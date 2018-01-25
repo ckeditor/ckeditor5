@@ -533,27 +533,6 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( 'setTo - removeAllRanges', () => {
-		it( 'should remove all ranges and fire change event', done => {
-			selection.setTo( [ range1, range2 ] );
-
-			selection.once( 'change', () => {
-				expect( selection.rangeCount ).to.equal( 0 );
-				done();
-			} );
-
-			selection.setTo( null );
-		} );
-
-		it( 'should do nothing when no ranges are present', () => {
-			const fireSpy = sinon.spy( selection, 'fire' );
-			selection.setTo( null );
-
-			fireSpy.restore();
-			expect( fireSpy.notCalled ).to.be.true;
-		} );
-	} );
-
 	describe( '_setRanges()', () => {
 		it( 'should throw an error when range is invalid', () => {
 			expect( () => {
@@ -587,193 +566,216 @@ describe( 'Selection', () => {
 	} );
 
 	describe( 'setTo()', () => {
-		it( 'should set selection ranges from the given selection', () => {
-			selection.setTo( range1 );
+		describe( 'simple scenarios', () => {
+			it( 'should set selection ranges from the given selection', () => {
+				selection.setTo( range1 );
 
-			const otherSelection = new Selection( [ range2, range3 ], true );
+				const otherSelection = new Selection( [ range2, range3 ], true );
 
-			selection.setTo( otherSelection );
+				selection.setTo( otherSelection );
 
-			expect( selection.rangeCount ).to.equal( 2 );
-			expect( selection._ranges[ 0 ].isEqual( range2 ) ).to.be.true;
-			expect( selection._ranges[ 0 ] ).is.not.equal( range2 );
-			expect( selection._ranges[ 1 ].isEqual( range3 ) ).to.be.true;
-			expect( selection._ranges[ 1 ] ).is.not.equal( range3 );
+				expect( selection.rangeCount ).to.equal( 2 );
+				expect( selection._ranges[ 0 ].isEqual( range2 ) ).to.be.true;
+				expect( selection._ranges[ 0 ] ).is.not.equal( range2 );
+				expect( selection._ranges[ 1 ].isEqual( range3 ) ).to.be.true;
+				expect( selection._ranges[ 1 ] ).is.not.equal( range3 );
 
-			expect( selection.anchor.isEqual( range3.end ) ).to.be.true;
-		} );
-
-		it( 'should set selection on the given Range using _setRanges method', () => {
-			const spy = sinon.spy( selection, '_setRanges' );
-
-			selection.setTo( range1 );
-
-			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range1 ] );
-			expect( selection.isBackward ).to.be.false;
-			expect( selection._setRanges.calledOnce ).to.be.true;
-			spy.restore();
-		} );
-
-		it( 'should set selection on the given iterable of Ranges using _setRanges method', () => {
-			const spy = sinon.spy( selection, '_setRanges' );
-
-			selection.setTo( new Set( [ range1, range2 ] ) );
-
-			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range1, range2 ] );
-			expect( selection.isBackward ).to.be.false;
-			expect( selection._setRanges.calledOnce ).to.be.true;
-			spy.restore();
-		} );
-
-		it( 'should set collapsed selection on the given Position using _setRanges method', () => {
-			const spy = sinon.spy( selection, '_setRanges' );
-
-			selection.setTo( range1.start );
-
-			expect( Array.from( selection.getRanges() ).length ).to.equal( 1 );
-			expect( Array.from( selection.getRanges() )[ 0 ].start ).to.deep.equal( range1.start );
-			expect( selection.isBackward ).to.be.false;
-			expect( selection.isCollapsed ).to.be.true;
-			expect( selection._setRanges.calledOnce ).to.be.true;
-			spy.restore();
-		} );
-
-		it( 'should fire change event', done => {
-			selection.on( 'change', () => {
-				expect( selection.rangeCount ).to.equal( 1 );
-				expect( selection.getFirstRange().isEqual( range1 ) ).to.be.true;
-				done();
+				expect( selection.anchor.isEqual( range3.end ) ).to.be.true;
 			} );
 
-			const otherSelection = new Selection( [ range1 ] );
+			it( 'should set selection on the given Range using _setRanges method', () => {
+				const spy = sinon.spy( selection, '_setRanges' );
 
-			selection.setTo( otherSelection );
-		} );
+				selection.setTo( range1 );
 
-		it( 'should set fake state and label', () => {
-			const otherSelection = new Selection();
-			const label = 'foo bar baz';
-			otherSelection.setFake( true, { label } );
-			selection.setTo( otherSelection );
+				expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range1 ] );
+				expect( selection.isBackward ).to.be.false;
+				expect( selection._setRanges.calledOnce ).to.be.true;
+				spy.restore();
+			} );
 
-			expect( selection.isFake ).to.be.true;
-			expect( selection.fakeSelectionLabel ).to.equal( label );
-		} );
+			it( 'should set selection on the given iterable of Ranges using _setRanges method', () => {
+				const spy = sinon.spy( selection, '_setRanges' );
 
-		it( 'should throw an error when trying to set to not selectable', () => {
-			const otherSelection = new Selection();
+				selection.setTo( new Set( [ range1, range2 ] ) );
 
-			expect( () => {
-				otherSelection.setTo( {} );
-			} ).to.throw( /view-selection-setTo-not-selectable/ );
-		} );
-	} );
+				expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range1, range2 ] );
+				expect( selection.isBackward ).to.be.false;
+				expect( selection._setRanges.calledOnce ).to.be.true;
+				spy.restore();
+			} );
 
-	describe( 'setTo - set collapsed at', () => {
-		beforeEach( () => {
-			selection.setTo( [ range1, range2 ] );
-		} );
+			it( 'should set collapsed selection on the given Position using _setRanges method', () => {
+				const spy = sinon.spy( selection, '_setRanges' );
 
-		it( 'should collapse selection at position', () => {
-			const position = new Position( el, 4 );
+				selection.setTo( range1.start );
 
-			selection.setTo( position );
-			const range = selection.getFirstRange();
-
-			expect( range.start.parent ).to.equal( el );
-			expect( range.start.offset ).to.equal( 4 );
-			expect( range.start.isEqual( range.end ) ).to.be.true;
-		} );
-
-		it( 'should collapse selection at node and offset', () => {
-			const foo = new Text( 'foo' );
-			const p = new Element( 'p', null, foo );
-
-			selection.setTo( foo );
-			let range = selection.getFirstRange();
-
-			expect( range.start.parent ).to.equal( foo );
-			expect( range.start.offset ).to.equal( 0 );
-			expect( range.start.isEqual( range.end ) ).to.be.true;
-
-			selection.setTo( p, 1 );
-			range = selection.getFirstRange();
-
-			expect( range.start.parent ).to.equal( p );
-			expect( range.start.offset ).to.equal( 1 );
-			expect( range.start.isEqual( range.end ) ).to.be.true;
-		} );
-
-		it( 'should collapse selection at node and flag', () => {
-			const foo = new Text( 'foo' );
-			const p = new Element( 'p', null, foo );
-
-			selection.setTo( foo, 'end' );
-			let range = selection.getFirstRange();
-
-			expect( range.start.parent ).to.equal( foo );
-			expect( range.start.offset ).to.equal( 3 );
-			expect( range.start.isEqual( range.end ) ).to.be.true;
-
-			selection.setTo( foo, 'before' );
-			range = selection.getFirstRange();
-
-			expect( range.start.parent ).to.equal( p );
-			expect( range.start.offset ).to.equal( 0 );
-			expect( range.start.isEqual( range.end ) ).to.be.true;
-
-			selection.setTo( foo, 'after' );
-			range = selection.getFirstRange();
-
-			expect( range.start.parent ).to.equal( p );
-			expect( range.start.offset ).to.equal( 1 );
-			expect( range.start.isEqual( range.end ) ).to.be.true;
-		} );
-	} );
-
-	describe( 'setTo - collapse at start', () => {
-		it( 'should collapse to start position and fire change event', done => {
-			selection.setTo( [ range1, range2, range3 ] );
-			selection.once( 'change', () => {
-				expect( selection.rangeCount ).to.equal( 1 );
+				expect( Array.from( selection.getRanges() ).length ).to.equal( 1 );
+				expect( Array.from( selection.getRanges() )[ 0 ].start ).to.deep.equal( range1.start );
+				expect( selection.isBackward ).to.be.false;
 				expect( selection.isCollapsed ).to.be.true;
-				expect( selection._ranges[ 0 ].start.isEqual( range2.start ) ).to.be.true;
-				done();
+				expect( selection._setRanges.calledOnce ).to.be.true;
+				spy.restore();
 			} );
 
-			selection.setTo( selection.getFirstPosition() );
-		} );
+			it( 'should fire change event', done => {
+				selection.on( 'change', () => {
+					expect( selection.rangeCount ).to.equal( 1 );
+					expect( selection.getFirstRange().isEqual( range1 ) ).to.be.true;
+					done();
+				} );
 
-		it( 'should do nothing if no ranges present', () => {
-			const fireSpy = sinon.spy( selection, 'fire' );
+				const otherSelection = new Selection( [ range1 ] );
 
-			selection.setTo( selection.getFirstPosition() );
-
-			fireSpy.restore();
-			expect( fireSpy.notCalled ).to.be.true;
-		} );
-	} );
-
-	describe( 'setTo - collapse to end', () => {
-		it( 'should collapse to end position and fire change event', done => {
-			selection.setTo( [ range1, range2, range3 ] );
-			selection.once( 'change', () => {
-				expect( selection.rangeCount ).to.equal( 1 );
-				expect( selection.isCollapsed ).to.be.true;
-				expect( selection._ranges[ 0 ].end.isEqual( range3.end ) ).to.be.true;
-				done();
+				selection.setTo( otherSelection );
 			} );
 
-			selection.setTo( selection.getLastPosition() );
+			it( 'should set fake state and label', () => {
+				const otherSelection = new Selection();
+				const label = 'foo bar baz';
+				otherSelection.setFake( true, { label } );
+				selection.setTo( otherSelection );
+
+				expect( selection.isFake ).to.be.true;
+				expect( selection.fakeSelectionLabel ).to.equal( label );
+			} );
+
+			it( 'should throw an error when trying to set to not selectable', () => {
+				const otherSelection = new Selection();
+
+				expect( () => {
+					otherSelection.setTo( {} );
+				} ).to.throw( /view-selection-setTo-not-selectable/ );
+			} );
 		} );
 
-		it( 'should do nothing if no ranges present', () => {
-			const fireSpy = sinon.spy( selection, 'fire' );
+		describe( 'setting collapsed selection', () => {
+			beforeEach( () => {
+				selection.setTo( [ range1, range2 ] );
+			} );
 
-			selection.setTo( selection.getLastPosition() );
+			it( 'should collapse selection at position', () => {
+				const position = new Position( el, 4 );
 
-			fireSpy.restore();
-			expect( fireSpy.notCalled ).to.be.true;
+				selection.setTo( position );
+				const range = selection.getFirstRange();
+
+				expect( range.start.parent ).to.equal( el );
+				expect( range.start.offset ).to.equal( 4 );
+				expect( range.start.isEqual( range.end ) ).to.be.true;
+			} );
+
+			it( 'should collapse selection at node and offset', () => {
+				const foo = new Text( 'foo' );
+				const p = new Element( 'p', null, foo );
+
+				selection.setTo( foo );
+				let range = selection.getFirstRange();
+
+				expect( range.start.parent ).to.equal( foo );
+				expect( range.start.offset ).to.equal( 0 );
+				expect( range.start.isEqual( range.end ) ).to.be.true;
+
+				selection.setTo( p, 1 );
+				range = selection.getFirstRange();
+
+				expect( range.start.parent ).to.equal( p );
+				expect( range.start.offset ).to.equal( 1 );
+				expect( range.start.isEqual( range.end ) ).to.be.true;
+			} );
+
+			it( 'should collapse selection at node and flag', () => {
+				const foo = new Text( 'foo' );
+				const p = new Element( 'p', null, foo );
+
+				selection.setTo( foo, 'end' );
+				let range = selection.getFirstRange();
+
+				expect( range.start.parent ).to.equal( foo );
+				expect( range.start.offset ).to.equal( 3 );
+				expect( range.start.isEqual( range.end ) ).to.be.true;
+
+				selection.setTo( foo, 'before' );
+				range = selection.getFirstRange();
+
+				expect( range.start.parent ).to.equal( p );
+				expect( range.start.offset ).to.equal( 0 );
+				expect( range.start.isEqual( range.end ) ).to.be.true;
+
+				selection.setTo( foo, 'after' );
+				range = selection.getFirstRange();
+
+				expect( range.start.parent ).to.equal( p );
+				expect( range.start.offset ).to.equal( 1 );
+				expect( range.start.isEqual( range.end ) ).to.be.true;
+			} );
+		} );
+
+		describe( 'setting collapsed selection at start', () => {
+			it( 'should collapse to start position and fire change event', done => {
+				selection.setTo( [ range1, range2, range3 ] );
+				selection.once( 'change', () => {
+					expect( selection.rangeCount ).to.equal( 1 );
+					expect( selection.isCollapsed ).to.be.true;
+					expect( selection._ranges[ 0 ].start.isEqual( range2.start ) ).to.be.true;
+					done();
+				} );
+
+				selection.setTo( selection.getFirstPosition() );
+			} );
+
+			it( 'should do nothing if no ranges present', () => {
+				const fireSpy = sinon.spy( selection, 'fire' );
+
+				selection.setTo( selection.getFirstPosition() );
+
+				fireSpy.restore();
+				expect( fireSpy.notCalled ).to.be.true;
+			} );
+		} );
+
+		describe( 'setting collapsed selection to end', () => {
+			it( 'should collapse to end position and fire change event', done => {
+				selection.setTo( [ range1, range2, range3 ] );
+				selection.once( 'change', () => {
+					expect( selection.rangeCount ).to.equal( 1 );
+					expect( selection.isCollapsed ).to.be.true;
+					expect( selection._ranges[ 0 ].end.isEqual( range3.end ) ).to.be.true;
+					done();
+				} );
+
+				selection.setTo( selection.getLastPosition() );
+			} );
+
+			it( 'should do nothing if no ranges present', () => {
+				const fireSpy = sinon.spy( selection, 'fire' );
+
+				selection.setTo( selection.getLastPosition() );
+
+				fireSpy.restore();
+				expect( fireSpy.notCalled ).to.be.true;
+			} );
+		} );
+
+		describe( 'removing all ranges', () => {
+			it( 'should remove all ranges and fire change event', done => {
+				selection.setTo( [ range1, range2 ] );
+
+				selection.once( 'change', () => {
+					expect( selection.rangeCount ).to.equal( 0 );
+					done();
+				} );
+
+				selection.setTo( null );
+			} );
+
+			it( 'should do nothing when no ranges are present', () => {
+				const fireSpy = sinon.spy( selection, 'fire' );
+				selection.setTo( null );
+
+				fireSpy.restore();
+				expect( fireSpy.notCalled ).to.be.true;
+			} );
 		} );
 	} );
 

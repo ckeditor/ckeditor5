@@ -173,8 +173,75 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( 'setTo() - setting selection inside element', () => {
-		it( 'should set selection inside an element', () => {
+	describe( 'setTo()', () => {
+		it( 'should set selection to be same as given selection, using _setRanges method', () => {
+			const spy = sinon.spy( selection, '_setRanges' );
+
+			const otherSelection = new Selection( [ range1, range2 ], true );
+
+			selection.setTo( otherSelection );
+
+			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range1, range2 ] );
+			expect( selection.isBackward ).to.be.true;
+			expect( selection._setRanges.calledOnce ).to.be.true;
+			spy.restore();
+		} );
+
+		it( 'should set selection on the given Range using _setRanges method', () => {
+			const spy = sinon.spy( selection, '_setRanges' );
+
+			selection.setTo( range1 );
+
+			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range1 ] );
+			expect( selection.isBackward ).to.be.false;
+			expect( selection._setRanges.calledOnce ).to.be.true;
+			spy.restore();
+		} );
+
+		it( 'should set selection on the given iterable of Ranges using _setRanges method', () => {
+			const spy = sinon.spy( selection, '_setRanges' );
+
+			selection.setTo( new Set( [ range1, range2 ] ) );
+
+			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range1, range2 ] );
+			expect( selection.isBackward ).to.be.false;
+			expect( selection._setRanges.calledOnce ).to.be.true;
+			spy.restore();
+		} );
+
+		it( 'should set collapsed selection on the given Position using _setRanges method', () => {
+			const spy = sinon.spy( selection, '_setRanges' );
+			const position = new Position( root, [ 4 ] );
+
+			selection.setTo( position );
+
+			expect( Array.from( selection.getRanges() ).length ).to.equal( 1 );
+			expect( Array.from( selection.getRanges() )[ 0 ].start ).to.deep.equal( position );
+			expect( selection.isBackward ).to.be.false;
+			expect( selection.isCollapsed ).to.be.true;
+			expect( selection._setRanges.calledOnce ).to.be.true;
+			spy.restore();
+		} );
+
+		it( 'should throw an error if added ranges intersects', () => {
+			expect( () => {
+				selection.setTo( [
+					liveRange,
+					new Range(
+						new Position( root, [ 0, 4 ] ),
+						new Position( root, [ 1, 2 ] )
+					)
+				] );
+			} ).to.throw( CKEditorError, /model-selection-range-intersects/ );
+		} );
+
+		it( 'should throw an error when trying to set selection to not selectable', () => {
+			expect( () => {
+				selection.setTo( {} );
+			} ).to.throw( /model-selection-setTo-not-selectable/ );
+		} );
+
+		it( 'should allow setting selection inside an element', () => {
 			const element = new Element( 'p', null, [ new Text( 'foo' ), new Text( 'bar' ) ] );
 
 			selection.setTo( Range.createIn( element ) );
@@ -186,10 +253,8 @@ describe( 'Selection', () => {
 			expect( ranges[ 0 ].end.parent ).to.equal( element );
 			expect( ranges[ 0 ].end.offset ).to.deep.equal( 6 );
 		} );
-	} );
 
-	describe( 'setTo() - setting selection on item', () => {
-		it( 'should set selection on an item', () => {
+		it( 'should allow setting selection on an item', () => {
 			const textNode1 = new Text( 'foo' );
 			const textNode2 = new Text( 'bar' );
 			const textNode3 = new Text( 'baz' );
@@ -204,79 +269,79 @@ describe( 'Selection', () => {
 			expect( ranges[ 0 ].end.parent ).to.equal( element );
 			expect( ranges[ 0 ].end.offset ).to.deep.equal( 6 );
 		} );
-	} );
 
-	describe( 'setTo() - setting selection to position or item', () => {
-		it( 'fires change:range', () => {
-			const spy = sinon.spy();
+		describe( 'setting selection to position or item', () => {
+			it( 'should fire change:range', () => {
+				const spy = sinon.spy();
 
-			selection.on( 'change:range', spy );
+				selection.on( 'change:range', spy );
 
-			selection.setTo( root );
+				selection.setTo( root );
 
-			expect( spy.calledOnce ).to.be.true;
-		} );
+				expect( spy.calledOnce ).to.be.true;
+			} );
 
-		it( 'sets selection at the 0 offset if second parameter not passed', () => {
-			selection.setTo( root );
+			it( 'should set selection at the 0 offset if second parameter not passed', () => {
+				selection.setTo( root );
 
-			expect( selection ).to.have.property( 'isCollapsed', true );
+				expect( selection ).to.have.property( 'isCollapsed', true );
 
-			const focus = selection.focus;
-			expect( focus ).to.have.property( 'parent', root );
-			expect( focus ).to.have.property( 'offset', 0 );
-		} );
+				const focus = selection.focus;
+				expect( focus ).to.have.property( 'parent', root );
+				expect( focus ).to.have.property( 'offset', 0 );
+			} );
 
-		it( 'sets selection at given offset in given parent', () => {
-			selection.setTo( root, 3 );
+			it( 'should set selection at given offset in given parent', () => {
+				selection.setTo( root, 3 );
 
-			expect( selection ).to.have.property( 'isCollapsed', true );
+				expect( selection ).to.have.property( 'isCollapsed', true );
 
-			const focus = selection.focus;
-			expect( focus ).to.have.property( 'parent', root );
-			expect( focus ).to.have.property( 'offset', 3 );
-		} );
+				const focus = selection.focus;
+				expect( focus ).to.have.property( 'parent', root );
+				expect( focus ).to.have.property( 'offset', 3 );
+			} );
 
-		it( 'sets selection at the end of the given parent', () => {
-			selection.setTo( root, 'end' );
+			it( 'should set selection at the end of the given parent', () => {
+				selection.setTo( root, 'end' );
 
-			expect( selection ).to.have.property( 'isCollapsed', true );
+				expect( selection ).to.have.property( 'isCollapsed', true );
 
-			const focus = selection.focus;
-			expect( focus ).to.have.property( 'parent', root );
-			expect( focus ).to.have.property( 'offset', root.maxOffset );
-		} );
+				const focus = selection.focus;
+				expect( focus ).to.have.property( 'parent', root );
+				expect( focus ).to.have.property( 'offset', root.maxOffset );
+			} );
 
-		it( 'sets selection before the specified element', () => {
-			selection.setTo( root.getChild( 1 ), 'before' );
+			it( 'should set selection before the specified element', () => {
+				selection.setTo( root.getChild( 1 ), 'before' );
 
-			expect( selection ).to.have.property( 'isCollapsed', true );
+				expect( selection ).to.have.property( 'isCollapsed', true );
 
-			const focus = selection.focus;
-			expect( focus ).to.have.property( 'parent', root );
-			expect( focus ).to.have.property( 'offset', 1 );
-		} );
+				const focus = selection.focus;
+				expect( focus ).to.have.property( 'parent', root );
+				expect( focus ).to.have.property( 'offset', 1 );
+			} );
 
-		it( 'sets selection after the specified element', () => {
-			selection.setTo( root.getChild( 1 ), 'after' );
+			it( 'should set selection after the specified element', () => {
+				selection.setTo( root.getChild( 1 ), 'after' );
 
-			expect( selection ).to.have.property( 'isCollapsed', true );
+				expect( selection ).to.have.property( 'isCollapsed', true );
 
-			const focus = selection.focus;
-			expect( focus ).to.have.property( 'parent', root );
-			expect( focus ).to.have.property( 'offset', 2 );
-		} );
+				const focus = selection.focus;
+				expect( focus ).to.have.property( 'parent', root );
+				expect( focus ).to.have.property( 'offset', 2 );
+			} );
 
-		it( 'sets selection at the specified position', () => {
-			const pos = Position.createFromParentAndOffset( root, 3 );
+			it( 'should set selection at the specified position', () => {
+				const pos = Position.createFromParentAndOffset( root, 3 );
 
-			selection.setTo( pos );
+				selection.setTo( pos );
 
-			expect( selection ).to.have.property( 'isCollapsed', true );
+				expect( selection ).to.have.property( 'isCollapsed', true );
 
-			const focus = selection.focus;
-			expect( focus ).to.have.property( 'parent', root );
-			expect( focus ).to.have.property( 'offset', 3 );
+				const focus = selection.focus;
+				expect( focus ).to.have.property( 'parent', root );
+				expect( focus ).to.have.property( 'offset', 3 );
+			} );
 		} );
 	} );
 
@@ -566,75 +631,6 @@ describe( 'Selection', () => {
 
 			expect( selection.anchor.path ).to.deep.equal( [ 2 ] );
 			expect( selection.focus.path ).to.deep.equal( [ 2, 2 ] );
-		} );
-	} );
-
-	describe( 'setTo()', () => {
-		it( 'should set selection to be same as given selection, using _setRanges method', () => {
-			const spy = sinon.spy( selection, '_setRanges' );
-
-			const otherSelection = new Selection( [ range1, range2 ], true );
-
-			selection.setTo( otherSelection );
-
-			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range1, range2 ] );
-			expect( selection.isBackward ).to.be.true;
-			expect( selection._setRanges.calledOnce ).to.be.true;
-			spy.restore();
-		} );
-
-		it( 'should set selection on the given Range using _setRanges method', () => {
-			const spy = sinon.spy( selection, '_setRanges' );
-
-			selection.setTo( range1 );
-
-			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range1 ] );
-			expect( selection.isBackward ).to.be.false;
-			expect( selection._setRanges.calledOnce ).to.be.true;
-			spy.restore();
-		} );
-
-		it( 'should set selection on the given iterable of Ranges using _setRanges method', () => {
-			const spy = sinon.spy( selection, '_setRanges' );
-
-			selection.setTo( new Set( [ range1, range2 ] ) );
-
-			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range1, range2 ] );
-			expect( selection.isBackward ).to.be.false;
-			expect( selection._setRanges.calledOnce ).to.be.true;
-			spy.restore();
-		} );
-
-		it( 'should set collapsed selection on the given Position using _setRanges method', () => {
-			const spy = sinon.spy( selection, '_setRanges' );
-			const position = new Position( root, [ 4 ] );
-
-			selection.setTo( position );
-
-			expect( Array.from( selection.getRanges() ).length ).to.equal( 1 );
-			expect( Array.from( selection.getRanges() )[ 0 ].start ).to.deep.equal( position );
-			expect( selection.isBackward ).to.be.false;
-			expect( selection.isCollapsed ).to.be.true;
-			expect( selection._setRanges.calledOnce ).to.be.true;
-			spy.restore();
-		} );
-
-		it( 'should throw an error if added ranges intersects', () => {
-			expect( () => {
-				selection.setTo( [
-					liveRange,
-					new Range(
-						new Position( root, [ 0, 4 ] ),
-						new Position( root, [ 1, 2 ] )
-					)
-				] );
-			} ).to.throw( CKEditorError, /model-selection-range-intersects/ );
-		} );
-
-		it( 'should throw an error when trying to set selection to not selectable', () => {
-			expect( () => {
-				selection.setTo( {} );
-			} ).to.throw( /model-selection-setTo-not-selectable/ );
 		} );
 	} );
 
