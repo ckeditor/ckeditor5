@@ -8,11 +8,11 @@
  */
 
 /**
- * Returns {@link module:font/fontsize/fontsizeediting~FontSizeConfig#options} array with options normalized in the
- * {@link module:font/fontsize/fontsizeediting~FontSizeOption} format, translated.
+ * Returns {@link module:font/fontsize~FontSizeConfig#options} array with options normalized in the
+ * {@link module:font/fontsize~FontSizeOption} format, translated.
  *
  * @param {Array.<String|Number|Object>} configuredOptions An array of options taken from configuration.
- * @returns {Array.<module:font/fontsize/fontsizeediting~FontSizeOption>}
+ * @returns {Array.<module:font/fontsize~FontSizeOption>}
  */
 export function normalizeOptions( configuredOptions ) {
 	// Convert options to objects.
@@ -62,7 +62,7 @@ const namedPresets = {
 // If object is passed then this method will return it without alternating it. Returns undefined for item than cannot be parsed.
 //
 // @param {String|Number|Object} item
-// @returns {undefined|module:font/fontsize/fontsizeediting~FontSizeOption}
+// @returns {undefined|module:font/fontsize~FontSizeOption}
 function getOptionDefinition( option ) {
 	// Treat any object as full item definition provided by user in configuration.
 	if ( typeof option === 'object' ) {
@@ -97,7 +97,7 @@ function getOptionDefinition( option ) {
 // Creates a predefined preset for pixel size.
 //
 // @param {Number} size Font size in pixels.
-// @returns {module:font/fontsize/fontsizeediting~FontSizeOption}
+// @returns {module:font/fontsize~FontSizeOption}
 function generatePixelPreset( size ) {
 	const sizeName = String( size );
 
