@@ -619,6 +619,26 @@ describe( 'DocumentSelection', () => {
 				expect( spyAttribute.called ).to.be.false;
 			} );
 
+			it( 'should not overwrite previously set attributes with same values', () => {
+				selection._setAttribute( 'foo', 'xyz' );
+
+				const spyAttribute = sinon.spy();
+				selection.on( 'change:attribute', spyAttribute );
+
+				model.applyOperation( wrapInDelta(
+					new AttributeOperation(
+						new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 5 ] ) ),
+						'foo',
+						null,
+						'xyz',
+						doc.version
+					)
+				) );
+
+				expect( selection.getAttribute( 'foo' ) ).to.equal( 'xyz' );
+				expect( spyAttribute.called ).to.be.false;
+			} );
+
 			it( 'should not overwrite previously removed attributes', () => {
 				selection._setAttribute( 'foo', 'xyz' );
 				selection._removeAttribute( 'foo' );

@@ -740,10 +740,8 @@ class LiveSelection extends Selection {
 				continue;
 			}
 
-			// Attribute still might not get removed because of priorities.
-			if ( this._removeAttribute( oldKey, false ) ) {
-				changed.add( oldKey );
-			}
+			// All rest attributes will be removed so changed attributes won't change .
+			this._removeAttribute( oldKey, false );
 		}
 
 		for ( const [ key, value ] of attrs ) {
