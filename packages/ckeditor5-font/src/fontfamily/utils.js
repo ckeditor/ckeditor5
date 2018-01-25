@@ -8,11 +8,11 @@
  */
 
 /**
- * Returns {@link module:font/fontfamily/fontfamilyediting~FontFamilyConfig#options} array with options normalized in the
- * {@link module:font/fontfamily/fontfamilyediting~FontFamilyOption} format.
+ * Returns {@link module:font/fontfamily~FontFamilyConfig#options} array with options normalized in the
+ * {@link module:font/fontfamily~FontFamilyOption} format.
  *
  * @param {Array.<String|Object>} configuredOptions An array of options taken from configuration.
- * @returns {Array.<module:font/fontfamily/fontfamilyediting~FontFamilyOption>}
+ * @returns {Array.<module:font/fontfamily~FontFamilyOption>}
  */
 export function normalizeOptions( configuredOptions ) {
 	// Convert options to objects.
@@ -26,7 +26,7 @@ export function normalizeOptions( configuredOptions ) {
 // If object is passed then this method will return it without alternating it. Returns undefined for item than cannot be parsed.
 //
 // @param {String|Object} option
-// @returns {undefined|module:font/fontfamily/fontfamilyediting~FontFamilyOption}
+// @returns {undefined|module:font/fontfamily~FontFamilyOption}
 function getOptionDefinition( option ) {
 	// Treat any object as full item definition provided by user in configuration.
 	if ( typeof option === 'object' ) {
