@@ -50,7 +50,9 @@ describe( 'ListCommand', () => {
 			'</widget>'
 		);
 
-		doc.selection.setCollapsedAt( doc.getRoot().getChild( 0 ) );
+		model.change( writer => {
+			writer.setSelection( doc.getRoot().getChild( 0 ) );
+		} );
 	} );
 
 	afterEach( () => {
@@ -70,24 +72,24 @@ describe( 'ListCommand', () => {
 
 		describe( 'value', () => {
 			it( 'should be false if first position in selection is not in a list item', () => {
-				model.change( () => {
-					doc.selection.setCollapsedAt( doc.getRoot().getChild( 3 ) );
+				model.change( writer => {
+					writer.setSelection( doc.getRoot().getChild( 3 ) );
 				} );
 
 				expect( command.value ).to.be.false;
 			} );
 
 			it( 'should be false if first position in selection is in a list item of different type', () => {
-				model.change( () => {
-					doc.selection.setCollapsedAt( doc.getRoot().getChild( 2 ) );
+				model.change( writer => {
+					writer.setSelection( doc.getRoot().getChild( 2 ) );
 				} );
 
 				expect( command.value ).to.be.false;
 			} );
 
 			it( 'should be true if first position in selection is in a list item of same type', () => {
-				model.change( () => {
-					doc.selection.setCollapsedAt( doc.getRoot().getChild( 1 ) );
+				model.change( writer => {
+					writer.setSelection( doc.getRoot().getChild( 1 ) );
 				} );
 
 				expect( command.value ).to.be.true;
@@ -303,11 +305,11 @@ describe( 'ListCommand', () => {
 				it( 'should rename closest block to listItem and set correct attributes', () => {
 					// From first paragraph to second paragraph.
 					// Command value=false, we are turning on list items.
-					model.change( () => {
-						doc.selection.setRanges( [ new Range(
+					model.change( writer => {
+						writer.setSelection( new Range(
 							Position.createAt( root.getChild( 2 ) ),
 							Position.createAt( root.getChild( 3 ), 'end' )
-						) ] );
+						) );
 					} );
 
 					command.execute();
@@ -328,11 +330,11 @@ describe( 'ListCommand', () => {
 				it( 'should rename closest listItem to paragraph', () => {
 					// From second bullet list item to first numbered list item.
 					// Command value=true, we are turning off list items.
-					model.change( () => {
-						doc.selection.setRanges( [ new Range(
+					model.change( writer => {
+						writer.setSelection( new Range(
 							Position.createAt( root.getChild( 1 ) ),
 							Position.createAt( root.getChild( 4 ), 'end' )
-						) ] );
+						) );
 					} );
 
 					// Convert paragraphs, leave numbered list items.
@@ -353,11 +355,11 @@ describe( 'ListCommand', () => {
 
 				it( 'should change closest listItem\'s type', () => {
 					// From first numbered lsit item to third bulleted list item.
-					model.change( () => {
-						doc.selection.setRanges( [ new Range(
+					model.change( writer => {
+						writer.setSelection( new Range(
 							Position.createAt( root.getChild( 4 ) ),
 							Position.createAt( root.getChild( 6 ) )
-						) ] );
+						) );
 					} );
 
 					// Convert paragraphs, leave numbered list items.
@@ -378,11 +380,11 @@ describe( 'ListCommand', () => {
 
 				it( 'should handle outdenting sub-items when list item is turned off', () => {
 					// From first numbered list item to third bulleted list item.
-					model.change( () => {
-						doc.selection.setRanges( [ new Range(
+					model.change( writer => {
+						writer.setSelection( new Range(
 							Position.createAt( root.getChild( 1 ) ),
 							Position.createAt( root.getChild( 5 ), 'end' )
-						) ] );
+						) );
 					} );
 
 					// Convert paragraphs, leave numbered list items.
