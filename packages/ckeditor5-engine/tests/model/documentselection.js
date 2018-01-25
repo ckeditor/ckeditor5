@@ -392,6 +392,15 @@ describe( 'DocumentSelection', () => {
 		} );
 	} );
 
+	describe( 'getSelectedElement()', () => {
+		it( 'should return selected element', () => {
+			selection._setTo( liveRange );
+			const p = root.getChild( 0 );
+
+			expect( selection.getSelectedElement() ).to.equal( p );
+		} );
+	} );
+
 	// DocumentSelection uses LiveRanges so here are only simple test to see if integration is
 	// working well, without getting into complicated corner cases.
 	describe( 'after applying an operation should get updated and fire events', () => {

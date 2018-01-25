@@ -244,6 +244,17 @@ export default class DocumentSelection {
 	}
 
 	/**
+	 * Returns the selected element. {@link module:engine/model/element~Element Element} is considered as selected if there is only
+	 * one range in the selection, and that range contains exactly one element.
+	 * Returns `null` if there is no selected element.
+	 *
+	 * @returns {module:engine/model/element~Element|null}
+	 */
+	getSelectedElement() {
+		return this._selection.getSelectedElement();
+	}
+
+	/**
 	 * Checks whether the selection contains the entire content of the given element. This means that selection must start
 	 * at a position {@link module:engine/model/position~Position#isTouching touching} the element's start and ends at position
 	 * touching the element's end.
