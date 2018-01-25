@@ -41,23 +41,23 @@ describe( 'Highlight', () => {
 		return editor.destroy();
 	} );
 
-	describe.skip( 'compatibility with images', () => {
-		it( 'does not work inside image caption', () => {
+	describe( 'compatibility with images', () => {
+		it( 'does work inside image caption', () => {
 			setModelData( model, '<image src="foo.png"><caption>foo[bar]baz</caption></image>' );
 
-			editor.execute( 'marker' );
+			editor.execute( 'highlight', { value: 'marker' } );
 
 			expect( getModelData( model ) )
 				.to.equal( '<image src="foo.png"><caption>foo[<$text highlight="marker">bar</$text>]baz</caption></image>' );
 		} );
 
-		it( 'does not work on selection with image', () => {
+		it( 'does work on selection with image', () => {
 			setModelData(
 				model,
 				'<paragraph>foo[foo</paragraph><image src="foo.png"><caption>abc</caption></image><paragraph>bar]bar</paragraph>'
 			);
 
-			editor.execute( 'marker' );
+			editor.execute( 'highlight', { value: 'marker' } );
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>foo[<$text highlight="marker">foo</$text></paragraph>' +
