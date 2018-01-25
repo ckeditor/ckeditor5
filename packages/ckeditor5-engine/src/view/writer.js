@@ -12,18 +12,131 @@ import ContainerElement from './containerelement';
 import AttributeElement from './attributeelement';
 import EmptyElement from './emptyelement';
 import UIElement from './uielement';
-import Text from './text';
 import Range from './range';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import DocumentFragment from './documentfragment';
 import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
+import Text from './text';
+import Element from './element';
+import EditableElement from './editableelement';
 
 /**
  * View writer class. Provides set of methods used to properly manipulate nodes attached to
- * {@link module:engine/view/document~Document view document}. To get an instance of view writer associated with
- * the document use {@link module:engine/view/view~View#change view.change()) method.
+ * {@link module:engine/view/document~Document view document}. It is not recommended to use it directly. To get an instance
+ * of view writer associated with the document use {@link module:engine/view/view~View#change view.change()) method.
  */
 export default class Writer {
+	/**
+	 * Creates a new {@link module:engine/view/text~Text text node}.
+	 *
+	 *		writer.createText( 'foo' );
+	 *
+	 * @param {String} data Text data.
+	 * @returns {module:engine/view/text~Text} Created text node.
+	 */
+	createText( data ) {
+		return new Text( data );
+	}
+
+	/**
+	 * Creates new {@link module:engine/view/element~Element element}.
+	 *
+	 *		writer.createElement( 'paragraph' );
+	 *		writer.createElement( 'paragraph', { 'alignment': 'center' } );
+	 *
+	 * @param {String} name Name of the element.
+	 * @param {Object} [attributes] Elements attributes.
+	 * @returns {module:engine/view/element~Element} Created element.
+	 */
+	createElement( name, attributes ) {
+		return new Element( name, attributes );
+	}
+
+	/**
+	 * Creates new {@link module:engine/view/documentfragment~DocumentFragment document fragment}.
+	 *
+	 *		writer.createDocumentFragment();
+	 *
+	 * @returns {module:engine/view/documentfragment~DocumentFragment} Created document fragment.
+	 */
+	createDocumentFragment() {
+		return new DocumentFragment();
+	}
+
+	/**
+	 * Creates new {@link module:engine/view/attributeelement~AttributeElement}.
+	 *
+	 *		writer.createAttributeElement( 'paragraph' );
+	 *		writer.createAttributeElement( 'paragraph', { 'alignment': 'center' } );
+	 *
+	 * @param {String} name Name of the element.
+	 * @param {Object} [attributes] Elements attributes.
+	 * @returns {module:engine/view/attributeelement~AttributeElement} Created element.
+	 */
+	createAttributeElement( name, attributes ) {
+		return new AttributeElement( name, attributes );
+	}
+
+	/**
+	 * Creates new {@link module:engine/view/containerelement~ContainerElement}.
+	 *
+	 *		writer.createContainerElement( 'paragraph' );
+	 *		writer.createContainerElement( 'paragraph', { 'alignment': 'center' } );
+	 *
+	 * @param {String} name Name of the element.
+	 * @param {Object} [attributes] Elements attributes.
+	 * @returns {module:engine/view/containerelement~ContainerElement} Created element.
+	 */
+	createContainerElement( name, attributes ) {
+		return new ContainerElement( name, attributes );
+	}
+
+	/**
+	 * Creates new {@link module:engine/view/editableelement~EditableElement}.
+	 *
+	 *		writer.createEditableElement( document, 'paragraph' );
+	 *		writer.createEditableElement( document, 'paragraph', { 'alignment': 'center' } );
+	 *
+	 * @param {module:engine/view/document~Document} document View document.
+	 * @param {String} name Name of the element.
+	 * @param {Object} [attributes] Elements attributes.
+	 * @returns {module:engine/view/editableelement~EditableElement} Created element.
+	 */
+	createEditableElement( document, name, attributes ) {
+		const editableElement = new EditableElement( name, attributes );
+		editableElement.document = document;
+
+		return editableElement;
+	}
+
+	/**
+	 * Creates new {@link module:engine/view/emptyelement~EmptyElement}.
+	 *
+	 *		writer.createEmptyElement( 'paragraph' );
+	 *		writer.createEmptyElement( 'paragraph', { 'alignment': 'center' } );
+	 *
+	 * @param {String} name Name of the element.
+	 * @param {Object} [attributes] Elements attributes.
+	 * @returns {module:engine/view/emptyelement~EmptyElement} Created element.
+	 */
+	createEmptyElement( name, attributes ) {
+		return new EmptyElement( name, attributes );
+	}
+
+	/**
+	 * Creates new {@link module:engine/view/uielement~UIElement}.
+	 *
+	 *		writer.createUIElement( 'paragraph' );
+	 *		writer.createUIElement( 'paragraph', { 'alignment': 'center' } );
+	 *
+	 * @param {String} name Name of the element.
+	 * @param {Object} [attributes] Elements attributes.
+	 * @returns {module:engine/view/uielement~UIElement} Created element.
+	 */
+	createUIElement( name, attributes ) {
+		return new UIElement( name, attributes );
+	}
+
 	/**
 	 * Breaks attribute nodes at provided position or at boundaries of provided range. It breaks attribute elements inside
 	 * up to a container element.
