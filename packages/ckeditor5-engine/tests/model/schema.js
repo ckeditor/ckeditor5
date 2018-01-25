@@ -377,6 +377,17 @@ describe( 'Schema', () => {
 			expect( schema.checkChild( root1, '$text' ) ).to.be.false;
 		} );
 
+		it( 'accepts a schemaContext instance as a context', () => {
+			const rootContext = new SchemaContext( Position.createAt( root1 ) );
+			const paragraphContext = new SchemaContext( Position.createAt( r1p1 ) );
+
+			expect( schema.checkChild( rootContext, 'paragraph' ) ).to.be.true;
+			expect( schema.checkChild( rootContext, '$text' ) ).to.be.false;
+
+			expect( schema.checkChild( paragraphContext, '$text' ) ).to.be.true;
+			expect( schema.checkChild( paragraphContext, 'paragraph' ) ).to.be.false;
+		} );
+
 		it( 'accepts a position as a context', () => {
 			const posInRoot = Position.createAt( root1 );
 			const posInParagraph = Position.createAt( r1p1 );
@@ -464,6 +475,14 @@ describe( 'Schema', () => {
 
 			expect( schema.checkAttribute( posInRoot, 'align' ) ).to.be.false;
 			expect( schema.checkAttribute( posInParagraph, 'align' ) ).to.be.true;
+		} );
+
+		it( 'accepts a schemaContext instance as a context', () => {
+			const rootContext = new SchemaContext( Position.createAt( root1 ) );
+			const paragraphContext = new SchemaContext( Position.createAt( r1p1 ) );
+
+			expect( schema.checkAttribute( rootContext, 'align' ) ).to.be.false;
+			expect( schema.checkAttribute( paragraphContext, 'align' ) ).to.be.true;
 		} );
 
 		it( 'accepts an array of node names as a context', () => {

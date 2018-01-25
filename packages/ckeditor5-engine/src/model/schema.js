@@ -193,11 +193,16 @@ export default class Schema {
 		this.decorate( 'checkAttribute' );
 
 		this.on( 'checkAttribute', ( evt, args ) => {
-			args[ 0 ] = new SchemaContext( args[ 0 ] );
+			if ( !( args[ 0 ] instanceof SchemaContext ) ) {
+				args[ 0 ] = new SchemaContext( args[ 0 ] );
+			}
 		}, { priority: 'highest' } );
 
 		this.on( 'checkChild', ( evt, args ) => {
-			args[ 0 ] = new SchemaContext( args[ 0 ] );
+			if ( !( args[ 0 ] instanceof SchemaContext ) ) {
+				args[ 0 ] = new SchemaContext( args[ 0 ] );
+			}
+
 			args[ 1 ] = this.getDefinition( args[ 1 ] );
 		}, { priority: 'highest' } );
 	}
@@ -375,8 +380,9 @@ export default class Schema {
 	 *		schema.checkChild( model.document.getRoot(), paragraph ); // -> true
 	 *
 	 * @fires checkChild
-	 * @param {module:engine/model/schema~SchemaContextDefinition} context Context in which the child will be checked.
-	 * @param {module:engine/model/node~Node|String} child The child to check.
+	 * @param {module:engine/model/schema~SchemaContextDefinition|module:engine/model/schema~SchemaContext} context
+	 * Context in which the child will be checked.
+	 * @param {module:engine/model/node~Node|String} def The child to check.
 	 */
 	checkChild( context, def ) {
 		// Note: context and child are already normalized here to a SchemaContext and SchemaCompiledItemDefinition.
@@ -399,7 +405,8 @@ export default class Schema {
 	 *		schema.checkAttribute( textNode, 'bold' ); // -> true
 	 *
 	 * @fires checkAttribute
-	 * @param {module:engine/model/schema~SchemaContextDefinition} context
+	 * @param {module:engine/model/schema~SchemaContextDefinition|module:engine/model/schema~SchemaContext} context
+	 * Context in which the attribute will be checked.
 	 * @param {String} attributeName
 	 */
 	checkAttribute( context, attributeName ) {
