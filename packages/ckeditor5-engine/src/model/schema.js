@@ -411,10 +411,15 @@ export default class Schema {
 	}
 
 	/**
-	 * Checks whether given element (`elementToMerge`) can be merged to the specified base element (`baseElement`).
+	 * Checks whether the given element (`elementToMerge`) can be merged with the specified base element (`baseElement`).
 	 *
-	 * @param {module:engine/model/Element~Element} baseElement The base element which will be merged.
-	 * @param {module:engine/model/Element~Element} elementToMerge The element to check whether can be merged with the base element.
+	 * In other words – whether `elementToMerge`'s children {@link #checkChild are allowed} in the `baseElement`.
+	 *
+	 * This check ensures that elements merged with {@link module:engine/model/writer~Writer#merge `Writer#merge()`}
+	 * will be valid.
+	 *
+	 * @param {module:engine/model/Element~Element} baseElement The base element to which the `elementToMerge` will be merged.
+	 * @param {module:engine/model/Element~Element} elementToMerge The element to merge.
 	 * @returns {Boolean}
 	 */
 	checkMerge( baseElement, elementToMerge ) {

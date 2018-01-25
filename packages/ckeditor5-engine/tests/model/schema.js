@@ -652,28 +652,28 @@ describe( 'Schema', () => {
 				allowIn: '$block'
 			} );
 			schema.register( 'paragraph', {
-				allowWhere: '$block'
+				inheritAllFrom: '$block'
+			} );
+			schema.register( 'listItem', {
+				inheritAllFrom: '$block'
 			} );
 			schema.register( 'blockQuote', {
 				allowWhere: '$block',
 				allowContentOf: '$root'
 			} );
-			schema.register( 'listItem', {
-				inheritAllFrom: '$block'
-			} );
 		} );
 
-		it( 'returns false if a block cannot be merged with other block (disallowed element is a first children)', () => {
+		it( 'returns false if a block cannot be merged with other block (disallowed element is the first child)', () => {
 			const paragraph = new Element( 'paragraph', null, [
 				new Text( 'xyz' )
 			] );
 			const blockQuote = new Element( 'blockQuote', null, [ paragraph ] );
 			const listItem = new Element( 'listItem' );
 
-			expect( schema.checkMerge( listItem, blockQuote ) ).to.equal( false );
+			expect( schema.checkMerge( listItem, blockQuote ) ).to.be.false;
 		} );
 
-		it( 'returns false if a block cannot be merged with other block (disallowed element is not a first children)', () => {
+		it( 'returns false if a block cannot be merged with other block (disallowed element is not the first child)', () => {
 			const paragraph = new Element( 'paragraph', null, [
 				new Text( 'foo' )
 			] );
@@ -684,7 +684,7 @@ describe( 'Schema', () => {
 			] );
 			const listItem = new Element( 'listItem' );
 
-			expect( schema.checkMerge( listItem, blockQuote ) ).to.equal( false );
+			expect( schema.checkMerge( listItem, blockQuote ) ).to.be.false;
 		} );
 
 		it( 'returns true if a block can be merged with other block', () => {
@@ -693,9 +693,12 @@ describe( 'Schema', () => {
 				new Text( 'xyz' )
 			] );
 
-			expect( schema.checkMerge( listItem, listItemToMerge ) ).to.equal( true );
+			expect( schema.checkMerge( listItem, listItemToMerge ) ).to.be.true;
 		} );
 
+		// This is an invalid case by definition – the baseElement should not contain disallowed elements
+		// in the first place. However, the check is focused on the elementToMerge's children so let's make sure
+		// that only them counts.
 		it( 'returns true if element to merge contains a valid content but base element contains disallowed elements', () => {
 			const listItem = new Element( 'listItem', null, [
 				new Text( 'foo' ),
@@ -707,8 +710,11 @@ describe( 'Schema', () => {
 				new Text( 'xyz' )
 			] );
 
-			expect( schema.checkMerge( listItem, listItemToMerge ) ).to.equal( true );
+			expect( schema.checkMerge( listItem, listItemToMerge ) ).to.be.true;
 		} );
+
+		// The checkMerge() method should also check whether all ancestors of elementToMerge are allowed in their new
+		// context (now, we check only immediate children), but for now we ignore these cases.
 	} );
 
 	describe( 'getLimitElement()', () => {
