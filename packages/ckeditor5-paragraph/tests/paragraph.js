@@ -92,7 +92,7 @@ describe( 'Paragraph feature', () => {
 			} );
 
 			it( 'should not autoparagraph text (in clipboard holder)', () => {
-				const modelFragment = editor.data.parse( 'foo', '$clipboardHolder' );
+				const modelFragment = editor.data.parse( 'foo', [ '$clipboardHolder' ] );
 
 				expect( stringifyModel( modelFragment ) )
 					.to.equal( 'foo' );
@@ -101,7 +101,7 @@ describe( 'Paragraph feature', () => {
 			it( 'should not autoparagraph text (in a context which does not allow paragraphs', () => {
 				model.schema.register( 'specialRoot' );
 
-				const modelFragment = editor.data.parse( 'foo', 'specialRoot' );
+				const modelFragment = editor.data.parse( 'foo', [ 'specialRoot' ] );
 
 				expect( stringifyModel( modelFragment ) )
 					.to.equal( '' );
@@ -125,7 +125,7 @@ describe( 'Paragraph feature', () => {
 			} );
 
 			it( 'should not autoparagraph 3 inline nodes (in clipboardHolder)', () => {
-				const modelFragment = editor.data.parse( 'foo<b>bar</b>bom', '$clipboardHolder' );
+				const modelFragment = editor.data.parse( 'foo<b>bar</b>bom', [ '$clipboardHolder' ] );
 
 				expect( stringifyModel( modelFragment ) )
 					.to.equal( 'foobarbom' );
@@ -243,7 +243,7 @@ describe( 'Paragraph feature', () => {
 			} );
 
 			it( 'should convert h1+h2 (in clipboard holder)', () => {
-				const modelFragment = editor.data.parse( '<h1>foo</h1><h2>bar</h2>', '$clipboardHolder' );
+				const modelFragment = editor.data.parse( '<h1>foo</h1><h2>bar</h2>', [ '$clipboardHolder' ] );
 
 				expect( stringifyModel( modelFragment ) )
 					.to.equal( '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
@@ -257,7 +257,7 @@ describe( 'Paragraph feature', () => {
 
 				buildViewConverter().for( editor.data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
 
-				const modelFragment = editor.data.parse( '<h1>foo</h1><h2>bar</h2><div>bom</div>', 'specialRoot' );
+				const modelFragment = editor.data.parse( '<h1>foo</h1><h2>bar</h2><div>bom</div>', [ 'specialRoot' ] );
 
 				expect( stringifyModel( modelFragment ) )
 					.to.equal( '<div>bom</div>' );
@@ -271,7 +271,7 @@ describe( 'Paragraph feature', () => {
 			} );
 
 			it( 'should convert ul,ol>li (in clipboard holder)', () => {
-				const modelFragment = editor.data.parse( '<ul><li>a</li><li>b</li></ul><ol><li>c</li></ol>', '$clipboardHolder' );
+				const modelFragment = editor.data.parse( '<ul><li>a</li><li>b</li></ul><ol><li>c</li></ol>', [ '$clipboardHolder' ] );
 
 				expect( stringifyModel( modelFragment ) )
 					.to.equal( '<paragraph>a</paragraph><paragraph>b</paragraph><paragraph>c</paragraph>' );
@@ -287,7 +287,7 @@ describe( 'Paragraph feature', () => {
 			// "b" is not autoparagraphed because clipboard holder allows text nodes.
 			// There's a similar integrational test what's going to happen when pasting in paragraph-integration.js.
 			it( 'should convert ul>li>ul>li+li (in clipboard holder)', () => {
-				const modelFragment = editor.data.parse( '<ul><li>a<ul><li>b</li><li>c</li></ul></li></ul>', '$clipboardHolder' );
+				const modelFragment = editor.data.parse( '<ul><li>a<ul><li>b</li><li>c</li></ul></li></ul>', [ '$clipboardHolder' ] );
 
 				expect( stringifyModel( modelFragment ) )
 					.to.equal( '<paragraph>a</paragraph><paragraph>b</paragraph><paragraph>c</paragraph>' );
@@ -303,7 +303,7 @@ describe( 'Paragraph feature', () => {
 			// "b" is not autoparagraphed because clipboard holder allows text nodes.
 			// There's a similar integrational test what's going to happen when pasting in paragraph-integration.js.
 			it( 'should convert ul>li>p,text (in clipboard holder)', () => {
-				const modelFragment = editor.data.parse( '<ul><li><p>a</p>b</li></ul>', '$clipboardHolder' );
+				const modelFragment = editor.data.parse( '<ul><li><p>a</p>b</li></ul>', [ '$clipboardHolder' ] );
 
 				expect( stringifyModel( modelFragment ) )
 					.to.equal( '<paragraph>a</paragraph><paragraph>b</paragraph>' );
@@ -321,7 +321,7 @@ describe( 'Paragraph feature', () => {
 			it( 'should convert td (in clipboardHolder)', () => {
 				const modelFragment = editor.data.parse(
 					'<table><tr><td>a</td><td>b</td></tr><tr><td>c</td><td>d</td></tr></table>',
-					'$clipboardHolder'
+					[ '$clipboardHolder' ]
 				);
 
 				expect( stringifyModel( modelFragment ) )
@@ -362,6 +362,12 @@ describe( 'Paragraph feature', () => {
 				expect( modelFragment ).to.be.instanceof( ModelDocumentFragment );
 				expect( modelFragment.getChild( 0 ).childCount ).to.equal( 1 );
 				expect( modelFragment.getChild( 0 ).getChild( 0 ) ).to.be.instanceOf( ModelText );
+			} );
+
+			it( 'should not convert empty elements', () => {
+				const modelFragment = editor.data.parse( '<ul><li></li><ul>' );
+
+				expect( stringifyModel( modelFragment ) ).to.equal( '' );
 			} );
 		} );
 	} );
