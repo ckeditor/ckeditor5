@@ -1137,6 +1137,73 @@ describe( 'Schema', () => {
 		} );
 	} );
 
+	describe( 'findAllowedParent', () => {
+		beforeEach( () => {
+			schema.register( '$root' );
+			schema.register( 'blockQuote', {
+				allowIn: '$root'
+			} );
+			schema.register( 'paragraph', {
+				allowIn: 'blockQuote'
+			} );
+			schema.register( '$text', {
+				allowIn: 'paragraph'
+			} );
+		} );
+
+		it( 'should return position ancestor that allows to insert given note to it', () => {
+			const node = new Element( 'paragraph' );
+
+			const allowedParent = schema.findAllowedParent( node, Position.createAt( r1bQp ) );
+
+			expect( allowedParent ).to.equal( r1bQ );
+		} );
+
+		it( 'should return position ancestor that allows to insert given note to it when position is already i such an element', () => {
+			const node = new Text( 'text' );
+
+			const parent = schema.findAllowedParent( node, Position.createAt( r1bQp ) );
+
+			expect( parent ).to.equal( r1bQp );
+		} );
+
+		it( 'should return null when limit element will be reached before allowed parent', () => {
+			schema.extend( 'blockQuote', {
+				isLimit: true
+			} );
+			schema.register( 'div', {
+				allowIn: '$root'
+			} );
+			const node = new Element( 'div' );
+
+			const parent = schema.findAllowedParent( node, Position.createAt( r1bQp ) );
+
+			expect( parent ).to.null;
+		} );
+
+		it( 'should return null when there is no allowed ancestor for given position', () => {
+			const node = new Element( 'section' );
+
+			const parent = schema.findAllowedParent( node, Position.createAt( r1bQp ) );
+
+			expect( parent ).to.null;
+		} );
+
+		it( 'should use custom limit checker nad return null if returns true', () => {
+			// $root is allowed ancestor for blockQuote.
+			const node = new Element( 'blockQuote' );
+
+			const parent = schema.findAllowedParent(
+				node,
+				Position.createAt( r1bQp ),
+				// However lest stop searching when blockQuote is reached.
+				element => element.name == 'blockQuote'
+			);
+
+			expect( parent ).to.null;
+		} );
+	} );
+
 	describe( 'removeDisallowedAttributes()', () => {
 		let model, doc, root;
 

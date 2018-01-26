@@ -675,6 +675,39 @@ export default class Schema {
 	}
 
 	/**
+	 * Tries to find position ancestors that allows to insert given node.
+	 * It starts searching from the given position and goes node by node to the top of the model tree
+	 * as long as {@link module:engine/model/schema~Schema#isLimit limit element} or top-most ancestor won't be reached.
+	 *
+	 * @params {module:engine/model/node~Node} node Node for which allowed parent should be found.
+	 * @params {module:engine/model/position~Position} position Position from searching will start.
+	 * @params {Function<module:engine/model/element~Element>} [limitChecker] When function is defined and returns true
+	 * then stops searching and returns null as a search result. Function gets current parent as a parameter.
+	 * @returns {module:engine/model/element~Element|null} element Allowed parent or null if nothing was found.
+	 */
+	findAllowedParent( node, position, limitChecker ) {
+		let parent = position.parent;
+
+		while ( parent ) {
+			if ( this.checkChild( parent, node ) ) {
+				return parent;
+			}
+
+			if ( this.isLimit( parent ) ) {
+				return null;
+			}
+
+			if ( typeof limitChecker == 'function' && limitChecker( parent ) ) {
+				return null;
+			}
+
+			parent = parent.parent;
+		}
+
+		return null;
+	}
+
+	/**
 	 * Removes attributes disallowed by the schema.
 	 *
 	 * @param {Iterable.<module:engine/model/node~Node>} nodes Nodes that will be filtered.
