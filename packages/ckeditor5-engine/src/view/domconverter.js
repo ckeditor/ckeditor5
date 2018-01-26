@@ -471,8 +471,9 @@ export default class DomConverter {
 			}
 		}
 
-		const viewSelection = new ViewSelection();
 		const isBackward = this.isDomSelectionBackward( domSelection );
+
+		const viewRanges = [];
 
 		for ( let i = 0; i < domSelection.rangeCount; i++ ) {
 			// DOM Range have correct start and end, no matter what is the DOM Selection direction. So we don't have to fix anything.
@@ -480,11 +481,11 @@ export default class DomConverter {
 			const viewRange = this.domRangeToView( domRange );
 
 			if ( viewRange ) {
-				viewSelection.setTo( viewRange, isBackward );
+				viewRanges.push( viewRange );
 			}
 		}
 
-		return viewSelection;
+		return new ViewSelection( viewRanges, isBackward );
 	}
 
 	/**
