@@ -270,46 +270,17 @@ export default class DocumentSelection {
 	}
 
 	/**
-	 * Moves {@link module:engine/model/documentselection~DocumentSelection#focus} to the specified location.
-	 * Should be used only within the {@link module:engine/model/writer~Writer#setSelectionFocus} method.
-	 *
-	 * The location can be specified in the same form as {@link module:engine/model/position~Position.createAt} parameters.
-	 *
-	 * @see module:engine/model/writer~Writer#setSelectionFocus
-	 * @protected
-	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
-	 * @param {Number|'end'|'before'|'after'} [offset] Offset or one of the flags. Used only when
-	 * first parameter is a {@link module:engine/model/item~Item model item}.
-	 */
-	_setFocus( itemOrPosition, offset ) {
-		this._selection.setFocus( itemOrPosition, offset );
-	}
-
-	/**
-	 * Sets this selection's ranges and direction to the specified location based on the given
-	 * {@link module:engine/model/selection~Selection selection}, {@link module:engine/model/position~Position position},
-	 * {@link module:engine/model/element~Element element}, {@link module:engine/model/position~Position position},
-	 * {@link module:engine/model/range~Range range}, an iterable of {@link module:engine/model/range~Range ranges} or null.
-	 * Should be used only within the {@link module:engine/model/writer~Writer#setSelection} method.
-	 *
-	 * @see module:engine/model/writer~Writer#setSelection
-	 * @protected
-	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
-	 * module:engine/model/position~Position|module:engine/model/element~Element|
-	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} selectable
-	 * @param {Boolean|Number|'before'|'end'|'after'} [backwardSelectionOrOffset]
-	 */
-	_setTo( selectable, backwardSelectionOrOffset ) {
-		this._selection.setTo( selectable, backwardSelectionOrOffset );
-	}
-
-	/**
 	 * Unbinds all events previously bound by document selection.
 	 */
 	destroy() {
 		this._selection.destroy();
 	}
 
+	/**
+	 * Returns iterable that iterates over this selection's attribute keys.
+	 *
+	 * @returns {Iterable.<String>}
+	 */
 	getAttributeKeys() {
 		return this._selection.getAttributeKeys();
 	}
@@ -344,6 +315,40 @@ export default class DocumentSelection {
 	 */
 	hasAttribute( key ) {
 		return this._selection.hasAttribute( key );
+	}
+
+	/**
+	 * Moves {@link module:engine/model/documentselection~DocumentSelection#focus} to the specified location.
+	 * Should be used only within the {@link module:engine/model/writer~Writer#setSelectionFocus} method.
+	 *
+	 * The location can be specified in the same form as {@link module:engine/model/position~Position.createAt} parameters.
+	 *
+	 * @see module:engine/model/writer~Writer#setSelectionFocus
+	 * @protected
+	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
+	 * @param {Number|'end'|'before'|'after'} [offset] Offset or one of the flags. Used only when
+	 * first parameter is a {@link module:engine/model/item~Item model item}.
+	 */
+	_setFocus( itemOrPosition, offset ) {
+		this._selection.setFocus( itemOrPosition, offset );
+	}
+
+	/**
+	 * Sets this selection's ranges and direction to the specified location based on the given
+	 * {@link module:engine/model/selection~Selection selection}, {@link module:engine/model/position~Position position},
+	 * {@link module:engine/model/element~Element element}, {@link module:engine/model/position~Position position},
+	 * {@link module:engine/model/range~Range range}, an iterable of {@link module:engine/model/range~Range ranges} or null.
+	 * Should be used only within the {@link module:engine/model/writer~Writer#setSelection} method.
+	 *
+	 * @see module:engine/model/writer~Writer#setSelection
+	 * @protected
+	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
+	 * module:engine/model/position~Position|module:engine/model/element~Element|
+	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} selectable
+	 * @param {Boolean|Number|'before'|'end'|'after'} [backwardSelectionOrOffset]
+	 */
+	_setTo( selectable, backwardSelectionOrOffset ) {
+		this._selection.setTo( selectable, backwardSelectionOrOffset );
 	}
 
 	/**
