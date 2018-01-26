@@ -125,12 +125,9 @@ describe( 'BlockQuoteCommand', () => {
 			'is false when selection is in an element which cannot be wrapped with blockQuote' +
 			'(because mQ is not allowed in its parent)',
 			() => {
-				model.schema.on( 'checkChild', ( evt, args ) => {
-					const def = model.schema.getDefinition( args[ 1 ] );
-
-					if ( def.name == 'blockQuote' ) {
-						evt.stop();
-						evt.return = false;
+				model.schema.addChildCheck( ( ctx, childDef ) => {
+					if ( childDef.name == 'blockQuote' ) {
+						return false;
 					}
 				} );
 
@@ -380,13 +377,9 @@ describe( 'BlockQuoteCommand', () => {
 			it( 'should not wrap a block which can not be in a quote', () => {
 				// blockQuote is allowed in root, but fooBlock can not be inside blockQuote.
 				model.schema.register( 'fooBlock', { inheritAllFrom: '$block' } );
-				model.schema.on( 'checkChild', ( evt, args ) => {
-					const def = model.schema.getDefinition( args[ 1 ] );
-					const ctx = args[ 0 ];
-
-					if ( ctx.endsWith( 'blockQuote' ) && def.name == 'fooBlock' ) {
-						evt.stop();
-						evt.return = false;
+				model.schema.addChildCheck( ( ctx, childDef ) => {
+					if ( ctx.endsWith( 'blockQuote' ) && childDef.name == 'fooBlock' ) {
+						return false;
 					}
 				} );
 

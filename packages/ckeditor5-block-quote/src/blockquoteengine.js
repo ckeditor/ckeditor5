@@ -37,16 +37,11 @@ export default class BlockQuoteEngine extends Plugin {
 		} );
 
 		// Disallow blockQuote in blockQuote.
-		schema.on( 'checkChild', ( evt, args ) => {
-			const ctx = args[ 0 ];
-			const child = args[ 1 ];
-			const childRule = schema.getDefinition( child );
-
-			if ( childRule && childRule.name == 'blockQuote' && ctx.endsWith( 'blockQuote' ) ) {
-				evt.stop();
-				evt.return = false;
+		schema.addChildCheck( ( ctx, childDef ) => {
+			if ( ctx.endsWith( 'blockQuote' ) && childDef.name == 'blockQuote' ) {
+				return false;
 			}
-		}, { priority: 'high' } );
+		} );
 
 		buildViewConverter().for( editor.data.viewToModel )
 			.fromElement( 'blockquote' )
