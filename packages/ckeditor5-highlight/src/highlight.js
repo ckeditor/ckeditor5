@@ -110,4 +110,3 @@ export default class Highlight extends Plugin {
  *
  * @member {Array.<module:highlight/highlight~HighlightOption>} module:highlight/highlight~HighlightConfig#options
  */
-
