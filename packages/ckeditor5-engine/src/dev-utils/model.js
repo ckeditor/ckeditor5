@@ -277,8 +277,12 @@ export function parse( data, schema, options = {} ) {
 	viewToModel.on( 'element', convertToModelElement() );
 	viewToModel.on( 'text', convertToModelText() );
 
+	viewToModel.isDebug = true;
+
 	// Convert view to model.
-	let model = viewToModel.convert( viewDocumentFragment.root, { context: options.context || [ '$root' ] } );
+	let model = viewToModel.convert( viewDocumentFragment.root, options.context || [ '$root' ] );
+
+	mapper.bindElements( model, viewDocumentFragment.root );
 
 	// If root DocumentFragment contains only one element - return that element.
 	if ( model.childCount == 1 ) {
@@ -317,8 +321,9 @@ export function parse( data, schema, options = {} ) {
 
 function convertToModelFragment() {
 	return ( evt, data, consumable, conversionApi ) => {
-		data.output = conversionApi.convertChildren( data.input, consumable, data );
-		conversionApi.mapper.bindElements( data.output, data.input );
+		data.output = conversionApi.convertChildren( data.input, consumable, data.position );
+
+		conversionApi.mapper.bindElements( data.position.parent, data.input );
 
 		evt.stop();
 	};
@@ -328,20 +333,22 @@ function convertToModelElement() {
 	return ( evt, data, consumable, conversionApi ) => {
 		const elementName = data.input.name;
 
-		if ( !conversionApi.schema.checkChild( data.context, elementName ) ) {
-			throw new Error( `Element '${ elementName }' was not allowed in context ${ JSON.stringify( data.context ) }.` );
+		if ( !conversionApi.schema.checkChild( data.position, elementName ) ) {
+			throw new Error( `Element '${ elementName }' was not allowed in given position.`, { position: data.position } );
 		}
 
 		// View attribute value is a string so we want to typecast it to the original type.
 		// E.g. `bold="true"` - value will be parsed from string `"true"` to boolean `true`.
 		const attributes = convertAttributes( data.input.getAttributes(), parseAttributeValue );
+		const element = conversionApi.writer.createElement( data.input.name, attributes );
 
-		data.output = conversionApi.writer.createElement( data.input.name, attributes );
-		conversionApi.mapper.bindElements( data.output, data.input );
+		conversionApi.writer.insert( element, data.position );
 
-		data.context.push( data.output );
-		data.output.appendChildren( conversionApi.convertChildren( data.input, consumable, data ) );
-		data.context.pop();
+		conversionApi.mapper.bindElements( element, data.input );
+
+		conversionApi.convertChildren( data.input, consumable, ModelPosition.createAt( element ) );
+
+		data.output = ModelRange.createOn( element );
 
 		evt.stop();
 	};
@@ -349,8 +356,8 @@ function convertToModelElement() {
 
 function convertToModelText( withAttributes = false ) {
 	return ( evt, data, consumable, conversionApi ) => {
-		if ( !conversionApi.schema.checkChild( data.context, '$text' ) ) {
-			throw new Error( `Text was not allowed in context ${ JSON.stringify( data.context ) }.` );
+		if ( !conversionApi.schema.checkChild( data.position, '$text' ) ) {
+			throw new Error( 'Text was not allowed in given position.', { position: data.position } );
 		}
 
 		let node;
@@ -365,7 +372,9 @@ function convertToModelText( withAttributes = false ) {
 			node = conversionApi.writer.createText( data.input.data );
 		}
 
-		data.output = node;
+		conversionApi.writer.insert( node, data.position );
+
+		data.output = ModelRange.createFromPositionAndShift( data.position, node.offsetSize );
 
 		evt.stop();
 	};
