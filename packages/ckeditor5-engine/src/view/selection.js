@@ -36,11 +36,34 @@ export default class Selection {
 	/**
 	 * Creates new selection instance.
 	 *
-	 * @param {Iterable.<module:engine/view/range~Range>} [ranges] An optional array of ranges to set.
-	 * @param {Boolean} [isLastBackward] An optional flag describing if last added range was selected forward - from start to end
-	 * (`false`) or backward - from end to start (`true`). Defaults to `false`.
+	 * 		// Creates empty selection without ranges.
+	 *		const selection = new Selection();
+	 *
+	 *		// Creates selection at the given range.
+	 *		const range = new Range( start, end );
+	 *		const selection = new Selection( range, isBackwardSelection );
+	 *
+	 *		// Creates selection at the given ranges
+	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
+	 *		const selection = new Selection( ranges, isBackwardSelection );
+	 *
+	 *		// Creates selection from the other selection.
+	 *		const otherSelection = new Selection();
+	 *		const selection = new Selection( otherSelection );
+	 *
+	 * 		// Creates selection at the given position.
+	 *		const position = new Position( root, path );
+	 *		const selection = new Selection( position );
+	 *
+	 * 		// Creates selection at the start position of given element.
+	 *		const paragraph = writer.createElement( 'paragraph' );
+	 *		const selection = new Selection( paragraph, offset );
+	 *
+	 * @param {module:engine/view/selection~Selection|module:engine/view/position~Position|
+	 * Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|module:engine/view/item~Item} [selectable]
+	 * @param {Boolean|Number|'before'|'end'|'after'} [backwardSelectionOrOffset]
 	 */
-	constructor( ranges, isLastBackward ) {
+	constructor( selectable, backwardSelectionOrOffset ) {
 		/**
 		 * Stores all ranges that are selected.
 		 *
@@ -73,8 +96,8 @@ export default class Selection {
 		 */
 		this._fakeSelectionLabel = '';
 
-		if ( ranges ) {
-			this._setRanges( ranges, isLastBackward );
+		if ( selectable ) {
+			this.setTo( selectable, backwardSelectionOrOffset );
 		}
 	}
 
@@ -519,20 +542,6 @@ export default class Selection {
 		const nodeBeforeEnd = range.end.nodeBefore;
 
 		return ( nodeAfterStart instanceof Element && nodeAfterStart == nodeBeforeEnd ) ? nodeAfterStart : null;
-	}
-
-	/**
-	 * Creates and returns an instance of `Selection` that is a clone of given selection, meaning that it has same
-	 * ranges and same direction as this selection.
-	 *
-	 * @params {module:engine/view/selection~Selection} otherSelection Selection to be cloned.
-	 * @returns {module:engine/view/selection~Selection} `Selection` instance that is a clone of given selection.
-	 */
-	static createFromSelection( otherSelection ) {
-		const selection = new Selection();
-		selection.setTo( otherSelection );
-
-		return selection;
 	}
 
 	/**

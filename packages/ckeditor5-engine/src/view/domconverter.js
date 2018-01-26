@@ -108,7 +108,7 @@ export default class DomConverter {
 	 * @param {module:engine/view/selection~Selection} viewSelection
 	 */
 	bindFakeSelection( domElement, viewSelection ) {
-		this._fakeSelectionMapping.set( domElement, ViewSelection.createFromSelection( viewSelection ) );
+		this._fakeSelectionMapping.set( domElement, new ViewSelection( viewSelection ) );
 	}
 
 	/**

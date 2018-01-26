@@ -82,7 +82,7 @@ export default class FakeSelectionObserver extends Observer {
 	 */
 	_handleSelectionMove( keyCode ) {
 		const selection = this.document.selection;
-		const newSelection = ViewSelection.createFromSelection( selection );
+		const newSelection = new ViewSelection( selection );
 		newSelection.setFake( false );
 
 		// Left or up arrow pressed - move selection to start.

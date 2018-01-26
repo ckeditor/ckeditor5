@@ -48,6 +48,82 @@ describe( 'Selection', () => {
 
 			expect( selection.isBackward ).to.be.true;
 		} );
+
+		it( 'should be able to create a selection from the given range and isLastBackward flag', () => {
+			const selection = new Selection( range1, true );
+
+			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range1 ] );
+			expect( selection.isBackward ).to.be.true;
+		} );
+
+		it( 'should be able to create a selection from the given iterable of ranges and isLastBackward flag', () => {
+			const ranges = new Set( [ range1, range2, range3 ] );
+			const selection = new Selection( ranges, false );
+
+			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range1, range2, range3 ] );
+			expect( selection.isBackward ).to.be.false;
+		} );
+
+		it( 'should be able to create a collapsed selection at the given position', () => {
+			const position = range1.start;
+			const selection = new Selection( position );
+
+			expect( Array.from( selection.getRanges() ).length ).to.equal( 1 );
+			expect( selection.getFirstRange().start ).to.deep.equal( position );
+			expect( selection.getFirstRange().end ).to.deep.equal( position );
+			expect( selection.isBackward ).to.be.false;
+		} );
+
+		it( 'should be able to create a collapsed selection at the given position', () => {
+			const position = range1.start;
+			const selection = new Selection( position );
+
+			expect( Array.from( selection.getRanges() ).length ).to.equal( 1 );
+			expect( selection.getFirstRange().start ).to.deep.equal( position );
+			expect( selection.getFirstRange().end ).to.deep.equal( position );
+			expect( selection.isBackward ).to.be.false;
+		} );
+
+		it( 'should be able to create a selection from the other selection', () => {
+			const otherSelection = new Selection( [ range2, range3 ], true );
+			const selection = new Selection( otherSelection );
+
+			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range2, range3 ] );
+			expect( selection.isBackward ).to.be.true;
+		} );
+
+		it( 'should be able to create a fake selection from the other fake selection', () => {
+			const otherSelection = new Selection( [ range2, range3 ], true );
+			otherSelection.setFake( true, { label: 'foo bar baz' } );
+			const selection = new Selection( otherSelection );
+
+			expect( selection.isFake ).to.be.true;
+			expect( selection.fakeSelectionLabel ).to.equal( 'foo bar baz' );
+		} );
+
+		it( 'should throw an error when range is invalid', () => {
+			expect( () => {
+				// eslint-disable-next-line no-new
+				new Selection( [ { invalid: 'range' } ] );
+			} ).to.throw( CKEditorError, 'view-selection-invalid-range: Invalid Range.' );
+		} );
+
+		it( 'should throw an error when ranges intersects', () => {
+			const text = el.getChild( 0 );
+			const range2 = Range.createFromParentsAndOffsets( text, 7, text, 15 );
+
+			expect( () => {
+				// eslint-disable-next-line no-new
+				new Selection( [ range1, range2 ] );
+			} ).to.throw( CKEditorError, 'view-selection-range-intersects' );
+		} );
+
+		it( 'should throw an error when trying to set to not selectable', () => {
+			expect( () => {
+				// eslint-disable-next-line no-new
+				new Selection( {} );
+			} ).to.throw( /view-selection-setTo-not-selectable/ );
+		} );
 	} );
 
 	describe( 'anchor', () => {
@@ -810,25 +886,6 @@ describe( 'Selection', () => {
 			expect( selection.editableElement ).to.equal( root );
 
 			viewDocument.destroy();
-		} );
-	} );
-
-	describe( 'createFromSelection', () => {
-		it( 'should return a Selection instance with same ranges and direction as given selection', () => {
-			selection.setTo( [ range1, range2 ], true );
-
-			const snapshot = Selection.createFromSelection( selection );
-
-			expect( snapshot.isBackward ).to.equal( selection.isBackward );
-
-			const selectionRanges = Array.from( selection.getRanges() );
-			const snapshotRanges = Array.from( snapshot.getRanges() );
-
-			expect( selectionRanges.length ).to.equal( snapshotRanges.length );
-
-			for ( let i = 0; i < selectionRanges.length; i++ ) {
-				expect( selectionRanges[ i ].isEqual( snapshotRanges[ i ] ) ).to.be.true;
-			}
 		} );
 	} );
 
