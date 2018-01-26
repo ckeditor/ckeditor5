@@ -34,5 +34,7 @@
 		border-top-right-radius: 0;
 	}
 
-	border: 1px solid var(--ck-color-editor-border);
+	&:not(.ck-focused) {
+		border-color: var(--ck-color-editor-border);
+	}
 }
