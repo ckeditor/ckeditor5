@@ -423,9 +423,9 @@ export default class Schema {
 	 * Instead of elements, you can pass the instance of {@link module:engine/model/position~Position} class as the `positionOrBaseElement`.
 	 * It means that the elements before and after the position will be checked whether they can be merged.
 	 *
-	 * @param {module:engine/model/position~Position|module:engine/model/Element~Element} positionOrBaseElement The position or base
+	 * @param {module:engine/model/position~Position|module:engine/model/element~Element} positionOrBaseElement The position or base
 	 * element to which the `elementToMerge` will be merged.
-	 * @param {module:engine/model/Element~Element} elementToMerge The element to merge. Required if `positionOrBaseElement` is a element.
+	 * @param {module:engine/model/element~Element} elementToMerge The element to merge. Required if `positionOrBaseElement` is a element.
 	 * @returns {Boolean}
 	 */
 	checkMerge( positionOrBaseElement, elementToMerge = null ) {
@@ -435,20 +435,20 @@ export default class Schema {
 
 			if ( !( nodeBefore instanceof Element ) ) {
 				/**
-				 * Node before merge position must be an element.
+				 * The node before the merge position must be an element.
 				 *
 				 * @error schema-check-merge-no-element-before
 				 */
-				throw new CKEditorError( 'schema-check-merge-no-element-before: Node before merge position must be an element.' );
+				throw new CKEditorError( 'schema-check-merge-no-element-before: The node before the merge position must be an element.' );
 			}
 
 			if ( !( nodeAfter instanceof Element ) ) {
 				/**
-				 * Node after merge position must be an element.
+				 * The node after the merge position must be an element.
 				 *
 				 * @error schema-check-merge-no-element-after
 				 */
-				throw new CKEditorError( 'schema-check-merge-no-element-after: Node after merge position must be an element.' );
+				throw new CKEditorError( 'schema-check-merge-no-element-after: The node after the merge position must be an element.' );
 			}
 
 			return this.checkMerge( nodeBefore, nodeAfter );
