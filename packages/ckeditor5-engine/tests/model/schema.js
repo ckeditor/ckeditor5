@@ -641,6 +641,169 @@ describe( 'Schema', () => {
 		} );
 	} );
 
+	describe( 'checkMerge()', () => {
+		beforeEach( () => {
+			schema.register( '$root' );
+			schema.register( '$block', {
+				allowIn: '$root',
+				isBlock: true
+			} );
+			schema.register( '$text', {
+				allowIn: '$block'
+			} );
+			schema.register( 'paragraph', {
+				inheritAllFrom: '$block'
+			} );
+			schema.register( 'listItem', {
+				inheritAllFrom: '$block'
+			} );
+			schema.register( 'blockQuote', {
+				allowWhere: '$block',
+				allowContentOf: '$root'
+			} );
+		} );
+
+		it( 'returns false if a block cannot be merged with other block (disallowed element is the first child)', () => {
+			const paragraph = new Element( 'paragraph', null, [
+				new Text( 'xyz' )
+			] );
+			const blockQuote = new Element( 'blockQuote', null, [ paragraph ] );
+			const listItem = new Element( 'listItem' );
+
+			expect( schema.checkMerge( listItem, blockQuote ) ).to.be.false;
+		} );
+
+		it( 'returns false if a block cannot be merged with other block (disallowed element is not the first child)', () => {
+			const paragraph = new Element( 'paragraph', null, [
+				new Text( 'foo' )
+			] );
+			const blockQuote = new Element( 'blockQuote', null, [
+				new Text( 'bar', { bold: true } ),
+				new Text( 'xyz' ),
+				paragraph
+			] );
+			const listItem = new Element( 'listItem' );
+
+			expect( schema.checkMerge( listItem, blockQuote ) ).to.be.false;
+		} );
+
+		it( 'returns true if a block can be merged with other block', () => {
+			const listItem = new Element( 'listItem' );
+			const listItemToMerge = new Element( 'listItem', null, [
+				new Text( 'xyz' )
+			] );
+
+			expect( schema.checkMerge( listItem, listItemToMerge ) ).to.be.true;
+		} );
+
+		it( 'return true if two elements between the position can be merged', () => {
+			const listItem = new Element( 'listItem', null, [
+				new Text( 'foo' )
+			] );
+			const listItemToMerge = new Element( 'listItem', null, [
+				new Text( 'bar' )
+			] );
+
+			// eslint-disable-next-line no-new
+			new Element( '$root', null, [
+				listItem, listItemToMerge
+			] );
+			const position = Position.createAfter( listItem );
+
+			expect( schema.checkMerge( position ) ).to.be.true;
+		} );
+
+		it( 'throws an error if there is no element before the position', () => {
+			const listItem = new Element( 'listItem', null, [
+				new Text( 'foo' )
+			] );
+
+			// eslint-disable-next-line no-new
+			new Element( '$root', null, [
+				listItem
+			] );
+
+			const position = Position.createBefore( listItem );
+
+			expect( () => {
+				expect( schema.checkMerge( position ) );
+			} ).to.throw( CKEditorError, /^schema-check-merge-no-element-before:/ );
+		} );
+
+		it( 'throws an error if the node before the position is not the element', () => {
+			const listItem = new Element( 'listItem', null, [
+				new Text( 'foo' )
+			] );
+
+			// eslint-disable-next-line no-new
+			new Element( '$root', null, [
+				new Text( 'bar' ),
+				listItem
+			] );
+
+			const position = Position.createBefore( listItem );
+
+			expect( () => {
+				expect( schema.checkMerge( position ) );
+			} ).to.throw( CKEditorError, /^schema-check-merge-no-element-before:/ );
+		} );
+
+		it( 'throws an error if there is no element after the position', () => {
+			const listItem = new Element( 'listItem', null, [
+				new Text( 'foo' )
+			] );
+
+			// eslint-disable-next-line no-new
+			new Element( '$root', null, [
+				listItem
+			] );
+
+			const position = Position.createAfter( listItem );
+
+			expect( () => {
+				expect( schema.checkMerge( position ) );
+			} ).to.throw( CKEditorError, /^schema-check-merge-no-element-after:/ );
+		} );
+
+		it( 'throws an error if the node after the position is not the element', () => {
+			const listItem = new Element( 'listItem', null, [
+				new Text( 'foo' )
+			] );
+
+			// eslint-disable-next-line no-new
+			new Element( '$root', null, [
+				listItem,
+				new Text( 'bar' )
+			] );
+
+			const position = Position.createBefore( listItem );
+
+			expect( () => {
+				expect( schema.checkMerge( position ) );
+			} ).to.throw( CKEditorError, /^schema-check-merge-no-element-before:/ );
+		} );
+
+		// This is an invalid case by definition – the baseElement should not contain disallowed elements
+		// in the first place. However, the check is focused on the elementToMerge's children so let's make sure
+		// that only them counts.
+		it( 'returns true if element to merge contains a valid content but base element contains disallowed elements', () => {
+			const listItem = new Element( 'listItem', null, [
+				new Text( 'foo' ),
+				new Element( 'paragraph', null, [
+					new Text( 'bar' )
+				] )
+			] );
+			const listItemToMerge = new Element( 'listItem', null, [
+				new Text( 'xyz' )
+			] );
+
+			expect( schema.checkMerge( listItem, listItemToMerge ) ).to.be.true;
+		} );
+
+		// The checkMerge() method should also check whether all ancestors of elementToMerge are allowed in their new
+		// context (now, we check only immediate children), but for now we ignore these cases.
+	} );
+
 	describe( 'getLimitElement()', () => {
 		let model, doc, root;
 
