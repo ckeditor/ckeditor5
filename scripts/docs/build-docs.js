@@ -14,6 +14,7 @@ const buildApiDocs = require( './buildapi' );
 const skipLiveSnippets = process.argv.includes( '--skip-snippets' );
 const skipApi = process.argv.includes( '--skip-api' );
 const skipValidation = process.argv.includes( '--skip-validation' );
+const dev = process.argv.includes( '--dev' );
 const production = process.argv.includes( '--production' );
 
 buildDocs();
@@ -31,6 +32,7 @@ function buildDocs() {
 			skipLiveSnippets,
 			skipApi,
 			skipValidation,
+			dev,
 			production
 		} ).then( () => process.exit() );
 
@@ -44,6 +46,7 @@ function buildDocs() {
 			return runUmberto( {
 				skipLiveSnippets,
 				skipValidation,
+				dev,
 				production
 			} );
 		} );
