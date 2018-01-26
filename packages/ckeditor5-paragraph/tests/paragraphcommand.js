@@ -82,12 +82,13 @@ describe( 'ParagraphCommand', () => {
 			setData( model, '<paragraph>[foo]</paragraph><notBlock>foo</notBlock>' );
 			const element = document.getRoot().getChild( 1 );
 
-			// Purposely not putting it in `model.change` to update command manually.
-			document.selection._setTo( Range.createIn( element ) );
+			model.change( writer => {
+				writer.setSelection( Range.createIn( element ) );
 
-			expect( command.value ).to.be.true;
-			command.refresh();
-			expect( command.value ).to.be.false;
+				expect( command.value ).to.be.true;
+				command.refresh();
+				expect( command.value ).to.be.false;
+			} );
 		} );
 	} );
 
