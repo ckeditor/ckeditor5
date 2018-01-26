@@ -304,6 +304,8 @@ export default class Selection {
 		} else if ( selectable instanceof Selection ) {
 			this._setRanges( selectable.getRanges(), selectable.isBackward );
 		} else if ( selectable._selection && selectable._selection instanceof Selection ) {
+			// We assume that the selectable is a DocumentSelection.
+			// It can't be imported here, because it would lead to circular imports.
 			this._setRanges( selectable.getRanges(), selectable.isBackward );
 		} else if ( selectable instanceof Range ) {
 			this._setRanges( [ selectable ], backwardSelectionOrOffset );
