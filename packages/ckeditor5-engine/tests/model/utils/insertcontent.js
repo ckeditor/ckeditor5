@@ -39,8 +39,7 @@ describe( 'DataController utils', () => {
 			model.schema.extend( '$text', { allowIn: '$root' } );
 			setData( model, 'a[]bc' );
 
-			const selection = new Selection();
-			selection.setTo( new Position( doc.getRoot(), [ 2 ] ) );
+			const selection = new Selection( new Position( doc.getRoot(), [ 2 ] ) );
 
 			model.change( () => {
 				insertContent( model, new Text( 'x' ), selection );

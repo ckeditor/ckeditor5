@@ -859,8 +859,7 @@ describe( 'DomConverter', () => {
 			domContainer.innerHTML = 'fake selection container';
 			document.body.appendChild( domContainer );
 
-			const viewSelection = new ViewSelection();
-			viewSelection.setTo( ViewRange.createIn( new ViewElement() ) );
+			const viewSelection = new ViewSelection( ViewRange.createIn( new ViewElement() ) );
 			converter.bindFakeSelection( domContainer, viewSelection );
 
 			const domRange = document.createRange();
@@ -881,8 +880,7 @@ describe( 'DomConverter', () => {
 			domContainer.innerHTML = 'fake selection container';
 			document.body.appendChild( domContainer );
 
-			const viewSelection = new ViewSelection();
-			viewSelection.setTo( ViewRange.createIn( new ViewElement() ) );
+			const viewSelection = new ViewSelection( ViewRange.createIn( new ViewElement() ) );
 			converter.bindFakeSelection( domContainer, viewSelection );
 
 			const domRange = document.createRange();

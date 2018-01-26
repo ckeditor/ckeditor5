@@ -185,11 +185,9 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 	} else if ( selectionOrPositionOrRange instanceof DocumentSelection ) {
 		selection = selectionOrPositionOrRange;
 	} else if ( selectionOrPositionOrRange instanceof ModelRange ) {
-		selection = new ModelSelection();
-		selection.setTo( selectionOrPositionOrRange );
+		selection = new ModelSelection( selectionOrPositionOrRange );
 	} else if ( selectionOrPositionOrRange instanceof ModelPosition ) {
-		selection = new ModelSelection();
-		selection.setTo( selectionOrPositionOrRange );
+		selection = new ModelSelection( selectionOrPositionOrRange );
 	}
 
 	// Setup model to view converter.
@@ -294,18 +292,15 @@ export function parse( data, schema, options = {} ) {
 
 		// Convert ranges.
 		for ( const viewRange of viewSelection.getRanges() ) {
-			ranges.push( ( mapper.toModelRange( viewRange ) ) );
+			ranges.push( mapper.toModelRange( viewRange ) );
 		}
 
 		// Create new selection.
-		selection = new ModelSelection();
-		selection.setTo( ranges, viewSelection.isBackward );
+		selection = new ModelSelection( ranges, viewSelection.isBackward );
 
 		// Set attributes to selection if specified.
-		if ( options.selectionAttributes ) {
-			for ( const [ key, value ] of toMap( options.selectionAttributes ) ) {
-				selection.setAttribute( key, value );
-			}
+		for ( const [ key, value ] of toMap( options.selectionAttributes || [] ) ) {
+			selection.setAttribute( key, value );
 		}
 	}
 

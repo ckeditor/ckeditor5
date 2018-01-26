@@ -270,8 +270,7 @@ describe( 'DomConverter', () => {
 		beforeEach( () => {
 			viewElement = new ViewElement();
 			domEl = document.createElement( 'div' );
-			selection = new ViewSelection();
-			selection.setTo( ViewRange.createIn( viewElement ) );
+			selection = new ViewSelection( ViewRange.createIn( viewElement ) );
 			converter.bindFakeSelection( domEl, selection );
 		} );
 
