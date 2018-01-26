@@ -161,7 +161,7 @@ describe( 'Schema', () => {
 			} );
 		} );
 
-		it( 'ensures no unregistered items in allowIn', () => {
+		it( 'ensures no non-registered items in allowIn', () => {
 			schema.register( 'foo', {
 				allowIn: '$root'
 			} );
@@ -256,7 +256,7 @@ describe( 'Schema', () => {
 			expect( schema.getDefinition( ctx.last ).isMe ).to.be.true;
 		} );
 
-		it( 'returns undefined when trying to get an unregistered item', () => {
+		it( 'returns undefined when trying to get an non-registered item', () => {
 			expect( schema.getDefinition( '404' ) ).to.be.undefined;
 		} );
 	} );
@@ -426,7 +426,16 @@ describe( 'Schema', () => {
 			expect( schema.checkChild( root1, new Text( 'foo' ) ) ).to.be.false;
 		} );
 
-		// TODO checks fires event
+		it( 'fires the checkChild event with already normalized params', done => {
+			schema.on( 'checkChild', ( evt, [ ctx, child ] ) => {
+				expect( ctx ).to.be.instanceof( SchemaContext );
+				expect( child ).to.equal( schema.getDefinition( 'paragraph' ) );
+
+				done();
+			}, { priority: 'highest' } );
+
+			schema.checkChild( root1, r1p1 );
+		} );
 	} );
 
 	describe( 'checkAttribute()', () => {
@@ -477,7 +486,159 @@ describe( 'Schema', () => {
 			expect( schema.checkAttribute( contextInText, 'bold' ) ).to.be.true;
 		} );
 
-		// TODO checks fires event
+		it( 'fires the checkAttribute event with already normalized context', done => {
+			schema.on( 'checkAttribute', ( evt, [ ctx, attributeName ] ) => {
+				expect( ctx ).to.be.instanceof( SchemaContext );
+				expect( attributeName ).to.equal( 'bold' );
+
+				done();
+			}, { priority: 'highest' } );
+
+			schema.checkAttribute( r1p1, 'bold' );
+		} );
+	} );
+
+	describe( 'addChildCheck()', () => {
+		beforeEach( () => {
+			schema.register( '$root' );
+			schema.register( 'paragraph', {
+				allowIn: '$root'
+			} );
+		} );
+
+		it( 'adds a high-priority listener', () => {
+			const order = [];
+
+			schema.on( 'checkChild', () => {
+				order.push( 'checkChild:high-before' );
+			}, { priority: 'high' } );
+
+			schema.addChildCheck( () => {
+				order.push( 'addChildCheck' );
+			} );
+
+			schema.on( 'checkChild', () => {
+				order.push( 'checkChild:high-after' );
+			}, { priority: 'high' } );
+
+			schema.checkChild( root1, r1p1 );
+
+			expect( order.join() ).to.equal( 'checkChild:high-before,addChildCheck,checkChild:high-after' );
+		} );
+
+		it( 'stops the event and overrides the return value when callback returned true', () => {
+			schema.register( '$text' );
+
+			expect( schema.checkChild( root1, '$text' ) ).to.be.false;
+
+			schema.addChildCheck( () => {
+				return true;
+			} );
+
+			schema.on( 'checkChild', () => {
+				throw new Error( 'the event should be stopped' );
+			}, { priority: 'high' } );
+
+			expect( schema.checkChild( root1, '$text' ) ).to.be.true;
+		} );
+
+		it( 'stops the event and overrides the return value when callback returned false', () => {
+			expect( schema.checkChild( root1, r1p1 ) ).to.be.true;
+
+			schema.addChildCheck( () => {
+				return false;
+			} );
+
+			schema.on( 'checkChild', () => {
+				throw new Error( 'the event should be stopped' );
+			}, { priority: 'high' } );
+
+			expect( schema.checkChild( root1, r1p1 ) ).to.be.false;
+		} );
+
+		it( 'receives context and child definition as params', () => {
+			schema.addChildCheck( ( ctx, childDef ) => {
+				expect( ctx ).to.be.instanceOf( SchemaContext );
+				expect( childDef ).to.equal( schema.getDefinition( 'paragraph' ) );
+			} );
+
+			expect( schema.checkChild( root1, r1p1 ) ).to.be.true;
+		} );
+
+		it( 'is not called when checking a non-registered element', () => {
+			expect( schema.getDefinition( 'foo' ) ).to.be.undefined;
+
+			schema.addChildCheck( () => {
+				throw new Error( 'callback should not be called' );
+			} );
+
+			expect( schema.checkChild( root1, 'foo' ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'addAttributeCheck()', () => {
+		beforeEach( () => {
+			schema.register( 'paragraph', {
+				allowAttributes: 'foo'
+			} );
+		} );
+
+		it( 'adds a high-priority listener', () => {
+			const order = [];
+
+			schema.on( 'checkAttribute', () => {
+				order.push( 'checkAttribute:high-before' );
+			}, { priority: 'high' } );
+
+			schema.addAttributeCheck( () => {
+				order.push( 'addAttributeCheck' );
+			} );
+
+			schema.on( 'checkAttribute', () => {
+				order.push( 'checkAttribute:high-after' );
+			}, { priority: 'high' } );
+
+			schema.checkAttribute( r1p1, 'foo' );
+
+			expect( order.join() ).to.equal( 'checkAttribute:high-before,addAttributeCheck,checkAttribute:high-after' );
+		} );
+
+		it( 'stops the event and overrides the return value when callback returned true', () => {
+			expect( schema.checkAttribute( r1p1, 'bar' ) ).to.be.false;
+
+			schema.addAttributeCheck( () => {
+				return true;
+			} );
+
+			schema.on( 'checkAttribute', () => {
+				throw new Error( 'the event should be stopped' );
+			}, { priority: 'high' } );
+
+			expect( schema.checkAttribute( r1p1, 'bar' ) ).to.be.true;
+		} );
+
+		it( 'stops the event and overrides the return value when callback returned false', () => {
+			expect( schema.checkAttribute( r1p1, 'foo' ) ).to.be.true;
+
+			schema.addAttributeCheck( () => {
+				return false;
+			} );
+
+			schema.on( 'checkAttribute', () => {
+				throw new Error( 'the event should be stopped' );
+			}, { priority: 'high' } );
+
+			expect( schema.checkAttribute( r1p1, 'foo' ) ).to.be.false;
+		} );
+
+		it( 'receives context and attribute name as params', () => {
+			schema.addAttributeCheck( ( ctx, attributeName ) => {
+				expect( ctx ).to.be.instanceOf( SchemaContext );
+				expect( attributeName ).to.equal( 'foo' );
+			} );
+
+			expect( schema.checkAttribute( r1p1, 'foo' ) ).to.be.true;
+		} );
 	} );
 
 	describe( 'getLimitElement()', () => {
@@ -611,22 +772,17 @@ describe( 'Schema', () => {
 				allowAttributes: [ 'name', 'title' ]
 			} );
 
-			schema.on( 'checkAttribute', ( evt, args ) => {
-				const ctx = args[ 0 ];
-				const attributeName = args[ 1 ];
-
+			schema.addAttributeCheck( ( ctx, attributeName ) => {
 				// Allow 'bold' on p>$text.
 				if ( ctx.endsWith( 'p $text' ) && attributeName == 'bold' ) {
-					evt.stop();
-					evt.return = true;
+					return true;
 				}
 
 				// Allow 'bold' on $root>p.
 				if ( ctx.endsWith( '$root p' ) && attributeName == 'bold' ) {
-					evt.stop();
-					evt.return = true;
+					return true;
 				}
-			}, { priority: 'high' } );
+			} );
 		} );
 
 		describe( 'when selection is collapsed', () => {
@@ -701,22 +857,17 @@ describe( 'Schema', () => {
 				allowWhere: '$text'
 			} );
 
-			schema.on( 'checkAttribute', ( evt, args ) => {
-				const ctx = args[ 0 ];
-				const attributeName = args[ 1 ];
-
+			schema.addAttributeCheck( ( ctx, attributeName ) => {
 				// Allow 'bold' on p>$text.
 				if ( ctx.endsWith( 'p $text' ) && attributeName == 'bold' ) {
-					evt.stop();
-					evt.return = true;
+					return true;
 				}
 
 				// Allow 'bold' on $root>p.
 				if ( ctx.endsWith( '$root p' ) && attributeName == 'bold' ) {
-					evt.stop();
-					evt.return = true;
+					return true;
 				}
-			}, { priority: 'high' } );
+			} );
 
 			setData( model, '<p>foo<img />bar</p>' );
 
@@ -752,16 +903,12 @@ describe( 'Schema', () => {
 		it( 'should return three ranges when attribute is not allowed on one element but is allowed on its child', () => {
 			schema.extend( '$text', { allowIn: 'img' } );
 
-			schema.on( 'checkAttribute', ( evt, args ) => {
-				const ctx = args[ 0 ];
-				const attributeName = args[ 1 ];
-
+			schema.addAttributeCheck( ( ctx, attributeName ) => {
 				// Allow 'bold' on img>$text.
 				if ( ctx.endsWith( 'img $text' ) && attributeName == 'bold' ) {
-					evt.stop();
-					evt.return = true;
+					return true;
 				}
-			}, { priority: 'high' } );
+			} );
 
 			setData( model, '[<p>foo<img>xxx</img>bar</p>]' );
 
@@ -795,16 +942,12 @@ describe( 'Schema', () => {
 		} );
 
 		it( 'should split range into two ranges and omit disallowed element', () => {
-			schema.on( 'checkAttribute', ( evt, args ) => {
-				const ctx = args[ 0 ];
-				const attributeName = args[ 1 ];
-
+			schema.addAttributeCheck( ( ctx, attributeName ) => {
 				// Disallow 'bold' on p>img.
 				if ( ctx.endsWith( 'p img' ) && attributeName == 'bold' ) {
-					evt.stop();
-					evt.return = false;
+					return false;
 				}
-			}, { priority: 'high' } );
+			} );
 
 			const result = schema.getValidRanges( ranges, attribute );
 
@@ -864,34 +1007,27 @@ describe( 'Schema', () => {
 		} );
 
 		it( 'should filter out disallowed attributes from all descendants of given nodes', () => {
-			schema.on( 'checkAttribute', ( evt, args ) => {
-				const ctx = args[ 0 ];
-				const attributeName = args[ 1 ];
-
+			schema.addAttributeCheck( ( ctx, attributeName ) => {
 				// Allow 'a' on div>$text.
 				if ( ctx.endsWith( 'div $text' ) && attributeName == 'a' ) {
-					evt.stop();
-					evt.return = true;
+					return true;
 				}
 
 				// Allow 'b' on div>paragraph>$text.
 				if ( ctx.endsWith( 'div paragraph $text' ) && attributeName == 'b' ) {
-					evt.stop();
-					evt.return = true;
+					return true;
 				}
 
 				// Allow 'a' on div>image.
 				if ( ctx.endsWith( 'div image' ) && attributeName == 'a' ) {
-					evt.stop();
-					evt.return = true;
+					return true;
 				}
 
 				// Allow 'b' on div>paragraph>image.
 				if ( ctx.endsWith( 'div paragraph image' ) && attributeName == 'b' ) {
-					evt.stop();
-					evt.return = true;
+					return true;
 				}
-			}, { priority: 'high' } );
+			} );
 
 			const foo = new Text( 'foo', { a: 1, b: 1 } );
 			const bar = new Text( 'bar', { a: 1, b: 1 } );
@@ -983,7 +1119,7 @@ describe( 'Schema', () => {
 				expect( schema.checkChild( div, div ) ).to.be.true;
 			} );
 
-			it( 'rejects $root>paragraph – unregistered paragraph', () => {
+			it( 'rejects $root>paragraph – non-registered paragraph', () => {
 				schema.register( '$root' );
 
 				expect( schema.checkChild( root1, r1p1 ) ).to.be.false;
@@ -1412,7 +1548,7 @@ describe( 'Schema', () => {
 				expect( schema.checkChild( root1, 'foo404' ) ).to.be.false;
 			} );
 
-			it( 'does not break when trying to check registered child in a context which contains unregistered elements', () => {
+			it( 'does not break when trying to check registered child in a context which contains non-registered elements', () => {
 				const foo404 = new Element( 'foo404' );
 
 				root1.appendChildren( foo404 );
@@ -1425,7 +1561,7 @@ describe( 'Schema', () => {
 				expect( schema.checkChild( foo404, '$text' ) ).to.be.false;
 			} );
 
-			it( 'does not break when used allowedIn pointing to an unregistered element', () => {
+			it( 'does not break when used allowedIn pointing to an non-registered element', () => {
 				schema.register( '$root' );
 				schema.register( '$text', {
 					allowIn: 'foo404'
@@ -1434,7 +1570,7 @@ describe( 'Schema', () => {
 				expect( schema.checkChild( root1, '$text' ) ).to.be.false;
 			} );
 
-			it( 'does not break when used allowWhere pointing to an unregistered element', () => {
+			it( 'does not break when used allowWhere pointing to an non-registered element', () => {
 				schema.register( '$root' );
 				schema.register( '$text', {
 					allowWhere: 'foo404'
@@ -1443,7 +1579,7 @@ describe( 'Schema', () => {
 				expect( schema.checkChild( root1, '$text' ) ).to.be.false;
 			} );
 
-			it( 'does not break when used allowContentOf pointing to an unregistered element', () => {
+			it( 'does not break when used allowContentOf pointing to an non-registered element', () => {
 				schema.register( '$root', {
 					allowContentOf: 'foo404'
 				} );
@@ -1463,7 +1599,7 @@ describe( 'Schema', () => {
 				expect( schema.checkChild( root1, 'paragraph' ) ).to.be.false;
 			} );
 
-			it( 'does not break when inheriting all from an unregistered element', () => {
+			it( 'does not break when inheriting all from an non-registered element', () => {
 				schema.register( 'paragraph', {
 					inheritAllFrom: '$block'
 				} );
@@ -1573,11 +1709,11 @@ describe( 'Schema', () => {
 		} );
 
 		describe( 'missing attribute definitions', () => {
-			it( 'does not crash when checking an attribute of a unregistered element', () => {
+			it( 'does not crash when checking an attribute of a non-registered element', () => {
 				expect( schema.checkAttribute( r1p1, 'align' ) ).to.be.false;
 			} );
 
-			it( 'does not crash when inheriting attributes of a unregistered element', () => {
+			it( 'does not crash when inheriting attributes of a non-registered element', () => {
 				schema.register( 'paragraph', {
 					allowAttributesOf: '$block'
 				} );
@@ -1585,7 +1721,7 @@ describe( 'Schema', () => {
 				expect( schema.checkAttribute( r1p1, 'whatever' ) ).to.be.false;
 			} );
 
-			it( 'does not crash when inheriting all from a unregistered element', () => {
+			it( 'does not crash when inheriting all from a non-registered element', () => {
 				schema.register( 'paragraph', {
 					allowAttributesOf: '$block'
 				} );
@@ -1595,7 +1731,7 @@ describe( 'Schema', () => {
 		} );
 
 		describe( 'missing types definitions', () => {
-			it( 'does not crash when inheriting types of an unregistered element', () => {
+			it( 'does not crash when inheriting types of an non-registered element', () => {
 				schema.register( 'paragraph', {
 					inheritTypesFrom: '$block'
 				} );
@@ -1632,16 +1768,11 @@ describe( 'Schema', () => {
 				} );
 
 				// Disallow blockQuote in blockQuote.
-				schema.on( 'checkChild', ( evt, args ) => {
-					const ctx = args[ 0 ];
-					const child = args[ 1 ];
-					const childRule = schema.getDefinition( child );
-
-					if ( childRule.name == 'blockQuote' && ctx.endsWith( 'blockQuote' ) ) {
-						evt.stop();
-						evt.return = false;
+				schema.addChildCheck( ( ctx, childDef ) => {
+					if ( childDef.name == 'blockQuote' && ctx.endsWith( 'blockQuote' ) ) {
+						return false;
 					}
-				}, { priority: 'high' } );
+				} );
 			},
 			() => {
 				schema.register( 'image', {
@@ -1664,15 +1795,11 @@ describe( 'Schema', () => {
 				} );
 
 				// Disallow bold in heading1.
-				schema.on( 'checkAttribute', ( evt, args ) => {
-					const ctx = args[ 0 ];
-					const attributeName = args[ 1 ];
-
+				schema.addAttributeCheck( ( ctx, attributeName ) => {
 					if ( ctx.endsWith( 'heading1 $text' ) && attributeName == 'bold' ) {
-						evt.stop();
-						evt.return = false;
+						return false;
 					}
-				}, { priority: 'high' } );
+				} );
 			},
 			() => {
 				schema.extend( '$block', {

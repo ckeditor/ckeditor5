@@ -20,13 +20,17 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 describe( 'Document', () => {
 	let viewDocument, domRoot, domSelection, viewRoot, foo, bar, ui, ui2;
 
-	class MyUIElement extends UIElement {
-		render( domDocument ) {
-			const element = super.render( domDocument );
-			element.innerText = this.contents;
+	function createUIElement( name, contents ) {
+		const element = new UIElement( name );
 
-			return element;
-		}
+		element.render = function( domDocument ) {
+			const domElement = this.toDomElement( domDocument );
+			domElement.innerText = contents;
+
+			return domElement;
+		};
+
+		return element;
 	}
 
 	beforeEach( () => {
@@ -46,11 +50,8 @@ describe( 'Document', () => {
 
 		foo = new ViewText( 'foo' );
 		bar = new ViewText( 'bar' );
-		ui = new MyUIElement( 'span' );
-		ui.contents = 'xxx';
-
-		ui2 = new MyUIElement( 'span' );
-		ui2.contents = 'yyy';
+		ui = createUIElement( 'span', 'xxx' );
+		ui2 = createUIElement( 'span', 'yyy' );
 	} );
 
 	afterEach( () => {

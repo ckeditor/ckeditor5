@@ -495,16 +495,11 @@ describe( 'View converter builder', () => {
 		buildViewConverter().for( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
 
 		// Disallow $root>div.
-		schema.on( 'checkChild', ( evt, args ) => {
-			const ctx = args[ 0 ];
-			const child = args[ 1 ];
-			const childRule = schema.getDefinition( child );
-
-			if ( childRule.name == 'div' && ctx.endsWith( '$root' ) ) {
-				evt.stop();
-				evt.return = false;
+		schema.addChildCheck( ( ctx, childDef ) => {
+			if ( childDef.name == 'div' && ctx.endsWith( '$root' ) ) {
+				return false;
 			}
-		}, { priority: 'high' } );
+		} );
 
 		dispatcher.on( 'element', convertToModelFragment(), { priority: 'lowest' } );
 
@@ -527,15 +522,11 @@ describe( 'View converter builder', () => {
 	// 	buildViewConverter().for( dispatcher ).fromElement( 'strong' ).toAttribute( 'bold', true );
 
 	// 	// Disallow bold in paragraph>$text.
-	// 	schema.on( 'checkAttribute', ( evt, args ) => {
-	// 		const context = args[ 0 ];
-	// 		const attributeName = args[ 1 ];
-
+	// 	schema.addAttributeCheck( ( ctx, attributeName ) => {
 	// 		if ( ctx.endsWith( 'paragraph $text' ) && attributeName == 'bold' ) {
-	// 			evt.stop();
-	// 			evt.return = false;
+	// 			return false;
 	// 		}
-	// 	}, { priority: 'high' } );
+	// 	} );
 
 	// 	dispatcher.on( 'element', convertToModelFragment(), { priority: 'lowest' } );
 

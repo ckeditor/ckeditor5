@@ -112,24 +112,21 @@ import Range from './range';
  * It means that you can add listeners to implement your specific rules which are not limited by the declarative
  * {@link module:engine/model/schema~SchemaItemDefinition API}.
  *
- * The block quote feature defines such a listener to disallow nested `<blockQuote>` structures:
+ * Those listeners can be added either by listening directly to the {@link ~Schema#event:checkChild} event or
+ * by using the handy {@link ~Schema#addChildCheck} method.
  *
- *		schema.on( 'checkChild', ( evt, args ) => {
- *			// The checkChild()'s params.
- *			// Note that context is automatically normalized to SchemaContext instance by a highest-priority listener.
- *			const context = args[ 0 ];
- *			const child = args[ 1 ];
+ * For instance, the block quote feature defines such a listener to disallow nested `<blockQuote>` structures:
  *
- *			// Pass the child through getDefinition() to normalize it (child can be passed in multiple formats).
- *			const childRule = schema.getDefinition( child );
+ *		schema.addChildCheck( context, childDefinition ) => {
+ *			// Note that context is automatically normalized to SchemaContext instance and
+ *			// child to its definition (SchemaCompiledItemDefinition).
  *
  *			// If checkChild() is called with a context that ends with blockQuote and blockQuote as a child
- *			// to check, make the method return false and stop the event so no other listener will override your decision.
- *			if ( childRule && childRule.name == 'blockQuote' && context.endsWith( 'blockQuote' ) ) {
- *				evt.stop();
- *				evt.return = false;
+ *			// to check, make the checkChild() method return false.
+ *			if ( context.endsWith( 'blockQuote' ) && childDefinition.name == 'blockQuote' ) {
+ *				return false;
  *			}
- *		}, { priority: 'high' } );
+ *		} );
  *
  * ## Defining attributes
  *
@@ -199,6 +196,7 @@ export default class Schema {
 
 		this.on( 'checkChild', ( evt, args ) => {
 			args[ 0 ] = new SchemaContext( args[ 0 ] );
+			args[ 1 ] = this.getDefinition( args[ 1 ] );
 		}, { priority: 'highest' } );
 	}
 
@@ -378,9 +376,8 @@ export default class Schema {
 	 * @param {module:engine/model/schema~SchemaContextDefinition} context Context in which the child will be checked.
 	 * @param {module:engine/model/node~Node|String} child The child to check.
 	 */
-	checkChild( context, child ) {
-		const def = this.getDefinition( child );
-
+	checkChild( context, def ) {
+		// Note: context and child are already normalized here to a SchemaContext and SchemaCompiledItemDefinition.
 		if ( !def ) {
 			return false;
 		}
@@ -411,6 +408,113 @@ export default class Schema {
 		}
 
 		return def.allowAttributes.includes( attributeName );
+	}
+
+	/**
+	 * Allows registering a callback to the {@link #checkChild} method calls.
+	 *
+	 * Callbacks allow you to implement rules which are not otherwise possible to achieve
+	 * by using the declarative API of {@link module:engine/model/schema~SchemaItemDefinition}.
+	 * For example, by using this method you can disallow elements in specific contexts.
+	 *
+	 * This method is a shorthand for using the {@link #event:checkChild} event. For even better control,
+	 * you can use that event instead.
+	 *
+	 * Example:
+	 *
+	 *		// Disallow heading1 directly inside a blockQuote.
+	 *		schema.addChildCheck( ( context, childDefinition ) => {
+	 *			if ( context.endsWith( 'blockQuote' ) && childDefinition.name == 'heading1' ) {
+	 *				return false;
+	 *			}
+	 *		} );
+	 *
+	 * Which translates to:
+	 *
+	 *		schema.on( 'checkChild', ( evt, args ) => {
+	 *			const context = args[ 0 ];
+	 *			const childDefinition = args[ 1 ];
+	 *
+	 *			if ( context.endsWith( 'blockQuote' ) && childDefinition && childDefinition.name == 'heading1' ) {
+	 *				// Prevent next listeners from being called.
+	 *				evt.stop();
+	 *				// Set the checkChild()'s return value.
+	 *				evt.return = false;
+	 *			}
+	 *		}, { priority: 'high' } );
+	 *
+	 * @param {Function} callback The callback to be called. It is called with two parameters:
+	 * {@link module:engine/model/schema~SchemaContext} (context) instance and
+	 * {@link module:engine/model/schema~SchemaCompiledItemDefinition} (child-to-check definition).
+	 * The callback may return `true/false` to override `checkChild()`'s return value. If it does not return
+	 * a boolean value, the default algorithm (or other callbacks) will define `checkChild()`'s return value.
+	 */
+	addChildCheck( callback ) {
+		this.on( 'checkChild', ( evt, [ ctx, childDef ] ) => {
+			// checkChild() was called with a non-registered child.
+			// In 99% cases such check should return false, so not to overcomplicate all callbacks
+			// don't even execute them.
+			if ( !childDef ) {
+				return;
+			}
+
+			const retValue = callback( ctx, childDef );
+
+			if ( typeof retValue == 'boolean' ) {
+				evt.stop();
+				evt.return = retValue;
+			}
+		}, { priority: 'high' } );
+	}
+
+	/**
+	 * Allows registering a callback to the {@link #checkAttribute} method calls.
+	 *
+	 * Callbacks allow you to implement rules which are not otherwise possible to achieve
+	 * by using the declarative API of {@link module:engine/model/schema~SchemaItemDefinition}.
+	 * For example, by using this method you can disallow attribute if node to which it is applied
+	 * is contained within some other element (e.g. you want to disallow `bold` on `$text` within `heading1`).
+	 *
+	 * This method is a shorthand for using the {@link #event:checkAttribute} event. For even better control,
+	 * you can use that event instead.
+	 *
+	 * Example:
+	 *
+	 *		// Disallow bold on $text inside heading1.
+	 *		schema.addChildCheck( ( context, attributeName ) => {
+	 *			if ( context.endsWith( 'heading1 $text' ) && attributeName == 'bold' ) {
+	 *				return false;
+	 *			}
+	 *		} );
+	 *
+	 * Which translates to:
+	 *
+	 *		schema.on( 'checkAttribute', ( evt, args ) => {
+	 *			const context = args[ 0 ];
+	 *			const attributeName = args[ 1 ];
+	 *
+	 *			if ( context.endsWith( 'heading1 $text' ) && attributeName == 'bold' ) {
+	 *				// Prevent next listeners from being called.
+	 *				evt.stop();
+	 *				// Set the checkAttribute()'s return value.
+	 *				evt.return = false;
+	 *			}
+	 *		}, { priority: 'high' } );
+	 *
+	 * @param {Function} callback The callback to be called. It is called with two parameters:
+	 * {@link module:engine/model/schema~SchemaContext} (context) instance and attribute name.
+	 * The callback may return `true/false` to override `checkAttribute()`'s return value. If it does not return
+	 * a boolean value, the default algorithm (or other callbacks) will define `checkAttribute()`'s return value.
+	 */
+	addAttributeCheck( callback ) {
+		this.on( 'checkAttribute', ( evt, [ ctx, attributeName ] ) => {
+			const retValue = callback( ctx, attributeName );
+
+			if ( typeof retValue == 'boolean' ) {
+				evt.stop();
+				evt.return = retValue;
+			}
+		}, { priority: 'high' } );
 	}
 
 	/**
@@ -600,31 +704,35 @@ mix( Schema, ObservableMixin );
  * additional behavior – e.g. implementing rules which cannot be defined using the declarative
  * {@link module:engine/model/schema~SchemaItemDefinition} interface.
  *
- * The {@link #checkChild} method fires an event because it's
+ * **Note:** The {@link #addChildCheck} method is a more handy way to register callbacks. Internally,
+ * it registers a listener to this event but comes with a simpler API and it is the recommended choice
+ * in most of the cases.
+ *
+ * The {@link #checkChild} method fires an event because it is
  * {@link module:utils/observablemixin~ObservableMixin#decorate decorated} with it. Thanks to that you can
  * use this event in a various way, but the most important use case is overriding standard behaviour of the
  * `checkChild()` method. Let's see a typical listener template:
  *
  *		schema.on( 'checkChild', ( evt, args ) => {
  *			const context = args[ 0 ];
- *			const child = args[ 1 ];
+ *			const childDefinition = args[ 1 ];
  *		}, { priority: 'high' } );
  *
  * The listener is added with a `high` priority to be executed before the default method is really called. The `args` callback
  * parameter contains arguments passed to `checkChild( context, child )`. However, the `context` parameter is already
- * normalized to a {@link module:engine/model/schema~SchemaContext} instance, so you don't have to worry about
- * the various ways how `context` may be passed to `checkChild()`.
+ * normalized to a {@link module:engine/model/schema~SchemaContext} instance and `child` to a
+ * {@link module:engine/model/schema~SchemaCompiledItemDefinition} instance, so you don't have to worry about
+ * the various ways how `context` and `child` may be passed to `checkChild()`.
+ *
+ * **Note:** `childDefinition` may be `undefined` if `checkChild()` was called with a non-registered element.
  *
  * So, in order to implement a rule "disallow `heading1` in `blockQuote`" you can add such a listener:
  *
  *		schema.on( 'checkChild', ( evt, args ) => {
  *			const context = args[ 0 ];
- *			const child = args[ 1 ];
+ *			const childDefinition = args[ 1 ];
  *
- *			// Normalize child too (it can be a string or a node).
- *			const childDefinition = schema.getDefinition( child );
- *
- *			if ( context.endsWith( 'blockQuote' ) && childDefinition.name == 'heading1' ) {
+ *			if ( context.endsWith( 'blockQuote' ) && childDefinition && childDefinition.name == 'heading1' ) {
  *				// Prevent next listeners from being called.
  *				evt.stop();
  *				// Set the checkChild()'s return value.
@@ -638,10 +746,7 @@ mix( Schema, ObservableMixin );
  *
  *		schema.on( 'checkChild', ( evt, args ) => {
  *			const context = args[ 0 ];
- *			const child = args[ 1 ];
- *
- *			// Normalize child too (it can be a string or a node).
- *			const childDefinition = schema.getDefinition( child );
+ *			const childDefinition = args[ 1 ];
  *
  *			if ( context.endsWith( 'bar foo' ) && childDefinition.name == 'listItem' ) {
  *				// Prevent next listeners from being called.
@@ -659,6 +764,10 @@ mix( Schema, ObservableMixin );
  * Event fired when the {@link #checkAttribute} method is called. It allows plugging in
  * additional behavior – e.g. implementing rules which cannot be defined using the declarative
  * {@link module:engine/model/schema~SchemaItemDefinition} interface.
+ *
+ * **Note:** The {@link #addAttributeCheck} method is a more handy way to register callbacks. Internally,
+ * it registers a listener to this event but comes with a simpler API and it is the recommended choice
+ * in most of the cases.
  *
  * The {@link #checkAttribute} method fires an event because it's
  * {@link module:utils/observablemixin~ObservableMixin#decorate decorated} with it. Thanks to that you can
