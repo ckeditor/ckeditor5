@@ -856,6 +856,18 @@ export default class Writer {
 	/**
 	 * Sets attribute(s) on the selection. If attribute with the same key already is set, it's value is overwritten.
 	 *
+	 * Using key and value pair:
+	 *
+	 * 	writer.setSelectionAttribute( 'italic', true );
+	 *
+	 * Using key-value object:
+	 *
+	 * 	writer.setSelectionAttribute( { italic: true, bold: false } );
+	 *
+	 * Using iterable object:
+	 *
+	 * 	writer.setSelectionAttribute( new Map( [ [ 'italic', true ] ] ) );
+	 *
 	 * @param {String|Object|Iterable.<*>} keyOrObjectOrIterable Key of the attribute to set
 	 * or object / iterable of key - value attribute pairs.
 	 * @param {*} [value] Attribute value.
@@ -873,7 +885,15 @@ export default class Writer {
 	}
 
 	/**
-	 * Removes an attribute with given key from the selection.
+	 * Removes attribute(s) with given key(s) from the selection.
+	 *
+	 * Using key
+	 *
+	 * 	writer.removeSelectionAttribute( 'italic' );
+	 *
+	 * Using iterable of keys
+	 *
+	 * 	writer.removeSelectionAttribute( [ 'italic', 'bold' ] );
 	 *
 	 * @param {String|Iterable.<String>} keyOrIterableOfKeys Key of the attribute to remove or an iterable of attribute keys to remove.
 	 */
