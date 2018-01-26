@@ -299,11 +299,11 @@ export default class Selection {
 	 * @param {Boolean|Number|'before'|'end'|'after'} [backwardSelectionOrOffset]
 	 */
 	setTo( selectable, backwardSelectionOrOffset ) {
-		if ( !selectable ) {
+		if ( selectable === null ) {
 			this._setRanges( [] );
 		} else if ( selectable instanceof Selection ) {
 			this._setRanges( selectable.getRanges(), selectable.isBackward );
-		} else if ( selectable._selection && selectable._selection instanceof Selection ) {
+		} else if ( selectable && selectable._selection instanceof Selection ) {
 			// We assume that the selectable is a DocumentSelection.
 			// It can't be imported here, because it would lead to circular imports.
 			this._setRanges( selectable.getRanges(), selectable.isBackward );

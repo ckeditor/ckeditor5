@@ -241,6 +241,12 @@ describe( 'Selection', () => {
 			} ).to.throw( /model-selection-setTo-not-selectable/ );
 		} );
 
+		it( 'should throw an error when trying to set selection to not selectable #2', () => {
+			expect( () => {
+				selection.setTo();
+			} ).to.throw( /model-selection-setTo-not-selectable/ );
+		} );
+
 		it( 'should allow setting selection inside an element', () => {
 			const element = new Element( 'p', null, [ new Text( 'foo' ), new Text( 'bar' ) ] );
 

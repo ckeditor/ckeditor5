@@ -647,6 +647,14 @@ describe( 'Selection', () => {
 					otherSelection.setTo( {} );
 				} ).to.throw( /view-selection-setTo-not-selectable/ );
 			} );
+
+			it( 'should throw an error when trying to set to not selectable #2', () => {
+				const otherSelection = new Selection();
+
+				expect( () => {
+					otherSelection.setTo();
+				} ).to.throw( /view-selection-setTo-not-selectable/ );
+			} );
 		} );
 
 		describe( 'setting collapsed selection', () => {

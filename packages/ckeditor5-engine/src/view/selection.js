@@ -412,7 +412,7 @@ export default class Selection {
 	 * @param {Boolean|Number|'before'|'end'|'after'} [backwardSelectionOrOffset]
 	 */
 	setTo( selectable, backwardSelectionOrOffset ) {
-		if ( selectable == null ) {
+		if ( selectable === null ) {
 			this._removeAllRanges();
 		} else if ( selectable instanceof Selection ) {
 			this._isFake = selectable.isFake;
