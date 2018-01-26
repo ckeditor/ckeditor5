@@ -35,6 +35,7 @@ import {
 } from '../conversion/model-selection-to-view-converters';
 import { insertText, insertElement, wrap } from '../conversion/model-to-view-converters';
 import isPlainObject from '@ckeditor/ckeditor5-utils/src/lib/lodash/isPlainObject';
+import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 
 /**
  * Writes the contents of the {@link module:engine/model/document~Document Document} to an HTML-like string.
@@ -132,9 +133,7 @@ export function setData( model, data, options = {} ) {
 			writer.setSelection( ranges, selection.isBackward );
 
 			if ( options.selectionAttributes ) {
-				for ( const [ key, value ] of selection.getAttributes() ) {
-					writer.setSelectionAttribute( key, value );
-				}
+				writer.setSelectionAttribute( selection.getAttributes() );
 			}
 		}
 	} );
@@ -304,8 +303,7 @@ export function parse( data, schema, options = {} ) {
 
 		// Set attributes to selection if specified.
 		if ( options.selectionAttributes ) {
-			for ( const key in options.selectionAttributes ) {
-				const value = options.selectionAttributes[ key ];
+			for ( const [ key, value ] of toMap( options.selectionAttributes ) ) {
 				selection.setAttribute( key, value );
 			}
 		}
