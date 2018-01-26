@@ -825,6 +825,8 @@ export default class Writer {
 	 * 		// Removes all ranges.
 	 *		writer.setSelection( null );
 	 *
+	 * Throws `writer-incorrect-use` error when the writer is used outside the `change()` block.
+	 *
 	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
 	 * module:engine/model/position~Position|module:engine/model/element~Element|
 	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} selectable
@@ -871,9 +873,26 @@ export default class Writer {
 	}
 
 	/**
+	 * Removes an attribute with given key from the selection.
+	 *
+	 * @param {String|Iterable.<String>} keyOrIterableOfKeys Key of the attribute to remove or an iterable of attribute keys to remove.
+	 */
+	removeSelectionAttribute( keyOrIterableOfKeys ) {
+		this._assertWriterUsedCorrectly();
+
+		if ( typeof keyOrIterableOfKeys === 'string' ) {
+			this._removeSelectionAttribute( keyOrIterableOfKeys );
+		} else {
+			for ( const key of keyOrIterableOfKeys ) {
+				this._removeSelectionAttribute( key );
+			}
+		}
+	}
+
+	/**
 	 * @private
-	 * @param {String} key
-	 * @param {*} value
+	 * @param {String} key Key of the attribute to remove.
+	 * @param {*} value Attribute value.
 	 */
 	_setSelectionAttribute( key, value ) {
 		const selection = this.model.document.selection;
@@ -886,23 +905,6 @@ export default class Writer {
 		}
 
 		selection._setAttribute( key, value );
-	}
-
-	/**
-	 * Removes an attribute with given key from the selection.
-	 *
-	 * @param {String|Iterable.<String>} keyOrIterableOfKeys Key of the attribute to remove.
-	 */
-	removeSelectionAttribute( keyOrIterableOfKeys ) {
-		this._assertWriterUsedCorrectly();
-
-		if ( typeof keyOrIterableOfKeys === 'string' ) {
-			this._removeSelectionAttribute( keyOrIterableOfKeys );
-		} else {
-			for ( const key of keyOrIterableOfKeys ) {
-				this._removeSelectionAttribute( key );
-			}
-		}
 	}
 
 	/**
