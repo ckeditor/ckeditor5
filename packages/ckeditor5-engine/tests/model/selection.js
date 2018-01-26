@@ -63,23 +63,67 @@ describe( 'Selection', () => {
 			expect( Array.from( selection.getRanges() ) ).to.deep.equal( ranges );
 		} );
 
+		it( 'should be able to create a selection from the given range and isLastBackward flag', () => {
+			const selection = new Selection( range1, true );
+
+			expect( selection.isBackward ).to.be.true;
+			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range1 ] );
+		} );
+
 		it( 'should be able to create a selection from the given ranges and isLastBackward flag', () => {
-			const ranges = [ range1, range2, range3 ];
+			const ranges = new Set( [ range1, range2, range3 ] );
 			const selection = new Selection( ranges, true );
 
 			expect( selection.isBackward ).to.be.true;
+			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range1, range2, range3 ] );
 		} );
 
-		it( 'should uses internal _setRanges() method to set ranges', () => {
+		it( 'should be able to create a selection from the other selection', () => {
 			const ranges = [ range1, range2, range3 ];
-			const spy = sinon.spy( Selection.prototype, '_setRanges' );
+			const otherSelection = new Selection( ranges, true );
+			const selection = new Selection( otherSelection );
 
-			const selection = new Selection( ranges );
+			expect( selection.isBackward ).to.be.true;
+			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range1, range2, range3 ] );
+		} );
 
-			expect( spy.calledOnce ).to.be.true;
-			expect( Array.from( selection.getRanges() ) ).to.deep.equal( ranges );
+		it( 'should be able to create a selection at the start position of an item', () => {
+			const selection = new Selection( root );
+			const focus = selection.focus;
 
-			spy.restore();
+			expect( selection ).to.have.property( 'isCollapsed', true );
+			expect( focus ).to.have.property( 'parent', root );
+			expect( focus ).to.have.property( 'offset', 0 );
+		} );
+
+		it( 'should be able to create a selection before the specified element', () => {
+			const selection = new Selection( root.getChild( 1 ), 'before' );
+			const focus = selection.focus;
+
+			expect( selection ).to.have.property( 'isCollapsed', true );
+
+			expect( focus ).to.have.property( 'parent', root );
+			expect( focus ).to.have.property( 'offset', 1 );
+		} );
+
+		it( 'should throw an error if added ranges intersects', () => {
+			expect( () => {
+				// eslint-disable-next-line no-new
+				new Selection( [
+					liveRange,
+					new Range(
+						new Position( root, [ 0, 4 ] ),
+						new Position( root, [ 1, 2 ] )
+					)
+				] );
+			} ).to.throw( CKEditorError, /model-selection-range-intersects/ );
+		} );
+
+		it( 'should throw an error when trying to set selection to not selectable', () => {
+			expect( () => {
+				// eslint-disable-next-line no-new
+				new Selection( {} );
+			} ).to.throw( /model-selection-setTo-not-selectable/ );
 		} );
 	} );
 
@@ -829,25 +873,6 @@ describe( 'Selection', () => {
 
 			expect( spy.notCalled ).to.be.true;
 			spy.restore();
-		} );
-	} );
-
-	describe( 'createFromSelection()', () => {
-		it( 'should return a Selection instance with same ranges and direction as given selection', () => {
-			selection.setTo( [ liveRange, range ], true );
-
-			const snapshot = Selection.createFromSelection( selection );
-
-			expect( selection.isBackward ).to.equal( snapshot.isBackward );
-
-			const selectionRanges = Array.from( selection.getRanges() );
-			const snapshotRanges = Array.from( snapshot.getRanges() );
-
-			expect( selectionRanges.length ).to.equal( snapshotRanges.length );
-
-			for ( let i = 0; i < selectionRanges.length; i++ ) {
-				expect( selectionRanges[ i ].isEqual( snapshotRanges[ i ] ) ).to.be.true;
-			}
 		} );
 	} );
 

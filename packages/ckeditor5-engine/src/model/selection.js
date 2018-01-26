@@ -24,13 +24,47 @@ import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
  */
 export default class Selection {
 	/**
-	 * Creates new selection instance.
+	 * Creates new selection instance on the given
+	 * {@link module:engine/model/selection~Selection selection}, {@link module:engine/model/position~Position position},
+	 * {@link module:engine/model/element~Element element}, {@link module:engine/model/position~Position position},
+	 * {@link module:engine/model/range~Range range}, an iterable of {@link module:engine/model/range~Range ranges}
+	 * or creates an empty selection if no arguments passed.
 	 *
-	 * @param {Iterable.<module:engine/view/range~Range>} [ranges] An optional iterable object of ranges to set.
-	 * @param {Boolean} [isLastBackward] An optional flag describing if last added range was selected forward - from start to end
-	 * (`false`) or backward - from end to start (`true`). Defaults to `false`.
+	 * 		// Creates empty selection without ranges.
+	 *		const selection = new Selection();
+	 *
+	 *		// Creates selection at the given range.
+	 *		const range = new Range( start, end );
+	 *		const selection = new Selection( range, isBackwardSelection );
+	 *
+	 *		// Creates selection at the given ranges
+	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
+	 *		const selection = new Selection( ranges, isBackwardSelection );
+	 *
+	 *		// Creates selection from the other selection.
+	 *		// Note: It doesn't copies selection attributes.
+	 *		const otherSelection = new Selection();
+	 *		const selection = new Selection( otherSelection );
+	 *
+	 * 		// Creates selection from the given document selection.
+	 *		// Note: It doesn't copies selection attributes.
+	 *		const documentSelection = new DocumentSelection( doc );
+	 *		const selection = new Selection( documentSelection );
+	 *
+	 * 		// Creates selection at the given position.
+	 *		const position = new Position( root, path );
+	 *		const selection = new Selection( position );
+	 *
+	 * 		// Creates selection at the start position of given element.
+	 *		const paragraph = writer.createElement( 'paragraph' );
+	 *		const selection = new Selection( paragraph, offset );
+	 *
+	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
+	 * module:engine/model/position~Position|module:engine/model/element~Element|
+	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range} [selectable]
+	 * @param {Boolean|Number|'before'|'end'|'after'} [backwardSelectionOrOffset]
 	 */
-	constructor( ranges, isLastBackward ) {
+	constructor( selectable, backwardSelectionOrOffset ) {
 		/**
 		 * Specifies whether the last added range was added as a backward or forward range.
 		 *
@@ -55,8 +89,8 @@ export default class Selection {
 		 */
 		this._attrs = new Map();
 
-		if ( ranges ) {
-			this._setRanges( ranges, isLastBackward );
+		if ( selectable ) {
+			this.setTo( selectable, backwardSelectionOrOffset );
 		}
 	}
 
@@ -265,20 +299,22 @@ export default class Selection {
 	 * {@link module:engine/model/selection~Selection selection}, {@link module:engine/model/position~Position position},
 	 * {@link module:engine/model/element~Element element}, {@link module:engine/model/position~Position position},
 	 * {@link module:engine/model/range~Range range}, an iterable of {@link module:engine/model/range~Range ranges} or null.
-	*
+	 *
 	 *		// Sets ranges from the given range.
 	 *		const range = new Range( start, end );
 	 *		selection.setTo( range, isBackwardSelection );
 	 *
 	 *		// Sets ranges from the iterable of ranges.
 	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
-	 *		selection.setTo( range, isBackwardSelection );
+	 *		selection.setTo( ranges, isBackwardSelection );
 	 *
 	 *		// Sets ranges from the other selection.
+	 *		// Note: It doesn't copies selection attributes.
 	 *		const otherSelection = new Selection();
 	 *		selection.setTo( otherSelection );
 	 *
 	 * 		// Sets ranges from the given document selection's ranges.
+	 *		// Note: It doesn't copies selection attributes.
 	 *		const documentSelection = new DocumentSelection( doc );
 	 *		selection.setTo( documentSelection );
 	 *
@@ -286,7 +322,7 @@ export default class Selection {
 	 *		const position = new Position( root, path );
 	 *		selection.setTo( position );
 	 *
-	 * 		// Sets range at the given element.
+	 * 		// Sets range at the position of given element and optional offset.
 	 *		const paragraph = writer.createElement( 'paragraph' );
 	 *		selection.setTo( paragraph, offset );
 	 *
@@ -577,20 +613,6 @@ export default class Selection {
 
 		return limitStartPosition.isTouching( this.getFirstPosition() ) &&
 			limitEndPosition.isTouching( this.getLastPosition() );
-	}
-
-	/**
-	 * Creates and returns an instance of `Selection` that is a clone of given selection, meaning that it has same
-	 * ranges and same direction as this selection.
-	 *
-	 * @params {module:engine/model/selection~Selection} otherSelection Selection to be cloned.
-	 * @returns {module:engine/model/selection~Selection} `Selection` instance that is a clone of given selection.
-	 */
-	static createFromSelection( otherSelection ) {
-		const selection = new this();
-		selection.setTo( otherSelection );
-
-		return selection;
 	}
 
 	/**
