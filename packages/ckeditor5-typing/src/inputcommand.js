@@ -90,10 +90,10 @@ export default class InputCommand extends Command {
 			}
 
 			if ( resultRange ) {
-				doc.selection.setRanges( [ resultRange ] );
+				writer.setSelection( resultRange );
 			} else if ( isCollapsedRange ) {
 				// If range was collapsed just shift the selection by the number of inserted characters.
-				doc.selection.setCollapsedAt( range.start.getShiftedBy( textInsertions ) );
+				writer.setSelection( range.start.getShiftedBy( textInsertions ) );
 			}
 
 			this._buffer.unlock();
