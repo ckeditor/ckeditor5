@@ -13,7 +13,7 @@ The {@link module:font/fontfamily~FontFamily} feature enables support for settin
 
 ## Configuring font family options
 
-It is, of course, possible to configure which font family options the editor should support. Use the {@link module:font/fontfamily~FontFamilyConfig#options `fontFamiliy.options`} configuration option to do so.
+It is, of course, possible to configure which font family options the editor should support. Use the {@link module:font/fontfamily~FontFamilyConfig#options `fontFamily.options`} configuration option to do so.
 Use special keyword `'default'` to use document's default font family as defined in CSS.
 
 For example, the following editor will support only two font families besides "default" one:
