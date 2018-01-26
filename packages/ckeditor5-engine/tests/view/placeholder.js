@@ -155,6 +155,24 @@ describe( 'placeholder', () => {
 			expect( secondElement.getAttribute( 'data-placeholder' ) ).to.equal( 'second placeholder' );
 			expect( secondElement.hasClass( 'ck-placeholder' ) ).to.be.false;
 		} );
+
+		it( 'should update placeholder before rendering', () => {
+			setData( view, '<div></div><div>{another div}</div>' );
+			const element = viewRoot.getChild( 0 );
+
+			attachPlaceholder( view, element, 'foo bar baz' );
+
+			view.change( () => {
+				viewDocument.selection.setRanges( [ ViewRange.createIn( element ) ] );
+
+				// Here we are before rendering - placeholder is visible in first element;
+				expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
+				expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
+			} );
+
+			// After rendering - placeholder should be invisible since selection is moved there.
+			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
+		} );
 	} );
 
 	describe( 'detachPlaceholder', () => {
