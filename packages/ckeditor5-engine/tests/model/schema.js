@@ -696,6 +696,57 @@ describe( 'Schema', () => {
 			expect( schema.checkMerge( listItem, listItemToMerge ) ).to.be.true;
 		} );
 
+		it( 'return true if two elements between the position can be merged', () => {
+			const listItem = new Element( 'listItem', null, [
+				new Text( 'foo' )
+			] );
+			const listItemToMerge = new Element( 'listItem', null, [
+				new Text( 'bar' )
+			] );
+
+			// eslint-disable-next-line no-new
+			new Element( '$root', null, [
+				listItem, listItemToMerge
+			] );
+			const position = Position.createAfter( listItem );
+
+			expect( schema.checkMerge( position ) ).to.be.true;
+		} );
+
+		it( 'throws an error if there is no element before the position', () => {
+			const listItem = new Element( 'listItem', null, [
+				new Text( 'foo' )
+			] );
+
+			// eslint-disable-next-line no-new
+			new Element( '$root', null, [
+				listItem
+			] );
+
+			const position = Position.createBefore( listItem );
+
+			expect( () => {
+				expect( schema.checkMerge( position ) );
+			} ).to.throw( CKEditorError, /^schema-check-merge-no-element-before:/ );
+		} );
+
+		it( 'throws an error if there is no element after the position', () => {
+			const listItem = new Element( 'listItem', null, [
+				new Text( 'foo' )
+			] );
+
+			// eslint-disable-next-line no-new
+			new Element( '$root', null, [
+				listItem
+			] );
+
+			const position = Position.createAfter( listItem );
+
+			expect( () => {
+				expect( schema.checkMerge( position ) );
+			} ).to.throw( CKEditorError, /^schema-check-merge-no-element-after:/ );
+		} );
+
 		// This is an invalid case by definition – the baseElement should not contain disallowed elements
 		// in the first place. However, the check is focused on the elementToMerge's children so let's make sure
 		// that only them counts.
