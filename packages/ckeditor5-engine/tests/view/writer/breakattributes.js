@@ -4,6 +4,7 @@
  */
 
 import Writer from '../../../src/view/writer';
+import Document from '../../../src/view/document';
 import { stringify, parse } from '../../../src/dev-utils/view';
 import ContainerElement from '../../../src/view/containerelement';
 import AttributeElement from '../../../src/view/attributeelement';
@@ -18,7 +19,7 @@ describe( 'Writer', () => {
 		let writer;
 
 		before( () => {
-			writer = new Writer();
+			writer = new Writer( new Document() );
 		} );
 
 		describe( 'break position', () => {

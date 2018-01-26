@@ -12,6 +12,7 @@ import Position from '../../../src/view/position';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { stringify, parse } from '../../../src/dev-utils/view';
 import AttributeElement from '../../../src/view/attributeelement';
+import Document from '../../../src/view/document';
 
 describe( 'Writer', () => {
 	describe( 'insert()', () => {
@@ -31,7 +32,7 @@ describe( 'Writer', () => {
 		}
 
 		before( () => {
-			writer = new Writer();
+			writer = new Writer( new Document() );
 		} );
 
 		it( 'should return collapsed range in insertion position when using empty array', () => {

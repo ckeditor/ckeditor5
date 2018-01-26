@@ -110,7 +110,7 @@ export default class Renderer {
 		 */
 		this._fakeSelectionContainer = null;
 
-		// TODO: document rend er event.
+		// TODO: document render event.
 		this.decorate( 'render' );
 	}
 

@@ -12,6 +12,7 @@ import UIElement from '../../../src/view/uielement';
 import Range from '../../../src/view/range';
 import Position from '../../../src/view/position';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import Document from '../../../src/view/document';
 
 describe( 'Writer', () => {
 	describe( 'move()', () => {
@@ -34,7 +35,7 @@ describe( 'Writer', () => {
 		}
 
 		before( () => {
-			writer = new Writer();
+			writer = new Writer( new Document() );
 		} );
 
 		it( 'should move single text node', () => {

@@ -12,6 +12,7 @@ import AttributeElement from '../../../src/view/attributeelement';
 import EmptyElement from '../../../src/view/emptyelement';
 import UIElement from '../../../src/view/uielement';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import Document from '../../../src/view/document';
 
 describe( 'Writer', () => {
 	describe( 'remove()', () => {
@@ -33,7 +34,7 @@ describe( 'Writer', () => {
 		}
 
 		before( () => {
-			writer = new Writer();
+			writer = new Writer( new Document() );
 		} );
 
 		it( 'should throw when range placed in two containers', () => {

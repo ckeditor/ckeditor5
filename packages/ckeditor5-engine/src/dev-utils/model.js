@@ -21,6 +21,7 @@ import ModelSelection from '../model/selection';
 import ModelDocumentFragment from '../model/documentfragment';
 
 import ViewWriter from '../view/writer';
+import ViewDocument from '../view/document';
 import ViewConversionDispatcher from '../conversion/viewconversiondispatcher';
 import ViewSelection from '../view/selection';
 import ViewDocumentFragment from '../view/documentfragment';
@@ -213,7 +214,7 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 	modelToView.on( 'selection', convertCollapsedSelection() );
 
 	// Convert model to view.
-	const writer = new ViewWriter();
+	const writer = new ViewWriter( new ViewDocument() );
 	modelToView.convertInsert( range, writer );
 
 	// Convert model selection to view selection.

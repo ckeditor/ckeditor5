@@ -9,7 +9,6 @@
 
 import extend from '@ckeditor/ckeditor5-utils/src/lib/lodash/extend';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import '../../theme/placeholder.css';
 
 const listener = {};
@@ -27,17 +26,8 @@ const documentPlaceholders = new WeakMap();
  * @param {Function} [checkFunction] If provided it will be called before checking if placeholder should be displayed.
  * If function returns `false` placeholder will not be showed.
  */
-export function attachPlaceholder( element, placeholderText, checkFunction ) {
-	const document = element.document;
-
-	if ( !document ) {
-		/**
-		 * Provided element is not placed in any {@link module:engine/view/document~Document}.
-		 *
-		 * @error view-placeholder-element-is-detached
-		 */
-		throw new CKEditorError( 'view-placeholder-element-is-detached: Provided element is not placed in document.' );
-	}
+export function attachPlaceholder( view, element, placeholderText, checkFunction ) {
+	const document = view.document;
 
 	// Detach placeholder if was used before.
 	detachPlaceholder( element );
@@ -45,7 +35,9 @@ export function attachPlaceholder( element, placeholderText, checkFunction ) {
 	// Single listener per document.
 	if ( !documentPlaceholders.has( document ) ) {
 		documentPlaceholders.set( document, new Map() );
-		listener.listenTo( document, 'change', () => updateAllPlaceholders( document ) );
+
+		// Attach listener just before rendering and update placeholders.
+		listener.listenTo( view.renderer, 'render', () => updateAllPlaceholders( document ), { priority: 'highest' } );
 	}
 
 	// Store text in element's data attribute.

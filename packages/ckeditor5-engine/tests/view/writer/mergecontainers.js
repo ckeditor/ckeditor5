@@ -6,6 +6,7 @@
 import Writer from '../../../src/view/writer';
 import { stringify, parse } from '../../../src/dev-utils/view';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import Document from '../../../src/view/document';
 
 describe( 'Writer', () => {
 	describe( 'mergeContainers()', () => {
@@ -24,7 +25,7 @@ describe( 'Writer', () => {
 		}
 
 		before( () => {
-			writer = new Writer();
+			writer = new Writer( new Document() );
 		} );
 
 		it( 'should merge two container elements - position between elements', () => {

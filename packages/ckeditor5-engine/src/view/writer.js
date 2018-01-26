@@ -26,6 +26,10 @@ import EditableElement from './editableelement';
  * of view writer associated with the document use {@link module:engine/view/view~View#change view.change()) method.
  */
 export default class Writer {
+	constructor( document ) {
+		this.document = document;
+	}
+
 	/**
 	 * Creates a new {@link module:engine/view/text~Text text node}.
 	 *
@@ -102,9 +106,9 @@ export default class Writer {
 	 * @param {Object} [attributes] Elements attributes.
 	 * @returns {module:engine/view/editableelement~EditableElement} Created element.
 	 */
-	createEditableElement( document, name, attributes ) {
+	createEditableElement( name, attributes ) {
 		const editableElement = new EditableElement( name, attributes );
-		editableElement.document = document;
+		editableElement.document = this.document;
 
 		return editableElement;
 	}

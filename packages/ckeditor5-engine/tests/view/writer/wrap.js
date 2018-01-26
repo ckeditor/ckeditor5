@@ -17,13 +17,14 @@ import Text from '../../../src/view/text';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { stringify, parse } from '../../../src/dev-utils/view';
 import createViewRoot from '../_utils/createroot';
+import Document from '../../../src/view/document';
 
 describe( 'Writer', () => {
 	describe( 'wrap()', () => {
 		let writer;
 
 		before( () => {
-			writer = new Writer();
+			writer = new Writer( new Document() );
 		} );
 
 		describe( 'non-collapsed range', () => {

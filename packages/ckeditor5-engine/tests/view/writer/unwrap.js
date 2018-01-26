@@ -14,6 +14,7 @@ import Range from '../../../src/view/range';
 import Text from '../../../src/view/text';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { stringify, parse } from '../../../src/dev-utils/view';
+import Document from '../../../src/view/document';
 
 describe( 'Writer', () => {
 	describe( 'unwrap()', () => {
@@ -32,7 +33,7 @@ describe( 'Writer', () => {
 		}
 
 		before( () => {
-			writer = new Writer();
+			writer = new Writer( new Document() );
 		} );
 
 		it( 'should do nothing on collapsed ranges', () => {

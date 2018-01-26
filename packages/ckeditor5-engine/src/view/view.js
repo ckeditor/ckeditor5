@@ -50,7 +50,7 @@ import { injectQuirksHandling } from './filler';
 export default class View {
 	constructor() {
 		this.document = new Document();
-		this._writer = new Writer();
+		this._writer = new Writer( this.document );
 
 		// TODO: check docs
 		// TODO: move change event description to this file.

@@ -21,16 +21,14 @@ import { INLINE_FILLER, INLINE_FILLER_LENGTH, isBlockFiller, BR_FILLER } from '.
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import createViewRoot from './_utils/createroot';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
-import Writer from '../../src/view/writer';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 
 testUtils.createSinonSandbox();
 
 describe( 'Renderer', () => {
-	let selection, domConverter, renderer, writer;
+	let selection, domConverter, renderer;
 
 	beforeEach( () => {
-		writer = new Writer();
 		selection = new Selection();
 		domConverter = new DomConverter();
 		renderer = new Renderer( domConverter, selection );
@@ -1902,7 +1900,10 @@ describe( 'Renderer', () => {
 			view.render();
 
 			// Unwrap italic attribute element.
-			writer.unwrap( viewDoc.selection.getFirstRange(), new ViewAttributeElement( 'italic' ) );
+			view.change( writer => {
+				writer.unwrap( viewDoc.selection.getFirstRange(), new ViewAttributeElement( 'italic' ) );
+			} );
+
 			expect( getViewData( view ) ).to.equal( '<p>[<strong>foo</strong>]</p>' );
 
 			// Re-render changes in view to DOM.
@@ -1925,7 +1926,10 @@ describe( 'Renderer', () => {
 			view.render();
 
 			// Unwrap italic attribute element and change text inside.
-			writer.unwrap( viewDoc.selection.getFirstRange(), new ViewAttributeElement( 'italic' ) );
+			view.change( writer => {
+				writer.unwrap( viewDoc.selection.getFirstRange(), new ViewAttributeElement( 'italic' ) );
+			} );
+
 			viewRoot.getChild( 0 ).getChild( 0 ).getChild( 0 ).data = 'bar';
 			expect( getViewData( view ) ).to.equal( '<p>[<strong>bar</strong>]</p>' );
 
@@ -1948,7 +1952,11 @@ describe( 'Renderer', () => {
 			// Change text and insert new element into paragraph.
 			const textNode = viewRoot.getChild( 0 ).getChild( 0 );
 			textNode.data = 'foobar';
-			writer.insert( ViewPosition.createAfter( textNode ), new ViewAttributeElement( 'img' ) );
+
+			view.change( writer => {
+				writer.insert( ViewPosition.createAfter( textNode ), new ViewAttributeElement( 'img' ) );
+			} );
+
 			expect( getViewData( view ) ).to.equal( '<p>foobar<img></img></p>' );
 
 			// Re-render changes in view to DOM.
@@ -1970,7 +1978,11 @@ describe( 'Renderer', () => {
 			// Change text and insert new element into paragraph.
 			const textNode = viewRoot.getChild( 0 ).getChild( 0 );
 			textNode.data = 'foobar';
-			writer.insert( ViewPosition.createBefore( textNode ), new ViewAttributeElement( 'img' ) );
+
+			view.change( writer => {
+				writer.insert( ViewPosition.createBefore( textNode ), new ViewAttributeElement( 'img' ) );
+			} );
+
 			expect( getViewData( view ) ).to.equal( '<p><img></img>foobar</p>' );
 
 			// Re-render changes in view to DOM.
@@ -1997,8 +2009,11 @@ describe( 'Renderer', () => {
 			const container = viewRoot.getChild( 0 );
 			const firstElement = container.getChild( 0 );
 
-			writer.remove( ViewRange.createOn( firstElement ) );
-			writer.insert( new ViewPosition( container, 2 ), firstElement );
+			view.change( writer => {
+				writer.remove( ViewRange.createOn( firstElement ) );
+				writer.insert( new ViewPosition( container, 2 ), firstElement );
+			} );
+
 			expect( getViewData( view ) ).to.equal( '<p><i></i><span></span><b></b></p>' );
 
 			// Re-render changes in view to DOM.

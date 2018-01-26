@@ -15,7 +15,6 @@ import ViewElement from '../../src/view/element';
 import ViewContainerElement from '../../src/view/containerelement';
 import ViewAttributeElement from '../../src/view/attributeelement';
 import ViewText from '../../src/view/text';
-import ViewWriter from '../../src/view/writer';
 import ViewPosition from '../../src/view/position';
 import ViewRange from '../../src/view/range';
 
@@ -31,17 +30,17 @@ import {
 import { convertToModelFragment, convertText } from '../../src/conversion/view-to-model-converters';
 
 describe( 'advanced-converters', () => {
-	let model, modelDoc, modelRoot, viewWriter, viewRoot, modelDispatcher, viewDispatcher;
+	let model, modelDoc, modelRoot, view, viewRoot, modelDispatcher, viewDispatcher;
 
 	beforeEach( () => {
 		model = new Model();
 		modelDoc = model.document;
 		modelRoot = modelDoc.createRoot();
-		viewWriter = new ViewWriter();
 
 		const editing = new EditingController( model );
 
-		viewRoot = editing.view.document.getRoot();
+		view = editing.view;
+		viewRoot = view.document.getRoot();
 
 		// Set name of view root the same as dom root.
 		// This is a mock of attaching view root to dom root.
@@ -180,7 +179,7 @@ describe( 'advanced-converters', () => {
 				const viewElement = new ViewContainerElement( 'blockquote' );
 
 				conversionApi.mapper.bindElements( data.item, viewElement );
-				viewWriter.insert( viewPosition, viewElement );
+				conversionApi.writer.insert( viewPosition, viewElement );
 			}, { priority: 'high' } );
 
 			modelDispatcher.on( 'attribute:linkHref:quote', linkHrefOnQuoteConverter, { priority: 'high' } );
@@ -197,7 +196,7 @@ describe( 'advanced-converters', () => {
 					// Attribute was removed -> remove the view link.
 					const viewLink = viewQuote.getChild( viewQuote.childCount - 1 );
 
-					viewWriter.remove( ViewRange.createOn( viewLink ) );
+					conversionApi.writer.remove( ViewRange.createOn( viewLink ) );
 
 					consumable.consume( data.item, 'attribute:linkTitle' );
 				} else if ( data.attributeOldValue === null ) {
@@ -210,7 +209,7 @@ describe( 'advanced-converters', () => {
 						viewLink.setAttribute( 'title', data.item.getAttribute( 'linkTitle' ) );
 					}
 
-					viewWriter.insert( new ViewPosition( viewQuote, viewQuote.childCount ), viewLink );
+					conversionApi.writer.insert( new ViewPosition( viewQuote, viewQuote.childCount ), viewLink );
 				} else {
 					// Attribute has changed -> change the existing view link.
 					const viewLink = viewQuote.getChild( viewQuote.childCount - 1 );
@@ -513,7 +512,10 @@ describe( 'advanced-converters', () => {
 			] );
 
 			modelRoot.appendChildren( modelElement );
-			modelDispatcher.convertInsert( ModelRange.createIn( modelRoot ), viewWriter );
+
+			view.change( writer => {
+				modelDispatcher.convertInsert( ModelRange.createIn( modelRoot ), writer );
+			} );
 
 			expect( viewToString( viewRoot ) ).to.equal(
 				'<div>' +

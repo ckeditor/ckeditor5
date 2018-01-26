@@ -8,6 +8,7 @@ import ContainerElement from '../../../src/view/containerelement';
 import Text from '../../../src/view/text';
 import Position from '../../../src/view/position';
 import { stringify, parse } from '../../../src/dev-utils/view';
+import Document from '../../../src/view/document';
 
 describe( 'Writer', () => {
 	describe( 'mergeAttributes', () => {
@@ -25,7 +26,7 @@ describe( 'Writer', () => {
 		}
 
 		before( () => {
-			writer = new Writer();
+			writer = new Writer( new Document() );
 		} );
 
 		it( 'should not merge if inside text node', () => {

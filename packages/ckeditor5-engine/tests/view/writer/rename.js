@@ -5,13 +5,14 @@
 
 import Writer from '../../../src/view/writer';
 import { parse } from '../../../src/dev-utils/view';
+import Document from '../../../src/view/document';
 
 describe( 'Writer', () => {
 	describe( 'rename()', () => {
 		let root, foo, writer;
 
 		before( () => {
-			writer = new Writer();
+			writer = new Writer( new Document() );
 		} );
 
 		beforeEach( () => {
