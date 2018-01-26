@@ -67,7 +67,7 @@ export default class DeleteCommand extends Command {
 		model.enqueueChange( this._buffer.batch, writer => {
 			this._buffer.lock();
 
-			const selection = Selection.createFromSelection( doc.selection );
+			const selection = new Selection( doc.selection );
 
 			// Do not replace the whole selected content if selection was collapsed.
 			// This prevents such situation:

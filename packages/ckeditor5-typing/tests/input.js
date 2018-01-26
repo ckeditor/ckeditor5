@@ -994,8 +994,7 @@ describe( 'Input feature', () => {
 
 			const paragraph = viewRoot.getChild( 0 );
 			const strong = paragraph.getChild( 0 );
-			const viewSelection = new ViewSelection();
-			viewSelection.setTo( paragraph, 0 );
+			const viewSelection = new ViewSelection( paragraph, 0 );
 
 			// Simulate mutations and DOM change.
 			domRoot.childNodes[ 0 ].innerHTML = '<b>textx</b>';
@@ -1019,8 +1018,7 @@ describe( 'Input feature', () => {
 
 			const paragraph = viewRoot.getChild( 0 );
 			const strong = paragraph.getChild( 0 );
-			const viewSelection = new ViewSelection();
-			viewSelection.setTo( paragraph );
+			const viewSelection = new ViewSelection( paragraph );
 
 			// Simulate mutations and DOM change.
 			domRoot.childNodes[ 0 ].innerHTML = '<strong>Foo bar </strong><b>apple</b>';
