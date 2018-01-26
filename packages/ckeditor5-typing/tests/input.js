@@ -1015,7 +1015,7 @@ describe( 'Input feature', () => {
 
 		// #117.
 		it( 'should handle mixed mutations', () => {
-			setModelData( model, '<paragraph><$text bold="true">Foo bar aple</$text></paragraph>' );
+			setModelData( model, '<paragraph>[]<$text bold="true">Foo bar aple</$text></paragraph>' );
 
 			const paragraph = viewRoot.getChild( 0 );
 			const strong = paragraph.getChild( 0 );
