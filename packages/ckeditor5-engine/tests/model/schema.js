@@ -730,6 +730,24 @@ describe( 'Schema', () => {
 			} ).to.throw( CKEditorError, /^schema-check-merge-no-element-before:/ );
 		} );
 
+		it( 'throws an error if the node before the position is not the element', () => {
+			const listItem = new Element( 'listItem', null, [
+				new Text( 'foo' )
+			] );
+
+			// eslint-disable-next-line no-new
+			new Element( '$root', null, [
+				new Text( 'bar' ),
+				listItem
+			] );
+
+			const position = Position.createBefore( listItem );
+
+			expect( () => {
+				expect( schema.checkMerge( position ) );
+			} ).to.throw( CKEditorError, /^schema-check-merge-no-element-before:/ );
+		} );
+
 		it( 'throws an error if there is no element after the position', () => {
 			const listItem = new Element( 'listItem', null, [
 				new Text( 'foo' )
@@ -745,6 +763,24 @@ describe( 'Schema', () => {
 			expect( () => {
 				expect( schema.checkMerge( position ) );
 			} ).to.throw( CKEditorError, /^schema-check-merge-no-element-after:/ );
+		} );
+
+		it( 'throws an error if the node after the position is not the element', () => {
+			const listItem = new Element( 'listItem', null, [
+				new Text( 'foo' )
+			] );
+
+			// eslint-disable-next-line no-new
+			new Element( '$root', null, [
+				listItem,
+				new Text( 'bar' )
+			] );
+
+			const position = Position.createBefore( listItem );
+
+			expect( () => {
+				expect( schema.checkMerge( position ) );
+			} ).to.throw( CKEditorError, /^schema-check-merge-no-element-before:/ );
 		} );
 
 		// This is an invalid case by definition – the baseElement should not contain disallowed elements
