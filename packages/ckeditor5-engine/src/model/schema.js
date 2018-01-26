@@ -12,6 +12,8 @@ import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 import Range from './range';
+import Position from './position';
+import Element from './element';
 
 /**
  * The model's schema. It defines allowed and disallowed structures of nodes as well as nodes' attributes.
@@ -408,6 +410,57 @@ export default class Schema {
 		}
 
 		return def.allowAttributes.includes( attributeName );
+	}
+
+	/**
+	 * Checks whether the given element (`elementToMerge`) can be merged with the specified base element (`positionOrBaseElement`).
+	 *
+	 * In other words – whether `elementToMerge`'s children {@link #checkChild are allowed} in the `positionOrBaseElement`.
+	 *
+	 * This check ensures that elements merged with {@link module:engine/model/writer~Writer#merge `Writer#merge()`}
+	 * will be valid.
+	 *
+	 * Instead of elements, you can pass the instance of {@link module:engine/model/position~Position} class as the `positionOrBaseElement`.
+	 * It means that the elements before and after the position will be checked whether they can be merged.
+	 *
+	 * @param {module:engine/model/position~Position|module:engine/model/Element~Element} positionOrBaseElement The position or base
+	 * element to which the `elementToMerge` will be merged.
+	 * @param {module:engine/model/Element~Element} elementToMerge The element to merge. Required if `positionOrBaseElement` is a element.
+	 * @returns {Boolean}
+	 */
+	checkMerge( positionOrBaseElement, elementToMerge = null ) {
+		if ( positionOrBaseElement instanceof Position ) {
+			const nodeBefore = positionOrBaseElement.nodeBefore;
+			const nodeAfter = positionOrBaseElement.nodeAfter;
+
+			if ( !( nodeBefore instanceof Element ) ) {
+				/**
+				 * Node before merge position must be an element.
+				 *
+				 * @error schema-check-merge-no-element-before
+				 */
+				throw new CKEditorError( 'schema-check-merge-no-element-before: Node before merge position must be an element.' );
+			}
+
+			if ( !( nodeAfter instanceof Element ) ) {
+				/**
+				 * Node after merge position must be an element.
+				 *
+				 * @error schema-check-merge-no-element-after
+				 */
+				throw new CKEditorError( 'schema-check-merge-no-element-after: Node after merge position must be an element.' );
+			}
+
+			return this.checkMerge( nodeBefore, nodeAfter );
+		}
+
+		for ( const child of elementToMerge.getChildren() ) {
+			if ( !this.checkChild( positionOrBaseElement, child ) ) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	/**
