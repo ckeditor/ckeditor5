@@ -14,10 +14,7 @@ import Model from '@ckeditor/ckeditor5-ui/src/model';
 
 import getBindingTargets from '@ckeditor/ckeditor5-ui/src/bindings/getbindingtargets';
 import addToolbarToDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/helpers/addtoolbartodropdown';
-import closeDropdownOnBlur from '@ckeditor/ckeditor5-ui/src/dropdown/helpers/closedropdownonblur';
-import closeDropdownOnExecute from '@ckeditor/ckeditor5-ui/src/dropdown/helpers/closedropdownonexecute';
 import enableModelIfOneIsEnabled from '@ckeditor/ckeditor5-ui/src/dropdown/helpers/enablemodelifoneisenabled';
-import focusDropdownContentsOnArrows from '@ckeditor/ckeditor5-ui/src/dropdown/helpers/focusdropdowncontentsonarrows';
 import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 
 import { commandNameFromOptionName } from './alignmentcommand';
@@ -127,9 +124,6 @@ export default class AlignmentUI extends Plugin {
 			const dropdownView = createDropdown( dropdownModel, locale );
 
 			addToolbarToDropdown( dropdownView, dropdownModel );
-			closeDropdownOnBlur( dropdownView );
-			closeDropdownOnExecute( dropdownView );
-			focusDropdownContentsOnArrows( dropdownView );
 
 			return dropdownView;
 		} );
