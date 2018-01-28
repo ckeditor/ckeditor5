@@ -221,7 +221,6 @@ describe( 'Alignment UI', () => {
 		it( '#toolbarView has the base properties', () => {
 			const toolbarView = dropdown.toolbarView;
 
-			expect( toolbarView ).to.have.property( 'className', 'ck-editor-toolbar' );
 			expect( toolbarView ).to.have.property( 'isVertical', true );
 		} );
 
