@@ -14,9 +14,8 @@ import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import addListViewToDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/helpers/addlistviewtodropdown';
 import closeDropdownOnBlur from '@ckeditor/ckeditor5-ui/src/dropdown/helpers/closedropdownonblur';
 import closeDropdownOnExecute from '@ckeditor/ckeditor5-ui/src/dropdown/helpers/closedropdownonexecute';
-import createButtonForDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/helpers/createbuttonfordropdown';
-import createDropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/helpers/createdropdownview';
 import focusDropdownContentsOnArrows from '@ckeditor/ckeditor5-ui/src/dropdown/helpers/focusdropdowncontentsonarrows';
+import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 
 import { normalizeOptions } from '../fontsize/utils';
 
@@ -74,8 +73,7 @@ export default class FontSizeUI extends Plugin {
 
 		// Register UI component.
 		editor.ui.componentFactory.add( 'fontSize', locale => {
-			const buttonView = createButtonForDropdown( dropdownModel, locale );
-			const dropdownView = createDropdownView( dropdownModel, buttonView, locale );
+			const dropdownView = createDropdown( dropdownModel, locale );
 
 			addListViewToDropdown( dropdownView, dropdownModel, locale );
 			closeDropdownOnBlur( dropdownView );
