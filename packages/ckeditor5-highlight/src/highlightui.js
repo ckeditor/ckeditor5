@@ -17,14 +17,13 @@ import penIcon from './../theme/icons/pen.svg';
 import eraserIcon from './../theme/icons/eraser.svg';
 
 import Model from '@ckeditor/ckeditor5-ui/src/model';
+import ToolbarSeparatorView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarseparatorview';
 import addToolbarToDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/helpers/addtoolbartodropdown';
 import closeDropdownOnBlur from '@ckeditor/ckeditor5-ui/src/dropdown/helpers/closedropdownonblur';
 import closeDropdownOnExecute from '@ckeditor/ckeditor5-ui/src/dropdown/helpers/closedropdownonexecute';
-import createDropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/helpers/createdropdownview';
-import createSplitButtonForDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/helpers/createsplitbuttonfordropdown';
 import enableModelIfOneIsEnabled from '@ckeditor/ckeditor5-ui/src/dropdown/helpers/enablemodelifoneisenabled';
 import focusDropdownContentsOnArrows from '@ckeditor/ckeditor5-ui/src/dropdown/helpers/focusdropdowncontentsonarrows';
-import ToolbarSeparatorView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarseparatorview';
+import { createSplitButtonDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 
 import './../theme/highlight.css';
 
@@ -220,8 +219,7 @@ export default class HighlightUI extends Plugin {
 
 			model.set( 'buttons', buttons );
 
-			const splitButtonView = createSplitButtonForDropdown( model, locale );
-			const dropdownView = createDropdownView( model, splitButtonView, locale );
+			const dropdownView = createSplitButtonDropdown( model, locale );
 
 			// TODO: Extend template to hide arrow from dropdown. Remove me after changes in theme-lark.
 			dropdownView.extendTemplate( {
@@ -242,8 +240,6 @@ export default class HighlightUI extends Plugin {
 					class: [ 'ck-highlight-dropdown' ]
 				}
 			} );
-
-			splitButtonView.delegate( 'execute' ).to( dropdownView );
 
 			// Execute current action from dropdown's split button action button.
 			dropdownView.on( 'execute', () => {
