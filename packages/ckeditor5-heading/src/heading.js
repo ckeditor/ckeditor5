@@ -12,9 +12,8 @@ import HeadingEngine from './headingengine';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Model from '@ckeditor/ckeditor5-ui/src/model';
 
-import getBindingTargets from '@ckeditor/ckeditor5-ui/src/bindings/getbindingtargets';
+import bindOneToMany from '@ckeditor/ckeditor5-ui/src/bindings/bindonetomany';
 import addListViewToDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/helpers/addlistviewtodropdown';
-import enableModelIfOneIsEnabled from '@ckeditor/ckeditor5-ui/src/dropdown/helpers/enablemodelifoneisenabled';
 import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
@@ -79,20 +78,16 @@ export default class Heading extends Plugin {
 			tooltip: dropdownTooltip
 		} );
 
-		enableModelIfOneIsEnabled( dropdownModel, commands );
+		bindOneToMany( dropdownModel, 'isEnabled', commands, 'isEnabled', ( ...areEnabled ) => {
+			return areEnabled.some( isEnabled => isEnabled );
+		} );
 
-		// TODO: might be unified as above but require a callback
-		dropdownModel.bind( 'label' ).to(
-			// Bind to #value of each command...
-			...getBindingTargets( commands, 'value' ),
-			// ...and chose the title of the first one which #value is true.
-			( ...areActive ) => {
-				const index = areActive.findIndex( value => value );
+		bindOneToMany( dropdownModel, 'label', commands, 'value', ( ...areActive ) => {
+			const index = areActive.findIndex( value => value );
 
-				// If none of the commands is active, display default title.
-				return options[ index ] ? options[ index ].title : defaultTitle;
-			}
-		);
+			// If none of the commands is active, display default title.
+			return options[ index ] ? options[ index ].title : defaultTitle;
+		} );
 
 		// Register UI component.
 		editor.ui.componentFactory.add( 'headings', locale => {
