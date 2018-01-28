@@ -17,9 +17,6 @@ import ButtonView from '../../../src/button/buttonview';
 
 import addListViewToDropdown from '../../../src/dropdown/helpers/addlistviewtodropdown';
 import addToolbarToDropdown from '../../../src/dropdown/helpers/addtoolbartodropdown';
-import closeDropdownOnBlur from '../../../src/dropdown/helpers/closedropdownonblur';
-import closeDropdownOnExecute from '../../../src/dropdown/helpers/closedropdownonexecute';
-import focusDropdownContentsOnArrows from '../../../src/dropdown/helpers/focusdropdowncontentsonarrows';
 import { createDropdown } from '../../../src/dropdown/utils';
 
 const ui = testUtils.createTestUIView( {
@@ -66,9 +63,6 @@ function testList() {
 	const dropdownView = createDropdown( model, {} );
 
 	addListViewToDropdown( dropdownView, model, {} );
-	closeDropdownOnBlur( dropdownView );
-	closeDropdownOnExecute( dropdownView );
-	focusDropdownContentsOnArrows( dropdownView );
 
 	dropdownView.on( 'execute', evt => {
 		/* global console */
@@ -141,9 +135,6 @@ function testButton() {
 	const toolbarDropdown = createDropdown( toolbarDropdownModel, locale );
 
 	addToolbarToDropdown( toolbarDropdown, toolbarDropdownModel );
-	closeDropdownOnBlur( toolbarDropdown );
-	closeDropdownOnExecute( toolbarDropdown );
-	focusDropdownContentsOnArrows( toolbarDropdown );
 
 	ui.toolbarDropdown.add( toolbarDropdown );
 

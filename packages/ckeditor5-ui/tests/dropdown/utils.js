@@ -3,7 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals document Event */
+
 import utilsTestUtils from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 import Model from '../../src/model';
 
@@ -12,18 +15,19 @@ import DropdownView from '../../src/dropdown/dropdownview';
 import DropdownPanelView from '../../src/dropdown/dropdownpanelview';
 import SplitButtonView from '../../src/button/splitbuttonview';
 import { createDropdown, createSplitButtonDropdown } from '../../src/dropdown/utils';
+import View from '../../src/view';
 
 const assertBinding = utilsTestUtils.assertBinding;
 
 describe( 'utils', () => {
-	let locale;
+	let locale, dropdownView;
 
 	beforeEach( () => {
 		locale = { t() {} };
 	} );
 
 	describe( 'createDropdown()', () => {
-		let dropdownView, model;
+		let model;
 
 		beforeEach( () => {
 			model = new Model();
@@ -132,10 +136,12 @@ describe( 'utils', () => {
 				sinon.assert.calledOnce( spy );
 			} );
 		} );
+
+		addDefaultBehaviorTests();
 	} );
 
 	describe( 'createSplitButtonDropdown()', () => {
-		let dropdownView, model;
+		let model;
 
 		beforeEach( () => {
 			model = new Model();
@@ -234,5 +240,140 @@ describe( 'utils', () => {
 				expect( dropdownView.buttonView ).to.be.instanceof( SplitButtonView );
 			} );
 		} );
+
+		addDefaultBehaviorTests();
 	} );
+
+	function addDefaultBehaviorTests() {
+		describe( 'hasDefaultBehavior', () => {
+			describe( 'closeDropdownOnBlur()', () => {
+				beforeEach( () => {
+					dropdownView.render();
+					document.body.appendChild( dropdownView.element );
+				} );
+
+				afterEach( () => {
+					dropdownView.element.remove();
+				} );
+
+				it( 'listens to view#isOpen and reacts to DOM events (valid target)', () => {
+					// Open the dropdown.
+					dropdownView.isOpen = true;
+					// Fire event from outside of the dropdown.
+					document.body.dispatchEvent( new Event( 'mousedown', {
+						bubbles: true
+					} ) );
+					// Closed the dropdown.
+					expect( dropdownView.isOpen ).to.be.false;
+					// Fire event from outside of the dropdown.
+					document.body.dispatchEvent( new Event( 'mousedown', {
+						bubbles: true
+					} ) );
+					// Dropdown is still closed.
+					expect( dropdownView.isOpen ).to.be.false;
+				} );
+
+				it( 'listens to view#isOpen and reacts to DOM events (invalid target)', () => {
+					// Open the dropdown.
+					dropdownView.isOpen = true;
+
+					// Event from view.element should be discarded.
+					dropdownView.element.dispatchEvent( new Event( 'mousedown', {
+						bubbles: true
+					} ) );
+
+					// Dropdown is still open.
+					expect( dropdownView.isOpen ).to.be.true;
+
+					// Event from within view.element should be discarded.
+					const child = document.createElement( 'div' );
+					dropdownView.element.appendChild( child );
+
+					child.dispatchEvent( new Event( 'mousedown', {
+						bubbles: true
+					} ) );
+
+					// Dropdown is still open.
+					expect( dropdownView.isOpen ).to.be.true;
+				} );
+			} );
+
+			describe( 'closeDropdownOnExecute()', () => {
+				beforeEach( () => {
+					dropdownView.render();
+					document.body.appendChild( dropdownView.element );
+				} );
+
+				afterEach( () => {
+					dropdownView.element.remove();
+				} );
+
+				it( 'changes view#isOpen on view#execute', () => {
+					dropdownView.isOpen = true;
+
+					dropdownView.fire( 'execute' );
+					expect( dropdownView.isOpen ).to.be.false;
+
+					dropdownView.fire( 'execute' );
+					expect( dropdownView.isOpen ).to.be.false;
+				} );
+			} );
+
+			describe( 'focusDropdownContentsOnArrows()', () => {
+				let panelChildView;
+
+				beforeEach( () => {
+					panelChildView = new View();
+					panelChildView.setTemplate( { tag: 'div' } );
+					panelChildView.focus = () => {};
+					panelChildView.focusLast = () => {};
+
+					// TODO: describe this as #contentView instead of #listView and #toolbarView
+					dropdownView.panelView.children.add( panelChildView );
+
+					dropdownView.render();
+					document.body.appendChild( dropdownView.element );
+				} );
+
+				afterEach( () => {
+					dropdownView.element.remove();
+				} );
+
+				it( '"arrowdown" focuses the #innerPanelView if dropdown is open', () => {
+					const keyEvtData = {
+						keyCode: keyCodes.arrowdown,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					};
+					const spy = sinon.spy( panelChildView, 'focus' );
+
+					dropdownView.isOpen = false;
+					dropdownView.keystrokes.press( keyEvtData );
+					sinon.assert.notCalled( spy );
+
+					dropdownView.isOpen = true;
+					dropdownView.keystrokes.press( keyEvtData );
+
+					sinon.assert.calledOnce( spy );
+				} );
+
+				it( '"arrowup" focuses the last #item in #innerPanelView if dropdown is open', () => {
+					const keyEvtData = {
+						keyCode: keyCodes.arrowup,
+						preventDefault: sinon.spy(),
+						stopPropagation: sinon.spy()
+					};
+					const spy = sinon.spy( panelChildView, 'focusLast' );
+
+					dropdownView.isOpen = false;
+					dropdownView.keystrokes.press( keyEvtData );
+					sinon.assert.notCalled( spy );
+
+					dropdownView.isOpen = true;
+					dropdownView.keystrokes.press( keyEvtData );
+					sinon.assert.calledOnce( spy );
+				} );
+			} );
+		} );
+	}
 } );

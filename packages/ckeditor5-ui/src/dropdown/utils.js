@@ -12,6 +12,8 @@ import DropdownView from './dropdownview';
 import SplitButtonView from '../button/splitbuttonview';
 import ButtonView from '../button/buttonview';
 
+import clickOutsideHandler from '../bindings/clickoutsidehandler';
+
 /**
  * A helper which creates an instance of {@link module:ui/dropdown/dropdownview~DropdownView} class using
  * a provided {@link module:ui/dropdown/dropdownmodel~DropdownModel}.
@@ -44,6 +46,8 @@ export function createDropdown( model, locale ) {
 	const buttonView = createButtonForDropdown( model, locale );
 
 	const dropdownView = prepareDropdown( locale, buttonView, model );
+
+	addDefaultBehavior( dropdownView );
 
 	return dropdownView;
 }
@@ -80,6 +84,8 @@ export function createSplitButtonDropdown( model, locale ) {
 	const buttonView = createSplitButtonForDropdown( model, locale );
 
 	const dropdownView = prepareDropdown( locale, buttonView, model );
+
+	addDefaultBehavior( dropdownView );
 
 	buttonView.delegate( 'execute' ).to( dropdownView );
 
@@ -120,4 +126,60 @@ function createButtonForDropdown( model, locale ) {
 	buttonView.delegate( 'execute' ).to( buttonView, 'select' );
 
 	return buttonView;
+}
+
+// @private
+function addDefaultBehavior( dropdown ) {
+	closeDropdownOnBlur( dropdown );
+	closeDropdownOnExecute( dropdown );
+	focusDropdownContentsOnArrows( dropdown );
+}
+
+// Adds a behavior to a dropdownView that closes opened dropdown on user click outside the dropdown.
+//
+// @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView
+function closeDropdownOnBlur( dropdownView ) {
+	dropdownView.on( 'render', () => {
+		clickOutsideHandler( {
+			emitter: dropdownView,
+			activator: () => dropdownView.isOpen,
+			callback: () => {
+				dropdownView.isOpen = false;
+			},
+			contextElements: [ dropdownView.element ]
+		} );
+	} );
+}
+
+// Adds a behavior to a dropdownView that closes dropdown view on any view collection item's "execute" event.
+//
+// @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView
+function closeDropdownOnExecute( dropdownView ) {
+	// Close the dropdown when one of the list items has been executed.
+	dropdownView.on( 'execute', () => {
+		dropdownView.isOpen = false;
+	} );
+}
+
+// Adds a behavior to a dropdownView that focuses dropdown panel view contents on keystrokes.
+//
+// @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView
+function focusDropdownContentsOnArrows( dropdownView ) {
+	// If the dropdown panel is already open, the arrow down key should
+	// focus the first element in list.
+	dropdownView.keystrokes.set( 'arrowdown', ( data, cancel ) => {
+		if ( dropdownView.isOpen ) {
+			dropdownView.panelView.focus();
+			cancel();
+		}
+	} );
+
+	// If the dropdown panel is already open, the arrow up key should
+	// focus the last element in the list.
+	dropdownView.keystrokes.set( 'arrowup', ( data, cancel ) => {
+		if ( dropdownView.isOpen ) {
+			dropdownView.panelView.focusLast();
+			cancel();
+		}
+	} );
 }
