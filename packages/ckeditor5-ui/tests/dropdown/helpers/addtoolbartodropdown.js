@@ -9,13 +9,12 @@ import Model from '../../../src/model';
 
 import ButtonView from '../../../src/button/buttonview';
 import ToolbarView from '../../../src/toolbar/toolbarview';
-import createButtonForDropdown from '../../../src/dropdown/helpers/createbuttonfordropdown';
-import createDropdownView from '../../../src/dropdown/helpers/createdropdownview';
+import { createDropdown } from '../../../src/dropdown/utils';
 
 import addToolbarToDropdown from '../../../src/dropdown/helpers/addtoolbartodropdown';
 
 describe( 'addToolbarToDropdown()', () => {
-	let dropdownView, buttonView, model, locale, buttons;
+	let dropdownView, model, locale, buttons;
 
 	beforeEach( () => {
 		locale = { t() {} };
@@ -33,8 +32,7 @@ describe( 'addToolbarToDropdown()', () => {
 			buttons
 		} );
 
-		buttonView = createButtonForDropdown( model, locale );
-		dropdownView = createDropdownView( model, buttonView, locale );
+		dropdownView = createDropdown( model, locale );
 
 		addToolbarToDropdown( dropdownView, model );
 
@@ -42,6 +40,7 @@ describe( 'addToolbarToDropdown()', () => {
 
 		document.body.appendChild( dropdownView.element );
 	} );
+
 	afterEach( () => {
 		dropdownView.element.remove();
 	} );

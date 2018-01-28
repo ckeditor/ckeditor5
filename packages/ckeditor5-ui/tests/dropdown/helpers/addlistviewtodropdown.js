@@ -12,13 +12,12 @@ import Model from '../../../src/model';
 import ListItemView from '../../../src/list/listitemview';
 import ListView from '../../../src/list/listview';
 
-import createButtonForDropdown from '../../../src/dropdown/helpers/createbuttonfordropdown';
-import createDropdownView from '../../../src/dropdown/helpers/createdropdownview';
+import { createDropdown } from './../../../src/dropdown/utils';
 
 import addListViewToDropdown from '../../../src/dropdown/helpers/addlistviewtodropdown';
 
 describe( 'addListViewToDropdown()', () => {
-	let dropdownView, buttonView, model, locale, items;
+	let dropdownView, model, locale, items;
 
 	beforeEach( () => {
 		locale = { t() {} };
@@ -30,8 +29,7 @@ describe( 'addListViewToDropdown()', () => {
 			label: 'foo'
 		} );
 
-		buttonView = createButtonForDropdown( model, locale );
-		dropdownView = createDropdownView( model, buttonView, locale );
+		dropdownView = createDropdown( model, locale );
 
 		addListViewToDropdown( dropdownView, model, locale );
 

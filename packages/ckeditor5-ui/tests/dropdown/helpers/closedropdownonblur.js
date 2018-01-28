@@ -6,15 +6,15 @@
 /* globals document, Event */
 
 import Model from '../../../src/model';
-import ButtonView from '../../../src/button/buttonview';
-import createDropdownView from '../../../src/dropdown/helpers/createdropdownview';
+
+import { createDropdown } from '../../../src/dropdown/utils';
 import closeDropdownOnBlur from '../../../src/dropdown/helpers/closedropdownonblur';
 
 describe( 'closeDropdownOnBlur()', () => {
 	let dropdownView;
 
 	beforeEach( () => {
-		dropdownView = createDropdownView( new Model(), new ButtonView(), {} );
+		dropdownView = createDropdown( new Model(), {} );
 
 		closeDropdownOnBlur( dropdownView );
 

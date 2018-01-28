@@ -17,11 +17,10 @@ import ButtonView from '../../../src/button/buttonview';
 
 import addListViewToDropdown from '../../../src/dropdown/helpers/addlistviewtodropdown';
 import addToolbarToDropdown from '../../../src/dropdown/helpers/addtoolbartodropdown';
-import createDropdownView from '../../../src/dropdown/helpers/createdropdownview';
-import createButtonForDropdown from '../../../src/dropdown/helpers/createbuttonfordropdown';
 import closeDropdownOnBlur from '../../../src/dropdown/helpers/closedropdownonblur';
 import closeDropdownOnExecute from '../../../src/dropdown/helpers/closedropdownonexecute';
 import focusDropdownContentsOnArrows from '../../../src/dropdown/helpers/focusdropdowncontentsonarrows';
+import { createDropdown } from '../../../src/dropdown/utils';
 
 const ui = testUtils.createTestUIView( {
 	dropdown: '#dropdown',
@@ -39,8 +38,7 @@ function testEmpty() {
 		withText: true
 	} );
 
-	const buttonView = createButtonForDropdown( model, {} );
-	const dropdownView = createDropdownView( model, buttonView, {} );
+	const dropdownView = createDropdown( model, {} );
 
 	ui.dropdown.add( dropdownView );
 
@@ -65,8 +63,7 @@ function testList() {
 		items: collection
 	} );
 
-	const buttonView = createButtonForDropdown( model, {} );
-	const dropdownView = createDropdownView( model, buttonView, {} );
+	const dropdownView = createDropdown( model, {} );
 
 	addListViewToDropdown( dropdownView, model, {} );
 	closeDropdownOnBlur( dropdownView );
@@ -93,11 +90,8 @@ function testSharedModel() {
 		withText: true
 	} );
 
-	const buttonView1 = createButtonForDropdown( model, {} );
-	const buttonView2 = createButtonForDropdown( model, {} );
-
-	const dropdownView1 = createDropdownView( model, buttonView1, {} );
-	const dropdownView2 = createDropdownView( model, buttonView2, {} );
+	const dropdownView1 = createDropdown( model, {} );
+	const dropdownView2 = createDropdown( model, {} );
 
 	ui.dropdownShared.add( dropdownView1 );
 	ui.dropdownShared.add( dropdownView2 );
@@ -113,8 +107,7 @@ function testLongLabel() {
 		withText: true
 	} );
 
-	const buttonView = createButtonForDropdown( model, {} );
-	const dropdownView = createDropdownView( model, buttonView, {} );
+	const dropdownView = createDropdown( model, {} );
 
 	ui.dropdownLabel.add( dropdownView );
 
@@ -145,8 +138,7 @@ function testButton() {
 		buttons: buttonViews
 	} );
 
-	const buttonView = createButtonForDropdown( toolbarDropdownModel, locale );
-	const toolbarDropdown = createDropdownView( toolbarDropdownModel, buttonView, locale );
+	const toolbarDropdown = createDropdown( toolbarDropdownModel, locale );
 
 	addToolbarToDropdown( toolbarDropdown, toolbarDropdownModel );
 	closeDropdownOnBlur( toolbarDropdown );

@@ -6,15 +6,14 @@
 /* globals document */
 
 import Model from '../../../src/model';
-import ButtonView from '../../../src/button/buttonview';
-import createDropdownView from '../../../src/dropdown/helpers/createdropdownview';
 import closeDropdownOnExecute from '../../../src/dropdown/helpers/closedropdownonexecute';
+import { createDropdown } from '../../../src/dropdown/utils';
 
 describe( 'closeDropdownOnExecute()', () => {
 	let dropdownView;
 
 	beforeEach( () => {
-		dropdownView = createDropdownView( new Model(), new ButtonView(), {} );
+		dropdownView = createDropdown( new Model(), {} );
 
 		closeDropdownOnExecute( dropdownView );
 

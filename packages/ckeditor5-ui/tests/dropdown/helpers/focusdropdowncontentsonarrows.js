@@ -9,17 +9,16 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 import View from '../../../src/view';
 import Model from '../../../src/model';
-import ButtonView from '../../../src/button/buttonview';
 
 import focusDropdownContentsOnArrows from '../../../src/dropdown/helpers/focusdropdowncontentsonarrows';
-import createDropdownView from '../../../src/dropdown/helpers/createdropdownview';
+import { createDropdown } from './../../../src/dropdown/utils';
 
 describe( 'focusDropdownContentsOnArrows()', () => {
 	let dropdownView;
 	let panelChildView;
 
 	beforeEach( () => {
-		dropdownView = createDropdownView( new Model(), new ButtonView(), {} );
+		dropdownView = createDropdown( new Model(), {} );
 
 		panelChildView = new View();
 		panelChildView.setTemplate( { tag: 'div' } );
