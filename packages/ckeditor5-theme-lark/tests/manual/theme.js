@@ -15,9 +15,6 @@ import IconView from '@ckeditor/ckeditor5-ui/src/icon/iconview';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 import addListViewToDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/helpers/addlistviewtodropdown';
-import closeDropdownOnBlur from '@ckeditor/ckeditor5-ui/src/dropdown/helpers/closedropdownonblur';
-import closeDropdownOnExecute from '@ckeditor/ckeditor5-ui/src/dropdown/helpers/closedropdownonexecute';
-import focusDropdownContentsOnArrows from '@ckeditor/ckeditor5-ui/src/dropdown/helpers/focusdropdowncontentsonarrows';
 import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
@@ -416,9 +413,6 @@ function listDropdown( {
 	const dropdown = createDropdown( model, {} );
 
 	addListViewToDropdown( dropdown, model, {} );
-	closeDropdownOnBlur( dropdown );
-	closeDropdownOnExecute( dropdown );
-	focusDropdownContentsOnArrows( dropdown );
 
 	return dropdown;
 }
