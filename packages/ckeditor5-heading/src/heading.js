@@ -14,10 +14,7 @@ import Model from '@ckeditor/ckeditor5-ui/src/model';
 
 import getBindingTargets from '@ckeditor/ckeditor5-ui/src/bindings/getbindingtargets';
 import addListViewToDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/helpers/addlistviewtodropdown';
-import closeDropdownOnBlur from '@ckeditor/ckeditor5-ui/src/dropdown/helpers/closedropdownonblur';
-import closeDropdownOnExecute from '@ckeditor/ckeditor5-ui/src/dropdown/helpers/closedropdownonexecute';
 import enableModelIfOneIsEnabled from '@ckeditor/ckeditor5-ui/src/dropdown/helpers/enablemodelifoneisenabled';
-import focusDropdownContentsOnArrows from '@ckeditor/ckeditor5-ui/src/dropdown/helpers/focusdropdowncontentsonarrows';
 import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
@@ -102,9 +99,6 @@ export default class Heading extends Plugin {
 			const dropdownView = createDropdown( dropdownModel, locale );
 
 			addListViewToDropdown( dropdownView, dropdownModel, locale );
-			closeDropdownOnBlur( dropdownView );
-			closeDropdownOnExecute( dropdownView );
-			focusDropdownContentsOnArrows( dropdownView );
 
 			dropdownView.extendTemplate( {
 				attributes: {
