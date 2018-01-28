@@ -12,9 +12,8 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Model from '@ckeditor/ckeditor5-ui/src/model';
 
-import getBindingTargets from '@ckeditor/ckeditor5-ui/src/bindings/getbindingtargets';
+import bindOneToMany from '@ckeditor/ckeditor5-ui/src/bindings/bindonetomany';
 import addToolbarToDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/helpers/addtoolbartodropdown';
-import enableModelIfOneIsEnabled from '@ckeditor/ckeditor5-ui/src/dropdown/helpers/enablemodelifoneisenabled';
 import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 
 import { commandNameFromOptionName } from './alignmentcommand';
@@ -102,24 +101,25 @@ export default class AlignmentUI extends Plugin {
 
 			// TODO: binding with callback as in headings
 			// Change icon upon selection
-			dropdownModel.bind( 'icon' ).to(
-				// Bind to #isOn of each button...
-				...getBindingTargets( buttons, 'isOn' ),
-				// ...and chose the title of the first one which #isOn is true.
-				( ...areActive ) => {
-					const index = areActive.findIndex( value => value );
-
-					// If none of the commands is active, display either defaultIcon or first button icon.
-					if ( index < 0 && dropdownModel.defaultIcon ) {
-						return dropdownModel.defaultIcon;
-					}
-
-					return dropdownModel.buttons[ index < 0 ? 0 : index ].icon;
-				}
-			);
+			const boundProperty = 'icon';
+			const collection = buttons;
+			const collectionProperty = 'isOn';
 
 			// Add specialised behavior
-			enableModelIfOneIsEnabled( dropdownModel, dropdownModel.buttons );
+			bindOneToMany( dropdownModel, boundProperty, collection, collectionProperty, ( ...areActive ) => {
+				const index = areActive.findIndex( value => value );
+
+				// If none of the commands is active, display either defaultIcon or first button icon.
+				if ( index < 0 && dropdownModel.defaultIcon ) {
+					return dropdownModel.defaultIcon;
+				}
+
+				return dropdownModel.buttons[ index < 0 ? 0 : index ].icon;
+			} );
+
+			bindOneToMany( dropdownModel, 'isEnabled', dropdownModel.buttons, 'isEnabled',
+				( ...areEnabled ) => areEnabled.some( isEnabled => isEnabled )
+			);
 
 			const dropdownView = createDropdown( dropdownModel, locale );
 
