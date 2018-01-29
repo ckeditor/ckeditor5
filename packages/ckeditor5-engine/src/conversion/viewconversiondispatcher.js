@@ -19,8 +19,8 @@ import log from '@ckeditor/ckeditor5-utils/src/log';
 /**
  * `ViewConversionDispatcher` is a central point of {@link module:engine/view/view view} conversion, which is a process of
  * converting given {@link module:engine/view/documentfragment~DocumentFragment view document fragment} or
- * {@link module:engine/view/element~Element}
- * into another structure. In default application, {@link module:engine/view/view view} is converted to {@link module:engine/model/model}.
+ * {@link module:engine/view/element~Element} into another structure.
+ * In default application, {@link module:engine/view/view view} is converted to {@link module:engine/model/model}.
  *
  * During conversion process, for all {@link module:engine/view/node~Node view nodes} from the converted view document fragment,
  * `ViewConversionDispatcher` fires corresponding events. Special callbacks called "converters" should listen to
@@ -115,14 +115,23 @@ export default class ViewConversionDispatcher {
 		this._model = model;
 
 		/**
+		 * Store of split elements that was created as a result of conversion using {@link #_splitToAllowedParent}.
+		 * We need to remember these elements because at the end of conversion we want to remove all empty elements.
+		 *
+		 * @protected
+		 * @type {Set<module:engine/model/element~Element>}
+		 */
+		this._splitElements = new Set();
+
+		/**
 		 * Interface passed by dispatcher to the events callbacks.
 		 *
 		 * @member {module:engine/conversion/viewconversiondispatcher~ViewConversionApi}
 		 */
 		this.conversionApi = Object.assign( {}, conversionApi );
 
-		// `convertItem` and `convertChildren` are bound to this `ViewConversionDispatcher` instance and
-		// set on `conversionApi`. This way only a part of `ViewConversionDispatcher` API is exposed.
+		// `convertItem`, `convertChildren` and `splitToAllowedParent` are bound to this `ViewConversionDispatcher`
+		// instance and set on `conversionApi`. This way only a part of `ViewConversionDispatcher` API is exposed.
 		this.conversionApi.convertItem = this._convertItem.bind( this );
 		this.conversionApi.convertChildren = this._convertChildren.bind( this );
 		this.conversionApi.splitToAllowedParent = this._splitToAllowedParent.bind( this );
@@ -155,12 +164,8 @@ export default class ViewConversionDispatcher {
 			// Store writer in current conversion as a conversion API.
 			this.conversionApi.writer = writer;
 
-			// Create set for split elements. We need to remember this elements, because at the end of conversion
-			// we want to remove all empty elements that was created as a result of the split.
-			this.conversionApi.splitElements = new Set();
-
 			// Additional date available between conversions.
-			// Needed when one converter needs to leave some data for oder converters.
+			// Needed when one converter needs to leave some data for the oder converters.
 			this.conversionApi.data = {};
 
 			// Do the conversion.
@@ -171,10 +176,8 @@ export default class ViewConversionDispatcher {
 
 			// When there is a conversion result.
 			if ( range ) {
-				// Remove each empty element that was created as a result of split.
-				for ( const item of this.conversionApi.splitElements ) {
-					removeEmptySplitResult( item, this.conversionApi );
-				}
+				// Remove all empty elements that was created as a result of split.
+				this._removeEmptySplitElements();
 
 				// Move all items that was converted to context tree to document fragment.
 				for ( const item of Array.from( position.parent.getChildren() ) ) {
@@ -185,9 +188,11 @@ export default class ViewConversionDispatcher {
 				documentFragment.markers = extractMarkersFromModelFragment( documentFragment, writer );
 			}
 
+			// Clear split elements.
+			this._splitElements.clear();
+
 			// Clear conversion API.
 			this.conversionApi.writer = null;
-			this.conversionApi.splitElements = null;
 			this.conversionApi.data = null;
 
 			// Return fragment as conversion result.
@@ -247,30 +252,35 @@ export default class ViewConversionDispatcher {
 	}
 
 	/**
-	 * TODO
-	 *
 	 * @private
+	 * @see module:engine/conversion/viewconversiondispatcher~ViewConversionApi#splitToAllowedParent
 	 */
-	_splitToAllowedParent( element, position, conversionApi ) {
+	_splitToAllowedParent( element, position ) {
 		function checkLimit( node ) {
 			return node.hasAttribute( 'isContextTree' );
 		}
 
-		const allowedParent = conversionApi.schema.findAllowedParent( element, position, checkLimit );
+		// Try to find allowed parent.
+		const allowedParent = this.conversionApi.schema.findAllowedParent( element, position, checkLimit );
 
+		// When there is no parent that allows to insert element then return `null`.
 		if ( !allowedParent ) {
-			return;
+			return null;
 		}
 
+		// When current position parent allows to insert element then return this position.
 		if ( allowedParent === position.parent ) {
 			return { position };
 		}
 
-		const data = conversionApi.writer.split( position, allowedParent );
+		// Split element to allowed parent.
+		const data = this.conversionApi.writer.split( position, allowedParent );
 
+		// Remember all elements that are created as a result of split.
+		// This is important because at the end of conversion we want to remove all empty split elements.
 		for ( const pos of data.range.getPositions() ) {
 			if ( !pos.isEqual( data.position ) ) {
-				conversionApi.splitElements.add( pos.parent );
+				this._splitElements.add( pos.parent );
 			}
 		}
 
@@ -278,6 +288,30 @@ export default class ViewConversionDispatcher {
 			position: data.position,
 			endElement: data.range.end.parent
 		};
+	}
+
+	/**
+	 * Checks if {@link #_splitElements} contains empty elements and remove them.
+	 * We need to do it smart because there could be elements that are not empty because contains
+	 * other empty split elements and after removing its children they become available to remove.
+	 * We need to continue iterating over split elements as long as any element will be removed.
+	 *
+	 * @private
+	 */
+	_removeEmptySplitElements() {
+		let removed = false;
+
+		for ( const element of this._splitElements ) {
+			if ( element.isEmpty ) {
+				this.conversionApi.writer.remove( element );
+				this._splitElements.delete( element );
+				removed = true;
+			}
+		}
+
+		if ( removed ) {
+			this._removeEmptySplitElements();
+		}
 	}
 
 	/**
@@ -304,7 +338,6 @@ export default class ViewConversionDispatcher {
 	 * @param {module:engine/view/element~Element} data.input Converted element.
 	 * @param {*} data.output The current state of conversion result. Every change to converted element should
 	 * be reflected by setting or modifying this property.
-	 * @param {module:engine/model/schema~SchemaPath} data.context The conversion context.
 	 * @param {module:engine/conversion/viewconsumable~ViewConsumable} consumable Values to consume.
 	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `ViewConversionDispatcher` constructor.
 	 * Besides of properties passed in constructor, it also has `convertItem` and `convertChildren` methods which are references
@@ -394,19 +427,6 @@ function contextToPosition( contextDefinition, writer ) {
 	return position;
 }
 
-function removeEmptySplitResult( item, conversionApi ) {
-	if ( item.isEmpty ) {
-		const parent = item.parent;
-
-		conversionApi.writer.remove( item );
-		conversionApi.splitElements.delete( item );
-
-		if ( conversionApi.splitElements.has( parent ) ) {
-			removeEmptySplitResult( parent, conversionApi );
-		}
-	}
-}
-
 /**
  * Conversion interface that is registered for given {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher}
  * and is passed as one of parameters when {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher dispatcher}
@@ -423,8 +443,7 @@ function removeEmptySplitResult( item, conversionApi ) {
  *
  * Every fired event is passed (as first parameter) an object with `output` property. Every event may set and/or
  * modify that property. When all callbacks are done, the final value of `output` property is returned by this method.
- * The `output` must be either {@link module:engine/model/node~Node model node} or
- * {@link module:engine/model/documentfragment~DocumentFragment model document fragment} or `null` (as set by default).
+ * The `output` must be {@link module:engine/model/range~Range model range} or `null` (as set by default).
  *
  * @method #convertItem
  * @fires module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:element
@@ -436,7 +455,7 @@ function removeEmptySplitResult( item, conversionApi ) {
  * @param {module:engine/model/position~Position} position Position of conversion.
  * @param {Object} [additionalData] Additional data to be passed in `data` argument when firing `ViewConversionDispatcher`
  * events. See also {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:element element event}.
- * @returns {module:engine/model/node~Node|module:engine/model/documentfragment~DocumentFragment|null} The result of item conversion,
+ * @returns {module:engine/model/range~Range|null} Model range containing result of item conversion,
  * created and modified by callbacks attached to fired event, or `null` if the conversion result was incorrect.
  */
 
@@ -453,8 +472,18 @@ function removeEmptySplitResult( item, conversionApi ) {
  * @param {module:engine/model/position~Position} position Position of conversion.
  * @param {Object} [additionalData] Additional data to be passed in `data` argument when firing `ViewConversionDispatcher`
  * events. See also {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:element element event}.
- * @returns {module:engine/model/documentfragment~DocumentFragment} Model document fragment containing results of conversion
- * of all children of given item.
+ * @returns {module:engine/model/range~Range} Model range containing results of conversion of all children of given item.
+ * When none of children was converted
+ */
+
+/**
+ * Find allowed parent for element that we are going to insert starting from given position.
+ * If current parent does not allow to insert element but one of the ancestors does then split nodes to allowed parent.
+ *
+ * @method #splitToAllowedParent
+ * @param {module:engine/model/position~Position} position Position on which element is going to be inserted.
+ * @param {module:engine/model/element~Node} element Element to insert.
+ * @returns TODO
  */
 
 /**
