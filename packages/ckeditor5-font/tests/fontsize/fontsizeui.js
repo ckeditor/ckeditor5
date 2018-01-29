@@ -119,6 +119,82 @@ describe( 'FontSizeUI', () => {
 			} );
 		} );
 
+		describe( 'config', () => {
+			describe( 'using presets', () => {
+				beforeEach( () => {
+					element = document.createElement( 'div' );
+					document.body.appendChild( element );
+
+					return ClassicTestEditor
+						.create( element, {
+							plugins: [ FontSizeEditing, FontSizeUI ],
+							fontSize: {
+								options: [ 'tiny', 'small', 'normal', 'big', 'huge' ]
+							}
+						} )
+						.then( newEditor => {
+							editor = newEditor;
+							dropdown = editor.ui.componentFactory.create( 'fontSize' );
+						} );
+				} );
+
+				it( 'adds css class to listView#items in the panel', () => {
+					const listView = dropdown.listView;
+
+					expect( listView.items.map( item => item.class ) ).to.deep.equal( [
+						'ck-fontsize-option text-tiny',
+						'ck-fontsize-option text-small',
+						'ck-fontsize-option',
+						'ck-fontsize-option text-big',
+						'ck-fontsize-option text-huge'
+					] );
+				} );
+			} );
+
+			describe( 'using numeric values', () => {
+				beforeEach( () => {
+					element = document.createElement( 'div' );
+					document.body.appendChild( element );
+
+					return ClassicTestEditor
+						.create( element, {
+							plugins: [ FontSizeEditing, FontSizeUI ],
+							fontSize: {
+								options: [ 10, 12, 'normal', 16, 18 ]
+							}
+						} )
+						.then( newEditor => {
+							editor = newEditor;
+							dropdown = editor.ui.componentFactory.create( 'fontSize' );
+						} );
+				} );
+
+				it( 'adds css class to listView#items in the panel', () => {
+					const listView = dropdown.listView;
+
+					expect( listView.items.map( item => item.class ) ).to.deep.equal( [
+						'ck-fontsize-option',
+						'ck-fontsize-option',
+						'ck-fontsize-option',
+						'ck-fontsize-option',
+						'ck-fontsize-option'
+					] );
+				} );
+
+				it( 'adds font-size style to listView#items in the panel', () => {
+					const listView = dropdown.listView;
+
+					expect( listView.items.map( item => item.style ) ).to.deep.equal( [
+						'font-size:10px',
+						'font-size:12px',
+						undefined,
+						'font-size:16px',
+						'font-size:18px'
+					] );
+				} );
+			} );
+		} );
+
 		describe( 'localization', () => {
 			beforeEach( () => {
 				return localizedEditor( [ 'tiny', 'small', 'normal', 'big', 'huge' ] );

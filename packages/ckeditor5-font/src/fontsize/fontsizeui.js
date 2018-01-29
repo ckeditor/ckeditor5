@@ -13,7 +13,10 @@ import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import createListDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/list/createlistdropdown';
 
 import { normalizeOptions } from '../fontsize/utils';
+
 import fontSizeIcon from '../../theme/icons/font-size.svg';
+
+import '../../theme/fontsize.css';
 
 /**
  * @extends module:core/plugin~Plugin
@@ -36,8 +39,16 @@ export default class FontSizeUI extends Plugin {
 				commandName: 'fontSize',
 				commandParam: option.model,
 				label: option.title,
-				class: option.class
+				class: 'ck-fontsize-option'
 			} );
+
+			if ( option.view && option.view.style ) {
+				itemModel.set( 'style', `font-size:${ option.view.style[ 'font-size' ] }` );
+			}
+
+			if ( option.view && option.view.class ) {
+				itemModel.set( 'class', `${ itemModel.class } ${ option.view.class }` );
+			}
 
 			itemModel.bind( 'isActive' ).to( command, 'value', value => value === option.model );
 
