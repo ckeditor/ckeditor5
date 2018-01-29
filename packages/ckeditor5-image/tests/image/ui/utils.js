@@ -59,7 +59,11 @@ describe( 'Utils', () => {
 				target: editingView.domConverter.viewToDom( editingView.selection.getSelectedElement() ),
 				positions: [
 					defaultPositions.northArrowSouth,
-					defaultPositions.southArrowNorth
+					defaultPositions.northArrowSouthWest,
+					defaultPositions.northArrowSouthEast,
+					defaultPositions.southArrowNorth,
+					defaultPositions.southArrowNorthWest,
+					defaultPositions.southArrowNorthEast
 				]
 			} );
 		} );
@@ -85,7 +89,11 @@ describe( 'Utils', () => {
 				target: editingView.domConverter.viewToDom( editingView.selection.getSelectedElement() ),
 				positions: [
 					defaultPositions.northArrowSouth,
-					defaultPositions.southArrowNorth
+					defaultPositions.northArrowSouthWest,
+					defaultPositions.northArrowSouthEast,
+					defaultPositions.southArrowNorth,
+					defaultPositions.southArrowNorthWest,
+					defaultPositions.southArrowNorthEast
 				]
 			} );
 		} );
