@@ -321,7 +321,7 @@ class ViewConverterBuilder {
 
 					// Now we need to check where the output should end.
 
-					// If we had to split parent to insert our element the we want to continue conversion
+					// If we had to split parent to insert our element then we want to continue conversion
 					// inside split parent.
 					//
 					// before: <allowed><notAllowed>[]</notAllowed></allowed>
