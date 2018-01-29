@@ -12,11 +12,11 @@
 	font-size: inherit;
 
 	/* A triangle displayed to indicate this is actually a dropdown. */
-	& .ck-dropdown__icon {
+	& .ck-dropdown__arrow {
 		right: var(--ck-spacing-standard);
 	}
 
-	&.ck-disabled .ck-dropdown__icon {
+	&.ck-disabled .ck-dropdown__arrow {
 		@mixin ck-disabled;
 	}
 
