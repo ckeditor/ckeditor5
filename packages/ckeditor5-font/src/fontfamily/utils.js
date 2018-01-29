@@ -58,7 +58,7 @@ function generateFontPreset( fontDefinition ) {
 	// Remove quotes from font names. They will be normalized later.
 	const fontNames = fontDefinition.replace( /"|'/g, '' ).split( ',' );
 
-	// The first matched font name will be used as dropdown list item title and as model value
+	// The first matched font name will be used as dropdown list item title and as model value.
 	const firstFontName = fontNames[ 0 ];
 
 	// CSS-compatible font names.

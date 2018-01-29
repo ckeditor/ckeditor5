@@ -39,7 +39,6 @@ export default class FontSizeEditing extends Plugin {
 			]
 		} );
 
-		// Get configuration
 		const data = editor.data;
 		const editing = editor.editing;
 
