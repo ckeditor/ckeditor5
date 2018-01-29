@@ -16,8 +16,7 @@ import alignCenterIcon from '@ckeditor/ckeditor5-core/theme/icons/object-center.
 import ButtonView from '../../../src/button/buttonview';
 
 import addListViewToDropdown from '../../../src/dropdown/helpers/addlistviewtodropdown';
-import addToolbarToDropdown from '../../../src/dropdown/helpers/addtoolbartodropdown';
-import { createDropdown } from '../../../src/dropdown/utils';
+import { createDropdown, addToolbarToDropdown } from '../../../src/dropdown/utils';
 
 const ui = testUtils.createTestUIView( {
 	dropdown: '#dropdown',
@@ -128,13 +127,12 @@ function testButton() {
 		} );
 
 	const toolbarDropdownModel = new Model( {
-		isVertical: true,
-		buttons: buttonViews
+		isVertical: true
 	} );
 
 	const toolbarDropdown = createDropdown( toolbarDropdownModel, locale );
 
-	addToolbarToDropdown( toolbarDropdown, toolbarDropdownModel );
+	addToolbarToDropdown( toolbarDropdown, buttonViews, toolbarDropdownModel );
 
 	ui.toolbarDropdown.add( toolbarDropdown );
 

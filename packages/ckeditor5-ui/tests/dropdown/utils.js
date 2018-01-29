@@ -14,8 +14,9 @@ import ButtonView from '../../src/button/buttonview';
 import DropdownView from '../../src/dropdown/dropdownview';
 import DropdownPanelView from '../../src/dropdown/dropdownpanelview';
 import SplitButtonView from '../../src/button/splitbuttonview';
-import { createDropdown, createSplitButtonDropdown } from '../../src/dropdown/utils';
 import View from '../../src/view';
+import ToolbarView from '../../src/toolbar/toolbarview';
+import { createDropdown, createSplitButtonDropdown, addToolbarToDropdown } from '../../src/dropdown/utils';
 
 const assertBinding = utilsTestUtils.assertBinding;
 
@@ -242,6 +243,69 @@ describe( 'utils', () => {
 		} );
 
 		addDefaultBehaviorTests();
+	} );
+
+	describe( 'addToolbarToDropdown()', () => {
+		let model, buttons;
+
+		beforeEach( () => {
+			buttons = [ '<svg>foo</svg>', '<svg>bar</svg>' ].map( icon => {
+				const button = new ButtonView();
+
+				button.icon = icon;
+
+				return button;
+			} );
+
+			model = new Model( { isVertical: true } );
+
+			dropdownView = createDropdown( model, locale );
+			addToolbarToDropdown( dropdownView, buttons, model );
+
+			dropdownView.render();
+			document.body.appendChild( dropdownView.element );
+		} );
+
+		afterEach( () => {
+			dropdownView.element.remove();
+		} );
+
+		it( 'sets view#locale', () => {
+			expect( dropdownView.locale ).to.equal( locale );
+		} );
+
+		it( 'sets view class', () => {
+			expect( dropdownView.element.classList.contains( 'ck-toolbar-dropdown' ) ).to.be.true;
+		} );
+
+		describe( 'view#toolbarView', () => {
+			it( 'is created', () => {
+				const panelChildren = dropdownView.panelView.children;
+
+				expect( panelChildren ).to.have.length( 1 );
+				expect( panelChildren.get( 0 ) ).to.equal( dropdownView.toolbarView );
+				expect( dropdownView.toolbarView ).to.be.instanceof( ToolbarView );
+			} );
+
+			it( 'delegates view.toolbarView.items#execute to the view', done => {
+				dropdownView.on( 'execute', evt => {
+					expect( evt.source ).to.equal( dropdownView.toolbarView.items.get( 0 ) );
+					expect( evt.path ).to.deep.equal( [ dropdownView.toolbarView.items.get( 0 ), dropdownView ] );
+
+					done();
+				} );
+
+				dropdownView.toolbarView.items.get( 0 ).fire( 'execute' );
+			} );
+
+			it( 'reacts on model#isVertical', () => {
+				model.isVertical = false;
+				expect( dropdownView.toolbarView.isVertical ).to.be.false;
+
+				model.isVertical = true;
+				expect( dropdownView.toolbarView.isVertical ).to.be.true;
+			} );
+		} );
 	} );
 
 	function addDefaultBehaviorTests() {
