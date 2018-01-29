@@ -13,8 +13,7 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import Model from '@ckeditor/ckeditor5-ui/src/model';
 
 import bindOneToMany from '@ckeditor/ckeditor5-ui/src/bindings/bindonetomany';
-import addToolbarToDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/helpers/addtoolbartodropdown';
-import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
+import { createDropdown, addToolbarToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 
 import { commandNameFromOptionName } from './alignmentcommand';
 import { isSupported } from './alignmentediting';
@@ -95,18 +94,14 @@ export default class AlignmentUI extends Plugin {
 				defaultIcon: alignLeftIcon,
 				withText: false,
 				isVertical: true,
-				tooltip: true,
-				buttons
+				tooltip: true
 			} );
 
 			// TODO: binding with callback as in headings
-			// Change icon upon selection
-			const boundProperty = 'icon';
-			const collection = buttons;
-			const collectionProperty = 'isOn';
-
 			// Add specialised behavior
-			bindOneToMany( dropdownModel, boundProperty, collection, collectionProperty, ( ...areActive ) => {
+
+			// Change icon upon selection
+			bindOneToMany( dropdownModel, 'icon', buttons, 'isOn', ( ...areActive ) => {
 				const index = areActive.findIndex( value => value );
 
 				// If none of the commands is active, display either defaultIcon or first button icon.
@@ -114,16 +109,16 @@ export default class AlignmentUI extends Plugin {
 					return dropdownModel.defaultIcon;
 				}
 
-				return dropdownModel.buttons[ index < 0 ? 0 : index ].icon;
+				return buttons[ index < 0 ? 0 : index ].icon;
 			} );
 
-			bindOneToMany( dropdownModel, 'isEnabled', dropdownModel.buttons, 'isEnabled',
+			bindOneToMany( dropdownModel, 'isEnabled', buttons, 'isEnabled',
 				( ...areEnabled ) => areEnabled.some( isEnabled => isEnabled )
 			);
 
 			const dropdownView = createDropdown( dropdownModel, locale );
 
-			addToolbarToDropdown( dropdownView, dropdownModel );
+			addToolbarToDropdown( dropdownView, buttons, dropdownModel );
 
 			return dropdownView;
 		} );
