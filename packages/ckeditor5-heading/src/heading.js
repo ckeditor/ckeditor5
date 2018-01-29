@@ -70,28 +70,28 @@ export default class Heading extends Plugin {
 			commands.push( command );
 		}
 
-		// Create dropdown model.
-		const dropdownModel = new Model( {
-			withText: true,
-			tooltip: dropdownTooltip
-		} );
-
-		bindOneToMany( dropdownModel, 'isEnabled', commands, 'isEnabled', ( ...areEnabled ) => {
-			return areEnabled.some( isEnabled => isEnabled );
-		} );
-
-		bindOneToMany( dropdownModel, 'label', commands, 'value', ( ...areActive ) => {
-			const index = areActive.findIndex( value => value );
-
-			// If none of the commands is active, display default title.
-			return options[ index ] ? options[ index ].title : defaultTitle;
-		} );
-
 		// Register UI component.
 		editor.ui.componentFactory.add( 'headings', locale => {
-			const dropdownView = createDropdown( dropdownModel, locale );
+			const dropdownView = createDropdown( locale );
 
-			addListViewToDropdown( dropdownView, dropdownItems, dropdownModel, locale );
+			dropdownView.set( {
+				isOn: false,
+				withText: true,
+				tooltip: dropdownTooltip
+			} );
+
+			addListViewToDropdown( dropdownView, dropdownItems );
+
+			bindOneToMany( dropdownView, 'isEnabled', commands, 'isEnabled', ( ...areEnabled ) => {
+				return areEnabled.some( isEnabled => isEnabled );
+			} );
+
+			bindOneToMany( dropdownView, 'label', commands, 'value', ( ...areActive ) => {
+				const index = areActive.findIndex( value => value );
+
+				// If none of the commands is active, display default title.
+				return options[ index ] ? options[ index ].title : defaultTitle;
+			} );
 
 			dropdownView.extendTemplate( {
 				attributes: {
