@@ -132,7 +132,6 @@ export function createSplitButtonDropdown( locale ) {
 export function addToolbarToDropdown( dropdownView, buttons ) {
 	const toolbarView = dropdownView.toolbarView = new ToolbarView();
 
-	// dropdownView.set( 'isVertical' );
 	toolbarView.bind( 'isVertical' ).to( dropdownView, 'isVertical' );
 
 	dropdownView.extendTemplate( {
