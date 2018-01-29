@@ -455,7 +455,7 @@ describe( 'Writer', () => {
 			 */
 			function test( input, wrapAttribute, expected ) {
 				const { view, selection } = parse( input, { rootElement: viewRoot } );
-				viewDocument.selection.setTo( selection );
+				viewDocument.selection._setTo( selection );
 
 				const newPosition = writer.wrap( selection.getFirstRange(), parse( wrapAttribute ) );
 

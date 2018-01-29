@@ -92,7 +92,7 @@ export function setData( view, data, options = {} ) {
 	const result = setData._parse( data, { rootElement: root } );
 
 	if ( result.view && result.selection ) {
-		document.selection.setTo( result.selection );
+		document.selection._setTo( result.selection );
 	}
 }
 

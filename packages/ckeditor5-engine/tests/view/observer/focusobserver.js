@@ -95,7 +95,7 @@ describe( 'FocusObserver', () => {
 		} );
 
 		it( 'should set isFocused to false on blur when selection in same editable', () => {
-			viewDocument.selection.setTo( ViewRange.createFromParentsAndOffsets( viewMain, 0, viewMain, 0 ) );
+			viewDocument.selection._setTo( ViewRange.createFromParentsAndOffsets( viewMain, 0, viewMain, 0 ) );
 
 			observer.onDomEvent( { type: 'focus', target: domMain } );
 
@@ -107,7 +107,7 @@ describe( 'FocusObserver', () => {
 		} );
 
 		it( 'should not set isFocused to false on blur when it is fired on other editable', () => {
-			viewDocument.selection.setTo( ViewRange.createFromParentsAndOffsets( viewMain, 0, viewMain, 0 ) );
+			viewDocument.selection._setTo( ViewRange.createFromParentsAndOffsets( viewMain, 0, viewMain, 0 ) );
 
 			observer.onDomEvent( { type: 'focus', target: domMain } );
 

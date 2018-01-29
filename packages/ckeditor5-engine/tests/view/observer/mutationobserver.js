@@ -26,7 +26,7 @@ describe( 'MutationObserver', () => {
 
 		createViewRoot( viewDocument );
 		view.attachDomRoot( domEditor );
-		viewDocument.selection.setTo( null );
+		viewDocument.selection._setTo( null );
 		document.getSelection().removeAllRanges();
 
 		mutationObserver = view.getObserver( MutationObserver );
@@ -228,7 +228,7 @@ describe( 'MutationObserver', () => {
 		const { view: viewContainer, selection } = parse( '<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>' );
 
 		viewRoot.appendChildren( viewContainer );
-		viewDocument.selection.setTo( selection );
+		viewDocument.selection._setTo( selection );
 
 		view.render();
 
@@ -246,7 +246,7 @@ describe( 'MutationObserver', () => {
 		const { view: viewContainer, selection } = parse( '<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>' );
 
 		viewRoot.appendChildren( viewContainer );
-		viewDocument.selection.setTo( selection );
+		viewDocument.selection._setTo( selection );
 
 		view.render();
 

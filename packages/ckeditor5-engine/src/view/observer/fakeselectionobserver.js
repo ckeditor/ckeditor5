@@ -87,12 +87,12 @@ export default class FakeSelectionObserver extends Observer {
 
 		// Left or up arrow pressed - move selection to start.
 		if ( keyCode == keyCodes.arrowleft || keyCode == keyCodes.arrowup ) {
-			newSelection.setTo( newSelection.getFirstPosition() );
+			newSelection._setTo( newSelection.getFirstPosition() );
 		}
 
 		// Right or down arrow pressed - move selection to end.
 		if ( keyCode == keyCodes.arrowright || keyCode == keyCodes.arrowdown ) {
-			newSelection.setTo( newSelection.getLastPosition() );
+			newSelection._setTo( newSelection.getLastPosition() );
 		}
 
 		const data = {

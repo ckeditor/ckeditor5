@@ -64,7 +64,7 @@ export default class Writer {
 	 * @param {Boolean|Number|'before'|'end'|'after'} [backwardSelectionOrOffset]
 	 */
 	setSelection( selectable, backwardSelectionOrOffset ) {
-		this.document.selection.setTo( selectable, backwardSelectionOrOffset );
+		this.document.selection._setTo( selectable, backwardSelectionOrOffset );
 	}
 
 	/**
@@ -77,7 +77,7 @@ export default class Writer {
 	 * first parameter is a {@link module:engine/view/item~Item view item}.
 	 */
 	setSelectionFocus( itemOrPosition, offset ) {
-		this.model.document.selection.setFocus( itemOrPosition, offset );
+		this.model.document.selection._setFocus( itemOrPosition, offset );
 	}
 
 	/**
@@ -639,7 +639,7 @@ export default class Writer {
 
 			// If wrapping position is equal to view selection, move view selection inside wrapping attribute element.
 			if ( viewSelection && viewSelection.isCollapsed && viewSelection.getFirstPosition().isEqual( range.start ) ) {
-				viewSelection.setTo( position );
+				viewSelection._setTo( position );
 			}
 
 			return new Range( position );

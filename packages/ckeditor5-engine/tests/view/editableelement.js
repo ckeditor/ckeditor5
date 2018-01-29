@@ -78,13 +78,13 @@ describe( 'EditableElement', () => {
 		it( 'should change isFocused on document render event', () => {
 			const rangeMain = Range.createFromParentsAndOffsets( viewMain, 0, viewMain, 0 );
 			const rangeHeader = Range.createFromParentsAndOffsets( viewHeader, 0, viewHeader, 0 );
-			docMock.selection.setTo( rangeMain );
+			docMock.selection._setTo( rangeMain );
 			docMock.isFocused = true;
 
 			expect( viewMain.isFocused ).to.be.true;
 			expect( viewHeader.isFocused ).to.be.false;
 
-			docMock.selection.setTo( [ rangeHeader ] );
+			docMock.selection._setTo( [ rangeHeader ] );
 			docMock.fire( 'render' );
 
 			expect( viewMain.isFocused ).to.be.false;
@@ -96,13 +96,13 @@ describe( 'EditableElement', () => {
 			const rangeHeader = Range.createFromParentsAndOffsets( viewHeader, 0, viewHeader, 0 );
 			docMock.render = sinon.spy();
 
-			docMock.selection.setTo( rangeMain );
+			docMock.selection._setTo( rangeMain );
 			docMock.isFocused = true;
 
 			expect( viewMain.isFocused ).to.be.true;
 			expect( viewHeader.isFocused ).to.be.false;
 
-			docMock.selection.setTo( [ rangeHeader ] );
+			docMock.selection._setTo( [ rangeHeader ] );
 
 			viewHeader.on( 'change:isFocused', ( evt, propertyName, value ) => {
 				expect( value ).to.be.true;
@@ -116,7 +116,7 @@ describe( 'EditableElement', () => {
 		it( 'should change isFocused when document.isFocus changes', () => {
 			const rangeMain = Range.createFromParentsAndOffsets( viewMain, 0, viewMain, 0 );
 			const rangeHeader = Range.createFromParentsAndOffsets( viewHeader, 0, viewHeader, 0 );
-			docMock.selection.setTo( rangeMain );
+			docMock.selection._setTo( rangeMain );
 			docMock.isFocused = true;
 
 			expect( viewMain.isFocused ).to.be.true;
@@ -127,7 +127,7 @@ describe( 'EditableElement', () => {
 			expect( viewMain.isFocused ).to.be.false;
 			expect( viewHeader.isFocused ).to.be.false;
 
-			docMock.selection.setTo( [ rangeHeader ] );
+			docMock.selection._setTo( [ rangeHeader ] );
 
 			expect( viewMain.isFocused ).to.be.false;
 			expect( viewHeader.isFocused ).to.be.false;

@@ -121,7 +121,7 @@ describe( 'Renderer', () => {
 			renderer.markedAttributes.clear();
 			renderer.markedChildren.clear();
 
-			selection.setTo( null );
+			selection._setTo( null );
 			selection.setFake( false );
 
 			selectionEditable = viewRoot;
@@ -404,7 +404,7 @@ describe( 'Renderer', () => {
 
 			const viewRoot = new ViewElement( 'p' );
 			viewRoot.appendChildren( viewP );
-			selection.setTo( newSelection );
+			selection._setTo( newSelection );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -418,7 +418,7 @@ describe( 'Renderer', () => {
 				'<container:p>foo<attribute:b contenteditable="false">[]</attribute:b>bar</container:p>' );
 
 			viewRoot.appendChildren( viewP );
-			selection.setTo( newSelection );
+			selection._setTo( newSelection );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -440,7 +440,7 @@ describe( 'Renderer', () => {
 				'<container:p contenteditable="false">foo<attribute:b>[]</attribute:b>bar</container:p>' );
 
 			viewRoot.appendChildren( viewP );
-			selection.setTo( newSelection );
+			selection._setTo( newSelection );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -465,7 +465,7 @@ describe( 'Renderer', () => {
 				'<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>' );
 
 			viewRoot.appendChildren( viewP );
-			selection.setTo( newSelection );
+			selection._setTo( newSelection );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -494,7 +494,7 @@ describe( 'Renderer', () => {
 			renderAndExpectNoChanges( renderer, domRoot );
 
 			// Step 3: <p>foo{}<b></b></p>
-			selection.setTo( ViewRange.createFromParentsAndOffsets( viewP.getChild( 0 ), 3, viewP.getChild( 0 ), 3 ) );
+			selection._setTo( ViewRange.createFromParentsAndOffsets( viewP.getChild( 0 ), 3, viewP.getChild( 0 ), 3 ) );
 
 			renderer.render();
 
@@ -524,7 +524,7 @@ describe( 'Renderer', () => {
 				'<container:p>[]<attribute:b>foo</attribute:b></container:p>' );
 
 			viewRoot.appendChildren( viewP );
-			selection.setTo( newSelection );
+			selection._setTo( newSelection );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -547,7 +547,7 @@ describe( 'Renderer', () => {
 			renderAndExpectNoChanges( renderer, domRoot );
 
 			// Step 3: <p><b>{}foo</b></p>
-			selection.setTo( ViewRange.createFromParentsAndOffsets(
+			selection._setTo( ViewRange.createFromParentsAndOffsets(
 				viewP.getChild( 0 ).getChild( 0 ), 0, viewP.getChild( 0 ).getChild( 0 ), 0 ) );
 
 			renderer.render();
@@ -575,7 +575,7 @@ describe( 'Renderer', () => {
 				'<container:p><attribute:b>foo</attribute:b>[]</container:p>' );
 
 			viewRoot.appendChildren( viewP );
-			selection.setTo( newSelection );
+			selection._setTo( newSelection );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -598,7 +598,7 @@ describe( 'Renderer', () => {
 			renderAndExpectNoChanges( renderer, domRoot );
 
 			// Step 3: <p><b>foo{}</b></p>
-			selection.setTo( ViewRange.createFromParentsAndOffsets(
+			selection._setTo( ViewRange.createFromParentsAndOffsets(
 				viewP.getChild( 0 ).getChild( 0 ), 3, viewP.getChild( 0 ).getChild( 0 ), 3 ) );
 
 			renderer.render();
@@ -625,7 +625,7 @@ describe( 'Renderer', () => {
 				'<container:p><attribute:b>foo</attribute:b>[]<attribute:b>bar</attribute:b></container:p>' );
 
 			viewRoot.appendChildren( viewP );
-			selection.setTo( newSelection );
+			selection._setTo( newSelection );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -653,7 +653,7 @@ describe( 'Renderer', () => {
 				'<container:p>foo<attribute:b>[]</attribute:b><attribute:i></attribute:i></container:p>' );
 
 			viewRoot.appendChildren( viewP );
-			selection.setTo( newSelection );
+			selection._setTo( newSelection );
 
 			renderer.markToSync( 'children', viewRoot );
 
@@ -671,7 +671,7 @@ describe( 'Renderer', () => {
 
 			// Step 2: <p>foo<b></b><i>"FILLER{}"</i></p>
 			const viewI = viewP.getChild( 2 );
-			selection.setTo( ViewRange.createFromParentsAndOffsets( viewI, 0, viewI, 0 ) );
+			selection._setTo( ViewRange.createFromParentsAndOffsets( viewI, 0, viewI, 0 ) );
 
 			renderer.render();
 
@@ -689,7 +689,7 @@ describe( 'Renderer', () => {
 			const { view: viewP, selection: newSelection } = parse( '<container:p>foo<attribute:b>[]</attribute:b></container:p>' );
 			const viewB = viewP.getChild( 1 );
 			viewRoot.appendChildren( viewP );
-			selection.setTo( newSelection );
+			selection._setTo( newSelection );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -704,13 +704,13 @@ describe( 'Renderer', () => {
 			// Step 2: Add text node.
 			const viewText = new ViewText( 'x' );
 			viewB.appendChildren( viewText );
-			selection.setTo( ViewRange.createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
+			selection._setTo( ViewRange.createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
 
 			renderer.markToSync( 'children', viewB );
 			renderer.render();
 
 			// Step 3: Remove selection from the view.
-			selection.setTo( null );
+			selection._setTo( null );
 
 			renderer.render();
 
@@ -728,7 +728,7 @@ describe( 'Renderer', () => {
 			// Step 1: <p>bar<b>foo</b>"FILLER{}"</p>
 			const { view: viewP, selection: newSelection } = parse( '<container:p>bar<attribute:b>foo</attribute:b>[]</container:p>' );
 			viewRoot.appendChildren( viewP );
-			selection.setTo( newSelection );
+			selection._setTo( newSelection );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -740,7 +740,7 @@ describe( 'Renderer', () => {
 			// Step 2: Remove the <b> and update the selection (<p>bar[]</p>).
 			viewP.removeChildren( 1 );
 
-			selection.setTo( ViewRange.createFromParentsAndOffsets( viewP, 1, viewP, 1 ) );
+			selection._setTo( ViewRange.createFromParentsAndOffsets( viewP, 1, viewP, 1 ) );
 
 			renderer.markToSync( 'children', viewP );
 			renderer.render();
@@ -757,7 +757,7 @@ describe( 'Renderer', () => {
 				'<container:p><attribute:b>foo</attribute:b>[]<attribute:b>bar</attribute:b></container:p><container:p></container:p>'
 			);
 			viewRoot.appendChildren( viewFragment );
-			selection.setTo( newSelection );
+			selection._setTo( newSelection );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -777,7 +777,7 @@ describe( 'Renderer', () => {
 
 			viewP2.appendChildren( removedChildren );
 
-			selection.setTo( ViewRange.createFromParentsAndOffsets( viewP, 0, viewP, 0 ) );
+			selection._setTo( ViewRange.createFromParentsAndOffsets( viewP, 0, viewP, 0 ) );
 
 			renderer.markToSync( 'children', viewP );
 			renderer.markToSync( 'children', viewP2 );
@@ -799,7 +799,7 @@ describe( 'Renderer', () => {
 			// Step 1: <p>bar<b>"FILLER{}"</b></p>
 			const { view: viewP, selection: newSelection } = parse( '<container:p>bar<attribute:b>[]</attribute:b></container:p>' );
 			viewRoot.appendChildren( viewP );
-			selection.setTo( newSelection );
+			selection._setTo( newSelection );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -814,7 +814,7 @@ describe( 'Renderer', () => {
 			const viewI = parse( '<attribute:i></attribute:i>' );
 			viewP.appendChildren( viewI );
 
-			selection.setTo( ViewRange.createFromParentsAndOffsets( viewI, 0, viewI, 0 ) );
+			selection._setTo( ViewRange.createFromParentsAndOffsets( viewI, 0, viewI, 0 ) );
 
 			renderer.markToSync( 'children', viewP );
 			renderer.render();
@@ -831,7 +831,7 @@ describe( 'Renderer', () => {
 			// Step 1: <p>bar<b>abc</b>"FILLER"{}</p>
 			const { view: viewP, selection: newSelection } = parse( '<container:p>bar<attribute:b>abc</attribute:b>[]</container:p>' );
 			viewRoot.appendChildren( viewP );
-			selection.setTo( newSelection );
+			selection._setTo( newSelection );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -844,7 +844,7 @@ describe( 'Renderer', () => {
 			const viewAbc = parse( 'abc' );
 			viewP.appendChildren( viewAbc );
 
-			selection.setTo( ViewRange.createFromParentsAndOffsets( viewP, 3, viewP, 3 ) );
+			selection._setTo( ViewRange.createFromParentsAndOffsets( viewP, 3, viewP, 3 ) );
 
 			renderer.markToSync( 'children', viewP );
 			renderer.render();
@@ -860,7 +860,7 @@ describe( 'Renderer', () => {
 			const { view: viewP, selection: newSelection } = parse( '<container:p>[]</container:p>' );
 
 			viewRoot.appendChildren( viewP );
-			selection.setTo( newSelection );
+			selection._setTo( newSelection );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -887,7 +887,7 @@ describe( 'Renderer', () => {
 
 			const viewText = new ViewText( 'x' );
 			viewP.appendChildren( viewText );
-			selection.setTo( ViewRange.createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
+			selection._setTo( ViewRange.createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
 
 			renderer.markToSync( 'children', viewP );
 			renderAndExpectNoChanges( renderer, domRoot );
@@ -899,7 +899,7 @@ describe( 'Renderer', () => {
 			const { view: viewP, selection: newSelection } = parse( '<container:p>[]</container:p>' );
 
 			viewRoot.appendChildren( viewP );
-			selection.setTo( newSelection );
+			selection._setTo( newSelection );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -917,7 +917,7 @@ describe( 'Renderer', () => {
 			// Add text node only in View <p>x{}</p>
 			const viewText = new ViewText( 'x' );
 			viewP.appendChildren( viewText );
-			selection.setTo( ViewRange.createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
+			selection._setTo( ViewRange.createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
 
 			renderer.markToSync( 'children', viewP );
 			renderer.render();
@@ -937,7 +937,7 @@ describe( 'Renderer', () => {
 			const { view: viewP, selection: newSelection } = parse( '<container:p>x{}</container:p>' );
 
 			viewRoot.appendChildren( viewP );
-			selection.setTo( newSelection );
+			selection._setTo( newSelection );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -964,7 +964,7 @@ describe( 'Renderer', () => {
 
 			viewP.removeChildren( 0 );
 
-			selection.setTo( ViewRange.createFromParentsAndOffsets( viewP, 0, viewP, 0 ) );
+			selection._setTo( ViewRange.createFromParentsAndOffsets( viewP, 0, viewP, 0 ) );
 
 			renderer.markToSync( 'children', viewP );
 			renderAndExpectNoChanges( renderer, domRoot );
@@ -979,7 +979,7 @@ describe( 'Renderer', () => {
 				'<container:p><attribute:b>[]</attribute:b>foo</container:p>' );
 
 			viewRoot.appendChildren( viewP );
-			selection.setTo( newSelection );
+			selection._setTo( newSelection );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -1015,7 +1015,7 @@ describe( 'Renderer', () => {
 
 			const viewText = new ViewText( 'x' );
 			viewB.appendChildren( viewText );
-			selection.setTo( ViewRange.createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
+			selection._setTo( ViewRange.createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
 
 			renderer.markToSync( 'children', viewP );
 			renderAndExpectNoChanges( renderer, domRoot );
@@ -1030,7 +1030,7 @@ describe( 'Renderer', () => {
 				'<container:p><attribute:b>[]</attribute:b>foo</container:p>' );
 
 			viewRoot.appendChildren( viewP );
-			selection.setTo( newSelection );
+			selection._setTo( newSelection );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -1058,7 +1058,7 @@ describe( 'Renderer', () => {
 
 			const viewText = new ViewText( 'x' );
 			viewB.appendChildren( viewText );
-			selection.setTo( ViewRange.createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
+			selection._setTo( ViewRange.createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
 
 			renderer.markToSync( 'children', viewB );
 			renderer.render();
@@ -1093,7 +1093,7 @@ describe( 'Renderer', () => {
 				'<container:p><attribute:b>[]</attribute:b>foo</container:p>' );
 
 			viewRoot.appendChildren( viewP );
-			selection.setTo( newSelection );
+			selection._setTo( newSelection );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -1121,7 +1121,7 @@ describe( 'Renderer', () => {
 
 			const viewText = new ViewText( 'x' );
 			viewB.appendChildren( viewText );
-			selection.setTo( ViewRange.createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
+			selection._setTo( ViewRange.createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
 
 			renderer.markToSync( 'text', viewText );
 			renderer.render();
@@ -1144,7 +1144,7 @@ describe( 'Renderer', () => {
 				'<container:p>fo{o<attribute:b>b}ar</attribute:b></container:p>' );
 
 			viewRoot.appendChildren( viewP );
-			selection.setTo( newSelection );
+			selection._setTo( newSelection );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -1182,7 +1182,7 @@ describe( 'Renderer', () => {
 			const { view: viewP, selection: newSelection } = parse( '<container:p>fo{o}</container:p>' );
 
 			viewRoot.appendChildren( viewP );
-			selection.setTo( newSelection );
+			selection._setTo( newSelection );
 
 			renderer.render();
 
@@ -1224,7 +1224,7 @@ describe( 'Renderer', () => {
 			const { view: viewP, selection: newSelection } = parse( '<container:p>fo{o}</container:p>' );
 
 			viewRoot.appendChildren( viewP );
-			selection.setTo( newSelection );
+			selection._setTo( newSelection );
 
 			renderer.render();
 
@@ -1253,7 +1253,7 @@ describe( 'Renderer', () => {
 			const { view: viewP, selection: newSelection } = parse( '<container:p>foo[]</container:p>' );
 
 			viewRoot.appendChildren( viewP );
-			selection.setTo( newSelection );
+			selection._setTo( newSelection );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -1268,7 +1268,7 @@ describe( 'Renderer', () => {
 				'<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>' );
 
 			viewRoot.appendChildren( viewP );
-			selection.setTo( newSelection );
+			selection._setTo( newSelection );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -1281,7 +1281,7 @@ describe( 'Renderer', () => {
 			// Remove filler.
 			domB.childNodes[ 0 ].data = '';
 
-			selection.setTo( null );
+			selection._setTo( null );
 			renderer.markToSync( 'children', viewB );
 
 			expect( () => {
@@ -1301,7 +1301,7 @@ describe( 'Renderer', () => {
 			const { view: view, selection: newSelection } = parse( inputView );
 
 			viewRoot.appendChildren( view );
-			selection.setTo( newSelection );
+			selection._setTo( newSelection );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -1362,7 +1362,7 @@ describe( 'Renderer', () => {
 					'<container:p>[foo bar]</container:p>'
 				);
 				viewRoot.appendChildren( viewP );
-				selection.setTo( newSelection );
+				selection._setTo( newSelection );
 				renderer.markToSync( 'children', viewRoot );
 				renderer.render();
 			} );
@@ -1552,7 +1552,7 @@ describe( 'Renderer', () => {
 					'<container:p>foo{}<attribute:b>bar</attribute:b></container:p>' );
 
 				viewRoot.appendChildren( viewP );
-				selection.setTo( newSelection );
+				selection._setTo( newSelection );
 
 				renderer.markToSync( 'children', viewRoot );
 				renderer.render();
@@ -1572,7 +1572,7 @@ describe( 'Renderer', () => {
 				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
 
 				// <container:p>foo<attribute:b>{}bar</attribute:b></container:p>
-				selection.setTo( [
+				selection._setTo( [
 					new ViewRange( new ViewPosition( viewB.getChild( 0 ), 0 ), new ViewPosition( viewB.getChild( 0 ), 0 ) )
 				] );
 
@@ -1592,7 +1592,7 @@ describe( 'Renderer', () => {
 					'<container:p>foo<attribute:b>[]</attribute:b></container:p>' );
 
 				viewRoot.appendChildren( viewP );
-				selection.setTo( newSelection );
+				selection._setTo( newSelection );
 
 				renderer.markToSync( 'children', viewRoot );
 				renderer.render();
@@ -1611,7 +1611,7 @@ describe( 'Renderer', () => {
 				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
 
 				// <container:p>foo{}<attribute:b></attribute:b></container:p>
-				selection.setTo( [
+				selection._setTo( [
 					new ViewRange( new ViewPosition( viewP.getChild( 0 ), 3 ), new ViewPosition( viewP.getChild( 0 ), 3 ) )
 				] );
 
@@ -1631,7 +1631,7 @@ describe( 'Renderer', () => {
 					'<container:p>fo{o}<attribute:b>bar</attribute:b></container:p>' );
 
 				viewRoot.appendChildren( viewP );
-				selection.setTo( newSelection );
+				selection._setTo( newSelection );
 
 				renderer.markToSync( 'children', viewRoot );
 				renderer.render();
@@ -1651,7 +1651,7 @@ describe( 'Renderer', () => {
 				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
 
 				// <container:p>fo{o<attribute:b>b}ar</attribute:b></container:p>
-				selection.setTo( [
+				selection._setTo( [
 					new ViewRange( new ViewPosition( viewP.getChild( 0 ), 2 ), new ViewPosition( viewB.getChild( 0 ), 1 ) )
 				] );
 
@@ -1670,7 +1670,7 @@ describe( 'Renderer', () => {
 				const { view: viewP, selection: newSelection } = parse( '<container:p>foo[]<ui:span></ui:span></container:p>' );
 
 				viewRoot.appendChildren( viewP );
-				selection.setTo( newSelection );
+				selection._setTo( newSelection );
 
 				renderer.markToSync( 'children', viewRoot );
 				renderer.render();
@@ -1712,7 +1712,7 @@ describe( 'Renderer', () => {
 					'<container:p>foo<attribute:b>{ba}r</attribute:b></container:p>' );
 
 				viewRoot.appendChildren( viewP );
-				selection.setTo( newSelection );
+				selection._setTo( newSelection );
 
 				renderer.markToSync( 'children', viewRoot );
 				renderer.render();
@@ -1732,7 +1732,7 @@ describe( 'Renderer', () => {
 				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
 
 				// <container:p>foo{<attribute:b>ba}r</attribute:b></container:p>
-				selection.setTo( [
+				selection._setTo( [
 					new ViewRange( new ViewPosition( viewP.getChild( 0 ), 3 ), new ViewPosition( viewB.getChild( 0 ), 2 ) )
 				] );
 
@@ -1750,7 +1750,7 @@ describe( 'Renderer', () => {
 					'<container:p>foo<attribute:b>b{ar}</attribute:b>baz</container:p>' );
 
 				viewRoot.appendChildren( viewP );
-				selection.setTo( newSelection );
+				selection._setTo( newSelection );
 
 				renderer.markToSync( 'children', viewRoot );
 				renderer.render();
@@ -1770,7 +1770,7 @@ describe( 'Renderer', () => {
 				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
 
 				// <container:p>foo<attribute:b>b{ar</attribute:b>}baz</container:p>
-				selection.setTo( [
+				selection._setTo( [
 					new ViewRange( new ViewPosition( viewB.getChild( 0 ), 1 ), new ViewPosition( viewP.getChild( 2 ), 0 ) )
 				] );
 
@@ -1788,7 +1788,7 @@ describe( 'Renderer', () => {
 					'<container:p>foo<attribute:b><attribute:i>{ba}r</attribute:i></attribute:b></container:p>' );
 
 				viewRoot.appendChildren( viewP );
-				selection.setTo( newSelection );
+				selection._setTo( newSelection );
 
 				renderer.markToSync( 'children', viewRoot );
 				renderer.render();
@@ -1808,7 +1808,7 @@ describe( 'Renderer', () => {
 				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
 
 				// <container:p>foo{<attribute:b><attribute:i>ba}r</attribute:i></attribute:b></container:p>
-				selection.setTo( [
+				selection._setTo( [
 					new ViewRange( new ViewPosition( viewP.getChild( 0 ), 3 ), new ViewPosition( viewI.getChild( 0 ), 2 ) )
 				] );
 
@@ -1826,7 +1826,7 @@ describe( 'Renderer', () => {
 					'<container:p>f{oo<attribute:b><attribute:i>bar}</attribute:i></attribute:b>baz</container:p>' );
 
 				viewRoot.appendChildren( viewP );
-				selection.setTo( newSelection );
+				selection._setTo( newSelection );
 
 				renderer.markToSync( 'children', viewRoot );
 				renderer.render();
@@ -1845,7 +1845,7 @@ describe( 'Renderer', () => {
 				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
 
 				// <container:p>f{oo<attribute:b><attribute:i>bar</attribute:i></attribute:b>}baz</container:p>
-				selection.setTo( [
+				selection._setTo( [
 					new ViewRange( new ViewPosition( viewP.getChild( 0 ), 1 ), new ViewPosition( viewP.getChild( 2 ), 0 ) )
 				] );
 

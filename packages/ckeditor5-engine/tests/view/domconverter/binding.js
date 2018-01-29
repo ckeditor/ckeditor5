@@ -283,7 +283,7 @@ describe( 'DomConverter', () => {
 		it( 'should keep a copy of selection', () => {
 			const selectionCopy = new ViewSelection( selection );
 
-			selection.setTo( ViewRange.createIn( new ViewElement() ), true );
+			selection._setTo( ViewRange.createIn( new ViewElement() ), true );
 			const bindSelection = converter.fakeSelectionToView( domEl );
 
 			expect( bindSelection ).to.not.equal( selection );

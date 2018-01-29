@@ -46,7 +46,7 @@ describe( 'convertSelectionChange', () => {
 
 	it( 'should convert collapsed selection', () => {
 		const viewSelection = new ViewSelection();
-		viewSelection.setTo( ViewRange.createFromParentsAndOffsets(
+		viewSelection._setTo( ViewRange.createFromParentsAndOffsets(
 			viewRoot.getChild( 0 ).getChild( 0 ), 1, viewRoot.getChild( 0 ).getChild( 0 ), 1 ) );
 
 		convertSelection( null, { newSelection: viewSelection } );
