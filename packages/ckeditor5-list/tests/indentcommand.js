@@ -52,16 +52,16 @@ describe( 'IndentCommand', () => {
 
 		describe( 'isEnabled', () => {
 			it( 'should be true if selection starts in list item', () => {
-				model.change( () => {
-					doc.selection.setCollapsedAt( root.getChild( 5 ) );
+				model.change( writer => {
+					writer.setSelection( root.getChild( 5 ) );
 				} );
 
 				expect( command.isEnabled ).to.be.true;
 			} );
 
 			it( 'should be false if selection starts in first list item', () => {
-				model.change( () => {
-					doc.selection.setCollapsedAt( root.getChild( 0 ) );
+				model.change( writer => {
+					writer.setSelection( root.getChild( 0 ) );
 				} );
 
 				expect( command.isEnabled ).to.be.false;
@@ -106,8 +106,8 @@ describe( 'IndentCommand', () => {
 			} );
 
 			it( 'should be false if selection starts in a list item that has bigger indent than it\'s previous sibling', () => {
-				model.change( () => {
-					doc.selection.setCollapsedAt( root.getChild( 2 ) );
+				model.change( writer => {
+					writer.setSelection( root.getChild( 2 ) );
 				} );
 
 				expect( command.isEnabled ).to.be.false;
@@ -126,8 +126,8 @@ describe( 'IndentCommand', () => {
 
 		describe( 'execute()', () => {
 			it( 'should use parent batch', () => {
-				model.change( () => {
-					doc.selection.setCollapsedAt( root.getChild( 5 ) );
+				model.change( writer => {
+					writer.setSelection( root.getChild( 5 ) );
 				} );
 
 				model.change( writer => {
@@ -140,8 +140,8 @@ describe( 'IndentCommand', () => {
 			} );
 
 			it( 'should increment indent attribute by 1', () => {
-				model.change( () => {
-					doc.selection.setCollapsedAt( root.getChild( 5 ) );
+				model.change( writer => {
+					writer.setSelection( root.getChild( 5 ) );
 				} );
 
 				command.execute();
@@ -158,8 +158,8 @@ describe( 'IndentCommand', () => {
 			} );
 
 			it( 'should increment indent of all sub-items of indented item', () => {
-				model.change( () => {
-					doc.selection.setCollapsedAt( root.getChild( 1 ) );
+				model.change( writer => {
+					writer.setSelection( root.getChild( 1 ) );
 				} );
 
 				command.execute();
@@ -176,11 +176,11 @@ describe( 'IndentCommand', () => {
 			} );
 
 			it( 'should increment indent of all selected item when multiple items are selected', () => {
-				model.change( () => {
-					doc.selection.setRanges( [ new Range(
+				model.change( writer => {
+					writer.setSelection( new Range(
 						new Position( root.getChild( 1 ), [ 0 ] ),
 						new Position( root.getChild( 3 ), [ 1 ] )
-					) ] );
+					) );
 				} );
 
 				command.execute();
@@ -211,8 +211,8 @@ describe( 'IndentCommand', () => {
 
 		describe( 'isEnabled', () => {
 			it( 'should be true if selection starts in list item', () => {
-				model.change( () => {
-					doc.selection.setCollapsedAt( root.getChild( 5 ) );
+				model.change( writer => {
+					writer.setSelection( root.getChild( 5 ) );
 				} );
 
 				expect( command.isEnabled ).to.be.true;
@@ -220,8 +220,8 @@ describe( 'IndentCommand', () => {
 
 			it( 'should be true if selection starts in first list item', () => {
 				// This is in contrary to forward indent command.
-				model.change( () => {
-					doc.selection.setCollapsedAt( root.getChild( 0 ) );
+				model.change( writer => {
+					writer.setSelection( root.getChild( 0 ) );
 				} );
 
 				expect( command.isEnabled ).to.be.true;
@@ -229,8 +229,8 @@ describe( 'IndentCommand', () => {
 
 			it( 'should be true if selection starts in a list item that has bigger indent than it\'s previous sibling', () => {
 				// This is in contrary to forward indent command.
-				model.change( () => {
-					doc.selection.setCollapsedAt( root.getChild( 2 ) );
+				model.change( writer => {
+					writer.setSelection( root.getChild( 2 ) );
 				} );
 
 				expect( command.isEnabled ).to.be.true;
@@ -239,8 +239,8 @@ describe( 'IndentCommand', () => {
 
 		describe( 'execute()', () => {
 			it( 'should decrement indent attribute by 1 (if it is bigger than 0)', () => {
-				model.change( () => {
-					doc.selection.setCollapsedAt( root.getChild( 5 ) );
+				model.change( writer => {
+					writer.setSelection( root.getChild( 5 ) );
 				} );
 
 				command.execute();
@@ -257,8 +257,8 @@ describe( 'IndentCommand', () => {
 			} );
 
 			it( 'should rename listItem to paragraph (if indent is equal to 0)', () => {
-				model.change( () => {
-					doc.selection.setCollapsedAt( root.getChild( 0 ) );
+				model.change( writer => {
+					writer.setSelection( root.getChild( 0 ) );
 				} );
 
 				command.execute();
@@ -275,8 +275,8 @@ describe( 'IndentCommand', () => {
 			} );
 
 			it( 'should decrement indent of all sub-items of outdented item', () => {
-				model.change( () => {
-					doc.selection.setCollapsedAt( root.getChild( 1 ) );
+				model.change( writer => {
+					writer.setSelection( root.getChild( 1 ) );
 				} );
 
 				command.execute();
@@ -293,11 +293,11 @@ describe( 'IndentCommand', () => {
 			} );
 
 			it( 'should outdent all selected item when multiple items are selected', () => {
-				model.change( () => {
-					doc.selection.setRanges( [ new Range(
+				model.change( writer => {
+					writer.setSelection( new Range(
 						new Position( root.getChild( 1 ), [ 0 ] ),
 						new Position( root.getChild( 3 ), [ 1 ] )
-					) ] );
+					) );
 				} );
 
 				command.execute();
