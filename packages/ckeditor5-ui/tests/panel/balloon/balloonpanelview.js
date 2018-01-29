@@ -180,8 +180,10 @@ describe( 'BalloonPanelView', () => {
 				element: view.element,
 				target,
 				positions: [
+					BalloonPanelView.defaultPositions.southArrowNorth,
 					BalloonPanelView.defaultPositions.southArrowNorthWest,
 					BalloonPanelView.defaultPositions.southArrowNorthEast,
+					BalloonPanelView.defaultPositions.northArrowSouth,
 					BalloonPanelView.defaultPositions.northArrowSouthWest,
 					BalloonPanelView.defaultPositions.northArrowSouthEast
 				],
@@ -212,7 +214,7 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.position ).to.equal( 'arrow_nw' );
+				expect( view.position ).to.equal( 'arrow_n' );
 			} );
 
 			it( 'should put balloon on the `south east` side of the target element when ' +
@@ -297,8 +299,8 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.top ).to.equal( 15 );
-				expect( view.left ).to.equal( -80 );
+				expect( view.top ).to.equal( BalloonPanelView.arrowVerticalOffset );
+				expect( view.left ).to.equal( -100 );
 
 				positionedAncestor.remove();
 			} );
@@ -322,8 +324,8 @@ describe( 'BalloonPanelView', () => {
 
 				view.attachTo( { target, limiter } );
 
-				expect( view.top ).to.equal( 115 );
-				expect( view.left ).to.equal( 20 );
+				expect( view.top ).to.equal( BalloonPanelView.arrowVerticalOffset + 100 );
+				expect( view.left ).to.equal( 0 );
 
 				positionedAncestor.remove();
 			} );
@@ -669,10 +671,12 @@ describe( 'BalloonPanelView', () => {
 	} );
 
 	describe( 'defaultPositions', () => {
-		let positions, balloonRect, targetRect;
+		let positions, balloonRect, targetRect, arrowHOffset, arrowVOffset;
 
 		beforeEach( () => {
 			positions = BalloonPanelView.defaultPositions;
+			arrowHOffset = BalloonPanelView.arrowHorizontalOffset;
+			arrowVOffset = BalloonPanelView.arrowVerticalOffset;
 
 			targetRect = {
 				top: 100,
@@ -701,7 +705,7 @@ describe( 'BalloonPanelView', () => {
 
 		it( 'should define the "northArrowSouth" position', () => {
 			expect( positions.northArrowSouth( targetRect, balloonRect ) ).to.deep.equal( {
-				top: 35,
+				top: 50 - arrowVOffset,
 				left: 125,
 				name: 'arrow_s'
 			} );
@@ -709,16 +713,16 @@ describe( 'BalloonPanelView', () => {
 
 		it( 'should define the "northArrowSouthEast" position', () => {
 			expect( positions.northArrowSouthEast( targetRect, balloonRect ) ).to.deep.equal( {
-				top: 35,
-				left: 130,
+				top: 50 - arrowVOffset,
+				left: 100 + arrowHOffset,
 				name: 'arrow_se'
 			} );
 		} );
 
 		it( 'should define the "northArrowSouthWest" position', () => {
 			expect( positions.northArrowSouthWest( targetRect, balloonRect ) ).to.deep.equal( {
-				top: 35,
-				left: 120,
+				top: 50 - arrowVOffset,
+				left: 150 - arrowHOffset,
 				name: 'arrow_sw'
 			} );
 		} );
@@ -727,7 +731,7 @@ describe( 'BalloonPanelView', () => {
 
 		it( 'should define the "northWestArrowSouth" position', () => {
 			expect( positions.northWestArrowSouth( targetRect, balloonRect ) ).to.deep.equal( {
-				top: 35,
+				top: 50 - arrowVOffset,
 				left: 75,
 				name: 'arrow_s'
 			} );
@@ -735,16 +739,16 @@ describe( 'BalloonPanelView', () => {
 
 		it( 'should define the "northWestArrowSouthWest" position', () => {
 			expect( positions.northWestArrowSouthWest( targetRect, balloonRect ) ).to.deep.equal( {
-				top: 35,
-				left: 70,
+				top: 50 - arrowVOffset,
+				left: 100 - arrowHOffset,
 				name: 'arrow_sw'
 			} );
 		} );
 
 		it( 'should define the "northWestArrowSouthEast" position', () => {
 			expect( positions.northWestArrowSouthEast( targetRect, balloonRect ) ).to.deep.equal( {
-				top: 35,
-				left: 80,
+				top: 50 - arrowVOffset,
+				left: 50 + arrowHOffset,
 				name: 'arrow_se'
 			} );
 		} );
@@ -753,7 +757,7 @@ describe( 'BalloonPanelView', () => {
 
 		it( 'should define the "northEastArrowSouth" position', () => {
 			expect( positions.northEastArrowSouth( targetRect, balloonRect ) ).to.deep.equal( {
-				top: 35,
+				top: 50 - arrowVOffset,
 				left: 175,
 				name: 'arrow_s'
 			} );
@@ -761,16 +765,16 @@ describe( 'BalloonPanelView', () => {
 
 		it( 'should define the "northEastArrowSouthEast" position', () => {
 			expect( positions.northEastArrowSouthEast( targetRect, balloonRect ) ).to.deep.equal( {
-				top: 35,
-				left: 180,
+				top: 50 - arrowVOffset,
+				left: 150 + arrowHOffset,
 				name: 'arrow_se'
 			} );
 		} );
 
 		it( 'should define the "northEastArrowSouthWest" position', () => {
 			expect( positions.northEastArrowSouthWest( targetRect, balloonRect ) ).to.deep.equal( {
-				top: 35,
-				left: 170,
+				top: 50 - arrowVOffset,
+				left: 200 - arrowHOffset,
 				name: 'arrow_sw'
 			} );
 		} );
@@ -779,7 +783,7 @@ describe( 'BalloonPanelView', () => {
 
 		it( 'should define the "southArrowNorth" position', () => {
 			expect( positions.southArrowNorth( targetRect, balloonRect ) ).to.deep.equal( {
-				top: 215,
+				top: 200 + arrowVOffset,
 				left: 125,
 				name: 'arrow_n'
 			} );
@@ -787,16 +791,16 @@ describe( 'BalloonPanelView', () => {
 
 		it( 'should define the "southArrowNorthEast" position', () => {
 			expect( positions.southArrowNorthEast( targetRect, balloonRect ) ).to.deep.equal( {
-				top: 215,
-				left: 130,
+				top: 200 + arrowVOffset,
+				left: 100 + arrowHOffset,
 				name: 'arrow_ne'
 			} );
 		} );
 
 		it( 'should define the "southArrowNorthWest" position', () => {
 			expect( positions.southArrowNorthWest( targetRect, balloonRect ) ).to.deep.equal( {
-				top: 215,
-				left: 120,
+				top: 200 + arrowVOffset,
+				left: 150 - arrowHOffset,
 				name: 'arrow_nw'
 			} );
 		} );
@@ -805,7 +809,7 @@ describe( 'BalloonPanelView', () => {
 
 		it( 'should define the "southWestArrowNorth" position', () => {
 			expect( positions.southWestArrowNorth( targetRect, balloonRect ) ).to.deep.equal( {
-				top: 215,
+				top: 200 + arrowVOffset,
 				left: 75,
 				name: 'arrow_n'
 			} );
@@ -813,16 +817,16 @@ describe( 'BalloonPanelView', () => {
 
 		it( 'should define the "southWestArrowNorthWest" position', () => {
 			expect( positions.southWestArrowNorthWest( targetRect, balloonRect ) ).to.deep.equal( {
-				top: 215,
-				left: 70,
+				top: 200 + arrowVOffset,
+				left: 100 - arrowHOffset,
 				name: 'arrow_nw'
 			} );
 		} );
 
 		it( 'should define the "southWestArrowNorthEast" position', () => {
 			expect( positions.southWestArrowNorthEast( targetRect, balloonRect ) ).to.deep.equal( {
-				top: 215,
-				left: 80,
+				top: 200 + arrowVOffset,
+				left: 50 + arrowHOffset,
 				name: 'arrow_ne'
 			} );
 		} );
@@ -831,7 +835,7 @@ describe( 'BalloonPanelView', () => {
 
 		it( 'should define the "southEastArrowNorth" position', () => {
 			expect( positions.southEastArrowNorth( targetRect, balloonRect ) ).to.deep.equal( {
-				top: 215,
+				top: 200 + arrowVOffset,
 				left: 175,
 				name: 'arrow_n'
 			} );
@@ -839,16 +843,16 @@ describe( 'BalloonPanelView', () => {
 
 		it( 'should define the "southEastArrowNorthEast" position', () => {
 			expect( positions.southEastArrowNorthEast( targetRect, balloonRect ) ).to.deep.equal( {
-				top: 215,
-				left: 180,
+				top: 200 + arrowVOffset,
+				left: 150 + arrowHOffset,
 				name: 'arrow_ne'
 			} );
 		} );
 
 		it( 'should define the "southEastArrowNorthWest" position', () => {
 			expect( positions.southEastArrowNorthWest( targetRect, balloonRect ) ).to.deep.equal( {
-				top: 215,
-				left: 170,
+				top: 200 + arrowVOffset,
+				left: 200 - arrowHOffset,
 				name: 'arrow_nw'
 			} );
 		} );

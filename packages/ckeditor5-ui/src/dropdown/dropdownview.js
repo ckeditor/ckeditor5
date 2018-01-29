@@ -111,7 +111,7 @@ export default class DropdownView extends View {
 		this.keystrokes = new KeystrokeHandler();
 
 		/**
-		 * Arrow icon of the dropdown.
+		 * The arrow icon of the dropdown.
 		 *
 		 * @readonly
 		 * @member {module:ui/icon/iconview~IconView} #arrowView
@@ -138,7 +138,7 @@ export default class DropdownView extends View {
 		arrowView.content = dropdownArrowIcon;
 		arrowView.extendTemplate( {
 			attributes: {
-				class: 'ck-dropdown__icon'
+				class: 'ck-dropdown__arrow'
 			}
 		} );
 
