@@ -10,7 +10,6 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import Model from '@ckeditor/ckeditor5-ui/src/model';
 
 import bindOneToMany from '@ckeditor/ckeditor5-ui/src/bindings/bindonetomany';
 import { createDropdown, addToolbarToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
@@ -85,11 +84,9 @@ export default class AlignmentUI extends Plugin {
 			.forEach( option => this._addButton( option ) );
 
 		componentFactory.add( 'alignmentDropdown', locale => {
-			const buttons = options.map( option => {
-				return componentFactory.create( commandNameFromOptionName( option ) );
-			} );
+			const dropdownView = createDropdown( locale );
 
-			const dropdownModel = new Model( {
+			dropdownView.set( {
 				label: t( 'Text alignment' ),
 				defaultIcon: alignLeftIcon,
 				withText: false,
@@ -97,28 +94,30 @@ export default class AlignmentUI extends Plugin {
 				tooltip: true
 			} );
 
+			const buttons = options.map( option => {
+				return componentFactory.create( commandNameFromOptionName( option ) );
+			} );
+
 			// TODO: binding with callback as in headings
 			// Add specialised behavior
 
 			// Change icon upon selection
-			bindOneToMany( dropdownModel, 'icon', buttons, 'isOn', ( ...areActive ) => {
+			bindOneToMany( dropdownView, 'icon', buttons, 'isOn', ( ...areActive ) => {
 				const index = areActive.findIndex( value => value );
 
 				// If none of the commands is active, display either defaultIcon or first button icon.
-				if ( index < 0 && dropdownModel.defaultIcon ) {
-					return dropdownModel.defaultIcon;
+				if ( index < 0 && dropdownView.defaultIcon ) {
+					return dropdownView.defaultIcon;
 				}
 
 				return buttons[ index < 0 ? 0 : index ].icon;
 			} );
 
-			bindOneToMany( dropdownModel, 'isEnabled', buttons, 'isEnabled',
+			bindOneToMany( dropdownView, 'isEnabled', buttons, 'isEnabled',
 				( ...areEnabled ) => areEnabled.some( isEnabled => isEnabled )
 			);
 
-			const dropdownView = createDropdown( dropdownModel, locale );
-
-			addToolbarToDropdown( dropdownView, buttons, dropdownModel );
+			addToolbarToDropdown( dropdownView, buttons );
 
 			return dropdownView;
 		} );
