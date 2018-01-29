@@ -71,8 +71,8 @@ describe( 'ParagraphCommand', () => {
 			setData( model, '<paragraph>[foo]</paragraph><notBlock>foo</notBlock>' );
 			const element = document.getRoot().getChild( 1 );
 
-			model.change( () => {
-				document.selection.setRanges( [ Range.createIn( element ) ] );
+			model.change( writer => {
+				writer.setSelection( Range.createIn( element ) );
 			} );
 
 			expect( command.value ).to.be.false;
@@ -82,12 +82,13 @@ describe( 'ParagraphCommand', () => {
 			setData( model, '<paragraph>[foo]</paragraph><notBlock>foo</notBlock>' );
 			const element = document.getRoot().getChild( 1 );
 
-			// Purposely not putting it in `model.change` to update command manually.
-			document.selection.setRanges( [ Range.createIn( element ) ] );
+			model.change( writer => {
+				writer.setSelection( Range.createIn( element ) );
 
-			expect( command.value ).to.be.true;
-			command.refresh();
-			expect( command.value ).to.be.false;
+				expect( command.value ).to.be.true;
+				command.refresh();
+				expect( command.value ).to.be.false;
+			} );
 		} );
 	} );
 
@@ -184,8 +185,7 @@ describe( 'ParagraphCommand', () => {
 
 				const secondToLastHeading = root.getChild( 1 );
 				const lastHeading = root.getChild( 2 );
-				const selection = new Selection();
-				selection.addRange( Range.createFromParentsAndOffsets( secondToLastHeading, 0, lastHeading, 1 ) );
+				const selection = new Selection( [ Range.createFromParentsAndOffsets( secondToLastHeading, 0, lastHeading, 1 ) ] );
 
 				command.execute( { selection } );
 				expect( getData( model ) ).to.equal(
