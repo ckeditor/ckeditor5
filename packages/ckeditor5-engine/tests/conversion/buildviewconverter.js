@@ -515,32 +515,29 @@ describe( 'View converter builder', () => {
 		expect( modelToString( conversionResult ) ).to.equal( '<paragraph>foo</paragraph>' );
 	} );
 
-	// TMP We can't make this test work for now.
-	// See https://github.com/ckeditor/ckeditor5-engine/issues/1213#issuecomment-354454906
-	//
-	// it( 'should filter out structure that is wrong with schema - attributes', () => {
-	// 	buildViewConverter().for( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
-	// 	buildViewConverter().for( dispatcher ).fromElement( 'strong' ).toAttribute( 'bold', true );
+	it( 'should filter out structure that is wrong with schema - attributes', () => {
+		buildViewConverter().for( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
+		buildViewConverter().for( dispatcher ).fromElement( 'strong' ).toAttribute( 'bold', true );
 
-	// 	// Disallow bold in paragraph>$text.
-	// 	schema.addAttributeCheck( ( ctx, attributeName ) => {
-	// 		if ( ctx.endsWith( 'paragraph $text' ) && attributeName == 'bold' ) {
-	// 			return false;
-	// 		}
-	// 	} );
+		// Disallow bold in paragraph>$text.
+		schema.addAttributeCheck( ( ctx, attributeName ) => {
+			if ( ctx.endsWith( 'paragraph $text' ) && attributeName == 'bold' ) {
+				return false;
+			}
+		} );
 
-	// 	dispatcher.on( 'element', convertToModelFragment(), { priority: 'lowest' } );
+		dispatcher.on( 'element', convertToModelFragment(), { priority: 'lowest' } );
 
-	// 	const viewElement = new ViewContainerElement( 'p', null,
-	// 		new ViewAttributeElement( 'strong', null,
-	// 			new ViewText( 'foo' )
-	// 		)
-	// 	);
+		const viewElement = new ViewContainerElement( 'p', null,
+			new ViewAttributeElement( 'strong', null,
+				new ViewText( 'foo' )
+			)
+		);
 
-	// 	const conversionResult = dispatcher.convert( viewElement, context );
+		const conversionResult = dispatcher.convert( viewElement, context );
 
-	// 	expect( modelToString( conversionResult ) ).to.equal( '<paragraph>foo</paragraph>' );
-	// } );
+		expect( modelToString( conversionResult ) ).to.equal( '<paragraph>foo</paragraph>' );
+	} );
 
 	it( 'should not set attribute when it is not allowed', () => {
 		buildViewConverter().for( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
