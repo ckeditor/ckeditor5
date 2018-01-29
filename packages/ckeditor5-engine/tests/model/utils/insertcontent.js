@@ -8,6 +8,8 @@ import insertContent from '../../../src/model/utils/insertcontent';
 import DocumentFragment from '../../../src/model/documentfragment';
 import Text from '../../../src/model/text';
 import Element from '../../../src/model/element';
+import Selection from '../../../src/model/selection';
+import Position from '../../../src/model/position';
 
 import { setData, getData, parse } from '../../../src/dev-utils/model';
 
@@ -26,6 +28,22 @@ describe( 'DataController utils', () => {
 			model.change( writer => {
 				insertContent( model, new Text( 'a' ), doc.selection );
 				expect( writer.batch.deltas ).to.length( 1 );
+			} );
+		} );
+
+		it( 'should be able to insert content at custom selection', () => {
+			model = new Model();
+			doc = model.document;
+			doc.createRoot();
+
+			model.schema.extend( '$text', { allowIn: '$root' } );
+			setData( model, 'a[]bc' );
+
+			const selection = new Selection( new Position( doc.getRoot(), [ 2 ] ) );
+
+			model.change( () => {
+				insertContent( model, new Text( 'x' ), selection );
+				expect( getData( model ) ).to.equal( 'a[]bxc' );
 			} );
 		} );
 
@@ -273,14 +291,9 @@ describe( 'DataController utils', () => {
 
 			it( 'not insert autoparagraph when paragraph is disallowed at the current position', () => {
 				// Disallow paragraph in $root.
-				model.schema.on( 'checkChild', ( evt, args ) => {
-					const ctx = args[ 0 ];
-					const child = args[ 1 ];
-					const childRule = model.schema.getDefinition( child );
-
-					if ( childRule.name == 'paragraph' && ctx.endsWith( '$root' ) ) {
-						evt.stop();
-						evt.return = false;
+				model.schema.addChildCheck( ( ctx, childDef ) => {
+					if ( childDef.name == 'paragraph' && ctx.endsWith( '$root' ) ) {
+						return false;
 					}
 				} );
 
@@ -618,34 +631,27 @@ describe( 'DataController utils', () => {
 				schema.extend( 'element', { allowIn: 'paragraph' } );
 				schema.extend( 'element', { allowIn: 'heading1' } );
 
-				schema.on( 'checkAttribute', ( evt, args ) => {
-					const ctx = args[ 0 ];
-					const attributeName = args[ 1 ];
-
+				schema.addAttributeCheck( ( ctx, attributeName ) => {
 					// Allow 'b' on paragraph>$text.
 					if ( ctx.endsWith( 'paragraph $text' ) && attributeName == 'b' ) {
-						evt.stop();
-						evt.return = true;
+						return true;
 					}
 
 					// Allow 'b' on paragraph>element>$text.
 					if ( ctx.endsWith( 'paragraph element $text' ) && attributeName == 'b' ) {
-						evt.stop();
-						evt.return = true;
+						return true;
 					}
 
 					// Allow 'a' and 'b' on heading1>element>$text.
 					if ( ctx.endsWith( 'heading1 element $text' ) && [ 'a', 'b' ].includes( attributeName ) ) {
-						evt.stop();
-						evt.return = true;
+						return true;
 					}
 
 					// Allow 'b' on element>table>td>$text.
 					if ( ctx.endsWith( 'element table td $text' ) && attributeName == 'b' ) {
-						evt.stop();
-						evt.return = true;
+						return true;
 					}
-				}, { priority: 'high' } );
+				} );
 			} );
 
 			it( 'filters out disallowed elements and leaves out the text', () => {

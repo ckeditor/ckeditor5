@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-import ViewRange from '../view/range';
-
 /**
  * Contains {@link module:engine/model/selection~Selection model selection} to
  * {@link module:engine/view/selection~Selection view selection} converters for
@@ -34,12 +32,14 @@ export function convertRangeSelection() {
 			return;
 		}
 
-		conversionApi.viewSelection.removeAllRanges();
+		const viewRanges = [];
 
 		for ( const range of selection.getRanges() ) {
 			const viewRange = conversionApi.mapper.toViewRange( range );
-			conversionApi.viewSelection.addRange( viewRange, selection.isBackward );
+			viewRanges.push( viewRange );
 		}
+
+		conversionApi.viewSelection.setTo( viewRanges, selection.isBackward );
 	};
 }
 
@@ -81,8 +81,7 @@ export function convertCollapsedSelection() {
 		const viewPosition = conversionApi.mapper.toViewPosition( modelPosition );
 		const brokenPosition = conversionApi.writer.breakAttributes( viewPosition );
 
-		conversionApi.viewSelection.removeAllRanges();
-		conversionApi.viewSelection.addRange( new ViewRange( brokenPosition, brokenPosition ) );
+		conversionApi.viewSelection.setTo( brokenPosition );
 	};
 }
 
@@ -121,7 +120,7 @@ export function clearAttributes() {
 				}
 			}
 		}
-		conversionApi.viewSelection.removeAllRanges();
+		conversionApi.viewSelection.setTo( null );
 	};
 }
 

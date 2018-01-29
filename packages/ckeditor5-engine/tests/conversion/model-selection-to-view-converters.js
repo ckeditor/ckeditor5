@@ -36,13 +36,13 @@ import { stringify as stringifyView } from '../../src/dev-utils/view';
 import { setData as setModelData } from '../../src/dev-utils/model';
 
 describe( 'model-selection-to-view-converters', () => {
-	let dispatcher, mapper, model, view, modelDoc, modelRoot, modelSelection, viewDoc, viewRoot, viewSelection, highlightDescriptor;
+	let dispatcher, mapper, model, view, modelDoc, modelRoot, docSelection, viewDoc, viewRoot, viewSelection, highlightDescriptor;
 
 	beforeEach( () => {
 		model = new Model();
 		modelDoc = model.document;
 		modelRoot = modelDoc.createRoot();
-		modelSelection = modelDoc.selection;
+		docSelection = modelDoc.selection;
 
 		model.schema.extend( '$text', { allowIn: '$root' } );
 
@@ -196,10 +196,9 @@ describe( 'model-selection-to-view-converters', () => {
 				setModelData( model, 'fo<$text bold="true">ob</$text>ar' );
 				const marker = model.markers.set( 'marker', ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 ) );
 
-				modelSelection.setRanges( [ new ModelRange( ModelPosition.createAt( modelRoot, 3 ) ) ] );
-
-				// Update selection attributes according to model.
-				modelSelection.refreshAttributes();
+				model.change( writer => {
+					writer.setSelection( new ModelRange( ModelPosition.createAt( modelRoot, 3 ) ) );
+				} );
 
 				// Remove view children manually (without firing additional conversion).
 				viewRoot.removeChildren( 0, viewRoot.childCount );
@@ -208,7 +207,7 @@ describe( 'model-selection-to-view-converters', () => {
 				view.change( writer => {
 					dispatcher.convertInsert( ModelRange.createIn( modelRoot ), writer );
 					dispatcher.convertMarkerAdd( marker.name, marker.getRange(), writer );
-					dispatcher.convertSelection( modelSelection, writer );
+					dispatcher.convertSelection( docSelection, writer );
 				} );
 
 				// Stringify view and check if it is same as expected.
@@ -221,12 +220,10 @@ describe( 'model-selection-to-view-converters', () => {
 				setModelData( model, 'fo<$text bold="true">ob</$text>ar' );
 				const marker = model.markers.set( 'marker', ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 ) );
 
-				modelSelection.setRanges( [ new ModelRange( ModelPosition.createAt( modelRoot, 3 ) ) ] );
-
-				// Update selection attributes according to model.
-				modelSelection.refreshAttributes();
-
-				modelSelection.removeAttribute( 'bold' );
+				model.change( writer => {
+					writer.setSelection( new ModelRange( ModelPosition.createAt( modelRoot, 3 ) ) );
+					writer.removeSelectionAttribute( 'bold' );
+				} );
 
 				// Remove view children manually (without firing additional conversion).
 				viewRoot.removeChildren( 0, viewRoot.childCount );
@@ -235,7 +232,7 @@ describe( 'model-selection-to-view-converters', () => {
 				view.change( writer => {
 					dispatcher.convertInsert( ModelRange.createIn( modelRoot ), writer );
 					dispatcher.convertMarkerAdd( marker.name, marker.getRange(), writer );
-					dispatcher.convertSelection( modelSelection, writer );
+					dispatcher.convertSelection( docSelection, writer );
 				} );
 
 				// Stringify view and check if it is same as expected.
@@ -251,7 +248,9 @@ describe( 'model-selection-to-view-converters', () => {
 				setModelData( model, 'foobar' );
 				const marker = model.markers.set( 'marker2', ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 ) );
 
-				modelSelection.setRanges( [ new ModelRange( ModelPosition.createAt( modelRoot, 3 ) ) ] );
+				model.change( writer => {
+					writer.setSelection( new ModelRange( ModelPosition.createAt( modelRoot, 3 ) ) );
+				} );
 
 				// Remove view children manually (without firing additional conversion).
 				viewRoot.removeChildren( 0, viewRoot.childCount );
@@ -260,7 +259,7 @@ describe( 'model-selection-to-view-converters', () => {
 				view.change( writer => {
 					dispatcher.convertInsert( ModelRange.createIn( modelRoot ), writer );
 					dispatcher.convertMarkerAdd( marker.name, marker.getRange(), writer );
-					dispatcher.convertSelection( modelSelection, writer );
+					dispatcher.convertSelection( docSelection, writer );
 				} );
 
 				// Stringify view and check if it is same as expected.
@@ -274,7 +273,9 @@ describe( 'model-selection-to-view-converters', () => {
 				setModelData( model, 'foobar' );
 				const marker = model.markers.set( 'marker3', ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 ) );
 
-				modelSelection.setRanges( [ new ModelRange( ModelPosition.createAt( modelRoot, 3 ) ) ] );
+				model.change( writer => {
+					writer.setSelection( new ModelRange( ModelPosition.createAt( modelRoot, 3 ) ) );
+				} );
 
 				// Remove view children manually (without firing additional conversion).
 				viewRoot.removeChildren( 0, viewRoot.childCount );
@@ -283,7 +284,7 @@ describe( 'model-selection-to-view-converters', () => {
 				view.change( writer => {
 					dispatcher.convertInsert( ModelRange.createIn( modelRoot ), writer );
 					dispatcher.convertMarkerAdd( marker.name, marker.getRange(), writer );
-					dispatcher.convertSelection( modelSelection, writer );
+					dispatcher.convertSelection( docSelection, writer );
 				} );
 
 				// Stringify view and check if it is same as expected.
@@ -301,12 +302,14 @@ describe( 'model-selection-to-view-converters', () => {
 					new ViewUIElement( 'span' )
 				] );
 
-				modelSelection.setRanges( [ new ModelRange( new ModelPosition( modelRoot, [ 0 ] ) ) ] );
-				modelSelection.setAttribute( 'bold', true );
+				model.change( writer => {
+					writer.setSelection( new ModelRange( new ModelPosition( modelRoot, [ 0 ] ) ) );
+					writer.setSelectionAttribute( 'bold', true );
+				} );
 
 				// Convert model to view.
 				view.change( writer => {
-					dispatcher.convertSelection( modelSelection, writer );
+					dispatcher.convertSelection( docSelection, writer );
 				} );
 
 				// Stringify view and check if it is same as expected.
@@ -318,8 +321,10 @@ describe( 'model-selection-to-view-converters', () => {
 			it( 'selection with attribute before ui element - has non-ui children #1', () => {
 				setModelData( model, 'x' );
 
-				modelSelection.setRanges( [ new ModelRange( new ModelPosition( modelRoot, [ 1 ] ) ) ] );
-				modelSelection.setAttribute( 'bold', true );
+				model.change( writer => {
+					writer.setSelection( new ModelRange( new ModelPosition( modelRoot, [ 1 ] ) ) );
+					writer.setSelectionAttribute( 'bold', true );
+				} );
 
 				// Convert model to view.
 				view.change( writer => {
@@ -329,7 +334,7 @@ describe( 'model-selection-to-view-converters', () => {
 					const uiElement = new ViewUIElement( 'span' );
 					viewRoot.insertChildren( 1, uiElement );
 
-					dispatcher.convertSelection( modelSelection, writer );
+					dispatcher.convertSelection( docSelection, writer );
 				} );
 
 				// Stringify view and check if it is same as expected.
@@ -341,8 +346,10 @@ describe( 'model-selection-to-view-converters', () => {
 			it( 'selection with attribute before ui element - has non-ui children #2', () => {
 				setModelData( model, '<$text bold="true">x</$text>y' );
 
-				modelSelection.setRanges( [ new ModelRange( new ModelPosition( modelRoot, [ 1 ] ) ) ] );
-				modelSelection.setAttribute( 'bold', true );
+				model.change( writer => {
+					writer.setSelection( new ModelRange( new ModelPosition( modelRoot, [ 1 ] ) ) );
+					writer.setSelectionAttribute( 'bold', true );
+				} );
 
 				// Convert model to view.
 				view.change( writer => {
@@ -351,7 +358,7 @@ describe( 'model-selection-to-view-converters', () => {
 					// Add ui element to view.
 					const uiElement = new ViewUIElement( 'span' );
 					viewRoot.insertChildren( 1, uiElement, writer );
-					dispatcher.convertSelection( modelSelection, writer );
+					dispatcher.convertSelection( docSelection, writer );
 				} );
 
 				// Stringify view and check if it is same as expected.
@@ -428,7 +435,9 @@ describe( 'model-selection-to-view-converters', () => {
 
 				view.change( writer => {
 					const modelRange = ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 1 );
-					modelDoc.selection.setRanges( [ modelRange ] );
+					model.change( writer => {
+						writer.setSelection( modelRange );
+					} );
 
 					dispatcher.convertSelection( modelDoc.selection, writer );
 				} );
@@ -452,7 +461,9 @@ describe( 'model-selection-to-view-converters', () => {
 					writer.mergeAttributes( viewSelection.getFirstPosition() );
 
 					const modelRange = ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 1 );
-					modelDoc.selection.setRanges( [ modelRange ] );
+					model.change( writer => {
+						writer.setSelection( modelRange );
+					} );
 
 					dispatcher.convertSelection( modelDoc.selection, writer );
 				} );
@@ -470,7 +481,7 @@ describe( 'model-selection-to-view-converters', () => {
 
 				view.change( writer => {
 					viewSelection.setFake( true );
-					dispatcher.convertSelection( modelSelection, writer );
+					dispatcher.convertSelection( docSelection, writer );
 				} );
 				expect( viewSelection.isFake ).to.be.false;
 			} );
@@ -559,21 +570,20 @@ describe( 'model-selection-to-view-converters', () => {
 		const endPos = new ModelPosition( modelRoot, endPath );
 
 		const isBackward = selectionPaths[ 2 ] === 'backward';
-		modelSelection.setRanges( [ new ModelRange( startPos, endPos ) ], isBackward );
+		model.change( writer => {
+			writer.setSelection( new ModelRange( startPos, endPos ), isBackward );
 
-		// Update selection attributes according to model.
-		modelSelection.refreshAttributes();
+			// And add or remove passed attributes.
+			for ( const key in selectionAttributes ) {
+				const value = selectionAttributes[ key ];
 
-		// And add or remove passed attributes.
-		for ( const key in selectionAttributes ) {
-			const value = selectionAttributes[ key ];
-
-			if ( value ) {
-				modelSelection.setAttribute( key, value );
-			} else {
-				modelSelection.removeAttribute( key );
+				if ( value ) {
+					writer.setSelectionAttribute( key, value );
+				} else {
+					writer.removeSelectionAttribute( key );
+				}
 			}
-		}
+		} );
 
 		// Remove view children manually (without firing additional conversion).
 		viewRoot.removeChildren( 0, viewRoot.childCount );
@@ -581,7 +591,7 @@ describe( 'model-selection-to-view-converters', () => {
 		// Convert model to view.
 		view.change( writer => {
 			dispatcher.convertInsert( ModelRange.createIn( modelRoot ), writer );
-			dispatcher.convertSelection( modelSelection, writer );
+			dispatcher.convertSelection( docSelection, writer );
 		} );
 
 		// Stringify view and check if it is same as expected.

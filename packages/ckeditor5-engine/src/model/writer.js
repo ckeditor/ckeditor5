@@ -35,6 +35,7 @@ import Element from './element';
 import RootElement from './rootelement';
 import Position from './position';
 import Range from './range.js';
+import DocumentSelection from './documentselection';
 
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 
@@ -152,7 +153,7 @@ export default class Writer {
 	 * second parameter is a {@link module:engine/model/item~Item model item}.
 	 */
 	insert( item, itemOrPosition, offset ) {
-		this._assertWriterUsageCorrectness();
+		this._assertWriterUsedCorrectly();
 
 		const position = Position.createAt( itemOrPosition, offset );
 
@@ -321,7 +322,7 @@ export default class Writer {
 	 * Model item or range on which the attribute will be set.
 	 */
 	setAttribute( key, value, itemOrRange ) {
-		this._assertWriterUsageCorrectness();
+		this._assertWriterUsedCorrectly();
 
 		if ( itemOrRange instanceof Range ) {
 			setAttributeOnRange( this, key, value, itemOrRange );
@@ -358,7 +359,7 @@ export default class Writer {
 	 * Model item or range from which the attribute will be removed.
 	 */
 	removeAttribute( key, itemOrRange ) {
-		this._assertWriterUsageCorrectness();
+		this._assertWriterUsedCorrectly();
 
 		if ( itemOrRange instanceof Range ) {
 			setAttributeOnRange( this, key, null, itemOrRange );
@@ -374,7 +375,7 @@ export default class Writer {
 	 * Model item or range from which all attributes will be removed.
 	 */
 	clearAttributes( itemOrRange ) {
-		this._assertWriterUsageCorrectness();
+		this._assertWriterUsedCorrectly();
 
 		const removeAttributesFromItem = item => {
 			for ( const attribute of item.getAttributeKeys() ) {
@@ -416,7 +417,7 @@ export default class Writer {
 	 * second parameter is a {@link module:engine/model/item~Item model item}.
 	 */
 	move( range, itemOrPosition, offset ) {
-		this._assertWriterUsageCorrectness();
+		this._assertWriterUsedCorrectly();
 
 		if ( !( range instanceof Range ) ) {
 			/**
@@ -464,7 +465,7 @@ export default class Writer {
 	 * @param {module:engine/model/item~Item|module:engine/model/range~Range} itemOrRange Model item or range to remove.
 	 */
 	remove( itemOrRange ) {
-		this._assertWriterUsageCorrectness();
+		this._assertWriterUsedCorrectly();
 
 		const addRemoveDelta = ( position, howMany ) => {
 			const delta = new RemoveDelta();
@@ -496,7 +497,7 @@ export default class Writer {
 	 * @param {module:engine/model/position~Position} position Position of merge.
 	 */
 	merge( position ) {
-		this._assertWriterUsageCorrectness();
+		this._assertWriterUsedCorrectly();
 
 		const delta = new MergeDelta();
 		this.batch.addDelta( delta );
@@ -548,7 +549,7 @@ export default class Writer {
 	 * @param {String} newName New element name.
 	 */
 	rename( element, newName ) {
-		this._assertWriterUsageCorrectness();
+		this._assertWriterUsedCorrectly();
 
 		if ( !( element instanceof Element ) ) {
 			/**
@@ -580,7 +581,7 @@ export default class Writer {
 	 * @param {module:engine/model/position~Position} position Position of split.
 	 */
 	split( position ) {
-		this._assertWriterUsageCorrectness();
+		this._assertWriterUsedCorrectly();
 
 		const delta = new SplitDelta();
 		this.batch.addDelta( delta );
@@ -631,7 +632,7 @@ export default class Writer {
 	 * @param {module:engine/model/element~Element|String} elementOrString Element or name of element to wrap the range with.
 	 */
 	wrap( range, elementOrString ) {
-		this._assertWriterUsageCorrectness();
+		this._assertWriterUsedCorrectly();
 
 		if ( !range.isFlat ) {
 			/**
@@ -691,7 +692,7 @@ export default class Writer {
 	 * @param {module:engine/model/element~Element} element Element to unwrap.
 	 */
 	unwrap( element ) {
-		this._assertWriterUsageCorrectness();
+		this._assertWriterUsedCorrectly();
 
 		if ( element.parent === null ) {
 			/**
@@ -739,7 +740,7 @@ export default class Writer {
 	 * @param {module:engine/model/range~Range} [newRange] Marker range.
 	 */
 	setMarker( markerOrName, newRange ) {
-		this._assertWriterUsageCorrectness();
+		this._assertWriterUsedCorrectly();
 
 		const name = typeof markerOrName == 'string' ? markerOrName : markerOrName.name;
 		const currentMarker = this.model.markers.get( name );
@@ -771,7 +772,7 @@ export default class Writer {
 	 * @param {module:engine/model/markercollection~Marker|String} markerOrName Marker or marker name to remove.
 	 */
 	removeMarker( markerOrName ) {
-		this._assertWriterUsageCorrectness();
+		this._assertWriterUsedCorrectly();
 
 		const name = typeof markerOrName == 'string' ? markerOrName : markerOrName.name;
 
@@ -790,19 +791,176 @@ export default class Writer {
 	}
 
 	/**
+	 * Sets this selection's ranges and direction to the specified location based on the given
+	 * {@link module:engine/model/selection~Selection selection}, {@link module:engine/model/position~Position position},
+	 * {@link module:engine/model/element~Element element}, {@link module:engine/model/position~Position position},
+	 * {@link module:engine/model/range~Range range}, an iterable of {@link module:engine/model/range~Range ranges} or null.
+	 *
+	 * Uses internally {@link module:engine/model/documentselection~DocumentSelection#_setTo}.
+	 *
+	 *		// Sets ranges from the given range.
+	 *		const range = new Range( start, end );
+	 *		writer.setSelection( range, isBackwardSelection );
+	 *
+	 *		// Sets ranges from the iterable of ranges.
+	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
+	 *		writer.setSelection( range, isBackwardSelection );
+	 *
+	 *		// Sets ranges from the other selection.
+	 *		const otherSelection = new Selection();
+	 *		writer.setSelection( otherSelection );
+	 *
+	 * 		// Sets ranges from the given document selection's ranges.
+	 *		const documentSelection = new DocumentSelection( doc );
+	 *		writer.setSelection( documentSelection );
+	 *
+	 * 		// Sets range at the given position.
+	 *		const position = new Position( root, path );
+	 *		writer.setSelection( position );
+	 *
+	 * 		// Sets range at the given element.
+	 *		const paragraph = writer.createElement( 'paragraph' );
+	 *		writer.setSelection( paragraph, offset );
+	 *
+	 * 		// Removes all ranges.
+	 *		writer.setSelection( null );
+	 *
+	 * Throws `writer-incorrect-use` error when the writer is used outside the `change()` block.
+	 *
+	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
+	 * module:engine/model/position~Position|module:engine/model/element~Element|
+	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} selectable
+	 * @param {Boolean|Number|'before'|'end'|'after'} [backwardSelectionOrOffset]
+	 */
+	setSelection( selectable, backwardSelectionOrOffset ) {
+		this._assertWriterUsedCorrectly();
+
+		this.model.document.selection._setTo( selectable, backwardSelectionOrOffset );
+	}
+
+	/**
+	 * Moves {@link module:engine/model/documentselection~DocumentSelection#focus} to the specified location.
+	 *
+	 * The location can be specified in the same form as {@link module:engine/model/position~Position.createAt} parameters.
+	 *
+	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
+	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
+	 * first parameter is a {@link module:engine/model/item~Item model item}.
+	 */
+	setSelectionFocus( itemOrPosition, offset ) {
+		this._assertWriterUsedCorrectly();
+
+		this.model.document.selection._setFocus( itemOrPosition, offset );
+	}
+
+	/**
+	 * Sets attribute(s) on the selection. If attribute with the same key already is set, it's value is overwritten.
+	 *
+	 * Using key and value pair:
+	 *
+	 * 	writer.setSelectionAttribute( 'italic', true );
+	 *
+	 * Using key-value object:
+	 *
+	 * 	writer.setSelectionAttribute( { italic: true, bold: false } );
+	 *
+	 * Using iterable object:
+	 *
+	 * 	writer.setSelectionAttribute( new Map( [ [ 'italic', true ] ] ) );
+	 *
+	 * @param {String|Object|Iterable.<*>} keyOrObjectOrIterable Key of the attribute to set
+	 * or object / iterable of key - value attribute pairs.
+	 * @param {*} [value] Attribute value.
+	 */
+	setSelectionAttribute( keyOrObjectOrIterable, value ) {
+		this._assertWriterUsedCorrectly();
+
+		if ( typeof keyOrObjectOrIterable === 'string' ) {
+			this._setSelectionAttribute( keyOrObjectOrIterable, value );
+		} else {
+			for ( const [ key, value ] of toMap( keyOrObjectOrIterable ) ) {
+				this._setSelectionAttribute( key, value );
+			}
+		}
+	}
+
+	/**
+	 * Removes attribute(s) with given key(s) from the selection.
+	 *
+	 * Using key
+	 *
+	 * 	writer.removeSelectionAttribute( 'italic' );
+	 *
+	 * Using iterable of keys
+	 *
+	 * 	writer.removeSelectionAttribute( [ 'italic', 'bold' ] );
+	 *
+	 * @param {String|Iterable.<String>} keyOrIterableOfKeys Key of the attribute to remove or an iterable of attribute keys to remove.
+	 */
+	removeSelectionAttribute( keyOrIterableOfKeys ) {
+		this._assertWriterUsedCorrectly();
+
+		if ( typeof keyOrIterableOfKeys === 'string' ) {
+			this._removeSelectionAttribute( keyOrIterableOfKeys );
+		} else {
+			for ( const key of keyOrIterableOfKeys ) {
+				this._removeSelectionAttribute( key );
+			}
+		}
+	}
+
+	/**
+	 * @private
+	 * @param {String} key Key of the attribute to remove.
+	 * @param {*} value Attribute value.
+	 */
+	_setSelectionAttribute( key, value ) {
+		const selection = this.model.document.selection;
+
+		// Store attribute in parent element if the selection is collapsed in an empty node.
+		if ( selection.isCollapsed && selection.anchor.parent.isEmpty ) {
+			const storeKey = DocumentSelection._getStoreAttributeKey( key );
+
+			this.setAttribute( storeKey, value, selection.anchor.parent );
+		}
+
+		selection._setAttribute( key, value );
+	}
+
+	/**
+	 * @private
+	 * @param {String} key Key of the attribute to remove.
+	 */
+	_removeSelectionAttribute( key ) {
+		const selection = this.model.document.selection;
+
+		// Remove stored attribute from parent element if the selection is collapsed in an empty node.
+		if ( selection.isCollapsed && selection.anchor.parent.isEmpty ) {
+			const storeKey = DocumentSelection._getStoreAttributeKey( key );
+
+			this.removeAttribute( storeKey, selection.anchor.parent );
+		}
+
+		selection._removeAttribute( key );
+	}
+
+	/**
 	 * Throws `writer-detached-writer-tries-to-modify-model` error when the writer is used outside of the `change()` block.
 	 *
 	 * @private
 	 */
-	_assertWriterUsageCorrectness() {
+	_assertWriterUsedCorrectly() {
 		/**
-		 * Detached writer tries to modify the model. Be sure, that your Writer is used
-		 * within the `model.change()` or `model.enqueueChange()` block.
+		 * Trying to use a writer outside a {@link module:engine/model/model~Model#change `change()` or
+		 * {@link module:engine/model/model~Model#enqueueChange `enqueueChange()`} blocks.
 		 *
-		 * @error writer-detached-writer-tries-to-modify-model
+		 * The writer can only be used inside these blocks which ensures that the model
+		 * can only be changed during such "sessions".
+		 *
+		 * @error writer-incorrect-use
 		 */
 		if ( this.model._currentWriter !== this ) {
-			throw new CKEditorError( 'writer-detached-writer-tries-to-modify-model: Detached writer tries to modify the model.' );
+			throw new CKEditorError( 'writer-incorrect-use: Trying to use a writer outside the change() block.' );
 		}
 	}
 }

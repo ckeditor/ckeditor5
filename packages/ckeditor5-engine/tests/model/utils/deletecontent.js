@@ -6,6 +6,7 @@
 import Model from '../../../src/model/model';
 import Position from '../../../src/model/position';
 import Range from '../../../src/model/range';
+import Selection from '../../../src/model/selection';
 import Element from '../../../src/model/element';
 import deleteContent from '../../../src/model/utils/deletecontent';
 import { setData, getData } from '../../../src/dev-utils/model';
@@ -38,6 +39,22 @@ describe( 'DataController utils', () => {
 
 				schema.register( 'image', { allowWhere: '$text' } );
 				schema.extend( '$text', { allowIn: '$root' } );
+			} );
+
+			it( 'should be able to delete content at custom selection', () => {
+				setData( model, 'a[]bcd' );
+
+				const range = new Range(
+					new Position( doc.getRoot(), [ 2 ] ),
+					new Position( doc.getRoot(), [ 3 ] )
+				);
+
+				const selection = new Selection( [ range ] );
+
+				model.change( () => {
+					deleteContent( model, selection );
+					expect( getData( model ) ).to.equal( 'a[]bd' );
+				} );
 			} );
 
 			test(
@@ -335,7 +352,9 @@ describe( 'DataController utils', () => {
 						new Position( doc.getRoot(), [ 1, 0, 0, 1 ] ) // b]ar
 					);
 
-					doc.selection.setRanges( [ range ] );
+					model.change( writer => {
+						writer.setSelection( range );
+					} );
 
 					deleteContent( model, doc.selection );
 
@@ -380,7 +399,9 @@ describe( 'DataController utils', () => {
 						new Position( doc.getRoot(), [ 1, 1 ] ) // b]om
 					);
 
-					doc.selection.setRanges( [ range ] );
+					model.change( writer => {
+						writer.setSelection( range );
+					} );
 
 					deleteContent( model, doc.selection );
 
@@ -423,7 +444,9 @@ describe( 'DataController utils', () => {
 						new Position( doc.getRoot(), [ 1, 0, 0, 3 ] ) // bar]
 					);
 
-					doc.selection.setRanges( [ range ] );
+					model.change( writer => {
+						writer.setSelection( range );
+					} );
 
 					deleteContent( model, doc.selection );
 
@@ -466,28 +489,22 @@ describe( 'DataController utils', () => {
 				beforeEach( () => {
 					const schema = model.schema;
 
-					schema.on( 'checkAttribute', ( evt, args ) => {
-						const ctx = args[ 0 ];
-						const attributeName = args[ 1 ];
+					schema.addAttributeCheck( ( ctx, attributeName ) => {
+						// Disallow 'c' on pchild>pchild>$text.
+						if ( ctx.endsWith( 'pchild pchild $text' ) && attributeName == 'c' ) {
+							return false;
+						}
 
 						// Allow 'a' and 'b' on paragraph>$text.
 						if ( ctx.endsWith( 'paragraph $text' ) && [ 'a', 'b' ].includes( attributeName ) ) {
-							evt.stop();
-							evt.return = true;
+							return true;
 						}
 
 						// Allow 'b' and 'c' in pchild>$text.
 						if ( ctx.endsWith( 'pchild $text' ) && [ 'b', 'c' ].includes( attributeName ) ) {
-							evt.stop();
-							evt.return = true;
+							return true;
 						}
-
-						// Disallow 'c' on pchild>pchild>$text.
-						if ( ctx.endsWith( 'pchild pchild $text' ) && attributeName == 'c' ) {
-							evt.stop();
-							evt.return = false;
-						}
-					}, { priority: 'high' } );
+					} );
 
 					schema.extend( 'pchild', { allowIn: 'pchild' } );
 				} );
@@ -586,6 +603,25 @@ describe( 'DataController utils', () => {
 
 				expect( getData( model, { rootName: 'bodyRoot' } ) )
 					.to.equal( '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>z</paragraph>' );
+			} );
+
+			it( 'creates a paragraph when text is not allowed (custom selection)', () => {
+				setData(
+					model,
+					'[<paragraph>x</paragraph>]<paragraph>yyy</paragraph><paragraph>z</paragraph>',
+					{ rootName: 'bodyRoot' }
+				);
+
+				const root = doc.getRoot( 'bodyRoot' );
+
+				const selection = new Selection( [
+					new Range( new Position( root, [ 1 ] ), new Position( root, [ 2 ] ) )
+				] );
+
+				deleteContent( model, selection );
+
+				expect( getData( model, { rootName: 'bodyRoot' } ) )
+					.to.equal( '[<paragraph>x</paragraph>]<paragraph></paragraph><paragraph>z</paragraph>' );
 			} );
 
 			it( 'creates a paragraph when text is not allowed (block widget selected)', () => {

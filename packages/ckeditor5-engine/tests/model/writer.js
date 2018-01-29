@@ -17,8 +17,8 @@ import Range from '../../src/model/range';
 
 import count from '@ckeditor/ckeditor5-utils/src/count';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-
 import { getNodesAndText } from '../../tests/model/_utils/utils';
+import DocumentSelection from '../../src/model/documentselection';
 
 describe( 'Writer', () => {
 	let model, doc, batch;
@@ -334,7 +334,7 @@ describe( 'Writer', () => {
 
 			expect( () => {
 				writer.insert( node, root );
-			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+			} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 		} );
 	} );
 
@@ -459,7 +459,7 @@ describe( 'Writer', () => {
 
 			expect( () => {
 				writer.insertText( 'foo', parent );
-			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+			} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 		} );
 	} );
 
@@ -580,7 +580,7 @@ describe( 'Writer', () => {
 
 			expect( () => {
 				writer.insertElement( 'foo', child, 'after' );
-			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+			} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 		} );
 	} );
 
@@ -776,7 +776,7 @@ describe( 'Writer', () => {
 
 			expect( () => {
 				writer.appendText( 'foo', parent );
-			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+			} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 		} );
 	} );
 
@@ -829,7 +829,7 @@ describe( 'Writer', () => {
 
 			expect( () => {
 				writer.appendElement( 'foo', parent );
-			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+			} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 		} );
 	} );
 
@@ -889,7 +889,7 @@ describe( 'Writer', () => {
 
 					expect( () => {
 						writer.setAttribute( 'a', 1, node );
-					} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+					} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 				} );
 			} );
 
@@ -916,7 +916,7 @@ describe( 'Writer', () => {
 
 					expect( () => {
 						writer.removeAttribute( 'b', node );
-					} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+					} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 				} );
 			} );
 		} );
@@ -1063,7 +1063,7 @@ describe( 'Writer', () => {
 
 					expect( () => {
 						writer.setAttribute( 'a', 1, getRange( 0, 20 ) );
-					} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+					} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 				} );
 			} );
 
@@ -1146,7 +1146,7 @@ describe( 'Writer', () => {
 
 					expect( () => {
 						writer.removeAttribute( 'a', getRange( 3, 15 ) );
-					} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+					} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 				} );
 			} );
 		} );
@@ -1205,7 +1205,7 @@ describe( 'Writer', () => {
 
 					expect( () => {
 						writer.setAttribute( 'a', 1, p );
-					} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+					} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 				} );
 			} );
 
@@ -1228,7 +1228,7 @@ describe( 'Writer', () => {
 
 					expect( () => {
 						writer.removeAttribute( 'b', root );
-					} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+					} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 				} );
 			} );
 
@@ -1292,7 +1292,7 @@ describe( 'Writer', () => {
 
 					expect( () => {
 						writer.clearAttributes( element );
-					} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+					} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 				} );
 			} );
 		} );
@@ -1412,7 +1412,7 @@ describe( 'Writer', () => {
 
 			expect( () => {
 				writer.setAttributes( new Map( [ [ 'a', 3 ], [ 'c', null ] ] ), item );
-			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+			} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 		} );
 	} );
 
@@ -1468,7 +1468,7 @@ describe( 'Writer', () => {
 
 			expect( () => {
 				writer.merge( new Position( root, [ 1 ] ) );
-			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+			} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 		} );
 	} );
 
@@ -1523,7 +1523,7 @@ describe( 'Writer', () => {
 
 			expect( () => {
 				writer.move( range, new Position( root, [ 1, 3 ] ) );
-			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+			} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 		} );
 	} );
 
@@ -1600,7 +1600,7 @@ describe( 'Writer', () => {
 
 				expect( () => {
 					writer.remove( range );
-				} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+				} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 			} );
 		} );
 
@@ -1659,7 +1659,7 @@ describe( 'Writer', () => {
 
 				expect( () => {
 					writer.remove( range );
-				} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+				} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 			} );
 		} );
 	} );
@@ -1701,7 +1701,7 @@ describe( 'Writer', () => {
 
 			expect( () => {
 				writer.rename( p, 'h' );
-			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+			} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 		} );
 	} );
 
@@ -1795,7 +1795,7 @@ describe( 'Writer', () => {
 
 			expect( () => {
 				writer.split( new Position( root, [ 0, 3 ] ) );
-			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+			} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 		} );
 	} );
 
@@ -1872,7 +1872,7 @@ describe( 'Writer', () => {
 
 			expect( () => {
 				writer.wrap( range, 'p' );
-			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+			} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 		} );
 	} );
 
@@ -1915,7 +1915,7 @@ describe( 'Writer', () => {
 
 			expect( () => {
 				writer.unwrap( p );
-			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+			} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 		} );
 	} );
 
@@ -1982,7 +1982,7 @@ describe( 'Writer', () => {
 
 			expect( () => {
 				writer.setMarker( marker );
-			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+			} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 		} );
 	} );
 
@@ -2013,7 +2013,7 @@ describe( 'Writer', () => {
 
 			expect( () => {
 				writer.removeMarker( 'name' );
-			} ).to.throw( CKEditorError, /^writer-detached-writer-tries-to-modify-model/ );
+			} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 		} );
 
 		it( 'should accept marker instance', () => {
@@ -2023,6 +2023,177 @@ describe( 'Writer', () => {
 			removeMarker( marker );
 
 			expect( model.markers.get( 'name' ) ).to.be.null;
+		} );
+	} );
+
+	describe( 'setSelection()', () => {
+		let root;
+
+		beforeEach( () => {
+			model.schema.register( 'p', { inheritAllFrom: '$block' } );
+			model.schema.extend( 'p', { allowIn: '$root' } );
+
+			root = doc.createRoot();
+			root.appendChildren( [
+				new Element( 'p' ),
+				new Element( 'p' ),
+				new Element( 'p', [], new Text( 'foo' ) )
+			] );
+		} );
+
+		it( 'should use DocumentSelection#_setTo method', () => {
+			const firstParagraph = root.getNodeByPath( [ 1 ] );
+
+			const setToSpy = sinon.spy( DocumentSelection.prototype, '_setTo' );
+			setSelection( firstParagraph );
+
+			expect( setToSpy.calledOnce ).to.be.true;
+			setToSpy.restore();
+		} );
+
+		it( 'should change document selection ranges', () => {
+			const range = new Range( new Position( root, [ 1 ] ), new Position( root, [ 2, 2 ] ) );
+
+			setSelection( range, true );
+
+			expect( model.document.selection._ranges.length ).to.equal( 1 );
+			expect( model.document.selection._ranges[ 0 ].start.path ).to.deep.equal( [ 1 ] );
+			expect( model.document.selection._ranges[ 0 ].end.path ).to.deep.equal( [ 2, 2 ] );
+			expect( model.document.selection.isBackward ).to.be.true;
+		} );
+	} );
+
+	describe( 'setSelectionFocus()', () => {
+		let root;
+
+		beforeEach( () => {
+			model.schema.register( 'p', { inheritAllFrom: '$block' } );
+			model.schema.extend( 'p', { allowIn: '$root' } );
+
+			root = doc.createRoot();
+			root.appendChildren( [
+				new Element( 'p' ),
+				new Element( 'p' ),
+				new Element( 'p', [], new Text( 'foo' ) )
+			] );
+		} );
+
+		it( 'should use DocumentSelection#_setFocus method', () => {
+			const firstParagraph = root.getNodeByPath( [ 1 ] );
+
+			const setFocusSpy = sinon.spy( DocumentSelection.prototype, '_setFocus' );
+			setSelectionFocus( firstParagraph );
+
+			expect( setFocusSpy.calledOnce ).to.be.true;
+			setFocusSpy.restore();
+		} );
+
+		it( 'should change document selection ranges', () => {
+			setSelection( new Position( root, [ 1 ] ) );
+			setSelectionFocus( new Position( root, [ 2, 2 ] ) );
+
+			expect( model.document.selection._ranges.length ).to.equal( 1 );
+			expect( model.document.selection._ranges[ 0 ].start.path ).to.deep.equal( [ 1 ] );
+			expect( model.document.selection._ranges[ 0 ].end.path ).to.deep.equal( [ 2, 2 ] );
+		} );
+	} );
+
+	describe( 'setSelectionAttribute()', () => {
+		const fooStoreAttrKey = DocumentSelection._getStoreAttributeKey( 'foo' );
+		let root, rangeInEmptyP, emptyP;
+
+		beforeEach( () => {
+			model.schema.register( 'p', { inheritAllFrom: '$block' } );
+			model.schema.extend( 'p', { allowIn: '$root' } );
+
+			root = doc.createRoot();
+			root.appendChildren( [
+				new Element( 'p', [], [] ),
+				new Element( 'p' ),
+				new Element( 'p', [], new Text( 'foo' ) )
+			] );
+
+			rangeInEmptyP = new Range( new Position( root, [ 0, 0 ] ), new Position( root, [ 0, 0 ] ) );
+			emptyP = root.getChild( 0 );
+		} );
+
+		it( 'should store attribute if the selection is in empty node', () => {
+			setSelection( rangeInEmptyP );
+			setSelectionAttribute( 'foo', 'bar' );
+
+			expect( model.document.selection.getAttribute( 'foo' ) ).to.equal( 'bar' );
+
+			expect( emptyP.getAttribute( fooStoreAttrKey ) ).to.equal( 'bar' );
+		} );
+
+		it( 'should be able to store attributes from the given object', () => {
+			setSelection( rangeInEmptyP );
+			setSelectionAttribute( { key1: 'foo', key2: 'bar' } );
+
+			expect( model.document.selection.getAttribute( 'key1' ) ).to.equal( 'foo' );
+			expect( model.document.selection.getAttribute( 'key2' ) ).to.equal( 'bar' );
+		} );
+
+		it( 'should be able to store attributes from the given iterable', () => {
+			setSelection( rangeInEmptyP );
+			setSelectionAttribute( new Map( [ [ 'key1', 'foo' ], [ 'key2', 'bar' ] ] ) );
+
+			expect( model.document.selection.getAttribute( 'key1' ) ).to.equal( 'foo' );
+			expect( model.document.selection.getAttribute( 'key2' ) ).to.equal( 'bar' );
+		} );
+	} );
+
+	describe( 'removeSelectionAttribute()', () => {
+		const fooStoreAttrKey = DocumentSelection._getStoreAttributeKey( 'foo' );
+		let root, rangeInEmptyP, emptyP;
+
+		beforeEach( () => {
+			model.schema.register( 'p', { inheritAllFrom: '$block' } );
+			model.schema.extend( 'p', { allowIn: '$root' } );
+
+			root = doc.createRoot();
+			root.appendChildren( [
+				new Element( 'p', [], [] ),
+				new Element( 'p' ),
+				new Element( 'p', [], new Text( 'foo' ) )
+			] );
+
+			rangeInEmptyP = new Range( new Position( root, [ 0, 0 ] ), new Position( root, [ 0, 0 ] ) );
+			emptyP = root.getChild( 0 );
+		} );
+
+		it( 'should remove stored attribute if the selection is in empty node', () => {
+			setSelection( rangeInEmptyP );
+			setSelectionAttribute( 'foo', 'bar' );
+			removeSelectionAttribute( 'foo' );
+
+			expect( model.document.selection.getAttribute( 'foo' ) ).to.be.undefined;
+
+			expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
+		} );
+
+		it( 'should remove all attributes from the given iterable', () => {
+			setSelection( rangeInEmptyP );
+			setSelectionAttribute( 'foo', 'bar' );
+			setSelectionAttribute( 'foo2', 'bar2' );
+			removeSelectionAttribute( [ 'foo', 'foo2' ] );
+
+			expect( model.document.selection.getAttribute( 'foo' ) ).to.be.undefined;
+			expect( model.document.selection.getAttribute( 'foo2' ) ).to.be.undefined;
+
+			expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
+		} );
+
+		it( 'should do nothing if attribute does not exist in the selection', () => {
+			setSelection( rangeInEmptyP );
+			setSelectionAttribute( 'foo', 'bar' );
+			setSelectionAttribute( 'foo2', 'bar2' );
+			removeSelectionAttribute( [ 'foo', 'baz' ] );
+
+			expect( model.document.selection.getAttribute( 'foo' ) ).to.be.undefined;
+			expect( model.document.selection.getAttribute( 'foo2' ) ).to.equal( 'bar2' );
+
+			expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
 		} );
 	} );
 
@@ -2155,6 +2326,30 @@ describe( 'Writer', () => {
 	function removeMarker( markerOrName ) {
 		model.enqueueChange( batch, writer => {
 			writer.removeMarker( markerOrName );
+		} );
+	}
+
+	function setSelection( selectable, backwardSelectionOrOffset ) {
+		model.enqueueChange( batch, writer => {
+			writer.setSelection( selectable, backwardSelectionOrOffset );
+		} );
+	}
+
+	function setSelectionFocus( itemOrPosition, offset ) {
+		model.enqueueChange( batch, writer => {
+			writer.setSelectionFocus( itemOrPosition, offset );
+		} );
+	}
+
+	function setSelectionAttribute( key, value ) {
+		model.enqueueChange( batch, writer => {
+			writer.setSelectionAttribute( key, value );
+		} );
+	}
+
+	function removeSelectionAttribute( key ) {
+		model.enqueueChange( batch, writer => {
+			writer.removeSelectionAttribute( key );
 		} );
 	}
 } );

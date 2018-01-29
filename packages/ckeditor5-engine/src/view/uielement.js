@@ -68,11 +68,31 @@ export default class UIElement extends Element {
 	/**
 	 * Renders this {@link module:engine/view/uielement~UIElement} to DOM. This method is called by
 	 * {@link module:engine/view/domconverter~DomConverter}.
+	 * Do not use inheritance to create custom rendering method, replace `render()` method instead:
+	 *
+	 *		const myUIElement = new UIElement( 'span' );
+	 *		myUIElement.render = function( domDocument ) {
+	 *			const domElement = this.toDomElement( domDocument );
+	 *			domElement.innerHTML = '<b>this is ui element</b>';
+	 *
+	 *			return domElement;
+	 *		};
 	 *
 	 * @param {Document} domDocument
 	 * @return {HTMLElement}
 	 */
 	render( domDocument ) {
+		return this.toDomElement( domDocument );
+	}
+
+	/**
+	 * Creates DOM element based on this view UIElement.
+	 * Note that each time this method is called new DOM element is created.
+	 *
+	 * @param {Document} domDocument
+	 * @returns {HTMLElement}
+	 */
+	toDomElement( domDocument ) {
 		const domElement = domDocument.createElement( this.name );
 
 		for ( const key of this.getAttributeKeys() ) {

@@ -164,20 +164,24 @@ describe( 'DomEventObserver', () => {
 	describe( 'integration with UIElement', () => {
 		let domRoot, domEvent, evtSpy, uiElement;
 
-		class MyUIElement extends UIElement {
-			render( domDocument ) {
-				const root = super.render( domDocument );
+		function createUIElement( name ) {
+			const element = new UIElement( name );
+
+			element.render = function( domDocument ) {
+				const root = this.toDomElement( domDocument );
 				root.innerHTML = '<span>foo bar</span>';
 
 				return root;
-			}
+			};
+
+			return element;
 		}
 
 		beforeEach( () => {
 			domRoot = document.createElement( 'div' );
 			const viewRoot = createViewRoot( viewDocument );
 			view.attachDomRoot( domRoot );
-			uiElement = new MyUIElement( 'p' );
+			uiElement = createUIElement( 'p' );
 			viewRoot.appendChildren( uiElement );
 			view.render();
 

@@ -46,7 +46,7 @@ describe( 'convertSelectionChange', () => {
 
 	it( 'should convert collapsed selection', () => {
 		const viewSelection = new ViewSelection();
-		viewSelection.addRange( ViewRange.createFromParentsAndOffsets(
+		viewSelection.setTo( ViewRange.createFromParentsAndOffsets(
 			viewRoot.getChild( 0 ).getChild( 0 ), 1, viewRoot.getChild( 0 ).getChild( 0 ), 1 ) );
 
 		convertSelection( null, { newSelection: viewSelection } );
@@ -62,10 +62,9 @@ describe( 'convertSelectionChange', () => {
 		// Re-bind elements that were just re-set.
 		mapper.bindElements( modelRoot.getChild( 0 ), viewRoot.getChild( 0 ) );
 
-		const viewSelection = new ViewSelection();
-		viewSelection.addRange(
+		const viewSelection = new ViewSelection( [
 			ViewRange.createFromParentsAndOffsets( viewRoot.getChild( 0 ).getChild( 0 ), 2, viewRoot.getChild( 0 ).getChild( 0 ), 6 )
-		);
+		] );
 
 		convertSelection( null, { newSelection: viewSelection } );
 
@@ -73,11 +72,12 @@ describe( 'convertSelectionChange', () => {
 	} );
 
 	it( 'should convert multi ranges selection', () => {
-		const viewSelection = new ViewSelection();
-		viewSelection.addRange( ViewRange.createFromParentsAndOffsets(
-			viewRoot.getChild( 0 ).getChild( 0 ), 1, viewRoot.getChild( 0 ).getChild( 0 ), 2 ) );
-		viewSelection.addRange( ViewRange.createFromParentsAndOffsets(
-			viewRoot.getChild( 1 ).getChild( 0 ), 1, viewRoot.getChild( 1 ).getChild( 0 ), 2 ) );
+		const viewSelection = new ViewSelection( [
+			ViewRange.createFromParentsAndOffsets(
+				viewRoot.getChild( 0 ).getChild( 0 ), 1, viewRoot.getChild( 0 ).getChild( 0 ), 2 ),
+			ViewRange.createFromParentsAndOffsets(
+				viewRoot.getChild( 1 ).getChild( 0 ), 1, viewRoot.getChild( 1 ).getChild( 0 ), 2 )
+		] );
 
 		convertSelection( null, { newSelection: viewSelection } );
 
@@ -99,11 +99,12 @@ describe( 'convertSelectionChange', () => {
 	} );
 
 	it( 'should convert reverse selection', () => {
-		const viewSelection = new ViewSelection();
-		viewSelection.addRange( ViewRange.createFromParentsAndOffsets(
-			viewRoot.getChild( 0 ).getChild( 0 ), 1, viewRoot.getChild( 0 ).getChild( 0 ), 2 ), true );
-		viewSelection.addRange( ViewRange.createFromParentsAndOffsets(
-			viewRoot.getChild( 1 ).getChild( 0 ), 1, viewRoot.getChild( 1 ).getChild( 0 ), 2 ), true );
+		const viewSelection = new ViewSelection( [
+			ViewRange.createFromParentsAndOffsets(
+				viewRoot.getChild( 0 ).getChild( 0 ), 1, viewRoot.getChild( 0 ).getChild( 0 ), 2 ),
+			ViewRange.createFromParentsAndOffsets(
+				viewRoot.getChild( 1 ).getChild( 0 ), 1, viewRoot.getChild( 1 ).getChild( 0 ), 2 )
+		], true );
 
 		convertSelection( null, { newSelection: viewSelection } );
 
@@ -112,9 +113,10 @@ describe( 'convertSelectionChange', () => {
 	} );
 
 	it( 'should not enqueue changes if selection has not changed', () => {
-		const viewSelection = new ViewSelection();
-		viewSelection.addRange( ViewRange.createFromParentsAndOffsets(
-			viewRoot.getChild( 0 ).getChild( 0 ), 1, viewRoot.getChild( 0 ).getChild( 0 ), 1 ) );
+		const viewSelection = new ViewSelection( [
+			ViewRange.createFromParentsAndOffsets(
+				viewRoot.getChild( 0 ).getChild( 0 ), 1, viewRoot.getChild( 0 ).getChild( 0 ), 1 )
+		] );
 
 		convertSelection( null, { newSelection: viewSelection } );
 

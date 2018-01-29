@@ -10,13 +10,15 @@
 import LivePosition from '../liveposition';
 import Position from '../position';
 import Range from '../range';
+import DocumentSelection from '../documentselection';
 
 /**
  * Deletes content of the selection and merge siblings. The resulting selection is always collapsed.
  *
  * @param {module:engine/model/model~Model} model The model in context of which the insertion
  * should be performed.
- * @param {module:engine/model/selection~Selection} selection Selection of which the content should be deleted.
+ * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
+ * Selection of which the content should be deleted.
  * @param {module:engine/model/batch~Batch} batch Batch to which the deltas will be added.
  * @param {Object} [options]
  * @param {Boolean} [options.leaveUnmerged=false] Whether to merge elements after removing the content of the selection.
@@ -82,7 +84,11 @@ export default function deleteContent( model, selection, options = {} ) {
 			schema.removeDisallowedAttributes( startPos.parent.getChildren(), writer );
 		}
 
-		selection.setCollapsedAt( startPos );
+		if ( selection instanceof DocumentSelection ) {
+			writer.setSelection( startPos );
+		} else {
+			selection.setTo( startPos );
+		}
 
 		// 4. Autoparagraphing.
 		// Check if a text is allowed in the new container. If not, try to create a new paragraph (if it's allowed here).
@@ -186,7 +192,12 @@ function insertParagraph( writer, position, selection ) {
 	const paragraph = writer.createElement( 'paragraph' );
 
 	writer.insert( paragraph, position );
-	selection.setCollapsedAt( paragraph );
+
+	if ( selection instanceof DocumentSelection ) {
+		writer.setSelection( paragraph );
+	} else {
+		selection.setTo( paragraph );
+	}
 }
 
 function replaceEntireContentWithParagraph( writer, selection ) {

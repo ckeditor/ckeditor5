@@ -255,7 +255,7 @@ describe( 'view', () => {
 				left: '-1000px'
 			} );
 
-			viewDocument.selection.addRange( range );
+			viewDocument.selection.setTo( range );
 
 			view.scrollToTheSelection();
 			sinon.assert.calledWithMatch( stub, sinon.match.number, sinon.match.number );
@@ -301,7 +301,7 @@ describe( 'view', () => {
 			document.body.appendChild( domEditable );
 			viewEditable = createViewRoot( viewDocument, 'div', 'main' );
 			view.attachDomRoot( domEditable );
-			viewDocument.selection.addRange( ViewRange.createFromParentsAndOffsets( viewEditable, 0, viewEditable, 0 ) );
+			viewDocument.selection.setTo( ViewRange.createFromParentsAndOffsets( viewEditable, 0, viewEditable, 0 ) );
 		} );
 
 		afterEach( () => {
@@ -338,7 +338,7 @@ describe( 'view', () => {
 
 		it( 'should log warning when no selection', () => {
 			const logSpy = testUtils.sinon.stub( log, 'warn' );
-			viewDocument.selection.removeAllRanges();
+			viewDocument.selection.setTo( null );
 
 			view.focus();
 			expect( logSpy.calledOnce ).to.be.true;

@@ -113,8 +113,7 @@ describe( 'View', () => {
 			const viewB = viewDocument.selection.getFirstPosition().parent;
 			const viewTextX = parse( 'x' );
 			viewB.appendChildren( viewTextX );
-			viewDocument.selection.removeAllRanges();
-			viewDocument.selection.addRange( ViewRange.createFromParentsAndOffsets( viewTextX, 1, viewTextX, 1 ) );
+			viewDocument.selection.setTo( ViewRange.createFromParentsAndOffsets( viewTextX, 1, viewTextX, 1 ) );
 
 			const domB = view.getDomRoot( 'main' ).querySelector( 'b' );
 			const domSelection = document.getSelection();

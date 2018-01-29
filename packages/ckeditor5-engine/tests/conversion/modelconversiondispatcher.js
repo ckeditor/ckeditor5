@@ -253,10 +253,12 @@ describe( 'ModelConversionDispatcher', () => {
 			dispatcher.off( 'selection' );
 
 			root.appendChildren( new ModelText( 'foobar' ) );
-			doc.selection.setRanges( [
-				new ModelRange( new ModelPosition( root, [ 1 ] ), new ModelPosition( root, [ 3 ] ) ),
-				new ModelRange( new ModelPosition( root, [ 4 ] ), new ModelPosition( root, [ 5 ] ) )
-			] );
+			model.change( writer => {
+				writer.setSelection( [
+					new ModelRange( new ModelPosition( root, [ 1 ] ), new ModelPosition( root, [ 3 ] ) ),
+					new ModelRange( new ModelPosition( root, [ 4 ] ), new ModelPosition( root, [ 5 ] ) )
+				] );
+			} );
 		} );
 
 		it( 'should fire selection event', () => {
@@ -300,9 +302,11 @@ describe( 'ModelConversionDispatcher', () => {
 		} );
 
 		it( 'should fire attributes events for collapsed selection', () => {
-			doc.selection.setRanges( [
-				new ModelRange( new ModelPosition( root, [ 2 ] ), new ModelPosition( root, [ 2 ] ) )
-			] );
+			model.change( writer => {
+				writer.setSelection(
+					new ModelRange( new ModelPosition( root, [ 2 ] ), new ModelPosition( root, [ 2 ] ) )
+				);
+			} );
 
 			model.change( writer => {
 				writer.setAttribute( 'bold', true, ModelRange.createIn( root ) );
@@ -316,9 +320,11 @@ describe( 'ModelConversionDispatcher', () => {
 		} );
 
 		it( 'should not fire attributes events if attribute has been consumed', () => {
-			doc.selection.setRanges( [
-				new ModelRange( new ModelPosition( root, [ 2 ] ), new ModelPosition( root, [ 2 ] ) )
-			] );
+			model.change( writer => {
+				writer.setSelection(
+					new ModelRange( new ModelPosition( root, [ 2 ] ), new ModelPosition( root, [ 2 ] ) )
+				);
+			} );
 
 			model.change( writer => {
 				writer.setAttribute( 'bold', true, ModelRange.createIn( root ) );
@@ -337,9 +343,11 @@ describe( 'ModelConversionDispatcher', () => {
 		} );
 
 		it( 'should fire events for markers for collapsed selection', () => {
-			doc.selection.setRanges( [
-				new ModelRange( new ModelPosition( root, [ 1 ] ), new ModelPosition( root, [ 1 ] ) )
-			] );
+			model.change( writer => {
+				writer.setSelection(
+					new ModelRange( new ModelPosition( root, [ 1 ] ), new ModelPosition( root, [ 1 ] ) )
+				);
+			} );
 
 			model.markers.set( 'name', ModelRange.createFromParentsAndOffsets( root, 0, root, 2 ) );
 
@@ -376,8 +384,8 @@ describe( 'ModelConversionDispatcher', () => {
 			const viewFigure = new ViewContainerElement( 'figure', null, viewCaption );
 
 			// Create custom highlight handler mock.
-			viewFigure.setCustomProperty( 'addHighlight', () => {} );
-			viewFigure.setCustomProperty( 'removeHighlight', () => {} );
+			viewFigure.setCustomProperty( 'addHighlight', () => { } );
+			viewFigure.setCustomProperty( 'removeHighlight', () => { } );
 
 			// Create mapper mock.
 			dispatcher.conversionApi.mapper = {
@@ -391,8 +399,9 @@ describe( 'ModelConversionDispatcher', () => {
 			};
 
 			model.markers.set( 'name', ModelRange.createFromParentsAndOffsets( root, 0, root, 1 ) );
-			doc.selection.setRanges( [ ModelRange.createFromParentsAndOffsets( caption, 1, caption, 1 ) ] );
-
+			model.change( writer => {
+				writer.setSelection( ModelRange.createFromParentsAndOffsets( caption, 1, caption, 1 ) );
+			} );
 			sinon.spy( dispatcher, 'fire' );
 
 			const markers = Array.from( model.markers.getMarkersAtPosition( doc.selection.getFirstPosition() ) );
@@ -403,9 +412,11 @@ describe( 'ModelConversionDispatcher', () => {
 		} );
 
 		it( 'should not fire events if information about marker has been consumed', () => {
-			doc.selection.setRanges( [
-				new ModelRange( new ModelPosition( root, [ 1 ] ), new ModelPosition( root, [ 1 ] ) )
-			] );
+			model.change( writer => {
+				writer.setSelection(
+					new ModelRange( new ModelPosition( root, [ 1 ] ), new ModelPosition( root, [ 1 ] ) )
+				);
+			} );
 
 			model.markers.set( 'foo', ModelRange.createFromParentsAndOffsets( root, 0, root, 2 ) );
 			model.markers.set( 'bar', ModelRange.createFromParentsAndOffsets( root, 0, root, 2 ) );

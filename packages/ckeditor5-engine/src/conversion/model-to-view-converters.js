@@ -11,6 +11,7 @@ import ViewElement from '../view/element';
 import ViewAttributeElement from '../view/attributeelement';
 import ViewText from '../view/text';
 import ViewRange from '../view/range';
+import DocumentSelection from '../model/documentselection';
 
 /**
  * Contains model to view converters for
@@ -332,7 +333,7 @@ export function wrap( elementCreator ) {
 
 		const viewWriter = conversionApi.writer;
 
-		if ( data.item instanceof ModelSelection ) {
+		if ( data.item instanceof ModelSelection || data.item instanceof DocumentSelection ) {
 			// Selection attribute conversion.
 			viewWriter.wrap( conversionApi.viewSelection.getFirstRange(), newViewElement, conversionApi.viewSelection );
 		} else {
@@ -372,7 +373,7 @@ export function highlightText( highlightDescriptor ) {
 			return;
 		}
 
-		if ( !( data.item instanceof ModelSelection ) && !data.item.is( 'textProxy' ) ) {
+		if ( !( data.item instanceof ModelSelection || data.item instanceof DocumentSelection ) && !data.item.is( 'textProxy' ) ) {
 			return;
 		}
 
@@ -389,7 +390,7 @@ export function highlightText( highlightDescriptor ) {
 		const viewElement = createViewElementFromHighlightDescriptor( descriptor );
 		const viewWriter = conversionApi.writer;
 
-		if ( data.item instanceof ModelSelection ) {
+		if ( data.item instanceof ModelSelection || data.item instanceof DocumentSelection ) {
 			viewWriter.wrap( conversionApi.viewSelection.getFirstRange(), viewElement, conversionApi.viewSelection );
 		} else {
 			const viewRange = conversionApi.mapper.toViewRange( data.range );
