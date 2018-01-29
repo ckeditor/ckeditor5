@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+import Range from '../model/range';
+
 /**
  * Contains {@link module:engine/view/view view} to {@link module:engine/model/model model} converters for
  * {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher}.
@@ -29,7 +31,7 @@ export function convertToModelFragment() {
 	return ( evt, data, consumable, conversionApi ) => {
 		// Second argument in `consumable.consume` is discarded for ViewDocumentFragment but is needed for ViewElement.
 		if ( !data.output && consumable.consume( data.input, { name: true } ) ) {
-			data.output = conversionApi.convertChildren( data.input, consumable, data );
+			data.output = conversionApi.convertChildren( data.input, consumable, data.position );
 		}
 	};
 }
@@ -41,9 +43,13 @@ export function convertToModelFragment() {
  */
 export function convertText() {
 	return ( evt, data, consumable, conversionApi ) => {
-		if ( conversionApi.schema.checkChild( data.context, '$text' ) ) {
+		if ( conversionApi.schema.checkChild( data.position, '$text' ) ) {
 			if ( consumable.consume( data.input ) ) {
-				data.output = conversionApi.writer.createText( data.input.data );
+				const text = conversionApi.writer.createText( data.input.data );
+
+				conversionApi.writer.insert( text, data.position );
+
+				data.output = Range.createFromPositionAndShift( data.position, text.offsetSize );
 			}
 		}
 	};

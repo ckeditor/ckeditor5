@@ -10,9 +10,7 @@
 import ViewConsumable from './viewconsumable';
 import ModelRange from '../model/range';
 import ModelPosition from '../model/position';
-import ModelTreeWalker from '../model/treewalker';
-import ModelNode from '../model/node';
-import ModelDocumentFragment from '../model/documentfragment';
+import { SchemaContext } from '../model/schema';
 
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
@@ -127,6 +125,7 @@ export default class ViewConversionDispatcher {
 		// set on `conversionApi`. This way only a part of `ViewConversionDispatcher` API is exposed.
 		this.conversionApi.convertItem = this._convertItem.bind( this );
 		this.conversionApi.convertChildren = this._convertChildren.bind( this );
+		this.conversionApi.splitToAllowedParent = this._splitToAllowedParent.bind( this );
 	}
 
 	/**
@@ -137,43 +136,62 @@ export default class ViewConversionDispatcher {
 	 * @fires documentFragment
 	 * @param {module:engine/view/documentfragment~DocumentFragment|module:engine/view/element~Element} viewItem
 	 * Part of the view to be converted.
-	 * @param {Object} additionalData Additional data to be passed in `data` argument when firing `ViewConversionDispatcher`
-	 * events. See also {@link ~ViewConversionDispatcher#event:element element event}.
+	 * @param {module:engine/model/schema~SchemaContextDefinition} [context=['$root']] Elements will be converted according to this context.
 	 * @returns {module:engine/model/documentfragment~DocumentFragment} Model data that is a result of the conversion process
 	 * wrapped in `DocumentFragment`. Converted marker elements will be set as that document fragment's
 	 * {@link module:engine/model/documentfragment~DocumentFragment#markers static markers map}.
 	 */
-	convert( viewItem, additionalData ) {
+	convert( viewItem, context = [ '$root' ] ) {
 		return this._model.change( writer => {
-			// Store writer in current conversion as a conversion API.
-			this.conversionApi.writer = writer;
-
 			this.fire( 'viewCleanup', viewItem );
 
 			const consumable = ViewConsumable.createFrom( viewItem );
-			let conversionResult = this._convertItem( viewItem, consumable, additionalData );
 
-			// Remove writer from conversion API after conversion.
+			// Create model tree according to given context. Elements will be converted to the top element of this tree.
+			// Thanks to this schema will be able check items precisely.
+			// Top element of context tree is marked by a `isContextTree` attribute.
+			const position = contextToPosition( context, writer );
+
+			// Store writer in current conversion as a conversion API.
+			this.conversionApi.writer = writer;
+
+			// Create set for split elements. We need to remember this elements, because at the end of conversion
+			// we want to remove all empty elements that was created as a result of the split.
+			this.conversionApi.splitElements = new Set();
+
+			// Additional date available between conversions.
+			// Needed when one converter needs to leave some data for oder converters.
+			this.conversionApi.data = {};
+
+			// Do the conversion.
+			const range = this._convertItem( viewItem, consumable, position );
+
+			// Conversion result is always a document fragment so let's create this fragment.
+			const documentFragment = writer.createDocumentFragment();
+
+			// When there is a conversion result.
+			if ( range ) {
+				// Remove each empty element that was created as a result of split.
+				for ( const item of this.conversionApi.splitElements ) {
+					removeEmptySplitResult( item, this.conversionApi );
+				}
+
+				// Move all items that was converted to context tree to document fragment.
+				for ( const item of Array.from( position.parent.getChildren() ) ) {
+					writer.append( item, documentFragment );
+				}
+
+				// Extract temporary markers elements from model and set as static markers collection.
+				documentFragment.markers = extractMarkersFromModelFragment( documentFragment, writer );
+			}
+
+			// Clear conversion API.
 			this.conversionApi.writer = null;
+			this.conversionApi.splitElements = null;
+			this.conversionApi.data = null;
 
-			// We can get a null here if conversion failed (see _convertItem())
-			// or simply if an item could not be converted (e.g. due to the schema).
-			if ( !conversionResult ) {
-				return writer.createDocumentFragment();
-			}
-
-			// When conversion result is not a document fragment we need to wrap it in document fragment.
-			if ( !conversionResult.is( 'documentFragment' ) ) {
-				const docFrag = writer.createDocumentFragment();
-
-				writer.append( conversionResult, docFrag );
-				conversionResult = docFrag;
-			}
-
-			// Extract temporary markers elements from model and set as static markers collection.
-			conversionResult.markers = extractMarkersFromModelFragment( conversionResult, writer );
-
-			return conversionResult;
+			// Return fragment as conversion result.
+			return documentFragment;
 		} );
 	}
 
@@ -181,11 +199,8 @@ export default class ViewConversionDispatcher {
 	 * @private
 	 * @see module:engine/conversion/viewconversiondispatcher~ViewConversionApi#convertItem
 	 */
-	_convertItem( input, consumable, additionalData = {} ) {
-		const data = Object.assign( {}, additionalData, {
-			input,
-			output: null
-		} );
+	_convertItem( input, consumable, position ) {
+		const data = Object.assign( { input, position, output: null } );
 
 		if ( input.is( 'element' ) ) {
 			this.fire( 'element:' + input.name, data, consumable, this.conversionApi );
@@ -196,7 +211,7 @@ export default class ViewConversionDispatcher {
 		}
 
 		// Handle incorrect `data.output`.
-		if ( data.output && !( data.output instanceof ModelNode || data.output instanceof ModelDocumentFragment ) ) {
+		if ( data.output && !( data.output instanceof ModelRange ) ) {
 			/**
 			 * Incorrect conversion result was dropped.
 			 *
@@ -217,19 +232,52 @@ export default class ViewConversionDispatcher {
 	 * @private
 	 * @see module:engine/conversion/viewconversiondispatcher~ViewConversionApi#convertChildren
 	 */
-	_convertChildren( input, consumable, additionalData ) {
-		const writer = this.conversionApi.writer;
-		const documentFragment = writer.createDocumentFragment();
+	_convertChildren( input, consumable, position ) {
+		const output = new ModelRange( position );
 
 		for ( const viewChild of Array.from( input.getChildren() ) ) {
-			const modelChild = this._convertItem( viewChild, consumable, additionalData );
+			const range = this._convertItem( viewChild, consumable, output.end );
 
-			if ( modelChild instanceof ModelNode || modelChild instanceof ModelDocumentFragment ) {
-				writer.append( modelChild, documentFragment );
+			if ( range instanceof ModelRange ) {
+				output.end = range.end;
 			}
 		}
 
-		return documentFragment;
+		return output;
+	}
+
+	/**
+	 * TODO
+	 *
+	 * @private
+	 */
+	_splitToAllowedParent( element, position, conversionApi ) {
+		function checkLimit( node ) {
+			return node.hasAttribute( 'isContextTree' );
+		}
+
+		const allowedParent = conversionApi.schema.findAllowedParent( element, position, checkLimit );
+
+		if ( !allowedParent ) {
+			return;
+		}
+
+		if ( allowedParent === position.parent ) {
+			return { position };
+		}
+
+		const data = conversionApi.writer.split( position, allowedParent );
+
+		for ( const pos of data.range.getPositions() ) {
+			if ( !pos.isEqual( data.position ) ) {
+				conversionApi.splitElements.add( pos.parent );
+			}
+		}
+
+		return {
+			position: data.position,
+			endElement: data.range.end.parent
+		};
 	}
 
 	/**
@@ -292,16 +340,13 @@ function extractMarkersFromModelFragment( modelItem, writer ) {
 	const markers = new Map();
 
 	// Create ModelTreeWalker.
-	const walker = new ModelTreeWalker( {
-		startPosition: ModelPosition.createAt( modelItem, 0 ),
-		ignoreElementEnd: true
-	} );
+	const range = ModelRange.createIn( modelItem ).getItems();
 
 	// Walk through DocumentFragment and collect marker elements.
-	for ( const value of walker ) {
+	for ( const item of range ) {
 		// Check if current element is a marker.
-		if ( value.item.name == '$marker' ) {
-			markerElements.add( value.item );
+		if ( item.name == '$marker' ) {
+			markerElements.add( item );
 		}
 	}
 
@@ -323,6 +368,43 @@ function extractMarkersFromModelFragment( modelItem, writer ) {
 	}
 
 	return markers;
+}
+
+function contextToPosition( contextDefinition, writer ) {
+	let position;
+
+	for ( const item of new SchemaContext( contextDefinition ) ) {
+		const attributes = {};
+
+		for ( const key of item.getAttributeKeys() ) {
+			attributes[ key ] = item.getAttribute( key );
+		}
+
+		const current = writer.createElement( item.name, attributes );
+
+		if ( position ) {
+			writer.append( current, position );
+		}
+
+		position = ModelPosition.createAt( current );
+	}
+
+	position.parent.setAttribute( 'isContextTree', true );
+
+	return position;
+}
+
+function removeEmptySplitResult( item, conversionApi ) {
+	if ( item.isEmpty ) {
+		const parent = item.parent;
+
+		conversionApi.writer.remove( item );
+		conversionApi.splitElements.delete( item );
+
+		if ( conversionApi.splitElements.has( parent ) ) {
+			removeEmptySplitResult( parent, conversionApi );
+		}
+	}
 }
 
 /**
@@ -351,6 +433,7 @@ function extractMarkersFromModelFragment( modelItem, writer ) {
  * @param {module:engine/view/documentfragment~DocumentFragment|module:engine/view/element~Element|module:engine/view/text~Text}
  * input Item to convert.
  * @param {module:engine/conversion/viewconsumable~ViewConsumable} consumable Values to consume.
+ * @param {module:engine/model/position~Position} position Position of conversion.
  * @param {Object} [additionalData] Additional data to be passed in `data` argument when firing `ViewConversionDispatcher`
  * events. See also {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:element element event}.
  * @returns {module:engine/model/node~Node|module:engine/model/documentfragment~DocumentFragment|null} The result of item conversion,
@@ -367,8 +450,15 @@ function extractMarkersFromModelFragment( modelItem, writer ) {
  * @param {module:engine/view/documentfragment~DocumentFragment|module:engine/view/element~Element}
  * input Item which children will be converted.
  * @param {module:engine/conversion/viewconsumable~ViewConsumable} consumable Values to consume.
+ * @param {module:engine/model/position~Position} position Position of conversion.
  * @param {Object} [additionalData] Additional data to be passed in `data` argument when firing `ViewConversionDispatcher`
  * events. See also {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:element element event}.
  * @returns {module:engine/model/documentfragment~DocumentFragment} Model document fragment containing results of conversion
  * of all children of given item.
+ */
+
+/**
+ * Custom data stored by converter for conversion process.
+ *
+ * @param {Object} #data
  */

@@ -9,7 +9,8 @@
 
 import Matcher from '../view/matcher';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
+import Position from '../model/position';
+import Range from '../model/range';
 
 /**
  * Provides chainable, high-level API to easily build basic view-to-model converters that are appended to given
@@ -291,31 +292,62 @@ class ViewConverterBuilder {
 						continue;
 					}
 
-					if ( !conversionApi.schema.checkChild( data.context, modelElement ) ) {
+					// When element was already consumed then skip it.
+					if ( !consumable.test( data.input, from.consume || match.match ) ) {
 						continue;
 					}
 
-					// Try to consume appropriate values from consumable values list.
-					if ( !consumable.consume( data.input, from.consume || match.match ) ) {
+					// Find allowed parent for element that we are going to insert.
+					// If current parent does not allow to insert element but one of the ancestors does
+					// then split nodes to allowed parent.
+					const splitResult = conversionApi.splitToAllowedParent( modelElement, data.position, conversionApi );
+
+					// When there is no split result it means that we can't insert element to model tree, so let's skip it.
+					if ( !splitResult ) {
 						continue;
 					}
 
-					// If everything is fine, we are ready to start the conversion.
-					// Add newly created `modelElement` to the parents stack.
-					data.context.push( modelElement );
+					// Insert element on allowed position.
+					conversionApi.writer.insert( modelElement, splitResult.position );
 
-					// Convert children of converted view element and append them to `modelElement`.
-					const modelChildren = conversionApi.convertChildren( data.input, consumable, data );
+					// Convert children and insert to element.
+					const childrenOutput = conversionApi.convertChildren( data.input, consumable, Position.createAt( modelElement ) );
 
-					for ( const child of Array.from( modelChildren ) ) {
-						writer.append( child, modelElement );
+					// Consume appropriate value from consumable values list.
+					consumable.consume( data.input, from.consume || match.match );
+
+					// Prepare conversion output range, we know that range will start before inserted element.
+					const output = new Range( Position.createBefore( modelElement ) );
+
+					// Now we need to check where the output should end.
+
+					// If we had to split parent to insert our element the we want to continue conversion
+					// inside split parent.
+					//
+					// before: <allowed><notAllowed>[]</notAllowed></allowed>
+					// after:  <allowed><notAllowed></notAllowed>[<converted></converted><notAllowed>]</notAllowed></allowed>
+					if ( splitResult.endElement ) {
+						output.end = Position.createAt( splitResult.endElement );
+
+					// When element is converted on target position (without splitting) we need to move range
+					// after this element but we need to take into consideration that children could split our
+					// element, so we need to move range after parent of the last converted child.
+					//
+					// after: <allowed>[]</allowed>
+					// before: <allowed>[<converted><child></child></converted><child></child><converted>]</converted></allowed>
+					} else if ( childrenOutput.end.parent !== childrenOutput.end.root ) {
+						output.end = Position.createAfter( childrenOutput.end.parent );
+
+					// Finally when we are sure that element and its parent was not split we need to put selection
+					// after element.
+					//
+					// after: <allowed>[]</allowed>
+					// before: <allowed>[<converted></converted>]</allowed>
+					} else {
+						output.end = Position.createAfter( modelElement );
 					}
 
-					// Remove created `modelElement` from the parents stack.
-					data.context.pop();
-
-					// Add `modelElement` as a result.
-					data.output = modelElement;
+					data.output = output;
 
 					// Prevent multiple conversion if there are other correct matches.
 					break;
@@ -365,7 +397,7 @@ class ViewConverterBuilder {
 					// Since we are converting to attribute we need an output on which we will set the attribute.
 					// If the output is not created yet, we will create it.
 					if ( !data.output ) {
-						data.output = conversionApi.convertChildren( data.input, consumable, data );
+						data.output = conversionApi.convertChildren( data.input, consumable, data.position );
 					}
 
 					// Use attribute creator function, if provided.
@@ -384,8 +416,12 @@ class ViewConverterBuilder {
 						};
 					}
 
-					// Set attribute on current `output`. `Schema` is checked inside this helper function.
-					setAttributeOn( data.output, attribute, data, conversionApi );
+					// Set attribute on each item in range according to Schema.
+					for ( const node of Array.from( data.output.getItems() ) ) {
+						if ( conversionApi.schema.checkAttribute( node, attribute.key ) ) {
+							conversionApi.writer.setAttribute( attribute.key, attribute.value, node );
+						}
+					}
 
 					// Prevent multiple conversion if there are other correct matches.
 					break;
@@ -467,7 +503,8 @@ class ViewConverterBuilder {
 						continue;
 					}
 
-					data.output = modelElement;
+					writer.insert( modelElement, data.position );
+					data.output = Range.createOn( modelElement );
 
 					// Prevent multiple conversion if there are other correct matches.
 					break;
@@ -501,22 +538,6 @@ class ViewConverterBuilder {
 				dispatcher.on( eventName, eventCallback, { priority } );
 			}
 		}
-	}
-}
-
-// Helper function that sets given attributes on given `module:engine/model/node~Node` or
-// `module:engine/model/documentfragment~DocumentFragment`.
-function setAttributeOn( toChange, attribute, data, conversionApi ) {
-	if ( isIterable( toChange ) ) {
-		for ( const node of toChange ) {
-			setAttributeOn( node, attribute, data, conversionApi );
-		}
-
-		return;
-	}
-
-	if ( conversionApi.schema.checkAttribute( toChange, attribute.key ) ) {
-		conversionApi.writer.setAttribute( attribute.key, attribute.value, toChange );
 	}
 }
 
