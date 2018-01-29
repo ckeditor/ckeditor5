@@ -18,9 +18,8 @@ import eraserIcon from './../theme/icons/eraser.svg';
 
 import Model from '@ckeditor/ckeditor5-ui/src/model';
 import ToolbarSeparatorView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarseparatorview';
-import addToolbarToDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/helpers/addtoolbartodropdown';
 import bindOneToMany from '@ckeditor/ckeditor5-ui/src/bindings/bindonetomany';
-import { createSplitButtonDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
+import { createSplitButtonDropdown, addToolbarToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 
 import './../theme/highlight.css';
 
@@ -216,8 +215,6 @@ export default class HighlightUI extends Plugin {
 			buttons.push( new ToolbarSeparatorView() );
 			buttons.push( componentFactory.create( 'removeHighlight' ) );
 
-			model.set( 'buttons', buttons );
-
 			const dropdownView = createSplitButtonDropdown( model, locale );
 
 			// TODO: Extend template to hide arrow from dropdown. Remove me after changes in theme-lark.
@@ -227,7 +224,7 @@ export default class HighlightUI extends Plugin {
 				}
 			} );
 
-			addToolbarToDropdown( dropdownView, model );
+			addToolbarToDropdown( dropdownView, buttons, model );
 
 			bindIconStyleToColor( dropdownView, model );
 
