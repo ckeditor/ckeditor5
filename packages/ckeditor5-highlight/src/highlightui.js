@@ -16,7 +16,6 @@ import markerIcon from './../theme/icons/marker.svg';
 import penIcon from './../theme/icons/pen.svg';
 import eraserIcon from './../theme/icons/eraser.svg';
 
-import Model from '@ckeditor/ckeditor5-ui/src/model';
 import ToolbarSeparatorView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarseparatorview';
 import bindOneToMany from '@ckeditor/ckeditor5-ui/src/bindings/bindonetomany';
 import { createSplitButtonDropdown, addToolbarToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
@@ -177,7 +176,9 @@ export default class HighlightUI extends Plugin {
 		componentFactory.add( 'highlightDropdown', locale => {
 			const command = editor.commands.get( 'highlight' );
 
-			const model = new Model( {
+			const dropdownView = createSplitButtonDropdown( locale );
+
+			dropdownView.set( {
 				tooltip: t( 'Highlight' ),
 				withText: false,
 				isVertical: false,
@@ -190,10 +191,10 @@ export default class HighlightUI extends Plugin {
 			// Dropdown button changes to selection (command.value):
 			// - If selection is in highlight it get active highlight appearance (icon, color) and is activated.
 			// - Otherwise it gets appearance (icon, color) of last executed highlight.
-			model.bind( 'icon' ).to( command, 'value', value => getIconForType( getActiveOption( value, 'type' ) ) );
-			model.bind( 'color' ).to( command, 'value', value => getActiveOption( value, 'color' ) );
-			model.bind( 'commandValue' ).to( command, 'value', value => getActiveOption( value, 'model' ) );
-			model.bind( 'isOn' ).to( command, 'value', value => !!value );
+			dropdownView.bind( 'icon' ).to( command, 'value', value => getIconForType( getActiveOption( value, 'type' ) ) );
+			dropdownView.bind( 'color' ).to( command, 'value', value => getActiveOption( value, 'color' ) );
+			dropdownView.bind( 'commandValue' ).to( command, 'value', value => getActiveOption( value, 'model' ) );
+			dropdownView.bind( 'isOn' ).to( command, 'value', value => !!value );
 
 			// Create buttons array.
 			const buttons = options.map( option => {
@@ -201,21 +202,19 @@ export default class HighlightUI extends Plugin {
 				const buttonView = componentFactory.create( 'highlight:' + option.model );
 
 				// Update lastExecutedHighlight on execute.
-				this.listenTo( buttonView, 'execute', () => model.set( { lastExecuted: option.model } ) );
+				this.listenTo( buttonView, 'execute', () => dropdownView.set( { lastExecuted: option.model } ) );
 
 				return buttonView;
 			} );
 
 			// Make toolbar button enabled when any button in dropdown is enabled before adding separator and eraser.
-			bindOneToMany( model, 'isEnabled', buttons, 'isEnabled',
+			bindOneToMany( dropdownView, 'isEnabled', buttons, 'isEnabled',
 				( ...areEnabled ) => areEnabled.some( isEnabled => isEnabled )
 			);
 
 			// Add separator and eraser buttons to dropdown.
 			buttons.push( new ToolbarSeparatorView() );
 			buttons.push( componentFactory.create( 'removeHighlight' ) );
-
-			const dropdownView = createSplitButtonDropdown( model, locale );
 
 			// TODO: Extend template to hide arrow from dropdown. Remove me after changes in theme-lark.
 			dropdownView.extendTemplate( {
@@ -224,9 +223,9 @@ export default class HighlightUI extends Plugin {
 				}
 			} );
 
-			addToolbarToDropdown( dropdownView, buttons, model );
+			addToolbarToDropdown( dropdownView, buttons );
 
-			bindIconStyleToColor( dropdownView, model );
+			bindIconStyleToColor( dropdownView );
 
 			dropdownView.extendTemplate( {
 				attributes: {
@@ -236,7 +235,7 @@ export default class HighlightUI extends Plugin {
 
 			// Execute current action from dropdown's split button action button.
 			dropdownView.on( 'execute', () => {
-				editor.execute( 'highlight', { value: model.commandValue } );
+				editor.execute( 'highlight', { value: dropdownView.commandValue } );
 				editor.editing.view.focus();
 			} );
 
@@ -244,7 +243,7 @@ export default class HighlightUI extends Plugin {
 			// If current is not set or it is the same as last execute this method will return the option key (like icon or color)
 			// of last executed highlighter. Otherwise it will return option key for current one.
 			function getActiveOption( current, key ) {
-				const whichHighlighter = !current || current === model.lastExecuted ? model.lastExecuted : current;
+				const whichHighlighter = !current || current === dropdownView.lastExecuted ? dropdownView.lastExecuted : current;
 
 				return optionsMap[ whichHighlighter ][ key ];
 			}
@@ -255,7 +254,7 @@ export default class HighlightUI extends Plugin {
 }
 
 // Extends split button icon style to reflect last used button style.
-function bindIconStyleToColor( dropdownView, model ) {
+function bindIconStyleToColor( dropdownView ) {
 	const actionView = dropdownView.buttonView.actionView;
 
 	const bind = actionView.bindTemplate;
@@ -267,7 +266,7 @@ function bindIconStyleToColor( dropdownView, model ) {
 		}
 	} );
 
-	actionView.bind( 'color' ).to( model, 'color' );
+	actionView.bind( 'color' ).to( dropdownView, 'color' );
 }
 
 // Returns icon for given highlighter type.
