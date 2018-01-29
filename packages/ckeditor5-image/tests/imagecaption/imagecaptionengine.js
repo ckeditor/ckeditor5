@@ -363,8 +363,8 @@ describe( 'ImageCaptionEngine', () => {
 		it( 'should add hidden class to figcaption when caption is empty and image is no longer selected', () => {
 			setModelData( model, '<paragraph>foo</paragraph>[<image src=""><caption></caption></image>]' );
 
-			model.change( () => {
-				doc.selection.removeAllRanges();
+			model.change( writer => {
+				writer.setSelection( null );
 			} );
 
 			expect( getViewData( viewDocument ) ).to.equal(
@@ -401,7 +401,7 @@ describe( 'ImageCaptionEngine', () => {
 
 			model.change( writer => {
 				writer.remove( doc.selection.getFirstRange() );
-				doc.selection.setRanges( [ ModelRange.createOn( image ) ] );
+				writer.setSelection( ModelRange.createOn( image ) );
 			} );
 
 			expect( getViewData( viewDocument ) ).to.equal(
@@ -417,8 +417,8 @@ describe( 'ImageCaptionEngine', () => {
 			setModelData( model, '<image src=""><caption>[foo bar]</caption></image><image src=""><caption></caption></image>' );
 			const image = doc.getRoot().getChild( 1 );
 
-			model.change( () => {
-				doc.selection.setRanges( [ ModelRange.createOn( image ) ] );
+			model.change( writer => {
+				writer.setSelection( ModelRange.createOn( image ) );
 			} );
 
 			expect( getViewData( viewDocument ) ).to.equal(
@@ -445,7 +445,7 @@ describe( 'ImageCaptionEngine', () => {
 				// Remove text and selection from caption.
 				model.change( writer => {
 					writer.remove( ModelRange.createIn( modelCaption ) );
-					doc.selection.removeAllRanges();
+					writer.setSelection( null );
 				} );
 
 				// Check if there is no figcaption in the view.
