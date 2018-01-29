@@ -82,10 +82,14 @@ describe( 'HighlightUI', () => {
 			expect( button ).to.have.property( 'withText', false );
 		} );
 
-		it( 'should add custom CSS class to dropdown', () => {
+		it( 'should add custom CSS class to dropdown and dropdown buttons', () => {
 			dropdown.render();
 
 			expect( dropdown.element.classList.contains( 'ck-highlight-dropdown' ) ).to.be.true;
+			expect( dropdown.buttonView.element.classList.contains( 'ck-highlight-button' ) ).to.be.true;
+			// There should be 5 highlight buttons, one separator and highlight remove button in toolbar.
+			expect( dropdown.toolbarView.items.map( button => button.element.classList.contains( 'ck-highlight-button' ) ) )
+				.to.deep.equal( [ true, true, true, true, true, false, false ] );
 		} );
 
 		it( 'should focus view after command execution', () => {

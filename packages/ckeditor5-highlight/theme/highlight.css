@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-.ck-highlight-dropdown svg path:not(.ck-icon__fill) {
+.ck-highlight-button svg path:not(.ck-icon__fill) {
 	/* Do not inherit color from parent. */
 	fill: initial;
 }

@@ -113,7 +113,8 @@ export default class HighlightUI extends Plugin {
 
 			button.extendTemplate( {
 				attributes: {
-					style: `color: ${ option.color }`
+					style: `color: ${ option.color }`,
+					class: 'ck-highlight-button'
 				}
 			} );
 		}
@@ -195,6 +196,12 @@ export default class HighlightUI extends Plugin {
 			dropdownView.bind( 'color' ).to( command, 'value', value => getActiveOption( value, 'color' ) );
 			dropdownView.bind( 'commandValue' ).to( command, 'value', value => getActiveOption( value, 'model' ) );
 			dropdownView.bind( 'isOn' ).to( command, 'value', value => !!value );
+
+			dropdownView.buttonView.extendTemplate( {
+				attributes: {
+					class: 'ck-highlight-button'
+				}
+			} );
 
 			// Create buttons array.
 			const buttons = options.map( option => {
