@@ -74,16 +74,16 @@ export default class HighlightCommand extends Command {
 					if ( !highlighter || this.value === highlighter ) {
 						// ...remove attribute when passing highlighter different then current or executing "eraser".
 						writer.removeAttribute( 'highlight', highlightRange );
-						selection.removeAttribute( 'highlight' );
+						writer.removeSelectionAttribute( 'highlight' );
 					} else {
 						// ...update `highlight` value.
 						writer.setAttribute( 'highlight', highlighter, highlightRange );
 
 						// And create new range wrapping changed highlighter.
-						selection.setRanges( [ highlightRange ] );
+						writer.setSelection( [ highlightRange ] );
 					}
 				} else if ( highlighter ) {
-					selection.setAttribute( 'highlight', highlighter );
+					writer.setSelectionAttribute( 'highlight', highlighter );
 				}
 			} else {
 				for ( const range of ranges ) {

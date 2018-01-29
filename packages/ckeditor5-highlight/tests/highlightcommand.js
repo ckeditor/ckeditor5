@@ -130,12 +130,12 @@ describe( 'HighlightCommand', () => {
 
 					// It should not save that bold was executed at position ( root, [ 0, 1 ] ).
 
-					model.change( () => {
+					model.change( writer => {
 						// Simulate clicking right arrow key by changing selection ranges.
-						doc.selection.setRanges( [ new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 0, 2 ] ) ) ] );
+						writer.setSelection( [ new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 0, 2 ] ) ) ] );
 
 						// Get back to previous selection.
-						doc.selection.setRanges( [ new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 1 ] ) ) ] );
+						writer.setSelection( [ new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 1 ] ) ) ] );
 					} );
 
 					expect( command.value ).to.be.undefined;
@@ -153,15 +153,15 @@ describe( 'HighlightCommand', () => {
 
 					// Attribute should be stored.
 					// Simulate clicking somewhere else in the editor.
-					model.change( () => {
-						doc.selection.setRanges( [ new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 0, 2 ] ) ) ] );
+					model.change( writer => {
+						writer.setSelection( [ new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 0, 2 ] ) ) ] );
 					} );
 
 					expect( command.value ).to.be.undefined;
 
 					// Go back to where attribute was stored.
-					model.change( () => {
-						doc.selection.setRanges( [ new Range( new Position( root, [ 1, 0 ] ), new Position( root, [ 1, 0 ] ) ) ] );
+					model.change( writer => {
+						writer.setSelection( [ new Range( new Position( root, [ 1, 0 ] ), new Position( root, [ 1, 0 ] ) ) ] );
 					} );
 
 					// Attribute should be restored.
