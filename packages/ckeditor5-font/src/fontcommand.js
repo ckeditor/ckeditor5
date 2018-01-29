@@ -71,9 +71,9 @@ export default class FontCommand extends Command {
 		model.change( writer => {
 			if ( selection.isCollapsed ) {
 				if ( value ) {
-					selection.setAttribute( this.attributeKey, value );
+					writer.setSelectionAttribute( this.attributeKey, value );
 				} else {
-					selection.removeAttribute( this.attributeKey );
+					writer.removeSelectionAttribute( this.attributeKey );
 				}
 			} else {
 				const ranges = model.schema.getValidRanges( selection.getRanges(), this.attributeKey );
