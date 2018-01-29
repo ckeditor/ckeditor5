@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-.ck-splitbutton-arrow {
+.ck-splitbutton-select {
 	& svg.ck-icon {
 		width: 0;
 		min-width: 0;
