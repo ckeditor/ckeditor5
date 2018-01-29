@@ -52,20 +52,18 @@ export default class FontFamilyUI extends Plugin {
 			dropdownItems.add( itemModel );
 		}
 
-		// Create dropdown model.
-		const dropdownModel = new Model( {
-			icon: fontFamilyIcon,
-			withText: false,
-			tooltip: t( 'Font Family' )
-		} );
-
-		dropdownModel.bind( 'isEnabled' ).to( command, 'isEnabled' );
-
 		// Register UI component.
 		editor.ui.componentFactory.add( 'fontFamily', locale => {
-			const dropdownView = createDropdown( dropdownModel, locale );
+			const dropdownView = createDropdown( locale );
+			addListViewToDropdown( dropdownView, dropdownItems );
 
-			addListViewToDropdown( dropdownView, dropdownItems, dropdownModel, locale );
+			dropdownView.set( {
+				icon: fontFamilyIcon,
+				withText: false,
+				tooltip: t( 'Font Family' )
+			} );
+
+			dropdownView.bind( 'isEnabled' ).to( command, 'isEnabled' );
 
 			dropdownView.extendTemplate( {
 				attributes: {

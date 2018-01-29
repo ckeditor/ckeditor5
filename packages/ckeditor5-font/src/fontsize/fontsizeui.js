@@ -57,20 +57,19 @@ export default class FontSizeUI extends Plugin {
 			dropdownItems.add( itemModel );
 		}
 
-		// Create dropdown model.
-		const dropdownModel = new Model( {
-			icon: fontSizeIcon,
-			withText: false,
-			tooltip: t( 'Font Size' )
-		} );
-
-		dropdownModel.bind( 'isEnabled' ).to( command, 'isEnabled' );
-
 		// Register UI component.
 		editor.ui.componentFactory.add( 'fontSize', locale => {
-			const dropdownView = createDropdown( dropdownModel, locale );
+			const dropdownView = createDropdown( locale );
+			addListViewToDropdown( dropdownView, dropdownItems );
 
-			addListViewToDropdown( dropdownView, dropdownItems, dropdownModel, locale );
+			// Create dropdown model.
+			dropdownView.set( {
+				icon: fontSizeIcon,
+				withText: false,
+				tooltip: t( 'Font Size' )
+			} );
+
+			dropdownView.bind( 'isEnabled' ).to( command, 'isEnabled' );
 
 			dropdownView.extendTemplate( {
 				attributes: {
