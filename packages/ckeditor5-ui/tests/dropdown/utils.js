@@ -7,6 +7,7 @@
 
 import utilsTestUtils from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 
 import Model from '../../src/model';
 
@@ -19,7 +20,6 @@ import ToolbarView from '../../src/toolbar/toolbarview';
 import { createDropdown, createSplitButtonDropdown, addToolbarToDropdown, addListViewToDropdown } from '../../src/dropdown/utils';
 import ListItemView from '../../src/list/listitemview';
 import ListView from '../../src/list/listview';
-import Collection from '../../../ckeditor5-utils/src/collection';
 
 const assertBinding = utilsTestUtils.assertBinding;
 
