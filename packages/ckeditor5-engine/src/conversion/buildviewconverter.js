@@ -335,16 +335,8 @@ class ViewConverterBuilder {
 					//
 					// after: <allowed>[]</allowed>
 					// before: <allowed>[<converted><child></child></converted><child></child><converted>]</converted></allowed>
-					} else if ( childrenOutput.end.parent !== childrenOutput.end.root ) {
-						output.end = Position.createAfter( childrenOutput.end.parent );
-
-					// Finally when we are sure that element and its parent was not split we need to put selection
-					// after element.
-					//
-					// after: <allowed>[]</allowed>
-					// before: <allowed>[<converted></converted>]</allowed>
 					} else {
-						output.end = Position.createAfter( modelElement );
+						output.end = Position.createAfter( childrenOutput.end.parent );
 					}
 
 					data.output = output;

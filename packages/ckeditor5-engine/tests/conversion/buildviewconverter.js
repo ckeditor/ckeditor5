@@ -125,6 +125,42 @@ describe( 'View converter builder', () => {
 		expect( modelToString( conversionResult ) ).to.equal( '<image src="foo.jpg"></image>' );
 	} );
 
+	it( 'should convert to model element when element children are not allowed in parent (empty split elements should be removed)', () => {
+		schema.register( 'section', {
+			inheritAllFrom: '$block'
+		} );
+
+		buildViewConverter().for( dispatcher )
+			.fromElement( 'p' )
+			.toElement( 'paragraph' );
+
+		buildViewConverter().for( dispatcher )
+			.fromElement( 'section' )
+			.toElement( 'section' );
+
+		const input = new ViewContainerElement( 'p', null, [
+			new ViewText( 'foo' ),
+			new ViewContainerElement( 'section', null, [
+				new ViewContainerElement( 'p', null, [
+					new ViewText( 'abc' ),
+					new ViewContainerElement( 'section' ),
+					new ViewText( 'cde' ),
+				] )
+			] ),
+			new ViewText( 'bar' ),
+		] );
+
+		const conversionResult = dispatcher.convert( input );
+
+		expect( modelToString( conversionResult ) ).to.equal(
+			'<paragraph>foo</paragraph>' +
+			'<paragraph>abc</paragraph>' +
+			'<section></section>' +
+			'<paragraph>cde</paragraph>' +
+			'<paragraph>bar</paragraph>'
+		);
+	} );
+
 	it( 'should convert from view element to model attribute', () => {
 		buildViewConverter().for( dispatcher ).fromElement( 'strong' ).toAttribute( 'bold', true );
 
