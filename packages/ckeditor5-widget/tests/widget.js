@@ -20,14 +20,13 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 /* global document */
 
 describe( 'Widget', () => {
-	let editor, model, doc, viewDocument;
+	let editor, model, viewDocument;
 
 	beforeEach( () => {
 		return VirtualTestEditor.create( { plugins: [ Widget, Typing ] } )
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
-				doc = model.document;
 				viewDocument = editor.editing.view;
 
 				model.schema.register( 'widget', {
@@ -235,8 +234,8 @@ describe( 'Widget', () => {
 			'<p>foo</p>[<div class="ck-widget ck-widget_selected" contenteditable="false">foo<b></b></div>]'
 		);
 
-		model.change( () => {
-			doc.selection.removeAllRanges();
+		model.change( writer => {
+			writer.setSelection( null );
 		} );
 
 		expect( getViewData( viewDocument ) ).to.equal(
