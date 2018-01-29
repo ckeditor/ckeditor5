@@ -39,7 +39,7 @@ viewDocument.on( 'mouseup', ( evt, data ) => {
 		console.log( 'Making selection around the <strong>.' );
 
 		const range = ViewRange.createOn( viewStrong );
-		viewDocument.selection.setRanges( [ range ] );
+		viewDocument.selection.setTo( [ range ] );
 		viewDocument.selection.setFake( true, { label: 'fake selection over bar' } );
 
 		viewDocument.render();

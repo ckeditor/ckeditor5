@@ -1057,8 +1057,7 @@ describe( 'Schema', () => {
 			setData( model, '[<p>foo<img>xxx</img>bar</p>]' );
 
 			const validRanges = schema.getValidRanges( doc.selection.getRanges(), attribute );
-			const sel = new Selection();
-			sel.setRanges( validRanges );
+			const sel = new Selection( validRanges );
 
 			expect( stringify( root, sel ) ).to.equal( '[<p>foo<img>]xxx[</img>bar</p>]' );
 		} );
@@ -1076,8 +1075,7 @@ describe( 'Schema', () => {
 			setData( model, '[<p>foo<img>xxx</img>bar</p>]' );
 
 			const validRanges = schema.getValidRanges( doc.selection.getRanges(), attribute );
-			const sel = new Selection();
-			sel.setRanges( validRanges );
+			const sel = new Selection( validRanges );
 
 			expect( stringify( root, sel ) ).to.equal( '[<p>foo]<img>[xxx]</img>[bar</p>]' );
 		} );
@@ -1086,8 +1084,7 @@ describe( 'Schema', () => {
 			setData( model, '<p>[foo<img></img>bar]x[bar<img></img>foo]</p>' );
 
 			const validRanges = schema.getValidRanges( doc.selection.getRanges(), attribute );
-			const sel = new Selection();
-			sel.setRanges( validRanges );
+			const sel = new Selection( validRanges );
 
 			expect( stringify( root, sel ) ).to.equal( '<p>[foo]<img></img>[bar]x[bar]<img></img>[foo]</p>' );
 		} );
@@ -1098,8 +1095,7 @@ describe( 'Schema', () => {
 			setData( model, '<p>[foo<img>bar]</img>bom</p>' );
 
 			const validRanges = schema.getValidRanges( doc.selection.getRanges(), attribute );
-			const sel = new Selection();
-			sel.setRanges( validRanges );
+			const sel = new Selection( validRanges );
 
 			expect( stringify( root, sel ) ).to.equal( '<p>[foo]<img>bar</img>bom</p>' );
 		} );

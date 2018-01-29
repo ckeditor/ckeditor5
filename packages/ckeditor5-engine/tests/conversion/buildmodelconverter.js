@@ -184,8 +184,7 @@ describe( 'Model converter builder', () => {
 
 				// Set collapsed selection after "f".
 				const position = new ModelPosition( modelRoot, [ 1 ] );
-				modelDoc.selection.setRanges( [ new ModelRange( position, position ) ] );
-				modelDoc.selection._updateAttributes();
+				writer.setSelection( new ModelRange( position, position ) );
 			} );
 
 			// Check if view structure is ok.
@@ -199,8 +198,8 @@ describe( 'Model converter builder', () => {
 			expect( ranges[ 0 ].start.offset ).to.equal( 1 );
 
 			// Change selection attribute, convert it.
-			model.change( () => {
-				modelDoc.selection.setAttribute( 'italic', 'i' );
+			model.change( writer => {
+				writer.setSelectionAttribute( 'italic', 'i' );
 			} );
 
 			// Check if view structure has changed.
@@ -214,8 +213,8 @@ describe( 'Model converter builder', () => {
 			expect( ranges[ 0 ].start.offset ).to.equal( 0 );
 
 			// Some more tests checking how selection attributes changes are converted:
-			model.change( () => {
-				modelDoc.selection.removeAttribute( 'italic' );
+			model.change( writer => {
+				writer.removeSelectionAttribute( 'italic' );
 			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><em>f</em><em>oo</em></div>' );
@@ -223,8 +222,8 @@ describe( 'Model converter builder', () => {
 			expect( ranges[ 0 ].start.parent.name ).to.equal( 'div' );
 			expect( ranges[ 0 ].start.offset ).to.equal( 1 );
 
-			model.change( () => {
-				modelDoc.selection.setAttribute( 'italic', 'em' );
+			model.change( writer => {
+				writer.setSelectionAttribute( 'italic', 'em' );
 			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><em>foo</em></div>' );
