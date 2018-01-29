@@ -31,6 +31,56 @@ export default class Writer {
 	}
 
 	/**
+	 * Sets {@link module:engine/view/selection~Selection selection's} ranges and direction to the specified location based on the given
+	 * {@link module:engine/view/selection~Selection selection}, {@link module:engine/view/position~Position position},
+	 * {@link module:engine/view/item~Item item}, {@link module:engine/view/range~Range range},
+	 * an iterable of {@link module:engine/view/range~Range ranges} or null.
+	 *
+	 *		// Sets ranges from the given range.
+	 *		const range = new Range( start, end );
+	 *		writer.setSelection( range, isBackwardSelection );
+	 *
+	 *		// Sets ranges from the iterable of ranges.
+	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
+	 *		writer.setSelection( range, isBackwardSelection );
+	 *
+	 *		// Sets ranges from the other selection.
+	 *		const otherSelection = new Selection();
+	 *		writer.setSelection( otherSelection );
+	 *
+	 * 		// Sets collapsed range at the given position.
+	 *		const position = new Position( root, path );
+	 *		writer.setSelection( position );
+	 *
+	 * 		// Sets collapsed range on the given item.
+	 *		const paragraph = writer.createElement( 'paragraph' );
+	 *		writer.setSelection( paragraph, offset );
+	 *
+	 * 		// Removes all ranges.
+	 *		writer.setSelection( null );
+
+	 * @param {module:engine/view/selection~Selection|module:engine/view/position~Position|
+	 * Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|module:engine/view/item~Item|null} selectable
+	 * @param {Boolean|Number|'before'|'end'|'after'} [backwardSelectionOrOffset]
+	 */
+	setSelection( selectable, backwardSelectionOrOffset ) {
+		this.document.selection.setTo( selectable, backwardSelectionOrOffset );
+	}
+
+	/**
+	 * Moves {@link module:engine/view/selection~Selection selection's} {@link #focus} to the specified location.
+	 *
+	 * The location can be specified in the same form as {@link module:engine/view/position~Position.createAt} parameters.
+	 *
+	 * @param {module:engine/view/item~Item|module:engine/view/position~Position} itemOrPosition
+	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
+	 * first parameter is a {@link module:engine/view/item~Item view item}.
+	 */
+	setSelectionFocus( itemOrPosition, offset ) {
+		this.model.document.selection.setFocus( itemOrPosition, offset );
+	}
+
+	/**
 	 * Creates a new {@link module:engine/view/text~Text text node}.
 	 *
 	 *		writer.createText( 'foo' );

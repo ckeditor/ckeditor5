@@ -97,7 +97,7 @@ export default class Selection {
 		this._fakeSelectionLabel = '';
 
 		if ( selectable ) {
-			this.setTo( selectable, backwardSelectionOrOffset );
+			this._setTo( selectable, backwardSelectionOrOffset );
 		}
 	}
 
@@ -429,12 +429,13 @@ export default class Selection {
 	 *
 	 * 		// Removes all ranges.
 	 *		selection.setTo( null );
-
+	 *
+	 * @protected
 	 * @param {module:engine/view/selection~Selection|module:engine/view/position~Position|
 	 * Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|module:engine/view/item~Item|null} selectable
 	 * @param {Boolean|Number|'before'|'end'|'after'} [backwardSelectionOrOffset]
 	 */
-	setTo( selectable, backwardSelectionOrOffset ) {
+	_setTo( selectable, backwardSelectionOrOffset ) {
 		if ( selectable === null ) {
 			this._removeAllRanges();
 		} else if ( selectable instanceof Selection ) {
@@ -489,12 +490,13 @@ export default class Selection {
 	 *
 	 * The location can be specified in the same form as {@link module:engine/view/position~Position.createAt} parameters.
 	 *
+	 * @protected
 	 * @fires change
 	 * @param {module:engine/view/item~Item|module:engine/view/position~Position} itemOrPosition
 	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
 	 * first parameter is a {@link module:engine/view/item~Item view item}.
 	 */
-	setFocus( itemOrPosition, offset ) {
+	_setFocus( itemOrPosition, offset ) {
 		if ( this.anchor === null ) {
 			/**
 			 * Cannot set selection focus if there are no ranges in selection.
