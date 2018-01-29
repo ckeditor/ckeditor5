@@ -10,7 +10,7 @@
 	}
 }
 
-.ck-rounded-corners .ck-splitbutton > .ck-button:not(.ck-splitbutton-arrow) {
+.ck-rounded-corners .ck-splitbutton > .ck-button:not(.ck-splitbutton-select) {
 	border-top-right-radius: unset;
 	border-bottom-right-radius: unset;
 
@@ -19,12 +19,12 @@
 	}
 }
 
-.ck-rounded-corners .ck-splitbutton > .ck-splitbutton-arrow {
+.ck-rounded-corners .ck-splitbutton > .ck-splitbutton-select {
 	border-top-left-radius: unset;
 	border-bottom-left-radius: unset;
 }
 
-.ck-splitbutton-arrow {
+.ck-splitbutton-select {
 	padding-right: var(--ck-spacing-standard);
 
 	& svg {

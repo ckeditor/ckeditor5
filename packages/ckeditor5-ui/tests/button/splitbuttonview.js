@@ -31,7 +31,7 @@ describe( 'SplitButtonView', () => {
 
 		it( 'creates view#selectView', () => {
 			expect( view.selectView ).to.be.instanceOf( ButtonView );
-			expect( view.selectView.element.classList.contains( 'ck-splitbutton-arrow' ) ).to.be.true;
+			expect( view.selectView.element.classList.contains( 'ck-splitbutton-select' ) ).to.be.true;
 			expect( view.selectView.icon ).to.be.not.undefined;
 		} );
 

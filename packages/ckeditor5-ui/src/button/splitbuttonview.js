@@ -19,7 +19,21 @@ import arrowIcon from '@ckeditor/ckeditor5-core/theme/icons/low-vision.svg';
 import './../../theme/components/button/splitbutton.css';
 
 /**
- * TODO
+ * The split button view class.
+ *
+ *		const view = new SplitButtonView();
+ *
+ *		view.set( {
+ *			label: 'A button',
+ *			keystroke: 'Ctrl+B',
+ *			tooltip: true
+ *		} );
+ *
+ *		view.render();
+ *
+ *		document.body.append( view.element );
+ *
+ * @extends module:ui/view~View
  */
 export default class SplitButtonView extends View {
 	/**
@@ -49,19 +63,42 @@ export default class SplitButtonView extends View {
 
 		/**
 		 * (Optional) An XML {@link module:ui/icon/iconview~IconView#content content} of the icon.
-		 * When defined, an {@link #iconView} will be added to the button.
+		 * When defined, an {@link #iconView} will be added to the action button.
 		 *
 		 * @observable
 		 * @member {String} #icon
 		 */
 		this.set( 'icon' );
 
+		/**
+		 * Collection of the child views inside of the split button {@link #element}.
+		 *
+		 * @readonly
+		 * @member {module:ui/viewcollection~ViewCollection}
+		 */
 		this.children = this.createCollection();
 
 		this.actionView = this._createActionView();
 		this.selectView = this._createSelectView();
 
+		/**
+		 * Instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}. It manages
+		 * keystrokes of the split button:
+		 *
+		 * * <kbd>▶</kbd> moves focus to select view when action view is focused,
+		 * * <kbd>◀</kbd> moves focus to action view when select view is focused.
+		 *
+		 * @readonly
+		 * @member {module:utils/keystrokehandler~KeystrokeHandler}
+		 */
 		this.keystrokes = new KeystrokeHandler();
+
+		/**
+		 * Tracks information about DOM focus in the dropdown.
+		 *
+		 * @readonly
+		 * @member {module:utils/focustracker~FocusTracker}
+		 */
 		this.focusTracker = new FocusTracker();
 
 		this.setTemplate( {
@@ -108,10 +145,20 @@ export default class SplitButtonView extends View {
 		} );
 	}
 
+	/**
+	 * Focuses the {@link #actionView#element} of the action part of split button.
+	 */
 	focus() {
 		this.actionView.focus();
 	}
 
+	/**
+	 * Creates a {@link module:ui/button/buttonview~ButtonView} instance as {@link #actionView} and binds it with main split button
+	 * attributes.
+	 *
+	 * @private
+	 * @returns {module:ui/button/buttonview~ButtonView}
+	 */
 	_createActionView() {
 		const buttonView = new ButtonView();
 
@@ -122,6 +169,13 @@ export default class SplitButtonView extends View {
 		return buttonView;
 	}
 
+	/**
+	 * Creates a {@link module:ui/button/buttonview~ButtonView} instance as {@link #selectView} and binds it with main split button
+	 * attributes.
+	 *
+	 * @private
+	 * @returns {module:ui/button/buttonview~ButtonView}
+	 */
 	_createSelectView() {
 		const selectView = new ButtonView();
 
@@ -129,7 +183,7 @@ export default class SplitButtonView extends View {
 
 		selectView.extendTemplate( {
 			attributes: {
-				class: 'ck-splitbutton-arrow'
+				class: 'ck-splitbutton-select'
 			}
 		} );
 
