@@ -48,7 +48,9 @@ describe( 'UndoEngine integration', () => {
 	} );
 
 	function setSelection( pathA, pathB ) {
-		doc.selection.setRanges( [ new Range( new Position( root, pathA ), new Position( root, pathB ) ) ] );
+		model.change( writer => {
+			writer.setSelection( new Range( new Position( root, pathA ), new Position( root, pathB ) ) );
+		} );
 	}
 
 	function input( input ) {
@@ -897,10 +899,10 @@ describe( 'UndoEngine integration', () => {
 
 			editor.execute( 'enter' );
 
-			model.change( () => {
+			model.change( writer => {
 				const range = new Range( new Position( root, [ 0, 3 ] ), new Position( root, [ 1, 3 ] ) );
 
-				doc.selection.setRanges( [ range ] );
+				writer.setSelection( range );
 
 				editor.execute( 'delete' );
 			} );
