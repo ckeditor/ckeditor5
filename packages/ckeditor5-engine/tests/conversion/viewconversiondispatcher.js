@@ -12,6 +12,8 @@ import Model from '../../src/model/model';
 import ModelText from '../../src/model/text';
 import ModelElement from '../../src/model/element';
 import ModelDocumentFragment from '../../src/model/documentfragment';
+import ModelPosition from '../../src/model/position';
+import ModelRange from '../../src/model/range';
 import { stringify } from '../../src/dev-utils/model';
 
 import log from '@ckeditor/ckeditor5-utils/src/log';
@@ -86,7 +88,7 @@ describe( 'ViewConversionDispatcher', () => {
 				// Check correctness of passed parameters.
 				expect( evt.name ).to.equal( 'text' );
 				expect( data.input ).to.equal( viewText );
-				expect( data.foo ).to.equal( 'bar' );
+				expect( data.position ).to.instanceof( ModelPosition );
 
 				// Check whether consumable has appropriate value to consume.
 				expect( consumable.consume( data.input ) ).to.be.true;
@@ -94,18 +96,21 @@ describe( 'ViewConversionDispatcher', () => {
 				// Check whether conversionApi of `dispatcher` has been passed.
 				expect( conversionApi ).to.equal( dispatcher.conversionApi );
 
+				const text = conversionApi.writer.createText( data.input.data );
+				conversionApi.writer.insert( text, data.position );
+
 				// Set conversion result to `output` property of `data`.
 				// Later we will check if it was returned by `convert` method.
-				data.output = new ModelText( data.foo );
+				data.output = ModelRange.createOn( text );
 			} );
 
 			// Use `additionalData` parameter to check if it was passed to the event.
-			const conversionResult = dispatcher.convert( viewText, { foo: 'bar' } );
+			const conversionResult = dispatcher.convert( viewText );
 
 			// Check conversion result.
 			// Result should be wrapped in document fragment.
 			expect( conversionResult ).to.be.instanceof( ModelDocumentFragment );
-			expect( conversionResult.getChild( 0 ).data ).to.equal( 'bar' );
+			expect( conversionResult.getChild( 0 ).data ).to.equal( 'foobar' );
 			expect( spy.calledOnce ).to.be.true;
 		} );
 
@@ -120,7 +125,7 @@ describe( 'ViewConversionDispatcher', () => {
 				// Check correctness of passed parameters.
 				expect( evt.name ).to.equal( 'element:p' );
 				expect( data.input ).to.equal( viewElement );
-				expect( data.foo ).to.equal( 'bar' );
+				expect( data.position ).to.instanceof( ModelPosition );
 
 				// Check whether consumable has appropriate value to consume.
 				expect( consumable.consume( data.input, { name: true } ) ).to.be.true;
@@ -129,13 +134,16 @@ describe( 'ViewConversionDispatcher', () => {
 				// Check whether conversionApi of `dispatcher` has been passed.
 				expect( conversionApi ).to.equal( dispatcher.conversionApi );
 
+				const paragraph = conversionApi.writer.createElement( 'paragraph' );
+				conversionApi.writer.insert( paragraph, data.position );
+
 				// Set conversion result to `output` property of `data`.
 				// Later we will check if it was returned by `convert` method.
-				data.output = new ModelElement( 'paragraph' );
+				data.output = ModelRange.createOn( paragraph );
 			} );
 
 			// Use `additionalData` parameter to check if it was passed to the event.
-			const conversionResult = dispatcher.convert( viewElement, { foo: 'bar' } );
+			const conversionResult = dispatcher.convert( viewElement );
 
 			// Check conversion result.
 			// Result should be wrapped in document fragment.
@@ -155,7 +163,7 @@ describe( 'ViewConversionDispatcher', () => {
 				// Check correctness of passed parameters.
 				expect( evt.name ).to.equal( 'documentFragment' );
 				expect( data.input ).to.equal( viewFragment );
-				expect( data.foo ).to.equal( 'bar' );
+				expect( data.position ).to.instanceof( ModelPosition );
 
 				// Check whether consumable has appropriate value to consume.
 				expect( consumable.consume( data.input ) ).to.be.true;
@@ -169,7 +177,7 @@ describe( 'ViewConversionDispatcher', () => {
 			} );
 
 			// Use `additionalData` parameter to check if it was passed to the event.
-			const conversionResult = dispatcher.convert( viewFragment, { foo: 'bar' } );
+			const conversionResult = dispatcher.convert( viewFragment );
 
 			// Check conversion result.
 			expect( conversionResult ).to.be.instanceof( ModelDocumentFragment );
@@ -263,11 +271,11 @@ describe( 'ViewConversionDispatcher', () => {
 				dispatcher.on( 'documentFragment', ( evt, data, consumable, conversionApi ) => {
 					spy();
 
-					expect( conversionApi.convertItem( viewP, consumableMock, data ) ).to.equal( modelP );
-					expect( conversionApi.convertItem( viewText, consumableMock, data ) ).to.equal( modelText );
+					expect( conversionApi.convertItem( viewP, consumableMock, data.position ) ).to.equal( modelP );
+					expect( conversionApi.convertItem( viewText, consumableMock, data.position ) ).to.equal( modelText );
 				} );
 
-				dispatcher.convert( new ViewDocumentFragment(), { foo: 'bar' } );
+				dispatcher.convert( new ViewDocumentFragment() );
 
 				expect( spy.calledOnce ).to.be.true;
 				expect( spyP.calledOnce ).to.be.true;
@@ -349,7 +357,7 @@ describe( 'ViewConversionDispatcher', () => {
 					expect( result.getChild( 1 ) ).to.equal( modelText );
 				} );
 
-				dispatcher.convert( new ViewDocumentFragment( [ viewArray, viewP, viewDiv, viewText, viewNull ] ), { foo: 'bar' } );
+				dispatcher.convert( new ViewDocumentFragment( [ viewArray, viewP, viewDiv, viewText, viewNull ] ) );
 
 				expect( spy.calledOnce ).to.be.true;
 				expect( spyNull.calledOnce ).to.be.true;
