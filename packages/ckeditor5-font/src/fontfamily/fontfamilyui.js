@@ -11,11 +11,11 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Model from '@ckeditor/ckeditor5-ui/src/model';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 
-import addListViewToDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/helpers/addlistviewtodropdown';
-import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
+import { createDropdown, addListViewToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
+
+import { normalizeOptions } from './utils';
 
 import fontFamilyIcon from '../../theme/icons/font-family.svg';
-import { normalizeOptions } from './utils';
 
 /**
  * @extends module:core/plugin~Plugin
@@ -56,7 +56,6 @@ export default class FontFamilyUI extends Plugin {
 		const dropdownModel = new Model( {
 			icon: fontFamilyIcon,
 			withText: false,
-			items: dropdownItems,
 			tooltip: t( 'Font Family' )
 		} );
 
@@ -66,7 +65,7 @@ export default class FontFamilyUI extends Plugin {
 		editor.ui.componentFactory.add( 'fontFamily', locale => {
 			const dropdownView = createDropdown( dropdownModel, locale );
 
-			addListViewToDropdown( dropdownView, dropdownModel, locale );
+			addListViewToDropdown( dropdownView, dropdownItems, dropdownModel, locale );
 
 			dropdownView.extendTemplate( {
 				attributes: {
