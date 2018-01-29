@@ -47,10 +47,10 @@ import '../../theme/components/dropdown/toolbardropdown.css';
  * @param {module:utils/locale~Locale} locale The locale instance.
  * @returns {module:ui/dropdown/dropdownview~DropdownView} The dropdown view instance.
  */
-export function createDropdown( model, locale ) {
-	const buttonView = createButtonForDropdown( model, locale );
+export function createDropdown( locale ) {
+	const buttonView = createButtonForDropdown( locale );
 
-	const dropdownView = prepareDropdown( locale, buttonView, model );
+	const dropdownView = prepareDropdown( locale, buttonView );
 
 	addDefaultBehavior( dropdownView );
 
@@ -85,10 +85,10 @@ export function createDropdown( model, locale ) {
  * @param {module:utils/locale~Locale} locale The locale instance.
  * @returns {module:ui/dropdown/dropdownview~DropdownView} The dropdown view instance.
  */
-export function createSplitButtonDropdown( model, locale ) {
-	const buttonView = createSplitButtonForDropdown( model, locale );
+export function createSplitButtonDropdown( locale ) {
+	const buttonView = createSplitButtonForDropdown( locale );
 
-	const dropdownView = prepareDropdown( locale, buttonView, model );
+	const dropdownView = prepareDropdown( locale, buttonView );
 
 	addDefaultBehavior( dropdownView );
 
@@ -129,10 +129,11 @@ export function createSplitButtonDropdown( model, locale ) {
  * @param {module:utils/locale~Locale} locale The locale instance.
  * @returns {module:ui/dropdown/dropdownview~DropdownView}
  */
-export function addToolbarToDropdown( dropdownView, buttons, model ) {
+export function addToolbarToDropdown( dropdownView, buttons ) {
 	const toolbarView = dropdownView.toolbarView = new ToolbarView();
 
-	toolbarView.bind( 'isVertical' ).to( model, 'isVertical' );
+	// dropdownView.set( 'isVertical' );
+	toolbarView.bind( 'isVertical' ).to( dropdownView, 'isVertical' );
 
 	dropdownView.extendTemplate( {
 		attributes: {
@@ -187,7 +188,8 @@ export function addToolbarToDropdown( dropdownView, buttons, model ) {
  * @param {module:utils/locale~Locale} locale The locale instance.
  * @returns {module:ui/dropdown/list/listdropdownview~ListDropdownView} The list dropdown view instance.
  */
-export function addListViewToDropdown( dropdownView, listViewItems, model, locale ) {
+export function addListViewToDropdown( dropdownView, listViewItems ) {
+	const locale = dropdownView.locale;
 	const listView = dropdownView.listView = new ListView( locale );
 
 	// TODO: make this param of method instead of model property?
@@ -207,14 +209,16 @@ export function addListViewToDropdown( dropdownView, listViewItems, model, local
 }
 
 // @private
-function prepareDropdown( locale, buttonView, model ) {
+function prepareDropdown( locale, buttonView ) {
 	const panelView = new DropdownPanelView( locale );
 	const dropdownView = new DropdownView( locale, buttonView, panelView );
 
-	dropdownView.bind( 'isEnabled' ).to( model );
+	buttonView.bind( 'label', 'isEnabled', 'withText', 'keystroke', 'tooltip', 'icon' ).to( dropdownView );
 
-	buttonView.bind( 'label', 'isEnabled', 'withText', 'keystroke', 'tooltip', 'icon' ).to( model );
-	buttonView.bind( 'isOn' ).to( model, 'isOn', dropdownView, 'isOpen', ( isOn, isOpen ) => {
+	// TODO: buttonView.bind( 'isOn' ).to( model, 'isOn', dropdownView, 'isOpen', ( isOn, isOpen ) => {
+	dropdownView.set( 'isOn', true );
+
+	buttonView.bind( 'isOn' ).to( dropdownView, 'isOn', dropdownView, 'isOpen', ( isOn, isOpen ) => {
 		return isOn || isOpen;
 	} );
 
@@ -222,7 +226,7 @@ function prepareDropdown( locale, buttonView, model ) {
 }
 
 // @private
-function createSplitButtonForDropdown( model, locale ) {
+function createSplitButtonForDropdown( locale ) {
 	const splitButtonView = new SplitButtonView( locale );
 
 	// TODO: Check if those binding are in good place (maybe move them to SplitButton) or add tests.
@@ -233,7 +237,7 @@ function createSplitButtonForDropdown( model, locale ) {
 }
 
 // @private
-function createButtonForDropdown( model, locale ) {
+function createButtonForDropdown( locale ) {
 	const buttonView = new ButtonView( locale );
 
 	// Dropdown expects "select" event to show contents.

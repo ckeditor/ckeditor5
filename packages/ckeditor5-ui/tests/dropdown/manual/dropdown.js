@@ -26,14 +26,14 @@ const ui = testUtils.createTestUIView( {
 } );
 
 function testEmpty() {
-	const model = new Model( {
+	const dropdownView = createDropdown( {} );
+
+	dropdownView.set( {
 		label: 'Dropdown',
 		isEnabled: true,
 		isOn: false,
 		withText: true
 	} );
-
-	const dropdownView = createDropdown( model, {} );
 
 	ui.dropdown.add( dropdownView );
 
@@ -50,16 +50,16 @@ function testList() {
 		} ) );
 	} );
 
-	const model = new Model( {
+	const dropdownView = createDropdown( {} );
+
+	dropdownView.set( {
 		label: 'ListDropdown',
 		isEnabled: true,
 		isOn: false,
 		withText: true
 	} );
 
-	const dropdownView = createDropdown( model, {} );
-
-	addListViewToDropdown( dropdownView, collection, model, {} );
+	addListViewToDropdown( dropdownView, collection );
 
 	dropdownView.on( 'execute', evt => {
 		/* global console */
@@ -68,21 +68,23 @@ function testList() {
 
 	ui.listDropdown.add( dropdownView );
 
-	window.listDropdownModel = model;
 	window.listDropdownCollection = collection;
 	window.Model = Model;
 }
 
 function testSharedModel() {
-	const model = new Model( {
+	const dropdownSettings = {
 		label: 'Shared Model',
 		isEnabled: true,
 		isOn: false,
 		withText: true
-	} );
+	};
 
-	const dropdownView1 = createDropdown( model, {} );
-	const dropdownView2 = createDropdown( model, {} );
+	const dropdownView1 = createDropdown( {} );
+	const dropdownView2 = createDropdown( {} );
+
+	dropdownView1.set( dropdownSettings );
+	dropdownView2.set( dropdownSettings );
 
 	ui.dropdownShared.add( dropdownView1 );
 	ui.dropdownShared.add( dropdownView2 );
@@ -91,14 +93,14 @@ function testSharedModel() {
 }
 
 function testLongLabel() {
-	const model = new Model( {
+	const dropdownView = createDropdown( {} );
+
+	dropdownView.set( {
 		label: 'Dropdown with a very long label',
 		isEnabled: true,
 		isOn: false,
 		withText: true
 	} );
-
-	const dropdownView = createDropdown( model, {} );
 
 	ui.dropdownLabel.add( dropdownView );
 
@@ -124,18 +126,14 @@ function testButton() {
 			return buttonView;
 		} );
 
-	const toolbarDropdownModel = new Model( {
-		isVertical: true
-	} );
+	const toolbarDropdown = createDropdown( locale );
+	toolbarDropdown.set( 'isVertical', true );
 
-	const toolbarDropdown = createDropdown( toolbarDropdownModel, locale );
-
-	addToolbarToDropdown( toolbarDropdown, buttonViews, toolbarDropdownModel );
+	addToolbarToDropdown( toolbarDropdown, buttonViews );
 
 	ui.toolbarDropdown.add( toolbarDropdown );
 
 	window.buttons = buttons;
-	window.toolbarDropdownModel = toolbarDropdownModel;
 }
 
 testEmpty();

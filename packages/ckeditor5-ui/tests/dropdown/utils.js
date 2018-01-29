@@ -31,11 +31,8 @@ describe( 'utils', () => {
 	} );
 
 	describe( 'createDropdown()', () => {
-		let model;
-
 		beforeEach( () => {
-			model = new Model();
-			dropdownView = createDropdown( model, locale );
+			dropdownView = createDropdown( locale );
 		} );
 
 		it( 'accepts locale', () => {
@@ -64,13 +61,14 @@ describe( 'utils', () => {
 				tooltip: false
 			};
 
-			model = new Model( modelDef );
-			dropdownView = createDropdown( model, locale );
+			dropdownView = createDropdown( locale );
+
+			dropdownView.set( modelDef );
 
 			assertBinding( dropdownView.buttonView,
 				modelDef,
 				[
-					[ model, { label: 'bar', isEnabled: false, isOn: true, withText: true, tooltip: true } ]
+					[ dropdownView, { label: 'bar', isEnabled: false, isOn: true, withText: true, tooltip: true } ]
 				],
 				{ label: 'bar', isEnabled: false, isOn: true, withText: true, tooltip: true }
 			);
@@ -85,19 +83,19 @@ describe( 'utils', () => {
 				tooltip: false
 			};
 
-			model = new Model( modelDef );
-			dropdownView = createDropdown( model, locale );
+			dropdownView = createDropdown( locale );
+			dropdownView.set( modelDef );
 
 			dropdownView.isOpen = false;
 			expect( dropdownView.buttonView.isOn ).to.be.false;
 
-			model.isOn = true;
+			dropdownView.isOn = true;
 			expect( dropdownView.buttonView.isOn ).to.be.true;
 
 			dropdownView.isOpen = true;
 			expect( dropdownView.buttonView.isOn ).to.be.true;
 
-			model.isOn = false;
+			dropdownView.isOn = false;
 			expect( dropdownView.buttonView.isOn ).to.be.true;
 		} );
 
@@ -109,13 +107,13 @@ describe( 'utils', () => {
 				tooltip: false
 			};
 
-			model = new Model( modelDef );
-			dropdownView = createDropdown( model, locale );
+			dropdownView = createDropdown( locale );
+			dropdownView.set( modelDef );
 
 			assertBinding( dropdownView,
 				{ isEnabled: true },
 				[
-					[ model, { isEnabled: false } ]
+					[ dropdownView, { isEnabled: false } ]
 				],
 				{ isEnabled: false }
 			);
@@ -145,11 +143,8 @@ describe( 'utils', () => {
 	} );
 
 	describe( 'createSplitButtonDropdown()', () => {
-		let model;
-
 		beforeEach( () => {
-			model = new Model();
-			dropdownView = createSplitButtonDropdown( model, locale );
+			dropdownView = createSplitButtonDropdown( locale );
 		} );
 
 		it( 'accepts locale', () => {
@@ -178,13 +173,13 @@ describe( 'utils', () => {
 				tooltip: false
 			};
 
-			model = new Model( modelDef );
-			dropdownView = createDropdown( model, locale );
+			dropdownView = createDropdown( locale );
+			dropdownView.set( modelDef );
 
 			assertBinding( dropdownView.buttonView,
 				modelDef,
 				[
-					[ model, { label: 'bar', isEnabled: false, isOn: true, withText: true, tooltip: true } ]
+					[ dropdownView, { label: 'bar', isEnabled: false, isOn: true, withText: true, tooltip: true } ]
 				],
 				{ label: 'bar', isEnabled: false, isOn: true, withText: true, tooltip: true }
 			);
@@ -199,19 +194,19 @@ describe( 'utils', () => {
 				tooltip: false
 			};
 
-			model = new Model( modelDef );
-			dropdownView = createDropdown( model, locale );
+			dropdownView = createDropdown( locale );
+			dropdownView.set( modelDef );
 
 			dropdownView.isOpen = false;
 			expect( dropdownView.buttonView.isOn ).to.be.false;
 
-			model.isOn = true;
+			dropdownView.isOn = true;
 			expect( dropdownView.buttonView.isOn ).to.be.true;
 
 			dropdownView.isOpen = true;
 			expect( dropdownView.buttonView.isOn ).to.be.true;
 
-			model.isOn = false;
+			dropdownView.isOn = false;
 			expect( dropdownView.buttonView.isOn ).to.be.true;
 		} );
 
@@ -223,13 +218,13 @@ describe( 'utils', () => {
 				tooltip: false
 			};
 
-			model = new Model( modelDef );
-			dropdownView = createDropdown( model, locale );
+			dropdownView = createDropdown( locale );
+			dropdownView.set( modelDef );
 
 			assertBinding( dropdownView,
 				{ isEnabled: true },
 				[
-					[ model, { isEnabled: false } ]
+					[ dropdownView, { isEnabled: false } ]
 				],
 				{ isEnabled: false }
 			);
@@ -249,7 +244,7 @@ describe( 'utils', () => {
 	} );
 
 	describe( 'addToolbarToDropdown()', () => {
-		let model, buttons;
+		let buttons;
 
 		beforeEach( () => {
 			buttons = [ '<svg>foo</svg>', '<svg>bar</svg>' ].map( icon => {
@@ -260,10 +255,10 @@ describe( 'utils', () => {
 				return button;
 			} );
 
-			model = new Model( { isVertical: true } );
+			dropdownView = createDropdown( locale );
+			dropdownView.set( 'isVertical', true );
 
-			dropdownView = createDropdown( model, locale );
-			addToolbarToDropdown( dropdownView, buttons, model );
+			addToolbarToDropdown( dropdownView, buttons );
 
 			dropdownView.render();
 			document.body.appendChild( dropdownView.element );
@@ -302,30 +297,29 @@ describe( 'utils', () => {
 			} );
 
 			it( 'reacts on model#isVertical', () => {
-				model.isVertical = false;
+				dropdownView.isVertical = false;
 				expect( dropdownView.toolbarView.isVertical ).to.be.false;
 
-				model.isVertical = true;
+				dropdownView.isVertical = true;
 				expect( dropdownView.toolbarView.isVertical ).to.be.true;
 			} );
 		} );
 	} );
 
 	describe( 'addListViewToDropdown()', () => {
-		let dropdownView, model, locale, items;
+		let items;
 
 		beforeEach( () => {
-			locale = { t() {} };
 			items = new Collection();
-			model = new Model( {
+
+			dropdownView = createDropdown( locale );
+			dropdownView.set( {
 				isEnabled: true,
 				isOn: false,
 				label: 'foo'
 			} );
 
-			dropdownView = createDropdown( model, locale );
-
-			addListViewToDropdown( dropdownView, items, model, locale );
+			addListViewToDropdown( dropdownView, items );
 
 			dropdownView.render();
 			document.body.appendChild( dropdownView.element );
