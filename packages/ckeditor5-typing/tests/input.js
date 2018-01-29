@@ -70,10 +70,10 @@ describe( 'Input feature', () => {
 	beforeEach( () => {
 		editor.setData( '<p>foobar</p>' );
 
-		model.change( () => {
-			model.document.selection.setRanges( [
+		model.change( writer => {
+			writer.setSelection(
 				ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 3, modelRoot.getChild( 0 ), 3 )
-			] );
+			);
 		} );
 	} );
 
@@ -271,7 +271,7 @@ describe( 'Input feature', () => {
 			// This test case emulates spellchecker correction.
 
 			const viewSelection = new ViewSelection();
-			viewSelection.setCollapsedAt( viewRoot.getChild( 0 ).getChild( 0 ), 6 );
+			viewSelection.setTo( viewRoot.getChild( 0 ).getChild( 0 ), 6 );
 
 			view.fire( 'mutations',
 				[ {
@@ -291,7 +291,7 @@ describe( 'Input feature', () => {
 			// This test case emulates spellchecker correction.
 
 			const viewSelection = new ViewSelection();
-			viewSelection.setCollapsedAt( viewRoot.getChild( 0 ).getChild( 0 ), 6 );
+			viewSelection.setTo( viewRoot.getChild( 0 ).getChild( 0 ), 6 );
 
 			testUtils.sinon.spy( Writer.prototype, 'insert' );
 			testUtils.sinon.spy( Writer.prototype, 'remove' );
@@ -315,7 +315,7 @@ describe( 'Input feature', () => {
 			editor.setData( '<p>Foo hous a</p>' );
 
 			const viewSelection = new ViewSelection();
-			viewSelection.setCollapsedAt( viewRoot.getChild( 0 ).getChild( 0 ), 9 );
+			viewSelection.setTo( viewRoot.getChild( 0 ).getChild( 0 ), 9 );
 
 			view.fire( 'mutations',
 				[ {
@@ -336,7 +336,7 @@ describe( 'Input feature', () => {
 			editor.setData( '<p>Bar athat foo</p>' );
 
 			const viewSelection = new ViewSelection();
-			viewSelection.setCollapsedAt( viewRoot.getChild( 0 ).getChild( 0 ), 8 );
+			viewSelection.setTo( viewRoot.getChild( 0 ).getChild( 0 ), 8 );
 
 			view.fire( 'mutations',
 				[ {
@@ -357,7 +357,7 @@ describe( 'Input feature', () => {
 			editor.setData( '<p>Foo hous e</p>' );
 
 			const viewSelection = new ViewSelection();
-			viewSelection.setCollapsedAt( viewRoot.getChild( 0 ).getChild( 0 ), 9 );
+			viewSelection.setTo( viewRoot.getChild( 0 ).getChild( 0 ), 9 );
 
 			view.fire( 'mutations',
 				[ {
@@ -377,8 +377,8 @@ describe( 'Input feature', () => {
 			editor.setData( '<p>Foo house</p>' );
 
 			const viewSelection = new ViewSelection();
-			viewSelection.setCollapsedAt( viewRoot.getChild( 0 ).getChild( 0 ), 8 );
-			viewSelection.moveFocusTo( viewRoot.getChild( 0 ).getChild( 0 ), 9 );
+			viewSelection.setTo( viewRoot.getChild( 0 ).getChild( 0 ), 8 );
+			viewSelection.setFocus( viewRoot.getChild( 0 ).getChild( 0 ), 9 );
 
 			view.fire( 'mutations',
 				[ {
@@ -395,10 +395,10 @@ describe( 'Input feature', () => {
 		} );
 
 		it( 'should replace last &nbsp; with space', () => {
-			model.change( () => {
-				model.document.selection.setRanges( [
+			model.change( writer => {
+				writer.setSelection(
 					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 6, modelRoot.getChild( 0 ), 6 )
-				] );
+				);
 			} );
 
 			view.fire( 'mutations', [
@@ -415,10 +415,10 @@ describe( 'Input feature', () => {
 		} );
 
 		it( 'should replace first &nbsp; with space', () => {
-			model.change( () => {
-				model.document.selection.setRanges( [
+			model.change( writer => {
+				writer.setSelection(
 					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 0, modelRoot.getChild( 0 ), 0 )
-				] );
+				);
 			} );
 
 			view.fire( 'mutations', [
@@ -435,10 +435,10 @@ describe( 'Input feature', () => {
 		} );
 
 		it( 'should replace all &nbsp; with spaces', () => {
-			model.change( () => {
-				model.document.selection.setRanges( [
+			model.change( writer => {
+				writer.setSelection(
 					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 6, modelRoot.getChild( 0 ), 6 )
-				] );
+				);
 			} );
 
 			view.fire( 'mutations', [
@@ -457,9 +457,9 @@ describe( 'Input feature', () => {
 
 	describe( 'keystroke handling', () => {
 		it( 'should remove contents', () => {
-			model.change( () => {
-				model.document.selection.setRanges( [
-					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) ] );
+			model.change( writer => {
+				writer.setSelection(
+					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) );
 			} );
 
 			listenter.listenTo( view, 'keydown', () => {
@@ -491,9 +491,9 @@ describe( 'Input feature', () => {
 		} );
 
 		it( 'should do nothing on arrow key', () => {
-			model.change( () => {
-				model.document.selection.setRanges( [
-					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) ] );
+			model.change( writer => {
+				writer.setSelection(
+					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) );
 			} );
 
 			view.fire( 'keydown', { keyCode: getCode( 'arrowdown' ) } );
@@ -502,9 +502,9 @@ describe( 'Input feature', () => {
 		} );
 
 		it( 'should do nothing on ctrl combinations', () => {
-			model.change( () => {
-				model.document.selection.setRanges( [
-					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) ] );
+			model.change( writer => {
+				writer.setSelection(
+					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) );
 			} );
 
 			view.fire( 'keydown', { ctrlKey: true, keyCode: getCode( 'c' ) } );
@@ -513,9 +513,9 @@ describe( 'Input feature', () => {
 		} );
 
 		it( 'should do nothing on non printable keys', () => {
-			model.change( () => {
-				model.document.selection.setRanges( [
-					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) ] );
+			model.change( writer => {
+				writer.setSelection(
+					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) );
 			} );
 
 			view.fire( 'keydown', { keyCode: 16 } ); // Shift
@@ -527,9 +527,9 @@ describe( 'Input feature', () => {
 
 		// #69
 		it( 'should do nothing on tab key', () => {
-			model.change( () => {
-				model.document.selection.setRanges( [
-					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) ] );
+			model.change( writer => {
+				writer.setSelection(
+					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) );
 			} );
 
 			view.fire( 'keydown', { keyCode: 9 } ); // Tab
@@ -539,9 +539,9 @@ describe( 'Input feature', () => {
 
 		// #82
 		it( 'should do nothing on composition start key', () => {
-			model.change( () => {
-				model.document.selection.setRanges( [
-					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) ] );
+			model.change( writer => {
+				writer.setSelection(
+					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) );
 			} );
 
 			view.fire( 'keydown', { keyCode: 229 } );
@@ -560,9 +560,9 @@ describe( 'Input feature', () => {
 			const lockSpy = testUtils.sinon.spy( buffer, 'lock' );
 			const unlockSpy = testUtils.sinon.spy( buffer, 'unlock' );
 
-			model.change( () => {
-				model.document.selection.setRanges( [
-					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) ] );
+			model.change( writer => {
+				writer.setSelection(
+					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) );
 			} );
 
 			view.fire( 'keydown', { keyCode: getCode( 'y' ) } );
@@ -994,8 +994,7 @@ describe( 'Input feature', () => {
 
 			const paragraph = viewRoot.getChild( 0 );
 			const strong = paragraph.getChild( 0 );
-			const viewSelection = new ViewSelection();
-			viewSelection.setCollapsedAt( paragraph, 0 );
+			const viewSelection = new ViewSelection( paragraph, 0 );
 
 			// Simulate mutations and DOM change.
 			domRoot.childNodes[ 0 ].innerHTML = '<b>textx</b>';
@@ -1015,12 +1014,11 @@ describe( 'Input feature', () => {
 
 		// #117.
 		it( 'should handle mixed mutations', () => {
-			setModelData( model, '<paragraph><$text bold="true">Foo bar aple</$text></paragraph>' );
+			setModelData( model, '<paragraph>[]<$text bold="true">Foo bar aple</$text></paragraph>' );
 
 			const paragraph = viewRoot.getChild( 0 );
 			const strong = paragraph.getChild( 0 );
-			const viewSelection = new ViewSelection();
-			viewSelection.setCollapsedAt( paragraph, 0 );
+			const viewSelection = new ViewSelection( paragraph );
 
 			// Simulate mutations and DOM change.
 			domRoot.childNodes[ 0 ].innerHTML = '<strong>Foo bar </strong><b>apple</b>';

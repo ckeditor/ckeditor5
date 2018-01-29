@@ -236,7 +236,7 @@ function emulateSpellcheckerMutation( editor, nodeIndex, resultPositionIndex, ol
 	const viewRoot = view.getRoot();
 	const viewSelection = new ViewSelection();
 
-	viewSelection.setCollapsedAt( viewRoot.getChild( nodeIndex ).getChild( 0 ), resultPositionIndex );
+	viewSelection.setTo( viewRoot.getChild( nodeIndex ).getChild( 0 ), resultPositionIndex );
 
 	view.fire( 'mutations',
 		[ {
@@ -256,10 +256,10 @@ function emulateSpellcheckerInsertText( editor, nodeIndex, rangeStart, rangeEnd,
 	window.focus();
 	editor.editing.view.focus();
 
-	model.change( () => {
-		model.document.selection.setRanges( [
+	model.change( writer => {
+		writer.setSelection(
 			ModelRange.createFromParentsAndOffsets( modelRoot.getChild( nodeIndex ), rangeStart, modelRoot.getChild( nodeIndex ), rangeEnd )
-		] );
+		);
 	} );
 
 	model.document.once( 'change', () => {
