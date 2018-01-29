@@ -503,6 +503,12 @@ class ViewConverterBuilder {
 						continue;
 					}
 
+					// Tmp fix because multiple matchers are not properly matched and consumed.
+					// See https://github.com/ckeditor/ckeditor5-engine/issues/1257.
+					if ( data.output ) {
+						continue;
+					}
+
 					writer.insert( modelElement, data.position );
 					data.output = Range.createOn( modelElement );
 
