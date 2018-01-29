@@ -408,10 +408,10 @@ function listDropdown( {
 	withText = true,
 	items = new Collection( { idProperty: 'label' } )
 } = {} ) {
-	const model = new Model( { label, isEnabled, isOn, withText } );
-	const dropdown = createDropdown( model, {} );
+	const dropdown = createDropdown( {} );
+	dropdown.set( { label, isEnabled, isOn, withText } );
 
-	addListViewToDropdown( dropdown, items, model, {} );
+	addListViewToDropdown( dropdown, items );
 
 	return dropdown;
 }
