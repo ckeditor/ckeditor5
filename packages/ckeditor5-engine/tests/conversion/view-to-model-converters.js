@@ -13,6 +13,7 @@ import ModelDocumentFragment from '../../src/model/documentfragment';
 import ModelElement from '../../src/model/element';
 import ModelText from '../../src/model/text';
 import ModelRange from '../../src/model/range';
+import ModelPosition from '../../src/model/position';
 
 import { convertToModelFragment, convertText } from '../../src/conversion/view-to-model-converters';
 
@@ -31,13 +32,13 @@ describe( 'view-to-model-converters', () => {
 		dispatcher = new ViewConversionDispatcher( model, { schema } );
 	} );
 
-	describe( 'convertText', () => {
+	describe( 'convertText()', () => {
 		it( 'should return converter converting ViewText to ModelText', () => {
 			const viewText = new ViewText( 'foobar' );
 
 			dispatcher.on( 'text', convertText() );
 
-			const conversionResult = dispatcher.convert( viewText, context );
+			const conversionResult = dispatcher.convert( viewText );
 
 			expect( conversionResult ).to.be.instanceof( ModelDocumentFragment );
 			expect( conversionResult.getChild( 0 ) ).to.be.instanceof( ModelText );
@@ -101,7 +102,7 @@ describe( 'view-to-model-converters', () => {
 		} );
 	} );
 
-	describe( 'convertToModelFragment', () => {
+	describe( 'convertToModelFragment()', () => {
 		it( 'should return converter converting whole ViewDocumentFragment to ModelDocumentFragment', () => {
 			const viewFragment = new ViewDocumentFragment( [
 				new ViewContainerElement( 'p', null, new ViewText( 'foo' ) ),
@@ -131,11 +132,12 @@ describe( 'view-to-model-converters', () => {
 			// Added with normal priority. Should make the above converter not fire.
 			dispatcher.on( 'element:p', ( evt, data, consumable, conversionApi ) => {
 				if ( consumable.consume( data.input, { name: true } ) ) {
-					data.output = new ModelElement( 'paragraph' );
+					const paragraph = conversionApi.writer.createElement( 'paragraph' );
 
-					data.context.push( data.output );
-					data.output.appendChildren( conversionApi.convertChildren( data.input, consumable, data ) );
-					data.context.pop();
+					conversionApi.writer.insert( paragraph, data.position );
+					conversionApi.convertChildren( data.input, consumable, ModelPosition.createAt( paragraph ) );
+
+					data.output = ModelRange.createOn( paragraph );
 				}
 			} );
 
