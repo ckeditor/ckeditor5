@@ -41,6 +41,12 @@ describe( 'ViewConversionDispatcher', () => {
 			expect( dispatcher.conversionApi ).to.have.property( 'convertChildren' ).that.is.instanceof( Function );
 			expect( dispatcher.conversionApi ).to.have.property( 'splitToAllowedParent' ).that.is.instanceof( Function );
 		} );
+
+		it( 'should have properties', () => {
+			const dispatcher = new ViewConversionDispatcher( model );
+
+			expect( dispatcher._splitElements ).to.instanceof( Set );
+		} );
 	} );
 
 	describe( 'convert()', () => {
@@ -48,6 +54,65 @@ describe( 'ViewConversionDispatcher', () => {
 
 		beforeEach( () => {
 			dispatcher = new ViewConversionDispatcher( model );
+		} );
+
+		it( 'should create api for current conversion process', () => {
+			const viewElement = new ViewContainerElement( 'p', null, new ViewText( 'foobar' ) );
+
+			// To be sure that both converters was called.
+			const spy = sinon.spy();
+
+			// To check that the same writer instance.
+			let writer;
+
+			// Conversion process properties should be undefined/empty before conversion.
+			expect( dispatcher.conversionApi.writer ).to.not.ok;
+			expect( dispatcher.conversionApi.data ).to.not.ok;
+			expect( dispatcher._splitElements.size ).to.equal( 0 );
+
+			dispatcher.on( 'element', ( evt, data, conversionApi ) => {
+				// Check conversion api params.
+				expect( conversionApi.writer ).to.instanceof( ModelWriter );
+				expect( conversionApi.data ).to.deep.equal( {} );
+				expect( dispatcher._splitElements.size ).to.equal( 0 );
+
+				// Remember writer to check in next converter that is exactly the same instance (the same undo step).
+				writer = conversionApi.writer;
+
+				// Add some data to conversion storage to verify them in next converter.
+				conversionApi.data.foo = 'bar';
+
+				// Add empty element and mark as a split result to check in next converter.
+				dispatcher._splitElements.add( conversionApi.writer.createElement( 'paragraph' ) );
+
+				// Convert children - this will call second converter.
+				conversionApi.convertChildren( data.viewItem, data.cursorPosition );
+
+				spy();
+			} );
+
+			dispatcher.on( 'text', ( evt, data, conversionApi ) => {
+				// The same writer is used in converters during one conversion.
+				expect( conversionApi.writer ).to.equal( writer );
+
+				// Data set by previous converter are remembered.
+				expect( conversionApi.data ).to.deep.equal( { foo: 'bar' } );
+
+				// Split element is remembered as well.
+				expect( dispatcher._splitElements.size ).to.equal( 1 );
+
+				spy();
+			} );
+
+			dispatcher.convert( viewElement );
+
+			// To be sure that both converters was called.
+			sinon.assert.calledTwice( spy );
+
+			// Conversion process properties should be cleared after conversion.
+			expect( dispatcher.conversionApi.writer ).to.not.ok;
+			expect( dispatcher.conversionApi.data ).to.not.ok;
+			expect( dispatcher._splitElements.size ).to.equal( 0 );
 		} );
 
 		it( 'should fire viewCleanup event on converted view part', () => {
@@ -83,27 +148,27 @@ describe( 'ViewConversionDispatcher', () => {
 			const spy = sinon.spy();
 			const viewText = new ViewText( 'foobar' );
 
-			dispatcher.on( 'text', ( evt, data, consumable, conversionApi ) => {
+			dispatcher.on( 'text', ( evt, data, conversionApi ) => {
 				// Check if this method has been fired.
 				spy();
 
 				// Check correctness of passed parameters.
 				expect( evt.name ).to.equal( 'text' );
-				expect( data.input ).to.equal( viewText );
-				expect( data.position ).to.instanceof( ModelPosition );
+				expect( data.viewItem ).to.equal( viewText );
+				expect( data.cursorPosition ).to.instanceof( ModelPosition );
 
 				// Check whether consumable has appropriate value to consume.
-				expect( consumable.consume( data.input ) ).to.be.true;
+				expect( conversionApi.consumable.consume( data.viewItem ) ).to.be.true;
 
 				// Check whether conversionApi of `dispatcher` has been passed.
 				expect( conversionApi ).to.equal( dispatcher.conversionApi );
 
-				const text = conversionApi.writer.createText( data.input.data );
-				conversionApi.writer.insert( text, data.position );
+				const text = conversionApi.writer.createText( data.viewItem.data );
+				conversionApi.writer.insert( text, data.cursorPosition );
 
-				// Set conversion result to `output` property of `data`.
+				// Set conversion result to `modelRange` property of `data`.
 				// Later we will check if it was returned by `convert` method.
-				data.output = ModelRange.createOn( text );
+				data.modelRange = ModelRange.createOn( text );
 			} );
 
 			const conversionResult = dispatcher.convert( viewText );
@@ -119,28 +184,28 @@ describe( 'ViewConversionDispatcher', () => {
 			const spy = sinon.spy();
 			const viewElement = new ViewContainerElement( 'p', { attrKey: 'attrValue' } );
 
-			dispatcher.on( 'element', ( evt, data, consumable, conversionApi ) => {
+			dispatcher.on( 'element', ( evt, data, conversionApi ) => {
 				// Check if this method has been fired.
 				spy();
 
 				// Check correctness of passed parameters.
 				expect( evt.name ).to.equal( 'element:p' );
-				expect( data.input ).to.equal( viewElement );
-				expect( data.position ).to.instanceof( ModelPosition );
+				expect( data.viewItem ).to.equal( viewElement );
+				expect( data.cursorPosition ).to.instanceof( ModelPosition );
 
 				// Check whether consumable has appropriate value to consume.
-				expect( consumable.consume( data.input, { name: true } ) ).to.be.true;
-				expect( consumable.consume( data.input, { attribute: 'attrKey' } ) ).to.be.true;
+				expect( conversionApi.consumable.consume( data.viewItem, { name: true } ) ).to.be.true;
+				expect( conversionApi.consumable.consume( data.viewItem, { attribute: 'attrKey' } ) ).to.be.true;
 
 				// Check whether conversionApi of `dispatcher` has been passed.
 				expect( conversionApi ).to.equal( dispatcher.conversionApi );
 
 				const paragraph = conversionApi.writer.createElement( 'paragraph' );
-				conversionApi.writer.insert( paragraph, data.position );
+				conversionApi.writer.insert( paragraph, data.cursorPosition );
 
-				// Set conversion result to `output` property of `data`.
+				// Set conversion result to `modelRange` property of `data`.
 				// Later we will check if it was returned by `convert` method.
-				data.output = ModelRange.createOn( paragraph );
+				data.modelRange = ModelRange.createOn( paragraph );
 			} );
 
 			// Use `additionalData` parameter to check if it was passed to the event.
@@ -157,27 +222,27 @@ describe( 'ViewConversionDispatcher', () => {
 			const spy = sinon.spy();
 			const viewFragment = new ViewDocumentFragment();
 
-			dispatcher.on( 'documentFragment', ( evt, data, consumable, conversionApi ) => {
+			dispatcher.on( 'documentFragment', ( evt, data, conversionApi ) => {
 				// Check if this method has been fired.
 				spy();
 
 				// Check correctness of passed parameters.
 				expect( evt.name ).to.equal( 'documentFragment' );
-				expect( data.input ).to.equal( viewFragment );
-				expect( data.position ).to.instanceof( ModelPosition );
+				expect( data.viewItem ).to.equal( viewFragment );
+				expect( data.cursorPosition ).to.instanceof( ModelPosition );
 
 				// Check whether consumable has appropriate value to consume.
-				expect( consumable.consume( data.input ) ).to.be.true;
+				expect( conversionApi.consumable.consume( data.viewItem ) ).to.be.true;
 
 				// Check whether conversionApi of `dispatcher` has been passed.
 				expect( conversionApi ).to.equal( dispatcher.conversionApi );
 
 				const text = conversionApi.writer.createText( 'foo' );
-				conversionApi.writer.insert( text, data.position );
+				conversionApi.writer.insert( text, data.cursorPosition );
 
-				// Set conversion result to `output` property of `data`.
+				// Set conversion result to `modelRange` property of `data`.
 				// Later we will check if it was returned by `convert` method.
-				data.output = ModelRange.createOn( text );
+				data.modelRange = ModelRange.createOn( text );
 			} );
 
 			// Use `additionalData` parameter to check if it was passed to the event.
@@ -189,85 +254,16 @@ describe( 'ViewConversionDispatcher', () => {
 			expect( spy.calledOnce ).to.be.true;
 		} );
 
-		it( 'should add contextual properties to conversion api', () => {
-			const viewElement = new ViewContainerElement( 'p', null, new ViewText( 'foobar' ) );
-
-			// To be sure that both converters was called.
-			const spy = sinon.spy();
-
-			// To check that the same batch is used across conversion.
-			let batch;
-
-			// Contextual properties of ConversionApi should be undefined/empty before conversion.
-			expect( dispatcher.conversionApi.writer ).to.not.ok;
-			expect( dispatcher.conversionApi.data ).to.not.ok;
-			expect( dispatcher._splitElements.size ).to.equal( 0 );
-
-			dispatcher.on( 'element', ( evt, data, consumable, conversionApi ) => {
-				// Check conversion api params.
-				expect( conversionApi.writer ).to.instanceof( ModelWriter );
-				expect( dispatcher._splitElements ).to.instanceof( Set );
-				expect( dispatcher._splitElements.size ).to.equal( 0 );
-				expect( conversionApi.data ).to.deep.equal( {} );
-
-				// Remember writer batch to check in next converter that is exactly the same batch.
-				batch = conversionApi.writer.batch;
-
-				// Add some data to conversion API to verify them in next converter.
-				// Set some custom data to conversion api data object.
-				conversionApi.data.foo = 'bar';
-
-				// Do the conversion.
-				const paragraph = conversionApi.writer.createElement( 'paragraph' );
-				conversionApi.writer.insert( paragraph, data.position );
-
-				// Add empty element and mark as a split result to check in next converter.
-				const splitElement = conversionApi.writer.createElement( 'paragraph' );
-				dispatcher._splitElements.add( splitElement );
-				conversionApi.writer.insert( splitElement, ModelPosition.createAfter( paragraph ) );
-
-				// Convert children - this wil call second converter.
-				conversionApi.convertChildren( data.input, consumable, ModelPosition.createAt( paragraph ) );
-
-				data.output = ModelRange.createOn( paragraph );
-
-				spy();
-			} );
-
-			dispatcher.on( 'text', ( evt, data, consumable, conversionApi ) => {
-				// The same batch is used in converters during one conversion.
-				expect( conversionApi.writer.batch ).to.equal( batch );
-
-				// Data set by previous converter are remembered.
-				expect( conversionApi.data ).to.deep.equal( { foo: 'bar' } );
-
-				// Split element is remembered as well.
-				expect( dispatcher._splitElements.size ).to.equal( 1 );
-
-				spy();
-			} );
-
-			dispatcher.convert( viewElement );
-
-			// To be sure that both converters was called.
-			sinon.assert.calledTwice( spy );
-
-			// Contextual properties of ConversionApi should be cleared after conversion.
-			expect( dispatcher.conversionApi.writer ).to.not.ok;
-			expect( dispatcher.conversionApi.data ).to.not.ok;
-			expect( dispatcher._splitElements.size ).to.equal( 0 );
-		} );
-
 		it( 'should remove empty elements that was created as a result of split', () => {
 			const viewElement = new ViewContainerElement( 'p' );
 
 			// To be sure that converter was called.
 			const spy = sinon.spy();
 
-			dispatcher.on( 'element', ( evt, data, consumable, conversionApi ) => {
+			dispatcher.on( 'element', ( evt, data, conversionApi ) => {
 				// First let's convert target element.
 				const paragraph = conversionApi.writer.createElement( 'paragraph' );
-				conversionApi.writer.insert( paragraph, data.position );
+				conversionApi.writer.insert( paragraph, data.cursorPosition );
 
 				// Then add some elements and mark as split.
 
@@ -291,7 +287,8 @@ describe( 'ViewConversionDispatcher', () => {
 				dispatcher._splitElements.add( outerSplit );
 				dispatcher._splitElements.add( innerSplit );
 
-				data.output = ModelRange.createOn( paragraph );
+				data.modelRange = ModelRange.createOn( paragraph );
+				data.cursorPosition = data.modelRange.end;
 
 				// We have the following result:
 				// <p><p></p></p>[<p></p>]<p></p><p>foo</p>
@@ -315,7 +312,8 @@ describe( 'ViewConversionDispatcher', () => {
 		it( 'should extract temporary markers elements from converter element and create static markers list', () => {
 			const viewFragment = new ViewDocumentFragment();
 
-			dispatcher.on( 'documentFragment', ( evt, data, consumable, conversionApi ) => {
+			dispatcher.on( 'documentFragment', ( evt, data, conversionApi ) => {
+				// Create model fragment.
 				const fragment = new ModelDocumentFragment( [
 					new ModelText( 'fo' ),
 					new ModelElement( '$marker', { 'data-name': 'marker1' } ),
@@ -326,9 +324,11 @@ describe( 'ViewConversionDispatcher', () => {
 					new ModelText( 'ar' ),
 				] );
 
-				conversionApi.writer.insert( fragment, data.position );
+				// Insert to conversion tree.
+				conversionApi.writer.insert( fragment, data.cursorPosition );
 
-				data.output = ModelRange.createIn( data.position.parent );
+				// Create range on this fragment as a conversion result.
+				data.modelRange = ModelRange.createIn( data.cursorPosition.parent );
 			} );
 
 			const conversionResult = dispatcher.convert( viewFragment );
@@ -361,9 +361,9 @@ describe( 'ViewConversionDispatcher', () => {
 				disallowIn: 'first'
 			} );
 
-			dispatcher.on( 'element:third', ( evt, data, consumable, conversionApi ) => {
+			dispatcher.on( 'element:third', ( evt, data, conversionApi ) => {
 				spy();
-				checkChildResult = conversionApi.schema.checkChild( data.position, 'third' );
+				checkChildResult = conversionApi.schema.checkChild( data.cursorPosition, 'third' );
 			} );
 
 			// Default context $root.
@@ -390,7 +390,7 @@ describe( 'ViewConversionDispatcher', () => {
 	} );
 
 	describe( 'conversionApi', () => {
-		let spy, spyP, spyText, viewP, viewText, modelP, modelText, consumableMock, rootMock, dispatcher,
+		let spy, spyP, spyText, viewP, viewText, modelP, modelText, rootMock, dispatcher,
 			spyNull, spyArray, viewDiv, viewNull, viewArray;
 
 		beforeEach( () => {
@@ -406,60 +406,56 @@ describe( 'ViewConversionDispatcher', () => {
 			// Put nodes to documentFragment, this will mock root element and makes possible to create range on them.
 			rootMock = new ModelDocumentFragment( [ modelP, modelText ] );
 
-			consumableMock = {};
-
 			dispatcher = new ViewConversionDispatcher( model, { schema: model.schema } );
 
-			dispatcher.on( 'element:p', ( evt, data, consumable ) => {
+			dispatcher.on( 'element:p', ( evt, data ) => {
 				spyP();
 
-				expect( consumable ).to.equal( consumableMock );
-
-				data.output = ModelRange.createOn( modelP );
+				data.modelRange = ModelRange.createOn( modelP );
+				data.cursorPosition = data.modelRange.end;
 			} );
 
-			dispatcher.on( 'text', ( evt, data, consumable ) => {
+			dispatcher.on( 'text', ( evt, data ) => {
 				spyText();
 
-				expect( consumable ).to.equal( consumableMock );
-
-				data.output = ModelRange.createOn( modelText );
+				data.modelRange = ModelRange.createOn( modelText );
+				data.cursorPosition = data.modelRange.end;
 			} );
 
 			spyNull = sinon.spy();
 			spyArray = sinon.spy();
 
 			viewDiv = new ViewContainerElement( 'div' ); // Will not be recognized and not converted.
-			viewNull = new ViewContainerElement( 'null' ); // Will return `null` in `data.output` upon conversion.
-			viewArray = new ViewContainerElement( 'array' ); // Will return an array in `data.output` upon conversion.
+			viewNull = new ViewContainerElement( 'null' ); // Will return `null` in `data.modelRange` upon conversion.
+			viewArray = new ViewContainerElement( 'array' ); // Will return an array in `data.modelRange` upon conversion.
 
 			dispatcher.on( 'element:null', ( evt, data ) => {
 				spyNull();
 
-				data.output = null;
+				data.modelRange = null;
 			} );
 
 			dispatcher.on( 'element:array', ( evt, data ) => {
 				spyArray();
 
-				data.output = [ new ModelText( 'foo' ) ];
+				data.modelRange = [ new ModelText( 'foo' ) ];
 			} );
 		} );
 
 		describe( 'convertItem()', () => {
-			it( 'should pass consumable and additional data to proper converter and return data.output', () => {
+			it( 'should call proper converter and return correct data', () => {
 				silenceWarnings();
 
-				dispatcher.on( 'documentFragment', ( evt, data, consumable, conversionApi ) => {
+				dispatcher.on( 'documentFragment', ( evt, data, conversionApi ) => {
 					spy();
 
-					const result1 = conversionApi.convertItem( viewP, consumableMock, data.position );
+					const result1 = conversionApi.convertItem( viewP, data.cursorPosition );
 					expect( result1 ).instanceof( ModelRange );
 					expect( result1.start.path ).to.deep.equal( [ 0 ] );
 					expect( result1.end.path ).to.deep.equal( [ 1 ] );
 					expect( first( result1.getItems() ) ).to.equal( modelP );
 
-					const result2 = conversionApi.convertItem( viewText, consumableMock, data.position );
+					const result2 = conversionApi.convertItem( viewText, data.cursorPosition );
 					expect( result2 ).instanceof( ModelRange );
 					expect( result2.start.path ).to.deep.equal( [ 1 ] );
 					expect( result2.end.path ).to.deep.equal( [ 7 ] );
@@ -477,11 +473,11 @@ describe( 'ViewConversionDispatcher', () => {
 			it( 'should do nothing if element was not converted', () => {
 				sinon.stub( log, 'warn' );
 
-				dispatcher.on( 'documentFragment', ( evt, data, consumable, conversionApi ) => {
+				dispatcher.on( 'documentFragment', ( evt, data, conversionApi ) => {
 					spy();
 
-					expect( conversionApi.convertItem( viewDiv ) ).to.equal( null );
-					expect( conversionApi.convertItem( viewNull ) ).to.equal( null );
+					expect( conversionApi.convertItem( viewDiv, data.cursorPosition ) ).to.equal( null );
+					expect( conversionApi.convertItem( viewNull, data.cursorPosition ) ).to.equal( null );
 				} );
 
 				dispatcher.convert( new ViewDocumentFragment() );
@@ -496,10 +492,10 @@ describe( 'ViewConversionDispatcher', () => {
 			it( 'should return null if element was incorrectly converted and log a warning', () => {
 				sinon.stub( log, 'warn' );
 
-				dispatcher.on( 'documentFragment', ( evt, data, consumable, conversionApi ) => {
+				dispatcher.on( 'documentFragment', ( evt, data, conversionApi ) => {
 					spy();
 
-					expect( conversionApi.convertItem( viewArray ) ).to.equal( null );
+					expect( conversionApi.convertItem( viewArray, data.cursorPosition ) ).to.equal( null );
 				} );
 
 				dispatcher.convert( new ViewDocumentFragment() );
@@ -517,10 +513,10 @@ describe( 'ViewConversionDispatcher', () => {
 				'wrapped in document fragment', () => {
 				silenceWarnings();
 
-				dispatcher.on( 'documentFragment', ( evt, data, consumable, conversionApi ) => {
+				dispatcher.on( 'documentFragment', ( evt, data, conversionApi ) => {
 					spy();
 
-					const result = conversionApi.convertChildren( data.input, consumableMock, ModelPosition.createAt( rootMock ) );
+					const result = conversionApi.convertChildren( data.viewItem, ModelPosition.createAt( rootMock ) );
 
 					expect( result ).to.be.instanceof( ModelRange );
 					expect( result.start.path ).to.deep.equal( [ 0 ] );
@@ -541,10 +537,10 @@ describe( 'ViewConversionDispatcher', () => {
 			it( 'should filter out incorrectly converted elements and log warnings', () => {
 				sinon.stub( log, 'warn' );
 
-				dispatcher.on( 'documentFragment', ( evt, data, consumable, conversionApi ) => {
+				dispatcher.on( 'documentFragment', ( evt, data, conversionApi ) => {
 					spy();
 
-					const result = conversionApi.convertChildren( data.input, consumableMock, ModelPosition.createAt( rootMock ) );
+					const result = conversionApi.convertChildren( data.viewItem, ModelPosition.createAt( rootMock ) );
 
 					expect( result ).to.be.instanceof( ModelRange );
 					expect( result.start.path ).to.deep.equal( [ 0 ] );
@@ -580,7 +576,7 @@ describe( 'ViewConversionDispatcher', () => {
 					allowIn: 'paragraph'
 				} );
 
-				dispatcher.on( 'documentFragment', ( evt, data, consumable, conversionApi ) => {
+				dispatcher.on( 'documentFragment', ( evt, data, conversionApi ) => {
 					const paragraph = conversionApi.writer.createElement( 'paragraph' );
 					const span = conversionApi.writer.createElement( 'span' );
 					const position = ModelPosition.createAt( paragraph );
@@ -608,7 +604,7 @@ describe( 'ViewConversionDispatcher', () => {
 					allowIn: 'section'
 				} );
 
-				dispatcher.on( 'documentFragment', ( evt, data, consumable, conversionApi ) => {
+				dispatcher.on( 'documentFragment', ( evt, data, conversionApi ) => {
 					const section = conversionApi.writer.createElement( 'section' );
 					const paragraph = conversionApi.writer.createElement( 'paragraph' );
 					const span = conversionApi.writer.createElement( 'span' );
@@ -622,7 +618,7 @@ describe( 'ViewConversionDispatcher', () => {
 
 					expect( result ).to.deep.equal( {
 						position: ModelPosition.createAfter( paragraph ),
-						endElement: paragraph.parent.getChild( 1 ).getChild( 0 )
+						cursorParent: paragraph.parent.getChild( 1 ).getChild( 0 )
 					} );
 
 					spy();
@@ -637,7 +633,7 @@ describe( 'ViewConversionDispatcher', () => {
 
 				model.schema.register( 'span' );
 
-				dispatcher.on( 'documentFragment', ( evt, data, consumable, conversionApi ) => {
+				dispatcher.on( 'documentFragment', ( evt, data, conversionApi ) => {
 					const paragraph = conversionApi.writer.createElement( 'paragraph' );
 					const span = conversionApi.writer.createElement( 'span' );
 					const position = ModelPosition.createAt( paragraph );

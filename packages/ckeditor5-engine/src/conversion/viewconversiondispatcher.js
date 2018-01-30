@@ -26,24 +26,21 @@ import log from '@ckeditor/ckeditor5-utils/src/log';
  * `ViewConversionDispatcher` fires corresponding events. Special callbacks called "converters" should listen to
  * `ViewConversionDispatcher` for those events.
  *
- * Each callback, as a first argument, is passed a special object `data` that has `input` and `output` properties.
- * `input` property contains {@link module:engine/view/node~Node view node} or
+ * Each callback, as a first argument, is passed a special object `data` that has `viewItem`, `cursorPosition` and
+ * `modelRange` properties. `viewItem` property contains {@link module:engine/view/node~Node view node} or
  * {@link module:engine/view/documentfragment~DocumentFragment view document fragment}
- * that is converted at the moment and might be handled by the callback. `output` property should be used to save the result
- * of conversion. Keep in mind that the `data` parameter is customizable and may contain other values - see
- * {@link ~ViewConversionDispatcher#convert}. It is also shared by reference by all callbacks
- * listening to given event. **Note**: in view to model conversion - `data` contains `context` property that is an array
- * of {@link module:engine/model/element~Element model elements}. These are model elements that will be the parent of currently
- * converted view item. `context` property is used in examples below.
- *
- * The second parameter passed to a callback is an instance of {@link module:engine/conversion/viewconsumable~ViewConsumable}. It stores
- * information about what parts of processed view item are still waiting to be handled. After a piece of view item
- * was converted, appropriate consumable value should be {@link module:engine/conversion/viewconsumable~ViewConsumable#consume consumed}.
+ * that is converted at the moment and might be handled by the callback. `modelRange` property should be used to save the result
+ * of conversion and is always a {@link module:engine/model/range~Range} when conversion result is correct.
+ * `cursorPosition` property is a {@link module:engine/model/position~Position position} on which conversion result will be inserted
+ * and is a context according to {@link module:engine/model/schema~Schema schema} will be checked before the conversion.
+ * See also {@link ~ViewConversionDispatcher#convert}. It is also shared by reference by all callbacks listening to given event.
  *
  * The third parameter passed to a callback is an instance of {@link ~ViewConversionDispatcher}
  * which provides additional tools for converters.
  *
  * Examples of providing callbacks for `ViewConversionDispatcher`:
+ *
+ * TODO - update samples.
  *
  *		// Converter for paragraphs (<p>).
  *		viewDispatcher.on( 'element:p', ( evt, data, consumable, conversionApi ) => {
@@ -166,20 +163,22 @@ export default class ViewConversionDispatcher {
 		return this._model.change( writer => {
 			this.fire( 'viewCleanup', viewItem );
 
-			const consumable = ViewConsumable.createFrom( viewItem );
-
 			// Create context tree and store position in the top element.
 			// Items will be converted according to this position.
 			this._contextPosition = contextToPosition( context, writer );
 
-			// Store writer in current conversion as a conversion API.
+			// Store writer in conversion as a conversion API
+			// to be sure that conversion process will use the same batch.
 			this.conversionApi.writer = writer;
+
+			// Create consumable values list for conversion process.
+			this.conversionApi.consumable = ViewConsumable.createFrom( viewItem );
 
 			// Custom data stored by converter for conversion process.
 			this.conversionApi.data = {};
 
 			// Do the conversion.
-			const range = this._convertItem( viewItem, consumable, this._contextPosition );
+			const range = this._convertItem( viewItem, this._contextPosition );
 
 			// Conversion result is always a document fragment so let's create this fragment.
 			const documentFragment = writer.createDocumentFragment();
@@ -217,19 +216,19 @@ export default class ViewConversionDispatcher {
 	 * @private
 	 * @see module:engine/conversion/viewconversiondispatcher~ViewConversionApi#convertItem
 	 */
-	_convertItem( input, consumable, position ) {
-		const data = Object.assign( { input, position, output: null } );
+	_convertItem( viewItem, cursorPosition ) {
+		const data = Object.assign( { viewItem, cursorPosition, modelRange: null } );
 
-		if ( input.is( 'element' ) ) {
-			this.fire( 'element:' + input.name, data, consumable, this.conversionApi );
-		} else if ( input.is( 'text' ) ) {
-			this.fire( 'text', data, consumable, this.conversionApi );
+		if ( viewItem.is( 'element' ) ) {
+			this.fire( 'element:' + viewItem.name, data, this.conversionApi );
+		} else if ( viewItem.is( 'text' ) ) {
+			this.fire( 'text', data, this.conversionApi );
 		} else {
-			this.fire( 'documentFragment', data, consumable, this.conversionApi );
+			this.fire( 'documentFragment', data, this.conversionApi );
 		}
 
 		// Handle incorrect `data.output`.
-		if ( data.output && !( data.output instanceof ModelRange ) ) {
+		if ( data.modelRange && !( data.modelRange instanceof ModelRange ) ) {
 			/**
 			 * Incorrect conversion result was dropped.
 			 *
@@ -238,39 +237,42 @@ export default class ViewConversionDispatcher {
 			 *
 			 * @error view-conversion-dispatcher-incorrect-result
 			 */
-			log.warn( 'view-conversion-dispatcher-incorrect-result: Incorrect conversion result was dropped.', [ input, data.output ] );
+			log.warn(
+				'view-conversion-dispatcher-incorrect-result: Incorrect conversion result was dropped.',
+				[ viewItem, data.modelRange ]
+			);
 
 			return null;
 		}
 
-		return data.output;
+		return data.modelRange;
 	}
 
 	/**
 	 * @private
 	 * @see module:engine/conversion/viewconversiondispatcher~ViewConversionApi#convertChildren
 	 */
-	_convertChildren( input, consumable, position ) {
-		const output = new ModelRange( position );
+	_convertChildren( viewItem, cursorPosition ) {
+		const childrenRange = new ModelRange( cursorPosition );
 
-		for ( const viewChild of Array.from( input.getChildren() ) ) {
-			const range = this._convertItem( viewChild, consumable, output.end );
+		for ( const viewChild of Array.from( viewItem.getChildren() ) ) {
+			const itemRange = this._convertItem( viewChild, childrenRange.end );
 
-			if ( range instanceof ModelRange ) {
-				output.end = range.end;
+			if ( itemRange instanceof ModelRange ) {
+				childrenRange.end = itemRange.end;
 			}
 		}
 
-		return output;
+		return childrenRange;
 	}
 
 	/**
 	 * @private
 	 * @see module:engine/conversion/viewconversiondispatcher~ViewConversionApi#splitToAllowedParent
 	 */
-	_splitToAllowedParent( element, position ) {
+	_splitToAllowedParent( element, cursorPosition ) {
 		// Try to find allowed parent.
-		const allowedParent = this.conversionApi.schema.findAllowedParent( element, position, this._contextPosition.parent );
+		const allowedParent = this.conversionApi.schema.findAllowedParent( element, cursorPosition, this._contextPosition.parent );
 
 		// When there is no parent that allows to insert element then return `null`.
 		if ( !allowedParent ) {
@@ -278,24 +280,24 @@ export default class ViewConversionDispatcher {
 		}
 
 		// When current position parent allows to insert element then return this position.
-		if ( allowedParent === position.parent ) {
-			return { position };
+		if ( allowedParent === cursorPosition.parent ) {
+			return { position: cursorPosition };
 		}
 
 		// Split element to allowed parent.
-		const data = this.conversionApi.writer.split( position, allowedParent );
+		const splitResult = this.conversionApi.writer.split( cursorPosition, allowedParent );
 
 		// Remember all elements that are created as a result of split.
 		// This is important because at the end of conversion we want to remove all empty split elements.
-		for ( const pos of data.range.getPositions() ) {
-			if ( !pos.isEqual( data.position ) ) {
-				this._splitElements.add( pos.parent );
+		for ( const position of splitResult.range.getPositions() ) {
+			if ( !position.isEqual( splitResult.position ) ) {
+				this._splitElements.add( position.parent );
 			}
 		}
 
 		return {
-			position: data.position,
-			cursorParent: data.range.end.parent
+			position: splitResult.position,
+			cursorParent: splitResult.range.end.parent
 		};
 	}
 
@@ -339,20 +341,16 @@ export default class ViewConversionDispatcher {
 	 * all elements conversion or to conversion of specific elements.
 	 *
 	 * @event element
-	 * @param {Object} data Object containing conversion input and a placeholder for conversion output and possibly other
-	 * values (see {@link #convert}).
-	 * Keep in mind that this object is shared by reference between all callbacks that will be called.
-	 * This means that callbacks can add their own values if needed,
-	 * and those values will be available in other callbacks.
-	 * @param {module:engine/view/element~Element} data.input Converted element.
-	 * @param {*} data.output The current state of conversion result. Every change to converted element should
-	 * be reflected by setting or modifying this property.
-	 * @param {module:engine/conversion/viewconsumable~ViewConsumable} consumable Values to consume.
-	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `ViewConversionDispatcher` constructor.
-	 * Besides of properties passed in constructor, it also has `convertItem` and `convertChildren` methods which are references
-	 * to {@link #_convertItem} and
-	 * {@link ~ViewConversionDispatcher#_convertChildren}. Those methods are needed to convert
-	 * the whole view-tree they were exposed in `conversionApi` for callbacks.
+	 * @param {Object} data Object containing viewItem to convert, cursorPosition as a conversion position and placeholder
+	 * for modelRange that is a conversion result. Keep in mind that this object is shared by reference between all
+	 * callbacks that will be called. This means that callbacks can override values if needed, and those values will
+	 * be available in other callbacks.
+	 * @param {module:engine/view/item~Item} data.viewItem Converted item.
+	 * @param {module:engine/model/position~Position} data.cursorPosition Target position for current item.
+	 * @param {module:engine/model/range~Range} data.modelRange The current state of conversion result. Every change to
+	 * converted element should be reflected by setting or modifying this property.
+	 * @param {ViewConversionApi} conversionApi Conversion interface to be used by callback, passed in
+	 * `ViewConversionDispatcher` constructor.
 	 */
 
 	/**
@@ -442,8 +440,7 @@ function contextToPosition( contextDefinition, writer ) {
  * and is passed as one of parameters when {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher dispatcher}
  * fires it's events.
  *
- * `ViewConversionApi` object is built by {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher} constructor.
- * The exact list of properties of this object is determined by the object passed to the constructor.
+ * TODO more explanation.
  *
  * @interface ViewConversionApi
  */
@@ -451,20 +448,16 @@ function contextToPosition( contextDefinition, writer ) {
 /**
  * Starts conversion of given item by firing an appropriate event.
  *
- * Every fired event is passed (as first parameter) an object with `output` property. Every event may set and/or
- * modify that property. When all callbacks are done, the final value of `output` property is returned by this method.
- * The `output` must be {@link module:engine/model/range~Range model range} or `null` (as set by default).
+ * Every fired event is passed (as first parameter) an object with `modelRange` property. Every event may set and/or
+ * modify that property. When all callbacks are done, the final value of `modelRange` property is returned by this method.
+ * The `modelRange` must be {@link module:engine/model/range~Range model range} or `null` (as set by default).
  *
  * @method #convertItem
  * @fires module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:element
  * @fires module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:text
  * @fires module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:documentFragment
- * @param {module:engine/view/documentfragment~DocumentFragment|module:engine/view/element~Element|module:engine/view/text~Text}
- * input Item to convert.
- * @param {module:engine/conversion/viewconsumable~ViewConsumable} consumable Values to consume.
- * @param {module:engine/model/position~Position} position Position of conversion.
- * @param {Object} [additionalData] Additional data to be passed in `data` argument when firing `ViewConversionDispatcher`
- * events. See also {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:element element event}.
+ * @param {module:engine/view/item~Item} viewItem Item to convert.
+ * @param {module:engine/model/position~Position} cursorPosition Position of conversion.
  * @returns {module:engine/model/range~Range|null} Model range containing result of item conversion,
  * created and modified by callbacks attached to fired event, or `null` if the conversion result was incorrect.
  */
@@ -476,14 +469,10 @@ function contextToPosition( contextDefinition, writer ) {
  * @fires module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:element
  * @fires module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:text
  * @fires module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:documentFragment
- * @param {module:engine/view/documentfragment~DocumentFragment|module:engine/view/element~Element}
- * input Item which children will be converted.
- * @param {module:engine/conversion/viewconsumable~ViewConsumable} consumable Values to consume.
- * @param {module:engine/model/position~Position} position Position of conversion.
- * @param {Object} [additionalData] Additional data to be passed in `data` argument when firing `ViewConversionDispatcher`
- * events. See also {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:element element event}.
+ * @param {module:engine/view/item~Item} viewItem Item to convert.
+ * @param {module:engine/model/position~Position} cursorPosition Position of conversion.
  * @returns {module:engine/model/range~Range} Model range containing results of conversion of all children of given item.
- * When none of children was converted
+ * When no children was converted then range is collapsed.
  */
 
 /**
@@ -493,18 +482,22 @@ function contextToPosition( contextDefinition, writer ) {
  * @method #splitToAllowedParent
  * @param {module:engine/model/position~Position} position Position on which element is going to be inserted.
  * @param {module:engine/model/element~Node} element Element to insert.
- * @returns {SplitToAllowedParentResult} Split result.
+ * @returns {Object} Split result.
+ * @returns {module:engine/model/position~Position} position between split elements.
+ * @returns {module:engine/model/element~Element} [cursorParent] Element inside which cursor should be placed to
+ * continue conversion. When element is not defined it means that there was no split.
+ */
+
+/**
+ * Instance of {@link module:engine/conversion/viewconsumable~ViewConsumable}. It stores
+ * information about what parts of processed view item are still waiting to be handled. After a piece of view item
+ * was converted, appropriate consumable value should be {@link module:engine/conversion/viewconsumable~ViewConsumable#consume consumed}.
+ *
+ * @param {Object} #consumable
  */
 
 /**
  * Custom data stored by converter for conversion process.
  *
  * @param {Object} #data
- */
-
-/**
- * @typedef {Object} SplitToAllowedParentResult
- * @property {module:engine/model/position~Position} position between split elements.
- * @property {module:engine/model/element~Element} [cursorParent] Element inside which cursor should be placed to
- * continue conversion. When element is not defined it means that there was no split.
  */
