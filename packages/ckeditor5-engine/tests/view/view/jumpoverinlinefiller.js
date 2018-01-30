@@ -5,7 +5,6 @@
 
 /* globals document */
 
-import ViewRange from '../../../src/view/range';
 import View from '../../../src/view/view';
 import { INLINE_FILLER_LENGTH, isInlineFiller, startsWithFiller } from '../../../src/view/filler';
 
@@ -105,27 +104,28 @@ describe( 'View', () => {
 		// } );
 
 		it( 'should do nothing if caret is not directly before the filler', () => {
-			setData( view, '<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>' );
-			view.render();
+			view.change( () => {
+				setData( view, '<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>' );
+			} );
 
-			// Insert a letter to the <b>: '<container:p>foo<attribute:b>x{}</attribute:b>bar</container:p>'
-			// Do this both in the view and in the DOM to simulate typing and to avoid rendering (which would remove the filler).
-			const viewB = viewDocument.selection.getFirstPosition().parent;
-			const viewTextX = parse( 'x' );
-			viewB.appendChildren( viewTextX );
-			viewDocument.selection._setTo( ViewRange.createFromParentsAndOffsets( viewTextX, 1, viewTextX, 1 ) );
-
-			const domB = view.getDomRoot( 'main' ).querySelector( 'b' );
 			const domSelection = document.getSelection();
-			domB.childNodes[ 0 ].data += 'x';
+			view.change( writer => {
+				// Insert a letter to the <b>: '<container:p>foo<attribute:b>x{}</attribute:b>bar</container:p>'
+				// Do this both in the view and in the DOM to simulate typing and to avoid rendering (which would remove the filler).
+				const viewB = writer.document.selection.getFirstPosition().parent;
+				const viewTextX = parse( 'x' );
+				viewB.appendChildren( viewTextX );
+				writer.setSelection( viewTextX, 1 );
 
-			const domRange = document.createRange();
-			domSelection.removeAllRanges();
-			domRange.setStart( domB.childNodes[ 0 ], INLINE_FILLER_LENGTH + 1 );
-			domRange.collapse( true );
-			domSelection.addRange( domRange );
+				const domB = view.getDomRoot( 'main' ).querySelector( 'b' );
+				domB.childNodes[ 0 ].data += 'x';
 
-			view.render();
+				const domRange = document.createRange();
+				domSelection.removeAllRanges();
+				domRange.setStart( domB.childNodes[ 0 ], INLINE_FILLER_LENGTH + 1 );
+				domRange.collapse( true );
+				domSelection.addRange( domRange );
+			} );
 
 			viewDocument.fire( 'keydown', { keyCode: keyCodes.arrowleft, domTarget: view.domRoots.get( 'main' ) } );
 
