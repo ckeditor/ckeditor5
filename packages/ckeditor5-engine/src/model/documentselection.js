@@ -873,7 +873,7 @@ class LiveSelection extends Selection {
 		const positionCandidate = Position.createFromPosition( removedRangeStart );
 
 		// Find a range that is a correct selection range and is closest to the start of removed range.
-		const selectionRange = this._document.getNearestSelectionRange( positionCandidate );
+		const selectionRange = this._model.schema.getNearestSelectionRange( positionCandidate );
 
 		// Remove the old selection range before preparing and adding new selection range. This order is important,
 		// because new range, in some cases, may intersect with old range (it depends on `getNearestSelectionRange()` result).
