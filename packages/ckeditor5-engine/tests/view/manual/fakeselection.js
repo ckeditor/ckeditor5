@@ -5,21 +5,22 @@
 
 /* globals document, console */
 
-import ViewDocument from '../../../src/view/document';
+import View from '../../../src/view/view';
 import DomEventObserver from '../../../src/view/observer/domeventobserver';
 import ViewRange from '../../../src/view/range';
 import createViewRoot from '../_utils/createroot';
 import { setData } from '../../../src/dev-utils/view';
 
-const viewDocument = new ViewDocument();
+const view = new View();
+const viewDocument = view.document;
 const domEditable = document.getElementById( 'editor' );
-const viewRoot = createViewRoot();
+const viewRoot = createViewRoot( viewDocument );
 let viewStrong;
 
-viewDocument.attachDomRoot( domEditable );
+view.attachDomRoot( domEditable );
 
 // Add mouseup oberver.
-viewDocument.addObserver( class extends DomEventObserver {
+view.addObserver( class extends DomEventObserver {
 	get domEventType() {
 		return [ 'mousedown', 'mouseup' ];
 	}
@@ -30,19 +31,19 @@ viewDocument.addObserver( class extends DomEventObserver {
 } );
 
 viewDocument.on( 'selectionChange', ( evt, data ) => {
-	viewDocument.selection.setTo( data.newSelection );
-	viewDocument.render();
+	view.change( writer => {
+		writer.setSelection( data.newSelection );
+	} );
 } );
 
 viewDocument.on( 'mouseup', ( evt, data ) => {
 	if ( data.target == viewStrong ) {
 		console.log( 'Making selection around the <strong>.' );
 
-		const range = ViewRange.createOn( viewStrong );
-		viewDocument.selection._setTo( [ range ] );
-		viewDocument.selection._setFake( true, { label: 'fake selection over bar' } );
-
-		viewDocument.render();
+		view.change( writer => {
+			writer.setSelection( ViewRange.createOn( viewStrong ) );
+			writer.setFakeSelection( true, { label: 'fake selection over bar' } );
+		} );
 
 		data.preventDefault();
 	}
@@ -64,21 +65,23 @@ viewDocument.selection.on( 'change', () => {
 } );
 
 viewDocument.on( 'focus', () => {
-	viewStrong.addClass( 'focused' );
-	viewDocument.render();
+	view.change( () => {
+		viewStrong.addClass( 'focused' );
+	} );
 
 	console.log( 'The document was focused.' );
 } );
 
 viewDocument.on( 'blur', () => {
-	viewStrong.removeClass( 'focused' );
-	viewDocument.render();
+	view.change( () => {
+		viewStrong.removeClass( 'focused' );
+	} );
 
 	console.log( 'The document was blurred.' );
 } );
 
-setData( viewDocument, '<container:p>{}foo<strong contenteditable="false">bar</strong>baz</container:p>' );
+setData( view, '<container:p>{}foo<strong contenteditable="false">bar</strong>baz</container:p>' );
 const viewP = viewRoot.getChild( 0 );
 viewStrong = viewP.getChild( 1 );
 
-viewDocument.focus();
+view.focus();
