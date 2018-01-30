@@ -342,6 +342,51 @@ describe( 'ViewConversionDispatcher', () => {
 			expect( marker1.end.path ).to.deep.equal( [ 4 ] );
 			expect( marker2.start.path ).to.deep.equal( marker2.end.path ).to.deep.equal( [ 3 ] );
 		} );
+
+		it( 'should convert according to given context', () => {
+			dispatcher = new ViewConversionDispatcher( model, { schema: model.schema } );
+
+			const spy = sinon.spy();
+			const viewElement = new ViewContainerElement( 'third' );
+			let checkChildResult;
+
+			model.schema.register( 'first', {
+				allowIn: '$root'
+			} );
+			model.schema.register( 'second', {
+				allowIn: 'first'
+			} );
+			model.schema.register( 'third', {
+				allowIn: 'second',
+				disallowIn: 'first'
+			} );
+
+			dispatcher.on( 'element:third', ( evt, data, consumable, conversionApi ) => {
+				spy();
+				checkChildResult = conversionApi.schema.checkChild( data.position, 'third' );
+			} );
+
+			// Default context $root.
+			dispatcher.convert( viewElement );
+			sinon.assert.calledOnce( spy );
+			expect( checkChildResult ).to.false;
+
+			// SchemaDefinition as context.
+			dispatcher.convert( viewElement, [ 'first' ] );
+			sinon.assert.calledTwice( spy );
+			expect( checkChildResult ).to.false;
+
+			// Position as context.
+			const fragment = new ModelDocumentFragment( [
+				new ModelElement( 'first', { foo: 'bar' }, [
+					new ModelElement( 'second', null )
+				] )
+			] );
+
+			dispatcher.convert( viewElement, new ModelPosition( fragment, [ 0, 0, 0 ] ) );
+			sinon.assert.calledThrice( spy );
+			expect( checkChildResult ).to.true;
+		} );
 	} );
 
 	describe( 'conversionApi', () => {
