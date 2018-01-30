@@ -1074,19 +1074,14 @@ export class SchemaContext {
 			return context;
 		}
 
-		if ( Array.isArray( context ) ) {
-			if ( context[ 0 ] && typeof context[ 0 ] != 'string' && context[ 0 ].is( 'documentFragment' ) ) {
-				context.shift();
-			}
-		}
-		else {
+		if ( !Array.isArray( context ) ) {
 			// `context` is item or position.
 			// Position#getAncestors() doesn't accept any parameters but it works just fine here.
 			context = context.getAncestors( { includeSelf: true } );
+		}
 
-			if ( context[ 0 ].is( 'documentFragment' ) ) {
-				context.shift();
-			}
+		if ( context[ 0 ] && typeof context[ 0 ] != 'string' && context[ 0 ].is( 'documentFragment' ) ) {
+			context.shift();
 		}
 
 		this._items = context.map( mapContextItem );
