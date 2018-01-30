@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+import first from '@ckeditor/ckeditor5-utils/src/first';
+
 /**
  * @module image/imagestyle/converters
  */
@@ -52,7 +54,7 @@ export function viewToModelStyleAttribute( styles ) {
 		}
 
 		const viewFigureElement = data.input;
-		const modelImageElement = data.output.getItems().next().value;
+		const modelImageElement = first( data.output.getItems() );
 
 		// Check if `imageStyle` attribute is allowed for current element.
 		if ( !conversionApi.schema.checkAttribute( modelImageElement, 'imageStyle' ) ) {
