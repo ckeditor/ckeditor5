@@ -26,36 +26,37 @@ import first from '@ckeditor/ckeditor5-utils/src/first';
  * @returns {Function}
  */
 export function viewFigureToModel() {
-	return ( evt, data, consumable, conversionApi ) => {
+	return ( evt, data, conversionApi ) => {
 		// Do not convert if this is not an "image figure".
-		if ( !consumable.test( data.input, { name: true, class: 'image' } ) ) {
+		if ( !conversionApi.consumable.test( data.viewItem, { name: true, class: 'image' } ) ) {
 			return;
 		}
 
 		// Do not convert if image cannot be placed in model at current position.
-		if ( !conversionApi.schema.checkChild( data.position, 'image' ) ) {
+		if ( !conversionApi.schema.checkChild( data.cursorPosition, 'image' ) ) {
 			return;
 		}
 
 		// Find an image element inside the figure element.
-		const viewImage = Array.from( data.input.getChildren() ).find( viewChild => viewChild.is( 'img' ) );
+		const viewImage = Array.from( data.viewItem.getChildren() ).find( viewChild => viewChild.is( 'img' ) );
 
 		// Do not convert if image element is absent, is missing src attribute or was already converted.
-		if ( !viewImage || !viewImage.hasAttribute( 'src' ) || !consumable.test( viewImage, { name: true } ) ) {
+		if ( !viewImage || !viewImage.hasAttribute( 'src' ) || !conversionApi.consumable.test( viewImage, { name: true } ) ) {
 			return;
 		}
 
 		// Convert view image to model image.
-		const output = conversionApi.convertItem( viewImage, consumable, data.position );
+		const { modelRange } = conversionApi.convertItem( viewImage, data.cursorPosition );
 
-		// Get image element from conversion output.
-		const modelImage = first( output.getItems() );
+		// Get image element from conversion result.
+		const modelImage = first( modelRange.getItems() );
 
 		// Convert rest of the figure element's children as an image children.
-		conversionApi.convertChildren( data.input, consumable, ModelPosition.createAt( modelImage ) );
+		conversionApi.convertChildren( data.viewItem, ModelPosition.createAt( modelImage ) );
 
 		// Set model image as conversion result.
-		data.output = ModelRange.createOn( modelImage );
+		data.modelRange = ModelRange.createOn( modelImage );
+		data.cursorPosition = data.modelRange.end;
 	};
 }
 

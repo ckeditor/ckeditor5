@@ -60,13 +60,14 @@ describe( 'Image converters', () => {
 
 			dispatcher = editor.data.viewToModel;
 			dispatcher.on( 'element:figure', viewFigureToModel() );
-			dispatcher.on( 'element:img', ( evt, data, consumable, conversionApi ) => {
-				if ( consumable.consume( data.input, { name: true, attribute: 'src' } ) ) {
-					const image = conversionApi.writer.createElement( 'image', { src: data.input.getAttribute( 'src' ) } );
+			dispatcher.on( 'element:img', ( evt, data, conversionApi ) => {
+				if ( conversionApi.consumable.consume( data.viewItem, { name: true, attribute: 'src' } ) ) {
+					const image = conversionApi.writer.createElement( 'image', { src: data.viewItem.getAttribute( 'src' ) } );
 
-					conversionApi.writer.insert( image, data.position );
+					conversionApi.writer.insert( image, data.cursorPosition );
 
-					data.output = ModelRange.createOn( image );
+					data.modelRange = ModelRange.createOn( image );
+					data.cursorPosition = data.modelRange.end;
 
 					imgConverterCalled = true;
 				}
@@ -96,17 +97,18 @@ describe( 'Image converters', () => {
 		} );
 
 		it( 'should be possible to overwrite', () => {
-			dispatcher.on( 'element:figure', ( evt, data, consumable, conversionApi ) => {
-				consumable.consume( data.input, { name: true } );
-				consumable.consume( data.input.getChild( 0 ), { name: true } );
+			dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
+				conversionApi.consumable.consume( data.viewItem, { name: true } );
+				conversionApi.consumable.consume( data.viewItem.getChild( 0 ), { name: true } );
 
 				const element = conversionApi.writer.createElement( 'myImage', {
 					data: {
-						src: data.input.getChild( 0 ).getAttribute( 'src' )
+						src: data.viewItem.getChild( 0 ).getAttribute( 'src' )
 					}
 				} );
-				conversionApi.writer.insert( element, data.position );
-				data.output = ModelRange.createOn( element );
+				conversionApi.writer.insert( element, data.cursorPosition );
+				data.modelRange = ModelRange.createOn( element );
+				data.cursorPosition = data.modelRange.end;
 			}, { priority: 'high' } );
 
 			editor.setData( '<figure class="image"><img src="foo.png" />xyz</figure>' );

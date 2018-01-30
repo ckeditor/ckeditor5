@@ -48,13 +48,13 @@ export function viewToModelStyleAttribute( styles ) {
 	// Convert only non–default styles.
 	const filteredStyles = styles.filter( style => !style.isDefault );
 
-	return ( evt, data, consumable, conversionApi ) => {
-		if ( !data.output ) {
+	return ( evt, data, conversionApi ) => {
+		if ( !data.modelRange ) {
 			return;
 		}
 
-		const viewFigureElement = data.input;
-		const modelImageElement = first( data.output.getItems() );
+		const viewFigureElement = data.viewItem;
+		const modelImageElement = first( data.modelRange.getItems() );
 
 		// Check if `imageStyle` attribute is allowed for current element.
 		if ( !conversionApi.schema.checkAttribute( modelImageElement, 'imageStyle' ) ) {
@@ -64,7 +64,7 @@ export function viewToModelStyleAttribute( styles ) {
 		// Convert style one by one.
 		for ( const style of filteredStyles ) {
 			// Try to consume class corresponding with style.
-			if ( consumable.consume( viewFigureElement, { class: style.className } ) ) {
+			if ( conversionApi.consumable.consume( viewFigureElement, { class: style.className } ) ) {
 				// And convert this style to model attribute.
 				conversionApi.writer.setAttribute( 'imageStyle', style.name, modelImageElement );
 			}
