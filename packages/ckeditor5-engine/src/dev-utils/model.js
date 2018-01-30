@@ -57,7 +57,7 @@ export function getData( model, options = {} ) {
 		throw new TypeError( 'Model needs to be an instance of module:engine/model/model~Model.' );
 	}
 
-	const withoutSelection = !!options.withoutSelection;
+	const withoutSelection = options.withoutSelection;
 	const rootName = options.rootName || 'main';
 	const root = model.document.getRoot( rootName );
 
@@ -320,44 +320,47 @@ export function parse( data, schema, options = {} ) {
 // -- Converters view -> model -----------------------------------------------------
 
 function convertToModelFragment() {
-	return ( evt, data, consumable, conversionApi ) => {
-		data.output = conversionApi.convertChildren( data.input, consumable, data.position );
+	return ( evt, data, conversionApi ) => {
+		const childrenResult = conversionApi.convertChildren( data.viewItem, data.cursorPosition );
 
-		conversionApi.mapper.bindElements( data.position.parent, data.input );
+		conversionApi.mapper.bindElements( data.cursorPosition.parent, data.viewItem );
+
+		data = Object.assign( data, childrenResult );
 
 		evt.stop();
 	};
 }
 
 function convertToModelElement() {
-	return ( evt, data, consumable, conversionApi ) => {
-		const elementName = data.input.name;
+	return ( evt, data, conversionApi ) => {
+		const elementName = data.viewItem.name;
 
-		if ( !conversionApi.schema.checkChild( data.position, elementName ) ) {
-			throw new Error( `Element '${ elementName }' was not allowed in given position.`, { position: data.position } );
+		if ( !conversionApi.schema.checkChild( data.cursorPosition, elementName ) ) {
+			throw new Error( `Element '${ elementName }' was not allowed in given position.`, { position: data.cursorPosition } );
 		}
 
 		// View attribute value is a string so we want to typecast it to the original type.
 		// E.g. `bold="true"` - value will be parsed from string `"true"` to boolean `true`.
-		const attributes = convertAttributes( data.input.getAttributes(), parseAttributeValue );
-		const element = conversionApi.writer.createElement( data.input.name, attributes );
+		const attributes = convertAttributes( data.viewItem.getAttributes(), parseAttributeValue );
+		const element = conversionApi.writer.createElement( data.viewItem.name, attributes );
 
-		conversionApi.writer.insert( element, data.position );
+		conversionApi.writer.insert( element, data.cursorPosition );
 
-		conversionApi.mapper.bindElements( element, data.input );
+		conversionApi.mapper.bindElements( element, data.viewItem );
 
-		conversionApi.convertChildren( data.input, consumable, ModelPosition.createAt( element ) );
+		conversionApi.convertChildren( data.viewItem, ModelPosition.createAt( element ) );
 
-		data.output = ModelRange.createOn( element );
+		data.modelRange = ModelRange.createOn( element );
+		data.cursorPosition = data.modelRange.end;
 
 		evt.stop();
 	};
 }
 
 function convertToModelText( withAttributes = false ) {
-	return ( evt, data, consumable, conversionApi ) => {
-		if ( !conversionApi.schema.checkChild( data.position, '$text' ) ) {
-			throw new Error( 'Text was not allowed in given position.', { position: data.position } );
+	return ( evt, data, conversionApi ) => {
+		if ( !conversionApi.schema.checkChild( data.cursorPosition, '$text' ) ) {
+			throw new Error( 'Text was not allowed in given position.', { position: data.cursorPosition } );
 		}
 
 		let node;
@@ -365,16 +368,17 @@ function convertToModelText( withAttributes = false ) {
 		if ( withAttributes ) {
 			// View attribute value is a string so we want to typecast it to the original type.
 			// E.g. `bold="true"` - value will be parsed from string `"true"` to boolean `true`.
-			const attributes = convertAttributes( data.input.getAttributes(), parseAttributeValue );
+			const attributes = convertAttributes( data.viewItem.getAttributes(), parseAttributeValue );
 
-			node = conversionApi.writer.createText( data.input.getChild( 0 ).data, attributes );
+			node = conversionApi.writer.createText( data.viewItem.getChild( 0 ).data, attributes );
 		} else {
-			node = conversionApi.writer.createText( data.input.data );
+			node = conversionApi.writer.createText( data.viewItem.data );
 		}
 
-		conversionApi.writer.insert( node, data.position );
+		conversionApi.writer.insert( node, data.cursorPosition );
 
-		data.output = ModelRange.createFromPositionAndShift( data.position, node.offsetSize );
+		data.modelRange = ModelRange.createFromPositionAndShift( data.cursorPosition, node.offsetSize );
+		data.cursorPosition = data.modelRange.end;
 
 		evt.stop();
 	};
