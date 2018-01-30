@@ -124,6 +124,18 @@ export default class ViewConversionDispatcher {
 		this._splitElements = new Set();
 
 		/**
+		 * Position inside top element of context tree.
+		 *
+		 * At the beginning of each conversion fragment of model tree is created according to given context.
+		 * {@link module:engine/view/item~Item View items} are converted to the top element of created fragment.
+		 * This makes possible to precisely check converted items by {@link module:engine/model/schema~Schema}.
+		 *
+		 * @private
+		 * @type {module:engine/model/position~Position|null}
+		 */
+		this._contextPosition = null;
+
+		/**
 		 * Interface passed by dispatcher to the events callbacks.
 		 *
 		 * @member {module:engine/conversion/viewconversiondispatcher~ViewConversionApi}
@@ -156,10 +168,9 @@ export default class ViewConversionDispatcher {
 
 			const consumable = ViewConsumable.createFrom( viewItem );
 
-			// Create model tree according to given context. Elements will be converted to the top element of this tree.
-			// Thanks to this schema will be able check items precisely.
-			// Top element of context tree is marked by a `isContextTree` attribute.
-			const position = contextToPosition( context, writer );
+			// Create context tree and store position in the top element.
+			// Items will be converted according to this position.
+			this._contextPosition = contextToPosition( context, writer );
 
 			// Store writer in current conversion as a conversion API.
 			this.conversionApi.writer = writer;
@@ -169,7 +180,7 @@ export default class ViewConversionDispatcher {
 			this.conversionApi.data = {};
 
 			// Do the conversion.
-			const range = this._convertItem( viewItem, consumable, position );
+			const range = this._convertItem( viewItem, consumable, this._contextPosition );
 
 			// Conversion result is always a document fragment so let's create this fragment.
 			const documentFragment = writer.createDocumentFragment();
@@ -180,13 +191,16 @@ export default class ViewConversionDispatcher {
 				this._removeEmptySplitElements();
 
 				// Move all items that was converted to context tree to document fragment.
-				for ( const item of Array.from( position.parent.getChildren() ) ) {
+				for ( const item of Array.from( this._contextPosition.parent.getChildren() ) ) {
 					writer.append( item, documentFragment );
 				}
 
 				// Extract temporary markers elements from model and set as static markers collection.
 				documentFragment.markers = extractMarkersFromModelFragment( documentFragment, writer );
 			}
+
+			// Clear context position.
+			this._contextPosition = null;
 
 			// Clear split elements.
 			this._splitElements.clear();
@@ -256,12 +270,8 @@ export default class ViewConversionDispatcher {
 	 * @see module:engine/conversion/viewconversiondispatcher~ViewConversionApi#splitToAllowedParent
 	 */
 	_splitToAllowedParent( element, position ) {
-		function checkLimit( node ) {
-			return node.hasAttribute( 'isContextTree' );
-		}
-
 		// Try to find allowed parent.
-		const allowedParent = this.conversionApi.schema.findAllowedParent( element, position, checkLimit );
+		const allowedParent = this.conversionApi.schema.findAllowedParent( element, position, this._contextPosition.parent );
 
 		// When there is no parent that allows to insert element then return `null`.
 		if ( !allowedParent ) {
