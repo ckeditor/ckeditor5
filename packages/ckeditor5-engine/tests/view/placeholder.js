@@ -92,8 +92,8 @@ describe( 'placeholder', () => {
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
 
-			view.change( () => {
-				viewDocument.selection._setTo( [ ViewRange.createIn( element ) ] );
+			view.change( writer => {
+				writer.setSelection( ViewRange.createIn( element ) );
 			} );
 
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
@@ -141,12 +141,12 @@ describe( 'placeholder', () => {
 			expect( secondElement.hasClass( 'ck-placeholder' ) ).to.be.true;
 
 			// Move selection to the elements with placeholders.
-			view.change( () => {
-				viewDocument.selection._setTo( [ ViewRange.createIn( element ) ] );
+			view.change( writer => {
+				writer.setSelection( ViewRange.createIn( element ) );
 			} );
 
-			secondView.change( () => {
-				secondDocument.selection._setTo( [ ViewRange.createIn( secondElement ) ] );
+			secondView.change( writer => {
+				writer.setSelection( ViewRange.createIn( secondElement ) );
 			} );
 
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'first placeholder' );
@@ -162,8 +162,8 @@ describe( 'placeholder', () => {
 
 			attachPlaceholder( view, element, 'foo bar baz' );
 
-			view.change( () => {
-				viewDocument.selection._setTo( ViewRange.createIn( element ) );
+			view.change( writer => {
+				writer.setSelection( ViewRange.createIn( element ) );
 
 				// Here we are before rendering - placeholder is visible in first element;
 				expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
