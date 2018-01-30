@@ -630,11 +630,9 @@ export default class Writer {
 	 *
 	 * @param {module:engine/view/range~Range} range Range to wrap.
 	 * @param {module:engine/view/attributeelement~AttributeElement} attribute Attribute element to use as wrapper.
-	 * @param {module:engine/view/selection~Selection} [viewSelection=null] View selection to change, required when
-	 * wrapping collapsed range.
 	 * @returns {module:engine/view/range~Range} range Range after wrapping, spanning over wrapping attribute element.
 	 */
-	wrap( range, attribute, viewSelection = null ) {
+	wrap( range, attribute ) {
 		if ( !( attribute instanceof AttributeElement ) ) {
 			throw new CKEditorError( 'view-writer-wrap-invalid-attribute' );
 		}
@@ -653,10 +651,11 @@ export default class Writer {
 			}
 
 			position = this._wrapPosition( position, attribute );
+			const viewSelection = this.document.selection;
 
 			// If wrapping position is equal to view selection, move view selection inside wrapping attribute element.
-			if ( viewSelection && viewSelection.isCollapsed && viewSelection.getFirstPosition().isEqual( range.start ) ) {
-				viewSelection._setTo( position );
+			if ( viewSelection.isCollapsed && viewSelection.getFirstPosition().isEqual( range.start ) ) {
+				this.setSelection( position );
 			}
 
 			return new Range( position );
