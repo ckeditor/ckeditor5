@@ -79,8 +79,7 @@ export default class EditingController {
 		 * @member {module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher} #modelToView
 		 */
 		this.modelToView = new ModelConversionDispatcher( this.model, {
-			mapper: this.mapper,
-			viewSelection: this.view.document.selection
+			mapper: this.mapper
 		} );
 
 		const doc = this.model.document;

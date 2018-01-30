@@ -332,10 +332,11 @@ export function wrap( elementCreator ) {
 		}
 
 		const viewWriter = conversionApi.writer;
+		const viewSelection = viewWriter.document.selection;
 
 		if ( data.item instanceof ModelSelection || data.item instanceof DocumentSelection ) {
 			// Selection attribute conversion.
-			viewWriter.wrap( conversionApi.viewSelection.getFirstRange(), newViewElement, conversionApi.viewSelection );
+			viewWriter.wrap( viewSelection.getFirstRange(), newViewElement, viewSelection );
 		} else {
 			// Node attribute conversion.
 			let viewRange = conversionApi.mapper.toViewRange( data.range );
@@ -389,9 +390,10 @@ export function highlightText( highlightDescriptor ) {
 
 		const viewElement = createViewElementFromHighlightDescriptor( descriptor );
 		const viewWriter = conversionApi.writer;
+		const viewSelection = viewWriter.document.selection;
 
 		if ( data.item instanceof ModelSelection || data.item instanceof DocumentSelection ) {
-			viewWriter.wrap( conversionApi.viewSelection.getFirstRange(), viewElement, conversionApi.viewSelection );
+			viewWriter.wrap( viewSelection.getFirstRange(), viewElement, viewSelection );
 		} else {
 			const viewRange = conversionApi.mapper.toViewRange( data.range );
 			viewWriter.wrap( viewRange, viewElement );

@@ -21,10 +21,8 @@ import ModelSelection from '../model/selection';
 import ModelDocumentFragment from '../model/documentfragment';
 import DocumentSelection from '../model/documentselection';
 
-import ViewWriter from '../view/writer';
-import ViewDocument from '../view/document';
+import View from '../view/view';
 import ViewConversionDispatcher from '../conversion/viewconversiondispatcher';
-import ViewSelection from '../view/selection';
 import ViewDocumentFragment from '../view/documentfragment';
 import ViewContainerElement from '../view/containerelement';
 import ViewAttributeElement from '../view/attributeelement';
@@ -194,8 +192,9 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 
 	// Setup model to view converter.
 	const viewDocumentFragment = new ViewDocumentFragment();
-	const viewSelection = new ViewSelection();
-	const modelToView = new ModelConversionDispatcher( model, { mapper, viewSelection } );
+	const view = new View();
+	const viewSelection = view.document.selection;
+	const modelToView = new ModelConversionDispatcher( model, { mapper } );
 
 	// Bind root elements.
 	mapper.bindElements( node.root, viewDocumentFragment );
@@ -216,7 +215,7 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 	modelToView.on( 'selection', convertCollapsedSelection() );
 
 	// Convert model to view.
-	const writer = new ViewWriter( new ViewDocument() );
+	const writer = view._writer;
 	modelToView.convertInsert( range, writer );
 
 	// Convert model selection to view selection.
