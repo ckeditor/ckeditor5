@@ -227,10 +227,10 @@ describe( 'MutationObserver', () => {
 	it( 'should fire children mutation if the mutation occurred in the inline filler', () => {
 		const { view: viewContainer, selection } = parse( '<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>' );
 
-		viewRoot.appendChildren( viewContainer );
-		viewDocument.selection._setTo( selection );
-
-		view.render();
+		view.change( writer => {
+			viewRoot.appendChildren( viewContainer );
+			writer.setSelection( selection );
+		} );
 
 		const inlineFiller = domEditor.childNodes[ 2 ].childNodes[ 1 ].childNodes[ 0 ];
 		inlineFiller.data += 'x';
@@ -245,17 +245,18 @@ describe( 'MutationObserver', () => {
 	it( 'should have no inline filler in mutation', () => {
 		const { view: viewContainer, selection } = parse( '<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>' );
 
-		viewRoot.appendChildren( viewContainer );
-		viewDocument.selection._setTo( selection );
-
-		view.render();
+		view.change( writer => {
+			viewRoot.appendChildren( viewContainer );
+			writer.setSelection( selection );
+		} );
 
 		let inlineFiller = domEditor.childNodes[ 2 ].childNodes[ 1 ].childNodes[ 0 ];
 		inlineFiller.data += 'x';
 
-		viewContainer.getChild( 1 ).appendChildren( parse( 'x' ) );
-		mutationObserver.flush();
-		view.render();
+		view.change( () => {
+			viewContainer.getChild( 1 ).appendChildren( parse( 'x' ) );
+			mutationObserver.flush();
+		} );
 
 		inlineFiller = domEditor.childNodes[ 2 ].childNodes[ 1 ].childNodes[ 0 ];
 		inlineFiller.data += 'y';
