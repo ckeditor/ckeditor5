@@ -681,11 +681,10 @@ export default class Schema {
 	 *
 	 * @params {module:engine/model/node~Node} node Node for which allowed parent should be found.
 	 * @params {module:engine/model/position~Position} position Position from searching will start.
-	 * @params {Function<module:engine/model/element~Element>} [limitChecker] When function is defined and returns true
-	 * then stops searching and returns null as a search result. Function gets current parent as a parameter.
+	 * @params {module:engine/model/element~Element} [limitElement] Custom limit element.
 	 * @returns {module:engine/model/element~Element|null} element Allowed parent or null if nothing was found.
 	 */
-	findAllowedParent( node, position, limitChecker ) {
+	findAllowedParent( node, position, limitElement ) {
 		let parent = position.parent;
 
 		while ( parent ) {
@@ -697,7 +696,7 @@ export default class Schema {
 				return null;
 			}
 
-			if ( typeof limitChecker == 'function' && limitChecker( parent ) ) {
+			if ( parent === limitElement ) {
 				return null;
 			}
 

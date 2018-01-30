@@ -1189,7 +1189,7 @@ describe( 'Schema', () => {
 			expect( parent ).to.null;
 		} );
 
-		it( 'should use custom limit checker nad return null if returns true', () => {
+		it( 'should use custom limit element nad return null if is reached', () => {
 			// $root is allowed ancestor for blockQuote.
 			const node = new Element( 'blockQuote' );
 
@@ -1197,7 +1197,7 @@ describe( 'Schema', () => {
 				node,
 				Position.createAt( r1bQp ),
 				// However lest stop searching when blockQuote is reached.
-				element => element.name == 'blockQuote'
+				r1bQ
 			);
 
 			expect( parent ).to.null;
