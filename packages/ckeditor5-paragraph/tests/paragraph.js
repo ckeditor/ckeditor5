@@ -189,8 +189,8 @@ describe( 'Paragraph feature', () => {
 
 			// This test was taken from the list package.
 			it( 'does not break when some converter returns nothing', () => {
-				editor.data.viewToModel.on( 'element:li', ( evt, data, consumable ) => {
-					consumable.consume( data.input, { name: true } );
+				editor.data.viewToModel.on( 'element:li', ( evt, data, conversionApi ) => {
+					conversionApi.consumable.consume( data.input, { name: true } );
 				}, { priority: 'highest' } );
 
 				const modelFragment = editor.data.parse( '<ul><li></li></ul>' );

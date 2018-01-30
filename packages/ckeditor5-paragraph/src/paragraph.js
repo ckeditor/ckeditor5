@@ -58,15 +58,15 @@ export default class Paragraph extends Plugin {
 
 		// Handles elements not converted by plugins and checks if would be converted if
 		// we wraps them by a paragraph or changes them to a paragraph.
-		data.viewToModel.on( 'element', ( evt, data, consumable, conversionApi ) => {
+		data.viewToModel.on( 'element', ( evt, data, conversionApi ) => {
 			// When element is already consumed by higher priority converters then do nothing.
-			if ( !consumable.test( data.input, { name: data.input.name } ) ) {
+			if ( !conversionApi.consumable.test( data.viewItem, { name: data.viewItem.name } ) ) {
 				return;
 			}
 
 			// When element is paragraph-like lets try to change it into a paragraph.
-			if ( Paragraph.paragraphLikeElements.has( data.input.name ) ) {
-				if ( data.input.isEmpty ) {
+			if ( Paragraph.paragraphLikeElements.has( data.viewItem.name ) ) {
+				if ( data.viewItem.isEmpty ) {
 					return;
 				}
 
@@ -75,7 +75,7 @@ export default class Paragraph extends Plugin {
 				// Find allowed parent for paragraph that we are going to insert.
 				// If current parent does not allow to insert paragraph but one of the ancestors does
 				// then split nodes to allowed parent.
-				const splitResult = conversionApi.splitToAllowedParent( paragraph, data.position, conversionApi );
+				const splitResult = conversionApi.splitToAllowedParent( paragraph, data.cursorPosition );
 
 				// When there is no split result it means that we can't insert paragraph in this position.
 				if ( !splitResult ) {
@@ -86,28 +86,29 @@ export default class Paragraph extends Plugin {
 				conversionApi.writer.insert( paragraph, splitResult.position );
 
 				// Convert children to paragraph.
-				const childrenOutput = conversionApi.convertChildren( data.input, consumable, Position.createAt( paragraph ) );
+				const { modelRange } = conversionApi.convertChildren( data.viewItem, Position.createAt( paragraph ) );
 
 				// Output range starts before paragraph but ends inside it after last child.
 				// This is because we want to keep siblings inside the same paragraph as long as it is possible.
 				// When next node won't be allowed in a paragraph it will split this paragraph anyway.
-				data.output = new Range( Position.createBefore( paragraph ), childrenOutput.end );
+				data.modelRange = new Range( Position.createBefore( paragraph ), modelRange.end );
+				data.cursorPosition = data.modelRange.end;
 
 			// When element is not paragraph-like lets try to wrap it by a paragraph.
-			} else if ( isParagraphable( data.input, data.position, conversionApi.schema ) ) {
-				data.output = wrapInParagraph( data.input, data.position, consumable, conversionApi );
+			} else if ( isParagraphable( data.viewItem, data.cursorPosition, conversionApi.schema ) ) {
+				data = Object.assign( data, wrapInParagraph( data.viewItem, data.cursorPosition, conversionApi ) );
 			}
 		}, { priority: 'low' } );
 
 		// Handles not converted text nodes and checks if would be converted if we wraps then by a paragraph.
-		data.viewToModel.on( 'text', ( evt, data, consumable, conversionApi ) => {
+		data.viewToModel.on( 'text', ( evt, data, conversionApi ) => {
 			// When node is already converted then do nothing.
-			if ( data.output ) {
+			if ( data.modelRange ) {
 				return;
 			}
 
-			if ( isParagraphable( data.input, data.position, conversionApi.schema ) ) {
-				data.output = wrapInParagraph( data.input, data.position, consumable, conversionApi );
+			if ( isParagraphable( data.viewItem, data.cursorPosition, conversionApi.schema ) ) {
+				data = Object.assign( data, wrapInParagraph( data.viewItem, data.cursorPosition, conversionApi ) );
 			}
 		}, { priority: 'lowest' } );
 
@@ -194,11 +195,11 @@ Paragraph.paragraphLikeElements = new Set( [
 	'td'
 ] );
 
-function wrapInParagraph( input, position, consumable, conversionApi ) {
+function wrapInParagraph( input, position, conversionApi ) {
 	const paragraph = conversionApi.writer.createElement( 'paragraph' );
 
 	conversionApi.writer.insert( paragraph, position );
-	return conversionApi.convertItem( input, consumable, Position.createAt( paragraph ) );
+	return conversionApi.convertItem( input, Position.createAt( paragraph ) );
 }
 
 function isParagraphable( node, position, schema ) {
