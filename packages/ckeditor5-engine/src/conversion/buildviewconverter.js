@@ -270,12 +270,12 @@ class ViewConverterBuilder {
 	 */
 	toElement( element ) {
 		function eventCallbackGen( from ) {
-			return ( evt, data, consumable, conversionApi ) => {
+			return ( evt, data, conversionApi ) => {
 				const writer = conversionApi.writer;
 
 				// There is one callback for all patterns in the matcher.
 				// This will be usually just one pattern but we support matchers with many patterns too.
-				const matchAll = from.matcher.matchAll( data.input );
+				const matchAll = from.matcher.matchAll( data.viewItem );
 
 				// If there is no match, this callback should not do anything.
 				if ( !matchAll ) {
@@ -285,7 +285,7 @@ class ViewConverterBuilder {
 				// Now, for every match between matcher and actual element, we will try to consume the match.
 				for ( const match of matchAll ) {
 					// Create model element basing on creator function or element name.
-					const modelElement = element instanceof Function ? element( data.input, writer ) : writer.createElement( element );
+					const modelElement = element instanceof Function ? element( data.viewItem, writer ) : writer.createElement( element );
 
 					// Do not convert if element building function returned falsy value.
 					if ( !modelElement ) {
@@ -293,14 +293,14 @@ class ViewConverterBuilder {
 					}
 
 					// When element was already consumed then skip it.
-					if ( !consumable.test( data.input, from.consume || match.match ) ) {
+					if ( !conversionApi.consumable.test( data.viewItem, from.consume || match.match ) ) {
 						continue;
 					}
 
 					// Find allowed parent for element that we are going to insert.
 					// If current parent does not allow to insert element but one of the ancestors does
 					// then split nodes to allowed parent.
-					const splitResult = conversionApi.splitToAllowedParent( modelElement, data.position, conversionApi );
+					const splitResult = conversionApi.splitToAllowedParent( modelElement, data.cursorPosition );
 
 					// When there is no split result it means that we can't insert element to model tree, so let's skip it.
 					if ( !splitResult ) {
@@ -311,35 +311,34 @@ class ViewConverterBuilder {
 					conversionApi.writer.insert( modelElement, splitResult.position );
 
 					// Convert children and insert to element.
-					const childrenOutput = conversionApi.convertChildren( data.input, consumable, Position.createAt( modelElement ) );
+					const childrenResult = conversionApi.convertChildren( data.viewItem, Position.createAt( modelElement ) );
 
 					// Consume appropriate value from consumable values list.
-					consumable.consume( data.input, from.consume || match.match );
+					conversionApi.consumable.consume( data.viewItem, from.consume || match.match );
 
-					// Prepare conversion output range, we know that range will start before inserted element.
-					const output = new Range( Position.createBefore( modelElement ) );
+					// Set conversion result range.
+					data.modelRange = new Range(
+						// Range should start before inserted element
+						Position.createBefore( modelElement ),
+						// Should end after but we need to take into consideration that children could split our
+						// element, so we need to move range after parent of the last converted child.
+						// before: <allowed>[]</allowed>
+						// after: <allowed>[<converted><child></child></converted><child></child><converted>]</converted></allowed>
+						Position.createAfter( childrenResult.cursorPosition.parent )
+					);
 
-					// Now we need to check where the output should end.
-
-					// If we had to split parent to insert our element then we want to continue conversion
-					// inside split parent.
+					// Now we need to check where the cursorPosition should be.
+					// If we had to split parent to insert our element then we want to continue conversion inside split parent.
 					//
 					// before: <allowed><notAllowed>[]</notAllowed></allowed>
-					// after:  <allowed><notAllowed></notAllowed>[<converted></converted><notAllowed>]</notAllowed></allowed>
+					// after:  <allowed><notAllowed></notAllowed><converted></converted><notAllowed>[]</notAllowed></allowed>
 					if ( splitResult.cursorParent ) {
-						output.end = Position.createAt( splitResult.cursorParent );
+						data.cursorPosition = Position.createAt( splitResult.cursorParent );
 
-					// When element is converted on target position (without splitting) we need to move range
-					// after this element but we need to take into consideration that children could split our
-					// element, so we need to move range after parent of the last converted child.
-					//
-					// after: <allowed>[]</allowed>
-					// before: <allowed>[<converted><child></child></converted><child></child><converted>]</converted></allowed>
+					// Otherwise just continue after inserted element.
 					} else {
-						output.end = Position.createAfter( childrenOutput.end.parent );
+						data.cursorPosition = data.modelRange.end;
 					}
-
-					data.output = output;
 
 					// Prevent multiple conversion if there are other correct matches.
 					break;
@@ -369,10 +368,10 @@ class ViewConverterBuilder {
 	 */
 	toAttribute( keyOrCreator, value ) {
 		function eventCallbackGen( from ) {
-			return ( evt, data, consumable, conversionApi ) => {
+			return ( evt, data, conversionApi ) => {
 				// There is one callback for all patterns in the matcher.
 				// This will be usually just one pattern but we support matchers with many patterns too.
-				const matchAll = from.matcher.matchAll( data.input );
+				const matchAll = from.matcher.matchAll( data.viewItem );
 
 				// If there is no match, this callback should not do anything.
 				if ( !matchAll ) {
@@ -382,21 +381,22 @@ class ViewConverterBuilder {
 				// Now, for every match between matcher and actual element, we will try to consume the match.
 				for ( const match of matchAll ) {
 					// Try to consume appropriate values from consumable values list.
-					if ( !consumable.consume( data.input, from.consume || match.match ) ) {
+					if ( !conversionApi.consumable.consume( data.viewItem, from.consume || match.match ) ) {
 						continue;
 					}
 
-					// Since we are converting to attribute we need an output on which we will set the attribute.
-					// If the output is not created yet, we will create it.
-					if ( !data.output ) {
-						data.output = conversionApi.convertChildren( data.input, consumable, data.position );
+					// Since we are converting to attribute we need an range on which we will set the attribute.
+					// If the range is not created yet, we will create it.
+					if ( !data.modelRange ) {
+						// Convert children and set conversion result as a current data.
+						data = Object.assign( data, conversionApi.convertChildren( data.viewItem, data.cursorPosition ) );
 					}
 
 					// Use attribute creator function, if provided.
 					let attribute;
 
 					if ( keyOrCreator instanceof Function ) {
-						attribute = keyOrCreator( data.input );
+						attribute = keyOrCreator( data.viewItem );
 
 						if ( !attribute ) {
 							return;
@@ -404,12 +404,12 @@ class ViewConverterBuilder {
 					} else {
 						attribute = {
 							key: keyOrCreator,
-							value: value ? value : data.input.getAttribute( from.attributeKey )
+							value: value ? value : data.viewItem.getAttribute( from.attributeKey )
 						};
 					}
 
 					// Set attribute on each item in range according to Schema.
-					for ( const node of Array.from( data.output.getItems() ) ) {
+					for ( const node of Array.from( data.modelRange.getItems() ) ) {
 						if ( conversionApi.schema.checkAttribute( node, attribute.key ) ) {
 							conversionApi.writer.setAttribute( attribute.key, attribute.value, node );
 						}
@@ -459,12 +459,12 @@ class ViewConverterBuilder {
 	 */
 	toMarker( creator ) {
 		function eventCallbackGen( from ) {
-			return ( evt, data, consumable, conversionApi ) => {
+			return ( evt, data, conversionApi ) => {
 				const writer = conversionApi.writer;
 
 				// There is one callback for all patterns in the matcher.
 				// This will be usually just one pattern but we support matchers with many patterns too.
-				const matchAll = from.matcher.matchAll( data.input );
+				const matchAll = from.matcher.matchAll( data.viewItem );
 
 				// If there is no match, this callback should not do anything.
 				if ( !matchAll ) {
@@ -475,10 +475,10 @@ class ViewConverterBuilder {
 
 				// When creator is provided then create model element basing on creator function.
 				if ( creator instanceof Function ) {
-					modelElement = creator( data.input );
+					modelElement = creator( data.viewItem );
 				// When there is no creator then create model element basing on data from view element.
 				} else {
-					modelElement = writer.createElement( '$marker', { 'data-name': data.input.getAttribute( 'data-name' ) } );
+					modelElement = writer.createElement( '$marker', { 'data-name': data.viewItem.getAttribute( 'data-name' ) } );
 				}
 
 				// Check if model element is correct (has proper name and property).
@@ -491,18 +491,19 @@ class ViewConverterBuilder {
 				// Now, for every match between matcher and actual element, we will try to consume the match.
 				for ( const match of matchAll ) {
 					// Try to consume appropriate values from consumable values list.
-					if ( !consumable.consume( data.input, from.consume || match.match ) ) {
+					if ( !conversionApi.consumable.consume( data.viewItem, from.consume || match.match ) ) {
 						continue;
 					}
 
 					// Tmp fix because multiple matchers are not properly matched and consumed.
 					// See https://github.com/ckeditor/ckeditor5-engine/issues/1257.
-					if ( data.output ) {
+					if ( data.modelRange ) {
 						continue;
 					}
 
-					writer.insert( modelElement, data.position );
-					data.output = Range.createOn( modelElement );
+					writer.insert( modelElement, data.cursorPosition );
+					data.modelRange = Range.createOn( modelElement );
+					data.cursorPosition = data.modelRange.end;
 
 					// Prevent multiple conversion if there are other correct matches.
 					break;
