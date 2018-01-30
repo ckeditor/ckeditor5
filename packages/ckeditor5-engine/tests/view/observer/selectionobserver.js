@@ -36,17 +36,17 @@ describe( 'SelectionObserver', () => {
 
 		viewRoot = viewDocument.getRoot();
 
-		viewRoot.appendChildren( parse(
-			'<container:p>xxx<ui:span></ui:span></container:p>' +
-			'<container:p>yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy</container:p>' ) );
+		view.change( writer => {
+			viewRoot.appendChildren( parse(
+				'<container:p>xxx<ui:span></ui:span></container:p>' +
+				'<container:p>yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy</container:p>' ) );
 
-		view.render();
+			writer.setSelection( null );
+			domDocument.getSelection().removeAllRanges();
 
-		viewDocument.selection._setTo( null );
-		domDocument.getSelection().removeAllRanges();
-
-		viewDocument.isFocused = true;
-		domMain.focus();
+			viewDocument.isFocused = true;
+			domMain.focus();
+		} );
 
 		selectionObserver.enable();
 
@@ -104,8 +104,10 @@ describe( 'SelectionObserver', () => {
 		setTimeout( done, 70 );
 
 		const viewBar = viewDocument.getRoot().getChild( 1 ).getChild( 0 );
-		viewDocument.selection._setTo( ViewRange.createFromParentsAndOffsets( viewBar, 1, viewBar, 2 ) );
-		view.render();
+
+		view.change( writer => {
+			writer.setSelection( ViewRange.createFromParentsAndOffsets( viewBar, 1, viewBar, 2 ) );
+		} );
 	} );
 
 	it( 'should not fired if observer is disabled', done => {
@@ -163,7 +165,9 @@ describe( 'SelectionObserver', () => {
 		let counter = 70;
 
 		const viewFoo = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
-		viewDocument.selection._setTo( ViewRange.createFromParentsAndOffsets( viewFoo, 0, viewFoo, 0 ) );
+		view.change( writer => {
+			writer.setSelection( viewFoo, 0 );
+		} );
 
 		return new Promise( ( resolve, reject ) => {
 			testUtils.sinon.stub( log, 'warn' ).callsFake( msg => {
@@ -315,15 +319,13 @@ describe( 'SelectionObserver', () => {
 		viewDocument.on( 'selectionChange', () => {
 			// Manually set selection because no handlers are set for selectionChange event in this test.
 			// Normally this is handled by view -> model -> view selection converters chain.
-			const viewSel = viewDocument.selection;
-
 			const viewAnchor = view.domConverter.domPositionToView( sel.anchorNode, sel.anchorOffset );
 			const viewFocus = view.domConverter.domPositionToView( sel.focusNode, sel.focusOffset );
 
-			viewSel._setTo( viewAnchor );
-			viewSel._setFocus( viewFocus );
-
-			view.render();
+			view.change( writer => {
+				writer.setSelection( viewAnchor );
+				writer.setSelectionFocus( viewFocus );
+			} );
 		} );
 
 		viewDocument.once( 'selectionChange', () => {
