@@ -6,7 +6,6 @@
 /* globals document */
 import FocusObserver from '../../../src/view/observer/focusobserver';
 import View from '../../../src/view/view';
-import ViewRange from '../../../src/view/range';
 import createViewRoot from '../_utils/createroot';
 import { setData } from '../../../src/dev-utils/view';
 
@@ -95,7 +94,9 @@ describe( 'FocusObserver', () => {
 		} );
 
 		it( 'should set isFocused to false on blur when selection in same editable', () => {
-			viewDocument.selection._setTo( ViewRange.createFromParentsAndOffsets( viewMain, 0, viewMain, 0 ) );
+			view.change( writer => {
+				writer.setSelection( viewMain, 0 );
+			} );
 
 			observer.onDomEvent( { type: 'focus', target: domMain } );
 
@@ -107,7 +108,9 @@ describe( 'FocusObserver', () => {
 		} );
 
 		it( 'should not set isFocused to false on blur when it is fired on other editable', () => {
-			viewDocument.selection._setTo( ViewRange.createFromParentsAndOffsets( viewMain, 0, viewMain, 0 ) );
+			view.change( writer => {
+				writer.setSelection( viewMain, 0 );
+			} );
 
 			observer.onDomEvent( { type: 'focus', target: domMain } );
 
