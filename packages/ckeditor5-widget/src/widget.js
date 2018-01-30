@@ -219,7 +219,7 @@ export default class Widget extends Plugin {
 		// If object element is selected.
 		if ( objectElement && schema.isObject( objectElement ) ) {
 			const position = isForward ? modelSelection.getLastPosition() : modelSelection.getFirstPosition();
-			const newRange = modelDocument.getNearestSelectionRange( position, isForward ? 'forward' : 'backward' );
+			const newRange = schema.getNearestSelectionRange( position, isForward ? 'forward' : 'backward' );
 
 			if ( newRange ) {
 				model.change( writer => {
