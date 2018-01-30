@@ -285,6 +285,9 @@ export default class ViewConversionDispatcher {
 
 		// Remember all elements that are created as a result of split.
 		// This is important because at the end of conversion we want to remove all empty split elements.
+		//
+		// Loop through positions between elements in range (except split result position) and collect parents.
+		// <notSplit><split1><split2>[pos]</split2>[pos]</split1>[omit]<split1>[pos]<split2>[pos]</split2></split1></notSplit>
 		for ( const position of splitResult.range.getPositions() ) {
 			if ( !position.isEqual( splitResult.position ) ) {
 				this._splitElements.add( position.parent );
