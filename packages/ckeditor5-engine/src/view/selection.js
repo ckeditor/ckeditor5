@@ -109,12 +109,13 @@ export default class Selection {
 	 * Additionally fake's selection label can be provided. It will be used to describe fake selection in DOM (and be
 	 * properly handled by screen readers).
 	 *
+	 * @protected
 	 * @fires change
 	 * @param {Boolean} [value=true] If set to true selection will be marked as `fake`.
 	 * @param {Object} [options] Additional options.
 	 * @param {String} [options.label=''] Fake selection label.
 	 */
-	setFake( value = true, options = {} ) {
+	_setFake( value = true, options = {} ) {
 		this._isFake = value;
 		this._fakeSelectionLabel = value ? options.label || '' : '';
 
@@ -124,7 +125,7 @@ export default class Selection {
 	/**
 	 * Returns true if selection instance is marked as `fake`.
 	 *
-	 * @see #setFake
+	 * @see #_setFake
 	 * @returns {Boolean}
 	 */
 	get isFake() {
@@ -134,7 +135,7 @@ export default class Selection {
 	/**
 	 * Returns fake selection label.
 	 *
-	 * @see #setFake
+	 * @see #_setFake
 	 * @returns {String}
 	 */
 	get fakeSelectionLabel() {

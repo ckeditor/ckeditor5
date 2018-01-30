@@ -122,7 +122,7 @@ describe( 'Renderer', () => {
 			renderer.markedChildren.clear();
 
 			selection._setTo( null );
-			selection.setFake( false );
+			selection._setFake( false );
 
 			selectionEditable = viewRoot;
 
@@ -1369,7 +1369,7 @@ describe( 'Renderer', () => {
 
 			it( 'should render fake selection', () => {
 				const label = 'fake selection label';
-				selection.setFake( true, { label } );
+				selection._setFake( true, { label } );
 				renderer.render();
 
 				expect( domRoot.childNodes.length ).to.equal( 2 );
@@ -1386,7 +1386,7 @@ describe( 'Renderer', () => {
 			} );
 
 			it( 'should render &nbsp; if no selection label is provided', () => {
-				selection.setFake( true );
+				selection._setFake( true );
 				renderer.render();
 
 				expect( domRoot.childNodes.length ).to.equal( 2 );
@@ -1402,10 +1402,10 @@ describe( 'Renderer', () => {
 			} );
 
 			it( 'should remove fake selection container when selection is no longer fake', () => {
-				selection.setFake( true );
+				selection._setFake( true );
 				renderer.render();
 
-				selection.setFake( false );
+				selection._setFake( false );
 				renderer.render();
 
 				expect( domRoot.childNodes.length ).to.equal( 1 );
@@ -1421,14 +1421,14 @@ describe( 'Renderer', () => {
 			it( 'should reuse fake selection container #1', () => {
 				const label = 'fake selection label';
 
-				selection.setFake( true, { label } );
+				selection._setFake( true, { label } );
 				renderer.render();
 
 				expect( domRoot.childNodes.length ).to.equal( 2 );
 
 				const container = domRoot.childNodes[ 1 ];
 
-				selection.setFake( true, { label } );
+				selection._setFake( true, { label } );
 				renderer.render();
 
 				expect( domRoot.childNodes.length ).to.equal( 2 );
@@ -1442,19 +1442,19 @@ describe( 'Renderer', () => {
 			} );
 
 			it( 'should reuse fake selection container #2', () => {
-				selection.setFake( true, { label: 'label 1' } );
+				selection._setFake( true, { label: 'label 1' } );
 				renderer.render();
 
 				expect( domRoot.childNodes.length ).to.equal( 2 );
 
 				const container = domRoot.childNodes[ 1 ];
 
-				selection.setFake( false );
+				selection._setFake( false );
 				renderer.render();
 
 				expect( domRoot.childNodes.length ).to.equal( 1 );
 
-				selection.setFake( true, { label: 'label 2' } );
+				selection._setFake( true, { label: 'label 2' } );
 				renderer.render();
 
 				expect( domRoot.childNodes.length ).to.equal( 2 );
@@ -1468,14 +1468,14 @@ describe( 'Renderer', () => {
 			} );
 
 			it( 'should reuse fake selection container #3', () => {
-				selection.setFake( true, { label: 'label 1' } );
+				selection._setFake( true, { label: 'label 1' } );
 				renderer.render();
 
 				expect( domRoot.childNodes.length ).to.equal( 2 );
 
 				const container = domRoot.childNodes[ 1 ];
 
-				selection.setFake( true, { label: 'label 2' } );
+				selection._setFake( true, { label: 'label 2' } );
 				renderer.render();
 
 				expect( domRoot.childNodes.length ).to.equal( 2 );
@@ -1489,7 +1489,7 @@ describe( 'Renderer', () => {
 			} );
 
 			it( 'should style fake selection container properly', () => {
-				selection.setFake( true, { label: 'fake selection' } );
+				selection._setFake( true, { label: 'fake selection' } );
 				renderer.render();
 
 				expect( domRoot.childNodes.length ).to.equal( 2 );
@@ -1502,7 +1502,7 @@ describe( 'Renderer', () => {
 			} );
 
 			it( 'should bind fake selection container to view selection', () => {
-				selection.setFake( true, { label: 'fake selection' } );
+				selection._setFake( true, { label: 'fake selection' } );
 				renderer.render();
 
 				expect( domRoot.childNodes.length ).to.equal( 2 );

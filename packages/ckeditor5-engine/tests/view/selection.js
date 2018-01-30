@@ -94,7 +94,7 @@ describe( 'Selection', () => {
 
 		it( 'should be able to create a fake selection from the other fake selection', () => {
 			const otherSelection = new Selection( [ range2, range3 ], true );
-			otherSelection.setFake( true, { label: 'foo bar baz' } );
+			otherSelection._setFake( true, { label: 'foo bar baz' } );
 			const selection = new Selection( otherSelection );
 
 			expect( selection.isFake ).to.be.true;
@@ -511,15 +511,15 @@ describe( 'Selection', () => {
 
 		it( 'should return false if one selection is fake', () => {
 			const otherSelection = new Selection();
-			otherSelection.setFake( true );
+			otherSelection._setFake( true );
 
 			expect( selection.isEqual( otherSelection ) ).to.be.false;
 		} );
 
 		it( 'should return true if both selection are fake', () => {
 			const otherSelection = new Selection( [ range1 ] );
-			otherSelection.setFake( true );
-			selection.setFake( true );
+			otherSelection._setFake( true );
+			selection._setFake( true );
 			selection._setTo( range1 );
 
 			expect( selection.isEqual( otherSelection ) ).to.be.true;
@@ -527,8 +527,8 @@ describe( 'Selection', () => {
 
 		it( 'should return false if both selection are fake but have different label', () => {
 			const otherSelection = new Selection( [ range1 ] );
-			otherSelection.setFake( true, { label: 'foo bar baz' } );
-			selection.setFake( true );
+			otherSelection._setFake( true, { label: 'foo bar baz' } );
+			selection._setFake( true );
 			selection._setTo( range1 );
 
 			expect( selection.isEqual( otherSelection ) ).to.be.false;
@@ -709,7 +709,7 @@ describe( 'Selection', () => {
 			it( 'should set fake state and label', () => {
 				const otherSelection = new Selection();
 				const label = 'foo bar baz';
-				otherSelection.setFake( true, { label } );
+				otherSelection._setFake( true, { label } );
 				selection._setTo( otherSelection );
 
 				expect( selection.isFake ).to.be.true;
@@ -863,7 +863,7 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( 'getEditableElement', () => {
+	describe( 'getEditableElement()', () => {
 		it( 'should return null if no ranges in selection', () => {
 			expect( selection.editableElement ).to.be.null;
 		} );
@@ -893,31 +893,31 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( 'setFake', () => {
+	describe( '_setFake()', () => {
 		it( 'should allow to set selection to fake', () => {
-			selection.setFake( true );
+			selection._setFake( true );
 
 			expect( selection.isFake ).to.be.true;
 		} );
 
 		it( 'should allow to set fake selection label', () => {
 			const label = 'foo bar baz';
-			selection.setFake( true, { label } );
+			selection._setFake( true, { label } );
 
 			expect( selection.fakeSelectionLabel ).to.equal( label );
 		} );
 
 		it( 'should not set label when set to false', () => {
 			const label = 'foo bar baz';
-			selection.setFake( false, { label } );
+			selection._setFake( false, { label } );
 
 			expect( selection.fakeSelectionLabel ).to.equal( '' );
 		} );
 
 		it( 'should reset label when set to false', () => {
 			const label = 'foo bar baz';
-			selection.setFake( true, { label } );
-			selection.setFake( false );
+			selection._setFake( true, { label } );
+			selection._setFake( false );
 
 			expect( selection.fakeSelectionLabel ).to.equal( '' );
 		} );
@@ -930,11 +930,11 @@ describe( 'Selection', () => {
 				done();
 			} );
 
-			selection.setFake( true, { label: 'foo bar baz' } );
+			selection._setFake( true, { label: 'foo bar baz' } );
 		} );
 	} );
 
-	describe( 'getSelectedElement', () => {
+	describe( 'getSelectedElement()', () => {
 		it( 'should return selected element', () => {
 			const { selection, view } = parse( 'foo [<b>bar</b>] baz' );
 			const b = view.getChild( 1 );

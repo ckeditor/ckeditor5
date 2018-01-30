@@ -129,5 +129,5 @@ export function clearAttributes() {
  * {@link module:engine/model/selection~Selection model selection} conversion.
  */
 export function clearFakeSelection() {
-	return ( evt, data, consumable, conversionApi ) => conversionApi.viewSelection.setFake( false );
+	return ( evt, data, consumable, conversionApi ) => conversionApi.viewSelection._setFake( false );
 }

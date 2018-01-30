@@ -33,7 +33,7 @@ describe( 'FakeSelectionObserver', () => {
 		root = createViewRoot( viewDocument );
 		view.attachDomRoot( domRoot );
 		observer = view.getObserver( FakeSelectionObserver );
-		viewDocument.selection.setFake();
+		viewDocument.selection._setFake();
 	} );
 
 	afterEach( () => {
@@ -41,7 +41,7 @@ describe( 'FakeSelectionObserver', () => {
 	} );
 
 	it( 'should do nothing if selection is not fake', () => {
-		viewDocument.selection.setFake( false );
+		viewDocument.selection._setFake( false );
 
 		return checkEventPrevention( keyCodes.arrowleft, false );
 	} );
@@ -200,7 +200,7 @@ describe( 'FakeSelectionObserver', () => {
 	//
 	// @param {Number} keyCode
 	function changeFakeSelectionPressing( keyCode ) {
-		viewDocument.selection.setFake();
+		viewDocument.selection._setFake();
 
 		const data = {
 			keyCode,

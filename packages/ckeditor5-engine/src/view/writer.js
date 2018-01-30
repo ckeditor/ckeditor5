@@ -77,7 +77,24 @@ export default class Writer {
 	 * first parameter is a {@link module:engine/view/item~Item view item}.
 	 */
 	setSelectionFocus( itemOrPosition, offset ) {
-		this.model.document.selection._setFocus( itemOrPosition, offset );
+		this.document.selection._setFocus( itemOrPosition, offset );
+	}
+
+	/**
+	 * Sets {@link module:engine/view/selection~Selection selection's} to be marked as `fake`. A fake selection does
+	 * not render as browser native selection over selected elements and is hidden to the user.
+	 * This way, no native selection UI artifacts are displayed to the user and selection over elements can be
+	 * represented in other way, for example by applying proper CSS class.
+	 *
+	 * Additionally fake's selection label can be provided. It will be used to describe fake selection in DOM (and be
+	 * properly handled by screen readers).
+	 *
+	 * @param {Boolean} [value=true] If set to true selection will be marked as `fake`.
+	 * @param {Object} [options] Additional options.
+	 * @param {String} [options.label=''] Fake selection label.
+	 */
+	setFakeSelection( value = true, options = {} ) {
+		this.document.selection._setFake( value, options );
 	}
 
 	/**
