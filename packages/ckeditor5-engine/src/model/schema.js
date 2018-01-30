@@ -676,10 +676,9 @@ export default class Schema {
 	 *
 	 * @params {module:engine/model/node~Node} node Node for which allowed parent should be found.
 	 * @params {module:engine/model/position~Position} position Position from searching will start.
-	 * @params {module:engine/model/element~Element} [limitElement] Custom limit element.
 	 * @returns {module:engine/model/element~Element|null} element Allowed parent or null if nothing was found.
 	 */
-	findAllowedParent( node, position, limitElement ) {
+	findAllowedParent( node, position ) {
 		let parent = position.parent;
 
 		while ( parent ) {
@@ -688,10 +687,6 @@ export default class Schema {
 			}
 
 			if ( this.isLimit( parent ) ) {
-				return null;
-			}
-
-			if ( parent === limitElement ) {
 				return null;
 			}
 

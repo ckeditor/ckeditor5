@@ -1137,7 +1137,7 @@ describe( 'Schema', () => {
 		} );
 	} );
 
-	describe( 'findAllowedParent', () => {
+	describe( 'findAllowedParent()', () => {
 		beforeEach( () => {
 			schema.register( '$root' );
 			schema.register( 'blockQuote', {
@@ -1185,20 +1185,6 @@ describe( 'Schema', () => {
 			const node = new Element( 'section' );
 
 			const parent = schema.findAllowedParent( node, Position.createAt( r1bQp ) );
-
-			expect( parent ).to.null;
-		} );
-
-		it( 'should use custom limit element nad return null if is reached', () => {
-			// $root is allowed ancestor for blockQuote.
-			const node = new Element( 'blockQuote' );
-
-			const parent = schema.findAllowedParent(
-				node,
-				Position.createAt( r1bQp ),
-				// However lest stop searching when blockQuote is reached.
-				r1bQ
-			);
 
 			expect( parent ).to.null;
 		} );
