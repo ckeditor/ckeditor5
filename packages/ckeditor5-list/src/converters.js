@@ -350,8 +350,8 @@ export function modelViewMergeAfter( evt, data, conversionApi ) {
  * @param {module:engine/conversion/viewconsumable~ViewConsumable} consumable Values to consume.
  * @param {Object} conversionApi Conversion interface to be used by the callback.
  */
-export function viewModelConverter( evt, data, consumable, conversionApi ) {
-	if ( consumable.consume( data.input, { name: true } ) ) {
+export function viewModelConverter( evt, data, conversionApi ) {
+	if ( conversionApi.consumable.consume( data.viewItem, { name: true } ) ) {
 		const writer = conversionApi.writer;
 		const conversionData = this.conversionApi.data;
 
@@ -363,13 +363,13 @@ export function viewModelConverter( evt, data, consumable, conversionApi ) {
 		writer.setAttribute( 'indent', conversionData.indent, listItem );
 
 		// Set 'bulleted' as default. If this item is pasted into a context,
-		const type = data.input.parent && data.input.parent.name == 'ol' ? 'numbered' : 'bulleted';
+		const type = data.viewItem.parent && data.viewItem.parent.name == 'ol' ? 'numbered' : 'bulleted';
 		writer.setAttribute( 'type', type, listItem );
 
 		// `listItem`s created recursively should have bigger indent.
 		conversionData.indent++;
 
-		writer.insert( listItem, data.position );
+		writer.insert( listItem, data.cursorPosition );
 
 		// Remember position after list item.
 		let nextPosition = ModelPosition.createAfter( listItem );
@@ -377,20 +377,21 @@ export function viewModelConverter( evt, data, consumable, conversionApi ) {
 		// Check all children of the converted `<li>`.
 		// At this point we assume there are no "whitespace" view text nodes in view list, between view list items.
 		// This should be handled by `<ul>` and `<ol>` converters.
-		for ( const child of data.input.getChildren() ) {
+		for ( const child of data.viewItem.getChildren() ) {
 			// If this is a view list element, we will convert it after last `listItem` model element.
 			if ( child.name == 'ul' || child.name == 'ol' ) {
-				nextPosition = conversionApi.convertItem( child, consumable, nextPosition ).end;
+				nextPosition = conversionApi.convertItem( child, nextPosition ).cursorPosition;
 			}
 			// If it was not a list it was a "regular" list item content. Just append it to `listItem`.
 			else {
-				conversionApi.convertItem( child, consumable, ModelPosition.createAt( listItem, 'end' ) );
+				conversionApi.convertItem( child, ModelPosition.createAt( listItem, 'end' ) );
 			}
 		}
 
 		conversionData.indent--;
 
-		data.output = new ModelRange( data.position, nextPosition );
+		data.modelRange = new ModelRange( data.cursorPosition, nextPosition );
+		data.cursorPosition = data.modelRange.end;
 	}
 }
 
@@ -404,10 +405,10 @@ export function viewModelConverter( evt, data, consumable, conversionApi ) {
  * @param {Object} data An object containing conversion input and a placeholder for conversion output and possibly other values.
  * @param {module:engine/conversion/viewconsumable~ViewConsumable} consumable Values to consume.
  */
-export function cleanList( evt, data, consumable ) {
-	if ( consumable.test( data.input, { name: true } ) ) {
+export function cleanList( evt, data, conversionApi ) {
+	if ( conversionApi.consumable.test( data.viewItem, { name: true } ) ) {
 		// Caching children because when we start removing them iterating fails.
-		const children = Array.from( data.input.getChildren() );
+		const children = Array.from( data.viewItem.getChildren() );
 
 		for ( const child of children ) {
 			if ( !child.is( 'li' ) ) {
@@ -425,13 +426,13 @@ export function cleanList( evt, data, consumable ) {
  * @param {Object} data An object containing conversion input and a placeholder for conversion output and possibly other values.
  * @param {module:engine/conversion/viewconsumable~ViewConsumable} consumable Values to consume.
  */
-export function cleanListItem( evt, data, consumable ) {
-	if ( consumable.test( data.input, { name: true } ) ) {
-		if ( data.input.childCount === 0 ) {
+export function cleanListItem( evt, data, conversionApi ) {
+	if ( conversionApi.consumable.test( data.viewItem, { name: true } ) ) {
+		if ( data.viewItem.childCount === 0 ) {
 			return;
 		}
 
-		const children = [ ...data.input.getChildren() ];
+		const children = [ ...data.viewItem.getChildren() ];
 
 		let foundList = false;
 		let firstNode = true;
