@@ -2455,6 +2455,14 @@ describe( 'SchemaContext', () => {
 			expect( Array.from( ctx.getItem( 2 ).getAttributeKeys() ).sort() ).to.deep.equal( [ 'align' ] );
 		} );
 
+		it( 'creates context based on a SchemaContext instance', () => {
+			const previousCtx = new SchemaContext( [ 'a', 'b', 'c' ] );
+
+			const ctx = new SchemaContext( previousCtx );
+
+			expect( ctx ).to.equal( previousCtx );
+		} );
+
 		it( 'filters out DocumentFragment when it is a first item of context - array', () => {
 			const ctx = new SchemaContext( [ new DocumentFragment(), 'paragraph' ] );
 

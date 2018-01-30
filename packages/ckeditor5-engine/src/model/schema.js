@@ -193,16 +193,11 @@ export default class Schema {
 		this.decorate( 'checkAttribute' );
 
 		this.on( 'checkAttribute', ( evt, args ) => {
-			if ( !( args[ 0 ] instanceof SchemaContext ) ) {
-				args[ 0 ] = new SchemaContext( args[ 0 ] );
-			}
+			args[ 0 ] = new SchemaContext( args[ 0 ] );
 		}, { priority: 'highest' } );
 
 		this.on( 'checkChild', ( evt, args ) => {
-			if ( !( args[ 0 ] instanceof SchemaContext ) ) {
-				args[ 0 ] = new SchemaContext( args[ 0 ] );
-			}
-
+			args[ 0 ] = new SchemaContext( args[ 0 ] );
 			args[ 1 ] = this.getDefinition( args[ 1 ] );
 		}, { priority: 'highest' } );
 	}
@@ -1072,9 +1067,13 @@ export class SchemaContext {
 	/**
 	 * Creates an instance of the context.
 	 *
-	 * @param {module:engine/model/schema~SchemaContextDefinition} context
+	 * @param {module:engine/model/schema~SchemaContextDefinition|module:engine/model/schema~SchemaContext} context
 	 */
 	constructor( context ) {
+		if ( context instanceof SchemaContext ) {
+			return context;
+		}
+
 		if ( Array.isArray( context ) ) {
 			if ( context[ 0 ] && typeof context[ 0 ] != 'string' && context[ 0 ].is( 'documentFragment' ) ) {
 				context.shift();
