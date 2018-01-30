@@ -180,7 +180,7 @@ export default class ViewConversionDispatcher {
 			this.conversionApi.consumable = ViewConsumable.createFrom( viewItem );
 
 			// Custom data stored by converter for conversion process.
-			this.conversionApi.data = {};
+			this.conversionApi.store = {};
 
 			// Do the conversion.
 			const { modelRange } = this._convertItem( viewItem, this._modelCursor );
@@ -210,7 +210,7 @@ export default class ViewConversionDispatcher {
 
 			// Clear conversion API.
 			this.conversionApi.writer = null;
-			this.conversionApi.data = null;
+			this.conversionApi.store = null;
 
 			// Return fragment as conversion result.
 			return documentFragment;
@@ -510,5 +510,5 @@ function createContextTree( contextDefinition, writer ) {
 /**
  * Custom data stored by converter for conversion process.
  *
- * @param {Object} #data
+ * @param {Object} #store
  */

@@ -63,20 +63,20 @@ describe( 'ViewConversionDispatcher', () => {
 
 			// Conversion process properties should be undefined/empty before conversion.
 			expect( dispatcher.conversionApi.writer ).to.not.ok;
-			expect( dispatcher.conversionApi.data ).to.not.ok;
+			expect( dispatcher.conversionApi.store ).to.not.ok;
 			expect( dispatcher._removeIfEmpty.size ).to.equal( 0 );
 
 			dispatcher.on( 'element', ( evt, data, conversionApi ) => {
 				// Check conversion api params.
 				expect( conversionApi.writer ).to.instanceof( ModelWriter );
-				expect( conversionApi.data ).to.deep.equal( {} );
+				expect( conversionApi.store ).to.deep.equal( {} );
 				expect( dispatcher._removeIfEmpty.size ).to.equal( 0 );
 
 				// Remember writer to check in next converter that is exactly the same instance (the same undo step).
 				writer = conversionApi.writer;
 
 				// Add some data to conversion storage to verify them in next converter.
-				conversionApi.data.foo = 'bar';
+				conversionApi.store.foo = 'bar';
 
 				// Add empty element and mark as a split result to check in next converter.
 				dispatcher._removeIfEmpty.add( conversionApi.writer.createElement( 'paragraph' ) );
@@ -92,7 +92,7 @@ describe( 'ViewConversionDispatcher', () => {
 				expect( conversionApi.writer ).to.equal( writer );
 
 				// Data set by previous converter are remembered.
-				expect( conversionApi.data ).to.deep.equal( { foo: 'bar' } );
+				expect( conversionApi.store ).to.deep.equal( { foo: 'bar' } );
 
 				// Split element is remembered as well.
 				expect( dispatcher._removeIfEmpty.size ).to.equal( 1 );
@@ -107,7 +107,7 @@ describe( 'ViewConversionDispatcher', () => {
 
 			// Conversion process properties should be cleared after conversion.
 			expect( dispatcher.conversionApi.writer ).to.not.ok;
-			expect( dispatcher.conversionApi.data ).to.not.ok;
+			expect( dispatcher.conversionApi.store ).to.not.ok;
 			expect( dispatcher._removeIfEmpty.size ).to.equal( 0 );
 		} );
 
@@ -237,7 +237,6 @@ describe( 'ViewConversionDispatcher', () => {
 				data.modelRange = ModelRange.createOn( text );
 			} );
 
-			// Use `additionalData` parameter to check if it was passed to the event.
 			const conversionResult = dispatcher.convert( viewFragment );
 
 			// Check conversion result.
