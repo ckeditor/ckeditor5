@@ -1122,7 +1122,7 @@ export class SchemaContext {
 	 * @param {module:engine/model/node~Node|String} item Item to add.
 	 */
 	addItem( item ) {
-		this._items.push( mapContextItem( item ) );
+		this._items = [ ...this._items, mapContextItem( item ) ];
 	}
 
 	/**
