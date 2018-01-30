@@ -115,22 +115,27 @@ export default class ViewConversionDispatcher {
 		 * List of elements that will be checked after conversion process and if element in the list will be empty it
 		 * will be removed from conversion result.
 		 *
+		 * After conversion process list is cleared.
+		 *
 		 * @protected
 		 * @type {Set<module:engine/model/element~Element>}
 		 */
 		this._removeIfEmpty = new Set();
 
 		/**
-		 * Position inside top element of context tree.
+		 * Position where conversion result will be inserted. Note that it's not exactly position in one of the
+		 * {@link module:engine/model/document~Document#roots document roots} but it's only a similar position.
+		 * At the beginning of conversion process fragment of model tree is created according to given context and this
+		 * position is created in the top element of created fragment. Then {@link module:engine/view/item~Item View items}
+		 * are converted to this position what makes possible to precisely check converted items by
+		 * {@link module:engine/model/schema~Schema}.
 		 *
-		 * At the beginning of each conversion fragment of model tree is created according to given context.
-		 * {@link module:engine/view/item~Item View items} are converted to the top element of created fragment.
-		 * This makes possible to precisely check converted items by {@link module:engine/model/schema~Schema}.
+		 * After conversion process position is cleared.
 		 *
 		 * @private
 		 * @type {module:engine/model/position~Position|null}
 		 */
-		this._contextPosition = null;
+		this._modelCursor = null;
 
 		/**
 		 * Interface passed by dispatcher to the events callbacks.
@@ -163,9 +168,9 @@ export default class ViewConversionDispatcher {
 		return this._model.change( writer => {
 			this.fire( 'viewCleanup', viewItem );
 
-			// Create context tree and store position in the top element.
+			// Create context tree and set position in the top element.
 			// Items will be converted according to this position.
-			this._contextPosition = contextToPosition( context, writer );
+			this._modelCursor = createContextTree( context, writer );
 
 			// Store writer in conversion as a conversion API
 			// to be sure that conversion process will use the same batch.
@@ -178,7 +183,7 @@ export default class ViewConversionDispatcher {
 			this.conversionApi.data = {};
 
 			// Do the conversion.
-			const { modelRange } = this._convertItem( viewItem, this._contextPosition );
+			const { modelRange } = this._convertItem( viewItem, this._modelCursor );
 
 			// Conversion result is always a document fragment so let's create this fragment.
 			const documentFragment = writer.createDocumentFragment();
@@ -189,7 +194,7 @@ export default class ViewConversionDispatcher {
 				this._removeEmptyElements();
 
 				// Move all items that was converted to context tree to document fragment.
-				for ( const item of Array.from( this._contextPosition.parent.getChildren() ) ) {
+				for ( const item of Array.from( this._modelCursor.parent.getChildren() ) ) {
 					writer.append( item, documentFragment );
 				}
 
@@ -198,7 +203,7 @@ export default class ViewConversionDispatcher {
 			}
 
 			// Clear context position.
-			this._contextPosition = null;
+			this._modelCursor = null;
 
 			// Clear split elements.
 			this._removeIfEmpty.clear();
@@ -268,7 +273,7 @@ export default class ViewConversionDispatcher {
 	 */
 	_splitToAllowedParent( element, cursorPosition ) {
 		// Try to find allowed parent.
-		const allowedParent = this.conversionApi.schema.findAllowedParent( element, cursorPosition, this._contextPosition.parent );
+		const allowedParent = this.conversionApi.schema.findAllowedParent( element, cursorPosition, this._modelCursor.parent );
 
 		// When there is no parent that allows to insert element then return `null`.
 		if ( !allowedParent ) {
@@ -410,7 +415,7 @@ function extractMarkersFromModelFragment( modelItem, writer ) {
 }
 
 // Creates model fragment according to given context and returns position in top element.
-function contextToPosition( contextDefinition, writer ) {
+function createContextTree( contextDefinition, writer ) {
 	let position;
 
 	for ( const item of new SchemaContext( contextDefinition ) ) {
@@ -428,8 +433,6 @@ function contextToPosition( contextDefinition, writer ) {
 
 		position = ModelPosition.createAt( current );
 	}
-
-	position.parent.setAttribute( 'isContextTree', true );
 
 	return position;
 }
