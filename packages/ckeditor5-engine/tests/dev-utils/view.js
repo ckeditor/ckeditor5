@@ -63,7 +63,9 @@ describe( 'view test utils', () => {
 				const root = createAttachedRoot( viewDocument, element );
 				root.appendChildren( new Element( 'p' ) );
 
-				viewDocument.selection._setTo( Range.createFromParentsAndOffsets( root, 0, root, 1 ) );
+				view.change( writer => {
+					writer.setSelection( Range.createFromParentsAndOffsets( root, 0, root, 1 ) );
+				} );
 
 				expect( getData( view, options ) ).to.equal( '[<p></p>]' );
 				sinon.assert.calledOnce( stringifySpy );
