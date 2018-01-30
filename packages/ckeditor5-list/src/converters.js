@@ -342,7 +342,7 @@ export function modelViewMergeAfter( evt, data, conversionApi ) {
  *
  * To set correct values of the `type` and `indent` attributes the converter:
  * * checks `<li>`'s parent,
- * * stores and increases the `conversionApi.data.indent` value when `<li>`'s sub-items are converted.
+ * * stores and increases the `conversionApi.store.indent` value when `<li>`'s sub-items are converted.
  *
  * @see module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:element
  * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
@@ -353,21 +353,21 @@ export function modelViewMergeAfter( evt, data, conversionApi ) {
 export function viewModelConverter( evt, data, conversionApi ) {
 	if ( conversionApi.consumable.consume( data.viewItem, { name: true } ) ) {
 		const writer = conversionApi.writer;
-		const conversionData = this.conversionApi.data;
+		const conversionStore = this.conversionApi.store;
 
 		// 1. Create `listItem` model element.
 		const listItem = writer.createElement( 'listItem' );
 
 		// 2. Handle `listItem` model element attributes.
-		conversionData.indent = conversionData.indent || 0;
-		writer.setAttribute( 'indent', conversionData.indent, listItem );
+		conversionStore.indent = conversionStore.indent || 0;
+		writer.setAttribute( 'indent', conversionStore.indent, listItem );
 
 		// Set 'bulleted' as default. If this item is pasted into a context,
 		const type = data.viewItem.parent && data.viewItem.parent.name == 'ol' ? 'numbered' : 'bulleted';
 		writer.setAttribute( 'type', type, listItem );
 
 		// `listItem`s created recursively should have bigger indent.
-		conversionData.indent++;
+		conversionStore.indent++;
 
 		writer.insert( listItem, data.cursorPosition );
 
@@ -388,7 +388,7 @@ export function viewModelConverter( evt, data, conversionApi ) {
 			}
 		}
 
-		conversionData.indent--;
+		conversionStore.indent--;
 
 		data.modelRange = new ModelRange( data.cursorPosition, nextPosition );
 		data.cursorPosition = data.modelRange.end;
