@@ -175,8 +175,7 @@ export default class ViewConversionDispatcher {
 			// Store writer in current conversion as a conversion API.
 			this.conversionApi.writer = writer;
 
-			// Additional date available between conversions.
-			// Needed when one converter needs to leave some data for the oder converters.
+			// Custom data stored by converter for conversion process.
 			this.conversionApi.data = {};
 
 			// Do the conversion.
@@ -296,7 +295,7 @@ export default class ViewConversionDispatcher {
 
 		return {
 			position: data.position,
-			endElement: data.range.end.parent
+			cursorParent: data.range.end.parent
 		};
 	}
 
@@ -413,6 +412,7 @@ function extractMarkersFromModelFragment( modelItem, writer ) {
 	return markers;
 }
 
+// Creates model fragment according to given context and returns position in top element.
 function contextToPosition( contextDefinition, writer ) {
 	let position;
 
@@ -493,11 +493,18 @@ function contextToPosition( contextDefinition, writer ) {
  * @method #splitToAllowedParent
  * @param {module:engine/model/position~Position} position Position on which element is going to be inserted.
  * @param {module:engine/model/element~Node} element Element to insert.
- * @returns TODO
+ * @returns {SplitToAllowedParentResult} Split result.
  */
 
 /**
  * Custom data stored by converter for conversion process.
  *
  * @param {Object} #data
+ */
+
+/**
+ * @typedef {Object} SplitToAllowedParentResult
+ * @property {module:engine/model/position~Position} position between split elements.
+ * @property {module:engine/model/element~Element} [cursorParent] Element inside which cursor should be placed to
+ * continue conversion. When element is not defined it means that there was no split.
  */

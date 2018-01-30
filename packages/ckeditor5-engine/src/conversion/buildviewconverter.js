@@ -326,8 +326,8 @@ class ViewConverterBuilder {
 					//
 					// before: <allowed><notAllowed>[]</notAllowed></allowed>
 					// after:  <allowed><notAllowed></notAllowed>[<converted></converted><notAllowed>]</notAllowed></allowed>
-					if ( splitResult.endElement ) {
-						output.end = Position.createAt( splitResult.endElement );
+					if ( splitResult.cursorParent ) {
+						output.end = Position.createAt( splitResult.cursorParent );
 
 					// When element is converted on target position (without splitting) we need to move range
 					// after this element but we need to take into consideration that children could split our
