@@ -12,9 +12,9 @@ import ModelRange from '../model/range';
 import ModelPosition from '../model/position';
 import { SchemaContext } from '../model/schema';
 
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 
 /**
  * `ViewConversionDispatcher` is a central point of {@link module:engine/view/view view} conversion, which is a process of
@@ -178,13 +178,13 @@ export default class ViewConversionDispatcher {
 			this.conversionApi.data = {};
 
 			// Do the conversion.
-			const range = this._convertItem( viewItem, this._contextPosition );
+			const { modelRange } = this._convertItem( viewItem, this._contextPosition );
 
 			// Conversion result is always a document fragment so let's create this fragment.
 			const documentFragment = writer.createDocumentFragment();
 
 			// When there is a conversion result.
-			if ( range ) {
+			if ( modelRange ) {
 				// Remove all empty elements that was created as a result of split.
 				this._removeEmptySplitElements();
 
@@ -227,25 +227,19 @@ export default class ViewConversionDispatcher {
 			this.fire( 'documentFragment', data, this.conversionApi );
 		}
 
-		// Handle incorrect `data.output`.
+		// Handle incorrect conversion result.
 		if ( data.modelRange && !( data.modelRange instanceof ModelRange ) ) {
 			/**
 			 * Incorrect conversion result was dropped.
 			 *
-			 * Item may be converted to either {@link module:engine/model/node~Node model node} or
-			 * {@link module:engine/model/documentfragment~DocumentFragment model document fragment}.
+			 * {@link module:engine/model/range~Range Model range} should be a conversion result.
 			 *
 			 * @error view-conversion-dispatcher-incorrect-result
 			 */
-			log.warn(
-				'view-conversion-dispatcher-incorrect-result: Incorrect conversion result was dropped.',
-				[ viewItem, data.modelRange ]
-			);
-
-			return null;
+			throw new CKEditorError( 'view-conversion-dispatcher-incorrect-result: Incorrect conversion result was dropped.' );
 		}
 
-		return data.modelRange;
+		return { modelRange: data.modelRange, cursorPosition: data.cursorPosition };
 	}
 
 	/**
@@ -253,17 +247,19 @@ export default class ViewConversionDispatcher {
 	 * @see module:engine/conversion/viewconversiondispatcher~ViewConversionApi#convertChildren
 	 */
 	_convertChildren( viewItem, cursorPosition ) {
-		const childrenRange = new ModelRange( cursorPosition );
+		const modelRange = new ModelRange( cursorPosition );
+		let nextCursorPosition = cursorPosition;
 
 		for ( const viewChild of Array.from( viewItem.getChildren() ) ) {
-			const itemRange = this._convertItem( viewChild, childrenRange.end );
+			const result = this._convertItem( viewChild, nextCursorPosition );
 
-			if ( itemRange instanceof ModelRange ) {
-				childrenRange.end = itemRange.end;
+			if ( result.modelRange instanceof ModelRange ) {
+				modelRange.end = result.modelRange.end;
+				nextCursorPosition = result.cursorPosition;
 			}
 		}
 
-		return childrenRange;
+		return { modelRange, cursorPosition: nextCursorPosition };
 	}
 
 	/**
@@ -440,7 +436,7 @@ function contextToPosition( contextDefinition, writer ) {
  * and is passed as one of parameters when {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher dispatcher}
  * fires it's events.
  *
- * TODO more explanation.
+ * TODO better explanation.
  *
  * @interface ViewConversionApi
  */
@@ -458,8 +454,10 @@ function contextToPosition( contextDefinition, writer ) {
  * @fires module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:documentFragment
  * @param {module:engine/view/item~Item} viewItem Item to convert.
  * @param {module:engine/model/position~Position} cursorPosition Position of conversion.
- * @returns {module:engine/model/range~Range|null} Model range containing result of item conversion,
+ * @returns {Object} result Conversion result.
+ * @returns {module:engine/model/range~Range|null} result.modelRange Model range containing result of item conversion,
  * created and modified by callbacks attached to fired event, or `null` if the conversion result was incorrect.
+ * @returns {module:engine/model/position~Position} result.cursorPosition Position where conversion should be continued.
  */
 
 /**
@@ -471,8 +469,10 @@ function contextToPosition( contextDefinition, writer ) {
  * @fires module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:documentFragment
  * @param {module:engine/view/item~Item} viewItem Item to convert.
  * @param {module:engine/model/position~Position} cursorPosition Position of conversion.
- * @returns {module:engine/model/range~Range} Model range containing results of conversion of all children of given item.
+ * @returns {Object} result Conversion result.
+ * @returns {module:engine/model/range~Range} result.modelRange Model range containing results of conversion of all children of given item.
  * When no children was converted then range is collapsed.
+ * @returns {module:engine/model/position~Position} result.cursorPosition Position where conversion should be continued.
  */
 
 /**

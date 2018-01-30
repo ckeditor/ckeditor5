@@ -18,17 +18,13 @@ import ModelRange from '../../src/model/range';
 import ModelWriter from '../../src/model/writer';
 
 import first from '@ckeditor/ckeditor5-utils/src/first';
-import log from '@ckeditor/ckeditor5-utils/src/log';
-
-// Stored in case it is silenced and has to be restored.
-const logWarn = log.warn;
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'ViewConversionDispatcher', () => {
 	let model;
 
 	beforeEach( () => {
 		model = new Model();
-		log.warn = logWarn;
 	} );
 
 	describe( 'constructor()', () => {
@@ -116,8 +112,6 @@ describe( 'ViewConversionDispatcher', () => {
 		} );
 
 		it( 'should fire viewCleanup event on converted view part', () => {
-			silenceWarnings();
-
 			sinon.spy( dispatcher, 'fire' );
 
 			const viewP = new ViewContainerElement( 'p' );
@@ -127,8 +121,6 @@ describe( 'ViewConversionDispatcher', () => {
 		} );
 
 		it( 'should fire proper events', () => {
-			silenceWarnings();
-
 			const viewText = new ViewText( 'foobar' );
 			const viewElement = new ViewContainerElement( 'p', null, viewText );
 			const viewFragment = new ViewDocumentFragment( viewElement );
@@ -444,23 +436,25 @@ describe( 'ViewConversionDispatcher', () => {
 
 		describe( 'convertItem()', () => {
 			it( 'should call proper converter and return correct data', () => {
-				silenceWarnings();
-
 				dispatcher.on( 'documentFragment', ( evt, data, conversionApi ) => {
 					spy();
 
-					const result1 = conversionApi.convertItem( viewP, data.cursorPosition );
-					expect( result1 ).instanceof( ModelRange );
-					expect( result1.start.path ).to.deep.equal( [ 0 ] );
-					expect( result1.end.path ).to.deep.equal( [ 1 ] );
-					expect( first( result1.getItems() ) ).to.equal( modelP );
+					const pResult = conversionApi.convertItem( viewP, data.cursorPosition );
+					expect( pResult.modelRange ).instanceof( ModelRange );
+					expect( pResult.modelRange.start.path ).to.deep.equal( [ 0 ] );
+					expect( pResult.modelRange.end.path ).to.deep.equal( [ 1 ] );
+					expect( first( pResult.modelRange.getItems() ) ).to.equal( modelP );
+					expect( pResult.cursorPosition ).to.instanceof( ModelPosition );
+					expect( pResult.cursorPosition.path ).to.deep.equal( [ 1 ] );
 
-					const result2 = conversionApi.convertItem( viewText, data.cursorPosition );
-					expect( result2 ).instanceof( ModelRange );
-					expect( result2.start.path ).to.deep.equal( [ 1 ] );
-					expect( result2.end.path ).to.deep.equal( [ 7 ] );
-					expect( first( result2.getItems() ) ).to.instanceof( ModelTextProxy );
-					expect( first( result2.getItems() ).data ).to.equal( 'foobar' );
+					const textResult = conversionApi.convertItem( viewText, data.cursorPosition );
+					expect( textResult.modelRange ).instanceof( ModelRange );
+					expect( textResult.modelRange.start.path ).to.deep.equal( [ 1 ] );
+					expect( textResult.modelRange.end.path ).to.deep.equal( [ 7 ] );
+					expect( first( textResult.modelRange.getItems() ) ).to.instanceof( ModelTextProxy );
+					expect( first( textResult.modelRange.getItems() ).data ).to.equal( 'foobar' );
+					expect( textResult.cursorPosition ).to.instanceof( ModelPosition );
+					expect( textResult.cursorPosition.path ).to.deep.equal( [ 7 ] );
 				} );
 
 				dispatcher.convert( new ViewDocumentFragment() );
@@ -471,60 +465,53 @@ describe( 'ViewConversionDispatcher', () => {
 			} );
 
 			it( 'should do nothing if element was not converted', () => {
-				sinon.stub( log, 'warn' );
-
 				dispatcher.on( 'documentFragment', ( evt, data, conversionApi ) => {
 					spy();
 
-					expect( conversionApi.convertItem( viewDiv, data.cursorPosition ) ).to.equal( null );
-					expect( conversionApi.convertItem( viewNull, data.cursorPosition ) ).to.equal( null );
+					expect( conversionApi.convertItem( viewDiv, data.cursorPosition ).modelRange ).to.equal( null );
+					expect( conversionApi.convertItem( viewNull, data.cursorPosition ).modelRange ).to.equal( null );
 				} );
 
 				dispatcher.convert( new ViewDocumentFragment() );
 
 				expect( spy.calledOnce ).to.be.true;
 				expect( spyNull.calledOnce ).to.be.true;
-				expect( log.warn.called ).to.be.false;
-
-				log.warn.restore();
 			} );
 
-			it( 'should return null if element was incorrectly converted and log a warning', () => {
-				sinon.stub( log, 'warn' );
-
+			it( 'should throw an error if element was incorrectly converted', () => {
 				dispatcher.on( 'documentFragment', ( evt, data, conversionApi ) => {
 					spy();
 
-					expect( conversionApi.convertItem( viewArray, data.cursorPosition ) ).to.equal( null );
+					conversionApi.convertItem( viewArray, data.cursorPosition );
 				} );
 
-				dispatcher.convert( new ViewDocumentFragment() );
+				expect( () => {
+					dispatcher.convert( new ViewDocumentFragment() );
+				} ).to.throw( CKEditorError, /^view-conversion-dispatcher-incorrect-result/ );
 
 				expect( spy.calledOnce ).to.be.true;
 				expect( spyArray.calledOnce ).to.be.true;
-				expect( log.warn.calledOnce ).to.be.true;
-
-				log.warn.restore();
 			} );
 		} );
 
 		describe( 'convertChildren()', () => {
 			it( 'should fire conversion for all children of passed element and return conversion results ' +
 				'wrapped in document fragment', () => {
-				silenceWarnings();
-
 				dispatcher.on( 'documentFragment', ( evt, data, conversionApi ) => {
 					spy();
 
 					const result = conversionApi.convertChildren( data.viewItem, ModelPosition.createAt( rootMock ) );
 
-					expect( result ).to.be.instanceof( ModelRange );
-					expect( result.start.path ).to.deep.equal( [ 0 ] );
-					expect( result.end.path ).to.deep.equal( [ 7 ] );
-					expect( Array.from( result.getItems() ) ).to.length( 2 );
-					expect( Array.from( result.getItems() )[ 0 ] ).to.equal( modelP );
-					expect( Array.from( result.getItems() )[ 1 ] ).to.instanceof( ModelTextProxy );
-					expect( Array.from( result.getItems() )[ 1 ].data ).to.equal( 'foobar' );
+					expect( result.modelRange ).to.be.instanceof( ModelRange );
+					expect( result.modelRange.start.path ).to.deep.equal( [ 0 ] );
+					expect( result.modelRange.end.path ).to.deep.equal( [ 7 ] );
+					expect( Array.from( result.modelRange.getItems() ) ).to.length( 2 );
+					expect( Array.from( result.modelRange.getItems() )[ 0 ] ).to.equal( modelP );
+					expect( Array.from( result.modelRange.getItems() )[ 1 ] ).to.instanceof( ModelTextProxy );
+					expect( Array.from( result.modelRange.getItems() )[ 1 ].data ).to.equal( 'foobar' );
+
+					expect( result.cursorPosition ).instanceof( ModelPosition );
+					expect( result.cursorPosition.path ).to.deep.equal( [ 7 ] );
 				} );
 
 				dispatcher.convert( new ViewDocumentFragment( [ viewP, viewText ] ) );
@@ -532,33 +519,6 @@ describe( 'ViewConversionDispatcher', () => {
 				expect( spy.calledOnce ).to.be.true;
 				expect( spyP.calledOnce ).to.be.true;
 				expect( spyText.calledOnce ).to.be.true;
-			} );
-
-			it( 'should filter out incorrectly converted elements and log warnings', () => {
-				sinon.stub( log, 'warn' );
-
-				dispatcher.on( 'documentFragment', ( evt, data, conversionApi ) => {
-					spy();
-
-					const result = conversionApi.convertChildren( data.viewItem, ModelPosition.createAt( rootMock ) );
-
-					expect( result ).to.be.instanceof( ModelRange );
-					expect( result.start.path ).to.deep.equal( [ 0 ] );
-					expect( result.end.path ).to.deep.equal( [ 7 ] );
-					expect( Array.from( result.getItems() ) ).to.length( 2 );
-					expect( Array.from( result.getItems() )[ 0 ] ).to.equal( modelP );
-					expect( Array.from( result.getItems() )[ 1 ] ).to.instanceof( ModelTextProxy );
-					expect( Array.from( result.getItems() )[ 1 ].data ).to.equal( 'foobar' );
-				} );
-
-				dispatcher.convert( new ViewDocumentFragment( [ viewArray, viewP, viewDiv, viewText, viewNull ] ) );
-
-				expect( spy.calledOnce ).to.be.true;
-				expect( spyNull.calledOnce ).to.be.true;
-				expect( spyArray.calledOnce ).to.be.true;
-				expect( log.warn.calledOnce ).to.be.true;
-
-				log.warn.restore();
 			} );
 		} );
 
@@ -649,10 +609,4 @@ describe( 'ViewConversionDispatcher', () => {
 			} );
 		} );
 	} );
-
-	// Silences warnings that pop up in tests. Use when the test checks a specific functionality and we are not interested in those logs.
-	// No need to restore `log.warn` - it is done in `afterEach()`.
-	function silenceWarnings() {
-		log.warn = () => {};
-	}
 } );
