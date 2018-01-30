@@ -28,10 +28,11 @@ import Range from '../model/range';
  * {@link module:engine/model/documentfragment~DocumentFragment model fragment} with children of converted view item.
  */
 export function convertToModelFragment() {
-	return ( evt, data, consumable, conversionApi ) => {
+	return ( evt, data, conversionApi ) => {
 		// Second argument in `consumable.consume` is discarded for ViewDocumentFragment but is needed for ViewElement.
-		if ( !data.output && consumable.consume( data.input, { name: true } ) ) {
-			data.output = conversionApi.convertChildren( data.input, consumable, data.position );
+		if ( !data.modelRange && conversionApi.consumable.consume( data.viewItem, { name: true } ) ) {
+			data = Object.assign( data, conversionApi.convertChildren( data.viewItem, data.cursorPosition ) );
+			data.cursorPosition = data.modelRange.end;
 		}
 	};
 }
@@ -42,14 +43,15 @@ export function convertToModelFragment() {
  * @returns {Function} {@link module:engine/view/text~Text View text} converter.
  */
 export function convertText() {
-	return ( evt, data, consumable, conversionApi ) => {
-		if ( conversionApi.schema.checkChild( data.position, '$text' ) ) {
-			if ( consumable.consume( data.input ) ) {
-				const text = conversionApi.writer.createText( data.input.data );
+	return ( evt, data, conversionApi ) => {
+		if ( conversionApi.schema.checkChild( data.cursorPosition, '$text' ) ) {
+			if ( conversionApi.consumable.consume( data.viewItem ) ) {
+				const text = conversionApi.writer.createText( data.viewItem.data );
 
-				conversionApi.writer.insert( text, data.position );
+				conversionApi.writer.insert( text, data.cursorPosition );
 
-				data.output = Range.createFromPositionAndShift( data.position, text.offsetSize );
+				data.modelRange = Range.createFromPositionAndShift( data.cursorPosition, text.offsetSize );
+				data.cursorPosition = data.modelRange.end;
 			}
 		}
 	};

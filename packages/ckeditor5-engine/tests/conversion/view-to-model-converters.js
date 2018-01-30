@@ -51,11 +51,12 @@ describe( 'view-to-model-converters', () => {
 			// Default converter for elements. Returns just converted children. Added with lowest priority.
 			dispatcher.on( 'text', convertText(), { priority: 'lowest' } );
 			// Added with normal priority. Should make the above converter not fire.
-			dispatcher.on( 'text', ( evt, data, consumable, conversionApi ) => {
-				if ( consumable.consume( data.input ) ) {
-					const text = conversionApi.writer.createText( data.input.data.replace( /fuck/gi, '****' ) );
-					conversionApi.writer.insert( text, data.position );
-					data.output = ModelRange.createFromPositionAndShift( data.position, text.offsetSize );
+			dispatcher.on( 'text', ( evt, data, conversionApi ) => {
+				if ( conversionApi.consumable.consume( data.viewItem ) ) {
+					const text = conversionApi.writer.createText( data.viewItem.data.replace( /fuck/gi, '****' ) );
+					conversionApi.writer.insert( text, data.cursorPosition );
+					data.modelRange = ModelRange.createFromPositionAndShift( data.cursorPosition, text.offsetSize );
+					data.cursorPosition = data.modelRange.end;
 				}
 			} );
 
@@ -130,14 +131,15 @@ describe( 'view-to-model-converters', () => {
 			// Default converter for elements. Returns just converted children. Added with lowest priority.
 			dispatcher.on( 'element', convertToModelFragment(), { priority: 'lowest' } );
 			// Added with normal priority. Should make the above converter not fire.
-			dispatcher.on( 'element:p', ( evt, data, consumable, conversionApi ) => {
-				if ( consumable.consume( data.input, { name: true } ) ) {
+			dispatcher.on( 'element:p', ( evt, data, conversionApi ) => {
+				if ( conversionApi.consumable.consume( data.viewItem, { name: true } ) ) {
 					const paragraph = conversionApi.writer.createElement( 'paragraph' );
 
-					conversionApi.writer.insert( paragraph, data.position );
-					conversionApi.convertChildren( data.input, consumable, ModelPosition.createAt( paragraph ) );
+					conversionApi.writer.insert( paragraph, data.cursorPosition );
+					conversionApi.convertChildren( data.viewItem, ModelPosition.createAt( paragraph ) );
 
-					data.output = ModelRange.createOn( paragraph );
+					data.modelRange = ModelRange.createOn( paragraph );
+					data.cursorPosition = data.modelRange.end;
 				}
 			} );
 
