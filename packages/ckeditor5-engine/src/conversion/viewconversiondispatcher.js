@@ -280,6 +280,11 @@ export default class ViewConversionDispatcher {
 			return null;
 		}
 
+		// When allowed parent is in context tree.
+		if ( this._modelCursor.parent.getAncestors().includes( allowedParent ) ) {
+			return null;
+		}
+
 		// When current position parent allows to insert element then return this position.
 		if ( allowedParent === cursorPosition.parent ) {
 			return { position: cursorPosition };
