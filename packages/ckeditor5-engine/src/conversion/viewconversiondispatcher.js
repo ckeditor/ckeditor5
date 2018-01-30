@@ -112,13 +112,13 @@ export default class ViewConversionDispatcher {
 		this._model = model;
 
 		/**
-		 * Store of split elements that was created as a result of conversion using {@link #_splitToAllowedParent}.
-		 * We need to remember these elements because at the end of conversion we want to remove all empty elements.
+		 * List of elements that will be checked after conversion process and if element in the list will be empty it
+		 * will be removed from conversion result.
 		 *
 		 * @protected
 		 * @type {Set<module:engine/model/element~Element>}
 		 */
-		this._splitElements = new Set();
+		this._removeIfEmpty = new Set();
 
 		/**
 		 * Position inside top element of context tree.
@@ -185,8 +185,8 @@ export default class ViewConversionDispatcher {
 
 			// When there is a conversion result.
 			if ( modelRange ) {
-				// Remove all empty elements that was created as a result of split.
-				this._removeEmptySplitElements();
+				// Remove all empty elements that was added to #_removeIfEmpty list.
+				this._removeEmptyElements();
 
 				// Move all items that was converted to context tree to document fragment.
 				for ( const item of Array.from( this._contextPosition.parent.getChildren() ) ) {
@@ -201,7 +201,7 @@ export default class ViewConversionDispatcher {
 			this._contextPosition = null;
 
 			// Clear split elements.
-			this._splitElements.clear();
+			this._removeIfEmpty.clear();
 
 			// Clear conversion API.
 			this.conversionApi.writer = null;
@@ -290,7 +290,7 @@ export default class ViewConversionDispatcher {
 		// <notSplit><split1><split2>[pos]</split2>[pos]</split1>[omit]<split1>[pos]<split2>[pos]</split2></split1></notSplit>
 		for ( const position of splitResult.range.getPositions() ) {
 			if ( !position.isEqual( splitResult.position ) ) {
-				this._splitElements.add( position.parent );
+				this._removeIfEmpty.add( position.parent );
 			}
 		}
 
@@ -301,26 +301,26 @@ export default class ViewConversionDispatcher {
 	}
 
 	/**
-	 * Checks if {@link #_splitElements} contains empty elements and remove them.
+	 * Checks if {@link #_removeIfEmpty} contains empty elements and remove them.
 	 * We need to do it smart because there could be elements that are not empty because contains
-	 * other empty split elements and after removing its children they become available to remove.
+	 * other empty elements and after removing its children they become available to remove.
 	 * We need to continue iterating over split elements as long as any element will be removed.
 	 *
 	 * @private
 	 */
-	_removeEmptySplitElements() {
+	_removeEmptyElements() {
 		let removed = false;
 
-		for ( const element of this._splitElements ) {
+		for ( const element of this._removeIfEmpty ) {
 			if ( element.isEmpty ) {
 				this.conversionApi.writer.remove( element );
-				this._splitElements.delete( element );
+				this._removeIfEmpty.delete( element );
 				removed = true;
 			}
 		}
 
 		if ( removed ) {
-			this._removeEmptySplitElements();
+			this._removeEmptyElements();
 		}
 	}
 

@@ -41,7 +41,7 @@ describe( 'ViewConversionDispatcher', () => {
 		it( 'should have properties', () => {
 			const dispatcher = new ViewConversionDispatcher( model );
 
-			expect( dispatcher._splitElements ).to.instanceof( Set );
+			expect( dispatcher._removeIfEmpty ).to.instanceof( Set );
 		} );
 	} );
 
@@ -64,13 +64,13 @@ describe( 'ViewConversionDispatcher', () => {
 			// Conversion process properties should be undefined/empty before conversion.
 			expect( dispatcher.conversionApi.writer ).to.not.ok;
 			expect( dispatcher.conversionApi.data ).to.not.ok;
-			expect( dispatcher._splitElements.size ).to.equal( 0 );
+			expect( dispatcher._removeIfEmpty.size ).to.equal( 0 );
 
 			dispatcher.on( 'element', ( evt, data, conversionApi ) => {
 				// Check conversion api params.
 				expect( conversionApi.writer ).to.instanceof( ModelWriter );
 				expect( conversionApi.data ).to.deep.equal( {} );
-				expect( dispatcher._splitElements.size ).to.equal( 0 );
+				expect( dispatcher._removeIfEmpty.size ).to.equal( 0 );
 
 				// Remember writer to check in next converter that is exactly the same instance (the same undo step).
 				writer = conversionApi.writer;
@@ -79,7 +79,7 @@ describe( 'ViewConversionDispatcher', () => {
 				conversionApi.data.foo = 'bar';
 
 				// Add empty element and mark as a split result to check in next converter.
-				dispatcher._splitElements.add( conversionApi.writer.createElement( 'paragraph' ) );
+				dispatcher._removeIfEmpty.add( conversionApi.writer.createElement( 'paragraph' ) );
 
 				// Convert children - this will call second converter.
 				conversionApi.convertChildren( data.viewItem, data.cursorPosition );
@@ -95,7 +95,7 @@ describe( 'ViewConversionDispatcher', () => {
 				expect( conversionApi.data ).to.deep.equal( { foo: 'bar' } );
 
 				// Split element is remembered as well.
-				expect( dispatcher._splitElements.size ).to.equal( 1 );
+				expect( dispatcher._removeIfEmpty.size ).to.equal( 1 );
 
 				spy();
 			} );
@@ -108,7 +108,7 @@ describe( 'ViewConversionDispatcher', () => {
 			// Conversion process properties should be cleared after conversion.
 			expect( dispatcher.conversionApi.writer ).to.not.ok;
 			expect( dispatcher.conversionApi.data ).to.not.ok;
-			expect( dispatcher._splitElements.size ).to.equal( 0 );
+			expect( dispatcher._removeIfEmpty.size ).to.equal( 0 );
 		} );
 
 		it( 'should fire viewCleanup event on converted view part', () => {
@@ -274,10 +274,10 @@ describe( 'ViewConversionDispatcher', () => {
 				conversionApi.writer.append( innerSplit, outerSplit );
 				conversionApi.writer.insert( outerSplit, ModelPosition.createBefore( paragraph ) );
 
-				dispatcher._splitElements.add( emptySplit );
-				dispatcher._splitElements.add( notEmptySplit );
-				dispatcher._splitElements.add( outerSplit );
-				dispatcher._splitElements.add( innerSplit );
+				dispatcher._removeIfEmpty.add( emptySplit );
+				dispatcher._removeIfEmpty.add( notEmptySplit );
+				dispatcher._removeIfEmpty.add( outerSplit );
+				dispatcher._removeIfEmpty.add( innerSplit );
 
 				data.modelRange = ModelRange.createOn( paragraph );
 				data.cursorPosition = data.modelRange.end;
