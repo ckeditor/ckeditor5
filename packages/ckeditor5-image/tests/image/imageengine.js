@@ -193,9 +193,9 @@ describe( 'ImageEngine', () => {
 			} );
 
 			it( 'should not convert if img is already consumed', () => {
-				editor.data.viewToModel.on( 'element:figure', ( evt, data, consumable ) => {
-					const img = data.input.getChild( 0 );
-					consumable.consume( img, { name: true } );
+				editor.data.viewToModel.on( 'element:figure', ( evt, data, conversionApi ) => {
+					const img = data.viewItem.getChild( 0 );
+					conversionApi.consumable.consume( img, { name: true } );
 				}, { priority: 'high' } );
 
 				editor.setData( '<figure class="image"><img src="foo.png" alt="alt text" /></figure>' );
@@ -205,9 +205,8 @@ describe( 'ImageEngine', () => {
 			} );
 
 			it( 'should not convert if figure is already consumed', () => {
-				editor.data.viewToModel.on( 'element:figure', ( evt, data, consumable ) => {
-					const figure = data.input;
-					consumable.consume( figure, { name: true, class: 'image' } );
+				editor.data.viewToModel.on( 'element:figure', ( evt, data, conversionApi ) => {
+					conversionApi.consumable.consume( data.viewItem, { name: true, class: 'image' } );
 				}, { priority: 'high' } );
 
 				editor.setData( '<figure class="image"><img src="foo.png" alt="alt text" /></figure>' );
