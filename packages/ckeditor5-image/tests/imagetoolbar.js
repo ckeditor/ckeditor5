@@ -127,11 +127,11 @@ describe( 'ImageToolbar', () => {
 			editingView.fire( 'render' );
 			expect( balloon.visibleView ).to.be.null;
 
-			model.change( () => {
+			model.change( writer => {
 				// Select the [<image></image>]
-				doc.selection.setRanges( [
+				writer.setSelection(
 					Range.createOn( doc.getRoot().getChild( 1 ) )
-				] );
+				);
 			} );
 
 			expect( balloon.visibleView ).to.equal( toolbar );
@@ -161,11 +161,11 @@ describe( 'ImageToolbar', () => {
 
 			expect( balloon.visibleView ).to.equal( toolbar );
 
-			model.change( () => {
+			model.change( writer => {
 				// Select the <paragraph>[...]</paragraph>
-				doc.selection.setRanges( [
+				writer.setSelection(
 					Range.createIn( doc.getRoot().getChild( 0 ) )
-				] );
+				);
 			} );
 
 			expect( balloon.visibleView ).to.be.null;
