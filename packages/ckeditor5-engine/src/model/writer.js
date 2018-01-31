@@ -573,20 +573,23 @@ export default class Writer {
 	}
 
 	/**
-	 * Splits an element at the given position.
+	 * Splits elements start from the given position and goes to the top of the model tree as long as given
+	 * `limitElement` won't be reached. When limitElement is not defined then only a parent of given position will be split.
 	 *
 	 * The element needs to have a parent. It cannot be a root element nor document fragment.
 	 * The `writer-split-element-no-parent` error will be thrown if you try to split an element with no parent.
 	 *
 	 * @param {module:engine/model/position~Position} position Position of split.
+	 * @param {module:engine/model/node~Node} [limitElement] Stop splitting when this element will be reached.
+	 * @returns {Object} result Split result.
+	 * @returns {module:engine/model/position~Position} result.position between split elements.
+	 * @returns {module:engine/model/range~Range} result.range Range that stars from the end of the first split element and ands
+	 * at the beginning of the first copy element.
 	 */
-	split( position ) {
+	split( position, limitElement ) {
 		this._assertWriterUsedCorrectly();
 
-		const delta = new SplitDelta();
-		this.batch.addDelta( delta );
-
-		const splitElement = position.parent;
+		let splitElement = position.parent;
 
 		if ( !splitElement.parent ) {
 			/**
@@ -597,30 +600,63 @@ export default class Writer {
 			throw new CKEditorError( 'writer-split-element-no-parent: Element with no parent can not be split.' );
 		}
 
-		const copy = new Element( splitElement.name, splitElement.getAttributes() );
-		const insertVersion = splitElement.root.document ? splitElement.root.document.version : null;
+		// When limit element is not defined lets set splitElement parent as limit.
+		if ( !limitElement ) {
+			limitElement = splitElement.parent;
+		}
 
-		const insert = new InsertOperation(
-			Position.createAfter( splitElement ),
-			copy,
-			insertVersion
-		);
+		if ( !position.parent.getAncestors( { includeSelf: true } ).includes( limitElement ) ) {
+			throw new CKEditorError( 'writer-split-invalid-limit-element: Limit element is not a position ancestor.' );
+		}
 
-		delta.addOperation( insert );
-		this.model.applyOperation( insert );
+		// We need to cache elements that will be created as a result of the first split because
+		// we need to create a range from the end of the first split element to the beginning of the
+		// first copy element. This should be handled by LiveRange but it doesn't work on detached nodes.
+		let firstSplitElement, firstCopyElement;
 
-		const moveVersion = insertVersion !== null ? insertVersion + 1 : null;
+		do {
+			const delta = new SplitDelta();
+			this.batch.addDelta( delta );
 
-		const move = new MoveOperation(
+			const copy = new Element( splitElement.name, splitElement.getAttributes() );
+			const insertVersion = splitElement.root.document ? splitElement.root.document.version : null;
+
+			const insert = new InsertOperation(
+				Position.createAfter( splitElement ),
+				copy,
+				insertVersion
+			);
+
+			delta.addOperation( insert );
+			this.model.applyOperation( insert );
+
+			const moveVersion = insertVersion !== null ? insertVersion + 1 : null;
+
+			const move = new MoveOperation(
+				position,
+				splitElement.maxOffset - position.offset,
+				Position.createFromParentAndOffset( copy, 0 ),
+				moveVersion
+			);
+			move.isSticky = true;
+
+			delta.addOperation( move );
+			this.model.applyOperation( move );
+
+			// Cache result of the first split.
+			if ( !firstSplitElement && !firstCopyElement ) {
+				firstSplitElement = splitElement;
+				firstCopyElement = copy;
+			}
+
+			position = Position.createBefore( copy );
+			splitElement = position.parent;
+		} while ( splitElement !== limitElement );
+
+		return {
 			position,
-			splitElement.maxOffset - position.offset,
-			Position.createFromParentAndOffset( copy, 0 ),
-			moveVersion
-		);
-		move.isSticky = true;
-
-		delta.addOperation( move );
-		this.model.applyOperation( move );
+			range: new Range( Position.createAt( firstSplitElement, 'end' ), Position.createAt( firstCopyElement ) )
+		};
 	}
 
 	/**

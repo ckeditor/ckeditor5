@@ -377,6 +377,17 @@ describe( 'Schema', () => {
 			expect( schema.checkChild( root1, '$text' ) ).to.be.false;
 		} );
 
+		it( 'accepts a schemaContext instance as a context', () => {
+			const rootContext = new SchemaContext( Position.createAt( root1 ) );
+			const paragraphContext = new SchemaContext( Position.createAt( r1p1 ) );
+
+			expect( schema.checkChild( rootContext, 'paragraph' ) ).to.be.true;
+			expect( schema.checkChild( rootContext, '$text' ) ).to.be.false;
+
+			expect( schema.checkChild( paragraphContext, '$text' ) ).to.be.true;
+			expect( schema.checkChild( paragraphContext, 'paragraph' ) ).to.be.false;
+		} );
+
 		it( 'accepts a position as a context', () => {
 			const posInRoot = Position.createAt( root1 );
 			const posInParagraph = Position.createAt( r1p1 );
@@ -464,6 +475,14 @@ describe( 'Schema', () => {
 
 			expect( schema.checkAttribute( posInRoot, 'align' ) ).to.be.false;
 			expect( schema.checkAttribute( posInParagraph, 'align' ) ).to.be.true;
+		} );
+
+		it( 'accepts a schemaContext instance as a context', () => {
+			const rootContext = new SchemaContext( Position.createAt( root1 ) );
+			const paragraphContext = new SchemaContext( Position.createAt( r1p1 ) );
+
+			expect( schema.checkAttribute( rootContext, 'align' ) ).to.be.false;
+			expect( schema.checkAttribute( paragraphContext, 'align' ) ).to.be.true;
 		} );
 
 		it( 'accepts an array of node names as a context', () => {
@@ -1351,6 +1370,59 @@ describe( 'Schema', () => {
 				}
 			} );
 		}
+	} );
+
+	describe( 'findAllowedParent()', () => {
+		beforeEach( () => {
+			schema.register( '$root' );
+			schema.register( 'blockQuote', {
+				allowIn: '$root'
+			} );
+			schema.register( 'paragraph', {
+				allowIn: 'blockQuote'
+			} );
+			schema.register( '$text', {
+				allowIn: 'paragraph'
+			} );
+		} );
+
+		it( 'should return position ancestor that allows to insert given note to it', () => {
+			const node = new Element( 'paragraph' );
+
+			const allowedParent = schema.findAllowedParent( node, Position.createAt( r1bQp ) );
+
+			expect( allowedParent ).to.equal( r1bQ );
+		} );
+
+		it( 'should return position ancestor that allows to insert given note to it when position is already i such an element', () => {
+			const node = new Text( 'text' );
+
+			const parent = schema.findAllowedParent( node, Position.createAt( r1bQp ) );
+
+			expect( parent ).to.equal( r1bQp );
+		} );
+
+		it( 'should return null when limit element will be reached before allowed parent', () => {
+			schema.extend( 'blockQuote', {
+				isLimit: true
+			} );
+			schema.register( 'div', {
+				allowIn: '$root'
+			} );
+			const node = new Element( 'div' );
+
+			const parent = schema.findAllowedParent( node, Position.createAt( r1bQp ) );
+
+			expect( parent ).to.null;
+		} );
+
+		it( 'should return null when there is no allowed ancestor for given position', () => {
+			const node = new Element( 'section' );
+
+			const parent = schema.findAllowedParent( node, Position.createAt( r1bQp ) );
+
+			expect( parent ).to.null;
+		} );
 	} );
 
 	describe( 'removeDisallowedAttributes()', () => {
@@ -2604,6 +2676,14 @@ describe( 'SchemaContext', () => {
 			expect( Array.from( ctx.getItem( 2 ).getAttributeKeys() ).sort() ).to.deep.equal( [ 'align' ] );
 		} );
 
+		it( 'creates context based on a SchemaContext instance', () => {
+			const previousCtx = new SchemaContext( [ 'a', 'b', 'c' ] );
+
+			const ctx = new SchemaContext( previousCtx );
+
+			expect( ctx ).to.equal( previousCtx );
+		} );
+
 		it( 'filters out DocumentFragment when it is a first item of context - array', () => {
 			const ctx = new SchemaContext( [ new DocumentFragment(), 'paragraph' ] );
 
@@ -2672,6 +2752,66 @@ describe( 'SchemaContext', () => {
 			const ctx = new SchemaContext( [ 'a', 'b', 'c' ] );
 
 			expect( ctx.getItem( 3 ) ).to.be.undefined;
+		} );
+	} );
+
+	describe( 'concat()', () => {
+		it( 'creates new SchemaContext instance with new item - #string', () => {
+			const ctx = new SchemaContext( [ 'a', 'b', 'c' ] );
+
+			const newCtx = ctx.concat( 'd' );
+
+			expect( newCtx ).to.instanceof( SchemaContext );
+			expect( newCtx ).to.not.equal( ctx );
+			expect( Array.from( newCtx.getNames() ) ).to.deep.equal( [ 'a', 'b', 'c', 'd' ] );
+			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ 'a', 'b', 'c' ] );
+		} );
+
+		it( 'creates new SchemaContext instance with new item - #text', () => {
+			const node = new Text( 'd' );
+			const ctx = new SchemaContext( [ 'a', 'b', 'c' ] );
+
+			const newCtx = ctx.concat( node );
+
+			expect( newCtx ).to.instanceof( SchemaContext );
+			expect( newCtx ).to.not.equal( ctx );
+			expect( Array.from( newCtx.getNames() ) ).to.deep.equal( [ 'a', 'b', 'c', '$text' ] );
+			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ 'a', 'b', 'c' ] );
+		} );
+
+		it( 'creates new SchemaContext instance with new item - #node', () => {
+			const ctx = new SchemaContext( [ 'a', 'b', 'c' ] );
+			const parent = new Element( 'parent', null, new Element( 'd' ) );
+
+			const newCtx = ctx.concat( parent.getChild( 0 ) );
+
+			expect( newCtx ).to.instanceof( SchemaContext );
+			expect( newCtx ).to.not.equal( ctx );
+			expect( Array.from( newCtx.getNames() ) ).to.deep.equal( [ 'a', 'b', 'c', 'd' ] );
+			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ 'a', 'b', 'c' ] );
+		} );
+
+		it( 'creates new SchemaContext instance with new item - #SchemaContext', () => {
+			const ctx = new SchemaContext( [ 'a', 'b', 'c' ] );
+			const schemaContext = new SchemaContext( [ 'd', 'e' ] );
+
+			const newCtx = ctx.concat( schemaContext );
+
+			expect( newCtx ).to.instanceof( SchemaContext );
+			expect( newCtx ).to.not.equal( ctx );
+			expect( Array.from( newCtx.getNames() ) ).to.deep.equal( [ 'a', 'b', 'c', 'd', 'e' ] );
+			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ 'a', 'b', 'c' ] );
+		} );
+
+		it( 'creates new SchemaContext instance with new item - #array', () => {
+			const ctx = new SchemaContext( [ 'a', 'b', 'c' ] );
+
+			const newCtx = ctx.concat( [ 'd', new Text( 'e' ), new Element( 'f' ) ] );
+
+			expect( newCtx ).to.instanceof( SchemaContext );
+			expect( newCtx ).to.not.equal( ctx );
+			expect( Array.from( newCtx.getNames() ) ).to.deep.equal( [ 'a', 'b', 'c', 'd', '$text', 'f' ] );
+			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ 'a', 'b', 'c' ] );
 		} );
 	} );
 
