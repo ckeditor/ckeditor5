@@ -14,7 +14,7 @@ import { isImageType, findOptimalInsertionPosition } from './utils';
 
 /**
  * Image upload button plugin.
- * Adds `insertImage` button to UI component factory.
+ * Adds `uploadImage` button to UI component factory.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -26,8 +26,8 @@ export default class ImageUploadUI extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 
-		// Setup `insertImage` button.
-		editor.ui.componentFactory.add( 'insertImage', locale => {
+		// Setup `uploadImage` button.
+		editor.ui.componentFactory.add( 'uploadImage', locale => {
 			const view = new FileDialogButtonView( locale );
 			const command = editor.commands.get( 'imageUpload' );
 
