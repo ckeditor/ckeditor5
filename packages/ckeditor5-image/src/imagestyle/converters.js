@@ -3,11 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
+import first from '@ckeditor/ckeditor5-utils/src/first';
+
 /**
  * @module image/imagestyle/converters
  */
-
-import { isImage } from '../image/utils';
 
 /**
  * Returns a converter for the `imageStyle` attribute. It can be used for adding, changing and removing the attribute.
@@ -48,42 +48,28 @@ export function viewToModelStyleAttribute( styles ) {
 	// Convert only non–default styles.
 	const filteredStyles = styles.filter( style => !style.isDefault );
 
-	return ( evt, data, consumable, conversionApi ) => {
+	return ( evt, data, conversionApi ) => {
+		if ( !data.modelRange ) {
+			return;
+		}
+
+		const viewFigureElement = data.viewItem;
+		const modelImageElement = first( data.modelRange.getItems() );
+
+		// Check if `imageStyle` attribute is allowed for current element.
+		if ( !conversionApi.schema.checkAttribute( modelImageElement, 'imageStyle' ) ) {
+			return;
+		}
+
+		// Convert style one by one.
 		for ( const style of filteredStyles ) {
-			viewToModelImageStyle( style, data, consumable, conversionApi );
+			// Try to consume class corresponding with style.
+			if ( conversionApi.consumable.consume( viewFigureElement, { class: style.className } ) ) {
+				// And convert this style to model attribute.
+				conversionApi.writer.setAttribute( 'imageStyle', style.name, modelImageElement );
+			}
 		}
 	};
-}
-
-// Converter from view to model converting single style.
-// For more information see {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher};
-//
-// @param {module:image/imagestyle/imagestyleengine~ImageStyleFormat} style
-// @param {Object} data
-// @param {module:engine/conversion/viewconsumable~ViewConsumable} consumable
-// @param {Object} conversionApi
-function viewToModelImageStyle( style, data, consumable, conversionApi ) {
-	const viewFigureElement = data.input;
-	const modelImageElement = data.output;
-
-	// *** Step 1: Validate conversion.
-	// Check if view element has proper class to consume.
-	if ( !consumable.test( viewFigureElement, { class: style.className } ) ) {
-		return;
-	}
-
-	// Check if figure is converted to image.
-	if ( !isImage( modelImageElement ) ) {
-		return;
-	}
-
-	if ( !conversionApi.schema.checkAttribute( [ ...data.context, 'image' ], 'imageStyle' ) ) {
-		return;
-	}
-
-	// *** Step2: Convert to model.
-	consumable.consume( viewFigureElement, { class: style.className } );
-	modelImageElement.setAttribute( 'imageStyle', style.name );
 }
 
 // Returns style with given `name` from array of styles.
