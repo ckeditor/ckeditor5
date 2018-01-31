@@ -67,7 +67,7 @@ export default class DeleteCommand extends Command {
 		model.enqueueChange( this._buffer.batch, writer => {
 			this._buffer.lock();
 
-			const selection = Selection.createFromSelection( doc.selection );
+			const selection = new Selection( doc.selection );
 
 			// Do not replace the whole selected content if selection was collapsed.
 			// This prevents such situation:
@@ -104,7 +104,7 @@ export default class DeleteCommand extends Command {
 			model.deleteContent( selection, { doNotResetEntireContent } );
 			this._buffer.input( changeCount );
 
-			doc.selection.setRanges( selection.getRanges(), selection.isBackward );
+			writer.setSelection( selection );
 
 			this._buffer.unlock();
 		} );
@@ -178,6 +178,6 @@ export default class DeleteCommand extends Command {
 		writer.remove( Range.createIn( limitElement ) );
 		writer.insert( paragraph, limitElement );
 
-		selection.setCollapsedAt( paragraph );
+		writer.setSelection( paragraph );
 	}
 }
