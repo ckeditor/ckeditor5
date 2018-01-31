@@ -379,6 +379,7 @@ export default class Link extends Plugin {
 			//   of the link,
 			// * the selection went to a different parent when creating a NEW link. E.g. someone
 			//   else modified the document.
+			// * the selection has expanded (e.g. displaying link actions then pressing SHIFT+Right arrow).
 			if ( ( prevSelectedLink && !selectedLink ) ||
 				( !prevSelectedLink && selectionParent !== prevSelectionParent ) ) {
 				this._hideUI();

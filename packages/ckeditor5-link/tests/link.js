@@ -324,8 +324,8 @@ describe( 'Link', () => {
 				const root = viewDocument.getRoot();
 				const text = root.getChild( 0 ).getChild( 0 ).getChild( 0 );
 
-				// Move selection to b[]az.
-				viewDocument.selection.setTo( Range.createFromParentsAndOffsets( text, 1, text, 1 ), true );
+				// Move selection to f[o]o.
+				viewDocument.selection.setTo( Range.createFromParentsAndOffsets( text, 1, text, 2 ), true );
 				viewDocument.render();
 
 				sinon.assert.calledOnce( spyHide );
