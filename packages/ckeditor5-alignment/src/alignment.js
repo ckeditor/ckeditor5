@@ -39,7 +39,7 @@ export default class Alignment extends Plugin {
 }
 
 /**
- * The configuration of the {@link module:alignment/alignment~Alignment Alignment feature}.
+ * The configuration of the {@link module:alignment/alignment~Alignment alignment feature}.
  *
  * Read more in {@link module:alignment/alignment~AlignmentConfig}.
  *
@@ -47,7 +47,7 @@ export default class Alignment extends Plugin {
  */
 
 /**
- * The configuration of the {@link module:alignment/alignment~Alignment Alignment feature}.
+ * The configuration of the {@link module:alignment/alignment~Alignment alignment feature}.
  *
  *		ClassicEditor
  *			.create( editorElement, {
@@ -58,7 +58,7 @@ export default class Alignment extends Plugin {
  *			.then( ... )
  *			.catch( ... );
  *
- * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
+ * See {@link module:core/editor/editorconfig~EditorConfig all editor configuration options}.
  *
  * @interface AlignmentConfig
  */

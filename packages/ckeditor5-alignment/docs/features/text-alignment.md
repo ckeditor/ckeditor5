@@ -5,7 +5,7 @@ category: features
 
 {@snippet features/build-text-alignment-source}
 
-The {@link module:alignment/alignment~Alignment} feature enables support for text alignment.
+The {@link module:alignment/alignment~Alignment} feature enables support for text alignment. You can use it to align your content to left, right and center or justify it. 
 
 ## Demo
 
@@ -13,9 +13,9 @@ The {@link module:alignment/alignment~Alignment} feature enables support for tex
 
 ## Configuring alignment options
 
-It is, of course, possible to configure which alignment options the editor should support. Use the {@link module:alignment/alignment~AlignmentConfig#options `alignment.options`} configuration option to do so (you can choose from `'left'`, `'right'`, `'center'` and `'justify'`,  but `'left'` should be always included).
+It is possible to configure which alignment options are available in the editor by setting the {@link module:alignment/alignment~AlignmentConfig#options `alignment.options`} configuration option. You can choose from `'left'`, `'right'`, `'center'` and `'justify'`;  note that `'left'` should always be included).
 
-For example, the following editor will support only two alignment to the left and to the right:
+For example, the following editor will support only two alignment options: to the left and to the right:
 
 ```js
 ClassicEditor
@@ -35,7 +35,7 @@ ClassicEditor
 
 ## Configuring the toolbar
 
-You can choose to use the alignment dropdown (`'alignmentDropdown'`) or configure the toolbar to use separate buttons for each of the options:
+You can choose to use the alignment drop-down (`'alignmentDropdown'`) or configure the toolbar to use separate buttons for each of the options:
 
 ```js
 ClassicEditor
@@ -80,7 +80,7 @@ ClassicEditor
 
 The {@link module:alignment/alignment~Alignment} plugin registers:
 
-* Dropdown: `'alignmentDropdown'`.
+* Drop-down: `'alignmentDropdown'`.
 * Buttons and commands: `'alignLeft'`, `'alignRight'`, `'alignCenter'`, `'alignJustify'`.
 
 	The number of options and their names are based on the {@link module:alignment/alignment~AlignmentConfig#options `alignment.options`} configuration option).
