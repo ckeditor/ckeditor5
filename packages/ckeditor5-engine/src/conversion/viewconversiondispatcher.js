@@ -40,40 +40,40 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  *
  * Examples of providing callbacks for `ViewConversionDispatcher`:
  *
- * TODO - update samples.
- *
  *		// Converter for paragraphs (<p>).
- *		viewDispatcher.on( 'element:p', ( evt, data, consumable, conversionApi ) => {
- *			const paragraph = new ModelElement( 'paragraph' );
+ *		viewDispatcher.on( 'element:p', ( evt, data, conversionApi ) => {
+ *			// Create paragraph element.
+ *			const paragraph = conversionApi.createElement( 'paragraph' );
  *
- *			if ( conversionApi.schema.checkChild( data.context, paragraph ) ) {
- *				if ( !consumable.consume( data.input, { name: true } ) ) {
- *					// Before converting this paragraph's children we have to update their context by this paragraph.
- *					data.context.push( paragraph );
- *					const children = conversionApi.convertChildren( data.input, consumable, data );
- *					data.context.pop();
- *					paragraph.appendChildren( children );
- *					data.output = paragraph;
+ *			// Check if paragraph is allowed on current cursor position.
+ *			if ( conversionApi.schema.checkChild( data.cursorPosition, paragraph ) ) {
+ *				// Try to consume value from consumable list.
+ *				if ( !conversionApi.consumable.consume( data.viewItem, { name: true } ) ) {
+ *					// Insert paragraph on cursor position.
+ *					conversionApi.writer.insert( paragraph, data.cursorPosition );
+ *
+ *					// Convert paragraph children to paragraph element.
+ *					conversionApi.convertChildren( data.viewItem, ModelPosition.createAt( paragraph ) );
+ *
+ *					// Wrap paragraph in range and set as conversion result.
+ *					data.modelRange = ModelRange.createOn( paragraph );
+ *
+ *					// Continue conversion just after paragraph.
+ *					data.cursorPosition = data.modelRange.end;
  *				}
  *			}
  *		} );
  *
  *		// Converter for links (<a>).
- *		viewDispatcher.on( 'element:a', ( evt, data, consumable, conversionApi ) => {
- *			if ( consumable.consume( data.input, { name: true, attributes: [ 'href' ] } ) ) {
+ *		viewDispatcher.on( 'element:a', ( evt, data, conversionApi ) => {
+ *			if ( conversionApi.consumable.consume( data.viewItem, { name: true, attributes: [ 'href' ] } ) ) {
  *				// <a> element is inline and is represented by an attribute in the model.
- *				// This is why we are not updating `context` property.
- *				data.output = conversionApi.convertChildren( data.input, consumable, data );
+ *				// This is why we need to convert only children.
+ *				const { modelRange } = conversionApi.convertChildren( data.viewItem, data.cursorPosition );
  *
- *				for ( let item of Range.createFrom( data.output ) ) {
- *					const schemaQuery = {
- *						name: item.name || '$text',
- *						attribute: 'link',
- *						inside: data.context
- *					};
- *
- *					if ( conversionApi.schema.checkAttribute( [ ...data.context, '$text' ], 'link' ) ) {
- *						item.setAttribute( 'link', data.input.getAttribute( 'href' ) );
+ *				for ( let item of modelRange.getItems() ) {
+ *					if ( conversionApi.schema.checkAttribute( item, 'linkHref' ) ) {
+ *						conversionApi.writer.setAttribute( 'linkHref', data.viewItem.getAttribute( 'href' ), item );
  *					}
  *				}
  *			}
@@ -446,8 +446,6 @@ function createContextTree( contextDefinition, writer ) {
  * Conversion interface that is registered for given {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher}
  * and is passed as one of parameters when {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher dispatcher}
  * fires it's events.
- *
- * TODO better explanation.
  *
  * @interface ViewConversionApi
  */
