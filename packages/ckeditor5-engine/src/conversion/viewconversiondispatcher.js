@@ -273,21 +273,21 @@ export default class ViewConversionDispatcher {
 	 */
 	_splitToAllowedParent( element, cursorPosition ) {
 		// Try to find allowed parent.
-		const allowedParent = this.conversionApi.schema.findAllowedParent( element, cursorPosition, this._modelCursor.parent );
+		const allowedParent = this.conversionApi.schema.findAllowedParent( element, cursorPosition );
 
 		// When there is no parent that allows to insert element then return `null`.
 		if ( !allowedParent ) {
 			return null;
 		}
 
-		// When allowed parent is in context tree.
-		if ( this._modelCursor.parent.getAncestors().includes( allowedParent ) ) {
-			return null;
-		}
-
 		// When current position parent allows to insert element then return this position.
 		if ( allowedParent === cursorPosition.parent ) {
 			return { position: cursorPosition };
+		}
+
+		// When allowed parent is in context tree.
+		if ( this._modelCursor.parent.getAncestors().includes( allowedParent ) ) {
+			return null;
 		}
 
 		// Split element to allowed parent.

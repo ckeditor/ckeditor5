@@ -606,6 +606,25 @@ describe( 'ViewConversionDispatcher', () => {
 				dispatcher.convert( new ViewDocumentFragment() );
 				sinon.assert.calledOnce( spy );
 			} );
+
+			it( 'should return null if element is not allowed in position and any of ancestors but is allowed in context tree', () => {
+				const spy = sinon.spy();
+
+				model.schema.register( 'div', {
+					allowIn: '$root',
+				} );
+
+				dispatcher.on( 'documentFragment', ( evt, data, conversionApi ) => {
+					const code = conversionApi.writer.createElement( 'div' );
+					const result = conversionApi.splitToAllowedParent( code, data.cursorPosition );
+
+					expect( result ).to.null;
+					spy();
+				} );
+
+				dispatcher.convert( new ViewDocumentFragment(), [ '$root', 'paragraph' ] );
+				sinon.assert.calledOnce( spy );
+			} );
 		} );
 	} );
 } );
