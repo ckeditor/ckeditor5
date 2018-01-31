@@ -98,7 +98,7 @@ describe( 'List', () => {
 
 			setData( model, '<listItem type="bulleted" indent="0">[]</listItem>' );
 
-			editor.editing.view.fire( 'enter', domEvtDataStub );
+			editor.editing.view.document.fire( 'enter', domEvtDataStub );
 
 			expect( editor.execute.calledOnce ).to.be.true;
 			expect( editor.execute.calledWithExactly( 'outdentList' ) );
@@ -111,7 +111,7 @@ describe( 'List', () => {
 
 			setData( model, '<listItem type="bulleted" indent="0">foo[]</listItem>' );
 
-			editor.editing.view.fire( 'enter', domEvtDataStub );
+			editor.editing.view.document.fire( 'enter', domEvtDataStub );
 
 			expect( editor.execute.called ).to.be.false;
 		} );
@@ -263,7 +263,7 @@ describe( 'List', () => {
 				'<listItem type="bulleted" indent="0">[]bar</listItem>'
 			);
 
-			editor.editing.view.fire( 'keydown', domEvtDataStub );
+			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
 			expect( editor.execute.calledOnce ).to.be.true;
 			expect( editor.execute.calledWithExactly( 'indentList' ) ).to.be.true;
@@ -280,7 +280,7 @@ describe( 'List', () => {
 				'<listItem type="bulleted" indent="1">[]bar</listItem>'
 			);
 
-			editor.editing.view.fire( 'keydown', domEvtDataStub );
+			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
 			expect( editor.execute.calledOnce ).to.be.true;
 			expect( editor.execute.calledWithExactly( 'outdentList' ) ).to.be.true;
@@ -291,7 +291,7 @@ describe( 'List', () => {
 		it( 'should not indent if command is disabled', () => {
 			setData( model, '<listItem type="bulleted" indent="0">[]foo</listItem>' );
 
-			editor.editing.view.fire( 'keydown', domEvtDataStub );
+			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
 			expect( editor.execute.called ).to.be.false;
 			sinon.assert.notCalled( domEvtDataStub.preventDefault );
@@ -307,7 +307,7 @@ describe( 'List', () => {
 				'<listItem type="bulleted" indent="0">[]bar</listItem>'
 			);
 
-			editor.editing.view.fire( 'keydown', domEvtDataStub );
+			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
 			expect( editor.execute.called ).to.be.false;
 			sinon.assert.notCalled( domEvtDataStub.preventDefault );

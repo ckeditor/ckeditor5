@@ -27,7 +27,7 @@ import { getData as getViewData, parse as parseView } from '@ckeditor/ckeditor5-
 import { insertElement } from '@ckeditor/ckeditor5-engine/src/conversion/model-to-view-converters';
 
 describe( 'ListEngine', () => {
-	let editor, model, modelDoc, modelRoot, viewDoc, viewRoot;
+	let editor, model, modelDoc, modelRoot, view, viewDoc, viewRoot;
 
 	beforeEach( () => {
 		return VirtualTestEditor
@@ -41,7 +41,8 @@ describe( 'ListEngine', () => {
 				modelDoc = model.document;
 				modelRoot = modelDoc.getRoot();
 
-				viewDoc = editor.editing.view;
+				view = editor.editing.view;
+				viewDoc = view.document;
 				viewRoot = viewDoc.getRoot();
 			} );
 	} );
@@ -3596,29 +3597,29 @@ describe( 'ListEngine', () => {
 
 			actionCallback();
 
-			expect( getViewData( viewDoc, { withoutSelection: true } ) ).to.equal( output );
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equal( output );
 		} );
 
 		it( testName + ' (undo integration)', () => {
 			setModelData( model, input );
 
 			const modelBefore = input;
-			const viewBefore = getViewData( viewDoc, { withoutSelection: true } );
+			const viewBefore = getViewData( view, { withoutSelection: true } );
 
 			actionCallback();
 
 			const modelAfter = getModelData( model );
-			const viewAfter = getViewData( viewDoc, { withoutSelection: true } );
+			const viewAfter = getViewData( view, { withoutSelection: true } );
 
 			editor.execute( 'undo' );
 
 			expect( getModelData( model ) ).to.equal( modelBefore );
-			expect( getViewData( viewDoc, { withoutSelection: true } ) ).to.equal( viewBefore );
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equal( viewBefore );
 
 			editor.execute( 'redo' );
 
 			expect( getModelData( model ) ).to.equal( modelAfter );
-			expect( getViewData( viewDoc, { withoutSelection: true } ) ).to.equal( viewAfter );
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equal( viewAfter );
 		} );
 	}
 } );

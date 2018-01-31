@@ -47,9 +47,11 @@ export default class List extends Plugin {
 		this._addButton( 'numberedList', t( 'Numbered List' ), numberedListIcon );
 		this._addButton( 'bulletedList', t( 'Bulleted List' ), bulletedListIcon );
 
+		const viewDocument = this.editor.editing.view.document;
+
 		// Overwrite default Enter key behavior.
 		// If Enter key is pressed with selection collapsed in empty list item, outdent it instead of breaking it.
-		this.listenTo( this.editor.editing.view, 'enter', ( evt, data ) => {
+		this.listenTo( viewDocument, 'enter', ( evt, data ) => {
 			const doc = this.editor.model.document;
 			const positionParent = doc.selection.getLastPosition().parent;
 
@@ -63,7 +65,7 @@ export default class List extends Plugin {
 
 		// Overwrite default Backspace key behavior.
 		// If Backspace key is pressed with selection collapsed on first position in first list item, outdent it. #83
-		this.listenTo( this.editor.editing.view, 'delete', ( evt, data ) => {
+		this.listenTo( viewDocument, 'delete', ( evt, data ) => {
 			// Check conditions from those that require less computations like those immediately available.
 			if ( data.direction !== 'backward' ) {
 				return;
