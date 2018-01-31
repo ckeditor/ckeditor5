@@ -1164,12 +1164,22 @@ export class SchemaContext {
 	}
 
 	/**
-	 * Adds new item at the to of the context.
+	 * Returns new SchemaContext instance with additional items created from provided definition.
 	 *
-	 * @param {module:engine/model/node~Node|String} item Item to add.
+	 * @param {String|module:engine/model/node~Node|~SchemaContextDefinition|Array<String|module:engine/model/node~Node>} definition
+	 * Definition of item(s) that will be added to current context.
+	 * @returns {~SchemaContext} New SchemaContext instance.
 	 */
-	addItem( item ) {
-		this._items = [ ...this._items, mapContextItem( item ) ];
+	concat( definition ) {
+		if ( !( definition instanceof SchemaContext ) && !Array.isArray( definition ) ) {
+			definition = [ definition ];
+		}
+
+		const ctx = new SchemaContext( definition );
+
+		ctx._items = [ ...this._items, ...ctx._items ];
+
+		return ctx;
 	}
 
 	/**

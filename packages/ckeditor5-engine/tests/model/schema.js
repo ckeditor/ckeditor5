@@ -2755,33 +2755,63 @@ describe( 'SchemaContext', () => {
 		} );
 	} );
 
-	describe( 'addItem()', () => {
-		it( 'adds new item at the top of the context #text', () => {
+	describe( 'concat()', () => {
+		it( 'creates new SchemaContext instance with new item - #string', () => {
+			const ctx = new SchemaContext( [ 'a', 'b', 'c' ] );
+
+			const newCtx = ctx.concat( 'd' );
+
+			expect( newCtx ).to.instanceof( SchemaContext );
+			expect( newCtx ).to.not.equal( ctx );
+			expect( Array.from( newCtx.getNames() ) ).to.deep.equal( [ 'a', 'b', 'c', 'd' ] );
+			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ 'a', 'b', 'c' ] );
+		} );
+
+		it( 'creates new SchemaContext instance with new item - #text', () => {
 			const node = new Text( 'd' );
-
 			const ctx = new SchemaContext( [ 'a', 'b', 'c' ] );
 
-			ctx.addItem( node );
+			const newCtx = ctx.concat( node );
 
-			expect( Array.from( ctx ).map( item => item.name ) ).to.deep.equal( [ 'a', 'b', 'c', '$text' ] );
+			expect( newCtx ).to.instanceof( SchemaContext );
+			expect( newCtx ).to.not.equal( ctx );
+			expect( Array.from( newCtx.getNames() ) ).to.deep.equal( [ 'a', 'b', 'c', '$text' ] );
+			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ 'a', 'b', 'c' ] );
 		} );
 
-		it( 'adds new item at the top of the context #string', () => {
+		it( 'creates new SchemaContext instance with new item - #node', () => {
 			const ctx = new SchemaContext( [ 'a', 'b', 'c' ] );
+			const parent = new Element( 'parent', null, new Element( 'd' ) );
 
-			ctx.addItem( 'd' );
+			const newCtx = ctx.concat( parent.getChild( 0 ) );
 
-			expect( Array.from( ctx ).map( item => item.name ) ).to.deep.equal( [ 'a', 'b', 'c', 'd' ] );
+			expect( newCtx ).to.instanceof( SchemaContext );
+			expect( newCtx ).to.not.equal( ctx );
+			expect( Array.from( newCtx.getNames() ) ).to.deep.equal( [ 'a', 'b', 'c', 'd' ] );
+			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ 'a', 'b', 'c' ] );
 		} );
 
-		it( 'adds new item at the top of the context #node', () => {
-			const node = new Element( 'd' );
+		it( 'creates new SchemaContext instance with new item - #SchemaContext', () => {
+			const ctx = new SchemaContext( [ 'a', 'b', 'c' ] );
+			const schemaContext = new SchemaContext( [ 'd', 'e' ] );
 
+			const newCtx = ctx.concat( schemaContext );
+
+			expect( newCtx ).to.instanceof( SchemaContext );
+			expect( newCtx ).to.not.equal( ctx );
+			expect( Array.from( newCtx.getNames() ) ).to.deep.equal( [ 'a', 'b', 'c', 'd', 'e' ] );
+			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ 'a', 'b', 'c' ] );
+		} );
+
+		it( 'creates new SchemaContext instance with new item - #array', () => {
 			const ctx = new SchemaContext( [ 'a', 'b', 'c' ] );
 
-			ctx.addItem( node );
+			const newCtx = ctx.concat( [ 'd', new Text( 'e' ), new Element( 'f' ) ] );
 
-			expect( Array.from( ctx ).map( item => item.name ) ).to.deep.equal( [ 'a', 'b', 'c', 'd' ] );
+			expect( newCtx ).to.instanceof( SchemaContext );
+			expect( newCtx ).to.not.equal( ctx );
+			expect( Array.from( newCtx.getNames() ) ).to.deep.equal( [ 'a', 'b', 'c', 'd', '$text', 'f' ] );
+			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ 'a', 'b', 'c' ] );
 		} );
 	} );
 
