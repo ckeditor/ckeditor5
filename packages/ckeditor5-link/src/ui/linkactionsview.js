@@ -12,7 +12,6 @@ import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
-import submitHandler from '@ckeditor/ckeditor5-ui/src/bindings/submithandler';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
@@ -57,7 +56,7 @@ export default class LinkActionsView extends View {
 		 *
 		 * @member {module:ui/view~View}
 		 */
-		this.previewButton = this._createPreviewButton();
+		this.previewButtonView = this._createPreviewButton();
 
 		/**
 		 * The unlink button view.
@@ -74,7 +73,7 @@ export default class LinkActionsView extends View {
 		this.editButtonView = this._createButton( t( 'Edit link' ), pencilIcon, 'edit' );
 
 		/**
-		 * Value of the "href" attribute of the link to use in the {@link #previewButton}.
+		 * Value of the "href" attribute of the link to use in the {@link #previewButtonView}.
 		 *
 		 * @observable
 		 * @member {String}
@@ -123,7 +122,7 @@ export default class LinkActionsView extends View {
 			},
 
 			children: [
-				this.previewButton,
+				this.previewButtonView,
 				this.editButtonView,
 				this.unlinkButtonView
 			]
@@ -136,12 +135,8 @@ export default class LinkActionsView extends View {
 	render() {
 		super.render();
 
-		submitHandler( {
-			view: this
-		} );
-
 		const childViews = [
-			this.previewButton,
+			this.previewButtonView,
 			this.editButtonView,
 			this.unlinkButtonView
 		];
