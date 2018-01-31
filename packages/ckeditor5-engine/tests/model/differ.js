@@ -534,9 +534,14 @@ describe( 'Differ', () => {
 		} );
 
 		it( 'on an element - only one of many attributes changes', () => {
-			root.getChild( 0 ).setAttribute( 'otherAttr', true );
-
 			const range = Range.createFromParentsAndOffsets( root, 0, root.getChild( 0 ), 0 );
+
+			// Set an attribute on an element. It won't change afterwards.
+			attribute( range, 'otherAttr', null, true );
+
+			// "Flush" differ.
+			differ.getChanges();
+			differ.reset();
 
 			attribute( range, attributeKey, attributeOldValue, attributeNewValue );
 

@@ -786,10 +786,10 @@ export default class Differ {
 					attributeNewValue: newValue,
 					changeCount: this._changeCount++
 				} );
-
-				// Prevent returning two diff items for the same change.
-				newAttributes.delete( key );
 			}
+
+			// Prevent returning two diff items for the same change.
+			newAttributes.delete( key );
 		}
 
 		// Look through new attributes that weren't handled above.
