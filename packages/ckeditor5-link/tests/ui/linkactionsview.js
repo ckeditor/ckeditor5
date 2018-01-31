@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import LinkActionsView from '../../src/ui/LinkActionsView';
+import LinkActionsView from '../../src/ui/linkactionsview';
 import View from '@ckeditor/ckeditor5-ui/src/view';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
