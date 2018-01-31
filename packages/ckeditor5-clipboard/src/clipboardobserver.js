@@ -19,20 +19,22 @@ import DataTransfer from './datatransfer';
  * @extends module:engine/view/observer/domeventobserver~DomEventObserver
  */
 export default class ClipboardObserver extends DomEventObserver {
-	constructor( doc ) {
-		super( doc );
+	constructor( view ) {
+		super( view );
+
+		const viewDocument = this.document;
 
 		this.domEventType = [ 'paste', 'copy', 'cut', 'drop', 'dragover' ];
 
-		this.listenTo( doc, 'paste', handleInput, { priority: 'low' } );
-		this.listenTo( doc, 'drop', handleInput, { priority: 'low' } );
+		this.listenTo( viewDocument, 'paste', handleInput, { priority: 'low' } );
+		this.listenTo( viewDocument, 'drop', handleInput, { priority: 'low' } );
 
 		function handleInput( evt, data ) {
 			data.preventDefault();
 
-			const targetRanges = data.dropRange ? [ data.dropRange ] : Array.from( doc.selection.getRanges() );
+			const targetRanges = data.dropRange ? [ data.dropRange ] : Array.from( viewDocument.selection.getRanges() );
 
-			doc.fire( 'clipboardInput', {
+			viewDocument.fire( 'clipboardInput', {
 				dataTransfer: data.dataTransfer,
 				targetRanges
 			} );
@@ -45,14 +47,14 @@ export default class ClipboardObserver extends DomEventObserver {
 		};
 
 		if ( domEvent.type == 'drop' ) {
-			evtData.dropRange = getDropViewRange( this.document, domEvent );
+			evtData.dropRange = getDropViewRange( this.view, domEvent );
 		}
 
 		this.fire( domEvent.type, domEvent, evtData );
 	}
 }
 
-function getDropViewRange( doc, domEvent ) {
+function getDropViewRange( view, domEvent ) {
 	const domDoc = domEvent.target.ownerDocument;
 	const x = domEvent.clientX;
 	const y = domEvent.clientY;
@@ -70,9 +72,9 @@ function getDropViewRange( doc, domEvent ) {
 	}
 
 	if ( domRange ) {
-		return doc.domConverter.domRangeToView( domRange );
+		return view.domConverter.domRangeToView( domRange );
 	} else {
-		return doc.selection.getFirstRange();
+		return view.document.selection.getFirstRange();
 	}
 }
 

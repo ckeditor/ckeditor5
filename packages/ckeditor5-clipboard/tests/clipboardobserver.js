@@ -6,7 +6,7 @@
 /* globals document */
 
 import ClipboardObserver from '../src/clipboardobserver';
-import Document from '@ckeditor/ckeditor5-engine/src/view/document';
+import View from '@ckeditor/ckeditor5-engine/src/view/view';
 import Element from '@ckeditor/ckeditor5-engine/src/view/element';
 import Range from '@ckeditor/ckeditor5-engine/src/view/range';
 import Position from '@ckeditor/ckeditor5-engine/src/view/position';
@@ -14,23 +14,24 @@ import DataTransfer from '../src/datatransfer';
 import createViewRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot';
 
 describe( 'ClipboardObserver', () => {
-	let doc, observer, root, el, range, eventSpy, preventDefaultSpy;
+	let view, doc, observer, root, el, range, eventSpy, preventDefaultSpy;
 
 	beforeEach( () => {
-		doc = new Document();
+		view = new View();
+		doc = view.document;
 		root = createViewRoot( doc );
 
 		// Create view and DOM structures.
 		el = new Element( 'p' );
 		root.appendChildren( el );
-		doc.domConverter.viewToDom( root, document, { withChildren: true, bind: true } );
+		view.domConverter.viewToDom( root, document, { withChildren: true, bind: true } );
 
-		doc.selection.setTo( el );
+		doc.selection._setTo( el );
 		range = new Range( new Position( root, 1 ) );
 		// Just making sure that the following tests will check anything.
 		expect( range.isEqual( doc.selection.getFirstRange() ) ).to.be.false;
 
-		observer = doc.addObserver( ClipboardObserver );
+		observer = view.addObserver( ClipboardObserver );
 
 		eventSpy = sinon.spy();
 		preventDefaultSpy = sinon.spy();
@@ -118,7 +119,7 @@ describe( 'ClipboardObserver', () => {
 		it( 'should be fired with the right event data – dropRange (when document.caretRangeFromPoint present)', () => {
 			let caretRangeFromPointCalledWith;
 
-			const domRange = doc.domConverter.viewRangeToDom( range );
+			const domRange = view.domConverter.viewRangeToDom( range );
 			const dataTransfer = mockDomDataTransfer();
 			const targetElement = mockDomTargetElement( {
 				caretRangeFromPoint( x, y ) {
@@ -148,7 +149,7 @@ describe( 'ClipboardObserver', () => {
 		} );
 
 		it( 'should be fired with the right event data – dropRange (when evt.rangeParent|Offset present)', () => {
-			const domRange = doc.domConverter.viewRangeToDom( range );
+			const domRange = view.domConverter.viewRangeToDom( range );
 			const dataTransfer = mockDomDataTransfer();
 			const targetElement = mockDomTargetElement( {
 				createRange() {

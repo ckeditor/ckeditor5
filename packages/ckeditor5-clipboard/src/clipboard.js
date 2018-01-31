@@ -118,8 +118,9 @@ export default class Clipboard extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const doc = editor.model.document;
-		const viewDocument = editor.editing.view.document;
+		const modelDocument = editor.model.document;
+		const view = editor.editing.view;
+		const viewDocument = view.document;
 
 		/**
 		 * Data processor used to convert pasted HTML to a view structure.
@@ -129,7 +130,7 @@ export default class Clipboard extends Plugin {
 		 */
 		this._htmlDataProcessor = new HtmlDataProcessor();
 
-		viewDocument.addObserver( ClipboardObserver );
+		view.addObserver( ClipboardObserver );
 
 		// The clipboard paste pipeline.
 
@@ -153,7 +154,7 @@ export default class Clipboard extends Plugin {
 
 			this.fire( 'inputTransformation', { content } );
 
-			viewDocument.scrollToTheSelection();
+			view.scrollToTheSelection();
 		}, { priority: 'low' } );
 
 		this.listenTo( this, 'inputTransformation', ( evt, data ) => {
@@ -170,7 +171,7 @@ export default class Clipboard extends Plugin {
 					return;
 				}
 
-				model.insertContent( modelFragment, doc.selection );
+				model.insertContent( modelFragment, modelDocument.selection );
 			}
 		}, { priority: 'low' } );
 
@@ -181,7 +182,7 @@ export default class Clipboard extends Plugin {
 
 			data.preventDefault();
 
-			const content = editor.data.toView( editor.model.getSelectedContent( doc.selection ) );
+			const content = editor.data.toView( editor.model.getSelectedContent( modelDocument.selection ) );
 
 			viewDocument.fire( 'clipboardOutput', { dataTransfer, content, method: evt.name } );
 		}
@@ -204,7 +205,7 @@ export default class Clipboard extends Plugin {
 			}
 
 			if ( data.method == 'cut' ) {
-				editor.model.deleteContent( doc.selection );
+				editor.model.deleteContent( modelDocument.selection );
 			}
 		}, { priority: 'low' } );
 	}

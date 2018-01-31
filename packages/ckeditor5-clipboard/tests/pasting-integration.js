@@ -194,7 +194,7 @@ describe( 'Pasting – integration', () => {
 } );
 
 function pasteHtml( editor, html ) {
-	editor.editing.view.fire( 'paste', {
+	editor.editing.view.document.fire( 'paste', {
 		dataTransfer: createDataTransfer( { 'text/html': html } ),
 		preventDefault() {}
 	} );
