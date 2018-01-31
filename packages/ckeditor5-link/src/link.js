@@ -380,6 +380,9 @@ export default class Link extends Plugin {
 			// * the selection went to a different parent when creating a NEW link. E.g. someone
 			//   else modified the document.
 			// * the selection has expanded (e.g. displaying link actions then pressing SHIFT+Right arrow).
+			//
+			// Note: #_getSelectedLinkElement will return a link for a non-collapsed selection only
+			// when fully selected.
 			if ( ( prevSelectedLink && !selectedLink ) ||
 				( !prevSelectedLink && selectionParent !== prevSelectionParent ) ) {
 				this._hideUI();
