@@ -42,7 +42,7 @@ describe( 'CKFinderUploadAdapter', () => {
 		expect( editor.plugins.get( CKFinderUploadAdapter ) ).to.be.instanceOf( CKFinderUploadAdapter );
 	} );
 
-	describe( 'Adapter', () => {
+	describe( 'UploadAdapter', () => {
 		let adapter, loaderMock;
 
 		beforeEach( () => {
