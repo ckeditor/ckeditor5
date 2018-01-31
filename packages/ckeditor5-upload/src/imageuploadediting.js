@@ -102,7 +102,7 @@ export default class ImageUploadEditing extends Plugin {
 						loader.abort();
 					} else if ( loader.status == 'idle' ) {
 						// If the image was inserted into content and has not been loaded, start loading it.
-						this.load( loader, item );
+						this._load( loader, item );
 					}
 				}
 			}
@@ -113,11 +113,11 @@ export default class ImageUploadEditing extends Plugin {
 	 * Performs image loading. Image is read from the disk and temporary data is displayed, after uploading process
 	 * is complete we replace temporary data with target image from the server.
 	 *
-	 * @protected
+	 * @private
 	 * @param {module:upload/filerepository~FileLoader} loader
 	 * @param {module:engine/model/element~Element} imageElement
 	 */
-	load( loader, imageElement ) {
+	_load( loader, imageElement ) {
 		const editor = this.editor;
 		const model = editor.model;
 		const t = editor.locale.t;
