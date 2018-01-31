@@ -26,9 +26,10 @@ export default class Delete extends Plugin {
 
 	init() {
 		const editor = this.editor;
-		const viewDocument = editor.editing.view.document;
+		const view = editor.editing.view;
+		const viewDocument = view.document;
 
-		viewDocument.addObserver( DeleteObserver );
+		view.addObserver( DeleteObserver );
 
 		editor.commands.add( 'forwardDelete', new DeleteCommand( editor, 'forward' ) );
 		editor.commands.add( 'delete', new DeleteCommand( editor, 'backward' ) );
@@ -36,7 +37,7 @@ export default class Delete extends Plugin {
 		this.listenTo( viewDocument, 'delete', ( evt, data ) => {
 			editor.execute( data.direction == 'forward' ? 'forwardDelete' : 'delete', { unit: data.unit, sequence: data.sequence } );
 			data.preventDefault();
-			viewDocument.scrollToTheSelection();
+			view.scrollToTheSelection();
 		} );
 	}
 }
