@@ -533,6 +533,18 @@ describe( 'Differ', () => {
 			] );
 		} );
 
+		it( 'on an element - only one of many attributes changes', () => {
+			root.getChild( 0 ).setAttribute( 'otherAttr', true );
+
+			const range = Range.createFromParentsAndOffsets( root, 0, root.getChild( 0 ), 0 );
+
+			attribute( range, attributeKey, attributeOldValue, attributeNewValue );
+
+			expectChanges( [
+				{ type: 'attribute', range, attributeKey, attributeOldValue, attributeNewValue }
+			] );
+		} );
+
 		it( 'on a character', () => {
 			const parent = root.getChild( 1 );
 			const range = Range.createFromParentsAndOffsets( parent, 1, parent, 2 );
