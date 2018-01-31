@@ -37,7 +37,7 @@ describe( 'ImageUploadButton', () => {
 
 		return ClassicEditor
 			.create( editorElement, {
-				plugins: [ Paragraph, Image, ImageUploadButton, FileRepository, UploadAdapterPluginMock ]
+				plugins: [ Paragraph, Image, ImageUploadEngine, ImageUploadButton, FileRepository, UploadAdapterPluginMock ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -53,10 +53,6 @@ describe( 'ImageUploadButton', () => {
 		editorElement.remove();
 
 		return editor.destroy();
-	} );
-
-	it( 'should include ImageUploadEngine', () => {
-		expect( editor.plugins.get( ImageUploadEngine ) ).to.be.instanceOf( ImageUploadEngine );
 	} );
 
 	it( 'should register insertImage button', () => {

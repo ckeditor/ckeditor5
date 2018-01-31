@@ -8,6 +8,7 @@
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageUpload from '../src/imageupload';
+import ImageUploadEngine from '../src/imageuploadengine';
 import ImageUploadProgress from '../src/imageuploadprogress';
 import ImageUploadButton from '../src/imageuploadbutton';
 
@@ -33,6 +34,10 @@ describe( 'ImageUpload', () => {
 		editorElement.remove();
 
 		return editor.destroy();
+	} );
+
+	it( 'should include ImageUploadEngine', () => {
+		expect( editor.plugins.get( ImageUploadEngine ) ).to.be.instanceOf( ImageUploadEngine );
 	} );
 
 	it( 'should include ImageUploadProgress', () => {

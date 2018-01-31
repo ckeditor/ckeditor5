@@ -8,7 +8,6 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ImageUploadEngine from './imageuploadengine';
 import FileDialogButtonView from './ui/filedialogbuttonview';
 import imageIcon from '@ckeditor/ckeditor5-core/theme/icons/image.svg';
 import { isImageType, findOptimalInsertionPosition } from './utils';
@@ -20,13 +19,6 @@ import { isImageType, findOptimalInsertionPosition } from './utils';
  * @extends module:core/plugin~Plugin
  */
 export default class ImageUploadButton extends Plugin {
-	/**
-	 * @inheritDoc
-	 */
-	static get requires() {
-		return [ ImageUploadEngine ];
-	}
-
 	/**
 	 * @inheritDoc
 	 */
