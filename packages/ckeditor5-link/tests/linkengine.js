@@ -102,7 +102,7 @@ describe( 'LinkEngine', () => {
 		it( 'should convert to link element instance', () => {
 			setModelData( model, '<paragraph><$text linkHref="url">foo</$text>bar</paragraph>' );
 
-			const element = editor.editing.view.getRoot().getChild( 0 ).getChild( 0 );
+			const element = editor.editing.view.document.getRoot().getChild( 0 ).getChild( 0 );
 			expect( isLinkElement( element ) ).to.be.true;
 		} );
 

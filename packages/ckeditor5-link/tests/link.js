@@ -75,11 +75,12 @@ describe( 'Link', () => {
 
 		beforeEach( () => {
 			balloonAddSpy = testUtils.sinon.spy( balloon, 'add' );
-			editor.editing.view.isFocused = true;
+			editor.editing.view.document.isFocused = true;
 		} );
 
 		it( 'should add #formView to the #_balloon and attach the #_balloon to the selection when text fragment is selected', () => {
 			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
+
 			const selectedRange = editorElement.ownerDocument.getSelection().getRangeAt( 0 );
 
 			linkFeature._showPanel();
@@ -229,27 +230,35 @@ describe( 'Link', () => {
 			expect( formView.urlInputView.inputView.element.value ).to.equal( '' );
 		} );
 
-		describe( 'when the document is rendering', () => {
-			it( 'should not duplicate #render listeners', () => {
-				const viewDocument = editor.editing.view;
+		describe( 'when the document is changing', () => {
+			let view, viewDocument;
 
+			beforeEach( () => {
+				view = editor.editing.view;
+				viewDocument = view.document;
+			} );
+
+			afterEach( () => {
+				view.destroy();
+			} );
+
+			it( 'should not duplicate #change listeners', () => {
 				setModelData( editor.model, '<paragraph>f[]oo</paragraph>' );
 
 				const spy = testUtils.sinon.stub( balloon, 'updatePosition' ).returns( {} );
 
 				linkFeature._showPanel();
-				viewDocument.render();
-				linkFeature._hidePanel();
+				view.change( () => {} );
 
+				linkFeature._hidePanel();
 				linkFeature._showPanel();
-				viewDocument.render();
+				view.change( () => {} );
+
 				sinon.assert.calledTwice( spy );
 			} );
 
 			// https://github.com/ckeditor/ckeditor5-link/issues/113
-			it( 'updates the position of the panel – editing a link, then the selection remains in the link upon #render', () => {
-				const viewDocument = editor.editing.view;
-
+			it( 'updates the position of the panel – editing a link, then the selection remains in the link upon #change', () => {
 				setModelData( editor.model, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
 
 				linkFeature._showPanel();
@@ -259,30 +268,32 @@ describe( 'Link', () => {
 				const text = root.getChild( 0 ).getChild( 0 ).getChild( 0 );
 
 				// Move selection to foo[].
-				viewDocument.selection.setTo( Range.createFromParentsAndOffsets( text, 3, text, 3 ), true );
-				viewDocument.render();
+				view.change( writer => {
+					writer.setSelection( Range.createFromParentsAndOffsets( text, 3, text, 3 ), true );
+				} );
 
 				sinon.assert.calledOnce( spy );
 				sinon.assert.calledWithExactly( spy, {
-					target: viewDocument.domConverter.mapViewToDom( root.getChild( 0 ).getChild( 0 ) )
+					target: view.domConverter.mapViewToDom( root.getChild( 0 ).getChild( 0 ) )
 				} );
 			} );
 
 			// https://github.com/ckeditor/ckeditor5-link/issues/113
-			it( 'updates the position of the panel – creating a new link, then the selection moved upon #render', () => {
-				const viewDocument = editor.editing.view;
+			it( 'updates the position of the panel – creating a new link, then the selection moved upon #change', () => {
+				const viewDocument = editor.editing.view.document;
 
 				setModelData( editor.model, '<paragraph>f[]oo</paragraph>' );
 
 				linkFeature._showPanel();
 				const spy = testUtils.sinon.stub( balloon, 'updatePosition' ).returns( {} );
 
-				// Fires #render.
+				// Fires #change.
 				const root = viewDocument.getRoot();
 				const text = root.getChild( 0 ).getChild( 0 );
 
-				viewDocument.selection.setTo( Range.createFromParentsAndOffsets( text, 3, text, 3 ), true );
-				viewDocument.render();
+				view.change( writer => {
+					writer.setSelection( Range.createFromParentsAndOffsets( text, 3, text, 3 ), true );
+				} );
 
 				sinon.assert.calledOnce( spy );
 				sinon.assert.calledWithExactly( spy, {
@@ -291,8 +302,8 @@ describe( 'Link', () => {
 			} );
 
 			// https://github.com/ckeditor/ckeditor5-link/issues/113
-			it( 'hides of the panel – editing a link, then the selection moved out of the link upon #render', () => {
-				const viewDocument = editor.editing.view;
+			it( 'hides of the panel – editing a link, then the selection moved out of the link upon #change', () => {
+				const viewDocument = editor.editing.view.document;
 
 				setModelData( editor.model, '<paragraph><$text linkHref="url">f[]oo</$text>bar</paragraph>' );
 
@@ -305,16 +316,17 @@ describe( 'Link', () => {
 				const text = root.getChild( 0 ).getChild( 1 );
 
 				// Move selection to b[]ar.
-				viewDocument.selection.setTo( Range.createFromParentsAndOffsets( text, 1, text, 1 ), true );
-				viewDocument.render();
+				view.change( writer => {
+					writer.setSelection( Range.createFromParentsAndOffsets( text, 1, text, 1 ), true );
+				} );
 
 				sinon.assert.calledOnce( spyHide );
 				sinon.assert.notCalled( spyUpdate );
 			} );
 
 			// https://github.com/ckeditor/ckeditor5-link/issues/113
-			it( 'hides of the panel – editing a link, then the selection moved to another link upon #render', () => {
-				const viewDocument = editor.editing.view;
+			it( 'hides of the panel – editing a link, then the selection moved to another link upon #change', () => {
+				const viewDocument = editor.editing.view.document;
 
 				setModelData(
 					editor.model,
@@ -330,16 +342,17 @@ describe( 'Link', () => {
 				const text = root.getChild( 0 ).getChild( 2 ).getChild( 0 );
 
 				// Move selection to b[]az.
-				viewDocument.selection.setTo( Range.createFromParentsAndOffsets( text, 1, text, 1 ), true );
-				viewDocument.render();
+				view.change( writer => {
+					writer.setSelection( Range.createFromParentsAndOffsets( text, 1, text, 1 ), true );
+				} );
 
 				sinon.assert.calledOnce( spyHide );
 				sinon.assert.notCalled( spyUpdate );
 			} );
 
 			// https://github.com/ckeditor/ckeditor5-link/issues/113
-			it( 'hides the panel – editing a link, then the selection expands upon #render', () => {
-				const viewDocument = editor.editing.view;
+			it( 'hides the panel – editing a link, then the selection expands upon #change', () => {
+				const viewDocument = editor.editing.view.document;
 
 				setModelData( editor.model, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
 
@@ -352,8 +365,9 @@ describe( 'Link', () => {
 				const text = root.getChild( 0 ).getChild( 0 ).getChild( 0 );
 
 				// Move selection to f[o]o.
-				viewDocument.selection.setTo( Range.createFromParentsAndOffsets( text, 1, text, 2 ), true );
-				viewDocument.render();
+				view.change( writer => {
+					writer.setSelection( Range.createFromParentsAndOffsets( text, 1, text, 2 ), true );
+				} );
 
 				sinon.assert.calledOnce( spyHide );
 				sinon.assert.notCalled( spyUpdate );
@@ -400,12 +414,12 @@ describe( 'Link', () => {
 			} ).to.not.throw();
 		} );
 
-		it( 'should clear `render` listener from ViewDocument', () => {
+		it( 'should clear `change` listener from ViewDocument', () => {
 			const spy = sinon.spy();
 
-			linkFeature.listenTo( editor.editing.view, 'render', spy );
+			linkFeature.listenTo( editor.editing.view.document, 'change', spy );
 			linkFeature._hidePanel();
-			editor.editing.view.render();
+			editor.editing.view.change( () => {} );
 
 			sinon.assert.notCalled( spy );
 		} );
@@ -603,6 +617,7 @@ describe( 'Link', () => {
 				setModelData( editor.model, '<$text linkHref="url">fo[]o</$text>' );
 
 				observer.fire( 'click', { target: document.body } );
+				sinon.assert.calledOnce( spy );
 				sinon.assert.calledWithExactly( spy );
 			} );
 

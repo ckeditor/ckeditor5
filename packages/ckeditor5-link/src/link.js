@@ -52,7 +52,7 @@ export default class Link extends Plugin {
 	init() {
 		const editor = this.editor;
 
-		editor.editing.view.document.addObserver( ClickObserver );
+		editor.editing.view.addObserver( ClickObserver );
 
 		/**
 		 * The form view displayed inside the balloon.
@@ -166,7 +166,7 @@ export default class Link extends Plugin {
 	 * @private
 	 */
 	_attachActions() {
-		const viewDocument = this.editor.editing.view;
+		const viewDocument = this.editor.editing.view.document;
 
 		// Handle click on view document and show panel when selection is placed inside the link element.
 		// Keep panel open until selection will be inside the same link element.
@@ -220,21 +220,21 @@ export default class Link extends Plugin {
 		const linkCommand = editor.commands.get( 'link' );
 		const unlinkCommand = editor.commands.get( 'unlink' );
 		const editing = editor.editing;
-		const showViewDocument = editing.view;
+		const showViewDocument = editing.view.document;
 		const showIsCollapsed = showViewDocument.selection.isCollapsed;
 		const showSelectedLink = this._getSelectedLinkElement();
 
-		this.listenTo( showViewDocument, 'render', () => {
+		this.listenTo( showViewDocument, 'change', () => {
 			const renderSelectedLink = this._getSelectedLinkElement();
 			const renderIsCollapsed = showViewDocument.selection.isCollapsed;
-			const hasSellectionExpanded = showIsCollapsed && !renderIsCollapsed;
+			const hasSelectionExpanded = showIsCollapsed && !renderIsCollapsed;
 
 			// Hide the panel if:
 			//   * the selection went out of the original link element
 			//     (e.g. paragraph containing the link was removed),
 			//   * the selection has expanded
-			// upon the #render event.
-			if ( hasSellectionExpanded || showSelectedLink !== renderSelectedLink ) {
+			// upon the #change event.
+			if ( hasSelectionExpanded || showSelectedLink !== renderSelectedLink ) {
 				this._hidePanel( true );
 			}
 			// Update the position of the panel when:
@@ -242,7 +242,7 @@ export default class Link extends Plugin {
 			//  * there was no link element in the first place, i.e. creating a new link
 			else {
 				// If still in a link element, simply update the position of the balloon.
-				// If there was no link, upon #render, the balloon must be moved
+				// If there was no link, upon #change, the balloon must be moved
 				// to the new position in the editing view (a new native DOM range).
 				this._balloon.updatePosition( this._getBalloonPositionData() );
 			}
@@ -285,7 +285,7 @@ export default class Link extends Plugin {
 	 * @param {Boolean} [focusEditable=false] When `true`, editable focus will be restored on panel hide.
 	 */
 	_hidePanel( focusEditable ) {
-		this.stopListening( this.editor.editing.view, 'render' );
+		this.stopListening( this.editor.editing.view.document, 'change' );
 
 		if ( !this._balloon.hasView( this.formView ) ) {
 			return;
@@ -295,7 +295,7 @@ export default class Link extends Plugin {
 			this.editor.editing.view.focus();
 		}
 
-		this.stopListening( this.editor.editing.view, 'render' );
+		this.stopListening( this.editor.editing.view.document, 'change' );
 		this._balloon.remove( this.formView );
 	}
 
@@ -310,14 +310,15 @@ export default class Link extends Plugin {
 	 * @returns {module:utils/dom/position~Options}
 	 */
 	_getBalloonPositionData() {
-		const viewDocument = this.editor.editing.view;
+		const view = this.editor.editing.view;
+		const viewDocument = view.document;
 		const targetLink = this._getSelectedLinkElement();
 
 		const target = targetLink ?
 			// When selection is inside link element, then attach panel to this element.
-			viewDocument.domConverter.mapViewToDom( targetLink ) :
+			view.domConverter.mapViewToDom( targetLink ) :
 			// Otherwise attach panel to the selection.
-			viewDocument.domConverter.viewRangeToDom( viewDocument.selection.getFirstRange() );
+			view.domConverter.viewRangeToDom( viewDocument.selection.getFirstRange() );
 
 		return { target };
 	}
@@ -334,7 +335,7 @@ export default class Link extends Plugin {
 	 * @returns {module:engine/view/attributeelement~AttributeElement|null}
 	 */
 	_getSelectedLinkElement() {
-		const selection = this.editor.editing.view.selection;
+		const selection = this.editor.editing.view.document.selection;
 
 		if ( selection.isCollapsed ) {
 			return findLinkElementAncestor( selection.getFirstPosition() );
