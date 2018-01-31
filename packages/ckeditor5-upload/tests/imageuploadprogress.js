@@ -9,7 +9,7 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ImageEngine from '@ckeditor/ckeditor5-image/src/image/imageengine';
-import ImageUploadEditing from './imageuploadediting';
+import ImageUploadEditing from '../src/imageuploadediting';
 import ImageUploadProgress from '../src/imageuploadprogress';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import FileRepository from '../src/filerepository';

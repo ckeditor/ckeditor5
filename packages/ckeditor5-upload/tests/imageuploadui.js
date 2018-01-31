@@ -12,7 +12,7 @@ import Image from '@ckeditor/ckeditor5-image/src/image';
 import FileDialogButtonView from '../src/ui/filedialogbuttonview';
 import FileRepository from '../src/filerepository';
 import ImageUploadUI from '../src/imageuploadui';
-import ImageUploadEditing from './imageuploadediting';
+import ImageUploadEditing from '../src/imageuploadediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
 
