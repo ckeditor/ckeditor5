@@ -85,7 +85,8 @@ export default class BaseCommand extends Command {
 	 * @param {Array.<module:engine/model/delta/delta~Delta>} deltas Deltas which has been applied since selection has been stored.
 	 */
 	_restoreSelection( ranges, isBackward, deltas ) {
-		const document = this.editor.model.document;
+		const model = this.editor.model;
+		const document = model.document;
 
 		// This will keep the transformed selection ranges.
 		const selectionRanges = [];
@@ -110,7 +111,9 @@ export default class BaseCommand extends Command {
 
 		// `selectionRanges` may be empty if all ranges ended up in graveyard. If that is the case, do not restore selection.
 		if ( selectionRanges.length ) {
-			document.selection.setRanges( selectionRanges, isBackward );
+			model.change( writer => {
+				writer.setSelection( selectionRanges, isBackward );
+			} );
 		}
 	}
 
