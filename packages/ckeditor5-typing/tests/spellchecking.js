@@ -1,9 +1,9 @@
 /*
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
-/* globals window, document */
+/* globals window, document, setTimeout */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
@@ -43,7 +43,7 @@ describe( 'Typing – spellchecking integration', () => {
 
 	beforeEach( () => {
 		if ( onChangesDone ) {
-			editor.model.document.off( 'changesDone', onChangesDone );
+			editor.model.document.off( 'change', onChangesDone );
 			onChangesDone = null;
 		}
 
@@ -236,7 +236,7 @@ function emulateSpellcheckerMutation( editor, nodeIndex, resultPositionIndex, ol
 	const viewRoot = view.getRoot();
 	const viewSelection = new ViewSelection();
 
-	viewSelection.setCollapsedAt( viewRoot.getChild( nodeIndex ).getChild( 0 ), resultPositionIndex );
+	viewSelection.setTo( viewRoot.getChild( nodeIndex ).getChild( 0 ), resultPositionIndex );
 
 	view.fire( 'mutations',
 		[ {
@@ -253,15 +253,18 @@ function emulateSpellcheckerInsertText( editor, nodeIndex, rangeStart, rangeEnd,
 	const model = editor.model;
 	const modelRoot = model.document.getRoot();
 
+	window.focus();
 	editor.editing.view.focus();
 
-	model.change( () => {
-		model.document.selection.setRanges( [
+	model.change( writer => {
+		writer.setSelection(
 			ModelRange.createFromParentsAndOffsets( modelRoot.getChild( nodeIndex ), rangeStart, modelRoot.getChild( nodeIndex ), rangeEnd )
-		] );
+		);
 	} );
 
-	editor.model.document.once( 'changesDone', onChangesDoneCallback, { priority: 'low' } );
+	model.document.once( 'change', () => {
+		setTimeout( onChangesDoneCallback, 100 );
+	}, { priority: 'low' } );
 
 	window.document.execCommand( 'insertText', false, text );
 }
@@ -270,4 +273,3 @@ function expectContent( editor, expectedModel, expectedView ) {
 	expect( getModelData( editor.model ) ).to.equal( expectedModel );
 	expect( getViewData( editor.editing.view ) ).to.equal( expectedView );
 }
-

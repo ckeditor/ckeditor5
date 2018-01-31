@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -244,12 +244,9 @@ describe( 'DeleteCommand', () => {
 		} );
 
 		it( 'does not replace an element if a paragraph is not allowed in current position', () => {
-			model.schema.on( 'checkChild', ( evt, args ) => {
-				const def = model.schema.getDefinition( args[ 1 ] );
-
-				if ( args[ 0 ].endsWith( '$root' ) && def.name == 'paragraph' ) {
-					evt.stop();
-					evt.return = false;
+			model.schema.addChildCheck( ( ctx, childDef ) => {
+				if ( ctx.endsWith( '$root' ) && childDef.name == 'paragraph' ) {
+					return false;
 				}
 			} );
 

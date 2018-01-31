@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -73,7 +73,9 @@ describe( 'Typing – InputCommand integration', () => {
 	}
 
 	function setSelection( pathA, pathB ) {
-		doc.selection.setRanges( [ new Range( new Position( doc.getRoot(), pathA ), new Position( doc.getRoot(), pathB ) ) ] );
+		model.change( writer => {
+			writer.setSelection( new Range( new Position( doc.getRoot(), pathA ), new Position( doc.getRoot(), pathB ) ) );
+		} );
 	}
 
 	describe( 'InputCommand integration', () => {

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -49,7 +49,7 @@ describe( 'Typing – bogus BR integration', () => {
 				setData( editor.model, '<paragraph>Foo[]</paragraph>' );
 			} );
 
-			editor.model.document.once( 'changesDone', () => {
+			editor.model.document.once( 'change', () => {
 				expect( editor.getData() ).to.equal( '<p>Foo&nbsp;</p>' );
 				done();
 			}, { priority: 'low' } );
@@ -63,7 +63,7 @@ describe( 'Typing – bogus BR integration', () => {
 				setData( editor.model, '<paragraph>[]</paragraph>' );
 			} );
 
-			editor.model.document.once( 'changesDone', () => {
+			editor.model.document.once( 'change', () => {
 				expect( editor.getData() ).to.equal( '<p>&nbsp;</p>' );
 				done();
 			}, { priority: 'low' } );
@@ -77,7 +77,7 @@ describe( 'Typing – bogus BR integration', () => {
 				setData( editor.model, '<paragraph><$text bold="true">Foo[]</$text></paragraph>' );
 			} );
 
-			editor.model.document.once( 'changesDone', () => {
+			editor.model.document.once( 'change', () => {
 				expect( editor.getData() ).to.equal( '<p><strong>Foo&nbsp;</strong></p>' );
 				done();
 			}, { priority: 'low' } );
@@ -95,7 +95,7 @@ describe( 'Typing – bogus BR integration', () => {
 				setData( editor.model, '<paragraph>Foo[]</paragraph>' );
 			} );
 
-			editor.model.document.once( 'changesDone', () => {
+			editor.model.document.once( 'change', () => {
 				expect( editor.getData() ).to.equal( '<p>Foo&nbsp;</p>' );
 				done();
 			}, { priority: 'low' } );
@@ -121,7 +121,7 @@ describe( 'Typing – bogus BR integration', () => {
 				setData( editor.model, '<paragraph>Foo[]</paragraph>' );
 			} );
 
-			editor.model.document.once( 'changesDone', () => {
+			editor.model.document.once( 'change', () => {
 				expect( editor.getData() ).to.equal( '<p>Foo&nbsp;</p>' );
 				done();
 			}, { priority: 'low' } );
@@ -150,7 +150,7 @@ describe( 'Typing – bogus BR integration', () => {
 				setData( editor.model, '<paragraph>Foo hous[]</paragraph>' );
 			} );
 
-			editor.model.document.once( 'changesDone', () => {
+			editor.model.document.once( 'change', () => {
 				expect( editor.getData() ).to.equal( '<p>Foo house</p>' );
 				done();
 			}, { priority: 'low' } );
