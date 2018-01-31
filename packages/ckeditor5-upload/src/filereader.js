@@ -16,6 +16,9 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * FileReader class - wrapper over native FileReader.
  */
 export default class FileReader {
+	/**
+	 * Creates an instance of the FileReader.
+	 */
 	constructor() {
 		const reader = new window.FileReader();
 

@@ -4,7 +4,7 @@
  */
 
 /**
- * @module upload/imageuploadbutton
+ * @module upload/imageuploadui
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';

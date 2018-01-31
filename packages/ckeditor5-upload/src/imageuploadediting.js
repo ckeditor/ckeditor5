@@ -4,7 +4,7 @@
  */
 
 /**
- * @module upload/imageuploadengine
+ * @module upload/imageuploadediting
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -15,7 +15,7 @@ import ModelSelection from '@ckeditor/ckeditor5-engine/src/model/selection';
 import { isImageType, findOptimalInsertionPosition } from './utils';
 
 /**
- * Image upload engine plugin.
+ * Image upload editing plugin.
  *
  * @extends module:core/plugin~Plugin
  */

@@ -14,8 +14,10 @@ import ImageUploadEditing from './imageuploadediting';
 
 /**
  * Image upload plugin.
+ *
  * This plugin do not do anything directly, but loads set of specific plugins to enable image uploading:
- * * {@link module:upload/imageuploadbutton~ImageUploadUI},
+ * * {@link module:upload/imageuploadediting~ImageUploadEditing},
+ * * {@link module:upload/imageuploadui~ImageUploadUI},
  * * {@link module:upload/imageuploadprogress~ImageUploadProgress}.
  *
  * @extends module:core/plugin~Plugin
