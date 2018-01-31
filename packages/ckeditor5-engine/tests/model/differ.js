@@ -533,6 +533,23 @@ describe( 'Differ', () => {
 			] );
 		} );
 
+		it( 'on an element - only one of many attributes changes', () => {
+			const range = Range.createFromParentsAndOffsets( root, 0, root.getChild( 0 ), 0 );
+
+			// Set an attribute on an element. It won't change afterwards.
+			attribute( range, 'otherAttr', null, true );
+
+			// "Flush" differ.
+			differ.getChanges();
+			differ.reset();
+
+			attribute( range, attributeKey, attributeOldValue, attributeNewValue );
+
+			expectChanges( [
+				{ type: 'attribute', range, attributeKey, attributeOldValue, attributeNewValue }
+			] );
+		} );
+
 		it( 'on a character', () => {
 			const parent = root.getChild( 1 );
 			const range = Range.createFromParentsAndOffsets( parent, 1, parent, 2 );

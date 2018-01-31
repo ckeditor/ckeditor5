@@ -10,37 +10,30 @@
 import ViewConsumable from './viewconsumable';
 import ModelRange from '../model/range';
 import ModelPosition from '../model/position';
-import ModelTreeWalker from '../model/treewalker';
-import ModelNode from '../model/node';
-import ModelDocumentFragment from '../model/documentfragment';
+import { SchemaContext } from '../model/schema';
 
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import log from '@ckeditor/ckeditor5-utils/src/log';
 
 /**
  * `ViewConversionDispatcher` is a central point of {@link module:engine/view/view view} conversion, which is a process of
  * converting given {@link module:engine/view/documentfragment~DocumentFragment view document fragment} or
- * {@link module:engine/view/element~Element}
- * into another structure. In default application, {@link module:engine/view/view view} is converted to {@link module:engine/model/model}.
+ * {@link module:engine/view/element~Element} into another structure.
+ * In default application, {@link module:engine/view/view view} is converted to {@link module:engine/model/model}.
  *
  * During conversion process, for all {@link module:engine/view/node~Node view nodes} from the converted view document fragment,
  * `ViewConversionDispatcher` fires corresponding events. Special callbacks called "converters" should listen to
  * `ViewConversionDispatcher` for those events.
  *
- * Each callback, as a first argument, is passed a special object `data` that has `input` and `output` properties.
- * `input` property contains {@link module:engine/view/node~Node view node} or
+ * Each callback, as a first argument, is passed a special object `data` that has `viewItem`, `cursorPosition` and
+ * `modelRange` properties. `viewItem` property contains {@link module:engine/view/node~Node view node} or
  * {@link module:engine/view/documentfragment~DocumentFragment view document fragment}
- * that is converted at the moment and might be handled by the callback. `output` property should be used to save the result
- * of conversion. Keep in mind that the `data` parameter is customizable and may contain other values - see
- * {@link ~ViewConversionDispatcher#convert}. It is also shared by reference by all callbacks
- * listening to given event. **Note**: in view to model conversion - `data` contains `context` property that is an array
- * of {@link module:engine/model/element~Element model elements}. These are model elements that will be the parent of currently
- * converted view item. `context` property is used in examples below.
- *
- * The second parameter passed to a callback is an instance of {@link module:engine/conversion/viewconsumable~ViewConsumable}. It stores
- * information about what parts of processed view item are still waiting to be handled. After a piece of view item
- * was converted, appropriate consumable value should be {@link module:engine/conversion/viewconsumable~ViewConsumable#consume consumed}.
+ * that is converted at the moment and might be handled by the callback. `modelRange` property should be used to save the result
+ * of conversion and is always a {@link module:engine/model/range~Range} when conversion result is correct.
+ * `cursorPosition` property is a {@link module:engine/model/position~Position position} on which conversion result will be inserted
+ * and is a context according to {@link module:engine/model/schema~Schema schema} will be checked before the conversion.
+ * See also {@link ~ViewConversionDispatcher#convert}. It is also shared by reference by all callbacks listening to given event.
  *
  * The third parameter passed to a callback is an instance of {@link ~ViewConversionDispatcher}
  * which provides additional tools for converters.
@@ -48,37 +41,39 @@ import log from '@ckeditor/ckeditor5-utils/src/log';
  * Examples of providing callbacks for `ViewConversionDispatcher`:
  *
  *		// Converter for paragraphs (<p>).
- *		viewDispatcher.on( 'element:p', ( evt, data, consumable, conversionApi ) => {
- *			const paragraph = new ModelElement( 'paragraph' );
+ *		viewDispatcher.on( 'element:p', ( evt, data, conversionApi ) => {
+ *			// Create paragraph element.
+ *			const paragraph = conversionApi.createElement( 'paragraph' );
  *
- *			if ( conversionApi.schema.checkChild( data.context, paragraph ) ) {
- *				if ( !consumable.consume( data.input, { name: true } ) ) {
- *					// Before converting this paragraph's children we have to update their context by this paragraph.
- *					data.context.push( paragraph );
- *					const children = conversionApi.convertChildren( data.input, consumable, data );
- *					data.context.pop();
- *					paragraph.appendChildren( children );
- *					data.output = paragraph;
+ *			// Check if paragraph is allowed on current cursor position.
+ *			if ( conversionApi.schema.checkChild( data.cursorPosition, paragraph ) ) {
+ *				// Try to consume value from consumable list.
+ *				if ( !conversionApi.consumable.consume( data.viewItem, { name: true } ) ) {
+ *					// Insert paragraph on cursor position.
+ *					conversionApi.writer.insert( paragraph, data.cursorPosition );
+ *
+ *					// Convert paragraph children to paragraph element.
+ *					conversionApi.convertChildren( data.viewItem, ModelPosition.createAt( paragraph ) );
+ *
+ *					// Wrap paragraph in range and set as conversion result.
+ *					data.modelRange = ModelRange.createOn( paragraph );
+ *
+ *					// Continue conversion just after paragraph.
+ *					data.cursorPosition = data.modelRange.end;
  *				}
  *			}
  *		} );
  *
  *		// Converter for links (<a>).
- *		viewDispatcher.on( 'element:a', ( evt, data, consumable, conversionApi ) => {
- *			if ( consumable.consume( data.input, { name: true, attributes: [ 'href' ] } ) ) {
+ *		viewDispatcher.on( 'element:a', ( evt, data, conversionApi ) => {
+ *			if ( conversionApi.consumable.consume( data.viewItem, { name: true, attributes: [ 'href' ] } ) ) {
  *				// <a> element is inline and is represented by an attribute in the model.
- *				// This is why we are not updating `context` property.
- *				data.output = conversionApi.convertChildren( data.input, consumable, data );
+ *				// This is why we need to convert only children.
+ *				const { modelRange } = conversionApi.convertChildren( data.viewItem, data.cursorPosition );
  *
- *				for ( let item of Range.createFrom( data.output ) ) {
- *					const schemaQuery = {
- *						name: item.name || '$text',
- *						attribute: 'link',
- *						inside: data.context
- *					};
- *
- *					if ( conversionApi.schema.checkAttribute( [ ...data.context, '$text' ], 'link' ) ) {
- *						item.setAttribute( 'link', data.input.getAttribute( 'href' ) );
+ *				for ( let item of modelRange.getItems() ) {
+ *					if ( conversionApi.schema.checkAttribute( item, 'linkHref' ) ) {
+ *						conversionApi.writer.setAttribute( 'linkHref', data.viewItem.getAttribute( 'href' ), item );
  *					}
  *				}
  *			}
@@ -117,16 +112,43 @@ export default class ViewConversionDispatcher {
 		this._model = model;
 
 		/**
+		 * List of elements that will be checked after conversion process and if element in the list will be empty it
+		 * will be removed from conversion result.
+		 *
+		 * After conversion process list is cleared.
+		 *
+		 * @protected
+		 * @type {Set<module:engine/model/element~Element>}
+		 */
+		this._removeIfEmpty = new Set();
+
+		/**
+		 * Position where conversion result will be inserted. Note that it's not exactly position in one of the
+		 * {@link module:engine/model/document~Document#roots document roots} but it's only a similar position.
+		 * At the beginning of conversion process fragment of model tree is created according to given context and this
+		 * position is created in the top element of created fragment. Then {@link module:engine/view/item~Item View items}
+		 * are converted to this position what makes possible to precisely check converted items by
+		 * {@link module:engine/model/schema~Schema}.
+		 *
+		 * After conversion process position is cleared.
+		 *
+		 * @private
+		 * @type {module:engine/model/position~Position|null}
+		 */
+		this._modelCursor = null;
+
+		/**
 		 * Interface passed by dispatcher to the events callbacks.
 		 *
 		 * @member {module:engine/conversion/viewconversiondispatcher~ViewConversionApi}
 		 */
 		this.conversionApi = Object.assign( {}, conversionApi );
 
-		// `convertItem` and `convertChildren` are bound to this `ViewConversionDispatcher` instance and
-		// set on `conversionApi`. This way only a part of `ViewConversionDispatcher` API is exposed.
+		// `convertItem`, `convertChildren` and `splitToAllowedParent` are bound to this `ViewConversionDispatcher`
+		// instance and set on `conversionApi`. This way only a part of `ViewConversionDispatcher` API is exposed.
 		this.conversionApi.convertItem = this._convertItem.bind( this );
 		this.conversionApi.convertChildren = this._convertChildren.bind( this );
+		this.conversionApi.splitToAllowedParent = this._splitToAllowedParent.bind( this );
 	}
 
 	/**
@@ -137,43 +159,61 @@ export default class ViewConversionDispatcher {
 	 * @fires documentFragment
 	 * @param {module:engine/view/documentfragment~DocumentFragment|module:engine/view/element~Element} viewItem
 	 * Part of the view to be converted.
-	 * @param {Object} additionalData Additional data to be passed in `data` argument when firing `ViewConversionDispatcher`
-	 * events. See also {@link ~ViewConversionDispatcher#event:element element event}.
+	 * @param {module:engine/model/schema~SchemaContextDefinition} [context=['$root']] Elements will be converted according to this context.
 	 * @returns {module:engine/model/documentfragment~DocumentFragment} Model data that is a result of the conversion process
 	 * wrapped in `DocumentFragment`. Converted marker elements will be set as that document fragment's
 	 * {@link module:engine/model/documentfragment~DocumentFragment#markers static markers map}.
 	 */
-	convert( viewItem, additionalData ) {
+	convert( viewItem, context = [ '$root' ] ) {
 		return this._model.change( writer => {
-			// Store writer in current conversion as a conversion API.
-			this.conversionApi.writer = writer;
-
 			this.fire( 'viewCleanup', viewItem );
 
-			const consumable = ViewConsumable.createFrom( viewItem );
-			let conversionResult = this._convertItem( viewItem, consumable, additionalData );
+			// Create context tree and set position in the top element.
+			// Items will be converted according to this position.
+			this._modelCursor = createContextTree( context, writer );
 
-			// Remove writer from conversion API after conversion.
+			// Store writer in conversion as a conversion API
+			// to be sure that conversion process will use the same batch.
+			this.conversionApi.writer = writer;
+
+			// Create consumable values list for conversion process.
+			this.conversionApi.consumable = ViewConsumable.createFrom( viewItem );
+
+			// Custom data stored by converter for conversion process.
+			this.conversionApi.store = {};
+
+			// Do the conversion.
+			const { modelRange } = this._convertItem( viewItem, this._modelCursor );
+
+			// Conversion result is always a document fragment so let's create this fragment.
+			const documentFragment = writer.createDocumentFragment();
+
+			// When there is a conversion result.
+			if ( modelRange ) {
+				// Remove all empty elements that was added to #_removeIfEmpty list.
+				this._removeEmptyElements();
+
+				// Move all items that was converted to context tree to document fragment.
+				for ( const item of Array.from( this._modelCursor.parent.getChildren() ) ) {
+					writer.append( item, documentFragment );
+				}
+
+				// Extract temporary markers elements from model and set as static markers collection.
+				documentFragment.markers = extractMarkersFromModelFragment( documentFragment, writer );
+			}
+
+			// Clear context position.
+			this._modelCursor = null;
+
+			// Clear split elements.
+			this._removeIfEmpty.clear();
+
+			// Clear conversion API.
 			this.conversionApi.writer = null;
+			this.conversionApi.store = null;
 
-			// We can get a null here if conversion failed (see _convertItem())
-			// or simply if an item could not be converted (e.g. due to the schema).
-			if ( !conversionResult ) {
-				return writer.createDocumentFragment();
-			}
-
-			// When conversion result is not a document fragment we need to wrap it in document fragment.
-			if ( !conversionResult.is( 'documentFragment' ) ) {
-				const docFrag = writer.createDocumentFragment();
-
-				writer.append( conversionResult, docFrag );
-				conversionResult = docFrag;
-			}
-
-			// Extract temporary markers elements from model and set as static markers collection.
-			conversionResult.markers = extractMarkersFromModelFragment( conversionResult, writer );
-
-			return conversionResult;
+			// Return fragment as conversion result.
+			return documentFragment;
 		} );
 	}
 
@@ -181,55 +221,117 @@ export default class ViewConversionDispatcher {
 	 * @private
 	 * @see module:engine/conversion/viewconversiondispatcher~ViewConversionApi#convertItem
 	 */
-	_convertItem( input, consumable, additionalData = {} ) {
-		const data = Object.assign( {}, additionalData, {
-			input,
-			output: null
-		} );
+	_convertItem( viewItem, cursorPosition ) {
+		const data = Object.assign( { viewItem, cursorPosition, modelRange: null } );
 
-		if ( input.is( 'element' ) ) {
-			this.fire( 'element:' + input.name, data, consumable, this.conversionApi );
-		} else if ( input.is( 'text' ) ) {
-			this.fire( 'text', data, consumable, this.conversionApi );
+		if ( viewItem.is( 'element' ) ) {
+			this.fire( 'element:' + viewItem.name, data, this.conversionApi );
+		} else if ( viewItem.is( 'text' ) ) {
+			this.fire( 'text', data, this.conversionApi );
 		} else {
-			this.fire( 'documentFragment', data, consumable, this.conversionApi );
+			this.fire( 'documentFragment', data, this.conversionApi );
 		}
 
-		// Handle incorrect `data.output`.
-		if ( data.output && !( data.output instanceof ModelNode || data.output instanceof ModelDocumentFragment ) ) {
+		// Handle incorrect conversion result.
+		if ( data.modelRange && !( data.modelRange instanceof ModelRange ) ) {
 			/**
 			 * Incorrect conversion result was dropped.
 			 *
-			 * Item may be converted to either {@link module:engine/model/node~Node model node} or
-			 * {@link module:engine/model/documentfragment~DocumentFragment model document fragment}.
+			 * {@link module:engine/model/range~Range Model range} should be a conversion result.
 			 *
 			 * @error view-conversion-dispatcher-incorrect-result
 			 */
-			log.warn( 'view-conversion-dispatcher-incorrect-result: Incorrect conversion result was dropped.', [ input, data.output ] );
-
-			return null;
+			throw new CKEditorError( 'view-conversion-dispatcher-incorrect-result: Incorrect conversion result was dropped.' );
 		}
 
-		return data.output;
+		return { modelRange: data.modelRange, cursorPosition: data.cursorPosition };
 	}
 
 	/**
 	 * @private
 	 * @see module:engine/conversion/viewconversiondispatcher~ViewConversionApi#convertChildren
 	 */
-	_convertChildren( input, consumable, additionalData ) {
-		const writer = this.conversionApi.writer;
-		const documentFragment = writer.createDocumentFragment();
+	_convertChildren( viewItem, cursorPosition ) {
+		const modelRange = new ModelRange( cursorPosition );
+		let nextCursorPosition = cursorPosition;
 
-		for ( const viewChild of Array.from( input.getChildren() ) ) {
-			const modelChild = this._convertItem( viewChild, consumable, additionalData );
+		for ( const viewChild of Array.from( viewItem.getChildren() ) ) {
+			const result = this._convertItem( viewChild, nextCursorPosition );
 
-			if ( modelChild instanceof ModelNode || modelChild instanceof ModelDocumentFragment ) {
-				writer.append( modelChild, documentFragment );
+			if ( result.modelRange instanceof ModelRange ) {
+				modelRange.end = result.modelRange.end;
+				nextCursorPosition = result.cursorPosition;
 			}
 		}
 
-		return documentFragment;
+		return { modelRange, cursorPosition: nextCursorPosition };
+	}
+
+	/**
+	 * @private
+	 * @see module:engine/conversion/viewconversiondispatcher~ViewConversionApi#splitToAllowedParent
+	 */
+	_splitToAllowedParent( node, cursorPosition ) {
+		// Try to find allowed parent.
+		const allowedParent = this.conversionApi.schema.findAllowedParent( node, cursorPosition );
+
+		// When there is no parent that allows to insert node then return `null`.
+		if ( !allowedParent ) {
+			return null;
+		}
+
+		// When current position parent allows to insert node then return this position.
+		if ( allowedParent === cursorPosition.parent ) {
+			return { position: cursorPosition };
+		}
+
+		// When allowed parent is in context tree.
+		if ( this._modelCursor.parent.getAncestors().includes( allowedParent ) ) {
+			return null;
+		}
+
+		// Split element to allowed parent.
+		const splitResult = this.conversionApi.writer.split( cursorPosition, allowedParent );
+
+		// Remember all elements that are created as a result of split.
+		// This is important because at the end of conversion we want to remove all empty split elements.
+		//
+		// Loop through positions between elements in range (except split result position) and collect parents.
+		// <notSplit><split1><split2>[pos]</split2>[pos]</split1>[omit]<split1>[pos]<split2>[pos]</split2></split1></notSplit>
+		for ( const position of splitResult.range.getPositions() ) {
+			if ( !position.isEqual( splitResult.position ) ) {
+				this._removeIfEmpty.add( position.parent );
+			}
+		}
+
+		return {
+			position: splitResult.position,
+			cursorParent: splitResult.range.end.parent
+		};
+	}
+
+	/**
+	 * Checks if {@link #_removeIfEmpty} contains empty elements and remove them.
+	 * We need to do it smart because there could be elements that are not empty because contains
+	 * other empty elements and after removing its children they become available to remove.
+	 * We need to continue iterating over split elements as long as any element will be removed.
+	 *
+	 * @private
+	 */
+	_removeEmptyElements() {
+		let removed = false;
+
+		for ( const element of this._removeIfEmpty ) {
+			if ( element.isEmpty ) {
+				this.conversionApi.writer.remove( element );
+				this._removeIfEmpty.delete( element );
+				removed = true;
+			}
+		}
+
+		if ( removed ) {
+			this._removeEmptyElements();
+		}
 	}
 
 	/**
@@ -248,21 +350,16 @@ export default class ViewConversionDispatcher {
 	 * all elements conversion or to conversion of specific elements.
 	 *
 	 * @event element
-	 * @param {Object} data Object containing conversion input and a placeholder for conversion output and possibly other
-	 * values (see {@link #convert}).
-	 * Keep in mind that this object is shared by reference between all callbacks that will be called.
-	 * This means that callbacks can add their own values if needed,
-	 * and those values will be available in other callbacks.
-	 * @param {module:engine/view/element~Element} data.input Converted element.
-	 * @param {*} data.output The current state of conversion result. Every change to converted element should
-	 * be reflected by setting or modifying this property.
-	 * @param {module:engine/model/schema~SchemaPath} data.context The conversion context.
-	 * @param {module:engine/conversion/viewconsumable~ViewConsumable} consumable Values to consume.
-	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `ViewConversionDispatcher` constructor.
-	 * Besides of properties passed in constructor, it also has `convertItem` and `convertChildren` methods which are references
-	 * to {@link #_convertItem} and
-	 * {@link ~ViewConversionDispatcher#_convertChildren}. Those methods are needed to convert
-	 * the whole view-tree they were exposed in `conversionApi` for callbacks.
+	 * @param {Object} data Object containing viewItem to convert, cursorPosition as a conversion position and placeholder
+	 * for modelRange that is a conversion result. Keep in mind that this object is shared by reference between all
+	 * callbacks that will be called. This means that callbacks can override values if needed, and those values will
+	 * be available in other callbacks.
+	 * @param {module:engine/view/item~Item} data.viewItem Converted item.
+	 * @param {module:engine/model/position~Position} data.cursorPosition Target position for current item.
+	 * @param {module:engine/model/range~Range} data.modelRange The current state of conversion result. Every change to
+	 * converted element should be reflected by setting or modifying this property.
+	 * @param {ViewConversionApi} conversionApi Conversion interface to be used by callback, passed in
+	 * `ViewConversionDispatcher` constructor.
 	 */
 
 	/**
@@ -292,16 +389,13 @@ function extractMarkersFromModelFragment( modelItem, writer ) {
 	const markers = new Map();
 
 	// Create ModelTreeWalker.
-	const walker = new ModelTreeWalker( {
-		startPosition: ModelPosition.createAt( modelItem, 0 ),
-		ignoreElementEnd: true
-	} );
+	const range = ModelRange.createIn( modelItem ).getItems();
 
 	// Walk through DocumentFragment and collect marker elements.
-	for ( const value of walker ) {
+	for ( const item of range ) {
 		// Check if current element is a marker.
-		if ( value.item.name == '$marker' ) {
-			markerElements.add( value.item );
+		if ( item.name == '$marker' ) {
+			markerElements.add( item );
 		}
 	}
 
@@ -325,13 +419,33 @@ function extractMarkersFromModelFragment( modelItem, writer ) {
 	return markers;
 }
 
+// Creates model fragment according to given context and returns position in top element.
+function createContextTree( contextDefinition, writer ) {
+	let position;
+
+	for ( const item of new SchemaContext( contextDefinition ) ) {
+		const attributes = {};
+
+		for ( const key of item.getAttributeKeys() ) {
+			attributes[ key ] = item.getAttribute( key );
+		}
+
+		const current = writer.createElement( item.name, attributes );
+
+		if ( position ) {
+			writer.append( current, position );
+		}
+
+		position = ModelPosition.createAt( current );
+	}
+
+	return position;
+}
+
 /**
  * Conversion interface that is registered for given {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher}
  * and is passed as one of parameters when {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher dispatcher}
  * fires it's events.
- *
- * `ViewConversionApi` object is built by {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher} constructor.
- * The exact list of properties of this object is determined by the object passed to the constructor.
  *
  * @interface ViewConversionApi
  */
@@ -339,22 +453,20 @@ function extractMarkersFromModelFragment( modelItem, writer ) {
 /**
  * Starts conversion of given item by firing an appropriate event.
  *
- * Every fired event is passed (as first parameter) an object with `output` property. Every event may set and/or
- * modify that property. When all callbacks are done, the final value of `output` property is returned by this method.
- * The `output` must be either {@link module:engine/model/node~Node model node} or
- * {@link module:engine/model/documentfragment~DocumentFragment model document fragment} or `null` (as set by default).
+ * Every fired event is passed (as first parameter) an object with `modelRange` property. Every event may set and/or
+ * modify that property. When all callbacks are done, the final value of `modelRange` property is returned by this method.
+ * The `modelRange` must be {@link module:engine/model/range~Range model range} or `null` (as set by default).
  *
  * @method #convertItem
  * @fires module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:element
  * @fires module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:text
  * @fires module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:documentFragment
- * @param {module:engine/view/documentfragment~DocumentFragment|module:engine/view/element~Element|module:engine/view/text~Text}
- * input Item to convert.
- * @param {module:engine/conversion/viewconsumable~ViewConsumable} consumable Values to consume.
- * @param {Object} [additionalData] Additional data to be passed in `data` argument when firing `ViewConversionDispatcher`
- * events. See also {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:element element event}.
- * @returns {module:engine/model/node~Node|module:engine/model/documentfragment~DocumentFragment|null} The result of item conversion,
+ * @param {module:engine/view/item~Item} viewItem Item to convert.
+ * @param {module:engine/model/position~Position} cursorPosition Position of conversion.
+ * @returns {Object} result Conversion result.
+ * @returns {module:engine/model/range~Range|null} result.modelRange Model range containing result of item conversion,
  * created and modified by callbacks attached to fired event, or `null` if the conversion result was incorrect.
+ * @returns {module:engine/model/position~Position} result.cursorPosition Position where conversion should be continued.
  */
 
 /**
@@ -364,11 +476,37 @@ function extractMarkersFromModelFragment( modelItem, writer ) {
  * @fires module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:element
  * @fires module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:text
  * @fires module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:documentFragment
- * @param {module:engine/view/documentfragment~DocumentFragment|module:engine/view/element~Element}
- * input Item which children will be converted.
- * @param {module:engine/conversion/viewconsumable~ViewConsumable} consumable Values to consume.
- * @param {Object} [additionalData] Additional data to be passed in `data` argument when firing `ViewConversionDispatcher`
- * events. See also {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:element element event}.
- * @returns {module:engine/model/documentfragment~DocumentFragment} Model document fragment containing results of conversion
- * of all children of given item.
+ * @param {module:engine/view/item~Item} viewItem Item to convert.
+ * @param {module:engine/model/position~Position} cursorPosition Position of conversion.
+ * @returns {Object} result Conversion result.
+ * @returns {module:engine/model/range~Range} result.modelRange Model range containing results of conversion of all children of given item.
+ * When no children was converted then range is collapsed.
+ * @returns {module:engine/model/position~Position} result.cursorPosition Position where conversion should be continued.
+ */
+
+/**
+ * Find allowed parent for element that we are going to insert starting from given position.
+ * If current parent does not allow to insert element but one of the ancestors does then split nodes to allowed parent.
+ *
+ * @method #splitToAllowedParent
+ * @param {module:engine/model/position~Position} position Position on which element is going to be inserted.
+ * @param {module:engine/model/node~Node} node Node to insert.
+ * @returns {Object} Split result.
+ * @returns {module:engine/model/position~Position} position between split elements.
+ * @returns {module:engine/model/element~Element} [cursorParent] Element inside which cursor should be placed to
+ * continue conversion. When element is not defined it means that there was no split.
+ */
+
+/**
+ * Instance of {@link module:engine/conversion/viewconsumable~ViewConsumable}. It stores
+ * information about what parts of processed view item are still waiting to be handled. After a piece of view item
+ * was converted, appropriate consumable value should be {@link module:engine/conversion/viewconsumable~ViewConsumable#consume consumed}.
+ *
+ * @param {Object} #consumable
+ */
+
+/**
+ * Custom data stored by converter for conversion process.
+ *
+ * @param {Object} #store
  */

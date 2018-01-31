@@ -26,7 +26,7 @@ import ModelRange from '../model/range';
  * Controller for the data pipeline. The data pipeline controls how data is retrieved from the document
  * and set inside it. Hence, the controller features two methods which allow to {@link ~DataController#get get}
  * and {@link ~DataController#set set} data of the {@link ~DataController#model model}
- * using given:
+ * using the given:
  *
  * * {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor},
  * * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher model to view} and
@@ -36,10 +36,11 @@ import ModelRange from '../model/range';
  */
 export default class DataController {
 	/**
-	 * Creates data controller instance.
+	 * Creates a data controller instance.
 	 *
 	 * @param {module:engine/model/model~Model} model Data model.
-	 * @param {module:engine/dataprocessor/dataprocessor~DataProcessor} [dataProcessor] Data processor which should used by the controller.
+	 * @param {module:engine/dataprocessor/dataprocessor~DataProcessor} [dataProcessor] Data processor that should be used
+	 * by the controller.
 	 */
 	constructor( model, dataProcessor ) {
 		/**
@@ -60,7 +61,7 @@ export default class DataController {
 
 		/**
 		 * Mapper used for the conversion. It has no permanent bindings, because they are created when getting data and
-		 * cleared directly after data are converted. However, the mapper is defined as class property, because
+		 * cleared directly after the data are converted. However, the mapper is defined as a class property, because
 		 * it needs to be passed to the `ModelConversionDispatcher` as a conversion API.
 		 *
 		 * @member {module:engine/conversion/mapper~Mapper}
@@ -68,8 +69,8 @@ export default class DataController {
 		this.mapper = new Mapper();
 
 		/**
-		 * Model to view conversion dispatcher used by the {@link #get get method}.
-		 * To attach model to view converter to the data pipeline you need to add lister to this property:
+		 * Model-to-view conversion dispatcher used by the {@link #get get method}.
+		 * To attach the model-to-view converter to the data pipeline you need to add a listener to this property:
 		 *
 		 *		data.modelToView( 'insert:$element', customInsertConverter );
 		 *
@@ -86,8 +87,8 @@ export default class DataController {
 		this.modelToView.on( 'insert:$text', insertText(), { priority: 'lowest' } );
 
 		/**
-		 * View to model conversion dispatcher used by the {@link #set set method}.
-		 * To attach view to model converter to the data pipeline you need to add lister to this property:
+		 * View-to-model conversion dispatcher used by the {@link #set set method}.
+		 * To attach the view-to-model converter to the data pipeline you need to add a listener to this property:
 		 *
 		 *		data.viewToModel( 'element', customElementConverter );
 		 *
@@ -113,7 +114,7 @@ export default class DataController {
 	}
 
 	/**
-	 * Returns model's data converted by the {@link #modelToView model to view converters} and
+	 * Returns the model's data converted by the {@link #modelToView model-to-view converters} and
 	 * formatted by the {@link #processor data processor}.
 	 *
 	 * @param {String} [rootName='main'] Root name.
@@ -127,11 +128,11 @@ export default class DataController {
 	/**
 	 * Returns the content of the given {@link module:engine/model/element~Element model's element} or
 	 * {@link module:engine/model/documentfragment~DocumentFragment model document fragment} converted by the
-	 * {@link #modelToView model to view converters} and formatted by the
+	 * {@link #modelToView model-to-view converters} and formatted by the
 	 * {@link #processor data processor}.
 	 *
 	 * @param {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment} modelElementOrFragment
-	 * Element which content will be stringified.
+	 * Element whose content will be stringified.
 	 * @returns {String} Output data.
 	 */
 	stringify( modelElementOrFragment ) {
@@ -145,11 +146,11 @@ export default class DataController {
 	/**
 	 * Returns the content of the given {@link module:engine/model/element~Element model element} or
 	 * {@link module:engine/model/documentfragment~DocumentFragment model document fragment} converted by the
-	 * {@link #modelToView model to view converters} to a
+	 * {@link #modelToView model-to-view converters} to a
 	 * {@link module:engine/view/documentfragment~DocumentFragment view document fragment}.
 	 *
 	 * @param {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment} modelElementOrFragment
-	 * Element or document fragment which content will be converted.
+	 * Element or document fragment whose content will be converted.
 	 * @returns {module:engine/view/documentfragment~DocumentFragment} Output view DocumentFragment.
 	 */
 	toView( modelElementOrFragment ) {
@@ -179,9 +180,9 @@ export default class DataController {
 
 	/**
 	 * Sets input data parsed by the {@link #processor data processor} and
-	 * converted by the {@link #viewToModel view to model converters}.
+	 * converted by the {@link #viewToModel view-to-model converters}.
 	 *
-	 * This method also creates a batch with all the changes applied. If all you need is to parse data use
+	 * This method also creates a batch with all the changes applied. If all you need is to parse data, use
 	 * the {@link #parse} method.
 	 *
 	 * @param {String} data Input data.
@@ -204,15 +205,15 @@ export default class DataController {
 
 	/**
 	 * Returns data parsed by the {@link #processor data processor} and then
-	 * converted by the {@link #viewToModel view to model converters}.
+	 * converted by the {@link #viewToModel view-to-model converters}.
 	 *
 	 * @see #set
 	 * @param {String} data Data to parse.
-	 * @param {String} [context='$root'] Base context in which the view will be converted to the model. See:
-	 * {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#convert}.
+	 * @param {module:engine/model/schema~SchemaContextDefinition} [context=['$root']] Base context in which the view will
+	 * be converted to the model. See: {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#convert}.
 	 * @returns {module:engine/model/documentfragment~DocumentFragment} Parsed data.
 	 */
-	parse( data, context = '$root' ) {
+	parse( data, context = [ '$root' ] ) {
 		// data -> view
 		const viewDocumentFragment = this.processor.toView( data );
 
@@ -221,22 +222,21 @@ export default class DataController {
 	}
 
 	/**
-	 * Returns wrapped by {module:engine/model/documentfragment~DocumentFragment} result of the given
-	 * {@link module:engine/view/element~Element view element} or
+	 * Returns the result of the given {@link module:engine/view/element~Element view element} or
 	 * {@link module:engine/view/documentfragment~DocumentFragment view document fragment} converted by the
-	 * {@link #viewToModel view to model converters}.
+	 * {@link #viewToModel view-to-model converters}, wrapped by {module:engine/model/documentfragment~DocumentFragment}.
 	 *
-	 * When marker elements were converted during conversion process then will be set as DocumentFragment's
+	 * When marker elements were converted during the conversion process, it will be set as a DocumentFragment's
 	 * {@link module:engine/model/documentfragment~DocumentFragment#markers static markers map}.
 	 *
 	 * @param {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment} viewElementOrFragment
-	 * Element or document fragment which content will be converted.
-	 * @param {String} [context='$root'] Base context in which the view will be converted to the model. See:
-	 * {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#convert}.
+	 * Element or document fragment whose content will be converted.
+	 * @param {module:engine/model/schema~SchemaContextDefinition} [context=['$root']] Base context in which the view will
+	 * be converted to the model. See: {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#convert}.
 	 * @returns {module:engine/model/documentfragment~DocumentFragment} Output document fragment.
 	 */
-	toModel( viewElementOrFragment, context = '$root' ) {
-		return this.viewToModel.convert( viewElementOrFragment, { context: [ context ] } );
+	toModel( viewElementOrFragment, context = [ '$root' ] ) {
+		return this.viewToModel.convert( viewElementOrFragment, context );
 	}
 
 	/**

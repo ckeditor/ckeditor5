@@ -97,7 +97,7 @@ describe( 'DataController', () => {
 		} );
 
 		it( 'should accept parsing context', () => {
-			const output = data.parse( 'foo', '$block' );
+			const output = data.parse( 'foo', [ '$block' ] );
 
 			expect( stringify( output ) ).to.equal( 'foo' );
 		} );
@@ -138,7 +138,7 @@ describe( 'DataController', () => {
 			expect( stringify( data.toModel( viewFragment ) ) ).to.equal( '' );
 
 			// Model fragment in inline root.
-			expect( stringify( data.toModel( viewFragment, 'inlineRoot' ) ) ).to.equal( 'foo' );
+			expect( stringify( data.toModel( viewFragment, [ 'inlineRoot' ] ) ) ).to.equal( 'foo' );
 		} );
 	} );
 
