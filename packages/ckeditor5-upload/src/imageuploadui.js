@@ -18,7 +18,7 @@ import { isImageType, findOptimalInsertionPosition } from './utils';
  *
  * @extends module:core/plugin~Plugin
  */
-export default class ImageUploadButton extends Plugin {
+export default class ImageUploadUI extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

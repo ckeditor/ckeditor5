@@ -11,7 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import FileDialogButtonView from '../src/ui/filedialogbuttonview';
 import FileRepository from '../src/filerepository';
-import ImageUploadButton from '../src/imageuploadbutton';
+import ImageUploadUI from '../src/imageuploadui';
 import ImageUploadEngine from '../src/imageuploadengine';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
@@ -19,7 +19,7 @@ import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
 import { createNativeFileMock, AdapterMock } from './_utils/mocks';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-describe( 'ImageUploadButton', () => {
+describe( 'ImageUploadUI', () => {
 	let editor, model, editorElement, fileRepository;
 
 	class UploadAdapterPluginMock extends Plugin {
@@ -37,7 +37,7 @@ describe( 'ImageUploadButton', () => {
 
 		return ClassicEditor
 			.create( editorElement, {
-				plugins: [ Paragraph, Image, ImageUploadEngine, ImageUploadButton, FileRepository, UploadAdapterPluginMock ]
+				plugins: [ Paragraph, Image, ImageUploadEngine, ImageUploadUI, FileRepository, UploadAdapterPluginMock ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;

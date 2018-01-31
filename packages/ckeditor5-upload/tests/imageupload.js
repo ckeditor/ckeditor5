@@ -10,7 +10,7 @@ import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageUpload from '../src/imageupload';
 import ImageUploadEngine from '../src/imageuploadengine';
 import ImageUploadProgress from '../src/imageuploadprogress';
-import ImageUploadButton from '../src/imageuploadbutton';
+import ImageUploadUI from '../src/imageuploadui';
 
 import { UploadAdapterPluginMock } from './_utils/mocks';
 
@@ -44,8 +44,8 @@ describe( 'ImageUpload', () => {
 		expect( editor.plugins.get( ImageUploadProgress ) ).to.be.instanceOf( ImageUploadProgress );
 	} );
 
-	it( 'should include ImageUploadButton', () => {
-		expect( editor.plugins.get( ImageUploadButton ) ).to.be.instanceOf( ImageUploadButton );
+	it( 'should include ImageUploadUI', () => {
+		expect( editor.plugins.get( ImageUploadUI ) ).to.be.instanceOf( ImageUploadUI );
 	} );
 } );
 
