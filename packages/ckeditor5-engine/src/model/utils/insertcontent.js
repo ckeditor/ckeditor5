@@ -161,7 +161,7 @@ class Insertion {
 			return Range.createOn( this.nodeToSelect );
 		}
 
-		return this.model.document.getNearestSelectionRange( this.position );
+		return this.model.schema.getNearestSelectionRange( this.position );
 	}
 
 	/**
