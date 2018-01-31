@@ -1,11 +1,11 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Widget from '../src/widget';
-import Delete from '@ckeditor/ckeditor5-typing/src/delete';
+import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
 import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
 import { toWidget } from '../src/utils';
@@ -20,14 +20,13 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 /* global document */
 
 describe( 'Widget', () => {
-	let editor, model, doc, viewDocument;
+	let editor, model, viewDocument;
 
 	beforeEach( () => {
-		return VirtualTestEditor.create( { plugins: [ Widget, Delete ] } )
+		return VirtualTestEditor.create( { plugins: [ Widget, Typing ] } )
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
-				doc = model.document;
 				viewDocument = editor.editing.view;
 
 				model.schema.register( 'widget', {
@@ -235,8 +234,8 @@ describe( 'Widget', () => {
 			'<p>foo</p>[<div class="ck-widget ck-widget_selected" contenteditable="false">foo<b></b></div>]'
 		);
 
-		model.change( () => {
-			doc.selection.removeAllRanges();
+		model.change( writer => {
+			writer.setSelection( null );
 		} );
 
 		expect( getViewData( viewDocument ) ).to.equal(
@@ -373,7 +372,8 @@ describe( 'Widget', () => {
 			test(
 				'should do nothing if other key is pressed',
 				'[<widget></widget>]<paragraph>foo</paragraph>',
-				keyCodes.a,
+				// Use a safe key (alt) to not trigger the Input features "unsafe keys" handler.
+				18,
 				'[<widget></widget>]<paragraph>foo</paragraph>'
 			);
 
@@ -703,7 +703,7 @@ describe( 'Widget', () => {
 				setModelData( model, data );
 				viewDocument.fire( 'keydown', new DomEventData(
 					viewDocument,
-					{ target: document.createElement( 'div' ), preventDefault: () => {} },
+					{ target: document.createElement( 'div' ), preventDefault() {} },
 					domEventDataMock
 				) );
 
@@ -721,17 +721,27 @@ describe( 'Widget', () => {
 			it( name, () => {
 				setModelData( model, input );
 				const scrollStub = sinon.stub( viewDocument, 'scrollToTheSelection' );
+				const domEventDataMock = {
+					keyCode: direction == 'backward' ? keyCodes.backspace : keyCodes.delete,
+				};
 
-				viewDocument.fire( 'delete', new DomEventData(
+				viewDocument.fire( 'keydown', new DomEventData(
 					viewDocument,
-					{ target: document.createElement( 'div' ), preventDefault: () => {} },
-					{ direction, unit: 'character', sequence: 0 }
+					{ target: document.createElement( 'div' ), preventDefault() {} },
+					domEventDataMock
 				) );
 
 				expect( getModelData( model ) ).to.equal( expected );
 				scrollStub.restore();
 			} );
 		}
+
+		// Let's make this integration tests real which will help covering
+		// cases like https://github.com/ckeditor/ckeditor5/issues/753.
+		// Originally, this test file used the Delete feature only which was not "integrational" enough.
+		it( 'tests are executed with the Typing feature', () => {
+			expect( editor.plugins.get( 'Typing' ) ).to.not.be.undefined;
+		} );
 
 		test(
 			'should select widget when backspace is pressed',

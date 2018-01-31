@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -222,8 +222,8 @@ export default class Widget extends Plugin {
 			const newRange = modelDocument.getNearestSelectionRange( position, isForward ? 'forward' : 'backward' );
 
 			if ( newRange ) {
-				model.change( () => {
-					modelSelection.setRanges( [ newRange ] );
+				model.change( writer => {
+					writer.setSelection( newRange );
 				} );
 			}
 
@@ -257,15 +257,15 @@ export default class Widget extends Plugin {
 	 */
 	_selectAllNestedEditableContent() {
 		const model = this.editor.model;
-		const modelSelection = model.document.selection;
-		const limitElement = model.schema.getLimitElement( modelSelection );
+		const documentSelection = model.document.selection;
+		const limitElement = model.schema.getLimitElement( documentSelection );
 
-		if ( modelSelection.getFirstRange().root == limitElement ) {
+		if ( documentSelection.getFirstRange().root == limitElement ) {
 			return false;
 		}
 
-		model.change( () => {
-			modelSelection.setIn( limitElement );
+		model.change( writer => {
+			writer.setSelection( ModelRange.createIn( limitElement ) );
 		} );
 
 		return true;
@@ -279,7 +279,6 @@ export default class Widget extends Plugin {
 	 */
 	_selectAllContent() {
 		const model = this.editor.model;
-		const modelSelection = model.document.selection;
 		const editing = this.editor.editing;
 		const viewDocument = editing.view;
 		const viewSelection = viewDocument.selection;
@@ -291,8 +290,8 @@ export default class Widget extends Plugin {
 		if ( selectedElement && isWidget( selectedElement ) ) {
 			const widgetParent = editing.mapper.toModelElement( selectedElement.parent );
 
-			model.change( () => {
-				modelSelection.setRanges( [ ModelRange.createIn( widgetParent ) ] );
+			model.change( writer => {
+				writer.setSelection( ModelRange.createIn( widgetParent ) );
 			} );
 
 			return true;
@@ -308,7 +307,9 @@ export default class Widget extends Plugin {
 	 * @param {module:engine/model/element~Element} element
 	 */
 	_setSelectionOverElement( element ) {
-		this.editor.model.document.selection.setRanges( [ ModelRange.createOn( element ) ] );
+		this.editor.model.change( writer => {
+			writer.setSelection( ModelRange.createOn( element ) );
+		} );
 	}
 
 	/**
@@ -327,7 +328,7 @@ export default class Widget extends Plugin {
 
 		// Clone current selection to use it as a probe. We must leave default selection as it is so it can return
 		// to its current state after undo.
-		const probe = ModelSelection.createFromSelection( modelSelection );
+		const probe = new ModelSelection( modelSelection );
 		model.modifySelection( probe, { direction: forward ? 'forward' : 'backward' } );
 		const objectElement = forward ? probe.focus.nodeBefore : probe.focus.nodeAfter;
 
