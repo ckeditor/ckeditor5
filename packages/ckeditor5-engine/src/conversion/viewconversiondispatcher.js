@@ -271,16 +271,16 @@ export default class ViewConversionDispatcher {
 	 * @private
 	 * @see module:engine/conversion/viewconversiondispatcher~ViewConversionApi#splitToAllowedParent
 	 */
-	_splitToAllowedParent( element, cursorPosition ) {
+	_splitToAllowedParent( node, cursorPosition ) {
 		// Try to find allowed parent.
-		const allowedParent = this.conversionApi.schema.findAllowedParent( element, cursorPosition );
+		const allowedParent = this.conversionApi.schema.findAllowedParent( node, cursorPosition );
 
-		// When there is no parent that allows to insert element then return `null`.
+		// When there is no parent that allows to insert node then return `null`.
 		if ( !allowedParent ) {
 			return null;
 		}
 
-		// When current position parent allows to insert element then return this position.
+		// When current position parent allows to insert node then return this position.
 		if ( allowedParent === cursorPosition.parent ) {
 			return { position: cursorPosition };
 		}
@@ -490,7 +490,7 @@ function createContextTree( contextDefinition, writer ) {
  *
  * @method #splitToAllowedParent
  * @param {module:engine/model/position~Position} position Position on which element is going to be inserted.
- * @param {module:engine/model/element~Node} element Element to insert.
+ * @param {module:engine/model/node~Node} node Node to insert.
  * @returns {Object} Split result.
  * @returns {module:engine/model/position~Position} position between split elements.
  * @returns {module:engine/model/element~Element} [cursorParent] Element inside which cursor should be placed to
