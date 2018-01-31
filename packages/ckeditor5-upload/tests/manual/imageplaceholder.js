@@ -7,10 +7,10 @@
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import ImageEngine from '@ckeditor/ckeditor5-image/src/image/imageengine';
-import ImageUploadEngine from '../../src/imageuploadengine';
+import ImageUploadEditing from '../../src/imageuploadediting';
 import ImageUploadProgress from '../../src/imageuploadprogress';
 
-ClassicTestEditor.create( { plugins: [ ImageEngine, ImageUploadEngine, ImageUploadProgress ] } )
+ClassicTestEditor.create( { plugins: [ ImageEngine, ImageUploadEditing, ImageUploadProgress ] } )
 	.then( editor => {
 		const imageUploadProgress = editor.plugins.get( ImageUploadProgress );
 		const img = document.createElement( 'img' );

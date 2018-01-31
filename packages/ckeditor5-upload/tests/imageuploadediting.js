@@ -9,7 +9,7 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ImageEngine from '@ckeditor/ckeditor5-image/src/image/imageengine';
-import ImageUploadEngine from '../src/imageuploadengine';
+import ImageUploadEditing from './imageuploadediting';
 import ImageUploadCommand from '../src/imageuploadcommand';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import UndoEngine from '@ckeditor/ckeditor5-undo/src/undoengine';
@@ -26,7 +26,7 @@ import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
 
-describe( 'ImageUploadEngine', () => {
+describe( 'ImageUploadEditing', () => {
 	// eslint-disable-next-line max-len
 	const base64Sample = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
 	let editor, model, doc, fileRepository, viewDocument, nativeReaderMock, loader, adapterMock;
@@ -54,7 +54,7 @@ describe( 'ImageUploadEngine', () => {
 
 		return ClassicTestEditor
 			.create( {
-				plugins: [ ImageEngine, ImageUploadEngine, Paragraph, UndoEngine, UploadAdapterPluginMock ]
+				plugins: [ ImageEngine, ImageUploadEditing, Paragraph, UndoEngine, UploadAdapterPluginMock ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;

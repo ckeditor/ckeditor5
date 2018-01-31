@@ -12,7 +12,7 @@ import Image from '@ckeditor/ckeditor5-image/src/image';
 import FileDialogButtonView from '../src/ui/filedialogbuttonview';
 import FileRepository from '../src/filerepository';
 import ImageUploadUI from '../src/imageuploadui';
-import ImageUploadEngine from '../src/imageuploadengine';
+import ImageUploadEditing from './imageuploadediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
 
@@ -37,7 +37,7 @@ describe( 'ImageUploadUI', () => {
 
 		return ClassicEditor
 			.create( editorElement, {
-				plugins: [ Paragraph, Image, ImageUploadEngine, ImageUploadUI, FileRepository, UploadAdapterPluginMock ]
+				plugins: [ Paragraph, Image, ImageUploadEditing, ImageUploadUI, FileRepository, UploadAdapterPluginMock ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;

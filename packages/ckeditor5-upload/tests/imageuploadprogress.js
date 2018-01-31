@@ -9,7 +9,7 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ImageEngine from '@ckeditor/ckeditor5-image/src/image/imageengine';
-import ImageUploadEngine from '../src/imageuploadengine';
+import ImageUploadEditing from './imageuploadediting';
 import ImageUploadProgress from '../src/imageuploadprogress';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import FileRepository from '../src/filerepository';
@@ -50,7 +50,7 @@ describe( 'ImageUploadProgress', () => {
 
 		return ClassicTestEditor
 			.create( {
-				plugins: [ ImageEngine, Paragraph, ImageUploadEngine, ImageUploadProgress, UploadAdapterPluginMock ]
+				plugins: [ ImageEngine, Paragraph, ImageUploadEditing, ImageUploadProgress, UploadAdapterPluginMock ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
