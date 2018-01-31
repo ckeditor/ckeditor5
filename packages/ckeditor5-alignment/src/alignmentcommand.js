@@ -19,7 +19,7 @@ import upperFirst from '@ckeditor/ckeditor5-utils/src/lib/lodash/upperFirst';
  */
 export default class AlignmentCommand extends Command {
 	/**
-	 * Creates an instance of the command.
+	 * Creates an instance of the alignment command.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor The editor instance.
 	 * @param {'left'|'right'|'center'|'justify'} alignment Alignment value to be handled by this command.
@@ -61,7 +61,7 @@ export default class AlignmentCommand extends Command {
 	refresh() {
 		const firstBlock = first( this.editor.model.document.selection.getSelectedBlocks() );
 
-		// As first check whether to enable or disable command as value will be always false if command cannot be enabled.
+		// As first check whether to enable or disable the command as the value will always be false if the command cannot be enabled.
 		this.isEnabled = !!firstBlock && this._canBeAligned( firstBlock );
 		this.value = this._getValue( firstBlock );
 	}
@@ -91,7 +91,7 @@ export default class AlignmentCommand extends Command {
 	}
 
 	/**
-	 * Checks whether block can have alignment set.
+	 * Checks whether a block can have alignment set.
 	 *
 	 * @private
 	 * @param {module:engine/model/element~Element} block A block to be checked.
@@ -105,7 +105,7 @@ export default class AlignmentCommand extends Command {
 	 * Checks the command's {@link #value}.
 	 *
 	 * @private
-	 * @param {module:engine/model/element~Element} firstBlock A first block in selection to be checked.
+	 * @param {module:engine/model/element~Element} firstBlock The first block in the selection to be checked.
 	 * @returns {Boolean} The current value.
 	 */
 	_getValue( firstBlock ) {
@@ -123,7 +123,7 @@ export default class AlignmentCommand extends Command {
 }
 
 /**
- * Helper function that returns command name for alignment option.
+ * Helper function that returns the command name for the alignment option.
  *
  * @param {String} option
  * @returns {String}

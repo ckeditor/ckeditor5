@@ -32,7 +32,7 @@ const icons = new Map( [
  * The default Alignment UI plugin.
  *
  * It introduces the `'alignLeft'`, `'alignRight'`, `'alignCenter'` and `'alignJustify'` buttons
- * and the `'alignmentDropdown'` dropdown.
+ * and the `'alignmentDropdown'` drop-down.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -102,10 +102,10 @@ export default class AlignmentUI extends Plugin {
 	}
 
 	/**
-	 * Helper method for initializing a button and linking it with an appropriate command.
+	 * Helper method for initializing the button and linking it with an appropriate command.
 	 *
 	 * @private
-	 * @param {String} option The name of the alignment option for which to add a button.
+	 * @param {String} option The name of the alignment option for which the button is added.
 	 */
 	_addButton( option ) {
 		const editor = this.editor;

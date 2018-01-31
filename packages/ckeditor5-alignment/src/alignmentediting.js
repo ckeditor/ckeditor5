@@ -28,7 +28,7 @@ export default class AlignmentEditing extends Plugin {
 	}
 
 	/**
-	 * List of supported alignment options:
+	 * The list of supported alignment options:
 	 *
 	 * * `'left'`,
 	 * * `'right'`,
@@ -85,16 +85,16 @@ export default class AlignmentEditing extends Plugin {
 }
 
 /**
- * Checks whether passed option is supported by {@link module:alignment/alignmentediting~AlignmentEditing}.
+ * Checks whether the passed option is supported by {@link module:alignment/alignmentediting~AlignmentEditing}.
  *
- * @param {String} option Option value to check.
+ * @param {String} option The option value to check.
  * @returns {Boolean}
  */
 export function isSupported( option ) {
 	return AlignmentEditing.supportedOptions.includes( option );
 }
 
-// Dispatcher handler responsible for setting style to a view element.
+// Dispatcher handler responsible for setting the style to a view element.
 // @private
 function convertStyle() {
 	return ( evt, data, consumable, conversionApi ) => {
@@ -110,7 +110,7 @@ function convertStyle() {
 	};
 }
 
-// Check whether alignment is default one.
+// Check whether alignment is the default one.
 // @private
 function isDefault( textAlign ) {
 	// Right now only LTR is supported so 'left' value is always the default one.
