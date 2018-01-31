@@ -34,12 +34,10 @@ describe( 'LinkFormView', () => {
 			expect( view.urlInputView ).to.be.instanceOf( View );
 			expect( view.saveButtonView ).to.be.instanceOf( View );
 			expect( view.cancelButtonView ).to.be.instanceOf( View );
-			expect( view.unlinkButtonView ).to.be.instanceOf( View );
 
 			expect( view._unboundChildren.get( 0 ) ).to.equal( view.urlInputView );
 			expect( view._unboundChildren.get( 1 ) ).to.equal( view.saveButtonView );
 			expect( view._unboundChildren.get( 2 ) ).to.equal( view.cancelButtonView );
-			expect( view._unboundChildren.get( 3 ) ).to.equal( view.unlinkButtonView );
 		} );
 
 		it( 'should create #focusTracker instance', () => {
@@ -68,16 +66,6 @@ describe( 'LinkFormView', () => {
 			expect( spy.calledOnce ).to.true;
 		} );
 
-		it( 'should fire `unlink` event on unlinkButtonView#execute', () => {
-			const spy = sinon.spy();
-
-			view.on( 'unlink', spy );
-
-			view.unlinkButtonView.fire( 'execute' );
-
-			expect( spy.calledOnce ).to.true;
-		} );
-
 		describe( 'url input view', () => {
 			it( 'has placeholder', () => {
 				expect( view.urlInputView.inputView.placeholder ).to.equal( 'https://example.com' );
@@ -89,16 +77,9 @@ describe( 'LinkFormView', () => {
 				expect( view.template.children[ 0 ] ).to.equal( view.urlInputView );
 			} );
 
-			it( 'has form actions container', () => {
-				expect( view.template.children[ 1 ].attributes.class ).to.have.members( [ 'ck-link-form__actions' ] );
-			} );
-
-			it( 'has form action views', () => {
-				const actions = view.template.children[ 1 ].children;
-
-				expect( actions[ 0 ] ).to.equal( view.saveButtonView );
-				expect( actions[ 1 ] ).to.equal( view.cancelButtonView );
-				expect( actions[ 2 ] ).to.equal( view.unlinkButtonView );
+			it( 'has button views', () => {
+				expect( view.template.children[ 1 ] ).to.equal( view.saveButtonView );
+				expect( view.template.children[ 2 ] ).to.equal( view.cancelButtonView );
 			} );
 		} );
 	} );
@@ -109,7 +90,6 @@ describe( 'LinkFormView', () => {
 				view.urlInputView,
 				view.saveButtonView,
 				view.cancelButtonView,
-				view.unlinkButtonView
 			] );
 		} );
 
@@ -122,7 +102,6 @@ describe( 'LinkFormView', () => {
 			sinon.assert.calledWithExactly( spy.getCall( 0 ), view.urlInputView.element );
 			sinon.assert.calledWithExactly( spy.getCall( 1 ), view.saveButtonView.element );
 			sinon.assert.calledWithExactly( spy.getCall( 2 ), view.cancelButtonView.element );
-			sinon.assert.calledWithExactly( spy.getCall( 3 ), view.unlinkButtonView.element );
 		} );
 
 		it( 'starts listening for #keystrokes coming from #element', () => {
