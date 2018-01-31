@@ -129,7 +129,7 @@ export default class ContextualToolbar extends Plugin {
 	 */
 	_handleSelectionChange() {
 		const selection = this.editor.model.document.selection;
-		const editingView = this.editor.editing.view;
+		const viewDocument = this.editor.editing.view.document;
 
 		this.listenTo( selection, 'change:range', ( evt, data ) => {
 			// When the selection is not changed by a collaboration and when is not collapsed.
@@ -145,7 +145,7 @@ export default class ContextualToolbar extends Plugin {
 		// Hide the toolbar when the selection stops changing.
 		this.listenTo( this, '_selectionChangeDebounced', () => {
 			// This implementation assumes that only non–collapsed selections gets the contextual toolbar.
-			if ( editingView.isFocused && !editingView.selection.isCollapsed ) {
+			if ( viewDocument.isFocused && !viewDocument.selection.isCollapsed ) {
 				this.show();
 			}
 		} );
@@ -168,9 +168,9 @@ export default class ContextualToolbar extends Plugin {
 			return;
 		}
 
-		// Update the toolbar position upon #render (e.g. external document changes)
+		// Update the toolbar position upon change (e.g. external document changes)
 		// while it's visible.
-		this.listenTo( this.editor.editing.view, 'render', () => {
+		this.listenTo( this.editor.editing.view, 'change', () => {
 			this._balloon.updatePosition( this._getBalloonPositionData() );
 		} );
 
@@ -187,7 +187,7 @@ export default class ContextualToolbar extends Plugin {
 	 */
 	hide() {
 		if ( this._balloon.hasView( this.toolbarView ) ) {
-			this.stopListening( this.editor.editing.view, 'render' );
+			this.stopListening( this.editor.editing.view, 'change' );
 			this._balloon.remove( this.toolbarView );
 		}
 	}
@@ -201,10 +201,11 @@ export default class ContextualToolbar extends Plugin {
 	 */
 	_getBalloonPositionData() {
 		const editor = this.editor;
-		const editingView = editor.editing.view;
+		const view = editor.editing.view;
+		const viewDocument = view.document;
 
 		// Get direction of the selection.
-		const isBackward = editingView.selection.isBackward;
+		const isBackward = viewDocument.selection.isBackward;
 
 		return {
 			// Because the target for BalloonPanelView is a Rect (not DOMRange), it's geometry will stay fixed
@@ -212,8 +213,8 @@ export default class ContextualToolbar extends Plugin {
 			// computed and hence, the target is defined as a function instead of a static value.
 			// https://github.com/ckeditor/ckeditor5-ui/issues/195
 			target: () => {
-				const range = editingView.selection.getFirstRange();
-				const rangeRects = Rect.getDomRangeRects( editingView.domConverter.viewRangeToDom( range ) );
+				const range = viewDocument.selection.getFirstRange();
+				const rangeRects = Rect.getDomRangeRects( view.domConverter.viewRangeToDom( range ) );
 
 				// Select the proper range rect depending on the direction of the selection.
 				if ( isBackward ) {
