@@ -282,8 +282,8 @@ class Insertion {
 			return;
 		}
 
-		const mergeLeft = context.isFirst && ( node.previousSibling instanceof Element ) && this.canMergeWith.has( node.previousSibling );
-		const mergeRight = context.isLast && ( node.nextSibling instanceof Element ) && this.canMergeWith.has( node.nextSibling );
+		const mergeLeft = canMergeLeft.call( this );
+		const mergeRight = canMergeRight.call( this );
 		const mergePosLeft = LivePosition.createBefore( node );
 		const mergePosRight = LivePosition.createAfter( node );
 
@@ -327,6 +327,24 @@ class Insertion {
 
 		mergePosLeft.detach();
 		mergePosRight.detach();
+
+		function canMergeLeft() {
+			const previousSibling = node.previousSibling;
+
+			return context.isFirst &&
+				( previousSibling instanceof Element ) &&
+				this.canMergeWith.has( previousSibling ) &&
+				this.model.schema.checkMerge( previousSibling, node );
+		}
+
+		function canMergeRight() {
+			const nextSibling = node.nextSibling;
+
+			return context.isLast &&
+				( nextSibling instanceof Element ) &&
+				this.canMergeWith.has( nextSibling ) &&
+				this.model.schema.checkMerge( node, nextSibling );
+		}
 	}
 
 	/**

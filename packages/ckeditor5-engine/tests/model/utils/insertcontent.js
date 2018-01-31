@@ -407,6 +407,25 @@ describe( 'DataController utils', () => {
 						'<paragraph>b</paragraph>'
 					);
 				} );
+
+				it( 'should not merge a paragraph wrapped in blockQuote with lists', () => {
+					model.schema.register( 'blockQuote', {
+						allowWhere: '$block',
+						allowContentOf: '$root',
+					} );
+
+					setData( model, '<listItem>fo[]o</listItem>' );
+
+					insertHelper( '<blockQuote><paragraph>xxx</paragraph></blockQuote><heading1>yyy</heading1>' );
+
+					expect( getData( model ) ).to.equal(
+						'<listItem>fo</listItem>' +
+						'<blockQuote>' +
+						'<paragraph>xxx</paragraph>' +
+						'</blockQuote>' +
+						'<heading1>yyy[]o</heading1>'
+					);
+				} );
 			} );
 
 			describe( 'mixed content to block', () => {
