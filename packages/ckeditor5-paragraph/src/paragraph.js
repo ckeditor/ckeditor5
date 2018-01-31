@@ -211,9 +211,7 @@ function isParagraphable( node, position, schema ) {
 	}
 
 	// And a node would be allowed in this paragraph...
-	context.addItem( 'paragraph' );
-
-	if ( !schema.checkChild( context, node ) ) {
+	if ( !schema.checkChild( context.concat( 'paragraph' ), node ) ) {
 		return false;
 	}
 
