@@ -14,18 +14,18 @@ import DomConverter from '../view/domconverter';
 import { NBSP_FILLER } from '../view/filler';
 
 /**
- * HtmlDataProcessor class.
- * This data processor implementation uses HTML as input/output data.
+ * The HTML data processor class.
+ * This data processor implementation uses HTML as input and output data.
  *
  * @implements module:engine/dataprocessor/dataprocessor~DataProcessor
  */
 export default class HtmlDataProcessor {
 	/**
-	 * Creates a new instance of the HtmlDataProcessor class.
+	 * Creates a new instance of the HTML data processor class.
 	 */
 	constructor() {
 		/**
-		 * DOMParser instance used to parse HTML string to HTMLDocument.
+		 * A DOM parser instance used to parse an HTML string to an HTML document.
 		 *
 		 * @private
 		 * @member {DOMParser}
@@ -33,7 +33,7 @@ export default class HtmlDataProcessor {
 		this._domParser = new DOMParser();
 
 		/**
-		 * DOM converter used to convert DOM elements to view elements.
+		 * A DOM converter used to convert DOM elements to view elements.
 		 *
 		 * @private
 		 * @member
@@ -41,7 +41,7 @@ export default class HtmlDataProcessor {
 		this._domConverter = new DomConverter( { blockFiller: NBSP_FILLER } );
 
 		/**
-		 * BasicHtmlWriter instance used to convert DOM elements to HTML string.
+		 * A basic HTML writer instance used to convert DOM elements to an HTML string.
 		 *
 		 * @private
 		 * @member {module:engine/dataprocessor/basichtmlwriter~BasicHtmlWriter}
@@ -50,8 +50,8 @@ export default class HtmlDataProcessor {
 	}
 
 	/**
-	 * Converts provided {@link module:engine/view/documentfragment~DocumentFragment DocumentFragment}
-	 * to data format - in this case HTML string.
+	 * Converts a provided {@link module:engine/view/documentfragment~DocumentFragment document fragment}
+	 * to data format &mdash; in this case to an HTML string.
 	 *
 	 * @param {module:engine/view/documentfragment~DocumentFragment} viewFragment
 	 * @returns {String} HTML string.
@@ -65,10 +65,10 @@ export default class HtmlDataProcessor {
 	}
 
 	/**
-	 * Converts provided HTML string to view tree.
+	 * Converts the provided HTML string to a view tree.
 	 *
-	 * @param {String} data HTML string.
-	 * @returns {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment|null} Converted view element.
+	 * @param {String} data An HTML string.
+	 * @returns {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment|null} A converted view element.
 	 */
 	toView( data ) {
 		// Convert input HTML data to DOM DocumentFragment.
@@ -79,8 +79,8 @@ export default class HtmlDataProcessor {
 	}
 
 	/**
-	 * Converts HTML String to its DOM representation. Returns DocumentFragment, containing nodes parsed from
-	 * provided data.
+	 * Converts an HTML string to its DOM representation. Returns a document fragment containing nodes parsed from
+	 * the provided data.
 	 *
 	 * @private
 	 * @param {String} data

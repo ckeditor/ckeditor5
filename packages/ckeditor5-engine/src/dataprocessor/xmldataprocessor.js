@@ -14,26 +14,26 @@ import DomConverter from '../view/domconverter';
 import { NBSP_FILLER } from '../view/filler';
 
 /**
- * XmlDataProcessor class.
- * This data processor implementation uses XML as input/output data.
+ * The XML data processor class.
+ * This data processor implementation uses XML as input and output data.
  * This class is needed because unlike HTML, XML allows to use any tag with any value.
- * E.g. `<link>Text</link>` is a valid XML but invalid HTML.
+ * For example, `<link>Text</link>` is a valid XML but invalid HTML.
  *
  * @implements module:engine/dataprocessor/dataprocessor~DataProcessor
  */
 export default class XmlDataProcessor {
 	/**
-	 * Creates a new instance of the XmlDataProcessor class.
+	 * Creates a new instance of the XML data processor class.
 	 *
 	 * @param {Object} options Configuration options.
-	 * @param {Array<String>} [options.namespaces=[]] List of namespaces allowed to use in XML input.
+	 * @param {Array<String>} [options.namespaces=[]] A list of namespaces allowed to use in the XML input.
 	 */
 	constructor( options = {} ) {
 		/**
-		 * List of namespaces allowed to use in XML input.
+		 * A list of namespaces allowed to use in the XML input.
 		 *
-		 * E.g. Registering namespaces [ 'attribute', 'container' ] allows to use `<attirbute:tagName></attribute:tagName>` and
-		 * `<container:tagName></container:tagName>` input. It is mainly for debugging.
+		 * For example, registering namespaces [ 'attribute', 'container' ] allows to use `<attirbute:tagName></attribute:tagName>`
+		 * and `<container:tagName></container:tagName>` input. It is mainly for debugging.
 		 *
 		 * @public
 		 * @member {DOMParser}
@@ -41,7 +41,7 @@ export default class XmlDataProcessor {
 		this.namespaces = options.namespaces || [];
 
 		/**
-		 * DOMParser instance used to parse XML string to XMLDocument.
+		 * DOM parser instance used to parse an XML string to an XML document.
 		 *
 		 * @private
 		 * @member {DOMParser}
@@ -57,8 +57,8 @@ export default class XmlDataProcessor {
 		this._domConverter = new DomConverter( { blockFiller: NBSP_FILLER } );
 
 		/**
-		 * BasicHtmlWriter instance used to convert DOM elements to XML string.
-		 * There is no need to use dedicated for XML writer because BasicHtmlWriter works well in this case.
+		 * A basic HTML writer instance used to convert DOM elements to an XML string.
+		 * There is no need to use a dedicated XML writer because the basic HTML writer works well in this case.
 		 *
 		 * @private
 		 * @member {module:engine/dataprocessor/basichtmlwriter~BasicHtmlWriter}
@@ -67,11 +67,11 @@ export default class XmlDataProcessor {
 	}
 
 	/**
-	 * Converts provided {@link module:engine/view/documentfragment~DocumentFragment DocumentFragment}
-	 * to data format- in this case XML string.
+	 * Converts the provided {@link module:engine/view/documentfragment~DocumentFragment document fragment}
+	 * to data format &mdash; in this case an XML string.
 	 *
 	 * @param {module:engine/view/documentfragment~DocumentFragment} viewFragment
-	 * @returns {String} XML string.
+	 * @returns {String} An XML string.
 	 */
 	toData( viewFragment ) {
 		// Convert view DocumentFragment to DOM DocumentFragment.
@@ -83,10 +83,10 @@ export default class XmlDataProcessor {
 	}
 
 	/**
-	 * Converts provided XML string to view tree.
+	 * Converts the provided XML string to a view tree.
 	 *
-	 * @param {String} data XML string.
-	 * @returns {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment|null} Converted view element.
+	 * @param {String} data An XML string.
+	 * @returns {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment|null} A converted view element.
 	 */
 	toView( data ) {
 		// Convert input XML data to DOM DocumentFragment.
@@ -97,8 +97,8 @@ export default class XmlDataProcessor {
 	}
 
 	/**
-	 * Converts XML String to its DOM representation. Returns DocumentFragment, containing nodes parsed from
-	 * provided data.
+	 * Converts an XML string to its DOM representation. Returns a document fragment containing nodes parsed from
+	 * the provided data.
 	 *
 	 * @private
 	 * @param {String} data
