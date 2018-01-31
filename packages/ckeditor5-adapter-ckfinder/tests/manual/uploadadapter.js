@@ -19,7 +19,7 @@ import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import List from '@ckeditor/ckeditor5-list/src/list';
-import ImageUpload from '@ckeditor/ckeditor5-upload/src/imageupload';
+import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 import CKFinderUploadAdapter from '../../src/uploadadapter';
 
 ClassicEditor

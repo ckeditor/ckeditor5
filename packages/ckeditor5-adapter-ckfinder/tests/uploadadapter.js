@@ -6,7 +6,7 @@
 /* globals document */
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Image from '@ckeditor/ckeditor5-image/src/image';
-import ImageUpload from '@ckeditor/ckeditor5-upload/src/imageupload';
+import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 import CKFinderUploadAdapter from '../src/uploadadapter';
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
 import { createNativeFileMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
