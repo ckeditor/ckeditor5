@@ -480,7 +480,7 @@ describe( 'model-selection-to-view-converters', () => {
 				dispatcher.on( 'selection', clearFakeSelection() );
 
 				view.change( writer => {
-					viewSelection._setFake( true );
+					writer.setFakeSelection( true );
 					dispatcher.convertSelection( docSelection, writer );
 				} );
 				expect( viewSelection.isFake ).to.be.false;
