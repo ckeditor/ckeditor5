@@ -7,13 +7,12 @@
  * @module utils/dom/rect
  */
 
-/* global Node */
-
 import isRange from './isrange';
 import isWindow from './iswindow';
 import isElement from '../lib/lodash/isElement';
 import getBorderWidths from './getborderwidths';
 import log from '../log';
+import isText from './istext';
 
 /**
  * A helper class representing a `ClientRect` object, e.g. value returned by
@@ -367,7 +366,7 @@ export default class Rect {
 		else {
 			let startContainer = range.startContainer;
 
-			if ( startContainer.nodeType === Node.TEXT_NODE ) {
+			if ( isText( startContainer ) ) {
 				startContainer = startContainer.parentNode;
 			}
 
