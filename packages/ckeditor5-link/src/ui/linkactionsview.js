@@ -178,9 +178,7 @@ export default class LinkActionsView extends View {
 			tooltip: true
 		} );
 
-		if ( eventName ) {
-			button.delegate( 'execute' ).to( this, eventName );
-		}
+		button.delegate( 'execute' ).to( this, eventName );
 
 		return button;
 	}
