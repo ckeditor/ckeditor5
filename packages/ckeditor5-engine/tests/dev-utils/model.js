@@ -21,7 +21,10 @@ describe( 'model test utils', () => {
 		root = document.createRoot();
 		selection = document.selection;
 		sandbox = sinon.sandbox.create();
-		selection.removeAllRanges();
+
+		model.change( writer => {
+			writer.setSelection( null );
+		} );
 
 		model.schema.register( 'a', {
 			allowWhere: '$text',
@@ -64,8 +67,9 @@ describe( 'model test utils', () => {
 		it( 'should use stringify method with selection', () => {
 			const stringifySpy = sandbox.spy( getData, '_stringify' );
 			root.appendChildren( new Element( 'b', null, new Text( 'btext' ) ) );
-			document.selection.addRange( Range.createFromParentsAndOffsets( root, 0, root, 1 ) );
-
+			model.change( writer => {
+				writer.setSelection( Range.createFromParentsAndOffsets( root, 0, root, 1 ) );
+			} );
 			expect( getData( model ) ).to.equal( '[<b>btext</b>]' );
 			sinon.assert.calledOnce( stringifySpy );
 			sinon.assert.calledWithExactly( stringifySpy, root, document.selection );
@@ -278,7 +282,9 @@ describe( 'model test utils', () => {
 
 			it( 'writes selection in an empty root', () => {
 				const root = document.createRoot( '$root', 'empty' );
-				selection.setCollapsedAt( root );
+				model.change( writer => {
+					writer.setSelection( root );
+				} );
 
 				expect( stringify( root, selection ) ).to.equal(
 					'[]'
@@ -286,7 +292,9 @@ describe( 'model test utils', () => {
 			} );
 
 			it( 'writes selection collapsed in an element', () => {
-				selection.setCollapsedAt( root );
+				model.change( writer => {
+					writer.setSelection( root );
+				} );
 
 				expect( stringify( root, selection ) ).to.equal(
 					'[]<a></a>foo<$text bold="true">bar</$text><b></b>'
@@ -294,7 +302,9 @@ describe( 'model test utils', () => {
 			} );
 
 			it( 'writes selection collapsed in a text', () => {
-				selection.setCollapsedAt( root, 3 );
+				model.change( writer => {
+					writer.setSelection( root, 3 );
+				} );
 
 				expect( stringify( root, selection ) ).to.equal(
 					'<a></a>fo[]o<$text bold="true">bar</$text><b></b>'
@@ -302,7 +312,9 @@ describe( 'model test utils', () => {
 			} );
 
 			it( 'writes selection collapsed at the text left boundary', () => {
-				selection.setCollapsedAt( elA, 'after' );
+				model.change( writer => {
+					writer.setSelection( elA, 'after' );
+				} );
 
 				expect( stringify( root, selection ) ).to.equal(
 					'<a></a>[]foo<$text bold="true">bar</$text><b></b>'
@@ -310,7 +322,9 @@ describe( 'model test utils', () => {
 			} );
 
 			it( 'writes selection collapsed at the text right boundary', () => {
-				selection.setCollapsedAt( elB, 'before' );
+				model.change( writer => {
+					writer.setSelection( elB, 'before' );
+				} );
 
 				expect( stringify( root, selection ) ).to.equal(
 					'<a></a>foo<$text bold="true">bar[]</$text><b></b>'
@@ -318,10 +332,12 @@ describe( 'model test utils', () => {
 			} );
 
 			it( 'writes selection collapsed at the end of the root', () => {
-				selection.setCollapsedAt( root, 'end' );
+				model.change( writer => {
+					writer.setSelection( root, 'end' );
 
-				// Needed due to https://github.com/ckeditor/ckeditor5-engine/issues/320.
-				selection.clearAttributes();
+					// Needed due to https://github.com/ckeditor/ckeditor5-engine/issues/320.
+					writer.removeSelectionAttribute( model.document.selection.getAttributeKeys() );
+				} );
 
 				expect( stringify( root, selection ) ).to.equal(
 					'<a></a>foo<$text bold="true">bar</$text><b></b>[]'
@@ -329,7 +345,9 @@ describe( 'model test utils', () => {
 			} );
 
 			it( 'writes selection collapsed selection in a text with attributes', () => {
-				selection.setCollapsedAt( root, 5 );
+				model.change( writer => {
+					writer.setSelection( root, 5 );
+				} );
 
 				expect( stringify( root, selection ) ).to.equal(
 					'<a></a>foo<$text bold="true">b[]ar</$text><b></b>'
@@ -337,9 +355,9 @@ describe( 'model test utils', () => {
 			} );
 
 			it( 'writes flat selection containing couple of nodes', () => {
-				selection.addRange(
-					Range.createFromParentsAndOffsets( root, 0, root, 4 )
-				);
+				model.change( writer => {
+					writer.setSelection( Range.createFromParentsAndOffsets( root, 0, root, 4 ) );
+				} );
 
 				expect( stringify( root, selection ) ).to.equal(
 					'[<a></a>foo]<$text bold="true">bar</$text><b></b>'
@@ -347,9 +365,9 @@ describe( 'model test utils', () => {
 			} );
 
 			it( 'writes flat selection within text', () => {
-				selection.addRange(
-					Range.createFromParentsAndOffsets( root, 2, root, 3 )
-				);
+				model.change( writer => {
+					writer.setSelection( Range.createFromParentsAndOffsets( root, 2, root, 3 ) );
+				} );
 
 				expect( stringify( root, selection ) ).to.equal(
 					'<a></a>f[o]o<$text bold="true">bar</$text><b></b>'
@@ -357,9 +375,9 @@ describe( 'model test utils', () => {
 			} );
 
 			it( 'writes multi-level selection', () => {
-				selection.addRange(
-					Range.createFromParentsAndOffsets( elA, 0, elB, 0 )
-				);
+				model.change( writer => {
+					writer.setSelection( Range.createFromParentsAndOffsets( elA, 0, elB, 0 ) );
+				} );
 
 				expect( stringify( root, selection ) ).to.equal(
 					'<a>[</a>foo<$text bold="true">bar</$text><b>]</b>'
@@ -367,10 +385,9 @@ describe( 'model test utils', () => {
 			} );
 
 			it( 'writes selection when is backward', () => {
-				selection.addRange(
-					Range.createFromParentsAndOffsets( elA, 0, elB, 0 ),
-					true
-				);
+				model.change( writer => {
+					writer.setSelection( Range.createFromParentsAndOffsets( elA, 0, elB, 0 ), true );
+				} );
 
 				expect( stringify( root, selection ) ).to.equal(
 					'<a>[</a>foo<$text bold="true">bar</$text><b>]</b>'
@@ -381,7 +398,9 @@ describe( 'model test utils', () => {
 				const root = document.createRoot( '$root', 'empty' );
 
 				root.appendChildren( new Text( 'நிலைக்கு' ) );
-				selection.addRange( Range.createFromParentsAndOffsets( root, 2, root, 6 ) );
+				model.change( writer => {
+					writer.setSelection( Range.createFromParentsAndOffsets( root, 2, root, 6 ) );
+				} );
 
 				expect( stringify( root, selection ) ).to.equal( 'நி[லைக்]கு' );
 			} );
@@ -562,10 +581,12 @@ describe( 'model test utils', () => {
 			} );
 
 			it( 'sets selection attributes', () => {
-				const result = parse( 'foo[]bar', model.schema, { selectionAttributes: {
-					bold: true,
-					italic: true
-				} } );
+				const result = parse( 'foo[]bar', model.schema, {
+					selectionAttributes: {
+						bold: true,
+						italic: true
+					}
+				} );
 
 				expect( stringify( result.model, result.selection ) ).to.equal( 'foo<$text bold="true" italic="true">[]</$text>bar' );
 			} );
@@ -583,9 +604,11 @@ describe( 'model test utils', () => {
 			} );
 
 			it( 'sets selection with attribute containing an element', () => {
-				const result = parse( 'x[<a></a>]', model.schema, { selectionAttributes: {
-					bold: true
-				} } );
+				const result = parse( 'x[<a></a>]', model.schema, {
+					selectionAttributes: {
+						bold: true
+					}
+				} );
 
 				expect( stringify( result.model, result.selection ) ).to.equal( 'x[<a></a>]' );
 				expect( result.selection.getAttribute( 'bold' ) ).to.be.true;

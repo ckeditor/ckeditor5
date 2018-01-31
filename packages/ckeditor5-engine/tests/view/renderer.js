@@ -122,7 +122,7 @@ describe( 'Renderer', () => {
 			renderer.markedAttributes.clear();
 			renderer.markedChildren.clear();
 
-			selection.removeAllRanges();
+			selection.setTo( null );
 			selection.setFake( false );
 
 			selectionEditable = viewRoot;
@@ -495,8 +495,7 @@ describe( 'Renderer', () => {
 			renderAndExpectNoChanges( renderer, domRoot );
 
 			// Step 3: <p>foo{}<b></b></p>
-			selection.removeAllRanges();
-			selection.addRange( ViewRange.createFromParentsAndOffsets( viewP.getChild( 0 ), 3, viewP.getChild( 0 ), 3 ) );
+			selection.setTo( ViewRange.createFromParentsAndOffsets( viewP.getChild( 0 ), 3, viewP.getChild( 0 ), 3 ) );
 
 			renderer.render();
 
@@ -549,8 +548,7 @@ describe( 'Renderer', () => {
 			renderAndExpectNoChanges( renderer, domRoot );
 
 			// Step 3: <p><b>{}foo</b></p>
-			selection.removeAllRanges();
-			selection.addRange( ViewRange.createFromParentsAndOffsets(
+			selection.setTo( ViewRange.createFromParentsAndOffsets(
 				viewP.getChild( 0 ).getChild( 0 ), 0, viewP.getChild( 0 ).getChild( 0 ), 0 ) );
 
 			renderer.render();
@@ -601,8 +599,7 @@ describe( 'Renderer', () => {
 			renderAndExpectNoChanges( renderer, domRoot );
 
 			// Step 3: <p><b>foo{}</b></p>
-			selection.removeAllRanges();
-			selection.addRange( ViewRange.createFromParentsAndOffsets(
+			selection.setTo( ViewRange.createFromParentsAndOffsets(
 				viewP.getChild( 0 ).getChild( 0 ), 3, viewP.getChild( 0 ).getChild( 0 ), 3 ) );
 
 			renderer.render();
@@ -674,9 +671,8 @@ describe( 'Renderer', () => {
 			expect( domP.childNodes[ 2 ].childNodes.length ).to.equal( 0 );
 
 			// Step 2: <p>foo<b></b><i>"FILLER{}"</i></p>
-			selection.removeAllRanges();
 			const viewI = viewP.getChild( 2 );
-			selection.addRange( ViewRange.createFromParentsAndOffsets( viewI, 0, viewI, 0 ) );
+			selection.setTo( ViewRange.createFromParentsAndOffsets( viewI, 0, viewI, 0 ) );
 
 			renderer.render();
 
@@ -709,14 +705,13 @@ describe( 'Renderer', () => {
 			// Step 2: Add text node.
 			const viewText = new ViewText( 'x' );
 			viewB.appendChildren( viewText );
-			selection.removeAllRanges();
-			selection.addRange( ViewRange.createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
+			selection.setTo( ViewRange.createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
 
 			renderer.markToSync( 'children', viewB );
 			renderer.render();
 
 			// Step 3: Remove selection from the view.
-			selection.removeAllRanges();
+			selection.setTo( null );
 
 			renderer.render();
 
@@ -746,8 +741,7 @@ describe( 'Renderer', () => {
 			// Step 2: Remove the <b> and update the selection (<p>bar[]</p>).
 			viewP.removeChildren( 1 );
 
-			selection.removeAllRanges();
-			selection.addRange( ViewRange.createFromParentsAndOffsets( viewP, 1, viewP, 1 ) );
+			selection.setTo( ViewRange.createFromParentsAndOffsets( viewP, 1, viewP, 1 ) );
 
 			renderer.markToSync( 'children', viewP );
 			renderer.render();
@@ -784,8 +778,7 @@ describe( 'Renderer', () => {
 
 			viewP2.appendChildren( removedChildren );
 
-			selection.removeAllRanges();
-			selection.addRange( ViewRange.createFromParentsAndOffsets( viewP, 0, viewP, 0 ) );
+			selection.setTo( ViewRange.createFromParentsAndOffsets( viewP, 0, viewP, 0 ) );
 
 			renderer.markToSync( 'children', viewP );
 			renderer.markToSync( 'children', viewP2 );
@@ -822,8 +815,7 @@ describe( 'Renderer', () => {
 			const viewI = parse( '<attribute:i></attribute:i>' );
 			viewP.appendChildren( viewI );
 
-			selection.removeAllRanges();
-			selection.addRange( ViewRange.createFromParentsAndOffsets( viewI, 0, viewI, 0 ) );
+			selection.setTo( ViewRange.createFromParentsAndOffsets( viewI, 0, viewI, 0 ) );
 
 			renderer.markToSync( 'children', viewP );
 			renderer.render();
@@ -853,8 +845,7 @@ describe( 'Renderer', () => {
 			const viewAbc = parse( 'abc' );
 			viewP.appendChildren( viewAbc );
 
-			selection.removeAllRanges();
-			selection.addRange( ViewRange.createFromParentsAndOffsets( viewP, 3, viewP, 3 ) );
+			selection.setTo( ViewRange.createFromParentsAndOffsets( viewP, 3, viewP, 3 ) );
 
 			renderer.markToSync( 'children', viewP );
 			renderer.render();
@@ -897,8 +888,7 @@ describe( 'Renderer', () => {
 
 			const viewText = new ViewText( 'x' );
 			viewP.appendChildren( viewText );
-			selection.removeAllRanges();
-			selection.addRange( ViewRange.createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
+			selection.setTo( ViewRange.createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
 
 			renderer.markToSync( 'children', viewP );
 			renderAndExpectNoChanges( renderer, domRoot );
@@ -928,8 +918,7 @@ describe( 'Renderer', () => {
 			// Add text node only in View <p>x{}</p>
 			const viewText = new ViewText( 'x' );
 			viewP.appendChildren( viewText );
-			selection.removeAllRanges();
-			selection.addRange( ViewRange.createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
+			selection.setTo( ViewRange.createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
 
 			renderer.markToSync( 'children', viewP );
 			renderer.render();
@@ -976,8 +965,7 @@ describe( 'Renderer', () => {
 
 			viewP.removeChildren( 0 );
 
-			selection.removeAllRanges();
-			selection.addRange( ViewRange.createFromParentsAndOffsets( viewP, 0, viewP, 0 ) );
+			selection.setTo( ViewRange.createFromParentsAndOffsets( viewP, 0, viewP, 0 ) );
 
 			renderer.markToSync( 'children', viewP );
 			renderAndExpectNoChanges( renderer, domRoot );
@@ -1028,8 +1016,7 @@ describe( 'Renderer', () => {
 
 			const viewText = new ViewText( 'x' );
 			viewB.appendChildren( viewText );
-			selection.removeAllRanges();
-			selection.addRange( ViewRange.createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
+			selection.setTo( ViewRange.createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
 
 			renderer.markToSync( 'children', viewP );
 			renderAndExpectNoChanges( renderer, domRoot );
@@ -1072,8 +1059,7 @@ describe( 'Renderer', () => {
 
 			const viewText = new ViewText( 'x' );
 			viewB.appendChildren( viewText );
-			selection.removeAllRanges();
-			selection.addRange( ViewRange.createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
+			selection.setTo( ViewRange.createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
 
 			renderer.markToSync( 'children', viewB );
 			renderer.render();
@@ -1136,8 +1122,7 @@ describe( 'Renderer', () => {
 
 			const viewText = new ViewText( 'x' );
 			viewB.appendChildren( viewText );
-			selection.removeAllRanges();
-			selection.addRange( ViewRange.createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
+			selection.setTo( ViewRange.createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
 
 			renderer.markToSync( 'text', viewText );
 			renderer.render();
@@ -1297,7 +1282,7 @@ describe( 'Renderer', () => {
 			// Remove filler.
 			domB.childNodes[ 0 ].data = '';
 
-			selection.removeAllRanges();
+			selection.setTo( null );
 			renderer.markToSync( 'children', viewB );
 
 			expect( () => {
@@ -1588,7 +1573,7 @@ describe( 'Renderer', () => {
 				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
 
 				// <container:p>foo<attribute:b>{}bar</attribute:b></container:p>
-				selection.setRanges( [
+				selection.setTo( [
 					new ViewRange( new ViewPosition( viewB.getChild( 0 ), 0 ), new ViewPosition( viewB.getChild( 0 ), 0 ) )
 				] );
 
@@ -1627,7 +1612,7 @@ describe( 'Renderer', () => {
 				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
 
 				// <container:p>foo{}<attribute:b></attribute:b></container:p>
-				selection.setRanges( [
+				selection.setTo( [
 					new ViewRange( new ViewPosition( viewP.getChild( 0 ), 3 ), new ViewPosition( viewP.getChild( 0 ), 3 ) )
 				] );
 
@@ -1667,7 +1652,7 @@ describe( 'Renderer', () => {
 				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
 
 				// <container:p>fo{o<attribute:b>b}ar</attribute:b></container:p>
-				selection.setRanges( [
+				selection.setTo( [
 					new ViewRange( new ViewPosition( viewP.getChild( 0 ), 2 ), new ViewPosition( viewB.getChild( 0 ), 1 ) )
 				] );
 
@@ -1748,7 +1733,7 @@ describe( 'Renderer', () => {
 				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
 
 				// <container:p>foo{<attribute:b>ba}r</attribute:b></container:p>
-				selection.setRanges( [
+				selection.setTo( [
 					new ViewRange( new ViewPosition( viewP.getChild( 0 ), 3 ), new ViewPosition( viewB.getChild( 0 ), 2 ) )
 				] );
 
@@ -1786,7 +1771,7 @@ describe( 'Renderer', () => {
 				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
 
 				// <container:p>foo<attribute:b>b{ar</attribute:b>}baz</container:p>
-				selection.setRanges( [
+				selection.setTo( [
 					new ViewRange( new ViewPosition( viewB.getChild( 0 ), 1 ), new ViewPosition( viewP.getChild( 2 ), 0 ) )
 				] );
 
@@ -1824,7 +1809,7 @@ describe( 'Renderer', () => {
 				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
 
 				// <container:p>foo{<attribute:b><attribute:i>ba}r</attribute:i></attribute:b></container:p>
-				selection.setRanges( [
+				selection.setTo( [
 					new ViewRange( new ViewPosition( viewP.getChild( 0 ), 3 ), new ViewPosition( viewI.getChild( 0 ), 2 ) )
 				] );
 
@@ -1861,7 +1846,7 @@ describe( 'Renderer', () => {
 				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
 
 				// <container:p>f{oo<attribute:b><attribute:i>bar</attribute:i></attribute:b>}baz</container:p>
-				selection.setRanges( [
+				selection.setTo( [
 					new ViewRange( new ViewPosition( viewP.getChild( 0 ), 1 ), new ViewPosition( viewP.getChild( 2 ), 0 ) )
 				] );
 

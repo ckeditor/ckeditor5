@@ -7,8 +7,11 @@
  * @module engine/model/documentselection
  */
 
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+
+import Selection from './selection';
 import Position from './position';
-import Range from './range';
 import LiveRange from './liverange';
 import Text from './text';
 import TextProxy from './textproxy';
@@ -16,18 +19,19 @@ import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 
-import Selection from './selection';
-
-const storePrefix = 'selection:';
-
 const attrOpTypes = new Set(
 	[ 'addAttribute', 'removeAttribute', 'changeAttribute', 'addRootAttribute', 'removeRootAttribute', 'changeRootAttribute' ]
 );
+
+const storePrefix = 'selection:';
 
 /**
  * `DocumentSelection` is a special selection which is used as the
  * {@link module:engine/model/document~Document#selection document's selection}.
  * There can be only one instance of `DocumentSelection` per document.
+ *
+ * All selection modifiers should be used from the {@link module:engine/model/writer~Writer} instance
+ * inside the {@link module:engine/model/model~Model#change} block, as it provides a secure way to modify model.
  *
  * `DocumentSelection` is automatically updated upon changes in the {@link module:engine/model/document~Document document}
  * to always contain valid ranges. Its attributes are inherited from the text unless set explicitly.
@@ -44,44 +48,411 @@ const attrOpTypes = new Set(
  * that are inside {@link module:engine/model/documentfragment~DocumentFragment document fragment}.
  * If you need to represent a selection in document fragment,
  * use {@link module:engine/model/selection~Selection Selection class} instead.
- *
- * @extends module:engine/model/selection~Selection
  */
-export default class DocumentSelection extends Selection {
+export default class DocumentSelection {
 	/**
 	 * Creates an empty live selection for given {@link module:engine/model/document~Document}.
 	 *
 	 * @param {module:engine/model/document~Document} doc Document which owns this selection.
 	 */
 	constructor( doc ) {
+		/**
+		 * Selection used internally by that class (`DocumentSelection` is a proxy to that selection).
+		 *
+		 * @protected
+		 */
+		this._selection = new LiveSelection( doc );
+
+		this._selection.delegate( 'change:range' ).to( this );
+		this._selection.delegate( 'change:attribute' ).to( this );
+	}
+
+	/**
+	 * Returns whether the selection is collapsed. Selection is collapsed when there is exactly one range which is
+	 * collapsed.
+	 *
+	 * @readonly
+	 * @type {Boolean}
+	 */
+	get isCollapsed() {
+		return this._selection.isCollapsed;
+	}
+
+	/**
+	 * Selection anchor. Anchor may be described as a position where the most recent part of the selection starts.
+	 * Together with {@link #focus} they define the direction of selection, which is important
+	 * when expanding/shrinking selection. Anchor is always {@link module:engine/model/range~Range#start start} or
+	 * {@link module:engine/model/range~Range#end end} position of the most recently added range.
+	 *
+	 * Is set to `null` if there are no ranges in selection.
+	 *
+	 * @see #focus
+	 * @readonly
+	 * @type {module:engine/model/position~Position|null}
+	 */
+	get anchor() {
+		return this._selection.anchor;
+	}
+
+	/**
+	 * Selection focus. Focus is a position where the selection ends.
+	 *
+	 * Is set to `null` if there are no ranges in selection.
+	 *
+	 * @see #anchor
+	 * @readonly
+	 * @type {module:engine/model/position~Position|null}
+	 */
+	get focus() {
+		return this._selection.focus;
+	}
+
+	/**
+	 * Returns number of ranges in selection.
+	 *
+	 * @readonly
+	 * @type {Number}
+	 */
+	get rangeCount() {
+		return this._selection.rangeCount;
+	}
+
+	/**
+	 * Describes whether `Documentselection` has own range(s) set, or if it is defaulted to
+	 * {@link module:engine/model/document~Document#_getDefaultRange document's default range}.
+	 *
+	 * @readonly
+	 * @type {Boolean}
+	 */
+	get hasOwnRange() {
+		return this._selection.hasOwnRange;
+	}
+
+	/**
+	 * Specifies whether the {@link #focus}
+	 * precedes {@link #anchor}.
+	 *
+	 * @readonly
+	 * @type {Boolean}
+	 */
+	get isBackward() {
+		return this._selection.isBackward;
+	}
+
+	/**
+	 * Used for the compatibility with the {@link module:engine/model/selection~Selection#isEqual} method.
+	 *
+	 * @protected
+	 */
+	get _ranges() {
+		return this._selection._ranges;
+	}
+
+	/**
+	 * Returns an iterable that iterates over copies of selection ranges.
+	 *
+	 * @returns {Iterable.<module:engine/model/range~Range>}
+	 */
+	getRanges() {
+		return this._selection.getRanges();
+	}
+
+	/**
+	 * Returns the first position in the selection.
+	 * First position is the position that {@link module:engine/model/position~Position#isBefore is before}
+	 * any other position in the selection.
+	 *
+	 * Returns `null` if there are no ranges in selection.
+	 *
+	 * @returns {module:engine/model/position~Position|null}
+	 */
+	getFirstPosition() {
+		return this._selection.getFirstPosition();
+	}
+
+	/**
+	 * Returns the last position in the selection.
+	 * Last position is the position that {@link module:engine/model/position~Position#isAfter is after}
+	 * any other position in the selection.
+	 *
+	 * Returns `null` if there are no ranges in selection.
+	 *
+	 * @returns {module:engine/model/position~Position|null}
+	 */
+	getLastPosition() {
+		return this._selection.getLastPosition();
+	}
+
+	/**
+	 * Returns a copy of the first range in the selection.
+	 * First range is the one which {@link module:engine/model/range~Range#start start} position
+	 * {@link module:engine/model/position~Position#isBefore is before} start position of all other ranges
+	 * (not to confuse with the first range added to the selection).
+	 *
+	 * Returns `null` if there are no ranges in selection.
+	 *
+	 * @returns {module:engine/model/range~Range|null}
+	 */
+	getFirstRange() {
+		return this._selection.getFirstRange();
+	}
+
+	/**
+	 * Returns a copy of the last range in the selection.
+	 * Last range is the one which {@link module:engine/model/range~Range#end end} position
+	 * {@link module:engine/model/position~Position#isAfter is after} end position of all other ranges (not to confuse with the range most
+	 * recently added to the selection).
+	 *
+	 * Returns `null` if there are no ranges in selection.
+	 *
+	 * @returns {module:engine/model/range~Range|null}
+	 */
+	getLastRange() {
+		return this._selection.getLastRange();
+	}
+
+	/**
+	 * Gets elements of type "block" touched by the selection.
+	 *
+	 * This method's result can be used for example to apply block styling to all blocks covered by this selection.
+	 *
+	 * **Note:** `getSelectedBlocks()` always returns the deepest block.
+	 *
+	 * In this case the function will return exactly all 3 paragraphs:
+	 *
+	 *		<paragraph>[a</paragraph>
+	 *		<quote>
+	 *			<paragraph>b</paragraph>
+	 *		</quote>
+	 *		<paragraph>c]d</paragraph>
+	 *
+	 * In this case the paragraph will also be returned, despite the collapsed selection:
+	 *
+	 *		<paragraph>[]a</paragraph>
+	 *
+	 * **Special case**: If a selection ends at the beginning of a block, that block is not returned as from user perspective
+	 * this block wasn't selected. See [#984](https://github.com/ckeditor/ckeditor5-engine/issues/984) for more details.
+	 *
+	 *		<paragraph>[a</paragraph>
+	 *		<paragraph>b</paragraph>
+	 *		<paragraph>]c</paragraph> // this block will not be returned
+	 *
+	 * @returns {Iterator.<module:engine/model/element~Element>}
+	 */
+	getSelectedBlocks() {
+		return this._selection.getSelectedBlocks();
+	}
+
+	/**
+	 * Returns the selected element. {@link module:engine/model/element~Element Element} is considered as selected if there is only
+	 * one range in the selection, and that range contains exactly one element.
+	 * Returns `null` if there is no selected element.
+	 *
+	 * @returns {module:engine/model/element~Element|null}
+	 */
+	getSelectedElement() {
+		return this._selection.getSelectedElement();
+	}
+
+	/**
+	 * Checks whether the selection contains the entire content of the given element. This means that selection must start
+	 * at a position {@link module:engine/model/position~Position#isTouching touching} the element's start and ends at position
+	 * touching the element's end.
+	 *
+	 * By default, this method will check whether the entire content of the selection's current root is selected.
+	 * Useful to check if e.g. the user has just pressed <kbd>Ctrl</kbd> + <kbd>A</kbd>.
+	 *
+	 * @param {module:engine/model/element~Element} [element=this.anchor.root]
+	 * @returns {Boolean}
+	 */
+	containsEntireContent( element ) {
+		return this._selection.containsEntireContent( element );
+	}
+
+	/**
+	 * Unbinds all events previously bound by document selection.
+	 */
+	destroy() {
+		this._selection.destroy();
+	}
+
+	/**
+	 * Returns iterable that iterates over this selection's attribute keys.
+	 *
+	 * @returns {Iterable.<String>}
+	 */
+	getAttributeKeys() {
+		return this._selection.getAttributeKeys();
+	}
+
+	/**
+	 * Returns iterable that iterates over this selection's attributes.
+	 *
+	 * Attributes are returned as arrays containing two items. First one is attribute key and second is attribute value.
+	 * This format is accepted by native `Map` object and also can be passed in `Node` constructor.
+	 *
+	 * @returns {Iterable.<*>}
+	 */
+	getAttributes() {
+		return this._selection.getAttributes();
+	}
+
+	/**
+	 * Gets an attribute value for given key or `undefined` if that attribute is not set on the selection.
+	 *
+	 * @param {String} key Key of attribute to look for.
+	 * @returns {*} Attribute value or `undefined`.
+	 */
+	getAttribute( key ) {
+		return this._selection.getAttribute( key );
+	}
+
+	/**
+	 * Checks if the selection has an attribute for given key.
+	 *
+	 * @param {String} key Key of attribute to check.
+	 * @returns {Boolean} `true` if attribute with given key is set on selection, `false` otherwise.
+	 */
+	hasAttribute( key ) {
+		return this._selection.hasAttribute( key );
+	}
+
+	/**
+	 * Moves {@link module:engine/model/documentselection~DocumentSelection#focus} to the specified location.
+	 * Should be used only within the {@link module:engine/model/writer~Writer#setSelectionFocus} method.
+	 *
+	 * The location can be specified in the same form as {@link module:engine/model/position~Position.createAt} parameters.
+	 *
+	 * @see module:engine/model/writer~Writer#setSelectionFocus
+	 * @protected
+	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
+	 * @param {Number|'end'|'before'|'after'} [offset] Offset or one of the flags. Used only when
+	 * first parameter is a {@link module:engine/model/item~Item model item}.
+	 */
+	_setFocus( itemOrPosition, offset ) {
+		this._selection.setFocus( itemOrPosition, offset );
+	}
+
+	/**
+	 * Sets this selection's ranges and direction to the specified location based on the given
+	 * {@link module:engine/model/selection~Selection selection}, {@link module:engine/model/position~Position position},
+	 * {@link module:engine/model/element~Element element}, {@link module:engine/model/position~Position position},
+	 * {@link module:engine/model/range~Range range}, an iterable of {@link module:engine/model/range~Range ranges} or null.
+	 * Should be used only within the {@link module:engine/model/writer~Writer#setSelection} method.
+	 *
+	 * @see module:engine/model/writer~Writer#setSelection
+	 * @protected
+	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
+	 * module:engine/model/position~Position|module:engine/model/element~Element|
+	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} selectable
+	 * @param {Boolean|Number|'before'|'end'|'after'} [backwardSelectionOrOffset]
+	 */
+	_setTo( selectable, backwardSelectionOrOffset ) {
+		this._selection.setTo( selectable, backwardSelectionOrOffset );
+	}
+
+	/**
+	 * Sets attribute on the selection. If attribute with the same key already is set, it's value is overwritten.
+	 * Should be used only within the {@link module:engine/model/writer~Writer#setSelectionAttribute} method.
+	 *
+	 * @see module:engine/model/writer~Writer#setSelectionAttribute
+	 * @protected
+	 * @param {String} key Key of the attribute to set.
+	 * @param {*} value Attribute value.
+	 */
+	_setAttribute( key, value ) {
+		this._selection.setAttribute( key, value );
+	}
+
+	/**
+	 * Removes an attribute with given key from the selection.
+	 * If the given attribute was set on the selection, fires the {@link module:engine/model/selection~Selection#event:change}
+	 * event with removed attribute key.
+	 * Should be used only within the {@link module:engine/model/writer~Writer#removeSelectionAttribute} method.
+	 *
+	 * @see module:engine/model/writer~Writer#removeSelectionAttribute
+	 * @protected
+	 * @param {String} key Key of the attribute to remove.
+	 */
+	_removeAttribute( key ) {
+		this._selection.removeAttribute( key );
+	}
+
+	/**
+	 * Returns an iterable that iterates through all selection attributes stored in current selection's parent.
+	 *
+	 * @protected
+	 * @returns {Iterable.<*>}
+	 */
+	_getStoredAttributes() {
+		return this._selection._getStoredAttributes();
+	}
+
+	/**
+	 * Generates and returns an attribute key for selection attributes store, basing on original attribute key.
+	 *
+	 * @protected
+	 * @param {String} key Attribute key to convert.
+	 * @returns {String} Converted attribute key, applicable for selection store.
+	 */
+	static _getStoreAttributeKey( key ) {
+		return storePrefix + key;
+	}
+
+	/**
+	 * Checks whether the given attribute key is an attribute stored on an element.
+	 *
+	 * @protected
+	 * @param {String} key
+	 * @returns {Boolean}
+	 */
+	static _isStoreAttributeKey( key ) {
+		return key.startsWith( storePrefix );
+	}
+}
+
+mix( DocumentSelection, EmitterMixin );
+
+// `LiveSelection` is used internally by {@link module:engine/model/documentselection~DocumentSelection} and shouldn't be used directly.
+//
+// LiveSelection` is automatically updated upon changes in the {@link module:engine/model/document~Document document}
+// to always contain valid ranges. Its attributes are inherited from the text unless set explicitly.
+//
+// Differences between {@link module:engine/model/selection~Selection} and `LiveSelection` are:
+// * there is always a range in `LiveSelection` - even if no ranges were added there is a "default range"
+// present in the selection,
+// * ranges added to this selection updates automatically when the document changes,
+// * attributes of `LiveSelection` are updated automatically according to selection ranges.
+//
+// @extends module:engine/model/selection~Selection
+//
+
+class LiveSelection extends Selection {
+	// Creates an empty live selection for given {@link module:engine/model/document~Document}.
+	// @param {module:engine/model/document~Document} doc Document which owns this selection.
+	constructor( doc ) {
 		super();
 
-		/**
-		 * Document which owns this selection.
-		 *
-		 * @protected
-		 * @member {module:engine/model/model~Model}
-		 */
+		// Document which owns this selection.
+		//
+		// @protected
+		// @member {module:engine/model/model~Model}
 		this._model = doc.model;
 
-		/**
-		 * Document which owns this selection.
-		 *
-		 * @protected
-		 * @member {module:engine/model/document~Document}
-		 */
+		// Document which owns this selection.
+		//
+		// @protected
+		// @member {module:engine/model/document~Document}
 		this._document = doc;
 
-		/**
-		 * Keeps mapping of attribute name to priority with which the attribute got modified (added/changed/removed)
-		 * last time. Possible values of priority are: `'low'` and `'normal'`.
-		 *
-		 * Priorities are used by internal `DocumentSelection` mechanisms. All attributes set using `DocumentSelection`
-		 * attributes API are set with `'normal'` priority.
-		 *
-		 * @private
-		 * @member {Map} module:engine/model/documentselection~DocumentSelection#_attributePriority
-		 */
+		// Keeps mapping of attribute name to priority with which the attribute got modified (added/changed/removed)
+		// last time. Possible values of priority are: `'low'` and `'normal'`.
+		//
+		// Priorities are used by internal `LiveSelection` mechanisms. All attributes set using `LiveSelection`
+		// attributes API are set with `'normal'` priority.
+		//
+		// @private
+		// @member {Map} module:engine/model/liveselection~LiveSelection#_attributePriority
 		this._attributePriority = new Map();
 
 		// Add events that will ensure selection correctness.
@@ -128,50 +499,34 @@ export default class DocumentSelection extends Selection {
 		}, { priority: 'low' } );
 	}
 
-	/**
-	 * @inheritDoc
-	 */
 	get isCollapsed() {
 		const length = this._ranges.length;
 
 		return length === 0 ? this._document._getDefaultRange().isCollapsed : super.isCollapsed;
 	}
 
-	/**
-	 * @inheritDoc
-	 */
 	get anchor() {
 		return super.anchor || this._document._getDefaultRange().start;
 	}
 
-	/**
-	 * @inheritDoc
-	 */
 	get focus() {
 		return super.focus || this._document._getDefaultRange().end;
 	}
 
-	/**
-	 * @inheritDoc
-	 */
 	get rangeCount() {
 		return this._ranges.length ? this._ranges.length : 1;
 	}
 
-	/**
-	 * Describes whether `DocumentSelection` has own range(s) set, or if it is defaulted to
-	 * {@link module:engine/model/document~Document#_getDefaultRange document's default range}.
-	 *
-	 * @readonly
-	 * @type {Boolean}
-	 */
+	// Describes whether `LiveSelection` has own range(s) set, or if it is defaulted to
+	// {@link module:engine/model/document~Document#_getDefaultRange document's default range}.
+	//
+	// @readonly
+	// @type {Boolean}
 	get hasOwnRange() {
 		return this._ranges.length > 0;
 	}
 
-	/**
-	 * Unbinds all events previously bound by document selection.
-	 */
+	// Unbinds all events previously bound by live selection.
 	destroy() {
 		for ( let i = 0; i < this._ranges.length; i++ ) {
 			this._ranges[ i ].detach();
@@ -180,9 +535,6 @@ export default class DocumentSelection extends Selection {
 		this.stopListening();
 	}
 
-	/**
-	 * @inheritDoc
-	 */
 	* getRanges() {
 		if ( this._ranges.length ) {
 			yield* super.getRanges();
@@ -191,53 +543,25 @@ export default class DocumentSelection extends Selection {
 		}
 	}
 
-	/**
-	 * @inheritDoc
-	 */
 	getFirstRange() {
 		return super.getFirstRange() || this._document._getDefaultRange();
 	}
 
-	/**
-	 * @inheritDoc
-	 */
 	getLastRange() {
 		return super.getLastRange() || this._document._getDefaultRange();
 	}
 
-	/**
-	 * @inheritDoc
-	 */
-	addRange( range, isBackward = false ) {
-		super.addRange( range, isBackward );
-		this.refreshAttributes();
+	setTo( selectable, backwardSelectionOrOffset ) {
+		super.setTo( selectable, backwardSelectionOrOffset );
+		this._refreshAttributes();
 	}
 
-	/**
-	 * @inheritDoc
-	 */
-	removeAllRanges() {
-		super.removeAllRanges();
-		this.refreshAttributes();
+	setFocus( itemOrPosition, offset ) {
+		super.setFocus( itemOrPosition, offset );
+		this._refreshAttributes();
 	}
 
-	/**
-	 * @inheritDoc
-	 */
-	setRanges( newRanges, isLastBackward = false ) {
-		super.setRanges( newRanges, isLastBackward );
-		this.refreshAttributes();
-	}
-
-	/**
-	 * @inheritDoc
-	 */
 	setAttribute( key, value ) {
-		// Store attribute in parent element if the selection is collapsed in an empty node.
-		if ( this.isCollapsed && this.anchor.parent.isEmpty ) {
-			this._storeAttribute( key, value );
-		}
-
 		if ( this._setAttribute( key, value ) ) {
 			// Fire event with exact data.
 			const attributeKeys = [ key ];
@@ -245,15 +569,7 @@ export default class DocumentSelection extends Selection {
 		}
 	}
 
-	/**
-	 * @inheritDoc
-	 */
 	removeAttribute( key ) {
-		// Remove stored attribute from parent element if the selection is collapsed in an empty node.
-		if ( this.isCollapsed && this.anchor.parent.isEmpty ) {
-			this._removeStoredAttribute( key );
-		}
-
 		if ( this._removeAttribute( key ) ) {
 			// Fire event with exact data.
 			const attributeKeys = [ key ];
@@ -261,67 +577,15 @@ export default class DocumentSelection extends Selection {
 		}
 	}
 
-	/**
-	 * @inheritDoc
-	 */
-	setAttributesTo( attrs ) {
-		attrs = toMap( attrs );
-
-		if ( this.isCollapsed && this.anchor.parent.isEmpty ) {
-			this._setStoredAttributesTo( attrs );
-		}
-
-		const changed = this._setAttributesTo( attrs );
-
-		if ( changed.size > 0 ) {
-			// Fire event with exact data (fire only if anything changed).
-			const attributeKeys = Array.from( changed );
-			this.fire( 'change:attribute', { attributeKeys, directChange: true } );
-		}
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	clearAttributes() {
-		this.setAttributesTo( [] );
-	}
-
-	/**
-	 * Removes all attributes from the selection and sets attributes according to the surrounding nodes.
-	 */
-	refreshAttributes() {
+	// Removes all attributes from the selection and sets attributes according to the surrounding nodes.
+	_refreshAttributes() {
 		this._updateAttributes( true );
 	}
 
-	/**
-	 * This method is not available in `DocumentSelection`. There can be only one
-	 * `DocumentSelection` per document instance, so creating new `DocumentSelection`s this way
-	 * would be unsafe.
-	 */
-	static createFromSelection() {
-		/**
-		 * Cannot create a new `DocumentSelection` instance.
-		 *
-		 * `DocumentSelection#createFromSelection()` is not available. There can be only one
-		 * `DocumentSelection` per document instance, so creating new `DocumentSelection`s this way
-		 * would be unsafe.
-		 *
-		 * @error documentselection-cannot-create
-		 */
-		throw new CKEditorError( 'documentselection-cannot-create: Cannot create a new DocumentSelection instance.' );
-	}
-
-	/**
-	 * @inheritDoc
-	 */
 	_popRange() {
 		this._ranges.pop().detach();
 	}
 
-	/**
-	 * @inheritDoc
-	 */
 	_pushRange( range ) {
 		const liveRange = this._prepareRange( range );
 
@@ -331,23 +595,14 @@ export default class DocumentSelection extends Selection {
 		}
 	}
 
-	/**
-	 * Prepares given range to be added to selection. Checks if it is correct,
-	 * converts it to {@link module:engine/model/liverange~LiveRange LiveRange}
-	 * and sets listeners listening to the range's change event.
-	 *
-	 * @private
-	 * @param {module:engine/model/range~Range} range
-	 */
+	// Prepares given range to be added to selection. Checks if it is correct,
+	// converts it to {@link module:engine/model/liverange~LiveRange LiveRange}
+	// and sets listeners listening to the range's change event.
+	//
+	// @private
+	// @param {module:engine/model/range~Range} range
 	_prepareRange( range ) {
-		if ( !( range instanceof Range ) ) {
-			/**
-			 * Trying to add an object that is not an instance of Range.
-			 *
-			 * @error model-selection-added-not-range
-			 */
-			throw new CKEditorError( 'model-selection-added-not-range: Trying to add an object that is not an instance of Range.' );
-		}
+		this._checkRange( range );
 
 		if ( range.root == this._document.graveyard ) {
 			/**
@@ -359,8 +614,6 @@ export default class DocumentSelection extends Selection {
 
 			return;
 		}
-
-		this._checkRange( range );
 
 		const liveRange = LiveRange.createFromRange( range );
 
@@ -377,13 +630,11 @@ export default class DocumentSelection extends Selection {
 		return liveRange;
 	}
 
-	/**
-	 * Updates this selection attributes according to its ranges and the {@link module:engine/model/document~Document model document}.
-	 *
-	 * @protected
-	 * @param {Boolean} clearAll
-	 * @fires change:attribute
-	 */
+	// Updates this selection attributes according to its ranges and the {@link module:engine/model/document~Document model document}.
+	//
+	// @protected
+	// @param {Boolean} clearAll
+	// @fires change:attribute
 	_updateAttributes( clearAll ) {
 		const newAttributes = toMap( this._getSurroundingAttributes() );
 		const oldAttributes = toMap( this.getAttributes() );
@@ -402,7 +653,7 @@ export default class DocumentSelection extends Selection {
 			}
 		}
 
-		this._setAttributesTo( newAttributes, false );
+		this._setAttributesTo( newAttributes );
 
 		// Let's evaluate which attributes really changed.
 		const changed = [];
@@ -428,39 +679,15 @@ export default class DocumentSelection extends Selection {
 		}
 	}
 
-	/**
-	 * Generates and returns an attribute key for selection attributes store, basing on original attribute key.
-	 *
-	 * @protected
-	 * @param {String} key Attribute key to convert.
-	 * @returns {String} Converted attribute key, applicable for selection store.
-	 */
-	static _getStoreAttributeKey( key ) {
-		return storePrefix + key;
-	}
-
-	/**
-	 * Checks whether the given attribute key is an attribute stored on an element.
-	 *
-	 * @protected
-	 * @param {String} key
-	 * @returns {Boolean}
-	 */
-	static _isStoreAttributeKey( key ) {
-		return key.startsWith( storePrefix );
-	}
-
-	/**
-	 * Internal method for setting `DocumentSelection` attribute. Supports attribute priorities (through `directChange`
-	 * parameter).
-	 *
-	 * @private
-	 * @param {String} key Attribute key.
-	 * @param {*} value Attribute value.
-	 * @param {Boolean} [directChange=true] `true` if the change is caused by `Selection` API, `false` if change
-	 * is caused by `Batch` API.
-	 * @returns {Boolean} Whether value has changed.
-	 */
+	// Internal method for setting `LiveSelection` attribute. Supports attribute priorities (through `directChange`
+	// parameter).
+	//
+	// @private
+	// @param {String} key Attribute key.
+	// @param {*} value Attribute value.
+	// @param {Boolean} [directChange=true] `true` if the change is caused by `Selection` API, `false` if change
+	// is caused by `Batch` API.
+	// @returns {Boolean} Whether value has changed.
 	_setAttribute( key, value, directChange = true ) {
 		const priority = directChange ? 'normal' : 'low';
 
@@ -484,17 +711,15 @@ export default class DocumentSelection extends Selection {
 		return true;
 	}
 
-	/**
-	 * Internal method for removing `DocumentSelection` attribute. Supports attribute priorities (through `directChange`
-	 * parameter).
-	 *
-	 * @private
-	 * @param {String} key Attribute key.
-	 * @param {Boolean} [directChange=true] `true` if the change is caused by `Selection` API, `false` if change
-	 * is caused by `Batch` API.
-	 * @returns {Boolean} Whether attribute was removed. May not be true if such attributes didn't exist or the
-	 * existing attribute had higher priority.
-	 */
+	// Internal method for removing `LiveSelection` attribute. Supports attribute priorities (through `directChange`
+	// parameter).
+	//
+	// @private
+	// @param {String} key Attribute key.
+	// @param {Boolean} [directChange=true] `true` if the change is caused by `Selection` API, `false` if change
+	// is caused by `Batch` API.
+	// @returns {Boolean} Whether attribute was removed. May not be true if such attributes didn't exist or the
+	// existing attribute had higher priority.
 	_removeAttribute( key, directChange = true ) {
 		const priority = directChange ? 'normal' : 'low';
 
@@ -516,17 +741,13 @@ export default class DocumentSelection extends Selection {
 		return true;
 	}
 
-	/**
-	 * Internal method for setting multiple `DocumentSelection` attributes. Supports attribute priorities (through
-	 * `directChange` parameter).
-	 *
-	 * @private
-	 * @param {Map} attrs Iterable object containing attributes to be set.
-	 * @param {Boolean} [directChange=true] `true` if the change is caused by `Selection` API, `false` if change
-	 * is caused by `Batch` API.
-	 * @returns {Set.<String>} Changed attribute keys.
-	 */
-	_setAttributesTo( attrs, directChange = true ) {
+	// Internal method for setting multiple `LiveSelection` attributes. Supports attribute priorities (through
+	// `directChange` parameter).
+	//
+	// @private
+	// @param {Map.<String,*>} attrs Iterable object containing attributes to be set.
+	// @returns {Set.<String>} Changed attribute keys.
+	_setAttributesTo( attrs ) {
 		const changed = new Set();
 
 		for ( const [ oldKey, oldValue ] of this.getAttributes() ) {
@@ -535,15 +756,13 @@ export default class DocumentSelection extends Selection {
 				continue;
 			}
 
-			// Attribute still might not get removed because of priorities.
-			if ( this._removeAttribute( oldKey, directChange ) ) {
-				changed.add( oldKey );
-			}
+			// All rest attributes will be removed so changed attributes won't change .
+			this._removeAttribute( oldKey, false );
 		}
 
 		for ( const [ key, value ] of attrs ) {
 			// Attribute may not be set because of attributes or because same key/value is already added.
-			const gotAdded = this._setAttribute( key, value, directChange );
+			const gotAdded = this._setAttribute( key, value, false );
 
 			if ( gotAdded ) {
 				changed.add( key );
@@ -553,12 +772,10 @@ export default class DocumentSelection extends Selection {
 		return changed;
 	}
 
-	/**
-	 * Returns an iterator that iterates through all selection attributes stored in current selection's parent.
-	 *
-	 * @private
-	 * @returns {Iterable.<*>}
-	 */
+	// Returns an iterable that iterates through all selection attributes stored in current selection's parent.
+	//
+	// @protected
+	// @returns {Iterable.<*>}
 	* _getStoredAttributes() {
 		const selectionParent = this.getFirstPosition().parent;
 
@@ -573,67 +790,12 @@ export default class DocumentSelection extends Selection {
 		}
 	}
 
-	/**
-	 * Removes attribute with given key from attributes stored in current selection's parent node.
-	 *
-	 * @private
-	 * @param {String} key Key of attribute to remove.
-	 */
-	_removeStoredAttribute( key ) {
-		const storeKey = DocumentSelection._getStoreAttributeKey( key );
-
-		this._model.change( writer => {
-			writer.removeAttribute( storeKey, this.anchor.parent );
-		} );
-	}
-
-	/**
-	 * Stores given attribute key and value in current selection's parent node.
-	 *
-	 * @private
-	 * @param {String} key Key of attribute to set.
-	 * @param {*} value Attribute value.
-	 */
-	_storeAttribute( key, value ) {
-		const storeKey = DocumentSelection._getStoreAttributeKey( key );
-
-		this._model.change( writer => {
-			writer.setAttribute( storeKey, value, this.anchor.parent );
-		} );
-	}
-
-	/**
-	 * Sets selection attributes stored in current selection's parent node to given set of attributes.
-	 *
-	 * @private
-	 * @param {Iterable} attrs Iterable object containing attributes to be set.
-	 */
-	_setStoredAttributesTo( attrs ) {
-		const selectionParent = this.anchor.parent;
-
-		this._model.change( writer => {
-			for ( const [ oldKey ] of this._getStoredAttributes() ) {
-				const storeKey = DocumentSelection._getStoreAttributeKey( oldKey );
-
-				writer.removeAttribute( storeKey, selectionParent );
-			}
-
-			for ( const [ key, value ] of attrs ) {
-				const storeKey = DocumentSelection._getStoreAttributeKey( key );
-
-				writer.setAttribute( storeKey, value, selectionParent );
-			}
-		} );
-	}
-
-	/**
-	 * Checks model text nodes that are closest to the selection's first position and returns attributes of first
-	 * found element. If there are no text nodes in selection's first position parent, it returns selection
-	 * attributes stored in that parent.
-	 *
-	 * @private
-	 * @returns {Iterable.<*>} Collection of attributes.
-	 */
+	// Checks model text nodes that are closest to the selection's first position and returns attributes of first
+	// found element. If there are no text nodes in selection's first position parent, it returns selection
+	// attributes stored in that parent.
+	//
+	// @private
+	// @returns {Iterable.<*>} Collection of attributes.
 	_getSurroundingAttributes() {
 		const position = this.getFirstPosition();
 		const schema = this._model.schema;
@@ -700,20 +862,18 @@ export default class DocumentSelection extends Selection {
 		return attrs;
 	}
 
-	/**
-	 * Fixes a selection range after it ends up in graveyard root.
-	 *
-	 * @private
-	 * @param {module:engine/model/liverange~LiveRange} liveRange The range from selection, that ended up in the graveyard root.
-	 * @param {module:engine/model/position~Position} removedRangeStart Start position of a range which was removed.
-	 */
+	// Fixes a selection range after it ends up in graveyard root.
+	//
+	// @private
+	// @param {module:engine/model/liverange~LiveRange} liveRange The range from selection, that ended up in the graveyard root.
+	// @param {module:engine/model/position~Position} removedRangeStart Start position of a range which was removed.
 	_fixGraveyardSelection( liveRange, removedRangeStart ) {
 		// The start of the removed range is the closest position to the `liveRange` - the original selection range.
 		// This is a good candidate for a fixed selection range.
 		const positionCandidate = Position.createFromPosition( removedRangeStart );
 
 		// Find a range that is a correct selection range and is closest to the start of removed range.
-		const selectionRange = this._document.getNearestSelectionRange( positionCandidate );
+		const selectionRange = this._model.schema.getNearestSelectionRange( positionCandidate );
 
 		// Remove the old selection range before preparing and adding new selection range. This order is important,
 		// because new range, in some cases, may intersect with old range (it depends on `getNearestSelectionRange()` result).
@@ -736,12 +896,12 @@ export default class DocumentSelection extends Selection {
 	}
 }
 
-// Helper function for {@link module:engine/model/documentselection~DocumentSelection#_updateAttributes}.
+// Helper function for {@link module:engine/model/liveselection~LiveSelection#_updateAttributes}.
 //
 // It takes model item, checks whether it is a text node (or text proxy) and, if so, returns it's attributes. If not, returns `null`.
 //
 // @param {module:engine/model/item~Item|null}  node
-// @returns {Boolean|Iterable}
+// @returns {Boolean}
 function getAttrsIfCharacter( node ) {
 	if ( node instanceof TextProxy || node instanceof Text ) {
 		return node.getAttributes();

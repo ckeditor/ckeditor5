@@ -94,7 +94,10 @@ describe( 'EditingController', () => {
 			buildModelConverter().for( editing.modelToView ).fromMarker( 'marker' ).toHighlight( {} );
 
 			// Note: The below code is highly overcomplicated due to #455.
-			model.document.selection.removeAllRanges();
+			model.change( writer => {
+				writer.setSelection( null );
+			} );
+
 			modelRoot.removeChildren( 0, modelRoot.childCount );
 
 			viewRoot.removeChildren( 0, viewRoot.childCount );
@@ -109,7 +112,7 @@ describe( 'EditingController', () => {
 			model.change( writer => {
 				writer.insert( modelData, model.document.getRoot() );
 
-				model.document.selection.addRange( ModelRange.createFromParentsAndOffsets(
+				writer.setSelection( ModelRange.createFromParentsAndOffsets(
 					modelRoot.getChild( 0 ), 1, modelRoot.getChild( 0 ), 1 )
 				);
 			} );
@@ -131,9 +134,9 @@ describe( 'EditingController', () => {
 			model.change( writer => {
 				writer.split( model.document.selection.getFirstPosition() );
 
-				model.document.selection.setRanges( [
+				writer.setSelection(
 					ModelRange.createFromParentsAndOffsets(	modelRoot.getChild( 1 ), 0, modelRoot.getChild( 1 ), 0 )
-				] );
+				);
 			} );
 
 			expect( getViewData( editing.view ) ).to.equal( '<p>f</p><p>{}oo</p><p></p><p>bar</p>' );
@@ -155,9 +158,9 @@ describe( 'EditingController', () => {
 					ModelRange.createFromPositionAndShift( model.document.selection.getFirstPosition(), 1 )
 				);
 
-				model.document.selection.setRanges( [
+				writer.setSelection(
 					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 1, modelRoot.getChild( 0 ), 1 )
-				] );
+				);
 			} );
 
 			expect( getViewData( editing.view ) ).to.equal( '<p>f{}o</p><p></p><p>bar</p>' );
@@ -189,38 +192,38 @@ describe( 'EditingController', () => {
 		} );
 
 		it( 'should convert collapsed selection', () => {
-			model.change( () => {
-				model.document.selection.setRanges( [
+			model.change( writer => {
+				writer.setSelection(
 					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 2 ), 1, modelRoot.getChild( 2 ), 1 )
-				] );
+				);
 			} );
 
 			expect( getViewData( editing.view ) ).to.equal( '<p>foo</p><p></p><p>b{}ar</p>' );
 		} );
 
 		it( 'should convert not collapsed selection', () => {
-			model.change( () => {
-				model.document.selection.setRanges( [
+			model.change( writer => {
+				writer.setSelection(
 					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 2 ), 1, modelRoot.getChild( 2 ), 2 )
-				] );
+				);
 			} );
 
 			expect( getViewData( editing.view ) ).to.equal( '<p>foo</p><p></p><p>b{a}r</p>' );
 		} );
 
 		it( 'should clear previous selection', () => {
-			model.change( () => {
-				model.document.selection.setRanges( [
+			model.change( writer => {
+				writer.setSelection(
 					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 2 ), 1, modelRoot.getChild( 2 ), 1 )
-				] );
+				);
 			} );
 
 			expect( getViewData( editing.view ) ).to.equal( '<p>foo</p><p></p><p>b{}ar</p>' );
 
-			model.change( () => {
-				model.document.selection.setRanges( [
+			model.change( writer => {
+				writer.setSelection(
 					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 2 ), 2, modelRoot.getChild( 2 ), 2 )
-				] );
+				);
 			} );
 
 			expect( getViewData( editing.view ) ).to.equal( '<p>foo</p><p></p><p>ba{}r</p>' );
@@ -369,7 +372,7 @@ describe( 'EditingController', () => {
 				writer.insert( modelData, modelRoot );
 				p1 = modelRoot.getChild( 0 );
 
-				model.document.selection.addRange( ModelRange.createFromParentsAndOffsets( p1, 0, p1, 0 ) );
+				writer.setSelection( ModelRange.createFromParentsAndOffsets( p1, 0, p1, 0 ) );
 			} );
 
 			mcd = editing.modelToView;

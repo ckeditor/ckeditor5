@@ -641,6 +641,169 @@ describe( 'Schema', () => {
 		} );
 	} );
 
+	describe( 'checkMerge()', () => {
+		beforeEach( () => {
+			schema.register( '$root' );
+			schema.register( '$block', {
+				allowIn: '$root',
+				isBlock: true
+			} );
+			schema.register( '$text', {
+				allowIn: '$block'
+			} );
+			schema.register( 'paragraph', {
+				inheritAllFrom: '$block'
+			} );
+			schema.register( 'listItem', {
+				inheritAllFrom: '$block'
+			} );
+			schema.register( 'blockQuote', {
+				allowWhere: '$block',
+				allowContentOf: '$root'
+			} );
+		} );
+
+		it( 'returns false if a block cannot be merged with other block (disallowed element is the first child)', () => {
+			const paragraph = new Element( 'paragraph', null, [
+				new Text( 'xyz' )
+			] );
+			const blockQuote = new Element( 'blockQuote', null, [ paragraph ] );
+			const listItem = new Element( 'listItem' );
+
+			expect( schema.checkMerge( listItem, blockQuote ) ).to.be.false;
+		} );
+
+		it( 'returns false if a block cannot be merged with other block (disallowed element is not the first child)', () => {
+			const paragraph = new Element( 'paragraph', null, [
+				new Text( 'foo' )
+			] );
+			const blockQuote = new Element( 'blockQuote', null, [
+				new Text( 'bar', { bold: true } ),
+				new Text( 'xyz' ),
+				paragraph
+			] );
+			const listItem = new Element( 'listItem' );
+
+			expect( schema.checkMerge( listItem, blockQuote ) ).to.be.false;
+		} );
+
+		it( 'returns true if a block can be merged with other block', () => {
+			const listItem = new Element( 'listItem' );
+			const listItemToMerge = new Element( 'listItem', null, [
+				new Text( 'xyz' )
+			] );
+
+			expect( schema.checkMerge( listItem, listItemToMerge ) ).to.be.true;
+		} );
+
+		it( 'return true if two elements between the position can be merged', () => {
+			const listItem = new Element( 'listItem', null, [
+				new Text( 'foo' )
+			] );
+			const listItemToMerge = new Element( 'listItem', null, [
+				new Text( 'bar' )
+			] );
+
+			// eslint-disable-next-line no-new
+			new Element( '$root', null, [
+				listItem, listItemToMerge
+			] );
+			const position = Position.createAfter( listItem );
+
+			expect( schema.checkMerge( position ) ).to.be.true;
+		} );
+
+		it( 'throws an error if there is no element before the position', () => {
+			const listItem = new Element( 'listItem', null, [
+				new Text( 'foo' )
+			] );
+
+			// eslint-disable-next-line no-new
+			new Element( '$root', null, [
+				listItem
+			] );
+
+			const position = Position.createBefore( listItem );
+
+			expect( () => {
+				expect( schema.checkMerge( position ) );
+			} ).to.throw( CKEditorError, /^schema-check-merge-no-element-before:/ );
+		} );
+
+		it( 'throws an error if the node before the position is not the element', () => {
+			const listItem = new Element( 'listItem', null, [
+				new Text( 'foo' )
+			] );
+
+			// eslint-disable-next-line no-new
+			new Element( '$root', null, [
+				new Text( 'bar' ),
+				listItem
+			] );
+
+			const position = Position.createBefore( listItem );
+
+			expect( () => {
+				expect( schema.checkMerge( position ) );
+			} ).to.throw( CKEditorError, /^schema-check-merge-no-element-before:/ );
+		} );
+
+		it( 'throws an error if there is no element after the position', () => {
+			const listItem = new Element( 'listItem', null, [
+				new Text( 'foo' )
+			] );
+
+			// eslint-disable-next-line no-new
+			new Element( '$root', null, [
+				listItem
+			] );
+
+			const position = Position.createAfter( listItem );
+
+			expect( () => {
+				expect( schema.checkMerge( position ) );
+			} ).to.throw( CKEditorError, /^schema-check-merge-no-element-after:/ );
+		} );
+
+		it( 'throws an error if the node after the position is not the element', () => {
+			const listItem = new Element( 'listItem', null, [
+				new Text( 'foo' )
+			] );
+
+			// eslint-disable-next-line no-new
+			new Element( '$root', null, [
+				listItem,
+				new Text( 'bar' )
+			] );
+
+			const position = Position.createBefore( listItem );
+
+			expect( () => {
+				expect( schema.checkMerge( position ) );
+			} ).to.throw( CKEditorError, /^schema-check-merge-no-element-before:/ );
+		} );
+
+		// This is an invalid case by definition – the baseElement should not contain disallowed elements
+		// in the first place. However, the check is focused on the elementToMerge's children so let's make sure
+		// that only them counts.
+		it( 'returns true if element to merge contains a valid content but base element contains disallowed elements', () => {
+			const listItem = new Element( 'listItem', null, [
+				new Text( 'foo' ),
+				new Element( 'paragraph', null, [
+					new Text( 'bar' )
+				] )
+			] );
+			const listItemToMerge = new Element( 'listItem', null, [
+				new Text( 'xyz' )
+			] );
+
+			expect( schema.checkMerge( listItem, listItemToMerge ) ).to.be.true;
+		} );
+
+		// The checkMerge() method should also check whether all ancestors of elementToMerge are allowed in their new
+		// context (now, we check only immediate children), but for now we ignore these cases.
+	} );
+
 	describe( 'getLimitElement()', () => {
 		let model, doc, root;
 
@@ -894,8 +1057,7 @@ describe( 'Schema', () => {
 			setData( model, '[<p>foo<img>xxx</img>bar</p>]' );
 
 			const validRanges = schema.getValidRanges( doc.selection.getRanges(), attribute );
-			const sel = new Selection();
-			sel.setRanges( validRanges );
+			const sel = new Selection( validRanges );
 
 			expect( stringify( root, sel ) ).to.equal( '[<p>foo<img>]xxx[</img>bar</p>]' );
 		} );
@@ -913,8 +1075,7 @@ describe( 'Schema', () => {
 			setData( model, '[<p>foo<img>xxx</img>bar</p>]' );
 
 			const validRanges = schema.getValidRanges( doc.selection.getRanges(), attribute );
-			const sel = new Selection();
-			sel.setRanges( validRanges );
+			const sel = new Selection( validRanges );
 
 			expect( stringify( root, sel ) ).to.equal( '[<p>foo]<img>[xxx]</img>[bar</p>]' );
 		} );
@@ -923,8 +1084,7 @@ describe( 'Schema', () => {
 			setData( model, '<p>[foo<img></img>bar]x[bar<img></img>foo]</p>' );
 
 			const validRanges = schema.getValidRanges( doc.selection.getRanges(), attribute );
-			const sel = new Selection();
-			sel.setRanges( validRanges );
+			const sel = new Selection( validRanges );
 
 			expect( stringify( root, sel ) ).to.equal( '<p>[foo]<img></img>[bar]x[bar]<img></img>[foo]</p>' );
 		} );
@@ -935,8 +1095,7 @@ describe( 'Schema', () => {
 			setData( model, '<p>[foo<img>bar]</img>bom</p>' );
 
 			const validRanges = schema.getValidRanges( doc.selection.getRanges(), attribute );
-			const sel = new Selection();
-			sel.setRanges( validRanges );
+			const sel = new Selection( validRanges );
 
 			expect( stringify( root, sel ) ).to.equal( '<p>[foo]<img>bar</img>bom</p>' );
 		} );
@@ -957,6 +1116,241 @@ describe( 'Schema', () => {
 			expect( result[ 1 ].start.path ).to.members( [ 0, 4 ] );
 			expect( result[ 1 ].end.path ).to.members( [ 1 ] );
 		} );
+	} );
+
+	describe( 'getNearestSelectionRange()', () => {
+		let selection, model, doc;
+
+		beforeEach( () => {
+			model = new Model();
+			doc = model.document;
+			schema = model.schema;
+			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+
+			model.schema.register( 'emptyBlock', { allowIn: '$root' } );
+
+			model.schema.register( 'widget', {
+				allowIn: '$root',
+				isObject: true
+			} );
+
+			model.schema.register( 'blockWidget', {
+				allowIn: '$root',
+				allowContentOf: '$block',
+				isObject: true
+			} );
+
+			doc.createRoot();
+			selection = doc.selection;
+		} );
+
+		test(
+			'should return collapsed range if text node can be placed at that position - both',
+			'<paragraph>[]</paragraph>',
+			'both',
+			'<paragraph>[]</paragraph>'
+		);
+
+		test(
+			'should return collapsed range if text node can be placed at that position - forward',
+			'<paragraph>[]</paragraph>',
+			'forward',
+			'<paragraph>[]</paragraph>'
+		);
+
+		test(
+			'should return collapsed range if text node can be placed at that position - backward',
+			'<paragraph>[]</paragraph>',
+			'backward',
+			'<paragraph>[]</paragraph>'
+		);
+
+		test( 'should return null in empty document - both', '', 'both', null );
+
+		test( 'should return null in empty document - backward', '', 'backward', null );
+
+		test( 'should return null in empty document - forward', '', 'forward', null );
+
+		test(
+			'should find range before when searching both ways',
+			'<paragraph></paragraph>[]<paragraph></paragraph>',
+			'both',
+			'<paragraph>[]</paragraph><paragraph></paragraph>'
+		);
+
+		test(
+			'should find range before when searching backward',
+			'<paragraph></paragraph>[]<paragraph></paragraph>',
+			'backward',
+			'<paragraph>[]</paragraph><paragraph></paragraph>'
+		);
+
+		test(
+			'should find range after when searching forward',
+			'<paragraph></paragraph>[]<paragraph></paragraph>',
+			'forward',
+			'<paragraph></paragraph><paragraph>[]</paragraph>'
+		);
+
+		test(
+			'should find range after when searching both ways when it is closer',
+			'<paragraph></paragraph><emptyBlock></emptyBlock>[]<paragraph></paragraph>',
+			'both',
+			'<paragraph></paragraph><emptyBlock></emptyBlock><paragraph>[]</paragraph>'
+		);
+
+		test(
+			'should find range before when searching both ways when it is closer',
+			'<paragraph></paragraph><emptyBlock></emptyBlock>[]<emptyBlock></emptyBlock><emptyBlock></emptyBlock><paragraph></paragraph>',
+			'both',
+			'<paragraph>[]</paragraph><emptyBlock></emptyBlock><emptyBlock></emptyBlock><emptyBlock></emptyBlock><paragraph></paragraph>'
+		);
+
+		test(
+			'should return null if there is no valid range',
+			'[]<emptyBlock></emptyBlock>',
+			'both',
+			null
+		);
+
+		test(
+			'should return null if there is no valid range in given direction - backward',
+			'[]<paragraph></paragraph>',
+			'backward',
+			null
+		);
+
+		test(
+			'should return null if there is no valid range in given direction - forward',
+			'<paragraph></paragraph>[]',
+			'forward',
+			null
+		);
+
+		test(
+			'should move forward when placed at root start',
+			'[]<paragraph></paragraph><paragraph></paragraph>',
+			'both',
+			'<paragraph>[]</paragraph><paragraph></paragraph>'
+		);
+
+		test(
+			'should move backward when placed at root end',
+			'<paragraph></paragraph><paragraph></paragraph>[]',
+			'both',
+			'<paragraph></paragraph><paragraph>[]</paragraph>'
+		);
+
+		describe( 'in case of objects which do not allow text inside', () => {
+			test(
+				'should select nearest object (o[]o) - both',
+				'<widget></widget>[]<widget></widget>',
+				'both',
+				'[<widget></widget>]<widget></widget>'
+			);
+
+			test(
+				'should select nearest object (o[]o) - forward',
+				'<widget></widget>[]<widget></widget>',
+				'forward',
+				'<widget></widget>[<widget></widget>]'
+			);
+
+			test(
+				'should select nearest object (o[]o) - backward',
+				'<widget></widget>[]<widget></widget>',
+				'both',
+				'[<widget></widget>]<widget></widget>'
+			);
+
+			test(
+				'should select nearest object (p[]o) - forward',
+				'<paragraph></paragraph>[]<widget></widget>',
+				'forward',
+				'<paragraph></paragraph>[<widget></widget>]'
+			);
+
+			test(
+				'should select nearest object (o[]p) - both',
+				'<widget></widget>[]<paragraph></paragraph>',
+				'both',
+				'[<widget></widget>]<paragraph></paragraph>'
+			);
+
+			test(
+				'should select nearest object (o[]p) - backward',
+				'<widget></widget>[]<paragraph></paragraph>',
+				'backward',
+				'[<widget></widget>]<paragraph></paragraph>'
+			);
+
+			test(
+				'should select nearest object ([]o) - both',
+				'[]<widget></widget><paragraph></paragraph>',
+				'both',
+				'[<widget></widget>]<paragraph></paragraph>'
+			);
+
+			test(
+				'should select nearest object ([]o) - forward',
+				'[]<widget></widget><paragraph></paragraph>',
+				'forward',
+				'[<widget></widget>]<paragraph></paragraph>'
+			);
+
+			test(
+				'should select nearest object (o[]) - both',
+				'<paragraph></paragraph><widget></widget>[]',
+				'both',
+				'<paragraph></paragraph>[<widget></widget>]'
+			);
+
+			test(
+				'should select nearest object (o[]) - backward',
+				'<paragraph></paragraph><widget></widget>[]',
+				'both',
+				'<paragraph></paragraph>[<widget></widget>]'
+			);
+		} );
+
+		describe( 'in case of objects which allow text inside', () => {
+			test(
+				'should select nearest object which allows text (o[]o) - both',
+				'<blockWidget></blockWidget>[]<blockWidget></blockWidget>',
+				'both',
+				'[<blockWidget></blockWidget>]<blockWidget></blockWidget>'
+			);
+
+			test(
+				'should select nearest object (o[]p) - both',
+				'<blockWidget></blockWidget>[]<paragraph></paragraph>',
+				'both',
+				'[<blockWidget></blockWidget>]<paragraph></paragraph>'
+			);
+
+			test(
+				'should select nearest object which allows text ([]o) - both',
+				'[]<blockWidget></blockWidget><paragraph></paragraph>',
+				'both',
+				'[<blockWidget></blockWidget>]<paragraph></paragraph>'
+			);
+		} );
+
+		function test( testName, data, direction, expected ) {
+			it( testName, () => {
+				setData( model, data );
+				const range = schema.getNearestSelectionRange( selection.anchor, direction );
+
+				if ( expected === null ) {
+					expect( range ).to.be.null;
+				} else {
+					model.change( writer => {
+						writer.setSelection( range );
+					} );
+					expect( getData( model ) ).to.equal( expected );
+				}
+			} );
+		}
 	} );
 
 	describe( 'removeDisallowedAttributes()', () => {

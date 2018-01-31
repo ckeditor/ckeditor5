@@ -380,7 +380,7 @@ describe( 'DataController utils', () => {
 				// Creating new instance of selection instead of operation on module:engine/model/document~Document#selection.
 				// Document's selection will throw errors in some test cases (which are correct cases, but only for
 				// non-document selections).
-				const testSelection = Selection.createFromSelection( doc.selection );
+				const testSelection = new Selection( doc.selection );
 				modifySelection( model, testSelection, { unit: 'codePoint', direction: 'backward' } );
 
 				expect( stringify( doc.getRoot(), testSelection ) ).to.equal( '<p>foob[̂]ar</p>' );
@@ -550,7 +550,7 @@ describe( 'DataController utils', () => {
 			// Creating new instance of selection instead of operation on module:engine/model/document~Document#selection.
 			// Document's selection will throw errors in some test cases (which are correct cases, but only for
 			// non-document selections).
-			const testSelection = Selection.createFromSelection( doc.selection );
+			const testSelection = new Selection( doc.selection );
 			modifySelection( model, testSelection, options );
 
 			expect( stringify( doc.getRoot(), testSelection ) ).to.equal( output );

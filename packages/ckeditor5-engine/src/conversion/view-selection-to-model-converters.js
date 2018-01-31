@@ -37,11 +37,11 @@ export function convertSelectionChange( model, mapper ) {
 			ranges.push( mapper.toModelRange( viewRange ) );
 		}
 
-		modelSelection.setRanges( ranges, viewSelection.isBackward );
+		modelSelection.setTo( ranges, viewSelection.isBackward );
 
 		if ( !modelSelection.isEqual( model.document.selection ) ) {
-			model.change( () => {
-				model.document.selection.setTo( modelSelection );
+			model.change( writer => {
+				writer.setSelection( modelSelection );
 			} );
 		}
 	};

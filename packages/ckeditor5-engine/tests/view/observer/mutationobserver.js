@@ -25,7 +25,7 @@ describe( 'MutationObserver', () => {
 
 		createViewRoot( viewDocument );
 		viewDocument.attachDomRoot( domEditor );
-		viewDocument.selection.removeAllRanges();
+		viewDocument.selection.setTo( null );
 		document.getSelection().removeAllRanges();
 
 		mutationObserver = viewDocument.getObserver( MutationObserver );

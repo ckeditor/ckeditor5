@@ -8,6 +8,8 @@ import insertContent from '../../../src/model/utils/insertcontent';
 import DocumentFragment from '../../../src/model/documentfragment';
 import Text from '../../../src/model/text';
 import Element from '../../../src/model/element';
+import Selection from '../../../src/model/selection';
+import Position from '../../../src/model/position';
 
 import { setData, getData, parse } from '../../../src/dev-utils/model';
 
@@ -26,6 +28,22 @@ describe( 'DataController utils', () => {
 			model.change( writer => {
 				insertContent( model, new Text( 'a' ), doc.selection );
 				expect( writer.batch.deltas ).to.length( 1 );
+			} );
+		} );
+
+		it( 'should be able to insert content at custom selection', () => {
+			model = new Model();
+			doc = model.document;
+			doc.createRoot();
+
+			model.schema.extend( '$text', { allowIn: '$root' } );
+			setData( model, 'a[]bc' );
+
+			const selection = new Selection( new Position( doc.getRoot(), [ 2 ] ) );
+
+			model.change( () => {
+				insertContent( model, new Text( 'x' ), selection );
+				expect( getData( model ) ).to.equal( 'a[]bxc' );
 			} );
 		} );
 

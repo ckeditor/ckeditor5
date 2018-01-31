@@ -100,7 +100,7 @@ describe( 'placeholder', () => {
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
 
-			viewDocument.selection.setRanges( [ ViewRange.createIn( element ) ] );
+			viewDocument.selection.setTo( [ ViewRange.createIn( element ) ] );
 			viewDocument.render();
 
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
@@ -146,8 +146,8 @@ describe( 'placeholder', () => {
 			expect( secondElement.hasClass( 'ck-placeholder' ) ).to.be.true;
 
 			// Move selection to the elements with placeholders.
-			viewDocument.selection.setRanges( [ ViewRange.createIn( element ) ] );
-			secondDocument.selection.setRanges( [ ViewRange.createIn( secondElement ) ] );
+			viewDocument.selection.setTo( [ ViewRange.createIn( element ) ] );
+			secondDocument.selection.setTo( [ ViewRange.createIn( secondElement ) ] );
 
 			// Render changes.
 			viewDocument.render();

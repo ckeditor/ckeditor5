@@ -89,7 +89,7 @@ describe( 'Document', () => {
 				// <container:p>foo<ui:span>xxx</ui:span>{}bar</container:p>
 				const p = new ViewContainerElement( 'p', null, [ foo, ui, bar ] );
 				viewRoot.appendChildren( p );
-				viewDocument.selection.setRanges( [ ViewRange.createFromParentsAndOffsets( bar, 0, bar, 0 ) ] );
+				viewDocument.selection.setTo( [ ViewRange.createFromParentsAndOffsets( bar, 0, bar, 0 ) ] );
 
 				renderAndFireKeydownEvent( { keyCode: keyCodes.arrowleft } );
 
@@ -104,7 +104,7 @@ describe( 'Document', () => {
 				// <container:p>foo[]<ui:span>xxx</ui:span>bar</container:p>
 				const p = new ViewContainerElement( 'p', null, [ foo, ui, bar ] );
 				viewRoot.appendChildren( p );
-				viewDocument.selection.setRanges( [ ViewRange.createFromParentsAndOffsets( p, 1, p, 1 ) ] );
+				viewDocument.selection.setTo( [ ViewRange.createFromParentsAndOffsets( p, 1, p, 1 ) ] );
 
 				renderAndFireKeydownEvent();
 
@@ -121,7 +121,7 @@ describe( 'Document', () => {
 				// <container:p>foo{}<ui:span>xxx</ui:span>bar</container:p>
 				const p = new ViewContainerElement( 'p', null, [ foo, ui, bar ] );
 				viewRoot.appendChildren( p );
-				viewDocument.selection.setRanges( [ ViewRange.createFromParentsAndOffsets( foo, 3, foo, 3 ) ] );
+				viewDocument.selection.setTo( [ ViewRange.createFromParentsAndOffsets( foo, 3, foo, 3 ) ] );
 
 				renderAndFireKeydownEvent();
 
@@ -138,7 +138,7 @@ describe( 'Document', () => {
 				// <container:p>foo{}<ui:span>xxx</ui:span><ui:span>yyy</ui:span>bar</container:p>'
 				const p = new ViewContainerElement( 'p', null, [ foo, ui, ui2, bar ] );
 				viewRoot.appendChildren( p );
-				viewDocument.selection.setRanges( [ ViewRange.createFromParentsAndOffsets( foo, 3, foo, 3 ) ] );
+				viewDocument.selection.setTo( [ ViewRange.createFromParentsAndOffsets( foo, 3, foo, 3 ) ] );
 
 				renderAndFireKeydownEvent();
 
@@ -157,7 +157,7 @@ describe( 'Document', () => {
 				const div = new ViewContainerElement( 'div' );
 				viewRoot.appendChildren( p );
 				viewRoot.appendChildren( div );
-				viewDocument.selection.setRanges( [ ViewRange.createFromParentsAndOffsets( foo, 3, foo, 3 ) ] );
+				viewDocument.selection.setTo( [ ViewRange.createFromParentsAndOffsets( foo, 3, foo, 3 ) ] );
 
 				renderAndFireKeydownEvent();
 
@@ -175,7 +175,7 @@ describe( 'Document', () => {
 				const b = new ViewAttribtueElement( 'b', null, foo );
 				const p = new ViewContainerElement( 'p', null, [ b, ui, bar ] );
 				viewRoot.appendChildren( p );
-				viewDocument.selection.setRanges( [ ViewRange.createFromParentsAndOffsets( foo, 3, foo, 3 ) ] );
+				viewDocument.selection.setTo( ViewRange.createFromParentsAndOffsets( foo, 3, foo, 3 ) );
 
 				renderAndFireKeydownEvent();
 
@@ -193,7 +193,7 @@ describe( 'Document', () => {
 				const b = new ViewAttribtueElement( 'b', null, foo );
 				const p = new ViewContainerElement( 'p', null, [ b, ui, bar ] );
 				viewRoot.appendChildren( p );
-				viewDocument.selection.setRanges( [ ViewRange.createFromParentsAndOffsets( b, 1, b, 1 ) ] );
+				viewDocument.selection.setTo( ViewRange.createFromParentsAndOffsets( b, 1, b, 1 ) );
 
 				renderAndFireKeydownEvent();
 
@@ -221,7 +221,7 @@ describe( 'Document', () => {
 				const p = new ViewContainerElement( 'p', null, [ i, ui, bar ] );
 
 				viewRoot.appendChildren( p );
-				viewDocument.selection.setRanges( [ ViewRange.createFromParentsAndOffsets( foo, 3, foo, 3 ) ] );
+				viewDocument.selection.setTo( ViewRange.createFromParentsAndOffsets( foo, 3, foo, 3 ) );
 
 				renderAndFireKeydownEvent();
 
@@ -248,7 +248,7 @@ describe( 'Document', () => {
 				const p = new ViewContainerElement( 'p', null, [ foo, b1, ui, ui2, b2, bar ] );
 
 				viewRoot.appendChildren( p );
-				viewDocument.selection.setRanges( [ ViewRange.createFromParentsAndOffsets( foo, 3, foo, 3 ) ] );
+				viewDocument.selection.setTo( ViewRange.createFromParentsAndOffsets( foo, 3, foo, 3 ) );
 
 				renderAndFireKeydownEvent();
 
@@ -276,7 +276,7 @@ describe( 'Document', () => {
 				const p = new ViewContainerElement( 'p', null, [ foo, b1, ui, ui2, b2, bar ] );
 
 				viewRoot.appendChildren( p );
-				viewDocument.selection.setRanges( [ ViewRange.createFromParentsAndOffsets( foo, 3, foo, 3 ) ] );
+				viewDocument.selection.setTo( ViewRange.createFromParentsAndOffsets( foo, 3, foo, 3 ) );
 
 				renderAndFireKeydownEvent( { shiftKey: true } );
 
@@ -352,7 +352,7 @@ describe( 'Document', () => {
 				const p = new ViewContainerElement( 'p', null, [ foo, ui, bar ] );
 
 				viewRoot.appendChildren( p );
-				viewDocument.selection.setRanges( [ ViewRange.createFromParentsAndOffsets( foo, 2, foo, 3 ) ] );
+				viewDocument.selection.setTo( ViewRange.createFromParentsAndOffsets( foo, 2, foo, 3 ) );
 
 				renderAndFireKeydownEvent( { shiftKey: true } );
 
@@ -377,7 +377,7 @@ describe( 'Document', () => {
 				const i = new ViewAttribtueElement( 'i', null, b );
 				const p = new ViewContainerElement( 'p', null, [ i, ui, bar ] );
 				viewRoot.appendChildren( p );
-				viewDocument.selection.setRanges( [ ViewRange.createFromParentsAndOffsets( foo, 2, foo, 3 ) ] );
+				viewDocument.selection.setTo( ViewRange.createFromParentsAndOffsets( foo, 2, foo, 3 ) );
 
 				renderAndFireKeydownEvent( { shiftKey: true } );
 
@@ -403,7 +403,7 @@ describe( 'Document', () => {
 				const b2 = new ViewAttribtueElement( 'b' );
 				const p = new ViewContainerElement( 'p', null, [ foo, b1, ui, ui2, b2, bar ] );
 				viewRoot.appendChildren( p );
-				viewDocument.selection.setRanges( [ ViewRange.createFromParentsAndOffsets( foo, 2, foo, 3 ) ] );
+				viewDocument.selection.setTo( ViewRange.createFromParentsAndOffsets( foo, 2, foo, 3 ) );
 
 				renderAndFireKeydownEvent( { shiftKey: true } );
 

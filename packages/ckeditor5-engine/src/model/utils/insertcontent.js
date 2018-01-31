@@ -12,6 +12,7 @@ import LivePosition from '../liveposition';
 import Element from '../element';
 import Range from '../range';
 import log from '@ckeditor/ckeditor5-utils/src/log';
+import DocumentSelection from '../documentselection';
 
 /**
  * Inserts content into the editor (specified selection) as one would expect the paste
@@ -25,7 +26,8 @@ import log from '@ckeditor/ckeditor5-utils/src/log';
  * @param {module:engine/model/model~Model} model The model in context of which the insertion
  * should be performed.
  * @param {module:engine/model/documentfragment~DocumentFragment|module:engine/model/item~Item} content The content to insert.
- * @param {module:engine/model/selection~Selection} selection Selection into which the content should be inserted.
+ * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
+ * Selection into which the content should be inserted.
  */
 export default function insertContent( model, content, selection ) {
 	model.change( writer => {
@@ -54,7 +56,11 @@ export default function insertContent( model, content, selection ) {
 
 		/* istanbul ignore else */
 		if ( newRange ) {
-			selection.setRanges( [ newRange ] );
+			if ( selection instanceof DocumentSelection ) {
+				writer.setSelection( newRange );
+			} else {
+				selection.setTo( newRange );
+			}
 		} else {
 			// We are not testing else because it's a safe check for unpredictable edge cases:
 			// an insertion without proper range to select.
@@ -155,7 +161,7 @@ class Insertion {
 			return Range.createOn( this.nodeToSelect );
 		}
 
-		return this.model.document.getNearestSelectionRange( this.position );
+		return this.model.schema.getNearestSelectionRange( this.position );
 	}
 
 	/**

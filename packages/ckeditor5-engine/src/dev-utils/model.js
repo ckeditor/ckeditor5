@@ -19,6 +19,7 @@ import ModelPosition from '../model/position';
 import ModelConversionDispatcher from '../conversion/modelconversiondispatcher';
 import ModelSelection from '../model/selection';
 import ModelDocumentFragment from '../model/documentfragment';
+import DocumentSelection from '../model/documentselection';
 
 import ViewConversionDispatcher from '../conversion/viewconversiondispatcher';
 import ViewSelection from '../view/selection';
@@ -34,6 +35,7 @@ import {
 } from '../conversion/model-selection-to-view-converters';
 import { insertText, insertElement, wrap } from '../conversion/model-to-view-converters';
 import isPlainObject from '@ckeditor/ckeditor5-utils/src/lib/lodash/isPlainObject';
+import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 
 /**
  * Writes the contents of the {@link module:engine/model/document~Document Document} to an HTML-like string.
@@ -46,7 +48,7 @@ import isPlainObject from '@ckeditor/ckeditor5-utils/src/lib/lodash/isPlainObjec
  * @param {Object} [options]
  * @param {Boolean} [options.withoutSelection=false] Whether to write the selection. When set to `true` selection will
  * be not included in returned string.
- * @param {Boolean} [options.rootName='main'] Name of the root from which data should be stringified. If not provided
+ * @param {String} [options.rootName='main'] Name of the root from which data should be stringified. If not provided
  * default `main` name will be used.
  * @returns {String} The stringified data.
  */
@@ -114,8 +116,8 @@ export function setData( model, data, options = {} ) {
 		writer.insert( modelDocumentFragment, modelRoot );
 
 		// Clean up previous document selection.
-		model.document.selection.clearAttributes();
-		model.document.selection.removeAllRanges();
+		writer.setSelection( null );
+		writer.removeSelectionAttribute( model.document.selection.getAttributeKeys() );
 
 		// Update document selection if specified.
 		if ( selection ) {
@@ -128,10 +130,10 @@ export function setData( model, data, options = {} ) {
 				ranges.push( new ModelRange( start, end ) );
 			}
 
-			model.document.selection.setRanges( ranges, selection.isBackward );
+			writer.setSelection( ranges, selection.isBackward );
 
 			if ( options.selectionAttributes ) {
-				model.document.selection.setAttributesTo( selection.getAttributes() );
+				writer.setSelectionAttribute( selection.getAttributes() );
 			}
 		}
 	} );
@@ -180,12 +182,12 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 	// Get selection from passed selection or position or range if at least one is specified.
 	if ( selectionOrPositionOrRange instanceof ModelSelection ) {
 		selection = selectionOrPositionOrRange;
+	} else if ( selectionOrPositionOrRange instanceof DocumentSelection ) {
+		selection = selectionOrPositionOrRange;
 	} else if ( selectionOrPositionOrRange instanceof ModelRange ) {
-		selection = new ModelSelection();
-		selection.addRange( selectionOrPositionOrRange );
+		selection = new ModelSelection( selectionOrPositionOrRange );
 	} else if ( selectionOrPositionOrRange instanceof ModelPosition ) {
-		selection = new ModelSelection();
-		selection.addRange( new ModelRange( selectionOrPositionOrRange, selectionOrPositionOrRange ) );
+		selection = new ModelSelection( selectionOrPositionOrRange );
 	}
 
 	// Setup model to view converter.
@@ -198,7 +200,7 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 
 	modelToView.on( 'insert:$text', insertText() );
 	modelToView.on( 'attribute', wrap( ( value, data ) => {
-		if ( data.item instanceof ModelSelection || data.item.is( 'textProxy' ) ) {
+		if ( data.item instanceof ModelSelection || data.item instanceof DocumentSelection || data.item.is( 'textProxy' ) ) {
 			return new ViewAttributeElement( 'model-text-with-attributes', { [ data.attributeKey ]: stringifyAttributeValue( value ) } );
 		}
 	} ) );
@@ -216,7 +218,7 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 
 	// Convert model selection to view selection.
 	if ( selection ) {
-		modelToView.convertSelection( selection, [] );
+		modelToView.convertSelection( selection );
 	}
 
 	// Parse view to data string.
@@ -290,16 +292,15 @@ export function parse( data, schema, options = {} ) {
 
 		// Convert ranges.
 		for ( const viewRange of viewSelection.getRanges() ) {
-			ranges.push( ( mapper.toModelRange( viewRange ) ) );
+			ranges.push( mapper.toModelRange( viewRange ) );
 		}
 
 		// Create new selection.
-		selection = new ModelSelection();
-		selection.setRanges( ranges, viewSelection.isBackward );
+		selection = new ModelSelection( ranges, viewSelection.isBackward );
 
 		// Set attributes to selection if specified.
-		if ( options.selectionAttributes ) {
-			selection.setAttributesTo( options.selectionAttributes );
+		for ( const [ key, value ] of toMap( options.selectionAttributes || [] ) ) {
+			selection.setAttribute( key, value );
 		}
 	}
 

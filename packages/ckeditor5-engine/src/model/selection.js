@@ -13,29 +13,63 @@ import Range from './range';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
-import mapsEqual from '@ckeditor/ckeditor5-utils/src/mapsequal';
 import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 
 /**
  * `Selection` is a group of {@link module:engine/model/range~Range ranges} which has a direction specified by
  * {@link module:engine/model/selection~Selection#anchor anchor} and {@link module:engine/model/selection~Selection#focus focus}.
  * Additionally, `Selection` may have it's own attributes.
+ *
+ * @mixes {module:utils/emittermixin~EmitterMixin}
  */
 export default class Selection {
 	/**
-	 * Creates new selection instance.
+	 * Creates new selection instance on the given
+	 * {@link module:engine/model/selection~Selection selection}, {@link module:engine/model/position~Position position},
+	 * {@link module:engine/model/element~Element element}, {@link module:engine/model/position~Position position},
+	 * {@link module:engine/model/range~Range range}, an iterable of {@link module:engine/model/range~Range ranges}
+	 * or creates an empty selection if no arguments passed.
 	 *
-	 * @param {Iterable.<module:engine/view/range~Range>} [ranges] An optional iterable object of ranges to set.
-	 * @param {Boolean} [isLastBackward] An optional flag describing if last added range was selected forward - from start to end
-	 * (`false`) or backward - from end to start (`true`). Defaults to `false`.
+	 * 		// Creates empty selection without ranges.
+	 *		const selection = new Selection();
+	 *
+	 *		// Creates selection at the given range.
+	 *		const range = new Range( start, end );
+	 *		const selection = new Selection( range, isBackwardSelection );
+	 *
+	 *		// Creates selection at the given ranges
+	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
+	 *		const selection = new Selection( ranges, isBackwardSelection );
+	 *
+	 *		// Creates selection from the other selection.
+	 *		// Note: It doesn't copies selection attributes.
+	 *		const otherSelection = new Selection();
+	 *		const selection = new Selection( otherSelection );
+	 *
+	 * 		// Creates selection from the given document selection.
+	 *		// Note: It doesn't copies selection attributes.
+	 *		const documentSelection = new DocumentSelection( doc );
+	 *		const selection = new Selection( documentSelection );
+	 *
+	 * 		// Creates selection at the given position.
+	 *		const position = new Position( root, path );
+	 *		const selection = new Selection( position );
+	 *
+	 * 		// Creates selection at the start position of given element.
+	 *		const paragraph = writer.createElement( 'paragraph' );
+	 *		const selection = new Selection( paragraph, offset );
+	 *
+	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
+	 * module:engine/model/position~Position|module:engine/model/element~Element|
+	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range} [selectable]
+	 * @param {Boolean|Number|'before'|'end'|'after'} [backwardSelectionOrOffset]
 	 */
-	constructor( ranges, isLastBackward ) {
+	constructor( selectable, backwardSelectionOrOffset ) {
 		/**
 		 * Specifies whether the last added range was added as a backward or forward range.
 		 *
 		 * @private
-		 * @member {Boolean}
+		 * @type {Boolean}
 		 */
 		this._lastRangeBackward = false;
 
@@ -43,7 +77,7 @@ export default class Selection {
 		 * Stores selection ranges.
 		 *
 		 * @protected
-		 * @member {Array.<module:engine/model/range~Range>}
+		 * @type {Array.<module:engine/model/range~Range>}
 		 */
 		this._ranges = [];
 
@@ -51,12 +85,12 @@ export default class Selection {
 		 * List of attributes set on current selection.
 		 *
 		 * @protected
-		 * @member {Map} module:engine/model/selection~Selection#_attrs
+		 * @type {Map.<String,*>}
 		 */
 		this._attrs = new Map();
 
-		if ( ranges ) {
-			this.setRanges( ranges, isLastBackward );
+		if ( selectable ) {
+			this.setTo( selectable, backwardSelectionOrOffset );
 		}
 	}
 
@@ -121,6 +155,7 @@ export default class Selection {
 	/**
 	 * Returns number of ranges in selection.
 	 *
+	 * @readonly
 	 * @type {Number}
 	 */
 	get rangeCount() {
@@ -131,6 +166,7 @@ export default class Selection {
 	 * Specifies whether the {@link #focus}
 	 * precedes {@link #anchor}.
 	 *
+	 * @readonly
 	 * @type {Boolean}
 	 */
 	get isBackward() {
@@ -174,7 +210,7 @@ export default class Selection {
 	}
 
 	/**
-	 * Returns an iterator that iterates over copies of selection ranges.
+	 * Returns an iterable that iterates over copies of selection ranges.
 	 *
 	 * @returns {Iterable.<module:engine/model/range~Range>}
 	 */
@@ -259,52 +295,85 @@ export default class Selection {
 	}
 
 	/**
-	 * Adds a range to this selection. Added range is copied. This means that passed range is not saved in `Selection`
-	 * instance and operating on it will not change `Selection` state.
+	 * Sets this selection's ranges and direction to the specified location based on the given
+	 * {@link module:engine/model/selection~Selection selection}, {@link module:engine/model/position~Position position},
+	 * {@link module:engine/model/element~Element element}, {@link module:engine/model/position~Position position},
+	 * {@link module:engine/model/range~Range range}, an iterable of {@link module:engine/model/range~Range ranges} or null.
 	 *
-	 * Accepts a flag describing in which way the selection is made - passed range might be selected from
-	 * {@link module:engine/model/range~Range#start start} to {@link module:engine/model/range~Range#end end}
-	 * or from {@link module:engine/model/range~Range#end end}
-	 * to {@link module:engine/model/range~Range#start start}.
-	 * The flag is used to set {@link #anchor} and
-	 * {@link #focus} properties.
+	 *		// Sets ranges from the given range.
+	 *		const range = new Range( start, end );
+	 *		selection.setTo( range, isBackwardSelection );
 	 *
-	 * @fires change:range
-	 * @param {module:engine/model/range~Range} range Range to add.
-	 * @param {Boolean} [isBackward=false] Flag describing if added range was selected forward - from start to end (`false`)
-	 * or backward - from end to start (`true`).
+	 *		// Sets ranges from the iterable of ranges.
+	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
+	 *		selection.setTo( ranges, isBackwardSelection );
+	 *
+	 *		// Sets ranges from the other selection.
+	 *		// Note: It doesn't copies selection attributes.
+	 *		const otherSelection = new Selection();
+	 *		selection.setTo( otherSelection );
+	 *
+	 * 		// Sets ranges from the given document selection's ranges.
+	 *		// Note: It doesn't copies selection attributes.
+	 *		const documentSelection = new DocumentSelection( doc );
+	 *		selection.setTo( documentSelection );
+	 *
+	 * 		// Sets range at the given position.
+	 *		const position = new Position( root, path );
+	 *		selection.setTo( position );
+	 *
+	 * 		// Sets range at the position of given element and optional offset.
+	 *		const paragraph = writer.createElement( 'paragraph' );
+	 *		selection.setTo( paragraph, offset );
+	 *
+	 * 		// Removes all ranges.
+	 *		selection.setTo( null );
+	 *
+	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
+	 * module:engine/model/position~Position|module:engine/model/element~Element|
+	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} selectable
+	 * @param {Boolean|Number|'before'|'end'|'after'} [backwardSelectionOrOffset]
 	 */
-	addRange( range, isBackward = false ) {
-		this._pushRange( range );
-		this._lastRangeBackward = !!isBackward;
-
-		this.fire( 'change:range', { directChange: true } );
-	}
-
-	/**
-	 * Removes all ranges that were added to the selection.
-	 *
-	 * @fires change:range
-	 */
-	removeAllRanges() {
-		if ( this._ranges.length > 0 ) {
-			this._removeAllRanges();
-			this.fire( 'change:range', { directChange: true } );
+	setTo( selectable, backwardSelectionOrOffset ) {
+		if ( selectable === null ) {
+			this._setRanges( [] );
+		} else if ( selectable instanceof Selection ) {
+			this._setRanges( selectable.getRanges(), selectable.isBackward );
+		} else if ( selectable && selectable._selection instanceof Selection ) {
+			// We assume that the selectable is a DocumentSelection.
+			// It can't be imported here, because it would lead to circular imports.
+			this._setRanges( selectable.getRanges(), selectable.isBackward );
+		} else if ( selectable instanceof Range ) {
+			this._setRanges( [ selectable ], backwardSelectionOrOffset );
+		} else if ( selectable instanceof Position ) {
+			this._setRanges( [ new Range( selectable ) ] );
+		} else if ( selectable instanceof Element ) {
+			this._setRanges( [ Range.createCollapsedAt( selectable, backwardSelectionOrOffset ) ] );
+		} else if ( isIterable( selectable ) ) {
+			// We assume that the selectable is an iterable of ranges.
+			this._setRanges( selectable, backwardSelectionOrOffset );
+		} else {
+			/**
+			 * Cannot set selection to given place.
+			 *
+			 * @error model-selection-setTo-not-selectable
+			 */
+			throw new CKEditorError( 'model-selection-setTo-not-selectable: Cannot set selection to given place.' );
 		}
 	}
 
 	/**
 	 * Replaces all ranges that were added to the selection with given array of ranges. Last range of the array
 	 * is treated like the last added range and is used to set {@link module:engine/model/selection~Selection#anchor} and
-	 * {@link module:engine/model/selection~Selection#focus}. Accepts a flag describing in which direction the selection is made
-	 * (see {@link module:engine/model/selection~Selection#addRange}).
+	 * {@link module:engine/model/selection~Selection#focus}. Accepts a flag describing in which direction the selection is made.
 	 *
+	 * @protected
 	 * @fires change:range
 	 * @param {Iterable.<module:engine/model/range~Range>} newRanges Ranges to set.
 	 * @param {Boolean} [isLastBackward=false] Flag describing if last added range was selected forward - from start to end (`false`)
 	 * or backward - from end to start (`true`).
 	 */
-	setRanges( newRanges, isLastBackward = false ) {
+	_setRanges( newRanges, isLastBackward = false ) {
 		newRanges = Array.from( newRanges );
 
 		// Check whether there is any range in new ranges set that is different than all already added ranges.
@@ -335,93 +404,6 @@ export default class Selection {
 	}
 
 	/**
-	 * Sets this selection's ranges and direction to the specified location based on the given
-	 * {@link module:engine/model/selection~Selection selection}, {@link module:engine/model/position~Position position},
-	 * {@link module:engine/model/range~Range range} or an iterable of {@link module:engine/model/range~Range ranges}.
-	 *
-	 * @param {module:engine/model/selection~Selection|module:engine/model/position~Position|
-	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range} selectable
-	 */
-	setTo( selectable ) {
-		if ( selectable instanceof Selection ) {
-			this.setRanges( selectable.getRanges(), selectable.isBackward );
-		} else if ( selectable instanceof Range ) {
-			this.setRanges( [ selectable ] );
-		} else if ( isIterable( selectable ) ) {
-			// We assume that the selectable is an iterable of ranges.
-			this.setRanges( selectable );
-		} else {
-			// We assume that the selectable is a position.
-			this.setRanges( [ new Range( selectable ) ] );
-		}
-	}
-
-	/**
-	 * Sets this selection in the provided element.
-	 *
-	 * @param {module:engine/model/element~Element} element
-	 */
-	setIn( element ) {
-		this.setRanges( [ Range.createIn( element ) ] );
-	}
-
-	/**
-	 * Sets this selection on the provided item.
-	 *
-	 * @param {module:engine/model/item~Item} item
-	 */
-	setOn( item ) {
-		this.setRanges( [ Range.createOn( item ) ] );
-	}
-
-	/**
-	 * Sets collapsed selection at the specified location.
-	 *
-	 * The location can be specified in the same form as {@link module:engine/model/position~Position.createAt} parameters.
-	 *
-	 * @fires change:range
-	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
-	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
-	 * first parameter is a {@link module:engine/model/item~Item model item}.
-	 */
-	setCollapsedAt( itemOrPosition, offset ) {
-		const pos = Position.createAt( itemOrPosition, offset );
-		const range = new Range( pos, pos );
-
-		this.setRanges( [ range ] );
-	}
-
-	/**
-	 * Collapses selection to the selection's {@link module:engine/model/selection~Selection#getFirstPosition first position}.
-	 * All ranges, besides the collapsed one, will be removed. Nothing will change if there are no ranges stored
-	 * inside selection.
-	 *
-	 * @fires change
-	 */
-	collapseToStart() {
-		const startPosition = this.getFirstPosition();
-
-		if ( startPosition !== null ) {
-			this.setRanges( [ new Range( startPosition, startPosition ) ] );
-		}
-	}
-
-	/**
-	 * Collapses selection to the selection's {@link module:engine/model/selection~Selection#getLastPosition last position}.
-	 * All ranges, besides the collapsed one, will be removed. Nothing will change if there are no ranges stored
-	 * inside selection.
-	 *
-	 * @fires change
-	 */
-	collapseToEnd() {
-		const endPosition = this.getLastPosition();
-
-		if ( endPosition !== null ) {
-			this.setRanges( [ new Range( endPosition, endPosition ) ] );
-		}
-	}
-
-	/**
 	 * Moves {@link module:engine/model/selection~Selection#focus} to the specified location.
 	 *
 	 * The location can be specified in the same form as {@link module:engine/model/position~Position.createAt} parameters.
@@ -431,15 +413,15 @@ export default class Selection {
 	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
 	 * first parameter is a {@link module:engine/model/item~Item model item}.
 	 */
-	moveFocusTo( itemOrPosition, offset ) {
+	setFocus( itemOrPosition, offset ) {
 		if ( this.anchor === null ) {
 			/**
 			 * Cannot set selection focus if there are no ranges in selection.
 			 *
-			 * @error model-selection-moveFocusTo-no-ranges
+			 * @error model-selection-setFocus-no-ranges
 			 */
 			throw new CKEditorError(
-				'model-selection-moveFocusTo-no-ranges: Cannot set selection focus if there are no ranges in selection.'
+				'model-selection-setFocus-no-ranges: Cannot set selection focus if there are no ranges in selection.'
 			);
 		}
 
@@ -456,10 +438,14 @@ export default class Selection {
 		}
 
 		if ( newFocus.compareWith( anchor ) == 'before' ) {
-			this.addRange( new Range( newFocus, anchor ), true );
+			this._pushRange( new Range( newFocus, anchor ) );
+			this._lastRangeBackward = true;
 		} else {
-			this.addRange( new Range( anchor, newFocus ) );
+			this._pushRange( new Range( anchor, newFocus ) );
+			this._lastRangeBackward = false;
 		}
+
+		this.fire( 'change:range', { directChange: true } );
 	}
 
 	/**
@@ -473,7 +459,7 @@ export default class Selection {
 	}
 
 	/**
-	 * Returns iterator that iterates over this selection's attributes.
+	 * Returns iterable that iterates over this selection's attributes.
 	 *
 	 * Attributes are returned as arrays containing two items. First one is attribute key and second is attribute value.
 	 * This format is accepted by native `Map` object and also can be passed in `Node` constructor.
@@ -485,7 +471,7 @@ export default class Selection {
 	}
 
 	/**
-	 * Returns iterator that iterates over this selection's attribute keys.
+	 * Returns iterable that iterates over this selection's attribute keys.
 	 *
 	 * @returns {Iterable.<String>}
 	 */
@@ -501,23 +487,6 @@ export default class Selection {
 	 */
 	hasAttribute( key ) {
 		return this._attrs.has( key );
-	}
-
-	/**
-	 * Removes all attributes from the selection.
-	 *
-	 * If there were any attributes in selection, fires the {@link #event:change} event with
-	 * removed attributes' keys.
-	 *
-	 * @fires change:attribute
-	 */
-	clearAttributes() {
-		if ( this._attrs.size > 0 ) {
-			const attributeKeys = Array.from( this._attrs.keys() );
-			this._attrs.clear();
-
-			this.fire( 'change:attribute', { attributeKeys, directChange: true } );
-		}
 	}
 
 	/**
@@ -552,35 +521,6 @@ export default class Selection {
 			this._attrs.set( key, value );
 
 			this.fire( 'change:attribute', { attributeKeys: [ key ], directChange: true } );
-		}
-	}
-
-	/**
-	 * Removes all attributes from the selection and sets given attributes.
-	 *
-	 * If given set of attributes is different than set of attributes already added to selection, fires
-	 * {@link #event:change change event} with keys of attributes that changed.
-	 *
-	 * @fires event:change:attribute
-	 * @param {Iterable|Object} attrs Iterable object containing attributes to be set.
-	 */
-	setAttributesTo( attrs ) {
-		attrs = toMap( attrs );
-
-		if ( !mapsEqual( attrs, this._attrs ) ) {
-			// Create a set from keys of old and new attributes.
-			const changed = new Set( Array.from( attrs.keys() ).concat( Array.from( this._attrs.keys() ) ) );
-
-			for ( const [ key, value ] of attrs ) {
-				// If the attribute remains unchanged, remove it from changed set.
-				if ( this._attrs.get( key ) === value ) {
-					changed.delete( key );
-				}
-			}
-
-			this._attrs = attrs;
-
-			this.fire( 'change:attribute', { attributeKeys: Array.from( changed ), directChange: true } );
 		}
 	}
 
@@ -676,20 +616,6 @@ export default class Selection {
 	}
 
 	/**
-	 * Creates and returns an instance of `Selection` that is a clone of given selection, meaning that it has same
-	 * ranges and same direction as this selection.
-	 *
-	 * @params {module:engine/model/selection~Selection} otherSelection Selection to be cloned.
-	 * @returns {module:engine/model/selection~Selection} `Selection` instance that is a clone of given selection.
-	 */
-	static createFromSelection( otherSelection ) {
-		const selection = new this();
-		selection.setTo( otherSelection );
-
-		return selection;
-	}
-
-	/**
 	 * Adds given range to internal {@link #_ranges ranges array}. Throws an error
 	 * if given range is intersecting with any range that is already stored in this selection.
 	 *
@@ -697,10 +623,6 @@ export default class Selection {
 	 * @param {module:engine/model/range~Range} range Range to add.
 	 */
 	_pushRange( range ) {
-		if ( !( range instanceof Range ) ) {
-			throw new CKEditorError( 'model-selection-added-not-range: Trying to add an object that is not an instance of Range.' );
-		}
-
 		this._checkRange( range );
 		this._ranges.push( Range.createFromRange( range ) );
 	}
@@ -730,24 +652,24 @@ export default class Selection {
 	}
 
 	/**
+	 * Deletes ranges from internal range array. Uses {@link #_popRange _popRange} to
+	 * ensure proper ranges removal.
+	 *
+	 * @protected
+	 */
+	_removeAllRanges() {
+		while ( this._ranges.length > 0 ) {
+			this._popRange();
+		}
+	}
+
+	/**
 	 * Removes most recently added range from the selection.
 	 *
 	 * @protected
 	 */
 	_popRange() {
 		this._ranges.pop();
-	}
-
-	/**
-	 * Deletes ranges from internal range array. Uses {@link #_popRange _popRange} to
-	 * ensure proper ranges removal.
-	 *
-	 * @private
-	 */
-	_removeAllRanges() {
-		while ( this._ranges.length > 0 ) {
-			this._popRange();
-		}
 	}
 
 	/**

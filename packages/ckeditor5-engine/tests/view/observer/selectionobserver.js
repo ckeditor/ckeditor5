@@ -41,7 +41,7 @@ describe( 'SelectionObserver', () => {
 
 		viewDocument.render();
 
-		viewDocument.selection.removeAllRanges();
+		viewDocument.selection.setTo( null );
 		domDocument.getSelection().removeAllRanges();
 
 		viewDocument.isFocused = true;
@@ -103,7 +103,7 @@ describe( 'SelectionObserver', () => {
 		setTimeout( done, 70 );
 
 		const viewBar = viewDocument.getRoot().getChild( 1 ).getChild( 0 );
-		viewDocument.selection.addRange( ViewRange.createFromParentsAndOffsets( viewBar, 1, viewBar, 2 ) );
+		viewDocument.selection.setTo( ViewRange.createFromParentsAndOffsets( viewBar, 1, viewBar, 2 ) );
 		viewDocument.render();
 	} );
 
@@ -162,7 +162,7 @@ describe( 'SelectionObserver', () => {
 		let counter = 70;
 
 		const viewFoo = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
-		viewDocument.selection.addRange( ViewRange.createFromParentsAndOffsets( viewFoo, 0, viewFoo, 0 ) );
+		viewDocument.selection.setTo( ViewRange.createFromParentsAndOffsets( viewFoo, 0, viewFoo, 0 ) );
 
 		return new Promise( ( resolve, reject ) => {
 			testUtils.sinon.stub( log, 'warn' ).callsFake( msg => {
@@ -186,7 +186,7 @@ describe( 'SelectionObserver', () => {
 
 	it( 'should not be treated as an infinite loop if selection is changed only few times', done => {
 		const viewFoo = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
-		viewDocument.selection.addRange( ViewRange.createFromParentsAndOffsets( viewFoo, 0, viewFoo, 0 ) );
+		viewDocument.selection.setTo( ViewRange.createFromParentsAndOffsets( viewFoo, 0, viewFoo, 0 ) );
 		const spy = testUtils.sinon.spy( log, 'warn' );
 
 		viewDocument.on( 'selectionChangeDone', () => {
@@ -319,8 +319,8 @@ describe( 'SelectionObserver', () => {
 			const viewAnchor = viewDocument.domConverter.domPositionToView( sel.anchorNode, sel.anchorOffset );
 			const viewFocus = viewDocument.domConverter.domPositionToView( sel.focusNode, sel.focusOffset );
 
-			viewSel.setCollapsedAt( viewAnchor );
-			viewSel.moveFocusTo( viewFocus );
+			viewSel.setTo( viewAnchor );
+			viewSel.setFocus( viewFocus );
 
 			viewDocument.render();
 		} );
