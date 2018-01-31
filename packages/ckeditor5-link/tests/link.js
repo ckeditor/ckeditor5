@@ -18,7 +18,7 @@ import LinkActionsView from '../src/ui/linkactionsview';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
-import ViewRange from '@ckeditor/ckeditor5-engine/src/view/range';
+import Range from '@ckeditor/ckeditor5-engine/src/view/range';
 import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobserver';
 
 testUtils.createSinonSandbox();
@@ -257,7 +257,7 @@ describe( 'Link', () => {
 				const text = root.getChild( 0 ).getChild( 0 ).getChild( 0 );
 
 				// Move selection to foo[].
-				viewDocument.selection.setRanges( [ ViewRange.createFromParentsAndOffsets( text, 3, text, 3 ) ], true );
+				viewDocument.selection.setTo( Range.createFromParentsAndOffsets( text, 3, text, 3 ), true );
 				viewDocument.render();
 
 				sinon.assert.calledOnce( spy );
@@ -279,7 +279,7 @@ describe( 'Link', () => {
 				const root = viewDocument.getRoot();
 				const text = root.getChild( 0 ).getChild( 0 );
 
-				viewDocument.selection.setRanges( [ ViewRange.createFromParentsAndOffsets( text, 3, text, 3 ) ], true );
+				viewDocument.selection.setTo( Range.createFromParentsAndOffsets( text, 3, text, 3 ), true );
 				viewDocument.render();
 
 				sinon.assert.calledOnce( spy );
@@ -303,7 +303,7 @@ describe( 'Link', () => {
 				const text = root.getChild( 0 ).getChild( 1 );
 
 				// Move selection to b[]ar.
-				viewDocument.selection.setRanges( [ ViewRange.createFromParentsAndOffsets( text, 1, text, 1 ) ], true );
+				viewDocument.selection.setTo( Range.createFromParentsAndOffsets( text, 1, text, 1 ), true );
 				viewDocument.render();
 
 				sinon.assert.calledOnce( spyHide );
@@ -324,8 +324,8 @@ describe( 'Link', () => {
 				const root = viewDocument.getRoot();
 				const text = root.getChild( 0 ).getChild( 0 ).getChild( 0 );
 
-				// Move selection to f[o]o.
-				viewDocument.selection.setRanges( [ ViewRange.createFromParentsAndOffsets( text, 1, text, 2 ) ], true );
+				// Move selection to b[]az.
+				viewDocument.selection.setTo( Range.createFromParentsAndOffsets( text, 1, text, 1 ), true );
 				viewDocument.render();
 
 				sinon.assert.calledOnce( spyHide );
@@ -347,7 +347,8 @@ describe( 'Link', () => {
 				const root = viewDocument.getRoot();
 				const text = root.getChild( 1 ).getChild( 0 );
 
-				viewDocument.selection.setRanges( [ ViewRange.createFromParentsAndOffsets( text, 3, text, 3 ) ], true );
+				// Move selection to f[o]o.
+				viewDocument.selection.setTo( Range.createFromParentsAndOffsets( text, 1, text, 2 ), true );
 				viewDocument.render();
 
 				sinon.assert.calledOnce( spyHide );

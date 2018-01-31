@@ -36,16 +36,16 @@ describe( 'UnlinkCommand', () => {
 
 	describe( 'isEnabled', () => {
 		it( 'should be true when selection has `linkHref` attribute', () => {
-			model.change( () => {
-				document.selection.setAttribute( 'linkHref', 'value' );
+			model.change( writer => {
+				writer.setSelectionAttribute( 'linkHref', 'value' );
 			} );
 
 			expect( command.isEnabled ).to.true;
 		} );
 
 		it( 'should be false when selection doesn\'t have `linkHref` attribute', () => {
-			model.change( () => {
-				document.selection.removeAttribute( 'linkHref' );
+			model.change( writer => {
+				writer.removeSelectionAttribute( 'linkHref' );
 			} );
 
 			expect( command.isEnabled ).to.false;
