@@ -7,19 +7,13 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import BalloonEditor from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor';
-import Enter from '@ckeditor/ckeditor5-enter/src/enter';
-import Typing from '@ckeditor/ckeditor5-typing/src/typing';
-import Heading from '@ckeditor/ckeditor5-heading/src/heading';
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Undo from '@ckeditor/ckeditor5-undo/src/undo';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
-import Link from '@ckeditor/ckeditor5-link/src/link';
 
 const config = {
-	plugins: [ Enter, Typing, Paragraph, Undo, Heading, Bold, Italic, Strikethrough, Code, Link ],
+	plugins: [ ArticlePluginSet, Strikethrough, Code ],
 	toolbar: [ 'headings', '|', 'bold', 'italic', 'strikethrough', 'code', 'link', '|', 'undo', 'redo' ]
 };
 
