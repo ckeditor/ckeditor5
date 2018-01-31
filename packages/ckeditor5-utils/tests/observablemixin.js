@@ -31,9 +31,9 @@ describe( 'ObservableMixin', () => {
 
 describe( 'Observable', () => {
 	class Observable {
-		constructor( attrs ) {
-			if ( attrs ) {
-				this.set( attrs );
+		constructor( properties ) {
+			if ( properties ) {
+				this.set( properties );
 			}
 		}
 	}
@@ -50,7 +50,7 @@ describe( 'Observable', () => {
 		} );
 	} );
 
-	it( 'should set attributes on creation', () => {
+	it( 'should set properties on creation', () => {
 		expect( car ).to.have.property( 'color', 'red' );
 		expect( car ).to.have.property( 'year', 2015 );
 	} );
@@ -128,7 +128,7 @@ describe( 'Observable', () => {
 			);
 		} );
 
-		it( 'should not fire the "change" event for the same attribute value', () => {
+		it( 'should not fire the "change" event for the same property value', () => {
 			const spy = sinon.spy();
 			const spyColor = sinon.spy();
 
@@ -168,7 +168,7 @@ describe( 'Observable', () => {
 			expect( car.method ).to.be.a( 'function' );
 		} );
 
-		it( 'should allow setting attributes with undefined value', () => {
+		it( 'should allow setting properties with undefined value', () => {
 			const spy = sinon.spy();
 
 			car.on( 'change', spy );
@@ -186,39 +186,39 @@ describe( 'Observable', () => {
 	} );
 
 	describe( 'bind()', () => {
-		it( 'should chain for a single attribute', () => {
+		it( 'should chain for a single property', () => {
 			expect( car.bind( 'color' ) ).to.contain.keys( 'to' );
 		} );
 
-		it( 'should chain for multiple attributes', () => {
+		it( 'should chain for multiple properties', () => {
 			expect( car.bind( 'color', 'year' ) ).to.contain.keys( 'to' );
 		} );
 
-		it( 'should chain for nonexistent attributes', () => {
+		it( 'should chain for nonexistent properties', () => {
 			expect( car.bind( 'nonexistent' ) ).to.contain.keys( 'to' );
 		} );
 
-		it( 'should throw when attributes are not strings', () => {
+		it( 'should throw when properties are not strings', () => {
 			expect( () => {
 				car.bind();
-			} ).to.throw( CKEditorError, /observable-bind-wrong-attrs/ );
+			} ).to.throw( CKEditorError, /observable-bind-wrong-properties/ );
 
 			expect( () => {
 				car.bind( new Date() );
-			} ).to.throw( CKEditorError, /observable-bind-wrong-attrs/ );
+			} ).to.throw( CKEditorError, /observable-bind-wrong-properties/ );
 
 			expect( () => {
 				car.bind( 'color', new Date() );
-			} ).to.throw( CKEditorError, /observable-bind-wrong-attrs/ );
+			} ).to.throw( CKEditorError, /observable-bind-wrong-properties/ );
 		} );
 
-		it( 'should throw when the same attribute is used than once', () => {
+		it( 'should throw when the same property is used than once', () => {
 			expect( () => {
 				car.bind( 'color', 'color' );
-			} ).to.throw( CKEditorError, /observable-bind-duplicate-attrs/ );
+			} ).to.throw( CKEditorError, /observable-bind-duplicate-properties/ );
 		} );
 
-		it( 'should throw when binding the same attribute more than once', () => {
+		it( 'should throw when binding the same property more than once', () => {
 			expect( () => {
 				car.bind( 'color' );
 				car.bind( 'color' );
@@ -240,7 +240,7 @@ describe( 'Observable', () => {
 				} ).to.throw( CKEditorError, /observable-bind-to-parse-error/ );
 			} );
 
-			it( 'should throw when binding multiple attributes to multiple observables', () => {
+			it( 'should throw when binding multiple properties to multiple observables', () => {
 				let vehicle = new Car();
 				const car1 = new Car( { color: 'red', year: 1943 } );
 				const car2 = new Car( { color: 'yellow', year: 1932 } );
@@ -274,7 +274,7 @@ describe( 'Observable', () => {
 				} ).to.throw( CKEditorError, /observable-bind-to-no-callback/ );
 			} );
 
-			it( 'should throw when binding multiple attributes but passed a callback', () => {
+			it( 'should throw when binding multiple properties but passed a callback', () => {
 				let vehicle = new Car();
 
 				expect( () => {
@@ -288,7 +288,7 @@ describe( 'Observable', () => {
 				} ).to.throw( CKEditorError, /observable-bind-to-extra-callback/ );
 			} );
 
-			it( 'should throw when binding a single attribute but multiple callbacks', () => {
+			it( 'should throw when binding a single property but multiple callbacks', () => {
 				let vehicle = new Car();
 
 				expect( () => {
@@ -302,33 +302,33 @@ describe( 'Observable', () => {
 				} ).to.throw( CKEditorError, /observable-bind-to-parse-error/ );
 			} );
 
-			it( 'should throw when a number of attributes does not match', () => {
+			it( 'should throw when a number of properties does not match', () => {
 				let vehicle = new Car();
 
 				expect( () => {
 					vehicle.bind( 'color' ).to( car, 'color', 'year' );
-				} ).to.throw( CKEditorError, /observable-bind-to-attrs-length/ );
+				} ).to.throw( CKEditorError, /observable-bind-to-properties-length/ );
 
 				expect( () => {
 					vehicle = new Car();
 
 					vehicle.bind( 'color', 'year' ).to( car, 'color' );
-				} ).to.throw( CKEditorError, /observable-bind-to-attrs-length/ );
+				} ).to.throw( CKEditorError, /observable-bind-to-properties-length/ );
 
 				expect( () => {
 					vehicle = new Car();
 
 					vehicle.bind( 'color' ).to( car, 'color', 'year', () => {} );
-				} ).to.throw( CKEditorError, /observable-bind-to-attrs-length/ );
+				} ).to.throw( CKEditorError, /observable-bind-to-properties-length/ );
 
 				expect( () => {
 					vehicle = new Car();
 
 					vehicle.bind( 'color' ).to( car, 'color', car, 'color', 'year', () => {} );
-				} ).to.throw( CKEditorError, /observable-bind-to-attrs-length/ );
+				} ).to.throw( CKEditorError, /observable-bind-to-properties-length/ );
 			} );
 
-			it( 'should work when attributes don\'t exist in to() observable #1', () => {
+			it( 'should work when properties don\'t exist in to() observable #1', () => {
 				const vehicle = new Car();
 
 				vehicle.bind( 'color' ).to( car, 'nonexistent in car' );
@@ -342,7 +342,7 @@ describe( 'Observable', () => {
 				);
 			} );
 
-			it( 'should work when attributes don\'t exist in to() observable #2', () => {
+			it( 'should work when properties don\'t exist in to() observable #2', () => {
 				const vehicle = new Car();
 
 				vehicle.bind( 'nonexistent in car' ).to( car );
@@ -356,7 +356,7 @@ describe( 'Observable', () => {
 				);
 			} );
 
-			it( 'should work when attributes don\'t exist in to() observable #3', () => {
+			it( 'should work when properties don\'t exist in to() observable #3', () => {
 				const vehicle = new Car();
 
 				vehicle.bind( 'year' ).to( car, 'color', car, 'nonexistent in car', ( a, b ) => a + b );
@@ -370,7 +370,7 @@ describe( 'Observable', () => {
 				);
 			} );
 
-			it( 'should set new observable attributes', () => {
+			it( 'should set new observable properties', () => {
 				const car = new Car( { color: 'green', year: 2001, type: 'pickup' } );
 				const vehicle = new Car( { 'not involved': true } );
 
@@ -382,7 +382,7 @@ describe( 'Observable', () => {
 				expect( vehicle ).to.have.property( 'not involved' );
 			} );
 
-			it( 'should work when no attribute specified #1', () => {
+			it( 'should work when no property specified #1', () => {
 				const vehicle = new Car();
 
 				vehicle.bind( 'color' ).to( car );
@@ -396,7 +396,7 @@ describe( 'Observable', () => {
 				);
 			} );
 
-			it( 'should work for a single attribute', () => {
+			it( 'should work for a single property', () => {
 				const vehicle = new Car();
 
 				vehicle.bind( 'color' ).to( car, 'color' );
@@ -410,7 +410,7 @@ describe( 'Observable', () => {
 				);
 			} );
 
-			it( 'should work for multiple attributes', () => {
+			it( 'should work for multiple properties', () => {
 				const vehicle = new Car();
 
 				vehicle.bind( 'color', 'year' ).to( car, 'color', 'year' );
@@ -424,7 +424,7 @@ describe( 'Observable', () => {
 				);
 			} );
 
-			it( 'should work for attributes that don\'t exist in the observable', () => {
+			it( 'should work for properties that don\'t exist in the observable', () => {
 				const vehicle = new Car();
 
 				vehicle.bind( 'nonexistent in vehicle' ).to( car, 'color' );
@@ -438,7 +438,7 @@ describe( 'Observable', () => {
 				);
 			} );
 
-			it( 'should work when using the same attribute name more than once', () => {
+			it( 'should work when using the same property name more than once', () => {
 				const vehicle = new Car();
 
 				vehicle.bind( 'color', 'year' ).to( car, 'year', 'year' );
@@ -467,7 +467,7 @@ describe( 'Observable', () => {
 				);
 			} );
 
-			it( 'should work with callback – set a new observable attribute', () => {
+			it( 'should work with callback – set a new observable property', () => {
 				const vehicle = new Car();
 				const car1 = new Car( { type: 'pickup' } );
 				const car2 = new Car( { type: 'truck' } );
@@ -713,7 +713,7 @@ describe( 'Observable', () => {
 				);
 			} );
 
-			it( 'should fire a single change event per bound attribute', () => {
+			it( 'should fire a single change event per bound property', () => {
 				const vehicle = new Car();
 				const car = new Car( { color: 'red', year: 1943 } );
 				const spy = sinon.spy();
@@ -739,7 +739,7 @@ describe( 'Observable', () => {
 			observable.unbind();
 		} );
 
-		it( 'should not fail when unbinding attribute that is not bound', () => {
+		it( 'should not fail when unbinding property that is not bound', () => {
 			const observable = new Observable();
 
 			observable.bind( 'foo' ).to( car, 'color' );
@@ -747,10 +747,10 @@ describe( 'Observable', () => {
 			expect( () => observable.unbind( 'bar' ) ).to.not.throw();
 		} );
 
-		it( 'should throw when non-string attribute is passed', () => {
+		it( 'should throw when non-string property is passed', () => {
 			expect( () => {
 				car.unbind( new Date() );
-			} ).to.throw( CKEditorError, /observable-unbind-wrong-attrs/ );
+			} ).to.throw( CKEditorError, /observable-unbind-wrong-properties/ );
 		} );
 
 		it( 'should remove all bindings', () => {
@@ -768,7 +768,7 @@ describe( 'Observable', () => {
 			);
 		} );
 
-		it( 'should remove bindings of certain attributes', () => {
+		it( 'should remove bindings of certain properties', () => {
 			const vehicle = new Car();
 			const car = new Car( { color: 'red', year: 2000, torque: 160 } );
 
@@ -784,7 +784,7 @@ describe( 'Observable', () => {
 			);
 		} );
 
-		it( 'should remove bindings of certain attributes, callback', () => {
+		it( 'should remove bindings of certain properties, callback', () => {
 			const vehicle = new Car();
 			const car1 = new Car( { color: 'red' } );
 			const car2 = new Car( { color: 'blue' } );
@@ -802,7 +802,7 @@ describe( 'Observable', () => {
 			);
 		} );
 
-		it( 'should be able to unbind two attributes from a single source observable attribute', () => {
+		it( 'should be able to unbind two properties from a single source observable property', () => {
 			const vehicle = new Car();
 
 			vehicle.bind( 'color' ).to( car, 'color' );
