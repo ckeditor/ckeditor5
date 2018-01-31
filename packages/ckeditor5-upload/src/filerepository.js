@@ -143,8 +143,8 @@ export default class FileRepository extends Plugin {
 			 * file upload integration.
 			 *
 			 * **If you see this warning when using a custom build** there is a chance that you enabled
-			 * a feature like {@link module:upload/imageupload~ImageUpload},
-			 * or {@link module:upload/imageuploadui~ImageUploadUI} but you did not enable any upload adapter.
+			 * a feature like {@link module:image/imageupload~ImageUpload},
+			 * or {@link module:image/imageupload/imageuploadui~ImageUploadUI} but you did not enable any upload adapter.
 			 * You can choose one of the existing upload adapters:
 			 *
 			 * * {@link module:easy-image/cloudservicesuploadadapter~CloudServicesUploadAdapter}
