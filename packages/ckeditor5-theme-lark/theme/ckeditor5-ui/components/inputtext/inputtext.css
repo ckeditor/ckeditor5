@@ -17,7 +17,7 @@
 
 	background: var(--ck-color-input-background);
 	border: 1px solid var(--ck-color-input-border);
-	padding: var(--ck-spacing-tiny) var(--ck-spacing-medium);
+	padding: var(--ck-spacing-extra-tiny) var(--ck-spacing-medium);
 	min-width: var(--ck-input-text-min-width);
 
 	&:focus {
