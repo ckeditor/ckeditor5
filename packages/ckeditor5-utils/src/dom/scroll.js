@@ -9,7 +9,7 @@
 
 import isRange from './isrange';
 import Rect from './rect';
-import isText from '../../../ckeditor5-engine/node_modules/@ckeditor/ckeditor5-utils/src/dom/istext';
+import isText from './istext';
 
 const utils = {};
 
