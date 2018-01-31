@@ -336,7 +336,7 @@ function convertToModelElement() {
 		const elementName = data.viewItem.name;
 
 		if ( !conversionApi.schema.checkChild( data.cursorPosition, elementName ) ) {
-			throw new Error( `Element '${ elementName }' was not allowed in given position.`, { position: data.cursorPosition } );
+			throw new Error( `Element '${ elementName }' was not allowed in given position.` );
 		}
 
 		// View attribute value is a string so we want to typecast it to the original type.
@@ -360,7 +360,7 @@ function convertToModelElement() {
 function convertToModelText( withAttributes = false ) {
 	return ( evt, data, conversionApi ) => {
 		if ( !conversionApi.schema.checkChild( data.cursorPosition, '$text' ) ) {
-			throw new Error( 'Text was not allowed in given position.', { position: data.cursorPosition } );
+			throw new Error( 'Text was not allowed in given position.' );
 		}
 
 		let node;
