@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -70,7 +70,7 @@ export default class LinkCommand extends Command {
 					writer.setAttribute( 'linkHref', href, linkRange );
 
 					// Create new range wrapping changed link.
-					selection.setRanges( [ linkRange ] );
+					writer.setSelection( linkRange );
 				}
 				// If not then insert text node with `linkHref` attribute in place of caret.
 				else {
@@ -83,7 +83,7 @@ export default class LinkCommand extends Command {
 					writer.insert( node, position );
 
 					// Create new range wrapping created node.
-					selection.setRanges( [ Range.createOn( node ) ] );
+					writer.setSelection( Range.createOn( node ) );
 				}
 			} else {
 				// If selection has non-collapsed ranges, we change attribute on nodes inside those ranges

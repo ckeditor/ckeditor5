@@ -1,17 +1,17 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
 import LinkEngine from '../src/linkengine';
 import LinkCommand from '../src/linkcommand';
-import LinkElement from '../src/linkelement';
 import UnlinkCommand from '../src/unlinkcommand';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import { isLinkElement } from '../src/utils';
 
 import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
 
@@ -99,10 +99,11 @@ describe( 'LinkEngine', () => {
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p><a href="url">foo</a>bar</p>' );
 		} );
 
-		it( 'should convert to `LinkElement` instance', () => {
+		it( 'should convert to link element instance', () => {
 			setModelData( model, '<paragraph><$text linkHref="url">foo</$text>bar</paragraph>' );
 
-			expect( editor.editing.view.getRoot().getChild( 0 ).getChild( 0 ) ).to.be.instanceof( LinkElement );
+			const element = editor.editing.view.getRoot().getChild( 0 ).getChild( 0 );
+			expect( isLinkElement( element ) ).to.be.true;
 		} );
 
 		// https://github.com/ckeditor/ckeditor5-link/issues/121

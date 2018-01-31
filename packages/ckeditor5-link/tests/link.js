@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -259,7 +259,7 @@ describe( 'Link', () => {
 				const text = root.getChild( 0 ).getChild( 0 ).getChild( 0 );
 
 				// Move selection to foo[].
-				viewDocument.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 3, text, 3 ) ], true );
+				viewDocument.selection.setTo( Range.createFromParentsAndOffsets( text, 3, text, 3 ), true );
 				viewDocument.render();
 
 				sinon.assert.calledOnce( spy );
@@ -281,7 +281,7 @@ describe( 'Link', () => {
 				const root = viewDocument.getRoot();
 				const text = root.getChild( 0 ).getChild( 0 );
 
-				viewDocument.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 3, text, 3 ) ], true );
+				viewDocument.selection.setTo( Range.createFromParentsAndOffsets( text, 3, text, 3 ), true );
 				viewDocument.render();
 
 				sinon.assert.calledOnce( spy );
@@ -305,7 +305,7 @@ describe( 'Link', () => {
 				const text = root.getChild( 0 ).getChild( 1 );
 
 				// Move selection to b[]ar.
-				viewDocument.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 1, text, 1 ) ], true );
+				viewDocument.selection.setTo( Range.createFromParentsAndOffsets( text, 1, text, 1 ), true );
 				viewDocument.render();
 
 				sinon.assert.calledOnce( spyHide );
@@ -330,7 +330,7 @@ describe( 'Link', () => {
 				const text = root.getChild( 0 ).getChild( 2 ).getChild( 0 );
 
 				// Move selection to b[]az.
-				viewDocument.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 1, text, 1 ) ], true );
+				viewDocument.selection.setTo( Range.createFromParentsAndOffsets( text, 1, text, 1 ), true );
 				viewDocument.render();
 
 				sinon.assert.calledOnce( spyHide );
@@ -352,7 +352,7 @@ describe( 'Link', () => {
 				const text = root.getChild( 0 ).getChild( 0 ).getChild( 0 );
 
 				// Move selection to f[o]o.
-				viewDocument.selection.setRanges( [ Range.createFromParentsAndOffsets( text, 1, text, 2 ) ], true );
+				viewDocument.selection.setTo( Range.createFromParentsAndOffsets( text, 1, text, 2 ), true );
 				viewDocument.render();
 
 				sinon.assert.calledOnce( spyHide );
@@ -606,14 +606,14 @@ describe( 'Link', () => {
 				sinon.assert.calledWithExactly( spy );
 			} );
 
-			it( 'should open when selection exclusively encloses a LinkElement (#1)', () => {
+			it( 'should open when selection exclusively encloses a link element (#1)', () => {
 				setModelData( editor.model, '[<$text linkHref="url">foo</$text>]' );
 
 				observer.fire( 'click', { target: {} } );
 				sinon.assert.calledWithExactly( spy );
 			} );
 
-			it( 'should open when selection exclusively encloses a LinkElement (#2)', () => {
+			it( 'should open when selection exclusively encloses a link element (#2)', () => {
 				setModelData( editor.model, '<$text linkHref="url">[foo]</$text>' );
 
 				observer.fire( 'click', { target: {} } );
@@ -627,35 +627,35 @@ describe( 'Link', () => {
 				sinon.assert.notCalled( spy );
 			} );
 
-			it( 'should not open when selection is non-collapsed and doesn\'t enclose a LinkElement (#1)', () => {
+			it( 'should not open when selection is non-collapsed and doesn\'t enclose a link element (#1)', () => {
 				setModelData( editor.model, '<$text linkHref="url">f[o]o</$text>' );
 
 				observer.fire( 'click', { target: {} } );
 				sinon.assert.notCalled( spy );
 			} );
 
-			it( 'should not open when selection is non-collapsed and doesn\'t enclose a LinkElement (#2)', () => {
+			it( 'should not open when selection is non-collapsed and doesn\'t enclose a link element (#2)', () => {
 				setModelData( editor.model, '<$text linkHref="url">[fo]o</$text>' );
 
 				observer.fire( 'click', { target: {} } );
 				sinon.assert.notCalled( spy );
 			} );
 
-			it( 'should not open when selection is non-collapsed and doesn\'t enclose a LinkElement (#3)', () => {
+			it( 'should not open when selection is non-collapsed and doesn\'t enclose a link element (#3)', () => {
 				setModelData( editor.model, '<$text linkHref="url">f[oo]</$text>' );
 
 				observer.fire( 'click', { target: {} } );
 				sinon.assert.notCalled( spy );
 			} );
 
-			it( 'should not open when selection is non-collapsed and doesn\'t enclose a LinkElement (#4)', () => {
+			it( 'should not open when selection is non-collapsed and doesn\'t enclose a link element (#4)', () => {
 				setModelData( editor.model, 'ba[r<$text linkHref="url">foo]</$text>' );
 
 				observer.fire( 'click', { target: {} } );
 				sinon.assert.notCalled( spy );
 			} );
 
-			it( 'should not open when selection is non-collapsed and doesn\'t enclose a LinkElement (#5)', () => {
+			it( 'should not open when selection is non-collapsed and doesn\'t enclose a link element (#5)', () => {
 				setModelData( editor.model, 'ba[r<$text linkHref="url">foo</$text>]' );
 
 				observer.fire( 'click', { target: {} } );

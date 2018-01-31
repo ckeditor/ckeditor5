@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -11,7 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobserver';
 import Range from '@ckeditor/ckeditor5-engine/src/view/range';
 import LinkEngine from './linkengine';
-import LinkElement from './linkelement';
+import { isLinkElement } from './utils';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
 
 import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsidehandler';
@@ -323,15 +323,15 @@ export default class Link extends Plugin {
 	}
 
 	/**
-	 * Returns the {@link module:link/linkelement~LinkElement} under
+	 * Returns the link {@link module:engine/view/attributeelement~AttributeElement} under
 	 * the {@link module:engine/view/document~Document editing view's} selection or `null`
 	 * if there is none.
 	 *
-	 * **Note**: For a non–collapsed selection the `LinkElement` is only returned when **fully**
+	 * **Note**: For a non–collapsed selection the link element is only returned when **fully**
 	 * selected and the **only** element within the selection boundaries.
 	 *
 	 * @private
-	 * @returns {module:link/linkelement~LinkElement|null}
+	 * @returns {module:engine/view/attributeelement~AttributeElement|null}
 	 */
 	_getSelectedLinkElement() {
 		const selection = this.editor.editing.view.selection;
@@ -340,7 +340,7 @@ export default class Link extends Plugin {
 			return findLinkElementAncestor( selection.getFirstPosition() );
 		} else {
 			// The range for fully selected link is usually anchored in adjacent text nodes.
-			// Trim it to get closer to the actual LinkElement.
+			// Trim it to get closer to the actual link element.
 			const range = selection.getFirstRange().getTrimmed();
 			const startLink = findLinkElementAncestor( range.start );
 			const endLink = findLinkElementAncestor( range.end );
@@ -349,7 +349,7 @@ export default class Link extends Plugin {
 				return null;
 			}
 
-			// Check if the LinkElement is fully selected.
+			// Check if the link element is fully selected.
 			if ( Range.createIn( startLink ).getTrimmed().isEqual( range ) ) {
 				return startLink;
 			} else {
@@ -359,11 +359,11 @@ export default class Link extends Plugin {
 	}
 }
 
-// Returns a `LinkElement` if there's one among the ancestors of the provided `Position`.
+// Returns a link element if there's one among the ancestors of the provided `Position`.
 //
 // @private
 // @param {module:engine/view/position~Position} View position to analyze.
-// @returns {module:link/linkelement~LinkElement|null} LinkElement at the position or null.
+// @returns {module:engine/view/attributeelement~AttributeElement|null} Link element at the position or null.
 function findLinkElementAncestor( position ) {
-	return position.getAncestors().find( ancestor => ancestor instanceof LinkElement );
+	return position.getAncestors().find( ancestor => isLinkElement( ancestor ) );
 }
