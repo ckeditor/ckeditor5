@@ -24,7 +24,7 @@ class SampleInputView extends View {
 		// events and text nodes.
 		const bind = this.bindTemplate;
 
-		// Views define their interface (state) using observable attributes.
+		// Views define their interface (state) using observable properties.
 		this.set( {
 			isEnabled: false,
 			placeholder: ''
@@ -87,7 +87,7 @@ parent.render();
 document.body.appendChild( parent.element );
 ```
 
-It is also possible to create standalone views that do not belong to any collection. They must be {@link module:ui/view~View#render rendered} before  injection into DOM:
+It is also possible to create standalone views that do not belong to any collection. They must be {@link module:ui/view~View#render rendered} before injection into the DOM:
 
 ```js
 const view = new SampleInputView( locale );
@@ -100,7 +100,7 @@ document.body.appendChild( view.element );
 
 ### Interaction
 
-Features can interact with the state of the DOM via the attributes of the view, so the following:
+Features can interact with the state of the DOM via the observable properties of the view, so the following:
 
 ```js
 view.isEnabled = true;
@@ -113,13 +113,13 @@ will result in:
 <input class="foo ck-enabled" type="text" placeholder="Type some text" />
 ```
 
-Alternatively, they can [bind](#Event-system-and-observables) them directly to their own observable attributes:
+Alternatively, they can [bind](#Event-system-and-observables) them directly to their own observable properties:
 
 ```js
 view.bind( 'placeholder', 'isEnabled' ).to( observable, 'placeholderText', 'isEnabled' );
 
 // The following will be automatically reflected in the view#placeholder and
-// view.element#placeholder HTML attribute in DOM.
+// view.element#placeholder HTML attribute in the DOM.
 observable.placeholderText = 'Some placeholder';
 ```
 
@@ -154,7 +154,7 @@ view.element.placeholder = 'A new placeholder';
 	Check out the {@link module:ui/template~TemplateDefinition} to learn more about the template syntax and other advanced concepts.
 </info-box>
 
-Templates support [observable attribute](#Event-system-and-observables) bindings and handle native DOM events. A very simple template can look like this:
+Templates support [observable properties](#Event-system-and-observables) bindings and handle native DOM events. A very simple template can look like this:
 
 ```js
 new Template( {
@@ -183,13 +183,13 @@ and renders to an HTML element:
 <p class="foo bar" style="background-color: yellow;">A paragraph.</p>
 ```
 
-where `observable#className` is `"bar"`. The `observable` in the example above can be a [view](#Views) or any object which is {@link module:utils/observablemixin~Observable observable}. When the value of the `className` attribute changes, the template updates the `class` attribute in DOM. From now on the element is permanently bound to the state of an application.
+where `observable#className` is `"bar"`. The `observable` in the example above can be a [view](#Views) or any object which is {@link module:utils/observablemixin~Observable observable}. When the value of the `className` attribute changes, the template updates the `class` attribute in the DOM. From now on the element is permanently bound to the state of an application.
 
 Similarly, when rendered, the template also takes care of DOM events. A binding to the `click` event in the definition makes the `observable` always fire the `clicked` event upon an action in DOM. This way the `observable` provides an event interface of the DOM element and all the communication should pass through it.
 
 ## View collections and the UI tree
 
-Views are organized into {@link module:ui/viewcollection~ViewCollection collections} which manage their elements and propagate DOM events even further. Adding or removing a view in a collection moves the {@link module:ui/view~View#element view's element} in DOM to reflect the position.
+Views are organized into {@link module:ui/viewcollection~ViewCollection collections} which manage their elements and propagate DOM events even further. Adding or removing a view in a collection moves the {@link module:ui/view~View#element view's element} in the DOM to reflect the position.
 
 Each editor UI has a {@link module:core/editor/editorui~EditorUI#view root view}, which can be found under `editor.ui.view`. Such view usually defines the container element of the editor and undermost view collections that other features can populate.
 
@@ -269,7 +269,7 @@ toolbar.items.add( buttonFoo );
 toolbar.items.add( buttonBar );
 ```
 
-The toolbar can now join the [UI tree](##View-collections-and-the-UI-tree) or it can be injected straight into DOM. To keep the example simple, proceed with the latter scenario:
+The toolbar can now join the [UI tree](##View-collections-and-the-UI-tree) or it can be injected straight into the DOM. To keep the example simple, proceed with the latter scenario:
 
 ```js
 toolbar.render();
@@ -317,7 +317,7 @@ focusTracker.add( document.querySelector( '.some-element' ) );
 focusTracker.add( viewInstance.element );
 ```
 
-Observing focus tracker's {@link module:utils/focustracker~FocusTracker#isFocused `isFocused`} attribute allows to determine whether one of the registered elements is currently focused:
+Observing focus tracker's {@link module:utils/focustracker~FocusTracker#isFocused `isFocused`} observable property allows to determine whether one of the registered elements is currently focused:
 
 ```js
 focusTracker.on( 'change:isFocused', ( evt, name, isFocused ) => {
@@ -343,7 +343,7 @@ import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 const keystrokeHandler = new KeystrokeHandler();
 ```
 
-To define the scope of the keystroke handler in DOM, use the {@link module:utils/keystrokehandler~KeystrokeHandler#listenTo `listenTo()`} method:
+To define the scope of the keystroke handler in the DOM, use the {@link module:utils/keystrokehandler~KeystrokeHandler#listenTo `listenTo()`} method:
 
 ```js
 keystrokeHandler.listenTo( document.querySelector( '.some-element' ) );
