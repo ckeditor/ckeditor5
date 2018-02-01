@@ -217,6 +217,12 @@ describe( 'Alignment UI', () => {
 			expect( button ).to.have.property( 'tooltip', true );
 		} );
 
+		it( 'should add custom CSS class to dropdown', () => {
+			dropdown.render();
+
+			expect( dropdown.element.classList.contains( 'ck-alignment-dropdown' ) ).to.be.true;
+		} );
+
 		it( '#toolbarView has the base properties', () => {
 			const toolbarView = dropdown.toolbarView;
 

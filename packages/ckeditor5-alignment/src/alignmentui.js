@@ -97,6 +97,12 @@ export default class AlignmentUI extends Plugin {
 				tooltip: true
 			} );
 
+			dropdownView.extendTemplate( {
+				attributes: {
+					class: 'ck-alignment-dropdown'
+				}
+			} );
+
 			// The default icon is align left as we do not support RTL yet (see #3).
 			const defaultIcon = alignLeftIcon;
 
