@@ -774,11 +774,24 @@ export default class Writer {
 	 *
 	 * @param {module:engine/model/markercollection~Marker|String} markerOrName Marker or marker name to add or update.
 	 * @param {module:engine/model/range~Range} [newRange] Marker range.
+	 * @param {Object} [options]
+	 * @param {Boolean} [options.usingOperation=false] Flag indicated whether the marker should be added by MarkerOperation.
+	 * @returns {module:engine/model/markercollection~Marker} Marker that was set.
 	 */
 	setMarker( markerOrName, newRange, options = { usingOperation: false } ) {
 		this._assertWriterUsedCorrectly();
 
 		const name = typeof markerOrName == 'string' ? markerOrName : markerOrName.name;
+
+		if ( !options.usingOperation ) {
+			// Marker set without using operation should always have range.
+			if ( !newRange ) {
+				throw new CKEditorError( 'writer-setMarker-no-range: Range parameter is required when adding a new marker.' );
+			}
+
+			return this.model.markers.set( name, newRange );
+		}
+
 		const currentMarker = this.model.markers.get( name );
 
 		if ( !newRange && !currentMarker ) {
@@ -788,11 +801,6 @@ export default class Writer {
 			 * @error writer-setMarker-no-range
 			 */
 			throw new CKEditorError( 'writer-setMarker-no-range: Range parameter is required when adding a new marker.' );
-		}
-
-		if ( !options.usingOperation ) {
-			const marker = this.model.markers.set( name, newRange );
-			return marker;
 		}
 
 		const currentRange = currentMarker ? currentMarker.getRange() : null;
@@ -805,12 +813,16 @@ export default class Writer {
 			// Just change marker range.
 			addMarkerOperation( this, name, currentRange, newRange );
 		}
+
+		return this.model.markers.get( name );
 	}
 
 	/**
 	 * Removes given {@link module:engine/model/markercollection~Marker marker} or marker with given name.
 	 *
 	 * @param {module:engine/model/markercollection~Marker|String} markerOrName Marker or marker name to remove.
+	 * @param {Object} [options]
+	 * @param {Boolean} [options.usingOperation=false] Flag indicated whether the marker should be removed by MarkerOperation.
 	 */
 	removeMarker( markerOrName, options = { usingOperation: false } ) {
 		this._assertWriterUsedCorrectly();
@@ -827,7 +839,9 @@ export default class Writer {
 		}
 
 		if ( !options.usingOperation ) {
-			return this.model.markers.remove( name );
+			this.model.markers.remove( name );
+
+			return;
 		}
 
 		const oldRange = this.model.markers.get( name ).getRange();
