@@ -12,7 +12,6 @@ import HeadingEngine from './headingengine';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Model from '@ckeditor/ckeditor5-ui/src/model';
 
-import bindOneToMany from '@ckeditor/ckeditor5-ui/src/bindings/bindonetomany';
 import { createDropdown, addListViewToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
@@ -82,11 +81,11 @@ export default class Heading extends Plugin {
 
 			addListViewToDropdown( dropdownView, dropdownItems );
 
-			bindOneToMany( dropdownView, 'isEnabled', commands, 'isEnabled', ( ...areEnabled ) => {
+			dropdownView.bind( 'isEnabled' ).toMany( commands, 'isEnabled', ( ...areEnabled ) => {
 				return areEnabled.some( isEnabled => isEnabled );
 			} );
 
-			bindOneToMany( dropdownView, 'label', commands, 'value', ( ...areActive ) => {
+			dropdownView.bind( 'label' ).toMany( commands, 'value', ( ...areActive ) => {
 				const index = areActive.findIndex( value => value );
 
 				// If none of the commands is active, display default title.
