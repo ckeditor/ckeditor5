@@ -1162,39 +1162,31 @@ export class SchemaContext {
 	}
 
 	/**
-	 * Returns new SchemaContext instance with additional items created from provided definition.
-	 * Definition can be:
+	 * Returns new SchemaContext instance with additional item
+	 *
+	 * Item can be added as:
 	 *
 	 * 		const context = new SchemaContext( [ '$root' ] );
 	 *
 	 * 		// An element.
 	 * 		const fooElement = writer.createElement( 'fooElement' );
-	 * 		const newContext = context.concat( fooElement ); // [ '$root', 'fooElement' ]
+	 * 		const newContext = context.push( fooElement ); // [ '$root', 'fooElement' ]
 	 *
 	 * 		// A text node.
 	 * 		const text = writer.createText( 'foobar' );
-	 * 		const newContext = context.concat( text ); // [ '$root', '$text' ]
+	 * 		const newContext = context.push( text ); // [ '$root', '$text' ]
 	 *
 	 * 		// A string (element name).
-	 * 		const newContext = context.concat( 'barElement' ); // [ '$root', 'barElement' ]
-	 *
-	 * 		// An array with above.
-	 * 		const fooElement = writer.createElement( 'fooElement' );
-	 * 		const text = writer.createText( 'foobar' );
-	 * 		const newContext = context.concat( [ fooElement, 'barElement', text ] ); // [ '$root', 'fooElement', 'barElement', '$text' ]
+	 * 		const newContext = context.push( 'barElement' ); // [ '$root', 'barElement' ]
 	 *
 	 * **Note** {module:engine/model/node~Node} that is already in the model tree will be added as the only item (without ancestors).
 	 *
-	 * @param {String|module:engine/model/node~Node|Array<String|module:engine/model/node~Node>} definition
-	 * Definition of item(s) that will be added to current context.
-	 * @returns {module:engine/model/schema~SchemaContext} New SchemaContext instance.
+	 * @param {String|module:engine/model/node~Node|Array<String|module:engine/model/node~Node>} item Item that will be added
+	 * to current context.
+	 * @returns {module:engine/model/schema~SchemaContext} New SchemaContext instance with additional item.
 	 */
-	concat( definition ) {
-		if ( !Array.isArray( definition ) ) {
-			definition = [ definition ];
-		}
-
-		const ctx = new SchemaContext( definition );
+	push( item ) {
+		const ctx = new SchemaContext( [ item ] );
 
 		ctx._items = [ ...this._items, ...ctx._items ];
 
