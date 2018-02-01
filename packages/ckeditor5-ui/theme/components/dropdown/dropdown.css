@@ -13,7 +13,6 @@
 	display: inline-block;
 	position: relative;
 
-	/* A triangle displayed to indicate this is actually a dropdown. */
 	& .ck-dropdown__arrow {
 		pointer-events: none;
 		z-index: var(--ck-z-default);
