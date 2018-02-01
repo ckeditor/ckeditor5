@@ -11,7 +11,6 @@
 	/* Enable font size inheritance, which allows fluid UI scaling. */
 	font-size: inherit;
 
-	/* A triangle displayed to indicate this is actually a dropdown. */
 	& .ck-dropdown__arrow {
 		right: var(--ck-spacing-standard);
 	}
