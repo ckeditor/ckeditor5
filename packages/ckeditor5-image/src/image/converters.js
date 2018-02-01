@@ -33,7 +33,7 @@ export function viewFigureToModel() {
 		}
 
 		// Do not convert if image cannot be placed in model at current position.
-		if ( !conversionApi.schema.checkChild( data.cursorPosition, 'image' ) ) {
+		if ( !conversionApi.schema.checkChild( data.modelCursor, 'image' ) ) {
 			return;
 		}
 
@@ -46,7 +46,7 @@ export function viewFigureToModel() {
 		}
 
 		// Convert view image to model image.
-		const { modelRange } = conversionApi.convertItem( viewImage, data.cursorPosition );
+		const { modelRange } = conversionApi.convertItem( viewImage, data.modelCursor );
 
 		// Get image element from conversion result.
 		const modelImage = first( modelRange.getItems() );
@@ -56,7 +56,7 @@ export function viewFigureToModel() {
 
 		// Set model image as conversion result.
 		data.modelRange = ModelRange.createOn( modelImage );
-		data.cursorPosition = data.modelRange.end;
+		data.modelCursor = data.modelRange.end;
 	};
 }
 
