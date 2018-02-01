@@ -28,50 +28,28 @@ export default class FontFamilyUI extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 
-		const dropdownItems = new Collection();
-
 		const options = this._getLocalizedOptions();
 
 		const command = editor.commands.get( 'fontFamily' );
 
-		// Create dropdown items.
-		for ( const option of options ) {
-			const itemModel = new Model( {
-				commandName: 'fontFamily',
-				commandParam: option.model,
-				label: option.title
-			} );
-
-			itemModel.bind( 'isActive' ).to( command, 'value', value => value === option.model );
-
-			// Try to set a dropdown list item style.
-			if ( option.view && option.view.style ) {
-				itemModel.set( 'style', `font-family: ${ option.view.style[ 'font-family' ] }` );
-			}
-
-			dropdownItems.add( itemModel );
-		}
-
 		// Register UI component.
 		editor.ui.componentFactory.add( 'fontFamily', locale => {
 			const dropdownView = createDropdown( locale );
-			addListViewToDropdown( dropdownView, dropdownItems );
+			addListViewToDropdown( dropdownView, _prepareListOptions( options, command ) );
 
 			dropdownView.set( {
+				label: t( 'Font Family' ),
 				icon: fontFamilyIcon,
-				withText: false,
-				tooltip: t( 'Font Family' )
+				tooltip: true
 			} );
-
-			dropdownView.bind( 'isEnabled' ).to( command, 'isEnabled' );
 
 			dropdownView.extendTemplate( {
 				attributes: {
-					class: [
-						'ck-font-family-dropdown'
-					]
+					class: 'ck-font-family-dropdown'
 				}
 			} );
+
+			dropdownView.bind( 'isEnabled' ).to( command );
 
 			// Execute command when an item from the dropdown is selected.
 			this.listenTo( dropdownView, 'execute', evt => {
@@ -109,4 +87,31 @@ export default class FontFamilyUI extends Plugin {
 			return option;
 		} );
 	}
+}
+
+// Prepares FontFamily dropdown items.
+// @private
+// @param {Array.<module:font/fontsize~FontSizeOption>} options
+// @param {module:font/fontsize/fontsizecommand~FontSizeCommand} command
+function _prepareListOptions( options, command ) {
+	const dropdownItems = new Collection();
+
+	// Create dropdown items.
+	for ( const option of options ) {
+		const itemModel = new Model( {
+			commandName: 'fontFamily',
+			commandParam: option.model,
+			label: option.title
+		} );
+
+		itemModel.bind( 'isActive' ).to( command, 'value', value => value === option.model );
+
+		// Try to set a dropdown list item style.
+		if ( option.view && option.view.style ) {
+			itemModel.set( 'style', `font-family: ${ option.view.style[ 'font-family' ] }` );
+		}
+
+		dropdownItems.add( itemModel );
+	}
+	return dropdownItems;
 }

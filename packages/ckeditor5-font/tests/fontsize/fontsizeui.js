@@ -74,9 +74,9 @@ describe( 'FontSizeUI', () => {
 		it( 'button has the base properties', () => {
 			const button = dropdown.buttonView;
 
-			expect( button ).to.have.property( 'tooltip', 'Font Size' );
+			expect( button ).to.have.property( 'label', 'Font Size' );
+			expect( button ).to.have.property( 'tooltip', true );
 			expect( button ).to.have.property( 'icon', fontSizeIcon );
-			expect( button ).to.have.property( 'withText', false );
 		} );
 
 		it( 'should add custom CSS class to dropdown', () => {
@@ -214,7 +214,7 @@ describe( 'FontSizeUI', () => {
 			it( 'works for the #buttonView', () => {
 				const buttonView = dropdown.buttonView;
 
-				expect( buttonView.tooltip ).to.equal( 'Rozmiar czcionki' );
+				expect( buttonView.label ).to.equal( 'Rozmiar czcionki' );
 			} );
 
 			it( 'works for the listView#items in the panel', () => {
