@@ -1167,13 +1167,13 @@ export class SchemaContext {
 	 *
 	 * 		const ctx = new SchemaContext( element ); // [ 'elementParent', 'element' ]
 	 *
-	 * 		// Node.
+	 * 		// A node.
 	 * 		const ctx2 = ctx.concat( element.getChild( 0 ) ); // [ 'elementParent', 'element', 'elementChild' ]
 	 *
-	 * 		// String (element name).
+	 * 		// A string (element name).
 	 * 		const ctx3 = ctx.concat( 'other' ); // [ 'elementParent', 'element', 'other' ]
 	 *
-	 * 		// Array with above.
+	 * 		// An array with above.
 	 * 		const ctx4 = ctx.concat( [ 'other', element.getChild( 0 ) ] ); // [ 'elementParent', 'element', 'other', 'elementChild ]
 	 *
 	 * @param {String|module:engine/model/node~Node|Array<String|module:engine/model/node~Node>} definition
