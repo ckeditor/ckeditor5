@@ -762,8 +762,11 @@ export default class Writer {
 	/**
 	 * Adds or updates {@link module:engine/model/markercollection~Marker marker} with given name to given `range`.
 	 *
+	 * It uses {@link module:engine/model/operation/markeroperation~MarkerOperation} when `options.usingOperation` is set to true.
+	 * Otherwise adds directly to the {@link module:engine/model/MarkerCollection~MarkerCollection}.
+	 *
 	 * If passed name is a name of already existing marker (or {@link module:engine/model/markercollection~Marker Marker} instance
-	 * is passed), `range` parameter may be omitted. In this case marker will not be updated in
+	 * is passed), `range` parameter may be omitted (only for setting markers using operation). In this case marker will not be updated in
 	 * {@link module:engine/model/model~Model#markers document marker collection}. However the marker will be added to
 	 * the document history. This may be important for other features, like undo. From document history point of view, it will
 	 * look like the marker was created and added to the document at the moment when it is set using this method.
@@ -784,7 +787,6 @@ export default class Writer {
 		const name = typeof markerOrName == 'string' ? markerOrName : markerOrName.name;
 
 		if ( !options.usingOperation ) {
-			// Marker set without using operation should always have range.
 			if ( !newRange ) {
 				throw new CKEditorError( 'writer-setMarker-no-range: Range parameter is required when adding a new marker.' );
 			}
@@ -819,6 +821,9 @@ export default class Writer {
 
 	/**
 	 * Removes given {@link module:engine/model/markercollection~Marker marker} or marker with given name.
+	 *
+	 * It uses {@link module:engine/model/operation/markeroperation~MarkerOperation} when `options.usingOperation` is set to true.
+	 * Otherwise removes directly from the {@link module:engine/model/MarkerCollection~MarkerCollection}.
 	 *
 	 * @param {module:engine/model/markercollection~Marker|String} markerOrName Marker or marker name to remove.
 	 * @param {Object} [options]
