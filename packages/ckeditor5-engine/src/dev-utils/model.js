@@ -321,9 +321,9 @@ export function parse( data, schema, options = {} ) {
 
 function convertToModelFragment() {
 	return ( evt, data, conversionApi ) => {
-		const childrenResult = conversionApi.convertChildren( data.viewItem, data.cursorPosition );
+		const childrenResult = conversionApi.convertChildren( data.viewItem, data.modelCursor );
 
-		conversionApi.mapper.bindElements( data.cursorPosition.parent, data.viewItem );
+		conversionApi.mapper.bindElements( data.modelCursor.parent, data.viewItem );
 
 		data = Object.assign( data, childrenResult );
 
@@ -335,8 +335,8 @@ function convertToModelElement() {
 	return ( evt, data, conversionApi ) => {
 		const elementName = data.viewItem.name;
 
-		if ( !conversionApi.schema.checkChild( data.cursorPosition, elementName ) ) {
-			throw new Error( `Element '${ elementName }' was not allowed in given position.`, { position: data.cursorPosition } );
+		if ( !conversionApi.schema.checkChild( data.modelCursor, elementName ) ) {
+			throw new Error( `Element '${ elementName }' was not allowed in given position.` );
 		}
 
 		// View attribute value is a string so we want to typecast it to the original type.
@@ -344,14 +344,14 @@ function convertToModelElement() {
 		const attributes = convertAttributes( data.viewItem.getAttributes(), parseAttributeValue );
 		const element = conversionApi.writer.createElement( data.viewItem.name, attributes );
 
-		conversionApi.writer.insert( element, data.cursorPosition );
+		conversionApi.writer.insert( element, data.modelCursor );
 
 		conversionApi.mapper.bindElements( element, data.viewItem );
 
 		conversionApi.convertChildren( data.viewItem, ModelPosition.createAt( element ) );
 
 		data.modelRange = ModelRange.createOn( element );
-		data.cursorPosition = data.modelRange.end;
+		data.modelCursor = data.modelRange.end;
 
 		evt.stop();
 	};
@@ -359,8 +359,8 @@ function convertToModelElement() {
 
 function convertToModelText( withAttributes = false ) {
 	return ( evt, data, conversionApi ) => {
-		if ( !conversionApi.schema.checkChild( data.cursorPosition, '$text' ) ) {
-			throw new Error( 'Text was not allowed in given position.', { position: data.cursorPosition } );
+		if ( !conversionApi.schema.checkChild( data.modelCursor, '$text' ) ) {
+			throw new Error( 'Text was not allowed in given position.' );
 		}
 
 		let node;
@@ -375,10 +375,10 @@ function convertToModelText( withAttributes = false ) {
 			node = conversionApi.writer.createText( data.viewItem.data );
 		}
 
-		conversionApi.writer.insert( node, data.cursorPosition );
+		conversionApi.writer.insert( node, data.modelCursor );
 
-		data.modelRange = ModelRange.createFromPositionAndShift( data.cursorPosition, node.offsetSize );
-		data.cursorPosition = data.modelRange.end;
+		data.modelRange = ModelRange.createFromPositionAndShift( data.modelCursor, node.offsetSize );
+		data.modelCursor = data.modelRange.end;
 
 		evt.stop();
 	};

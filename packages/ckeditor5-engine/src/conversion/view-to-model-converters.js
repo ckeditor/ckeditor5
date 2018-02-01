@@ -31,8 +31,8 @@ export function convertToModelFragment() {
 	return ( evt, data, conversionApi ) => {
 		// Second argument in `consumable.consume` is discarded for ViewDocumentFragment but is needed for ViewElement.
 		if ( !data.modelRange && conversionApi.consumable.consume( data.viewItem, { name: true } ) ) {
-			data = Object.assign( data, conversionApi.convertChildren( data.viewItem, data.cursorPosition ) );
-			data.cursorPosition = data.modelRange.end;
+			data = Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
+			data.modelCursor = data.modelRange.end;
 		}
 	};
 }
@@ -44,14 +44,14 @@ export function convertToModelFragment() {
  */
 export function convertText() {
 	return ( evt, data, conversionApi ) => {
-		if ( conversionApi.schema.checkChild( data.cursorPosition, '$text' ) ) {
+		if ( conversionApi.schema.checkChild( data.modelCursor, '$text' ) ) {
 			if ( conversionApi.consumable.consume( data.viewItem ) ) {
 				const text = conversionApi.writer.createText( data.viewItem.data );
 
-				conversionApi.writer.insert( text, data.cursorPosition );
+				conversionApi.writer.insert( text, data.modelCursor );
 
-				data.modelRange = Range.createFromPositionAndShift( data.cursorPosition, text.offsetSize );
-				data.cursorPosition = data.modelRange.end;
+				data.modelRange = Range.createFromPositionAndShift( data.modelCursor, text.offsetSize );
+				data.modelCursor = data.modelRange.end;
 			}
 		}
 	};

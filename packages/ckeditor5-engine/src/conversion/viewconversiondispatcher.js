@@ -26,12 +26,12 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * `ViewConversionDispatcher` fires corresponding events. Special callbacks called "converters" should listen to
  * `ViewConversionDispatcher` for those events.
  *
- * Each callback, as a first argument, is passed a special object `data` that has `viewItem`, `cursorPosition` and
+ * Each callback, as a first argument, is passed a special object `data` that has `viewItem`, `modelCursor` and
  * `modelRange` properties. `viewItem` property contains {@link module:engine/view/node~Node view node} or
  * {@link module:engine/view/documentfragment~DocumentFragment view document fragment}
  * that is converted at the moment and might be handled by the callback. `modelRange` property should be used to save the result
  * of conversion and is always a {@link module:engine/model/range~Range} when conversion result is correct.
- * `cursorPosition` property is a {@link module:engine/model/position~Position position} on which conversion result will be inserted
+ * `modelCursor` property is a {@link module:engine/model/position~Position position} on which conversion result will be inserted
  * and is a context according to {@link module:engine/model/schema~Schema schema} will be checked before the conversion.
  * See also {@link ~ViewConversionDispatcher#convert}. It is also shared by reference by all callbacks listening to given event.
  *
@@ -46,11 +46,11 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  *			const paragraph = conversionApi.createElement( 'paragraph' );
  *
  *			// Check if paragraph is allowed on current cursor position.
- *			if ( conversionApi.schema.checkChild( data.cursorPosition, paragraph ) ) {
+ *			if ( conversionApi.schema.checkChild( data.modelCursor, paragraph ) ) {
  *				// Try to consume value from consumable list.
  *				if ( !conversionApi.consumable.consume( data.viewItem, { name: true } ) ) {
  *					// Insert paragraph on cursor position.
- *					conversionApi.writer.insert( paragraph, data.cursorPosition );
+ *					conversionApi.writer.insert( paragraph, data.modelCursor );
  *
  *					// Convert paragraph children to paragraph element.
  *					conversionApi.convertChildren( data.viewItem, ModelPosition.createAt( paragraph ) );
@@ -59,7 +59,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  *					data.modelRange = ModelRange.createOn( paragraph );
  *
  *					// Continue conversion just after paragraph.
- *					data.cursorPosition = data.modelRange.end;
+ *					data.modelCursor = data.modelRange.end;
  *				}
  *			}
  *		} );
@@ -69,7 +69,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  *			if ( conversionApi.consumable.consume( data.viewItem, { name: true, attributes: [ 'href' ] } ) ) {
  *				// <a> element is inline and is represented by an attribute in the model.
  *				// This is why we need to convert only children.
- *				const { modelRange } = conversionApi.convertChildren( data.viewItem, data.cursorPosition );
+ *				const { modelRange } = conversionApi.convertChildren( data.viewItem, data.modelCursor );
  *
  *				for ( let item of modelRange.getItems() ) {
  *					if ( conversionApi.schema.checkAttribute( item, 'linkHref' ) ) {
@@ -221,8 +221,8 @@ export default class ViewConversionDispatcher {
 	 * @private
 	 * @see module:engine/conversion/viewconversiondispatcher~ViewConversionApi#convertItem
 	 */
-	_convertItem( viewItem, cursorPosition ) {
-		const data = Object.assign( { viewItem, cursorPosition, modelRange: null } );
+	_convertItem( viewItem, modelCursor ) {
+		const data = Object.assign( { viewItem, modelCursor, modelRange: null } );
 
 		if ( viewItem.is( 'element' ) ) {
 			this.fire( 'element:' + viewItem.name, data, this.conversionApi );
@@ -244,36 +244,36 @@ export default class ViewConversionDispatcher {
 			throw new CKEditorError( 'view-conversion-dispatcher-incorrect-result: Incorrect conversion result was dropped.' );
 		}
 
-		return { modelRange: data.modelRange, cursorPosition: data.cursorPosition };
+		return { modelRange: data.modelRange, modelCursor: data.modelCursor };
 	}
 
 	/**
 	 * @private
 	 * @see module:engine/conversion/viewconversiondispatcher~ViewConversionApi#convertChildren
 	 */
-	_convertChildren( viewItem, cursorPosition ) {
-		const modelRange = new ModelRange( cursorPosition );
-		let nextCursorPosition = cursorPosition;
+	_convertChildren( viewItem, modelCursor ) {
+		const modelRange = new ModelRange( modelCursor );
+		let nextModelCursor = modelCursor;
 
 		for ( const viewChild of Array.from( viewItem.getChildren() ) ) {
-			const result = this._convertItem( viewChild, nextCursorPosition );
+			const result = this._convertItem( viewChild, nextModelCursor );
 
 			if ( result.modelRange instanceof ModelRange ) {
 				modelRange.end = result.modelRange.end;
-				nextCursorPosition = result.cursorPosition;
+				nextModelCursor = result.modelCursor;
 			}
 		}
 
-		return { modelRange, cursorPosition: nextCursorPosition };
+		return { modelRange, modelCursor: nextModelCursor };
 	}
 
 	/**
 	 * @private
 	 * @see module:engine/conversion/viewconversiondispatcher~ViewConversionApi#splitToAllowedParent
 	 */
-	_splitToAllowedParent( node, cursorPosition ) {
+	_splitToAllowedParent( node, modelCursor ) {
 		// Try to find allowed parent.
-		const allowedParent = this.conversionApi.schema.findAllowedParent( node, cursorPosition );
+		const allowedParent = this.conversionApi.schema.findAllowedParent( node, modelCursor );
 
 		// When there is no parent that allows to insert node then return `null`.
 		if ( !allowedParent ) {
@@ -281,8 +281,8 @@ export default class ViewConversionDispatcher {
 		}
 
 		// When current position parent allows to insert node then return this position.
-		if ( allowedParent === cursorPosition.parent ) {
-			return { position: cursorPosition };
+		if ( allowedParent === modelCursor.parent ) {
+			return { position: modelCursor };
 		}
 
 		// When allowed parent is in context tree.
@@ -291,7 +291,7 @@ export default class ViewConversionDispatcher {
 		}
 
 		// Split element to allowed parent.
-		const splitResult = this.conversionApi.writer.split( cursorPosition, allowedParent );
+		const splitResult = this.conversionApi.writer.split( modelCursor, allowedParent );
 
 		// Remember all elements that are created as a result of split.
 		// This is important because at the end of conversion we want to remove all empty split elements.
@@ -350,12 +350,12 @@ export default class ViewConversionDispatcher {
 	 * all elements conversion or to conversion of specific elements.
 	 *
 	 * @event element
-	 * @param {Object} data Object containing viewItem to convert, cursorPosition as a conversion position and placeholder
+	 * @param {Object} data Object containing viewItem to convert, modelCursor as a conversion position and placeholder
 	 * for modelRange that is a conversion result. Keep in mind that this object is shared by reference between all
 	 * callbacks that will be called. This means that callbacks can override values if needed, and those values will
 	 * be available in other callbacks.
 	 * @param {module:engine/view/item~Item} data.viewItem Converted item.
-	 * @param {module:engine/model/position~Position} data.cursorPosition Target position for current item.
+	 * @param {module:engine/model/position~Position} data.modelCursor Target position for current item.
 	 * @param {module:engine/model/range~Range} data.modelRange The current state of conversion result. Every change to
 	 * converted element should be reflected by setting or modifying this property.
 	 * @param {ViewConversionApi} conversionApi Conversion interface to be used by callback, passed in
@@ -462,11 +462,11 @@ function createContextTree( contextDefinition, writer ) {
  * @fires module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:text
  * @fires module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:documentFragment
  * @param {module:engine/view/item~Item} viewItem Item to convert.
- * @param {module:engine/model/position~Position} cursorPosition Position of conversion.
+ * @param {module:engine/model/position~Position} modelCursor Position of conversion.
  * @returns {Object} result Conversion result.
  * @returns {module:engine/model/range~Range|null} result.modelRange Model range containing result of item conversion,
  * created and modified by callbacks attached to fired event, or `null` if the conversion result was incorrect.
- * @returns {module:engine/model/position~Position} result.cursorPosition Position where conversion should be continued.
+ * @returns {module:engine/model/position~Position} result.modelCursor Position where conversion should be continued.
  */
 
 /**
@@ -477,11 +477,11 @@ function createContextTree( contextDefinition, writer ) {
  * @fires module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:text
  * @fires module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:documentFragment
  * @param {module:engine/view/item~Item} viewItem Item to convert.
- * @param {module:engine/model/position~Position} cursorPosition Position of conversion.
+ * @param {module:engine/model/position~Position} modelCursor Position of conversion.
  * @returns {Object} result Conversion result.
  * @returns {module:engine/model/range~Range} result.modelRange Model range containing results of conversion of all children of given item.
  * When no children was converted then range is collapsed.
- * @returns {module:engine/model/position~Position} result.cursorPosition Position where conversion should be continued.
+ * @returns {module:engine/model/position~Position} result.modelCursor Position where conversion should be continued.
  */
 
 /**

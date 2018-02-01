@@ -54,9 +54,9 @@ describe( 'view-to-model-converters', () => {
 			dispatcher.on( 'text', ( evt, data, conversionApi ) => {
 				if ( conversionApi.consumable.consume( data.viewItem ) ) {
 					const text = conversionApi.writer.createText( data.viewItem.data.replace( /fuck/gi, '****' ) );
-					conversionApi.writer.insert( text, data.cursorPosition );
-					data.modelRange = ModelRange.createFromPositionAndShift( data.cursorPosition, text.offsetSize );
-					data.cursorPosition = data.modelRange.end;
+					conversionApi.writer.insert( text, data.modelCursor );
+					data.modelRange = ModelRange.createFromPositionAndShift( data.modelCursor, text.offsetSize );
+					data.modelCursor = data.modelRange.end;
 				}
 			} );
 
@@ -135,11 +135,11 @@ describe( 'view-to-model-converters', () => {
 				if ( conversionApi.consumable.consume( data.viewItem, { name: true } ) ) {
 					const paragraph = conversionApi.writer.createElement( 'paragraph' );
 
-					conversionApi.writer.insert( paragraph, data.cursorPosition );
+					conversionApi.writer.insert( paragraph, data.modelCursor );
 					conversionApi.convertChildren( data.viewItem, ModelPosition.createAt( paragraph ) );
 
 					data.modelRange = ModelRange.createOn( paragraph );
-					data.cursorPosition = data.modelRange.end;
+					data.modelCursor = data.modelRange.end;
 				}
 			} );
 

@@ -82,7 +82,7 @@ describe( 'ViewConversionDispatcher', () => {
 				dispatcher._removeIfEmpty.add( conversionApi.writer.createElement( 'paragraph' ) );
 
 				// Convert children - this will call second converter.
-				conversionApi.convertChildren( data.viewItem, data.cursorPosition );
+				conversionApi.convertChildren( data.viewItem, data.modelCursor );
 
 				spy();
 			} );
@@ -147,7 +147,7 @@ describe( 'ViewConversionDispatcher', () => {
 				// Check correctness of passed parameters.
 				expect( evt.name ).to.equal( 'text' );
 				expect( data.viewItem ).to.equal( viewText );
-				expect( data.cursorPosition ).to.instanceof( ModelPosition );
+				expect( data.modelCursor ).to.instanceof( ModelPosition );
 
 				// Check whether consumable has appropriate value to consume.
 				expect( conversionApi.consumable.consume( data.viewItem ) ).to.be.true;
@@ -156,7 +156,7 @@ describe( 'ViewConversionDispatcher', () => {
 				expect( conversionApi ).to.equal( dispatcher.conversionApi );
 
 				const text = conversionApi.writer.createText( data.viewItem.data );
-				conversionApi.writer.insert( text, data.cursorPosition );
+				conversionApi.writer.insert( text, data.modelCursor );
 
 				// Set conversion result to `modelRange` property of `data`.
 				// Later we will check if it was returned by `convert` method.
@@ -183,7 +183,7 @@ describe( 'ViewConversionDispatcher', () => {
 				// Check correctness of passed parameters.
 				expect( evt.name ).to.equal( 'element:p' );
 				expect( data.viewItem ).to.equal( viewElement );
-				expect( data.cursorPosition ).to.instanceof( ModelPosition );
+				expect( data.modelCursor ).to.instanceof( ModelPosition );
 
 				// Check whether consumable has appropriate value to consume.
 				expect( conversionApi.consumable.consume( data.viewItem, { name: true } ) ).to.be.true;
@@ -193,7 +193,7 @@ describe( 'ViewConversionDispatcher', () => {
 				expect( conversionApi ).to.equal( dispatcher.conversionApi );
 
 				const paragraph = conversionApi.writer.createElement( 'paragraph' );
-				conversionApi.writer.insert( paragraph, data.cursorPosition );
+				conversionApi.writer.insert( paragraph, data.modelCursor );
 
 				// Set conversion result to `modelRange` property of `data`.
 				// Later we will check if it was returned by `convert` method.
@@ -221,7 +221,7 @@ describe( 'ViewConversionDispatcher', () => {
 				// Check correctness of passed parameters.
 				expect( evt.name ).to.equal( 'documentFragment' );
 				expect( data.viewItem ).to.equal( viewFragment );
-				expect( data.cursorPosition ).to.instanceof( ModelPosition );
+				expect( data.modelCursor ).to.instanceof( ModelPosition );
 
 				// Check whether consumable has appropriate value to consume.
 				expect( conversionApi.consumable.consume( data.viewItem ) ).to.be.true;
@@ -230,7 +230,7 @@ describe( 'ViewConversionDispatcher', () => {
 				expect( conversionApi ).to.equal( dispatcher.conversionApi );
 
 				const text = conversionApi.writer.createText( 'foo' );
-				conversionApi.writer.insert( text, data.cursorPosition );
+				conversionApi.writer.insert( text, data.modelCursor );
 
 				// Set conversion result to `modelRange` property of `data`.
 				// Later we will check if it was returned by `convert` method.
@@ -254,7 +254,7 @@ describe( 'ViewConversionDispatcher', () => {
 			dispatcher.on( 'element', ( evt, data, conversionApi ) => {
 				// First let's convert target element.
 				const paragraph = conversionApi.writer.createElement( 'paragraph' );
-				conversionApi.writer.insert( paragraph, data.cursorPosition );
+				conversionApi.writer.insert( paragraph, data.modelCursor );
 
 				// Then add some elements and mark as split.
 
@@ -279,7 +279,7 @@ describe( 'ViewConversionDispatcher', () => {
 				dispatcher._removeIfEmpty.add( innerSplit );
 
 				data.modelRange = ModelRange.createOn( paragraph );
-				data.cursorPosition = data.modelRange.end;
+				data.modelCursor = data.modelRange.end;
 
 				// We have the following result:
 				// <p><p></p></p>[<p></p>]<p></p><p>foo</p>
@@ -316,10 +316,10 @@ describe( 'ViewConversionDispatcher', () => {
 				] );
 
 				// Insert to conversion tree.
-				conversionApi.writer.insert( fragment, data.cursorPosition );
+				conversionApi.writer.insert( fragment, data.modelCursor );
 
 				// Create range on this fragment as a conversion result.
-				data.modelRange = ModelRange.createIn( data.cursorPosition.parent );
+				data.modelRange = ModelRange.createIn( data.modelCursor.parent );
 			} );
 
 			const conversionResult = dispatcher.convert( viewFragment );
@@ -354,7 +354,7 @@ describe( 'ViewConversionDispatcher', () => {
 
 			dispatcher.on( 'element:third', ( evt, data, conversionApi ) => {
 				spy();
-				checkChildResult = conversionApi.schema.checkChild( data.cursorPosition, 'third' );
+				checkChildResult = conversionApi.schema.checkChild( data.modelCursor, 'third' );
 			} );
 
 			// Default context $root.
@@ -403,14 +403,14 @@ describe( 'ViewConversionDispatcher', () => {
 				spyP();
 
 				data.modelRange = ModelRange.createOn( modelP );
-				data.cursorPosition = data.modelRange.end;
+				data.modelCursor = data.modelRange.end;
 			} );
 
 			dispatcher.on( 'text', ( evt, data ) => {
 				spyText();
 
 				data.modelRange = ModelRange.createOn( modelText );
-				data.cursorPosition = data.modelRange.end;
+				data.modelCursor = data.modelRange.end;
 			} );
 
 			spyNull = sinon.spy();
@@ -438,22 +438,22 @@ describe( 'ViewConversionDispatcher', () => {
 				dispatcher.on( 'documentFragment', ( evt, data, conversionApi ) => {
 					spy();
 
-					const pResult = conversionApi.convertItem( viewP, data.cursorPosition );
+					const pResult = conversionApi.convertItem( viewP, data.modelCursor );
 					expect( pResult.modelRange ).instanceof( ModelRange );
 					expect( pResult.modelRange.start.path ).to.deep.equal( [ 0 ] );
 					expect( pResult.modelRange.end.path ).to.deep.equal( [ 1 ] );
 					expect( first( pResult.modelRange.getItems() ) ).to.equal( modelP );
-					expect( pResult.cursorPosition ).to.instanceof( ModelPosition );
-					expect( pResult.cursorPosition.path ).to.deep.equal( [ 1 ] );
+					expect( pResult.modelCursor ).to.instanceof( ModelPosition );
+					expect( pResult.modelCursor.path ).to.deep.equal( [ 1 ] );
 
-					const textResult = conversionApi.convertItem( viewText, data.cursorPosition );
+					const textResult = conversionApi.convertItem( viewText, data.modelCursor );
 					expect( textResult.modelRange ).instanceof( ModelRange );
 					expect( textResult.modelRange.start.path ).to.deep.equal( [ 1 ] );
 					expect( textResult.modelRange.end.path ).to.deep.equal( [ 7 ] );
 					expect( first( textResult.modelRange.getItems() ) ).to.instanceof( ModelTextProxy );
 					expect( first( textResult.modelRange.getItems() ).data ).to.equal( 'foobar' );
-					expect( textResult.cursorPosition ).to.instanceof( ModelPosition );
-					expect( textResult.cursorPosition.path ).to.deep.equal( [ 7 ] );
+					expect( textResult.modelCursor ).to.instanceof( ModelPosition );
+					expect( textResult.modelCursor.path ).to.deep.equal( [ 7 ] );
 				} );
 
 				dispatcher.convert( new ViewDocumentFragment() );
@@ -467,8 +467,8 @@ describe( 'ViewConversionDispatcher', () => {
 				dispatcher.on( 'documentFragment', ( evt, data, conversionApi ) => {
 					spy();
 
-					expect( conversionApi.convertItem( viewDiv, data.cursorPosition ).modelRange ).to.equal( null );
-					expect( conversionApi.convertItem( viewNull, data.cursorPosition ).modelRange ).to.equal( null );
+					expect( conversionApi.convertItem( viewDiv, data.modelCursor ).modelRange ).to.equal( null );
+					expect( conversionApi.convertItem( viewNull, data.modelCursor ).modelRange ).to.equal( null );
 				} );
 
 				dispatcher.convert( new ViewDocumentFragment() );
@@ -481,7 +481,7 @@ describe( 'ViewConversionDispatcher', () => {
 				dispatcher.on( 'documentFragment', ( evt, data, conversionApi ) => {
 					spy();
 
-					conversionApi.convertItem( viewArray, data.cursorPosition );
+					conversionApi.convertItem( viewArray, data.modelCursor );
 				} );
 
 				expect( () => {
@@ -509,8 +509,8 @@ describe( 'ViewConversionDispatcher', () => {
 					expect( Array.from( result.modelRange.getItems() )[ 1 ] ).to.instanceof( ModelTextProxy );
 					expect( Array.from( result.modelRange.getItems() )[ 1 ].data ).to.equal( 'foobar' );
 
-					expect( result.cursorPosition ).instanceof( ModelPosition );
-					expect( result.cursorPosition.path ).to.deep.equal( [ 7 ] );
+					expect( result.modelCursor ).instanceof( ModelPosition );
+					expect( result.modelCursor.path ).to.deep.equal( [ 7 ] );
 				} );
 
 				dispatcher.convert( new ViewDocumentFragment( [ viewP, viewText ] ) );
@@ -616,7 +616,7 @@ describe( 'ViewConversionDispatcher', () => {
 
 				dispatcher.on( 'documentFragment', ( evt, data, conversionApi ) => {
 					const code = conversionApi.writer.createElement( 'div' );
-					const result = conversionApi.splitToAllowedParent( code, data.cursorPosition );
+					const result = conversionApi.splitToAllowedParent( code, data.modelCursor );
 
 					expect( result ).to.null;
 					spy();
