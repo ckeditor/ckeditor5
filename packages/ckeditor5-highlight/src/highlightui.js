@@ -17,7 +17,6 @@ import penIcon from './../theme/icons/pen.svg';
 import eraserIcon from './../theme/icons/eraser.svg';
 
 import ToolbarSeparatorView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarseparatorview';
-import bindOneToMany from '@ckeditor/ckeditor5-ui/src/bindings/bindonetomany';
 import { createSplitButtonDropdown, addToolbarToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 
 import './../theme/highlight.css';
@@ -215,9 +214,7 @@ export default class HighlightUI extends Plugin {
 			} );
 
 			// Make toolbar button enabled when any button in dropdown is enabled before adding separator and eraser.
-			bindOneToMany( dropdownView, 'isEnabled', buttons, 'isEnabled',
-				( ...areEnabled ) => areEnabled.some( isEnabled => isEnabled )
-			);
+			dropdownView.bind( 'isEnabled' ).toMany( buttons, 'isEnabled', ( ...areEnabled ) => areEnabled.some( isEnabled => isEnabled ) );
 
 			// Add separator and eraser buttons to dropdown.
 			buttons.push( new ToolbarSeparatorView() );
