@@ -2066,7 +2066,7 @@ describe( 'Writer', () => {
 
 		it( 'should remove marker from the document marker collection', () => {
 			setMarker( 'name', range );
-			removeMarker( 'name', { usingOperation: true } );
+			removeMarker( 'name' );
 
 			expect( model.markers.get( 'name' ) ).to.be.null;
 		} );
@@ -2089,8 +2089,23 @@ describe( 'Writer', () => {
 			setMarker( 'name', range );
 			const marker = model.markers.get( 'name' );
 
+			removeMarker( marker );
+
+			expect( model.markers.get( 'name' ) ).to.be.null;
+		} );
+
+		it( 'should use MarkerOperation when usingOperation is set to true', () => {
+			setMarker( 'name', range );
+
+			const marker = model.markers.get( 'name' );
+			const spy = sinon.spy();
+
+			model.on( 'applyOperation', spy );
+
 			removeMarker( marker, { usingOperation: true } );
 
+			expect( spy.calledOnce ).to.be.true;
+			expect( spy.firstCall.args[ 1 ][ 0 ].type ).to.equal( 'marker' );
 			expect( model.markers.get( 'name' ) ).to.be.null;
 		} );
 	} );
