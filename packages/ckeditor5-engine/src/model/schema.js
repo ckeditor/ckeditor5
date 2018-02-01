@@ -1165,6 +1165,18 @@ export class SchemaContext {
 
 	/**
 	 * Returns new SchemaContext instance with additional items created from provided definition.
+	 * Definition can be:
+	 *
+	 * 		const ctx = new SchemaContext( element ); // [ 'elementParent', 'element' ]
+	 *
+	 * 		// Node.
+	 * 		const ctx2 = ctx.concat( element.getChild( 0 ) ); // [ 'elementParent', 'element', 'elementChild' ]
+	 *
+	 * 		// String (element name).
+	 * 		const ctx3 = ctx.concat( 'other' ); // [ 'elementParent', 'element', 'other' ]
+	 *
+	 * 		// Array with above.
+	 * 		const ctx3 = ctx.concat( [ 'other', element.getChild( 0 ) ] ); // [ 'elementParent', 'element', 'other', 'elementChild ]
 	 *
 	 * @param {String|module:engine/model/node~Node|Array<String|module:engine/model/node~Node>} definition
 	 * Definition of item(s) that will be added to current context.
