@@ -300,7 +300,7 @@ class ViewConverterBuilder {
 					// Find allowed parent for element that we are going to insert.
 					// If current parent does not allow to insert element but one of the ancestors does
 					// then split nodes to allowed parent.
-					const splitResult = conversionApi.splitToAllowedParent( modelElement, data.cursorPosition );
+					const splitResult = conversionApi.splitToAllowedParent( modelElement, data.modelCursor );
 
 					// When there is no split result it means that we can't insert element to model tree, so let's skip it.
 					if ( !splitResult ) {
@@ -324,20 +324,20 @@ class ViewConverterBuilder {
 						// element, so we need to move range after parent of the last converted child.
 						// before: <allowed>[]</allowed>
 						// after: <allowed>[<converted><child></child></converted><child></child><converted>]</converted></allowed>
-						Position.createAfter( childrenResult.cursorPosition.parent )
+						Position.createAfter( childrenResult.modelCursor.parent )
 					);
 
-					// Now we need to check where the cursorPosition should be.
+					// Now we need to check where the modelCursor should be.
 					// If we had to split parent to insert our element then we want to continue conversion inside split parent.
 					//
 					// before: <allowed><notAllowed>[]</notAllowed></allowed>
 					// after:  <allowed><notAllowed></notAllowed><converted></converted><notAllowed>[]</notAllowed></allowed>
 					if ( splitResult.cursorParent ) {
-						data.cursorPosition = Position.createAt( splitResult.cursorParent );
+						data.modelCursor = Position.createAt( splitResult.cursorParent );
 
 					// Otherwise just continue after inserted element.
 					} else {
-						data.cursorPosition = data.modelRange.end;
+						data.modelCursor = data.modelRange.end;
 					}
 
 					// Prevent multiple conversion if there are other correct matches.
@@ -389,7 +389,7 @@ class ViewConverterBuilder {
 					// If the range is not created yet, we will create it.
 					if ( !data.modelRange ) {
 						// Convert children and set conversion result as a current data.
-						data = Object.assign( data, conversionApi.convertChildren( data.viewItem, data.cursorPosition ) );
+						data = Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
 					}
 
 					// Use attribute creator function, if provided.
@@ -501,9 +501,9 @@ class ViewConverterBuilder {
 						continue;
 					}
 
-					writer.insert( modelElement, data.cursorPosition );
+					writer.insert( modelElement, data.modelCursor );
 					data.modelRange = Range.createOn( modelElement );
-					data.cursorPosition = data.modelRange.end;
+					data.modelCursor = data.modelRange.end;
 
 					// Prevent multiple conversion if there are other correct matches.
 					break;
