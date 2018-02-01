@@ -38,7 +38,7 @@
 			background: transparent;
 		}
 
-		&.ck-on:not(.ck-button_with-text) {
+		&.ck-on {
 			@mixin ck-button-colors --ck-color-editor-toolbar-button-on;
 		}
 	}
