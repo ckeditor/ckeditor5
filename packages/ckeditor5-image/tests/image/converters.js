@@ -64,10 +64,10 @@ describe( 'Image converters', () => {
 				if ( conversionApi.consumable.consume( data.viewItem, { name: true, attribute: 'src' } ) ) {
 					const image = conversionApi.writer.createElement( 'image', { src: data.viewItem.getAttribute( 'src' ) } );
 
-					conversionApi.writer.insert( image, data.cursorPosition );
+					conversionApi.writer.insert( image, data.modelCursor );
 
 					data.modelRange = ModelRange.createOn( image );
-					data.cursorPosition = data.modelRange.end;
+					data.modelCursor = data.modelRange.end;
 
 					imgConverterCalled = true;
 				}
@@ -106,9 +106,9 @@ describe( 'Image converters', () => {
 						src: data.viewItem.getChild( 0 ).getAttribute( 'src' )
 					}
 				} );
-				conversionApi.writer.insert( element, data.cursorPosition );
+				conversionApi.writer.insert( element, data.modelCursor );
 				data.modelRange = ModelRange.createOn( element );
-				data.cursorPosition = data.modelRange.end;
+				data.modelCursor = data.modelRange.end;
 			}, { priority: 'high' } );
 
 			editor.setData( '<figure class="image"><img src="foo.png" />xyz</figure>' );
