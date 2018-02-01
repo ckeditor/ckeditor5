@@ -26,7 +26,7 @@ import uid from '@ckeditor/ckeditor5-utils/src/uid.js';
  * (sending the file and handling server's response). You can use one of the existing plugins introducing upload adapters
  * (e.g. {@link module:easy-image/cloudservicesuploadadapter~CloudServicesUploadAdapter} or
  * {@link module:adapter-ckfinder/uploadadapter~CKFinderUploadAdapter}) or write your own one
- * (which boils down to setting the {@link ~FileRepository#createAdapter} factory function – see
+ * (which boils down to setting the {@link ~FileRepository#createUploadAdapter} factory function – see
  * {@link module:upload/filerepository~UploadAdapter `UploadAdapter` interface} documentation).
  *
  * Then, you can use {@link module:upload/filerepository~FileRepository#createLoader `createLoader()`} and the returned
@@ -62,7 +62,7 @@ export default class FileRepository extends Plugin {
 		 *
 		 * For more information and example see {@link module:upload/filerepository~UploadAdapter}.
 		 *
-		 * @member {Function} #createAdapter
+		 * @member {Function} #createUploadAdapter
 		 */
 
 		/**
@@ -120,18 +120,18 @@ export default class FileRepository extends Plugin {
 	/**
 	 * Creates a loader instance for the given file.
 	 *
-	 * Requires {@link #createAdapter} factory to be defined.
+	 * Requires {@link #createUploadAdapter} factory to be defined.
 	 *
 	 * @param {File} file Native File object.
 	 * @returns {module:upload/filerepository~FileLoader|null}
 	 */
 	createLoader( file ) {
-		if ( !this.createAdapter ) {
+		if ( !this.createUploadAdapter ) {
 			/**
 			 * You need to enable an upload adapter in order to be able to upload files.
 			 *
 			 * This warning shows up when {@link module:upload/filerepository~FileRepository} is being used
-			 * without {@link #createAdapter definining an upload adapter}.
+			 * without {@link #createUploadAdapter definining an upload adapter}.
 			 *
 			 * **If you see this warning when using one of the {@glink builds/index CKEditor 5 Builds}**
 			 * it means that you did not configure any of the upload adapters available by default in those builds.
@@ -163,7 +163,7 @@ export default class FileRepository extends Plugin {
 		}
 
 		const loader = new FileLoader( file );
-		loader._adapter = this.createAdapter( loader );
+		loader._adapter = this.createUploadAdapter( loader );
 
 		this.loaders.add( loader );
 
@@ -478,7 +478,7 @@ mix( FileLoader, ObservableMixin );
  *
  * Then upload adapter can be set to be used by {@link module:upload/filerepository~FileRepository FileRepository}:
  *
- *		editor.plugins.get( 'FileRepository' ).createAdapter = function( loader ) {
+ *		editor.plugins.get( 'FileRepository' ).createUploadAdapter = function( loader ) {
  *			return new UploadAdapter( loader );
  *		};
  *
@@ -509,7 +509,7 @@ mix( FileLoader, ObservableMixin );
  * https://github.com/ckeditor/ckeditor5-easy-image/issues/4 for more information.
  *
  * Take a look at {@link module:upload/filerepository~UploadAdapter example Adapter implementation} and
- * {@link module:upload/filerepository~FileRepository#createAdapter createAdapter method}.
+ * {@link module:upload/filerepository~FileRepository#createUploadAdapter createUploadAdapter method}.
  *
  * @method module:upload/filerepository~UploadAdapter#upload
  * @returns {Promise} Promise that should be resolved when data is uploaded.
@@ -520,7 +520,7 @@ mix( FileLoader, ObservableMixin );
  * After aborting it should reject promise returned from {@link #upload upload()}.
  *
  * Take a look at {@link module:upload/filerepository~UploadAdapter example Adapter implementation} and
- * {@link module:upload/filerepository~FileRepository#createAdapter createAdapter method}.
+ * {@link module:upload/filerepository~FileRepository#createUploadAdapter createUploadAdapter method}.
  *
  * @method module:upload/filerepository~UploadAdapter#abort
  */
