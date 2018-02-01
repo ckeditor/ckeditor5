@@ -1174,7 +1174,7 @@ export class SchemaContext {
 	 * 		const ctx3 = ctx.concat( 'other' ); // [ 'elementParent', 'element', 'other' ]
 	 *
 	 * 		// Array with above.
-	 * 		const ctx3 = ctx.concat( [ 'other', element.getChild( 0 ) ] ); // [ 'elementParent', 'element', 'other', 'elementChild ]
+	 * 		const ctx4 = ctx.concat( [ 'other', element.getChild( 0 ) ] ); // [ 'elementParent', 'element', 'other', 'elementChild ]
 	 *
 	 * @param {String|module:engine/model/node~Node|Array<String|module:engine/model/node~Node>} definition
 	 * Definition of item(s) that will be added to current context.
