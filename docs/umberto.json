@@ -14,31 +14,27 @@
 		"customRanking": [
 			{
 				"url": "api/module_core_editor_editorconfig-EditorConfig.html",
-				"rank": 10
+				"rank": 65
 			},
 			{
 				"url": "api/module_heading_heading-HeadingConfig.html",
-				"rank": 7
+				"rank": 30
 			},
 			{
 				"url": "api/module_image_image-ImageConfig.html",
-				"rank": 7
+				"rank": 30
 			},
 			{
 				"url": "api/module_editor-classic_classiceditor-ClassicEditor.html",
-				"rank": 5
+				"rank": 30
 			},
 			{
 				"url": "api/module_editor-balloon_ballooneditor-BalloonEditor.html",
-				"rank": 5
+				"rank": 30
 			},
 			{
 				"url": "api/module_editor-inline_inlineeditor-InlineEditor.html",
-				"rank": 5
-			},
-			{
-				"url": "api/module_utils_config.html",
-				"rank": -5
+				"rank": 30
 			}
 		]
 	},
