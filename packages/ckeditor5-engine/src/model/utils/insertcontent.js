@@ -165,6 +165,7 @@ class Insertion {
 	}
 
 	/**
+	 * @private
 	 * Handles insertion of a single node.
 	 *
 	 * @param {module:engine/model/node~Node} node
@@ -211,6 +212,7 @@ class Insertion {
 	}
 
 	/**
+	 * @private
 	 * @param {module:engine/model/element~Element} node The object element.
 	 * @param {Object} context
 	 */
@@ -226,6 +228,7 @@ class Insertion {
 	}
 
 	/**
+	 * @private
 	 * @param {module:engine/model/node~Node} node The disallowed node which needs to be handled.
 	 * @param {Object} context
 	 */
@@ -241,6 +244,7 @@ class Insertion {
 	}
 
 	/**
+	 * @private
 	 * @param {module:engine/model/node~Node} node The node to insert.
 	 */
 	_insert( node ) {
@@ -274,6 +278,7 @@ class Insertion {
 	}
 
 	/**
+	 * @private
 	 * @param {module:engine/model/node~Node} node The node which could potentially be merged.
 	 * @param {Object} context
 	 */
@@ -332,6 +337,7 @@ class Insertion {
 	/**
 	 * Checks whether specified node can be merged with previous sibling element.
 	 *
+	 * @private
 	 * @param {module:engine/model/node~Node} node The node which could potentially be merged.
 	 * @param {Object} context
 	 * @returns {Boolean}
@@ -348,6 +354,7 @@ class Insertion {
 	/**
 	 * Checks whether specified node can be merged with next sibling element.
 	 *
+	 * @private
 	 * @param {module:engine/model/node~Node} node The node which could potentially be merged.
 	 * @param {Object} context
 	 * @returns {Boolean}
@@ -364,6 +371,7 @@ class Insertion {
 	/**
 	 * Tries wrapping the node in a new paragraph and inserting it this way.
 	 *
+	 * @private
 	 * @param {module:engine/model/node~Node} node The node which needs to be autoparagraphed.
 	 * @param {Object} context
 	 */
@@ -380,6 +388,7 @@ class Insertion {
 	}
 
 	/**
+	 * @private
 	 * @param {module:engine/model/node~Node} node
 	 * @returns {Boolean} Whether an allowed position was found.
 	 * `false` is returned if the node isn't allowed at any position up in the tree, `true` if was.
@@ -425,6 +434,7 @@ class Insertion {
 	/**
 	 * Gets the element in which the given node is allowed. It checks the passed element and all its ancestors.
 	 *
+	 * @private
 	 * @param {module:engine/model/node~Node} node The node to check.
 	 * @param {module:engine/model/element~Element} element The element in which the node's correctness should be checked.
 	 * @returns {module:engine/model/element~Element|null}
