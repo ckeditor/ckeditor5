@@ -1989,7 +1989,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should return marker with properly set managedUsingOperations (to false)', () => {
-			const marker = setMarker( 'name', range, { usingOperation: false } );
+			const marker = setMarker( 'name', range );
 
 			expect( marker.managedUsingOperations ).to.equal( false );
 		} );
