@@ -500,7 +500,7 @@ export function wrap( range, attribute, viewSelection = null ) {
 
 		// If wrapping position is equal to view selection, move view selection inside wrapping attribute element.
 		if ( viewSelection && viewSelection.isCollapsed && viewSelection.getFirstPosition().isEqual( range.start ) ) {
-			viewSelection.setRanges( [ new Range( position ) ] );
+			viewSelection.setTo( position );
 		}
 
 		return new Range( position );
