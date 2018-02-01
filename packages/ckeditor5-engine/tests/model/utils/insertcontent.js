@@ -408,7 +408,7 @@ describe( 'DataController utils', () => {
 					);
 				} );
 
-				it( 'should not merge a paragraph wrapped in blockQuote with lists', () => {
+				it( 'should not merge a paragraph wrapped in blockQuote with list item (checking left merge)', () => {
 					model.schema.register( 'blockQuote', {
 						allowWhere: '$block',
 						allowContentOf: '$root',
@@ -424,6 +424,44 @@ describe( 'DataController utils', () => {
 						'<paragraph>xxx</paragraph>' +
 						'</blockQuote>' +
 						'<heading1>yyy[]o</heading1>'
+					);
+				} );
+
+				it( 'should not merge a paragraph wrapped in blockQuote with list item (checking right merge)', () => {
+					model.schema.register( 'blockQuote', {
+						allowWhere: '$block',
+						allowContentOf: '$root',
+					} );
+
+					setData( model, '<listItem>fo[]o</listItem>' );
+
+					insertHelper( '<heading1>yyy</heading1><blockQuote><paragraph>xxx</paragraph></blockQuote>' );
+
+					expect( getData( model ) ).to.equal(
+						'<listItem>foyyy</listItem>' +
+						'<blockQuote>' +
+						'<paragraph>xxx</paragraph>' +
+						'</blockQuote>' +
+						'<listItem>[]o</listItem>'
+					);
+				} );
+
+				it( 'should not merge a paragraph wrapped in blockQuote with list item (checking both merges)', () => {
+					model.schema.register( 'blockQuote', {
+						allowWhere: '$block',
+						allowContentOf: '$root',
+					} );
+
+					setData( model, '<listItem>fo[]o</listItem>' );
+
+					insertHelper( '<blockQuote><paragraph>xxx</paragraph></blockQuote>' );
+
+					expect( getData( model ) ).to.equal(
+						'<listItem>fo</listItem>' +
+						'<blockQuote>' +
+						'<paragraph>xxx</paragraph>' +
+						'</blockQuote>' +
+						'<listItem>[]o</listItem>'
 					);
 				} );
 			} );
