@@ -207,7 +207,7 @@ export default class DataController {
 	}
 
 	/**
-	 * Returns data parsed by the {@link #processor data processor} and then
+	 * Returns the data parsed by the {@link #processor data processor} and then
 	 * converted by the {@link #viewToModel view-to-model converters}.
 	 *
 	 * @see #set
@@ -229,7 +229,7 @@ export default class DataController {
 	 * {@link module:engine/view/documentfragment~DocumentFragment view document fragment} converted by the
 	 * {@link #viewToModel view-to-model converters}, wrapped by {module:engine/model/documentfragment~DocumentFragment}.
 	 *
-	 * When marker elements were converted during the conversion process, it will be set as a DocumentFragment's
+	 * When marker elements were converted during the conversion process, it will be set as a document fragment's
 	 * {@link module:engine/model/documentfragment~DocumentFragment#markers static markers map}.
 	 *
 	 * @param {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment} viewElementOrFragment
