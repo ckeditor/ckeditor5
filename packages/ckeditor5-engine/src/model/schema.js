@@ -376,8 +376,7 @@ export default class Schema {
 	 *		schema.checkChild( model.document.getRoot(), paragraph ); // -> true
 	 *
 	 * @fires checkChild
-	 * @param {module:engine/model/schema~SchemaContextDefinition|module:engine/model/schema~SchemaContext} context
-	 * Context in which the child will be checked.
+	 * @param {module:engine/model/schema~SchemaContextDefinition} context Context in which the child will be checked.
 	 * @param {module:engine/model/node~Node|String} def The child to check.
 	 */
 	checkChild( context, def ) {
@@ -401,8 +400,7 @@ export default class Schema {
 	 *		schema.checkAttribute( textNode, 'bold' ); // -> true
 	 *
 	 * @fires checkAttribute
-	 * @param {module:engine/model/schema~SchemaContextDefinition|module:engine/model/schema~SchemaContext} context
-	 * Context in which the attribute will be checked.
+	 * @param {module:engine/model/schema~SchemaContextDefinition} context Context in which the attribute will be checked.
 	 * @param {String} attributeName
 	 */
 	checkAttribute( context, attributeName ) {
@@ -1164,18 +1162,31 @@ export class SchemaContext {
 	}
 
 	/**
-	 * Returns new SchemaContext instance with additional items created from provided definition.
+	 * Returns new SchemaContext instance with additional item
 	 *
-	 * @param {String|module:engine/model/node~Node|module:engine/model/schema~SchemaContext|
-	 * Array<String|module:engine/model/node~Node>} definition Definition of item(s) that will be added to current context.
-	 * @returns {module:engine/model/schema~SchemaContext} New SchemaContext instance.
+	 * Item can be added as:
+	 *
+	 * 		const context = new SchemaContext( [ '$root' ] );
+	 *
+	 * 		// An element.
+	 * 		const fooElement = writer.createElement( 'fooElement' );
+	 * 		const newContext = context.push( fooElement ); // [ '$root', 'fooElement' ]
+	 *
+	 * 		// A text node.
+	 * 		const text = writer.createText( 'foobar' );
+	 * 		const newContext = context.push( text ); // [ '$root', '$text' ]
+	 *
+	 * 		// A string (element name).
+	 * 		const newContext = context.push( 'barElement' ); // [ '$root', 'barElement' ]
+	 *
+	 * **Note** {module:engine/model/node~Node} that is already in the model tree will be added as the only item (without ancestors).
+	 *
+	 * @param {String|module:engine/model/node~Node|Array<String|module:engine/model/node~Node>} item Item that will be added
+	 * to current context.
+	 * @returns {module:engine/model/schema~SchemaContext} New SchemaContext instance with additional item.
 	 */
-	concat( definition ) {
-		if ( !( definition instanceof SchemaContext ) && !Array.isArray( definition ) ) {
-			definition = [ definition ];
-		}
-
-		const ctx = new SchemaContext( definition );
+	push( item ) {
+		const ctx = new SchemaContext( [ item ] );
 
 		ctx._items = [ ...this._items, ...ctx._items ];
 
@@ -1231,6 +1242,8 @@ export class SchemaContext {
  * means that the context will be unrealistic (e.g. attributes of these nodes are not specified).
  * However, at times this may be the only way to define the context (e.g. when checking some
  * hypothetical situation).
+ * * By defining a {@link module:engine/model/schema~SchemaContext} instance - in this case the same instance as provided
+ * will be return.
  *
  * Examples of context definitions passed to the {@link module:engine/model/schema~Schema#checkChild `Schema#checkChild()`}
  * method:
@@ -1278,7 +1291,7 @@ export class SchemaContext {
  *		// Check in [ rootElement, paragraphElement, textNode ].
  *		schema.checkChild( [ ...positionInParagraph.getAncestors(), '$text' ], 'bold' );
  *
- * @typedef {module:engine/model/node~Node|module:engine/model/position~Position|
+ * @typedef {module:engine/model/node~Node|module:engine/model/position~Position|module:engine/model/schema~SchemaContext|
  * Array.<String|module:engine/model/node~Node>} module:engine/model/schema~SchemaContextDefinition
  */
 
