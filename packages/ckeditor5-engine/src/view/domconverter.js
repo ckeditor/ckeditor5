@@ -22,6 +22,7 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import indexOf from '@ckeditor/ckeditor5-utils/src/dom/indexof';
 import getAncestors from '@ckeditor/ckeditor5-utils/src/dom/getancestors';
 import getCommonAncestor from '@ckeditor/ckeditor5-utils/src/dom/getcommonancestor';
+import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
 
 /**
  * DomConverter is a set of tools to do transformations between DOM nodes and view nodes. It also handles
@@ -339,7 +340,7 @@ export default class DomConverter {
 
 			// If there is an inline filler at position return position inside the filler. We should never return
 			// the position before the inline filler.
-			if ( this.isText( domAfter ) && startsWithFiller( domAfter ) ) {
+			if ( isText( domAfter ) && startsWithFiller( domAfter ) ) {
 				return { parent: domAfter, offset: INLINE_FILLER_LENGTH };
 			}
 
@@ -375,7 +376,7 @@ export default class DomConverter {
 			return uiElement;
 		}
 
-		if ( this.isText( domNode ) ) {
+		if ( isText( domNode ) ) {
 			if ( isInlineFiller( domNode ) ) {
 				return null;
 			} else {
@@ -460,7 +461,7 @@ export default class DomConverter {
 			let container = domSelection.getRangeAt( 0 ).startContainer;
 
 			// The DOM selection might be moved to the text node inside the fake selection container.
-			if ( this.isText( container ) ) {
+			if ( isText( container ) ) {
 				container = container.parentNode;
 			}
 
@@ -533,7 +534,7 @@ export default class DomConverter {
 			return ViewPosition.createBefore( viewElement );
 		}
 
-		if ( this.isText( domParent ) ) {
+		if ( isText( domParent ) ) {
 			if ( isInlineFiller( domParent ) ) {
 				return this.domPositionToView( domParent.parentNode, indexOf( domParent ) );
 			}
@@ -562,7 +563,7 @@ export default class DomConverter {
 				}
 			} else {
 				const domBefore = domParent.childNodes[ domOffset - 1 ];
-				const viewBefore = this.isText( domBefore ) ?
+				const viewBefore = isText( domBefore ) ?
 					this.findCorrespondingViewText( domBefore ) :
 					this.mapDomToView( domBefore );
 
@@ -750,16 +751,6 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Returns `true` when `node.nodeType` equals `Node.TEXT_NODE`.
-	 *
-	 * @param {Node} node Node to check.
-	 * @returns {Boolean}
-	 */
-	isText( node ) {
-		return node && node.nodeType == Node.TEXT_NODE;
-	}
-
-	/**
 	 * Returns `true` when `node.nodeType` equals `Node.ELEMENT_NODE`.
 	 *
 	 * @param {Node} node Node to check.
@@ -864,7 +855,7 @@ export default class DomConverter {
 	 */
 	_isDomSelectionPositionCorrect( domParent, offset ) {
 		// If selection is before or in the middle of inline filler string, it is incorrect.
-		if ( this.isText( domParent ) && startsWithFiller( domParent ) && offset < INLINE_FILLER_LENGTH ) {
+		if ( isText( domParent ) && startsWithFiller( domParent ) && offset < INLINE_FILLER_LENGTH ) {
 			// Selection in a text node, at wrong position (before or in the middle of filler).
 			return false;
 		}

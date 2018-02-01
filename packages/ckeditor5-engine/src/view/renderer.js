@@ -17,6 +17,7 @@ import insertAt from '@ckeditor/ckeditor5-utils/src/dom/insertat';
 import remove from '@ckeditor/ckeditor5-utils/src/dom/remove';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
 
 /**
  * Renderer updates DOM structure and selection, to make them a reflection of the view structure and selection.
@@ -256,7 +257,7 @@ export default class Renderer {
 		const childNodes = domParentOrArray instanceof Array ? domParentOrArray : domParentOrArray.childNodes;
 		const nodeAfterFiller = childNodes[ offset ];
 
-		if ( this.domConverter.isText( nodeAfterFiller ) ) {
+		if ( isText( nodeAfterFiller ) ) {
 			nodeAfterFiller.data = INLINE_FILLER + nodeAfterFiller.data;
 
 			return nodeAfterFiller;
@@ -321,7 +322,7 @@ export default class Renderer {
 		const selectionPosition = this.selection.getFirstPosition();
 		const position = this.domConverter.viewPositionToDom( selectionPosition );
 
-		if ( position && this.domConverter.isText( position.parent ) && startsWithFiller( position.parent ) ) {
+		if ( position && isText( position.parent ) && startsWithFiller( position.parent ) ) {
 			return true;
 		}
 
@@ -515,7 +516,7 @@ export default class Renderer {
 				return true;
 			}
 			// Texts.
-			else if ( domConverter.isText( actualDomChild ) && domConverter.isText( expectedDomChild ) ) {
+			else if ( isText( actualDomChild ) && isText( expectedDomChild ) ) {
 				return actualDomChild.data === expectedDomChild.data;
 			}
 			// Block fillers.

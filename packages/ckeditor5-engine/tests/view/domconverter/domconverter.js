@@ -143,19 +143,6 @@ describe( 'DomConverter', () => {
 			comment = document.createComment( 'a' );
 		} );
 
-		describe( 'isText()', () => {
-			it( 'should return true for Text nodes', () => {
-				expect( converter.isText( text ) ).to.be.true;
-			} );
-
-			it( 'should return false for other arguments', () => {
-				expect( converter.isText( element ) ).to.be.false;
-				expect( converter.isText( documentFragment ) ).to.be.false;
-				expect( converter.isText( comment ) ).to.be.false;
-				expect( converter.isText( {} ) ).to.be.false;
-			} );
-		} );
-
 		describe( 'isElement()', () => {
 			it( 'should return true for HTMLElement nodes', () => {
 				expect( converter.isElement( element ) ).to.be.true;
