@@ -2779,7 +2779,7 @@ describe( 'SchemaContext', () => {
 			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ 'a', 'b', 'c' ] );
 		} );
 
-		it( 'creates new SchemaContext instance with new item - #node', () => {
+		it( 'creates new SchemaContext instance with new item - #element', () => {
 			const ctx = new SchemaContext( [ 'a', 'b', 'c' ] );
 			const parent = new Element( 'parent', null, new Element( 'd' ) );
 
@@ -2791,22 +2791,11 @@ describe( 'SchemaContext', () => {
 			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ 'a', 'b', 'c' ] );
 		} );
 
-		it( 'creates new SchemaContext instance with new item - #SchemaContext', () => {
-			const ctx = new SchemaContext( [ 'a', 'b', 'c' ] );
-			const schemaContext = new SchemaContext( [ 'd', 'e' ] );
-
-			const newCtx = ctx.concat( schemaContext );
-
-			expect( newCtx ).to.instanceof( SchemaContext );
-			expect( newCtx ).to.not.equal( ctx );
-			expect( Array.from( newCtx.getNames() ) ).to.deep.equal( [ 'a', 'b', 'c', 'd', 'e' ] );
-			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ 'a', 'b', 'c' ] );
-		} );
-
 		it( 'creates new SchemaContext instance with new item - #array', () => {
 			const ctx = new SchemaContext( [ 'a', 'b', 'c' ] );
+			const parent = new Element( 'parent', null, new Element( 'f' ) );
 
-			const newCtx = ctx.concat( [ 'd', new Text( 'e' ), new Element( 'f' ) ] );
+			const newCtx = ctx.concat( [ 'd', new Text( 'e' ), parent.getChild( 0 ) ] );
 
 			expect( newCtx ).to.instanceof( SchemaContext );
 			expect( newCtx ).to.not.equal( ctx );

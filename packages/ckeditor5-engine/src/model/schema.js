@@ -1166,12 +1166,12 @@ export class SchemaContext {
 	/**
 	 * Returns new SchemaContext instance with additional items created from provided definition.
 	 *
-	 * @param {String|module:engine/model/node~Node|module:engine/model/schema~SchemaContext|
-	 * Array<String|module:engine/model/node~Node>} definition Definition of item(s) that will be added to current context.
+	 * @param {String|module:engine/model/node~Node|Array<String|module:engine/model/node~Node>} definition
+	 * Definition of item(s) that will be added to current context.
 	 * @returns {module:engine/model/schema~SchemaContext} New SchemaContext instance.
 	 */
 	concat( definition ) {
-		if ( !( definition instanceof SchemaContext ) && !Array.isArray( definition ) ) {
+		if ( !Array.isArray( definition ) ) {
 			definition = [ definition ];
 		}
 
