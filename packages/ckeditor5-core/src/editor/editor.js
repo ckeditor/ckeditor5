@@ -126,7 +126,7 @@ export default class Editor {
 		 * @member {module:core/editingkeystrokehandler~EditingKeystrokeHandler}
 		 */
 		this.keystrokes = new EditingKeystrokeHandler( this );
-		this.keystrokes.listenTo( this.editing.view );
+		this.keystrokes.listenTo( this.editing.view.document );
 	}
 
 	/**

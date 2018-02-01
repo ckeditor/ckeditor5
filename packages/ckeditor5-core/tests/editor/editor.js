@@ -154,7 +154,7 @@ describe( 'Editor', () => {
 			const spy = sinon.spy( EditingKeystrokeHandler.prototype, 'listenTo' );
 			const editor = new Editor();
 
-			sinon.assert.calledWith( spy, editor.editing.view );
+			sinon.assert.calledWith( spy, editor.editing.view.document );
 		} );
 	} );
 
