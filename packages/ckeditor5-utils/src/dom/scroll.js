@@ -3,14 +3,13 @@
  * For licensing, see LICENSE.md.
  */
 
-/* global Node */
-
 /**
  * @module utils/dom/scroll
  */
 
 import isRange from './isrange';
 import Rect from './rect';
+import isText from './istext';
 
 const utils = {};
 
@@ -255,7 +254,7 @@ function getParentElement( elementOrRange ) {
 		let parent = elementOrRange.commonAncestorContainer;
 
 		// If a Range is attached to the Text, use the closest element ancestor.
-		if ( parent.nodeType == Node.TEXT_NODE ) {
+		if ( isText( parent ) ) {
 			parent = parent.parentNode;
 		}
 
