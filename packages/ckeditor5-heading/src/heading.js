@@ -46,32 +46,34 @@ export default class Heading extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const dropdownItems = new Collection();
-		const options = this._getLocalizedOptions();
-		const commands = [];
 		const t = editor.t;
+		const options = this._getLocalizedOptions();
 		const defaultTitle = t( 'Choose heading' );
 		const dropdownTooltip = t( 'Heading' );
 
-		for ( const option of options ) {
-			const command = editor.commands.get( option.model );
-			const itemModel = new Model( {
-				commandName: option.model,
-				label: option.title,
-				class: option.class
-			} );
-
-			itemModel.bind( 'isActive' ).to( command, 'value' );
-
-			// Add the option to the collection.
-			dropdownItems.add( itemModel );
-
-			commands.push( command );
-		}
-
 		// Register UI component.
 		editor.ui.componentFactory.add( 'headings', locale => {
+			const commands = [];
+			const dropdownItems = new Collection();
+
+			for ( const option of options ) {
+				const command = editor.commands.get( option.model );
+				const itemModel = new Model( {
+					commandName: option.model,
+					label: option.title,
+					class: option.class
+				} );
+
+				itemModel.bind( 'isActive' ).to( command, 'value' );
+
+				// Add the option to the collection.
+				dropdownItems.add( itemModel );
+
+				commands.push( command );
+			}
+
 			const dropdownView = createDropdown( locale );
+			addListViewToDropdown( dropdownView, dropdownItems );
 
 			dropdownView.set( {
 				isOn: false,
@@ -79,7 +81,13 @@ export default class Heading extends Plugin {
 				tooltip: dropdownTooltip
 			} );
 
-			addListViewToDropdown( dropdownView, dropdownItems );
+			dropdownView.extendTemplate( {
+				attributes: {
+					class: [
+						'ck-heading-dropdown'
+					]
+				}
+			} );
 
 			dropdownView.bind( 'isEnabled' ).toMany( commands, 'isEnabled', ( ...areEnabled ) => {
 				return areEnabled.some( isEnabled => isEnabled );
@@ -90,14 +98,6 @@ export default class Heading extends Plugin {
 
 				// If none of the commands is active, display default title.
 				return options[ index ] ? options[ index ].title : defaultTitle;
-			} );
-
-			dropdownView.extendTemplate( {
-				attributes: {
-					class: [
-						'ck-heading-dropdown'
-					]
-				}
 			} );
 
 			// Execute command when an item from the dropdown is selected.
