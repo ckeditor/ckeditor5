@@ -1165,17 +1165,25 @@ export class SchemaContext {
 	 * Returns new SchemaContext instance with additional items created from provided definition.
 	 * Definition can be:
 	 *
-	 * 		const context = new SchemaContext( element ); // [ 'elementParent', 'element' ]
+	 * 		const context = new SchemaContext( [ '$root' ] );
 	 *
-	 * 		// A node.
-	 * 		const context2 = context.concat( element.getChild( 0 ) ); // [ 'elementParent', 'element', 'elementChild' ]
+	 * 		// An element.
+	 * 		const fooElement = writer.createElement( 'fooElement' );
+	 * 		const newContext = context.concat( fooElement ); // [ '$root', 'fooElement' ]
+	 *
+	 * 		// A text node.
+	 * 		const text = writer.createText( 'foobar' );
+	 * 		const newContext = context.concat( text ); // [ '$root', '$text' ]
 	 *
 	 * 		// A string (element name).
-	 * 		const context3 = context.concat( 'other' ); // [ 'elementParent', 'element', 'other' ]
+	 * 		const newContext = context.concat( 'barElement' ); // [ '$root', 'barElement' ]
 	 *
 	 * 		// An array with above.
-	 * 		const context4 = context
-	 * 			.concat( [ 'other', element.getChild( 0 ) ] ); // [ 'elementParent', 'element', 'other', 'elementChild ]
+	 * 		const fooElement = writer.createElement( 'fooElement' );
+	 * 		const text = writer.createText( 'foobar' );
+	 * 		const newContext = context.concat( [ fooElement, 'barElement', text ] ); // [ '$root', 'fooElement', 'barElement', '$text' ]
+	 *
+	 * **Note** {module:engine/model/node~Node} that is already in the model tree will be added as the only item (without ancestors).
 	 *
 	 * @param {String|module:engine/model/node~Node|Array<String|module:engine/model/node~Node>} definition
 	 * Definition of item(s) that will be added to current context.
