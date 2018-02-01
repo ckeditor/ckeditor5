@@ -75,7 +75,7 @@ export default class Paragraph extends Plugin {
 				// Find allowed parent for paragraph that we are going to insert.
 				// If current parent does not allow to insert paragraph but one of the ancestors does
 				// then split nodes to allowed parent.
-				const splitResult = conversionApi.splitToAllowedParent( paragraph, data.cursorPosition );
+				const splitResult = conversionApi.splitToAllowedParent( paragraph, data.modelCursor );
 
 				// When there is no split result it means that we can't insert paragraph in this position.
 				if ( !splitResult ) {
@@ -92,11 +92,11 @@ export default class Paragraph extends Plugin {
 				// This is because we want to keep siblings inside the same paragraph as long as it is possible.
 				// When next node won't be allowed in a paragraph it will split this paragraph anyway.
 				data.modelRange = new Range( Position.createBefore( paragraph ), modelRange.end );
-				data.cursorPosition = data.modelRange.end;
+				data.modelCursor = data.modelRange.end;
 
 			// When element is not paragraph-like lets try to wrap it by a paragraph.
-			} else if ( isParagraphable( data.viewItem, data.cursorPosition, conversionApi.schema ) ) {
-				data = Object.assign( data, wrapInParagraph( data.viewItem, data.cursorPosition, conversionApi ) );
+			} else if ( isParagraphable( data.viewItem, data.modelCursor, conversionApi.schema ) ) {
+				data = Object.assign( data, wrapInParagraph( data.viewItem, data.modelCursor, conversionApi ) );
 			}
 		}, { priority: 'low' } );
 
@@ -107,8 +107,8 @@ export default class Paragraph extends Plugin {
 				return;
 			}
 
-			if ( isParagraphable( data.viewItem, data.cursorPosition, conversionApi.schema ) ) {
-				data = Object.assign( data, wrapInParagraph( data.viewItem, data.cursorPosition, conversionApi ) );
+			if ( isParagraphable( data.viewItem, data.modelCursor, conversionApi.schema ) ) {
+				data = Object.assign( data, wrapInParagraph( data.viewItem, data.modelCursor, conversionApi ) );
 			}
 		}, { priority: 'lowest' } );
 
