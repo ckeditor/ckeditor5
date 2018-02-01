@@ -18,7 +18,7 @@ import AlignmentUI from './alignmentui';
  * It loads the {@link module:alignment/alignmentediting~AlignmentEditing} and
  * {@link module:alignment/alignmentui~AlignmentUI} plugins.
  *
- * Read more about the feature in the {@glink api/alignment text alignment package} page.
+ * Read more about the feature on the {@glink api/alignment text alignment package} page.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -66,7 +66,7 @@ export default class Alignment extends Plugin {
 /**
  * Available alignment options.
  *
- * The available options are – `'left'`, `'right'`, `'center'` and `'justify'`. Other values are ignored.
+ * The available options are: `'left'`, `'right'`, `'center'` and `'justify'`. Other values are ignored.
  *
  * **Note:** It is recommended to always use `'left'` as it is the default value which the user should
  * normally be able to choose.

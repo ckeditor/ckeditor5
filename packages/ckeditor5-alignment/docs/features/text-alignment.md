@@ -13,7 +13,7 @@ The {@link module:alignment/alignment~Alignment} feature enables support for tex
 
 ## Configuring alignment options
 
-It is possible to configure which alignment options are available in the editor by setting the {@link module:alignment/alignment~AlignmentConfig#options `alignment.options`} configuration option. You can choose from `'left'`, `'right'`, `'center'` and `'justify'`;  note that `'left'` should always be included).
+It is possible to configure which alignment options are available in the editor by setting the {@link module:alignment/alignment~AlignmentConfig#options `alignment.options`} configuration option. You can choose from `'left'`, `'right'`, `'center'` and `'justify'`;  note that `'left'` should always be included.
 
 For example, the following editor will support only two alignment options: to the left and to the right:
 

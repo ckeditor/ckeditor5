@@ -29,7 +29,7 @@ const icons = new Map( [
 ] );
 
 /**
- * The default Alignment UI plugin.
+ * The default alignment UI plugin.
  *
  * It introduces the `'alignLeft'`, `'alignRight'`, `'alignCenter'` and `'alignJustify'` buttons
  * and the `'alignmentDropdown'` drop-down.
