@@ -47,7 +47,7 @@ export default class CKFinderUploadAdapter extends Plugin {
 		}
 
 		// Register CKFinderAdapter
-		this.editor.plugins.get( FileRepository ).createAdapter = loader => new UploadAdapter( loader, url, this.editor.t );
+		this.editor.plugins.get( FileRepository ).createUploadAdapter = loader => new UploadAdapter( loader, url, this.editor.t );
 	}
 }
 

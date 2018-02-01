@@ -50,7 +50,7 @@ describe( 'CKFinderUploadAdapter', () => {
 			file.name = 'image.jpeg';
 			loaderMock = { file	};
 
-			adapter = editor.plugins.get( FileRepository ).createAdapter( loaderMock );
+			adapter = editor.plugins.get( FileRepository ).createUploadAdapter( loaderMock );
 		} );
 
 		it( 'crateAdapter method should be registered and have upload and abort methods', () => {
@@ -59,7 +59,7 @@ describe( 'CKFinderUploadAdapter', () => {
 			expect( adapter.abort ).to.be.a( 'function' );
 		} );
 
-		it( 'should not set the FileRepository.createAdapter factory if not configured', () => {
+		it( 'should not set the FileRepository.createUploadAdapter factory if not configured', () => {
 			const editorElement = document.createElement( 'div' );
 			document.body.appendChild( editorElement );
 
@@ -70,7 +70,7 @@ describe( 'CKFinderUploadAdapter', () => {
 				.then( editor => {
 					const fileRepository = editor.plugins.get( FileRepository );
 
-					expect( fileRepository ).to.not.have.property( 'createAdapter' );
+					expect( fileRepository ).to.not.have.property( 'createUploadAdapter' );
 
 					editorElement.remove();
 
