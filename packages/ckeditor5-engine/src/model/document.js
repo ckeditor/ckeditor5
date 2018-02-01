@@ -13,7 +13,6 @@ import Position from './position';
 import RootElement from './rootelement';
 import History from './history';
 import DocumentSelection from './documentselection';
-import TreeWalker from './treewalker';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import clone from '@ckeditor/ckeditor5-utils/src/lib/lodash/clone';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
@@ -249,59 +248,6 @@ export default class Document {
 	}
 
 	/**
-	 * Basing on given `position`, finds and returns a {@link module:engine/model/range~Range Range} instance that is
-	 * nearest to that `position` and is a correct range for selection.
-	 *
-	 * Correct selection range might be collapsed - when it's located in position where text node can be placed.
-	 * Non-collapsed range is returned when selection can be placed around element marked as "object" in
-	 * {@link module:engine/model/schema~Schema schema}.
-	 *
-	 * Direction of searching for nearest correct selection range can be specified as:
-	 * * `both` - searching will be performed in both ways,
-	 * * `forward` - searching will be performed only forward,
-	 * * `backward` - searching will be performed only backward.
-	 *
-	 * When valid selection range cannot be found, `null` is returned.
-	 *
-	 * @param {module:engine/model/position~Position} position Reference position where new selection range should be looked for.
-	 * @param {'both'|'forward'|'backward'} [direction='both'] Search direction.
-	 * @returns {module:engine/model/range~Range|null} Nearest selection range or `null` if one cannot be found.
-	 */
-	getNearestSelectionRange( position, direction = 'both' ) {
-		const schema = this.model.schema;
-
-		// Return collapsed range if provided position is valid.
-		if ( schema.checkChild( position, '$text' ) ) {
-			return new Range( position );
-		}
-
-		let backwardWalker, forwardWalker;
-
-		if ( direction == 'both' || direction == 'backward' ) {
-			backwardWalker = new TreeWalker( { startPosition: position, direction: 'backward' } );
-		}
-
-		if ( direction == 'both' || direction == 'forward' ) {
-			forwardWalker = new TreeWalker( { startPosition: position } );
-		}
-
-		for ( const data of combineWalkers( backwardWalker, forwardWalker ) ) {
-			const type = ( data.walker == backwardWalker ? 'elementEnd' : 'elementStart' );
-			const value = data.value;
-
-			if ( value.type == type && schema.isObject( value.item ) ) {
-				return Range.createOn( value.item );
-			}
-
-			if ( schema.checkChild( value.nextPosition, '$text' ) ) {
-				return new Range( value.nextPosition );
-			}
-		}
-
-		return null;
-	}
-
-	/**
 	 * Used to register a post-fixer callback. Post-fixers mechanism guarantees that the features that listen to
 	 * {@link module:engine/model/model~Model#event:_change model's change event} will operate on a correct model state.
 	 *
@@ -380,10 +326,11 @@ export default class Document {
 	 */
 	_getDefaultRange() {
 		const defaultRoot = this._getDefaultRoot();
+		const schema = this.model.schema;
 
 		// Find the first position where the selection can be put.
 		const position = new Position( defaultRoot, [ 0 ] );
-		const nearestRange = this.getNearestSelectionRange( position );
+		const nearestRange = schema.getNearestSelectionRange( position );
 
 		// If valid selection range is not found - return range collapsed at the beginning of the root.
 		return nearestRange || new Range( position );
@@ -445,43 +392,4 @@ function validateTextNodePosition( rangeBoundary ) {
 	}
 
 	return true;
-}
-
-// Generator function returning values from provided walkers, switching between them at each iteration. If only one walker
-// is provided it will return data only from that walker.
-//
-// @param {module:engine/module/treewalker~TreeWalker} [backward] Walker iterating in backward direction.
-// @param {module:engine/module/treewalker~TreeWalker} [forward] Walker iterating in forward direction.
-// @returns {Iterable.<Object>} Object returned at each iteration contains `value` and `walker` (informing which walker returned
-// given value) fields.
-function* combineWalkers( backward, forward ) {
-	let done = false;
-
-	while ( !done ) {
-		done = true;
-
-		if ( backward ) {
-			const step = backward.next();
-
-			if ( !step.done ) {
-				done = false;
-				yield {
-					walker: backward,
-					value: step.value
-				};
-			}
-		}
-
-		if ( forward ) {
-			const step = forward.next();
-
-			if ( !step.done ) {
-				done = false;
-				yield {
-					walker: forward,
-					value: step.value
-				};
-			}
-		}
-	}
 }

@@ -14,6 +14,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import Range from './range';
 import Position from './position';
 import Element from './element';
+import TreeWalker from './treewalker';
 
 /**
  * The model's schema. It defines allowed and disallowed structures of nodes as well as nodes' attributes.
@@ -375,8 +376,9 @@ export default class Schema {
 	 *		schema.checkChild( model.document.getRoot(), paragraph ); // -> true
 	 *
 	 * @fires checkChild
-	 * @param {module:engine/model/schema~SchemaContextDefinition} context Context in which the child will be checked.
-	 * @param {module:engine/model/node~Node|String} child The child to check.
+	 * @param {module:engine/model/schema~SchemaContextDefinition|module:engine/model/schema~SchemaContext} context
+	 * Context in which the child will be checked.
+	 * @param {module:engine/model/node~Node|String} def The child to check.
 	 */
 	checkChild( context, def ) {
 		// Note: context and child are already normalized here to a SchemaContext and SchemaCompiledItemDefinition.
@@ -399,7 +401,8 @@ export default class Schema {
 	 *		schema.checkAttribute( textNode, 'bold' ); // -> true
 	 *
 	 * @fires checkAttribute
-	 * @param {module:engine/model/schema~SchemaContextDefinition} context
+	 * @param {module:engine/model/schema~SchemaContextDefinition|module:engine/model/schema~SchemaContext} context
+	 * Context in which the attribute will be checked.
 	 * @param {String} attributeName
 	 */
 	checkAttribute( context, attributeName ) {
@@ -665,6 +668,84 @@ export default class Schema {
 		}
 
 		return validRanges;
+	}
+
+	/**
+	 * Basing on given `position`, finds and returns a {@link module:engine/model/range~Range Range} instance that is
+	 * nearest to that `position` and is a correct range for selection.
+	 *
+	 * Correct selection range might be collapsed - when it's located in position where text node can be placed.
+	 * Non-collapsed range is returned when selection can be placed around element marked as "object" in
+	 * {@link module:engine/model/schema~Schema schema}.
+	 *
+	 * Direction of searching for nearest correct selection range can be specified as:
+	 * * `both` - searching will be performed in both ways,
+	 * * `forward` - searching will be performed only forward,
+	 * * `backward` - searching will be performed only backward.
+	 *
+	 * When valid selection range cannot be found, `null` is returned.
+	 *
+	 * @param {module:engine/model/position~Position} position Reference position where new selection range should be looked for.
+	 * @param {'both'|'forward'|'backward'} [direction='both'] Search direction.
+	 * @returns {module:engine/model/range~Range|null} Nearest selection range or `null` if one cannot be found.
+	 */
+	getNearestSelectionRange( position, direction = 'both' ) {
+		// Return collapsed range if provided position is valid.
+		if ( this.checkChild( position, '$text' ) ) {
+			return new Range( position );
+		}
+
+		let backwardWalker, forwardWalker;
+
+		if ( direction == 'both' || direction == 'backward' ) {
+			backwardWalker = new TreeWalker( { startPosition: position, direction: 'backward' } );
+		}
+
+		if ( direction == 'both' || direction == 'forward' ) {
+			forwardWalker = new TreeWalker( { startPosition: position } );
+		}
+
+		for ( const data of combineWalkers( backwardWalker, forwardWalker ) ) {
+			const type = ( data.walker == backwardWalker ? 'elementEnd' : 'elementStart' );
+			const value = data.value;
+
+			if ( value.type == type && this.isObject( value.item ) ) {
+				return Range.createOn( value.item );
+			}
+
+			if ( this.checkChild( value.nextPosition, '$text' ) ) {
+				return new Range( value.nextPosition );
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Tries to find position ancestors that allows to insert given node.
+	 * It starts searching from the given position and goes node by node to the top of the model tree
+	 * as long as {@link module:engine/model/schema~Schema#isLimit limit element} or top-most ancestor won't be reached.
+	 *
+	 * @params {module:engine/model/node~Node} node Node for which allowed parent should be found.
+	 * @params {module:engine/model/position~Position} position Position from searching will start.
+	 * @returns {module:engine/model/element~Element|null} element Allowed parent or null if nothing was found.
+	 */
+	findAllowedParent( node, position ) {
+		let parent = position.parent;
+
+		while ( parent ) {
+			if ( this.checkChild( parent, node ) ) {
+				return parent;
+			}
+
+			if ( this.isLimit( parent ) ) {
+				return null;
+			}
+
+			parent = parent.parent;
+		}
+
+		return null;
 	}
 
 	/**
@@ -1033,22 +1114,21 @@ export class SchemaContext {
 	/**
 	 * Creates an instance of the context.
 	 *
-	 * @param {module:engine/model/schema~SchemaContextDefinition} context
+	 * @param {module:engine/model/schema~SchemaContextDefinition|module:engine/model/schema~SchemaContext} context
 	 */
 	constructor( context ) {
-		if ( Array.isArray( context ) ) {
-			if ( context[ 0 ] && typeof context[ 0 ] != 'string' && context[ 0 ].is( 'documentFragment' ) ) {
-				context.shift();
-			}
+		if ( context instanceof SchemaContext ) {
+			return context;
 		}
-		else {
+
+		if ( !Array.isArray( context ) ) {
 			// `context` is item or position.
 			// Position#getAncestors() doesn't accept any parameters but it works just fine here.
 			context = context.getAncestors( { includeSelf: true } );
+		}
 
-			if ( context[ 0 ].is( 'documentFragment' ) ) {
-				context.shift();
-			}
+		if ( context[ 0 ] && typeof context[ 0 ] != 'string' && context[ 0 ].is( 'documentFragment' ) ) {
+			context.shift();
 		}
 
 		this._items = context.map( mapContextItem );
@@ -1081,6 +1161,25 @@ export class SchemaContext {
 	 */
 	[ Symbol.iterator ]() {
 		return this._items[ Symbol.iterator ]();
+	}
+
+	/**
+	 * Returns new SchemaContext instance with additional items created from provided definition.
+	 *
+	 * @param {String|module:engine/model/node~Node|module:engine/model/schema~SchemaContext|
+	 * Array<String|module:engine/model/node~Node>} definition Definition of item(s) that will be added to current context.
+	 * @returns {module:engine/model/schema~SchemaContext} New SchemaContext instance.
+	 */
+	concat( definition ) {
+		if ( !( definition instanceof SchemaContext ) && !Array.isArray( definition ) ) {
+			definition = [ definition ];
+		}
+
+		const ctx = new SchemaContext( definition );
+
+		ctx._items = [ ...this._items, ...ctx._items ];
+
+		return ctx;
 	}
 
 	/**
@@ -1382,5 +1481,44 @@ function mapContextItem( ctxItem ) {
 				return ctxItem.getAttribute( key );
 			}
 		};
+	}
+}
+
+// Generator function returning values from provided walkers, switching between them at each iteration. If only one walker
+// is provided it will return data only from that walker.
+//
+// @param {module:engine/module/treewalker~TreeWalker} [backward] Walker iterating in backward direction.
+// @param {module:engine/module/treewalker~TreeWalker} [forward] Walker iterating in forward direction.
+// @returns {Iterable.<Object>} Object returned at each iteration contains `value` and `walker` (informing which walker returned
+// given value) fields.
+function* combineWalkers( backward, forward ) {
+	let done = false;
+
+	while ( !done ) {
+		done = true;
+
+		if ( backward ) {
+			const step = backward.next();
+
+			if ( !step.done ) {
+				done = false;
+				yield {
+					walker: backward,
+					value: step.value
+				};
+			}
+		}
+
+		if ( forward ) {
+			const step = forward.next();
+
+			if ( !step.done ) {
+				done = false;
+				yield {
+					walker: forward,
+					value: step.value
+				};
+			}
+		}
 	}
 }

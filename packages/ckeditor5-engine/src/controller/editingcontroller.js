@@ -28,14 +28,14 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
  * Controller for the editing pipeline. The editing pipeline controls {@link ~EditingController#model model} rendering,
- * including selection handling. It also creates {@link ~EditingController#view view document} which build a
- * browser-independent virtualization over the DOM elements. Editing controller also attach default converters.
+ * including selection handling. It also creates the {@link ~EditingController#view view document} which builds a
+ * browser-independent virtualization over the DOM elements. The editing controller also attaches default converters.
  *
  * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class EditingController {
 	/**
-	 * Creates editing controller instance.
+	 * Creates an editing controller instance.
 	 *
 	 * @param {module:engine/model/model~Model} model Editing model.
 	 */
@@ -57,7 +57,7 @@ export default class EditingController {
 		this.view = new View();
 
 		/**
-		 * Mapper which describes model-view binding.
+		 * Mapper which describes the model-view binding.
 		 *
 		 * @readonly
 		 * @member {module:engine/conversion/mapper~Mapper}
@@ -65,9 +65,9 @@ export default class EditingController {
 		this.mapper = new Mapper();
 
 		/**
-		 * Model to view conversion dispatcher, which converts changes from the model to {@link #view the editing view}.
+		 * Model-to-view conversion dispatcher that converts changes from the model to {@link #view the editing view}.
 		 *
-		 * To attach model-to-view converter to the editing pipeline you need to add a listener to this dispatcher:
+		 * To attach the model-to-view converter to the editing pipeline you need to add a listener to this dispatcher:
 		 *
 		 *		editing.modelToView( 'insert:$element', customInsertConverter );
 		 *

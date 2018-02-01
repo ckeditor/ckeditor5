@@ -23,7 +23,6 @@ import ViewConversionDispatcher from '../../src/conversion/viewconversiondispatc
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 import { convertToModelFragment, convertText } from '../../src/conversion/view-to-model-converters';
-import { stringify } from '../../src/dev-utils/model';
 
 function modelAttributesToString( item ) {
 	let result = '';
@@ -63,13 +62,13 @@ const textAttributes = [ 'linkHref', 'linkTitle', 'bold', 'italic', 'style' ];
 const pAttributes = [ 'class', 'important', 'theme', 'decorated', 'size' ];
 
 describe( 'View converter builder', () => {
-	let dispatcher, model, schema, additionalData;
+	let dispatcher, model, schema, context;
 
 	beforeEach( () => {
 		model = new Model();
 
-		// `additionalData` parameter for `.convert` calls.
-		additionalData = { context: [ '$root' ] };
+		// `context` parameter for `.convert` calls.
+		context = [ '$root' ];
 
 		schema = model.schema;
 
@@ -111,7 +110,7 @@ describe( 'View converter builder', () => {
 	it( 'should convert from view element to model element', () => {
 		buildViewConverter().for( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
 
-		const conversionResult = dispatcher.convert( new ViewContainerElement( 'p', null, new ViewText( 'foo' ) ), additionalData );
+		const conversionResult = dispatcher.convert( new ViewContainerElement( 'p', null, new ViewText( 'foo' ) ) );
 
 		expect( modelToString( conversionResult ) ).to.equal( '<paragraph>foo</paragraph>' );
 	} );
@@ -121,16 +120,52 @@ describe( 'View converter builder', () => {
 			.fromElement( 'img' )
 			.toElement( viewElement => new ModelElement( 'image', { src: viewElement.getAttribute( 'src' ) } ) );
 
-		const conversionResult = dispatcher.convert( new ViewContainerElement( 'img', { src: 'foo.jpg' } ), additionalData );
+		const conversionResult = dispatcher.convert( new ViewContainerElement( 'img', { src: 'foo.jpg' } ), context );
 
 		expect( modelToString( conversionResult ) ).to.equal( '<image src="foo.jpg"></image>' );
+	} );
+
+	it( 'should convert to model element when element children are not allowed in parent (empty split elements should be removed)', () => {
+		schema.register( 'section', {
+			inheritAllFrom: '$block'
+		} );
+
+		buildViewConverter().for( dispatcher )
+			.fromElement( 'p' )
+			.toElement( 'paragraph' );
+
+		buildViewConverter().for( dispatcher )
+			.fromElement( 'section' )
+			.toElement( 'section' );
+
+		const input = new ViewContainerElement( 'p', null, [
+			new ViewText( 'foo' ),
+			new ViewContainerElement( 'section', null, [
+				new ViewContainerElement( 'p', null, [
+					new ViewText( 'abc' ),
+					new ViewContainerElement( 'section' ),
+					new ViewText( 'cde' ),
+				] )
+			] ),
+			new ViewText( 'bar' ),
+		] );
+
+		const conversionResult = dispatcher.convert( input );
+
+		expect( modelToString( conversionResult ) ).to.equal(
+			'<paragraph>foo</paragraph>' +
+			'<paragraph>abc</paragraph>' +
+			'<section></section>' +
+			'<paragraph>cde</paragraph>' +
+			'<paragraph>bar</paragraph>'
+		);
 	} );
 
 	it( 'should convert from view element to model attribute', () => {
 		buildViewConverter().for( dispatcher ).fromElement( 'strong' ).toAttribute( 'bold', true );
 
 		const conversionResult = dispatcher.convert(
-			new ViewAttributeElement( 'strong', null, new ViewText( 'foo' ) ), additionalData
+			new ViewAttributeElement( 'strong', null, new ViewText( 'foo' ) ), context
 		);
 
 		// Have to check root because result is a ModelText.
@@ -143,7 +178,7 @@ describe( 'View converter builder', () => {
 			.toAttribute( viewElement => ( { key: 'linkHref', value: viewElement.getAttribute( 'href' ) } ) );
 
 		const conversionResult = dispatcher.convert(
-			new ViewAttributeElement( 'a', { href: 'foo.html' }, new ViewText( 'foo' ) ), additionalData
+			new ViewAttributeElement( 'a', { href: 'foo.html' }, new ViewText( 'foo' ) ), context
 		);
 
 		// Have to check root because result is a ModelText.
@@ -158,7 +193,7 @@ describe( 'View converter builder', () => {
 			.toAttribute( viewElement => ( { key: 'class', value: viewElement.getAttribute( 'class' ) } ) );
 
 		const conversionResult = dispatcher.convert(
-			new ViewContainerElement( 'p', { class: 'myClass' }, new ViewText( 'foo' ) ), additionalData
+			new ViewContainerElement( 'p', { class: 'myClass' }, new ViewText( 'foo' ) ), context
 		);
 
 		expect( modelToString( conversionResult ) ).to.equal( '<paragraph class="myClass">foo</paragraph>' );
@@ -180,7 +215,7 @@ describe( 'View converter builder', () => {
 			new ViewContainerElement( 'p', { 'data-type': 'foo' }, new ViewText( 'xyz' ) )
 		] );
 
-		const conversionResult = dispatcher.convert( viewStructure, additionalData );
+		const conversionResult = dispatcher.convert( viewStructure, context );
 
 		expect( modelToString( conversionResult ) ).to.equal(
 			'<paragraph important="true">foo</paragraph>' +
@@ -206,7 +241,7 @@ describe( 'View converter builder', () => {
 			new ViewContainerElement( 'span', { style: 'font-weight:bold; font-size:20px' }, new ViewText( 'ddd' ) )
 		] );
 
-		const conversionResult = dispatcher.convert( viewElement, additionalData );
+		const conversionResult = dispatcher.convert( viewElement, context );
 
 		expect( modelToString( conversionResult ) ).to.equal( '<paragraph><$text bold="true">aaabbbcccddd</$text></paragraph>' );
 	} );
@@ -223,12 +258,13 @@ describe( 'View converter builder', () => {
 			new ViewText( 'r' )
 		] );
 
-		const conversionResult = dispatcher.convert( viewElement, additionalData );
+		const conversionResult = dispatcher.convert( viewElement, context );
 
 		const markerSearch = conversionResult.markers.get( 'search' );
 
 		expect( conversionResult.markers.size ).to.equal( 1 );
-		expect( stringify( conversionResult, markerSearch ) ).to.equal( '<paragraph>Fo[o ba]r</paragraph>' );
+		expect( markerSearch.start.path ).to.deep.equal( [ 0, 2 ] );
+		expect( markerSearch.end.path ).to.deep.equal( [ 0, 6 ] );
 	} );
 
 	it( 'should convert from element to marker using creator function', () => {
@@ -245,12 +281,13 @@ describe( 'View converter builder', () => {
 			new ViewText( 'r' )
 		] );
 
-		const conversionResult = dispatcher.convert( viewElement, additionalData );
+		const conversionResult = dispatcher.convert( viewElement, context );
 
 		const markerSearch = conversionResult.markers.get( 'search' );
 
 		expect( conversionResult.markers.size ).to.equal( 1 );
-		expect( stringify( conversionResult, markerSearch ) ).to.equal( '<paragraph>Fo[o ba]r</paragraph>' );
+		expect( markerSearch.start.path ).to.deep.equal( [ 0, 2 ] );
+		expect( markerSearch.end.path ).to.deep.equal( [ 0, 6 ] );
 	} );
 
 	it( 'should convert from multiple view entities to marker', () => {
@@ -271,16 +308,16 @@ describe( 'View converter builder', () => {
 			new ViewText( 'r' )
 		] );
 
-		const conversionResult = dispatcher.convert( viewElement, additionalData );
+		const conversionResult = dispatcher.convert( viewElement );
 
 		const marker1 = conversionResult.markers.get( 'marker1' );
 		const marker2 = conversionResult.markers.get( 'marker2' );
 		const marker3 = conversionResult.markers.get( 'marker3' );
 
 		expect( conversionResult.markers.size ).to.equal( 3 );
-		expect( stringify( conversionResult, marker1 ) ).to.equal( '<paragraph>Fo[]o bar</paragraph>' );
-		expect( stringify( conversionResult, marker2 ) ).to.equal( '<paragraph>Foo b[]ar</paragraph>' );
-		expect( stringify( conversionResult, marker3 ) ).to.equal( '<paragraph>Foo ba[]r</paragraph>' );
+		expect( marker1.start.path ).to.deep.equal( marker1.end.path ).to.deep.equal( [ 0, 2 ] );
+		expect( marker2.start.path ).to.deep.equal( marker2.end.path ).to.deep.equal( [ 0, 5 ] );
+		expect( marker3.start.path ).to.deep.equal( marker3.end.path ).to.deep.equal( [ 0, 6 ] );
 	} );
 
 	it( 'should do nothing when there is no element matching to marker pattern', () => {
@@ -288,7 +325,7 @@ describe( 'View converter builder', () => {
 
 		const element = new ViewAttributeElement( 'span' );
 
-		const result = dispatcher.convert( element, additionalData );
+		const result = dispatcher.convert( element );
 
 		expect( result ).to.be.instanceof( ModelDocumentFragment );
 		expect( result.childCount ).to.equal( 0 );
@@ -300,7 +337,7 @@ describe( 'View converter builder', () => {
 		const element = new ViewAttributeElement( 'marker', { class: 'search' } );
 
 		expect( () => {
-			dispatcher.convert( element, additionalData );
+			dispatcher.convert( element, context );
 		} ).to.throw( CKEditorError, /^build-view-converter-invalid-marker/ );
 	} );
 
@@ -312,7 +349,7 @@ describe( 'View converter builder', () => {
 		const element = new ViewAttributeElement( 'marker', { 'data-name': 'search' } );
 
 		expect( () => {
-			dispatcher.convert( element, additionalData );
+			dispatcher.convert( element, context );
 		} ).to.throw( CKEditorError, /^build-view-converter-invalid-marker/ );
 	} );
 
@@ -324,7 +361,7 @@ describe( 'View converter builder', () => {
 		const element = new ViewAttributeElement( 'marker', { 'data-name': 'search' } );
 
 		expect( () => {
-			dispatcher.convert( element, additionalData );
+			dispatcher.convert( element, context );
 		} ).to.throw( CKEditorError, /^build-view-converter-invalid-marker/ );
 	} );
 
@@ -341,7 +378,7 @@ describe( 'View converter builder', () => {
 
 		// Not quite megatron.
 		result = dispatcher.convert(
-			new ViewContainerElement( 'span', { class: 'megatron' }, new ViewText( 'foo' ) ), additionalData
+			new ViewContainerElement( 'span', { class: 'megatron' }, new ViewText( 'foo' ) ), context
 		);
 
 		expect( modelToString( result ) ).to.equal( '<span>foo</span>' );
@@ -349,7 +386,7 @@ describe( 'View converter builder', () => {
 		// Almost a megatron. Missing a head.
 		result = dispatcher.convert(
 			new ViewContainerElement( 'span', { class: 'megatron', body: 'megatron', legs: 'megatron' }, new ViewText( 'foo' ) ),
-			additionalData
+			context
 		);
 
 		expect( modelToString( result ) ).to.equal( '<span>foo</span>' );
@@ -361,7 +398,7 @@ describe( 'View converter builder', () => {
 				{ class: 'megatron', body: 'megatron', legs: 'megatron', head: 'megatron' },
 				new ViewText( 'foo' )
 			),
-			additionalData
+			context
 		);
 
 		expect( modelToString( result ) ).to.equal( '<paragraph>foo</paragraph>' );
@@ -373,7 +410,7 @@ describe( 'View converter builder', () => {
 				{ class: 'megatron', body: 'megatron', legs: 'megatron', head: 'megatron' },
 				new ViewText( 'foo' )
 			),
-			additionalData
+			context
 		);
 
 		expect( modelToString( result ) ).to.equal( '<MEGATRON>foo</MEGATRON>' );
@@ -393,7 +430,7 @@ describe( 'View converter builder', () => {
 			new ViewText( 'foo' )
 		);
 
-		const conversionResult = dispatcher.convert( viewElement, additionalData );
+		const conversionResult = dispatcher.convert( viewElement, context );
 
 		expect( modelToString( conversionResult ) ).to.equal( '<span transformer="megatron">foo</span>' );
 	} );
@@ -403,7 +440,7 @@ describe( 'View converter builder', () => {
 
 		const viewElement = new ViewAttributeElement( 'strong', null, new ViewText( 'foo' ) );
 
-		const conversionResult = dispatcher.convert( viewElement, additionalData );
+		const conversionResult = dispatcher.convert( viewElement, context );
 
 		expect( conversionResult.is( 'documentFragment' ) ).to.be.true;
 	} );
@@ -415,7 +452,7 @@ describe( 'View converter builder', () => {
 		buildViewConverter().for( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
 
 		const conversionResult = dispatcher.convert(
-			new ViewContainerElement( 'p', { class: 'myClass' }, new ViewText( 'foo' ) ), additionalData
+			new ViewContainerElement( 'p', { class: 'myClass' }, new ViewText( 'foo' ) ), context
 		);
 
 		// Element converter was fired first even though attribute converter was added first.
@@ -431,7 +468,7 @@ describe( 'View converter builder', () => {
 		let result;
 
 		result = dispatcher.convert(
-			new ViewContainerElement( 'p', { class: 'myClass' }, new ViewText( 'foo' ) ), additionalData
+			new ViewContainerElement( 'p', { class: 'myClass' }, new ViewText( 'foo' ) ), context
 		);
 
 		expect( modelToString( result ) ).to.equal( '<paragraph class="myClass">foo</paragraph>' );
@@ -441,7 +478,7 @@ describe( 'View converter builder', () => {
 			.toElement( 'customP' );
 
 		result = dispatcher.convert(
-			new ViewContainerElement( 'p', { class: 'myClass' }, new ViewText( 'foo' ) ), additionalData
+			new ViewContainerElement( 'p', { class: 'myClass' }, new ViewText( 'foo' ) ), context
 		);
 
 		expect( modelToString( result ) ).to.equal( '<customP>foo</customP>' );
@@ -462,7 +499,7 @@ describe( 'View converter builder', () => {
 			.toAttribute( 'size', 'small' );
 
 		const viewElement = new ViewContainerElement( 'p', { class: 'decorated small' }, new ViewText( 'foo' ) );
-		const conversionResult = dispatcher.convert( viewElement, additionalData );
+		const conversionResult = dispatcher.convert( viewElement, context );
 
 		// P element and it's children got converted by the converter (1) and the converter (1) got fired
 		// because P name was not consumed in converter (2). Converter (3) could consume class="small" because
@@ -485,7 +522,7 @@ describe( 'View converter builder', () => {
 			new ViewContainerElement( 'abcd', null, new ViewText( 'foo' ) )
 		] );
 
-		const conversionResult = dispatcher.convert( viewStructure, additionalData );
+		const conversionResult = dispatcher.convert( viewStructure, context );
 
 		expect( modelToString( conversionResult ) ).to.equal( '<div class="myClass"><abcd>foo</abcd></div>' );
 	} );
@@ -509,37 +546,34 @@ describe( 'View converter builder', () => {
 			)
 		);
 
-		const conversionResult = dispatcher.convert( viewElement, additionalData );
+		const conversionResult = dispatcher.convert( viewElement, context );
 
 		expect( modelToString( conversionResult ) ).to.equal( '<paragraph>foo</paragraph>' );
 	} );
 
-	// TMP We can't make this test work for now.
-	// See https://github.com/ckeditor/ckeditor5-engine/issues/1213#issuecomment-354454906
-	//
-	// it( 'should filter out structure that is wrong with schema - attributes', () => {
-	// 	buildViewConverter().for( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
-	// 	buildViewConverter().for( dispatcher ).fromElement( 'strong' ).toAttribute( 'bold', true );
+	it( 'should filter out structure that is wrong with schema - attributes', () => {
+		buildViewConverter().for( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
+		buildViewConverter().for( dispatcher ).fromElement( 'strong' ).toAttribute( 'bold', true );
 
-	// 	// Disallow bold in paragraph>$text.
-	// 	schema.addAttributeCheck( ( ctx, attributeName ) => {
-	// 		if ( ctx.endsWith( 'paragraph $text' ) && attributeName == 'bold' ) {
-	// 			return false;
-	// 		}
-	// 	} );
+		// Disallow bold in paragraph>$text.
+		schema.addAttributeCheck( ( ctx, attributeName ) => {
+			if ( ctx.endsWith( 'paragraph $text' ) && attributeName == 'bold' ) {
+				return false;
+			}
+		} );
 
-	// 	dispatcher.on( 'element', convertToModelFragment(), { priority: 'lowest' } );
+		dispatcher.on( 'element', convertToModelFragment(), { priority: 'lowest' } );
 
-	// 	const viewElement = new ViewContainerElement( 'p', null,
-	// 		new ViewAttributeElement( 'strong', null,
-	// 			new ViewText( 'foo' )
-	// 		)
-	// 	);
+		const viewElement = new ViewContainerElement( 'p', null,
+			new ViewAttributeElement( 'strong', null,
+				new ViewText( 'foo' )
+			)
+		);
 
-	// 	const conversionResult = dispatcher.convert( viewElement, additionalData );
+		const conversionResult = dispatcher.convert( viewElement, context );
 
-	// 	expect( modelToString( conversionResult ) ).to.equal( '<paragraph>foo</paragraph>' );
-	// } );
+		expect( modelToString( conversionResult ) ).to.equal( '<paragraph>foo</paragraph>' );
+	} );
 
 	it( 'should not set attribute when it is not allowed', () => {
 		buildViewConverter().for( dispatcher ).fromElement( 'p' ).toElement( 'paragraph' );
@@ -551,7 +585,7 @@ describe( 'View converter builder', () => {
 			)
 		);
 
-		const conversionResult = dispatcher.convert( viewElement, additionalData );
+		const conversionResult = dispatcher.convert( viewElement, context );
 
 		expect( modelToString( conversionResult ) ).to.equal( '<paragraph>foo</paragraph>' );
 	} );
@@ -565,11 +599,11 @@ describe( 'View converter builder', () => {
 			} );
 
 		const viewElement = new ViewContainerElement( 'p' );
-		let conversionResult = dispatcher.convert( viewElement, additionalData );
+		let conversionResult = dispatcher.convert( viewElement, context );
 		expect( modelToString( conversionResult ) ).to.equal( '<paragraph></paragraph>' );
 
 		viewElement.setAttribute( 'stop', true );
-		conversionResult = dispatcher.convert( viewElement, additionalData );
+		conversionResult = dispatcher.convert( viewElement, context );
 
 		expect( conversionResult ).to.be.instanceof( ModelDocumentFragment );
 		expect( conversionResult.childCount ).to.equal( 0 );
@@ -587,11 +621,11 @@ describe( 'View converter builder', () => {
 		} );
 
 		const viewElement = new ViewContainerElement( 'p', { 'data-type': 'foo' } );
-		let conversionResult = dispatcher.convert( viewElement, additionalData );
+		let conversionResult = dispatcher.convert( viewElement, context );
 		expect( modelToString( conversionResult ) ).to.equal( '<paragraph type="foo"></paragraph>' );
 
 		viewElement.setAttribute( 'data-type', 'stop' );
-		conversionResult = dispatcher.convert( viewElement, additionalData );
+		conversionResult = dispatcher.convert( viewElement, context );
 		expect( modelToString( conversionResult ) ).to.equal( '<paragraph></paragraph>' );
 	} );
 } );

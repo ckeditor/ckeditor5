@@ -95,14 +95,14 @@ function viewToString( item ) {
 }
 
 describe( 'definition-based-converters', () => {
-	let model, dispatcher, modelDoc, modelRoot, viewRoot, controller, additionalData, schema;
+	let model, dispatcher, modelDoc, modelRoot, viewRoot, controller, context, schema;
 
 	beforeEach( () => {
 		model = new Model();
 	} );
 
 	function setupViewToModelTests() {
-		additionalData = { context: [ '$root' ] };
+		context = [ '$root' ];
 		schema = model.schema;
 		dispatcher = new ViewConversionDispatcher( model, { schema } );
 	}
@@ -229,7 +229,7 @@ describe( 'definition-based-converters', () => {
 				viewToModelAttribute( 'foo', { model: 'bar', view: 'strong' }, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
-					new ViewAttributeElement( 'strong', null, new ViewText( 'foo' ) ), additionalData
+					new ViewAttributeElement( 'strong', null, new ViewText( 'foo' ) ), context
 				);
 
 				expect( modelToString( conversionResult ) ).to.equal( '<$text foo="bar">foo</$text>' );
@@ -239,7 +239,7 @@ describe( 'definition-based-converters', () => {
 				viewToModelAttribute( 'foo', { model: 'bar', view: { name: 'strong' } }, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
-					new ViewAttributeElement( 'strong', null, new ViewText( 'foo' ) ), additionalData
+					new ViewAttributeElement( 'strong', null, new ViewText( 'foo' ) ), context
 				);
 
 				expect( modelToString( conversionResult ) ).to.equal( '<$text foo="bar">foo</$text>' );
@@ -249,7 +249,7 @@ describe( 'definition-based-converters', () => {
 				viewToModelAttribute( 'foo', { model: 'bar', view: { name: 'span', class: 'foo' } }, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
-					new ViewAttributeElement( 'span', { class: 'foo' }, new ViewText( 'foo' ) ), additionalData
+					new ViewAttributeElement( 'span', { class: 'foo' }, new ViewText( 'foo' ) ), context
 				);
 
 				expect( modelToString( conversionResult ) ).to.equal( '<$text foo="bar">foo</$text>' );
@@ -262,7 +262,7 @@ describe( 'definition-based-converters', () => {
 				}, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
-					new ViewAttributeElement( 'span', { class: 'foo bar' }, new ViewText( 'foo' ) ), additionalData
+					new ViewAttributeElement( 'span', { class: 'foo bar' }, new ViewText( 'foo' ) ), context
 				);
 
 				expect( modelToString( conversionResult ) ).to.equal( '<$text foo="bar">foo</$text>' );
@@ -275,7 +275,7 @@ describe( 'definition-based-converters', () => {
 				}, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
-					new ViewAttributeElement( 'span', { style: 'font-weight:bold' }, new ViewText( 'foo' ) ), additionalData
+					new ViewAttributeElement( 'span', { style: 'font-weight:bold' }, new ViewText( 'foo' ) ), context
 				);
 
 				expect( modelToString( conversionResult ) ).to.equal( '<$text foo="bar">foo</$text>' );
@@ -288,7 +288,7 @@ describe( 'definition-based-converters', () => {
 				}, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
-					new ViewAttributeElement( 'span', { 'data-foo': 'bar' }, new ViewText( 'foo' ) ), additionalData
+					new ViewAttributeElement( 'span', { 'data-foo': 'bar' }, new ViewText( 'foo' ) ), context
 				);
 
 				expect( modelToString( conversionResult ) ).to.equal( '<$text foo="bar">foo</$text>' );
@@ -305,7 +305,7 @@ describe( 'definition-based-converters', () => {
 				}, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
-					new ViewAttributeElement( 'span', { 'data-foo': 'bar' }, new ViewText( 'foo' ) ), additionalData
+					new ViewAttributeElement( 'span', { 'data-foo': 'bar' }, new ViewText( 'foo' ) ), context
 				);
 
 				expect( modelToString( conversionResult ) ).to.equal( '<$text foo="bar">foo</$text>' );
@@ -316,7 +316,7 @@ describe( 'definition-based-converters', () => {
 				viewToModelAttribute( 'foo', { model: 'bar', view: { name: 'strong', priority: 'high' } }, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
-					new ViewAttributeElement( 'strong', null, new ViewText( 'foo' ) ), additionalData
+					new ViewAttributeElement( 'strong', null, new ViewText( 'foo' ) ), context
 				);
 
 				expect( modelToString( conversionResult ) ).to.equal( '<$text foo="bar">foo</$text>' );
@@ -396,7 +396,7 @@ describe( 'definition-based-converters', () => {
 				viewToModelElement( { model: 'bar', view: 'strong' }, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
-					new ViewElement( 'strong', null, new ViewText( 'foo' ) ), additionalData
+					new ViewElement( 'strong', null, new ViewText( 'foo' ) ), context
 				);
 
 				expect( modelToString( conversionResult ) ).to.equal( '<bar>foo</bar>' );
@@ -406,7 +406,7 @@ describe( 'definition-based-converters', () => {
 				viewToModelElement( { model: 'bar', view: { name: 'strong' } }, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
-					new ViewElement( 'strong', null, new ViewText( 'foo' ) ), additionalData
+					new ViewElement( 'strong', null, new ViewText( 'foo' ) ), context
 				);
 
 				expect( modelToString( conversionResult ) ).to.equal( '<bar>foo</bar>' );
@@ -416,7 +416,7 @@ describe( 'definition-based-converters', () => {
 				viewToModelElement( { model: 'bar', view: { name: 'span', class: 'foo' } }, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
-					new ViewElement( 'span', { class: 'foo' }, new ViewText( 'foo' ) ), additionalData
+					new ViewElement( 'span', { class: 'foo' }, new ViewText( 'foo' ) ), context
 				);
 
 				expect( modelToString( conversionResult ) ).to.equal( '<bar>foo</bar>' );
@@ -426,7 +426,7 @@ describe( 'definition-based-converters', () => {
 				viewToModelElement( { model: 'bar', view: { name: 'span', class: [ 'foo', 'bar' ] } }, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
-					new ViewElement( 'span', { class: 'foo bar' }, new ViewText( 'foo' ) ), additionalData
+					new ViewElement( 'span', { class: 'foo bar' }, new ViewText( 'foo' ) ), context
 				);
 
 				expect( modelToString( conversionResult ) ).to.equal( '<bar>foo</bar>' );
@@ -436,7 +436,7 @@ describe( 'definition-based-converters', () => {
 				viewToModelElement( { model: 'bar', view: { name: 'span', style: { 'font-weight': 'bold' } } }, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
-					new ViewElement( 'span', { style: 'font-weight:bold' }, new ViewText( 'foo' ) ), additionalData
+					new ViewElement( 'span', { style: 'font-weight:bold' }, new ViewText( 'foo' ) ), context
 				);
 
 				expect( modelToString( conversionResult ) ).to.equal( '<bar>foo</bar>' );
@@ -446,7 +446,7 @@ describe( 'definition-based-converters', () => {
 				viewToModelElement( { model: 'bar', view: { name: 'span', attribute: { 'data-foo': 'bar' } } }, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
-					new ViewElement( 'span', { 'data-foo': 'bar' }, new ViewText( 'foo' ) ), additionalData
+					new ViewElement( 'span', { 'data-foo': 'bar' }, new ViewText( 'foo' ) ), context
 				);
 
 				expect( modelToString( conversionResult ) ).to.equal( '<bar>foo</bar>' );
@@ -463,7 +463,7 @@ describe( 'definition-based-converters', () => {
 				}, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
-					new ViewElement( 'span', { 'data-foo': 'bar' }, new ViewText( 'foo' ) ), additionalData
+					new ViewElement( 'span', { 'data-foo': 'bar' }, new ViewText( 'foo' ) ), context
 				);
 
 				expect( modelToString( conversionResult ) ).to.equal( '<bar>foo</bar>' );
@@ -474,7 +474,7 @@ describe( 'definition-based-converters', () => {
 				viewToModelElement( { model: 'bar', view: { name: 'strong', priority: 'high' } }, [ dispatcher ] );
 
 				const conversionResult = dispatcher.convert(
-					new ViewElement( 'strong', null, new ViewText( 'foo' ) ), additionalData
+					new ViewElement( 'strong', null, new ViewText( 'foo' ) ), context
 				);
 
 				expect( modelToString( conversionResult ) ).to.equal( '<bar>foo</bar>' );

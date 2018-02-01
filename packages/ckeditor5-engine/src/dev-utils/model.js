@@ -57,7 +57,7 @@ export function getData( model, options = {} ) {
 		throw new TypeError( 'Model needs to be an instance of module:engine/model/model~Model.' );
 	}
 
-	const withoutSelection = !!options.withoutSelection;
+	const withoutSelection = options.withoutSelection;
 	const rootName = options.rootName || 'main';
 	const root = model.document.getRoot( rootName );
 
@@ -279,8 +279,12 @@ export function parse( data, schema, options = {} ) {
 	viewToModel.on( 'element', convertToModelElement() );
 	viewToModel.on( 'text', convertToModelText() );
 
+	viewToModel.isDebug = true;
+
 	// Convert view to model.
-	let model = viewToModel.convert( viewDocumentFragment.root, { context: options.context || [ '$root' ] } );
+	let model = viewToModel.convert( viewDocumentFragment.root, options.context || [ '$root' ] );
+
+	mapper.bindElements( model, viewDocumentFragment.root );
 
 	// If root DocumentFragment contains only one element - return that element.
 	if ( model.childCount == 1 ) {
@@ -318,41 +322,47 @@ export function parse( data, schema, options = {} ) {
 // -- Converters view -> model -----------------------------------------------------
 
 function convertToModelFragment() {
-	return ( evt, data, consumable, conversionApi ) => {
-		data.output = conversionApi.convertChildren( data.input, consumable, data );
-		conversionApi.mapper.bindElements( data.output, data.input );
+	return ( evt, data, conversionApi ) => {
+		const childrenResult = conversionApi.convertChildren( data.viewItem, data.cursorPosition );
+
+		conversionApi.mapper.bindElements( data.cursorPosition.parent, data.viewItem );
+
+		data = Object.assign( data, childrenResult );
 
 		evt.stop();
 	};
 }
 
 function convertToModelElement() {
-	return ( evt, data, consumable, conversionApi ) => {
-		const elementName = data.input.name;
+	return ( evt, data, conversionApi ) => {
+		const elementName = data.viewItem.name;
 
-		if ( !conversionApi.schema.checkChild( data.context, elementName ) ) {
-			throw new Error( `Element '${ elementName }' was not allowed in context ${ JSON.stringify( data.context ) }.` );
+		if ( !conversionApi.schema.checkChild( data.cursorPosition, elementName ) ) {
+			throw new Error( `Element '${ elementName }' was not allowed in given position.` );
 		}
 
 		// View attribute value is a string so we want to typecast it to the original type.
 		// E.g. `bold="true"` - value will be parsed from string `"true"` to boolean `true`.
-		const attributes = convertAttributes( data.input.getAttributes(), parseAttributeValue );
+		const attributes = convertAttributes( data.viewItem.getAttributes(), parseAttributeValue );
+		const element = conversionApi.writer.createElement( data.viewItem.name, attributes );
 
-		data.output = conversionApi.writer.createElement( data.input.name, attributes );
-		conversionApi.mapper.bindElements( data.output, data.input );
+		conversionApi.writer.insert( element, data.cursorPosition );
 
-		data.context.push( data.output );
-		data.output.appendChildren( conversionApi.convertChildren( data.input, consumable, data ) );
-		data.context.pop();
+		conversionApi.mapper.bindElements( element, data.viewItem );
+
+		conversionApi.convertChildren( data.viewItem, ModelPosition.createAt( element ) );
+
+		data.modelRange = ModelRange.createOn( element );
+		data.cursorPosition = data.modelRange.end;
 
 		evt.stop();
 	};
 }
 
 function convertToModelText( withAttributes = false ) {
-	return ( evt, data, consumable, conversionApi ) => {
-		if ( !conversionApi.schema.checkChild( data.context, '$text' ) ) {
-			throw new Error( `Text was not allowed in context ${ JSON.stringify( data.context ) }.` );
+	return ( evt, data, conversionApi ) => {
+		if ( !conversionApi.schema.checkChild( data.cursorPosition, '$text' ) ) {
+			throw new Error( 'Text was not allowed in given position.' );
 		}
 
 		let node;
@@ -360,14 +370,17 @@ function convertToModelText( withAttributes = false ) {
 		if ( withAttributes ) {
 			// View attribute value is a string so we want to typecast it to the original type.
 			// E.g. `bold="true"` - value will be parsed from string `"true"` to boolean `true`.
-			const attributes = convertAttributes( data.input.getAttributes(), parseAttributeValue );
+			const attributes = convertAttributes( data.viewItem.getAttributes(), parseAttributeValue );
 
-			node = conversionApi.writer.createText( data.input.getChild( 0 ).data, attributes );
+			node = conversionApi.writer.createText( data.viewItem.getChild( 0 ).data, attributes );
 		} else {
-			node = conversionApi.writer.createText( data.input.data );
+			node = conversionApi.writer.createText( data.viewItem.data );
 		}
 
-		data.output = node;
+		conversionApi.writer.insert( node, data.cursorPosition );
+
+		data.modelRange = ModelRange.createFromPositionAndShift( data.cursorPosition, node.offsetSize );
+		data.cursorPosition = data.modelRange.end;
 
 		evt.stop();
 	};

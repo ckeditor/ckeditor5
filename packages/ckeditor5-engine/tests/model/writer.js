@@ -1790,6 +1790,42 @@ describe( 'Writer', () => {
 			} ).to.throw( CKEditorError, /^writer-split-element-no-parent/ );
 		} );
 
+		it( 'should split elements to limitElement', () => {
+			const div = new Element( 'div', null, p );
+			const section = new Element( 'section', null, div );
+
+			root.insertChildren( 0, section );
+
+			split( new Position( p, [ 3 ] ), section );
+
+			expect( root.maxOffset ).to.equal( 1 );
+			expect( section.maxOffset ).to.equal( 2 );
+
+			expect( section.getChild( 0 ).name ).to.equal( 'div' );
+			expect( section.getChild( 0 ).getChild( 0 ).name ).to.equal( 'p' );
+			expect( section.getChild( 0 ).getChild( 0 ).getAttribute( 'key' ) ).to.equal( 'value' );
+			expect( count( section.getChild( 0 ).getChild( 0 ).getAttributes() ) ).to.equal( 1 );
+			expect( section.getChild( 0 ).getChild( 0 ).getChild( 0 ).data ).to.equal( 'foo' );
+
+			expect( section.getChild( 1 ).name ).to.equal( 'div' );
+			expect( section.getChild( 1 ).getChild( 0 ).name ).to.equal( 'p' );
+			expect( section.getChild( 1 ).getChild( 0 ).getAttribute( 'key' ) ).to.equal( 'value' );
+			expect( count( section.getChild( 1 ).getChild( 0 ).getAttributes() ) ).to.equal( 1 );
+			expect( section.getChild( 1 ).getChild( 0 ).getChild( 0 ).data ).to.equal( 'bar' );
+		} );
+
+		it( 'should throw when limitElement is not a position ancestor', () => {
+			const div = new Element( 'div', null, p );
+			const section = new Element( 'section', null, div );
+
+			root.insertChildren( 0, div );
+			root.insertChildren( 1, section );
+
+			expect( () => {
+				split( new Position( p, [ 3 ] ), section );
+			} ).to.throw( CKEditorError, /^writer-split-invalid-limit-element/ );
+		} );
+
 		it( 'should throw when trying to use detached writer', () => {
 			const writer = new Writer( model, batch );
 
@@ -2299,9 +2335,9 @@ describe( 'Writer', () => {
 		} );
 	}
 
-	function split( position ) {
+	function split( position, limitElement ) {
 		model.enqueueChange( batch, writer => {
-			writer.split( position );
+			writer.split( position, limitElement );
 		} );
 	}
 

@@ -8,13 +8,13 @@
  */
 
 /**
- * HTML writer interface.
+ * The HTML writer interface.
  *
  * @interface module:engine/dataprocessor/htmlwriter~HtmlWriter
  */
 
 /**
- * Returns HTML string created from DocumentFragment.
+ * Returns an HTML string created from a document fragment.
  *
  * @method module:engine/dataprocessor/htmlwriter~HtmlWriter#getHtml
  * @param {DocumentFragment} fragment

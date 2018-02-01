@@ -377,6 +377,17 @@ describe( 'Schema', () => {
 			expect( schema.checkChild( root1, '$text' ) ).to.be.false;
 		} );
 
+		it( 'accepts a schemaContext instance as a context', () => {
+			const rootContext = new SchemaContext( Position.createAt( root1 ) );
+			const paragraphContext = new SchemaContext( Position.createAt( r1p1 ) );
+
+			expect( schema.checkChild( rootContext, 'paragraph' ) ).to.be.true;
+			expect( schema.checkChild( rootContext, '$text' ) ).to.be.false;
+
+			expect( schema.checkChild( paragraphContext, '$text' ) ).to.be.true;
+			expect( schema.checkChild( paragraphContext, 'paragraph' ) ).to.be.false;
+		} );
+
 		it( 'accepts a position as a context', () => {
 			const posInRoot = Position.createAt( root1 );
 			const posInParagraph = Position.createAt( r1p1 );
@@ -464,6 +475,14 @@ describe( 'Schema', () => {
 
 			expect( schema.checkAttribute( posInRoot, 'align' ) ).to.be.false;
 			expect( schema.checkAttribute( posInParagraph, 'align' ) ).to.be.true;
+		} );
+
+		it( 'accepts a schemaContext instance as a context', () => {
+			const rootContext = new SchemaContext( Position.createAt( root1 ) );
+			const paragraphContext = new SchemaContext( Position.createAt( r1p1 ) );
+
+			expect( schema.checkAttribute( rootContext, 'align' ) ).to.be.false;
+			expect( schema.checkAttribute( paragraphContext, 'align' ) ).to.be.true;
 		} );
 
 		it( 'accepts an array of node names as a context', () => {
@@ -1115,6 +1134,294 @@ describe( 'Schema', () => {
 			expect( result[ 0 ].end.path ).to.members( [ 0, 3 ] );
 			expect( result[ 1 ].start.path ).to.members( [ 0, 4 ] );
 			expect( result[ 1 ].end.path ).to.members( [ 1 ] );
+		} );
+	} );
+
+	describe( 'getNearestSelectionRange()', () => {
+		let selection, model, doc;
+
+		beforeEach( () => {
+			model = new Model();
+			doc = model.document;
+			schema = model.schema;
+			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+
+			model.schema.register( 'emptyBlock', { allowIn: '$root' } );
+
+			model.schema.register( 'widget', {
+				allowIn: '$root',
+				isObject: true
+			} );
+
+			model.schema.register( 'blockWidget', {
+				allowIn: '$root',
+				allowContentOf: '$block',
+				isObject: true
+			} );
+
+			doc.createRoot();
+			selection = doc.selection;
+		} );
+
+		test(
+			'should return collapsed range if text node can be placed at that position - both',
+			'<paragraph>[]</paragraph>',
+			'both',
+			'<paragraph>[]</paragraph>'
+		);
+
+		test(
+			'should return collapsed range if text node can be placed at that position - forward',
+			'<paragraph>[]</paragraph>',
+			'forward',
+			'<paragraph>[]</paragraph>'
+		);
+
+		test(
+			'should return collapsed range if text node can be placed at that position - backward',
+			'<paragraph>[]</paragraph>',
+			'backward',
+			'<paragraph>[]</paragraph>'
+		);
+
+		test( 'should return null in empty document - both', '', 'both', null );
+
+		test( 'should return null in empty document - backward', '', 'backward', null );
+
+		test( 'should return null in empty document - forward', '', 'forward', null );
+
+		test(
+			'should find range before when searching both ways',
+			'<paragraph></paragraph>[]<paragraph></paragraph>',
+			'both',
+			'<paragraph>[]</paragraph><paragraph></paragraph>'
+		);
+
+		test(
+			'should find range before when searching backward',
+			'<paragraph></paragraph>[]<paragraph></paragraph>',
+			'backward',
+			'<paragraph>[]</paragraph><paragraph></paragraph>'
+		);
+
+		test(
+			'should find range after when searching forward',
+			'<paragraph></paragraph>[]<paragraph></paragraph>',
+			'forward',
+			'<paragraph></paragraph><paragraph>[]</paragraph>'
+		);
+
+		test(
+			'should find range after when searching both ways when it is closer',
+			'<paragraph></paragraph><emptyBlock></emptyBlock>[]<paragraph></paragraph>',
+			'both',
+			'<paragraph></paragraph><emptyBlock></emptyBlock><paragraph>[]</paragraph>'
+		);
+
+		test(
+			'should find range before when searching both ways when it is closer',
+			'<paragraph></paragraph><emptyBlock></emptyBlock>[]<emptyBlock></emptyBlock><emptyBlock></emptyBlock><paragraph></paragraph>',
+			'both',
+			'<paragraph>[]</paragraph><emptyBlock></emptyBlock><emptyBlock></emptyBlock><emptyBlock></emptyBlock><paragraph></paragraph>'
+		);
+
+		test(
+			'should return null if there is no valid range',
+			'[]<emptyBlock></emptyBlock>',
+			'both',
+			null
+		);
+
+		test(
+			'should return null if there is no valid range in given direction - backward',
+			'[]<paragraph></paragraph>',
+			'backward',
+			null
+		);
+
+		test(
+			'should return null if there is no valid range in given direction - forward',
+			'<paragraph></paragraph>[]',
+			'forward',
+			null
+		);
+
+		test(
+			'should move forward when placed at root start',
+			'[]<paragraph></paragraph><paragraph></paragraph>',
+			'both',
+			'<paragraph>[]</paragraph><paragraph></paragraph>'
+		);
+
+		test(
+			'should move backward when placed at root end',
+			'<paragraph></paragraph><paragraph></paragraph>[]',
+			'both',
+			'<paragraph></paragraph><paragraph>[]</paragraph>'
+		);
+
+		describe( 'in case of objects which do not allow text inside', () => {
+			test(
+				'should select nearest object (o[]o) - both',
+				'<widget></widget>[]<widget></widget>',
+				'both',
+				'[<widget></widget>]<widget></widget>'
+			);
+
+			test(
+				'should select nearest object (o[]o) - forward',
+				'<widget></widget>[]<widget></widget>',
+				'forward',
+				'<widget></widget>[<widget></widget>]'
+			);
+
+			test(
+				'should select nearest object (o[]o) - backward',
+				'<widget></widget>[]<widget></widget>',
+				'both',
+				'[<widget></widget>]<widget></widget>'
+			);
+
+			test(
+				'should select nearest object (p[]o) - forward',
+				'<paragraph></paragraph>[]<widget></widget>',
+				'forward',
+				'<paragraph></paragraph>[<widget></widget>]'
+			);
+
+			test(
+				'should select nearest object (o[]p) - both',
+				'<widget></widget>[]<paragraph></paragraph>',
+				'both',
+				'[<widget></widget>]<paragraph></paragraph>'
+			);
+
+			test(
+				'should select nearest object (o[]p) - backward',
+				'<widget></widget>[]<paragraph></paragraph>',
+				'backward',
+				'[<widget></widget>]<paragraph></paragraph>'
+			);
+
+			test(
+				'should select nearest object ([]o) - both',
+				'[]<widget></widget><paragraph></paragraph>',
+				'both',
+				'[<widget></widget>]<paragraph></paragraph>'
+			);
+
+			test(
+				'should select nearest object ([]o) - forward',
+				'[]<widget></widget><paragraph></paragraph>',
+				'forward',
+				'[<widget></widget>]<paragraph></paragraph>'
+			);
+
+			test(
+				'should select nearest object (o[]) - both',
+				'<paragraph></paragraph><widget></widget>[]',
+				'both',
+				'<paragraph></paragraph>[<widget></widget>]'
+			);
+
+			test(
+				'should select nearest object (o[]) - backward',
+				'<paragraph></paragraph><widget></widget>[]',
+				'both',
+				'<paragraph></paragraph>[<widget></widget>]'
+			);
+		} );
+
+		describe( 'in case of objects which allow text inside', () => {
+			test(
+				'should select nearest object which allows text (o[]o) - both',
+				'<blockWidget></blockWidget>[]<blockWidget></blockWidget>',
+				'both',
+				'[<blockWidget></blockWidget>]<blockWidget></blockWidget>'
+			);
+
+			test(
+				'should select nearest object (o[]p) - both',
+				'<blockWidget></blockWidget>[]<paragraph></paragraph>',
+				'both',
+				'[<blockWidget></blockWidget>]<paragraph></paragraph>'
+			);
+
+			test(
+				'should select nearest object which allows text ([]o) - both',
+				'[]<blockWidget></blockWidget><paragraph></paragraph>',
+				'both',
+				'[<blockWidget></blockWidget>]<paragraph></paragraph>'
+			);
+		} );
+
+		function test( testName, data, direction, expected ) {
+			it( testName, () => {
+				setData( model, data );
+				const range = schema.getNearestSelectionRange( selection.anchor, direction );
+
+				if ( expected === null ) {
+					expect( range ).to.be.null;
+				} else {
+					model.change( writer => {
+						writer.setSelection( range );
+					} );
+					expect( getData( model ) ).to.equal( expected );
+				}
+			} );
+		}
+	} );
+
+	describe( 'findAllowedParent()', () => {
+		beforeEach( () => {
+			schema.register( '$root' );
+			schema.register( 'blockQuote', {
+				allowIn: '$root'
+			} );
+			schema.register( 'paragraph', {
+				allowIn: 'blockQuote'
+			} );
+			schema.register( '$text', {
+				allowIn: 'paragraph'
+			} );
+		} );
+
+		it( 'should return position ancestor that allows to insert given note to it', () => {
+			const node = new Element( 'paragraph' );
+
+			const allowedParent = schema.findAllowedParent( node, Position.createAt( r1bQp ) );
+
+			expect( allowedParent ).to.equal( r1bQ );
+		} );
+
+		it( 'should return position ancestor that allows to insert given note to it when position is already i such an element', () => {
+			const node = new Text( 'text' );
+
+			const parent = schema.findAllowedParent( node, Position.createAt( r1bQp ) );
+
+			expect( parent ).to.equal( r1bQp );
+		} );
+
+		it( 'should return null when limit element will be reached before allowed parent', () => {
+			schema.extend( 'blockQuote', {
+				isLimit: true
+			} );
+			schema.register( 'div', {
+				allowIn: '$root'
+			} );
+			const node = new Element( 'div' );
+
+			const parent = schema.findAllowedParent( node, Position.createAt( r1bQp ) );
+
+			expect( parent ).to.null;
+		} );
+
+		it( 'should return null when there is no allowed ancestor for given position', () => {
+			const node = new Element( 'section' );
+
+			const parent = schema.findAllowedParent( node, Position.createAt( r1bQp ) );
+
+			expect( parent ).to.null;
 		} );
 	} );
 
@@ -2369,6 +2676,14 @@ describe( 'SchemaContext', () => {
 			expect( Array.from( ctx.getItem( 2 ).getAttributeKeys() ).sort() ).to.deep.equal( [ 'align' ] );
 		} );
 
+		it( 'creates context based on a SchemaContext instance', () => {
+			const previousCtx = new SchemaContext( [ 'a', 'b', 'c' ] );
+
+			const ctx = new SchemaContext( previousCtx );
+
+			expect( ctx ).to.equal( previousCtx );
+		} );
+
 		it( 'filters out DocumentFragment when it is a first item of context - array', () => {
 			const ctx = new SchemaContext( [ new DocumentFragment(), 'paragraph' ] );
 
@@ -2437,6 +2752,66 @@ describe( 'SchemaContext', () => {
 			const ctx = new SchemaContext( [ 'a', 'b', 'c' ] );
 
 			expect( ctx.getItem( 3 ) ).to.be.undefined;
+		} );
+	} );
+
+	describe( 'concat()', () => {
+		it( 'creates new SchemaContext instance with new item - #string', () => {
+			const ctx = new SchemaContext( [ 'a', 'b', 'c' ] );
+
+			const newCtx = ctx.concat( 'd' );
+
+			expect( newCtx ).to.instanceof( SchemaContext );
+			expect( newCtx ).to.not.equal( ctx );
+			expect( Array.from( newCtx.getNames() ) ).to.deep.equal( [ 'a', 'b', 'c', 'd' ] );
+			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ 'a', 'b', 'c' ] );
+		} );
+
+		it( 'creates new SchemaContext instance with new item - #text', () => {
+			const node = new Text( 'd' );
+			const ctx = new SchemaContext( [ 'a', 'b', 'c' ] );
+
+			const newCtx = ctx.concat( node );
+
+			expect( newCtx ).to.instanceof( SchemaContext );
+			expect( newCtx ).to.not.equal( ctx );
+			expect( Array.from( newCtx.getNames() ) ).to.deep.equal( [ 'a', 'b', 'c', '$text' ] );
+			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ 'a', 'b', 'c' ] );
+		} );
+
+		it( 'creates new SchemaContext instance with new item - #node', () => {
+			const ctx = new SchemaContext( [ 'a', 'b', 'c' ] );
+			const parent = new Element( 'parent', null, new Element( 'd' ) );
+
+			const newCtx = ctx.concat( parent.getChild( 0 ) );
+
+			expect( newCtx ).to.instanceof( SchemaContext );
+			expect( newCtx ).to.not.equal( ctx );
+			expect( Array.from( newCtx.getNames() ) ).to.deep.equal( [ 'a', 'b', 'c', 'd' ] );
+			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ 'a', 'b', 'c' ] );
+		} );
+
+		it( 'creates new SchemaContext instance with new item - #SchemaContext', () => {
+			const ctx = new SchemaContext( [ 'a', 'b', 'c' ] );
+			const schemaContext = new SchemaContext( [ 'd', 'e' ] );
+
+			const newCtx = ctx.concat( schemaContext );
+
+			expect( newCtx ).to.instanceof( SchemaContext );
+			expect( newCtx ).to.not.equal( ctx );
+			expect( Array.from( newCtx.getNames() ) ).to.deep.equal( [ 'a', 'b', 'c', 'd', 'e' ] );
+			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ 'a', 'b', 'c' ] );
+		} );
+
+		it( 'creates new SchemaContext instance with new item - #array', () => {
+			const ctx = new SchemaContext( [ 'a', 'b', 'c' ] );
+
+			const newCtx = ctx.concat( [ 'd', new Text( 'e' ), new Element( 'f' ) ] );
+
+			expect( newCtx ).to.instanceof( SchemaContext );
+			expect( newCtx ).to.not.equal( ctx );
+			expect( Array.from( newCtx.getNames() ) ).to.deep.equal( [ 'a', 'b', 'c', 'd', '$text', 'f' ] );
+			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ 'a', 'b', 'c' ] );
 		} );
 	} );
 
