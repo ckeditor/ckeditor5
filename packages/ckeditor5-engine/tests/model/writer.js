@@ -1965,25 +1965,25 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should add marker to the document marker collection', () => {
-			setMarker( 'name', range );
+			setMarker( 'name', range, { usingOperation: true } );
 
 			expect( model.markers.get( 'name' ).getRange().isEqual( range ) ).to.be.true;
 		} );
 
 		it( 'should update marker in the document marker collection', () => {
-			setMarker( 'name', range );
+			setMarker( 'name', range, { usingOperation: true } );
 
 			const range2 = Range.createFromParentsAndOffsets( root, 0, root, 0 );
-			setMarker( 'name', range2 );
+			setMarker( 'name', range2, { usingOperation: true } );
 
 			expect( model.markers.get( 'name' ).getRange().isEqual( range2 ) ).to.be.true;
 		} );
 
 		it( 'should accept marker instance', () => {
-			const marker = model.markers.set( 'name', range );
+			const marker = setMarker( 'name', range );
 			const range2 = Range.createFromParentsAndOffsets( root, 0, root, 0 );
 
-			setMarker( marker, range2 );
+			setMarker( marker, range2, { usingOperation: true } );
 			const op = batch.deltas[ 0 ].operations[ 0 ];
 
 			expect( model.markers.get( 'name' ).getRange().isEqual( range2 ) ).to.be.true;
@@ -1992,12 +1992,12 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should accept empty range parameter if marker instance is passed', () => {
-			const marker = model.markers.set( 'name', range );
+			const marker = setMarker( 'name', range );
 			const spy = sinon.spy();
 
 			model.on( 'applyOperation', spy );
 
-			setMarker( marker );
+			setMarker( marker, null, { usingOperation: true } );
 			const op = batch.deltas[ 0 ].operations[ 0 ];
 
 			expect( spy.calledOnce ).to.be.true;
@@ -2013,11 +2013,11 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
-			const marker = model.markers.set( 'name', range );
+			const marker = setMarker( 'name', range );
 			const writer = new Writer( model, batch );
 
 			expect( () => {
-				writer.setMarker( marker );
+				writer.setMarker( marker, null, { usingOperation: true } );
 			} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 		} );
 	} );
@@ -2033,7 +2033,7 @@ describe( 'Writer', () => {
 
 		it( 'should remove marker from the document marker collection', () => {
 			setMarker( 'name', range );
-			removeMarker( 'name' );
+			removeMarker( 'name', { usingOperation: true } );
 
 			expect( model.markers.get( 'name' ) ).to.be.null;
 		} );
@@ -2056,7 +2056,7 @@ describe( 'Writer', () => {
 			setMarker( 'name', range );
 			const marker = model.markers.get( 'name' );
 
-			removeMarker( marker );
+			removeMarker( marker, { usingOperation: true } );
 
 			expect( model.markers.get( 'name' ) ).to.be.null;
 		} );
@@ -2353,15 +2353,19 @@ describe( 'Writer', () => {
 		} );
 	}
 
-	function setMarker( markerOrName, newRange ) {
+	function setMarker( markerOrName, newRange, options ) {
+		let marker;
+
 		model.enqueueChange( batch, writer => {
-			writer.setMarker( markerOrName, newRange );
+			marker = writer.setMarker( markerOrName, newRange, options );
 		} );
+
+		return marker;
 	}
 
-	function removeMarker( markerOrName ) {
+	function removeMarker( markerOrName, options ) {
 		model.enqueueChange( batch, writer => {
-			writer.removeMarker( markerOrName );
+			writer.removeMarker( markerOrName, options );
 		} );
 	}
 

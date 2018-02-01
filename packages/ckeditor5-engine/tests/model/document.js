@@ -237,8 +237,8 @@ describe( 'Document', () => {
 		it( 'should buffer marker changes in differ', () => {
 			sinon.spy( doc.differ, 'bufferMarkerChange' );
 
-			model.change( () => {
-				model.markers.set( 'marker', Range.createCollapsedAt( doc.getRoot(), 0 ) );
+			model.change( writer => {
+				writer.setMarker( 'marker', Range.createCollapsedAt( doc.getRoot(), 0 ) );
 			} );
 
 			expect( doc.differ.bufferMarkerChange.called ).to.be.true;

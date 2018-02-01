@@ -73,13 +73,13 @@ ClassicEditor
 			moveSelectionByOffset( 1 );
 		} );
 
-		model.change( () => {
+		model.change( writer => {
 			const root = model.document.getRoot();
 			const range = new Range( new Position( root, [ 0, 10 ] ), new Position( root, [ 0, 16 ] ) );
 			const name = 'highlight:yellow:' + uid();
 
 			markerNames.push( name );
-			model.markers.set( name, range );
+			writer.setMarker( name, range );
 		} );
 	} )
 	.catch( err => {
@@ -91,17 +91,17 @@ function uid() {
 }
 
 function addHighlight( color ) {
-	model.change( () => {
+	model.change( writer => {
 		const range = Range.createFromRange( model.document.selection.getFirstRange() );
 		const name = 'highlight:' + color + ':' + uid();
 
 		markerNames.push( name );
-		model.markers.set( name, range );
+		writer.setMarker( name, range );
 	} );
 }
 
 function removeHighlight() {
-	model.change( () => {
+	model.change( writer => {
 		const pos = model.document.selection.getFirstPosition();
 
 		for ( let i = 0; i < markerNames.length; i++ ) {
@@ -110,7 +110,7 @@ function removeHighlight() {
 			const range = marker.getRange();
 
 			if ( range.containsPosition( pos ) || range.start.isEqual( pos ) || range.end.isEqual( pos ) ) {
-				model.markers.remove( name );
+				writer.removeMarker( name );
 
 				markerNames.splice( i, 1 );
 				break;

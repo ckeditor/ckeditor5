@@ -86,7 +86,9 @@ describe( 'MarkerOperation', () => {
 	} );
 
 	it( 'should not fire document markers set event if newRange is same as current marker range', () => {
-		model.markers.set( 'name', range );
+		model.change( writer => {
+			writer.setMarker( 'name', range );
+		} );
 
 		sinon.spy( model.markers, 'fire' );
 
