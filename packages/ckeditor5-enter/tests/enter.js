@@ -9,7 +9,7 @@ import EnterCommand from '../src/entercommand';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 
 describe( 'Enter feature', () => {
-	let editor, editingView;
+	let editor, viewDocument;
 
 	beforeEach( () => {
 		return VirtualTestEditor
@@ -18,7 +18,7 @@ describe( 'Enter feature', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-				editingView = editor.editing.view;
+				viewDocument = editor.editing.view.document;
 			} );
 	} );
 
@@ -28,10 +28,9 @@ describe( 'Enter feature', () => {
 
 	it( 'listens to the editing view enter event', () => {
 		const spy = editor.execute = sinon.spy();
-		const view = editor.editing.view;
 		const domEvt = getDomEvent();
 
-		view.fire( 'enter', new DomEventData( editingView, domEvt ) );
+		viewDocument.fire( 'enter', new DomEventData( viewDocument, domEvt ) );
 
 		expect( spy.calledOnce ).to.be.true;
 		expect( spy.calledWithExactly( 'enter' ) ).to.be.true;
@@ -40,12 +39,11 @@ describe( 'Enter feature', () => {
 	} );
 
 	it( 'scrolls the editing document to the selection after executing the command', () => {
-		const view = editor.editing.view;
 		const domEvt = getDomEvent();
 		const executeSpy = editor.execute = sinon.spy();
-		const scrollSpy = sinon.stub( view, 'scrollToTheSelection' );
+		const scrollSpy = sinon.stub( editor.editing.view, 'scrollToTheSelection' );
 
-		view.fire( 'enter', new DomEventData( editingView, domEvt ) );
+		viewDocument.fire( 'enter', new DomEventData( viewDocument, domEvt ) );
 
 		sinon.assert.calledOnce( scrollSpy );
 		sinon.assert.callOrder( executeSpy, scrollSpy );
