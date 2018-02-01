@@ -155,9 +155,9 @@ export default class FileRepository extends Plugin {
 			 * You can also implement your own upload adapter (in which case, please refer
 			 * to the {@link ~UploadAdapter `UploadAdapter` interface} documentation).
 			 *
-			 * @error filerepository-no-adapter
+			 * @error filerepository-no-upload-adapter
 			 */
-			log.error( 'filerepository-no-adapter: Upload adapter is not defined.' );
+			log.error( 'filerepository-no-upload-adapter: Upload adapter is not defined.' );
 
 			return null;
 		}

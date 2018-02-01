@@ -102,7 +102,7 @@ describe( 'FileRepository', () => {
 			sinon.assert.calledOnce( stub );
 			sinon.assert.calledWithExactly(
 				stub,
-				'filerepository-no-adapter: Upload adapter is not defined.'
+				'filerepository-no-upload-adapter: Upload adapter is not defined.'
 			);
 		} );
 
