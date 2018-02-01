@@ -77,7 +77,7 @@ export default class BlockQuote extends Plugin {
 		// This listener is added in afterInit in order to register it after list's feature listener.
 		// We can't use a priority for this, because 'low' is already used by the enter feature, unless
 		// we'd use numeric priority in this case.
-		this.listenTo( this.editor.editing.view, 'enter', ( evt, data ) => {
+		this.listenTo( this.editor.editing.view.document, 'enter', ( evt, data ) => {
 			const doc = this.editor.model.document;
 			const positionParent = doc.selection.getLastPosition().parent;
 

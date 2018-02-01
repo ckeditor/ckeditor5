@@ -17,7 +17,7 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'BlockQuote integration', () => {
-	let editor, model, element;
+	let editor, model, element, viewDocument;
 
 	beforeEach( () => {
 		element = document.createElement( 'div' );
@@ -30,6 +30,7 @@ describe( 'BlockQuote integration', () => {
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
+				viewDocument = editor.editing.view.document;
 			} );
 	} );
 
@@ -52,7 +53,7 @@ describe( 'BlockQuote integration', () => {
 
 			setModelData( model, '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>x</paragraph>' );
 
-			editor.editing.view.fire( 'enter', data );
+			viewDocument.fire( 'enter', data );
 
 			// Only enter command should be executed.
 			expect( data.preventDefault.called ).to.be.true;
@@ -66,7 +67,7 @@ describe( 'BlockQuote integration', () => {
 
 			setModelData( model, '<blockQuote><paragraph>xx[]</paragraph></blockQuote>' );
 
-			editor.editing.view.fire( 'enter', data );
+			viewDocument.fire( 'enter', data );
 
 			// Only enter command should be executed.
 			expect( data.preventDefault.called ).to.be.true;
@@ -80,7 +81,7 @@ describe( 'BlockQuote integration', () => {
 
 			setModelData( model, '<blockQuote><paragraph>[]xx</paragraph></blockQuote>' );
 
-			editor.editing.view.fire( 'enter', data );
+			viewDocument.fire( 'enter', data );
 
 			// Only enter command should be executed.
 			expect( data.preventDefault.called ).to.be.true;
@@ -94,7 +95,7 @@ describe( 'BlockQuote integration', () => {
 
 			setModelData( model, '<blockQuote><paragraph>[</paragraph><paragraph>]</paragraph></blockQuote>' );
 
-			editor.editing.view.fire( 'enter', data );
+			viewDocument.fire( 'enter', data );
 
 			// Only enter command should be executed.
 			expect( data.preventDefault.called ).to.be.true;
@@ -114,7 +115,7 @@ describe( 'BlockQuote integration', () => {
 				'<paragraph>x</paragraph>'
 			);
 
-			editor.editing.view.fire( 'enter', data );
+			viewDocument.fire( 'enter', data );
 
 			expect( data.preventDefault.called ).to.be.true;
 
@@ -134,7 +135,7 @@ describe( 'BlockQuote integration', () => {
 
 			setModelData( model, '<paragraph>x</paragraph><blockQuote><paragraph>[]</paragraph></blockQuote><paragraph>x</paragraph>' );
 
-			editor.editing.view.fire( 'enter', data );
+			viewDocument.fire( 'enter', data );
 
 			expect( data.preventDefault.called ).to.be.true;
 			expect( execSpy.calledOnce ).to.be.true;
@@ -153,7 +154,7 @@ describe( 'BlockQuote integration', () => {
 				'<paragraph>x</paragraph>'
 			);
 
-			editor.editing.view.fire( 'enter', data );
+			viewDocument.fire( 'enter', data );
 
 			expect( data.preventDefault.called ).to.be.true;
 			expect( execSpy.calledOnce ).to.be.true;
@@ -178,7 +179,7 @@ describe( 'BlockQuote integration', () => {
 				'<paragraph>x</paragraph>'
 			);
 
-			editor.editing.view.fire( 'enter', data );
+			viewDocument.fire( 'enter', data );
 
 			expect( data.preventDefault.called ).to.be.true;
 			expect( execSpy.calledOnce ).to.be.true;
@@ -203,7 +204,7 @@ describe( 'BlockQuote integration', () => {
 				'<paragraph>x</paragraph>'
 			);
 
-			editor.editing.view.fire( 'enter', data );
+			viewDocument.fire( 'enter', data );
 
 			sinon.assert.calledOnce( scrollSpy );
 			sinon.assert.callOrder( execSpy, scrollSpy );
@@ -228,7 +229,7 @@ describe( 'BlockQuote integration', () => {
 				'<paragraph>d</paragraph>'
 			);
 
-			editor.editing.view.fire( 'delete', data );
+			viewDocument.fire( 'delete', data );
 
 			expect( getModelData( model ) ).to.equal(
 				'<blockQuote><paragraph>a</paragraph><paragraph>b[]c</paragraph></blockQuote>' +
@@ -245,7 +246,7 @@ describe( 'BlockQuote integration', () => {
 				'<paragraph>y</paragraph>'
 			);
 
-			editor.editing.view.fire( 'delete', data );
+			viewDocument.fire( 'delete', data );
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>x[]a</paragraph>' +
@@ -264,7 +265,7 @@ describe( 'BlockQuote integration', () => {
 				'<paragraph>y</paragraph>'
 			);
 
-			editor.editing.view.fire( 'delete', data );
+			viewDocument.fire( 'delete', data );
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>x</paragraph>' +
@@ -283,7 +284,7 @@ describe( 'BlockQuote integration', () => {
 				'<paragraph>y</paragraph>'
 			);
 
-			editor.editing.view.fire( 'delete', data );
+			viewDocument.fire( 'delete', data );
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>x</paragraph>' +
@@ -301,7 +302,7 @@ describe( 'BlockQuote integration', () => {
 				'<paragraph>y</paragraph>'
 			);
 
-			editor.editing.view.fire( 'delete', data );
+			viewDocument.fire( 'delete', data );
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>x[]</paragraph>' +
