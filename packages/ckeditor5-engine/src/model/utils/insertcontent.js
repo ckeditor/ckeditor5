@@ -282,8 +282,8 @@ class Insertion {
 			return;
 		}
 
-		const mergeLeft = canMergeLeft( this.canMergeWith, this.model.schema );
-		const mergeRight = canMergeRight( this.canMergeWith, this.model.schema );
+		const mergeLeft = this._canMergeLeft( node, context );
+		const mergeRight = this._canMergeRight( node, context );
 		const mergePosLeft = LivePosition.createBefore( node );
 		const mergePosRight = LivePosition.createAfter( node );
 
@@ -327,30 +327,38 @@ class Insertion {
 
 		mergePosLeft.detach();
 		mergePosRight.detach();
+	}
 
-		// @param {Set} canMergeWith
-		// @param {module:engine/model/schema~Schema} schema
-		// @returns {Boolean}
-		function canMergeLeft( canMergeWith, schema ) {
-			const previousSibling = node.previousSibling;
+	/**
+	 * Checks whether specified node can be merged with previous sibling element.
+	 *
+	 * @param {module:engine/model/node~Node} node The node which could potentially be merged.
+	 * @param {Object} context
+	 * @returns {Boolean}
+	 */
+	_canMergeLeft( node, context ) {
+		const previousSibling = node.previousSibling;
 
-			return context.isFirst &&
-				( previousSibling instanceof Element ) &&
-				canMergeWith.has( previousSibling ) &&
-				schema.checkMerge( previousSibling, node );
-		}
+		return context.isFirst &&
+			( previousSibling instanceof Element ) &&
+			this.canMergeWith.has( previousSibling ) &&
+			this.model.schema.checkMerge( previousSibling, node );
+	}
 
-		// @param {Set} canMergeWith
-		// @param {module:engine/model/schema~Schema} schema
-		// @returns {Boolean}
-		function canMergeRight( canMergeWith, schema ) {
-			const nextSibling = node.nextSibling;
+	/**
+	 * Checks whether specified node can be merged with next sibling element.
+	 *
+	 * @param {module:engine/model/node~Node} node The node which could potentially be merged.
+	 * @param {Object} context
+	 * @returns {Boolean}
+	 */
+	_canMergeRight( node, context ) {
+		const nextSibling = node.nextSibling;
 
-			return context.isLast &&
-				( nextSibling instanceof Element ) &&
-				canMergeWith.has( nextSibling ) &&
-				schema.checkMerge( node, nextSibling );
-		}
+		return context.isLast &&
+			( nextSibling instanceof Element ) &&
+			this.canMergeWith.has( nextSibling ) &&
+			this.model.schema.checkMerge( node, nextSibling );
 	}
 
 	/**
