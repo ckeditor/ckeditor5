@@ -18,9 +18,4 @@
 	& > :not(:first-child) {
 		margin-left: var(--ck-spacing-standard);
 	}
-
-	& .ck-input-text {
-		/* https://github.com/ckeditor/ckeditor5-link/issues/145 */
-		min-width: 18em;
-	}
 }

@@ -8,7 +8,7 @@
 @import "../../../mixins/_shadow.css";
 
 :root {
-	--ck-input-text-min-width: 21em;
+	--ck-input-text-width: 18em;
 }
 
 .ck-input-text {
@@ -18,7 +18,7 @@
 	background: var(--ck-color-input-background);
 	border: 1px solid var(--ck-color-input-border);
 	padding: var(--ck-spacing-extra-tiny) var(--ck-spacing-medium);
-	min-width: var(--ck-input-text-min-width);
+	min-width: var(--ck-input-text-width);
 
 	&:focus {
 		@mixin ck-focus-ring;
