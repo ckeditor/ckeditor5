@@ -11,7 +11,6 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
-import bindOneToMany from '@ckeditor/ckeditor5-ui/src/bindings/bindonetomany';
 import { createDropdown, addToolbarToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 
 import { commandNameFromOptionName } from './alignmentcommand';
@@ -102,7 +101,7 @@ export default class AlignmentUI extends Plugin {
 			// Add specialised behavior
 
 			// Change icon upon selection
-			bindOneToMany( dropdownView, 'icon', buttons, 'isOn', ( ...areActive ) => {
+			dropdownView.bind( 'icon' ).toMany( buttons, 'isOn', ( ...areActive ) => {
 				const index = areActive.findIndex( value => value );
 
 				// If none of the commands is active, display either defaultIcon or first button icon.
@@ -113,9 +112,7 @@ export default class AlignmentUI extends Plugin {
 				return buttons[ index < 0 ? 0 : index ].icon;
 			} );
 
-			bindOneToMany( dropdownView, 'isEnabled', buttons, 'isEnabled',
-				( ...areEnabled ) => areEnabled.some( isEnabled => isEnabled )
-			);
+			dropdownView.bind( 'isEnabled' ).toMany( buttons, 'isEnabled', ( ...areEnabled ) => areEnabled.some( isEnabled => isEnabled ) );
 
 			addToolbarToDropdown( dropdownView, buttons );
 
