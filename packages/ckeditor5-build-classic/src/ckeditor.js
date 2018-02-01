@@ -46,6 +46,7 @@ ClassicEditor.build = {
 		toolbar: {
 			items: [
 				'headings',
+				'|',
 				'bold',
 				'italic',
 				'link',
