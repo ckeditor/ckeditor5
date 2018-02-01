@@ -11,8 +11,6 @@
  * An object defining view element used in {@link module:engine/conversion/definition-based-converters} as part of
  * {@link module:engine/conversion/definition-based-converters~ConverterDefinition}.
  *
- * It describe a view element that is used
- *
  *		const viewDefinition = {
  *			name: 'h1',
  *			class: [ 'foo', 'bar' ]
