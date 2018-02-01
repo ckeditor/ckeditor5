@@ -9,6 +9,7 @@
 
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
+import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 
 import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
@@ -344,7 +345,7 @@ export function modelViewMergeAfter( evt, data, conversionApi ) {
  *
  * To set correct values of the `type` and `indent` attributes the converter:
  * * checks `<li>`'s parent,
- * * passes the `data.indent` value when `<li>`'s sub-items are converted.
+ * * stores and increases the `conversionApi.store.indent` value when `<li>`'s sub-items are converted.
  *
  * @see module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:element
  * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
@@ -352,61 +353,48 @@ export function modelViewMergeAfter( evt, data, conversionApi ) {
  * @param {module:engine/conversion/viewconsumable~ViewConsumable} consumable Values to consume.
  * @param {Object} conversionApi Conversion interface to be used by the callback.
  */
-export function viewModelConverter( evt, data, consumable, conversionApi ) {
-	if ( consumable.consume( data.input, { name: true } ) ) {
+export function viewModelConverter( evt, data, conversionApi ) {
+	if ( conversionApi.consumable.consume( data.viewItem, { name: true } ) ) {
 		const writer = conversionApi.writer;
+		const conversionStore = this.conversionApi.store;
 
 		// 1. Create `listItem` model element.
 		const listItem = writer.createElement( 'listItem' );
 
 		// 2. Handle `listItem` model element attributes.
-		data.indent = data.indent ? data.indent : 0;
-		writer.setAttribute( 'indent', data.indent, listItem );
+		conversionStore.indent = conversionStore.indent || 0;
+		writer.setAttribute( 'indent', conversionStore.indent, listItem );
 
 		// Set 'bulleted' as default. If this item is pasted into a context,
-		const type = data.input.parent && data.input.parent.name == 'ol' ? 'numbered' : 'bulleted';
+		const type = data.viewItem.parent && data.viewItem.parent.name == 'ol' ? 'numbered' : 'bulleted';
 		writer.setAttribute( 'type', type, listItem );
 
-		let alteredContext = false;
-
-		// See https://github.com/ckeditor/ckeditor5-list/issues/87
-		if ( data.context[ data.context.length - 1 ].name != 'listItem' ) {
-			// 3. Handle `<li>` children.
-			data.context.push( listItem );
-			alteredContext = true;
-		}
-
 		// `listItem`s created recursively should have bigger indent.
-		data.indent++;
+		conversionStore.indent++;
 
-		// `listItem`s will be kept in flat structure.
-		const items = writer.createDocumentFragment();
-		writer.append( listItem, items );
+		writer.insert( listItem, data.cursorPosition );
+
+		// Remember position after list item.
+		let nextPosition = ModelPosition.createAfter( listItem );
 
 		// Check all children of the converted `<li>`.
 		// At this point we assume there are no "whitespace" view text nodes in view list, between view list items.
 		// This should be handled by `<ul>` and `<ol>` converters.
-		for ( const child of data.input.getChildren() ) {
-			// Let's convert the child.
-			const converted = conversionApi.convertItem( child, consumable, data );
-
-			// If this is a view list element, we will convert it and concat the result (`listItem` model elements)
-			// with already gathered results (in `items` array). `converted` should be a `ModelDocumentFragment`.
+		for ( const child of data.viewItem.getChildren() ) {
+			// If this is a view list element, we will convert it after last `listItem` model element.
 			if ( child.name == 'ul' || child.name == 'ol' ) {
-				writer.append( converted, items );
+				nextPosition = conversionApi.convertItem( child, nextPosition ).cursorPosition;
 			}
 			// If it was not a list it was a "regular" list item content. Just append it to `listItem`.
 			else {
-				writer.append( converted, listItem );
+				conversionApi.convertItem( child, ModelPosition.createAt( listItem, 'end' ) );
 			}
 		}
 
-		data.indent--;
-		if ( alteredContext ) {
-			data.context.pop();
-		}
+		conversionStore.indent--;
 
-		data.output = items;
+		data.modelRange = new ModelRange( data.cursorPosition, nextPosition );
+		data.cursorPosition = data.modelRange.end;
 	}
 }
 
@@ -420,10 +408,10 @@ export function viewModelConverter( evt, data, consumable, conversionApi ) {
  * @param {Object} data An object containing conversion input and a placeholder for conversion output and possibly other values.
  * @param {module:engine/conversion/viewconsumable~ViewConsumable} consumable Values to consume.
  */
-export function cleanList( evt, data, consumable ) {
-	if ( consumable.test( data.input, { name: true } ) ) {
+export function cleanList( evt, data, conversionApi ) {
+	if ( conversionApi.consumable.test( data.viewItem, { name: true } ) ) {
 		// Caching children because when we start removing them iterating fails.
-		const children = Array.from( data.input.getChildren() );
+		const children = Array.from( data.viewItem.getChildren() );
 
 		for ( const child of children ) {
 			if ( !child.is( 'li' ) ) {
@@ -441,13 +429,13 @@ export function cleanList( evt, data, consumable ) {
  * @param {Object} data An object containing conversion input and a placeholder for conversion output and possibly other values.
  * @param {module:engine/conversion/viewconsumable~ViewConsumable} consumable Values to consume.
  */
-export function cleanListItem( evt, data, consumable ) {
-	if ( consumable.test( data.input, { name: true } ) ) {
-		if ( data.input.childCount === 0 ) {
+export function cleanListItem( evt, data, conversionApi ) {
+	if ( conversionApi.consumable.test( data.viewItem, { name: true } ) ) {
+		if ( data.viewItem.childCount === 0 ) {
 			return;
 		}
 
-		const children = [ ...data.input.getChildren() ];
+		const children = [ ...data.viewItem.getChildren() ];
 
 		let foundList = false;
 		let firstNode = true;
@@ -574,10 +562,16 @@ export function viewToModelPosition( evt, data ) {
 /**
  * Post-fixer that reacts to changes on document and fixes incorrect model states.
  *
- * Example:
+ * In an example below, there is a correct list structure.
+ * Then the middle element will be removed so the list structure will become incorrect:
  *
  *		<listItem type="bulleted" indent=0>Item 1</listItem>
  *		<listItem type="bulleted" indent=1>Item 2</listItem>   <--- this is removed.
+ *		<listItem type="bulleted" indent=2>Item 3</listItem>
+ *
+ * List structure after the middle element removed:
+ *
+ * 		<listItem type="bulleted" indent=0>Item 1</listItem>
  *		<listItem type="bulleted" indent=2>Item 3</listItem>
  *
  * Should become:

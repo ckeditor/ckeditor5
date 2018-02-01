@@ -8,6 +8,7 @@ import ListCommand from '../src/listcommand';
 
 import ModelDocumentFragment from '@ckeditor/ckeditor5-engine/src/model/documentfragment';
 import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
+import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import ModelText from '@ckeditor/ckeditor5-engine/src/model/text';
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
@@ -3356,8 +3357,8 @@ describe( 'ListEngine', () => {
 		} );
 
 		it( 'view li converter should not fire if change was already consumed', () => {
-			editor.data.viewToModel.on( 'element:li', ( evt, data, consumable ) => {
-				consumable.consume( data.input, { name: true } );
+			editor.data.viewToModel.on( 'element:li', ( evt, data, conversionApi ) => {
+				conversionApi.consumable.consume( data.viewItem, { name: true } );
 			}, { priority: 'highest' } );
 
 			editor.setData( '<p></p><ul><li></li></ul>' );
@@ -3366,8 +3367,8 @@ describe( 'ListEngine', () => {
 		} );
 
 		it( 'view ul converter should not fire if change was already consumed', () => {
-			editor.data.viewToModel.on( 'element:ul', ( evt, data, consumable ) => {
-				consumable.consume( data.input, { name: true } );
+			editor.data.viewToModel.on( 'element:ul', ( evt, data, conversionApi ) => {
+				conversionApi.consumable.consume( data.viewItem, { name: true } );
 			}, { priority: 'highest' } );
 
 			editor.setData( '<p></p><ul><li></li></ul>' );
@@ -3375,9 +3376,9 @@ describe( 'ListEngine', () => {
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<paragraph></paragraph>' );
 		} );
 
-		it( 'view converter should pass model document fragment in data.output', () => {
+		it( 'view converter should pass model range in data.modelRange', () => {
 			editor.data.viewToModel.on( 'element:ul', ( evt, data ) => {
-				expect( data.output ).to.be.instanceof( ModelDocumentFragment );
+				expect( data.modelRange ).to.be.instanceof( ModelRange );
 			}, { priority: 'lowest' } );
 
 			editor.setData( '<ul><li>Foo</li><li>Bar</li></ul>' );
