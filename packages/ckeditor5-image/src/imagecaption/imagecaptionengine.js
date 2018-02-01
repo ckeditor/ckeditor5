@@ -10,7 +10,6 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
 import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
-import viewWriter from '@ckeditor/ckeditor5-engine/src/view/writer';
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
 import { isImage } from '../image/utils';
@@ -34,7 +33,7 @@ export default class ImageCaptionEngine extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const viewDocument = editor.editing.view;
+		const view = editor.editing.view;
 		const schema = editor.model.schema;
 		const data = editor.data;
 		const editing = editor.editing;
@@ -54,7 +53,7 @@ export default class ImageCaptionEngine extends Plugin {
 		 * @private
 		 * @member {Function}
 		 */
-		this._createCaption = captionElementCreator( viewDocument, t( 'Enter image caption' ) );
+		this._createCaption = captionElementCreator( view, t( 'Enter image caption' ) );
 
 		// Schema configuration.
 		schema.register( 'caption', {
@@ -85,7 +84,7 @@ export default class ImageCaptionEngine extends Plugin {
 		editing.modelToView.on( 'remove', ( evt, data ) => this._fixCaptionVisibility( data.position.parent ), { priority: 'high' } );
 
 		// Update view before each rendering.
-		this.listenTo( viewDocument, 'render', () => this._updateCaptionVisibility(), { priority: 'high' } );
+		this.listenTo( view.renderer, 'render', () => this._updateCaptionVisibility(), { priority: 'high' } );
 	}
 
 	/**
@@ -206,7 +205,7 @@ function captionModelToView( elementCreator, hide = true ) {
 				viewCaption.addClass( 'ck-hidden' );
 			}
 
-			insertViewCaptionAndBind( viewCaption, data.item, viewImage, conversionApi.mapper );
+			insertViewCaptionAndBind( viewCaption, data.item, viewImage, conversionApi );
 		}
 	};
 }
@@ -217,12 +216,12 @@ function captionModelToView( elementCreator, hide = true ) {
 // @param {module:engine/view/containerelement~ContainerElement} viewCaption
 // @param {module:engine/model/element~Element} modelCaption
 // @param {module:engine/view/containerelement~ContainerElement} viewImage
-// @param {module:engine/conversion/mapper~Mapper} mapper
-function insertViewCaptionAndBind( viewCaption, modelCaption, viewImage, mapper ) {
+// @param {Object} conversionApi
+function insertViewCaptionAndBind( viewCaption, modelCaption, viewImage, conversionApi ) {
 	const viewPosition = ViewPosition.createAt( viewImage, 'end' );
 
-	viewWriter.insert( viewPosition, viewCaption );
-	mapper.bindElements( modelCaption, viewCaption );
+	conversionApi.writer.insert( viewPosition, viewCaption );
+	conversionApi.mapper.bindElements( modelCaption, viewCaption );
 }
 
 // Checks if the provided node or one of its ancestors is a caption element, and returns it.

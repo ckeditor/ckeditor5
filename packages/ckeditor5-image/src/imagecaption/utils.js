@@ -17,16 +17,16 @@ const captionSymbol = Symbol( 'imageCaption' );
 /**
  * Returns a function that creates a caption editable element for the given {@link module:engine/view/document~Document}.
  *
- * @param {module:engine/view/document~Document} viewDocument
+ * @param {module:engine/view/view~View} view
  * @param {String} placeholderText The text to be displayed when the caption is empty.
  * @return {Function}
  */
-export function captionElementCreator( viewDocument, placeholderText ) {
+export function captionElementCreator( view, placeholderText ) {
 	return () => {
 		const editable = new ViewEditableElement( 'figcaption' );
-		editable.document = viewDocument;
+		editable.document = view.document;
 		editable.setCustomProperty( captionSymbol, true );
-		attachPlaceholder( editable, placeholderText );
+		attachPlaceholder( view, editable, placeholderText );
 
 		return toWidgetEditable( editable );
 	};

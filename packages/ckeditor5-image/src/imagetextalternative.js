@@ -83,7 +83,8 @@ export default class ImageTextAlternative extends Plugin {
 	 */
 	_createForm() {
 		const editor = this.editor;
-		const editingView = editor.editing.view;
+		const view = editor.editing.view;
+		const viewDocument = view.document;
 
 		/**
 		 * The contextual balloon plugin instance.
@@ -122,8 +123,8 @@ export default class ImageTextAlternative extends Plugin {
 		} );
 
 		// Reposition the balloon or hide the form if an image widget is no longer selected.
-		this.listenTo( editingView, 'render', () => {
-			if ( !isImageWidgetSelected( editingView.selection ) ) {
+		this.listenTo( viewDocument, 'change', () => {
+			if ( !isImageWidgetSelected( viewDocument.selection ) ) {
 				this._hideForm( true );
 			} else if ( this._isVisible ) {
 				repositionContextualBalloon( editor );

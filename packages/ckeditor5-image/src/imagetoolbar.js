@@ -80,7 +80,7 @@ export default class ImageToolbar extends Plugin {
 		this._toolbar.fillFromConfig( toolbarConfig, editor.ui.componentFactory );
 
 		// Show balloon panel each time image widget is selected.
-		this.listenTo( editor.editing.view, 'render', () => {
+		this.listenTo( editor.editing.view.document, 'change', () => {
 			this._checkIsVisible();
 		}, { priority: 'low' } );
 
@@ -102,7 +102,7 @@ export default class ImageToolbar extends Plugin {
 		if ( !editor.ui.focusTracker.isFocused ) {
 			this._hideToolbar();
 		} else {
-			if ( isImageWidgetSelected( editor.editing.view.selection ) ) {
+			if ( isImageWidgetSelected( editor.editing.view.document.selection ) ) {
 				this._showToolbar();
 			} else {
 				this._hideToolbar();
