@@ -209,13 +209,12 @@ describe( 'Alignment UI', () => {
 			dropdown = editor.ui.componentFactory.create( 'alignmentDropdown' );
 		} );
 
-		it( 'button has the base properties', () => {
+		it( '#buttonView has the base properties', () => {
 			const button = dropdown.buttonView;
 
 			expect( button ).to.have.property( 'label', 'Text alignment' );
 			expect( button ).to.have.property( 'icon' );
 			expect( button ).to.have.property( 'tooltip', true );
-			expect( button ).to.have.property( 'withText', false );
 		} );
 
 		it( '#toolbarView has the base properties', () => {

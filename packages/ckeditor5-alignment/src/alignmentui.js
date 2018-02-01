@@ -85,36 +85,37 @@ export default class AlignmentUI extends Plugin {
 		componentFactory.add( 'alignmentDropdown', locale => {
 			const dropdownView = createDropdown( locale );
 
+			// Get alignment buttons.
+			const buttons = options.map( option => componentFactory.create( commandNameFromOptionName( option ) ) );
+
+			addToolbarToDropdown( dropdownView, buttons );
+
+			// Configure dropdown properties an behavior.
 			dropdownView.set( {
 				label: t( 'Text alignment' ),
-				defaultIcon: alignLeftIcon,
-				withText: false,
 				isVertical: true,
 				tooltip: true
 			} );
 
-			const buttons = options.map( option => {
-				return componentFactory.create( commandNameFromOptionName( option ) );
-			} );
+			// The default icon is align left as we do not support RTL yet (see #3).
+			const defaultIcon = alignLeftIcon;
 
-			// TODO: binding with callback as in headings
-			// Add specialised behavior
-
-			// Change icon upon selection
+			// Change icon to reflect current selection's alignment.
 			dropdownView.bind( 'icon' ).toMany( buttons, 'isOn', ( ...areActive ) => {
+				// Get the index of an active button.
 				const index = areActive.findIndex( value => value );
 
-				// If none of the commands is active, display either defaultIcon or first button icon.
-				if ( index < 0 && dropdownView.defaultIcon ) {
-					return dropdownView.defaultIcon;
+				// If none of the commands is active, display either defaultIcon or the first button's icon.
+				if ( index < 0 ) {
+					return defaultIcon;
 				}
 
-				return buttons[ index < 0 ? 0 : index ].icon;
+				// Return active button's icon.
+				return buttons[ index ].icon;
 			} );
 
+			// Enable button if any of the buttons is enabled.
 			dropdownView.bind( 'isEnabled' ).toMany( buttons, 'isEnabled', ( ...areEnabled ) => areEnabled.some( isEnabled => isEnabled ) );
-
-			addToolbarToDropdown( dropdownView, buttons );
 
 			return dropdownView;
 		} );
@@ -154,13 +155,3 @@ export default class AlignmentUI extends Plugin {
 		} );
 	}
 }
-
-/**
- * TODO: move somewhere
- * Defines default icon which is used when no button is active.
- *
- * Also see {@link #icon}.
- *
- * @observable
- * @member {String} #defaultIcon
- */
