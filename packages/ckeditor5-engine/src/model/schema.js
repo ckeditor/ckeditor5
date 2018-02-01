@@ -376,8 +376,7 @@ export default class Schema {
 	 *		schema.checkChild( model.document.getRoot(), paragraph ); // -> true
 	 *
 	 * @fires checkChild
-	 * @param {module:engine/model/schema~SchemaContextDefinition|module:engine/model/schema~SchemaContext} context
-	 * Context in which the child will be checked.
+	 * @param {module:engine/model/schema~SchemaContextDefinition} context Context in which the child will be checked.
 	 * @param {module:engine/model/node~Node|String} def The child to check.
 	 */
 	checkChild( context, def ) {
@@ -401,8 +400,7 @@ export default class Schema {
 	 *		schema.checkAttribute( textNode, 'bold' ); // -> true
 	 *
 	 * @fires checkAttribute
-	 * @param {module:engine/model/schema~SchemaContextDefinition|module:engine/model/schema~SchemaContext} context
-	 * Context in which the attribute will be checked.
+	 * @param {module:engine/model/schema~SchemaContextDefinition} context Context in which the attribute will be checked.
 	 * @param {String} attributeName
 	 */
 	checkAttribute( context, attributeName ) {
@@ -1243,6 +1241,8 @@ export class SchemaContext {
  * means that the context will be unrealistic (e.g. attributes of these nodes are not specified).
  * However, at times this may be the only way to define the context (e.g. when checking some
  * hypothetical situation).
+ * * By defining a {@link module:engine/model/schema~SchemaContext} instance - in this case the same instance as provided
+ * will be return.
  *
  * Examples of context definitions passed to the {@link module:engine/model/schema~Schema#checkChild `Schema#checkChild()`}
  * method:
@@ -1290,7 +1290,7 @@ export class SchemaContext {
  *		// Check in [ rootElement, paragraphElement, textNode ].
  *		schema.checkChild( [ ...positionInParagraph.getAncestors(), '$text' ], 'bold' );
  *
- * @typedef {module:engine/model/node~Node|module:engine/model/position~Position|
+ * @typedef {module:engine/model/node~Node|module:engine/model/position~Position|module:engine/model/schema~SchemaContext|
  * Array.<String|module:engine/model/node~Node>} module:engine/model/schema~SchemaContextDefinition
  */
 
