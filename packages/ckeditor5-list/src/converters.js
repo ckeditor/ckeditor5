@@ -372,7 +372,7 @@ export function viewModelConverter( evt, data, conversionApi ) {
 		// `listItem`s created recursively should have bigger indent.
 		conversionStore.indent++;
 
-		writer.insert( listItem, data.cursorPosition );
+		writer.insert( listItem, data.modelCursor );
 
 		// Remember position after list item.
 		let nextPosition = ModelPosition.createAfter( listItem );
@@ -383,7 +383,7 @@ export function viewModelConverter( evt, data, conversionApi ) {
 		for ( const child of data.viewItem.getChildren() ) {
 			// If this is a view list element, we will convert it after last `listItem` model element.
 			if ( child.name == 'ul' || child.name == 'ol' ) {
-				nextPosition = conversionApi.convertItem( child, nextPosition ).cursorPosition;
+				nextPosition = conversionApi.convertItem( child, nextPosition ).modelCursor;
 			}
 			// If it was not a list it was a "regular" list item content. Just append it to `listItem`.
 			else {
@@ -393,8 +393,8 @@ export function viewModelConverter( evt, data, conversionApi ) {
 
 		conversionStore.indent--;
 
-		data.modelRange = new ModelRange( data.cursorPosition, nextPosition );
-		data.cursorPosition = data.modelRange.end;
+		data.modelRange = new ModelRange( data.modelCursor, nextPosition );
+		data.modelCursor = data.modelRange.end;
 	}
 }
 
