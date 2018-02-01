@@ -136,6 +136,7 @@ const ObservableMixin = {
 
 		// @typedef {Object} BindChain
 		// @property {Function} to See {@link ~ObservableMixin#_bindTo}.
+		// @property {Function} toMany See {@link ~ObservableMixin#_bindToMany}.
 		// @property {module:utils/observablemixin~Observable} _observable The observable which initializes the binding.
 		// @property {Array} _bindProperties Array of `_observable` properties to be bound.
 		// @property {Array} _to Array of `to()` observable–properties (`{ observable: toObservable, properties: ...toProperties }`).
@@ -144,6 +145,7 @@ const ObservableMixin = {
 		// initiated in this binding chain.
 		return {
 			to: bindTo,
+			toMany: bindToMany,
 
 			_observable: this,
 			_bindProperties: bindProperties,
@@ -414,6 +416,40 @@ function bindTo( ...args ) {
 	} );
 }
 
+// Binds to an attribute in a set of iterable observables.
+//
+// @private
+// @param {Iterable.<Observable>} observables
+// @param {String} attribute
+// @param {Function} callback
+function bindToMany( observables, attribute, callback ) {
+	if ( this._bindings.size > 1 ) {
+		/**
+		 * Binding one attribute to many observables only possible with one attribute.
+		 *
+		 * @error observable-bind-to-many-not-one-binding
+		 */
+		throw new CKEditorError( 'observable-bind-to-many-not-one-binding: Cannot bind multiple properties with toMany().' );
+	}
+
+	this.to(
+		// Bind to #attribute of each observable...
+		...getBindingTargets( observables, attribute ),
+		// ...using given callback to parse attribute values.
+		callback
+	);
+}
+
+// Returns an array of binding components for
+// {@link Observable#bind} from a set of iterable observables.
+//
+// @param {Iterable.<Observable>} observables
+// @param {String} attribute
+// @returns {Array.<String>}
+function getBindingTargets( observables, attribute ) {
+	return Array.prototype.concat( ...observables.map( observable => [ observable, attribute ] ) );
+}
+
 // Check if all entries of the array are of `String` type.
 //
 // @private
@@ -660,14 +696,21 @@ function attachBindToListeners( observable, toBindings ) {
  *
  * **Note**: To release the binding use {@link module:utils/observablemixin~Observable#unbind}.
  *
+ * Using `bind().to()` chain:
+ *
  *		A.bind( 'a' ).to( B );
  *		A.bind( 'a' ).to( B, 'b' );
  *		A.bind( 'a', 'b' ).to( B, 'c', 'd' );
  *		A.bind( 'a' ).to( B, 'b', C, 'd', ( b, d ) => b + d );
  *
+ * It is also possible to bind to the same property in a observables collection using `bind().toMany()` chain:
+ *
+ *		A.bind( 'a' ).toMany( [ B, C, D ], 'x', ( a, b, c ) => a + b + c );
+ *		A.bind( 'a' ).toMany( [ B, C, D ], 'x', ( ...x ) => x.every( x => x ) );
+ *
  * @method #bind
  * @param {...String} bindProperties Observable properties that will be bound to another observable(s).
- * @returns {Object} The bind chain with the `to()` method.
+ * @returns {Object} The bind chain with the `to()` and `toMany()` methods.
  */
 
 /**
@@ -709,7 +752,7 @@ function attachBindToListeners( observable, toBindings ) {
  *
  *
  * Note: we used a high priority listener here to execute this callback before the one which
- * calls the orignal method (which used the default priority).
+ * calls the original method (which used the default priority).
  *
  * It's also possible to change the return value:
  *
