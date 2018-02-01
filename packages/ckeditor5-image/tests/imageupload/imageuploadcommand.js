@@ -10,7 +10,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ImageUploadCommand from '../../src/imageupload/imageuploadcommand';
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
 
-import { createNativeFileMock, AdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
+import { createNativeFileMock, UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import Image from '../../src/image/imageengine';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -29,8 +29,8 @@ describe( 'ImageUploadCommand', () => {
 	class UploadAdapterPluginMock extends Plugin {
 		init() {
 			fileRepository = this.editor.plugins.get( FileRepository );
-			fileRepository.createAdapter = loader => {
-				return new AdapterMock( loader );
+			fileRepository.createUploadAdapter = loader => {
+				return new UploadAdapterMock( loader );
 			};
 		}
 	}
@@ -118,7 +118,7 @@ describe( 'ImageUploadCommand', () => {
 		it( 'should not throw when upload adapter is not set (FileRepository will log an error anyway)', () => {
 			const file = createNativeFileMock();
 
-			fileRepository.createAdapter = undefined;
+			fileRepository.createUploadAdapter = undefined;
 
 			const logStub = testUtils.sinon.stub( log, 'error' );
 

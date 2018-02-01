@@ -15,7 +15,7 @@ import List from '@ckeditor/ckeditor5-list/src/list';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
-import { AdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
+import { UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
 import ImageStyle from '../../src/imagestyle';
 import ImageToolbar from '../../src/imagetoolbar';
 import Image from '../../src/image';
@@ -37,8 +37,8 @@ ClassicEditor
 	} )
 	.then( editor => {
 		// Register fake adapter.
-		editor.plugins.get( 'FileRepository' ).createAdapter = loader => {
-			const adapterMock = new AdapterMock( loader );
+		editor.plugins.get( 'FileRepository' ).createUploadAdapter = loader => {
+			const adapterMock = new UploadAdapterMock( loader );
 			createProgressButton( loader, adapterMock );
 
 			return adapterMock;

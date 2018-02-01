@@ -16,7 +16,7 @@ import UndoEngine from '@ckeditor/ckeditor5-undo/src/undoengine';
 import DataTransfer from '@ckeditor/ckeditor5-clipboard/src/datatransfer';
 
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
-import { AdapterMock, createNativeFileMock, NativeFileReaderMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
+import { UploadAdapterMock, createNativeFileMock, NativeFileReaderMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
 
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
@@ -36,9 +36,9 @@ describe( 'ImageUploadEditing', () => {
 	class UploadAdapterPluginMock extends Plugin {
 		init() {
 			fileRepository = this.editor.plugins.get( FileRepository );
-			fileRepository.createAdapter = newLoader => {
+			fileRepository.createUploadAdapter = newLoader => {
 				loader = newLoader;
-				adapterMock = new AdapterMock( loader );
+				adapterMock = new UploadAdapterMock( loader );
 
 				return adapterMock;
 			};

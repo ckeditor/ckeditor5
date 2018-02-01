@@ -16,7 +16,7 @@ import ImageUploadEditing from '../../src/imageupload/imageuploadediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
 
-import { createNativeFileMock, AdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
+import { createNativeFileMock, UploadAdapterMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'ImageUploadUI', () => {
@@ -25,8 +25,8 @@ describe( 'ImageUploadUI', () => {
 	class UploadAdapterPluginMock extends Plugin {
 		init() {
 			fileRepository = this.editor.plugins.get( FileRepository );
-			fileRepository.createAdapter = loader => {
-				return new AdapterMock( loader );
+			fileRepository.createUploadAdapter = loader => {
+				return new UploadAdapterMock( loader );
 			};
 		}
 	}

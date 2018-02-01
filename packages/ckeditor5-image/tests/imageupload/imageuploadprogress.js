@@ -14,7 +14,7 @@ import ImageUploadProgress from '../../src/imageupload/imageuploadprogress';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
 
-import { AdapterMock, createNativeFileMock, NativeFileReaderMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
+import { UploadAdapterMock, createNativeFileMock, NativeFileReaderMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
@@ -30,9 +30,9 @@ describe( 'ImageUploadProgress', () => {
 	class UploadAdapterPluginMock extends Plugin {
 		init() {
 			fileRepository = this.editor.plugins.get( FileRepository );
-			fileRepository.createAdapter = newLoader => {
+			fileRepository.createUploadAdapter = newLoader => {
 				loader = newLoader;
-				adapterMock = new AdapterMock( loader );
+				adapterMock = new UploadAdapterMock( loader );
 
 				return adapterMock;
 			};
@@ -59,9 +59,9 @@ describe( 'ImageUploadProgress', () => {
 				viewDocument = editor.editing.view;
 
 				fileRepository = editor.plugins.get( FileRepository );
-				fileRepository.createAdapter = newLoader => {
+				fileRepository.createUploadAdapter = newLoader => {
 					loader = newLoader;
-					adapterMock = new AdapterMock( loader );
+					adapterMock = new UploadAdapterMock( loader );
 
 					return adapterMock;
 				};
