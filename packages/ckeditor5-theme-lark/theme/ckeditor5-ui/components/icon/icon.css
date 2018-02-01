@@ -3,7 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
+:root {
+	--ck-icon-size: calc(var(--ck-line-height-base) * var(--ck-font-size-normal));
+}
+
 svg.ck-icon {
-	width: calc(var(--ck-line-height-base) * var(--ck-font-size-normal));
-	height: calc(var(--ck-line-height-base) * var(--ck-font-size-normal));
+	width: var(--ck-icon-size);
+	height: var(--ck-icon-size);
 }

@@ -7,12 +7,17 @@
 @import "../../../mixins/_disabled.css";
 @import "../../../mixins/_shadow.css";
 
+:root {
+	--ck-dropdown-icon-size: calc(0.5 * var(--ck-icon-size));
+}
+
 .ck-dropdown {
 	/* Enable font size inheritance, which allows fluid UI scaling. */
 	font-size: inherit;
 
 	& .ck-dropdown__arrow {
 		right: var(--ck-spacing-standard);
+		width: var(--ck-dropdown-icon-size);
 	}
 
 	&.ck-disabled .ck-dropdown__arrow {
