@@ -12,11 +12,13 @@ import Model from '../../src/model/model';
 import ModelDocumentFragment from '../../src/model/documentfragment';
 import ModelElement from '../../src/model/element';
 import ModelText from '../../src/model/text';
+import ModelRange from '../../src/model/range';
+import ModelPosition from '../../src/model/position';
 
 import { convertToModelFragment, convertText } from '../../src/conversion/view-to-model-converters';
 
 describe( 'view-to-model-converters', () => {
-	let dispatcher, schema, additionalData, model;
+	let dispatcher, schema, context, model;
 
 	beforeEach( () => {
 		model = new Model();
@@ -25,18 +27,18 @@ describe( 'view-to-model-converters', () => {
 		schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 		schema.extend( '$text', { allowIn: '$root' } );
 
-		additionalData = { context: [ '$root' ] };
+		context = [ '$root' ];
 
 		dispatcher = new ViewConversionDispatcher( model, { schema } );
 	} );
 
-	describe( 'convertText', () => {
+	describe( 'convertText()', () => {
 		it( 'should return converter converting ViewText to ModelText', () => {
 			const viewText = new ViewText( 'foobar' );
 
 			dispatcher.on( 'text', convertText() );
 
-			const conversionResult = dispatcher.convert( viewText, additionalData );
+			const conversionResult = dispatcher.convert( viewText );
 
 			expect( conversionResult ).to.be.instanceof( ModelDocumentFragment );
 			expect( conversionResult.getChild( 0 ) ).to.be.instanceof( ModelText );
@@ -49,13 +51,16 @@ describe( 'view-to-model-converters', () => {
 			// Default converter for elements. Returns just converted children. Added with lowest priority.
 			dispatcher.on( 'text', convertText(), { priority: 'lowest' } );
 			// Added with normal priority. Should make the above converter not fire.
-			dispatcher.on( 'text', ( evt, data, consumable ) => {
-				if ( consumable.consume( data.input ) ) {
-					data.output = new ModelText( data.input.data.replace( /fuck/gi, '****' ) );
+			dispatcher.on( 'text', ( evt, data, conversionApi ) => {
+				if ( conversionApi.consumable.consume( data.viewItem ) ) {
+					const text = conversionApi.writer.createText( data.viewItem.data.replace( /fuck/gi, '****' ) );
+					conversionApi.writer.insert( text, data.modelCursor );
+					data.modelRange = ModelRange.createFromPositionAndShift( data.modelCursor, text.offsetSize );
+					data.modelCursor = data.modelRange.end;
 				}
 			} );
 
-			const conversionResult = dispatcher.convert( viewText, additionalData );
+			const conversionResult = dispatcher.convert( viewText, context );
 
 			expect( conversionResult ).to.be.instanceof( ModelDocumentFragment );
 			expect( conversionResult.getChild( 0 ) ).to.be.instanceof( ModelText );
@@ -72,12 +77,12 @@ describe( 'view-to-model-converters', () => {
 			const viewText = new ViewText( 'foobar' );
 			dispatcher.on( 'text', convertText() );
 
-			let conversionResult = dispatcher.convert( viewText, additionalData );
+			let conversionResult = dispatcher.convert( viewText, context );
 
 			expect( conversionResult ).to.be.instanceof( ModelDocumentFragment );
 			expect( conversionResult.childCount ).to.equal( 0 );
 
-			conversionResult = dispatcher.convert( viewText, { context: [ '$block' ] } );
+			conversionResult = dispatcher.convert( viewText, [ '$block' ] );
 
 			expect( conversionResult ).to.be.instanceof( ModelDocumentFragment );
 			expect( conversionResult.childCount ).to.equal( 1 );
@@ -90,7 +95,7 @@ describe( 'view-to-model-converters', () => {
 
 			dispatcher.on( 'text', convertText() );
 
-			const conversionResult = dispatcher.convert( viewText, additionalData );
+			const conversionResult = dispatcher.convert( viewText, context );
 
 			expect( conversionResult ).to.be.instanceof( ModelDocumentFragment );
 			expect( conversionResult.getChild( 0 ) ).to.be.instanceof( ModelText );
@@ -98,7 +103,7 @@ describe( 'view-to-model-converters', () => {
 		} );
 	} );
 
-	describe( 'convertToModelFragment', () => {
+	describe( 'convertToModelFragment()', () => {
 		it( 'should return converter converting whole ViewDocumentFragment to ModelDocumentFragment', () => {
 			const viewFragment = new ViewDocumentFragment( [
 				new ViewContainerElement( 'p', null, new ViewText( 'foo' ) ),
@@ -111,7 +116,7 @@ describe( 'view-to-model-converters', () => {
 			dispatcher.on( 'element', convertToModelFragment() );
 			dispatcher.on( 'documentFragment', convertToModelFragment() );
 
-			const conversionResult = dispatcher.convert( viewFragment, additionalData );
+			const conversionResult = dispatcher.convert( viewFragment, context );
 
 			expect( conversionResult ).to.be.instanceof( ModelDocumentFragment );
 			expect( conversionResult.maxOffset ).to.equal( 6 );
@@ -126,17 +131,19 @@ describe( 'view-to-model-converters', () => {
 			// Default converter for elements. Returns just converted children. Added with lowest priority.
 			dispatcher.on( 'element', convertToModelFragment(), { priority: 'lowest' } );
 			// Added with normal priority. Should make the above converter not fire.
-			dispatcher.on( 'element:p', ( evt, data, consumable, conversionApi ) => {
-				if ( consumable.consume( data.input, { name: true } ) ) {
-					data.output = new ModelElement( 'paragraph' );
+			dispatcher.on( 'element:p', ( evt, data, conversionApi ) => {
+				if ( conversionApi.consumable.consume( data.viewItem, { name: true } ) ) {
+					const paragraph = conversionApi.writer.createElement( 'paragraph' );
 
-					data.context.push( data.output );
-					data.output.appendChildren( conversionApi.convertChildren( data.input, consumable, data ) );
-					data.context.pop();
+					conversionApi.writer.insert( paragraph, data.modelCursor );
+					conversionApi.convertChildren( data.viewItem, ModelPosition.createAt( paragraph ) );
+
+					data.modelRange = ModelRange.createOn( paragraph );
+					data.modelCursor = data.modelRange.end;
 				}
 			} );
 
-			const conversionResult = dispatcher.convert( viewP, additionalData );
+			const conversionResult = dispatcher.convert( viewP, context );
 
 			expect( conversionResult ).to.be.instanceof( ModelDocumentFragment );
 			expect( conversionResult.getChild( 0 ) ).to.be.instanceof( ModelElement );

@@ -432,13 +432,7 @@ describe( 'model test utils', () => {
 		} );
 
 		test( 'creates empty DocumentFragment with selection', {
-			data: '[]',
-			check( fragment, selection ) {
-				expect( fragment ).to.be.instanceOf( DocumentFragment );
-				expect( fragment.childCount ).to.equal( 0 );
-				expect( selection.rangeCount ).to.equal( 1 );
-				expect( selection.getFirstRange().isEqual( Range.createFromParentsAndOffsets( fragment, 0, fragment, 0 ) ) ).to.be.true;
-			}
+			data: '[]'
 		} );
 
 		test( 'returns Element if range is around single element', {
@@ -529,7 +523,7 @@ describe( 'model test utils', () => {
 		it( 'throws when try to set element not registered in schema', () => {
 			expect( () => {
 				parse( '<xyz></xyz>', model.schema );
-			} ).to.throw( Error, 'Element \'xyz\' was not allowed in context ["$root"].' );
+			} ).to.throw( Error, 'Element \'xyz\' was not allowed in given position.' );
 		} );
 
 		it( 'throws when try to set text directly to $root without registering it', () => {
@@ -537,7 +531,7 @@ describe( 'model test utils', () => {
 
 			expect( () => {
 				parse( 'text', model.schema );
-			} ).to.throw( Error, 'Text was not allowed in context ["$root"].' );
+			} ).to.throw( Error, 'Text was not allowed in given position.' );
 		} );
 
 		it( 'converts data in the specified context', () => {
@@ -652,6 +646,7 @@ describe( 'model test utils', () => {
 		function test( title, options ) {
 			it( title, () => {
 				const output = options.output || options.data;
+
 				const data = parse( options.data, model.schema );
 				let converted, selection;
 

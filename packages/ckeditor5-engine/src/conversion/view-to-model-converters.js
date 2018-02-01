@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+import Range from '../model/range';
+
 /**
  * Contains {@link module:engine/view/view view} to {@link module:engine/model/model model} converters for
  * {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher}.
@@ -26,10 +28,11 @@
  * {@link module:engine/model/documentfragment~DocumentFragment model fragment} with children of converted view item.
  */
 export function convertToModelFragment() {
-	return ( evt, data, consumable, conversionApi ) => {
+	return ( evt, data, conversionApi ) => {
 		// Second argument in `consumable.consume` is discarded for ViewDocumentFragment but is needed for ViewElement.
-		if ( !data.output && consumable.consume( data.input, { name: true } ) ) {
-			data.output = conversionApi.convertChildren( data.input, consumable, data );
+		if ( !data.modelRange && conversionApi.consumable.consume( data.viewItem, { name: true } ) ) {
+			data = Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
+			data.modelCursor = data.modelRange.end;
 		}
 	};
 }
@@ -40,10 +43,15 @@ export function convertToModelFragment() {
  * @returns {Function} {@link module:engine/view/text~Text View text} converter.
  */
 export function convertText() {
-	return ( evt, data, consumable, conversionApi ) => {
-		if ( conversionApi.schema.checkChild( data.context, '$text' ) ) {
-			if ( consumable.consume( data.input ) ) {
-				data.output = conversionApi.writer.createText( data.input.data );
+	return ( evt, data, conversionApi ) => {
+		if ( conversionApi.schema.checkChild( data.modelCursor, '$text' ) ) {
+			if ( conversionApi.consumable.consume( data.viewItem ) ) {
+				const text = conversionApi.writer.createText( data.viewItem.data );
+
+				conversionApi.writer.insert( text, data.modelCursor );
+
+				data.modelRange = Range.createFromPositionAndShift( data.modelCursor, text.offsetSize );
+				data.modelCursor = data.modelRange.end;
 			}
 		}
 	};
