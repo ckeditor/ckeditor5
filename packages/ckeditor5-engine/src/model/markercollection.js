@@ -99,28 +99,30 @@ export default class MarkerCollection {
 	 * set is different, the marker in collection is removed and then new marker is added. If the range was same, nothing
 	 * happens and `false` is returned.
 	 *
+	 * @protected
 	 * @fires module:engine/model/markercollection~MarkerCollection#event:add
 	 * @fires module:engine/model/markercollection~MarkerCollection#event:remove
 	 * @param {String|module:engine/model/markercollection~Marker} markerOrName Name of marker to add or Marker instance to update.
 	 * @param {module:engine/model/range~Range} range Marker range.
+	 * @param {Boolean} managedUsingOperations Specifies whether the marker is managed using operations.
 	 * @returns {module:engine/model/markercollection~Marker} `Marker` instance added to the collection.
 	 */
-	set( markerOrName, range ) {
+	_set( markerOrName, range, managedUsingOperations ) {
 		const markerName = markerOrName instanceof Marker ? markerOrName.name : markerOrName;
 		const oldMarker = this._markers.get( markerName );
 
 		if ( oldMarker ) {
 			const oldRange = oldMarker.getRange();
 
-			if ( oldRange.isEqual( range ) ) {
+			if ( oldRange.isEqual( range ) && managedUsingOperations === oldMarker.managedUsingOperations ) {
 				return oldMarker;
 			}
 
-			this.remove( markerName );
+			this._remove( markerName );
 		}
 
 		const liveRange = LiveRange.createFromRange( range );
-		const marker = new Marker( markerName, liveRange );
+		const marker = new Marker( markerName, liveRange, managedUsingOperations );
 
 		this._markers.set( markerName, marker );
 		this.fire( 'add:' + markerName, marker );
@@ -131,10 +133,11 @@ export default class MarkerCollection {
 	/**
 	 * Removes given {@link ~Marker marker} or a marker with given name from the `MarkerCollection`.
 	 *
+	 * @protected
 	 * @param {String} markerOrName Marker or name of a marker to remove.
 	 * @returns {Boolean} `true` if marker was found and removed, `false` otherwise.
 	 */
-	remove( markerOrName ) {
+	_remove( markerOrName ) {
 		const markerName = markerOrName instanceof Marker ? markerOrName.name : markerOrName;
 		const oldMarker = this._markers.get( markerName );
 
@@ -281,20 +284,28 @@ class Marker {
 	 * @param {String} name Marker name.
 	 * @param {module:engine/model/liverange~LiveRange} liveRange Range marked by the marker.
 	 */
-	constructor( name, liveRange ) {
+	constructor( name, liveRange, managedUsingOperations ) {
 		/**
 		 * Marker's name.
 		 *
 		 * @readonly
-		 * @member {String} #name
+		 * @type {String}
 		 */
 		this.name = name;
+
+		/**
+		 * Flag indicates if the marker should be managed using operations.
+		 *
+		 * @readonly
+		 * @type {Boolean}
+		 */
+		this.managedUsingOperations = managedUsingOperations;
 
 		/**
 		 * Range marked by the marker.
 		 *
 		 * @protected
-		 * @member {module:engine/model/liverange~LiveRange} #_liveRange
+		 * @type {module:engine/model/liverange~LiveRange}
 		 */
 		this._liveRange = liveRange;
 

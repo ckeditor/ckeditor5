@@ -791,7 +791,7 @@ export default class Writer {
 				throw new CKEditorError( 'writer-setMarker-no-range: Range parameter is required when adding a new marker.' );
 			}
 
-			return this.model.markers.set( name, newRange );
+			return this.model.markers._set( name, newRange, options.usingOperation );
 		}
 
 		const currentMarker = this.model.markers.get( name );
@@ -827,9 +827,8 @@ export default class Writer {
 	 *
 	 * @param {module:engine/model/markercollection~Marker|String} markerOrName Marker or marker name to remove.
 	 * @param {Object} [options]
-	 * @param {Boolean} [options.usingOperation=false] Flag indicated whether the marker should be removed by MarkerOperation.
 	 */
-	removeMarker( markerOrName, options = { usingOperation: false } ) {
+	removeMarker( markerOrName ) {
 		this._assertWriterUsedCorrectly();
 
 		const name = typeof markerOrName == 'string' ? markerOrName : markerOrName.name;
@@ -843,13 +842,15 @@ export default class Writer {
 			throw new CKEditorError( 'writer-removeMarker-no-marker: Trying to remove marker which does not exist.' );
 		}
 
-		if ( !options.usingOperation ) {
-			this.model.markers.remove( name );
+		const marker = this.model.markers.get( name );
+
+		if ( !marker.managedUsingOperations ) {
+			this.model.markers._remove( name );
 
 			return;
 		}
 
-		const oldRange = this.model.markers.get( name ).getRange();
+		const oldRange = marker.getRange();
 
 		addMarkerOperation( this, name, oldRange, null );
 	}

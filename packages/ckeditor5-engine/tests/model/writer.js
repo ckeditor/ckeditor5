@@ -1982,6 +1982,18 @@ describe( 'Writer', () => {
 			expect( model.markers.get( 'name' ) ).to.equal( marker );
 		} );
 
+		it( 'should return marker with properly set managedUsingOperations (to true)', () => {
+			const marker = setMarker( 'name', range, { usingOperation: true } );
+
+			expect( marker.managedUsingOperations ).to.equal( true );
+		} );
+
+		it( 'should return marker with properly set managedUsingOperations (to false)', () => {
+			const marker = setMarker( 'name', range, { usingOperation: false } );
+
+			expect( marker.managedUsingOperations ).to.equal( false );
+		} );
+
 		it( 'should update marker in the document marker collection', () => {
 			setMarker( 'name', range );
 
@@ -2094,15 +2106,15 @@ describe( 'Writer', () => {
 			expect( model.markers.get( 'name' ) ).to.be.null;
 		} );
 
-		it( 'should use MarkerOperation when usingOperation is set to true', () => {
-			setMarker( 'name', range );
+		it( 'should use MarkerOperation when marker was created using operation', () => {
+			setMarker( 'name', range, { usingOperation: true } );
 
 			const marker = model.markers.get( 'name' );
 			const spy = sinon.spy();
 
 			model.on( 'applyOperation', spy );
 
-			removeMarker( marker, { usingOperation: true } );
+			removeMarker( marker );
 
 			expect( spy.calledOnce ).to.be.true;
 			expect( spy.firstCall.args[ 1 ][ 0 ].type ).to.equal( 'marker' );

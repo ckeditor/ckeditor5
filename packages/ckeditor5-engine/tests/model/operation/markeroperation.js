@@ -30,14 +30,14 @@ describe( 'MarkerOperation', () => {
 	} );
 
 	it( 'should add marker to document marker collection', () => {
-		sinon.spy( model.markers, 'set' );
+		sinon.spy( model.markers, '_set' );
 
 		model.applyOperation( wrapInDelta(
 			new MarkerOperation( 'name', null, range, model.markers, doc.version )
 		) );
 
 		expect( doc.version ).to.equal( 1 );
-		expect( model.markers.set.calledWith( 'name', matchRange( range ) ) );
+		expect( model.markers._set.calledWith( 'name', matchRange( range ) ) );
 		expect( model.markers.get( 'name' ).getRange().isEqual( range ) ).to.be.true;
 	} );
 
@@ -48,14 +48,14 @@ describe( 'MarkerOperation', () => {
 
 		const range2 = Range.createFromParentsAndOffsets( root, 0, root, 3 );
 
-		sinon.spy( model.markers, 'set' );
+		sinon.spy( model.markers, '_set' );
 
 		model.applyOperation( wrapInDelta(
 			new MarkerOperation( 'name', range, range2, model.markers, doc.version )
 		) );
 
 		expect( doc.version ).to.equal( 2 );
-		expect( model.markers.set.calledWith( 'name', matchRange( range2 ) ) );
+		expect( model.markers._set.calledWith( 'name', matchRange( range2 ) ) );
 		expect( model.markers.get( 'name' ).getRange().isEqual( range2 ) ).to.be.true;
 	} );
 
@@ -64,14 +64,14 @@ describe( 'MarkerOperation', () => {
 			new MarkerOperation( 'name', null, range, model.markers, doc.version )
 		) );
 
-		sinon.spy( model.markers, 'remove' );
+		sinon.spy( model.markers, '_remove' );
 
 		model.applyOperation( wrapInDelta(
 			new MarkerOperation( 'name', range, null, model.markers, doc.version )
 		) );
 
 		expect( doc.version ).to.equal( 2 );
-		expect( model.markers.remove.calledWith( 'name' ) );
+		expect( model.markers._remove.calledWith( 'name' ) );
 		expect( model.markers.get( 'name' ) ).to.be.null;
 	} );
 
@@ -87,7 +87,7 @@ describe( 'MarkerOperation', () => {
 
 	it( 'should not fire document markers set event if newRange is same as current marker range', () => {
 		model.change( writer => {
-			writer.setMarker( 'name', range );
+			writer.setMarker( 'name', range, { usingOperation: true } );
 		} );
 
 		sinon.spy( model.markers, 'fire' );
