@@ -163,4 +163,3 @@ describe( 'ImageUploadUI', () => {
 		expect( executeStub.firstCall.args[ 1 ].file ).to.equal( files[ 0 ] );
 	} );
 } );
-

@@ -6,7 +6,7 @@
 /* globals document */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import Image from '@ckeditor/ckeditor5-image/src/image';
+import Image from '../src/image';
 import ImageUpload from '../src/imageupload';
 import ImageUploadEditing from '../src/imageupload/imageuploadediting';
 import ImageUploadProgress from '../src/imageupload/imageuploadprogress';
@@ -48,4 +48,3 @@ describe( 'ImageUpload', () => {
 		expect( editor.plugins.get( ImageUploadUI ) ).to.be.instanceOf( ImageUploadUI );
 	} );
 } );
-
