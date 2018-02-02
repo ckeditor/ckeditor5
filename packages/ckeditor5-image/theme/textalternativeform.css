@@ -3,18 +3,12 @@
  * For licensing, see LICENSE.md.
  */
 
-.cke-text-alternative-form {
-	overflow: hidden;
-}
+.ck-text-alternative-form {
+	& .ck-labeled-input {
+		display: inline-block;
+	}
 
-.cke-text-alternative-form__actions {
-	clear: both;
-
-	& .ck-button {
-		float: right;
-
-		& + .ck-button + .ck-button {
-			float: left;
-		}
+	& .ck-label {
+		display: none;
 	}
 }
