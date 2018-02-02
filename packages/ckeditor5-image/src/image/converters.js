@@ -52,9 +52,8 @@ export function viewFigureToModel() {
 		// modelCursor and modelRange ends after converted image.
 		data = Object.assign( data, conversionApi.convertItem( viewImage, data.modelCursor ) );
 
-		// Consume item from consumable list.
-		conversionApi.consumable.consume( viewImage, { name: true, attribute: 'src' } );
-		conversionApi.consumable.consume( data.viewItem, { name: true } );
+		// Consume figure from consumable list.
+		conversionApi.consumable.consume( data.viewItem, { name: true, class: 'image' } );
 
 		// Get image element from conversion result.
 		const modelImage = first( data.modelRange.getItems() );
