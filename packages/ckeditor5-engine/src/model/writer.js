@@ -815,7 +815,7 @@ export default class Writer {
 	 * @param {Boolean} [options.usingOperation=false] Flag indicated whether the marker should be added by MarkerOperation.
 	 * @returns {module:engine/model/markercollection~Marker} Marker that was set.
 	 */
-	setMarker( markerOrNameOrRange, rangeOrManagedUsingOperations, options ) {
+	setMarker( markerOrNameOrRange, rangeOrOptions, options ) {
 		this._assertWriterUsedCorrectly();
 
 		let markerName, newRange, usingOperation;
@@ -823,16 +823,16 @@ export default class Writer {
 		if ( markerOrNameOrRange instanceof Range ) {
 			markerName = uid();
 			newRange = markerOrNameOrRange;
-			usingOperation = !!rangeOrManagedUsingOperations && !!rangeOrManagedUsingOperations.usingOperation;
+			usingOperation = !!rangeOrOptions && !!rangeOrOptions.usingOperation;
 		} else {
 			markerName = typeof markerOrNameOrRange === 'string' ? markerOrNameOrRange : markerOrNameOrRange.name;
 
-			if ( rangeOrManagedUsingOperations instanceof Range ) {
-				newRange = rangeOrManagedUsingOperations;
+			if ( rangeOrOptions instanceof Range ) {
+				newRange = rangeOrOptions;
 				usingOperation = !!options && !!options.usingOperation;
 			} else {
 				newRange = null;
-				usingOperation = !!rangeOrManagedUsingOperations && !!rangeOrManagedUsingOperations.usingOperation;
+				usingOperation = !!rangeOrOptions && !!rangeOrOptions.usingOperation;
 			}
 		}
 

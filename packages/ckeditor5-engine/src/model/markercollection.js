@@ -111,7 +111,15 @@ export default class MarkerCollection {
 		if ( oldMarker ) {
 			const oldRange = oldMarker.getRange();
 
-			if ( oldRange.isEqual( range ) && managedUsingOperations === oldMarker.managedUsingOperations ) {
+			if ( managedUsingOperations !== oldMarker.managedUsingOperations ) {
+				/**
+				 * Marker's type should be consistent. Provide correct `managedUsingOperations` parameter.
+				 */
+				throw new CKEditorError( 'marker-set-incorrect-marker-type:' +
+				' Marker\'s type should be consistent. Provide correct `managedUsingOperations` parameter.' );
+			}
+
+			if ( oldRange.isEqual( range ) ) {
 				return oldMarker;
 			}
 

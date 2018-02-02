@@ -2004,11 +2004,14 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should accept marker instance', () => {
-			const marker = setMarker( 'name', range );
+			const marker = setMarker( 'name', range, { usingOperation: true } );
 			const range2 = Range.createFromParentsAndOffsets( root, 0, root, 0 );
 
 			setMarker( marker, range2, { usingOperation: true } );
-			const op = batch.deltas[ 0 ].operations[ 0 ];
+
+			expect( batch.deltas.length ).to.equal( 2 );
+
+			const op = batch.deltas[ 1 ].operations[ 0 ];
 
 			expect( model.markers.get( 'name' ).getRange().isEqual( range2 ) ).to.be.true;
 			expect( op.oldRange.isEqual( range ) ).to.be.true;
@@ -2016,7 +2019,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should accept empty range parameter if marker instance is passed and usingOperation is set to true', () => {
-			const marker = setMarker( 'name', range );
+			const marker = setMarker( 'name', range, { usingOperation: true } );
 			const spy = sinon.spy();
 
 			model.on( 'applyOperation', spy );
@@ -2071,6 +2074,14 @@ describe( 'Writer', () => {
 			expect( () => {
 				setMarker( 'name' );
 			} ).to.throw( CKEditorError, /^writer-setMarker-no-range/ );
+		} );
+
+		it( 'should throw if marker is updated incorrectly', () => {
+			setMarker( 'name', range );
+
+			expect( () => {
+				setMarker( 'name', range, { usingOperation: true } );
+			} ).to.throw( CKEditorError, /^marker-set-incorrect-marker-type/ );
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
