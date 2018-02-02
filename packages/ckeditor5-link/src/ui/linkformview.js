@@ -19,6 +19,8 @@ import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 
+import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
+import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 import '../../theme/linkform.css';
 
 /**
@@ -65,7 +67,7 @@ export default class LinkFormView extends View {
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
-		this.saveButtonView = this._createButton( t( 'Save' ) );
+		this.saveButtonView = this._createButton( t( 'Save' ), checkIcon );
 		this.saveButtonView.type = 'submit';
 
 		/**
@@ -73,14 +75,7 @@ export default class LinkFormView extends View {
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
-		this.cancelButtonView = this._createButton( t( 'Cancel' ), 'cancel' );
-
-		/**
-		 * The Unlink button view.
-		 *
-		 * @member {module:ui/button/buttonview~ButtonView}
-		 */
-		this.unlinkButtonView = this._createButton( t( 'Unlink' ), 'unlink' );
+		this.cancelButtonView = this._createButton( t( 'Cancel' ), cancelIcon, 'cancel' );
 
 		/**
 		 * A collection of views which can be focused in the form.
@@ -133,21 +128,8 @@ export default class LinkFormView extends View {
 
 			children: [
 				this.urlInputView,
-				{
-					tag: 'div',
-
-					attributes: {
-						class: [
-							'ck-link-form__actions'
-						]
-					},
-
-					children: [
-						this.saveButtonView,
-						this.cancelButtonView,
-						this.unlinkButtonView
-					]
-				}
+				this.saveButtonView,
+				this.cancelButtonView
 			]
 		} );
 	}
@@ -165,8 +147,7 @@ export default class LinkFormView extends View {
 		const childViews = [
 			this.urlInputView,
 			this.saveButtonView,
-			this.cancelButtonView,
-			this.unlinkButtonView
+			this.cancelButtonView
 		];
 
 		childViews.forEach( v => {
@@ -209,15 +190,19 @@ export default class LinkFormView extends View {
 	 * Creates a button view.
 	 *
 	 * @private
-	 * @param {String} label The button label
+	 * @param {String} label The button label.
+	 * @param {String} icon The button's icon.
 	 * @param {String} [eventName] An event name that the `ButtonView#execute` event will be delegated to.
 	 * @returns {module:ui/button/buttonview~ButtonView} The button view instance.
 	 */
-	_createButton( label, eventName ) {
+	_createButton( label, icon, eventName ) {
 		const button = new ButtonView( this.locale );
 
-		button.label = label;
-		button.withText = true;
+		button.set( {
+			label,
+			icon,
+			tooltip: true
+		} );
 
 		if ( eventName ) {
 			button.delegate( 'execute' ).to( this, eventName );
@@ -238,10 +223,4 @@ export default class LinkFormView extends View {
  * Fired when the form view is canceled, e.g. click on {@link #cancelButtonView}.
  *
  * @event cancel
- */
-
-/**
- * Fired when the {@link #unlinkButtonView} is clicked.
- *
- * @event unlink
  */
