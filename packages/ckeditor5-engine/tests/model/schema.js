@@ -1386,7 +1386,7 @@ describe( 'Schema', () => {
 			} );
 		} );
 
-		it( 'should return position ancestor that allows to insert given note to it', () => {
+		it( 'should return position ancestor that allows to insert given node to it', () => {
 			const node = new Element( 'paragraph' );
 
 			const allowedParent = schema.findAllowedParent( node, Position.createAt( r1bQp ) );
@@ -1394,7 +1394,7 @@ describe( 'Schema', () => {
 			expect( allowedParent ).to.equal( r1bQ );
 		} );
 
-		it( 'should return position ancestor that allows to insert given note to it when position is already i such an element', () => {
+		it( 'should return position ancestor that allows to insert given node to it when position is already i such an element', () => {
 			const node = new Text( 'text' );
 
 			const parent = schema.findAllowedParent( node, Position.createAt( r1bQp ) );
@@ -1402,9 +1402,23 @@ describe( 'Schema', () => {
 			expect( parent ).to.equal( r1bQp );
 		} );
 
-		it( 'should return null when limit element will be reached before allowed parent', () => {
+		it( 'should return null when limit element is reached before allowed parent', () => {
 			schema.extend( 'blockQuote', {
 				isLimit: true
+			} );
+			schema.register( 'div', {
+				allowIn: '$root'
+			} );
+			const node = new Element( 'div' );
+
+			const parent = schema.findAllowedParent( node, Position.createAt( r1bQp ) );
+
+			expect( parent ).to.null;
+		} );
+
+		it( 'should return null when object element is reached before allowed parent', () => {
+			schema.extend( 'blockQuote', {
+				isObject: true
 			} );
 			schema.register( 'div', {
 				allowIn: '$root'

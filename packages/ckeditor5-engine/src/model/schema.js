@@ -736,7 +736,8 @@ export default class Schema {
 				return parent;
 			}
 
-			if ( this.isLimit( parent ) ) {
+			// Do not split limit elements and objects.
+			if ( this.isLimit( parent ) || this.isObject( parent ) ) {
 				return null;
 			}
 
