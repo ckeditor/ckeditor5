@@ -18,7 +18,7 @@ function Markdown( editor ) {
 ClassicEditor
 	.create( document.querySelector( '#snippet-markdown' ), {
 		plugins: [ ArticlePluginSet, Markdown ],
-		toolbar: [ 'headings', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
+		toolbar: [ 'headings', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
 		image: {
 			toolbar: [ 'imageStyleFull', 'imageStyleSide', '|', 'imageTextAlternative' ]
 		}
