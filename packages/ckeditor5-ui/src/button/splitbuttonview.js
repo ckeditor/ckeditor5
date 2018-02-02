@@ -53,8 +53,7 @@ export default class SplitButtonView extends View {
 		this.set( 'isEnabled', true );
 
 		/**
-		 * The label of the button view visible to the user when {@link #withText} is `true`.
-		 * It can also be used to create a {@link #tooltip}.
+		 * Used to create a {@link #tooltip}.
 		 *
 		 * @observable
 		 * @member {String} #label
@@ -72,7 +71,7 @@ export default class SplitButtonView extends View {
 
 		/**
 		 * (Optional) An XML {@link module:ui/icon/iconview~IconView#content content} of the icon.
-		 * When defined, an {@link #iconView} will be added to the action button.
+		 * When defined, an {@link module:ui/button/buttonview~ButtonView#iconView} will be added to the {@link #actionView} button.
 		 *
 		 * @observable
 		 * @member {String} #icon

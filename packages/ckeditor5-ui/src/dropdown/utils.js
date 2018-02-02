@@ -135,7 +135,7 @@ export function addToolbarToDropdown( dropdownView, buttons ) {
 }
 
 /**
- * Adds an instance of {@link module:ui/dropdown/list/listdropdownview~ListDropdownView} to a dropdown.
+ * Adds an instance of {@link module:ui/list/listview~ListView} to a dropdown.
  *
  *		const items = new Collection();
  *
@@ -158,7 +158,7 @@ export function addToolbarToDropdown( dropdownView, buttons ) {
  * and {@link module:list/list~List}.
  *
  * @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView A dropdown instance to which `ListVIew` will be added.
- * @param {module:utils/collection~Collection.<module:utils/observablemixin~Observable>} items
+ * @param {module:utils/collection~Collection} items
  * that the inner dropdown {@link module:ui/list/listview~ListView} children are created from.
  *
  * Usually, it is a collection of {@link module:ui/model~Model models}.

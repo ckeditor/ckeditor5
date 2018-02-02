@@ -33,9 +33,8 @@ import '../../theme/components/dropdown/dropdown.css';
  *		// Will render a dropdown with a panel containing a "Content of the panel" text.
  *		document.body.appendChild( dropdown.element );
  *
- * Also see {@link module:ui/dropdown/createdropdown~createDropdown} and
- * {@link module:ui/dropdown/list/createlistdropdown~createListDropdown} to learn about different
- * dropdown creation helpers.
+ * Also see {@link module:ui/dropdown/utils~createDropdown} and {@link module:ui/dropdown/utils~createSplitButtonDropdown}
+ * to learn about different dropdown creation helpers.
  *
  * @extends module:ui/view~View
  */
@@ -209,6 +208,49 @@ export default class DropdownView extends View {
 		 *
 		 * @observable
 		 * @member {Boolean} #icon
+		 */
+
+		/**
+		 * Controls dropdown's toolbar direction.
+		 * **Note**: Only supported when dropdown has list view added using {@link module:ui/dropdown/utils~addToolbarToDropdown}.
+		 *
+		 * @observable
+		 * @member {Boolean} #isVertical=false
+		 */
+
+		/**
+		 * A child {@link module:ui/list/listview~ListView list view} of the dropdown located
+		 * in its {@link module:ui/dropdown/dropdownview~DropdownView#panelView panel}.
+		 *
+		 * **Note**: Only supported when dropdown has list view added using {@link module:ui/dropdown/utils~addListToDropdown}.
+		 *
+		 * @readonly
+		 * @member {module:ui/list/listview~ListView} #listView
+		 */
+
+		/**
+		 * A child toolbar of the dropdown located in the
+		 * {@link module:ui/dropdown/dropdownview~DropdownView#panelView panel}.
+		 *
+		 * **Note**: Only supported when dropdown has list view added using {@link module:ui/dropdown/utils~addToolbarToDropdown}.
+		 *
+		 * @readonly
+		 * @member {module:ui/toolbar/toolbarview~ToolbarView} #toolbarView
+		 */
+
+		/**
+		 * Fired when the toolbar button or list item is executed.
+		 *
+		 * For {@link #listView} It fires when one of the list items has been
+		 * {@link module:ui/list/listitemview~ListItemView#event:execute executed}.
+		 *
+		 * For {@link #toolbarView} It fires when one of the buttons has been
+		 * {@link module:ui/button/buttonview~ButtonView#event:execute executed}.
+		 *
+		 * **Note**: Only supported when dropdown has list view added using {@link module:ui/dropdown/utils~addListToDropdown}
+		 * or {@link module:ui/dropdown/utils~addToolbarToDropdown}.
+		 *
+		 * @event #execute
 		 */
 	}
 
