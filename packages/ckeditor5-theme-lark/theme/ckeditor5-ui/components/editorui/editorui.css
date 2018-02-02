@@ -22,6 +22,11 @@
 	overflow: auto;
 	padding: 0 var(--ck-spacing-standard);
 	border: 1px solid transparent;
+
+	/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/116 */
+	& > *:first-child {
+		margin-top: var(--ck-spacing-standard);
+	}
 }
 
 .ck-editor-toolbar {
