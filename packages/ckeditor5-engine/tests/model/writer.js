@@ -2063,7 +2063,7 @@ describe( 'Writer', () => {
 
 		it( 'should throw if marker with given name does not exist and range is not passed', () => {
 			expect( () => {
-				setMarker( 'name', null, { usingOperation: true } );
+				setMarker( 'name', { usingOperation: true } );
 			} ).to.throw( CKEditorError, /^writer-setMarker-no-range/ );
 		} );
 

@@ -764,7 +764,8 @@ export default class Writer {
 	 * Adds or updates {@link module:engine/model/markercollection~Marker marker} with given name to given `range`.
 	 *
 	 * It uses {@link module:engine/model/operation/markeroperation~MarkerOperation} when `options.usingOperation` is set to true.
-	 * Otherwise adds directly to the {@link module:engine/model/MarkerCollection~MarkerCollection}.
+	 * Otherwise adds directly to the {@link module:engine/model/MarkerCollection~MarkerCollection}. For additional information about
+	 * the difference between those two types see {@link module:/engine/model/markercollection~MarkerCollection}.
 	 *
 	 * If passed name is a name of already existing marker (or {@link module:engine/model/markercollection~Marker Marker} instance
 	 * is passed), `range` parameter may be omitted (only for setting markers using operation). In this case marker will not be updated in
@@ -826,6 +827,11 @@ export default class Writer {
 
 		if ( !usingOperation ) {
 			if ( !newRange ) {
+				/**
+			 	 * Range parameter is required when adding a new marker.
+				 *
+				 * @error writer-setMarker-no-range
+				 */
 				throw new CKEditorError( 'writer-setMarker-no-range: Range parameter is required when adding a new marker.' );
 			}
 
@@ -835,11 +841,6 @@ export default class Writer {
 		const currentMarker = this.model.markers.get( markerName );
 
 		if ( !newRange && !currentMarker ) {
-			/**
-			 * Range parameter is required when adding a new marker.
-			 *
-			 * @error writer-setMarker-no-range
-			 */
 			throw new CKEditorError( 'writer-setMarker-no-range: Range parameter is required when adding a new marker.' );
 		}
 
