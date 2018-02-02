@@ -4,7 +4,7 @@
  */
 
 /**
- * @module utils/dom/isdomnode
+ * @module utils/dom/isnode
  */
 
 /**
@@ -13,7 +13,7 @@
  * @param {*} obj
  * @returns {Boolean}
  */
-export default function isDomNode( obj ) {
+export default function isNode( obj ) {
 	if ( obj ) {
 		if ( obj.defaultView ) {
 			return obj instanceof obj.defaultView.Document;

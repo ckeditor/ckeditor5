@@ -10,7 +10,7 @@
 import { default as EmitterMixin, _getEmitterListenedTo, _setEmitterId } from '../emittermixin';
 import uid from '../uid';
 import extend from '../lib/lodash/extend';
-import isDomNode from './isdomnode';
+import isNode from './isnode';
 import isWindow from './iswindow';
 
 /**
@@ -53,7 +53,7 @@ const DomEmitterMixin = extend( {}, EmitterMixin, {
 	listenTo( emitter, ...rest ) {
 		// Check if emitter is an instance of DOM Node. If so, replace the argument with
 		// corresponding ProxyEmitter (or create one if not existing).
-		if ( isDomNode( emitter ) || isWindow( emitter ) ) {
+		if ( isNode( emitter ) || isWindow( emitter ) ) {
 			const proxy = this._getProxyEmitter( emitter ) || new ProxyEmitter( emitter );
 
 			proxy.attach( ...rest );
@@ -82,7 +82,7 @@ const DomEmitterMixin = extend( {}, EmitterMixin, {
 	 */
 	stopListening( emitter, event, callback ) {
 		// Check if emitter is an instance of DOM Node. If so, replace the argument with corresponding ProxyEmitter.
-		if ( isDomNode( emitter ) || isWindow( emitter ) ) {
+		if ( isNode( emitter ) || isWindow( emitter ) ) {
 			const proxy = this._getProxyEmitter( emitter );
 
 			// Element has no listeners.
