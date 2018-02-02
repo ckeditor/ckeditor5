@@ -81,7 +81,7 @@ describe( 'Image converters', () => {
 			expect( imgConverterCalled ).to.be.true;
 		} );
 
-		it( 'should convert non-img children in image context and append them to model image element', () => {
+		it( 'should convert children allowed by schema and omit disallowed', () => {
 			buildViewConverter().for( editor.data.viewToModel ).fromElement( 'foo' ).toElement( 'foo' );
 			buildViewConverter().for( editor.data.viewToModel ).fromElement( 'bar' ).toElement( 'bar' );
 

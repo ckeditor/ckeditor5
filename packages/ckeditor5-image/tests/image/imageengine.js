@@ -248,17 +248,6 @@ describe( 'ImageEngine', () => {
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( '<div></div>' );
 			} );
 
-			it( 'should handle figure with two images', () => {
-				model.schema.extend( '$text', { allowIn: 'image' } );
-
-				editor.setData( '<figure class="image"><img src="foo.jpg" /><img src="bar.jpg" />abc</figure>' );
-
-				// The foo.jpg image is properly converted using figure converter. The other image was tried to
-				// be added as a child of foo.jpg and then was autohoisted.
-				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<image src="bar.jpg"></image><image src="foo.jpg">abc</image>' );
-			} );
-
 			it( 'should convert image with srcset attribute', () => {
 				editor.setData(
 					'<figure class="image">' +

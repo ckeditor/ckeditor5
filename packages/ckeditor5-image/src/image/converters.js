@@ -8,7 +8,6 @@
  */
 
 import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
-import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 import first from '@ckeditor/ckeditor5-utils/src/first';
 
 /**
@@ -32,11 +31,6 @@ export function viewFigureToModel() {
 			return;
 		}
 
-		// Do not convert if image cannot be placed in model at current position.
-		if ( !conversionApi.schema.checkChild( data.modelCursor, 'image' ) ) {
-			return;
-		}
-
 		// Find an image element inside the figure element.
 		const viewImage = Array.from( data.viewItem.getChildren() ).find( viewChild => viewChild.is( 'img' ) );
 
@@ -45,18 +39,34 @@ export function viewFigureToModel() {
 			return;
 		}
 
-		// Convert view image to model image.
-		const { modelRange } = conversionApi.convertItem( viewImage, data.modelCursor );
+		// Find allowed ancestor in model for image that is gong to be inserted.
+		const splitResult = conversionApi.splitToAllowedParent( 'image', data.modelCursor );
+
+		// Do not convert if image cannot be placed in model at current position and in any of ancestors.
+		if ( !splitResult ) {
+			return;
+		}
+
+		// Convert view image to model image and save result as a conversion result.
+		// Image is an object, so we are sure that it won't be split so at this stage of conversion
+		// modelCursor and modelRange ends after converted image.
+		data = Object.assign( data, conversionApi.convertItem( viewImage, data.modelCursor ) );
+
+		// Consume item from consumable list.
+		conversionApi.consumable.consume( viewImage, { name: true, attribute: 'src' } );
+		conversionApi.consumable.consume( data.viewItem, { name: true } );
 
 		// Get image element from conversion result.
-		const modelImage = first( modelRange.getItems() );
+		const modelImage = first( data.modelRange.getItems() );
 
 		// Convert rest of the figure element's children as an image children.
 		conversionApi.convertChildren( data.viewItem, ModelPosition.createAt( modelImage ) );
 
-		// Set model image as conversion result.
-		data.modelRange = ModelRange.createOn( modelImage );
-		data.modelCursor = data.modelRange.end;
+		// When parent of current modelCursor had to be split to insert image let's
+		// continue conversion inside split element.
+		if ( splitResult.cursorParent ) {
+			data.modelCursor = ModelPosition.createAt( splitResult.cursorParent );
+		}
 	};
 }
 
