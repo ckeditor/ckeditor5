@@ -3427,6 +3427,18 @@ describe( 'ListEngine', () => {
 				.to.equal( '<ul><li>Foo<span></span><ul><li>Xxx</li><li>Yyy</li></ul></li></ul>' );
 		} );
 
+		it( 'list should be not converted in disallowed context', () => {
+			model.document.createRoot( '$title', 'title' );
+			model.schema.register( '$title', {
+				disallow: '$block',
+				allow: 'inline'
+			} );
+
+			const data = editor.data;
+
+			expect( data.stringify( data.parse( '<ul><li>foo</li></ul>', [ 'title' ] ) ) ).to.equal( '' );
+		} );
+
 		describe( 'remove converter should properly handle ui elements', () => {
 			let uiElement, liFoo, liBar;
 

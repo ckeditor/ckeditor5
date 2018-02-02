@@ -369,9 +369,17 @@ export function viewModelConverter( evt, data, conversionApi ) {
 		// `listItem`s created recursively should have bigger indent.
 		conversionStore.indent++;
 
-		writer.insert( listItem, data.modelCursor );
+		// Try to find allowed parent for list item.
+		const splitResult = conversionApi.splitToAllowedParent( listItem, data.modelCursor );
 
-		// Remember position after list item.
+		// When there is no allowed parent it means that list item can not be converted at current modelCursor.
+		if ( !splitResult ) {
+			return;
+		}
+
+		writer.insert( listItem, splitResult.position );
+
+		// Remember position after list item, next list items will be inserted at this position.
 		let nextPosition = ModelPosition.createAfter( listItem );
 
 		// Check all children of the converted `<li>`.
@@ -391,7 +399,12 @@ export function viewModelConverter( evt, data, conversionApi ) {
 		conversionStore.indent--;
 
 		data.modelRange = new ModelRange( data.modelCursor, nextPosition );
-		data.modelCursor = data.modelRange.end;
+
+		if ( splitResult.cursorParent ) {
+			data.modelCursor = ModelPosition.createAt( splitResult.cursorParent );
+		} else {
+			data.modelCursor = data.modelRange.end;
+		}
 	}
 }
 
