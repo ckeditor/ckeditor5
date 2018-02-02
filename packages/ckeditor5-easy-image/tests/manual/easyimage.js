@@ -18,7 +18,7 @@ ClassicEditor
 			tokenUrl: TOKEN_URL
 		},
 		plugins: [ ArticlePluginSet, EasyImage ],
-		toolbar: [ 'headings', 'undo', 'redo', 'uploadImage' ],
+		toolbar: [ 'headings', '|', 'undo', 'redo', 'uploadImage' ],
 		image: {
 			toolbar: [ 'imageStyleFull', 'imageStyleSide', '|', 'imageTextAlternative' ]
 		}
