@@ -12,7 +12,9 @@ import Alignment from '../../src/alignment';
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ ArticlePluginSet, Alignment ],
-		toolbar: [ 'headings', 'bold', 'italic', 'link', 'alignmentDropdown', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ]
+		toolbar: [
+			'headings', '|', 'bold', 'italic', 'link', 'alignmentDropdown', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'
+		]
 	} )
 	.then( editor => {
 		window.editor = editor;

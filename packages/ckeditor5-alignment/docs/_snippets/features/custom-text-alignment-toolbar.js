@@ -9,7 +9,7 @@ ClassicEditor
 	.create( document.querySelector( '#snippet-custom-text-alignment-toolbar' ), {
 		toolbar: {
 			items: [
-				'headings', 'alignLeft', 'alignRight', 'alignCenter', 'alignJustify'
+				'headings', '|', 'alignLeft', 'alignRight', 'alignCenter', 'alignJustify'
 			],
 			viewportTopOffset: 60
 		}

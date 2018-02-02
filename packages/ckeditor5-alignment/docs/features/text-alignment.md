@@ -24,7 +24,7 @@ ClassicEditor
 			options: [ 'left', 'right' ]
 		},
 		toolbar: [
-			'headings', 'bulletedList', 'numberedList', 'alignmentDropdown', 'undo', 'redo'
+			'headings', '|', 'bulletedList', 'numberedList', 'alignmentDropdown', 'undo', 'redo'
 		]
 	} )
 	.then( ... )
@@ -41,7 +41,7 @@ You can choose to use the alignment drop-down (`'alignmentDropdown'`) or configu
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		toolbar: [
-			'headings', 'alignLeft', 'alignRight', 'alignCenter', 'alignJustify'
+			'headings', '|', 'alignLeft', 'alignRight', 'alignCenter', 'alignJustify'
 		]
 	} )
 	.then( ... )

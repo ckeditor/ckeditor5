@@ -13,7 +13,7 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ ArticlePluginSet, Alignment ],
 		toolbar: [
-			'headings', 'bold', 'italic', 'link', 'alignmentDropdown', 'bulletedList', 'numberedList',
+			'headings', '|', 'bold', 'italic', 'link', 'alignmentDropdown', 'bulletedList', 'numberedList',
 			'blockQuote', 'undo', 'redo'
 		],
 		alignment: { options: [ 'center', 'justify' ] }
