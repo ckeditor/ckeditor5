@@ -12,7 +12,7 @@ import HeadingEngine from './headingengine';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Model from '@ckeditor/ckeditor5-ui/src/model';
 
-import { createDropdown, addListViewToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
+import { createDropdown, addListToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 
@@ -73,7 +73,7 @@ export default class Heading extends Plugin {
 			}
 
 			const dropdownView = createDropdown( locale );
-			addListViewToDropdown( dropdownView, dropdownItems );
+			addListToDropdown( dropdownView, dropdownItems );
 
 			dropdownView.set( {
 				isOn: false,
