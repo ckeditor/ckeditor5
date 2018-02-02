@@ -4,7 +4,7 @@
  */
 
 /**
- * @module ui/button/buttonview
+ * @module ui/button/splitbuttonview
  */
 
 import View from '../view';
@@ -62,6 +62,15 @@ export default class SplitButtonView extends View {
 		this.set( 'label' );
 
 		/**
+		 * (Optional) The keystroke associated with the button, i.e. <kbd>CTRL+B</kbd>,
+		 * in the string format compatible with {@link module:utils/keyboard}.
+		 *
+		 * @observable
+		 * @member {Boolean} #keystroke
+		 */
+		this.set( 'keystroke' );
+
+		/**
 		 * (Optional) An XML {@link module:ui/icon/iconview~IconView#content content} of the icon.
 		 * When defined, an {@link #iconView} will be added to the action button.
 		 *
@@ -71,6 +80,44 @@ export default class SplitButtonView extends View {
 		this.set( 'icon' );
 
 		/**
+		 * (Optional) Tooltip of the button, i.e. displayed when hovering the button with the mouse cursor.
+		 *
+		 * * If defined as a `Boolean` (e.g. `true`), then combination of `label` and `keystroke` will be set as a tooltip.
+		 * * If defined as a `String`, tooltip will equal the exact text of that `String`.
+		 * * If defined as a `Function`, `label` and `keystroke` will be passed to that function, which is to return
+		 * a string with the tooltip text.
+		 *
+		 *		const view = new ButtonView( locale );
+		 *		view.tooltip = ( label, keystroke ) => `A tooltip for ${ label } and ${ keystroke }.`
+		 *
+		 * @observable
+		 * @default false
+		 * @member {Boolean|String|Function} #tooltip
+		 */
+		this.set( 'tooltip' );
+
+		/**
+		 * Controls whether the button view is "on". It makes sense when a feature it represents
+		 * is currently active, e.g. a bold button is "on" when the selection is in the bold text.
+		 *
+		 * To disable the button, use {@link #isEnabled} instead.
+		 *
+		 * @observable
+		 * @member {Boolean} #isOn
+		 */
+		this.set( 'isOn', false );
+
+		/**
+		 * Controls whether the button view is enabled, i.e. it can be clicked and execute an action.
+		 *
+		 * To change the "on" state of the button, use {@link #isOn} instead.
+		 *
+		 * @observable
+		 * @member {Boolean} #isEnabled
+		 */
+		this.set( 'isEnabled', true );
+
+		/**
 		 * Collection of the child views inside of the split button {@link #element}.
 		 *
 		 * @readonly
@@ -78,7 +125,20 @@ export default class SplitButtonView extends View {
 		 */
 		this.children = this.createCollection();
 
+		/**
+		 * A main button of split button.
+		 *
+		 * @readonly
+		 * @member {module:ui/button/buttonview~ButtonView}
+		 */
 		this.actionView = this._createActionView();
+
+		/**
+		 * A secondary button of split button that opens dropdown.
+		 *
+		 * @readonly
+		 * @member {module:ui/button/buttonview~ButtonView}
+		 */
 		this.selectView = this._createSelectView();
 
 		/**
@@ -162,7 +222,7 @@ export default class SplitButtonView extends View {
 	_createActionView() {
 		const buttonView = new ButtonView();
 
-		buttonView.bind( 'icon', 'isEnabled', 'label' ).to( this );
+		buttonView.bind( 'icon', 'isEnabled', 'label', 'isOn', 'tooltip', 'keystroke' ).to( this );
 
 		buttonView.delegate( 'execute' ).to( this );
 

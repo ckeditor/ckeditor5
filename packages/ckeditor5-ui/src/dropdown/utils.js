@@ -79,8 +79,7 @@ export function createDropdown( locale ) {
  * @returns {module:ui/dropdown/dropdownview~DropdownView} The dropdown view instance.
  */
 export function createSplitButtonDropdown( locale ) {
-	const buttonView = createSplitButtonForDropdown( locale );
-
+	const buttonView = new SplitButtonView( locale );
 	const dropdownView = prepareDropdown( locale, buttonView );
 
 	addDefaultBehavior( dropdownView );
@@ -198,19 +197,6 @@ function prepareDropdown( locale, buttonView ) {
 	} );
 
 	return dropdownView;
-}
-
-// Creates a split button view instance to be used as a toolbar button that opens a dropdown.
-//
-// @param {module:utils/locale~Locale} locale The locale instance.
-// @returns {module:ui/button/splitbuttonview~SplitButtonView}
-function createSplitButtonForDropdown( locale ) {
-	const splitButtonView = new SplitButtonView( locale );
-
-	// TODO: Check if those binding are in good place (maybe move them to SplitButton) or add tests.
-	splitButtonView.actionView.bind( 'isOn', 'tooltip' ).to( splitButtonView );
-
-	return splitButtonView;
 }
 
 // Creates a default button view instance to be used as a toolbar button that opens a dropdown.
