@@ -28,10 +28,10 @@
     "@ckeditor/ckeditor5-paragraph": "ckeditor/ckeditor5-paragraph#d0f0a60",
     "@ckeditor/ckeditor5-theme-lark": "ckeditor/ckeditor5-theme-lark#ebfd5b6",
     "@ckeditor/ckeditor5-typing": "ckeditor/ckeditor5-typing#89190a8",
-    "@ckeditor/ckeditor5-ui": "ckeditor/ckeditor5-ui#c5cea07",
+    "@ckeditor/ckeditor5-ui": "ckeditor/ckeditor5-ui#3175a64",
     "@ckeditor/ckeditor5-undo": "ckeditor/ckeditor5-undo#72e0836",
     "@ckeditor/ckeditor5-upload": "ckeditor/ckeditor5-upload#55697a9",
-    "@ckeditor/ckeditor5-utils": "ckeditor/ckeditor5-utils#a9a6bec",
+    "@ckeditor/ckeditor5-utils": "ckeditor/ckeditor5-utils#1823196",
     "@ckeditor/ckeditor5-widget": "ckeditor/ckeditor5-widget#08b4f4e"
   }
 }
