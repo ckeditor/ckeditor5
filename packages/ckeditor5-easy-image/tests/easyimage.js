@@ -8,7 +8,7 @@
 import EasyImage from '../src/easyimage';
 import CloudServicesUploadAdapter from '../src/cloudservicesuploadadapter';
 import Image from '@ckeditor/ckeditor5-image/src/image';
-import ImageUpload from '@ckeditor/ckeditor5-upload/src/imageupload';
+import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import UploadGatewayMock from './_utils/uploadgatewaymock';
 import { createNativeFileMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
