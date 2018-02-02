@@ -8,9 +8,6 @@
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-
-import TreeWalker from '../../../../src/model/treewalker';
-import Position from '../../../../src/model/position';
 import Range from '../../../../src/model/range';
 import LivePosition from '../../../../src/model/liveposition';
 
@@ -45,49 +42,43 @@ class Link extends Plugin {
 	}
 }
 
-const urlRegex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/;
-
 class AutoLinker extends Plugin {
 	init() {
-		this.editor.model.document.on( 'change', ( event, type, changes, batch ) => {
-			if ( type != 'insert' ) {
-				return;
-			}
+		this.editor.model.document.on( 'change', () => {
+			const changes = this.editor.model.document.differ.getChanges();
 
-			for ( const value of changes.range.getItems( { singleCharacters: true } ) ) {
-				const walker = new TreeWalker( {
-					direction: 'backward',
-					startPosition: Position.createAfter( value )
-				} );
+			for ( const entry of changes ) {
+				if ( entry.type != 'insert' || entry.name != '$text' || !entry.position.textNode ) {
+					continue;
+				}
 
-				const currentValue = walker.next().value;
-				const text = currentValue.item.data;
+				const textNode = entry.position.textNode;
+				const text = textNode.data;
 
 				if ( !text ) {
 					return;
 				}
 
-				const matchedUrl = urlRegex.exec( text );
+				const regexp = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/g;
+				let match;
 
-				if ( !matchedUrl ) {
-					return;
+				while ( ( match = regexp.exec( text ) ) !== null ) {
+					const index = match.index;
+					const url = match[ 0 ];
+					const length = url.length;
+
+					if ( entry.position.offset + entry.length == index + length ) {
+						const livePos = LivePosition.createFromParentAndOffset( textNode.parent, index );
+						this.editor.model.enqueueChange( writer => {
+							const urlRange = Range.createFromPositionAndShift( livePos, length );
+							writer.setAttribute( 'link', url, urlRange );
+						} );
+						return;
+					}
 				}
-
-				const url = matchedUrl[ 0 ];
-				const offset = _getLastPathPart( currentValue.nextPosition.path ) + matchedUrl.index;
-				const livePos = LivePosition.createFromParentAndOffset( currentValue.item.parent, offset );
-
-				this.editor.model.enqueueChange( batch, writer => {
-					const urlRange = Range.createFromPositionAndShift( livePos, url.length );
-					writer.setAttribute( 'link', url, urlRange );
-				} );
 			}
 		} );
 	}
-}
-
-function _getLastPathPart( path ) {
-	return path[ path.length - 1 ];
 }
 
 ClassicEditor.create( document.querySelector( '#editor' ), {
