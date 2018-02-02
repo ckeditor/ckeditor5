@@ -24,3 +24,18 @@
  * @readonly
  * @member {module:ui/list/listview~ListView} #listView
  */
+
+/**
+ *
+ *
+ * @observable
+ * @member {module:utils/collection~Collection.<module:utils/observablemixin~Observable>} #items
+ */
+
+/**
+ * Fired when the list dropdown is executed. It fires when one of the list items in
+ * {@link #items the collection} has been
+ * {@link module:ui/list/listitemview~ListItemView#event:execute executed}.
+ *
+ * @event #execute
+ */

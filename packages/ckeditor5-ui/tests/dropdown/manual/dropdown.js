@@ -15,7 +15,7 @@ import alignRightIcon from '@ckeditor/ckeditor5-core/theme/icons/object-right.sv
 import alignCenterIcon from '@ckeditor/ckeditor5-core/theme/icons/object-center.svg';
 import ButtonView from '../../../src/button/buttonview';
 
-import { createDropdown, addToolbarToDropdown, addListViewToDropdown } from '../../../src/dropdown/utils';
+import { createDropdown, addToolbarToDropdown, addListToDropdown } from '../../../src/dropdown/utils';
 
 const ui = testUtils.createTestUIView( {
 	dropdown: '#dropdown',
@@ -59,7 +59,7 @@ function testList() {
 		withText: true
 	} );
 
-	addListViewToDropdown( dropdownView, collection );
+	addListToDropdown( dropdownView, collection );
 
 	dropdownView.on( 'execute', evt => {
 		/* global console */

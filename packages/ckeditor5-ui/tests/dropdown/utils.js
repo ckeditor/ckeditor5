@@ -17,7 +17,7 @@ import DropdownPanelView from '../../src/dropdown/dropdownpanelview';
 import SplitButtonView from '../../src/button/splitbuttonview';
 import View from '../../src/view';
 import ToolbarView from '../../src/toolbar/toolbarview';
-import { createDropdown, createSplitButtonDropdown, addToolbarToDropdown, addListViewToDropdown } from '../../src/dropdown/utils';
+import { createDropdown, createSplitButtonDropdown, addToolbarToDropdown, addListToDropdown } from '../../src/dropdown/utils';
 import ListItemView from '../../src/list/listitemview';
 import ListView from '../../src/list/listview';
 
@@ -306,7 +306,7 @@ describe( 'utils', () => {
 		} );
 	} );
 
-	describe( 'addListViewToDropdown()', () => {
+	describe( 'addListToDropdown()', () => {
 		let items;
 
 		beforeEach( () => {
@@ -319,7 +319,7 @@ describe( 'utils', () => {
 				label: 'foo'
 			} );
 
-			addListViewToDropdown( dropdownView, items );
+			addListToDropdown( dropdownView, items );
 
 			dropdownView.render();
 			document.body.appendChild( dropdownView.element );

@@ -20,30 +20,27 @@ import clickOutsideHandler from '../bindings/clickoutsidehandler';
 import '../../theme/components/dropdown/toolbardropdown.css';
 
 /**
- * A helper which creates an instance of {@link module:ui/dropdown/dropdownview~DropdownView} class using
- * a provided {@link module:ui/dropdown/dropdownmodel~DropdownModel}.
+ * A helper which creates an instance of {@link module:ui/dropdown/dropdownview~DropdownView} class with an instance of
+ * {@link module:ui/button/buttonview~ButtonView} in toolbar.
  *
- *		const model = new Model( {
+ *		const dropdown = createDropdown( model );
+ *
+ *		// Configure dropdown properties:
+ *		dropdown.set( {
  *			label: 'A dropdown',
  *			isEnabled: true,
  *			isOn: false,
  *			withText: true
  *		} );
  *
- *		const dropdown = createDropdown( model );
- *
  *		dropdown.render();
  *
  *		// Will render a dropdown labeled "A dropdown" with an empty panel.
  *		document.body.appendChild( dropdown.element );
  *
- * The model instance remains in control of the dropdown after it has been created. E.g. changes to the
- * {@link module:ui/dropdown/dropdownmodel~DropdownModel#label `model.label`} will be reflected in the
- * dropdown button's {@link module:ui/button/buttonview~ButtonView#label} attribute and in DOM.
+ * Also see {@link module:ui/dropdown/utils~createSplitButtonDropdown}, {@link module:ui/dropdown/utils~addListToDropdown}
+ * and {@link module:ui/dropdown/utils~addToolbarToDropdown}.
  *
- * Also see {@link module:ui/dropdown/list/createlistdropdown~createListDropdown}.
- *
- * @param {module:ui/dropdown/dropdownmodel~DropdownModel} model Model of this dropdown.
  * @param {module:utils/locale~Locale} locale The locale instance.
  * @returns {module:ui/dropdown/dropdownview~DropdownView} The dropdown view instance.
  */
@@ -58,30 +55,26 @@ export function createDropdown( locale ) {
 }
 
 /**
- * A helper which creates an instance of {@link module:ui/dropdown/dropdownview~DropdownView} class using
- * a provided {@link module:ui/dropdown/dropdownmodel~DropdownModel}.
+ * A helper which creates an instance of {@link module:ui/dropdown/dropdownview~DropdownView} class with an instance of
+ * {@link module:ui/button/splitbuttonview~SplitButtonView} in toolbar.
  *
- *		const model = new Model( {
+ *		const dropdown = createSplitButtonDropdown( model );
+ *
+ *		// Configure dropdown properties:
+ *		dropdown.set( {
  *			label: 'A dropdown',
  *			isEnabled: true,
- *			isOn: false,
- *			withText: true
+ *			isOn: false
  *		} );
- *
- *		const dropdown = createDropdown( model );
  *
  *		dropdown.render();
  *
  *		// Will render a dropdown labeled "A dropdown" with an empty panel.
  *		document.body.appendChild( dropdown.element );
  *
- * The model instance remains in control of the dropdown after it has been created. E.g. changes to the
- * {@link module:ui/dropdown/dropdownmodel~DropdownModel#label `model.label`} will be reflected in the
- * dropdown button's {@link module:ui/button/buttonview~ButtonView#label} attribute and in DOM.
+ * Also see {@link module:ui/dropdown/utils~createDropdown}, {@link module:ui/dropdown/utils~addListToDropdown}
+ * and {@link module:ui/dropdown/utils~addToolbarToDropdown}.
  *
- * Also see {@link module:ui/dropdown/list/createlistdropdown~createListDropdown}.
- *
- * @param {module:ui/dropdown/dropdownmodel~DropdownModel} model Model of this dropdown.
  * @param {module:utils/locale~Locale} locale The locale instance.
  * @returns {module:ui/dropdown/dropdownview~DropdownView} The dropdown view instance.
  */
@@ -98,36 +91,30 @@ export function createSplitButtonDropdown( locale ) {
 }
 
 /**
- * Creates an instance of {@link module:ui/dropdown/button/buttondropdownview~ButtonDropdownView} class using
- * a provided {@link module:ui/dropdown/button/buttondropdownmodel~ButtonDropdownModel}.
+ * Adds an instance of {@link module:ui/toolbar/toolbarview~ToolbarView} to a dropdown.
  *
  *		const buttons = [];
  *
+ * 		// Either create a new ButtonView instance or create existing.
  *		buttons.push( new ButtonView() );
  *		buttons.push( editor.ui.componentFactory.get( 'someButton' ) );
  *
- *		const model = new Model( {
- *			label: 'A button dropdown',
- *			isVertical: true,
- *			buttons
- *		} );
+ *		const dropdown = createDropdown( locale );
  *
- *		const dropdown = createButtonDropdown( model, locale );
+ *		addToolbarToDropdown( dropdown, buttons );
+ *
+ *		dropdown.isVertical = true;
  *
  *		// Will render a vertical button dropdown labeled "A button dropdown"
  *		// with a button group in the panel containing two buttons.
  *		dropdown.render()
  *		document.body.appendChild( dropdown.element );
  *
- * The model instance remains in control of the dropdown after it has been created. E.g. changes to the
- * {@link module:ui/dropdown/dropdownmodel~DropdownModel#label `model.label`} will be reflected in the
- * dropdown button's {@link module:ui/button/buttonview~ButtonView#label} attribute and in DOM.
+ * See {@link module:ui/dropdown/utils~createDropdown}, {@link module:ui/dropdown/utils~createSplitButtonDropdown}
+ * and {@link module:ui/toolbar/toolbarview~ToolbarView}.
  *
- * See {@link module:ui/dropdown/createdropdown~createDropdown}.
- *
- * @param {module:ui/dropdown/button/buttondropdownmodel~ButtonDropdownModel} model Model of the list dropdown.
- * @param {module:utils/locale~Locale} locale The locale instance.
- * @returns {module:ui/dropdown/dropdownview~DropdownView}
+ * @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView A dropdown instance to which `ToolbarView` will be added.
+ * @param {Iterable.<module:ui/button/buttonview~ButtonView>} buttons
  */
 export function addToolbarToDropdown( dropdownView, buttons ) {
 	const toolbarView = dropdownView.toolbarView = new ToolbarView();
@@ -140,59 +127,46 @@ export function addToolbarToDropdown( dropdownView, buttons ) {
 		}
 	} );
 
-	// TODO: bind buttons to items in toolbar
 	buttons.map( view => toolbarView.items.add( view ) );
 
 	dropdownView.panelView.children.add( toolbarView );
 	toolbarView.items.delegate( 'execute' ).to( dropdownView );
-
-	return toolbarView;
 }
 
 /**
- * Creates an instance of {@link module:ui/dropdown/list/listdropdownview~ListDropdownView} class using
- * a provided {@link module:ui/dropdown/list/listdropdownmodel~ListDropdownModel}.
+ * Adds an instance of {@link module:ui/dropdown/list/listdropdownview~ListDropdownView} to a dropdown.
  *
  *		const items = new Collection();
  *
  *		items.add( new Model( { label: 'First item', style: 'color: red' } ) );
  *		items.add( new Model( { label: 'Second item', style: 'color: green', class: 'foo' } ) );
  *
- *		const model = new Model( {
- *			isEnabled: true,
- *			items,
- *			isOn: false,
- *			label: 'A dropdown'
- *		} );
+ *        const dropdown = createDropdown( locale );
  *
- *		const dropdown = createListDropdown( model, locale );
+ *        addListToDropdown( dropdown, items );
  *
- *		// Will render a dropdown labeled "A dropdown" with a list in the panel
- *		// containing two items.
+ *        // Will render a dropdown with a list in the panel containing two items.
  *		dropdown.render()
  *		document.body.appendChild( dropdown.element );
  *
- * The model instance remains in control of the dropdown after it has been created. E.g. changes to the
- * {@link module:ui/dropdown/dropdownmodel~DropdownModel#label `model.label`} will be reflected in the
- * dropdown button's {@link module:ui/button/buttonview~ButtonView#label} attribute and in DOM.
+ * The `items` collection passed to this methods controls the presence and attributes of respective
+ * {@link module:ui/list/listitemview~ListItemView list items}.
  *
- * The
- * {@link module:ui/dropdown/list/listdropdownmodel~ListDropdownModel#items items collection}
- * of the {@link module:ui/dropdown/list/listdropdownmodel~ListDropdownModel model} also controls the
- * presence and attributes of respective {@link module:ui/list/listitemview~ListItemView list items}.
  *
- * See {@link module:ui/dropdown/createdropdown~createDropdown} and {@link module:list/list~List}.
+ * See {@link module:ui/dropdown/utils~createDropdown}, {@link module:ui/dropdown/utils~createSplitButtonDropdown}
+ * and {@link module:list/list~List}.
  *
- * @param {module:ui/dropdown/list/listdropdownmodel~ListDropdownModel} model Model of the list dropdown.
- * @param {module:utils/locale~Locale} locale The locale instance.
- * @returns {module:ui/dropdown/list/listdropdownview~ListDropdownView} The list dropdown view instance.
+ * @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView A dropdown instance to which `ListVIew` will be added.
+ * @param {module:utils/collection~Collection.<module:utils/observablemixin~Observable>} items
+ * that the inner dropdown {@link module:ui/list/listview~ListView} children are created from.
+ *
+ * Usually, it is a collection of {@link module:ui/model~Model models}.
  */
-export function addListViewToDropdown( dropdownView, listViewItems ) {
+export function addListToDropdown( dropdownView, items ) {
 	const locale = dropdownView.locale;
 	const listView = dropdownView.listView = new ListView( locale );
 
-	// TODO: make this param of method instead of model property?
-	listView.items.bindTo( listViewItems ).using( itemModel => {
+	listView.items.bindTo( items ).using( itemModel => {
 		const item = new ListItemView( locale );
 
 		// Bind all attributes of the model to the item view.
@@ -202,19 +176,21 @@ export function addListViewToDropdown( dropdownView, listViewItems ) {
 	} );
 
 	dropdownView.panelView.children.add( listView );
-	listView.items.delegate( 'execute' ).to( dropdownView );
 
-	return listView;
+	listView.items.delegate( 'execute' ).to( dropdownView );
 }
 
-// @private
+// Creates a dropdown view instance and binds dropdown view with a button view.
+//
+// @param {module:utils/locale~Locale} locale The locale instance.
+// @param {module:ui/button/buttonview~ButtonView|module:ui/button/splitbuttonview~SplitButtonView} locale The button view instance.
+// @returns {module:ui/dropdown/dropdownview~DropdownView}
 function prepareDropdown( locale, buttonView ) {
 	const panelView = new DropdownPanelView( locale );
 	const dropdownView = new DropdownView( locale, buttonView, panelView );
 
 	buttonView.bind( 'label', 'isEnabled', 'withText', 'keystroke', 'tooltip', 'icon' ).to( dropdownView );
 
-	// TODO: buttonView.bind( 'isOn' ).to( model, 'isOn', dropdownView, 'isOpen', ( isOn, isOpen ) => {
 	dropdownView.set( 'isOn', true );
 
 	buttonView.bind( 'isOn' ).to( dropdownView, 'isOn', dropdownView, 'isOpen', ( isOn, isOpen ) => {
@@ -224,35 +200,42 @@ function prepareDropdown( locale, buttonView ) {
 	return dropdownView;
 }
 
-// @private
+// Creates a split button view instance to be used as a toolbar button that opens a dropdown.
+//
+// @param {module:utils/locale~Locale} locale The locale instance.
+// @returns {module:ui/button/splitbuttonview~SplitButtonView}
 function createSplitButtonForDropdown( locale ) {
 	const splitButtonView = new SplitButtonView( locale );
 
 	// TODO: Check if those binding are in good place (maybe move them to SplitButton) or add tests.
-	splitButtonView.actionView.bind( 'isOn' ).to( splitButtonView );
-	splitButtonView.actionView.bind( 'tooltip' ).to( splitButtonView );
+	splitButtonView.actionView.bind( 'isOn', 'tooltip' ).to( splitButtonView );
 
 	return splitButtonView;
 }
 
-// @private
+// Creates a default button view instance to be used as a toolbar button that opens a dropdown.
+//
+// @param {module:utils/locale~Locale} locale The locale instance.
+// @returns {module:ui/button/buttonview~ButtonView}
 function createButtonForDropdown( locale ) {
 	const buttonView = new ButtonView( locale );
 
-	// Dropdown expects "select" event to show contents.
+	// Dropdown expects "select" event on button view upon which the dropdown will open.
 	buttonView.delegate( 'execute' ).to( buttonView, 'select' );
 
 	return buttonView;
 }
 
-// @private
-function addDefaultBehavior( dropdown ) {
-	closeDropdownOnBlur( dropdown );
-	closeDropdownOnExecute( dropdown );
-	focusDropdownContentsOnArrows( dropdown );
+// Add a set of default behaviors to dropdown view.
+//
+// @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView
+function addDefaultBehavior( dropdownView ) {
+	closeDropdownOnBlur( dropdownView );
+	closeDropdownOnExecute( dropdownView );
+	focusDropdownContentsOnArrows( dropdownView );
 }
 
-// Adds a behavior to a dropdownView that closes opened dropdown on user click outside the dropdown.
+// Adds a behavior to a dropdownView that closes opened dropdown when user clicks outside the dropdown.
 //
 // @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView
 function closeDropdownOnBlur( dropdownView ) {
@@ -268,7 +251,7 @@ function closeDropdownOnBlur( dropdownView ) {
 	} );
 }
 
-// Adds a behavior to a dropdownView that closes dropdown view on any view collection item's "execute" event.
+// Adds a behavior to a dropdownView that closes the dropdown view on "execute" event.
 //
 // @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView
 function closeDropdownOnExecute( dropdownView ) {
@@ -278,12 +261,11 @@ function closeDropdownOnExecute( dropdownView ) {
 	} );
 }
 
-// Adds a behavior to a dropdownView that focuses dropdown panel view contents on keystrokes.
+// Adds a behavior to a dropdownView that focuses the dropdown's panel view contents on keystrokes.
 //
 // @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView
 function focusDropdownContentsOnArrows( dropdownView ) {
-	// If the dropdown panel is already open, the arrow down key should
-	// focus the first element in list.
+	// If the dropdown panel is already open, the arrow down key should focus the first child of the #panelView.
 	dropdownView.keystrokes.set( 'arrowdown', ( data, cancel ) => {
 		if ( dropdownView.isOpen ) {
 			dropdownView.panelView.focus();
@@ -291,8 +273,7 @@ function focusDropdownContentsOnArrows( dropdownView ) {
 		}
 	} );
 
-	// If the dropdown panel is already open, the arrow up key should
-	// focus the last element in the list.
+	// If the dropdown panel is already open, the arrow up key should focus the last child of the #panelView.
 	dropdownView.keystrokes.set( 'arrowup', ( data, cancel ) => {
 		if ( dropdownView.isOpen ) {
 			dropdownView.panelView.focusLast();

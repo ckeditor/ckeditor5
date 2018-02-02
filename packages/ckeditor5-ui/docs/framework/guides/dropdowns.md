@@ -43,7 +43,7 @@ dropdownView.on( 'execute', () => {
 ```js
 import Model from '@ckeditor/ckeditor5-ui/src/model';
 
-import { addListViewToDropdown, createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
+import { addListToDropdown, createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 
 const items = [
 	new Model( {
@@ -58,7 +58,7 @@ const items = [
 
 const dropdownView = createDropdown( locale );
 
-addListViewToDropdown( dropdownView, items );
+addListToDropdown( dropdownView, items );
 
 // Execute command when an item from the dropdown is selected.
 dropdownView.on( 'execute', evt => {
