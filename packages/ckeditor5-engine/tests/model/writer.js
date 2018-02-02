@@ -2021,7 +2021,7 @@ describe( 'Writer', () => {
 
 			model.on( 'applyOperation', spy );
 
-			setMarker( marker, null, { usingOperation: true } );
+			setMarker( marker, { usingOperation: true } );
 
 			const op = batch.deltas[ 0 ].operations[ 0 ];
 
@@ -2029,6 +2029,22 @@ describe( 'Writer', () => {
 			expect( spy.firstCall.args[ 1 ][ 0 ].type ).to.equal( 'marker' );
 			expect( op.oldRange ).to.be.null;
 			expect( op.newRange.isEqual( range ) ).to.be.true;
+		} );
+
+		it( 'should create a unique id if the first param is type of range', () => {
+			const marker = setMarker( range );
+
+			expect( marker.name ).to.be.a( 'string' );
+		} );
+
+		it( 'should create a unique id if the first param is type of range when usingOperations is set to true', () => {
+			const spy = sinon.spy();
+			model.on( 'applyOperation', spy );
+
+			const marker = setMarker( range, { usingOperation: true } );
+
+			expect( marker.name ).to.be.a( 'string' );
+			expect( spy.calledOnce ).to.be.true;
 		} );
 
 		it( 'should use operations when having set usingOperations to true', () => {
@@ -2413,11 +2429,11 @@ describe( 'Writer', () => {
 		} );
 	}
 
-	function setMarker( markerOrName, newRange, options ) {
+	function setMarker( markerOrNameOrRange, rangeOrManagedUsingOperations, options ) {
 		let marker;
 
 		model.enqueueChange( batch, writer => {
-			marker = writer.setMarker( markerOrName, newRange, options );
+			marker = writer.setMarker( markerOrNameOrRange, rangeOrManagedUsingOperations, options );
 		} );
 
 		return marker;
