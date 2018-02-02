@@ -17,7 +17,7 @@ export const createNativeFileMock = () => ( {
  * AdapterMock class.
  * Simulates adapter behaviour without any server-side communications.
  */
-export class AdapterMock {
+export class UploadAdapterMock {
 	constructor( loader ) {
 		this.loader = loader;
 	}
@@ -123,6 +123,6 @@ export class UploadAdapterPluginMock extends Plugin {
 	init() {
 		const fileRepository = this.editor.plugins.get( 'FileRepository' );
 
-		fileRepository.createAdapter = () => {};
+		fileRepository.createUploadAdapter = () => {};
 	}
 }

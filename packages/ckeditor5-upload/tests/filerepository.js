@@ -11,7 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import FileRepository from '../src/filerepository';
 
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
-import { createNativeFileMock, AdapterMock, NativeFileReaderMock } from './_utils/mocks';
+import { createNativeFileMock, UploadAdapterMock, NativeFileReaderMock } from './_utils/mocks';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import FileReader from '../src/filereader';
@@ -25,8 +25,8 @@ describe( 'FileRepository', () => {
 		init() {
 			fileRepository = this.editor.plugins.get( 'FileRepository' );
 
-			fileRepository.createAdapter = loader => {
-				adapterMock = new AdapterMock( loader );
+			fileRepository.createUploadAdapter = loader => {
+				adapterMock = new UploadAdapterMock( loader );
 
 				return adapterMock;
 			};
@@ -95,14 +95,14 @@ describe( 'FileRepository', () => {
 		it( 'should return null if adapter is not present', () => {
 			const stub = testUtils.sinon.stub( log, 'error' );
 
-			fileRepository.createAdapter = undefined;
+			fileRepository.createUploadAdapter = undefined;
 
 			expect( fileRepository.createLoader( createNativeFileMock() ) ).to.be.null;
 
 			sinon.assert.calledOnce( stub );
 			sinon.assert.calledWithExactly(
 				stub,
-				'filerepository-no-adapter: Upload adapter is not defined.'
+				'filerepository-no-upload-adapter: Upload adapter is not defined.'
 			);
 		} );
 
