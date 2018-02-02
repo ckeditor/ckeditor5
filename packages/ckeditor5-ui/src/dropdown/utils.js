@@ -192,8 +192,6 @@ function prepareDropdown( locale, buttonView ) {
 
 	buttonView.bind( 'label', 'isEnabled', 'withText', 'keystroke', 'tooltip', 'icon' ).to( dropdownView );
 
-	dropdownView.set( 'isOn', true );
-
 	buttonView.bind( 'isOn' ).to( dropdownView, 'isOn', dropdownView, 'isOpen', ( isOn, isOpen ) => {
 		return isOn || isOpen;
 	} );

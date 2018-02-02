@@ -149,6 +149,67 @@ export default class DropdownView extends View {
 				]
 			}
 		} );
+
+		/**
+		 * The label of the dropdown.
+		 *
+		 * **Note**: Only supported when dropdown was created using {@link module:ui/dropdown/utils~createDropdown} or
+		 * {@link module:ui/dropdown/utils~createSplitButtonDropdown}.
+		 *
+		 * Also see {@link module:ui/button/buttonview~ButtonView#label}.
+		 *
+		 * @observable
+		 * @member {String} #label
+		 */
+
+		/**
+		 * Controls whether the dropdown is enabled, i.e. it opens the panel when clicked.
+		 *
+		 * **Note**: Only supported when dropdown was created using {@link module:ui/dropdown/utils~createDropdown} or
+		 * {@link module:ui/dropdown/utils~createSplitButtonDropdown}.
+		 *
+		 * Also see {@link module:ui/button/buttonview~ButtonView#isEnabled}.
+		 *
+		 * @observable
+		 * @member {Boolean} #isEnabled
+		 */
+
+		/**
+		 * Controls whether the dropdown is "on". It makes sense when a feature it represents
+		 * is currently active.
+		 *
+		 * **Note**: Only supported when dropdown was created using {@link module:ui/dropdown/utils~createDropdown} or
+		 * {@link module:ui/dropdown/utils~createSplitButtonDropdown}.
+		 *
+		 * Also see {@link module:ui/button/buttonview~ButtonView#isOn}.
+		 *
+		 * @observable
+		 * @member {Boolean} #isOn
+		 */
+
+		/**
+		 * (Optional) Controls whether the label of the dropdown is visible.
+		 *
+		 * **Note**: Only supported when dropdown was created using {@link module:ui/dropdown/utils~createDropdown} or
+		 * {@link module:ui/dropdown/utils~createSplitButtonDropdown}.
+		 *
+		 * Also see {@link module:ui/button/buttonview~ButtonView#withText}.
+		 *
+		 * @observable
+		 * @member {Boolean} #withText
+		 */
+
+		/**
+		 * (Optional) Controls the icon of the dropdown.
+		 *
+		 * **Note**: Only supported when dropdown was created using {@link module:ui/dropdown/utils~createDropdown} or
+		 * {@link module:ui/dropdown/utils~createSplitButtonDropdown}.
+		 *
+		 * Also see {@link module:ui/button/buttonview~ButtonView#withText}.
+		 *
+		 * @observable
+		 * @member {Boolean} #icon
+		 */
 	}
 
 	/**
