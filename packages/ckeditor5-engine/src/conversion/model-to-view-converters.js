@@ -36,10 +36,10 @@ import DocumentSelection from '../model/documentselection';
  *
  *		modelDispatcher.on(
  *			'insert:myElem',
- *			insertElement( ( data, consumable, conversionApi ) => {
- *				let myElem = new ViewElement( 'myElem', { myAttr: true }, new ViewText( 'myText' ) );
+ *			insertElement( ( modelItem, consumable, conversionApi ) => {
+ *				let myElem = new ViewElement( 'myElem', { myAttr: 'my-' + modelItem.getAttribute( 'myAttr' ) }, new ViewText( 'myText' ) );
  *
- *				// Do something fancy with myElem using data/consumable/conversionApi ...
+ *				// Do something fancy with myElem using `modelItem` or other parameters.
  *
  *				return myElem;
  *			}
@@ -53,7 +53,7 @@ export function insertElement( elementCreator ) {
 	return ( evt, data, consumable, conversionApi ) => {
 		const viewElement = ( elementCreator instanceof ViewElement ) ?
 			elementCreator.clone( true ) :
-			elementCreator( data, consumable, conversionApi );
+			elementCreator( data.item, consumable, conversionApi );
 
 		if ( !viewElement ) {
 			return;
@@ -241,7 +241,7 @@ export function removeUIElement( elementCreator ) {
  * The converter automatically consumes corresponding value from consumables list and stops the event (see
  * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher}).
  *
- *		modelDispatcher.on( 'attribute:customAttr:myElem', changeAttribute( ( data ) => {
+ *		modelDispatcher.on( 'attribute:customAttr:myElem', changeAttribute( ( value, data ) => {
  *			// Change attribute key from `customAttr` to `class` in view.
  *			const key = 'class';
  *			let value = data.attributeNewValue;
@@ -262,19 +262,25 @@ export function removeUIElement( elementCreator ) {
  * @returns {Function} Set/change attribute converter.
  */
 export function changeAttribute( attributeCreator ) {
-	attributeCreator = attributeCreator || ( ( value, key ) => ( { value, key } ) );
+	attributeCreator = attributeCreator || ( ( value, data ) => ( { value, key: data.attributeKey } ) );
 
 	return ( evt, data, consumable, conversionApi ) => {
 		if ( !consumable.consume( data.item, evt.name ) ) {
 			return;
 		}
 
-		const { key, value } = attributeCreator( data.attributeNewValue, data.attributeKey, data, consumable, conversionApi );
+		// First remove the old attribute if there was one.
+		const oldAttribute = attributeCreator( data.attributeOldValue, data, consumable, conversionApi );
 
-		if ( data.attributeNewValue !== null ) {
-			conversionApi.mapper.toViewElement( data.item ).setAttribute( key, value );
-		} else {
-			conversionApi.mapper.toViewElement( data.item ).removeAttribute( key );
+		if ( data.attributeOldValue !== null && oldAttribute ) {
+			conversionApi.mapper.toViewElement( data.item ).removeAttribute( oldAttribute.key );
+		}
+
+		// Then, if conversion was successful, set the new attribute.
+		const newAttribute = attributeCreator( data.attributeNewValue, data, consumable, conversionApi );
+
+		if ( data.attributeNewValue !== null && newAttribute ) {
+			conversionApi.mapper.toViewElement( data.item ).setAttribute( newAttribute.key, newAttribute.value );
 		}
 	};
 }
@@ -338,11 +344,11 @@ export function wrap( elementCreator ) {
 			let viewRange = conversionApi.mapper.toViewRange( data.range );
 
 			// First, unwrap the range from current wrapper.
-			if ( data.attributeOldValue !== null ) {
+			if ( data.attributeOldValue !== null && oldViewElement ) {
 				viewRange = viewWriter.unwrap( viewRange, oldViewElement );
 			}
 
-			if ( data.attributeNewValue !== null ) {
+			if ( data.attributeNewValue !== null && newViewElement ) {
 				viewWriter.wrap( viewRange, newViewElement );
 			}
 		}
@@ -583,16 +589,17 @@ class HighlightAttributeElement extends ViewAttributeElement {
 }
 
 /**
- * Object describing how the content highlight should be created in the view.
+ * Object describing how the marker highlight should be represented in the view.
  *
- * Each text node contained in the highlight will be wrapped with `span` element with CSS class(es), attributes and priority
- * described by this object.
+ * Each text node contained in a highlighted range will be wrapped in a `span` {@link module:engine/view/attributeelement~AttributeElement}
+ * with CSS class(es), attributes and priority described by this object.
  *
- * Each element can handle displaying the highlight separately by providing `addHighlight` and `removeHighlight` custom
- * properties:
- *  * `HighlightDescriptor` is passed to the `addHighlight` function upon conversion and should be used to apply the highlight to
+ * Additionally, each {@link module:engine/view/containerelement~ContainerElement} can handle displaying the highlight separately
+ * by providing `addHighlight` and `removeHighlight` custom properties. In this case:
+ *
+ *  * `HighlightDescriptor` object is passed to the `addHighlight` function upon conversion and should be used to apply the highlight to
  *  the element,
- *  * descriptor id is passed to the `removeHighlight` function upon conversion and should be used to remove the highlight of given
+ *  * descriptor `id` is passed to the `removeHighlight` function upon conversion and should be used to remove the highlight of given
  *  id from the element.
  *
  * @typedef {Object} module:engine/conversion/model-to-view-converters~HighlightDescriptor

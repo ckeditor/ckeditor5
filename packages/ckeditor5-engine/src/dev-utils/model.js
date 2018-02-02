@@ -212,11 +212,11 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 			return new ViewAttributeElement( 'model-text-with-attributes', { [ data.attributeKey ]: stringifyAttributeValue( value ) } );
 		}
 	} ) );
-	modelToView.on( 'insert', insertElement( data => {
+	modelToView.on( 'insert', insertElement( modelItem => {
 		// Stringify object types values for properly display as an output string.
-		const attributes = convertAttributes( data.item.getAttributes(), stringifyAttributeValue );
+		const attributes = convertAttributes( modelItem.getAttributes(), stringifyAttributeValue );
 
-		return new ViewContainerElement( data.item.name, attributes );
+		return new ViewContainerElement( modelItem.name, attributes );
 	} ) );
 	modelToView.on( 'selection', convertRangeSelection() );
 	modelToView.on( 'selection', convertCollapsedSelection() );

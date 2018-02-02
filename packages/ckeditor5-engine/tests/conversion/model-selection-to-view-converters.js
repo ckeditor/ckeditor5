@@ -492,7 +492,7 @@ describe( 'model-selection-to-view-converters', () => {
 			model.schema.extend( '$text', { allowIn: 'td' } );
 
 			// "Universal" converter to convert table structure.
-			const tableConverter = insertElement( data => new ViewContainerElement( data.item.name ) );
+			const tableConverter = insertElement( modelItem => new ViewContainerElement( modelItem.name ) );
 			dispatcher.on( 'insert:table', tableConverter );
 			dispatcher.on( 'insert:tr', tableConverter );
 			dispatcher.on( 'insert:td', tableConverter );

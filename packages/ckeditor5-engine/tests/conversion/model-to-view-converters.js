@@ -127,8 +127,8 @@ describe( 'model-to-view-converters', () => {
 		} );
 
 		it( 'should take view element function generator as a parameter', () => {
-			const elementGenerator = ( data, consumable ) => {
-				if ( consumable.consume( data.item, 'attribute:nice' ) ) {
+			const elementGenerator = ( modelItem, consumable ) => {
+				if ( consumable.consume( modelItem, 'attribute:nice' ) ) {
 					return new ViewContainerElement( 'div' );
 				}
 
@@ -173,7 +173,7 @@ describe( 'model-to-view-converters', () => {
 		} );
 
 		it( 'should convert insert/change/remove with attribute generating function as a parameter', () => {
-			const themeConverter = ( value, key, data ) => {
+			const themeConverter = ( value, data ) => {
 				if ( data.item instanceof ModelElement && data.item.childCount > 0 ) {
 					value += ' fix-content';
 				}
@@ -930,7 +930,7 @@ describe( 'model-to-view-converters', () => {
 		it( 'should return attribute element from descriptor object', () => {
 			const descriptor = {
 				class: 'foo-class',
-				attributes: { one: 1, two: 2 },
+				attributes: { one: '1', two: '2' },
 				priority: 7,
 			};
 			const element = createViewElementFromHighlightDescriptor( descriptor );
@@ -948,7 +948,7 @@ describe( 'model-to-view-converters', () => {
 		it( 'should return attribute element from descriptor object - array with classes', () => {
 			const descriptor = {
 				class: [ 'foo-class', 'bar-class' ],
-				attributes: { one: 1, two: 2 },
+				attributes: { one: '1', two: '2' },
 				priority: 7,
 			};
 			const element = createViewElementFromHighlightDescriptor( descriptor );
@@ -966,7 +966,7 @@ describe( 'model-to-view-converters', () => {
 
 		it( 'should create element without class', () => {
 			const descriptor = {
-				attributes: { one: 1, two: 2 },
+				attributes: { one: '1', two: '2' },
 				priority: 7,
 			};
 			const element = createViewElementFromHighlightDescriptor( descriptor );
@@ -983,7 +983,7 @@ describe( 'model-to-view-converters', () => {
 		it( 'should create element without priority', () => {
 			const descriptor = {
 				class: 'foo-class',
-				attributes: { one: 1, two: 2 },
+				attributes: { one: '1', two: '2' },
 			};
 			const element = createViewElementFromHighlightDescriptor( descriptor );
 
