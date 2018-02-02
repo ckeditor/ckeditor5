@@ -472,7 +472,7 @@ export default class Writer {
 			const delta = new RemoveDelta();
 			this.batch.addDelta( delta );
 
-			addRemoveOperation( position, howMany, delta, this.model );
+			applyRemoveOperation( position, howMany, delta, this.model );
 		};
 
 		if ( itemOrRange instanceof Range ) {
@@ -540,7 +540,7 @@ export default class Writer {
 		delta.addOperation( move );
 		this.model.applyOperation( move );
 
-		addRemoveOperation( position, 1, delta, this.model );
+		applyRemoveOperation( position, 1, delta, this.model );
 	}
 
 	/**
@@ -757,7 +757,7 @@ export default class Writer {
 		delta.addOperation( move );
 		this.model.applyOperation( move );
 
-		addRemoveOperation( Position.createBefore( element ), 1, delta, this.model );
+		applyRemoveOperation( Position.createBefore( element ), 1, delta, this.model );
 	}
 
 	/**
@@ -860,10 +860,10 @@ export default class Writer {
 		if ( !newRange ) {
 			// If `newRange` is not given, treat this as synchronizing existing marker.
 			// Create `MarkerOperation` with `oldRange` set to `null`, so reverse operation will remove the marker.
-			addMarkerOperation( this, markerName, null, currentRange );
+			applyMarkerOperation( this, markerName, null, currentRange );
 		} else {
 			// Just change marker range.
-			addMarkerOperation( this, markerName, currentRange, newRange );
+			applyMarkerOperation( this, markerName, currentRange, newRange );
 		}
 
 		return this.model.markers.get( markerName );
@@ -901,7 +901,7 @@ export default class Writer {
 
 		const oldRange = marker.getRange();
 
-		addMarkerOperation( this, name, oldRange, null );
+		applyMarkerOperation( this, name, oldRange, null );
 	}
 
 	/**
@@ -1192,14 +1192,14 @@ function setAttributeOnItem( writer, key, value, item ) {
 	}
 }
 
-// Creates and adds marker operation to {@link module:engine/model/delta/delta~Delta delta}.
+// Creates and applies marker operation to {@link module:engine/model/delta/delta~Delta delta}.
 //
 // @private
 // @param {module:engine/model/writer~Writer} writer
 // @param {String} name Marker name.
 // @param {module:engine/model/range~Range} oldRange Marker range before the change.
 // @param {module:engine/model/range~Range} newRange Marker range after the change.
-function addMarkerOperation( writer, name, oldRange, newRange ) {
+function applyMarkerOperation( writer, name, oldRange, newRange ) {
 	const model = writer.model;
 	const doc = model.document;
 	const delta = new MarkerDelta();
@@ -1219,7 +1219,7 @@ function addMarkerOperation( writer, name, oldRange, newRange ) {
 // @param {Number} howMany Number of nodes to remove.
 // @param {module:engine/model/delta~Delta} delta Delta to add new operation to.
 // @param {module:engine/model/model~Model} model Model instance on which operation will be applied.
-function addRemoveOperation( position, howMany, delta, model ) {
+function applyRemoveOperation( position, howMany, delta, model ) {
 	let operation;
 
 	if ( position.root.document ) {

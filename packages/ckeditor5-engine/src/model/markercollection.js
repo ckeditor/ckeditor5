@@ -122,7 +122,7 @@ export default class MarkerCollection {
 		const marker = new Marker( markerName, liveRange, managedUsingOperations );
 
 		this._markers.set( markerName, marker );
-		this.fire( 'add:' + markerName, marker );
+		this.fire( 'set:' + markerName, marker );
 
 		return marker;
 	}
@@ -211,10 +211,10 @@ export default class MarkerCollection {
 	}
 
 	/**
-	 * Fired whenever marker is added to `MarkerCollection`.
+	 * Fired whenever marker is added or updated in `MarkerCollection`.
 	 *
-	 * @event add
-	 * @param {module:engine/model/markercollection~Marker} The added marker.
+	 * @event set
+	 * @param {module:engine/model/markercollection~Marker} The set marker.
 	 */
 
 	/**
@@ -246,7 +246,7 @@ mix( MarkerCollection, EmitterMixin );
  * using common prefixes, separated with `:`, for example: `user:john` or `search:3`. That's useful in term of creating namespaces
  * for custom elements (e.g. comments, highlights).
  *
- * There're two types of markers. Both type of them should be added /updated by {@link module:engine/model/writer~Writer#setMarker}
+ * There're two types of markers. Both type of them should be added / updated by {@link module:engine/model/writer~Writer#setMarker}
  * and removed by {@link module:engine/model/writer~Writer#removeMarker} methods. Both of them are stored in the {@link ~MarkerCollection}.
  *
  * 1. Markers not added to document (default ones). They can be used as bookmarks or visual markers.

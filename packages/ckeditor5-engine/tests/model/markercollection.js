@@ -41,7 +41,7 @@ describe( 'MarkerCollection', () => {
 	} );
 
 	describe( '_set', () => {
-		it( 'should create a marker, fire add:<markerName> event and return true', () => {
+		it( 'should create a marker, fire set:<markerName> event and return true', () => {
 			sinon.spy( markers, 'fire' );
 
 			const result = markers._set( 'name', range );
@@ -50,7 +50,7 @@ describe( 'MarkerCollection', () => {
 			expect( result ).to.equal( marker );
 			expect( marker.name ).to.equal( 'name' );
 			expect( marker.getRange().isEqual( range ) ).to.be.true;
-			expect( markers.fire.calledWithExactly( 'add:name', marker ) ).to.be.true;
+			expect( markers.fire.calledWithExactly( 'set:name', marker ) ).to.be.true;
 		} );
 
 		it( 'should fire remove:<markerName> event, and create a new marker if marker with given name was in the collection', () => {
@@ -61,7 +61,7 @@ describe( 'MarkerCollection', () => {
 			const marker2 = markers._set( 'name', range2 );
 
 			expect( markers.fire.calledWithExactly( 'remove:name', marker1 ) ).to.be.true;
-			expect( markers.fire.calledWithExactly( 'add:name', marker2 ) ).to.be.true;
+			expect( markers.fire.calledWithExactly( 'set:name', marker2 ) ).to.be.true;
 
 			expect( marker2.name ).to.equal( 'name' );
 			expect( marker2.getRange().isEqual( range2 ) ).to.be.true;
