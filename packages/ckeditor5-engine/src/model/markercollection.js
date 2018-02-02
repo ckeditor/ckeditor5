@@ -29,16 +29,18 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * There're two types of markers. Both type of them should be added / updated by {@link module:engine/model/writer~Writer#setMarker}
  * and removed by {@link module:engine/model/writer~Writer#removeMarker} methods. Both of them are stored in the {@link ~MarkerCollection}.
  *
- * 1. Markers added to the document. They're synchronized in the collaboration and handled in the undo.
- * This type of markers is useful for solutions like spell checking or comments. Sample usage:
- * 		writer.setMarker( markerOrName, ranges, { usingOperation: true } );
- *
- * 2. Markers not added to document (default ones). They can be used as bookmarks or visual markers.
+ * 1. Markers not added to document (default ones). They can be used as bookmarks or visual markers.
  * They're great for showing results of the find, or select link when the focus is in the input,
  * see https://github.com/ckeditor/ckeditor5-link/issues/13. Sample usage:
  * 		writer.setMarker( markerOrName, ranges );
  *
+ * 1. Markers added to the document. They're synchronized in the collaboration and handled in the undo.
+ * This type of markers is useful for solutions like spell checking or comments. Sample usage:
+ * 		writer.setMarker( markerOrName, ranges, { usingOperation: true } );
+ *
  * Note: For efficiency reasons, it's best to create and keep at least markers as possible.
+ *
+ * @see {module:engine/model/liverange~LiveRange}
  */
 export default class MarkerCollection {
 	/**
@@ -247,15 +249,14 @@ mix( MarkerCollection, EmitterMixin );
  * There're two types of markers. Both type of them should be added /updated by {@link module:engine/model/writer~Writer#setMarker}
  * and removed by {@link module:engine/model/writer~Writer#removeMarker} methods. Both of them are stored in the {@link ~MarkerCollection}.
  *
- * 1. Markers added to the document. They're synchronized in the collaboration and handled in the undo.
- * This type of markers is useful for solutions like spell checking or comments.
- * Usage:
- * 		writer.setMarker( markerOrName, ranges, { usingOperation: true } );
- *
- * 2. Markers not added to document. They can be used as bookmarks or visual markers. They're great for showing results of the find,
- * or select link when the focus is in the input see https://github.com/ckeditor/ckeditor5-link/issues/13.
- * Usage:
+ * 1. Markers not added to document (default ones). They can be used as bookmarks or visual markers.
+ * They're great for showing results of the find, or select link when the focus is in the input,
+ * see https://github.com/ckeditor/ckeditor5-link/issues/13. Sample usage:
  * 		writer.setMarker( markerOrName, ranges );
+ *
+ * 1. Markers added to the document. They're synchronized in the collaboration and handled in the undo.
+ * This type of markers is useful for solutions like spell checking or comments. Sample usage:
+ * 		writer.setMarker( markerOrName, ranges, { usingOperation: true } );
  *
  * Since markers are based on {@link module:engine/model/liverange~LiveRange live ranges}, for efficiency reasons, it's
  * best to create and keep at least markers as possible.

@@ -766,14 +766,14 @@ export default class Writer {
 	 *
 	 * There're two types of markers.
 	 *
-	 * 1. Markers added to the document. They're synchronized in the collaboration and handled in the undo.
-	 * This type of markers is useful for solutions like spell checking or comments. Sample usage:
-	 * 		writer.setMarker( markerOrName, ranges, { usingOperation: true } );
-	 *
-	 * 2. Markers not added to document (default ones). They can be used as bookmarks or visual markers.
+	 * 1. Markers not added to document (default ones). They can be used as bookmarks or visual markers.
 	 * They're great for showing results of the find, or select link when the focus is in the input,
 	 * see https://github.com/ckeditor/ckeditor5-link/issues/13. Sample usage:
 	 * 		writer.setMarker( markerOrName, ranges );
+	 *
+	 * 1. Markers added to the document. They're synchronized in the collaboration and handled in the undo.
+	 * This type of markers is useful for solutions like spell checking or comments. Sample usage:
+	 * 		writer.setMarker( markerOrName, ranges, { usingOperation: true } );
 	 *
 	 * If passed name is a name of already existing marker (or {@link module:engine/model/markercollection~Marker Marker} instance
 	 * is passed), `range` parameter may be omitted (only for setting markers using operation). In this case marker will not be updated in
@@ -807,6 +807,7 @@ export default class Writer {
 	 *
 	 * Note: For efficiency reasons, it's best to create and keep at least markers as possible.
 	 *
+	 * @see {module:engine/model/liverange~LiveRange}
 	 * @param {module:engine/model/markercollection~Marker|String|module:engine/model/range~Range} markerOrNameOrRange
 	 * Name of marker to add, Marker instance to update or range for the marker with a unique name.
 	 * @param {module:engine/model/range~Range|Object} [rangeOrOptions] Marker range or options.
