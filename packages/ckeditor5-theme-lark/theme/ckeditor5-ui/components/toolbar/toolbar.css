@@ -8,7 +8,7 @@
 .ck-toolbar {
 	@mixin ck-rounded-corners;
 
-	padding: 0 var(--ck-spacing-small) var(--ck-spacing-small);
+	padding: 0 var(--ck-spacing-small);
 	border: 1px solid var(--ck-color-toolbar-border);
 
 	& > * {
@@ -17,6 +17,7 @@
 
 		/* Make sure items wrapped to the next line have v-spacing */
 		margin-top: var(--ck-spacing-small);
+		margin-bottom: var(--ck-spacing-small);
 	}
 
 	&.ck-toolbar_vertical {
@@ -39,9 +40,10 @@
 }
 
 .ck-toolbar__separator {
+	align-self: stretch;
 	width: 1px;
-	height: calc(1em + 2 * var(--ck-spacing-medium));
-	vertical-align: middle;
+	margin-top: 0;
+	margin-bottom: 0;
 	background: var(--ck-color-toolbar-border);
 }
 

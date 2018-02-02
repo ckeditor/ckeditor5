@@ -20,8 +20,12 @@ a.ck-button {
 	white-space: nowrap;
 	cursor: default;
 	vertical-align: middle;
-	padding: var(--ck-spacing-small);
+	padding: var(--ck-spacing-tiny);
 	text-align: center;
+
+	/* Normalize the height of the line. Removing this will break consistent height
+	among text and text-less buttons (with icons). */
+	line-height: 1;
 
 	/* Enable font size inheritance, which allows fluid UI scaling. */
 	font-size: inherit;
@@ -44,7 +48,7 @@ a.ck-button {
 	}
 
 	&.ck-button_with-text {
-		padding: var(--ck-spacing-small) var(--ck-spacing-standard);
+		padding: var(--ck-spacing-tiny) var(--ck-spacing-standard);
 
 		@mixin ck-button-icon {
 			margin-left: calc(-1 * var(--ck-spacing-small));
@@ -57,22 +61,33 @@ a.ck-button {
 		@mixin ck-button-colors --ck-color-button-on;
 	}
 
-	& .ck-icon {
+	@mixin ck-button-icon {
 		use,
 		use * {
 			color: inherit;
 		}
 	}
 
+	&:not(.ck-button_with-text) {
+		@mixin ck-button-icon {
+			/* This margin is neccessary for icons in label-less buttons to stretch
+			the button properly. When there's no text in the button, browsers render
+			them too small. It's a really tricky topic, when browsers render svg as an inline
+			content and line size (character width) measurement and alignment kicks in. */
+			margin: var(--ck-spacing-tiny);
+		}
+	}
+
 	& .ck-button__label {
 		/* Enable font size inheritance, which allows fluid UI scaling. */
 		font-size: inherit;
-
-		height: var(--ck-line-height-base)em;
-		line-height: inherit;
 		font-weight: inherit;
 		color: inherit;
 		cursor: inherit;
+
+		/* Must be consistent with .ck-icon's vertical align. Otherwise, buttons with and
+		without labels (but with icons) have different sizes in Chrome */
+		vertical-align: middle;
 	}
 }
 
@@ -81,14 +96,7 @@ a.ck-button {
 a.ck-button-action {
 	@mixin ck-button-colors --ck-color-button-action;
 
-	text-shadow: 0 -1px var(--ck-color-button-action-border);
 	color: var(--ck-color-button-action-text);
-
-	&:hover,
-	&:focus,
-	&:active {
-		text-shadow: 0 -1px var(--ck-color-button-action-active-border);
-	}
 }
 
 .ck-button-bold,

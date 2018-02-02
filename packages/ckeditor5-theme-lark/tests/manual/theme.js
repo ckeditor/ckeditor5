@@ -14,6 +14,7 @@ import View from '@ckeditor/ckeditor5-ui/src/view';
 import IconView from '@ckeditor/ckeditor5-ui/src/icon/iconview';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import createListDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/list/createlistdropdown';
+import createButtonDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/button/createbuttondropdown';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import ToolbarSeparatorView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarseparatorview';
 import InputTextView from '@ckeditor/ckeditor5-ui/src/inputtext/inputtextview';
@@ -60,7 +61,8 @@ const ui = testUtils.createTestUIView( {
 	'buttonResponsive3': '#button-responsive-3',
 	'buttonTooltip': '#button-tooltip',
 
-	dropdown: '#dropdown',
+	listDropdown: '#list-dropdown',
+	buttonDropdown: '#button-dropdown',
 
 	'toolbarText': '#toolbar-text',
 	'toolbarButton': '#toolbar-button',
@@ -221,20 +223,52 @@ function renderDropdown() {
 		} ) );
 	} );
 
-	const itemListModel = new Model( {
-		items: collection
-	} );
-
-	ui.dropdown.add( dropdown( {
+	ui.listDropdown.add( listDropdown( {
 		label: 'Normal state',
 		isEnabled: true,
-		content: itemListModel
+		items: collection
 	} ) );
 
-	ui.dropdown.add( dropdown( {
+	ui.listDropdown.add( listDropdown( {
 		label: 'Disabled',
 		isEnabled: false,
-		content: itemListModel
+		items: collection
+	} ) );
+
+	ui.buttonDropdown.add( buttonDropdown( {
+		label: 'Normal state',
+		isEnabled: true,
+		buttons: [
+			button( {
+				withText: false,
+				label: 'foo',
+				icon: boldIcon
+			} ),
+			button( {
+				withText: false,
+				label: 'foo',
+				icon: italicIcon
+			} )
+		]
+	} ) );
+
+	ui.buttonDropdown.add( buttonDropdown( {
+		label: 'Disabled',
+		isEnabled: false,
+		buttons: [
+			button( {
+				withText: false,
+				isEnabled: false,
+				label: 'foo',
+				icon: boldIcon
+			} ),
+			button( {
+				withText: false,
+				isEnabled: false,
+				label: 'foo',
+				icon: italicIcon
+			} )
+		]
 	} ) );
 }
 
@@ -255,7 +289,7 @@ function renderToolbar() {
 			label: 'Button with an icon',
 			icon: boldIcon
 		} ),
-		dropdown(),
+		listDropdown(),
 		button()
 	] ) );
 
@@ -366,7 +400,7 @@ function toolbar( children = [] ) {
 	return toolbar;
 }
 
-function dropdown( {
+function listDropdown( {
 	label = 'Dropdown',
 	isEnabled = true,
 	isOn = false,
@@ -375,6 +409,20 @@ function dropdown( {
 } = {} ) {
 	const model = new Model( { label, isEnabled, items, isOn, withText } );
 	const dropdown = createListDropdown( model, {} );
+
+	return dropdown;
+}
+
+function buttonDropdown( {
+	label = 'Button dropdown',
+	isEnabled = true,
+	isOn = false,
+	withText = true,
+	isVertical = true,
+	buttons = []
+} = {} ) {
+	const model = new Model( { label, isEnabled, buttons, isVertical, isOn, withText } );
+	const dropdown = createButtonDropdown( model, {} );
 
 	return dropdown;
 }

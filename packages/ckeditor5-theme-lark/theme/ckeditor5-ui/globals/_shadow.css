@@ -12,5 +12,5 @@
 	/**
 	 * A visual style of element's drop shadow (i.e. panel).
 	 */
-	--ck-drop-shadow: 0 1px 2px 0 var(--ck-color-shadow-drop);
+	--ck-drop-shadow: 0 2px 2px 1px var(--ck-color-shadow-drop);
 }

@@ -8,8 +8,8 @@
 
 :root {
 	--ck-balloon-arrow-offset: 2px;
-	--ck-balloon-arrow-height: 15px;
-	--ck-balloon-arrow-half-width: 10px;
+	--ck-balloon-arrow-height: 10px;
+	--ck-balloon-arrow-half-width: 8px;
 }
 
 .ck-balloon-panel {

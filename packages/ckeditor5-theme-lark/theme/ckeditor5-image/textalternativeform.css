@@ -3,25 +3,19 @@
  * For licensing, see LICENSE.md.
  */
 
-.cke-text-alternative-form {
-	padding: var(--ck-spacing-large);
+.ck-text-alternative-form {
+	padding: var(--ck-spacing-standard);
+
+	& .ck-button {
+		border-width: 0;
+	}
 
 	&:focus {
-		/* https://github.com/ckeditor/ckeditor5-image/issues/40 */
+		/* https://github.com/ckeditor/ckeditor5-link/issues/90 */
 		outline: none;
 	}
 
-	& .ck-label {
-		margin-bottom: var(--ck-spacing-small);
-	}
-}
-
-.cke-text-alternative-form__actions {
-	padding-top: var(--ck-spacing-large);
-
-	& .ck-button {
-		& + .ck-button {
-			margin-right: var(--ck-spacing-medium);
-		}
+	& > :not(:first-child) {
+		margin-left: var(--ck-spacing-standard);
 	}
 }

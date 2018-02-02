@@ -30,23 +30,16 @@
 		border-width: 0;
 	}
 
+	/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/120 */
 	& > .ck-button,
-	& .ck-dropdown .ck-dropdown__button {
+	& > * > .ck-button {
 		&:not(:hover):not(:focus):not(.ck-on),
 		&.ck-disabled {
-			background: var(--ck-color-editor-toolbar-background);
+			background: transparent;
 		}
 
-		&.ck-on:not(.ck-button_with-text) {
+		&.ck-on {
 			@mixin ck-button-colors --ck-color-editor-toolbar-button-on;
-		}
-	}
-
-	& .ck-dropdown .ck-dropdown__button.ck-button_with-text {
-		border-width: 1px;
-
-		&:not(:hover):not(:focus):not(.ck-on) {
-			background: var(--ck-color-editor-dropdown-background);
 		}
 	}
 
@@ -58,12 +51,12 @@
 /* https://github.com/ckeditor/ckeditor5-theme-lark/issues/111 */
 .ck-toolbar-container.ck-editor-toolbar-container[class*="arrow_n"] {
 	&::after {
-		border-bottom-color: var(--ck-color-editor-toolbar-background);
+		border-bottom-color: var(--ck-color-base-foreground);
 	}
 }
 
 .ck-toolbar-container.ck-editor-toolbar-container[class*="arrow_s"] {
 	&::after {
-		border-top-color: var(--ck-color-editor-toolbar-background);
+		border-top-color: var(--ck-color-base-foreground);
 	}
 }
