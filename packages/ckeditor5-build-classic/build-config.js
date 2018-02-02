@@ -38,6 +38,7 @@ module.exports = {
 		toolbar: {
 			items: [
 				'headings',
+				'|',
 				'bold',
 				'italic',
 				'link',
