@@ -142,11 +142,11 @@ export function addToolbarToDropdown( dropdownView, buttons ) {
  *		items.add( new Model( { label: 'First item', style: 'color: red' } ) );
  *		items.add( new Model( { label: 'Second item', style: 'color: green', class: 'foo' } ) );
  *
- *        const dropdown = createDropdown( locale );
+ *		const dropdown = createDropdown( locale );
  *
- *        addListToDropdown( dropdown, items );
+ *		addListToDropdown( dropdown, items );
  *
- *        // Will render a dropdown with a list in the panel containing two items.
+ *		// Will render a dropdown with a list in the panel containing two items.
  *		dropdown.render()
  *		document.body.appendChild( dropdown.element );
  *
