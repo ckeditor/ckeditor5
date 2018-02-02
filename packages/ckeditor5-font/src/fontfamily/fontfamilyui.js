@@ -11,7 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Model from '@ckeditor/ckeditor5-ui/src/model';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 
-import { createDropdown, addListViewToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
+import { createDropdown, addListToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 
 import { normalizeOptions } from './utils';
 
@@ -35,7 +35,7 @@ export default class FontFamilyUI extends Plugin {
 		// Register UI component.
 		editor.ui.componentFactory.add( 'fontFamily', locale => {
 			const dropdownView = createDropdown( locale );
-			addListViewToDropdown( dropdownView, _prepareListOptions( options, command ) );
+			addListToDropdown( dropdownView, _prepareListOptions( options, command ) );
 
 			dropdownView.set( {
 				label: t( 'Font Family' ),

@@ -11,7 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Model from '@ckeditor/ckeditor5-ui/src/model';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 
-import { createDropdown, addListViewToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
+import { createDropdown, addListToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 
 import { normalizeOptions } from '../fontsize/utils';
 
@@ -37,7 +37,7 @@ export default class FontSizeUI extends Plugin {
 		// Register UI component.
 		editor.ui.componentFactory.add( 'fontSize', locale => {
 			const dropdownView = createDropdown( locale );
-			addListViewToDropdown( dropdownView, _prepareListOptions( options, command ) );
+			addListToDropdown( dropdownView, _prepareListOptions( options, command ) );
 
 			// Create dropdown model.
 			dropdownView.set( {
