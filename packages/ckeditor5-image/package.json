@@ -12,6 +12,7 @@
     "@ckeditor/ckeditor5-ui": "^1.0.0-alpha.2",
     "@ckeditor/ckeditor5-utils": "^1.0.0-alpha.2",
     "@ckeditor/ckeditor5-theme-lark": "^1.0.0-alpha.2",
+    "@ckeditor/ckeditor5-upload": "^1.0.0-alpha.2",
     "@ckeditor/ckeditor5-widget": "^1.0.0-alpha.2"
   },
   "devDependencies": {
