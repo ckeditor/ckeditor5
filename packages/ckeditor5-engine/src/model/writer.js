@@ -762,10 +762,18 @@ export default class Writer {
 
 	/**
 	 * Adds or updates {@link module:engine/model/markercollection~Marker marker} with given name to given `range`.
+	 * If the marker, nor marker's name is not provided, new marker is created and returned with a unique name.
 	 *
-	 * It uses {@link module:engine/model/operation/markeroperation~MarkerOperation} when `options.usingOperation` is set to true.
-	 * Otherwise adds directly to the {@link module:engine/model/MarkerCollection~MarkerCollection}. For additional information about
-	 * the difference between those two types see {@link module:/engine/model/markercollection~MarkerCollection}.
+	 * There're two types of markers.
+	 *
+	 * 1. Markers added to the document. They're synchronized in the collaboration and handled in the undo.
+	 * This type of markers is useful for solutions like spell checking or comments. Sample usage:
+	 * 		writer.setMarker( markerOrName, ranges, { usingOperation: true } );
+	 *
+	 * 2. Markers not added to document (default ones). They can be used as bookmarks or visual markers.
+	 * They're great for showing results of the find, or select link when the focus is in the input,
+	 * see https://github.com/ckeditor/ckeditor5-link/issues/13. Sample usage:
+	 * 		writer.setMarker( markerOrName, ranges );
 	 *
 	 * If passed name is a name of already existing marker (or {@link module:engine/model/markercollection~Marker Marker} instance
 	 * is passed), `range` parameter may be omitted (only for setting markers using operation). In this case marker will not be updated in
@@ -789,13 +797,15 @@ export default class Writer {
 	 *
 	 * 		setMarker( range, { usingOperations: true } );
 	 *
-	 * Create marker directly with a unique id:
+	 * Create marker directly with a unique name:
 	 *
 	 * 		setMarker( range )
 	 *
 	 * Update marker using `MarkerOperation` operation.
 	 *
 	 * 		setMarker( marker, { usingOperations: true } );
+	 *
+	 * Note: For efficiency reasons, it's best to create and keep at least markers as possible.
 	 *
 	 * @param {module:engine/model/markercollection~Marker|String|module:engine/model/range~Range} markerOrNameOrRange
 	 * Name of marker to add, Marker instance to update or range for the marker with a unique name.
@@ -860,9 +870,8 @@ export default class Writer {
 
 	/**
 	 * Removes given {@link module:engine/model/markercollection~Marker marker} or marker with given name.
-	 *
-	 * It uses {@link module:engine/model/operation/markeroperation~MarkerOperation} when marker's `managedUsingOperation` is set to true.
-	 * Otherwise removes directly from the {@link module:engine/model/MarkerCollection~MarkerCollection}.
+	 * There's no `usingOperation` option available here, the marker destructing mechanism is hidden and used
+	 * accordingly to how the marker was created, so if the marker was created with operation, it will be destroyed using operation.
 	 *
 	 * @param {module:engine/model/markercollection~Marker|String} markerOrName Marker or marker name to remove.
 	 * @param {Object} [options]
