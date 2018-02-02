@@ -60,7 +60,7 @@ class FancyWidget extends Plugin {
 
 ClassicEditor.create( global.document.querySelector( '#editor' ), {
 	plugins: [ Enter, Typing, Paragraph, Undo, Heading, Bold, Italic, List, FancyWidget ],
-	toolbar: [ 'headings', 'undo', 'redo', 'bold', 'italic', 'numberedList', 'bulletedList' ]
+	toolbar: [ 'headings', '|', 'undo', 'redo', 'bold', 'italic', 'numberedList', 'bulletedList' ]
 } )
 	.then( editor => {
 		window.editor = editor;
