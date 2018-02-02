@@ -30,7 +30,7 @@ module.exports = {
 		'@ckeditor/ckeditor5-link/src/link',
 		'@ckeditor/ckeditor5-list/src/list',
 		'@ckeditor/ckeditor5-paragraph/src/paragraph',
-		'@ckeditor/ckeditor5-upload/src/imageupload'
+		'@ckeditor/ckeditor5-image/src/imageupload'
 	],
 
 	// Editor config.

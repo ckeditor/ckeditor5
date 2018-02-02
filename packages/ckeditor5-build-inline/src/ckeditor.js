@@ -19,7 +19,7 @@ import ImagetoolbarPlugin from '@ckeditor/ckeditor5-image/src/imagetoolbar';
 import LinkPlugin from '@ckeditor/ckeditor5-link/src/link';
 import ListPlugin from '@ckeditor/ckeditor5-list/src/list';
 import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ImageuploadPlugin from '@ckeditor/ckeditor5-upload/src/imageupload';
+import ImageuploadPlugin from '@ckeditor/ckeditor5-image/src/imageupload';
 
 export default class InlineEditor extends InlineEditorBase {}
 
