@@ -113,7 +113,7 @@ let logger = console;
  *
  * Every operation applied on {@link module:engine/model/document~Document model.Document} is logged.
  *
- * Following classes are expanded with `log` and meaningful `toString` methods:
+ * The following classes are expanded with `log` and meaningful `toString` methods:
  * * {@link module:engine/model/position~Position model.Position},
  * * {@link module:engine/model/range~Range model.Range},
  * * {@link module:engine/model/text~Text model.Text},
@@ -127,25 +127,25 @@ let logger = console;
  * * {@link module:engine/view/documentfragment~DocumentFragment view.DocumentFragment},
  * * {@link module:engine/view/document~Document view.Document}.
  *
- * Additionally, following logging utility methods are added:
+ * Additionally, the following logging utility methods are added:
  * * {@link module:engine/model/text~Text model.Text} `logExtended`,
  * * {@link module:engine/model/element~Element model.Element} `logExtended`,
  * * {@link module:engine/model/element~Element model.Element} `logAll`,
  * * {@link module:engine/model/delta/delta~Delta model.Delta} `logAll`.
  *
- * Additionally, following classes are expanded with `logTree` and `printTree` methods:
+ * Additionally, the following classes are expanded with `logTree` and `printTree` methods:
  * * {@link module:engine/model/element~Element model.Element},
  * * {@link module:engine/model/documentfragment~DocumentFragment model.DocumentFragment},
  * * {@link module:engine/view/element~Element view.Element},
  * * {@link module:engine/view/documentfragment~DocumentFragment view.DocumentFragment}.
  *
- * Finally, following methods are added to {@link module:core/editor/editor~Editor}: `logModel`, `logView`, `logDocuments`.
- * All those methods take one parameter, which is a version of {@link module:engine/model/document~Document model document}
- * for which model or view document state should be logged.
+ * Finally, the following methods are added to {@link module:core/editor/editor~Editor}: `logModel`, `logView`, `logDocuments`.
+ * All those methods take one parameter, which is the version of the {@link module:engine/model/document~Document model document}
+ * for which the model or view document state should be logged.
  *
- * @param {Object} [_logger] Object with functions used to log messages and errors. By default messages are logged to console.
+ * @param {Object} [_logger] An object with functions used to log messages and errors. By default messages are logged to the console.
  * If specified, it is expected to have `log()` and `error()` methods.
- * @returns {module:engine/dev-utils/enableenginedebug~DebugPlugin} Plugin to be loaded in the editor.
+ * @returns {module:engine/dev-utils/enableenginedebug~DebugPlugin} The plugin to be loaded into the editor.
  */
 export default function enableEngineDebug( _logger = console ) {
 	logger = _logger;
@@ -676,7 +676,7 @@ class DebugPlugin extends Plugin {
 	}
 }
 
-// Helper function, stores `document` state for given `version` as a string in private property.
+// Helper function, stores the `document` state for a given `version` as a string in a private property.
 function dumpTrees( document, version ) {
 	let string = '';
 
@@ -693,7 +693,7 @@ function dumpTrees( document, version ) {
 	}
 }
 
-// Helper function, returns class name of given `Delta` or `Operation`.
+// Helper function, returns the class name of a given `Delta` or `Operation`.
 // @param {module:engine/model/delta/delta~Delta|module:engine/model/operation/operation~Operation}
 // @returns {String} Class name.
 function getClassName( obj ) {
@@ -702,7 +702,7 @@ function getClassName( obj ) {
 	return path[ path.length - 1 ];
 }
 
-// Helper function, converts map to {"key1":"value1","key2":"value2"} format.
+// Helper function, converts a map to the {"key1":"value1","key2":"value2"} format.
 // @param {Map} map Map to convert.
 // @returns {String} Converted map.
 function mapString( map ) {
@@ -715,7 +715,7 @@ function mapString( map ) {
 	return JSON.stringify( obj );
 }
 
-// Helper function, converts map to key1="value1" key2="value1" format.
+// Helper function, converts a map to the key1="value1" key2="value1" format.
 // @param {Map} map Map to convert.
 // @returns {String} Converted map.
 function mapToTags( map ) {

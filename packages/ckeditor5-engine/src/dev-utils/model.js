@@ -8,7 +8,7 @@
  */
 
 /**
- * Collection of methods for manipulating {@link module:engine/model/model model} for testing purposes.
+ * Collection of methods for manipulating the {@link module:engine/model/model model} for testing purposes.
  */
 
 import RootElement from '../model/rootelement';
@@ -38,18 +38,18 @@ import isPlainObject from '@ckeditor/ckeditor5-utils/src/lib/lodash/isPlainObjec
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 
 /**
- * Writes the contents of the {@link module:engine/model/document~Document Document} to an HTML-like string.
+ * Writes the content of the {@link module:engine/model/document~Document document} to an HTML-like string.
  *
- * **Note:** {@link module:engine/model/text~Text text} node contains attributes will be represented as:
+ * **Note:** A {@link module:engine/model/text~Text text} node that contains attributes will be represented as:
  *
  *		<$text attribute="value">Text data</$text>
  *
  * @param {module:engine/model/model~Model} model
  * @param {Object} [options]
- * @param {Boolean} [options.withoutSelection=false] Whether to write the selection. When set to `true` selection will
- * be not included in returned string.
- * @param {String} [options.rootName='main'] Name of the root from which data should be stringified. If not provided
- * default `main` name will be used.
+ * @param {Boolean} [options.withoutSelection=false] Whether to write the selection. When set to `true`, the selection will
+ * not be included in the returned string.
+ * @param {String} [options.rootName='main'] The name of the root from which the data should be stringified. If not provided,
+ * the default `main` name will be used.
  * @returns {String} The stringified data.
  */
 export function getData( model, options = {} ) {
@@ -68,21 +68,21 @@ export function getData( model, options = {} ) {
 getData._stringify = stringify;
 
 /**
- * Sets the contents of the {@link module:engine/model/document~Document Document} provided as HTML-like string.
+ * Sets the content of the {@link module:engine/model/document~Document document} provided as an HTML-like string.
  *
- * **Note:** Remember to register elements in {@link module:engine/model/model~Model#schema model's schema} before inserting them.
+ * **Note:** Remember to register elements in the {@link module:engine/model/model~Model#schema model's schema} before inserting them.
  *
- * **Note:** To create {@link module:engine/model/text~Text text} node witch containing attributes use:
+ * **Note:** To create a {@link module:engine/model/text~Text text} node that contains attributes use:
  *
  *		<$text attribute="value">Text data</$text>
  *
  * @param {module:engine/model/model~Model} model
- * @param {String} data HTML-like string to write into Document.
+ * @param {String} data HTML-like string to write into the document.
  * @param {Object} options
- * @param {String} [options.rootName='main'] Root name where parsed data will be stored. If not provided, default `main`
+ * @param {String} [options.rootName='main'] Root name where parsed data will be stored. If not provided, the default `main`
  * name will be used.
- * @param {Array<Object>} [options.selectionAttributes] List of attributes which will be passed to the selection.
- * @param {Boolean} [options.lastRangeBackward=false] If set to true last range will be added as backward.
+ * @param {Array<Object>} [options.selectionAttributes] A list of attributes which will be passed to the selection.
+ * @param {Boolean} [options.lastRangeBackward=false] If set to `true`, the last range will be added as backward.
  * @param {String} [options.batchType='transparent'] Batch type used for inserting elements.
  * See {@link module:engine/model/batch~Batch#type}.
  */
@@ -145,18 +145,18 @@ setData._parse = parse;
 /**
  * Converts model nodes to HTML-like string representation.
  *
- * **Note:** {@link module:engine/model/text~Text text} node contains attributes will be represented as:
+ * **Note:** A {@link module:engine/model/text~Text text} node that contains attributes will be represented as:
  *
  *		<$text attribute="value">Text data</$text>
  *
  * @param {module:engine/model/rootelement~RootElement|module:engine/model/element~Element|module:engine/model/text~Text|
- * module:engine/model/documentfragment~DocumentFragment} node Node to stringify.
+ * module:engine/model/documentfragment~DocumentFragment} node A node to stringify.
  * @param {module:engine/model/selection~Selection|module:engine/model/position~Position|
  * module:engine/model/range~Range} [selectionOrPositionOrRange=null]
- * Selection instance which ranges will be included in returned string data. If Range instance is provided - it will be
- * converted to selection containing this range. If Position instance is provided - it will be converted to selection
+ * A selection instance whose ranges will be included in the returned string data. If a range instance is provided, it will be
+ * converted to a selection containing this range. If a position instance is provided, it will be converted to a selection
  * containing one range collapsed at this position.
- * @returns {String} HTML-like string representing the model.
+ * @returns {String} An HTML-like string representing the model.
  */
 export function stringify( node, selectionOrPositionOrRange = null ) {
 	const model = new Model();
@@ -229,23 +229,23 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 }
 
 /**
- * Parses HTML-like string and returns model {@link module:engine/model/rootelement~RootElement rootElement}.
+ * Parses an HTML-like string and returns the model {@link module:engine/model/rootelement~RootElement rootElement}.
  *
- * **Note:** To create {@link module:engine/model/text~Text text} node witch containing attributes use:
+ * **Note:** To create a {@link module:engine/model/text~Text text} node that contains attributes use:
  *
  *		<$text attribute="value">Text data</$text>
  *
  * @param {String} data HTML-like string to be parsed.
- * @param {module:engine/model/schema~Schema} schema Schema instance uses by converters for element validation.
- * @param {module:engine/model/batch~Batch} batch Batch used for conversion.
+ * @param {module:engine/model/schema~Schema} schema A schema instance used by converters for element validation.
+ * @param {module:engine/model/batch~Batch} batch A batch used for conversion.
  * @param {Object} [options={}] Additional configuration.
- * @param {Array<Object>} [options.selectionAttributes] List of attributes which will be passed to the selection.
- * @param {Boolean} [options.lastRangeBackward=false] If set to true last range will be added as backward.
+ * @param {Array<Object>} [options.selectionAttributes] A list of attributes which will be passed to the selection.
+ * @param {Boolean} [options.lastRangeBackward=false] If set to `true`, the last range will be added as backward.
  * @param {module:engine/model/schema~SchemaContextDefinition} [options.context=[ '$root' ]] The conversion context.
- * If not provided default `[ '$root' ]` will be used.
+ * If not provided, the default `[ '$root' ]` will be used.
  * @returns {module:engine/model/element~Element|module:engine/model/text~Text|
- * module:engine/model/documentfragment~DocumentFragment|Object} Returns parsed model node or
- * object with two fields `model` and `selection` when selection ranges were included in data to parse.
+ * module:engine/model/documentfragment~DocumentFragment|Object} Returns the parsed model node or
+ * an object with two fields: `model` and `selection`, when selection ranges were included in the data to parse.
  */
 export function parse( data, schema, options = {} ) {
 	const mapper = new Mapper();
