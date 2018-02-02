@@ -14,7 +14,7 @@ import View from '@ckeditor/ckeditor5-ui/src/view';
 import IconView from '@ckeditor/ckeditor5-ui/src/icon/iconview';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
-import { createDropdown, addListViewToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
+import { createDropdown, addListToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import ToolbarSeparatorView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarseparatorview';
@@ -411,7 +411,7 @@ function listDropdown( {
 	const dropdown = createDropdown( {} );
 	dropdown.set( { label, isEnabled, isOn, withText } );
 
-	addListViewToDropdown( dropdown, items );
+	addListToDropdown( dropdown, items );
 
 	return dropdown;
 }
