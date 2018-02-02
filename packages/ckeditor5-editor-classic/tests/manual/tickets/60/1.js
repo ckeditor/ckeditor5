@@ -18,7 +18,7 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Enter, Typing, Paragraph, Undo, Heading, Bold, Italic ],
 		toolbar: {
-			items: [ 'headings', 'bold', 'italic', 'undo', 'redo' ],
+			items: [ 'headings', '|', 'bold', 'italic', 'undo', 'redo' ],
 			viewportTopOffset: 100
 		}
 	} )
