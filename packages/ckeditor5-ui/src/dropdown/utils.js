@@ -45,10 +45,12 @@ import '../../theme/components/dropdown/toolbardropdown.css';
  * @returns {module:ui/dropdown/dropdownview~DropdownView} The dropdown view instance.
  */
 export function createDropdown( locale ) {
-	const buttonView = createButtonForDropdown( locale );
+	const buttonView = new ButtonView( locale );
+
+	// Dropdown expects "select" event on button view upon which the dropdown will open.
+	buttonView.delegate( 'execute' ).to( buttonView, 'select' );
 
 	const dropdownView = prepareDropdown( locale, buttonView );
-
 	addDefaultBehavior( dropdownView );
 
 	return dropdownView;
@@ -80,8 +82,8 @@ export function createDropdown( locale ) {
  */
 export function createSplitButtonDropdown( locale ) {
 	const buttonView = new SplitButtonView( locale );
-	const dropdownView = prepareDropdown( locale, buttonView );
 
+	const dropdownView = prepareDropdown( locale, buttonView );
 	addDefaultBehavior( dropdownView );
 
 	buttonView.delegate( 'execute' ).to( dropdownView );
@@ -197,19 +199,6 @@ function prepareDropdown( locale, buttonView ) {
 	} );
 
 	return dropdownView;
-}
-
-// Creates a default button view instance to be used as a toolbar button that opens a dropdown.
-//
-// @param {module:utils/locale~Locale} locale The locale instance.
-// @returns {module:ui/button/buttonview~ButtonView}
-function createButtonForDropdown( locale ) {
-	const buttonView = new ButtonView( locale );
-
-	// Dropdown expects "select" event on button view upon which the dropdown will open.
-	buttonView.delegate( 'execute' ).to( buttonView, 'select' );
-
-	return buttonView;
 }
 
 // Add a set of default behaviors to dropdown view.
