@@ -165,9 +165,9 @@ class Insertion {
 	}
 
 	/**
-	 * @private
 	 * Handles insertion of a single node.
 	 *
+	 * @private
 	 * @param {module:engine/model/node~Node} node
 	 * @param {Object} context
 	 * @param {Boolean} context.isFirst Whether the given node is the first one in the content to be inserted.
