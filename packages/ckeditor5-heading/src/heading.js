@@ -75,7 +75,7 @@ export default class Heading extends Plugin {
 			const dropdownView = createDropdown( locale );
 			addListToDropdown( dropdownView, dropdownItems );
 
-			dropdownView.set( {
+			dropdownView.buttonView.set( {
 				isOn: false,
 				withText: true,
 				tooltip: dropdownTooltip
@@ -93,7 +93,7 @@ export default class Heading extends Plugin {
 				return areEnabled.some( isEnabled => isEnabled );
 			} );
 
-			dropdownView.bind( 'label' ).toMany( commands, 'value', ( ...areActive ) => {
+			dropdownView.buttonView.bind( 'label' ).toMany( commands, 'value', ( ...areActive ) => {
 				const index = areActive.findIndex( value => value );
 
 				// If none of the commands is active, display default title.
