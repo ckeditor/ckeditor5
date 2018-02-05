@@ -6,28 +6,25 @@
 /* globals document */
 
 import View from '../../../src/view/view';
-import Position from '../../../src/view/position';
 import createViewRoot from '../_utils/createroot';
-import { parse } from '../../../src/dev-utils/view';
+import { setData } from '../../../src/dev-utils/view';
 
 const view = new View();
 const viewDocument = view.document;
-const viewRoot = createViewRoot( viewDocument );
+createViewRoot( viewDocument );
 view.attachDomRoot( document.getElementById( 'editor' ) );
 
-view.change( writer => {
-	const { selection, view: data } = parse(
-		'<container:p><attribute:strong>foo</attribute:strong>[]<attribute:strong>bar</attribute:strong></container:p>'
-	);
-
-	writer.insert( Position.createAt( viewRoot ), data );
-	writer.setSelection( selection );
-} );
+setData(
+	view,
+	'<container:p><attribute:strong>foo</attribute:strong>[]<attribute:strong>bar</attribute:strong></container:p>'
+);
 
 view.focus();
 
 viewDocument.on( 'selectionChange', ( evt, data ) => {
 	view.change( writer => {
+		// Re-render view selection each time selection is changed.
+		// See https://github.com/ckeditor/ckeditor5-engine/issues/796.
 		writer.setSelection( data.newSelection );
 	} );
 } );
