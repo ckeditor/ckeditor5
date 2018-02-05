@@ -223,13 +223,6 @@ export default class HighlightUI extends Plugin {
 			buttons.push( new ToolbarSeparatorView() );
 			buttons.push( componentFactory.create( 'removeHighlight' ) );
 
-			// TODO: Extend template to hide arrow from dropdown. Remove me after changes in theme-lark.
-			dropdownView.extendTemplate( {
-				attributes: {
-					class: 'ck-splitbutton-dropdown'
-				}
-			} );
-
 			addToolbarToDropdown( dropdownView, buttons );
 
 			bindIconStyleToColor( dropdownView );
