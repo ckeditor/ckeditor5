@@ -85,10 +85,9 @@ describe( 'Image converters', () => {
 			buildViewConverter().for( editor.data.viewToModel ).fromElement( 'foo' ).toElement( 'foo' );
 			buildViewConverter().for( editor.data.viewToModel ).fromElement( 'bar' ).toElement( 'bar' );
 
-			schema.register( 'foo' );
-			schema.register( 'bar' );
-
-			schema.extend( 'foo', { allowIn: 'image' } );
+			schema.register( 'foo', { allowIn: 'image' } );
+			// Is allowed in root, but should not try to split image element.
+			schema.register( 'bar', { allowIn: '$root' } );
 
 			editor.setData( '<figure class="image">x<img src="foo.png" />y<foo></foo><bar></bar></figure>' );
 
