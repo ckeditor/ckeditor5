@@ -50,7 +50,7 @@ export function viewFigureToModel() {
 		// Convert view image to model image and save result as a conversion result.
 		// Image is an object, so we are sure that it won't be split so at this stage of conversion
 		// modelCursor and modelRange ends after converted image.
-		data = Object.assign( data, conversionApi.convertItem( viewImage, data.modelCursor ) );
+		data = Object.assign( data, conversionApi.convertItem( viewImage, splitResult.position ) );
 
 		// Consume figure from consumable list.
 		conversionApi.consumable.consume( data.viewItem, { name: true, class: 'image' } );
