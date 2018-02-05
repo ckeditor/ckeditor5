@@ -934,7 +934,7 @@ describe( 'Schema', () => {
 			expect( schema.getLimitElement( doc.selection ) ).to.equal( root );
 		} );
 
-		it( 'works fine with multi-range selections if the first one has the root element as a limit element', () => {
+		it( 'works fine with multi-range selections if the first range has the root element as a limit element', () => {
 			setData(
 				model,
 				'<image>' +
@@ -950,7 +950,7 @@ describe( 'Schema', () => {
 			expect( schema.getLimitElement( doc.selection ) ).to.equal( root );
 		} );
 
-		it( 'works fine with multi-range selections if the second one has the root element as a limit element', () => {
+		it( 'works fine with multi-range selections if the last range has the root element as a limit element', () => {
 			setData(
 				model,
 				'<paragraph>Paragraph item 1</paragraph>' +
