@@ -836,6 +836,8 @@ export default class Writer {
 			}
 		}
 
+		const currentMarker = this.model.markers.get( markerName );
+
 		if ( !usingOperation ) {
 			if ( !newRange ) {
 				/**
@@ -846,10 +848,14 @@ export default class Writer {
 				throw new CKEditorError( 'writer-setMarker-no-range: Range parameter is required when adding a new marker.' );
 			}
 
+			// If marker changes to marker that do not use operations then we need to create additional operation
+			// that removes that marker first.
+			if ( currentMarker && currentMarker.managedUsingOperations && !usingOperation ) {
+				applyMarkerOperation( this, markerName, currentMarker.getRange(), null );
+			}
+
 			return this.model.markers._set( markerName, newRange, usingOperation );
 		}
-
-		const currentMarker = this.model.markers.get( markerName );
 
 		if ( !newRange && !currentMarker ) {
 			throw new CKEditorError( 'writer-setMarker-no-range: Range parameter is required when adding a new marker.' );

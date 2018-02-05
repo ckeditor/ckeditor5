@@ -2076,12 +2076,39 @@ describe( 'Writer', () => {
 			} ).to.throw( CKEditorError, /^writer-setMarker-no-range/ );
 		} );
 
-		it( 'should throw if marker is updated incorrectly', () => {
-			setMarker( 'name', range );
+		it( 'should create additional operation when marker type changes to not managed using operation', () => {
+			const spy = sinon.spy();
+			model.on( 'applyOperation', spy );
 
-			expect( () => {
-				setMarker( 'name', range, { usingOperation: true } );
-			} ).to.throw( CKEditorError, /^marker-set-incorrect-marker-type/ );
+			setMarker( 'name', range, { usingOperation: true } );
+			const marker = setMarker( 'name', range );
+			const op1 = batch.deltas[ 0 ].operations[ 0 ];
+			const op2 = batch.deltas[ 1 ].operations[ 0 ];
+
+			expect( spy.calledTwice ).to.be.true;
+			expect( spy.firstCall.args[ 1 ][ 0 ].type ).to.equal( 'marker' );
+			expect( spy.secondCall.args[ 1 ][ 0 ].type ).to.equal( 'marker' );
+
+			expect( op1.oldRange ).to.be.null;
+			expect( op1.newRange.isEqual( range ) ).to.be.true;
+
+			expect( op2.oldRange.isEqual( range ) ).to.be.true;
+			expect( op2.newRange ).to.be.null;
+
+			expect( marker.managedUsingOperations ).to.be.false;
+		} );
+
+		it( 'should enable changing marker to be not managed using operation', () => {
+			const spy = sinon.spy();
+			model.on( 'applyOperation', spy );
+
+			setMarker( 'name', range );
+			const marker = setMarker( 'name', range, { usingOperation: true } );
+
+			expect( spy.calledOnce ).to.be.true;
+			expect( spy.firstCall.args[ 1 ][ 0 ].type ).to.equal( 'marker' );
+
+			expect( marker.managedUsingOperations ).to.be.true;
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
