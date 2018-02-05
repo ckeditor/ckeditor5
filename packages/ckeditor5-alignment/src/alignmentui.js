@@ -90,11 +90,12 @@ export default class AlignmentUI extends Plugin {
 			addToolbarToDropdown( dropdownView, buttons );
 
 			// Configure dropdown properties an behavior.
-			dropdownView.set( {
+			dropdownView.buttonView.set( {
 				label: t( 'Text alignment' ),
-				isVertical: true,
 				tooltip: true
 			} );
+
+			dropdownView.toolbarView.isVertical = true;
 
 			dropdownView.extendTemplate( {
 				attributes: {
@@ -106,7 +107,7 @@ export default class AlignmentUI extends Plugin {
 			const defaultIcon = alignLeftIcon;
 
 			// Change icon to reflect current selection's alignment.
-			dropdownView.bind( 'icon' ).toMany( buttons, 'isOn', ( ...areActive ) => {
+			dropdownView.buttonView.bind( 'icon' ).toMany( buttons, 'isOn', ( ...areActive ) => {
 				// Get the index of an active button.
 				const index = areActive.findIndex( value => value );
 
