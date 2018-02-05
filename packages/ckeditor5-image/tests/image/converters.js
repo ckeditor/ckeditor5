@@ -13,6 +13,7 @@ import { toImageWidget } from '../../src/image/utils';
 import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
 import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
 import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
+import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
@@ -53,25 +54,23 @@ describe( 'Image converters', () => {
 		let dispatcher, schema, imgConverterCalled;
 
 		beforeEach( () => {
-			imgConverterCalled = false;
+			// Since this part of test tests only view->model conversion editing pipeline is not necessary
+			// so defining model->view converters won't be necessary.
+			editor.editing.destroy();
 
 			schema = model.schema;
 			schema.extend( '$text', { allowIn: 'image' } );
 
 			dispatcher = editor.data.viewToModel;
 			dispatcher.on( 'element:figure', viewFigureToModel() );
-			dispatcher.on( 'element:img', ( evt, data, conversionApi ) => {
-				if ( conversionApi.consumable.consume( data.viewItem, { name: true, attribute: 'src' } ) ) {
-					const image = conversionApi.writer.createElement( 'image', { src: data.viewItem.getAttribute( 'src' ) } );
 
-					conversionApi.writer.insert( image, data.modelCursor );
-
-					data.modelRange = ModelRange.createOn( image );
-					data.modelCursor = data.modelRange.end;
-
+			buildViewConverter().for( dispatcher )
+				.from( { name: 'img', attribute: { src: true } } )
+				.toElement( viewImage => {
 					imgConverterCalled = true;
-				}
-			} );
+
+					return new ModelElement( 'image', { src: viewImage.getAttribute( 'src' ) } );
+				} );
 		} );
 
 		it( 'should find img element among children and convert it using already defined converters', () => {
@@ -81,19 +80,75 @@ describe( 'Image converters', () => {
 			expect( imgConverterCalled ).to.be.true;
 		} );
 
-		it( 'should convert non-img children in image context and append them to model image element', () => {
+		it( 'should convert children allowed by schema and omit disallowed', () => {
 			buildViewConverter().for( editor.data.viewToModel ).fromElement( 'foo' ).toElement( 'foo' );
 			buildViewConverter().for( editor.data.viewToModel ).fromElement( 'bar' ).toElement( 'bar' );
 
-			schema.register( 'foo' );
-			schema.register( 'bar' );
-
-			schema.extend( 'foo', { allowIn: 'image' } );
+			schema.register( 'foo', { allowIn: 'image' } );
+			// Is allowed in root, but should not try to split image element.
+			schema.register( 'bar', { allowIn: '$root' } );
 
 			editor.setData( '<figure class="image">x<img src="foo.png" />y<foo></foo><bar></bar></figure>' );
 
 			// Element bar not converted because schema does not allow it.
 			expectModel( '<image src="foo.png">xy<foo></foo></image>' );
+		} );
+
+		it( 'should split parent element when image is not allowed - in the middle', () => {
+			buildViewConverter().for( editor.data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
+
+			schema.register( 'div', { inheritAllFrom: '$block' } );
+			schema.extend( 'image', { disallowIn: 'div' } );
+
+			editor.setData(
+				'<div>' +
+					'abc' +
+					'<figure class="image">' +
+						'<img src="foo.jpg"/>' +
+					'</figure>' +
+					'def' +
+				'</div>'
+			);
+
+			expectModel( '<div>abc</div><image src="foo.jpg"></image><div>def</div>' );
+		} );
+
+		it( 'should split parent element when image is not allowed - at the end', () => {
+			buildViewConverter().for( editor.data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
+			buildModelConverter().for( editor.editing.modelToView ).fromElement( 'div' ).toElement( 'div' );
+
+			schema.register( 'div', { inheritAllFrom: '$block' } );
+			schema.extend( 'image', { disallowIn: 'div' } );
+
+			editor.setData(
+				'<div>' +
+					'abc' +
+					'<figure class="image">' +
+						'<img src="foo.jpg"/>' +
+					'</figure>' +
+				'</div>'
+			);
+
+			expectModel( '<div>abc</div><image src="foo.jpg"></image>' );
+		} );
+
+		it( 'should split parent element when image is not allowed - at the beginning', () => {
+			buildViewConverter().for( editor.data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
+			buildModelConverter().for( editor.editing.modelToView ).fromElement( 'div' ).toElement( 'div' );
+
+			schema.register( 'div', { inheritAllFrom: '$block' } );
+			schema.extend( 'image', { disallowIn: 'div' } );
+
+			editor.setData(
+				'<div>' +
+					'<figure class="image">' +
+						'<img src="foo.jpg"/>' +
+					'</figure>' +
+					'def' +
+				'</div>'
+			);
+
+			expectModel( '<image src="foo.jpg"></image><div>def</div>' );
 		} );
 
 		it( 'should be possible to overwrite', () => {
