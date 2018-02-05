@@ -45,11 +45,13 @@ export function viewFigureToModel() {
 		// Get image element from conversion result.
 		const modelImage = first( conversionResult.modelRange.getItems() );
 
-		// When image was successfully converted.
-		if ( modelImage ) {
-			// Convert rest of the figure element's children as an image children.
-			conversionApi.convertChildren( data.viewItem, ModelPosition.createAt( modelImage ) );
+		// When image wasn't successfully converted then finish conversion.
+		if ( !modelImage ) {
+			return;
 		}
+
+		// Convert rest of the figure element's children as an image children.
+		conversionApi.convertChildren( data.viewItem, ModelPosition.createAt( modelImage ) );
 
 		// Set image range as conversion result.
 		data.modelRange = conversionResult.modelRange;
