@@ -5,22 +5,30 @@
 
 /* globals document */
 
-import Document from '../../../src/view/document';
-import { setData } from '../../../src/dev-utils/view';
+import View from '../../../src/view/view';
+import Position from '../../../src/view/position';
+import createViewRoot from '../_utils/createroot';
+import { parse } from '../../../src/dev-utils/view';
 
-const viewDocument = new Document();
-viewDocument.createRoot( document.getElementById( 'editor' ) );
+const view = new View();
+const viewDocument = view.document;
+const viewRoot = createViewRoot( viewDocument );
+view.attachDomRoot( document.getElementById( 'editor' ) );
 
-viewDocument.isFocused = true;
+view.change( writer => {
+	const { selection, view: data } = parse(
+		'<container:p><attribute:strong>foo</attribute:strong>[]<attribute:strong>bar</attribute:strong></container:p>'
+	);
 
-setData( viewDocument,
-	'<container:p><attribute:strong>foo</attribute:strong>[]<attribute:strong>bar</attribute:strong></container:p>' );
-
-viewDocument.on( 'selectionChange', ( evt, data ) => {
-	viewDocument.selection.setTo( data.newSelection );
-
-	// Needed due to https://github.com/ckeditor/ckeditor5-engine/issues/796.
-	viewDocument.render();
+	writer.insert( Position.createAt( viewRoot ), data );
+	writer.setSelection( selection );
 } );
 
-viewDocument.render();
+view.focus();
+
+viewDocument.on( 'selectionChange', ( evt, data ) => {
+	view.change( writer => {
+		writer.setSelection( data.newSelection );
+	} );
+} );
+

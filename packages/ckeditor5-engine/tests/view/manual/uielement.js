@@ -13,12 +13,10 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
-import UIElement from '../../../src/view/uielement';
 import Position from '../../../src/view/position';
-import writer from '../../../src/view/writer';
 
-function createEndingUIElement() {
-	const element = new UIElement( 'span' );
+function createEndingUIElement( writer ) {
+	const element = writer.createUIElement( 'span' );
 
 	element.render = function( domDocument ) {
 		const root = this.toDomElement( domDocument );
@@ -31,8 +29,8 @@ function createEndingUIElement() {
 	return element;
 }
 
-function createMiddleUIElement() {
-	const element = new UIElement( 'span' );
+function createMiddleUIElement( writer ) {
+	const element = writer.createUIElement( 'span' );
 
 	element.render = function( domDocument ) {
 		const root = this.toDomElement( domDocument );
@@ -53,7 +51,7 @@ class UIElementTestPlugin extends Plugin {
 		// Add some UIElement to each paragraph.
 		editing.modelToView.on( 'insert:paragraph', ( evt, data, consumable, conversionApi ) => {
 			const viewP = conversionApi.mapper.toViewElement( data.item );
-			viewP.appendChildren( createEndingUIElement() );
+			viewP.appendChildren( createEndingUIElement( conversionApi.writer ) );
 		}, { priority: 'lowest' } );
 	}
 }
@@ -65,18 +63,19 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
+		const view = editor.editing.view;
 
 		// Add some UI elements.
-		const viewRoot = editor.editing.view.getRoot();
+		const viewRoot = editor.editing.view.document.getRoot();
 		const viewText1 = viewRoot.getChild( 0 ).getChild( 0 );
 		const viewText2 = viewRoot.getChild( 1 ).getChild( 0 );
 
-		writer.insert( new Position( viewText1, 20 ), createMiddleUIElement() );
-		writer.insert( new Position( viewText1, 20 ), createMiddleUIElement() );
-		writer.insert( new Position( viewText2, 0 ), createMiddleUIElement() );
-		writer.insert( new Position( viewText2, 6 ), createMiddleUIElement() );
-
-		editor.editing.view.render();
+		view.change( writer => {
+			writer.insert( new Position( viewText1, 20 ), createMiddleUIElement( writer ) );
+			writer.insert( new Position( viewText1, 20 ), createMiddleUIElement( writer ) );
+			writer.insert( new Position( viewText2, 0 ), createMiddleUIElement( writer ) );
+			writer.insert( new Position( viewText2, 6 ), createMiddleUIElement( writer ) );
+		} );
 	} )
 	.catch( err => {
 		console.error( err.stack );

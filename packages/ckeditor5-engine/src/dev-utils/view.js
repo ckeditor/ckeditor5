@@ -89,11 +89,14 @@ export function setData( view, data, options = {} ) {
 	const document = view.document;
 	const rootName = options.rootName || 'main';
 	const root = document.getRoot( rootName );
-	const result = setData._parse( data, { rootElement: root } );
 
-	if ( result.view && result.selection ) {
-		document.selection._setTo( result.selection );
-	}
+	view.change( writer => {
+		const result = setData._parse( data, { rootElement: root } );
+
+		if ( result.view && result.selection ) {
+			writer.setSelection( result.selection );
+		}
+	} );
 }
 
 // Set parse as setData private method - needed for testing/spying.

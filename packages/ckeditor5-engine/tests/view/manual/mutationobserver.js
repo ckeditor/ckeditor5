@@ -5,19 +5,26 @@
 
 /* globals console, document */
 
-import Document from '../../../src/view/document';
-import { setData } from '../../../src/dev-utils/view';
+import View from '../../../src/view/view';
+import Position from '../../../src/view/position';
+import createViewRoot from '../_utils/createroot';
+import { parse } from '../../../src/dev-utils/view';
 
-const viewDocument = new Document();
-viewDocument.createRoot( document.getElementById( 'editor' ) );
+const view = new View();
+const viewDocument = view.document;
+const viewRoot = createViewRoot( viewDocument );
+view.attachDomRoot( document.getElementById( 'editor' ) );
 
 viewDocument.on( 'mutations', ( evt, mutations ) => console.log( mutations ) );
 viewDocument.on( 'selectionChange', ( evt, data ) => {
-	viewDocument.selection.setTo( data.newSelection );
+	view.change( writer => writer.setSelection( data.newSelection ) );
 } );
 
-setData( viewDocument,
-	'<container:p>foo</container:p>' +
-	'<container:p>bar</container:p>' );
+view.change( writer => {
+	const data = parse(
+		'<container:p>foo</container:p>' +
+		'<container:p>bar</container:p>'
+	);
 
-viewDocument.render();
+	writer.insert( Position.createAt( viewRoot ), data );
+} );
