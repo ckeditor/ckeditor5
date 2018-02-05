@@ -592,7 +592,7 @@ export default class Schema {
 				// because the root element is on the top of the tree and it's the common ancestor for all selection's ranges.
 				if ( element.is( 'rootElement' ) ) {
 					return element;
-				} else if  ( rangeCommonAncestor.is( 'rootElement' ) ) {
+				} else if ( rangeCommonAncestor.is( 'rootElement' ) ) {
 					return rangeCommonAncestor;
 				}
 
