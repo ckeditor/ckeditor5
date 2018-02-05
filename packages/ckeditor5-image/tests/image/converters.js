@@ -96,6 +96,64 @@ describe( 'Image converters', () => {
 			expectModel( '<image src="foo.png">xy<foo></foo></image>' );
 		} );
 
+		it( 'should split parent element when image is not allowed - in the middle', () => {
+			buildViewConverter().for( editor.data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
+			buildModelConverter().for( editor.editing.modelToView ).fromElement( 'div' ).toElement( 'div' );
+
+			schema.register( 'div', { inheritAllFrom: '$block', } );
+			schema.extend( 'image', { disallowIn: 'div' } );
+
+			editor.setData(
+				'<div>' +
+					'abc' +
+					'<figure class="image">' +
+						'<img src="foo.jpg"/>' +
+					'</figure>' +
+					'def' +
+				'</div>'
+			);
+
+			expectModel( '<div>abc</div><image src="foo.jpg"></image><div>def</div>' );
+		} );
+
+		it( 'should split parent element when image is not allowed - at the end', () => {
+			buildViewConverter().for( editor.data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
+			buildModelConverter().for( editor.editing.modelToView ).fromElement( 'div' ).toElement( 'div' );
+
+			schema.register( 'div', { inheritAllFrom: '$block', } );
+			schema.extend( 'image', { disallowIn: 'div' } );
+
+			editor.setData(
+				'<div>' +
+					'abc' +
+					'<figure class="image">' +
+						'<img src="foo.jpg"/>' +
+					'</figure>' +
+				'</div>'
+			);
+
+			expectModel( '<div>abc</div><image src="foo.jpg"></image>' );
+		} );
+
+		it( 'should split parent element when image is not allowed - at the beginning', () => {
+			buildViewConverter().for( editor.data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
+			buildModelConverter().for( editor.editing.modelToView ).fromElement( 'div' ).toElement( 'div' );
+
+			schema.register( 'div', { inheritAllFrom: '$block', } );
+			schema.extend( 'image', { disallowIn: 'div' } );
+
+			editor.setData(
+				'<div>' +
+					'<figure class="image">' +
+						'<img src="foo.jpg"/>' +
+					'</figure>' +
+					'def' +
+				'</div>'
+			);
+
+			expectModel( '<image src="foo.jpg"></image><div>def</div>' );
+		} );
+
 		it( 'should be possible to overwrite', () => {
 			dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
 				conversionApi.consumable.consume( data.viewItem, { name: true } );
