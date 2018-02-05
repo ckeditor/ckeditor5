@@ -39,32 +39,17 @@ export function viewFigureToModel() {
 			return;
 		}
 
-		// Find allowed ancestor in model for image that is gong to be inserted.
-		const splitResult = conversionApi.splitToAllowedParent( 'image', data.modelCursor );
-
-		// Do not convert if image cannot be placed in model at current position and in any of ancestors.
-		if ( !splitResult ) {
-			return;
-		}
-
 		// Convert view image to model image and save result as a conversion result.
-		// Image is an object, so we are sure that it won't be split so at this stage of conversion
-		// modelCursor and modelRange ends after converted image.
-		data = Object.assign( data, conversionApi.convertItem( viewImage, splitResult.position ) );
-
-		// Consume figure from consumable list.
-		conversionApi.consumable.consume( data.viewItem, { name: true, class: 'image' } );
+		// Image is an object, so we are sure that it won't be split by it's children.
+		data = Object.assign( data, conversionApi.convertItem( viewImage, data.modelCursor ) );
 
 		// Get image element from conversion result.
 		const modelImage = first( data.modelRange.getItems() );
 
-		// Convert rest of the figure element's children as an image children.
-		conversionApi.convertChildren( data.viewItem, ModelPosition.createAt( modelImage ) );
-
-		// When parent of current modelCursor had to be split to insert image let's
-		// continue conversion inside split element.
-		if ( splitResult.cursorParent ) {
-			data.modelCursor = ModelPosition.createAt( splitResult.cursorParent );
+		// When image was successfully converted.
+		if ( modelImage ) {
+			// Convert rest of the figure element's children as an image children.
+			conversionApi.convertChildren( data.viewItem, ModelPosition.createAt( modelImage ) );
 		}
 	};
 }

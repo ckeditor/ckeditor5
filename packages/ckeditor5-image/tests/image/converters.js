@@ -13,6 +13,7 @@ import { toImageWidget } from '../../src/image/utils';
 import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
 import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
 import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
+import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
@@ -53,8 +54,6 @@ describe( 'Image converters', () => {
 		let dispatcher, schema, imgConverterCalled;
 
 		beforeEach( () => {
-			imgConverterCalled = false;
-
 			// Since this part of test tests only view->model conversion editing pipeline is not necessary
 			// so defining model->view converters won't be necessary.
 			editor.editing.destroy();
@@ -64,18 +63,14 @@ describe( 'Image converters', () => {
 
 			dispatcher = editor.data.viewToModel;
 			dispatcher.on( 'element:figure', viewFigureToModel() );
-			dispatcher.on( 'element:img', ( evt, data, conversionApi ) => {
-				if ( conversionApi.consumable.consume( data.viewItem, { name: true, attribute: 'src' } ) ) {
-					const image = conversionApi.writer.createElement( 'image', { src: data.viewItem.getAttribute( 'src' ) } );
 
-					conversionApi.writer.insert( image, data.modelCursor );
-
-					data.modelRange = ModelRange.createOn( image );
-					data.modelCursor = data.modelRange.end;
-
+			buildViewConverter().for( dispatcher )
+				.from( { name: 'img', attribute: { src: true } } )
+				.toElement( viewImage => {
 					imgConverterCalled = true;
-				}
-			} );
+
+					return new ModelElement( 'image', { src: viewImage.getAttribute( 'src' ) } );
+				} );
 		} );
 
 		it( 'should find img element among children and convert it using already defined converters', () => {
