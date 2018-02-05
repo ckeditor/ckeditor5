@@ -69,11 +69,13 @@ export function createDropdown( locale, ButtonClass = DropdownButtonView ) {
 	const panelView = new DropdownPanelView( locale );
 	const dropdownView = new DropdownView( locale, buttonView, panelView );
 
-	buttonView.bind( 'label', 'isEnabled', 'withText', 'keystroke', 'tooltip', 'icon' ).to( dropdownView );
+	buttonView.bind( 'isEnabled' ).to( dropdownView );
 
-	buttonView.bind( 'isOn' ).to( dropdownView, 'isOn', dropdownView, 'isOpen', ( isOn, isOpen ) => {
-		return isOn || isOpen;
-	} );
+	if ( buttonView instanceof DropdownButtonView ) {
+		buttonView.bind( 'isOn' ).to( dropdownView, 'isOpen' );
+	} else {
+		buttonView.arrowView.bind( 'isOn' ).to( dropdownView, 'isOpen' );
+	}
 
 	addDefaultBehavior( dropdownView );
 
@@ -93,7 +95,7 @@ export function createDropdown( locale, ButtonClass = DropdownButtonView ) {
  *
  *		addToolbarToDropdown( dropdown, buttons );
  *
- *		dropdown.isVertical = true;
+ *		dropdown.toolbarView.isVertical = true;
  *
  *		// Will render a vertical button dropdown labeled "A button dropdown"
  *		// with a button group in the panel containing two buttons.
@@ -107,8 +109,6 @@ export function createDropdown( locale, ButtonClass = DropdownButtonView ) {
  */
 export function addToolbarToDropdown( dropdownView, buttons ) {
 	const toolbarView = dropdownView.toolbarView = new ToolbarView();
-
-	toolbarView.bind( 'isVertical' ).to( dropdownView, 'isVertical' );
 
 	dropdownView.extendTemplate( {
 		attributes: {

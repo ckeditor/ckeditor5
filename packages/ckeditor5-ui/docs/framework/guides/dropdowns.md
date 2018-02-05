@@ -47,7 +47,7 @@ buttons.push( componentFactory.create( 'someExistingButton' ) );
 
 const dropdownView = createDropdown( locale, SplitButtonView );
 
-dropdownView.set( {
+dropdownView.buttonView.set( {
 	icon: 'some SVG',
 	tooltip: 'My dropdown'
 } );

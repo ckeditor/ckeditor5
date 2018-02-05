@@ -28,7 +28,7 @@ const ui = testUtils.createTestUIView( {
 function testEmpty() {
 	const dropdownView = createDropdown( {} );
 
-	dropdownView.set( {
+	dropdownView.buttonView.set( {
 		label: 'Dropdown',
 		isEnabled: true,
 		isOn: false,
@@ -52,7 +52,7 @@ function testList() {
 
 	const dropdownView = createDropdown( {} );
 
-	dropdownView.set( {
+	dropdownView.buttonView.set( {
 		label: 'ListDropdown',
 		isEnabled: true,
 		isOn: false,
@@ -95,7 +95,7 @@ function testSharedModel() {
 function testLongLabel() {
 	const dropdownView = createDropdown( {} );
 
-	dropdownView.set( {
+	dropdownView.buttonView.set( {
 		label: 'Dropdown with a very long label',
 		isEnabled: true,
 		isOn: false,

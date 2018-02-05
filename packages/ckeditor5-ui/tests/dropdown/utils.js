@@ -58,71 +58,27 @@ describe( 'utils', () => {
 			expect( dropdownView.buttonView ).to.be.instanceOf( SplitButtonView );
 		} );
 
-		it( 'binds button attributes to the model', () => {
-			const modelDef = {
-				label: 'foo',
-				isOn: false,
-				isEnabled: true,
-				withText: false,
-				tooltip: false
-			};
-
+		it( 'binds #isEnabled to the buttonView', () => {
 			dropdownView = createDropdown( locale );
-
-			dropdownView.set( modelDef );
 
 			assertBinding( dropdownView.buttonView,
-				modelDef,
-				[
-					[ dropdownView, { label: 'bar', isEnabled: false, isOn: true, withText: true, tooltip: true } ]
-				],
-				{ label: 'bar', isEnabled: false, isOn: true, withText: true, tooltip: true }
-			);
-		} );
-
-		it( 'binds button#isOn do dropdown #isOpen and model #isOn', () => {
-			const modelDef = {
-				label: 'foo',
-				isOn: false,
-				isEnabled: true,
-				withText: false,
-				tooltip: false
-			};
-
-			dropdownView = createDropdown( locale );
-			dropdownView.set( modelDef );
-
-			dropdownView.isOpen = false;
-			expect( dropdownView.buttonView.isOn ).to.be.false;
-
-			dropdownView.isOn = true;
-			expect( dropdownView.buttonView.isOn ).to.be.true;
-
-			dropdownView.isOpen = true;
-			expect( dropdownView.buttonView.isOn ).to.be.true;
-
-			dropdownView.isOn = false;
-			expect( dropdownView.buttonView.isOn ).to.be.true;
-		} );
-
-		it( 'binds dropdown#isEnabled to the model', () => {
-			const modelDef = {
-				label: 'foo',
-				isEnabled: true,
-				withText: false,
-				tooltip: false
-			};
-
-			dropdownView = createDropdown( locale );
-			dropdownView.set( modelDef );
-
-			assertBinding( dropdownView,
 				{ isEnabled: true },
 				[
 					[ dropdownView, { isEnabled: false } ]
 				],
 				{ isEnabled: false }
 			);
+		} );
+
+		it( 'binds button#isOn to dropdown #isOpen', () => {
+			dropdownView = createDropdown( locale );
+			dropdownView.buttonView.isEnabled = true;
+
+			dropdownView.isOpen = false;
+			expect( dropdownView.buttonView.isOn ).to.be.false;
+
+			dropdownView.isOpen = true;
+			expect( dropdownView.buttonView.isOn ).to.be.true;
 		} );
 
 		describe( '#buttonView', () => {
@@ -279,7 +235,6 @@ describe( 'utils', () => {
 			} );
 
 			dropdownView = createDropdown( locale );
-			dropdownView.set( 'isVertical', true );
 
 			addToolbarToDropdown( dropdownView, buttons );
 
@@ -318,14 +273,6 @@ describe( 'utils', () => {
 
 				dropdownView.toolbarView.items.get( 0 ).fire( 'execute' );
 			} );
-
-			it( 'reacts on model#isVertical', () => {
-				dropdownView.isVertical = false;
-				expect( dropdownView.toolbarView.isVertical ).to.be.false;
-
-				dropdownView.isVertical = true;
-				expect( dropdownView.toolbarView.isVertical ).to.be.true;
-			} );
 		} );
 	} );
 
@@ -336,7 +283,7 @@ describe( 'utils', () => {
 			items = new Collection();
 
 			dropdownView = createDropdown( locale );
-			dropdownView.set( {
+			dropdownView.buttonView.set( {
 				isEnabled: true,
 				isOn: false,
 				label: 'foo'
