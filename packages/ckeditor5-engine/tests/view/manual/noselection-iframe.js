@@ -5,15 +5,16 @@
 
 /* globals document */
 
-import Document from '../../../src/view/document';
+import View from '../../../src/view/view';
 import { setData } from '../../../src/dev-utils/view';
+import createViewRoot from '../_utils/createroot';
 
-const viewDocument = new Document();
+const view = new View();
+const viewDocument = view.document;
+createViewRoot( viewDocument );
 const iframe = document.getElementById( 'iframe' );
-viewDocument.createRoot( iframe.contentWindow.document.getElementById( 'editor' ) );
+view.attachDomRoot( iframe.contentWindow.document.getElementById( 'editor' ) );
 
-setData( viewDocument,
+setData( view,
 	'<container:p>foo</container:p>' +
 	'<container:p>bar</container:p>' );
-
-viewDocument.render();
