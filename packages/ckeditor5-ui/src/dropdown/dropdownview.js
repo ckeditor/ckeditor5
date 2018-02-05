@@ -8,10 +8,8 @@
  */
 
 import View from '../view';
-import IconView from '../icon/iconview';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
-import dropdownArrowIcon from '../../theme/icons/dropdown-arrow.svg';
 
 import '../../theme/components/dropdown/dropdown.css';
 
@@ -109,14 +107,6 @@ export default class DropdownView extends View {
 		 */
 		this.keystrokes = new KeystrokeHandler();
 
-		/**
-		 * The arrow icon of the dropdown.
-		 *
-		 * @readonly
-		 * @member {module:ui/icon/iconview~IconView} #arrowView
-		 */
-		const arrowView = this.arrowView = new IconView();
-
 		this.setTemplate( {
 			tag: 'div',
 
@@ -129,16 +119,8 @@ export default class DropdownView extends View {
 
 			children: [
 				buttonView,
-				arrowView,
 				panelView
 			]
-		} );
-
-		arrowView.content = dropdownArrowIcon;
-		arrowView.extendTemplate( {
-			attributes: {
-				class: 'ck-dropdown__arrow'
-			}
 		} );
 
 		buttonView.extendTemplate( {

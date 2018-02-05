@@ -3,13 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* TODO: change me */
-.ck-splitbutton-dropdown {
-	&::after {
-		display: none;
-	}
-}
-
 .ck-rounded-corners .ck-splitbutton > .ck-button:not(.ck-splitbutton-select) {
 	border-top-right-radius: unset;
 	border-bottom-right-radius: unset;
@@ -24,25 +17,15 @@
 	border-bottom-left-radius: unset;
 }
 
-.ck-splitbutton-select {
-	padding-right: var(--ck-spacing-standard);
+.ck-dropdown {
+	/* Enable font size inheritance, which allows fluid UI scaling. */
+	font-size: inherit;
 
-	& svg {
-		width: 0;
-		min-width: 0;
-	}
-
-	&::after {
-		content: '';
-		width: 0;
-		height: 0;
-		pointer-events: none;
-		z-index: var(--ck-z-default);
-
-		position: absolute;
-		top: 50%;
-		/* To make the triangle appear in the middle of split button the translation in X-axis
-		 * should be adjusted by the half of its width. */
-		transform: translate3d(calc(-50% + 0.2em), -50%, 0);
+	& .ck-splitbutton .ck-splitbutton-select svg {
+		position: static;
+		top: initial;
+		transform: initial;
+		right: auto;
+		width: var(--ck-dropdown-icon-size);
 	}
 }

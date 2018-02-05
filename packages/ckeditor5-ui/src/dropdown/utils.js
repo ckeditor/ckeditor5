@@ -9,8 +9,8 @@
 
 import DropdownPanelView from './dropdownpanelview';
 import DropdownView from './dropdownview';
+import DropdownButtonView from '../button/dropdownbuttonview';
 import SplitButtonView from '../button/splitbuttonview';
-import ButtonView from '../button/buttonview';
 import ToolbarView from '../toolbar/toolbarview';
 import ListView from '../list/listview';
 import ListItemView from '../list/listitemview';
@@ -45,10 +45,7 @@ import '../../theme/components/dropdown/toolbardropdown.css';
  * @returns {module:ui/dropdown/dropdownview~DropdownView} The dropdown view instance.
  */
 export function createDropdown( locale ) {
-	const buttonView = new ButtonView( locale );
-
-	// Dropdown expects "select" event on button view upon which the dropdown will open.
-	buttonView.delegate( 'execute' ).to( buttonView, 'select' );
+	const buttonView = new DropdownButtonView( locale );
 
 	const dropdownView = prepareDropdown( locale, buttonView );
 	addDefaultBehavior( dropdownView );
