@@ -41,7 +41,7 @@ import '../../theme/components/dropdown/toolbardropdown.css';
  *
  * The second supported button class is {@link module:ui/dropdown/button/splitbuttonview~SplitButtonView}
  *
- * 		import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview';
+ *		import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview';
  *
  *		const dropdown = createDropdown( model, SplitButtonView );
  *
@@ -85,7 +85,7 @@ export function createDropdown( locale, ButtonClass = DropdownButtonView ) {
  *
  *		const buttons = [];
  *
- * 		// Either create a new ButtonView instance or create existing.
+ *		// Either create a new ButtonView instance or create existing.
  *		buttons.push( new ButtonView() );
  *		buttons.push( editor.ui.componentFactory.get( 'someButton' ) );
  *
