@@ -42,7 +42,7 @@ export default class DropdownButtonView extends ButtonView {
 		 * @readonly
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
-		this.selectView = this._createSelectView();
+		this.arrowView = this._createArrowView();
 
 		// Dropdown expects "select" event on button view upon which the dropdown will open.
 		this.delegate( 'execute' ).to( this, 'select' );
@@ -54,17 +54,17 @@ export default class DropdownButtonView extends ButtonView {
 	render() {
 		super.render();
 
-		this.children.add( this.selectView );
+		this.children.add( this.arrowView );
 	}
 
 	/**
-	 * Creates a {@link module:ui/button/buttonview~ButtonView} instance as {@link #selectView} and binds it with main split button
+	 * Creates a {@link module:ui/button/buttonview~ButtonView} instance as {@link #arrowView} and binds it with main split button
 	 * attributes.
 	 *
 	 * @private
 	 * @returns {module:ui/button/buttonview~ButtonView}
 	 */
-	_createSelectView() {
+	_createArrowView() {
 		const arrowView = new IconView();
 
 		arrowView.content = dropdownArrowIcon;

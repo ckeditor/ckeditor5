@@ -8,7 +8,6 @@ import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import ButtonView from '../../src/button/buttonview';
-import IconView from '../../src/icon/iconview';
 import DropdownPanelView from '../../src/dropdown/dropdownpanelview';
 
 describe( 'DropdownView', () => {
@@ -55,19 +54,13 @@ describe( 'DropdownView', () => {
 
 		it( 'creates #element from template', () => {
 			expect( view.element.classList.contains( 'ck-dropdown' ) ).to.be.true;
-			expect( view.element.children ).to.have.length( 3 );
+			expect( view.element.children ).to.have.length( 2 );
 			expect( view.element.children[ 0 ] ).to.equal( buttonView.element );
-			expect( view.element.children[ 1 ] ).to.equal( view.arrowView.element );
-			expect( view.element.children[ 2 ] ).to.equal( panelView.element );
+			expect( view.element.children[ 1 ] ).to.equal( panelView.element );
 		} );
 
 		it( 'sets view#buttonView class', () => {
 			expect( view.buttonView.element.classList.contains( 'ck-dropdown__button' ) ).to.be.true;
-		} );
-
-		it( 'creates #arrowView icon instance', () => {
-			expect( view.arrowView ).to.be.instanceOf( IconView );
-			expect( view.arrowView.element.classList.contains( 'ck-dropdown__arrow' ) );
 		} );
 
 		describe( 'bindings', () => {

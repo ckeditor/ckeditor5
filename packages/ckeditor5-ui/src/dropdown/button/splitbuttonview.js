@@ -137,7 +137,7 @@ export default class SplitButtonView extends View {
 		 * @readonly
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
-		this.selectView = this._createSelectView();
+		this.arrowView = this._createArrowView();
 
 		/**
 		 * Instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}. It manages
@@ -177,17 +177,17 @@ export default class SplitButtonView extends View {
 		super.render();
 
 		this.children.add( this.actionView );
-		this.children.add( this.selectView );
+		this.children.add( this.arrowView );
 
 		this.focusTracker.add( this.actionView.element );
-		this.focusTracker.add( this.selectView.element );
+		this.focusTracker.add( this.arrowView.element );
 
 		this.keystrokes.listenTo( this.element );
 
 		// Overrides toolbar focus cycling behavior.
 		this.keystrokes.set( 'arrowright', ( evt, cancel ) => {
 			if ( this.focusTracker.focusedElement === this.actionView.element ) {
-				this.selectView.focus();
+				this.arrowView.focus();
 
 				cancel();
 			}
@@ -195,7 +195,7 @@ export default class SplitButtonView extends View {
 
 		// Overrides toolbar focus cycling behavior.
 		this.keystrokes.set( 'arrowleft', ( evt, cancel ) => {
-			if ( this.focusTracker.focusedElement === this.selectView.element ) {
+			if ( this.focusTracker.focusedElement === this.arrowView.element ) {
 				this.actionView.focus();
 
 				cancel();
@@ -228,27 +228,27 @@ export default class SplitButtonView extends View {
 	}
 
 	/**
-	 * Creates a {@link module:ui/button/buttonview~ButtonView} instance as {@link #selectView} and binds it with main split button
+	 * Creates a {@link module:ui/button/buttonview~ButtonView} instance as {@link #arrowView} and binds it with main split button
 	 * attributes.
 	 *
 	 * @private
 	 * @returns {module:ui/button/buttonview~ButtonView}
 	 */
-	_createSelectView() {
-		const selectView = new ButtonView();
+	_createArrowView() {
+		const arrowView = new ButtonView();
 
-		selectView.icon = dropdownArrowIcon;
+		arrowView.icon = dropdownArrowIcon;
 
-		selectView.extendTemplate( {
+		arrowView.extendTemplate( {
 			attributes: {
-				class: 'ck-splitbutton-select'
+				class: 'ck-splitbutton-arrow'
 			}
 		} );
 
-		selectView.bind( 'isEnabled' ).to( this );
+		arrowView.bind( 'isEnabled' ).to( this );
 
-		selectView.delegate( 'execute' ).to( this, 'select' );
+		arrowView.delegate( 'execute' ).to( this, 'select' );
 
-		return selectView;
+		return arrowView;
 	}
 }

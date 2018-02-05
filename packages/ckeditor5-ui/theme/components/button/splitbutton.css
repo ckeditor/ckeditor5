@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-.ck-rounded-corners .ck-splitbutton > .ck-button:not(.ck-splitbutton-select) {
+.ck-rounded-corners .ck-splitbutton > .ck-button:not(.ck-splitbutton-arrow) {
 	border-top-right-radius: unset;
 	border-bottom-right-radius: unset;
 
@@ -12,7 +12,7 @@
 	}
 }
 
-.ck-rounded-corners .ck-splitbutton > .ck-splitbutton-select {
+.ck-rounded-corners .ck-splitbutton > .ck-splitbutton-arrow {
 	border-top-left-radius: unset;
 	border-bottom-left-radius: unset;
 }
@@ -21,7 +21,7 @@
 	/* Enable font size inheritance, which allows fluid UI scaling. */
 	font-size: inherit;
 
-	& .ck-splitbutton .ck-splitbutton-select svg {
+	& .ck-splitbutton .ck-splitbutton-arrow svg {
 		position: static;
 		top: initial;
 		transform: initial;

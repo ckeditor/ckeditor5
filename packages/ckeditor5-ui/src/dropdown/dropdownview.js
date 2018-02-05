@@ -31,8 +31,7 @@ import '../../theme/components/dropdown/dropdown.css';
  *		// Will render a dropdown with a panel containing a "Content of the panel" text.
  *		document.body.appendChild( dropdown.element );
  *
- * Also see {@link module:ui/dropdown/utils~createDropdown} and {@link module:ui/dropdown/utils~createSplitButtonDropdown}
- * to learn about different dropdown creation helpers.
+ * Also see {@link module:ui/dropdown/utils~createDropdown} to learn about dropdown creation helper.
  *
  * @extends module:ui/view~View
  */
@@ -134,8 +133,7 @@ export default class DropdownView extends View {
 		/**
 		 * The label of the dropdown.
 		 *
-		 * **Note**: Only supported when dropdown was created using {@link module:ui/dropdown/utils~createDropdown} or
-		 * {@link module:ui/dropdown/utils~createSplitButtonDropdown}.
+		 * **Note**: Only supported when dropdown was created using {@link module:ui/dropdown/utils~createDropdown}.
 		 *
 		 * Also see {@link module:ui/button/buttonview~ButtonView#label}.
 		 *
@@ -146,8 +144,7 @@ export default class DropdownView extends View {
 		/**
 		 * Controls whether the dropdown is enabled, i.e. it opens the panel when clicked.
 		 *
-		 * **Note**: Only supported when dropdown was created using {@link module:ui/dropdown/utils~createDropdown} or
-		 * {@link module:ui/dropdown/utils~createSplitButtonDropdown}.
+		 * **Note**: Only supported when dropdown was created using {@link module:ui/dropdown/utils~createDropdown}.
 		 *
 		 * Also see {@link module:ui/button/buttonview~ButtonView#isEnabled}.
 		 *
@@ -159,8 +156,7 @@ export default class DropdownView extends View {
 		 * Controls whether the dropdown is "on". It makes sense when a feature it represents
 		 * is currently active.
 		 *
-		 * **Note**: Only supported when dropdown was created using {@link module:ui/dropdown/utils~createDropdown} or
-		 * {@link module:ui/dropdown/utils~createSplitButtonDropdown}.
+		 * **Note**: Only supported when dropdown was created using {@link module:ui/dropdown/utils~createDropdown}.
 		 *
 		 * Also see {@link module:ui/button/buttonview~ButtonView#isOn}.
 		 *
@@ -171,8 +167,7 @@ export default class DropdownView extends View {
 		/**
 		 * (Optional) Controls whether the label of the dropdown is visible.
 		 *
-		 * **Note**: Only supported when dropdown was created using {@link module:ui/dropdown/utils~createDropdown} or
-		 * {@link module:ui/dropdown/utils~createSplitButtonDropdown}.
+		 * **Note**: Only supported when dropdown was created using {@link module:ui/dropdown/utils~createDropdown}.
 		 *
 		 * Also see {@link module:ui/button/buttonview~ButtonView#withText}.
 		 *
@@ -183,8 +178,7 @@ export default class DropdownView extends View {
 		/**
 		 * (Optional) Controls the icon of the dropdown.
 		 *
-		 * **Note**: Only supported when dropdown was created using {@link module:ui/dropdown/utils~createDropdown} or
-		 * {@link module:ui/dropdown/utils~createSplitButtonDropdown}.
+		 * **Note**: Only supported when dropdown was created using {@link module:ui/dropdown/utils~createDropdown}.
 		 *
 		 * Also see {@link module:ui/button/buttonview~ButtonView#withText}.
 		 *

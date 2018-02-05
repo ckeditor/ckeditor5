@@ -29,10 +29,10 @@ describe( 'SplitButtonView', () => {
 			expect( view.actionView ).to.be.instanceOf( ButtonView );
 		} );
 
-		it( 'creates view#selectView', () => {
-			expect( view.selectView ).to.be.instanceOf( ButtonView );
-			expect( view.selectView.element.classList.contains( 'ck-splitbutton-select' ) ).to.be.true;
-			expect( view.selectView.icon ).to.be.not.undefined;
+		it( 'creates view#arrowView', () => {
+			expect( view.arrowView ).to.be.instanceOf( ButtonView );
+			expect( view.arrowView.element.classList.contains( 'ck-splitbutton-arrow' ) ).to.be.true;
+			expect( view.arrowView.icon ).to.be.not.undefined;
 		} );
 
 		it( 'creates element from template', () => {
@@ -41,7 +41,7 @@ describe( 'SplitButtonView', () => {
 		} );
 
 		describe( 'activates keyboard navigation for the toolbar', () => {
-			it( 'so "arrowright" on view#selectView does nothing', () => {
+			it( 'so "arrowright" on view#arrowView does nothing', () => {
 				const keyEvtData = {
 					keyCode: keyCodes.arrowright,
 					preventDefault: sinon.spy(),
@@ -49,7 +49,7 @@ describe( 'SplitButtonView', () => {
 				};
 
 				view.focusTracker.isFocused = true;
-				view.focusTracker.focusedElement = view.selectView.element;
+				view.focusTracker.focusedElement = view.arrowView.element;
 
 				const spy = sinon.spy( view.actionView, 'focus' );
 
@@ -59,7 +59,7 @@ describe( 'SplitButtonView', () => {
 				sinon.assert.notCalled( keyEvtData.stopPropagation );
 			} );
 
-			it( 'so "arrowleft" on view#selectView focuses view#actionView', () => {
+			it( 'so "arrowleft" on view#arrowView focuses view#actionView', () => {
 				const keyEvtData = {
 					keyCode: keyCodes.arrowleft,
 					preventDefault: sinon.spy(),
@@ -67,7 +67,7 @@ describe( 'SplitButtonView', () => {
 				};
 
 				view.focusTracker.isFocused = true;
-				view.focusTracker.focusedElement = view.selectView.element;
+				view.focusTracker.focusedElement = view.arrowView.element;
 
 				const spy = sinon.spy( view.actionView, 'focus' );
 
@@ -77,7 +77,7 @@ describe( 'SplitButtonView', () => {
 				sinon.assert.calledOnce( keyEvtData.stopPropagation );
 			} );
 
-			it( 'so "arrowright" on view#actionView focuses view#selectView', () => {
+			it( 'so "arrowright" on view#actionView focuses view#arrowView', () => {
 				const keyEvtData = {
 					keyCode: keyCodes.arrowright,
 					preventDefault: sinon.spy(),
@@ -87,7 +87,7 @@ describe( 'SplitButtonView', () => {
 				view.focusTracker.isFocused = true;
 				view.focusTracker.focusedElement = view.actionView.element;
 
-				const spy = sinon.spy( view.selectView, 'focus' );
+				const spy = sinon.spy( view.arrowView, 'focus' );
 
 				view.keystrokes.press( keyEvtData );
 				sinon.assert.calledOnce( spy );
@@ -105,7 +105,7 @@ describe( 'SplitButtonView', () => {
 				view.focusTracker.isFocused = true;
 				view.focusTracker.focusedElement = view.actionView.element;
 
-				const spy = sinon.spy( view.selectView, 'focus' );
+				const spy = sinon.spy( view.arrowView, 'focus' );
 
 				view.keystrokes.press( keyEvtData );
 				sinon.assert.notCalled( spy );
@@ -150,22 +150,22 @@ describe( 'SplitButtonView', () => {
 			expect( view.actionView.label ).to.equal( 'foo' );
 		} );
 
-		it( 'delegates selectView#execute to view#select', () => {
+		it( 'delegates arrowView#execute to view#select', () => {
 			const spy = sinon.spy();
 
 			view.on( 'select', spy );
 
-			view.selectView.fire( 'execute' );
+			view.arrowView.fire( 'execute' );
 
 			sinon.assert.calledOnce( spy );
 		} );
 
-		it( 'binds selectView#isEnabled to view', () => {
-			expect( view.selectView.isEnabled ).to.be.true;
+		it( 'binds arrowView#isEnabled to view', () => {
+			expect( view.arrowView.isEnabled ).to.be.true;
 
 			view.isEnabled = false;
 
-			expect( view.selectView.isEnabled ).to.be.false;
+			expect( view.arrowView.isEnabled ).to.be.false;
 		} );
 	} );
 

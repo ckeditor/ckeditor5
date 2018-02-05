@@ -10,7 +10,6 @@
 import DropdownPanelView from './dropdownpanelview';
 import DropdownView from './dropdownview';
 import DropdownButtonView from './button/dropdownbuttonview';
-import SplitButtonView from './button/splitbuttonview';
 import ToolbarView from '../toolbar/toolbarview';
 import ListView from '../list/listview';
 import ListItemView from '../list/listitemview';
@@ -21,7 +20,9 @@ import '../../theme/components/dropdown/toolbardropdown.css';
 
 /**
  * A helper which creates an instance of {@link module:ui/dropdown/dropdownview~DropdownView} class with an instance of
- * {@link module:ui/button/buttonview~ButtonView} in toolbar.
+ * a button class passed as `ButtonClass` parameter`
+ *
+ * The default value of `ButtonClass` is {@link module:ui/dropdown/button/dropdownbuttonview~DropdownButtonView} class.
  *
  *		const dropdown = createDropdown( model );
  *
@@ -38,26 +39,11 @@ import '../../theme/components/dropdown/toolbardropdown.css';
  *		// Will render a dropdown labeled "A dropdown" with an empty panel.
  *		document.body.appendChild( dropdown.element );
  *
- * Also see {@link module:ui/dropdown/utils~createSplitButtonDropdown}, {@link module:ui/dropdown/utils~addListToDropdown}
- * and {@link module:ui/dropdown/utils~addToolbarToDropdown}.
+ * The second supported button class is {@link module:ui/dropdown/button/splitbuttonview~SplitButtonView}
  *
- * @param {module:utils/locale~Locale} locale The locale instance.
- * @returns {module:ui/dropdown/dropdownview~DropdownView} The dropdown view instance.
- */
-export function createDropdown( locale ) {
-	const buttonView = new DropdownButtonView( locale );
-
-	const dropdownView = prepareDropdown( locale, buttonView );
-	addDefaultBehavior( dropdownView );
-
-	return dropdownView;
-}
-
-/**
- * A helper which creates an instance of {@link module:ui/dropdown/dropdownview~DropdownView} class with an instance of
- * {@link module:ui/dropdown/button/splitbuttonview~SplitButtonView} in toolbar.
+ * 		import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview';
  *
- *		const dropdown = createSplitButtonDropdown( model );
+ *		const dropdown = createDropdown( model, SplitButtonView );
  *
  *		// Configure dropdown properties:
  *		dropdown.set( {
@@ -71,19 +57,25 @@ export function createDropdown( locale ) {
  *		// Will render a dropdown labeled "A dropdown" with an empty panel.
  *		document.body.appendChild( dropdown.element );
  *
- * Also see {@link module:ui/dropdown/utils~createDropdown}, {@link module:ui/dropdown/utils~addListToDropdown}
- * and {@link module:ui/dropdown/utils~addToolbarToDropdown}.
+ * Also see {@link module:ui/dropdown/utils~addListToDropdown} and {@link module:ui/dropdown/utils~addToolbarToDropdown}.
  *
  * @param {module:utils/locale~Locale} locale The locale instance.
+ * @param {Function} ButtonClass The dropdown button view class.
  * @returns {module:ui/dropdown/dropdownview~DropdownView} The dropdown view instance.
  */
-export function createSplitButtonDropdown( locale ) {
-	const buttonView = new SplitButtonView( locale );
+export function createDropdown( locale, ButtonClass = DropdownButtonView ) {
+	const buttonView = new ButtonClass( locale );
 
-	const dropdownView = prepareDropdown( locale, buttonView );
+	const panelView = new DropdownPanelView( locale );
+	const dropdownView = new DropdownView( locale, buttonView, panelView );
+
+	buttonView.bind( 'label', 'isEnabled', 'withText', 'keystroke', 'tooltip', 'icon' ).to( dropdownView );
+
+	buttonView.bind( 'isOn' ).to( dropdownView, 'isOn', dropdownView, 'isOpen', ( isOn, isOpen ) => {
+		return isOn || isOpen;
+	} );
+
 	addDefaultBehavior( dropdownView );
-
-	buttonView.delegate( 'execute' ).to( dropdownView );
 
 	return dropdownView;
 }
@@ -108,8 +100,7 @@ export function createSplitButtonDropdown( locale ) {
  *		dropdown.render()
  *		document.body.appendChild( dropdown.element );
  *
- * See {@link module:ui/dropdown/utils~createDropdown}, {@link module:ui/dropdown/utils~createSplitButtonDropdown}
- * and {@link module:ui/toolbar/toolbarview~ToolbarView}.
+ * See {@link module:ui/dropdown/utils~createDropdown} and {@link module:ui/toolbar/toolbarview~ToolbarView}.
  *
  * @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView A dropdown instance to which `ToolbarView` will be added.
  * @param {Iterable.<module:ui/button/buttonview~ButtonView>} buttons
@@ -151,8 +142,7 @@ export function addToolbarToDropdown( dropdownView, buttons ) {
  * {@link module:ui/list/listitemview~ListItemView list items}.
  *
  *
- * See {@link module:ui/dropdown/utils~createDropdown}, {@link module:ui/dropdown/utils~createSplitButtonDropdown}
- * and {@link module:list/list~List}.
+ * See {@link module:ui/dropdown/utils~createDropdown} and {@link module:list/list~List}.
  *
  * @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView A dropdown instance to which `ListVIew` will be added.
  * @param {module:utils/collection~Collection} items
@@ -176,25 +166,6 @@ export function addListToDropdown( dropdownView, items ) {
 	dropdownView.panelView.children.add( listView );
 
 	listView.items.delegate( 'execute' ).to( dropdownView );
-}
-
-// Creates a dropdown view instance and binds dropdown view with a button view.
-//
-// @param {module:utils/locale~Locale} locale The locale instance.
-// @param {module:ui/dropdown/button/dropdownbuttonview~DropdownButtonView|module:ui/dropdown/button/splitbuttonview~SplitButtonView}
-// buttonView // The button view instance.
-// @returns {module:ui/dropdown/dropdownview~DropdownView}
-function prepareDropdown( locale, buttonView ) {
-	const panelView = new DropdownPanelView( locale );
-	const dropdownView = new DropdownView( locale, buttonView, panelView );
-
-	buttonView.bind( 'label', 'isEnabled', 'withText', 'keystroke', 'tooltip', 'icon' ).to( dropdownView );
-
-	buttonView.bind( 'isOn' ).to( dropdownView, 'isOn', dropdownView, 'isOpen', ( isOn, isOpen ) => {
-		return isOn || isOpen;
-	} );
-
-	return dropdownView;
 }
 
 // Add a set of default behaviors to dropdown view.
