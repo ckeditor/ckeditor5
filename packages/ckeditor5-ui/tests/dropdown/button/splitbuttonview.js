@@ -5,8 +5,8 @@
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import ButtonView from '../../src/button/buttonview';
-import SplitButtonView from '../../src/button/splitbuttonview';
+import ButtonView from '../../../src/button/buttonview';
+import SplitButtonView from '../../../src/dropdown/button/splitbuttonview';
 
 testUtils.createSinonSandbox();
 

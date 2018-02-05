@@ -9,8 +9,8 @@
 
 import DropdownPanelView from './dropdownpanelview';
 import DropdownView from './dropdownview';
-import DropdownButtonView from '../button/dropdownbuttonview';
-import SplitButtonView from '../button/splitbuttonview';
+import DropdownButtonView from './button/dropdownbuttonview';
+import SplitButtonView from './button/splitbuttonview';
 import ToolbarView from '../toolbar/toolbarview';
 import ListView from '../list/listview';
 import ListItemView from '../list/listitemview';
@@ -55,7 +55,7 @@ export function createDropdown( locale ) {
 
 /**
  * A helper which creates an instance of {@link module:ui/dropdown/dropdownview~DropdownView} class with an instance of
- * {@link module:ui/button/splitbuttonview~SplitButtonView} in toolbar.
+ * {@link module:ui/dropdown/button/splitbuttonview~SplitButtonView} in toolbar.
  *
  *		const dropdown = createSplitButtonDropdown( model );
  *
@@ -181,7 +181,8 @@ export function addListToDropdown( dropdownView, items ) {
 // Creates a dropdown view instance and binds dropdown view with a button view.
 //
 // @param {module:utils/locale~Locale} locale The locale instance.
-// @param {module:ui/button/buttonview~ButtonView|module:ui/button/splitbuttonview~SplitButtonView} locale The button view instance.
+// @param {module:ui/dropdown/button/dropdownbuttonview~DropdownButtonView|module:ui/dropdown/button/splitbuttonview~SplitButtonView}
+// buttonView // The button view instance.
 // @returns {module:ui/dropdown/dropdownview~DropdownView}
 function prepareDropdown( locale, buttonView ) {
 	const panelView = new DropdownPanelView( locale );

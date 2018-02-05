@@ -14,7 +14,7 @@ import Model from '../../src/model';
 import ButtonView from '../../src/button/buttonview';
 import DropdownView from '../../src/dropdown/dropdownview';
 import DropdownPanelView from '../../src/dropdown/dropdownpanelview';
-import SplitButtonView from '../../src/button/splitbuttonview';
+import SplitButtonView from '../../src/dropdown/button/splitbuttonview';
 import View from '../../src/view';
 import ToolbarView from '../../src/toolbar/toolbarview';
 import { createDropdown, createSplitButtonDropdown, addToolbarToDropdown, addListToDropdown } from '../../src/dropdown/utils';

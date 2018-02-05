@@ -4,18 +4,18 @@
  */
 
 /**
- * @module ui/button/splitbuttonview
+ * @module ui/dropdown/button/splitbuttonview
  */
 
-import View from '../view';
-import ButtonView from './buttonview';
+import View from '../../view';
+import ButtonView from '../../button/buttonview';
 
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 
-import dropdownArrowIcon from '../../theme/icons/dropdown-arrow.svg';
+import dropdownArrowIcon from '../../../theme/icons/dropdown-arrow.svg';
 
-import './../../theme/components/button/splitbutton.css';
+import '../../../theme/components/button/splitbutton.css';
 
 /**
  * The split button view class.

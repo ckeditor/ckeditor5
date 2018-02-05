@@ -4,13 +4,13 @@
  */
 
 /**
- * @module ui/button/splitbuttonview
+ * @module ui/dropdown/button/dropdownbuttonview
  */
 
-import ButtonView from './buttonview';
+import ButtonView from '../../button/buttonview';
 
-import dropdownArrowIcon from '../../theme/icons/dropdown-arrow.svg';
-import IconView from '../icon/iconview';
+import dropdownArrowIcon from '../../../theme/icons/dropdown-arrow.svg';
+import IconView from '../../icon/iconview';
 
 /**
  * The default dropdown button view class.
