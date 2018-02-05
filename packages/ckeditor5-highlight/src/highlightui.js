@@ -17,7 +17,8 @@ import penIcon from './../theme/icons/pen.svg';
 import eraserIcon from './../theme/icons/eraser.svg';
 
 import ToolbarSeparatorView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarseparatorview';
-import { createSplitButtonDropdown, addToolbarToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
+import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview';
+import { createDropdown, addToolbarToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 
 import './../theme/highlight.css';
 
@@ -176,7 +177,7 @@ export default class HighlightUI extends Plugin {
 		componentFactory.add( 'highlightDropdown', locale => {
 			const command = editor.commands.get( 'highlight' );
 
-			const dropdownView = createSplitButtonDropdown( locale );
+			const dropdownView = createDropdown( locale, SplitButtonView );
 
 			dropdownView.set( {
 				tooltip: t( 'Highlight' ),
@@ -195,6 +196,8 @@ export default class HighlightUI extends Plugin {
 			dropdownView.bind( 'color' ).to( command, 'value', value => getActiveOption( value, 'color' ) );
 			dropdownView.bind( 'commandValue' ).to( command, 'value', value => getActiveOption( value, 'model' ) );
 			dropdownView.bind( 'isOn' ).to( command, 'value', value => !!value );
+
+			dropdownView.buttonView.delegate( 'execute' ).to( dropdownView );
 
 			dropdownView.buttonView.extendTemplate( {
 				attributes: {
