@@ -39,18 +39,23 @@ export function viewFigureToModel() {
 			return;
 		}
 
-		// Convert view image to model image and save result as a conversion result.
-		// Image is an object, so we are sure that it won't be split by it's children.
-		data = Object.assign( data, conversionApi.convertItem( viewImage, data.modelCursor ) );
+		// Convert view image to model image.
+		const conversionResult = conversionApi.convertItem( viewImage, data.modelCursor );
 
 		// Get image element from conversion result.
-		const modelImage = first( data.modelRange.getItems() );
+		const modelImage = first( conversionResult.modelRange.getItems() );
 
 		// When image was successfully converted.
 		if ( modelImage ) {
 			// Convert rest of the figure element's children as an image children.
 			conversionApi.convertChildren( data.viewItem, ModelPosition.createAt( modelImage ) );
 		}
+
+		// Set image range as conversion result.
+		data.modelRange = conversionResult.modelRange;
+
+		// Continue conversion where image conversion ends.
+		data.modelCursor = conversionResult.modelCursor;
 	};
 }
 
