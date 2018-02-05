@@ -37,7 +37,7 @@ export default class FontFamilyUI extends Plugin {
 			const dropdownView = createDropdown( locale );
 			addListToDropdown( dropdownView, _prepareListOptions( options, command ) );
 
-			dropdownView.set( {
+			dropdownView.buttonView.set( {
 				label: t( 'Font Family' ),
 				icon: fontFamilyIcon,
 				tooltip: true

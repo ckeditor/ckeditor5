@@ -40,7 +40,7 @@ export default class FontSizeUI extends Plugin {
 			addListToDropdown( dropdownView, _prepareListOptions( options, command ) );
 
 			// Create dropdown model.
-			dropdownView.set( {
+			dropdownView.buttonView.set( {
 				label: t( 'Font Size' ),
 				icon: fontSizeIcon,
 				tooltip: true
