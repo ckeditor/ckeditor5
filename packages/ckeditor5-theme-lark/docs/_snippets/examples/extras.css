@@ -8,7 +8,7 @@
 
 /* The shadow should be 10% brighter than the toolbar background. */
 :root {
-	--ck-shadow-color: #646265;
+	--ck-shadow-color: hsl(280, 2%, 39%);
 }
 
 .ck-editor-toolbar {
