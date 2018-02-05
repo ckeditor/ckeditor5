@@ -722,7 +722,8 @@ export default class Schema {
 	/**
 	 * Tries to find position ancestors that allows to insert given node.
 	 * It starts searching from the given position and goes node by node to the top of the model tree
-	 * as long as {@link module:engine/model/schema~Schema#isLimit limit element} or top-most ancestor won't be reached.
+	 * as long as {@link module:engine/model/schema~Schema#isLimit limit element},
+	 * {@link module:engine/model/schema~Schema#isObject object element} or top-most ancestor won't be reached.
 	 *
 	 * @params {module:engine/model/node~Node} node Node for which allowed parent should be found.
 	 * @params {module:engine/model/position~Position} position Position from searching will start.
