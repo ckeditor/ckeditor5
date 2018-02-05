@@ -55,6 +55,10 @@ describe( 'Image converters', () => {
 		beforeEach( () => {
 			imgConverterCalled = false;
 
+			// Since this part of test tests only view->model conversion editing pipeline is not necessary
+			// so defining model->view converters won't be necessary.
+			editor.editing.destroy();
+
 			schema = model.schema;
 			schema.extend( '$text', { allowIn: 'image' } );
 
@@ -97,9 +101,8 @@ describe( 'Image converters', () => {
 
 		it( 'should split parent element when image is not allowed - in the middle', () => {
 			buildViewConverter().for( editor.data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
-			buildModelConverter().for( editor.editing.modelToView ).fromElement( 'div' ).toElement( 'div' );
 
-			schema.register( 'div', { inheritAllFrom: '$block', } );
+			schema.register( 'div', { inheritAllFrom: '$block' } );
 			schema.extend( 'image', { disallowIn: 'div' } );
 
 			editor.setData(
@@ -119,7 +122,7 @@ describe( 'Image converters', () => {
 			buildViewConverter().for( editor.data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
 			buildModelConverter().for( editor.editing.modelToView ).fromElement( 'div' ).toElement( 'div' );
 
-			schema.register( 'div', { inheritAllFrom: '$block', } );
+			schema.register( 'div', { inheritAllFrom: '$block' } );
 			schema.extend( 'image', { disallowIn: 'div' } );
 
 			editor.setData(
@@ -138,7 +141,7 @@ describe( 'Image converters', () => {
 			buildViewConverter().for( editor.data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
 			buildModelConverter().for( editor.editing.modelToView ).fromElement( 'div' ).toElement( 'div' );
 
-			schema.register( 'div', { inheritAllFrom: '$block', } );
+			schema.register( 'div', { inheritAllFrom: '$block' } );
 			schema.extend( 'image', { disallowIn: 'div' } );
 
 			editor.setData(
