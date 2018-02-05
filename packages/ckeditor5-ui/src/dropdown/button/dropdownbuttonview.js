@@ -15,7 +15,7 @@ import IconView from '../../icon/iconview';
 /**
  * The default dropdown button view class.
  *
- *		const view = new SplitButtonView();
+ *		const view = new DropdownButtonView();
  *
  *		view.set( {
  *			label: 'A button',
@@ -28,6 +28,7 @@ import IconView from '../../icon/iconview';
  *		document.body.append( view.element );
  *
  * @extends module:ui/view~View
+ * @implements module:ui/dropdown/dropdownbuttoninterface~DropdownButtonInterface
  */
 export default class DropdownButtonView extends ButtonView {
 	/**
@@ -37,15 +38,21 @@ export default class DropdownButtonView extends ButtonView {
 		super( locale );
 
 		/**
-		 * A secondary button of split button that opens dropdown.
+		 * An icon that displays arrow to indicate a dropdown button.
 		 *
 		 * @readonly
-		 * @member {module:ui/button/buttonview~ButtonView}
+		 * @member {module:ui/dropdown/button/dropdownbuttonview~DropdownButtonView}
 		 */
 		this.arrowView = this._createArrowView();
 
 		// Dropdown expects "select" event on button view upon which the dropdown will open.
 		this.delegate( 'execute' ).to( this, 'select' );
+
+		/**
+		 * Fired when the view is clicked. It won't be fired when the button {@link #isEnabled} is `false`.
+		 *
+		 * @event select
+		 */
 	}
 
 	/**
@@ -58,11 +65,10 @@ export default class DropdownButtonView extends ButtonView {
 	}
 
 	/**
-	 * Creates a {@link module:ui/button/buttonview~ButtonView} instance as {@link #arrowView} and binds it with main split button
-	 * attributes.
+	 * Creates a {@link module:ui/icon/iconview~IconView} instance as {@link #arrowView}.
 	 *
 	 * @private
-	 * @returns {module:ui/button/buttonview~ButtonView}
+	 * @returns {module:ui/icon/iconview~IconView}
 	 */
 	_createArrowView() {
 		const arrowView = new IconView();

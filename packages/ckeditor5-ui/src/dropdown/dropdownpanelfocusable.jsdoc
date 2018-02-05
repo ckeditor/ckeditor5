@@ -8,7 +8,7 @@
  */
 
 /**
- * The dropdown panel interface interface for focusable contents. It provides two methods for managing focus of the contents
+ * The dropdown panel interface for focusable contents. It provides two methods for managing focus of the contents
  * of dropdown's panel.
  *
  * @interface module:ui/dropdown/dropdownpanelfocusable~DropdownPanelFocusable

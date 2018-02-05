@@ -33,6 +33,7 @@ import '../../../theme/components/button/splitbutton.css';
  *		document.body.append( view.element );
  *
  * @extends module:ui/view~View
+ * @implements module:ui/dropdown/dropdownbuttoninterface~DropdownButtonInterface
  */
 export default class SplitButtonView extends View {
 	/**
@@ -60,7 +61,7 @@ export default class SplitButtonView extends View {
 		this.set( 'label' );
 
 		/**
-		 * (Optional) The keystroke associated with the button, i.e. <kbd>CTRL+B</kbd>,
+		 * (Optional) The keystroke associated with the button, i.e. <kbd>Ctrl</kbd>+<kbd>B</kbd>,
 		 * in the string format compatible with {@link module:utils/keyboard}.
 		 *
 		 * @observable
@@ -143,8 +144,8 @@ export default class SplitButtonView extends View {
 		 * Instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}. It manages
 		 * keystrokes of the split button:
 		 *
-		 * * <kbd>▶</kbd> moves focus to select view when action view is focused,
-		 * * <kbd>◀</kbd> moves focus to action view when select view is focused.
+		 * * <kbd>▶</kbd> moves focus to arrow view when action view is focused,
+		 * * <kbd>◀</kbd> moves focus to action view when arrow view is focused.
 		 *
 		 * @readonly
 		 * @member {module:utils/keystrokehandler~KeystrokeHandler}

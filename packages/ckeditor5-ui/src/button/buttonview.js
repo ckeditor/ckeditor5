@@ -32,6 +32,7 @@ import '../../theme/components/button/button.css';
  *		document.body.append( view.element );
  *
  * @extends module:ui/view~View
+ * @implements module:ui/button/buttoninterface~ButtonInterface
  */
 export default class ButtonView extends View {
 	/**

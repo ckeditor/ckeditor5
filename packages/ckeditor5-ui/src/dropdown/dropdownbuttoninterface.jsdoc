@@ -1,0 +1,21 @@
+/**
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+/**
+ * @module ui/dropdown/dropdownbuttoninterface
+ */
+
+/**
+ * The dropdown button interface.
+ *
+ * @interface module:ui/dropdown/dropdownbuttoninterface~DropdownButtonInterface
+ * @extends module:ui/button/buttoninterface~ButtonInterface
+ */
+
+/**
+ * Fired when the arrow view is clicked. It won't be fired when the button {@link #isEnabled} is `false`.
+ *
+ * @event select
+ */
