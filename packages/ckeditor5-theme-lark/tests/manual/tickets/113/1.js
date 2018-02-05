@@ -9,12 +9,8 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor'
 import BalloonEditor from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 
-import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
-import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
-
 const config = {
-	plugins: [ ArticlePluginSet, Strikethrough, Code ],
-	toolbar: [ 'headings', '|', 'bold', 'italic', 'strikethrough', 'code', 'link', '|', 'undo', 'redo' ]
+	plugins: [ ArticlePluginSet ]
 };
 
 ClassicEditor
