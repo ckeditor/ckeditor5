@@ -79,7 +79,6 @@ describe( 'HighlightUI', () => {
 
 			expect( button ).to.have.property( 'tooltip', 'Highlight' );
 			expect( button ).to.have.property( 'icon', markerIcon );
-			expect( button ).to.have.property( 'withText', false );
 		} );
 
 		it( 'should add custom CSS class to dropdown and dropdown buttons', () => {

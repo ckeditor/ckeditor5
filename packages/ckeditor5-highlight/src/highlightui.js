@@ -179,10 +179,8 @@ export default class HighlightUI extends Plugin {
 
 			const dropdownView = createDropdown( locale, SplitButtonView );
 
-			dropdownView.set( {
+			dropdownView.buttonView.set( {
 				tooltip: t( 'Highlight' ),
-				withText: false,
-				isVertical: false,
 				// Holds last executed highlighter.
 				lastExecuted: startingHighlighter.model,
 				// Holds current highlighter to execute (might be different then last used).
@@ -192,10 +190,10 @@ export default class HighlightUI extends Plugin {
 			// Dropdown button changes to selection (command.value):
 			// - If selection is in highlight it get active highlight appearance (icon, color) and is activated.
 			// - Otherwise it gets appearance (icon, color) of last executed highlight.
-			dropdownView.bind( 'icon' ).to( command, 'value', value => getIconForType( getActiveOption( value, 'type' ) ) );
-			dropdownView.bind( 'color' ).to( command, 'value', value => getActiveOption( value, 'color' ) );
-			dropdownView.bind( 'commandValue' ).to( command, 'value', value => getActiveOption( value, 'model' ) );
-			dropdownView.bind( 'isOn' ).to( command, 'value', value => !!value );
+			dropdownView.buttonView.bind( 'icon' ).to( command, 'value', value => getIconForType( getActiveOption( value, 'type' ) ) );
+			dropdownView.buttonView.bind( 'color' ).to( command, 'value', value => getActiveOption( value, 'color' ) );
+			dropdownView.buttonView.bind( 'commandValue' ).to( command, 'value', value => getActiveOption( value, 'model' ) );
+			dropdownView.buttonView.bind( 'isOn' ).to( command, 'value', value => !!value );
 
 			dropdownView.buttonView.delegate( 'execute' ).to( dropdownView );
 
@@ -211,7 +209,7 @@ export default class HighlightUI extends Plugin {
 				const buttonView = componentFactory.create( 'highlight:' + option.model );
 
 				// Update lastExecutedHighlight on execute.
-				this.listenTo( buttonView, 'execute', () => dropdownView.set( { lastExecuted: option.model } ) );
+				this.listenTo( buttonView, 'execute', () => dropdownView.buttonView.set( { lastExecuted: option.model } ) );
 
 				return buttonView;
 			} );
@@ -243,7 +241,8 @@ export default class HighlightUI extends Plugin {
 			// If current is not set or it is the same as last execute this method will return the option key (like icon or color)
 			// of last executed highlighter. Otherwise it will return option key for current one.
 			function getActiveOption( current, key ) {
-				const whichHighlighter = !current || current === dropdownView.lastExecuted ? dropdownView.lastExecuted : current;
+				const whichHighlighter = !current ||
+				current === dropdownView.buttonView.lastExecuted ? dropdownView.buttonView.lastExecuted : current;
 
 				return optionsMap[ whichHighlighter ][ key ];
 			}
@@ -266,7 +265,7 @@ function bindIconStyleToColor( dropdownView ) {
 		}
 	} );
 
-	actionView.bind( 'color' ).to( dropdownView, 'color' );
+	actionView.bind( 'color' ).to( dropdownView.buttonView, 'color' );
 }
 
 // Returns icon for given highlighter type.
