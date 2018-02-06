@@ -188,15 +188,15 @@ Although Bootstrap provides most of the CSS, it does not come with styles dedica
 /* Give the editor some space and limits using a border. */
 .ck-editor {
 	margin: 1em 0;
-	border: 1px solid rgba( 0, 0, 0, .1 );
+	border: 1px solid hsla(0, 0%, 0%, 0.1);
 	border-radius: 4px;
 }
 
 /* Adding internal spacing, border and background to the toolbar.  */
 .ck-editor .btn-toolbar {
 	padding: .5rem;
-	background: #f7f7f9;
-	border-bottom: 1px solid rgba( 0, 0, 0, .1 );
+	background: hsl(240, 14%, 97%);
+	border-bottom: 1px solid hsla(0, 0%, 0%, 0.1);
 }
 
 /* Tweaking the editable area for better readability. */
@@ -207,8 +207,8 @@ Although Bootstrap provides most of the CSS, it does not come with styles dedica
 
 /* When in read–only mode, the editable should fade out. */
 .ck-editor .ck-editor__editable:not([contenteditable]) {
-	background: #fafafa;
-	color: #777;
+	background: hsl(0, 0%, 98%);
+	color: hsl(0, 0%, 47%);
 }
 
 /* Make sure the headings drop-down button does not change its size
