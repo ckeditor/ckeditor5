@@ -36,6 +36,7 @@ describe( 'EditableUIView', () => {
 			view.render();
 			expect( view.element ).to.equal( view.editableElement );
 			expect( view.element.classList.contains( 'ck-editor__editable' ) ).to.be.true;
+			expect( view.element.classList.contains( 'ck-content' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-rounded-corners' ) ).to.be.true;
 			expect( view.externalElement ).to.be.undefined;
 			expect( view.isRendered ).to.be.true;
