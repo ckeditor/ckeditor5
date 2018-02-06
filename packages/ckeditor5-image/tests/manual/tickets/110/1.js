@@ -18,7 +18,7 @@ import ImageToolbar from '../../../../src/imagetoolbar';
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ EnterPlugin, TypingPlugin, ParagraphPlugin, HeadingPlugin, ImagePlugin, UndoPlugin, ImageToolbar, ContextualToolbar ],
-		contextualToolbar: [ 'headings', 'undo', 'redo' ],
+		contextualToolbar: [ 'headings', '|', 'undo', 'redo' ],
 		image: {
 			toolbar: [ 'imageTextAlternative' ]
 		}

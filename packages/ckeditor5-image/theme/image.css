@@ -3,13 +3,18 @@
  * For licensing, see LICENSE.md.
  */
 
-.ck-editor__editable {
-	& .image {
-		clear: both;
+.ck-content .image {
+	clear: both;
+	text-align: center;
 
-		& > img {
-			/* Prevent unnecessary margins caused by line-height (see #44). */
-			display: block;
-		}
+	& > img {
+		/* Prevent unnecessary margins caused by line-height (see #44). */
+		display: block;
+
+		/* Center the image if its width is smaller than content's width. */
+		margin: 0 auto;
+
+		/* Make sure the image never exceeds the size of the parent container (ckeditor/ckeditor5-ui#67). */
+		max-width: 100%;
 	}
 }

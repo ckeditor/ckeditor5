@@ -17,7 +17,7 @@ import ClipboardPlugin from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ EnterPlugin, TypingPlugin, ParagraphPlugin, HeadingPlugin, ImagePlugin, UndoPlugin, ClipboardPlugin ],
-		toolbar: [ 'headings', 'undo', 'redo' ]
+		toolbar: [ 'headings', '|', 'undo', 'redo' ]
 	} )
 	.then( editor => {
 		window.editor = editor;

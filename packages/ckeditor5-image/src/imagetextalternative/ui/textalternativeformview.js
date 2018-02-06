@@ -19,6 +19,8 @@ import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
 
+import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
+import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
 import '../../../theme/textalternativeform.css';
 
 /**
@@ -63,7 +65,7 @@ export default class TextAlternativeFormView extends View {
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView} #saveButtonView
 		 */
-		this.saveButtonView = this._createButton( t( 'Save' ) );
+		this.saveButtonView = this._createButton( t( 'Save' ), checkIcon );
 		this.saveButtonView.type = 'submit';
 
 		/**
@@ -71,7 +73,7 @@ export default class TextAlternativeFormView extends View {
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView} #cancelButtonView
 		 */
-		this.cancelButtonView = this._createButton( t( 'Cancel' ), 'cancel' );
+		this.cancelButtonView = this._createButton( t( 'Cancel' ), cancelIcon, 'cancel' );
 
 		/**
 		 * A collection of views which can be focused in the form.
@@ -115,7 +117,7 @@ export default class TextAlternativeFormView extends View {
 
 			attributes: {
 				class: [
-					'cke-text-alternative-form',
+					'ck-text-alternative-form',
 				],
 
 				// https://github.com/ckeditor/ckeditor5-image/issues/40
@@ -124,20 +126,8 @@ export default class TextAlternativeFormView extends View {
 
 			children: [
 				this.labeledInput,
-				{
-					tag: 'div',
-
-					attributes: {
-						class: [
-							'cke-text-alternative-form__actions'
-						]
-					},
-
-					children: [
-						this.saveButtonView,
-						this.cancelButtonView
-					]
-				}
+				this.saveButtonView,
+				this.cancelButtonView
 			]
 		} );
 	}
@@ -167,14 +157,18 @@ export default class TextAlternativeFormView extends View {
 	 *
 	 * @private
 	 * @param {String} label The button label
+	 * @param {String} icon The button's icon.
 	 * @param {String} [eventName] The event name that the ButtonView#execute event will be delegated to.
 	 * @returns {module:ui/button/buttonview~ButtonView} The button view instance.
 	 */
-	_createButton( label, eventName ) {
+	_createButton( label, icon, eventName ) {
 		const button = new ButtonView( this.locale );
 
-		button.label = label;
-		button.withText = true;
+		button.set( {
+			label,
+			icon,
+			tooltip: true
+		} );
 
 		if ( eventName ) {
 			button.delegate( 'execute' ).to( this, eventName );
@@ -192,7 +186,9 @@ export default class TextAlternativeFormView extends View {
 	_createLabeledInputView() {
 		const t = this.locale.t;
 		const labeledInput = new LabeledInputView( this.locale, InputTextView );
+
 		labeledInput.label = t( 'Text alternative' );
+		labeledInput.inputView.placeholder = t( 'Text alternative' );
 
 		return labeledInput;
 	}

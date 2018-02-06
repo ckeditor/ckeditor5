@@ -27,7 +27,7 @@ describe( 'TextAlternativeFormView', () => {
 		it( 'should create element from template', () => {
 			view.render();
 
-			expect( view.element.classList.contains( 'cke-text-alternative-form' ) ).to.be.true;
+			expect( view.element.classList.contains( 'ck-text-alternative-form' ) ).to.be.true;
 			expect( view.element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
 		} );
 

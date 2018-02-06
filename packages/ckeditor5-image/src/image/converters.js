@@ -8,7 +8,6 @@
  */
 
 import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
-import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 import first from '@ckeditor/ckeditor5-utils/src/first';
 
 /**
@@ -32,11 +31,6 @@ export function viewFigureToModel() {
 			return;
 		}
 
-		// Do not convert if image cannot be placed in model at current position.
-		if ( !conversionApi.schema.checkChild( data.modelCursor, 'image' ) ) {
-			return;
-		}
-
 		// Find an image element inside the figure element.
 		const viewImage = Array.from( data.viewItem.getChildren() ).find( viewChild => viewChild.is( 'img' ) );
 
@@ -46,17 +40,24 @@ export function viewFigureToModel() {
 		}
 
 		// Convert view image to model image.
-		const { modelRange } = conversionApi.convertItem( viewImage, data.modelCursor );
+		const conversionResult = conversionApi.convertItem( viewImage, data.modelCursor );
 
 		// Get image element from conversion result.
-		const modelImage = first( modelRange.getItems() );
+		const modelImage = first( conversionResult.modelRange.getItems() );
+
+		// When image wasn't successfully converted then finish conversion.
+		if ( !modelImage ) {
+			return;
+		}
 
 		// Convert rest of the figure element's children as an image children.
 		conversionApi.convertChildren( data.viewItem, ModelPosition.createAt( modelImage ) );
 
-		// Set model image as conversion result.
-		data.modelRange = ModelRange.createOn( modelImage );
-		data.modelCursor = data.modelRange.end;
+		// Set image range as conversion result.
+		data.modelRange = conversionResult.modelRange;
+
+		// Continue conversion where image conversion ends.
+		data.modelCursor = conversionResult.modelCursor;
 	};
 }
 

@@ -11,7 +11,7 @@ The [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckedit
 * {@link module:image/imagetoolbar~ImageToolbar} adds the image feature's contextual toolbar,
 * {@link module:image/imagecaption~ImageCaption} adds support for captions,
 * {@link module:image/imagestyle~ImageStyle} adds support for image styles,
-* {@link module:upload/imageupload~ImageUpload} adds support for uploading dropped or pasted images (note: it is currently located in the [`@ckeditor/ckeditor5-upload`](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload) package but will be moved to the `@ckeditor/ckeditor5-image` package).
+* {@link module:image/imageupload~ImageUpload} adds support for uploading dropped or pasted images (note: it is currently located in the [`@ckeditor/ckeditor5-upload`](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload) package but will be moved to the `@ckeditor/ckeditor5-image` package).
 
 <info-box info>
 	The first four features listed above (so all except the upload support) are enabled by default in all builds.
