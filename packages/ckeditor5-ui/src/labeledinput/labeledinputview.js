@@ -73,6 +73,7 @@ export default class LabeledInputView extends View {
 			tag: 'div',
 			attributes: {
 				class: [
+					'ck-labeled-input',
 					bind.if( 'isReadOnly', 'ck-disabled' )
 				]
 			},

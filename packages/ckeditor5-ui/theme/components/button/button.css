@@ -12,12 +12,7 @@ a.ck-button {
 	@mixin ck-unselectable;
 	@mixin ck-tooltip_enabled;
 
-	display: inline-block;
 	position: relative;
-
-	@mixin ck-button-icon {
-		display: inline-block;
-	}
 
 	&.ck-button_with-text {
 		& .ck-button__label {
