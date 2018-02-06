@@ -106,7 +106,20 @@ export default class View {
 		injectQuirksHandling( this );
 		injectUiElementHandling( this );
 
+		/**
+		 * Is set to `true` when {@link #change view changes} are currently in progress.
+		 *
+		 * @private
+		 * @member {Boolean} module:engine/view/view~View#_ongoingChange
+		 */
 		this._ongoingChange = false;
+
+		/**
+		 * Is set to `true` when rendering view to DOM is currently in progress.
+		 *
+		 * @private
+		 * @member {Boolean} module:engine/view/view~View#_renderingInProgress
+		 */
 		this._renderingInProgress = false;
 	}
 
@@ -228,8 +241,8 @@ export default class View {
 	}
 
 	/**
-	 * Focuses document. It will focus {@link module:engine/view/editableelement~EditableElement EditableElement} that is currently having
-	 * selection inside.
+	 * It will focus DOM element representing {@link module:engine/view/editableelement~EditableElement EditableElement}
+	 * that is currently having selection inside.
 	 */
 	focus() {
 		if ( !this.document.isFocused ) {
@@ -251,6 +264,29 @@ export default class View {
 		}
 	}
 
+	/**
+	 * Change method is the primary way of changing the view. You should use it to modify any node in the view tree.
+	 * It makes sure that after all changes are made view is rendered to DOM. It prevents situations when DOM is updated
+	 * when view state is not yet correct. It allows to nest calls one inside another and still perform single rendering
+	 * after all changes are applied.
+	 *
+	 *		view.change( writer => {
+	 *			writer.insert( position1, writer.createText( 'foo' );
+	 *
+	 *			view.change( writer => {
+	 *				writer.insert( position2, writer.createText( 'bar' );
+	 *			} );
+	 *
+	 * 			writer.remove( range );
+	 *		} );
+	 *
+	 * Change block is executed immediately.
+	 *
+	 * When the outermost block is done and rendering to DOM is over it fires {@link module:engine/view/document~Document#change }
+	 * event.
+	 *
+	 * @param {Function} callback Callback function which may modify the view.
+	 */
 	change( callback ) {
 		if ( this._renderingInProgress ) {
 			/**
@@ -260,7 +296,7 @@ export default class View {
 			 */
 			log.warn(
 				'applying-view-changes-on-rendering: ' +
-				'Attempting to make changes in the view during rendering process.' +
+				'Attempting to make changes in the view during rendering process. ' +
 				'This may cause some unexpected behaviour and inconsistency between the DOM and the view.'
 			);
 		}
@@ -281,6 +317,10 @@ export default class View {
 		}
 	}
 
+	/**
+	 * Renders {@link module:engine/view/document~Document view document} to DOM. If any view changes are
+	 * currently in progress, rendering will start after all {@link #change change blocks} are processed.
+	 */
 	render() {
 		// Render only if no ongoing changes in progress. If there are some, view document will be rendered after all
 		// changes are done. This way view document will not be rendered in the middle of some changes.
@@ -289,6 +329,9 @@ export default class View {
 		}
 	}
 
+	/**
+	 * Destroys this instance. Makes sure that all observers are destroyed and listeners removed.
+	 */
 	destroy() {
 		for ( const observer of this._observers.values() ) {
 			observer.destroy();

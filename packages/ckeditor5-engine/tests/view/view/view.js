@@ -15,6 +15,7 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import ViewRange from '../../../src/view/range';
 import RootEditableElement from '../../../src/view/rooteditableelement';
 import ViewElement from '../../../src/view/element';
+import ViewPosition from '../../../src/view/position';
 import { isBlockFiller, BR_FILLER } from '../../../src/view/filler';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 
@@ -91,6 +92,7 @@ describe( 'view', () => {
 			expect( view.domConverter.mapViewToDom( viewRoot ) ).to.equal( domDiv );
 
 			expect( view.renderer.markedChildren.has( viewRoot ) ).to.be.true;
+			domDiv.remove();
 		} );
 
 		it( 'should attach DOM element to custom view element', () => {
@@ -394,6 +396,7 @@ describe( 'view', () => {
 			expect( isBlockFiller( domDiv.childNodes[ 0 ], BR_FILLER ) ).to.be.true;
 
 			view.destroy();
+			domDiv.remove();
 		} );
 
 		it( 'should render changes in the Document', () => {
@@ -436,6 +439,93 @@ describe( 'view', () => {
 			expect( domRoot.childNodes[ 0 ].getAttribute( 'class' ) ).to.equal( 'bar' );
 
 			view.destroy();
+			domRoot.remove();
+		} );
+
+		describe( 'change()', () => {
+			it( 'should call render and fire event after the change', () => {
+				const renderSpy = sinon.spy();
+				const changeSpy = sinon.spy();
+				view.renderer.on( 'render', renderSpy );
+				view.document.on( 'change', changeSpy );
+
+				view.change( () => {} );
+
+				sinon.assert.callOrder( renderSpy, changeSpy );
+			} );
+
+			it( 'should render and fire change event once for nested change blocks', () => {
+				const renderSpy = sinon.spy();
+				const changeSpy = sinon.spy();
+				view.renderer.on( 'render', renderSpy );
+				view.document.on( 'change', changeSpy );
+
+				view.change( () => {
+					view.change( () => {} );
+					view.change( () => {
+						view.change( () => {} );
+						view.change( () => {} );
+					} );
+					view.change( () => {} );
+				} );
+
+				sinon.assert.calledOnce( renderSpy );
+				sinon.assert.calledOnce( changeSpy );
+				sinon.assert.callOrder( renderSpy, changeSpy );
+			} );
+
+			it( 'should render and fire change event once even if render is called during the change', () => {
+				const renderSpy = sinon.spy();
+				const changeSpy = sinon.spy();
+				view.renderer.on( 'render', renderSpy );
+				view.document.on( 'change', changeSpy );
+
+				view.change( () => {
+					view.render();
+					view.change( () => {
+						view.render();
+					} );
+					view.render();
+				} );
+
+				sinon.assert.calledOnce( renderSpy );
+				sinon.assert.calledOnce( changeSpy );
+				sinon.assert.callOrder( renderSpy, changeSpy );
+			} );
+
+			it( 'should log warning when someone tries to change view during rendering', () => {
+				const domDiv = document.createElement( 'div' );
+				const viewRoot = createViewRoot( viewDocument, 'div', 'main' );
+				sinon.stub( log, 'warn' );
+				view.attachDomRoot( domDiv );
+
+				view.change( writer => {
+					const p = writer.createContainerElement( 'p' );
+					const ui = writer.createUIElement( 'span' );
+
+					// This UIElement will try to modify view tree during rendering.
+					ui.render = function( domDocument ) {
+						const element = this.toDomElement( domDocument );
+
+						view.change( () => {} );
+
+						return element;
+					};
+
+					writer.insert( ViewPosition.createAt( p ), ui );
+					writer.insert( ViewPosition.createAt( viewRoot ), p );
+				} );
+
+				sinon.assert.calledOnce( log.warn );
+				sinon.assert.calledWithExactly( log.warn,
+					'applying-view-changes-on-rendering: ' +
+					'Attempting to make changes in the view during rendering process. ' +
+					'This may cause some unexpected behaviour and inconsistency between the DOM and the view.'
+				);
+
+				domDiv.remove();
+				log.warn.restore();
+			} );
 		} );
 	} );
 
