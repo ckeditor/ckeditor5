@@ -341,7 +341,7 @@ export default class Link extends Plugin {
 
 		const editingView = this.editor.editing.view;
 
-		this.stopListening( editingView, 'render' );
+		this.stopListening( editingView.document, 'change' );
 
 		// Remove form first because it's on top of the stack.
 		this._removeFormView();
@@ -369,7 +369,7 @@ export default class Link extends Plugin {
 		let prevSelectedLink = this._getSelectedLinkElement();
 		let prevSelectionParent = getSelectionParent();
 
-		this.listenTo( editingView, 'render', () => {
+		this.listenTo( editingView.document, 'change', () => {
 			const selectedLink = this._getSelectedLinkElement();
 			const selectionParent = getSelectionParent();
 
@@ -402,7 +402,7 @@ export default class Link extends Plugin {
 		} );
 
 		function getSelectionParent() {
-			return editingView.selection.focus.getAncestors()
+			return editingView.document.selection.focus.getAncestors()
 				.reverse()
 				.find( node => node.is( 'element' ) );
 		}
