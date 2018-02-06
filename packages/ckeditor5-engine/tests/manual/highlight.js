@@ -103,9 +103,9 @@ ClassicEditor.create( global.document.querySelector( '#editor' ), {
 		document.getElementById( 'remove-markers' ).addEventListener( 'mousedown', evt => {
 			const markers = editor.model.markers;
 
-			editor.model.change( () => {
+			editor.model.change( writer => {
 				for ( const marker of markers ) {
-					markers.remove( marker );
+					writer.removeMarker( marker );
 				}
 			} );
 
@@ -117,14 +117,14 @@ ClassicEditor.create( global.document.querySelector( '#editor' ), {
 	} );
 
 function addMarker( editor, color ) {
-	editor.model.change( () => {
+	editor.model.change( writer => {
 		const range = ModelRange.createFromRange( editor.model.document.selection.getFirstRange() );
-		editor.model.markers.set( 'marker:' + color, range );
+		writer.setMarker( 'marker:' + color, range );
 	} );
 }
 
 function removeMarker( editor, color ) {
-	editor.model.change( () => {
-		editor.model.markers.remove( 'marker:' + color );
+	editor.model.change( writer => {
+		writer.removeMarker( 'marker:' + color );
 	} );
 }

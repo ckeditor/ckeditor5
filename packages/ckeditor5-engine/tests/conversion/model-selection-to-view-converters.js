@@ -176,6 +176,8 @@ describe( 'model-selection-to-view-converters', () => {
 		} );
 
 		describe( 'collapsed selection', () => {
+			let marker;
+
 			it( 'in container', () => {
 				test(
 					[ 1, 1 ],
@@ -194,9 +196,9 @@ describe( 'model-selection-to-view-converters', () => {
 
 			it( 'in attribute and marker', () => {
 				setModelData( model, 'fo<$text bold="true">ob</$text>ar' );
-				const marker = model.markers.set( 'marker', ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 ) );
 
 				model.change( writer => {
+					marker = writer.setMarker( 'marker', ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 ) );
 					writer.setSelection( new ModelRange( ModelPosition.createAt( modelRoot, 3 ) ) );
 				} );
 
@@ -218,9 +220,9 @@ describe( 'model-selection-to-view-converters', () => {
 
 			it( 'in attribute and marker - no attribute', () => {
 				setModelData( model, 'fo<$text bold="true">ob</$text>ar' );
-				const marker = model.markers.set( 'marker', ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 ) );
 
 				model.change( writer => {
+					marker = writer.setMarker( 'marker', ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 ) );
 					writer.setSelection( new ModelRange( ModelPosition.createAt( modelRoot, 3 ) ) );
 					writer.removeSelectionAttribute( 'bold' );
 				} );
@@ -246,9 +248,9 @@ describe( 'model-selection-to-view-converters', () => {
 				) );
 
 				setModelData( model, 'foobar' );
-				const marker = model.markers.set( 'marker2', ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 ) );
 
 				model.change( writer => {
+					marker = writer.setMarker( 'marker2', ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 ) );
 					writer.setSelection( new ModelRange( ModelPosition.createAt( modelRoot, 3 ) ) );
 				} );
 
@@ -271,9 +273,9 @@ describe( 'model-selection-to-view-converters', () => {
 				dispatcher.on( 'addMarker:marker3', highlightText( () => null ) );
 
 				setModelData( model, 'foobar' );
-				const marker = model.markers.set( 'marker3', ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 ) );
 
 				model.change( writer => {
+					marker = writer.setMarker( 'marker3', ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 ) );
 					writer.setSelection( new ModelRange( ModelPosition.createAt( modelRoot, 3 ) ) );
 				} );
 
