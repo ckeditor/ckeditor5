@@ -6,7 +6,7 @@
     "@ckeditor/ckeditor5-alignment": "ckeditor/ckeditor5-alignment#cb51773",
     "@ckeditor/ckeditor5-autoformat": "ckeditor/ckeditor5-autoformat#f323b98",
     "@ckeditor/ckeditor5-basic-styles": "ckeditor/ckeditor5-basic-styles#3226016",
-    "@ckeditor/ckeditor5-block-quote": "ckeditor/ckeditor5-block-quote#a292c5e",
+    "@ckeditor/ckeditor5-block-quote": "ckeditor/ckeditor5-block-quote#dcc93e2",
     "@ckeditor/ckeditor5-build-balloon": "ckeditor/ckeditor5-build-balloon#389f0aa",
     "@ckeditor/ckeditor5-build-classic": "ckeditor/ckeditor5-build-classic#e60f941",
     "@ckeditor/ckeditor5-build-inline": "ckeditor/ckeditor5-build-inline#5b68031",
