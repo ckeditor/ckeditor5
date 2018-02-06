@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
-/*
- * Note: This file should contain the wireframe styles only. But since there are no such styles,
- * it acts as a message to the builder telling that it should look for the corresponding styles
- * **in the theme** when compiling the editor.
- */
+code {
+	background-color: hsla(0, 0%, 78%, 0.3);
+	padding: .15em;
+	border-radius: 2px;
+}
