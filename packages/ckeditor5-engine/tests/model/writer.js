@@ -2040,7 +2040,7 @@ describe( 'Writer', () => {
 			expect( marker.name ).to.be.a( 'string' );
 		} );
 
-		it( 'should create a unique id if the first param is type of range when usingOperations is set to true', () => {
+		it( 'should create a unique id if the first param is type of range when usingOperation is set to true', () => {
 			const spy = sinon.spy();
 			model.on( 'applyOperation', spy );
 
@@ -2050,7 +2050,7 @@ describe( 'Writer', () => {
 			expect( spy.calledOnce ).to.be.true;
 		} );
 
-		it( 'should use operations when having set usingOperations to true', () => {
+		it( 'should use operations when having set usingOperation to true', () => {
 			const spy = sinon.spy();
 
 			model.on( 'applyOperation', spy );

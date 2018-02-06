@@ -778,7 +778,7 @@ export default class Writer {
 	 *
 	 * Update marker using operation:
 	 *
-	 * 		setMarker( marker, range, { usingOperations: true } );
+	 * 		setMarker( marker, range, { usingOperation: true } );
 	 *
 	 * Create/update marker directly base on marker's name:
 	 *
@@ -786,7 +786,7 @@ export default class Writer {
 	 *
 	 * Create marker with a unique id using operation:
 	 *
-	 * 		setMarker( range, { usingOperations: true } );
+	 * 		setMarker( range, { usingOperation: true } );
 	 *
 	 * Create marker directly with a unique name:
 	 *
@@ -794,7 +794,7 @@ export default class Writer {
 	 *
 	 * Change marker's option (start using operations to manage it):
 	 *
-	 * 		setMarker( marker, { usingOperations: true } );
+	 * 		setMarker( marker, { usingOperation: true } );
 	 *
 	 * Note: For efficiency reasons, it's best to create and keep as little markers as possible.
 	 *
