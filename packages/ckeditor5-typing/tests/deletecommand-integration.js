@@ -3,8 +3,18 @@
  * For licensing, see LICENSE.md.
  */
 
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
+/* global document */
+
+import Typing from '../src/typing';
 import DeleteCommand from '../src/deletecommand';
+import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading';
+import List from '@ckeditor/ckeditor5-list/src/list';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Image from '@ckeditor/ckeditor5-image/src/image';
+import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 import UndoEngine from '@ckeditor/ckeditor5-undo/src/undoengine';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
@@ -151,6 +161,48 @@ describe( 'DeleteCommand integration', () => {
 			editor.execute( 'delete' );
 
 			assertOutput( '<h1>[]</h1>' );
+		} );
+	} );
+
+	describe( 'with multi-range selection', () => {
+		let element, editor, model;
+
+		beforeEach( () => {
+			element = document.createElement( 'div' );
+			document.body.appendChild( element );
+
+			return ClassicEditor
+				.create( element, {
+					plugins: [ Typing, Heading, List, Image, ImageCaption, Paragraph, BlockQuote ]
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+					model = editor.model;
+				} );
+		} );
+
+		afterEach( () => {
+			element.remove();
+
+			return editor.destroy();
+		} );
+
+		it( 'should not throw an error if content with the image is being removed', () => {
+			setData( model,
+				'<listItem indent="0" type="numbered">OL List i[tem 1</listItem>' +
+				'<listItem indent="0" type="numbered">OL List item 2</listItem>]' +
+				'<image alt="bar" imageStyle="imageStyleSide" src="sample.jpg"><caption>[Caption</caption></image>' +
+				'<blockQuote>' +
+					'<paragraph>Quote</paragraph>' +
+					'<listItem indent="0" type="bulleted">Quoted UL List item 1</listItem>' +
+					'<listItem indent="0" type="bulleted">Quote]d UL List item 2</listItem>' +
+					'<paragraph>Quote</paragraph>' +
+				'</blockQuote>'
+			);
+
+			expect( () => {
+				editor.execute( 'delete' );
+			} ).to.not.throw();
 		} );
 	} );
 } );
