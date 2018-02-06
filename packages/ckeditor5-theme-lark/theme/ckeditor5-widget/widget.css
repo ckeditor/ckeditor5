@@ -8,8 +8,8 @@
 
 :root {
 	--ck-widget-outline-thickness: 3px;
-	--ck-color-widget-border-blurred: #ddd;
-	--ck-color-widget-border-hover: #FFD25C;
+	--ck-color-widget-border-blurred: hsl(0, 0%, 87%);
+	--ck-color-widget-border-hover: hsl(43, 100%, 68%);
 	--ck-color-widget-editable-focused-background: var(--ck-color-base-background),
 }
 

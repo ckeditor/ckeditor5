@@ -4,7 +4,7 @@
  */
 
 :root {
-	--ck-color-code: rgba( 200, 200, 200, 0.3 );
+	--ck-color-code: hsla(0, 0%, 78%, 0.3);
 }
 
 code {
