@@ -27,8 +27,10 @@ import IconView from '../../icon/iconview';
  *
  *		document.body.append( view.element );
  *
+ * Also see {@link module:ui/dropdown/utils~createDropdown}.
+ *
  * @extends module:ui/view~View
- * @implements module:ui/dropdown/dropdownbuttoninterface~DropdownButtonInterface
+ * @implements module:ui/dropdown/button/dropdownbuttoninterface~DropdownButtonInterface
  */
 export default class DropdownButtonView extends ButtonView {
 	/**

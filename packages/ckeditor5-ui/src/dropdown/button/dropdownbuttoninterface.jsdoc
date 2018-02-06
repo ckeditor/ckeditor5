@@ -4,13 +4,13 @@
  */
 
 /**
- * @module ui/dropdown/dropdownbuttoninterface
+ * @module ui/dropdown/button/dropdownbuttoninterface
  */
 
 /**
  * The dropdown button interface.
  *
- * @interface module:ui/dropdown/dropdownbuttoninterface~DropdownButtonInterface
+ * @interface module:ui/dropdown/button/dropdownbuttoninterface~DropdownButtonInterface
  * @extends module:ui/button/buttoninterface~ButtonInterface
  */
 

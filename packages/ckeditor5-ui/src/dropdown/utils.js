@@ -20,7 +20,7 @@ import '../../theme/components/dropdown/toolbardropdown.css';
 
 /**
  * A helper which creates an instance of {@link module:ui/dropdown/dropdownview~DropdownView} class with an instance of
- * a button class passed as `ButtonClass` parameter`
+ * a button class passed as `ButtonClass` parameter.
  *
  * The default value of `ButtonClass` is {@link module:ui/dropdown/button/dropdownbuttonview~DropdownButtonView} class.
  *
@@ -39,28 +39,14 @@ import '../../theme/components/dropdown/toolbardropdown.css';
  *		// Will render a dropdown labeled "A dropdown" with an empty panel.
  *		document.body.appendChild( dropdown.element );
  *
- * The second supported button class is {@link module:ui/dropdown/button/splitbuttonview~SplitButtonView}
- *
- *		import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview';
- *
- *		const dropdown = createDropdown( model, SplitButtonView );
- *
- *		// Configure dropdown properties:
- *		dropdown.set( {
- *			label: 'A dropdown',
- *			isEnabled: true,
- *			isOn: false
- *		} );
- *
- *		dropdown.render();
- *
- *		// Will render a dropdown labeled "A dropdown" with an empty panel.
- *		document.body.appendChild( dropdown.element );
+ * The supported button classes for dropdown are:
+ * * {@link module:ui/dropdown/button/dropdownbuttonview~DropdownButtonView}
+ * * {@link module:ui/dropdown/button/splitbuttonview~SplitButtonView}
  *
  * Also see {@link module:ui/dropdown/utils~addListToDropdown} and {@link module:ui/dropdown/utils~addToolbarToDropdown}.
  *
  * @param {module:utils/locale~Locale} locale The locale instance.
- * @param {Function} ButtonClass The dropdown button view class.
+ * @param {module:ui/dropdown/button/dropdownbuttoninterface~DropdownButtonInterface} ButtonClass The dropdown button view class.
  * @returns {module:ui/dropdown/dropdownview~DropdownView} The dropdown view instance.
  */
 export function createDropdown( locale, ButtonClass = DropdownButtonView ) {
