@@ -36,6 +36,7 @@ export default class EditableUIView extends View {
 			attributes: {
 				class: [
 					bind.to( 'isFocused', value => value ? 'ck-focused' : 'ck-blurred' ),
+					'ck',
 					'ck-editor__editable',
 					'ck-content',
 					'ck-rounded-corners'
