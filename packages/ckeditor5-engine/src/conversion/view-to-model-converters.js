@@ -31,8 +31,10 @@ export function convertToModelFragment() {
 	return ( evt, data, conversionApi ) => {
 		// Second argument in `consumable.consume` is discarded for ViewDocumentFragment but is needed for ViewElement.
 		if ( !data.modelRange && conversionApi.consumable.consume( data.viewItem, { name: true } ) ) {
-			data = Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
-			data.modelCursor = data.modelRange.end;
+			const { modelRange, modelCursor } = conversionApi.convertChildren( data.viewItem, data.modelCursor );
+
+			data.modelRange = modelRange;
+			data.modelCursor = modelCursor;
 		}
 	};
 }
