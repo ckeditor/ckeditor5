@@ -18,6 +18,7 @@ import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsid
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import LinkFormView from './ui/linkformview';
+import LinkActionsView from './ui/linkactionsview';
 
 import linkIcon from '../theme/icons/link.svg';
 
@@ -55,11 +56,18 @@ export default class Link extends Plugin {
 		editor.editing.view.addObserver( ClickObserver );
 
 		/**
+		 * The actions view displayed inside of the balloon.
+		 *
+		 * @member {module:link/ui/linkactionsview~LinkActionsView}
+		 */
+		this.actionsView = this._createActionsView();
+
+		/**
 		 * The form view displayed inside the balloon.
 		 *
 		 * @member {module:link/ui/linkformview~LinkFormView}
 		 */
-		this.formView = this._createForm();
+		this.formView = this._createFormView();
 
 		/**
 		 * The contextual balloon plugin instance.
@@ -73,7 +81,43 @@ export default class Link extends Plugin {
 		this._createToolbarLinkButton();
 
 		// Attach lifecycle actions to the the balloon.
-		this._attachActions();
+		this._enableUserBalloonInteractions();
+	}
+
+	/**
+	 * Creates the {@link module:link/ui/linkactionsview~LinkActionsView} instance.
+	 *
+	 * @private
+	 * @returns {module:link/ui/linkactionsview~LinkActionsView} The link actions view instance.
+	 */
+	_createActionsView() {
+		const editor = this.editor;
+		const actionsView = new LinkActionsView( editor.locale );
+		const linkCommand = editor.commands.get( 'link' );
+		const unlinkCommand = editor.commands.get( 'unlink' );
+
+		actionsView.bind( 'href' ).to( linkCommand, 'value' );
+		actionsView.editButtonView.bind( 'isEnabled' ).to( linkCommand );
+		actionsView.unlinkButtonView.bind( 'isEnabled' ).to( unlinkCommand );
+
+		// Execute unlink command after clicking on the "Edit" button.
+		this.listenTo( actionsView, 'edit', () => {
+			this._addFormView();
+		} );
+
+		// Execute unlink command after clicking on the "Unlink" button.
+		this.listenTo( actionsView, 'unlink', () => {
+			editor.execute( 'unlink' );
+			this._hideUI();
+		} );
+
+		// Close the panel on esc key press when the **actions have focus**.
+		actionsView.keystrokes.set( 'Esc', ( data, cancel ) => {
+			this._hideUI();
+			cancel();
+		} );
+
+		return actionsView;
 	}
 
 	/**
@@ -82,37 +126,31 @@ export default class Link extends Plugin {
 	 * @private
 	 * @returns {module:link/ui/linkformview~LinkFormView} The link form instance.
 	 */
-	_createForm() {
+	_createFormView() {
 		const editor = this.editor;
 		const formView = new LinkFormView( editor.locale );
 		const linkCommand = editor.commands.get( 'link' );
-		const unlinkCommand = editor.commands.get( 'unlink' );
 
 		formView.urlInputView.bind( 'value' ).to( linkCommand, 'value' );
 
 		// Form elements should be read-only when corresponding commands are disabled.
 		formView.urlInputView.bind( 'isReadOnly' ).to( linkCommand, 'isEnabled', value => !value );
 		formView.saveButtonView.bind( 'isEnabled' ).to( linkCommand );
-		formView.unlinkButtonView.bind( 'isEnabled' ).to( unlinkCommand );
 
-		// Execute link command after clicking on formView `Save` button.
+		// Execute link command after clicking the "Save" button.
 		this.listenTo( formView, 'submit', () => {
 			editor.execute( 'link', formView.urlInputView.inputView.element.value );
-			this._hidePanel( true );
+			this._removeFormView();
 		} );
 
-		// Execute unlink command after clicking on formView `Unlink` button.
-		this.listenTo( formView, 'unlink', () => {
-			editor.execute( 'unlink' );
-			this._hidePanel( true );
+		// Hide the panel after clicking the "Cancel" button.
+		this.listenTo( formView, 'cancel', () => {
+			this._removeFormView();
 		} );
 
-		// Hide the panel after clicking on formView `Cancel` button.
-		this.listenTo( formView, 'cancel', () => this._hidePanel( true ) );
-
-		// Close the panel on esc key press when the form has focus.
+		// Close the panel on esc key press when the **form has focus**.
 		formView.keystrokes.set( 'Esc', ( data, cancel ) => {
-			this._hidePanel( true );
+			this._removeFormView();
 			cancel();
 		} );
 
@@ -136,7 +174,7 @@ export default class Link extends Plugin {
 			cancel();
 
 			if ( linkCommand.isEnabled ) {
-				this._showPanel( true );
+				this._showUI();
 			}
 		} );
 
@@ -153,7 +191,7 @@ export default class Link extends Plugin {
 			button.bind( 'isEnabled' ).to( linkCommand, 'isEnabled' );
 
 			// Show the panel on button click.
-			this.listenTo( button, 'execute', () => this._showPanel( true ) );
+			this.listenTo( button, 'execute', () => this._showUI() );
 
 			return button;
 		} );
@@ -165,7 +203,7 @@ export default class Link extends Plugin {
 	 *
 	 * @private
 	 */
-	_attachActions() {
+	_enableUserBalloonInteractions() {
 		const viewDocument = this.editor.editing.view.document;
 
 		// Handle click on view document and show panel when selection is placed inside the link element.
@@ -175,14 +213,14 @@ export default class Link extends Plugin {
 
 			if ( parentLink ) {
 				// Then show panel but keep focus inside editor editable.
-				this._showPanel();
+				this._showUI();
 			}
 		} );
 
 		// Focus the form if the balloon is visible and the Tab key has been pressed.
 		this.editor.keystrokes.set( 'Tab', ( data, cancel ) => {
-			if ( this._balloon.visibleView === this.formView && !this.formView.focusTracker.isFocused ) {
-				this.formView.focus();
+			if ( this._areActionsVisible && !this.actionsView.focusTracker.isFocused ) {
+				this.actionsView.focus();
 				cancel();
 			}
 		}, {
@@ -194,8 +232,8 @@ export default class Link extends Plugin {
 
 		// Close the panel on the Esc key press when the editable has focus and the balloon is visible.
 		this.editor.keystrokes.set( 'Esc', ( data, cancel ) => {
-			if ( this._balloon.visibleView === this.formView ) {
-				this._hidePanel();
+			if ( this._isUIVisible ) {
+				this._hideUI();
 				cancel();
 			}
 		} );
@@ -203,9 +241,21 @@ export default class Link extends Plugin {
 		// Close on click outside of balloon panel element.
 		clickOutsideHandler( {
 			emitter: this.formView,
-			activator: () => this._balloon.hasView( this.formView ),
+			activator: () => this._isUIVisible,
 			contextElements: [ this._balloon.view.element ],
-			callback: () => this._hidePanel()
+			callback: () => this._hideUI()
+		} );
+	}
+
+	/**
+	 * Adds the {@link #actionsView} to the {@link #_balloon}.
+	 *
+	 * @protected
+	 */
+	_addActionsView() {
+		this._balloon.add( {
+			view: this.actionsView,
+			position: this._getBalloonPositionData()
 		} );
 	}
 
@@ -213,59 +263,17 @@ export default class Link extends Plugin {
 	 * Adds the {@link #formView} to the {@link #_balloon}.
 	 *
 	 * @protected
-	 * @param {Boolean} [focusInput=false] When `true`, the link form will be focused on panel show.
 	 */
-	_showPanel( focusInput ) {
+	_addFormView() {
 		const editor = this.editor;
 		const linkCommand = editor.commands.get( 'link' );
-		const unlinkCommand = editor.commands.get( 'unlink' );
-		const editing = editor.editing;
-		const showViewDocument = editing.view.document;
-		const showIsCollapsed = showViewDocument.selection.isCollapsed;
-		const showSelectedLink = this._getSelectedLinkElement();
 
-		this.listenTo( showViewDocument, 'change', () => {
-			const renderSelectedLink = this._getSelectedLinkElement();
-			const renderIsCollapsed = showViewDocument.selection.isCollapsed;
-			const hasSelectionExpanded = showIsCollapsed && !renderIsCollapsed;
-
-			// Hide the panel if:
-			//   * the selection went out of the original link element
-			//     (e.g. paragraph containing the link was removed),
-			//   * the selection has expanded
-			// upon the #change event.
-			if ( hasSelectionExpanded || showSelectedLink !== renderSelectedLink ) {
-				this._hidePanel( true );
-			}
-			// Update the position of the panel when:
-			//  * the selection remains in the original link element,
-			//  * there was no link element in the first place, i.e. creating a new link
-			else {
-				// If still in a link element, simply update the position of the balloon.
-				// If there was no link, upon #change, the balloon must be moved
-				// to the new position in the editing view (a new native DOM range).
-				this._balloon.updatePosition( this._getBalloonPositionData() );
-			}
+		this._balloon.add( {
+			view: this.formView,
+			position: this._getBalloonPositionData()
 		} );
 
-		if ( this._balloon.hasView( this.formView ) ) {
-			// Check if formView should be focused and focus it if is visible.
-			if ( focusInput && this._balloon.visibleView === this.formView ) {
-				this.formView.urlInputView.select();
-			}
-		} else {
-			this._balloon.add( {
-				view: this.formView,
-				position: this._getBalloonPositionData()
-			} );
-
-			if ( focusInput ) {
-				this.formView.urlInputView.select();
-			}
-		}
-
-		// https://github.com/ckeditor/ckeditor5-link/issues/53
-		this.formView.unlinkButtonView.isVisible = unlinkCommand.isEnabled;
+		this.formView.urlInputView.select();
 
 		// Make sure that each time the panel shows up, the URL field remains in sync with the value of
 		// the command. If the user typed in the input, then canceled the balloon (`urlInputView#value` stays
@@ -279,24 +287,184 @@ export default class Link extends Plugin {
 	/**
 	 * Removes the {@link #formView} from the {@link #_balloon}.
 	 *
-	 * See {@link #_showPanel}.
-	 *
 	 * @protected
-	 * @param {Boolean} [focusEditable=false] When `true`, editable focus will be restored on panel hide.
 	 */
-	_hidePanel( focusEditable ) {
-		this.stopListening( this.editor.editing.view.document, 'change' );
+	_removeFormView() {
+		if ( this._isFormInPanel ) {
+			this._balloon.remove( this.formView );
 
-		if ( !this._balloon.hasView( this.formView ) ) {
+			// Because the form has an input which has focus, the focus must be brought back
+			// to the editor. Otherwise, it would be lost.
+			this.editor.editing.view.focus();
+		}
+	}
+
+	/**
+	 * Shows the right kind of the UI for current state of the command. It's either
+	 * {@link #formView} or {@link #actionsView}.
+	 *
+	 * @private
+	 */
+	_showUI() {
+		const editor = this.editor;
+		const linkCommand = editor.commands.get( 'link' );
+
+		if ( !linkCommand.isEnabled || this._isUIInPanel ) {
 			return;
 		}
 
-		if ( focusEditable ) {
-			this.editor.editing.view.focus();
+		// When there's no link under the selection, go straight to the editing UI.
+		if ( !this._getSelectedLinkElement() ) {
+			this._addActionsView();
+			this._addFormView();
+		}
+		// Otherwise display just the actions UI.
+		else {
+			this._addActionsView();
 		}
 
-		this.stopListening( this.editor.editing.view.document, 'change' );
-		this._balloon.remove( this.formView );
+		// Begin responding to view#render once the UI is added.
+		this._startUpdatingUIOnViewRender();
+	}
+
+	/**
+	 * Removes the {@link #formView} from the {@link #_balloon}.
+	 *
+	 * See {@link #_addFormView}, {@link #_addActionsView}.
+	 *
+	 * @protected
+	 */
+	_hideUI() {
+		if ( !this._isUIInPanel ) {
+			return;
+		}
+
+		const editingView = this.editor.editing.view;
+
+		this.stopListening( editingView, 'render' );
+
+		// Remove form first because it's on top of the stack.
+		this._removeFormView();
+
+		// Then remove the actions view because it's beneath the form.
+		this._balloon.remove( this.actionsView );
+
+		// Make sure the focus always gets back to the editable.
+		editingView.focus();
+	}
+
+	/**
+	 * Makes the UI react to the {@link module:engine/view/document~Document#event:render} in the view
+	 * document to reposition itself as the document changes.
+	 *
+	 * See: {@link #_hideUI} to learn when the UI stops reacting to the `render` event.
+	 *
+	 * @protected
+	 */
+	_startUpdatingUIOnViewRender() {
+		const editor = this.editor;
+		const editing = editor.editing;
+		const editingView = editing.view;
+
+		let prevSelectedLink = this._getSelectedLinkElement();
+		let prevSelectionParent = getSelectionParent();
+
+		this.listenTo( editingView, 'render', () => {
+			const selectedLink = this._getSelectedLinkElement();
+			const selectionParent = getSelectionParent();
+
+			// Hide the panel if:
+			//
+			// * the selection went out of the EXISTING link element. E.g. user moved the caret out
+			//   of the link,
+			// * the selection went to a different parent when creating a NEW link. E.g. someone
+			//   else modified the document.
+			// * the selection has expanded (e.g. displaying link actions then pressing SHIFT+Right arrow).
+			//
+			// Note: #_getSelectedLinkElement will return a link for a non-collapsed selection only
+			// when fully selected.
+			if ( ( prevSelectedLink && !selectedLink ) ||
+				( !prevSelectedLink && selectionParent !== prevSelectionParent ) ) {
+				this._hideUI();
+			}
+			// Update the position of the panel when:
+			//  * the selection remains in the original link element,
+			//  * there was no link element in the first place, i.e. creating a new link
+			else {
+				// If still in a link element, simply update the position of the balloon.
+				// If there was no link (e.g. inserting one), the balloon must be moved
+				// to the new position in the editing view (a new native DOM range).
+				this._balloon.updatePosition( this._getBalloonPositionData() );
+			}
+
+			prevSelectedLink = selectedLink;
+			prevSelectionParent = selectionParent;
+		} );
+
+		function getSelectionParent() {
+			return editingView.selection.focus.getAncestors()
+				.reverse()
+				.find( node => node.is( 'element' ) );
+		}
+	}
+
+	/**
+	 * Returns true when {@link #formView} is in the {@link #_balloon}.
+	 *
+	 * @readonly
+	 * @protected
+	 * @type {Boolean}
+	 */
+	get _isFormInPanel() {
+		return this._balloon.hasView( this.formView );
+	}
+
+	/**
+	 * Returns true when {@link #actionsView} is in the {@link #_balloon}.
+	 *
+	 * @readonly
+	 * @protected
+	 * @type {Boolean}
+	 */
+	get _areActionsInPanel() {
+		return this._balloon.hasView( this.actionsView );
+	}
+
+	/**
+	 * Returns true when {@link #actionsView} is in the {@link #_balloon} and it is
+	 * currently visible.
+	 *
+	 * @readonly
+	 * @protected
+	 * @type {Boolean}
+	 */
+	get _areActionsVisible() {
+		return this._balloon.visibleView === this.actionsView;
+	}
+
+	/**
+	 * Returns true when {@link #actionsView} or {@link #formView} is in the {@link #_balloon}.
+	 *
+	 * @readonly
+	 * @protected
+	 * @type {Boolean}
+	 */
+	get _isUIInPanel() {
+		return this._isFormInPanel || this._areActionsInPanel;
+	}
+
+	/**
+	 * Returns true when {@link #actionsView} or {@link #formView} is in the {@link #_balloon} and it is
+	 * currently visible.
+	 *
+	 * @readonly
+	 * @protected
+	 * @type {Boolean}
+	 */
+	get _isUIVisible() {
+		const visibleView = this._balloon.visibleView;
+
+		return visibleView == this.formView || this._areActionsVisible;
 	}
 
 	/**
