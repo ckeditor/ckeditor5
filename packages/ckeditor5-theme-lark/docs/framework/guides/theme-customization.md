@@ -221,7 +221,7 @@ In the editor demo presented and the very beginning of this guide, the drop down
 
 ```css
 :root {
-	--ck-shadow-color: #646265;
+	--ck-shadow-color: hsl(280, 1.5%, 39%);
 }
 
 .ck-editor-toolbar .ck-button.ck-dropdown__button {
@@ -237,7 +237,7 @@ Again, the rule above could be added directly to any stylesheet in the web page 
 
 /* The shadow should be 10% brighter than the toolbar background. */
 :root {
-	--ck-shadow-color: #646265;
+	--ck-shadow-color: hsl(280, 1.5%, 39%);
 }
 
 .ck-editor-toolbar {
