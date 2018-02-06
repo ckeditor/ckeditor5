@@ -761,39 +761,30 @@ export default class Writer {
 	}
 
 	/**
-	 * Adds or updates {@link module:engine/model/markercollection~Marker marker} with given name to given `range`.
-	 * If the marker, nor marker's name is not provided, new marker is created and returned with a unique name.
+	 * Adds or updates {@link module:engine/model/markercollection~Marker marker}.
 	 *
-	 * There're two types of markers.
+	 * As the first parameter you can set marker name or instance. If none of them is provided, new marker, with a unique
+	 * name is created and returned.
 	 *
-	 * 1. Markers not added to document (default ones). They can be used as bookmarks or visual markers.
-	 * They're great for showing results of the find, or select link when the focus is in the input,
-	 * see https://github.com/ckeditor/ckeditor5-link/issues/13. Sample usage:
-	 * 		writer.setMarker( markerOrName, ranges );
+	 * Using this method you can change markers range or define if the marker is managed by operation or not.
 	 *
-	 * 1. Markers added to the document. They're synchronized in the collaboration and handled in the undo.
-	 * This type of markers is useful for solutions like spell checking or comments. Sample usage:
-	 * 		writer.setMarker( markerOrName, ranges, { usingOperation: true } );
+	 * Marker tracks changes is the document and updates the range automatically, so you need to update the range only
+	 * when it changes directly. You do not need to update it after each document change.
 	 *
-	 * If passed name is a name of already existing marker (or {@link module:engine/model/markercollection~Marker Marker} instance
-	 * is passed), `range` parameter may be omitted (only for setting markers using operation). In this case marker will not be updated in
-	 * {@link module:engine/model/model~Model#markers document marker collection}. However the marker will be added to
-	 * the document history. This may be important for other features, like undo. From document history point of view, it will
-	 * look like the marker was created and added to the document at the moment when it is set using this method.
+	 * The option parameter let you decide if the marker should be managed by operations or not. See
+	 * {@link module:engine/model/markercollection~Marker marker class description} to learn about the difference between
+	 * markers managed by operation and managed directly. You can change this option for existing marker. This is
+	 * useful if a marker have been created earlier and need to be added to the document history later.
 	 *
-	 * This is useful if the marker is created before it can be added to document history (e.g. a feature creating the marker
-	 * is waiting for additional data, etc.). In this case, the marker may be first created directly through
-	 * {@link module:engine/model/markercollection~MarkerCollection MarkerCollection API} and only later added using `Batch` API.
-	 *
-	 * Create / update marker using `MarkerOperation` operation:
+	 * Update marker using operation:
 	 *
 	 * 		setMarker( marker, range, { usingOperations: true } );
 	 *
-	 * Create / update marker directly base on marker's name:
+	 * Create/update marker directly base on marker's name:
 	 *
 	 * 		setMarker( markerName, range );
 	 *
-	 * Create marker with a unique id using `MarkerOperation` operation:
+	 * Create marker with a unique id using operation:
 	 *
 	 * 		setMarker( range, { usingOperations: true } );
 	 *
@@ -801,18 +792,19 @@ export default class Writer {
 	 *
 	 * 		setMarker( range )
 	 *
-	 * Update marker using `MarkerOperation` operation.
+	 * Change marker's option (start using operations to manage it):
 	 *
 	 * 		setMarker( marker, { usingOperations: true } );
 	 *
-	 * Note: For efficiency reasons, it's best to create and keep at least markers as possible.
+	 * Note: For efficiency reasons, it's best to create and keep as little markers as possible.
 	 *
-	 * @see {module:engine/model/liverange~LiveRange}
-	 * @param {module:engine/model/markercollection~Marker|String|module:engine/model/range~Range} markerOrNameOrRange
+	 * @see module:engine/model/markercollection~Marker
+	 * @param {module:engine/model/markercollection~Marker|String} [markerOrName=uid()]
 	 * Name of marker to add, Marker instance to update or range for the marker with a unique name.
-	 * @param {module:engine/model/range~Range|Object} [rangeOrOptions] Marker range or options.
+	 * @param {module:engine/model/range~Range|Object} [range] Marker range or options.
 	 * @param {Object} [options]
 	 * @param {Boolean} [options.usingOperation=false] Flag indicated whether the marker should be added by MarkerOperation.
+	 * See {@link module:engine/model/markercollection~Marker#managedUsingOperations}.
 	 * @returns {module:engine/model/markercollection~Marker} Marker that was set.
 	 */
 	setMarker( markerOrNameOrRange, rangeOrOptions, options ) {
@@ -877,8 +869,8 @@ export default class Writer {
 
 	/**
 	 * Removes given {@link module:engine/model/markercollection~Marker marker} or marker with given name.
-	 * There's no `usingOperation` option available here, the marker destructing mechanism is hidden and used
-	 * accordingly to how the marker was created, so if the marker was created with operation, it will be destroyed using operation.
+	 * The marker is removed accordingly to how it has been created, so if the marker was created using operation,
+	 * it will be destroyed using operation.
 	 *
 	 * @param {module:engine/model/markercollection~Marker|String} markerOrName Marker or marker name to remove.
 	 * @param {Object} [options]

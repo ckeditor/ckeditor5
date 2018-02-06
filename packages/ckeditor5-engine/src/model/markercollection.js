@@ -15,32 +15,19 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
- * Creates, stores and manages {@link module:engine/model/markercollection~Marker markers}.
+ * The collection of all {@link module:engine/model/markercollection~Marker markers} attached to the document.
+ * It lets you {@link module:engine/model/markercollection~MarkerCollection#get get} markers or track them using
+ * {@link module:engine/model/markercollection~MarkerCollection#event:set} and
+ * {@link module:engine/model/markercollection~MarkerCollection#event:remove} events.
  *
- * Markers are designed to be a ready-to-use solution for having up-to-date ranges on the document with an easy access to them.
- * They're built from a name and a {@link module:engine/model/liverange~LiveRange live range}.
- * Name is used to group and identify markers. Names have to be unique, but markers can be grouped by
- * using common prefixes, separated with `:`, for example: `user:john` or `search:3`. That's useful in term of creating namespaces
- * for custom elements (e.g. comments, highlights).
+ * To create, change or remove makers use {@link module:engine/model/writer~Writer model writers'} methods:
+ * {@link module:engine/model/writer~Writer#setMarker} or {@link module:engine/model/writer~Writer#removeMarker}. Since
+ * the writer is the only proper way to change the data model it is not possible to change markers directly using this
+ * collection. All markers created by the writer will be automatically added to this collection.
  *
- * Markers can be watched for changes - both adding and removing markers from the `MarkerCollection` fires events
- * (`~MarkerCollection#event:add` and `MarkerCollection#event:remove`).
+ * By default there is one marker collection available as {@link module:engine/model/model~Model#markers model property}.
  *
- * There're two types of markers. Both type of them should be added / updated by {@link module:engine/model/writer~Writer#setMarker}
- * and removed by {@link module:engine/model/writer~Writer#removeMarker} methods. Both of them are stored in the {@link ~MarkerCollection}.
- *
- * 1. Markers not added to document (default ones). They can be used as bookmarks or visual markers.
- * They're great for showing results of the find, or select link when the focus is in the input,
- * see https://github.com/ckeditor/ckeditor5-link/issues/13. Sample usage:
- * 		writer.setMarker( markerOrName, ranges );
- *
- * 1. Markers added to the document. They're synchronized in the collaboration and handled in the undo.
- * This type of markers is useful for solutions like spell checking or comments. Sample usage:
- * 		writer.setMarker( markerOrName, ranges, { usingOperation: true } );
- *
- * Note: For efficiency reasons, it's best to create and keep at least markers as possible.
- *
- * @see {module:engine/model/liverange~LiveRange}
+ * @see module:engine/model/markercollection~Marker
  */
 export default class MarkerCollection {
 	/**
@@ -97,9 +84,9 @@ export default class MarkerCollection {
 	 * happens and `false` is returned.
 	 *
 	 * @protected
-	 * @fires module:engine/model/markercollection~MarkerCollection#event:add
+	 * @fires module:engine/model/markercollection~MarkerCollection#event:set
 	 * @fires module:engine/model/markercollection~MarkerCollection#event:remove
-	 * @param {String|module:engine/model/markercollection~Marker} markerOrName Name of marker to add or Marker instance to update.
+	 * @param {String|module:engine/model/markercollection~Marker} markerOrName Name of marker to set or marker instance to update.
 	 * @param {module:engine/model/range~Range} range Marker range.
 	 * @param {Boolean} managedUsingOperations Specifies whether the marker is managed using operations.
 	 * @returns {module:engine/model/markercollection~Marker} `Marker` instance added to the collection.
@@ -230,48 +217,64 @@ mix( MarkerCollection, EmitterMixin );
 /**
  * `Marker` is a continuous parts of model (like a range), is named and represent some kind of information about marked
  * part of model document. In contrary to {@link module:engine/model/node~Node nodes}, which are building blocks of
- * model document tree, markers are not stored directly in document tree. Still, they are document data, by giving
+ * model document tree, markers are not stored directly in document tree but in
+ * {@link module:engine/model/model~Model#markers model markers' collection}. Still, they are document data, by giving
  * additional meaning to the part of a model document between marker start and marker end.
  *
  * In this sense, markers are similar to adding and converting attributes on nodes. The difference is that attribute is
  * connected with a given node (e.g. a character is bold no matter if it gets moved or content around it changes).
- * Markers on the other hand are continuous ranges and are characterised by their start and end position. This means that
+ * Markers on the other hand are continuous ranges and are characterized by their start and end position. This means that
  * any character in the marker is marked by the marker. For example, if a character is moved outside of marker it stops being
  * "special" and the marker is shrunk. Similarly, when a character is moved into the marker from other place in document
  * model, it starts being "special" and the marker is enlarged.
  *
- * Markers are designed to be a ready-to-use solution for having up-to-date ranges on the document with an easy access to them.
- * They're built from a name and a {@link module:engine/model/liverange~LiveRange live range}.
+ * Another upside of markers is that finding marked part of document is fast and easy. Using attributes to mark some nodes
+ * and then trying to find that part of document would require traversing whole document tree. Marker gives instant access
+ * to the range which it is marking at the moment.
+ *
+ * Markers are built from a name and a range.
+ *
+ * Range of the marker is updated automatically when document changes, using
+ * {@link module:engine/model/liverange~LiveRange live range} mechanism.
+ *
  * Name is used to group and identify markers. Names have to be unique, but markers can be grouped by
- * using common prefixes, separated with `:`, for example: `user:john` or `search:3`. That's useful in term of creating namespaces
- * for custom elements (e.g. comments, highlights).
+ * using common prefixes, separated with `:`, for example: `user:john` or `search:3`. That's useful in term of creating
+ * namespaces for custom elements (e.g. comments, highlights). You can use this prefixes in
+ * {@link module:engine/model/markercollection~MarkerCollection#event:set} listeners to listen on changes in a group of markers.
+ * For instance: `model.markers.on( 'set:user', callback );` will be called whenever any `user:*` markers changes.
  *
- * There're two types of markers. Both type of them should be added / updated by {@link module:engine/model/writer~Writer#setMarker}
- * and removed by {@link module:engine/model/writer~Writer#removeMarker} methods. Both of them are stored in the {@link ~MarkerCollection}.
+ * There are two types of markers.
  *
- * 1. Markers not added to document (default ones). They can be used as bookmarks or visual markers.
- * They're great for showing results of the find, or select link when the focus is in the input,
- * see https://github.com/ckeditor/ckeditor5-link/issues/13. Sample usage:
- * 		writer.setMarker( markerOrName, ranges );
+ * 1. Markers managed directly, without using operations. They are added directly by {@link module:engine/model/writer~Writer}
+ * to the {@link module:engine/model/markercollection~MarkerCollection} without any additional mechanism. They can be used
+ * as bookmarks or visual markers. They are great for showing results of the find, or select link when the focus is in the input.
  *
- * 1. Markers added to the document. They're synchronized in the collaboration and handled in the undo.
- * This type of markers is useful for solutions like spell checking or comments. Sample usage:
- * 		writer.setMarker( markerOrName, ranges, { usingOperation: true } );
+ * 1. Markers managed using operations. These markers are also stored in {@link module:engine/model/markercollection~MarkerCollection}
+ * but changes in these markers is managed the same way all other changes in the model structure - using operations.
+ * Therefore, they are handled in the undo stack and synchronized between clients if the collaboration plugin is enabled.
+ * This type of markers is useful for solutions like spell checking or comments.
  *
- * Since markers are based on {@link module:engine/model/liverange~LiveRange live ranges}, for efficiency reasons, it's
- * best to create and keep at least markers as possible.
+ * Both type of them should be added / updated by {@link module:engine/model/writer~Writer#setMarker}
+ * and removed by {@link module:engine/model/writer~Writer#removeMarker} methods.
+ *
+ *		model.change( ( writer ) => {
+ * 			const marker = writer.setMarker( name, range, { usingOperations: true } );
+ *
+ * 			// ...
+ *
+ * 			writer.removeMarker( marker );
+ *		} );
+ *
+ * See {@link module:engine/model/writer~Writer} to find more examples.
+ *
+ * Since markers need to track change in the document, for efficiency reasons, it is best to create and keep as little
+ * markers as possible and remove them as soon as they are not needed anymore.
  *
  * Markers can be converted to view by adding appropriate converters for
  * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:addMarker} and
  * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:removeMarker}
  * events, or by building converters for {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher}
  * using {@link module:engine/conversion/buildmodelconverter~buildModelConverter model converter builder}.
- *
- * Another upside of markers is that finding marked part of document is fast and easy. Using attributes to mark some nodes
- * and then trying to find that part of document would require traversing whole document tree. Marker gives instant access
- * to the range which it is marking at the moment.
- *
- * `Marker` instances are created and destroyed only by {@link ~MarkerCollection MarkerCollection}.
  */
 class Marker {
 	/**
@@ -290,7 +293,8 @@ class Marker {
 		this.name = name;
 
 		/**
-		 * Flag indicates if the marker should be managed using operations.
+		 * Flag indicates if the marker is managed using operations or not. See {@link ~Marker marker class description}
+		 * to learn more about marker types. See {@link module:engine/model/writer~Writer#setMarker}.
 		 *
 		 * @readonly
 		 * @type {Boolean}
