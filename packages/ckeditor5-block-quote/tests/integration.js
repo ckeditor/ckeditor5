@@ -12,9 +12,14 @@ import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 import List from '@ckeditor/ckeditor5-list/src/list';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import Delete from '@ckeditor/ckeditor5-typing/src/delete';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import {
+	parse as parseModel,
+	getData as getModelData,
+	setData as setModelData
+} from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'BlockQuote integration', () => {
 	let editor, model, element;
@@ -25,7 +30,7 @@ describe( 'BlockQuote integration', () => {
 
 		return ClassicTestEditor
 			.create( element, {
-				plugins: [ BlockQuote, Paragraph, Image, ImageCaption, List, Enter, Delete ]
+				plugins: [ BlockQuote, Paragraph, Image, ImageCaption, List, Enter, Delete, Heading ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -385,6 +390,29 @@ describe( 'BlockQuote integration', () => {
 					'</image>' +
 					'<paragraph>b]ar</paragraph>' +
 				'</blockQuote>'
+			);
+		} );
+	} );
+
+	// When blockQuote with a paragraph was pasted into a list item, the item contained the paragraph. It was invalid.
+	// There is a test which checks whether blockQuote will split the list items instead of merging with.
+	describe( 'compatibility with lists', () => {
+		it( 'does not merge the paragraph with list item', () => {
+			setModelData( model, '<listItem indent="0" type="bulleted">fo[]o</listItem>' );
+
+			const df = parseModel(
+				'<blockQuote><paragraph>xxx</paragraph></blockQuote><heading1>yyy</heading1>',
+				model.schema
+			);
+
+			model.insertContent( df, model.document.selection );
+
+			expect( getModelData( model ) ).to.equal(
+				'<listItem indent="0" type="bulleted">fo</listItem>' +
+				'<blockQuote>' +
+				'<paragraph>xxx</paragraph>' +
+				'</blockQuote>' +
+				'<heading1>yyy[]o</heading1>'
 			);
 		} );
 	} );
