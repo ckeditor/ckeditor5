@@ -15,7 +15,11 @@ import Delete from '@ckeditor/ckeditor5-typing/src/delete';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import { parse, getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import {
+	parse as parseModel,
+	getData as getModelData,
+	setData as setModelData
+} from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'BlockQuote integration', () => {
 	let editor, model, element;
@@ -396,7 +400,7 @@ describe( 'BlockQuote integration', () => {
 		it( 'does not merge the paragraph with list item', () => {
 			setModelData( model, '<listItem indent="0" type="bulleted">fo[]o</listItem>' );
 
-			const df = parse(
+			const df = parseModel(
 				'<blockQuote><paragraph>xxx</paragraph></blockQuote><heading1>yyy</heading1>',
 				model.schema
 			);
