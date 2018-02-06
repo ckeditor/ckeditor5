@@ -370,14 +370,14 @@ describe( 'model-to-view-converters', () => {
 				dispatcher.on( 'addMarker:marker', insertUIElement( viewUi ) );
 				dispatcher.on( 'removeMarker:marker', removeUIElement( viewUi ) );
 
-				model.change( () => {
-					model.markers.set( 'marker', range );
+				model.change( writer => {
+					writer.setMarker( 'marker', range );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo<span class="marker"></span>bar</p></div>' );
 
-				model.change( () => {
-					model.markers.remove( 'marker' );
+				model.change( writer => {
+					writer.removeMarker( 'marker' );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
@@ -389,14 +389,14 @@ describe( 'model-to-view-converters', () => {
 				dispatcher.on( 'addMarker:marker', insertUIElement( () => viewUi ) );
 				dispatcher.on( 'removeMarker:marker', removeUIElement( () => viewUi ) );
 
-				model.change( () => {
-					model.markers.set( 'marker', range );
+				model.change( writer => {
+					writer.setMarker( 'marker', range );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo<span class="marker"></span>bar</p></div>' );
 
-				model.change( () => {
-					model.markers.remove( 'marker' );
+				model.change( writer => {
+					writer.removeMarker( 'marker' );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
@@ -422,14 +422,14 @@ describe( 'model-to-view-converters', () => {
 				dispatcher.on( 'addMarker:marker', insertUIElement( () => null ) );
 				dispatcher.on( 'removeMarker:marker', removeUIElement( () => null ) );
 
-				model.change( () => {
-					model.markers.set( 'marker', range );
+				model.change( writer => {
+					writer.setMarker( 'marker', range );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 
-				model.change( () => {
-					model.markers.remove( 'marker' );
+				model.change( writer => {
+					writer.removeMarker( 'marker' );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
@@ -447,15 +447,15 @@ describe( 'model-to-view-converters', () => {
 				dispatcher.on( 'addMarker:marker', insertUIElement( viewUi ) );
 				dispatcher.on( 'removeMarker:marker', removeUIElement( viewUi ) );
 
-				model.change( () => {
-					model.markers.set( 'marker', range );
+				model.change( writer => {
+					writer.setMarker( 'marker', range );
 				} );
 
 				expect( viewToString( viewRoot ) )
 					.to.equal( '<div><p>fo<span class="marker"></span>oba<span class="marker"></span>r</p></div>' );
 
-				model.change( () => {
-					model.markers.remove( 'marker' );
+				model.change( writer => {
+					writer.removeMarker( 'marker' );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
@@ -467,15 +467,15 @@ describe( 'model-to-view-converters', () => {
 				dispatcher.on( 'addMarker:marker', insertUIElement( viewUi ) );
 				dispatcher.on( 'removeMarker:marker', removeUIElement( viewUi ) );
 
-				model.change( () => {
-					model.markers.set( 'marker', range );
+				model.change( writer => {
+					writer.setMarker( 'marker', range );
 				} );
 
 				expect( viewToString( viewRoot ) )
 					.to.equal( '<div><p>fo<span class="marker"></span>oba<span class="marker"></span>r</p></div>' );
 
-				model.change( () => {
-					model.markers.remove( 'marker' );
+				model.change( writer => {
+					writer.removeMarker( 'marker' );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
@@ -493,16 +493,16 @@ describe( 'model-to-view-converters', () => {
 				dispatcher.on( 'addMarker:marker', insertUIElement( creator ) );
 				dispatcher.on( 'removeMarker:marker', removeUIElement( creator ) );
 
-				model.change( () => {
-					model.markers.set( 'marker', range );
+				model.change( writer => {
+					writer.setMarker( 'marker', range );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal(
 					'<div><p>fo<span class="marker" data-start="true"></span>oba<span class="marker" data-end="true"></span>r</p></div>'
 				);
 
-				model.change( () => {
-					model.markers.remove( 'marker' );
+				model.change( writer => {
+					writer.removeMarker( 'marker' );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
@@ -726,8 +726,8 @@ describe( 'model-to-view-converters', () => {
 				dispatcher.on( 'addMarker:marker', highlightElement( highlightDescriptor ) );
 				dispatcher.on( 'removeMarker:marker', removeHighlight( highlightDescriptor ) );
 
-				model.change( () => {
-					model.markers.set( 'marker', markerRange );
+				model.change( writer => {
+					writer.setMarker( 'marker', markerRange );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal(
@@ -741,8 +741,8 @@ describe( 'model-to-view-converters', () => {
 					'</div>'
 				);
 
-				model.change( () => {
-					model.markers.remove( 'marker' );
+				model.change( writer => {
+					writer.removeMarker( 'marker' );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
@@ -759,8 +759,8 @@ describe( 'model-to-view-converters', () => {
 				dispatcher.on( 'addMarker:marker', highlightElement( newDescriptor ), { priority: 'high' } );
 				dispatcher.on( 'removeMarker:marker', removeHighlight( newDescriptor ), { priority: 'high' } );
 
-				model.change( () => {
-					model.markers.set( 'marker', markerRange );
+				model.change( writer => {
+					writer.setMarker( 'marker', markerRange );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal(
@@ -774,8 +774,8 @@ describe( 'model-to-view-converters', () => {
 					'</div>'
 				);
 
-				model.change( () => {
-					model.markers.remove( 'marker' );
+				model.change( writer => {
+					writer.removeMarker( 'marker' );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
@@ -786,14 +786,14 @@ describe( 'model-to-view-converters', () => {
 				dispatcher.on( 'addMarker:marker', highlightElement( () => null ), { priority: 'high' } );
 				dispatcher.on( 'removeMarker:marker', removeHighlight( () => null ), { priority: 'high' } );
 
-				model.change( () => {
-					model.markers.set( 'marker', markerRange );
+				model.change( writer => {
+					writer.setMarker( 'marker', markerRange );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
 
-				model.change( () => {
-					model.markers.remove( 'marker' );
+				model.change( writer => {
+					writer.removeMarker( 'marker' );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
@@ -840,8 +840,8 @@ describe( 'model-to-view-converters', () => {
 			} );
 
 			it( 'should use addHighlight and removeHighlight on elements and not convert children nodes', () => {
-				model.change( () => {
-					model.markers.set( 'marker', markerRange );
+				model.change( writer => {
+					writer.setMarker( 'marker', markerRange );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal(
@@ -852,8 +852,8 @@ describe( 'model-to-view-converters', () => {
 					'</div>'
 				);
 
-				model.change( () => {
-					model.markers.remove( 'marker' );
+				model.change( writer => {
+					writer.removeMarker( 'marker' );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><div>foo</div></div>' );
@@ -866,8 +866,8 @@ describe( 'model-to-view-converters', () => {
 				dispatcher.on( 'addMarker:marker', highlightElement( newDescriptor ), { priority: 'high' } );
 				dispatcher.on( 'removeMarker:marker', removeHighlight( newDescriptor ), { priority: 'high' } );
 
-				model.change( () => {
-					model.markers.set( 'marker', markerRange );
+				model.change( writer => {
+					writer.setMarker( 'marker', markerRange );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal(
@@ -878,8 +878,8 @@ describe( 'model-to-view-converters', () => {
 					'</div>'
 				);
 
-				model.change( () => {
-					model.markers.remove( 'marker' );
+				model.change( writer => {
+					writer.removeMarker( 'marker' );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><div>foo</div></div>' );
@@ -901,8 +901,8 @@ describe( 'model-to-view-converters', () => {
 					expect( id ).to.equal( 'marker:foo-bar-baz' );
 				} );
 
-				model.change( () => {
-					model.markers.set( 'marker2', markerRange );
+				model.change( writer => {
+					writer.setMarker( 'marker2', markerRange );
 				} );
 			} );
 
@@ -911,14 +911,14 @@ describe( 'model-to-view-converters', () => {
 				dispatcher.on( 'addMarker:marker2', highlightElement( () => null ) );
 				dispatcher.on( 'removeMarker:marker2', removeHighlight( () => null ) );
 
-				model.change( () => {
-					model.markers.set( 'marker2', markerRange );
+				model.change( writer => {
+					writer.setMarker( 'marker2', markerRange );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><div>foo</div></div>' );
 
-				model.change( () => {
-					model.markers.remove( 'marker2' );
+				model.change( writer => {
+					writer.removeMarker( 'marker2' );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><div>foo</div></div>' );

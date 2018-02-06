@@ -1970,6 +1970,30 @@ describe( 'Writer', () => {
 			expect( model.markers.get( 'name' ).getRange().isEqual( range ) ).to.be.true;
 		} );
 
+		it( 'should return marker if that was set directly', () => {
+			const marker = setMarker( 'name', range );
+
+			expect( model.markers.get( 'name' ) ).to.equal( marker );
+		} );
+
+		it( 'should return marker if that was set using operation API', () => {
+			const marker = setMarker( 'name', range, { usingOperation: true } );
+
+			expect( model.markers.get( 'name' ) ).to.equal( marker );
+		} );
+
+		it( 'should return marker with properly set managedUsingOperations (to true)', () => {
+			const marker = setMarker( 'name', range, { usingOperation: true } );
+
+			expect( marker.managedUsingOperations ).to.equal( true );
+		} );
+
+		it( 'should return marker with properly set managedUsingOperations (to false)', () => {
+			const marker = setMarker( 'name', range );
+
+			expect( marker.managedUsingOperations ).to.equal( false );
+		} );
+
 		it( 'should update marker in the document marker collection', () => {
 			setMarker( 'name', range );
 
@@ -1980,24 +2004,58 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should accept marker instance', () => {
-			const marker = model.markers.set( 'name', range );
+			const marker = setMarker( 'name', range, { usingOperation: true } );
 			const range2 = Range.createFromParentsAndOffsets( root, 0, root, 0 );
 
-			setMarker( marker, range2 );
-			const op = batch.deltas[ 0 ].operations[ 0 ];
+			setMarker( marker, range2, { usingOperation: true } );
+
+			expect( batch.deltas.length ).to.equal( 2 );
+
+			const op = batch.deltas[ 1 ].operations[ 0 ];
 
 			expect( model.markers.get( 'name' ).getRange().isEqual( range2 ) ).to.be.true;
 			expect( op.oldRange.isEqual( range ) ).to.be.true;
 			expect( op.newRange.isEqual( range2 ) ).to.be.true;
 		} );
 
-		it( 'should accept empty range parameter if marker instance is passed', () => {
-			const marker = model.markers.set( 'name', range );
+		it( 'should accept empty range parameter if marker instance is passed and usingOperation is set to true', () => {
+			const marker = setMarker( 'name', range, { usingOperation: true } );
 			const spy = sinon.spy();
 
 			model.on( 'applyOperation', spy );
 
-			setMarker( marker );
+			setMarker( marker, { usingOperation: true } );
+
+			const op = batch.deltas[ 0 ].operations[ 0 ];
+
+			expect( spy.calledOnce ).to.be.true;
+			expect( spy.firstCall.args[ 1 ][ 0 ].type ).to.equal( 'marker' );
+			expect( op.oldRange ).to.be.null;
+			expect( op.newRange.isEqual( range ) ).to.be.true;
+		} );
+
+		it( 'should create a unique id if the first param is type of range', () => {
+			const marker = setMarker( range );
+
+			expect( marker.name ).to.be.a( 'string' );
+		} );
+
+		it( 'should create a unique id if the first param is type of range when usingOperation is set to true', () => {
+			const spy = sinon.spy();
+			model.on( 'applyOperation', spy );
+
+			const marker = setMarker( range, { usingOperation: true } );
+
+			expect( marker.name ).to.be.a( 'string' );
+			expect( spy.calledOnce ).to.be.true;
+		} );
+
+		it( 'should use operations when having set usingOperation to true', () => {
+			const spy = sinon.spy();
+
+			model.on( 'applyOperation', spy );
+
+			setMarker( 'name', range, { usingOperation: true } );
 			const op = batch.deltas[ 0 ].operations[ 0 ];
 
 			expect( spy.calledOnce ).to.be.true;
@@ -2008,16 +2066,57 @@ describe( 'Writer', () => {
 
 		it( 'should throw if marker with given name does not exist and range is not passed', () => {
 			expect( () => {
+				setMarker( 'name', { usingOperation: true } );
+			} ).to.throw( CKEditorError, /^writer-setMarker-no-range/ );
+		} );
+
+		it( 'should throw if marker is set directly and range is not passed', () => {
+			expect( () => {
 				setMarker( 'name' );
 			} ).to.throw( CKEditorError, /^writer-setMarker-no-range/ );
 		} );
 
+		it( 'should create additional operation when marker type changes to not managed using operation', () => {
+			const spy = sinon.spy();
+			model.on( 'applyOperation', spy );
+
+			setMarker( 'name', range, { usingOperation: true } );
+			const marker = setMarker( 'name', range );
+			const op1 = batch.deltas[ 0 ].operations[ 0 ];
+			const op2 = batch.deltas[ 1 ].operations[ 0 ];
+
+			expect( spy.calledTwice ).to.be.true;
+			expect( spy.firstCall.args[ 1 ][ 0 ].type ).to.equal( 'marker' );
+			expect( spy.secondCall.args[ 1 ][ 0 ].type ).to.equal( 'marker' );
+
+			expect( op1.oldRange ).to.be.null;
+			expect( op1.newRange.isEqual( range ) ).to.be.true;
+
+			expect( op2.oldRange.isEqual( range ) ).to.be.true;
+			expect( op2.newRange ).to.be.null;
+
+			expect( marker.managedUsingOperations ).to.be.false;
+		} );
+
+		it( 'should enable changing marker to be not managed using operation', () => {
+			const spy = sinon.spy();
+			model.on( 'applyOperation', spy );
+
+			setMarker( 'name', range );
+			const marker = setMarker( 'name', range, { usingOperation: true } );
+
+			expect( spy.calledOnce ).to.be.true;
+			expect( spy.firstCall.args[ 1 ][ 0 ].type ).to.equal( 'marker' );
+
+			expect( marker.managedUsingOperations ).to.be.true;
+		} );
+
 		it( 'should throw when trying to use detached writer', () => {
-			const marker = model.markers.set( 'name', range );
+			const marker = setMarker( 'name', range );
 			const writer = new Writer( model, batch );
 
 			expect( () => {
-				writer.setMarker( marker );
+				writer.setMarker( marker, null, { usingOperation: true } );
 			} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 		} );
 	} );
@@ -2058,6 +2157,21 @@ describe( 'Writer', () => {
 
 			removeMarker( marker );
 
+			expect( model.markers.get( 'name' ) ).to.be.null;
+		} );
+
+		it( 'should use MarkerOperation when marker was created using operation', () => {
+			setMarker( 'name', range, { usingOperation: true } );
+
+			const marker = model.markers.get( 'name' );
+			const spy = sinon.spy();
+
+			model.on( 'applyOperation', spy );
+
+			removeMarker( marker );
+
+			expect( spy.calledOnce ).to.be.true;
+			expect( spy.firstCall.args[ 1 ][ 0 ].type ).to.equal( 'marker' );
 			expect( model.markers.get( 'name' ) ).to.be.null;
 		} );
 	} );
@@ -2353,15 +2467,19 @@ describe( 'Writer', () => {
 		} );
 	}
 
-	function setMarker( markerOrName, newRange ) {
+	function setMarker( markerOrNameOrRange, rangeOrManagedUsingOperations, options ) {
+		let marker;
+
 		model.enqueueChange( batch, writer => {
-			writer.setMarker( markerOrName, newRange );
+			marker = writer.setMarker( markerOrNameOrRange, rangeOrManagedUsingOperations, options );
 		} );
+
+		return marker;
 	}
 
-	function removeMarker( markerOrName ) {
+	function removeMarker( markerOrName, options ) {
 		model.enqueueChange( batch, writer => {
-			writer.removeMarker( markerOrName );
+			writer.removeMarker( markerOrName, options );
 		} );
 	}
 

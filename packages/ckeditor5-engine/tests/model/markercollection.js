@@ -26,8 +26,8 @@ describe( 'MarkerCollection', () => {
 
 	describe( 'iterator', () => {
 		it( 'should return markers added to the marker collection', () => {
-			markers.set( 'a', range );
-			markers.set( 'b', range );
+			markers._set( 'a', range );
+			markers._set( 'b', range );
 
 			const markerA = markers.get( 'a' );
 			const markerB = markers.get( 'b' );
@@ -40,28 +40,28 @@ describe( 'MarkerCollection', () => {
 		} );
 	} );
 
-	describe( 'set', () => {
-		it( 'should create a marker, fire add:<markerName> event and return true', () => {
+	describe( '_set', () => {
+		it( 'should create a marker, fire set:<markerName> event and return true', () => {
 			sinon.spy( markers, 'fire' );
 
-			const result = markers.set( 'name', range );
+			const result = markers._set( 'name', range );
 			const marker = markers.get( 'name' );
 
 			expect( result ).to.equal( marker );
 			expect( marker.name ).to.equal( 'name' );
 			expect( marker.getRange().isEqual( range ) ).to.be.true;
-			expect( markers.fire.calledWithExactly( 'add:name', marker ) ).to.be.true;
+			expect( markers.fire.calledWithExactly( 'set:name', marker ) ).to.be.true;
 		} );
 
 		it( 'should fire remove:<markerName> event, and create a new marker if marker with given name was in the collection', () => {
-			const marker1 = markers.set( 'name', range );
+			const marker1 = markers._set( 'name', range );
 
 			sinon.spy( markers, 'fire' );
 
-			const marker2 = markers.set( 'name', range2 );
+			const marker2 = markers._set( 'name', range2 );
 
 			expect( markers.fire.calledWithExactly( 'remove:name', marker1 ) ).to.be.true;
-			expect( markers.fire.calledWithExactly( 'add:name', marker2 ) ).to.be.true;
+			expect( markers.fire.calledWithExactly( 'set:name', marker2 ) ).to.be.true;
 
 			expect( marker2.name ).to.equal( 'name' );
 			expect( marker2.getRange().isEqual( range2 ) ).to.be.true;
@@ -70,21 +70,21 @@ describe( 'MarkerCollection', () => {
 		} );
 
 		it( 'should not fire event and return the same marker if given marker has a range equal to given range', () => {
-			const marker1 = markers.set( 'name', range );
+			const marker1 = markers._set( 'name', range );
 
 			sinon.spy( markers, 'fire' );
 
-			const marker2 = markers.set( 'name', range );
+			const marker2 = markers._set( 'name', range );
 
 			expect( marker1 ).to.equal( marker2 );
 			expect( markers.fire.notCalled ).to.be.true;
 		} );
 
 		it( 'should accept marker instance instead of name', () => {
-			markers.set( 'name', range );
+			markers._set( 'name', range );
 			const marker1 = markers.get( 'name' );
 
-			const result = markers.set( marker1, range2 );
+			const result = markers._set( marker1, range2 );
 			const marker2 = markers.get( 'name' );
 
 			expect( result ).to.equal( marker2 );
@@ -99,7 +99,7 @@ describe( 'MarkerCollection', () => {
 		} );
 
 		it( 'should return true if marker with given name is in the collection', () => {
-			markers.set( 'name', range );
+			markers._set( 'name', range );
 			expect( markers.has( 'name' ) ).to.be.true;
 		} );
 	} );
@@ -114,13 +114,13 @@ describe( 'MarkerCollection', () => {
 		} );
 	} );
 
-	describe( 'remove', () => {
+	describe( '_remove', () => {
 		it( 'should remove marker, return true and fire remove:<markerName> event', () => {
-			const marker = markers.set( 'name', range );
+			const marker = markers._set( 'name', range );
 
 			sinon.spy( markers, 'fire' );
 
-			const result = markers.remove( 'name' );
+			const result = markers._remove( 'name' );
 
 			expect( result ).to.be.true;
 			expect( markers.fire.calledWithExactly( 'remove:name', marker ) ).to.be.true;
@@ -128,13 +128,13 @@ describe( 'MarkerCollection', () => {
 		} );
 
 		it( 'should destroy marker instance', () => {
-			const marker = markers.set( 'name', range );
+			const marker = markers._set( 'name', range );
 			const liveRange = marker._liveRange;
 
 			sinon.spy( marker, 'stopListening' );
 			sinon.spy( liveRange, 'detach' );
 
-			markers.remove( 'name' );
+			markers._remove( 'name' );
 
 			expect( marker.stopListening.calledOnce ).to.be.true;
 			expect( marker._liveRange ).to.be.null;
@@ -142,22 +142,22 @@ describe( 'MarkerCollection', () => {
 		} );
 
 		it( 'should return false if name has not been found in collection', () => {
-			markers.set( 'name', range );
+			markers._set( 'name', range );
 
 			sinon.spy( markers, 'fire' );
 
-			const result = markers.remove( 'other' );
+			const result = markers._remove( 'other' );
 
 			expect( result ).to.be.false;
 			expect( markers.fire.notCalled ).to.be.true;
 		} );
 
 		it( 'should accept marker instance instead of name', () => {
-			const marker = markers.set( 'name', range );
+			const marker = markers._set( 'name', range );
 
 			sinon.spy( markers, 'fire' );
 
-			const result = markers.remove( marker );
+			const result = markers._remove( marker );
 
 			expect( result ).to.be.true;
 			expect( markers.fire.calledWithExactly( 'remove:name', marker ) ).to.be.true;
@@ -167,10 +167,10 @@ describe( 'MarkerCollection', () => {
 
 	describe( 'getMarkersGroup', () => {
 		it( 'returns all markers which names start on given prefix', () => {
-			const markerFooA = markers.set( 'foo:a', range );
-			const markerFooB = markers.set( 'foo:b', range );
-			markers.set( 'bar:a', range );
-			markers.set( 'foobar:a', range );
+			const markerFooA = markers._set( 'foo:a', range );
+			const markerFooB = markers._set( 'foo:b', range );
+			markers._set( 'bar:a', range );
+			markers._set( 'foobar:a', range );
 
 			expect( Array.from( markers.getMarkersGroup( 'foo' ) ) ).to.deep.equal( [ markerFooA, markerFooB ] );
 			expect( Array.from( markers.getMarkersGroup( 'a' ) ) ).to.deep.equal( [] );
@@ -179,8 +179,8 @@ describe( 'MarkerCollection', () => {
 
 	describe( 'getMarkersAtPosition', () => {
 		it( 'should return iterator iterating over all markers that contains given position', () => {
-			markers.set( 'a', range );
-			const markerB = markers.set( 'b', range2 );
+			markers._set( 'a', range );
+			const markerB = markers._set( 'b', range2 );
 
 			const result = Array.from( markers.getMarkersAtPosition( Position.createAt( root, 1 ) ) );
 
@@ -190,8 +190,8 @@ describe( 'MarkerCollection', () => {
 
 	describe( 'destroy', () => {
 		it( 'should make MarkerCollection stop listening to all events and destroy all markers', () => {
-			const markerA = markers.set( 'a', range );
-			const markerB = markers.set( 'b', range2 );
+			const markerA = markers._set( 'a', range );
+			const markerB = markers._set( 'b', range2 );
 
 			sinon.spy( markers, 'stopListening' );
 			sinon.spy( markerA, 'stopListening' );
@@ -221,7 +221,7 @@ describe( 'Marker', () => {
 		root.appendChildren( new Text( 'foo' ) );
 
 		const range = Range.createFromParentsAndOffsets( root, 1, root, 2 );
-		const marker = model.markers.set( 'name', range );
+		const marker = model.markers._set( 'name', range );
 
 		expect( marker.getRange().isEqual( range ) ).to.be.true;
 		expect( marker.getStart().isEqual( range.start ) ).to.be.true;
@@ -240,9 +240,9 @@ describe( 'Marker', () => {
 
 	it( 'should throw when using the API if marker was removed from markers collection', () => {
 		const range = Range.createFromParentsAndOffsets( root, 1, root, 2 );
-		const marker = model.markers.set( 'name', range );
+		const marker = model.markers._set( 'name', range );
 
-		model.markers.remove( 'name' );
+		model.markers._remove( 'name' );
 
 		expect( () => {
 			marker.getRange();
@@ -259,7 +259,7 @@ describe( 'Marker', () => {
 
 	it( 'should delegate events from live range', () => {
 		const range = Range.createFromParentsAndOffsets( root, 1, root, 2 );
-		const marker = model.markers.set( 'name', range );
+		const marker = model.markers._set( 'name', range );
 
 		const eventRange = sinon.spy();
 		const eventContent = sinon.spy();

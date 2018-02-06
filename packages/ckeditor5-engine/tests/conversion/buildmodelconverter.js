@@ -348,8 +348,8 @@ describe( 'Model converter builder', () => {
 				attributes: { title: 'highlight title' }
 			} );
 
-			model.change( () => {
-				model.markers.set( 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 ) );
+			model.change( writer => {
+				writer.setMarker( 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 ) );
 			} );
 
 			expect( viewToString( viewRoot ) ).to.equal(
@@ -363,8 +363,8 @@ describe( 'Model converter builder', () => {
 
 			expect( viewRoot.getChild( 0 ).getChild( 1 ).priority ).to.equal( 3 );
 
-			model.change( () => {
-				model.markers.remove( 'search' );
+			model.change( writer => {
+				writer.removeMarker( 'search' );
 			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
@@ -377,8 +377,8 @@ describe( 'Model converter builder', () => {
 				attributes: { title: 'highlight title' }
 			} ) );
 
-			model.change( () => {
-				model.markers.set( 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 ) );
+			model.change( writer => {
+				writer.setMarker( 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 ) );
 			} );
 
 			expect( viewToString( viewRoot ) ).to.equal(
@@ -392,8 +392,8 @@ describe( 'Model converter builder', () => {
 
 			expect( viewRoot.getChild( 0 ).getChild( 1 ).priority ).to.equal( 12 );
 
-			model.change( () => {
-				model.markers.remove( 'search' );
+			model.change( writer => {
+				writer.removeMarker( 'search' );
 			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
@@ -404,14 +404,14 @@ describe( 'Model converter builder', () => {
 				class: 'highlight'
 			} );
 
-			model.change( () => {
-				model.markers.set( 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 2 ) );
+			model.change( writer => {
+				writer.setMarker( 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 2 ) );
 			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 
-			model.change( () => {
-				model.markers.remove( 'search' );
+			model.change( writer => {
+				writer.removeMarker( 'search' );
 			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
@@ -421,8 +421,8 @@ describe( 'Model converter builder', () => {
 			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toHighlight( { class: 'highlight' } );
 			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).withPriority( 'high' ).toHighlight( { class: 'override' } );
 
-			model.change( () => {
-				model.markers.set( 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 ) );
+			model.change( writer => {
+				writer.setMarker( 'search', ModelRange.createFromParentsAndOffsets( modelElement, 2, modelElement, 4 ) );
 			} );
 
 			expect( viewToString( viewRoot ) ).to.equal(
@@ -468,14 +468,14 @@ describe( 'Model converter builder', () => {
 			it( 'using passed view element name', () => {
 				buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toElement( 'span' );
 
-				model.change( () => {
-					model.markers.set( 'search', range );
+				model.change( writer => {
+					writer.setMarker( 'search', range );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>fo<span></span>obar</p></div>' );
 
-				model.change( () => {
-					model.markers.remove( 'search' );
+				model.change( writer => {
+					writer.removeMarker( 'search' );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
@@ -485,14 +485,14 @@ describe( 'Model converter builder', () => {
 				const viewElement = new ViewUIElement( 'span', { class: 'search' } );
 				buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toElement( viewElement );
 
-				model.change( () => {
-					model.markers.set( 'search', range );
+				model.change( writer => {
+					writer.setMarker( 'search', range );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>fo<span class="search"></span>obar</p></div>' );
 
-				model.change( () => {
-					model.markers.remove( 'search' );
+				model.change( writer => {
+					writer.removeMarker( 'search' );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
@@ -505,14 +505,14 @@ describe( 'Model converter builder', () => {
 					return new ViewUIElement( 'span', { class: className } );
 				} );
 
-				model.change( () => {
-					model.markers.set( 'search:red', range );
+				model.change( writer => {
+					writer.setMarker( 'search:red', range );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>fo<span class="search search-color-red"></span>obar</p></div>' );
 
-				model.change( () => {
-					model.markers.remove( 'search:red' );
+				model.change( writer => {
+					writer.removeMarker( 'search:red' );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
@@ -527,14 +527,14 @@ describe( 'Model converter builder', () => {
 			it( 'using passed view element name', () => {
 				buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toElement( 'span' );
 
-				model.change( () => {
-					model.markers.set( 'search', range );
+				model.change( writer => {
+					writer.setMarker( 'search', range );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>fo<span></span>ob<span></span>ar</p></div>' );
 
-				model.change( () => {
-					model.markers.remove( 'search' );
+				model.change( writer => {
+					writer.removeMarker( 'search' );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
@@ -544,16 +544,16 @@ describe( 'Model converter builder', () => {
 				const viewElement = new ViewUIElement( 'span', { class: 'search' } );
 				buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toElement( viewElement );
 
-				model.change( () => {
-					model.markers.set( 'search', range );
+				model.change( writer => {
+					writer.setMarker( 'search', range );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal(
 					'<div><p>fo<span class="search"></span>ob<span class="search"></span>ar</p></div>'
 				);
 
-				model.change( () => {
-					model.markers.remove( 'search' );
+				model.change( writer => {
+					writer.removeMarker( 'search' );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
@@ -566,16 +566,16 @@ describe( 'Model converter builder', () => {
 					return new ViewUIElement( 'span', { class: className } );
 				} );
 
-				model.change( () => {
-					model.markers.set( 'search:red', range );
+				model.change( writer => {
+					writer.setMarker( 'search:red', range );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal(
 					'<div><p>fo<span class="search search-color-red"></span>ob<span class="search search-color-red"></span>ar</p></div>'
 				);
 
-				model.change( () => {
-					model.markers.remove( 'search:red' );
+				model.change( writer => {
+					writer.removeMarker( 'search:red' );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
@@ -588,8 +588,8 @@ describe( 'Model converter builder', () => {
 			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).toElement( 'normal' );
 			buildModelConverter().for( dispatcher ).fromMarker( 'search' ).withPriority( 'high' ).toElement( 'high' );
 
-			model.change( () => {
-				model.markers.set( 'search', range );
+			model.change( writer => {
+				writer.setMarker( 'search', range );
 			} );
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>fo<high></high>obar</p></div>' );
