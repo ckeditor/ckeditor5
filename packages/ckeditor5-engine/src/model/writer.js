@@ -908,8 +908,6 @@ export default class Writer {
 	 * {@link module:engine/model/element~Element element}, {@link module:engine/model/position~Position position},
 	 * {@link module:engine/model/range~Range range}, an iterable of {@link module:engine/model/range~Range ranges} or null.
 	 *
-	 * Uses internally {@link module:engine/model/documentselection~DocumentSelection#_setTo}.
-	 *
 	 *		// Sets ranges from the given range.
 	 *		const range = new Range( start, end );
 	 *		writer.setSelection( range, isBackwardSelection );
@@ -926,11 +924,11 @@ export default class Writer {
 	 *		const documentSelection = new DocumentSelection( doc );
 	 *		writer.setSelection( documentSelection );
 	 *
-	 * 		// Sets range at the given position.
+	 * 		// Sets collapsed range at the given position.
 	 *		const position = new Position( root, path );
 	 *		writer.setSelection( position );
 	 *
-	 * 		// Sets range at the given element.
+	 * 		// Sets collapsed range at the given offset in element.
 	 *		const paragraph = writer.createElement( 'paragraph' );
 	 *		writer.setSelection( paragraph, offset );
 	 *
