@@ -61,7 +61,7 @@ For example, the following editor will support the following two heading options
 	// Styles for the heading in the content and for the dropdown item.
 	h2.fancy, .ck-heading_heading2_fancy {
 		color: #ff0050;
-		font-size: 1.3em;
+		font-size: 17px;
 	}
 </style>
 

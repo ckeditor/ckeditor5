@@ -3,8 +3,25 @@
  * For licensing, see LICENSE.md.
  */
 
-/*
- * Note: This file should contain the wireframe styles only. But since there are no such styles,
- * it acts as a message to the builder telling that it should look for the corresponding styles
- * **in the theme** when compiling the editor.
- */
+.ck-heading_heading1 {
+	font-size: 20px;
+}
+
+.ck-heading_heading2 {
+	font-size: 17px;
+}
+
+.ck-heading_heading3 {
+	font-size: 14px;
+}
+
+/* Using absolute units to make sure each element has the same height and padding.
+https://github.com/ckeditor/ckeditor5-heading/issues/63 */
+[class*="ck-heading_"] {
+	line-height: 18px;
+	padding: 11px;
+}
+
+[class*="ck-heading_heading"] {
+	font-weight: bold;
+}
