@@ -151,5 +151,35 @@ describe( 'view-to-model-converters', () => {
 			expect( conversionResult.getChild( 0 ).maxOffset ).to.equal( 3 );
 			expect( conversionResult.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foo' );
 		} );
+
+		it( 'should forward correct modelCursor', () => {
+			const spy = sinon.spy();
+			const view = new ViewDocumentFragment( [
+				new ViewContainerElement( 'div', null, [ new ViewText( 'abc' ), new ViewContainerElement( 'foo' ) ] ),
+				new ViewContainerElement( 'bar' )
+			] );
+			const position = ModelPosition.createAt( new ModelElement( 'element' ) );
+
+			dispatcher.on( 'documentFragment', convertToModelFragment() );
+			dispatcher.on( 'element', convertToModelFragment(), { priority: 'lowest' } );
+			dispatcher.on( 'element:foo', ( evt, data ) => {
+				// Be sure that current cursor is not the same as custom.
+				expect( data.modelCursor ).to.not.equal( position );
+				// Set custom cursor as a result of docFrag last child conversion.
+				// This cursor should be forwarded by a documentFragment converter.
+				data.modelCursor = position;
+				// Be sure that callback was fired.
+				spy();
+			} );
+
+			dispatcher.on( 'element:bar', ( evt, data ) => {
+				expect( data.modelCursor ).to.equal( position );
+				spy();
+			} );
+
+			dispatcher.convert( view );
+
+			sinon.assert.calledTwice( spy );
+		} );
 	} );
 } );
