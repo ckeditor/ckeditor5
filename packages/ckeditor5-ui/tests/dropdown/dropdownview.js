@@ -72,9 +72,9 @@ describe( 'DropdownView', () => {
 						values.push( view.isOpen );
 					} );
 
-					view.buttonView.fire( 'select' );
-					view.buttonView.fire( 'select' );
-					view.buttonView.fire( 'select' );
+					view.buttonView.fire( 'open' );
+					view.buttonView.fire( 'open' );
+					view.buttonView.fire( 'open' );
 
 					expect( values ).to.have.members( [ true, false, true ] );
 				} );

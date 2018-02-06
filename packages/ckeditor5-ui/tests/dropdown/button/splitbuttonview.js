@@ -150,10 +150,10 @@ describe( 'SplitButtonView', () => {
 			expect( view.actionView.label ).to.equal( 'foo' );
 		} );
 
-		it( 'delegates arrowView#execute to view#select', () => {
+		it( 'delegates arrowView#execute to view#open', () => {
 			const spy = sinon.spy();
 
-			view.on( 'select', spy );
+			view.on( 'open', spy );
 
 			view.arrowView.fire( 'execute' );
 

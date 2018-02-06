@@ -172,8 +172,8 @@ export default class DropdownView extends View {
 	render() {
 		super.render();
 
-		// Toggle the the dropdown when its button has been clicked.
-		this.listenTo( this.buttonView, 'select', () => {
+		// Toggle the dropdown when its button has been clicked.
+		this.listenTo( this.buttonView, 'open', () => {
 			this.isOpen = !this.isOpen;
 		} );
 

@@ -34,10 +34,10 @@ describe( 'DropdownButtonView', () => {
 	} );
 
 	describe( 'bindings', () => {
-		it( 'delegates view#execute to view#select', () => {
+		it( 'delegates view#execute to view#open', () => {
 			const spy = sinon.spy();
 
-			view.on( 'select', spy );
+			view.on( 'open', spy );
 
 			view.fire( 'execute' );
 

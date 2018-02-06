@@ -250,7 +250,7 @@ export default class SplitButtonView extends View {
 
 		arrowView.bind( 'isEnabled' ).to( this );
 
-		arrowView.delegate( 'execute' ).to( this, 'select' );
+		arrowView.delegate( 'execute' ).to( this, 'open' );
 
 		return arrowView;
 	}

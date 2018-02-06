@@ -47,8 +47,8 @@ export default class DropdownButtonView extends ButtonView {
 		 */
 		this.arrowView = this._createArrowView();
 
-		// Dropdown expects "select" event on button view upon which the dropdown will open.
-		this.delegate( 'execute' ).to( this, 'select' );
+		// Dropdown expects "open" event on button view upon which the dropdown will open.
+		this.delegate( 'execute' ).to( this, 'open' );
 
 		/**
 		 * Fired when the view is clicked. It won't be fired when the button {@link #isEnabled} is `false`.
