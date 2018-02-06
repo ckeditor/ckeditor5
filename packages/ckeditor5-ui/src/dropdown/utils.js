@@ -26,11 +26,9 @@ import '../../theme/components/dropdown/toolbardropdown.css';
  *
  *		const dropdown = createDropdown( model );
  *
- *		// Configure dropdown properties:
- *		dropdown.set( {
+ *		// Configure dropdown's button properties:
+ *		dropdown.buttonView.set( {
  *			label: 'A dropdown',
- *			isEnabled: true,
- *			isOn: false,
  *			withText: true
  *		} );
  *
