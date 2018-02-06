@@ -25,15 +25,18 @@ describe( 'DataController', () => {
 
 	beforeEach( () => {
 		model = new Model();
+
+		schema = model.schema;
 		modelDocument = model.document;
+
 		modelDocument.createRoot();
-		modelDocument.createRoot( '$root', 'title' );
+		modelDocument.createRoot( '$title', 'title' );
+
+		schema.register( '$title', { inheritAllFrom: '$root' } );
 
 		htmlDataProcessor = new HtmlDataProcessor();
 
 		data = new DataController( model, htmlDataProcessor );
-
-		schema = model.schema;
 	} );
 
 	describe( 'constructor()', () => {
@@ -143,7 +146,7 @@ describe( 'DataController', () => {
 	} );
 
 	describe( 'set()', () => {
-		it( 'should set data to root', () => {
+		it( 'should set data to default main root', () => {
 			schema.extend( '$text', { allowIn: '$root' } );
 			data.set( 'foo' );
 
@@ -174,6 +177,17 @@ describe( 'DataController', () => {
 			data.set( 'Bar', 'title' );
 
 			expect( getData( model, { withoutSelection: true, rootName: 'main' } ) ).to.equal( 'foo' );
+			expect( getData( model, { withoutSelection: true, rootName: 'title' } ) ).to.equal( 'Bar' );
+
+			expect( count( modelDocument.history.getDeltas() ) ).to.equal( 2 );
+		} );
+
+		it( 'should parse given data before set in a context of correct root', () => {
+			schema.extend( '$text', { allowIn: '$title', disallowIn: '$root' } );
+			data.set( 'foo', 'main' );
+			data.set( 'Bar', 'title' );
+
+			expect( getData( model, { withoutSelection: true, rootName: 'main' } ) ).to.equal( '' );
 			expect( getData( model, { withoutSelection: true, rootName: 'title' } ) ).to.equal( 'Bar' );
 
 			expect( count( modelDocument.history.getDeltas() ) ).to.equal( 2 );

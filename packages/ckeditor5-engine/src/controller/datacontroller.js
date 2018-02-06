@@ -199,7 +199,7 @@ export default class DataController {
 			writer.removeSelectionAttribute( this.model.document.selection.getAttributeKeys() );
 
 			writer.remove( ModelRange.createIn( modelRoot ) );
-			writer.insert( this.parse( data ), modelRoot );
+			writer.insert( this.parse( data, modelRoot ), modelRoot );
 		} );
 	}
 
