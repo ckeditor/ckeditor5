@@ -21,7 +21,7 @@ import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
  * Class representing selection in tree view.
  *
  * Selection can consist of {@link module:engine/view/range~Range ranges} that can be set using
- * {@link module:engine/view/selection~Selection#setTo} method.
+ * {@link module:engine/view/selection~Selection#_setTo} method.
  * That method create copies of provided ranges and store those copies internally. Further modifications to passed
  * ranges will not change selection's state.
  * Selection's ranges can be obtained via {@link module:engine/view/selection~Selection#getRanges getRanges},
@@ -99,27 +99,6 @@ export default class Selection {
 		if ( selectable ) {
 			this._setTo( selectable, backwardSelectionOrOffset );
 		}
-	}
-
-	/**
-	 * Sets this selection instance to be marked as `fake`. A fake selection does not render as browser native selection
-	 * over selected elements and is hidden to the user. This way, no native selection UI artifacts are displayed to
-	 * the user and selection over elements can be represented in other way, for example by applying proper CSS class.
-	 *
-	 * Additionally fake's selection label can be provided. It will be used to describe fake selection in DOM (and be
-	 * properly handled by screen readers).
-	 *
-	 * @protected
-	 * @fires change
-	 * @param {Boolean} [value=true] If set to true selection will be marked as `fake`.
-	 * @param {Object} [options] Additional options.
-	 * @param {String} [options.label=''] Fake selection label.
-	 */
-	_setFake( value = true, options = {} ) {
-		this._isFake = value;
-		this._fakeSelectionLabel = value ? options.label || '' : '';
-
-		this.fire( 'change' );
 	}
 
 	/**
@@ -391,6 +370,25 @@ export default class Selection {
 	}
 
 	/**
+	 * Returns the selected element. {@link module:engine/view/element~Element Element} is considered as selected if there is only
+	 * one range in the selection, and that range contains exactly one element.
+	 * Returns `null` if there is no selected element.
+	 *
+	 * @returns {module:engine/view/element~Element|null}
+	 */
+	getSelectedElement() {
+		if ( this.rangeCount !== 1 ) {
+			return null;
+		}
+
+		const range = this.getFirstRange();
+		const nodeAfterStart = range.start.nodeAfter;
+		const nodeBeforeEnd = range.end.nodeBefore;
+
+		return ( nodeAfterStart instanceof Element && nodeAfterStart == nodeBeforeEnd ) ? nodeAfterStart : null;
+	}
+
+	/**
 	 * Removes all ranges that were added to the selection.
 	 *
 	 * @fires change
@@ -529,22 +527,24 @@ export default class Selection {
 	}
 
 	/**
-	 * Returns the selected element. {@link module:engine/view/element~Element Element} is considered as selected if there is only
-	 * one range in the selection, and that range contains exactly one element.
-	 * Returns `null` if there is no selected element.
+	 * Sets this selection instance to be marked as `fake`. A fake selection does not render as browser native selection
+	 * over selected elements and is hidden to the user. This way, no native selection UI artifacts are displayed to
+	 * the user and selection over elements can be represented in other way, for example by applying proper CSS class.
 	 *
-	 * @returns {module:engine/view/element~Element|null}
+	 * Additionally fake's selection label can be provided. It will be used to describe fake selection in DOM (and be
+	 * properly handled by screen readers).
+	 *
+	 * @protected
+	 * @fires change
+	 * @param {Boolean} [value=true] If set to true selection will be marked as `fake`.
+	 * @param {Object} [options] Additional options.
+	 * @param {String} [options.label=''] Fake selection label.
 	 */
-	getSelectedElement() {
-		if ( this.rangeCount !== 1 ) {
-			return null;
-		}
+	_setFake( value = true, options = {} ) {
+		this._isFake = value;
+		this._fakeSelectionLabel = value ? options.label || '' : '';
 
-		const range = this.getFirstRange();
-		const nodeAfterStart = range.start.nodeAfter;
-		const nodeBeforeEnd = range.end.nodeBefore;
-
-		return ( nodeAfterStart instanceof Element && nodeAfterStart == nodeBeforeEnd ) ? nodeAfterStart : null;
+		this.fire( 'change' );
 	}
 
 	/**

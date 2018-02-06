@@ -49,21 +49,17 @@ import { injectQuirksHandling } from './filler';
  */
 export default class View {
 	constructor() {
+		/**
+		 * Instance of the {@link module:engine/view/document~Document} associated with this view controller.
+		 *
+		 * @readonly
+		 * @member {module:engine/view/document~Document} module:engine/view/view~View#document
+		 */
 		this.document = new Document();
-		this._writer = new Writer( this.document );
-
-		// TODO: check docs
-		// TODO: move change event description to this file.
-		// TODO: check import path
-		// TODO: check where render() is used and eventually switch to change() where possible
-		// TODO: observers docs fixes
-		// TODO: check where writer instance is created and it should be returned by change() method only (converters!)
-		// TODO: manual tests
-		// TODO: placeholder - use change() block
 
 		/**
 		 * Instance of the {@link module:engine/view/domconverter~DomConverter domConverter} use by
-		 * {@link module:engine/view/document~Document#renderer renderer}
+		 * {@link module:engine/view/view~View#renderer renderer}
 		 * and {@link module:engine/view/observer/observer~Observer observers}.
 		 *
 		 * @readonly
@@ -72,7 +68,7 @@ export default class View {
 		this.domConverter = new DomConverter();
 
 		/**
-		 * Instance of the {@link module:engine/view/document~Document#renderer renderer}.
+		 * Instance of the {@link module:engine/view/renderer~Renderer renderer}.
 		 *
 		 * @readonly
 		 * @member {module:engine/view/renderer~Renderer} module:engine/view/view~View#renderer
@@ -96,16 +92,6 @@ export default class View {
 		 */
 		this._observers = new Map();
 
-		// Add default observers.
-		this.addObserver( MutationObserver );
-		this.addObserver( SelectionObserver );
-		this.addObserver( FocusObserver );
-		this.addObserver( KeyObserver );
-		this.addObserver( FakeSelectionObserver );
-
-		injectQuirksHandling( this );
-		injectUiElementHandling( this );
-
 		/**
 		 * Is set to `true` when {@link #change view changes} are currently in progress.
 		 *
@@ -121,6 +107,25 @@ export default class View {
 		 * @member {Boolean} module:engine/view/view~View#_renderingInProgress
 		 */
 		this._renderingInProgress = false;
+
+		/**
+		 * Writer instance used in {@link #change change method) callbacks.
+		 *
+		 * @private
+		 * @member {module:engine/view/writer~Writer} module:engine/view/view~View#_writer
+		 */
+		this._writer = new Writer( this.document );
+
+		// Add default observers.
+		this.addObserver( MutationObserver );
+		this.addObserver( SelectionObserver );
+		this.addObserver( FocusObserver );
+		this.addObserver( KeyObserver );
+		this.addObserver( FakeSelectionObserver );
+
+		// Inject quirks handlers.
+		injectQuirksHandling( this );
+		injectUiElementHandling( this );
 	}
 
 	/**
@@ -167,7 +172,7 @@ export default class View {
 	/**
 	 * Creates observer of the given type if not yet created, {@link module:engine/view/observer/observer~Observer#enable enables} it
 	 * and {@link module:engine/view/observer/observer~Observer#observe attaches} to all existing and future
-	 * {@link module:engine/view/document~Document#domRoots DOM roots}.
+	 * {@link #domRoots DOM roots}.
 	 *
 	 * Note: Observers are recognized by their constructor (classes). A single observer will be instantiated and used only
 	 * when registered for the first time. This means that features and other components can register a single observer
@@ -282,8 +287,8 @@ export default class View {
 	 *
 	 * Change block is executed immediately.
 	 *
-	 * When the outermost block is done and rendering to DOM is over it fires {@link module:engine/view/document~Document#change }
-	 * event.
+	 * When the outermost change block is done and rendering to DOM is over it fires
+	 * {@link module:engine/view/document~Document#event:change} event.
 	 *
 	 * @param {Function} callback Callback function which may modify the view.
 	 */
@@ -355,6 +360,13 @@ export default class View {
 
 		this._renderingInProgress = false;
 	}
+
+	/**
+	 * Fired after a topmost {@link module:engine/view/view~View#change change block} is finished and DOM rendering has
+	 * been executed.
+	 *
+	 * @event module:engine/view/document~Document#event:change
+	 */
 }
 
 mix( View, ObservableMixin );

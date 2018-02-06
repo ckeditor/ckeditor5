@@ -14,7 +14,7 @@ const DEFAULT_PRIORITY = 10;
 
 /**
  * Attributes are elements which define document presentation. They are mostly elements like `<b>` or `<span>`.
- * Attributes can be broken and merged by the {@link module:engine/view/writer~writer view writer}.
+ * Attributes can be broken and merged by the {@link module:engine/view/writer~Writer view writer}.
  *
  * Editing engine does not define fixed HTML DTD. This is why the type of the {@link module:engine/view/element~Element} need to
  * be defined by the feature developer. Creating an element you should use {@link module:engine/view/containerelement~ContainerElement}

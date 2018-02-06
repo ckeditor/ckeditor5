@@ -41,8 +41,8 @@ export default class EditableElement extends ContainerElement {
 		/**
 		 * Whether the editable is focused.
 		 *
-		 * This property updates when {@link module:engine/view/document~Document#isFocused document.isFocused} is changed and after each
-		 * {@link module:engine/view/document~Document#render render} method call.
+		 * This property updates when {@link module:engine/view/document~Document#isFocused document.isFocused} or view
+		 * selection is changed.
 		 *
 		 * @readonly
 		 * @observable

@@ -68,7 +68,7 @@ export default class Writer {
 	}
 
 	/**
-	 * Moves {@link module:engine/view/selection~Selection selection's} {@link #focus} to the specified location.
+	 * Moves {@link module:engine/view/selection~Selection#focus selection's focus} to the specified location.
 	 *
 	 * The location can be specified in the same form as {@link module:engine/view/position~Position.createAt} parameters.
 	 *

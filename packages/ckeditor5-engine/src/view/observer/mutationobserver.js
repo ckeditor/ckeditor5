@@ -48,14 +48,14 @@ export default class MutationObserver extends Observer {
 		};
 
 		/**
-		 * Reference to the {@link module:engine/view/document~Document#domConverter}.
+		 * Reference to the {@link module:engine/view/view~View#domConverter}.
 		 *
 		 * @member {module:engine/view/domconverter~DomConverter}
 		 */
 		this.domConverter = view.domConverter;
 
 		/**
-		 * Reference to the {@link module:engine/view/document~Document#renderer}.
+		 * Reference to the {@link module:engine/view/view~View#renderer}.
 		 *
 		 * @member {module:engine/view/renderer~Renderer}
 		 */
