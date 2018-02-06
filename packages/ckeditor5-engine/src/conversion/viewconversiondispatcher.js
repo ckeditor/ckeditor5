@@ -82,7 +82,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  *		// Fire conversion.
  *		// Always take care where the converted model structure will be appended to. If this `viewDocumentFragment`
  *		// is going to be appended directly to a '$root' element, use that in `context`.
- *		viewDispatcher.convert( viewDocumentFragment, { context: [ '$root' ] } );
+ *		viewDispatcher.convert( viewDocumentFragment, '$root' );
  *
  * Before each conversion process, `ViewConversionDispatcher` fires {@link ~ViewConversionDispatcher#event:viewCleanup}
  * event which can be used to prepare tree view for conversion.
