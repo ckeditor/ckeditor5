@@ -11,17 +11,17 @@ import Position from './position';
 import Range from './range';
 
 /**
- * Calculates difference between two model states.
+ * Calculates the difference between two model states.
  *
  * Receives operations that are to be applied on the model document. Marks parts of the model document tree which
- * are changed and saves those elements state before the change. Then, it compares saved elements with the
+ * are changed and saves the state of these elements before the change. Then, it compares saved elements with the
  * changed elements, after all changes are applied on the model document. Calculates the diff between saved
- * elements and new ones and returns a changes set.
+ * elements and new ones and returns a change set.
  */
 export default class Differ {
 	constructor() {
 		/**
-		 * A map that stores changes that happened in given element.
+		 * A map that stores changes that happened in a given element.
 		 *
 		 * The keys of the map are references to the model elements.
 		 * The values of the map are arrays with changes that were done on this element.
@@ -32,9 +32,9 @@ export default class Differ {
 		this._changesInElement = new Map();
 
 		/**
-		 * A map that stores "element's children snapshots". A snapshot is representing children of given element before
+		 * A map that stores "element's children snapshots". A snapshot is representing children of a given element before
 		 * the first change was applied on that element. Snapshot items are objects with two properties: `name`,
-		 * containing element name (or `'$text'` for text node) and `attributes` which is a map of a node's attributes.
+		 * containing the element name (or `'$text'` for a text node) and `attributes` which is a map of the node's attributes.
 		 *
 		 * @private
 		 * @type {Map}
@@ -45,7 +45,7 @@ export default class Differ {
 		 * A map that stores all changed markers.
 		 *
 		 * The keys of the map are marker names.
-		 * The values of the map are objects with properties `oldRange` and `newRange`. Those holds the marker range
+		 * The values of the map are objects with the `oldRange` and `newRange` properties. They store the marker range
 		 * state before and after the change.
 		 *
 		 * @private
@@ -54,7 +54,7 @@ export default class Differ {
 		this._changedMarkers = new Map();
 
 		/**
-		 * Stores how many changes has been processed. Used to order changes chronologically. It is important
+		 * Stores the number of changes that were processed. Used to order the changes chronologically. It is important
 		 * when changes are sorted.
 		 *
 		 * @private
@@ -75,11 +75,11 @@ export default class Differ {
 		this._cachedChanges = null;
 
 		/**
-		 * For efficiency purposes, `Differ` stores the change set returned by the differ after {@link #getChanges} call.
-		 * Cache is reset each time a new operation is buffered. If the cache has not been reset, {@link #getChanges} will
+		 * For efficiency purposes, `Differ` stores the change set returned by the differ after the {@link #getChanges} call.
+		 * The cache is reset each time a new operation is buffered. If the cache has not been reset, {@link #getChanges} will
 		 * return the cached value instead of calculating it again.
 		 *
-		 * This property stores all changes evaluated by `Differ`, also those that took place in graveyard.
+		 * This property stores all changes evaluated by `Differ`, including those that took place in the graveyard.
 		 *
 		 * @private
 		 * @type {Array.<Object>|null}
@@ -98,12 +98,12 @@ export default class Differ {
 	}
 
 	/**
-	 * Buffers given operation. Operation has to be buffered before it is executed.
+	 * Buffers a given operation. An operation has to be buffered before it is executed.
 	 *
-	 * Operation type is checked and it is checked which nodes it will affect. Then those nodes are stored in `Differ`
+	 * Operation type is checked and it is checked which nodes it will affect. These nodes are then stored in `Differ`
 	 * in the state before the operation is executed.
 	 *
-	 * @param {module:engine/model/operation/operation~Operation} operation Operation to buffer.
+	 * @param {module:engine/model/operation/operation~Operation} operation An operation to buffer.
 	 */
 	bufferOperation( operation ) {
 		switch ( operation.type ) {
@@ -140,9 +140,10 @@ export default class Differ {
 	/**
 	 * Buffers marker change.
 	 *
-	 * @param {String} markerName Name of marker which changed.
-	 * @param {module:engine/model/range~Range|null} oldRange Marker range before the change or `null` if marker was just created.
-	 * @param {module:engine/model/range~Range|null} newRange Marker range after the change or `null` if marker was removed.
+	 * @param {String} markerName The name of the marker that changed.
+	 * @param {module:engine/model/range~Range|null} oldRange Marker range before the change or `null` if the marker has just
+	 * been created.
+	 * @param {module:engine/model/range~Range|null} newRange Marker range after the change or `null` if the marker was removed.
 	 */
 	bufferMarkerChange( markerName, oldRange, newRange ) {
 		const buffered = this._changedMarkers.get( markerName );
@@ -164,9 +165,9 @@ export default class Differ {
 	}
 
 	/**
-	 * Returns all markers which should be removed as a result of buffered changes.
+	 * Returns all markers that should be removed as a result of buffered changes.
 	 *
-	 * @returns {Array.<Object>} Markers to remove. Each array item is an object containing `name` and `range` property.
+	 * @returns {Array.<Object>} Markers to remove. Each array item is an object containing the `name` and `range` properties.
 	 */
 	getMarkersToRemove() {
 		const result = [];
@@ -183,7 +184,7 @@ export default class Differ {
 	/**
 	 * Returns all markers which should be added as a result of buffered changes.
 	 *
-	 * @returns {Array.<Object>} Markers to add. Each array item is an object containing `name` and `range` property.
+	 * @returns {Array.<Object>} Markers to add. Each array item is an object containing the `name` and `range` properties.
 	 */
 	getMarkersToAdd() {
 		const result = [];
@@ -198,20 +199,20 @@ export default class Differ {
 	}
 
 	/**
-	 * Calculates diff between old model tree state (state before the first buffered operations since the last {@link #reset} call)
-	 * and the new model tree state (actual one). Should be called after all buffered operations are executed.
+	 * Calculates the diff between the old model tree state (the state before the first buffered operations since the last {@link #reset}
+	 * call) and the new model tree state (actual one). It should be called after all buffered operations are executed.
 	 *
-	 * The diff set is returned as an array of diff items, each describing a change done on model. The items are sorted by
+	 * The diff set is returned as an array of diff items, each describing a change done on the model. The items are sorted by
 	 * the position on which the change happened. If a position {@link module:engine/model/position~Position#isBefore is before}
 	 * another one, it will be on an earlier index in the diff set.
 	 *
-	 * Because calculating diff is a costly operation, the result is cached. If no new operation was buffered since the
-	 * previous {@link #getChanges} call, the next call with return the cached value.
+	 * Because calculating the diff is a costly operation, the result is cached. If no new operation was buffered since the
+	 * previous {@link #getChanges} call, the next call will return the cached value.
 	 *
 	 * @param {Object} options Additional options.
 	 * @param {Boolean} [options.includeChangesInGraveyard=false] If set to `true`, also changes that happened
-	 * in graveyard root will be returned. By default, changes in graveyard root are not returned.
-	 * @returns {Array.<Object>} Diff between old and new model tree state.
+	 * in the graveyard root will be returned. By default, changes in the graveyard root are not returned.
+	 * @returns {Array.<Object>} Diff between the old and the new model tree state.
 	 */
 	getChanges( options = { includeChangesInGraveyard: false } ) {
 		// If there are cached changes, just return them instead of calculating changes again.
@@ -394,11 +395,11 @@ export default class Differ {
 	}
 
 	/**
-	 * Checks whether given element is inserted or removed or one of its ancestor is inserted or removed. Used to
-	 * filter out sub-changes in elements that are changed itself.
+	 * Checks whether a given element is inserted or removed or one of its ancestors is inserted or removed. Used to
+	 * filter out sub-changes in elements that are changed.
 	 *
 	 * @private
-	 * @param {module:engine/model/element~Element} element Element to check.
+	 * @param {module:engine/model/element~Element} element An element to check.
 	 * @returns {Boolean}
 	 */
 	_isInsertedOrRemoved( element ) {
@@ -434,7 +435,7 @@ export default class Differ {
 	}
 
 	/**
-	 * Saves and handles insert change.
+	 * Saves and handles an insert change.
 	 *
 	 * @private
 	 * @param {module:engine/model/element~Element} parent
@@ -448,7 +449,7 @@ export default class Differ {
 	}
 
 	/**
-	 * Saves and handles remove change.
+	 * Saves and handles a remove change.
 	 *
 	 * @private
 	 * @param {module:engine/model/element~Element} parent
@@ -462,7 +463,7 @@ export default class Differ {
 	}
 
 	/**
-	 * Saves and handles attribute change.
+	 * Saves and handles an attribute change.
 	 *
 	 * @private
 	 * @param {module:engine/model/item~Item} item
@@ -505,7 +506,7 @@ export default class Differ {
 	}
 
 	/**
-	 * Gets an array of changes that were already saved for given element.
+	 * Gets an array of changes that have already been saved for a given element.
 	 *
 	 * @private
 	 * @param {module:engine/model/element~Element} element
@@ -526,7 +527,7 @@ export default class Differ {
 	}
 
 	/**
-	 * Saves a children snapshot for given element.
+	 * Saves a children snapshot for a given element.
 	 *
 	 * @private
 	 * @param {module:engine/model/element~Element} element
@@ -538,12 +539,12 @@ export default class Differ {
 	}
 
 	/**
-	 * For given newly saved change, compares it with a change already done on the element and modifies the incoming
+	 * For a given newly saved change, compares it with a change already done on the element and modifies the incoming
 	 * change and/or the old change.
 	 *
 	 * @private
 	 * @param {Object} inc Incoming (new) change.
-	 * @param {Array.<Object>} changes Array containing all the changes done on that element.
+	 * @param {Array.<Object>} changes An array containing all the changes done on that element.
 	 */
 	_handleChange( inc, changes ) {
 		for ( const old of changes ) {
@@ -718,10 +719,10 @@ export default class Differ {
 	 * Returns an object with a single insert change description.
 	 *
 	 * @private
-	 * @param {module:engine/model/element~Element} parent Element in which change happened.
-	 * @param {Number} offset Offset at which change happened.
-	 * @param {String} name Removed element name or `'$text'` for character.
-	 * @returns {Object} Diff item.
+	 * @param {module:engine/model/element~Element} parent The element in which the change happened.
+	 * @param {Number} offset The offset at which change happened.
+	 * @param {String} name The name of the removed element or `'$text'` for a character.
+	 * @returns {Object} The diff item.
 	 */
 	_getInsertDiff( parent, offset, name ) {
 		return {
@@ -737,10 +738,10 @@ export default class Differ {
 	 * Returns an object with a single remove change description.
 	 *
 	 * @private
-	 * @param {module:engine/model/element~Element} parent Element in which change happened.
-	 * @param {Number} offset Offset at which change happened.
-	 * @param {String} name Removed element name or `'$text'` for character.
-	 * @returns {Object} Diff item.
+	 * @param {module:engine/model/element~Element} parent The element in which change happened.
+	 * @param {Number} offset The offset at which change happened.
+	 * @param {String} name The name of the removed element or `'$text'` for a character.
+	 * @returns {Object} The diff item.
 	 */
 	_getRemoveDiff( parent, offset, name ) {
 		return {
@@ -753,13 +754,13 @@ export default class Differ {
 	}
 
 	/**
-	 * Returns an array of objects that each is a single attribute change description.
+	 * Returns an array of objects where each one is a single attribute change description.
 	 *
 	 * @private
-	 * @param {module:engine/model/range~Range} range Range on which change happened.
-	 * @param {Map} oldAttributes Map, map iterator or compatible object that contains attributes before change.
-	 * @param {Map} newAttributes Map, map iterator or compatible object that contains attributes after change.
-	 * @returns {Array.<Object>} Array containing one or more diff items.
+	 * @param {module:engine/model/range~Range} range The range where the change happened.
+	 * @param {Map} oldAttributes A map, map iterator or compatible object that contains attributes before the change.
+	 * @param {Map} newAttributes A map, map iterator or compatible object that contains attributes after the change.
+	 * @returns {Array.<Object>} An array containing one or more diff items.
 	 */
 	_getAttributesDiff( range, oldAttributes, newAttributes ) {
 		// Results holder.

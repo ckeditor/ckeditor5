@@ -8,8 +8,8 @@
  */
 
 /**
- * `Batch` instance groups model changes ({@link module:engine/model/delta/delta~Delta deltas}). All deltas grouped in a single `Batch`
- * can be reverted together, so you can think about `Batch` as of a single undo step. If you want to extend given undo step you
+ * A batch instance groups model changes ({@link module:engine/model/delta/delta~Delta deltas}). All deltas grouped in a single batch
+ * can be reverted together, so you can think about a batch as of a single undo step. If you want to extend a given undo step, you
  * can add more changes to the batch using {@link module:engine/model/model~Model#enqueueChange}:
  *
  *		model.enqueueChange( batch, writer => {
@@ -21,15 +21,15 @@
  */
 export default class Batch {
 	/**
-	 * Creates `Batch` instance.
+	 * Creates a batch instance.
 	 *
 	 * @see module:engine/model/model~Model#enqueueChange
 	 * @see module:engine/model/model~Model#change
-	 * @param {'transparent'|'default'} [type='default'] Type of the batch.
+	 * @param {'transparent'|'default'} [type='default'] The type of the batch.
 	 */
 	constructor( type = 'default' ) {
 		/**
-		 * Array of deltas which compose this batch.
+		 * An array of deltas that compose this batch.
 		 *
 		 * @readonly
 		 * @type {Array.<module:engine/model/delta/delta~Delta>}
@@ -37,11 +37,12 @@ export default class Batch {
 		this.deltas = [];
 
 		/**
-		 * Type of the batch.
+		 * The type of the batch.
 		 *
-		 * Can be one of the following values:
-		 * * `'default'` - all "normal" batches, most commonly used type.
-		 * * `'transparent'` - batch that should be ignored by other features, i.e. initial batch or collaborative editing changes.
+		 * It can be one of the following values:
+		 * * `'default'` &ndash; All "normal" batches. This is the most commonly used type.
+		 * * `'transparent'` &ndash; A batch that should be ignored by other features, i.e. an initial batch or collaborative editing
+		 * changes.
 		 *
 		 * @readonly
 		 * @type {'transparent'|'default'}
@@ -50,8 +51,8 @@ export default class Batch {
 	}
 
 	/**
-	 * Returns this batch base version, which is equal to the base version of first delta (which has base version set)
-	 * in the batch. If there are no deltas in the batch or neither delta has base version set, it returns `null`.
+	 * Returns the base version of this batch, which is equal to the base version of the first delta (which has the base version set)
+	 * in the batch. If there are no deltas in the batch or neither delta has the base version set, it returns `null`.
 	 *
 	 * @readonly
 	 * @type {Number|null}
@@ -67,11 +68,11 @@ export default class Batch {
 	}
 
 	/**
-	 * Adds delta to the batch instance. All modification methods (insert, remove, split, etc.) use this method
+	 * Adds a delta to the batch instance. All modification methods (insert, remove, split, etc.) use this method
 	 * to add created deltas.
 	 *
-	 * @param {module:engine/model/delta/delta~Delta} delta Delta to add.
-	 * @return {module:engine/model/delta/delta~Delta} Added delta.
+	 * @param {module:engine/model/delta/delta~Delta} delta A delta to add.
+	 * @return {module:engine/model/delta/delta~Delta} An added delta.
 	 */
 	addDelta( delta ) {
 		delta.batch = this;

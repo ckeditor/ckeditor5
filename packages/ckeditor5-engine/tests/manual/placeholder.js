@@ -17,7 +17,7 @@ import { attachPlaceholder } from '../../src/view/placeholder';
 ClassicEditor
 	.create( global.document.querySelector( '#editor' ), {
 		plugins: [ Enter, Typing, Paragraph, Undo, Heading ],
-		toolbar: [ 'headings', 'undo', 'redo' ]
+		toolbar: [ 'headings', '|', 'undo', 'redo' ]
 	} )
 	.then( editor => {
 		const view = editor.editing.view;

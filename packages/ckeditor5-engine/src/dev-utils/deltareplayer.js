@@ -12,7 +12,7 @@
 import DeltaFactory from '../model/delta/deltafactory';
 
 /**
- * DeltaReplayer is a dev-tool created for easily replaying operations on the document from stringified deltas.
+ * Delta replayer is a development tool created for easy replaying of operations on the document from stringified deltas.
  */
 export default class DeltaReplayer {
 	/**
@@ -27,7 +27,7 @@ export default class DeltaReplayer {
 	}
 
 	/**
-	 * Parses given string containing stringified deltas and sets parsed deltas as deltas to replay.
+	 * Parses the given string containing stringified deltas and sets parsed deltas as deltas to replay.
 	 *
 	 * @param {String} stringifiedDeltas Stringified deltas to replay.
 	 */
@@ -53,7 +53,7 @@ export default class DeltaReplayer {
 	}
 
 	/**
-	 * Applies all deltas with delay between actions.
+	 * Applies all deltas with a delay between actions.
 	 *
 	 * @param {Number} timeInterval Time between applying deltas.
 	 * @returns {Promise}
@@ -81,7 +81,7 @@ export default class DeltaReplayer {
 	/**
 	 * Applies `numberOfDeltas` deltas, beginning after the last applied delta (or first delta, if no deltas were applied).
 	 *
-	 * @param {Number} numberOfDeltas Number of deltas to apply.
+	 * @param {Number} numberOfDeltas The number of deltas to apply.
 	 * @returns {Promise}
 	 */
 	applyDeltas( numberOfDeltas ) {
@@ -112,8 +112,8 @@ export default class DeltaReplayer {
 	}
 
 	/**
-	 * Applies the next delta to replay. Returns promise with `isFinished` parameter that is `true` if the last
-	 * delta in replayer has been applied, `false` otherwise.
+	 * Applies the next delta to replay. Returns a promise with the `isFinished` parameter that is `true` if the last
+	 * delta in the replayer has been applied, `false` otherwise.
 	 *
 	 * @returns {Promise.<Boolean>}
 	 */
