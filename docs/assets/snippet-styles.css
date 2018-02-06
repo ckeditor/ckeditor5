@@ -6,28 +6,28 @@
 	margin: 1.5em 0;
 }
 
-.ck-editor .ck-editor__editable {
+.ck-content {
 	padding: 1em;
 }
 
-.ck-editor .ck-editor__editable > :first-child {
+.ck-content > :first-child {
 	margin-top: 0;
 }
 
-.ck-editor .ck-editor__editable > :last-child {
+.ck-content > :last-child {
 	margin-bottom: 0;
 }
 
 /* Reset h1's styling – https://github.com/ckeditor/ckeditor5-heading/issues/86 */
-.ck-editor .ck-editor__editable h1 {
+.ck-content h1 {
 	display: block;
 	margin-bottom: .5em;
 }
 
 /* By default Umberto uses a trick with non breaking spaces around <code> to fix space rendering.
 It breaks CKEditor 5 (see how <p><code>[]</code></p> looks). */
-.ck-editor .ck-editor__editable code:before,
-.ck-editor .ck-editor__editable code:after {
+.ck-content code:before,
+.ck-content code:after {
 	content: '' !important;
 	letter-spacing: 0 !important;
 	display: none !important; /* Firefox is very stubborn. */
