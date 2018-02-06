@@ -372,7 +372,8 @@ export function viewModelConverter( evt, data, conversionApi ) {
 		// Try to find allowed parent for list item.
 		const splitResult = conversionApi.splitToAllowedParent( listItem, data.modelCursor );
 
-		// When there is no allowed parent it means that list item can not be converted at current modelCursor.
+		// When there is no allowed parent it means that list item cannot be converted at current model position
+		// and in any of position ancestors.
 		if ( !splitResult ) {
 			return;
 		}
@@ -390,7 +391,7 @@ export function viewModelConverter( evt, data, conversionApi ) {
 			if ( child.name == 'ul' || child.name == 'ol' ) {
 				nextPosition = conversionApi.convertItem( child, nextPosition ).modelCursor;
 			}
-			// If it was not a list it was a "regular" list item content. Just append it to `listItem`.
+			// If it was not a list it was a "regular" list item content. Just convert it to `listItem`.
 			else {
 				conversionApi.convertItem( child, ModelPosition.createAt( listItem, 'end' ) );
 			}
@@ -398,11 +399,15 @@ export function viewModelConverter( evt, data, conversionApi ) {
 
 		conversionStore.indent--;
 
+		// Result range starts before the first item and ends after the last.
 		data.modelRange = new ModelRange( data.modelCursor, nextPosition );
 
+		// When modelCursor parent had to be split to insert list item.
 		if ( splitResult.cursorParent ) {
+			// Then continue conversion in split element.
 			data.modelCursor = ModelPosition.createAt( splitResult.cursorParent );
 		} else {
+			// Otherwise continue conversion after last list item.
 			data.modelCursor = data.modelRange.end;
 		}
 	}

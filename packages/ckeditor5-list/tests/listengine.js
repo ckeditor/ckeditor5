@@ -14,8 +14,8 @@ import ModelText from '@ckeditor/ckeditor5-engine/src/model/text';
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
 import ViewUIElement from '@ckeditor/ckeditor5-engine/src/view/uielement';
+import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
 
-import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import BoldEngine from '@ckeditor/ckeditor5-basic-styles/src/boldengine';
 import UndoEngine from '@ckeditor/ckeditor5-undo/src/undoengine';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
@@ -33,7 +33,7 @@ describe( 'ListEngine', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Clipboard, BoldEngine, Paragraph, ListEngine, UndoEngine, BlockQuoteEngine ]
+				plugins: [ Clipboard, BoldEngine, ListEngine, UndoEngine, BlockQuoteEngine ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -3427,18 +3427,6 @@ describe( 'ListEngine', () => {
 				.to.equal( '<ul><li>Foo<span></span><ul><li>Xxx</li><li>Yyy</li></ul></li></ul>' );
 		} );
 
-		it( 'list should be not converted in disallowed context', () => {
-			model.document.createRoot( '$title', 'title' );
-			model.schema.register( '$title', {
-				disallow: '$block',
-				allow: 'inline'
-			} );
-
-			const data = editor.data;
-
-			expect( data.stringify( data.parse( '<ul><li>foo</li></ul>', [ 'title' ] ) ) ).to.equal( '' );
-		} );
-
 		describe( 'remove converter should properly handle ui elements', () => {
 			let uiElement, liFoo, liBar;
 
@@ -3485,6 +3473,85 @@ describe( 'ListEngine', () => {
 				expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
 					.to.equal( '<ul><li>Foo</li><span></span></ul>' );
 			} );
+		} );
+	} );
+
+	describe( 'schema checking and parent splitting', () => {
+		beforeEach( () => {
+			// Since this part of test tests only view->model conversion editing pipeline is not necessary.
+			editor.editing.destroy();
+		} );
+
+		it( 'list should be not converted when modelCursor and its ancestors disallow to insert list', () => {
+			model.document.createRoot( '$title', 'title' );
+
+			model.schema.register( '$title', {
+				disallow: '$block',
+				allow: 'inline'
+			} );
+
+			editor.data.set( '<ul><li>foo</li></ul>', 'title' );
+
+			expect( getModelData( model, { rootName: 'title', withoutSelection: true } ) ).to.equal( '' );
+		} );
+
+		it( 'should split parent element when one of modelCursor ancestors allows to insert list - in the middle', () => {
+			buildViewConverter().for( editor.data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
+			model.schema.register( 'div', { inheritAllFrom: '$block' } );
+
+			editor.setData(
+				'<div>' +
+					'abc' +
+					'<ul>' +
+						'<li>foo</li>' +
+					'</ul>' +
+					'def' +
+				'</div>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<div>abc</div>' +
+				'<listItem indent="0" type="bulleted">foo</listItem>' +
+				'<div>def</div>'
+			);
+		} );
+
+		it( 'should split parent element when one of modelCursor ancestors allows to insert list - at the end', () => {
+			buildViewConverter().for( editor.data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
+			model.schema.register( 'div', { inheritAllFrom: '$block' } );
+
+			editor.setData(
+				'<div>' +
+					'abc' +
+					'<ul>' +
+						'<li>foo</li>' +
+					'</ul>' +
+				'</div>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<div>abc</div>' +
+				'<listItem indent="0" type="bulleted">foo</listItem>'
+			);
+		} );
+
+		it( 'should split parent element when one of modelCursor ancestors allows to insert list - at the beginning', () => {
+			buildViewConverter().for( editor.data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
+			model.schema.register( 'div', { inheritAllFrom: '$block' } );
+
+			editor.setData(
+				'<div>' +
+					'<ul>' +
+					'<li>foo</li>' +
+					'</ul>' +
+					'def' +
+				'</div>'
+			);
+
+			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
+				'<listItem indent="0" type="bulleted">foo</listItem>' +
+				'<div>def</div>'
+			);
 		} );
 	} );
 
