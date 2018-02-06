@@ -65,7 +65,7 @@
 
 	& fieldset {
 		padding: 10px;
-		border: 2px groove #E0DFE3;
+		border: 2px groove hsl(255, 7%, 88%);
 	}
 
 	& button::-moz-focus-inner {
