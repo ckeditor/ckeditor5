@@ -7,7 +7,7 @@
  * @module engine/view/domconverter
  */
 
-/* globals document, Node, NodeFilter */
+/* globals document, Node, NodeFilter, Text */
 
 import ViewText from './text';
 import ViewElement from './element';
@@ -956,10 +956,10 @@ export default class DomConverter {
 	 * @private
 	 */
 	_processDataFromDomText( node ) {
-		let data = getDataWithoutFiller( node );
+		let data = node.data;
 
 		if ( _hasDomParentOfType( node, this.preElements ) ) {
-			return data;
+			return getDataWithoutFiller( node );
 		}
 
 		// Change all consecutive whitespace characters (from the [ \n\t\r] set –
@@ -978,9 +978,12 @@ export default class DomConverter {
 		}
 
 		// If next text node does not exist remove space character from the end of this text node.
-		if ( !nextNode ) {
+		if ( !nextNode && !startsWithFiller( node ) ) {
 			data = data.replace( / $/, '' );
 		}
+
+		data = getDataWithoutFiller( new Text( data ) );
+
 		// At this point we should have removed all whitespaces from DOM text data.
 
 		// Now we have to change &nbsp; chars, that were in DOM text data because of rendering reasons, to spaces.
