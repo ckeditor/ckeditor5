@@ -14,6 +14,7 @@ ClassicEditor
 		toolbar: {
 			items: [
 				'headings',
+				'|',
 				'bold',
 				'italic',
 				'code',
