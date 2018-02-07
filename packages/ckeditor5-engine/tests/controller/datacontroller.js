@@ -8,17 +8,24 @@ import Range from '../../src/model/range';
 import DataController from '../../src/controller/datacontroller';
 import HtmlDataProcessor from '../../src/dataprocessor/htmldataprocessor';
 
-import buildViewConverter from '../../src/conversion/buildviewconverter';
-import buildModelConverter from '../../src/conversion/buildmodelconverter';
-
 import ModelDocumentFragment from '../../src/model/documentfragment';
-
 import ViewDocumentFragment from '../../src/view/documentfragment';
 
 import { getData, setData, stringify, parse as parseModel } from '../../src/dev-utils/model';
 import { parse as parseView, stringify as stringifyView } from '../../src/dev-utils/view';
 
 import count from '@ckeditor/ckeditor5-utils/src/count';
+
+import {
+	elementToElement as vtmElementToElement,
+	elementToAttribute as vtmElementToAttribute
+} from '../../src/conversion/view-to-model-helpers';
+
+import {
+	elementToElement as mtvElementToElement,
+	attributeToElement as mtvAttributeToElement,
+	markerToHighlight as mtvMarkerToHighlight
+} from '../../src/conversion/model-to-view-helpers';
 
 describe( 'DataController', () => {
 	let model, modelDocument, htmlDataProcessor, data, schema;
@@ -59,7 +66,7 @@ describe( 'DataController', () => {
 		it( 'should set paragraph', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
-			buildViewConverter().for( data.viewToModel ).fromElement( 'p' ).toElement( 'paragraph' );
+			vtmElementToElement( { view: 'p', model: 'paragraph' } )( data.viewToModel );
 
 			const output = data.parse( '<p>foo<b>bar</b></p>' );
 
@@ -70,7 +77,7 @@ describe( 'DataController', () => {
 		it( 'should set two paragraphs', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
-			buildViewConverter().for( data.viewToModel ).fromElement( 'p' ).toElement( 'paragraph' );
+			vtmElementToElement( { view: 'p', model: 'paragraph' } )( data.viewToModel );
 
 			const output = data.parse( '<p>foo</p><p>bar</p>' );
 
@@ -84,10 +91,10 @@ describe( 'DataController', () => {
 				allowAttributes: [ 'bold' ]
 			} );
 
-			buildViewConverter().for( data.viewToModel ).fromElement( 'p' ).toElement( 'paragraph' );
-			buildViewConverter().for( data.viewToModel ).fromElement( 'b' ).toAttribute( 'bold', true );
+			vtmElementToElement( { view: 'p', model: 'paragraph' } )( data.viewToModel );
+			vtmElementToAttribute( { view: 'strong', model: 'bold' } )( data.viewToModel );
 
-			const output = data.parse( '<p>foo<b>bar</b></p>' );
+			const output = data.parse( '<p>foo<strong>bar</strong></p>' );
 
 			expect( output ).to.instanceof( ModelDocumentFragment );
 			expect( stringify( output ) ).to.equal( '<paragraph>foo<$text bold="true">bar</$text></paragraph>' );
@@ -110,7 +117,7 @@ describe( 'DataController', () => {
 		beforeEach( () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
-			buildViewConverter().for( data.viewToModel ).fromElement( 'p' ).toElement( 'paragraph' );
+			vtmElementToElement( { view: 'p', model: 'paragraph' } )( data.viewToModel );
 		} );
 
 		it( 'should convert content of an element #1', () => {
@@ -213,7 +220,7 @@ describe( 'DataController', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			setData( model, '<paragraph>foo</paragraph>' );
 
-			buildModelConverter().for( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
+			mtvElementToElement( { model: 'paragraph', view: 'p' } )( data.modelToView );
 
 			expect( data.get() ).to.equal( '<p>foo</p>' );
 		} );
@@ -222,7 +229,7 @@ describe( 'DataController', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			setData( model, '<paragraph></paragraph>' );
 
-			buildModelConverter().for( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
+			mtvElementToElement( { model: 'paragraph', view: 'p' } )( data.modelToView );
 
 			expect( data.get() ).to.equal( '<p>&nbsp;</p>' );
 		} );
@@ -231,7 +238,7 @@ describe( 'DataController', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			setData( model, '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
 
-			buildModelConverter().for( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
+			mtvElementToElement( { model: 'paragraph', view: 'p' } )( data.modelToView );
 
 			expect( data.get() ).to.equal( '<p>foo</p><p>bar</p>' );
 		} );
@@ -247,7 +254,7 @@ describe( 'DataController', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			setData( model, '<paragraph>foo<$text bold="true">bar</$text></paragraph>' );
 
-			buildModelConverter().for( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
+			mtvElementToElement( { model: 'paragraph', view: 'p' } )( data.modelToView );
 
 			expect( data.get() ).to.equal( '<p>foobar</p>' );
 		} );
@@ -256,10 +263,10 @@ describe( 'DataController', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			setData( model, '<paragraph>foo<$text bold="true">bar</$text></paragraph>' );
 
-			buildModelConverter().for( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
-			buildModelConverter().for( data.modelToView ).fromAttribute( 'bold' ).toElement( 'b' );
+			mtvElementToElement( { model: 'paragraph', view: 'p' } )( data.modelToView );
+			mtvAttributeToElement( 'bold', { view: 'strong' } )( data.modelToView );
 
-			expect( data.get() ).to.equal( '<p>foo<b>bar</b></p>' );
+			expect( data.get() ).to.equal( '<p>foo<strong>bar</strong></p>' );
 		} );
 
 		it( 'should get root name as a parameter', () => {
@@ -269,8 +276,8 @@ describe( 'DataController', () => {
 			setData( model, '<paragraph>foo</paragraph>', { rootName: 'main' } );
 			setData( model, 'Bar', { rootName: 'title' } );
 
-			buildModelConverter().for( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
-			buildModelConverter().for( data.modelToView ).fromAttribute( 'bold' ).toElement( 'b' );
+			mtvElementToElement( { model: 'paragraph', view: 'p' } )( data.modelToView );
+			mtvAttributeToElement( 'bold', { view: 'strong' } )( data.modelToView );
 
 			expect( data.get() ).to.equal( '<p>foo</p>' );
 			expect( data.get( 'main' ) ).to.equal( '<p>foo</p>' );
@@ -286,7 +293,7 @@ describe( 'DataController', () => {
 			schema.extend( '$block', { allowIn: 'div' } );
 			schema.extend( 'div', { allowIn: '$root' } );
 
-			buildModelConverter().for( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
+			mtvElementToElement( { model: 'paragraph', view: 'p' } )( data.modelToView );
 		} );
 
 		it( 'should stringify a content of an element', () => {
@@ -310,7 +317,7 @@ describe( 'DataController', () => {
 			schema.extend( '$block', { allowIn: 'div' } );
 			schema.extend( 'div', { allowIn: '$root' } );
 
-			buildModelConverter().for( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
+			mtvElementToElement( { model: 'paragraph', view: 'p' } )( data.modelToView );
 		} );
 
 		it( 'should convert a content of an element', () => {
@@ -331,7 +338,7 @@ describe( 'DataController', () => {
 			const modelElement = parseModel( '<div><paragraph>foobar</paragraph></div>', schema );
 			const modelRoot = model.document.getRoot();
 
-			buildModelConverter().for( data.modelToView ).fromMarker( 'marker:a' ).toHighlight( { class: 'a' } );
+			mtvMarkerToHighlight( { model: 'marker:a', view: { class: 'a' } } )( data.modelToView );
 
 			model.change( writer => {
 				writer.insert( modelElement, modelRoot, 0 );
@@ -348,8 +355,8 @@ describe( 'DataController', () => {
 			const modelElement = parseModel( '<div><paragraph>foo</paragraph><paragraph>bar</paragraph></div>', schema );
 			const modelRoot = model.document.getRoot();
 
-			buildModelConverter().for( data.modelToView ).fromMarker( 'marker:a' ).toHighlight( { class: 'a' } );
-			buildModelConverter().for( data.modelToView ).fromMarker( 'marker:b' ).toHighlight( { class: 'b' } );
+			mtvMarkerToHighlight( { model: 'marker:a', view: { class: 'a' } } )( data.modelToView );
+			mtvMarkerToHighlight( { model: 'marker:b', view: { class: 'b' } } )( data.modelToView );
 
 			const modelP1 = modelElement.getChild( 0 );
 			const modelP2 = modelElement.getChild( 1 );

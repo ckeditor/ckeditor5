@@ -5,6 +5,19 @@
 
 /* global console, window, document */
 
+import ModelRange from '../../src/model/range';
+import ViewContainerElement from '../../src/view/containerelement';
+import ViewText from '../../src/view/text';
+
+import {
+	elementToElement as vtmElementToElement,
+} from '../../src/conversion/view-to-model-helpers';
+
+import {
+	elementToElement as mtvElementToElement,
+	markerToHighlight as mtvMarkerToHighlight
+} from '../../src/conversion/model-to-view-helpers';
+
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
@@ -15,12 +28,6 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import List from '@ckeditor/ckeditor5-list/src/list';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import buildModelConverter from '../../src/conversion/buildmodelconverter';
-import buildViewConverter from '../../src/conversion/buildviewconverter';
-import ModelRange from '../../src/model/range';
-import ModelElement from '../../src/model/element';
-import ViewContainerElement from '../../src/view/containerelement';
-import ViewText from '../../src/view/text';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
@@ -34,7 +41,6 @@ class FancyWidget extends Plugin {
 		const editor = this.editor;
 		const schema = editor.model.schema;
 		const data = editor.data;
-		const editing = editor.editing;
 
 		// Configure schema.
 		schema.register( 'fancywidget', {
@@ -42,19 +48,19 @@ class FancyWidget extends Plugin {
 		} );
 		schema.extend( 'fancywidget', { allowIn: '$root' } );
 
-		// Build converter from model to view for editing pipeline.
-		buildModelConverter().for( editing.modelToView )
-			.fromElement( 'fancywidget' )
-			.toElement( () => {
+		mtvElementToElement( {
+			model: 'fancywidget',
+			view: () => {
 				const widgetElement = new ViewContainerElement( 'figure', { class: 'fancy-widget' }, new ViewText( 'widget' ) );
 
 				return toWidget( widgetElement );
-			} );
+			}
+		} )( data.modelToView );
 
-		// Build converter from view element to model element for data pipeline.
-		buildViewConverter().for( data.viewToModel )
-			.fromElement( 'figure' )
-			.toElement( () => new ModelElement( 'fancywidget' ) );
+		vtmElementToElement( {
+			view: 'figure',
+			model: 'fancywidget'
+		} )( data.viewToModel );
 	}
 }
 
@@ -65,10 +71,12 @@ ClassicEditor.create( global.document.querySelector( '#editor' ), {
 	.then( editor => {
 		window.editor = editor;
 
-		buildModelConverter()
-			.for( editor.editing.modelToView )
-			.fromMarker( 'marker' )
-			.toHighlight( data => ( { class: 'highlight-' + data.markerName.split( ':' )[ 1 ] } ) );
+		mtvMarkerToHighlight( {
+			model: 'marker',
+			view: data => ( {
+				class: 'highlight-' + data.markerName.split( ':' )[ 1 ]
+			} )
+		} );
 
 		document.getElementById( 'add-marker-yellow' ).addEventListener( 'mousedown', evt => {
 			addMarker( editor, 'yellow' );

@@ -13,7 +13,8 @@ import ViewDocument from '../../src/view/document';
 
 import Mapper from '../../src/conversion/mapper';
 import ModelConversionDispatcher from '../../src/conversion/modelconversiondispatcher';
-import buildModelConverter from '../../src/conversion/buildmodelconverter';
+
+import { elementToElement, markerToHighlight } from '../../src/conversion/model-to-view-helpers';
 
 import Model from '../../src/model/model';
 import ModelPosition from '../../src/model/position';
@@ -89,9 +90,10 @@ describe( 'EditingController', () => {
 
 			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			model.schema.register( 'div', { inheritAllFrom: '$block' } );
-			buildModelConverter().for( editing.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
-			buildModelConverter().for( editing.modelToView ).fromElement( 'div' ).toElement( 'div' );
-			buildModelConverter().for( editing.modelToView ).fromMarker( 'marker' ).toHighlight( {} );
+
+			elementToElement( { model: 'paragraph', view: 'p' } )( editing.modelToView );
+			elementToElement( { model: 'div', view: 'div' } )( editing.modelToView );
+			markerToHighlight( { model: 'marker', view: {} } )( editing.modelToView );
 
 			// Note: The below code is highly overcomplicated due to #455.
 			model.change( writer => {
@@ -355,9 +357,10 @@ describe( 'EditingController', () => {
 
 			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			model.schema.register( 'div', { inheritAllFrom: '$block' } );
-			buildModelConverter().for( editing.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
-			buildModelConverter().for( editing.modelToView ).fromElement( 'div' ).toElement( 'div' );
-			buildModelConverter().for( editing.modelToView ).fromMarker( 'marker' ).toHighlight( {} );
+
+			elementToElement( { model: 'paragraph', view: 'p' } )( editing.modelToView );
+			elementToElement( { model: 'div', view: 'div' } )( editing.modelToView );
+			markerToHighlight( { model: 'marker', view: {} } )( editing.modelToView );
 
 			const modelData = new ModelDocumentFragment( parse(
 				'<paragraph>foo</paragraph>' +
