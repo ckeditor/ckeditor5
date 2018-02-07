@@ -93,7 +93,7 @@ export default class Writer {
 	 * @param {Object} [options] Additional options.
 	 * @param {String} [options.label=''] Fake selection label.
 	 */
-	setFakeSelection( value = true, options = {} ) {
+	setFakeSelection( value, options ) {
 		this.document.selection._setFake( value, options );
 	}
 
