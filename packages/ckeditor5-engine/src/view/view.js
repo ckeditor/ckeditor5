@@ -295,7 +295,8 @@ export default class View {
 	change( callback ) {
 		if ( this._renderingInProgress ) {
 			/**
-			 * TODO: description - there might be a view change triggered during rendering process.
+			 * Warning displayed when there is an attempt to make changes in the view tree during the rendering process.
+			 * This may cause unexpected behaviour and inconsistency between the DOM and the view.
 			 *
 			 * @error applying-view-changes-on-rendering
 			 */

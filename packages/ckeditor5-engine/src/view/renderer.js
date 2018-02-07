@@ -110,8 +110,6 @@ export default class Renderer {
 		 * @type {null|HTMLElement}
 		 */
 		this._fakeSelectionContainer = null;
-
-		// TODO: document render event.
 		this.decorate( 'render' );
 	}
 

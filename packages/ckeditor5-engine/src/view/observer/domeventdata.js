@@ -21,13 +21,19 @@ export default class DomEventData {
 	 * @param {Object} [additionalData] Additional properties that the instance should contain.
 	 */
 	constructor( view, domEvent, additionalData ) {
+		/**
+		 * Instance of the view controller.
+		 *
+		 * @readonly
+		 * @member {module:engine/view/view~View} module:engine/view/observer/observer~Observer.DomEvent#view
+		 */
 		this.view = view;
 
 		/**
 		 * The instance of the document.
 		 *
 		 * @readonly
-		 * @member {module:engine/view/document~Document} module:engine/view/observer/observer~Observer.DomEvent#view
+		 * @member {module:engine/view/document~Document} module:engine/view/observer/observer~Observer.DomEvent#document
 		 */
 		this.document = view.document;
 

@@ -24,6 +24,12 @@ export default class Observer {
 	 * @param {module:engine/view/view~View} view
 	 */
 	constructor( view ) {
+		/**
+		 * Instance of the view controller.
+		 *
+		 * @readonly
+		 * @member {module:engine/view/view~View}
+		 */
 		this.view = view;
 
 		/**
