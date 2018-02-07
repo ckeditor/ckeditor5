@@ -6,12 +6,12 @@
 /* global console */
 
 import {
-	elementToElement as vtmElementToElement
-} from '../../src/conversion/view-to-model-helpers';
+	upcastElementToElement
+} from '../../src/conversion/upcast-helpers';
 
 import {
-	elementToElement as mtvElementToElement
-} from '../../src/conversion/model-to-view-helpers';
+	downcastElementToElement
+} from '../../src/conversion/downcast-helpers';
 
 import ViewEditableElement from '../../src/view/editableelement';
 import { getData } from '../../src/dev-utils/model';
@@ -43,7 +43,7 @@ class NestedEditable extends Plugin {
 			allowIn: [ 'figure', 'figcaption' ]
 		} );
 
-		editor.conversion.for( 'model' ).add( mtvElementToElement( {
+		editor.conversion.for( 'downcast' ).add( downcastElementToElement( {
 			model: 'figure',
 			view: {
 				name: 'figure',
@@ -53,12 +53,12 @@ class NestedEditable extends Plugin {
 			}
 		} ) );
 
-		editor.conversion.for( 'view' ).add( vtmElementToElement( {
+		editor.conversion.for( 'upcast' ).add( upcastElementToElement( {
 			model: 'figure',
 			view: 'figure'
 		} ) );
 
-		editor.conversion.for( 'model' ).add( mtvElementToElement( {
+		editor.conversion.for( 'downcast' ).add( downcastElementToElement( {
 			model: 'figcaption',
 			view: () => {
 				const element = new ViewEditableElement( 'figcaption', { contenteditable: 'true' } );
@@ -76,7 +76,7 @@ class NestedEditable extends Plugin {
 			}
 		} ) );
 
-		editor.conversion.for( 'view' ).add( vtmElementToElement( {
+		editor.conversion.for( 'upcast' ).add( upcastElementToElement( {
 			model: 'figcaption',
 			view: 'figcaption'
 		} ) );

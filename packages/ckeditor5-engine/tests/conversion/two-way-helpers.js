@@ -4,13 +4,13 @@
  */
 
 import {
-	modelElementIsViewElement, modelAttributeIsViewElement, modelAttributeIsViewAttribute
-} from '../../src/conversion/definition-conversion';
+	elementToElement, attributeToElement, attributeToAttribute
+} from '../../src/conversion/two-way-helpers';
 
 import Conversion from '../../src/conversion/conversion';
-import ViewConversionDispatcher from '../../src/conversion/viewconversiondispatcher';
+import UpcastDispatcher from '../../src/conversion/upcastdispatcher';
 
-import { convertText, convertToModelFragment } from '../../src/conversion/view-to-model-converters';
+import { convertText, convertToModelFragment } from '../../src/conversion/upcast-converters';
 
 import EditingController from '../../src/controller/editingcontroller';
 
@@ -20,7 +20,7 @@ import ModelRange from '../../src/model/range';
 import { stringify as viewStringify, parse as viewParse } from '../../src/dev-utils/view';
 import { stringify as modelStringify } from '../../src/dev-utils/model';
 
-describe( 'definition-conversion', () => {
+describe( 'two-way-helpers', () => {
 	let viewDispatcher, model, schema, conversion, modelRoot, viewRoot;
 
 	beforeEach( () => {
@@ -45,19 +45,19 @@ describe( 'definition-conversion', () => {
 			inheritAllFrom: '$block'
 		} );
 
-		viewDispatcher = new ViewConversionDispatcher( model, { schema } );
+		viewDispatcher = new UpcastDispatcher( model, { schema } );
 		viewDispatcher.on( 'text', convertText() );
 		viewDispatcher.on( 'element', convertToModelFragment(), { priority: 'lowest' } );
 		viewDispatcher.on( 'documentFragment', convertToModelFragment(), { priority: 'lowest' } );
 
 		conversion = new Conversion();
 		conversion.register( 'view', [ viewDispatcher ] );
-		conversion.register( 'model', [ controller.modelToView ] );
+		conversion.register( 'model', [ controller.downcastDispatcher ] );
 	} );
 
-	describe( 'modelElementIsViewElement', () => {
+	describe( 'elementToElement', () => {
 		it( 'config.view is a string', () => {
-			modelElementIsViewElement( conversion, { model: 'paragraph', view: 'p' } );
+			elementToElement( conversion, { model: 'paragraph', view: 'p' } );
 
 			test( '<p>Foo</p>', '<paragraph>Foo</paragraph>' );
 		} );
@@ -67,7 +67,7 @@ describe( 'definition-conversion', () => {
 				inheritAllFrom: 'paragraph'
 			} );
 
-			modelElementIsViewElement( conversion, {
+			elementToElement( conversion, {
 				model: 'fancyParagraph',
 				view: {
 					name: 'p',
@@ -79,7 +79,7 @@ describe( 'definition-conversion', () => {
 		} );
 
 		it( 'config.view is an object with upcastAlso defined', () => {
-			modelElementIsViewElement( conversion, {
+			elementToElement( conversion, {
 				model: 'paragraph',
 				view: 'p',
 				upcastAlso: [
@@ -104,7 +104,7 @@ describe( 'definition-conversion', () => {
 				inheritAllFrom: '$block'
 			} );
 
-			modelElementIsViewElement( conversion, {
+			elementToElement( conversion, {
 				model: 'heading',
 				view: 'h2',
 				upcastAlso: viewElement => {
@@ -130,7 +130,7 @@ describe( 'definition-conversion', () => {
 				}
 			} );
 
-			modelElementIsViewElement( conversion, {
+			elementToElement( conversion, {
 				model: 'paragraph',
 				view: 'p'
 			} );
@@ -143,19 +143,19 @@ describe( 'definition-conversion', () => {
 		} );
 	} );
 
-	describe( 'modelAttributeIsViewElement', () => {
+	describe( 'attributeToElement', () => {
 		beforeEach( () => {
-			modelElementIsViewElement( conversion, { model: 'paragraph', view: 'p' } );
+			elementToElement( conversion, { model: 'paragraph', view: 'p' } );
 		} );
 
 		it( 'config.view is a string', () => {
-			modelAttributeIsViewElement( conversion, 'bold', { view: 'strong' } );
+			attributeToElement( conversion, 'bold', { view: 'strong' } );
 
 			test( '<p><strong>Foo</strong> bar</p>', '<paragraph><$text bold="true">Foo</$text> bar</paragraph>' );
 		} );
 
 		it( 'config.view is an object', () => {
-			modelAttributeIsViewElement( conversion, 'bold', {
+			attributeToElement( conversion, 'bold', {
 				view: {
 					name: 'span',
 					class: 'bold'
@@ -166,7 +166,7 @@ describe( 'definition-conversion', () => {
 		} );
 
 		it( 'config.view is an object with upcastAlso defined', () => {
-			modelAttributeIsViewElement( conversion, 'bold', {
+			attributeToElement( conversion, 'bold', {
 				view: 'strong',
 				upcastAlso: [
 					'b',
@@ -234,7 +234,7 @@ describe( 'definition-conversion', () => {
 				allowAttributes: [ 'styled' ]
 			} );
 
-			modelAttributeIsViewElement( conversion, 'styled', {
+			attributeToElement( conversion, 'styled', {
 				model: 'dark',
 				view: {
 					name: 'span',
@@ -250,7 +250,7 @@ describe( 'definition-conversion', () => {
 				allowAttributes: [ 'fontSize' ]
 			} );
 
-			modelAttributeIsViewElement( conversion, 'fontSize', [
+			attributeToElement( conversion, 'fontSize', [
 				{
 					model: 'big',
 					view: {
@@ -287,7 +287,7 @@ describe( 'definition-conversion', () => {
 				allowAttributes: [ 'fontSize' ]
 			} );
 
-			modelAttributeIsViewElement( conversion, 'fontSize', [
+			attributeToElement( conversion, 'fontSize', [
 				{
 					model: 'big',
 					view: {
@@ -380,9 +380,9 @@ describe( 'definition-conversion', () => {
 		} );
 	} );
 
-	describe( 'modelAttributeIsViewAttribute', () => {
+	describe( 'attributeToAttribute', () => {
 		beforeEach( () => {
-			modelElementIsViewElement( conversion, { model: 'image', view: 'img' } );
+			elementToElement( conversion, { model: 'image', view: 'img' } );
 
 			schema.register( 'image', {
 				inheritAllFrom: '$block',
@@ -394,7 +394,7 @@ describe( 'definition-conversion', () => {
 				allowAttributes: [ 'src' ]
 			} );
 
-			modelAttributeIsViewAttribute( conversion, 'src' );
+			attributeToAttribute( conversion, 'src' );
 
 			test( '<img src="foo.jpg"></img>', '<image src="foo.jpg"></image>' );
 		} );
@@ -404,7 +404,7 @@ describe( 'definition-conversion', () => {
 				allowAttributes: [ 'source' ]
 			} );
 
-			modelAttributeIsViewAttribute( conversion, 'source', { view: 'src' } );
+			attributeToAttribute( conversion, 'source', { view: 'src' } );
 
 			test( '<img src="foo.jpg"></img>', '<image source="foo.jpg"></image>' );
 		} );
@@ -414,7 +414,7 @@ describe( 'definition-conversion', () => {
 				allowAttributes: [ 'aside' ]
 			} );
 
-			modelAttributeIsViewAttribute( conversion, 'aside', {
+			attributeToAttribute( conversion, 'aside', {
 				model: true,
 				view: {
 					name: 'img',
@@ -423,7 +423,7 @@ describe( 'definition-conversion', () => {
 				}
 			} );
 
-			modelElementIsViewElement( conversion, { model: 'paragraph', view: 'p' } );
+			elementToElement( conversion, { model: 'paragraph', view: 'p' } );
 
 			test( '<img class="aside half-size"></img>', '<image aside="true"></image>' );
 			test( '<p class="aside half-size"></p>', '<paragraph></paragraph>', '<p></p>' );
@@ -434,7 +434,7 @@ describe( 'definition-conversion', () => {
 				allowAttributes: [ 'styled' ]
 			} );
 
-			modelAttributeIsViewAttribute( conversion, 'styled', [
+			attributeToAttribute( conversion, 'styled', [
 				{
 					model: 'dark',
 					view: {
@@ -456,13 +456,13 @@ describe( 'definition-conversion', () => {
 		} );
 
 		it( 'config is an array with upcastAlso defined', () => {
-			modelElementIsViewElement( conversion, { model: 'paragraph', view: 'p' } );
+			elementToElement( conversion, { model: 'paragraph', view: 'p' } );
 
 			schema.extend( 'paragraph', {
 				allowAttributes: [ 'align' ]
 			} );
 
-			modelAttributeIsViewAttribute( conversion, 'align', [
+			attributeToAttribute( conversion, 'align', [
 				{
 					model: 'right',
 					view: {

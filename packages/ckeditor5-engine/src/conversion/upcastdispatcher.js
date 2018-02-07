@@ -4,7 +4,7 @@
  */
 
 /**
- * @module engine/conversion/viewconversiondispatcher
+ * @module engine/conversion/upcastdispatcher
  */
 
 import ViewConsumable from './viewconsumable';
@@ -17,14 +17,14 @@ import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
- * `ViewConversionDispatcher` is a central point of {@link module:engine/view/view view} conversion, which is a process of
+ * `UpcastDispatcher` is a central point of {@link module:engine/view/view view} conversion, which is a process of
  * converting given {@link module:engine/view/documentfragment~DocumentFragment view document fragment} or
  * {@link module:engine/view/element~Element} into another structure.
  * In default application, {@link module:engine/view/view view} is converted to {@link module:engine/model/model}.
  *
  * During conversion process, for all {@link module:engine/view/node~Node view nodes} from the converted view document fragment,
- * `ViewConversionDispatcher` fires corresponding events. Special callbacks called "converters" should listen to
- * `ViewConversionDispatcher` for those events.
+ * `UpcastDispatcher` fires corresponding events. Special callbacks called "converters" should listen to
+ * `UpcastDispatcher` for those events.
  *
  * Each callback, as a first argument, is passed a special object `data` that has `viewItem`, `modelCursor` and
  * `modelRange` properties. `viewItem` property contains {@link module:engine/view/node~Node view node} or
@@ -33,15 +33,15 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * of conversion and is always a {@link module:engine/model/range~Range} when conversion result is correct.
  * `modelCursor` property is a {@link module:engine/model/position~Position position} on which conversion result will be inserted
  * and is a context according to {@link module:engine/model/schema~Schema schema} will be checked before the conversion.
- * See also {@link ~ViewConversionDispatcher#convert}. It is also shared by reference by all callbacks listening to given event.
+ * See also {@link ~UpcastDispatcher#convert}. It is also shared by reference by all callbacks listening to given event.
  *
- * The third parameter passed to a callback is an instance of {@link ~ViewConversionDispatcher}
+ * The third parameter passed to a callback is an instance of {@link ~UpcastDispatcher}
  * which provides additional tools for converters.
  *
- * Examples of providing callbacks for `ViewConversionDispatcher`:
+ * Examples of providing callbacks for `UpcastDispatcher`:
  *
  *		// Converter for paragraphs (<p>).
- *		viewDispatcher.on( 'element:p', ( evt, data, conversionApi ) => {
+ *		upcastDispatcher.on( 'element:p', ( evt, data, conversionApi ) => {
  *			// Create paragraph element.
  *			const paragraph = conversionApi.createElement( 'paragraph' );
  *
@@ -65,7 +65,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  *		} );
  *
  *		// Converter for links (<a>).
- *		viewDispatcher.on( 'element:a', ( evt, data, conversionApi ) => {
+ *		upcastDispatcher.on( 'element:a', ( evt, data, conversionApi ) => {
  *			if ( conversionApi.consumable.consume( data.viewItem, { name: true, attributes: [ 'href' ] } ) ) {
  *				// <a> element is inline and is represented by an attribute in the model.
  *				// This is why we need to convert only children.
@@ -82,9 +82,9 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  *		// Fire conversion.
  *		// Always take care where the converted model structure will be appended to. If this `viewDocumentFragment`
  *		// is going to be appended directly to a '$root' element, use that in `context`.
- *		viewDispatcher.convert( viewDocumentFragment, '$root' );
+ *		upcastDispatcher.convert( viewDocumentFragment, '$root' );
  *
- * Before each conversion process, `ViewConversionDispatcher` fires {@link ~ViewConversionDispatcher#event:viewCleanup}
+ * Before each conversion process, `UpcastDispatcher` fires {@link ~UpcastDispatcher#event:viewCleanup}
  * event which can be used to prepare tree view for conversion.
  *
  * @mixes module:utils/emittermixin~EmitterMixin
@@ -93,14 +93,14 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * @fires text
  * @fires documentFragment
  */
-export default class ViewConversionDispatcher {
+export default class UpcastDispatcher {
 	/**
-	 * Creates a `ViewConversionDispatcher` that operates using passed API.
+	 * Creates a `UpcastDispatcher` that operates using passed API.
 	 *
-	 * @see module:engine/conversion/viewconversiondispatcher~ViewConversionApi
+	 * @see module:engine/conversion/upcastdispatcher~ViewConversionApi
 	 * @param {module:engine/model/model~Model} model Data model.
 	 * @param {Object} [conversionApi] Additional properties for interface that will be passed to events fired
-	 * by `ViewConversionDispatcher`.
+	 * by `UpcastDispatcher`.
 	 */
 	constructor( model, conversionApi = {} ) {
 		/**
@@ -140,12 +140,12 @@ export default class ViewConversionDispatcher {
 		/**
 		 * Interface passed by dispatcher to the events callbacks.
 		 *
-		 * @member {module:engine/conversion/viewconversiondispatcher~ViewConversionApi}
+		 * @member {module:engine/conversion/upcastdispatcher~ViewConversionApi}
 		 */
 		this.conversionApi = Object.assign( {}, conversionApi );
 
-		// `convertItem`, `convertChildren` and `splitToAllowedParent` are bound to this `ViewConversionDispatcher`
-		// instance and set on `conversionApi`. This way only a part of `ViewConversionDispatcher` API is exposed.
+		// `convertItem`, `convertChildren` and `splitToAllowedParent` are bound to this `UpcastDispatcher`
+		// instance and set on `conversionApi`. This way only a part of `UpcastDispatcher` API is exposed.
 		this.conversionApi.convertItem = this._convertItem.bind( this );
 		this.conversionApi.convertChildren = this._convertChildren.bind( this );
 		this.conversionApi.splitToAllowedParent = this._splitToAllowedParent.bind( this );
@@ -219,7 +219,7 @@ export default class ViewConversionDispatcher {
 
 	/**
 	 * @private
-	 * @see module:engine/conversion/viewconversiondispatcher~ViewConversionApi#convertItem
+	 * @see module:engine/conversion/upcastdispatcher~ViewConversionApi#convertItem
 	 */
 	_convertItem( viewItem, modelCursor ) {
 		const data = Object.assign( { viewItem, modelCursor, modelRange: null } );
@@ -249,7 +249,7 @@ export default class ViewConversionDispatcher {
 
 	/**
 	 * @private
-	 * @see module:engine/conversion/viewconversiondispatcher~ViewConversionApi#convertChildren
+	 * @see module:engine/conversion/upcastdispatcher~ViewConversionApi#convertChildren
 	 */
 	_convertChildren( viewItem, modelCursor ) {
 		const modelRange = new ModelRange( modelCursor );
@@ -269,7 +269,7 @@ export default class ViewConversionDispatcher {
 
 	/**
 	 * @private
-	 * @see module:engine/conversion/viewconversiondispatcher~ViewConversionApi#splitToAllowedParent
+	 * @see module:engine/conversion/upcastdispatcher~ViewConversionApi#splitToAllowedParent
 	 */
 	_splitToAllowedParent( node, modelCursor ) {
 		// Try to find allowed parent.
@@ -335,7 +335,7 @@ export default class ViewConversionDispatcher {
 	}
 
 	/**
-	 * Fired before the first conversion event, at the beginning of view to model conversion process.
+	 * Fired before the first conversion event, at the beginning of upcast (view to model conversion) process.
 	 *
 	 * @event viewCleanup
 	 * @param {module:engine/view/documentfragment~DocumentFragment|module:engine/view/element~Element}
@@ -359,7 +359,7 @@ export default class ViewConversionDispatcher {
 	 * @param {module:engine/model/range~Range} data.modelRange The current state of conversion result. Every change to
 	 * converted element should be reflected by setting or modifying this property.
 	 * @param {ViewConversionApi} conversionApi Conversion interface to be used by callback, passed in
-	 * `ViewConversionDispatcher` constructor.
+	 * `UpcastDispatcher` constructor.
 	 */
 
 	/**
@@ -377,7 +377,7 @@ export default class ViewConversionDispatcher {
 	 */
 }
 
-mix( ViewConversionDispatcher, EmitterMixin );
+mix( UpcastDispatcher, EmitterMixin );
 
 // Traverses given model item and searches elements which marks marker range. Found element is removed from
 // DocumentFragment but path of this element is stored in a Map which is then returned.
@@ -443,8 +443,8 @@ function createContextTree( contextDefinition, writer ) {
 }
 
 /**
- * Conversion interface that is registered for given {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher}
- * and is passed as one of parameters when {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher dispatcher}
+ * Conversion interface that is registered for given {@link module:engine/conversion/upcastdispatcher~UpcastDispatcher}
+ * and is passed as one of parameters when {@link module:engine/conversion/upcastdispatcher~UpcastDispatcher dispatcher}
  * fires it's events.
  *
  * @interface ViewConversionApi
@@ -458,9 +458,9 @@ function createContextTree( contextDefinition, writer ) {
  * The `modelRange` must be {@link module:engine/model/range~Range model range} or `null` (as set by default).
  *
  * @method #convertItem
- * @fires module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:element
- * @fires module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:text
- * @fires module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:documentFragment
+ * @fires module:engine/conversion/upcastdispatcher~UpcastDispatcher#event:element
+ * @fires module:engine/conversion/upcastdispatcher~UpcastDispatcher#event:text
+ * @fires module:engine/conversion/upcastdispatcher~UpcastDispatcher#event:documentFragment
  * @param {module:engine/view/item~Item} viewItem Item to convert.
  * @param {module:engine/model/position~Position} modelCursor Position of conversion.
  * @returns {Object} result Conversion result.
@@ -473,9 +473,9 @@ function createContextTree( contextDefinition, writer ) {
  * Starts conversion of all children of given item by firing appropriate events for all those children.
  *
  * @method #convertChildren
- * @fires module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:element
- * @fires module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:text
- * @fires module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:documentFragment
+ * @fires module:engine/conversion/upcastdispatcher~UpcastDispatcher#event:element
+ * @fires module:engine/conversion/upcastdispatcher~UpcastDispatcher#event:text
+ * @fires module:engine/conversion/upcastdispatcher~UpcastDispatcher#event:documentFragment
  * @param {module:engine/view/item~Item} viewItem Item to convert.
  * @param {module:engine/model/position~Position} modelCursor Position of conversion.
  * @returns {Object} result Conversion result.

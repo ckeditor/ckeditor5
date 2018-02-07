@@ -11,7 +11,7 @@ import ModelPosition from '../model/position';
 import cloneDeep from '@ckeditor/ckeditor5-utils/src/lib/lodash/cloneDeep';
 
 /**
- * @module engine/conversion/view-to-model-helpers
+ * @module engine/conversion/upcast-helpers
  */
 
 /**
@@ -21,11 +21,11 @@ import cloneDeep from '@ckeditor/ckeditor5-utils/src/lib/lodash/cloneDeep';
  *
  * Keep in mind that the element will be inserted only if it is allowed by {@link module:engine/model/schema~Schema schema} configuration.
  *
- *		elementToElement( { view: 'p', model: 'paragraph' } );
+ *		upcastElementToElement( { view: 'p', model: 'paragraph' } );
  *
- *		elementToElement( { view: 'p', model: 'paragraph' }, 'high' );
+ *		upcastElementToElement( { view: 'p', model: 'paragraph' }, 'high' );
  *
- *		elementToElement( {
+ *		upcastElementToElement( {
  *			view: {
  *				name: 'p',
  *				class: 'fancy'
@@ -33,7 +33,7 @@ import cloneDeep from '@ckeditor/ckeditor5-utils/src/lib/lodash/cloneDeep';
  *			model: 'fancyParagraph'
  *		} );
  *
- *		elementToElement( {
+ *		upcastElementToElement( {
  *			view: {
  *				name: 'p',
  *				class: 'fancy'
@@ -41,7 +41,7 @@ import cloneDeep from '@ckeditor/ckeditor5-utils/src/lib/lodash/cloneDeep';
  *			model: new ModelElement( 'p', { fancy: true } )
  *		} );
  *
- *		elementToElement( {
+ *		upcastElementToElement( {
  * 			view: {
  *				name: 'p',
  *				class: 'heading'
@@ -58,7 +58,7 @@ import cloneDeep from '@ckeditor/ckeditor5-utils/src/lib/lodash/cloneDeep';
  * @param {module:utils/priorities~PriorityString} [priority='normal'] Converter priority.
  * @returns {Function} Conversion helper.
  */
-export function elementToElement( config, priority = 'normal' ) {
+export function upcastElementToElement( config, priority = 'normal' ) {
 	config = cloneDeep( config );
 
 	const converter = _prepareToElementConverter( config );
@@ -79,11 +79,11 @@ export function elementToElement( config, priority = 'normal' ) {
  *
  * Keep in mind that the attribute will be set only if it is allowed by {@link module:engine/model/schema~Schema schema} configuration.
  *
- *		elementToAttribute( { view: 'strong', model: 'bold' } );
+ *		upcastElementToAttribute( { view: 'strong', model: 'bold' } );
  *
- *		elementToAttribute( { view: 'strong', model: 'bold' }, 'normal' );
+ *		upcastElementToAttribute( { view: 'strong', model: 'bold' }, 'normal' );
  *
- *		elementToAttribute( {
+ *		upcastElementToAttribute( {
  *			view: {
  *				name: 'span',
  *				class: 'bold'
@@ -91,7 +91,7 @@ export function elementToElement( config, priority = 'normal' ) {
  *			model: 'bold'
  *		} );
  *
- *		elementToAttribute( {
+ *		upcastElementToAttribute( {
  *			view: {
  *				name: 'span',
  *				class: [ 'styled', 'styled-dark' ]
@@ -102,7 +102,7 @@ export function elementToElement( config, priority = 'normal' ) {
  *			}
  *		} );
  *
- * 		elementToAttribute( {
+ * 		upcastElementToAttribute( {
  *			view: {
  *				name: 'span',
  *				style: {
@@ -136,12 +136,12 @@ export function elementToElement( config, priority = 'normal' ) {
  * @param {module:utils/priorities~PriorityString} [priority='low'] Converter priority.
  * @returns {Function} Conversion helper.
  */
-export function elementToAttribute( config, priority = 'low' ) {
+export function upcastElementToAttribute( config, priority = 'low' ) {
 	config = cloneDeep( config );
 
 	_normalizeModelAttributeConfig( config );
 
-	const converter = _prepareToAttributeConverter( config, false );
+	const converter = _prepareToAttributeConverter( config, true );
 
 	const elementName = _getViewElementNameFromConfig( config );
 	const eventName = elementName ? 'element:' + elementName : 'element';
@@ -159,13 +159,13 @@ export function elementToAttribute( config, priority = 'low' ) {
  *
  * Keep in mind that the attribute will be set only if it is allowed by {@link module:engine/model/schema~Schema schema} configuration.
  *
- *		attributeToAttribute( { view: 'src', model: 'source' } );
+ *		upcastAttributeToAttribute( { view: 'src', model: 'source' } );
  *
- *		attributeToAttribute( { view: { key: 'src' }, model: 'source' } );
+ *		upcastAttributeToAttribute( { view: { key: 'src' }, model: 'source' } );
  *
- *		attributeToAttribute( { view: { key: 'src' }, model: 'source' }, 'normal' );
+ *		upcastAttributeToAttribute( { view: { key: 'src' }, model: 'source' }, 'normal' );
  *
- *		attributeToAttribute( {
+ *		upcastAttributeToAttribute( {
  *			view: {
  *				key: 'data-style',
  *				value: /[\s\S]+/
@@ -173,7 +173,7 @@ export function elementToAttribute( config, priority = 'low' ) {
  *			model: 'styled'
  *		} );
  *
- *		attributeToAttribute( {
+ *		upcastAttributeToAttribute( {
  *			view: {
  *				name: 'span',
  *				key: 'class',
@@ -185,7 +185,7 @@ export function elementToAttribute( config, priority = 'low' ) {
  *			}
  *		} );
  *
- *		attributeToAttribute( {
+ *		upcastAttributeToAttribute( {
  *			view: {
  *				key: 'class',
  *				value: /styled-[\S]+/
@@ -216,7 +216,7 @@ export function elementToAttribute( config, priority = 'low' ) {
  * @param {module:utils/priorities~PriorityString} [priority='low'] Converter priority.
  * @returns {Function} Conversion helper.
  */
-export function attributeToAttribute( config, priority = 'low' ) {
+export function upcastAttributeToAttribute( config, priority = 'low' ) {
 	config = cloneDeep( config );
 
 	let viewKey = null;
@@ -227,7 +227,7 @@ export function attributeToAttribute( config, priority = 'low' ) {
 
 	_normalizeModelAttributeConfig( config, viewKey );
 
-	const converter = _prepareToAttributeConverter( config, true );
+	const converter = _prepareToAttributeConverter( config, false );
 
 	return dispatcher => {
 		dispatcher.on( 'element', converter, { priority } );
@@ -242,13 +242,16 @@ export function attributeToAttribute( config, priority = 'low' ) {
  * after the conversion is done, the marker will be available in
  * {@link module:engine/model/document~Document#markers model document markers}.
  *
- *		elementToMarker( { view: 'marker-search', model: 'search' } );
+ *		upcastElementToMarker( { view: 'marker-search', model: 'search' } );
  *
- *		elementToMarker( { view: 'marker-search', model: 'search' }, 'high' );
+ *		upcastElementToMarker( { view: 'marker-search', model: 'search' }, 'high' );
  *
- *		elementToMarker( { view: 'marker-search', model: viewElement => 'comment:' + viewElement.getAttribute( 'data-comment-id' ) } );
+ *		upcastElementToMarker( {
+ *			view: 'marker-search',
+ *			model: viewElement => 'comment:' + viewElement.getAttribute( 'data-comment-id' )
+ *		} );
  *
- *		elementToMarker( {
+ *		upcastElementToMarker( {
  *			view: {
  *				name: 'span',
  *				attribute: {
@@ -267,12 +270,12 @@ export function attributeToAttribute( config, priority = 'low' ) {
  * @param {module:utils/priorities~PriorityString} [priority='normal'] Converter priority.
  * @returns {Function} Conversion helper.
  */
-export function elementToMarker( config, priority = 'normal' ) {
+export function upcastElementToMarker( config, priority = 'normal' ) {
 	config = cloneDeep( config );
 
 	_normalizeToMarkerConfig( config );
 
-	return elementToElement( config, priority );
+	return upcastElementToElement( config, priority );
 }
 
 // Helper function for from-view-element conversion. Checks if `config.view` directly specifies converted view element's name
@@ -366,7 +369,7 @@ function _prepareToElementConverter( config ) {
 	};
 }
 
-// Helper function for view-to-model-element converter. Takes the model configuration, the converted view element
+// Helper function for upcasting-to-element converter. Takes the model configuration, the converted view element
 // and a writer instance and returns a model element instance to be inserted in the model.
 //
 // @param {String|Function|module:engine/model/element~Element} model Model conversion configuration.
@@ -500,8 +503,8 @@ function _setAttributeOn( modelRange, modelAttribute, conversionApi ) {
 	return result;
 }
 
-// Helper function for view-to-model-marker conversion. Takes the config in a format requested by `elementToMarker()`
-// function and converts it to a format that is supported by `elementToElement()` function.
+// Helper function for upcasting-to-marker conversion. Takes the config in a format requested by `upcastElementToMarker()`
+// function and converts it to a format that is supported by `upcastElementToElement()` function.
 //
 // @param {Object} config Conversion configuration.
 function _normalizeToMarkerConfig( config ) {

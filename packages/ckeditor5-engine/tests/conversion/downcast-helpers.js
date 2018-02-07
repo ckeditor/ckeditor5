@@ -4,8 +4,8 @@
  */
 
 import {
-	elementToElement, attributeToElement, attributeToAttribute, markerToElement, markerToHighlight
-} from '../../src/conversion/model-to-view-helpers';
+	downcastElementToElement, downcastAttributeToElement, downcastAttributeToAttribute, downcastMarkerToElement, downcastMarkerToHighlight
+} from '../../src/conversion/downcast-helpers';
 
 import Conversion from '../../src/conversion/conversion';
 import EditingController from '../../src/controller/editingcontroller';
@@ -19,7 +19,7 @@ import ViewUIElement from '../../src/view/uielement';
 
 import { stringify } from '../../src/dev-utils/view';
 
-describe( 'model-to-view-helpers', () => {
+describe( 'downcast-helpers', () => {
 	let conversion, model, modelRoot, viewRoot;
 
 	beforeEach( () => {
@@ -36,14 +36,14 @@ describe( 'model-to-view-helpers', () => {
 		viewRoot = controller.view.getRoot();
 
 		conversion = new Conversion();
-		conversion.register( 'model', [ controller.modelToView ] );
+		conversion.register( 'model', [ controller.downcastDispatcher ] );
 	} );
 
-	describe( 'elementToElement', () => {
+	describe( 'downcastElementToElement', () => {
 		it( 'config.view is a string', () => {
-			const helper = elementToElement( { model: 'paragraph', view: 'p' } );
+			const helper = downcastElementToElement( { model: 'paragraph', view: 'p' } );
 
-			conversion.for( 'model' ).add( helper );
+			conversion.for( 'downcast' ).add( helper );
 
 			model.change( writer => {
 				writer.insertElement( 'paragraph', modelRoot, 0 );
@@ -53,10 +53,10 @@ describe( 'model-to-view-helpers', () => {
 		} );
 
 		it( 'can be overwritten using priority', () => {
-			const helperA = elementToElement( { model: 'paragraph', view: 'p' } );
-			const helperB = elementToElement( { model: 'paragraph', view: 'foo' }, 'high' );
+			const helperA = downcastElementToElement( { model: 'paragraph', view: 'p' } );
+			const helperB = downcastElementToElement( { model: 'paragraph', view: 'foo' }, 'high' );
 
-			conversion.for( 'model' ).add( helperA ).add( helperB );
+			conversion.for( 'downcast' ).add( helperA ).add( helperB );
 
 			model.change( writer => {
 				writer.insertElement( 'paragraph', modelRoot, 0 );
@@ -66,12 +66,12 @@ describe( 'model-to-view-helpers', () => {
 		} );
 
 		it( 'config.view is an element instance', () => {
-			const helper = elementToElement( {
+			const helper = downcastElementToElement( {
 				model: 'paragraph',
 				view: new ViewContainerElement( 'p' )
 			} );
 
-			conversion.for( 'model' ).add( helper );
+			conversion.for( 'downcast' ).add( helper );
 
 			model.change( writer => {
 				writer.insertElement( 'paragraph', modelRoot, 0 );
@@ -81,7 +81,7 @@ describe( 'model-to-view-helpers', () => {
 		} );
 
 		it( 'config.view is a view element definition', () => {
-			const helper = elementToElement( {
+			const helper = downcastElementToElement( {
 				model: 'fancyParagraph',
 				view: {
 					name: 'p',
@@ -89,7 +89,7 @@ describe( 'model-to-view-helpers', () => {
 				}
 			} );
 
-			conversion.for( 'model' ).add( helper );
+			conversion.for( 'downcast' ).add( helper );
 
 			model.change( writer => {
 				writer.insertElement( 'fancyParagraph', modelRoot, 0 );
@@ -99,12 +99,12 @@ describe( 'model-to-view-helpers', () => {
 		} );
 
 		it( 'config.view is a function', () => {
-			const helper = elementToElement( {
+			const helper = downcastElementToElement( {
 				model: 'heading',
 				view: modelElement => new ViewContainerElement( 'h' + modelElement.getAttribute( 'level' ) )
 			} );
 
-			conversion.for( 'model' ).add( helper );
+			conversion.for( 'downcast' ).add( helper );
 
 			model.change( writer => {
 				writer.insertElement( 'heading', { level: 2 }, modelRoot, 0 );
@@ -114,11 +114,11 @@ describe( 'model-to-view-helpers', () => {
 		} );
 	} );
 
-	describe( 'attributeToElement', () => {
+	describe( 'downcastAttributeToElement', () => {
 		it( 'config.view is a string', () => {
-			const helper = attributeToElement( 'bold', { view: 'strong' } );
+			const helper = downcastAttributeToElement( 'bold', { view: 'strong' } );
 
-			conversion.for( 'model' ).add( helper );
+			conversion.for( 'downcast' ).add( helper );
 
 			model.change( writer => {
 				writer.insertText( 'foo', { bold: true }, modelRoot, 0 );
@@ -128,10 +128,10 @@ describe( 'model-to-view-helpers', () => {
 		} );
 
 		it( 'can be overwritten using priority', () => {
-			const helperA = attributeToElement( 'bold', { view: 'strong' } );
-			const helperB = attributeToElement( 'bold', { view: 'b' }, 'high' );
+			const helperA = downcastAttributeToElement( 'bold', { view: 'strong' } );
+			const helperB = downcastAttributeToElement( 'bold', { view: 'b' }, 'high' );
 
-			conversion.for( 'model' ).add( helperA ).add( helperB );
+			conversion.for( 'downcast' ).add( helperA ).add( helperB );
 
 			model.change( writer => {
 				writer.insertText( 'foo', { bold: true }, modelRoot, 0 );
@@ -141,11 +141,11 @@ describe( 'model-to-view-helpers', () => {
 		} );
 
 		it( 'config.view is an element instance', () => {
-			const helper = attributeToElement( 'bold', {
+			const helper = downcastAttributeToElement( 'bold', {
 				view: new ViewAttributeElement( 'strong' )
 			} );
 
-			conversion.for( 'model' ).add( helper );
+			conversion.for( 'downcast' ).add( helper );
 
 			model.change( writer => {
 				writer.insertText( 'foo', { bold: true }, modelRoot, 0 );
@@ -155,14 +155,14 @@ describe( 'model-to-view-helpers', () => {
 		} );
 
 		it( 'config.view is a view element definition', () => {
-			const helper = attributeToElement( 'bold', {
+			const helper = downcastAttributeToElement( 'bold', {
 				view: {
 					name: 'span',
 					class: 'bold'
 				}
 			} );
 
-			conversion.for( 'model' ).add( helper );
+			conversion.for( 'downcast' ).add( helper );
 
 			model.change( writer => {
 				writer.insertText( 'foo', { bold: true }, modelRoot, 0 );
@@ -172,7 +172,7 @@ describe( 'model-to-view-helpers', () => {
 		} );
 
 		it( 'config.view is a view element definition, model attribute value specified', () => {
-			const helper = attributeToElement( 'styled', {
+			const helper = downcastAttributeToElement( 'styled', {
 				model: 'dark',
 				view: {
 					name: 'span',
@@ -180,7 +180,7 @@ describe( 'model-to-view-helpers', () => {
 				}
 			} );
 
-			conversion.for( 'model' ).add( helper );
+			conversion.for( 'downcast' ).add( helper );
 
 			model.change( writer => {
 				writer.insertText( 'foo', { styled: 'dark' }, modelRoot, 0 );
@@ -196,7 +196,7 @@ describe( 'model-to-view-helpers', () => {
 		} );
 
 		it( 'multiple config items', () => {
-			const helper = attributeToElement( 'fontSize', [
+			const helper = downcastAttributeToElement( 'fontSize', [
 				{
 					model: 'big',
 					view: {
@@ -217,7 +217,7 @@ describe( 'model-to-view-helpers', () => {
 				}
 			] );
 
-			conversion.for( 'model' ).add( helper );
+			conversion.for( 'downcast' ).add( helper );
 
 			model.change( writer => {
 				writer.insertText( 'foo', { fontSize: 'big' }, modelRoot, 0 );
@@ -239,11 +239,11 @@ describe( 'model-to-view-helpers', () => {
 		} );
 
 		it( 'config.view is a function', () => {
-			const helper = attributeToElement( 'bold', {
+			const helper = downcastAttributeToElement( 'bold', {
 				view: attributeValue => new ViewAttributeElement( 'span', { style: 'font-weight:' + attributeValue } )
 			} );
 
-			conversion.for( 'model' ).add( helper );
+			conversion.for( 'downcast' ).add( helper );
 
 			model.change( writer => {
 				writer.insertText( 'foo', { bold: '500' }, modelRoot, 0 );
@@ -253,15 +253,15 @@ describe( 'model-to-view-helpers', () => {
 		} );
 	} );
 
-	describe( 'attributeToAttribute', () => {
+	describe( 'downcastAttributeToAttribute', () => {
 		beforeEach( () => {
-			conversion.for( 'model' ).add( elementToElement( { model: 'image', view: 'img' } ) );
+			conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'image', view: 'img' } ) );
 		} );
 
 		it( 'config not set', () => {
-			const helper = attributeToAttribute( 'src' );
+			const helper = downcastAttributeToAttribute( 'src' );
 
-			conversion.for( 'model' ).add( helper );
+			conversion.for( 'downcast' ).add( helper );
 
 			model.change( writer => {
 				writer.insertElement( 'image', { src: 'foo.jpg' }, modelRoot, 0 );
@@ -271,9 +271,9 @@ describe( 'model-to-view-helpers', () => {
 		} );
 
 		it( 'config.view is a string', () => {
-			const helper = attributeToAttribute( 'source', { view: 'src' } );
+			const helper = downcastAttributeToAttribute( 'source', { view: 'src' } );
 
-			conversion.for( 'model' ).add( helper );
+			conversion.for( 'downcast' ).add( helper );
 
 			model.change( writer => {
 				writer.insertElement( 'image', { source: 'foo.jpg' }, modelRoot, 0 );
@@ -283,10 +283,10 @@ describe( 'model-to-view-helpers', () => {
 		} );
 
 		it( 'can be overwritten using priority', () => {
-			const helperA = attributeToAttribute( 'source', { view: 'href' } );
-			const helperB = attributeToAttribute( 'source', { view: 'src' }, 'high' );
+			const helperA = downcastAttributeToAttribute( 'source', { view: 'href' } );
+			const helperB = downcastAttributeToAttribute( 'source', { view: 'src' }, 'high' );
 
-			conversion.for( 'model' ).add( helperA ).add( helperB );
+			conversion.for( 'downcast' ).add( helperA ).add( helperB );
 
 			model.change( writer => {
 				writer.insertElement( 'image', { source: 'foo.jpg' }, modelRoot, 0 );
@@ -296,9 +296,9 @@ describe( 'model-to-view-helpers', () => {
 		} );
 
 		it( 'config.view is an object', () => {
-			const helper = attributeToAttribute( 'stylish', { view: { key: 'class', value: 'styled' } } );
+			const helper = downcastAttributeToAttribute( 'stylish', { view: { key: 'class', value: 'styled' } } );
 
-			conversion.for( 'model' ).add( helper );
+			conversion.for( 'downcast' ).add( helper );
 
 			model.change( writer => {
 				writer.insertElement( 'image', { stylish: true }, modelRoot, 0 );
@@ -308,7 +308,7 @@ describe( 'model-to-view-helpers', () => {
 		} );
 
 		it( 'config.view is an object, model attribute value specified', () => {
-			const helper = attributeToAttribute( 'styled', {
+			const helper = downcastAttributeToAttribute( 'styled', {
 				model: 'dark',
 				view: {
 					key: 'class',
@@ -316,7 +316,7 @@ describe( 'model-to-view-helpers', () => {
 				}
 			} );
 
-			conversion.for( 'model' ).add( helper );
+			conversion.for( 'downcast' ).add( helper );
 
 			model.change( writer => {
 				writer.insertElement( 'image', { styled: 'dark' }, modelRoot, 0 );
@@ -332,7 +332,7 @@ describe( 'model-to-view-helpers', () => {
 		} );
 
 		it( 'multiple config items', () => {
-			const helper = attributeToAttribute( 'styled', [
+			const helper = downcastAttributeToAttribute( 'styled', [
 				{
 					model: 'dark',
 					view: {
@@ -349,7 +349,7 @@ describe( 'model-to-view-helpers', () => {
 				}
 			] );
 
-			conversion.for( 'model' ).add( helper );
+			conversion.for( 'downcast' ).add( helper );
 
 			model.change( writer => {
 				writer.insertElement( 'image', { styled: 'dark' }, modelRoot, 0 );
@@ -371,11 +371,11 @@ describe( 'model-to-view-helpers', () => {
 		} );
 
 		it( 'config.view is a function', () => {
-			const helper = attributeToAttribute( 'styled', {
+			const helper = downcastAttributeToAttribute( 'styled', {
 				view: attributeValue => ( { key: 'class', value: 'styled-' + attributeValue } )
 			} );
 
-			conversion.for( 'model' ).add( helper );
+			conversion.for( 'downcast' ).add( helper );
 
 			model.change( writer => {
 				writer.insertElement( 'image', { styled: 'pull-out' }, modelRoot, 0 );
@@ -385,11 +385,11 @@ describe( 'model-to-view-helpers', () => {
 		} );
 	} );
 
-	describe( 'markerToElement', () => {
+	describe( 'downcastMarkerToElement', () => {
 		it( 'config.view is a string', () => {
-			const helper = markerToElement( { model: 'search', view: 'marker-search' } );
+			const helper = downcastMarkerToElement( { model: 'search', view: 'marker-search' } );
 
-			conversion.for( 'model' ).add( helper );
+			conversion.for( 'downcast' ).add( helper );
 
 			model.change( writer => {
 				writer.insertText( 'foo', modelRoot, 0 );
@@ -400,10 +400,10 @@ describe( 'model-to-view-helpers', () => {
 		} );
 
 		it( 'can be overwritten using priority', () => {
-			const helperA = markerToElement( { model: 'search', view: 'marker-search' } );
-			const helperB = markerToElement( { model: 'search', view: 'search' }, 'high' );
+			const helperA = downcastMarkerToElement( { model: 'search', view: 'marker-search' } );
+			const helperB = downcastMarkerToElement( { model: 'search', view: 'search' }, 'high' );
 
-			conversion.for( 'model' ).add( helperA ).add( helperB );
+			conversion.for( 'downcast' ).add( helperA ).add( helperB );
 
 			model.change( writer => {
 				writer.insertText( 'foo', modelRoot, 0 );
@@ -414,12 +414,12 @@ describe( 'model-to-view-helpers', () => {
 		} );
 
 		it( 'config.view is an element instance', () => {
-			const helper = markerToElement( {
+			const helper = downcastMarkerToElement( {
 				model: 'search',
 				view: new ViewUIElement( 'span', { 'data-marker': 'search' } )
 			} );
 
-			conversion.for( 'model' ).add( helper );
+			conversion.for( 'downcast' ).add( helper );
 
 			model.change( writer => {
 				writer.insertText( 'foo', modelRoot, 0 );
@@ -430,7 +430,7 @@ describe( 'model-to-view-helpers', () => {
 		} );
 
 		it( 'config.view is a view element definition', () => {
-			const helper = markerToElement( {
+			const helper = downcastMarkerToElement( {
 				model: 'search',
 				view: {
 					name: 'span',
@@ -440,7 +440,7 @@ describe( 'model-to-view-helpers', () => {
 				}
 			} );
 
-			conversion.for( 'model' ).add( helper );
+			conversion.for( 'downcast' ).add( helper );
 
 			model.change( writer => {
 				writer.insertText( 'foo', modelRoot, 0 );
@@ -451,14 +451,14 @@ describe( 'model-to-view-helpers', () => {
 		} );
 
 		it( 'config.view is a function', () => {
-			const helper = markerToElement( {
+			const helper = downcastMarkerToElement( {
 				model: 'search',
 				view: data => {
 					return new ViewUIElement( 'span', { 'data-marker': 'search', 'data-start': data.isOpening } );
 				}
 			} );
 
-			conversion.for( 'model' ).add( helper );
+			conversion.for( 'downcast' ).add( helper );
 
 			model.change( writer => {
 				writer.insertText( 'foo', modelRoot, 0 );
@@ -469,11 +469,11 @@ describe( 'model-to-view-helpers', () => {
 		} );
 	} );
 
-	describe( 'markerToHighlight', () => {
+	describe( 'downcastMarkerToHighlight', () => {
 		it( 'config.view is a highlight descriptor', () => {
-			const helper = markerToHighlight( { model: 'comment', view: { class: 'comment' } } );
+			const helper = downcastMarkerToHighlight( { model: 'comment', view: { class: 'comment' } } );
 
-			conversion.for( 'model' ).add( helper );
+			conversion.for( 'downcast' ).add( helper );
 
 			model.change( writer => {
 				writer.insertText( 'foo', modelRoot, 0 );
@@ -484,10 +484,10 @@ describe( 'model-to-view-helpers', () => {
 		} );
 
 		it( 'can be overwritten using priority', () => {
-			const helperA = markerToHighlight( { model: 'comment', view: { class: 'comment' } } );
-			const helperB = markerToHighlight( { model: 'comment', view: { class: 'new-comment' } }, 'high' );
+			const helperA = downcastMarkerToHighlight( { model: 'comment', view: { class: 'comment' } } );
+			const helperB = downcastMarkerToHighlight( { model: 'comment', view: { class: 'new-comment' } }, 'high' );
 
-			conversion.for( 'model' ).add( helperA ).add( helperB );
+			conversion.for( 'downcast' ).add( helperA ).add( helperB );
 
 			model.change( writer => {
 				writer.insertText( 'foo', modelRoot, 0 );
@@ -498,7 +498,7 @@ describe( 'model-to-view-helpers', () => {
 		} );
 
 		it( 'config.view is a function', () => {
-			const helper = markerToHighlight( {
+			const helper = downcastMarkerToHighlight( {
 				model: 'comment',
 				view: data => {
 					const commentType = data.markerName.split( ':' )[ 1 ];
@@ -509,7 +509,7 @@ describe( 'model-to-view-helpers', () => {
 				}
 			} );
 
-			conversion.for( 'model' ).add( helper );
+			conversion.for( 'downcast' ).add( helper );
 
 			model.change( writer => {
 				writer.insertText( 'foo', modelRoot, 0 );

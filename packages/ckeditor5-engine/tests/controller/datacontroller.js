@@ -17,15 +17,15 @@ import { parse as parseView, stringify as stringifyView } from '../../src/dev-ut
 import count from '@ckeditor/ckeditor5-utils/src/count';
 
 import {
-	elementToElement as vtmElementToElement,
-	elementToAttribute as vtmElementToAttribute
-} from '../../src/conversion/view-to-model-helpers';
+	upcastElementToElement,
+	upcastElementToAttribute
+} from '../../src/conversion/upcast-helpers';
 
 import {
-	elementToElement as mtvElementToElement,
-	attributeToElement as mtvAttributeToElement,
-	markerToHighlight as mtvMarkerToHighlight
-} from '../../src/conversion/model-to-view-helpers';
+	downcastElementToElement,
+	downcastAttributeToElement,
+	downcastMarkerToHighlight
+} from '../../src/conversion/downcast-helpers';
 
 describe( 'DataController', () => {
 	let model, modelDocument, htmlDataProcessor, data, schema;
@@ -66,7 +66,7 @@ describe( 'DataController', () => {
 		it( 'should set paragraph', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
-			vtmElementToElement( { view: 'p', model: 'paragraph' } )( data.viewToModel );
+			upcastElementToElement( { view: 'p', model: 'paragraph' } )( data.upcastDispatcher );
 
 			const output = data.parse( '<p>foo<b>bar</b></p>' );
 
@@ -77,7 +77,7 @@ describe( 'DataController', () => {
 		it( 'should set two paragraphs', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
-			vtmElementToElement( { view: 'p', model: 'paragraph' } )( data.viewToModel );
+			upcastElementToElement( { view: 'p', model: 'paragraph' } )( data.upcastDispatcher );
 
 			const output = data.parse( '<p>foo</p><p>bar</p>' );
 
@@ -91,8 +91,8 @@ describe( 'DataController', () => {
 				allowAttributes: [ 'bold' ]
 			} );
 
-			vtmElementToElement( { view: 'p', model: 'paragraph' } )( data.viewToModel );
-			vtmElementToAttribute( { view: 'strong', model: 'bold' } )( data.viewToModel );
+			upcastElementToElement( { view: 'p', model: 'paragraph' } )( data.upcastDispatcher );
+			upcastElementToAttribute( { view: 'strong', model: 'bold' } )( data.upcastDispatcher );
 
 			const output = data.parse( '<p>foo<strong>bar</strong></p>' );
 
@@ -117,7 +117,7 @@ describe( 'DataController', () => {
 		beforeEach( () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
-			vtmElementToElement( { view: 'p', model: 'paragraph' } )( data.viewToModel );
+			upcastElementToElement( { view: 'p', model: 'paragraph' } )( data.upcastDispatcher );
 		} );
 
 		it( 'should convert content of an element #1', () => {
@@ -220,7 +220,7 @@ describe( 'DataController', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			setData( model, '<paragraph>foo</paragraph>' );
 
-			mtvElementToElement( { model: 'paragraph', view: 'p' } )( data.modelToView );
+			downcastElementToElement( { model: 'paragraph', view: 'p' } )( data.downcastDispatcher );
 
 			expect( data.get() ).to.equal( '<p>foo</p>' );
 		} );
@@ -229,7 +229,7 @@ describe( 'DataController', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			setData( model, '<paragraph></paragraph>' );
 
-			mtvElementToElement( { model: 'paragraph', view: 'p' } )( data.modelToView );
+			downcastElementToElement( { model: 'paragraph', view: 'p' } )( data.downcastDispatcher );
 
 			expect( data.get() ).to.equal( '<p>&nbsp;</p>' );
 		} );
@@ -238,7 +238,7 @@ describe( 'DataController', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			setData( model, '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
 
-			mtvElementToElement( { model: 'paragraph', view: 'p' } )( data.modelToView );
+			downcastElementToElement( { model: 'paragraph', view: 'p' } )( data.downcastDispatcher );
 
 			expect( data.get() ).to.equal( '<p>foo</p><p>bar</p>' );
 		} );
@@ -254,7 +254,7 @@ describe( 'DataController', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			setData( model, '<paragraph>foo<$text bold="true">bar</$text></paragraph>' );
 
-			mtvElementToElement( { model: 'paragraph', view: 'p' } )( data.modelToView );
+			downcastElementToElement( { model: 'paragraph', view: 'p' } )( data.downcastDispatcher );
 
 			expect( data.get() ).to.equal( '<p>foobar</p>' );
 		} );
@@ -263,8 +263,8 @@ describe( 'DataController', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			setData( model, '<paragraph>foo<$text bold="true">bar</$text></paragraph>' );
 
-			mtvElementToElement( { model: 'paragraph', view: 'p' } )( data.modelToView );
-			mtvAttributeToElement( 'bold', { view: 'strong' } )( data.modelToView );
+			downcastElementToElement( { model: 'paragraph', view: 'p' } )( data.downcastDispatcher );
+			downcastAttributeToElement( 'bold', { view: 'strong' } )( data.downcastDispatcher );
 
 			expect( data.get() ).to.equal( '<p>foo<strong>bar</strong></p>' );
 		} );
@@ -276,8 +276,8 @@ describe( 'DataController', () => {
 			setData( model, '<paragraph>foo</paragraph>', { rootName: 'main' } );
 			setData( model, 'Bar', { rootName: 'title' } );
 
-			mtvElementToElement( { model: 'paragraph', view: 'p' } )( data.modelToView );
-			mtvAttributeToElement( 'bold', { view: 'strong' } )( data.modelToView );
+			downcastElementToElement( { model: 'paragraph', view: 'p' } )( data.downcastDispatcher );
+			downcastAttributeToElement( 'bold', { view: 'strong' } )( data.downcastDispatcher );
 
 			expect( data.get() ).to.equal( '<p>foo</p>' );
 			expect( data.get( 'main' ) ).to.equal( '<p>foo</p>' );
@@ -293,7 +293,7 @@ describe( 'DataController', () => {
 			schema.extend( '$block', { allowIn: 'div' } );
 			schema.extend( 'div', { allowIn: '$root' } );
 
-			mtvElementToElement( { model: 'paragraph', view: 'p' } )( data.modelToView );
+			downcastElementToElement( { model: 'paragraph', view: 'p' } )( data.downcastDispatcher );
 		} );
 
 		it( 'should stringify a content of an element', () => {
@@ -317,7 +317,7 @@ describe( 'DataController', () => {
 			schema.extend( '$block', { allowIn: 'div' } );
 			schema.extend( 'div', { allowIn: '$root' } );
 
-			mtvElementToElement( { model: 'paragraph', view: 'p' } )( data.modelToView );
+			downcastElementToElement( { model: 'paragraph', view: 'p' } )( data.downcastDispatcher );
 		} );
 
 		it( 'should convert a content of an element', () => {
@@ -338,7 +338,7 @@ describe( 'DataController', () => {
 			const modelElement = parseModel( '<div><paragraph>foobar</paragraph></div>', schema );
 			const modelRoot = model.document.getRoot();
 
-			mtvMarkerToHighlight( { model: 'marker:a', view: { class: 'a' } } )( data.modelToView );
+			downcastMarkerToHighlight( { model: 'marker:a', view: { class: 'a' } } )( data.downcastDispatcher );
 
 			model.change( writer => {
 				writer.insert( modelElement, modelRoot, 0 );
@@ -355,8 +355,8 @@ describe( 'DataController', () => {
 			const modelElement = parseModel( '<div><paragraph>foo</paragraph><paragraph>bar</paragraph></div>', schema );
 			const modelRoot = model.document.getRoot();
 
-			mtvMarkerToHighlight( { model: 'marker:a', view: { class: 'a' } } )( data.modelToView );
-			mtvMarkerToHighlight( { model: 'marker:b', view: { class: 'b' } } )( data.modelToView );
+			downcastMarkerToHighlight( { model: 'marker:a', view: { class: 'a' } } )( data.downcastDispatcher );
+			downcastMarkerToHighlight( { model: 'marker:b', view: { class: 'b' } } )( data.downcastDispatcher );
 
 			const modelP1 = modelElement.getChild( 0 );
 			const modelP2 = modelElement.getChild( 1 );

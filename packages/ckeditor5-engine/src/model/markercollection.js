@@ -271,9 +271,9 @@ mix( MarkerCollection, EmitterMixin );
  * markers as possible and remove them as soon as they are not needed anymore.
  *
  * Markers can be converted to view by adding appropriate converters for
- * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:addMarker} and
- * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:removeMarker}
- * events, or by building converters for {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher}
+ * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:addMarker} and
+ * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:removeMarker}
+ * events, or by building converters for {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}
  * using {@link module:engine/conversion/buildmodelconverter~buildModelConverter model converter builder}.
  */
 class Marker {

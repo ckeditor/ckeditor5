@@ -15,7 +15,10 @@ import List from '@ckeditor/ckeditor5-list/src/list';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 
-import buildModelConverter from '../../src/conversion/buildmodelconverter';
+import {
+	downcastMarkerToHighlight
+} from '../../src/conversion/downcast-helpers';
+
 import Position from '../../src/model/position';
 import Range from '../../src/model/range';
 
@@ -32,16 +35,17 @@ ClassicEditor
 		window.editor = editor;
 		model = editor.model;
 
-		buildModelConverter().for( editor.editing.modelToView )
-			.fromMarker( 'highlight' )
-			.toHighlight( data => {
+		downcastMarkerToHighlight( {
+			model: 'highlight',
+			view: data => {
 				const color = data.markerName.split( ':' )[ 1 ];
 
 				return {
 					class: 'h-' + color,
 					priority: 1
 				};
-			} );
+			}
+		} );
 
 		window.document.getElementById( 'add-yellow' ).addEventListener( 'mousedown', e => {
 			e.preventDefault();

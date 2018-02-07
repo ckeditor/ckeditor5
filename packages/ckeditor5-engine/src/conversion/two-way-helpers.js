@@ -4,28 +4,28 @@
  */
 
 /**
- * @module engine/conversion/definition-conversion
+ * @module engine/conversion/two-way-helpers
  */
 
 import {
-	elementToElement as mtvElementToElement,
-	attributeToElement as mtvAttributeToElement,
-	attributeToAttribute as mtvAttributeToAttribute
-} from './model-to-view-helpers';
+	downcastElementToElement,
+	downcastAttributeToElement,
+	downcastAttributeToAttribute
+} from './downcast-helpers';
 
 import {
-	elementToElement as vtmElementToElement,
-	elementToAttribute as vtmElementToAttribute,
-	attributeToAttribute as vtmAttributeToAttribute
-} from './view-to-model-helpers';
+	upcastElementToElement,
+	upcastElementToAttribute,
+	upcastAttributeToAttribute
+} from './upcast-helpers';
 
 /**
  * Defines a conversion between the model and the view where a model element is represented as a view element (and vice versa).
  * For example, model `<paragraph>Foo</paragraph>` is `<p>Foo</p>` in the view.
  *
- *		modelElementIsViewElement( conversion, { model: 'paragraph', view: 'p' } );
+ *		elementToElement( conversion, { model: 'paragraph', view: 'p' } );
  *
- *		modelElementIsViewElement( conversion, {
+ *		elementToElement( conversion, {
  *			model: 'fancyParagraph',
  *			view: {
  *				name: 'p',
@@ -33,7 +33,7 @@ import {
  *			}
  *		} );
  *
- *		modelElementIsViewElement( conversion, {
+ *		elementToElement( conversion, {
  *			model: 'paragraph',
  *			view: 'p',
  *			upcastAlso: [
@@ -48,7 +48,7 @@ import {
  *			]
  *		} );
  *
- *		modelElementIsViewElement( conversion, {
+ *		elementToElement( conversion, {
  *			model: 'heading',
  *			view: 'h2',
  *			// Convert "headling-like" paragraphs to headings.
@@ -82,13 +82,13 @@ import {
  * @param {module:engine/view/matcher~MatcherPattern|Array.<module:engine/view/matcher~MatcherPattern>} [definition.upcastAlso]
  * Any view element matching `upcastAlso` will also be converted to the given model element.
  */
-export function modelElementIsViewElement( conversion, definition ) {
-	// Set model-to-view conversion.
-	conversion.for( 'model' ).add( mtvElementToElement( definition ) );
+export function elementToElement( conversion, definition ) {
+	// Set up downcast converter.
+	conversion.for( 'downcast' ).add( downcastElementToElement( definition ) );
 
-	// Set view-to-model conversion.
+	// Set up upcast converter.
 	for ( const view of _getAllViews( definition ) ) {
-		conversion.for( 'view' ).add( vtmElementToElement( {
+		conversion.for( 'upcast' ).add( upcastElementToElement( {
 			model: definition.model,
 			view
 		} ) );
@@ -99,16 +99,16 @@ export function modelElementIsViewElement( conversion, definition ) {
  * Defines a conversion between the model and the view where a model attribute is represented as a view element (and vice versa).
  * For example, model text node with data `"Foo"` and `bold` attribute is `<strong>Foo</strong>` in the view.
  *
- *		modelAttributeIsViewElement( conversion, 'bold', { view: 'strong' } );
+ *		attributeToElement( conversion, 'bold', { view: 'strong' } );
  *
- *		modelAttributeIsViewElement( conversion, 'bold', {
+ *		attributeToElement( conversion, 'bold', {
  *			view: {
  *				name: 'span',
  *				class: 'bold'
  *			}
  *		} );
  *
- *		modelAttributeIsViewElement( conversion, 'bold', {
+ *		attributeToElement( conversion, 'bold', {
  *			view: 'strong',
  *			upcastAlso: [
  *				'b',
@@ -135,7 +135,7 @@ export function modelElementIsViewElement( conversion, definition ) {
  *			]
  *		} );
  *
- *		modelAttributeIsViewElement( conversion, 'styled', {
+ *		attributeToElement( conversion, 'styled', {
  *			model: 'dark',
  *			view: {
  *				name: 'span',
@@ -143,7 +143,7 @@ export function modelElementIsViewElement( conversion, definition ) {
  *			}
  *		} );
  *
- *		modelAttributeIsViewElement( conversion, 'fontSize', [
+ *		attributeToElement( conversion, 'fontSize', [
  *			{
  *				model: 'big',
  *				view: {
@@ -164,7 +164,7 @@ export function modelElementIsViewElement( conversion, definition ) {
  *			}
  *		] );
  *
- *		modelAttributeIsViewElement( conversion, 'fontSize', [
+ *		attributeToElement( conversion, 'fontSize', [
  *			{
  *				model: 'big',
  *				view: {
@@ -230,18 +230,17 @@ export function modelElementIsViewElement( conversion, definition ) {
  * @param {module:engine/conversion/conversion~Conversion} conversion Conversion class instance with registered conversion dispatchers.
  * @param {String} modelAttributeKey The key of the model attribute to convert.
  * @param {Object|Array.<Object>} definition Conversion definition. It is possible to provide multiple definitions in an array.
- * @param {*} [definition.model] The value of the converted model attribute. If omitted, in model-to-view conversion,
- * the item will be treated as a default item, that will be used when no other item matches. In view-to-model conversion,
- * the model attribute value will be set to `true`.
+ * @param {*} [definition.model] The value of the converted model attribute. If omitted, when downcasted, the item will be treated
+ * as a default item, that will be used when no other item matches. When upcasted, the model attribute value will be set to `true`.
  * @param {module:engine/view/elementdefinition~ElementDefinition} definition.view Definition of a view element to convert from/to.
  * @param {module:engine/view/matcher~MatcherPattern|Array.<module:engine/view/matcher~MatcherPattern>} [definition.upcastAlso]
  * Any view element matching `upcastAlso` will also be converted to the given model element.
  */
-export function modelAttributeIsViewElement( conversion, modelAttributeKey, definition ) {
-	// Set model-to-view conversion.
-	conversion.for( 'model' ).add( mtvAttributeToElement( modelAttributeKey, definition ) );
+export function attributeToElement( conversion, modelAttributeKey, definition ) {
+	// Set downcast (model to view conversion).
+	conversion.for( 'downcast' ).add( downcastAttributeToElement( modelAttributeKey, definition ) );
 
-	// Set view-to-model conversion. In this case, we need to re-organise the definition config.
+	// Set upcast (view to model conversion). In this case, we need to re-organise the definition config.
 	if ( !Array.isArray( definition ) ) {
 		definition = [ definition ];
 	}
@@ -250,7 +249,7 @@ export function modelAttributeIsViewElement( conversion, modelAttributeKey, defi
 		const model = _getModelAttributeDefinition( modelAttributeKey, item.model );
 
 		for ( const view of _getAllViews( item ) ) {
-			conversion.for( 'view' ).add( vtmElementToAttribute( {
+			conversion.for( 'upcast' ).add( upcastElementToAttribute( {
 				view,
 				model
 			} ) );
@@ -262,11 +261,11 @@ export function modelAttributeIsViewElement( conversion, modelAttributeKey, defi
  * Defines a conversion between the model and the view where a model attribute is represented as a view attribute (and vice versa).
  * For example, `<image src='foo.jpg'></image>` is converted to `<img src='foo.jpg'></img>` (same attribute name and value).
  *
- *		modelAttributeIsViewAttribute( conversion, 'src' );
+ *		attributeToAttribute( conversion, 'src' );
  *
- *		modelAttributeIsViewAttribute( conversion, 'source', { view: 'src' } );
+ *		attributeToAttribute( conversion, 'source', { view: 'src' } );
  *
- *		modelAttributeIsViewAttribute( conversion, 'aside', {
+ *		attributeToAttribute( conversion, 'aside', {
  *			model: true,
  *			view: {
  *				name: 'img',
@@ -275,7 +274,7 @@ export function modelAttributeIsViewElement( conversion, modelAttributeKey, defi
  *			}
  *		} );
  *
- *		modelAttributeIsViewAttribute( conversion, 'styled', [
+ *		attributeToAttribute( conversion, 'styled', [
  *			{
  *				model: 'dark',
  *				view: {
@@ -292,7 +291,7 @@ export function modelAttributeIsViewElement( conversion, modelAttributeKey, defi
  *			}
  *		] );
  *
- *		modelAttributeIsViewAttribute( conversion, 'align', [
+ *		attributeToAttribute( conversion, 'align', [
  *			{
  *				model: 'right',
  *				view: {
@@ -328,8 +327,8 @@ export function modelAttributeIsViewElement( conversion, modelAttributeKey, defi
  * @param {Object|Array.<Object>} [definition] Conversion definition. It is possible to provide multiple definitions in an array.
  * If not set, the conversion helper will assume 1-to-1 conversion, that is the model attribute key and value will be same
  * as the view attribute key and value.
- * @param {*} [definition.model] The value of the converted model attribute. If omitted, in model-to-view conversion,
- * the item will be treated as a default item, that will be used when no other item matches. In view-to-model conversion,
+ * @param {*} [definition.model] The value of the converted model attribute. If omitted, when downcasting,
+ * the item will be treated as a default item, that will be used when no other item matches. When upcasting conversion,
  * the model attribute value will be set to the same value as in the view.
  * @param {Object} definition.view View attribute conversion details. Given object has required `key` property,
  * specifying view attribute key, optional `value` property, specifying view attribute value and optional `name`
@@ -338,11 +337,11 @@ export function modelAttributeIsViewElement( conversion, modelAttributeKey, defi
  * @param {module:engine/view/matcher~MatcherPattern|Array.<module:engine/view/matcher~MatcherPattern>} [definition.upcastAlso]
  * Any view element matching `upcastAlso` will also be converted to the given model element.
  */
-export function modelAttributeIsViewAttribute( conversion, modelAttributeKey, definition ) {
-	// Set model-to-view conversion.
-	conversion.for( 'model' ).add( mtvAttributeToAttribute( modelAttributeKey, definition ) );
+export function attributeToAttribute( conversion, modelAttributeKey, definition ) {
+	// Set up downcast converter.
+	conversion.for( 'downcast' ).add( downcastAttributeToAttribute( modelAttributeKey, definition ) );
 
-	// Set view-to-model conversion. In this case, we need to re-organise the definition config.
+	// Set up upcast converter. In this case, we need to re-organise the definition config.
 	if ( !definition ) {
 		definition = { view: modelAttributeKey };
 	}
@@ -355,7 +354,7 @@ export function modelAttributeIsViewAttribute( conversion, modelAttributeKey, de
 		const model = _getModelAttributeDefinition( modelAttributeKey, item.model );
 
 		for ( const view of _getAllViews( item ) ) {
-			conversion.for( 'view' ).add( vtmAttributeToAttribute( {
+			conversion.for( 'upcast' ).add( upcastAttributeToAttribute( {
 				view,
 				model
 			} ) );

@@ -10,12 +10,12 @@ import ViewUIElement from '../view/uielement';
 import {
 	insertElement, wrap, changeAttribute,
 	insertUIElement, removeUIElement, highlightText, highlightElement, removeHighlight
-} from './model-to-view-converters';
+} from './downcast-converters';
 
 import cloneDeep from '@ckeditor/ckeditor5-utils/src/lib/lodash/cloneDeep';
 
 /**
- * @module engine/conversion/model-to-view-helpers
+ * @module engine/conversion/downcast-helpers
  */
 
 /**
@@ -23,13 +23,13 @@ import cloneDeep from '@ckeditor/ckeditor5-utils/src/lib/lodash/cloneDeep';
  *
  * This conversion results in creating a view element. For example, model `<paragraph>Foo</paragraph>` becomes `<p>Foo</p>` in the view.
  *
- *		elementToElement( { model: 'paragraph', view: 'p' } );
+ *		downcastElementToElement( { model: 'paragraph', view: 'p' } );
  *
- *		elementToElement( { model: 'paragraph', view: 'p' }, 'high' );
+ *		downcastElementToElement( { model: 'paragraph', view: 'p' }, 'high' );
  *
- *		elementToElement( { model: 'paragraph', view: new ViewContainerElement( 'p' ) } );
+ *		downcastElementToElement( { model: 'paragraph', view: new ViewContainerElement( 'p' ) } );
  *
- *		elementToElement( {
+ *		downcastElementToElement( {
  *			model: 'fancyParagraph',
  *			view: {
  *				name: 'p',
@@ -37,7 +37,7 @@ import cloneDeep from '@ckeditor/ckeditor5-utils/src/lib/lodash/cloneDeep';
  *			}
  *		} );
  *
- * 		elementToElement( {
+ * 		downcastElementToElement( {
  * 			model: 'heading',
  * 			view: modelElement => new ViewContainerElement( 'h' + modelElement.getAttribute( 'level' ) )
  * 		} );
@@ -53,7 +53,7 @@ import cloneDeep from '@ckeditor/ckeditor5-utils/src/lib/lodash/cloneDeep';
  * @param {module:utils/priorities~PriorityString} [priority='normal'] Converter priority.
  * @returns {Function} Conversion helper.
  */
-export function elementToElement( config, priority = 'normal' ) {
+export function downcastElementToElement( config, priority = 'normal' ) {
 	config = cloneDeep( config );
 
 	_normalizeToElementConfig( config, ViewContainerElement );
@@ -69,20 +69,20 @@ export function elementToElement( config, priority = 'normal' ) {
  * This conversion results in wrapping view nodes in a view attribute element. For example, model text node with data
  * `"Foo"` and `bold` attribute becomes `<strong>Foo</strong>` in the view.
  *
- *		attributeToElement( 'bold', { view: 'strong' } );
+ *		downcastAttributeToElement( 'bold', { view: 'strong' } );
  *
- *		attributeToElement( 'bold', { view: 'strong' }, 'high' );
+ *		downcastAttributeToElement( 'bold', { view: 'strong' }, 'high' );
  *
- *		attributeToElement( 'bold', { view: new ViewAttributeElement( 'strong' ) } );
+ *		downcastAttributeToElement( 'bold', { view: new ViewAttributeElement( 'strong' ) } );
  *
- *		attributeToElement( 'bold', {
+ *		downcastAttributeToElement( 'bold', {
  *			view: {
  *				name: 'span',
  *				class: 'bold'
  *			}
  *		} );
  *
- *		attributeToElement( 'styled', {
+ *		downcastAttributeToElement( 'styled', {
  *			model: 'dark',
  *			view: {
  *				name: 'span',
@@ -90,7 +90,7 @@ export function elementToElement( config, priority = 'normal' ) {
  *			}
  *		} );
  *
- *		attributeToElement( 'fontSize', [
+ *		downcastAttributeToElement( 'fontSize', [
  *			{
  *				model: 'big',
  *				view: {
@@ -111,7 +111,7 @@ export function elementToElement( config, priority = 'normal' ) {
  *			}
  *		] );
  *
- * 		attributeToElement( 'bold', {
+ * 		downcastAttributeToElement( 'bold', {
  * 			view: modelAttributeValue => new ViewAttributeElement( 'span', { style: 'font-weight:' + modelAttributeValue } )
  * 		} );
  *
@@ -128,7 +128,7 @@ export function elementToElement( config, priority = 'normal' ) {
  * @param {module:utils/priorities~PriorityString} [priority='normal'] Converter priority.
  * @returns {Function} Conversion helper.
  */
-export function attributeToElement( modelAttributeKey, config, priority = 'normal' ) {
+export function downcastAttributeToElement( modelAttributeKey, config, priority = 'normal' ) {
 	config = cloneDeep( config );
 
 	_normalizeToElementConfig( config, ViewAttributeElement );
@@ -146,20 +146,20 @@ export function attributeToElement( modelAttributeKey, config, priority = 'norma
  * This conversion results in adding an attribute on a view node, basing on an attribute from a model node. For example,
  * `<image src='foo.jpg'></image>` is converted to `<img src='foo.jpg'></img>`.
  *
- *		attributeToAttribute( 'src' );
+ *		downcastAttributeToAttribute( 'src' );
  *
- *		attributeToAttribute( 'source', { view: 'src' } );
+ *		downcastAttributeToAttribute( 'source', { view: 'src' } );
  *
- *		attributeToAttribute( 'source', { view: 'src' }, 'high' );
+ *		downcastAttributeToAttribute( 'source', { view: 'src' }, 'high' );
  *
- *		attributeToAttribute( 'stylish', {
+ *		downcastAttributeToAttribute( 'stylish', {
  *			view: {
  *				key: 'class',
  *				value: 'styled'
  *			}
  *		} );
  *
- *		attributeToAttribute( 'styled', {
+ *		downcastAttributeToAttribute( 'styled', {
  *			model: 'dark',
  *			view: {
  *				key: 'class',
@@ -167,7 +167,7 @@ export function attributeToElement( modelAttributeKey, config, priority = 'norma
  *			}
  *		} );
  *
- *		attributeToAttribute( 'style', [
+ *		downcastAttributeToAttribute( 'style', [
  *			{
  *				model: 'dark',
  *				view: {
@@ -184,7 +184,7 @@ export function attributeToElement( modelAttributeKey, config, priority = 'norma
  *			}
  *		] );
  *
- *		attributeToAttribute( 'style', {
+ *		downcastAttributeToAttribute( 'style', {
  *			view: attributeValue => ( { key: 'class', value: 'style-' + attributeValue } )
  *		} );
  *
@@ -205,7 +205,7 @@ export function attributeToElement( modelAttributeKey, config, priority = 'norma
  * @param {module:utils/priorities~PriorityString} [priority='normal'] Converter priority.
  * @returns {Function} Conversion helper.
  */
-export function attributeToAttribute( modelAttributeKey, config = {}, priority = 'normal' ) {
+export function downcastAttributeToAttribute( modelAttributeKey, config = {}, priority = 'normal' ) {
 	config = cloneDeep( config );
 
 	_normalizeToAttributeConfig( modelAttributeKey, config );
@@ -224,13 +224,13 @@ export function attributeToAttribute( modelAttributeKey, config = {}, priority =
  * is collapsed, only one element is created. For example, model marker set like this `<paragraph>F[oo b]ar</paragraph>`
  * becomes `<p>F<span data-marker="search"></span>oo b<span data-marker="search"></span>ar</p>` in the view.
  *
- *		markerToElement( { model: 'search', view: 'marker-search' } );
+ *		downcastMarkerToElement( { model: 'search', view: 'marker-search' } );
  *
- *		markerToElement( { model: 'search', view: 'marker-search' }, 'high' );
+ *		downcastMarkerToElement( { model: 'search', view: 'marker-search' }, 'high' );
  *
- *		markerToElement( { model: 'search', view: new ViewUIElement( 'span', { data-marker: 'search' } ) } );
+ *		downcastMarkerToElement( { model: 'search', view: new ViewUIElement( 'span', { data-marker: 'search' } ) } );
  *
- *		markerToElement( {
+ *		downcastMarkerToElement( {
  *			model: 'search',
  *			view: {
  *				name: 'span',
@@ -240,7 +240,7 @@ export function attributeToAttribute( modelAttributeKey, config = {}, priority =
  *			}
  *		} );
  *
- * 		markerToElement( {
+ * 		downcastMarkerToElement( {
  * 			model: 'search',
  * 			view: data => {
  *	 			return new ViewUIElement( 'span', { 'data-marker': 'search', 'data-start': data.isOpening } );
@@ -250,7 +250,7 @@ export function attributeToAttribute( modelAttributeKey, config = {}, priority =
  * If function is passed as `config.view` parameter, it will be used to generate both boundary elements. The function
  * receives `data` object as parameter and should return an instance of {@link module:engine/view/uielement~UIElement view.UIElement}.
  * The `data` object properties are passed from
- * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:addMarker}. Additionally,
+ * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:addMarker}. Additionally,
  * `data.isOpening` parameter is passed, which is set to `true` for marker start boundary element, and `false` to
  * marker end boundary element.
  *
@@ -266,7 +266,7 @@ export function attributeToAttribute( modelAttributeKey, config = {}, priority =
  * @param {module:utils/priorities~PriorityString} [priority='normal'] Converter priority.
  * @returns {Function} Conversion helper.
  */
-export function markerToElement( config, priority = 'normal' ) {
+export function downcastMarkerToElement( config, priority = 'normal' ) {
 	config = cloneDeep( config );
 
 	_normalizeToElementConfig( config, ViewUIElement );
@@ -281,7 +281,7 @@ export function markerToElement( config, priority = 'normal' ) {
  * Model marker to highlight conversion helper.
  *
  * This conversion results in creating a highlight on view nodes. For this kind of conversion,
- * {@link module:engine/conversion/model-to-view-converters~HighlightDescriptor} should be provided.
+ * {@link module:engine/conversion/downcast-converters~HighlightDescriptor} should be provided.
  *
  * For text nodes, a `span` {@link module:engine/view/attributeelement~AttributeElement} is created and it wraps all text nodes
  * in the converted marker range. For example, model marker set like this `<paragraph>F[oo b]ar</paragraph>` becomes
@@ -296,11 +296,11 @@ export function markerToElement( config, priority = 'normal' ) {
  * to a container element, it is the container element instance itself which applies values from highlight descriptor.
  * So, in a sense, converter takes care of stating what should be applied on what, while element decides how to apply that.
  *
- *		markerToHighlight( { model: 'comment', view: { class: 'comment' } } );
+ *		downcastMarkerToHighlight( { model: 'comment', view: { class: 'comment' } } );
  *
- *		markerToHighlight( { model: 'comment', view: { class: 'new-comment' } }, 'high' );
+ *		downcastMarkerToHighlight( { model: 'comment', view: { class: 'new-comment' } }, 'high' );
  *
- * 		markerToHighlight( {
+ * 		downcastMarkerToHighlight( {
  * 			model: 'comment',
  * 			view: data => {
  * 				// Assuming that marker name is in a form of comment:commentType.
@@ -315,18 +315,18 @@ export function markerToElement( config, priority = 'normal' ) {
  * If function is passed as `config.view` parameter, it will be used to generate highlight descriptor. The function
  * receives `data` object as parameter and should return an instance of {@link module:engine/view/uielement~UIElement view.UIElement}.
  * The `data` object properties are passed from
- * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:addMarker}.
+ * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:addMarker}.
  *
  * See {@link module:engine/conversion/conversion~Conversion#for} to learn how to add converter to conversion process.
  *
  * @param {Object} config Conversion configuration.
  * @param {String} config.model Name of the model marker (or model marker group) to convert.
- * @param {module:engine/conversion/model-to-view-converters~HighlightDescriptor|Function} config.view Highlight descriptor
+ * @param {module:engine/conversion/downcast-converters~HighlightDescriptor|Function} config.view Highlight descriptor
  * which will be used for highlighting or a function that takes model marker data as a parameter and returns a highlight descriptor.
  * @param {module:utils/priorities~PriorityString} [priority='normal'] Converter priority.
  * @returns {Function} Conversion helper.
  */
-export function markerToHighlight( config, priority = 'normal' ) {
+export function downcastMarkerToHighlight( config, priority = 'normal' ) {
 	return dispatcher => {
 		dispatcher.on( 'addMarker:' + config.model, highlightText( config.view ), { priority } );
 		dispatcher.on( 'addMarker:' + config.model, highlightElement( config.view ), { priority } );
@@ -334,7 +334,7 @@ export function markerToHighlight( config, priority = 'normal' ) {
 	};
 }
 
-// Takes config and adds default parameters if they don't exist and normalizes other parameters to be used in model-to-view converters
+// Takes config and adds default parameters if they don't exist and normalizes other parameters to be used in downcast converters
 // for generating a view element.
 //
 // @param {Object} config Object with conversion helper configuration.
@@ -387,7 +387,7 @@ function _createViewElementFromDefinition( viewElementDefinition, ViewElementCla
 	return element;
 }
 
-// Takes config and adds default parameters if they don't exist and normalizes other parameters to be used in model-to-view converters
+// Takes config and adds default parameters if they don't exist and normalizes other parameters to be used in downcast converters
 // for generating view attribute.
 //
 // @param {String} modelAttributeKey Model attribute key for which config is defined.

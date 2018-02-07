@@ -12,9 +12,9 @@ import EditingController from '../../src/controller/editingcontroller';
 import ViewDocument from '../../src/view/document';
 
 import Mapper from '../../src/conversion/mapper';
-import ModelConversionDispatcher from '../../src/conversion/modelconversiondispatcher';
+import DowncastDispatcher from '../../src/conversion/downcastdispatcher';
 
-import { elementToElement, markerToHighlight } from '../../src/conversion/model-to-view-helpers';
+import { downcastElementToElement, downcastMarkerToHighlight } from '../../src/conversion/downcast-helpers';
 
 import Model from '../../src/model/model';
 import ModelPosition from '../../src/model/position';
@@ -41,7 +41,7 @@ describe( 'EditingController', () => {
 			expect( editing ).to.have.property( 'model' ).that.equals( model );
 			expect( editing ).to.have.property( 'view' ).that.is.instanceof( ViewDocument );
 			expect( editing ).to.have.property( 'mapper' ).that.is.instanceof( Mapper );
-			expect( editing ).to.have.property( 'modelToView' ).that.is.instanceof( ModelConversionDispatcher );
+			expect( editing ).to.have.property( 'downcastDispatcher' ).that.is.instanceof( DowncastDispatcher );
 
 			editing.destroy();
 		} );
@@ -91,9 +91,9 @@ describe( 'EditingController', () => {
 			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			model.schema.register( 'div', { inheritAllFrom: '$block' } );
 
-			elementToElement( { model: 'paragraph', view: 'p' } )( editing.modelToView );
-			elementToElement( { model: 'div', view: 'div' } )( editing.modelToView );
-			markerToHighlight( { model: 'marker', view: {} } )( editing.modelToView );
+			downcastElementToElement( { model: 'paragraph', view: 'p' } )( editing.downcastDispatcher );
+			downcastElementToElement( { model: 'div', view: 'div' } )( editing.downcastDispatcher );
+			downcastMarkerToHighlight( { model: 'marker', view: {} } )( editing.downcastDispatcher );
 
 			// Note: The below code is highly overcomplicated due to #455.
 			model.change( writer => {
@@ -358,9 +358,9 @@ describe( 'EditingController', () => {
 			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			model.schema.register( 'div', { inheritAllFrom: '$block' } );
 
-			elementToElement( { model: 'paragraph', view: 'p' } )( editing.modelToView );
-			elementToElement( { model: 'div', view: 'div' } )( editing.modelToView );
-			markerToHighlight( { model: 'marker', view: {} } )( editing.modelToView );
+			downcastElementToElement( { model: 'paragraph', view: 'p' } )( editing.downcastDispatcher );
+			downcastElementToElement( { model: 'div', view: 'div' } )( editing.downcastDispatcher );
+			downcastMarkerToHighlight( { model: 'marker', view: {} } )( editing.downcastDispatcher );
 
 			const modelData = new ModelDocumentFragment( parse(
 				'<paragraph>foo</paragraph>' +
@@ -375,7 +375,7 @@ describe( 'EditingController', () => {
 				writer.setSelection( ModelRange.createFromParentsAndOffsets( p1, 0, p1, 0 ) );
 			} );
 
-			mcd = editing.modelToView;
+			mcd = editing.downcastDispatcher;
 			sinon.spy( mcd, 'convertMarkerRemove' );
 		} );
 
@@ -571,7 +571,7 @@ describe( 'EditingController', () => {
 
 			const spy = sinon.spy();
 
-			editing.modelToView.on( 'insert:$element', spy );
+			editing.downcastDispatcher.on( 'insert:$element', spy );
 
 			editing.destroy();
 

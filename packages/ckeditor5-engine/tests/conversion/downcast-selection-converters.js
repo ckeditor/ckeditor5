@@ -15,13 +15,13 @@ import ViewUIElement from '../../src/view/uielement';
 import { mergeAttributes } from '../../src/view/writer';
 
 import Mapper from '../../src/conversion/mapper';
-import ModelConversionDispatcher from '../../src/conversion/modelconversiondispatcher';
+import DowncastDispatcher from '../../src/conversion/downcastdispatcher';
 import {
 	convertRangeSelection,
 	convertCollapsedSelection,
 	clearAttributes,
 	clearFakeSelection
-} from '../../src/conversion/model-selection-to-view-converters';
+} from '../../src/conversion/downcast-selection-converters';
 
 import {
 	insertElement,
@@ -30,13 +30,13 @@ import {
 	highlightElement,
 	highlightText,
 	removeHighlight
-} from '../../src/conversion/model-to-view-converters';
+} from '../../src/conversion/downcast-converters';
 
 import createViewRoot from '../view/_utils/createroot';
 import { stringify as stringifyView } from '../../src/dev-utils/view';
 import { setData as setModelData } from '../../src/dev-utils/model';
 
-describe( 'model-selection-to-view-converters', () => {
+describe( 'downcast-selection-converters', () => {
 	let dispatcher, mapper, model, modelDoc, modelRoot, docSelection, viewDoc, viewRoot, viewSelection, highlightDescriptor;
 
 	beforeEach( () => {
@@ -56,7 +56,7 @@ describe( 'model-selection-to-view-converters', () => {
 
 		highlightDescriptor = { class: 'marker', priority: 1 };
 
-		dispatcher = new ModelConversionDispatcher( model, { mapper, viewSelection } );
+		dispatcher = new DowncastDispatcher( model, { mapper, viewSelection } );
 
 		dispatcher.on( 'insert:$text', insertText() );
 		dispatcher.on( 'attribute:bold', wrap( new ViewAttributeElement( 'strong' ) ) );

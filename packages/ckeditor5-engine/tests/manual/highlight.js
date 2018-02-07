@@ -10,13 +10,13 @@ import ViewContainerElement from '../../src/view/containerelement';
 import ViewText from '../../src/view/text';
 
 import {
-	elementToElement as vtmElementToElement,
-} from '../../src/conversion/view-to-model-helpers';
+	upcastElementToElement,
+} from '../../src/conversion/upcast-helpers';
 
 import {
-	elementToElement as mtvElementToElement,
-	markerToHighlight as mtvMarkerToHighlight
-} from '../../src/conversion/model-to-view-helpers';
+	downcastElementToElement,
+	downcastMarkerToHighlight
+} from '../../src/conversion/downcast-helpers';
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
@@ -48,19 +48,19 @@ class FancyWidget extends Plugin {
 		} );
 		schema.extend( 'fancywidget', { allowIn: '$root' } );
 
-		mtvElementToElement( {
+		downcastElementToElement( {
 			model: 'fancywidget',
 			view: () => {
 				const widgetElement = new ViewContainerElement( 'figure', { class: 'fancy-widget' }, new ViewText( 'widget' ) );
 
 				return toWidget( widgetElement );
 			}
-		} )( data.modelToView );
+		} )( data.downcastDispatcher );
 
-		vtmElementToElement( {
+		upcastElementToElement( {
 			view: 'figure',
 			model: 'fancywidget'
-		} )( data.viewToModel );
+		} )( data.upcastDispatcher );
 	}
 }
 
@@ -71,7 +71,7 @@ ClassicEditor.create( global.document.querySelector( '#editor' ), {
 	.then( editor => {
 		window.editor = editor;
 
-		mtvMarkerToHighlight( {
+		downcastMarkerToHighlight( {
 			model: 'marker',
 			view: data => ( {
 				class: 'highlight-' + data.markerName.split( ':' )[ 1 ]

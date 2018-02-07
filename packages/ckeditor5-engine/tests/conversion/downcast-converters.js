@@ -25,11 +25,11 @@ import {
 	highlightText,
 	removeHighlight,
 	createViewElementFromHighlightDescriptor
-} from '../../src/conversion/model-to-view-converters';
+} from '../../src/conversion/downcast-converters';
 
 import EditingController from '../../src/controller/editingcontroller';
 
-describe( 'model-to-view-converters', () => {
+describe( 'downcast-converters', () => {
 	let dispatcher, modelDoc, modelRoot, viewRoot, controller, modelRootStart, model;
 
 	beforeEach( () => {
@@ -44,7 +44,7 @@ describe( 'model-to-view-converters', () => {
 		// This is a mock of attaching view root to dom root.
 		controller.view.getRoot()._name = 'div';
 
-		dispatcher = controller.modelToView;
+		dispatcher = controller.downcastDispatcher;
 
 		dispatcher.on( 'insert:paragraph', insertElement( () => new ViewContainerElement( 'p' ) ) );
 		dispatcher.on( 'attribute:class', changeAttribute() );
@@ -86,7 +86,7 @@ describe( 'model-to-view-converters', () => {
 	}
 
 	describe( 'insertText', () => {
-		it( 'should convert text insertion in model to view text', () => {
+		it( 'should downcast text', () => {
 			model.change( writer => {
 				writer.insert( new ModelText( 'foobar' ), modelRootStart );
 			} );

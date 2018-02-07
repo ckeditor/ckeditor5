@@ -12,12 +12,12 @@ import Range from '../../../../src/model/range';
 import LivePosition from '../../../../src/model/liveposition';
 
 import {
-	elementToAttribute as vtmElementToAttribute
-} from '../../../../src/conversion/view-to-model-helpers';
+	upcastElementToAttribute
+} from '../../../../src/conversion/upcast-helpers';
 
 import {
-	attributeToElement as mtvAttributeToElement,
-} from '../../../../src/conversion/model-to-view-helpers';
+	downcastAttributeToElement,
+} from '../../../../src/conversion/downcast-helpers';
 
 import AttributeElement from '../../../../src/view/attributeelement';
 
@@ -33,12 +33,11 @@ class Link extends Plugin {
 		// Allow bold attribute on all inline nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: 'link' } );
 
-		editor.conversion.for( 'model' ).add( mtvAttributeToElement( {
-			model: 'link',
+		editor.conversion.for( 'downcast' ).add( downcastAttributeToElement( 'link', {
 			view: attributeValue => new AttributeElement( 'a', { href: attributeValue } )
 		} ) );
 
-		editor.conversion.for( 'view' ).add( vtmElementToAttribute( {
+		editor.conversion.for( 'upcast' ).add( upcastElementToAttribute( {
 			view: 'a',
 			model: {
 				key: 'link',

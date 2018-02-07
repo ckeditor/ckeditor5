@@ -9,12 +9,12 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import {
-	elementToElement as vtmElementToElement
-} from '../../src/conversion/view-to-model-helpers';
+	upcastElementToElement
+} from '../../src/conversion/upcast-helpers';
 
 import {
-	elementToElement as mtvElementToElement
-} from '../../src/conversion/model-to-view-helpers';
+	downcastElementToElement
+} from '../../src/conversion/downcast-helpers';
 
 import { getData as getModelData } from '../../src/dev-utils/model';
 import { getData as getViewData } from '../../src/dev-utils/view';
@@ -54,12 +54,12 @@ function WidgetPlugin( editor ) {
 	} );
 	schema.extend( 'widget', { allowIn: '$root' } );
 
-	editor.conversion.for( 'model' ).add( mtvElementToElement( {
+	editor.conversion.for( 'downcast' ).add( downcastElementToElement( {
 		model: 'widget',
 		view: 'widget'
 	} ) );
 
-	editor.conversion.for( 'view' ).add( vtmElementToElement( {
+	editor.conversion.for( 'upcast' ).add( upcastElementToElement( {
 		model: 'widget',
 		view: 'widget'
 	} ) );

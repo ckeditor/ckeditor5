@@ -15,22 +15,21 @@ import viewWriter from '../view/writer';
 import DocumentSelection from '../model/documentselection';
 
 /**
- * Contains model to view converters for
- * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher}.
+ * Contains downcast (model to view) converters for {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}.
  *
- * @module engine/conversion/model-to-view-converters
+ * @module engine/conversion/downcast-converters
  */
 
 /**
  * Function factory, creates a converter that converts node insertion changes from the model to the view.
  * The view element that will be added to the view depends on passed parameter. If {@link module:engine/view/element~Element} was passed,
  * it will be cloned and the copy will be inserted. If `Function` is provided, it is passed all the parameters of the
- * dispatcher's {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:insert insert event}.
+ * dispatcher's {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert insert event}.
  * It's expected that the function returns a {@link module:engine/view/element~Element}.
  * The result of the function will be inserted to the view.
  *
  * The converter automatically consumes corresponding value from consumables list, stops the event (see
- * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher}) and bind model and view elements.
+ * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}) and bind model and view elements.
  *
  *		modelDispatcher.on( 'insert:paragraph', insertElement( new ViewElement( 'p' ) ) );
  *
@@ -71,10 +70,10 @@ export function insertElement( elementCreator ) {
 }
 
 /**
- * Function factory, creates a default model-to-view converter for text insertion changes.
+ * Function factory, creates a default downcast converter for text insertion changes.
  *
  * The converter automatically consumes corresponding value from consumables list and stops the event (see
- * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher}).
+ * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}).
  *
  *		modelDispatcher.on( 'insert:$text', insertText() );
  *
@@ -94,7 +93,7 @@ export function insertText() {
 }
 
 /**
- * Function factory, creates a default model-to-view converter for node remove changes.
+ * Function factory, creates a default downcast converter for node remove changes.
  *
  *		modelDispatcher.on( 'remove', remove() );
  *
@@ -186,7 +185,7 @@ export function insertUIElement( elementCreator ) {
 }
 
 /**
- * Function factory, creates a default model-to-view converter for removing {@link module:engine/view/uielement~UIElement ui element}
+ * Function factory, creates a default downcast converter for removing {@link module:engine/view/uielement~UIElement ui element}
  * basing on marker remove change.
  *
  * @param {module:engine/view/uielement~UIElement|Function} elementCreator View ui element, or function returning
@@ -239,7 +238,7 @@ export function removeUIElement( elementCreator ) {
  * **Note:** Provided attribute creator should always return the same `key` for given attribute from the model.
  *
  * The converter automatically consumes corresponding value from consumables list and stops the event (see
- * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher}).
+ * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}).
  *
  *		modelDispatcher.on( 'attribute:customAttr:myElem', changeAttribute( ( value, data ) => {
  *			// Change attribute key from `customAttr` to `class` in view.
@@ -258,7 +257,7 @@ export function removeUIElement( elementCreator ) {
  * @param {Function} [attributeCreator] Function returning an object with two properties: `key` and `value`, which
  * represents attribute key and attribute value to be set on a {@link module:engine/view/element~Element view element}.
  * The function is passed all the parameters of the
- * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:attribute} event.
+ * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute} event.
  * @returns {Function} Set/change attribute converter.
  */
 export function changeAttribute( attributeCreator ) {
@@ -301,13 +300,13 @@ export function changeAttribute( attributeCreator ) {
  *
  * The wrapping node depends on passed parameter. If {@link module:engine/view/element~Element} was passed, it will be cloned and
  * the copy will become the wrapping element. If `Function` is provided, it is passed attribute value and then all the parameters of the
- * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:attribute attribute event}.
+ * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute attribute event}.
  * It's expected that the function returns a {@link module:engine/view/element~Element}.
  * The result of the function will be the wrapping element.
  * When provided `Function` does not return element, then will be no conversion.
  *
  * The converter automatically consumes corresponding value from consumables list, stops the event (see
- * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher}).
+ * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}).
  *
  *		modelDispatcher.on( 'attribute:bold', wrapItem( new ViewAttributeElement( 'strong' ) ) );
  *
@@ -358,7 +357,7 @@ export function wrap( elementCreator ) {
 /**
  * Function factory, creates converter that converts text inside marker's range. Converter wraps the text with
  * {@link module:engine/view/attributeelement~AttributeElement} created from provided descriptor.
- * See {link module:engine/conversion/model-to-view-converters~createViewElementFromHighlightDescriptor}.
+ * See {link module:engine/conversion/downcast-converters~createViewElementFromHighlightDescriptor}.
  *
  * Also can be used to convert selection that is inside a marker. In that case, an empty attribute element will be
  * created and the selection will be put inside it.
@@ -367,7 +366,7 @@ export function wrap( elementCreator ) {
  *
  * If the highlight descriptor will not provide `id` property, name of the marker will be used.
  *
- * @param {module:engine/conversion/model-to-view-converters~HighlightDescriptor|Function} highlightDescriptor
+ * @param {module:engine/conversion/downcast-converters~HighlightDescriptor|Function} highlightDescriptor
  * @return {Function}
  */
 export function highlightText( highlightDescriptor ) {
@@ -415,7 +414,7 @@ export function highlightText( highlightDescriptor ) {
  *
  * If the highlight descriptor will not provide `id` property, name of the marker will be used.
  *
- * @param {module:engine/conversion/model-to-view-converters~HighlightDescriptor|Function} highlightDescriptor
+ * @param {module:engine/conversion/downcast-converters~HighlightDescriptor|Function} highlightDescriptor
  * @return {Function}
  */
 export function highlightElement( highlightDescriptor ) {
@@ -460,7 +459,7 @@ export function highlightElement( highlightDescriptor ) {
  * Both text nodes and elements are handled by this converter by they are handled a bit differently.
  *
  * Text nodes are unwrapped using {@link module:engine/view/attributeelement~AttributeElement} created from provided
- * highlight descriptor. See {link module:engine/conversion/model-to-view-converters~highlightDescriptorToAttributeElement}.
+ * highlight descriptor. See {link module:engine/conversion/downcast-converters~highlightDescriptorToAttributeElement}.
  *
  * For elements, the converter checks if an element has `removeHighlight` function stored as
  * {@link module:engine/view/element~Element#setCustomProperty custom property}. If so, it uses it to remove the highlight.
@@ -473,7 +472,7 @@ export function highlightElement( highlightDescriptor ) {
  *
  * If the highlight descriptor will not provide `id` property, name of the marker will be used.
  *
- * @param {module:engine/conversion/model-to-view-converters~HighlightDescriptor|Function} highlightDescriptor
+ * @param {module:engine/conversion/downcast-converters~HighlightDescriptor|Function} highlightDescriptor
  * @return {Function}
  */
 export function removeHighlight( highlightDescriptor ) {
@@ -544,11 +543,11 @@ function _prepareDescriptor( highlightDescriptor, data, conversionApi ) {
 
 /**
  * Creates `span` {@link module:engine/view/attributeelement~AttributeElement view attribute element} from information
- * provided by {@link module:engine/conversion/model-to-view-converters~HighlightDescriptor} object. If priority
+ * provided by {@link module:engine/conversion/downcast-converters~HighlightDescriptor} object. If priority
  * is not provided in descriptor - default priority will be used.
  *
- * @param {module:engine/conversion/model-to-view-converters~HighlightDescriptor} descriptor
- * @return {module:engine/conversion/model-to-view-converters~HighlightAttributeElement}
+ * @param {module:engine/conversion/downcast-converters~HighlightDescriptor} descriptor
+ * @return {module:engine/conversion/downcast-converters~HighlightAttributeElement}
  */
 export function createViewElementFromHighlightDescriptor( descriptor ) {
 	const viewElement = new HighlightAttributeElement( 'span', descriptor.attributes );
@@ -575,7 +574,7 @@ export function createViewElementFromHighlightDescriptor( descriptor ) {
  * is {@link module:engine/view/attributeelement~AttributeElement#isSimilar} method.
  *
  * For `HighlightAttributeElement` it checks just `highlightDescriptorId` custom property, that is set during marker-to-highlight
- * conversion basing on {@link module:engine/conversion/model-to-view-converters~HighlightDescriptor} object.
+ * conversion basing on {@link module:engine/conversion/downcast-converters~HighlightDescriptor} object.
  * `HighlightAttributeElement`s with same `highlightDescriptorId` property are considered similar.
  */
 class HighlightAttributeElement extends ViewAttributeElement {
@@ -602,7 +601,7 @@ class HighlightAttributeElement extends ViewAttributeElement {
  *  * descriptor `id` is passed to the `removeHighlight` function upon conversion and should be used to remove the highlight of given
  *  id from the element.
  *
- * @typedef {Object} module:engine/conversion/model-to-view-converters~HighlightDescriptor
+ * @typedef {Object} module:engine/conversion/downcast-converters~HighlightDescriptor
  *
  * @property {String|Array.<String>} class CSS class or array of classes to set. If descriptor is used to
  * create {@link module:engine/view/attributeelement~AttributeElement} over text nodes, those classes will be set

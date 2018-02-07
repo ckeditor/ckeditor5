@@ -28,8 +28,8 @@ export default class Conversion {
 	 * {@link module:utils/ckeditorerror~CKEditorError conversion-register-group-exists} error is thrown.
 	 *
 	 * @param {String} groupName A name for dispatchers group.
-	 * @param {Array.<module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher|
-	 * module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher>} dispatchers Dispatchers to register
+	 * @param {Array.<module:engine/conversion/downcastdispatcher~DowncastDispatcher|
+	 * module:engine/conversion/upcastdispatcher~UpcastDispatcher>} dispatchers Dispatchers to register
 	 * under given name.
 	 */
 	register( groupName, dispatchers ) {
@@ -49,7 +49,7 @@ export default class Conversion {
 	 * Provides chainable API to assign converters to dispatchers registered under given group name. Converters are added
 	 * by calling `.add()` method of an object returned by this function.
 	 *
-	 *		conversion.for( 'model' )
+	 *		conversion.for( 'downcast' )
 	 *			.add( conversionHelperA )
 	 *			.add( conversionHelperB );
 	 *
@@ -61,15 +61,15 @@ export default class Conversion {
 	 * Conversion helpers for most common cases are already provided. They are flexible enough to cover most use cases.
 	 * See documentation to learn how they can be configured.
 	 *
-	 * For model to view conversion, these are:
+	 * For downcast (model to view conversion), these are:
 	 *
-	 * * {@link module:engine/conversion/model-to-view-helpers~elementToElement model element to view element conversion helper},
-	 * * {@link module:engine/conversion/model-to-view-helpers~attributeToElement model attribute to view element conversion helper},
-	 * * {@link module:engine/conversion/model-to-view-helpers~attributeToAttribute model attribute to view attribute conversion helper}.
+	 * * {@link module:engine/conversion/downcast-helpers~elementToElement model element to view element conversion helper},
+	 * * {@link module:engine/conversion/downcast-helpers~attributeToElement model attribute to view element conversion helper},
+	 * * {@link module:engine/conversion/downcast-helpers~attributeToAttribute model attribute to view attribute conversion helper}.
 	 *
-	 * For view to model conversion, these are:
+	 * For upcast (view to model conversion), these are:
 	 *
-	 * * view element to model element conversion helper,
+	 * * {view element to model element conversion helper,
 	 * * view element to model attribute conversion helper,
 	 * * view attribute to model attribute conversion helper.
 	 *
@@ -79,12 +79,12 @@ export default class Conversion {
 	 *		const config = { model: 'paragraph', view: 'p' };
 	 *
 	 *		// Add converters to proper dispatchers using conversion helpers.
-	 *		conversion.for( 'model' ).add( modelElementToElement( config ) );
-	 *		conversion.for( 'view' ).add( viewElementToElement( config ) );
+	 *		conversion.for( 'downcast' ).add( modelElementToElement( config ) );
+	 *		conversion.for( 'upcast' ).add( viewElementToElement( config ) );
 	 *
 	 * An example of providing custom conversion helper that uses custom converter function:
 	 *
-	 *		conversion.for( 'model' ).add( dispatcher => {
+	 *		conversion.for( 'downcast' ).add( dispatcher => {
 	 *			// Adding custom `myConverter` converter for 'paragraph' element insertion, with default priority ('normal').
 	 *			dispatcher.on( 'insert:paragraph', myConverter );
 	 *		} );
@@ -112,8 +112,8 @@ export default class Conversion {
 	 *
 	 * @private
 	 * @param {String} groupName
-	 * @returns {Array.<module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher|
-	 * module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher>}
+	 * @returns {Array.<module:engine/conversion/downcastdispatcher~DowncastDispatcher|
+	 * module:engine/conversion/upcastdispatcher~UpcastDispatcher>}
 	 */
 	_getDispatchers( groupName ) {
 		const dispatchers = this._dispatchersGroups.get( groupName );
@@ -137,8 +137,8 @@ export default class Conversion {
 // adding converters to all specified dispatchers.
 //
 // @private
-// @param {Array.<module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher|
-// module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher>} dispatchers
+// @param {Array.<module:engine/conversion/downcastdispatcher~DowncastDispatcher|
+// module:engine/conversion/upcastdispatcher~UpcastDispatcher>} dispatchers
 // @param {Function} conversionHelper
 function _addToDispatchers( dispatchers, conversionHelper ) {
 	for ( const dispatcher of dispatchers ) {

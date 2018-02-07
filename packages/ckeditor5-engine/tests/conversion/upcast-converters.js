@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import ViewConversionDispatcher from '../../src/conversion/viewconversiondispatcher';
+import UpcastDispatcher from '../../src/conversion/upcastdispatcher';
 import ViewContainerElement from '../../src/view/containerelement';
 import ViewDocumentFragment from '../../src/view/documentfragment';
 import ViewText from '../../src/view/text';
@@ -15,9 +15,9 @@ import ModelText from '../../src/model/text';
 import ModelRange from '../../src/model/range';
 import ModelPosition from '../../src/model/position';
 
-import { convertToModelFragment, convertText } from '../../src/conversion/view-to-model-converters';
+import { convertToModelFragment, convertText } from '../../src/conversion/upcast-converters';
 
-describe( 'view-to-model-converters', () => {
+describe( 'upcast-converters', () => {
 	let dispatcher, schema, context, model;
 
 	beforeEach( () => {
@@ -29,7 +29,7 @@ describe( 'view-to-model-converters', () => {
 
 		context = [ '$root' ];
 
-		dispatcher = new ViewConversionDispatcher( model, { schema } );
+		dispatcher = new UpcastDispatcher( model, { schema } );
 	} );
 
 	describe( 'convertText()', () => {

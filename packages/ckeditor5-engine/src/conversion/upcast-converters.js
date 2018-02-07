@@ -7,16 +7,16 @@ import Range from '../model/range';
 
 /**
  * Contains {@link module:engine/view/view view} to {@link module:engine/model/model model} converters for
- * {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher}.
+ * {@link module:engine/conversion/upcastdispatcher~UpcastDispatcher}.
  *
- * @module engine/conversion/view-to-model-converters
+ * @module engine/conversion/upcast-converters
  */
 
 /**
  * Function factory, creates a converter that converts {@link module:engine/view/documentfragment~DocumentFragment view document fragment}
  * or all children of {@link module:engine/view/element~Element} into
  * {@link module:engine/model/documentfragment~DocumentFragment model document fragment}.
- * This is the "entry-point" converter for view to model conversion. This converter starts the conversion of all children
+ * This is the "entry-point" converter for upcast (view to model conversion). This converter starts the conversion of all children
  * of passed view document fragment. Those children {@link module:engine/view/node~Node view nodes} are then handled by other converters.
  *
  * This also a "default", last resort converter for all view elements that has not been converted by other converters.
