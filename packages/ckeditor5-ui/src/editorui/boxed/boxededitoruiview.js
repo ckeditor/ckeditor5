@@ -67,7 +67,7 @@ export default class BoxedEditorUIView extends EditorUIView {
 				role: 'application',
 				dir: 'ltr',
 				lang: locale.language,
-				'aria-labelledby': `cke-editor__aria-label_${ ariaLabelUid }`
+				'aria-labelledby': `ck-editor__aria-label_${ ariaLabelUid }`
 			},
 
 			children: [
@@ -106,8 +106,8 @@ export default class BoxedEditorUIView extends EditorUIView {
 
 		voiceLabel.extendTemplate( {
 			attributes: {
-				id: `cke-editor__aria-label_${ ariaLabelUid }`,
-				class: 'cke-voice-label'
+				id: `ck-editor__aria-label_${ ariaLabelUid }`,
+				class: 'ck-voice-label'
 			}
 		} );
 
