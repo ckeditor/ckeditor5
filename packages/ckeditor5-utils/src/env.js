@@ -21,9 +21,9 @@ const env = {
 	 * Indicates that application is running on Macintosh.
 	 *
 	 * @static
-	 * @member {Boolean} module:utils/env~env#mac
+	 * @member {Boolean} module:utils/env~env#isMac
 	 */
-	mac: isMac( userAgent )
+	isMac: isMac( userAgent )
 };
 
 export default env;

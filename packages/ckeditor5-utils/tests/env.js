@@ -13,13 +13,13 @@ describe( 'Env', () => {
 		expect( env ).to.be.an( 'object' );
 	} );
 
-	describe( 'mac', () => {
+	describe( 'isMac', () => {
 		it( 'is a boolean', () => {
-			expect( env.mac ).to.be.a( 'boolean' );
+			expect( env.isMac ).to.be.a( 'boolean' );
 		} );
 	} );
 
-	describe( 'isMac', () => {
+	describe( 'isMac()', () => {
 		it( 'returns true for macintosh UA strings', () => {
 			expect( isMac( 'macintosh' ) ).to.be.true;
 			expect( isMac( 'foo macintosh bar' ) ).to.be.true;

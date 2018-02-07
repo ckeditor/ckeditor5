@@ -108,7 +108,7 @@ export function parseKeystroke( keystroke ) {
  * @returns {String} Keystroke text specific for the environment.
  */
 export function getEnvKeystrokeText( keystroke ) {
-	if ( !env.mac ) {
+	if ( !env.isMac ) {
 		return keystroke;
 	}
 
