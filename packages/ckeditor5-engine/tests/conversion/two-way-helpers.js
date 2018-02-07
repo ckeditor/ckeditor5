@@ -51,8 +51,8 @@ describe( 'two-way-helpers', () => {
 		viewDispatcher.on( 'documentFragment', convertToModelFragment(), { priority: 'lowest' } );
 
 		conversion = new Conversion();
-		conversion.register( 'view', [ viewDispatcher ] );
-		conversion.register( 'model', [ controller.downcastDispatcher ] );
+		conversion.register( 'upcast', [ viewDispatcher ] );
+		conversion.register( 'downcast', [ controller.downcastDispatcher ] );
 	} );
 
 	describe( 'elementToElement', () => {

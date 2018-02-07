@@ -36,7 +36,7 @@ describe( 'downcast-helpers', () => {
 		viewRoot = controller.view.getRoot();
 
 		conversion = new Conversion();
-		conversion.register( 'model', [ controller.downcastDispatcher ] );
+		conversion.register( 'downcast', [ controller.downcastDispatcher ] );
 	} );
 
 	describe( 'downcastElementToElement', () => {

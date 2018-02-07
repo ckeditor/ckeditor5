@@ -52,7 +52,7 @@ describe( 'upcast-helpers', () => {
 		dispatcher.on( 'documentFragment', convertToModelFragment(), { priority: 'lowest' } );
 
 		conversion = new Conversion();
-		conversion.register( 'view', [ dispatcher ] );
+		conversion.register( 'upcast', [ dispatcher ] );
 	} );
 
 	describe( 'upcastElementToElement', () => {
