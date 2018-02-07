@@ -456,8 +456,12 @@ class LiveSelection extends Selection {
 		this._attributePriority = new Map();
 
 		// Add events that will ensure selection correctness.
-		this.on( 'change:range', () => {
-			for ( const range of this.getRanges() ) {
+		this.on( 'change:range', ( evt, options ) => {
+			// If the `options.range` is specified, only the passed Range will be checked.
+			// It prevents to checking selection's ranges before they are updated. Read more #1281.
+			const ranges = options.range ? [ options.range ] : Array.from( this.getRanges() );
+
+			for ( const range of ranges ) {
 				if ( !this._document._validateSelectionRange( range ) ) {
 					/**
 					 * Range from {@link module:engine/model/documentselection~DocumentSelection document selection}
@@ -624,7 +628,7 @@ class LiveSelection extends Selection {
 			}
 
 			// Whenever a live range from selection changes, fire an event informing about that change.
-			this.fire( 'change:range', { directChange: false } );
+			this.fire( 'change:range', { directChange: false, range: liveRange } );
 		} );
 
 		return liveRange;
