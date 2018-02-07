@@ -103,15 +103,15 @@ describe( 'Keyboard', () => {
 	} );
 
 	describe( 'getEnvKeystrokeText', () => {
-		const initialEnvMac = env.mac;
+		const initialEnvMac = env.isMac;
 
 		afterEach( () => {
-			env.mac = initialEnvMac;
+			env.isMac = initialEnvMac;
 		} );
 
 		describe( 'on Macintosh', () => {
 			beforeEach( () => {
-				env.mac = true;
+				env.isMac = true;
 			} );
 
 			it( 'replaces CTRL with ⌘', () => {
@@ -147,7 +147,7 @@ describe( 'Keyboard', () => {
 
 		describe( 'on non–Macintosh', () => {
 			beforeEach( () => {
-				env.mac = false;
+				env.isMac = false;
 			} );
 
 			it( 'does not touch anything', () => {
