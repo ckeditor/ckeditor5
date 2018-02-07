@@ -17,7 +17,7 @@
     "@ckeditor/ckeditor5-editor-balloon": "ckeditor/ckeditor5-editor-balloon#04504ba",
     "@ckeditor/ckeditor5-editor-classic": "ckeditor/ckeditor5-editor-classic#ed124d2",
     "@ckeditor/ckeditor5-editor-inline": "ckeditor/ckeditor5-editor-inline#be370db",
-    "@ckeditor/ckeditor5-engine": "ckeditor/ckeditor5-engine#226dcc6",
+    "@ckeditor/ckeditor5-engine": "ckeditor/ckeditor5-engine#699da2b",
     "@ckeditor/ckeditor5-enter": "ckeditor/ckeditor5-enter#712ceb7",
     "@ckeditor/ckeditor5-essentials": "ckeditor/ckeditor5-essentials#5c2db3e",
     "@ckeditor/ckeditor5-heading": "ckeditor/ckeditor5-heading#5574c7e",
@@ -31,7 +31,7 @@
     "@ckeditor/ckeditor5-ui": "ckeditor/ckeditor5-ui#7973f83",
     "@ckeditor/ckeditor5-undo": "ckeditor/ckeditor5-undo#254cd89",
     "@ckeditor/ckeditor5-upload": "ckeditor/ckeditor5-upload#55697a9",
-    "@ckeditor/ckeditor5-utils": "ckeditor/ckeditor5-utils#1823196",
+    "@ckeditor/ckeditor5-utils": "ckeditor/ckeditor5-utils#dc6b226",
     "@ckeditor/ckeditor5-widget": "ckeditor/ckeditor5-widget#08b4f4e"
   }
 }
