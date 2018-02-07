@@ -10,6 +10,7 @@ import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import createViewRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import env from '../../ckeditor5-utils/src/env';
 
 describe( 'DeleteObserver', () => {
 	let viewDocument;
@@ -28,6 +29,12 @@ describe( 'DeleteObserver', () => {
 	} );
 
 	describe( 'delete event', () => {
+		const initialEnvMac = env.isMac;
+
+		afterEach( () => {
+			env.isMac = initialEnvMac;
+		} );
+
 		it( 'is fired on keydown', () => {
 			const spy = sinon.spy();
 
@@ -45,14 +52,36 @@ describe( 'DeleteObserver', () => {
 			expect( data ).to.have.property( 'sequence', 1 );
 		} );
 
-		it( 'is fired with a proper direction and unit', () => {
+		it( 'is fired with a proper direction and unit (on Mac)', () => {
 			const spy = sinon.spy();
+
+			env.isMac = true;
 
 			viewDocument.on( 'delete', spy );
 
 			viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
 				keyCode: getCode( 'backspace' ),
 				altKey: true
+			} ) );
+
+			expect( spy.calledOnce ).to.be.true;
+
+			const data = spy.args[ 0 ][ 1 ];
+			expect( data ).to.have.property( 'direction', 'backward' );
+			expect( data ).to.have.property( 'unit', 'word' );
+			expect( data ).to.have.property( 'sequence', 1 );
+		} );
+
+		it( 'is fired with a proper direction and unit (on non-Mac)', () => {
+			const spy = sinon.spy();
+
+			env.isMac = false;
+
+			viewDocument.on( 'delete', spy );
+
+			viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
+				keyCode: getCode( 'backspace' ),
+				ctrlKey: true
 			} ) );
 
 			expect( spy.calledOnce ).to.be.true;
