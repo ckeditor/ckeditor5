@@ -7,10 +7,6 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-
-import Text from '@ckeditor/ckeditor5-engine/src/model/text';
-import Selection from '@ckeditor/ckeditor5-engine/src/model/selection';
-
 // import { stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 ClassicEditor
@@ -20,9 +16,10 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
+		const viewDocument = editor.editing.view.document;
 		// const clipboard = editor.plugins.get( 'Clipboard' );
 
-		editor.editing.view.on( 'drop', ( evt, data ) => {
+		viewDocument.on( 'drop', ( evt, data ) => {
 			console.clear();
 
 			console.log( '----- drop -----' );
@@ -33,10 +30,10 @@ ClassicEditor
 			data.preventDefault();
 			evt.stop();
 
-			editor.model.change( () => {
-				const insertAtSelection = new Selection( [ editor.editing.mapper.toModelRange( data.dropRange ) ] );
-				editor.model.insertContent( new Text( '@' ), insertAtSelection );
-				editor.model.document.selection.setTo( insertAtSelection );
+			editor.model.change( writer => {
+				const dropRange = editor.editing.mapper.toModelRange( data.dropRange );
+				writer.insert( writer.createText( '@' ), dropRange.start );
+				writer.setSelection( dropRange );
 			} );
 		} );
 
