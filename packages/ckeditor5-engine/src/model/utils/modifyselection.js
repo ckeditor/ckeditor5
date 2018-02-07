@@ -13,6 +13,8 @@ import Range from '../range';
 import { isInsideSurrogatePair, isInsideCombinedSymbol } from '@ckeditor/ckeditor5-utils/src/unicode';
 import DocumentSelection from '../documentselection';
 
+const wordBoundaryCharacters = ' ,.-():\'"';
+
 /**
  * Modifies the selection. Currently, the supported modifications are:
  *
@@ -31,6 +33,7 @@ import DocumentSelection from '../documentselection';
  *  For example `𨭎` is represented in `String` by `\uD862\uDF4E`. Both `\uD862` and `\uDF4E` do not have any meaning
  *  outside the pair (are rendered as ? when alone). Position between them would be incorrect. In this case, selection
  *  extension will include whole "surrogate pair".
+ *  * `'word'` - moves selection by whole word.
  *
  * **Note:** if you extend a forward selection in a backward direction you will in fact shrink it.
  *
@@ -39,7 +42,7 @@ import DocumentSelection from '../documentselection';
  * @param {module:engine/model/selection~Selection} selection The selection to modify.
  * @param {Object} [options]
  * @param {'forward'|'backward'} [options.direction='forward'] The direction in which the selection should be modified.
- * @param {'character'|'codePoint'} [options.unit='character'] The unit by which selection should be modified.
+ * @param {'character'|'codePoint'|'word'} [options.unit='character'] The unit by which selection should be modified.
  */
 export default function modifySelection( model, selection, options = {} ) {
 	const schema = model.schema;
@@ -79,11 +82,13 @@ export default function modifySelection( model, selection, options = {} ) {
 }
 
 // Checks whether the selection can be extended to the the walker's next value (next position).
+// @param {{ walker, unit, isForward, schema }} data
+// @param {{ item, nextPosition, type}} value
 function tryExtendingTo( data, value ) {
 	// If found text, we can certainly put the focus in it. Let's just find a correct position
 	// based on the unit.
 	if ( value.type == 'text' ) {
-		return getCorrectPosition( data.walker, data.unit );
+		return getCorrectPosition( data.walker, data.unit, data.isForward );
 	}
 
 	// Entering an element.
@@ -117,14 +122,22 @@ function tryExtendingTo( data, value ) {
 
 // Finds a correct position by walking in a text node and checking whether selection can be extended to given position
 // or should be extended further.
-function getCorrectPosition( walker, unit ) {
+//
+// @param {module:engine/model/treewalker~TreeWalker} walker
+// @param {String} unit The unit by which selection should be modified.
+// @param {Boolean} isForward Is the direction in which the selection should be modified is forward.
+function getCorrectPosition( walker, unit, isForward ) {
 	const textNode = walker.position.textNode;
 
 	if ( textNode ) {
 		const data = textNode.data;
 		let offset = walker.position.offset - textNode.startOffset;
 
-		while ( isInsideSurrogatePair( data, offset ) || ( unit == 'character' && isInsideCombinedSymbol( data, offset ) ) ) {
+		while (
+			isInsideSurrogatePair( data, offset ) ||
+			( unit == 'character' && isInsideCombinedSymbol( data, offset ) ) ||
+			( unit == 'word' && !isAtWordBoundary( data, offset, isForward, textNode ) )
+		) {
 			walker.next();
 
 			offset = walker.position.offset - textNode.startOffset;
@@ -143,4 +156,23 @@ function getSearchRange( start, isForward ) {
 	} else {
 		return new Range( searchEnd, start );
 	}
+}
+
+// Checks if selection is on word boundary.
+//
+// @param {String} data TextNode contents.
+// @param {Number} offset Position offset.
+// @param {Boolean} isForward Is the direction in which the selection should be modified is forward.
+function isAtWordBoundary( data, offset, isForward, textNode ) {
+	const textBoundaryOffset = isForward ? textNode.endOffset : 0;
+
+	// If the position as at the end of a textNode it is also a word boundary.
+	if ( offset === textBoundaryOffset ) {
+		return true;
+	}
+
+	// The offset to check depends on direction.
+	const offsetToCheck = offset + ( isForward ? 0 : -1 );
+
+	return wordBoundaryCharacters.includes( data.charAt( offsetToCheck ) );
 }
