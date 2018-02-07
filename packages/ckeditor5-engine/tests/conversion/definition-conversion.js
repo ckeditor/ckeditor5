@@ -78,24 +78,68 @@ describe( 'definition-conversion', () => {
 			test( '<p class="fancy">Foo</p>', '<fancyParagraph>Foo</fancyParagraph>' );
 		} );
 
-		it( 'config.view is an object with alternative view', () => {
-			schema.register( 'blockquote', {
-				inheritAllFrom: '$block'
-			} );
-
+		it( 'config.view is an object with upcastAlso defined', () => {
 			modelElementIsViewElement( conversion, {
-				model: 'blockquote',
-				view: 'blockquote',
-				alternativeView: [
+				model: 'paragraph',
+				view: 'p',
+				upcastAlso: [
+					'div',
 					{
-						name: 'div',
-						class: 'blockquote'
+						// Match any name.
+						name: /./,
+						style: {
+							display: 'block'
+						}
 					}
 				]
 			} );
 
-			test( '<blockquote>Foo</blockquote>', '<blockquote>Foo</blockquote>' );
-			test( '<div class="blockquote">Foo</div>', '<blockquote>Foo</blockquote>', '<blockquote>Foo</blockquote>' );
+			test( '<p>Foo</p>', '<paragraph>Foo</paragraph>' );
+			test( '<div>Foo</div>', '<paragraph>Foo</paragraph>', '<p>Foo</p>' );
+			test( '<span style="display:block">Foo</span>', '<paragraph>Foo</paragraph>', '<p>Foo</p>' );
+		} );
+
+		it( 'upcastAlso given as a function', () => {
+			schema.register( 'heading', {
+				inheritAllFrom: '$block'
+			} );
+
+			modelElementIsViewElement( conversion, {
+				model: 'heading',
+				view: 'h2',
+				upcastAlso: viewElement => {
+					const fontSize = viewElement.getStyle( 'font-size' );
+
+					if ( !fontSize ) {
+						return null;
+					}
+
+					const match = fontSize.match( /(\d+)\s*px/ );
+
+					if ( !match ) {
+						return null;
+					}
+
+					const size = Number( match[ 1 ] );
+
+					if ( size >= 26 ) {
+						return { name: true, style: [ 'font-size' ] };
+					}
+
+					return null;
+				}
+			} );
+
+			modelElementIsViewElement( conversion, {
+				model: 'paragraph',
+				view: 'p'
+			} );
+
+			test( '<p></p>', '<paragraph></paragraph>' );
+			test( '<p style="font-size:20px"></p>', '<paragraph></paragraph>', '<p></p>' );
+
+			test( '<h2></h2>', '<heading></heading>' );
+			test( '<p style="font-size:26px"></p>', '<heading></heading>', '<h2></h2>' );
 		} );
 	} );
 
@@ -121,10 +165,10 @@ describe( 'definition-conversion', () => {
 			test( '<p><span class="bold">Foo</span> bar</p>', '<paragraph><$text bold="true">Foo</$text> bar</paragraph>' );
 		} );
 
-		it( 'config.view is an object with alternative view', () => {
+		it( 'config.view is an object with upcastAlso defined', () => {
 			modelAttributeIsViewElement( conversion, 'bold', {
 				view: 'strong',
-				alternativeView: [
+				upcastAlso: [
 					'b',
 					{
 						name: 'span',
@@ -134,6 +178,16 @@ describe( 'definition-conversion', () => {
 						name: 'span',
 						style: {
 							'font-weight': 'bold'
+						}
+					},
+					viewElement => {
+						const fontWeight = viewElement.getStyle( 'font-weight' );
+
+						if ( viewElement.is( 'span' ) && fontWeight && /\d+/.test( fontWeight ) && Number( fontWeight ) > 500 ) {
+							return {
+								name: true,
+								style: [ 'font-weight' ]
+							};
 						}
 					}
 				]
@@ -158,6 +212,18 @@ describe( 'definition-conversion', () => {
 
 			test(
 				'<p><span style="font-weight: bold;">Foo</span></p>',
+				'<paragraph><$text bold="true">Foo</$text></paragraph>',
+				'<p><strong>Foo</strong></p>'
+			);
+
+			test(
+				'<p><span style="font-weight: 500;">Foo</span></p>',
+				'<paragraph>Foo</paragraph>',
+				'<p>Foo</p>'
+			);
+
+			test(
+				'<p><span style="font-weight: 600;">Foo</span></p>',
 				'<paragraph><$text bold="true">Foo</$text></paragraph>',
 				'<p><strong>Foo</strong></p>'
 			);
@@ -216,7 +282,7 @@ describe( 'definition-conversion', () => {
 			);
 		} );
 
-		it( 'config is an array with alternative view', () => {
+		it( 'config is an array with upcastAlso defined', () => {
 			schema.extend( '$text', {
 				allowAttributes: [ 'fontSize' ]
 			} );
@@ -230,14 +296,27 @@ describe( 'definition-conversion', () => {
 							'font-size': '1.2em'
 						}
 					},
-					alternativeView: [
-						{
-							name: 'span',
-							style: {
-								'font-size': '12px'
-							}
+					upcastAlso: viewElement => {
+						const fontSize = viewElement.getStyle( 'font-size' );
+
+						if ( !fontSize ) {
+							return null;
 						}
-					]
+
+						const match = fontSize.match( /(\d+)\s*px/ );
+
+						if ( !match ) {
+							return null;
+						}
+
+						const size = Number( match[ 1 ] );
+
+						if ( viewElement.is( 'span' ) && size > 10 ) {
+							return { name: true, style: [ 'font-size' ] };
+						}
+
+						return null;
+					}
 				},
 				{
 					model: 'small',
@@ -247,14 +326,27 @@ describe( 'definition-conversion', () => {
 							'font-size': '0.8em'
 						}
 					},
-					alternativeView: [
-						{
-							name: 'span',
-							style: {
-								'font-size': '8px'
-							}
+					upcastAlso: viewElement => {
+						const fontSize = viewElement.getStyle( 'font-size' );
+
+						if ( !fontSize ) {
+							return null;
 						}
-					]
+
+						const match = fontSize.match( /(\d+)\s*px/ );
+
+						if ( !match ) {
+							return null;
+						}
+
+						const size = Number( match[ 1 ] );
+
+						if ( viewElement.is( 'span' ) && size < 10 ) {
+							return { name: true, style: [ 'font-size' ] };
+						}
+
+						return null;
+					}
 				}
 			] );
 
@@ -278,6 +370,12 @@ describe( 'definition-conversion', () => {
 				'<p><span style="font-size:8px">Foo</span> bar</p>',
 				'<paragraph><$text fontSize="small">Foo</$text> bar</paragraph>',
 				'<p><span style="font-size:0.8em">Foo</span> bar</p>'
+			);
+
+			test(
+				'<p><span style="font-size:10px">Foo</span> bar</p>',
+				'<paragraph>Foo bar</paragraph>',
+				'<p>Foo bar</p>'
 			);
 		} );
 	} );
@@ -319,12 +417,16 @@ describe( 'definition-conversion', () => {
 			modelAttributeIsViewAttribute( conversion, 'aside', {
 				model: true,
 				view: {
+					name: 'img',
 					key: 'class',
 					value: 'aside half-size'
 				}
 			} );
 
+			modelElementIsViewElement( conversion, { model: 'paragraph', view: 'p' } );
+
 			test( '<img class="aside half-size"></img>', '<image aside="true"></image>' );
+			test( '<p class="aside half-size"></p>', '<paragraph></paragraph>', '<p></p>' );
 		} );
 
 		it( 'config is an array', () => {
@@ -353,8 +455,9 @@ describe( 'definition-conversion', () => {
 			test( '<img class="styled styled-light"></img>', '<image styled="light"></image>' );
 		} );
 
-		it( 'config is an array with alternative view', () => {
+		it( 'config is an array with upcastAlso defined', () => {
 			modelElementIsViewElement( conversion, { model: 'paragraph', view: 'p' } );
+
 			schema.extend( 'paragraph', {
 				allowAttributes: [ 'align' ]
 			} );
@@ -366,12 +469,15 @@ describe( 'definition-conversion', () => {
 						key: 'class',
 						value: 'align-right'
 					},
-					alternativeView: [
-						{
-							key: 'style',
-							value: 'text-align:right;'
+					upcastAlso: viewElement => {
+						if ( viewElement.getStyle( 'text-align' ) == 'right' ) {
+							return {
+								style: [ 'text-align' ]
+							};
 						}
-					]
+
+						return null;
+					}
 				},
 				{
 					model: 'center',
@@ -379,12 +485,11 @@ describe( 'definition-conversion', () => {
 						key: 'class',
 						value: 'align-center'
 					},
-					alternativeView: [
-						{
-							key: 'style',
-							value: 'text-align:center;'
+					upcastAlso: {
+						style: {
+							'text-align': 'center'
 						}
-					]
+					}
 				}
 			] );
 

@@ -52,8 +52,7 @@ import cloneDeep from '@ckeditor/ckeditor5-utils/src/lib/lodash/cloneDeep';
  * See {@link module:engine/conversion/conversion~Conversion#for} to learn how to add converter to conversion process.
  *
  * @param {Object} config Conversion configuration.
- * @param {String|module:engine/view/viewelementdefinition~ViewElementDefinition} config.view View element name, or
- * a view element definition. Conversion will be set for view elements which match the name or the definition.
+ * @param {module:engine/view/matcher~MatcherPattern} config.view Pattern matching all view elements which should be converted.
  * @param {String|module:engine/model/element~Element|Function} config.model Name of the model element, a model element
  * instance or a function that takes a view element and returns a model element. The model element will be inserted in the model.
  * @param {module:utils/priorities~PriorityString} [priority='normal'] Converter priority.
@@ -63,10 +62,12 @@ export function elementToElement( config, priority = 'normal' ) {
 	config = cloneDeep( config );
 
 	const converter = _prepareToElementConverter( config );
-	const elementName = typeof config.view == 'string' ? config.view : config.view.name;
+
+	const elementName = _getViewElementNameFromConfig( config );
+	const eventName = elementName ? 'element:' + elementName : 'element';
 
 	return dispatcher => {
-		dispatcher.on( 'element:' + elementName, converter, { priority } );
+		dispatcher.on( eventName, converter, { priority } );
 	};
 }
 
@@ -128,8 +129,7 @@ export function elementToElement( config, priority = 'normal' ) {
  * See {@link module:engine/conversion/conversion~Conversion#for} to learn how to add converter to conversion process.
  *
  * @param {Object} config Conversion configuration.
- * @param {String|module:engine/view/viewelementdefinition~ViewElementDefinition} config.view View element name, or
- * a view element definition. Conversion will be set for view elements which match the name or the definition.
+ * @param {module:engine/view/matcher~MatcherPattern} config.view Pattern matching all view elements which should be converted.
  * @param {String|Object} config.model Model attribute key or an object with `key` and `value` properties, describing
  * the model attribute. `value` property may be set as a function that takes a view element and returns the value.
  * If `String` is given, the model attribute value will be set to `true`.
@@ -141,10 +141,13 @@ export function elementToAttribute( config, priority = 'low' ) {
 
 	_normalizeModelAttributeConfig( config );
 
-	const converter = _prepareToAttributeConverter( config );
+	const converter = _prepareToAttributeConverter( config, false );
+
+	const elementName = _getViewElementNameFromConfig( config );
+	const eventName = elementName ? 'element:' + elementName : 'element';
 
 	return dispatcher => {
-		dispatcher.on( 'element', converter, { priority } );
+		dispatcher.on( eventName, converter, { priority } );
 	};
 }
 
@@ -158,18 +161,21 @@ export function elementToAttribute( config, priority = 'low' ) {
  *
  *		attributeToAttribute( { view: 'src', model: 'source' } );
  *
- *		attributeToAttribute( { view: 'src', model: 'source' }, 'normal' );
+ *		attributeToAttribute( { view: { key: 'src' }, model: 'source' } );
+ *
+ *		attributeToAttribute( { view: { key: 'src' }, model: 'source' }, 'normal' );
  *
  *		attributeToAttribute( {
  *			view: {
- *				key: 'class',
- *				value: 'styled'
+ *				key: 'data-style',
+ *				value: /[\s\S]+/
  *			},
  *			model: 'styled'
  *		} );
  *
  *		attributeToAttribute( {
  *			view: {
+ *				name: 'span',
  *				key: 'class',
  *				value: 'styled-dark'
  *			},
@@ -199,8 +205,11 @@ export function elementToAttribute( config, priority = 'low' ) {
  *
  * @param {String|Object} config Conversion configuration. If given as a `String`, the conversion will be set for a
  * view attribute with given key. The model attribute key and value will be same as view attribute key and value.
- * @param {String|Object} config.view View attribute key or an object with `key` and `value` properties.
- * Conversion will be set for view attributes with given key or which match given object.
+ * @param {String|Object} config.view Specifies which view attribute will be converted. If a `String` is passed,
+ * attributes with given key will be converted. If an `Object` is passed, it must have a required `key` property,
+ * specifying view attribute key, and may have an optional `value` property, specifying view attribute value and optional `name`
+ * property specifying a view element name from/on which the attribute should be converted. `value` can be given as a `String`,
+ * a `RegExp` or a function callback, that takes view attribute value as the only parameter and returns `Boolean`.
  * @param {String|Object} config.model Model attribute key or an object with `key` and `value` properties, describing
  * the model attribute. `value` property may be set as a function that takes a view element and returns the value.
  * If `String` is given, the model attribute value will be same as view attribute value.
@@ -210,10 +219,15 @@ export function elementToAttribute( config, priority = 'low' ) {
 export function attributeToAttribute( config, priority = 'low' ) {
 	config = cloneDeep( config );
 
-	const viewKey = _normalizeFromAttributeConfig( config );
+	let viewKey = null;
+
+	if ( typeof config.view == 'string' || config.view.key ) {
+		viewKey = _normalizeViewAttributeKeyValueConfig( config );
+	}
+
 	_normalizeModelAttributeConfig( config, viewKey );
 
-	const converter = _prepareToAttributeConverter( config );
+	const converter = _prepareToAttributeConverter( config, true );
 
 	return dispatcher => {
 		dispatcher.on( 'element', converter, { priority } );
@@ -247,8 +261,7 @@ export function attributeToAttribute( config, priority = 'low' ) {
  * See {@link module:engine/conversion/conversion~Conversion#for} to learn how to add converter to conversion process.
  *
  * @param {Object} config Conversion configuration.
- * @param {String|module:engine/view/viewelementdefinition~ViewElementDefinition} config.view View element name, or
- * a view element definition. Conversion will be set for view elements which match the name or the definition.
+ * @param {module:engine/view/matcher~MatcherPattern} config.view Pattern matching all view elements which should be converted.
  * @param {String|Function} config.model Name of the model marker, or a function that takes a view element and returns
  * a model marker name.
  * @param {module:utils/priorities~PriorityString} [priority='normal'] Converter priority.
@@ -260,6 +273,23 @@ export function elementToMarker( config, priority = 'normal' ) {
 	_normalizeToMarkerConfig( config );
 
 	return elementToElement( config, priority );
+}
+
+// Helper function for from-view-element conversion. Checks if `config.view` directly specifies converted view element's name
+// and if so, returns it.
+//
+// @param {Object} config Conversion config.
+// @returns {String|null} View element name or `null` if name is not directly set.
+function _getViewElementNameFromConfig( config ) {
+	if ( typeof config.view == 'string' ) {
+		return config.view;
+	}
+
+	if ( typeof config.view == 'object' && typeof config.view.name == 'string' ) {
+		return config.view.name;
+	}
+
+	return null;
 }
 
 // Helper for to-model-element conversion. Takes a config object and returns a proper converter function.
@@ -352,17 +382,42 @@ function _getModelElement( model, input, writer ) {
 	}
 }
 
-function _normalizeFromAttributeConfig( config ) {
-	const key = typeof config.view == 'string' ? config.view : config.view.key;
-	const value = typeof config.view == 'string' ? /[\s\S]*/ : config.view.value;
+// Helper function view-attribute-to-model-attribute helper. Normalizes `config.view` which was set as `String` or
+// as an `Object` with `key`, `value` and `name` properties. Normalized `config.view` has is compatible with
+// {@link module:engine/view/matcher~MatcherPattern}.
+//
+// @param {Object} config Conversion config.
+// @returns {String} Key of the converted view attribute.
+function _normalizeViewAttributeKeyValueConfig( config ) {
+	if ( typeof config.view == 'string' ) {
+		config.view = { key: config.view };
+	}
 
-	config.view = { attribute: {
-		[ key ]: value
-	} };
+	const key = config.view.key;
+	const value = typeof config.view.value == 'undefined' ? /[\s\S]*/ : config.view.value;
+
+	const normalized = {
+		attribute: {
+			[ key ]: value
+		}
+	};
+
+	if ( config.view.name ) {
+		normalized.name = config.view.name;
+	}
+
+	config.view = normalized;
 
 	return key;
 }
 
+// Helper function that normalizes `config.model` in from-model-attribute conversion. `config.model` can be set
+// as a `String`, an `Object` with only `key` property or an `Object` with `key` and `value` properties. Normalized
+// `config.model` is an `Object` with `key` and `value` properties.
+//
+// @param {Object} config Conversion config.
+// @param {String} viewAttributeKeyToCopy Key of the  converted view attribute. If it is set, model attribute value
+// will be equal to view attribute value.
 function _normalizeModelAttributeConfig( config, viewAttributeKeyToCopy = null ) {
 	const defaultModelValue = viewAttributeKeyToCopy === null ? true : viewElement => viewElement.getAttribute( viewAttributeKeyToCopy );
 
@@ -377,7 +432,8 @@ function _normalizeModelAttributeConfig( config, viewAttributeKeyToCopy = null )
 //
 // @param {String} modelAttributeKey The key of the model attribute to set on a model node.
 // @param {Object|Array.<Object>} config Conversion configuration. It is possible to provide multiple configurations in an array.
-function _prepareToAttributeConverter( config ) {
+// @param {Boolean} consumeName If set to `true` converter will not consume element's name.
+function _prepareToAttributeConverter( config, consumeName ) {
 	const matcher = new Matcher( config.view );
 
 	return ( evt, data, conversionApi ) => {
@@ -394,6 +450,11 @@ function _prepareToAttributeConverter( config ) {
 		// Do not convert if attribute building function returned falsy value.
 		if ( modelValue === null ) {
 			return;
+		}
+
+		if ( !consumeName ) {
+			// Do not test or consume `name` consumable.
+			delete match.match.name;
 		}
 
 		// Try to consume appropriate values from consumable values list.
@@ -417,6 +478,13 @@ function _prepareToAttributeConverter( config ) {
 	};
 }
 
+// Helper function for to-model-attribute converter. Sets model attribute on given range. Checks {@link module:engine/model/schema~Schema}
+// to ensure proper model structure.
+//
+// @param {module:engine/model/range~Range} modelRange Model range on which attribute should be set.
+// @param {Object} modelAttribute Model attribute to set.
+// @param {Object} conversionApi Conversion API.
+// @returns {Boolean} `true` if attribute was set on at least one node from given `modelRange`.
 function _setAttributeOn( modelRange, modelAttribute, conversionApi ) {
 	let result = false;
 

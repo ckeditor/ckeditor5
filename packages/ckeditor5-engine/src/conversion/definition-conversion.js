@@ -34,24 +34,53 @@ import {
  *		} );
  *
  *		modelElementIsViewElement( conversion, {
- *			model: 'blockquote',
- *			view: 'blockquote',
- *			alternativeView: [
+ *			model: 'paragraph',
+ *			view: 'p',
+ *			upcastAlso: [
+ *				'div',
  *				{
- *					name: 'div',
- *					class: 'blockquote'
+ *					// Match any name.
+ *					name: /./,
+ *					style: {
+ *						display: 'block'
+ *					}
  *				}
  *			]
+ *		} );
+ *
+ *		modelElementIsViewElement( conversion, {
+ *			model: 'heading',
+ *			view: 'h2',
+ *			// Convert "headling-like" paragraphs to headings.
+ *			upcastAlso: viewElement => {
+ *				const fontSize = viewElement.getStyle( 'font-size' );
+ *
+ *				if ( !fontSize ) {
+ *					return null;
+ *				}
+ *
+ *				const match = fontSize.match( /(\d+)\s*px/ );
+ *
+ *				if ( !match ) {
+ *					return null;
+ *				}
+ *
+ *				const size = Number( match[ 1 ] );
+ *
+ *				if ( size > 26 ) {
+ *					return { name: true, style: [ 'font-size' ] };
+ *				}
+ *
+ *				return null;
+ *			}
  *		} );
  *
  * @param {module:engine/conversion/conversion~Conversion} conversion Conversion class instance with registered conversion dispatchers.
  * @param {Object} definition Conversion definition.
  * @param {String} definition.model Name of the model element to convert.
- * @param {String|module:engine/view/viewelementdefinition~ViewElementDefinition} definition.view Name or a definition of
- * a view element to convert.
- * @param {Array.<String|module:engine/view/viewelementdefinition~ViewElementDefinition>} [definition.alternativeView]
- * Alternative forms of view, that also should be converted to model. Keep in mind that those will be "converted back"
- * to the main form, given in `definition.view`.
+ * @param {module:engine/view/elementdefinition~ElementDefinition} definition.view Definition of a view element to convert from/to.
+ * @param {module:engine/view/matcher~MatcherPattern|Array.<module:engine/view/matcher~MatcherPattern>} [definition.upcastAlso]
+ * Any view element matching `upcastAlso` will also be converted to the given model element.
  */
 export function modelElementIsViewElement( conversion, definition ) {
 	// Set model-to-view conversion.
@@ -81,7 +110,7 @@ export function modelElementIsViewElement( conversion, definition ) {
  *
  *		modelAttributeIsViewElement( conversion, 'bold', {
  *			view: 'strong',
- *			alternativeView: [
+ *			upcastAlso: [
  *				'b',
  *				{
  *					name: 'span',
@@ -91,6 +120,16 @@ export function modelElementIsViewElement( conversion, definition ) {
  *					name: 'span',
  *					style: {
  *						'font-weight': 'bold'
+ *					}
+ *				},
+ *				viewElement => {
+ *					const fontWeight = viewElement.getStyle( 'font-weight' );
+ *
+ *					if ( viewElement.is( 'span' ) && fontWeight && /\d+/.test() && Number( fontWeight ) > 500 ) {
+ *						return {
+ *							name: true,
+ *							style: [ 'font-weight' ]
+ *						};
  *					}
  *				}
  *			]
@@ -134,14 +173,27 @@ export function modelElementIsViewElement( conversion, definition ) {
  *						'font-size': '1.2em'
  *					}
  *				},
- *				alternativeView: [
- *					{
- *						name: 'span',
- *						style: {
- *							'font-size': '12px'
- *						}
+ *				upcastAlso: viewElement => {
+ *					const fontSize = viewElement.getStyle( 'font-size' );
+ *
+ *					if ( !fontSize ) {
+ *						return null;
  *					}
- *				]
+ *
+ *					const match = fontSize.match( /(\d+)\s*px/ );
+ *
+ *					if ( !match ) {
+ *						return null;
+ *					}
+ *
+ *					const size = Number( match[ 1 ] );
+ *
+ *					if ( viewElement.is( 'span' ) && size > 10 ) {
+ *						return { name: true, style: [ 'font-size' ] };
+ *					}
+ *
+ *					return null;
+ *				}
  *			},
  *			{
  *				model: 'small',
@@ -151,14 +203,27 @@ export function modelElementIsViewElement( conversion, definition ) {
  *						'font-size': '0.8em'
  *					}
  *				},
- *				alternativeView: [
- *					{
- *						name: 'span',
- *						style: {
- *							'font-size': '8px'
- *						}
+ *				upcastAlso: viewElement => {
+ *					const fontSize = viewElement.getStyle( 'font-size' );
+ *
+ *					if ( !fontSize ) {
+ *						return null;
  *					}
- *				]
+ *
+ *					const match = fontSize.match( /(\d+)\s*px/ );
+ *
+ *					if ( !match ) {
+ *						return null;
+ *					}
+ *
+ *					const size = Number( match[ 1 ] );
+ *
+ *					if ( viewElement.is( 'span' ) && size < 10 ) {
+ *						return { name: true, style: [ 'font-size' ] };
+ *					}
+ *
+ *					return null;
+ *				}
  *			}
  *		] );
  *
@@ -168,11 +233,9 @@ export function modelElementIsViewElement( conversion, definition ) {
  * @param {*} [definition.model] The value of the converted model attribute. If omitted, in model-to-view conversion,
  * the item will be treated as a default item, that will be used when no other item matches. In view-to-model conversion,
  * the model attribute value will be set to `true`.
- * @param {String|module:engine/view/viewelementdefinition~ViewElementDefinition} definition.view Name or a definition of
- * a view element to convert.
- * @param {Array.<String|module:engine/view/viewelementdefinition~ViewElementDefinition>} [definition.alternativeView]
- * Alternative forms of view, that also should be converted to model. Keep in mind that those will be "converted back"
- * to the main form, given in `definition.view`.
+ * @param {module:engine/view/elementdefinition~ElementDefinition} definition.view Definition of a view element to convert from/to.
+ * @param {module:engine/view/matcher~MatcherPattern|Array.<module:engine/view/matcher~MatcherPattern>} [definition.upcastAlso]
+ * Any view element matching `upcastAlso` will also be converted to the given model element.
  */
 export function modelAttributeIsViewElement( conversion, modelAttributeKey, definition ) {
 	// Set model-to-view conversion.
@@ -206,6 +269,7 @@ export function modelAttributeIsViewElement( conversion, modelAttributeKey, defi
  *		modelAttributeIsViewAttribute( conversion, 'aside', {
  *			model: true,
  *			view: {
+ *				name: 'img',
  *				key: 'class',
  *				value: 'aside half-size'
  *			}
@@ -235,12 +299,15 @@ export function modelAttributeIsViewElement( conversion, modelAttributeKey, defi
  *					key: 'class',
  *					value: 'align-right'
  *				},
- *				alternativeView: [
- *					{
- *						key: 'style',
- *						value: 'text-align:right;'
+ *				upcastAlso: viewElement => {
+ *					if ( viewElement.getStyle( 'text-align' ) == 'right' ) {
+ *						return {
+ *							style: [ 'text-align' ]
+ *						};
  *					}
- *				]
+ *
+ *					return null;
+ *				}
  *			},
  *			{
  *				model: 'center',
@@ -248,12 +315,11 @@ export function modelAttributeIsViewElement( conversion, modelAttributeKey, defi
  *					key: 'class',
  *					value: 'align-center'
  *				},
- *				alternativeView: [
- *					{
- *						key: 'style',
- *						value: 'text-align:center;'
+ *				upcastAlso: {
+ *					style: {
+ *						'text-align': 'center'
  *					}
- *				]
+ *				}
  *			}
  *		] );
  *
@@ -265,11 +331,12 @@ export function modelAttributeIsViewElement( conversion, modelAttributeKey, defi
  * @param {*} [definition.model] The value of the converted model attribute. If omitted, in model-to-view conversion,
  * the item will be treated as a default item, that will be used when no other item matches. In view-to-model conversion,
  * the model attribute value will be set to the same value as in the view.
- * @param {String|module:engine/view/viewelementdefinition~ViewElementDefinition} definition.view Name or a definition of
- * a view element to convert.
- * @param {Array.<String|module:engine/view/viewelementdefinition~ViewElementDefinition>} [definition.alternativeView]
- * Alternative forms of view, that also should be converted to model. Keep in mind that those will be "converted back"
- * to the main form, given in `definition.view`.
+ * @param {Object} definition.view View attribute conversion details. Given object has required `key` property,
+ * specifying view attribute key, optional `value` property, specifying view attribute value and optional `name`
+ * property specifying a view element name from/on which the attribute should be converted. If `value` is not given,
+ * the view attribute value will be equal to model attribute value.
+ * @param {module:engine/view/matcher~MatcherPattern|Array.<module:engine/view/matcher~MatcherPattern>} [definition.upcastAlso]
+ * Any view element matching `upcastAlso` will also be converted to the given model element.
  */
 export function modelAttributeIsViewAttribute( conversion, modelAttributeKey, definition ) {
 	// Set model-to-view conversion.
@@ -313,10 +380,16 @@ function _getModelAttributeDefinition( key, model ) {
 }
 
 // Helper function that creates a joint array out of an item passed in `definition.view` and items passed in
-// `definition.alternativeView`.
+// `definition.upcastAlso`.
 //
 // @param {Object} definition Conversion definition.
 // @returns {Array} Array containing view definitions.
 function _getAllViews( definition ) {
-	return [].concat( definition.view ).concat( definition.alternativeView || [] );
+	if ( !definition.upcastAlso ) {
+		return [ definition.view ];
+	} else {
+		const upcastAlso = Array.isArray( definition.upcastAlso ) ? definition.upcastAlso : [ definition.upcastAlso ];
+
+		return [ definition.view ].concat( upcastAlso );
+	}
 }

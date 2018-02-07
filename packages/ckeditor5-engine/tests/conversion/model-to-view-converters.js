@@ -798,6 +798,28 @@ describe( 'model-to-view-converters', () => {
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
 			} );
+
+			it( 'should do nothing if collapsed marker is converted', () => {
+				const descriptor = { class: 'foo' };
+
+				dispatcher.on( 'addMarker:marker', highlightText( descriptor ), { priority: 'high' } );
+				dispatcher.on( 'addMarker:marker', highlightElement( descriptor ), { priority: 'high' } );
+				dispatcher.on( 'removeMarker:marker', removeHighlight( descriptor ), { priority: 'high' } );
+
+				markerRange = ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 0 );
+
+				model.change( () => {
+					model.markers.set( 'marker', markerRange );
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
+
+				model.change( () => {
+					model.markers.remove( 'marker' );
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
+			} );
 		} );
 
 		describe( 'on element', () => {

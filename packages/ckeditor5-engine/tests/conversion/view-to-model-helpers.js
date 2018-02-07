@@ -346,13 +346,28 @@ describe( 'view-to-model-helpers', () => {
 			);
 		} );
 
+		it( 'config.view has only key set', () => {
+			schema.extend( 'image', {
+				allowAttributes: [ 'source' ]
+			} );
+
+			const helper = attributeToAttribute( { view: { key: 'src' }, model: 'source' } );
+
+			conversion.for( 'view' ).add( helper );
+
+			expectResult(
+				new ViewAttributeElement( 'img', { src: 'foo.jpg' } ),
+				'<image source="foo.jpg"></image>'
+			);
+		} );
+
 		it( 'can be overwritten using priority', () => {
 			schema.extend( 'image', {
 				allowAttributes: [ 'src', 'source' ]
 			} );
 
-			const helperA = attributeToAttribute( { view: 'src', model: 'src' } );
-			const helperB = attributeToAttribute( { view: 'src', model: 'source' }, 'normal' );
+			const helperA = attributeToAttribute( { view: { key: 'src' }, model: 'src' } );
+			const helperB = attributeToAttribute( { view: { key: 'src' }, model: 'source' }, 'normal' );
 
 			conversion.for( 'view' ).add( helperA ).add( helperB );
 
@@ -362,7 +377,7 @@ describe( 'view-to-model-helpers', () => {
 			);
 		} );
 
-		it( 'config.view is an object', () => {
+		it( 'config.view has value set', () => {
 			schema.extend( 'image', {
 				allowAttributes: [ 'styled' ]
 			} );
@@ -390,6 +405,7 @@ describe( 'view-to-model-helpers', () => {
 
 			const helper = attributeToAttribute( {
 				view: {
+					name: 'img',
 					key: 'class',
 					value: 'styled-dark'
 				},
@@ -399,16 +415,23 @@ describe( 'view-to-model-helpers', () => {
 				}
 			} );
 
-			conversion.for( 'view' ).add( helper );
+			conversion.for( 'view' )
+				.add( helper )
+				.add( elementToElement( { view: 'p', model: 'paragraph' } ) );
 
 			expectResult(
-				new ViewAttributeElement( 'img', { class: 'styled-dark' } ),
+				new ViewContainerElement( 'img', { class: 'styled-dark' } ),
 				'<image styled="dark"></image>'
 			);
 
 			expectResult(
-				new ViewAttributeElement( 'img', { class: 'styled-xxx' } ),
+				new ViewContainerElement( 'img', { class: 'styled-xxx' } ),
 				'<image></image>'
+			);
+
+			expectResult(
+				new ViewContainerElement( 'p', { class: 'styled-dark' } ),
+				'<paragraph></paragraph>'
 			);
 		} );
 
@@ -418,17 +441,25 @@ describe( 'view-to-model-helpers', () => {
 			} );
 
 			const helper = attributeToAttribute( {
-				view: 'data-style',
+				view: {
+					key: 'class',
+					value: /styled-[\S]+/
+				},
 				model: {
 					key: 'styled',
-					value: viewElement => viewElement.getAttribute( 'data-style' ).substr( 6 )
+					value: viewElement => {
+						const regexp = /styled-([\S]+)/;
+						const match = viewElement.getAttribute( 'class' ).match( regexp );
+
+						return match[ 1 ];
+					}
 				}
 			} );
 
 			conversion.for( 'view' ).add( helper );
 
 			expectResult(
-				new ViewAttributeElement( 'img', { 'data-style': 'style-dark' } ),
+				new ViewAttributeElement( 'img', { 'class': 'styled-dark' } ),
 				'<image styled="dark"></image>'
 			);
 		} );
