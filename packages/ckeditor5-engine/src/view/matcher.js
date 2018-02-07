@@ -38,7 +38,7 @@ export default class Matcher {
 	 *			class: 'foobar'
 	 *		} );
 	 *
-	 * See {@link ~MatcherPattern} for more examples.
+	 * See {@link module:engine/view/matcher~MatcherPattern} for more examples.
 	 *
 	 * Multiple patterns can be added in one call:
 	 *

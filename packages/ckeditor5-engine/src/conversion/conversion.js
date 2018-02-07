@@ -63,24 +63,24 @@ export default class Conversion {
 	 *
 	 * For downcast (model to view conversion), these are:
 	 *
-	 * * {@link module:engine/conversion/downcast-helpers~elementToElement model element to view element conversion helper},
-	 * * {@link module:engine/conversion/downcast-helpers~attributeToElement model attribute to view element conversion helper},
-	 * * {@link module:engine/conversion/downcast-helpers~attributeToAttribute model attribute to view attribute conversion helper}.
+	 * * {@link module:engine/conversion/downcast-helpers~downcastElementToElement downcast element to element helper},
+	 * * {@link module:engine/conversion/downcast-helpers~downcastAttributeToElement downcast attribute to element helper},
+	 * * {@link module:engine/conversion/downcast-helpers~downcastAttributeToAttribute downcast attribute to attribute helper}.
 	 *
 	 * For upcast (view to model conversion), these are:
 	 *
-	 * * {view element to model element conversion helper,
-	 * * view element to model attribute conversion helper,
-	 * * view attribute to model attribute conversion helper.
+	 * * {@link module:engine/conversion/upcast-helpers~upcastElementToElement upcast element to element helper},
+	 * * {@link module:engine/conversion/upcast-helpers~upcastElementToAttribute upcast attribute to element helper},
+	 * * {@link module:engine/conversion/upcast-helpers~upcastAttributeToAttribute upcast attribute to attribute helper}.
 	 *
-	 * An example of using model conversion helpers to convert `paragraph` model element to `p` view element (and back):
+	 * An example of using conversion helpers to convert `paragraph` model element to `p` view element (and back):
 	 *
 	 *		// Define conversion configuration - model element 'paragraph' should be converted to view element 'p'.
 	 *		const config = { model: 'paragraph', view: 'p' };
 	 *
 	 *		// Add converters to proper dispatchers using conversion helpers.
-	 *		conversion.for( 'downcast' ).add( modelElementToElement( config ) );
-	 *		conversion.for( 'upcast' ).add( viewElementToElement( config ) );
+	 *		conversion.for( 'downcast' ).add( downcastElementToElement( config ) );
+	 *		conversion.for( 'upcast' ).add( upcastElementToElement( config ) );
 	 *
 	 * An example of providing custom conversion helper that uses custom converter function:
 	 *

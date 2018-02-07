@@ -46,7 +46,7 @@ import cloneDeep from '@ckeditor/ckeditor5-utils/src/lib/lodash/cloneDeep';
  *
  * @param {Object} config Conversion configuration.
  * @param {String} config.model Name of the model element to convert.
- * @param {String|module:engine/view/viewelementdefinition~ViewElementDefinition|Function|
+ * @param {String|module:engine/view/elementdefinition~elementDefinition|Function|
  * module:engine/view/containerelement~ContainerElement} config.view View element name, or a view element definition,
  * or a function that takes model element as a parameter and returns a view container element,
  * or a view container element instance. The view element will be used then in conversion.
@@ -121,7 +121,7 @@ export function downcastElementToElement( config, priority = 'normal' ) {
  * @param {Object|Array.<Object>} config Conversion configuration. It is possible to provide multiple configurations in an array.
  * @param {*} [config.model] The value of the converted model attribute for which the `view` property is defined.
  * If omitted, the configuration item will be used as a "default" configuration when no other item matches the attribute value.
- * @param {String|module:engine/view/viewelementdefinition~ViewElementDefinition|Function|
+ * @param {String|module:engine/view/elementdefinition~elementDefinition|Function|
  * module:engine/view/attributeelement~AttributeElement} config.view View element name, or a view element definition,
  * or a function that takes model element as a parameter and returns a view attribute element, or a view attribute element instance.
  * The view element will be used then in conversion.
@@ -260,7 +260,7 @@ export function downcastAttributeToAttribute( modelAttributeKey, config = {}, pr
  *
  * @param {Object} config Conversion configuration.
  * @param {String} config.model Name of the model marker (or model marker group) to convert.
- * @param {module:engine/view/viewelementdefinition~ViewElementDefinition|Function} config.view View element definition
+ * @param {module:engine/view/elementdefinition~elementDefinition|Function} config.view View element definition
  * which will be used to build a view element for conversion or a function that takes model marker data as a parameter and
  * returns view element to use in conversion.
  * @param {module:utils/priorities~PriorityString} [priority='normal'] Converter priority.
@@ -364,7 +364,7 @@ function _normalizeToElementConfig( config, ViewElementClass ) {
 
 // Creates view element instance from provided viewElementDefinition and class.
 //
-// @param {module:engine/view/viewelementdefinition~ViewElementDefinition} viewElementDefinition
+// @param {module:engine/view/elementdefinition~elementDefinition} viewElementDefinition
 // @param {Function} ViewElementClass
 // @returns {module:engine/view/element~Element}
 function _createViewElementFromDefinition( viewElementDefinition, ViewElementClass ) {

@@ -270,11 +270,20 @@ mix( MarkerCollection, EmitterMixin );
  * Since markers need to track change in the document, for efficiency reasons, it is best to create and keep as little
  * markers as possible and remove them as soon as they are not needed anymore.
  *
- * Markers can be converted to view by adding appropriate converters for
- * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:addMarker} and
- * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:removeMarker}
- * events, or by building converters for {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}
- * using {@link module:engine/conversion/buildmodelconverter~buildModelConverter model converter builder}.
+ * Markers can be downcasted and upcasted.
+ *
+ * Markers downcast happens on {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:addMarker} and
+ * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:removeMarker} events.
+ * Use {@link module:engine/conversion/downcast-helpers downcast helpers} or attach a custom converter to mentioned events.
+ * For {@link module:engine/controller/datacontroller~DataController data pipeline}, marker should be downcasted to an element.
+ * Then, it can be upcasted back to a marker. Again, use {@link module:engine/conversion/upcast-helpers upcast helpers} or
+ * attach a custom converter to {@link module:engine/conversion/upcastdispatcher~UpcastDispatcher#event:element}.
+ *
+ * Another upside of markers is that finding marked part of document is fast and easy. Using attributes to mark some nodes
+ * and then trying to find that part of document would require traversing whole document tree. Marker gives instant access
+ * to the range which it is marking at the moment.
+ *
+ * `Marker` instances are created and destroyed only by {@link ~MarkerCollection MarkerCollection}.
  */
 class Marker {
 	/**

@@ -240,7 +240,7 @@ export function upcastAttributeToAttribute( config, priority = 'low' ) {
  * This conversion results in creating a model marker. For example, if the marker was stored in a view as an element:
  * `<p>Fo<span data-marker="comment" data-comment-id="7"></span>o</p><p>B<span data-marker="comment" data-comment-id="7"></span>ar</p>`,
  * after the conversion is done, the marker will be available in
- * {@link module:engine/model/document~Document#markers model document markers}.
+ * {@link module:engine/model/model~Model#markers model document markers}.
  *
  *		upcastElementToMarker( { view: 'marker-search', model: 'search' } );
  *
