@@ -10,11 +10,11 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import {
 	upcastElementToElement
-} from '../../src/conversion/upcast-helpers';
+} from '../../src/conversion/upcast-converters';
 
 import {
 	downcastElementToElement
-} from '../../src/conversion/downcast-helpers';
+} from '../../src/conversion/downcast-converters';
 
 import { getData as getModelData } from '../../src/dev-utils/model';
 import { getData as getViewData } from '../../src/dev-utils/view';

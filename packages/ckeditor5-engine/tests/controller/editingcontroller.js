@@ -14,7 +14,7 @@ import ViewDocument from '../../src/view/document';
 import Mapper from '../../src/conversion/mapper';
 import DowncastDispatcher from '../../src/conversion/downcastdispatcher';
 
-import { downcastElementToElement, downcastMarkerToHighlight } from '../../src/conversion/downcast-helpers';
+import { downcastElementToElement, downcastMarkerToHighlight } from '../../src/conversion/downcast-converters';
 
 import Model from '../../src/model/model';
 import ModelPosition from '../../src/model/position';

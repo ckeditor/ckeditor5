@@ -13,11 +13,11 @@ import LivePosition from '../../../../src/model/liveposition';
 
 import {
 	upcastElementToAttribute
-} from '../../../../src/conversion/upcast-helpers';
+} from '../../../../src/conversion/upcast-converters';
 
 import {
 	downcastAttributeToElement,
-} from '../../../../src/conversion/downcast-helpers';
+} from '../../../../src/conversion/downcast-converters';
 
 import AttributeElement from '../../../../src/view/attributeelement';
 

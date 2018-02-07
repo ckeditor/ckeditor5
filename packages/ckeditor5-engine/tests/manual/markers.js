@@ -17,7 +17,7 @@ import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 
 import {
 	downcastMarkerToHighlight
-} from '../../src/conversion/downcast-helpers';
+} from '../../src/conversion/downcast-converters';
 
 import Position from '../../src/model/position';
 import Range from '../../src/model/range';

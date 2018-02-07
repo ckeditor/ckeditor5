@@ -4,20 +4,20 @@
  */
 
 /**
- * @module engine/conversion/two-way-helpers
+ * @module engine/conversion/two-way-converters
  */
 
 import {
 	downcastElementToElement,
 	downcastAttributeToElement,
 	downcastAttributeToAttribute
-} from './downcast-helpers';
+} from './downcast-converters';
 
 import {
 	upcastElementToElement,
 	upcastElementToAttribute,
 	upcastAttributeToAttribute
-} from './upcast-helpers';
+} from './upcast-converters';
 
 /**
  * Defines a conversion between the model and the view where a model element is represented as a view element (and vice versa).

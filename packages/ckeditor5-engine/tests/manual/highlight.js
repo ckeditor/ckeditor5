@@ -11,12 +11,12 @@ import ViewText from '../../src/view/text';
 
 import {
 	upcastElementToElement,
-} from '../../src/conversion/upcast-helpers';
+} from '../../src/conversion/upcast-converters';
 
 import {
 	downcastElementToElement,
 	downcastMarkerToHighlight
-} from '../../src/conversion/downcast-helpers';
+} from '../../src/conversion/downcast-converters';
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';

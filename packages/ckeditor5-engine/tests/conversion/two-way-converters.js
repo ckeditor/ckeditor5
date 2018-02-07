@@ -5,7 +5,7 @@
 
 import {
 	elementToElement, attributeToElement, attributeToAttribute
-} from '../../src/conversion/two-way-helpers';
+} from '../../src/conversion/two-way-converters';
 
 import Conversion from '../../src/conversion/conversion';
 import UpcastDispatcher from '../../src/conversion/upcastdispatcher';
@@ -20,7 +20,7 @@ import ModelRange from '../../src/model/range';
 import { stringify as viewStringify, parse as viewParse } from '../../src/dev-utils/view';
 import { stringify as modelStringify } from '../../src/dev-utils/model';
 
-describe( 'two-way-helpers', () => {
+describe( 'two-way-converters', () => {
 	let viewDispatcher, model, schema, conversion, modelRoot, viewRoot;
 
 	beforeEach( () => {

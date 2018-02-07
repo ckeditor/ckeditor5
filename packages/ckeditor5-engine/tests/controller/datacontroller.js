@@ -19,13 +19,13 @@ import count from '@ckeditor/ckeditor5-utils/src/count';
 import {
 	upcastElementToElement,
 	upcastElementToAttribute
-} from '../../src/conversion/upcast-helpers';
+} from '../../src/conversion/upcast-converters';
 
 import {
 	downcastElementToElement,
 	downcastAttributeToElement,
 	downcastMarkerToHighlight
-} from '../../src/conversion/downcast-helpers';
+} from '../../src/conversion/downcast-converters';
 
 describe( 'DataController', () => {
 	let model, modelDocument, htmlDataProcessor, data, schema;

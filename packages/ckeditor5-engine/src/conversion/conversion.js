@@ -63,15 +63,15 @@ export default class Conversion {
 	 *
 	 * For downcast (model to view conversion), these are:
 	 *
-	 * * {@link module:engine/conversion/downcast-helpers~downcastElementToElement downcast element to element helper},
-	 * * {@link module:engine/conversion/downcast-helpers~downcastAttributeToElement downcast attribute to element helper},
-	 * * {@link module:engine/conversion/downcast-helpers~downcastAttributeToAttribute downcast attribute to attribute helper}.
+	 * * {@link module:engine/conversion/downcast-converters~downcastElementToElement downcast element to element converter},
+	 * * {@link module:engine/conversion/downcast-converters~downcastAttributeToElement downcast attribute to element converter},
+	 * * {@link module:engine/conversion/downcast-converters~downcastAttributeToAttribute downcast attribute to attribute converter}.
 	 *
 	 * For upcast (view to model conversion), these are:
 	 *
-	 * * {@link module:engine/conversion/upcast-helpers~upcastElementToElement upcast element to element helper},
-	 * * {@link module:engine/conversion/upcast-helpers~upcastElementToAttribute upcast attribute to element helper},
-	 * * {@link module:engine/conversion/upcast-helpers~upcastAttributeToAttribute upcast attribute to attribute helper}.
+	 * * {@link module:engine/conversion/upcast-converters~upcastElementToElement upcast element to element converter},
+	 * * {@link module:engine/conversion/upcast-converters~upcastElementToAttribute upcast attribute to element converter},
+	 * * {@link module:engine/conversion/upcast-converters~upcastAttributeToAttribute upcast attribute to attribute converter}.
 	 *
 	 * An example of using conversion helpers to convert `paragraph` model element to `p` view element (and back):
 	 *

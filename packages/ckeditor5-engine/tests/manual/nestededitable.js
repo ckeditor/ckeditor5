@@ -7,11 +7,11 @@
 
 import {
 	upcastElementToElement
-} from '../../src/conversion/upcast-helpers';
+} from '../../src/conversion/upcast-converters';
 
 import {
 	downcastElementToElement
-} from '../../src/conversion/downcast-helpers';
+} from '../../src/conversion/downcast-converters';
 
 import ViewEditableElement from '../../src/view/editableelement';
 import { getData } from '../../src/dev-utils/model';
