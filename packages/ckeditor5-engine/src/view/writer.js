@@ -58,7 +58,7 @@ export default class Writer {
 	 *
 	 * 		// Removes all ranges.
 	 *		writer.setSelection( null );
-
+	 *
 	 * @param {module:engine/view/selection~Selection|module:engine/view/position~Position|
 	 * Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|module:engine/view/item~Item|null} selectable
 	 * @param {Boolean|Number|'before'|'end'|'after'} [backwardSelectionOrOffset]
@@ -121,17 +121,6 @@ export default class Writer {
 	 */
 	createElement( name, attributes ) {
 		return new Element( name, attributes );
-	}
-
-	/**
-	 * Creates new {@link module:engine/view/documentfragment~DocumentFragment document fragment}.
-	 *
-	 *		writer.createDocumentFragment();
-	 *
-	 * @returns {module:engine/view/documentfragment~DocumentFragment} Created document fragment.
-	 */
-	createDocumentFragment() {
-		return new DocumentFragment();
 	}
 
 	/**
