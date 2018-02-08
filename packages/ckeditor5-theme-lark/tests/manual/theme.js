@@ -14,7 +14,7 @@ import View from '@ckeditor/ckeditor5-ui/src/view';
 import IconView from '@ckeditor/ckeditor5-ui/src/icon/iconview';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
-import { createDropdown, addListToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
+import { createDropdown, addListToDropdown, addToolbarToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import ToolbarSeparatorView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarseparatorview';
@@ -23,6 +23,7 @@ import LabeledInputView from '@ckeditor/ckeditor5-ui/src/labeledinput/labeledinp
 
 import boldIcon from '@ckeditor/ckeditor5-basic-styles/theme/icons/bold.svg';
 import italicIcon from '@ckeditor/ckeditor5-basic-styles/theme/icons/italic.svg';
+import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview';
 
 class TextView extends View {
 	constructor() {
@@ -236,7 +237,7 @@ function renderDropdown() {
 		items: collection
 	} ) );
 
-	ui.buttonDropdown.add( buttonDropdown( {
+	ui.buttonDropdown.add( toolbarDropdown( {
 		label: 'Normal state',
 		isEnabled: true,
 		buttons: [
@@ -253,7 +254,7 @@ function renderDropdown() {
 		]
 	} ) );
 
-	ui.buttonDropdown.add( buttonDropdown( {
+	ui.buttonDropdown.add( toolbarDropdown( {
 		label: 'Disabled',
 		isEnabled: false,
 		buttons: [
@@ -291,6 +292,11 @@ function renderToolbar() {
 			icon: boldIcon
 		} ),
 		listDropdown(),
+		splitButtonDropdown( {
+			label: 'Split button dropdown',
+			withText: false,
+			icon: boldIcon
+		} ),
 		button()
 	] ) );
 
@@ -409,14 +415,14 @@ function listDropdown( {
 	items = new Collection( { idProperty: 'label' } )
 } = {} ) {
 	const dropdown = createDropdown( {} );
-	dropdown.set( { label, isEnabled, isOn, withText } );
-
 	addListToDropdown( dropdown, items );
+
+	dropdown.buttonView.set( { label, isEnabled, isOn, withText } );
 
 	return dropdown;
 }
 
-function buttonDropdown( {
+function toolbarDropdown( {
 	label = 'Button dropdown',
 	isEnabled = true,
 	isOn = false,
@@ -424,8 +430,29 @@ function buttonDropdown( {
 	isVertical = true,
 	buttons = []
 } = {} ) {
-	const model = new Model( { label, isEnabled, buttons, isVertical, isOn, withText } );
-	const dropdown = createButtonDropdown( model, {} );
+	const dropdown = createDropdown( {} );
+
+	addToolbarToDropdown( dropdown, buttons );
+
+	dropdown.buttonView.set( { label, isEnabled, isVertical, isOn, withText } );
+
+	return dropdown;
+}
+
+function splitButtonDropdown( {
+	label = 'Button dropdown',
+	icon = undefined,
+	isEnabled = true,
+	isOn = false,
+	withText = true,
+	isVertical = true,
+	buttons = []
+} = {} ) {
+	const dropdown = createDropdown( {}, SplitButtonView );
+
+	addToolbarToDropdown( dropdown, buttons );
+
+	dropdown.buttonView.set( { icon, label, isEnabled, isVertical, isOn, withText } );
 
 	return dropdown;
 }
