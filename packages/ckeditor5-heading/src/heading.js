@@ -11,7 +11,9 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import HeadingEngine from './headingengine';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Model from '@ckeditor/ckeditor5-ui/src/model';
-import createListDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/list/createlistdropdown';
+
+import { createDropdown, addListToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
+
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 
 import '../theme/heading.css';
@@ -44,60 +46,42 @@ export default class Heading extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const dropdownItems = new Collection();
-		const options = this._getLocalizedOptions();
-		const commands = [];
 		const t = editor.t;
+		const options = this._getLocalizedOptions();
 		const defaultTitle = t( 'Choose heading' );
 		const dropdownTooltip = t( 'Heading' );
 
-		for ( const option of options ) {
-			const command = editor.commands.get( option.model );
-			const itemModel = new Model( {
-				commandName: option.model,
-				label: option.title,
-				class: option.class
-			} );
-
-			itemModel.bind( 'isActive' ).to( command, 'value' );
-
-			// Add the option to the collection.
-			dropdownItems.add( itemModel );
-
-			commands.push( command );
-		}
-
-		// Create dropdown model.
-		const dropdownModel = new Model( {
-			withText: true,
-			items: dropdownItems,
-			tooltip: dropdownTooltip
-		} );
-
-		dropdownModel.bind( 'isEnabled' ).to(
-			// Bind to #isEnabled of each command...
-			...getCommandsBindingTargets( commands, 'isEnabled' ),
-			// ...and set it true if any command #isEnabled is true.
-			( ...areEnabled ) => areEnabled.some( isEnabled => isEnabled )
-		);
-
-		dropdownModel.bind( 'label' ).to(
-			// Bind to #value of each command...
-			...getCommandsBindingTargets( commands, 'value' ),
-			// ...and chose the title of the first one which #value is true.
-			( ...areActive ) => {
-				const index = areActive.findIndex( value => value );
-
-				// If none of the commands is active, display default title.
-				return options[ index ] ? options[ index ].title : defaultTitle;
-			}
-		);
-
 		// Register UI component.
 		editor.ui.componentFactory.add( 'headings', locale => {
-			const dropdown = createListDropdown( dropdownModel, locale );
+			const commands = [];
+			const dropdownItems = new Collection();
 
-			dropdown.extendTemplate( {
+			for ( const option of options ) {
+				const command = editor.commands.get( option.model );
+				const itemModel = new Model( {
+					commandName: option.model,
+					label: option.title,
+					class: option.class
+				} );
+
+				itemModel.bind( 'isActive' ).to( command, 'value' );
+
+				// Add the option to the collection.
+				dropdownItems.add( itemModel );
+
+				commands.push( command );
+			}
+
+			const dropdownView = createDropdown( locale );
+			addListToDropdown( dropdownView, dropdownItems );
+
+			dropdownView.buttonView.set( {
+				isOn: false,
+				withText: true,
+				tooltip: dropdownTooltip
+			} );
+
+			dropdownView.extendTemplate( {
 				attributes: {
 					class: [
 						'ck-heading-dropdown'
@@ -105,13 +89,24 @@ export default class Heading extends Plugin {
 				}
 			} );
 
+			dropdownView.bind( 'isEnabled' ).toMany( commands, 'isEnabled', ( ...areEnabled ) => {
+				return areEnabled.some( isEnabled => isEnabled );
+			} );
+
+			dropdownView.buttonView.bind( 'label' ).toMany( commands, 'value', ( ...areActive ) => {
+				const index = areActive.findIndex( value => value );
+
+				// If none of the commands is active, display default title.
+				return options[ index ] ? options[ index ].title : defaultTitle;
+			} );
+
 			// Execute command when an item from the dropdown is selected.
-			this.listenTo( dropdown, 'execute', evt => {
+			this.listenTo( dropdownView, 'execute', evt => {
 				editor.execute( evt.source.commandName );
 				editor.editing.view.focus();
 			} );
 
-			return dropdown;
+			return dropdownView;
 		} );
 	}
 
@@ -147,18 +142,6 @@ export default class Heading extends Plugin {
 			return option;
 		} );
 	}
-}
-
-// Returns an array of binding components for
-// {@link module:utils/observablemixin~Observable#bind} from a set of iterable
-// commands.
-//
-// @private
-// @param {Iterable.<module:core/command~Command>} commands
-// @param {String} attribute
-// @returns {Array.<String>}
-function getCommandsBindingTargets( commands, attribute ) {
-	return Array.prototype.concat( ...commands.map( c => [ c, attribute ] ) );
 }
 
 /**
