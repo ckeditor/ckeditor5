@@ -45,7 +45,7 @@ export default class ImageUploadEditing extends Plugin {
 		editor.commands.add( 'imageUpload', new ImageUploadCommand( editor ) );
 
 		// Execute imageUpload command when image is dropped or pasted.
-		editor.editing.view.on( 'clipboardInput', ( evt, data ) => {
+		editor.editing.view.document.on( 'clipboardInput', ( evt, data ) => {
 			// Skip if non empty HTML data is included.
 			// https://github.com/ckeditor/ckeditor5-upload/issues/68
 			if ( isHtmlIncluded( data.dataTransfer ) ) {
@@ -71,7 +71,7 @@ export default class ImageUploadEditing extends Plugin {
 		} );
 
 		// Prevents from browser redirecting to the dropped image.
-		editor.editing.view.on( 'dragover', ( evt, data ) => {
+		editor.editing.view.document.on( 'dragover', ( evt, data ) => {
 			data.preventDefault();
 		} );
 
@@ -134,8 +134,9 @@ export default class ImageUploadEditing extends Plugin {
 				const viewImg = viewFigure.getChild( 0 );
 				const promise = loader.upload();
 
-				viewImg.setAttribute( 'src', data );
-				editor.editing.view.render();
+				editor.editing.view.change( () => {
+					viewImg.setAttribute( 'src', data );
+				} );
 
 				model.enqueueChange( 'transparent', writer => {
 					writer.setAttribute( 'uploadStatus', 'uploading', imageElement );
