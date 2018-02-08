@@ -127,39 +127,43 @@ function tryExtendingTo( data, value ) {
 // @param {String} unit The unit by which selection should be modified.
 // @param {Boolean} isForward Is the direction in which the selection should be modified is forward.
 function getCorrectPosition( walker, unit, isForward ) {
-	const textNode = walker.position.textNode;
+	let textNode = walker.position.textNode;
 
 	if ( textNode ) {
-		const data = textNode.data;
+		let data = textNode.data;
 		let offset = walker.position.offset - textNode.startOffset;
+		let isAtNodeBoundary = offset === ( isForward ? textNode.endOffset : 0 );
 
 		while (
 			isInsideSurrogatePair( data, offset ) ||
 			( unit == 'character' && isInsideCombinedSymbol( data, offset ) ) ||
-			( unit == 'word' && !isAtWordBoundary( textNode, offset, isForward ) )
+			( unit == 'word' && ( !( isAtNodeBoundary || isAtWordBoundary( textNode.data, offset, isForward ) ) ) )
 		) {
 			walker.next();
 
-			offset = walker.position.offset - textNode.startOffset;
-		}
+			// Check of adjacent text nodes with different attributes (like BOLD).
+			// Example			: 'foofoo []bar<$text bold="true">bar</$text> bazbaz'
+			// should expand to	: 'foofoo [bar<$text bold="true">bar</$text>] bazbaz'.
+			if ( unit == 'word' && !isAtNodeBoundary ) {
+				const nextNode = isForward ? walker.position.nodeAfter : walker.position.nodeBefore;
 
-		// Check of adjacent text nodes with different attributes (like BOLD).
-		// Example			: 'foofoo []bar<$text bold="true">bar</$text> bazbaz'
-		// should expand to	: 'foofoo [bar<$text bold="true">bar</$text>] bazbaz'.
-		if ( unit == 'word' ) {
-			const nextNode = isForward ? walker.position.nodeAfter : walker.position.nodeBefore;
+				if ( nextNode ) {
+					// Check boundary char of an adjacent text node.
+					const boundaryChar = nextNode.data.charAt( isForward ? 0 : nextNode.data.length - 1 );
 
-			if ( nextNode ) {
-				// Check boundary char of an adjacent text node.
-				const boundaryChar = nextNode.data.charAt( isForward ? 0 : nextNode.data.length - 1 );
+					// Go to the next node if the character at the boundary of that node belongs to the same word.
+					if ( !wordBoundaryCharacters.includes( boundaryChar ) ) {
+						// If adjacent text node belongs to the same word go to it & reset values.
+						walker.next();
 
-				// Go to the next node if the character at the boundary of that node belongs to the same word.
-				if ( !wordBoundaryCharacters.includes( boundaryChar ) ) {
-					walker.next();
-
-					return getCorrectPosition( walker, 'word', isForward );
+						textNode = walker.position.textNode;
+						data = textNode.data;
+					}
 				}
 			}
+
+			offset = walker.position.offset - textNode.startOffset;
+			isAtNodeBoundary = offset === ( isForward ? textNode.endOffset : 0 );
 		}
 	}
 
@@ -182,15 +186,7 @@ function getSearchRange( start, isForward ) {
 // @param {module:engine/view/text~Text} textNode The text node to investigate.
 // @param {Number} offset Position offset.
 // @param {Boolean} isForward Is the direction in which the selection should be modified is forward.
-function isAtWordBoundary( textNode, offset, isForward ) {
-	const data = textNode.data;
-	const textBoundaryOffset = isForward ? textNode.endOffset : 0;
-
-	// If the position as at the end of a textNode it is also a word boundary.
-	if ( offset === textBoundaryOffset ) {
-		return true;
-	}
-
+function isAtWordBoundary( data, offset, isForward ) {
 	// The offset to check depends on direction.
 	const offsetToCheck = offset + ( isForward ? 0 : -1 );
 
