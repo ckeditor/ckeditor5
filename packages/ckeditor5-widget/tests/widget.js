@@ -7,7 +7,7 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import Widget from '../src/widget';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
-import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
+import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
 import { toWidget } from '../src/utils';
 import ViewContainer from '@ckeditor/ckeditor5-engine/src/view/containerelement';
 import ViewEditable from '@ckeditor/ckeditor5-engine/src/view/editableelement';
@@ -70,42 +70,29 @@ describe( 'Widget', () => {
 					allowIn: [ 'blockQuote', 'div' ]
 				} );
 
-				buildModelConverter().for( editor.editing.modelToView )
-					.fromElement( 'paragraph' )
-					.toElement( 'p' );
+				editor.conversion.for( 'downcast' )
+					.add( downcastElementToElement( { model: 'paragraph', view: 'p' } ) )
+					.add( downcastElementToElement( { model: 'inline', view: 'figure' } ) )
+					.add( downcastElementToElement( { model: 'image', view: 'img' } ) )
+					.add( downcastElementToElement( { model: 'blockQuote', view: 'blockquote' } ) )
+					.add( downcastElementToElement( { model: 'div', view: 'div' } ) )
+					.add( downcastElementToElement( {
+						model: 'widget',
+						view: () => {
+							const b = new AttributeContainer( 'b' );
+							const div = new ViewContainer( 'div', null, b );
 
-				buildModelConverter().for( editor.editing.modelToView )
-					.fromElement( 'widget' )
-					.toElement( () => {
-						const b = new AttributeContainer( 'b' );
-						const div = new ViewContainer( 'div', null, b );
-
-						return toWidget( div, { label: 'element label' } );
-					} );
-
-				buildModelConverter().for( editor.editing.modelToView )
-					.fromElement( 'inline' )
-					.toElement( 'figure' );
-
-				buildModelConverter().for( editor.editing.modelToView )
-					.fromElement( 'nested' )
-					.toElement( () => new ViewEditable( 'figcaption', { contenteditable: true } ) );
-
-				buildModelConverter().for( editor.editing.modelToView )
-					.fromElement( 'editable' )
-					.toElement( () => new ViewEditable( 'figcaption', { contenteditable: true } ) );
-
-				buildModelConverter().for( editor.editing.modelToView )
-					.fromElement( 'image' )
-					.toElement( 'img' );
-
-				buildModelConverter().for( editor.editing.modelToView )
-					.fromElement( 'blockQuote' )
-					.toElement( 'blockquote' );
-
-				buildModelConverter().for( editor.editing.modelToView )
-					.fromElement( 'div' )
-					.toElement( 'div' );
+							return toWidget( div, { label: 'element label' } );
+						}
+					} ) )
+					.add( downcastElementToElement( {
+						model: 'nested',
+						view: () => new ViewEditable( 'figcaption', { contenteditable: true } )
+					} ) )
+					.add( downcastElementToElement( {
+						model: 'editable',
+						view: () => new ViewEditable( 'figcaption', { contenteditable: true } )
+					} ) );
 			} );
 	} );
 

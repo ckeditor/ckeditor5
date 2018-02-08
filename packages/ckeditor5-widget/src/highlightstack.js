@@ -11,12 +11,14 @@ import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
- * Class used to handle correct order of
- * {@link module:engine/conversion/buildmodelconverter~ModelConverterBuilder#toHighlight highlights} on
- * elements. When different highlights are applied to same element correct order should be preserved:
+ * Class used to handle correct order of highlights on elements.
+ *
+ * When different highlights are applied to same element correct order should be preserved:
+ *
  * * highlight with highest priority should be applied,
  * * if two highlights have same priority - sort by CSS class provided in
  * {@link module:engine/conversion/model-to-view-converters~HighlightDescriptor}.
+ *
  * This way, highlight will be applied with the same rules it is applied on texts.
  */
 export default class HighlightStack {
