@@ -161,21 +161,16 @@ export default class Document {
 		// Buffer marker changes.
 		// This is not covered in buffering operations because markers may change outside of them (when they
 		// are modified using `model.markers` collection, not through `MarkerOperation`).
-		this.listenTo( model.markers, 'set', ( evt, marker ) => {
-			// TODO: Should filter out changes of markers that are not in document.
-			// Whenever a new marker is added, buffer that change.
-			this.differ.bufferMarkerChange( marker.name, null, marker.getRange() );
+		this.listenTo( model.markers, 'update', ( evt, marker, oldRange, newRange ) => {
+			// Whenever marker is updated, buffer that change.
+			this.differ.bufferMarkerChange( marker.name, oldRange, newRange );
 
-			// Whenever marker changes, buffer that.
-			marker.on( 'change', ( evt, oldRange ) => {
-				this.differ.bufferMarkerChange( marker.name, oldRange, marker.getRange() );
-			} );
-		} );
-
-		this.listenTo( model.markers, 'remove', ( evt, marker ) => {
-			// TODO: Should filter out changes of markers that are not in document.
-			// Whenever marker is removed, buffer that change.
-			this.differ.bufferMarkerChange( marker.name, marker.getRange(), null );
+			if ( !oldRange ) {
+				// Whenever marker changes, buffer that.
+				marker.on( 'change', ( evt, oldRange ) => {
+					this.differ.bufferMarkerChange( marker.name, oldRange, marker.getRange() );
+				} );
+			}
 		} );
 	}
 
