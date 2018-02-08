@@ -59,20 +59,23 @@ export default class AlignmentEditing extends Plugin {
 
 		// Convert `text-align` style property from element to model attribute alignment.
 		editor.conversion.for( 'upcast' )
-			.use( upcastAttributeToAttribute( {
+			.add( upcastAttributeToAttribute( {
 				view: {
 					key: 'style',
 					value: /text-align/
 				},
-				model: viewElement => {
-					const textAlign = viewElement.getStyle( 'text-align' );
+				model: {
+					key: 'alignment',
+					value: viewElement => {
+						const textAlign = viewElement.getStyle( 'text-align' );
 
-					// Do not convert empty, default or unknown alignment values.
-					if ( !textAlign || isDefault( textAlign ) || !enabledOptions.includes( textAlign ) ) {
-						return;
+						// Do not convert empty, default or unknown alignment values.
+						if ( !textAlign || isDefault( textAlign ) || !enabledOptions.includes( textAlign ) ) {
+							return;
+						}
+
+						return textAlign;
 					}
-
-					return { key: 'alignment', value: textAlign };
 				}
 			} ) );
 

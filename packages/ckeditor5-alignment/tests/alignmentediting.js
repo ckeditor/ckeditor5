@@ -161,8 +161,8 @@ describe( 'AlignmentEditing', () => {
 
 	describe( 'should be extensible', () => {
 		it( 'converters in the data pipeline', () => {
-			blockDefaultConversion( editor.data.modelToView );
-			blockDefaultConversion( editor.editing.modelToView );
+			blockDefaultConversion( editor.data.downcastDispatcher );
+			blockDefaultConversion( editor.editing.downcastDispatcher );
 
 			const data = '<p style="text-align:justify;">x</p>';
 
