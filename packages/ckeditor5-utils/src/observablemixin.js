@@ -445,9 +445,12 @@ function bindToMany( observables, attribute, callback ) {
 //
 // @param {Iterable.<Observable>} observables
 // @param {String} attribute
-// @returns {Array.<String>}
+// @returns {Array.<String|Observable>}
 function getBindingTargets( observables, attribute ) {
-	return Array.prototype.concat( ...observables.map( observable => [ observable, attribute ] ) );
+	const observableAndAttributePairs = Array.from( observables ).map( observable => [ observable, attribute ] );
+
+	// Merge pairs to one-dimension array of observables and attributes.
+	return Array.prototype.concat.apply( [], observableAndAttributePairs );
 }
 
 // Check if all entries of the array are of `String` type.
