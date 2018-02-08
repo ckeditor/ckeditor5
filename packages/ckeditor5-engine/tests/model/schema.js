@@ -2690,6 +2690,12 @@ describe( 'SchemaContext', () => {
 			expect( Array.from( ctx.getItem( 2 ).getAttributeKeys() ).sort() ).to.deep.equal( [ 'align' ] );
 		} );
 
+		it( 'creates context based on a string', () => {
+			const ctx = new SchemaContext( 'paragraph' );
+
+			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ 'paragraph' ] );
+		} );
+
 		it( 'creates context based on a SchemaContext instance', () => {
 			const previousCtx = new SchemaContext( [ 'a', 'b', 'c' ] );
 
