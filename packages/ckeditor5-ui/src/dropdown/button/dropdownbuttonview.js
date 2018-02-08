@@ -27,10 +27,10 @@ import IconView from '../../icon/iconview';
  *
  *		document.body.append( view.element );
  *
- * Also see {@link module:ui/dropdown/utils~createDropdown}.
+ * Also see the {@link module:ui/dropdown/utils~createDropdown `createDropdown()` util}.
  *
- * @extends module:ui/view~View
  * @implements module:ui/dropdown/button/dropdownbuttoninterface~DropdownButtonInterface
+ * @extends module:ui/button/buttonview~ButtonView
  */
 export default class DropdownButtonView extends ButtonView {
 	/**
@@ -43,18 +43,12 @@ export default class DropdownButtonView extends ButtonView {
 		 * An icon that displays arrow to indicate a dropdown button.
 		 *
 		 * @readonly
-		 * @member {module:ui/dropdown/button/dropdownbuttonview~DropdownButtonView}
+		 * @member {module:ui/icon/iconview~IconView}
 		 */
 		this.arrowView = this._createArrowView();
 
-		// Dropdown expects "open" event on button view upon which the dropdown will open.
+		// DropdownButtonInterface expects the open event upon which the dropdown will open.
 		this.delegate( 'execute' ).to( this, 'open' );
-
-		/**
-		 * Fired when the view is clicked. It won't be fired when the button {@link #isEnabled} is `false`.
-		 *
-		 * @event select
-		 */
 	}
 
 	/**

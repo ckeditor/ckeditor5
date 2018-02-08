@@ -10,26 +10,9 @@
 /**
  * The button interface.
  *
+ *		TODO
+ *
  * @interface module:ui/button/buttoninterface~ButtonInterface
- */
-
-/**
- * The button view class.
- *
- *		const view = new ButtonView();
- *
- *		view.set( {
- *			label: 'A button',
- *			keystroke: 'Ctrl+B',
- *			tooltip: true,
- *			withText: true
- *		} );
- *
- *		view.render();
- *
- *		document.body.append( view.element );
- *
- * @extends module:ui/view~View
  */
 
 /**
@@ -72,7 +55,7 @@
  *
  * @observable
  * @default 's'
- * @member {'s'|'n'} #position
+ * @member {'s'|'n'} #tooltipPosition
  */
 
 /**
@@ -89,6 +72,7 @@
  * To disable the button, use {@link #isEnabled} instead.
  *
  * @observable
+ * @default true
  * @member {Boolean} #isOn
  */
 
@@ -98,6 +82,7 @@
  * To change the "on" state of the button, use {@link #isOn} instead.
  *
  * @observable
+ * @default true
  * @member {Boolean} #isEnabled
  */
 
@@ -106,6 +91,7 @@
  * using a CSS class.
  *
  * @observable
+ * @default true
  * @member {Boolean} #isVisible
  */
 
@@ -113,6 +99,7 @@
  * (Optional) Controls whether the label of the button is hidden (e.g. an icon–only button).
  *
  * @observable
+ * @default false
  * @member {Boolean} #withText
  */
 
@@ -132,6 +119,7 @@
  * @default -1
  * @member {String} #tabindex
  */
+
 /**
  * Fired when the button view is clicked. It won't be fired when the button {@link #isEnabled}
  * is `false`.

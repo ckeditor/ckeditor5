@@ -15,7 +15,8 @@
  */
 
 /**
- * Fired when the arrow view is clicked. It won't be fired when the button {@link #isEnabled} is `false`.
+ * Fired when the dropdown should be opened.
+ * It will not be fired when the button {@link #isEnabled is disabled}.
  *
  * @event open
  */

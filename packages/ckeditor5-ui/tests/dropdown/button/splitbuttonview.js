@@ -40,6 +40,17 @@ describe( 'SplitButtonView', () => {
 			expect( view.element.classList.contains( 'ck-splitbutton' ) ).to.be.true;
 		} );
 
+		it( 'binds #isVisible to the template', () => {
+			expect( view.element.classList.contains( 'ck-hidden' ) ).to.be.false;
+
+			view.isVisible = false;
+
+			expect( view.element.classList.contains( 'ck-hidden' ) ).to.be.true;
+
+			// There should be no binding to the action view. Only the entire split button should react.
+			expect( view.actionView.element.classList.contains( 'ck-hidden' ) ).to.be.false;
+		} );
+
 		describe( 'activates keyboard navigation for the toolbar', () => {
 			it( 'so "arrowright" on view#arrowView does nothing', () => {
 				const keyEvtData = {
@@ -166,6 +177,39 @@ describe( 'SplitButtonView', () => {
 			view.isEnabled = false;
 
 			expect( view.arrowView.isEnabled ).to.be.false;
+		} );
+
+		it( 'binds actionView#tabindex to view', () => {
+			expect( view.actionView.tabindex ).to.equal( -1 );
+
+			view.tabindex = 1;
+
+			expect( view.actionView.tabindex ).to.equal( 1 );
+		} );
+
+		// Makes little sense for split button but ButtonInterface specifies it, so let's support it.
+		it( 'binds actionView#type to view', () => {
+			expect( view.actionView.type ).to.equal( 'button' );
+
+			view.type = 'submit';
+
+			expect( view.actionView.type ).to.equal( 'submit' );
+		} );
+
+		it( 'binds actionView#withText to view', () => {
+			expect( view.actionView.withText ).to.equal( false );
+
+			view.withText = true;
+
+			expect( view.actionView.withText ).to.equal( true );
+		} );
+
+		it( 'binds actionView#tooltipPosition to view', () => {
+			expect( view.actionView.tooltipPosition ).to.equal( 's' );
+
+			view.tooltipPosition = 'n';
+
+			expect( view.actionView.tooltipPosition ).to.equal( 'n' );
 		} );
 	} );
 

@@ -32,10 +32,10 @@ import '../../../theme/components/dropdown/splitbutton.css';
  *
  *		document.body.append( view.element );
  *
- * Also see {@link module:ui/dropdown/utils~createDropdown}.
+ * Also see the {@link module:ui/dropdown/utils~createDropdown `createDropdown()` util}.
  *
- * @extends module:ui/view~View
  * @implements module:ui/dropdown/button/dropdownbuttoninterface~DropdownButtonInterface
+ * @extends module:ui/view~View
  */
 export default class SplitButtonView extends View {
 	/**
@@ -44,79 +44,20 @@ export default class SplitButtonView extends View {
 	constructor( locale ) {
 		super( locale );
 
-		/**
-		 * Controls whether the button view is enabled, i.e. it can be clicked and execute an action.
-		 *
-		 * To change the "on" state of the button, use {@link #isOn} instead.
-		 *
-		 * @observable
-		 * @member {Boolean} #isEnabled
-		 */
-		this.set( 'isEnabled', true );
+		const bind = this.bindTemplate;
 
-		/**
-		 * Used to create a {@link #tooltip}.
-		 *
-		 * @observable
-		 * @member {String} #label
-		 */
-		this.set( 'label' );
-
-		/**
-		 * (Optional) The keystroke associated with the button, i.e. <kbd>Ctrl</kbd>+<kbd>B</kbd>,
-		 * in the string format compatible with {@link module:utils/keyboard}.
-		 *
-		 * @observable
-		 * @member {Boolean} #keystroke
-		 */
-		this.set( 'keystroke' );
-
-		/**
-		 * (Optional) An XML {@link module:ui/icon/iconview~IconView#content content} of the icon.
-		 * When defined, an {@link module:ui/button/buttonview~ButtonView#iconView} will be added to the {@link #actionView} button.
-		 *
-		 * @observable
-		 * @member {String} #icon
-		 */
+		// Implement ButtonInterface.
 		this.set( 'icon' );
-
-		/**
-		 * (Optional) Tooltip of the button, i.e. displayed when hovering the button with the mouse cursor.
-		 *
-		 * * If defined as a `Boolean` (e.g. `true`), then combination of `label` and `keystroke` will be set as a tooltip.
-		 * * If defined as a `String`, tooltip will equal the exact text of that `String`.
-		 * * If defined as a `Function`, `label` and `keystroke` will be passed to that function, which is to return
-		 * a string with the tooltip text.
-		 *
-		 *		const view = new ButtonView( locale );
-		 *		view.tooltip = ( label, keystroke ) => `A tooltip for ${ label } and ${ keystroke }.`
-		 *
-		 * @observable
-		 * @default false
-		 * @member {Boolean|String|Function} #tooltip
-		 */
-		this.set( 'tooltip' );
-
-		/**
-		 * Controls whether the button view is "on". It makes sense when a feature it represents
-		 * is currently active, e.g. a bold button is "on" when the selection is in the bold text.
-		 *
-		 * To disable the button, use {@link #isEnabled} instead.
-		 *
-		 * @observable
-		 * @member {Boolean} #isOn
-		 */
-		this.set( 'isOn', false );
-
-		/**
-		 * Controls whether the button view is enabled, i.e. it can be clicked and execute an action.
-		 *
-		 * To change the "on" state of the button, use {@link #isOn} instead.
-		 *
-		 * @observable
-		 * @member {Boolean} #isEnabled
-		 */
 		this.set( 'isEnabled', true );
+		this.set( 'isOn', false );
+		this.set( 'isVisible', true );
+		this.set( 'keystroke' );
+		this.set( 'label' );
+		this.set( 'tabindex', -1 );
+		this.set( 'tooltip' );
+		this.set( 'tooltipPosition', 's' );
+		this.set( 'type', 'button' );
+		this.set( 'withText', false );
 
 		/**
 		 * Collection of the child views inside of the split button {@link #element}.
@@ -166,7 +107,10 @@ export default class SplitButtonView extends View {
 			tag: 'div',
 
 			attributes: {
-				class: 'ck-splitbutton'
+				class: [
+					'ck-splitbutton',
+					bind.if( 'isVisible', 'ck-hidden', value => !value )
+				]
 			},
 
 			children: this.children
@@ -223,7 +167,18 @@ export default class SplitButtonView extends View {
 	_createActionView() {
 		const buttonView = new ButtonView();
 
-		buttonView.bind( 'icon', 'isEnabled', 'label', 'isOn', 'tooltip', 'keystroke' ).to( this );
+		buttonView.bind(
+			'icon',
+			'isEnabled',
+			'isOn',
+			'keystroke',
+			'label',
+			'tabindex',
+			'tooltip',
+			'tooltipPosition',
+			'type',
+			'withText'
+		).to( this );
 
 		buttonView.delegate( 'execute' ).to( this );
 
