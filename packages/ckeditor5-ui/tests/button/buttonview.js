@@ -248,6 +248,7 @@ describe( 'ButtonView', () => {
 
 			expect( view.iconView ).to.instanceOf( IconView );
 			expect( view.iconView.content ).to.equal( '<svg></svg>' );
+			expect( view.iconView.element.classList.contains( 'ck-button__icon' ) ).to.be.true;
 
 			view.icon = '<svg>bar</svg>';
 			expect( view.iconView.content ).to.equal( '<svg>bar</svg>' );

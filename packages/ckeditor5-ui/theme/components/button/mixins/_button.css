@@ -7,7 +7,7 @@
  * A helper to define button–specific icon styles.
  */
 @define-mixin ck-button-icon {
-	& .ck-icon:first-child {
+	& .ck-button__icon {
 		@mixin-content;
 	}
 }

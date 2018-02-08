@@ -151,6 +151,12 @@ export default class ButtonView extends View {
 
 			iconView.bind( 'content' ).to( this, 'icon' );
 
+			iconView.extendTemplate( {
+				attributes: {
+					class: 'ck-button__icon'
+				}
+			} );
+
 			this.children.add( iconView );
 		}
 
