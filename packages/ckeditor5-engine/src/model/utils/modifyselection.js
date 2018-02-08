@@ -136,20 +136,25 @@ function getCorrectPosition( walker, unit, isForward ) {
 		while (
 			isInsideSurrogatePair( data, offset ) ||
 			( unit == 'character' && isInsideCombinedSymbol( data, offset ) ) ||
-			( unit == 'word' && !isAtWordBoundary( data, offset, isForward, textNode ) )
+			( unit == 'word' && !isAtWordBoundary( textNode, offset, isForward ) )
 		) {
 			walker.next();
 
 			offset = walker.position.offset - textNode.startOffset;
 		}
 
+		// Check of adjacent text nodes with different attributes (like BOLD).
+		// Example			: 'foofoo []bar<$text bold="true">bar</$text> bazbaz'
+		// should expand to	: 'foofoo [bar<$text bold="true">bar</$text>] bazbaz'.
 		if ( unit == 'word' ) {
 			const nextNode = isForward ? walker.position.nodeAfter : walker.position.nodeBefore;
 
 			if ( nextNode ) {
-				const charAt = nextNode.data.charAt( isForward ? 0 : nextNode.data.length - 1 );
+				// Check boundary char of an adjacent text node.
+				const boundaryChar = nextNode.data.charAt( isForward ? 0 : nextNode.data.length - 1 );
 
-				if ( !wordBoundaryCharacters.includes( charAt ) ) {
+				// Go to the next node if the character at the boundary of that node belongs to the same word.
+				if ( !wordBoundaryCharacters.includes( boundaryChar ) ) {
 					walker.next();
 
 					return getCorrectPosition( walker, 'word', isForward );
@@ -174,10 +179,11 @@ function getSearchRange( start, isForward ) {
 
 // Checks if selection is on word boundary.
 //
-// @param {String} data TextNode contents.
+// @param {module:engine/view/text~Text} textNode The text node to investigate.
 // @param {Number} offset Position offset.
 // @param {Boolean} isForward Is the direction in which the selection should be modified is forward.
-function isAtWordBoundary( data, offset, isForward, textNode ) {
+function isAtWordBoundary( textNode, offset, isForward ) {
+	const data = textNode.data;
 	const textBoundaryOffset = isForward ? textNode.endOffset : 0;
 
 	// If the position as at the end of a textNode it is also a word boundary.
