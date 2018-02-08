@@ -14,7 +14,6 @@ import ModelText from '@ckeditor/ckeditor5-engine/src/model/text';
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
 import ViewUIElement from '@ckeditor/ckeditor5-engine/src/view/uielement';
-import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
 
 import BoldEngine from '@ckeditor/ckeditor5-basic-styles/src/boldengine';
 import UndoEngine from '@ckeditor/ckeditor5-undo/src/undoengine';
@@ -25,7 +24,8 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import { getData as getModelData, setData as setModelData, parse as parseModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData, parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
-import { insertElement } from '@ckeditor/ckeditor5-engine/src/conversion/model-to-view-converters';
+import { insertElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
+import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 
 describe( 'ListEngine', () => {
 	let editor, model, modelDoc, modelRoot, viewDoc, viewRoot;
@@ -3297,7 +3297,7 @@ describe( 'ListEngine', () => {
 
 	describe( 'other', () => {
 		it( 'model insert converter should not fire if change was already consumed', () => {
-			editor.editing.modelToView.on( 'insert:listItem', ( evt, data, consumable, conversionApi ) => {
+			editor.editing.downcastDispatcher.on( 'insert:listItem', ( evt, data, consumable, conversionApi ) => {
 				consumable.consume( data.item, 'attribute:type' );
 				consumable.consume( data.item, 'attribute:indent' );
 
@@ -3313,7 +3313,7 @@ describe( 'ListEngine', () => {
 		} );
 
 		it( 'model remove converter should be possible to overwrite', () => {
-			editor.editing.modelToView.on( 'remove:listItem', evt => {
+			editor.editing.downcastDispatcher.on( 'remove:listItem', evt => {
 				evt.stop();
 			}, { priority: 'highest' } );
 
@@ -3328,7 +3328,7 @@ describe( 'ListEngine', () => {
 		} );
 
 		it( 'model change type converter should not fire if change was already consumed', () => {
-			editor.editing.modelToView.on( 'attribute:type', ( evt, data, consumable ) => {
+			editor.editing.downcastDispatcher.on( 'attribute:type', ( evt, data, consumable ) => {
 				consumable.consume( data.item, 'attribute:type' );
 			}, { priority: 'highest' } );
 
@@ -3342,7 +3342,7 @@ describe( 'ListEngine', () => {
 		} );
 
 		it( 'model change indent converter should not fire if change was already consumed', () => {
-			editor.editing.modelToView.on( 'attribute:indent', ( evt, data, consumable ) => {
+			editor.editing.downcastDispatcher.on( 'attribute:indent', ( evt, data, consumable ) => {
 				consumable.consume( data.item, 'attribute:indent' );
 			}, { priority: 'highest' } );
 
@@ -3356,7 +3356,7 @@ describe( 'ListEngine', () => {
 		} );
 
 		it( 'view li converter should not fire if change was already consumed', () => {
-			editor.data.viewToModel.on( 'element:li', ( evt, data, conversionApi ) => {
+			editor.data.upcastDispatcher.on( 'element:li', ( evt, data, conversionApi ) => {
 				conversionApi.consumable.consume( data.viewItem, { name: true } );
 			}, { priority: 'highest' } );
 
@@ -3366,7 +3366,7 @@ describe( 'ListEngine', () => {
 		} );
 
 		it( 'view ul converter should not fire if change was already consumed', () => {
-			editor.data.viewToModel.on( 'element:ul', ( evt, data, conversionApi ) => {
+			editor.data.upcastDispatcher.on( 'element:ul', ( evt, data, conversionApi ) => {
 				conversionApi.consumable.consume( data.viewItem, { name: true } );
 			}, { priority: 'highest' } );
 
@@ -3376,7 +3376,7 @@ describe( 'ListEngine', () => {
 		} );
 
 		it( 'view converter should pass model range in data.modelRange', () => {
-			editor.data.viewToModel.on( 'element:ul', ( evt, data ) => {
+			editor.data.upcastDispatcher.on( 'element:ul', ( evt, data ) => {
 				expect( data.modelRange ).to.be.instanceof( ModelRange );
 			}, { priority: 'lowest' } );
 
@@ -3496,7 +3496,7 @@ describe( 'ListEngine', () => {
 		} );
 
 		it( 'should split parent element when one of modelCursor ancestors allows to insert list - in the middle', () => {
-			buildViewConverter().for( editor.data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
+			editor.conversion.for( 'upcast' ).add( upcastElementToElement( { view: 'div', model: 'div' } ) );
 			model.schema.register( 'div', { inheritAllFrom: '$block' } );
 
 			editor.setData(
@@ -3517,7 +3517,7 @@ describe( 'ListEngine', () => {
 		} );
 
 		it( 'should split parent element when one of modelCursor ancestors allows to insert list - at the end', () => {
-			buildViewConverter().for( editor.data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
+			editor.conversion.for( 'upcast' ).add( upcastElementToElement( { view: 'div', model: 'div' } ) );
 			model.schema.register( 'div', { inheritAllFrom: '$block' } );
 
 			editor.setData(
@@ -3536,7 +3536,7 @@ describe( 'ListEngine', () => {
 		} );
 
 		it( 'should split parent element when one of modelCursor ancestors allows to insert list - at the beginning', () => {
-			buildViewConverter().for( editor.data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
+			editor.conversion.for( 'upcast' ).add( upcastElementToElement( { view: 'div', model: 'div' } ) );
 			model.schema.register( 'div', { inheritAllFrom: '$block' } );
 
 			editor.setData(

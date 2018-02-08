@@ -71,25 +71,25 @@ export default class ListEngine extends Plugin {
 		editing.mapper.on( 'viewToModelPosition', viewToModelPosition );
 		data.mapper.on( 'modelToViewPosition', modelToViewPosition );
 
-		editing.modelToView.on( 'insert', modelViewSplitOnInsert, { priority: 'high' } );
-		editing.modelToView.on( 'insert:listItem', modelViewInsertion );
-		data.modelToView.on( 'insert', modelViewSplitOnInsert, { priority: 'high' } );
-		data.modelToView.on( 'insert:listItem', modelViewInsertion );
+		editing.downcastDispatcher.on( 'insert', modelViewSplitOnInsert, { priority: 'high' } );
+		editing.downcastDispatcher.on( 'insert:listItem', modelViewInsertion );
+		data.downcastDispatcher.on( 'insert', modelViewSplitOnInsert, { priority: 'high' } );
+		data.downcastDispatcher.on( 'insert:listItem', modelViewInsertion );
 
-		editing.modelToView.on( 'attribute:type:listItem', modelViewChangeType );
-		data.modelToView.on( 'attribute:type:listItem', modelViewChangeType );
-		editing.modelToView.on( 'attribute:indent:listItem', modelViewChangeIndent );
-		data.modelToView.on( 'attribute:indent:listItem', modelViewChangeIndent );
+		editing.downcastDispatcher.on( 'attribute:type:listItem', modelViewChangeType );
+		data.downcastDispatcher.on( 'attribute:type:listItem', modelViewChangeType );
+		editing.downcastDispatcher.on( 'attribute:indent:listItem', modelViewChangeIndent );
+		data.downcastDispatcher.on( 'attribute:indent:listItem', modelViewChangeIndent );
 
-		editing.modelToView.on( 'remove:listItem', modelViewRemove );
-		editing.modelToView.on( 'remove', modelViewMergeAfter, { priority: 'low' } );
-		data.modelToView.on( 'remove:listItem', modelViewRemove );
-		data.modelToView.on( 'remove', modelViewMergeAfter, { priority: 'low' } );
+		editing.downcastDispatcher.on( 'remove:listItem', modelViewRemove );
+		editing.downcastDispatcher.on( 'remove', modelViewMergeAfter, { priority: 'low' } );
+		data.downcastDispatcher.on( 'remove:listItem', modelViewRemove );
+		data.downcastDispatcher.on( 'remove', modelViewMergeAfter, { priority: 'low' } );
 
-		data.viewToModel.on( 'element:ul', cleanList, { priority: 'high' } );
-		data.viewToModel.on( 'element:ol', cleanList, { priority: 'high' } );
-		data.viewToModel.on( 'element:li', cleanListItem, { priority: 'high' } );
-		data.viewToModel.on( 'element:li', viewModelConverter );
+		data.upcastDispatcher.on( 'element:ul', cleanList, { priority: 'high' } );
+		data.upcastDispatcher.on( 'element:ol', cleanList, { priority: 'high' } );
+		data.upcastDispatcher.on( 'element:li', cleanListItem, { priority: 'high' } );
+		data.upcastDispatcher.on( 'element:li', viewModelConverter );
 
 		// Fix indentation of pasted items.
 		editor.model.on( 'insertContent', modelIndentPasteFixer, { priority: 'high' } );
