@@ -69,7 +69,7 @@ export default class DropdownPanelView extends View {
 	/**
 	 * Focuses the view element or first item in view collection on opening dropdown's panel.
 	 *
-	 * See also {@link module:ui/dropdown/dropdownpanelfocusable}.
+	 * See also {@link module:ui/dropdown/dropdownpanelfocusable~DropdownPanelFocusable}.
 	 */
 	focus() {
 		if ( this.children.length ) {
@@ -80,7 +80,7 @@ export default class DropdownPanelView extends View {
 	/**
 	 * Focuses the view element or last item in view collection on opening dropdown's panel.
 	 *
-	 * See also {@link module:ui/dropdown/dropdownpanelfocusable}.
+	 * See also {@link module:ui/dropdown/dropdownpanelfocusable~DropdownPanelFocusable}.
 	 */
 	focusLast() {
 		if ( this.children.length ) {

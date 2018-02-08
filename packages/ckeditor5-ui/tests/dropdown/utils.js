@@ -91,7 +91,7 @@ describe( 'utils', () => {
 			} );
 		} );
 
-		describe( 'hasDefaultBehavior', () => {
+		describe( 'has default behavior', () => {
 			describe( 'closeDropdownOnBlur()', () => {
 				beforeEach( () => {
 					dropdownView.render();

@@ -19,10 +19,14 @@ import clickOutsideHandler from '../bindings/clickoutsidehandler';
 import '../../theme/components/dropdown/toolbardropdown.css';
 
 /**
- * A helper which creates an instance of {@link module:ui/dropdown/dropdownview~DropdownView} class with an instance of
- * a button class passed as `ButtonClass` parameter.
+ * A helper for creating dropdowns. It creates an instance of a {@link module:ui/dropdown/dropdownview~DropdownView dropdown},
+ * with a {@link module:ui/dropdown/button/dropdownbuttoninterface~DropdownButtonInterface button},
+ * {@link module:ui/dropdown/dropdownpanelview~DropdownPanelView panel} and all standard dropdown's behaviors.
  *
- * The default value of `ButtonClass` is {@link module:ui/dropdown/button/dropdownbuttonview~DropdownButtonView} class.
+ * # Creating dropdowns
+ *
+ * By default, the default {@link module:ui/dropdown/button/dropdownbuttonview~DropdownButtonView} class is used as
+ * definition of the button:
  *
  *		const dropdown = createDropdown( model );
  *
@@ -37,14 +41,43 @@ import '../../theme/components/dropdown/toolbardropdown.css';
  *		// Will render a dropdown labeled "A dropdown" with an empty panel.
  *		document.body.appendChild( dropdown.element );
  *
- * The supported button classes for dropdown are:
- * * {@link module:ui/dropdown/button/dropdownbuttonview~DropdownButtonView}
- * * {@link module:ui/dropdown/button/splitbuttonview~SplitButtonView}
+ * You can also provide other button views (they need to implement the
+ * {module:ui/dropdown/button/dropdownbuttoninterface~DropdownButtonInterface} interface). For instance, you can use
+ * {@link module:ui/dropdown/button/splitbuttonview~SplitButtonView} to create a dropdown with a split button.
  *
- * Also see {@link module:ui/dropdown/utils~addListToDropdown} and {@link module:ui/dropdown/utils~addToolbarToDropdown}.
+ *		const dropdown = createDropdown( model, SplitButtonView );
+ *
+ *		// Configure dropdown's button properties:
+ *		dropdown.buttonView.set( {
+ *			label: 'A dropdown',
+ *			withText: true
+ *		} );
+ *
+ *		dropdown.buttonView.on( 'execute', () => {
+ *			// Add the behavior of the "action part" of the split button.
+ *			// Split button consists of the "action part" and "arrow part".
+ *			// The arrow opens the dropdown while the action part can have some other behavior.
+ * 		} );
+ *
+ *		dropdown.render();
+ *
+ *		// Will render a dropdown labeled "A dropdown" with an empty panel.
+ *		document.body.appendChild( dropdown.element );
+ *
+ * # Adding content to the dropdown's panel
+ *
+ * The content of the panel can be inserted directly into the `dropdown.panelView.element`:
+ *
+ *		dropdown.panelView.element.textContent = 'Content of the panel';
+ *
+ * However, most of the time you will want to add there either a {@link module:ui/list/listview~ListView list of options}
+ * or a list of buttons (i.e. a {@link module:ui/toolbar/toolbarview~ToolbarView toolbar}).
+ * To simplify the task, you can use, respectively, {@link module:ui/dropdown/utils~addListToDropdown} or
+ * {@link module:ui/dropdown/utils~addToolbarToDropdown} utils.
  *
  * @param {module:utils/locale~Locale} locale The locale instance.
- * @param {module:ui/dropdown/button/dropdownbuttoninterface~DropdownButtonInterface} ButtonClass The dropdown button view class.
+ * @param {Function} ButtonClass The dropdown button view class. Needs to implement the
+ * {@link module:ui/dropdown/button/dropdownbuttoninterface~DropdownButtonInterface} interface.
  * @returns {module:ui/dropdown/dropdownview~DropdownView} The dropdown view instance.
  */
 export function createDropdown( locale, ButtonClass = DropdownButtonView ) {

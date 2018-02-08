@@ -8,9 +8,9 @@
  */
 
 /**
- * The button interface.
- *
- *		TODO
+ * The button interface. Implemented by, among others, {@link module:ui/button/buttonview~ButtonView},
+ * {@link module:ui/dropdown/button/splitbuttonview~SplitButtonView} and
+ * {@link module:ui/dropdown/button/dropdownbuttonview~DropdownButtonView}.
  *
  * @interface module:ui/button/buttoninterface~ButtonInterface
  */

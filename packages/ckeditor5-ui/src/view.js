@@ -111,7 +111,7 @@ export default class View {
 		 *
 		 *		const view = new SampleView();
 		 *
-		 *		// Renders the #template
+		 *		// Renders the #template.
 		 *		view.render();
 		 *
 		 *		// Append the HTML element of the view to <body>.

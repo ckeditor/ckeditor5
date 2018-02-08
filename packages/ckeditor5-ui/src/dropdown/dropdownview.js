@@ -14,13 +14,36 @@ import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 import '../../theme/components/dropdown/dropdown.css';
 
 /**
- * The dropdown view class.
+ * The dropdown view class. It manages the dropdown button and dropdown panel.
  *
- *		const button = new ButtonView( locale );
+ * In most cases, the easiest way to create a dropdown is by using the {@link module:ui/dropdown/utils~createDropdown}
+ * util:
+ *
+ *		const dropdown = createDropdown( locale );
+ *
+ *		// Configure dropdown's button properties:
+ *		dropdown.buttonView.set( {
+ *			label: 'A dropdown',
+ *			withText: true
+ *		} );
+ *
+ *		dropdown.render();
+ *
+ *		dropdown.panelView.element.textContent = 'Content of the panel';
+ *
+ *		// Will render a dropdown with a panel containing a "Content of the panel" text.
+ *		document.body.appendChild( dropdown.element );
+ *
+ * If you want to add a richer content to the dropdown panel, you can use the {@link module:ui/dropdown/utils~addListToDropdown}
+ * and {@link module:ui/dropdown/utils~addToolbarToDropdown} helpers. See more examples in
+ * {@link module:ui/dropdown/utils~createDropdown} documentation.
+ *
+ * If you want to create a completely custom dropdown, then you can compose it manually:
+ *
+ *		const button = new DropdownButtonView( locale );
  *		const panel = new DropdownPanelView( locale );
  *		const dropdown = new DropdownView( locale, button, panel );
  *
- *		panel.element.textContent = 'Content of the panel';
  *		button.set( {
  *			label: 'A dropdown',
  *			withText: true
@@ -28,16 +51,27 @@ import '../../theme/components/dropdown/dropdown.css';
  *
  *		dropdown.render();
  *
+ *		panel.element.textContent = 'Content of the panel';
+ *
  *		// Will render a dropdown with a panel containing a "Content of the panel" text.
  *		document.body.appendChild( dropdown.element );
  *
- * Also see {@link module:ui/dropdown/utils~createDropdown} to learn about dropdown creation helper.
+ * However, dropdown created this way will contain little behavior. You will need to implement handlers for actions
+ * such as {@link module:ui/bindings/clickoutsidehandler~clickOutsideHandler clicking outside an open dropdown}
+ * (which should close it) and support for arrow keys inside the panel. Therefore, unless you really know what
+ * you do and you really need to do it, it is recommended to use the {@link module:ui/dropdown/utils~createDropdown} helper.
  *
  * @extends module:ui/view~View
  */
 export default class DropdownView extends View {
 	/**
-	 * @inheritDoc
+	 * Creates an instance of the dropdown.
+	 *
+	 * Also see {@link #render}.
+	 *
+	 * @param {module:utils/locale~Locale} [locale] The localization services instance.
+	 * @param {module:ui/dropdown/button/dropdownbuttoninterface~DropdownButtonInterface} buttonView
+	 * @param {module:ui/dropdown/dropdownpanelview~DropdownPanelView} panelView
 	 */
 	constructor( locale, buttonView, panelView ) {
 		super( locale );
