@@ -209,19 +209,23 @@ describe( 'Alignment UI', () => {
 			dropdown = editor.ui.componentFactory.create( 'alignmentDropdown' );
 		} );
 
-		it( 'button has the base properties', () => {
+		it( '#buttonView has the base properties', () => {
 			const button = dropdown.buttonView;
 
 			expect( button ).to.have.property( 'label', 'Text alignment' );
 			expect( button ).to.have.property( 'icon' );
 			expect( button ).to.have.property( 'tooltip', true );
-			expect( button ).to.have.property( 'withText', false );
+		} );
+
+		it( 'should add custom CSS class to dropdown', () => {
+			dropdown.render();
+
+			expect( dropdown.element.classList.contains( 'ck-alignment-dropdown' ) ).to.be.true;
 		} );
 
 		it( '#toolbarView has the base properties', () => {
 			const toolbarView = dropdown.toolbarView;
 
-			expect( toolbarView ).to.have.property( 'className', 'ck-editor-toolbar' );
 			expect( toolbarView ).to.have.property( 'isVertical', true );
 		} );
 

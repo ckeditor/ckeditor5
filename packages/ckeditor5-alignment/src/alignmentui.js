@@ -10,8 +10,8 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import Model from '@ckeditor/ckeditor5-ui/src/model';
-import createButtonDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/button/createbuttondropdown';
+
+import { createDropdown, addToolbarToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 
 import { commandNameFromOptionName } from './alignmentcommand';
 import { isSupported } from './alignmentediting';
@@ -83,21 +83,47 @@ export default class AlignmentUI extends Plugin {
 			.forEach( option => this._addButton( option ) );
 
 		componentFactory.add( 'alignmentDropdown', locale => {
-			const buttons = options.map( option => {
-				return componentFactory.create( commandNameFromOptionName( option ) );
-			} );
+			const dropdownView = createDropdown( locale );
 
-			const model = new Model( {
+			// Add existing alignment buttons to dropdown's toolbar.
+			const buttons = options.map( option => componentFactory.create( commandNameFromOptionName( option ) ) );
+			addToolbarToDropdown( dropdownView, buttons );
+
+			// Configure dropdown properties an behavior.
+			dropdownView.buttonView.set( {
 				label: t( 'Text alignment' ),
-				defaultIcon: alignLeftIcon,
-				withText: false,
-				isVertical: true,
-				tooltip: true,
-				toolbarClassName: 'ck-editor-toolbar',
-				buttons
+				tooltip: true
 			} );
 
-			return createButtonDropdown( model, locale );
+			dropdownView.toolbarView.isVertical = true;
+
+			dropdownView.extendTemplate( {
+				attributes: {
+					class: 'ck-alignment-dropdown'
+				}
+			} );
+
+			// The default icon is align left as we do not support RTL yet (see #3).
+			const defaultIcon = alignLeftIcon;
+
+			// Change icon to reflect current selection's alignment.
+			dropdownView.buttonView.bind( 'icon' ).toMany( buttons, 'isOn', ( ...areActive ) => {
+				// Get the index of an active button.
+				const index = areActive.findIndex( value => value );
+
+				// If none of the commands is active, display either defaultIcon or the first button's icon.
+				if ( index < 0 ) {
+					return defaultIcon;
+				}
+
+				// Return active button's icon.
+				return buttons[ index ].icon;
+			} );
+
+			// Enable button if any of the buttons is enabled.
+			dropdownView.bind( 'isEnabled' ).toMany( buttons, 'isEnabled', ( ...areEnabled ) => areEnabled.some( isEnabled => isEnabled ) );
+
+			return dropdownView;
 		} );
 	}
 
