@@ -29,7 +29,7 @@ import IconView from '../../icon/iconview';
  *
  * Also see the {@link module:ui/dropdown/utils~createDropdown `createDropdown()` util}.
  *
- * @implements module:ui/dropdown/button/dropdownbuttoninterface~DropdownButtonInterface
+ * @implements module:ui/dropdown/button/dropdownbutton~DropdownButton
  * @extends module:ui/button/buttonview~ButtonView
  */
 export default class DropdownButtonView extends ButtonView {
@@ -47,7 +47,7 @@ export default class DropdownButtonView extends ButtonView {
 		 */
 		this.arrowView = this._createArrowView();
 
-		// DropdownButtonInterface expects the open event upon which the dropdown will open.
+		// The DropdownButton interface expects the open event upon which will open the dropdown.
 		this.delegate( 'execute' ).to( this, 'open' );
 	}
 

@@ -20,7 +20,7 @@ import '../../theme/components/dropdown/toolbardropdown.css';
 
 /**
  * A helper for creating dropdowns. It creates an instance of a {@link module:ui/dropdown/dropdownview~DropdownView dropdown},
- * with a {@link module:ui/dropdown/button/dropdownbuttoninterface~DropdownButtonInterface button},
+ * with a {@link module:ui/dropdown/button/dropdownbutton~DropdownButton button},
  * {@link module:ui/dropdown/dropdownpanelview~DropdownPanelView panel} and all standard dropdown's behaviors.
  *
  * # Creating dropdowns
@@ -42,7 +42,7 @@ import '../../theme/components/dropdown/toolbardropdown.css';
  *		document.body.appendChild( dropdown.element );
  *
  * You can also provide other button views (they need to implement the
- * {module:ui/dropdown/button/dropdownbuttoninterface~DropdownButtonInterface} interface). For instance, you can use
+ * {module:ui/dropdown/button/dropdownbutton~DropdownButton} interface). For instance, you can use
  * {@link module:ui/dropdown/button/splitbuttonview~SplitButtonView} to create a dropdown with a split button.
  *
  *		const dropdown = createDropdown( model, SplitButtonView );
@@ -77,7 +77,7 @@ import '../../theme/components/dropdown/toolbardropdown.css';
  *
  * @param {module:utils/locale~Locale} locale The locale instance.
  * @param {Function} ButtonClass The dropdown button view class. Needs to implement the
- * {@link module:ui/dropdown/button/dropdownbuttoninterface~DropdownButtonInterface} interface.
+ * {@link module:ui/dropdown/button/dropdownbutton~DropdownButton} interface.
  * @returns {module:ui/dropdown/dropdownview~DropdownView} The dropdown view instance.
  */
 export function createDropdown( locale, ButtonClass = DropdownButtonView ) {

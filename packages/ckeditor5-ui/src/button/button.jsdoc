@@ -4,7 +4,7 @@
  */
 
 /**
- * @module ui/button/buttoninterface
+ * @module ui/button/button
  */
 
 /**
@@ -12,7 +12,7 @@
  * {@link module:ui/dropdown/button/splitbuttonview~SplitButtonView} and
  * {@link module:ui/dropdown/button/dropdownbuttonview~DropdownButtonView}.
  *
- * @interface module:ui/button/buttoninterface~ButtonInterface
+ * @interface module:ui/button/button~Button
  */
 
 /**

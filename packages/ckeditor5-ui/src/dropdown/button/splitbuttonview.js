@@ -34,7 +34,7 @@ import '../../../theme/components/dropdown/splitbutton.css';
  *
  * Also see the {@link module:ui/dropdown/utils~createDropdown `createDropdown()` util}.
  *
- * @implements module:ui/dropdown/button/dropdownbuttoninterface~DropdownButtonInterface
+ * @implements module:ui/dropdown/button/dropdownbutton~DropdownButton
  * @extends module:ui/view~View
  */
 export default class SplitButtonView extends View {
@@ -46,7 +46,7 @@ export default class SplitButtonView extends View {
 
 		const bind = this.bindTemplate;
 
-		// Implement ButtonInterface.
+		// Implement the Button interface.
 		this.set( 'icon' );
 		this.set( 'isEnabled', true );
 		this.set( 'isOn', false );

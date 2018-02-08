@@ -70,7 +70,7 @@ export default class DropdownView extends View {
 	 * Also see {@link #render}.
 	 *
 	 * @param {module:utils/locale~Locale} [locale] The localization services instance.
-	 * @param {module:ui/dropdown/button/dropdownbuttoninterface~DropdownButtonInterface} buttonView
+	 * @param {module:ui/dropdown/button/dropdownbutton~DropdownButton} buttonView
 	 * @param {module:ui/dropdown/dropdownpanelview~DropdownPanelView} panelView
 	 */
 	constructor( locale, buttonView, panelView ) {

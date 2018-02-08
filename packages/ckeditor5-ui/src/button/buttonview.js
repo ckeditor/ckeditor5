@@ -32,7 +32,7 @@ import '../../theme/components/button/button.css';
  *		document.body.append( view.element );
  *
  * @extends module:ui/view~View
- * @implements module:ui/button/buttoninterface~ButtonInterface
+ * @implements module:ui/button/button~Button
  */
 export default class ButtonView extends View {
 	/**
@@ -43,7 +43,7 @@ export default class ButtonView extends View {
 
 		const bind = this.bindTemplate;
 
-		// Implement ButtonInterface.
+		// Implement the Button interface.
 		this.set( 'icon' );
 		this.set( 'isEnabled', true );
 		this.set( 'isOn', false );

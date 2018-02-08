@@ -187,7 +187,7 @@ describe( 'SplitButtonView', () => {
 			expect( view.actionView.tabindex ).to.equal( 1 );
 		} );
 
-		// Makes little sense for split button but ButtonInterface specifies it, so let's support it.
+		// Makes little sense for split button but the Button interface specifies it, so let's support it.
 		it( 'binds actionView#type to view', () => {
 			expect( view.actionView.type ).to.equal( 'button' );
 
