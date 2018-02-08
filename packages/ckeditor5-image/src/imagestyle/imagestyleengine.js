@@ -60,11 +60,11 @@ export default class ImageStyleEngine extends Plugin {
 
 		// Converters for imageStyle attribute from model to view.
 		const modelToViewConverter = modelToViewStyleAttribute( styles );
-		editing.modelToView.on( 'attribute:imageStyle:image', modelToViewConverter );
-		data.modelToView.on( 'attribute:imageStyle:image', modelToViewConverter );
+		editing.downcastDispatcher.on( 'attribute:imageStyle:image', modelToViewConverter );
+		data.downcastDispatcher.on( 'attribute:imageStyle:image', modelToViewConverter );
 
 		// Converter for figure element from view to model.
-		data.viewToModel.on( 'element:figure', viewToModelStyleAttribute( styles ), { priority: 'low' } );
+		data.upcastDispatcher.on( 'element:figure', viewToModelStyleAttribute( styles ), { priority: 'low' } );
 
 		// Register separate command for each style.
 		for ( const style of styles ) {

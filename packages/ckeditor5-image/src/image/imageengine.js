@@ -8,15 +8,18 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
-import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
+
 import {
 	viewFigureToModel,
-	createImageAttributeConverter,
+	modelToViewAttributeConverter,
 	srcsetAttributeConverter
 } from './converters';
+
 import { toImageWidget } from './utils';
-import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
+
+import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
+import { upcastElementToElement, upcastAttributeToAttribute } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
+
 import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
 import ViewEmptyElement from '@ckeditor/ckeditor5-engine/src/view/emptyelement';
 
@@ -34,9 +37,8 @@ export default class ImageEngine extends Plugin {
 	init() {
 		const editor = this.editor;
 		const schema = editor.model.schema;
-		const data = editor.data;
-		const editing = editor.editing;
 		const t = editor.t;
+		const conversion = editor.conversion;
 
 		// Configure schema.
 		schema.register( 'image', {
@@ -46,54 +48,59 @@ export default class ImageEngine extends Plugin {
 			allowAttributes: [ 'alt', 'src', 'srcset' ]
 		} );
 
-		// Build converter from model to view for data pipeline.
-		buildModelConverter().for( data.modelToView )
-			.fromElement( 'image' )
-			.toElement( () => createImageViewElement() );
+		editor.conversion.for( 'toData' ).add( downcastElementToElement( {
+			model: 'image',
+			view: () => createImageViewElement()
+		} ) );
 
-		// Build converter from model to view for editing pipeline.
-		buildModelConverter().for( editing.modelToView )
-			.fromElement( 'image' )
-			.toElement( () => toImageWidget( createImageViewElement(), t( 'image widget' ) ) );
+		editor.conversion.for( 'toEditing' ).add( downcastElementToElement( {
+			model: 'image',
+			view: () => toImageWidget( createImageViewElement(), t( 'image widget' ) )
+		} ) );
 
-		createImageAttributeConverter( [ editing.modelToView, data.modelToView ], 'src' );
-		createImageAttributeConverter( [ editing.modelToView, data.modelToView ], 'alt' );
+		conversion.for( 'downcast' )
+			.add( modelToViewAttributeConverter( 'src' ) )
+			.add( modelToViewAttributeConverter( 'alt' ) )
+			.add( srcsetAttributeConverter() );
 
-		// Convert `srcset` attribute changes and add or remove `sizes` attribute when necessary.
-		createImageAttributeConverter( [ editing.modelToView, data.modelToView ], 'srcset', srcsetAttributeConverter );
-
-		// Build converter for view img element to model image element.
-		buildViewConverter().for( data.viewToModel )
-			.from( { name: 'img', attribute: { src: true } } )
-			.toElement( viewImage => new ModelElement( 'image', { src: viewImage.getAttribute( 'src' ) } ) );
-
-		// Build converter for alt attribute.
-		buildViewConverter().for( data.viewToModel )
-			.from( { name: 'img', attribute: { alt: true } } )
-			.consuming( { attribute: [ 'alt' ] } )
-			.toAttribute( viewImage => ( { key: 'alt', value: viewImage.getAttribute( 'alt' ) } ) );
-
-		// Build converter for srcset attribute.
-		buildViewConverter().for( data.viewToModel )
-			.from( { name: 'img', attribute: { srcset: true } } )
-			.consuming( { attribute: [ 'srcset' ] } )
-			.toAttribute( viewImage => {
-				const value = {
-					data: viewImage.getAttribute( 'srcset' )
-				};
-
-				if ( viewImage.hasAttribute( 'width' ) ) {
-					value.width = viewImage.getAttribute( 'width' );
-				}
-
-				return {
+		conversion.for( 'upcast' )
+			.add( upcastElementToElement( {
+				view: {
+					name: 'img',
+					attribute: {
+						src: true
+					}
+				},
+				model: ( viewImage, modelWriter ) => modelWriter.createElement( 'image', { src: viewImage.getAttribute( 'src' ) } )
+			} ) )
+			.add( upcastAttributeToAttribute( {
+				view: {
+					name: 'img',
+					key: 'alt'
+				},
+				model: 'alt'
+			} ) )
+			.add( upcastAttributeToAttribute( {
+				view: {
+					name: 'img',
+					key: 'srcset'
+				},
+				model: {
 					key: 'srcset',
-					value
-				};
-			} );
+					value: viewImage => {
+						const value = {
+							data: viewImage.getAttribute( 'srcset' )
+						};
 
-		// Converter for figure element from view to model.
-		data.viewToModel.on( 'element:figure', viewFigureToModel() );
+						if ( viewImage.hasAttribute( 'width' ) ) {
+							value.width = viewImage.getAttribute( 'width' );
+						}
+
+						return value;
+					}
+				}
+			} ) )
+			.add( viewFigureToModel() );
 	}
 }
 

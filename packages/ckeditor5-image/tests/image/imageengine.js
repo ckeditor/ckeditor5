@@ -7,8 +7,7 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import ImageEngine from '../../src/image/imageengine';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
-import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
+import { elementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/two-way-converters';
 import { isImageWidget } from '../../src/image/utils';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 
@@ -87,7 +86,7 @@ describe( 'ImageEngine', () => {
 			} );
 
 			it( 'should not convert srcset attribute if is already consumed', () => {
-				editor.data.modelToView.on( 'attribute:srcset:image', ( evt, data, consumable ) => {
+				editor.data.downcastDispatcher.on( 'attribute:srcset:image', ( evt, data, consumable ) => {
 					const modelImage = data.item;
 
 					consumable.consume( modelImage, evt.name );
@@ -173,9 +172,6 @@ describe( 'ImageEngine', () => {
 			} );
 
 			it( 'should not convert in wrong context', () => {
-				const data = editor.data;
-				const editing = editor.editing;
-
 				model.schema.register( 'div', { inheritAllFrom: '$block' } );
 				model.schema.addChildCheck( ( ctx, childDef ) => {
 					if ( ctx.endsWith( '$root' ) && childDef.name == 'image' ) {
@@ -183,8 +179,7 @@ describe( 'ImageEngine', () => {
 					}
 				} );
 
-				buildModelConverter().for( data.modelToView, editing.modelToView ).fromElement( 'div' ).toElement( 'div' );
-				buildViewConverter().for( data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
+				elementToElement( editor.conversion, { model: 'div', view: 'div' } );
 
 				editor.setData( '<div><figure class="image"><img src="foo.png" alt="alt text" /></figure></div>' );
 
@@ -193,7 +188,7 @@ describe( 'ImageEngine', () => {
 			} );
 
 			it( 'should not convert if img is already consumed', () => {
-				editor.data.viewToModel.on( 'element:figure', ( evt, data, conversionApi ) => {
+				editor.data.upcastDispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
 					const img = data.viewItem.getChild( 0 );
 					conversionApi.consumable.consume( img, { name: true } );
 				}, { priority: 'high' } );
@@ -205,7 +200,7 @@ describe( 'ImageEngine', () => {
 			} );
 
 			it( 'should not convert if figure is already consumed', () => {
-				editor.data.viewToModel.on( 'element:figure', ( evt, data, conversionApi ) => {
+				editor.data.upcastDispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
 					conversionApi.consumable.consume( data.viewItem, { name: true, class: 'image' } );
 				}, { priority: 'high' } );
 
@@ -217,7 +212,7 @@ describe( 'ImageEngine', () => {
 
 			it( 'should dispatch conversion for nested elements', () => {
 				const conversionSpy = sinon.spy();
-				editor.data.viewToModel.on( 'element:figcaption', conversionSpy );
+				editor.data.upcastDispatcher.on( 'element:figcaption', conversionSpy );
 
 				editor.setData( '<figure class="image"><img src="foo.png" alt="alt text" /><figcaption></figcaption></figure>' );
 
@@ -232,16 +227,12 @@ describe( 'ImageEngine', () => {
 			} );
 
 			it( 'should not convert alt attribute on non-img element', () => {
-				const data = editor.data;
-				const editing = editor.editing;
-
 				model.schema.register( 'div', {
 					inheritAllFrom: '$block',
 					allowAttributes: 'alt'
 				} );
 
-				buildModelConverter().for( data.modelToView, editing.modelToView ).fromElement( 'div' ).toElement( 'div' );
-				buildViewConverter().for( data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
+				elementToElement( editor.conversion, { model: 'div', view: 'div' } );
 
 				editor.setData( '<div alt="foo"></div>' );
 
@@ -285,15 +276,7 @@ describe( 'ImageEngine', () => {
 				beforeEach( () => {
 					model.schema.register( 'div', { inheritAllFrom: '$block' } );
 
-					buildModelConverter()
-						.for( editor.data.modelToView, editor.editing.modelToView )
-						.fromElement( 'div' )
-						.toElement( 'div' );
-
-					buildViewConverter()
-						.for( editor.data.viewToModel )
-						.fromElement( 'div' )
-						.toElement( 'div' );
+					elementToElement( editor.conversion, { model: 'div', view: 'div' } );
 				} );
 
 				it( 'image between non-hoisted elements', () => {
@@ -375,10 +358,7 @@ describe( 'ImageEngine', () => {
 					} );
 					model.schema.extend( 'div', { allowIn: 'limit' } );
 
-					buildModelConverter()
-						.for( editor.data.modelToView, editor.editing.modelToView ).fromElement( 'limit' ).toElement( 'limit' );
-
-					buildViewConverter().for( editor.data.viewToModel ).fromElement( 'limit' ).toElement( 'limit' );
+					elementToElement( editor.conversion, { model: 'limit', view: 'limit' } );
 
 					editor.setData( '<limit><div>foo<img src="foo.jpg" alt="foo" />bar</div></limit>' );
 
@@ -442,7 +422,7 @@ describe( 'ImageEngine', () => {
 				setModelData( model, '<image src="foo.png" alt="alt text"></image>' );
 				const image = document.getRoot().getChild( 0 );
 
-				editor.editing.modelToView.on( 'attribute:alt:image', ( evt, data, consumable ) => {
+				editor.editing.downcastDispatcher.on( 'attribute:alt:image', ( evt, data, consumable ) => {
 					consumable.consume( data.item, 'attribute:alt' );
 				}, { priority: 'high' } );
 
@@ -541,7 +521,7 @@ describe( 'ImageEngine', () => {
 			} );
 
 			it( 'should not convert srcset attribute if is already consumed', () => {
-				editor.editing.modelToView.on( 'attribute:srcset:image', ( evt, data, consumable ) => {
+				editor.editing.downcastDispatcher.on( 'attribute:srcset:image', ( evt, data, consumable ) => {
 					const modelImage = data.item;
 
 					consumable.consume( modelImage, evt.name );

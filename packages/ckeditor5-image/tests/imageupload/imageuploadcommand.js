@@ -14,7 +14,7 @@ import { createNativeFileMock, UploadAdapterMock } from '@ckeditor/ckeditor5-upl
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import Image from '../../src/image/imageengine';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
+import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
 import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 
 import log from '@ckeditor/ckeditor5-utils/src/log';
@@ -104,9 +104,7 @@ describe( 'ImageUploadCommand', () => {
 			} );
 			model.schema.extend( '$text', { allowIn: 'other' } );
 
-			buildModelConverter().for( editor.editing.modelToView )
-				.fromElement( 'other' )
-				.toElement( 'p' );
+			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'other', view: 'p' } ) );
 
 			setModelData( model, '<other>[]</other>' );
 
