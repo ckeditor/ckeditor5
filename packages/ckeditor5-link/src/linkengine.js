@@ -36,7 +36,12 @@ export default class LinkEngine extends Plugin {
 
 		editor.conversion.for( 'upcast' )
 			.add( upcastElementToAttribute( {
-				view: { name: 'a', attribute: { href: true } },
+				view: {
+					name: 'a',
+					attribute: {
+						href: true
+					}
+				},
 				model: viewElement => ( {
 					key: 'linkHref',
 					value: viewElement.getAttribute( 'href' )
