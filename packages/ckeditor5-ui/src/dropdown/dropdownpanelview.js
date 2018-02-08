@@ -36,9 +36,9 @@ export default class DropdownPanelView extends View {
 		/**
 		 * Collection of the child views in this panel.
 		 *
-		 * A common child type is the {@link module:list/list~List}. See
-		 * {@link module:ui/dropdown/list/createlistdropdown~createListDropdown} to learn more
-		 * about list dropdowns.
+		 * A common child type is the {@link module:ui/list/listview~ListView} and {@link module:ui/toolbar/toolbarview~ToolbarView}.
+		 * See {@link module:ui/dropdown/utils~addListToDropdown} and
+		 * {@link module:ui/dropdown/utils~addToolbarToDropdown} to learn more about child views of dropdowns.
 		 *
 		 * @readonly
 		 * @member {module:ui/viewcollection~ViewCollection}
@@ -64,5 +64,33 @@ export default class DropdownPanelView extends View {
 				selectstart: bind.to( evt => evt.preventDefault() )
 			}
 		} );
+	}
+
+	/**
+	 * Focuses the view element or first item in view collection on opening dropdown's panel.
+	 *
+	 * See also {@link module:ui/dropdown/dropdownpanelfocusable~DropdownPanelFocusable}.
+	 */
+	focus() {
+		if ( this.children.length ) {
+			this.children.first.focus();
+		}
+	}
+
+	/**
+	 * Focuses the view element or last item in view collection on opening dropdown's panel.
+	 *
+	 * See also {@link module:ui/dropdown/dropdownpanelfocusable~DropdownPanelFocusable}.
+	 */
+	focusLast() {
+		if ( this.children.length ) {
+			const lastChild = this.children.last;
+
+			if ( typeof lastChild.focusLast === 'function' ) {
+				lastChild.focusLast();
+			} else {
+				lastChild.focus();
+			}
+		}
 	}
 }

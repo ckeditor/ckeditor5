@@ -1,3 +1,4 @@
+
 /**
  * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
@@ -7,6 +8,7 @@
 
 import ViewCollection from '../../src/viewcollection';
 import DropdownPanelView from '../../src/dropdown/dropdownpanelview';
+import View from '../../src/view';
 
 describe( 'DropdownPanelView', () => {
 	let view, locale;
@@ -61,6 +63,57 @@ describe( 'DropdownPanelView', () => {
 					} );
 				} );
 			} );
+		} );
+	} );
+
+	describe( 'focus()', () => {
+		it( 'does nothing for empty panel', () => {
+			expect( () => view.focus() ).to.not.throw();
+		} );
+
+		it( 'focuses first child view', () => {
+			const firstChildView = new View();
+
+			firstChildView.focus = sinon.spy();
+
+			view.children.add( firstChildView );
+			view.children.add( new View() );
+
+			view.focus();
+
+			sinon.assert.calledOnce( firstChildView.focus );
+		} );
+	} );
+
+	describe( 'focusLast()', () => {
+		it( 'does nothing for empty panel', () => {
+			expect( () => view.focusLast() ).to.not.throw();
+		} );
+
+		it( 'focuses last child view', () => {
+			const lastChildView = new View();
+
+			lastChildView.focusLast = sinon.spy();
+
+			view.children.add( new View() );
+			view.children.add( lastChildView );
+
+			view.focusLast();
+
+			sinon.assert.calledOnce( lastChildView.focusLast );
+		} );
+
+		it( 'focuses last child view even if it does not have focusLast() method', () => {
+			const lastChildView = new View();
+
+			lastChildView.focus = sinon.spy();
+
+			view.children.add( new View() );
+			view.children.add( lastChildView );
+
+			view.focusLast();
+
+			sinon.assert.calledOnce( lastChildView.focus );
 		} );
 	} );
 } );
