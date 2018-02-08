@@ -372,9 +372,18 @@ export function viewModelConverter( evt, data, conversionApi ) {
 		// `listItem`s created recursively should have bigger indent.
 		conversionStore.indent++;
 
-		writer.insert( listItem, data.modelCursor );
+		// Try to find allowed parent for list item.
+		const splitResult = conversionApi.splitToAllowedParent( listItem, data.modelCursor );
 
-		// Remember position after list item.
+		// When there is no allowed parent it means that list item cannot be converted at current model position
+		// and in any of position ancestors.
+		if ( !splitResult ) {
+			return;
+		}
+
+		writer.insert( listItem, splitResult.position );
+
+		// Remember position after list item, next list items will be inserted at this position.
 		let nextPosition = ModelPosition.createAfter( listItem );
 
 		// Check all children of the converted `<li>`.
@@ -385,7 +394,7 @@ export function viewModelConverter( evt, data, conversionApi ) {
 			if ( child.name == 'ul' || child.name == 'ol' ) {
 				nextPosition = conversionApi.convertItem( child, nextPosition ).modelCursor;
 			}
-			// If it was not a list it was a "regular" list item content. Just append it to `listItem`.
+			// If it was not a list it was a "regular" list item content. Just convert it to `listItem`.
 			else {
 				conversionApi.convertItem( child, ModelPosition.createAt( listItem, 'end' ) );
 			}
@@ -393,8 +402,17 @@ export function viewModelConverter( evt, data, conversionApi ) {
 
 		conversionStore.indent--;
 
+		// Result range starts before the first item and ends after the last.
 		data.modelRange = new ModelRange( data.modelCursor, nextPosition );
-		data.modelCursor = data.modelRange.end;
+
+		// When modelCursor parent had to be split to insert list item.
+		if ( splitResult.cursorParent ) {
+			// Then continue conversion in split element.
+			data.modelCursor = ModelPosition.createAt( splitResult.cursorParent );
+		} else {
+			// Otherwise continue conversion after last list item.
+			data.modelCursor = data.modelRange.end;
+		}
 	}
 }
 
