@@ -597,6 +597,13 @@ describe( 'DataController utils', () => {
 							{ unit: 'word' }
 						);
 
+						test(
+							'ignores attributes when in one word - case 3',
+							`<p>foo[]<$text bold="true">bar</$text><$text italic="true">baz</$text>baz${ stopCharacter }foobarbaz</p>`,
+							`<p>foo[<$text bold="true">bar</$text><$text italic="true">baz</$text>baz]${ stopCharacter }foobarbaz</p>`,
+							{ unit: 'word' }
+						);
+
 						it( 'extends whole word backward to the previous word ignoring attributes - case 1', () => {
 							setData(
 								model,
