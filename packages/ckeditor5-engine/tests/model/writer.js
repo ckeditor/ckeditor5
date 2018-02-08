@@ -1995,12 +1995,12 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should update marker in the document marker collection', () => {
-			setMarker( 'name', range );
+			const marker = setMarker( 'name', range );
 
 			const range2 = Range.createFromParentsAndOffsets( root, 0, root, 0 );
 			setMarker( 'name', range2 );
 
-			expect( model.markers.get( 'name' ).getRange().isEqual( range2 ) ).to.be.true;
+			expect( marker.getRange().isEqual( range2 ) ).to.be.true;
 		} );
 
 		it( 'should accept marker instance', () => {
@@ -2013,7 +2013,7 @@ describe( 'Writer', () => {
 
 			const op = batch.deltas[ 1 ].operations[ 0 ];
 
-			expect( model.markers.get( 'name' ).getRange().isEqual( range2 ) ).to.be.true;
+			expect( marker.getRange().isEqual( range2 ) ).to.be.true;
 			expect( op.oldRange.isEqual( range ) ).to.be.true;
 			expect( op.newRange.isEqual( range2 ) ).to.be.true;
 		} );
