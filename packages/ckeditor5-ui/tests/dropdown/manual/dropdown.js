@@ -14,15 +14,16 @@ import alignLeftIcon from '@ckeditor/ckeditor5-core/theme/icons/object-left.svg'
 import alignRightIcon from '@ckeditor/ckeditor5-core/theme/icons/object-right.svg';
 import alignCenterIcon from '@ckeditor/ckeditor5-core/theme/icons/object-center.svg';
 import ButtonView from '../../../src/button/buttonview';
+import SplitButtonView from '../../../src/dropdown/button/splitbuttonview';
 
 import { createDropdown, addToolbarToDropdown, addListToDropdown } from '../../../src/dropdown/utils';
 
 const ui = testUtils.createTestUIView( {
 	dropdown: '#dropdown',
 	listDropdown: '#list-dropdown',
-	dropdownShared: '#dropdown-shared',
 	dropdownLabel: '#dropdown-label',
-	toolbarDropdown: '#dropdown-toolbar'
+	toolbarDropdown: '#dropdown-toolbar',
+	splitButton: '#dropdown-splitbutton'
 } );
 
 function testEmpty() {
@@ -72,26 +73,6 @@ function testList() {
 	window.Model = Model;
 }
 
-function testSharedModel() {
-	const dropdownSettings = {
-		label: 'Shared Model',
-		isEnabled: true,
-		isOn: false,
-		withText: true
-	};
-
-	const dropdownView1 = createDropdown( {} );
-	const dropdownView2 = createDropdown( {} );
-
-	dropdownView1.set( dropdownSettings );
-	dropdownView2.set( dropdownSettings );
-
-	ui.dropdownShared.add( dropdownView1 );
-	ui.dropdownShared.add( dropdownView2 );
-
-	dropdownView1.panelView.element.innerHTML = dropdownView2.panelView.element.innerHTML = 'Empty panel.';
-}
-
 function testLongLabel() {
 	const dropdownView = createDropdown( {} );
 
@@ -107,7 +88,7 @@ function testLongLabel() {
 	dropdownView.panelView.element.innerHTML = 'Empty panel. There is no child view in this DropdownPanelView.';
 }
 
-function testButton() {
+function testToolbar() {
 	const locale = {};
 
 	const icons = { left: alignLeftIcon, right: alignRightIcon, center: alignCenterIcon };
@@ -131,13 +112,53 @@ function testButton() {
 
 	addToolbarToDropdown( toolbarDropdown, buttonViews );
 
+	// This will change icon to button with `isOn = true`.
+	toolbarDropdown.buttonView.bind( 'icon' ).toMany( buttons, 'isOn', ( ...areActive ) => {
+		// Get the index of an active button.
+		const index = areActive.findIndex( value => value );
+
+		// If none of the commands is active, display either defaultIcon or the first button's icon.
+		if ( index < 0 ) {
+			return buttons[ 0 ].icon;
+		}
+
+		// Return active button's icon.
+		return buttons[ index ].icon;
+	} );
+
+	// This will disable dropdown button when all buttons have `isEnabled = false`.
+	toolbarDropdown.bind( 'isEnabled' ).toMany( buttons, 'isEnabled', ( ...areEnabled ) => areEnabled.some( isEnabled => isEnabled ) );
+
 	ui.toolbarDropdown.add( toolbarDropdown );
 
 	window.buttons = buttons;
 }
 
+function testSplitButton() {
+	const dropdownView = createDropdown( {}, SplitButtonView );
+
+	dropdownView.buttonView.set( {
+		label: 'Dropdown',
+		icon: alignCenterIcon
+	} );
+
+	ui.splitButton.add( dropdownView );
+
+	dropdownView.panelView.element.innerHTML = 'Empty panel. There is no child view in this DropdownPanelView.';
+
+	dropdownView.buttonView.on( 'execute', () => {
+		/* global console */
+		console.log( 'SplitButton#execute' );
+	} );
+
+	dropdownView.buttonView.on( 'open', () => {
+		/* global console */
+		console.log( 'SplitButton#open' );
+	} );
+}
+
 testEmpty();
 testList();
-testSharedModel();
 testLongLabel();
-testButton();
+testToolbar();
+testSplitButton();

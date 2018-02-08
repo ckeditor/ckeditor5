@@ -33,3 +33,9 @@ listDropdownCollection.add(
 1. Play with `buttons[ n ].isOn` to control buttonDropdown active icon.
 2. Play with `buttons[ n ].isEnabled` to control buttonDropdown disabled state (all buttons must be set to `false`).
 3. Play with `toolbarDropdown.toolbarView.isVertical` to control buttonDropdown vertical/horizontal alignment.
+
+## SplitButton Dropdown
+
+* It should have two distinct fields: action button and arrow.
+* Click on action button should be logged in console.
+* Click on arrow button should open panel and should be logged in console.
