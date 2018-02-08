@@ -9,10 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import {
-	modelElementToViewContainerElement,
-	viewToModelElement
-} from '@ckeditor/ckeditor5-engine/src/conversion/definition-based-converters';
+import { elementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/two-way-converters';
 
 import HeadingCommand from './headingcommand';
 
@@ -53,8 +50,6 @@ export default class HeadingEngine extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const data = editor.data;
-		const editing = editor.editing;
 		const options = editor.config.get( 'heading.options' );
 
 		for ( const option of options ) {
@@ -65,11 +60,11 @@ export default class HeadingEngine extends Plugin {
 					inheritAllFrom: '$block'
 				} );
 
-				// Build converter from model to view for data and editing pipelines.
-				modelElementToViewContainerElement( option, [ data.modelToView, editing.modelToView ] );
-
-				// Build converter from view to model for data pipeline.
-				viewToModelElement( option, [ data.viewToModel ] );
+				elementToElement( editor.conversion, {
+					model: option.model,
+					view: option.view,
+					upcastAlso: option.upcastAlso
+				} );
 
 				// Register the heading command for this option.
 				editor.commands.add( option.model, new HeadingCommand( editor, option.model ) );
