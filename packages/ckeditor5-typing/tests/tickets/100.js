@@ -10,8 +10,8 @@ import Italic from '@ckeditor/ckeditor5-basic-styles/src/italicengine';
 import LinkEngine from '@ckeditor/ckeditor5-link/src/linkengine';
 import Input from '../../src/input';
 
-import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
-import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
+import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
+import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 
 import ViewText from '@ckeditor/ckeditor5-engine/src/view/text';
 import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
@@ -50,13 +50,15 @@ describe( 'Bug ckeditor5-typing#100', () => {
 				// Mock image feature.
 				newEditor.model.schema.register( 'image', { allowWhere: '$text' } );
 
-				buildModelConverter().for( newEditor.data.modelToView, newEditor.editing.modelToView )
-					.fromElement( 'image' )
-					.toElement( 'img' );
+				editor.conversion.for( 'downcast' ).add( downcastElementToElement( {
+					model: 'image',
+					view: 'img'
+				} ) );
 
-				buildViewConverter().for( newEditor.data.viewToModel )
-					.fromElement( 'img' )
-					.toElement( 'image' );
+				editor.conversion.for( 'upcast' ).add( upcastElementToElement( {
+					view: 'img',
+					model: 'image'
+				} ) );
 
 				// Disable MO completely and in a way it won't be reenabled on some Document#render() call.
 				const mutationObserver = view.getObserver( MutationObserver );
