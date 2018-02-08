@@ -41,15 +41,15 @@ To use different language than default one (English), you need to load the edito
 
 ```html
 <script src="https://cdn.ckeditor.com/ckeditor5/[version.number]/[distribution]/ckeditor.js"></script>
-<script src="https://cdn.ckeditor.com/ckeditor5/[version.number]/[distribution]/lang/de.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/[version.number]/[distribution]/translations/de.js"></script>
 ```
 
 See {@link builds/guides/integration/installation#CDN CDN installation guides} for more information.
 
 ### npm
 
-After installing the build from npm, languages will be available at `node_modules/@ckeditor/ckeditor5-build-[name]/build/lang/[lang].js`.
-Single language can be loaded directly to your code by importing `'@ckeditor/ckeditor5-build-[name]/build/lang/de.js'`.
+After installing the build from npm, languages will be available at `node_modules/@ckeditor/ckeditor5-build-[name]/build/translations/[lang].js`.
+Single language can be loaded directly to your code by importing `'@ckeditor/ckeditor5-build-[name]/build/translations/de.js'`.
 
 See {@link builds/guides/integration/installation#npm npm installation guides} for more information.
 
@@ -59,7 +59,7 @@ All additional languages are included in `.zip` file. You need to include `ckedi
 
 ```js
 <script src="[ckeditor-path]/ckeditor.js"></script>
-<script src="[ckeditor-path]/lang/de.js"></script>
+<script src="[ckeditor-path]/translations/de.js"></script>
 ```
 
 See {@link builds/guides/integration/installation#Zip-download zip installation guides} for more information.
@@ -96,7 +96,7 @@ If you build CKEditor from scratch or integrate it directly into your applicatio
 				// The bundle is optimized for one language when this option is omitted.
 				additionalLanguages: 'all',
 
-				// outputDirectory - optional directory for emitted translations, `'lang'` by default, relative to the webpack's output.
+				// outputDirectory - optional directory for emitted translations, `'translations'` by default, relative to the webpack's output.
 
 				// strict - will cause the building process to fail if an error is found during the building process.
 
@@ -108,13 +108,13 @@ If you build CKEditor from scratch or integrate it directly into your applicatio
 	// ...
 	```
 
-3. Run webpack. If the `additionalLanguages` option is not set, the CKEditor plugin for webpack will replace the {@link module:utils/locale~Locale#t `t()`} function call parameters used in the source code with localized language strings. Otherwise the CKEditor plugin for webpack will replace the {@link module:utils/locale~Locale#t `t()`} function call parameters with short ids and emit the translation files that should land in the `'lang'` directory (or different, if the `outputDirectory` option is specified).
+3. Run webpack. If the `additionalLanguages` option is not set, the CKEditor plugin for webpack will replace the {@link module:utils/locale~Locale#t `t()`} function call parameters used in the source code with localized language strings. Otherwise the CKEditor plugin for webpack will replace the {@link module:utils/locale~Locale#t `t()`} function call parameters with short ids and emit the translation files that should land in the `'translations'` directory (or different, if the `outputDirectory` option is specified).
 
 4. If you want to change the language after the build ends, you will need to edit the `index.html` file, add the translation file and set the UI language to the target one.
 
 	```html
 	<script src="../build/ckeditor.js"></script>
-	<script src="../build/lang/pl.js"></script>
+	<script src="../build/translations/pl.js"></script>
 	<script>
 		ClassicEditor
 			.create( document.querySelector( '#editor' ), {
