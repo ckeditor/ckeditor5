@@ -8,8 +8,8 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
-import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
+import { downcastAttributeToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
+import { upcastElementToAttribute, upcastAttributeToAttribute } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 import AttributeCommand from './attributecommand';
 
 const BOLD = 'bold';
@@ -28,23 +28,19 @@ export default class BoldEngine extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const data = editor.data;
-		const editing = editor.editing;
 
 		// Allow bold attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: BOLD } );
 
 		// Build converter from model to view for data and editing pipelines.
-		buildModelConverter().for( data.modelToView, editing.modelToView )
-			.fromAttribute( BOLD )
-			.toElement( 'strong' );
+		editor.conversion.for( 'downcast' )
+			.add( downcastAttributeToElement( BOLD, { view: 'strong' } ) );
 
 		// Build converter from view to model for data pipeline.
-		buildViewConverter().for( data.viewToModel )
-			.fromElement( 'strong' )
-			.fromElement( 'b' )
-			.fromAttribute( 'style', { 'font-weight': 'bold' } )
-			.toAttribute( BOLD, true );
+		editor.conversion.for( 'upcast' )
+			.add( upcastElementToAttribute( { view: 'b', model: BOLD } ) )
+			.add( upcastElementToAttribute( { view: 'strong', model: BOLD } ) )
+			.add( upcastAttributeToAttribute( { view: { style: { 'font-weight': 'bold' } }, model: BOLD } ) );
 
 		// Create bold command.
 		editor.commands.add( BOLD, new AttributeCommand( editor, BOLD ) );

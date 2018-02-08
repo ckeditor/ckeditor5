@@ -8,8 +8,8 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
-import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
+import { downcastAttributeToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
+import { upcastElementToAttribute, upcastAttributeToAttribute } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 import AttributeCommand from './attributecommand';
 
 const CODE = 'code';
@@ -28,22 +28,18 @@ export default class CodeEngine extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const data = editor.data;
-		const editing = editor.editing;
 
 		// Allow code attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: CODE } );
 
 		// Build converter from model to view for data and editing pipelines.
-		buildModelConverter().for( data.modelToView, editing.modelToView )
-			.fromAttribute( CODE )
-			.toElement( 'code' );
+		editor.conversion.for( 'downcast' )
+			.add( downcastAttributeToElement( CODE, { view: 'code' } ) );
 
 		// Build converter from view to model for data pipeline.
-		buildViewConverter().for( data.viewToModel )
-			.fromElement( 'code' )
-			.fromAttribute( 'style', { 'word-wrap': 'break-word' } )
-			.toAttribute( CODE, true );
+		editor.conversion.for( 'upcast' )
+			.add( upcastElementToAttribute( { view: 'code', model: CODE } ) )
+			.add( upcastAttributeToAttribute( { view: { style: { 'word-wrap': 'break-word' } }, model: CODE } ) );
 
 		// Create code command.
 		editor.commands.add( CODE, new AttributeCommand( editor, CODE ) );

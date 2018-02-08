@@ -8,8 +8,8 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
-import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
+import { downcastAttributeToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
+import { upcastElementToAttribute, upcastAttributeToAttribute } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 import AttributeCommand from './attributecommand';
 
 const UNDERLINE = 'underline';
@@ -28,22 +28,18 @@ export default class UnderlineEngine extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const data = editor.data;
-		const editing = editor.editing;
 
 		// Allow strikethrough attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: UNDERLINE } );
 
 		// Build converter from model to view for data and editing pipelines.
-		buildModelConverter().for( data.modelToView, editing.modelToView )
-			.fromAttribute( UNDERLINE )
-			.toElement( 'u' );
+		editor.conversion.for( 'downcast' )
+			.add( downcastAttributeToElement( UNDERLINE, { view: 'u' } ) );
 
 		// Build converter from view to model for data pipeline.
-		buildViewConverter().for( data.viewToModel )
-			.fromElement( 'u' )
-			.fromAttribute( 'style', { 'text-decoration': 'underline' } )
-			.toAttribute( UNDERLINE, true );
+		editor.conversion.for( 'upcast' )
+			.add( upcastElementToAttribute( { view: 'u', model: UNDERLINE } ) )
+			.add( upcastAttributeToAttribute( { view: { style: { 'text-decoration': 'underline' } }, model: UNDERLINE } ) );
 
 		// Create underline command.
 		editor.commands.add( UNDERLINE, new AttributeCommand( editor, UNDERLINE ) );

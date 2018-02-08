@@ -8,8 +8,8 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
-import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
+import { downcastAttributeToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
+import { upcastElementToAttribute, upcastAttributeToAttribute } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 import AttributeCommand from './attributecommand';
 
 const ITALIC = 'italic';
@@ -28,23 +28,19 @@ export default class ItalicEngine extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const data = editor.data;
-		const editing = editor.editing;
 
 		// Allow italic attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: ITALIC } );
 
 		// Build converter from model to view for data and editing pipelines.
-		buildModelConverter().for( data.modelToView, editing.modelToView )
-			.fromAttribute( ITALIC )
-			.toElement( 'i' );
+		editor.conversion.for( 'downcast' )
+			.add( downcastAttributeToElement( ITALIC, { view: 'i' } ) );
 
 		// Build converter from view to model for data pipeline.
-		buildViewConverter().for( data.viewToModel )
-			.fromElement( 'em' )
-			.fromElement( 'i' )
-			.fromAttribute( 'style', { 'font-style': 'italic' } )
-			.toAttribute( ITALIC, true );
+		editor.conversion.for( 'upcast' )
+			.add( upcastElementToAttribute( { view: 'em', model: ITALIC } ) )
+			.add( upcastElementToAttribute( { view: 'i', model: ITALIC } ) )
+			.add( upcastAttributeToAttribute( { view: { style: { 'font-style': 'italic' } }, model: ITALIC } ) );
 
 		// Create italic command.
 		editor.commands.add( ITALIC, new AttributeCommand( editor, ITALIC ) );
