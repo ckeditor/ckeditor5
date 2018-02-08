@@ -730,6 +730,63 @@ describe( 'Observable', () => {
 					.to.have.members( [ 'color', 'year', 'color', 'year' ] );
 			} );
 		} );
+
+		describe( 'toMany()', () => {
+			let Wheel;
+
+			beforeEach( () => {
+				Wheel = class extends Observable {
+				};
+			} );
+
+			it( 'should not chain', () => {
+				expect(
+					car.bind( 'color' ).toMany( [ new Observable( { color: 'red' } ) ], 'color', () => {} )
+				).to.be.undefined;
+			} );
+
+			it( 'should throw when binding multiple properties', () => {
+				let vehicle = new Car();
+
+				expect( () => {
+					vehicle.bind( 'color', 'year' ).toMany( [ car ], 'foo', () => {} );
+				} ).to.throw( CKEditorError, /observable-bind-to-many-not-one-binding/ );
+
+				expect( () => {
+					vehicle = new Car();
+
+					vehicle.bind( 'color', 'year' ).to( car, car, () => {} );
+				} ).to.throw( CKEditorError, /observable-bind-to-extra-callback/ );
+			} );
+
+			it( 'binds observable property to collection property using callback', () => {
+				const wheels = [
+					new Wheel( { isTyrePressureOK: true } ),
+					new Wheel( { isTyrePressureOK: true } ),
+					new Wheel( { isTyrePressureOK: true } ),
+					new Wheel( { isTyrePressureOK: true } )
+				];
+
+				car.bind( 'showTyrePressureWarning' ).toMany( wheels, 'isTyrePressureOK', ( ...areEnabled ) => {
+					// Every tyre must have OK pressure.
+					return !areEnabled.every( isTyrePressureOK => isTyrePressureOK );
+				} );
+
+				expect( car.showTyrePressureWarning ).to.be.false;
+
+				wheels[ 0 ].isTyrePressureOK = false;
+
+				expect( car.showTyrePressureWarning ).to.be.true;
+
+				wheels[ 0 ].isTyrePressureOK = true;
+
+				expect( car.showTyrePressureWarning ).to.be.false;
+
+				wheels[ 1 ].isTyrePressureOK = false;
+
+				expect( car.showTyrePressureWarning ).to.be.true;
+			} );
+		} );
 	} );
 
 	describe( 'unbind()', () => {
