@@ -170,7 +170,7 @@ export default class ContextualToolbar extends Plugin {
 
 		// Update the toolbar position upon change (e.g. external document changes)
 		// while it's visible.
-		this.listenTo( this.editor.editing.view, 'change', () => {
+		this.listenTo( this.editor.editing.view.document, 'change', () => {
 			this._balloon.updatePosition( this._getBalloonPositionData() );
 		} );
 
@@ -187,7 +187,7 @@ export default class ContextualToolbar extends Plugin {
 	 */
 	hide() {
 		if ( this._balloon.hasView( this.toolbarView ) ) {
-			this.stopListening( this.editor.editing.view, 'change' );
+			this.stopListening( this.editor.editing.view.document, 'change' );
 			this._balloon.remove( this.toolbarView );
 		}
 	}
