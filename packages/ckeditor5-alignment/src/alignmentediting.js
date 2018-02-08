@@ -10,7 +10,7 @@
 import AlignmentCommand, { commandNameFromOptionName } from './alignmentcommand';
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
+import { upcastAttributeToAttribute } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 
 /**
  * @extends module:core/plugin~Plugin
@@ -49,31 +49,32 @@ export default class AlignmentEditing extends Plugin {
 	init() {
 		const editor = this.editor;
 		const schema = editor.model.schema;
-		const data = editor.data;
-		const editing = editor.editing;
 
 		const enabledOptions = editor.config.get( 'alignment.options' );
 
 		// Allow alignment attribute on all blocks.
 		schema.extend( '$block', { allowAttributes: 'alignment' } );
 
-		data.modelToView.on( 'attribute:alignment', convertStyle() );
-		editing.modelToView.on( 'attribute:alignment', convertStyle() );
+		editor.conversion.for( 'downcast' ).add( downcastAttributeToStyle() );
 
 		// Convert `text-align` style property from element to model attribute alignment.
-		buildViewConverter()
-			.for( data.viewToModel )
-			.fromAttribute( 'style', /text-align/ )
-			.toAttribute( viewElement => {
-				const textAlign = viewElement.getStyle( 'text-align' );
+		editor.conversion.for( 'upcast' )
+			.use( upcastAttributeToAttribute( {
+				view: {
+					key: 'style',
+					value: /text-align/
+				},
+				model: viewElement => {
+					const textAlign = viewElement.getStyle( 'text-align' );
 
-				// Do not convert empty, default or unknown alignment values.
-				if ( !textAlign || isDefault( textAlign ) || !enabledOptions.includes( textAlign ) ) {
-					return;
+					// Do not convert empty, default or unknown alignment values.
+					if ( !textAlign || isDefault( textAlign ) || !enabledOptions.includes( textAlign ) ) {
+						return;
+					}
+
+					return { key: 'alignment', value: textAlign };
 				}
-
-				return { key: 'alignment', value: textAlign };
-			} );
+			} ) );
 
 		// Add only enabled & supported commands.
 		enabledOptions
@@ -96,17 +97,19 @@ export function isSupported( option ) {
 
 // Dispatcher handler responsible for setting the style to a view element.
 // @private
-function convertStyle() {
-	return ( evt, data, consumable, conversionApi ) => {
-		if ( !consumable.consume( data.item, evt.name ) ) {
-			return;
-		}
+function downcastAttributeToStyle() {
+	return dispatcher => {
+		dispatcher.on( 'attribute:alignment', ( evt, data, consumable, conversionApi ) => {
+			if ( !consumable.consume( data.item, evt.name ) ) {
+				return;
+			}
 
-		if ( data.attributeNewValue ) {
-			conversionApi.mapper.toViewElement( data.item ).setStyle( { 'text-align': data.attributeNewValue } );
-		} else {
-			conversionApi.mapper.toViewElement( data.item ).removeStyle( 'text-align' );
-		}
+			if ( data.attributeNewValue ) {
+				conversionApi.mapper.toViewElement( data.item ).setStyle( { 'text-align': data.attributeNewValue } );
+			} else {
+				conversionApi.mapper.toViewElement( data.item ).removeStyle( 'text-align' );
+			}
+		} );
 	};
 }
 
