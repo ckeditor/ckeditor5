@@ -10,8 +10,7 @@
 import ParagraphCommand from './paragraphcommand';
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
-import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
+import { elementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/two-way-converters';
 import { SchemaContext } from '@ckeditor/ckeditor5-engine/src/model/schema';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
@@ -44,21 +43,13 @@ export default class Paragraph extends Plugin {
 		// Schema.
 		model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
-		// Build converter from model to view for data and editing pipelines.
-		buildModelConverter().for( data.modelToView, editing.modelToView )
-			.fromElement( 'paragraph' )
-			.toElement( 'p' );
-
-		// Build converter from view to model for data pipeline.
-		buildViewConverter().for( data.viewToModel )
-			.fromElement( 'p' )
-			.toElement( 'paragraph' );
+		elementToElement( editor.conversion, { model: 'paragraph', view: 'p' } );
 
 		// Content autoparagraphing. --------------------------------------------------
 
 		// Handles elements not converted by plugins and checks if would be converted if
 		// we wraps them by a paragraph or changes them to a paragraph.
-		data.viewToModel.on( 'element', ( evt, data, conversionApi ) => {
+		data.upcastDispatcher.on( 'element', ( evt, data, conversionApi ) => {
 			// When element is already consumed by higher priority converters then do nothing.
 			if ( !conversionApi.consumable.test( data.viewItem, { name: data.viewItem.name } ) ) {
 				return;
@@ -101,7 +92,7 @@ export default class Paragraph extends Plugin {
 		}, { priority: 'low' } );
 
 		// Handles not converted text nodes and checks if would be converted if we wraps then by a paragraph.
-		data.viewToModel.on( 'text', ( evt, data, conversionApi ) => {
+		data.upcastDispatcher.on( 'text', ( evt, data, conversionApi ) => {
 			// When node is already converted then do nothing.
 			if ( data.modelRange ) {
 				return;
