@@ -71,7 +71,7 @@ export default class InlineEditorUI {
 		}
 
 		// https://github.com/ckeditor/ckeditor5-editor-inline/issues/4
-		view.listenTo( editor.editing.view, 'render', () => {
+		view.listenTo( editor.editing.view, 'change', () => {
 			// Don't pin if the panel is not already visible. It prevents the panel
 			// showing up when there's no focus in the UI.
 			if ( view.panel.isVisible ) {
