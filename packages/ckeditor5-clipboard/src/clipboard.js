@@ -165,7 +165,7 @@ export default class Clipboard extends Plugin {
 				// Convert the pasted content to a model document fragment.
 				// Conversion is contextual, but in this case we need an "all allowed" context and for that
 				// we use the $clipboardHolder item.
-				const modelFragment = dataController.toModel( data.content, [ '$clipboardHolder' ] );
+				const modelFragment = dataController.toModel( data.content, '$clipboardHolder' );
 
 				if ( modelFragment.childCount == 0 ) {
 					return;
