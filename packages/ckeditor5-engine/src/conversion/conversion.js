@@ -84,10 +84,8 @@ export default class Conversion {
 	 *
 	 * An example of providing custom conversion helper that uses custom converter function:
 	 *
-	 *		conversion.for( 'downcast' ).add( dispatcher => {
-	 *			// Adding custom `myConverter` converter for 'paragraph' element insertion, with default priority ('normal').
-	 *			dispatcher.on( 'insert:paragraph', myConverter );
-	 *		} );
+	 *		// Adding custom `myConverter` converter for 'paragraph' element insertion, with default priority ('normal').
+	 *		conversion.for( 'downcast' ).add( conversion.customConverter( 'insert:paragraph', myConverter ) );
 	 *
 	 * @param {String} groupName Name of dispatchers group to add converters to.
 	 * @returns {Object} Object with `.add()` method, providing a way to add converters.

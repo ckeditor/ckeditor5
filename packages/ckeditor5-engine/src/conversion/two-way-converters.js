@@ -88,10 +88,12 @@ export function elementToElement( conversion, definition ) {
 
 	// Set up upcast converter.
 	for ( const view of _getAllViews( definition ) ) {
+		const priority = view == definition.view ? 'normal' : 'high';
+
 		conversion.for( 'upcast' ).add( upcastElementToElement( {
 			model: definition.model,
 			view
-		} ) );
+		}, priority ) );
 	}
 }
 
@@ -249,10 +251,12 @@ export function attributeToElement( conversion, modelAttributeKey, definition ) 
 		const model = _getModelAttributeDefinition( modelAttributeKey, item.model );
 
 		for ( const view of _getAllViews( item ) ) {
+			const priority = view == item.view ? 'normal' : 'high';
+
 			conversion.for( 'upcast' ).add( upcastElementToAttribute( {
 				view,
 				model
-			} ) );
+			}, priority ) );
 		}
 	}
 }
@@ -354,10 +358,12 @@ export function attributeToAttribute( conversion, modelAttributeKey, definition 
 		const model = _getModelAttributeDefinition( modelAttributeKey, item.model );
 
 		for ( const view of _getAllViews( item ) ) {
+			const priority = view == item.view ? 'low' : 'normal';
+
 			conversion.for( 'upcast' ).add( upcastAttributeToAttribute( {
 				view,
 				model
-			} ) );
+			}, priority ) );
 		}
 	}
 }

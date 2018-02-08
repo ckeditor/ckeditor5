@@ -1313,13 +1313,13 @@ describe( 'downcast-converters', () => {
 				markerRange = ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 0 );
 
 				model.change( () => {
-					model.markers.set( 'marker', markerRange );
+					model.markers._set( 'marker', markerRange );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
 
 				model.change( () => {
-					model.markers.remove( 'marker' );
+					model.markers._remove( 'marker' );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );

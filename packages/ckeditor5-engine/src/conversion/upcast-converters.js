@@ -206,8 +206,7 @@ export function upcastElementToAttribute( config, priority = 'low' ) {
  *
  * See {@link module:engine/conversion/conversion~Conversion#for} to learn how to add converter to conversion process.
  *
- * @param {String|Object} config Conversion configuration. If given as a `String`, the conversion will be set for a
- * view attribute with given key. The model attribute key and value will be same as view attribute key and value.
+ * @param {Object} config Conversion configuration.
  * @param {String|Object} config.view Specifies which view attribute will be converted. If a `String` is passed,
  * attributes with given key will be converted. If an `Object` is passed, it must have a required `key` property,
  * specifying view attribute key, and may have an optional `value` property, specifying view attribute value and optional `name`
@@ -330,7 +329,7 @@ function _prepareToElementConverter( config ) {
 		// Find allowed parent for element that we are going to insert.
 		// If current parent does not allow to insert element but one of the ancestors does
 		// then split nodes to allowed parent.
-		const splitResult = conversionApi.splitToAllowedParent( modelElement, data.cursorPosition );
+		const splitResult = conversionApi.splitToAllowedParent( modelElement, data.modelCursor );
 
 		// When there is no split result it means that we can't insert element to model tree, so let's skip it.
 		if ( !splitResult ) {
@@ -354,20 +353,20 @@ function _prepareToElementConverter( config ) {
 			// element, so we need to move range after parent of the last converted child.
 			// before: <allowed>[]</allowed>
 			// after: <allowed>[<converted><child></child></converted><child></child><converted>]</converted></allowed>
-			ModelPosition.createAfter( childrenResult.cursorPosition.parent )
+			ModelPosition.createAfter( childrenResult.modelCursor.parent )
 		);
 
-		// Now we need to check where the cursorPosition should be.
+		// Now we need to check where the modelCursor should be.
 		// If we had to split parent to insert our element then we want to continue conversion inside split parent.
 		//
 		// before: <allowed><notAllowed>[]</notAllowed></allowed>
 		// after:  <allowed><notAllowed></notAllowed><converted></converted><notAllowed>[]</notAllowed></allowed>
 		if ( splitResult.cursorParent ) {
-			data.cursorPosition = ModelPosition.createAt( splitResult.cursorParent );
+			data.modelCursor = ModelPosition.createAt( splitResult.cursorParent );
 
 			// Otherwise just continue after inserted element.
 		} else {
-			data.cursorPosition = data.modelRange.end;
+			data.modelCursor = data.modelRange.end;
 		}
 	};
 }
@@ -472,7 +471,7 @@ function _prepareToAttributeConverter( config, consumeName ) {
 		// If the range is not created yet, we will create it.
 		if ( !data.modelRange ) {
 			// Convert children and set conversion result as a current data.
-			data = Object.assign( data, conversionApi.convertChildren( data.viewItem, data.cursorPosition ) );
+			data = Object.assign( data, conversionApi.convertChildren( data.viewItem, data.modelCursor ) );
 		}
 
 		// Set attribute on current `output`. `Schema` is checked inside this helper function.
