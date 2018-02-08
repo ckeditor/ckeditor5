@@ -142,6 +142,20 @@ function getCorrectPosition( walker, unit, isForward ) {
 
 			offset = walker.position.offset - textNode.startOffset;
 		}
+
+		if ( unit == 'word' ) {
+			const nextNode = isForward ? walker.position.nodeAfter : walker.position.nodeBefore;
+
+			if ( nextNode ) {
+				const charAt = nextNode.data.charAt( isForward ? 0 : nextNode.data.length - 1 );
+
+				if ( !wordBoundaryCharacters.includes( charAt ) ) {
+					walker.next();
+
+					return getCorrectPosition( walker, 'word', isForward );
+				}
+			}
+		}
 	}
 
 	return walker.position;

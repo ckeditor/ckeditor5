@@ -447,7 +447,7 @@ describe( 'DataController utils', () => {
 					{ unit: 'word', direction: 'backward' }
 				);
 
-				for ( const char of [ ',', '.', '-', '(', ',', ':', '\'', '"' ] ) {
+				for ( const char of [ ' ', ',', '.', '-', '(', ',', ':', '\'', '"' ] ) {
 					testStopCharacter( char );
 				}
 
@@ -557,29 +557,73 @@ describe( 'DataController utils', () => {
 				} );
 
 				function testStopCharacter( stopCharacter ) {
-					test(
-						`extends whole word forward (stop character: "${ stopCharacter }")`,
-						`<p>f[]oo${ stopCharacter }bar</p>`,
-						`<p>f[oo]${ stopCharacter }bar</p>`,
-						{ unit: 'word' }
-					);
+					describe( `stop character: "${ stopCharacter }"`, () => {
+						test(
+							'extends whole word forward',
+							`<p>f[]oo${ stopCharacter }bar</p>`,
+							`<p>f[oo]${ stopCharacter }bar</p>`,
+							{ unit: 'word' }
+						);
 
-					it( `extends whole word backward to the previous word (stop character: "${ stopCharacter }")`, () => {
-						setData( model, `<p>foo${ stopCharacter }ba[]r</p>`, { lastRangeBackward: true } );
+						it( 'extends whole word backward to the previous word', () => {
+							setData( model, `<p>foo${ stopCharacter }ba[]r</p>`, { lastRangeBackward: true } );
 
-						modifySelection( model, doc.selection, { unit: 'word', direction: 'backward' } );
+							modifySelection( model, doc.selection, { unit: 'word', direction: 'backward' } );
 
-						expect( stringify( doc.getRoot(), doc.selection ) ).to.equal( `<p>foo${ stopCharacter }[ba]r</p>` );
-						expect( doc.selection.isBackward ).to.true;
-					} );
+							expect( stringify( doc.getRoot(), doc.selection ) ).to.equal( `<p>foo${ stopCharacter }[ba]r</p>` );
+							expect( doc.selection.isBackward ).to.true;
+						} );
 
-					it( `extends whole word backward (stop character: "${ stopCharacter }")`, () => {
-						setData( model, `<p>fo[]o${ stopCharacter }bar</p>`, { lastRangeBackward: true } );
+						it( 'extends whole word backward', () => {
+							setData( model, `<p>fo[]o${ stopCharacter }bar</p>`, { lastRangeBackward: true } );
 
-						modifySelection( model, doc.selection, { unit: 'word', direction: 'backward' } );
+							modifySelection( model, doc.selection, { unit: 'word', direction: 'backward' } );
 
-						expect( stringify( doc.getRoot(), doc.selection ) ).to.equal( `<p>[fo]o${ stopCharacter }bar</p>` );
-						expect( doc.selection.isBackward ).to.true;
+							expect( stringify( doc.getRoot(), doc.selection ) ).to.equal( `<p>[fo]o${ stopCharacter }bar</p>` );
+							expect( doc.selection.isBackward ).to.true;
+						} );
+
+						test(
+							'ignores attributes when in one word - case 1',
+							`<p>foo[]<$text bold="true">bar</$text>baz${ stopCharacter }foobarbaz</p>`,
+							`<p>foo[<$text bold="true">bar</$text>baz]${ stopCharacter }foobarbaz</p>`,
+							{ unit: 'word' }
+						);
+
+						test(
+							'ignores attributes when in one word - case 2',
+							`<p>foo[]<$text bold="true">bar</$text>${ stopCharacter }foobarbaz</p>`,
+							`<p>foo[<$text bold="true">bar</$text>]${ stopCharacter }foobarbaz</p>`,
+							{ unit: 'word' }
+						);
+
+						it( 'extends whole word backward to the previous word ignoring attributes - case 1', () => {
+							setData(
+								model,
+								`<p>foobarbaz${ stopCharacter }foo<$text bold="true">bar</$text>baz[]</p>`
+							);
+
+							modifySelection( model, doc.selection, { unit: 'word', direction: 'backward' } );
+
+							expect( stringify( doc.getRoot(), doc.selection ) ).to.equal(
+								`<p>foobarbaz${ stopCharacter }[foo<$text bold="true">bar</$text>baz]</p>`
+							);
+							expect( doc.selection.isBackward ).to.true;
+						} );
+
+						it( 'extends whole word backward to the previous word ignoring attributes - case 2', () => {
+							setData(
+								model,
+								`<p>foobarbaz${ stopCharacter }<$text bold="true">bar</$text>baz[]</p>`
+							);
+
+							modifySelection( model, doc.selection, { unit: 'word', direction: 'backward' } );
+
+							expect( stringify( doc.getRoot(), doc.selection ) ).to.equal(
+								`<p>foobarbaz${ stopCharacter }[<$text bold="true">bar</$text>baz]</p>`
+							);
+							expect( doc.selection.isBackward ).to.true;
+						} );
 					} );
 				}
 			} );
@@ -620,7 +664,8 @@ describe( 'DataController utils', () => {
 				test(
 					'extends over character after boundary',
 					'<p>a[</p><p>]bcd</p>',
-					'<p>a[</p><p>b]cd</p>'
+					'<p>a[</p><p>bcd]</p>',
+					{ unit: 'word' }
 				);
 
 				it( 'extends over character after boundary (backward)', () => {
@@ -635,32 +680,35 @@ describe( 'DataController utils', () => {
 				test(
 					'stops on the first position where text is allowed - inside block',
 					'<p>a[]</p><p><x>bcd</x></p>',
-					'<p>a[</p><p>]<x>bcd</x></p>'
+					'<p>a[</p><p>]<x>bcd</x></p>',
+					{ unit: 'word' }
 				);
 
 				test(
 					'stops on the first position where text is allowed - inside inline element',
 					'<p>a[</p><p>]<x>bcd</x>ef</p>',
-					'<p>a[</p><p><x>]bcd</x>ef</p>'
+					'<p>a[</p><p><x>]bcd</x>ef</p>',
+					{ unit: 'word' }
 				);
 
 				test(
 					'extends over element when next node is a text',
 					'<p><x>a[]</x>bc</p>',
-					'<p><x>a[</x>]bc</p>'
+					'<p><x>a[</x>]bc</p>',
+					{ unit: 'word' }
 				);
 
 				test(
 					'extends over element when next node is a text - backward',
 					'<p>ab<x>[]c</x></p>',
 					'<p>ab[<x>]c</x></p>',
-					{ direction: 'backward' }
+					{ unit: 'word', direction: 'backward' }
 				);
 
 				it( 'shrinks over boundary of empty elements', () => {
 					setData( model, '<p>[</p><p>]</p>', { lastRangeBackward: true } );
 
-					modifySelection( model, doc.selection );
+					modifySelection( model, doc.selection, { unit: 'word' } );
 
 					expect( stringify( doc.getRoot(), doc.selection ) ).to.equal( '<p></p><p>[]</p>' );
 					expect( doc.selection.isBackward ).to.false;
@@ -669,7 +717,7 @@ describe( 'DataController utils', () => {
 				it( 'shrinks over boundary of empty elements (backward)', () => {
 					setData( model, '<p>[</p><p>]</p>' );
 
-					modifySelection( model, doc.selection, { direction: 'backward' } );
+					modifySelection( model, doc.selection, { unit: 'word', direction: 'backward' } );
 
 					expect( stringify( doc.getRoot(), doc.selection ) ).to.equal( '<p>[]</p><p></p>' );
 					expect( doc.selection.isBackward ).to.false;
@@ -678,7 +726,7 @@ describe( 'DataController utils', () => {
 				it( 'shrinks over boundary of non-empty elements', () => {
 					setData( model, '<p>a[</p><p>]b</p>', { lastRangeBackward: true } );
 
-					modifySelection( model, doc.selection );
+					modifySelection( model, doc.selection, { unit: 'word' } );
 
 					expect( stringify( doc.getRoot(), doc.selection ) ).to.equal( '<p>a</p><p>[]b</p>' );
 					expect( doc.selection.isBackward ).to.false;
@@ -688,13 +736,13 @@ describe( 'DataController utils', () => {
 					'shrinks over boundary of non-empty elements (backward)',
 					'<p>a[</p><p>]b</p>',
 					'<p>a[]</p><p>b</p>',
-					{ direction: 'backward' }
+					{ unit: 'word', direction: 'backward' }
 				);
 
 				it( 'updates selection attributes', () => {
 					setData( model, '<p><$text bold="true">foo</$text>[b]</p>' );
 
-					modifySelection( model, doc.selection, { direction: 'backward' } );
+					modifySelection( model, doc.selection, { unit: 'word', direction: 'backward' } );
 
 					expect( stringify( doc.getRoot(), doc.selection ) ).to.equal( '<p><$text bold="true">foo[]</$text>b</p>' );
 					expect( doc.selection.getAttribute( 'bold' ) ).to.equal( true );
@@ -711,40 +759,43 @@ describe( 'DataController utils', () => {
 				test(
 					'skips position at the beginning of an element which does not allow text',
 					'<p>x[]</p><quote><p>y</p></quote><p>z</p>',
-					'<p>x[</p><quote><p>]y</p></quote><p>z</p>'
+					'<p>x[</p><quote><p>]y</p></quote><p>z</p>',
+					{ unit: 'word' }
 				);
 
 				test(
 					'skips position at the end of an element which does not allow text - backward',
 					'<p>x</p><quote><p>y</p></quote><p>[]z</p>',
 					'<p>x</p><quote><p>y[</p></quote><p>]z</p>',
-					{ direction: 'backward' }
+					{ unit: 'word', direction: 'backward' }
 				);
 
 				test(
 					'skips position at the end of an element which does not allow text',
 					'<p>x[</p><quote><p>y]</p></quote><p>z</p>',
-					'<p>x[</p><quote><p>y</p></quote><p>]z</p>'
+					'<p>x[</p><quote><p>y</p></quote><p>]z</p>',
+					{ unit: 'word' }
 				);
 
 				test(
 					'skips position at the beginning of an element which does not allow text - backward',
 					'<p>x</p><quote><p>[]y</p></quote><p>z</p>',
 					'<p>x[</p><quote><p>]y</p></quote><p>z</p>',
-					{ direction: 'backward' }
+					{ unit: 'word', direction: 'backward' }
 				);
 
 				test(
 					'extends to an empty block after skipping incorrect position',
 					'<p>x[]</p><quote><p></p></quote><p>z</p>',
-					'<p>x[</p><quote><p>]</p></quote><p>z</p>'
+					'<p>x[</p><quote><p>]</p></quote><p>z</p>',
+					{ unit: 'word' }
 				);
 
 				test(
 					'extends to an empty block after skipping incorrect position - backward',
 					'<p>x</p><quote><p></p></quote><p>[]z</p>',
 					'<p>x</p><quote><p>[</p></quote><p>]z</p>',
-					{ direction: 'backward' }
+					{ unit: 'word', direction: 'backward' }
 				);
 			} );
 		} );
