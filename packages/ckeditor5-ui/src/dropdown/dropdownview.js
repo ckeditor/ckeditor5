@@ -8,21 +8,42 @@
  */
 
 import View from '../view';
-import IconView from '../icon/iconview';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
-import dropdownArrowIcon from '../../theme/icons/dropdown-arrow.svg';
 
 import '../../theme/components/dropdown/dropdown.css';
 
 /**
- * The dropdown view class.
+ * The dropdown view class. It manages the dropdown button and dropdown panel.
  *
- *		const button = new ButtonView( locale );
+ * In most cases, the easiest way to create a dropdown is by using the {@link module:ui/dropdown/utils~createDropdown}
+ * util:
+ *
+ *		const dropdown = createDropdown( locale );
+ *
+ *		// Configure dropdown's button properties:
+ *		dropdown.buttonView.set( {
+ *			label: 'A dropdown',
+ *			withText: true
+ *		} );
+ *
+ *		dropdown.render();
+ *
+ *		dropdown.panelView.element.textContent = 'Content of the panel';
+ *
+ *		// Will render a dropdown with a panel containing a "Content of the panel" text.
+ *		document.body.appendChild( dropdown.element );
+ *
+ * If you want to add a richer content to the dropdown panel, you can use the {@link module:ui/dropdown/utils~addListToDropdown}
+ * and {@link module:ui/dropdown/utils~addToolbarToDropdown} helpers. See more examples in
+ * {@link module:ui/dropdown/utils~createDropdown} documentation.
+ *
+ * If you want to create a completely custom dropdown, then you can compose it manually:
+ *
+ *		const button = new DropdownButtonView( locale );
  *		const panel = new DropdownPanelView( locale );
  *		const dropdown = new DropdownView( locale, button, panel );
  *
- *		panel.element.textContent = 'Content of the panel';
  *		button.set( {
  *			label: 'A dropdown',
  *			withText: true
@@ -30,18 +51,27 @@ import '../../theme/components/dropdown/dropdown.css';
  *
  *		dropdown.render();
  *
+ *		panel.element.textContent = 'Content of the panel';
+ *
  *		// Will render a dropdown with a panel containing a "Content of the panel" text.
  *		document.body.appendChild( dropdown.element );
  *
- * Also see {@link module:ui/dropdown/createdropdown~createDropdown} and
- * {@link module:ui/dropdown/list/createlistdropdown~createListDropdown} to learn about different
- * dropdown creation helpers.
+ * However, dropdown created this way will contain little behavior. You will need to implement handlers for actions
+ * such as {@link module:ui/bindings/clickoutsidehandler~clickOutsideHandler clicking outside an open dropdown}
+ * (which should close it) and support for arrow keys inside the panel. Therefore, unless you really know what
+ * you do and you really need to do it, it is recommended to use the {@link module:ui/dropdown/utils~createDropdown} helper.
  *
  * @extends module:ui/view~View
  */
 export default class DropdownView extends View {
 	/**
-	 * @inheritDoc
+	 * Creates an instance of the dropdown.
+	 *
+	 * Also see {@link #render}.
+	 *
+	 * @param {module:utils/locale~Locale} [locale] The localization services instance.
+	 * @param {module:ui/dropdown/button/dropdownbutton~DropdownButton} buttonView
+	 * @param {module:ui/dropdown/dropdownpanelview~DropdownPanelView} panelView
 	 */
 	constructor( locale, buttonView, panelView ) {
 		super( locale );
@@ -110,14 +140,6 @@ export default class DropdownView extends View {
 		 */
 		this.keystrokes = new KeystrokeHandler();
 
-		/**
-		 * The arrow icon of the dropdown.
-		 *
-		 * @readonly
-		 * @member {module:ui/icon/iconview~IconView} #arrowView
-		 */
-		const arrowView = this.arrowView = new IconView();
-
 		this.setTemplate( {
 			tag: 'div',
 
@@ -130,16 +152,8 @@ export default class DropdownView extends View {
 
 			children: [
 				buttonView,
-				arrowView,
 				panelView
 			]
-		} );
-
-		arrowView.content = dropdownArrowIcon;
-		arrowView.extendTemplate( {
-			attributes: {
-				class: 'ck-dropdown__arrow'
-			}
 		} );
 
 		buttonView.extendTemplate( {
@@ -149,6 +163,41 @@ export default class DropdownView extends View {
 				]
 			}
 		} );
+
+		/**
+		 * A child {@link module:ui/list/listview~ListView list view} of the dropdown located
+		 * in its {@link module:ui/dropdown/dropdownview~DropdownView#panelView panel}.
+		 *
+		 * **Note**: Only supported when dropdown has list view added using {@link module:ui/dropdown/utils~addListToDropdown}.
+		 *
+		 * @readonly
+		 * @member {module:ui/list/listview~ListView} #listView
+		 */
+
+		/**
+		 * A child toolbar of the dropdown located in the
+		 * {@link module:ui/dropdown/dropdownview~DropdownView#panelView panel}.
+		 *
+		 * **Note**: Only supported when dropdown has list view added using {@link module:ui/dropdown/utils~addToolbarToDropdown}.
+		 *
+		 * @readonly
+		 * @member {module:ui/toolbar/toolbarview~ToolbarView} #toolbarView
+		 */
+
+		/**
+		 * Fired when the toolbar button or list item is executed.
+		 *
+		 * For {@link #listView} It fires when one of the list items has been
+		 * {@link module:ui/list/listitemview~ListItemView#event:execute executed}.
+		 *
+		 * For {@link #toolbarView} It fires when one of the buttons has been
+		 * {@link module:ui/button/buttonview~ButtonView#event:execute executed}.
+		 *
+		 * **Note**: Only supported when dropdown has list view added using {@link module:ui/dropdown/utils~addListToDropdown}
+		 * or {@link module:ui/dropdown/utils~addToolbarToDropdown}.
+		 *
+		 * @event #execute
+		 */
 	}
 
 	/**
@@ -157,8 +206,8 @@ export default class DropdownView extends View {
 	render() {
 		super.render();
 
-		// Toggle the the dropdown when it's button has been clicked.
-		this.listenTo( this.buttonView, 'execute', () => {
+		// Toggle the dropdown when its button has been clicked.
+		this.listenTo( this.buttonView, 'open', () => {
 			this.isOpen = !this.isOpen;
 		} );
 
