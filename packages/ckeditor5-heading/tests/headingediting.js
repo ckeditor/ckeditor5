@@ -3,20 +3,20 @@
  * For licensing, see LICENSE.md.
  */
 
-import HeadingEngine from '../src/headingengine';
+import HeadingEditing from '../src/headingediting';
 import HeadingCommand from '../src/headingcommand';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ParagraphCommand from '@ckeditor/ckeditor5-paragraph/src/paragraphcommand';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-describe( 'HeadingEngine', () => {
+describe( 'HeadingEditing', () => {
 	let editor, model;
 
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ HeadingEngine ]
+				plugins: [ HeadingEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -25,7 +25,7 @@ describe( 'HeadingEngine', () => {
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( HeadingEngine ) ).to.be.instanceOf( HeadingEngine );
+		expect( editor.plugins.get( HeadingEditing ) ).to.be.instanceOf( HeadingEditing );
 	} );
 
 	it( 'should load paragraph feature', () => {
@@ -79,7 +79,7 @@ describe( 'HeadingEngine', () => {
 		beforeEach( () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ HeadingEngine ],
+					plugins: [ HeadingEditing ],
 					heading: {
 						options: [
 							{ model: 'paragraph', title: 'paragraph' },
@@ -120,7 +120,7 @@ describe( 'HeadingEngine', () => {
 	it( 'should not blow up if there\'s no enter command in the editor', () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ HeadingEngine ]
+				plugins: [ HeadingEditing ]
 			} );
 	} );
 
@@ -145,7 +145,7 @@ describe( 'HeadingEngine', () => {
 
 				return VirtualTestEditor
 					.create( {
-						plugins: [ HeadingEngine ],
+						plugins: [ HeadingEditing ],
 						heading: {
 							options
 						}

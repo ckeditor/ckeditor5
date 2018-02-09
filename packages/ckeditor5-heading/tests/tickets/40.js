@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import HeadingEngine from '../../src/headingengine';
+import HeadingEditing from '../../src/headingediting';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -18,7 +18,7 @@ describe( 'Bug ckeditor5-heading#40', () => {
 	it( 'enter at the end of a heading creates a paragraph, when heading was loaded before enter', () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ HeadingEngine, Enter ]
+				plugins: [ HeadingEditing, Enter ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -34,7 +34,7 @@ describe( 'Bug ckeditor5-heading#40', () => {
 	it( 'enter at the end of a heading creates a paragraph, when enter was loaded before heading', () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Enter, HeadingEngine ]
+				plugins: [ Enter, HeadingEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
