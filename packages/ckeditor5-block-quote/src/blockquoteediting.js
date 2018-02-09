@@ -4,7 +4,7 @@
  */
 
 /**
- * @module block-quote/blockquoteengine
+ * @module block-quote/blockquoteediting
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -15,13 +15,13 @@ import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/convers
 import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 
 /**
- * The block quote engine.
+ * The block quote editing.
  *
  * Introduces the `'blockQuote'` command and the `'blockQuote'` model element.
  *
  * @extends module:core/plugin~Plugin
  */
-export default class BlockQuoteEngine extends Plugin {
+export default class BlockQuoteEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -48,5 +48,31 @@ export default class BlockQuoteEngine extends Plugin {
 
 		editor.conversion.for( 'upcast' )
 			.add( upcastElementToElement( { model: 'blockQuote', view: 'blockquote' } ) );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	afterInit() {
+		const editor = this.editor;
+		const command = editor.commands.get( 'blockQuote' );
+
+		// Overwrite default Enter key behavior.
+		// If Enter key is pressed with selection collapsed in empty block inside a quote, break the quote.
+		// This listener is added in afterInit in order to register it after list's feature listener.
+		// We can't use a priority for this, because 'low' is already used by the enter feature, unless
+		// we'd use numeric priority in this case.
+		this.listenTo( this.editor.editing.view, 'enter', ( evt, data ) => {
+			const doc = this.editor.model.document;
+			const positionParent = doc.selection.getLastPosition().parent;
+
+			if ( doc.selection.isCollapsed && positionParent.isEmpty && command.value ) {
+				this.editor.execute( 'blockQuote' );
+				this.editor.editing.view.scrollToTheSelection();
+
+				data.preventDefault();
+				evt.stop();
+			}
+		} );
 	}
 }

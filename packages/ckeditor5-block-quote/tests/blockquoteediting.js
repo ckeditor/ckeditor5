@@ -3,22 +3,22 @@
  * For licensing, see LICENSE.md.
  */
 
-import BlockQuoteEngine from '../src/blockquoteengine';
+import BlockQuoteEditing from '../src/blockquoteediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ListEngine from '@ckeditor/ckeditor5-list/src/listengine';
+import ListEditing from '@ckeditor/ckeditor5-list/src/listediting';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import BlockQuoteCommand from '../src/blockquotecommand';
 
-describe( 'BlockQuoteEngine', () => {
+describe( 'BlockQuoteEditing', () => {
 	let editor, model;
 
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ BlockQuoteEngine, Paragraph ]
+				plugins: [ BlockQuoteEditing, Paragraph ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -69,7 +69,7 @@ describe( 'BlockQuoteEngine', () => {
 	it( 'allows list items inside blockQuote', () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ BlockQuoteEngine, Paragraph, ListEngine ]
+				plugins: [ BlockQuoteEditing, Paragraph, ListEditing ]
 			} )
 			.then( editor => {
 				editor.setData( '<blockquote><ul><li>xx</li></ul></blockquote>' );
