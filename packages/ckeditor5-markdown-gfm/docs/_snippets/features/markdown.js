@@ -8,6 +8,8 @@
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
+import { TOKEN_URL } from '@ckeditor/ckeditor5-cloudservices/tests/_utils/cloudservices-config';
 
 import GFMDataProcessor from '@ckeditor/ckeditor5-markdown-gfm/src/gfmdataprocessor';
 
@@ -17,10 +19,13 @@ function Markdown( editor ) {
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-markdown' ), {
-		plugins: [ ArticlePluginSet, Markdown ],
+		plugins: [ ArticlePluginSet, EasyImage, Markdown ],
 		toolbar: [ 'headings', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
 		image: {
 			toolbar: [ 'imageStyleFull', 'imageStyleSide', '|', 'imageTextAlternative' ]
+		},
+		cloudServices: {
+			tokenUrl: TOKEN_URL
 		}
 	} )
 	.then( editor => {
