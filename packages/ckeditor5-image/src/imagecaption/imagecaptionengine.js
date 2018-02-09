@@ -12,7 +12,7 @@ import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containere
 import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
 import viewWriter from '@ckeditor/ckeditor5-engine/src/view/writer';
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
-import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
+import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 import { isImage } from '../image/utils';
 import {
 	captionElementCreator,
@@ -67,22 +67,26 @@ export default class ImageCaptionEngine extends Plugin {
 		editor.model.document.registerPostFixer( writer => this._insertMissingModelCaptionElement( writer ) );
 
 		// View to model converter for the data pipeline.
-		buildViewConverter()
-			.for( data.viewToModel )
-			.from( matchImageCaption )
-			.toElement( 'caption' );
+		editor.conversion.for( 'upcast' ).add( upcastElementToElement( {
+			view: matchImageCaption,
+			model: 'caption'
+		} ) );
 
 		// Model to view converter for the data pipeline.
-		data.modelToView.on( 'insert:caption', captionModelToView( new ViewContainerElement( 'figcaption' ), false ) );
+		data.downcastDispatcher.on( 'insert:caption', captionModelToView( new ViewContainerElement( 'figcaption' ), false ) );
 
 		// Model to view converter for the editing pipeline.
-		editing.modelToView.on( 'insert:caption', captionModelToView( this._createCaption ) );
+		editing.downcastDispatcher.on( 'insert:caption', captionModelToView( this._createCaption ) );
 
 		// Always show caption in view when something is inserted in model.
-		editing.modelToView.on( 'insert', ( evt, data ) => this._fixCaptionVisibility( data.item ), { priority: 'high' } );
+		editing.downcastDispatcher.on( 'insert', ( evt, data ) => this._fixCaptionVisibility( data.item ), { priority: 'high' } );
 
 		// Hide caption when everything is removed from it.
-		editing.modelToView.on( 'remove', ( evt, data ) => this._fixCaptionVisibility( data.position.parent ), { priority: 'high' } );
+		editing.downcastDispatcher.on(
+			'remove',
+			( evt, data ) => this._fixCaptionVisibility( data.position.parent ),
+			{ priority: 'high' }
+		);
 
 		// Update view before each rendering.
 		this.listenTo( viewDocument, 'render', () => this._updateCaptionVisibility(), { priority: 'high' } );

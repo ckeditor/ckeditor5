@@ -25,7 +25,11 @@ import first from '@ckeditor/ckeditor5-utils/src/first';
  * @returns {Function}
  */
 export function viewFigureToModel() {
-	return ( evt, data, conversionApi ) => {
+	return dispatcher => {
+		dispatcher.on( 'element:figure', converter );
+	};
+
+	function converter( evt, data, conversionApi ) {
 		// Do not convert if this is not an "image figure".
 		if ( !conversionApi.consumable.test( data.viewItem, { name: true, class: 'image' } ) ) {
 			return;
@@ -58,20 +62,6 @@ export function viewFigureToModel() {
 
 		// Continue conversion where image conversion ends.
 		data.modelCursor = conversionResult.modelCursor;
-	};
-}
-
-/**
- * Creates the image attribute converter for provided model conversion dispatchers.
- *
- * @param {Array.<module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher>} dispatchers
- * @param {String} attributeName
- * @param {Function} [converter] Custom converter for the attribute - default one converts attribute from model `image` element
- * to the same attribute in `img` in the view.
- */
-export function createImageAttributeConverter( dispatchers, attributeName, converter = modelToViewAttributeConverter ) {
-	for ( const dispatcher of dispatchers ) {
-		dispatcher.on( `attribute:${ attributeName }:image`, converter() );
 	}
 }
 
@@ -81,7 +71,11 @@ export function createImageAttributeConverter( dispatchers, attributeName, conve
  * @return {Function}
  */
 export function srcsetAttributeConverter() {
-	return ( evt, data, consumable, conversionApi ) => {
+	return dispatcher => {
+		dispatcher.on( 'attribute:srcset:image', converter );
+	};
+
+	function converter( evt, data, consumable, conversionApi ) {
 		const parts = evt.name.split( ':' );
 		const consumableType = parts[ 0 ] + ':' + parts[ 1 ];
 		const modelImage = data.item;
@@ -117,14 +111,15 @@ export function srcsetAttributeConverter() {
 				}
 			}
 		}
-	};
+	}
 }
 
-// Returns model to view image converter converting given attribute, and adding it to `img` element nested inside `figure` element.
-//
-// @private
-function modelToViewAttributeConverter() {
-	return ( evt, data, consumable, conversionApi ) => {
+export function modelToViewAttributeConverter( attributeKey ) {
+	return dispatcher => {
+		dispatcher.on( `attribute:${ attributeKey }:image`, converter );
+	};
+
+	function converter( evt, data, consumable, conversionApi ) {
 		const parts = evt.name.split( ':' );
 		const consumableType = parts[ 0 ] + ':' + parts[ 1 ];
 		const modelImage = data.item;
@@ -141,5 +136,5 @@ function modelToViewAttributeConverter() {
 		} else {
 			img.removeAttribute( data.attributeKey );
 		}
-	};
+	}
 }

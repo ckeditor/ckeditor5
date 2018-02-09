@@ -192,7 +192,7 @@ describe( 'ImageStyleEngine', () => {
 		} );
 
 		it( 'should not convert from model to view if already consumed: adding attribute', () => {
-			editor.editing.modelToView.on( 'attribute:imageStyle', ( evt, data, consumable ) => {
+			editor.editing.downcastDispatcher.on( 'attribute:imageStyle', ( evt, data, consumable ) => {
 				consumable.consume( data.item, 'attribute:imageStyle' );
 			}, { priority: 'high' } );
 
@@ -209,7 +209,7 @@ describe( 'ImageStyleEngine', () => {
 		} );
 
 		it( 'should not set attribute if change was already consumed', () => {
-			editor.editing.modelToView.on( 'attribute:imageStyle', ( evt, data, consumable ) => {
+			editor.editing.downcastDispatcher.on( 'attribute:imageStyle', ( evt, data, consumable ) => {
 				consumable.consume( data.item, 'attribute:imageStyle' );
 			}, { priority: 'high' } );
 
