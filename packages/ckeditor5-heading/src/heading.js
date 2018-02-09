@@ -211,11 +211,9 @@ export default class Heading extends Plugin {
 /**
  * Heading option descriptor.
  *
- * This format is compatible with {@link module:engine/conversion/definition-based-converters~ConverterDefinition}
- * and adds to additional properties: `title` and `class`.
- *
  * @typedef {Object} module:heading/heading~HeadingOption
- * @extends module:engine/conversion/definition-based-converters~ConverterDefinition
+ * @property {String} model Name of the model element to convert.
+ * @property {module:engine/view/elementdefinition~ElementDefinition} view Definition of a view element to convert from/to.
  * @property {String} title The user-readable title of the option.
  * @property {String} class The class which will be added to the dropdown item representing this option.
  */
