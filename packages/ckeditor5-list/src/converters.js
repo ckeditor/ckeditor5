@@ -24,7 +24,7 @@ import { createViewListItemElement } from './utils';
  * It creates a `<ul><li></li><ul>` (or `<ol>`) view structure out of a `listItem` model element, inserts it at the correct
  * position, and merges the list with surrounding lists (if available).
  *
- * @see module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:insert
+ * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert
  * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
  * @param {Object} data Additional information about the change.
  * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
@@ -51,7 +51,7 @@ export function modelViewInsertion( evt, data, consumable, conversionApi ) {
 /**
  * A model-to-view converter for `listItem` model element removal.
  *
- * @see module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:remove
+ * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:remove
  * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
  * @param {Object} data Additional information about the change.
  * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
@@ -96,7 +96,7 @@ export function modelViewRemove( evt, data, conversionApi ) {
  * This change means that `<li>` elements parent changes from `<ul>` to `<ol>` (or vice versa). This is accomplished
  * by breaking view elements, changing their name and merging them.
  *
- * @see module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:attribute
+ * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute
  * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
  * @param {Object} data Additional information about the change.
  * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
@@ -133,7 +133,7 @@ export function modelViewChangeType( evt, data, consumable, conversionApi ) {
 /**
  * A model-to-view converter for `indent` attribute change on `listItem` model element.
  *
- * @see module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:attribute
+ * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute
  * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
  * @param {Object} data Additional information about the change.
  * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
@@ -199,7 +199,7 @@ export function modelViewChangeIndent( evt, data, consumable, conversionApi ) {
  *		<paragraph>xxx</paragraph>       // Instead of this wrong view state:
  *		<listItem>bar</listItem>         <ul><li>foo</li><p>xxx</p><li>bar</li></ul>
  *
- * @see module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:insert
+ * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert
  * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
  * @param {Object} data Additional information about the change.
  * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
@@ -320,7 +320,7 @@ export function modelViewSplitOnInsert( evt, data, consumable, conversionApi ) {
  *		                                     <li>bar</li>
  *		                                 </ul>
  *
- * @see module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:remove
+ * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:remove
  * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
  * @param {Object} data Additional information about the change.
  * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
@@ -344,7 +344,7 @@ export function modelViewMergeAfter( evt, data, conversionApi ) {
  * * checks `<li>`'s parent,
  * * stores and increases the `conversionApi.store.indent` value when `<li>`'s sub-items are converted.
  *
- * @see module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:element
+ * @see module:engine/conversion/upcastdispatcher~UpcastDispatcher#event:element
  * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
  * @param {Object} data An object containing conversion input and a placeholder for conversion output and possibly other values.
  * @param {module:engine/conversion/viewconsumable~ViewConsumable} consumable Values to consume.
@@ -418,7 +418,7 @@ export function viewModelConverter( evt, data, conversionApi ) {
  * This is mostly to clean whitespaces from between `<li>` view elements inside the view list element, however, also
  * incorrect data can be cleared if the view was incorrect.
  *
- * @see module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:element
+ * @see module:engine/conversion/upcastdispatcher~UpcastDispatcher#event:element
  * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
  * @param {Object} data An object containing conversion input and a placeholder for conversion output and possibly other values.
  * @param {module:engine/conversion/viewconsumable~ViewConsumable} consumable Values to consume.
@@ -439,7 +439,7 @@ export function cleanList( evt, data, conversionApi ) {
 /**
  * A view-to-model converter for `<li>` elements that cleans whitespace formatting from the input view.
  *
- * @see module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#event:element
+ * @see module:engine/conversion/upcastdispatcher~UpcastDispatcher#event:element
  * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
  * @param {Object} data An object containing conversion input and a placeholder for conversion output and possibly other values.
  * @param {module:engine/conversion/viewconsumable~ViewConsumable} consumable Values to consume.
