@@ -873,7 +873,6 @@ export default class Writer {
 	 * it will be destroyed using operation.
 	 *
 	 * @param {module:engine/model/markercollection~Marker|String} markerOrName Marker or marker name to remove.
-	 * @param {Object} [options]
 	 */
 	removeMarker( markerOrName ) {
 		this._assertWriterUsedCorrectly();

@@ -933,6 +933,38 @@ describe( 'Schema', () => {
 
 			expect( schema.getLimitElement( doc.selection ) ).to.equal( root );
 		} );
+
+		it( 'works fine with multi-range selections if the first range has the root element as a limit element', () => {
+			setData(
+				model,
+				'<image>' +
+					'<caption>[Foo</caption>' +
+				'</image>' +
+				'<article>' +
+					'<paragraph>Paragraph in article]</paragraph>' +
+				'</article>' +
+				'<paragraph>Paragraph item 1</paragraph>' +
+				'<paragraph>Paragraph [item 2]</paragraph>'
+			);
+
+			expect( schema.getLimitElement( doc.selection ) ).to.equal( root );
+		} );
+
+		it( 'works fine with multi-range selections if the last range has the root element as a limit element', () => {
+			setData(
+				model,
+				'<paragraph>Paragraph item 1</paragraph>' +
+				'<paragraph>Paragraph [item 2]</paragraph>' +
+				'<image>' +
+					'<caption>[Foo</caption>' +
+				'</image>' +
+				'<article>' +
+					'<paragraph>Paragraph in article]</paragraph>' +
+				'</article>'
+			);
+
+			expect( schema.getLimitElement( doc.selection ) ).to.equal( root );
+		} );
 	} );
 
 	describe( 'checkAttributeInSelection()', () => {
