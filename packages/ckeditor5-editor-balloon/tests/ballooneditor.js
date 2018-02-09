@@ -9,8 +9,9 @@ import BalloonEditorUI from '../src/ballooneditorui';
 import BalloonEditorUIView from '../src/ballooneditoruiview';
 
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
-import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
-import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
+
+import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
+import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 
 import BalloonEditor from '../src/ballooneditor';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -257,17 +258,12 @@ describe( 'BalloonEditor', () => {
 					schema.extend( 'heading', { allowIn: '$root' } );
 					schema.extend( '$text', { allowIn: 'heading' } );
 
-					buildModelConverter().for( editor.data.modelToView )
-						.fromElement( 'heading' )
-						.toElement( 'heading' );
-
-					buildViewConverter().for( editor.data.viewToModel )
-						.fromElement( 'heading' )
-						.toElement( 'heading' );
-
-					buildModelConverter().for( editor.editing.modelToView )
-						.fromElement( 'heading' )
-						.toElement( 'heading-editing-representation' );
+					editor.conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'heading', view: 'heading' } ) );
+					editor.conversion.for( 'dataDowncast' ).add( downcastElementToElement( { model: 'heading', view: 'heading' } ) );
+					editor.conversion.for( 'editingDowncast' ).add( downcastElementToElement( {
+						model: 'heading',
+						view: 'heading-editing-representation'
+					} ) );
 				} );
 		} );
 
