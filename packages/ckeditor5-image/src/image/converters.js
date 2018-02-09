@@ -76,15 +76,11 @@ export function srcsetAttributeConverter() {
 	};
 
 	function converter( evt, data, consumable, conversionApi ) {
-		const parts = evt.name.split( ':' );
-		const consumableType = parts[ 0 ] + ':' + parts[ 1 ];
-		const modelImage = data.item;
-
-		if ( !consumable.consume( modelImage, consumableType ) ) {
+		if ( !consumable.consume( data.item, evt.name ) ) {
 			return;
 		}
 
-		const figure = conversionApi.mapper.toViewElement( modelImage );
+		const figure = conversionApi.mapper.toViewElement( data.item );
 		const img = figure.getChild( 0 );
 
 		if ( data.attributeNewValue === null ) {
@@ -120,15 +116,11 @@ export function modelToViewAttributeConverter( attributeKey ) {
 	};
 
 	function converter( evt, data, consumable, conversionApi ) {
-		const parts = evt.name.split( ':' );
-		const consumableType = parts[ 0 ] + ':' + parts[ 1 ];
-		const modelImage = data.item;
-
-		if ( !consumable.consume( modelImage, consumableType ) ) {
+		if ( !consumable.consume( data.item, evt.name ) ) {
 			return;
 		}
 
-		const figure = conversionApi.mapper.toViewElement( modelImage );
+		const figure = conversionApi.mapper.toViewElement( data.item );
 		const img = figure.getChild( 0 );
 
 		if ( data.attributeNewValue !== null ) {
