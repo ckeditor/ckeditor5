@@ -42,10 +42,10 @@ export default class LinkEngine extends Plugin {
 						href: true
 					}
 				},
-				model: viewElement => ( {
+				model: {
 					key: 'linkHref',
-					value: viewElement.getAttribute( 'href' )
-				} )
+					value: viewElement => viewElement.getAttribute( 'href' )
+				}
 			} ) );
 
 		// Create linking commands.
