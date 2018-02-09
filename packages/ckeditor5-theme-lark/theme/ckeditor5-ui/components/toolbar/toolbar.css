@@ -21,12 +21,21 @@
 	}
 
 	&.ck-toolbar_vertical {
-		& > * {
-			/* Items in a vertical toolbar should have no horizontal margin */
-			margin-right: 0;
+		/* Items in a vertical toolbar span the entire width. */
+		padding: 0;
 
-			/* Items in a vertical toolbar should span the horizontal space */
+		& > * {
+			/* Items in a vertical toolbar should span the horizontal space. */
 			width: 100%;
+
+			/* Items in a vertical toolbar should have no margin. */
+			margin: 0;
+
+			/* Items in a vertical toolbar span the entire width so rounded corners are pointless. */
+			border-radius: 0;
+
+			/* Items in a vertical toolbar span the entire width so any border is pointless. */
+			border: 0;
 		}
 	}
 
