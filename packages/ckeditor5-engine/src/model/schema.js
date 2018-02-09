@@ -588,15 +588,7 @@ export default class Schema {
 					return rangeCommonAncestor;
 				}
 
-				// If the element or the common ancestor for the selection's range is a root element, use it
-				// because the root element is on the top of the tree and it's the common ancestor for all selection's ranges.
-				if ( element.is( 'rootElement' ) ) {
-					return element;
-				} else if ( rangeCommonAncestor.is( 'rootElement' ) ) {
-					return rangeCommonAncestor;
-				}
-
-				return element.getCommonAncestor( rangeCommonAncestor );
+				return element.getCommonAncestor( rangeCommonAncestor, { includeSelf: true } );
 			}, null );
 
 		while ( !this.isLimit( element ) ) {
