@@ -13,8 +13,8 @@ import {
 } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
-import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
-import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
+import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
+import { upcastElementToElement, upcastElementToAttribute } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 
 import ModelDocumentFragment from '@ckeditor/ckeditor5-engine/src/model/documentfragment';
 import ModelText from '@ckeditor/ckeditor5-engine/src/model/text';
@@ -82,8 +82,8 @@ describe( 'Paragraph feature', () => {
 				editor.model.schema.register( 'span', { allowWhere: '$text' } );
 				editor.model.schema.extend( '$text', { allowIn: 'span' } );
 
-				buildModelConverter().for( editor.editing.modelToView, editor.data.modelToView ).fromElement( 'span' ).toElement( 'span' );
-				buildViewConverter().for( editor.data.viewToModel ).fromElement( 'span' ).toElement( 'span' );
+				editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'span', view: 'span' } ) );
+				editor.conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'span', view: 'span' } ) );
 
 				editor.setData( '<span>foo</span>' );
 
@@ -109,7 +109,8 @@ describe( 'Paragraph feature', () => {
 
 			it( 'should autoparagraph text next to allowed element', () => {
 				model.schema.register( 'heading1', { inheritAllFrom: '$block' } );
-				buildViewConverter().for( editor.data.viewToModel ).fromElement( 'h1' ).toElement( 'heading1' );
+
+				editor.conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'heading1', view: 'h1' } ) );
 
 				const modelFragment = editor.data.parse( '<h1>foo</h1>bar<p>bom</p>' );
 
@@ -136,7 +137,7 @@ describe( 'Paragraph feature', () => {
 				model.schema.extend( 'div', { allowIn: '$root' } );
 				model.schema.extend( 'paragraph', { allowIn: 'div' } );
 
-				buildViewConverter().for( editor.data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
+				editor.conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'div', view: 'div' } ) );
 
 				const modelFragment = editor.data.parse( '<div>foo</div><div>bom<p>bim</p></div>' );
 
@@ -149,7 +150,8 @@ describe( 'Paragraph feature', () => {
 
 			it( 'should autoparagraph text inside disallowed element next to allowed element', () => {
 				model.schema.register( 'heading1', { inheritAllFrom: '$block' } );
-				buildViewConverter().for( editor.data.viewToModel ).fromElement( 'h1' ).toElement( 'heading1' );
+
+				editor.conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'heading1', view: 'h1' } ) );
 
 				const modelFragment = editor.data.parse( '<div><h1>foo</h1>bar</div>' );
 
@@ -159,7 +161,8 @@ describe( 'Paragraph feature', () => {
 
 			it( 'should not autoparagraph text in disallowed element', () => {
 				model.schema.register( 'heading1', { inheritAllFrom: '$block' } );
-				buildViewConverter().for( editor.data.viewToModel ).fromElement( 'h1' ).toElement( 'heading1' );
+
+				editor.conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'heading1', view: 'h1' } ) );
 
 				const modelFragment = editor.data.parse( '<h1><b>foo</b>bar</h1>' );
 
@@ -189,7 +192,7 @@ describe( 'Paragraph feature', () => {
 
 			// This test was taken from the list package.
 			it( 'does not break when some converter returns nothing', () => {
-				editor.data.viewToModel.on( 'element:li', ( evt, data, conversionApi ) => {
+				editor.data.upcastDispatcher.on( 'element:li', ( evt, data, conversionApi ) => {
 					conversionApi.consumable.consume( data.input, { name: true } );
 				}, { priority: 'highest' } );
 
@@ -202,9 +205,7 @@ describe( 'Paragraph feature', () => {
 				beforeEach( () => {
 					model.schema.extend( '$text', { allowAttributes: 'bold' } );
 
-					buildViewConverter().for( editor.data.viewToModel )
-						.fromElement( 'b' )
-						.toAttribute( 'bold', true );
+					editor.conversion.for( 'upcast' ).add( upcastElementToAttribute( { view: 'b', model: 'bold' } ) );
 				} );
 
 				it( 'inside document fragment', () => {
@@ -217,7 +218,7 @@ describe( 'Paragraph feature', () => {
 					model.schema.register( 'blockQuote', { allowIn: '$root' } );
 					model.schema.extend( '$block', { allowIn: 'blockQuote' } );
 
-					buildViewConverter().for( editor.data.viewToModel ).fromElement( 'blockquote' ).toElement( 'blockQuote' );
+					editor.conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'blockQuote', view: 'blockquote' } ) );
 
 					const modelFragment = editor.data.parse( '<blockquote>foo<b>bar</b>bom</blockquote>' );
 
@@ -255,7 +256,7 @@ describe( 'Paragraph feature', () => {
 				model.schema.extend( 'div', { allowIn: 'specialRoot' } );
 				model.schema.extend( '$text', { allowIn: 'div' } );
 
-				buildViewConverter().for( editor.data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
+				editor.conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'div', view: 'div' } ) );
 
 				const modelFragment = editor.data.parse( '<h1>foo</h1><h2>bar</h2><div>bom</div>', [ 'specialRoot' ] );
 
@@ -300,8 +301,6 @@ describe( 'Paragraph feature', () => {
 					.to.equal( '<paragraph>a</paragraph><paragraph>b</paragraph>' );
 			} );
 
-			// "b" is not autoparagraphed because clipboard holder allows text nodes.
-			// There's a similar integrational test what's going to happen when pasting in paragraph-integration.js.
 			it( 'should convert ul>li>p,text (in clipboard holder)', () => {
 				const modelFragment = editor.data.parse( '<ul><li><p>a</p>b</li></ul>', [ '$clipboardHolder' ] );
 
@@ -333,7 +332,7 @@ describe( 'Paragraph feature', () => {
 				model.schema.extend( 'div', { allowIn: '$root' } );
 				model.schema.extend( 'paragraph', { allowIn: 'div' } );
 
-				buildViewConverter().for( editor.data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
+				editor.conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'div', view: 'div' } ) );
 
 				const modelFragment = editor.data.parse( '<div><ul><li>foo</li><li>bar</li></ul></div><div>bom<p>bim</p></div>' );
 
