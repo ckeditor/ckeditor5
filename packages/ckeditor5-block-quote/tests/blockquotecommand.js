@@ -6,7 +6,7 @@
 import BlockQuoteEngine from '../src/blockquoteengine';
 import BlockQuoteCommand from '../src/blockquotecommand';
 
-import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
+import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -37,17 +37,9 @@ describe( 'BlockQuoteCommand', () => {
 				} );
 				model.schema.extend( '$text', { allowIn: 'widget' } );
 
-				buildModelConverter().for( editor.editing.modelToView )
-					.fromElement( 'paragraph' )
-					.toElement( 'p' );
-
-				buildModelConverter().for( editor.editing.modelToView )
-					.fromElement( 'heading' )
-					.toElement( 'h' );
-
-				buildModelConverter().for( editor.editing.modelToView )
-					.fromElement( 'widget' )
-					.toElement( 'widget' );
+				editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'paragraph', view: 'p' } ) );
+				editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'heading', view: 'h' } ) );
+				editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'widget', view: 'widget' } ) );
 
 				command = editor.commands.get( 'blockQuote' );
 			} );
@@ -383,9 +375,7 @@ describe( 'BlockQuoteCommand', () => {
 					}
 				} );
 
-				buildModelConverter().for( editor.editing.modelToView )
-					.fromElement( 'fooBlock' )
-					.toElement( 'fooblock' );
+				editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'fooBlock', view: 'fooblock' } ) );
 
 				setModelData(
 					model,
@@ -415,12 +405,8 @@ describe( 'BlockQuoteCommand', () => {
 				model.schema.extend( 'fooWrapper', { allowIn: '$root' } );
 				model.schema.extend( 'fooBlock', { allowIn: 'fooWrapper' } );
 
-				buildModelConverter().for( editor.editing.modelToView )
-					.fromElement( 'fooWrapper' )
-					.toElement( 'foowrapper' );
-				buildModelConverter().for( editor.editing.modelToView )
-					.fromElement( 'fooBlock' )
-					.toElement( 'fooblock' );
+				editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'fooWrapper', view: 'foowrapper' } ) );
+				editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'fooBlock', view: 'fooblock' } ) );
 
 				setModelData(
 					model,

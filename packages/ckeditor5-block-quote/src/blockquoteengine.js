@@ -11,8 +11,8 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import BlockQuoteCommand from './blockquotecommand';
 
-import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
-import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
+import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
+import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 
 /**
  * The block quote engine.
@@ -43,12 +43,10 @@ export default class BlockQuoteEngine extends Plugin {
 			}
 		} );
 
-		buildViewConverter().for( editor.data.viewToModel )
-			.fromElement( 'blockquote' )
-			.toElement( 'blockQuote' );
+		editor.conversion.for( 'downcast' )
+			.add( downcastElementToElement( { model: 'blockQuote', view: 'blockquote' } ) );
 
-		buildModelConverter().for( editor.data.modelToView, editor.editing.modelToView )
-			.fromElement( 'blockQuote' )
-			.toElement( 'blockquote' );
+		editor.conversion.for( 'upcast' )
+			.add( upcastElementToElement( { model: 'blockQuote', view: 'blockquote' } ) );
 	}
 }
