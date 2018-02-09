@@ -5,6 +5,8 @@
 
 /* globals ClassicEditor, console, window, document */
 
+import { TOKEN_URL } from '@ckeditor/ckeditor5-cloudservices/tests/_utils/cloudservices-config';
+
 ClassicEditor
 	.create( document.querySelector( '#snippet-custom-text-alignment-toolbar' ), {
 		toolbar: {
@@ -12,6 +14,9 @@ ClassicEditor
 				'headings', '|', 'alignLeft', 'alignRight', 'alignCenter', 'alignJustify'
 			],
 			viewportTopOffset: 60
+		},
+		cloudServices: {
+			tokenUrl: TOKEN_URL
 		}
 	} )
 	.then( editor => {
