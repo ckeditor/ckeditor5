@@ -261,8 +261,8 @@ describe( 'BalloonEditor', () => {
 					editor.conversion.for( 'toData' ).add( downcastElementToElement( { model: 'heading', view: 'heading' } ) );
 					editor.conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'heading', view: 'heading' } ) );
 					editor.conversion.for( 'toEditing' ).add( downcastElementToElement( {
-						model: 'heading-editing-representation',
-						view: 'heading'
+						model: 'heading',
+						view: 'heading-editing-representation'
 					} ) );
 				} );
 		} );
