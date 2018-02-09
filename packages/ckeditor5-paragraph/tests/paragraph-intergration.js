@@ -5,8 +5,8 @@
 
 import Paragraph from '../src/paragraph';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
-import UndoEngine from '@ckeditor/ckeditor5-undo/src/undoengine';
-import HeadingEngine from '@ckeditor/ckeditor5-heading/src/headingengine';
+import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
+import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import {
 	getData as getModelData,
@@ -38,7 +38,7 @@ describe( 'Paragraph feature – integration', () => {
 		// Explainer: the heading feature is configured to handle h2-h4 elements, so h1 has no handler.
 		it( 'pastes h1+h2+p as p+h2+p when heading feature is present', () => {
 			return VirtualTestEditor
-				.create( { plugins: [ Paragraph, Clipboard, HeadingEngine ] } )
+				.create( { plugins: [ Paragraph, Clipboard, HeadingEditing ] } )
 				.then( newEditor => {
 					const editor = newEditor;
 					const clipboard = editor.plugins.get( 'Clipboard' );
@@ -76,7 +76,7 @@ describe( 'Paragraph feature – integration', () => {
 		// handle the li element.
 		it( 'pastes ul>li>h2+h3+p as h2+h3+p when heading feature is present', () => {
 			return VirtualTestEditor
-				.create( { plugins: [ Paragraph, Clipboard, HeadingEngine ] } )
+				.create( { plugins: [ Paragraph, Clipboard, HeadingEditing ] } )
 				.then( newEditor => {
 					const editor = newEditor;
 					const clipboard = editor.plugins.get( 'Clipboard' );
@@ -142,7 +142,7 @@ describe( 'Paragraph feature – integration', () => {
 	describe( 'with undo', () => {
 		it( 'fixing empty roots should be transparent to undo', () => {
 			return VirtualTestEditor
-				.create( { plugins: [ Paragraph, UndoEngine ] } )
+				.create( { plugins: [ Paragraph, UndoEditing ] } )
 				.then( newEditor => {
 					const editor = newEditor;
 					const doc = editor.model.document;
@@ -175,7 +175,7 @@ describe( 'Paragraph feature – integration', () => {
 
 		it( 'fixing empty roots should be transparent to undo - multiple roots', () => {
 			return VirtualTestEditor
-				.create( { plugins: [ Paragraph, UndoEngine ] } )
+				.create( { plugins: [ Paragraph, UndoEditing ] } )
 				.then( newEditor => {
 					const editor = newEditor;
 					const doc = editor.model.document;

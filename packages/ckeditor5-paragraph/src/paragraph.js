@@ -36,7 +36,6 @@ export default class Paragraph extends Plugin {
 		const editor = this.editor;
 		const model = editor.model;
 		const data = editor.data;
-		const editing = editor.editing;
 
 		editor.commands.add( 'paragraph', new ParagraphCommand( editor ) );
 
