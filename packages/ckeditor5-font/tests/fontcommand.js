@@ -8,8 +8,8 @@ import FontCommand from '../src/fontcommand';
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import Range from '../../ckeditor5-engine/src/model/range';
-import Position from '../../ckeditor5-engine/src/model/position';
+import Range from '@ckeditor/ckeditor5-engine/src/model/range';
+import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 
 describe( 'FontCommand', () => {
 	let editor, model, doc, root, command;
