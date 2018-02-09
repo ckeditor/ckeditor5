@@ -5,8 +5,13 @@
 
 /* globals ClassicEditor, console, window, document */
 
+import { TOKEN_URL } from '@ckeditor/ckeditor5-cloudservices/tests/_utils/cloudservices-config';
+
 ClassicEditor
 	.create( document.querySelector( '#snippet-read-only' ), {
+		cloudServices: {
+			tokenUrl: TOKEN_URL
+		},
 		toolbar: {
 			viewportTopOffset: 60
 		}
