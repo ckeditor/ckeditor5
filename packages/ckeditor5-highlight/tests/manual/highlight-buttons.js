@@ -5,8 +5,8 @@
 
 /* globals console, window, document */
 
-import ClassicEditor from '../../../ckeditor5-editor-classic/src/classiceditor';
-import ArticlePluginSet from '../../../ckeditor5-core/tests/_utils/articlepluginset';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import Highlight from '../../src/highlight';
 
 ClassicEditor
