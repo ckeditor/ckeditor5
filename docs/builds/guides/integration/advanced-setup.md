@@ -218,7 +218,7 @@ This module will export an editor creator class which has all the plugins and co
 The second variant how to run the editor is to use the creator class directly, without creating an intermediary subclass. The above code would translate to:
 
 ```js
-import ClassicEditorBase from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import EssentialsPlugin from '@ckeditor/ckeditor5-essentials/src/essentials';
 import AutoformatPlugin from '@ckeditor/ckeditor5-autoformat/src/autoformat';
 import BoldPlugin from '@ckeditor/ckeditor5-basic-styles/src/bold';

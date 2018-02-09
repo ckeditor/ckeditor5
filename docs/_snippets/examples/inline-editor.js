@@ -36,7 +36,7 @@ Array.from( inlineInjectElements ).forEach( inlineElement => {
 			'EasyImage',
 			'CKFinderUploadAdapter'
 		];
-		config.toolbar.items = [ 'headings', 'bold', 'italic', 'link' ];
+		config.toolbar.items = [ 'headings', '|', 'bold', 'italic', 'link' ];
 	}
 
 	InlineEditor

@@ -92,7 +92,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 </tr>
 <tr>
 <td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-autoGrow_bottomSpace">autoGrow_bottomSpace</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-autoGrow_maxHeight">autoGrow_maxHeight</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-autoGrow_minHeight">autoGrow_minHeight</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-autoGrow_onStartup">autoGrow_onStartup</a></td>
-<td><p>Classic editor (CKEditor 5) no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>, which means that the height (and similar options) of the editing area can be easily controlled with CSS. For example the minHeight and maxHeight settings can be achieved with <code>.ck-editor__editable { min-height:200px; max-height:400px; }</code>.</p><p> See also <a href="https://stackoverflow.com/questions/46559354/how-to-set-the-height-of-ckeditor-5-classic-editor" target="_blank" rel="noopener">How to set the height of CKEditor 5 (Classic editor)</a>.</p></td>
+<td><p>Classic editor (CKEditor 5) no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>, which means that the height (and similar options) of the editing area can be easily controlled with CSS. For example the minHeight and maxHeight settings can be achieved with <code>.ck-content { min-height:200px; max-height:400px; }</code>.</p><p> See also <a href="https://stackoverflow.com/questions/46559354/how-to-set-the-height-of-ckeditor-5-classic-editor" target="_blank" rel="noopener">How to set the height of CKEditor 5 (Classic editor)</a>.</p></td>
 </tr>
 <tr>
 <td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-autoUpdateElement">autoUpdateElement</a></td>
@@ -140,7 +140,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 </tr>
 <tr>
 <td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-contentsCss">contentsCss</a></td>
-<td>Classic editor (CKEditor 5) no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>, so such file and configuration setting is no longer needed. If for some reason you need to style the contents of the editing area differently, use the <code>.ck-editor__editable</code> selector.</td>
+<td>Classic editor (CKEditor 5) no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>, so such file and configuration setting is no longer needed. If for some reason you need to style the contents of the editing area differently, use the <code>.ck-content</code> selector.</td>
 </tr>
 <tr>
 <td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-contentsLangDirection">contentsLangDirection</a></td>
@@ -320,7 +320,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 </tr>
 <tr>
 <td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-height">height</a></td>
-<td><p>Classic editor (CKEditor 5) no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>, which means that the height (and similar options) of the editing area can be easily controlled with CSS. For example the height setting can be achieved with <code>.ck-editor__editable { height:400px; }</code>.</p><p>See also <a href="https://stackoverflow.com/questions/46559354/how-to-set-the-height-of-ckeditor-5-classic-editor" target="_blank" rel="noopener">How to set the height of CKEditor 5 (Classic editor)</a>.</p></td>
+<td><p>Classic editor (CKEditor 5) no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>, which means that the height (and similar options) of the editing area can be easily controlled with CSS. For example the height setting can be achieved with <code>.ck-content { height:400px; }</code>.</p><p>See also <a href="https://stackoverflow.com/questions/46559354/how-to-set-the-height-of-ckeditor-5-classic-editor" target="_blank" rel="noopener">How to set the height of CKEditor 5 (Classic editor)</a>.</p></td>
 </tr>
 <tr>
 <td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-htmlEncodeOutput">htmlEncodeOutput</a></td>
@@ -544,7 +544,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 </tr>
 <tr>
 <td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-width">width</a></td>
-<td><p>Classic editor (CKEditor 5) no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>, which means that the height (and similar options) of the editing area can be easily controlled with CSS. For example the width setting can be achieved with <code>.ck-editor__editable { width:400px; }</code>.</p><p>See also <a href="https://stackoverflow.com/questions/46559354/how-to-set-the-height-of-ckeditor-5-classic-editor" target="_blank" rel="noopener">How to set the height of CKEditor 5 (Classic editor)</a>.</p></td>
+<td><p>Classic editor (CKEditor 5) no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>, which means that the height (and similar options) of the editing area can be easily controlled with CSS. For example the width setting can be achieved with <code>.ck-content { width:400px; }</code>.</p><p>See also <a href="https://stackoverflow.com/questions/46559354/how-to-set-the-height-of-ckeditor-5-classic-editor" target="_blank" rel="noopener">How to set the height of CKEditor 5 (Classic editor)</a>.</p></td>
 </tr>
 <tr>
 <td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-wsc_cmd">wsc_cmd</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-wsc_customDictionaryIds">wsc_customDictionaryIds</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-wsc_customLoaderScript">wsc_customLoaderScript</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-wsc_customerId">wsc_customerId</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-wsc_height">wsc_height</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-wsc_lang">wsc_lang</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-wsc_left">wsc_left</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-wsc_top">wsc_top</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-wsc_userDictionaryName">wsc_userDictionaryName</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-wsc_width">wsc_width</a></td>
