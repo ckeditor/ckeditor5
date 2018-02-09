@@ -6,7 +6,7 @@
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/boldengine';
+import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
 import Input from '../src/input';
 
 import Writer from '@ckeditor/ckeditor5-engine/src/model/writer';
@@ -35,7 +35,7 @@ describe( 'Input feature', () => {
 
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Input, Paragraph, Bold ]
+				plugins: [ Input, Paragraph, BoldEditing ]
 			} )
 			.then( newEditor => {
 				// Mock image feature.

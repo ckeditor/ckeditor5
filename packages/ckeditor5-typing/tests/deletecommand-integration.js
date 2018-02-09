@@ -5,7 +5,7 @@
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import DeleteCommand from '../src/deletecommand';
-import UndoEngine from '@ckeditor/ckeditor5-undo/src/undoengine';
+import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'DeleteCommand integration', () => {
@@ -14,7 +14,7 @@ describe( 'DeleteCommand integration', () => {
 	beforeEach( () => {
 		return ModelTestEditor
 			.create( {
-				plugins: [ UndoEngine ],
+				plugins: [ UndoEditing ],
 				typing: {
 					undoStep: 3
 				}
