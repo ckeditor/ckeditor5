@@ -1,0 +1,31 @@
+/*
+ * Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+@import "../../../mixins/_rounded.css";
+
+.ck-splitbutton {
+	& > .ck-splitbutton__action {
+		/* Don't round the first button on the right side */
+		@mixin ck-rounded-corners {
+			border-top-right-radius: unset;
+			border-bottom-right-radius: unset;
+		}
+	}
+
+	& > .ck-splitbutton__arrow {
+		/* Disable a double border between the button and the arrow button. */
+		border-left: 0;
+
+		/* Don't round the arrow button on the right side */
+		@mixin ck-rounded-corners {
+			border-top-left-radius: unset;
+			border-bottom-left-radius: unset;
+		}
+
+		& svg {
+			width: var(--ck-dropdown-arrow-size);
+		}
+	}
+}
