@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import LinkEngine from '../src/linkengine';
+import LinkEditing from '../src/linkediting';
 import LinkCommand from '../src/linkcommand';
 import UnlinkCommand from '../src/unlinkcommand';
 
@@ -15,13 +15,13 @@ import { isLinkElement } from '../src/utils';
 
 import { downcastAttributeToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
 
-describe( 'LinkEngine', () => {
+describe( 'LinkEditing', () => {
 	let editor, model;
 
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Paragraph, LinkEngine ]
+				plugins: [ Paragraph, LinkEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -30,7 +30,7 @@ describe( 'LinkEngine', () => {
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( LinkEngine ) ).to.be.instanceOf( LinkEngine );
+		expect( editor.plugins.get( LinkEditing ) ).to.be.instanceOf( LinkEditing );
 	} );
 
 	it( 'should set proper schema rules', () => {

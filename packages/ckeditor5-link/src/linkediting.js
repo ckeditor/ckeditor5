@@ -4,7 +4,7 @@
  */
 
 /**
- * @module link/linkengine
+ * @module link/linkediting
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -21,7 +21,7 @@ import { createLinkElement } from './utils';
  *
  * @extends module:core/plugin~Plugin
  */
-export default class LinkEngine extends Plugin {
+export default class LinkEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
