@@ -19,8 +19,8 @@ import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import BoldEngine from '@ckeditor/ckeditor5-basic-styles/src/boldengine';
 
-import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
-import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
+import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
+import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
@@ -40,8 +40,9 @@ describe( 'UndoEngine integration', () => {
 
 				// Add "div feature".
 				model.schema.register( 'div', { inheritAllFrom: '$block' } );
-				buildModelConverter().for( editor.data.modelToView, editor.editing.modelToView ).fromElement( 'div' ).toElement( 'div' );
-				buildViewConverter().for( editor.data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
+
+				editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'div', view: 'div' } ) );
+				editor.conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'div', view: 'div' } ) );
 
 				root = doc.getRoot();
 			} );
