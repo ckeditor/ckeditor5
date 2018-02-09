@@ -4,7 +4,7 @@
  */
 
 /**
- * @module list/listengine
+ * @module list/listediting
  */
 
 import ListCommand from './listcommand';
@@ -35,7 +35,7 @@ import {
  *
  * @extends module:core/plugin~Plugin
  */
-export default class ListEngine extends Plugin {
+export default class ListEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -101,6 +101,20 @@ export default class ListEngine extends Plugin {
 		// Register commands for indenting.
 		editor.commands.add( 'indentList', new IndentCommand( editor, 'forward' ) );
 		editor.commands.add( 'outdentList', new IndentCommand( editor, 'backward' ) );
+
+		const getCommandExecuter = commandName => {
+			return ( data, cancel ) => {
+				const command = this.editor.commands.get( commandName );
+
+				if ( command.isEnabled ) {
+					this.editor.execute( commandName );
+					cancel();
+				}
+			};
+		};
+
+		this.editor.keystrokes.set( 'Tab', getCommandExecuter( 'indentList' ) );
+		this.editor.keystrokes.set( 'Shift+Tab', getCommandExecuter( 'outdentList' ) );
 	}
 }
 

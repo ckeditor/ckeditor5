@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import ListEngine from '../src/listengine';
+import ListEditing from '../src/listediting';
 import ListCommand from '../src/listcommand';
 
 import ModelDocumentFragment from '@ckeditor/ckeditor5-engine/src/model/documentfragment';
@@ -15,10 +15,10 @@ import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
 import ViewUIElement from '@ckeditor/ckeditor5-engine/src/view/uielement';
 
-import BoldEngine from '@ckeditor/ckeditor5-basic-styles/src/boldengine';
-import UndoEngine from '@ckeditor/ckeditor5-undo/src/undoengine';
+import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
+import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
-import BlockQuoteEngine from '@ckeditor/ckeditor5-block-quote/src/blockquoteengine';
+import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getModelData, setData as setModelData, parse as parseModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -27,13 +27,13 @@ import { getData as getViewData, parse as parseView } from '@ckeditor/ckeditor5-
 import { insertElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
 import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 
-describe( 'ListEngine', () => {
+describe( 'ListEditing', () => {
 	let editor, model, modelDoc, modelRoot, viewDoc, viewRoot;
 
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Clipboard, BoldEngine, ListEngine, UndoEngine, BlockQuoteEngine ]
+				plugins: [ Clipboard, BoldEditing, ListEditing, UndoEditing, BlockQuoteEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -48,7 +48,7 @@ describe( 'ListEngine', () => {
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( ListEngine ) ).to.be.instanceOf( ListEngine );
+		expect( editor.plugins.get( ListEditing ) ).to.be.instanceOf( ListEditing );
 	} );
 
 	it( 'should set proper schema rules', () => {
