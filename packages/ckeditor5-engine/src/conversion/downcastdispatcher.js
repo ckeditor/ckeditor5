@@ -4,7 +4,7 @@
  */
 
 /**
- * @module engine/conversion/modelconversiondispatcher
+ * @module engine/conversion/downcastdispatcher
  */
 
 import Consumable from './modelconsumable';
@@ -14,72 +14,72 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import extend from '@ckeditor/ckeditor5-utils/src/lib/lodash/extend';
 
 /**
- * `ModelConversionDispatcher` is a central point of model conversion, which is a process of reacting to changes
+ * `DowncastDispatcher` is a central point of downcasting (conversion from model to view), which is a process of reacting to changes
  * in the model and firing a set of events. Callbacks listening to those events are called converters. Those
  * converters role is to convert the model changes to changes in view (for example, adding view nodes or
  * changing attributes on view elements).
  *
- * During conversion process, `ModelConversionDispatcher` fires events, basing on state of the model and prepares
+ * During conversion process, `DowncastDispatcher` fires events, basing on state of the model and prepares
  * data for those events. It is important to understand that those events are connected with changes done on model,
- * for example: "node has been inserted" or "attribute has changed". This is in contrary to view to model conversion,
+ * for example: "node has been inserted" or "attribute has changed". This is in a contrary to upcasting (view to model conversion),
  * where we convert view state (view nodes) to a model tree.
  *
  * The events are prepared basing on a diff created by {@link module:engine/model/differ~Differ Differ}, which buffers them
- * and then passes to `ModelConversionDispatcher` as a diff between old model state and new model state.
+ * and then passes to `DowncastDispatcher` as a diff between old model state and new model state.
  *
  * Note, that because changes are converted there is a need to have a mapping between model structure and view structure.
- * To map positions and elements during model to view conversion use {@link module:engine/conversion/mapper~Mapper}.
+ * To map positions and elements during downcast (model to view conversion) use {@link module:engine/conversion/mapper~Mapper}.
  *
- * `ModelConversionDispatcher` fires following events for model tree changes:
+ * `DowncastDispatcher` fires following events for model tree changes:
  *
- * * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:insert insert}
+ * * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert insert}
  * if a range of nodes has been inserted to the model tree,
- * * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:remove remove}
+ * * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:remove remove}
  * if a range of nodes has been removed from the model tree,
- * * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:attribute attribute}
+ * * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute attribute}
  * if attribute has been added, changed or removed from a model node.
  *
- * For {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:insert insert}
- * and {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:attribute attribute},
- * `ModelConversionDispatcher` generates {@link module:engine/conversion/modelconsumable~ModelConsumable consumables}.
+ * For {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert insert}
+ * and {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute attribute},
+ * `DowncastDispatcher` generates {@link module:engine/conversion/modelconsumable~ModelConsumable consumables}.
  * These are used to have a control over which changes has been already consumed. It is useful when some converters
  * overwrite other or converts multiple changes (for example converts insertion of an element and also converts that
  * element's attributes during insertion).
  *
- * Additionally, `ModelConversionDispatcher` fires events for {@link module:engine/model/markercollection~Marker marker} changes:
+ * Additionally, `DowncastDispatcher` fires events for {@link module:engine/model/markercollection~Marker marker} changes:
  *
- * * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:addMarker} if a marker has been added,
- * * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:removeMarker} if a marker has been removed.
+ * * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:addMarker} if a marker has been added,
+ * * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:removeMarker} if a marker has been removed.
  *
  * Note, that changing a marker is done through removing the marker from the old range, and adding on the new range,
  * so both those events are fired.
  *
- * Finally, `ModelConversionDispatcher` also handles firing events for {@link module:engine/model/selection model selection}
+ * Finally, `DowncastDispatcher` also handles firing events for {@link module:engine/model/selection model selection}
  * conversion:
  *
- * * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:selection}
+ * * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:selection}
  * which converts selection from model to view,
- * * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:attribute}
+ * * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute}
  * which is fired for every selection attribute,
- * * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:addMarker}
+ * * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:addMarker}
  * which is fired for every marker which contains selection.
  *
  * Unlike model tree and markers, events for selection are not fired for changes but for selection state.
  *
- * When providing custom listeners for `ModelConversionDispatcher` remember to check whether given change has not been
+ * When providing custom listeners for `DowncastDispatcher` remember to check whether given change has not been
  * {@link module:engine/conversion/modelconsumable~ModelConsumable#consume consumed} yet.
  *
- * When providing custom listeners for `ModelConversionDispatcher` keep in mind that any callback that had
+ * When providing custom listeners for `DowncastDispatcher` keep in mind that any callback that had
  * {@link module:engine/conversion/modelconsumable~ModelConsumable#consume consumed} a value from a consumable and
  * converted the change should also stop the event (for efficiency purposes).
  *
- * When providing custom listeners for `ModelConversionDispatcher` remember to use provided
+ * When providing custom listeners for `DowncastDispatcher` remember to use provided
  * {@link module:engine/view/writer~Writer view writer} to apply changes to the view document.
  *
- * Example of a custom converter for `ModelConversionDispatcher`:
+ * Example of a custom converter for `DowncastDispatcher`:
  *
  *		// We will convert inserting "paragraph" model element into the model.
- *		modelDispatcher.on( 'insert:paragraph', ( evt, data, consumable, conversionApi ) => {
+ *		downcastDispatcher.on( 'insert:paragraph', ( evt, data, consumable, conversionApi ) => {
  *			// Remember to check whether the change has not been consumed yet and consume it.
  *			if ( consumable.consume( data.item, 'insert' ) ) {
  *				return;
@@ -89,7 +89,7 @@ import extend from '@ckeditor/ckeditor5-utils/src/lib/lodash/extend';
  *			const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
  *
  *			// Create <p> element that will be inserted in view at `viewPosition`.
- *			const viewElement = new ViewElement( 'p' );
+ *			const viewElement = conversionApi.writer.createContainerElement( 'p' );
  *
  *			// Bind the newly created view element to model element so positions will map accordingly in future.
  *			conversionApi.mapper.bindElements( data.item, viewElement );
@@ -101,9 +101,9 @@ import extend from '@ckeditor/ckeditor5-utils/src/lib/lodash/extend';
  *			evt.stop();
  *		} );
  */
-export default class ModelConversionDispatcher {
+export default class DowncastDispatcher {
 	/**
-	 * Creates a `ModelConversionDispatcher` instance.
+	 * Creates a `DowncastDispatcher` instance.
 	 *
 	 * @param {module:engine/model/model~Model} model Data model.
 	 * @param {Object} [conversionApi] Interface passed by dispatcher to the events calls.
@@ -466,7 +466,7 @@ export default class ModelConversionDispatcher {
 	 * @param {module:engine/model/item~Item} data.item Inserted item.
 	 * @param {module:engine/model/range~Range} data.range Range spanning over inserted item.
 	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
-	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `ModelConversionDispatcher` constructor.
+	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `DowncastDispatcher` constructor.
 	 */
 
 	/**
@@ -483,7 +483,7 @@ export default class ModelConversionDispatcher {
 	 * @param {module:engine/model/position~Position} data.sourcePosition Position from where the range has been removed.
 	 * @param {module:engine/model/range~Range} data.range Removed range (in {@link module:engine/model/document~Document#graveyard
 	 * graveyard root}).
-	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `ModelConversionDispatcher` constructor.
+	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `DowncastDispatcher` constructor.
 	 */
 
 	/**
@@ -505,7 +505,7 @@ export default class ModelConversionDispatcher {
 	 * @param {*} data.attributeOldValue Attribute value before the change. This is `null` when selection attribute is converted.
 	 * @param {*} data.attributeNewValue New attribute value.
 	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
-	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `ModelConversionDispatcher` constructor.
+	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `DowncastDispatcher` constructor.
 	 */
 
 	/**
@@ -514,7 +514,7 @@ export default class ModelConversionDispatcher {
 	 * @event selection
 	 * @param {module:engine/model/selection~Selection} selection Selection that is converted.
 	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
-	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `ModelConversionDispatcher` constructor.
+	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `DowncastDispatcher` constructor.
 	 */
 
 	/**
@@ -549,7 +549,7 @@ export default class ModelConversionDispatcher {
 	 * @param {module:engine/model/range~Range} data.markerRange Marker range.
 	 * @param {String} data.markerName Marker name.
 	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
-	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `ModelConversionDispatcher` constructor.
+	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `DowncastDispatcher` constructor.
 	 */
 
 	/**
@@ -564,11 +564,11 @@ export default class ModelConversionDispatcher {
 	 * @param {Object} data Additional information about the change.
 	 * @param {module:engine/model/range~Range} data.markerRange Marker range.
 	 * @param {String} data.markerName Marker name.
-	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `ModelConversionDispatcher` constructor.
+	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `DowncastDispatcher` constructor.
 	 */
 }
 
-mix( ModelConversionDispatcher, EmitterMixin );
+mix( DowncastDispatcher, EmitterMixin );
 
 // Helper function, checks whether change of `marker` at `modelPosition` should be converted. Marker changes are not
 // converted if they happen inside an element with custom conversion method.

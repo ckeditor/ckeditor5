@@ -581,12 +581,14 @@ export default class Schema {
 	getLimitElement( selection ) {
 		// Find the common ancestor for all selection's ranges.
 		let element = Array.from( selection.getRanges() )
-			.reduce( ( node, range ) => {
-				if ( !node ) {
-					return range.getCommonAncestor();
+			.reduce( ( element, range ) => {
+				const rangeCommonAncestor = range.getCommonAncestor();
+
+				if ( !element ) {
+					return rangeCommonAncestor;
 				}
 
-				return node.getCommonAncestor( range.getCommonAncestor() );
+				return element.getCommonAncestor( rangeCommonAncestor, { includeSelf: true } );
 			}, null );
 
 		while ( !this.isLimit( element ) ) {

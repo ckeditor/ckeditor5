@@ -11,8 +11,13 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Range from '../../../../src/model/range';
 import LivePosition from '../../../../src/model/liveposition';
 
-import buildModelConverter from '../../../../src/conversion/buildmodelconverter';
-import buildViewConverter from '../../../../src/conversion/buildviewconverter';
+import {
+	upcastElementToAttribute
+} from '../../../../src/conversion/upcast-converters';
+
+import {
+	downcastAttributeToElement,
+} from '../../../../src/conversion/downcast-converters';
 
 import AttributeElement from '../../../../src/view/attributeelement';
 
@@ -24,21 +29,21 @@ import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 class Link extends Plugin {
 	init() {
 		const editor = this.editor;
-		const data = editor.data;
-		const editing = editor.editing;
 
 		// Allow bold attribute on all inline nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: 'link' } );
 
-		// Build converter from model to view for data and editing pipelines.
-		buildModelConverter().for( data.modelToView, editing.modelToView )
-			.fromAttribute( 'link' )
-			.toElement( href => new AttributeElement( 'a', { href } ) );
+		editor.conversion.for( 'downcast' ).add( downcastAttributeToElement( 'link', {
+			view: attributeValue => new AttributeElement( 'a', { href: attributeValue } )
+		} ) );
 
-		// Build converter from view to model for data pipeline.
-		buildViewConverter().for( data.viewToModel )
-			.fromElement( 'a' )
-			.toAttribute( viewElement => ( { key: 'link', value: viewElement.getAttribute( 'href' ) } ) );
+		editor.conversion.for( 'upcast' ).add( upcastElementToAttribute( {
+			view: 'a',
+			model: {
+				key: 'link',
+				value: viewElement => viewElement.getAttribute( 'href' )
+			}
+		} ) );
 	}
 }
 

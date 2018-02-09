@@ -7,7 +7,7 @@
  * Contains {@link module:engine/view/selection~Selection view selection}
  * to {@link module:engine/model/selection~Selection model selection} conversion helpers.
  *
- * @module engine/conversion/view-selection-to-model-converters
+ * @module engine/conversion/upcast-selection-converters
  */
 
 import ModelSelection from '../model/selection';

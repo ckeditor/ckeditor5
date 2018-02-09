@@ -6,9 +6,9 @@
 /**
  * Contains {@link module:engine/model/selection~Selection model selection} to
  * {@link module:engine/view/selection~Selection view selection} converters for
- * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher}.
+ * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}.
  *
- * @module engine/conversion/model-selection-to-view-converters
+ * @module engine/conversion/downcast-selection-converters
  */
 
 /**
@@ -60,7 +60,7 @@ export function convertRangeSelection() {
  * converted, the broken attributes might be merged again, or the position where the selection is may be wrapped
  * in different, appropriate attribute elements.
  *
- * See also {@link module:engine/conversion/model-selection-to-view-converters~clearAttributes} which does a clean-up
+ * See also {@link module:engine/conversion/downcast-selection-converters~clearAttributes} which does a clean-up
  * by merging attributes.
  *
  * @returns {Function} Selection converter.
@@ -105,7 +105,7 @@ export function convertCollapsedSelection() {
  *
  *		modelDispatcher.on( 'selection', clearAttributes() );
  *
- * See {@link module:engine/conversion/model-selection-to-view-converters~convertCollapsedSelection}
+ * See {@link module:engine/conversion/downcast-selection-converters~convertCollapsedSelection}
  * which do the opposite by breaking attributes in the selection position.
  *
  * @returns {Function} Selection converter.

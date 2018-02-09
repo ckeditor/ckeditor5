@@ -16,24 +16,24 @@ import Model from '../model/model';
 import Batch from '../model/batch';
 import ModelRange from '../model/range';
 import ModelPosition from '../model/position';
-import ModelConversionDispatcher from '../conversion/modelconversiondispatcher';
+import DowncastDispatcher from '../conversion/downcastdispatcher';
 import ModelSelection from '../model/selection';
 import ModelDocumentFragment from '../model/documentfragment';
 import DocumentSelection from '../model/documentselection';
 
 import View from '../view/view';
-import ViewConversionDispatcher from '../conversion/viewconversiondispatcher';
-import ViewDocumentFragment from '../view/documentfragment';
+import UpcastDispatcher from '../conversion/upcastdispatcher';
 import ViewContainerElement from '../view/containerelement';
 import ViewAttributeElement from '../view/attributeelement';
+import ViewRootEditableElement from '../view/rooteditableelement';
 
 import Mapper from '../conversion/mapper';
 import { parse as viewParse, stringify as viewStringify } from '../../src/dev-utils/view';
 import {
 	convertRangeSelection,
 	convertCollapsedSelection,
-} from '../conversion/model-selection-to-view-converters';
-import { insertText, insertElement, wrap } from '../conversion/model-to-view-converters';
+} from '../conversion/downcast-selection-converters';
+import { insertText, insertElement, wrap } from '../conversion/downcast-converters';
 import isPlainObject from '@ckeditor/ckeditor5-utils/src/lib/lodash/isPlainObject';
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 
@@ -190,41 +190,54 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 		selection = new ModelSelection( selectionOrPositionOrRange );
 	}
 
-	// Setup model to view converter.
-	const viewDocumentFragment = new ViewDocumentFragment();
+	// Set up conversion.
+	// Create a temporary view controller.
 	const view = new View();
-	const viewSelection = view.document.selection;
-	const modelToView = new ModelConversionDispatcher( model, { mapper } );
+	const viewDocument = view.document;
+	const viewRoot = new ViewRootEditableElement( 'div' );
+
+	// Create a temporary root element in view document.
+	viewRoot.document = view.document;
+	viewRoot.rootName = 'main';
+	viewDocument.roots.add( viewRoot );
+
+	// Create and setup downcast dispatcher.
+	const downcastDispatcher = new DowncastDispatcher( model, { mapper } );
 
 	// Bind root elements.
-	mapper.bindElements( node.root, viewDocumentFragment );
+	mapper.bindElements( node.root, viewRoot );
 
-	modelToView.on( 'insert:$text', insertText() );
-	modelToView.on( 'attribute', wrap( ( value, data ) => {
+	downcastDispatcher.on( 'insert:$text', insertText() );
+	downcastDispatcher.on( 'attribute', wrap( ( value, data ) => {
 		if ( data.item instanceof ModelSelection || data.item instanceof DocumentSelection || data.item.is( 'textProxy' ) ) {
 			return new ViewAttributeElement( 'model-text-with-attributes', { [ data.attributeKey ]: stringifyAttributeValue( value ) } );
 		}
 	} ) );
-	modelToView.on( 'insert', insertElement( data => {
+	downcastDispatcher.on( 'insert', insertElement( modelItem => {
 		// Stringify object types values for properly display as an output string.
-		const attributes = convertAttributes( data.item.getAttributes(), stringifyAttributeValue );
+		const attributes = convertAttributes( modelItem.getAttributes(), stringifyAttributeValue );
 
-		return new ViewContainerElement( data.item.name, attributes );
+		return new ViewContainerElement( modelItem.name, attributes );
 	} ) );
-	modelToView.on( 'selection', convertRangeSelection() );
-	modelToView.on( 'selection', convertCollapsedSelection() );
+	downcastDispatcher.on( 'selection', convertRangeSelection() );
+	downcastDispatcher.on( 'selection', convertCollapsedSelection() );
 
 	// Convert model to view.
 	const writer = view._writer;
-	modelToView.convertInsert( range, writer );
+	downcastDispatcher.convertInsert( range, writer );
 
 	// Convert model selection to view selection.
 	if ( selection ) {
-		modelToView.convertSelection( selection, writer );
+		downcastDispatcher.convertSelection( selection, writer );
 	}
 
 	// Parse view to data string.
-	const data = viewStringify( viewDocumentFragment, viewSelection, { sameSelectionCharacters: true } );
+	let data = viewStringify( viewRoot, viewDocument.selection, { sameSelectionCharacters: true } );
+
+	// Removing unneccessary <div> and </div> added because `viewRoot` was also stringified alongside input data.
+	data = data.substr( 5, data.length - 11 );
+
+	view.destroy();
 
 	// Replace valid XML `model-text-with-attributes` element name to `$text`.
 	return data.replace( new RegExp( 'model-text-with-attributes', 'g' ), '$text' );
@@ -271,18 +284,18 @@ export function parse( data, schema, options = {} ) {
 		viewDocumentFragment = parsedResult;
 	}
 
-	// Setup view to model converter.
-	const viewToModel = new ViewConversionDispatcher( new Model(), { schema, mapper } );
+	// Set up upcast dispatcher.
+	const upcastDispatcher = new UpcastDispatcher( new Model(), { schema, mapper } );
 
-	viewToModel.on( 'documentFragment', convertToModelFragment() );
-	viewToModel.on( 'element:model-text-with-attributes', convertToModelText( true ) );
-	viewToModel.on( 'element', convertToModelElement() );
-	viewToModel.on( 'text', convertToModelText() );
+	upcastDispatcher.on( 'documentFragment', convertToModelFragment() );
+	upcastDispatcher.on( 'element:model-text-with-attributes', convertToModelText( true ) );
+	upcastDispatcher.on( 'element', convertToModelElement() );
+	upcastDispatcher.on( 'text', convertToModelText() );
 
-	viewToModel.isDebug = true;
+	upcastDispatcher.isDebug = true;
 
 	// Convert view to model.
-	let model = viewToModel.convert( viewDocumentFragment.root, options.context || '$root' );
+	let model = upcastDispatcher.convert( viewDocumentFragment.root, options.context || '$root' );
 
 	mapper.bindElements( model, viewDocumentFragment.root );
 

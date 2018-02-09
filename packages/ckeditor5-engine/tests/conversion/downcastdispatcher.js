@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import ModelConversionDispatcher from '../../src/conversion/modelconversiondispatcher';
+import DowncastDispatcher from '../../src/conversion/downcastdispatcher';
 import Model from '../../src/model/model';
 import ModelText from '../../src/model/text';
 import ModelElement from '../../src/model/element';
@@ -13,14 +13,14 @@ import ModelPosition from '../../src/model/position';
 import View from '../../src/view/view';
 import ViewContainerElement from '../../src/view/containerelement';
 
-describe( 'ModelConversionDispatcher', () => {
+describe( 'DowncastDispatcher', () => {
 	let dispatcher, doc, root, differStub, model, view;
 
 	beforeEach( () => {
 		model = new Model();
 		view = new View();
 		doc = model.document;
-		dispatcher = new ModelConversionDispatcher( model );
+		dispatcher = new DowncastDispatcher( model );
 		root = doc.createRoot();
 
 		differStub = {
@@ -31,9 +31,9 @@ describe( 'ModelConversionDispatcher', () => {
 	} );
 
 	describe( 'constructor()', () => {
-		it( 'should create ModelConversionDispatcher with given api', () => {
+		it( 'should create DowncastDispatcher with given api', () => {
 			const apiObj = {};
-			const dispatcher = new ModelConversionDispatcher( model, { apiObj } );
+			const dispatcher = new DowncastDispatcher( model, { apiObj } );
 
 			expect( dispatcher.conversionApi.apiObj ).to.equal( apiObj );
 		} );

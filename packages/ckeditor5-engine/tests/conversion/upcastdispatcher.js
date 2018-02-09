@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import ViewConversionDispatcher from '../../src/conversion/viewconversiondispatcher';
+import UpcastDispatcher from '../../src/conversion/upcastdispatcher';
 import ViewContainerElement from '../../src/view/containerelement';
 import ViewDocumentFragment from '../../src/view/documentfragment';
 import ViewText from '../../src/view/text';
@@ -20,7 +20,7 @@ import ModelWriter from '../../src/model/writer';
 import first from '@ckeditor/ckeditor5-utils/src/first';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
-describe( 'ViewConversionDispatcher', () => {
+describe( 'UpcastDispatcher', () => {
 	let model;
 
 	beforeEach( () => {
@@ -28,9 +28,9 @@ describe( 'ViewConversionDispatcher', () => {
 	} );
 
 	describe( 'constructor()', () => {
-		it( 'should create ViewConversionDispatcher with passed api', () => {
+		it( 'should create UpcastDispatcher with passed api', () => {
 			const apiObj = {};
-			const dispatcher = new ViewConversionDispatcher( model, { apiObj } );
+			const dispatcher = new UpcastDispatcher( model, { apiObj } );
 
 			expect( dispatcher.conversionApi.apiObj ).to.equal( apiObj );
 			expect( dispatcher.conversionApi ).to.have.property( 'convertItem' ).that.is.instanceof( Function );
@@ -39,7 +39,7 @@ describe( 'ViewConversionDispatcher', () => {
 		} );
 
 		it( 'should have properties', () => {
-			const dispatcher = new ViewConversionDispatcher( model );
+			const dispatcher = new UpcastDispatcher( model );
 
 			expect( dispatcher._removeIfEmpty ).to.instanceof( Set );
 		} );
@@ -49,7 +49,7 @@ describe( 'ViewConversionDispatcher', () => {
 		let dispatcher;
 
 		beforeEach( () => {
-			dispatcher = new ViewConversionDispatcher( model );
+			dispatcher = new UpcastDispatcher( model );
 		} );
 
 		it( 'should create api for current conversion process', () => {
@@ -335,7 +335,7 @@ describe( 'ViewConversionDispatcher', () => {
 		} );
 
 		it( 'should convert according to given context', () => {
-			dispatcher = new ViewConversionDispatcher( model, { schema: model.schema } );
+			dispatcher = new UpcastDispatcher( model, { schema: model.schema } );
 
 			const spy = sinon.spy();
 			const viewElement = new ViewContainerElement( 'third' );
@@ -397,7 +397,7 @@ describe( 'ViewConversionDispatcher', () => {
 			// Put nodes to documentFragment, this will mock root element and makes possible to create range on them.
 			rootMock = new ModelDocumentFragment( [ modelP, modelText ] );
 
-			dispatcher = new ViewConversionDispatcher( model, { schema: model.schema } );
+			dispatcher = new UpcastDispatcher( model, { schema: model.schema } );
 
 			dispatcher.on( 'element:p', ( evt, data ) => {
 				spyP();
