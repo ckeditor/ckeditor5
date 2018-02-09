@@ -165,9 +165,9 @@ export default class SplitButtonView extends View {
 	 * @returns {module:ui/button/buttonview~ButtonView}
 	 */
 	_createActionView() {
-		const buttonView = new ButtonView();
+		const actionView = new ButtonView();
 
-		buttonView.bind(
+		actionView.bind(
 			'icon',
 			'isEnabled',
 			'isOn',
@@ -180,9 +180,15 @@ export default class SplitButtonView extends View {
 			'withText'
 		).to( this );
 
-		buttonView.delegate( 'execute' ).to( this );
+		actionView.extendTemplate( {
+			attributes: {
+				class: 'ck-splitbutton__action'
+			}
+		} );
 
-		return buttonView;
+		actionView.delegate( 'execute' ).to( this );
+
+		return actionView;
 	}
 
 	/**
@@ -199,7 +205,7 @@ export default class SplitButtonView extends View {
 
 		arrowView.extendTemplate( {
 			attributes: {
-				class: 'ck-splitbutton-arrow'
+				class: 'ck-splitbutton__arrow'
 			}
 		} );
 
