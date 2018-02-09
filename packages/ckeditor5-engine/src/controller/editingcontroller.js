@@ -49,7 +49,7 @@ export default class EditingController {
 		this.model = model;
 
 		/**
-		 * Editing view.
+		 * Editing view controller.
 		 *
 		 * @readonly
 		 * @member {module:engine/view/view~View}

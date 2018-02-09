@@ -318,7 +318,6 @@ export default class View {
 
 			this._ongoingChange = false;
 
-			// TODO: docs for the event.
 			this.document.fire( 'change' );
 		}
 	}
