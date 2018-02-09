@@ -7,18 +7,23 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
+import { TOKEN_URL } from '@ckeditor/ckeditor5-cloudservices/tests/_utils/cloudservices-config';
 import './custom.css';
 import './extras.css';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-classic-editor' ), {
-		plugins: [ ArticlePluginSet ],
+		plugins: [ ArticlePluginSet, EasyImage ],
 		toolbar: {
 			items: [ 'headings', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
 			viewportTopOffset: 60
 		},
 		image: {
 			toolbar: [ 'imageStyleFull', 'imageStyleSide', '|', 'imageTextAlternative' ]
+		},
+		cloudServices: {
+			tokenUrl: TOKEN_URL
 		}
 	} )
 	.then( editor => {
