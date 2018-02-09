@@ -176,10 +176,10 @@ export default class HighlightUI extends Plugin {
 
 		componentFactory.add( 'highlightDropdown', locale => {
 			const command = editor.commands.get( 'highlight' );
-
 			const dropdownView = createDropdown( locale, SplitButtonView );
+			const splitButtonView = dropdownView.buttonView;
 
-			dropdownView.buttonView.set( {
+			splitButtonView.set( {
 				tooltip: t( 'Highlight' ),
 				// Holds last executed highlighter.
 				lastExecuted: startingHighlighter.model,
@@ -190,14 +190,14 @@ export default class HighlightUI extends Plugin {
 			// Dropdown button changes to selection (command.value):
 			// - If selection is in highlight it get active highlight appearance (icon, color) and is activated.
 			// - Otherwise it gets appearance (icon, color) of last executed highlight.
-			dropdownView.buttonView.bind( 'icon' ).to( command, 'value', value => getIconForType( getActiveOption( value, 'type' ) ) );
-			dropdownView.buttonView.bind( 'color' ).to( command, 'value', value => getActiveOption( value, 'color' ) );
-			dropdownView.buttonView.bind( 'commandValue' ).to( command, 'value', value => getActiveOption( value, 'model' ) );
-			dropdownView.buttonView.bind( 'isOn' ).to( command, 'value', value => !!value );
+			splitButtonView.bind( 'icon' ).to( command, 'value', value => getIconForType( getActiveOption( value, 'type' ) ) );
+			splitButtonView.bind( 'color' ).to( command, 'value', value => getActiveOption( value, 'color' ) );
+			splitButtonView.bind( 'commandValue' ).to( command, 'value', value => getActiveOption( value, 'model' ) );
+			splitButtonView.bind( 'isOn' ).to( command, 'value', value => !!value );
 
-			dropdownView.buttonView.delegate( 'execute' ).to( dropdownView );
+			splitButtonView.delegate( 'execute' ).to( dropdownView );
 
-			dropdownView.buttonView.extendTemplate( {
+			splitButtonView.extendTemplate( {
 				attributes: {
 					class: 'ck-highlight-button'
 				}
@@ -232,8 +232,8 @@ export default class HighlightUI extends Plugin {
 			} );
 
 			// Execute current action from dropdown's split button action button.
-			dropdownView.on( 'execute', () => {
-				editor.execute( 'highlight', { value: dropdownView.commandValue } );
+			splitButtonView.on( 'execute', () => {
+				editor.execute( 'highlight', { value: splitButtonView.commandValue } );
 				editor.editing.view.focus();
 			} );
 
@@ -242,7 +242,7 @@ export default class HighlightUI extends Plugin {
 			// of last executed highlighter. Otherwise it will return option key for current one.
 			function getActiveOption( current, key ) {
 				const whichHighlighter = !current ||
-				current === dropdownView.buttonView.lastExecuted ? dropdownView.buttonView.lastExecuted : current;
+				current === splitButtonView.lastExecuted ? splitButtonView.lastExecuted : current;
 
 				return optionsMap[ whichHighlighter ][ key ];
 			}

@@ -91,15 +91,6 @@ describe( 'HighlightUI', () => {
 				.to.deep.equal( [ true, true, true, true, true, false, false ] );
 		} );
 
-		it( 'should focus view after command execution', () => {
-			const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
-
-			dropdown.commandName = 'highlight';
-			dropdown.fire( 'execute' );
-
-			sinon.assert.calledOnce( focusSpy );
-		} );
-
 		it( 'should have proper icons in dropdown', () => {
 			const toolbar = dropdown.toolbarView;
 
@@ -165,6 +156,15 @@ describe( 'HighlightUI', () => {
 				command.value = undefined;
 
 				validateButton( 4 );
+			} );
+
+			it( 'should focus view after command execution', () => {
+				const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
+
+				dropdown.buttonView.commandName = 'highlight';
+				dropdown.buttonView.fire( 'execute' );
+
+				sinon.assert.calledOnce( focusSpy );
 			} );
 		} );
 
