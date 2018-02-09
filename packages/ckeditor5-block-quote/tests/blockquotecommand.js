@@ -405,7 +405,7 @@ describe( 'BlockQuoteCommand', () => {
 				model.schema.extend( 'fooWrapper', { allowIn: '$root' } );
 				model.schema.extend( 'fooBlock', { allowIn: 'fooWrapper' } );
 
-				editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'fooWraper', view: 'foowraper' } ) );
+				editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'fooWrapper', view: 'foowrapper' } ) );
 				editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'fooBlock', view: 'fooblock' } ) );
 
 				setModelData(
