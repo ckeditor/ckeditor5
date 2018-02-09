@@ -3,29 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
-.ck-rounded-corners .ck-splitbutton > .ck-button:not(.ck-splitbutton-arrow) {
-	border-top-right-radius: unset;
-	border-bottom-right-radius: unset;
-
-	&:focus {
-		z-index: calc(var(--ck-z-default) + 1);
-	}
-}
-
-.ck-rounded-corners .ck-splitbutton > .ck-splitbutton-arrow {
-	border-top-left-radius: unset;
-	border-bottom-left-radius: unset;
-}
-
-.ck-dropdown {
+.ck-splitbutton {
 	/* Enable font size inheritance, which allows fluid UI scaling. */
 	font-size: inherit;
 
-	& .ck-splitbutton .ck-splitbutton-arrow svg {
-		position: static;
-		top: initial;
-		transform: initial;
-		right: auto;
-		width: var(--ck-dropdown-icon-size);
+	& .ck-splitbutton__action:focus {
+		z-index: calc(var(--ck-z-default) + 1);
 	}
 }
