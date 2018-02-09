@@ -30,7 +30,7 @@ describe( 'two-way-converters', () => {
 		const modelDoc = model.document;
 		modelRoot = modelDoc.createRoot();
 
-		viewRoot = controller.view.getRoot();
+		viewRoot = controller.view.document.getRoot();
 		// Set name of view root the same as dom root.
 		// This is a mock of attaching view root to dom root.
 		viewRoot._name = 'div';
