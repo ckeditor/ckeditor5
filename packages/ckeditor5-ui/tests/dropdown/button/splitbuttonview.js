@@ -27,11 +27,12 @@ describe( 'SplitButtonView', () => {
 
 		it( 'creates view#actionView', () => {
 			expect( view.actionView ).to.be.instanceOf( ButtonView );
+			expect( view.actionView.element.classList.contains( 'ck-splitbutton__action' ) ).to.be.true;
 		} );
 
 		it( 'creates view#arrowView', () => {
 			expect( view.arrowView ).to.be.instanceOf( ButtonView );
-			expect( view.arrowView.element.classList.contains( 'ck-splitbutton-arrow' ) ).to.be.true;
+			expect( view.arrowView.element.classList.contains( 'ck-splitbutton__arrow' ) ).to.be.true;
 			expect( view.arrowView.icon ).to.be.not.undefined;
 		} );
 
