@@ -213,8 +213,8 @@ describe( 'Editor', () => {
 			expect( () => {
 				// Would throw if any of this group won't exist.
 				editor.conversion.for( 'downcast' );
-				editor.conversion.for( 'downcastEditing' );
-				editor.conversion.for( 'downcastData' );
+				editor.conversion.for( 'editingDowncast' );
+				editor.conversion.for( 'dataDowncast' );
 				editor.conversion.for( 'upcast' );
 			} ).not.to.throw();
 		} );
