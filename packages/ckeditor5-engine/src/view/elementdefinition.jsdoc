@@ -1,0 +1,58 @@
+/**
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+/**
+ * @module engine/view/elementdefinition
+ */
+
+/**
+ * A plain object that describes a view element in a way that a concrete, exact view element could be created from that description.
+ *
+ *		const viewDefinition = {
+ *			name: 'h1',
+ *			class: [ 'foo', 'bar' ]
+ *		};
+ *
+ * Above describes a view element:
+ *
+ *		<h1 class="foo bar"></h1>
+ *
+ * An example with styles and attributes:
+ *
+ *      const viewDefinition = {
+ *          name: 'span',
+ *          style: {
+ *              'font-size': '12px',
+ *              'font-weight': 'bold'
+ *          },
+ *          attribute: {
+ *              'data-id': '123'
+ *          }
+ *      };
+ *
+ * Describes:
+ *
+ *      <span style="font-size:12px;font-weight:bold" data-id="123"></span>
+ *
+ * Elements without attributes can be given simply as a string:
+ *
+ *		const viewDefinition = 'p';
+ *
+ * Which will be treated as:
+ *
+ *		const viewDefinition = {
+ *			name: 'p'
+ *		};
+ *
+ * @typedef {String|Object} module:engine/view/elementdefinition~ElementDefinition
+ *
+ * @property {String} name View element name.
+ * @property {String|Array.<String>} [class] Class name or array of class names to match. Each name can be
+ * provided in a form of string.
+ * @property {Object} [style] Object with key-value pairs representing styles. Each object key represents style name.
+ * Value under that key must be a string.
+ * @property {Object} [attribute] Object with key-value pairs representing attributes. Each object key represents
+ * attribute name. Value under that key must be a string.
+ */

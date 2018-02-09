@@ -11,7 +11,7 @@ import createViewRoot from '../view/_utils/createroot';
 import Model from '../../src/model/model';
 
 import Mapper from '../../src/conversion/mapper';
-import { convertSelectionChange } from '../../src/conversion/view-selection-to-model-converters';
+import { convertSelectionChange } from '../../src/conversion/upcast-selection-converters';
 
 import { setData as modelSetData, getData as modelGetData } from '../../src/dev-utils/model';
 import { setData as viewSetData } from '../../src/dev-utils/view';
