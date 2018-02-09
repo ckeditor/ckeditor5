@@ -41,6 +41,14 @@ describe( 'Element', () => {
 			expect( el.getAttribute( 'foo' ) ).to.equal( 'bar' );
 		} );
 
+		it( 'should stringify attributes', () => {
+			const el = new Element( 'p', { foo: true, bar: null, object: {} } );
+
+			expect( el.getAttribute( 'foo' ) ).to.equal( 'true' );
+			expect( el.getAttribute( 'bar' ) ).to.be.undefined;
+			expect( el.getAttribute( 'object' ) ).to.equal( '[object Object]' );
+		} );
+
 		it( 'should create element with children', () => {
 			const child = new Element( 'p', { foo: 'bar' } );
 			const parent = new Element( 'div', [], [ child ] );
