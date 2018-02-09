@@ -108,7 +108,7 @@ describe( 'ContextualBalloon', () => {
 				} ) );
 
 				editor.conversion.for( 'downcast' ).add( downcastElementToElement( {
-					model: 'widget',
+					model: 'nestedEditable',
 					view: () => new ViewEditableElement( 'figcaption', { contenteditable: 'true' } )
 				} ) );
 
