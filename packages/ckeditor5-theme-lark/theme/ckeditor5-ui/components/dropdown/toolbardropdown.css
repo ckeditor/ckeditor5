@@ -5,11 +5,4 @@
 
 .ck-toolbar-dropdown .ck-toolbar {
 	border: 0;
-	padding: 0;
-
-	& .ck-button {
-		border-radius: 0;
-		border: 0;
-		margin: 0;
-	}
 }
