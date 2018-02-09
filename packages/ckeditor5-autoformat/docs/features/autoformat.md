@@ -68,7 +68,7 @@ ClassicEditor
 
 ## Creating custom autoformatters
 
-The {@link module:autoformat/autoformat~Autoformat} feature bases on {@link module:autoformat/blockautoformatengine~BlockAutoformatEngine} and {@link module:autoformat/inlineautoformatengine~InlineAutoformatEngine} tools to create the autoformatters mentioned above.
+The {@link module:autoformat/autoformat~Autoformat} feature bases on {@link module:autoformat/blockautoformatediting~BlockAutoformatEditing} and {@link module:autoformat/inlineautoformatediting~InlineAutoformatEditing} tools to create the autoformatters mentioned above.
 
 You can use these tools to create your own autoformatters. Check the [`Autoformat` feature's code](https://github.com/ckeditor/ckeditor5-autoformat/blob/master/src/autoformat.js) as an example.
 

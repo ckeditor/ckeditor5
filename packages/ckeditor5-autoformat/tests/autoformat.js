@@ -6,12 +6,12 @@
 import Autoformat from '../src/autoformat';
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ListEngine from '@ckeditor/ckeditor5-list/src/listengine';
-import HeadingEngine from '@ckeditor/ckeditor5-heading/src/headingengine';
-import BoldEngine from '@ckeditor/ckeditor5-basic-styles/src/boldengine';
-import CodeEngine from '@ckeditor/ckeditor5-basic-styles/src/codeengine';
-import ItalicEngine from '@ckeditor/ckeditor5-basic-styles/src/italicengine';
-import BlockQuoteEngine from '@ckeditor/ckeditor5-block-quote/src/blockquoteengine';
+import ListEditing from '@ckeditor/ckeditor5-list/src/listediting';
+import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
+import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
+import CodeEditing from '@ckeditor/ckeditor5-basic-styles/src/code/codeediting';
+import ItalicEditing from '@ckeditor/ckeditor5-basic-styles/src/italic/italicediting';
+import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
@@ -33,12 +33,12 @@ describe( 'Autoformat', () => {
 					Enter,
 					Paragraph,
 					Autoformat,
-					ListEngine,
-					HeadingEngine,
-					BoldEngine,
-					ItalicEngine,
-					CodeEngine,
-					BlockQuoteEngine
+					ListEditing,
+					HeadingEditing,
+					BoldEditing,
+					ItalicEditing,
+					CodeEditing,
+					BlockQuoteEditing
 				]
 			} )
 			.then( newEditor => {
@@ -378,7 +378,7 @@ describe( 'Autoformat', () => {
 		it( 'should use only configured headings', () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ Enter, Paragraph, Autoformat, ListEngine, HeadingEngine ],
+					plugins: [ Enter, Paragraph, Autoformat, ListEditing, HeadingEditing ],
 					heading: {
 						options: [
 							{ model: 'paragraph' },

@@ -4,7 +4,7 @@
  */
 
 /**
- * @module autoformat/blockautoformatengine
+ * @module autoformat/blockautoformatediting
  */
 
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
@@ -20,7 +20,7 @@ import Range from '@ckeditor/ckeditor5-engine/src/model/range';
  * the {@link module:autoformat/autoformat~Autoformat} feature which enables a set of default autoformatters
  * (lists, headings, bold and italic).
  */
-export default class BlockAutoformatEngine {
+export default class BlockAutoformatEditing {
 	/**
 	 * Creates a listener triggered on `change` event in the document.
 	 * Calls the callback when inserted text matches the regular expression or the command name
@@ -30,11 +30,11 @@ export default class BlockAutoformatEngine {
 	 *
 	 * To convert a paragraph to heading 1 when `- ` is typed, using just the commmand name:
 	 *
-	 *		new BlockAutoformatEngine( editor, /^\- $/, 'heading1' );
+	 *		new BlockAutoformatEditing( editor, /^\- $/, 'heading1' );
 	 *
 	 * To convert a paragraph to heading 1 when `- ` is typed, using just the callback:
 	 *
-	 *		new BlockAutoformatEngine( editor, /^\- $/, ( context ) => {
+	 *		new BlockAutoformatEditing( editor, /^\- $/, ( context ) => {
 	 *			const { match } = context;
 	 *			const headingLevel = match[ 1 ].length;
 	 *

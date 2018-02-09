@@ -4,7 +4,7 @@
  */
 
 /**
- * @module autoformat/inlineautoformatengine
+ * @module autoformat/inlineautoformatediting
  */
 
 import LiveRange from '@ckeditor/ckeditor5-engine/src/model/liverange';
@@ -20,7 +20,7 @@ import LiveRange from '@ckeditor/ckeditor5-engine/src/model/liverange';
  * the {@link module:autoformat/autoformat~Autoformat} feature which enables a set of default autoformatters
  * (lists, headings, bold and italic).
  */
-export default class InlineAutoformatEngine {
+export default class InlineAutoformatEditing {
 	/**
 	 * Enables autoformatting mechanism for a given {@link module:core/editor/editor~Editor}.
 	 *
@@ -38,7 +38,7 @@ export default class InlineAutoformatEngine {
 	 *		// - The first to match the starting `**` delimiter.
 	 *		// - The second to match the text to format.
 	 *		// - The third to match the ending `**` delimiter.
-	 *		new InlineAutoformatEngine( editor, /(\*\*)([^\*]+?)(\*\*)$/g, 'bold' );
+	 *		new InlineAutoformatEditing( editor, /(\*\*)([^\*]+?)(\*\*)$/g, 'bold' );
 	 *
 	 * When a function is provided instead of the regular expression, it will be executed with the text to match as a parameter.
 	 * The function should return proper "ranges" to delete and format.
@@ -57,10 +57,10 @@ export default class InlineAutoformatEngine {
 	 * formatting.
 	 *
 	 *		// Use attribute name:
-	 *		new InlineAutoformatEngine( editor, /(\*\*)([^\*]+?)(\*\*)$/g, 'bold' );
+	 *		new InlineAutoformatEditing( editor, /(\*\*)([^\*]+?)(\*\*)$/g, 'bold' );
 	 *
 	 *		// Use formatting callback:
-	 *		new InlineAutoformatEngine( editor, /(\*\*)([^\*]+?)(\*\*)$/g, ( writer, validRanges ) => {
+	 *		new InlineAutoformatEditing( editor, /(\*\*)([^\*]+?)(\*\*)$/g, ( writer, validRanges ) => {
 	 *			for ( let range of validRanges ) {
 	 *				writer.setAttribute( command, true, range );
 	 *			}

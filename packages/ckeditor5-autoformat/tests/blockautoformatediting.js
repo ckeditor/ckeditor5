@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import BlockAutoformatEngine from '../src/blockautoformatengine';
+import BlockAutoformatEditing from '../src/blockautoformatediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
@@ -13,7 +13,7 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 
 testUtils.createSinonSandbox();
 
-describe( 'BlockAutoformatEngine', () => {
+describe( 'BlockAutoformatEditing', () => {
 	let editor, model, doc;
 
 	beforeEach( () => {
@@ -32,7 +32,7 @@ describe( 'BlockAutoformatEngine', () => {
 		it( 'should run a command when the pattern is matched', () => {
 			const spy = testUtils.sinon.spy();
 			editor.commands.add( 'testCommand', new TestCommand( editor, spy ) );
-			new BlockAutoformatEngine( editor, /^[*]\s$/, 'testCommand' ); // eslint-disable-line no-new
+			new BlockAutoformatEditing( editor, /^[*]\s$/, 'testCommand' ); // eslint-disable-line no-new
 
 			setData( model, '<paragraph>*[]</paragraph>' );
 			model.change( writer => {
@@ -45,7 +45,7 @@ describe( 'BlockAutoformatEngine', () => {
 		it( 'should remove found pattern', () => {
 			const spy = testUtils.sinon.spy();
 			editor.commands.add( 'testCommand', new TestCommand( editor, spy ) );
-			new BlockAutoformatEngine( editor, /^[*]\s$/, 'testCommand' ); // eslint-disable-line no-new
+			new BlockAutoformatEditing( editor, /^[*]\s$/, 'testCommand' ); // eslint-disable-line no-new
 
 			setData( model, '<paragraph>*[]</paragraph>' );
 			model.change( writer => {
@@ -60,7 +60,7 @@ describe( 'BlockAutoformatEngine', () => {
 	describe( 'Callback', () => {
 		it( 'should run callback when the pattern is matched', () => {
 			const spy = testUtils.sinon.spy();
-			new BlockAutoformatEngine( editor, /^[*]\s$/, spy ); // eslint-disable-line no-new
+			new BlockAutoformatEditing( editor, /^[*]\s$/, spy ); // eslint-disable-line no-new
 
 			setData( model, '<paragraph>*[]</paragraph>' );
 			model.change( writer => {
@@ -72,7 +72,7 @@ describe( 'BlockAutoformatEngine', () => {
 
 		it( 'should ignore other delta operations', () => {
 			const spy = testUtils.sinon.spy();
-			new BlockAutoformatEngine( editor, /^[*]\s/, spy ); // eslint-disable-line no-new
+			new BlockAutoformatEditing( editor, /^[*]\s/, spy ); // eslint-disable-line no-new
 
 			setData( model, '<paragraph>*[]</paragraph>' );
 			model.change( writer => {
@@ -84,7 +84,7 @@ describe( 'BlockAutoformatEngine', () => {
 
 		it( 'should stop if there is no text to run matching on', () => {
 			const spy = testUtils.sinon.spy();
-			new BlockAutoformatEngine( editor, /^[*]\s/, spy ); // eslint-disable-line no-new
+			new BlockAutoformatEditing( editor, /^[*]\s/, spy ); // eslint-disable-line no-new
 
 			setData( model, '<paragraph>[]</paragraph>' );
 			model.change( writer => {
