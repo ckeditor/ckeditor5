@@ -4,12 +4,12 @@
  */
 
 /**
- * @module image/imagestyle/imagestyleengine
+ * @module image/imagestyle/imagestyleediting
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ImageStyleCommand from './imagestylecommand';
-import ImageEngine from '../image/imageengine';
+import ImageEditing from '../image/imageediting';
 import { viewToModelStyleAttribute, modelToViewStyleAttribute } from './converters';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 
@@ -24,19 +24,19 @@ import rightIcon from '@ckeditor/ckeditor5-core/theme/icons/object-right.svg';
  *
  * @extends {module:core/plugin~Plugin}
  */
-export default class ImageStyleEngine extends Plugin {
+export default class ImageStyleEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ ImageEngine ];
+		return [ ImageEditing ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'ImageStyleEngine';
+		return 'ImageStyleEditing';
 	}
 
 	/**
@@ -74,11 +74,11 @@ export default class ImageStyleEngine extends Plugin {
 
 	/**
 	 * Returns {@link module:image/image~ImageConfig#styles} array with items normalized in the
-	 * {@link module:image/imagestyle/imagestyleengine~ImageStyleFormat} format, translated
+	 * {@link module:image/imagestyle/imagestyleediting~ImageStyleFormat} format, translated
 	 * `title` and a complete `icon` markup for each style.
 	 *
 	 * @readonly
-	 * @type {Array.<module:image/imagestyle/imagestyleengine~ImageStyleFormat>}
+	 * @type {Array.<module:image/imagestyle/imagestyleediting~ImageStyleFormat>}
 	 */
 	get imageStyles() {
 		// Return cached value if there is one to improve the performance.
@@ -112,7 +112,7 @@ export default class ImageStyleEngine extends Plugin {
 	 * use in the {@link #imageStyles}.
 	 *
 	 * The following localized titles corresponding with
-	 * {@link module:image/imagestyle/imagestyleengine~ImageStyleEngine.defaultStyles} are available:
+	 * {@link module:image/imagestyle/imagestyleediting~ImageStyleEditing.defaultStyles} are available:
 	 *
 	 * * `'Full size image'`,
 	 * * `'Side image'`,
@@ -153,7 +153,7 @@ export default class ImageStyleEngine extends Plugin {
  *
  * @member {Object.<String,Object>}
  */
-ImageStyleEngine.defaultStyles = {
+ImageStyleEditing.defaultStyles = {
 	// This option is equal to situation when no style is applied.
 	imageStyleFull: {
 		name: 'imageStyleFull',
@@ -203,7 +203,7 @@ ImageStyleEngine.defaultStyles = {
  *
  * @member {Object.<String, String>}
  */
-ImageStyleEngine.defaultIcons = {
+ImageStyleEditing.defaultIcons = {
 	full: fullWidthIcon,
 	left: leftIcon,
 	right: rightIcon,
@@ -211,14 +211,14 @@ ImageStyleEngine.defaultIcons = {
 };
 
 // Normalizes an image style provided in the {@link module:image/image~ImageConfig#styles}
-// and returns it in a {@link module:image/imagestyle/imagestyleengine~ImageStyleFormat}.
+// and returns it in a {@link module:image/imagestyle/imagestyleediting~ImageStyleFormat}.
 //
 // @private
 // @param {Object} style
-// @returns {@link module:image/imagestyle/imagestyleengine~ImageStyleFormat}
+// @returns {@link module:image/imagestyle/imagestyleediting~ImageStyleFormat}
 function normalizeStyle( style ) {
-	const defaultStyles = ImageStyleEngine.defaultStyles;
-	const defaultIcons = ImageStyleEngine.defaultIcons;
+	const defaultStyles = ImageStyleEditing.defaultStyles;
+	const defaultIcons = ImageStyleEditing.defaultIcons;
 
 	// Just the name of the style has been passed.
 	if ( typeof style == 'string' ) {
@@ -278,7 +278,7 @@ function normalizeStyle( style ) {
  *			className: 'image-full-size'
  *		}
  *
- * @typedef {Object} module:image/imagestyle/imagestyleengine~ImageStyleFormat
+ * @typedef {Object} module:image/imagestyle/imagestyleediting~ImageStyleFormat
  * @property {String} name The unique name of the style. It will be used to:
  * * register the {@link module:core/command~Command command} which will apply this style,
  * * store the style's button in the editor {@link module:ui/componentfactory~ComponentFactory},
@@ -287,7 +287,7 @@ function normalizeStyle( style ) {
  * A default style does not apply any CSS class to the view element.
  * @property {String} icon One of the following to be used when creating the style's button:
  *  * An SVG icon source (as an XML string),
- *  * One of {@link module:image/imagestyle/imagestyleengine~ImageStyleEngine.defaultIcons} to use a default icon provided by the plugin.
+ *  * One of {@link module:image/imagestyle/imagestyleediting~ImageStyleEditing.defaultIcons} to use a default icon provided by the plugin.
  * @property {String} title The style's title.
  * @property {String} className The CSS class used to represent the style in view.
  */

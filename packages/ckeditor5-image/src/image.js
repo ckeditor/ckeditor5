@@ -8,7 +8,7 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ImageEngine from './image/imageengine';
+import ImageEditing from '../src/image/imageediting';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 import ImageTextAlternative from './imagetextalternative';
 import { isImageWidgetSelected } from './image/utils';
@@ -18,7 +18,7 @@ import '../theme/image.css';
 /**
  * The image plugin.
  *
- * Uses the {@link module:image/image/imageengine~ImageEngine}.
+ * Uses the {@link module:image/image/imageediting~ImageEditing}.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -27,7 +27,7 @@ export default class Image extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ ImageEngine, Widget, ImageTextAlternative ];
+		return [ ImageEditing, Widget, ImageTextAlternative ];
 	}
 
 	/**

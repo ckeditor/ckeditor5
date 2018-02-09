@@ -4,8 +4,8 @@
  */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import ImageStyleEngine from '../../src/imagestyle/imagestyleengine';
-import ImageEngine from '../../src/image/imageengine';
+import ImageStyleEditing from '../../src/imagestyle/imagestyleediting';
+import ImageEditing from '../../src/image/imageediting';
 import ImageStyleCommand from '../../src/imagestyle/imagestylecommand';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import log from '@ckeditor/ckeditor5-utils/src/log';
@@ -21,7 +21,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 testUtils.createSinonSandbox();
 
-describe( 'ImageStyleEngine', () => {
+describe( 'ImageStyleEditing', () => {
 	let editor, plugin, model, document, viewDocument;
 
 	afterEach( () => {
@@ -32,7 +32,7 @@ describe( 'ImageStyleEngine', () => {
 		beforeEach( () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ ImageStyleEngine ],
+					plugins: [ ImageStyleEditing ],
 				} )
 				.then( newEditor => {
 					editor = newEditor;
@@ -40,11 +40,11 @@ describe( 'ImageStyleEngine', () => {
 		} );
 
 		it( 'should be loaded', () => {
-			expect( editor.plugins.get( ImageStyleEngine ) ).to.be.instanceOf( ImageStyleEngine );
+			expect( editor.plugins.get( ImageStyleEditing ) ).to.be.instanceOf( ImageStyleEditing );
 		} );
 
-		it( 'should load image engine', () => {
-			expect( editor.plugins.get( ImageEngine ) ).to.be.instanceOf( ImageEngine );
+		it( 'should load image editing', () => {
+			expect( editor.plugins.get( ImageEditing ) ).to.be.instanceOf( ImageEditing );
 		} );
 	} );
 
@@ -52,7 +52,7 @@ describe( 'ImageStyleEngine', () => {
 		beforeEach( () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ ImageStyleEngine ],
+					plugins: [ ImageStyleEditing ],
 					image: {
 						styles: [
 							{ name: 'fullStyle', title: 'foo', icon: 'object-center', isDefault: true },
@@ -72,7 +72,7 @@ describe( 'ImageStyleEngine', () => {
 		it( 'should define image.styles config', () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ ImageStyleEngine ]
+					plugins: [ ImageStyleEditing ]
 				} )
 				.then( newEditor => {
 					editor = newEditor;
@@ -267,7 +267,7 @@ describe( 'ImageStyleEngine', () => {
 		it( 'should fall back to defaults when no image.styles', () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ ImageStyleEngine ]
+					plugins: [ ImageStyleEditing ]
 				} )
 				.then( newEditor => {
 					editor = newEditor;
@@ -279,7 +279,7 @@ describe( 'ImageStyleEngine', () => {
 		it( 'should not alter the image.styles config', () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ ImageStyleEngine ],
+					plugins: [ ImageStyleEditing ],
 					image: {
 						styles: [
 							'imageStyleSide'
@@ -296,7 +296,7 @@ describe( 'ImageStyleEngine', () => {
 		it( 'should not alter object definitions in the image.styles config', () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ ImageStyleEngine ],
+					plugins: [ ImageStyleEditing ],
 					image: {
 						styles: [
 							{ name: 'imageStyleSide' }
@@ -313,11 +313,11 @@ describe( 'ImageStyleEngine', () => {
 		it( 'should cache the styles', () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ ImageStyleEngine ]
+					plugins: [ ImageStyleEditing ]
 				} )
 				.then( newEditor => {
 					editor = newEditor;
-					plugin = editor.plugins.get( ImageStyleEngine );
+					plugin = editor.plugins.get( ImageStyleEditing );
 
 					expect( plugin.imageStyles ).to.equal( plugin.imageStyles );
 				} );
@@ -333,7 +333,7 @@ describe( 'ImageStyleEngine', () => {
 
 				return VirtualTestEditor
 					.create( {
-						plugins: [ TranslationMock, ImageStyleEngine ],
+						plugins: [ TranslationMock, ImageStyleEditing ],
 						image: {
 							styles: [
 								// Custom user styles.
@@ -348,7 +348,7 @@ describe( 'ImageStyleEngine', () => {
 					} )
 					.then( newEditor => {
 						editor = newEditor;
-						plugin = editor.plugins.get( ImageStyleEngine );
+						plugin = editor.plugins.get( ImageStyleEditing );
 					} );
 			} );
 
@@ -363,7 +363,7 @@ describe( 'ImageStyleEngine', () => {
 			} );
 
 			it( 'should use one of default icons if #icon matches', () => {
-				expect( plugin.imageStyles[ 1 ].icon ).to.equal( ImageStyleEngine.defaultIcons.right );
+				expect( plugin.imageStyles[ 1 ].icon ).to.equal( ImageStyleEditing.defaultIcons.right );
 			} );
 
 			it( 'should use one of default translations if #title matches', () => {
@@ -374,7 +374,7 @@ describe( 'ImageStyleEngine', () => {
 				expect( plugin.imageStyles[ 3 ] ).to.deep.equal( {
 					name: 'imageStyleFull',
 					title: 'Custom title',
-					icon: ImageStyleEngine.defaultIcons.left,
+					icon: ImageStyleEditing.defaultIcons.left,
 					isDefault: true
 				} );
 			} );
@@ -384,15 +384,15 @@ describe( 'ImageStyleEngine', () => {
 			it( 'should use one of default styles if #name matches', () => {
 				return VirtualTestEditor
 					.create( {
-						plugins: [ ImageStyleEngine ],
+						plugins: [ ImageStyleEditing ],
 						image: {
 							styles: [ 'imageStyleFull' ]
 						}
 					} )
 					.then( newEditor => {
 						editor = newEditor;
-						plugin = editor.plugins.get( ImageStyleEngine );
-						expect( plugin.imageStyles[ 0 ] ).to.deep.equal( ImageStyleEngine.defaultStyles.imageStyleFull );
+						plugin = editor.plugins.get( ImageStyleEditing );
+						expect( plugin.imageStyles[ 0 ] ).to.deep.equal( ImageStyleEditing.defaultStyles.imageStyleFull );
 					} );
 			} );
 
@@ -401,14 +401,14 @@ describe( 'ImageStyleEngine', () => {
 
 				return VirtualTestEditor
 					.create( {
-						plugins: [ ImageStyleEngine ],
+						plugins: [ ImageStyleEditing ],
 						image: {
 							styles: [ 'foo' ]
 						}
 					} )
 					.then( newEditor => {
 						editor = newEditor;
-						plugin = editor.plugins.get( ImageStyleEngine );
+						plugin = editor.plugins.get( ImageStyleEditing );
 
 						expect( plugin.imageStyles[ 0 ] ).to.deep.equal( {
 							name: 'foo'
@@ -428,11 +428,11 @@ describe( 'ImageStyleEngine', () => {
 		it( 'should return localized titles of default styles', () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ ImageStyleEngine ]
+					plugins: [ ImageStyleEditing ]
 				} )
 				.then( newEditor => {
 					editor = newEditor;
-					plugin = editor.plugins.get( ImageStyleEngine );
+					plugin = editor.plugins.get( ImageStyleEditing );
 
 					expect( plugin.localizedDefaultStylesTitles ).to.deep.equal( {
 						'Full size image': 'Full size image',
@@ -447,7 +447,7 @@ describe( 'ImageStyleEngine', () => {
 
 	describe( 'defaultStyles', () => {
 		it( 'should be defined', () => {
-			expect( ImageStyleEngine.defaultStyles ).to.deep.equal( {
+			expect( ImageStyleEditing.defaultStyles ).to.deep.equal( {
 				imageStyleFull: {
 					name: 'imageStyleFull',
 					title: 'Full size image',
@@ -484,7 +484,7 @@ describe( 'ImageStyleEngine', () => {
 
 	describe( 'defaultIcons', () => {
 		it( 'should be defined', () => {
-			expect( ImageStyleEngine.defaultIcons ).to.deep.equal( {
+			expect( ImageStyleEditing.defaultIcons ).to.deep.equal( {
 				full: fullWidthIcon,
 				left: leftIcon,
 				right: rightIcon,

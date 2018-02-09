@@ -4,7 +4,7 @@
  */
 
 /**
- * @module image/imagecaption/imagecaptionengine
+ * @module image/imagecaption/imagecaptionediting
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -28,7 +28,7 @@ import {
  *
  * @extends module:core/plugin~Plugin
  */
-export default class ImageCaptionEngine extends Plugin {
+export default class ImageCaptionEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

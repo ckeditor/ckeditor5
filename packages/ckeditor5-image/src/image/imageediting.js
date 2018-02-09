@@ -4,7 +4,7 @@
  */
 
 /**
- * @module image/image/imageengine
+ * @module image/image/imageediting
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -30,7 +30,7 @@ import ViewEmptyElement from '@ckeditor/ckeditor5-engine/src/view/emptyelement';
  *
  * @extends module:core/plugin~Plugin
  */
-export default class ImageEngine extends Plugin {
+export default class ImageEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */

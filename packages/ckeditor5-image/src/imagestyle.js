@@ -8,15 +8,14 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ImageStyleEngine from './imagestyle/imagestyleengine';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-
-import '../theme/imagestyle.css';
+import ImageStyleEditing from './imagestyle/imagestyleediting';
+import ImageStyleUI from './imagestyle/imagestyleui';
 
 /**
  * The image style plugin.
  *
- * Uses the {@link module:image/imagestyle/imagestyleengine~ImageStyleEngine}.
+ * It loads the {@link module:image/imagestyle/imagestyleediting~ImageStyleEditing}
+ * and {@link module:image/imagestyle/imagestyleui~ImageStyleUI} plugins.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -25,7 +24,7 @@ export default class ImageStyle extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ ImageStyleEngine ];
+		return [ ImageStyleEditing, ImageStyleUI ];
 	}
 
 	/**
@@ -34,55 +33,15 @@ export default class ImageStyle extends Plugin {
 	static get pluginName() {
 		return 'ImageStyle';
 	}
-
-	/**
-	 * @inheritDoc
-	 */
-	init() {
-		const editor = this.editor;
-		const styles = editor.plugins.get( ImageStyleEngine ).imageStyles;
-
-		for ( const style of styles ) {
-			this._createButton( style );
-		}
-	}
-
-	/**
-	 * Creates a button for each style and stores it in the editor {@link module:ui/componentfactory~ComponentFactory ComponentFactory}.
-	 *
-	 * @private
-	 * @param {module:image/imagestyle/imagestyleengine~ImageStyleFormat} style
-	 */
-	_createButton( style ) {
-		const editor = this.editor;
-		const command = editor.commands.get( style.name );
-
-		editor.ui.componentFactory.add( style.name, locale => {
-			const view = new ButtonView( locale );
-
-			view.set( {
-				label: style.title,
-				icon: style.icon,
-				tooltip: true
-			} );
-
-			view.bind( 'isEnabled' ).to( command, 'isEnabled' );
-			view.bind( 'isOn' ).to( command, 'value' );
-
-			this.listenTo( view, 'execute', () => editor.execute( style.name ) );
-
-			return view;
-		} );
-	}
 }
 
 /**
  * Available image styles.
- * The option is used by the {@link module:image/imagestyle/imagestyleengine~ImageStyleEngine} feature.
+ * The option is used by the {@link module:image/imagestyle/imagestyleediting~ImageStyleEditing} feature.
  *
  * The default value is:
  *
- * 		const imageConfig = {
+ *		const imageConfig = {
  *			styles: [ 'imageStyleFull', 'imageStyleSide' ]
  *		};
  *
@@ -91,12 +50,12 @@ export default class ImageStyle extends Plugin {
  *  * the "full" style which doesn't apply any class, e.g. for images styled to span 100% width of the content,
  *  * the "side" style with the `.image-style-side` CSS class.
  *
- * See {@link module:image/imagestyle/imagestyleengine~ImageStyleEngine.defaultStyles} to learn more about default
+ * See {@link module:image/imagestyle/imagestyleediting~ImageStyleEditing.defaultStyles} to learn more about default
  * styles provided by the image feature.
  *
- * The {@link module:image/imagestyle/imagestyleengine~ImageStyleEngine.defaultStyles default styles} can be customized,
+ * The {@link module:image/imagestyle/imagestyleediting~ImageStyleEditing.defaultStyles default styles} can be customized,
  * e.g. to change the icon, title or CSS class of the style. The feature also provides several
- * {@link module:image/imagestyle/imagestyleengine~ImageStyleEngine.defaultIcons default icons} to chose from.
+ * {@link module:image/imagestyle/imagestyleediting~ImageStyleEditing.defaultIcons default icons} to chose from.
  *
  *		import customIcon from 'custom-icon.svg';
  *
@@ -129,7 +88,7 @@ export default class ImageStyle extends Plugin {
  *			]
  *		};
  *
- * Note: Setting `title` to one of {@link module:image/imagestyle/imagestyleengine~ImageStyleEngine#localizedDefaultStylesTitles}
+ * Note: Setting `title` to one of {@link module:image/imagestyle/imagestyleediting~ImageStyleEditing#localizedDefaultStylesTitles}
  * will automatically translate it to the language of the editor.
  *
  * Read more about styling images in the {@glink features/image#Image-styles Image styles guide}.
@@ -147,5 +106,5 @@ export default class ImageStyle extends Plugin {
  *			toolbar: [ 'imageStyleFull', 'imageStyleSide' ]
  *		};
  *
- * @member {Array.<module:image/imagestyle/imagestyleengine~ImageStyleFormat>} module:image/image~ImageConfig#styles
+ * @member {Array.<module:image/imagestyle/imagestyleediting~ImageStyleFormat>} module:image/image~ImageConfig#styles
  */

@@ -5,9 +5,9 @@
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 
-import ImageCaptionEngine from '../../src/imagecaption/imagecaptionengine';
-import ImageEngine from '../../src/image/imageengine';
-import UndoEngine from '@ckeditor/ckeditor5-undo/src/undoengine';
+import ImageCaptionEditing from '../../src/imagecaption/imagecaptionediting';
+import ImageEditing from '../../src/image/imageediting';
+import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import ViewAttributeElement from '@ckeditor/ckeditor5-engine/src/view/attributeelement';
@@ -21,13 +21,13 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 
 import { elementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/two-way-converters';
 
-describe( 'ImageCaptionEngine', () => {
+describe( 'ImageCaptionEditing', () => {
 	let editor, model, doc, viewDocument;
 
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ ImageCaptionEngine, ImageEngine, UndoEngine, Paragraph ]
+				plugins: [ ImageCaptionEditing, ImageEditing, UndoEditing, Paragraph ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -47,7 +47,7 @@ describe( 'ImageCaptionEngine', () => {
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( ImageCaptionEngine ) ).to.be.instanceOf( ImageCaptionEngine );
+		expect( editor.plugins.get( ImageCaptionEditing ) ).to.be.instanceOf( ImageCaptionEditing );
 	} );
 
 	it( 'should set proper schema rules', () => {
