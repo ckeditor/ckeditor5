@@ -7,6 +7,7 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
 import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
+import { TOKEN_URL } from '@ckeditor/ckeditor5-cloudservices/tests/_utils/cloudservices-config';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-autoformat' ), {
@@ -26,6 +27,9 @@ ClassicEditor
 				'redo'
 			],
 			viewportTopOffset: 60
+		},
+		cloudServices: {
+			tokenUrl: TOKEN_URL
 		}
 	} )
 	.then( editor => {
