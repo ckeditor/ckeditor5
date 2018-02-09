@@ -9,8 +9,13 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
 
+import { TOKEN_URL } from '@ckeditor/ckeditor5-cloudservices/tests/_utils/cloudservices-config';
+
 ClassicEditor
 	.create( document.querySelector( '#snippet-ui-language' ), {
+		cloudServices: {
+			tokenUrl: TOKEN_URL
+		},
 		toolbar: {
 			viewportTopOffset: 60
 		}
