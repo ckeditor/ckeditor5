@@ -86,8 +86,8 @@ describe( 'HeadingEngine', () => {
 							{
 								model: 'heading1',
 								view: 'h1',
-								acceptsAlso: [
-									{ name: 'p', attribute: { 'data-heading': 'h1' }, priority: 'high' }
+								upcastAlso: [
+									{ name: 'p', attribute: { 'data-heading': 'h1' } }
 								],
 								title: 'User H1'
 							}
