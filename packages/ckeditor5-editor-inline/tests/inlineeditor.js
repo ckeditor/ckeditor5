@@ -246,9 +246,9 @@ describe( 'InlineEditor', () => {
 					schema.extend( 'heading', { allowIn: '$root' } );
 					schema.extend( '$text', { allowIn: 'heading' } );
 
-					editor.conversion.for( 'toData' ).add( downcastElementToElement( { model: 'heading', view: 'heading' } ) );
 					editor.conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'heading', view: 'heading' } ) );
-					editor.conversion.for( 'toEditing' ).add( downcastElementToElement( {
+					editor.conversion.for( 'dataDowncast' ).add( downcastElementToElement( { model: 'heading', view: 'heading' } ) );
+					editor.conversion.for( 'editingDowncast' ).add( downcastElementToElement( {
 						model: 'heading',
 						view: 'heading-editing-representation'
 					} ) );
