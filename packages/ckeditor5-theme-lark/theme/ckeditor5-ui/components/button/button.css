@@ -8,7 +8,6 @@
 @import "../../../mixins/_disabled.css";
 @import "../../../mixins/_rounded.css";
 @import "../../mixins/_button.css";
-@import "@ckeditor/ckeditor5-ui/theme/components/button/mixins/_button.css";
 
 .ck-button,
 a.ck-button {
@@ -37,7 +36,7 @@ a.ck-button {
 
 	/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/70 */
 	&.ck-disabled {
-		@mixin ck-button-icon {
+		& .ck-button__icon {
 			@mixin ck-disabled;
 		}
 
@@ -50,7 +49,7 @@ a.ck-button {
 	&.ck-button_with-text {
 		padding: var(--ck-spacing-tiny) var(--ck-spacing-standard);
 
-		@mixin ck-button-icon {
+		& .ck-button__icon {
 			margin-left: calc(-1 * var(--ck-spacing-small));
 			margin-right: var(--ck-spacing-small);
 		}
@@ -61,21 +60,19 @@ a.ck-button {
 		@mixin ck-button-colors --ck-color-button-on;
 	}
 
-	@mixin ck-button-icon {
-		use,
-		use * {
+	& .ck-button__icon {
+		& use,
+		& use * {
 			color: inherit;
 		}
 	}
 
-	&:not(.ck-button_with-text) {
-		@mixin ck-button-icon {
-			/* This margin is neccessary for icons in label-less buttons to stretch
-			the button properly. When there's no text in the button, browsers render
-			them too small. It's a really tricky topic, when browsers render svg as an inline
-			content and line size (character width) measurement and alignment kicks in. */
-			margin: var(--ck-spacing-tiny);
-		}
+	&:not(.ck-button_with-text) .ck-button__icon {
+		/* This margin is neccessary for icons in label-less buttons to stretch
+		the button properly. When there's no text in the button, browsers render
+		them too small. It's a really tricky topic, when browsers render svg as an inline
+		content and line size (character width) measurement and alignment kicks in. */
+		margin: var(--ck-spacing-tiny);
 	}
 
 	& .ck-button__label {
