@@ -3,7 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-@import "./mixins/_button.css";
 @import "../../mixins/_unselectable.css";
 @import "../tooltip/mixins/_tooltip.css";
 
