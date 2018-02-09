@@ -9,7 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { downcastAttributeToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
-import { upcastElementToAttribute, upcastAttributeToAttribute } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
+import { upcastElementToAttribute } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 import AttributeCommand from './attributecommand';
 
 const STRIKETHROUGH = 'strikethrough';
@@ -42,7 +42,7 @@ export default class StrikethroughEngine extends Plugin {
 			.add( upcastElementToAttribute( { view: 's', model: STRIKETHROUGH } ) )
 			.add( upcastElementToAttribute( { view: 'del', model: STRIKETHROUGH } ) )
 			.add( upcastElementToAttribute( { view: 'strike', model: STRIKETHROUGH } ) )
-			.add( upcastAttributeToAttribute( { view: { style: { 'text-decoration': 'line-through' } }, model: STRIKETHROUGH } ) );
+			.add( upcastElementToAttribute( { view: { style: { 'text-decoration': 'line-through' } }, model: STRIKETHROUGH } ) );
 
 		// Create strikethrough command.
 		editor.commands.add( STRIKETHROUGH, new AttributeCommand( editor, STRIKETHROUGH ) );

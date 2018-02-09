@@ -9,7 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { downcastAttributeToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
-import { upcastElementToAttribute, upcastAttributeToAttribute } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
+import { upcastElementToAttribute } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 import AttributeCommand from './attributecommand';
 
 const BOLD = 'bold';
@@ -40,7 +40,7 @@ export default class BoldEngine extends Plugin {
 		editor.conversion.for( 'upcast' )
 			.add( upcastElementToAttribute( { view: 'b', model: BOLD } ) )
 			.add( upcastElementToAttribute( { view: 'strong', model: BOLD } ) )
-			.add( upcastAttributeToAttribute( { view: { style: { 'font-weight': 'bold' } }, model: BOLD } ) );
+			.add( upcastElementToAttribute( { view: { style: { 'font-weight': 'bold' } }, model: BOLD } ) );
 
 		// Create bold command.
 		editor.commands.add( BOLD, new AttributeCommand( editor, BOLD ) );

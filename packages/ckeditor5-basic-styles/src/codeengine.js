@@ -9,7 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { downcastAttributeToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
-import { upcastElementToAttribute, upcastAttributeToAttribute } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
+import { upcastElementToAttribute } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 import AttributeCommand from './attributecommand';
 
 const CODE = 'code';
@@ -39,7 +39,7 @@ export default class CodeEngine extends Plugin {
 		// Build converter from view to model for data pipeline.
 		editor.conversion.for( 'upcast' )
 			.add( upcastElementToAttribute( { view: 'code', model: CODE } ) )
-			.add( upcastAttributeToAttribute( { view: { style: { 'word-wrap': 'break-word' } }, model: CODE } ) );
+			.add( upcastElementToAttribute( { view: { style: { 'word-wrap': 'break-word' } }, model: CODE } ) );
 
 		// Create code command.
 		editor.commands.add( CODE, new AttributeCommand( editor, CODE ) );

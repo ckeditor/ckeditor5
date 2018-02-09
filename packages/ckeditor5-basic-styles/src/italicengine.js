@@ -9,7 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { downcastAttributeToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
-import { upcastElementToAttribute, upcastAttributeToAttribute } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
+import { upcastElementToAttribute } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 import AttributeCommand from './attributecommand';
 
 const ITALIC = 'italic';
@@ -40,7 +40,7 @@ export default class ItalicEngine extends Plugin {
 		editor.conversion.for( 'upcast' )
 			.add( upcastElementToAttribute( { view: 'em', model: ITALIC } ) )
 			.add( upcastElementToAttribute( { view: 'i', model: ITALIC } ) )
-			.add( upcastAttributeToAttribute( { view: { style: { 'font-style': 'italic' } }, model: ITALIC } ) );
+			.add( upcastElementToAttribute( { view: { style: { 'font-style': 'italic' } }, model: ITALIC } ) );
 
 		// Create italic command.
 		editor.commands.add( ITALIC, new AttributeCommand( editor, ITALIC ) );

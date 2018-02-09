@@ -9,7 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { downcastAttributeToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
-import { upcastElementToAttribute, upcastAttributeToAttribute } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
+import { upcastElementToAttribute } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 import AttributeCommand from './attributecommand';
 
 const UNDERLINE = 'underline';
@@ -39,7 +39,7 @@ export default class UnderlineEngine extends Plugin {
 		// Build converter from view to model for data pipeline.
 		editor.conversion.for( 'upcast' )
 			.add( upcastElementToAttribute( { view: 'u', model: UNDERLINE } ) )
-			.add( upcastAttributeToAttribute( { view: { style: { 'text-decoration': 'underline' } }, model: UNDERLINE } ) );
+			.add( upcastElementToAttribute( { view: { style: { 'text-decoration': 'underline' } }, model: UNDERLINE } ) );
 
 		// Create underline command.
 		editor.commands.add( UNDERLINE, new AttributeCommand( editor, UNDERLINE ) );
