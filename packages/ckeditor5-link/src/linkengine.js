@@ -8,8 +8,8 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
-import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
+import { downcastAttributeToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
+import { upcastElementToAttribute } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 import LinkCommand from './linkcommand';
 import UnlinkCommand from './unlinkcommand';
 import { createLinkElement } from './utils';
@@ -27,24 +27,25 @@ export default class LinkEngine extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const data = editor.data;
-		const editing = editor.editing;
 
 		// Allow link attribute on all inline nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: 'linkHref' } );
 
-		// Build converter from model to view for data and editing pipelines.
-		buildModelConverter().for( data.modelToView, editing.modelToView )
-			.fromAttribute( 'linkHref' )
-			.toElement( linkHref => createLinkElement( linkHref ) );
+		editor.conversion.for( 'downcast' )
+			.add( downcastAttributeToElement( 'linkHref', { view: linkHref => createLinkElement( linkHref ) } ) );
 
-		// Build converter from view to model for data pipeline.
-		buildViewConverter().for( data.viewToModel )
-			// Convert <a> with href (value doesn't matter).
-			.from( { name: 'a', attribute: { href: true } } )
-			.toAttribute( viewElement => ( {
-				key: 'linkHref',
-				value: viewElement.getAttribute( 'href' )
+		editor.conversion.for( 'upcast' )
+			.add( upcastElementToAttribute( {
+				view: {
+					name: 'a',
+					attribute: {
+						href: true
+					}
+				},
+				model: {
+					key: 'linkHref',
+					value: viewElement => viewElement.getAttribute( 'href' )
+				}
 			} ) );
 
 		// Create linking commands.
