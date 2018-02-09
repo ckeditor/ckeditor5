@@ -419,7 +419,7 @@ function bindTo( ...args ) {
 // Binds to an attribute in a set of iterable observables.
 //
 // @private
-// @param {Iterable.<Observable>} observables
+// @param {Array.<Observable>} observables
 // @param {String} attribute
 // @param {Function} callback
 function bindToMany( observables, attribute, callback ) {
@@ -443,11 +443,11 @@ function bindToMany( observables, attribute, callback ) {
 // Returns an array of binding components for
 // {@link Observable#bind} from a set of iterable observables.
 //
-// @param {Iterable.<Observable>} observables
+// @param {Array.<Observable>} observables
 // @param {String} attribute
 // @returns {Array.<String|Observable>}
 function getBindingTargets( observables, attribute ) {
-	const observableAndAttributePairs = Array.from( observables ).map( observable => [ observable, attribute ] );
+	const observableAndAttributePairs = observables.map( observable => [ observable, attribute ] );
 
 	// Merge pairs to one-dimension array of observables and attributes.
 	return Array.prototype.concat.apply( [], observableAndAttributePairs );
