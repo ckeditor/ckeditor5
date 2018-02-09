@@ -4,25 +4,25 @@
  */
 
 /**
- * @module basic-styles/underlineengine
+ * @module basic-styles/underline/underlineediting
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { downcastAttributeToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
 import { upcastElementToAttribute } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
-import AttributeCommand from './attributecommand';
+import AttributeCommand from '../attributecommand';
 
 const UNDERLINE = 'underline';
 
 /**
- * The underline engine feature.
+ * The underline editing feature.
  *
- * It registers the `underline` command and introduces the `underline` attribute in the model which renders to the view
- * as an `<u>` element.
+ * It registers the `underline` command, the <kbd>Ctrl+U</kbd> keystroke
+ * and introduces the `underline` attribute in the model which renders to the view as an `<u>` element.
  *
  * @extends module:core/plugin~Plugin
  */
-export default class UnderlineEngine extends Plugin {
+export default class UnderlineEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -43,5 +43,8 @@ export default class UnderlineEngine extends Plugin {
 
 		// Create underline command.
 		editor.commands.add( UNDERLINE, new AttributeCommand( editor, UNDERLINE ) );
+
+		// Set the Ctrl+U keystroke.
+		editor.keystrokes.set( 'CTRL+U', 'underline' );
 	}
 }

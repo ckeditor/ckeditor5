@@ -3,22 +3,23 @@
  * For licensing, see LICENSE.md.
  */
 
-import BoldEngine from '../src/boldengine';
+import BoldEditing from '../../src/bold/boldediting';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import AttributeCommand from '../src/attributecommand';
+import AttributeCommand from '../../src/attributecommand';
 
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+import { keyCodes } from '../../../ckeditor5-utils/src/keyboard';
 
-describe( 'BoldEngine', () => {
+describe( 'BoldEditing', () => {
 	let editor, model;
 
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Paragraph, BoldEngine ]
+				plugins: [ Paragraph, BoldEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -31,12 +32,28 @@ describe( 'BoldEngine', () => {
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( BoldEngine ) ).to.be.instanceOf( BoldEngine );
+		expect( editor.plugins.get( BoldEditing ) ).to.be.instanceOf( BoldEditing );
 	} );
 
 	it( 'should set proper schema rules', () => {
 		expect( model.schema.checkAttribute( [ '$root', '$block', '$text' ], 'bold' ) ).to.be.true;
 		expect( model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'bold' ) ).to.be.true;
+	} );
+
+	it( 'should set editor keystroke', () => {
+		const spy = sinon.spy( editor, 'execute' );
+		const keyEventData = {
+			keyCode: keyCodes.b,
+			ctrlKey: true,
+			preventDefault: sinon.spy(),
+			stopPropagation: sinon.spy()
+		};
+
+		const wasHandled = editor.keystrokes.press( keyEventData );
+
+		expect( wasHandled ).to.be.true;
+		expect( spy.calledOnce ).to.be.true;
+		expect( keyEventData.preventDefault.calledOnce ).to.be.true;
 	} );
 
 	describe( 'command', () => {

@@ -4,25 +4,25 @@
  */
 
 /**
- * @module basic-styles/codeengine
+ * @module basic-styles/code/codeediting
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { downcastAttributeToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
 import { upcastElementToAttribute } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
-import AttributeCommand from './attributecommand';
+import AttributeCommand from '../attributecommand';
 
 const CODE = 'code';
 
 /**
- * The code engine feature.
+ * The code editing feature.
  *
  * It registers the `code` command and introduces the `code` attribute in the model which renders to the view
  * as a `<code>` element.
  *
  * @extends module:core/plugin~Plugin
  */
-export default class CodeEngine extends Plugin {
+export default class CodeEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
