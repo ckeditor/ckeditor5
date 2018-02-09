@@ -48,12 +48,12 @@ export default class ImageEngine extends Plugin {
 			allowAttributes: [ 'alt', 'src', 'srcset' ]
 		} );
 
-		editor.conversion.for( 'toData' ).add( downcastElementToElement( {
+		editor.conversion.for( 'dataDowncast' ).add( downcastElementToElement( {
 			model: 'image',
 			view: () => createImageViewElement()
 		} ) );
 
-		editor.conversion.for( 'toEditing' ).add( downcastElementToElement( {
+		editor.conversion.for( 'editingDowncast' ).add( downcastElementToElement( {
 			model: 'image',
 			view: () => toImageWidget( createImageViewElement(), t( 'image widget' ) )
 		} ) );
