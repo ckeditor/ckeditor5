@@ -10,28 +10,28 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor'
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
-import UndoEngine from '../src/undoengine';
+import UndoEditing from '../src/undoediting';
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import HeadingEngine from '@ckeditor/ckeditor5-heading/src/headingengine';
+import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
-import BoldEngine from '@ckeditor/ckeditor5-basic-styles/src/boldengine';
+import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
 
 import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
 import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-describe( 'UndoEngine integration', () => {
+describe( 'UndoEditing integration', () => {
 	let editor, model, doc, root, div;
 
 	beforeEach( () => {
 		div = document.createElement( 'div' );
 		document.body.appendChild( div );
 
-		return ClassicEditor.create( div, { plugins: [ Paragraph, HeadingEngine, Typing, Enter, Clipboard, BoldEngine, UndoEngine ] } )
+		return ClassicEditor.create( div, { plugins: [ Paragraph, HeadingEditing, Typing, Enter, Clipboard, BoldEditing, UndoEditing ] } )
 			.then( newEditor => {
 				editor = newEditor;
 

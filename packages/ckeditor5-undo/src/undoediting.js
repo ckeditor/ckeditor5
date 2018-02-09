@@ -4,7 +4,7 @@
  */
 
 /**
- * @module undo/undoengine
+ * @module undo/undoediting
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -19,7 +19,7 @@ import RedoCommand from './redocommand';
  *
  * @extends module:core/plugin~Plugin
  */
-export default class UndoEngine extends Plugin {
+export default class UndoEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -31,7 +31,7 @@ export default class UndoEngine extends Plugin {
 		 * Created and registered during the {@link #init feature initialization}.
 		 *
 		 * @private
-		 * @member {undo.UndoEngineCommand} #_undoCommand
+		 * @member {undo.UndoEditingCommand} #_undoCommand
 		 */
 
 		/**
@@ -39,7 +39,7 @@ export default class UndoEngine extends Plugin {
 		 * Created and registered during the {@link #init feature initialization}.
 		 *
 		 * @private
-		 * @member {undo.UndoEngineCommand} #_redoCommand
+		 * @member {undo.UndoEditingCommand} #_redoCommand
 		 */
 
 		/**
@@ -55,15 +55,17 @@ export default class UndoEngine extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
+		const editor = this.editor;
+
 		// Create commands.
-		this._undoCommand = new UndoCommand( this.editor );
-		this._redoCommand = new RedoCommand( this.editor );
+		this._undoCommand = new UndoCommand( editor );
+		this._redoCommand = new RedoCommand( editor );
 
 		// Register command to the editor.
-		this.editor.commands.add( 'undo', this._undoCommand );
-		this.editor.commands.add( 'redo', this._redoCommand );
+		editor.commands.add( 'undo', this._undoCommand );
+		editor.commands.add( 'redo', this._redoCommand );
 
-		this.listenTo( this.editor.model, 'applyOperation', ( evt, args ) => {
+		this.listenTo( editor.model, 'applyOperation', ( evt, args ) => {
 			const operation = args[ 0 ];
 			const batch = operation.delta.batch;
 
@@ -89,5 +91,9 @@ export default class UndoEngine extends Plugin {
 		this.listenTo( this._undoCommand, 'revert', ( evt, undoneBatch, undoingBatch ) => {
 			this._redoCommand.addBatch( undoingBatch );
 		} );
+
+		editor.keystrokes.set( 'CTRL+Z', 'undo' );
+		editor.keystrokes.set( 'CTRL+Y', 'redo' );
+		editor.keystrokes.set( 'CTRL+SHIFT+Z', 'redo' );
 	}
 }
