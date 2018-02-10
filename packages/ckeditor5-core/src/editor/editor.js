@@ -13,6 +13,7 @@ import PluginCollection from '../plugincollection';
 import CommandCollection from '../commandcollection';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 import DataController from '@ckeditor/ckeditor5-engine/src/controller/datacontroller';
+import Conversion from '@ckeditor/ckeditor5-engine/src/conversion/conversion';
 import Model from '@ckeditor/ckeditor5-engine/src/model/model';
 import EditingKeystrokeHandler from '../editingkeystrokehandler';
 
@@ -118,6 +119,23 @@ export default class Editor {
 		 */
 		this.editing = new EditingController( this.model );
 		this.editing.view.bind( 'isReadOnly' ).to( this );
+
+		/**
+		 * Conversion manager to which conversion dispatchers are registered. Used to add converters to the editor.
+		 *
+		 * See {@link module:engine/conversion/conversion~Conversion#for} to learn how to use conversion helpers in order to
+		 * add converters to the editor.
+		 *
+		 * @readonly
+		 * @member {module:engine/conversion/conversion~Conversion}
+		 */
+		this.conversion = new Conversion();
+
+		this.conversion.register( 'downcast', [ this.editing.downcastDispatcher, this.data.downcastDispatcher ] );
+		this.conversion.register( 'editingDowncast', [ this.editing.downcastDispatcher ] );
+		this.conversion.register( 'dataDowncast', [ this.data.downcastDispatcher ] );
+
+		this.conversion.register( 'upcast', [ this.data.upcastDispatcher ] );
 
 		/**
 		 * Instance of the {@link module:core/editingkeystrokehandler~EditingKeystrokeHandler}.

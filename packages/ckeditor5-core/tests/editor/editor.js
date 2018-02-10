@@ -200,6 +200,26 @@ describe( 'Editor', () => {
 		} );
 	} );
 
+	describe( 'conversion', () => {
+		it( 'should have conversion property', () => {
+			const editor = new Editor();
+
+			expect( editor ).to.have.property( 'conversion' );
+		} );
+
+		it( 'should have defined default conversion groups', () => {
+			const editor = new Editor();
+
+			expect( () => {
+				// Would throw if any of this group won't exist.
+				editor.conversion.for( 'downcast' );
+				editor.conversion.for( 'editingDowncast' );
+				editor.conversion.for( 'dataDowncast' );
+				editor.conversion.for( 'upcast' );
+			} ).not.to.throw();
+		} );
+	} );
+
 	describe( 'destroy()', () => {
 		it( 'should fire "destroy"', () => {
 			const editor = new Editor();
