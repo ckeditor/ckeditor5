@@ -5,15 +5,17 @@
 
 import {
 	viewFigureToModel,
-	createImageAttributeConverter,
+	modelToViewAttributeConverter
 } from '../../src/image/converters';
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import { createImageViewElement } from '../../src/image/imageengine';
 import { toImageWidget } from '../../src/image/utils';
-import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
-import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
+import { createImageViewElement } from '../../src/image/imageengine';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+
+import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
+import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
+import { elementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/two-way-converters';
+
 import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
-import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
@@ -37,12 +39,14 @@ describe( 'Image converters', () => {
 					isBlock: true
 				} );
 
-				buildModelConverter().for( editor.editing.modelToView )
-					.fromElement( 'image' )
-					.toElement( () => toImageWidget( createImageViewElement() ) );
+				editor.conversion.for( 'editingDowncast' ).add( downcastElementToElement( {
+					model: 'image',
+					view: () => toImageWidget( createImageViewElement() )
+				} ) );
 
-				createImageAttributeConverter( [ editor.editing.modelToView ], 'src' );
-				createImageAttributeConverter( [ editor.editing.modelToView ], 'alt' );
+				editor.conversion.for( 'downcast' )
+					.add( modelToViewAttributeConverter( 'src' ) )
+					.add( modelToViewAttributeConverter( 'alt' ) );
 			} );
 	} );
 
@@ -51,7 +55,7 @@ describe( 'Image converters', () => {
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( data );
 		}
 
-		let dispatcher, schema, imgConverterCalled;
+		let schema, imgConverterCalled;
 
 		beforeEach( () => {
 			// Since this part of test tests only view->model conversion editing pipeline is not necessary
@@ -61,16 +65,21 @@ describe( 'Image converters', () => {
 			schema = model.schema;
 			schema.extend( '$text', { allowIn: 'image' } );
 
-			dispatcher = editor.data.viewToModel;
-			dispatcher.on( 'element:figure', viewFigureToModel() );
+			editor.conversion.for( 'upcast' )
+				.add( viewFigureToModel() )
+				.add( upcastElementToElement( {
+					view: {
+						name: 'img',
+						attribute: {
+							src: true
+						}
+					},
+					model: ( viewImage, writer ) => {
+						imgConverterCalled = true;
 
-			buildViewConverter().for( dispatcher )
-				.from( { name: 'img', attribute: { src: true } } )
-				.toElement( viewImage => {
-					imgConverterCalled = true;
-
-					return new ModelElement( 'image', { src: viewImage.getAttribute( 'src' ) } );
-				} );
+						return writer.createElement( 'image', { src: viewImage.getAttribute( 'src' ) } );
+					}
+				} ) );
 		} );
 
 		it( 'should find img element among children and convert it using already defined converters', () => {
@@ -81,8 +90,8 @@ describe( 'Image converters', () => {
 		} );
 
 		it( 'should convert children allowed by schema and omit disallowed', () => {
-			buildViewConverter().for( editor.data.viewToModel ).fromElement( 'foo' ).toElement( 'foo' );
-			buildViewConverter().for( editor.data.viewToModel ).fromElement( 'bar' ).toElement( 'bar' );
+			editor.conversion.for( 'upcast' ).add( upcastElementToElement( { view: 'foo', model: 'foo' } ) );
+			editor.conversion.for( 'upcast' ).add( upcastElementToElement( { view: 'bar', model: 'bar' } ) );
 
 			schema.register( 'foo', { allowIn: 'image' } );
 			// Is allowed in root, but should not try to split image element.
@@ -95,7 +104,7 @@ describe( 'Image converters', () => {
 		} );
 
 		it( 'should split parent element when image is not allowed - in the middle', () => {
-			buildViewConverter().for( editor.data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
+			editor.conversion.for( 'upcast' ).add( upcastElementToElement( { view: 'div', model: 'div' } ) );
 
 			schema.register( 'div', { inheritAllFrom: '$block' } );
 			schema.extend( 'image', { disallowIn: 'div' } );
@@ -114,8 +123,7 @@ describe( 'Image converters', () => {
 		} );
 
 		it( 'should split parent element when image is not allowed - at the end', () => {
-			buildViewConverter().for( editor.data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
-			buildModelConverter().for( editor.editing.modelToView ).fromElement( 'div' ).toElement( 'div' );
+			elementToElement( editor.conversion, { model: 'div', view: 'div' } );
 
 			schema.register( 'div', { inheritAllFrom: '$block' } );
 			schema.extend( 'image', { disallowIn: 'div' } );
@@ -133,8 +141,7 @@ describe( 'Image converters', () => {
 		} );
 
 		it( 'should split parent element when image is not allowed - at the beginning', () => {
-			buildViewConverter().for( editor.data.viewToModel ).fromElement( 'div' ).toElement( 'div' );
-			buildModelConverter().for( editor.editing.modelToView ).fromElement( 'div' ).toElement( 'div' );
+			elementToElement( editor.conversion, { model: 'div', view: 'div' } );
 
 			schema.register( 'div', { inheritAllFrom: '$block' } );
 			schema.extend( 'image', { disallowIn: 'div' } );
@@ -152,7 +159,7 @@ describe( 'Image converters', () => {
 		} );
 
 		it( 'should be possible to overwrite', () => {
-			dispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
+			editor.data.upcastDispatcher.on( 'element:figure', ( evt, data, conversionApi ) => {
 				conversionApi.consumable.consume( data.viewItem, { name: true } );
 				conversionApi.consumable.consume( data.viewItem.getChild( 0 ), { name: true } );
 
@@ -237,7 +244,7 @@ describe( 'Image converters', () => {
 		} );
 
 		it( 'should not set attribute if change was already consumed', () => {
-			editor.editing.modelToView.on( 'attribute:alt:image', ( evt, data, consumable ) => {
+			editor.editing.downcastDispatcher.on( 'attribute:alt:image', ( evt, data, consumable ) => {
 				consumable.consume( data.item, 'attribute:alt' );
 			}, { priority: 'high' } );
 

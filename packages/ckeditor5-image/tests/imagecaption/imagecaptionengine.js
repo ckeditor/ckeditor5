@@ -18,8 +18,7 @@ import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
-import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
-import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
+import { elementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/two-way-converters';
 
 describe( 'ImageCaptionEngine', () => {
 	let editor, model, doc, view;
@@ -39,15 +38,10 @@ describe( 'ImageCaptionEngine', () => {
 				model.schema.extend( 'caption', { allowIn: 'widget' } );
 				model.schema.extend( '$text', { allowIn: 'widget' } );
 
-				buildViewConverter()
-					.for( editor.data.viewToModel )
-					.fromElement( 'widget' )
-					.toElement( 'widget' );
-
-				buildModelConverter()
-					.for( editor.data.modelToView, editor.editing.modelToView )
-					.fromElement( 'widget' )
-					.toElement( 'widget' );
+				elementToElement( editor.conversion, {
+					model: 'widget',
+					view: 'widget'
+				} );
 			} );
 	} );
 
@@ -148,7 +142,7 @@ describe( 'ImageCaptionEngine', () => {
 			} );
 
 			it( 'should not convert when element is already consumed', () => {
-				editor.editing.modelToView.on(
+				editor.editing.downcastDispatcher.on(
 					'insert:caption',
 					( evt, data, consumable, conversionApi ) => {
 						consumable.consume( data.item, 'insert' );
