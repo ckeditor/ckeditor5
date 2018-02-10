@@ -13,7 +13,7 @@ import { getData as getModelData, setData as setModelData } from '@ckeditor/cked
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { isLinkElement } from '../src/utils';
 
-import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
+import { downcastAttributeToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
 
 describe( 'LinkEngine', () => {
 	let editor, model;
@@ -110,9 +110,7 @@ describe( 'LinkEngine', () => {
 		it( 'should should set priority for `linkHref` higher than all other attribute elements', () => {
 			model.schema.extend( '$text', { allowAttributes: 'foo' } );
 
-			buildModelConverter().for( editor.data.modelToView )
-				.fromAttribute( 'foo' )
-				.toElement( 'f' );
+			editor.conversion.for( 'downcast' ).add( downcastAttributeToElement( 'foo', { view: 'f' } ) );
 
 			setModelData( model,
 				'<paragraph>' +
