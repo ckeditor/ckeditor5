@@ -11,8 +11,9 @@ import Input from '../src/input';
 
 import Writer from '@ckeditor/ckeditor5-engine/src/model/writer';
 import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
-import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
-import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
+
+import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
+import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 
 import ViewText from '@ckeditor/ckeditor5-engine/src/view/text';
 import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
@@ -40,13 +41,15 @@ describe( 'Input feature', () => {
 				// Mock image feature.
 				newEditor.model.schema.register( 'image', { allowWhere: '$text' } );
 
-				buildModelConverter().for( newEditor.data.modelToView, newEditor.editing.modelToView )
-					.fromElement( 'image' )
-					.toElement( 'img' );
+				newEditor.conversion.for( 'downcast' ).add( downcastElementToElement( {
+					model: 'image',
+					view: 'img'
+				} ) );
 
-				buildViewConverter().for( newEditor.data.viewToModel )
-					.fromElement( 'img' )
-					.toElement( 'image' );
+				newEditor.conversion.for( 'upcast' ).add( upcastElementToElement( {
+					view: 'img',
+					model: 'image'
+				} ) );
 
 				editor = newEditor;
 				model = editor.model;

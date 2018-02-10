@@ -31,7 +31,7 @@ export default class ChangeBuffer {
 	/**
 	 * Creates a new instance of the change buffer.
 	 *
-	 * @param {module:engine/model/document~Document} doc
+	 * @param {module:engine/model/model~Model} model
 	 * @param {Number} [limit=20] The maximum number of atomic changes which can be contained in one batch.
 	 */
 	constructor( model, limit = 20 ) {
