@@ -34,6 +34,10 @@ import ItalicEngine from '@ckeditor/ckeditor5-basic-styles/src/italicengine';
 import UnderlineEngine from '@ckeditor/ckeditor5-basic-styles/src/underlineengine';
 import HeadingEngine from '@ckeditor/ckeditor5-heading/src/headingengine';
 
+// EasyImage
+import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
+import { TOKEN_URL } from '@ckeditor/ckeditor5-cloudservices/tests/_utils/cloudservices-config';
+
 // Extending the Editor, which brings base editor API.
 export default class BootstrapEditor extends Editor {
 	constructor( element, config ) {
@@ -206,9 +210,12 @@ function setupHeadingDropdown( editor ) {
 BootstrapEditor
 	.create( $( '#editor' ).get( 0 ), {
 		plugins: [
-			Clipboard, Enter, Typing, Paragraph,
-			BoldEngine, ItalicEngine, UnderlineEngine, HeadingEngine, UndoEngine
-		]
+			Clipboard, Enter, Typing, Paragraph, EasyImage,
+			BoldEngine, ItalicEngine, UnderlineEngine, HeadingEngine, UndoEngine,
+		],
+		cloudServices: {
+			tokenUrl: TOKEN_URL
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;
