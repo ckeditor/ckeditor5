@@ -9,8 +9,6 @@ import ModelRange from '../../src/model/range';
 import ModelPosition from '../../src/model/position';
 
 import View from '../../src/view/view';
-import ViewContainerElement from '../../src/view/containerelement';
-import ViewAttributeElement from '../../src/view/attributeelement';
 import ViewUIElement from '../../src/view/uielement';
 
 import Mapper from '../../src/conversion/mapper';
@@ -59,7 +57,9 @@ describe( 'downcast-selection-converters', () => {
 		dispatcher = new DowncastDispatcher( model, { mapper, viewSelection } );
 
 		dispatcher.on( 'insert:$text', insertText() );
-		dispatcher.on( 'attribute:bold', wrap( new ViewAttributeElement( 'strong' ) ) );
+
+		const strongCreator = ( value, data, consumable, api ) => api.writer.createAttributeElement( 'strong' );
+		dispatcher.on( 'attribute:bold', wrap( strongCreator ) );
 
 		dispatcher.on( 'addMarker:marker', highlightText( highlightDescriptor ) );
 		dispatcher.on( 'addMarker:marker', highlightElement( highlightDescriptor ) );
@@ -502,7 +502,8 @@ describe( 'downcast-selection-converters', () => {
 			model.schema.extend( '$text', { allowIn: 'td' } );
 
 			// "Universal" converter to convert table structure.
-			const tableConverter = insertElement( modelItem => new ViewContainerElement( modelItem.name ) );
+			const containerCreator = ( item, consumable, api ) => api.writer.createContainerElement( item.name );
+			const tableConverter = insertElement( containerCreator );
 			dispatcher.on( 'insert:table', tableConverter );
 			dispatcher.on( 'insert:tr', tableConverter );
 			dispatcher.on( 'insert:td', tableConverter );
