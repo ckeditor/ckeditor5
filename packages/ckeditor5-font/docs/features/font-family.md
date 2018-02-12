@@ -70,7 +70,7 @@ ClassicEditor
 The {@link module:font/fontfamily~FontFamily} plugin registers:
 
 * The `'fontFamily'` dropdown,
-* The `'fontFamily'` command.
+* The {@link module:font/fontfamily/fontfamilycommand~FontFamilyCommand `'fontFamily'`} command.
 
 	The number of options and their names correspond to the {@link module:font/fontfamily~FontFamilyConfig#options `fontFamily.options`} configuration option.
 
@@ -80,7 +80,7 @@ The {@link module:font/fontfamily~FontFamily} plugin registers:
 	editor.execute( 'fontFamily', { value: 'Arial' } );
 	```
 
-	The Value passed to `family` corresponds to the first font name in the configuration string. For the following default configuration:
+	The `value` must correspond to the first font name in the configuration string. For the following default configuration:
 	```js
 	fontFamily.options = [
 		'default',
@@ -95,7 +95,7 @@ The {@link module:font/fontfamily~FontFamily} plugin registers:
 	]
 	```
 
-	the `fontFamily` command will accept the corresponding strings as a value:
+	the `fontFamily` command will accept the corresponding strings as values:
 	* `'Arial'`
 	* `'Courier New'`
 	* `'Georgia'`
@@ -105,7 +105,7 @@ The {@link module:font/fontfamily~FontFamily} plugin registers:
 	* `'Trebuchet MS'`
 	* `'Verdana'`
 
-	passing an empty value will remove any `fontFamily` (`default`):
+	Note that passing an empty value will remove the `fontFamily` from the selection (`default`):
 
 	```js
 	editor.execute( 'fontFamily' );

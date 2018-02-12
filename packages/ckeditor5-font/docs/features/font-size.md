@@ -123,7 +123,7 @@ ClassicEditor
 The {@link module:font/fontsize~FontSize} plugin registers the following components:
 
 * The `'fontSize'` dropdown,
-* The `'fontSize'` command.
+* The {@link module:font/fontsize/fontsizecommand~FontSizeCommand `'fontSize'`} command.
 
 	The number of options and their names correspond to the {@link module:font/fontsize~FontSizeConfig#options `fontSize.options`} configuration option.
 
