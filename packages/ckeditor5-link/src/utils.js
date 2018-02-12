@@ -7,8 +7,6 @@
  * @module link/utils
  */
 
-import AttributeElement from '@ckeditor/ckeditor5-engine/src/view/attributeelement';
-
 const linkElementSymbol = Symbol( 'linkElement' );
 
 /**
@@ -27,8 +25,8 @@ export function isLinkElement( node ) {
  * @param {String} href
  * @return {module:engine/view/attributeelement~AttributeElement}
  */
-export function createLinkElement( href ) {
-	const linkElement = new AttributeElement( 'a', { href } );
+export function createLinkElement( href, writer ) {
+	const linkElement = writer.createAttributeElement( 'a', { href } );
 	linkElement.setCustomProperty( linkElementSymbol, true );
 
 	// https://github.com/ckeditor/ckeditor5-link/issues/121
