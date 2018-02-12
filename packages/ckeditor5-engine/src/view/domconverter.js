@@ -982,6 +982,8 @@ export default class DomConverter {
 			data = data.replace( / $/, '' );
 		}
 
+		// Firefox inserts whitespace and <br> instead of non-breaking space. To prevent normal space from
+		// being removed inline filler is removed after first string replaces. See ckeditor5#692.
 		data = getDataWithoutFiller( new Text( data ) );
 
 		// At this point we should have removed all whitespaces from DOM text data.
