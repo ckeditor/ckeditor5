@@ -8,13 +8,12 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import {
-	modelAttributeToViewAttributeElement,
-	viewToModelAttribute
-} from '@ckeditor/ckeditor5-engine/src/conversion/definition-based-converters';
+import { attributeToElement } from '@ckeditor/ckeditor5-engine/src/conversion/two-way-converters';
 
 import FontSizeCommand from './fontsizecommand';
 import { normalizeOptions } from './utils';
+
+const FONT_SIZE = 'fontSize';
 
 /**
  * The Font Size Editing feature.
@@ -29,7 +28,7 @@ export default class FontSizeEditing extends Plugin {
 		super( editor );
 
 		// Define default configuration using named presets.
-		editor.config.define( 'fontSize', {
+		editor.config.define( FONT_SIZE, {
 			options: [
 				'tiny',
 				'small',
@@ -39,22 +38,14 @@ export default class FontSizeEditing extends Plugin {
 			]
 		} );
 
-		const data = editor.data;
-		const editing = editor.editing;
-
 		// Define view to model conversion.
 		const options = normalizeOptions( this.editor.config.get( 'fontSize.options' ) ).filter( item => item.model );
 
-		for ( const option of options ) {
-			// Covert view to model.
-			viewToModelAttribute( 'fontSize', option, [ data.viewToModel ] );
-		}
-
-		// Define model to view conversion.
-		modelAttributeToViewAttributeElement( 'fontSize', options, [ data.modelToView, editing.modelToView ] );
+		// Set-up the two-way conversion.
+		attributeToElement( editor.conversion, FONT_SIZE, options );
 
 		// Add FontSize command.
-		editor.commands.add( 'fontSize', new FontSizeCommand( editor ) );
+		editor.commands.add( FONT_SIZE, new FontSizeCommand( editor ) );
 	}
 
 	/**
@@ -64,6 +55,6 @@ export default class FontSizeEditing extends Plugin {
 		const editor = this.editor;
 
 		// Allow fontSize attribute on text nodes.
-		editor.model.schema.extend( '$text', { allowAttributes: 'fontSize' } );
+		editor.model.schema.extend( '$text', { allowAttributes: FONT_SIZE } );
 	}
 }

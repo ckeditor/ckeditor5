@@ -8,13 +8,12 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import {
-	modelAttributeToViewAttributeElement,
-	viewToModelAttribute
-} from '@ckeditor/ckeditor5-engine/src/conversion/definition-based-converters';
+import { attributeToElement } from '@ckeditor/ckeditor5-engine/src/conversion/two-way-converters';
 
 import FontFamilyCommand from './fontfamilycommand';
 import { normalizeOptions } from './utils';
+
+const FONT_FAMILY = 'fontFamily';
 
 /**
  * The Font Family Editing feature.
@@ -29,7 +28,7 @@ export default class FontFamilyEditing extends Plugin {
 		super( editor );
 
 		// Define default configuration using font families shortcuts.
-		editor.config.define( 'fontFamily', {
+		editor.config.define( FONT_FAMILY, {
 			options: [
 				'default',
 				'Arial, Helvetica, sans-serif',
@@ -49,23 +48,16 @@ export default class FontFamilyEditing extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const data = editor.data;
-		const editing = editor.editing;
 
 		// Allow fontFamily attribute on text nodes.
-		editor.model.schema.extend( '$text', { allowAttributes: 'fontFamily' } );
+		editor.model.schema.extend( '$text', { allowAttributes: FONT_FAMILY } );
 
 		// Get configured font family options without "default" option.
 		const options = normalizeOptions( editor.config.get( 'fontFamily.options' ) ).filter( item => item.model );
 
-		// Define view to model conversion.
-		for ( const option of options ) {
-			viewToModelAttribute( 'fontFamily', option, [ data.viewToModel ] );
-		}
+		// Set-up the two-way conversion.
+		attributeToElement( editor.conversion, FONT_FAMILY, options );
 
-		// Define model to view conversion.
-		modelAttributeToViewAttributeElement( 'fontFamily', options, [ data.modelToView, editing.modelToView ] );
-
-		editor.commands.add( 'fontFamily', new FontFamilyCommand( editor ) );
+		editor.commands.add( FONT_FAMILY, new FontFamilyCommand( editor ) );
 	}
 }

@@ -132,9 +132,9 @@ describe( 'FontSizeEditing', () => {
 									name: 'span',
 									class: [ 'text-complex' ]
 								},
-								acceptsAlso: [
+								upcastAlso: [
 									{ name: 'span', style: { 'font-size': '77em' } },
-									{ name: 'span', attributes: { 'data-size': '77em' } }
+									{ name: 'span', attribute: { 'data-size': '77em' } }
 								]
 							}
 						]

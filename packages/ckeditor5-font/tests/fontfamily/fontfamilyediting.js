@@ -139,10 +139,10 @@ describe( 'FontFamilyEditing', () => {
 									name: 'span',
 									class: [ 'text-complex' ]
 								},
-								acceptsAlso: [
+								upcastAlso: [
 									{ name: 'span', style: { 'font-family': 'Arial' } },
 									{ name: 'span', style: { 'font-family': 'Arial,sans-serif' } },
-									{ name: 'span', attributes: { 'data-font': 'Arial' } }
+									{ name: 'span', attribute: { 'data-font': 'Arial' } }
 								]
 							}
 						]
