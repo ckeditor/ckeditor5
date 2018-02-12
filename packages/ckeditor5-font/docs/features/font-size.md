@@ -14,7 +14,8 @@ The {@link module:font/fontsize~FontSize} feature enables support for setting fo
 ## Configuring font size options
 
 It is possible to configure which font size options are supported by the editor. Use the {@link module:font/fontsize~FontSizeConfig#options `fontSize.options`} configuration option to do so.
-Use the special keyword `'normal'` to use the default font size defined in the web page styles.
+
+Use the special keyword `'normal'` to use the default font size defined in the web page styles — it disables the font-size feature.
 
 The font size feature supports two ways of defining configuration: using  predefined (named) presets or simple numeric values.
 
