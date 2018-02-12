@@ -21,7 +21,10 @@ describe( 'image captioning utils', () => {
 		view = new View();
 		document = view.document;
 		const creator = captionElementCreator( view, 'placeholder text' );
-		element = creator();
+
+		view.change( writer => {
+			element = creator( writer );
+		} );
 	} );
 
 	describe( 'captionElementCreator', () => {

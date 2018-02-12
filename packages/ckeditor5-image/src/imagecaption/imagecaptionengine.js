@@ -8,8 +8,6 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
-import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 import { isImage } from '../image/utils';
@@ -47,14 +45,6 @@ export default class ImageCaptionEngine extends Plugin {
 		 * @member {module:engine/view/editableelement~EditableElement} #_lastSelectedCaption
 		 */
 
-		/**
-		 * A function used to create the editable caption element in the editing view.
-		 *
-		 * @private
-		 * @member {Function}
-		 */
-		this._createCaption = captionElementCreator( view, t( 'Enter image caption' ) );
-
 		// Schema configuration.
 		schema.register( 'caption', {
 			allowIn: 'image',
@@ -72,10 +62,12 @@ export default class ImageCaptionEngine extends Plugin {
 		} ) );
 
 		// Model to view converter for the data pipeline.
-		data.downcastDispatcher.on( 'insert:caption', captionModelToView( new ViewContainerElement( 'figcaption' ), false ) );
+		const createCaptionForData = writer => writer.createContainerElement( 'figcaption' );
+		data.downcastDispatcher.on( 'insert:caption', captionModelToView( createCaptionForData, false ) );
 
 		// Model to view converter for the editing pipeline.
-		editing.downcastDispatcher.on( 'insert:caption', captionModelToView( this._createCaption ) );
+		const createCaptionForEditing = captionElementCreator( view, t( 'Enter image caption' ) );
+		editing.downcastDispatcher.on( 'insert:caption', captionModelToView( createCaptionForEditing ) );
 
 		// Always show caption in view when something is inserted in model.
 		editing.downcastDispatcher.on( 'insert', ( evt, data ) => this._fixCaptionVisibility( data.item ), { priority: 'high' } );
@@ -182,7 +174,7 @@ export default class ImageCaptionEngine extends Plugin {
 // Creates a converter that converts image caption model element to view element.
 //
 // @private
-// @param {Function|module:engine/view/element~Element} elementCreator
+// @param {Function} elementCreator
 // @param {Boolean} [hide=true] When set to `false` view element will not be inserted when it's empty.
 // @return {Function}
 function captionModelToView( elementCreator, hide = true ) {
@@ -200,9 +192,7 @@ function captionModelToView( elementCreator, hide = true ) {
 			}
 
 			const viewImage = conversionApi.mapper.toViewElement( data.range.start.parent );
-			const viewCaption = ( elementCreator instanceof ViewElement ) ?
-				elementCreator.clone( true ) :
-				elementCreator();
+			const viewCaption = elementCreator( conversionApi.writer );
 
 			// Hide if empty.
 			if ( !captionElement.childCount ) {
