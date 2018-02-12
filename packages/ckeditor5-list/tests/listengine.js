@@ -12,7 +12,6 @@ import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import ModelText from '@ckeditor/ckeditor5-engine/src/model/text';
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
-import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
 import ViewUIElement from '@ckeditor/ckeditor5-engine/src/view/uielement';
 
 import BoldEngine from '@ckeditor/ckeditor5-basic-styles/src/boldengine';
@@ -3302,7 +3301,7 @@ describe( 'ListEngine', () => {
 				consumable.consume( data.item, 'attribute:type' );
 				consumable.consume( data.item, 'attribute:indent' );
 
-				const converter = insertElement( new ViewContainerElement( 'p' ) );
+				const converter = insertElement( ( item, consumable, api ) => api.writer.createContainerElement( 'p' ) );
 
 				return converter( evt, data, consumable, conversionApi );
 			}, { priority: 'highest' } );

@@ -53,10 +53,10 @@ describe( 'List', () => {
 		sinon.spy( editor, 'execute' );
 
 		bulletedListButton.fire( 'execute' );
-		expect( editor.execute.calledWithExactly( 'bulletedList' ) );
+		sinon.assert.calledWithExactly( editor.execute, 'bulletedList' );
 
 		numberedListButton.fire( 'execute' );
-		expect( editor.execute.calledWithExactly( 'numberedList' ) );
+		sinon.assert.calledWithExactly( editor.execute, 'numberedList' );
 	} );
 
 	it( 'should bind bulleted list button model to bulledList command', () => {
@@ -100,8 +100,8 @@ describe( 'List', () => {
 
 			editor.editing.view.document.fire( 'enter', domEvtDataStub );
 
-			expect( editor.execute.calledOnce ).to.be.true;
-			expect( editor.execute.calledWithExactly( 'outdentList' ) );
+			sinon.assert.calledOnce( editor.execute );
+			sinon.assert.calledWithExactly( editor.execute, 'outdentList' );
 		} );
 
 		it( 'should not execute outdentList command on enter key in non-empty list', () => {
@@ -113,7 +113,7 @@ describe( 'List', () => {
 
 			editor.editing.view.document.fire( 'enter', domEvtDataStub );
 
-			expect( editor.execute.called ).to.be.false;
+			sinon.assert.notCalled( editor.execute );
 		} );
 	} );
 
@@ -125,9 +125,9 @@ describe( 'List', () => {
 
 			setData( model, '<listItem type="bulleted" indent="0">[]foo</listItem>' );
 
-			editor.editing.view.fire( 'delete', domEvtDataStub );
+			editor.editing.view.document.fire( 'delete', domEvtDataStub );
 
-			expect( editor.execute.calledWithExactly( 'outdentList' ) );
+			sinon.assert.calledWithExactly( editor.execute, 'outdentList' );
 		} );
 
 		it( 'should execute outdentList command on backspace key in first item of list', () => {
@@ -137,9 +137,9 @@ describe( 'List', () => {
 
 			setData( model, '<paragraph>foo</paragraph><listItem type="bulleted" indent="0">[]foo</listItem>' );
 
-			editor.editing.view.fire( 'delete', domEvtDataStub );
+			editor.editing.view.document.fire( 'delete', domEvtDataStub );
 
-			expect( editor.execute.calledWithExactly( 'outdentList' ) );
+			sinon.assert.calledWithExactly( editor.execute, 'outdentList' );
 		} );
 
 		it( 'should not execute outdentList command on delete key in first item of list', () => {
@@ -149,7 +149,7 @@ describe( 'List', () => {
 
 			setData( model, '<listItem type="bulleted" indent="0">[]foo</listItem>' );
 
-			editor.editing.view.fire( 'delete', domEvtDataStub );
+			editor.editing.view.document.fire( 'delete', domEvtDataStub );
 
 			sinon.assert.notCalled( editor.execute );
 		} );
@@ -161,7 +161,7 @@ describe( 'List', () => {
 
 			setData( model, '<listItem type="bulleted" indent="0">[fo]o</listItem>' );
 
-			editor.editing.view.fire( 'delete', domEvtDataStub );
+			editor.editing.view.document.fire( 'delete', domEvtDataStub );
 
 			sinon.assert.notCalled( editor.execute );
 		} );
@@ -173,7 +173,7 @@ describe( 'List', () => {
 
 			setData( model, '<paragraph>[]foo</paragraph>' );
 
-			editor.editing.view.fire( 'delete', domEvtDataStub );
+			editor.editing.view.document.fire( 'delete', domEvtDataStub );
 
 			sinon.assert.notCalled( editor.execute );
 		} );
@@ -185,7 +185,7 @@ describe( 'List', () => {
 
 			setData( model, '<listItem type="bulleted" indent="0">foo</listItem><listItem type="bulleted" indent="0">[]foo</listItem>' );
 
-			editor.editing.view.fire( 'delete', domEvtDataStub );
+			editor.editing.view.document.fire( 'delete', domEvtDataStub );
 
 			sinon.assert.notCalled( editor.execute );
 		} );
@@ -197,7 +197,7 @@ describe( 'List', () => {
 
 			setData( model, '<listItem type="bulleted" indent="0">fo[]o</listItem>' );
 
-			editor.editing.view.fire( 'delete', domEvtDataStub );
+			editor.editing.view.document.fire( 'delete', domEvtDataStub );
 
 			sinon.assert.notCalled( editor.execute );
 		} );
@@ -209,7 +209,7 @@ describe( 'List', () => {
 
 			setData( model, '<listItem type="bulleted" indent="0">fo[]o</listItem>' );
 
-			editor.editing.view.fire( 'delete', domEvtDataStub );
+			editor.editing.view.document.fire( 'delete', domEvtDataStub );
 
 			sinon.assert.notCalled( editor.execute );
 		} );
@@ -221,9 +221,9 @@ describe( 'List', () => {
 
 			setData( model, '<blockQuote><paragraph>x</paragraph></blockQuote><listItem type="bulleted" indent="0">[]foo</listItem>' );
 
-			editor.editing.view.fire( 'delete', domEvtDataStub );
+			editor.editing.view.document.fire( 'delete', domEvtDataStub );
 
-			expect( editor.execute.calledWithExactly( 'outdentList' ) );
+			sinon.assert.calledWithExactly( editor.execute, 'outdentList' );
 		} );
 
 		it( 'should outdent list when list is nested in block quote', () => {
@@ -233,9 +233,9 @@ describe( 'List', () => {
 
 			setData( model, '<paragraph>x</paragraph><blockQuote><listItem type="bulleted" indent="0">[]foo</listItem></blockQuote>' );
 
-			editor.editing.view.fire( 'delete', domEvtDataStub );
+			editor.editing.view.document.fire( 'delete', domEvtDataStub );
 
-			expect( editor.execute.calledWithExactly( 'outdentList' ) );
+			sinon.assert.calledWithExactly( editor.execute, 'outdentList' );
 		} );
 	} );
 
@@ -265,8 +265,8 @@ describe( 'List', () => {
 
 			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
-			expect( editor.execute.calledOnce ).to.be.true;
-			expect( editor.execute.calledWithExactly( 'indentList' ) ).to.be.true;
+			sinon.assert.calledOnce( editor.execute );
+			sinon.assert.calledWithExactly( editor.execute, 'indentList' );
 			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
 			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
 		} );
@@ -282,8 +282,8 @@ describe( 'List', () => {
 
 			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
-			expect( editor.execute.calledOnce ).to.be.true;
-			expect( editor.execute.calledWithExactly( 'outdentList' ) ).to.be.true;
+			sinon.assert.calledOnce( editor.execute );
+			sinon.assert.calledWithExactly( editor.execute, 'outdentList' );
 			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
 			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
 		} );

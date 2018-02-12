@@ -11,7 +11,6 @@ import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 
-import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import ViewRange from '@ckeditor/ckeditor5-engine/src/view/range';
 import ViewTreeWalker from '@ckeditor/ckeditor5-engine/src/view/treewalker';
@@ -42,7 +41,7 @@ export function modelViewInsertion( evt, data, consumable, conversionApi ) {
 	consumable.consume( data.item, 'attribute:indent' );
 
 	const modelItem = data.item;
-	const viewItem = generateLiInUl( modelItem, conversionApi.mapper );
+	const viewItem = generateLiInUl( modelItem, conversionApi );
 
 	injectViewList( modelItem, viewItem, conversionApi );
 }
@@ -804,11 +803,13 @@ export function modelIndentPasteFixer( evt, [ content, selection ] ) {
 // Helper function that creates a `<ul><li></li></ul>` or (`<ol>`) structure out of given `modelItem` model `listItem` element.
 // Then, it binds created view list item (<li>) with model `listItem` element.
 // The function then returns created view list item (<li>).
-function generateLiInUl( modelItem, mapper ) {
+function generateLiInUl( modelItem, conversionApi ) {
+	const mapper = conversionApi.mapper;
+	const viewWriter = conversionApi.writer;
 	const listType = modelItem.getAttribute( 'type' ) == 'numbered' ? 'ol' : 'ul';
 	const viewItem = createViewListItemElement();
 
-	const viewList = new ViewContainerElement( listType, null );
+	const viewList = viewWriter.createContainerElement( listType, null );
 	viewList.appendChildren( viewItem );
 
 	mapper.bindElements( modelItem, viewItem );
