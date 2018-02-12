@@ -73,9 +73,9 @@ export default class FontFamily extends Plugin {
  */
 
 /**
- * Available font family options. Defined either as array of strings.
+ * Available font family options defined as an array of strings.
  *
- * The default value is
+ * The default value is:
  *
  *		const fontFamilyConfig = {
  *			options: [
@@ -91,22 +91,23 @@ export default class FontFamily extends Plugin {
  *			]
  *		};
  *
- * which configures 8 font family options. Each option consist one or more font-family names separated with coma. The first font name is
- * used as dropdown item description in UI. The family names that consist spaces should not have quotes (as opposed to CSS standard).
- * Appropriate quotes will be added in the view. For example, for the "Lucida Sans Unicode" the editor will render:
+ * which configures 8 font family options. Each option consist one or more coma–separated font-family names. The first font name is
+ * used as a dropdown item description in the UI. The family names that consist of spaces should not have quotes
+ * (as opposed to the CSS standard).
+ *
+ * The necessary quotes will be added automatically in the view. For example, for the "Lucida Sans Unicode" the editor will render:
  *
  * 		<span style="font-family:'Lucida Sans Unicode', 'Lucida Grande', sans-serif">...</span>
  *
- * The "default" option is used to remove fontFamily from selection. In such case the text will
- * be represented in view using default content CSS font-family.
-
- * To use defined font families from {@link module:core/commandcollection~CommandCollection} use `fontFamily` command and pass desired
- * font family as a value.
- * For example, the below code will apply `fontFamily` attribute with `tiny` value to the current selection:
+ * The "default" option can be used to remove the `font–family` from selection. In such case the text will
+ * be represented in view using default `font-family` defined in the styles of the web page.
+ *
+ * The `fontFamily` command is also available in the {@link module:core/commandcollection~CommandCollection}.
+ * For example, the following code will apply the `fontFamily` attribute with the `tiny` value to the current selection:
  *
  *		editor.execute( 'fontFamily', { value: 'tiny' } );
  *
- * Executing `fontFamily` command without value will remove `fontFamily` attribute from the current selection.
+ * Executing `fontFamily` command without any value will remove `fontFamily` attribute from the current selection.
  *
  * @member {Array.<String|module:font/fontfamily~FontFamilyOption>} module:font/fontfamily~FontFamilyConfig#options
  */
