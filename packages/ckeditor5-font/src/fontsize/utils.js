@@ -103,7 +103,7 @@ function generatePixelPreset( size ) {
 
 	return {
 		title: sizeName,
-		model: sizeName,
+		model: size,
 		view: {
 			name: 'span',
 			style: {

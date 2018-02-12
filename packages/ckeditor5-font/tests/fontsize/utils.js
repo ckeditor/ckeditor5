@@ -40,11 +40,11 @@ describe( 'FontSizeEditing Utils', () => {
 		describe( 'numeric presets', () => {
 			it( 'should return generated presets', () => {
 				expect( normalizeOptions( [ '10', 12, 'normal', '14.1', 18.3 ] ) ).to.deep.equal( [
-					{ title: '10', model: '10', view: { name: 'span', style: { 'font-size': '10px' } } },
-					{ title: '12', model: '12', view: { name: 'span', style: { 'font-size': '12px' } } },
+					{ title: '10', model: 10, view: { name: 'span', style: { 'font-size': '10px' } } },
+					{ title: '12', model: 12, view: { name: 'span', style: { 'font-size': '12px' } } },
 					{ title: 'Normal', model: undefined },
-					{ title: '14.1', model: '14.1', view: { name: 'span', style: { 'font-size': '14.1px' } } },
-					{ title: '18.3', model: '18.3', view: { name: 'span', style: { 'font-size': '18.3px' } } }
+					{ title: '14.1', model: 14.1, view: { name: 'span', style: { 'font-size': '14.1px' } } },
+					{ title: '18.3', model: 18.3, view: { name: 'span', style: { 'font-size': '18.3px' } } }
 				] );
 			} );
 		} );
