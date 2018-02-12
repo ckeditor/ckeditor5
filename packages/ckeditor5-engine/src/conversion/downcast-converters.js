@@ -450,7 +450,7 @@ function _getCreatorForArrayConfig( config ) {
 	const defaultConfig = config.find( configEntry => configEntry.model === undefined );
 
 	// Return a creator function.
-	return modelAttributeValue => {
+	return ( modelAttributeValue, data, consumable, conversionApi ) => {
 		// Set default config at first. It will be used if no other entry matches model attribute value.
 		let matchedConfigEntry = defaultConfig;
 
@@ -466,7 +466,7 @@ function _getCreatorForArrayConfig( config ) {
 		// If there was default config or matched config...
 		if ( matchedConfigEntry ) {
 			// The entry `.view` is a function after it got normalized earlier, execute it and return the value.
-			return matchedConfigEntry.view( modelAttributeValue );
+			return matchedConfigEntry.view( modelAttributeValue, data, consumable, conversionApi );
 		}
 
 		return null;
