@@ -101,24 +101,6 @@ describe( 'upcast-helpers', () => {
 			expectResult( new ViewContainerElement( 'p', { class: 'fancy' } ), '<fancyParagraph></fancyParagraph>' );
 		} );
 
-		it( 'config.model is element instance', () => {
-			schema.extend( 'paragraph', {
-				allowAttributes: [ 'fancy' ]
-			} );
-
-			const helper = upcastElementToElement( {
-				view: {
-					name: 'p',
-					class: 'fancy'
-				},
-				model: new ModelElement( 'paragraph', { fancy: true } )
-			} );
-
-			conversion.for( 'upcast' ).add( helper );
-
-			expectResult( new ViewContainerElement( 'p', { class: 'fancy' } ), '<paragraph fancy="true"></paragraph>' );
-		} );
-
 		it( 'config.model is a function', () => {
 			schema.register( 'heading', {
 				inheritAllFrom: '$block',
@@ -130,7 +112,9 @@ describe( 'upcast-helpers', () => {
 					name: 'p',
 					class: 'heading'
 				},
-				model: viewElement => new ModelElement( 'heading', { level: viewElement.getAttribute( 'data-level' ) } )
+				model: ( viewElement, modelWriter ) => {
+					return modelWriter.createElement( 'heading', { level: viewElement.getAttribute( 'data-level' ) } );
+				}
 			} );
 
 			conversion.for( 'upcast' ).add( helper );
