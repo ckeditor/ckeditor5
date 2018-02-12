@@ -374,10 +374,8 @@ function _prepareToElementConverter( config ) {
 function _getModelElement( model, input, writer ) {
 	if ( model instanceof Function ) {
 		return model( input, writer );
-	} else if ( typeof model == 'string' ) {
-		return writer.createElement( model );
 	} else {
-		return model;
+		return writer.createElement( model );
 	}
 }
 
