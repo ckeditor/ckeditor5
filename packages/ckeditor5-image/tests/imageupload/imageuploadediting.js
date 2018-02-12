@@ -140,7 +140,7 @@ describe( 'ImageUploadEditing', () => {
 
 	it( 'should not execute imageUpload command when file is not an image', () => {
 		const spy = sinon.spy( editor, 'execute' );
-		const viewDocument = editor.editing.view;
+		const viewDocument = editor.editing.view.document;
 		const fileMock = {
 			type: 'media/mp3',
 			size: 1024
