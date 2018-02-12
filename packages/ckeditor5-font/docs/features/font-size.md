@@ -125,7 +125,7 @@ The {@link module:font/fontsize~FontSize} plugin registers the following compone
 * The `'fontSize'` dropdown,
 * The `'fontSize'` command.
 
-	The number of options and their names correspond to the {@link module:font/fontsize~FontSizeConfig#options `fontSize.options`} configuration option).
+	The number of options and their names correspond to the {@link module:font/fontsize~FontSizeConfig#options `fontSize.options`} configuration option.
 
 	You can change the font size of the current selection by executing the command with a desired value:
 

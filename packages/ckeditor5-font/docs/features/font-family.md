@@ -72,7 +72,7 @@ The {@link module:font/fontfamily~FontFamily} plugin registers:
 * The `'fontFamily'` dropdown,
 * The `'fontFamily'` command.
 
-	The number of options and their names correspond to the {@link module:font/fontfamily~FontFamilyConfig#options `fontFamily.options`} configuration option).
+	The number of options and their names correspond to the {@link module:font/fontfamily~FontFamilyConfig#options `fontFamily.options`} configuration option.
 
 	You can change the font family of the current selection by executing the command with a desired value:
 
