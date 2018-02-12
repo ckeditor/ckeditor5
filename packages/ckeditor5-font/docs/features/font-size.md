@@ -13,12 +13,12 @@ The {@link module:font/fontsize~FontSize} feature enables support for setting fo
 
 ## Configuring font size options
 
-It is, of course, possible to configure which font size options the editor should support. Use the {@link module:font/fontsize~FontSizeConfig#options `fontSize.options`} configuration option to do so.
-Use special keyword `'normal'` to use document's normal font size as defined in CSS.
+It is possible to configure which font size options are supported by the editor. Use the {@link module:font/fontsize~FontSizeConfig#options `fontSize.options`} configuration option to do so.
+Use the special keyword `'normal'` to use the default font size defined in the web page styles.
 
-The font size feature supports two ways of defining configuration using either predefined named presets or numeric values.
+The font size feature supports two ways of defining configuration: using  predefined (named) presets or simple numeric values.
 
-### Configuration using predefined named presets
+### Configuration using the predefined named presets
 
 The font size feature defines 4 named presets:
 - `'tiny'`
@@ -26,13 +26,13 @@ The font size feature defines 4 named presets:
 - `'big'`
 - `'huge'`
 
-Each size will be represented in the view as `<span>` element with `text-*` class set. For example for `'tiny'` preset the editor will output:
+Each size is represented in the view as a `<span>` element with the `text-*` class. For example, the `'tiny'` preset looks as follows in the editor data:
 
 ```html
 <span class="text-tiny">...</span>
 ```
 
-Below is the editor that will support only two font sizes:
+An example of the editor that supports only two font sizes:
 
 ```js
 ClassicEditor
@@ -56,16 +56,16 @@ ClassicEditor
 
 ### Configuration using numeric presets
 
-As an alternative the font feature supports numeric values as options.
+As an alternative, the font feature supports numeric values.
 
-Each size will be represented in the view as `<span>` element with `font-size` style set as `px` value.
-For example for `14` the editor will output:
+Each size is represented in the view as a `<span>` element with the `font-size` style set in `px`.
+For example, `14` will be represented in the editor data as:
 
 ```html
 <span style="font-size: 14px">...</span>
 ```
 
-Below is the editor that will support numeric font sizes (it is assumed that `'normal'` size is defined by CSS as `15px`:
+Here's an example of the editor that supports numeric font sizes (assuming that the `'normal'` size is defined by CSS as `15px`):
 
 ```js
 ClassicEditor
@@ -99,7 +99,7 @@ To add this feature to your editor install the [`@ckeditor/ckeditor5-font`](http
 npm install --save @ckeditor/ckeditor5-font
 ```
 
-And add it to your plugin list and toolbar configuration:
+And add it to your plugin list and the toolbar configuration:
 
 ```js
 import FontSize from '@ckeditor/ckeditor5-font/src/fontsize';
@@ -119,24 +119,24 @@ ClassicEditor
 
 ## Common API
 
-The {@link module:font/fontsize~FontSize} plugin registers:
+The {@link module:font/fontsize~FontSize} plugin registers the following components:
 
-* Dropdown: `'fontSize'`.
-* Command: `'fontSize'`.
+* The `'fontSize'` dropdown,
+* The `'fontSize'` command.
 
-	The number of options and their names are based on the {@link module:font/fontsize~FontSizeConfig#options `fontSize.options`} configuration option).
+	The number of options and their names correspond to the {@link module:font/fontsize~FontSizeConfig#options `fontSize.options`} configuration option).
 
-	You can change font size of the current selection by executing command with proper value:
+	You can change the font size of the current selection by executing the command with a desired value:
 
 	```js
 	// For numeric values:
 	editor.execute( 'fontSize', { value: 10 } );
-	
+
 	// For named presets:
 	editor.execute( 'fontSize', { value: 'small' } );
 	```
 	passing an empty value will remove any `fontSize` set:
-	
+
 	```js
 	editor.execute( 'fontSize' );
 	```

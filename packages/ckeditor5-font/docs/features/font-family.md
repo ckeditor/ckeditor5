@@ -13,10 +13,10 @@ The {@link module:font/fontfamily~FontFamily} feature enables support for settin
 
 ## Configuring font family options
 
-It is, of course, possible to configure which font family options the editor should support. Use the {@link module:font/fontfamily~FontFamilyConfig#options `fontFamily.options`} configuration option to do so.
-Use special keyword `'default'` to use document's default font family as defined in CSS.
+It is possible to configure which font family options are supported by the editor. Use the {@link module:font/fontfamily~FontFamilyConfig#options `fontFamily.options`} configuration option to do so.
+Use the special keyword `'default'` to use the default `font-family` defined in the web page styles.
 
-For example, the following editor will support only two font families besides "default" one:
+For example, the following editor supports only two font families besides the "default" one:
 
 ```js
 ClassicEditor
@@ -46,7 +46,7 @@ To add this feature to your editor install the [`@ckeditor/ckeditor5-font`](http
 npm install --save @ckeditor/ckeditor5-font
 ```
 
-And add it to your plugin list and toolbar configuration:
+And add it to your plugin list and the toolbar configuration:
 
 ```js
 import FontFamily from '@ckeditor/ckeditor5-font/src/fontfamily';
@@ -68,18 +68,18 @@ ClassicEditor
 
 The {@link module:font/fontfamily~FontFamily} plugin registers:
 
-* Dropdown: `'fontFamily'`.
-* Command: `'fontFamily'`.
+* The `'fontFamily'` dropdown,
+* The `'fontFamily'` command.
 
-	The number of options and their names are based on the {@link module:font/fontfamily~FontFamilyConfig#options `fontFamily.options`} configuration option).
+	The number of options and their names correspond to the {@link module:font/fontfamily~FontFamilyConfig#options `fontFamily.options`} configuration option).
 
-	You can change font family of the current selection by executing command with proper value:
+	You can change the font family of the current selection by executing the command with a desired value:
 
 	```js
 	editor.execute( 'fontFamily', { value: 'Arial' } );
 	```
 
-	The Value passed to `family` corresponds to the first font name in configuration string. For default configuration:
+	The Value passed to `family` corresponds to the first font name in the configuration string. For the following default configuration:
 	```js
 	fontFamily.options = [
 		'default',
@@ -93,8 +93,8 @@ The {@link module:font/fontfamily~FontFamily} plugin registers:
 		'Verdana, Geneva, sans-serif'
 	]
 	```
-	
-	the `fontFamily` command will accept strings below as value:
+
+	the `fontFamily` command will accept the corresponding strings as a value:
 	* `'Arial'`
 	* `'Courier New'`
 	* `'Georgia'`
@@ -102,10 +102,10 @@ The {@link module:font/fontfamily~FontFamily} plugin registers:
 	* `'Tahoma'`
 	* `'Times New Roman'`
 	* `'Trebuchet MS'`
-	* `'Verdana'` 
-	
-	passing an empty value will remove any `fontFamily` set:
-	
+	* `'Verdana'`
+
+	passing an empty value will remove any `fontFamily` (`default`):
+
 	```js
 	editor.execute( 'fontFamily' );
 	```
