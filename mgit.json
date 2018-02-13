@@ -5,7 +5,7 @@
     "@ckeditor/ckeditor5-adapter-ckfinder": "ckeditor/ckeditor5-adapter-ckfinder#a07a835",
     "@ckeditor/ckeditor5-alignment": "ckeditor/ckeditor5-alignment#2b43bfe",
     "@ckeditor/ckeditor5-autoformat": "ckeditor/ckeditor5-autoformat#e471861",
-    "@ckeditor/ckeditor5-basic-styles": "ckeditor/ckeditor5-basic-styles#deb0c7c",
+    "@ckeditor/ckeditor5-basic-styles": "ckeditor/ckeditor5-basic-styles#4281eca",
     "@ckeditor/ckeditor5-block-quote": "ckeditor/ckeditor5-block-quote#17aabad",
     "@ckeditor/ckeditor5-build-balloon": "ckeditor/ckeditor5-build-balloon#28ba469",
     "@ckeditor/ckeditor5-build-classic": "ckeditor/ckeditor5-build-classic#8231dee",
