@@ -68,6 +68,15 @@ describe( 'Writer', () => {
 			expect( element.name ).to.equal( 'foo' );
 			assertElementAttributes( element, attributes );
 		} );
+
+		it( 'should allow to pass priority', () => {
+			const element = writer.createAttributeElement( 'foo', attributes, 99 );
+
+			expect( element.is( 'attributeElement' ) ).to.be.true;
+			expect( element.name ).to.equal( 'foo' );
+			expect( element.priority ).to.equal( 99 );
+			assertElementAttributes( element, attributes );
+		} );
 	} );
 
 	describe( 'createContainerElement()', () => {
@@ -107,6 +116,139 @@ describe( 'Writer', () => {
 			expect( element.is( 'uiElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'foo' );
 			assertElementAttributes( element, attributes );
+		} );
+
+		it( 'should allow to pass custom rendering method', () => {
+			const renderFn = function() {};
+			const element = writer.createUIElement( 'foo', attributes, renderFn );
+
+			expect( element.is( 'uiElement' ) ).to.be.true;
+			expect( element.name ).to.equal( 'foo' );
+			expect( element.render ).to.equal( renderFn );
+			assertElementAttributes( element, attributes );
+		} );
+	} );
+
+	describe( 'setAttribute()', () => {
+		it( 'should set attribute on given element', () => {
+			const element = writer.createAttributeElement( 'span' );
+
+			writer.setAttribute( 'foo', 'bar', element );
+
+			expect( element.getAttribute( 'foo' ) ).to.equal( 'bar' );
+		} );
+	} );
+
+	describe( 'removeAttribute()', () => {
+		it( 'should remove attribute on given element', () => {
+			const element = writer.createAttributeElement( 'span', { foo: 'bar' } );
+
+			writer.removeAttribute( 'foo', element );
+
+			expect( element.getAttribute( 'foo' ) ).to.be.undefined;
+		} );
+	} );
+
+	describe( 'addClass()', () => {
+		it( 'should add class to given element', () => {
+			const element = writer.createAttributeElement( 'span' );
+
+			writer.addClass( 'foo', element );
+
+			expect( element.hasClass( 'foo' ) ).to.be.true;
+		} );
+
+		it( 'should add multiple classes to given element', () => {
+			const element = writer.createAttributeElement( 'span' );
+
+			writer.addClass( [ 'foo', 'bar' ], element );
+
+			expect( element.hasClass( 'foo' ) ).to.be.true;
+			expect( element.hasClass( 'bar' ) ).to.be.true;
+		} );
+	} );
+
+	describe( 'removeClass()', () => {
+		it( 'should remove class from given element', () => {
+			const element = writer.createAttributeElement( 'span', { class: 'foo bar' } );
+
+			writer.removeClass( 'foo', element );
+
+			expect( element.hasClass( 'foo' ) ).to.be.false;
+			expect( element.hasClass( 'bar' ) ).to.be.true;
+		} );
+
+		it( 'should remove multiple classes from given element', () => {
+			const element = writer.createAttributeElement( 'span', { class: 'foo bar' } );
+
+			writer.removeClass( [ 'foo', 'bar' ], element );
+
+			expect( element.hasClass( 'foo' ) ).to.be.false;
+			expect( element.hasClass( 'bar' ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'addStyle()', () => {
+		it( 'should add style to given element', () => {
+			const element = writer.createAttributeElement( 'span' );
+
+			writer.setStyle( 'foo', 'bar', element );
+
+			expect( element.getStyle( 'foo' ) ).to.equal( 'bar' );
+		} );
+
+		it( 'should allow to add multiple styles to given element', () => {
+			const element = writer.createAttributeElement( 'span' );
+
+			writer.setStyle( {
+				foo: 'bar',
+				baz: 'quiz'
+			}, element );
+
+			expect( element.getStyle( 'foo' ) ).to.equal( 'bar' );
+			expect( element.getStyle( 'baz' ) ).to.equal( 'quiz' );
+		} );
+	} );
+
+	describe( 'removeStyle()', () => {
+		it( 'should remove style from given element', () => {
+			const element = writer.createAttributeElement( 'span', { style: 'foo:bar;baz:quiz;' } );
+
+			writer.removeStyle( 'foo', element );
+
+			expect( element.hasStyle( 'foo' ) ).to.be.false;
+			expect( element.hasStyle( 'baz' ) ).to.be.true;
+		} );
+
+		it( 'should remove multiple styles from given element', () => {
+			const element = writer.createAttributeElement( 'span', { style: 'foo:bar;baz:quiz;' } );
+
+			writer.removeStyle( [ 'foo', 'bar' ], element );
+
+			expect( element.hasStyle( 'foo' ) ).to.be.false;
+			expect( element.hasStyle( 'baz' ) ).to.be.true;
+		} );
+	} );
+
+	describe( 'setCustomProperty()', () => {
+		it( 'should set custom property to given element', () => {
+			const element = writer.createAttributeElement( 'span' );
+
+			writer.setCustomProperty( 'foo', 'bar', element );
+
+			expect( element.getCustomProperty( 'foo' ) ).to.equal( 'bar' );
+		} );
+	} );
+
+	describe( 'removeCustomProperty()', () => {
+		it( 'should remove custom property from given element', () => {
+			const element = writer.createAttributeElement( 'span' );
+
+			writer.setCustomProperty( 'foo', 'bar', element );
+			expect( element.getCustomProperty( 'foo' ) ).to.equal( 'bar' );
+
+			writer.removeCustomProperty( 'foo', element );
+			expect( element.getCustomProperty( 'foo' ) ).to.be.undefined;
 		} );
 	} );
 
