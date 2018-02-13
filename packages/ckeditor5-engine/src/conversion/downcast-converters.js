@@ -44,7 +44,7 @@ import cloneDeep from '@ckeditor/ckeditor5-utils/src/lib/lodash/cloneDeep';
  * 			view: ( modelItem, consumable, conversionApi ) => {
  * 				const viewWriter = conversionApi.writer;
  *
- * 				return viewWriter.createContainerElement( 'h' + modelElement.getAttribute( 'level' ) );
+ * 				return viewWriter.createContainerElement( 'h' + modelItem.getAttribute( 'level' ) );
  * 			}
  * 		} );
  *
@@ -121,7 +121,7 @@ export function downcastElementToElement( config, priority = 'normal' ) {
  * 			view: ( modelAttributeValue, data, consumable, conversionApi ) => {
  * 				const viewWriter = conversionApi.writer;
  *
- * 				return	viewWriter( 'span', { style: 'font-weight:' + modelAttributeValue } );
+ * 				return viewWriter( 'span', { style: 'font-weight:' + modelAttributeValue } );
  * 			}
  * 		} );
  *
