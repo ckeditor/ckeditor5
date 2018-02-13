@@ -306,7 +306,7 @@ describe( 'Matcher', () => {
 			};
 			const matcher = new Matcher( pattern );
 			const el = new Element( 'a' );
-			el.addClass( 'foo', 'bar', 'baz' );
+			el._addClass( [ 'foo', 'bar', 'baz' ] );
 
 			const result = matcher.match( el );
 			expect( result ).to.be.an( 'object' );
@@ -376,9 +376,9 @@ describe( 'Matcher', () => {
 			const el2 = new Element( 'p' );
 			const el3 = new Element( 'p' );
 
-			el1.addClass( 'red-foreground' );
-			el2.addClass( 'red-background' );
-			el3.addClass( 'blue-text' );
+			el1._addClass( 'red-foreground' );
+			el2._addClass( 'red-background' );
+			el3._addClass( 'blue-text' );
 
 			const result = matcher.matchAll( el1, el2, el3 );
 			expect( result ).to.be.an( 'array' );

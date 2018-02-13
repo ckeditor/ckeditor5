@@ -487,7 +487,7 @@ describe( 'ViewConsumable', () => {
 		} );
 
 		it( 'should add all classes', () => {
-			el.addClass( 'foo', 'bar', 'baz' );
+			el._addClass( [ 'foo', 'bar', 'baz' ] );
 
 			const consumables = ViewConsumable.consumablesFromElement( el );
 			expect( consumables.class.length ).to.equal( 3 );

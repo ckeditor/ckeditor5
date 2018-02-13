@@ -174,7 +174,7 @@ describe( 'Element', () => {
 
 		it( 'should clone class attribute', () => {
 			const el = new Element( 'p', { foo: 'bar' } );
-			el.addClass( 'baz', 'qux' );
+			el._addClass( [ 'baz', 'qux' ] );
 			const clone = el.clone( false );
 
 			expect( clone ).to.not.equal( el );
@@ -261,10 +261,10 @@ describe( 'Element', () => {
 			const el3 = new Element( 'p' );
 			const el4 = new Element( 'p' );
 
-			el1.addClass( 'foo', 'bar' );
-			el2.addClass( 'bar', 'foo' );
-			el3.addClass( 'baz' );
-			el4.addClass( 'baz', 'bar' );
+			el1._addClass( [ 'foo', 'bar' ] );
+			el2._addClass( [ 'bar', 'foo' ] );
+			el3._addClass( 'baz' );
+			el4._addClass( [ 'baz', 'bar' ] );
 
 			expect( el1.isSimilar( el2 ) ).to.be.true;
 			expect( el1.isSimilar( el3 ) ).to.be.false;
@@ -492,7 +492,7 @@ describe( 'Element', () => {
 			} );
 
 			it( 'should return class attribute', () => {
-				el.addClass( 'foo', 'bar' );
+				el._addClass( [ 'foo', 'bar' ] );
 
 				expect( el.getAttribute( 'class' ) ).to.equal( 'foo bar' );
 			} );
@@ -524,7 +524,7 @@ describe( 'Element', () => {
 			it( 'should return class and style attribute', () => {
 				el._setAttribute( 'class', 'abc' );
 				el._setAttribute( 'style', 'width:20px;' );
-				el.addClass( 'xyz' );
+				el._addClass( 'xyz' );
 				el.setStyle( 'font-weight', 'bold' );
 
 				expect( Array.from( el.getAttributes() ) ).to.deep.equal( [
@@ -543,7 +543,7 @@ describe( 'Element', () => {
 
 			it( 'should return true if element has class attribute', () => {
 				expect( el.hasAttribute( 'class' ) ).to.be.false;
-				el.addClass( 'foo' );
+				el._addClass( 'foo' );
 				expect( el.hasAttribute( 'class' ) ).to.be.true;
 			} );
 
@@ -571,7 +571,7 @@ describe( 'Element', () => {
 			} );
 
 			it( 'should return class key', () => {
-				el.addClass( 'foo' );
+				el._addClass( 'foo' );
 				el._setAttribute( 'bar', true );
 				const expected = [ 'class', 'bar' ];
 				let i = 0;
@@ -619,7 +619,7 @@ describe( 'Element', () => {
 			} );
 
 			it( 'should remove class attribute', () => {
-				el.addClass( 'foo', 'bar' );
+				el._addClass( [ 'foo', 'bar' ] );
 				const el2 = new Element( 'p' );
 				const removed1 = el._removeAttribute( 'class' );
 				const removed2 = el2._removeAttribute( 'class' );
@@ -654,9 +654,9 @@ describe( 'Element', () => {
 			el = new Element( 'p' );
 		} );
 
-		describe( 'addClass', () => {
+		describe( '_addClass()', () => {
 			it( 'should add single class', () => {
-				el.addClass( 'one' );
+				el._addClass( 'one' );
 
 				expect( el._classes.has( 'one' ) ).to.be.true;
 			} );
@@ -667,11 +667,11 @@ describe( 'Element', () => {
 					done();
 				} );
 
-				el.addClass( 'one' );
+				el._addClass( 'one' );
 			} );
 
 			it( 'should add multiple classes', () => {
-				el.addClass( 'one', 'two', 'three' );
+				el._addClass( [ 'one', 'two', 'three' ] );
 
 				expect( el._classes.has( 'one' ) ).to.be.true;
 				expect( el._classes.has( 'two' ) ).to.be.true;
@@ -681,7 +681,7 @@ describe( 'Element', () => {
 
 		describe( 'removeClass', () => {
 			it( 'should remove single class', () => {
-				el.addClass( 'one', 'two', 'three' );
+				el._addClass( [ 'one', 'two', 'three' ] );
 
 				el.removeClass( 'one' );
 
@@ -691,7 +691,7 @@ describe( 'Element', () => {
 			} );
 
 			it( 'should fire change event with attributes type', done => {
-				el.addClass( 'one' );
+				el._addClass( 'one' );
 				el.once( 'change:attributes', eventInfo => {
 					expect( eventInfo.source ).to.equal( el );
 					done();
@@ -701,7 +701,7 @@ describe( 'Element', () => {
 			} );
 
 			it( 'should remove multiple classes', () => {
-				el.addClass( 'one', 'two', 'three', 'four' );
+				el._addClass( [ 'one', 'two', 'three', 'four' ] );
 				el.removeClass( 'one', 'two', 'three' );
 
 				expect( el._classes.has( 'one' ) ).to.be.false;
@@ -713,7 +713,7 @@ describe( 'Element', () => {
 
 		describe( 'hasClass', () => {
 			it( 'should check if element has a class', () => {
-				el.addClass( 'one', 'two', 'three' );
+				el._addClass( [ 'one', 'two', 'three' ] );
 
 				expect( el.hasClass( 'one' ) ).to.be.true;
 				expect( el.hasClass( 'two' ) ).to.be.true;
@@ -722,7 +722,7 @@ describe( 'Element', () => {
 			} );
 
 			it( 'should check if element has multiple classes', () => {
-				el.addClass( 'one', 'two', 'three' );
+				el._addClass( [ 'one', 'two', 'three' ] );
 
 				expect( el.hasClass( 'one', 'two' ) ).to.be.true;
 				expect( el.hasClass( 'three', 'two' ) ).to.be.true;
@@ -734,7 +734,7 @@ describe( 'Element', () => {
 		describe( 'getClassNames', () => {
 			it( 'should return iterator with all class names', () => {
 				const names = [ 'one', 'two', 'three' ];
-				el.addClass( ...names );
+				el._addClass( names );
 				const iterator = el.getClassNames();
 				let i = 0;
 
@@ -1019,7 +1019,7 @@ describe( 'Element', () => {
 
 		it( 'should return classes in sorted order', () => {
 			const el = new Element( 'fruit' );
-			el.addClass( 'banana', 'lemon', 'apple' );
+			el._addClass( [ 'banana', 'lemon', 'apple' ] );
 
 			expect( el.getIdentity() ).to.equal( 'fruit class="apple,banana,lemon"' );
 		} );
@@ -1049,7 +1049,7 @@ describe( 'Element', () => {
 				style: 'text-align:center;border-radius:10px'
 			} );
 
-			el.addClass( 'three', 'two', 'one' );
+			el._addClass( [ 'three', 'two', 'one' ] );
 
 			expect( el.getIdentity() ).to.equal(
 				'baz class="one,three,two" style="border-radius:10px;text-align:center" bar="two" foo="one"'

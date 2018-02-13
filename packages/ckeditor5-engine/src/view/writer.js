@@ -190,6 +190,10 @@ export default class Writer {
 		element._removeAttribute( key );
 	}
 
+	addClass( className, element ) {
+		element._addClass( className );
+	}
+
 	/**
 	 * Breaks attribute nodes at provided position or at boundaries of provided range. It breaks attribute elements inside
 	 * up to a container element.
@@ -1045,7 +1049,7 @@ export default class Writer {
 
 		for ( const key of wrapper.getClassNames() ) {
 			if ( !toWrap.hasClass( key ) ) {
-				toWrap.addClass( key );
+				this.addClass( key, toWrap );
 			}
 		}
 

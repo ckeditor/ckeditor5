@@ -420,20 +420,6 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Adds specified class.
-	 *
-	 *		element.addClass( 'foo' ); // Adds 'foo' class.
-	 *		element.addClass( 'foo', 'bar' ); // Adds 'foo' and 'bar' classes.
-	 *
-	 * @param {...String} className
-	 * @fires module:engine/view/node~Node#change
-	 */
-	addClass( ...className ) {
-		this._fireChange( 'attributes', this );
-		className.forEach( name => this._classes.add( name ) );
-	}
-
-	/**
 	 * Removes specified class.
 	 *
  	 *		element.removeClass( 'foo' );  // Removes 'foo' class.
@@ -711,6 +697,23 @@ export default class Element extends Node {
 
 		// Remove other attributes.
 		return this._attrs.delete( key );
+	}
+
+	/**
+	 * Adds specified class.
+	 *
+	 *		element._addClass( 'foo' ); // Adds 'foo' class.
+	 *		element._addClass( [ 'foo', 'bar' ] ); // Adds 'foo' and 'bar' classes.
+	 *
+	 * @protected
+	 * @param {Array.<String>|String} className
+	 * @fires module:engine/view/node~Node#change
+	 */
+	_addClass( className ) {
+		this._fireChange( 'attributes', this );
+
+		className = Array.isArray( className ) ? className : [ className ];
+		className.forEach( name => this._classes.add( name ) );
 	}
 
 	/**

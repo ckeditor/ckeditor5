@@ -523,7 +523,7 @@ describe( 'downcast-selection-converters', () => {
 						consumable.consume( selection, 'selection' );
 
 						const viewNode = conversionApi.mapper.toViewElement( node );
-						viewNode.addClass( 'selected' );
+						conversionApi.writer.addClass( 'selected', viewNode );
 					}
 				}
 			} );

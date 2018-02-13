@@ -108,14 +108,14 @@ function updateSinglePlaceholder( element, checkFunction ) {
 
 	// If element is empty and editor is blurred.
 	if ( !document.isFocused && isEmptyish ) {
-		element.addClass( 'ck-placeholder' );
+		element._addClass( 'ck-placeholder' );
 
 		return;
 	}
 
 	// It there are no child elements and selection is not placed inside element.
 	if ( isEmptyish && anchor && anchor.parent !== element ) {
-		element.addClass( 'ck-placeholder' );
+		element._addClass( 'ck-placeholder' );
 	} else {
 		element.removeClass( 'ck-placeholder' );
 	}

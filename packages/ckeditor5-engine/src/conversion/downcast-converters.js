@@ -386,13 +386,7 @@ function _createViewElementFromDefinition( viewElementDefinition, ViewElementCla
 	}
 
 	if ( viewElementDefinition.class ) {
-		const classes = viewElementDefinition.class;
-
-		if ( typeof classes == 'string' ) {
-			element.addClass( classes );
-		} else {
-			element.addClass( ...classes );
-		}
+		element._addClass( viewElementDefinition.class );
 	}
 
 	return element;
@@ -1011,8 +1005,7 @@ export function createViewElementFromHighlightDescriptor( descriptor ) {
 	const viewElement = new HighlightAttributeElement( 'span', descriptor.attributes );
 
 	if ( descriptor.class ) {
-		const cssClasses = Array.isArray( descriptor.class ) ? descriptor.class : [ descriptor.class ];
-		viewElement.addClass( ...cssClasses );
+		viewElement._addClass( descriptor.class );
 	}
 
 	if ( descriptor.priority ) {
