@@ -14,7 +14,7 @@ const imageSymbol = Symbol( 'isImage' );
 
 /**
  * Converts a given {@link module:engine/view/element~Element} to an image widget:
- * * adds a {@link module:engine/view/element~Element#setCustomProperty custom property} allowing to recognize the image widget element,
+ * * adds a {@link module:engine/view/element~Element#_setCustomProperty custom property} allowing to recognize the image widget element,
  * * calls the {@link module:widget/utils~toWidget toWidget} function with the proper element's label creator.
  *
  * @param {module:engine/view/element~Element} viewElement
