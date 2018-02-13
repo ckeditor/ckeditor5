@@ -73,9 +73,7 @@ export default class FontFamily extends Plugin {
  */
 
 /**
- * Available font family options defined as an array of strings.
- *
- * The default value is:
+ * Available font family options defined as an array of strings. The default value is:
  *
  *		const fontFamilyConfig = {
  *			options: [
@@ -91,21 +89,21 @@ export default class FontFamily extends Plugin {
  *			]
  *		};
  *
- * which configures 8 font family options. Each option consist one or more comma–separated font-family names. The first font name is
- * used as a dropdown item description in the UI. The family names that consist of spaces should not have quotes
- * (as opposed to the CSS standard).
+ * which configures 8 font family options. Each option consist of one or more comma–separated font-family names. The first font name is
+ * used as a dropdown item description in the UI.
  *
- * The necessary quotes will be added automatically in the view. For example, for the "Lucida Sans Unicode" the editor will render:
+ * **Note:** The family names that consist of spaces should not have quotes (as opposed to the CSS standard). The necessary quotes
+ * will be added automatically in the view. For example, the `"Lucida Sans Unicode"` will render as follows:
  *
  * 		<span style="font-family:'Lucida Sans Unicode', 'Lucida Grande', sans-serif">...</span>
  *
- * The "default" option can be used to remove the `font–family` from selection. In such case the text will
- * be represented in view using default `font-family` defined in the styles of the web page.
+ * The "default" option removes the `fontFamily` attribute from the selection. In such case, the text will
+ * be rendered in the view using the default font family defined in the styles of the web page.
  *
- * The `fontFamily` command is also available in the {@link module:core/commandcollection~CommandCollection}.
- * For example, the following code will apply the `fontFamily` attribute with the `tiny` value to the current selection:
+ * Font family can be applied using the command API. To do that, use the `fontFamily` command and pass the desired family as a `value`.
+ * For example, the following code will apply the `fontFamily` attribute with the `'Arial'` `value` to the current selection:
  *
- *		editor.execute( 'fontFamily', { value: 'tiny' } );
+ *		editor.execute( 'fontFamily', { value: 'Arial' } );
  *
  * Executing `fontFamily` command without any value will remove `fontFamily` attribute from the current selection.
  *
