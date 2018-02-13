@@ -79,15 +79,15 @@ export default class MarkerCollection {
 	 * {@link module:engine/model/range~Range range}.
 	 *
 	 * If `MarkerCollection` already had a marker with given name (or {@link ~Marker marker} was passed), the marker in
-	 * collection is updated and {module:engine/model/markercollection~MarkerCollection#event:update} event is fired but only
-	 * if there was a change (marker range or {@link ~Marker#managedUsingOperations} flag has changed.
+	 * collection is updated and {@link module:engine/model/markercollection~MarkerCollection#event:update} event is fired
+	 * but only if there was a change (marker range or {@link ~Marker#managedUsingOperations} flag has changed.
 	 *
 	 * @protected
 	 * @fires module:engine/model/markercollection~MarkerCollection#event:update
 	 * @param {String|module:engine/model/markercollection~Marker} markerOrName Name of marker to set or marker instance to update.
 	 * @param {module:engine/model/range~Range} range Marker range.
 	 * @param {Boolean} managedUsingOperations Specifies whether the marker is managed using operations.
-	 * @returns {module:engine/model/markercollection~Marker} Added or updated `Marker` instance.
+	 * @returns {module:engine/model/markercollection~Marker} `Marker` instance which was added or updated.
 	 */
 	_set( markerOrName, range, managedUsingOperations ) {
 		const markerName = markerOrName instanceof Marker ? markerOrName.name : markerOrName;
