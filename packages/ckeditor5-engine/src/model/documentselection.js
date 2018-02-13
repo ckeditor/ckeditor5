@@ -389,6 +389,14 @@ export default class DocumentSelection {
 	}
 
 	/**
+	 * Temporarily and partially disables default gravity behaviour that tries to get attributes from nodes surrounding the caret.
+	 * @see module:engine/model/writer~Writer#overrideGravity
+	 */
+	_overrideGravity() {
+		this._selection.overrideGravity();
+	}
+
+	/**
 	 * Generates and returns an attribute key for selection attributes store, basing on original attribute key.
 	 *
 	 * @protected
@@ -464,6 +472,13 @@ class LiveSelection extends Selection {
 		// @private
 		// @member {Array} module:engine/model/liveselection~LiveSelection#_hasChangedRange
 		this._hasChangedRange = false;
+
+		// When is set as `true` then selection attributes on node before the caret won't be taken
+		// into consideration while updating selection attributes.
+		//
+		// @private
+		// @type {Boolean}
+		this._isGravityOverriden = false;
 
 		// Add events that will ensure selection correctness.
 		this.on( 'change:range', () => {
@@ -599,6 +614,19 @@ class LiveSelection extends Selection {
 			const attributeKeys = [ key ];
 			this.fire( 'change:attribute', { attributeKeys, directChange: true } );
 		}
+	}
+
+	overrideGravity() {
+		this._isGravityOverriden = true;
+
+		this.on( 'change:range', ( evt, directChange ) => {
+			if ( directChange ) {
+				this._isGravityOverriden = false;
+				evt.off();
+			}
+		} );
+
+		this._updateAttributes();
 	}
 
 	// Removes all attributes from the selection and sets attributes according to the surrounding nodes.
@@ -851,8 +879,11 @@ class LiveSelection extends Selection {
 			const nodeBefore = position.textNode ? position.textNode : position.nodeBefore;
 			const nodeAfter = position.textNode ? position.textNode : position.nodeAfter;
 
-			// ...look at the node before caret and take attributes from it if it is a character node.
-			attrs = getAttrsIfCharacter( nodeBefore );
+			// When gravity is overridden then don't take node before into consideration.
+			if ( !this._isGravityOverriden ) {
+				// ...look at the node before caret and take attributes from it if it is a character node.
+				attrs = getAttrsIfCharacter( nodeBefore );
+			}
 
 			// 3. If not, look at the node after caret...
 			if ( !attrs ) {
@@ -860,7 +891,8 @@ class LiveSelection extends Selection {
 			}
 
 			// 4. If not, try to find the first character on the left, that is in the same node.
-			if ( !attrs ) {
+			// When gravity is overridden then don't take node before into consideration.
+			if ( !this._isGravityOverriden && !attrs ) {
 				let node = nodeBefore;
 
 				while ( node && !attrs ) {
