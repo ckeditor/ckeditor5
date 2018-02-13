@@ -177,15 +177,31 @@ export default class Writer {
 	/**
 	 * Creates new {@link module:engine/view/uielement~UIElement}.
 	 *
-	 *		writer.createUIElement( 'paragraph' );
-	 *		writer.createUIElement( 'paragraph', { 'alignment': 'center' } );
+	 *		writer.createUIElement( 'span' );
+	 *		writer.createUIElement( 'span', { 'alignment': 'center' } );
+	 *
+	 * Custom render function can be provided as third parameter:
+	 *
+	 *		writer.createUIElement( 'span', null, function( domDocument ) {
+	 *			const domElement = this.toDomElement( domDocument );
+	 *			domElement.innerHTML = '<b>this is ui element</b>';
+	 *
+	 *			return domElement;
+	 *		} );
 	 *
 	 * @param {String} name Name of the element.
 	 * @param {Object} [attributes] Elements attributes.
+	 * @param {Function} [renderFunction] Custom render function.
 	 * @returns {module:engine/view/uielement~UIElement} Created element.
 	 */
-	createUIElement( name, attributes ) {
-		return new UIElement( name, attributes );
+	createUIElement( name, attributes, renderFunction ) {
+		const uiElement = new UIElement( name, attributes );
+
+		if ( renderFunction ) {
+			uiElement.render = renderFunction;
+		}
+
+		return uiElement;
 	}
 
 	setAttribute( key, value, element ) {
