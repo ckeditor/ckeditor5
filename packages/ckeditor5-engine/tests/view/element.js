@@ -986,8 +986,8 @@ describe( 'Element', () => {
 			expect( el.getCustomProperty( 'bar' ) ).to.equal( 'baz' );
 			expect( el.getCustomProperty( symbol ) ).to.equal( 'test' );
 
-			el.removeCustomProperty( 'bar' );
-			el.removeCustomProperty( symbol );
+			el._removeCustomProperty( 'bar' );
+			el._removeCustomProperty( symbol );
 
 			expect( el.getCustomProperty( 'bar' ) ).to.be.undefined;
 			expect( el.getCustomProperty( symbol ) ).to.be.undefined;

@@ -521,16 +521,6 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Removes the custom property stored under the given key.
-	 *
-	 * @param {String|Symbol} key
-	 * @returns {Boolean} Returns true if property was removed.
-	 */
-	removeCustomProperty( key ) {
-		return this._customProperties.delete( key );
-	}
-
-	/**
 	 * Returns an iterator which iterates over this element's custom properties.
 	 * Iterator provides `[ key, value ]` pairs for each stored property.
 	 *
@@ -721,6 +711,17 @@ export default class Element extends Node {
 	 */
 	_setCustomProperty( key, value ) {
 		this._customProperties.set( key, value );
+	}
+
+	/**
+	 * Removes the custom property stored under the given key.
+	 *
+	 * @protected
+	 * @param {String|Symbol} key
+	 * @returns {Boolean} Returns true if property was removed.
+	 */
+	_removeCustomProperty( key ) {
+		return this._customProperties.delete( key );
 	}
 
 	/**

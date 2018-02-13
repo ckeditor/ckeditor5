@@ -210,6 +210,10 @@ export default class Writer {
 		element._setCustomProperty( key, value );
 	}
 
+	removeCustomProperty( key, element ) {
+		element._removeCustomProperty( key );
+	}
+
 	/**
 	 * Breaks attribute nodes at provided position or at boundaries of provided range. It breaks attribute elements inside
 	 * up to a container element.
