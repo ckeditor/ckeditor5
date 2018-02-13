@@ -199,17 +199,6 @@ describe( 'DocumentSelection', () => {
 		} );
 	} );
 
-	describe( 'setTo - set collapsed at', () => {
-		it( 'detaches all existing ranges', () => {
-			selection._setTo( [ range, liveRange ] );
-
-			const spy = testUtils.sinon.spy( LiveRange.prototype, 'detach' );
-			selection._setTo( root );
-
-			expect( spy.calledTwice ).to.be.true;
-		} );
-	} );
-
 	describe( 'destroy()', () => {
 		it( 'should unbind all events', () => {
 			selection._setTo( [ range, liveRange ] );
@@ -229,7 +218,45 @@ describe( 'DocumentSelection', () => {
 		} );
 	} );
 
-	describe( 'setFocus()', () => {
+	describe( 'getFirstRange()', () => {
+		it( 'should return default range if no ranges were added', () => {
+			const firstRange = selection.getFirstRange();
+
+			expect( firstRange.start.isEqual( new Position( root, [ 0, 0 ] ) ) );
+			expect( firstRange.end.isEqual( new Position( root, [ 0, 0 ] ) ) );
+		} );
+	} );
+
+	describe( 'getLastRange()', () => {
+		it( 'should return default range if no ranges were added', () => {
+			const lastRange = selection.getLastRange();
+
+			expect( lastRange.start.isEqual( new Position( root, [ 0, 0 ] ) ) );
+			expect( lastRange.end.isEqual( new Position( root, [ 0, 0 ] ) ) );
+		} );
+	} );
+
+	describe( 'getSelectedElement()', () => {
+		it( 'should return selected element', () => {
+			selection._setTo( liveRange );
+			const p = root.getChild( 0 );
+
+			expect( selection.getSelectedElement() ).to.equal( p );
+		} );
+	} );
+
+	describe( '_setTo() - set collapsed at', () => {
+		it( 'detaches all existing ranges', () => {
+			selection._setTo( [ range, liveRange ] );
+
+			const spy = testUtils.sinon.spy( LiveRange.prototype, 'detach' );
+			selection._setTo( root );
+
+			expect( spy.calledTwice ).to.be.true;
+		} );
+	} );
+
+	describe( '_setFocus()', () => {
 		it( 'modifies default range', () => {
 			const startPos = selection.getFirstPosition();
 			const endPos = Position.createAt( root, 'end' );
@@ -262,7 +289,7 @@ describe( 'DocumentSelection', () => {
 		} );
 	} );
 
-	describe( 'setTo - remove all ranges', () => {
+	describe( '_setTo() - remove all ranges', () => {
 		let spy, ranges;
 
 		beforeEach( () => {
@@ -304,7 +331,7 @@ describe( 'DocumentSelection', () => {
 		} );
 	} );
 
-	describe( 'setTo()', () => {
+	describe( '_setTo()', () => {
 		it( 'should throw an error when range is invalid', () => {
 			expect( () => {
 				selection._setTo( [ { invalid: 'range' } ] );
@@ -364,24 +391,6 @@ describe( 'DocumentSelection', () => {
 		} );
 	} );
 
-	describe( 'getFirstRange()', () => {
-		it( 'should return default range if no ranges were added', () => {
-			const firstRange = selection.getFirstRange();
-
-			expect( firstRange.start.isEqual( new Position( root, [ 0, 0 ] ) ) );
-			expect( firstRange.end.isEqual( new Position( root, [ 0, 0 ] ) ) );
-		} );
-	} );
-
-	describe( 'getLastRange()', () => {
-		it( 'should return default range if no ranges were added', () => {
-			const lastRange = selection.getLastRange();
-
-			expect( lastRange.start.isEqual( new Position( root, [ 0, 0 ] ) ) );
-			expect( lastRange.end.isEqual( new Position( root, [ 0, 0 ] ) ) );
-		} );
-	} );
-
 	describe( '_isStoreAttributeKey', () => {
 		it( 'should return true if given key is a key of an attribute stored in element by DocumentSelection', () => {
 			expect( DocumentSelection._isStoreAttributeKey( fooStoreAttrKey ) ).to.be.true;
@@ -389,15 +398,6 @@ describe( 'DocumentSelection', () => {
 
 		it( 'should return false if given key is not a key of an attribute stored in element by DocumentSelection', () => {
 			expect( DocumentSelection._isStoreAttributeKey( 'foo' ) ).to.be.false;
-		} );
-	} );
-
-	describe( 'getSelectedElement()', () => {
-		it( 'should return selected element', () => {
-			selection._setTo( liveRange );
-			const p = root.getChild( 0 );
-
-			expect( selection.getSelectedElement() ).to.equal( p );
 		} );
 	} );
 
@@ -799,7 +799,7 @@ describe( 'DocumentSelection', () => {
 			} );
 		} );
 
-		describe( 'removeAttribute()', () => {
+		describe( '_removeAttribute()', () => {
 			it( 'should remove attribute set on the text fragment', () => {
 				selection._setTo( [ rangeInFullP ] );
 				selection._setAttribute( 'foo', 'bar' );
