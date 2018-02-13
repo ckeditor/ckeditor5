@@ -59,7 +59,8 @@ ClassicEditor
 
 		setData( editor.model,
 			'<paragraph>foo[]</paragraph>' +
-			'<widget><nested>bar</nested></widget>'
+			'<widget><nested>bar</nested></widget>' +
+			'<widget><nested>bom</nested></widget>'
 		);
 	} )
 	.catch( err => {
