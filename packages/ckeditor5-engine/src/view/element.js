@@ -448,33 +448,6 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Adds style to the element.
-	 *
-	 *		element.setStyle( 'color', 'red' );
-	 *		element.setStyle( {
-	 *			color: 'red',
-	 *			position: 'fixed'
-	 *		} );
-	 *
-	 * @param {String|Object} property Property name or object with key - value pairs.
-	 * @param {String} [value] Value to set. This parameter is ignored if object is provided as the first parameter.
-	 * @fires module:engine/view/node~Node#change
-	 */
-	setStyle( property, value ) {
-		this._fireChange( 'attributes', this );
-
-		if ( isPlainObject( property ) ) {
-			const keys = Object.keys( property );
-
-			for ( const key of keys ) {
-				this._styles.set( key, property[ key ] );
-			}
-		} else {
-			this._styles.set( property, value );
-		}
-	}
-
-	/**
 	 * Returns style value for given property.
 	 * Undefined is returned if style does not exist.
 	 *
@@ -716,6 +689,34 @@ export default class Element extends Node {
 
 		className = Array.isArray( className ) ? className : [ className ];
 		className.forEach( name => this._classes.delete( name ) );
+	}
+
+	/**
+	 * Adds style to the element.
+	 *
+	 *		element._setStyle( 'color', 'red' );
+	 *		element._setStyle( {
+	 *			color: 'red',
+	 *			position: 'fixed'
+	 *		} );
+	 *
+	 * @protected
+	 * @param {String|Object} property Property name or object with key - value pairs.
+	 * @param {String} [value] Value to set. This parameter is ignored if object is provided as the first parameter.
+	 * @fires module:engine/view/node~Node#change
+	 */
+	_setStyle( property, value ) {
+		this._fireChange( 'attributes', this );
+
+		if ( isPlainObject( property ) ) {
+			const keys = Object.keys( property );
+
+			for ( const key of keys ) {
+				this._styles.set( key, property[ key ] );
+			}
+		} else {
+			this._styles.set( property, value );
+		}
 	}
 
 	/**

@@ -277,13 +277,13 @@ describe( 'Element', () => {
 			const el3 = new Element( 'p' );
 			const el4 = new Element( 'p' );
 
-			el1.setStyle( 'color', 'red' );
-			el1.setStyle( 'top', '10px' );
-			el2.setStyle( 'top', '20px' );
-			el3.setStyle( 'top', '10px' );
-			el3.setStyle( 'color', 'red' );
-			el4.setStyle( 'color', 'blue' );
-			el4.setStyle( 'top', '10px' );
+			el1._setStyle( 'color', 'red' );
+			el1._setStyle( 'top', '10px' );
+			el2._setStyle( 'top', '20px' );
+			el3._setStyle( 'top', '10px' );
+			el3._setStyle( 'color', 'red' );
+			el4._setStyle( 'color', 'blue' );
+			el4._setStyle( 'top', '10px' );
 
 			expect( el1.isSimilar( el2 ) ).to.be.false;
 			expect( el1.isSimilar( el3 ) ).to.be.true;
@@ -472,8 +472,8 @@ describe( 'Element', () => {
 			} );
 
 			it( 'should replace all styles', () => {
-				el.setStyle( 'color', 'red' );
-				el.setStyle( 'top', '10px' );
+				el._setStyle( 'color', 'red' );
+				el._setStyle( 'top', '10px' );
 				el._setAttribute( 'style', 'border:none' );
 
 				expect( el.hasStyle( 'color' ) ).to.be.false;
@@ -502,8 +502,8 @@ describe( 'Element', () => {
 			} );
 
 			it( 'should return style attribute', () => {
-				el.setStyle( 'color', 'red' );
-				el.setStyle( 'top', '10px' );
+				el._setStyle( 'color', 'red' );
+				el._setStyle( 'top', '10px' );
 
 				expect( el.getAttribute( 'style' ) ).to.equal( 'color:red;top:10px;' );
 			} );
@@ -525,7 +525,7 @@ describe( 'Element', () => {
 				el._setAttribute( 'class', 'abc' );
 				el._setAttribute( 'style', 'width:20px;' );
 				el._addClass( 'xyz' );
-				el.setStyle( 'font-weight', 'bold' );
+				el._setStyle( 'font-weight', 'bold' );
 
 				expect( Array.from( el.getAttributes() ) ).to.deep.equal( [
 					[ 'class', 'abc xyz' ], [ 'style', 'width:20px;font-weight:bold;' ]
@@ -549,7 +549,7 @@ describe( 'Element', () => {
 
 			it( 'should return true if element has style attribute', () => {
 				expect( el.hasAttribute( 'style' ) ).to.be.false;
-				el.setStyle( 'border', '1px solid red' );
+				el._setStyle( 'border', '1px solid red' );
 				expect( el.hasAttribute( 'style' ) ).to.be.true;
 			} );
 		} );
@@ -583,7 +583,7 @@ describe( 'Element', () => {
 			} );
 
 			it( 'should return style key', () => {
-				el.setStyle( 'color', 'black' );
+				el._setStyle( 'color', 'black' );
 				el._setAttribute( 'bar', true );
 				const expected = [ 'style', 'bar' ];
 				let i = 0;
@@ -632,8 +632,8 @@ describe( 'Element', () => {
 			} );
 
 			it( 'should remove style attribute', () => {
-				el.setStyle( 'color', 'red' );
-				el.setStyle( 'position', 'fixed' );
+				el._setStyle( 'color', 'red' );
+				el._setStyle( 'position', 'fixed' );
 				const el2 = new Element( 'p' );
 				const removed1 = el._removeAttribute( 'style' );
 				const removed2 = el2._removeAttribute( 'style' );
@@ -752,9 +752,9 @@ describe( 'Element', () => {
 			el = new Element( 'p' );
 		} );
 
-		describe( 'setStyle', () => {
+		describe( '_setStyle()', () => {
 			it( 'should set element style', () => {
-				el.setStyle( 'color', 'red' );
+				el._setStyle( 'color', 'red' );
 
 				expect( el._styles.has( 'color' ) ).to.be.true;
 				expect( el._styles.get( 'color' ) ).to.equal( 'red' );
@@ -766,11 +766,11 @@ describe( 'Element', () => {
 					done();
 				} );
 
-				el.setStyle( 'color', 'red' );
+				el._setStyle( 'color', 'red' );
 			} );
 
 			it( 'should set multiple styles by providing an object', () => {
-				el.setStyle( {
+				el._setStyle( {
 					color: 'red',
 					position: 'fixed'
 				} );
@@ -784,7 +784,7 @@ describe( 'Element', () => {
 
 		describe( 'getStyle', () => {
 			it( 'should get style', () => {
-				el.setStyle( {
+				el._setStyle( {
 					color: 'red',
 					border: '1px solid red'
 				} );
@@ -798,7 +798,7 @@ describe( 'Element', () => {
 			it( 'should return iterator with all style names', () => {
 				const names = [ 'color', 'position' ];
 
-				el.setStyle( {
+				el._setStyle( {
 					color: 'red',
 					position: 'absolute'
 				} );
@@ -814,14 +814,14 @@ describe( 'Element', () => {
 
 		describe( 'hasStyle', () => {
 			it( 'should check if element has a style', () => {
-				el.setStyle( 'padding-top', '10px' );
+				el._setStyle( 'padding-top', '10px' );
 
 				expect( el.hasStyle( 'padding-top' ) ).to.be.true;
 				expect( el.hasStyle( 'padding-left' ) ).to.be.false;
 			} );
 
 			it( 'should check if element has multiple styles', () => {
-				el.setStyle( {
+				el._setStyle( {
 					'padding-top': '10px',
 					'margin-left': '10px',
 					'color': '10px;'
@@ -835,14 +835,14 @@ describe( 'Element', () => {
 
 		describe( 'removeStyle', () => {
 			it( 'should remove style', () => {
-				el.setStyle( 'padding-top', '10px' );
+				el._setStyle( 'padding-top', '10px' );
 				el.removeStyle( 'padding-top' );
 
 				expect( el.hasStyle( 'padding-top' ) ).to.be.false;
 			} );
 
 			it( 'should fire change event with attributes type', done => {
-				el.setStyle( 'color', 'red' );
+				el._setStyle( 'color', 'red' );
 				el.once( 'change:attributes', eventInfo => {
 					expect( eventInfo.source ).to.equal( el );
 					done();
@@ -852,7 +852,7 @@ describe( 'Element', () => {
 			} );
 
 			it( 'should remove multiple styles', () => {
-				el.setStyle( {
+				el._setStyle( {
 					'padding-top': '10px',
 					'margin-top': '10px',
 					'color': 'red'

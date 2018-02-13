@@ -328,7 +328,7 @@ describe( 'Matcher', () => {
 			};
 			const matcher = new Matcher( pattern );
 			const el = new Element( 'a' );
-			el.setStyle( {
+			el._setStyle( {
 				color: 'red',
 				position: 'relative'
 			} );

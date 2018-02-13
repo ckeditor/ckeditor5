@@ -500,7 +500,7 @@ describe( 'ViewConsumable', () => {
 		} );
 
 		it( 'should add all styles', () => {
-			el.setStyle( {
+			el._setStyle( {
 				color: 'red',
 				position: 'absolute'
 			} );

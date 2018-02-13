@@ -382,7 +382,7 @@ function _createViewElementFromDefinition( viewElementDefinition, ViewElementCla
 	const element = new ViewElementClass( viewElementDefinition.name, Object.assign( {}, viewElementDefinition.attribute ) );
 
 	if ( viewElementDefinition.style ) {
-		element.setStyle( viewElementDefinition.style );
+		element._setStyle( viewElementDefinition.style );
 	}
 
 	if ( viewElementDefinition.class ) {
