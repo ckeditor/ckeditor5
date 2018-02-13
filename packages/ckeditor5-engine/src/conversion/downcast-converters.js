@@ -722,16 +722,19 @@ export function changeAttribute( attributeCreator ) {
 
 		// First remove the old attribute if there was one.
 		const oldAttribute = attributeCreator( data.attributeOldValue, data, consumable, conversionApi );
+		const mapper = conversionApi.mapper;
+		const viewWriter = conversionApi.writer;
 
 		if ( data.attributeOldValue !== null && oldAttribute ) {
-			conversionApi.mapper.toViewElement( data.item ).removeAttribute( oldAttribute.key );
+			mapper.toViewElement( data.item ).removeAttribute( oldAttribute.key );
 		}
 
 		// Then, if conversion was successful, set the new attribute.
 		const newAttribute = attributeCreator( data.attributeNewValue, data, consumable, conversionApi );
 
 		if ( data.attributeNewValue !== null && newAttribute ) {
-			conversionApi.mapper.toViewElement( data.item ).setAttribute( newAttribute.key, newAttribute.value );
+			const viewElement = mapper.toViewElement( data.item );
+			viewWriter.setAttribute( newAttribute.key, newAttribute.value, viewElement );
 		}
 	};
 }

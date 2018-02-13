@@ -930,7 +930,7 @@ function _convertElement( viewElement ) {
 
 	// Move attributes.
 	for ( const attributeKey of viewElement.getAttributeKeys() ) {
-		newElement.setAttribute( attributeKey, viewElement.getAttribute( attributeKey ) );
+		newElement._setAttribute( attributeKey, viewElement.getAttribute( attributeKey ) );
 	}
 
 	return newElement;

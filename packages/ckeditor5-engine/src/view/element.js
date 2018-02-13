@@ -318,27 +318,6 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Adds or overwrite attribute with a specified key and value.
-	 *
-	 * @param {String} key Attribute key.
-	 * @param {String} value Attribute value.
-	 * @fires module:engine/view/node~Node#change
-	 */
-	setAttribute( key, value ) {
-		value = String( value );
-
-		this._fireChange( 'attributes', this );
-
-		if ( key == 'class' ) {
-			parseClasses( this._classes, value );
-		} else if ( key == 'style' ) {
-			parseInlineStyles( this._styles, value );
-		} else {
-			this._attrs.set( key, value );
-		}
-	}
-
-	/**
 	 * Inserts a child node or a list of child nodes on the given index and sets the parent of these nodes to
 	 * this element.
 	 *
@@ -686,12 +665,12 @@ export default class Element extends Node {
  	 *
 	 * For example:
 	 *
-	 *		const element = new ViewElement( 'foo' );
-	 *		element.setAttribute( 'banana', '10' );
-	 *		element.setAttribute( 'apple', '20' );
-	 *		element.setStyle( 'color', 'red' );
-	 *		element.setStyle( 'border-color', 'white' );
-	 *		element.addClass( 'baz' );
+	 *		const element = new ViewElement( 'foo', {
+	 *			banana: '10',
+	 *			apple: '20',
+	 *			style: 'color: red; border-color: white;',
+	 *			class: 'baz'
+	 *		} );
 	 *
 	 *		// returns 'foo class="baz" style="border-color:white;color:red" apple="20" banana="10"'
 	 *		element.getIdentity();
@@ -709,6 +688,28 @@ export default class Element extends Node {
 			( classes == '' ? '' : ` class="${ classes }"` ) +
 			( styles == '' ? '' : ` style="${ styles }"` ) +
 			( attributes == '' ? '' : ` ${ attributes }` );
+	}
+
+	/**
+	 * Adds or overwrite attribute with a specified key and value.
+	 *
+	 * @protected
+	 * @param {String} key Attribute key.
+	 * @param {String} value Attribute value.
+	 * @fires module:engine/view/node~Node#change
+	 */
+	_setAttribute( key, value ) {
+		value = String( value );
+
+		this._fireChange( 'attributes', this );
+
+		if ( key == 'class' ) {
+			parseClasses( this._classes, value );
+		} else if ( key == 'style' ) {
+			parseInlineStyles( this._styles, value );
+		} else {
+			this._attrs.set( key, value );
+		}
 	}
 
 	/**

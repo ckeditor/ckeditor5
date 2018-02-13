@@ -1307,7 +1307,9 @@ describe( 'downcast-converters', () => {
 					} );
 
 					viewContainer.setCustomProperty( 'removeHighlight', element => {
-						element.setAttribute( 'class', '' );
+						controller.view.change( writer => {
+							writer.setAttribute( 'class', '', element );
+						} );
 					} );
 
 					return viewContainer;

@@ -303,8 +303,7 @@ describe( 'Node', () => {
 
 		beforeEach( () => {
 			text = new Text( 'foo' );
-			img = new Element( 'img' );
-			img.setAttribute( 'src', 'img.png' );
+			img = new Element( 'img', { 'src': 'img.png' } );
 
 			root = new Element( 'p', { renderer: { markToSync: rootChangeSpy } } );
 			root.appendChildren( [ text, img ] );
@@ -323,14 +322,14 @@ describe( 'Node', () => {
 				imgChangeSpy( 'attributes', node );
 			} );
 
-			img.setAttribute( 'width', 100 );
+			img._setAttribute( 'width', 100 );
 
 			sinon.assert.calledOnce( imgChangeSpy );
 			sinon.assert.calledWith( imgChangeSpy, 'attributes', img );
 		} );
 
 		it( 'should be fired on the parent', () => {
-			img.setAttribute( 'width', 100 );
+			img._setAttribute( 'width', 100 );
 
 			sinon.assert.calledOnce( rootChangeSpy );
 			sinon.assert.calledWith( rootChangeSpy, 'attributes', img );
@@ -338,7 +337,7 @@ describe( 'Node', () => {
 
 		describe( 'setAttribute()', () => {
 			it( 'should fire change event', () => {
-				img.setAttribute( 'width', 100 );
+				img._setAttribute( 'width', 100 );
 
 				sinon.assert.calledOnce( rootChangeSpy );
 				sinon.assert.calledWith( rootChangeSpy, 'attributes', img );

@@ -182,6 +182,10 @@ export default class Writer {
 		return new UIElement( name, attributes );
 	}
 
+	setAttribute( key, value, element ) {
+		element._setAttribute( key, value );
+	}
+
 	/**
 	 * Breaks attribute nodes at provided position or at boundaries of provided range. It breaks attribute elements inside
 	 * up to a container element.
@@ -878,7 +882,7 @@ export default class Writer {
 	 */
 	_wrapRange( range, attribute ) {
 		// Range is inside single attribute and spans on all children.
-		if ( rangeSpansOnAllChildren( range ) && wrapAttributeElement( attribute, range.start.parent ) ) {
+		if ( rangeSpansOnAllChildren( range ) && this._wrapAttributeElement( attribute, range.start.parent ) ) {
 			const parent = range.start.parent;
 
 			const end = this.mergeAttributes( Position.createAfter( parent ) );
@@ -894,7 +898,7 @@ export default class Writer {
 		if ( breakEnd.isEqual( breakStart.getShiftedBy( 1 ) ) ) {
 			const node = breakStart.nodeAfter;
 
-			if ( node instanceof AttributeElement && wrapAttributeElement( attribute, node ) ) {
+			if ( node instanceof AttributeElement && this._wrapAttributeElement( attribute, node ) ) {
 				const start = this.mergeAttributes( breakStart );
 
 				if ( !start.isEqual( breakStart ) ) {
@@ -978,6 +982,70 @@ export default class Writer {
 
 		// If position is next to text node - move position inside.
 		return movePositionToTextNode( newPosition );
+	}
+
+	/**
+	 * 	Wraps one {@link module:engine/view/attributeelement~AttributeElement AttributeElement} into another by
+	 * 	merging them if possible. When merging is possible - all attributes, styles and classes are moved from wrapper
+	 * 	element to element being wrapped.
+	 *
+	 * 	@private
+	 * 	@param {module:engine/view/attributeelement~AttributeElement} wrapper Wrapper AttributeElement.
+	 * 	@param {module:engine/view/attributeelement~AttributeElement} toWrap AttributeElement to wrap using wrapper element.
+	 * 	@returns {Boolean} Returns `true` if elements are merged.
+	 */
+	_wrapAttributeElement( wrapper, toWrap ) {
+		// Can't merge if name or priority differs.
+		if ( wrapper.name !== toWrap.name || wrapper.priority !== toWrap.priority ) {
+			return false;
+		}
+
+		// Check if attributes can be merged.
+		for ( const key of wrapper.getAttributeKeys() ) {
+			// Classes and styles should be checked separately.
+			if ( key === 'class' || key === 'style' ) {
+				continue;
+			}
+
+			// If some attributes are different we cannot wrap.
+			if ( toWrap.hasAttribute( key ) && toWrap.getAttribute( key ) !== wrapper.getAttribute( key ) ) {
+				return false;
+			}
+		}
+
+		// Check if styles can be merged.
+		for ( const key of wrapper.getStyleNames() ) {
+			if ( toWrap.hasStyle( key ) && toWrap.getStyle( key ) !== wrapper.getStyle( key ) ) {
+				return false;
+			}
+		}
+
+		// Move all attributes/classes/styles from wrapper to wrapped AttributeElement.
+		for ( const key of wrapper.getAttributeKeys() ) {
+			// Classes and styles should be checked separately.
+			if ( key === 'class' || key === 'style' ) {
+				continue;
+			}
+
+			// Move only these attributes that are not present - other are similar.
+			if ( !toWrap.hasAttribute( key ) ) {
+				this.setAttribute( key, wrapper.getAttribute( key ), toWrap );
+			}
+		}
+
+		for ( const key of wrapper.getStyleNames() ) {
+			if ( !toWrap.hasStyle( key ) ) {
+				toWrap.setStyle( key, wrapper.getStyle( key ) );
+			}
+		}
+
+		for ( const key of wrapper.getClassNames() ) {
+			if ( !toWrap.hasClass( key ) ) {
+				toWrap.addClass( key );
+			}
+		}
+
+		return true;
 	}
 }
 
@@ -1228,67 +1296,6 @@ function mergeTextNodes( t1, t2 ) {
 	t2.remove();
 
 	return new Position( t1, nodeBeforeLength );
-}
-
-// Wraps one {@link module:engine/view/attributeelement~AttributeElement AttributeElement} into another by merging them if possible.
-// When merging is possible - all attributes, styles and classes are moved from wrapper element to element being
-// wrapped.
-//
-// @param {module:engine/view/attributeelement~AttributeElement} wrapper Wrapper AttributeElement.
-// @param {module:engine/view/attributeelement~AttributeElement} toWrap AttributeElement to wrap using wrapper element.
-// @returns {Boolean} Returns `true` if elements are merged.
-function wrapAttributeElement( wrapper, toWrap ) {
-	// Can't merge if name or priority differs.
-	if ( wrapper.name !== toWrap.name || wrapper.priority !== toWrap.priority ) {
-		return false;
-	}
-
-	// Check if attributes can be merged.
-	for ( const key of wrapper.getAttributeKeys() ) {
-		// Classes and styles should be checked separately.
-		if ( key === 'class' || key === 'style' ) {
-			continue;
-		}
-
-		// If some attributes are different we cannot wrap.
-		if ( toWrap.hasAttribute( key ) && toWrap.getAttribute( key ) !== wrapper.getAttribute( key ) ) {
-			return false;
-		}
-	}
-
-	// Check if styles can be merged.
-	for ( const key of wrapper.getStyleNames() ) {
-		if ( toWrap.hasStyle( key ) && toWrap.getStyle( key ) !== wrapper.getStyle( key ) ) {
-			return false;
-		}
-	}
-
-	// Move all attributes/classes/styles from wrapper to wrapped AttributeElement.
-	for ( const key of wrapper.getAttributeKeys() ) {
-		// Classes and styles should be checked separately.
-		if ( key === 'class' || key === 'style' ) {
-			continue;
-		}
-
-		// Move only these attributes that are not present - other are similar.
-		if ( !toWrap.hasAttribute( key ) ) {
-			toWrap.setAttribute( key, wrapper.getAttribute( key ) );
-		}
-	}
-
-	for ( const key of wrapper.getStyleNames() ) {
-		if ( !toWrap.hasStyle( key ) ) {
-			toWrap.setStyle( key, wrapper.getStyle( key ) );
-		}
-	}
-
-	for ( const key of wrapper.getClassNames() ) {
-		if ( !toWrap.hasClass( key ) ) {
-			toWrap.addClass( key );
-		}
-	}
-
-	return true;
 }
 
 // Unwraps {@link module:engine/view/attributeelement~AttributeElement AttributeElement} from another by removing corresponding attributes,

@@ -247,8 +247,8 @@ describe( 'Element', () => {
 			const other1 = el.clone();
 			const other2 = el.clone();
 			const other3 = el.clone();
-			other1.setAttribute( 'baz', 'qux' );
-			other2.setAttribute( 'foo', 'not-bar' );
+			other1._setAttribute( 'baz', 'qux' );
+			other2._setAttribute( 'foo', 'not-bar' );
 			other3.removeAttribute( 'foo' );
 			expect( el.isSimilar( other1 ) ).to.be.false;
 			expect( el.isSimilar( other2 ) ).to.be.false;
@@ -432,14 +432,14 @@ describe( 'Element', () => {
 
 		describe( 'setAttribute', () => {
 			it( 'should set attribute', () => {
-				el.setAttribute( 'foo', 'bar' );
+				el._setAttribute( 'foo', 'bar' );
 
 				expect( el._attrs.has( 'foo' ) ).to.be.true;
 				expect( el._attrs.get( 'foo' ) ).to.equal( 'bar' );
 			} );
 
 			it( 'should cast attribute value to a string', () => {
-				el.setAttribute( 'foo', true );
+				el._setAttribute( 'foo', true );
 
 				expect( el._attrs.get( 'foo' ) ).to.equal( 'true' );
 			} );
@@ -450,11 +450,11 @@ describe( 'Element', () => {
 					done();
 				} );
 
-				el.setAttribute( 'foo', 'bar' );
+				el._setAttribute( 'foo', 'bar' );
 			} );
 
 			it( 'should set class', () => {
-				el.setAttribute( 'class', 'foo bar' );
+				el._setAttribute( 'class', 'foo bar' );
 
 				expect( el._attrs.has( 'class' ) ).to.be.false;
 				expect( el._classes.has( 'foo' ) ).to.be.true;
@@ -462,8 +462,8 @@ describe( 'Element', () => {
 			} );
 
 			it( 'should replace all existing classes', () => {
-				el.setAttribute( 'class', 'foo bar baz' );
-				el.setAttribute( 'class', 'qux' );
+				el._setAttribute( 'class', 'foo bar baz' );
+				el._setAttribute( 'class', 'qux' );
 
 				expect( el._classes.has( 'foo' ) ).to.be.false;
 				expect( el._classes.has( 'bar' ) ).to.be.false;
@@ -474,7 +474,7 @@ describe( 'Element', () => {
 			it( 'should replace all styles', () => {
 				el.setStyle( 'color', 'red' );
 				el.setStyle( 'top', '10px' );
-				el.setAttribute( 'style', 'border:none' );
+				el._setAttribute( 'style', 'border:none' );
 
 				expect( el.hasStyle( 'color' ) ).to.be.false;
 				expect( el.hasStyle( 'top' ) ).to.be.false;
@@ -485,7 +485,7 @@ describe( 'Element', () => {
 
 		describe( 'getAttribute', () => {
 			it( 'should return attribute', () => {
-				el.setAttribute( 'foo', 'bar' );
+				el._setAttribute( 'foo', 'bar' );
 
 				expect( el.getAttribute( 'foo' ) ).to.equal( 'bar' );
 				expect( el.getAttribute( 'bom' ) ).to.not.be.ok;
@@ -515,15 +515,15 @@ describe( 'Element', () => {
 
 		describe( 'getAttributes', () => {
 			it( 'should return attributes', () => {
-				el.setAttribute( 'foo', 'bar' );
-				el.setAttribute( 'abc', 'xyz' );
+				el._setAttribute( 'foo', 'bar' );
+				el._setAttribute( 'abc', 'xyz' );
 
 				expect( Array.from( el.getAttributes() ) ).to.deep.equal( [ [ 'foo', 'bar' ], [ 'abc', 'xyz' ] ] );
 			} );
 
 			it( 'should return class and style attribute', () => {
-				el.setAttribute( 'class', 'abc' );
-				el.setAttribute( 'style', 'width:20px;' );
+				el._setAttribute( 'class', 'abc' );
+				el._setAttribute( 'style', 'width:20px;' );
 				el.addClass( 'xyz' );
 				el.setStyle( 'font-weight', 'bold' );
 
@@ -535,7 +535,7 @@ describe( 'Element', () => {
 
 		describe( 'hasAttribute', () => {
 			it( 'should return true if element has attribute', () => {
-				el.setAttribute( 'foo', 'bar' );
+				el._setAttribute( 'foo', 'bar' );
 
 				expect( el.hasAttribute( 'foo' ) ).to.be.true;
 				expect( el.hasAttribute( 'bom' ) ).to.be.false;
@@ -556,8 +556,8 @@ describe( 'Element', () => {
 
 		describe( 'getAttributeKeys', () => {
 			it( 'should return keys', () => {
-				el.setAttribute( 'foo', true );
-				el.setAttribute( 'bar', true );
+				el._setAttribute( 'foo', true );
+				el._setAttribute( 'bar', true );
 
 				const expected = [ 'foo', 'bar' ];
 				let i = 0;
@@ -572,7 +572,7 @@ describe( 'Element', () => {
 
 			it( 'should return class key', () => {
 				el.addClass( 'foo' );
-				el.setAttribute( 'bar', true );
+				el._setAttribute( 'bar', true );
 				const expected = [ 'class', 'bar' ];
 				let i = 0;
 
@@ -584,7 +584,7 @@ describe( 'Element', () => {
 
 			it( 'should return style key', () => {
 				el.setStyle( 'color', 'black' );
-				el.setAttribute( 'bar', true );
+				el._setAttribute( 'bar', true );
 				const expected = [ 'style', 'bar' ];
 				let i = 0;
 
@@ -597,7 +597,7 @@ describe( 'Element', () => {
 
 		describe( 'removeAttribute', () => {
 			it( 'should remove attributes', () => {
-				el.setAttribute( 'foo', true );
+				el._setAttribute( 'foo', true );
 
 				expect( el.hasAttribute( 'foo' ) ).to.be.true;
 
@@ -609,7 +609,7 @@ describe( 'Element', () => {
 			} );
 
 			it( 'should fire change event with attributes type', done => {
-				el.setAttribute( 'foo', 'bar' );
+				el._setAttribute( 'foo', 'bar' );
 				el.once( 'change:attributes', eventInfo => {
 					expect( eventInfo.source ).to.equal( el );
 					done();

@@ -42,7 +42,7 @@ export function attachPlaceholder( view, element, placeholderText, checkFunction
 
 	// Store text in element's data attribute.
 	// This data attribute is used in CSS class to show the placeholder.
-	element.setAttribute( 'data-placeholder', placeholderText );
+	element._setAttribute( 'data-placeholder', placeholderText );
 
 	// Store information about placeholder.
 	documentPlaceholders.get( document ).set( element, checkFunction );

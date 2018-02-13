@@ -51,7 +51,7 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should mark attributes which need update', () => {
-			viewRoot.setAttribute( 'class', 'foo' );
+			viewRoot._setAttribute( 'class', 'foo' );
 
 			renderer.markToSync( 'attributes', viewRoot );
 
@@ -151,7 +151,7 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should update attributes', () => {
-			viewRoot.setAttribute( 'class', 'foo' );
+			viewRoot._setAttribute( 'class', 'foo' );
 
 			renderer.markToSync( 'attributes', viewRoot );
 			renderer.render();
@@ -162,7 +162,7 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should remove attributes', () => {
-			viewRoot.setAttribute( 'class', 'foo' );
+			viewRoot._setAttribute( 'class', 'foo' );
 			domRoot.setAttribute( 'id', 'bar' );
 			domRoot.setAttribute( 'class', 'bar' );
 

@@ -432,7 +432,7 @@ describe( 'view', () => {
 			expect( domRoot.childNodes.length ).to.equal( 1 );
 			expect( domRoot.childNodes[ 0 ].getAttribute( 'class' ) ).to.equal( 'foo' );
 
-			viewP.setAttribute( 'class', 'bar' );
+			viewP._setAttribute( 'class', 'bar' );
 			view.render();
 
 			expect( domRoot.childNodes.length ).to.equal( 1 );

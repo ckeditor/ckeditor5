@@ -474,8 +474,8 @@ describe( 'ViewConsumable', () => {
 		} );
 
 		it( 'should add all attributes', () => {
-			el.setAttribute( 'title', 'foobar' );
-			el.setAttribute( 'href', 'https://ckeditor.com' );
+			el._setAttribute( 'title', 'foobar' );
+			el._setAttribute( 'href', 'https://ckeditor.com' );
 
 			const consumables = ViewConsumable.consumablesFromElement( el );
 			expect( consumables.attribute.length ).to.equal( 2 );
