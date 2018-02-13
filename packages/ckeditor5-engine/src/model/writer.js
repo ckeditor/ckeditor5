@@ -1017,6 +1017,22 @@ export default class Writer {
 	}
 
 	/**
+	 * Temporarily (until selection won't be changed directly by the user) disables default gravity behaviour that tries
+	 * to get attributes from nodes surrounding the caret. When gravity is marked as overridden then attributes from the
+	 * node before the caret won't be taken into consideration while updating selection attributes.
+	 *
+	 * For the following model fragment:
+	 *
+	 * 		<$text bold="true" linkHref="url">bar[]</$text><$text bold="true">biz</$text>
+	 *
+	 * Selection attribute keys before override will be equal `[ 'bold', 'linkHref' ]`
+	 * Selection attribute keys after override will be equal `[ 'bold' ]`
+	 */
+	overrideSelectionGravity() {
+		this.model.document.selection._overrideGravity();
+	}
+
+	/**
 	 * @private
 	 * @param {String} key Key of the attribute to remove.
 	 * @param {*} value Attribute value.
