@@ -59,7 +59,7 @@ export function attachPlaceholder( view, element, placeholderText, checkFunction
 export function detachPlaceholder( element ) {
 	const document = element.document;
 
-	element.removeClass( 'ck-placeholder' );
+	element._removeClass( 'ck-placeholder' );
 	element._removeAttribute( 'data-placeholder' );
 
 	if ( documentPlaceholders.has( document ) ) {
@@ -97,7 +97,7 @@ function updateSinglePlaceholder( element, checkFunction ) {
 
 	// If checkFunction is provided and returns false - remove placeholder.
 	if ( checkFunction && !checkFunction() ) {
-		element.removeClass( 'ck-placeholder' );
+		element._removeClass( 'ck-placeholder' );
 
 		return;
 	}
@@ -117,6 +117,6 @@ function updateSinglePlaceholder( element, checkFunction ) {
 	if ( isEmptyish && anchor && anchor.parent !== element ) {
 		element._addClass( 'ck-placeholder' );
 	} else {
-		element.removeClass( 'ck-placeholder' );
+		element._removeClass( 'ck-placeholder' );
 	}
 }

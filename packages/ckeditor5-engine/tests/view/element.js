@@ -679,11 +679,11 @@ describe( 'Element', () => {
 			} );
 		} );
 
-		describe( 'removeClass', () => {
+		describe( '_removeClass()', () => {
 			it( 'should remove single class', () => {
 				el._addClass( [ 'one', 'two', 'three' ] );
 
-				el.removeClass( 'one' );
+				el._removeClass( 'one' );
 
 				expect( el._classes.has( 'one' ) ).to.be.false;
 				expect( el._classes.has( 'two' ) ).to.be.true;
@@ -697,12 +697,12 @@ describe( 'Element', () => {
 					done();
 				} );
 
-				el.removeClass( 'one' );
+				el._removeClass( 'one' );
 			} );
 
 			it( 'should remove multiple classes', () => {
 				el._addClass( [ 'one', 'two', 'three', 'four' ] );
-				el.removeClass( 'one', 'two', 'three' );
+				el._removeClass( [ 'one', 'two', 'three' ] );
 
 				expect( el._classes.has( 'one' ) ).to.be.false;
 				expect( el._classes.has( 'two' ) ).to.be.false;

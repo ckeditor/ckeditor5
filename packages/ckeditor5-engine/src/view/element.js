@@ -420,20 +420,6 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Removes specified class.
-	 *
- 	 *		element.removeClass( 'foo' );  // Removes 'foo' class.
-	 *		element.removeClass( 'foo', 'bar' ); // Removes both 'foo' and 'bar' classes.
-	 *
-	 * @param {...String} className
-	 * @fires module:engine/view/node~Node#change
-	 */
-	removeClass( ...className ) {
-		this._fireChange( 'attributes', this );
-		className.forEach( name => this._classes.delete( name ) );
-	}
-
-	/**
 	 * Returns true if class is present.
 	 * If more then one class is provided - returns true only when all classes are present.
 	 *
@@ -714,6 +700,22 @@ export default class Element extends Node {
 
 		className = Array.isArray( className ) ? className : [ className ];
 		className.forEach( name => this._classes.add( name ) );
+	}
+
+	/**
+	 * Removes specified class.
+	 *
+	 *		element._removeClass( 'foo' );  // Removes 'foo' class.
+	 *		element._removeClass( [ 'foo', 'bar' ] ); // Removes both 'foo' and 'bar' classes.
+	 *
+	 * @param {Array.<String>|String} className
+	 * @fires module:engine/view/node~Node#change
+	 */
+	_removeClass( className ) {
+		this._fireChange( 'attributes', this );
+
+		className = Array.isArray( className ) ? className : [ className ];
+		className.forEach( name => this._classes.delete( name ) );
 	}
 
 	/**
