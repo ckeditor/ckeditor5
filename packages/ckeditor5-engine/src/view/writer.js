@@ -16,6 +16,7 @@ import Range from './range';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import DocumentFragment from './documentfragment';
 import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
+import isPlainObject from '@ckeditor/ckeditor5-utils/src/lib/lodash/isPlainObject';
 import Text from './text';
 import EditableElement from './editableelement';
 
@@ -204,36 +205,112 @@ export default class Writer {
 		return uiElement;
 	}
 
+	/**
+	 * Adds or overwrite element's attribute with a specified key and value.
+	 *
+	 *		writer.setAttribute( 'href', 'http://ckeditor.com', linkElement );
+	 *
+	 * @param {String} key Attribute key.
+	 * @param {String} value Attribute value.
+	 * @param {module:engine/view/element~Element} element
+	 */
 	setAttribute( key, value, element ) {
 		element._setAttribute( key, value );
 	}
 
+	/**
+	 * Removes attribute from the element.
+	 *
+	 *		writer.removeAttribute( 'href', linkElement );
+	 *
+	 * @param {String} key Attribute key.
+	 * @param {module:engine/view/element~Element} element
+	 */
 	removeAttribute( key, element ) {
 		element._removeAttribute( key );
 	}
 
+	/**
+	 * Adds specified class to the element.
+	 *
+	 *		writer.addClass( 'foo', linkElement );
+	 *		writer.addClass( [ 'foo', 'bar' ], linkElement );
+	 *
+	 * @param {Array.<String>|String} className
+	 * @param {module:engine/view/element~Element} element
+	 */
 	addClass( className, element ) {
 		element._addClass( className );
 	}
 
+	/**
+	 * Removes specified class from the element.
+	 *
+	 *		writer.removeClass( 'foo', linkElement );
+	 *		writer.removeClass( [ 'foo', 'bar' ], linkElement );
+	 *
+	 * @param {Array.<String>|String} className
+	 * @param {module:engine/view/element~Element} element
+	 */
 	removeClass( className, element ) {
 		element._removeClass( className );
 	}
 
+	/**
+	 * Adds style to the element.
+	 *
+	 *		writer.setStyle( 'color', 'red', element );
+	 *		writer.setStyle( {
+	 *			color: 'red',
+	 *			position: 'fixed'
+	 *		}, element );
+	 *
+	 * @param {String|Object} property Property name or object with key - value pairs.
+	 * @param {String} [value] Value to set. This parameter is ignored if object is provided as the first parameter.
+	 * @param {module:engine/view/element~Element} element Element to set styles on.
+	 */
 	setStyle( property, value, element ) {
+		if ( isPlainObject( property ) && element === undefined ) {
+			element = value;
+		}
+
 		element._setStyle( property, value );
 	}
 
+	/**
+	 * Removes specified style from the element.
+	 *
+	 *		writer.removeStyle( 'color', element );  // Removes 'color' style.
+	 *		writer.removeStyle( [ 'color', 'border-top' ], element ); // Removes both 'color' and 'border-top' styles.
+	 *
+	 * @param {Array.<String>|String} property
+	 * @param {module:engine/view/element~Element} element
+	 */
 	removeStyle( property, element ) {
 		element._removeStyle( property );
 	}
 
+	/**
+	 * Sets a custom property on element. Unlike attributes, custom properties are not rendered to the DOM,
+	 * so they can be used to add special data to elements.
+	 *
+	 * @param {String|Symbol} key
+	 * @param {*} value
+	 * @param {module:engine/view/element~Element} element
+	 */
 	setCustomProperty( key, value, element ) {
 		element._setCustomProperty( key, value );
 	}
 
+	/**
+	 * Removes a custom property stored under the given key.
+	 *
+	 * @param {String|Symbol} key
+	 * @param {module:engine/view/element~Element} element
+	 * @returns {Boolean} Returns true if property was removed.
+	 */
 	removeCustomProperty( key, element ) {
-		element._removeCustomProperty( key );
+		return element._removeCustomProperty( key );
 	}
 
 	/**

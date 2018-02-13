@@ -855,7 +855,7 @@ export function highlightText( highlightDescriptor ) {
  * Converter function factory. Creates a function which applies the marker's highlight to an element inside the marker's range.
  *
  * The converter checks if an element has `addHighlight` function stored as
- * {@link module:engine/view/element~Element#setCustomProperty custom property} and, if so, uses it to apply the highlight.
+ * {@link module:engine/view/element~Element#_setCustomProperty custom property} and, if so, uses it to apply the highlight.
  * In such case converter will consume all element's children, assuming that they were handled by element itself.
  *
  * When `addHighlight` custom property is not present, element is not converted in any special way.
@@ -913,7 +913,7 @@ export function highlightElement( highlightDescriptor ) {
  * highlight descriptor. See {link module:engine/conversion/downcast-converters~highlightDescriptorToAttributeElement}.
  *
  * For elements, the converter checks if an element has `removeHighlight` function stored as
- * {@link module:engine/view/element~Element#setCustomProperty custom property}. If so, it uses it to remove the highlight.
+ * {@link module:engine/view/element~Element#_setCustomProperty custom property}. If so, it uses it to remove the highlight.
  * In such case, children of that element will not be converted.
  *
  * When `removeHighlight` is not present, element is not converted in any special way.
