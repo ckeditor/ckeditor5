@@ -455,10 +455,10 @@ describe( 'view test utils', () => {
 		it( 'should parse element priority', () => {
 			const parsed1 = parse( '<b view-priority="12"></b>' );
 			const attribute1 = new AttributeElement( 'b' );
-			attribute1.priority = 12;
+			attribute1._priority = 12;
 			const parsed2 = parse( '<attribute:b view-priority="44"></attribute:b>' );
 			const attribute2 = new AttributeElement( 'b' );
-			attribute2.priority = 44;
+			attribute2._priority = 44;
 
 			parsed1.isSimilar( attribute1 );
 			expect( parsed1.isSimilar( attribute1 ) ).to.be.true;

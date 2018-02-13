@@ -511,7 +511,7 @@ describe( 'Position', () => {
 			const document = new Document();
 			const p = new Element( 'p' );
 			const editable = new EditableElement( 'div', null, p );
-			editable.document = document;
+			editable._document = document;
 			const position = new Position( p, 0 );
 
 			expect( position.editableElement ).to.equal( editable );

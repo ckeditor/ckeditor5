@@ -60,11 +60,23 @@ export default class EditableElement extends ContainerElement {
 		 */
 	}
 
+	/**
+	 * Returns document associated with the editable.
+	 *
+	 * @readonly
+	 * @return {module:engine/view/document~Document}
+	 */
 	get document() {
 		return this.getCustomProperty( documentSymbol );
 	}
 
-	set document( document ) {
+	/**
+	 * Sets document of this editable element.
+	 *
+	 * @protected
+	 * @param {module:engine/view/document~Document} document
+	 */
+	set _document( document ) {
 		if ( this.getCustomProperty( documentSymbol ) ) {
 			/**
 			 * View document is already set. It can only be set once.

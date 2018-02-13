@@ -533,7 +533,7 @@ describe( 'view', () => {
 		const viewRoot = new RootEditableElement( name );
 
 		viewRoot.rootName = rootName;
-		viewRoot.document = viewDoc;
+		viewRoot._document = viewDoc;
 		viewDoc.roots.add( viewRoot );
 
 		return viewRoot;

@@ -1009,7 +1009,7 @@ export function createViewElementFromHighlightDescriptor( descriptor ) {
 	}
 
 	if ( descriptor.priority ) {
-		viewElement.priority = descriptor.priority;
+		viewElement._priority = descriptor.priority;
 	}
 
 	viewElement._setCustomProperty( 'highlightDescriptorId', descriptor.id );

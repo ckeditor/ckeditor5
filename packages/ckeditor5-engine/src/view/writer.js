@@ -118,8 +118,14 @@ export default class Writer {
 	 * @param {Object} [attributes] Elements attributes.
 	 * @returns {module:engine/view/attributeelement~AttributeElement} Created element.
 	 */
-	createAttributeElement( name, attributes ) {
-		return new AttributeElement( name, attributes );
+	createAttributeElement( name, attributes, priority ) {
+		const attributeElement = new AttributeElement( name, attributes );
+
+		if ( priority ) {
+			attributeElement._priority = priority;
+		}
+
+		return attributeElement;
 	}
 
 	/**
@@ -149,7 +155,7 @@ export default class Writer {
 	 */
 	createEditableElement( name, attributes ) {
 		const editableElement = new EditableElement( name, attributes );
-		editableElement.document = this.document;
+		editableElement._document = this.document;
 
 		return editableElement;
 	}
@@ -983,8 +989,8 @@ export default class Writer {
 		}
 
 		// Create fake element that will represent position, and will not be merged with other attributes.
-		const fakePosition = new AttributeElement();
-		fakePosition.priority = Number.POSITIVE_INFINITY;
+		const fakePosition = this.createAttributeElement();
+		fakePosition._priority = Number.POSITIVE_INFINITY;
 		fakePosition.isSimilar = () => false;
 
 		// Insert fake element in position location.

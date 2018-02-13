@@ -157,7 +157,7 @@ export default class EditingController {
 			const viewRoot = new RootEditableElement( root.name );
 
 			viewRoot.rootName = root.rootName;
-			viewRoot.document = this.view.document;
+			viewRoot._document = this.view.document;
 			this.mapper.bindElements( root, viewRoot );
 
 			return viewRoot;

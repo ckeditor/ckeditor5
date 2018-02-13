@@ -192,7 +192,7 @@ setData._parse = parse;
  * {@link module:engine/view/attributeelement~AttributeElement attribute elements}.
  *
  *		const attribute = new AttributeElement( 'b' );
- *		attribute.priority = 20;
+ *		attribute._priority = 20;
  *		getData( attribute, null, { showPriority: true } ); // <b view-priority="20"></b>
  *
  * @param {module:engine/view/text~Text|module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment}
@@ -924,7 +924,7 @@ function _convertElement( viewElement ) {
 
 	if ( newElement.is( 'attributeElement' ) ) {
 		if ( info.priority !== null ) {
-			newElement.priority = info.priority;
+			newElement._priority = info.priority;
 		}
 	}
 
