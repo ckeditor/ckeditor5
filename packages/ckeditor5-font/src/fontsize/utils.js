@@ -8,8 +8,8 @@
  */
 
 /**
- * Returns {@link module:font/fontsize~FontSizeConfig#options} array with options normalized in the
- * {@link module:font/fontsize~FontSizeOption} format, translated.
+ * Normalizes and translates the {@link module:font/fontsize~FontSizeConfig#options config options}
+ * to the {@link module:font/fontsize~FontSizeOption} format.
  *
  * @param {Array.<String|Number|Object>} configuredOptions An array of options taken from configuration.
  * @returns {Array.<module:font/fontsize~FontSizeOption>}

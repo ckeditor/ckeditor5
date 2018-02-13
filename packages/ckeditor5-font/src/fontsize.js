@@ -73,8 +73,8 @@ export default class FontSize extends Plugin {
  */
 
 /**
- * Available font size options. Defined either using predefined presets, numeric pixel values
- * or {@link module:font/fontsize~FontSizeOption}.
+ * Available font size options. Expressed as predefined presets, numerical "pixel" values
+ * or the {@link module:font/fontsize~FontSizeOption}.
  *
  * The default value is:
  *
@@ -88,23 +88,22 @@ export default class FontSize extends Plugin {
  *			]
  *		};
  *
- * It defines 4 sizes: "tiny", "small", "big" and "huge". Those values will be rendered as `span` elements in view. The "normal" defines
- * text without a `fontSize` attribute set.
+ * It defines 4 sizes: **tiny**, **small**, **big**, and **huge**. These values will be rendered as `span` elements in view.
+ * The **normal** defines a text without the `fontSize` attribute.
  *
- * Each rendered span in the view will have class attribute set corresponding to size name.
- * For instance for "small" size the view will render:
+ * Each `span` has the `class` attribute set to the corresponding size name. For instance, this is what the **small** size looks
+ * like in the view:
  *
  * 		<span class="text-small">...</span>
  *
- * As an alternative the font size might be defined using numeric values (either as Number or as String):
+ * As an alternative, the font size might be defined using the numerical values (either as a `Number` or as a `String`):
  *
  * 		const fontSizeConfig = {
  * 			options: [ 9, 10, 11, 12, 13, 14, 15 ]
  * 		};
  *
- * To use defined font sizes from {@link module:core/commandcollection~CommandCollection} use `fontSize` command and pass desired
- * font size as a value.
- * For example, the below code will apply `fontSize` attribute with `tiny` value to the current selection:
+ * Font size can be applied using the command API. To do that, use the `fontSize` command and pass the desired font size as a `value`.
+ * For example, the below code will apply the `fontSize` attribute with the **tiny** value to the current selection:
  *
  *		editor.execute( 'fontSize', { value: 'tiny' } );
  *

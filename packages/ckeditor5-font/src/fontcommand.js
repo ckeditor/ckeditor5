@@ -25,7 +25,7 @@ export default class FontCommand extends Command {
 		super( editor );
 
 		/**
-		 * If is set it means that selection has `attributeKey` set to that value.
+		 * When set, it reflects the {@link #attributeKey} value of the selection.
 		 *
 		 * @observable
 		 * @readonly
@@ -53,7 +53,8 @@ export default class FontCommand extends Command {
 	}
 
 	/**
-	 * Executes the command. Applies the the attribute `value` to a selection. If no value is passed it removes attribute from selection.
+	 * Executes the command. Applies the `value` of the {@link #attributeKey} to the selection.
+	 * If no `value` is passed, it removes the attribute from the selection.
 	 *
 	 * @protected
 	 * @param {Object} [options] Options for the executed command.

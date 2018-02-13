@@ -8,8 +8,8 @@
  */
 
 /**
- * Returns {@link module:font/fontfamily~FontFamilyConfig#options} array with options normalized in the
- * {@link module:font/fontfamily~FontFamilyOption} format.
+ * Normalizes the {@link module:font/fontfamily~FontFamilyConfig#options config options}
+ * to the {@link module:font/fontfamily~FontFamilyOption} format.
  *
  * @param {Array.<String|Object>} configuredOptions An array of options taken from configuration.
  * @returns {Array.<module:font/fontfamily~FontFamilyOption>}

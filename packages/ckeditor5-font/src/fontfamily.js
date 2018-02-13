@@ -91,7 +91,7 @@ export default class FontFamily extends Plugin {
  *			]
  *		};
  *
- * which configures 8 font family options. Each option consist one or more coma–separated font-family names. The first font name is
+ * which configures 8 font family options. Each option consist one or more comma–separated font-family names. The first font name is
  * used as a dropdown item description in the UI. The family names that consist of spaces should not have quotes
  * (as opposed to the CSS standard).
  *
