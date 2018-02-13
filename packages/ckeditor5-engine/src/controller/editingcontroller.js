@@ -133,7 +133,7 @@ export default class EditingController {
 
 		// If an existing marker is updated through `model.Model#markers` directly (not through operation), just remove it.
 		this.listenTo( model.markers, 'update', ( evt, marker, oldRange ) => {
-			if ( oldRange && !marker.managedUsingOperations ) {
+			if ( oldRange && !removedMarkers.has( marker.name ) ) {
 				removedMarkers.add( marker.name );
 
 				this.view.change( writer => {
