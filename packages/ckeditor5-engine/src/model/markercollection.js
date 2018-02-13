@@ -86,10 +86,10 @@ export default class MarkerCollection {
 	 * @fires module:engine/model/markercollection~MarkerCollection#event:update
 	 * @param {String|module:engine/model/markercollection~Marker} markerOrName Name of marker to set or marker instance to update.
 	 * @param {module:engine/model/range~Range} range Marker range.
-	 * @param {Boolean} managedUsingOperations Specifies whether the marker is managed using operations.
+	 * @param {Boolean} [managedUsingOperations=false] Specifies whether the marker is managed using operations.
 	 * @returns {module:engine/model/markercollection~Marker} `Marker` instance which was added or updated.
 	 */
-	_set( markerOrName, range, managedUsingOperations ) {
+	_set( markerOrName, range, managedUsingOperations = false ) {
 		const markerName = markerOrName instanceof Marker ? markerOrName.name : markerOrName;
 		const oldMarker = this._markers.get( markerName );
 
@@ -102,7 +102,7 @@ export default class MarkerCollection {
 				hasChanged = true;
 			}
 
-			if ( !!managedUsingOperations !== oldMarker.managedUsingOperations ) {
+			if ( managedUsingOperations != oldMarker.managedUsingOperations ) {
 				oldMarker._managedUsingOperations = managedUsingOperations;
 				hasChanged = true;
 			}
@@ -314,7 +314,7 @@ class Marker {
 		 * @protected
 		 * @member {Boolean}
 		 */
-		this._managedUsingOperations = !!managedUsingOperations;
+		this._managedUsingOperations = managedUsingOperations;
 
 		/**
 		 * Range marked by the marker.
