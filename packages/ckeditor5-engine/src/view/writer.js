@@ -17,7 +17,6 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import DocumentFragment from './documentfragment';
 import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 import Text from './text';
-import Element from './element';
 import EditableElement from './editableelement';
 
 /**
@@ -107,20 +106,6 @@ export default class Writer {
 	 */
 	createText( data ) {
 		return new Text( data );
-	}
-
-	/**
-	 * Creates new {@link module:engine/view/element~Element element}.
-	 *
-	 *		writer.createElement( 'paragraph' );
-	 *		writer.createElement( 'paragraph', { 'alignment': 'center' } );
-	 *
-	 * @param {String} name Name of the element.
-	 * @param {Object} [attributes] Elements attributes.
-	 * @returns {module:engine/view/element~Element} Created element.
-	 */
-	createElement( name, attributes ) {
-		return new Element( name, attributes );
 	}
 
 	/**

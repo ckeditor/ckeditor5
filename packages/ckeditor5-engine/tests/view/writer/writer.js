@@ -60,16 +60,6 @@ describe( 'Writer', () => {
 		} );
 	} );
 
-	describe( 'createElement()', () => {
-		it( 'should create Element', () => {
-			const element = writer.createElement( 'foo', attributes );
-
-			expect( element.is( 'element' ) ).to.be.true;
-			expect( element.name ).to.equal( 'foo' );
-			assertElementAttributes( element, attributes );
-		} );
-	} );
-
 	describe( 'createAttributeElement()', () => {
 		it( 'should create AttributeElement', () => {
 			const element = writer.createAttributeElement( 'foo', attributes );
