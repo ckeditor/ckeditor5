@@ -202,6 +202,10 @@ export default class Writer {
 		element._setStyle( property, value );
 	}
 
+	removeStyle( property, element ) {
+		element._removeStyle( property );
+	}
+
 	/**
 	 * Breaks attribute nodes at provided position or at boundaries of provided range. It breaks attribute elements inside
 	 * up to a container element.
@@ -1120,7 +1124,7 @@ export default class Writer {
 		this.removeClass( Array.from( wrapper.getClassNames() ), toUnwrap );
 
 		// Remove all wrapper's styles from unwrapped element.
-		toUnwrap.removeStyle( ...wrapper.getStyleNames() );
+		this.removeStyle( Array.from( wrapper.getStyleNames() ), toUnwrap );
 
 		return true;
 	}

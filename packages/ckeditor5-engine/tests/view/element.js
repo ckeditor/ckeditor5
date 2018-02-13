@@ -833,10 +833,10 @@ describe( 'Element', () => {
 			} );
 		} );
 
-		describe( 'removeStyle', () => {
+		describe( '_removeStyle()', () => {
 			it( 'should remove style', () => {
 				el._setStyle( 'padding-top', '10px' );
-				el.removeStyle( 'padding-top' );
+				el._removeStyle( 'padding-top' );
 
 				expect( el.hasStyle( 'padding-top' ) ).to.be.false;
 			} );
@@ -848,7 +848,7 @@ describe( 'Element', () => {
 					done();
 				} );
 
-				el.removeStyle( 'color' );
+				el._removeStyle( 'color' );
 			} );
 
 			it( 'should remove multiple styles', () => {
@@ -857,7 +857,7 @@ describe( 'Element', () => {
 					'margin-top': '10px',
 					'color': 'red'
 				} );
-				el.removeStyle( 'padding-top', 'margin-top' );
+				el._removeStyle( [ 'padding-top', 'margin-top' ] );
 
 				expect( el.hasStyle( 'padding-top' ) ).to.be.false;
 				expect( el.hasStyle( 'margin-top' ) ).to.be.false;

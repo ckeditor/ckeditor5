@@ -487,20 +487,6 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Removes specified style.
-	 *
-	 *		element.removeStyle( 'color' );  // Removes 'color' style.
-	 *		element.removeStyle( 'color', 'border-top' ); // Removes both 'color' and 'border-top' styles.
-	 *
-	 * @param {...String} property
-	 * @fires module:engine/view/node~Node#change
-	 */
-	removeStyle( ...property ) {
-		this._fireChange( 'attributes', this );
-		property.forEach( name => this._styles.delete( name ) );
-	}
-
-	/**
 	 * Returns ancestor element that match specified pattern.
 	 * Provided patterns should be compatible with {@link module:engine/view/matcher~Matcher Matcher} as it is used internally.
 	 *
@@ -717,6 +703,23 @@ export default class Element extends Node {
 		} else {
 			this._styles.set( property, value );
 		}
+	}
+
+	/**
+	 * Removes specified style.
+	 *
+	 *		element._removeStyle( 'color' );  // Removes 'color' style.
+	 *		element._removeStyle( [ 'color', 'border-top' ] ); // Removes both 'color' and 'border-top' styles.
+	 *
+	 * @protected
+	 * @param {Array.<String>|String} property
+	 * @fires module:engine/view/node~Node#change
+	 */
+	_removeStyle( property ) {
+		this._fireChange( 'attributes', this );
+
+		property = Array.isArray( property ) ? property : [ property ];
+		property.forEach( name => this._styles.delete( name ) );
 	}
 
 	/**
