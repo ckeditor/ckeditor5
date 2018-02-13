@@ -77,12 +77,12 @@ export function convertCollapsedSelection() {
 			return;
 		}
 
-		const writer = conversionApi.writer;
+		const viewWriter = conversionApi.writer;
 		const modelPosition = selection.getFirstPosition();
 		const viewPosition = conversionApi.mapper.toViewPosition( modelPosition );
-		const brokenPosition = writer.breakAttributes( viewPosition );
+		const brokenPosition = viewWriter.breakAttributes( viewPosition );
 
-		writer.setSelection( brokenPosition );
+		viewWriter.setSelection( brokenPosition );
 	};
 }
 
@@ -112,8 +112,8 @@ export function convertCollapsedSelection() {
  */
 export function clearAttributes() {
 	return ( evt, data, consumable, conversionApi ) => {
-		const writer = conversionApi.writer;
-		const viewSelection = writer.document.selection;
+		const viewWriter = conversionApi.writer;
+		const viewSelection = viewWriter.document.selection;
 
 		for ( const range of viewSelection.getRanges() ) {
 			// Not collapsed selection should not have artifacts.
@@ -124,7 +124,7 @@ export function clearAttributes() {
 				}
 			}
 		}
-		writer.setSelection( null );
+		viewWriter.setSelection( null );
 	};
 }
 

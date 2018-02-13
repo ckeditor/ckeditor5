@@ -483,7 +483,7 @@ function _getCreatorForArrayConfig( config ) {
  * The converter automatically consumes corresponding value from consumables list, stops the event (see
  * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}) and bind model and view elements.
  *
- *		modelDispatcher.on(
+ *		downcastDispatcher.on(
  *			'insert:myElem',
  *			insertElement( ( modelItem, consumable, conversionApi ) => {
  *				const writer = conversionApi.writer;
@@ -961,10 +961,11 @@ export function removeHighlight( highlightDescriptor ) {
 		// Then, iterate through all other items. Look for text nodes and unwrap them. Start from the end
 		// to prevent errors when view structure changes when unwrapping (and, for example, some attributes are merged).
 		const viewHighlightElement = createViewElementFromHighlightDescriptor( descriptor );
+		const viewWriter = conversionApi.writer;
 
 		for ( const item of Array.from( items ).reverse() ) {
 			if ( item.is( 'textProxy' ) ) {
-				conversionApi.writer.unwrap( ViewRange.createOn( item ), viewHighlightElement );
+				viewWriter.unwrap( ViewRange.createOn( item ), viewHighlightElement );
 			}
 		}
 	};
