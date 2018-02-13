@@ -335,7 +335,7 @@ describe( 'Node', () => {
 			sinon.assert.calledWith( rootChangeSpy, 'attributes', img );
 		} );
 
-		describe( 'setAttribute()', () => {
+		describe( '_setAttribute()', () => {
 			it( 'should fire change event', () => {
 				img._setAttribute( 'width', 100 );
 
@@ -344,9 +344,9 @@ describe( 'Node', () => {
 			} );
 		} );
 
-		describe( 'removeAttribute()', () => {
+		describe( '_removeAttribute()', () => {
 			it( 'should fire change event', () => {
-				img.removeAttribute( 'src' );
+				img._removeAttribute( 'src' );
 
 				sinon.assert.calledOnce( rootChangeSpy );
 				sinon.assert.calledWith( rootChangeSpy, 'attributes', img );

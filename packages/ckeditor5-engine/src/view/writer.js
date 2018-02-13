@@ -186,6 +186,10 @@ export default class Writer {
 		element._setAttribute( key, value );
 	}
 
+	removeAttribute( key, element ) {
+		element._removeAttribute( key );
+	}
+
 	/**
 	 * Breaks attribute nodes at provided position or at boundaries of provided range. It breaks attribute elements inside
 	 * up to a container element.
@@ -681,7 +685,7 @@ export default class Writer {
 			const node = breakStart.nodeAfter;
 
 			// Unwrap single attribute element.
-			if ( !attribute.isSimilar( node ) && node instanceof AttributeElement && unwrapAttributeElement( attribute, node ) ) {
+			if ( !attribute.isSimilar( node ) && node instanceof AttributeElement && this._unwrapAttributeElement( attribute, node ) ) {
 				const start = this.mergeAttributes( breakStart );
 
 				if ( !start.isEqual( breakStart ) ) {
@@ -1047,6 +1051,67 @@ export default class Writer {
 
 		return true;
 	}
+
+	/**
+	 * Unwraps {@link module:engine/view/attributeelement~AttributeElement AttributeElement} from another by removing
+	 * corresponding attributes, classes and styles. All attributes, classes and styles from wrapper should be present
+	 * inside element being unwrapped.
+	 *
+	 * @private
+	 * @param {module:engine/view/attributeelement~AttributeElement} wrapper Wrapper AttributeElement.
+	 * @param {module:engine/view/attributeelement~AttributeElement} toUnwrap AttributeElement to unwrap using wrapper element.
+	 * @returns {Boolean} Returns `true` if elements are unwrapped.
+	 **/
+	_unwrapAttributeElement( wrapper, toUnwrap ) {
+		// Can't unwrap if name or priority differs.
+		if ( wrapper.name !== toUnwrap.name || wrapper.priority !== toUnwrap.priority ) {
+			return false;
+		}
+
+		// Check if AttributeElement has all wrapper attributes.
+		for ( const key of wrapper.getAttributeKeys() ) {
+			// Classes and styles should be checked separately.
+			if ( key === 'class' || key === 'style' ) {
+				continue;
+			}
+
+			// If some attributes are missing or different we cannot unwrap.
+			if ( !toUnwrap.hasAttribute( key ) || toUnwrap.getAttribute( key ) !== wrapper.getAttribute( key ) ) {
+				return false;
+			}
+		}
+
+		// Check if AttributeElement has all wrapper classes.
+		if ( !toUnwrap.hasClass( ...wrapper.getClassNames() ) ) {
+			return false;
+		}
+
+		// Check if AttributeElement has all wrapper styles.
+		for ( const key of wrapper.getStyleNames() ) {
+			// If some styles are missing or different we cannot unwrap.
+			if ( !toUnwrap.hasStyle( key ) || toUnwrap.getStyle( key ) !== wrapper.getStyle( key ) ) {
+				return false;
+			}
+		}
+
+		// Remove all wrapper's attributes from unwrapped element.
+		for ( const key of wrapper.getAttributeKeys() ) {
+			// Classes and styles should be checked separately.
+			if ( key === 'class' || key === 'style' ) {
+				continue;
+			}
+
+			this.removeAttribute( key, toUnwrap );
+		}
+
+		// Remove all wrapper's classes from unwrapped element.
+		toUnwrap.removeClass( ...wrapper.getClassNames() );
+
+		// Remove all wrapper's styles from unwrapped element.
+		toUnwrap.removeStyle( ...wrapper.getStyleNames() );
+
+		return true;
+	}
 }
 
 // Helper function for `view.writer.wrap`. Checks if given element has any children that are not ui elements.
@@ -1296,63 +1361,6 @@ function mergeTextNodes( t1, t2 ) {
 	t2.remove();
 
 	return new Position( t1, nodeBeforeLength );
-}
-
-// Unwraps {@link module:engine/view/attributeelement~AttributeElement AttributeElement} from another by removing corresponding attributes,
-// classes and styles. All attributes, classes and styles from wrapper should be present inside element being unwrapped.
-//
-// @param {module:engine/view/attributeelement~AttributeElement} wrapper Wrapper AttributeElement.
-// @param {module:engine/view/attributeelement~AttributeElement} toUnwrap AttributeElement to unwrap using wrapper element.
-// @returns {Boolean} Returns `true` if elements are unwrapped.
-function unwrapAttributeElement( wrapper, toUnwrap ) {
-	// Can't unwrap if name or priority differs.
-	if ( wrapper.name !== toUnwrap.name || wrapper.priority !== toUnwrap.priority ) {
-		return false;
-	}
-
-	// Check if AttributeElement has all wrapper attributes.
-	for ( const key of wrapper.getAttributeKeys() ) {
-		// Classes and styles should be checked separately.
-		if ( key === 'class' || key === 'style' ) {
-			continue;
-		}
-
-		// If some attributes are missing or different we cannot unwrap.
-		if ( !toUnwrap.hasAttribute( key ) || toUnwrap.getAttribute( key ) !== wrapper.getAttribute( key ) ) {
-			return false;
-		}
-	}
-
-	// Check if AttributeElement has all wrapper classes.
-	if ( !toUnwrap.hasClass( ...wrapper.getClassNames() ) ) {
-		return false;
-	}
-
-	// Check if AttributeElement has all wrapper styles.
-	for ( const key of wrapper.getStyleNames() ) {
-		// If some styles are missing or different we cannot unwrap.
-		if ( !toUnwrap.hasStyle( key ) || toUnwrap.getStyle( key ) !== wrapper.getStyle( key ) ) {
-			return false;
-		}
-	}
-
-	// Remove all wrapper's attributes from unwrapped element.
-	for ( const key of wrapper.getAttributeKeys() ) {
-		// Classes and styles should be checked separately.
-		if ( key === 'class' || key === 'style' ) {
-			continue;
-		}
-
-		toUnwrap.removeAttribute( key );
-	}
-
-	// Remove all wrapper's classes from unwrapped element.
-	toUnwrap.removeClass( ...wrapper.getClassNames() );
-
-	// Remove all wrapper's styles from unwrapped element.
-	toUnwrap.removeStyle( ...wrapper.getStyleNames() );
-
-	return true;
 }
 
 // Returns `true` if range is located in same {@link module:engine/view/attributeelement~AttributeElement AttributeElement}

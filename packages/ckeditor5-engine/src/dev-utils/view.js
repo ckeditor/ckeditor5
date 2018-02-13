@@ -952,7 +952,7 @@ function _convertElement( viewElement ) {
 function _convertElementNameAndPriority( viewElement ) {
 	const parts = viewElement.name.split( ':' );
 	const priority = _convertPriority( viewElement.getAttribute( 'view-priority' ) );
-	viewElement.removeAttribute( 'view-priority' );
+	viewElement._removeAttribute( 'view-priority' );
 
 	if ( parts.length == 1 ) {
 		return {

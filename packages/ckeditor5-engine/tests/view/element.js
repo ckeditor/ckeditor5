@@ -249,7 +249,7 @@ describe( 'Element', () => {
 			const other3 = el.clone();
 			other1._setAttribute( 'baz', 'qux' );
 			other2._setAttribute( 'foo', 'not-bar' );
-			other3.removeAttribute( 'foo' );
+			other3._removeAttribute( 'foo' );
 			expect( el.isSimilar( other1 ) ).to.be.false;
 			expect( el.isSimilar( other2 ) ).to.be.false;
 			expect( el.isSimilar( other3 ) ).to.be.false;
@@ -430,7 +430,7 @@ describe( 'Element', () => {
 			el = new Element( 'p' );
 		} );
 
-		describe( 'setAttribute', () => {
+		describe( '_setAttribute', () => {
 			it( 'should set attribute', () => {
 				el._setAttribute( 'foo', 'bar' );
 
@@ -595,13 +595,13 @@ describe( 'Element', () => {
 			} );
 		} );
 
-		describe( 'removeAttribute', () => {
+		describe( '_removeAttribute', () => {
 			it( 'should remove attributes', () => {
 				el._setAttribute( 'foo', true );
 
 				expect( el.hasAttribute( 'foo' ) ).to.be.true;
 
-				el.removeAttribute( 'foo' );
+				el._removeAttribute( 'foo' );
 
 				expect( el.hasAttribute( 'foo' ) ).to.be.false;
 
@@ -615,14 +615,14 @@ describe( 'Element', () => {
 					done();
 				} );
 
-				el.removeAttribute( 'foo' );
+				el._removeAttribute( 'foo' );
 			} );
 
 			it( 'should remove class attribute', () => {
 				el.addClass( 'foo', 'bar' );
 				const el2 = new Element( 'p' );
-				const removed1 = el.removeAttribute( 'class' );
-				const removed2 = el2.removeAttribute( 'class' );
+				const removed1 = el._removeAttribute( 'class' );
+				const removed2 = el2._removeAttribute( 'class' );
 
 				expect( el.hasAttribute( 'class' ) ).to.be.false;
 				expect( el.hasClass( 'foo' ) ).to.be.false;
@@ -635,8 +635,8 @@ describe( 'Element', () => {
 				el.setStyle( 'color', 'red' );
 				el.setStyle( 'position', 'fixed' );
 				const el2 = new Element( 'p' );
-				const removed1 = el.removeAttribute( 'style' );
-				const removed2 = el2.removeAttribute( 'style' );
+				const removed1 = el._removeAttribute( 'style' );
+				const removed2 = el2._removeAttribute( 'style' );
 
 				expect( el.hasAttribute( 'style' ) ).to.be.false;
 				expect( el.hasStyle( 'color' ) ).to.be.false;

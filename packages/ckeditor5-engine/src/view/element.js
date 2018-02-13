@@ -349,42 +349,6 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Removes attribute from the element.
-	 *
-	 * @param {String} key Attribute key.
-	 * @returns {Boolean} Returns true if an attribute existed and has been removed.
-	 * @fires module:engine/view/node~Node#change
-	 */
-	removeAttribute( key ) {
-		this._fireChange( 'attributes', this );
-
-		// Remove class attribute.
-		if ( key == 'class' ) {
-			if ( this._classes.size > 0 ) {
-				this._classes.clear();
-
-				return true;
-			}
-
-			return false;
-		}
-
-		// Remove style attribute.
-		if ( key == 'style' ) {
-			if ( this._styles.size > 0 ) {
-				this._styles.clear();
-
-				return true;
-			}
-
-			return false;
-		}
-
-		// Remove other attributes.
-		return this._attrs.delete( key );
-	}
-
-	/**
 	 * Removes number of child nodes starting at the given index and set the parent of these nodes to `null`.
 	 *
 	 * @param {Number} index Number of the first node to remove.
@@ -710,6 +674,43 @@ export default class Element extends Node {
 		} else {
 			this._attrs.set( key, value );
 		}
+	}
+
+	/**
+	 * Removes attribute from the element.
+	 *
+	 * @protected
+	 * @param {String} key Attribute key.
+	 * @returns {Boolean} Returns true if an attribute existed and has been removed.
+	 * @fires module:engine/view/node~Node#change
+	 */
+	_removeAttribute( key ) {
+		this._fireChange( 'attributes', this );
+
+		// Remove class attribute.
+		if ( key == 'class' ) {
+			if ( this._classes.size > 0 ) {
+				this._classes.clear();
+
+				return true;
+			}
+
+			return false;
+		}
+
+		// Remove style attribute.
+		if ( key == 'style' ) {
+			if ( this._styles.size > 0 ) {
+				this._styles.clear();
+
+				return true;
+			}
+
+			return false;
+		}
+
+		// Remove other attributes.
+		return this._attrs.delete( key );
 	}
 
 	/**

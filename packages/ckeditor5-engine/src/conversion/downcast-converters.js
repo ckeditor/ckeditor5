@@ -726,7 +726,8 @@ export function changeAttribute( attributeCreator ) {
 		const viewWriter = conversionApi.writer;
 
 		if ( data.attributeOldValue !== null && oldAttribute ) {
-			mapper.toViewElement( data.item ).removeAttribute( oldAttribute.key );
+			const viewElement = mapper.toViewElement( data.item );
+			viewWriter.removeAttribute( oldAttribute.key, viewElement );
 		}
 
 		// Then, if conversion was successful, set the new attribute.

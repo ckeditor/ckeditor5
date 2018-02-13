@@ -60,7 +60,7 @@ export function detachPlaceholder( element ) {
 	const document = element.document;
 
 	element.removeClass( 'ck-placeholder' );
-	element.removeAttribute( 'data-placeholder' );
+	element._removeAttribute( 'data-placeholder' );
 
 	if ( documentPlaceholders.has( document ) ) {
 		documentPlaceholders.get( document ).delete( element );
