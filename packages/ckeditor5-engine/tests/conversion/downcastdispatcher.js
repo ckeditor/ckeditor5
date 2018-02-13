@@ -385,8 +385,8 @@ describe( 'DowncastDispatcher', () => {
 			const viewFigure = new ViewContainerElement( 'figure', null, viewCaption );
 
 			// Create custom highlight handler mock.
-			viewFigure.setCustomProperty( 'addHighlight', () => { } );
-			viewFigure.setCustomProperty( 'removeHighlight', () => { } );
+			viewFigure._setCustomProperty( 'addHighlight', () => { } );
+			viewFigure._setCustomProperty( 'removeHighlight', () => { } );
 
 			// Create mapper mock.
 			dispatcher.conversionApi.mapper = {

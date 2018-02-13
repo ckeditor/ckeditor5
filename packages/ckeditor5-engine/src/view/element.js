@@ -511,17 +511,6 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Sets a custom property. Unlike attributes, custom properties are not rendered to the DOM,
-	 * so they can be used to add special data to elements.
-	 *
-	 * @param {String|Symbol} key
-	 * @param {*} value
-	 */
-	setCustomProperty( key, value ) {
-		this._customProperties.set( key, value );
-	}
-
-	/**
 	 * Returns the custom property value for the given key.
 	 *
 	 * @param {String|Symbol} key
@@ -720,6 +709,18 @@ export default class Element extends Node {
 
 		property = Array.isArray( property ) ? property : [ property ];
 		property.forEach( name => this._styles.delete( name ) );
+	}
+
+	/**
+	 * Sets a custom property. Unlike attributes, custom properties are not rendered to the DOM,
+	 * so they can be used to add special data to elements.
+	 *
+	 * @protected
+	 * @param {String|Symbol} key
+	 * @param {*} value
+	 */
+	_setCustomProperty( key, value ) {
+		this._customProperties.set( key, value );
 	}
 
 	/**

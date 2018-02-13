@@ -74,7 +74,7 @@ export default class EditableElement extends ContainerElement {
 			throw new CKEditorError( 'view-editableelement-document-already-set: View document is already set.' );
 		}
 
-		this.setCustomProperty( documentSymbol, document );
+		this._setCustomProperty( documentSymbol, document );
 
 		this.bind( 'isReadOnly' ).to( document );
 

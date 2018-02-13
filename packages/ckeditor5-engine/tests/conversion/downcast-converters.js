@@ -1302,13 +1302,13 @@ describe( 'downcast-converters', () => {
 				dispatcher.on( 'insert:div', insertElement( () => {
 					const viewContainer = new ViewContainerElement( 'div' );
 
-					viewContainer.setCustomProperty( 'addHighlight', ( element, descriptor ) => {
+					viewContainer._setCustomProperty( 'addHighlight', ( element, descriptor ) => {
 						controller.view.change( writer => {
 							writer.addClass( descriptor.class, element );
 						} );
 					} );
 
-					viewContainer.setCustomProperty( 'removeHighlight', element => {
+					viewContainer._setCustomProperty( 'removeHighlight', element => {
 						controller.view.change( writer => {
 							writer.setAttribute( 'class', '', element );
 						} );
@@ -1383,12 +1383,12 @@ describe( 'downcast-converters', () => {
 				dispatcher.on( 'addMarker:marker2', highlightElement( () => null ) );
 				dispatcher.on( 'removeMarker:marker2', removeHighlight( () => null ) );
 
-				viewDiv.setCustomProperty( 'addHighlight', ( element, descriptor ) => {
+				viewDiv._setCustomProperty( 'addHighlight', ( element, descriptor ) => {
 					expect( descriptor.priority ).to.equal( 10 );
 					expect( descriptor.id ).to.equal( 'marker:foo-bar-baz' );
 				} );
 
-				viewDiv.setCustomProperty( 'removeHighlight', ( element, id ) => {
+				viewDiv._setCustomProperty( 'removeHighlight', ( element, id ) => {
 					expect( id ).to.equal( 'marker:foo-bar-baz' );
 				} );
 

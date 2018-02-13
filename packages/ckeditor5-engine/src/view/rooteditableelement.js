@@ -53,7 +53,7 @@ export default class RootEditableElement extends EditableElement {
 	}
 
 	set rootName( rootName ) {
-		this.setCustomProperty( rootNameSymbol, rootName );
+		this._setCustomProperty( rootNameSymbol, rootName );
 	}
 
 	/**

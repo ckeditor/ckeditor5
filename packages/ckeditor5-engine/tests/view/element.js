@@ -198,8 +198,8 @@ describe( 'Element', () => {
 		it( 'should clone custom properties', () => {
 			const el = new Element( 'p' );
 			const symbol = Symbol( 'custom' );
-			el.setCustomProperty( 'foo', 'bar' );
-			el.setCustomProperty( symbol, 'baz' );
+			el._setCustomProperty( 'foo', 'bar' );
+			el._setCustomProperty( symbol, 'baz' );
 
 			const cloned = el.clone();
 
@@ -964,7 +964,7 @@ describe( 'Element', () => {
 	describe( 'custom properties', () => {
 		it( 'should allow to set and get custom properties', () => {
 			const el = new Element( 'p' );
-			el.setCustomProperty( 'foo', 'bar' );
+			el._setCustomProperty( 'foo', 'bar' );
 
 			expect( el.getCustomProperty( 'foo' ) ).to.equal( 'bar' );
 		} );
@@ -972,7 +972,7 @@ describe( 'Element', () => {
 		it( 'should allow to add symbol property', () => {
 			const el = new Element( 'p' );
 			const symbol = Symbol( 'custom' );
-			el.setCustomProperty( symbol, 'bar' );
+			el._setCustomProperty( symbol, 'bar' );
 
 			expect( el.getCustomProperty( symbol ) ).to.equal( 'bar' );
 		} );
@@ -980,8 +980,8 @@ describe( 'Element', () => {
 		it( 'should allow to remove custom property', () => {
 			const el = new Element( 'foo' );
 			const symbol = Symbol( 'quix' );
-			el.setCustomProperty( 'bar', 'baz' );
-			el.setCustomProperty( symbol, 'test' );
+			el._setCustomProperty( 'bar', 'baz' );
+			el._setCustomProperty( symbol, 'test' );
 
 			expect( el.getCustomProperty( 'bar' ) ).to.equal( 'baz' );
 			expect( el.getCustomProperty( symbol ) ).to.equal( 'test' );
@@ -995,9 +995,9 @@ describe( 'Element', () => {
 
 		it( 'should allow to iterate over custom properties', () => {
 			const el = new Element( 'p' );
-			el.setCustomProperty( 'foo', 1 );
-			el.setCustomProperty( 'bar', 2 );
-			el.setCustomProperty( 'baz', 3 );
+			el._setCustomProperty( 'foo', 1 );
+			el._setCustomProperty( 'bar', 2 );
+			el._setCustomProperty( 'baz', 3 );
 
 			const properties = [ ...el.getCustomProperties() ];
 

@@ -1012,7 +1012,7 @@ export function createViewElementFromHighlightDescriptor( descriptor ) {
 		viewElement.priority = descriptor.priority;
 	}
 
-	viewElement.setCustomProperty( 'highlightDescriptorId', descriptor.id );
+	viewElement._setCustomProperty( 'highlightDescriptorId', descriptor.id );
 
 	return viewElement;
 }
