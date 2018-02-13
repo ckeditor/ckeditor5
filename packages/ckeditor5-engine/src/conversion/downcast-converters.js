@@ -788,7 +788,7 @@ export function wrap( elementCreator ) {
 
 		if ( data.item instanceof ModelSelection || data.item instanceof DocumentSelection ) {
 			// Selection attribute conversion.
-			viewWriter.wrap( viewSelection.getFirstRange(), newViewElement, viewSelection );
+			viewWriter.wrap( viewSelection.getFirstRange(), newViewElement );
 		} else {
 			// Node attribute conversion.
 			let viewRange = conversionApi.mapper.toViewRange( data.range );
