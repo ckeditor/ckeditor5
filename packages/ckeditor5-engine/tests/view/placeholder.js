@@ -78,7 +78,7 @@ describe( 'placeholder', () => {
 
 			attachPlaceholder( view, element, 'foo bar baz', spy );
 
-			sinon.assert.calledOnce( spy );
+			sinon.assert.called( spy );
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
 		} );
@@ -185,7 +185,7 @@ describe( 'placeholder', () => {
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
 
-			detachPlaceholder( element );
+			detachPlaceholder( view, element );
 
 			expect( element.hasAttribute( 'data-placeholder' ) ).to.be.false;
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;

@@ -22,6 +22,7 @@ import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import { scrollViewportToShowTarget } from '@ckeditor/ckeditor5-utils/src/dom/scroll';
+import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
 import { injectUiElementHandling } from './uielement';
 import { injectQuirksHandling } from './filler';
 
@@ -352,13 +353,14 @@ export default class View {
 	 * @private
 	 */
 	_render() {
-		this._renderingInProgress = true;
+		// Lock just before rendering and unlock just after.
+		// This way other parts of the code can listen to the `render` event and modify the view tree just before rendering.
+		this.renderer.once( 'render', () => ( this._renderingInProgress = true ), { priority: priorities.get( 'normal' ) + 1 } );
+		this.renderer.once( 'render', () => ( this._renderingInProgress = false ), { priority: priorities.get( 'normal' ) - 1 } );
 
 		this.disableObservers();
 		this.renderer.render();
 		this.enableObservers();
-
-		this._renderingInProgress = false;
 	}
 
 	/**

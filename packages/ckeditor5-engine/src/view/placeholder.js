@@ -30,61 +30,67 @@ export function attachPlaceholder( view, element, placeholderText, checkFunction
 	const document = view.document;
 
 	// Detach placeholder if was used before.
-	detachPlaceholder( element );
+	detachPlaceholder( view, element );
 
 	// Single listener per document.
 	if ( !documentPlaceholders.has( document ) ) {
 		documentPlaceholders.set( document, new Map() );
 
 		// Attach listener just before rendering and update placeholders.
-		listener.listenTo( view.renderer, 'render', () => updateAllPlaceholders( document ), { priority: 'highest' } );
+		listener.listenTo( view.renderer, 'render', () => updateAllPlaceholders( view ), { priority: 'highest' } );
 	}
 
 	// Store text in element's data attribute.
 	// This data attribute is used in CSS class to show the placeholder.
-	element._setAttribute( 'data-placeholder', placeholderText );
+	view.change( writer => {
+		writer.setAttribute( 'data-placeholder', placeholderText, element );
+	} );
 
 	// Store information about placeholder.
 	documentPlaceholders.get( document ).set( element, checkFunction );
 
 	// Update right away too.
-	updateSinglePlaceholder( element, checkFunction );
+	updateSinglePlaceholder( view, element, checkFunction );
 }
 
 /**
  * Removes placeholder functionality from given element.
  *
+ * @param {module:engine/view/view~View} view
  * @param {module:engine/view/element~Element} element
  */
-export function detachPlaceholder( element ) {
+export function detachPlaceholder( view, element ) {
 	const document = element.document;
-
-	element._removeClass( 'ck-placeholder' );
-	element._removeAttribute( 'data-placeholder' );
 
 	if ( documentPlaceholders.has( document ) ) {
 		documentPlaceholders.get( document ).delete( element );
 	}
+
+	view.change( writer => {
+		writer.removeClass( 'ck-placeholder', element );
+		writer.removeAttribute( 'data-placeholder', element );
+	} );
 }
 
 // Updates all placeholders of given document.
 //
 // @private
-// @param {module:engine/view/document~Document} document
-function updateAllPlaceholders( document ) {
-	const placeholders = documentPlaceholders.get( document );
+// @param {module:engine/view/view~View} view
+function updateAllPlaceholders( view ) {
+	const placeholders = documentPlaceholders.get( view.document );
 
 	for ( const [ element, checkFunction ] of placeholders ) {
-		updateSinglePlaceholder( element, checkFunction );
+		updateSinglePlaceholder( view, element, checkFunction );
 	}
 }
 
 // Updates placeholder class of given element.
 //
 // @private
+// @param {module:engine/view/view~View} view
 // @param {module:engine/view/element~Element} element
 // @param {Function} checkFunction
-function updateSinglePlaceholder( element, checkFunction ) {
+function updateSinglePlaceholder( view, element, checkFunction ) {
 	const document = element.document;
 
 	// Element was removed from document.
@@ -97,7 +103,9 @@ function updateSinglePlaceholder( element, checkFunction ) {
 
 	// If checkFunction is provided and returns false - remove placeholder.
 	if ( checkFunction && !checkFunction() ) {
-		element._removeClass( 'ck-placeholder' );
+		view.change( writer => {
+			writer.removeClass( 'ck-placeholder', element );
+		} );
 
 		return;
 	}
@@ -108,15 +116,21 @@ function updateSinglePlaceholder( element, checkFunction ) {
 
 	// If element is empty and editor is blurred.
 	if ( !document.isFocused && isEmptyish ) {
-		element._addClass( 'ck-placeholder' );
+		view.change( writer => {
+			writer.addClass( 'ck-placeholder', element );
+		} );
 
 		return;
 	}
 
 	// It there are no child elements and selection is not placed inside element.
 	if ( isEmptyish && anchor && anchor.parent !== element ) {
-		element._addClass( 'ck-placeholder' );
+		view.change( writer => {
+			writer.addClass( 'ck-placeholder', element );
+		} );
 	} else {
-		element._removeClass( 'ck-placeholder' );
+		view.change( writer => {
+			writer.removeClass( 'ck-placeholder', element );
+		} );
 	}
 }
