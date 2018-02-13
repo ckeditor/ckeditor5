@@ -608,7 +608,7 @@ export default class Writer {
      * Wraps elements within range with provided {@link module:engine/view/attributeelement~AttributeElement AttributeElement}.
      * If a collapsed range is provided, it will be wrapped only if it is equal to view selection.
      *
-     * If `viewSelection` was set and a collapsed range was passed, if the range is same as selection, the selection
+     * If a collapsed range was passed and is same as selection, the selection
      * will be moved to the inside of the wrapped attribute element.
      *
      * Throws {@link module:utils/ckeditorerror~CKEditorError} `view-writer-invalid-range-container`
