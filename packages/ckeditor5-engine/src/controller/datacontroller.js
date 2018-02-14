@@ -145,6 +145,9 @@ export default class DataController {
 		const modelRange = ModelRange.createIn( modelElementOrFragment );
 
 		const viewDocumentFragment = new ViewDocumentFragment();
+
+		// Create separate ViewWriter just for data conversion purposes.
+		// We have no view controller and rendering do DOM in DataController so view.change() block is not used here.
 		const viewWriter = new ViewWriter( new ViewDocument() );
 		this.mapper.bindElements( modelElementOrFragment, viewDocumentFragment );
 
