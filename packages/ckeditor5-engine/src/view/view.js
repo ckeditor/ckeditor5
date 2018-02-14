@@ -27,17 +27,19 @@ import { injectQuirksHandling } from './filler';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
- * Editor's view controller class.
- * It combines the actual tree of view elements - {@link module:engine/view/document~Document}, tree of DOM elements,
- * {@link module:engine/view/domconverter~DomConverter DOM Converter}, {@link module:engine/view/renderer~Renderer renderer} and all
- * {@link module:engine/view/observer/observer~Observer observers}.
+ * Editor's view controller class. Its main responsibility is DOM - View management for editing purposes, to provide
+ * abstraction over the DOM structure and events and hide all browsers quirks.
  *
- * To modify view nodes use {@link module:engine/view/writer~Writer view writer}, which can be
- * accessed by using {@link module:engine/view/view~View#change} method.
+ * View controller renders view document to DOM whenever view structure changes. To determine when view can be rendered,
+ * all changes need to be done using the {@link module:engine/view/view~View#change} method, using
+ * {@link module:engine/view/writer~Writer}:
  *
- * If you want to only transform the tree of view elements to the DOM elements you can use the
- * {@link module:engine/view/domconverter~DomConverter DomConverter}.
+ *		view.change( writer => {
+ *			writer.insert( position, writer.createText( 'foo' ) );
+ *		} );
  *
+ * View controller also register {@link module:engine/view/observer/observer~Observer observers} which observes changes
+ * on DOM and fire events on the {@link module:engine/view/document~Document Document}.
  * Note that the following observers are added by the class constructor and are always available:
  *
  * * {@link module:engine/view/observer/mutationobserver~MutationObserver},
@@ -45,6 +47,11 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  * * {@link module:engine/view/observer/focusobserver~FocusObserver},
  * * {@link module:engine/view/observer/keyobserver~KeyObserver},
  * * {@link module:engine/view/observer/fakeselectionobserver~FakeSelectionObserver}.
+ *
+ * This class also {@link module:engine/view/view~View#attachDomRoot bind DOM and View elements}.
+ *
+ * If you do not need full DOM - View management, and want to only transform the tree of view elements to the DOM
+ * elements you do not need this controller, you can use the {@link module:engine/view/domconverter~DomConverter DomConverter}.
  *
  * @mixes module:utils/observablemixin~ObservableMixin
  */
@@ -285,10 +292,10 @@ export default class View {
 	 * after all changes are applied.
 	 *
 	 *		view.change( writer => {
-	 *			writer.insert( position1, writer.createText( 'foo' );
+	 *			writer.insert( position1, writer.createText( 'foo' ) );
 	 *
 	 *			view.change( writer => {
-	 *				writer.insert( position2, writer.createText( 'bar' );
+	 *				writer.insert( position2, writer.createText( 'bar' ) );
 	 *			} );
 	 *
 	 * 			writer.remove( range );
