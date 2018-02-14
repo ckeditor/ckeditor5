@@ -6,8 +6,7 @@
 /* global console, window, document */
 
 import ModelRange from '../../src/model/range';
-import ViewContainerElement from '../../src/view/containerelement';
-import ViewText from '../../src/view/text';
+import ViewPosition from '../../src/view/position';
 
 import {
 	upcastElementToElement,
@@ -50,8 +49,10 @@ class FancyWidget extends Plugin {
 
 		downcastElementToElement( {
 			model: 'fancywidget',
-			view: () => {
-				const widgetElement = new ViewContainerElement( 'figure', { class: 'fancy-widget' }, new ViewText( 'widget' ) );
+			view: ( modelItem, consumable, conversionApi ) => {
+				const viewWriter = conversionApi.writer;
+				const widgetElement = viewWriter.createContainerElement( 'figure', { class: 'fancy-widget' } );
+				viewWriter.insert( ViewPosition.createAt( widgetElement ), viewWriter.createText( 'widget' ) );
 
 				return toWidget( widgetElement );
 			}
