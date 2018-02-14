@@ -220,6 +220,20 @@ ClassicEditor.build = {
 
 This module will export an editor creator class which has all the plugins and configuration that you need already built-in. To use such editor, simply import that class and call the static `.create()` method like in all {@link builds/guides/integration/basic-api#Creating-an-editor examples}.
 
+```js
+import ClassicEditor from './ckeditor';
+
+ClassicEditor
+	// Note that you don't have to specify the plugin and toolbar configuraiton — using defaults from the build.
+	.create( document.querySelector( '#editor' ) )
+	.then( editor => {
+		console.log( 'Editor was initialized', editor );
+	} )
+	.catch( error => {
+		console.error( error.stack );
+	} );
+```
+
 ### Running the editor – method 2
 
 The second variant how to run the editor is to use the creator class directly, without creating an intermediary subclass. The above code would translate to:
