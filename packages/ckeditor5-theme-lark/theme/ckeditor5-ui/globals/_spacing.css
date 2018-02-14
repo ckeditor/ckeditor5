@@ -9,6 +9,6 @@
 	--ck-spacing-standard: 					var(--ck-spacing-unit);
 	--ck-spacing-medium: 					calc(var(--ck-spacing-unit) * 0.8);
 	--ck-spacing-small: 					calc(var(--ck-spacing-unit) * 0.5);
-	--ck-spacing-tiny: 						calc(var(--ck-spacing-unit) * 0.25);
+	--ck-spacing-tiny: 						calc(var(--ck-spacing-unit) * 0.3);
 	--ck-spacing-extra-tiny: 				calc(var(--ck-spacing-unit) * 0.16);
 }
