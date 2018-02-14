@@ -6,10 +6,10 @@
 /* globals ClassicEditor, console, window, document */
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-font-size' ), {
+	.create( document.querySelector( '#snippet-font' ), {
 		toolbar: {
 			items: [
-				'headings', '|', 'bulletedList', 'numberedList', 'fontSize', 'undo', 'redo'
+				'headings', '|', 'bulletedList', 'numberedList', 'fontSize', 'fontFamily', 'undo', 'redo'
 			],
 			viewportTopOffset: 60
 		}

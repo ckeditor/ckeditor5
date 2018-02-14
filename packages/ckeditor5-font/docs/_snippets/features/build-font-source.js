@@ -7,8 +7,8 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
 
-import FontFamily from '@ckeditor/ckeditor5-font/src/fontfamily';
+import Font from '@ckeditor/ckeditor5-font/src/font';
 
-ClassicEditor.build.plugins.push( FontFamily );
+ClassicEditor.build.plugins.push( Font );
 
 window.ClassicEditor = ClassicEditor;

@@ -1,15 +1,49 @@
 ---
-title: Font size
+title: Font
 category: features
 ---
 
-{@snippet features/build-font-size-source}
+{@snippet features/build-font-source}
 
-The {@link module:font/fontsize~FontSize} feature enables support for setting font size. This feature allows to control size of a text by inline `<span>` elements that have set either class or `font-size` CSS set in style attribute.
+The {@link module:font/font~Font} feature enables support for:
+* setting font family - which allows to control font face of a text by inline `<span>` elements with a `font-family` CSS set in style attribute.
+* setting font size - which allows to control size of a text by inline `<span>` elements that have set either class or `font-size` CSS set in style attribute.
+
+The font features can be used independently by using:
+* {@link module:font/fontfamily~FontFamily} to control font face of a text.
+* {@link module:font/fontsize~FontSize} to control size of a text.
 
 ## Demo
 
-{@snippet features/font-size}
+{@snippet features/font}
+
+## Configuring font family options
+
+It is possible to configure which font family options are supported by the editor. Use the {@link module:font/fontfamily~FontFamilyConfig#options `fontFamily.options`} configuration option to do so.
+
+Use the special keyword `'default'` to use the default `font-family` defined in the web page styles — it disables the font family feature.
+
+For example, the following editor supports only two font families besides the "default" one:
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		fontFamily: {
+			options: [
+				'default',
+				'Ubuntu, Arial, sans-serif',
+				'Ubuntu Mono, Courier New, Courier, monospace'
+			]
+		},
+		toolbar: [
+			'headings', 'bulletedList', 'numberedList', 'fontFamily', 'undo', 'redo'
+		]
+	} )
+	.then( ... )
+	.catch( ... );
+```
+
+{@snippet features/custom-font-family-options}
 
 ## Configuring font size options
 
@@ -127,12 +161,26 @@ npm install --save @ckeditor/ckeditor5-font
 And add it to your plugin list and the toolbar configuration:
 
 ```js
-import FontSize from '@ckeditor/ckeditor5-font/src/fontsize';
+import Font from '@ckeditor/ckeditor5-font/src/font';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ FontSize, ... ],
-		toolbar: [ 'fontSize', ... ]
+		plugins: [ Font, ... ],
+		toolbar: [ 'fontSize', 'fontFamily', ... ]
+	} )
+	.then( ... )
+	.catch( ... );
+```
+
+or add one of the font features to your plugin list and the toolbar configuration:
+
+```js
+import FontFamily from '@ckeditor/ckeditor5-font/src/fontfamily';
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		plugins: [ FontFamily, ... ],
+		toolbar: [ 'fontFamily', ... ]
 	} )
 	.then( ... )
 	.catch( ... );
@@ -143,6 +191,50 @@ ClassicEditor
 </info-box>
 
 ## Common API
+
+The {@link module:font/fontfamily~FontFamily} plugin registers:
+
+* The `'fontFamily'` dropdown,
+* The {@link module:font/fontfamily/fontfamilycommand~FontFamilyCommand `'fontFamily'`} command.
+
+	The number of options and their names correspond to the {@link module:font/fontfamily~FontFamilyConfig#options `fontFamily.options`} configuration option.
+
+	You can change the font family of the current selection by executing the command with a desired value:
+
+	```js
+	editor.execute( 'fontFamily', { value: 'Arial' } );
+	```
+
+	The `value` must correspond to the first font name in the configuration string. For the following default configuration:
+	```js
+	fontFamily.options = [
+		'default',
+		'Arial, Helvetica, sans-serif',
+		'Courier New, Courier, monospace',
+		'Georgia, serif',
+		'Lucida Sans Unicode, Lucida Grande, sans-serif',
+		'Tahoma, Geneva, sans-serif',
+		'Times New Roman, Times, serif',
+		'Trebuchet MS, Helvetica, sans-serif',
+		'Verdana, Geneva, sans-serif'
+	]
+	```
+
+	the `fontFamily` command will accept the corresponding strings as values:
+	* `'Arial'`
+	* `'Courier New'`
+	* `'Georgia'`
+	* `'Lucida Sans Unicode'`
+	* `'Tahoma'`
+	* `'Times New Roman'`
+	* `'Trebuchet MS'`
+	* `'Verdana'`
+
+	Note that passing an empty value will remove the `fontFamily` from the selection (`default`):
+
+	```js
+	editor.execute( 'fontFamily' );
+	```
 
 The {@link module:font/fontsize~FontSize} plugin registers the following components:
 
@@ -165,7 +257,6 @@ The {@link module:font/fontsize~FontSize} plugin registers the following compone
 	```js
 	editor.execute( 'fontSize' );
 	```
-
 ## Contribute
 
 The source code of the feature is available on GitHub in https://github.com/ckeditor/ckeditor5-font.
