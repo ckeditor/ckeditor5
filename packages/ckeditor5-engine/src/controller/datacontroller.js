@@ -87,7 +87,7 @@ export default class DataController {
 		 * @readonly
 		 * @member {module:engine/conversion/upcastdispatcher~UpcastDispatcher}
 		 */
-		this.upcastDispatcher = new UpcastDispatcher( this.model, {
+		this.upcastDispatcher = new UpcastDispatcher( {
 			schema: model.schema
 		} );
 
@@ -227,7 +227,9 @@ export default class DataController {
 	 * @returns {module:engine/model/documentfragment~DocumentFragment} Output document fragment.
 	 */
 	toModel( viewElementOrFragment, context = '$root' ) {
-		return this.upcastDispatcher.convert( viewElementOrFragment, context );
+		return this.model.change( writer => {
+			return this.upcastDispatcher.convert( viewElementOrFragment, writer, context );
+		} );
 	}
 
 	/**

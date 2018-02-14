@@ -97,19 +97,10 @@ export default class UpcastDispatcher {
 	 * Creates a `UpcastDispatcher` that operates using passed API.
 	 *
 	 * @see module:engine/conversion/upcastdispatcher~ViewConversionApi
-	 * @param {module:engine/model/model~Model} model Data model.
 	 * @param {Object} [conversionApi] Additional properties for interface that will be passed to events fired
 	 * by `UpcastDispatcher`.
 	 */
-	constructor( model, conversionApi = {} ) {
-		/**
-		 * Data model.
-		 *
-		 * @private
-		 * @type {module:engine/model/model~Model}
-		 */
-		this._model = model;
-
+	constructor( conversionApi = {} ) {
 		/**
 		 * List of elements that will be checked after conversion process and if element in the list will be empty it
 		 * will be removed from conversion result.
@@ -153,62 +144,61 @@ export default class UpcastDispatcher {
 	 * @fires documentFragment
 	 * @param {module:engine/view/documentfragment~DocumentFragment|module:engine/view/element~Element} viewItem
 	 * Part of the view to be converted.
+	 * @param {module:engine/model/writer~Writer} writer Instance of model writer.
 	 * @param {module:engine/model/schema~SchemaContextDefinition} [context=['$root']] Elements will be converted according to this context.
 	 * @returns {module:engine/model/documentfragment~DocumentFragment} Model data that is a result of the conversion process
 	 * wrapped in `DocumentFragment`. Converted marker elements will be set as that document fragment's
 	 * {@link module:engine/model/documentfragment~DocumentFragment#markers static markers map}.
 	 */
-	convert( viewItem, context = [ '$root' ] ) {
-		return this._model.change( writer => {
-			this.fire( 'viewCleanup', viewItem );
+	convert( viewItem, writer, context = [ '$root' ] ) {
+		this.fire( 'viewCleanup', viewItem );
 
-			// Create context tree and set position in the top element.
-			// Items will be converted according to this position.
-			this._modelCursor = createContextTree( context, writer );
+		// Create context tree and set position in the top element.
+		// Items will be converted according to this position.
+		this._modelCursor = createContextTree( context, writer );
 
-			// Store writer in conversion as a conversion API
-			// to be sure that conversion process will use the same batch.
-			this.conversionApi.writer = writer;
+		// Store writer in conversion as a conversion API
+		// to be sure that conversion process will use the same batch.
+		this.conversionApi.writer = writer;
 
-			// Create consumable values list for conversion process.
-			this.conversionApi.consumable = ViewConsumable.createFrom( viewItem );
+		// Create consumable values list for conversion process.
+		this.conversionApi.consumable = ViewConsumable.createFrom( viewItem );
 
-			// Custom data stored by converter for conversion process.
-			this.conversionApi.store = {};
+		// Custom data stored by converter for conversion process.
+		this.conversionApi.store = {};
 
-			// Do the conversion.
-			const { modelRange } = this._convertItem( viewItem, this._modelCursor );
+		// Do the conversion.
+		const { modelRange } = this._convertItem( viewItem, this._modelCursor );
 
-			// Conversion result is always a document fragment so let's create this fragment.
-			const documentFragment = writer.createDocumentFragment();
+		// Conversion result is always a document fragment so let's create this fragment.
+		const documentFragment = writer.createDocumentFragment();
 
-			// When there is a conversion result.
-			if ( modelRange ) {
-				// Remove all empty elements that was added to #_removeIfEmpty list.
-				this._removeEmptyElements();
+		// When there is a conversion result.
+		if ( modelRange ) {
+			// Remove all empty elements that was added to #_removeIfEmpty list.
+			this._removeEmptyElements();
 
-				// Move all items that was converted to context tree to document fragment.
-				for ( const item of Array.from( this._modelCursor.parent.getChildren() ) ) {
-					writer.append( item, documentFragment );
-				}
-
-				// Extract temporary markers elements from model and set as static markers collection.
-				documentFragment.markers = extractMarkersFromModelFragment( documentFragment, writer );
+			// Move all items that was converted to context tree to document fragment.
+			for ( const item of Array.from( this._modelCursor.parent.getChildren() ) ) {
+				writer.append( item, documentFragment );
 			}
 
-			// Clear context position.
-			this._modelCursor = null;
+			// Extract temporary markers elements from model and set as static markers collection.
+			documentFragment.markers = extractMarkersFromModelFragment( documentFragment, writer );
+		}
 
-			// Clear split elements.
-			this._removeIfEmpty.clear();
+		// Clear context position.
+		this._modelCursor = null;
 
-			// Clear conversion API.
-			this.conversionApi.writer = null;
-			this.conversionApi.store = null;
+		// Clear split elements.
+		this._removeIfEmpty.clear();
 
-			// Return fragment as conversion result.
-			return documentFragment;
-		} );
+		// Clear conversion API.
+		this.conversionApi.writer = null;
+		this.conversionApi.store = null;
+
+		// Return fragment as conversion result.
+		return documentFragment;
 	}
 
 	/**

@@ -285,7 +285,8 @@ export function parse( data, schema, options = {} ) {
 	}
 
 	// Set up upcast dispatcher.
-	const upcastDispatcher = new UpcastDispatcher( new Model(), { schema, mapper } );
+	const modelController = new Model();
+	const upcastDispatcher = new UpcastDispatcher( { schema, mapper } );
 
 	upcastDispatcher.on( 'documentFragment', convertToModelFragment() );
 	upcastDispatcher.on( 'element:model-text-with-attributes', convertToModelText( true ) );
@@ -295,7 +296,9 @@ export function parse( data, schema, options = {} ) {
 	upcastDispatcher.isDebug = true;
 
 	// Convert view to model.
-	let model = upcastDispatcher.convert( viewDocumentFragment.root, options.context || '$root' );
+	let model = modelController.change(
+		writer => upcastDispatcher.convert( viewDocumentFragment.root, writer, options.context || '$root' )
+	);
 
 	mapper.bindElements( model, viewDocumentFragment.root );
 

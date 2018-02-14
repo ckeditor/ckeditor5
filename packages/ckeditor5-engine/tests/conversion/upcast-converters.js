@@ -27,7 +27,7 @@ import {
 import { stringify } from '../../src/dev-utils/model';
 
 describe( 'upcast-helpers', () => {
-	let dispatcher, model, schema, conversion;
+	let upcastDispatcher, model, schema, conversion;
 
 	beforeEach( () => {
 		model = new Model();
@@ -50,13 +50,13 @@ describe( 'upcast-helpers', () => {
 			allowAttributes: [ 'bold' ]
 		} );
 
-		dispatcher = new UpcastDispatcher( model, { schema } );
-		dispatcher.on( 'text', convertText() );
-		dispatcher.on( 'element', convertToModelFragment(), { priority: 'lowest' } );
-		dispatcher.on( 'documentFragment', convertToModelFragment(), { priority: 'lowest' } );
+		upcastDispatcher = new UpcastDispatcher( { schema } );
+		upcastDispatcher.on( 'text', convertText() );
+		upcastDispatcher.on( 'element', convertToModelFragment(), { priority: 'lowest' } );
+		upcastDispatcher.on( 'documentFragment', convertToModelFragment(), { priority: 'lowest' } );
 
 		conversion = new Conversion();
-		conversion.register( 'upcast', [ dispatcher ] );
+		conversion.register( 'upcast', [ upcastDispatcher ] );
 	} );
 
 	describe( 'upcastElementToElement', () => {
@@ -600,18 +600,18 @@ describe( 'upcast-helpers', () => {
 	} );
 
 	function expectResult( viewToConvert, modelString, marker ) {
-		const model = dispatcher.convert( viewToConvert );
+		const conversionResult = model.change( writer => upcastDispatcher.convert( viewToConvert, writer ) );
 
 		if ( marker ) {
-			expect( model.markers.has( marker.name ) ).to.be.true;
+			expect( conversionResult.markers.has( marker.name ) ).to.be.true;
 
-			const convertedMarker = model.markers.get( marker.name );
+			const convertedMarker = conversionResult.markers.get( marker.name );
 
 			expect( convertedMarker.start.path ).to.deep.equal( marker.start );
 			expect( convertedMarker.end.path ).to.deep.equal( marker.end );
 		}
 
-		expect( stringify( model ) ).to.equal( modelString );
+		expect( stringify( conversionResult ) ).to.equal( modelString );
 	}
 } );
 
@@ -627,7 +627,7 @@ describe( 'upcast-converters', () => {
 
 		context = [ '$root' ];
 
-		dispatcher = new UpcastDispatcher( model, { schema } );
+		dispatcher = new UpcastDispatcher( { schema } );
 	} );
 
 	describe( 'convertText()', () => {
@@ -636,7 +636,7 @@ describe( 'upcast-converters', () => {
 
 			dispatcher.on( 'text', convertText() );
 
-			const conversionResult = dispatcher.convert( viewText );
+			const conversionResult = model.change( writer => dispatcher.convert( viewText, writer ) );
 
 			expect( conversionResult ).to.be.instanceof( ModelDocumentFragment );
 			expect( conversionResult.getChild( 0 ) ).to.be.instanceof( ModelText );
@@ -658,7 +658,7 @@ describe( 'upcast-converters', () => {
 				}
 			} );
 
-			const conversionResult = dispatcher.convert( viewText, context );
+			const conversionResult = model.change( writer => dispatcher.convert( viewText, writer, context ) );
 
 			expect( conversionResult ).to.be.instanceof( ModelDocumentFragment );
 			expect( conversionResult.getChild( 0 ) ).to.be.instanceof( ModelText );
@@ -674,13 +674,12 @@ describe( 'upcast-converters', () => {
 
 			const viewText = new ViewText( 'foobar' );
 			dispatcher.on( 'text', convertText() );
-
-			let conversionResult = dispatcher.convert( viewText, context );
+			let conversionResult = model.change( writer => dispatcher.convert( viewText, writer, context ) );
 
 			expect( conversionResult ).to.be.instanceof( ModelDocumentFragment );
 			expect( conversionResult.childCount ).to.equal( 0 );
 
-			conversionResult = dispatcher.convert( viewText, [ '$block' ] );
+			conversionResult = model.change( writer => dispatcher.convert( viewText, writer, [ '$block' ] ) );
 
 			expect( conversionResult ).to.be.instanceof( ModelDocumentFragment );
 			expect( conversionResult.childCount ).to.equal( 1 );
@@ -693,7 +692,7 @@ describe( 'upcast-converters', () => {
 
 			dispatcher.on( 'text', convertText() );
 
-			const conversionResult = dispatcher.convert( viewText, context );
+			const conversionResult = model.change( writer => dispatcher.convert( viewText, writer, context ) );
 
 			expect( conversionResult ).to.be.instanceof( ModelDocumentFragment );
 			expect( conversionResult.getChild( 0 ) ).to.be.instanceof( ModelText );
@@ -714,7 +713,7 @@ describe( 'upcast-converters', () => {
 			dispatcher.on( 'element', convertToModelFragment() );
 			dispatcher.on( 'documentFragment', convertToModelFragment() );
 
-			const conversionResult = dispatcher.convert( viewFragment, context );
+			const conversionResult = model.change( writer => dispatcher.convert( viewFragment, writer, context ) );
 
 			expect( conversionResult ).to.be.instanceof( ModelDocumentFragment );
 			expect( conversionResult.maxOffset ).to.equal( 6 );
@@ -741,7 +740,7 @@ describe( 'upcast-converters', () => {
 				}
 			} );
 
-			const conversionResult = dispatcher.convert( viewP, context );
+			const conversionResult = model.change( writer => dispatcher.convert( viewP, writer, context ) );
 
 			expect( conversionResult ).to.be.instanceof( ModelDocumentFragment );
 			expect( conversionResult.getChild( 0 ) ).to.be.instanceof( ModelElement );
@@ -775,7 +774,7 @@ describe( 'upcast-converters', () => {
 				spy();
 			} );
 
-			dispatcher.convert( view );
+			model.change( writer => dispatcher.convert( view, writer ) );
 
 			sinon.assert.calledTwice( spy );
 		} );

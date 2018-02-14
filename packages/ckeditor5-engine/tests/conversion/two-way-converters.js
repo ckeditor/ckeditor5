@@ -21,7 +21,7 @@ import { stringify as viewStringify, parse as viewParse } from '../../src/dev-ut
 import { stringify as modelStringify } from '../../src/dev-utils/model';
 
 describe( 'two-way-converters', () => {
-	let viewDispatcher, model, schema, conversion, modelRoot, viewRoot;
+	let upcastDispatcher, model, schema, conversion, modelRoot, viewRoot;
 
 	beforeEach( () => {
 		model = new Model();
@@ -45,13 +45,13 @@ describe( 'two-way-converters', () => {
 			inheritAllFrom: '$block'
 		} );
 
-		viewDispatcher = new UpcastDispatcher( model, { schema } );
-		viewDispatcher.on( 'text', convertText() );
-		viewDispatcher.on( 'element', convertToModelFragment(), { priority: 'lowest' } );
-		viewDispatcher.on( 'documentFragment', convertToModelFragment(), { priority: 'lowest' } );
+		upcastDispatcher = new UpcastDispatcher( { schema } );
+		upcastDispatcher.on( 'text', convertText() );
+		upcastDispatcher.on( 'element', convertToModelFragment(), { priority: 'lowest' } );
+		upcastDispatcher.on( 'documentFragment', convertToModelFragment(), { priority: 'lowest' } );
 
 		conversion = new Conversion();
-		conversion.register( 'upcast', [ viewDispatcher ] );
+		conversion.register( 'upcast', [ upcastDispatcher ] );
 		conversion.register( 'downcast', [ controller.downcastDispatcher ] );
 	} );
 
@@ -527,9 +527,8 @@ describe( 'two-way-converters', () => {
 	function loadData( input ) {
 		const parsedView = viewParse( input );
 
-		const convertedModel = viewDispatcher.convert( parsedView );
-
 		model.change( writer => {
+			const convertedModel = upcastDispatcher.convert( parsedView, writer );
 			writer.remove( ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, modelRoot.maxOffset ) );
 			writer.insert( convertedModel, modelRoot, 0 );
 		} );
