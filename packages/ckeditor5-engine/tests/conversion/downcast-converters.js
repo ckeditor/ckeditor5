@@ -1302,16 +1302,12 @@ describe( 'downcast-converters', () => {
 				dispatcher.on( 'insert:div', insertElement( () => {
 					const viewContainer = new ViewContainerElement( 'div' );
 
-					viewContainer._setCustomProperty( 'addHighlight', ( element, descriptor ) => {
-						controller.view.change( writer => {
-							writer.addClass( descriptor.class, element );
-						} );
+					viewContainer._setCustomProperty( 'addHighlight', ( element, descriptor, writer ) => {
+						writer.addClass( descriptor.class, element );
 					} );
 
-					viewContainer._setCustomProperty( 'removeHighlight', element => {
-						controller.view.change( writer => {
-							writer.setAttribute( 'class', '', element );
-						} );
+					viewContainer._setCustomProperty( 'removeHighlight', ( element, id, writer ) => {
+						writer.setAttribute( 'class', '', element );
 					} );
 
 					return viewContainer;

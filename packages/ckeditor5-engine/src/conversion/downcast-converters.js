@@ -899,7 +899,7 @@ export function highlightElement( highlightDescriptor ) {
 				consumable.consume( value.item, evt.name );
 			}
 
-			viewElement.getCustomProperty( 'addHighlight' )( viewElement, descriptor );
+			viewElement.getCustomProperty( 'addHighlight' )( viewElement, descriptor, conversionApi.writer );
 		}
 	};
 }
@@ -947,7 +947,7 @@ export function removeHighlight( highlightDescriptor ) {
 		// First, iterate through all items and remove highlight from those container elements that have custom highlight handling.
 		for ( const item of items ) {
 			if ( item.is( 'containerElement' ) && item.getCustomProperty( 'removeHighlight' ) ) {
-				item.getCustomProperty( 'removeHighlight' )( item, descriptor.id );
+				item.getCustomProperty( 'removeHighlight' )( item, descriptor.id, conversionApi.writer );
 
 				// If container element had custom handling, remove all it's children from further processing.
 				for ( const descendant of ViewRange.createIn( item ) ) {
