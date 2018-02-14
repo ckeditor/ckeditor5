@@ -16,7 +16,8 @@ import { normalizeOptions } from './utils';
 const FONT_SIZE = 'fontSize';
 
 /**
- * The Font Size Editing feature.
+ * The font size editing feature. It introduces the `'fontSize'` command and introduces `fontSize` attribute in the model which renders
+ * to the view depending on configuration as a `<span>` element with either a `font-size` style attribute or a class attribute.
  *
  * @extends module:core/plugin~Plugin
  */

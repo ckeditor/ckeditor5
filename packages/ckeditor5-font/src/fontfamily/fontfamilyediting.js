@@ -16,7 +16,8 @@ import { normalizeOptions } from './utils';
 const FONT_FAMILY = 'fontFamily';
 
 /**
- * The Font Family Editing feature.
+ * The font family editing feature. It introduces the `'fontFamily'` command and introduces `fontFamily` attribute in the model
+ * which renders to the view as a `<span>` element with a `font-family` style attribute.
  *
  * @extends module:core/plugin~Plugin
  */

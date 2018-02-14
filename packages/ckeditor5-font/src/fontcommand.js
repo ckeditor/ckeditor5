@@ -59,7 +59,6 @@ export default class FontCommand extends Command {
 	 * @protected
 	 * @param {Object} [options] Options for the executed command.
 	 * @param {String} [options.value] a value to apply.
-	 *
 	 * @fires execute
 	 */
 	execute( options = {} ) {

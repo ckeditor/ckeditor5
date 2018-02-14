@@ -13,13 +13,13 @@ import FontCommand from '../fontcommand';
  * The font family command. It is used by the {@link module:font/fontfamily/fontfamilyediting~FontFamilyEditing}
  * to apply font family.
  *
+ *		editor.execute( 'fontFamily', { value: 'Arial' } );
+ *
  * @extends module:core/command~Command
  */
 export default class FontFamilyCommand extends FontCommand {
 	/**
-	 * Creates an instance of the command.
-	 *
-	 * @param {module:core/editor/editor~Editor} editor Editor instance.
+	 * @inheritDoc
 	 */
 	constructor( editor ) {
 		super( editor, 'fontFamily' );

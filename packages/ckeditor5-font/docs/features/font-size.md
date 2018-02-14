@@ -5,7 +5,7 @@ category: features
 
 {@snippet features/build-font-size-source}
 
-The {@link module:font/fontsize~FontSize} feature enables support for setting font size.
+The {@link module:font/fontsize~FontSize} feature enables support for setting font size. This feature allows to control size of a text by inline `<span>` elements that have set either class or `font-size` CSS set in style attribute.
 
 ## Demo
 
@@ -31,6 +31,30 @@ Each size is represented in the view as a `<span>` element with the `text-*` cla
 
 ```html
 <span class="text-tiny">...</span>
+```
+
+The CSS definition for those CSS classes must be included:
+- on the web page's CSS stylesheet that the editor is included and 
+- on the web page's CSS stylesheet that renders edited content. 
+
+The examples defines below CSS:
+
+```css
+.text-tiny {
+	font-size: 0.7em;
+}
+
+.text-small {
+	font-size: 0.85em;
+}
+
+.text-big {
+	font-size: 1.4em;
+}
+
+.text-huge {
+	font-size: 1.8em;
+}
 ```
 
 An example of the editor that supports only two font sizes:

@@ -5,7 +5,7 @@ category: features
 
 {@snippet features/build-font-family-source}
 
-The {@link module:font/fontfamily~FontFamily} feature enables support for setting font family.
+The {@link module:font/fontfamily~FontFamily} feature enables support for setting font family. This feature allows to control size of a text by inline `<span>` elements with a `font-family` CSS set in style attribute.
 
 ## Demo
 

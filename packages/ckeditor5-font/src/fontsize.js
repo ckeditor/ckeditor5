@@ -12,7 +12,7 @@ import FontSizeEditing from './fontsize/fontsizeediting';
 import FontSizeUI from './fontsize/fontsizeui';
 
 /**
- * The Font size plugin.
+ * The font size plugin.
  *
  * It requires {@link module:font/fontsize/fontsizeediting~FontSizeEditing} and
  * {@link module:font/fontsize/fontsizeui~FontSizeUI} plugins.

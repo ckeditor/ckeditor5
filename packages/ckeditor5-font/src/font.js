@@ -13,9 +13,11 @@ import FontFamily from './fontfamily';
 import FontSize from './fontsize';
 
 /**
- * The Font plugin.
+ * A plugin that includes additional font features. It represents set of features that manipulates visual representation of text.
  *
- * It requires {@link module:font/fontsize~FontSize} and {@link module:font/fontfamily~FontFamily} plugins.
+ * This plugin enables:
+ * * {@link module:font/fontsize~FontSize}
+ * * {@link module:font/fontfamily~FontFamily} plugins.
  *
  * Read more about the feature in the {@glink api/font font package} page.
  *
