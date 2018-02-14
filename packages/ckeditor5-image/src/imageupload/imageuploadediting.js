@@ -134,8 +134,8 @@ export default class ImageUploadEditing extends Plugin {
 				const viewImg = viewFigure.getChild( 0 );
 				const promise = loader.upload();
 
-				editor.editing.view.change( () => {
-					viewImg.setAttribute( 'src', data );
+				editor.editing.view.change( writer => {
+					writer.setAttribute( 'src', data, viewImg );
 				} );
 
 				model.enqueueChange( 'transparent', writer => {

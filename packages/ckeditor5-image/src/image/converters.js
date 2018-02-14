@@ -80,6 +80,7 @@ export function srcsetAttributeConverter() {
 			return;
 		}
 
+		const writer = conversionApi.writer;
 		const figure = conversionApi.mapper.toViewElement( data.item );
 		const img = figure.getChild( 0 );
 
@@ -87,23 +88,23 @@ export function srcsetAttributeConverter() {
 			const srcset = data.attributeOldValue;
 
 			if ( srcset.data ) {
-				img.removeAttribute( 'srcset' );
-				img.removeAttribute( 'sizes' );
+				writer.removeAttribute( 'srcset', img );
+				writer.removeAttribute( 'sizes', img );
 
 				if ( srcset.width ) {
-					img.removeAttribute( 'width' );
+					writer.removeAttribute( 'width', img );
 				}
 			}
 		} else {
 			const srcset = data.attributeNewValue;
 
 			if ( srcset.data ) {
-				img.setAttribute( 'srcset', srcset.data );
+				writer.setAttribute( 'srcset', srcset.data, img );
 				// Always outputting `100vw`. See https://github.com/ckeditor/ckeditor5-image/issues/2.
-				img.setAttribute( 'sizes', '100vw' );
+				writer.setAttribute( 'sizes', '100vw', img );
 
 				if ( srcset.width ) {
-					img.setAttribute( 'width', srcset.width );
+					writer.setAttribute( 'width', srcset.width, img );
 				}
 			}
 		}
@@ -120,13 +121,14 @@ export function modelToViewAttributeConverter( attributeKey ) {
 			return;
 		}
 
+		const viewWriter = conversionApi.writer;
 		const figure = conversionApi.mapper.toViewElement( data.item );
 		const img = figure.getChild( 0 );
 
 		if ( data.attributeNewValue !== null ) {
-			img.setAttribute( data.attributeKey, data.attributeNewValue );
+			viewWriter.setAttribute( data.attributeKey, data.attributeNewValue, img );
 		} else {
-			img.removeAttribute( data.attributeKey );
+			viewWriter.removeAttribute( data.attributeKey, img );
 		}
 	}
 }

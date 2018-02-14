@@ -54,7 +54,7 @@ export default class ImageEngine extends Plugin {
 		} ) );
 
 		const editingElementCreator = ( item, consumable, api ) =>
-			toImageWidget( createImageViewElement( api.writer ), t( 'image widget' ) );
+			toImageWidget( createImageViewElement( api.writer ), api.writer, t( 'image widget' ) );
 
 		editor.conversion.for( 'editingDowncast' ).add( downcastElementToElement( {
 			model: 'image',
