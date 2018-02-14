@@ -4,9 +4,9 @@
  */
 
 :root {
-	--ck-color-base-foreground: 								hsl(0, 0%, 97%);
+	--ck-color-base-foreground: 								hsl(0, 0%, 98%);
 	--ck-color-base-background: 								hsl(0, 0%, 100%);
-	--ck-color-base-border: 									hsl(0, 0%, 72%);
+	--ck-color-base-border: 									hsl(0, 0%, 77%);
 	--ck-color-base-action: 									hsl(104, 44%, 48%);
 	--ck-color-base-focus: 										hsl(209, 92%, 70%);
 	--ck-color-base-text: 										hsl(0, 0%, 20%);
@@ -96,7 +96,7 @@
 	/* -- Editor -------------------------------------------------------------------------------- */
 
 	--ck-color-editor-border: 									var(--ck-color-base-border);
-	--ck-color-editor-toolbar-background: 						linear-gradient(0, var(--ck-color-base-foreground), var(--ck-color-base-background));
+	--ck-color-editor-toolbar-background: 						var(--ck-color-base-foreground);
 
 	--ck-color-editor-toolbar-button-on-background: 			hsl(0, 0%, 87%);
 	--ck-color-editor-toolbar-button-on-border: 				transparent;
