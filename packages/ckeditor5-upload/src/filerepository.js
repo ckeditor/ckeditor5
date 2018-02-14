@@ -153,7 +153,7 @@ export default class FileRepository extends Plugin {
 			 * (remember to {@link module:core/editor/editorconfig~EditorConfig#ckfinder configure it})
 			 *
 			 * You can also implement your own upload adapter (in which case, please refer
-			 * to the {@link ~UploadAdapter `UploadAdapter` interface} documentation).
+			 * to the {@link module:upload/filerepository~UploadAdapter `UploadAdapter` interface} documentation).
 			 *
 			 * @error filerepository-no-upload-adapter
 			 */
