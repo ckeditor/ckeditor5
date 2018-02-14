@@ -269,6 +269,66 @@ describe( 'MutationObserver', () => {
 		expect( lastMutations[ 0 ].newText ).to.equal( 'xy' );
 	} );
 
+	// https://github.com/ckeditor/ckeditor5/issues/692 Scenario 1.
+	it( 'should handle space after inline filler at the end of container', () => {
+		const { view, selection } = parse( '<container:p>foo<attribute:b>[]</attribute:b></container:p>' );
+
+		viewRoot.appendChildren( view );
+		viewDocument.selection.setTo( selection );
+
+		viewDocument.render();
+
+		const inlineFiller = domEditor.childNodes[ 2 ].childNodes[ 1 ].childNodes[ 0 ];
+
+		inlineFiller.data += ' ';
+
+		mutationObserver.flush();
+
+		expect( lastMutations.length ).to.equal( 1 );
+		expect( lastMutations[ 0 ].type ).to.equal( 'children' );
+		expect( lastMutations[ 0 ].node ).to.equal( selection.getFirstPosition().parent );
+	} );
+
+	// https://github.com/ckeditor/ckeditor5/issues/692 Scenario 3.
+	it( 'should handle space after inline filler at the end of container #2', () => {
+		const { view, selection } = parse( '<container:p>foo<attribute:b>bar</attribute:b>[]</container:p>' );
+
+		viewRoot.appendChildren( view );
+		viewDocument.selection.setTo( selection );
+
+		viewDocument.render();
+
+		const inlineFiller = domEditor.childNodes[ 2 ].childNodes[ 2 ];
+
+		inlineFiller.data += ' ';
+
+		mutationObserver.flush();
+
+		expect( lastMutations.length ).to.equal( 1 );
+		expect( lastMutations[ 0 ].type ).to.equal( 'children' );
+		expect( lastMutations[ 0 ].node ).to.equal( selection.getFirstPosition().parent );
+	} );
+
+	// https://github.com/ckeditor/ckeditor5/issues/692 Scenario 2.
+	it( 'should handle space after inline filler at the beginning of container', () => {
+		const { view, selection } = parse( '<container:p><attribute:b>[]</attribute:b>foo</container:p>' );
+
+		viewRoot.appendChildren( view );
+		viewDocument.selection.setTo( selection );
+
+		viewDocument.render();
+
+		const inlineFiller = domEditor.childNodes[ 2 ].childNodes[ 0 ].childNodes[ 0 ];
+
+		inlineFiller.data += ' ';
+
+		mutationObserver.flush();
+
+		expect( lastMutations.length ).to.equal( 1 );
+		expect( lastMutations[ 0 ].type ).to.equal( 'children' );
+		expect( lastMutations[ 0 ].node ).to.equal( selection.getFirstPosition().parent );
+	} );
+
 	it( 'should have no block filler in mutation', () => {
 		viewRoot.appendChildren( parse( '<container:p></container:p>' ) );
 
@@ -359,7 +419,7 @@ describe( 'MutationObserver', () => {
 
 		mutationObserver.flush();
 
-		// There was onlu P2 change. P1 must be ignored.
+		// There was only P2 change. P1 must be ignored.
 		const viewP2 = viewRoot.getChild( 1 );
 		expect( lastMutations.length ).to.equal( 1 );
 		expect( lastMutations[ 0 ].node ).to.equal( viewP2 );
