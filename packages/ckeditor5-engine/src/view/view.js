@@ -22,9 +22,9 @@ import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import { scrollViewportToShowTarget } from '@ckeditor/ckeditor5-utils/src/dom/scroll';
-import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
 import { injectUiElementHandling } from './uielement';
 import { injectQuirksHandling } from './filler';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * Editor's view controller class.
@@ -71,11 +71,11 @@ export default class View {
 		/**
 		 * Instance of the {@link module:engine/view/renderer~Renderer renderer}.
 		 *
-		 * @readonly
+		 * @protected
 		 * @member {module:engine/view/renderer~Renderer} module:engine/view/view~View#renderer
 		 */
-		this.renderer = new Renderer( this.domConverter, this.document.selection );
-		this.renderer.bind( 'isFocused' ).to( this.document );
+		this._renderer = new Renderer( this.domConverter, this.document.selection );
+		this._renderer.bind( 'isFocused' ).to( this.document );
 
 		/**
 		 * Roots of the DOM tree. Map on the `HTMLElement`s with roots names as keys.
@@ -102,12 +102,15 @@ export default class View {
 		this._ongoingChange = false;
 
 		/**
-		 * Is set to `true` when rendering view to DOM is currently in progress.
+		 * Is set to `true` when rendering view to DOM was started.
+		 * This is used to check whether view document can accept changes in current state.
+		 * From the moment when rendering to DOM is stared view tree is locked to prevent changes that will not be
+		 * reflected in the DOM.
 		 *
 		 * @private
-		 * @member {Boolean} module:engine/view/view~View#_renderingInProgress
+		 * @member {Boolean} module:engine/view/view~View#_renderingStarted
 		 */
-		this._renderingInProgress = false;
+		this._renderingStarted = false;
 
 		/**
 		 * Writer instance used in {@link #change change method) callbacks.
@@ -127,6 +130,11 @@ export default class View {
 		// Inject quirks handlers.
 		injectQuirksHandling( this );
 		injectUiElementHandling( this );
+
+		// Use 'low` priority so that all listeners on 'normal` priority will be executed before.
+		this.on( 'render', () => {
+			this._render();
+		}, { priority: 'low' } );
 	}
 
 	/**
@@ -148,12 +156,12 @@ export default class View {
 
 		this.domRoots.set( name, domRoot );
 		this.domConverter.bindElements( domRoot, viewRoot );
-		this.renderer.markToSync( 'children', viewRoot );
-		this.renderer.domDocuments.add( domRoot.ownerDocument );
+		this._renderer.markToSync( 'children', viewRoot );
+		this._renderer.domDocuments.add( domRoot.ownerDocument );
 
-		viewRoot.on( 'change:children', ( evt, node ) => this.renderer.markToSync( 'children', node ) );
-		viewRoot.on( 'change:attributes', ( evt, node ) => this.renderer.markToSync( 'attributes', node ) );
-		viewRoot.on( 'change:text', ( evt, node ) => this.renderer.markToSync( 'text', node ) );
+		viewRoot.on( 'change:children', ( evt, node ) => this._renderer.markToSync( 'children', node ) );
+		viewRoot.on( 'change:attributes', ( evt, node ) => this._renderer.markToSync( 'attributes', node ) );
+		viewRoot.on( 'change:text', ( evt, node ) => this._renderer.markToSync( 'text', node ) );
 
 		for ( const observer of this._observers.values() ) {
 			observer.observe( domRoot, name );
@@ -291,22 +299,14 @@ export default class View {
 	 * When the outermost change block is done and rendering to DOM is over it fires
 	 * {@link module:engine/view/document~Document#event:change} event.
 	 *
+	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `applying-view-changes-on-rendering` when
+	 * change block is used after rendering to DOM has started.
+	 *
 	 * @param {Function} callback Callback function which may modify the view.
 	 */
 	change( callback ) {
-		if ( this._renderingInProgress ) {
-			/**
-			 * Warning displayed when there is an attempt to make changes in the view tree during the rendering process.
-			 * This may cause unexpected behaviour and inconsistency between the DOM and the view.
-			 *
-			 * @error applying-view-changes-on-rendering
-			 */
-			log.warn(
-				'applying-view-changes-on-rendering: ' +
-				'Attempting to make changes in the view during rendering process. ' +
-				'This may cause some unexpected behaviour and inconsistency between the DOM and the view.'
-			);
-		}
+		// Check if change is performed in correct moment.
+		this._assertRenderingInProgress();
 
 		// If other changes are in progress wait with rendering until every ongoing change is over.
 		if ( this._ongoingChange ) {
@@ -315,23 +315,29 @@ export default class View {
 			this._ongoingChange = true;
 
 			callback( this._writer );
-			this._render();
+			this.fire( 'render' );
 
 			this._ongoingChange = false;
-
-			this.document.fire( 'change' );
+			this._renderingStarted = false;
 		}
 	}
 
 	/**
 	 * Renders {@link module:engine/view/document~Document view document} to DOM. If any view changes are
 	 * currently in progress, rendering will start after all {@link #change change blocks} are processed.
+	 *
+	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `applying-view-changes-on-rendering` when
+	 * trying to re-render when rendering to DOM has already started.
 	 */
 	render() {
-		// Render only if no ongoing changes in progress. If there are some, view document will be rendered after all
+		// Check if rendering is performed in correct moment.
+		this._assertRenderingInProgress();
+
+		// Render only if no ongoing changes are in progress. If there are some, view document will be rendered after all
 		// changes are done. This way view document will not be rendered in the middle of some changes.
 		if ( !this._ongoingChange ) {
-			this._render();
+			this.fire( 'render' );
+			this._renderingStarted = false;
 		}
 	}
 
@@ -353,21 +359,49 @@ export default class View {
 	 * @private
 	 */
 	_render() {
-		// Lock just before rendering and unlock just after.
-		// This way other parts of the code can listen to the `render` event and modify the view tree just before rendering.
-		this.renderer.once( 'render', () => ( this._renderingInProgress = true ), { priority: priorities.get( 'normal' ) + 1 } );
-		this.renderer.once( 'render', () => ( this._renderingInProgress = false ), { priority: priorities.get( 'normal' ) - 1 } );
+		this._renderingStarted = true;
 
 		this.disableObservers();
-		this.renderer.render();
+		this._renderer.render();
 		this.enableObservers();
 	}
 
 	/**
-	 * Fired after a topmost {@link module:engine/view/view~View#change change block} is finished and DOM rendering has
+	 * Throws `applying-view-changes-on-rendering` error when trying to modify or re-render view tree when rendering is
+	 * already started
+	 *
+	 * @private
+	 */
+	_assertRenderingInProgress() {
+		if ( this._renderingStarted ) {
+			/**
+			 * There is an attempt to make changes in the view tree after the rendering process
+			 * has started. This may cause unexpected behaviour and inconsistency between the DOM and the view.
+			 * This may be caused by:
+			 *   * calling `view.change()` or `view.render()` methods during rendering process,
+			 *   * calling `view.change()` or `view.render()` methods in callbacks to
+			 *   {module:engine/view/document~Document#event:change view document change event) on `low` priority, after
+			 *   rendering is over for current `change` block.
+			 *
+			 * @error applying-view-changes-on-rendering
+			 */
+			throw new CKEditorError(
+				'applying-view-changes-on-rendering: ' +
+				'Attempting to make changes in the view during rendering process. ' +
+				'This may cause some unexpected behaviour and inconsistency between the DOM and the view.'
+			);
+		}
+	}
+
+	/**
+	 * Fired after a topmost {@link module:engine/view/view~View#change change block} is finished and the DOM rendering has
 	 * been executed.
 	 *
-	 * @event module:engine/view/document~Document#event:change
+	 * Actual rendering is performed on 'low' priority. This means that all listeners on 'normal' and above priorities
+	 * will be executed after changes made to view tree but before rendering to the DOM. Use `low` priority for callbacks that
+	 * should be executed after rendering to the DOM.
+	 *
+	 * @event module:engine/view/view~View#event:render
 	 */
 }
 

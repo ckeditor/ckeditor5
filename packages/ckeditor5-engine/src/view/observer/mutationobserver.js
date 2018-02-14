@@ -59,7 +59,7 @@ export default class MutationObserver extends Observer {
 		 *
 		 * @member {module:engine/view/renderer~Renderer}
 		 */
-		this.renderer = view.renderer;
+		this.renderer = view._renderer;
 
 		/**
 		 * Observed DOM elements.

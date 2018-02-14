@@ -18,6 +18,7 @@ import ViewElement from '../../../src/view/element';
 import ViewPosition from '../../../src/view/position';
 import { isBlockFiller, BR_FILLER } from '../../../src/view/filler';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'view', () => {
 	const DEFAULT_OBSERVERS_COUNT = 5;
@@ -91,7 +92,7 @@ describe( 'view', () => {
 			expect( view.getDomRoot() ).to.equal( domDiv );
 			expect( view.domConverter.mapViewToDom( viewRoot ) ).to.equal( domDiv );
 
-			expect( view.renderer.markedChildren.has( viewRoot ) ).to.be.true;
+			expect( view._renderer.markedChildren.has( viewRoot ) ).to.be.true;
 			domDiv.remove();
 		} );
 
@@ -106,7 +107,7 @@ describe( 'view', () => {
 			expect( count( view.domRoots ) ).to.equal( 1 );
 			expect( view.getDomRoot( 'header' ) ).to.equal( domH1 );
 			expect( view.domConverter.mapViewToDom( viewH1 ) ).to.equal( domH1 );
-			expect( view.renderer.markedChildren.has( viewH1 ) ).to.be.true;
+			expect( view._renderer.markedChildren.has( viewH1 ) ).to.be.true;
 		} );
 
 		it( 'should call observe on each observer', () => {
@@ -115,7 +116,7 @@ describe( 'view', () => {
 
 			view = new View();
 			viewDocument = view.document;
-			view.renderer.render = sinon.spy();
+			view._renderer.render = sinon.spy();
 
 			const domDiv1 = document.createElement( 'div' );
 			domDiv1.setAttribute( 'id', 'editor' );
@@ -141,7 +142,7 @@ describe( 'view', () => {
 
 			view = new View();
 			viewDocument = view.document;
-			view.renderer.render = sinon.spy();
+			view._renderer.render = sinon.spy();
 		} );
 
 		afterEach( () => {
@@ -197,7 +198,7 @@ describe( 'view', () => {
 			view.render();
 
 			sinon.assert.calledOnce( observerMock.disable );
-			sinon.assert.calledOnce( view.renderer.render );
+			sinon.assert.calledOnce( view._renderer.render );
 			sinon.assert.calledTwice( observerMock.enable );
 		} );
 
@@ -358,19 +359,19 @@ describe( 'view', () => {
 	describe( 'isFocused', () => {
 		it( 'should change renderer.isFocused too', () => {
 			expect( viewDocument.isFocused ).to.equal( false );
-			expect( view.renderer.isFocused ).to.equal( false );
+			expect( view._renderer.isFocused ).to.equal( false );
 
 			viewDocument.isFocused = true;
 
 			expect( viewDocument.isFocused ).to.equal( true );
-			expect( view.renderer.isFocused ).to.equal( true );
+			expect( view._renderer.isFocused ).to.equal( true );
 		} );
 	} );
 
 	describe( 'render()', () => {
 		it( 'disable observers, renders and enable observers', () => {
 			const observerMock = view.addObserver( ObserverMock );
-			const renderStub = sinon.stub( view.renderer, 'render' );
+			const renderStub = sinon.stub( view._renderer, 'render' );
 
 			view.render();
 
@@ -443,22 +444,26 @@ describe( 'view', () => {
 		} );
 
 		describe( 'change()', () => {
-			it( 'should call render and fire event after the change', () => {
-				const renderSpy = sinon.spy();
-				const changeSpy = sinon.spy();
-				view.renderer.on( 'render', renderSpy );
-				view.document.on( 'change', changeSpy );
+			it( 'should fire render event and it should trigger rendering on low priority', () => {
+				const renderSpy = sinon.spy( view._renderer, 'render' );
+				const beforeSpy = sinon.spy();
+				const afterSpy = sinon.spy();
+
+				view.on( 'render', beforeSpy );
+				view.on( 'render', afterSpy, { priority: 'low' } );
 
 				view.change( () => {} );
 
-				sinon.assert.callOrder( renderSpy, changeSpy );
+				sinon.assert.callOrder( beforeSpy, renderSpy, afterSpy );
 			} );
 
-			it( 'should render and fire change event once for nested change blocks', () => {
-				const renderSpy = sinon.spy();
-				const changeSpy = sinon.spy();
-				view.renderer.on( 'render', renderSpy );
-				view.document.on( 'change', changeSpy );
+			it( 'should fire render event once for nested change blocks', () => {
+				const renderSpy = sinon.spy( view._renderer, 'render' );
+				const beforeSpy = sinon.spy();
+				const afterSpy = sinon.spy();
+
+				view.on( 'render', beforeSpy );
+				view.on( 'render', afterSpy, { priority: 'low' } );
 
 				view.change( () => {
 					view.change( () => {} );
@@ -469,16 +474,19 @@ describe( 'view', () => {
 					view.change( () => {} );
 				} );
 
+				sinon.assert.calledOnce( beforeSpy );
 				sinon.assert.calledOnce( renderSpy );
-				sinon.assert.calledOnce( changeSpy );
-				sinon.assert.callOrder( renderSpy, changeSpy );
+				sinon.assert.calledOnce( afterSpy );
+				sinon.assert.callOrder( beforeSpy, renderSpy, afterSpy );
 			} );
 
-			it( 'should render and fire change event once even if render is called during the change', () => {
-				const renderSpy = sinon.spy();
-				const changeSpy = sinon.spy();
-				view.renderer.on( 'render', renderSpy );
-				view.document.on( 'change', changeSpy );
+			it( 'should fire render event once even if render is called during the change', () => {
+				const renderSpy = sinon.spy( view._renderer, 'render' );
+				const beforeSpy = sinon.spy();
+				const afterSpy = sinon.spy();
+
+				view.on( 'render', beforeSpy );
+				view.on( 'render', afterSpy, { priority: 'low' } );
 
 				view.change( () => {
 					view.render();
@@ -488,43 +496,90 @@ describe( 'view', () => {
 					view.render();
 				} );
 
+				sinon.assert.calledOnce( beforeSpy );
 				sinon.assert.calledOnce( renderSpy );
-				sinon.assert.calledOnce( changeSpy );
-				sinon.assert.callOrder( renderSpy, changeSpy );
+				sinon.assert.calledOnce( afterSpy );
+				sinon.assert.callOrder( beforeSpy, renderSpy, afterSpy );
 			} );
 
-			it( 'should log warning when someone tries to change view during rendering', () => {
+			it( 'should throw when someone tries to change view during rendering', () => {
 				const domDiv = document.createElement( 'div' );
 				const viewRoot = createViewRoot( viewDocument, 'div', 'main' );
-				sinon.stub( log, 'warn' );
+				let renderingCalled = false;
 				view.attachDomRoot( domDiv );
 
 				view.change( writer => {
 					const p = writer.createContainerElement( 'p' );
-					const ui = writer.createUIElement( 'span' );
-
-					// This UIElement will try to modify view tree during rendering.
-					ui.render = function( domDocument ) {
+					const ui = writer.createUIElement( 'span', null, function( domDocument ) {
 						const element = this.toDomElement( domDocument );
 
-						view.change( () => {} );
+						expect( () => view.change( () => {} ) ).to.throw( CKEditorError, /^applying-view-changes-on-rendering/ );
+						renderingCalled = true;
 
 						return element;
-					};
-
+					} );
 					writer.insert( ViewPosition.createAt( p ), ui );
 					writer.insert( ViewPosition.createAt( viewRoot ), p );
 				} );
 
-				sinon.assert.calledOnce( log.warn );
-				sinon.assert.calledWithExactly( log.warn,
-					'applying-view-changes-on-rendering: ' +
-					'Attempting to make changes in the view during rendering process. ' +
-					'This may cause some unexpected behaviour and inconsistency between the DOM and the view.'
-				);
-
+				expect( renderingCalled ).to.be.true;
 				domDiv.remove();
-				log.warn.restore();
+			} );
+
+			it( 'should throw when someone tries to call render() during rendering', () => {
+				const domDiv = document.createElement( 'div' );
+				const viewRoot = createViewRoot( viewDocument, 'div', 'main' );
+				let renderingCalled = false;
+				view.attachDomRoot( domDiv );
+
+				view.change( writer => {
+					const p = writer.createContainerElement( 'p' );
+					const ui = writer.createUIElement( 'span', null, function( domDocument ) {
+						const element = this.toDomElement( domDocument );
+
+						expect( () => view.render() ).to.throw( CKEditorError, /^applying-view-changes-on-rendering/ );
+						renderingCalled = true;
+
+						return element;
+					} );
+					writer.insert( ViewPosition.createAt( p ), ui );
+					writer.insert( ViewPosition.createAt( viewRoot ), p );
+				} );
+
+				expect( renderingCalled ).to.be.true;
+				domDiv.remove();
+			} );
+
+			it( 'should throw when someone tries to call change() after rendering is finished but still in change block', () => {
+				view.on( 'render', () => {
+					expect( () => view.change( () => {} ) ).to.throw( CKEditorError, /^applying-view-changes-on-rendering/ );
+				}, { priority: 'low' } );
+
+				view.change( () => {} );
+			} );
+
+			it( 'should throw when someone tries to call render() after rendering is finished but still in change block', () => {
+				view.on( 'render', () => {
+					expect( () => view.render() ).to.throw( CKEditorError, /^applying-view-changes-on-rendering/ );
+				}, { priority: 'low' } );
+
+				view.change( () => {} );
+			} );
+
+			it( 'should NOT throw when someone tries to call change() before rendering', () => {
+				view.on( 'render', () => {
+					expect( () => view.change( () => {} ) ).not.to.throw( CKEditorError, /^applying-view-changes-on-rendering/ );
+				}, { priority: 'normal' } );
+
+				view.change( () => {} );
+			} );
+
+			it( 'should NOT throw when someone tries to call render() before rendering', () => {
+				view.on( 'render', () => {
+					expect( () => view.render() ).not.to.throw( CKEditorError, /^applying-view-changes-on-rendering/ );
+				}, { priority: 'normal' } );
+
+				view.change( () => {} );
 			} );
 		} );
 	} );

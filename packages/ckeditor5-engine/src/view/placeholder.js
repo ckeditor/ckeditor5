@@ -37,7 +37,7 @@ export function attachPlaceholder( view, element, placeholderText, checkFunction
 		documentPlaceholders.set( document, new Map() );
 
 		// Attach listener just before rendering and update placeholders.
-		listener.listenTo( view.renderer, 'render', () => updateAllPlaceholders( view ), { priority: 'highest' } );
+		listener.listenTo( view, 'render', () => updateAllPlaceholders( view ) );
 	}
 
 	// Store text in element's data attribute.

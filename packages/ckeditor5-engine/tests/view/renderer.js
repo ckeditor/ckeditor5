@@ -140,16 +140,6 @@ describe( 'Renderer', () => {
 			domRoot.remove();
 		} );
 
-		it( 'should be decorated', () => {
-			const spy = sinon.spy();
-
-			renderer.on( 'render', spy );
-
-			renderer.render();
-
-			expect( spy.calledOnce ).to.be.true;
-		} );
-
 		it( 'should update attributes', () => {
 			viewRoot._setAttribute( 'class', 'foo' );
 

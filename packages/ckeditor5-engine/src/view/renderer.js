@@ -110,7 +110,6 @@ export default class Renderer {
 		 * @type {null|HTMLElement}
 		 */
 		this._fakeSelectionContainer = null;
-		this.decorate( 'render' );
 	}
 
 	/**
@@ -709,13 +708,6 @@ export default class Renderer {
 			}
 		}
 	}
-
-	/**
-	 * Fired when {@link #render render} method is called. Actual rendering is executed as a listener to
-	 * this event with default priority. This way other listeners can be used to run code before or after rendering.
-	 *
-	 * @event render
-	 */
 }
 
 mix( Renderer, ObservableMixin );

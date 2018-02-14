@@ -170,9 +170,9 @@ describe( 'FocusObserver', () => {
 			view.render();
 
 			viewDocument.on( 'selectionChange', selectionChangeSpy );
-			view.renderer.on( 'render', renderSpy, { priority: 'low' } );
+			view.on( 'render', renderSpy, { priority: 'low' } );
 
-			view.renderer.on( 'render', () => {
+			view.on( 'render', () => {
 				sinon.assert.callOrder( selectionChangeSpy, renderSpy );
 				done();
 			}, { priority: 'low' } );
@@ -192,9 +192,9 @@ describe( 'FocusObserver', () => {
 			const domEditable = domRoot.childNodes[ 0 ];
 
 			viewDocument.on( 'selectionChange', selectionChangeSpy );
-			view.renderer.on( 'render', renderSpy, { priority: 'low' } );
+			view.on( 'render', renderSpy, { priority: 'low' } );
 
-			view.renderer.on( 'render', () => {
+			view.on( 'render', () => {
 				sinon.assert.notCalled( selectionChangeSpy );
 				sinon.assert.called( renderSpy );
 
