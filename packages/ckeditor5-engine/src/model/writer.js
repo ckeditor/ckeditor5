@@ -40,6 +40,7 @@ import DocumentSelection from './documentselection';
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import uid from '@ckeditor/ckeditor5-utils/src/uid';
 
 /**
  * Model writer it the proper way of modifying model. It should be used whenever you wants to create node, modify
@@ -194,7 +195,7 @@ export default class Writer {
 					markerRange.end._getCombined( rangeRootPosition, position )
 				);
 
-				this.setMarker( markerName, range );
+				this.setMarker( markerName, range, { usingOperation: true } );
 			}
 		}
 	}
@@ -471,7 +472,7 @@ export default class Writer {
 			const delta = new RemoveDelta();
 			this.batch.addDelta( delta );
 
-			addRemoveOperation( position, howMany, delta, this.model );
+			applyRemoveOperation( position, howMany, delta, this.model );
 		};
 
 		if ( itemOrRange instanceof Range ) {
@@ -539,7 +540,7 @@ export default class Writer {
 		delta.addOperation( move );
 		this.model.applyOperation( move );
 
-		addRemoveOperation( position, 1, delta, this.model );
+		applyRemoveOperation( position, 1, delta, this.model );
 	}
 
 	/**
@@ -756,37 +757,99 @@ export default class Writer {
 		delta.addOperation( move );
 		this.model.applyOperation( move );
 
-		addRemoveOperation( Position.createBefore( element ), 1, delta, this.model );
+		applyRemoveOperation( Position.createBefore( element ), 1, delta, this.model );
 	}
 
 	/**
-	 * Adds or updates {@link module:engine/model/markercollection~Marker marker} with given name to given `range`.
+	 * Adds or updates {@link module:engine/model/markercollection~Marker marker}.
 	 *
-	 * If passed name is a name of already existing marker (or {@link module:engine/model/markercollection~Marker Marker} instance
-	 * is passed), `range` parameter may be omitted. In this case marker will not be updated in
-	 * {@link module:engine/model/model~Model#markers document marker collection}. However the marker will be added to
-	 * the document history. This may be important for other features, like undo. From document history point of view, it will
-	 * look like the marker was created and added to the document at the moment when it is set using this method.
+	 * As the first parameter you can set marker name or instance. If none of them is provided, new marker, with a unique
+	 * name is created and returned.
 	 *
-	 * This is useful if the marker is created before it can be added to document history (e.g. a feature creating the marker
-	 * is waiting for additional data, etc.). In this case, the marker may be first created directly through
-	 * {@link module:engine/model/markercollection~MarkerCollection MarkerCollection API} and only later added using `Batch` API.
+	 * Using this method you can change markers range or define if the marker is managed by operation or not.
 	 *
-	 * @param {module:engine/model/markercollection~Marker|String} markerOrName Marker or marker name to add or update.
-	 * @param {module:engine/model/range~Range} [newRange] Marker range.
+	 * Marker tracks changes is the document and updates the range automatically, so you need to update the range only
+	 * when it changes directly. You do not need to update it after each document change.
+	 *
+	 * The option parameter let you decide if the marker should be managed by operations or not. See
+	 * {@link module:engine/model/markercollection~Marker marker class description} to learn about the difference between
+	 * markers managed by operation and managed directly. You can change this option for existing marker. This is
+	 * useful if a marker have been created earlier and need to be added to the document history later.
+	 *
+	 * Update marker using operation:
+	 *
+	 * 		setMarker( marker, range, { usingOperation: true } );
+	 *
+	 * Create/update marker directly base on marker's name:
+	 *
+	 * 		setMarker( markerName, range );
+	 *
+	 * Create marker with a unique id using operation:
+	 *
+	 * 		setMarker( range, { usingOperation: true } );
+	 *
+	 * Create marker directly with a unique name:
+	 *
+	 * 		setMarker( range )
+	 *
+	 * Change marker's option (start using operations to manage it):
+	 *
+	 * 		setMarker( marker, { usingOperation: true } );
+	 *
+	 * Note: For efficiency reasons, it's best to create and keep as little markers as possible.
+	 *
+	 * @see module:engine/model/markercollection~Marker
+	 * @param {module:engine/model/markercollection~Marker|String} [markerOrName=uid()]
+	 * Name of marker to add, Marker instance to update or range for the marker with a unique name.
+	 * @param {module:engine/model/range~Range|Object} [range] Marker range or options.
+	 * @param {Object} [options]
+	 * @param {Boolean} [options.usingOperation=false] Flag indicated whether the marker should be added by MarkerOperation.
+	 * See {@link module:engine/model/markercollection~Marker#managedUsingOperations}.
+	 * @returns {module:engine/model/markercollection~Marker} Marker that was set.
 	 */
-	setMarker( markerOrName, newRange ) {
+	setMarker( markerOrNameOrRange, rangeOrOptions, options ) {
 		this._assertWriterUsedCorrectly();
 
-		const name = typeof markerOrName == 'string' ? markerOrName : markerOrName.name;
-		const currentMarker = this.model.markers.get( name );
+		let markerName, newRange, usingOperation;
+
+		if ( markerOrNameOrRange instanceof Range ) {
+			markerName = uid();
+			newRange = markerOrNameOrRange;
+			usingOperation = !!rangeOrOptions && !!rangeOrOptions.usingOperation;
+		} else {
+			markerName = typeof markerOrNameOrRange === 'string' ? markerOrNameOrRange : markerOrNameOrRange.name;
+
+			if ( rangeOrOptions instanceof Range ) {
+				newRange = rangeOrOptions;
+				usingOperation = !!options && !!options.usingOperation;
+			} else {
+				newRange = null;
+				usingOperation = !!rangeOrOptions && !!rangeOrOptions.usingOperation;
+			}
+		}
+
+		const currentMarker = this.model.markers.get( markerName );
+
+		if ( !usingOperation ) {
+			if ( !newRange ) {
+				/**
+			 	 * Range parameter is required when adding a new marker.
+				 *
+				 * @error writer-setMarker-no-range
+				 */
+				throw new CKEditorError( 'writer-setMarker-no-range: Range parameter is required when adding a new marker.' );
+			}
+
+			// If marker changes to marker that do not use operations then we need to create additional operation
+			// that removes that marker first.
+			if ( currentMarker && currentMarker.managedUsingOperations && !usingOperation ) {
+				applyMarkerOperation( this, markerName, currentMarker.getRange(), null );
+			}
+
+			return this.model.markers._set( markerName, newRange, usingOperation );
+		}
 
 		if ( !newRange && !currentMarker ) {
-			/**
-			 * Range parameter is required when adding a new marker.
-			 *
-			 * @error writer-setMarker-no-range
-			 */
 			throw new CKEditorError( 'writer-setMarker-no-range: Range parameter is required when adding a new marker.' );
 		}
 
@@ -795,15 +858,19 @@ export default class Writer {
 		if ( !newRange ) {
 			// If `newRange` is not given, treat this as synchronizing existing marker.
 			// Create `MarkerOperation` with `oldRange` set to `null`, so reverse operation will remove the marker.
-			addMarkerOperation( this, name, null, currentRange );
+			applyMarkerOperation( this, markerName, null, currentRange );
 		} else {
 			// Just change marker range.
-			addMarkerOperation( this, name, currentRange, newRange );
+			applyMarkerOperation( this, markerName, currentRange, newRange );
 		}
+
+		return this.model.markers.get( markerName );
 	}
 
 	/**
 	 * Removes given {@link module:engine/model/markercollection~Marker marker} or marker with given name.
+	 * The marker is removed accordingly to how it has been created, so if the marker was created using operation,
+	 * it will be destroyed using operation.
 	 *
 	 * @param {module:engine/model/markercollection~Marker|String} markerOrName Marker or marker name to remove.
 	 */
@@ -821,9 +888,17 @@ export default class Writer {
 			throw new CKEditorError( 'writer-removeMarker-no-marker: Trying to remove marker which does not exist.' );
 		}
 
-		const oldRange = this.model.markers.get( name ).getRange();
+		const marker = this.model.markers.get( name );
 
-		addMarkerOperation( this, name, oldRange, null );
+		if ( !marker.managedUsingOperations ) {
+			this.model.markers._remove( name );
+
+			return;
+		}
+
+		const oldRange = marker.getRange();
+
+		applyMarkerOperation( this, name, oldRange, null );
 	}
 
 	/**
@@ -831,8 +906,6 @@ export default class Writer {
 	 * {@link module:engine/model/selection~Selection selection}, {@link module:engine/model/position~Position position},
 	 * {@link module:engine/model/element~Element element}, {@link module:engine/model/position~Position position},
 	 * {@link module:engine/model/range~Range range}, an iterable of {@link module:engine/model/range~Range ranges} or null.
-	 *
-	 * Uses internally {@link module:engine/model/documentselection~DocumentSelection#_setTo}.
 	 *
 	 *		// Sets ranges from the given range.
 	 *		const range = new Range( start, end );
@@ -850,11 +923,11 @@ export default class Writer {
 	 *		const documentSelection = new DocumentSelection( doc );
 	 *		writer.setSelection( documentSelection );
 	 *
-	 * 		// Sets range at the given position.
+	 * 		// Sets collapsed range at the given position.
 	 *		const position = new Position( root, path );
 	 *		writer.setSelection( position );
 	 *
-	 * 		// Sets range at the given element.
+	 * 		// Sets collapsed range at the given offset in element.
 	 *		const paragraph = writer.createElement( 'paragraph' );
 	 *		writer.setSelection( paragraph, offset );
 	 *
@@ -1114,14 +1187,14 @@ function setAttributeOnItem( writer, key, value, item ) {
 	}
 }
 
-// Creates and adds marker operation to {@link module:engine/model/delta/delta~Delta delta}.
+// Creates and applies marker operation to {@link module:engine/model/delta/delta~Delta delta}.
 //
 // @private
 // @param {module:engine/model/writer~Writer} writer
 // @param {String} name Marker name.
 // @param {module:engine/model/range~Range} oldRange Marker range before the change.
 // @param {module:engine/model/range~Range} newRange Marker range after the change.
-function addMarkerOperation( writer, name, oldRange, newRange ) {
+function applyMarkerOperation( writer, name, oldRange, newRange ) {
 	const model = writer.model;
 	const doc = model.document;
 	const delta = new MarkerDelta();
@@ -1141,7 +1214,7 @@ function addMarkerOperation( writer, name, oldRange, newRange ) {
 // @param {Number} howMany Number of nodes to remove.
 // @param {module:engine/model/delta~Delta} delta Delta to add new operation to.
 // @param {module:engine/model/model~Model} model Model instance on which operation will be applied.
-function addRemoveOperation( position, howMany, delta, model ) {
+function applyRemoveOperation( position, howMany, delta, model ) {
 	let operation;
 
 	if ( position.root.document ) {

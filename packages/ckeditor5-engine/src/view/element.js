@@ -60,11 +60,7 @@ export default class Element extends Node {
 		 * @protected
 		 * @member {Map} #_attrs
 		 */
-		if ( isPlainObject( attrs ) ) {
-			this._attrs = objectToMap( attrs );
-		} else {
-			this._attrs = new Map( attrs );
-		}
+		this._attrs = parseAttributes( attrs );
 
 		/**
 		 * Array of child nodes.
@@ -721,6 +717,30 @@ export default class Element extends Node {
 	 * @abstract
 	 * @method module:engine/view/element~Element#getFillerOffset
 	 */
+}
+
+// Parses attributes provided to the element constructor before they are applied to an element. If attributes are passed
+// as an object (instead of `Map`), the object is transformed to the map. Attributes with `null` value are removed.
+// Attributes with non-`String` value are converted to `String`.
+//
+// @param {Object|Map} attrs Attributes to parse.
+// @returns {Map} Parsed attributes.
+function parseAttributes( attrs ) {
+	if ( isPlainObject( attrs ) ) {
+		attrs = objectToMap( attrs );
+	} else {
+		attrs = new Map( attrs );
+	}
+
+	for ( const [ key, value ] of attrs ) {
+		if ( value === null ) {
+			attrs.delete( key );
+		} else if ( typeof value != 'string' ) {
+			attrs.set( key, String( value ) );
+		}
+	}
+
+	return attrs;
 }
 
 // Parses inline styles and puts property - value pairs into styles map.

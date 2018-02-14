@@ -12,11 +12,11 @@ import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 
 import Mapper from '../conversion/mapper';
 
-import ModelConversionDispatcher from '../conversion/modelconversiondispatcher';
-import { insertText } from '../conversion/model-to-view-converters';
+import DowncastDispatcher from '../conversion/downcastdispatcher';
+import { insertText } from '../conversion/downcast-converters';
 
-import ViewConversionDispatcher from '../conversion/viewconversiondispatcher';
-import { convertText, convertToModelFragment } from '../conversion/view-to-model-converters';
+import UpcastDispatcher from '../conversion/upcastdispatcher';
+import { convertText, convertToModelFragment } from '../conversion/upcast-converters';
 
 import ViewDocumentFragment from '../view/documentfragment';
 
@@ -26,11 +26,11 @@ import ModelRange from '../model/range';
  * Controller for the data pipeline. The data pipeline controls how data is retrieved from the document
  * and set inside it. Hence, the controller features two methods which allow to {@link ~DataController#get get}
  * and {@link ~DataController#set set} data of the {@link ~DataController#model model}
- * using the given:
+ * using given:
  *
  * * {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor},
- * * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher model to view} and
- * * {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher view to model} converters.
+ * * downcast converters,
+ * * upcast converters.
  *
  * @mixes module:utils/observablemixin~ObservableMixin
  */
@@ -62,44 +62,30 @@ export default class DataController {
 		/**
 		 * Mapper used for the conversion. It has no permanent bindings, because they are created when getting data and
 		 * cleared directly after the data are converted. However, the mapper is defined as a class property, because
-		 * it needs to be passed to the `ModelConversionDispatcher` as a conversion API.
+		 * it needs to be passed to the `DowncastDispatcher` as a conversion API.
 		 *
 		 * @member {module:engine/conversion/mapper~Mapper}
 		 */
 		this.mapper = new Mapper();
 
 		/**
-		 * Model-to-view conversion dispatcher used by the {@link #get get method}.
-		 * To attach the model-to-view converter to the data pipeline you need to add a listener to this property:
-		 *
-		 *		data.modelToView( 'insert:$element', customInsertConverter );
-		 *
-		 * Or use {@link module:engine/conversion/buildmodelconverter~ModelConverterBuilder}:
-		 *
-		 *		buildModelConverter().for( data.modelToView ).fromAttribute( 'bold' ).toElement( 'b' );
+		 * Downcast dispatcher used by the {@link #get get method}. Downcast converters should be attached to it.
 		 *
 		 * @readonly
-		 * @member {module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher}
+		 * @member {module:engine/conversion/downcastdispatcher~DowncastDispatcher}
 		 */
-		this.modelToView = new ModelConversionDispatcher( this.model, {
+		this.downcastDispatcher = new DowncastDispatcher( this.model, {
 			mapper: this.mapper
 		} );
-		this.modelToView.on( 'insert:$text', insertText(), { priority: 'lowest' } );
+		this.downcastDispatcher.on( 'insert:$text', insertText(), { priority: 'lowest' } );
 
 		/**
-		 * View-to-model conversion dispatcher used by the {@link #set set method}.
-		 * To attach the view-to-model converter to the data pipeline you need to add a listener to this property:
-		 *
-		 *		data.viewToModel( 'element', customElementConverter );
-		 *
-		 * Or use {@link module:engine/conversion/buildviewconverter~ViewConverterBuilder}:
-		 *
-		 *		buildViewConverter().for( data.viewToModel ).fromElement( 'b' ).toAttribute( 'bold', 'true' );
+		 * Upcast dispatcher used by the {@link #set set method}. Upcast converters should be attached to it.
 		 *
 		 * @readonly
-		 * @member {module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher}
+		 * @member {module:engine/conversion/upcastdispatcher~UpcastDispatcher}
 		 */
-		this.viewToModel = new ViewConversionDispatcher( this.model, {
+		this.upcastDispatcher = new UpcastDispatcher( this.model, {
 			schema: model.schema
 		} );
 
@@ -108,13 +94,13 @@ export default class DataController {
 		// Note that if there is no default converter for the element it will be skipped, for instance `<b>foo</b>` will be
 		// converted to nothing. We add `convertToModelFragment` as a last converter so it converts children of that
 		// element to the document fragment so `<b>foo</b>` will be converted to `foo` if there is no converter for `<b>`.
-		this.viewToModel.on( 'text', convertText(), { priority: 'lowest' } );
-		this.viewToModel.on( 'element', convertToModelFragment(), { priority: 'lowest' } );
-		this.viewToModel.on( 'documentFragment', convertToModelFragment(), { priority: 'lowest' } );
+		this.upcastDispatcher.on( 'text', convertText(), { priority: 'lowest' } );
+		this.upcastDispatcher.on( 'element', convertToModelFragment(), { priority: 'lowest' } );
+		this.upcastDispatcher.on( 'documentFragment', convertToModelFragment(), { priority: 'lowest' } );
 	}
 
 	/**
-	 * Returns the model's data converted by the {@link #modelToView model-to-view converters} and
+	 * Returns the model's data converted by downcast dispatchers attached to {@link #downcastDispatcher} and
 	 * formatted by the {@link #processor data processor}.
 	 *
 	 * @param {String} [rootName='main'] Root name.
@@ -127,9 +113,8 @@ export default class DataController {
 
 	/**
 	 * Returns the content of the given {@link module:engine/model/element~Element model's element} or
-	 * {@link module:engine/model/documentfragment~DocumentFragment model document fragment} converted by the
-	 * {@link #modelToView model-to-view converters} and formatted by the
-	 * {@link #processor data processor}.
+	 * {@link module:engine/model/documentfragment~DocumentFragment model document fragment} converted by the downcast converters
+	 * attached to {@link #downcastDispatcher} and formatted by the {@link #processor data processor}.
 	 *
 	 * @param {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment} modelElementOrFragment
 	 * Element whose content will be stringified.
@@ -145,8 +130,8 @@ export default class DataController {
 
 	/**
 	 * Returns the content of the given {@link module:engine/model/element~Element model element} or
-	 * {@link module:engine/model/documentfragment~DocumentFragment model document fragment} converted by the
-	 * {@link #modelToView model-to-view converters} to a
+	 * {@link module:engine/model/documentfragment~DocumentFragment model document fragment} converted by the downcast
+	 * converters attached to {@link #downcastDispatcher} to a
 	 * {@link module:engine/view/documentfragment~DocumentFragment view document fragment}.
 	 *
 	 * @param {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment} modelElementOrFragment
@@ -160,7 +145,7 @@ export default class DataController {
 		const viewDocumentFragment = new ViewDocumentFragment();
 		this.mapper.bindElements( modelElementOrFragment, viewDocumentFragment );
 
-		this.modelToView.convertInsert( modelRange );
+		this.downcastDispatcher.convertInsert( modelRange );
 
 		if ( !modelElementOrFragment.is( 'documentFragment' ) ) {
 			// Then, if a document element is converted, convert markers.
@@ -168,7 +153,7 @@ export default class DataController {
 			const markers = _getMarkersRelativeToElement( modelElementOrFragment );
 
 			for ( const [ name, range ] of markers ) {
-				this.modelToView.convertMarkerAdd( name, range );
+				this.downcastDispatcher.convertMarkerAdd( name, range );
 			}
 		}
 
@@ -180,7 +165,7 @@ export default class DataController {
 
 	/**
 	 * Sets input data parsed by the {@link #processor data processor} and
-	 * converted by the {@link #viewToModel view-to-model converters}.
+	 * converted by the {@link #upcastDispatcher view-to-model converters}.
 	 *
 	 * This method also creates a batch with all the changes applied. If all you need is to parse data, use
 	 * the {@link #parse} method.
@@ -199,21 +184,21 @@ export default class DataController {
 			writer.removeSelectionAttribute( this.model.document.selection.getAttributeKeys() );
 
 			writer.remove( ModelRange.createIn( modelRoot ) );
-			writer.insert( this.parse( data ), modelRoot );
+			writer.insert( this.parse( data, modelRoot ), modelRoot );
 		} );
 	}
 
 	/**
-	 * Returns the data parsed by the {@link #processor data processor} and then
-	 * converted by the {@link #viewToModel view-to-model converters}.
+	 * Returns the data parsed by the {@link #processor data processor} and then converted by upcast converters
+	 * attached to the {@link #upcastDispatcher}.
 	 *
 	 * @see #set
 	 * @param {String} data Data to parse.
-	 * @param {module:engine/model/schema~SchemaContextDefinition} [context=['$root']] Base context in which the view will
-	 * be converted to the model. See: {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#convert}.
+	 * @param {module:engine/model/schema~SchemaContextDefinition} [context='$root'] Base context in which the view will
+	 * be converted to the model. See: {@link module:engine/conversion/upcastdispatcher~UpcastDispatcher#convert}.
 	 * @returns {module:engine/model/documentfragment~DocumentFragment} Parsed data.
 	 */
-	parse( data, context = [ '$root' ] ) {
+	parse( data, context = '$root' ) {
 		// data -> view
 		const viewDocumentFragment = this.processor.toView( data );
 
@@ -224,19 +209,19 @@ export default class DataController {
 	/**
 	 * Returns the result of the given {@link module:engine/view/element~Element view element} or
 	 * {@link module:engine/view/documentfragment~DocumentFragment view document fragment} converted by the
-	 * {@link #viewToModel view-to-model converters}, wrapped by {module:engine/model/documentfragment~DocumentFragment}.
+	 * {@link #upcastDispatcher view-to-model converters}, wrapped by {module:engine/model/documentfragment~DocumentFragment}.
 	 *
 	 * When marker elements were converted during the conversion process, it will be set as a document fragment's
 	 * {@link module:engine/model/documentfragment~DocumentFragment#markers static markers map}.
 	 *
 	 * @param {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment} viewElementOrFragment
 	 * Element or document fragment whose content will be converted.
-	 * @param {module:engine/model/schema~SchemaContextDefinition} [context=['$root']] Base context in which the view will
-	 * be converted to the model. See: {@link module:engine/conversion/viewconversiondispatcher~ViewConversionDispatcher#convert}.
+	 * @param {module:engine/model/schema~SchemaContextDefinition} [context='$root'] Base context in which the view will
+	 * be converted to the model. See: {@link module:engine/conversion/upcastdispatcher~UpcastDispatcher#convert}.
 	 * @returns {module:engine/model/documentfragment~DocumentFragment} Output document fragment.
 	 */
-	toModel( viewElementOrFragment, context = [ '$root' ] ) {
-		return this.viewToModel.convert( viewElementOrFragment, context );
+	toModel( viewElementOrFragment, context = '$root' ) {
+		return this.upcastDispatcher.convert( viewElementOrFragment, context );
 	}
 
 	/**
@@ -247,7 +232,7 @@ export default class DataController {
 
 mix( DataController, ObservableMixin );
 
-// Helper function for converting part of a model to view.
+// Helper function for downcast conversion.
 //
 // Takes a document element (element that is added to a model document) and checks which markers are inside it
 // and which markers are containing it. If the marker is intersecting with element, the intersection is returned.

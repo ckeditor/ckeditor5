@@ -15,7 +15,10 @@ import List from '@ckeditor/ckeditor5-list/src/list';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 
-import buildModelConverter from '../../src/conversion/buildmodelconverter';
+import {
+	downcastMarkerToHighlight
+} from '../../src/conversion/downcast-converters';
+
 import Position from '../../src/model/position';
 import Range from '../../src/model/range';
 
@@ -32,16 +35,17 @@ ClassicEditor
 		window.editor = editor;
 		model = editor.model;
 
-		buildModelConverter().for( editor.editing.modelToView )
-			.fromMarker( 'highlight' )
-			.toHighlight( data => {
+		downcastMarkerToHighlight( {
+			model: 'highlight',
+			view: data => {
 				const color = data.markerName.split( ':' )[ 1 ];
 
 				return {
 					class: 'h-' + color,
 					priority: 1
 				};
-			} );
+			}
+		} );
 
 		window.document.getElementById( 'add-yellow' ).addEventListener( 'mousedown', e => {
 			e.preventDefault();
@@ -73,13 +77,13 @@ ClassicEditor
 			moveSelectionByOffset( 1 );
 		} );
 
-		model.change( () => {
+		model.change( writer => {
 			const root = model.document.getRoot();
 			const range = new Range( new Position( root, [ 0, 10 ] ), new Position( root, [ 0, 16 ] ) );
 			const name = 'highlight:yellow:' + uid();
 
 			markerNames.push( name );
-			model.markers.set( name, range );
+			writer.setMarker( name, range );
 		} );
 	} )
 	.catch( err => {
@@ -91,17 +95,17 @@ function uid() {
 }
 
 function addHighlight( color ) {
-	model.change( () => {
+	model.change( writer => {
 		const range = Range.createFromRange( model.document.selection.getFirstRange() );
 		const name = 'highlight:' + color + ':' + uid();
 
 		markerNames.push( name );
-		model.markers.set( name, range );
+		writer.setMarker( name, range );
 	} );
 }
 
 function removeHighlight() {
-	model.change( () => {
+	model.change( writer => {
 		const pos = model.document.selection.getFirstPosition();
 
 		for ( let i = 0; i < markerNames.length; i++ ) {
@@ -110,7 +114,7 @@ function removeHighlight() {
 			const range = marker.getRange();
 
 			if ( range.containsPosition( pos ) || range.start.isEqual( pos ) || range.end.isEqual( pos ) ) {
-				model.markers.remove( name );
+				writer.removeMarker( name );
 
 				markerNames.splice( i, 1 );
 				break;

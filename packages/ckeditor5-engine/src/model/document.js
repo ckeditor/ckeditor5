@@ -24,8 +24,8 @@ const graveyardName = '$graveyard';
 
 /**
  * Document tree model describes all editable data in the editor. It may contain multiple
- * {@link module:engine/model/document~Document#roots root elements}, for example if the editor have multiple editable areas,
- * each area will be represented by the separate root.
+ * {@link module:engine/model/document~Document#roots root elements}. For example, if the editor has multiple editable areas,
+ * each area will be represented by a separate root.
  *
  * @mixes module:utils/emittermixin~EmitterMixin
  */
@@ -36,7 +36,7 @@ export default class Document {
 	 */
 	constructor( model ) {
 		/**
-		 * {@link module:engine/model/model~Model} the document is part of.
+		 * The {@link module:engine/model/model~Model model} that the document is a part of.
 		 *
 		 * @readonly
 		 * @member {module:engine/model/model~Model}
@@ -44,10 +44,10 @@ export default class Document {
 		this.model = model;
 
 		/**
-		 * Document version. It starts from `0` and every operation increases the version number. It is used to ensure that
-		 * operations are applied on the proper document version.
-		 * If the {@link module:engine/model/operation/operation~Operation#baseVersion} will not match document version the
-		 * {@link module:utils/ckeditorerror~CKEditorError model-document-applyOperation-wrong-version} error is thrown.
+		 * The document version. It starts from `0` and every operation increases the version number. It is used to ensure that
+		 * operations are applied on a proper document version.
+		 * If the {@link module:engine/model/operation/operation~Operation#baseVersion base version} does not match the document version,
+		 * a {@link module:utils/ckeditorerror~CKEditorError model-document-applyOperation-wrong-version} error is thrown.
 		 *
 		 * @readonly
 		 * @member {Number}
@@ -55,7 +55,7 @@ export default class Document {
 		this.version = 0;
 
 		/**
-		 * Document's history.
+		 * The document's history.
 		 *
 		 * **Note:** Be aware that deltas applied to the document might get removed or changed.
 		 *
@@ -65,7 +65,7 @@ export default class Document {
 		this.history = new History( this );
 
 		/**
-		 * Selection done on this document.
+		 * The selection done on this document.
 		 *
 		 * @readonly
 		 * @member {module:engine/model/documentselection~DocumentSelection}
@@ -73,7 +73,7 @@ export default class Document {
 		this.selection = new DocumentSelection( this );
 
 		/**
-		 * List of roots that are owned and managed by this document. Use {@link #createRoot} and
+		 * A list of roots that are owned and managed by this document. Use {@link #createRoot} and
 		 * {@link #getRoot} to manipulate it.
 		 *
 		 * @readonly
@@ -82,7 +82,7 @@ export default class Document {
 		this.roots = new Collection( { idProperty: 'rootName' } );
 
 		/**
-		 * Model differ object. Its role is to buffer changes done on model document and then calculate a diff of those changes.
+		 * The model differ object. Its role is to buffer changes done on the model document and then calculate a diff of those changes.
 		 *
 		 * @readonly
 		 * @member {module:engine/model/differ~Differ}
@@ -161,7 +161,7 @@ export default class Document {
 		// Buffer marker changes.
 		// This is not covered in buffering operations because markers may change outside of them (when they
 		// are modified using `model.markers` collection, not through `MarkerOperation`).
-		this.listenTo( model.markers, 'add', ( evt, marker ) => {
+		this.listenTo( model.markers, 'set', ( evt, marker ) => {
 			// TODO: Should filter out changes of markers that are not in document.
 			// Whenever a new marker is added, buffer that change.
 			this.differ.bufferMarkerChange( marker.name, null, marker.getRange() );
@@ -180,7 +180,7 @@ export default class Document {
 	}
 
 	/**
-	 * Graveyard tree root. Document always have a graveyard root, which stores removed nodes.
+	 * The graveyard tree root. A document always has a graveyard root that stores removed nodes.
 	 *
 	 * @readonly
 	 * @member {module:engine/model/rootelement~RootElement}
@@ -192,16 +192,15 @@ export default class Document {
 	/**
 	 * Creates a new top-level root.
 	 *
-	 * @param {String} [elementName='$root'] Element name. Defaults to `'$root'` which also have
-	 * some basic schema defined (`$block`s are allowed inside the `$root`). Make sure to define a proper
-	 * schema if you use a different name.
-	 * @param {String} [rootName='main'] Unique root name.
-	 * @returns {module:engine/model/rootelement~RootElement} Created root.
+	 * @param {String} [elementName='$root'] The element name. Defaults to `'$root'` which also has some basic schema defined
+	 * (`$block`s are allowed inside the `$root`). Make sure to define a proper schema if you use a different name.
+	 * @param {String} [rootName='main'] A unique root name.
+	 * @returns {module:engine/model/rootelement~RootElement} The created root.
 	 */
 	createRoot( elementName = '$root', rootName = 'main' ) {
 		if ( this.roots.get( rootName ) ) {
 			/**
-			 * Root with specified name already exists.
+			 * A root with the specified name already exists.
 			 *
 			 * @error model-document-createRoot-name-exists
 			 * @param {module:engine/model/document~Document} doc
@@ -220,7 +219,7 @@ export default class Document {
 	}
 
 	/**
-	 * Removes all events listeners set by document instance.
+	 * Removes all event listeners set by the document instance.
 	 */
 	destroy() {
 		this.selection.destroy();
@@ -228,18 +227,18 @@ export default class Document {
 	}
 
 	/**
-	 * Returns top-level root by its name.
+	 * Returns the top-level root by its name.
 	 *
-	 * @param {String} [name='main'] Unique root name.
-	 * @returns {module:engine/model/rootelement~RootElement|null} Root registered under given name or null when
-	 * there is no root of given name.
+	 * @param {String} [name='main'] A unique root name.
+	 * @returns {module:engine/model/rootelement~RootElement|null} The root registered under a given name or null when
+	 * there is no root with the given name.
 	 */
 	getRoot( name = 'main' ) {
 		return this.roots.get( name );
 	}
 
 	/**
-	 * Returns array with names of all roots (without the {@link #graveyard}) added to the document.
+	 * Returns an array with names of all roots (without the {@link #graveyard}) added to the document.
 	 *
 	 * @returns {Array.<String>} Roots names.
 	 */
@@ -248,32 +247,33 @@ export default class Document {
 	}
 
 	/**
-	 * Used to register a post-fixer callback. Post-fixers mechanism guarantees that the features that listen to
-	 * {@link module:engine/model/model~Model#event:_change model's change event} will operate on a correct model state.
+	 * Used to register a post-fixer callback. A post-fixer mechanism guarantees that the features that listen to
+	 * the {@link module:engine/model/model~Model#event:_change model's change event} will operate on a correct model state.
 	 *
-	 * Execution of a feature may lead to an incorrect document tree state. The callbacks are used to fix document tree after
+	 * An execution of a feature may lead to an incorrect document tree state. The callbacks are used to fix the document tree after
 	 * it has changed. Post-fixers are fired just after all changes from the outermost change block were applied but
-	 * before {@link module:engine/model/document~Document#event:change} is fired. If a post-fixer callback made a change,
-	 * it should return `true`. When this happens, all post-fixers are fired again to check if something else should
+	 * before the {@link module:engine/model/document~Document#event:change change event} is fired. If a post-fixer callback made
+	 * a change, it should return `true`. When this happens, all post-fixers are fired again to check if something else should
 	 * not be fixed in the new document tree state.
 	 *
-	 * As a parameter, a post-fixer callback receives {@link module:engine/model/writer~Writer} instance connected with the executed
-	 * changes block. Thanks to that, all changes done by the callback will be added to the same {@link module:engine/model/batch~Batch}
-	 * (and undo step) as the original changes. This makes post-fixer changes transparent for the user.
+	 * As a parameter, a post-fixer callback receives a {@link module:engine/model/writer~Writer writer} instance connected with the
+	 * executed changes block. Thanks to that, all changes done by the callback will be added to the same
+	 * {@link module:engine/model/batch~Batch batch} (and undo step) as the original changes. This makes post-fixer changes transparent
+	 * for the user.
 	 *
-	 * An example of a post-fixer is a callback that checks if all the data was removed from the editor. If so, the
-	 * callback should add an empty paragraph, so that the editor is never empty:
+	 * An example of a post-fixer is a callback that checks if all the data were removed from the editor. If so, the
+	 * callback should add an empty paragraph so that the editor is never empty:
 	 *
 	 *		document.registerPostFixer( writer => {
 	 *			const changes = document.differ.getChanges();
 	 *
-	 *			// Check if the changes lead to an empty root in an editor.
+	 *			// Check if the changes lead to an empty root in the editor.
 	 *			for ( const entry of changes ) {
 	 *				if ( entry.type == 'remove' && entry.position.root.isEmpty ) {
 	 *					writer.insertElement( 'paragraph', entry.position.root, 0 );
 	 *
 	 *					// It is fine to return early, even if multiple roots would need to be fixed.
-	 *					// All post-fixers will be fired again, so if there more empty roots, those will be fixed too.
+	 *					// All post-fixers will be fired again, so if there are more empty roots, those will be fixed, too.
 	 *					return true;
 	 *				}
 	 *			}
@@ -286,9 +286,9 @@ export default class Document {
 	}
 
 	/**
-	 * Custom toJSON method to solve child-parent circular dependencies.
+	 * A custom `toJSON()` method to solve child-parent circular dependencies.
 	 *
-	 * @returns {Object} Clone of this object with the document property changed to string.
+	 * @returns {Object} A clone of this object with the document property changed to a string.
 	 */
 	toJSON() {
 		const json = clone( this );
@@ -301,7 +301,7 @@ export default class Document {
 	}
 
 	/**
-	 * Returns default root for this document which is either the first root that was added to the the document using
+	 * Returns the default root for this document which is either the first root that was added to the document using
 	 * {@link #createRoot} or the {@link #graveyard graveyard root} if no other roots were created.
 	 *
 	 * @protected
@@ -318,8 +318,8 @@ export default class Document {
 	}
 
 	/**
-	 * Returns a default range for this selection. The default range is a collapsed range that starts and ends
-	 * at the beginning of this selection's document's {@link #_getDefaultRoot default root}.
+	 * Returns the default range for this selection. The default range is a collapsed range that starts and ends
+	 * at the beginning of this selection's document {@link #_getDefaultRoot default root}.
 	 *
 	 * @protected
 	 * @returns {module:engine/model/range~Range}
@@ -337,11 +337,11 @@ export default class Document {
 	}
 
 	/**
-	 * Checks whether given {@link module:engine/model/range~Range range} is a valid range for
-	 * {@link #selection document's selection}.
+	 * Checks whether a given {@link module:engine/model/range~Range range} is a valid range for
+	 * the {@link #selection document's selection}.
 	 *
 	 * @private
-	 * @param {module:engine/model/range~Range} range Range to check.
+	 * @param {module:engine/model/range~Range} range A range to check.
 	 * @returns {Boolean} `true` if `range` is valid, `false` otherwise.
 	 */
 	_validateSelectionRange( range ) {
@@ -349,7 +349,7 @@ export default class Document {
 	}
 
 	/**
-	 * Performs post-fixer loops. Executes post-fixer callbacks as long as neither of them has done any changes to model.
+	 * Performs post-fixer loops. Executes post-fixer callbacks as long as none of them has done any changes to the model.
 	 *
 	 * @private
 	 */
@@ -368,12 +368,12 @@ export default class Document {
 	}
 
 	/**
-	 * Fired after an {@link module:engine/model/model~Model#enqueueChange enqueueChange block} or the outermost
-	 * {@link module:engine/model/model~Model#change change block} has been executed and the document model tree was changed
+	 * Fired after an {@link module:engine/model/model~Model#enqueueChange enqueue change block} or the outermost
+	 * {@link module:engine/model/model~Model#change change block} was executed and the document model tree was changed
 	 * during that block execution.
 	 *
 	 * @event change
-	 * @param {@link module:engine/model/batch~Batch} batch Batch which was used in the executed changes block.
+	 * @param {@link module:engine/model/batch~Batch} batch The batch that was used in the executed changes block.
 	 */
 }
 

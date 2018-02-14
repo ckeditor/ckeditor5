@@ -581,12 +581,14 @@ export default class Schema {
 	getLimitElement( selection ) {
 		// Find the common ancestor for all selection's ranges.
 		let element = Array.from( selection.getRanges() )
-			.reduce( ( node, range ) => {
-				if ( !node ) {
-					return range.getCommonAncestor();
+			.reduce( ( element, range ) => {
+				const rangeCommonAncestor = range.getCommonAncestor();
+
+				if ( !element ) {
+					return rangeCommonAncestor;
 				}
 
-				return node.getCommonAncestor( range.getCommonAncestor() );
+				return element.getCommonAncestor( rangeCommonAncestor, { includeSelf: true } );
 			}, null );
 
 		while ( !this.isLimit( element ) ) {
@@ -1114,14 +1116,16 @@ export class SchemaContext {
 	/**
 	 * Creates an instance of the context.
 	 *
-	 * @param {module:engine/model/schema~SchemaContextDefinition|module:engine/model/schema~SchemaContext} context
+	 * @param {module:engine/model/schema~SchemaContextDefinition} context
 	 */
 	constructor( context ) {
 		if ( context instanceof SchemaContext ) {
 			return context;
 		}
 
-		if ( !Array.isArray( context ) ) {
+		if ( typeof context == 'string' ) {
+			context = [ context ];
+		} else if ( !Array.isArray( context ) ) {
 			// `context` is item or position.
 			// Position#getAncestors() doesn't accept any parameters but it works just fine here.
 			context = context.getAncestors( { includeSelf: true } );
@@ -1239,11 +1243,11 @@ export class SchemaContext {
  * * By defining a **node** – in this cases this node and all its ancestors will be used.
  * * By defining a **position** in the document – in this case all its ancestors will be used.
  * * By defining an **array of nodes** – in this case this array defines the entire context.
- * * By defining an **array of node names** (potentially, mixed with real nodes) – in this case
- * nodes definied by strings will be "mocked". Using strings is not recommended as it
- * means that the context will be unrealistic (e.g. attributes of these nodes are not specified).
- * However, at times this may be the only way to define the context (e.g. when checking some
- * hypothetical situation).
+ * * By defining a **name of node** - in this case node will be "mocked". It is not recommended because context
+ * will be unrealistic (e.g. attributes of these nodes are not specified). However, at times this may be the only
+ * way to define the context (e.g. when checking some hypothetical situation).
+ * * By defining an **array of node names** (potentially, mixed with real nodes) – The same as **name of node**
+ * but it is possible to create a path.
  * * By defining a {@link module:engine/model/schema~SchemaContext} instance - in this case the same instance as provided
  * will be return.
  *
@@ -1262,6 +1266,9 @@ export class SchemaContext {
  *
  *		// Check in [ rootElement, paragraphElement ].
  *		schema.checkChild( [ rootElement, paragraphElement ], 'foo' );
+ *
+ *		// Check only fakeParagraphElement.
+ *		schema.checkChild( 'paragraph', 'foo' );
  *
  *		// Check in [ fakeRootElement, fakeBarElement, paragraphElement ].
  *		schema.checkChild( [ '$root', 'bar', paragraphElement ], 'foo' );
@@ -1294,7 +1301,7 @@ export class SchemaContext {
  *		schema.checkChild( [ ...positionInParagraph.getAncestors(), '$text' ], 'bold' );
  *
  * @typedef {module:engine/model/node~Node|module:engine/model/position~Position|module:engine/model/schema~SchemaContext|
- * Array.<String|module:engine/model/node~Node>} module:engine/model/schema~SchemaContextDefinition
+ * String|Array.<String|module:engine/model/node~Node>} module:engine/model/schema~SchemaContextDefinition
  */
 
 /**

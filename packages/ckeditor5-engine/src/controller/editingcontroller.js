@@ -10,18 +10,18 @@
 import RootEditableElement from '../view/rooteditableelement';
 import ViewDocument from '../view/document';
 import Mapper from '../conversion/mapper';
-import ModelConversionDispatcher from '../conversion/modelconversiondispatcher';
+import DowncastDispatcher from '../conversion/downcastdispatcher';
 import {
 	insertText,
 	remove
-} from '../conversion/model-to-view-converters';
-import { convertSelectionChange } from '../conversion/view-selection-to-model-converters';
+} from '../conversion/downcast-converters';
+import { convertSelectionChange } from '../conversion/upcast-selection-converters';
 import {
 	convertRangeSelection,
 	convertCollapsedSelection,
 	clearAttributes,
 	clearFakeSelection
-} from '../conversion/model-selection-to-view-converters';
+} from '../conversion/downcast-selection-converters';
 
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
@@ -65,20 +65,12 @@ export default class EditingController {
 		this.mapper = new Mapper();
 
 		/**
-		 * Model-to-view conversion dispatcher that converts changes from the model to {@link #view the editing view}.
-		 *
-		 * To attach the model-to-view converter to the editing pipeline you need to add a listener to this dispatcher:
-		 *
-		 *		editing.modelToView( 'insert:$element', customInsertConverter );
-		 *
-		 * Or use {@link module:engine/conversion/buildmodelconverter~ModelConverterBuilder}:
-		 *
-		 *		buildModelConverter().for( editing.modelToView ).fromAttribute( 'bold' ).toElement( 'b' );
+		 * Downcast dispatcher that converts changes from the model to {@link #view the editing view}.
 		 *
 		 * @readonly
-		 * @member {module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher} #modelToView
+		 * @member {module:engine/conversion/downcastdispatcher~DowncastDispatcher} #downcastDispatcher
 		 */
-		this.modelToView = new ModelConversionDispatcher( this.model, {
+		this.downcastDispatcher = new DowncastDispatcher( this.model, {
 			mapper: this.mapper,
 			viewSelection: this.view.selection
 		} );
@@ -86,11 +78,11 @@ export default class EditingController {
 		const doc = this.model.document;
 
 		this.listenTo( doc, 'change', () => {
-			this.modelToView.convertChanges( doc.differ );
+			this.downcastDispatcher.convertChanges( doc.differ );
 		}, { priority: 'low' } );
 
 		this.listenTo( model, '_change', () => {
-			this.modelToView.convertSelection( doc.selection );
+			this.downcastDispatcher.convertSelection( doc.selection );
 			this.view.render();
 		}, { priority: 'low' } );
 
@@ -98,14 +90,14 @@ export default class EditingController {
 		this.listenTo( this.view, 'selectionChange', convertSelectionChange( this.model, this.mapper ) );
 
 		// Attach default model converters.
-		this.modelToView.on( 'insert:$text', insertText(), { priority: 'lowest' } );
-		this.modelToView.on( 'remove', remove(), { priority: 'low' } );
+		this.downcastDispatcher.on( 'insert:$text', insertText(), { priority: 'lowest' } );
+		this.downcastDispatcher.on( 'remove', remove(), { priority: 'low' } );
 
 		// Attach default model selection converters.
-		this.modelToView.on( 'selection', clearAttributes(), { priority: 'low' } );
-		this.modelToView.on( 'selection', clearFakeSelection(), { priority: 'low' } );
-		this.modelToView.on( 'selection', convertRangeSelection(), { priority: 'low' } );
-		this.modelToView.on( 'selection', convertCollapsedSelection(), { priority: 'low' } );
+		this.downcastDispatcher.on( 'selection', clearAttributes(), { priority: 'low' } );
+		this.downcastDispatcher.on( 'selection', clearFakeSelection(), { priority: 'low' } );
+		this.downcastDispatcher.on( 'selection', convertRangeSelection(), { priority: 'low' } );
+		this.downcastDispatcher.on( 'selection', convertCollapsedSelection(), { priority: 'low' } );
 
 		// Convert markers removal.
 		//
@@ -130,7 +122,7 @@ export default class EditingController {
 				if ( _operationAffectsMarker( operation, marker ) ) {
 					// And if the operation in any way modifies the marker, remove the marker from the view.
 					removedMarkers.add( marker.name );
-					this.modelToView.convertMarkerRemove( marker.name, markerRange );
+					this.downcastDispatcher.convertMarkerRemove( marker.name, markerRange );
 
 					// TODO: This stinks but this is the safest place to have this code.
 					this.model.document.differ.bufferMarkerChange( marker.name, markerRange, markerRange );
@@ -143,7 +135,7 @@ export default class EditingController {
 		this.listenTo( model.markers, 'remove', ( evt, marker ) => {
 			if ( !removedMarkers.has( marker.name ) ) {
 				removedMarkers.add( marker.name );
-				this.modelToView.convertMarkerRemove( marker.name, marker.getRange() );
+				this.downcastDispatcher.convertMarkerRemove( marker.name, marker.getRange() );
 			}
 		} );
 

@@ -5,6 +5,19 @@
 
 /* global console, window, document */
 
+import ModelRange from '../../src/model/range';
+import ViewContainerElement from '../../src/view/containerelement';
+import ViewText from '../../src/view/text';
+
+import {
+	upcastElementToElement,
+} from '../../src/conversion/upcast-converters';
+
+import {
+	downcastElementToElement,
+	downcastMarkerToHighlight
+} from '../../src/conversion/downcast-converters';
+
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
@@ -15,12 +28,6 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import List from '@ckeditor/ckeditor5-list/src/list';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import buildModelConverter from '../../src/conversion/buildmodelconverter';
-import buildViewConverter from '../../src/conversion/buildviewconverter';
-import ModelRange from '../../src/model/range';
-import ModelElement from '../../src/model/element';
-import ViewContainerElement from '../../src/view/containerelement';
-import ViewText from '../../src/view/text';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
@@ -34,7 +41,6 @@ class FancyWidget extends Plugin {
 		const editor = this.editor;
 		const schema = editor.model.schema;
 		const data = editor.data;
-		const editing = editor.editing;
 
 		// Configure schema.
 		schema.register( 'fancywidget', {
@@ -42,19 +48,19 @@ class FancyWidget extends Plugin {
 		} );
 		schema.extend( 'fancywidget', { allowIn: '$root' } );
 
-		// Build converter from model to view for editing pipeline.
-		buildModelConverter().for( editing.modelToView )
-			.fromElement( 'fancywidget' )
-			.toElement( () => {
+		downcastElementToElement( {
+			model: 'fancywidget',
+			view: () => {
 				const widgetElement = new ViewContainerElement( 'figure', { class: 'fancy-widget' }, new ViewText( 'widget' ) );
 
 				return toWidget( widgetElement );
-			} );
+			}
+		} )( data.downcastDispatcher );
 
-		// Build converter from view element to model element for data pipeline.
-		buildViewConverter().for( data.viewToModel )
-			.fromElement( 'figure' )
-			.toElement( () => new ModelElement( 'fancywidget' ) );
+		upcastElementToElement( {
+			view: 'figure',
+			model: 'fancywidget'
+		} )( data.upcastDispatcher );
 	}
 }
 
@@ -65,10 +71,12 @@ ClassicEditor.create( global.document.querySelector( '#editor' ), {
 	.then( editor => {
 		window.editor = editor;
 
-		buildModelConverter()
-			.for( editor.editing.modelToView )
-			.fromMarker( 'marker' )
-			.toHighlight( data => ( { class: 'highlight-' + data.markerName.split( ':' )[ 1 ] } ) );
+		downcastMarkerToHighlight( {
+			model: 'marker',
+			view: data => ( {
+				class: 'highlight-' + data.markerName.split( ':' )[ 1 ]
+			} )
+		} );
 
 		document.getElementById( 'add-marker-yellow' ).addEventListener( 'mousedown', evt => {
 			addMarker( editor, 'yellow' );
@@ -103,9 +111,9 @@ ClassicEditor.create( global.document.querySelector( '#editor' ), {
 		document.getElementById( 'remove-markers' ).addEventListener( 'mousedown', evt => {
 			const markers = editor.model.markers;
 
-			editor.model.change( () => {
+			editor.model.change( writer => {
 				for ( const marker of markers ) {
-					markers.remove( marker );
+					writer.removeMarker( marker );
 				}
 			} );
 
@@ -117,14 +125,14 @@ ClassicEditor.create( global.document.querySelector( '#editor' ), {
 	} );
 
 function addMarker( editor, color ) {
-	editor.model.change( () => {
+	editor.model.change( writer => {
 		const range = ModelRange.createFromRange( editor.model.document.selection.getFirstRange() );
-		editor.model.markers.set( 'marker:' + color, range );
+		writer.setMarker( 'marker:' + color, range );
 	} );
 }
 
 function removeMarker( editor, color ) {
-	editor.model.change( () => {
-		editor.model.markers.remove( 'marker:' + color );
+	editor.model.change( writer => {
+		writer.removeMarker( 'marker:' + color );
 	} );
 }

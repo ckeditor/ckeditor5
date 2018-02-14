@@ -12,8 +12,9 @@ import EditingController from '../../src/controller/editingcontroller';
 import ViewDocument from '../../src/view/document';
 
 import Mapper from '../../src/conversion/mapper';
-import ModelConversionDispatcher from '../../src/conversion/modelconversiondispatcher';
-import buildModelConverter from '../../src/conversion/buildmodelconverter';
+import DowncastDispatcher from '../../src/conversion/downcastdispatcher';
+
+import { downcastElementToElement, downcastMarkerToHighlight } from '../../src/conversion/downcast-converters';
 
 import Model from '../../src/model/model';
 import ModelPosition from '../../src/model/position';
@@ -40,7 +41,7 @@ describe( 'EditingController', () => {
 			expect( editing ).to.have.property( 'model' ).that.equals( model );
 			expect( editing ).to.have.property( 'view' ).that.is.instanceof( ViewDocument );
 			expect( editing ).to.have.property( 'mapper' ).that.is.instanceof( Mapper );
-			expect( editing ).to.have.property( 'modelToView' ).that.is.instanceof( ModelConversionDispatcher );
+			expect( editing ).to.have.property( 'downcastDispatcher' ).that.is.instanceof( DowncastDispatcher );
 
 			editing.destroy();
 		} );
@@ -89,9 +90,10 @@ describe( 'EditingController', () => {
 
 			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			model.schema.register( 'div', { inheritAllFrom: '$block' } );
-			buildModelConverter().for( editing.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
-			buildModelConverter().for( editing.modelToView ).fromElement( 'div' ).toElement( 'div' );
-			buildModelConverter().for( editing.modelToView ).fromMarker( 'marker' ).toHighlight( {} );
+
+			downcastElementToElement( { model: 'paragraph', view: 'p' } )( editing.downcastDispatcher );
+			downcastElementToElement( { model: 'div', view: 'div' } )( editing.downcastDispatcher );
+			downcastMarkerToHighlight( { model: 'marker', view: {} } )( editing.downcastDispatcher );
 
 			// Note: The below code is highly overcomplicated due to #455.
 			model.change( writer => {
@@ -232,8 +234,8 @@ describe( 'EditingController', () => {
 		it( 'should convert adding marker', () => {
 			const range = new ModelRange( new ModelPosition( modelRoot, [ 0, 1 ] ), new ModelPosition( modelRoot, [ 2, 2 ] ) );
 
-			model.change( () => {
-				model.markers.set( 'marker', range );
+			model.change( writer => {
+				writer.setMarker( 'marker', range );
 			} );
 
 			expect( getViewData( editing.view, { withoutSelection: true } ) )
@@ -243,12 +245,12 @@ describe( 'EditingController', () => {
 		it( 'should convert removing marker', () => {
 			const range = new ModelRange( new ModelPosition( modelRoot, [ 0, 1 ] ), new ModelPosition( modelRoot, [ 2, 2 ] ) );
 
-			model.change( () => {
-				model.markers.set( 'marker', range );
+			model.change( writer => {
+				writer.setMarker( 'marker', range );
 			} );
 
-			model.change( () => {
-				model.markers.remove( 'marker' );
+			model.change( writer => {
+				writer.removeMarker( 'marker' );
 			} );
 
 			expect( getViewData( editing.view, { withoutSelection: true } ) )
@@ -258,14 +260,14 @@ describe( 'EditingController', () => {
 		it( 'should convert changing marker', () => {
 			const range = new ModelRange( new ModelPosition( modelRoot, [ 0, 1 ] ), new ModelPosition( modelRoot, [ 2, 2 ] ) );
 
-			model.change( () => {
-				model.markers.set( 'marker', range );
+			model.change( writer => {
+				writer.setMarker( 'marker', range );
 			} );
 
 			const range2 = new ModelRange( new ModelPosition( modelRoot, [ 0, 0 ] ), new ModelPosition( modelRoot, [ 0, 2 ] ) );
 
-			model.change( () => {
-				model.markers.set( 'marker', range2 );
+			model.change( writer => {
+				writer.setMarker( 'marker', range2 );
 			} );
 
 			expect( getViewData( editing.view, { withoutSelection: true } ) )
@@ -275,11 +277,8 @@ describe( 'EditingController', () => {
 		it( 'should convert insertion into marker', () => {
 			const range = new ModelRange( new ModelPosition( modelRoot, [ 0, 1 ] ), new ModelPosition( modelRoot, [ 2, 2 ] ) );
 
-			model.change( () => {
-				model.markers.set( 'marker', range );
-			} );
-
 			model.change( writer => {
+				writer.setMarker( 'marker', range );
 				writer.insertText( 'xyz', new ModelPosition( modelRoot, [ 1, 0 ] ) );
 			} );
 
@@ -290,8 +289,8 @@ describe( 'EditingController', () => {
 		it( 'should convert move to marker', () => {
 			const range = new ModelRange( new ModelPosition( modelRoot, [ 0, 1 ] ), new ModelPosition( modelRoot, [ 2, 2 ] ) );
 
-			model.change( () => {
-				model.markers.set( 'marker', range );
+			model.change( writer => {
+				writer.setMarker( 'marker', range );
 			} );
 
 			model.change( writer => {
@@ -308,8 +307,8 @@ describe( 'EditingController', () => {
 		it( 'should convert move from marker', () => {
 			const range = new ModelRange( new ModelPosition( modelRoot, [ 0, 1 ] ), new ModelPosition( modelRoot, [ 2, 2 ] ) );
 
-			model.change( () => {
-				model.markers.set( 'marker', range );
+			model.change( writer => {
+				writer.setMarker( 'marker', range );
 			} );
 
 			model.change( writer => {
@@ -326,8 +325,8 @@ describe( 'EditingController', () => {
 		it( 'should convert the whole marker move', () => {
 			const range = new ModelRange( new ModelPosition( modelRoot, [ 0, 1 ] ), new ModelPosition( modelRoot, [ 0, 3 ] ) );
 
-			model.change( () => {
-				model.markers.set( 'marker', range );
+			model.change( writer => {
+				writer.setMarker( 'marker', range );
 			} );
 
 			model.change( writer => {
@@ -358,9 +357,10 @@ describe( 'EditingController', () => {
 
 			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			model.schema.register( 'div', { inheritAllFrom: '$block' } );
-			buildModelConverter().for( editing.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
-			buildModelConverter().for( editing.modelToView ).fromElement( 'div' ).toElement( 'div' );
-			buildModelConverter().for( editing.modelToView ).fromMarker( 'marker' ).toHighlight( {} );
+
+			downcastElementToElement( { model: 'paragraph', view: 'p' } )( editing.downcastDispatcher );
+			downcastElementToElement( { model: 'div', view: 'div' } )( editing.downcastDispatcher );
+			downcastMarkerToHighlight( { model: 'marker', view: {} } )( editing.downcastDispatcher );
 
 			const modelData = new ModelDocumentFragment( parse(
 				'<paragraph>foo</paragraph>' +
@@ -375,7 +375,7 @@ describe( 'EditingController', () => {
 				writer.setSelection( ModelRange.createFromParentsAndOffsets( p1, 0, p1, 0 ) );
 			} );
 
-			mcd = editing.modelToView;
+			mcd = editing.downcastDispatcher;
 			sinon.spy( mcd, 'convertMarkerRemove' );
 		} );
 
@@ -386,7 +386,7 @@ describe( 'EditingController', () => {
 
 		it( 'should remove marker from view if it will be affected by insert operation', () => {
 			model.change( writer => {
-				writer.setMarker( 'marker', ModelRange.createFromParentsAndOffsets( p1, 1, p1, 2 ) );
+				writer.setMarker( 'marker', ModelRange.createFromParentsAndOffsets( p1, 1, p1, 2 ), { usingOperation: true } );
 			} );
 
 			// Adding with 'high' priority, because `applyOperation` is decorated - its default callback is fired with 'normal' priority.
@@ -404,7 +404,7 @@ describe( 'EditingController', () => {
 
 		it( 'should remove marker from view if it will be affected by remove operation', () => {
 			model.change( writer => {
-				writer.setMarker( 'marker', ModelRange.createFromParentsAndOffsets( p1, 1, p1, 2 ) );
+				writer.setMarker( 'marker', ModelRange.createFromParentsAndOffsets( p1, 1, p1, 2 ), { usingOperation: true } );
 			} );
 
 			// Adding with 'high' priority, because `applyOperation` is decorated - its default callback is fired with 'normal' priority.
@@ -422,7 +422,7 @@ describe( 'EditingController', () => {
 
 		it( 'should remove marker from view if it will be affected by move operation', () => {
 			model.change( writer => {
-				writer.setMarker( 'marker', ModelRange.createFromParentsAndOffsets( p1, 1, p1, 2 ) );
+				writer.setMarker( 'marker', ModelRange.createFromParentsAndOffsets( p1, 1, p1, 2 ), { usingOperation: true } );
 			} );
 
 			// Adding with 'high' priority, because `applyOperation` is decorated - its default callback is fired with 'normal' priority.
@@ -442,7 +442,11 @@ describe( 'EditingController', () => {
 
 		it( 'should remove marker from view if it will be affected by rename operation', () => {
 			model.change( writer => {
-				writer.setMarker( 'marker', ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 1 ) );
+				writer.setMarker(
+					'marker',
+					ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 1 ),
+					{ usingOperation: true }
+				);
 			} );
 
 			// Adding with 'high' priority, because `applyOperation` is decorated - its default callback is fired with 'normal' priority.
@@ -460,7 +464,7 @@ describe( 'EditingController', () => {
 
 		it( 'should remove marker from view if it will be affected by marker operation', () => {
 			model.change( writer => {
-				writer.setMarker( 'marker', ModelRange.createFromParentsAndOffsets( p1, 1, p1, 2 ) );
+				writer.setMarker( 'marker', ModelRange.createFromParentsAndOffsets( p1, 1, p1, 2 ), { usingOperation: true } );
 			} );
 
 			// Adding with 'high' priority, because `applyOperation` is decorated - its default callback is fired with 'normal' priority.
@@ -472,7 +476,7 @@ describe( 'EditingController', () => {
 			model.change( writer => {
 				const p2 = p1.nextSibling;
 
-				writer.setMarker( 'marker', ModelRange.createFromParentsAndOffsets( p2, 1, p2, 2 ) );
+				writer.setMarker( 'marker', ModelRange.createFromParentsAndOffsets( p2, 1, p2, 2 ), { usingOperation: true } );
 			} );
 
 			expect( getViewData( editing.view, { withoutSelection: true } ) ).to.equal( '<p>foo</p><p>b<span>a</span>r</p>' );
@@ -480,7 +484,7 @@ describe( 'EditingController', () => {
 
 		it( 'should remove marker from view if it is removed through marker collection', () => {
 			model.change( writer => {
-				writer.setMarker( 'marker', ModelRange.createFromParentsAndOffsets( p1, 1, p1, 2 ) );
+				writer.setMarker( 'marker', ModelRange.createFromParentsAndOffsets( p1, 1, p1, 2 ), { usingOperation: true } );
 			} );
 
 			// Adding with 'high' priority, because `applyOperation` is decorated - its default callback is fired with 'normal' priority.
@@ -489,8 +493,8 @@ describe( 'EditingController', () => {
 				expect( getViewData( editing.view, { withoutSelection: true } ) ).to.equal( '<p>foo</p><p>bar</p>' );
 			}, { priority: 'low' } );
 
-			model.change( () => {
-				model.markers.remove( 'marker' );
+			model.change( writer => {
+				writer.removeMarker( 'marker' );
 			} );
 
 			expect( getViewData( editing.view, { withoutSelection: true } ) ).to.equal( '<p>foo</p><p>bar</p>' );
@@ -498,7 +502,7 @@ describe( 'EditingController', () => {
 
 		it( 'should not remove marker if applied operation is an attribute operation', () => {
 			model.change( writer => {
-				writer.setMarker( 'marker', ModelRange.createFromParentsAndOffsets( p1, 1, p1, 2 ) );
+				writer.setMarker( 'marker', ModelRange.createFromParentsAndOffsets( p1, 1, p1, 2 ), { usingOperation: true } );
 			} );
 
 			// Adding with 'high' priority, because `applyOperation` is decorated - its default callback is fired with 'normal' priority.
@@ -516,7 +520,7 @@ describe( 'EditingController', () => {
 
 		it( 'should not crash if multiple operations affect a marker', () => {
 			model.change( writer => {
-				writer.setMarker( 'marker', ModelRange.createFromParentsAndOffsets( p1, 1, p1, 2 ) );
+				writer.setMarker( 'marker', ModelRange.createFromParentsAndOffsets( p1, 1, p1, 2 ), { usingOperation: true } );
 			} );
 
 			model.change( writer => {
@@ -530,12 +534,12 @@ describe( 'EditingController', () => {
 
 		it( 'should not crash if marker is removed, added and removed #1', () => {
 			model.change( writer => {
-				writer.setMarker( 'marker', ModelRange.createFromParentsAndOffsets( p1, 1, p1, 2 ) );
+				writer.setMarker( 'marker', ModelRange.createFromParentsAndOffsets( p1, 1, p1, 2 ), { usingOperation: true } );
 			} );
 
 			model.change( writer => {
 				writer.insertText( 'a', p1, 0 );
-				writer.setMarker( 'marker', ModelRange.createFromParentsAndOffsets( p1, 3, p1, 4 ) );
+				writer.setMarker( 'marker', ModelRange.createFromParentsAndOffsets( p1, 3, p1, 4 ), { usingOperation: true } );
 				writer.insertText( 'a', p1, 0 );
 			} );
 
@@ -544,13 +548,13 @@ describe( 'EditingController', () => {
 
 		it( 'should not crash if marker is removed, added and removed #2', () => {
 			model.change( writer => {
-				writer.setMarker( 'marker', ModelRange.createFromParentsAndOffsets( p1, 1, p1, 2 ) );
+				writer.setMarker( 'marker', ModelRange.createFromParentsAndOffsets( p1, 1, p1, 2 ), { usingOperation: true } );
 			} );
 
 			model.change( writer => {
-				writer.removeMarker( 'marker' );
-				writer.setMarker( 'marker', ModelRange.createFromParentsAndOffsets( p1, 0, p1, 1 ) );
-				writer.removeMarker( 'marker' );
+				writer.removeMarker( 'marker', { usingOperation: true } );
+				writer.setMarker( 'marker', ModelRange.createFromParentsAndOffsets( p1, 0, p1, 1 ), { usingOperation: true } );
+				writer.removeMarker( 'marker', { usingOperation: true } );
 			} );
 
 			expect( getViewData( editing.view, { withoutSelection: true } ) ).to.equal( '<p>foo</p><p>bar</p>' );
@@ -567,7 +571,7 @@ describe( 'EditingController', () => {
 
 			const spy = sinon.spy();
 
-			editing.modelToView.on( 'insert:$element', spy );
+			editing.downcastDispatcher.on( 'insert:$element', spy );
 
 			editing.destroy();
 

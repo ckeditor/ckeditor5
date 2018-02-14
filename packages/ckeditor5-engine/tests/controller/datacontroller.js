@@ -8,11 +8,7 @@ import Range from '../../src/model/range';
 import DataController from '../../src/controller/datacontroller';
 import HtmlDataProcessor from '../../src/dataprocessor/htmldataprocessor';
 
-import buildViewConverter from '../../src/conversion/buildviewconverter';
-import buildModelConverter from '../../src/conversion/buildmodelconverter';
-
 import ModelDocumentFragment from '../../src/model/documentfragment';
-
 import ViewDocumentFragment from '../../src/view/documentfragment';
 
 import { getData, setData, stringify, parse as parseModel } from '../../src/dev-utils/model';
@@ -20,20 +16,34 @@ import { parse as parseView, stringify as stringifyView } from '../../src/dev-ut
 
 import count from '@ckeditor/ckeditor5-utils/src/count';
 
+import {
+	upcastElementToElement,
+	upcastElementToAttribute
+} from '../../src/conversion/upcast-converters';
+
+import {
+	downcastElementToElement,
+	downcastAttributeToElement,
+	downcastMarkerToHighlight
+} from '../../src/conversion/downcast-converters';
+
 describe( 'DataController', () => {
 	let model, modelDocument, htmlDataProcessor, data, schema;
 
 	beforeEach( () => {
 		model = new Model();
+
+		schema = model.schema;
 		modelDocument = model.document;
+
 		modelDocument.createRoot();
-		modelDocument.createRoot( '$root', 'title' );
+		modelDocument.createRoot( '$title', 'title' );
+
+		schema.register( '$title', { inheritAllFrom: '$root' } );
 
 		htmlDataProcessor = new HtmlDataProcessor();
 
 		data = new DataController( model, htmlDataProcessor );
-
-		schema = model.schema;
 	} );
 
 	describe( 'constructor()', () => {
@@ -56,7 +66,7 @@ describe( 'DataController', () => {
 		it( 'should set paragraph', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
-			buildViewConverter().for( data.viewToModel ).fromElement( 'p' ).toElement( 'paragraph' );
+			upcastElementToElement( { view: 'p', model: 'paragraph' } )( data.upcastDispatcher );
 
 			const output = data.parse( '<p>foo<b>bar</b></p>' );
 
@@ -67,7 +77,7 @@ describe( 'DataController', () => {
 		it( 'should set two paragraphs', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
-			buildViewConverter().for( data.viewToModel ).fromElement( 'p' ).toElement( 'paragraph' );
+			upcastElementToElement( { view: 'p', model: 'paragraph' } )( data.upcastDispatcher );
 
 			const output = data.parse( '<p>foo</p><p>bar</p>' );
 
@@ -81,10 +91,10 @@ describe( 'DataController', () => {
 				allowAttributes: [ 'bold' ]
 			} );
 
-			buildViewConverter().for( data.viewToModel ).fromElement( 'p' ).toElement( 'paragraph' );
-			buildViewConverter().for( data.viewToModel ).fromElement( 'b' ).toAttribute( 'bold', true );
+			upcastElementToElement( { view: 'p', model: 'paragraph' } )( data.upcastDispatcher );
+			upcastElementToAttribute( { view: 'strong', model: 'bold' } )( data.upcastDispatcher );
 
-			const output = data.parse( '<p>foo<b>bar</b></p>' );
+			const output = data.parse( '<p>foo<strong>bar</strong></p>' );
 
 			expect( output ).to.instanceof( ModelDocumentFragment );
 			expect( stringify( output ) ).to.equal( '<paragraph>foo<$text bold="true">bar</$text></paragraph>' );
@@ -107,7 +117,7 @@ describe( 'DataController', () => {
 		beforeEach( () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
-			buildViewConverter().for( data.viewToModel ).fromElement( 'p' ).toElement( 'paragraph' );
+			upcastElementToElement( { view: 'p', model: 'paragraph' } )( data.upcastDispatcher );
 		} );
 
 		it( 'should convert content of an element #1', () => {
@@ -143,7 +153,7 @@ describe( 'DataController', () => {
 	} );
 
 	describe( 'set()', () => {
-		it( 'should set data to root', () => {
+		it( 'should set data to default main root', () => {
 			schema.extend( '$text', { allowIn: '$root' } );
 			data.set( 'foo' );
 
@@ -179,6 +189,17 @@ describe( 'DataController', () => {
 			expect( count( modelDocument.history.getDeltas() ) ).to.equal( 2 );
 		} );
 
+		it( 'should parse given data before set in a context of correct root', () => {
+			schema.extend( '$text', { allowIn: '$title', disallowIn: '$root' } );
+			data.set( 'foo', 'main' );
+			data.set( 'Bar', 'title' );
+
+			expect( getData( model, { withoutSelection: true, rootName: 'main' } ) ).to.equal( '' );
+			expect( getData( model, { withoutSelection: true, rootName: 'title' } ) ).to.equal( 'Bar' );
+
+			expect( count( modelDocument.history.getDeltas() ) ).to.equal( 2 );
+		} );
+
 		// This case was added when order of params was different and it really didn't work. Let's keep it
 		// if anyone will ever try to change this.
 		it( 'should allow setting empty data', () => {
@@ -199,7 +220,7 @@ describe( 'DataController', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			setData( model, '<paragraph>foo</paragraph>' );
 
-			buildModelConverter().for( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
+			downcastElementToElement( { model: 'paragraph', view: 'p' } )( data.downcastDispatcher );
 
 			expect( data.get() ).to.equal( '<p>foo</p>' );
 		} );
@@ -208,7 +229,7 @@ describe( 'DataController', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			setData( model, '<paragraph></paragraph>' );
 
-			buildModelConverter().for( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
+			downcastElementToElement( { model: 'paragraph', view: 'p' } )( data.downcastDispatcher );
 
 			expect( data.get() ).to.equal( '<p>&nbsp;</p>' );
 		} );
@@ -217,7 +238,7 @@ describe( 'DataController', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			setData( model, '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
 
-			buildModelConverter().for( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
+			downcastElementToElement( { model: 'paragraph', view: 'p' } )( data.downcastDispatcher );
 
 			expect( data.get() ).to.equal( '<p>foo</p><p>bar</p>' );
 		} );
@@ -233,7 +254,7 @@ describe( 'DataController', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			setData( model, '<paragraph>foo<$text bold="true">bar</$text></paragraph>' );
 
-			buildModelConverter().for( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
+			downcastElementToElement( { model: 'paragraph', view: 'p' } )( data.downcastDispatcher );
 
 			expect( data.get() ).to.equal( '<p>foobar</p>' );
 		} );
@@ -242,10 +263,10 @@ describe( 'DataController', () => {
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			setData( model, '<paragraph>foo<$text bold="true">bar</$text></paragraph>' );
 
-			buildModelConverter().for( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
-			buildModelConverter().for( data.modelToView ).fromAttribute( 'bold' ).toElement( 'b' );
+			downcastElementToElement( { model: 'paragraph', view: 'p' } )( data.downcastDispatcher );
+			downcastAttributeToElement( 'bold', { view: 'strong' } )( data.downcastDispatcher );
 
-			expect( data.get() ).to.equal( '<p>foo<b>bar</b></p>' );
+			expect( data.get() ).to.equal( '<p>foo<strong>bar</strong></p>' );
 		} );
 
 		it( 'should get root name as a parameter', () => {
@@ -255,8 +276,8 @@ describe( 'DataController', () => {
 			setData( model, '<paragraph>foo</paragraph>', { rootName: 'main' } );
 			setData( model, 'Bar', { rootName: 'title' } );
 
-			buildModelConverter().for( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
-			buildModelConverter().for( data.modelToView ).fromAttribute( 'bold' ).toElement( 'b' );
+			downcastElementToElement( { model: 'paragraph', view: 'p' } )( data.downcastDispatcher );
+			downcastAttributeToElement( 'bold', { view: 'strong' } )( data.downcastDispatcher );
 
 			expect( data.get() ).to.equal( '<p>foo</p>' );
 			expect( data.get( 'main' ) ).to.equal( '<p>foo</p>' );
@@ -272,7 +293,7 @@ describe( 'DataController', () => {
 			schema.extend( '$block', { allowIn: 'div' } );
 			schema.extend( 'div', { allowIn: '$root' } );
 
-			buildModelConverter().for( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
+			downcastElementToElement( { model: 'paragraph', view: 'p' } )( data.downcastDispatcher );
 		} );
 
 		it( 'should stringify a content of an element', () => {
@@ -296,7 +317,7 @@ describe( 'DataController', () => {
 			schema.extend( '$block', { allowIn: 'div' } );
 			schema.extend( 'div', { allowIn: '$root' } );
 
-			buildModelConverter().for( data.modelToView ).fromElement( 'paragraph' ).toElement( 'p' );
+			downcastElementToElement( { model: 'paragraph', view: 'p' } )( data.downcastDispatcher );
 		} );
 
 		it( 'should convert a content of an element', () => {
@@ -317,11 +338,11 @@ describe( 'DataController', () => {
 			const modelElement = parseModel( '<div><paragraph>foobar</paragraph></div>', schema );
 			const modelRoot = model.document.getRoot();
 
-			buildModelConverter().for( data.modelToView ).fromMarker( 'marker:a' ).toHighlight( { class: 'a' } );
+			downcastMarkerToHighlight( { model: 'marker:a', view: { class: 'a' } } )( data.downcastDispatcher );
 
 			model.change( writer => {
 				writer.insert( modelElement, modelRoot, 0 );
-				writer.setMarker( 'marker:a', Range.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 1 ) );
+				writer.setMarker( 'marker:a', Range.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 1 ), { usingOperation: true } );
 			} );
 
 			const viewDocumentFragment = data.toView( modelElement );
@@ -334,8 +355,8 @@ describe( 'DataController', () => {
 			const modelElement = parseModel( '<div><paragraph>foo</paragraph><paragraph>bar</paragraph></div>', schema );
 			const modelRoot = model.document.getRoot();
 
-			buildModelConverter().for( data.modelToView ).fromMarker( 'marker:a' ).toHighlight( { class: 'a' } );
-			buildModelConverter().for( data.modelToView ).fromMarker( 'marker:b' ).toHighlight( { class: 'b' } );
+			downcastMarkerToHighlight( { model: 'marker:a', view: { class: 'a' } } )( data.downcastDispatcher );
+			downcastMarkerToHighlight( { model: 'marker:b', view: { class: 'b' } } )( data.downcastDispatcher );
 
 			const modelP1 = modelElement.getChild( 0 );
 			const modelP2 = modelElement.getChild( 1 );
@@ -343,8 +364,8 @@ describe( 'DataController', () => {
 			model.change( writer => {
 				writer.insert( modelElement, modelRoot, 0 );
 
-				writer.setMarker( 'marker:a', Range.createFromParentsAndOffsets( modelP1, 1, modelP1, 3 ) );
-				writer.setMarker( 'marker:b', Range.createFromParentsAndOffsets( modelP2, 0, modelP2, 2 ) );
+				writer.setMarker( 'marker:a', Range.createFromParentsAndOffsets( modelP1, 1, modelP1, 3 ), { usingOperation: true } );
+				writer.setMarker( 'marker:b', Range.createFromParentsAndOffsets( modelP2, 0, modelP2, 2 ), { usingOperation: true } );
 			} );
 
 			const viewDocumentFragment = data.toView( modelP1 );

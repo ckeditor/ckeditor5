@@ -87,9 +87,9 @@ export default class MarkerOperation extends Operation {
 	 * @inheritDoc
 	 */
 	_execute() {
-		const type = this.newRange ? 'set' : 'remove';
+		const type = this.newRange ? '_set' : '_remove';
 
-		this._markers[ type ]( this.name, this.newRange );
+		this._markers[ type ]( this.name, this.newRange, true );
 	}
 
 	/**

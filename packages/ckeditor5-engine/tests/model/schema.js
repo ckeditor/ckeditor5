@@ -933,6 +933,38 @@ describe( 'Schema', () => {
 
 			expect( schema.getLimitElement( doc.selection ) ).to.equal( root );
 		} );
+
+		it( 'works fine with multi-range selections if the first range has the root element as a limit element', () => {
+			setData(
+				model,
+				'<image>' +
+					'<caption>[Foo</caption>' +
+				'</image>' +
+				'<article>' +
+					'<paragraph>Paragraph in article]</paragraph>' +
+				'</article>' +
+				'<paragraph>Paragraph item 1</paragraph>' +
+				'<paragraph>Paragraph [item 2]</paragraph>'
+			);
+
+			expect( schema.getLimitElement( doc.selection ) ).to.equal( root );
+		} );
+
+		it( 'works fine with multi-range selections if the last range has the root element as a limit element', () => {
+			setData(
+				model,
+				'<paragraph>Paragraph item 1</paragraph>' +
+				'<paragraph>Paragraph [item 2]</paragraph>' +
+				'<image>' +
+					'<caption>[Foo</caption>' +
+				'</image>' +
+				'<article>' +
+					'<paragraph>Paragraph in article]</paragraph>' +
+				'</article>'
+			);
+
+			expect( schema.getLimitElement( doc.selection ) ).to.equal( root );
+		} );
 	} );
 
 	describe( 'checkAttributeInSelection()', () => {
@@ -2688,6 +2720,12 @@ describe( 'SchemaContext', () => {
 			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ '$root', 'blockQuote', 'paragraph' ] );
 
 			expect( Array.from( ctx.getItem( 2 ).getAttributeKeys() ).sort() ).to.deep.equal( [ 'align' ] );
+		} );
+
+		it( 'creates context based on a string', () => {
+			const ctx = new SchemaContext( 'paragraph' );
+
+			expect( Array.from( ctx.getNames() ) ).to.deep.equal( [ 'paragraph' ] );
 		} );
 
 		it( 'creates context based on a SchemaContext instance', () => {

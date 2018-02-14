@@ -8,8 +8,13 @@
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
-import buildViewConverter from '../../src/conversion/buildviewconverter';
-import buildModelConverter from '../../src/conversion/buildmodelconverter';
+import {
+	upcastElementToElement
+} from '../../src/conversion/upcast-converters';
+
+import {
+	downcastElementToElement
+} from '../../src/conversion/downcast-converters';
 
 import { getData as getModelData } from '../../src/dev-utils/model';
 import { getData as getViewData } from '../../src/dev-utils/view';
@@ -49,11 +54,13 @@ function WidgetPlugin( editor ) {
 	} );
 	schema.extend( 'widget', { allowIn: '$root' } );
 
-	buildModelConverter().for( editor.data.modelToView, editor.editing.modelToView )
-		.fromElement( 'widget' )
-		.toElement( 'widget' );
+	editor.conversion.for( 'downcast' ).add( downcastElementToElement( {
+		model: 'widget',
+		view: 'widget'
+	} ) );
 
-	buildViewConverter().for( editor.data.viewToModel )
-		.fromElement( 'widget' )
-		.toElement( 'widget' );
+	editor.conversion.for( 'upcast' ).add( upcastElementToElement( {
+		model: 'widget',
+		view: 'widget'
+	} ) );
 }

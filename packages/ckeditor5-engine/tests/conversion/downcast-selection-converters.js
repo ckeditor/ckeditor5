@@ -15,13 +15,13 @@ import ViewUIElement from '../../src/view/uielement';
 import { mergeAttributes } from '../../src/view/writer';
 
 import Mapper from '../../src/conversion/mapper';
-import ModelConversionDispatcher from '../../src/conversion/modelconversiondispatcher';
+import DowncastDispatcher from '../../src/conversion/downcastdispatcher';
 import {
 	convertRangeSelection,
 	convertCollapsedSelection,
 	clearAttributes,
 	clearFakeSelection
-} from '../../src/conversion/model-selection-to-view-converters';
+} from '../../src/conversion/downcast-selection-converters';
 
 import {
 	insertElement,
@@ -30,13 +30,13 @@ import {
 	highlightElement,
 	highlightText,
 	removeHighlight
-} from '../../src/conversion/model-to-view-converters';
+} from '../../src/conversion/downcast-converters';
 
 import createViewRoot from '../view/_utils/createroot';
 import { stringify as stringifyView } from '../../src/dev-utils/view';
 import { setData as setModelData } from '../../src/dev-utils/model';
 
-describe( 'model-selection-to-view-converters', () => {
+describe( 'downcast-selection-converters', () => {
 	let dispatcher, mapper, model, modelDoc, modelRoot, docSelection, viewDoc, viewRoot, viewSelection, highlightDescriptor;
 
 	beforeEach( () => {
@@ -56,7 +56,7 @@ describe( 'model-selection-to-view-converters', () => {
 
 		highlightDescriptor = { class: 'marker', priority: 1 };
 
-		dispatcher = new ModelConversionDispatcher( model, { mapper, viewSelection } );
+		dispatcher = new DowncastDispatcher( model, { mapper, viewSelection } );
 
 		dispatcher.on( 'insert:$text', insertText() );
 		dispatcher.on( 'attribute:bold', wrap( new ViewAttributeElement( 'strong' ) ) );
@@ -176,6 +176,8 @@ describe( 'model-selection-to-view-converters', () => {
 		} );
 
 		describe( 'collapsed selection', () => {
+			let marker;
+
 			it( 'in container', () => {
 				test(
 					[ 1, 1 ],
@@ -194,9 +196,9 @@ describe( 'model-selection-to-view-converters', () => {
 
 			it( 'in attribute and marker', () => {
 				setModelData( model, 'fo<$text bold="true">ob</$text>ar' );
-				const marker = model.markers.set( 'marker', ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 ) );
 
 				model.change( writer => {
+					marker = writer.setMarker( 'marker', ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 ) );
 					writer.setSelection( new ModelRange( ModelPosition.createAt( modelRoot, 3 ) ) );
 				} );
 
@@ -218,9 +220,9 @@ describe( 'model-selection-to-view-converters', () => {
 
 			it( 'in attribute and marker - no attribute', () => {
 				setModelData( model, 'fo<$text bold="true">ob</$text>ar' );
-				const marker = model.markers.set( 'marker', ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 ) );
 
 				model.change( writer => {
+					marker = writer.setMarker( 'marker', ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 ) );
 					writer.setSelection( new ModelRange( ModelPosition.createAt( modelRoot, 3 ) ) );
 					writer.removeSelectionAttribute( 'bold' );
 				} );
@@ -246,9 +248,9 @@ describe( 'model-selection-to-view-converters', () => {
 				) );
 
 				setModelData( model, 'foobar' );
-				const marker = model.markers.set( 'marker2', ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 ) );
 
 				model.change( writer => {
+					marker = writer.setMarker( 'marker2', ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 ) );
 					writer.setSelection( new ModelRange( ModelPosition.createAt( modelRoot, 3 ) ) );
 				} );
 
@@ -271,9 +273,9 @@ describe( 'model-selection-to-view-converters', () => {
 				dispatcher.on( 'addMarker:marker3', highlightText( () => null ) );
 
 				setModelData( model, 'foobar' );
-				const marker = model.markers.set( 'marker3', ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 ) );
 
 				model.change( writer => {
+					marker = writer.setMarker( 'marker3', ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 ) );
 					writer.setSelection( new ModelRange( ModelPosition.createAt( modelRoot, 3 ) ) );
 				} );
 
@@ -490,7 +492,7 @@ describe( 'model-selection-to-view-converters', () => {
 			model.schema.extend( '$text', { allowIn: 'td' } );
 
 			// "Universal" converter to convert table structure.
-			const tableConverter = insertElement( data => new ViewContainerElement( data.item.name ) );
+			const tableConverter = insertElement( modelItem => new ViewContainerElement( modelItem.name ) );
 			dispatcher.on( 'insert:table', tableConverter );
 			dispatcher.on( 'insert:tr', tableConverter );
 			dispatcher.on( 'insert:td', tableConverter );
