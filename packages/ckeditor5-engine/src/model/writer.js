@@ -45,7 +45,7 @@ import uid from '@ckeditor/ckeditor5-utils/src/uid';
 /**
  * Model writer it the proper way of modifying model. It should be used whenever you wants to create node, modify
  * child nodes, attributes or text. To get writer use {@link module:engine/model/model~Model#change} or
- * {@link @see module:engine/model/model~Model#enqueueChange}.
+ * {@link module:engine/model/model~Model#enqueueChange}.
  *
  *		model.change( writer => {
  *			writer.insertText( 'foo', paragraph, 'end' );
