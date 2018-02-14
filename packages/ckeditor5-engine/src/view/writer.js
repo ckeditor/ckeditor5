@@ -112,8 +112,8 @@ export default class Writer {
 	/**
 	 * Creates new {@link module:engine/view/attributeelement~AttributeElement}.
 	 *
-	 *		writer.createAttributeElement( 'paragraph' );
-	 *		writer.createAttributeElement( 'paragraph', { 'alignment': 'center' } );
+	 *		writer.createAttributeElement( 'strong' );
+	 *		writer.createAttributeElement( 'strong', { 'alignment': 'center' } );
 	 *
 	 * @param {String} name Name of the element.
 	 * @param {Object} [attributes] Elements attributes.
@@ -146,8 +146,8 @@ export default class Writer {
 	/**
 	 * Creates new {@link module:engine/view/editableelement~EditableElement}.
 	 *
-	 *		writer.createEditableElement( document, 'paragraph' );
-	 *		writer.createEditableElement( document, 'paragraph', { 'alignment': 'center' } );
+	 *		writer.createEditableElement( document, 'div' );
+	 *		writer.createEditableElement( document, 'div', { 'alignment': 'center' } );
 	 *
 	 * @param {module:engine/view/document~Document} document View document.
 	 * @param {String} name Name of the element.
@@ -164,8 +164,8 @@ export default class Writer {
 	/**
 	 * Creates new {@link module:engine/view/emptyelement~EmptyElement}.
 	 *
-	 *		writer.createEmptyElement( 'paragraph' );
-	 *		writer.createEmptyElement( 'paragraph', { 'alignment': 'center' } );
+	 *		writer.createEmptyElement( 'img' );
+	 *		writer.createEmptyElement( 'img', { 'alignment': 'center' } );
 	 *
 	 * @param {String} name Name of the element.
 	 * @param {Object} [attributes] Elements attributes.
