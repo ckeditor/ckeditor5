@@ -202,7 +202,7 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 	viewDocument.roots.add( viewRoot );
 
 	// Create and setup downcast dispatcher.
-	const downcastDispatcher = new DowncastDispatcher( model, { mapper } );
+	const downcastDispatcher = new DowncastDispatcher( { mapper } );
 
 	// Bind root elements.
 	mapper.bindElements( node.root, viewRoot );
@@ -228,7 +228,7 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 
 	// Convert model selection to view selection.
 	if ( selection ) {
-		downcastDispatcher.convertSelection( selection, writer );
+		downcastDispatcher.convertSelection( selection, model.markers, writer );
 	}
 
 	// Parse view to data string.

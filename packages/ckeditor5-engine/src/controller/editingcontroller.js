@@ -70,16 +70,18 @@ export default class EditingController {
 		 * @readonly
 		 * @member {module:engine/conversion/downcastdispatcher~DowncastDispatcher} #downcastDispatcher
 		 */
-		this.downcastDispatcher = new DowncastDispatcher( this.model, {
+		this.downcastDispatcher = new DowncastDispatcher( {
 			mapper: this.mapper
 		} );
 
 		const doc = this.model.document;
+		const selection = doc.selection;
+		const markers = this.model.markers;
 
 		this.listenTo( doc, 'change', () => {
 			this.view.change( writer => {
 				this.downcastDispatcher.convertChanges( doc.differ, writer );
-				this.downcastDispatcher.convertSelection( doc.selection, writer );
+				this.downcastDispatcher.convertSelection( selection, markers, writer );
 			} );
 		}, { priority: 'low' } );
 

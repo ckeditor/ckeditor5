@@ -76,7 +76,7 @@ export default class DataController {
 		 * @readonly
 		 * @member {module:engine/conversion/downcastdispatcher~DowncastDispatcher}
 		 */
-		this.downcastDispatcher = new DowncastDispatcher( this.model, {
+		this.downcastDispatcher = new DowncastDispatcher( {
 			mapper: this.mapper
 		} );
 		this.downcastDispatcher.on( 'insert:$text', insertText(), { priority: 'lowest' } );

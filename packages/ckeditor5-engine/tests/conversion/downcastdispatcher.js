@@ -20,7 +20,7 @@ describe( 'DowncastDispatcher', () => {
 		model = new Model();
 		view = new View();
 		doc = model.document;
-		dispatcher = new DowncastDispatcher( model );
+		dispatcher = new DowncastDispatcher();
 		root = doc.createRoot();
 
 		differStub = {
@@ -33,7 +33,7 @@ describe( 'DowncastDispatcher', () => {
 	describe( 'constructor()', () => {
 		it( 'should create DowncastDispatcher with given api', () => {
 			const apiObj = {};
-			const dispatcher = new DowncastDispatcher( model, { apiObj } );
+			const dispatcher = new DowncastDispatcher( { apiObj } );
 
 			expect( dispatcher.conversionApi.apiObj ).to.equal( apiObj );
 		} );
@@ -264,7 +264,7 @@ describe( 'DowncastDispatcher', () => {
 		it( 'should fire selection event', () => {
 			sinon.spy( dispatcher, 'fire' );
 
-			dispatcher.convertSelection( doc.selection, [] );
+			dispatcher.convertSelection( doc.selection, model.markers, [] );
 
 			expect( dispatcher.fire.calledWith(
 				'selection',
@@ -284,7 +284,7 @@ describe( 'DowncastDispatcher', () => {
 				expect( consumable.test( data.selection, 'attribute:italic' ) ).to.be.null;
 			} );
 
-			dispatcher.convertSelection( doc.selection, [] );
+			dispatcher.convertSelection( doc.selection, model.markers, [] );
 		} );
 
 		it( 'should not fire attributes events for non-collapsed selection', () => {
@@ -295,7 +295,7 @@ describe( 'DowncastDispatcher', () => {
 
 			sinon.spy( dispatcher, 'fire' );
 
-			dispatcher.convertSelection( doc.selection, [] );
+			dispatcher.convertSelection( doc.selection, model.markers, [] );
 
 			expect( dispatcher.fire.calledWith( 'attribute:bold' ) ).to.be.false;
 			expect( dispatcher.fire.calledWith( 'attribute:italic' ) ).to.be.false;
@@ -314,7 +314,7 @@ describe( 'DowncastDispatcher', () => {
 
 			sinon.spy( dispatcher, 'fire' );
 
-			dispatcher.convertSelection( doc.selection, [] );
+			dispatcher.convertSelection( doc.selection, model.markers, [] );
 
 			expect( dispatcher.fire.calledWith( 'attribute:bold' ) ).to.be.true;
 		} );
@@ -337,7 +337,7 @@ describe( 'DowncastDispatcher', () => {
 
 			sinon.spy( dispatcher, 'fire' );
 
-			dispatcher.convertSelection( doc.selection, [] );
+			dispatcher.convertSelection( doc.selection, model.markers, [] );
 
 			expect( dispatcher.fire.calledWith( 'attribute:bold' ) ).to.be.false;
 		} );
@@ -353,7 +353,7 @@ describe( 'DowncastDispatcher', () => {
 			sinon.spy( dispatcher, 'fire' );
 
 			const markers = Array.from( model.markers.getMarkersAtPosition( doc.selection.getFirstPosition() ) );
-			dispatcher.convertSelection( doc.selection, markers );
+			dispatcher.convertSelection( doc.selection, model.markers, markers );
 
 			expect( dispatcher.fire.calledWith( 'addMarker:name' ) ).to.be.true;
 		} );
@@ -366,7 +366,7 @@ describe( 'DowncastDispatcher', () => {
 			sinon.spy( dispatcher, 'fire' );
 
 			const markers = Array.from( model.markers.getMarkersAtPosition( doc.selection.getFirstPosition() ) );
-			dispatcher.convertSelection( doc.selection, markers );
+			dispatcher.convertSelection( doc.selection, model.markers, markers );
 
 			expect( dispatcher.fire.calledWith( 'addMarker:name' ) ).to.be.false;
 		} );
@@ -407,7 +407,7 @@ describe( 'DowncastDispatcher', () => {
 
 			const markers = Array.from( model.markers.getMarkersAtPosition( doc.selection.getFirstPosition() ) );
 
-			dispatcher.convertSelection( doc.selection, markers );
+			dispatcher.convertSelection( doc.selection, model.markers, markers );
 
 			expect( dispatcher.fire.calledWith( 'addMarker:name' ) ).to.be.false;
 		} );
@@ -428,7 +428,7 @@ describe( 'DowncastDispatcher', () => {
 			} );
 
 			const markers = Array.from( model.markers.getMarkersAtPosition( doc.selection.getFirstPosition() ) );
-			dispatcher.convertSelection( doc.selection, markers );
+			dispatcher.convertSelection( doc.selection, model.markers, markers );
 
 			expect( dispatcher.fire.calledWith( 'addMarker:foo' ) ).to.be.true;
 			expect( dispatcher.fire.calledWith( 'addMarker:bar' ) ).to.be.false;

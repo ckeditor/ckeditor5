@@ -54,7 +54,7 @@ describe( 'downcast-selection-converters', () => {
 
 		highlightDescriptor = { class: 'marker', priority: 1 };
 
-		dispatcher = new DowncastDispatcher( model, { mapper, viewSelection } );
+		dispatcher = new DowncastDispatcher( { mapper, viewSelection } );
 
 		dispatcher.on( 'insert:$text', insertText() );
 
@@ -209,7 +209,7 @@ describe( 'downcast-selection-converters', () => {
 				view.change( writer => {
 					dispatcher.convertInsert( ModelRange.createIn( modelRoot ), writer );
 					dispatcher.convertMarkerAdd( marker.name, marker.getRange(), writer );
-					dispatcher.convertSelection( docSelection, writer );
+					dispatcher.convertSelection( docSelection, model.markers, writer );
 				} );
 
 				// Stringify view and check if it is same as expected.
@@ -234,7 +234,7 @@ describe( 'downcast-selection-converters', () => {
 				view.change( writer => {
 					dispatcher.convertInsert( ModelRange.createIn( modelRoot ), writer );
 					dispatcher.convertMarkerAdd( marker.name, marker.getRange(), writer );
-					dispatcher.convertSelection( docSelection, writer );
+					dispatcher.convertSelection( docSelection, model.markers, writer );
 				} );
 
 				// Stringify view and check if it is same as expected.
@@ -261,7 +261,7 @@ describe( 'downcast-selection-converters', () => {
 				view.change( writer => {
 					dispatcher.convertInsert( ModelRange.createIn( modelRoot ), writer );
 					dispatcher.convertMarkerAdd( marker.name, marker.getRange(), writer );
-					dispatcher.convertSelection( docSelection, writer );
+					dispatcher.convertSelection( docSelection, model.markers, writer );
 				} );
 
 				// Stringify view and check if it is same as expected.
@@ -286,7 +286,7 @@ describe( 'downcast-selection-converters', () => {
 				view.change( writer => {
 					dispatcher.convertInsert( ModelRange.createIn( modelRoot ), writer );
 					dispatcher.convertMarkerAdd( marker.name, marker.getRange(), writer );
-					dispatcher.convertSelection( docSelection, writer );
+					dispatcher.convertSelection( docSelection, model.markers, writer );
 				} );
 
 				// Stringify view and check if it is same as expected.
@@ -311,7 +311,7 @@ describe( 'downcast-selection-converters', () => {
 
 				// Convert model to view.
 				view.change( writer => {
-					dispatcher.convertSelection( docSelection, writer );
+					dispatcher.convertSelection( docSelection, model.markers, writer );
 				} );
 
 				// Stringify view and check if it is same as expected.
@@ -336,7 +336,7 @@ describe( 'downcast-selection-converters', () => {
 					const uiElement = new ViewUIElement( 'span' );
 					viewRoot.insertChildren( 1, uiElement );
 
-					dispatcher.convertSelection( docSelection, writer );
+					dispatcher.convertSelection( docSelection, model.markers, writer );
 				} );
 
 				// Stringify view and check if it is same as expected.
@@ -360,7 +360,7 @@ describe( 'downcast-selection-converters', () => {
 					// Add ui element to view.
 					const uiElement = new ViewUIElement( 'span' );
 					viewRoot.insertChildren( 1, uiElement, writer );
-					dispatcher.convertSelection( docSelection, writer );
+					dispatcher.convertSelection( docSelection, model.markers, writer );
 				} );
 
 				// Stringify view and check if it is same as expected.
@@ -441,7 +441,7 @@ describe( 'downcast-selection-converters', () => {
 						writer.setSelection( modelRange );
 					} );
 
-					dispatcher.convertSelection( modelDoc.selection, writer );
+					dispatcher.convertSelection( modelDoc.selection, model.markers, writer );
 				} );
 
 				expect( viewSelection.rangeCount ).to.equal( 1 );
@@ -467,7 +467,7 @@ describe( 'downcast-selection-converters', () => {
 						writer.setSelection( modelRange );
 					} );
 
-					dispatcher.convertSelection( modelDoc.selection, writer );
+					dispatcher.convertSelection( modelDoc.selection, model.markers, writer );
 				} );
 
 				expect( viewSelection.rangeCount ).to.equal( 1 );
@@ -483,7 +483,7 @@ describe( 'downcast-selection-converters', () => {
 
 				view.change( writer => {
 					writer.setFakeSelection( true );
-					dispatcher.convertSelection( docSelection, writer );
+					dispatcher.convertSelection( docSelection, model.markers, writer );
 				} );
 				expect( viewSelection.isFake ).to.be.false;
 			} );
@@ -594,7 +594,7 @@ describe( 'downcast-selection-converters', () => {
 		// Convert model to view.
 		view.change( writer => {
 			dispatcher.convertInsert( ModelRange.createIn( modelRoot ), writer );
-			dispatcher.convertSelection( docSelection, writer );
+			dispatcher.convertSelection( docSelection, model.markers, writer );
 		} );
 
 		// Stringify view and check if it is same as expected.

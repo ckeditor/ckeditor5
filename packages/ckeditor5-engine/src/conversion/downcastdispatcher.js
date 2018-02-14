@@ -105,18 +105,9 @@ export default class DowncastDispatcher {
 	/**
 	 * Creates a `DowncastDispatcher` instance.
 	 *
-	 * @param {module:engine/model/model~Model} model Data model.
 	 * @param {Object} [conversionApi] Interface passed by dispatcher to the events calls.
 	 */
-	constructor( model, conversionApi = {} ) {
-		/**
-		 * Data model instance bound with this dispatcher.
-		 *
-		 * @private
-		 * @member {module:engine/model/model~Model}
-		 */
-		this._model = model;
-
+	constructor( conversionApi = {} ) {
 		/**
 		 * Interface passed by dispatcher to the events callbacks.
 		 *
@@ -250,12 +241,14 @@ export default class DowncastDispatcher {
 	 * @fires addMarker
 	 * @fires attribute
 	 * @param {module:engine/model/selection~Selection} selection Selection to convert.
+	 * @param {module:engine/model/selection~Selection} Array<module:engine/model/markercollection~Marker> markers
+	 * Array of markers containing model markers.
 	 * @param {module:engine/view/writer~Writer} writer View writer that should be used to modify view document.
 	 */
-	convertSelection( selection, writer ) {
+	convertSelection( selection, markers, writer ) {
 		this.conversionApi.writer = writer;
-		const markers = Array.from( this._model.markers.getMarkersAtPosition( selection.getFirstPosition() ) );
-		const consumable = this._createSelectionConsumable( selection, markers );
+		const markersAtSelection = Array.from( markers.getMarkersAtPosition( selection.getFirstPosition() ) );
+		const consumable = this._createSelectionConsumable( selection, markersAtSelection );
 
 		this.fire( 'selection', { selection }, consumable, this.conversionApi );
 
@@ -263,7 +256,7 @@ export default class DowncastDispatcher {
 			return;
 		}
 
-		for ( const marker of markers ) {
+		for ( const marker of markersAtSelection ) {
 			const markerRange = marker.getRange();
 
 			if ( !shouldMarkerChangeBeConverted( selection.getFirstPosition(), marker, this.conversionApi.mapper ) ) {
