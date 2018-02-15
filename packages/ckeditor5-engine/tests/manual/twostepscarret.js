@@ -8,24 +8,18 @@
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import LinkEngine from '@ckeditor/ckeditor5-link/src/linkengine';
+import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 
 import bindTwoStepCaretToAttribute from '@ckeditor/ckeditor5-engine/src/utils/bindtwostepcarettoattribute';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Essentials, Paragraph, LinkEngine, Bold ],
-		toolbar: [ 'undo', 'redo', 'bold' ]
+		plugins: [ Essentials, Paragraph, Underline, Bold ],
+		toolbar: [ 'undo', 'redo', '|', 'bold', 'underline' ]
 	} )
 	.then( editor => {
-		const selection = editor.model.document.selection;
-
-		bindTwoStepCaretToAttribute( editor, editor, 'linkHref' );
-
-		selection.on( 'change', () => {
-			document.querySelector( '.status-box' ).classList.toggle( 'active', selection.hasAttribute( 'linkHref' ) );
-		} );
+		bindTwoStepCaretToAttribute( editor, editor, 'underline' );
 	} )
 	.catch( err => {
 		console.error( err.stack );

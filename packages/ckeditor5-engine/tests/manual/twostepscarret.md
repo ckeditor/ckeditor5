@@ -1,41 +1,46 @@
 ## Two-steps caret movment [#1286](https://github.com/ckeditor/ckeditor5-engine/issues/1289)
 
 ### Moving right
-1. Put selection one character before the link
+1. Put selection one character before the underline
 2. Move selection by one character to the right using right arrow
-	- selection should be outside the link
+	- underline button should be not selected
 3. Press right arrow once again
-	- selection should be at the same position but inside the link
-4. Using right arrow move selection at the end of the link
-	- selection should be still inside the link
+	- selection should be at the same position
+	- underline button should be selected
+4. Using right arrow move selection at the end of the underline
+	- underline button should be selected
 5. Press right arrow once again
-	- selection should be at the same position but outside the link
+	- selection should be at the same position
+	- underline button should be not selected
 
 ### Moving left
-1. Put selection one character after the link
+1. Put selection one character after the underline
 2. Move selection by one character to the left using left arrow
-	- selection should be outside the link (ignore the blink).
+	- underline button should be not selected
 3. Press left arrow once again
-	- selection should be at the same position but inside the link
-4. Using left arrow move selection at the beginning of the link
-	- selection should be still inside the link (ignore the blink).
+	- selection should be at the same position
+	- underline button should be selected
+4. Using left arrow move selection at the beginning of the underline
+	- underline button should be selected
 5. Press left arrow once again
-	- selection should be at the same position but outside the link
+	- selection should be at the same position
+	- underline button should be not selected
 
 ### Mouse
-1. Put selection at the beginning of the link
-	- selection should be outside the link
-2. Put selection at the end of the link
-	- selection should be inside the link
+1. Put selection at the beginning of the underline
+	- underline button should be not selected
+2. Put selection at the end of the underline
+	- underline button should be  selected
 
 ### Attributes set explicit
-1. Put selection one character before the end of the link
+1. Put selection one character before the end of the underline
 2. Move selection by one character to the right using right arrow
-	- selection should be inside the link
+	- underline button should be selected
 3. Turn on bold attribute (`Ctrl + B`)
 3. Press right arrow once again
-	- selection should be at the same position but outside the link
-	- bold should stay enabled
+	- selection should be at the same position
+	- underline button should be not selected
+	- bold button should stay selected
 
 ### Not bounded attribute
 Just make sure that two-steps caret movement is disabled for bold text from the second paragraph.
