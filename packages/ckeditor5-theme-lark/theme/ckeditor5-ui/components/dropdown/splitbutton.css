@@ -18,6 +18,9 @@
 		/* Disable a double border between the button and the arrow button. */
 		border-left: 0;
 
+		/* It's a text-less button but still, it should not be square. */
+		min-width: unset;
+
 		/* Don't round the arrow button on the right side */
 		@mixin ck-rounded-corners {
 			border-top-left-radius: unset;

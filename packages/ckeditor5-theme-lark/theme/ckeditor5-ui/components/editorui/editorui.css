@@ -29,6 +29,36 @@
 	}
 }
 
+<<<<<<< HEAD
+=======
+.ck-editor-toolbar {
+	& .ck-button,
+	& .ck-button:focus {
+		border-width: 0;
+	}
+
+	/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/120 */
+	/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/131 */
+	& > .ck-button,
+	& > .ck-dropdown > .ck-button,
+	& > .ck-file-dialog-button > .ck-button,
+	& > .ck-dropdown > .ck-splitbutton > .ck-button {
+		&:not(:hover):not(:focus):not(.ck-on),
+		&.ck-disabled {
+			background: transparent;
+		}
+
+		&.ck-on {
+			@mixin ck-button-colors --ck-color-editor-toolbar-button-on;
+		}
+	}
+
+	@nest .ck-toolbar-container & {
+		background: var(--ck-color-editor-toolbar-background);
+	}
+}
+
+>>>>>>> f223d6a2faf2e848edead9c49fdad72b4bc9c95f
 /* https://github.com/ckeditor/ckeditor5-theme-lark/issues/111 */
 /* .ck-toolbar-container.ck-editor-toolbar-container[class*="arrow_n"] {
 	&::after {
