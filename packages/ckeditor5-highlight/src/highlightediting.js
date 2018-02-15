@@ -8,10 +8,7 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import {
-	modelAttributeToViewAttributeElement,
-	viewToModelAttribute
-} from '@ckeditor/ckeditor5-engine/src/conversion/definition-based-converters';
+import { attributeToElement } from '@ckeditor/ckeditor5-engine/src/conversion/two-way-converters';
 
 import HighlightCommand from './highlightcommand';
 
@@ -43,25 +40,13 @@ export default class HighlightEditing extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const data = editor.data;
-		const editing = editor.editing;
 
 		// Allow highlight attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: 'highlight' } );
 
 		const options = editor.config.get( 'highlight.options' );
 
-		// Define view to model conversion.
-		for ( const option of options ) {
-			viewToModelAttribute( 'highlight', _getConverterDefinition( option ), [ data.viewToModel ] );
-		}
-
-		// Define model to view conversion.
-		modelAttributeToViewAttributeElement(
-			'highlight',
-			options.map( _getConverterDefinition ),
-			[ data.modelToView, editing.modelToView ]
-		);
+		attributeToElement( editor.conversion, 'highlight', options.map( _getConverterDefinition ) );
 
 		editor.commands.add( 'highlight', new HighlightCommand( editor ) );
 	}
