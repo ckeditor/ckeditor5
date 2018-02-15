@@ -58,24 +58,20 @@ viewDocument.selection.on( 'change', () => {
 	const lastPos = viewDocument.selection.getLastPosition();
 
 	if ( firstPos && lastPos && firstPos.nodeAfter == viewStrong && lastPos.nodeBefore == viewStrong ) {
-		viewStrong.addClass( 'selected' );
+		view.change( writer => writer.addClass( 'selected', viewStrong ) );
 	} else {
-		viewStrong.removeClass( 'selected' );
+		view.change( writer => writer.removeClass( 'selected', viewStrong ) );
 	}
 } );
 
 viewDocument.on( 'focus', () => {
-	view.change( () => {
-		viewStrong.addClass( 'focused' );
-	} );
+	view.change( writer => writer.addClass( 'focused', viewStrong ) );
 
 	console.log( 'The document was focused.' );
 } );
 
 viewDocument.on( 'blur', () => {
-	view.change( () => {
-		viewStrong.removeClass( 'focused' );
-	} );
+	view.change( writer => writer.removeClass( 'focused', viewStrong ) );
 
 	console.log( 'The document was blurred.' );
 } );
