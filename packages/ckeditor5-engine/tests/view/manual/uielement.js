@@ -16,29 +16,25 @@ import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Position from '../../../src/view/position';
 
 function createEndingUIElement( writer ) {
-	const element = writer.createUIElement( 'span' );
-
-	element.render = function( domDocument ) {
+	const element = writer.createUIElement( 'span', null, function( domDocument ) {
 		const root = this.toDomElement( domDocument );
 		root.classList.add( 'ui-element' );
 		root.innerHTML = 'END OF PARAGRAPH';
 
 		return root;
-	};
+	} );
 
 	return element;
 }
 
 function createMiddleUIElement( writer ) {
-	const element = writer.createUIElement( 'span' );
-
-	element.render = function( domDocument ) {
+	const element = writer.createUIElement( 'span', null, function( domDocument ) {
 		const root = this.toDomElement( domDocument );
 		root.classList.add( 'ui-element' );
 		root.innerHTML = 'X';
 
 		return root;
-	};
+	} );
 
 	return element;
 }
