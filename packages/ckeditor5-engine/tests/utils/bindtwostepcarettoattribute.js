@@ -5,17 +5,16 @@
 
 /* global document */
 
-import bindTwoStepCaretToAttribute from '../../src/utils/bindtwostepcarettoattribute';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
-import Range from '@ckeditor/ckeditor5-engine/src/model/range';
-import { upcastElementToAttribute } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
-
+import bindTwoStepCaretToAttribute from '../../src/utils/bindtwostepcarettoattribute';
+import Position from '../../src/model/position';
+import Range from '../../src/model/range';
+import DomEventData from '../../src/view/observer/domeventdata';
+import { upcastElementToAttribute } from '../../src/conversion/upcast-converters';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { setData } from '../../src/dev-utils/model';
 
 describe( 'bindTwoStepCaretToAttribute()', () => {
 	let editor, model, emitter, selection, viewDoc, preventDefaultSpy;
