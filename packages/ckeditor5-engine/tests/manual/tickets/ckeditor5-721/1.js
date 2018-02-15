@@ -12,11 +12,9 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 
-import AttributeContainer from '../../../../src/view/attributeelement';
-import ViewContainer from '../../../../src/view/containerelement';
+import ViewPosition from '../../../../src/view/position';
 import { downcastElementToElement } from '../../../../src/conversion/downcast-converters';
 import { setData } from '../../../../src/dev-utils/model';
-import ViewEditable from '../../../../src/view/editableelement';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
@@ -45,16 +43,19 @@ ClassicEditor
 		editor.conversion.for( 'downcast' )
 			.add( downcastElementToElement( {
 				model: 'widget',
-				view: () => {
-					const b = new AttributeContainer( 'b' );
-					const div = new ViewContainer( 'div', null, b );
+				view: ( modelItem, consumable, conversionApi ) => {
+					const writer = conversionApi.writer;
+					const b = writer.createAttributeElement( 'b' );
+					const div = writer.createContainerElement( 'div' );
 
-					return toWidget( div, { label: 'element label' } );
+					writer.insert( ViewPosition.createAt( div ), b );
+
+					return toWidget( div, writer, { label: 'element label' } );
 				}
 			} ) )
 			.add( downcastElementToElement( {
 				model: 'nested',
-				view: () => new ViewEditable( 'figcaption', { contenteditable: true } )
+				view: ( item, consumable, api ) => api.writer.createEditableElement( 'figcaption', { contenteditable: true } )
 			} ) );
 
 		setData( editor.model,
