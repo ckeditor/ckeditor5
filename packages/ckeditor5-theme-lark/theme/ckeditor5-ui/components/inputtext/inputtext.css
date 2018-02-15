@@ -23,6 +23,9 @@
 	/* This is important to stay of the same height as surrounding buttons */
 	min-height: var(--ck-ui-component-min-height);
 
+	transition-property: box-shadow, border;
+	transition: .2s ease-in-out;
+
 	&:focus {
 		@mixin ck-focus-ring;
 		@mixin ck-box-shadow var(--ck-focus-outer-shadow), var(--ck-inner-shadow);
