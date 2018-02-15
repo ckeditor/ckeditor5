@@ -39,7 +39,7 @@ class FancyWidget extends Plugin {
 	init() {
 		const editor = this.editor;
 		const schema = editor.model.schema;
-		const data = editor.data;
+		const conversion = editor.conversion;
 
 		// Configure schema.
 		schema.register( 'fancywidget', {
@@ -47,21 +47,22 @@ class FancyWidget extends Plugin {
 		} );
 		schema.extend( 'fancywidget', { allowIn: '$root' } );
 
-		downcastElementToElement( {
+		conversion.for( 'editingDowncast' ).add( downcastElementToElement( {
 			model: 'fancywidget',
 			view: ( modelItem, consumable, conversionApi ) => {
 				const viewWriter = conversionApi.writer;
 				const widgetElement = viewWriter.createContainerElement( 'figure', { class: 'fancy-widget' } );
 				viewWriter.insert( ViewPosition.createAt( widgetElement ), viewWriter.createText( 'widget' ) );
 
-				return toWidget( widgetElement );
+				return toWidget( widgetElement, viewWriter );
 			}
-		} )( data.downcastDispatcher );
+		} ) );
 
-		upcastElementToElement( {
-			view: 'figure',
-			model: 'fancywidget'
-		} )( data.upcastDispatcher );
+		conversion.for( 'upcast' )
+			.add( upcastElementToElement( {
+				view: 'figure',
+				model: 'fancywidget'
+			} ) );
 	}
 }
 
@@ -72,12 +73,12 @@ ClassicEditor.create( global.document.querySelector( '#editor' ), {
 	.then( editor => {
 		window.editor = editor;
 
-		downcastMarkerToHighlight( {
+		editor.conversion.for( 'editingDowncast' ).add( downcastMarkerToHighlight( {
 			model: 'marker',
 			view: data => ( {
 				class: 'highlight-' + data.markerName.split( ':' )[ 1 ]
 			} )
-		} );
+		} ) );
 
 		document.getElementById( 'add-marker-yellow' ).addEventListener( 'mousedown', evt => {
 			addMarker( editor, 'yellow' );
