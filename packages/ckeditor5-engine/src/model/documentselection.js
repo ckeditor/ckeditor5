@@ -634,8 +634,8 @@ class LiveSelection extends Selection {
 	overrideGravity() {
 		this._isGravityOverriden = true;
 
-		this.on( 'change:range', ( evt, directChange ) => {
-			if ( directChange ) {
+		this.on( 'change:range', ( evt, data ) => {
+			if ( data.directChange ) {
 				this._isGravityOverriden = false;
 				evt.off();
 			}
