@@ -23,10 +23,10 @@ const captionSymbol = Symbol( 'imageCaption' );
 export function captionElementCreator( view, placeholderText ) {
 	return writer => {
 		const editable = writer.createEditableElement( 'figcaption' );
-		editable.setCustomProperty( captionSymbol, true );
+		writer.setCustomProperty( captionSymbol, true, editable );
 		attachPlaceholder( view, editable, placeholderText );
 
-		return toWidgetEditable( editable );
+		return toWidgetEditable( editable, writer );
 	};
 }
 

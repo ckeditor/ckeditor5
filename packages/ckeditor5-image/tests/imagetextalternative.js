@@ -16,7 +16,7 @@ import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 describe( 'ImageTextAlternative', () => {
-	let editor, viewDocument, model, view, doc, plugin, command, form, balloon, editorElement, button;
+	let editor, model, view, doc, plugin, command, form, balloon, editorElement, button;
 
 	beforeEach( () => {
 		editorElement = global.document.createElement( 'div' );
@@ -30,7 +30,6 @@ describe( 'ImageTextAlternative', () => {
 				editor = newEditor;
 				model = editor.model;
 				view = editor.editing.view;
-				viewDocument = view.document;
 				doc = model.document;
 				newEditor.editing.view.attachDomRoot( editorElement );
 				plugin = editor.plugins.get( ImageTextAlternative );
@@ -160,14 +159,14 @@ describe( 'ImageTextAlternative', () => {
 			expect( balloon.visibleView ).to.equal( lastView );
 		} );
 
-		describe( 'integration with the editor selection (#change event)', () => {
+		describe( 'integration with the editor selection (#render event)', () => {
 			it( 'should re-position the form', () => {
 				setData( model, '[<image src=""></image>]' );
 				button.fire( 'execute' );
 
 				const spy = sinon.spy( balloon, 'updatePosition' );
 
-				viewDocument.fire( 'change' );
+				view.fire( 'render' );
 				sinon.assert.calledOnce( spy );
 			} );
 
@@ -175,7 +174,7 @@ describe( 'ImageTextAlternative', () => {
 				setData( model, '[<image src=""></image>]' );
 				button.fire( 'execute' );
 
-				const remveSpy = sinon.spy( balloon, 'remove' );
+				const removeSpy = sinon.spy( balloon, 'remove' );
 				const focusSpy = sinon.spy( editor.editing.view, 'focus' );
 
 				// EnqueueChange automatically fires #render event.
@@ -183,7 +182,7 @@ describe( 'ImageTextAlternative', () => {
 					writer.remove( doc.selection.getFirstRange() );
 				} );
 
-				sinon.assert.calledWithExactly( remveSpy, form );
+				sinon.assert.calledWithExactly( removeSpy, form );
 				sinon.assert.calledOnce( focusSpy );
 			} );
 		} );

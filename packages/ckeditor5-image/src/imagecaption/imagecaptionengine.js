@@ -70,17 +70,17 @@ export default class ImageCaptionEngine extends Plugin {
 		editing.downcastDispatcher.on( 'insert:caption', captionModelToView( createCaptionForEditing ) );
 
 		// Always show caption in view when something is inserted in model.
-		editing.downcastDispatcher.on( 'insert', ( evt, data ) => this._fixCaptionVisibility( data.item ), { priority: 'high' } );
-
-		// Hide caption when everything is removed from it.
 		editing.downcastDispatcher.on(
-			'remove',
-			( evt, data ) => this._fixCaptionVisibility( data.position.parent ),
+			'insert',
+			this._fixCaptionVisibility( data => data.item ),
 			{ priority: 'high' }
 		);
 
+		// Hide caption when everything is removed from it.
+		editing.downcastDispatcher.on( 'remove', this._fixCaptionVisibility( data => data.position.parent ), { priority: 'high' } );
+
 		// Update view before each rendering.
-		this.listenTo( view.renderer, 'render', () => this._updateCaptionVisibility(), { priority: 'high' } );
+		this.listenTo( view, 'render', () => this._updateCaptionVisibility( view ) );
 	}
 
 	/**
@@ -89,13 +89,13 @@ export default class ImageCaptionEngine extends Plugin {
 	 *
 	 * @private
 	 */
-	_updateCaptionVisibility() {
+	_updateCaptionVisibility( view ) {
 		const mapper = this.editor.editing.mapper;
 		let viewCaption;
 
 		// Hide last selected caption if have no child elements.
 		if ( this._lastSelectedCaption && !this._lastSelectedCaption.childCount ) {
-			this._lastSelectedCaption.addClass( 'ck-hidden' );
+			view.change( writer => writer.addClass( 'ck-hidden', this._lastSelectedCaption ) );
 		}
 
 		// If whole image is selected.
@@ -116,33 +116,41 @@ export default class ImageCaptionEngine extends Plugin {
 		}
 
 		if ( viewCaption ) {
-			viewCaption.removeClass( 'ck-hidden' );
+			view.change( writer => writer.removeClass( 'ck-hidden', viewCaption ) );
 			this._lastSelectedCaption = viewCaption;
 		}
 	}
 
 	/**
-	 * Fixes caption visibility during the model-to-view conversion.
+	 * Returns converter that fixes caption visibility during the model-to-view conversion.
 	 * Checks if the changed node is placed inside the caption element and fixes its visibility in the view.
 	 *
 	 * @private
-	 * @param {module:engine/model/node~Node} node
+	 * @param {Function} nodeFinder
+	 * @returns {Function}
 	 */
-	_fixCaptionVisibility( node ) {
-		const modelCaption = getParentCaption( node );
-		const mapper = this.editor.editing.mapper;
+	_fixCaptionVisibility( nodeFinder ) {
+		return ( evt, data, consumable, conversionApi ) => {
+			// There is no consumable on 'remove' event.
+			conversionApi = conversionApi ? conversionApi : consumable;
 
-		if ( modelCaption ) {
-			const viewCaption = mapper.toViewElement( modelCaption );
+			const node = nodeFinder( data );
+			const modelCaption = getParentCaption( node );
+			const mapper = this.editor.editing.mapper;
+			const viewWriter = conversionApi.writer;
 
-			if ( viewCaption ) {
-				if ( modelCaption.childCount ) {
-					viewCaption.removeClass( 'ck-hidden' );
-				} else {
-					viewCaption.addClass( 'ck-hidden' );
+			if ( modelCaption ) {
+				const viewCaption = mapper.toViewElement( modelCaption );
+
+				if ( viewCaption ) {
+					if ( modelCaption.childCount ) {
+						viewWriter.removeClass( 'ck-hidden', viewCaption );
+					} else {
+						viewWriter.addClass( 'ck-hidden', viewCaption );
+					}
 				}
 			}
-		}
+		};
 	}
 
 	/**
@@ -193,10 +201,11 @@ function captionModelToView( elementCreator, hide = true ) {
 
 			const viewImage = conversionApi.mapper.toViewElement( data.range.start.parent );
 			const viewCaption = elementCreator( conversionApi.writer );
+			const viewWriter = conversionApi.writer;
 
 			// Hide if empty.
 			if ( !captionElement.childCount ) {
-				viewCaption.addClass( 'ck-hidden' );
+				viewWriter.addClass( 'ck-hidden', viewCaption );
 			}
 
 			insertViewCaptionAndBind( viewCaption, data.item, viewImage, conversionApi );

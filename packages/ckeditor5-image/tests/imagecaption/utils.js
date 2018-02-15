@@ -46,7 +46,7 @@ describe( 'image captioning utils', () => {
 
 		it( 'should return false for other elements', () => {
 			const editable = new ViewEditableElement( 'figcaption', { contenteditable: true } );
-			editable.document = document;
+			editable._document = document;
 
 			expect( isCaption( editable ) ).to.be.false;
 		} );
