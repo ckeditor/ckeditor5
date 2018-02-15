@@ -14,7 +14,7 @@ ClassicEditor
 		plugins: [ ArticlePluginSet, Highlight ],
 		toolbar: [
 			'highlight:marker', 'highlight:pinkMarker', 'highlight:greenMarker', 'highlight:redPen', 'highlight:bluePen', 'removeHighlight',
-			'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'
+			'|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'
 		]
 	} )
 	.then( editor => {
