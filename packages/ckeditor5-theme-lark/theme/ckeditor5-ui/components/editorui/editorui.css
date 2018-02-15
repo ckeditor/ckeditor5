@@ -39,6 +39,7 @@
 	/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/131 */
 	& > .ck-button,
 	& > .ck-dropdown > .ck-button,
+	& > .ck-file-dialog-button > .ck-button,
 	& > .ck-dropdown > .ck-splitbutton > .ck-button {
 		&:not(:hover):not(:focus):not(.ck-on),
 		&.ck-disabled {
