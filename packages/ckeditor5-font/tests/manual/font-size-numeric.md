@@ -1,7 +1,7 @@
 ### Loading
 
 The data should be loaded with:
-- 7 paragraphs with font sizes (10, 12, 14, normal, 18, 20, 22),
+- 7 paragraphs with font sizes (10, 12, 14, default, 18, 20, 22),
 
 ### Testing
 

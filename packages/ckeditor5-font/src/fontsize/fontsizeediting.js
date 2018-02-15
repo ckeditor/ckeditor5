@@ -40,7 +40,7 @@ export default class FontSizeEditing extends Plugin {
 			options: [
 				'tiny',
 				'small',
-				'normal',
+				'default',
 				'big',
 				'huge'
 			]

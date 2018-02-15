@@ -39,7 +39,7 @@ describe( 'FontSizeEditing', () => {
 	describe( 'config', () => {
 		describe( 'default value', () => {
 			it( 'should be set', () => {
-				expect( editor.config.get( 'fontSize.options' ) ).to.deep.equal( [ 'tiny', 'small', 'normal', 'big', 'huge' ] );
+				expect( editor.config.get( 'fontSize.options' ) ).to.deep.equal( [ 'tiny', 'small', 'default', 'big', 'huge' ] );
 			} );
 		} );
 	} );
@@ -52,7 +52,7 @@ describe( 'FontSizeEditing', () => {
 					fontSize: {
 						options: [
 							'tiny',
-							'normal',
+							'default',
 							18,
 							{
 								title: 'My setting',
@@ -106,7 +106,7 @@ describe( 'FontSizeEditing', () => {
 					fontSize: {
 						options: [
 							'tiny',
-							'normal',
+							'default',
 							18,
 							{
 								title: 'My setting',

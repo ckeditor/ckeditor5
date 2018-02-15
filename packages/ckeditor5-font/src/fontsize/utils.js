@@ -74,11 +74,11 @@ function getOptionDefinition( option ) {
 		return namedPresets[ option ];
 	}
 
-	// 'Normal' font size. It will be used to remove the fontSize attribute.
-	if ( option === 'normal' ) {
+	// 'Default' font size. It will be used to remove the fontSize attribute.
+	if ( option === 'default' ) {
 		return {
 			model: undefined,
-			title: 'Normal'
+			title: 'Default'
 		};
 	}
 

@@ -82,14 +82,14 @@ export default class FontSize extends Plugin {
  *			options: [
  *				'tiny',
  * 				'small',
- * 				'normal',
+ * 				'default',
  * 				'big',
  * 				'huge'
  *			]
  *		};
  *
  * It defines 4 sizes: **tiny**, **small**, **big**, and **huge**. These values will be rendered as `span` elements in view.
- * The **normal** defines a text without the `fontSize` attribute.
+ * The **default** defines a text without the `fontSize` attribute.
  *
  * Each `span` has the `class` attribute set to the corresponding size name. For instance, this is what the **small** size looks
  * like in the view:

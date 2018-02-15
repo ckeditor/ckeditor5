@@ -84,7 +84,7 @@ export default class FontSizeUI extends Plugin {
 		const t = editor.t;
 
 		const localizedTitles = {
-			Normal: t( 'Normal' ),
+			Default: t( 'Default' ),
 			Tiny: t( 'Tiny' ),
 			Small: t( 'Small' ),
 			Big: t( 'Big' ),

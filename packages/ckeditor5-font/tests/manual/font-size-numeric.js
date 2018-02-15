@@ -15,7 +15,7 @@ ClassicEditor
 		toolbar: [
 			'headings', '|', 'fontSize', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'
 		],
-		fontSize: { options: [ 10, 12, 14, 'normal', 18, 20, 22 ] }
+		fontSize: { options: [ 10, 12, 14, 'default', 18, 20, 22 ] }
 	} )
 	.then( editor => {
 		window.editor = editor;

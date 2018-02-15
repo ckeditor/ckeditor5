@@ -8,7 +8,7 @@ import { normalizeOptions } from '../../src/fontsize/utils';
 describe( 'FontSizeEditing Utils', () => {
 	describe( 'normalizeOptions()', () => {
 		it( 'should discard unsupported values', () => {
-			expect( normalizeOptions( [ () => {}, 'normal', 'unknown' ] ) ).to.deep.equal( [ { title: 'Normal', model: undefined } ] );
+			expect( normalizeOptions( [ () => {}, 'default', 'unknown' ] ) ).to.deep.equal( [ { title: 'Default', model: undefined } ] );
 		} );
 
 		it( 'should pass through object definition', () => {
@@ -27,10 +27,10 @@ describe( 'FontSizeEditing Utils', () => {
 
 		describe( 'named presets', () => {
 			it( 'should return defined presets', () => {
-				expect( normalizeOptions( [ 'tiny', 'small', 'normal', 'big', 'huge' ] ) ).to.deep.equal( [
+				expect( normalizeOptions( [ 'tiny', 'small', 'default', 'big', 'huge' ] ) ).to.deep.equal( [
 					{ title: 'Tiny', model: 'tiny', view: { name: 'span', class: 'text-tiny' } },
 					{ title: 'Small', model: 'small', view: { name: 'span', class: 'text-small' } },
-					{ title: 'Normal', model: undefined },
+					{ title: 'Default', model: undefined },
 					{ title: 'Big', model: 'big', view: { name: 'span', class: 'text-big' } },
 					{ title: 'Huge', model: 'huge', view: { name: 'span', class: 'text-huge' } }
 				] );
@@ -39,10 +39,10 @@ describe( 'FontSizeEditing Utils', () => {
 
 		describe( 'numeric presets', () => {
 			it( 'should return generated presets', () => {
-				expect( normalizeOptions( [ '10', 12, 'normal', '14.1', 18.3 ] ) ).to.deep.equal( [
+				expect( normalizeOptions( [ '10', 12, 'default', '14.1', 18.3 ] ) ).to.deep.equal( [
 					{ title: '10', model: 10, view: { name: 'span', style: { 'font-size': '10px' } } },
 					{ title: '12', model: 12, view: { name: 'span', style: { 'font-size': '12px' } } },
-					{ title: 'Normal', model: undefined },
+					{ title: 'Default', model: undefined },
 					{ title: '14.1', model: 14.1, view: { name: 'span', style: { 'font-size': '14.1px' } } },
 					{ title: '18.3', model: 18.3, view: { name: 'span', style: { 'font-size': '18.3px' } } }
 				] );

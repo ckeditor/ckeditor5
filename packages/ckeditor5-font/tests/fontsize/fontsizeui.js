@@ -23,7 +23,7 @@ describe( 'FontSizeUI', () => {
 	before( () => {
 		addTranslations( 'en', {
 			'Font Size': 'Font Size',
-			'Normal': 'Normal',
+			'Default': 'Default',
 			'Tiny': 'Tiny',
 			'Small': 'Small',
 			'Big': 'Big',
@@ -32,7 +32,7 @@ describe( 'FontSizeUI', () => {
 
 		addTranslations( 'pl', {
 			'Font Size': 'Rozmiar czcionki',
-			'Normal': 'Normalny',
+			'Default': 'Domyślny',
 			'Tiny': 'Tyci',
 			'Small': 'Mały',
 			'Big': 'Duży',
@@ -99,7 +99,7 @@ describe( 'FontSizeUI', () => {
 
 			command.value = undefined;
 
-			// The third item is 'normal' font size.
+			// The third item is 'default' font size.
 			expect( listView.items.map( item => item.isActive ) ).to.deep.equal( [ false, false, true, false, false ] );
 
 			command.value = 'tiny';
@@ -129,7 +129,7 @@ describe( 'FontSizeUI', () => {
 						.create( element, {
 							plugins: [ FontSizeEditing, FontSizeUI ],
 							fontSize: {
-								options: [ 'tiny', 'small', 'normal', 'big', 'huge' ]
+								options: [ 'tiny', 'small', 'default', 'big', 'huge' ]
 							}
 						} )
 						.then( newEditor => {
@@ -160,7 +160,7 @@ describe( 'FontSizeUI', () => {
 						.create( element, {
 							plugins: [ FontSizeEditing, FontSizeUI ],
 							fontSize: {
-								options: [ 10, 12, 'normal', 16, 18 ]
+								options: [ 10, 12, 'default', 16, 18 ]
 							}
 						} )
 						.then( newEditor => {
@@ -197,15 +197,15 @@ describe( 'FontSizeUI', () => {
 
 		describe( 'localization', () => {
 			beforeEach( () => {
-				return localizedEditor( [ 'tiny', 'small', 'normal', 'big', 'huge' ] );
+				return localizedEditor( [ 'tiny', 'small', 'default', 'big', 'huge' ] );
 			} );
 
 			it( 'does not alter normalizeOptions() internals', () => {
-				const options = normalizeOptions( [ 'tiny', 'small', 'normal', 'big', 'huge' ] );
+				const options = normalizeOptions( [ 'tiny', 'small', 'default', 'big', 'huge' ] );
 				expect( options ).to.deep.equal( [
 					{ title: 'Tiny', model: 'tiny', view: { name: 'span', class: 'text-tiny' } },
 					{ title: 'Small', model: 'small', view: { name: 'span', class: 'text-small' } },
-					{ title: 'Normal', model: undefined },
+					{ title: 'Default', model: undefined },
 					{ title: 'Big', model: 'big', view: { name: 'span', class: 'text-big' } },
 					{ title: 'Huge', model: 'huge', view: { name: 'span', class: 'text-huge' } }
 				] );
@@ -223,7 +223,7 @@ describe( 'FontSizeUI', () => {
 				expect( listView.items.map( item => item.label ) ).to.deep.equal( [
 					'Tyci',
 					'Mały',
-					'Normalny',
+					'Domyślny',
 					'Duży',
 					'Ogromny'
 				] );
