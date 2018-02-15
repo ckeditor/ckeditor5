@@ -139,6 +139,10 @@ export default class DocumentSelection {
 		return this._selection.isBackward;
 	}
 
+	get isGravityOverridden() {
+		return this._selection._isGravityOverriden;
+	}
+
 	/**
 	 * Used for the compatibility with the {@link module:engine/model/selection~Selection#isEqual} method.
 	 *
@@ -391,9 +395,20 @@ export default class DocumentSelection {
 	/**
 	 * Temporarily and partially disables default gravity behaviour that tries to get attributes from nodes surrounding the caret.
 	 * @see module:engine/model/writer~Writer#overrideGravity
+	 *
+	 * @protected
 	 */
 	_overrideGravity() {
 		this._selection.overrideGravity();
+	}
+
+	/**
+	 * Restore overridden gravity.
+	 *
+	 * @protected
+	 */
+	_restoreGravity() {
+		this._selection.restoreGravity();
 	}
 
 	/**
@@ -476,7 +491,7 @@ class LiveSelection extends Selection {
 		// When is set as `true` then selection attributes on node before the caret won't be taken
 		// into consideration while updating selection attributes.
 		//
-		// @private
+		// @protected
 		// @type {Boolean}
 		this._isGravityOverriden = false;
 
@@ -626,6 +641,11 @@ class LiveSelection extends Selection {
 			}
 		} );
 
+		this._updateAttributes();
+	}
+
+	restoreGravity() {
+		this._isGravityOverriden = false;
 		this._updateAttributes();
 	}
 

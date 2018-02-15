@@ -1033,6 +1033,13 @@ export default class Writer {
 	}
 
 	/**
+	 * Restore overridden gravity to default.
+	 */
+	restoreSelectionGravity() {
+		this.model.document.selection._restoreGravity();
+	}
+
+	/**
 	 * @private
 	 * @param {String} key Key of the attribute to remove.
 	 * @param {*} value Attribute value.

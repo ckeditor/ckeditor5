@@ -806,6 +806,36 @@ describe( 'DocumentSelection', () => {
 		} );
 	} );
 
+	describe( '_restoreGravity()', () => {
+		beforeEach( () => {
+			model.schema.extend( '$text', {
+				allowIn: '$root'
+			} );
+		} );
+
+		it( 'should not revert default gravity when is overridden', () => {
+			setData( model, '<$text bold="true" italic="true">foo[]</$text>' );
+
+			selection._overrideGravity();
+
+			expect( Array.from( selection.getAttributeKeys() ) ).to.length( 0 );
+
+			selection._restoreGravity();
+
+			expect( Array.from( selection.getAttributeKeys() ) ).to.have.members( [ 'bold', 'italic' ] );
+		} );
+
+		it( 'should do nothing when gravity is not overridden', () => {
+			setData( model, '<$text bold="true" italic="true">foo[]</$text>' );
+
+			expect( () => {
+				selection._restoreGravity();
+			} ).to.not.throw();
+
+			expect( Array.from( selection.getAttributeKeys() ) ).to.have.members( [ 'bold', 'italic' ] );
+		} );
+	} );
+
 	// DocumentSelection uses LiveRanges so here are only simple test to see if integration is
 	// working well, without getting into complicated corner cases.
 	describe( 'after applying an operation should get updated and fire events', () => {

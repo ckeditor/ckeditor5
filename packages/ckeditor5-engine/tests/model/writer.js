@@ -2380,6 +2380,36 @@ describe( 'Writer', () => {
 		} );
 	} );
 
+	describe( 'restoreSelectionGravity()', () => {
+		it( 'should use DocumentSelection#_restoreGravity', () => {
+			const restoreGravitySpy = sinon.spy( DocumentSelection.prototype, '_restoreGravity' );
+
+			restoreSelectionGravity();
+
+			sinon.assert.calledOnce( restoreGravitySpy );
+			restoreGravitySpy.restore();
+		} );
+
+		it( 'should restore overridden gravity to default', () => {
+			const root = doc.createRoot();
+			root.appendChildren( [
+				new Text( 'foo', { foo: true } ),
+				new Text( 'bar', { foo: true, bar: true } ),
+				new Text( 'biz', { foo: true } )
+			] );
+
+			setSelection( new Position( root, [ 6 ] ) );
+
+			overrideSelectionGravity();
+
+			expect( Array.from( model.document.selection.getAttributeKeys() ) ).to.deep.equal( [ 'foo' ] );
+
+			restoreSelectionGravity();
+
+			expect( Array.from( model.document.selection.getAttributeKeys() ) ).to.deep.equal( [ 'foo', 'bar' ] );
+		} );
+	} );
+
 	function createText( data, attributes ) {
 		return model.change( writer => {
 			return writer.createText( data, attributes );
@@ -2543,6 +2573,12 @@ describe( 'Writer', () => {
 	function overrideSelectionGravity() {
 		model.change( writer => {
 			writer.overrideSelectionGravity();
+		} );
+	}
+
+	function restoreSelectionGravity() {
+		model.change( writer => {
+			writer.restoreSelectionGravity();
 		} );
 	}
 } );
