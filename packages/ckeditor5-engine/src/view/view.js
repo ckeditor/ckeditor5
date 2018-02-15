@@ -304,7 +304,7 @@ export default class View {
 	 * Change block is executed immediately.
 	 *
 	 * When the outermost change block is done and rendering to DOM is over it fires
-	 * {@link module:engine/view/document~Document#event:change} event.
+	 * {@link module:engine/view/view~View#event:render} event.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `applying-view-changes-on-rendering` when
 	 * change block is used after rendering to DOM has started.
