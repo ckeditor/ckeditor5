@@ -38,10 +38,10 @@
 	--ck-color-button-on-focus-background: 						hsl(0, 0%, 77%);
 	--ck-color-button-on-focus-border: 							transparent;
 	--ck-color-button-on-active-background: 					hsl(0, 0%, 73%);
-	--ck-color-button-on-active-border: 						transparent
+	--ck-color-button-on-active-border: 						transparent;
 	--ck-color-button-on-active-shadow: 						hsl(0, 0%, 63%);
 	--ck-color-button-on-disabled-background: 					hsl(0, 0%, 87%);
-	--ck-color-button-on-disabled-border: 						transparent
+	--ck-color-button-on-disabled-border: 						transparent;
 
 	--ck-color-button-action-background: 						var(--ck-color-base-action);
 	--ck-color-button-action-border: 							var(--ck-color-base-action);
