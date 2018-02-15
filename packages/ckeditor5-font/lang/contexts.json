@@ -1,0 +1,10 @@
+{
+	"Font Size": "Tooltip for the font size drop-down.",
+	"Normal": "Drop-down option label for the normal font size.",
+	"Tiny": "Drop-down option label for the 'tiny' font size preset.",
+	"Small": "Drop-down option label for the 'small' font size preset.",
+	"Big": "Drop-down option label for the 'big' font size preset.",
+	"Huge": "Drop-down option label for the 'huge' font size preset.",
+	"Font Family": "Tooltip for the font family drop-down.",
+	"Default": "Drop-down option label for the default font family."
+}
