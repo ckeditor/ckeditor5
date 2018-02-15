@@ -354,8 +354,8 @@ export default class Link extends Plugin {
 	}
 
 	/**
-	 * Makes the UI react to the {@link module:engine/view/document~Document#event:change} in the view
-	 * document to reposition itself as the document changes.
+	 * Makes the UI react to the {@link module:engine/view/view~View#event:render} in the view to
+	 * reposition itself as the document changes.
 	 *
 	 * See: {@link #_hideUI} to learn when the UI stops reacting to the `render` event.
 	 *
