@@ -96,7 +96,6 @@
 	/* -- Overrides the default colors used by the editor --------------------------------------- */
 
 	--ck-color-editor-border: var(--ck-custom-background);
-	--ck-color-editor-toolbar-background: var(--ck-custom-background);
 	--ck-color-editor-dropdown-background: hsl(270, 1%, 33%);
 
 	/* -- Overrides the default colors used by ckeditor5-image package -------------------------- */

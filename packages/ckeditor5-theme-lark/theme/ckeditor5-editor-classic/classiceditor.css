@@ -13,7 +13,7 @@
 				border-bottom-right-radius: 0;
 			}
 
-			background: var(--ck-color-editor-toolbar-background);
+			background: var(--ck-color-toolbar-background);
 			border-bottom-width: 0;
 		}
 

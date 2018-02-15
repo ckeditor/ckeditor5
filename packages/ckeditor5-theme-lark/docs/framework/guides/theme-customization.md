@@ -152,7 +152,7 @@ The file containing custom variables will be named `custom.css` and it will look
 
 	/* -- Overrides the default .ck-toolbar class colors ---------------------------------------- */
 
-	--ck-color-toolbar-background: var(--ck-custom-foreground);
+	--ck-color-toolbar-background: var(--ck-custom-background);
 	--ck-color-toolbar-border: var(--ck-custom-border);
 
 	/* -- Overrides the default .ck-tooltip class colors ---------------------------------------- */
@@ -163,7 +163,6 @@ The file containing custom variables will be named `custom.css` and it will look
 	/* -- Overrides the default colors used by the editor --------------------------------------- */
 
 	--ck-color-editor-border: var(--ck-custom-background);
-	--ck-color-editor-toolbar-background: var(--ck-custom-background);
 	--ck-color-editor-dropdown-background: hsl(270, 1%, 33%);
 
 	/* -- Overrides the default colors used by ckeditor5-image package -------------------------- */
