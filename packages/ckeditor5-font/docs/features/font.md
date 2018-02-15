@@ -5,23 +5,19 @@ category: features
 
 {@snippet features/build-font-source}
 
-The {@link module:font/font~Font} feature enables support for:
-* setting font family - which allows to control font face of a text by inline `<span>` elements with a `font-family` CSS set in style attribute.
-* setting font size - which allows to control size of a text by inline `<span>` elements that have set either class or `font-size` CSS set in style attribute.
-
-The font features can be used independently by using:
-* {@link module:font/fontfamily~FontFamily} to control font face of a text.
-* {@link module:font/fontsize~FontSize} to control size of a text.
+The {@link module:font/font~Font} plugin enables the following features in the editor:
+* {@link module:font/fontfamily~FontFamily} – allows to change the font family by applying inline `<span>` elements with a `font-family` in the `style` attribute,
+* {@link module:font/fontsize~FontSize} – allows to control size by applying inline `<span>` elements that either have a CSS class or a `font-size` in the `style` attribute.
 
 ## Demo
 
 {@snippet features/font}
 
-## Configuring font family options
+## Configuring the font family
 
 It is possible to configure which font family options are supported by the editor. Use the {@link module:font/fontfamily~FontFamilyConfig#options `fontFamily.options`} configuration option to do so.
 
-Use the special keyword `'default'` to use the default `font-family` defined in the web page styles — it disables the font family feature.
+Use the special `'default'` keyword to use the default `font-family` defined in the web page styles (removes any custom font family).
 
 For example, the following editor supports only two font families besides the "default" one:
 
@@ -45,11 +41,11 @@ ClassicEditor
 
 {@snippet features/custom-font-family-options}
 
-## Configuring font size options
+## Configuring the font size
 
 It is possible to configure which font size options are supported by the editor. Use the {@link module:font/fontsize~FontSizeConfig#options `fontSize.options`} configuration option to do so.
 
-Use the special keyword `'normal'` to use the default font size defined in the web page styles — it disables the font-size feature.
+Use the special `'normal'` keyword to use the default font size defined in the web page styles (removes any custom size).
 
 The font size feature supports two ways of defining configuration: using  predefined (named) presets or simple numeric values.
 
@@ -67,11 +63,11 @@ Each size is represented in the view as a `<span>` element with the `text-*` cla
 <span class="text-tiny">...</span>
 ```
 
-The CSS definition for those CSS classes must be included:
-- on the web page's CSS stylesheet that the editor is included and 
-- on the web page's CSS stylesheet that renders edited content. 
+The CSS definition for the classes (presets) must be included:
+- in the web page's styles where the editor runs (backend),
+- in the web page's styles where the edited content is rendered (frontend)
 
-The examples defines below CSS:
+Here's an example of the font size CSS classes:
 
 ```css
 .text-tiny {
@@ -113,18 +109,18 @@ ClassicEditor
 
 {@snippet features/custom-font-size-named-options}
 
-### Configuration using numeric presets
+### Configuration using numerical values
 
-As an alternative, the font feature supports numeric values.
+The font feature also supports numerical values.
 
-Each size is represented in the view as a `<span>` element with the `font-size` style set in `px`.
+In this case, each size is represented in the view as a `<span>` element with the `font-size` style set in `px`.
 For example, `14` will be represented in the editor data as:
 
 ```html
 <span style="font-size: 14px">...</span>
 ```
 
-Here's an example of the editor that supports numeric font sizes (assuming that the `'normal'` size is defined by CSS as `15px`):
+Here's an example of the editor that supports numerical font sizes. Note that `'normal'` is controlled by the default styles of the web page:
 
 ```js
 ClassicEditor

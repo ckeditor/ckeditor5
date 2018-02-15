@@ -14,8 +14,8 @@ import FontFamilyUI from './fontfamily/fontfamilyui';
 /**
  * The font family plugin.
  *
- * It requires {@link module:font/fontfamily/fontfamilyediting~FontFamilyEditing} and
- * {@link module:font/fontfamily/fontfamilyui~FontFamilyUI} plugins.
+ * It enables {@link module:font/fontfamily/fontfamilyediting~FontFamilyEditing} and
+ * {@link module:font/fontfamily/fontfamilyui~FontFamilyUI} features in the editor.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -36,14 +36,14 @@ export default class FontFamily extends Plugin {
 }
 
 /**
- * Font family option descriptor. Compatible with {@link module:engine/conversion/definition-based-converters~ConverterDefinition}.
+ * Font family option descriptor.
  *
  * @typedef {Object} module:font/fontfamily~FontFamilyOption
  *
  * @property {String} title The user-readable title of the option.
  * @property {String} model Attribute's unique value in the model.
- * @property {module:engine/view/viewelementdefinition~ViewElementDefinition} view View element configuration.
- * @property {Array.<module:engine/view/viewelementdefinition~ViewElementDefinition>} [upcastAlso] An array with all matched elements that
+ * @property {module:engine/view/elementdefinition~ElementDefinition} view View element configuration.
+ * @property {Array.<module:engine/view/elementdefinition~ElementDefinition>} [upcastAlso] An array with all matched elements that
  * view to model conversion should also accept.
  */
 

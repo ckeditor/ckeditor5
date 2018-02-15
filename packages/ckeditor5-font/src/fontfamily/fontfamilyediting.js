@@ -16,8 +16,12 @@ import { normalizeOptions } from './utils';
 const FONT_FAMILY = 'fontFamily';
 
 /**
- * The font family editing feature. It introduces the `'fontFamily'` command and introduces `fontFamily` attribute in the model
- * which renders to the view as a `<span>` element with a `font-family` style attribute.
+ * The font family editing feature.
+ *
+ * It introduces the {@link module:font/fontfamily/fontfamilycommand~FontFamilyCommand command} and
+ * the `fontFamily` attribute in the {@link module:engine/model/model~Model model} which renders
+ * in the {@link module:engine/view/view view} as an inline span (`<span style="font-family: Arial">`),
+ * depending on the {@link module:font/fontfamily~FontFamilyConfig configuration}.
  *
  * @extends module:core/plugin~Plugin
  */

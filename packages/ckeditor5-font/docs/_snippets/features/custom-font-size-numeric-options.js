@@ -8,7 +8,7 @@ ClassicEditor
 	.create( document.querySelector( '#snippet-custom-font-size-numeric-options' ), {
 		toolbar: {
 			items: [
-				'headings', '|', 'bulletedList', 'numberedList', 'fontSize', 'undo', 'redo'
+				'headings', '|', 'fontSize', 'bulletedList', 'numberedList', 'undo', 'redo'
 			],
 			viewportTopOffset: 60
 		},

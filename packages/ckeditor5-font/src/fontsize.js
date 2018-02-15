@@ -14,8 +14,8 @@ import FontSizeUI from './fontsize/fontsizeui';
 /**
  * The font size plugin.
  *
- * It requires {@link module:font/fontsize/fontsizeediting~FontSizeEditing} and
- * {@link module:font/fontsize/fontsizeui~FontSizeUI} plugins.
+ * It enables {@link module:font/fontsize/fontsizeediting~FontSizeEditing} and
+ * {@link module:font/fontsize/fontsizeui~FontSizeUI} features in the editor.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -36,14 +36,14 @@ export default class FontSize extends Plugin {
 }
 
 /**
- * Font size option descriptor. Compatible with {@link module:engine/conversion/definition-based-converters~ConverterDefinition}.
+ * Font size option descriptor.
  *
  * @typedef {Object} module:font/fontsize~FontSizeOption
  *
  * @property {String} title The user-readable title of the option.
  * @property {String} model Attribute's unique value in the model.
- * @property {module:engine/view/viewelementdefinition~ViewElementDefinition} view View element configuration.
- * @property {Array.<module:engine/view/viewelementdefinition~ViewElementDefinition>} [upcastAlso] An array with all matched elements that
+ * @property {module:engine/view/elementdefinition~ElementDefinition} view View element configuration.
+ * @property {Array.<module:engine/view/elementdefinition~ElementDefinition>} [upcastAlso] An array with all matched elements that
  * view to model conversion should also accept.
  */
 

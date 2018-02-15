@@ -11,11 +11,13 @@ import FontCommand from '../fontcommand';
 
 /**
  * The font size command. It is used by the {@link module:font/fontsize/fontsizeediting~FontSizeEditing}
- * to apply font size.
+ * to apply the font size.
  *
  *		editor.execute( 'fontSize', { value: 'small' } );
  *
- * @extends module:core/command~Command
+ * **Note**: Executing the command without the value removes the attribute from the model.
+ *
+ * @extends module:font/fontcommand~FontCommand
  */
 export default class FontSizeCommand extends FontCommand {
 	/**
