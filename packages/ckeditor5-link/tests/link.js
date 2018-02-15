@@ -387,10 +387,10 @@ describe( 'Link', () => {
 			} ).to.not.throw();
 		} );
 
-		it( 'should clear #change listener from the ViewDocument', () => {
+		it( 'should clear #render listener from the ViewDocument', () => {
 			const spy = sinon.spy();
 
-			linkFeature.listenTo( editor.editing.view.document, 'change', spy );
+			linkFeature.listenTo( editor.editing.view, 'render', spy );
 			linkFeature._hideUI();
 			editor.editing.view.change( () => {} );
 

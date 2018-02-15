@@ -26,11 +26,9 @@ export function isLinkElement( node ) {
  * @return {module:engine/view/attributeelement~AttributeElement}
  */
 export function createLinkElement( href, writer ) {
-	const linkElement = writer.createAttributeElement( 'a', { href } );
-	linkElement.setCustomProperty( linkElementSymbol, true );
-
-	// https://github.com/ckeditor/ckeditor5-link/issues/121
-	linkElement.priority = 5;
+	// Priority 5 - https://github.com/ckeditor/ckeditor5-link/issues/121.
+	const linkElement = writer.createAttributeElement( 'a', { href }, 5 );
+	writer.setCustomProperty( linkElementSymbol, true, linkElement );
 
 	return linkElement;
 }
