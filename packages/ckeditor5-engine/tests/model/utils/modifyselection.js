@@ -486,7 +486,6 @@ describe( 'DataController utils', () => {
 				test(
 					'expands selection to the word start',
 					'<p>foo bar[b]az</p>',
-					// TODO: '<p>foo [barb]az</p>',
 					'<p>foo [bar]baz</p>',
 					{ unit: 'word', direction: 'backward' }
 				);
@@ -496,7 +495,6 @@ describe( 'DataController utils', () => {
 
 					modifySelection( model, doc.selection, { unit: 'word' } );
 
-					// TODO: expect( stringify( doc.getRoot(), doc.selection ) ).to.equal( '<p>foo[bar] baz</p>' );
 					expect( stringify( doc.getRoot(), doc.selection ) ).to.equal( '<p>foob[ar] baz</p>' );
 					expect( doc.selection.isBackward ).to.false;
 				} );
