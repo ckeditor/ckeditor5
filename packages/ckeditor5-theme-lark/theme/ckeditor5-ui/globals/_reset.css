@@ -3,6 +3,14 @@
  * For licensing, see LICENSE.md.
  */
 
+:root {
+	/* This is super-important. This is **manually** adjusted so a button without an icon
+	is never smaller than a button with icon, additionally making sure that text-less buttons
+	are perfect squares. The value is also shared by other components which should stay "in-line"
+	with buttons. */
+	--ck-ui-component-min-height: 2.3em;
+}
+
 /**
  * Resets an element, ignoring its children.
  */

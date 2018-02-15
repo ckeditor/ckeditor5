@@ -20,6 +20,9 @@
 	padding: var(--ck-spacing-extra-tiny) var(--ck-spacing-medium);
 	min-width: var(--ck-input-text-width);
 
+	/* This is important to stay of the same height as surrounding buttons */
+	min-height: var(--ck-ui-component-min-height);
+
 	&:focus {
 		@mixin ck-focus-ring;
 		@mixin ck-box-shadow var(--ck-focus-outer-shadow), var(--ck-inner-shadow);

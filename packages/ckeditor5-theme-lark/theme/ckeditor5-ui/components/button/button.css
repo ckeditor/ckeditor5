@@ -22,6 +22,10 @@ a.ck-button {
 	padding: var(--ck-spacing-tiny);
 	text-align: center;
 
+	/* A very important piece of styling. Go to variable declaration to learn more. */
+	min-width: var(--ck-ui-component-min-height);
+	min-height: var(--ck-ui-component-min-height);
+
 	/* Normalize the height of the line. Removing this will break consistent height
 	among text and text-less buttons (with icons). */
 	line-height: 1;
@@ -65,14 +69,6 @@ a.ck-button {
 		& use * {
 			color: inherit;
 		}
-	}
-
-	&:not(.ck-button_with-text) .ck-button__icon {
-		/* This margin is neccessary for icons in label-less buttons to stretch
-		the button properly. When there's no text in the button, browsers render
-		them too small. It's a really tricky topic, when browsers render svg as an inline
-		content and line size (character width) measurement and alignment kicks in. */
-		margin: var(--ck-spacing-tiny);
 	}
 
 	& .ck-button__label {

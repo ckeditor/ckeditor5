@@ -16,7 +16,8 @@
 	}
 
 	& .ck-button.ck-link-actions__preview {
-		padding: 0;
+		padding-left: 0;
+		padding-right: 0;
 
 		&,
 		&:hover,
