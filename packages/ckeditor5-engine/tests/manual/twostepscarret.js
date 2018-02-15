@@ -11,7 +11,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 
-import bindTwoStepCaretToAttribute from '@ckeditor/ckeditor5-engine/src/utils/bindtwostepcarettoattribute';
+import bindTwoStepCaretToAttribute from '../../src/utils/bindtwostepcarettoattribute';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
