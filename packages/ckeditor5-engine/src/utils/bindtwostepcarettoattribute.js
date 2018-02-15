@@ -127,8 +127,8 @@ export default function bindTwoStepCaretToAttribute( editor, emitter, attribute 
 		} );
 
 		// Clear state every time when selection is changed directly by the user.
-		emitter.listenTo( modelSelection, 'change:range', ( evt, directChange ) => {
-			if ( directChange ) {
+		emitter.listenTo( modelSelection, 'change:range', ( evt, data ) => {
+			if ( data.directChange ) {
 				isFirstStepMade = false;
 			}
 		} );

@@ -8,6 +8,8 @@
 import bindTwoStepCaretToAttribute from '../../src/utils/bindtwostepcarettoattribute';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
+import Position from '@ckeditor/ckeditor5-engine/src/model/position';
+import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import { upcastElementToAttribute } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
@@ -137,6 +139,17 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 			sinon.assert.notCalled( preventDefaultSpy );
 			expect( selection.isGravityOverridden ).to.false;
 		} );
+
+		it( 'should do nothing for non-collapsed selection', () => {
+			setData( model, '<$text c="true">fo[o]</$text><$text a="true" b="true">bar</$text>' );
+
+			// Firing keyup event will simulate that caret is here as a result of left arrow key press.
+			viewDoc.fire( 'keyup', getEventData( { keyCode: keyCodes.arrowleft } ) );
+
+			viewDoc.fire( 'keydown', getEventData( { keyCode: keyCodes.arrowright } ) );
+
+			expect( selection.isGravityOverridden ).to.false;
+		} );
 	} );
 
 	describe( 'moving left', () => {
@@ -244,19 +257,93 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 			expect( selection.isGravityOverridden ).to.false;
 		} );
 
-		it( 'mouse', () => {
-			it( 'should not override gravity when selection is placed at the beginning of text', () => {
-				setData( model, '<$text a="true">[]foo</$text>' );
+		it( 'should do nothing for non-collapsed selection', () => {
+			setData( model, '<$text c="true">foo</$text><$text a="true" b="true">[b]ar</$text>', { lastRangeBackward: true } );
 
-				expect( selection.isGravityOverridden ).to.false;
-			} );
+			// Firing keyup event will simulate that caret is here as a result of left arrow key press.
+			viewDoc.fire( 'keyup', getEventData( { keyCode: keyCodes.arrowleft } ) );
 
-			it( 'should not override gravity when selection is placed at the end of text', () => {
-				setData( model, '<$text a="true">foo[]</$text>' );
-
-				expect( selection.isGravityOverridden ).to.false;
-			} );
+			expect( selection.isGravityOverridden ).to.false;
 		} );
+
+		// There is no need to test it while moving right, because moving right does not use additional state.
+		it( 'should work when external changes are made meanwhile', () => {
+			setData( model, '<$text>foo</$text><$text a="true" b="true">bar[]</$text><$text c="true">biz</$text>' );
+
+			// Firing keyup event will simulate that caret is here as a result of left arrow key press.
+			viewDoc.fire( 'keyup', getEventData( { keyCode: keyCodes.arrowleft } ) );
+
+			// Gravity is overridden, caret is at the end of the text but is "outside" of the text.
+			expect( Array.from( selection.getAttributeKeys() ) ).to.have.members( [ 'c' ] );
+			expect( selection.isGravityOverridden ).to.true;
+
+			// External changes.
+			model.change( writer => {
+				writer.insertText( 'abc', Position.createAt( editor.model.document.getRoot() ) );
+			} );
+
+			// Press left key.
+			viewDoc.fire( 'keydown', getEventData( {
+				keyCode: keyCodes.arrowleft,
+				preventDefault: preventDefaultSpy
+			} ) );
+			// Moving left needs additional keyup event to check that everything is right.
+			viewDoc.fire( 'keyup', getEventData( { keyCode: keyCodes.arrowleft } ) );
+
+			// Caret movement was blocked but now is "inside" the text.
+			expect( Array.from( selection.getAttributeKeys() ) ).to.have.members( [ 'a', 'b' ] );
+			expect( selection.isGravityOverridden ).to.false;
+			sinon.assert.calledOnce( preventDefaultSpy );
+		} );
+
+		// There is no need to test it while moving right, because moving right does not use additional state.
+		it( 'should not block caret when while doing two steps movement and text is removed by external change', () => {
+			setData( model, '<$text c="true">foo</$text><$text a="true" b="true">[]bar</$text>biz' );
+
+			// Firing keyup event will simulate that caret is here as a result of left arrow key press.
+			viewDoc.fire( 'keyup', getEventData( { keyCode: keyCodes.arrowleft } ) );
+
+			// Gravity is overridden, caret is at the beginning of the text and is "inside" of the text.
+			expect( Array.from( selection.getAttributeKeys() ) ).to.have.members( [ 'a', 'b' ] );
+			expect( selection.isGravityOverridden ).to.true;
+
+			// External changes.
+			model.change( writer => {
+				writer.remove( Range.createFromPositionAndShift( new Position( editor.model.document.getRoot(), [ 2 ] ), 5 ) );
+			} );
+
+			// Press left key.
+			viewDoc.fire( 'keydown', getEventData( {
+				keyCode: keyCodes.arrowleft,
+				preventDefault: preventDefaultSpy
+			} ) );
+			// Moving left needs additional keyup event to check that everything is right.
+			viewDoc.fire( 'keyup', getEventData( { keyCode: keyCodes.arrowleft } ) );
+
+			sinon.assert.notCalled( preventDefaultSpy );
+		} );
+	} );
+
+	describe( 'mouse', () => {
+		it( 'should not override gravity when selection is placed at the beginning of text', () => {
+			setData( model, '<$text a="true">[]foo</$text>' );
+
+			expect( selection.isGravityOverridden ).to.false;
+		} );
+
+		it( 'should not override gravity when selection is placed at the end of text', () => {
+			setData( model, '<$text a="true">foo[]</$text>' );
+
+			expect( selection.isGravityOverridden ).to.false;
+		} );
+	} );
+
+	it( 'should do nothing when key other then arrow left and right is pressed', () => {
+		setData( model, '<$text a="true">foo[]</$text>' );
+
+		expect( () => {
+			viewDoc.fire( 'keydown', getEventData( { keyCode: keyCodes.arrowup } ) );
+		} ).to.not.throw();
 	} );
 
 	function getEventData( data ) {
