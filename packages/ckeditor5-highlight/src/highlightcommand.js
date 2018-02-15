@@ -14,6 +14,11 @@ import Range from '@ckeditor/ckeditor5-engine/src/model/range';
  * The highlight command. It is used by the {@link module:highlight/highlightediting~HighlightEditing highlight feature}
  * to apply text highlighting.
  *
+ *		editor.execute( 'highlight', { value: 'greenMarker' } );
+ *
+ * **Note**: Executing the command without the value removes the attribute from the model. If selection is collapsed inside
+ * text with highlight attribute the whole range with that attribute will be removed from the model.
+ *
  * @extends module:core/command~Command
  */
 export default class HighlightCommand extends Command {

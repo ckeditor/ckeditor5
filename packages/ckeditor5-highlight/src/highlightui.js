@@ -23,7 +23,14 @@ import { createDropdown, addToolbarToDropdown } from '@ckeditor/ckeditor5-ui/src
 import './../theme/highlight.css';
 
 /**
- * The default Highlight UI plugin.
+ * The default Highlight UI plugin. It introduces the `'highlightDropdown'` drop-down, `'removeHighlight'` and `'highlight:*'` buttons.
+ *
+ * The default configuration provides below buttons:
+ * * `'highlight:marker'`
+ * * `'highlight:pinkMarker'`
+ * * `'highlight:greenMarker'`
+ * * `'highlight:redPen'`
+ * * `'highlight:bluePen'`
  *
  * @extends module:core/plugin~Plugin
  */

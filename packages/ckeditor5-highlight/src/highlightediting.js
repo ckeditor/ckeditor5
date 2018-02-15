@@ -13,7 +13,10 @@ import { attributeToElement } from '@ckeditor/ckeditor5-engine/src/conversion/tw
 import HighlightCommand from './highlightcommand';
 
 /**
- * The highlight editing feature. It introduces `highlight` command which allow to highlight selected text with defined 'marker' or 'pen'.
+ * The highlight editing feature. It introduces {@link module:highlight/highlightcommand~HighlightCommand command } and the `highlight`
+ * attribute in the {@link module:engine/model/model~Model model} which renders in the {@link module:engine/view/view view}
+ * as a `<mark>` element with a class attribute (`<span class="marker-green">...</span>`) depending
+ * on the {@link module:highlight/highlight~HighlightConfig configuration}.
  *
  * @extends module:core/plugin~Plugin
  */
