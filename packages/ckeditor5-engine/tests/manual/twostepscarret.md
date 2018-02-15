@@ -13,7 +13,7 @@
 
 ### Moving left
 1. Put selection one character after the link
-2. Move selection by one character to the left using right arrow
+2. Move selection by one character to the left using left arrow
 	- selection should be outside the link (ignore the blink).
 3. Press left arrow once again
 	- selection should be at the same position but inside the link
