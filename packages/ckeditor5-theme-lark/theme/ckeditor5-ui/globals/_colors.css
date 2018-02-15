@@ -23,14 +23,14 @@
 
 	/* -- Buttons ------------------------------------------------------------------------------- */
 
-	--ck-color-button-default-background: 						var(--ck-color-base-background);
-	--ck-color-button-default-border: 							var(--ck-color-base-border);
-	--ck-color-button-default-focus-background: 				hsl(0, 0%, 90%);
-	--ck-color-button-default-focus-border: 					hsl(0, 0%, 65%);
+	--ck-color-button-default-background: 						transparent;
+	--ck-color-button-default-border: 							transparent;
+	--ck-color-button-default-focus-background: 				transparent;
+	--ck-color-button-default-focus-border: 					transparent;
 	--ck-color-button-default-active-background: 				hsl(0, 0%, 85%);
-	--ck-color-button-default-active-border: 					hsl(0, 0%, 60%);
+	--ck-color-button-default-active-border: 					transparent;
 	--ck-color-button-default-active-shadow: 					hsl(0, 0%, 75%);
-	--ck-color-button-default-disabled-background: 				hsl(0, 0%, 100%);
+	--ck-color-button-default-disabled-background: 				transparent;
 	--ck-color-button-default-disabled-border: 					hsl(0, 0%, 78%);
 
 	--ck-color-button-on-background: 							hsl(0, 0%, 87%);
