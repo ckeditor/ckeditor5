@@ -447,7 +447,7 @@ describe( 'DataController utils', () => {
 					{ unit: 'word', direction: 'backward' }
 				);
 
-				for ( const char of [ ' ', ',', '.', '-', '(', ',', ':', '\'', '"' ] ) {
+				for ( const char of ' ,.?!:;"-()'.split( '' ) ) {
 					testStopCharacter( char );
 				}
 

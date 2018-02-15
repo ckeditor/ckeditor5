@@ -13,7 +13,7 @@ import Range from '../range';
 import { isInsideSurrogatePair, isInsideCombinedSymbol } from '@ckeditor/ckeditor5-utils/src/unicode';
 import DocumentSelection from '../documentselection';
 
-const wordBoundaryCharacters = ' ,.-():\'"';
+const wordBoundaryCharacters = ' ,.?!:;"-()';
 
 /**
  * Modifies the selection. Currently, the supported modifications are:
