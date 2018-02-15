@@ -57,7 +57,7 @@ export default class Widget extends Plugin {
 		// Converts selection placed over widget element to fake selection
 		this.editor.editing.downcastDispatcher.on( 'selection', ( evt, data, consumable, conversionApi ) => {
 			// Remove selected class from previously selected widgets.
-			this._clearPreviouslySelectedWidgets();
+			this._clearPreviouslySelectedWidgets( conversionApi.writer );
 
 			const viewWriter = conversionApi.writer;
 			const viewSelection = viewWriter.document.selection;
@@ -68,7 +68,7 @@ export default class Widget extends Plugin {
 					const node = value.item;
 
 					if ( node.is( 'element' ) && isWidget( node ) ) {
-						node.addClass( WIDGET_SELECTED_CLASS_NAME );
+						viewWriter.addClass( WIDGET_SELECTED_CLASS_NAME, node );
 						this._previouslySelected.add( node );
 
 						// Check if widget is a single element selected.
@@ -345,11 +345,13 @@ export default class Widget extends Plugin {
 
 	/**
 	 * Removes CSS class from previously selected widgets.
+	 *
 	 * @private
+	 * @param {module:engine/view/writer~Writer} writer
 	 */
-	_clearPreviouslySelectedWidgets() {
+	_clearPreviouslySelectedWidgets( writer ) {
 		for ( const widget of this._previouslySelected ) {
-			widget.removeClass( WIDGET_SELECTED_CLASS_NAME );
+			writer.removeClass( WIDGET_SELECTED_CLASS_NAME, widget );
 		}
 
 		this._previouslySelected.clear();

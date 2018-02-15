@@ -34,8 +34,9 @@ export default class HighlightStack {
 	 *
 	 * @fires change:top
 	 * @param {module:engine/conversion/downcast-converters~HighlightDescriptor} descriptor
+	 * @param {module:engine/view/writer~Writer} writer
 	 */
-	add( descriptor ) {
+	add( descriptor, writer ) {
 		const stack = this._stack;
 
 		// Save top descriptor and insert new one. If top is changed - fire event.
@@ -47,7 +48,8 @@ export default class HighlightStack {
 		if ( oldTop !== newTop && !compareDescriptors( oldTop, newTop ) ) {
 			this.fire( 'change:top', {
 				oldDescriptor: oldTop,
-				newDescriptor: newTop
+				newDescriptor: newTop,
+				writer
 			} );
 		}
 	}
@@ -57,8 +59,9 @@ export default class HighlightStack {
 	 *
 	 * @fires change:top
 	 * @param {String} id Id of the descriptor to remove.
+	 * @param {module:engine/view/writer~Writer} writer
 	 */
-	remove( id ) {
+	remove( id, writer ) {
 		const stack = this._stack;
 
 		const oldTop = stack[ 0 ];
@@ -69,7 +72,8 @@ export default class HighlightStack {
 		if ( oldTop !== newTop && !compareDescriptors( oldTop, newTop ) ) {
 			this.fire( 'change:top', {
 				oldDescriptor: oldTop,
-				newDescriptor: newTop
+				newDescriptor: newTop,
+				writer
 			} );
 		}
 	}
@@ -168,4 +172,5 @@ function classesToString( classes ) {
  * descriptor. It will be `undefined` when last descriptor is removed from the stack.
  * @param {module:engine/conversion/downcast-converters~HighlightDescriptor} [data.oldDescriptor] Old highlight
  * descriptor. It will be `undefined` when first descriptor is added to the stack.
+ * @param {module:engine/view/writer~Writer} writer View writer that can be used to modify element.
  */

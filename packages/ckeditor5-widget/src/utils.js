@@ -45,25 +45,27 @@ export function isWidget( element ) {
  * * implements `addHighlight` and `removeHighlight` custom properties to handle view highlight on widgets.
  *
  * @param {module:engine/view/element~Element} element
+ * @param {module:engine/view/writer~Writer} writer
  * @param {Object} [options={}]
  * @param {String|Function} [options.label] Element's label provided to {@link ~setLabel} function. It can be passed as
  * a plain string or a function returning a string.
  * @returns {module:engine/view/element~Element} Returns same element.
  */
-export function toWidget( element, options = {} ) {
-	element.setAttribute( 'contenteditable', 'false' );
+export function toWidget( element, writer, options = {} ) {
+	writer.setAttribute( 'contenteditable', 'false', element );
+	writer.addClass( WIDGET_CLASS_NAME, element );
+	writer.setCustomProperty( widgetSymbol, true, element );
 	element.getFillerOffset = getFillerOffset;
-	element.addClass( WIDGET_CLASS_NAME );
-	element.setCustomProperty( widgetSymbol, true );
 
 	if ( options.label ) {
-		setLabel( element, options.label );
+		setLabel( element, options.label, writer );
 	}
 
 	setHighlightHandling(
 		element,
-		( element, descriptor ) => element.addClass( ...normalizeToArray( descriptor.class ) ),
-		( element, descriptor ) => element.removeClass( ...normalizeToArray( descriptor.class ) )
+		writer,
+		( element, descriptor, writer ) => writer.addClass( normalizeToArray( descriptor.class ), element ),
+		( element, descriptor, writer ) => writer.removeClass( normalizeToArray( descriptor.class ), element )
 	);
 
 	return element;
@@ -79,24 +81,25 @@ export function toWidget( element, options = {} ) {
  * properly determine which highlight descriptor should be used at given time.
  *
  * @param {module:engine/view/element~Element} element
+ * @param {module:engine/view/writer~Writer} writer
  * @param {Function} add
  * @param {Function} remove
  */
-export function setHighlightHandling( element, add, remove ) {
+export function setHighlightHandling( element, writer, add, remove ) {
 	const stack = new HighlightStack();
 
 	stack.on( 'change:top', ( evt, data ) => {
 		if ( data.oldDescriptor ) {
-			remove( element, data.oldDescriptor );
+			remove( element, data.oldDescriptor, data.writer );
 		}
 
 		if ( data.newDescriptor ) {
-			add( element, data.newDescriptor );
+			add( element, data.newDescriptor, data.writer );
 		}
 	} );
 
-	element.setCustomProperty( 'addHighlight', ( element, descriptor ) => stack.add( descriptor ) );
-	element.setCustomProperty( 'removeHighlight', ( element, id ) => stack.remove( id ) );
+	writer.setCustomProperty( 'addHighlight', ( element, descriptor, writer ) => stack.add( descriptor, writer ), element );
+	writer.setCustomProperty( 'removeHighlight', ( element, id, writer ) => stack.remove( id, writer ), element );
 }
 
 /**
@@ -106,9 +109,10 @@ export function setHighlightHandling( element, add, remove ) {
  *
  * @param {module:engine/view/element~Element} element
  * @param {String|Function} labelOrCreator
+ *  * @param {module:engine/view/writer~Writer} writer
  */
-export function setLabel( element, labelOrCreator ) {
-	element.setCustomProperty( labelSymbol, labelOrCreator );
+export function setLabel( element, labelOrCreator, writer ) {
+	writer.setCustomProperty( labelSymbol, labelOrCreator, element );
 }
 
 /**
@@ -137,22 +141,22 @@ export function getLabel( element ) {
  * @param {module:engine/view/editableelement~EditableElement} editable
  * @returns {module:engine/view/editableelement~EditableElement} Returns same element that was provided in `editable` param.
  */
-export function toWidgetEditable( editable ) {
-	editable.addClass( 'ck-editable' );
+export function toWidgetEditable( editable, writer ) {
+	writer.addClass( 'ck-editable', editable );
 
 	// Set initial contenteditable value.
-	editable.setAttribute( 'contenteditable', editable.isReadOnly ? 'false' : 'true' );
+	writer.setAttribute( 'contenteditable', editable.isReadOnly ? 'false' : 'true', editable );
 
 	// Bind contenteditable property to element#isReadOnly.
 	editable.on( 'change:isReadOnly', ( evt, property, is ) => {
-		editable.setAttribute( 'contenteditable', is ? 'false' : 'true' );
+		writer.setAttribute( 'contenteditable', is ? 'false' : 'true', editable );
 	} );
 
 	editable.on( 'change:isFocused', ( evt, property, is ) => {
 		if ( is ) {
-			editable.addClass( 'ck-editable_focused' );
+			writer.addClass( 'ck-editable_focused', editable );
 		} else {
-			editable.removeClass( 'ck-editable_focused' );
+			writer.removeClass( 'ck-editable_focused', editable );
 		}
 	} );
 

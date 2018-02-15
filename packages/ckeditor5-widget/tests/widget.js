@@ -9,10 +9,8 @@ import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
 import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
 import { toWidget } from '../src/utils';
-import ViewContainer from '@ckeditor/ckeditor5-engine/src/view/containerelement';
-import ViewEditable from '@ckeditor/ckeditor5-engine/src/view/editableelement';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
-import AttributeContainer from '@ckeditor/ckeditor5-engine/src/view/attributeelement';
+import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
@@ -79,20 +77,22 @@ describe( 'Widget', () => {
 					.add( downcastElementToElement( { model: 'div', view: 'div' } ) )
 					.add( downcastElementToElement( {
 						model: 'widget',
-						view: () => {
-							const b = new AttributeContainer( 'b' );
-							const div = new ViewContainer( 'div', null, b );
+						view: ( item, consumable, api ) => {
+							const writer = api.writer;
+							const b = writer.createAttributeElement( 'b' );
+							const div = writer.createContainerElement( 'div' );
+							writer.insert( ViewPosition.createAt( div ), b );
 
-							return toWidget( div, { label: 'element label' } );
+							return toWidget( div, writer, { label: 'element label' } );
 						}
 					} ) )
 					.add( downcastElementToElement( {
 						model: 'nested',
-						view: () => new ViewEditable( 'figcaption', { contenteditable: true } )
+						view: ( item, consumable, api ) => api.writer.createEditableElement( 'figcaption', { contenteditable: true } )
 					} ) )
 					.add( downcastElementToElement( {
 						model: 'editable',
-						view: () => new ViewEditable( 'figcaption', { contenteditable: true } )
+						view: ( item, consumable, api ) => api.writer.createEditableElement( 'figcaption', { contenteditable: true } )
 					} ) );
 			} );
 	} );
