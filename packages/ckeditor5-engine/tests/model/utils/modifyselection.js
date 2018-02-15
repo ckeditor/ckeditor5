@@ -459,38 +459,38 @@ describe( 'DataController utils', () => {
 				);
 
 				it( 'extends whole word backward (non-collapsed)', () => {
-					setData( model, '<p>foo b[a]r</p>', { lastRangeBackward: true } );
+					setData( model, '<p>foo ba[a]r</p>', { lastRangeBackward: true } );
 
 					modifySelection( model, doc.selection, { unit: 'word', direction: 'backward' } );
 
-					expect( stringify( doc.getRoot(), doc.selection ) ).to.equal( '<p>foo [ba]r</p>' );
+					expect( stringify( doc.getRoot(), doc.selection ) ).to.equal( '<p>foo [baa]r</p>' );
 					expect( doc.selection.isBackward ).to.true;
 				} );
 
 				test(
 					'extends to element boundary',
-					'<p>fo[]o</p>',
-					'<p>fo[o]</p>',
+					'<p>fo[]oo</p>',
+					'<p>fo[oo]</p>',
 					{ unit: 'word' }
 				);
 
 				it( 'extends to element boundary (backward)', () => {
-					setData( model, '<p>f[]oo</p>' );
+					setData( model, '<p>ff[]oo</p>' );
 
 					modifySelection( model, doc.selection, { unit: 'word', direction: 'backward' } );
 
-					expect( stringify( doc.getRoot(), doc.selection ) ).to.equal( '<p>[f]oo</p>' );
+					expect( stringify( doc.getRoot(), doc.selection ) ).to.equal( '<p>[ff]oo</p>' );
 					expect( doc.selection.isBackward ).to.true;
 				} );
 
 				test(
-					'expands selection to the word start',
+					'expands forward selection to the word start',
 					'<p>foo bar[b]az</p>',
 					'<p>foo [bar]baz</p>',
 					{ unit: 'word', direction: 'backward' }
 				);
 
-				it( 'expands backward selection to word end', () => {
+				it( 'expands backward selection to the word end', () => {
 					setData( model, '<p>foo[b]ar baz</p>', { lastRangeBackward: true } );
 
 					modifySelection( model, doc.selection, { unit: 'word' } );
@@ -509,9 +509,9 @@ describe( 'DataController utils', () => {
 				it( 'unicode support - combining mark backward', () => {
 					setData( model, '<p>foob̂[]ar</p>' );
 
-					modifySelection( model, doc.selection, { direction: 'backward' } );
+					modifySelection( model, doc.selection, { direction: 'backward', unit: 'word' } );
 
-					expect( stringify( doc.getRoot(), doc.selection ) ).to.equal( '<p>foo[b̂]ar</p>' );
+					expect( stringify( doc.getRoot(), doc.selection ) ).to.equal( '<p>[foob̂]ar</p>' );
 					expect( doc.selection.isBackward ).to.true;
 				} );
 
