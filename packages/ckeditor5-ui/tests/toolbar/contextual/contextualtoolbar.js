@@ -66,7 +66,6 @@ describe( 'ContextualToolbar', () => {
 		expect( contextualToolbar ).to.instanceOf( Plugin );
 		expect( contextualToolbar ).to.instanceOf( ContextualToolbar );
 		expect( contextualToolbar.toolbarView ).to.instanceof( ToolbarView );
-		expect( contextualToolbar.toolbarView.element.classList.contains( 'ck-editor-toolbar' ) ).to.be.true;
 		expect( contextualToolbar.toolbarView.element.classList.contains( 'ck-toolbar_floating' ) ).to.be.true;
 	} );
 
@@ -183,7 +182,7 @@ describe( 'ContextualToolbar', () => {
 
 			sinon.assert.calledWith( balloonAddSpy, {
 				view: contextualToolbar.toolbarView,
-				balloonClassName: 'ck-toolbar-container ck-editor-toolbar-container',
+				balloonClassName: 'ck-toolbar-container',
 				position: {
 					target: sinon.match.func,
 					positions: [
@@ -226,7 +225,7 @@ describe( 'ContextualToolbar', () => {
 
 			sinon.assert.calledWithExactly( balloonAddSpy, {
 				view: contextualToolbar.toolbarView,
-				balloonClassName: 'ck-toolbar-container ck-editor-toolbar-container',
+				balloonClassName: 'ck-toolbar-container',
 				position: {
 					target: sinon.match.func,
 					positions: [
