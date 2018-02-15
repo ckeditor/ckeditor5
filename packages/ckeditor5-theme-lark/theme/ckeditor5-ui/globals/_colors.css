@@ -25,13 +25,13 @@
 
 	--ck-color-button-default-background: 						transparent;
 	--ck-color-button-default-border: 							transparent;
-	--ck-color-button-default-focus-background: 				transparent;
+	--ck-color-button-default-focus-background: 				hsl(0, 0%, 90%);
 	--ck-color-button-default-focus-border: 					transparent;
 	--ck-color-button-default-active-background: 				hsl(0, 0%, 85%);
 	--ck-color-button-default-active-border: 					transparent;
 	--ck-color-button-default-active-shadow: 					hsl(0, 0%, 75%);
 	--ck-color-button-default-disabled-background: 				transparent;
-	--ck-color-button-default-disabled-border: 					hsl(0, 0%, 78%);
+	--ck-color-button-default-disabled-border: 					transparent;
 
 	--ck-color-button-on-background: 							hsl(0, 0%, 87%);
 	--ck-color-button-on-border: 								transparent;
