@@ -242,7 +242,7 @@ The {@link module:font/fontsize~FontSize} plugin registers the following compone
 	You can change the font size of the current selection by executing the command with a desired value:
 
 	```js
-	// For numeric values:
+	// For numerical values:
 	editor.execute( 'fontSize', { value: 10 } );
 
 	// For named presets:

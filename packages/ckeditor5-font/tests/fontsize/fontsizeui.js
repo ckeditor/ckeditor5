@@ -151,7 +151,7 @@ describe( 'FontSizeUI', () => {
 				} );
 			} );
 
-			describe( 'using numeric values', () => {
+			describe( 'using numerical values', () => {
 				beforeEach( () => {
 					element = document.createElement( 'div' );
 					document.body.appendChild( element );

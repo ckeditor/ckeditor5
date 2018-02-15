@@ -37,7 +37,7 @@ describe( 'FontSizeEditing Utils', () => {
 			} );
 		} );
 
-		describe( 'numeric presets', () => {
+		describe( 'numerical presets', () => {
 			it( 'should return generated presets', () => {
 				expect( normalizeOptions( [ '10', 12, 'default', '14.1', 18.3 ] ) ).to.deep.equal( [
 					{ title: '10', model: 10, view: { name: 'span', style: { 'font-size': '10px' } } },
