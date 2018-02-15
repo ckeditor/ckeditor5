@@ -33,7 +33,7 @@ const wordBoundaryCharacters = ' ,.-():\'"';
  *  For example `𨭎` is represented in `String` by `\uD862\uDF4E`. Both `\uD862` and `\uDF4E` do not have any meaning
  *  outside the pair (are rendered as ? when alone). Position between them would be incorrect. In this case, selection
  *  extension will include whole "surrogate pair".
- *  * `'word'` - moves selection by whole word.
+ *  * `'word'` - moves selection by a whole word.
  *
  * **Note:** if you extend a forward selection in a backward direction you will in fact shrink it.
  *
@@ -83,7 +83,7 @@ export default function modifySelection( model, selection, options = {} ) {
 
 // Checks whether the selection can be extended to the the walker's next value (next position).
 // @param {{ walker, unit, isForward, schema }} data
-// @param {{ item, nextPosition, type}} value
+// @param {module:engine/view/treewalker~TreeWalkerValue} value
 function tryExtendingTo( data, value ) {
 	// If found text, we can certainly put the focus in it. Let's just find a correct position
 	// based on the unit.
