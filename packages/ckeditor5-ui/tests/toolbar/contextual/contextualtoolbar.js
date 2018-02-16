@@ -4,7 +4,7 @@
  */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import ContextualToolbar from '../../../src/toolbar/contextual/contextualtoolbar';
+import BalloonToolbar from '../../../src/toolbar/balloon/balloontoolbar';
 import ContextualBalloon from '../../../src/panel/balloon/contextualballoon';
 import BalloonPanelView from '../../../src/panel/balloon/balloonpanelview';
 import ToolbarView from '../../../src/toolbar/toolbarview';
@@ -18,8 +18,8 @@ import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
 
 /* global document, setTimeout, window */
 
-describe( 'ContextualToolbar', () => {
-	let sandbox, editor, model, selection, editingView, contextualToolbar, balloon, editorElement;
+describe( 'BalloonToolbar', () => {
+	let sandbox, editor, model, selection, editingView, balloonToolbar, balloon, editorElement;
 
 	beforeEach( () => {
 		sandbox = sinon.sandbox.create();
@@ -29,15 +29,15 @@ describe( 'ContextualToolbar', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ Paragraph, Bold, Italic, ContextualToolbar ],
-				contextualToolbar: [ 'bold', 'italic' ]
+				plugins: [ Paragraph, Bold, Italic, BalloonToolbar ],
+				balloonToolbar: [ 'bold', 'italic' ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
 				editingView = editor.editing.view;
 				selection = model.document.selection;
-				contextualToolbar = editor.plugins.get( ContextualToolbar );
+				balloonToolbar = editor.plugins.get( BalloonToolbar );
 				balloon = editor.plugins.get( ContextualBalloon );
 
 				editingView.attachDomRoot( editorElement );
@@ -63,11 +63,11 @@ describe( 'ContextualToolbar', () => {
 	} );
 
 	it( 'should create a plugin instance', () => {
-		expect( contextualToolbar ).to.instanceOf( Plugin );
-		expect( contextualToolbar ).to.instanceOf( ContextualToolbar );
-		expect( contextualToolbar.toolbarView ).to.instanceof( ToolbarView );
-		expect( contextualToolbar.toolbarView.element.classList.contains( 'ck-editor-toolbar' ) ).to.be.true;
-		expect( contextualToolbar.toolbarView.element.classList.contains( 'ck-toolbar_floating' ) ).to.be.true;
+		expect( balloonToolbar ).to.instanceOf( Plugin );
+		expect( balloonToolbar ).to.instanceOf( BalloonToolbar );
+		expect( balloonToolbar.toolbarView ).to.instanceof( ToolbarView );
+		expect( balloonToolbar.toolbarView.element.classList.contains( 'ck-editor-toolbar' ) ).to.be.true;
+		expect( balloonToolbar.toolbarView.element.classList.contains( 'ck-toolbar_floating' ) ).to.be.true;
 	} );
 
 	it( 'should load ContextualBalloon', () => {
@@ -75,7 +75,7 @@ describe( 'ContextualToolbar', () => {
 	} );
 
 	it( 'should create components from config', () => {
-		expect( contextualToolbar.toolbarView.items ).to.length( 2 );
+		expect( balloonToolbar.toolbarView.items ).to.length( 2 );
 	} );
 
 	it( 'should accept the extended format of the toolbar config', () => {
@@ -84,15 +84,15 @@ describe( 'ContextualToolbar', () => {
 
 		return ClassicTestEditor
 			.create( editorElement, {
-				plugins: [ Paragraph, Bold, Italic, Underline, ContextualToolbar ],
-				contextualToolbar: {
+				plugins: [ Paragraph, Bold, Italic, Underline, BalloonToolbar ],
+				balloonToolbar: {
 					items: [ 'bold', 'italic', 'underline' ]
 				}
 			} )
 			.then( editor => {
-				const contextualToolbar = editor.plugins.get( ContextualToolbar );
+				const balloonToolbar = editor.plugins.get( BalloonToolbar );
 
-				expect( contextualToolbar.toolbarView.items ).to.length( 3 );
+				expect( balloonToolbar.toolbarView.items ).to.length( 3 );
 
 				editorElement.remove();
 
@@ -107,7 +107,7 @@ describe( 'ContextualToolbar', () => {
 
 		const spy = sandbox.spy();
 		setData( model, '<paragraph>[bar]</paragraph>' );
-		contextualToolbar.on( '_selectionChangeDebounced', spy );
+		balloonToolbar.on( '_selectionChangeDebounced', spy );
 
 		selection.fire( 'change:range', {} );
 
@@ -139,7 +139,7 @@ describe( 'ContextualToolbar', () => {
 
 	describe( 'pluginName', () => {
 		it( 'should return plugin by its name', () => {
-			expect( editor.plugins.get( 'ContextualToolbar' ) ).to.equal( contextualToolbar );
+			expect( editor.plugins.get( 'BalloonToolbar' ) ).to.equal( balloonToolbar );
 		} );
 	} );
 
@@ -179,10 +179,10 @@ describe( 'ContextualToolbar', () => {
 
 			const defaultPositions = BalloonPanelView.defaultPositions;
 
-			contextualToolbar.show();
+			balloonToolbar.show();
 
 			sinon.assert.calledWith( balloonAddSpy, {
-				view: contextualToolbar.toolbarView,
+				view: balloonToolbar.toolbarView,
 				balloonClassName: 'ck-toolbar-container ck-editor-toolbar-container',
 				position: {
 					target: sinon.match.func,
@@ -213,7 +213,7 @@ describe( 'ContextualToolbar', () => {
 
 			setData( model, '<paragraph>b[a]r</paragraph>' );
 
-			contextualToolbar.show();
+			balloonToolbar.show();
 			expect( balloonAddSpy.firstCall.args[ 0 ].position.target() ).to.deep.equal( forwardSelectionRect );
 		} );
 
@@ -222,10 +222,10 @@ describe( 'ContextualToolbar', () => {
 
 			const defaultPositions = BalloonPanelView.defaultPositions;
 
-			contextualToolbar.show();
+			balloonToolbar.show();
 
 			sinon.assert.calledWithExactly( balloonAddSpy, {
-				view: contextualToolbar.toolbarView,
+				view: balloonToolbar.toolbarView,
 				balloonClassName: 'ck-toolbar-container ck-editor-toolbar-container',
 				position: {
 					target: sinon.match.func,
@@ -250,7 +250,7 @@ describe( 'ContextualToolbar', () => {
 
 			editingView.fire( 'render' );
 
-			contextualToolbar.show();
+			balloonToolbar.show();
 			sinon.assert.notCalled( spy );
 
 			editingView.fire( 'render' );
@@ -260,31 +260,31 @@ describe( 'ContextualToolbar', () => {
 		it( 'should not add #toolbarView to the #_balloon more than once', () => {
 			setData( model, '<paragraph>b[a]r</paragraph>' );
 
-			contextualToolbar.show();
-			contextualToolbar.show();
+			balloonToolbar.show();
+			balloonToolbar.show();
 			sinon.assert.calledOnce( balloonAddSpy );
 		} );
 
 		it( 'should not add #toolbarView to the #_balloon when all components inside #toolbarView are disabled', () => {
-			Array.from( contextualToolbar.toolbarView.items ).forEach( item => {
+			Array.from( balloonToolbar.toolbarView.items ).forEach( item => {
 				item.isEnabled = false;
 			} );
 			setData( model, '<paragraph>b[a]r</paragraph>' );
 
-			contextualToolbar.show();
+			balloonToolbar.show();
 			sinon.assert.notCalled( balloonAddSpy );
 		} );
 
 		it( 'should add #toolbarView to the #_balloon when at least one component inside does not have #isEnabled interface', () => {
-			Array.from( contextualToolbar.toolbarView.items ).forEach( item => {
+			Array.from( balloonToolbar.toolbarView.items ).forEach( item => {
 				item.isEnabled = false;
 			} );
 
-			delete contextualToolbar.toolbarView.items.get( 0 ).isEnabled;
+			delete balloonToolbar.toolbarView.items.get( 0 ).isEnabled;
 
 			setData( model, '<paragraph>b[a]r</paragraph>' );
 
-			contextualToolbar.show();
+			balloonToolbar.show();
 			sinon.assert.calledOnce( balloonAddSpy );
 		} );
 
@@ -292,21 +292,21 @@ describe( 'ContextualToolbar', () => {
 			let showSpy;
 
 			beforeEach( () => {
-				showSpy = sandbox.spy( contextualToolbar, 'show' );
+				showSpy = sandbox.spy( balloonToolbar, 'show' );
 			} );
 
 			it( 'should not be called when the editor is not focused', () => {
 				setData( model, '<paragraph>b[a]r</paragraph>' );
 				editingView.isFocused = false;
 
-				contextualToolbar.fire( '_selectionChangeDebounced' );
+				balloonToolbar.fire( '_selectionChangeDebounced' );
 				sinon.assert.notCalled( showSpy );
 			} );
 
 			it( 'should not be called when the selection is collapsed', () => {
 				setData( model, '<paragraph>b[]ar</paragraph>' );
 
-				contextualToolbar.fire( '_selectionChangeDebounced' );
+				balloonToolbar.fire( '_selectionChangeDebounced' );
 				sinon.assert.notCalled( showSpy );
 			} );
 
@@ -314,7 +314,7 @@ describe( 'ContextualToolbar', () => {
 				setData( model, '<paragraph>b[a]r</paragraph>' );
 				editingView.isFocused = true;
 
-				contextualToolbar.fire( '_selectionChangeDebounced' );
+				balloonToolbar.fire( '_selectionChangeDebounced' );
 				sinon.assert.calledOnce( showSpy );
 			} );
 		} );
@@ -331,10 +331,10 @@ describe( 'ContextualToolbar', () => {
 		it( 'should remove #toolbarView from the #_balloon', () => {
 			setData( model, '<paragraph>b[a]r</paragraph>' );
 
-			contextualToolbar.show();
+			balloonToolbar.show();
 
-			contextualToolbar.hide();
-			sinon.assert.calledWithExactly( removeBalloonSpy, contextualToolbar.toolbarView );
+			balloonToolbar.hide();
+			sinon.assert.calledWithExactly( removeBalloonSpy, balloonToolbar.toolbarView );
 		} );
 
 		it( 'should stop update balloon position on ViewDocument#render event', () => {
@@ -342,15 +342,15 @@ describe( 'ContextualToolbar', () => {
 
 			const spy = sandbox.spy( balloon, 'updatePosition' );
 
-			contextualToolbar.show();
-			contextualToolbar.hide();
+			balloonToolbar.show();
+			balloonToolbar.hide();
 
 			editingView.fire( 'render' );
 			sinon.assert.notCalled( spy );
 		} );
 
 		it( 'should not remove #ttolbarView when is not added to the #_balloon', () => {
-			contextualToolbar.hide();
+			balloonToolbar.hide();
 
 			sinon.assert.notCalled( removeBalloonSpy );
 		} );
@@ -359,19 +359,19 @@ describe( 'ContextualToolbar', () => {
 	describe( 'destroy()', () => {
 		it( 'can be called multiple times', () => {
 			expect( () => {
-				contextualToolbar.destroy();
-				contextualToolbar.destroy();
+				balloonToolbar.destroy();
+				balloonToolbar.destroy();
 			} ).to.not.throw();
 		} );
 
 		it( 'should not fire `_selectionChangeDebounced` after plugin destroy', done => {
 			const spy = sandbox.spy();
 
-			contextualToolbar.on( '_selectionChangeDebounced', spy );
+			balloonToolbar.on( '_selectionChangeDebounced', spy );
 
 			selection.fire( 'change:range', { directChange: true } );
 
-			contextualToolbar.destroy();
+			balloonToolbar.destroy();
 
 			setTimeout( () => {
 				sinon.assert.notCalled( spy );
@@ -386,22 +386,22 @@ describe( 'ContextualToolbar', () => {
 		beforeEach( () => {
 			setData( model, '<paragraph>[bar]</paragraph>' );
 
-			showPanelSpy = sandbox.spy( contextualToolbar, 'show' );
-			hidePanelSpy = sandbox.spy( contextualToolbar, 'hide' );
+			showPanelSpy = sandbox.spy( balloonToolbar, 'show' );
+			hidePanelSpy = sandbox.spy( balloonToolbar, 'hide' );
 		} );
 
 		it( 'should open when selection stops changing', () => {
 			sinon.assert.notCalled( showPanelSpy );
 			sinon.assert.notCalled( hidePanelSpy );
 
-			contextualToolbar.fire( '_selectionChangeDebounced' );
+			balloonToolbar.fire( '_selectionChangeDebounced' );
 
 			sinon.assert.calledOnce( showPanelSpy );
 			sinon.assert.notCalled( hidePanelSpy );
 		} );
 
 		it( 'should close when selection starts changing by a directChange', () => {
-			contextualToolbar.fire( '_selectionChangeDebounced' );
+			balloonToolbar.fire( '_selectionChangeDebounced' );
 
 			sinon.assert.calledOnce( showPanelSpy );
 			sinon.assert.notCalled( hidePanelSpy );
@@ -413,7 +413,7 @@ describe( 'ContextualToolbar', () => {
 		} );
 
 		it( 'should not close when selection starts changing by not a directChange', () => {
-			contextualToolbar.fire( '_selectionChangeDebounced' );
+			balloonToolbar.fire( '_selectionChangeDebounced' );
 
 			sinon.assert.calledOnce( showPanelSpy );
 			sinon.assert.notCalled( hidePanelSpy );
@@ -425,7 +425,7 @@ describe( 'ContextualToolbar', () => {
 		} );
 
 		it( 'should close when selection starts changing by not a directChange but will become collapsed', () => {
-			contextualToolbar.fire( '_selectionChangeDebounced' );
+			balloonToolbar.fire( '_selectionChangeDebounced' );
 
 			sinon.assert.calledOnce( showPanelSpy );
 			sinon.assert.notCalled( hidePanelSpy );
@@ -443,9 +443,9 @@ describe( 'ContextualToolbar', () => {
 		it( 'should hide if the editor loses focus', () => {
 			editor.ui.focusTracker.isFocused = true;
 
-			contextualToolbar.fire( '_selectionChangeDebounced' );
+			balloonToolbar.fire( '_selectionChangeDebounced' );
 
-			const stub = sandbox.stub( balloon, 'visibleView' ).get( () => contextualToolbar.toolbarView );
+			const stub = sandbox.stub( balloon, 'visibleView' ).get( () => balloonToolbar.toolbarView );
 
 			sinon.assert.calledOnce( showPanelSpy );
 			sinon.assert.notCalled( hidePanelSpy );
@@ -461,7 +461,7 @@ describe( 'ContextualToolbar', () => {
 		it( 'should not hide if the editor loses focus and #toolbarView is not visible', () => {
 			editor.ui.focusTracker.isFocused = true;
 
-			contextualToolbar.fire( '_selectionChangeDebounced' );
+			balloonToolbar.fire( '_selectionChangeDebounced' );
 
 			const stub = sandbox.stub( balloon, 'visibleView' ).get( () => null );
 
@@ -481,10 +481,10 @@ describe( 'ContextualToolbar', () => {
 		it( 'should fire `show` event just before panel shows', () => {
 			const spy = sandbox.spy();
 
-			contextualToolbar.on( 'show', spy );
+			balloonToolbar.on( 'show', spy );
 			setData( model, '<paragraph>b[a]r</paragraph>' );
 
-			contextualToolbar.show();
+			balloonToolbar.show();
 			sinon.assert.calledOnce( spy );
 		} );
 
@@ -493,9 +493,9 @@ describe( 'ContextualToolbar', () => {
 
 			setData( model, '<paragraph>b[a]r</paragraph>' );
 
-			contextualToolbar.on( 'show', evt => evt.stop(), { priority: 'high' } );
+			balloonToolbar.on( 'show', evt => evt.stop(), { priority: 'high' } );
 
-			contextualToolbar.show();
+			balloonToolbar.show();
 			sinon.assert.notCalled( balloonAddSpy );
 		} );
 	} );

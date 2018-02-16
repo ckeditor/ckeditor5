@@ -4,7 +4,7 @@
  */
 
 /**
- * @module ui/toolbar/contextual/contextualtoolbar
+ * @module ui/toolbar/balloon/balloontoolbar
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -22,12 +22,12 @@ import normalizeToolbarConfig from '../normalizetoolbarconfig';
  *
  * @extends module:core/plugin~Plugin
  */
-export default class ContextualToolbar extends Plugin {
+export default class BalloonToolbar extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'ContextualToolbar';
+		return 'BalloonToolbar';
 	}
 
 	/**
@@ -84,7 +84,7 @@ export default class ContextualToolbar extends Plugin {
 		this._handleSelectionChange();
 		this._handleFocusChange();
 
-		// The appearance of the ContextualToolbar method is event–driven.
+		// The appearance of the BalloonToolbar method is event–driven.
 		// It is possible to stop the #show event and this prevent the toolbar from showing up.
 		this.decorate( 'show' );
 	}
@@ -96,7 +96,7 @@ export default class ContextualToolbar extends Plugin {
 	 * @inheritDoc
 	 */
 	afterInit() {
-		const config = normalizeToolbarConfig( this.editor.config.get( 'contextualToolbar' ) );
+		const config = normalizeToolbarConfig( this.editor.config.get( 'balloonToolbar' ) );
 		const factory = this.editor.ui.componentFactory;
 
 		this.toolbarView.fillFromConfig( config.items, factory );
@@ -283,20 +283,20 @@ function getBalloonPositions( isBackward ) {
 }
 
 /**
- * Contextual toolbar configuration. Used by the {@link module:ui/toolbar/contextual/contextualtoolbar~ContextualToolbar}
+ * Contextual toolbar configuration. Used by the {@link module:ui/toolbar/balloon/balloontoolbar~BalloonToolbar}
  * feature.
  *
  *		const config = {
- *			contextualToolbar: [ 'bold', 'italic', 'undo', 'redo' ]
+ *			balloonToolbar: [ 'bold', 'italic', 'undo', 'redo' ]
  *		};
  *
  * You can also use `'|'` to create a separator between groups of items:
  *
  *		const config = {
- *			contextualToolbar: [ 'bold', 'italic', | 'undo', 'redo' ]
+ *			balloonToolbar: [ 'bold', 'italic', | 'undo', 'redo' ]
  *		};
  *
  * Read also about configuring the main editor toolbar in {@link module:core/editor/editorconfig~EditorConfig#toolbar}.
  *
- * @member {Array.<String>|Object} module:core/editor/editorconfig~EditorConfig#contextualToolbar
+ * @member {Array.<String>|Object} module:core/editor/editorconfig~EditorConfig#balloonToolbar
  */

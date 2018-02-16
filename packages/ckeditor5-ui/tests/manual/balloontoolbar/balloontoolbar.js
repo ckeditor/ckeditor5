@@ -7,21 +7,21 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import ContextualToolbar from '../../../src/toolbar/contextual/contextualtoolbar';
+import BalloonToolbar from '../../../src/toolbar/balloon/balloontoolbar';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet, ContextualToolbar ],
+		plugins: [ ArticlePluginSet, BalloonToolbar ],
 		toolbar: [ 'bold', 'italic', 'link', 'undo', 'redo' ],
-		contextualToolbar: [ 'bold', 'italic', 'link' ]
+		balloonToolbar: [ 'bold', 'italic', 'link' ]
 	} )
 	.then( editor => {
 		window.editor = editor;
 
-		const contextualToolbar = editor.plugins.get( 'ContextualToolbar' );
+		const balloonToolbar = editor.plugins.get( 'BalloonToolbar' );
 
-		contextualToolbar.on( 'show', evt => {
+		balloonToolbar.on( 'show', evt => {
 			const selectionRange = editor.model.document.selection.getFirstRange();
 			const blockRange = Range.createOn( editor.model.document.getRoot().getChild( 0 ) );
 
