@@ -628,6 +628,10 @@ export default class Renderer {
 		const anchor = this.domConverter.viewPositionToDom( this.selection.anchor );
 		const focus = this.domConverter.viewPositionToDom( this.selection.focus );
 
+		// Focus the new editing host.
+		// Otherwise, FF may throw an error (https://github.com/ckeditor/ckeditor5/issues/721).
+		domRoot.focus();
+
 		domSelection.collapse( anchor.parent, anchor.offset );
 		domSelection.extend( focus.parent, focus.offset );
 	}
