@@ -37,6 +37,9 @@ a.ck-button {
 	&:focus {
 		@mixin ck-focus-ring;
 		@mixin ck-box-shadow var(--ck-focus-outer-shadow);
+
+		/* Disable border part of the focus ring for the buttons. It is too much. */
+		border-color: transparent;
 	}
 
 	/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/70 */
