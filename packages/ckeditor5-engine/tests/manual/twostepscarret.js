@@ -20,8 +20,11 @@ ClassicEditor
 		toolbar: [ 'undo', 'redo', '|', 'bold', 'underline', 'italic' ]
 	} )
 	.then( editor => {
-		bindTwoStepCaretToAttribute( editor, editor, 'italic' );
-		bindTwoStepCaretToAttribute( editor, editor, 'underline' );
+		const bold = editor.plugins.get( Italic );
+		const underline = editor.plugins.get( Underline );
+
+		bindTwoStepCaretToAttribute( editor.editing.view, editor.model, bold, 'italic' );
+		bindTwoStepCaretToAttribute( editor.editing.view, editor.model, underline, 'underline' );
 	} )
 	.catch( err => {
 		console.error( err.stack );

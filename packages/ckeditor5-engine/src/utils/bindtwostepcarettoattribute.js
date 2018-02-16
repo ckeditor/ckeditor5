@@ -32,17 +32,16 @@ import first from '@ckeditor/ckeditor5-utils/src/first';
  * 		<p>foo<a>bar</a>{}biz<p> `<-` <p>foo<a>bar{}</a>biz<p>
  * 		<p>foo<a>{}bar</a>biz<p> `<-` <p>foo{}<a>bar</a>biz<p>
  *
- * @param {module:core/editor/editor~Editor} editor The Editor instance.
+ * @param {module:engine/view/view~View} view View controller instance.
+ * @param {module:engine/model/model~Model} model Data model instance.
  * @param {module:utils/dom/emittermixin~Emitter} emitter The emitter to which this behavior should be added.
  * @param {String} attribute Attribute for which behaviour will be added.
  */
-export default function bindTwoStepCaretToAttribute( editor, emitter, attribute ) {
-	const model = editor.model;
-	const editingView = editor.editing.view;
+export default function bindTwoStepCaretToAttribute( view, model, emitter, attribute ) {
 	const modelSelection = model.document.selection;
 
 	// Listen to keyboard events and handle cursor before the move.
-	emitter.listenTo( editingView, 'keydown', ( evt, data ) => {
+	emitter.listenTo( view.document, 'keydown', ( evt, data ) => {
 		const arrowRightPressed = data.keyCode == keyCodes.arrowright;
 		const arrowLeftPressed = data.keyCode == keyCodes.arrowleft;
 

@@ -26,7 +26,7 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 			editor = newEditor;
 			model = editor.model;
 			selection = model.document.selection;
-			viewDoc = editor.editing.view;
+			viewDoc = editor.editing.view.document;
 			preventDefaultSpy = sinon.spy();
 
 			editor.model.schema.extend( '$text', {
@@ -38,7 +38,7 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 			editor.conversion.for( 'upcast' ).add( upcastElementToAttribute( { view: 'b', model: 'b' } ) );
 			editor.conversion.for( 'upcast' ).add( upcastElementToAttribute( { view: 'c', model: 'c' } ) );
 
-			bindTwoStepCaretToAttribute( editor, emitter, 'a' );
+			bindTwoStepCaretToAttribute( editor.editing.view, editor.model, emitter, 'a' );
 		} );
 	} );
 
