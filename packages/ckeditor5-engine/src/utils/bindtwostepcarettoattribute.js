@@ -7,8 +7,8 @@
  * @module engine/utils/bindtwostepcarettoattribute
  */
 
+import Range from '../../src/model/range';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import first from '@ckeditor/ckeditor5-utils/src/first';
 
 /**
