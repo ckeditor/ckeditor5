@@ -394,17 +394,20 @@ export default class DocumentSelection {
 
 	/**
 	 * Temporarily and partially disables default gravity behaviour that tries to get attributes from nodes surrounding the caret.
-	 * @see module:engine/model/writer~Writer#overrideGravity
 	 *
+	 * @see module:engine/model/writer~Writer#overrideGravity
 	 * @protected
+	 * @param {Function} [customRestorer] A callback function that allows to control when default gravity should be restored.
+	 * Callback takes function as a param that allow to restore the gravity.
 	 */
-	_overrideGravity() {
-		this._selection.overrideGravity();
+	_overrideGravity( customRestorer ) {
+		this._selection.overrideGravity( customRestorer );
 	}
 
 	/**
 	 * Restore overridden gravity.
 	 *
+	 * @see module:engine/model/writer~Writer#restoreSelectionGravity
 	 * @protected
 	 */
 	_restoreGravity() {
@@ -631,15 +634,19 @@ class LiveSelection extends Selection {
 		}
 	}
 
-	overrideGravity() {
+	overrideGravity( customRestorer ) {
 		this._isGravityOverriden = true;
 
-		this.on( 'change:range', ( evt, data ) => {
-			if ( data.directChange ) {
-				this._isGravityOverriden = false;
-				evt.off();
-			}
-		} );
+		if ( typeof customRestorer == 'function' ) {
+			customRestorer( this.restoreGravity.bind( this ) );
+		} else {
+			this.on( 'change:range', ( evt, data ) => {
+				if ( data.directChange ) {
+					this._isGravityOverriden = false;
+					evt.off();
+				}
+			} );
+		}
 
 		this._updateAttributes();
 	}

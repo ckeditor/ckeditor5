@@ -2372,11 +2372,38 @@ describe( 'Writer', () => {
 			overrideSelectionGravity();
 
 			expect( Array.from( model.document.selection.getAttributeKeys() ) ).to.deep.equal( [ 'foo' ] );
+			expect( model.document.selection.isGravityOverridden ).to.true;
 
 			// Disable override by moving selection.
 			setSelection( new Position( root, [ 5 ] ) );
 
 			expect( Array.from( model.document.selection.getAttributeKeys() ) ).to.deep.equal( [ 'foo', 'bar' ] );
+			expect( model.document.selection.isGravityOverridden ).to.false;
+		} );
+
+		it( 'should allow to use custom restorer callback', () => {
+			const root = doc.createRoot();
+			root.appendChildren( [ new Text( 'foobar', { foo: true } ) ] );
+
+			setSelection( new Position( root, [ 1 ] ) );
+
+			overrideSelectionGravity( restore => {
+				let i = 0;
+
+				model.document.selection.on( 'change:range', () => {
+					if ( i++ > 0 ) {
+						restore();
+					}
+				} );
+			} );
+
+			// Moving selection for the first time does not restore.
+			setSelection( new Position( root, [ 2 ] ) );
+			expect( model.document.selection.isGravityOverridden ).to.true;
+
+			// Second move does.
+			setSelection( new Position( root, [ 1 ] ) );
+			expect( model.document.selection.isGravityOverridden ).to.false;
 		} );
 	} );
 
@@ -2570,9 +2597,9 @@ describe( 'Writer', () => {
 		} );
 	}
 
-	function overrideSelectionGravity() {
+	function overrideSelectionGravity( customRestorer ) {
 		model.change( writer => {
-			writer.overrideSelectionGravity();
+			writer.overrideSelectionGravity( customRestorer );
 		} );
 	}
 

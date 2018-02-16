@@ -1017,9 +1017,10 @@ export default class Writer {
 	}
 
 	/**
-	 * Temporarily (until selection won't be changed directly by the user) disables default gravity behaviour that tries
-	 * to get attributes from nodes surrounding the caret. When gravity is marked as overridden then attributes from the
-	 * node before the caret won't be taken into consideration while updating selection attributes.
+	 * Temporarily (until selection won't be changed directly by the user or using `customRestorer`) disables default
+	 * gravity behaviour that tries to get attributes from nodes surrounding the caret. When gravity is marked
+	 * as overridden then attributes from the node before the caret won't be taken into consideration while
+	 * updating selection attributes.
 	 *
 	 * For the following model fragment:
 	 *
@@ -1027,9 +1028,19 @@ export default class Writer {
 	 *
 	 * Selection attribute keys before override will be equal `[ 'bold', 'linkHref' ]`
 	 * Selection attribute keys after override will be equal `[ 'bold' ]`
+	 *
+	 * As default gravity is restored just after a direct {@link module:model/documentselection~DocumentSelection#change:range} event
+	 * but it could be customised using `customRestorer` callback:
+	 *
+	 * 		model.change( writer => {
+	 * 			writer.overrideSelectionGravity( restore => // and gravity won't be restored until `restore` callback won't be called ).
+	 * 		} );
+	 *
+	 * @param {Function} [customRestorer] A callback function that allows to control when default gravity should be restored.
+	 * Callback takes function as a param that allow to restore the gravity.
 	 */
-	overrideSelectionGravity() {
-		this.model.document.selection._overrideGravity();
+	overrideSelectionGravity( customRestorer ) {
+		this.model.document.selection._overrideGravity( customRestorer );
 	}
 
 	/**
