@@ -115,37 +115,18 @@ export default class Conversion {
 	}
 
 	/**
-	 * Returns dispatchers registered under given group name.
-	 *
-	 * If given group name has not been registered,
-	 * {@link module:utils/ckeditorerror~CKEditorError conversion-for-unknown-group} error is thrown.
-	 *
-	 * @private
-	 * @param {String} groupName
-	 * @returns {Array.<module:engine/conversion/downcastdispatcher~DowncastDispatcher|
-	 * module:engine/conversion/upcastdispatcher~UpcastDispatcher>}
-	 */
-	_getDispatchers( groupName ) {
-		const dispatchers = this._dispatchersGroups.get( groupName );
-
-		if ( !dispatchers ) {
-			/**
-			 * Trying to add a converter to an unknown dispatchers group.
-			 *
-			 * @error conversion-for-unknown-group
-			 */
-			throw new CKEditorError( 'conversion-for-unknown-group: Trying to add a converter to an unknown dispatchers group.' );
-		}
-
-		return dispatchers;
-	}
-
-	/**
-	 * Defines a conversion between the model and the view where a model element is represented as a view element (and vice versa).
+	 * Sets up converters between the model and the view which convert a model element to a view element (and vice versa).
 	 * For example, model `<paragraph>Foo</paragraph>` is `<p>Foo</p>` in the view.
 	 *
+	 * `definition.model` is a `String` with a model element name to converter from/to.
+	 *
+	 *		// Simple conversion from `paragraph` model element to `<p>` view element (and vice versa).
 	 *		conversion.elementToElement( { model: 'paragraph', view: 'p' } );
 	 *
+	 *		// Override other converters by specifying converter definition with higher priority.
+	 *		conversion.elementToElement( { model: 'paragraph', view: 'div', priority: 'high' } );
+	 *
+	 *		// View specified as an object instead of a string.
 	 *		conversion.elementToElement( {
 	 *			model: 'fancyParagraph',
 	 *			view: {
@@ -154,13 +135,14 @@ export default class Conversion {
 	 *			}
 	 *		} );
 	 *
+	 *		// Use `upcastAlso` to define other view elements that should be also converted to `paragraph` element.
 	 *		conversion.elementToElement( {
 	 *			model: 'paragraph',
 	 *			view: 'p',
 	 *			upcastAlso: [
 	 *				'div',
 	 *				{
-	 *					// Match any name.
+	 *					// Any element with `display: block` style.
 	 *					name: /./,
 	 *					style: {
 	 *						display: 'block'
@@ -169,6 +151,7 @@ export default class Conversion {
 	 *			]
 	 *		} );
 	 *
+	 *		// `upcastAlso` set as callback enables a conversion of a wide range of different view elements.
 	 *		conversion.elementToElement( {
 	 *			model: 'heading',
 	 *			view: 'h2',
@@ -196,41 +179,49 @@ export default class Conversion {
 	 *			}
 	 *		} );
 	 *
-	 * @param {Object} definition Conversion definition.
-	 * @param {String} definition.model Name of the model element to convert.
-	 * @param {module:engine/view/elementdefinition~ElementDefinition} definition.view Definition of a view element to convert from/to.
-	 * @param {module:engine/view/matcher~MatcherPattern|Array.<module:engine/view/matcher~MatcherPattern>} [definition.upcastAlso]
-	 * Any view element matching `upcastAlso` will also be converted to the given model element.
+	 * @param {~ConverterDefinition} definition Converter definition.
 	 */
 	elementToElement( definition ) {
 		// Set up downcast converter.
 		this.for( 'downcast' ).add( downcastElementToElement( definition ) );
 
 		// Set up upcast converter.
-		for ( const view of _getAllViews( definition ) ) {
-			const priority = view == definition.view ? 'normal' : 'high';
-
-			this.for( 'upcast' ).add( upcastElementToElement( {
-				model: definition.model,
-				view
-			}, priority ) );
+		for ( const { model, view } of _getAllUpcastDefinitions( definition ) ) {
+			this.for( 'upcast' ).add(
+				upcastElementToElement( {
+					model,
+					view,
+					priority: definition.priority
+				} )
+			);
 		}
 	}
 
 	/**
-	 * Defines a conversion between the model and the view where a model attribute is represented as a view element (and vice versa).
+	 * Sets up converters between the model and the view which convert a model attribute to a view element (and vice versa).
 	 * For example, model text node with data `"Foo"` and `bold` attribute is `<strong>Foo</strong>` in the view.
 	 *
-	 *		conversion.attributeToElement( 'bold', { view: 'strong' } );
+	 * `definition.model` parameter specifies what model attribute should be converted from/to. It can be a `{ key, value }` object
+	 * describing attribute key and value to convert or a `String` specifying just attribute key (then `value` is set to `true`).
 	 *
-	 *		conversion.attributeToElement( 'bold', {
+	 *		// Simple conversion from `bold=true` attribute to `<strong>` view element (and vice versa).
+	 *		conversion.attributeToElement( { model: 'bold', view: 'strong' } );
+	 *
+	 *		// Override other converters by specifying converter definition with higher priority.
+	 *		conversion.attributeToElement( { model: 'bold', view: 'b', priority: 'high' } );
+	 *
+	 *		// View specified as an object instead of a string.
+	 *		conversion.attributeToElement( {
+	 *			model: 'bold',
 	 *			view: {
 	 *				name: 'span',
 	 *				class: 'bold'
 	 *			}
 	 *		} );
 	 *
-	 *		conversion.attributeToElement( 'bold', {
+	 *		// Use `upcastAlso` to define other view elements that should be also converted to `bold` attribute.
+	 *		conversion.attributeToElement( {
+	 *			model: 'bold',
 	 *			view: 'strong',
 	 *			upcastAlso: [
 	 *				'b',
@@ -257,45 +248,29 @@ export default class Conversion {
 	 *			]
 	 *		} );
 	 *
-	 *		conversion.attributeToElement( 'styled', {
-	 *			model: 'dark',
-	 *			view: {
-	 *				name: 'span',
-	 *				class: [ 'styled', 'styled-dark' ]
-	 *			}
-	 *		} );
-	 *
-	 *		conversion.attributeToElement( 'fontSize', [
-	 *			{
-	 *				model: 'big',
-	 *				view: {
-	 *					name: 'span',
-	 *					style: {
-	 *						'font-size': '1.2em'
-	 *					}
-	 *				}
+	 *		// Conversion from/to a model attribute key which value is an enum (`fontSize=big|small`).
+	 *		// `upcastAlso` set as callback enables a conversion of a wide range of different view elements.
+	 *		conversion.attributeToElement( {
+	 *			model: {
+	 *				key: 'fontSize',
+	 *				values: [ 'big', 'small' ]
 	 *			},
-	 *			{
-	 *				model: 'small',
-	 *				view: {
-	 *					name: 'span',
-	 *					style: {
-	 *						'font-size': '0.8em'
-	 *					}
-	 *				}
-	 *			}
-	 *		] );
-	 *
-	 *		conversion.attributeToElement( 'fontSize', [
-	 *			{
-	 *				model: 'big',
-	 *				view: {
+	 *			view: {
+	 *				big: {
 	 *					name: 'span',
 	 *					style: {
 	 *						'font-size': '1.2em'
 	 *					}
 	 *				},
-	 *				upcastAlso: viewElement => {
+	 *				small: {
+	 *					name: 'span',
+	 *					style: {
+	 *						'font-size': '0.8em'
+	 *					}
+	 *				}
+	 *			},
+	 *			upcastAlso: {
+	 *				big: viewElement => {
 	 *					const fontSize = viewElement.getStyle( 'font-size' );
 	 *
 	 *					if ( !fontSize ) {
@@ -315,17 +290,8 @@ export default class Conversion {
 	 *					}
 	 *
 	 *					return null;
-	 *				}
-	 *			},
-	 *			{
-	 *				model: 'small',
-	 *				view: {
-	 *					name: 'span',
-	 *					style: {
-	 *						'font-size': '0.8em'
-	 *					}
 	 *				},
-	 *				upcastAlso: viewElement => {
+	 *				small: viewElement => {
 	 *					const fontSize = viewElement.getStyle( 'font-size' );
 	 *
 	 *					if ( !fontSize ) {
@@ -347,145 +313,191 @@ export default class Conversion {
 	 *					return null;
 	 *				}
 	 *			}
-	 *		] );
+	 *		} );
 	 *
-	 * @param {String} modelAttributeKey The key of the model attribute to convert.
-	 * @param {Object|Array.<Object>} definition Conversion definition. It is possible to provide multiple definitions in an array.
-	 * @param {*} [definition.model] The value of the converted model attribute. If omitted, when downcasted, the item will be treated
-	 * as a default item, that will be used when no other item matches. When upcasted, the model attribute value will be set to `true`.
-	 * @param {module:engine/view/elementdefinition~ElementDefinition} definition.view Definition of a view element to convert from/to.
-	 * @param {module:engine/view/matcher~MatcherPattern|Array.<module:engine/view/matcher~MatcherPattern>} [definition.upcastAlso]
-	 * Any view element matching `upcastAlso` will also be converted to the given model element.
+	 * @param {~ConverterDefinition} definition Converter definition.
 	 */
-	attributeToElement( modelAttributeKey, definition ) {
-		// Set downcast (model to view conversion).
-		this.for( 'downcast' ).add( downcastAttributeToElement( modelAttributeKey, definition ) );
+	attributeToElement( definition ) {
+		// Set up downcast converter.
+		this.for( 'downcast' ).add( downcastAttributeToElement( definition ) );
 
-		// Set upcast (view to model conversion). In this case, we need to re-organise the definition config.
-		if ( !Array.isArray( definition ) ) {
-			definition = [ definition ];
-		}
-
-		for ( const item of definition ) {
-			const model = _getModelAttributeDefinition( modelAttributeKey, item.model );
-
-			for ( const view of _getAllViews( item ) ) {
-				const priority = view == item.view ? 'normal' : 'high';
-
-				this.for( 'upcast' ).add( upcastElementToAttribute( {
+		// Set up upcast converter.
+		for ( const { model, view } of _getAllUpcastDefinitions( definition ) ) {
+			this.for( 'upcast' ).add(
+				upcastElementToAttribute( {
 					view,
-					model
-				}, priority ) );
-			}
+					model,
+					priority: definition.priority
+				} )
+			);
 		}
 	}
 
 	/**
-	 * Defines a conversion between the model and the view where a model attribute is represented as a view attribute (and vice versa).
-	 * For example, `<image src='foo.jpg'></image>` is converted to `<img src='foo.jpg'></img>` (same attribute name and value).
+	 * Sets up converters between the model and the view which convert a model attribute to a view attribute (and vice versa).
+	 * For example, `<image src='foo.jpg'></image>` is converted to `<img src='foo.jpg'></img>` (same attribute key and value).
 	 *
-	 *		conversion.attributeToAttribute( 'src' );
+	 * `definition.model` parameter specifies what model attribute should be converted from/to.
+	 * It can be a `{ key, values, [ name ] }` object or a `String`, which will be treated like `{ key: definition.model }`.
+	 * `key` property is the model attribute key to convert from/to.
+	 * `values` are the possible model attribute values. If `values` is not set, model attribute value will be the same as the
+	 * view attribute value.
+	 * If `name` is set, conversion will be set up only for model elements with the given name.
 	 *
-	 *		conversion.attributeToAttribute( 'source', { view: 'src' } );
+	 * `definition.view` parameter specifies what view attribute should be converted from/to.
+	 * It can be a `{ key, value, [ name ] }` object or a `String`, which will be treated like `{ key: definition.view }`.
+	 * `key` property is the view attribute key to convert from/to.
+	 * `value` is the view attribute value to convert from/to. If `definition.value` is not set, view attribute value will be
+	 * the same as the model attribute value.
+	 * If `key` is `'class'`, `value` can be a `String` or an array of `String`s.
+	 * If `key` is `'style'`, `value` is an object with key-value pairs.
+	 * In other cases, `value` is a `String`.
+	 * If `name` is set, conversion will be set up only for model elements with the given name.
+	 * If `definition.model.values` is set, `definition.view` is an object which assigns values from `definition.model.values`
+	 * to `{ key, value, [ name ] }` objects.
 	 *
-	 *		conversion.attributeToAttribute( 'aside', {
-	 *			model: true,
+	 * `definition.upcastAlso` specifies which other matching view elements should be also upcast to given model configuration.
+	 * If `definition.model.values` is set, `definition.upcastAlso` should be an object assigning values from `definition.model.values`
+	 * to {@link module:engine/view/matcher~MatcherPattern}s or arrays of {@link module:engine/view/matcher~MatcherPattern}s.
+	 *
+	 * **Note:** `definition.model` and `definition.view` form should be mirrored, that is the same type of parameters should
+	 * be given in both parameters.
+	 *
+	 *		// Simple conversion from `source` model attribute to `src` view attribute (and vice versa).
+	 *		conversion.attributeToAttribute( { model: 'source', view: 'src' } );
+	 *
+	 *		// Attributes values are strictly specified.
+	 *		conversion.attributeToAttribute( {
+	 *			model: {
+	 *				name: 'image',
+	 *				key: 'aside',
+	 *				values: [ 'aside' ]
+	 *			},
 	 *			view: {
-	 *				name: 'img',
-	 *				key: 'class',
-	 *				value: 'aside half-size'
+	 *				aside: {
+	 *					name: 'img',
+	 *					key: 'class',
+	 *					value: [ 'aside', 'half-size' ]
+	 *				}
 	 *			}
 	 *		} );
 	 *
-	 *		conversion.attributeToAttribute( 'styled', [
-	 *			{
-	 *				model: 'dark',
-	 *				view: {
-	 *					key: 'class',
-	 *					value: 'styled styled-dark'
-	 *				}
+	 *		// Set style attribute.
+	 *		conversion.attributeToAttribute( {
+	 *			model: {
+	 *				name: 'image',
+	 *				key: 'aside',
+	 *				values: [ 'aside' ]
 	 *			},
-	 *			{
-	 *				model: 'light',
-	 *				view: {
-	 *					key: 'class',
-	 *					value: 'styled styled-light'
+	 *			view: {
+	 *				aside: {
+	 *					name: 'img',
+	 *					key: 'style',
+	 *					value: {
+	 *						float: 'right',
+	 *						width: '50%',
+	 *						margin: '5px'
+	 *					}
 	 *				}
 	 *			}
-	 *		] );
+	 *		} );
 	 *
-	 *		conversion.attributeToAttribute( 'align', [
-	 *			{
-	 *				model: 'right',
-	 *				view: {
+	 *		// Conversion from/to a model attribute key which value is an enum (`align=right|center`).
+	 *		// Use `upcastAlso` to define other view elements that should be also converted to `align=right` attribute.
+	 *		conversion.attributeToAttribute( {
+	 *			model: {
+	 *				key: 'align',
+	 *				values: [ 'right', 'center' ]
+	 *			},
+	 *			view: {
+	 *				right: {
 	 *					key: 'class',
 	 *					value: 'align-right'
 	 *				},
-	 *				upcastAlso: viewElement => {
-	 *					if ( viewElement.getStyle( 'text-align' ) == 'right' ) {
-	 *						return {
-	 *							style: [ 'text-align' ]
-	 *						};
-	 *					}
-	 *
-	 *					return null;
-	 *				}
-	 *			},
-	 *			{
-	 *				model: 'center',
-	 *				view: {
+	 *				center: {
 	 *					key: 'class',
 	 *					value: 'align-center'
+	 *				}
+	 *			},
+	 *			upcastAlso: {
+	 *				right: {
+	 *					style: {
+	 *						'text-align': 'right'
+	 *					}
 	 *				},
-	 *				upcastAlso: {
+	 *				center: {
 	 *					style: {
 	 *						'text-align': 'center'
 	 *					}
 	 *				}
 	 *			}
-	 *		] );
+	 *		} );
 	 *
-	 * @param {String} modelAttributeKey The key of the model attribute to convert.
-	 * @param {Object|Array.<Object>} [definition] Conversion definition. It is possible to provide multiple definitions in an array.
-	 * If not set, the conversion helper will assume 1-to-1 conversion, that is the model attribute key and value will be same
-	 * as the view attribute key and value.
-	 * @param {*} [definition.model] The value of the converted model attribute. If omitted, when downcasting,
-	 * the item will be treated as a default item, that will be used when no other item matches. When upcasting conversion,
-	 * the model attribute value will be set to the same value as in the view.
-	 * @param {Object} definition.view View attribute conversion details. Given object has required `key` property,
-	 * specifying view attribute key, optional `value` property, specifying view attribute value and optional `name`
-	 * property specifying a view element name from/on which the attribute should be converted. If `value` is not given,
-	 * the view attribute value will be equal to model attribute value.
+	 * @param {Object} [definition] Converter definition.
+	 * @param {String|Object} definition.model Model attribute to convert from/to.
+	 * @param {String|Object} definition.view View attribute to convert from/to.
 	 * @param {module:engine/view/matcher~MatcherPattern|Array.<module:engine/view/matcher~MatcherPattern>} [definition.upcastAlso]
-	 * Any view element matching `upcastAlso` will also be converted to the given model element.
+	 * Any view element matching `definition.upcastAlso` will also be converted to the given model attribute. `definition.upcastAlso`
+	 * is used only if `config.model.values` is specified.
 	 */
-	attributeToAttribute( modelAttributeKey, definition ) {
+	attributeToAttribute( definition ) {
 		// Set up downcast converter.
-		this.for( 'downcast' ).add( downcastAttributeToAttribute( modelAttributeKey, definition ) );
+		this.for( 'downcast' ).add( downcastAttributeToAttribute( definition ) );
 
-		// Set up upcast converter. In this case, we need to re-organise the definition config.
-		if ( !definition ) {
-			definition = { view: modelAttributeKey };
-		}
-
-		if ( !Array.isArray( definition ) ) {
-			definition = [ definition ];
-		}
-
-		for ( const item of definition ) {
-			const model = _getModelAttributeDefinition( modelAttributeKey, item.model );
-
-			for ( const view of _getAllViews( item ) ) {
-				const priority = view == item.view ? 'low' : 'normal';
-
-				this.for( 'upcast' ).add( upcastAttributeToAttribute( {
+		// Set up upcast converter.
+		for ( const { model, view } of _getAllUpcastDefinitions( definition ) ) {
+			this.for( 'upcast' ).add(
+				upcastAttributeToAttribute( {
 					view,
 					model
-				}, priority ) );
-			}
+				} )
+			);
 		}
 	}
+
+	/**
+	 * Returns dispatchers registered under given group name.
+	 *
+	 * If given group name has not been registered,
+	 * {@link module:utils/ckeditorerror~CKEditorError conversion-for-unknown-group} error is thrown.
+	 *
+	 * @private
+	 * @param {String} groupName
+	 * @returns {Array.<module:engine/conversion/downcastdispatcher~DowncastDispatcher|
+	 * module:engine/conversion/upcastdispatcher~UpcastDispatcher>}
+	 */
+	_getDispatchers( groupName ) {
+		const dispatchers = this._dispatchersGroups.get( groupName );
+
+		if ( !dispatchers ) {
+			/**
+			 * Trying to add a converter to an unknown dispatchers group.
+			 *
+			 * @error conversion-for-unknown-group
+			 */
+			throw new CKEditorError( 'conversion-for-unknown-group: Trying to add a converter to an unknown dispatchers group.' );
+		}
+
+		return dispatchers;
+	}
 }
+
+/**
+ * Defines how the model should be converted from/to the view.
+ *
+ * @typedef {Object} module:engine/conversion/conversion~ConverterDefinition
+ *
+ * @property {*} [model] Model conversion definition. Describes model element or model attribute to convert. This parameter differs
+ * for different functions that accepts `ConverterDefinition`. See the description of a function to learn how to set it.
+ * @property {module:engine/view/elementdefinition~ElementDefinition|Object} view Definition of a view element to convert from/to.
+ * If `model` describes multiple values, `view` is an object that assigns those values (`view` object keys) to view element definitions
+ * (`view` object values).
+ * @property {module:engine/view/matcher~MatcherPattern|Array.<module:engine/view/matcher~MatcherPattern>} [upcastAlso]
+ * Any view element matching `upcastAlso` will also be converted to model. If `model` describes multiple values, `upcastAlso`
+ * is an object that assigns those values (`upcastAlso` object keys) to {@link module:engine/view/matcher~MatcherPattern}s
+ * (`upcastAlso` object values).
+ * @property {module:utils/priorities~PriorityString} [priority] Conversion priority.
+ */
 
 // Helper function for `Conversion` `.add()` method.
 //
@@ -502,33 +514,33 @@ function _addToDispatchers( dispatchers, conversionHelper ) {
 	}
 }
 
-// Helper function, normalizes input data into a correct config form that can be accepted by conversion helpers. The
-// correct form is either `String` or an object with `key` and `value` properties.
-//
-// @param {String} key Model attribute key.
-// @param {*} [model] Model attribute value.
-// @returns {Object} Normalized model attribute definition.
-function _getModelAttributeDefinition( key, model ) {
-	if ( model === undefined ) {
-		return key;
-	} else {
-		return {
-			key, value: model
-		};
-	}
-}
-
 // Helper function that creates a joint array out of an item passed in `definition.view` and items passed in
 // `definition.upcastAlso`.
 //
-// @param {Object} definition Conversion definition.
+// @param {~ConverterDefinition} definition
 // @returns {Array} Array containing view definitions.
-function _getAllViews( definition ) {
-	if ( !definition.upcastAlso ) {
-		return [ definition.view ];
-	} else {
-		const upcastAlso = Array.isArray( definition.upcastAlso ) ? definition.upcastAlso : [ definition.upcastAlso ];
+function* _getAllUpcastDefinitions( definition ) {
+	if ( definition.model.values ) {
+		for ( const value of definition.model.values ) {
+			const model = { key: definition.model.key, value };
+			const view = definition.view[ value ];
+			const upcastAlso = definition.upcastAlso ? definition.upcastAlso[ value ] : undefined;
 
-		return [ definition.view ].concat( upcastAlso );
+			yield* _getUpcastDefinition( model, view, upcastAlso );
+		}
+	} else {
+		yield* _getUpcastDefinition( definition.model, definition.view, definition.upcastAlso );
+	}
+}
+
+function* _getUpcastDefinition( model, view, upcastAlso ) {
+	yield { model, view };
+
+	if ( upcastAlso ) {
+		upcastAlso = Array.isArray( upcastAlso ) ? upcastAlso : [ upcastAlso ];
+
+		for ( const upcastAlsoItem of upcastAlso ) {
+			yield { model, view: upcastAlsoItem };
+		}
 	}
 }

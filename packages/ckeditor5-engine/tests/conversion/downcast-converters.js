@@ -15,7 +15,6 @@ import ModelPosition from '../../src/model/position';
 
 import ViewElement from '../../src/view/element';
 import ViewContainerElement from '../../src/view/containerelement';
-import ViewAttributeElement from '../../src/view/attributeelement';
 import ViewUIElement from '../../src/view/uielement';
 import ViewText from '../../src/view/text';
 
@@ -62,7 +61,7 @@ describe( 'downcast-helpers', () => {
 
 		it( 'can be overwritten using priority', () => {
 			const helperA = downcastElementToElement( { model: 'paragraph', view: 'p' } );
-			const helperB = downcastElementToElement( { model: 'paragraph', view: 'foo' }, 'high' );
+			const helperB = downcastElementToElement( { model: 'paragraph', view: 'foo', priority: 'high' } );
 
 			conversion.for( 'downcast' ).add( helperA ).add( helperB );
 
@@ -94,7 +93,7 @@ describe( 'downcast-helpers', () => {
 		it( 'config.view is a function', () => {
 			const helper = downcastElementToElement( {
 				model: 'heading',
-				view: modelElement => new ViewContainerElement( 'h' + modelElement.getAttribute( 'level' ) )
+				view: ( modelElement, viewWriter ) => viewWriter.createContainerElement( 'h' + modelElement.getAttribute( 'level' ) )
 			} );
 
 			conversion.for( 'downcast' ).add( helper );
@@ -109,7 +108,7 @@ describe( 'downcast-helpers', () => {
 
 	describe( 'downcastAttributeToElement', () => {
 		it( 'config.view is a string', () => {
-			const helper = downcastAttributeToElement( 'bold', { view: 'strong' } );
+			const helper = downcastAttributeToElement( { model: 'bold', view: 'strong' } );
 
 			conversion.for( 'downcast' ).add( helper );
 
@@ -121,8 +120,8 @@ describe( 'downcast-helpers', () => {
 		} );
 
 		it( 'can be overwritten using priority', () => {
-			const helperA = downcastAttributeToElement( 'bold', { view: 'strong' } );
-			const helperB = downcastAttributeToElement( 'bold', { view: 'b' }, 'high' );
+			const helperA = downcastAttributeToElement( { model: 'bold', view: 'strong' } );
+			const helperB = downcastAttributeToElement( { model: 'bold', view: 'b', priority: 'high' } );
 
 			conversion.for( 'downcast' ).add( helperA ).add( helperB );
 
@@ -134,67 +133,44 @@ describe( 'downcast-helpers', () => {
 		} );
 
 		it( 'config.view is a view element definition', () => {
-			const helper = downcastAttributeToElement( 'bold', {
+			const helper = downcastAttributeToElement( {
+				model: 'invert',
 				view: {
 					name: 'span',
-					class: 'bold'
+					class: [ 'font-light', 'bg-dark' ]
 				}
 			} );
 
 			conversion.for( 'downcast' ).add( helper );
 
 			model.change( writer => {
-				writer.insertText( 'foo', { bold: true }, modelRoot, 0 );
+				writer.insertText( 'foo', { invert: true }, modelRoot, 0 );
 			} );
 
-			expectResult( '<span class="bold">foo</span>' );
+			expectResult( '<span class="bg-dark font-light">foo</span>' );
 		} );
 
-		it( 'config.view is a view element definition, model attribute value specified', () => {
-			const helper = downcastAttributeToElement( 'styled', {
-				model: 'dark',
+		it( 'model attribute value is enum', () => {
+			const helper = downcastAttributeToElement( {
+				model: {
+					key: 'fontSize',
+					values: [ 'big', 'small' ]
+				},
 				view: {
-					name: 'span',
-					class: [ 'styled', 'styled-dark' ]
-				}
-			} );
-
-			conversion.for( 'downcast' ).add( helper );
-
-			model.change( writer => {
-				writer.insertText( 'foo', { styled: 'dark' }, modelRoot, 0 );
-			} );
-
-			expectResult( '<span class="styled styled-dark">foo</span>' );
-
-			model.change( writer => {
-				writer.setAttribute( 'styled', 'xyz', modelRoot.getChild( 0 ) );
-			} );
-
-			expectResult( 'foo' );
-		} );
-
-		it( 'multiple config items', () => {
-			const helper = downcastAttributeToElement( 'fontSize', [
-				{
-					model: 'big',
-					view: {
+					big: {
 						name: 'span',
 						style: {
 							'font-size': '1.2em'
 						}
-					}
-				},
-				{
-					model: 'small',
-					view: {
+					},
+					small: {
 						name: 'span',
 						style: {
 							'font-size': '0.8em'
 						}
 					}
 				}
-			] );
+			} );
 
 			conversion.for( 'downcast' ).add( helper );
 
@@ -218,8 +194,11 @@ describe( 'downcast-helpers', () => {
 		} );
 
 		it( 'config.view is a function', () => {
-			const helper = downcastAttributeToElement( 'bold', {
-				view: attributeValue => new ViewAttributeElement( 'span', { style: 'font-weight:' + attributeValue } )
+			const helper = downcastAttributeToElement( {
+				model: 'bold',
+				view: ( modelAttributeValue, viewWriter ) => {
+					return viewWriter.createAttributeElement( 'span', { style: 'font-weight:' + modelAttributeValue } );
+				}
 			} );
 
 			conversion.for( 'downcast' ).add( helper );
@@ -237,20 +216,8 @@ describe( 'downcast-helpers', () => {
 			conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'image', view: 'img' } ) );
 		} );
 
-		it( 'config not set', () => {
-			const helper = downcastAttributeToAttribute( 'src' );
-
-			conversion.for( 'downcast' ).add( helper );
-
-			model.change( writer => {
-				writer.insertElement( 'image', { src: 'foo.jpg' }, modelRoot, 0 );
-			} );
-
-			expectResult( '<img src="foo.jpg"></img>' );
-		} );
-
 		it( 'config.view is a string', () => {
-			const helper = downcastAttributeToAttribute( 'source', { view: 'src' } );
+			const helper = downcastAttributeToAttribute( { model: 'source', view: 'src' } );
 
 			conversion.for( 'downcast' ).add( helper );
 
@@ -259,11 +226,17 @@ describe( 'downcast-helpers', () => {
 			} );
 
 			expectResult( '<img src="foo.jpg"></img>' );
+
+			model.change( writer => {
+				writer.removeAttribute( 'source', modelRoot.getChild( 0 ) );
+			} );
+
+			expectResult( '<img></img>' );
 		} );
 
 		it( 'can be overwritten using priority', () => {
-			const helperA = downcastAttributeToAttribute( 'source', { view: 'href' } );
-			const helperB = downcastAttributeToAttribute( 'source', { view: 'src' }, 'high' );
+			const helperA = downcastAttributeToAttribute( { model: 'source', view: 'href' } );
+			const helperB = downcastAttributeToAttribute( { model: 'source', view: 'src', priority: 'high' } );
 
 			conversion.for( 'downcast' ).add( helperA ).add( helperB );
 
@@ -274,83 +247,121 @@ describe( 'downcast-helpers', () => {
 			expectResult( '<img src="foo.jpg"></img>' );
 		} );
 
-		it( 'config.view is an object', () => {
-			const helper = downcastAttributeToAttribute( 'stylish', { view: { key: 'class', value: 'styled' } } );
+		it( 'model element name specified', () => {
+			conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'paragraph', view: 'p' } ) );
 
-			conversion.for( 'downcast' ).add( helper );
-
-			model.change( writer => {
-				writer.insertElement( 'image', { stylish: true }, modelRoot, 0 );
-			} );
-
-			expectResult( '<img class="styled"></img>' );
-		} );
-
-		it( 'config.view is an object, model attribute value specified', () => {
-			const helper = downcastAttributeToAttribute( 'styled', {
-				model: 'dark',
-				view: {
-					key: 'class',
-					value: 'styled-dark styled'
-				}
-			} );
-
-			conversion.for( 'downcast' ).add( helper );
-
-			model.change( writer => {
-				writer.insertElement( 'image', { styled: 'dark' }, modelRoot, 0 );
-			} );
-
-			expectResult( '<img class="styled styled-dark"></img>' );
-
-			model.change( writer => {
-				writer.setAttribute( 'styled', 'xyz', modelRoot.getChild( 0 ) );
-			} );
-
-			expectResult( '<img></img>' );
-		} );
-
-		it( 'multiple config items', () => {
-			const helper = downcastAttributeToAttribute( 'styled', [
-				{
-					model: 'dark',
-					view: {
-						key: 'class',
-						value: 'styled-dark'
-					}
+			const helper = downcastAttributeToAttribute( {
+				model: {
+					name: 'image',
+					key: 'source'
 				},
-				{
-					model: 'light',
-					view: {
-						key: 'class',
-						value: 'styled-light'
-					}
-				}
-			] );
+				view: 'src'
+			} );
 
 			conversion.for( 'downcast' ).add( helper );
 
 			model.change( writer => {
-				writer.insertElement( 'image', { styled: 'dark' }, modelRoot, 0 );
+				writer.insertElement( 'image', { source: 'foo.jpg' }, modelRoot, 0 );
 			} );
 
-			expectResult( '<img class="styled-dark"></img>' );
+			expectResult( '<img src="foo.jpg"></img>' );
+
+			model.change( writer => {
+				writer.rename( modelRoot.getChild( 0 ), 'paragraph' );
+			} );
+
+			expectResult( '<p></p>' );
+		} );
+
+		it( 'config.view is an object, model attribute value is enum', () => {
+			conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'paragraph', view: 'p' } ) );
+
+			const helper = downcastAttributeToAttribute( {
+				model: {
+					key: 'styled',
+					values: [ 'dark', 'light' ]
+				},
+				view: {
+					dark: {
+						key: 'class',
+						value: [ 'styled', 'styled-dark' ]
+					},
+					light: {
+						key: 'class',
+						value: [ 'styled', 'styled-light' ]
+					}
+				}
+			} );
+
+			conversion.for( 'downcast' ).add( helper );
+
+			model.change( writer => {
+				writer.insertElement( 'paragraph', { styled: 'dark' }, modelRoot, 0 );
+			} );
+
+			expectResult( '<p class="styled styled-dark"></p>' );
 
 			model.change( writer => {
 				writer.setAttribute( 'styled', 'light', modelRoot.getChild( 0 ) );
 			} );
 
-			expectResult( '<img class="styled-light"></img>' );
+			expectResult( '<p class="styled styled-light"></p>' );
 
 			model.change( writer => {
-				writer.setAttribute( 'styled', 'xyz', modelRoot.getChild( 0 ) );
+				writer.removeAttribute( 'styled', modelRoot.getChild( 0 ) );
 			} );
 
-			expectResult( '<img></img>' );
+			expectResult( '<p></p>' );
+		} );
+
+		it( 'config.view is an object, model attribute value is enum, view has style', () => {
+			conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'paragraph', view: 'p' } ) );
+
+			const helper = downcastAttributeToAttribute( {
+				model: {
+					key: 'align',
+					values: [ 'right', 'center' ]
+				},
+				view: {
+					right: {
+						key: 'style',
+						value: {
+							'text-align': 'right'
+						}
+					},
+					center: {
+						key: 'style',
+						value: {
+							'text-align': 'center'
+						}
+					}
+				}
+			} );
+
+			conversion.for( 'downcast' ).add( helper );
+
+			model.change( writer => {
+				writer.insertElement( 'paragraph', { align: 'right' }, modelRoot, 0 );
+			} );
+
+			expectResult( '<p style="text-align:right"></p>' );
+
+			model.change( writer => {
+				writer.setAttribute( 'align', 'center', modelRoot.getChild( 0 ) );
+			} );
+
+			expectResult( '<p style="text-align:center"></p>' );
+
+			model.change( writer => {
+				writer.removeAttribute( 'align', modelRoot.getChild( 0 ) );
+			} );
+
+			expectResult( '<p></p>' );
 		} );
 
 		it( 'config.view is a function', () => {
-			const helper = downcastAttributeToAttribute( 'styled', {
+			const helper = downcastAttributeToAttribute( {
+				model: 'styled',
 				view: attributeValue => ( { key: 'class', value: 'styled-' + attributeValue } )
 			} );
 
@@ -380,7 +391,7 @@ describe( 'downcast-helpers', () => {
 
 		it( 'can be overwritten using priority', () => {
 			const helperA = downcastMarkerToElement( { model: 'search', view: 'marker-search' } );
-			const helperB = downcastMarkerToElement( { model: 'search', view: 'search' }, 'high' );
+			const helperB = downcastMarkerToElement( { model: 'search', view: 'search', priority: 'high' } );
 
 			conversion.for( 'downcast' ).add( helperA ).add( helperB );
 
@@ -416,8 +427,8 @@ describe( 'downcast-helpers', () => {
 		it( 'config.view is a function', () => {
 			const helper = downcastMarkerToElement( {
 				model: 'search',
-				view: data => {
-					return new ViewUIElement( 'span', { 'data-marker': 'search', 'data-start': data.isOpening } );
+				view: ( data, viewWriter ) => {
+					return viewWriter.createUIElement( 'span', { 'data-marker': 'search', 'data-start': data.isOpening } );
 				}
 			} );
 
@@ -448,7 +459,7 @@ describe( 'downcast-helpers', () => {
 
 		it( 'can be overwritten using priority', () => {
 			const helperA = downcastMarkerToHighlight( { model: 'comment', view: { class: 'comment' } } );
-			const helperB = downcastMarkerToHighlight( { model: 'comment', view: { class: 'new-comment' } }, 'high' );
+			const helperB = downcastMarkerToHighlight( { model: 'comment', view: { class: 'new-comment' }, priority: 'high' } );
 
 			conversion.for( 'downcast' ).add( helperA ).add( helperB );
 
@@ -508,7 +519,7 @@ describe( 'downcast-converters', () => {
 		dispatcher.on(
 			'insert:paragraph',
 			insertElement(
-				( modelItem, consumable, conversionApi ) => conversionApi.writer.createContainerElement( 'p' )
+				( modelItem, viewWriter ) => viewWriter.createContainerElement( 'p' )
 			)
 		);
 
@@ -581,7 +592,7 @@ describe( 'downcast-converters', () => {
 	} );
 
 	describe( 'insertElement', () => {
-		it( 'should convert element insertion in model to and map positions for future converting', () => {
+		it( 'should convert element insertion in model', () => {
 			const modelElement = new ModelElement( 'paragraph', null, new ModelText( 'foobar' ) );
 
 			model.change( writer => {
@@ -591,26 +602,16 @@ describe( 'downcast-converters', () => {
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 		} );
 
-		it( 'should take view element function generator as a parameter', () => {
-			const elementGenerator = ( modelItem, consumable ) => {
-				if ( consumable.consume( modelItem, 'attribute:nice' ) ) {
-					return new ViewContainerElement( 'div' );
-				}
+		it( 'should not convert if creator returned null', () => {
+			dispatcher.on( 'insert:div', insertElement( () => null ) );
 
-				// Test if default converter will be fired for paragraph, if `null` is returned and consumable was not consumed.
-				return null;
-			};
-
-			dispatcher.on( 'insert:paragraph', insertElement( elementGenerator ), { priority: 'high' } );
-
-			const niceP = new ModelElement( 'paragraph', { nice: true }, new ModelText( 'foo' ) );
-			const badP = new ModelElement( 'paragraph', null, new ModelText( 'bar' ) );
+			const modelElement = new ModelElement( 'div' );
 
 			model.change( writer => {
-				writer.insert( [ niceP, badP ], modelRootStart );
+				writer.insert( modelElement, modelRootStart );
 			} );
 
-			expect( viewToString( viewRoot ) ).to.equal( '<div><div>foo</div><p>bar</p></div>' );
+			expect( viewToString( viewRoot ) ).to.equal( '<div></div>' );
 		} );
 	} );
 
@@ -646,7 +647,7 @@ describe( 'downcast-converters', () => {
 				return { key: 'class', value };
 			};
 
-			dispatcher.on( 'insert:div', insertElement( ( model, consumable, api ) => api.writer.createContainerElement( 'div' ) ) );
+			dispatcher.on( 'insert:div', insertElement( ( modelElement, viewWriter ) => viewWriter.createContainerElement( 'div' ) ) );
 			dispatcher.on( 'attribute:theme', changeAttribute( themeConverter ) );
 
 			const modelParagraph = new ModelElement( 'paragraph', { theme: 'nice' }, new ModelText( 'foobar' ) );
@@ -690,7 +691,7 @@ describe( 'downcast-converters', () => {
 	describe( 'wrap', () => {
 		it( 'should convert insert/change/remove of attribute in model into wrapping element in a view', () => {
 			const modelElement = new ModelElement( 'paragraph', null, new ModelText( 'foobar', { bold: true } ) );
-			const creator = ( value, data, consumable, api ) => api.writer.createAttributeElement( 'b' );
+			const creator = ( modelAttributeValue, viewWriter ) => viewWriter.createAttributeElement( 'b' );
 
 			dispatcher.on( 'attribute:bold', wrap( creator ) );
 
@@ -710,9 +711,9 @@ describe( 'downcast-converters', () => {
 		it( 'should convert insert/remove of attribute in model with wrapping element generating function as a parameter', () => {
 			const modelElement = new ModelElement( 'paragraph', null, new ModelText( 'foobar', { style: 'bold' } ) );
 
-			const elementGenerator = ( value, data, consumable, api ) => {
-				if ( value == 'bold' ) {
-					return api.writer.createAttributeElement( 'b' );
+			const elementGenerator = ( modelAttributeValue, viewWriter ) => {
+				if ( modelAttributeValue == 'bold' ) {
+					return viewWriter.createAttributeElement( 'b' );
 				}
 			};
 
@@ -738,7 +739,9 @@ describe( 'downcast-converters', () => {
 				new ModelText( 'x' )
 			] );
 
-			const elementGenerator = ( href, data, consumable, api ) => api.writer.createAttributeElement( 'a', { href } );
+			const elementGenerator = ( modelAttributeValue, viewWriter ) => {
+				return viewWriter.createAttributeElement( 'a', { href: modelAttributeValue } );
+			};
 
 			dispatcher.on( 'attribute:link', wrap( elementGenerator ) );
 
@@ -758,7 +761,7 @@ describe( 'downcast-converters', () => {
 
 		it( 'should support unicode', () => {
 			const modelElement = new ModelElement( 'paragraph', null, [ 'நி', new ModelText( 'லைக்', { bold: true } ), 'கு' ] );
-			const creator = ( value, data, consumable, api ) => api.writer.createAttributeElement( 'b' );
+			const creator = ( modelAttributeValue, viewWriter ) => viewWriter.createAttributeElement( 'b' );
 
 			dispatcher.on( 'attribute:bold', wrap( creator ) );
 
@@ -777,18 +780,20 @@ describe( 'downcast-converters', () => {
 
 		it( 'should be possible to override wrap', () => {
 			const modelElement = new ModelElement( 'paragraph', null, new ModelText( 'foobar', { bold: true } ) );
-			const creator = ( value, data, consumable, api ) => api.writer.createAttributeElement( 'b' );
 
-			dispatcher.on( 'attribute:bold', wrap( creator ) );
-			dispatcher.on( 'attribute:bold', ( evt, data, consumable ) => {
-				consumable.consume( data.item, 'attribute:bold' );
-			}, { priority: 'high' } );
+			dispatcher.on( 'attribute:bold', wrap( ( modelAttributeValue, viewWriter ) => viewWriter.createAttributeElement( 'b' ) ) );
+
+			dispatcher.on(
+				'attribute:bold',
+				wrap( ( modelAttributeValue, viewWriter ) => viewWriter.createAttributeElement( 'strong' ) ),
+				{ priority: 'high' }
+			);
 
 			model.change( writer => {
 				writer.insert( modelElement, modelRootStart );
 			} );
 
-			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p><strong>foobar</strong></p></div>' );
 		} );
 
 		it( 'should not convert and not consume if creator function returned null', () => {
@@ -799,9 +804,9 @@ describe( 'downcast-converters', () => {
 			const modelElement = new ModelElement( 'paragraph', null, new ModelText( 'foobar', { italic: true } ) );
 
 			dispatcher.on( 'attribute:italic', wrap( elementGenerator ) );
-			dispatcher.on( 'attribute:italic', ( evt, data, consumable ) => {
-				expect( consumable.test( data.item, 'attribute:italic' ) ).to.be.true;
-			} );
+
+			const spy = sinon.spy();
+			dispatcher.on( 'attribute:italic', spy );
 
 			model.change( writer => {
 				writer.insert( modelElement, modelRootStart );
@@ -809,6 +814,7 @@ describe( 'downcast-converters', () => {
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 			expect( dispatcher.fire.calledWith( 'attribute:italic:$text' ) ).to.be.true;
+			expect( spy.called ).to.be.true;
 		} );
 	} );
 
@@ -829,30 +835,11 @@ describe( 'downcast-converters', () => {
 				range = ModelRange.createFromParentsAndOffsets( modelElement, 3, modelElement, 3 );
 			} );
 
-			it( 'should insert and remove ui element - element as a creator', () => {
-				const viewUi = new ViewUIElement( 'span', { 'class': 'marker' } );
+			it( 'should insert and remove ui element', () => {
+				const creator = ( data, viewWriter ) => viewWriter.createUIElement( 'span', { 'class': 'marker' } );
 
-				dispatcher.on( 'addMarker:marker', insertUIElement( viewUi ) );
-				dispatcher.on( 'removeMarker:marker', removeUIElement( viewUi ) );
-
-				model.change( writer => {
-					writer.setMarker( 'marker', range );
-				} );
-
-				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo<span class="marker"></span>bar</p></div>' );
-
-				model.change( writer => {
-					writer.removeMarker( 'marker' );
-				} );
-
-				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
-			} );
-
-			it( 'should insert and remove ui element - function as a creator', () => {
-				const viewUi = new ViewUIElement( 'span', { 'class': 'marker' } );
-
-				dispatcher.on( 'addMarker:marker', insertUIElement( () => viewUi ) );
-				dispatcher.on( 'removeMarker:marker', removeUIElement( () => viewUi ) );
+				dispatcher.on( 'addMarker:marker', insertUIElement( creator ) );
+				dispatcher.on( 'removeMarker:marker', removeUIElement( creator ) );
 
 				model.change( writer => {
 					writer.setMarker( 'marker', range );
@@ -868,16 +855,19 @@ describe( 'downcast-converters', () => {
 			} );
 
 			it( 'should not convert if consumable was consumed', () => {
-				const viewUi = new ViewUIElement( 'span', { 'class': 'marker' } );
-
 				sinon.spy( dispatcher, 'fire' );
 
-				dispatcher.on( 'addMarker:marker', insertUIElement( viewUi ) );
+				dispatcher.on( 'addMarker:marker', insertUIElement(
+					( data, viewWriter ) => viewWriter.createUIElement( 'span', { 'class': 'marker' } ) )
+				);
+
 				dispatcher.on( 'addMarker:marker', ( evt, data, consumable ) => {
 					consumable.consume( data.markerRange, 'addMarker:marker' );
 				}, { priority: 'high' } );
 
-				dispatcher.convertMarkerAdd( 'marker', range );
+				model.change( writer => {
+					writer.setMarker( 'marker', range );
+				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 				expect( dispatcher.fire.calledWith( 'addMarker:marker' ) );
@@ -907,10 +897,10 @@ describe( 'downcast-converters', () => {
 			} );
 
 			it( 'should insert and remove ui element - element as a creator', () => {
-				const viewUi = new ViewUIElement( 'span', { 'class': 'marker' } );
+				const creator = ( data, viewWriter ) => viewWriter.createUIElement( 'span', { 'class': 'marker' } );
 
-				dispatcher.on( 'addMarker:marker', insertUIElement( viewUi ) );
-				dispatcher.on( 'removeMarker:marker', removeUIElement( viewUi ) );
+				dispatcher.on( 'addMarker:marker', insertUIElement( creator ) );
+				dispatcher.on( 'removeMarker:marker', removeUIElement( creator ) );
 
 				model.change( writer => {
 					writer.setMarker( 'marker', range );
@@ -927,10 +917,10 @@ describe( 'downcast-converters', () => {
 			} );
 
 			it( 'should insert and remove ui element - function as a creator', () => {
-				const viewUi = data => new ViewUIElement( 'span', { 'class': data.markerName } );
+				const creator = ( data, viewWriter ) => viewWriter.createUIElement( 'span', { 'class': data.markerName } );
 
-				dispatcher.on( 'addMarker:marker', insertUIElement( viewUi ) );
-				dispatcher.on( 'removeMarker:marker', removeUIElement( viewUi ) );
+				dispatcher.on( 'addMarker:marker', insertUIElement( creator ) );
+				dispatcher.on( 'removeMarker:marker', removeUIElement( creator ) );
 
 				model.change( writer => {
 					writer.setMarker( 'marker', range );
@@ -947,12 +937,12 @@ describe( 'downcast-converters', () => {
 			} );
 
 			it( 'should insert and remove different opening and ending element', () => {
-				function creator( data ) {
+				function creator( data, viewWriter ) {
 					if ( data.isOpening ) {
-						return new ViewUIElement( 'span', { 'class': data.markerName, 'data-start': true } );
+						return viewWriter.createUIElement( 'span', { 'class': data.markerName, 'data-start': true } );
 					}
 
-					return new ViewUIElement( 'span', { 'class': data.markerName, 'data-end': true } );
+					return viewWriter.createUIElement( 'span', { 'class': data.markerName, 'data-end': true } );
 				}
 
 				dispatcher.on( 'addMarker:marker', insertUIElement( creator ) );
@@ -974,16 +964,18 @@ describe( 'downcast-converters', () => {
 			} );
 
 			it( 'should not convert if consumable was consumed', () => {
-				const viewUi = new ViewUIElement( 'span', { 'class': 'marker' } );
+				const creator = ( data, viewWriter ) => viewWriter.createUIElement( 'span', { 'class': 'marker' } );
 
 				sinon.spy( dispatcher, 'fire' );
 
-				dispatcher.on( 'addMarker:marker', insertUIElement( viewUi ) );
+				dispatcher.on( 'addMarker:marker', insertUIElement( creator ) );
 				dispatcher.on( 'addMarker:marker', ( evt, data, consumable ) => {
 					consumable.consume( data.item, 'addMarker:marker' );
 				}, { priority: 'high' } );
 
-				dispatcher.convertMarkerAdd( 'marker', range );
+				model.change( writer => {
+					writer.setMarker( 'marker', range );
+				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
 				expect( dispatcher.fire.calledWith( 'addMarker:marker' ) );
@@ -1099,7 +1091,9 @@ describe( 'downcast-converters', () => {
 			const modelP = new ModelElement( 'paragraph', null, new ModelText( 'foo' ) );
 			const modelWidget = new ModelElement( 'widget', null, modelP );
 
-			dispatcher.on( 'insert:widget', insertElement( () => new ViewContainerElement( 'widget' ) ) );
+			dispatcher.on( 'insert:widget', insertElement(
+				( modelElement, viewWriter ) => viewWriter.createContainerElement( 'widget' ) )
+			);
 
 			model.change( writer => {
 				writer.insert( modelWidget, modelRootStart );

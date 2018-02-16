@@ -93,7 +93,7 @@ describe( 'Conversion', () => {
 			const modelDoc = model.document;
 			modelRoot = modelDoc.createRoot();
 
-			viewRoot = controller.view.getRoot();
+			viewRoot = controller.view.document.getRoot();
 			// Set name of view root the same as dom root.
 			// This is a mock of attaching view root to dom root.
 			viewRoot._name = 'div';
@@ -125,6 +125,14 @@ describe( 'Conversion', () => {
 				test( '<p>Foo</p>', '<paragraph>Foo</paragraph>' );
 			} );
 
+			it( 'config.priority is defined', () => {
+				conversion.elementToElement( { model: 'paragraph', view: 'p' } );
+				conversion.elementToElement( { model: 'paragraph', view: 'div', priority: 'high' } );
+
+				test( '<div>Foo</div>', '<paragraph>Foo</paragraph>' );
+				test( '<p>Foo</p>', '<paragraph>Foo</paragraph>', '<div>Foo</div>' );
+			} );
+
 			it( 'config.view is an object', () => {
 				schema.register( 'fancyParagraph', {
 					inheritAllFrom: 'paragraph'
@@ -148,7 +156,7 @@ describe( 'Conversion', () => {
 					upcastAlso: [
 						'div',
 						{
-							// Match any name.
+							// Any element with `display: block` style.
 							name: /./,
 							style: {
 								display: 'block'
@@ -212,13 +220,22 @@ describe( 'Conversion', () => {
 			} );
 
 			it( 'config.view is a string', () => {
-				conversion.attributeToElement( 'bold', { view: 'strong' } );
+				conversion.attributeToElement( { model: 'bold', view: 'strong' } );
 
 				test( '<p><strong>Foo</strong> bar</p>', '<paragraph><$text bold="true">Foo</$text> bar</paragraph>' );
 			} );
 
+			it( 'config.priority is defined', () => {
+				conversion.attributeToElement( { model: 'bold', view: 'strong' } );
+				conversion.attributeToElement( { model: 'bold', view: 'b', priority: 'high' } );
+
+				test( '<p><b>Foo</b></p>', '<paragraph><$text bold="true">Foo</$text></paragraph>' );
+				test( '<p><strong>Foo</strong></p>', '<paragraph><$text bold="true">Foo</$text></paragraph>', '<p><b>Foo</b></p>' );
+			} );
+
 			it( 'config.view is an object', () => {
-				conversion.attributeToElement( 'bold', {
+				conversion.attributeToElement( {
+					model: 'bold',
 					view: {
 						name: 'span',
 						class: 'bold'
@@ -229,7 +246,8 @@ describe( 'Conversion', () => {
 			} );
 
 			it( 'config.view is an object with upcastAlso defined', () => {
-				conversion.attributeToElement( 'bold', {
+				conversion.attributeToElement( {
+					model: 'bold',
 					view: 'strong',
 					upcastAlso: [
 						'b',
@@ -292,77 +310,32 @@ describe( 'Conversion', () => {
 				);
 			} );
 
-			it( 'config.model is a string', () => {
-				schema.extend( '$text', {
-					allowAttributes: [ 'styled' ]
-				} );
-
-				conversion.attributeToElement( 'styled', {
-					model: 'dark',
-					view: {
-						name: 'span',
-						class: [ 'styled', 'styled-dark' ]
-					}
-				} );
-
-				test(
-					'<p><span class="styled styled-dark">Foo</span> bar</p>',
-					'<paragraph><$text styled="dark">Foo</$text> bar</paragraph>'
-				);
-			} );
-
-			it( 'config is an array', () => {
+			it( 'model attribute value is enumerable', () => {
 				schema.extend( '$text', {
 					allowAttributes: [ 'fontSize' ]
 				} );
 
-				conversion.attributeToElement( 'fontSize', [
-					{
-						model: 'big',
-						view: {
-							name: 'span',
-							style: {
-								'font-size': '1.2em'
-							}
-						}
+				conversion.attributeToElement( {
+					model: {
+						key: 'fontSize',
+						values: [ 'big', 'small' ]
 					},
-					{
-						model: 'small',
-						view: {
-							name: 'span',
-							style: {
-								'font-size': '0.8em'
-							}
-						}
-					}
-				] );
-
-				test(
-					'<p><span style="font-size:1.2em">Foo</span> bar</p>',
-					'<paragraph><$text fontSize="big">Foo</$text> bar</paragraph>'
-				);
-
-				test(
-					'<p><span style="font-size:0.8em">Foo</span> bar</p>',
-					'<paragraph><$text fontSize="small">Foo</$text> bar</paragraph>'
-				);
-			} );
-
-			it( 'config is an array with upcastAlso defined', () => {
-				schema.extend( '$text', {
-					allowAttributes: [ 'fontSize' ]
-				} );
-
-				conversion.attributeToElement( 'fontSize', [
-					{
-						model: 'big',
-						view: {
+					view: {
+						big: {
 							name: 'span',
 							style: {
 								'font-size': '1.2em'
 							}
 						},
-						upcastAlso: viewElement => {
+						small: {
+							name: 'span',
+							style: {
+								'font-size': '0.8em'
+							}
+						}
+					},
+					upcastAlso: {
+						big: viewElement => {
 							const fontSize = viewElement.getStyle( 'font-size' );
 
 							if ( !fontSize ) {
@@ -382,17 +355,8 @@ describe( 'Conversion', () => {
 							}
 
 							return null;
-						}
-					},
-					{
-						model: 'small',
-						view: {
-							name: 'span',
-							style: {
-								'font-size': '0.8em'
-							}
 						},
-						upcastAlso: viewElement => {
+						small: viewElement => {
 							const fontSize = viewElement.getStyle( 'font-size' );
 
 							if ( !fontSize ) {
@@ -414,7 +378,7 @@ describe( 'Conversion', () => {
 							return null;
 						}
 					}
-				] );
+				} );
 
 				test(
 					'<p><span style="font-size:1.2em">Foo</span> bar</p>',
@@ -455,70 +419,70 @@ describe( 'Conversion', () => {
 				} );
 			} );
 
-			it( 'config is not set', () => {
-				schema.extend( 'image', {
-					allowAttributes: [ 'src' ]
-				} );
-
-				conversion.attributeToAttribute( 'src' );
-
-				test( '<img src="foo.jpg"></img>', '<image src="foo.jpg"></image>' );
-			} );
-
-			it( 'config.view is a string', () => {
+			it( 'config.view and config.model are strings', () => {
 				schema.extend( 'image', {
 					allowAttributes: [ 'source' ]
 				} );
 
-				conversion.attributeToAttribute( 'source', { view: 'src' } );
+				conversion.attributeToAttribute( { model: 'source', view: 'src' } );
 
 				test( '<img src="foo.jpg"></img>', '<image source="foo.jpg"></image>' );
 			} );
 
-			it( 'config.view is an object', () => {
+			it( 'config.view and config.model are objects', () => {
 				schema.extend( 'image', {
 					allowAttributes: [ 'aside' ]
 				} );
 
-				conversion.attributeToAttribute( 'aside', {
-					model: true,
+				conversion.attributeToAttribute( {
+					model: {
+						name: 'image',
+						key: 'aside',
+						values: [ 'aside' ]
+					},
 					view: {
-						name: 'img',
-						key: 'class',
-						value: 'aside half-size'
+						aside: {
+							name: 'img',
+							key: 'class',
+							value: [ 'aside', 'half-size' ]
+						}
 					}
 				} );
 
 				conversion.elementToElement( { model: 'paragraph', view: 'p' } );
 
-				test( '<img class="aside half-size"></img>', '<image aside="true"></image>' );
+				test( '<img class="aside half-size"></img>', '<image aside="aside"></image>' );
 				test( '<p class="aside half-size"></p>', '<paragraph></paragraph>', '<p></p>' );
 			} );
 
-			it( 'config is an array', () => {
+			it( 'config.view and config.model are objects - convert to style attribute', () => {
 				schema.extend( 'image', {
-					allowAttributes: [ 'styled' ]
+					allowAttributes: [ 'aside' ]
 				} );
 
-				conversion.attributeToAttribute( 'styled', [
-					{
-						model: 'dark',
-						view: {
-							key: 'class',
-							value: 'styled styled-dark'
-						}
+				conversion.attributeToAttribute( {
+					model: {
+						name: 'image',
+						key: 'aside',
+						values: [ 'aside' ]
 					},
-					{
-						model: 'light',
-						view: {
-							key: 'class',
-							value: 'styled styled-light'
+					view: {
+						aside: {
+							name: 'img',
+							key: 'style',
+							value: {
+								float: 'right',
+								width: '50%',
+								margin: '5px'
+							}
 						}
 					}
-				] );
+				} );
 
-				test( '<img class="styled styled-dark"></img>', '<image styled="dark"></image>' );
-				test( '<img class="styled styled-light"></img>', '<image styled="light"></image>' );
+				conversion.elementToElement( { model: 'paragraph', view: 'p' } );
+
+				test( '<img style="float:right;margin:5px;width:50%"></img>', '<image aside="aside"></image>' );
+				test( '<p style="float:right;margin:5px;width:50%"></p>', '<paragraph></paragraph>', '<p></p>' );
 			} );
 
 			it( 'config is an array with upcastAlso defined', () => {
@@ -528,36 +492,34 @@ describe( 'Conversion', () => {
 					allowAttributes: [ 'align' ]
 				} );
 
-				conversion.attributeToAttribute( 'align', [
-					{
-						model: 'right',
-						view: {
+				conversion.attributeToAttribute( {
+					model: {
+						key: 'align',
+						values: [ 'right', 'center' ]
+					},
+					view: {
+						right: {
 							key: 'class',
 							value: 'align-right'
 						},
-						upcastAlso: viewElement => {
-							if ( viewElement.getStyle( 'text-align' ) == 'right' ) {
-								return {
-									style: [ 'text-align' ]
-								};
-							}
-
-							return null;
-						}
-					},
-					{
-						model: 'center',
-						view: {
+						center: {
 							key: 'class',
 							value: 'align-center'
+						}
+					},
+					upcastAlso: {
+						right: {
+							style: {
+								'text-align': 'right'
+							}
 						},
-						upcastAlso: {
+						center: {
 							style: {
 								'text-align': 'center'
 							}
 						}
 					}
-				] );
+				} );
 
 				test(
 					'<p class="align-right">Foo</p>',
@@ -592,8 +554,11 @@ describe( 'Conversion', () => {
 
 		function loadData( input ) {
 			const parsedView = viewParse( input );
+			let convertedModel;
 
-			const convertedModel = viewDispatcher.convert( parsedView );
+			model.change( writer => {
+				convertedModel = viewDispatcher.convert( parsedView, writer );
+			} );
 
 			model.change( writer => {
 				writer.remove( ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, modelRoot.maxOffset ) );

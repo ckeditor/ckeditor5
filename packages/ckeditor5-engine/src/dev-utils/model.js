@@ -16,24 +16,25 @@ import Model from '../model/model';
 import Batch from '../model/batch';
 import ModelRange from '../model/range';
 import ModelPosition from '../model/position';
-import DowncastDispatcher from '../conversion/downcastdispatcher';
 import ModelSelection from '../model/selection';
 import ModelDocumentFragment from '../model/documentfragment';
 import DocumentSelection from '../model/documentselection';
 
 import View from '../view/view';
-import UpcastDispatcher from '../conversion/upcastdispatcher';
 import ViewContainerElement from '../view/containerelement';
-import ViewAttributeElement from '../view/attributeelement';
 import ViewRootEditableElement from '../view/rooteditableelement';
 
-import Mapper from '../conversion/mapper';
 import { parse as viewParse, stringify as viewStringify } from '../../src/dev-utils/view';
+
+import DowncastDispatcher from '../conversion/downcastdispatcher';
+import UpcastDispatcher from '../conversion/upcastdispatcher';
+import Mapper from '../conversion/mapper';
 import {
 	convertRangeSelection,
 	convertCollapsedSelection,
 } from '../conversion/downcast-selection-converters';
 import { insertText, insertElement, wrap } from '../conversion/downcast-converters';
+
 import isPlainObject from '@ckeditor/ckeditor5-utils/src/lib/lodash/isPlainObject';
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 
@@ -208,11 +209,18 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 	mapper.bindElements( node.root, viewRoot );
 
 	downcastDispatcher.on( 'insert:$text', insertText() );
-	downcastDispatcher.on( 'attribute', wrap( ( value, data ) => {
+	downcastDispatcher.on( 'attribute', ( evt, data, consumable, conversionApi ) => {
 		if ( data.item instanceof ModelSelection || data.item instanceof DocumentSelection || data.item.is( 'textProxy' ) ) {
-			return new ViewAttributeElement( 'model-text-with-attributes', { [ data.attributeKey ]: stringifyAttributeValue( value ) } );
+			const converter = wrap( ( modelAttributeValue, viewWriter ) => {
+				return viewWriter.createAttributeElement(
+					'model-text-with-attributes',
+					{ [ data.attributeKey ]: stringifyAttributeValue( modelAttributeValue ) }
+				);
+			} );
+
+			converter( evt, data, consumable, conversionApi );
 		}
-	} ) );
+	} );
 	downcastDispatcher.on( 'insert', insertElement( modelItem => {
 		// Stringify object types values for properly display as an output string.
 		const attributes = convertAttributes( modelItem.getAttributes(), stringifyAttributeValue );
