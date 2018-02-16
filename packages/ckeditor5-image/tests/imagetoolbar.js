@@ -79,11 +79,9 @@ describe( 'ImageToolbar', () => {
 
 			setData( model, '[<image src=""></image>]' );
 
-			expect( toolbar.element.classList.contains( 'ck-editor-toolbar' ) ).to.be.true;
-
 			sinon.assert.calledWithMatch( spy, {
 				view: toolbar,
-				balloonClassName: 'ck-toolbar-container ck-editor-toolbar-container'
+				balloonClassName: 'ck-toolbar-container'
 			} );
 		} );
 	} );

@@ -13,7 +13,7 @@ import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextu
 import { isImageWidgetSelected } from './image/utils';
 import { repositionContextualBalloon, getBalloonPositionData } from './image/ui/utils';
 
-const balloonClassName = 'ck-toolbar-container ck-editor-toolbar-container';
+const balloonClassName = 'ck-toolbar-container';
 
 /**
  * The image toolbar class. Creates an image toolbar that shows up when the image widget is selected.
@@ -68,13 +68,6 @@ export default class ImageToolbar extends Plugin {
 		 * @type {module:ui/toolbar/toolbarview~ToolbarView}
 		 */
 		this._toolbar = new ToolbarView();
-
-		// Add CSS class to the toolbar.
-		this._toolbar.extendTemplate( {
-			attributes: {
-				class: 'ck-editor-toolbar'
-			}
-		} );
 
 		// Add buttons to the toolbar.
 		this._toolbar.fillFromConfig( toolbarConfig, editor.ui.componentFactory );
