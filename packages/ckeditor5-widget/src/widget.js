@@ -42,7 +42,8 @@ export default class Widget extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
-		const viewDocument = this.editor.editing.view;
+		const view = this.editor.editing.view;
+		const viewDocument = view.document;
 
 		/**
 		 * Holds previously selected widgets.
@@ -56,9 +57,10 @@ export default class Widget extends Plugin {
 		// Converts selection placed over widget element to fake selection
 		this.editor.editing.downcastDispatcher.on( 'selection', ( evt, data, consumable, conversionApi ) => {
 			// Remove selected class from previously selected widgets.
-			this._clearPreviouslySelectedWidgets();
+			this._clearPreviouslySelectedWidgets( conversionApi.writer );
 
-			const viewSelection = conversionApi.viewSelection;
+			const viewWriter = conversionApi.writer;
+			const viewSelection = viewWriter.document.selection;
 			const selectedElement = viewSelection.getSelectedElement();
 
 			for ( const range of viewSelection.getRanges() ) {
@@ -66,12 +68,12 @@ export default class Widget extends Plugin {
 					const node = value.item;
 
 					if ( node.is( 'element' ) && isWidget( node ) ) {
-						node.addClass( WIDGET_SELECTED_CLASS_NAME );
+						viewWriter.addClass( WIDGET_SELECTED_CLASS_NAME, node );
 						this._previouslySelected.add( node );
 
 						// Check if widget is a single element selected.
 						if ( node == selectedElement ) {
-							viewSelection.setFake( true, { label: getLabel( selectedElement ) } );
+							viewWriter.setFakeSelection( true, { label: getLabel( selectedElement ) } );
 						}
 					}
 				}
@@ -79,7 +81,7 @@ export default class Widget extends Plugin {
 		}, { priority: 'low' } );
 
 		// If mouse down is pressed on widget - create selection over whole widget.
-		viewDocument.addObserver( MouseObserver );
+		view.addObserver( MouseObserver );
 		this.listenTo( viewDocument, 'mousedown', ( ...args ) => this._onMousedown( ...args ) );
 
 		// Handle custom keydown behaviour.
@@ -103,7 +105,8 @@ export default class Widget extends Plugin {
 	 */
 	_onMousedown( eventInfo, domEventData ) {
 		const editor = this.editor;
-		const viewDocument = editor.editing.view;
+		const view = editor.editing.view;
+		const viewDocument = view.document;
 		let element = domEventData.target;
 
 		// Do nothing if inside nested editable.
@@ -124,7 +127,7 @@ export default class Widget extends Plugin {
 
 		// Focus editor if is not focused already.
 		if ( !viewDocument.isFocused ) {
-			viewDocument.focus();
+			view.focus();
 		}
 
 		// Create model selection over widget.
@@ -280,7 +283,8 @@ export default class Widget extends Plugin {
 	_selectAllContent() {
 		const model = this.editor.model;
 		const editing = this.editor.editing;
-		const viewDocument = editing.view;
+		const view = editing.view;
+		const viewDocument = view.document;
 		const viewSelection = viewDocument.selection;
 
 		const selectedElement = viewSelection.getSelectedElement();
@@ -341,11 +345,13 @@ export default class Widget extends Plugin {
 
 	/**
 	 * Removes CSS class from previously selected widgets.
+	 *
 	 * @private
+	 * @param {module:engine/view/writer~Writer} writer
 	 */
-	_clearPreviouslySelectedWidgets() {
+	_clearPreviouslySelectedWidgets( writer ) {
 		for ( const widget of this._previouslySelected ) {
-			widget.removeClass( WIDGET_SELECTED_CLASS_NAME );
+			writer.removeClass( WIDGET_SELECTED_CLASS_NAME, widget );
 		}
 
 		this._previouslySelected.clear();

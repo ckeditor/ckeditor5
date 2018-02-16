@@ -9,10 +9,8 @@ import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import MouseObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mouseobserver';
 import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
 import { toWidget } from '../src/utils';
-import ViewContainer from '@ckeditor/ckeditor5-engine/src/view/containerelement';
-import ViewEditable from '@ckeditor/ckeditor5-engine/src/view/editableelement';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
-import AttributeContainer from '@ckeditor/ckeditor5-engine/src/view/attributeelement';
+import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
@@ -20,14 +18,15 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 /* global document */
 
 describe( 'Widget', () => {
-	let editor, model, viewDocument;
+	let editor, model, view, viewDocument;
 
 	beforeEach( () => {
 		return VirtualTestEditor.create( { plugins: [ Widget, Typing ] } )
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
-				viewDocument = editor.editing.view;
+				view = editor.editing.view;
+				viewDocument = view.document;
 
 				model.schema.register( 'widget', {
 					inheritAllFrom: '$block',
@@ -78,20 +77,22 @@ describe( 'Widget', () => {
 					.add( downcastElementToElement( { model: 'div', view: 'div' } ) )
 					.add( downcastElementToElement( {
 						model: 'widget',
-						view: () => {
-							const b = new AttributeContainer( 'b' );
-							const div = new ViewContainer( 'div', null, b );
+						view: ( item, consumable, api ) => {
+							const writer = api.writer;
+							const b = writer.createAttributeElement( 'b' );
+							const div = writer.createContainerElement( 'div' );
+							writer.insert( ViewPosition.createAt( div ), b );
 
-							return toWidget( div, { label: 'element label' } );
+							return toWidget( div, writer, { label: 'element label' } );
 						}
 					} ) )
 					.add( downcastElementToElement( {
 						model: 'nested',
-						view: () => new ViewEditable( 'figcaption', { contenteditable: true } )
+						view: ( item, consumable, api ) => api.writer.createEditableElement( 'figcaption', { contenteditable: true } )
 					} ) )
 					.add( downcastElementToElement( {
 						model: 'editable',
-						view: () => new ViewEditable( 'figcaption', { contenteditable: true } )
+						view: ( item, consumable, api ) => api.writer.createEditableElement( 'figcaption', { contenteditable: true } )
 					} ) );
 			} );
 	} );
@@ -101,7 +102,7 @@ describe( 'Widget', () => {
 	} );
 
 	it( 'should add MouseObserver', () => {
-		expect( editor.editing.view.getObserver( MouseObserver ) ).to.be.instanceof( MouseObserver );
+		expect( view.getObserver( MouseObserver ) ).to.be.instanceof( MouseObserver );
 	} );
 
 	it( 'should create selection over clicked widget', () => {
@@ -156,7 +157,7 @@ describe( 'Widget', () => {
 			preventDefault: sinon.spy()
 		};
 
-		viewDocument.focus();
+		view.focus();
 		viewDocument.fire( 'mousedown', domEventDataMock );
 
 		expect( getModelData( model ) ).to.equal( '<paragraph>[]foo bar</paragraph><widget></widget>' );
@@ -170,7 +171,7 @@ describe( 'Widget', () => {
 			target: widget,
 			preventDefault: sinon.spy()
 		};
-		const focusSpy = sinon.spy( viewDocument, 'focus' );
+		const focusSpy = sinon.spy( view, 'focus' );
 
 		viewDocument.isFocused = true;
 		viewDocument.fire( 'mousedown', domEventDataMock );
@@ -183,7 +184,7 @@ describe( 'Widget', () => {
 	it( 'should apply fake view selection if model selection is on widget element', () => {
 		setModelData( model, '[<widget>foo bar</widget>]' );
 
-		expect( getViewData( viewDocument ) ).to.equal(
+		expect( getViewData( view ) ).to.equal(
 			'[<div class="ck-widget ck-widget_selected" contenteditable="false">foo bar<b></b></div>]'
 		);
 		expect( viewDocument.selection.isFake ).to.be.true;
@@ -199,7 +200,7 @@ describe( 'Widget', () => {
 		setModelData( model, '[<paragraph>foo</paragraph><widget></widget><widget></widget>]' );
 
 		expect( viewDocument.selection.isFake ).to.be.false;
-		expect( getViewData( viewDocument ) ).to.equal(
+		expect( getViewData( view ) ).to.equal(
 			'[' +
 			'<p>foo</p>' +
 			'<div class="ck-widget ck-widget_selected" contenteditable="false"><b></b></div>' +
@@ -217,7 +218,7 @@ describe( 'Widget', () => {
 	it( 'should toggle selected class', () => {
 		setModelData( model, '<paragraph>foo</paragraph>[<widget>foo</widget>]' );
 
-		expect( getViewData( viewDocument ) ).to.equal(
+		expect( getViewData( view ) ).to.equal(
 			'<p>foo</p>[<div class="ck-widget ck-widget_selected" contenteditable="false">foo<b></b></div>]'
 		);
 
@@ -225,7 +226,7 @@ describe( 'Widget', () => {
 			writer.setSelection( null );
 		} );
 
-		expect( getViewData( viewDocument ) ).to.equal(
+		expect( getViewData( view ) ).to.equal(
 			'<p>{}foo</p><div class="ck-widget" contenteditable="false">foo<b></b></div>'
 		);
 	} );
@@ -233,7 +234,7 @@ describe( 'Widget', () => {
 	it( 'should do nothing when selection is placed in other editable', () => {
 		setModelData( model, '<widget><editable>foo bar</editable></widget><editable>[baz]</editable>' );
 
-		expect( getViewData( viewDocument ) ).to.equal(
+		expect( getViewData( view ) ).to.equal(
 			'<div class="ck-widget" contenteditable="false">' +
 				'<figcaption contenteditable="true">foo bar</figcaption>' +
 				'<b></b>' +
@@ -697,7 +698,7 @@ describe( 'Widget', () => {
 				expect( getModelData( model ) ).to.equal( expected );
 
 				if ( expectedView ) {
-					expect( getViewData( viewDocument ) ).to.equal( expectedView );
+					expect( getViewData( view ) ).to.equal( expectedView );
 				}
 			} );
 		}
@@ -707,7 +708,7 @@ describe( 'Widget', () => {
 		function test( name, input, direction, expected ) {
 			it( name, () => {
 				setModelData( model, input );
-				const scrollStub = sinon.stub( viewDocument, 'scrollToTheSelection' );
+				const scrollStub = sinon.stub( view, 'scrollToTheSelection' );
 				const domEventDataMock = {
 					keyCode: direction == 'backward' ? keyCodes.backspace : keyCodes.delete,
 				};
@@ -914,7 +915,7 @@ describe( 'Widget', () => {
 
 		it( 'should prevent default behaviour and stop event propagation', () => {
 			setModelData( model, '<paragraph>foo[]</paragraph><widget></widget>' );
-			const scrollStub = sinon.stub( viewDocument, 'scrollToTheSelection' );
+			const scrollStub = sinon.stub( view, 'scrollToTheSelection' );
 			const deleteSpy = sinon.spy();
 
 			viewDocument.on( 'delete', deleteSpy );
@@ -1060,7 +1061,7 @@ describe( 'Widget', () => {
 		);
 
 		it( 'does nothing when editor when read only mode is enabled (delete)', () => {
-			const scrollStub = sinon.stub( viewDocument, 'scrollToTheSelection' );
+			const scrollStub = sinon.stub( view, 'scrollToTheSelection' );
 			setModelData( model,
 				'<paragraph>foo</paragraph>' +
 				'<image></image>' +
@@ -1088,7 +1089,7 @@ describe( 'Widget', () => {
 		} );
 
 		it( 'does nothing when editor when read only mode is enabled (forward delete)', () => {
-			const scrollStub = sinon.stub( viewDocument, 'scrollToTheSelection' );
+			const scrollStub = sinon.stub( view, 'scrollToTheSelection' );
 			setModelData( model,
 				'<paragraph>foo</paragraph>' +
 				'<image></image>' +
