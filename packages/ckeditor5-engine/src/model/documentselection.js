@@ -395,7 +395,7 @@ export default class DocumentSelection {
 	/**
 	 * Temporarily and partially disables default gravity behaviour that tries to get attributes from nodes surrounding the caret.
 	 *
-	 * @see module:engine/model/writer~Writer#overrideGravity
+	 * @see module:engine/model/writer~Writer#overrideSelectionGravity
 	 * @protected
 	 * @param {Boolean} [customRestore=false] When `true` then gravity won't be restored automatically.
 	 */

@@ -1028,9 +1028,8 @@ export default class Writer {
 	 * Selection attribute keys before override will be equal `[ 'bold', 'linkHref' ]`
 	 * Selection attribute keys after override will be equal `[ 'bold' ]`
 	 *
-	 * As default gravity is automatically restored just after a direct
-	 * {@link module:model/documentselection~DocumentSelection#change:range} event but this behaviour can be disabled
-	 * by passing `true` flag as param.
+	 * As default gravity is automatically restored just after a direct selection change event but this behaviour
+	 * can be disabled by passing `true` flag as param.
 	 *
 	 * @param {Boolean} [customRestore=false] When `true` then gravity won't be restored until
 	 * {@link ~Writer#overrideSelectionGravity} will be called directly.
