@@ -18,8 +18,6 @@ import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
-import { elementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/two-way-converters';
-
 describe( 'ImageCaptionEngine', () => {
 	let editor, model, doc, view;
 
@@ -38,7 +36,7 @@ describe( 'ImageCaptionEngine', () => {
 				model.schema.extend( 'caption', { allowIn: 'widget' } );
 				model.schema.extend( '$text', { allowIn: 'widget' } );
 
-				elementToElement( editor.conversion, {
+				editor.conversion.elementToElement( {
 					model: 'widget',
 					view: 'widget'
 				} );

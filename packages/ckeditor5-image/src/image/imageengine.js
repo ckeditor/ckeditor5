@@ -47,16 +47,17 @@ export default class ImageEngine extends Plugin {
 			allowAttributes: [ 'alt', 'src', 'srcset' ]
 		} );
 
-		const dataElementCreator = ( item, consumable, api ) => createImageViewElement( api.writer );
-		editor.conversion.for( 'dataDowncast' ).add( downcastElementToElement( {
+		const dataElementCreator = ( modelElement, viewWriter ) => createImageViewElement( viewWriter );
+		conversion.for( 'dataDowncast' ).add( downcastElementToElement( {
 			model: 'image',
 			view: dataElementCreator
 		} ) );
 
-		const editingElementCreator = ( item, consumable, api ) =>
-			toImageWidget( createImageViewElement( api.writer ), api.writer, t( 'image widget' ) );
+		const editingElementCreator = ( modelElement, viewWriter ) => {
+			return toImageWidget( createImageViewElement( viewWriter ), viewWriter, t( 'image widget' ) );
+		};
 
-		editor.conversion.for( 'editingDowncast' ).add( downcastElementToElement( {
+		conversion.for( 'editingDowncast' ).add( downcastElementToElement( {
 			model: 'image',
 			view: editingElementCreator
 		} ) );

@@ -13,7 +13,6 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 
 import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
 import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
-import { elementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/two-way-converters';
 
 import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
@@ -39,8 +38,8 @@ describe( 'Image converters', () => {
 					isBlock: true
 				} );
 
-				const editingElementCreator = ( item, consumable, api ) =>
-					toImageWidget( createImageViewElement( api.writer ), api.writer, '' );
+				const editingElementCreator = ( modelElement, viewWriter ) =>
+					toImageWidget( createImageViewElement( viewWriter ), viewWriter, '' );
 
 				editor.conversion.for( 'editingDowncast' ).add( downcastElementToElement( {
 					model: 'image',
@@ -126,7 +125,7 @@ describe( 'Image converters', () => {
 		} );
 
 		it( 'should split parent element when image is not allowed - at the end', () => {
-			elementToElement( editor.conversion, { model: 'div', view: 'div' } );
+			editor.conversion.elementToElement( { model: 'div', view: 'div' } );
 
 			schema.register( 'div', { inheritAllFrom: '$block' } );
 			schema.extend( 'image', { disallowIn: 'div' } );
@@ -144,7 +143,7 @@ describe( 'Image converters', () => {
 		} );
 
 		it( 'should split parent element when image is not allowed - at the beginning', () => {
-			elementToElement( editor.conversion, { model: 'div', view: 'div' } );
+			editor.conversion.elementToElement( { model: 'div', view: 'div' } );
 
 			schema.register( 'div', { inheritAllFrom: '$block' } );
 			schema.extend( 'image', { disallowIn: 'div' } );
