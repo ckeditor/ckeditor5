@@ -8,8 +8,6 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { downcastAttributeToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
-import { upcastElementToAttribute } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 import AttributeCommand from './attributecommand';
 
 const CODE = 'code';
@@ -32,14 +30,15 @@ export default class CodeEngine extends Plugin {
 		// Allow code attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: CODE } );
 
-		// Build converter from model to view for data and editing pipelines.
-		editor.conversion.for( 'downcast' )
-			.add( downcastAttributeToElement( CODE, { view: 'code' } ) );
-
-		// Build converter from view to model for data pipeline.
-		editor.conversion.for( 'upcast' )
-			.add( upcastElementToAttribute( { view: 'code', model: CODE } ) )
-			.add( upcastElementToAttribute( { view: { style: { 'word-wrap': 'break-word' } }, model: CODE } ) );
+		editor.conversion.attributeToElement( {
+			model: CODE,
+			view: 'code',
+			upcastAlso: {
+				style: {
+					'word-wrap': 'break-word'
+				}
+			}
+		} );
 
 		// Create code command.
 		editor.commands.add( CODE, new AttributeCommand( editor, CODE ) );
