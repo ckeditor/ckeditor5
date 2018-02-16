@@ -38,6 +38,6 @@
 	}
 
 	&:not(.ck-focused) {
-		border-color: var(--ck-color-editor-border);
+		border-color: var(--ck-color-base-border);
 	}
 }

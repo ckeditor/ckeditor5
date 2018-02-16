@@ -93,12 +93,6 @@
 	--ck-color-tooltip-background: 								var(--ck-color-base-text);
 	--ck-color-tooltip-text: 									var(--ck-color-base-background);
 
-	/* -- Editor -------------------------------------------------------------------------------- */
-
-	--ck-color-editor-border: 									var(--ck-color-base-border);
-	--ck-color-editor-toolbar-background: 						var(--ck-color-base-foreground);
-	--ck-color-editor-dropdown-background: 						var(--ck-color-base-background);
-
 	/* -- Engine -------------------------------------------------------------------------------- */
 
 	--ck-color-engine-placeholder-text: 						hsl(0, 0%, 76%);
