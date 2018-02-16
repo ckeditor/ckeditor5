@@ -80,7 +80,7 @@
 
 	/* -- Panel --------------------------------------------------------------------------------- */
 
-	--ck-color-panel-background: 								var(--ck-color-base-foreground);
+	--ck-color-panel-background: 								var(--ck-color-base-background);
 	--ck-color-panel-border: 									var(--ck-color-base-border);
 
 	/* -- Toolbar ------------------------------------------------------------------------------- */
