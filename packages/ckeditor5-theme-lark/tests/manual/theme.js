@@ -95,19 +95,19 @@ function renderIcon() {
 function renderButton() {
 	// --- States ------------------------------------------------------------
 
-	ui.buttonStates.add( button( {
-		label: 'State: normal (none)',
-	} ) );
-
-	ui.buttonStates.add( button( {
-		label: 'State: disabled',
-		isEnabled: false
-	} ) );
-
-	ui.buttonStates.add( button( {
-		label: 'State: on',
-		isOn: true
-	} ) );
+	ui.buttonStates.add( toolbar( [
+		button( {
+			label: 'State: normal (none)',
+		} ),
+		button( {
+			label: 'State: disabled',
+			isEnabled: false
+		} ),
+		button( {
+			label: 'State: on',
+			isOn: true
+		} )
+	 ] ) );
 
 	// --- Types ------------------------------------------------------------
 
@@ -115,9 +115,9 @@ function renderButton() {
 	const roundedButton = button( { label: 'Rounded corners' } );
 	const boldButton = button( { label: 'Bold text' } );
 
-	ui.buttonTypes.add( actionButton );
-	ui.buttonTypes.add( roundedButton );
-	ui.buttonTypes.add( boldButton );
+	ui.buttonTypes.add( toolbar( [
+		actionButton, roundedButton, boldButton
+	] ) );
 
 	// TODO: It requires model interface.
 	actionButton.element.classList.add( 'ck-button-action' );
@@ -130,26 +130,22 @@ function renderButton() {
 
 	// --- Icon ------------------------------------------------------------
 
-	ui.buttonIcon.add( button( {
-		label: 'Bold',
-		icon: boldIcon
-	} ) );
+	ui.buttonIcon.add( toolbar( [
+		button( {
+			label: 'Bold',
+			icon: boldIcon
+		} )
+	] ) );
 
 	const styledButton = button( {
 		label: 'Button with an icon and custom styles',
 		icon: italicIcon
 	} );
 
-	ui.buttonIconCustom.add( styledButton );
+	ui.buttonIconCustom.add( toolbar( [ styledButton ] ) );
 
 	// TODO: It probably requires model interface.
 	styledButton.element.setAttribute( 'style', 'border-radius: 100px; border: 0' );
-
-	ui.buttonIconStates.add( button( {
-		label: 'Disabled',
-		icon: boldIcon,
-		isEnabled: false
-	} ) );
 
 	const disabledActionButton = button( {
 		label: 'Disabled action',
@@ -157,32 +153,27 @@ function renderButton() {
 		isEnabled: false
 	} );
 
-	ui.buttonIconStates.add( disabledActionButton );
+	ui.buttonIconStates.add( toolbar( [
+		button( {
+			label: 'Disabled',
+			icon: boldIcon,
+			isEnabled: false
+		} ),
+		disabledActionButton,
+		button( {
+			label: 'Bold',
+			withText: false,
+			tooltip: true,
+			icon: boldIcon
+		} )
+	] ) );
 
 	// TODO: It requires model interface.
 	disabledActionButton.element.classList.add( 'ck-button-action' );
 
-	ui.buttonIconStates.add( button( {
-		label: 'Bold',
-		withText: false,
-		tooltip: true,
-		icon: boldIcon
-	} ) );
-
 	// --- Responsive ------------------------------------------------------------
 
 	for ( let i = 1; i < 4; i++ ) {
-		ui[ `buttonResponsive${ i }` ].add( button( {
-			label: 'A button',
-			isEnabled: true
-		} ) );
-
-		ui[ `buttonResponsive${ i }` ].add( button( {
-			label: 'Bold',
-			icon: boldIcon,
-			isEnabled: true
-		} ) );
-
 		const notextButton = button( {
 			label: 'Bold',
 			withText: false,
@@ -190,7 +181,18 @@ function renderButton() {
 			icon: boldIcon
 		} );
 
-		ui[ `buttonResponsive${ i }` ].add( notextButton );
+		ui[ `buttonResponsive${ i }` ].add( toolbar( [
+			button( {
+				label: 'A button',
+				isEnabled: true
+			} ),
+			button( {
+				label: 'Bold',
+				icon: boldIcon,
+				isEnabled: true
+			} ),
+			notextButton
+		] ) );
 
 		// TODO: It requires model interface.
 		notextButton.element.classList.add( 'ck-button-action' );
@@ -198,19 +200,20 @@ function renderButton() {
 
 	// --- Tooltip ------------------------------------------------------------
 
-	ui.buttonTooltip.add( button( {
-		label: 'This button has a tooltip (south)',
-		withText: true,
-		tooltip: 'The content of the tooltip',
-	} ) );
-
-	ui.buttonTooltip.add( button( {
-		label: 'This one too – north',
-		withText: true,
-		keystroke: 'Ctrl+N',
-		tooltip: true,
-		tooltipPosition: 'n'
-	} ) );
+	ui.buttonTooltip.add( toolbar( [
+		button( {
+			label: 'This button has a tooltip (south)',
+			withText: true,
+			tooltip: 'The content of the tooltip',
+		} ),
+		button( {
+			label: 'This one too – north',
+			withText: true,
+			keystroke: 'Ctrl+N',
+			tooltip: true,
+			tooltipPosition: 'n'
+		} )
+	] ) );
 }
 
 function renderDropdown() {
@@ -225,53 +228,55 @@ function renderDropdown() {
 		} ) );
 	} );
 
-	ui.listDropdown.add( listDropdown( {
-		label: 'Normal state',
-		isEnabled: true,
-		items: collection
-	} ) );
+	ui.listDropdown.add( toolbar( [
+		listDropdown( {
+			label: 'Normal state',
+			isEnabled: true,
+			items: collection
+		} ),
+		listDropdown( {
+			label: 'Disabled',
+			isEnabled: false,
+			items: collection
+		} )
+	] ) );
 
-	ui.listDropdown.add( listDropdown( {
-		label: 'Disabled',
-		isEnabled: false,
-		items: collection
-	} ) );
-
-	ui.buttonDropdown.add( toolbarDropdown( {
-		label: 'Normal state',
-		isEnabled: true,
-		buttons: [
-			button( {
-				withText: false,
-				label: 'foo',
-				icon: boldIcon
-			} ),
-			button( {
-				withText: false,
-				label: 'foo',
-				icon: italicIcon
-			} )
-		]
-	} ) );
-
-	ui.buttonDropdown.add( toolbarDropdown( {
-		label: 'Disabled',
-		isEnabled: false,
-		buttons: [
-			button( {
-				withText: false,
-				isEnabled: false,
-				label: 'foo',
-				icon: boldIcon
-			} ),
-			button( {
-				withText: false,
-				isEnabled: false,
-				label: 'foo',
-				icon: italicIcon
-			} )
-		]
-	} ) );
+	ui.buttonDropdown.add( toolbar( [
+		toolbarDropdown( {
+			label: 'Normal state',
+			isEnabled: true,
+			buttons: [
+				button( {
+					withText: false,
+					label: 'foo',
+					icon: boldIcon
+				} ),
+				button( {
+					withText: false,
+					label: 'foo',
+					icon: italicIcon
+				} )
+			]
+		} ),
+		toolbarDropdown( {
+			label: 'Disabled',
+			isEnabled: false,
+			buttons: [
+				button( {
+					withText: false,
+					isEnabled: false,
+					label: 'foo',
+					icon: boldIcon
+				} ),
+				button( {
+					withText: false,
+					isEnabled: false,
+					label: 'foo',
+					icon: italicIcon
+				} )
+			]
+		} )
+	] ) );
 }
 
 function renderToolbar() {
