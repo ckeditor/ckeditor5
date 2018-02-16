@@ -17,8 +17,10 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
  * @extends module:engine/view/observer~Observer
  */
 export default class EnterObserver extends Observer {
-	constructor( document ) {
-		super( document );
+	constructor( view ) {
+		super( view );
+
+		const document = this.document;
 
 		document.on( 'keydown', ( evt, data ) => {
 			if ( this.isEnabled && data.keyCode == keyCodes.enter ) {
