@@ -107,10 +107,13 @@ function downcastAttributeToStyle() {
 				return;
 			}
 
+			const element = conversionApi.mapper.toViewElement( data.item );
+			const viewWriter = conversionApi.writer;
+
 			if ( data.attributeNewValue ) {
-				conversionApi.mapper.toViewElement( data.item ).setStyle( { 'text-align': data.attributeNewValue } );
+				viewWriter.setStyle( { 'text-align': data.attributeNewValue }, element );
 			} else {
-				conversionApi.mapper.toViewElement( data.item ).removeStyle( 'text-align' );
+				viewWriter.removeStyle( 'text-align', element );
 			}
 		} );
 	};
