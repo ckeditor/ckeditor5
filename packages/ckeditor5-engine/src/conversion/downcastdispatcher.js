@@ -123,8 +123,6 @@ export default class DowncastDispatcher {
 	 * @param {module:engine/view/writer~Writer} writer View writer that should be used to modify view document.
 	 */
 	convertChanges( differ, writer ) {
-		this.conversionApi.writer = writer;
-
 		// Convert changes that happened on model tree.
 		for ( const entry of differ.getChanges() ) {
 			if ( entry.type == 'insert' ) {
