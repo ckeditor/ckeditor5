@@ -248,12 +248,12 @@ describe( 'ContextualToolbar', () => {
 
 			const spy = sandbox.spy( balloon, 'updatePosition' );
 
-			editingView.document.fire( 'change' );
+			editingView.fire( 'render' );
 
 			contextualToolbar.show();
 			sinon.assert.notCalled( spy );
 
-			editingView.document.fire( 'change' );
+			editingView.fire( 'render' );
 			sinon.assert.calledOnce( spy );
 		} );
 
@@ -345,7 +345,7 @@ describe( 'ContextualToolbar', () => {
 			contextualToolbar.show();
 			contextualToolbar.hide();
 
-			editingView.fire( 'change' );
+			editingView.fire( 'render' );
 			sinon.assert.notCalled( spy );
 		} );
 
