@@ -10,7 +10,7 @@ ClassicEditor
 		toolbar: {
 			items: [
 				'headings', '|', 'highlight:marker', 'highlight:greenMarker', 'highlight:pinkMarker', 'highlight:bluePen',
-				'highlight:redPen', 'removeHighlight', 'undo', 'redo'
+				'highlight:redPen', 'removeHighlight', '|', 'undo', 'redo'
 			],
 			viewportTopOffset: 60
 		}

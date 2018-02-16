@@ -5,18 +5,18 @@ category: features
 
 {@snippet features/build-highlight-source}
 
-The {@link module:highlight/highlight~Highlight} feature enables support for setting highlight.
+The {@link module:highlight/highlight~Highlight} feature offers a text marking tools that help content authors speed up their work, e.g. reviewing content or marking it for the future reference. It uses inline `<marker>` elements in the view, supports both markers (background color) and pens (text color), and comes with a flexible configuration.
 
 ## Demo
 
 {@snippet features/highlight}
 
-## Configuring highlight options
+## Configuring the highlight options
 
-It is, of course, possible to configure which highlight options the editor should support.
-Use the {@link module:highlight/highlight~HighlightConfig#options `highlight.options`} configuration option to do so.
+It is possible to configure which highlight options are supported by the editor.
+You can use the {@link module:highlight/highlight~HighlightConfig#options `highlight.options`} configuration and define your own highlight styles.
 
-For example, the following editor will support only two highlighters:
+For example, the following editor supports only two styles (a green marker and a blue pen):
 
 ```js
 ClassicEditor
@@ -28,19 +28,19 @@ ClassicEditor
 					class: 'marker-green',
 					title: 'Green marker',
 					color: '#66ff00',
-					type: 'marker' 
+					type: 'marker'
 				},
-				{ 
+				{
 					model: 'bluePen',
 					class: 'pen-blue',
 					title: 'Blue pen',
 					color: '#0091ff',
-					type: 'pen' 
+					type: 'pen'
 				}
 			]
 		},
 		toolbar: [
-			'headings', 'bulletedList', 'numberedList', 'highlight', 'undo', 'redo'
+			'headings', '|', 'bulletedList', 'numberedList', 'highlightDropdown', 'undo', 'redo'
 		]
 	} )
 	.then( ... )
@@ -49,17 +49,17 @@ ClassicEditor
 
 {@snippet features/custom-highlight-options}
 
-Instead of using `highlightDropdown` the editor supports also button configuration:
+Instead of using the (default) `highlightDropdown`, the feature also supports a configuration with separate buttons directly in the toolbar:
 
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		toolbar: {
 			items: [
-				'headings', 'highlight:marker', 'highlight:greenMarker',
+				'headings', '|', 'highlight:marker', 'highlight:greenMarker',
 				'highlight:pinkMarker', 'highlight:bluePen',
 				'highlight:redPen', 'removeHighlight', 'undo', 'redo'
-			],
+			]
 		}
 	} )
 	.then( ... )
@@ -76,7 +76,7 @@ To add this feature to your editor install the [`@ckeditor/ckeditor5-highlight`]
 npm install --save @ckeditor/ckeditor5-highlight
 ```
 
-And add it to your plugin list and toolbar configuration:
+And add it to your plugin list and the toolbar configuration:
 
 ```js
 import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight';
@@ -98,18 +98,18 @@ ClassicEditor
 
 The {@link module:highlight/highlight~Highlight} plugin registers:
 
-* Dropdown: `'highlightDropdown'`.
-* Command: `'highlight'`.
+* The `'highlightDropdown'` dropdown,
+* The {@link module:highlight/highlightcommand~HighlightCommand `'highlight'`} command.
 
-	The number of options and their names are based on the {@link module:highlight/highlight~HighlightConfig#options `highlight.options`} configuration option).
+	The number of options and their names correspond to the {@link module:highlight/highlight~HighlightConfig#options `highlight.options`} configuration option.
 
-	You can change highlight of the current selection by executing command with proper value:
+	You can change the highlight of the current selection by executing the command with a desired value:
 
 	```js
 	editor.execute( 'highlight', { value: 'marker' } );
 	```
 
-	The Value passed to `highlight` corresponds to the `model` property in configuration object. For default configuration:
+	The `value` corresponds to the `model` property in configuration object. For the default configuration:
 	```js
 	highlight.options = [
 		{ model: 'marker', class: 'marker', title: 'Marker', color: '#ffff66', type: 'marker' },
@@ -119,16 +119,16 @@ The {@link module:highlight/highlight~Highlight} plugin registers:
 		{ model: 'bluePen', class: 'pen-blue', title: 'Blue pen', color: '#0091ff', type: 'pen' }
 	]
 	```
-	
-	the `highlight` command will accept strings below as value:
-	- `'marker'` - and will be available as `highligth:marker'` button.
-	- `'greenMarker'` - and will be available as `highligth:greenMarker'` button.
-	- `'pinkMarker'` - and will be available as `highligth:pinkMarker'` button.
-	- `'redPen'` - and will be available as `highligth:redPen'` button.
-	- `'bluePen'` - and will be available as `highligth:bluePen'` button.
-	
-	passing an empty value will remove any `highlight` set:
-	
+
+	the `highlight` command will accept the corresponding strings as values:
+	- `'marker'` – available as a `'highlight:marker'` button.
+	- `'greenMarker'` – available as a `'highlight:greenMarker'` button.
+	- `'pinkMarker'` – available as a `'highlight:pinkMarker'` button.
+	- `'redPen'` – available as a `'highlight:redPen'` button.
+	- `'bluePen'` – available as a `'highlight:bluePen'` button.
+
+	passing an empty `value` will remove any `highlight` from the selection:
+
 	```js
 	editor.execute( 'highlight' );
 	```
