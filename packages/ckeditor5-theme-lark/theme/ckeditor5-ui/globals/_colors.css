@@ -44,7 +44,7 @@
 	--ck-color-button-on-disabled-border: 						transparent;
 
 	--ck-color-button-action-background: 						var(--ck-color-base-action);
-	--ck-color-button-action-border: 							var(--ck-color-base-action);
+	--ck-color-button-action-border: 							transparent;
 	--ck-color-button-action-focus-background: 					hsl(104, 44%, 43%);
 	--ck-color-button-action-focus-border: 						transparent;
 	--ck-color-button-action-active-background: 				hsl(104, 44%, 41%);
