@@ -204,7 +204,7 @@ export default class Link extends Plugin {
 	 * @private
 	 */
 	_enableUserBalloonInteractions() {
-		const viewDocument = this.editor.editing.view;
+		const viewDocument = this.editor.editing.view.document;
 
 		// Handle click on view document and show panel when selection is placed inside the link element.
 		// Keep panel open until selection will be inside the same link element.
@@ -354,8 +354,8 @@ export default class Link extends Plugin {
 	}
 
 	/**
-	 * Makes the UI react to the {@link module:engine/view/document~Document#event:render} in the view
-	 * document to reposition itself as the document changes.
+	 * Makes the UI react to the {@link module:engine/view/view~View#event:render} in the view to
+	 * reposition itself as the document changes.
 	 *
 	 * See: {@link #_hideUI} to learn when the UI stops reacting to the `render` event.
 	 *
@@ -402,7 +402,7 @@ export default class Link extends Plugin {
 		} );
 
 		function getSelectionParent() {
-			return editingView.selection.focus.getAncestors()
+			return editingView.document.selection.focus.getAncestors()
 				.reverse()
 				.find( node => node.is( 'element' ) );
 		}
@@ -478,14 +478,15 @@ export default class Link extends Plugin {
 	 * @returns {module:utils/dom/position~Options}
 	 */
 	_getBalloonPositionData() {
-		const viewDocument = this.editor.editing.view;
+		const view = this.editor.editing.view;
+		const viewDocument = view.document;
 		const targetLink = this._getSelectedLinkElement();
 
 		const target = targetLink ?
 			// When selection is inside link element, then attach panel to this element.
-			viewDocument.domConverter.mapViewToDom( targetLink ) :
+			view.domConverter.mapViewToDom( targetLink ) :
 			// Otherwise attach panel to the selection.
-			viewDocument.domConverter.viewRangeToDom( viewDocument.selection.getFirstRange() );
+			view.domConverter.viewRangeToDom( viewDocument.selection.getFirstRange() );
 
 		return { target };
 	}
@@ -502,7 +503,7 @@ export default class Link extends Plugin {
 	 * @returns {module:engine/view/attributeelement~AttributeElement|null}
 	 */
 	_getSelectedLinkElement() {
-		const selection = this.editor.editing.view.selection;
+		const selection = this.editor.editing.view.document.selection;
 
 		if ( selection.isCollapsed ) {
 			return findLinkElementAncestor( selection.getFirstPosition() );
