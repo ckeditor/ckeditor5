@@ -23,7 +23,7 @@ import ViewDocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfr
 import ViewText from '@ckeditor/ckeditor5-engine/src/view/text';
 
 describe( 'Clipboard feature', () => {
-	let editor, editingView, clipboardPlugin, scrollSpy;
+	let editor, view, viewDocument, clipboardPlugin, scrollSpy;
 
 	beforeEach( () => {
 		return VirtualTestEditor
@@ -32,18 +32,19 @@ describe( 'Clipboard feature', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-				editingView = editor.editing.view;
+				view = editor.editing.view;
+				viewDocument = editor.editing.view.document;
 				clipboardPlugin = editor.plugins.get( 'Clipboard' );
 
 				// VirtualTestEditor has no DOM, so this method must be stubbed for all tests.
 				// Otherwise it will throw as it accesses the DOM to do its job.
-				scrollSpy = sinon.stub( editingView, 'scrollToTheSelection' );
+				scrollSpy = sinon.stub( view, 'scrollToTheSelection' );
 			} );
 	} );
 
 	describe( 'constructor()', () => {
 		it( 'registers ClipboardObserver', () => {
-			expect( editingView.getObserver( ClipboardObserver ) ).to.be.instanceOf( ClipboardObserver );
+			expect( view.getObserver( ClipboardObserver ) ).to.be.instanceOf( ClipboardObserver );
 		} );
 	} );
 
@@ -53,14 +54,14 @@ describe( 'Clipboard feature', () => {
 				const dataTransferMock = createDataTransfer( { 'text/html': '<p>x</p>', 'text/plain': 'y' } );
 				const preventDefaultSpy = sinon.spy();
 
-				editingView.on( 'clipboardInput', ( evt, data ) => {
+				viewDocument.on( 'clipboardInput', ( evt, data ) => {
 					expect( preventDefaultSpy.calledOnce ).to.be.true;
 					expect( data.dataTransfer ).to.equal( dataTransferMock );
 
 					done();
 				} );
 
-				editingView.fire( 'paste', {
+				viewDocument.fire( 'paste', {
 					dataTransfer: dataTransferMock,
 					preventDefault: preventDefaultSpy
 				} );
@@ -77,7 +78,7 @@ describe( 'Clipboard feature', () => {
 					done();
 				} );
 
-				editingView.fire( 'paste', {
+				viewDocument.fire( 'paste', {
 					dataTransfer: dataTransferMock,
 					preventDefault: preventDefaultSpy
 				} );
@@ -89,14 +90,14 @@ describe( 'Clipboard feature', () => {
 				const dataTransferMock = createDataTransfer( { 'text/plain': 'x\n\ny  z' } );
 				const preventDefaultSpy = sinon.spy();
 
-				editingView.on( 'clipboardInput', ( evt, data ) => {
+				viewDocument.on( 'clipboardInput', ( evt, data ) => {
 					expect( preventDefaultSpy.calledOnce ).to.be.true;
 					expect( data.dataTransfer ).to.equal( dataTransferMock );
 
 					done();
 				} );
 
-				editingView.fire( 'paste', {
+				viewDocument.fire( 'paste', {
 					dataTransfer: dataTransferMock,
 					preventDefault: preventDefaultSpy
 				} );
@@ -113,7 +114,7 @@ describe( 'Clipboard feature', () => {
 					done();
 				} );
 
-				editingView.fire( 'paste', {
+				viewDocument.fire( 'paste', {
 					dataTransfer: dataTransferMock,
 					preventDefault: preventDefaultSpy
 				} );
@@ -125,7 +126,7 @@ describe( 'Clipboard feature', () => {
 			const preventDefaultSpy = sinon.spy();
 			const editorViewCalled = sinon.spy();
 
-			editingView.on( 'clipboardInput', ( evt, data ) => {
+			viewDocument.on( 'clipboardInput', ( evt, data ) => {
 				expect( preventDefaultSpy.calledOnce ).to.be.true;
 
 				expect( data.dataTransfer ).to.equal( dataTransferMock );
@@ -142,7 +143,7 @@ describe( 'Clipboard feature', () => {
 				done();
 			} );
 
-			editingView.fire( 'paste', {
+			viewDocument.fire( 'paste', {
 				dataTransfer: dataTransferMock,
 				preventDefault: preventDefaultSpy
 			} );
@@ -152,13 +153,13 @@ describe( 'Clipboard feature', () => {
 			const dataTransferMock = createDataTransfer( { 'text/html': 'x' } );
 			const spy = sinon.spy();
 
-			editingView.on( 'paste', evt => {
+			viewDocument.on( 'paste', evt => {
 				evt.stop();
 			} );
 
-			editingView.on( 'clipboardInput', spy );
+			viewDocument.on( 'clipboardInput', spy );
 
-			editingView.fire( 'paste', {
+			viewDocument.fire( 'paste', {
 				dataTransfer: dataTransferMock,
 				preventDefault() {}
 			} );
@@ -170,7 +171,7 @@ describe( 'Clipboard feature', () => {
 			const dataTransferMock = createDataTransfer( { 'text/html': '<p>x</p>', 'text/plain': 'y' } );
 			const spy = sinon.stub( editor.model, 'insertContent' );
 
-			editingView.fire( 'paste', {
+			viewDocument.fire( 'paste', {
 				dataTransfer: dataTransferMock,
 				preventDefault() {}
 			} );
@@ -185,7 +186,7 @@ describe( 'Clipboard feature', () => {
 
 			editor.isReadOnly = true;
 
-			editingView.fire( 'paste', {
+			viewDocument.fire( 'paste', {
 				dataTransfer: dataTransferMock,
 				preventDefault() {}
 			} );
@@ -199,7 +200,7 @@ describe( 'Clipboard feature', () => {
 			const dataTransferMock = createDataTransfer( { 'text/html': '<unknownTag></unknownTag>', 'text/plain': '' } );
 			const spy = sinon.stub( editor.model, 'insertContent' );
 
-			editingView.fire( 'paste', {
+			viewDocument.fire( 'paste', {
 				dataTransfer: dataTransferMock,
 				preventDefault() {}
 			} );
@@ -213,7 +214,7 @@ describe( 'Clipboard feature', () => {
 			const dataTransferMock = createDataTransfer( { 'text/html': 'x<p>y</p>', 'text/plain': 'z' } );
 			const spy = sinon.stub( editor.model, 'insertContent' );
 
-			editingView.fire( 'paste', {
+			viewDocument.fire( 'paste', {
 				dataTransfer: dataTransferMock,
 				preventDefault() {}
 			} );
@@ -226,7 +227,7 @@ describe( 'Clipboard feature', () => {
 			const dataTransferMock = createDataTransfer( { 'text/plain': '' } );
 			const spy = sinon.stub( editor.model, 'insertContent' );
 
-			editingView.fire( 'clipboardInput', {
+			viewDocument.fire( 'clipboardInput', {
 				dataTransfer: dataTransferMock,
 				content: new ViewDocumentFragment()
 			} );
@@ -240,7 +241,7 @@ describe( 'Clipboard feature', () => {
 
 			clipboardPlugin.on( 'inputTransformation', inputTransformationSpy );
 
-			editingView.fire( 'clipboardInput', {
+			viewDocument.fire( 'clipboardInput', {
 				dataTransfer: dataTransferMock,
 				content: new ViewDocumentFragment()
 			} );
@@ -253,11 +254,11 @@ describe( 'Clipboard feature', () => {
 			const dataTransferMock = createDataTransfer( { 'text/html': 'x' } );
 			const spy = sinon.stub( editor.model, 'insertContent' );
 
-			editingView.on( 'clipboardInput', evt => {
+			viewDocument.on( 'clipboardInput', evt => {
 				evt.stop();
 			} );
 
-			editingView.fire( 'paste', {
+			viewDocument.fire( 'paste', {
 				dataTransfer: dataTransferMock,
 				preventDefault() {}
 			} );
@@ -281,7 +282,7 @@ describe( 'Clipboard feature', () => {
 
 			setModelData( editor.model, '<paragraph>a[bc</paragraph><paragraph>de]f</paragraph>' );
 
-			editingView.on( 'clipboardOutput', ( evt, data ) => {
+			viewDocument.on( 'clipboardOutput', ( evt, data ) => {
 				expect( preventDefaultSpy.calledOnce ).to.be.true;
 				expect( data.method ).to.equal( 'copy' );
 
@@ -293,7 +294,7 @@ describe( 'Clipboard feature', () => {
 				done();
 			} );
 
-			editingView.fire( 'copy', {
+			viewDocument.fire( 'copy', {
 				dataTransfer: dataTransferMock,
 				preventDefault: preventDefaultSpy
 			} );
@@ -305,13 +306,13 @@ describe( 'Clipboard feature', () => {
 
 			setModelData( editor.model, '<paragraph>a[bc</paragraph><paragraph>de]f</paragraph>' );
 
-			editingView.on( 'clipboardOutput', ( evt, data ) => {
+			viewDocument.on( 'clipboardOutput', ( evt, data ) => {
 				expect( data.method ).to.equal( 'cut' );
 
 				done();
 			} );
 
-			editingView.fire( 'cut', {
+			viewDocument.fire( 'cut', {
 				dataTransfer: dataTransferMock,
 				preventDefault: preventDefaultSpy
 			} );
@@ -325,9 +326,9 @@ describe( 'Clipboard feature', () => {
 			setModelData( editor.model, '<paragraph>a[bc</paragraph><paragraph>de]f</paragraph>' );
 			editor.isReadOnly = true;
 
-			editingView.on( 'clipboardOutput', spy );
+			viewDocument.on( 'clipboardOutput', spy );
 
-			editingView.fire( 'cut', {
+			viewDocument.fire( 'cut', {
 				dataTransfer: dataTransferMock,
 				preventDefault: preventDefaultSpy
 			} );
@@ -340,13 +341,13 @@ describe( 'Clipboard feature', () => {
 			const dataTransferMock = createDataTransfer();
 			const spy = sinon.spy();
 
-			editingView.on( 'copy', evt => {
+			viewDocument.on( 'copy', evt => {
 				evt.stop();
 			} );
 
-			editingView.on( 'clipboardOutput', spy );
+			viewDocument.on( 'clipboardOutput', spy );
 
-			editingView.fire( 'copy', {
+			viewDocument.fire( 'copy', {
 				dataTransfer: dataTransferMock,
 				preventDefault() {}
 			} );
@@ -395,7 +396,7 @@ describe( 'Clipboard feature', () => {
 					'<figcaption>caption</figcaption>' +
 				'</figure>';
 
-			editingView.fire( 'clipboardOutput', {
+			viewDocument.fire( 'clipboardOutput', {
 				dataTransfer: dataTransferMock,
 				content: parseView( input ),
 				method: 'copy'
@@ -442,7 +443,7 @@ describe( 'Clipboard feature', () => {
 				'image foo\n' +
 				'caption';
 
-			editingView.fire( 'clipboardOutput', {
+			viewDocument.fire( 'clipboardOutput', {
 				dataTransfer: dataTransferMock,
 				content: parseView( input ),
 				method: 'copy'
@@ -454,7 +455,7 @@ describe( 'Clipboard feature', () => {
 		it( 'does not set clipboard HTML data if content is empty', () => {
 			const dataTransferMock = createDataTransfer();
 
-			editingView.fire( 'clipboardOutput', {
+			viewDocument.fire( 'clipboardOutput', {
 				dataTransfer: dataTransferMock,
 				content: new ViewDocumentFragment(),
 				method: 'copy'
@@ -471,7 +472,7 @@ describe( 'Clipboard feature', () => {
 			// Change block is only to get writer instance.
 			// Writer should not be passed along this event.
 			editor.model.change( writer => {
-				editingView.fire( 'clipboardOutput', {
+				viewDocument.fire( 'clipboardOutput', {
 					dataTransfer: dataTransferMock,
 					content: new ViewDocumentFragment(),
 					method: 'cut',
@@ -485,11 +486,11 @@ describe( 'Clipboard feature', () => {
 		it( 'uses low priority observer for the clipboardOutput event', () => {
 			const dataTransferMock = createDataTransfer();
 
-			editingView.on( 'clipboardOutput', evt => {
+			viewDocument.on( 'clipboardOutput', evt => {
 				evt.stop();
 			} );
 
-			editingView.fire( 'copy', {
+			viewDocument.fire( 'copy', {
 				dataTransfer: dataTransferMock,
 				content: new ViewDocumentFragment( [ new ViewText( 'abc' ) ] ),
 				preventDefault() {}

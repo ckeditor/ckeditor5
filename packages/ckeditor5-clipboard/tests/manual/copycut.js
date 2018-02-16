@@ -17,18 +17,19 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
+		const viewDocument = editor.editing.view.document;
 		const clipboard = editor.plugins.get( 'Clipboard' );
 
-		editor.editing.view.on( 'paste', ( evt, data ) => {
+		viewDocument.on( 'paste', ( evt, data ) => {
 			console.clear();
 			onViewEvent( evt, data );
 		} );
-		editor.editing.view.on( 'paste', onViewEvent );
-		editor.editing.view.on( 'copy', onViewEvent, { priority: 'lowest' } );
-		editor.editing.view.on( 'cut', onViewEvent, { priority: 'lowest' } );
+		viewDocument.on( 'paste', onViewEvent );
+		viewDocument.on( 'copy', onViewEvent, { priority: 'lowest' } );
+		viewDocument.on( 'cut', onViewEvent, { priority: 'lowest' } );
 
 		clipboard.on( 'inputTransformation', onPipelineEvent );
-		editor.editing.view.on( 'clipboardOutput', ( evt, data ) => {
+		viewDocument.on( 'clipboardOutput', ( evt, data ) => {
 			console.clear();
 			onPipelineEvent( evt, data );
 		} );
