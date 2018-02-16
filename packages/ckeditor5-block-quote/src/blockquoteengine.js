@@ -8,11 +8,7 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-
 import BlockQuoteCommand from './blockquotecommand';
-
-import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
-import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 
 /**
  * The block quote engine.
@@ -43,10 +39,6 @@ export default class BlockQuoteEngine extends Plugin {
 			}
 		} );
 
-		editor.conversion.for( 'downcast' )
-			.add( downcastElementToElement( { model: 'blockQuote', view: 'blockquote' } ) );
-
-		editor.conversion.for( 'upcast' )
-			.add( upcastElementToElement( { model: 'blockQuote', view: 'blockquote' } ) );
+		editor.conversion.elementToElement( { model: 'blockQuote', view: 'blockquote' } );
 	}
 }
