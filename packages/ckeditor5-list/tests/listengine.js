@@ -12,7 +12,6 @@ import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import ModelText from '@ckeditor/ckeditor5-engine/src/model/text';
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
-import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
 import ViewUIElement from '@ckeditor/ckeditor5-engine/src/view/uielement';
 
 import BoldEngine from '@ckeditor/ckeditor5-basic-styles/src/boldengine';
@@ -28,7 +27,7 @@ import { insertElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcas
 import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 
 describe( 'ListEngine', () => {
-	let editor, model, modelDoc, modelRoot, viewDoc, viewRoot;
+	let editor, model, modelDoc, modelRoot, view, viewDoc, viewRoot;
 
 	beforeEach( () => {
 		return VirtualTestEditor
@@ -42,7 +41,8 @@ describe( 'ListEngine', () => {
 				modelDoc = model.document;
 				modelRoot = modelDoc.getRoot();
 
-				viewDoc = editor.editing.view;
+				view = editor.editing.view;
+				viewDoc = view.document;
 				viewRoot = viewDoc.getRoot();
 			} );
 	} );
@@ -3301,7 +3301,7 @@ describe( 'ListEngine', () => {
 				consumable.consume( data.item, 'attribute:type' );
 				consumable.consume( data.item, 'attribute:indent' );
 
-				const converter = insertElement( new ViewContainerElement( 'p' ) );
+				const converter = insertElement( ( item, consumable, api ) => api.writer.createContainerElement( 'p' ) );
 
 				return converter( evt, data, consumable, conversionApi );
 			}, { priority: 'highest' } );
@@ -3676,29 +3676,29 @@ describe( 'ListEngine', () => {
 
 			actionCallback();
 
-			expect( getViewData( viewDoc, { withoutSelection: true } ) ).to.equal( output );
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equal( output );
 		} );
 
 		it( testName + ' (undo integration)', () => {
 			setModelData( model, input );
 
 			const modelBefore = input;
-			const viewBefore = getViewData( viewDoc, { withoutSelection: true } );
+			const viewBefore = getViewData( view, { withoutSelection: true } );
 
 			actionCallback();
 
 			const modelAfter = getModelData( model );
-			const viewAfter = getViewData( viewDoc, { withoutSelection: true } );
+			const viewAfter = getViewData( view, { withoutSelection: true } );
 
 			editor.execute( 'undo' );
 
 			expect( getModelData( model ) ).to.equal( modelBefore );
-			expect( getViewData( viewDoc, { withoutSelection: true } ) ).to.equal( viewBefore );
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equal( viewBefore );
 
 			editor.execute( 'redo' );
 
 			expect( getModelData( model ) ).to.equal( modelAfter );
-			expect( getViewData( viewDoc, { withoutSelection: true } ) ).to.equal( viewAfter );
+			expect( getViewData( view, { withoutSelection: true } ) ).to.equal( viewAfter );
 		} );
 	}
 } );
