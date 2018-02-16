@@ -455,13 +455,19 @@ class LiveSelection extends Selection {
 		// @member {Map} module:engine/model/liveselection~LiveSelection#_attributePriority
 		this._attributePriority = new Map();
 
-		// Add events that will ensure selection correctness.
-		this.on( 'change:range', ( evt, options ) => {
-			// If the `options.range` is specified, only the passed Range will be checked.
-			// It prevents to checking selection's ranges before they are updated. Read more #1281.
-			const ranges = options.range ? [ options.range ] : Array.from( this.getRanges() );
+		// Contains data requires to fix ranges which have been moved to the graveyard
+		// @private
+		// @member {Array} module:engine/model/liveselection~LiveSelection#_fixGraveyardRangesData
+		this._fixGraveyardRangesData = [];
 
-			for ( const range of ranges ) {
+		// Flag that informs whether the selection ranges have changed. It is changed on true when `LiveRange#change:range event is fired.
+		// @private
+		// @member {Array} module:engine/model/liveselection~LiveSelection#_hasChangedRange
+		this._hasChangedRange = false;
+
+		// Add events that will ensure selection correctness.
+		this.on( 'change:range', () => {
+			for ( const range of this.getRanges() ) {
 				if ( !this._document._validateSelectionRange( range ) ) {
 					/**
 					 * Range from {@link module:engine/model/documentselection~DocumentSelection document selection}
@@ -501,6 +507,20 @@ class LiveSelection extends Selection {
 				clearAttributesStoredInElement( operation, this._model, batch );
 			}
 		}, { priority: 'low' } );
+
+		this.listenTo( this._model, 'applyOperation', () => {
+			while ( this._fixGraveyardRangesData.length ) {
+				const { range, sourcePosition } = this._fixGraveyardRangesData.shift();
+
+				this._fixGraveyardSelection( range, sourcePosition );
+			}
+
+			if ( this._hasChangedRange ) {
+				this._hasChangedRange = false;
+
+				this.fire( 'change:range', { directChange: false } );
+			}
+		}, { priority: 'lowest' } );
 	}
 
 	get isCollapsed() {
@@ -622,13 +642,15 @@ class LiveSelection extends Selection {
 		const liveRange = LiveRange.createFromRange( range );
 
 		liveRange.on( 'change:range', ( evt, oldRange, data ) => {
-			// If `LiveRange` is in whole moved to the graveyard, fix that range.
-			if ( liveRange.root == this._document.graveyard ) {
-				this._fixGraveyardSelection( liveRange, data.sourcePosition );
-			}
+			this._hasChangedRange = true;
 
-			// Whenever a live range from selection changes, fire an event informing about that change.
-			this.fire( 'change:range', { directChange: false, range: liveRange } );
+			// If `LiveRange` is in whole moved to the graveyard, save necessary data. It will be fixed on `Model#applyOperation` event.
+			if ( liveRange.root == this._document.graveyard ) {
+				this._fixGraveyardRangesData.push( {
+					range: liveRange,
+					position: data.sourcePosition
+				} );
+			}
 		} );
 
 		return liveRange;
@@ -894,9 +916,6 @@ class LiveSelection extends Selection {
 			this._ranges.splice( index, 0, newRange );
 		}
 		// If nearest valid selection range cannot be found - just removing the old range is fine.
-
-		// Fire an event informing about selection change.
-		this.fire( 'change:range', { directChange: false } );
 	}
 }
 
