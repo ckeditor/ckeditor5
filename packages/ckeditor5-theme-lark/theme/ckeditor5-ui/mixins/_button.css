@@ -11,18 +11,15 @@
  */
 @define-mixin ck-button-colors $prefix {
 	background: var($(prefix)-background);
-	border-color: var($(prefix)-border);
 
 	&:not(.ck-disabled) {
 		&:hover,
 		&:focus {
 			background: var($(prefix)-focus-background);
-			border-color: var($(prefix)-focus-border);
 		}
 
 		&:active {
 			background: var($(prefix)-active-background);
-			border-color: var($(prefix)-active-border);
 			box-shadow: inset 0 2px 2px var($(prefix)-active-shadow);
 		}
 	}
@@ -30,6 +27,5 @@
 	/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/98 */
 	&.ck-disabled {
 		background: var($(prefix)-disabled-background);
-		border-color: var($(prefix)-disabled-border);
 	}
 }

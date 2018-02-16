@@ -13,7 +13,6 @@
 				border-bottom-right-radius: 0;
 			}
 
-			background: var(--ck-color-editor-toolbar-background);
 			border-bottom-width: 0;
 		}
 
@@ -38,6 +37,6 @@
 	}
 
 	&:not(.ck-focused) {
-		border-color: var(--ck-color-editor-border);
+		border-color: var(--ck-color-base-border);
 	}
 }

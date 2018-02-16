@@ -11,10 +11,6 @@
 .ck-link-actions {
 	padding: var(--ck-spacing-standard);
 
-	& .ck-button {
-		border: 0;
-	}
-
 	& .ck-button.ck-link-actions__preview {
 		padding-left: 0;
 		padding-right: 0;
@@ -24,7 +20,6 @@
 		&:focus,
 		&:active {
 			background: none;
-			border: 0;
 		}
 
 		&:active {

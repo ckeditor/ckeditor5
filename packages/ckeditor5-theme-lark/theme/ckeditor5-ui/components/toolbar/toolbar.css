@@ -8,6 +8,7 @@
 .ck-toolbar {
 	@mixin ck-rounded-corners;
 
+	background: var(--ck-color-toolbar-background);
 	padding: 0 var(--ck-spacing-small);
 	border: 1px solid var(--ck-color-toolbar-border);
 

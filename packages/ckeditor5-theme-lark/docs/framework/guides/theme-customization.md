@@ -102,15 +102,15 @@ The file containing custom variables will be named `custom.css` and it will look
 	--ck-color-button-default-disabled-background: var(--ck-custom-background);
 	--ck-color-button-default-disabled-border: var(--ck-custom-border);
 
-	--ck-color-button-on-background: var(--ck-custom-foreground);
-	--ck-color-button-on-border: var(--ck-custom-border);
-	--ck-color-button-on-focus-background: hsl(255, 4%, 21%);
-	--ck-color-button-on-focus-border: hsl(0, 0%, 20%);
-	--ck-color-button-on-active-background: hsl(255, 4%, 20%);
-	--ck-color-button-on-active-border: hsl(300, 1%, 19%);
-	--ck-color-button-on-active-shadow: hsl(240, 3%, 19%);
-	--ck-color-button-on-disabled-background: var(--ck-custom-foreground);
-	--ck-color-button-on-disabled-border: var(--ck-custom-border);
+	--ck-color-button-on-background: hsl(0, 0%, 24%);
+	--ck-color-button-on-border: transparent;
+	--ck-color-button-on-focus-background: hsl(0, 0%, 21%);
+	--ck-color-button-on-focus-border: transparent;
+	--ck-color-button-on-active-background: hsl(0, 0%, 15%);
+	--ck-color-button-on-active-border: transparent;
+	--ck-color-button-on-active-shadow: hsl(0, 0%, 18%);
+	--ck-color-button-on-disabled-background: transparent;
+	--ck-color-button-on-disabled-border: transparent;
 
 	--ck-color-button-action-background: hsl(168, 76%, 42%);
 	--ck-color-button-action-border: hsl(168, 60%, 55%);
@@ -152,7 +152,7 @@ The file containing custom variables will be named `custom.css` and it will look
 
 	/* -- Overrides the default .ck-toolbar class colors ---------------------------------------- */
 
-	--ck-color-toolbar-background: var(--ck-custom-foreground);
+	--ck-color-toolbar-background: var(--ck-custom-background);
 	--ck-color-toolbar-border: var(--ck-custom-border);
 
 	/* -- Overrides the default .ck-tooltip class colors ---------------------------------------- */
@@ -162,20 +162,8 @@ The file containing custom variables will be named `custom.css` and it will look
 
 	/* -- Overrides the default colors used by the editor --------------------------------------- */
 
-	--ck-color-editor-border: var(--ck-custom-background);
-	--ck-color-editor-toolbar-background: var(--ck-custom-background);
-
-	--ck-color-editor-toolbar-button-on-background: hsl(0, 0%, 24%);
-	--ck-color-editor-toolbar-button-on-border: transparent;
-	--ck-color-editor-toolbar-button-on-focus-background: hsl(0, 0%, 21%);
-	--ck-color-editor-toolbar-button-on-focus-border: transparent;
-	--ck-color-editor-toolbar-button-on-active-background: hsl(0, 0%, 15%);
-	--ck-color-editor-toolbar-button-on-active-border: transparent;
-	--ck-color-editor-toolbar-button-on-active-shadow: hsl(0, 0%, 18%);
-	--ck-color-editor-toolbar-button-on-disabled-background: transparent;
-	--ck-color-editor-toolbar-button-on-disabled-border: transparent;
-
-	--ck-color-editor-dropdown-background: hsl(270, 1%, 33%);
+	--ck-color-base-border: var(--ck-custom-background);
+	--ck-color-dropdown-background: hsl(270, 1%, 33%);
 
 	/* -- Overrides the default colors used by ckeditor5-image package -------------------------- */
 

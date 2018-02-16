@@ -23,35 +23,23 @@
 
 	/* -- Buttons ------------------------------------------------------------------------------- */
 
-	--ck-color-button-default-background: 						var(--ck-color-base-background);
-	--ck-color-button-default-border: 							var(--ck-color-base-border);
+	--ck-color-button-default-background: 						transparent;
 	--ck-color-button-default-focus-background: 				hsl(0, 0%, 90%);
-	--ck-color-button-default-focus-border: 					hsl(0, 0%, 65%);
 	--ck-color-button-default-active-background: 				hsl(0, 0%, 85%);
-	--ck-color-button-default-active-border: 					hsl(0, 0%, 60%);
 	--ck-color-button-default-active-shadow: 					hsl(0, 0%, 75%);
-	--ck-color-button-default-disabled-background: 				hsl(0, 0%, 100%);
-	--ck-color-button-default-disabled-border: 					hsl(0, 0%, 78%);
+	--ck-color-button-default-disabled-background: 				transparent;
 
-	--ck-color-button-on-background: 							var(--ck-color-base-foreground);
-	--ck-color-button-on-border: 								hsl(0, 0%, 72%);
-	--ck-color-button-on-focus-background: 						hsl(0, 0%, 87%);
-	--ck-color-button-on-focus-border: 							hsl(0, 0%, 62%);
-	--ck-color-button-on-active-background: 					hsl(0, 0%, 82%);
-	--ck-color-button-on-active-border: 						hsl(0, 0%, 57%);
-	--ck-color-button-on-active-shadow: 						hsl(0, 0%, 72%);
-	--ck-color-button-on-disabled-background: 					hsl(0, 0%, 100%);
-	--ck-color-button-on-disabled-border: 						hsl(0, 0%, 75%);
+	--ck-color-button-on-background: 							hsl(0, 0%, 87%);
+	--ck-color-button-on-focus-background: 						hsl(0, 0%, 77%);
+	--ck-color-button-on-active-background: 					hsl(0, 0%, 73%);
+	--ck-color-button-on-active-shadow: 						hsl(0, 0%, 63%);
+	--ck-color-button-on-disabled-background: 					hsl(0, 0%, 87%);
 
 	--ck-color-button-action-background: 						var(--ck-color-base-action);
-	--ck-color-button-action-border: 							var(--ck-color-base-action);
 	--ck-color-button-action-focus-background: 					hsl(104, 44%, 43%);
-	--ck-color-button-action-focus-border: 						hsl(104, 44%, 35%);
 	--ck-color-button-action-active-background: 				hsl(104, 44%, 41%);
-	--ck-color-button-action-active-border: 					hsl(104, 44%, 33%);
 	--ck-color-button-action-active-shadow: 					hsl(104, 44%, 36%);
 	--ck-color-button-action-disabled-background: 				hsl(104, 44%, 58%);
-	--ck-color-button-action-disabled-border: 					hsl(104, 44%, 38%);
 	--ck-color-button-action-text: 								var(--ck-color-base-background);
 
 	/* -- Dropdown ------------------------------------------------------------------------------ */
@@ -85,30 +73,13 @@
 
 	/* -- Toolbar ------------------------------------------------------------------------------- */
 
-	--ck-color-toolbar-background: 								var(--ck-color-base-background);
+	--ck-color-toolbar-background: 								var(--ck-color-base-foreground);
 	--ck-color-toolbar-border: 									var(--ck-color-base-border);
 
 	/* -- Tooltip ------------------------------------------------------------------------------- */
 
 	--ck-color-tooltip-background: 								var(--ck-color-base-text);
 	--ck-color-tooltip-text: 									var(--ck-color-base-background);
-
-	/* -- Editor -------------------------------------------------------------------------------- */
-
-	--ck-color-editor-border: 									var(--ck-color-base-border);
-	--ck-color-editor-toolbar-background: 						var(--ck-color-base-foreground);
-
-	--ck-color-editor-toolbar-button-on-background: 			hsl(0, 0%, 87%);
-	--ck-color-editor-toolbar-button-on-border: 				transparent;
-	--ck-color-editor-toolbar-button-on-focus-background: 		hsl(0, 0%, 77%);
-	--ck-color-editor-toolbar-button-on-focus-border: 			transparent;
-	--ck-color-editor-toolbar-button-on-active-background: 		hsl(0, 0%, 73%);
-	--ck-color-editor-toolbar-button-on-active-border: 			transparent;
-	--ck-color-editor-toolbar-button-on-active-shadow: 			hsl(0, 0%, 63%);
-	--ck-color-editor-toolbar-button-on-disabled-background: 	hsl(0, 0%, 87%);
-	--ck-color-editor-toolbar-button-on-disabled-border: 		transparent;
-
-	--ck-color-editor-dropdown-background: 						var(--ck-color-base-background);
 
 	/* -- Engine -------------------------------------------------------------------------------- */
 
