@@ -14,8 +14,6 @@ a.ck-button {
 	@mixin ck-button-colors --ck-color-button-default;
 	@mixin ck-rounded-corners;
 
-	border-width: 1px;
-	border-style: solid;
 	white-space: nowrap;
 	cursor: default;
 	vertical-align: middle;

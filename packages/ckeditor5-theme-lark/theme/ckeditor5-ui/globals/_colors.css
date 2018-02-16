@@ -24,34 +24,22 @@
 	/* -- Buttons ------------------------------------------------------------------------------- */
 
 	--ck-color-button-default-background: 						transparent;
-	--ck-color-button-default-border: 							transparent;
 	--ck-color-button-default-focus-background: 				hsl(0, 0%, 90%);
-	--ck-color-button-default-focus-border: 					transparent;
 	--ck-color-button-default-active-background: 				hsl(0, 0%, 85%);
-	--ck-color-button-default-active-border: 					transparent;
 	--ck-color-button-default-active-shadow: 					hsl(0, 0%, 75%);
 	--ck-color-button-default-disabled-background: 				transparent;
-	--ck-color-button-default-disabled-border: 					transparent;
 
 	--ck-color-button-on-background: 							hsl(0, 0%, 87%);
-	--ck-color-button-on-border: 								transparent;
 	--ck-color-button-on-focus-background: 						hsl(0, 0%, 77%);
-	--ck-color-button-on-focus-border: 							transparent;
 	--ck-color-button-on-active-background: 					hsl(0, 0%, 73%);
-	--ck-color-button-on-active-border: 						transparent;
 	--ck-color-button-on-active-shadow: 						hsl(0, 0%, 63%);
 	--ck-color-button-on-disabled-background: 					hsl(0, 0%, 87%);
-	--ck-color-button-on-disabled-border: 						transparent;
 
 	--ck-color-button-action-background: 						var(--ck-color-base-action);
-	--ck-color-button-action-border: 							transparent;
 	--ck-color-button-action-focus-background: 					hsl(104, 44%, 43%);
-	--ck-color-button-action-focus-border: 						transparent;
 	--ck-color-button-action-active-background: 				hsl(104, 44%, 41%);
-	--ck-color-button-action-active-border: 					transparent;
 	--ck-color-button-action-active-shadow: 					hsl(104, 44%, 36%);
 	--ck-color-button-action-disabled-background: 				hsl(104, 44%, 58%);
-	--ck-color-button-action-disabled-border: 					transparent;
 	--ck-color-button-action-text: 								var(--ck-color-base-background);
 
 	/* -- Dropdown ------------------------------------------------------------------------------ */
