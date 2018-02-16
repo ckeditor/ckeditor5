@@ -19,6 +19,8 @@ import UpcastDispatcher from '../conversion/upcastdispatcher';
 import { convertText, convertToModelFragment } from '../conversion/upcast-converters';
 
 import ViewDocumentFragment from '../view/documentfragment';
+import ViewDocument from '../view/document';
+import ViewWriter from '../view/writer';
 
 import ModelRange from '../model/range';
 
@@ -74,7 +76,7 @@ export default class DataController {
 		 * @readonly
 		 * @member {module:engine/conversion/downcastdispatcher~DowncastDispatcher}
 		 */
-		this.downcastDispatcher = new DowncastDispatcher( this.model, {
+		this.downcastDispatcher = new DowncastDispatcher( {
 			mapper: this.mapper
 		} );
 		this.downcastDispatcher.on( 'insert:$text', insertText(), { priority: 'lowest' } );
@@ -85,7 +87,7 @@ export default class DataController {
 		 * @readonly
 		 * @member {module:engine/conversion/upcastdispatcher~UpcastDispatcher}
 		 */
-		this.upcastDispatcher = new UpcastDispatcher( this.model, {
+		this.upcastDispatcher = new UpcastDispatcher( {
 			schema: model.schema
 		} );
 
@@ -143,9 +145,13 @@ export default class DataController {
 		const modelRange = ModelRange.createIn( modelElementOrFragment );
 
 		const viewDocumentFragment = new ViewDocumentFragment();
+
+		// Create separate ViewWriter just for data conversion purposes.
+		// We have no view controller and rendering do DOM in DataController so view.change() block is not used here.
+		const viewWriter = new ViewWriter( new ViewDocument() );
 		this.mapper.bindElements( modelElementOrFragment, viewDocumentFragment );
 
-		this.downcastDispatcher.convertInsert( modelRange );
+		this.downcastDispatcher.convertInsert( modelRange, viewWriter );
 
 		if ( !modelElementOrFragment.is( 'documentFragment' ) ) {
 			// Then, if a document element is converted, convert markers.
@@ -153,7 +159,7 @@ export default class DataController {
 			const markers = _getMarkersRelativeToElement( modelElementOrFragment );
 
 			for ( const [ name, range ] of markers ) {
-				this.downcastDispatcher.convertMarkerAdd( name, range );
+				this.downcastDispatcher.convertMarkerAdd( name, range, viewWriter );
 			}
 		}
 
@@ -221,7 +227,9 @@ export default class DataController {
 	 * @returns {module:engine/model/documentfragment~DocumentFragment} Output document fragment.
 	 */
 	toModel( viewElementOrFragment, context = '$root' ) {
-		return this.upcastDispatcher.convert( viewElementOrFragment, context );
+		return this.model.change( writer => {
+			return this.upcastDispatcher.convert( viewElementOrFragment, writer, context );
+		} );
 	}
 
 	/**

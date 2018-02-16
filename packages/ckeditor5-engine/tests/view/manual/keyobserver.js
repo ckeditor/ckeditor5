@@ -5,15 +5,24 @@
 
 /* globals console, document */
 
-import Document from '../../../src/view/document';
-import { setData } from '../../../src/dev-utils/view';
+import View from '../../../src/view/view';
+import Position from '../../../src/view/position';
+import createViewRoot from '../_utils/createroot';
 
-const viewDocument = new Document();
+const view = new View();
+const viewDocument = view.document;
 
 viewDocument.on( 'keydown', ( evt, data ) => console.log( 'keydown', data ) );
 viewDocument.on( 'keyup', ( evt, data ) => console.log( 'keyup', data ) );
 
-viewDocument.createRoot( document.getElementById( 'editable' ), 'editable' );
-setData( viewDocument, 'foo{}bar', { rootName: 'editable' } );
-viewDocument.focus();
+const viewRoot = createViewRoot( viewDocument, 'div', 'editable' );
+view.attachDomRoot( document.getElementById( 'editable' ), 'editable' );
+
+view.change( writer => {
+	const text = writer.createText( 'foobar' );
+	writer.insert( Position.createAt( viewRoot ), text );
+	writer.setSelection( text, 3 );
+} );
+
+view.focus();
 

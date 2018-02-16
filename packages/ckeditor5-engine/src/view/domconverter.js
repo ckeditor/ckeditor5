@@ -413,7 +413,7 @@ export default class DomConverter {
 				const attrs = domNode.attributes;
 
 				for ( let i = attrs.length - 1; i >= 0; i-- ) {
-					viewElement.setAttribute( attrs[ i ].name, attrs[ i ].value );
+					viewElement._setAttribute( attrs[ i ].name, attrs[ i ].value );
 				}
 			}
 

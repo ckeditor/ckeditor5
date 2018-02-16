@@ -3,26 +3,31 @@
  * For licensing, see LICENSE.md.
  */
 
-import { mergeContainers } from '../../../src/view/writer';
+import Writer from '../../../src/view/writer';
 import { stringify, parse } from '../../../src/dev-utils/view';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import Document from '../../../src/view/document';
 
-describe( 'writer', () => {
-	/**
-	 * Executes test using `parse` and `stringify` utils functions. Uses range delimiters `[]{}` to create and
-	 * test break position.
-	 *
-	 * @param {String} input
-	 * @param {String} expected
-	 */
-	function test( input, expected ) {
-		const { view, selection } = parse( input );
+describe( 'Writer', () => {
+	describe( 'mergeContainers()', () => {
+		let writer;
 
-		const newPosition = mergeContainers( selection.getFirstPosition() );
-		expect( stringify( view.root, newPosition, { showType: true, showPriority: false } ) ).to.equal( expected );
-	}
+		// Executes test using `parse` and `stringify` utils functions. Uses range delimiters `[]{}` to create and
+		// test break position.
+		//
+		// @param {String} input
+		// @param {String} expected
+		function test( input, expected ) {
+			const { view, selection } = parse( input );
 
-	describe( 'mergeContainers', () => {
+			const newPosition = writer.mergeContainers( selection.getFirstPosition() );
+			expect( stringify( view.root, newPosition, { showType: true, showPriority: false } ) ).to.equal( expected );
+		}
+
+		before( () => {
+			writer = new Writer( new Document() );
+		} );
+
 		it( 'should merge two container elements - position between elements', () => {
 			test(
 				'<container:div>' +
@@ -54,7 +59,7 @@ describe( 'writer', () => {
 			const { selection } = parse( '[]<container:div>foobar</container:div>' );
 
 			expect( () => {
-				mergeContainers( selection.getFirstPosition() );
+				writer.mergeContainers( selection.getFirstPosition() );
 			} ).to.throw( CKEditorError, /view-writer-merge-containers-invalid-position/ );
 		} );
 
@@ -62,7 +67,7 @@ describe( 'writer', () => {
 			const { selection } = parse( '<container:div>foobar</container:div>[]' );
 
 			expect( () => {
-				mergeContainers( selection.getFirstPosition() );
+				writer.mergeContainers( selection.getFirstPosition() );
 			} ).to.throw( CKEditorError, /view-writer-merge-containers-invalid-position/ );
 		} );
 
@@ -70,7 +75,7 @@ describe( 'writer', () => {
 			const { selection } = parse( '<attribute:u>foo</attribute:u>[]<container:div>bar</container:div>' );
 
 			expect( () => {
-				mergeContainers( selection.getFirstPosition() );
+				writer.mergeContainers( selection.getFirstPosition() );
 			} ).to.throw( CKEditorError, /view-writer-merge-containers-invalid-position/ );
 		} );
 
@@ -78,7 +83,7 @@ describe( 'writer', () => {
 			const { selection } = parse( '<container:div>foo</container:div>[]<attribute:u>bar</attribute:u>' );
 
 			expect( () => {
-				mergeContainers( selection.getFirstPosition() );
+				writer.mergeContainers( selection.getFirstPosition() );
 			} ).to.throw( CKEditorError, /view-writer-merge-containers-invalid-position/ );
 		} );
 	} );

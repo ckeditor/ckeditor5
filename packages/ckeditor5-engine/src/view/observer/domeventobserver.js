@@ -55,8 +55,8 @@ export default class DomEventObserver extends Observer {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( document ) {
-		super( document );
+	constructor( view ) {
+		super( view );
 
 		/**
 		 * If set to `true` DOM events will be listened on the capturing phase.
@@ -93,7 +93,7 @@ export default class DomEventObserver extends Observer {
 	 */
 	fire( eventType, domEvent, additionalData ) {
 		if ( this.isEnabled ) {
-			this.document.fire( eventType, new DomEventData( this.document, domEvent, additionalData ) );
+			this.document.fire( eventType, new DomEventData( this.view, domEvent, additionalData ) );
 		}
 	}
 }

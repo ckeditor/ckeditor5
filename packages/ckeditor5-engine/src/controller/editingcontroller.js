@@ -8,7 +8,7 @@
  */
 
 import RootEditableElement from '../view/rooteditableelement';
-import ViewDocument from '../view/document';
+import View from '../view/view';
 import Mapper from '../conversion/mapper';
 import DowncastDispatcher from '../conversion/downcastdispatcher';
 import {
@@ -49,12 +49,12 @@ export default class EditingController {
 		this.model = model;
 
 		/**
-		 * View document.
+		 * Editing view controller.
 		 *
 		 * @readonly
-		 * @member {module:engine/view/document~Document}
+		 * @member {module:engine/view/view~View}
 		 */
-		this.view = new ViewDocument();
+		this.view = new View();
 
 		/**
 		 * Mapper which describes the model-view binding.
@@ -70,24 +70,23 @@ export default class EditingController {
 		 * @readonly
 		 * @member {module:engine/conversion/downcastdispatcher~DowncastDispatcher} #downcastDispatcher
 		 */
-		this.downcastDispatcher = new DowncastDispatcher( this.model, {
-			mapper: this.mapper,
-			viewSelection: this.view.selection
+		this.downcastDispatcher = new DowncastDispatcher( {
+			mapper: this.mapper
 		} );
 
 		const doc = this.model.document;
+		const selection = doc.selection;
+		const markers = this.model.markers;
 
 		this.listenTo( doc, 'change', () => {
-			this.downcastDispatcher.convertChanges( doc.differ );
-		}, { priority: 'low' } );
-
-		this.listenTo( model, '_change', () => {
-			this.downcastDispatcher.convertSelection( doc.selection );
-			this.view.render();
+			this.view.change( writer => {
+				this.downcastDispatcher.convertChanges( doc.differ, writer );
+				this.downcastDispatcher.convertSelection( selection, markers, writer );
+			} );
 		}, { priority: 'low' } );
 
 		// Convert selection from view to model.
-		this.listenTo( this.view, 'selectionChange', convertSelectionChange( this.model, this.mapper ) );
+		this.listenTo( this.view.document, 'selectionChange', convertSelectionChange( this.model, this.mapper ) );
 
 		// Attach default model converters.
 		this.downcastDispatcher.on( 'insert:$text', insertText(), { priority: 'lowest' } );
@@ -122,7 +121,9 @@ export default class EditingController {
 				if ( _operationAffectsMarker( operation, marker ) ) {
 					// And if the operation in any way modifies the marker, remove the marker from the view.
 					removedMarkers.add( marker.name );
-					this.downcastDispatcher.convertMarkerRemove( marker.name, markerRange );
+					this.view.change( writer => {
+						this.downcastDispatcher.convertMarkerRemove( marker.name, markerRange, writer );
+					} );
 
 					// TODO: This stinks but this is the safest place to have this code.
 					this.model.document.differ.bufferMarkerChange( marker.name, markerRange, markerRange );
@@ -135,7 +136,9 @@ export default class EditingController {
 		this.listenTo( model.markers, 'remove', ( evt, marker ) => {
 			if ( !removedMarkers.has( marker.name ) ) {
 				removedMarkers.add( marker.name );
-				this.downcastDispatcher.convertMarkerRemove( marker.name, marker.getRange() );
+				this.view.change( writer => {
+					this.downcastDispatcher.convertMarkerRemove( marker.name, marker.getRange(), writer );
+				} );
 			}
 		} );
 
@@ -147,7 +150,7 @@ export default class EditingController {
 		// Binds {@link module:engine/view/document~Document#roots view roots collection} to
 		// {@link module:engine/model/document~Document#roots model roots collection} so creating
 		// model root automatically creates corresponding view root.
-		this.view.roots.bindTo( this.model.document.roots ).using( root => {
+		this.view.document.roots.bindTo( this.model.document.roots ).using( root => {
 			// $graveyard is a special root that has no reflection in the view.
 			if ( root.rootName == '$graveyard' ) {
 				return null;
@@ -156,7 +159,7 @@ export default class EditingController {
 			const viewRoot = new RootEditableElement( root.name );
 
 			viewRoot.rootName = root.rootName;
-			viewRoot.document = this.view;
+			viewRoot._document = this.view.document;
 			this.mapper.bindElements( root, viewRoot );
 
 			return viewRoot;

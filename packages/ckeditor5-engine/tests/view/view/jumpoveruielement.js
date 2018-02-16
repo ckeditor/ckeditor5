@@ -5,7 +5,7 @@
 
 /* globals document */
 
-import ViewDocument from '../../../src/view/document';
+import View from '../../../src/view/view';
 import UIElement from '../../../src/view/uielement';
 import ViewContainerElement from '../../../src/view/containerelement';
 import ViewAttribtueElement from '../../../src/view/attributeelement';
@@ -17,8 +17,8 @@ import createViewRoot from '../_utils/createroot';
 import { setData as setViewData } from '../../../src/dev-utils/view';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-describe( 'Document', () => {
-	let viewDocument, domRoot, domSelection, viewRoot, foo, bar, ui, ui2;
+describe( 'View', () => {
+	let view, viewDocument, domRoot, domSelection, viewRoot, foo, bar, ui, ui2;
 
 	function createUIElement( name, contents ) {
 		const element = new UIElement( name );
@@ -39,9 +39,10 @@ describe( 'Document', () => {
 		} );
 		document.body.appendChild( domRoot );
 
-		viewDocument = new ViewDocument();
+		view = new View();
+		viewDocument = view.document;
 		viewRoot = createViewRoot( viewDocument );
-		viewDocument.attachDomRoot( domRoot );
+		view.attachDomRoot( domRoot );
 
 		domSelection = document.getSelection();
 		domSelection.removeAllRanges();
@@ -55,15 +56,15 @@ describe( 'Document', () => {
 	} );
 
 	afterEach( () => {
-		viewDocument.destroy();
+		view.destroy();
 
 		domRoot.parentElement.removeChild( domRoot );
 	} );
 
 	function renderAndFireKeydownEvent( options ) {
-		viewDocument.render();
+		view.render();
 
-		const eventData = Object.assign( { keyCode: keyCodes.arrowright, domTarget: viewDocument.domRoots.get( 'main' ) }, options );
+		const eventData = Object.assign( { keyCode: keyCodes.arrowright, domTarget: view.domRoots.get( 'main' ) }, options );
 		viewDocument.fire( 'keydown', eventData );
 	}
 
@@ -89,7 +90,10 @@ describe( 'Document', () => {
 				// <container:p>foo<ui:span>xxx</ui:span>{}bar</container:p>
 				const p = new ViewContainerElement( 'p', null, [ foo, ui, bar ] );
 				viewRoot.appendChildren( p );
-				viewDocument.selection.setTo( [ ViewRange.createFromParentsAndOffsets( bar, 0, bar, 0 ) ] );
+
+				view.change( writer => {
+					writer.setSelection( [ ViewRange.createFromParentsAndOffsets( bar, 0, bar, 0 ) ] );
+				} );
 
 				renderAndFireKeydownEvent( { keyCode: keyCodes.arrowleft } );
 
@@ -104,7 +108,10 @@ describe( 'Document', () => {
 				// <container:p>foo[]<ui:span>xxx</ui:span>bar</container:p>
 				const p = new ViewContainerElement( 'p', null, [ foo, ui, bar ] );
 				viewRoot.appendChildren( p );
-				viewDocument.selection.setTo( [ ViewRange.createFromParentsAndOffsets( p, 1, p, 1 ) ] );
+
+				view.change( writer => {
+					writer.setSelection( [ ViewRange.createFromParentsAndOffsets( p, 1, p, 1 ) ] );
+				} );
 
 				renderAndFireKeydownEvent();
 
@@ -121,7 +128,10 @@ describe( 'Document', () => {
 				// <container:p>foo{}<ui:span>xxx</ui:span>bar</container:p>
 				const p = new ViewContainerElement( 'p', null, [ foo, ui, bar ] );
 				viewRoot.appendChildren( p );
-				viewDocument.selection.setTo( [ ViewRange.createFromParentsAndOffsets( foo, 3, foo, 3 ) ] );
+
+				view.change( writer => {
+					writer.setSelection( [ ViewRange.createFromParentsAndOffsets( foo, 3, foo, 3 ) ] );
+				} );
 
 				renderAndFireKeydownEvent();
 
@@ -138,7 +148,10 @@ describe( 'Document', () => {
 				// <container:p>foo{}<ui:span>xxx</ui:span><ui:span>yyy</ui:span>bar</container:p>'
 				const p = new ViewContainerElement( 'p', null, [ foo, ui, ui2, bar ] );
 				viewRoot.appendChildren( p );
-				viewDocument.selection.setTo( [ ViewRange.createFromParentsAndOffsets( foo, 3, foo, 3 ) ] );
+
+				view.change( writer => {
+					writer.setSelection( [ ViewRange.createFromParentsAndOffsets( foo, 3, foo, 3 ) ] );
+				} );
 
 				renderAndFireKeydownEvent();
 
@@ -155,9 +168,12 @@ describe( 'Document', () => {
 				// <container:p>foo{}<ui:span>xxx</ui:span><ui:span>yyy</ui:span></container:p><container:div></container:div>
 				const p = new ViewContainerElement( 'p', null, [ foo, ui, ui2 ] );
 				const div = new ViewContainerElement( 'div' );
-				viewRoot.appendChildren( p );
-				viewRoot.appendChildren( div );
-				viewDocument.selection.setTo( [ ViewRange.createFromParentsAndOffsets( foo, 3, foo, 3 ) ] );
+
+				view.change( writer => {
+					viewRoot.appendChildren( p );
+					viewRoot.appendChildren( div );
+					writer.setSelection( [ ViewRange.createFromParentsAndOffsets( foo, 3, foo, 3 ) ] );
+				} );
 
 				renderAndFireKeydownEvent();
 
@@ -175,7 +191,10 @@ describe( 'Document', () => {
 				const b = new ViewAttribtueElement( 'b', null, foo );
 				const p = new ViewContainerElement( 'p', null, [ b, ui, bar ] );
 				viewRoot.appendChildren( p );
-				viewDocument.selection.setTo( ViewRange.createFromParentsAndOffsets( foo, 3, foo, 3 ) );
+
+				view.change( writer => {
+					writer.setSelection( ViewRange.createFromParentsAndOffsets( foo, 3, foo, 3 ) );
+				} );
 
 				renderAndFireKeydownEvent();
 
@@ -193,7 +212,10 @@ describe( 'Document', () => {
 				const b = new ViewAttribtueElement( 'b', null, foo );
 				const p = new ViewContainerElement( 'p', null, [ b, ui, bar ] );
 				viewRoot.appendChildren( p );
-				viewDocument.selection.setTo( ViewRange.createFromParentsAndOffsets( b, 1, b, 1 ) );
+
+				view.change( writer => {
+					writer.setSelection( ViewRange.createFromParentsAndOffsets( b, 1, b, 1 ) );
+				} );
 
 				renderAndFireKeydownEvent();
 
@@ -221,7 +243,10 @@ describe( 'Document', () => {
 				const p = new ViewContainerElement( 'p', null, [ i, ui, bar ] );
 
 				viewRoot.appendChildren( p );
-				viewDocument.selection.setTo( ViewRange.createFromParentsAndOffsets( foo, 3, foo, 3 ) );
+
+				view.change( writer => {
+					writer.setSelection( ViewRange.createFromParentsAndOffsets( foo, 3, foo, 3 ) );
+				} );
 
 				renderAndFireKeydownEvent();
 
@@ -248,7 +273,10 @@ describe( 'Document', () => {
 				const p = new ViewContainerElement( 'p', null, [ foo, b1, ui, ui2, b2, bar ] );
 
 				viewRoot.appendChildren( p );
-				viewDocument.selection.setTo( ViewRange.createFromParentsAndOffsets( foo, 3, foo, 3 ) );
+
+				view.change( writer => {
+					writer.setSelection( ViewRange.createFromParentsAndOffsets( foo, 3, foo, 3 ) );
+				} );
 
 				renderAndFireKeydownEvent();
 
@@ -276,7 +304,10 @@ describe( 'Document', () => {
 				const p = new ViewContainerElement( 'p', null, [ foo, b1, ui, ui2, b2, bar ] );
 
 				viewRoot.appendChildren( p );
-				viewDocument.selection.setTo( ViewRange.createFromParentsAndOffsets( foo, 3, foo, 3 ) );
+
+				view.change( writer => {
+					writer.setSelection( ViewRange.createFromParentsAndOffsets( foo, 3, foo, 3 ) );
+				} );
 
 				renderAndFireKeydownEvent( { shiftKey: true } );
 
@@ -290,42 +321,42 @@ describe( 'Document', () => {
 			} );
 
 			it( 'do nothing if selection is not directly before ui element', () => {
-				setViewData( viewDocument, '<container:p>fo{}o<ui:span></ui:span>bar</container:p>' );
+				setViewData( view, '<container:p>fo{}o<ui:span></ui:span>bar</container:p>' );
 				renderAndFireKeydownEvent();
 
 				check( 'foo', 2 );
 			} );
 
 			it( 'do nothing if selection is in attribute element but not before ui element', () => {
-				setViewData( viewDocument, '<container:p><attribute:b>foo{}</attribute:b>bar</container:p>' );
+				setViewData( view, '<container:p><attribute:b>foo{}</attribute:b>bar</container:p>' );
 				renderAndFireKeydownEvent();
 
 				check( 'foo', 3 );
 			} );
 
 			it( 'do nothing if selection is before non-empty attribute element', () => {
-				setViewData( viewDocument, '<container:p>fo{}<attribute:b>o</attribute:b><ui:span></ui:span>bar</container:p>' );
+				setViewData( view, '<container:p>fo{}<attribute:b>o</attribute:b><ui:span></ui:span>bar</container:p>' );
 				renderAndFireKeydownEvent();
 
 				check( 'fo', 2 );
 			} );
 
 			it( 'do nothing if selection is before container element - case 1', () => {
-				setViewData( viewDocument, '<container:p>foo{}</container:p><ui:span></ui:span><container:div>bar</container:div>' );
+				setViewData( view, '<container:p>foo{}</container:p><ui:span></ui:span><container:div>bar</container:div>' );
 				renderAndFireKeydownEvent();
 
 				check( 'foo', 3 );
 			} );
 
 			it( 'do nothing if selection is before container element - case 2', () => {
-				setViewData( viewDocument, '<container:div>foo{}<container:p></container:p><ui:span></ui:span></container:div>' );
+				setViewData( view, '<container:div>foo{}<container:p></container:p><ui:span></ui:span></container:div>' );
 				renderAndFireKeydownEvent();
 
 				check( 'foo', 3 );
 			} );
 
 			it( 'do nothing if selection is at the end of last container element', () => {
-				setViewData( viewDocument, '<container:p>foo{}</container:p>' );
+				setViewData( view, '<container:p>foo{}</container:p>' );
 				renderAndFireKeydownEvent();
 
 				check( 'foo', 3 );
@@ -334,14 +365,14 @@ describe( 'Document', () => {
 
 		describe( 'non-collapsed selection', () => {
 			it( 'should do nothing', () => {
-				setViewData( viewDocument, '<container:p>f{oo}<ui:span></ui:span>bar</container:p>' );
+				setViewData( view, '<container:p>f{oo}<ui:span></ui:span>bar</container:p>' );
 				renderAndFireKeydownEvent();
 
 				check( 'foo', 1, 'foo', 3 );
 			} );
 
 			it( 'should do nothing if selection is not before ui element - shift key pressed', () => {
-				setViewData( viewDocument, '<container:p>f{o}o<ui:span></ui:span>bar</container:p>' );
+				setViewData( view, '<container:p>f{o}o<ui:span></ui:span>bar</container:p>' );
 				renderAndFireKeydownEvent( { shiftKey: true } );
 
 				check( 'foo', 1, 'foo', 2 );
@@ -352,7 +383,10 @@ describe( 'Document', () => {
 				const p = new ViewContainerElement( 'p', null, [ foo, ui, bar ] );
 
 				viewRoot.appendChildren( p );
-				viewDocument.selection.setTo( ViewRange.createFromParentsAndOffsets( foo, 2, foo, 3 ) );
+
+				view.change( writer => {
+					writer.setSelection( ViewRange.createFromParentsAndOffsets( foo, 2, foo, 3 ) );
+				} );
 
 				renderAndFireKeydownEvent( { shiftKey: true } );
 
@@ -377,7 +411,10 @@ describe( 'Document', () => {
 				const i = new ViewAttribtueElement( 'i', null, b );
 				const p = new ViewContainerElement( 'p', null, [ i, ui, bar ] );
 				viewRoot.appendChildren( p );
-				viewDocument.selection.setTo( ViewRange.createFromParentsAndOffsets( foo, 2, foo, 3 ) );
+
+				view.change( writer => {
+					writer.setSelection( ViewRange.createFromParentsAndOffsets( foo, 2, foo, 3 ) );
+				} );
 
 				renderAndFireKeydownEvent( { shiftKey: true } );
 
@@ -403,7 +440,10 @@ describe( 'Document', () => {
 				const b2 = new ViewAttribtueElement( 'b' );
 				const p = new ViewContainerElement( 'p', null, [ foo, b1, ui, ui2, b2, bar ] );
 				viewRoot.appendChildren( p );
-				viewDocument.selection.setTo( ViewRange.createFromParentsAndOffsets( foo, 2, foo, 3 ) );
+
+				view.change( writer => {
+					writer.setSelection( ViewRange.createFromParentsAndOffsets( foo, 2, foo, 3 ) );
+				} );
 
 				renderAndFireKeydownEvent( { shiftKey: true } );
 
@@ -417,14 +457,14 @@ describe( 'Document', () => {
 			} );
 		} );
 
-		it( 'should do nothing if dom position cannot be converted to view position', () => {
+		it( 'should do nothing if DOM position cannot be converted to view position', () => {
 			const newDiv = document.createElement( 'div' );
 			const domSelection = document.getSelection();
 
 			document.body.appendChild( newDiv );
 			domSelection.collapse( newDiv, 0 );
 
-			viewDocument.fire( 'keydown', { keyCode: keyCodes.arrowright, domTarget: viewDocument.domRoots.get( 'main' ) } );
+			viewDocument.fire( 'keydown', { keyCode: keyCodes.arrowright, domTarget: view.domRoots.get( 'main' ) } );
 		} );
 	} );
 } );

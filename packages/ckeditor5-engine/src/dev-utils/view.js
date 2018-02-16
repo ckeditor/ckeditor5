@@ -11,7 +11,7 @@
  * Collection of methods for manipulating the {@link module:engine/view/view view} for testing purposes.
  */
 
-import Document from '../view/document';
+import View from '../view/view';
 import ViewDocumentFragment from '../view/documentfragment';
 import XmlDataProcessor from '../dataprocessor/xmldataprocessor';
 import ViewElement from '../view/element';
@@ -37,7 +37,7 @@ const allowedTypes = {
 /**
  * Writes the content of the {@link module:engine/view/document~Document document} to an HTML-like string.
  *
- * @param {module:engine/view/document~Document} document
+ * @param {module:engine/view/view~View} view
  * @param {Object} [options]
  * @param {Boolean} [options.withoutSelection=false] Whether to write the selection. When set to `true`, the selection will
  * not be included in the returned string.
@@ -49,11 +49,12 @@ const allowedTypes = {
  * (`<span view-priority="12">`, `<b view-priority="10">`).
  * @returns {String} The stringified data.
  */
-export function getData( document, options = {} ) {
-	if ( !( document instanceof Document ) ) {
-		throw new TypeError( 'Document needs to be an instance of module:engine/view/document~Document.' );
+export function getData( view, options = {} ) {
+	if ( !( view instanceof View ) ) {
+		throw new TypeError( 'View needs to be an instance of module:engine/view/view~View.' );
 	}
 
+	const document = view.document;
 	const withoutSelection = !!options.withoutSelection;
 	const rootName = options.rootName || 'main';
 	const root = document.getRoot( rootName );
@@ -74,24 +75,28 @@ getData._stringify = stringify;
 /**
  * Sets the content of the {@link module:engine/view/document~Document document} provided as an HTML-like string.
  *
- * @param {module:engine/view/document~Document} document
+ * @param {module:engine/view/view~View} view
  * @param {String} data An HTML-like string to write into the document.
  * @param {Object} options
  * @param {String} [options.rootName='main'] The root name where parsed data will be stored. If not provided,
  * the default `main` name will be used.
  */
-export function setData( document, data, options = {} ) {
-	if ( !( document instanceof Document ) ) {
-		throw new TypeError( 'Document needs to be an instance of module:engine/view/document~Document.' );
+export function setData( view, data, options = {} ) {
+	if ( !( view instanceof View ) ) {
+		throw new TypeError( 'View needs to be an instance of module:engine/view/view~View.' );
 	}
 
+	const document = view.document;
 	const rootName = options.rootName || 'main';
 	const root = document.getRoot( rootName );
-	const result = setData._parse( data, { rootElement: root } );
 
-	if ( result.view && result.selection ) {
-		document.selection.setTo( result.selection );
-	}
+	view.change( writer => {
+		const result = setData._parse( data, { rootElement: root } );
+
+		if ( result.view && result.selection ) {
+			writer.setSelection( result.selection );
+		}
+	} );
 }
 
 // Set parse as setData private method - needed for testing/spying.
@@ -187,7 +192,7 @@ setData._parse = parse;
  * {@link module:engine/view/attributeelement~AttributeElement attribute elements}.
  *
  *		const attribute = new AttributeElement( 'b' );
- *		attribute.priority = 20;
+ *		attribute._priority = 20;
  *		getData( attribute, null, { showPriority: true } ); // <b view-priority="20"></b>
  *
  * @param {module:engine/view/text~Text|module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment}
@@ -919,13 +924,13 @@ function _convertElement( viewElement ) {
 
 	if ( newElement.is( 'attributeElement' ) ) {
 		if ( info.priority !== null ) {
-			newElement.priority = info.priority;
+			newElement._priority = info.priority;
 		}
 	}
 
 	// Move attributes.
 	for ( const attributeKey of viewElement.getAttributeKeys() ) {
-		newElement.setAttribute( attributeKey, viewElement.getAttribute( attributeKey ) );
+		newElement._setAttribute( attributeKey, viewElement.getAttribute( attributeKey ) );
 	}
 
 	return newElement;
@@ -947,7 +952,7 @@ function _convertElement( viewElement ) {
 function _convertElementNameAndPriority( viewElement ) {
 	const parts = viewElement.name.split( ':' );
 	const priority = _convertPriority( viewElement.getAttribute( 'view-priority' ) );
-	viewElement.removeAttribute( 'view-priority' );
+	viewElement._removeAttribute( 'view-priority' );
 
 	if ( parts.length == 1 ) {
 		return {

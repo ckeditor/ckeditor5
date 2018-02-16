@@ -29,9 +29,7 @@ describe( 'DomConverter', () => {
 		it( 'should create tree of DOM elements from view elements', () => {
 			const viewImg = new ViewElement( 'img' );
 			const viewText = new ViewText( 'foo' );
-			const viewP = new ViewElement( 'p' );
-
-			viewP.setAttribute( 'class', 'foo' );
+			const viewP = new ViewElement( 'p', { class: 'foo' } );
 
 			viewP.appendChildren( viewImg );
 			viewP.appendChildren( viewText );
@@ -59,9 +57,7 @@ describe( 'DomConverter', () => {
 		it( 'should create tree of DOM elements from view elements and bind elements', () => {
 			const viewImg = new ViewElement( 'img' );
 			const viewText = new ViewText( 'foo' );
-			const viewP = new ViewElement( 'p' );
-
-			viewP.setAttribute( 'class', 'foo' );
+			const viewP = new ViewElement( 'p', { class: 'foo' } );
 
 			viewP.appendChildren( viewImg );
 			viewP.appendChildren( viewText );
@@ -98,9 +94,7 @@ describe( 'DomConverter', () => {
 		it( 'should create tree of DOM elements from view element without children', () => {
 			const viewImg = new ViewElement( 'img' );
 			const viewText = new ViewText( 'foo' );
-			const viewP = new ViewElement( 'p' );
-
-			viewP.setAttribute( 'class', 'foo' );
+			const viewP = new ViewElement( 'p', { class: 'foo' } );
 
 			viewP.appendChildren( viewImg );
 			viewP.appendChildren( viewText );

@@ -5,10 +5,12 @@
 
 /* globals console, document */
 
-import Document from '../../../src/view/document';
-import { setData } from '../../../src/dev-utils/view';
+import View from '../../../src/view/view';
+import Position from '../../../src/view/position';
+import createViewRoot from '../_utils/createroot';
 
-const viewDocument = new Document();
+const view = new View();
+const viewDocument = view.document;
 
 viewDocument.on( 'focus', ( evt, data ) => console.log( `Focus in ${ data.domTarget.id }.` ) );
 viewDocument.on( 'blur', ( evt, data ) => console.log( `Blur in ${ data.domTarget.id }.` ) );
@@ -16,22 +18,31 @@ viewDocument.on( 'blur', ( evt, data ) => console.log( `Blur in ${ data.domTarge
 const domEditable1 = document.getElementById( 'editable1' );
 const domEditable2 = document.getElementById( 'editable2' );
 
-const editable1 = viewDocument.createRoot( domEditable1, 'editable1' );
-const editable2 = viewDocument.createRoot( domEditable2, 'editable2' );
+const editable1 = createViewRoot( viewDocument, 'div', 'editable1' );
+const editable2 = createViewRoot( viewDocument, 'div', 'editable2' );
+
+view.attachDomRoot( domEditable1, 'editable1' );
+view.attachDomRoot( domEditable2, 'editable2' );
 
 viewDocument.on( 'selectionChange', ( evt, data ) => {
-	viewDocument.selection.setTo( data.newSelection );
-	viewDocument.render();
+	view.change( writer => {
+		writer.setSelection( data.newSelection );
+	} );
 } );
 
-setData( viewDocument, '<container:p>{}First editable.</container:p>', { rootName: 'editable1' } );
-setData( viewDocument, '<container:p>Second editable.</container:p>', { rootName: 'editable2' } );
+view.change( writer => {
+	writer.insert( Position.createAt( editable1 ), writer.createText( 'First editable.' ) );
+	writer.insert( Position.createAt( editable2 ), writer.createText( 'Second editable.' ) );
+
+	writer.setSelection( editable1 );
+} );
 
 editable1.on( 'change:isFocused', () => {
 	domEditable1.style.backgroundColor = editable1.isFocused ? 'green' : 'red';
 } );
+
 editable2.on( 'change:isFocused', () => {
 	domEditable2.style.backgroundColor = editable2.isFocused ? 'green' : 'red';
 } );
 
-viewDocument.focus();
+view.focus();

@@ -16,7 +16,7 @@ import RootEditableElement from '../../../src/view/rooteditableelement';
 export default function createRoot( doc, name = 'div', rootName = 'main' ) {
 	const root = new RootEditableElement( name );
 
-	root.document = doc;
+	root._document = doc;
 	root.rootName = rootName;
 	doc.roots.add( root );
 

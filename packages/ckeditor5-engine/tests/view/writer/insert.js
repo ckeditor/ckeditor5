@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import { insert } from '../../../src/view/writer';
+import Writer from '../../../src/view/writer';
 import ContainerElement from '../../../src/view/containerelement';
 import Element from '../../../src/view/element';
 import EmptyElement from '../../../src/view/emptyelement';
@@ -12,24 +12,29 @@ import Position from '../../../src/view/position';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { stringify, parse } from '../../../src/dev-utils/view';
 import AttributeElement from '../../../src/view/attributeelement';
+import Document from '../../../src/view/document';
 
-describe( 'writer', () => {
-	/**
-	 * Executes test using `parse` and `stringify` utils functions.
-	 *
-	 * @param {String} input
-	 * @param {Array.<String>} nodesToInsert
-	 * @param {String} expected
-	 */
-	function test( input, nodesToInsert, expected ) {
-		nodesToInsert = nodesToInsert.map( node => parse( node ) );
-		const { view, selection } = parse( input );
+describe( 'Writer', () => {
+	describe( 'insert()', () => {
+		let writer;
 
-		const newRange = insert( selection.getFirstPosition(), nodesToInsert );
-		expect( stringify( view.root, newRange, { showType: true, showPriority: true } ) ).to.equal( expected );
-	}
+		// Executes test using `parse` and `stringify` utils functions.
+		//
+		// @param {String} input
+		// @param {Array.<String>} nodesToInsert
+		// @param {String} expected
+		function test( input, nodesToInsert, expected ) {
+			nodesToInsert = nodesToInsert.map( node => parse( node ) );
+			const { view, selection } = parse( input );
 
-	describe( 'insert', () => {
+			const newRange = writer.insert( selection.getFirstPosition(), nodesToInsert );
+			expect( stringify( view.root, newRange, { showType: true, showPriority: true } ) ).to.equal( expected );
+		}
+
+		before( () => {
+			writer = new Writer( new Document() );
+		} );
+
 		it( 'should return collapsed range in insertion position when using empty array', () => {
 			test(
 				'<container:p>foo{}bar</container:p>',
@@ -151,7 +156,7 @@ describe( 'writer', () => {
 			const container = new ContainerElement( 'p' );
 			const position = new Position( container, 0 );
 			expect( () => {
-				insert( position, element );
+				writer.insert( position, element );
 			} ).to.throw( CKEditorError, 'view-writer-insert-invalid-node' );
 		} );
 
@@ -162,7 +167,7 @@ describe( 'writer', () => {
 			const position = new Position( container, 0 );
 
 			expect( () => {
-				insert( position, root );
+				writer.insert( position, root );
 			} ).to.throw( CKEditorError, 'view-writer-insert-invalid-node' );
 		} );
 
@@ -172,7 +177,7 @@ describe( 'writer', () => {
 			const attributeElement = new AttributeElement( 'i' );
 
 			expect( () => {
-				insert( position, attributeElement );
+				writer.insert( position, attributeElement );
 			} ).to.throw( CKEditorError, 'view-writer-invalid-position-container' );
 		} );
 
@@ -191,7 +196,7 @@ describe( 'writer', () => {
 			const attributeElement = new AttributeElement( 'i' );
 
 			expect( () => {
-				insert( position, attributeElement );
+				writer.insert( position, attributeElement );
 			} ).to.throw( CKEditorError, 'view-writer-cannot-break-empty-element' );
 		} );
 
@@ -202,7 +207,7 @@ describe( 'writer', () => {
 			const attributeElement = new AttributeElement( 'i' );
 
 			expect( () => {
-				insert( position, attributeElement );
+				writer.insert( position, attributeElement );
 			} ).to.throw( CKEditorError, 'view-writer-cannot-break-ui-element' );
 		} );
 	} );

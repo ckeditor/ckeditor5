@@ -3,27 +3,32 @@
  * For licensing, see LICENSE.md.
  */
 
-import { mergeAttributes } from '../../../src/view/writer';
+import Writer from '../../../src/view/writer';
 import ContainerElement from '../../../src/view/containerelement';
 import Text from '../../../src/view/text';
 import Position from '../../../src/view/position';
 import { stringify, parse } from '../../../src/dev-utils/view';
+import Document from '../../../src/view/document';
 
-describe( 'writer', () => {
-	/**
-	 * Executes test using `parse` and `stringify` utils functions. Uses range delimiters `[]{}` to create and
-	 * test merge position.
-	 *
-	 * @param {String} input
-	 * @param {String} expected
-	 */
-	function test( input, expected ) {
-		const { view, selection } = parse( input );
-		const newPosition = mergeAttributes( selection.getFirstPosition() );
-		expect( stringify( view, newPosition, { showType: true, showPriority: true } ) ).to.equal( expected );
-	}
-
+describe( 'Writer', () => {
 	describe( 'mergeAttributes', () => {
+		let writer;
+
+		// Executes test using `parse` and `stringify` utils functions. Uses range delimiters `[]{}` to create and
+		// test merge position.
+		//
+		// @param {String} input
+		// @param {String} expected
+		function test( input, expected ) {
+			const { view, selection } = parse( input );
+			const newPosition = writer.mergeAttributes( selection.getFirstPosition() );
+			expect( stringify( view, newPosition, { showType: true, showPriority: true } ) ).to.equal( expected );
+		}
+
+		before( () => {
+			writer = new Writer( new Document() );
+		} );
+
 		it( 'should not merge if inside text node', () => {
 			test( '<container:p>fo{}bar</container:p>', '<container:p>fo{}bar</container:p>' );
 		} );
@@ -63,7 +68,7 @@ describe( 'writer', () => {
 			const p = new ContainerElement( 'p', null, [ t1, t2 ] );
 			const position = new Position( p, 1 );
 
-			const newPosition = mergeAttributes( position );
+			const newPosition = writer.mergeAttributes( position );
 			expect( stringify( p, newPosition ) ).to.equal( '<p>foo{}bar</p>' );
 		} );
 

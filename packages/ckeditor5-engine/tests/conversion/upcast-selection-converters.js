@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import ViewDocument from '../../src/view/document';
+import View from '../../src/view/view';
 import ViewSelection from '../../src/view/selection';
 import ViewRange from '../../src/view/range';
 import createViewRoot from '../view/_utils/createroot';
@@ -17,7 +17,7 @@ import { setData as modelSetData, getData as modelGetData } from '../../src/dev-
 import { setData as viewSetData } from '../../src/dev-utils/view';
 
 describe( 'convertSelectionChange', () => {
-	let model, view, mapper, convertSelection, modelRoot, viewRoot;
+	let model, view, viewDocument, mapper, convertSelection, modelRoot, viewRoot;
 
 	beforeEach( () => {
 		model = new Model();
@@ -26,8 +26,9 @@ describe( 'convertSelectionChange', () => {
 
 		modelSetData( model, '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
 
-		view = new ViewDocument();
-		viewRoot = createViewRoot( view, 'div', 'main' );
+		view = new View();
+		viewDocument = view.document;
+		viewRoot = createViewRoot( viewDocument, 'div', 'main' );
 
 		viewSetData( view, '<p>foo</p><p>bar</p>' );
 
@@ -45,7 +46,7 @@ describe( 'convertSelectionChange', () => {
 
 	it( 'should convert collapsed selection', () => {
 		const viewSelection = new ViewSelection();
-		viewSelection.setTo( ViewRange.createFromParentsAndOffsets(
+		viewSelection._setTo( ViewRange.createFromParentsAndOffsets(
 			viewRoot.getChild( 0 ).getChild( 0 ), 1, viewRoot.getChild( 0 ).getChild( 0 ), 1 ) );
 
 		convertSelection( null, { newSelection: viewSelection } );

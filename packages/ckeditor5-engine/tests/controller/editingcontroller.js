@@ -9,7 +9,7 @@ import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 
 import EditingController from '../../src/controller/editingcontroller';
 
-import ViewDocument from '../../src/view/document';
+import View from '../../src/view/view';
 
 import Mapper from '../../src/conversion/mapper';
 import DowncastDispatcher from '../../src/conversion/downcastdispatcher';
@@ -39,7 +39,7 @@ describe( 'EditingController', () => {
 
 		it( 'should create controller with properties', () => {
 			expect( editing ).to.have.property( 'model' ).that.equals( model );
-			expect( editing ).to.have.property( 'view' ).that.is.instanceof( ViewDocument );
+			expect( editing ).to.have.property( 'view' ).that.is.instanceof( View );
 			expect( editing ).to.have.property( 'mapper' ).that.is.instanceof( Mapper );
 			expect( editing ).to.have.property( 'downcastDispatcher' ).that.is.instanceof( DowncastDispatcher );
 
@@ -57,15 +57,15 @@ describe( 'EditingController', () => {
 
 		it( 'should bind view roots to model roots', () => {
 			expect( model.document.roots ).to.length( 1 ); // $graveyard
-			expect( editing.view.roots ).to.length( 0 );
+			expect( editing.view.document.roots ).to.length( 0 );
 
 			const modelRoot = model.document.createRoot();
 
 			expect( model.document.roots ).to.length( 2 );
-			expect( editing.view.roots ).to.length( 1 );
-			expect( editing.view.getRoot().document ).to.equal( editing.view );
+			expect( editing.view.document.roots ).to.length( 1 );
+			expect( editing.view.document.getRoot().document ).to.equal( editing.view.document );
 
-			expect( editing.view.getRoot().name ).to.equal( modelRoot.name ).to.equal( '$root' );
+			expect( editing.view.document.getRoot().name ).to.equal( modelRoot.name ).to.equal( '$root' );
 		} );
 	} );
 
@@ -85,7 +85,7 @@ describe( 'EditingController', () => {
 
 			document.body.appendChild( domRoot );
 
-			viewRoot = editing.view.getRoot();
+			viewRoot = editing.view.document.getRoot();
 			editing.view.attachDomRoot( domRoot );
 
 			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
@@ -169,7 +169,7 @@ describe( 'EditingController', () => {
 		} );
 
 		it( 'should convert selection from view to model', done => {
-			listener.listenTo( editing.view, 'selectionChange', () => {
+			listener.listenTo( editing.view.document, 'selectionChange', () => {
 				setTimeout( () => {
 					expect( getModelData( model ) ).to.equal(
 						'<paragraph>foo</paragraph>' +
@@ -178,10 +178,10 @@ describe( 'EditingController', () => {
 					);
 
 					done();
-				} );
+				}, 1 );
 			} );
 
-			editing.view.isFocused = true;
+			editing.view.document.isFocused = true;
 			editing.view.render();
 
 			const domSelection = document.getSelection();

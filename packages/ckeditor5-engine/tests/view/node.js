@@ -222,7 +222,7 @@ describe( 'Node', () => {
 		it( 'should return Document attached to the parent element', () => {
 			const docMock = createDocumentMock();
 			const parent = new RootEditableElement( 'div' );
-			parent.document = docMock;
+			parent._document = docMock;
 			const child = new Element( 'p' );
 
 			child.parent = parent;
@@ -248,7 +248,7 @@ describe( 'Node', () => {
 
 		it( 'should return root element', () => {
 			const parent = new RootEditableElement( 'div' );
-			parent.document = createDocumentMock();
+			parent._document = createDocumentMock();
 			const child = new Element( 'p' );
 
 			child.parent = parent;
@@ -303,8 +303,7 @@ describe( 'Node', () => {
 
 		beforeEach( () => {
 			text = new Text( 'foo' );
-			img = new Element( 'img' );
-			img.setAttribute( 'src', 'img.png' );
+			img = new Element( 'img', { 'src': 'img.png' } );
 
 			root = new Element( 'p', { renderer: { markToSync: rootChangeSpy } } );
 			root.appendChildren( [ text, img ] );
@@ -323,31 +322,31 @@ describe( 'Node', () => {
 				imgChangeSpy( 'attributes', node );
 			} );
 
-			img.setAttribute( 'width', 100 );
+			img._setAttribute( 'width', 100 );
 
 			sinon.assert.calledOnce( imgChangeSpy );
 			sinon.assert.calledWith( imgChangeSpy, 'attributes', img );
 		} );
 
 		it( 'should be fired on the parent', () => {
-			img.setAttribute( 'width', 100 );
+			img._setAttribute( 'width', 100 );
 
 			sinon.assert.calledOnce( rootChangeSpy );
 			sinon.assert.calledWith( rootChangeSpy, 'attributes', img );
 		} );
 
-		describe( 'setAttribute()', () => {
+		describe( '_setAttribute()', () => {
 			it( 'should fire change event', () => {
-				img.setAttribute( 'width', 100 );
+				img._setAttribute( 'width', 100 );
 
 				sinon.assert.calledOnce( rootChangeSpy );
 				sinon.assert.calledWith( rootChangeSpy, 'attributes', img );
 			} );
 		} );
 
-		describe( 'removeAttribute()', () => {
+		describe( '_removeAttribute()', () => {
 			it( 'should fire change event', () => {
-				img.removeAttribute( 'src' );
+				img._removeAttribute( 'src' );
 
 				sinon.assert.calledOnce( rootChangeSpy );
 				sinon.assert.calledWith( rootChangeSpy, 'attributes', img );

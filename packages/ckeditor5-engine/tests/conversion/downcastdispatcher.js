@@ -10,15 +10,17 @@ import ModelElement from '../../src/model/element';
 import ModelRange from '../../src/model/range';
 import ModelPosition from '../../src/model/position';
 
+import View from '../../src/view/view';
 import ViewContainerElement from '../../src/view/containerelement';
 
 describe( 'DowncastDispatcher', () => {
-	let dispatcher, doc, root, differStub, model;
+	let dispatcher, doc, root, differStub, model, view;
 
 	beforeEach( () => {
 		model = new Model();
+		view = new View();
 		doc = model.document;
-		dispatcher = new DowncastDispatcher( model );
+		dispatcher = new DowncastDispatcher();
 		root = doc.createRoot();
 
 		differStub = {
@@ -31,7 +33,7 @@ describe( 'DowncastDispatcher', () => {
 	describe( 'constructor()', () => {
 		it( 'should create DowncastDispatcher with given api', () => {
 			const apiObj = {};
-			const dispatcher = new DowncastDispatcher( model, { apiObj } );
+			const dispatcher = new DowncastDispatcher( { apiObj } );
 
 			expect( dispatcher.conversionApi.apiObj ).to.equal( apiObj );
 		} );
@@ -46,7 +48,9 @@ describe( 'DowncastDispatcher', () => {
 
 			differStub.getChanges = () => [ { type: 'insert', position, length: 1 } ];
 
-			dispatcher.convertChanges( differStub );
+			view.change( writer => {
+				dispatcher.convertChanges( differStub, writer );
+			} );
 
 			expect( dispatcher.convertInsert.calledOnce ).to.be.true;
 			expect( dispatcher.convertInsert.firstCall.args[ 0 ].isEqual( range ) ).to.be.true;
@@ -59,7 +63,9 @@ describe( 'DowncastDispatcher', () => {
 
 			differStub.getChanges = () => [ { type: 'remove', position, length: 2, name: '$text' } ];
 
-			dispatcher.convertChanges( differStub );
+			view.change( writer => {
+				dispatcher.convertChanges( differStub, writer );
+			} );
 
 			expect( dispatcher.convertRemove.calledWith( position, 2, '$text' ) ).to.be.true;
 		} );
@@ -74,7 +80,9 @@ describe( 'DowncastDispatcher', () => {
 				{ type: 'attribute', position, range, attributeKey: 'key', attributeOldValue: null, attributeNewValue: 'foo' }
 			];
 
-			dispatcher.convertChanges( differStub );
+			view.change( writer => {
+				dispatcher.convertChanges( differStub, writer );
+			} );
 
 			expect( dispatcher.convertAttribute.calledWith( range, 'key', null, 'foo' ) ).to.be.true;
 		} );
@@ -94,7 +102,9 @@ describe( 'DowncastDispatcher', () => {
 				{ type: 'insert', position, length: 3 },
 			];
 
-			dispatcher.convertChanges( differStub );
+			view.change( writer => {
+				dispatcher.convertChanges( differStub, writer );
+			} );
 
 			expect( dispatcher.convertInsert.calledTwice ).to.be.true;
 			expect( dispatcher.convertRemove.calledOnce ).to.be.true;
@@ -112,7 +122,9 @@ describe( 'DowncastDispatcher', () => {
 				{ name: 'bar', range: barRange }
 			];
 
-			dispatcher.convertChanges( differStub );
+			view.change( writer => {
+				dispatcher.convertChanges( differStub, writer );
+			} );
 
 			expect( dispatcher.convertMarkerAdd.calledWith( 'foo', fooRange ) );
 			expect( dispatcher.convertMarkerAdd.calledWith( 'bar', barRange ) );
@@ -129,7 +141,9 @@ describe( 'DowncastDispatcher', () => {
 				{ name: 'bar', range: barRange }
 			];
 
-			dispatcher.convertChanges( differStub );
+			view.change( writer => {
+				dispatcher.convertChanges( differStub, writer );
+			} );
 
 			expect( dispatcher.convertMarkerRemove.calledWith( 'foo', fooRange ) );
 			expect( dispatcher.convertMarkerRemove.calledWith( 'bar', barRange ) );
@@ -250,7 +264,7 @@ describe( 'DowncastDispatcher', () => {
 		it( 'should fire selection event', () => {
 			sinon.spy( dispatcher, 'fire' );
 
-			dispatcher.convertSelection( doc.selection, [] );
+			dispatcher.convertSelection( doc.selection, model.markers, [] );
 
 			expect( dispatcher.fire.calledWith(
 				'selection',
@@ -270,7 +284,7 @@ describe( 'DowncastDispatcher', () => {
 				expect( consumable.test( data.selection, 'attribute:italic' ) ).to.be.null;
 			} );
 
-			dispatcher.convertSelection( doc.selection, [] );
+			dispatcher.convertSelection( doc.selection, model.markers, [] );
 		} );
 
 		it( 'should not fire attributes events for non-collapsed selection', () => {
@@ -281,7 +295,7 @@ describe( 'DowncastDispatcher', () => {
 
 			sinon.spy( dispatcher, 'fire' );
 
-			dispatcher.convertSelection( doc.selection, [] );
+			dispatcher.convertSelection( doc.selection, model.markers, [] );
 
 			expect( dispatcher.fire.calledWith( 'attribute:bold' ) ).to.be.false;
 			expect( dispatcher.fire.calledWith( 'attribute:italic' ) ).to.be.false;
@@ -300,7 +314,7 @@ describe( 'DowncastDispatcher', () => {
 
 			sinon.spy( dispatcher, 'fire' );
 
-			dispatcher.convertSelection( doc.selection, [] );
+			dispatcher.convertSelection( doc.selection, model.markers, [] );
 
 			expect( dispatcher.fire.calledWith( 'attribute:bold' ) ).to.be.true;
 		} );
@@ -323,7 +337,7 @@ describe( 'DowncastDispatcher', () => {
 
 			sinon.spy( dispatcher, 'fire' );
 
-			dispatcher.convertSelection( doc.selection, [] );
+			dispatcher.convertSelection( doc.selection, model.markers, [] );
 
 			expect( dispatcher.fire.calledWith( 'attribute:bold' ) ).to.be.false;
 		} );
@@ -339,7 +353,7 @@ describe( 'DowncastDispatcher', () => {
 			sinon.spy( dispatcher, 'fire' );
 
 			const markers = Array.from( model.markers.getMarkersAtPosition( doc.selection.getFirstPosition() ) );
-			dispatcher.convertSelection( doc.selection, markers );
+			dispatcher.convertSelection( doc.selection, model.markers, markers );
 
 			expect( dispatcher.fire.calledWith( 'addMarker:name' ) ).to.be.true;
 		} );
@@ -352,7 +366,7 @@ describe( 'DowncastDispatcher', () => {
 			sinon.spy( dispatcher, 'fire' );
 
 			const markers = Array.from( model.markers.getMarkersAtPosition( doc.selection.getFirstPosition() ) );
-			dispatcher.convertSelection( doc.selection, markers );
+			dispatcher.convertSelection( doc.selection, model.markers, markers );
 
 			expect( dispatcher.fire.calledWith( 'addMarker:name' ) ).to.be.false;
 		} );
@@ -371,8 +385,8 @@ describe( 'DowncastDispatcher', () => {
 			const viewFigure = new ViewContainerElement( 'figure', null, viewCaption );
 
 			// Create custom highlight handler mock.
-			viewFigure.setCustomProperty( 'addHighlight', () => { } );
-			viewFigure.setCustomProperty( 'removeHighlight', () => { } );
+			viewFigure._setCustomProperty( 'addHighlight', () => { } );
+			viewFigure._setCustomProperty( 'removeHighlight', () => { } );
 
 			// Create mapper mock.
 			dispatcher.conversionApi.mapper = {
@@ -393,7 +407,7 @@ describe( 'DowncastDispatcher', () => {
 
 			const markers = Array.from( model.markers.getMarkersAtPosition( doc.selection.getFirstPosition() ) );
 
-			dispatcher.convertSelection( doc.selection, markers );
+			dispatcher.convertSelection( doc.selection, model.markers, markers );
 
 			expect( dispatcher.fire.calledWith( 'addMarker:name' ) ).to.be.false;
 		} );
@@ -414,7 +428,7 @@ describe( 'DowncastDispatcher', () => {
 			} );
 
 			const markers = Array.from( model.markers.getMarkersAtPosition( doc.selection.getFirstPosition() ) );
-			dispatcher.convertSelection( doc.selection, markers );
+			dispatcher.convertSelection( doc.selection, model.markers, markers );
 
 			expect( dispatcher.fire.calledWith( 'addMarker:foo' ) ).to.be.true;
 			expect( dispatcher.fire.calledWith( 'addMarker:bar' ) ).to.be.false;
