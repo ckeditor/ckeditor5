@@ -31,6 +31,9 @@ a.ck-button {
 	/* Enable font size inheritance, which allows fluid UI scaling. */
 	font-size: inherit;
 
+	/* Avoid flickering when the foucs border shows up. */
+	border: 1px solid transparent;
+
 	&:focus {
 		@mixin ck-focus-ring;
 		@mixin ck-box-shadow var(--ck-focus-outer-shadow);
