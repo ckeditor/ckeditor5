@@ -17,9 +17,10 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
  * @extends module:engine/view/observer/observer~Observer
  */
 export default class DeleteObserver extends Observer {
-	constructor( document ) {
-		super( document );
+	constructor( view ) {
+		super( view );
 
+		const document = view.document;
 		let sequence = 0;
 
 		document.on( 'keyup', ( evt, data ) => {

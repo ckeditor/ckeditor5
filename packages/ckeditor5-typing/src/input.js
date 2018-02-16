@@ -42,11 +42,11 @@ export default class Input extends Plugin {
 
 		editor.commands.add( 'input', inputCommand );
 
-		this.listenTo( editingView, 'keydown', ( evt, data ) => {
+		this.listenTo( editingView.document, 'keydown', ( evt, data ) => {
 			this._handleKeydown( data, inputCommand );
 		}, { priority: 'lowest' } );
 
-		this.listenTo( editingView, 'mutations', ( evt, mutations, viewSelection ) => {
+		this.listenTo( editingView.document, 'mutations', ( evt, mutations, viewSelection ) => {
 			this._handleMutations( mutations, viewSelection );
 		} );
 	}
