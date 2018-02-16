@@ -510,9 +510,12 @@ class LiveSelection extends Selection {
 
 		this.listenTo( this._model, 'applyOperation', () => {
 			while ( this._fixGraveyardRangesData.length ) {
-				const { range, position } = this._fixGraveyardRangesData.shift();
+				const { liveRange, sourcePosition } = this._fixGraveyardRangesData.shift();
 
-				this._fixGraveyardSelection( range, position );
+				// Checks whether the liveRange still belongs to graveyard.
+				if ( liveRange.root == this._document.graveyard ) {
+					this._fixGraveyardSelection( liveRange, sourcePosition );
+				}
 			}
 
 			if ( this._hasChangedRange ) {
@@ -647,8 +650,8 @@ class LiveSelection extends Selection {
 			// If `LiveRange` is in whole moved to the graveyard, save necessary data. It will be fixed on `Model#applyOperation` event.
 			if ( liveRange.root == this._document.graveyard ) {
 				this._fixGraveyardRangesData.push( {
-					range: liveRange,
-					position: data.sourcePosition
+					liveRange,
+					sourcePosition: data.sourcePosition
 				} );
 			}
 		} );
