@@ -510,9 +510,9 @@ class LiveSelection extends Selection {
 
 		this.listenTo( this._model, 'applyOperation', () => {
 			while ( this._fixGraveyardRangesData.length ) {
-				const { range, sourcePosition } = this._fixGraveyardRangesData.shift();
+				const { range, position } = this._fixGraveyardRangesData.shift();
 
-				this._fixGraveyardSelection( range, sourcePosition );
+				this._fixGraveyardSelection( range, position );
 			}
 
 			if ( this._hasChangedRange ) {
