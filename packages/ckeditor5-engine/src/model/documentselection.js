@@ -397,11 +397,10 @@ export default class DocumentSelection {
 	 *
 	 * @see module:engine/model/writer~Writer#overrideGravity
 	 * @protected
-	 * @param {Function} [customRestorer] A callback function that allows to control when default gravity should be restored.
-	 * Callback takes function as a param that allow to restore the gravity.
+	 * @param {Boolean} [customRestore=false] When `true` then gravity won't be restored automatically.
 	 */
-	_overrideGravity( customRestorer ) {
-		this._selection.overrideGravity( customRestorer );
+	_overrideGravity( customRestore ) {
+		this._selection.overrideGravity( customRestore );
 	}
 
 	/**
@@ -634,15 +633,13 @@ class LiveSelection extends Selection {
 		}
 	}
 
-	overrideGravity( customRestorer ) {
+	overrideGravity( customRestore ) {
 		this._isGravityOverriden = true;
 
-		if ( typeof customRestorer == 'function' ) {
-			customRestorer( this.restoreGravity.bind( this ) );
-		} else {
+		if ( !customRestore ) {
 			this.on( 'change:range', ( evt, data ) => {
 				if ( data.directChange ) {
-					this._isGravityOverriden = false;
+					this.restoreGravity();
 					evt.off();
 				}
 			} );

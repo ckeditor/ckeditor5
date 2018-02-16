@@ -2381,28 +2381,21 @@ describe( 'Writer', () => {
 			expect( model.document.selection.isGravityOverridden ).to.false;
 		} );
 
-		it( 'should allow to use custom restorer callback', () => {
+		it( 'should allow to restorer gravity in a custom way', () => {
 			const root = doc.createRoot();
 			root.appendChildren( [ new Text( 'foobar', { foo: true } ) ] );
 
 			setSelection( new Position( root, [ 1 ] ) );
 
-			overrideSelectionGravity( restore => {
-				let i = 0;
+			overrideSelectionGravity( true );
 
-				model.document.selection.on( 'change:range', () => {
-					if ( i++ > 0 ) {
-						restore();
-					}
-				} );
-			} );
-
-			// Moving selection for the first time does not restore.
+			// Moving selection does not restore gravity.
 			setSelection( new Position( root, [ 2 ] ) );
 			expect( model.document.selection.isGravityOverridden ).to.true;
 
-			// Second move does.
-			setSelection( new Position( root, [ 1 ] ) );
+			// We need to do it manually.
+			restoreSelectionGravity();
+
 			expect( model.document.selection.isGravityOverridden ).to.false;
 		} );
 	} );
@@ -2597,9 +2590,9 @@ describe( 'Writer', () => {
 		} );
 	}
 
-	function overrideSelectionGravity( customRestorer ) {
+	function overrideSelectionGravity( customRestore ) {
 		model.change( writer => {
-			writer.overrideSelectionGravity( customRestorer );
+			writer.overrideSelectionGravity( customRestore );
 		} );
 	}
 

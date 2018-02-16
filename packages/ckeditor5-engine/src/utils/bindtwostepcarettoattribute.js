@@ -103,17 +103,17 @@ export default function bindTwoStepCaretToAttribute( editor, emitter, attribute 
 			// event following the overriding will restore the gravity.
 			if ( isStickToAttribute( nextPosition.nodeBefore, nextPosition.nodeAfter, attribute ) ) {
 				model.change( writer => {
-					// So let's override the gravity.
-					writer.overrideSelectionGravity( restore => {
-						// But skip the following `change:range` event and restore the gravity on the next one.
-						let counter = 0;
+					let counter = 0;
 
-						emitter.listenTo( modelSelection, 'change:range', ( evt, data ) => {
-							if ( counter++ && data.directChange ) {
-								restore();
-								evt.off();
-							}
-						} );
+					// So let's override the gravity.
+					writer.overrideSelectionGravity( true );
+
+					// But skip the following `change:range` event and restore the gravity on the next one.
+					emitter.listenTo( modelSelection, 'change:range', ( evt, data ) => {
+						if ( counter++ && data.directChange ) {
+							writer.restoreSelectionGravity();
+							evt.off();
+						}
 					} );
 				} );
 			}
