@@ -53,7 +53,6 @@ export default class ContextualToolbar extends Plugin {
 		this.toolbarView.extendTemplate( {
 			attributes: {
 				class: [
-					'ck-editor-toolbar',
 					'ck-toolbar_floating'
 				]
 			}
@@ -178,7 +177,7 @@ export default class ContextualToolbar extends Plugin {
 		this._balloon.add( {
 			view: this.toolbarView,
 			position: this._getBalloonPositionData(),
-			balloonClassName: 'ck-toolbar-container ck-editor-toolbar-container'
+			balloonClassName: 'ck-toolbar-container'
 		} );
 	}
 
