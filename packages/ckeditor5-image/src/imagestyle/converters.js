@@ -27,13 +27,14 @@ export function modelToViewStyleAttribute( styles ) {
 		const oldStyle = getStyleByName( data.attributeOldValue, styles );
 
 		const viewElement = conversionApi.mapper.toViewElement( data.item );
+		const viewWriter = conversionApi.writer;
 
 		if ( oldStyle ) {
-			viewElement.removeClass( oldStyle.className );
+			viewWriter.removeClass( oldStyle.className, viewElement );
 		}
 
 		if ( newStyle ) {
-			viewElement.addClass( newStyle.className );
+			viewWriter.addClass( newStyle.className, viewElement );
 		}
 	};
 }

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
+import View from '@ckeditor/ckeditor5-engine/src/view/view';
 import ViewEditableElement from '@ckeditor/ckeditor5-engine/src/view/editableelement';
 import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
 import {
@@ -15,12 +15,16 @@ import {
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 
 describe( 'image captioning utils', () => {
-	let element, document;
+	let element, view, document;
 
 	beforeEach( () => {
-		document = new ViewDocument();
-		const creator = captionElementCreator( document, 'placeholder text' );
-		element = creator();
+		view = new View();
+		document = view.document;
+		const creator = captionElementCreator( view, 'placeholder text' );
+
+		view.change( writer => {
+			element = creator( writer );
+		} );
 	} );
 
 	describe( 'captionElementCreator', () => {
@@ -42,7 +46,7 @@ describe( 'image captioning utils', () => {
 
 		it( 'should return false for other elements', () => {
 			const editable = new ViewEditableElement( 'figcaption', { contenteditable: true } );
-			editable.document = document;
+			editable._document = document;
 
 			expect( isCaption( editable ) ).to.be.false;
 		} );

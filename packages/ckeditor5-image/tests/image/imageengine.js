@@ -12,7 +12,7 @@ import { isImageWidget } from '../../src/image/utils';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 
 describe( 'ImageEngine', () => {
-	let editor, model, document, viewDocument;
+	let editor, model, document, view, viewDocument;
 
 	beforeEach( () => {
 		return VirtualTestEditor
@@ -23,7 +23,8 @@ describe( 'ImageEngine', () => {
 				editor = newEditor;
 				model = editor.model;
 				document = model.document;
-				viewDocument = editor.editing.view;
+				view = editor.editing.view;
+				viewDocument = view.document;
 			} );
 	} );
 
@@ -380,7 +381,7 @@ describe( 'ImageEngine', () => {
 			it( 'should convert', () => {
 				setModelData( model, '<image src="foo.png" alt="alt text"></image>' );
 
-				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false"><img alt="alt text" src="foo.png"></img></figure>'
 				);
 			} );
@@ -401,7 +402,7 @@ describe( 'ImageEngine', () => {
 					writer.setAttribute( 'alt', 'new text', image );
 				} );
 
-				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false"><img alt="new text" src="foo.png"></img></figure>'
 				);
 			} );
@@ -414,7 +415,7 @@ describe( 'ImageEngine', () => {
 					writer.removeAttribute( 'alt', image );
 				} );
 
-				expect( getViewData( viewDocument, { withoutSelection: true } ) )
+				expect( getViewData( view, { withoutSelection: true } ) )
 					.to.equal( '<figure class="ck-widget image" contenteditable="false"><img src="foo.png"></img></figure>' );
 			} );
 
@@ -430,7 +431,7 @@ describe( 'ImageEngine', () => {
 					writer.removeAttribute( 'alt', image );
 				} );
 
-				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false"><img alt="alt text" src="foo.png"></img></figure>'
 				);
 			} );
@@ -443,7 +444,7 @@ describe( 'ImageEngine', () => {
 						'srcset=\'{ "data":"small.png 148w, big.png 1024w" }\'>' +
 					'</image>' );
 
-				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<img alt="alt text" sizes="100vw" src="foo.png" srcset="small.png 148w, big.png 1024w"></img>' +
 					'</figure>'
@@ -463,7 +464,7 @@ describe( 'ImageEngine', () => {
 					writer.removeAttribute( 'srcset', image );
 				} );
 
-				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<img alt="alt text" src="foo.png"></img>' +
 					'</figure>'
@@ -478,7 +479,7 @@ describe( 'ImageEngine', () => {
 						'srcset=\'{ "data":"small.png 148w, big.png 1024w", "width":"1024" }\'>' +
 					'</image>' );
 
-				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<img alt="alt text" sizes="100vw" src="foo.png" srcset="small.png 148w, big.png 1024w" width="1024"></img>' +
 					'</figure>'
@@ -493,7 +494,7 @@ describe( 'ImageEngine', () => {
 					writer.removeAttribute( 'srcset', image );
 				} );
 
-				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<img src="foo.png"></img>' +
 					'</figure>'
@@ -513,7 +514,7 @@ describe( 'ImageEngine', () => {
 					writer.removeAttribute( 'srcset', image );
 				} );
 
-				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false">' +
 					'<img src="foo.png"></img>' +
 					'</figure>'
@@ -535,7 +536,7 @@ describe( 'ImageEngine', () => {
 					'</image>'
 				);
 
-				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<img alt="alt text" src="foo.png"></img>' +
 					'</figure>'

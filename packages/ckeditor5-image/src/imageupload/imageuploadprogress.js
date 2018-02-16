@@ -10,7 +10,8 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
 import uploadingPlaceholder from '../../theme/icons/image_placeholder.svg';
-import UIElement from '@ckeditor/ckeditor5-engine/src/view/uielement';
+import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
+import ViewRange from '@ckeditor/ckeditor5-engine/src/view/range';
 
 import '../../theme/imageuploadprogress.css';
 
@@ -52,8 +53,9 @@ export default class ImageUploadProgress extends Plugin {
 	 * @param {module:utils/eventinfo~EventInfo} evt Object containing information about the fired event.
 	 * @param {Object} data Additional information about the change.
 	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
+	 * @param {Object} conversionApi
 	 */
-	uploadStatusChange( evt, data, consumable ) {
+	uploadStatusChange( evt, data, consumable, conversionApi ) {
 		const editor = this.editor;
 		const modelImage = data.item;
 		const uploadId = modelImage.getAttribute( 'uploadId' );
@@ -66,12 +68,13 @@ export default class ImageUploadProgress extends Plugin {
 		const placeholder = this.placeholder;
 		const status = data.attributeNewValue;
 		const viewFigure = editor.editing.mapper.toViewElement( modelImage );
+		const viewWriter = conversionApi.writer;
 
 		// Show placeholder with infinite progress bar on the top while image is read from disk.
 		if ( status == 'reading' ) {
-			viewFigure.addClass( 'ck-appear', 'ck-infinite-progress', 'ck-image-upload-placeholder' );
+			viewWriter.addClass( [ 'ck-appear', 'ck-infinite-progress', 'ck-image-upload-placeholder' ], viewFigure );
 			const viewImg = viewFigure.getChild( 0 );
-			viewImg.setAttribute( 'src', placeholder );
+			viewWriter.setAttribute( 'src', placeholder, viewImg );
 
 			return;
 		}
@@ -81,15 +84,16 @@ export default class ImageUploadProgress extends Plugin {
 			const loader = fileRepository.loaders.get( uploadId );
 
 			if ( loader ) {
-				const progressBar = createProgressBar();
+				const progressBar = createProgressBar( viewWriter );
 
-				viewFigure.removeClass( 'ck-infinite-progress', 'ck-image-upload-placeholder' );
-				viewFigure.appendChildren( progressBar );
+				viewWriter.removeClass( [ 'ck-infinite-progress', 'ck-image-upload-placeholder' ], viewFigure );
+				viewWriter.insert( ViewPosition.createAt( viewFigure, 'end' ), progressBar );
 
 				// Update progress bar width when uploadedPercent is changed.
 				loader.on( 'change:uploadedPercent', ( evt, name, value ) => {
-					progressBar.setStyle( 'width', value + '%' );
-					editor.editing.view.render();
+					editor.editing.view.change( writer => {
+						writer.setStyle( 'width', value + '%', progressBar );
+					} );
 				} );
 			}
 
@@ -100,12 +104,12 @@ export default class ImageUploadProgress extends Plugin {
 		const progressBar = getProgressBar( viewFigure );
 
 		if ( progressBar ) {
-			progressBar.remove();
+			viewWriter.remove( ViewRange.createOn( progressBar ) );
 		} else {
-			viewFigure.removeClass( 'ck-infinite-progress' );
+			viewWriter.removeClass( 'ck-infinite-progress', viewFigure );
 		}
 
-		viewFigure.removeClass( 'ck-appear', 'ck-image-upload-placeholder' );
+		viewWriter.removeClass( [ 'ck-appear', 'ck-image-upload-placeholder' ], viewFigure );
 	}
 }
 
@@ -115,10 +119,11 @@ const progressBarSymbol = Symbol( 'progress-bar' );
 // Create progress bar element using {@link module:engine/view/uielement~UIElement}.
 //
 // @private
+// @param {module:engine/view/writer~Writer} writer
 // @returns {module:engine/view/uielement~UIElement}
-function createProgressBar() {
-	const progressBar = new UIElement( 'div', { class: 'ck-progress-bar' } );
-	progressBar.setCustomProperty( progressBarSymbol, true );
+function createProgressBar( writer ) {
+	const progressBar = writer.createUIElement( 'div', { class: 'ck-progress-bar' } );
+	writer.setCustomProperty( progressBarSymbol, true, progressBar );
 
 	return progressBar;
 }

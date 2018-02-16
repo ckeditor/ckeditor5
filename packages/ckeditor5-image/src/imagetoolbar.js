@@ -95,7 +95,7 @@ export default class ImageToolbar extends Plugin {
 		if ( !editor.ui.focusTracker.isFocused ) {
 			this._hideToolbar();
 		} else {
-			if ( isImageWidgetSelected( editor.editing.view.selection ) ) {
+			if ( isImageWidgetSelected( editor.editing.view.document.selection ) ) {
 				this._showToolbar();
 			} else {
 				this._hideToolbar();
