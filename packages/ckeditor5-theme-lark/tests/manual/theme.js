@@ -107,7 +107,7 @@ function renderButton() {
 			label: 'State: on',
 			isOn: true
 		} )
-	 ] ) );
+	] ) );
 
 	// --- Types ------------------------------------------------------------
 
