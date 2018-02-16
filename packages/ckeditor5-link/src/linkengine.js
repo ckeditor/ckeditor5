@@ -31,10 +31,8 @@ export default class LinkEngine extends Plugin {
 		// Allow link attribute on all inline nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: 'linkHref' } );
 
-		const linkElementCreator = ( href, data, consumable, api ) => createLinkElement( href, api.writer );
-
 		editor.conversion.for( 'downcast' )
-			.add( downcastAttributeToElement( 'linkHref', { view: linkElementCreator } ) );
+			.add( downcastAttributeToElement( { model: 'linkHref', view: createLinkElement } ) );
 
 		editor.conversion.for( 'upcast' )
 			.add( upcastElementToAttribute( {
