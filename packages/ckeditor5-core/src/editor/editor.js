@@ -118,7 +118,7 @@ export default class Editor {
 		 * @member {module:engine/controller/editingcontroller~EditingController}
 		 */
 		this.editing = new EditingController( this.model );
-		this.editing.view.bind( 'isReadOnly' ).to( this );
+		this.editing.view.document.bind( 'isReadOnly' ).to( this );
 
 		/**
 		 * Conversion manager to which conversion dispatchers are registered. Used to add converters to the editor.
@@ -144,7 +144,7 @@ export default class Editor {
 		 * @member {module:core/editingkeystrokehandler~EditingKeystrokeHandler}
 		 */
 		this.keystrokes = new EditingKeystrokeHandler( this );
-		this.keystrokes.listenTo( this.editing.view );
+		this.keystrokes.listenTo( this.editing.view.document );
 	}
 
 	/**
