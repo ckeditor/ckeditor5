@@ -8,16 +8,16 @@
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
 import ArticlePluginSet from '../_utils/articlepluginset';
-import ContextualToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/contextual/contextualtoolbar';
+import BalloonToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/balloon/balloontoolbar';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet, ContextualToolbar ],
+		plugins: [ ArticlePluginSet, BalloonToolbar ],
 		toolbar: [ 'headings', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
 		image: {
 			toolbar: [ 'imageStyleFull', 'imageStyleSide', '|', 'imageTextAlternative' ],
 		},
-		contextualToolbar: [ 'bold', 'italic', 'link' ]
+		balloonToolbar: [ 'bold', 'italic', 'link' ]
 	} )
 	.then( editor => {
 		window.editor = editor;
