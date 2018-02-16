@@ -53,7 +53,7 @@ export default class Writer {
 	 *		writer.setSelection( position );
 	 *
 	 * 		// Sets collapsed range on the given item.
-	 *		const paragraph = writer.createElement( 'paragraph' );
+	 *		const paragraph = writer.createContainerElement( 'paragraph' );
 	 *		writer.setSelection( paragraph, offset );
 	 *
 	 * 		// Removes all ranges.

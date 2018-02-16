@@ -539,7 +539,7 @@ export default class Element extends Node {
  	 *
 	 * For example:
 	 *
-	 *		const element = new ViewElement( 'foo', {
+	 *		const element = writer.createContainerElement( 'foo', {
 	 *			banana: '10',
 	 *			apple: '20',
 	 *			style: 'color: red; border-color: white;',
