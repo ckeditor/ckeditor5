@@ -12,6 +12,10 @@ import createViewRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/creater
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+
+testUtils.createSinonSandbox();
+
 describe( 'DeleteObserver', () => {
 	let viewDocument;
 
@@ -29,12 +33,6 @@ describe( 'DeleteObserver', () => {
 	} );
 
 	describe( 'delete event', () => {
-		const initialEnvMac = env.isMac;
-
-		afterEach( () => {
-			env.isMac = initialEnvMac;
-		} );
-
 		it( 'is fired on keydown', () => {
 			const spy = sinon.spy();
 
@@ -55,7 +53,7 @@ describe( 'DeleteObserver', () => {
 		it( 'is fired with a proper direction and unit (on Mac)', () => {
 			const spy = sinon.spy();
 
-			env.isMac = true;
+			testUtils.sinon.stub( env, 'isMac' ).value( true );
 
 			viewDocument.on( 'delete', spy );
 
@@ -75,7 +73,7 @@ describe( 'DeleteObserver', () => {
 		it( 'is fired with a proper direction and unit (on non-Mac)', () => {
 			const spy = sinon.spy();
 
-			env.isMac = false;
+			testUtils.sinon.stub( env, 'isMac' ).value( false );
 
 			viewDocument.on( 'delete', spy );
 
