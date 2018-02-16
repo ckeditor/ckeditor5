@@ -7,9 +7,7 @@
  * @module engine/utils/bindtwostepcarettoattribute
  */
 
-import Range from '../../src/model/range';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import first from '@ckeditor/ckeditor5-utils/src/first';
 
 /**
  * This helper adds two-steps caret movement behaviour for given attribute.
@@ -90,10 +88,10 @@ export default function bindTwoStepCaretToAttribute( view, model, emitter, attri
 
 			// If we are here we need to check if caret is a one character before the text with attribute bound
 			// `foo<a>bar</a>b{}iz` or `foo<a>b{}ar</a>biz`.
-			const nextPosition = getPreviousPosition( position );
+			const nextPosition = position.getShiftedBy( -1 );
 
-			// When there is no position it means that parent bound has been reached.
-			if ( !nextPosition ) {
+			// When position is the same it means that parent bound has been reached.
+			if ( !nextPosition.isBefore( position ) ) {
 				return;
 			}
 
@@ -129,20 +127,4 @@ function isStickToAttribute( nextNode, prevNode, attribute ) {
 	const isAttrInPrev = prevNode ? prevNode.hasAttribute( attribute ) : false;
 
 	return isAttrInNext && !isAttrInPrev || !isAttrInNext && isAttrInPrev;
-}
-
-// @param {module:engine/model/position~Position} position Initial position.
-// @returns {module:engine/model/position~Position|undefined} Previous position according to initial position in range.
-function getPreviousPosition( position ) {
-	const iterator = Range.createIn( position.parent ).getPositions( {
-		direction: 'backward',
-		singleCharacters: true,
-		startPosition: position
-	} );
-
-	// First position is the same as initial so we need to skip it.
-	first( iterator );
-
-	// Get position before the previous node of initial position.
-	return first( iterator );
 }
