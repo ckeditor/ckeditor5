@@ -9,7 +9,7 @@ import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
 import BalloonEditorUI from '../src/ballooneditorui';
 import BalloonEditorUIView from '../src/ballooneditoruiview';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import ContextualToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/contextual/contextualtoolbar';
+import BalloonToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/balloon/balloontoolbar';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import utils from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
@@ -20,7 +20,7 @@ describe( 'BalloonEditorUI', () => {
 	beforeEach( () => {
 		return VirtualBalloonTestEditor
 			.create( {
-				plugins: [ ContextualToolbar ]
+				plugins: [ BalloonToolbar ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -57,7 +57,7 @@ describe( 'BalloonEditorUI', () => {
 		} );
 
 		it( 'initializes keyboard navigation between view#toolbar and view#editable', () => {
-			const toolbar = editor.plugins.get( 'ContextualToolbar' );
+			const toolbar = editor.plugins.get( 'BalloonToolbar' );
 			const toolbarFocusSpy = sinon.stub( toolbar.toolbarView, 'focus' ).returns( {} );
 			const toolbarShowSpy = sinon.stub( toolbar, 'show' ).returns( {} );
 			const toolbarHideSpy = sinon.stub( toolbar, 'hide' ).returns( {} );

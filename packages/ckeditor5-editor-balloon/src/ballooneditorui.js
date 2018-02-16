@@ -51,7 +51,7 @@ export default class BalloonEditorUI {
 	init() {
 		const editor = this.editor;
 		const view = this.view;
-		const contextualToolbar = editor.plugins.get( 'ContextualToolbar' );
+		const balloonToolbar = editor.plugins.get( 'BalloonToolbar' );
 
 		view.render();
 
@@ -71,12 +71,12 @@ export default class BalloonEditorUI {
 			origin: editor.editing.view,
 			originFocusTracker: this.focusTracker,
 			originKeystrokeHandler: editor.keystrokes,
-			toolbar: contextualToolbar.toolbarView,
+			toolbar: balloonToolbar.toolbarView,
 			beforeFocus() {
-				contextualToolbar.show();
+				balloonToolbar.show();
 			},
 			afterBlur() {
-				contextualToolbar.hide();
+				balloonToolbar.hide();
 			}
 		} );
 	}
