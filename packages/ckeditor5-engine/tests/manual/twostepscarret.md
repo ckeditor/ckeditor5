@@ -42,5 +42,9 @@
 	- underline button should be not selected
 	- bold button should stay selected
 
+### Moving from one bound attribute to another
+1. Make sure that moving between underline and italic text from second paragraph works the same way as above.
+
+
 ### Not bounded attribute
-Just make sure that two-steps caret movement is disabled for bold text from the second paragraph.
+Just make sure that two-steps caret movement is disabled for bold text from the third paragraph.
