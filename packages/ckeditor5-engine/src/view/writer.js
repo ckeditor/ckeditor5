@@ -52,19 +52,30 @@ export default class Writer {
 	 *		const position = new Position( root, path );
 	 *		writer.setSelection( position );
 	 *
-	 * 		// Sets collapsed range on the given item.
-	 *		const paragraph = writer.createContainerElement( 'paragraph' );
-	 *		writer.setSelection( paragraph, offset );
+	 * 		// Sets collapsed range at the position of given item and offset.
+	 *		const paragraph = writer.createElement( 'paragraph' );
+	 *		selection.setTo( paragraph, offset );
+	 *
+	 *		// Sets range inside the item.
+	 *		const paragraph = writer.createElement( 'paragraph' );
+	 *		selection.setTo( paragraph, 'in' );
+	 *
+	 *		// Sets range on the item.
+	 *		const paragraph = writer.createElement( 'paragraph' );
+	 *		selection.setTo( paragraph, 'on' );
 	 *
 	 * 		// Removes all ranges.
 	 *		writer.setSelection( null );
 	 *
 	 * @param {module:engine/view/selection~Selection|module:engine/view/position~Position|
 	 * Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|module:engine/view/item~Item|null} selectable
-	 * @param {Boolean|Number|'before'|'end'|'after'} [backwardSelectionOrOffset]
+	 * @param {Object|Number|'before'|'end'|'after'|'on'|'in'} [optionsOrPlaceOrOffset]
+	 * @param {Boolean} [optionsOrPlaceOrOffset.backward]
+	 * @param {Object} [options]
+	 * @param {Boolean} [options.backward]
 	 */
-	setSelection( selectable, backwardSelectionOrOffset ) {
-		this.document.selection._setTo( selectable, backwardSelectionOrOffset );
+	setSelection( selectable, optionsOrPlaceOrOffset, options ) {
+		this.document.selection._setTo( selectable, optionsOrPlaceOrOffset, options );
 	}
 
 	/**

@@ -41,11 +41,11 @@ export default class Selection {
 	 *
 	 *		// Creates selection at the given range.
 	 *		const range = new Range( start, end );
-	 *		const selection = new Selection( range, isBackwardSelection );
+	 *		const selection = new Selection( range, { backward } );
 	 *
 	 *		// Creates selection at the given ranges
 	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
-	 *		const selection = new Selection( ranges, isBackwardSelection );
+	 *		const selection = new Selection( ranges, { backward } );
 	 *
 	 *		// Creates selection from the other selection.
 	 *		const otherSelection = new Selection();
@@ -61,11 +61,11 @@ export default class Selection {
 	 *
 	 *		// Sets range inside the item.
 	 *		const paragraph = writer.createElement( 'paragraph' );
-	 *		selection.setTo( paragraph, 'in' );
+	 *		selection.setTo( paragraph, 'in', { backward } );
 	 *
 	 *		// Sets range on the item.
 	 *		const paragraph = writer.createElement( 'paragraph' );
-	 *		selection.setTo( paragraph, 'on' );
+	 *		selection.setTo( paragraph, 'on', { backward } );
 	 *
 	* @param {module:engine/view/selection~Selection|module:engine/view/position~Position|
 	 * Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|module:engine/view/item~Item|null} selectable

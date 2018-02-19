@@ -104,7 +104,7 @@ describe( 'convertSelectionChange', () => {
 				viewRoot.getChild( 0 ).getChild( 0 ), 1, viewRoot.getChild( 0 ).getChild( 0 ), 2 ),
 			ViewRange.createFromParentsAndOffsets(
 				viewRoot.getChild( 1 ).getChild( 0 ), 1, viewRoot.getChild( 1 ).getChild( 0 ), 2 )
-		], true );
+		], { backward: true } );
 
 		convertSelection( null, { newSelection: viewSelection } );
 

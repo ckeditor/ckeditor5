@@ -23,9 +23,9 @@ describe( 'Writer', () => {
 		it( 'should use selection._setTo method internally', () => {
 			const spy = sinon.spy( writer.document.selection, '_setTo' );
 			const position = ViewPosition.createAt( root );
-			writer.setSelection( position, true );
+			writer.setSelection( position );
 
-			sinon.assert.calledWithExactly( spy, position, true );
+			sinon.assert.calledWith( spy, position );
 			spy.restore();
 		} );
 	} );
