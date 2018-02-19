@@ -37,8 +37,9 @@ describe( 'HighlightUI', () => {
 			'Marker': 'Marker',
 			'Green marker': 'Zielony marker',
 			'Pink marker': 'Różowy marker',
+			'Blue marker': 'Niebieski marker',
 			'Red pen': 'Czerwony długopis',
-			'Blue pen': 'Niebieski długopis',
+			'Green pen': 'Zielony długopis',
 			'Remove highlighting': 'Usuń zaznaczenie'
 		} );
 	} );
@@ -88,7 +89,7 @@ describe( 'HighlightUI', () => {
 			expect( dropdown.buttonView.element.classList.contains( 'ck-highlight-button' ) ).to.be.true;
 			// There should be 5 highlight buttons, one separator and highlight remove button in toolbar.
 			expect( dropdown.toolbarView.items.map( button => button.element.classList.contains( 'ck-highlight-button' ) ) )
-				.to.deep.equal( [ true, true, true, true, true, false, false ] );
+				.to.deep.equal( [ true, true, true, true, true, true, false, false ] );
 		} );
 
 		it( 'should have proper icons in dropdown', () => {
@@ -98,7 +99,7 @@ describe( 'HighlightUI', () => {
 			command.value = undefined;
 
 			expect( toolbar.items.map( item => item.icon ) )
-				.to.deep.equal( [ markerIcon, markerIcon, markerIcon, penIcon, penIcon, undefined, eraserIcon ] );
+				.to.deep.equal( [ markerIcon, markerIcon, markerIcon, markerIcon, penIcon, penIcon, undefined, eraserIcon ] );
 		} );
 
 		it( 'should activate current option in dropdown', () => {
@@ -108,13 +109,13 @@ describe( 'HighlightUI', () => {
 			command.value = undefined;
 
 			expect( toolbar.items.map( item => item.isOn ) )
-				.to.deep.equal( [ false, false, false, false, false, undefined, false ] );
+				.to.deep.equal( [ false, false, false, false, false, false, undefined, false ] );
 
 			// Inside a selection with highlight.
 			command.value = 'greenMarker';
 
 			// The second item is 'greenMarker' highlighter.
-			expect( toolbar.items.map( item => item.isOn ) ).to.deep.equal( [ false, true, false, false, false, undefined, false ] );
+			expect( toolbar.items.map( item => item.isOn ) ).to.deep.equal( [ false, true, false, false, false, false, undefined, false ] );
 		} );
 
 		describe( 'toolbar button behavior', () => {
@@ -138,7 +139,7 @@ describe( 'HighlightUI', () => {
 			it( 'should change button on selection', () => {
 				command.value = 'redPen';
 
-				validateButton( 3 );
+				validateButton( 4 );
 
 				command.value = undefined;
 
@@ -149,13 +150,13 @@ describe( 'HighlightUI', () => {
 				command.value = 'marker';
 				validateButton( 0 );
 
-				buttons[ 4 ].fire( 'execute' );
-				command.value = 'bluePen';
+				buttons[ 5 ].fire( 'execute' );
+				command.value = 'greenPen';
 
 				// Simulate selection moved to not highlighted text.
 				command.value = undefined;
 
-				validateButton( 4 );
+				validateButton( 5 );
 			} );
 
 			it( 'should focus view after command execution', () => {
@@ -197,8 +198,9 @@ describe( 'HighlightUI', () => {
 					'Marker',
 					'Zielony marker',
 					'Różowy marker',
+					'Niebieski marker',
 					'Czerwony długopis',
-					'Niebieski długopis',
+					'Zielony długopis',
 					'Usuń zaznaczenie'
 				] );
 			} );
