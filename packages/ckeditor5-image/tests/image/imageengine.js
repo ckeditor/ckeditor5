@@ -7,7 +7,6 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import ImageEngine from '../../src/image/imageengine';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import { elementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/two-way-converters';
 import { isImageWidget } from '../../src/image/utils';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 
@@ -180,7 +179,7 @@ describe( 'ImageEngine', () => {
 					}
 				} );
 
-				elementToElement( editor.conversion, { model: 'div', view: 'div' } );
+				editor.conversion.elementToElement( { model: 'div', view: 'div' } );
 
 				editor.setData( '<div><figure class="image"><img src="foo.png" alt="alt text" /></figure></div>' );
 
@@ -233,7 +232,7 @@ describe( 'ImageEngine', () => {
 					allowAttributes: 'alt'
 				} );
 
-				elementToElement( editor.conversion, { model: 'div', view: 'div' } );
+				editor.conversion.elementToElement( { model: 'div', view: 'div' } );
 
 				editor.setData( '<div alt="foo"></div>' );
 
@@ -277,7 +276,7 @@ describe( 'ImageEngine', () => {
 				beforeEach( () => {
 					model.schema.register( 'div', { inheritAllFrom: '$block' } );
 
-					elementToElement( editor.conversion, { model: 'div', view: 'div' } );
+					editor.conversion.elementToElement( { model: 'div', view: 'div' } );
 				} );
 
 				it( 'image between non-hoisted elements', () => {
@@ -359,7 +358,7 @@ describe( 'ImageEngine', () => {
 					} );
 					model.schema.extend( 'div', { allowIn: 'limit' } );
 
-					elementToElement( editor.conversion, { model: 'limit', view: 'limit' } );
+					editor.conversion.elementToElement( { model: 'limit', view: 'limit' } );
 
 					editor.setData( '<limit><div>foo<img src="foo.jpg" alt="foo" />bar</div></limit>' );
 
