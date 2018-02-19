@@ -376,7 +376,7 @@ export default class Selection {
 				/**
 				 * Required second parameter when setting selection to node.
 				 *
-				 * @error
+				 * @error model-selection-setTo-required-second-parameter
 				 */
 				throw new CKEditorError(
 					'model-selection-setTo-required-second-parameter: Required second parameter when setting selection to node.' );

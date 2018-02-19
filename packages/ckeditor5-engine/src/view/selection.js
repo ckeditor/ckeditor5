@@ -12,8 +12,8 @@ import Range from './range';
 import Position from './position';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import Node from './node';
 import Element from './element';
-import Text from './text';
 import count from '@ckeditor/ckeditor5-utils/src/count';
 import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 
@@ -55,15 +55,26 @@ export default class Selection {
 	 *		const position = new Position( root, path );
 	 *		const selection = new Selection( position );
 	 *
-	 * 		// Creates selection at the start position of given element.
+	 * 		// Sets collapsed range at the position of given item and offset.
 	 *		const paragraph = writer.createElement( 'paragraph' );
-	 *		const selection = new Selection( paragraph, offset );
+	 *		selection.setTo( paragraph, offset );
 	 *
-	 * @param {module:engine/view/selection~Selection|module:engine/view/position~Position|
-	 * Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|module:engine/view/item~Item} [selectable]
-	 * @param {Boolean|Number|'before'|'end'|'after'} [backwardSelectionOrOffset]
+	 *		// Sets range inside the item.
+	 *		const paragraph = writer.createElement( 'paragraph' );
+	 *		selection.setTo( paragraph, 'in' );
+	 *
+	 *		// Sets range on the item.
+	 *		const paragraph = writer.createElement( 'paragraph' );
+	 *		selection.setTo( paragraph, 'on' );
+	 *
+	* @param {module:engine/view/selection~Selection|module:engine/view/position~Position|
+	 * Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|module:engine/view/item~Item|null} selectable
+	 * @param {Object|Number|'before'|'end'|'after'|'on'|'in'} [optionsOrPlaceOrOffset]
+	 * @param {Boolean} [optionsOrPlaceOrOffset.backward]
+	 * @param {Object} [options]
+	 * @param {Boolean} [options.backward]
 	 */
-	constructor( selectable, backwardSelectionOrOffset ) {
+	constructor( selectable, optionsOrPlaceOrOffset, options ) {
 		/**
 		 * Stores all ranges that are selected.
 		 *
@@ -97,7 +108,7 @@ export default class Selection {
 		this._fakeSelectionLabel = '';
 
 		if ( selectable ) {
-			this._setTo( selectable, backwardSelectionOrOffset );
+			this._setTo( selectable, optionsOrPlaceOrOffset, options );
 		}
 	}
 
@@ -422,9 +433,17 @@ export default class Selection {
 	 *		const position = new Position( root, path );
 	 *		selection.setTo( position );
 	 *
-	 * 		// Sets collapsed range on the given item.
+	 * 		// Sets collapsed range at the position of given item and offset.
 	 *		const paragraph = writer.createElement( 'paragraph' );
 	 *		selection.setTo( paragraph, offset );
+	 *
+	 *		// Sets range inside the item.
+	 *		const paragraph = writer.createElement( 'paragraph' );
+	 *		selection.setTo( paragraph, 'in' );
+	 *
+	 *		// Sets range on the item.
+	 *		const paragraph = writer.createElement( 'paragraph' );
+	 *		selection.setTo( paragraph, 'on' );
 	 *
 	 * 		// Removes all ranges.
 	 *		selection.setTo( null );
@@ -432,9 +451,12 @@ export default class Selection {
 	 * @protected
 	 * @param {module:engine/view/selection~Selection|module:engine/view/position~Position|
 	 * Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|module:engine/view/item~Item|null} selectable
-	 * @param {Boolean|Number|'before'|'end'|'after'} [backwardSelectionOrOffset]
+	 * @param {Object|Number|'before'|'end'|'after'|'on'|'in'} [optionsOrPlaceOrOffset]
+	 * @param {Boolean} [optionsOrPlaceOrOffset.backward]
+	 * @param {Object} [options]
+	 * @param {Boolean} [options.backward]
 	 */
-	_setTo( selectable, backwardSelectionOrOffset ) {
+	_setTo( selectable, optionsOrPlaceOrOffset, options ) {
 		if ( selectable === null ) {
 			this._removeAllRanges();
 		} else if ( selectable instanceof Selection ) {
@@ -442,16 +464,33 @@ export default class Selection {
 			this._fakeSelectionLabel = selectable.fakeSelectionLabel;
 			this._setRanges( selectable.getRanges(), selectable.isBackward );
 		} else if ( selectable instanceof Range ) {
-			this._setRanges( [ selectable ], backwardSelectionOrOffset );
+			this._setRanges( [ selectable ], !!optionsOrPlaceOrOffset && !!optionsOrPlaceOrOffset.backward );
 		} else if ( selectable instanceof Position ) {
 			this._setRanges( [ new Range( selectable ) ] );
-		} else if ( selectable instanceof Text ) {
-			this._setRanges( [ Range.createCollapsedAt( selectable, backwardSelectionOrOffset ) ] );
-		} else if ( selectable instanceof Element ) {
-			this._setRanges( [ Range.createCollapsedAt( selectable, backwardSelectionOrOffset ) ] );
+		} else if ( selectable instanceof Node ) {
+			const backward = !!options && !!options.backward;
+			let range;
+
+			if ( optionsOrPlaceOrOffset == 'in' ) {
+				range = Range.createIn( selectable );
+			} else if ( optionsOrPlaceOrOffset == 'on' ) {
+				range = Range.createOn( selectable );
+			} else if ( optionsOrPlaceOrOffset !== undefined ) {
+				range = Range.createCollapsedAt( selectable, optionsOrPlaceOrOffset );
+			} else {
+				/**
+				 * Required second parameter when setting selection to node.
+				 *
+				 * @error view-selection-setTo-required-second-parameter
+				 */
+				throw new CKEditorError(
+					'view-selection-setTo-required-second-parameter: Required second parameter when setting selection to node.' );
+			}
+
+			this._setRanges( [ range ], backward );
 		} else if ( isIterable( selectable ) ) {
 			// We assume that the selectable is an iterable of ranges.
-			this._setRanges( selectable, backwardSelectionOrOffset );
+			this._setRanges( selectable, optionsOrPlaceOrOffset && !!optionsOrPlaceOrOffset.backward );
 		} else {
 			/**
 			 * Cannot set selection to given place.
