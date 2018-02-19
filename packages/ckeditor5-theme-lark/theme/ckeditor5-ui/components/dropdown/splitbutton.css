@@ -15,9 +15,6 @@
 	}
 
 	& > .ck-splitbutton__arrow {
-		/* Disable a double border between the button and the arrow button. */
-		border-left: 0;
-
 		/* It's a text-less button but still, it should not be square. */
 		min-width: unset;
 
@@ -29,6 +26,20 @@
 
 		& svg {
 			width: var(--ck-dropdown-arrow-size);
+		}
+	}
+
+	/* When the split button is "open" (the arrow is on) or being hovered, it should get some styling
+	as a whole. The background of both buttons should stand out and there should be a visual
+	separation between both buttons. */
+	&.ck-splitbutton_open,
+	&:hover {
+		& > .ck-button:not(.ck-on):not(:hover) {
+			background: hsl(0, 0%, 92%);
+		}
+
+		& > .ck-splitbutton__arrow {
+			border-left-color: hsl(0, 0%, 70%);
 		}
 	}
 }
