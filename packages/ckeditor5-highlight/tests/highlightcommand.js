@@ -46,9 +46,9 @@ describe( 'HighlightCommand', () => {
 
 	describe( 'value', () => {
 		it( 'is set to highlight attribute value when selection is in text with highlight attribute', () => {
-			setData( model, '<p><$text highlight="marker">fo[o]</$text></p>' );
+			setData( model, '<p><$text highlight="yellowMarker">fo[o]</$text></p>' );
 
-			expect( command ).to.have.property( 'value', 'marker' );
+			expect( command ).to.have.property( 'value', 'yellowMarker' );
 		} );
 
 		it( 'is undefined when selection is not in text with highlight attribute', () => {
@@ -79,9 +79,9 @@ describe( 'HighlightCommand', () => {
 		describe( 'with option.value set', () => {
 			describe( 'on collapsed range', () => {
 				it( 'should change entire highlight when inside highlighted text', () => {
-					setData( model, '<p>abc<$text highlight="marker">foo[]bar</$text>xyz</p>' );
+					setData( model, '<p>abc<$text highlight="yellowMarker">foo[]bar</$text>xyz</p>' );
 
-					expect( command.value ).to.equal( 'marker' );
+					expect( command.value ).to.equal( 'yellowMarker' );
 
 					command.execute( { value: 'greenMarker' } );
 
@@ -91,11 +91,11 @@ describe( 'HighlightCommand', () => {
 				} );
 
 				it( 'should remove entire highlight when inside highlighted text of the same value', () => {
-					setData( model, '<p>abc<$text highlight="marker">foo[]bar</$text>xyz</p>' );
+					setData( model, '<p>abc<$text highlight="yellowMarker">foo[]bar</$text>xyz</p>' );
 
-					expect( command.value ).to.equal( 'marker' );
+					expect( command.value ).to.equal( 'yellowMarker' );
 
-					command.execute( { value: 'marker' } );
+					command.execute( { value: 'yellowMarker' } );
 
 					expect( getData( model ) ).to.equal( '<p>abcfoo[]barxyz</p>' );
 
@@ -103,7 +103,7 @@ describe( 'HighlightCommand', () => {
 				} );
 
 				it( 'should change selection attribute in non-empty parent', () => {
-					setData( model, '<p>a[]bc<$text highlight="marker">foobar</$text>xyz</p>' );
+					setData( model, '<p>a[]bc<$text highlight="yellowMarker">foobar</$text>xyz</p>' );
 					expect( command.value ).to.be.undefined;
 
 					command.execute( { value: 'foo' } );
@@ -124,7 +124,7 @@ describe( 'HighlightCommand', () => {
 				} );
 
 				it( 'should not store attribute change on selection if selection is collapsed in non-empty parent', () => {
-					setData( model, '<p>a[]bc<$text highlight="marker">foobar</$text>xyz</p>' );
+					setData( model, '<p>a[]bc<$text highlight="yellowMarker">foobar</$text>xyz</p>' );
 
 					command.execute( { value: 'foo' } );
 
@@ -142,7 +142,7 @@ describe( 'HighlightCommand', () => {
 				} );
 
 				it( 'should change selection attribute and store it if selection is collapsed in empty parent', () => {
-					setData( model, '<p>abc<$text highlight="marker">foobar</$text>xyz</p><p>[]</p>' );
+					setData( model, '<p>abc<$text highlight="yellowMarker">foobar</$text>xyz</p><p>[]</p>' );
 
 					expect( command.value ).to.be.undefined;
 
@@ -176,15 +176,15 @@ describe( 'HighlightCommand', () => {
 
 			describe( 'on not collapsed range', () => {
 				it( 'should set highlight attribute on selected node when passed as parameter', () => {
-					setData( model, '<p>a[bc<$text highlight="marker">fo]obar</$text>xyz</p>' );
+					setData( model, '<p>a[bc<$text highlight="yellowMarker">fo]obar</$text>xyz</p>' );
 
 					expect( command.value ).to.be.undefined;
 
-					command.execute( { value: 'marker' } );
+					command.execute( { value: 'yellowMarker' } );
 
-					expect( command.value ).to.equal( 'marker' );
+					expect( command.value ).to.equal( 'yellowMarker' );
 
-					expect( getData( model ) ).to.equal( '<p>a[<$text highlight="marker">bcfo]obar</$text>xyz</p>' );
+					expect( getData( model ) ).to.equal( '<p>a[<$text highlight="yellowMarker">bcfo]obar</$text>xyz</p>' );
 				} );
 
 				it( 'should set highlight attribute on selected node when passed as parameter (multiple nodes)', () => {
@@ -195,26 +195,26 @@ describe( 'HighlightCommand', () => {
 						'<p>barbar]bar</p>'
 					);
 
-					command.execute( { value: 'marker' } );
+					command.execute( { value: 'yellowMarker' } );
 
-					expect( command.value ).to.equal( 'marker' );
+					expect( command.value ).to.equal( 'yellowMarker' );
 
 					expect( getData( model ) ).to.equal(
-						'<p>abcabc[<$text highlight="marker">abc</$text></p>' +
-						'<p><$text highlight="marker">foofoofoo</$text></p>' +
-						'<p><$text highlight="marker">barbar</$text>]bar</p>'
+						'<p>abcabc[<$text highlight="yellowMarker">abc</$text></p>' +
+						'<p><$text highlight="yellowMarker">foofoofoo</$text></p>' +
+						'<p><$text highlight="yellowMarker">barbar</$text>]bar</p>'
 					);
 				} );
 
 				it( 'should set highlight attribute on selected nodes when passed as parameter only on selected characters', () => {
-					setData( model, '<p>abc[<$text highlight="marker">foo]bar</$text>xyz</p>' );
+					setData( model, '<p>abc[<$text highlight="yellowMarker">foo]bar</$text>xyz</p>' );
 
-					expect( command.value ).to.equal( 'marker' );
+					expect( command.value ).to.equal( 'yellowMarker' );
 
 					command.execute( { value: 'foo' } );
 
 					expect( getData( model ) ).to.equal(
-						'<p>abc[<$text highlight="foo">foo</$text>]<$text highlight="marker">bar</$text>xyz</p>'
+						'<p>abc[<$text highlight="foo">foo</$text>]<$text highlight="yellowMarker">bar</$text>xyz</p>'
 					);
 
 					expect( command.value ).to.equal( 'foo' );
@@ -225,9 +225,9 @@ describe( 'HighlightCommand', () => {
 		describe( 'with undefined option.value', () => {
 			describe( 'on collapsed range', () => {
 				it( 'should remove entire highlight when inside highlighted text', () => {
-					setData( model, '<p>abc<$text highlight="marker">foo[]bar</$text>xyz</p>' );
+					setData( model, '<p>abc<$text highlight="yellowMarker">foo[]bar</$text>xyz</p>' );
 
-					expect( command.value ).to.equal( 'marker' );
+					expect( command.value ).to.equal( 'yellowMarker' );
 
 					command.execute();
 
@@ -239,13 +239,13 @@ describe( 'HighlightCommand', () => {
 
 			describe( 'on not collapsed range', () => {
 				it( 'should remove highlight attribute on selected node when undefined passed as parameter', () => {
-					setData( model, '<p>abc[<$text highlight="marker">foo]bar</$text>xyz</p>' );
+					setData( model, '<p>abc[<$text highlight="yellowMarker">foo]bar</$text>xyz</p>' );
 
-					expect( command.value ).to.equal( 'marker' );
+					expect( command.value ).to.equal( 'yellowMarker' );
 
 					command.execute();
 
-					expect( getData( model ) ).to.equal( '<p>abc[foo]<$text highlight="marker">bar</$text>xyz</p>' );
+					expect( getData( model ) ).to.equal( '<p>abc[foo]<$text highlight="yellowMarker">bar</$text>xyz</p>' );
 
 					expect( command.value ).to.be.undefined;
 				} );

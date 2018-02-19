@@ -112,7 +112,7 @@ The {@link module:highlight/highlight~Highlight} plugin registers:
 	The `value` corresponds to the `model` property in configuration object. For the default configuration:
 	```js
 	highlight.options = [
-		{ model: 'marker', class: 'marker', title: 'Marker', color: '#fdfd77', type: 'marker' },
+		{ model: 'yellowMarker', class: 'marker-yellow', title: 'Yellow Marker', color: '#fdfd77', type: 'marker' },
 		{ model: 'greenMarker', class: 'marker-green', title: 'Green marker', color: '#63f963', type: 'marker' },
 		{ model: 'pinkMarker', class: 'marker-pink', title: 'Pink marker', color: '#fc7999', type: 'marker' },
 		{ model: 'blueMarker', class: 'marker-blue', title: 'Blue marker', color: '#72cdfd', type: 'marker' },
@@ -122,7 +122,7 @@ The {@link module:highlight/highlight~Highlight} plugin registers:
 	```
 
 	the `highlight` command will accept the corresponding strings as values:
-	- `'marker'` – available as a `'highlight:marker'` button,
+	- `'yellowMarker'` – available as a `'highlight:yellowMarker'` button,
 	- `'greenMarker'` – available as a `'highlight:greenMarker'` button,
 	- `'pinkMarker'` – available as a `'highlight:pinkMarker'` button,
 	- `'blueMarker'` – available as a `'highlight:blueMarker'` button,

@@ -9,10 +9,11 @@ You should be able to:
 - manually invoke highlight command in console:
 
 ```
-editor.execute( 'highlight', { class: 'marker' } );
-editor.execute( 'highlight', { class: 'marker-green' } );
-editor.execute( 'highlight', { class: 'marker-pink' } );
+editor.execute( 'highlight', { value: 'yellowMarker' } );
+editor.execute( 'highlight', { value: 'greenMarker' } );
+editor.execute( 'highlight', { value: 'pinkMarker' } );
+editor.execute( 'highlight', { value: 'blueMarker' } );
 
-editor.execute( 'highlight', { class: 'pen-red' } );
-editor.execute( 'highlight', { class: 'pen-green' } );
+editor.execute( 'highlight', { value: 'redPen' } );
+editor.execute( 'highlight', { value: 'greenPen' } );
 ```

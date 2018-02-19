@@ -47,7 +47,7 @@ export default class HighlightUI extends Plugin {
 	 * The following localized titles corresponding with default
 	 * {@link module:highlight/highlight~HighlightConfig#options} are available:
 	 *
-	 * * `'Marker'`,
+	 * * `'Yellow marker'`,
 	 * * `'Green marker'`,
 	 * * `'Pink marker'`,
 	 * * `'Blue marker'`,
@@ -61,7 +61,7 @@ export default class HighlightUI extends Plugin {
 		const t = this.editor.t;
 
 		return {
-			'Marker': t( 'Marker' ),
+			'Yellow marker': t( 'Yellow marker' ),
 			'Green marker': t( 'Green marker' ),
 			'Pink marker': t( 'Pink marker' ),
 			'Blue marker': t( 'Blue marker' ),

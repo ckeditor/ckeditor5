@@ -13,7 +13,7 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ ArticlePluginSet, Highlight ],
 		toolbar: [
-			'highlight:marker', 'highlight:greenMarker', 'highlight:pinkMarker', 'highlight:blueMarker',
+			'highlight:yellowMarker', 'highlight:greenMarker', 'highlight:pinkMarker', 'highlight:blueMarker',
 			'highlight:redPen', 'highlight:greenPen', 'removeHighlight',
 			'|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'
 		]

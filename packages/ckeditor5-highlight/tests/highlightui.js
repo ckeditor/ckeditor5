@@ -24,7 +24,7 @@ describe( 'HighlightUI', () => {
 	before( () => {
 		addTranslations( 'en', {
 			'Highlight': 'Highlight',
-			'Marker': 'Marker',
+			'Yellow marker': 'Yellow marker',
 			'Green marker': 'Green marker',
 			'Pink marker': 'Pink marker',
 			'Red pen': 'Red pen',
@@ -34,7 +34,7 @@ describe( 'HighlightUI', () => {
 
 		addTranslations( 'pl', {
 			'Highlight': 'Zakreślacz',
-			'Marker': 'Marker',
+			'Yellow marker': 'Żółty marker',
 			'Green marker': 'Zielony marker',
 			'Pink marker': 'Różowy marker',
 			'Blue marker': 'Niebieski marker',
@@ -147,7 +147,7 @@ describe( 'HighlightUI', () => {
 			} );
 
 			it( 'should change button on execute option', () => {
-				command.value = 'marker';
+				command.value = 'yellowMarker';
 				validateButton( 0 );
 
 				buttons[ 5 ].fire( 'execute' );
@@ -195,7 +195,7 @@ describe( 'HighlightUI', () => {
 				const listView = dropdown.toolbarView;
 
 				expect( listView.items.map( item => item.label ).filter( label => !!label ) ).to.deep.equal( [
-					'Marker',
+					'Żółty marker',
 					'Zielony marker',
 					'Różowy marker',
 					'Niebieski marker',

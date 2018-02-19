@@ -43,18 +43,18 @@ describe( 'HighlightEditing', () => {
 
 	describe( 'data pipeline conversions', () => {
 		it( 'should convert defined marker classes', () => {
-			const data = '<p>f<mark class="marker">o</mark>o</p>';
+			const data = '<p>f<mark class="marker-yellow">o</mark>o</p>';
 			editor.setData( data );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph>[]f<$text highlight="marker">o</$text>o</paragraph>' );
+			expect( getModelData( model ) ).to.equal( '<paragraph>[]f<$text highlight="yellowMarker">o</$text>o</paragraph>' );
 			expect( editor.getData() ).to.equal( data );
 		} );
 
 		it( 'should convert only one defined marker classes', () => {
-			editor.setData( '<p>f<mark class="marker-green marker">o</mark>o</p>' );
+			editor.setData( '<p>f<mark class="marker-green marker-yellow">o</mark>o</p>' );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph>[]f<$text highlight="marker">o</$text>o</paragraph>' );
-			expect( editor.getData() ).to.equal( '<p>f<mark class="marker">o</mark>o</p>' );
+			expect( getModelData( model ) ).to.equal( '<paragraph>[]f<$text highlight="yellowMarker">o</$text>o</paragraph>' );
+			expect( editor.getData() ).to.equal( '<p>f<mark class="marker-yellow">o</mark>o</p>' );
 		} );
 
 		it( 'should not convert undefined marker classes', () => {
@@ -74,9 +74,9 @@ describe( 'HighlightEditing', () => {
 
 	describe( 'editing pipeline conversion', () => {
 		it( 'should convert mark element with defined class', () => {
-			setModelData( model, '<paragraph>f<$text highlight="marker">o</$text>o</paragraph>' );
+			setModelData( model, '<paragraph>f<$text highlight="yellowMarker">o</$text>o</paragraph>' );
 
-			expect( editor.getData() ).to.equal( '<p>f<mark class="marker">o</mark>o</p>' );
+			expect( editor.getData() ).to.equal( '<p>f<mark class="marker-yellow">o</mark>o</p>' );
 		} );
 	} );
 
@@ -85,7 +85,7 @@ describe( 'HighlightEditing', () => {
 			it( 'should be set', () => {
 				expect( editor.config.get( 'highlight' ) ).to.deep.equal( {
 					options: [
-						{ model: 'marker', class: 'marker', title: 'Marker', color: '#fdfd77', type: 'marker' },
+						{ model: 'yellowMarker', class: 'marker-yellow', title: 'Yellow marker', color: '#fdfd77', type: 'marker' },
 						{ model: 'greenMarker', class: 'marker-green', title: 'Green marker', color: '#63f963', type: 'marker' },
 						{ model: 'pinkMarker', class: 'marker-pink', title: 'Pink marker', color: '#fc7999', type: 'marker' },
 						{ model: 'blueMarker', class: 'marker-blue', title: 'Blue marker', color: '#72cdfd', type: 'marker' },

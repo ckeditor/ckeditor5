@@ -28,7 +28,7 @@ export default class HighlightEditing extends Plugin {
 
 		editor.config.define( 'highlight', {
 			options: [
-				{ model: 'marker', class: 'marker', title: 'Marker', color: '#fdfd77', type: 'marker' },
+				{ model: 'yellowMarker', class: 'marker-yellow', title: 'Yellow marker', color: '#fdfd77', type: 'marker' },
 				{ model: 'greenMarker', class: 'marker-green', title: 'Green marker', color: '#63f963', type: 'marker' },
 				{ model: 'pinkMarker', class: 'marker-pink', title: 'Pink marker', color: '#fc7999', type: 'marker' },
 				{ model: 'blueMarker', class: 'marker-blue', title: 'Blue marker', color: '#72cdfd', type: 'marker' },
