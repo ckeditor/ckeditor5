@@ -512,10 +512,7 @@ class LiveSelection extends Selection {
 			while ( this._fixGraveyardRangesData.length ) {
 				const { liveRange, sourcePosition } = this._fixGraveyardRangesData.shift();
 
-				// Checks whether the `liveRange` is still inside the graveyard.
-				if ( liveRange.root == this._document.graveyard ) {
-					this._fixGraveyardSelection( liveRange, sourcePosition );
-				}
+				this._fixGraveyardSelection( liveRange, sourcePosition );
 			}
 
 			if ( this._hasChangedRange ) {
