@@ -185,7 +185,7 @@ describe( 'ParagraphCommand', () => {
 
 				const secondToLastHeading = root.getChild( 1 );
 				const lastHeading = root.getChild( 2 );
-				const selection = new Selection( [ Range.createFromParentsAndOffsets( secondToLastHeading, 0, lastHeading, 1 ) ] );
+				const selection = new Selection( Range.createFromParentsAndOffsets( secondToLastHeading, 0, lastHeading, 1 ) );
 
 				command.execute( { selection } );
 				expect( getData( model ) ).to.equal(
