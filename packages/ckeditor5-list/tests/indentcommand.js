@@ -53,7 +53,7 @@ describe( 'IndentCommand', () => {
 		describe( 'isEnabled', () => {
 			it( 'should be true if selection starts in list item', () => {
 				model.change( writer => {
-					writer.setSelection( root.getChild( 5 ) );
+					writer.setSelection( root.getChild( 5 ), 0 );
 				} );
 
 				expect( command.isEnabled ).to.be.true;
@@ -61,7 +61,7 @@ describe( 'IndentCommand', () => {
 
 			it( 'should be false if selection starts in first list item', () => {
 				model.change( writer => {
-					writer.setSelection( root.getChild( 0 ) );
+					writer.setSelection( root.getChild( 0 ), 0 );
 				} );
 
 				expect( command.isEnabled ).to.be.false;
@@ -107,7 +107,7 @@ describe( 'IndentCommand', () => {
 
 			it( 'should be false if selection starts in a list item that has bigger indent than it\'s previous sibling', () => {
 				model.change( writer => {
-					writer.setSelection( root.getChild( 2 ) );
+					writer.setSelection( root.getChild( 2 ), 0 );
 				} );
 
 				expect( command.isEnabled ).to.be.false;
@@ -127,7 +127,7 @@ describe( 'IndentCommand', () => {
 		describe( 'execute()', () => {
 			it( 'should use parent batch', () => {
 				model.change( writer => {
-					writer.setSelection( root.getChild( 5 ) );
+					writer.setSelection( root.getChild( 5 ), 0 );
 				} );
 
 				model.change( writer => {
@@ -141,7 +141,7 @@ describe( 'IndentCommand', () => {
 
 			it( 'should increment indent attribute by 1', () => {
 				model.change( writer => {
-					writer.setSelection( root.getChild( 5 ) );
+					writer.setSelection( root.getChild( 5 ), 0 );
 				} );
 
 				command.execute();
@@ -159,7 +159,7 @@ describe( 'IndentCommand', () => {
 
 			it( 'should increment indent of all sub-items of indented item', () => {
 				model.change( writer => {
-					writer.setSelection( root.getChild( 1 ) );
+					writer.setSelection( root.getChild( 1 ), 0 );
 				} );
 
 				command.execute();
@@ -212,7 +212,7 @@ describe( 'IndentCommand', () => {
 		describe( 'isEnabled', () => {
 			it( 'should be true if selection starts in list item', () => {
 				model.change( writer => {
-					writer.setSelection( root.getChild( 5 ) );
+					writer.setSelection( root.getChild( 5 ), 0 );
 				} );
 
 				expect( command.isEnabled ).to.be.true;
@@ -221,7 +221,7 @@ describe( 'IndentCommand', () => {
 			it( 'should be true if selection starts in first list item', () => {
 				// This is in contrary to forward indent command.
 				model.change( writer => {
-					writer.setSelection( root.getChild( 0 ) );
+					writer.setSelection( root.getChild( 0 ), 0 );
 				} );
 
 				expect( command.isEnabled ).to.be.true;
@@ -230,7 +230,7 @@ describe( 'IndentCommand', () => {
 			it( 'should be true if selection starts in a list item that has bigger indent than it\'s previous sibling', () => {
 				// This is in contrary to forward indent command.
 				model.change( writer => {
-					writer.setSelection( root.getChild( 2 ) );
+					writer.setSelection( root.getChild( 2 ), 0 );
 				} );
 
 				expect( command.isEnabled ).to.be.true;
@@ -240,7 +240,7 @@ describe( 'IndentCommand', () => {
 		describe( 'execute()', () => {
 			it( 'should decrement indent attribute by 1 (if it is bigger than 0)', () => {
 				model.change( writer => {
-					writer.setSelection( root.getChild( 5 ) );
+					writer.setSelection( root.getChild( 5 ), 0 );
 				} );
 
 				command.execute();
@@ -258,7 +258,7 @@ describe( 'IndentCommand', () => {
 
 			it( 'should rename listItem to paragraph (if indent is equal to 0)', () => {
 				model.change( writer => {
-					writer.setSelection( root.getChild( 0 ) );
+					writer.setSelection( root.getChild( 0 ), 0 );
 				} );
 
 				command.execute();
@@ -276,7 +276,7 @@ describe( 'IndentCommand', () => {
 
 			it( 'should decrement indent of all sub-items of outdented item', () => {
 				model.change( writer => {
-					writer.setSelection( root.getChild( 1 ) );
+					writer.setSelection( root.getChild( 1 ), 0 );
 				} );
 
 				command.execute();

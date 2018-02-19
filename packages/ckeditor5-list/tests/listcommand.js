@@ -51,7 +51,7 @@ describe( 'ListCommand', () => {
 		);
 
 		model.change( writer => {
-			writer.setSelection( doc.getRoot().getChild( 0 ) );
+			writer.setSelection( doc.getRoot().getChild( 0 ), 0 );
 		} );
 	} );
 
@@ -73,7 +73,7 @@ describe( 'ListCommand', () => {
 		describe( 'value', () => {
 			it( 'should be false if first position in selection is not in a list item', () => {
 				model.change( writer => {
-					writer.setSelection( doc.getRoot().getChild( 3 ) );
+					writer.setSelection( doc.getRoot().getChild( 3 ), 0 );
 				} );
 
 				expect( command.value ).to.be.false;
@@ -81,7 +81,7 @@ describe( 'ListCommand', () => {
 
 			it( 'should be false if first position in selection is in a list item of different type', () => {
 				model.change( writer => {
-					writer.setSelection( doc.getRoot().getChild( 2 ) );
+					writer.setSelection( doc.getRoot().getChild( 2 ), 0 );
 				} );
 
 				expect( command.value ).to.be.false;
@@ -89,7 +89,7 @@ describe( 'ListCommand', () => {
 
 			it( 'should be true if first position in selection is in a list item of same type', () => {
 				model.change( writer => {
-					writer.setSelection( doc.getRoot().getChild( 1 ) );
+					writer.setSelection( doc.getRoot().getChild( 1 ), 0 );
 				} );
 
 				expect( command.value ).to.be.true;
