@@ -58,7 +58,7 @@ describe( 'downcast-selection-converters', () => {
 
 		dispatcher.on( 'insert:$text', insertText() );
 
-		const strongCreator = ( value, data, consumable, api ) => api.writer.createAttributeElement( 'strong' );
+		const strongCreator = ( modelAttributeValue, viewWriter ) => viewWriter.createAttributeElement( 'strong' );
 		dispatcher.on( 'attribute:bold', wrap( strongCreator ) );
 
 		dispatcher.on( 'addMarker:marker', highlightText( highlightDescriptor ) );
@@ -502,7 +502,7 @@ describe( 'downcast-selection-converters', () => {
 			model.schema.extend( '$text', { allowIn: 'td' } );
 
 			// "Universal" converter to convert table structure.
-			const containerCreator = ( item, consumable, api ) => api.writer.createContainerElement( item.name );
+			const containerCreator = ( modelElement, viewWriter ) => viewWriter.createContainerElement( modelElement.name );
 			const tableConverter = insertElement( containerCreator );
 			dispatcher.on( 'insert:table', tableConverter );
 			dispatcher.on( 'insert:tr', tableConverter );

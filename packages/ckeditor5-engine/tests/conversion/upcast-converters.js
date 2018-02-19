@@ -74,7 +74,7 @@ describe( 'upcast-helpers', () => {
 			} );
 
 			const helperA = upcastElementToElement( { view: 'p', model: 'p' } );
-			const helperB = upcastElementToElement( { view: 'p', model: 'paragraph' }, 'high' );
+			const helperB = upcastElementToElement( { view: 'p', model: 'paragraph', priority: 'high' } );
 
 			conversion.for( 'upcast' ).add( helperA ).add( helperB );
 
@@ -86,37 +86,17 @@ describe( 'upcast-helpers', () => {
 				inheritAllFrom: '$block'
 			} );
 
-			const helperParagraph = upcastElementToElement( { view: 'p', model: 'paragraph' } );
 			const helperFancy = upcastElementToElement( {
 				view: {
 					name: 'p',
 					class: 'fancy'
 				},
-				model: 'fancyParagraph'
-			}, 'high' );
+				model: 'fancyParagraph',
+			} );
 
-			conversion.for( 'upcast' ).add( helperParagraph ).add( helperFancy );
+			conversion.for( 'upcast' ).add( helperFancy );
 
-			expectResult( new ViewContainerElement( 'p' ), '<paragraph></paragraph>' );
 			expectResult( new ViewContainerElement( 'p', { class: 'fancy' } ), '<fancyParagraph></fancyParagraph>' );
-		} );
-
-		it( 'config.model is element instance', () => {
-			schema.extend( 'paragraph', {
-				allowAttributes: [ 'fancy' ]
-			} );
-
-			const helper = upcastElementToElement( {
-				view: {
-					name: 'p',
-					class: 'fancy'
-				},
-				model: new ModelElement( 'paragraph', { fancy: true } )
-			} );
-
-			conversion.for( 'upcast' ).add( helper );
-
-			expectResult( new ViewContainerElement( 'p', { class: 'fancy' } ), '<paragraph fancy="true"></paragraph>' );
 		} );
 
 		it( 'config.model is a function', () => {
@@ -130,7 +110,9 @@ describe( 'upcast-helpers', () => {
 					name: 'p',
 					class: 'heading'
 				},
-				model: viewElement => new ModelElement( 'heading', { level: viewElement.getAttribute( 'data-level' ) } )
+				model: ( viewElement, modelWriter ) => {
+					return modelWriter.createElement( 'heading', { level: viewElement.getAttribute( 'data-level' ) } );
+				}
 			} );
 
 			conversion.for( 'upcast' ).add( helper );
@@ -176,7 +158,7 @@ describe( 'upcast-helpers', () => {
 
 		it( 'should not do anything if returned model element is null', () => {
 			const helperA = upcastElementToElement( { view: 'p', model: 'paragraph' } );
-			const helperB = upcastElementToElement( { view: 'p', model: () => null }, 'high' );
+			const helperB = upcastElementToElement( { view: 'p', model: () => null, priority: 'high' } );
 
 			conversion.for( 'upcast' ).add( helperA ).add( helperB );
 
@@ -198,7 +180,7 @@ describe( 'upcast-helpers', () => {
 
 		it( 'can be overwritten using priority', () => {
 			const helperA = upcastElementToAttribute( { view: 'strong', model: 'strong' } );
-			const helperB = upcastElementToAttribute( { view: 'strong', model: 'bold' }, 'high' );
+			const helperB = upcastElementToAttribute( { view: 'strong', model: 'bold', priority: 'high' } );
 
 			conversion.for( 'upcast' ).add( helperA ).add( helperB );
 
@@ -314,8 +296,9 @@ describe( 'upcast-helpers', () => {
 				model: {
 					key: 'bold',
 					value: () => null
-				}
-			}, 'high' );
+				},
+				priority: 'high'
+			} );
 
 			conversion.for( 'upcast' ).add( helperA ).add( helperB );
 
@@ -371,7 +354,7 @@ describe( 'upcast-helpers', () => {
 			} );
 
 			const helperA = upcastAttributeToAttribute( { view: { key: 'src' }, model: 'src' } );
-			const helperB = upcastAttributeToAttribute( { view: { key: 'src' }, model: 'source' }, 'normal' );
+			const helperB = upcastAttributeToAttribute( { view: { key: 'src' }, model: 'source', priority: 'normal' } );
 
 			conversion.for( 'upcast' ).add( helperA ).add( helperB );
 
@@ -536,7 +519,7 @@ describe( 'upcast-helpers', () => {
 
 		it( 'can be overwritten using priority', () => {
 			const helperA = upcastElementToMarker( { view: 'marker-search', model: 'search-result' } );
-			const helperB = upcastElementToMarker( { view: 'marker-search', model: 'search' }, 'high' );
+			const helperB = upcastElementToMarker( { view: 'marker-search', model: 'search', priority: 'high' } );
 
 			conversion.for( 'upcast' ).add( helperA ).add( helperB );
 

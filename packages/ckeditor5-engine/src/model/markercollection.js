@@ -80,7 +80,8 @@ export default class MarkerCollection {
 	 *
 	 * If `MarkerCollection` already had a marker with given name (or {@link ~Marker marker} was passed), the marker in
 	 * collection is updated and {@link module:engine/model/markercollection~MarkerCollection#event:update} event is fired
-	 * but only if there was a change (marker range or {@link ~Marker#managedUsingOperations} flag has changed.
+	 * but only if there was a change (marker range or {@link module:engine/model/markercollection~Marker#managedUsingOperations}
+	 * flag has changed.
 	 *
 	 * @protected
 	 * @fires module:engine/model/markercollection~MarkerCollection#event:update
@@ -246,7 +247,7 @@ mix( MarkerCollection, EmitterMixin );
  * Name is used to group and identify markers. Names have to be unique, but markers can be grouped by
  * using common prefixes, separated with `:`, for example: `user:john` or `search:3`. That's useful in term of creating
  * namespaces for custom elements (e.g. comments, highlights). You can use this prefixes in
- * {@link module:engine/model/markercollection~MarkerCollection#event:set} listeners to listen on changes in a group of markers.
+ * {@link module:engine/model/markercollection~MarkerCollection#event:update} listeners to listen on changes in a group of markers.
  * For instance: `model.markers.on( 'set:user', callback );` will be called whenever any `user:*` markers changes.
  *
  * There are two types of markers.
@@ -425,7 +426,7 @@ class Marker {
 	 *
 	 * When marker is removed from {@link module:engine/model/markercollection~MarkerCollection MarkerCollection},
 	 * all event listeners listening to it should be removed. It is best to do it on
-	 * {@link module:engine/model/markercollection~MarkerCollection#event:remove MarkerCollection remove event}.
+	 * {@link module:engine/model/markercollection~MarkerCollection#event:update MarkerCollection update event}.
 	 *
 	 * @see module:engine/model/liverange~LiveRange#event:change:range
 	 * @event change:range
@@ -439,7 +440,7 @@ class Marker {
 	 *
 	 * When marker is removed from {@link module:engine/model/markercollection~MarkerCollection MarkerCollection},
 	 * all event listeners listening to it should be removed. It is best to do it on
-	 * {@link module:engine/model/markercollection~MarkerCollection#event:remove MarkerCollection remove event}.
+	 * {@link module:engine/model/markercollection~MarkerCollection#event:update MarkerCollection update event}.
 	 *
 	 * @see module:engine/model/liverange~LiveRange#event:change:content
 	 * @event change:content

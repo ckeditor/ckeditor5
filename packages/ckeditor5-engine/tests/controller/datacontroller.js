@@ -264,7 +264,7 @@ describe( 'DataController', () => {
 			setData( model, '<paragraph>foo<$text bold="true">bar</$text></paragraph>' );
 
 			downcastElementToElement( { model: 'paragraph', view: 'p' } )( data.downcastDispatcher );
-			downcastAttributeToElement( 'bold', { view: 'strong' } )( data.downcastDispatcher );
+			downcastAttributeToElement( { model: 'bold', view: 'strong' } )( data.downcastDispatcher );
 
 			expect( data.get() ).to.equal( '<p>foo<strong>bar</strong></p>' );
 		} );
@@ -277,7 +277,7 @@ describe( 'DataController', () => {
 			setData( model, 'Bar', { rootName: 'title' } );
 
 			downcastElementToElement( { model: 'paragraph', view: 'p' } )( data.downcastDispatcher );
-			downcastAttributeToElement( 'bold', { view: 'strong' } )( data.downcastDispatcher );
+			downcastAttributeToElement( { model: 'bold', view: 'strong' } )( data.downcastDispatcher );
 
 			expect( data.get() ).to.equal( '<p>foo</p>' );
 			expect( data.get( 'main' ) ).to.equal( '<p>foo</p>' );
