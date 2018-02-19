@@ -902,16 +902,16 @@ export default class Writer {
 	/**
 	 * Sets this selection's ranges and direction to the specified location based on the given
 	 * {@link module:engine/model/selection~Selection selection}, {@link module:engine/model/position~Position position},
-	 * {@link module:engine/model/element~Element element}, {@link module:engine/model/position~Position position},
+	 * {@link module:engine/model/element~Node node}, {@link module:engine/model/position~Position position},
 	 * {@link module:engine/model/range~Range range}, an iterable of {@link module:engine/model/range~Range ranges} or null.
 	 *
 	 *		// Sets ranges from the given range.
 	 *		const range = new Range( start, end );
-	 *		writer.setSelection( range, isBackwardSelection );
+	 *		writer.setSelection( range, { backward } );
 	 *
 	 *		// Sets ranges from the iterable of ranges.
 	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
-	 *		writer.setSelection( range, isBackwardSelection );
+	 *		writer.setSelection( range, { backward } );
 	 *
 	 *		// Sets ranges from the other selection.
 	 *		const otherSelection = new Selection();
@@ -925,9 +925,17 @@ export default class Writer {
 	 *		const position = new Position( root, path );
 	 *		writer.setSelection( position );
 	 *
-	 * 		// Sets collapsed range at the given offset in element.
+	 * 		// Sets range at the position of given node and offset.
 	 *		const paragraph = writer.createElement( 'paragraph' );
 	 *		writer.setSelection( paragraph, offset );
+	 *
+	 *		// Sets range inside the node.
+	 *		const paragraph = writer.createElement( 'paragraph', { backward } );
+	 *		writer.setSelection( paragraph, 'in' );
+	 *
+	 *		// Sets range on the node.
+	 *		const paragraph = writer.createElement( 'paragraph', { backward } );
+	 *		writer.setSelection( paragraph, 'on' );
 	 *
 	 * 		// Removes all ranges.
 	 *		writer.setSelection( null );
@@ -935,14 +943,17 @@ export default class Writer {
 	 * Throws `writer-incorrect-use` error when the writer is used outside the `change()` block.
 	 *
 	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
-	 * module:engine/model/position~Position|module:engine/model/element~Element|
+	 * module:engine/model/position~Position|module:engine/model/node~Node|
 	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} selectable
-	 * @param {Boolean|Number|'before'|'end'|'after'} [backwardSelectionOrOffset]
+	 * @param {Object|Number|'before'|'end'|'after'|'on'|'in'} [optionsOrPlaceOrOffset]
+	 * @param {Boolean} [optionsOrPlaceOrOffset.backward]
+	 * @param {Object} [options]
+	 * @param {Boolean} [options.backward]
 	 */
-	setSelection( selectable, backwardSelectionOrOffset ) {
+	setSelection( selectable, optionsOrPlaceOrOffset, options ) {
 		this._assertWriterUsedCorrectly();
 
-		this.model.document.selection._setTo( selectable, backwardSelectionOrOffset );
+		this.model.document.selection._setTo( selectable, optionsOrPlaceOrOffset, options );
 	}
 
 	/**

@@ -320,6 +320,23 @@ describe( 'Selection', () => {
 			expect( ranges[ 0 ].end.offset ).to.deep.equal( 6 );
 		} );
 
+		it( 'should allow setting backward inside on the item', () => {
+			const textNode1 = new Text( 'foo' );
+			const textNode2 = new Text( 'bar' );
+			const textNode3 = new Text( 'baz' );
+			const element = new Element( 'p', null, [ textNode1, textNode2, textNode3 ] );
+
+			selection.setTo( textNode2, 'on', { backward: true } );
+
+			const ranges = Array.from( selection.getRanges() );
+			expect( ranges.length ).to.equal( 1 );
+			expect( ranges[ 0 ].start.parent ).to.equal( element );
+			expect( ranges[ 0 ].start.offset ).to.deep.equal( 3 );
+			expect( ranges[ 0 ].end.parent ).to.equal( element );
+			expect( ranges[ 0 ].end.offset ).to.deep.equal( 6 );
+			expect( selection.isBackward ).to.equal( true );
+		} );
+
 		// TODO - backward
 		// TODO - throwing
 

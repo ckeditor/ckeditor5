@@ -194,9 +194,9 @@ function insertParagraph( writer, position, selection ) {
 	writer.insert( paragraph, position );
 
 	if ( selection instanceof DocumentSelection ) {
-		writer.setSelection( paragraph );
+		writer.setSelection( paragraph, 0 );
 	} else {
-		selection.setTo( paragraph );
+		selection.setTo( paragraph, 0 );
 	}
 }
 

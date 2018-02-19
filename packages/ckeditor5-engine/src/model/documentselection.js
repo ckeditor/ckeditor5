@@ -634,8 +634,8 @@ class LiveSelection extends Selection {
 		return super.getLastRange() || this._document._getDefaultRange();
 	}
 
-	setTo( selectable, backwardSelectionOrOffset ) {
-		super.setTo( selectable, backwardSelectionOrOffset );
+	setTo( selectable, optionsOrPlaceOrOffset, options ) {
+		super.setTo( selectable, optionsOrPlaceOrOffset, options );
 		this._refreshAttributes();
 	}
 

@@ -574,7 +574,7 @@ describe( 'downcast-selection-converters', () => {
 
 		const isBackward = selectionPaths[ 2 ] === 'backward';
 		model.change( writer => {
-			writer.setSelection( new ModelRange( startPos, endPos ), isBackward );
+			writer.setSelection( new ModelRange( startPos, endPos ), { backward: isBackward } );
 
 			// And add or remove passed attributes.
 			for ( const key in selectionAttributes ) {

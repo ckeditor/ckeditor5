@@ -39,7 +39,7 @@ export function convertRangeSelection() {
 			viewRanges.push( viewRange );
 		}
 
-		conversionApi.writer.setSelection( viewRanges, selection.isBackward );
+		conversionApi.writer.setSelection( viewRanges, { backward: selection.isBackward } );
 	};
 }
 

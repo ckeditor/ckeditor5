@@ -36,11 +36,11 @@ export default class Selection {
 	 *
 	 *		// Creates selection at the given range.
 	 *		const range = new Range( start, end );
-	 *		const selection = new Selection( range, isBackwardSelection );
+	 *		const selection = new Selection( range, { backward } );
 	 *
 	 *		// Creates selection at the given ranges
 	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
-	 *		const selection = new Selection( ranges, isBackwardSelection );
+	 *		const selection = new Selection( ranges, { backward } );
 	 *
 	 *		// Creates selection from the other selection.
 	 *		// Note: It doesn't copies selection attributes.
@@ -306,11 +306,11 @@ export default class Selection {
 	 *
 	 *		// Sets ranges from the given range.
 	 *		const range = new Range( start, end );
-	 *		selection.setTo( range, isBackwardSelection );
+	 *		selection.setTo( range, { backward } );
 	 *
 	 *		// Sets ranges from the iterable of ranges.
 	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
-	 *		selection.setTo( ranges, isBackwardSelection );
+	 *		selection.setTo( ranges, { backward } );
 	 *
 	 *		// Sets ranges from the other selection.
 	 *		// Note: It doesn't copies selection attributes.
@@ -385,7 +385,7 @@ export default class Selection {
 			this._setRanges( [ range ], backward );
 		} else if ( isIterable( selectable ) ) {
 			// We assume that the selectable is an iterable of ranges.
-			this._setRanges( selectable, optionsOrPlaceOrOffset );
+			this._setRanges( selectable, optionsOrPlaceOrOffset && !!optionsOrPlaceOrOffset.backward );
 		} else {
 			/**
 			 * Cannot set selection to given place.
