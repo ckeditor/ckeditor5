@@ -64,7 +64,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should be able to create a selection from the given range and isLastBackward flag', () => {
-			const selection = new Selection( range1, true );
+			const selection = new Selection( range1, { backward: true } );
 
 			expect( selection.isBackward ).to.be.true;
 			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range1 ] );
@@ -72,7 +72,7 @@ describe( 'Selection', () => {
 
 		it( 'should be able to create a selection from the given ranges and isLastBackward flag', () => {
 			const ranges = new Set( [ range1, range2, range3 ] );
-			const selection = new Selection( ranges, true );
+			const selection = new Selection( ranges, { backward: true } );
 
 			expect( selection.isBackward ).to.be.true;
 			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range1, range2, range3 ] );
@@ -80,7 +80,7 @@ describe( 'Selection', () => {
 
 		it( 'should be able to create a selection from the other selection', () => {
 			const ranges = [ range1, range2, range3 ];
-			const otherSelection = new Selection( ranges, true );
+			const otherSelection = new Selection( ranges, { backward: true } );
 			const selection = new Selection( otherSelection );
 
 			expect( selection.isBackward ).to.be.true;
@@ -88,7 +88,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should be able to create a selection at the start position of an item', () => {
-			const selection = new Selection( root );
+			const selection = new Selection( root, 0 );
 			const focus = selection.focus;
 
 			expect( selection ).to.have.property( 'isCollapsed', true );
@@ -173,7 +173,7 @@ describe( 'Selection', () => {
 
 	describe( 'isBackward', () => {
 		it( 'is defined by the last added range', () => {
-			selection.setTo( [ range ], true );
+			selection.setTo( [ range ], { backward: true } );
 			expect( selection ).to.have.property( 'isBackward', true );
 
 			selection.setTo( liveRange );
@@ -183,7 +183,7 @@ describe( 'Selection', () => {
 		it( 'is false when last range is collapsed', () => {
 			const pos = Position.createAt( root, 0 );
 
-			selection.setTo( [ new Range( pos, pos ) ], true );
+			selection.setTo( pos );
 
 			expect( selection.isBackward ).to.be.false;
 		} );
@@ -206,7 +206,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should return correct focus when last added range is backward one', () => {
-			selection.setTo( [ r1, r2, r3 ], true );
+			selection.setTo( [ r1, r2, r3 ], { backward: true } );
 
 			expect( selection.focus.isEqual( r3.start ) ).to.be.true;
 		} );
@@ -221,7 +221,7 @@ describe( 'Selection', () => {
 		it( 'should set selection to be same as given selection, using _setRanges method', () => {
 			const spy = sinon.spy( selection, '_setRanges' );
 
-			const otherSelection = new Selection( [ range1, range2 ], true );
+			const otherSelection = new Selection( [ range1, range2 ], { backward: true } );
 
 			selection.setTo( otherSelection );
 
@@ -291,10 +291,10 @@ describe( 'Selection', () => {
 			} ).to.throw( /model-selection-setTo-not-selectable/ );
 		} );
 
-		it( 'should allow setting selection inside an element', () => {
+		it( 'should allow setting selection inside the element', () => {
 			const element = new Element( 'p', null, [ new Text( 'foo' ), new Text( 'bar' ) ] );
 
-			selection.setTo( Range.createIn( element ) );
+			selection.setTo( element, 'in' );
 
 			const ranges = Array.from( selection.getRanges() );
 			expect( ranges.length ).to.equal( 1 );
@@ -304,13 +304,13 @@ describe( 'Selection', () => {
 			expect( ranges[ 0 ].end.offset ).to.deep.equal( 6 );
 		} );
 
-		it( 'should allow setting selection on an item', () => {
+		it( 'should allow setting selection on the item', () => {
 			const textNode1 = new Text( 'foo' );
 			const textNode2 = new Text( 'bar' );
 			const textNode3 = new Text( 'baz' );
 			const element = new Element( 'p', null, [ textNode1, textNode2, textNode3 ] );
 
-			selection.setTo( Range.createOn( textNode2 ) );
+			selection.setTo( textNode2, 'on' );
 
 			const ranges = Array.from( selection.getRanges() );
 			expect( ranges.length ).to.equal( 1 );
@@ -320,25 +320,24 @@ describe( 'Selection', () => {
 			expect( ranges[ 0 ].end.offset ).to.deep.equal( 6 );
 		} );
 
+		// TODO - backward
+		// TODO - throwing
+
 		describe( 'setting selection to position or item', () => {
 			it( 'should fire change:range', () => {
 				const spy = sinon.spy();
 
 				selection.on( 'change:range', spy );
 
-				selection.setTo( root );
+				selection.setTo( root, 0 );
 
 				expect( spy.calledOnce ).to.be.true;
 			} );
 
-			it( 'should set selection at the 0 offset if second parameter not passed', () => {
-				selection.setTo( root );
-
-				expect( selection ).to.have.property( 'isCollapsed', true );
-
-				const focus = selection.focus;
-				expect( focus ).to.have.property( 'parent', root );
-				expect( focus ).to.have.property( 'offset', 0 );
+			it( 'should throw if second parameter is not passed', () => {
+				expect( () => {
+					selection.setTo( root );
+				} ).to.throw( CKEditorError, /model-selection-setTo-required-second-parameter/ );
 			} );
 
 			it( 'should set selection at given offset in given parent', () => {
@@ -484,7 +483,7 @@ describe( 'Selection', () => {
 			const endPos = Position.createAt( root, 2 );
 			const newEndPos = Position.createAt( root, 3 );
 
-			selection.setTo( new Range( startPos, endPos ), true );
+			selection.setTo( new Range( startPos, endPos ), { backward: true } );
 
 			selection.setFocus( newEndPos );
 
@@ -498,7 +497,7 @@ describe( 'Selection', () => {
 			const endPos = Position.createAt( root, 2 );
 			const newEndPos = Position.createAt( root, 0 );
 
-			selection.setTo( new Range( startPos, endPos ), true );
+			selection.setTo( new Range( startPos, endPos ), { backward: true } );
 
 			selection.setFocus( newEndPos );
 
@@ -634,7 +633,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should acknowledge backward flag when setting anchor and focus', () => {
-			selection._setRanges( newRanges, true );
+			selection._setRanges( newRanges, { backward: true } );
 			expect( selection.anchor.path ).to.deep.equal( [ 6, 0 ] );
 			expect( selection.focus.path ).to.deep.equal( [ 5, 0 ] );
 		} );
@@ -677,7 +676,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should set anchor and focus to the end and start of the most recently added range if backward flag was used', () => {
-			selection._setRanges( [ liveRange, range ], true );
+			selection._setRanges( [ liveRange, range ], { backward: true } );
 
 			expect( selection.anchor.path ).to.deep.equal( [ 2 ] );
 			expect( selection.focus.path ).to.deep.equal( [ 2, 2 ] );
@@ -766,9 +765,9 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should return true if backward selections equal', () => {
-			selection.setTo( [ range1 ], true );
+			selection.setTo( [ range1 ], { backward: true } );
 
-			const otherSelection = new Selection( [ range1 ], true );
+			const otherSelection = new Selection( [ range1 ], { backward: true } );
 
 			expect( selection.isEqual( otherSelection ) ).to.be.true;
 		} );
@@ -798,7 +797,7 @@ describe( 'Selection', () => {
 		it( 'should return false if directions do not equal', () => {
 			selection.setTo( range1 );
 
-			const otherSelection = new Selection( [ range1 ], true );
+			const otherSelection = new Selection( [ range1 ], { backward: true } );
 
 			expect( selection.isEqual( otherSelection ) ).to.be.false;
 		} );
