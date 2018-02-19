@@ -26,13 +26,13 @@ import isEqualWith from '@ckeditor/ckeditor5-utils/src/lib/lodash/isEqualWith';
  * mutations on elements which do not have corresponding view elements. Also
  * {@link module:engine/view/observer/mutationobserver~MutatedText text mutation} is fired only if parent element do not change child list.
  *
- * Note that this observer is attached by the {@link module:engine/view/document~Document} and is available by default.
+ * Note that this observer is attached by the {@link module:engine/view/view~View} and is available by default.
  *
  * @extends module:engine/view/observer/observer~Observer
  */
 export default class MutationObserver extends Observer {
-	constructor( document ) {
-		super( document );
+	constructor( view ) {
+		super( view );
 
 		/**
 		 * Native mutation observer config.
@@ -48,18 +48,18 @@ export default class MutationObserver extends Observer {
 		};
 
 		/**
-		 * Reference to the {@link module:engine/view/document~Document#domConverter}.
+		 * Reference to the {@link module:engine/view/view~View#domConverter}.
 		 *
 		 * @member {module:engine/view/domconverter~DomConverter}
 		 */
-		this.domConverter = document.domConverter;
+		this.domConverter = view.domConverter;
 
 		/**
-		 * Reference to the {@link module:engine/view/document~Document#renderer}.
+		 * Reference to the {@link module:engine/view/view~View#renderer}.
 		 *
 		 * @member {module:engine/view/renderer~Renderer}
 		 */
-		this.renderer = document.renderer;
+		this.renderer = view._renderer;
 
 		/**
 		 * Observed DOM elements.
@@ -240,8 +240,8 @@ export default class MutationObserver extends Observer {
 			// Anchor and focus has to be properly mapped to view.
 			if ( viewSelectionAnchor && viewSelectionFocus ) {
 				viewSelection = new ViewSelection();
-				viewSelection.setTo( viewSelectionAnchor );
-				viewSelection.setFocus( viewSelectionFocus );
+				viewSelection._setTo( viewSelectionAnchor );
+				viewSelection._setFocus( viewSelectionFocus );
 			}
 		}
 
@@ -249,7 +249,7 @@ export default class MutationObserver extends Observer {
 
 		// If nothing changes on `mutations` event, at this point we have "dirty DOM" (changed) and de-synched
 		// view (which has not been changed). In order to "reset DOM" we render the view again.
-		this.document.render();
+		this.view.render();
 
 		function sameNodes( child1, child2 ) {
 			// First level of comparison (array of children vs array of children) – use the Lodash's default behavior.
@@ -295,14 +295,13 @@ export default class MutationObserver extends Observer {
 }
 
 /**
- * Fired when mutation occurred. If tree view is not changed on this event, DOM will be reverter to the state before
+ * Fired when mutation occurred. If tree view is not changed on this event, DOM will be reverted to the state before
  * mutation, so all changes which should be applied, should be handled on this event.
  *
  * Introduced by {@link module:engine/view/observer/mutationobserver~MutationObserver}.
  *
  * Note that because {@link module:engine/view/observer/mutationobserver~MutationObserver} is attached by the
- * {@link module:engine/view/document~Document}
- * this event is available by default.
+ * {@link module:engine/view/view~View} this event is available by default.
  *
  * @see module:engine/view/observer/mutationobserver~MutationObserver
  * @event module:engine/view/document~Document#event:mutations

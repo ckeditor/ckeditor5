@@ -4,15 +4,16 @@
  */
 
 import Observer from '../../../src/view/observer/observer';
+import View from '../../../src/view/view';
 
 describe( 'Observer', () => {
 	describe( 'constructor()', () => {
 		it( 'should create Observer with properties', () => {
-			const viewDocument = {};
-			const observer = new Observer( viewDocument );
+			const view = new View();
+			const observer = new Observer( view );
 
 			expect( observer ).to.be.an.instanceof( Observer );
-			expect( observer ).to.have.property( 'document' ).that.equals( viewDocument );
+			expect( observer ).to.have.property( 'document' ).that.equals( view.document );
 			expect( observer ).to.have.property( 'isEnabled' ).that.is.false;
 		} );
 	} );

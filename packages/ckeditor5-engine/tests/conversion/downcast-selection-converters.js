@@ -8,11 +8,8 @@ import ModelElement from '../../src/model/element';
 import ModelRange from '../../src/model/range';
 import ModelPosition from '../../src/model/position';
 
-import ViewDocument from '../../src/view/document';
-import ViewContainerElement from '../../src/view/containerelement';
-import ViewAttributeElement from '../../src/view/attributeelement';
+import View from '../../src/view/view';
 import ViewUIElement from '../../src/view/uielement';
-import { mergeAttributes } from '../../src/view/writer';
 
 import Mapper from '../../src/conversion/mapper';
 import DowncastDispatcher from '../../src/conversion/downcastdispatcher';
@@ -37,7 +34,7 @@ import { stringify as stringifyView } from '../../src/dev-utils/view';
 import { setData as setModelData } from '../../src/dev-utils/model';
 
 describe( 'downcast-selection-converters', () => {
-	let dispatcher, mapper, model, modelDoc, modelRoot, docSelection, viewDoc, viewRoot, viewSelection, highlightDescriptor;
+	let dispatcher, mapper, model, view, modelDoc, modelRoot, docSelection, viewDoc, viewRoot, viewSelection, highlightDescriptor;
 
 	beforeEach( () => {
 		model = new Model();
@@ -47,7 +44,8 @@ describe( 'downcast-selection-converters', () => {
 
 		model.schema.extend( '$text', { allowIn: '$root' } );
 
-		viewDoc = new ViewDocument();
+		view = new View();
+		viewDoc = view.document;
 		viewRoot = createViewRoot( viewDoc );
 		viewSelection = viewDoc.selection;
 
@@ -56,10 +54,12 @@ describe( 'downcast-selection-converters', () => {
 
 		highlightDescriptor = { class: 'marker', priority: 1 };
 
-		dispatcher = new DowncastDispatcher( model, { mapper, viewSelection } );
+		dispatcher = new DowncastDispatcher( { mapper, viewSelection } );
 
 		dispatcher.on( 'insert:$text', insertText() );
-		dispatcher.on( 'attribute:bold', wrap( new ViewAttributeElement( 'strong' ) ) );
+
+		const strongCreator = ( value, data, consumable, api ) => api.writer.createAttributeElement( 'strong' );
+		dispatcher.on( 'attribute:bold', wrap( strongCreator ) );
 
 		dispatcher.on( 'addMarker:marker', highlightText( highlightDescriptor ) );
 		dispatcher.on( 'addMarker:marker', highlightElement( highlightDescriptor ) );
@@ -72,7 +72,7 @@ describe( 'downcast-selection-converters', () => {
 	} );
 
 	afterEach( () => {
-		viewDoc.destroy();
+		view.destroy();
 	} );
 
 	describe( 'default converters', () => {
@@ -206,11 +206,11 @@ describe( 'downcast-selection-converters', () => {
 				viewRoot.removeChildren( 0, viewRoot.childCount );
 
 				// Convert model to view.
-				dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
-				dispatcher.convertMarkerAdd( marker.name, marker.getRange() );
-
-				const markers = Array.from( model.markers.getMarkersAtPosition( docSelection.getFirstPosition() ) );
-				dispatcher.convertSelection( docSelection, markers );
+				view.change( writer => {
+					dispatcher.convertInsert( ModelRange.createIn( modelRoot ), writer );
+					dispatcher.convertMarkerAdd( marker.name, marker.getRange(), writer );
+					dispatcher.convertSelection( docSelection, model.markers, writer );
+				} );
 
 				// Stringify view and check if it is same as expected.
 				expect( stringifyView( viewRoot, viewSelection, { showType: false } ) ).to.equal(
@@ -231,11 +231,11 @@ describe( 'downcast-selection-converters', () => {
 				viewRoot.removeChildren( 0, viewRoot.childCount );
 
 				// Convert model to view.
-				dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
-				dispatcher.convertMarkerAdd( marker.name, marker.getRange() );
-
-				const markers = Array.from( model.markers.getMarkersAtPosition( docSelection.getFirstPosition() ) );
-				dispatcher.convertSelection( docSelection, markers );
+				view.change( writer => {
+					dispatcher.convertInsert( ModelRange.createIn( modelRoot ), writer );
+					dispatcher.convertMarkerAdd( marker.name, marker.getRange(), writer );
+					dispatcher.convertSelection( docSelection, model.markers, writer );
+				} );
 
 				// Stringify view and check if it is same as expected.
 				expect( stringifyView( viewRoot, viewSelection, { showType: false } ) )
@@ -258,11 +258,11 @@ describe( 'downcast-selection-converters', () => {
 				viewRoot.removeChildren( 0, viewRoot.childCount );
 
 				// Convert model to view.
-				dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
-				dispatcher.convertMarkerAdd( marker.name, marker.getRange() );
-
-				const markers = Array.from( model.markers.getMarkersAtPosition( docSelection.getFirstPosition() ) );
-				dispatcher.convertSelection( docSelection, markers );
+				view.change( writer => {
+					dispatcher.convertInsert( ModelRange.createIn( modelRoot ), writer );
+					dispatcher.convertMarkerAdd( marker.name, marker.getRange(), writer );
+					dispatcher.convertSelection( docSelection, model.markers, writer );
+				} );
 
 				// Stringify view and check if it is same as expected.
 				expect( stringifyView( viewRoot, viewSelection, { showType: false } ) )
@@ -283,11 +283,11 @@ describe( 'downcast-selection-converters', () => {
 				viewRoot.removeChildren( 0, viewRoot.childCount );
 
 				// Convert model to view.
-				dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
-				dispatcher.convertMarkerAdd( marker.name, marker.getRange() );
-
-				const markers = Array.from( model.markers.getMarkersAtPosition( docSelection.getFirstPosition() ) );
-				dispatcher.convertSelection( docSelection, markers );
+				view.change( writer => {
+					dispatcher.convertInsert( ModelRange.createIn( modelRoot ), writer );
+					dispatcher.convertMarkerAdd( marker.name, marker.getRange(), writer );
+					dispatcher.convertSelection( docSelection, model.markers, writer );
+				} );
 
 				// Stringify view and check if it is same as expected.
 				expect( stringifyView( viewRoot, viewSelection, { showType: false } ) )
@@ -310,7 +310,9 @@ describe( 'downcast-selection-converters', () => {
 				} );
 
 				// Convert model to view.
-				dispatcher.convertSelection( docSelection, [] );
+				view.change( writer => {
+					dispatcher.convertSelection( docSelection, model.markers, writer );
+				} );
 
 				// Stringify view and check if it is same as expected.
 				expect( stringifyView( viewRoot, viewSelection, { showType: false } ) )
@@ -327,13 +329,15 @@ describe( 'downcast-selection-converters', () => {
 				} );
 
 				// Convert model to view.
-				dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
+				view.change( writer => {
+					dispatcher.convertInsert( ModelRange.createIn( modelRoot ), writer );
 
-				// Add ui element to view.
-				const uiElement = new ViewUIElement( 'span' );
-				viewRoot.insertChildren( 1, uiElement );
+					// Add ui element to view.
+					const uiElement = new ViewUIElement( 'span' );
+					viewRoot.insertChildren( 1, uiElement );
 
-				dispatcher.convertSelection( docSelection, [] );
+					dispatcher.convertSelection( docSelection, model.markers, writer );
+				} );
 
 				// Stringify view and check if it is same as expected.
 				expect( stringifyView( viewRoot, viewSelection, { showType: false } ) )
@@ -350,13 +354,14 @@ describe( 'downcast-selection-converters', () => {
 				} );
 
 				// Convert model to view.
-				dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
+				view.change( writer => {
+					dispatcher.convertInsert( ModelRange.createIn( modelRoot ), writer );
 
-				// Add ui element to view.
-				const uiElement = new ViewUIElement( 'span' );
-				viewRoot.insertChildren( 1, uiElement );
-
-				dispatcher.convertSelection( docSelection, [] );
+					// Add ui element to view.
+					const uiElement = new ViewUIElement( 'span' );
+					viewRoot.insertChildren( 1, uiElement, writer );
+					dispatcher.convertSelection( docSelection, model.markers, writer );
+				} );
 
 				// Stringify view and check if it is same as expected.
 				expect( stringifyView( viewRoot, viewSelection, { showType: false } ) )
@@ -430,12 +435,14 @@ describe( 'downcast-selection-converters', () => {
 					{ bold: 'true' }
 				);
 
-				const modelRange = ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 1 );
-				model.change( writer => {
-					writer.setSelection( modelRange );
-				} );
+				view.change( writer => {
+					const modelRange = ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 1 );
+					model.change( writer => {
+						writer.setSelection( modelRange );
+					} );
 
-				dispatcher.convertSelection( modelDoc.selection, [] );
+					dispatcher.convertSelection( modelDoc.selection, model.markers, writer );
+				} );
 
 				expect( viewSelection.rangeCount ).to.equal( 1 );
 
@@ -451,15 +458,17 @@ describe( 'downcast-selection-converters', () => {
 					{ bold: 'true' }
 				);
 
-				// Remove <strong></strong> manually.
-				mergeAttributes( viewSelection.getFirstPosition() );
+				view.change( writer => {
+					// Remove <strong></strong> manually.
+					writer.mergeAttributes( viewSelection.getFirstPosition() );
 
-				const modelRange = ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 1 );
-				model.change( writer => {
-					writer.setSelection( modelRange );
+					const modelRange = ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 1 );
+					model.change( writer => {
+						writer.setSelection( modelRange );
+					} );
+
+					dispatcher.convertSelection( modelDoc.selection, model.markers, writer );
 				} );
-
-				dispatcher.convertSelection( modelDoc.selection, [] );
 
 				expect( viewSelection.rangeCount ).to.equal( 1 );
 
@@ -471,10 +480,11 @@ describe( 'downcast-selection-converters', () => {
 		describe( 'clearFakeSelection', () => {
 			it( 'should clear fake selection', () => {
 				dispatcher.on( 'selection', clearFakeSelection() );
-				viewSelection.setFake( true );
 
-				dispatcher.convertSelection( docSelection, [] );
-
+				view.change( writer => {
+					writer.setFakeSelection( true );
+					dispatcher.convertSelection( docSelection, model.markers, writer );
+				} );
 				expect( viewSelection.isFake ).to.be.false;
 			} );
 		} );
@@ -492,7 +502,8 @@ describe( 'downcast-selection-converters', () => {
 			model.schema.extend( '$text', { allowIn: 'td' } );
 
 			// "Universal" converter to convert table structure.
-			const tableConverter = insertElement( modelItem => new ViewContainerElement( modelItem.name ) );
+			const containerCreator = ( item, consumable, api ) => api.writer.createContainerElement( item.name );
+			const tableConverter = insertElement( containerCreator );
 			dispatcher.on( 'insert:table', tableConverter );
 			dispatcher.on( 'insert:tr', tableConverter );
 			dispatcher.on( 'insert:td', tableConverter );
@@ -512,7 +523,7 @@ describe( 'downcast-selection-converters', () => {
 						consumable.consume( selection, 'selection' );
 
 						const viewNode = conversionApi.mapper.toViewElement( node );
-						viewNode.addClass( 'selected' );
+						conversionApi.writer.addClass( 'selected', viewNode );
 					}
 				}
 			} );
@@ -581,8 +592,10 @@ describe( 'downcast-selection-converters', () => {
 		viewRoot.removeChildren( 0, viewRoot.childCount );
 
 		// Convert model to view.
-		dispatcher.convertInsert( ModelRange.createIn( modelRoot ) );
-		dispatcher.convertSelection( docSelection, [] );
+		view.change( writer => {
+			dispatcher.convertInsert( ModelRange.createIn( modelRoot ), writer );
+			dispatcher.convertSelection( docSelection, model.markers, writer );
+		} );
 
 		// Stringify view and check if it is same as expected.
 		expect( stringifyView( viewRoot, viewSelection, { showType: false } ) ).to.equal( '<div>' + expectedView + '</div>' );

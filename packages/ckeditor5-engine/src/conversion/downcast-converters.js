@@ -11,9 +11,7 @@ import ViewContainerElement from '../view/containerelement';
 import ViewUIElement from '../view/uielement';
 import ViewElement from '../view/element';
 import ViewAttributeElement from '../view/attributeelement';
-import ViewText from '../view/text';
 import ViewRange from '../view/range';
-import viewWriter from '../view/writer';
 import DocumentSelection from '../model/documentselection';
 
 import cloneDeep from '@ckeditor/ckeditor5-utils/src/lib/lodash/cloneDeep';
@@ -33,8 +31,6 @@ import cloneDeep from '@ckeditor/ckeditor5-utils/src/lib/lodash/cloneDeep';
  *
  *		downcastElementToElement( { model: 'paragraph', view: 'p' }, 'high' );
  *
- *		downcastElementToElement( { model: 'paragraph', view: new ViewContainerElement( 'p' ) } );
- *
  *		downcastElementToElement( {
  *			model: 'fancyParagraph',
  *			view: {
@@ -45,17 +41,23 @@ import cloneDeep from '@ckeditor/ckeditor5-utils/src/lib/lodash/cloneDeep';
  *
  * 		downcastElementToElement( {
  * 			model: 'heading',
- * 			view: modelElement => new ViewContainerElement( 'h' + modelElement.getAttribute( 'level' ) )
+ * 			view: ( modelItem, consumable, conversionApi ) => {
+ * 				const viewWriter = conversionApi.writer;
+ *
+ * 				return viewWriter.createContainerElement( 'h' + modelItem.getAttribute( 'level' ) );
+ * 			}
  * 		} );
  *
  * See {@link module:engine/conversion/conversion~Conversion#for} to learn how to add converter to conversion process.
  *
  * @param {Object} config Conversion configuration.
  * @param {String} config.model Name of the model element to convert.
- * @param {String|module:engine/view/elementdefinition~ElementDefinition|Function|
- * module:engine/view/containerelement~ContainerElement} config.view View element name, or a view element definition,
- * or a function that takes model element as a parameter and returns a view container element,
- * or a view container element instance. The view element will be used then in conversion.
+ * @param {String|module:engine/view/elementdefinition~ElementDefinition|Function} config.view View element name, or a
+ * view element definition, or a function that  will be provided with all the parameters of the dispatcher's
+ * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert insert event}.
+ * It's expected that the function returns a {@link module:engine/view/containerelement~ContainerElement}.
+ * The view element will be used then in conversion.
+ *
  * @param {module:utils/priorities~PriorityString} [priority='normal'] Converter priority.
  * @returns {Function} Conversion helper.
  */
@@ -78,8 +80,6 @@ export function downcastElementToElement( config, priority = 'normal' ) {
  *		downcastAttributeToElement( 'bold', { view: 'strong' } );
  *
  *		downcastAttributeToElement( 'bold', { view: 'strong' }, 'high' );
- *
- *		downcastAttributeToElement( 'bold', { view: new ViewAttributeElement( 'strong' ) } );
  *
  *		downcastAttributeToElement( 'bold', {
  *			view: {
@@ -118,7 +118,11 @@ export function downcastElementToElement( config, priority = 'normal' ) {
  *		] );
  *
  * 		downcastAttributeToElement( 'bold', {
- * 			view: modelAttributeValue => new ViewAttributeElement( 'span', { style: 'font-weight:' + modelAttributeValue } )
+ * 			view: ( modelAttributeValue, data, consumable, conversionApi ) => {
+ * 				const viewWriter = conversionApi.writer;
+ *
+ * 				return viewWriter( 'span', { style: 'font-weight:' + modelAttributeValue } );
+ * 			}
  * 		} );
  *
  * See {@link module:engine/conversion/conversion~Conversion#for} to learn how to add converter to conversion process.
@@ -127,9 +131,8 @@ export function downcastElementToElement( config, priority = 'normal' ) {
  * @param {Object|Array.<Object>} config Conversion configuration. It is possible to provide multiple configurations in an array.
  * @param {*} [config.model] The value of the converted model attribute for which the `view` property is defined.
  * If omitted, the configuration item will be used as a "default" configuration when no other item matches the attribute value.
- * @param {String|module:engine/view/elementdefinition~ElementDefinition|Function|
- * module:engine/view/attributeelement~AttributeElement} config.view View element name, or a view element definition,
- * or a function that takes model element as a parameter and returns a view attribute element, or a view attribute element instance.
+ * @param {String|module:engine/view/elementdefinition~ElementDefinition|Function} config.view View element name,
+ * or a view element definition, or a function that takes model element as a parameter and returns a view attribute element.
  * The view element will be used then in conversion.
  * @param {module:utils/priorities~PriorityString} [priority='normal'] Converter priority.
  * @returns {Function} Conversion helper.
@@ -248,14 +251,14 @@ export function downcastAttributeToAttribute( modelAttributeKey, config = {}, pr
  *
  * 		downcastMarkerToElement( {
  * 			model: 'search',
- * 			view: data => {
- *	 			return new ViewUIElement( 'span', { 'data-marker': 'search', 'data-start': data.isOpening } );
+ * 			view: ( data, conversionApi ) => {
+ *	 			return conversionApi.writer.createUIElement( 'span', { 'data-marker': 'search', 'data-start': data.isOpening } );
  * 			}
  * 		} );
  *
  * If function is passed as `config.view` parameter, it will be used to generate both boundary elements. The function
  * receives `data` object as parameter and should return an instance of {@link module:engine/view/uielement~UIElement view.UIElement}.
- * The `data` object properties are passed from
+ * The `data` and `conversionApi` objects are passed from
  * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:addMarker}. Additionally,
  * `data.isOpening` parameter is passed, which is set to `true` for marker start boundary element, and `false` to
  * marker end boundary element.
@@ -319,8 +322,8 @@ export function downcastMarkerToElement( config, priority = 'normal' ) {
  * 		} );
  *
  * If function is passed as `config.view` parameter, it will be used to generate highlight descriptor. The function
- * receives `data` object as parameter and should return an instance of {@link module:engine/view/uielement~UIElement view.UIElement}.
- * The `data` object properties are passed from
+ * receives `data` and `conversionApi` objects as parameters and should return
+ * {@link module:engine/conversion/downcast-converters~HighlightDescriptor}. The `data` and `conversionApi` objects are passed from
  * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:addMarker}.
  *
  * See {@link module:engine/conversion/conversion~Conversion#for} to learn how to add converter to conversion process.
@@ -355,17 +358,19 @@ function _normalizeToElementConfig( config, ViewElementClass ) {
 		return;
 	}
 
+	const view = config.view;
+
 	// Build `.view` property.
-	// It is expected to be either creator function or view element instance.
-	if ( typeof config.view == 'string' ) {
-		// If `.view` is a string, create a proper view element instance out of given `ViewElementClass` and name given in `.view`.
-		config.view = new ViewElementClass( config.view );
-	} else if ( typeof config.view == 'object' && !( config.view instanceof ViewElementClass ) ) {
+	// It is expected to be either string, element definition or creator function.
+	if ( typeof view == 'string' ) {
+		// If `.view` is a string, create a function that returns view element instance out of given `ViewElementClass`.
+		config.view = () => new ViewElementClass( view );
+	} else if ( typeof view == 'object' ) {
 		// If `.view` is an object, use it to build view element instance.
-		config.view = _createViewElementFromDefinition( config.view, ViewElementClass );
+		const element = _createViewElementFromDefinition( view, ViewElementClass );
+		config.view = () => element.clone();
 	}
-	// `.view` can be also a function or already a view element instance.
-	// These are already valid types which don't have to be normalized.
+	// `.view` can be also a function that is already valid type which don't have to be normalized.
 }
 
 // Creates view element instance from provided viewElementDefinition and class.
@@ -377,17 +382,11 @@ function _createViewElementFromDefinition( viewElementDefinition, ViewElementCla
 	const element = new ViewElementClass( viewElementDefinition.name, Object.assign( {}, viewElementDefinition.attribute ) );
 
 	if ( viewElementDefinition.style ) {
-		element.setStyle( viewElementDefinition.style );
+		element._setStyle( viewElementDefinition.style );
 	}
 
 	if ( viewElementDefinition.class ) {
-		const classes = viewElementDefinition.class;
-
-		if ( typeof classes == 'string' ) {
-			element.addClass( classes );
-		} else {
-			element.addClass( ...classes );
-		}
+		element._addClass( viewElementDefinition.class );
 	}
 
 	return element;
@@ -445,7 +444,7 @@ function _getCreatorForArrayConfig( config ) {
 	const defaultConfig = config.find( configEntry => configEntry.model === undefined );
 
 	// Return a creator function.
-	return modelAttributeValue => {
+	return ( modelAttributeValue, data, consumable, conversionApi ) => {
 		// Set default config at first. It will be used if no other entry matches model attribute value.
 		let matchedConfigEntry = defaultConfig;
 
@@ -460,12 +459,8 @@ function _getCreatorForArrayConfig( config ) {
 
 		// If there was default config or matched config...
 		if ( matchedConfigEntry ) {
-			// If the entry `.view` is a function, execute it and return the value...
-			if ( typeof matchedConfigEntry.view == 'function' ) {
-				return matchedConfigEntry.view( modelAttributeValue );
-			}
-			// Else, just return `.view`, it should be a view element instance after it got normalized earlier.
-			return matchedConfigEntry.view;
+			// The entry `.view` is a function after it got normalized earlier, execute it and return the value.
+			return matchedConfigEntry.view( modelAttributeValue, data, consumable, conversionApi );
 		}
 
 		return null;
@@ -474,21 +469,20 @@ function _getCreatorForArrayConfig( config ) {
 
 /**
  * Function factory, creates a converter that converts node insertion changes from the model to the view.
- * The view element that will be added to the view depends on passed parameter. If {@link module:engine/view/element~Element} was passed,
- * it will be cloned and the copy will be inserted. If `Function` is provided, it is passed all the parameters of the
- * dispatcher's {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert insert event}.
+ * Passed function will be provided with all the parameters of the dispatcher's
+ * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert insert event}.
  * It's expected that the function returns a {@link module:engine/view/element~Element}.
  * The result of the function will be inserted to the view.
  *
  * The converter automatically consumes corresponding value from consumables list, stops the event (see
  * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}) and bind model and view elements.
  *
- *		modelDispatcher.on( 'insert:paragraph', insertElement( new ViewElement( 'p' ) ) );
- *
- *		modelDispatcher.on(
+ *		downcastDispatcher.on(
  *			'insert:myElem',
  *			insertElement( ( modelItem, consumable, conversionApi ) => {
- *				let myElem = new ViewElement( 'myElem', { myAttr: 'my-' + modelItem.getAttribute( 'myAttr' ) }, new ViewText( 'myText' ) );
+ *				const writer = conversionApi.writer;
+ *				const text = writer.createText( 'myText' );
+ *				const myElem = writer.createElement( 'myElem', { myAttr: 'my-' + modelItem.getAttribute( 'myAttr' ) }, text );
  *
  *				// Do something fancy with myElem using `modelItem` or other parameters.
  *
@@ -496,15 +490,12 @@ function _getCreatorForArrayConfig( config ) {
  *			}
  *		) );
  *
- * @param {module:engine/view/element~Element|Function} elementCreator View element, or function returning a view element, which
- * will be inserted.
+ * @param {Function} elementCreator Function returning a view element, which will be inserted.
  * @returns {Function} Insert element event converter.
  */
 export function insertElement( elementCreator ) {
 	return ( evt, data, consumable, conversionApi ) => {
-		const viewElement = ( elementCreator instanceof ViewElement ) ?
-			elementCreator.clone( true ) :
-			elementCreator( data.item, consumable, conversionApi );
+		const viewElement = elementCreator( data.item, consumable, conversionApi );
 
 		if ( !viewElement ) {
 			return;
@@ -517,7 +508,7 @@ export function insertElement( elementCreator ) {
 		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
 
 		conversionApi.mapper.bindElements( data.item, viewElement );
-		viewWriter.insert( viewPosition, viewElement );
+		conversionApi.writer.insert( viewPosition, viewElement );
 	};
 }
 
@@ -537,8 +528,9 @@ export function insertText() {
 			return;
 		}
 
+		const viewWriter = conversionApi.writer;
 		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
-		const viewText = new ViewText( data.item.data );
+		const viewText = viewWriter.createText( data.item.data );
 
 		viewWriter.insert( viewPosition, viewText );
 	};
@@ -562,7 +554,7 @@ export function remove() {
 		const viewRange = new ViewRange( viewStart, viewEnd );
 
 		// Trim the range to remove in case some UI elements are on the view range boundaries.
-		const removed = viewWriter.remove( viewRange.getTrimmed() );
+		const removed = conversionApi.writer.remove( viewRange.getTrimmed() );
 
 		// After the range is removed, unbind all view elements from the model.
 		// Range inside view document fragment is used to unbind deeply.
@@ -623,6 +615,7 @@ export function insertUIElement( elementCreator ) {
 		}
 
 		const mapper = conversionApi.mapper;
+		const viewWriter = conversionApi.writer;
 
 		// Add "opening" element.
 		viewWriter.insert( mapper.toViewPosition( markerRange.start ), viewStartElement );
@@ -666,6 +659,7 @@ export function removeUIElement( elementCreator ) {
 		}
 
 		const markerRange = data.markerRange;
+		const viewWriter = conversionApi.writer;
 
 		// When removing the ui elements, we map the model range to view twice, because that view range
 		// may change after the first clearing.
@@ -722,16 +716,20 @@ export function changeAttribute( attributeCreator ) {
 
 		// First remove the old attribute if there was one.
 		const oldAttribute = attributeCreator( data.attributeOldValue, data, consumable, conversionApi );
+		const mapper = conversionApi.mapper;
+		const viewWriter = conversionApi.writer;
 
 		if ( data.attributeOldValue !== null && oldAttribute ) {
-			conversionApi.mapper.toViewElement( data.item ).removeAttribute( oldAttribute.key );
+			const viewElement = mapper.toViewElement( data.item );
+			viewWriter.removeAttribute( oldAttribute.key, viewElement );
 		}
 
 		// Then, if conversion was successful, set the new attribute.
 		const newAttribute = attributeCreator( data.attributeNewValue, data, consumable, conversionApi );
 
 		if ( data.attributeNewValue !== null && newAttribute ) {
-			conversionApi.mapper.toViewElement( data.item ).setAttribute( newAttribute.key, newAttribute.value );
+			const viewElement = mapper.toViewElement( data.item );
+			viewWriter.setAttribute( newAttribute.key, newAttribute.value, viewElement );
 		}
 	};
 }
@@ -750,8 +748,7 @@ export function changeAttribute( attributeCreator ) {
  *			|- b {bold: true}                             |   |- ab
  *			|- c                                          |- c
  *
- * The wrapping node depends on passed parameter. If {@link module:engine/view/element~Element} was passed, it will be cloned and
- * the copy will become the wrapping element. If `Function` is provided, it is passed attribute value and then all the parameters of the
+ * Passed `Function` will be provided with attribute value and then all the parameters of the
  * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute attribute event}.
  * It's expected that the function returns a {@link module:engine/view/element~Element}.
  * The result of the function will be the wrapping element.
@@ -760,24 +757,21 @@ export function changeAttribute( attributeCreator ) {
  * The converter automatically consumes corresponding value from consumables list, stops the event (see
  * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}).
  *
- *		modelDispatcher.on( 'attribute:bold', wrapItem( new ViewAttributeElement( 'strong' ) ) );
+ *		modelDispatcher.on( 'attribute:bold', wrapItem( ( attributeValue, data, consumable, conversionApi ) => {
+ *			return conversionApi.writer.createAttributeElement( 'strong' );
+ *		} );
  *
- * @param {module:engine/view/element~Element|Function} elementCreator View element, or function returning a view element, which will
- * be used for wrapping.
+ * @param {Function} elementCreator Function returning a view element, which will be used for wrapping.
  * @returns {Function} Set/change attribute converter.
  */
 export function wrap( elementCreator ) {
 	return ( evt, data, consumable, conversionApi ) => {
 		// Recreate current wrapping node. It will be used to unwrap view range if the attribute value has changed
 		// or the attribute was removed.
-		const oldViewElement = ( elementCreator instanceof ViewElement ) ?
-			elementCreator.clone( true ) :
-			elementCreator( data.attributeOldValue, data, consumable, conversionApi );
+		const oldViewElement = elementCreator( data.attributeOldValue, data, consumable, conversionApi );
 
 		// Create node to wrap with.
-		const newViewElement = ( elementCreator instanceof ViewElement ) ?
-			elementCreator.clone( true ) :
-			elementCreator( data.attributeNewValue, data, consumable, conversionApi );
+		const newViewElement = elementCreator( data.attributeNewValue, data, consumable, conversionApi );
 
 		if ( !oldViewElement && !newViewElement ) {
 			return;
@@ -787,9 +781,12 @@ export function wrap( elementCreator ) {
 			return;
 		}
 
+		const viewWriter = conversionApi.writer;
+		const viewSelection = viewWriter.document.selection;
+
 		if ( data.item instanceof ModelSelection || data.item instanceof DocumentSelection ) {
 			// Selection attribute conversion.
-			viewWriter.wrap( conversionApi.viewSelection.getFirstRange(), newViewElement, conversionApi.viewSelection );
+			viewWriter.wrap( viewSelection.getFirstRange(), newViewElement );
 		} else {
 			// Node attribute conversion.
 			let viewRange = conversionApi.mapper.toViewRange( data.range );
@@ -842,9 +839,11 @@ export function highlightText( highlightDescriptor ) {
 		}
 
 		const viewElement = createViewElementFromHighlightDescriptor( descriptor );
+		const viewWriter = conversionApi.writer;
+		const viewSelection = viewWriter.document.selection;
 
 		if ( data.item instanceof ModelSelection || data.item instanceof DocumentSelection ) {
-			viewWriter.wrap( conversionApi.viewSelection.getFirstRange(), viewElement, conversionApi.viewSelection );
+			viewWriter.wrap( viewSelection.getFirstRange(), viewElement, viewSelection );
 		} else {
 			const viewRange = conversionApi.mapper.toViewRange( data.range );
 			viewWriter.wrap( viewRange, viewElement );
@@ -856,7 +855,7 @@ export function highlightText( highlightDescriptor ) {
  * Converter function factory. Creates a function which applies the marker's highlight to an element inside the marker's range.
  *
  * The converter checks if an element has `addHighlight` function stored as
- * {@link module:engine/view/element~Element#setCustomProperty custom property} and, if so, uses it to apply the highlight.
+ * {@link module:engine/view/element~Element#_setCustomProperty custom property} and, if so, uses it to apply the highlight.
  * In such case converter will consume all element's children, assuming that they were handled by element itself.
  *
  * When `addHighlight` custom property is not present, element is not converted in any special way.
@@ -900,7 +899,7 @@ export function highlightElement( highlightDescriptor ) {
 				consumable.consume( value.item, evt.name );
 			}
 
-			viewElement.getCustomProperty( 'addHighlight' )( viewElement, descriptor );
+			viewElement.getCustomProperty( 'addHighlight' )( viewElement, descriptor, conversionApi.writer );
 		}
 	};
 }
@@ -914,7 +913,7 @@ export function highlightElement( highlightDescriptor ) {
  * highlight descriptor. See {link module:engine/conversion/downcast-converters~highlightDescriptorToAttributeElement}.
  *
  * For elements, the converter checks if an element has `removeHighlight` function stored as
- * {@link module:engine/view/element~Element#setCustomProperty custom property}. If so, it uses it to remove the highlight.
+ * {@link module:engine/view/element~Element#_setCustomProperty custom property}. If so, it uses it to remove the highlight.
  * In such case, children of that element will not be converted.
  *
  * When `removeHighlight` is not present, element is not converted in any special way.
@@ -948,7 +947,7 @@ export function removeHighlight( highlightDescriptor ) {
 		// First, iterate through all items and remove highlight from those container elements that have custom highlight handling.
 		for ( const item of items ) {
 			if ( item.is( 'containerElement' ) && item.getCustomProperty( 'removeHighlight' ) ) {
-				item.getCustomProperty( 'removeHighlight' )( item, descriptor.id );
+				item.getCustomProperty( 'removeHighlight' )( item, descriptor.id, conversionApi.writer );
 
 				// If container element had custom handling, remove all it's children from further processing.
 				for ( const descendant of ViewRange.createIn( item ) ) {
@@ -960,6 +959,7 @@ export function removeHighlight( highlightDescriptor ) {
 		// Then, iterate through all other items. Look for text nodes and unwrap them. Start from the end
 		// to prevent errors when view structure changes when unwrapping (and, for example, some attributes are merged).
 		const viewHighlightElement = createViewElementFromHighlightDescriptor( descriptor );
+		const viewWriter = conversionApi.writer;
 
 		for ( const item of Array.from( items ).reverse() ) {
 			if ( item.is( 'textProxy' ) ) {
@@ -1005,15 +1005,14 @@ export function createViewElementFromHighlightDescriptor( descriptor ) {
 	const viewElement = new HighlightAttributeElement( 'span', descriptor.attributes );
 
 	if ( descriptor.class ) {
-		const cssClasses = Array.isArray( descriptor.class ) ? descriptor.class : [ descriptor.class ];
-		viewElement.addClass( ...cssClasses );
+		viewElement._addClass( descriptor.class );
 	}
 
 	if ( descriptor.priority ) {
-		viewElement.priority = descriptor.priority;
+		viewElement._priority = descriptor.priority;
 	}
 
-	viewElement.setCustomProperty( 'highlightDescriptorId', descriptor.id );
+	viewElement._setCustomProperty( 'highlightDescriptorId', descriptor.id );
 
 	return viewElement;
 }

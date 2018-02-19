@@ -5,30 +5,31 @@
 
 /* globals document */
 
-import ViewDocument from '../../../src/view/document';
+import View from '../../../src/view/view';
 import MutationObserver from '../../../src/view/observer/mutationobserver';
 import UIElement from '../../../src/view/uielement';
 import createViewRoot from '../_utils/createroot';
 import { parse } from '../../../src/dev-utils/view';
 
 describe( 'MutationObserver', () => {
-	let domEditor, viewDocument, viewRoot, mutationObserver, lastMutations, domRoot;
+	let view, domEditor, viewDocument, viewRoot, mutationObserver, lastMutations, domRoot;
 
 	beforeEach( () => {
 		domRoot = document.createElement( 'div' );
 		domRoot.innerHTML = '<div contenteditable="true" id="main"></div><div contenteditable="true" id="additional"></div>';
 		document.body.appendChild( domRoot );
 
-		viewDocument = new ViewDocument();
+		view = new View();
+		viewDocument = view.document;
 		domEditor = document.getElementById( 'main' );
 		lastMutations = null;
 
 		createViewRoot( viewDocument );
-		viewDocument.attachDomRoot( domEditor );
-		viewDocument.selection.setTo( null );
+		view.attachDomRoot( domEditor );
+		viewDocument.selection._setTo( null );
 		document.getSelection().removeAllRanges();
 
-		mutationObserver = viewDocument.getObserver( MutationObserver );
+		mutationObserver = view.getObserver( MutationObserver );
 
 		viewDocument.on( 'mutations', ( evt, mutations ) => {
 			lastMutations = mutations;
@@ -38,14 +39,14 @@ describe( 'MutationObserver', () => {
 
 		viewRoot.appendChildren( parse( '<container:p>foo</container:p><container:p>bar</container:p>' ) );
 
-		viewDocument.render();
+		view.render();
 	} );
 
 	afterEach( () => {
 		mutationObserver.disable();
 
 		domRoot.parentElement.removeChild( domRoot );
-		viewDocument.destroy();
+		view.destroy();
 	} );
 
 	it( 'should handle typing', () => {
@@ -65,7 +66,7 @@ describe( 'MutationObserver', () => {
 		const additional = document.getElementById( 'additional' );
 		mutationObserver.disable();
 		createViewRoot( viewDocument, 'div', 'additional' );
-		viewDocument.attachDomRoot( additional, 'additional' );
+		view.attachDomRoot( additional, 'additional' );
 
 		additional.textContent = 'foobar';
 		mutationObserver.flush();
@@ -97,7 +98,7 @@ describe( 'MutationObserver', () => {
 	it( 'should handle unbold', () => {
 		viewRoot.removeChildren( 0, viewRoot.childCount );
 		viewRoot.appendChildren( parse( '<container:p><attribute:b>foo</attribute:b></container:p>' ) );
-		viewDocument.render();
+		view.render();
 
 		const domP = domEditor.childNodes[ 0 ];
 		const domB = domP.childNodes[ 0 ];
@@ -200,13 +201,13 @@ describe( 'MutationObserver', () => {
 
 		// Prepare AdditionalEditor
 		createViewRoot( viewDocument, 'div', 'additional' );
-		viewDocument.attachDomRoot( domAdditionalEditor, 'additional' );
+		view.attachDomRoot( domAdditionalEditor, 'additional' );
 
 		viewDocument.getRoot( 'additional' ).appendChildren(
 			parse( '<container:p>foo</container:p><container:p>bar</container:p>' ) );
 
 		// Render AdditionalEditor (first editor has been rendered in the beforeEach function)
-		viewDocument.render();
+		view.render();
 
 		domEditor.childNodes[ 0 ].childNodes[ 0 ].data = 'foom';
 		domAdditionalEditor.childNodes[ 0 ].childNodes[ 0 ].data = 'foom';
@@ -224,12 +225,12 @@ describe( 'MutationObserver', () => {
 	} );
 
 	it( 'should fire children mutation if the mutation occurred in the inline filler', () => {
-		const { view, selection } = parse( '<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>' );
+		const { view: viewContainer, selection } = parse( '<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>' );
 
-		viewRoot.appendChildren( view );
-		viewDocument.selection.setTo( selection );
-
-		viewDocument.render();
+		view.change( writer => {
+			viewRoot.appendChildren( viewContainer );
+			writer.setSelection( selection );
+		} );
 
 		const inlineFiller = domEditor.childNodes[ 2 ].childNodes[ 1 ].childNodes[ 0 ];
 		inlineFiller.data += 'x';
@@ -242,19 +243,20 @@ describe( 'MutationObserver', () => {
 	} );
 
 	it( 'should have no inline filler in mutation', () => {
-		const { view, selection } = parse( '<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>' );
+		const { view: viewContainer, selection } = parse( '<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>' );
 
-		viewRoot.appendChildren( view );
-		viewDocument.selection.setTo( selection );
-
-		viewDocument.render();
+		view.change( writer => {
+			viewRoot.appendChildren( viewContainer );
+			writer.setSelection( selection );
+		} );
 
 		let inlineFiller = domEditor.childNodes[ 2 ].childNodes[ 1 ].childNodes[ 0 ];
 		inlineFiller.data += 'x';
 
-		view.getChild( 1 ).appendChildren( parse( 'x' ) );
-		mutationObserver.flush();
-		viewDocument.render();
+		view.change( () => {
+			viewContainer.getChild( 1 ).appendChildren( parse( 'x' ) );
+			mutationObserver.flush();
+		} );
 
 		inlineFiller = domEditor.childNodes[ 2 ].childNodes[ 1 ].childNodes[ 0 ];
 		inlineFiller.data += 'y';
@@ -270,7 +272,7 @@ describe( 'MutationObserver', () => {
 	it( 'should have no block filler in mutation', () => {
 		viewRoot.appendChildren( parse( '<container:p></container:p>' ) );
 
-		viewDocument.render();
+		view.render();
 
 		const domP = domEditor.childNodes[ 2 ];
 		domP.removeChild( domP.childNodes[ 0 ] );
@@ -289,7 +291,7 @@ describe( 'MutationObserver', () => {
 	it( 'should ignore mutation with bogus br inserted on the end of the empty paragraph', () => {
 		viewRoot.appendChildren( parse( '<container:p></container:p>' ) );
 
-		viewDocument.render();
+		view.render();
 
 		const domP = domEditor.childNodes[ 2 ];
 		domP.appendChild( document.createElement( 'br' ) );
@@ -302,7 +304,7 @@ describe( 'MutationObserver', () => {
 	it( 'should ignore mutation with bogus br inserted on the end of the paragraph with text', () => {
 		viewRoot.appendChildren( parse( '<container:p>foo</container:p>' ) );
 
-		viewDocument.render();
+		view.render();
 
 		const domP = domEditor.childNodes[ 2 ];
 		domP.appendChild( document.createElement( 'br' ) );
@@ -315,7 +317,7 @@ describe( 'MutationObserver', () => {
 	it( 'should ignore mutation with bogus br inserted on the end of the paragraph while processing text mutations', () => {
 		viewRoot.appendChildren( parse( '<container:p>foo</container:p>' ) );
 
-		viewDocument.render();
+		view.render();
 
 		const domP = domEditor.childNodes[ 2 ];
 		domP.childNodes[ 0 ].data = 'foo ';
@@ -332,7 +334,7 @@ describe( 'MutationObserver', () => {
 	it( 'should ignore child mutations which resulted in no changes – when element contains elements', () => {
 		viewRoot.appendChildren( parse( '<container:p><container:x></container:x></container:p>' ) );
 
-		viewDocument.render();
+		view.render();
 
 		const domP = domEditor.childNodes[ 2 ];
 		const domY = document.createElement( 'y' );
@@ -366,7 +368,7 @@ describe( 'MutationObserver', () => {
 	it( 'should not ignore mutation with br inserted not on the end of the paragraph', () => {
 		viewRoot.appendChildren( parse( '<container:p>foo</container:p>' ) );
 
-		viewDocument.render();
+		view.render();
 
 		const domP = domEditor.childNodes[ 2 ];
 		domP.insertBefore( document.createElement( 'br' ), domP.childNodes[ 0 ] );
@@ -385,7 +387,7 @@ describe( 'MutationObserver', () => {
 	it( 'should not ignore mutation inserting element different than br on the end of the empty paragraph', () => {
 		viewRoot.appendChildren( parse( '<container:p></container:p>' ) );
 
-		viewDocument.render();
+		view.render();
 
 		const domP = domEditor.childNodes[ 2 ];
 		domP.appendChild( document.createElement( 'span' ) );
@@ -403,7 +405,7 @@ describe( 'MutationObserver', () => {
 	it( 'should not ignore mutation inserting element different than br on the end of the paragraph with text', () => {
 		viewRoot.appendChildren( parse( '<container:p>foo</container:p>' ) );
 
-		viewDocument.render();
+		view.render();
 
 		const domP = domEditor.childNodes[ 2 ];
 		domP.appendChild( document.createElement( 'span' ) );
@@ -437,7 +439,7 @@ describe( 'MutationObserver', () => {
 			const uiElement = createUIElement( 'div' );
 			viewRoot.appendChildren( uiElement );
 
-			viewDocument.render();
+			view.render();
 		} );
 
 		it( 'should not collect text mutations from UIElement', () => {

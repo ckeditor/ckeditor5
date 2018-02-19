@@ -40,7 +40,7 @@ describe( 'DomConverter', () => {
 		beforeEach( () => {
 			viewDocument = new ViewDocument();
 			viewEditable = new ViewEditable( 'div' );
-			viewEditable.document = viewDocument;
+			viewEditable._document = viewDocument;
 
 			domEditable = document.createElement( 'div' );
 			domEditableParent = document.createElement( 'div' );
@@ -53,7 +53,6 @@ describe( 'DomConverter', () => {
 		afterEach( () => {
 			converter.unbindDomElement( domEditable );
 			document.body.removeChild( domEditableParent );
-			viewDocument.destroy();
 
 			document.body.focus();
 		} );

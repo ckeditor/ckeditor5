@@ -318,27 +318,6 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Adds or overwrite attribute with a specified key and value.
-	 *
-	 * @param {String} key Attribute key.
-	 * @param {String} value Attribute value.
-	 * @fires module:engine/view/node~Node#change
-	 */
-	setAttribute( key, value ) {
-		value = String( value );
-
-		this._fireChange( 'attributes', this );
-
-		if ( key == 'class' ) {
-			parseClasses( this._classes, value );
-		} else if ( key == 'style' ) {
-			parseInlineStyles( this._styles, value );
-		} else {
-			this._attrs.set( key, value );
-		}
-	}
-
-	/**
 	 * Inserts a child node or a list of child nodes on the given index and sets the parent of these nodes to
 	 * this element.
 	 *
@@ -367,42 +346,6 @@ export default class Element extends Node {
 		}
 
 		return count;
-	}
-
-	/**
-	 * Removes attribute from the element.
-	 *
-	 * @param {String} key Attribute key.
-	 * @returns {Boolean} Returns true if an attribute existed and has been removed.
-	 * @fires module:engine/view/node~Node#change
-	 */
-	removeAttribute( key ) {
-		this._fireChange( 'attributes', this );
-
-		// Remove class attribute.
-		if ( key == 'class' ) {
-			if ( this._classes.size > 0 ) {
-				this._classes.clear();
-
-				return true;
-			}
-
-			return false;
-		}
-
-		// Remove style attribute.
-		if ( key == 'style' ) {
-			if ( this._styles.size > 0 ) {
-				this._styles.clear();
-
-				return true;
-			}
-
-			return false;
-		}
-
-		// Remove other attributes.
-		return this._attrs.delete( key );
 	}
 
 	/**
@@ -477,34 +420,6 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Adds specified class.
-	 *
-	 *		element.addClass( 'foo' ); // Adds 'foo' class.
-	 *		element.addClass( 'foo', 'bar' ); // Adds 'foo' and 'bar' classes.
-	 *
-	 * @param {...String} className
-	 * @fires module:engine/view/node~Node#change
-	 */
-	addClass( ...className ) {
-		this._fireChange( 'attributes', this );
-		className.forEach( name => this._classes.add( name ) );
-	}
-
-	/**
-	 * Removes specified class.
-	 *
- 	 *		element.removeClass( 'foo' );  // Removes 'foo' class.
-	 *		element.removeClass( 'foo', 'bar' ); // Removes both 'foo' and 'bar' classes.
-	 *
-	 * @param {...String} className
-	 * @fires module:engine/view/node~Node#change
-	 */
-	removeClass( ...className ) {
-		this._fireChange( 'attributes', this );
-		className.forEach( name => this._classes.delete( name ) );
-	}
-
-	/**
 	 * Returns true if class is present.
 	 * If more then one class is provided - returns true only when all classes are present.
 	 *
@@ -530,33 +445,6 @@ export default class Element extends Node {
 	 */
 	getClassNames() {
 		return this._classes.keys();
-	}
-
-	/**
-	 * Adds style to the element.
-	 *
-	 *		element.setStyle( 'color', 'red' );
-	 *		element.setStyle( {
-	 *			color: 'red',
-	 *			position: 'fixed'
-	 *		} );
-	 *
-	 * @param {String|Object} property Property name or object with key - value pairs.
-	 * @param {String} [value] Value to set. This parameter is ignored if object is provided as the first parameter.
-	 * @fires module:engine/view/node~Node#change
-	 */
-	setStyle( property, value ) {
-		this._fireChange( 'attributes', this );
-
-		if ( isPlainObject( property ) ) {
-			const keys = Object.keys( property );
-
-			for ( const key of keys ) {
-				this._styles.set( key, property[ key ] );
-			}
-		} else {
-			this._styles.set( property, value );
-		}
 	}
 
 	/**
@@ -599,20 +487,6 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Removes specified style.
-	 *
-	 *		element.removeStyle( 'color' );  // Removes 'color' style.
-	 *		element.removeStyle( 'color', 'border-top' ); // Removes both 'color' and 'border-top' styles.
-	 *
-	 * @param {...String} property
-	 * @fires module:engine/view/node~Node#change
-	 */
-	removeStyle( ...property ) {
-		this._fireChange( 'attributes', this );
-		property.forEach( name => this._styles.delete( name ) );
-	}
-
-	/**
 	 * Returns ancestor element that match specified pattern.
 	 * Provided patterns should be compatible with {@link module:engine/view/matcher~Matcher Matcher} as it is used internally.
 	 *
@@ -637,17 +511,6 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Sets a custom property. Unlike attributes, custom properties are not rendered to the DOM,
-	 * so they can be used to add special data to elements.
-	 *
-	 * @param {String|Symbol} key
-	 * @param {*} value
-	 */
-	setCustomProperty( key, value ) {
-		this._customProperties.set( key, value );
-	}
-
-	/**
 	 * Returns the custom property value for the given key.
 	 *
 	 * @param {String|Symbol} key
@@ -655,16 +518,6 @@ export default class Element extends Node {
 	 */
 	getCustomProperty( key ) {
 		return this._customProperties.get( key );
-	}
-
-	/**
-	 * Removes the custom property stored under the given key.
-	 *
-	 * @param {String|Symbol} key
-	 * @returns {Boolean} Returns true if property was removed.
-	 */
-	removeCustomProperty( key ) {
-		return this._customProperties.delete( key );
 	}
 
 	/**
@@ -686,12 +539,12 @@ export default class Element extends Node {
  	 *
 	 * For example:
 	 *
-	 *		const element = new ViewElement( 'foo' );
-	 *		element.setAttribute( 'banana', '10' );
-	 *		element.setAttribute( 'apple', '20' );
-	 *		element.setStyle( 'color', 'red' );
-	 *		element.setStyle( 'border-color', 'white' );
-	 *		element.addClass( 'baz' );
+	 *		const element = writer.createContainerElement( 'foo', {
+	 *			banana: '10',
+	 *			apple: '20',
+	 *			style: 'color: red; border-color: white;',
+	 *			class: 'baz'
+	 *		} );
 	 *
 	 *		// returns 'foo class="baz" style="border-color:white;color:red" apple="20" banana="10"'
 	 *		element.getIdentity();
@@ -709,6 +562,166 @@ export default class Element extends Node {
 			( classes == '' ? '' : ` class="${ classes }"` ) +
 			( styles == '' ? '' : ` style="${ styles }"` ) +
 			( attributes == '' ? '' : ` ${ attributes }` );
+	}
+
+	/**
+	 * Adds or overwrite attribute with a specified key and value.
+	 *
+	 * @protected
+	 * @param {String} key Attribute key.
+	 * @param {String} value Attribute value.
+	 * @fires module:engine/view/node~Node#change
+	 */
+	_setAttribute( key, value ) {
+		value = String( value );
+
+		this._fireChange( 'attributes', this );
+
+		if ( key == 'class' ) {
+			parseClasses( this._classes, value );
+		} else if ( key == 'style' ) {
+			parseInlineStyles( this._styles, value );
+		} else {
+			this._attrs.set( key, value );
+		}
+	}
+
+	/**
+	 * Removes attribute from the element.
+	 *
+	 * @protected
+	 * @param {String} key Attribute key.
+	 * @returns {Boolean} Returns true if an attribute existed and has been removed.
+	 * @fires module:engine/view/node~Node#change
+	 */
+	_removeAttribute( key ) {
+		this._fireChange( 'attributes', this );
+
+		// Remove class attribute.
+		if ( key == 'class' ) {
+			if ( this._classes.size > 0 ) {
+				this._classes.clear();
+
+				return true;
+			}
+
+			return false;
+		}
+
+		// Remove style attribute.
+		if ( key == 'style' ) {
+			if ( this._styles.size > 0 ) {
+				this._styles.clear();
+
+				return true;
+			}
+
+			return false;
+		}
+
+		// Remove other attributes.
+		return this._attrs.delete( key );
+	}
+
+	/**
+	 * Adds specified class.
+	 *
+	 *		element._addClass( 'foo' ); // Adds 'foo' class.
+	 *		element._addClass( [ 'foo', 'bar' ] ); // Adds 'foo' and 'bar' classes.
+	 *
+	 * @protected
+	 * @param {Array.<String>|String} className
+	 * @fires module:engine/view/node~Node#change
+	 */
+	_addClass( className ) {
+		this._fireChange( 'attributes', this );
+
+		className = Array.isArray( className ) ? className : [ className ];
+		className.forEach( name => this._classes.add( name ) );
+	}
+
+	/**
+	 * Removes specified class.
+	 *
+	 *		element._removeClass( 'foo' );  // Removes 'foo' class.
+	 *		element._removeClass( [ 'foo', 'bar' ] ); // Removes both 'foo' and 'bar' classes.
+	 *
+	 * @param {Array.<String>|String} className
+	 * @fires module:engine/view/node~Node#change
+	 */
+	_removeClass( className ) {
+		this._fireChange( 'attributes', this );
+
+		className = Array.isArray( className ) ? className : [ className ];
+		className.forEach( name => this._classes.delete( name ) );
+	}
+
+	/**
+	 * Adds style to the element.
+	 *
+	 *		element._setStyle( 'color', 'red' );
+	 *		element._setStyle( {
+	 *			color: 'red',
+	 *			position: 'fixed'
+	 *		} );
+	 *
+	 * @protected
+	 * @param {String|Object} property Property name or object with key - value pairs.
+	 * @param {String} [value] Value to set. This parameter is ignored if object is provided as the first parameter.
+	 * @fires module:engine/view/node~Node#change
+	 */
+	_setStyle( property, value ) {
+		this._fireChange( 'attributes', this );
+
+		if ( isPlainObject( property ) ) {
+			const keys = Object.keys( property );
+
+			for ( const key of keys ) {
+				this._styles.set( key, property[ key ] );
+			}
+		} else {
+			this._styles.set( property, value );
+		}
+	}
+
+	/**
+	 * Removes specified style.
+	 *
+	 *		element._removeStyle( 'color' );  // Removes 'color' style.
+	 *		element._removeStyle( [ 'color', 'border-top' ] ); // Removes both 'color' and 'border-top' styles.
+	 *
+	 * @protected
+	 * @param {Array.<String>|String} property
+	 * @fires module:engine/view/node~Node#change
+	 */
+	_removeStyle( property ) {
+		this._fireChange( 'attributes', this );
+
+		property = Array.isArray( property ) ? property : [ property ];
+		property.forEach( name => this._styles.delete( name ) );
+	}
+
+	/**
+	 * Sets a custom property. Unlike attributes, custom properties are not rendered to the DOM,
+	 * so they can be used to add special data to elements.
+	 *
+	 * @protected
+	 * @param {String|Symbol} key
+	 * @param {*} value
+	 */
+	_setCustomProperty( key, value ) {
+		this._customProperties.set( key, value );
+	}
+
+	/**
+	 * Removes the custom property stored under the given key.
+	 *
+	 * @protected
+	 * @param {String|Symbol} key
+	 * @returns {Boolean} Returns true if property was removed.
+	 */
+	_removeCustomProperty( key ) {
+		return this._customProperties.delete( key );
 	}
 
 	/**
