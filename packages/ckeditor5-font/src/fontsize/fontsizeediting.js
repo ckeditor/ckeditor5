@@ -8,10 +8,10 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { attributeToElement } from '@ckeditor/ckeditor5-engine/src/conversion/two-way-converters';
 
 import FontSizeCommand from './fontsizecommand';
 import { normalizeOptions } from './utils';
+import { buildDefinition } from '../utils';
 
 const FONT_SIZE = 'fontSize';
 
@@ -48,9 +48,10 @@ export default class FontSizeEditing extends Plugin {
 
 		// Define view to model conversion.
 		const options = normalizeOptions( this.editor.config.get( 'fontSize.options' ) ).filter( item => item.model );
+		const definition = buildDefinition( FONT_SIZE, options );
 
 		// Set-up the two-way conversion.
-		attributeToElement( editor.conversion, FONT_SIZE, options );
+		editor.conversion.attributeToElement( definition );
 
 		// Add FontSize command.
 		editor.commands.add( FONT_SIZE, new FontSizeCommand( editor ) );

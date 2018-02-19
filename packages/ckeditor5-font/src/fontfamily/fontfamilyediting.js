@@ -8,10 +8,10 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { attributeToElement } from '@ckeditor/ckeditor5-engine/src/conversion/two-way-converters';
 
 import FontFamilyCommand from './fontfamilycommand';
 import { normalizeOptions } from './utils';
+import { buildDefinition } from '../utils';
 
 const FONT_FAMILY = 'fontFamily';
 
@@ -59,9 +59,10 @@ export default class FontFamilyEditing extends Plugin {
 
 		// Get configured font family options without "default" option.
 		const options = normalizeOptions( editor.config.get( 'fontFamily.options' ) ).filter( item => item.model );
+		const definition = buildDefinition( FONT_FAMILY, options );
 
 		// Set-up the two-way conversion.
-		attributeToElement( editor.conversion, FONT_FAMILY, options );
+		editor.conversion.attributeToElement( definition );
 
 		editor.commands.add( FONT_FAMILY, new FontFamilyCommand( editor ) );
 	}
