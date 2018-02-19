@@ -5,6 +5,11 @@
 
 @import "../../../mixins/_rounded.css";
 
+:root {
+	--ck-color-split-button-hover-background: hsl(0, 0%, 92%);
+	--ck-color-split-button-hover-border: hsl(0, 0%, 70%);
+}
+
 .ck-splitbutton {
 	& > .ck-splitbutton__action {
 		/* Don't round the first button on the right side */
@@ -34,12 +39,13 @@
 	separation between both buttons. */
 	&.ck-splitbutton_open,
 	&:hover {
+		/* When the split button hovered as a whole, not as individual buttons. */
 		& > .ck-button:not(.ck-on):not(:hover) {
-			background: hsl(0, 0%, 92%);
+			background: var(--ck-color-split-button-hover-background);
 		}
 
 		& > .ck-splitbutton__arrow {
-			border-left-color: hsl(0, 0%, 70%);
+			border-left-color: var(--ck-color-split-button-hover-border);
 		}
 	}
 }
