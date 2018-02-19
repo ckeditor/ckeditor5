@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -9,15 +9,13 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
-import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
-
-import AttributeElement from '@ckeditor/ckeditor5-engine/src/view/attributeelement';
-
 import HighlightCommand from './highlightcommand';
 
 /**
- * The highlight editing feature. It introduces `highlight` command which allow to highlight selected text with defined 'marker' or 'pen'.
+ * The highlight editing feature. It introduces the {@link module:highlight/highlightcommand~HighlightCommand command} and the `highlight`
+ * attribute in the {@link module:engine/model/model~Model model} which renders in the {@link module:engine/view/view view}
+ * as a `<mark>` element with the class attribute (`<span class="marker-green">...</span>`) depending
+ * on the {@link module:highlight/highlight~HighlightConfig configuration}.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -28,13 +26,16 @@ export default class HighlightEditing extends Plugin {
 	constructor( editor ) {
 		super( editor );
 
-		editor.config.define( 'highlight', [
-			{ class: 'marker', title: 'Marker', color: '#ffff66', type: 'marker' },
-			{ class: 'marker-green', title: 'Green Marker', color: '#66ff00', type: 'marker' },
-			{ class: 'marker-pink', title: 'Pink Marker', color: '#ff6fff', type: 'marker' },
-			{ class: 'pen-red', title: 'Red Pen', color: '#ff0000', type: 'pen' },
-			{ class: 'pen-blue', title: 'Blue Pen', color: '#0000ff', type: 'pen' }
-		] );
+		editor.config.define( 'highlight', {
+			options: [
+				{ model: 'yellowMarker', class: 'marker-yellow', title: 'Yellow marker', color: '#fdfd77', type: 'marker' },
+				{ model: 'greenMarker', class: 'marker-green', title: 'Green marker', color: '#63f963', type: 'marker' },
+				{ model: 'pinkMarker', class: 'marker-pink', title: 'Pink marker', color: '#fc7999', type: 'marker' },
+				{ model: 'blueMarker', class: 'marker-blue', title: 'Blue marker', color: '#72cdfd', type: 'marker' },
+				{ model: 'redPen', class: 'pen-red', title: 'Red pen', color: '#e91313', type: 'pen' },
+				{ model: 'greenPen', class: 'pen-green', title: 'Green pen', color: '#118800', type: 'pen' }
+			]
+		} );
 	}
 
 	/**
@@ -42,82 +43,39 @@ export default class HighlightEditing extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const data = editor.data;
-		const editing = editor.editing;
 
-		// Allow highlight attribute on all elements
-		editor.document.schema.allow( { name: '$inline', attributes: 'highlight', inside: '$block' } );
-		// Temporary workaround. See https://github.com/ckeditor/ckeditor5/issues/477.
-		editor.document.schema.allow( { name: '$inline', attributes: 'highlight', inside: '$clipboardHolder' } );
+		// Allow highlight attribute on text nodes.
+		editor.model.schema.extend( '$text', { allowAttributes: 'highlight' } );
 
-		// Convert highlight attribute to a mark element with associated class.
-		buildModelConverter()
-			.for( data.modelToView, editing.modelToView )
-			.fromAttribute( 'highlight' )
-			.toElement( data => new AttributeElement( 'mark', { class: data } ) );
+		const options = editor.config.get( 'highlight.options' );
 
-		const configuredClasses = editor.config.get( 'highlight' ).map( config => config.class );
-
-		// Convert `mark` attribute with class name to model's highlight attribute.
-		buildViewConverter()
-			.for( data.viewToModel )
-			.fromElement( 'mark' )
-			.toAttribute( viewElement => {
-				for ( const className of viewElement.getClassNames() ) {
-					if ( configuredClasses.indexOf( className ) > -1 ) {
-						return { key: 'highlight', value: className };
-					}
-				}
-			} );
+		// Set-up the two-way conversion.
+		editor.conversion.attributeToElement( _buildDefinition( options ) );
 
 		editor.commands.add( 'highlight', new HighlightCommand( editor ) );
 	}
 }
 
-/**
- * Highlight option descriptor.
- *
- * @typedef {Object} module:highlight/highlightediting~HeadingOption
- * @property {String} class The class which is used to differentiate highlighters.
- * @property {String} title The user-readable title of the option.
- * @property {String} color Color used for highlighter. Should be coherent with CSS class definition.
- * @property {'marker'|'pen'} type The type of highlighter:
- * - "marker" - will use #color as background,
- * - "pen" - will use #color as font color.
- */
+// Converts options array to a converter definition.
+//
+// @param {Array.<module:highlight/highlight~HighlightOption>} options Array with configured options.
+// @returns {module:engine/conversion/conversion~ConverterDefinition}
+function _buildDefinition( options ) {
+	const definition = {
+		model: {
+			key: 'highlight',
+			values: []
+		},
+		view: {}
+	};
 
-/**
- * The configuration of the {@link module:highlight/highlightediting~HighlightEditing Highlight feature}.
- *
- * Read more in {@link module:highlight/highlightediting~HighlightEditingConfig}.
- *
- * @member {module:highlight/highlightediting~HighlightEditingConfig} module:core/editor/editorconfig~EditorConfig#highlight
- */
+	for ( const option of options ) {
+		definition.model.values.push( option.model );
+		definition.view[ option.model ] = {
+			name: 'mark',
+			class: option.class
+		};
+	}
 
-/**
- * The configuration of the {@link module:highlight/highlightediting~HighlightEditing Highlight feature}.
- *
- *        ClassicEditor
- *            .create( editorElement, {
- * 				highlight:  ... // Highlight feature config.
- *			} )
- *            .then( ... )
- *            .catch( ... );
- *
- * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
- *
- * @interface HighlightEditingConfig
- */
-
-/**
- * Available highlighters options.
- *
- * There are two types of highlighters:
- * - 'marker' - rendered as `<mark>` element with defined background color.
- * - 'pen' - rendered as `<mark>` element with defined foreground (font) color.
- *
- * Note: Each highlighter must have it's own CSS class defined to properly match content data. Also it is advised
- * that color value should match the values defined in content CSS stylesheet.
- *
- * @member {Array.<module:heading/heading~HeadingOption>} module:heading/heading~HeadingConfig#options
- */
+	return definition;
+}

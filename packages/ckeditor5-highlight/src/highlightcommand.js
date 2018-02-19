@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -8,10 +8,17 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
+import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 
 /**
  * The highlight command. It is used by the {@link module:highlight/highlightediting~HighlightEditing highlight feature}
- * to apply text highlighting.
+ * to apply the text highlighting.
+ *
+ *		editor.execute( 'highlight', { value: 'greenMarker' } );
+ *
+ * **Note**: Executing the command without the value removes the attribute from the model. If the selection is collapsed
+ * inside a text with the highlight attribute, the command will remove the attribute from the entire range
+ * of that text.
  *
  * @extends module:core/command~Command
  */
@@ -20,10 +27,19 @@ export default class HighlightCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		const doc = this.editor.document;
+		const model = this.editor.model;
+		const doc = model.document;
 
+		/**
+		 * A value indicating whether the command is active. If the selection has some highlight attribute,
+		 * it corresponds to the value of that attribute.
+		 *
+		 * @observable
+		 * @readonly
+		 * @member {undefined|String} module:highlight/highlightcommand~HighlightCommand#value
+		 */
 		this.value = doc.selection.getAttribute( 'highlight' );
-		this.isEnabled = doc.schema.checkAttributeInSelection( doc.selection, 'highlight' );
+		this.isEnabled = model.schema.checkAttributeInSelection( doc.selection, 'highlight' );
 	}
 
 	/**
@@ -31,38 +47,56 @@ export default class HighlightCommand extends Command {
 	 *
 	 * @protected
 	 * @param {Object} [options] Options for the executed command.
-	 * @param {String} options.class Name of highlighter class.
-	 * @param {module:engine/model/batch~Batch} [options.batch] A batch to collect all the change steps.
-	 * A new batch will be created if this option is not set.
+	 * @param {String} [options.value] a value to apply.
+	 *
+	 * @fires execute
 	 */
 	execute( options = {} ) {
-		const doc = this.editor.document;
-		const selection = doc.selection;
+		const model = this.editor.model;
+		const document = model.document;
+		const selection = document.selection;
 
-		// Do not apply highlight no collapsed selection.
-		if ( selection.isCollapsed ) {
-			return;
-		}
+		const highlighter = options.value;
 
-		doc.enqueueChanges( () => {
-			const ranges = doc.schema.getValidRanges( selection.getRanges(), 'highlight' );
-			const batch = options.batch || doc.batch();
+		model.change( writer => {
+			const ranges = model.schema.getValidRanges( selection.getRanges(), 'highlight' );
 
-			for ( const range of ranges ) {
-				if ( options.class ) {
-					batch.setAttribute( range, 'highlight', options.class );
-				} else {
-					batch.removeAttribute( range, 'highlight' );
+			if ( selection.isCollapsed ) {
+				const position = selection.getFirstPosition();
+
+				// When selection is inside text with `highlight` attribute.
+				if ( selection.hasAttribute( 'highlight' ) ) {
+					// Find the full highlighted range.
+					const isSameHighlight = value => {
+						return value.item.hasAttribute( 'highlight' ) && value.item.getAttribute( 'highlight' ) === this.value;
+					};
+
+					const highlightStart = position.getLastMatchingPosition( isSameHighlight, { direction: 'backward' } );
+					const highlightEnd = position.getLastMatchingPosition( isSameHighlight );
+
+					const highlightRange = new Range( highlightStart, highlightEnd );
+
+					// Then depending on current value...
+					if ( !highlighter || this.value === highlighter ) {
+						// ...remove attribute when passing highlighter different then current or executing "eraser".
+						writer.removeAttribute( 'highlight', highlightRange );
+						writer.removeSelectionAttribute( 'highlight' );
+					} else {
+						// ...update `highlight` value.
+						writer.setAttribute( 'highlight', highlighter, highlightRange );
+					}
+				} else if ( highlighter ) {
+					writer.setSelectionAttribute( 'highlight', highlighter );
+				}
+			} else {
+				for ( const range of ranges ) {
+					if ( highlighter ) {
+						writer.setAttribute( 'highlight', highlighter, range );
+					} else {
+						writer.removeAttribute( 'highlight', range );
+					}
 				}
 			}
 		} );
 	}
 }
-
-/**
- * Holds current highlight class. If there is no highlight in selection then value will be undefined.
- *
- * @observable
- * @readonly
- * @member {undefined|String} module:highlight/highlightcommand~HighlightCommand#value
- */

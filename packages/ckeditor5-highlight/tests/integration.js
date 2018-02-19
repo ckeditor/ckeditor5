@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -19,7 +19,7 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'Highlight', () => {
-	let editor, doc, element;
+	let editor, model, element;
 
 	beforeEach( () => {
 		element = document.createElement( 'div' );
@@ -31,7 +31,7 @@ describe( 'Highlight', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-				doc = editor.document;
+				model = editor.model;
 			} );
 	} );
 
@@ -42,27 +42,27 @@ describe( 'Highlight', () => {
 	} );
 
 	describe( 'compatibility with images', () => {
-		it( 'does not work inside image caption', () => {
-			setModelData( doc, '<image src="foo.png"><caption>foo[bar]baz</caption></image>' );
+		it( 'does work inside image caption', () => {
+			setModelData( model, '<image src="foo.png"><caption>foo[bar]baz</caption></image>' );
 
-			editor.execute( 'highlight', { class: 'marker' } );
+			editor.execute( 'highlight', { value: 'yellowMarker' } );
 
-			expect( getModelData( doc ) )
-				.to.equal( '<image src="foo.png"><caption>foo[<$text highlight="marker">bar</$text>]baz</caption></image>' );
+			expect( getModelData( model ) )
+				.to.equal( '<image src="foo.png"><caption>foo[<$text highlight="yellowMarker">bar</$text>]baz</caption></image>' );
 		} );
 
-		it( 'does not work on selection with image', () => {
+		it( 'does work on selection with image', () => {
 			setModelData(
-				doc,
+				model,
 				'<paragraph>foo[foo</paragraph><image src="foo.png"><caption>abc</caption></image><paragraph>bar]bar</paragraph>'
 			);
 
-			editor.execute( 'highlight', { class: 'marker' } );
+			editor.execute( 'highlight', { value: 'yellowMarker' } );
 
-			expect( getModelData( doc ) ).to.equal(
-				'<paragraph>foo[<$text highlight="marker">foo</$text></paragraph>' +
-				'<image src="foo.png"><caption><$text highlight="marker">abc</$text></caption></image>' +
-				'<paragraph><$text highlight="marker">bar</$text>]bar</paragraph>'
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>foo[<$text highlight="yellowMarker">foo</$text></paragraph>' +
+				'<image src="foo.png"><caption><$text highlight="yellowMarker">abc</$text></caption></image>' +
+				'<paragraph><$text highlight="yellowMarker">bar</$text>]bar</paragraph>'
 			);
 		} );
 	} );
