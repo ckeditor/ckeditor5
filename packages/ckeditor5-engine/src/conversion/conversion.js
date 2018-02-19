@@ -170,6 +170,10 @@ export default class Conversion {
 	 *				const size = Number( match[ 1 ] );
 	 *
 	 *				if ( size > 26 ) {
+	 *					// Returned value be an object with the matched properties.
+	 *					// Those properties will be "consumed" during conversion.
+	 *					// See `engine.view.Matcher~MatcherPattern` and `engine.view.Matcher#match` for more.
+	 *
 	 *					return { name: true, style: [ 'font-size' ] };
 	 *				}
 	 *
@@ -237,6 +241,10 @@ export default class Conversion {
 	 *					const fontWeight = viewElement.getStyle( 'font-weight' );
 	 *
 	 *					if ( viewElement.is( 'span' ) && fontWeight && /\d+/.test() && Number( fontWeight ) > 500 ) {
+	 *						// Returned value be an object with the matched properties.
+	 *						// Those properties will be "consumed" during conversion.
+	 *						// See `engine.view.Matcher~MatcherPattern` and `engine.view.Matcher#match` for more.
+	 *
 	 *						return {
 	 *							name: true,
 	 *							style: [ 'font-weight' ]
@@ -284,6 +292,10 @@ export default class Conversion {
 	 *					const size = Number( match[ 1 ] );
 	 *
 	 *					if ( viewElement.is( 'span' ) && size > 10 ) {
+	 *						// Returned value be an object with the matched properties.
+	 *						// Those properties will be "consumed" during conversion.
+	 *						// See `engine.view.Matcher~MatcherPattern` and `engine.view.Matcher#match` for more.
+	 *
 	 *						return { name: true, style: [ 'font-size' ] };
 	 *					}
 	 *
@@ -305,6 +317,10 @@ export default class Conversion {
 	 *					const size = Number( match[ 1 ] );
 	 *
 	 *					if ( viewElement.is( 'span' ) && size < 10 ) {
+	 *						// Returned value be an object with the matched properties.
+	 *						// Those properties will be "consumed" during conversion.
+	 *						// See `engine.view.Matcher~MatcherPattern` and `engine.view.Matcher#match` for more.
+	 *
 	 *						return { name: true, style: [ 'font-size' ] };
 	 *					}
 	 *
