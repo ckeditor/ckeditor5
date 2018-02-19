@@ -8,8 +8,6 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { downcastAttributeToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
-import { upcastElementToAttribute } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 import AttributeCommand from './attributecommand';
 
 const BOLD = 'bold';
@@ -33,14 +31,19 @@ export default class BoldEngine extends Plugin {
 		editor.model.schema.extend( '$text', { allowAttributes: BOLD } );
 
 		// Build converter from model to view for data and editing pipelines.
-		editor.conversion.for( 'downcast' )
-			.add( downcastAttributeToElement( BOLD, { view: 'strong' } ) );
 
-		// Build converter from view to model for data pipeline.
-		editor.conversion.for( 'upcast' )
-			.add( upcastElementToAttribute( { view: 'b', model: BOLD } ) )
-			.add( upcastElementToAttribute( { view: 'strong', model: BOLD } ) )
-			.add( upcastElementToAttribute( { view: { style: { 'font-weight': 'bold' } }, model: BOLD } ) );
+		editor.conversion.attributeToElement( {
+			model: BOLD,
+			view: 'strong',
+			upcastAlso: [
+				'b',
+				{
+					style: {
+						'font-weight': 'bold'
+					}
+				}
+			]
+		} );
 
 		// Create bold command.
 		editor.commands.add( BOLD, new AttributeCommand( editor, BOLD ) );

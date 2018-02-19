@@ -8,8 +8,6 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { downcastAttributeToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
-import { upcastElementToAttribute } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 import AttributeCommand from './attributecommand';
 
 const UNDERLINE = 'underline';
@@ -32,14 +30,15 @@ export default class UnderlineEngine extends Plugin {
 		// Allow strikethrough attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: UNDERLINE } );
 
-		// Build converter from model to view for data and editing pipelines.
-		editor.conversion.for( 'downcast' )
-			.add( downcastAttributeToElement( UNDERLINE, { view: 'u' } ) );
-
-		// Build converter from view to model for data pipeline.
-		editor.conversion.for( 'upcast' )
-			.add( upcastElementToAttribute( { view: 'u', model: UNDERLINE } ) )
-			.add( upcastElementToAttribute( { view: { style: { 'text-decoration': 'underline' } }, model: UNDERLINE } ) );
+		editor.conversion.attributeToElement( {
+			model: UNDERLINE,
+			view: 'u',
+			upcastAlso: {
+				style: {
+					'text-decoration': 'underline'
+				}
+			}
+		} );
 
 		// Create underline command.
 		editor.commands.add( UNDERLINE, new AttributeCommand( editor, UNDERLINE ) );
