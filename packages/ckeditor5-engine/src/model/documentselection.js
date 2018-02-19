@@ -455,12 +455,12 @@ class LiveSelection extends Selection {
 		// @member {Map} module:engine/model/liveselection~LiveSelection#_attributePriority
 		this._attributePriority = new Map();
 
-		// Contains data requires to fix ranges which have been moved to the graveyard
+		// Contains data required to fix ranges which have been moved to the graveyard.
 		// @private
 		// @member {Array} module:engine/model/liveselection~LiveSelection#_fixGraveyardRangesData
 		this._fixGraveyardRangesData = [];
 
-		// Flag that informs whether the selection ranges have changed. It is changed on true when `LiveRange#change:range event is fired.
+		// Flag that informs whether the selection ranges have changed. It is changed on true when `LiveRange#change:range` event is fired.
 		// @private
 		// @member {Array} module:engine/model/liveselection~LiveSelection#_hasChangedRange
 		this._hasChangedRange = false;
@@ -512,7 +512,7 @@ class LiveSelection extends Selection {
 			while ( this._fixGraveyardRangesData.length ) {
 				const { liveRange, sourcePosition } = this._fixGraveyardRangesData.shift();
 
-				// Checks whether the liveRange still belongs to graveyard.
+				// Checks whether the `liveRange` is still inside the graveyard.
 				if ( liveRange.root == this._document.graveyard ) {
 					this._fixGraveyardSelection( liveRange, sourcePosition );
 				}
