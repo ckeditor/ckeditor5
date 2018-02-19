@@ -8,7 +8,6 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { attributeToElement } from '@ckeditor/ckeditor5-engine/src/conversion/two-way-converters';
 
 import HighlightCommand from './highlightcommand';
 
@@ -50,23 +49,33 @@ export default class HighlightEditing extends Plugin {
 
 		const options = editor.config.get( 'highlight.options' );
 
-		attributeToElement( editor.conversion, 'highlight', options.map( _getConverterDefinition ) );
+		// Set-up the two-way conversion.
+		editor.conversion.attributeToElement( _buildDefinition( options ) );
 
 		editor.commands.add( 'highlight', new HighlightCommand( editor ) );
 	}
 }
 
-// Converts {@link module:highlight/highlight~HighlightOption}
-// to {@link module:engine/conversion/definition-based-converters~ConverterDefinition}
+// Converts options array to a converter definition.
 //
-// @param {module:highlight/highlight~HighlightOption} option
-// @returns {module:engine/conversion/definition-based-converters~ConverterDefinition}
-function _getConverterDefinition( option ) {
-	return {
-		model: option.model,
-		view: {
+// @param {Array.<module:highlight/highlight~HighlightOption>} options Array with configured options.
+// @returns {module:engine/conversion/conversion~ConverterDefinition}
+function _buildDefinition( options ) {
+	const definition = {
+		model: {
+			key: 'highlight',
+			values: []
+		},
+		view: {}
+	};
+
+	for ( const option of options ) {
+		definition.model.values.push( option.model );
+		definition.view[ option.model ] = {
 			name: 'mark',
 			class: option.class
-		}
-	};
+		};
+	}
+
+	return definition;
 }
