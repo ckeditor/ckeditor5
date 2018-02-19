@@ -52,6 +52,14 @@ describe( 'SplitButtonView', () => {
 			expect( view.actionView.element.classList.contains( 'ck-hidden' ) ).to.be.false;
 		} );
 
+		it( 'binds arrowView#isOn to the template', () => {
+			view.arrowView.isOn = true;
+			expect( view.element.classList.contains( 'ck-splitbutton_open' ) ).to.be.true;
+
+			view.arrowView.isOn = false;
+			expect( view.element.classList.contains( 'ck-splitbutton_open' ) ).to.be.false;
+		} );
+
 		describe( 'activates keyboard navigation for the toolbar', () => {
 			it( 'so "arrowright" on view#arrowView does nothing', () => {
 				const keyEvtData = {
