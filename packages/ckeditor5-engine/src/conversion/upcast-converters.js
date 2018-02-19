@@ -307,6 +307,9 @@ function _prepareToElementConverter( config ) {
 			return;
 		}
 
+		// Force consuming element's name.
+		match.match.name = true;
+
 		// Create model element basing on config.
 		const modelElement = _getModelElement( config.model, data.viewItem, conversionApi.writer );
 
@@ -437,7 +440,8 @@ function _normalizeModelAttributeConfig( config, viewAttributeKeyToCopy = null )
 //
 // @param {String} modelAttributeKey The key of the model attribute to set on a model node.
 // @param {Object|Array.<Object>} config Conversion configuration. It is possible to provide multiple configurations in an array.
-// @param {Boolean} consumeName If set to `true` converter will not consume element's name.
+// @param {Boolean} consumeName If set to `true` converter will try to consume name. If set to `false` converter will not try to
+// consume name. This flag overwrites parameter returned by `Matcher#match`.
 function _prepareToAttributeConverter( config, consumeName ) {
 	const matcher = new Matcher( config.view );
 
@@ -460,6 +464,8 @@ function _prepareToAttributeConverter( config, consumeName ) {
 		if ( !consumeName ) {
 			// Do not test or consume `name` consumable.
 			delete match.match.name;
+		} else {
+			match.match.name = true;
 		}
 
 		// Try to consume appropriate values from consumable values list.

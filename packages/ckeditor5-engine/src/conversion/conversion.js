@@ -141,7 +141,6 @@ export default class Conversion {
 	 *				'div',
 	 *				{
 	 *					// Any element with `display: block` style.
-	 *					name: /./,
 	 *					style: {
 	 *						display: 'block'
 	 *					}
