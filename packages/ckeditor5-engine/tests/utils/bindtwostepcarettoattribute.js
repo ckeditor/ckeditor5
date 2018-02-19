@@ -88,7 +88,7 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 				preventDefault: preventDefaultSpy
 			} ) );
 
-			// Gravity is overridden, caret movement is blocked, selection at the beginning but "outside" the text.
+			// Gravity is overridden, caret movement is blocked, selection at the end but "outside" the text.
 			expect( Array.from( selection.getAttributeKeys() ) ).to.have.members( [ 'c' ] );
 			expect( selection.isGravityOverridden ).to.true;
 			sinon.assert.calledOnce( preventDefaultSpy );
@@ -125,6 +125,23 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 
 			sinon.assert.notCalled( preventDefaultSpy );
 			expect( selection.isGravityOverridden ).to.false;
+		} );
+
+		it( 'should require two-steps movement when caret goes between text node with the same attribute but different value', () => {
+			setData( model, '<$text a="1">bar[]</$text><$text a="2">foo</$text>' );
+
+			// Gravity is not overridden.
+			expect( selection.isGravityOverridden ).to.false;
+
+			// Press right key.
+			viewDoc.fire( 'keydown', getEventData( {
+				keyCode: keyCodes.arrowright,
+				preventDefault: preventDefaultSpy
+			} ) );
+
+			// Gravity is overridden, caret movement is blocked.
+			expect( selection.isGravityOverridden ).to.true;
+			sinon.assert.calledOnce( preventDefaultSpy );
 		} );
 	} );
 
@@ -253,6 +270,23 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 			expect( () => {
 				viewDoc.fire( 'keydown', getEventData( { keyCode: keyCodes.arrowleft } ) );
 			} ).to.not.throw();
+		} );
+
+		it( 'should require two-steps movement when caret goes between text node with the same attribute but different value', () => {
+			setData( model, '<$text a="2">foo</$text><$text a="1">b[]ar</$text>' );
+
+			// Gravity is not overridden.
+			expect( selection.isGravityOverridden ).to.false;
+
+			// Press left key.
+			viewDoc.fire( 'keydown', getEventData( {
+				keyCode: keyCodes.arrowleft,
+				preventDefault: preventDefaultSpy
+			} ) );
+
+			// Gravity is overridden, caret movement was not blocked.
+			sinon.assert.notCalled( preventDefaultSpy );
+			expect( selection.isGravityOverridden ).to.true;
 		} );
 	} );
 

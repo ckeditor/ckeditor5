@@ -126,5 +126,9 @@ function isStickToAttribute( nextNode, prevNode, attribute ) {
 	const isAttrInNext = nextNode ? nextNode.hasAttribute( attribute ) : false;
 	const isAttrInPrev = prevNode ? prevNode.hasAttribute( attribute ) : false;
 
+	if ( isAttrInNext && isAttrInPrev && nextNode.getAttributeKeys( attribute ) !== prevNode.getAttribute( attribute ) ) {
+		return true;
+	}
+
 	return isAttrInNext && !isAttrInPrev || !isAttrInNext && isAttrInPrev;
 }
