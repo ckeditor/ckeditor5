@@ -3301,7 +3301,7 @@ describe( 'ListEngine', () => {
 				consumable.consume( data.item, 'attribute:type' );
 				consumable.consume( data.item, 'attribute:indent' );
 
-				const converter = insertElement( ( item, consumable, api ) => api.writer.createContainerElement( 'p' ) );
+				const converter = insertElement( ( modelElement, viewWriter ) => viewWriter.createContainerElement( 'p' ) );
 
 				return converter( evt, data, consumable, conversionApi );
 			}, { priority: 'highest' } );
