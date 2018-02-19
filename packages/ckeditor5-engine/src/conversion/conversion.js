@@ -118,8 +118,6 @@ export default class Conversion {
 	 * Sets up converters between the model and the view which convert a model element to a view element (and vice versa).
 	 * For example, model `<paragraph>Foo</paragraph>` is `<p>Foo</p>` in the view.
 	 *
-	 * `definition.model` is a `String` with a model element name to converter from/to.
-	 *
 	 *		// Simple conversion from `paragraph` model element to `<p>` view element (and vice versa).
 	 *		conversion.elementToElement( { model: 'paragraph', view: 'p' } );
 	 *
@@ -179,7 +177,10 @@ export default class Conversion {
 	 *			}
 	 *		} );
 	 *
-	 * @param {~ConverterDefinition} definition Converter definition.
+	 * `definition.model` is a `String` with a model element name to converter from/to.
+	 * See {@link module:engine/conversion/conversion~ConverterDefinition} to learn about other parameters.
+	 *
+	 * @param {module:engine/conversion/conversion~ConverterDefinition} definition Converter definition.
 	 */
 	elementToElement( definition ) {
 		// Set up downcast converter.
@@ -200,9 +201,6 @@ export default class Conversion {
 	/**
 	 * Sets up converters between the model and the view which convert a model attribute to a view element (and vice versa).
 	 * For example, model text node with data `"Foo"` and `bold` attribute is `<strong>Foo</strong>` in the view.
-	 *
-	 * `definition.model` parameter specifies what model attribute should be converted from/to. It can be a `{ key, value }` object
-	 * describing attribute key and value to convert or a `String` specifying just attribute key (then `value` is set to `true`).
 	 *
 	 *		// Simple conversion from `bold=true` attribute to `<strong>` view element (and vice versa).
 	 *		conversion.attributeToElement( { model: 'bold', view: 'strong' } );
@@ -315,7 +313,11 @@ export default class Conversion {
 	 *			}
 	 *		} );
 	 *
-	 * @param {~ConverterDefinition} definition Converter definition.
+	 * `definition.model` parameter specifies what model attribute should be converted from/to. It can be a `{ key, value }` object
+	 * describing attribute key and value to convert or a `String` specifying just attribute key (then `value` is set to `true`).
+	 * See {@link module:engine/conversion/conversion~ConverterDefinition} to learn about other parameters.
+	 *
+	 * @param {module:engine/conversion/conversion~ConverterDefinition} definition Converter definition.
 	 */
 	attributeToElement( definition ) {
 		// Set up downcast converter.
@@ -336,32 +338,6 @@ export default class Conversion {
 	/**
 	 * Sets up converters between the model and the view which convert a model attribute to a view attribute (and vice versa).
 	 * For example, `<image src='foo.jpg'></image>` is converted to `<img src='foo.jpg'></img>` (same attribute key and value).
-	 *
-	 * `definition.model` parameter specifies what model attribute should be converted from/to.
-	 * It can be a `{ key, values, [ name ] }` object or a `String`, which will be treated like `{ key: definition.model }`.
-	 * `key` property is the model attribute key to convert from/to.
-	 * `values` are the possible model attribute values. If `values` is not set, model attribute value will be the same as the
-	 * view attribute value.
-	 * If `name` is set, conversion will be set up only for model elements with the given name.
-	 *
-	 * `definition.view` parameter specifies what view attribute should be converted from/to.
-	 * It can be a `{ key, value, [ name ] }` object or a `String`, which will be treated like `{ key: definition.view }`.
-	 * `key` property is the view attribute key to convert from/to.
-	 * `value` is the view attribute value to convert from/to. If `definition.value` is not set, view attribute value will be
-	 * the same as the model attribute value.
-	 * If `key` is `'class'`, `value` can be a `String` or an array of `String`s.
-	 * If `key` is `'style'`, `value` is an object with key-value pairs.
-	 * In other cases, `value` is a `String`.
-	 * If `name` is set, conversion will be set up only for model elements with the given name.
-	 * If `definition.model.values` is set, `definition.view` is an object which assigns values from `definition.model.values`
-	 * to `{ key, value, [ name ] }` objects.
-	 *
-	 * `definition.upcastAlso` specifies which other matching view elements should be also upcast to given model configuration.
-	 * If `definition.model.values` is set, `definition.upcastAlso` should be an object assigning values from `definition.model.values`
-	 * to {@link module:engine/view/matcher~MatcherPattern}s or arrays of {@link module:engine/view/matcher~MatcherPattern}s.
-	 *
-	 * **Note:** `definition.model` and `definition.view` form should be mirrored, that is the same type of parameters should
-	 * be given in both parameters.
 	 *
 	 *		// Simple conversion from `source` model attribute to `src` view attribute (and vice versa).
 	 *		conversion.attributeToAttribute( { model: 'source', view: 'src' } );
@@ -433,7 +409,33 @@ export default class Conversion {
 	 *			}
 	 *		} );
 	 *
-	 * @param {Object} [definition] Converter definition.
+	 * `definition.model` parameter specifies what model attribute should be converted from/to.
+	 * It can be a `{ key, [ values ], [ name ] }` object or a `String`, which will be treated like `{ key: definition.model }`.
+	 * `key` property is the model attribute key to convert from/to.
+	 * `values` are the possible model attribute values. If `values` is not set, model attribute value will be the same as the
+	 * view attribute value.
+	 * If `name` is set, conversion will be set up only for model elements with the given name.
+	 *
+	 * `definition.view` parameter specifies what view attribute should be converted from/to.
+	 * It can be a `{ key, value, [ name ] }` object or a `String`, which will be treated like `{ key: definition.view }`.
+	 * `key` property is the view attribute key to convert from/to.
+	 * `value` is the view attribute value to convert from/to. If `definition.value` is not set, view attribute value will be
+	 * the same as the model attribute value.
+	 * If `key` is `'class'`, `value` can be a `String` or an array of `String`s.
+	 * If `key` is `'style'`, `value` is an object with key-value pairs.
+	 * In other cases, `value` is a `String`.
+	 * If `name` is set, conversion will be set up only for model elements with the given name.
+	 * If `definition.model.values` is set, `definition.view` is an object which assigns values from `definition.model.values`
+	 * to `{ key, value, [ name ] }` objects.
+	 *
+	 * `definition.upcastAlso` specifies which other matching view elements should be also upcast to given model configuration.
+	 * If `definition.model.values` is set, `definition.upcastAlso` should be an object assigning values from `definition.model.values`
+	 * to {@link module:engine/view/matcher~MatcherPattern}s or arrays of {@link module:engine/view/matcher~MatcherPattern}s.
+	 *
+	 * **Note:** `definition.model` and `definition.view` form should be mirrored, that is the same type of parameters should
+	 * be given in both parameters.
+	 *
+	 * @param {Object} definition Converter definition.
 	 * @param {String|Object} definition.model Model attribute to convert from/to.
 	 * @param {String|Object} definition.view View attribute to convert from/to.
 	 * @param {module:engine/view/matcher~MatcherPattern|Array.<module:engine/view/matcher~MatcherPattern>} [definition.upcastAlso]
@@ -517,7 +519,7 @@ function _addToDispatchers( dispatchers, conversionHelper ) {
 // Helper function that creates a joint array out of an item passed in `definition.view` and items passed in
 // `definition.upcastAlso`.
 //
-// @param {~ConverterDefinition} definition
+// @param {module:engine/conversion/conversion~ConverterDefinition} definition
 // @returns {Array} Array containing view definitions.
 function* _getAllUpcastDefinitions( definition ) {
 	if ( definition.model.values ) {
