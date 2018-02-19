@@ -77,22 +77,21 @@ describe( 'Widget', () => {
 					.add( downcastElementToElement( { model: 'div', view: 'div' } ) )
 					.add( downcastElementToElement( {
 						model: 'widget',
-						view: ( item, consumable, api ) => {
-							const writer = api.writer;
-							const b = writer.createAttributeElement( 'b' );
-							const div = writer.createContainerElement( 'div' );
-							writer.insert( ViewPosition.createAt( div ), b );
+						view: ( modelItem, viewWriter ) => {
+							const b = viewWriter.createAttributeElement( 'b' );
+							const div = viewWriter.createContainerElement( 'div' );
+							viewWriter.insert( ViewPosition.createAt( div ), b );
 
-							return toWidget( div, writer, { label: 'element label' } );
+							return toWidget( div, viewWriter, { label: 'element label' } );
 						}
 					} ) )
 					.add( downcastElementToElement( {
 						model: 'nested',
-						view: ( item, consumable, api ) => api.writer.createEditableElement( 'figcaption', { contenteditable: true } )
+						view: ( modelItem, viewWriter ) => viewWriter.createEditableElement( 'figcaption', { contenteditable: true } )
 					} ) )
 					.add( downcastElementToElement( {
 						model: 'editable',
-						view: ( item, consumable, api ) => api.writer.createEditableElement( 'figcaption', { contenteditable: true } )
+						view: ( modelItem, viewWriter ) => viewWriter.createEditableElement( 'figcaption', { contenteditable: true } )
 					} ) );
 			} );
 	} );
