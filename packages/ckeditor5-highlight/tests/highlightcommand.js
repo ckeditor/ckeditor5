@@ -85,7 +85,7 @@ describe( 'HighlightCommand', () => {
 
 					command.execute( { value: 'greenMarker' } );
 
-					expect( getData( model ) ).to.equal( '<p>abc[<$text highlight="greenMarker">foobar</$text>]xyz</p>' );
+					expect( getData( model ) ).to.equal( '<p>abc<$text highlight="greenMarker">foo[]bar</$text>xyz</p>' );
 
 					expect( command.value ).to.equal( 'greenMarker' );
 				} );
@@ -171,18 +171,6 @@ describe( 'HighlightCommand', () => {
 
 					expect( command.value ).to.be.undefined;
 					expect( doc.selection.hasAttribute( 'highlight' ) ).to.be.false;
-				} );
-
-				it( 'should change entire highlight when inside highlighted text', () => {
-					setData( model, '<p>abc<$text highlight="marker">foo[]bar</$text>xyz</p>' );
-
-					expect( command.value ).to.equal( 'marker' );
-
-					command.execute( { value: 'greenMarker' } );
-
-					expect( getData( model ) ).to.equal( '<p>abc[<$text highlight="greenMarker">foobar</$text>]xyz</p>' );
-
-					expect( command.value ).to.equal( 'greenMarker' );
 				} );
 			} );
 

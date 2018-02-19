@@ -83,9 +83,6 @@ export default class HighlightCommand extends Command {
 					} else {
 						// ...update `highlight` value.
 						writer.setAttribute( 'highlight', highlighter, highlightRange );
-
-						// And create new range wrapping changed highlighter.
-						writer.setSelection( [ highlightRange ] );
 					}
 				} else if ( highlighter ) {
 					writer.setSelectionAttribute( 'highlight', highlighter );
