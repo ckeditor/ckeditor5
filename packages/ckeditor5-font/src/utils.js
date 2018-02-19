@@ -8,11 +8,11 @@
  */
 
 /**
- * Builds a proper {@link module:engine/conversion/Conversion~ConverterDefinition converter definition} out of input data.
+ * Builds a proper {@link module:engine/conversion/conversion~ConverterDefinition converter definition} out of input data.
  *
  * @param {String} modelAttributeKey Key
- * @param {Array.<module:font/fontsize~FontFamilyOption>|Array.<module:font/fontsize~FontSizeOption>} options
- * @returns {module:engine/conversion/Conversion~ConverterDefinition}
+ * @param {Array.<module:font/fontfamily~FontFamilyOption>|Array.<module:font/fontsize~FontSizeOption>} options
+ * @returns {module:engine/conversion/conversion~ConverterDefinition}
  */
 export function buildDefinition( modelAttributeKey, options ) {
 	const definition = {
