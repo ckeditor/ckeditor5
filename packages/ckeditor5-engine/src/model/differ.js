@@ -547,6 +547,8 @@ export default class Differ {
 	 * @param {Array.<Object>} changes An array containing all the changes done on that element.
 	 */
 	_handleChange( inc, changes ) {
+		inc.newHowMany = inc.howMany;
+
 		for ( const old of changes ) {
 			const incEnd = inc.offset + inc.howMany;
 			const oldEnd = old.offset + old.howMany;
@@ -556,8 +558,8 @@ export default class Differ {
 					if ( inc.offset <= old.offset ) {
 						old.offset += inc.howMany;
 					} else if ( inc.offset < oldEnd ) {
-						old.howMany += inc.howMany;
-						inc.howMany = 0;
+						old.howMany += inc.newHowMany;
+						inc.newHowMany = 0;
 					}
 				}
 
@@ -608,20 +610,20 @@ export default class Differ {
 							old.offset = inc.offset;
 
 							old.howMany -= intersectionLength;
-							inc.howMany -= intersectionLength;
+							inc.newHowMany -= intersectionLength;
 						} else {
-							old.howMany -= inc.howMany;
-							inc.howMany = 0;
+							old.howMany -= inc.newHowMany;
+							inc.newHowMany = 0;
 						}
 					} else {
 						if ( inc.offset <= old.offset ) {
-							inc.howMany = inc.howMany - old.howMany;
+							inc.newHowMany -= old.howMany;
 							old.howMany = 0;
 						} else if ( inc.offset < oldEnd ) {
 							const intersectionLength = oldEnd - inc.offset;
 
 							old.howMany -= intersectionLength;
-							inc.howMany -= intersectionLength;
+							inc.newHowMany -= intersectionLength;
 						}
 					}
 				}
@@ -631,9 +633,9 @@ export default class Differ {
 						old.offset -= inc.howMany;
 					} else if ( inc.offset < old.offset ) {
 						old.offset = inc.offset;
-						old.howMany += inc.howMany;
+						old.howMany += inc.newHowMany;
 
-						inc.howMany = 0;
+						inc.newHowMany = 0;
 					}
 				}
 
@@ -656,7 +658,7 @@ export default class Differ {
 
 							old.howMany = inc.offset - old.offset;
 
-							const howManyAfter = howMany - old.howMany - inc.howMany;
+							const howManyAfter = howMany - old.howMany - inc.newHowMany;
 
 							// Add the second part of attribute change to the beginning of processed array so it won't
 							// be processed again in this loop.
@@ -695,24 +697,27 @@ export default class Differ {
 							changes.push( attributePart );
 						}
 
-						inc.howMany = old.offset - inc.offset;
+						inc.newHowMany = old.offset - inc.offset;
 					} else if ( inc.offset >= old.offset && inc.offset < oldEnd ) {
 						if ( incEnd > oldEnd ) {
-							inc.howMany = incEnd - oldEnd;
+							inc.newHowMany = incEnd - oldEnd;
 							inc.offset = oldEnd;
 						} else {
-							inc.howMany = 0;
+							inc.newHowMany = 0;
 						}
 					}
 				}
 
 				if ( old.type == 'attribute' ) {
 					if ( inc.offset >= old.offset && incEnd <= oldEnd ) {
-						inc.howMany = 0;
+						inc.newHowMany = 0;
 					}
 				}
 			}
 		}
+
+		inc.howMany = inc.newHowMany;
+		delete inc.newHowMany;
 	}
 
 	/**
