@@ -106,7 +106,7 @@ The {@link module:highlight/highlight~Highlight} plugin registers:
 	You can change the highlight of the current selection by executing the command with a desired value:
 
 	```js
-	editor.execute( 'highlight', { value: 'marker' } );
+	editor.execute( 'highlight', { value: 'yellowMarker' } );
 	```
 
 	The `value` corresponds to the `model` property in configuration object. For the default configuration:
