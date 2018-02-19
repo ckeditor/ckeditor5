@@ -53,6 +53,11 @@ export default function bindTwoStepCaretToAttribute( view, model, emitter, attri
 			return;
 		}
 
+		// User tries to expand selection, so two-steps movement is not necessary.
+		if ( data.shiftKey ) {
+			return;
+		}
+
 		const position = modelSelection.getFirstPosition();
 
 		// Moving right.

@@ -10,7 +10,6 @@ import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 import bindTwoStepCaretToAttribute from '../../src/utils/bindtwostepcarettoattribute';
 import Position from '../../src/model/position';
 import Range from '../../src/model/range';
-import DomEventData from '../../src/view/observer/domeventdata';
 import { upcastElementToAttribute } from '../../src/conversion/upcast-converters';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
@@ -55,10 +54,10 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 			expect( selection.isGravityOverridden ).to.false;
 
 			// Press right key.
-			viewDoc.fire( 'keydown', getEventData( {
+			fireKeyDownEvent( {
 				keyCode: keyCodes.arrowright,
 				preventDefault: preventDefaultSpy
-			} ) );
+			} );
 
 			// Gravity is overridden, caret movement is blocked, selection at the beginning but "inside" the text.
 			expect( Array.from( selection.getAttributeKeys() ) ).to.have.members( [ 'a', 'b' ] );
@@ -66,10 +65,10 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 			sinon.assert.calledOnce( preventDefaultSpy );
 
 			// Press right key.
-			viewDoc.fire( 'keydown', getEventData( {
+			fireKeyDownEvent( {
 				keyCode: keyCodes.arrowright,
 				preventDefault: preventDefaultSpy
-			} ) );
+			} );
 
 			// Caret movement was not blocked this time (still once) so everything works normally.
 			sinon.assert.calledOnce( preventDefaultSpy );
@@ -83,10 +82,10 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 			expect( selection.isGravityOverridden ).to.false;
 
 			// Press right key.
-			viewDoc.fire( 'keydown', getEventData( {
+			fireKeyDownEvent( {
 				keyCode: keyCodes.arrowright,
 				preventDefault: preventDefaultSpy
-			} ) );
+			} );
 
 			// Gravity is overridden, caret movement is blocked, selection at the end but "outside" the text.
 			expect( Array.from( selection.getAttributeKeys() ) ).to.have.members( [ 'c' ] );
@@ -94,10 +93,10 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 			sinon.assert.calledOnce( preventDefaultSpy );
 
 			// Press right key.
-			viewDoc.fire( 'keydown', getEventData( {
+			fireKeyDownEvent( {
 				keyCode: keyCodes.arrowright,
 				preventDefault: preventDefaultSpy
-			} ) );
+			} );
 
 			// Caret movement was not blocked this time (still once) so everything works normally.
 			sinon.assert.calledOnce( preventDefaultSpy );
@@ -106,10 +105,10 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 		it( 'should do nothing for not bound attribute (at the beginning)', () => {
 			setData( model, '[]<$text c="true">foo</$text>' );
 
-			viewDoc.fire( 'keydown', getEventData( {
+			fireKeyDownEvent( {
 				keyCode: keyCodes.arrowright,
 				preventDefault: preventDefaultSpy
-			} ) );
+			} );
 
 			sinon.assert.notCalled( preventDefaultSpy );
 			expect( selection.isGravityOverridden ).to.false;
@@ -118,10 +117,10 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 		it( 'should do nothing for not bound attribute (at the end)', () => {
 			setData( model, '<$text c="true">foo[]</$text>' );
 
-			viewDoc.fire( 'keydown', getEventData( {
+			fireKeyDownEvent( {
 				keyCode: keyCodes.arrowright,
 				preventDefault: preventDefaultSpy
-			} ) );
+			} );
 
 			sinon.assert.notCalled( preventDefaultSpy );
 			expect( selection.isGravityOverridden ).to.false;
@@ -134,10 +133,10 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 			expect( selection.isGravityOverridden ).to.false;
 
 			// Press right key.
-			viewDoc.fire( 'keydown', getEventData( {
+			fireKeyDownEvent( {
 				keyCode: keyCodes.arrowright,
 				preventDefault: preventDefaultSpy
-			} ) );
+			} );
 
 			// Gravity is overridden, caret movement is blocked.
 			expect( selection.isGravityOverridden ).to.true;
@@ -154,10 +153,10 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 			expect( selection.isGravityOverridden ).to.false;
 
 			// Press left key.
-			viewDoc.fire( 'keydown', getEventData( {
+			fireKeyDownEvent( {
 				keyCode: keyCodes.arrowleft,
 				preventDefault: preventDefaultSpy
-			} ) );
+			} );
 
 			// Caret movement was not blocked.
 			sinon.assert.notCalled( preventDefaultSpy );
@@ -171,10 +170,10 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 			expect( selection.isGravityOverridden ).to.true;
 
 			// Press left key.
-			viewDoc.fire( 'keydown', getEventData( {
+			fireKeyDownEvent( {
 				keyCode: keyCodes.arrowleft,
 				preventDefault: preventDefaultSpy
-			} ) );
+			} );
 
 			// Caret movement was blocked but now is "inside" the text.
 			expect( Array.from( selection.getAttributeKeys() ) ).to.have.members( [ 'a', 'b' ] );
@@ -182,10 +181,10 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 			sinon.assert.calledOnce( preventDefaultSpy );
 
 			// Press left key.
-			viewDoc.fire( 'keydown', getEventData( {
+			fireKeyDownEvent( {
 				keyCode: keyCodes.arrowleft,
 				preventDefault: preventDefaultSpy
-			} ) );
+			} );
 
 			// Caret movement was not blocked this time (still once) so everything works normally.
 			sinon.assert.calledOnce( preventDefaultSpy );
@@ -203,10 +202,10 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 			expect( selection.isGravityOverridden ).to.false;
 
 			// Press left key.
-			viewDoc.fire( 'keydown', getEventData( {
+			fireKeyDownEvent( {
 				keyCode: keyCodes.arrowleft,
 				preventDefault: preventDefaultSpy
-			} ) );
+			} );
 
 			// Caret movement was not blocked.
 			sinon.assert.notCalled( preventDefaultSpy );
@@ -220,10 +219,10 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 			expect( selection.isGravityOverridden ).to.true;
 
 			// Press left key.
-			viewDoc.fire( 'keydown', getEventData( {
+			fireKeyDownEvent( {
 				keyCode: keyCodes.arrowleft,
 				preventDefault: preventDefaultSpy
-			} ) );
+			} );
 
 			// Gravity is not overridden, caret movement was blocked but now is "outside" the text.
 			expect( Array.from( selection.getAttributeKeys() ) ).to.have.members( [ 'c' ] );
@@ -231,10 +230,10 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 			sinon.assert.calledOnce( preventDefaultSpy );
 
 			// Press left key.
-			viewDoc.fire( 'keydown', getEventData( {
+			fireKeyDownEvent( {
 				keyCode: keyCodes.arrowleft,
 				preventDefault: preventDefaultSpy
-			} ) );
+			} );
 
 			// Caret movement was not blocked this time (still once) so everything works normally.
 			sinon.assert.calledOnce( preventDefaultSpy );
@@ -243,10 +242,10 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 		it( 'should do nothing for not bound attribute (at the beginning)', () => {
 			setData( model, '<$text c="true">[]foo</$text>' );
 
-			viewDoc.fire( 'keydown', getEventData( {
+			fireKeyDownEvent( {
 				keyCode: keyCodes.arrowright,
 				preventDefault: preventDefaultSpy
-			} ) );
+			} );
 
 			sinon.assert.notCalled( preventDefaultSpy );
 			expect( selection.isGravityOverridden ).to.false;
@@ -255,10 +254,10 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 		it( 'should do nothing for not bound attribute (at the end)', () => {
 			setData( model, '<$text c="true">foo</$text>[]' );
 
-			viewDoc.fire( 'keydown', getEventData( {
+			fireKeyDownEvent( {
 				keyCode: keyCodes.arrowright,
 				preventDefault: preventDefaultSpy
-			} ) );
+			} );
 
 			sinon.assert.notCalled( preventDefaultSpy );
 			expect( selection.isGravityOverridden ).to.false;
@@ -268,7 +267,7 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 			setData( model, '[]foo', { lastRangeBackward: true } );
 
 			expect( () => {
-				viewDoc.fire( 'keydown', getEventData( { keyCode: keyCodes.arrowleft } ) );
+				fireKeyDownEvent( { keyCode: keyCodes.arrowleft } );
 			} ).to.not.throw();
 		} );
 
@@ -279,10 +278,10 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 			expect( selection.isGravityOverridden ).to.false;
 
 			// Press left key.
-			viewDoc.fire( 'keydown', getEventData( {
+			fireKeyDownEvent( {
 				keyCode: keyCodes.arrowleft,
 				preventDefault: preventDefaultSpy
-			} ) );
+			} );
 
 			// Gravity is overridden, caret movement was not blocked.
 			sinon.assert.notCalled( preventDefaultSpy );
@@ -308,21 +307,32 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 		setData( model, '<$text a="true">foo[]</$text>' );
 
 		expect( () => {
-			viewDoc.fire( 'keydown', getEventData( { keyCode: keyCodes.arrowup } ) );
+			fireKeyDownEvent( { keyCode: keyCodes.arrowup } );
 		} ).to.not.throw();
 	} );
 
 	it( 'should do nothing for non-collapsed selection', () => {
 		setData( model, '<$text c="true">fo[o]</$text><$text a="true" b="true">bar</$text>' );
 
-		viewDoc.fire( 'keydown', getEventData( { keyCode: keyCodes.arrowright } ) );
+		fireKeyDownEvent( { keyCode: keyCodes.arrowright } );
 
 		expect( selection.isGravityOverridden ).to.false;
 	} );
 
-	function getEventData( data ) {
-		data.target = document.body;
+	it( 'should do nothing when shift key is pressed', () => {
+		setData( model, '<$text c="true">foo</$text><$text a="true" b="true">b[]ar</$text>' );
 
-		return new DomEventData( viewDoc, data, { keyCode: data.keyCode } );
+		fireKeyDownEvent( {
+			keyCode: keyCodes.arrowleft,
+			shiftKey: true
+		} );
+
+		expect( selection.isGravityOverridden ).to.false;
+	} );
+
+	function fireKeyDownEvent( options ) {
+		const eventData = Object.assign( { domTarget: document.body }, options );
+
+		viewDoc.fire( 'keydown', eventData );
 	}
 } );
