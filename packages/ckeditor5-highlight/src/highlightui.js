@@ -29,10 +29,11 @@ import './../theme/highlight.css';
  *
  * The default configuration includes the following buttons:
  * * `'highlight:marker'`
- * * `'highlight:pinkMarker'`
  * * `'highlight:greenMarker'`
+ * * `'highlight:pinkMarker'`
+ * * `'highlight:blueMarker'`
  * * `'highlight:redPen'`
- * * `'highlight:bluePen'`
+ * * `'highlight:greenPen'`
  *
  * See the {@link module:highlight/highlight~HighlightConfig#options configuration} to learn more
  * about the defaults.
@@ -49,8 +50,9 @@ export default class HighlightUI extends Plugin {
 	 * * `'Marker'`,
 	 * * `'Green marker'`,
 	 * * `'Pink marker'`,
-	 * * `'Blue pen'`.
-	 * * `'Red pen'`.
+	 * * `'Blue marker'`,
+	 * * `'Red pen'`,
+	 * * `'Green pen'`.
 	 *
 	 * @readonly
 	 * @type {Object.<String,String>}
@@ -62,8 +64,9 @@ export default class HighlightUI extends Plugin {
 			'Marker': t( 'Marker' ),
 			'Green marker': t( 'Green marker' ),
 			'Pink marker': t( 'Pink marker' ),
+			'Blue marker': t( 'Blue marker' ),
 			'Red pen': t( 'Red pen' ),
-			'Blue pen': t( 'Blue pen' )
+			'Green pen': t( 'Green pen' )
 		};
 	}
 

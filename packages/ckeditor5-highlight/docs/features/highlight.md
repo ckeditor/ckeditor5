@@ -16,7 +16,7 @@ The {@link module:highlight/highlight~Highlight} feature offers a text marking t
 It is possible to configure which highlight options are supported by the editor.
 You can use the {@link module:highlight/highlight~HighlightConfig#options `highlight.options`} configuration and define your own highlight styles.
 
-For example, the following editor supports only two styles (a green marker and a blue pen):
+For example, the following editor supports only two styles (a green marker and a red pen):
 
 ```js
 ClassicEditor
@@ -27,14 +27,14 @@ ClassicEditor
 					model: 'greenMarker',
 					class: 'marker-green',
 					title: 'Green marker',
-					color: '#66ff00',
+					color: '#63f963',
 					type: 'marker'
 				},
 				{
-					model: 'bluePen',
-					class: 'pen-blue',
-					title: 'Blue pen',
-					color: '#0091ff',
+					model: 'redPen',
+					class: 'pen-red',
+					title: 'Red pen',
+					color: '#e91313',
 					type: 'pen'
 				}
 			]
@@ -57,7 +57,7 @@ ClassicEditor
 		toolbar: {
 			items: [
 				'headings', '|', 'highlight:marker', 'highlight:greenMarker',
-				'highlight:pinkMarker', 'highlight:bluePen',
+				'highlight:pinkMarker', 'highlight:greenPen',
 				'highlight:redPen', 'removeHighlight', 'undo', 'redo'
 			]
 		}
@@ -112,20 +112,22 @@ The {@link module:highlight/highlight~Highlight} plugin registers:
 	The `value` corresponds to the `model` property in configuration object. For the default configuration:
 	```js
 	highlight.options = [
-		{ model: 'marker', class: 'marker', title: 'Marker', color: '#ffff66', type: 'marker' },
-		{ model: 'greenMarker', class: 'marker-green', title: 'Green marker', color: '#66ff00', type: 'marker' },
-		{ model: 'pinkMarker', class: 'marker-pink', title: 'Pink marker', color: '#ff6fff', type: 'marker' },
-		{ model: 'redPen', class: 'pen-red', title: 'Red pen', color: '#ff2929', type: 'pen' },
-		{ model: 'bluePen', class: 'pen-blue', title: 'Blue pen', color: '#0091ff', type: 'pen' }
+		{ model: 'marker', class: 'marker', title: 'Marker', color: '#fdfd77', type: 'marker' },
+		{ model: 'greenMarker', class: 'marker-green', title: 'Green marker', color: '#63f963', type: 'marker' },
+		{ model: 'pinkMarker', class: 'marker-pink', title: 'Pink marker', color: '#fc7999', type: 'marker' },
+		{ model: 'blueMarker', class: 'marker-blue', title: 'Blue marker', color: '#72cdfd', type: 'marker' },
+		{ model: 'redPen', class: 'pen-red', title: 'Red pen', color: '#e91313', type: 'pen' },
+		{ model: 'greenPen', class: 'pen-green', title: 'Green pen', color: '#118800', type: 'pen' }
 	]
 	```
 
 	the `highlight` command will accept the corresponding strings as values:
-	- `'marker'` – available as a `'highlight:marker'` button.
-	- `'greenMarker'` – available as a `'highlight:greenMarker'` button.
-	- `'pinkMarker'` – available as a `'highlight:pinkMarker'` button.
-	- `'redPen'` – available as a `'highlight:redPen'` button.
-	- `'bluePen'` – available as a `'highlight:bluePen'` button.
+	- `'marker'` – available as a `'highlight:marker'` button,
+	- `'greenMarker'` – available as a `'highlight:greenMarker'` button,
+	- `'pinkMarker'` – available as a `'highlight:pinkMarker'` button,
+	- `'blueMarker'` – available as a `'highlight:blueMarker'` button,
+	- `'redPen'` – available as a `'highlight:redPen'` button,
+	- `'greenPen'` – available as a `'highlight:greenPen'` button.
 
 	passing an empty `value` will remove any `highlight` from the selection:
 
