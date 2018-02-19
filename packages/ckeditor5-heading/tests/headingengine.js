@@ -89,7 +89,8 @@ describe( 'HeadingEngine', () => {
 								upcastAlso: [
 									{ name: 'p', attribute: { 'data-heading': 'h1' } }
 								],
-								title: 'User H1'
+								title: 'User H1',
+								priority: 'high'
 							}
 						]
 					}
