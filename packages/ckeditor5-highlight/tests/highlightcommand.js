@@ -172,6 +172,22 @@ describe( 'HighlightCommand', () => {
 					expect( command.value ).to.be.undefined;
 					expect( doc.selection.hasAttribute( 'highlight' ) ).to.be.false;
 				} );
+
+				it( 'should change selection attribute on consecutive calls', () => {
+					setData( model, '<p>abcfoobar[] foobar</p>' );
+
+					expect( command.value ).to.be.undefined;
+
+					command.execute( { value: 'greenMarker' } );
+
+					expect( command.value ).to.equal( 'greenMarker' );
+					expect( doc.selection.hasAttribute( 'highlight' ) ).to.be.true;
+
+					command.execute( { value: 'pinkMarker' } );
+
+					expect( command.value ).to.equal( 'pinkMarker' );
+					expect( doc.selection.hasAttribute( 'highlight' ) ).to.be.true;
+				} );
 			} );
 
 			describe( 'on not collapsed range', () => {
