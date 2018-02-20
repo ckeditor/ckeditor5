@@ -23,7 +23,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * See the {@glink examples/builds/inline-editor demo}.
  *
  * In order to create a inline editor instance, use the static
- * {@link module:editor-inline/inlineeditor~InlineEditor#create `InlineEditor.create()`} method.
+ * {@link module:editor-inline/inlineeditor~InlineEditor.create `InlineEditor.create()`} method.
  *
  * # Inline editor and inline build
  *
@@ -37,7 +37,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * Using the editor from source gives much better flexibility and allows easier customization.
  *
  * Read more about initializing the editor from source or as a build in
- * {@link module:editor-inline/inlineeditor~InlineEditor#create `InlineEditor.create()`}.
+ * {@link module:editor-inline/inlineeditor~InlineEditor.create `InlineEditor.create()`}.
  *
  * @mixes module:core/editor/utils/dataapimixin~DataApiMixin
  * @mixes module:core/editor/utils/elementapimixin~ElementApiMixin
@@ -49,7 +49,7 @@ export default class InlineEditor extends Editor {
 	 * Creates an instance of the inline editor.
 	 *
 	 * **Note:** do not use the constructor to create editor instances. Use the static
-	 * {@link module:editor-inline/inlineeditor~InlineEditor#create `InlineEditor.create()`} method instead.
+	 * {@link module:editor-inline/inlineeditor~InlineEditor.create `InlineEditor.create()`} method instead.
 	 *
 	 * @protected
 	 * @param {HTMLElement} element The DOM element that will be the source for the created editor
