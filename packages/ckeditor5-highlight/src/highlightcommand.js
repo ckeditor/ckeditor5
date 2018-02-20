@@ -84,6 +84,7 @@ export default class HighlightCommand extends Command {
 					} else {
 						// ...update `highlight` value.
 						writer.setAttribute( 'highlight', highlighter, highlightRange );
+						writer.setSelectionAttribute( 'highlight', highlighter );
 					}
 				} else if ( highlighter ) {
 					writer.setSelectionAttribute( 'highlight', highlighter );

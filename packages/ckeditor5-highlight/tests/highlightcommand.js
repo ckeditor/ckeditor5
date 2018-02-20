@@ -172,6 +172,23 @@ describe( 'HighlightCommand', () => {
 					expect( command.value ).to.be.undefined;
 					expect( doc.selection.hasAttribute( 'highlight' ) ).to.be.false;
 				} );
+
+				// https://github.com/ckeditor/ckeditor5-highlight/issues/8
+				it( 'should change selection attribute on consecutive calls', () => {
+					setData( model, '<p>abcfoobar[] foobar</p>' );
+
+					expect( command.value ).to.be.undefined;
+
+					command.execute( { value: 'greenMarker' } );
+
+					expect( command.value ).to.equal( 'greenMarker' );
+					expect( doc.selection.getAttribute( 'highlight' ) ).to.equal( 'greenMarker' );
+
+					command.execute( { value: 'pinkMarker' } );
+
+					expect( command.value ).to.equal( 'pinkMarker' );
+					expect( doc.selection.getAttribute( 'highlight' ) ).to.equal( 'pinkMarker' );
+				} );
 			} );
 
 			describe( 'on not collapsed range', () => {
