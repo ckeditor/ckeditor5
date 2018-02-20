@@ -172,6 +172,10 @@ This file can be referenced directly in HTML **after the `<link>` tag injected b
 
 Alternatively, the style sheet can also be imported into a JavaScript file that is processed by webpack and the [loaders](#Styles-processing-and-bundling) becoming part of the build, e.g. an entry point of the application.
 
+<info-box info>
+	Learn more about {@link framework/guides/quick-start building the editor using webpack}.
+</info-box>
+
 ```js
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
