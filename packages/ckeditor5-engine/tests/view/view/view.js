@@ -584,6 +584,36 @@ describe( 'view', () => {
 				sinon.assert.calledTwice( spy );
 			} );
 
+			it( 'should call second render after the first is done', () => {
+				let called = false;
+				const order = [];
+
+				const lowSpy = sinon.spy( () => {
+					order.push( 'low1' );
+
+					// Prevent infinite loop.
+					if ( !called ) {
+						called = true;
+						view.render();
+					}
+
+					order.push( 'low2' );
+				} );
+
+				const lowestSpy = sinon.spy( () => {
+					order.push( 'lowest' );
+				} );
+
+				view.on( 'render', lowSpy, { priority: 'low' } );
+				view.on( 'render', lowestSpy, { priority: 'lowest' } );
+
+				view.render();
+				sinon.assert.calledTwice( lowSpy );
+				sinon.assert.calledTwice( lowestSpy );
+
+				expect( order ).to.deep.equal( [ 'low1', 'low2', 'lowest', 'low1', 'low2', 'lowest' ] );
+			} );
+
 			it( 'should NOT throw when someone tries to call change() before rendering', () => {
 				view.on( 'render', () => {
 					expect( () => view.change( () => {} ) ).not.to.throw( CKEditorError, /^applying-view-changes-on-rendering/ );
