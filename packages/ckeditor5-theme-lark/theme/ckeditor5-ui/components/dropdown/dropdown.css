@@ -60,9 +60,6 @@
 		/* Disabled radius of top-left border to be consistent with .dropdown__button */
 		border-top-left-radius: 0;
 	}
-
-	/* https://github.com/ckeditor/ckeditor5-theme-lark/pull/146 */
-	overflow: hidden;
 	
 	background: var(--ck-color-dropdown-panel-background);
 	border: 1px solid var(--ck-color-dropdown-panel-border);
