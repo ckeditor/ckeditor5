@@ -550,20 +550,38 @@ describe( 'view', () => {
 				domDiv.remove();
 			} );
 
-			it( 'should throw when someone tries to call change() after rendering is finished but still in change block', () => {
-				view.on( 'render', () => {
-					expect( () => view.change( () => {} ) ).to.throw( CKEditorError, /^applying-view-changes-on-rendering/ );
-				}, { priority: 'low' } );
+			it( 'should create separate render event when change() called on low priority', () => {
+				let called = false;
+
+				const spy = sinon.spy( () => {
+					// Prevent infinite loop.
+					if ( !called ) {
+						called = true;
+						view.change( () => {} );
+					}
+				} );
+
+				view.on( 'render', spy, { priority: 'low' } );
 
 				view.change( () => {} );
+				sinon.assert.calledTwice( spy );
 			} );
 
-			it( 'should throw when someone tries to call render() after rendering is finished but still in change block', () => {
-				view.on( 'render', () => {
-					expect( () => view.render() ).to.throw( CKEditorError, /^applying-view-changes-on-rendering/ );
-				}, { priority: 'low' } );
+			it( 'should create separate render event when render() called on low priority', () => {
+				let called = false;
 
-				view.change( () => {} );
+				const spy = sinon.spy( () => {
+					// Prevent infinite loop.
+					if ( !called ) {
+						called = true;
+						view.render();
+					}
+				} );
+
+				view.on( 'render', spy, { priority: 'low' } );
+
+				view.render();
+				sinon.assert.calledTwice( spy );
 			} );
 
 			it( 'should NOT throw when someone tries to call change() before rendering', () => {

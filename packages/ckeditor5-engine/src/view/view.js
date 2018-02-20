@@ -109,15 +109,15 @@ export default class View {
 		this._ongoingChange = false;
 
 		/**
-		 * Is set to `true` when rendering view to DOM was started.
+		 * Is set to `true` when rendering view to DOM is in progress.
 		 * This is used to check whether view document can accept changes in current state.
 		 * From the moment when rendering to DOM is stared view tree is locked to prevent changes that will not be
 		 * reflected in the DOM.
 		 *
 		 * @private
-		 * @member {Boolean} module:engine/view/view~View#_renderingStarted
+		 * @member {Boolean} module:engine/view/view~View#_renderingInProgress
 		 */
-		this._renderingStarted = false;
+		this._renderingInProgress = false;
 
 		/**
 		 * Writer instance used in {@link #change change method) callbacks.
@@ -303,11 +303,11 @@ export default class View {
 	 *
 	 * Change block is executed immediately.
 	 *
-	 * When the outermost change block is done and rendering to DOM is over it fires
+	 * When the outermost change block is done it fires
 	 * {@link module:engine/view/view~View#event:render} event.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `applying-view-changes-on-rendering` when
-	 * change block is used after rendering to DOM has started.
+	 * change block is used when rendering to DOM is in progress.
 	 *
 	 * @param {Function} callback Callback function which may modify the view.
 	 */
@@ -323,9 +323,6 @@ export default class View {
 
 			callback( this._writer );
 			this.fire( 'render' );
-
-			this._ongoingChange = false;
-			this._renderingStarted = false;
 		}
 	}
 
@@ -343,8 +340,7 @@ export default class View {
 		// Render only if no ongoing changes are in progress. If there are some, view document will be rendered after all
 		// changes are done. This way view document will not be rendered in the middle of some changes.
 		if ( !this._ongoingChange ) {
-			this.fire( 'render' );
-			this._renderingStarted = false;
+			this.change( () => {} );
 		}
 	}
 
@@ -366,11 +362,16 @@ export default class View {
 	 * @private
 	 */
 	_render() {
-		this._renderingStarted = true;
+		this._renderingInProgress = true;
 
 		this.disableObservers();
 		this._renderer.render();
 		this.enableObservers();
+
+		// Current ongoing change is finished after rendering is done.
+		// Further render() or change() calls will create new ongoing change.
+		this._ongoingChange = false;
+		this._renderingInProgress = false;
 	}
 
 	/**
@@ -380,15 +381,11 @@ export default class View {
 	 * @private
 	 */
 	_assertRenderingInProgress() {
-		if ( this._renderingStarted ) {
+		if ( this._renderingInProgress ) {
 			/**
-			 * There is an attempt to make changes in the view tree after the rendering process
-			 * has started. This may cause unexpected behaviour and inconsistency between the DOM and the view.
-			 * This may be caused by:
-			 *   * calling `view.change()` or `view.render()` methods during rendering process,
-			 *   * calling `view.change()` or `view.render()` methods in callbacks to
-			 *   {module:engine/view/document~Document#event:change view document change event) on `low` priority, after
-			 *   rendering is over for current `change` block.
+			 * There is an attempt to make changes in the view tree when the rendering process is in progress.
+			 * This may cause unexpected behaviour and inconsistency between the DOM and the view.
+			 * This may be caused by calling `view.change()` or `view.render()` methods during rendering process.
 			 *
 			 * @error applying-view-changes-on-rendering
 			 */
@@ -401,12 +398,18 @@ export default class View {
 	}
 
 	/**
-	 * Fired after a topmost {@link module:engine/view/view~View#change change block} is finished and the DOM rendering has
-	 * been executed.
+	 * Fired after a topmost {@link module:engine/view/view~View#change change block} is finished.
 	 *
-	 * Actual rendering is performed on 'low' priority. This means that all listeners on 'normal' and above priorities
+	 * Actual rendering is performed on 'low' priority. This means that all listeners on 'normal' and higher priorities
 	 * will be executed after changes made to view tree but before rendering to the DOM. Use `low` priority for callbacks that
 	 * should be executed after rendering to the DOM.
+	 *
+	 * When listener on `normal` (or higher) priority call {@link module:engine/view/view~View#change change()} or
+	 * {@link module:engine/view/view~View#render render()} it will be included in currently executed change block (no
+	 * more `render` events will be fired).
+	 *
+	 * When listener on `low` (or lower) priority calls {@link module:engine/view/view~View#change change()} or
+	 * {@link module:engine/view/view~View#render render()} it will create a new change block (new `render` event will be fired).
 	 *
 	 * @event module:engine/view/view~View#event:render
 	 */
