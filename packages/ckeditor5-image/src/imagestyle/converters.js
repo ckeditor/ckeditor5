@@ -17,8 +17,8 @@ import first from '@ckeditor/ckeditor5-utils/src/first';
  * @returns {Function} A model-to-view attribute converter.
  */
 export function modelToViewStyleAttribute( styles ) {
-	return ( evt, data, consumable, conversionApi ) => {
-		if ( !consumable.consume( data.item, evt.name ) ) {
+	return ( evt, data, conversionApi ) => {
+		if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 			return;
 		}
 

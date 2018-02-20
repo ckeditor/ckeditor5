@@ -153,8 +153,8 @@ describe( 'ImageUploadProgress', () => {
 	} );
 
 	it( 'should not process attribute change if it is already consumed', () => {
-		editor.editing.downcastDispatcher.on( 'attribute:uploadStatus:image', ( evt, data, consumable ) => {
-			consumable.consume( data.item, evt.name );
+		editor.editing.downcastDispatcher.on( 'attribute:uploadStatus:image', ( evt, data, conversionApi ) => {
+			conversionApi.consumable.consume( data.item, evt.name );
 		}, { priority: 'highest' } );
 
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
