@@ -1193,6 +1193,63 @@ describe( 'Differ', () => {
 				] );
 			} );
 		} );
+
+		// ckeditor5#733.
+		it( 'proper filtering of changes in removed elements', () => {
+			// Before fix there was a buggy scenario described in ckeditor5#733.
+			// There was this structure: `<paragraph>foo[</paragraph><image /><blockQuote><p>te]xt</p></blockQuote>`
+			// On delete of above selection `image` and `paragraph` inside `blockQuote` are removed (it gets merged).
+			// However, since `image` was removed first, when checking if `paragraph` is in a removed element,
+			// it appeared that `blockQuote` looks like it is removed because it had the same path as the already removed `<image>`.
+			// In a result, removing `paragraph` was discarded.
+			// The mistake was that the checking for removing was done at incorrect moment.
+			root.removeChildren( 0, root.childCount );
+			root.appendChildren( [
+				new Element( 'paragraph', null, new Text( 'foo' ) ),
+				new Element( 'image' ),
+				new Element( 'blockQuote', null, [
+					new Element( 'paragraph', null, new Text( 'text' ) )
+				] )
+			] );
+
+			model.change( () => {
+				// Remove `"te"`.
+				remove( new Position( root, [ 2, 0, 0 ] ), 2 );
+				// Remove `image` before `blockQuote`.
+				remove( new Position( root, [ 1 ] ), 1 );
+				// Move `"xt"` to first `paragraph` (merging).
+				move( new Position( root, [ 1, 0, 0 ] ), 2, new Position( root, [ 0, 3 ] ) );
+				// Remove `paragraph` inside `blockQuote`.
+				remove( new Position( root, [ 1, 0 ] ), 1 );
+
+				expectChanges( [
+					{ type: 'insert', name: '$text', length: 2, position: new Position( root, [ 0, 3 ] ) },
+					{ type: 'remove', name: 'image', length: 1, position: new Position( root, [ 1 ] ) },
+					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 1, 0 ] ) }
+				] );
+			} );
+		} );
+
+		it( 'proper filtering of changes in inserted elements', () => {
+			root.removeChildren( 0, root.childCount );
+			root.appendChildren( new Element( 'image' ) );
+
+			const blockQuote = new Element( 'blockQuote', null, new Element( 'paragraph' ) );
+
+			model.change( () => {
+				// Insert `blockQuote` with `paragraph` after `image`.
+				insert( blockQuote, new Position( root, [ 1 ] ) );
+				// Remove `image` from before `blockQuote`.
+				remove( new Position( root, [ 0 ] ), 1 );
+				// Insert text into `paragraph` in `blockQuote`.
+				insert( new Text( 'foo' ), new Position( root, [ 0, 0, 0 ] ) );
+
+				expectChanges( [
+					{ type: 'remove', name: 'image', length: 1, position: new Position( root, [ 0 ] ) },
+					{ type: 'insert', name: 'blockQuote', length: 1, position: new Position( root, [ 0 ] ) }
+				] );
+			} );
+		} );
 	} );
 
 	describe( 'getChanges()', () => {

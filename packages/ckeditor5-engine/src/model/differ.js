@@ -229,13 +229,6 @@ export default class Differ {
 
 		// Check all changed elements.
 		for ( const element of this._changesInElement.keys() ) {
-			// Each item in `this._changesInElement` describes changes of the _children_ of that element.
-			// If the element itself has been inserted we should skip all the changes in it because the element will be reconverted.
-			// If the element itself has been removed we should skip all the changes in it because they would be incorrect.
-			if ( this._isInsertedOrRemoved( element ) ) {
-				continue;
-			}
-
 			// Get changes for this element and sort them.
 			const changes = this._changesInElement.get( element ).sort( ( a, b ) => {
 				if ( a.offset === b.offset ) {
@@ -395,46 +388,6 @@ export default class Differ {
 	}
 
 	/**
-	 * Checks whether a given element is inserted or removed or one of its ancestors is inserted or removed. Used to
-	 * filter out sub-changes in elements that are changed.
-	 *
-	 * @private
-	 * @param {module:engine/model/element~Element} element An element to check.
-	 * @returns {Boolean}
-	 */
-	_isInsertedOrRemoved( element ) {
-		let parent = element.parent;
-
-		// Check all ancestors of given element.
-		while ( parent ) {
-			// Get the checked element's offset.
-			const offset = element.startOffset;
-
-			if ( this._changesInElement.has( parent ) ) {
-				const changes = this._changesInElement.get( parent );
-
-				// If there were changes in that element's ancestor, check all of them.
-				for ( const change of changes ) {
-					// Skip attribute changes. We are interested only if the element was inserted or removed.
-					if ( change.type == 'attribute' ) {
-						continue;
-					}
-
-					if ( change.offset <= offset && change.offset + change.howMany > offset ) {
-						return true;
-					}
-				}
-			}
-
-			// Move up.
-			parent = parent.parent;
-			element = element.parent;
-		}
-
-		return false;
-	}
-
-	/**
 	 * Saves and handles an insert change.
 	 *
 	 * @private
@@ -443,6 +396,10 @@ export default class Differ {
 	 * @param {Number} howMany
 	 */
 	_markInsert( parent, offset, howMany ) {
+		if ( this._isInInsertedElement( parent ) ) {
+			return;
+		}
+
 		const changeItem = { type: 'insert', offset, howMany, count: this._changeCount++ };
 
 		this._markChange( parent, changeItem );
@@ -457,9 +414,15 @@ export default class Differ {
 	 * @param {Number} howMany
 	 */
 	_markRemove( parent, offset, howMany ) {
+		if ( this._isInInsertedElement( parent ) ) {
+			return;
+		}
+
 		const changeItem = { type: 'remove', offset, howMany, count: this._changeCount++ };
 
 		this._markChange( parent, changeItem );
+
+		this._removeAllNestedChanges( parent, offset, howMany );
 	}
 
 	/**
@@ -469,6 +432,10 @@ export default class Differ {
 	 * @param {module:engine/model/item~Item} item
 	 */
 	_markAttribute( item ) {
+		if ( this._isInInsertedElement( item.parent ) ) {
+			return;
+		}
+
 		const changeItem = { type: 'attribute', offset: item.startOffset, howMany: item.offsetSize, count: this._changeCount++ };
 
 		this._markChange( item.parent, changeItem );
@@ -830,6 +797,43 @@ export default class Differ {
 		}
 
 		return diffs;
+	}
+
+	_isInInsertedElement( element ) {
+		const parent = element.parent;
+
+		if ( !parent ) {
+			return false;
+		}
+
+		const changes = this._changesInElement.get( parent );
+		const offset = element.startOffset;
+
+		if ( changes ) {
+			for ( const change of changes ) {
+				if ( change.type == 'insert' && offset >= change.offset && offset < change.offset + change.howMany ) {
+					return true;
+				}
+			}
+		}
+
+		return this._isInInsertedElement( parent );
+	}
+
+	_removeAllNestedChanges( parent, offset, howMany ) {
+		const range = Range.createFromParentsAndOffsets( parent, offset, parent, offset + howMany );
+
+		for ( const item of range.getItems( { shallow: true } ) ) {
+			if ( item.is( 'element' ) ) {
+				this._removeChangesInElement( item );
+				this._removeAllNestedChanges( item, 0, item.maxOffset );
+			}
+		}
+	}
+
+	_removeChangesInElement( element ) {
+		this._elementSnapshots.delete( element );
+		this._changesInElement.delete( element );
 	}
 }
 
