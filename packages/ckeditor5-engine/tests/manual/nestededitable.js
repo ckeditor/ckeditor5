@@ -58,7 +58,7 @@ class NestedEditable extends Plugin {
 
 		editor.conversion.for( 'downcast' ).add( downcastElementToElement( {
 			model: 'figcaption',
-			view: ( modelItem, consumable, conversionApi ) => {
+			view: ( modelItem, conversionApi ) => {
 				const viewWriter = conversionApi.writer;
 				const element = viewWriter.createEditableElement( 'figcaption', { contenteditable: 'true' } );
 

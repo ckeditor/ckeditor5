@@ -79,9 +79,9 @@ import extend from '@ckeditor/ckeditor5-utils/src/lib/lodash/extend';
  * Example of a custom converter for `DowncastDispatcher`:
  *
  *		// We will convert inserting "paragraph" model element into the model.
- *		downcastDispatcher.on( 'insert:paragraph', ( evt, data, consumable, conversionApi ) => {
+ *		downcastDispatcher.on( 'insert:paragraph', ( evt, data, conversionApi ) => {
  *			// Remember to check whether the change has not been consumed yet and consume it.
- *			if ( consumable.consume( data.item, 'insert' ) ) {
+ *			if ( conversionApi.consumable.consume( data.item, 'insert' ) ) {
  *				return;
  *			}
  *
@@ -156,7 +156,7 @@ export default class DowncastDispatcher {
 		this.conversionApi.writer = writer;
 
 		// Create a list of things that can be consumed, consisting of nodes and their attributes.
-		const consumable = this._createInsertConsumable( range );
+		this.conversionApi.consumable = this._createInsertConsumable( range );
 
 		// Fire a separate insert event for each node and text fragment contained in the range.
 		for ( const value of range ) {
@@ -167,7 +167,7 @@ export default class DowncastDispatcher {
 				range: itemRange
 			};
 
-			this._testAndFire( 'insert', data, consumable );
+			this._testAndFire( 'insert', data );
 
 			// Fire a separate addAttribute event for each attribute that was set on inserted items.
 			// This is important because most attributes converters will listen only to add/change/removeAttribute events.
@@ -177,9 +177,11 @@ export default class DowncastDispatcher {
 				data.attributeOldValue = null;
 				data.attributeNewValue = item.getAttribute( key );
 
-				this._testAndFire( `attribute:${ key }`, data, consumable );
+				this._testAndFire( `attribute:${ key }`, data );
 			}
 		}
+
+		this._clearConversionApi();
 	}
 
 	/**
@@ -194,6 +196,8 @@ export default class DowncastDispatcher {
 		this.conversionApi.writer = writer;
 
 		this.fire( 'remove:' + name, { position, length }, this.conversionApi );
+
+		this._clearConversionApi();
 	}
 
 	/**
@@ -212,7 +216,7 @@ export default class DowncastDispatcher {
 		this.conversionApi.writer = writer;
 
 		// Create a list with attributes to consume.
-		const consumable = this._createConsumableForRange( range, `attribute:${ key }` );
+		this.conversionApi.consumable = this._createConsumableForRange( range, `attribute:${ key }` );
 
 		// Create a separate attribute event for each node in the range.
 		for ( const value of range ) {
@@ -226,8 +230,10 @@ export default class DowncastDispatcher {
 				attributeNewValue: newValue
 			};
 
-			this._testAndFire( `attribute:${ key }`, data, consumable );
+			this._testAndFire( `attribute:${ key }`, data );
 		}
+
+		this._clearConversionApi();
 	}
 
 	/**
@@ -239,16 +245,16 @@ export default class DowncastDispatcher {
 	 * @fires addMarker
 	 * @fires attribute
 	 * @param {module:engine/model/selection~Selection} selection Selection to convert.
-	 * @param {module:engine/model/selection~Selection} Array<module:engine/model/markercollection~Marker> markers
-	 * Array of markers containing model markers.
+	 * @param {Array.<module:engine/model/markercollection~Marker>} markers Array of markers containing model markers.
 	 * @param {module:engine/view/writer~Writer} writer View writer that should be used to modify view document.
 	 */
 	convertSelection( selection, markers, writer ) {
-		this.conversionApi.writer = writer;
 		const markersAtSelection = Array.from( markers.getMarkersAtPosition( selection.getFirstPosition() ) );
-		const consumable = this._createSelectionConsumable( selection, markersAtSelection );
 
-		this.fire( 'selection', { selection }, consumable, this.conversionApi );
+		this.conversionApi.writer = writer;
+		this.conversionApi.consumable = this._createSelectionConsumable( selection, markersAtSelection );
+
+		this.fire( 'selection', { selection }, this.conversionApi );
 
 		if ( !selection.isCollapsed ) {
 			return;
@@ -267,8 +273,8 @@ export default class DowncastDispatcher {
 				markerRange
 			};
 
-			if ( consumable.test( selection, 'addMarker:' + marker.name ) ) {
-				this.fire( 'addMarker:' + marker.name, data, consumable, this.conversionApi );
+			if ( this.conversionApi.consumable.test( selection, 'addMarker:' + marker.name ) ) {
+				this.fire( 'addMarker:' + marker.name, data, this.conversionApi );
 			}
 		}
 
@@ -282,10 +288,12 @@ export default class DowncastDispatcher {
 			};
 
 			// Do not fire event if the attribute has been consumed.
-			if ( consumable.test( selection, 'attribute:' + data.attributeKey ) ) {
-				this.fire( 'attribute:' + data.attributeKey, data, consumable, this.conversionApi );
+			if ( this.conversionApi.consumable.test( selection, 'attribute:' + data.attributeKey ) ) {
+				this.fire( 'attribute:' + data.attributeKey, data, this.conversionApi );
 			}
 		}
+
+		this._clearConversionApi();
 	}
 
 	/**
@@ -313,28 +321,29 @@ export default class DowncastDispatcher {
 			const consumable = new Consumable();
 			consumable.add( markerRange, eventName );
 
-			this.fire( eventName, {
-				markerName,
-				markerRange
-			}, consumable, this.conversionApi );
+			this.conversionApi.consumable = consumable;
+
+			this.fire( eventName, { markerName, markerRange }, this.conversionApi );
 
 			return;
 		}
 
 		// Create consumable for each item in range.
-		const consumable = this._createConsumableForRange( markerRange, eventName );
+		this.conversionApi.consumable = this._createConsumableForRange( markerRange, eventName );
 
 		// Create separate event for each node in the range.
 		for ( const item of markerRange.getItems() ) {
 			// Do not fire event for already consumed items.
-			if ( !consumable.test( item, eventName ) ) {
+			if ( !this.conversionApi.consumable.test( item, eventName ) ) {
 				continue;
 			}
 
 			const data = { item, range: Range.createOn( item ), markerName, markerRange };
 
-			this.fire( eventName, data, consumable, this.conversionApi );
+			this.fire( eventName, data, this.conversionApi );
 		}
+
+		this._clearConversionApi();
 	}
 
 	/**
@@ -354,6 +363,8 @@ export default class DowncastDispatcher {
 		this.conversionApi.writer = writer;
 
 		this.fire( 'removeMarker:' + markerName, { markerName, markerRange }, this.conversionApi );
+
+		this._clearConversionApi();
 	}
 
 	/**
@@ -430,17 +441,26 @@ export default class DowncastDispatcher {
 	 * @fires attribute
 	 * @param {String} type Event type.
 	 * @param {Object} data Event data.
-	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
 	 */
-	_testAndFire( type, data, consumable ) {
-		if ( !consumable.test( data.item, type ) ) {
+	_testAndFire( type, data ) {
+		if ( !this.conversionApi.consumable.test( data.item, type ) ) {
 			// Do not fire event if the item was consumed.
 			return;
 		}
 
 		const name = data.item.name || '$text';
 
-		this.fire( type + ':' + name, data, consumable, this.conversionApi );
+		this.fire( type + ':' + name, data, this.conversionApi );
+	}
+
+	/**
+	 * Clears conversion API object.
+	 *
+	 * @private
+	 */
+	_clearConversionApi() {
+		delete this.conversionApi.writer;
+		delete this.conversionApi.consumable;
 	}
 
 	/**

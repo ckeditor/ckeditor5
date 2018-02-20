@@ -43,7 +43,7 @@ ClassicEditor
 		editor.conversion.for( 'downcast' )
 			.add( downcastElementToElement( {
 				model: 'widget',
-				view: ( modelItem, consumable, conversionApi ) => {
+				view: ( modelItem, conversionApi ) => {
 					const writer = conversionApi.writer;
 					const b = writer.createAttributeElement( 'b' );
 					const div = writer.createContainerElement( 'div' );
@@ -55,7 +55,7 @@ ClassicEditor
 			} ) )
 			.add( downcastElementToElement( {
 				model: 'nested',
-				view: ( item, consumable, api ) => api.writer.createEditableElement( 'figcaption', { contenteditable: true } )
+				view: ( item, api ) => api.writer.createEditableElement( 'figcaption', { contenteditable: true } )
 			} ) );
 
 		setData( editor.model,

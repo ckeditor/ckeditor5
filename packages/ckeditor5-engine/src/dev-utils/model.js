@@ -209,7 +209,7 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 	mapper.bindElements( node.root, viewRoot );
 
 	downcastDispatcher.on( 'insert:$text', insertText() );
-	downcastDispatcher.on( 'attribute', ( evt, data, consumable, conversionApi ) => {
+	downcastDispatcher.on( 'attribute', ( evt, data, conversionApi ) => {
 		if ( data.item instanceof ModelSelection || data.item instanceof DocumentSelection || data.item.is( 'textProxy' ) ) {
 			const converter = wrap( ( modelAttributeValue, viewWriter ) => {
 				return viewWriter.createAttributeElement(
@@ -218,7 +218,7 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 				);
 			} );
 
-			converter( evt, data, consumable, conversionApi );
+			converter( evt, data, conversionApi );
 		}
 	} );
 	downcastDispatcher.on( 'insert', insertElement( modelItem => {
