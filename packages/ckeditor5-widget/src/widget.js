@@ -55,7 +55,7 @@ export default class Widget extends Plugin {
 
 		// Model to view selection converter.
 		// Converts selection placed over widget element to fake selection
-		this.editor.editing.downcastDispatcher.on( 'selection', ( evt, data, consumable, conversionApi ) => {
+		this.editor.editing.downcastDispatcher.on( 'selection', ( evt, data, conversionApi ) => {
 			// Remove selected class from previously selected widgets.
 			this._clearPreviouslySelectedWidgets( conversionApi.writer );
 
