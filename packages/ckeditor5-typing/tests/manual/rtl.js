@@ -19,11 +19,11 @@ const config = {
 };
 
 window.setInterval( function() {
-	const doc1 = window.editor1.document;
-	const doc2 = window.editor2.document;
+	const doc1 = window.editor1.model.document;
+	const doc2 = window.editor2.model.document;
 
-	if ( window.editor1.editing.view.isFocused ) {
-		console.log( 'editor 1', getData( doc1 ) );
+	if ( window.editor1.editing.view.document.isFocused ) {
+		console.log( 'editor 1', getData( window.editor1.model ) );
 
 		const modelSel = doc1.selection;
 
@@ -43,8 +43,8 @@ window.setInterval( function() {
 		);
 	}
 
-	if ( window.editor2.editing.view.isFocused ) {
-		console.log( 'editor 2', getData( doc2 ) );
+	if ( window.editor2.editing.view.document.isFocused ) {
+		console.log( 'editor 2', getData( window.editor2.model ) );
 
 		const modelSel = doc2.selection;
 

@@ -26,15 +26,15 @@ ClassicEditor
 
 		document.querySelector( '#nbsp' ).addEventListener( 'click', () => {
 			editor.model.change( writer => {
-				editor.model.document.selection.collapseToStart();
+				writer.setSelection( editor.model.document.selection.getFirstRange().start );
 				writer.insertText( '\u00A0', editor.model.document.selection.getFirstPosition() );
 			} );
 		} );
 
-		editor.model.document.once( 'change', () => {
+		editor.model.document.on( 'change', () => {
 			console.clear();
 
-			const modelData = getModelData( editor.model.document, { withoutSelection: true } );
+			const modelData = getModelData( editor.model, { withoutSelection: true } );
 			console.log( 'model:', modelData.replace( /\u00A0/g, '&nbsp;' ) );
 
 			const viewData = getViewData( editor.editing.view, { withoutSelection: true } );

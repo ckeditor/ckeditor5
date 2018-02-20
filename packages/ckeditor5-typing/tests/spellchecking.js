@@ -233,12 +233,12 @@ describe( 'Typing – spellchecking integration', () => {
 
 function emulateSpellcheckerMutation( editor, nodeIndex, resultPositionIndex, oldText, newText ) {
 	const view = editor.editing.view;
-	const viewRoot = view.getRoot();
+	const viewRoot = view.document.getRoot();
 	const viewSelection = new ViewSelection();
 
-	viewSelection.setTo( viewRoot.getChild( nodeIndex ).getChild( 0 ), resultPositionIndex );
+	viewSelection._setTo( viewRoot.getChild( nodeIndex ).getChild( 0 ), resultPositionIndex );
 
-	view.fire( 'mutations',
+	view.document.fire( 'mutations',
 		[ {
 			type: 'text',
 			oldText,
