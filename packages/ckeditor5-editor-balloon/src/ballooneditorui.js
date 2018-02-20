@@ -56,7 +56,7 @@ export default class BalloonEditorUI {
 		view.render();
 
 		// Setup the editable.
-		const editingRoot = editor.editing.view.getRoot();
+		const editingRoot = editor.editing.view.document.getRoot();
 		view.editable.bind( 'isReadOnly' ).to( editingRoot );
 
 		// Bind to focusTracker instead of editor.editing.view because otherwise
