@@ -18,7 +18,7 @@
 	--ck-color-focus-border: 									hsl(208, 90%, 62%);
 	--ck-color-focus-shadow:									hsl(209, 90%, 72%);
 	--ck-color-text: 											var(--ck-color-base-text);
-	--ck-color-shadow-drop: 									hsla(0, 0%, 0%, 0.2);
+	--ck-color-shadow-drop: 									hsla(0, 0%, 0%, 0.15);
 	--ck-color-shadow-inner: 									hsla(0, 0%, 0%, 0.1);
 
 	/* -- Buttons ------------------------------------------------------------------------------- */
