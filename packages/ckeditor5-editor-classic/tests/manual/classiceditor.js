@@ -28,7 +28,7 @@ function initEditor() {
 			console.log( 'You can now play with it using global `editor` and `editable` variables.' );
 
 			window.editor = editor = newEditor;
-			window.editable = editable = editor.editing.view.getRoot();
+			window.editable = editable = editor.editing.view.document.getRoot();
 
 			observer = testUtils.createObserver();
 			observer.observe( 'Editable', editable, [ 'isFocused' ] );
@@ -53,5 +53,3 @@ function destroyEditor() {
 
 document.getElementById( 'initEditor' ).addEventListener( 'click', initEditor );
 document.getElementById( 'destroyEditor' ).addEventListener( 'click', destroyEditor );
-
-initEditor();

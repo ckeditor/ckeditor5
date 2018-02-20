@@ -46,12 +46,6 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 		 */
 		this.toolbar = new ToolbarView( locale );
 
-		this.toolbar.extendTemplate( {
-			attributes: {
-				class: 'ck-editor-toolbar'
-			}
-		} );
-
 		/**
 		 * Editable UI view.
 		 *

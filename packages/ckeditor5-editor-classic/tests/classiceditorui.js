@@ -104,7 +104,7 @@ describe( 'ClassicEditorUI', () => {
 			} );
 
 			it( 'sets view.editable#name', () => {
-				const editable = editor.editing.view.getRoot();
+				const editable = editor.editing.view.document.getRoot();
 
 				expect( view.editable.name ).to.equal( editable.rootName );
 			} );
@@ -114,14 +114,14 @@ describe( 'ClassicEditorUI', () => {
 					view.editable,
 					{ isFocused: false },
 					[
-						[ editor.editing.view, { isFocused: true } ]
+						[ editor.editing.view.document, { isFocused: true } ]
 					],
 					{ isFocused: true }
 				);
 			} );
 
 			it( 'binds view.editable#isReadOnly', () => {
-				const editable = editor.editing.view.getRoot();
+				const editable = editor.editing.view.document.getRoot();
 
 				utils.assertBinding(
 					view.editable,
