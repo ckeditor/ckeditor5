@@ -138,23 +138,23 @@ describe( 'Editor', () => {
 			expect( editor.config.get( 'bar' ) ).to.equal( 'foo' );
 		} );
 
-		it( 'should bind editing.view#isReadOnly to the editor', () => {
+		it( 'should bind editing.view.document#isReadOnly to the editor', () => {
 			const editor = new Editor();
 
 			editor.isReadOnly = false;
 
-			expect( editor.editing.view.isReadOnly ).to.false;
+			expect( editor.editing.view.document.isReadOnly ).to.false;
 
 			editor.isReadOnly = true;
 
-			expect( editor.editing.view.isReadOnly ).to.true;
+			expect( editor.editing.view.document.isReadOnly ).to.true;
 		} );
 
 		it( 'should activate #keystrokes', () => {
 			const spy = sinon.spy( EditingKeystrokeHandler.prototype, 'listenTo' );
 			const editor = new Editor();
 
-			sinon.assert.calledWith( spy, editor.editing.view );
+			sinon.assert.calledWith( spy, editor.editing.view.document );
 		} );
 	} );
 
