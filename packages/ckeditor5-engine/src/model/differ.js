@@ -547,7 +547,23 @@ export default class Differ {
 	 * @param {Array.<Object>} changes An array containing all the changes done on that element.
 	 */
 	_handleChange( inc, changes ) {
-		inc.newHowMany = inc.howMany;
+		// We need a helper variable that will store how many nodes are to be still handled for this change item.
+		// `nodesToHandle` (how many nodes still need to be handled) and `howMany` (how many nodes were affected)
+		// needs to be differentiated.
+		//
+		// This comes up when there are multiple changes that are affected by `inc` change item.
+		//
+		// For example: assume two insert changes: `{ offset: 2, howMany: 1 }` and `{ offset: 5, howMany: 1 }`.
+		// Assume that `inc` change is remove `{ offset: 2, howMany: 2, nodesToHandle: 2 }`.
+		//
+		// Then, we:
+		// - "forget" about first insert change (it is "eaten" by remove),
+		// - because of that, at the end we will want to remove only one node (`nodesToHandle = 1`),
+		// - but still we have to change offset of the second insert change from `5` to `3`!
+		//
+		// So, `howMany` does not change throughout items transformation and keeps information about how many nodes were affected,
+		// while `nodesToHandle` means how many nodes need to be handled after the change item is transformed by other changes.
+		inc.nodesToHandle = inc.howMany;
 
 		for ( const old of changes ) {
 			const incEnd = inc.offset + inc.howMany;
@@ -558,8 +574,8 @@ export default class Differ {
 					if ( inc.offset <= old.offset ) {
 						old.offset += inc.howMany;
 					} else if ( inc.offset < oldEnd ) {
-						old.howMany += inc.newHowMany;
-						inc.newHowMany = 0;
+						old.howMany += inc.nodesToHandle;
+						inc.nodesToHandle = 0;
 					}
 				}
 
@@ -610,20 +626,20 @@ export default class Differ {
 							old.offset = inc.offset;
 
 							old.howMany -= intersectionLength;
-							inc.newHowMany -= intersectionLength;
+							inc.nodesToHandle -= intersectionLength;
 						} else {
-							old.howMany -= inc.newHowMany;
-							inc.newHowMany = 0;
+							old.howMany -= inc.nodesToHandle;
+							inc.nodesToHandle = 0;
 						}
 					} else {
 						if ( inc.offset <= old.offset ) {
-							inc.newHowMany -= old.howMany;
+							inc.nodesToHandle -= old.howMany;
 							old.howMany = 0;
 						} else if ( inc.offset < oldEnd ) {
 							const intersectionLength = oldEnd - inc.offset;
 
 							old.howMany -= intersectionLength;
-							inc.newHowMany -= intersectionLength;
+							inc.nodesToHandle -= intersectionLength;
 						}
 					}
 				}
@@ -633,9 +649,9 @@ export default class Differ {
 						old.offset -= inc.howMany;
 					} else if ( inc.offset < old.offset ) {
 						old.offset = inc.offset;
-						old.howMany += inc.newHowMany;
+						old.howMany += inc.nodesToHandle;
 
-						inc.newHowMany = 0;
+						inc.nodesToHandle = 0;
 					}
 				}
 
@@ -658,7 +674,7 @@ export default class Differ {
 
 							old.howMany = inc.offset - old.offset;
 
-							const howManyAfter = howMany - old.howMany - inc.newHowMany;
+							const howManyAfter = howMany - old.howMany - inc.nodesToHandle;
 
 							// Add the second part of attribute change to the beginning of processed array so it won't
 							// be processed again in this loop.
@@ -697,27 +713,27 @@ export default class Differ {
 							changes.push( attributePart );
 						}
 
-						inc.newHowMany = old.offset - inc.offset;
+						inc.nodesToHandle = old.offset - inc.offset;
 					} else if ( inc.offset >= old.offset && inc.offset < oldEnd ) {
 						if ( incEnd > oldEnd ) {
-							inc.newHowMany = incEnd - oldEnd;
+							inc.nodesToHandle = incEnd - oldEnd;
 							inc.offset = oldEnd;
 						} else {
-							inc.newHowMany = 0;
+							inc.nodesToHandle = 0;
 						}
 					}
 				}
 
 				if ( old.type == 'attribute' ) {
 					if ( inc.offset >= old.offset && incEnd <= oldEnd ) {
-						inc.newHowMany = 0;
+						inc.nodesToHandle = 0;
 					}
 				}
 			}
 		}
 
-		inc.howMany = inc.newHowMany;
-		delete inc.newHowMany;
+		inc.howMany = inc.nodesToHandle;
+		delete inc.nodesToHandle;
 	}
 
 	/**
