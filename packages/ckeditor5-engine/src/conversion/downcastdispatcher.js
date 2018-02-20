@@ -156,7 +156,7 @@ export default class DowncastDispatcher {
 		this.conversionApi.writer = writer;
 
 		// Create a list of things that can be consumed, consisting of nodes and their attributes.
-		const consumable = this._createInsertConsumable( range );
+		this.conversionApi.consumable = this._createInsertConsumable( range );
 
 		// Fire a separate insert event for each node and text fragment contained in the range.
 		for ( const value of range ) {
@@ -167,7 +167,7 @@ export default class DowncastDispatcher {
 				range: itemRange
 			};
 
-			this._testAndFire( 'insert', data, consumable );
+			this._testAndFire( 'insert', data );
 
 			// Fire a separate addAttribute event for each attribute that was set on inserted items.
 			// This is important because most attributes converters will listen only to add/change/removeAttribute events.
@@ -177,7 +177,7 @@ export default class DowncastDispatcher {
 				data.attributeOldValue = null;
 				data.attributeNewValue = item.getAttribute( key );
 
-				this._testAndFire( `attribute:${ key }`, data, consumable );
+				this._testAndFire( `attribute:${ key }`, data );
 			}
 		}
 
@@ -216,7 +216,7 @@ export default class DowncastDispatcher {
 		this.conversionApi.writer = writer;
 
 		// Create a list with attributes to consume.
-		const consumable = this._createConsumableForRange( range, `attribute:${ key }` );
+		this.conversionApi.consumable = this._createConsumableForRange( range, `attribute:${ key }` );
 
 		// Create a separate attribute event for each node in the range.
 		for ( const value of range ) {
@@ -230,7 +230,7 @@ export default class DowncastDispatcher {
 				attributeNewValue: newValue
 			};
 
-			this._testAndFire( `attribute:${ key }`, data, consumable );
+			this._testAndFire( `attribute:${ key }`, data );
 		}
 
 		this._clearConversionApi();
@@ -441,17 +441,14 @@ export default class DowncastDispatcher {
 	 * @fires attribute
 	 * @param {String} type Event type.
 	 * @param {Object} data Event data.
-	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
 	 */
-	_testAndFire( type, data, consumable ) {
-		if ( !consumable.test( data.item, type ) ) {
+	_testAndFire( type, data ) {
+		if ( !this.conversionApi.consumable.test( data.item, type ) ) {
 			// Do not fire event if the item was consumed.
 			return;
 		}
 
 		const name = data.item.name || '$text';
-
-		this.conversionApi.consumable = consumable;
 
 		this.fire( type + ':' + name, data, this.conversionApi );
 	}
