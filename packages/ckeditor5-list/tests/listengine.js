@@ -3297,13 +3297,13 @@ describe( 'ListEngine', () => {
 
 	describe( 'other', () => {
 		it( 'model insert converter should not fire if change was already consumed', () => {
-			editor.editing.downcastDispatcher.on( 'insert:listItem', ( evt, data, consumable, conversionApi ) => {
-				consumable.consume( data.item, 'attribute:type' );
-				consumable.consume( data.item, 'attribute:indent' );
+			editor.editing.downcastDispatcher.on( 'insert:listItem', ( evt, data, conversionApi ) => {
+				conversionApi.consumable.consume( data.item, 'attribute:type' );
+				conversionApi.consumable.consume( data.item, 'attribute:indent' );
 
 				const converter = insertElement( ( modelElement, viewWriter ) => viewWriter.createContainerElement( 'p' ) );
 
-				return converter( evt, data, consumable, conversionApi );
+				return converter( evt, data, conversionApi );
 			}, { priority: 'highest' } );
 
 			// Paragraph is needed, otherwise selection throws.
@@ -3328,8 +3328,8 @@ describe( 'ListEngine', () => {
 		} );
 
 		it( 'model change type converter should not fire if change was already consumed', () => {
-			editor.editing.downcastDispatcher.on( 'attribute:type', ( evt, data, consumable ) => {
-				consumable.consume( data.item, 'attribute:type' );
+			editor.editing.downcastDispatcher.on( 'attribute:type', ( evt, data, conversionApi ) => {
+				conversionApi.consumable.consume( data.item, 'attribute:type' );
 			}, { priority: 'highest' } );
 
 			setModelData( model, '<listItem indent="0" type="bulleted"></listItem>' );
@@ -3342,8 +3342,8 @@ describe( 'ListEngine', () => {
 		} );
 
 		it( 'model change indent converter should not fire if change was already consumed', () => {
-			editor.editing.downcastDispatcher.on( 'attribute:indent', ( evt, data, consumable ) => {
-				consumable.consume( data.item, 'attribute:indent' );
+			editor.editing.downcastDispatcher.on( 'attribute:indent', ( evt, data, conversionApi ) => {
+				conversionApi.consumable.consume( data.item, 'attribute:indent' );
 			}, { priority: 'highest' } );
 
 			setModelData( model, '<listItem indent="0" type="bulleted">a</listItem><listItem indent="0" type="bulleted">b</listItem>' );

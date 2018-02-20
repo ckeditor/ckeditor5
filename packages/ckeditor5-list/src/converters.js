@@ -25,10 +25,11 @@ import { createViewListItemElement } from './utils';
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert
  * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
  * @param {Object} data Additional information about the change.
- * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
  * @param {Object} conversionApi Conversion interface.
  */
-export function modelViewInsertion( evt, data, consumable, conversionApi ) {
+export function modelViewInsertion( evt, data, conversionApi ) {
+	const consumable = conversionApi.consumable;
+
 	if ( !consumable.test( data.item, 'insert' ) ||
 		!consumable.test( data.item, 'attribute:type' ) ||
 		!consumable.test( data.item, 'attribute:indent' )
@@ -52,7 +53,6 @@ export function modelViewInsertion( evt, data, consumable, conversionApi ) {
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:remove
  * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
  * @param {Object} data Additional information about the change.
- * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
  * @param {Object} conversionApi Conversion interface.
  */
 export function modelViewRemove( evt, data, conversionApi ) {
@@ -98,11 +98,10 @@ export function modelViewRemove( evt, data, conversionApi ) {
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute
  * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
  * @param {Object} data Additional information about the change.
- * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
  * @param {Object} conversionApi Conversion interface.
  */
-export function modelViewChangeType( evt, data, consumable, conversionApi ) {
-	if ( !consumable.consume( data.item, 'attribute:type' ) ) {
+export function modelViewChangeType( evt, data, conversionApi ) {
+	if ( !conversionApi.consumable.consume( data.item, 'attribute:type' ) ) {
 		return;
 	}
 
@@ -126,7 +125,7 @@ export function modelViewChangeType( evt, data, consumable, conversionApi ) {
 
 	// 4. Consumable insertion of children inside the item. They are already handled by re-building the item in view.
 	for ( const child of data.item.getChildren() ) {
-		consumable.consume( child, 'insert' );
+		conversionApi.consumable.consume( child, 'insert' );
 	}
 }
 
@@ -136,11 +135,10 @@ export function modelViewChangeType( evt, data, consumable, conversionApi ) {
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute
  * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
  * @param {Object} data Additional information about the change.
- * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
  * @param {Object} conversionApi Conversion interface.
  */
-export function modelViewChangeIndent( evt, data, consumable, conversionApi ) {
-	if ( !consumable.consume( data.item, 'attribute:indent' ) ) {
+export function modelViewChangeIndent( evt, data, conversionApi ) {
+	if ( !conversionApi.consumable.consume( data.item, 'attribute:indent' ) ) {
 		return;
 	}
 
@@ -158,15 +156,8 @@ export function modelViewChangeIndent( evt, data, consumable, conversionApi ) {
 	const removeRange = ViewRange.createOn( viewList );
 	viewWriter.remove( removeRange );
 
-	// TODO: get rid of `removePosition` when conversion is done on `changesDone`.
-	let removePosition;
-
 	if ( viewListPrev && viewListPrev.nextSibling ) {
-		removePosition = mergeViewLists( viewWriter, viewListPrev, viewListPrev.nextSibling );
-	}
-
-	if ( !removePosition ) {
-		removePosition = removeRange.start;
+		mergeViewLists( viewWriter, viewListPrev, viewListPrev.nextSibling );
 	}
 
 	// 3. Bring back nested list that was in the removed <li>.
@@ -177,7 +168,7 @@ export function modelViewChangeIndent( evt, data, consumable, conversionApi ) {
 
 	// 5. Consume insertion of children inside the item. They are already handled by re-building the item in view.
 	for ( const child of data.item.getChildren() ) {
-		consumable.consume( child, 'insert' );
+		conversionApi.consumable.consume( child, 'insert' );
 	}
 }
 
@@ -203,10 +194,9 @@ export function modelViewChangeIndent( evt, data, consumable, conversionApi ) {
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert
  * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
  * @param {Object} data Additional information about the change.
- * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
  * @param {Object} conversionApi Conversion interface.
  */
-export function modelViewSplitOnInsert( evt, data, consumable, conversionApi ) {
+export function modelViewSplitOnInsert( evt, data, conversionApi ) {
 	if ( data.item.name != 'listItem' ) {
 		let viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
 
@@ -325,7 +315,6 @@ export function modelViewSplitOnInsert( evt, data, consumable, conversionApi ) {
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:remove
  * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
  * @param {Object} data Additional information about the change.
- * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
  * @param {Object} conversionApi Conversion interface.
  */
 export function modelViewMergeAfter( evt, data, conversionApi ) {
@@ -349,7 +338,6 @@ export function modelViewMergeAfter( evt, data, conversionApi ) {
  * @see module:engine/conversion/upcastdispatcher~UpcastDispatcher#event:element
  * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
  * @param {Object} data An object containing conversion input and a placeholder for conversion output and possibly other values.
- * @param {module:engine/conversion/viewconsumable~ViewConsumable} consumable Values to consume.
  * @param {Object} conversionApi Conversion interface to be used by the callback.
  */
 export function viewModelConverter( evt, data, conversionApi ) {
@@ -423,7 +411,7 @@ export function viewModelConverter( evt, data, conversionApi ) {
  * @see module:engine/conversion/upcastdispatcher~UpcastDispatcher#event:element
  * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
  * @param {Object} data An object containing conversion input and a placeholder for conversion output and possibly other values.
- * @param {module:engine/conversion/viewconsumable~ViewConsumable} consumable Values to consume.
+ * @param {Object} conversionApi Conversion interface to be used by the callback.
  */
 export function cleanList( evt, data, conversionApi ) {
 	if ( conversionApi.consumable.test( data.viewItem, { name: true } ) ) {
@@ -444,7 +432,7 @@ export function cleanList( evt, data, conversionApi ) {
  * @see module:engine/conversion/upcastdispatcher~UpcastDispatcher#event:element
  * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
  * @param {Object} data An object containing conversion input and a placeholder for conversion output and possibly other values.
- * @param {module:engine/conversion/viewconsumable~ViewConsumable} consumable Values to consume.
+ * @param {Object} conversionApi Conversion interface to be used by the callback.
  */
 export function cleanListItem( evt, data, conversionApi ) {
 	if ( conversionApi.consumable.test( data.viewItem, { name: true } ) ) {
