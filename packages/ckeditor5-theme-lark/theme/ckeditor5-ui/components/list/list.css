@@ -8,7 +8,7 @@
 
 .ck-list {
 	@mixin ck-rounded-corners;
-	
+
 	list-style-type: none;
 	background: var(--ck-color-list-background);
 }
