@@ -152,8 +152,8 @@ describe( 'downcast-selection-converters', () => {
 			it( 'consumes consumable values properly', () => {
 				// Add callback that will fire before default ones.
 				// This should prevent default callback doing anything.
-				dispatcher.on( 'selection', ( evt, data, consumable ) => {
-					expect( consumable.consume( data.selection, 'selection' ) ).to.be.true;
+				dispatcher.on( 'selection', ( evt, data, conversionApi ) => {
+					expect( conversionApi.consumable.consume( data.selection, 'selection' ) ).to.be.true;
 				}, { priority: 'high' } );
 
 				// Similar test case as the first in this suite.
@@ -371,12 +371,12 @@ describe( 'downcast-selection-converters', () => {
 			it( 'consumes consumable values properly', () => {
 				// Add callbacks that will fire before default ones.
 				// This should prevent default callbacks doing anything.
-				dispatcher.on( 'selection', ( evt, data, consumable ) => {
-					expect( consumable.consume( data.selection, 'selection' ) ).to.be.true;
+				dispatcher.on( 'selection', ( evt, data, conversionApi ) => {
+					expect( conversionApi.consumable.consume( data.selection, 'selection' ) ).to.be.true;
 				}, { priority: 'high' } );
 
-				dispatcher.on( 'attribute:bold', ( evt, data, consumable ) => {
-					expect( consumable.consume( data.item, 'attribute:bold' ) ).to.be.true;
+				dispatcher.on( 'attribute:bold', ( evt, data, conversionApi ) => {
+					expect( conversionApi.consumable.consume( data.item, 'attribute:bold' ) ).to.be.true;
 				}, { priority: 'high' } );
 
 				// Similar test case as above.
@@ -509,10 +509,10 @@ describe( 'downcast-selection-converters', () => {
 			dispatcher.on( 'insert:td', tableConverter );
 
 			// Special converter for table cells.
-			dispatcher.on( 'selection', ( evt, data, consumable, conversionApi ) => {
+			dispatcher.on( 'selection', ( evt, data, conversionApi ) => {
 				const selection = data.selection;
 
-				if ( !consumable.test( selection, 'selection' ) || selection.isCollapsed ) {
+				if ( !conversionApi.consumable.test( selection, 'selection' ) || selection.isCollapsed ) {
 					return;
 				}
 
@@ -520,7 +520,7 @@ describe( 'downcast-selection-converters', () => {
 					const node = range.start.nodeAfter;
 
 					if ( node == range.end.nodeBefore && node instanceof ModelElement && node.name == 'td' ) {
-						consumable.consume( selection, 'selection' );
+						conversionApi.consumable.consume( selection, 'selection' );
 
 						const viewNode = conversionApi.mapper.toViewElement( node );
 						conversionApi.writer.addClass( 'selected', viewNode );

@@ -579,8 +579,8 @@ describe( 'downcast-converters', () => {
 		} );
 
 		it( 'should be possible to override it', () => {
-			dispatcher.on( 'insert:$text', ( evt, data, consumable ) => {
-				consumable.consume( data.item, 'insert' );
+			dispatcher.on( 'insert:$text', ( evt, data, conversionApi ) => {
+				conversionApi.consumable.consume( data.item, 'insert' );
 			}, { priority: 'high' } );
 
 			model.change( writer => {
@@ -675,8 +675,8 @@ describe( 'downcast-converters', () => {
 		it( 'should be possible to override setAttribute', () => {
 			const modelElement = new ModelElement( 'paragraph', { class: 'foo' }, new ModelText( 'foobar' ) );
 
-			dispatcher.on( 'attribute:class', ( evt, data, consumable ) => {
-				consumable.consume( data.item, 'attribute:class' );
+			dispatcher.on( 'attribute:class', ( evt, data, conversionApi ) => {
+				conversionApi.consumable.consume( data.item, 'attribute:class' );
 			}, { priority: 'high' } );
 
 			model.change( writer => {
@@ -861,8 +861,8 @@ describe( 'downcast-converters', () => {
 					( data, viewWriter ) => viewWriter.createUIElement( 'span', { 'class': 'marker' } ) )
 				);
 
-				dispatcher.on( 'addMarker:marker', ( evt, data, consumable ) => {
-					consumable.consume( data.markerRange, 'addMarker:marker' );
+				dispatcher.on( 'addMarker:marker', ( evt, data, conversionApi ) => {
+					conversionApi.consumable.consume( data.markerRange, 'addMarker:marker' );
 				}, { priority: 'high' } );
 
 				model.change( writer => {
@@ -969,8 +969,8 @@ describe( 'downcast-converters', () => {
 				sinon.spy( dispatcher, 'fire' );
 
 				dispatcher.on( 'addMarker:marker', insertUIElement( creator ) );
-				dispatcher.on( 'addMarker:marker', ( evt, data, consumable ) => {
-					consumable.consume( data.item, 'addMarker:marker' );
+				dispatcher.on( 'addMarker:marker', ( evt, data, conversionApi ) => {
+					conversionApi.consumable.consume( data.item, 'addMarker:marker' );
 				}, { priority: 'high' } );
 
 				model.change( writer => {

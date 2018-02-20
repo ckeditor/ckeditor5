@@ -431,10 +431,9 @@ function _normalizeToAttributeConfig( view ) {
  *
  *		downcastDispatcher.on(
  *			'insert:myElem',
- *			insertElement( ( modelItem, consumable, conversionApi ) => {
- *				const writer = conversionApi.writer;
- *				const text = writer.createText( 'myText' );
- *				const myElem = writer.createElement( 'myElem', { myAttr: 'my-' + modelItem.getAttribute( 'myAttr' ) }, text );
+ *			insertElement( ( modelItem, viewWriter ) => {
+ *				const text = viewWriter.createText( 'myText' );
+ *				const myElem = viewWriter.createElement( 'myElem', { myAttr: 'my-' + modelItem.getAttribute( 'myAttr' ) }, text );
  *
  *				// Do something fancy with myElem using `modelItem` or other parameters.
  *
@@ -446,14 +445,14 @@ function _normalizeToAttributeConfig( view ) {
  * @returns {Function} Insert element event converter.
  */
 export function insertElement( elementCreator ) {
-	return ( evt, data, consumable, conversionApi ) => {
+	return ( evt, data, conversionApi ) => {
 		const viewElement = elementCreator( data.item, conversionApi.writer );
 
 		if ( !viewElement ) {
 			return;
 		}
 
-		if ( !consumable.consume( data.item, 'insert' ) ) {
+		if ( !conversionApi.consumable.consume( data.item, 'insert' ) ) {
 			return;
 		}
 
@@ -475,8 +474,8 @@ export function insertElement( elementCreator ) {
  * @returns {Function} Insert text event converter.
  */
 export function insertText() {
-	return ( evt, data, consumable, conversionApi ) => {
-		if ( !consumable.consume( data.item, 'insert' ) ) {
+	return ( evt, data, conversionApi ) => {
+		if ( !conversionApi.consumable.consume( data.item, 'insert' ) ) {
 			return;
 		}
 
@@ -530,7 +529,7 @@ export function remove() {
  * @returns {Function} Insert element event converter.
  */
 export function insertUIElement( elementCreator ) {
-	return ( evt, data, consumable, conversionApi ) => {
+	return ( evt, data, conversionApi ) => {
 		// Create two view elements. One will be inserted at the beginning of marker, one at the end.
 		// If marker is collapsed, only "opening" element will be inserted.
 		data.isOpening = true;
@@ -548,13 +547,13 @@ export function insertUIElement( elementCreator ) {
 		// Marker that is collapsed has consumable build differently that non-collapsed one.
 		// For more information see `addMarker` event description.
 		// If marker's range is collapsed - check if it can be consumed.
-		if ( markerRange.isCollapsed && !consumable.consume( markerRange, evt.name ) ) {
+		if ( markerRange.isCollapsed && !conversionApi.consumable.consume( markerRange, evt.name ) ) {
 			return;
 		}
 
 		// If marker's range is not collapsed - consume all items inside.
 		for ( const value of markerRange ) {
-			if ( !consumable.consume( value.item, evt.name ) ) {
+			if ( !conversionApi.consumable.consume( value.item, evt.name ) ) {
 				return;
 			}
 		}
@@ -646,8 +645,8 @@ export function removeUIElement( elementCreator ) {
 export function changeAttribute( attributeCreator ) {
 	attributeCreator = attributeCreator || ( ( value, data ) => ( { value, key: data.attributeKey } ) );
 
-	return ( evt, data, consumable, conversionApi ) => {
-		if ( !consumable.consume( data.item, evt.name ) ) {
+	return ( evt, data, conversionApi ) => {
+		if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 			return;
 		}
 
@@ -676,7 +675,7 @@ export function changeAttribute( attributeCreator ) {
 		}
 
 		// Then, if conversion was successful, set the new attribute.
-		const newAttribute = attributeCreator( data.attributeNewValue, data, consumable, conversionApi );
+		const newAttribute = attributeCreator( data.attributeNewValue, data );
 
 		if ( data.attributeNewValue !== null && newAttribute ) {
 			if ( newAttribute.key == 'class' ) {
@@ -721,15 +720,15 @@ export function changeAttribute( attributeCreator ) {
  * The converter automatically consumes corresponding value from consumables list, stops the event (see
  * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}).
  *
- *		modelDispatcher.on( 'attribute:bold', wrapItem( ( attributeValue, data, consumable, conversionApi ) => {
- *			return conversionApi.writer.createAttributeElement( 'strong' );
+ *		modelDispatcher.on( 'attribute:bold', wrapItem( ( modelAttributeValue, viewWriter ) => {
+ *			return viewWriter.createAttributeElement( 'strong' );
  *		} );
  *
  * @param {Function} elementCreator Function returning a view element, which will be used for wrapping.
  * @returns {Function} Set/change attribute converter.
  */
 export function wrap( elementCreator ) {
-	return ( evt, data, consumable, conversionApi ) => {
+	return ( evt, data, conversionApi ) => {
 		// Recreate current wrapping node. It will be used to unwrap view range if the attribute value has changed
 		// or the attribute was removed.
 		const oldViewElement = elementCreator( data.attributeOldValue, conversionApi.writer );
@@ -741,7 +740,7 @@ export function wrap( elementCreator ) {
 			return;
 		}
 
-		if ( !consumable.consume( data.item, evt.name ) ) {
+		if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 			return;
 		}
 
@@ -783,7 +782,7 @@ export function wrap( elementCreator ) {
  * @return {Function}
  */
 export function highlightText( highlightDescriptor ) {
-	return ( evt, data, consumable, conversionApi ) => {
+	return ( evt, data, conversionApi ) => {
 		if ( data.markerRange.isCollapsed ) {
 			return;
 		}
@@ -798,7 +797,7 @@ export function highlightText( highlightDescriptor ) {
 			return;
 		}
 
-		if ( !consumable.consume( data.item, evt.name ) ) {
+		if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 			return;
 		}
 
@@ -833,7 +832,7 @@ export function highlightText( highlightDescriptor ) {
  * @return {Function}
  */
 export function highlightElement( highlightDescriptor ) {
-	return ( evt, data, consumable, conversionApi ) => {
+	return ( evt, data, conversionApi ) => {
 		if ( data.markerRange.isCollapsed ) {
 			return;
 		}
@@ -848,7 +847,7 @@ export function highlightElement( highlightDescriptor ) {
 			return;
 		}
 
-		if ( !consumable.test( data.item, evt.name ) ) {
+		if ( !conversionApi.consumable.test( data.item, evt.name ) ) {
 			return;
 		}
 
@@ -856,11 +855,11 @@ export function highlightElement( highlightDescriptor ) {
 
 		if ( viewElement && viewElement.getCustomProperty( 'addHighlight' ) ) {
 			// Consume element itself.
-			consumable.consume( data.item, evt.name );
+			conversionApi.consumable.consume( data.item, evt.name );
 
 			// Consume all children nodes.
 			for ( const value of ModelRange.createIn( data.item ) ) {
-				consumable.consume( value.item, evt.name );
+				conversionApi.consumable.consume( value.item, evt.name );
 			}
 
 			viewElement.getCustomProperty( 'addHighlight' )( viewElement, descriptor, conversionApi.writer );

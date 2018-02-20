@@ -163,7 +163,7 @@ describe( 'DowncastDispatcher', () => {
 			const loggedEvents = [];
 
 			// We will check everything connected with insert event:
-			dispatcher.on( 'insert', ( evt, data, consumable ) => {
+			dispatcher.on( 'insert', ( evt, data, conversionApi ) => {
 				// Check if the item is correct.
 				const itemId = data.item.name ? data.item.name : '$text:' + data.item.data;
 				// Check if the range is correct.
@@ -174,11 +174,11 @@ describe( 'DowncastDispatcher', () => {
 				// Check if the event name is correct.
 				expect( evt.name ).to.equal( 'insert:' + ( data.item.name || '$text' ) );
 				// Check if model consumable is correct.
-				expect( consumable.consume( data.item, 'insert' ) ).to.be.true;
+				expect( conversionApi.consumable.consume( data.item, 'insert' ) ).to.be.true;
 			} );
 
 			// Same here.
-			dispatcher.on( 'attribute', ( evt, data, consumable ) => {
+			dispatcher.on( 'attribute', ( evt, data, conversionApi ) => {
 				const itemId = data.item.name ? data.item.name : '$text:' + data.item.data;
 				const key = data.attributeKey;
 				const value = data.attributeNewValue;
@@ -187,7 +187,7 @@ describe( 'DowncastDispatcher', () => {
 				loggedEvents.push( log );
 
 				expect( evt.name ).to.equal( 'attribute:' + key + ':' + ( data.item.name || '$text' ) );
-				expect( consumable.consume( data.item, 'attribute:' + key ) ).to.be.true;
+				expect( conversionApi.consumable.consume( data.item, 'attribute:' + key ) ).to.be.true;
 			} );
 
 			dispatcher.convertInsert( range );
@@ -214,9 +214,9 @@ describe( 'DowncastDispatcher', () => {
 
 			sinon.spy( dispatcher, 'fire' );
 
-			dispatcher.on( 'insert:image', ( evt, data, consumable ) => {
-				consumable.consume( data.item.getChild( 0 ), 'insert' );
-				consumable.consume( data.item, 'attribute:bold' );
+			dispatcher.on( 'insert:image', ( evt, data, conversionApi ) => {
+				conversionApi.consumable.consume( data.item.getChild( 0 ), 'insert' );
+				conversionApi.consumable.consume( data.item, 'attribute:bold' );
 			} );
 
 			const range = ModelRange.createIn( root );
@@ -278,10 +278,10 @@ describe( 'DowncastDispatcher', () => {
 				writer.setAttribute( 'italic', true, ModelRange.createFromParentsAndOffsets( root, 4, root, 5 ) );
 			} );
 
-			dispatcher.on( 'selection', ( evt, data, consumable ) => {
-				expect( consumable.test( data.selection, 'selection' ) ).to.be.true;
-				expect( consumable.test( data.selection, 'attribute:bold' ) ).to.be.true;
-				expect( consumable.test( data.selection, 'attribute:italic' ) ).to.be.null;
+			dispatcher.on( 'selection', ( evt, data, conversionApi ) => {
+				expect( conversionApi.consumable.test( data.selection, 'selection' ) ).to.be.true;
+				expect( conversionApi.consumable.test( data.selection, 'attribute:bold' ) ).to.be.true;
+				expect( conversionApi.consumable.test( data.selection, 'attribute:italic' ) ).to.be.null;
 			} );
 
 			dispatcher.convertSelection( doc.selection, model.markers, [] );
@@ -331,8 +331,8 @@ describe( 'DowncastDispatcher', () => {
 				writer.setAttribute( 'italic', true, ModelRange.createFromParentsAndOffsets( root, 4, root, 5 ) );
 			} );
 
-			dispatcher.on( 'selection', ( evt, data, consumable ) => {
-				consumable.consume( data.selection, 'attribute:bold' );
+			dispatcher.on( 'selection', ( evt, data, conversionApi ) => {
+				conversionApi.consumable.consume( data.selection, 'attribute:bold' );
 			} );
 
 			sinon.spy( dispatcher, 'fire' );
@@ -423,8 +423,8 @@ describe( 'DowncastDispatcher', () => {
 
 			sinon.spy( dispatcher, 'fire' );
 
-			dispatcher.on( 'addMarker:foo', ( evt, data, consumable ) => {
-				consumable.consume( data.item, 'addMarker:bar' );
+			dispatcher.on( 'addMarker:foo', ( evt, data, conversionApi ) => {
+				conversionApi.consumable.consume( data.item, 'addMarker:bar' );
 			} );
 
 			const markers = Array.from( model.markers.getMarkersAtPosition( doc.selection.getFirstPosition() ) );
@@ -478,10 +478,10 @@ describe( 'DowncastDispatcher', () => {
 
 			const items = [];
 
-			dispatcher.on( 'addMarker:name', ( evt, data, consumable ) => {
+			dispatcher.on( 'addMarker:name', ( evt, data, conversionApi ) => {
 				expect( data.markerName ).to.equal( 'name' );
 				expect( data.markerRange.isEqual( range ) ).to.be.true;
-				expect( consumable.test( data.item, 'addMarker:name' ) );
+				expect( conversionApi.consumable.test( data.item, 'addMarker:name' ) );
 
 				items.push( data.item );
 			} );

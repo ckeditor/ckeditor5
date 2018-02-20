@@ -53,9 +53,9 @@ import TextProxy from '../model/textproxy';
  *		//   ├─ <img />
  *		//   └─ <caption>
  *		//       └─ foo
- *		modelConversionDispatcher.on( 'insert:image', ( evt, data, consumable, conversionApi ) => {
+ *		modelConversionDispatcher.on( 'insert:image', ( evt, data, conversionApi ) => {
  *			// First, consume the `image` element.
- *			consumable.consume( data.item, 'insert' );
+ *			conversionApi.consumable.consume( data.item, 'insert' );
  *
  *			// Just create normal image element for the view.
  *			// Maybe it will be "decorated" later.
@@ -69,7 +69,7 @@ import TextProxy from '../model/textproxy';
  *				// `modelCaption` insertion change is consumed from consumable values.
  *				// It will not be converted by other converters, but it's children (probably some text) will be.
  *				// Through mapping, converters for text will know where to insert contents of `modelCaption`.
- *				if ( consumable.consume( modelCaption, 'insert' ) ) {
+ *				if ( conversionApi.consumable.consume( modelCaption, 'insert' ) ) {
  *					const viewCaption = new ViewElement( 'figcaption' );
  *
  *					const viewImageHolder = new ViewElement( 'figure', null, [ viewImage, viewCaption ] );
