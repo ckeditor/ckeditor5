@@ -53,7 +53,7 @@ export default class ViewCollection extends Collection {
 	/**
 	 * Creates a new instance of the {@link module:ui/viewcollection~ViewCollection}.
 	 *
-	 * @param {module:utils/locale~Locale} [locale] The {@link module:core/editor~Editor editor's locale} instance.
+	 * @param {module:utils/locale~Locale} [locale] The {@link module:core/editor/editor~Editor editor's locale} instance.
 	 */
 	constructor( locale ) {
 		super( {
