@@ -73,12 +73,15 @@ import extend from '@ckeditor/ckeditor5-utils/src/lib/lodash/extend';
  * {@link module:engine/conversion/modelconsumable~ModelConsumable#consume consumed} a value from a consumable and
  * converted the change should also stop the event (for efficiency purposes).
  *
+ * When providing custom listeners for `DowncastDispatcher` remember to use provided
+ * {@link module:engine/view/writer~Writer view writer} to apply changes to the view document.
+ *
  * Example of a custom converter for `DowncastDispatcher`:
  *
  *		// We will convert inserting "paragraph" model element into the model.
- *		downcastDispatcher.on( 'insert:paragraph', ( evt, data, consumable, conversionApi ) => {
+ *		downcastDispatcher.on( 'insert:paragraph', ( evt, data, conversionApi ) => {
  *			// Remember to check whether the change has not been consumed yet and consume it.
- *			if ( consumable.consume( data.item, 'insert' ) ) {
+ *			if ( conversionApi.consumable.consume( data.item, 'insert' ) ) {
  *				return;
  *			}
  *
@@ -86,13 +89,13 @@ import extend from '@ckeditor/ckeditor5-utils/src/lib/lodash/extend';
  *			const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
  *
  *			// Create <p> element that will be inserted in view at `viewPosition`.
- *			const viewElement = new ViewElement( 'p' );
+ *			const viewElement = conversionApi.writer.createContainerElement( 'p' );
  *
  *			// Bind the newly created view element to model element so positions will map accordingly in future.
  *			conversionApi.mapper.bindElements( data.item, viewElement );
  *
  *			// Add the newly created view element to the view.
- *			viewWriter.insert( viewPosition, viewElement );
+ *			conversionApi.writer.insert( viewPosition, viewElement );
  *
  *			// Remember to stop the event propagation.
  *			evt.stop();
@@ -102,18 +105,9 @@ export default class DowncastDispatcher {
 	/**
 	 * Creates a `DowncastDispatcher` instance.
 	 *
-	 * @param {module:engine/model/model~Model} model Data model.
 	 * @param {Object} [conversionApi] Interface passed by dispatcher to the events calls.
 	 */
-	constructor( model, conversionApi = {} ) {
-		/**
-		 * Data model instance bound with this dispatcher.
-		 *
-		 * @private
-		 * @member {module:engine/model/model~Model}
-		 */
-		this._model = model;
-
+	constructor( conversionApi = {} ) {
 		/**
 		 * Interface passed by dispatcher to the events callbacks.
 		 *
@@ -126,23 +120,24 @@ export default class DowncastDispatcher {
 	 * Takes {@link module:engine/model/differ~Differ model differ} object with buffered changes and fires conversion basing on it.
 	 *
 	 * @param {module:engine/model/differ~Differ} differ Differ object with buffered changes.
+	 * @param {module:engine/view/writer~Writer} writer View writer that should be used to modify view document.
 	 */
-	convertChanges( differ ) {
+	convertChanges( differ, writer ) {
 		// Convert changes that happened on model tree.
 		for ( const entry of differ.getChanges() ) {
 			if ( entry.type == 'insert' ) {
-				this.convertInsert( Range.createFromPositionAndShift( entry.position, entry.length ) );
+				this.convertInsert( Range.createFromPositionAndShift( entry.position, entry.length ), writer );
 			} else if ( entry.type == 'remove' ) {
-				this.convertRemove( entry.position, entry.length, entry.name );
+				this.convertRemove( entry.position, entry.length, entry.name, writer );
 			} else {
 				// entry.type == 'attribute'.
-				this.convertAttribute( entry.range, entry.attributeKey, entry.attributeOldValue, entry.attributeNewValue );
+				this.convertAttribute( entry.range, entry.attributeKey, entry.attributeOldValue, entry.attributeNewValue, writer );
 			}
 		}
 
 		// After the view is updated, convert markers which has changed.
 		for ( const change of differ.getMarkersToAdd() ) {
-			this.convertMarkerAdd( change.name, change.range );
+			this.convertMarkerAdd( change.name, change.range, writer );
 		}
 	}
 
@@ -155,10 +150,13 @@ export default class DowncastDispatcher {
 	 * @fires insert
 	 * @fires attribute
 	 * @param {module:engine/model/range~Range} range Inserted range.
+	 * @param {module:engine/view/writer~Writer} writer View writer that should be used to modify view document.
 	 */
-	convertInsert( range ) {
+	convertInsert( range, writer ) {
+		this.conversionApi.writer = writer;
+
 		// Create a list of things that can be consumed, consisting of nodes and their attributes.
-		const consumable = this._createInsertConsumable( range );
+		this.conversionApi.consumable = this._createInsertConsumable( range );
 
 		// Fire a separate insert event for each node and text fragment contained in the range.
 		for ( const value of range ) {
@@ -169,7 +167,7 @@ export default class DowncastDispatcher {
 				range: itemRange
 			};
 
-			this._testAndFire( 'insert', data, consumable );
+			this._testAndFire( 'insert', data );
 
 			// Fire a separate addAttribute event for each attribute that was set on inserted items.
 			// This is important because most attributes converters will listen only to add/change/removeAttribute events.
@@ -179,9 +177,11 @@ export default class DowncastDispatcher {
 				data.attributeOldValue = null;
 				data.attributeNewValue = item.getAttribute( key );
 
-				this._testAndFire( `attribute:${ key }`, data, consumable );
+				this._testAndFire( `attribute:${ key }`, data );
 			}
 		}
+
+		this._clearConversionApi();
 	}
 
 	/**
@@ -190,9 +190,14 @@ export default class DowncastDispatcher {
 	 * @param {module:engine/model/position~Position} position Position from which node was removed.
 	 * @param {Number} length Offset size of removed node.
 	 * @param {String} name Name of removed node.
+	 * @param {module:engine/view/writer~Writer} writer View writer that should be used to modify view document.
 	 */
-	convertRemove( position, length, name ) {
+	convertRemove( position, length, name, writer ) {
+		this.conversionApi.writer = writer;
+
 		this.fire( 'remove:' + name, { position, length }, this.conversionApi );
+
+		this._clearConversionApi();
 	}
 
 	/**
@@ -205,10 +210,13 @@ export default class DowncastDispatcher {
 	 * @param {String} key Key of the attribute that has changed.
 	 * @param {*} oldValue Attribute value before the change or `null` if the attribute has not been set before.
 	 * @param {*} newValue New attribute value or `null` if the attribute has been removed.
+	 * @param {module:engine/view/writer~Writer} writer View writer that should be used to modify view document.
 	 */
-	convertAttribute( range, key, oldValue, newValue ) {
+	convertAttribute( range, key, oldValue, newValue, writer ) {
+		this.conversionApi.writer = writer;
+
 		// Create a list with attributes to consume.
-		const consumable = this._createConsumableForRange( range, `attribute:${ key }` );
+		this.conversionApi.consumable = this._createConsumableForRange( range, `attribute:${ key }` );
 
 		// Create a separate attribute event for each node in the range.
 		for ( const value of range ) {
@@ -222,8 +230,10 @@ export default class DowncastDispatcher {
 				attributeNewValue: newValue
 			};
 
-			this._testAndFire( `attribute:${ key }`, data, consumable );
+			this._testAndFire( `attribute:${ key }`, data );
 		}
+
+		this._clearConversionApi();
 	}
 
 	/**
@@ -235,18 +245,22 @@ export default class DowncastDispatcher {
 	 * @fires addMarker
 	 * @fires attribute
 	 * @param {module:engine/model/selection~Selection} selection Selection to convert.
+	 * @param {Array.<module:engine/model/markercollection~Marker>} markers Array of markers containing model markers.
+	 * @param {module:engine/view/writer~Writer} writer View writer that should be used to modify view document.
 	 */
-	convertSelection( selection ) {
-		const markers = Array.from( this._model.markers.getMarkersAtPosition( selection.getFirstPosition() ) );
-		const consumable = this._createSelectionConsumable( selection, markers );
+	convertSelection( selection, markers, writer ) {
+		const markersAtSelection = Array.from( markers.getMarkersAtPosition( selection.getFirstPosition() ) );
 
-		this.fire( 'selection', { selection }, consumable, this.conversionApi );
+		this.conversionApi.writer = writer;
+		this.conversionApi.consumable = this._createSelectionConsumable( selection, markersAtSelection );
+
+		this.fire( 'selection', { selection }, this.conversionApi );
 
 		if ( !selection.isCollapsed ) {
 			return;
 		}
 
-		for ( const marker of markers ) {
+		for ( const marker of markersAtSelection ) {
 			const markerRange = marker.getRange();
 
 			if ( !shouldMarkerChangeBeConverted( selection.getFirstPosition(), marker, this.conversionApi.mapper ) ) {
@@ -259,8 +273,8 @@ export default class DowncastDispatcher {
 				markerRange
 			};
 
-			if ( consumable.test( selection, 'addMarker:' + marker.name ) ) {
-				this.fire( 'addMarker:' + marker.name, data, consumable, this.conversionApi );
+			if ( this.conversionApi.consumable.test( selection, 'addMarker:' + marker.name ) ) {
+				this.fire( 'addMarker:' + marker.name, data, this.conversionApi );
 			}
 		}
 
@@ -274,10 +288,12 @@ export default class DowncastDispatcher {
 			};
 
 			// Do not fire event if the attribute has been consumed.
-			if ( consumable.test( selection, 'attribute:' + data.attributeKey ) ) {
-				this.fire( 'attribute:' + data.attributeKey, data, consumable, this.conversionApi );
+			if ( this.conversionApi.consumable.test( selection, 'attribute:' + data.attributeKey ) ) {
+				this.fire( 'attribute:' + data.attributeKey, data, this.conversionApi );
 			}
 		}
+
+		this._clearConversionApi();
 	}
 
 	/**
@@ -287,12 +303,15 @@ export default class DowncastDispatcher {
 	 * @fires addMarker
 	 * @param {String} markerName Marker name.
 	 * @param {module:engine/model/range~Range} markerRange Marker range.
+	 * @param {module:engine/view/writer~Writer} writer View writer that should be used to modify view document.
 	 */
-	convertMarkerAdd( markerName, markerRange ) {
+	convertMarkerAdd( markerName, markerRange, writer ) {
 		// Do not convert if range is in graveyard or not in the document (e.g. in DocumentFragment).
 		if ( !markerRange.root.document || markerRange.root.rootName == '$graveyard' ) {
 			return;
 		}
+
+		this.conversionApi.writer = writer;
 
 		// In markers' case, event name == consumable name.
 		const eventName = 'addMarker:' + markerName;
@@ -302,28 +321,29 @@ export default class DowncastDispatcher {
 			const consumable = new Consumable();
 			consumable.add( markerRange, eventName );
 
-			this.fire( eventName, {
-				markerName,
-				markerRange
-			}, consumable, this.conversionApi );
+			this.conversionApi.consumable = consumable;
+
+			this.fire( eventName, { markerName, markerRange }, this.conversionApi );
 
 			return;
 		}
 
 		// Create consumable for each item in range.
-		const consumable = this._createConsumableForRange( markerRange, eventName );
+		this.conversionApi.consumable = this._createConsumableForRange( markerRange, eventName );
 
 		// Create separate event for each node in the range.
 		for ( const item of markerRange.getItems() ) {
 			// Do not fire event for already consumed items.
-			if ( !consumable.test( item, eventName ) ) {
+			if ( !this.conversionApi.consumable.test( item, eventName ) ) {
 				continue;
 			}
 
 			const data = { item, range: Range.createOn( item ), markerName, markerRange };
 
-			this.fire( eventName, data, consumable, this.conversionApi );
+			this.fire( eventName, data, this.conversionApi );
 		}
+
+		this._clearConversionApi();
 	}
 
 	/**
@@ -332,14 +352,19 @@ export default class DowncastDispatcher {
 	 * @fires removeMarker
 	 * @param {String} markerName Marker name.
 	 * @param {module:engine/model/range~Range} markerRange Marker range.
+	 * @param {module:engine/view/writer~Writer} writer View writer that should be used to modify view document.
 	 */
-	convertMarkerRemove( markerName, markerRange ) {
+	convertMarkerRemove( markerName, markerRange, writer ) {
 		// Do not convert if range is in graveyard or not in the document (e.g. in DocumentFragment).
 		if ( !markerRange.root.document || markerRange.root.rootName == '$graveyard' ) {
 			return;
 		}
 
+		this.conversionApi.writer = writer;
+
 		this.fire( 'removeMarker:' + markerName, { markerName, markerRange }, this.conversionApi );
+
+		this._clearConversionApi();
 	}
 
 	/**
@@ -416,17 +441,26 @@ export default class DowncastDispatcher {
 	 * @fires attribute
 	 * @param {String} type Event type.
 	 * @param {Object} data Event data.
-	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
 	 */
-	_testAndFire( type, data, consumable ) {
-		if ( !consumable.test( data.item, type ) ) {
+	_testAndFire( type, data ) {
+		if ( !this.conversionApi.consumable.test( data.item, type ) ) {
 			// Do not fire event if the item was consumed.
 			return;
 		}
 
 		const name = data.item.name || '$text';
 
-		this.fire( type + ':' + name, data, consumable, this.conversionApi );
+		this.fire( type + ':' + name, data, this.conversionApi );
+	}
+
+	/**
+	 * Clears conversion API object.
+	 *
+	 * @private
+	 */
+	_clearConversionApi() {
+		delete this.conversionApi.writer;
+		delete this.conversionApi.consumable;
 	}
 
 	/**

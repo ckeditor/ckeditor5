@@ -740,6 +740,33 @@ describe( 'DocumentSelection', () => {
 				expect( selection.getFirstPosition().path ).to.deep.equal( [ 0, 0 ] );
 			} );
 		} );
+
+		it( '`DocumentSelection#change:range` event should be fire once even if selection contains multi-ranges', () => {
+			root.removeChildren( 0, root.childCount );
+			root.insertChildren( 0, [
+				new Element( 'p', [], new Text( 'abcdef' ) ),
+				new Element( 'p', [], new Text( 'foobar' ) ),
+				new Text( 'xyz #2' )
+			] );
+
+			selection._setTo( [
+				Range.createIn( root.getNodeByPath( [ 0 ] ) ),
+				Range.createIn( root.getNodeByPath( [ 1 ] ) )
+			] );
+
+			spyRange = sinon.spy();
+			selection.on( 'change:range', spyRange );
+
+			model.applyOperation( wrapInDelta(
+				new InsertOperation(
+					new Position( root, [ 0 ] ),
+					'xyz #1',
+					doc.version
+				)
+			) );
+
+			expect( spyRange.calledOnce ).to.be.true;
+		} );
 	} );
 
 	describe( 'attributes', () => {

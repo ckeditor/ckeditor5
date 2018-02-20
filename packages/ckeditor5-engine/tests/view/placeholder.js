@@ -5,139 +5,134 @@
 
 import { attachPlaceholder, detachPlaceholder } from '../../src/view/placeholder';
 import createViewRoot from './_utils/createroot';
-import ViewContainerElement from '../../src/view/containerelement';
-import ViewDocument from '../../src/view/document';
+import View from '../../src/view/view';
 import ViewRange from '../../src/view/range';
 import { setData } from '../../src/dev-utils/view';
 
 describe( 'placeholder', () => {
-	let viewDocument, viewRoot;
+	let view, viewDocument, viewRoot;
 
 	beforeEach( () => {
-		viewDocument = new ViewDocument();
+		view = new View();
+		viewDocument = view.document;
 		viewRoot = createViewRoot( viewDocument );
 		viewDocument.isFocused = true;
 	} );
 
 	describe( 'createPlaceholder', () => {
-		it( 'should throw if element is not inside document', () => {
-			const element = new ViewContainerElement( 'div' );
-
-			expect( () => {
-				attachPlaceholder( element, 'foo bar baz' );
-			} ).to.throw( 'view-placeholder-element-is-detached' );
-		} );
-
 		it( 'should attach proper CSS class and data attribute', () => {
-			setData( viewDocument, '<div></div><div>{another div}</div>' );
+			setData( view, '<div></div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );
 
-			attachPlaceholder( element, 'foo bar baz' );
+			attachPlaceholder( view, element, 'foo bar baz' );
 
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
 		} );
 
 		it( 'if element has children set only data attribute', () => {
-			setData( viewDocument, '<div>first div</div><div>{another div}</div>' );
+			setData( view, '<div>first div</div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );
 
-			attachPlaceholder( element, 'foo bar baz' );
+			attachPlaceholder( view, element, 'foo bar baz' );
 
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
 		} );
 
 		it( 'if element has only ui elements, set CSS class and data attribute', () => {
-			setData( viewDocument, '<div><ui:span></ui:span><ui:span></ui:span></div><div>{another div}</div>' );
+			setData( view, '<div><ui:span></ui:span><ui:span></ui:span></div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );
 
-			attachPlaceholder( element, 'foo bar baz' );
+			attachPlaceholder( view, element, 'foo bar baz' );
 
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
 		} );
 
 		it( 'if element has selection inside set only data attribute', () => {
-			setData( viewDocument, '<div>[]</div><div>another div</div>' );
+			setData( view, '<div>[]</div><div>another div</div>' );
 			const element = viewRoot.getChild( 0 );
 
-			attachPlaceholder( element, 'foo bar baz' );
+			attachPlaceholder( view, element, 'foo bar baz' );
 
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
 		} );
 
 		it( 'if element has selection inside but document is blurred should contain placeholder CSS class', () => {
-			setData( viewDocument, '<div>[]</div><div>another div</div>' );
+			setData( view, '<div>[]</div><div>another div</div>' );
 			const element = viewRoot.getChild( 0 );
 			viewDocument.isFocused = false;
 
-			attachPlaceholder( element, 'foo bar baz' );
+			attachPlaceholder( view, element, 'foo bar baz' );
 
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
 		} );
 
 		it( 'use check function if one is provided', () => {
-			setData( viewDocument, '<div></div><div>{another div}</div>' );
+			setData( view, '<div></div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );
 			const spy = sinon.spy( () => false );
 
-			attachPlaceholder( element, 'foo bar baz', spy );
+			attachPlaceholder( view, element, 'foo bar baz', spy );
 
-			sinon.assert.calledOnce( spy );
+			sinon.assert.called( spy );
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
 		} );
 
 		it( 'should remove CSS class if selection is moved inside', () => {
-			setData( viewDocument, '<div></div><div>{another div}</div>' );
+			setData( view, '<div></div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );
 
-			attachPlaceholder( element, 'foo bar baz' );
+			attachPlaceholder( view, element, 'foo bar baz' );
 
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
 
-			viewDocument.selection.setTo( [ ViewRange.createIn( element ) ] );
-			viewDocument.render();
+			view.change( writer => {
+				writer.setSelection( ViewRange.createIn( element ) );
+			} );
 
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
 		} );
 
 		it( 'should change placeholder settings when called twice', () => {
-			setData( viewDocument, '<div></div><div>{another div}</div>' );
+			setData( view, '<div></div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );
 
-			attachPlaceholder( element, 'foo bar baz' );
-			attachPlaceholder( element, 'new text' );
+			attachPlaceholder( view, element, 'foo bar baz' );
+			attachPlaceholder( view, element, 'new text' );
 
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'new text' );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
 		} );
 
 		it( 'should not throw when element is no longer in document', () => {
-			setData( viewDocument, '<div></div><div>{another div}</div>' );
+			setData( view, '<div></div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );
 
-			attachPlaceholder( element, 'foo bar baz' );
-			setData( viewDocument, '<p>paragraph</p>' );
+			attachPlaceholder( view, element, 'foo bar baz' );
+			setData( view, '<p>paragraph</p>' );
 
-			viewDocument.render();
+			view.render();
 		} );
 
 		it( 'should allow to add placeholder to elements from different documents', () => {
-			setData( viewDocument, '<div></div><div>{another div}</div>' );
+			setData( view, '<div></div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );
-			const secondDocument = new ViewDocument();
+
+			const secondView = new View();
+			const secondDocument = secondView.document;
 			secondDocument.isFocused = true;
 			const secondRoot = createViewRoot( secondDocument );
-			setData( secondDocument, '<div></div><div>{another div}</div>' );
+			setData( secondView, '<div></div><div>{another div}</div>' );
 			const secondElement = secondRoot.getChild( 0 );
 
-			attachPlaceholder( element, 'first placeholder' );
-			attachPlaceholder( secondElement, 'second placeholder' );
+			attachPlaceholder( view, element, 'first placeholder' );
+			attachPlaceholder( secondView, secondElement, 'second placeholder' );
 
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'first placeholder' );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
@@ -146,12 +141,13 @@ describe( 'placeholder', () => {
 			expect( secondElement.hasClass( 'ck-placeholder' ) ).to.be.true;
 
 			// Move selection to the elements with placeholders.
-			viewDocument.selection.setTo( [ ViewRange.createIn( element ) ] );
-			secondDocument.selection.setTo( [ ViewRange.createIn( secondElement ) ] );
+			view.change( writer => {
+				writer.setSelection( ViewRange.createIn( element ) );
+			} );
 
-			// Render changes.
-			viewDocument.render();
-			secondDocument.render();
+			secondView.change( writer => {
+				writer.setSelection( ViewRange.createIn( secondElement ) );
+			} );
 
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'first placeholder' );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
@@ -159,19 +155,37 @@ describe( 'placeholder', () => {
 			expect( secondElement.getAttribute( 'data-placeholder' ) ).to.equal( 'second placeholder' );
 			expect( secondElement.hasClass( 'ck-placeholder' ) ).to.be.false;
 		} );
+
+		it( 'should update placeholder before rendering', () => {
+			setData( view, '<div></div><div>{another div}</div>' );
+			const element = viewRoot.getChild( 0 );
+
+			attachPlaceholder( view, element, 'foo bar baz' );
+
+			view.change( writer => {
+				writer.setSelection( ViewRange.createIn( element ) );
+
+				// Here we are before rendering - placeholder is visible in first element;
+				expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
+				expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
+			} );
+
+			// After rendering - placeholder should be invisible since selection is moved there.
+			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
+		} );
 	} );
 
 	describe( 'detachPlaceholder', () => {
 		it( 'should remove placeholder from element', () => {
-			setData( viewDocument, '<div></div><div>{another div}</div>' );
+			setData( view, '<div></div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );
 
-			attachPlaceholder( element, 'foo bar baz' );
+			attachPlaceholder( view, element, 'foo bar baz' );
 
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
 
-			detachPlaceholder( element );
+			detachPlaceholder( view, element );
 
 			expect( element.hasAttribute( 'data-placeholder' ) ).to.be.false;
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;

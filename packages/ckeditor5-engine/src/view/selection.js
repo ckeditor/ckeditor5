@@ -21,7 +21,7 @@ import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
  * Class representing selection in tree view.
  *
  * Selection can consist of {@link module:engine/view/range~Range ranges} that can be set using
- * {@link module:engine/view/selection~Selection#setTo} method.
+ * {@link module:engine/view/selection~Selection#_setTo} method.
  * That method create copies of provided ranges and store those copies internally. Further modifications to passed
  * ranges will not change selection's state.
  * Selection's ranges can be obtained via {@link module:engine/view/selection~Selection#getRanges getRanges},
@@ -97,34 +97,14 @@ export default class Selection {
 		this._fakeSelectionLabel = '';
 
 		if ( selectable ) {
-			this.setTo( selectable, backwardSelectionOrOffset );
+			this._setTo( selectable, backwardSelectionOrOffset );
 		}
-	}
-
-	/**
-	 * Sets this selection instance to be marked as `fake`. A fake selection does not render as browser native selection
-	 * over selected elements and is hidden to the user. This way, no native selection UI artifacts are displayed to
-	 * the user and selection over elements can be represented in other way, for example by applying proper CSS class.
-	 *
-	 * Additionally fake's selection label can be provided. It will be used to describe fake selection in DOM (and be
-	 * properly handled by screen readers).
-	 *
-	 * @fires change
-	 * @param {Boolean} [value=true] If set to true selection will be marked as `fake`.
-	 * @param {Object} [options] Additional options.
-	 * @param {String} [options.label=''] Fake selection label.
-	 */
-	setFake( value = true, options = {} ) {
-		this._isFake = value;
-		this._fakeSelectionLabel = value ? options.label || '' : '';
-
-		this.fire( 'change' );
 	}
 
 	/**
 	 * Returns true if selection instance is marked as `fake`.
 	 *
-	 * @see #setFake
+	 * @see #_setFake
 	 * @returns {Boolean}
 	 */
 	get isFake() {
@@ -134,7 +114,7 @@ export default class Selection {
 	/**
 	 * Returns fake selection label.
 	 *
-	 * @see #setFake
+	 * @see #_setFake
 	 * @returns {String}
 	 */
 	get fakeSelectionLabel() {
@@ -390,6 +370,25 @@ export default class Selection {
 	}
 
 	/**
+	 * Returns the selected element. {@link module:engine/view/element~Element Element} is considered as selected if there is only
+	 * one range in the selection, and that range contains exactly one element.
+	 * Returns `null` if there is no selected element.
+	 *
+	 * @returns {module:engine/view/element~Element|null}
+	 */
+	getSelectedElement() {
+		if ( this.rangeCount !== 1 ) {
+			return null;
+		}
+
+		const range = this.getFirstRange();
+		const nodeAfterStart = range.start.nodeAfter;
+		const nodeBeforeEnd = range.end.nodeBefore;
+
+		return ( nodeAfterStart instanceof Element && nodeAfterStart == nodeBeforeEnd ) ? nodeAfterStart : null;
+	}
+
+	/**
 	 * Removes all ranges that were added to the selection.
 	 *
 	 * @fires change
@@ -429,12 +428,13 @@ export default class Selection {
 	 *
 	 * 		// Removes all ranges.
 	 *		selection.setTo( null );
-
+	 *
+	 * @protected
 	 * @param {module:engine/view/selection~Selection|module:engine/view/position~Position|
 	 * Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|module:engine/view/item~Item|null} selectable
 	 * @param {Boolean|Number|'before'|'end'|'after'} [backwardSelectionOrOffset]
 	 */
-	setTo( selectable, backwardSelectionOrOffset ) {
+	_setTo( selectable, backwardSelectionOrOffset ) {
 		if ( selectable === null ) {
 			this._removeAllRanges();
 		} else if ( selectable instanceof Selection ) {
@@ -489,12 +489,13 @@ export default class Selection {
 	 *
 	 * The location can be specified in the same form as {@link module:engine/view/position~Position.createAt} parameters.
 	 *
+	 * @protected
 	 * @fires change
 	 * @param {module:engine/view/item~Item|module:engine/view/position~Position} itemOrPosition
 	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
 	 * first parameter is a {@link module:engine/view/item~Item view item}.
 	 */
-	setFocus( itemOrPosition, offset ) {
+	_setFocus( itemOrPosition, offset ) {
 		if ( this.anchor === null ) {
 			/**
 			 * Cannot set selection focus if there are no ranges in selection.
@@ -526,22 +527,24 @@ export default class Selection {
 	}
 
 	/**
-	 * Returns the selected element. {@link module:engine/view/element~Element Element} is considered as selected if there is only
-	 * one range in the selection, and that range contains exactly one element.
-	 * Returns `null` if there is no selected element.
+	 * Sets this selection instance to be marked as `fake`. A fake selection does not render as browser native selection
+	 * over selected elements and is hidden to the user. This way, no native selection UI artifacts are displayed to
+	 * the user and selection over elements can be represented in other way, for example by applying proper CSS class.
 	 *
-	 * @returns {module:engine/view/element~Element|null}
+	 * Additionally fake's selection label can be provided. It will be used to describe fake selection in DOM (and be
+	 * properly handled by screen readers).
+	 *
+	 * @protected
+	 * @fires change
+	 * @param {Boolean} [value=true] If set to true selection will be marked as `fake`.
+	 * @param {Object} [options] Additional options.
+	 * @param {String} [options.label=''] Fake selection label.
 	 */
-	getSelectedElement() {
-		if ( this.rangeCount !== 1 ) {
-			return null;
-		}
+	_setFake( value = true, options = {} ) {
+		this._isFake = value;
+		this._fakeSelectionLabel = value ? options.label || '' : '';
 
-		const range = this.getFirstRange();
-		const nodeAfterStart = range.start.nodeAfter;
-		const nodeBeforeEnd = range.end.nodeBefore;
-
-		return ( nodeAfterStart instanceof Element && nodeAfterStart == nodeBeforeEnd ) ? nodeAfterStart : null;
+		this.fire( 'change' );
 	}
 
 	/**

@@ -13,13 +13,13 @@ import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 /**
  * {@link module:engine/view/document~Document#event:keydown Key down} event observer.
  *
- * Note that this observer is attached by the {@link module:engine/view/document~Document} and is available by default.
+ * Note that this observer is attached by the {@link module:engine/view/view~View} and is available by default.
  *
  * @extends module:engine/view/observer/domeventobserver~DomEventObserver
  */
 export default class KeyObserver extends DomEventObserver {
-	constructor( document ) {
-		super( document );
+	constructor( view ) {
+		super( view );
 
 		this.domEventType = [ 'keydown', 'keyup' ];
 	}
@@ -45,8 +45,7 @@ export default class KeyObserver extends DomEventObserver {
  * Introduced by {@link module:engine/view/observer/keyobserver~KeyObserver}.
  *
  * Note that because {@link module:engine/view/observer/keyobserver~KeyObserver} is attached by the
- * {@link module:engine/view/document~Document}
- * this event is available by default.
+ * {@link module:engine/view/view~View} this event is available by default.
  *
  * @see module:engine/view/observer/keyobserver~KeyObserver
  * @event module:engine/view/document~Document#event:keydown
@@ -59,8 +58,7 @@ export default class KeyObserver extends DomEventObserver {
  * Introduced by {@link module:engine/view/observer/keyobserver~KeyObserver}.
  *
  * Note that because {@link module:engine/view/observer/keyobserver~KeyObserver} is attached by the
- * {@link module:engine/view/document~Document}
- * this event is available by default.
+ * {@link module:engine/view/view~View} this event is available by default.
  *
  * @see module:engine/view/observer/keyobserver~KeyObserver
  * @event module:engine/view/document~Document#event:keyup

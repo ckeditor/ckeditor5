@@ -6,6 +6,7 @@
 import MarkerCollection from '../../src/model/markercollection';
 import Position from '../../src/model/position';
 import Range from '../../src/model/range';
+import LiveRange from '../../src/model/liverange';
 import Text from '../../src/model/text';
 import Model from '../../src/model/model';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
@@ -41,7 +42,7 @@ describe( 'MarkerCollection', () => {
 	} );
 
 	describe( '_set', () => {
-		it( 'should create a marker, fire set:<markerName> event and return true', () => {
+		it( 'should create a marker and fire update:<markerName>', () => {
 			sinon.spy( markers, 'fire' );
 
 			const result = markers._set( 'name', range );
@@ -49,47 +50,71 @@ describe( 'MarkerCollection', () => {
 
 			expect( result ).to.equal( marker );
 			expect( marker.name ).to.equal( 'name' );
+			expect( marker.managedUsingOperations ).to.false;
 			expect( marker.getRange().isEqual( range ) ).to.be.true;
-			expect( markers.fire.calledWithExactly( 'set:name', marker ) ).to.be.true;
+			sinon.assert.calledWithExactly( markers.fire, 'update:name', result, null, range );
 		} );
 
-		it( 'should fire remove:<markerName> event, and create a new marker if marker with given name was in the collection', () => {
-			const marker1 = markers._set( 'name', range );
+		it( 'should create a marker marked as managed by operations', () => {
+			const marker = markers._set( 'name', range, true );
+
+			expect( marker.managedUsingOperations ).to.true;
+		} );
+
+		it( 'should update marker range and fire update:<markerName> event if marker with given name was in the collection', () => {
+			const marker = markers._set( 'name', range );
+
+			sinon.spy( markers, 'fire' );
+			sinon.spy( marker, '_detachLiveRange' );
+			sinon.spy( marker, '_attachLiveRange' );
+
+			const result = markers._set( 'name', range2 );
+
+			expect( result ).to.equal( marker );
+			expect( marker.getRange().isEqual( range2 ) ).to.be.true;
+
+			sinon.assert.calledWithExactly( markers.fire, 'update:name', marker, range, range2 );
+			sinon.assert.calledOnce( marker._detachLiveRange );
+			sinon.assert.calledOnce( marker._detachLiveRange );
+		} );
+
+		it( 'should update marker#managedUsingOperations and fire update:<markerName> event if marker with given name ' +
+			'was in the collection',
+		() => {
+			const marker = markers._set( 'name', range );
+
+			sinon.spy( markers, 'fire' );
+			sinon.spy( marker, '_detachLiveRange' );
+			sinon.spy( marker, '_attachLiveRange' );
+
+			const result = markers._set( 'name', range, true );
+
+			expect( result ).to.equal( marker );
+			expect( marker.managedUsingOperations ).to.true;
+			expect( marker.getRange().isEqual( range ) ).to.be.true;
+
+			sinon.assert.calledWithExactly( markers.fire, 'update:name', marker, range, range );
+			sinon.assert.notCalled( marker._detachLiveRange );
+			sinon.assert.notCalled( marker._attachLiveRange );
+		} );
+
+		it( 'should not fire event if given marker has not changed', () => {
+			const marker = markers._set( 'name', range );
 
 			sinon.spy( markers, 'fire' );
 
-			const marker2 = markers._set( 'name', range2 );
+			const result = markers._set( 'name', range );
 
-			expect( markers.fire.calledWithExactly( 'remove:name', marker1 ) ).to.be.true;
-			expect( markers.fire.calledWithExactly( 'set:name', marker2 ) ).to.be.true;
-
-			expect( marker2.name ).to.equal( 'name' );
-			expect( marker2.getRange().isEqual( range2 ) ).to.be.true;
-
-			expect( marker1 ).not.to.equal( marker2 );
-		} );
-
-		it( 'should not fire event and return the same marker if given marker has a range equal to given range', () => {
-			const marker1 = markers._set( 'name', range );
-
-			sinon.spy( markers, 'fire' );
-
-			const marker2 = markers._set( 'name', range );
-
-			expect( marker1 ).to.equal( marker2 );
-			expect( markers.fire.notCalled ).to.be.true;
+			expect( marker ).to.equal( result );
+			sinon.assert.notCalled( markers.fire );
 		} );
 
 		it( 'should accept marker instance instead of name', () => {
-			markers._set( 'name', range );
-			const marker1 = markers.get( 'name' );
+			const marker = markers._set( 'name', range );
 
-			const result = markers._set( marker1, range2 );
-			const marker2 = markers.get( 'name' );
+			markers._set( marker, range2 );
 
-			expect( result ).to.equal( marker2 );
-			expect( marker2.getRange().isEqual( range2 ) );
-			expect( marker1 ).not.to.equal( marker2 );
+			expect( marker.getRange().isEqual( range2 ) ).to.true;
 		} );
 	} );
 
@@ -115,7 +140,7 @@ describe( 'MarkerCollection', () => {
 	} );
 
 	describe( '_remove', () => {
-		it( 'should remove marker, return true and fire remove:<markerName> event', () => {
+		it( 'should remove marker, return true and fire update:<markerName> event', () => {
 			const marker = markers._set( 'name', range );
 
 			sinon.spy( markers, 'fire' );
@@ -123,22 +148,20 @@ describe( 'MarkerCollection', () => {
 			const result = markers._remove( 'name' );
 
 			expect( result ).to.be.true;
-			expect( markers.fire.calledWithExactly( 'remove:name', marker ) ).to.be.true;
 			expect( markers.get( 'name' ) ).to.be.null;
+			sinon.assert.calledWithExactly( markers.fire, 'update:name', marker, range, null );
 		} );
 
 		it( 'should destroy marker instance', () => {
 			const marker = markers._set( 'name', range );
-			const liveRange = marker._liveRange;
 
 			sinon.spy( marker, 'stopListening' );
-			sinon.spy( liveRange, 'detach' );
+			sinon.spy( marker, '_detachLiveRange' );
 
 			markers._remove( 'name' );
 
 			expect( marker.stopListening.calledOnce ).to.be.true;
-			expect( marker._liveRange ).to.be.null;
-			expect( liveRange.detach.calledOnce ).to.be.true;
+			expect( marker._detachLiveRange.calledOnce ).to.be.true;
 		} );
 
 		it( 'should return false if name has not been found in collection', () => {
@@ -160,7 +183,7 @@ describe( 'MarkerCollection', () => {
 			const result = markers._remove( marker );
 
 			expect( result ).to.be.true;
-			expect( markers.fire.calledWithExactly( 'remove:name', marker ) ).to.be.true;
+			expect( markers.fire.calledWithExactly( 'update:name', marker, range, null ) ).to.be.true;
 			expect( markers.get( 'name' ) ).to.be.null;
 		} );
 	} );
@@ -255,9 +278,13 @@ describe( 'Marker', () => {
 		expect( () => {
 			marker.getEnd();
 		} ).to.throw( CKEditorError, /^marker-destroyed/ );
+
+		expect( () => {
+			marker.managedUsingOperations;
+		} ).to.throw( CKEditorError, /^marker-destroyed/ );
 	} );
 
-	it( 'should delegate events from live range', () => {
+	it( 'should attach live range to marker', () => {
 		const range = Range.createFromParentsAndOffsets( root, 1, root, 2 );
 		const marker = model.markers._set( 'name', range );
 
@@ -272,5 +299,71 @@ describe( 'Marker', () => {
 
 		expect( eventRange.calledOnce ).to.be.true;
 		expect( eventContent.calledOnce ).to.be.true;
+	} );
+
+	it( 'should detach live range from marker', () => {
+		const range = Range.createFromParentsAndOffsets( root, 1, root, 2 );
+		const marker = model.markers._set( 'name', range );
+		const liveRange = marker._liveRange;
+
+		const eventRange = sinon.spy();
+		const eventContent = sinon.spy();
+		sinon.spy( liveRange, 'detach' );
+
+		marker.on( 'change:range', eventRange );
+		marker.on( 'change:content', eventContent );
+
+		marker._detachLiveRange();
+
+		liveRange.fire( 'change:range', null, {} );
+		liveRange.fire( 'change:content', null, {} );
+
+		expect( eventRange.notCalled ).to.be.true;
+		expect( eventContent.notCalled ).to.be.true;
+		expect( liveRange.detach.calledOnce ).to.true;
+	} );
+
+	it( 'should reattach live range to marker', () => {
+		const range = Range.createFromParentsAndOffsets( root, 1, root, 2 );
+		const marker = model.markers._set( 'name', range );
+		const oldLiveRange = marker._liveRange;
+		const newLiveRange = LiveRange.createFromParentsAndOffsets( root, 0, root, 1 );
+
+		const eventRange = sinon.spy();
+		const eventContent = sinon.spy();
+		sinon.spy( oldLiveRange, 'detach' );
+
+		marker.on( 'change:range', eventRange );
+		marker.on( 'change:content', eventContent );
+
+		marker._attachLiveRange( newLiveRange );
+
+		oldLiveRange.fire( 'change:range', null, {} );
+		oldLiveRange.fire( 'change:content', null, {} );
+
+		expect( eventRange.notCalled ).to.be.true;
+		expect( eventContent.notCalled ).to.be.true;
+		expect( oldLiveRange.detach.calledOnce ).to.true;
+
+		newLiveRange.fire( 'change:range', null, {} );
+		newLiveRange.fire( 'change:content', null, {} );
+
+		expect( eventRange.calledOnce ).to.be.true;
+		expect( eventContent.calledOnce ).to.be.true;
+	} );
+
+	it( 'should change managedUsingOperations flag', () => {
+		const range = Range.createFromParentsAndOffsets( root, 1, root, 2 );
+		const marker = model.markers._set( 'name', range, false );
+
+		expect( marker.managedUsingOperations ).to.false;
+
+		marker._managedUsingOperations = true;
+
+		expect( marker.managedUsingOperations ).to.true;
+
+		marker._managedUsingOperations = false;
+
+		expect( marker.managedUsingOperations ).to.false;
 	} );
 } );

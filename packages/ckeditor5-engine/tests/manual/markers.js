@@ -35,7 +35,7 @@ ClassicEditor
 		window.editor = editor;
 		model = editor.model;
 
-		downcastMarkerToHighlight( {
+		editor.conversion.for( 'editingDowncast' ).add( downcastMarkerToHighlight( {
 			model: 'highlight',
 			view: data => {
 				const color = data.markerName.split( ':' )[ 1 ];
@@ -45,7 +45,7 @@ ClassicEditor
 					priority: 1
 				};
 			}
-		} );
+		} ) );
 
 		window.document.getElementById( 'add-yellow' ).addEventListener( 'mousedown', e => {
 			e.preventDefault();

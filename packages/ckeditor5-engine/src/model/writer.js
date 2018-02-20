@@ -761,34 +761,32 @@ export default class Writer {
 	}
 
 	/**
-	 * Adds or updates {@link module:engine/model/markercollection~Marker marker}.
+	 * Adds or updates a {@link module:engine/model/markercollection~Marker marker}. Marker is a named range, which tracks
+	 * changes in the document and updates its range automatically, when model tree changes. Still, it is possible to change the
+	 * marker's range directly using this method.
 	 *
 	 * As the first parameter you can set marker name or instance. If none of them is provided, new marker, with a unique
 	 * name is created and returned.
 	 *
-	 * Using this method you can change markers range or define if the marker is managed by operation or not.
-	 *
-	 * Marker tracks changes is the document and updates the range automatically, so you need to update the range only
-	 * when it changes directly. You do not need to update it after each document change.
-	 *
-	 * The option parameter let you decide if the marker should be managed by operations or not. See
+	 * The `options.usingOperation` parameter lets you decide if the marker should be managed by operations or not. See
 	 * {@link module:engine/model/markercollection~Marker marker class description} to learn about the difference between
-	 * markers managed by operation and managed directly. You can change this option for existing marker. This is
-	 * useful if a marker have been created earlier and need to be added to the document history later.
-	 *
-	 * Update marker using operation:
-	 *
-	 * 		setMarker( marker, range, { usingOperation: true } );
+	 * markers managed by operations and not-managed by operations. It is possible to change this option for an existing marker.
+	 * This is useful when a marker have been created earlier and then later, it needs to be added to the document history.
 	 *
 	 * Create/update marker directly base on marker's name:
 	 *
 	 * 		setMarker( markerName, range );
 	 *
+	 * Update marker using operation:
+	 *
+	 * 		setMarker( marker, range, { usingOperation: true } );
+	 * 		setMarker( markerName, range, { usingOperation: true } );
+	 *
 	 * Create marker with a unique id using operation:
 	 *
 	 * 		setMarker( range, { usingOperation: true } );
 	 *
-	 * Create marker directly with a unique name:
+	 * Create marker directly without using operations:
 	 *
 	 * 		setMarker( range )
 	 *
@@ -799,9 +797,9 @@ export default class Writer {
 	 * Note: For efficiency reasons, it's best to create and keep as little markers as possible.
 	 *
 	 * @see module:engine/model/markercollection~Marker
-	 * @param {module:engine/model/markercollection~Marker|String} [markerOrName=uid()]
-	 * Name of marker to add, Marker instance to update or range for the marker with a unique name.
-	 * @param {module:engine/model/range~Range|Object} [range] Marker range or options.
+	 * @param {module:engine/model/markercollection~Marker|String} [markerOrName]
+	 * Name of a marker to create or update, or `Marker` instance to update, or range for the marker with a unique name.
+	 * @param {module:engine/model/range~Range} [range] Marker range.
 	 * @param {Object} [options]
 	 * @param {Boolean} [options.usingOperation=false] Flag indicated whether the marker should be added by MarkerOperation.
 	 * See {@link module:engine/model/markercollection~Marker#managedUsingOperations}.

@@ -174,7 +174,7 @@ describe( 'Element', () => {
 
 		it( 'should clone class attribute', () => {
 			const el = new Element( 'p', { foo: 'bar' } );
-			el.addClass( 'baz', 'qux' );
+			el._addClass( [ 'baz', 'qux' ] );
 			const clone = el.clone( false );
 
 			expect( clone ).to.not.equal( el );
@@ -198,8 +198,8 @@ describe( 'Element', () => {
 		it( 'should clone custom properties', () => {
 			const el = new Element( 'p' );
 			const symbol = Symbol( 'custom' );
-			el.setCustomProperty( 'foo', 'bar' );
-			el.setCustomProperty( symbol, 'baz' );
+			el._setCustomProperty( 'foo', 'bar' );
+			el._setCustomProperty( symbol, 'baz' );
 
 			const cloned = el.clone();
 
@@ -247,9 +247,9 @@ describe( 'Element', () => {
 			const other1 = el.clone();
 			const other2 = el.clone();
 			const other3 = el.clone();
-			other1.setAttribute( 'baz', 'qux' );
-			other2.setAttribute( 'foo', 'not-bar' );
-			other3.removeAttribute( 'foo' );
+			other1._setAttribute( 'baz', 'qux' );
+			other2._setAttribute( 'foo', 'not-bar' );
+			other3._removeAttribute( 'foo' );
 			expect( el.isSimilar( other1 ) ).to.be.false;
 			expect( el.isSimilar( other2 ) ).to.be.false;
 			expect( el.isSimilar( other3 ) ).to.be.false;
@@ -261,10 +261,10 @@ describe( 'Element', () => {
 			const el3 = new Element( 'p' );
 			const el4 = new Element( 'p' );
 
-			el1.addClass( 'foo', 'bar' );
-			el2.addClass( 'bar', 'foo' );
-			el3.addClass( 'baz' );
-			el4.addClass( 'baz', 'bar' );
+			el1._addClass( [ 'foo', 'bar' ] );
+			el2._addClass( [ 'bar', 'foo' ] );
+			el3._addClass( 'baz' );
+			el4._addClass( [ 'baz', 'bar' ] );
 
 			expect( el1.isSimilar( el2 ) ).to.be.true;
 			expect( el1.isSimilar( el3 ) ).to.be.false;
@@ -277,13 +277,13 @@ describe( 'Element', () => {
 			const el3 = new Element( 'p' );
 			const el4 = new Element( 'p' );
 
-			el1.setStyle( 'color', 'red' );
-			el1.setStyle( 'top', '10px' );
-			el2.setStyle( 'top', '20px' );
-			el3.setStyle( 'top', '10px' );
-			el3.setStyle( 'color', 'red' );
-			el4.setStyle( 'color', 'blue' );
-			el4.setStyle( 'top', '10px' );
+			el1._setStyle( 'color', 'red' );
+			el1._setStyle( 'top', '10px' );
+			el2._setStyle( 'top', '20px' );
+			el3._setStyle( 'top', '10px' );
+			el3._setStyle( 'color', 'red' );
+			el4._setStyle( 'color', 'blue' );
+			el4._setStyle( 'top', '10px' );
 
 			expect( el1.isSimilar( el2 ) ).to.be.false;
 			expect( el1.isSimilar( el3 ) ).to.be.true;
@@ -430,16 +430,16 @@ describe( 'Element', () => {
 			el = new Element( 'p' );
 		} );
 
-		describe( 'setAttribute', () => {
+		describe( '_setAttribute', () => {
 			it( 'should set attribute', () => {
-				el.setAttribute( 'foo', 'bar' );
+				el._setAttribute( 'foo', 'bar' );
 
 				expect( el._attrs.has( 'foo' ) ).to.be.true;
 				expect( el._attrs.get( 'foo' ) ).to.equal( 'bar' );
 			} );
 
 			it( 'should cast attribute value to a string', () => {
-				el.setAttribute( 'foo', true );
+				el._setAttribute( 'foo', true );
 
 				expect( el._attrs.get( 'foo' ) ).to.equal( 'true' );
 			} );
@@ -450,11 +450,11 @@ describe( 'Element', () => {
 					done();
 				} );
 
-				el.setAttribute( 'foo', 'bar' );
+				el._setAttribute( 'foo', 'bar' );
 			} );
 
 			it( 'should set class', () => {
-				el.setAttribute( 'class', 'foo bar' );
+				el._setAttribute( 'class', 'foo bar' );
 
 				expect( el._attrs.has( 'class' ) ).to.be.false;
 				expect( el._classes.has( 'foo' ) ).to.be.true;
@@ -462,8 +462,8 @@ describe( 'Element', () => {
 			} );
 
 			it( 'should replace all existing classes', () => {
-				el.setAttribute( 'class', 'foo bar baz' );
-				el.setAttribute( 'class', 'qux' );
+				el._setAttribute( 'class', 'foo bar baz' );
+				el._setAttribute( 'class', 'qux' );
 
 				expect( el._classes.has( 'foo' ) ).to.be.false;
 				expect( el._classes.has( 'bar' ) ).to.be.false;
@@ -472,9 +472,9 @@ describe( 'Element', () => {
 			} );
 
 			it( 'should replace all styles', () => {
-				el.setStyle( 'color', 'red' );
-				el.setStyle( 'top', '10px' );
-				el.setAttribute( 'style', 'border:none' );
+				el._setStyle( 'color', 'red' );
+				el._setStyle( 'top', '10px' );
+				el._setAttribute( 'style', 'border:none' );
 
 				expect( el.hasStyle( 'color' ) ).to.be.false;
 				expect( el.hasStyle( 'top' ) ).to.be.false;
@@ -485,14 +485,14 @@ describe( 'Element', () => {
 
 		describe( 'getAttribute', () => {
 			it( 'should return attribute', () => {
-				el.setAttribute( 'foo', 'bar' );
+				el._setAttribute( 'foo', 'bar' );
 
 				expect( el.getAttribute( 'foo' ) ).to.equal( 'bar' );
 				expect( el.getAttribute( 'bom' ) ).to.not.be.ok;
 			} );
 
 			it( 'should return class attribute', () => {
-				el.addClass( 'foo', 'bar' );
+				el._addClass( [ 'foo', 'bar' ] );
 
 				expect( el.getAttribute( 'class' ) ).to.equal( 'foo bar' );
 			} );
@@ -502,8 +502,8 @@ describe( 'Element', () => {
 			} );
 
 			it( 'should return style attribute', () => {
-				el.setStyle( 'color', 'red' );
-				el.setStyle( 'top', '10px' );
+				el._setStyle( 'color', 'red' );
+				el._setStyle( 'top', '10px' );
 
 				expect( el.getAttribute( 'style' ) ).to.equal( 'color:red;top:10px;' );
 			} );
@@ -515,17 +515,17 @@ describe( 'Element', () => {
 
 		describe( 'getAttributes', () => {
 			it( 'should return attributes', () => {
-				el.setAttribute( 'foo', 'bar' );
-				el.setAttribute( 'abc', 'xyz' );
+				el._setAttribute( 'foo', 'bar' );
+				el._setAttribute( 'abc', 'xyz' );
 
 				expect( Array.from( el.getAttributes() ) ).to.deep.equal( [ [ 'foo', 'bar' ], [ 'abc', 'xyz' ] ] );
 			} );
 
 			it( 'should return class and style attribute', () => {
-				el.setAttribute( 'class', 'abc' );
-				el.setAttribute( 'style', 'width:20px;' );
-				el.addClass( 'xyz' );
-				el.setStyle( 'font-weight', 'bold' );
+				el._setAttribute( 'class', 'abc' );
+				el._setAttribute( 'style', 'width:20px;' );
+				el._addClass( 'xyz' );
+				el._setStyle( 'font-weight', 'bold' );
 
 				expect( Array.from( el.getAttributes() ) ).to.deep.equal( [
 					[ 'class', 'abc xyz' ], [ 'style', 'width:20px;font-weight:bold;' ]
@@ -535,7 +535,7 @@ describe( 'Element', () => {
 
 		describe( 'hasAttribute', () => {
 			it( 'should return true if element has attribute', () => {
-				el.setAttribute( 'foo', 'bar' );
+				el._setAttribute( 'foo', 'bar' );
 
 				expect( el.hasAttribute( 'foo' ) ).to.be.true;
 				expect( el.hasAttribute( 'bom' ) ).to.be.false;
@@ -543,21 +543,21 @@ describe( 'Element', () => {
 
 			it( 'should return true if element has class attribute', () => {
 				expect( el.hasAttribute( 'class' ) ).to.be.false;
-				el.addClass( 'foo' );
+				el._addClass( 'foo' );
 				expect( el.hasAttribute( 'class' ) ).to.be.true;
 			} );
 
 			it( 'should return true if element has style attribute', () => {
 				expect( el.hasAttribute( 'style' ) ).to.be.false;
-				el.setStyle( 'border', '1px solid red' );
+				el._setStyle( 'border', '1px solid red' );
 				expect( el.hasAttribute( 'style' ) ).to.be.true;
 			} );
 		} );
 
 		describe( 'getAttributeKeys', () => {
 			it( 'should return keys', () => {
-				el.setAttribute( 'foo', true );
-				el.setAttribute( 'bar', true );
+				el._setAttribute( 'foo', true );
+				el._setAttribute( 'bar', true );
 
 				const expected = [ 'foo', 'bar' ];
 				let i = 0;
@@ -571,8 +571,8 @@ describe( 'Element', () => {
 			} );
 
 			it( 'should return class key', () => {
-				el.addClass( 'foo' );
-				el.setAttribute( 'bar', true );
+				el._addClass( 'foo' );
+				el._setAttribute( 'bar', true );
 				const expected = [ 'class', 'bar' ];
 				let i = 0;
 
@@ -583,8 +583,8 @@ describe( 'Element', () => {
 			} );
 
 			it( 'should return style key', () => {
-				el.setStyle( 'color', 'black' );
-				el.setAttribute( 'bar', true );
+				el._setStyle( 'color', 'black' );
+				el._setAttribute( 'bar', true );
 				const expected = [ 'style', 'bar' ];
 				let i = 0;
 
@@ -595,13 +595,13 @@ describe( 'Element', () => {
 			} );
 		} );
 
-		describe( 'removeAttribute', () => {
+		describe( '_removeAttribute', () => {
 			it( 'should remove attributes', () => {
-				el.setAttribute( 'foo', true );
+				el._setAttribute( 'foo', true );
 
 				expect( el.hasAttribute( 'foo' ) ).to.be.true;
 
-				el.removeAttribute( 'foo' );
+				el._removeAttribute( 'foo' );
 
 				expect( el.hasAttribute( 'foo' ) ).to.be.false;
 
@@ -609,20 +609,20 @@ describe( 'Element', () => {
 			} );
 
 			it( 'should fire change event with attributes type', done => {
-				el.setAttribute( 'foo', 'bar' );
+				el._setAttribute( 'foo', 'bar' );
 				el.once( 'change:attributes', eventInfo => {
 					expect( eventInfo.source ).to.equal( el );
 					done();
 				} );
 
-				el.removeAttribute( 'foo' );
+				el._removeAttribute( 'foo' );
 			} );
 
 			it( 'should remove class attribute', () => {
-				el.addClass( 'foo', 'bar' );
+				el._addClass( [ 'foo', 'bar' ] );
 				const el2 = new Element( 'p' );
-				const removed1 = el.removeAttribute( 'class' );
-				const removed2 = el2.removeAttribute( 'class' );
+				const removed1 = el._removeAttribute( 'class' );
+				const removed2 = el2._removeAttribute( 'class' );
 
 				expect( el.hasAttribute( 'class' ) ).to.be.false;
 				expect( el.hasClass( 'foo' ) ).to.be.false;
@@ -632,11 +632,11 @@ describe( 'Element', () => {
 			} );
 
 			it( 'should remove style attribute', () => {
-				el.setStyle( 'color', 'red' );
-				el.setStyle( 'position', 'fixed' );
+				el._setStyle( 'color', 'red' );
+				el._setStyle( 'position', 'fixed' );
 				const el2 = new Element( 'p' );
-				const removed1 = el.removeAttribute( 'style' );
-				const removed2 = el2.removeAttribute( 'style' );
+				const removed1 = el._removeAttribute( 'style' );
+				const removed2 = el2._removeAttribute( 'style' );
 
 				expect( el.hasAttribute( 'style' ) ).to.be.false;
 				expect( el.hasStyle( 'color' ) ).to.be.false;
@@ -654,9 +654,9 @@ describe( 'Element', () => {
 			el = new Element( 'p' );
 		} );
 
-		describe( 'addClass', () => {
+		describe( '_addClass()', () => {
 			it( 'should add single class', () => {
-				el.addClass( 'one' );
+				el._addClass( 'one' );
 
 				expect( el._classes.has( 'one' ) ).to.be.true;
 			} );
@@ -667,11 +667,11 @@ describe( 'Element', () => {
 					done();
 				} );
 
-				el.addClass( 'one' );
+				el._addClass( 'one' );
 			} );
 
 			it( 'should add multiple classes', () => {
-				el.addClass( 'one', 'two', 'three' );
+				el._addClass( [ 'one', 'two', 'three' ] );
 
 				expect( el._classes.has( 'one' ) ).to.be.true;
 				expect( el._classes.has( 'two' ) ).to.be.true;
@@ -679,11 +679,11 @@ describe( 'Element', () => {
 			} );
 		} );
 
-		describe( 'removeClass', () => {
+		describe( '_removeClass()', () => {
 			it( 'should remove single class', () => {
-				el.addClass( 'one', 'two', 'three' );
+				el._addClass( [ 'one', 'two', 'three' ] );
 
-				el.removeClass( 'one' );
+				el._removeClass( 'one' );
 
 				expect( el._classes.has( 'one' ) ).to.be.false;
 				expect( el._classes.has( 'two' ) ).to.be.true;
@@ -691,18 +691,18 @@ describe( 'Element', () => {
 			} );
 
 			it( 'should fire change event with attributes type', done => {
-				el.addClass( 'one' );
+				el._addClass( 'one' );
 				el.once( 'change:attributes', eventInfo => {
 					expect( eventInfo.source ).to.equal( el );
 					done();
 				} );
 
-				el.removeClass( 'one' );
+				el._removeClass( 'one' );
 			} );
 
 			it( 'should remove multiple classes', () => {
-				el.addClass( 'one', 'two', 'three', 'four' );
-				el.removeClass( 'one', 'two', 'three' );
+				el._addClass( [ 'one', 'two', 'three', 'four' ] );
+				el._removeClass( [ 'one', 'two', 'three' ] );
 
 				expect( el._classes.has( 'one' ) ).to.be.false;
 				expect( el._classes.has( 'two' ) ).to.be.false;
@@ -713,7 +713,7 @@ describe( 'Element', () => {
 
 		describe( 'hasClass', () => {
 			it( 'should check if element has a class', () => {
-				el.addClass( 'one', 'two', 'three' );
+				el._addClass( [ 'one', 'two', 'three' ] );
 
 				expect( el.hasClass( 'one' ) ).to.be.true;
 				expect( el.hasClass( 'two' ) ).to.be.true;
@@ -722,7 +722,7 @@ describe( 'Element', () => {
 			} );
 
 			it( 'should check if element has multiple classes', () => {
-				el.addClass( 'one', 'two', 'three' );
+				el._addClass( [ 'one', 'two', 'three' ] );
 
 				expect( el.hasClass( 'one', 'two' ) ).to.be.true;
 				expect( el.hasClass( 'three', 'two' ) ).to.be.true;
@@ -734,7 +734,7 @@ describe( 'Element', () => {
 		describe( 'getClassNames', () => {
 			it( 'should return iterator with all class names', () => {
 				const names = [ 'one', 'two', 'three' ];
-				el.addClass( ...names );
+				el._addClass( names );
 				const iterator = el.getClassNames();
 				let i = 0;
 
@@ -752,9 +752,9 @@ describe( 'Element', () => {
 			el = new Element( 'p' );
 		} );
 
-		describe( 'setStyle', () => {
+		describe( '_setStyle()', () => {
 			it( 'should set element style', () => {
-				el.setStyle( 'color', 'red' );
+				el._setStyle( 'color', 'red' );
 
 				expect( el._styles.has( 'color' ) ).to.be.true;
 				expect( el._styles.get( 'color' ) ).to.equal( 'red' );
@@ -766,11 +766,11 @@ describe( 'Element', () => {
 					done();
 				} );
 
-				el.setStyle( 'color', 'red' );
+				el._setStyle( 'color', 'red' );
 			} );
 
 			it( 'should set multiple styles by providing an object', () => {
-				el.setStyle( {
+				el._setStyle( {
 					color: 'red',
 					position: 'fixed'
 				} );
@@ -784,7 +784,7 @@ describe( 'Element', () => {
 
 		describe( 'getStyle', () => {
 			it( 'should get style', () => {
-				el.setStyle( {
+				el._setStyle( {
 					color: 'red',
 					border: '1px solid red'
 				} );
@@ -798,7 +798,7 @@ describe( 'Element', () => {
 			it( 'should return iterator with all style names', () => {
 				const names = [ 'color', 'position' ];
 
-				el.setStyle( {
+				el._setStyle( {
 					color: 'red',
 					position: 'absolute'
 				} );
@@ -814,14 +814,14 @@ describe( 'Element', () => {
 
 		describe( 'hasStyle', () => {
 			it( 'should check if element has a style', () => {
-				el.setStyle( 'padding-top', '10px' );
+				el._setStyle( 'padding-top', '10px' );
 
 				expect( el.hasStyle( 'padding-top' ) ).to.be.true;
 				expect( el.hasStyle( 'padding-left' ) ).to.be.false;
 			} );
 
 			it( 'should check if element has multiple styles', () => {
-				el.setStyle( {
+				el._setStyle( {
 					'padding-top': '10px',
 					'margin-left': '10px',
 					'color': '10px;'
@@ -833,31 +833,31 @@ describe( 'Element', () => {
 			} );
 		} );
 
-		describe( 'removeStyle', () => {
+		describe( '_removeStyle()', () => {
 			it( 'should remove style', () => {
-				el.setStyle( 'padding-top', '10px' );
-				el.removeStyle( 'padding-top' );
+				el._setStyle( 'padding-top', '10px' );
+				el._removeStyle( 'padding-top' );
 
 				expect( el.hasStyle( 'padding-top' ) ).to.be.false;
 			} );
 
 			it( 'should fire change event with attributes type', done => {
-				el.setStyle( 'color', 'red' );
+				el._setStyle( 'color', 'red' );
 				el.once( 'change:attributes', eventInfo => {
 					expect( eventInfo.source ).to.equal( el );
 					done();
 				} );
 
-				el.removeStyle( 'color' );
+				el._removeStyle( 'color' );
 			} );
 
 			it( 'should remove multiple styles', () => {
-				el.setStyle( {
+				el._setStyle( {
 					'padding-top': '10px',
 					'margin-top': '10px',
 					'color': 'red'
 				} );
-				el.removeStyle( 'padding-top', 'margin-top' );
+				el._removeStyle( [ 'padding-top', 'margin-top' ] );
 
 				expect( el.hasStyle( 'padding-top' ) ).to.be.false;
 				expect( el.hasStyle( 'margin-top' ) ).to.be.false;
@@ -964,7 +964,7 @@ describe( 'Element', () => {
 	describe( 'custom properties', () => {
 		it( 'should allow to set and get custom properties', () => {
 			const el = new Element( 'p' );
-			el.setCustomProperty( 'foo', 'bar' );
+			el._setCustomProperty( 'foo', 'bar' );
 
 			expect( el.getCustomProperty( 'foo' ) ).to.equal( 'bar' );
 		} );
@@ -972,7 +972,7 @@ describe( 'Element', () => {
 		it( 'should allow to add symbol property', () => {
 			const el = new Element( 'p' );
 			const symbol = Symbol( 'custom' );
-			el.setCustomProperty( symbol, 'bar' );
+			el._setCustomProperty( symbol, 'bar' );
 
 			expect( el.getCustomProperty( symbol ) ).to.equal( 'bar' );
 		} );
@@ -980,14 +980,14 @@ describe( 'Element', () => {
 		it( 'should allow to remove custom property', () => {
 			const el = new Element( 'foo' );
 			const symbol = Symbol( 'quix' );
-			el.setCustomProperty( 'bar', 'baz' );
-			el.setCustomProperty( symbol, 'test' );
+			el._setCustomProperty( 'bar', 'baz' );
+			el._setCustomProperty( symbol, 'test' );
 
 			expect( el.getCustomProperty( 'bar' ) ).to.equal( 'baz' );
 			expect( el.getCustomProperty( symbol ) ).to.equal( 'test' );
 
-			el.removeCustomProperty( 'bar' );
-			el.removeCustomProperty( symbol );
+			el._removeCustomProperty( 'bar' );
+			el._removeCustomProperty( symbol );
 
 			expect( el.getCustomProperty( 'bar' ) ).to.be.undefined;
 			expect( el.getCustomProperty( symbol ) ).to.be.undefined;
@@ -995,9 +995,9 @@ describe( 'Element', () => {
 
 		it( 'should allow to iterate over custom properties', () => {
 			const el = new Element( 'p' );
-			el.setCustomProperty( 'foo', 1 );
-			el.setCustomProperty( 'bar', 2 );
-			el.setCustomProperty( 'baz', 3 );
+			el._setCustomProperty( 'foo', 1 );
+			el._setCustomProperty( 'bar', 2 );
+			el._setCustomProperty( 'baz', 3 );
 
 			const properties = [ ...el.getCustomProperties() ];
 
@@ -1019,7 +1019,7 @@ describe( 'Element', () => {
 
 		it( 'should return classes in sorted order', () => {
 			const el = new Element( 'fruit' );
-			el.addClass( 'banana', 'lemon', 'apple' );
+			el._addClass( [ 'banana', 'lemon', 'apple' ] );
 
 			expect( el.getIdentity() ).to.equal( 'fruit class="apple,banana,lemon"' );
 		} );
@@ -1049,7 +1049,7 @@ describe( 'Element', () => {
 				style: 'text-align:center;border-radius:10px'
 			} );
 
-			el.addClass( 'three', 'two', 'one' );
+			el._addClass( [ 'three', 'two', 'one' ] );
 
 			expect( el.getIdentity() ).to.equal(
 				'baz class="one,three,two" style="border-radius:10px;text-align:center" bar="two" foo="one"'

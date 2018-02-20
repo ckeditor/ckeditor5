@@ -6,19 +6,20 @@
 /* globals document */
 
 import KeyObserver from '../../../src/view/observer/keyobserver';
-import ViewDocument from '../../../src/view/document';
+import View from '../../../src/view/view';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 describe( 'KeyObserver', () => {
-	let viewDocument, observer;
+	let view, viewDocument, observer;
 
 	beforeEach( () => {
-		viewDocument = new ViewDocument();
-		observer = viewDocument.getObserver( KeyObserver );
+		view = new View();
+		viewDocument = view.document;
+		observer = view.getObserver( KeyObserver );
 	} );
 
 	afterEach( () => {
-		viewDocument.destroy();
+		view.destroy();
 	} );
 
 	it( 'should define domEventType', () => {

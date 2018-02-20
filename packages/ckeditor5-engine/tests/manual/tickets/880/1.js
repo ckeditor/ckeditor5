@@ -18,7 +18,7 @@ ClassicEditor
 	.then( editor => {
 		window.editor = editor;
 
-		editor.editing.view.on( 'selectionChange', () => {
+		editor.editing.view.document.on( 'selectionChange', () => {
 			editor.model.change( () => {
 			} );
 			console.log( 'selectionChange', ( new Date() ).getTime() );

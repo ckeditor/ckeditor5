@@ -13,14 +13,14 @@ import DomEventObserver from './domeventobserver';
  * {@link module:engine/view/document~Document#event:click Click} event observer.
  *
  * Note that this observer is not available by default. To make it available it needs to be added to
- * {@link module:engine/view/document~Document}
- * by a {@link module:engine/view/document~Document#addObserver} method.
+ * {@link module:engine/view/view~View view controller}
+ * by a {@link module:engine/view/view~View#addObserver} method.
  *
  * @extends module:engine/view/observer/domeventobserver~DomEventObserver
  */
 export default class ClickObserver extends DomEventObserver {
-	constructor( document ) {
-		super( document );
+	constructor( view ) {
+		super( view );
 
 		this.domEventType = 'click';
 	}
@@ -37,7 +37,7 @@ export default class ClickObserver extends DomEventObserver {
  *
  * Note that this event is not available by default. To make it available
  * {@link module:engine/view/observer/clickobserver~ClickObserver} needs to be added
- * to {@link module:engine/view/document~Document} by a {@link module:engine/view/document~Document#addObserver} method.
+ * to {@link module:engine/view/view~View} by a {@link module:engine/view/view~View#addObserver} method.
  *
  * @see module:engine/view/observer/clickobserver~ClickObserver
  * @event module:engine/view/document~Document#event:click

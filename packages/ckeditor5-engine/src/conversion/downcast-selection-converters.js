@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-import viewWriter from '../view/writer';
-
 /**
  * Contains {@link module:engine/model/selection~Selection model selection} to
  * {@link module:engine/view/selection~Selection view selection} converters for
@@ -23,14 +21,14 @@ import viewWriter from '../view/writer';
  * @returns {Function} Selection converter.
  */
 export function convertRangeSelection() {
-	return ( evt, data, consumable, conversionApi ) => {
+	return ( evt, data, conversionApi ) => {
 		const selection = data.selection;
 
 		if ( selection.isCollapsed ) {
 			return;
 		}
 
-		if ( !consumable.consume( selection, 'selection' ) ) {
+		if ( !conversionApi.consumable.consume( selection, 'selection' ) ) {
 			return;
 		}
 
@@ -41,7 +39,7 @@ export function convertRangeSelection() {
 			viewRanges.push( viewRange );
 		}
 
-		conversionApi.viewSelection.setTo( viewRanges, selection.isBackward );
+		conversionApi.writer.setSelection( viewRanges, selection.isBackward );
 	};
 }
 
@@ -68,22 +66,23 @@ export function convertRangeSelection() {
  * @returns {Function} Selection converter.
  */
 export function convertCollapsedSelection() {
-	return ( evt, data, consumable, conversionApi ) => {
+	return ( evt, data, conversionApi ) => {
 		const selection = data.selection;
 
 		if ( !selection.isCollapsed ) {
 			return;
 		}
 
-		if ( !consumable.consume( selection, 'selection' ) ) {
+		if ( !conversionApi.consumable.consume( selection, 'selection' ) ) {
 			return;
 		}
 
+		const viewWriter = conversionApi.writer;
 		const modelPosition = selection.getFirstPosition();
 		const viewPosition = conversionApi.mapper.toViewPosition( modelPosition );
 		const brokenPosition = viewWriter.breakAttributes( viewPosition );
 
-		conversionApi.viewSelection.setTo( brokenPosition );
+		viewWriter.setSelection( brokenPosition );
 	};
 }
 
@@ -112,17 +111,20 @@ export function convertCollapsedSelection() {
  * @returns {Function} Selection converter.
  */
 export function clearAttributes() {
-	return ( evt, data, consumable, conversionApi ) => {
-		for ( const range of conversionApi.viewSelection.getRanges() ) {
+	return ( evt, data, conversionApi ) => {
+		const viewWriter = conversionApi.writer;
+		const viewSelection = viewWriter.document.selection;
+
+		for ( const range of viewSelection.getRanges() ) {
 			// Not collapsed selection should not have artifacts.
 			if ( range.isCollapsed ) {
 				// Position might be in the node removed by the view writer.
 				if ( range.end.parent.document ) {
-					viewWriter.mergeAttributes( range.start );
+					conversionApi.writer.mergeAttributes( range.start );
 				}
 			}
 		}
-		conversionApi.viewSelection.setTo( null );
+		viewWriter.setSelection( null );
 	};
 }
 
@@ -131,5 +133,5 @@ export function clearAttributes() {
  * {@link module:engine/model/selection~Selection model selection} conversion.
  */
 export function clearFakeSelection() {
-	return ( evt, data, consumable, conversionApi ) => conversionApi.viewSelection.setFake( false );
+	return ( evt, data, conversionApi ) => conversionApi.writer.setFakeSelection( false );
 }

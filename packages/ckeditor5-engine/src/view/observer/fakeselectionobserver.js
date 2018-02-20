@@ -25,10 +25,10 @@ export default class FakeSelectionObserver extends Observer {
 	/**
 	 * Creates new FakeSelectionObserver instance.
 	 *
-	 * @param {module:engine/view/document~Document} document
+	 * @param {module:engine/view/view~View} view
 	 */
-	constructor( document ) {
-		super( document );
+	constructor( view ) {
+		super( view );
 
 		/**
 		 * Fires debounced event `selectionChangeDone`. It uses `lodash#debounce` method to delay function call.
@@ -83,16 +83,16 @@ export default class FakeSelectionObserver extends Observer {
 	_handleSelectionMove( keyCode ) {
 		const selection = this.document.selection;
 		const newSelection = new ViewSelection( selection );
-		newSelection.setFake( false );
+		newSelection._setFake( false );
 
 		// Left or up arrow pressed - move selection to start.
 		if ( keyCode == keyCodes.arrowleft || keyCode == keyCodes.arrowup ) {
-			newSelection.setTo( newSelection.getFirstPosition() );
+			newSelection._setTo( newSelection.getFirstPosition() );
 		}
 
 		// Right or down arrow pressed - move selection to end.
 		if ( keyCode == keyCodes.arrowright || keyCode == keyCodes.arrowdown ) {
-			newSelection.setTo( newSelection.getLastPosition() );
+			newSelection._setTo( newSelection.getLastPosition() );
 		}
 
 		const data = {

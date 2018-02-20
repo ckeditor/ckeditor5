@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
-import { wrap } from '../../../src/view/writer';
-import Document from '../../../src/view/document';
+import Writer from '../../../src/view/writer';
+import View from '../../../src/view/view';
 import DocumentFragment from '../../../src/view/documentfragment';
 import Element from '../../../src/view/element';
 import ContainerElement from '../../../src/view/containerelement';
@@ -17,9 +17,16 @@ import Text from '../../../src/view/text';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { stringify, parse } from '../../../src/dev-utils/view';
 import createViewRoot from '../_utils/createroot';
+import Document from '../../../src/view/document';
 
-describe( 'writer', () => {
-	describe( 'wrap', () => {
+describe( 'Writer', () => {
+	describe( 'wrap()', () => {
+		let writer;
+
+		before( () => {
+			writer = new Writer( new Document() );
+		} );
+
 		describe( 'non-collapsed range', () => {
 			/**
 			 * Executes test using `parse` and `stringify` utils functions.
@@ -30,7 +37,7 @@ describe( 'writer', () => {
 			 */
 			function test( input, wrapAttribute, expected ) {
 				const { view, selection } = parse( input );
-				const newRange = wrap( selection.getFirstRange(), parse( wrapAttribute ) );
+				const newRange = writer.wrap( selection.getFirstRange(), parse( wrapAttribute ) );
 
 				expect( stringify( view.root, newRange, { showType: true, showPriority: true } ) ).to.equal( expected );
 			}
@@ -60,7 +67,7 @@ describe( 'writer', () => {
 				const b = new Element( 'b' );
 
 				expect( () => {
-					wrap( range, b );
+					writer.wrap( range, b );
 				} ).to.throw( CKEditorError, 'view-writer-wrap-invalid-attribute' );
 			} );
 
@@ -74,7 +81,7 @@ describe( 'writer', () => {
 				const b = new AttributeElement( 'b' );
 
 				expect( () => {
-					wrap( range, b );
+					writer.wrap( range, b );
 				} ).to.throw( CKEditorError, 'view-writer-invalid-range-container' );
 			} );
 
@@ -83,7 +90,7 @@ describe( 'writer', () => {
 				const b = new AttributeElement( 'b' );
 
 				expect( () => {
-					wrap( Range.createFromParentsAndOffsets( el, 0, el, 0 ), b );
+					writer.wrap( Range.createFromParentsAndOffsets( el, 0, el, 0 ), b );
 				} ).to.throw( CKEditorError, 'view-writer-invalid-range-container' );
 			} );
 
@@ -351,7 +358,7 @@ describe( 'writer', () => {
 				const range = Range.createFromParentsAndOffsets( emptyElement, 0, container, 1 );
 
 				expect( () => {
-					wrap( range, new AttributeElement( 'b' ) );
+					writer.wrap( range, new AttributeElement( 'b' ) );
 				} ).to.throw( CKEditorError, 'view-writer-cannot-break-empty-element' );
 			} );
 
@@ -369,7 +376,7 @@ describe( 'writer', () => {
 				const range = Range.createFromParentsAndOffsets( uiElement, 0, container, 1 );
 
 				expect( () => {
-					wrap( range, new AttributeElement( 'b' ) );
+					writer.wrap( range, new AttributeElement( 'b' ) );
 				} ).to.throw( CKEditorError, 'view-writer-cannot-break-ui-element' );
 			} );
 
@@ -427,15 +434,16 @@ describe( 'writer', () => {
 		} );
 
 		describe( 'collapsed range', () => {
-			let viewDocument, viewRoot;
+			let view, viewDocument, viewRoot;
 
 			beforeEach( () => {
-				viewDocument = new Document();
+				view = new View();
+				viewDocument = view.document;
 				viewRoot = createViewRoot( viewDocument );
 			} );
 
 			afterEach( () => {
-				viewDocument.destroy();
+				view.destroy();
 			} );
 
 			/**
@@ -447,9 +455,9 @@ describe( 'writer', () => {
 			 */
 			function test( input, wrapAttribute, expected ) {
 				const { view, selection } = parse( input, { rootElement: viewRoot } );
-				viewDocument.selection.setTo( selection );
+				viewDocument.selection._setTo( selection );
 
-				const newPosition = wrap( selection.getFirstRange(), parse( wrapAttribute ) );
+				const newPosition = writer.wrap( selection.getFirstRange(), parse( wrapAttribute ) );
 
 				// Moving parsed elements to a document fragment so the view root is not shown in `stringify`.
 				const viewChildren = new DocumentFragment( view.getChildren() );
@@ -463,7 +471,7 @@ describe( 'writer', () => {
 				const b = new Element( 'b' );
 
 				expect( () => {
-					wrap( new Range( position ), b );
+					writer.wrap( new Range( position ), b );
 				} ).to.throw( CKEditorError, 'view-writer-wrap-invalid-attribute' );
 			} );
 

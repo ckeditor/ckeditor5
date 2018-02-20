@@ -13,7 +13,7 @@ describe( 'RootEditableElement', () => {
 	describe( 'constructor()', () => {
 		it( 'should create an element with default root name', () => {
 			const root = new RootEditableElement( 'div' );
-			root.document = createDocumentMock();
+			root._document = createDocumentMock();
 
 			expect( root ).to.be.instanceof( EditableElement );
 			expect( root ).to.be.instanceof( ContainerElement );
@@ -27,7 +27,7 @@ describe( 'RootEditableElement', () => {
 
 		it( 'should create an element with custom root name', () => {
 			const root = new RootEditableElement( 'h1' );
-			root.document = createDocumentMock();
+			root._document = createDocumentMock();
 			root.rootName = 'header';
 
 			expect( root.rootName ).to.equal( 'header' );
@@ -83,12 +83,12 @@ describe( 'RootEditableElement', () => {
 
 	it( 'should be cloned properly', () => {
 		const root = new RootEditableElement( 'h1' );
-		root.document = createDocumentMock();
+		root._document = createDocumentMock();
 		root.rootName = 'header';
 
 		const newRoot = root.clone();
 
-		expect( newRoot.document ).to.equal( root.document );
+		expect( newRoot._document ).to.equal( root._document );
 		expect( newRoot.rootName ).to.equal( root.rootName );
 	} );
 } );

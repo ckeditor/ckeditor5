@@ -13,7 +13,6 @@ import {
 	downcastElementToElement
 } from '../../src/conversion/downcast-converters';
 
-import ViewEditableElement from '../../src/view/editableelement';
 import { getData } from '../../src/dev-utils/model';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
@@ -30,7 +29,6 @@ class NestedEditable extends Plugin {
 	init() {
 		const editor = this.editor;
 		const editing = editor.editing;
-		const viewDocument = editing.view;
 		const schema = editor.model.schema;
 
 		schema.register( 'figure', {
@@ -60,15 +58,15 @@ class NestedEditable extends Plugin {
 
 		editor.conversion.for( 'downcast' ).add( downcastElementToElement( {
 			model: 'figcaption',
-			view: () => {
-				const element = new ViewEditableElement( 'figcaption', { contenteditable: 'true' } );
-				element.document = viewDocument;
+			view: ( modelItem, conversionApi ) => {
+				const viewWriter = conversionApi.writer;
+				const element = viewWriter.createEditableElement( 'figcaption', { contenteditable: 'true' } );
 
 				element.on( 'change:isFocused', ( evt, property, is ) => {
 					if ( is ) {
-						element.addClass( 'focused' );
+						editing.view.change( writer => writer.addClass( 'focused', element ) );
 					} else {
-						element.removeClass( 'focused' );
+						editing.view.change( writer => writer.removeClass( 'focused', element ) );
 					}
 				} );
 

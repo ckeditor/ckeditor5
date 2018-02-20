@@ -3,12 +3,17 @@
  * For licensing, see LICENSE.md.
  */
 
-import { rename } from '../../../src/view/writer';
+import Writer from '../../../src/view/writer';
 import { parse } from '../../../src/dev-utils/view';
+import Document from '../../../src/view/document';
 
-describe( 'writer', () => {
-	describe( 'rename', () => {
-		let root, foo;
+describe( 'Writer', () => {
+	describe( 'rename()', () => {
+		let root, foo, writer;
+
+		before( () => {
+			writer = new Writer( new Document() );
+		} );
 
 		beforeEach( () => {
 			root = parse( '<container:div><container:foo foo="1">xxx</container:foo></container:div>' );
@@ -19,7 +24,7 @@ describe( 'writer', () => {
 		it( 'should rename given element by inserting a new element in the place of the old one', () => {
 			const text = foo.getChild( 0 );
 
-			rename( foo, 'bar' );
+			writer.rename( foo, 'bar' );
 
 			const bar = root.getChild( 0 );
 
@@ -30,7 +35,7 @@ describe( 'writer', () => {
 		} );
 
 		it( 'should return a reference to the inserted element', () => {
-			const bar = rename( foo, 'bar' );
+			const bar = writer.rename( foo, 'bar' );
 
 			expect( bar ).to.equal( root.getChild( 0 ) );
 		} );

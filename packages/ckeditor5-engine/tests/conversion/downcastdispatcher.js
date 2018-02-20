@@ -10,15 +10,17 @@ import ModelElement from '../../src/model/element';
 import ModelRange from '../../src/model/range';
 import ModelPosition from '../../src/model/position';
 
+import View from '../../src/view/view';
 import ViewContainerElement from '../../src/view/containerelement';
 
 describe( 'DowncastDispatcher', () => {
-	let dispatcher, doc, root, differStub, model;
+	let dispatcher, doc, root, differStub, model, view;
 
 	beforeEach( () => {
 		model = new Model();
+		view = new View();
 		doc = model.document;
-		dispatcher = new DowncastDispatcher( model );
+		dispatcher = new DowncastDispatcher();
 		root = doc.createRoot();
 
 		differStub = {
@@ -31,7 +33,7 @@ describe( 'DowncastDispatcher', () => {
 	describe( 'constructor()', () => {
 		it( 'should create DowncastDispatcher with given api', () => {
 			const apiObj = {};
-			const dispatcher = new DowncastDispatcher( model, { apiObj } );
+			const dispatcher = new DowncastDispatcher( { apiObj } );
 
 			expect( dispatcher.conversionApi.apiObj ).to.equal( apiObj );
 		} );
@@ -46,7 +48,9 @@ describe( 'DowncastDispatcher', () => {
 
 			differStub.getChanges = () => [ { type: 'insert', position, length: 1 } ];
 
-			dispatcher.convertChanges( differStub );
+			view.change( writer => {
+				dispatcher.convertChanges( differStub, writer );
+			} );
 
 			expect( dispatcher.convertInsert.calledOnce ).to.be.true;
 			expect( dispatcher.convertInsert.firstCall.args[ 0 ].isEqual( range ) ).to.be.true;
@@ -59,7 +63,9 @@ describe( 'DowncastDispatcher', () => {
 
 			differStub.getChanges = () => [ { type: 'remove', position, length: 2, name: '$text' } ];
 
-			dispatcher.convertChanges( differStub );
+			view.change( writer => {
+				dispatcher.convertChanges( differStub, writer );
+			} );
 
 			expect( dispatcher.convertRemove.calledWith( position, 2, '$text' ) ).to.be.true;
 		} );
@@ -74,7 +80,9 @@ describe( 'DowncastDispatcher', () => {
 				{ type: 'attribute', position, range, attributeKey: 'key', attributeOldValue: null, attributeNewValue: 'foo' }
 			];
 
-			dispatcher.convertChanges( differStub );
+			view.change( writer => {
+				dispatcher.convertChanges( differStub, writer );
+			} );
 
 			expect( dispatcher.convertAttribute.calledWith( range, 'key', null, 'foo' ) ).to.be.true;
 		} );
@@ -94,7 +102,9 @@ describe( 'DowncastDispatcher', () => {
 				{ type: 'insert', position, length: 3 },
 			];
 
-			dispatcher.convertChanges( differStub );
+			view.change( writer => {
+				dispatcher.convertChanges( differStub, writer );
+			} );
 
 			expect( dispatcher.convertInsert.calledTwice ).to.be.true;
 			expect( dispatcher.convertRemove.calledOnce ).to.be.true;
@@ -112,7 +122,9 @@ describe( 'DowncastDispatcher', () => {
 				{ name: 'bar', range: barRange }
 			];
 
-			dispatcher.convertChanges( differStub );
+			view.change( writer => {
+				dispatcher.convertChanges( differStub, writer );
+			} );
 
 			expect( dispatcher.convertMarkerAdd.calledWith( 'foo', fooRange ) );
 			expect( dispatcher.convertMarkerAdd.calledWith( 'bar', barRange ) );
@@ -129,7 +141,9 @@ describe( 'DowncastDispatcher', () => {
 				{ name: 'bar', range: barRange }
 			];
 
-			dispatcher.convertChanges( differStub );
+			view.change( writer => {
+				dispatcher.convertChanges( differStub, writer );
+			} );
 
 			expect( dispatcher.convertMarkerRemove.calledWith( 'foo', fooRange ) );
 			expect( dispatcher.convertMarkerRemove.calledWith( 'bar', barRange ) );
@@ -149,7 +163,7 @@ describe( 'DowncastDispatcher', () => {
 			const loggedEvents = [];
 
 			// We will check everything connected with insert event:
-			dispatcher.on( 'insert', ( evt, data, consumable ) => {
+			dispatcher.on( 'insert', ( evt, data, conversionApi ) => {
 				// Check if the item is correct.
 				const itemId = data.item.name ? data.item.name : '$text:' + data.item.data;
 				// Check if the range is correct.
@@ -160,11 +174,11 @@ describe( 'DowncastDispatcher', () => {
 				// Check if the event name is correct.
 				expect( evt.name ).to.equal( 'insert:' + ( data.item.name || '$text' ) );
 				// Check if model consumable is correct.
-				expect( consumable.consume( data.item, 'insert' ) ).to.be.true;
+				expect( conversionApi.consumable.consume( data.item, 'insert' ) ).to.be.true;
 			} );
 
 			// Same here.
-			dispatcher.on( 'attribute', ( evt, data, consumable ) => {
+			dispatcher.on( 'attribute', ( evt, data, conversionApi ) => {
 				const itemId = data.item.name ? data.item.name : '$text:' + data.item.data;
 				const key = data.attributeKey;
 				const value = data.attributeNewValue;
@@ -173,7 +187,7 @@ describe( 'DowncastDispatcher', () => {
 				loggedEvents.push( log );
 
 				expect( evt.name ).to.equal( 'attribute:' + key + ':' + ( data.item.name || '$text' ) );
-				expect( consumable.consume( data.item, 'attribute:' + key ) ).to.be.true;
+				expect( conversionApi.consumable.consume( data.item, 'attribute:' + key ) ).to.be.true;
 			} );
 
 			dispatcher.convertInsert( range );
@@ -200,9 +214,9 @@ describe( 'DowncastDispatcher', () => {
 
 			sinon.spy( dispatcher, 'fire' );
 
-			dispatcher.on( 'insert:image', ( evt, data, consumable ) => {
-				consumable.consume( data.item.getChild( 0 ), 'insert' );
-				consumable.consume( data.item, 'attribute:bold' );
+			dispatcher.on( 'insert:image', ( evt, data, conversionApi ) => {
+				conversionApi.consumable.consume( data.item.getChild( 0 ), 'insert' );
+				conversionApi.consumable.consume( data.item, 'attribute:bold' );
 			} );
 
 			const range = ModelRange.createIn( root );
@@ -250,7 +264,7 @@ describe( 'DowncastDispatcher', () => {
 		it( 'should fire selection event', () => {
 			sinon.spy( dispatcher, 'fire' );
 
-			dispatcher.convertSelection( doc.selection, [] );
+			dispatcher.convertSelection( doc.selection, model.markers, [] );
 
 			expect( dispatcher.fire.calledWith(
 				'selection',
@@ -264,13 +278,13 @@ describe( 'DowncastDispatcher', () => {
 				writer.setAttribute( 'italic', true, ModelRange.createFromParentsAndOffsets( root, 4, root, 5 ) );
 			} );
 
-			dispatcher.on( 'selection', ( evt, data, consumable ) => {
-				expect( consumable.test( data.selection, 'selection' ) ).to.be.true;
-				expect( consumable.test( data.selection, 'attribute:bold' ) ).to.be.true;
-				expect( consumable.test( data.selection, 'attribute:italic' ) ).to.be.null;
+			dispatcher.on( 'selection', ( evt, data, conversionApi ) => {
+				expect( conversionApi.consumable.test( data.selection, 'selection' ) ).to.be.true;
+				expect( conversionApi.consumable.test( data.selection, 'attribute:bold' ) ).to.be.true;
+				expect( conversionApi.consumable.test( data.selection, 'attribute:italic' ) ).to.be.null;
 			} );
 
-			dispatcher.convertSelection( doc.selection, [] );
+			dispatcher.convertSelection( doc.selection, model.markers, [] );
 		} );
 
 		it( 'should not fire attributes events for non-collapsed selection', () => {
@@ -281,7 +295,7 @@ describe( 'DowncastDispatcher', () => {
 
 			sinon.spy( dispatcher, 'fire' );
 
-			dispatcher.convertSelection( doc.selection, [] );
+			dispatcher.convertSelection( doc.selection, model.markers, [] );
 
 			expect( dispatcher.fire.calledWith( 'attribute:bold' ) ).to.be.false;
 			expect( dispatcher.fire.calledWith( 'attribute:italic' ) ).to.be.false;
@@ -300,7 +314,7 @@ describe( 'DowncastDispatcher', () => {
 
 			sinon.spy( dispatcher, 'fire' );
 
-			dispatcher.convertSelection( doc.selection, [] );
+			dispatcher.convertSelection( doc.selection, model.markers, [] );
 
 			expect( dispatcher.fire.calledWith( 'attribute:bold' ) ).to.be.true;
 		} );
@@ -317,13 +331,13 @@ describe( 'DowncastDispatcher', () => {
 				writer.setAttribute( 'italic', true, ModelRange.createFromParentsAndOffsets( root, 4, root, 5 ) );
 			} );
 
-			dispatcher.on( 'selection', ( evt, data, consumable ) => {
-				consumable.consume( data.selection, 'attribute:bold' );
+			dispatcher.on( 'selection', ( evt, data, conversionApi ) => {
+				conversionApi.consumable.consume( data.selection, 'attribute:bold' );
 			} );
 
 			sinon.spy( dispatcher, 'fire' );
 
-			dispatcher.convertSelection( doc.selection, [] );
+			dispatcher.convertSelection( doc.selection, model.markers, [] );
 
 			expect( dispatcher.fire.calledWith( 'attribute:bold' ) ).to.be.false;
 		} );
@@ -339,7 +353,7 @@ describe( 'DowncastDispatcher', () => {
 			sinon.spy( dispatcher, 'fire' );
 
 			const markers = Array.from( model.markers.getMarkersAtPosition( doc.selection.getFirstPosition() ) );
-			dispatcher.convertSelection( doc.selection, markers );
+			dispatcher.convertSelection( doc.selection, model.markers, markers );
 
 			expect( dispatcher.fire.calledWith( 'addMarker:name' ) ).to.be.true;
 		} );
@@ -352,7 +366,7 @@ describe( 'DowncastDispatcher', () => {
 			sinon.spy( dispatcher, 'fire' );
 
 			const markers = Array.from( model.markers.getMarkersAtPosition( doc.selection.getFirstPosition() ) );
-			dispatcher.convertSelection( doc.selection, markers );
+			dispatcher.convertSelection( doc.selection, model.markers, markers );
 
 			expect( dispatcher.fire.calledWith( 'addMarker:name' ) ).to.be.false;
 		} );
@@ -371,8 +385,8 @@ describe( 'DowncastDispatcher', () => {
 			const viewFigure = new ViewContainerElement( 'figure', null, viewCaption );
 
 			// Create custom highlight handler mock.
-			viewFigure.setCustomProperty( 'addHighlight', () => { } );
-			viewFigure.setCustomProperty( 'removeHighlight', () => { } );
+			viewFigure._setCustomProperty( 'addHighlight', () => { } );
+			viewFigure._setCustomProperty( 'removeHighlight', () => { } );
 
 			// Create mapper mock.
 			dispatcher.conversionApi.mapper = {
@@ -393,7 +407,7 @@ describe( 'DowncastDispatcher', () => {
 
 			const markers = Array.from( model.markers.getMarkersAtPosition( doc.selection.getFirstPosition() ) );
 
-			dispatcher.convertSelection( doc.selection, markers );
+			dispatcher.convertSelection( doc.selection, model.markers, markers );
 
 			expect( dispatcher.fire.calledWith( 'addMarker:name' ) ).to.be.false;
 		} );
@@ -409,12 +423,12 @@ describe( 'DowncastDispatcher', () => {
 
 			sinon.spy( dispatcher, 'fire' );
 
-			dispatcher.on( 'addMarker:foo', ( evt, data, consumable ) => {
-				consumable.consume( data.item, 'addMarker:bar' );
+			dispatcher.on( 'addMarker:foo', ( evt, data, conversionApi ) => {
+				conversionApi.consumable.consume( data.item, 'addMarker:bar' );
 			} );
 
 			const markers = Array.from( model.markers.getMarkersAtPosition( doc.selection.getFirstPosition() ) );
-			dispatcher.convertSelection( doc.selection, markers );
+			dispatcher.convertSelection( doc.selection, model.markers, markers );
 
 			expect( dispatcher.fire.calledWith( 'addMarker:foo' ) ).to.be.true;
 			expect( dispatcher.fire.calledWith( 'addMarker:bar' ) ).to.be.false;
@@ -464,10 +478,10 @@ describe( 'DowncastDispatcher', () => {
 
 			const items = [];
 
-			dispatcher.on( 'addMarker:name', ( evt, data, consumable ) => {
+			dispatcher.on( 'addMarker:name', ( evt, data, conversionApi ) => {
 				expect( data.markerName ).to.equal( 'name' );
 				expect( data.markerRange.isEqual( range ) ).to.be.true;
-				expect( consumable.test( data.item, 'addMarker:name' ) );
+				expect( conversionApi.consumable.test( data.item, 'addMarker:name' ) );
 
 				items.push( data.item );
 			} );

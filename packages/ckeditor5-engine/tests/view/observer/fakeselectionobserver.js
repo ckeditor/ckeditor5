@@ -7,14 +7,14 @@
 
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 import FakeSelectionObserver from '../../../src/view/observer/fakeselectionobserver';
-import ViewDocument from '../../../src/view/document';
+import View from '../../../src/view/view';
 import DomEventData from '../../../src/view/observer/domeventdata';
 import createViewRoot from '../_utils/createroot';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { setData, stringify } from '../../../src/dev-utils/view';
 
 describe( 'FakeSelectionObserver', () => {
-	let observer, viewDocument, root, domRoot;
+	let observer, view, viewDocument, root, domRoot;
 
 	before( () => {
 		domRoot = createElement( document, 'div', {
@@ -28,19 +28,20 @@ describe( 'FakeSelectionObserver', () => {
 	} );
 
 	beforeEach( () => {
-		viewDocument = new ViewDocument();
+		view = new View();
+		viewDocument = view.document;
 		root = createViewRoot( viewDocument );
-		viewDocument.attachDomRoot( domRoot );
-		observer = viewDocument.getObserver( FakeSelectionObserver );
-		viewDocument.selection.setFake();
+		view.attachDomRoot( domRoot );
+		observer = view.getObserver( FakeSelectionObserver );
+		viewDocument.selection._setFake();
 	} );
 
 	afterEach( () => {
-		viewDocument.destroy();
+		view.destroy();
 	} );
 
 	it( 'should do nothing if selection is not fake', () => {
-		viewDocument.selection.setFake( false );
+		viewDocument.selection._setFake( false );
 
 		return checkEventPrevention( keyCodes.arrowleft, false );
 	} );
@@ -190,7 +191,7 @@ describe( 'FakeSelectionObserver', () => {
 				resolve();
 			} );
 
-			setData( viewDocument, initialData );
+			setData( view, initialData );
 			changeFakeSelectionPressing( keyCode );
 		} );
 	}
@@ -199,7 +200,7 @@ describe( 'FakeSelectionObserver', () => {
 	//
 	// @param {Number} keyCode
 	function changeFakeSelectionPressing( keyCode ) {
-		viewDocument.selection.setFake();
+		viewDocument.selection._setFake();
 
 		const data = {
 			keyCode,

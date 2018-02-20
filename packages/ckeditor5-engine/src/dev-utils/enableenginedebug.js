@@ -628,7 +628,7 @@ function enableDocumentTools() {
 	} );
 
 	sandbox.mock( Editor.prototype, 'logView', function( version ) {
-		this.editing.view.log( version );
+		this.editing.view.document.log( version );
 	} );
 
 	sandbox.mock( Editor.prototype, 'logDocuments', function( version = null ) {
@@ -658,7 +658,8 @@ class DebugPlugin extends Plugin {
 
 		const model = this.editor.model;
 		const modelDocument = model.document;
-		const viewDocument = this.editor.editing.view;
+		const view = this.editor.editing.view;
+		const viewDocument = view.document;
 
 		modelDocument[ treeDump ] = [];
 		viewDocument[ treeDump ] = [];
