@@ -25,7 +25,12 @@
 
 	/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/116 */
 	& > *:first-child {
-		margin-top: var(--ck-spacing-standard);
+		margin-top: var(--ck-spacing-large);
+	}
+
+	/* https://github.com/ckeditor/ckeditor5/issues/847 */
+	& > *:last-child {
+		margin-bottom: var(--ck-spacing-large);
 	}
 }
 
