@@ -173,6 +173,7 @@ describe( 'HighlightCommand', () => {
 					expect( doc.selection.hasAttribute( 'highlight' ) ).to.be.false;
 				} );
 
+				// https://github.com/ckeditor/ckeditor5-highlight/issues/8
 				it( 'should change selection attribute on consecutive calls', () => {
 					setData( model, '<p>abcfoobar[] foobar</p>' );
 
@@ -181,12 +182,12 @@ describe( 'HighlightCommand', () => {
 					command.execute( { value: 'greenMarker' } );
 
 					expect( command.value ).to.equal( 'greenMarker' );
-					expect( doc.selection.hasAttribute( 'highlight' ) ).to.be.true;
+					expect( doc.selection.getAttribute( 'highlight' ) ).to.equal( 'greenMarker' );
 
 					command.execute( { value: 'pinkMarker' } );
 
 					expect( command.value ).to.equal( 'pinkMarker' );
-					expect( doc.selection.hasAttribute( 'highlight' ) ).to.be.true;
+					expect( doc.selection.getAttribute( 'highlight' ) ).to.equal( 'pinkMarker' );
 				} );
 			} );
 
