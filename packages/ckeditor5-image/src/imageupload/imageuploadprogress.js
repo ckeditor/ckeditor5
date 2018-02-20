@@ -55,12 +55,12 @@ export default class ImageUploadProgress extends Plugin {
 	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
 	 * @param {Object} conversionApi
 	 */
-	uploadStatusChange( evt, data, consumable, conversionApi ) {
+	uploadStatusChange( evt, data, conversionApi ) {
 		const editor = this.editor;
 		const modelImage = data.item;
 		const uploadId = modelImage.getAttribute( 'uploadId' );
 
-		if ( !consumable.consume( data.item, evt.name ) || !uploadId ) {
+		if ( !conversionApi.consumable.consume( data.item, evt.name ) || !uploadId ) {
 			return;
 		}
 

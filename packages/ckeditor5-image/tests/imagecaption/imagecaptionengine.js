@@ -142,8 +142,8 @@ describe( 'ImageCaptionEngine', () => {
 			it( 'should not convert when element is already consumed', () => {
 				editor.editing.downcastDispatcher.on(
 					'insert:caption',
-					( evt, data, consumable, conversionApi ) => {
-						consumable.consume( data.item, 'insert' );
+					( evt, data, conversionApi ) => {
+						conversionApi.consumable.consume( data.item, 'insert' );
 
 						const imageFigure = conversionApi.mapper.toViewElement( data.range.start.parent );
 						const viewElement = new ViewAttributeElement( 'span' );

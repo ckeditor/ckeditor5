@@ -246,8 +246,8 @@ describe( 'Image converters', () => {
 		} );
 
 		it( 'should not set attribute if change was already consumed', () => {
-			editor.editing.downcastDispatcher.on( 'attribute:alt:image', ( evt, data, consumable ) => {
-				consumable.consume( data.item, 'attribute:alt' );
+			editor.editing.downcastDispatcher.on( 'attribute:alt:image', ( evt, data, conversionApi ) => {
+				conversionApi.consumable.consume( data.item, 'attribute:alt' );
 			}, { priority: 'high' } );
 
 			setModelData( model, '<image src="" alt="foo bar"></image>' );

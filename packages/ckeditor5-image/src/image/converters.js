@@ -75,8 +75,8 @@ export function srcsetAttributeConverter() {
 		dispatcher.on( 'attribute:srcset:image', converter );
 	};
 
-	function converter( evt, data, consumable, conversionApi ) {
-		if ( !consumable.consume( data.item, evt.name ) ) {
+	function converter( evt, data, conversionApi ) {
+		if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 			return;
 		}
 
@@ -116,8 +116,8 @@ export function modelToViewAttributeConverter( attributeKey ) {
 		dispatcher.on( `attribute:${ attributeKey }:image`, converter );
 	};
 
-	function converter( evt, data, consumable, conversionApi ) {
-		if ( !consumable.consume( data.item, evt.name ) ) {
+	function converter( evt, data, conversionApi ) {
+		if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 			return;
 		}
 

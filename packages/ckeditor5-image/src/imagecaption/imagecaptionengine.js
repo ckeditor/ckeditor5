@@ -186,7 +186,7 @@ export default class ImageCaptionEngine extends Plugin {
 // @param {Boolean} [hide=true] When set to `false` view element will not be inserted when it's empty.
 // @return {Function}
 function captionModelToView( elementCreator, hide = true ) {
-	return ( evt, data, consumable, conversionApi ) => {
+	return ( evt, data, conversionApi ) => {
 		const captionElement = data.item;
 
 		// Return if element shouldn't be present when empty.
@@ -195,7 +195,7 @@ function captionModelToView( elementCreator, hide = true ) {
 		}
 
 		if ( isImage( captionElement.parent ) ) {
-			if ( !consumable.consume( data.item, 'insert' ) ) {
+			if ( !conversionApi.consumable.consume( data.item, 'insert' ) ) {
 				return;
 			}
 

@@ -86,10 +86,10 @@ describe( 'ImageEngine', () => {
 			} );
 
 			it( 'should not convert srcset attribute if is already consumed', () => {
-				editor.data.downcastDispatcher.on( 'attribute:srcset:image', ( evt, data, consumable ) => {
+				editor.data.downcastDispatcher.on( 'attribute:srcset:image', ( evt, data, conversionApi ) => {
 					const modelImage = data.item;
 
-					consumable.consume( modelImage, evt.name );
+					conversionApi.consumable.consume( modelImage, evt.name );
 				}, { priority: 'high' } );
 
 				setModelData( model,
@@ -422,8 +422,8 @@ describe( 'ImageEngine', () => {
 				setModelData( model, '<image src="foo.png" alt="alt text"></image>' );
 				const image = document.getRoot().getChild( 0 );
 
-				editor.editing.downcastDispatcher.on( 'attribute:alt:image', ( evt, data, consumable ) => {
-					consumable.consume( data.item, 'attribute:alt' );
+				editor.editing.downcastDispatcher.on( 'attribute:alt:image', ( evt, data, conversionApi ) => {
+					conversionApi.consumable.consume( data.item, 'attribute:alt' );
 				}, { priority: 'high' } );
 
 				model.change( writer => {
@@ -521,10 +521,10 @@ describe( 'ImageEngine', () => {
 			} );
 
 			it( 'should not convert srcset attribute if is already consumed', () => {
-				editor.editing.downcastDispatcher.on( 'attribute:srcset:image', ( evt, data, consumable ) => {
+				editor.editing.downcastDispatcher.on( 'attribute:srcset:image', ( evt, data, conversionApi ) => {
 					const modelImage = data.item;
 
-					consumable.consume( modelImage, evt.name );
+					conversionApi.consumable.consume( modelImage, evt.name );
 				}, { priority: 'high' } );
 
 				setModelData( model,
