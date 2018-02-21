@@ -187,10 +187,6 @@ class MutationHandler {
 		// Get common ancestor in DOM.
 		const domMutationCommonAncestor = domConverter.mapViewToDom( mutationsCommonAncestor );
 
-		if ( !domMutationCommonAncestor ) {
-			return;
-		}
-
 		// Create fresh DomConverter so it will not use existing mapping and convert current DOM to model.
 		// This wouldn't be needed if DomConverter would allow to create fresh view without checking any mappings.
 		const freshDomConverter = new DomConverter();
