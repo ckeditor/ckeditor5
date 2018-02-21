@@ -1,0 +1,43 @@
+{
+  "name": "@ckeditor/ckeditor5-table",
+  "version": "0.0.1",
+  "description": "Table feature for CKEditor 5.",
+  "keywords": [
+    "ckeditor5",
+    "ckeditor5-feature"
+  ],
+  "dependencies": {
+  },
+  "devDependencies": {
+  },
+  "engines": {
+    "node": ">=6.0.0",
+    "npm": ">=3.0.0"
+  },
+  "author": "CKSource (http://cksource.com/)",
+  "license": "(GPL-2.0 OR LGPL-2.1 OR MPL-1.1)",
+  "homepage": "https://ckeditor5.github.io",
+  "bugs": "https://github.com/ckeditor/ckeditor5-table/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ckeditor/ckeditor5-table.git"
+  },
+  "files": [
+    "lang",
+    "src",
+    "theme"
+  ],
+  "scripts": {
+    "lint": "eslint --quiet '**/*.js'",
+    "precommit": "lint-staged"
+  },
+  "lint-staged": {
+    "**/*.js": [
+      "eslint --quiet"
+    ]
+  },
+  "eslintIgnore": [
+    "src/lib/**",
+    "packages/**"
+  ]
+}
