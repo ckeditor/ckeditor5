@@ -65,6 +65,13 @@ export default class UndoEngine extends Plugin {
 
 		this.listenTo( this.editor.model, 'applyOperation', ( evt, args ) => {
 			const operation = args[ 0 ];
+
+			// Do not register batch if the operation is not a document operation.
+			// This prevents from creating empty undo steps, where all operations where non-document operations.
+			if ( !operation.isDocumentOperation ) {
+				return;
+			}
+
 			const batch = operation.delta.batch;
 
 			// If changes are not a part of a batch or this is not a new batch, omit those changes.
