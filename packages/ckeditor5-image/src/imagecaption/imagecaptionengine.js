@@ -80,7 +80,7 @@ export default class ImageCaptionEngine extends Plugin {
 		editing.downcastDispatcher.on( 'remove', this._fixCaptionVisibility( data => data.position.parent ), { priority: 'high' } );
 
 		// Update view before each rendering.
-		this.listenTo( view, 'render', () => this._updateCaptionVisibility( view ) );
+		this.listenTo( view.document.selection, 'change', () => this._updateCaptionVisibility( view ) );
 	}
 
 	/**
@@ -95,7 +95,9 @@ export default class ImageCaptionEngine extends Plugin {
 
 		// Hide last selected caption if have no child elements.
 		if ( this._lastSelectedCaption && !this._lastSelectedCaption.childCount ) {
-			view.change( writer => writer.addClass( 'ck-hidden', this._lastSelectedCaption ) );
+			if ( !this._lastSelectedCaption.hasClass( 'ck-hidden' ) ) {
+				view.change( writer => writer.addClass( 'ck-hidden', this._lastSelectedCaption ) );
+			}
 		}
 
 		// If whole image is selected.
@@ -116,8 +118,11 @@ export default class ImageCaptionEngine extends Plugin {
 		}
 
 		if ( viewCaption ) {
-			view.change( writer => writer.removeClass( 'ck-hidden', viewCaption ) );
 			this._lastSelectedCaption = viewCaption;
+
+			if ( viewCaption.hasClass( 'ck-hidden' ) ) {
+				view.change( writer => writer.removeClass( 'ck-hidden', viewCaption ) );
+			}
 		}
 	}
 
