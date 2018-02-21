@@ -508,7 +508,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 </tr>
 <tr>
 <td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-toolbar">toolbar</a></td>
-<td><p>{@link module:core/editor/editorconfig~EditorConfig#toolbar <code>toolbar</code>}</p><p>See also {@link module:core/editor/editorconfig~EditorConfig#contextualToolbar <code>contextualToolbar</code>} to define the toolbar of a Balloon editor.</p></td>
+<td><p>{@link module:core/editor/editorconfig~EditorConfig#toolbar <code>toolbar</code>}</p><p>See also {@link module:core/editor/editorconfig~EditorConfig#balloonToolbar <code>contextualToolbar</code>} to define the toolbar of a Balloon editor.</p></td>
 </tr>
 <tr>
 <td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-toolbarCanCollapse">toolbarCanCollapse</a></td>
