@@ -799,6 +799,13 @@ export default class Differ {
 		return diffs;
 	}
 
+	/**
+	 * Checks whether given element or any of its parents is an element that is buffered as an inserted element.
+	 *
+	 * @private
+	 * @param {module:engine/model/element~Element} element Element to check.
+	 * @returns {Boolean}
+	 */
 	_isInInsertedElement( element ) {
 		const parent = element.parent;
 
@@ -820,20 +827,26 @@ export default class Differ {
 		return this._isInInsertedElement( parent );
 	}
 
+	/**
+	 * Removes deeply all buffered changes that are registered in elements from range specified by `parent`, `offset`
+	 * and `howMany`.
+	 *
+	 * @private
+	 * @param {module:engine/model/element~Element} parent
+	 * @param {Number} offset
+	 * @param {Number} howMany
+	 */
 	_removeAllNestedChanges( parent, offset, howMany ) {
 		const range = Range.createFromParentsAndOffsets( parent, offset, parent, offset + howMany );
 
 		for ( const item of range.getItems( { shallow: true } ) ) {
 			if ( item.is( 'element' ) ) {
-				this._removeChangesInElement( item );
+				this._elementSnapshots.delete( item );
+				this._changesInElement.delete( item );
+
 				this._removeAllNestedChanges( item, 0, item.maxOffset );
 			}
 		}
-	}
-
-	_removeChangesInElement( element ) {
-		this._elementSnapshots.delete( element );
-		this._changesInElement.delete( element );
 	}
 }
 
