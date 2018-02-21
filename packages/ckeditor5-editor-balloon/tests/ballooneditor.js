@@ -17,7 +17,7 @@ import BalloonEditor from '../src/ballooneditor';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import ContextualToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/contextual/contextualtoolbar';
+import BalloonToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/balloon/balloontoolbar';
 import DataApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/dataapimixin';
 import ElementApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/elementapimixin';
 import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
@@ -43,17 +43,17 @@ describe( 'BalloonEditor', () => {
 	describe( 'constructor()', () => {
 		beforeEach( () => {
 			editor = new BalloonEditor( editorElement, {
-				plugins: [ ContextualToolbar, Bold ],
+				plugins: [ BalloonToolbar, Bold ],
 				toolbar: [ 'Bold' ]
 			} );
 		} );
 
-		it( 'pushes ContextualToolbar to the list of plugins', () => {
-			expect( editor.config.get( 'plugins' ) ).to.include( ContextualToolbar );
+		it( 'pushes BalloonToolbar to the list of plugins', () => {
+			expect( editor.config.get( 'plugins' ) ).to.include( BalloonToolbar );
 		} );
 
-		it( 'pipes config#toolbar to config#contextualToolbar', () => {
-			expect( editor.config.get( 'contextualToolbar' ) ).to.have.members( [ 'Bold' ] );
+		it( 'pipes config#toolbar to config#balloonToolbar', () => {
+			expect( editor.config.get( 'balloonToolbar' ) ).to.have.members( [ 'Bold' ] );
 		} );
 
 		it( 'uses HTMLDataProcessor', () => {

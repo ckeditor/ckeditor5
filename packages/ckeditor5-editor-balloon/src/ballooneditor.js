@@ -9,7 +9,7 @@
 
 import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
-import ContextualToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/contextual/contextualtoolbar';
+import BalloonToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/balloon/balloontoolbar';
 import BalloonEditorUI from './ballooneditorui';
 import BalloonEditorUIView from './ballooneditoruiview';
 import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement';
@@ -20,7 +20,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
  * The {@glink builds/guides/overview#Balloon-editor balloon editor} implementation (Medium-like editor).
- * It uses an inline editable and a toolbar based on the {@link module:ui/toolbar/contextual/contextualtoolbar~ContextualToolbar}.
+ * It uses an inline editable and a toolbar based on the {@link module:ui/toolbar/balloon/balloontoolbar~BalloonToolbar}.
  * See the {@glink examples/builds/balloon-editor demo}.
  *
  * In order to create a balloon editor instance, use the static
@@ -62,8 +62,8 @@ export default class BalloonEditor extends Editor {
 
 		this.element = element;
 
-		this.config.get( 'plugins' ).push( ContextualToolbar );
-		this.config.define( 'contextualToolbar', this.config.get( 'toolbar' ) );
+		this.config.get( 'plugins' ).push( BalloonToolbar );
+		this.config.define( 'balloonToolbar', this.config.get( 'toolbar' ) );
 
 		this.data.processor = new HtmlDataProcessor();
 
