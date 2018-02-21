@@ -445,6 +445,30 @@ describe( 'Input feature', () => {
 			expect( getModelData( model ) ).to.equal( '<paragraph>foobar   baz[]</paragraph>' );
 			expect( getViewData( view ) ).to.equal( '<p>foobar   baz{}</p>' );
 		} );
+
+		// ckeditor5#718.
+		it( 'should not crash and prevent all changes if view common ancestor of mutations cannot be mapped to model', () => {
+			editor.setData( '<p>Foo</p><ul><li>Bar</li><li>Baz</li></ul>' );
+
+			const ul = viewRoot.getChild( 1 );
+
+			viewDocument.fire( 'mutations', [
+				{
+					type: 'text',
+					oldText: 'Bar',
+					newText: 'Bx',
+					node: ul.getChild( 0 )
+				},
+				{
+					type: 'children',
+					oldChildren: [ ul.getChild( 0 ), ul.getChild( 1 ) ],
+					newChildren: [ ul.getChild( 0 ) ],
+					node: ul
+				}
+			] );
+
+			expect( getViewData( view ) ).to.equal( '<p>{}Foo</p><ul><li>Bar</li><li>Baz</li></ul>' );
+		} );
 	} );
 
 	describe( 'keystroke handling', () => {

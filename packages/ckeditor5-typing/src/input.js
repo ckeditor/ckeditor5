@@ -197,6 +197,15 @@ class MutationHandler {
 		// Current model.
 		const currentModel = this.editor.editing.mapper.toModelElement( mutationsCommonAncestor );
 
+		// If common ancestor is not mapped, do not do anything. It probably is a parent of another view element.
+		// That means that we would need to diff model elements (see `if` below). Better return early instead of
+		// trying to get a reasonable model ancestor. It will fell into the `if` below anyway.
+		// This situation happens for example for lists. If `<ul>` is a common ancestor, `currentModel` is `undefined`
+		// because `<ul>` is not mapped (`<li>`s are).
+		if ( !currentModel ) {
+			return;
+		}
+
 		// Get children from both ancestors.
 		const modelFromDomChildren = Array.from( modelFromCurrentDom.getChildren() );
 		const currentModelChildren = Array.from( currentModel.getChildren() );
