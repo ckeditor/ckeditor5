@@ -10,7 +10,6 @@ import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articleplugi
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
 import { TOKEN_URL } from '@ckeditor/ckeditor5-cloudservices/tests/_utils/cloudservices-config';
 import './custom.css';
-import './extras.css';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-classic-editor' ), {
