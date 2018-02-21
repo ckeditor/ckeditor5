@@ -74,18 +74,19 @@ describe( 'ContextualBalloon', () => {
 		} );
 
 		describe( 'positionLimiter', () => {
-			let model, viewDocument, root;
+			let model, view, viewDocument, root;
 
 			beforeEach( () => {
 				model = editor.model;
-				viewDocument = editor.editing.view;
+				view = editor.editing.view;
+				viewDocument = view.document;
 				root = viewDocument.getRoot();
 			} );
 
 			it( 'obtains the root of the selection', () => {
 				setModelData( model, '<paragraph>[]bar</paragraph>' );
 
-				expect( balloon.positionLimiter() ).to.equal( viewDocument.domConverter.mapViewToDom( root ) );
+				expect( balloon.positionLimiter() ).to.equal( view.domConverter.mapViewToDom( root ) );
 			} );
 
 			it( 'does not fail if selection has no #editableElement', () => {
@@ -114,7 +115,7 @@ describe( 'ContextualBalloon', () => {
 
 				setModelData( model, '<widget><nestedEditable>[]foo</nestedEditable></widget>' );
 
-				expect( balloon.positionLimiter() ).to.equal( viewDocument.domConverter.mapViewToDom( root ) );
+				expect( balloon.positionLimiter() ).to.equal( view.domConverter.mapViewToDom( root ) );
 			} );
 		} );
 

@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+@import "../tooltip/mixins/_tooltip.css";
+
 .ck-splitbutton {
 	/* Enable font size inheritance, which allows fluid UI scaling. */
 	font-size: inherit;
@@ -10,4 +12,9 @@
 	& .ck-splitbutton__action:focus {
 		z-index: calc(var(--ck-z-default) + 1);
 	}
+}
+
+/* Disable tooltips for the buttons when the button is "open" */
+.ck-splitbutton.ck-splitbutton_open > .ck-button {
+	@mixin ck-tooltip_disabled;
 }

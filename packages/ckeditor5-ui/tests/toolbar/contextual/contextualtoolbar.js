@@ -47,7 +47,7 @@ describe( 'BalloonToolbar', () => {
 				sandbox.stub( balloon.view, 'pin' ).returns( {} );
 
 				// Focus the engine.
-				editingView.isFocused = true;
+				editingView.document.isFocused = true;
 				editingView.getDomRoot().focus();
 
 				// Remove all selection ranges from DOM before testing.
@@ -66,7 +66,6 @@ describe( 'BalloonToolbar', () => {
 		expect( balloonToolbar ).to.instanceOf( Plugin );
 		expect( balloonToolbar ).to.instanceOf( BalloonToolbar );
 		expect( balloonToolbar.toolbarView ).to.instanceof( ToolbarView );
-		expect( balloonToolbar.toolbarView.element.classList.contains( 'ck-editor-toolbar' ) ).to.be.true;
 		expect( balloonToolbar.toolbarView.element.classList.contains( 'ck-toolbar_floating' ) ).to.be.true;
 	} );
 
@@ -171,7 +170,7 @@ describe( 'BalloonToolbar', () => {
 			] );
 
 			balloonAddSpy = sandbox.spy( balloon, 'add' );
-			editingView.isFocused = true;
+			editingView.document.isFocused = true;
 		} );
 
 		it( 'should add #toolbarView to the #_balloon and attach the #_balloon to the selection for the forward selection', () => {
@@ -183,7 +182,7 @@ describe( 'BalloonToolbar', () => {
 
 			sinon.assert.calledWith( balloonAddSpy, {
 				view: balloonToolbar.toolbarView,
-				balloonClassName: 'ck-toolbar-container ck-editor-toolbar-container',
+				balloonClassName: 'ck-toolbar-container',
 				position: {
 					target: sinon.match.func,
 					positions: [
@@ -226,7 +225,7 @@ describe( 'BalloonToolbar', () => {
 
 			sinon.assert.calledWithExactly( balloonAddSpy, {
 				view: balloonToolbar.toolbarView,
-				balloonClassName: 'ck-toolbar-container ck-editor-toolbar-container',
+				balloonClassName: 'ck-toolbar-container',
 				position: {
 					target: sinon.match.func,
 					positions: [
@@ -243,7 +242,7 @@ describe( 'BalloonToolbar', () => {
 			expect( balloonAddSpy.firstCall.args[ 0 ].position.target() ).to.deep.equal( backwardSelectionRect );
 		} );
 
-		it( 'should update balloon position on ViewDocument#render event while balloon is added to the #_balloon', () => {
+		it( 'should update balloon position on view#change event while balloon is added to the #_balloon', () => {
 			setData( model, '<paragraph>b[a]r</paragraph>' );
 
 			const spy = sandbox.spy( balloon, 'updatePosition' );
@@ -297,7 +296,7 @@ describe( 'BalloonToolbar', () => {
 
 			it( 'should not be called when the editor is not focused', () => {
 				setData( model, '<paragraph>b[a]r</paragraph>' );
-				editingView.isFocused = false;
+				editingView.document.isFocused = false;
 
 				balloonToolbar.fire( '_selectionChangeDebounced' );
 				sinon.assert.notCalled( showSpy );
@@ -312,7 +311,7 @@ describe( 'BalloonToolbar', () => {
 
 			it( 'should be called when the selection is not collapsed and editor is focused', () => {
 				setData( model, '<paragraph>b[a]r</paragraph>' );
-				editingView.isFocused = true;
+				editingView.document.isFocused = true;
 
 				balloonToolbar.fire( '_selectionChangeDebounced' );
 				sinon.assert.calledOnce( showSpy );
@@ -325,7 +324,7 @@ describe( 'BalloonToolbar', () => {
 
 		beforeEach( () => {
 			removeBalloonSpy = sandbox.stub( balloon, 'remove' ).returns( {} );
-			editingView.isFocused = true;
+			editingView.document.isFocused = true;
 		} );
 
 		it( 'should remove #toolbarView from the #_balloon', () => {
@@ -337,7 +336,7 @@ describe( 'BalloonToolbar', () => {
 			sinon.assert.calledWithExactly( removeBalloonSpy, balloonToolbar.toolbarView );
 		} );
 
-		it( 'should stop update balloon position on ViewDocument#render event', () => {
+		it( 'should stop update balloon position on ViewDocument#change event', () => {
 			setData( model, '<paragraph>b[a]r</paragraph>' );
 
 			const spy = sandbox.spy( balloon, 'updatePosition' );
