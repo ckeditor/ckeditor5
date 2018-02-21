@@ -12,10 +12,9 @@ import EditableElement from './editableelement';
 const rootNameSymbol = Symbol( 'rootName' );
 
 /**
- * Class representing a single root in the data view. A root can be either {@link #isReadOnly editable or read-only}, but
- * in both cases it is called "an editable". Roots can contain other {@link module:engine/view/editableelement~EditableElement editable
- * elements}
- * making them "nested editables".
+ * Class representing a single root in the data view. A root can be either {@link ~RootEditableElement#isReadOnly editable or read-only},
+ * but in both cases it is called "an editable". Roots can contain other {@link module:engine/view/editableelement~EditableElement
+ * editable elements} making them "nested editables".
  *
  * @extends module:engine/view/editableelement~EditableElement
  */

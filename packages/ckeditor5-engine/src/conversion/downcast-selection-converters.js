@@ -21,14 +21,14 @@
  * @returns {Function} Selection converter.
  */
 export function convertRangeSelection() {
-	return ( evt, data, consumable, conversionApi ) => {
+	return ( evt, data, conversionApi ) => {
 		const selection = data.selection;
 
 		if ( selection.isCollapsed ) {
 			return;
 		}
 
-		if ( !consumable.consume( selection, 'selection' ) ) {
+		if ( !conversionApi.consumable.consume( selection, 'selection' ) ) {
 			return;
 		}
 
@@ -66,14 +66,14 @@ export function convertRangeSelection() {
  * @returns {Function} Selection converter.
  */
 export function convertCollapsedSelection() {
-	return ( evt, data, consumable, conversionApi ) => {
+	return ( evt, data, conversionApi ) => {
 		const selection = data.selection;
 
 		if ( !selection.isCollapsed ) {
 			return;
 		}
 
-		if ( !consumable.consume( selection, 'selection' ) ) {
+		if ( !conversionApi.consumable.consume( selection, 'selection' ) ) {
 			return;
 		}
 
@@ -111,7 +111,7 @@ export function convertCollapsedSelection() {
  * @returns {Function} Selection converter.
  */
 export function clearAttributes() {
-	return ( evt, data, consumable, conversionApi ) => {
+	return ( evt, data, conversionApi ) => {
 		const viewWriter = conversionApi.writer;
 		const viewSelection = viewWriter.document.selection;
 
@@ -133,5 +133,5 @@ export function clearAttributes() {
  * {@link module:engine/model/selection~Selection model selection} conversion.
  */
 export function clearFakeSelection() {
-	return ( evt, data, consumable, conversionApi ) => conversionApi.writer.setFakeSelection( false );
+	return ( evt, data, conversionApi ) => conversionApi.writer.setFakeSelection( false );
 }
