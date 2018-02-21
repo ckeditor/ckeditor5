@@ -29,7 +29,7 @@ import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
 describe( 'ImageUploadEditing', () => {
 	// eslint-disable-next-line max-len
 	const base64Sample = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
-	let editor, model, doc, fileRepository, viewDocument, nativeReaderMock, loader, adapterMock;
+	let editor, model, view, doc, fileRepository, viewDocument, nativeReaderMock, loader, adapterMock;
 
 	testUtils.createSinonSandbox();
 
@@ -60,7 +60,8 @@ describe( 'ImageUploadEditing', () => {
 				editor = newEditor;
 				model = editor.model;
 				doc = model.document;
-				viewDocument = editor.editing.view;
+				view = editor.editing.view;
+				viewDocument = view.document;
 			} );
 	} );
 
@@ -139,7 +140,7 @@ describe( 'ImageUploadEditing', () => {
 
 	it( 'should not execute imageUpload command when file is not an image', () => {
 		const spy = sinon.spy( editor, 'execute' );
-		const viewDocument = editor.editing.view;
+		const viewDocument = editor.editing.view.document;
 		const fileMock = {
 			type: 'media/mp3',
 			size: 1024
@@ -197,13 +198,13 @@ describe( 'ImageUploadEditing', () => {
 	} );
 
 	it( 'should not convert image\'s uploadId attribute if is consumed already', () => {
-		editor.editing.downcastDispatcher.on( 'attribute:uploadId:image', ( evt, data, consumable ) => {
-			consumable.consume( data.item, evt.name );
+		editor.editing.downcastDispatcher.on( 'attribute:uploadId:image', ( evt, data, conversionApi ) => {
+			conversionApi.consumable.consume( data.item, evt.name );
 		}, { priority: 'high' } );
 
 		setModelData( model, '<image uploadId="1234"></image>' );
 
-		expect( getViewData( viewDocument ) ).to.equal(
+		expect( getViewData( view ) ).to.equal(
 			'[<figure class="ck-widget image" contenteditable="false">' +
 				'<img></img>' +
 			'</figure>]' );
@@ -215,7 +216,7 @@ describe( 'ImageUploadEditing', () => {
 		editor.execute( 'imageUpload', { file } );
 
 		model.once( '_change', () => {
-			expect( getViewData( viewDocument ) ).to.equal(
+			expect( getViewData( view ) ).to.equal(
 				'[<figure class="ck-widget image" contenteditable="false">' +
 				`<img src="${ base64Sample }"></img>` +
 				'</figure>]' +
@@ -236,7 +237,7 @@ describe( 'ImageUploadEditing', () => {
 
 		model.document.once( 'change', () => {
 			model.document.once( 'change', () => {
-				expect( getViewData( viewDocument ) ).to.equal(
+				expect( getViewData( view ) ).to.equal(
 					'[<figure class="ck-widget image" contenteditable="false"><img src="image.png"></img></figure>]<p>foo bar</p>'
 				);
 				expect( loader.status ).to.equal( 'idle' );
@@ -291,7 +292,7 @@ describe( 'ImageUploadEditing', () => {
 	it( 'should do nothing if image does not have uploadId', () => {
 		setModelData( model, '<image src="image.png"></image>' );
 
-		expect( getViewData( viewDocument ) ).to.equal(
+		expect( getViewData( view ) ).to.equal(
 			'[<figure class="ck-widget image" contenteditable="false"><img src="image.png"></img></figure>]'
 		);
 	} );
@@ -408,7 +409,7 @@ describe( 'ImageUploadEditing', () => {
 
 		model.document.once( 'change', () => {
 			model.document.once( 'change', () => {
-				expect( getViewData( viewDocument ) ).to.equal(
+				expect( getViewData( view ) ).to.equal(
 					'[<figure class="ck-widget image" contenteditable="false">' +
 						'<img sizes="100vw" src="image.png" srcset="image-500.png 500w, image-800.png 800w" width="800"></img>' +
 					'</figure>]<p>foo bar</p>'
@@ -427,7 +428,7 @@ describe( 'ImageUploadEditing', () => {
 	it( 'should prevent from browser redirecting when an image is dropped on another image', () => {
 		const spy = testUtils.sinon.spy();
 
-		editor.editing.view.fire( 'dragover', {
+		editor.editing.view.document.fire( 'dragover', {
 			preventDefault: spy
 		} );
 

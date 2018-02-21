@@ -20,8 +20,7 @@ import { toImageWidget } from './utils';
 import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
 import { upcastElementToElement, upcastAttributeToAttribute } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 
-import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
-import ViewEmptyElement from '@ckeditor/ckeditor5-engine/src/view/emptyelement';
+import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 
 /**
  * The image engine plugin.
@@ -48,14 +47,19 @@ export default class ImageEngine extends Plugin {
 			allowAttributes: [ 'alt', 'src', 'srcset' ]
 		} );
 
-		editor.conversion.for( 'dataDowncast' ).add( downcastElementToElement( {
+		const dataElementCreator = ( modelElement, viewWriter ) => createImageViewElement( viewWriter );
+		conversion.for( 'dataDowncast' ).add( downcastElementToElement( {
 			model: 'image',
-			view: () => createImageViewElement()
+			view: dataElementCreator
 		} ) );
 
-		editor.conversion.for( 'editingDowncast' ).add( downcastElementToElement( {
+		const editingElementCreator = ( modelElement, viewWriter ) => {
+			return toImageWidget( createImageViewElement( viewWriter ), viewWriter, t( 'image widget' ) );
+		};
+
+		conversion.for( 'editingDowncast' ).add( downcastElementToElement( {
 			model: 'image',
-			view: () => toImageWidget( createImageViewElement(), t( 'image widget' ) )
+			view: editingElementCreator
 		} ) );
 
 		conversion.for( 'downcast' )
@@ -111,7 +115,13 @@ export default class ImageEngine extends Plugin {
 // Note that `alt` and `src` attributes are converted separately, so they are not included.
 //
 // @private
+// @param {module:engine/view/writer~Writer} writer
 // @return {module:engine/view/containerelement~ContainerElement}
-export function createImageViewElement() {
-	return new ViewContainerElement( 'figure', { class: 'image' }, new ViewEmptyElement( 'img' ) );
+export function createImageViewElement( writer ) {
+	const emptyElement = writer.createEmptyElement( 'img' );
+	const figure = writer.createContainerElement( 'figure', { class: 'image' } );
+
+	writer.insert( ViewPosition.createAt( figure ), emptyElement );
+
+	return figure;
 }

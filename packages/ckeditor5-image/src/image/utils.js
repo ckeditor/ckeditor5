@@ -14,17 +14,18 @@ const imageSymbol = Symbol( 'isImage' );
 
 /**
  * Converts a given {@link module:engine/view/element~Element} to an image widget:
- * * adds a {@link module:engine/view/element~Element#setCustomProperty custom property} allowing to recognize the image widget element,
+ * * adds a {@link module:engine/view/element~Element#_setCustomProperty custom property} allowing to recognize the image widget element,
  * * calls the {@link module:widget/utils~toWidget toWidget} function with the proper element's label creator.
  *
  * @param {module:engine/view/element~Element} viewElement
+ * @param {module:engine/view/writer~Writer} writer Instance of view writer.
  * @param {String} label Element's label. It will be concatenated with the image `alt` attribute if one is present.
  * @returns {module:engine/view/element~Element}
  */
-export function toImageWidget( viewElement, label ) {
-	viewElement.setCustomProperty( imageSymbol, true );
+export function toImageWidget( viewElement, writer, label ) {
+	writer.setCustomProperty( imageSymbol, true, viewElement );
 
-	return toWidget( viewElement, { label: labelCreator } );
+	return toWidget( viewElement, writer, { label: labelCreator } );
 
 	function labelCreator() {
 		const imgElement = viewElement.getChild( 0 );

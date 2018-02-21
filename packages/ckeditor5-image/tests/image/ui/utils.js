@@ -56,7 +56,7 @@ describe( 'Utils', () => {
 			repositionContextualBalloon( editor );
 
 			sinon.assert.calledWithExactly( spy, {
-				target: editingView.domConverter.viewToDom( editingView.selection.getSelectedElement() ),
+				target: editingView.domConverter.viewToDom( editingView.document.selection.getSelectedElement() ),
 				positions: [
 					defaultPositions.northArrowSouth,
 					defaultPositions.northArrowSouthWest,
@@ -86,7 +86,7 @@ describe( 'Utils', () => {
 			const data = getBalloonPositionData( editor );
 
 			expect( data ).to.deep.equal( {
-				target: editingView.domConverter.viewToDom( editingView.selection.getSelectedElement() ),
+				target: editingView.domConverter.viewToDom( editingView.document.selection.getSelectedElement() ),
 				positions: [
 					defaultPositions.northArrowSouth,
 					defaultPositions.northArrowSouthWest,

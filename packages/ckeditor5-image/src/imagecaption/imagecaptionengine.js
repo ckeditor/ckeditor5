@@ -8,9 +8,6 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
-import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
-import viewWriter from '@ckeditor/ckeditor5-engine/src/view/writer';
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 import { isImage } from '../image/utils';
@@ -34,7 +31,7 @@ export default class ImageCaptionEngine extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const viewDocument = editor.editing.view;
+		const view = editor.editing.view;
 		const schema = editor.model.schema;
 		const data = editor.data;
 		const editing = editor.editing;
@@ -47,14 +44,6 @@ export default class ImageCaptionEngine extends Plugin {
 		 * @private
 		 * @member {module:engine/view/editableelement~EditableElement} #_lastSelectedCaption
 		 */
-
-		/**
-		 * A function used to create the editable caption element in the editing view.
-		 *
-		 * @private
-		 * @member {Function}
-		 */
-		this._createCaption = captionElementCreator( viewDocument, t( 'Enter image caption' ) );
 
 		// Schema configuration.
 		schema.register( 'caption', {
@@ -73,23 +62,25 @@ export default class ImageCaptionEngine extends Plugin {
 		} ) );
 
 		// Model to view converter for the data pipeline.
-		data.downcastDispatcher.on( 'insert:caption', captionModelToView( new ViewContainerElement( 'figcaption' ), false ) );
+		const createCaptionForData = writer => writer.createContainerElement( 'figcaption' );
+		data.downcastDispatcher.on( 'insert:caption', captionModelToView( createCaptionForData, false ) );
 
 		// Model to view converter for the editing pipeline.
-		editing.downcastDispatcher.on( 'insert:caption', captionModelToView( this._createCaption ) );
+		const createCaptionForEditing = captionElementCreator( view, t( 'Enter image caption' ) );
+		editing.downcastDispatcher.on( 'insert:caption', captionModelToView( createCaptionForEditing ) );
 
 		// Always show caption in view when something is inserted in model.
-		editing.downcastDispatcher.on( 'insert', ( evt, data ) => this._fixCaptionVisibility( data.item ), { priority: 'high' } );
-
-		// Hide caption when everything is removed from it.
 		editing.downcastDispatcher.on(
-			'remove',
-			( evt, data ) => this._fixCaptionVisibility( data.position.parent ),
+			'insert',
+			this._fixCaptionVisibility( data => data.item ),
 			{ priority: 'high' }
 		);
 
+		// Hide caption when everything is removed from it.
+		editing.downcastDispatcher.on( 'remove', this._fixCaptionVisibility( data => data.position.parent ), { priority: 'high' } );
+
 		// Update view before each rendering.
-		this.listenTo( viewDocument, 'render', () => this._updateCaptionVisibility(), { priority: 'high' } );
+		this.listenTo( view, 'render', () => this._updateCaptionVisibility( view ) );
 	}
 
 	/**
@@ -98,13 +89,13 @@ export default class ImageCaptionEngine extends Plugin {
 	 *
 	 * @private
 	 */
-	_updateCaptionVisibility() {
+	_updateCaptionVisibility( view ) {
 		const mapper = this.editor.editing.mapper;
 		let viewCaption;
 
 		// Hide last selected caption if have no child elements.
 		if ( this._lastSelectedCaption && !this._lastSelectedCaption.childCount ) {
-			this._lastSelectedCaption.addClass( 'ck-hidden' );
+			view.change( writer => writer.addClass( 'ck-hidden', this._lastSelectedCaption ) );
 		}
 
 		// If whole image is selected.
@@ -125,33 +116,41 @@ export default class ImageCaptionEngine extends Plugin {
 		}
 
 		if ( viewCaption ) {
-			viewCaption.removeClass( 'ck-hidden' );
+			view.change( writer => writer.removeClass( 'ck-hidden', viewCaption ) );
 			this._lastSelectedCaption = viewCaption;
 		}
 	}
 
 	/**
-	 * Fixes caption visibility during the model-to-view conversion.
+	 * Returns converter that fixes caption visibility during the model-to-view conversion.
 	 * Checks if the changed node is placed inside the caption element and fixes its visibility in the view.
 	 *
 	 * @private
-	 * @param {module:engine/model/node~Node} node
+	 * @param {Function} nodeFinder
+	 * @returns {Function}
 	 */
-	_fixCaptionVisibility( node ) {
-		const modelCaption = getParentCaption( node );
-		const mapper = this.editor.editing.mapper;
+	_fixCaptionVisibility( nodeFinder ) {
+		return ( evt, data, consumable, conversionApi ) => {
+			// There is no consumable on 'remove' event.
+			conversionApi = conversionApi ? conversionApi : consumable;
 
-		if ( modelCaption ) {
-			const viewCaption = mapper.toViewElement( modelCaption );
+			const node = nodeFinder( data );
+			const modelCaption = getParentCaption( node );
+			const mapper = this.editor.editing.mapper;
+			const viewWriter = conversionApi.writer;
 
-			if ( viewCaption ) {
-				if ( modelCaption.childCount ) {
-					viewCaption.removeClass( 'ck-hidden' );
-				} else {
-					viewCaption.addClass( 'ck-hidden' );
+			if ( modelCaption ) {
+				const viewCaption = mapper.toViewElement( modelCaption );
+
+				if ( viewCaption ) {
+					if ( modelCaption.childCount ) {
+						viewWriter.removeClass( 'ck-hidden', viewCaption );
+					} else {
+						viewWriter.addClass( 'ck-hidden', viewCaption );
+					}
 				}
 			}
-		}
+		};
 	}
 
 	/**
@@ -183,11 +182,11 @@ export default class ImageCaptionEngine extends Plugin {
 // Creates a converter that converts image caption model element to view element.
 //
 // @private
-// @param {Function|module:engine/view/element~Element} elementCreator
+// @param {Function} elementCreator
 // @param {Boolean} [hide=true] When set to `false` view element will not be inserted when it's empty.
 // @return {Function}
 function captionModelToView( elementCreator, hide = true ) {
-	return ( evt, data, consumable, conversionApi ) => {
+	return ( evt, data, conversionApi ) => {
 		const captionElement = data.item;
 
 		// Return if element shouldn't be present when empty.
@@ -196,21 +195,20 @@ function captionModelToView( elementCreator, hide = true ) {
 		}
 
 		if ( isImage( captionElement.parent ) ) {
-			if ( !consumable.consume( data.item, 'insert' ) ) {
+			if ( !conversionApi.consumable.consume( data.item, 'insert' ) ) {
 				return;
 			}
 
 			const viewImage = conversionApi.mapper.toViewElement( data.range.start.parent );
-			const viewCaption = ( elementCreator instanceof ViewElement ) ?
-				elementCreator.clone( true ) :
-				elementCreator();
+			const viewCaption = elementCreator( conversionApi.writer );
+			const viewWriter = conversionApi.writer;
 
 			// Hide if empty.
 			if ( !captionElement.childCount ) {
-				viewCaption.addClass( 'ck-hidden' );
+				viewWriter.addClass( 'ck-hidden', viewCaption );
 			}
 
-			insertViewCaptionAndBind( viewCaption, data.item, viewImage, conversionApi.mapper );
+			insertViewCaptionAndBind( viewCaption, data.item, viewImage, conversionApi );
 		}
 	};
 }
@@ -221,12 +219,12 @@ function captionModelToView( elementCreator, hide = true ) {
 // @param {module:engine/view/containerelement~ContainerElement} viewCaption
 // @param {module:engine/model/element~Element} modelCaption
 // @param {module:engine/view/containerelement~ContainerElement} viewImage
-// @param {module:engine/conversion/mapper~Mapper} mapper
-function insertViewCaptionAndBind( viewCaption, modelCaption, viewImage, mapper ) {
+// @param {Object} conversionApi
+function insertViewCaptionAndBind( viewCaption, modelCaption, viewImage, conversionApi ) {
 	const viewPosition = ViewPosition.createAt( viewImage, 'end' );
 
-	viewWriter.insert( viewPosition, viewCaption );
-	mapper.bindElements( modelCaption, viewCaption );
+	conversionApi.writer.insert( viewPosition, viewCaption );
+	conversionApi.mapper.bindElements( modelCaption, viewCaption );
 }
 
 // Checks if the provided node or one of its ancestors is a caption element, and returns it.

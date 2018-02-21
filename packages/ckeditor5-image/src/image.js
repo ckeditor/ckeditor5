@@ -49,7 +49,7 @@ export default class Image extends Plugin {
 		// https://github.com/ckeditor/ckeditor5-image/issues/110
 		if ( balloonToolbar ) {
 			this.listenTo( balloonToolbar, 'show', evt => {
-				if ( isImageWidgetSelected( editor.editing.view.selection ) ) {
+				if ( isImageWidgetSelected( editor.editing.view.document.selection ) ) {
 					evt.stop();
 				}
 			}, { priority: 'high' } );

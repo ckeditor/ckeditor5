@@ -12,17 +12,14 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 import ViewAttributeElement from '@ckeditor/ckeditor5-engine/src/view/attributeelement';
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
-import viewWriter from '@ckeditor/ckeditor5-engine/src/view/writer';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
-import { elementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/two-way-converters';
-
 describe( 'ImageCaptionEngine', () => {
-	let editor, model, doc, viewDocument;
+	let editor, model, doc, view;
 
 	beforeEach( () => {
 		return VirtualTestEditor
@@ -33,13 +30,13 @@ describe( 'ImageCaptionEngine', () => {
 				editor = newEditor;
 				model = editor.model;
 				doc = model.document;
-				viewDocument = editor.editing.view;
+				view = editor.editing.view;
 				model.schema.register( 'widget' );
 				model.schema.extend( 'widget', { allowIn: '$root' } );
 				model.schema.extend( 'caption', { allowIn: 'widget' } );
 				model.schema.extend( '$text', { allowIn: 'widget' } );
 
-				elementToElement( editor.conversion, {
+				editor.conversion.elementToElement( {
 					model: 'widget',
 					view: 'widget'
 				} );
@@ -113,7 +110,7 @@ describe( 'ImageCaptionEngine', () => {
 			it( 'should convert caption element to figcaption contenteditable', () => {
 				setModelData( model, '<image src="img.png"><caption>Foo bar baz.</caption></image>' );
 
-				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<img src="img.png"></img>' +
 						'<figcaption class="ck-editable" contenteditable="true" data-placeholder="Enter image caption">' +
@@ -126,7 +123,7 @@ describe( 'ImageCaptionEngine', () => {
 			it( 'should convert caption to element with proper CSS class if it\'s empty', () => {
 				setModelData( model, '<paragraph>foo</paragraph><image src="img.png"><caption></caption></image>' );
 
-				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<p>foo</p>' +
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<img src="img.png"></img>' +
@@ -139,28 +136,28 @@ describe( 'ImageCaptionEngine', () => {
 
 			it( 'should not convert caption from other elements', () => {
 				setModelData( model, '<widget>foo bar<caption></caption></widget>' );
-				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( '<widget>foo bar</widget>' );
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equal( '<widget>foo bar</widget>' );
 			} );
 
 			it( 'should not convert when element is already consumed', () => {
 				editor.editing.downcastDispatcher.on(
 					'insert:caption',
-					( evt, data, consumable, conversionApi ) => {
-						consumable.consume( data.item, 'insert' );
+					( evt, data, conversionApi ) => {
+						conversionApi.consumable.consume( data.item, 'insert' );
 
 						const imageFigure = conversionApi.mapper.toViewElement( data.range.start.parent );
 						const viewElement = new ViewAttributeElement( 'span' );
 
 						const viewPosition = ViewPosition.createAt( imageFigure, 'end' );
 						conversionApi.mapper.bindElements( data.item, viewElement );
-						viewWriter.insert( viewPosition, viewElement );
+						conversionApi.writer.insert( viewPosition, viewElement );
 					},
 					{ priority: 'high' }
 				);
 
 				setModelData( model, '<image src="img.png"><caption>Foo bar baz.</caption></image>' );
 
-				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false"><img src="img.png"></img><span></span>Foo bar baz.</figure>'
 				);
 			} );
@@ -175,7 +172,7 @@ describe( 'ImageCaptionEngine', () => {
 					writer.insertText( 'foo bar', caption );
 				} );
 
-				expect( getViewData( viewDocument ) ).to.equal(
+				expect( getViewData( view ) ).to.equal(
 					'<p>{}foo</p>' +
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<img src="img.png"></img>' +
@@ -196,7 +193,7 @@ describe( 'ImageCaptionEngine', () => {
 					writer.remove( ModelRange.createIn( caption ) );
 				} );
 
-				expect( getViewData( viewDocument ) ).to.equal(
+				expect( getViewData( view ) ).to.equal(
 					'<p>{}foo</p>' +
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<img src="img.png"></img>' +
@@ -217,7 +214,7 @@ describe( 'ImageCaptionEngine', () => {
 					writer.remove( ModelRange.createFromParentsAndOffsets( caption, 0, caption, 8 ) );
 				} );
 
-				expect( getViewData( viewDocument ) ).to.equal(
+				expect( getViewData( view ) ).to.equal(
 					'<p>{}foo</p>' +
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<img src="img.png"></img>' +
@@ -238,7 +235,7 @@ describe( 'ImageCaptionEngine', () => {
 				'[<image alt="" src=""><caption></caption></image>]<paragraph></paragraph>'
 			);
 
-			expect( getViewData( viewDocument ) ).to.equal(
+			expect( getViewData( view ) ).to.equal(
 				'[<figure class="ck-widget image" contenteditable="false">' +
 					'<img alt="" src=""></img>' +
 					'<figcaption class="ck-editable ck-placeholder" ' +
@@ -261,7 +258,7 @@ describe( 'ImageCaptionEngine', () => {
 				'[<image alt="" src=""><caption>foo bar</caption></image>]<paragraph></paragraph>'
 			);
 
-			expect( getViewData( viewDocument ) ).to.equal(
+			expect( getViewData( view ) ).to.equal(
 				'[<figure class="ck-widget image" contenteditable="false">' +
 					'<img alt="" src=""></img>' +
 					'<figcaption class="ck-editable" contenteditable="true" data-placeholder="Enter image caption">' +
@@ -289,7 +286,7 @@ describe( 'ImageCaptionEngine', () => {
 				'[<image alt="" src=""><caption></caption></image>]<paragraph></paragraph>'
 			);
 
-			expect( getViewData( viewDocument ) ).to.equal(
+			expect( getViewData( view ) ).to.equal(
 				'[<figure class="ck-widget image" contenteditable="false">' +
 					'<img alt="" src=""></img>' +
 					'<figcaption class="ck-editable ck-placeholder" ' +
@@ -318,7 +315,7 @@ describe( 'ImageCaptionEngine', () => {
 		it( 'image should have empty figcaption element when is selected', () => {
 			setModelData( model, '<paragraph>foo</paragraph>[<image src=""><caption></caption></image>]' );
 
-			expect( getViewData( viewDocument ) ).to.equal(
+			expect( getViewData( view ) ).to.equal(
 				'<p>foo</p>' +
 				'[<figure class="ck-widget image" contenteditable="false">' +
 					'<img src=""></img>' +
@@ -331,7 +328,7 @@ describe( 'ImageCaptionEngine', () => {
 		it( 'image should have empty figcaption element with hidden class when not selected', () => {
 			setModelData( model, '<paragraph>[]foo</paragraph><image src=""><caption></caption></image>' );
 
-			expect( getViewData( viewDocument ) ).to.equal(
+			expect( getViewData( view ) ).to.equal(
 				'<p>{}foo</p>' +
 				'<figure class="ck-widget image" contenteditable="false">' +
 					'<img src=""></img>' +
@@ -345,7 +342,7 @@ describe( 'ImageCaptionEngine', () => {
 		it( 'should not add additional figcaption if one is already present', () => {
 			setModelData( model, '<paragraph>foo</paragraph>[<image src=""><caption>foo bar</caption></image>]' );
 
-			expect( getViewData( viewDocument ) ).to.equal(
+			expect( getViewData( view ) ).to.equal(
 				'<p>foo</p>' +
 				'[<figure class="ck-widget image" contenteditable="false">' +
 					'<img src=""></img>' +
@@ -361,7 +358,7 @@ describe( 'ImageCaptionEngine', () => {
 				writer.setSelection( null );
 			} );
 
-			expect( getViewData( viewDocument ) ).to.equal(
+			expect( getViewData( view ) ).to.equal(
 				'<p>{}foo</p>' +
 				'<figure class="ck-widget image" contenteditable="false">' +
 					'<img src=""></img>' +
@@ -379,7 +376,7 @@ describe( 'ImageCaptionEngine', () => {
 				writer.remove( doc.selection.getFirstRange() );
 			} );
 
-			expect( getViewData( viewDocument ) ).to.equal(
+			expect( getViewData( view ) ).to.equal(
 				'<figure class="ck-widget image" contenteditable="false">' +
 					'<img src=""></img>' +
 					'<figcaption class="ck-editable ck-placeholder" contenteditable="true" data-placeholder="Enter image caption">' +
@@ -398,7 +395,7 @@ describe( 'ImageCaptionEngine', () => {
 				writer.setSelection( ModelRange.createOn( image ) );
 			} );
 
-			expect( getViewData( viewDocument ) ).to.equal(
+			expect( getViewData( view ) ).to.equal(
 				'[<figure class="ck-widget image" contenteditable="false">' +
 					'<img src=""></img>' +
 					'<figcaption class="ck-editable ck-placeholder" ' +
@@ -415,7 +412,7 @@ describe( 'ImageCaptionEngine', () => {
 				writer.setSelection( ModelRange.createOn( image ) );
 			} );
 
-			expect( getViewData( viewDocument ) ).to.equal(
+			expect( getViewData( view ) ).to.equal(
 				'<figure class="ck-widget image" contenteditable="false">' +
 					'<img src=""></img>' +
 					'<figcaption class="ck-editable" contenteditable="true" data-placeholder="Enter image caption">foo bar</figcaption>' +
@@ -443,7 +440,7 @@ describe( 'ImageCaptionEngine', () => {
 				} );
 
 				// Check if there is no figcaption in the view.
-				expect( getViewData( viewDocument ) ).to.equal(
+				expect( getViewData( view ) ).to.equal(
 					'<p>{}foo</p>' +
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<img src=""></img>' +
@@ -456,7 +453,7 @@ describe( 'ImageCaptionEngine', () => {
 				editor.execute( 'undo' );
 
 				// Check if figcaption is back with contents.
-				expect( getViewData( viewDocument ) ).to.equal(
+				expect( getViewData( view ) ).to.equal(
 					'<p>foo</p>' +
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<img src=""></img>' +

@@ -7,12 +7,11 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import ImageEngine from '../../src/image/imageengine';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-import { elementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/two-way-converters';
 import { isImageWidget } from '../../src/image/utils';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 
 describe( 'ImageEngine', () => {
-	let editor, model, document, viewDocument;
+	let editor, model, document, view, viewDocument;
 
 	beforeEach( () => {
 		return VirtualTestEditor
@@ -23,7 +22,8 @@ describe( 'ImageEngine', () => {
 				editor = newEditor;
 				model = editor.model;
 				document = model.document;
-				viewDocument = editor.editing.view;
+				view = editor.editing.view;
+				viewDocument = view.document;
 			} );
 	} );
 
@@ -86,10 +86,10 @@ describe( 'ImageEngine', () => {
 			} );
 
 			it( 'should not convert srcset attribute if is already consumed', () => {
-				editor.data.downcastDispatcher.on( 'attribute:srcset:image', ( evt, data, consumable ) => {
+				editor.data.downcastDispatcher.on( 'attribute:srcset:image', ( evt, data, conversionApi ) => {
 					const modelImage = data.item;
 
-					consumable.consume( modelImage, evt.name );
+					conversionApi.consumable.consume( modelImage, evt.name );
 				}, { priority: 'high' } );
 
 				setModelData( model,
@@ -179,7 +179,7 @@ describe( 'ImageEngine', () => {
 					}
 				} );
 
-				elementToElement( editor.conversion, { model: 'div', view: 'div' } );
+				editor.conversion.elementToElement( { model: 'div', view: 'div' } );
 
 				editor.setData( '<div><figure class="image"><img src="foo.png" alt="alt text" /></figure></div>' );
 
@@ -232,7 +232,7 @@ describe( 'ImageEngine', () => {
 					allowAttributes: 'alt'
 				} );
 
-				elementToElement( editor.conversion, { model: 'div', view: 'div' } );
+				editor.conversion.elementToElement( { model: 'div', view: 'div' } );
 
 				editor.setData( '<div alt="foo"></div>' );
 
@@ -276,7 +276,7 @@ describe( 'ImageEngine', () => {
 				beforeEach( () => {
 					model.schema.register( 'div', { inheritAllFrom: '$block' } );
 
-					elementToElement( editor.conversion, { model: 'div', view: 'div' } );
+					editor.conversion.elementToElement( { model: 'div', view: 'div' } );
 				} );
 
 				it( 'image between non-hoisted elements', () => {
@@ -358,7 +358,7 @@ describe( 'ImageEngine', () => {
 					} );
 					model.schema.extend( 'div', { allowIn: 'limit' } );
 
-					elementToElement( editor.conversion, { model: 'limit', view: 'limit' } );
+					editor.conversion.elementToElement( { model: 'limit', view: 'limit' } );
 
 					editor.setData( '<limit><div>foo<img src="foo.jpg" alt="foo" />bar</div></limit>' );
 
@@ -380,7 +380,7 @@ describe( 'ImageEngine', () => {
 			it( 'should convert', () => {
 				setModelData( model, '<image src="foo.png" alt="alt text"></image>' );
 
-				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false"><img alt="alt text" src="foo.png"></img></figure>'
 				);
 			} );
@@ -401,7 +401,7 @@ describe( 'ImageEngine', () => {
 					writer.setAttribute( 'alt', 'new text', image );
 				} );
 
-				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false"><img alt="new text" src="foo.png"></img></figure>'
 				);
 			} );
@@ -414,7 +414,7 @@ describe( 'ImageEngine', () => {
 					writer.removeAttribute( 'alt', image );
 				} );
 
-				expect( getViewData( viewDocument, { withoutSelection: true } ) )
+				expect( getViewData( view, { withoutSelection: true } ) )
 					.to.equal( '<figure class="ck-widget image" contenteditable="false"><img src="foo.png"></img></figure>' );
 			} );
 
@@ -422,15 +422,15 @@ describe( 'ImageEngine', () => {
 				setModelData( model, '<image src="foo.png" alt="alt text"></image>' );
 				const image = document.getRoot().getChild( 0 );
 
-				editor.editing.downcastDispatcher.on( 'attribute:alt:image', ( evt, data, consumable ) => {
-					consumable.consume( data.item, 'attribute:alt' );
+				editor.editing.downcastDispatcher.on( 'attribute:alt:image', ( evt, data, conversionApi ) => {
+					conversionApi.consumable.consume( data.item, 'attribute:alt' );
 				}, { priority: 'high' } );
 
 				model.change( writer => {
 					writer.removeAttribute( 'alt', image );
 				} );
 
-				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false"><img alt="alt text" src="foo.png"></img></figure>'
 				);
 			} );
@@ -443,7 +443,7 @@ describe( 'ImageEngine', () => {
 						'srcset=\'{ "data":"small.png 148w, big.png 1024w" }\'>' +
 					'</image>' );
 
-				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<img alt="alt text" sizes="100vw" src="foo.png" srcset="small.png 148w, big.png 1024w"></img>' +
 					'</figure>'
@@ -463,7 +463,7 @@ describe( 'ImageEngine', () => {
 					writer.removeAttribute( 'srcset', image );
 				} );
 
-				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<img alt="alt text" src="foo.png"></img>' +
 					'</figure>'
@@ -478,7 +478,7 @@ describe( 'ImageEngine', () => {
 						'srcset=\'{ "data":"small.png 148w, big.png 1024w", "width":"1024" }\'>' +
 					'</image>' );
 
-				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<img alt="alt text" sizes="100vw" src="foo.png" srcset="small.png 148w, big.png 1024w" width="1024"></img>' +
 					'</figure>'
@@ -493,7 +493,7 @@ describe( 'ImageEngine', () => {
 					writer.removeAttribute( 'srcset', image );
 				} );
 
-				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<img src="foo.png"></img>' +
 					'</figure>'
@@ -513,7 +513,7 @@ describe( 'ImageEngine', () => {
 					writer.removeAttribute( 'srcset', image );
 				} );
 
-				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false">' +
 					'<img src="foo.png"></img>' +
 					'</figure>'
@@ -521,10 +521,10 @@ describe( 'ImageEngine', () => {
 			} );
 
 			it( 'should not convert srcset attribute if is already consumed', () => {
-				editor.editing.downcastDispatcher.on( 'attribute:srcset:image', ( evt, data, consumable ) => {
+				editor.editing.downcastDispatcher.on( 'attribute:srcset:image', ( evt, data, conversionApi ) => {
 					const modelImage = data.item;
 
-					consumable.consume( modelImage, evt.name );
+					conversionApi.consumable.consume( modelImage, evt.name );
 				}, { priority: 'high' } );
 
 				setModelData( model,
@@ -535,7 +535,7 @@ describe( 'ImageEngine', () => {
 					'</image>'
 				);
 
-				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
 					'<figure class="ck-widget image" contenteditable="false">' +
 						'<img alt="alt text" src="foo.png"></img>' +
 					'</figure>'
