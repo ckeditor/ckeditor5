@@ -118,7 +118,7 @@ export default class Editor {
 		 * @member {module:engine/controller/editingcontroller~EditingController}
 		 */
 		this.editing = new EditingController( this.model );
-		this.editing.view.bind( 'isReadOnly' ).to( this );
+		this.editing.view.document.bind( 'isReadOnly' ).to( this );
 
 		/**
 		 * Conversion manager to which conversion dispatchers are registered. Used to add converters to the editor.
@@ -144,7 +144,7 @@ export default class Editor {
 		 * @member {module:core/editingkeystrokehandler~EditingKeystrokeHandler}
 		 */
 		this.keystrokes = new EditingKeystrokeHandler( this );
-		this.keystrokes.listenTo( this.editing.view );
+		this.keystrokes.listenTo( this.editing.view.document );
 	}
 
 	/**
@@ -262,9 +262,9 @@ mix( Editor, ObservableMixin );
  *
  * Note: This event is most useful for plugin developers. When integrating the editor with your website or
  * application you do not have to listen to `editor#ready` because when the promise returned by the static
- * {@link #create `Editor.create()`} event is resolved, the editor is already ready. In fact, since the first moment
- * when the editor instance is available to you is inside `then()`'s callback, you cannot even add a listener to
- * the `editor#ready` event.
+ * {@link module:core/editor/editor~Editor.create `Editor.create()`} event is resolved, the editor is already ready.
+ * In fact, since the first moment when the editor instance is available to you is inside `then()`'s callback,
+ * you cannot even add a listener to the `editor#ready` event.
  *
  * @event ready
  */
