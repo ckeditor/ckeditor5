@@ -75,7 +75,9 @@ Copy these dependencies to your `package.json` and call `npm install` to install
     "@ckeditor/ckeditor5-image": "^0.7.0",
     "@ckeditor/ckeditor5-link": "^0.8.0",
     "@ckeditor/ckeditor5-list": "^0.7.0",
-    "@ckeditor/ckeditor5-paragraph": "^0.9.0"
+    "@ckeditor/ckeditor5-paragraph": "^0.9.0",
+    "@ckeditor/ckeditor5-theme-lark": "^1.0.0-alpha.2",
+    "@ckeditor/ckeditor5-dev-utils": "^7.0.0"
 
     // ...
 }
@@ -86,10 +88,8 @@ The second step is to install dependencies needed to build the editor. The list 
 ```bash
 npm install --save \
 	@ckeditor/ckeditor5-dev-webpack-plugin \
-	css-loader  \
-	node-sass \
+	postcss-loader \
 	raw-loader \
-	sass-loader \
 	style-loader \
 	webpack
 ```
@@ -100,7 +100,7 @@ You may also want to install [`babel-minify-webpack-plugin`](https://github.com/
 
 Now, you can configure webpack. There are a couple of things which you need to take care of when building CKEditor:
 
-* Handling SASS files of CKEditor's theme. They are included in the CKEditor source using `import 'path/to/theme.sass'` statements, so you need [proper loaders](https://webpack.js.org/loaders/).
+* Handling CSS files of CKEditor's theme. They are included in the CKEditor sources using `import 'path/to/styles.css'` statements, so you need [proper loaders](https://webpack.js.org/loaders/).
 * Similarly, you need to handle bundling SVG icons, which are also imported directly into the source. For that you need the [`raw-loader`](https://webpack.js.org/loaders/raw-loader/).
 * Finally, to localize the editor you need to use the [`@ckeditor/ckeditor5-dev-webpack-plugin`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-webpack-plugin) webpack plugin.
 
@@ -108,6 +108,7 @@ The minimal configuration, assuming that you use the same methods of handling as
 
 ```js
 const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' );
+const { getPostCssConfig } = require( '@ckeditor/ckeditor5-dev-utils' ).styles;
 
 module.exports = {
 	plugins: [
@@ -129,19 +130,25 @@ module.exports = {
 				use: [ 'raw-loader' ]
 			},
 			{
-				// Or /ckeditor5-[^/]+\/theme\/[^/]+\.scss$/ if you want to limit this loader
+				// Or /ckeditor5-[^/]+\/theme\/[^/]+\.css$/ if you want to limit this loader
 				// to CKEditor 5's theme only.
-				test: /\.scss$/,
-
+				test: /\.css$/,
 				use: [
-					'style-loader',
 					{
-						loader: 'css-loader',
+						loader: 'style-loader',
 						options: {
-							minimize: true
+							singleton: true
 						}
 					},
-					'sass-loader'
+					{
+						loader: 'postcss-loader',
+						options: getPostCssConfig( {
+							themeImporter: {
+								themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
+							},
+							minify: true
+						} )
+					},
 				]
 			}
 		]
@@ -212,6 +219,20 @@ ClassicEditor.build = {
 ```
 
 This module will export an editor creator class which has all the plugins and configuration that you need already built-in. To use such editor, simply import that class and call the static `.create()` method like in all {@link builds/guides/integration/basic-api#Creating-an-editor examples}.
+
+```js
+import ClassicEditor from './ckeditor';
+
+ClassicEditor
+	// Note that you don't have to specify the plugin and toolbar configuraiton — using defaults from the build.
+	.create( document.querySelector( '#editor' ) )
+	.then( editor => {
+		console.log( 'Editor was initialized', editor );
+	} )
+	.catch( error => {
+		console.error( error.stack );
+	} );
+```
 
 ### Running the editor – method 2
 
@@ -314,17 +335,19 @@ module.exports = {
 				use: [ 'raw-loader' ]
 			},
 			{
-				test: /\.scss$/,
+				test: /\.css$/,
 				use: ExtractTextPlugin.extract( {
 					fallback: 'style-loader',
 					use: [
 						{
-							loader: 'css-loader',
-							options: {
-								minimize: true
-							}
-						},
-						'sass-loader'
+							loader: 'postcss-loader',
+							options: getPostCssConfig( {
+								themeImporter: {
+									themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
+								},
+								minify: true
+							} )
+						}
 					]
 				} )
 			}

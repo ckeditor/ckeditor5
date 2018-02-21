@@ -26,10 +26,8 @@ First, install packages needed to build CKEditor 5.
 
 ```bash
 npm install --save \
-	css-loader  \
-	node-sass \
+	postcss-loader \
 	raw-loader \
-	sass-loader \
 	style-loader \
 	webpack
 ```
@@ -42,6 +40,7 @@ The minimal webpack configuration needed to enable building CKEditor 5 is:
 'use strict';
 
 const path = require( 'path' );
+const { getPostCssConfig } = require( '@ckeditor/ckeditor5-dev-utils' ).styles;
 
 module.exports = {
 	// https://webpack.js.org/configuration/entry-context/
@@ -63,14 +62,25 @@ module.exports = {
 				use: [ 'raw-loader' ]
 			},
 			{
-				// Or /ckeditor5-[^/]+\/theme\/[^/]+\.scss$/ if you want to limit this loader
+				// Or /ckeditor5-[^/]+\/theme\/[^/]+\.css$/ if you want to limit this loader
 				// to CKEditor 5's theme only.
-				test: /\.scss$/,
-
+				test: /\.css$/,
 				use: [
-					'style-loader',
-					'css-loader',
-					'sass-loader'
+					{
+						loader: 'style-loader',
+						options: {
+							singleton: true
+						}
+					},
+					{
+						loader: 'postcss-loader',
+						options: getPostCssConfig( {
+							themeImporter: {
+								themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
+							},
+							minify: true
+						} )
+					},
 				]
 			}
 		]
@@ -85,10 +95,12 @@ Now, you can install some of the CKEditor 5 Framework packages which will allow 
 
 ```bash
 npm install --save \
+	@ckeditor/ckeditor5-dev-utils \
 	@ckeditor/ckeditor5-editor-classic \
 	@ckeditor/ckeditor5-essentials \
 	@ckeditor/ckeditor5-paragraph \
-	@ckeditor/ckeditor5-basic-styles
+	@ckeditor/ckeditor5-basic-styles \
+	@ckeditor/ckeditor5-theme-lark
 ```
 
 Based on these packages you can create a simple application.
