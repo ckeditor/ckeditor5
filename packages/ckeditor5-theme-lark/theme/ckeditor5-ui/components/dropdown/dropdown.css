@@ -38,6 +38,7 @@
 			@mixin ck-disabled;
 		}
 
+		/* https://github.com/ckeditor/ckeditor5/issues/816 */
 		&.ck-on {
 			border-bottom-left-radius: 0;
 			border-bottom-right-radius: 0;
