@@ -6,7 +6,7 @@
 /* globals console:false, document, setTimeout */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ContextualToolbar from '../../../src/toolbar/contextual/contextualtoolbar';
+import BalloonToolbar from '../../../src/toolbar/balloon/balloontoolbar';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
@@ -15,9 +15,9 @@ import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 // Editor for the external insert.
 ClassicEditor
 	.create( document.querySelector( '#editor-insert' ), {
-		plugins: [ ArticlePluginSet, ContextualToolbar ],
+		plugins: [ ArticlePluginSet, BalloonToolbar ],
 		toolbar: [ 'bold', 'link' ],
-		contextualToolbar: [ 'bold', 'link' ]
+		balloonToolbar: [ 'bold', 'link' ]
 	} )
 	.then( editor => {
 		const element = document.querySelector( '#button-insert' );
@@ -32,9 +32,9 @@ ClassicEditor
 // Editor for the external delete.
 ClassicEditor
 	.create( document.querySelector( '#editor-delete' ), {
-		plugins: [ ArticlePluginSet, ContextualToolbar ],
+		plugins: [ ArticlePluginSet, BalloonToolbar ],
 		toolbar: [ 'bold', 'link' ],
-		contextualToolbar: [ 'bold', 'link' ]
+		balloonToolbar: [ 'bold', 'link' ]
 	} )
 	.then( editor => {
 		const element = document.querySelector( '#button-delete' );
