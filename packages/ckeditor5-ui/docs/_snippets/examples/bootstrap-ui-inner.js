@@ -7,6 +7,9 @@
 
 // Basic classes to create an editor.
 import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
+import EditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/editoruiview';
+import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
+import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import ElementReplacer from '@ckeditor/ckeditor5-utils/src/elementreplacer';
@@ -34,40 +37,44 @@ import ItalicEngine from '@ckeditor/ckeditor5-basic-styles/src/italicengine';
 import UnderlineEngine from '@ckeditor/ckeditor5-basic-styles/src/underlineengine';
 import HeadingEngine from '@ckeditor/ckeditor5-heading/src/headingengine';
 
-// EasyImage
+// The easy image integration.
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
 import { TOKEN_URL } from '@ckeditor/ckeditor5-cloudservices/tests/_utils/cloudservices-config';
 
-// Extending the Editor, which brings base editor API.
+// Extending the Editor class, which brings base editor API.
 export default class BootstrapEditor extends Editor {
 	constructor( element, config ) {
 		super( config );
 
+		// Remember the element the editor is created with.
 		this.element = element;
-
-		// Create the ("main") root element of the model tree.
-		this.model.document.createRoot();
 
 		// Use the HTML data processor in this editor.
 		this.data.processor = new HtmlDataProcessor();
 
-		// This editor uses a single editable view in DOM.
-		this.editable = new InlineEditableUIView( this.locale );
+		// Create the ("main") root element of the model tree.
+		this.model.document.createRoot();
 
-		// A helper to easily replace the editor#element with editor.editable#element.
-		this._elementReplacer = new ElementReplacer();
+		// The UI layer of the editor.
+		this.ui = new BootstrapEditorUI( this );
 
 		// When editor#element is a textarea inside a form element
 		// then content of this textarea will be updated on form submit.
 		attachToForm( this );
+
+		// A helper to easily replace the editor#element with editor.editable#element.
+		this._elementReplacer = new ElementReplacer();
 	}
 
 	destroy() {
 		// When destroyed, editor sets the output of editor#getData() into editor#element...
 		this.updateElement();
 
-		// ...and restores editor#element.
+		// ...and restores the original editor#element...
 		this._elementReplacer.restore();
+
+		// ...and destroys the UI.
+		this.ui.destroy();
 
 		return super.destroy();
 	}
@@ -75,34 +82,23 @@ export default class BootstrapEditor extends Editor {
 	static create( element, config ) {
 		return new Promise( resolve => {
 			const editor = new this( element, config );
-			const editable = editor.editable;
+			const editable = editor.ui.view.editable;
 
 			resolve(
 				editor.initPlugins()
-					// Render the editable view in DOM first.
-					.then( () => editable.render() )
-					// Replace the editor#element with editor.editable#element.
-					.then( () => editor._elementReplacer.replace( element, editable.element ) )
-					// Handle the UI of the editor.
 					.then( () => {
-						// Create an editing root in the editing layer. It will correspond with the
-						// document root created in the constructor().
-						const editingRoot = editor.editing.createRoot( 'div' );
+						// Initialize the UI first. See the BootstrapEditorUI class to learn more.
+						editor.ui.init();
 
-						// Bind the basic attributes of the editable in DOM with the editing layer.
-						editable.bind( 'isReadOnly' ).to( editingRoot );
-						editable.bind( 'isFocused' ).to( editor.editing.view );
-						editable.name = editingRoot.rootName;
-
-						// Setup the external Bootstrap UI so it works with the editor.
-						setupButtons( editor );
-						setupHeadingDropdown( editor );
+						// Replace the editor#element with editor.editable#element.
+						editor._elementReplacer.replace( element, editable.element );
 
 						// Tell the world that the UI of the editor is ready to use.
 						editor.fire( 'uiReady' );
 					} )
 					// Bind the editor editing layer to the editable in DOM.
 					.then( () => editor.editing.view.attachDomRoot( editable.element ) )
+					// Fill the editable with the intial data.
 					.then( () => editor.loadDataFromElement() )
 					// Fire the events that announce that the editor is complete and ready to use.
 					.then( () => {
@@ -119,91 +115,149 @@ export default class BootstrapEditor extends Editor {
 mix( BootstrapEditor, DataApiMixin );
 mix( BootstrapEditor, ElementApiMixin );
 
-// This function activates Bold, Italic, Underline, Undo and Redo buttons in the toolbar.
-function setupButtons( editor ) {
-	[ 'bold', 'italic', 'underline', 'undo', 'redo' ].forEach( commandName => {
-		// Retrieve the editor command corresponding with the id of the button in DOM.
-		const command = editor.commands.get( commandName );
+// The class organizing the UI of the editor, binding it with existing Bootstrap elements in DOM.
+class BootstrapEditorUI {
+	constructor( editor ) {
+		this.editor = editor;
 
-		// Retrieve the jQuery object corresponding with the button in DOM.
-		const button = $( `#${ commandName }` );
+		// The global UI view of the editor. It aggregates various Bootstrap DOM elements.
+		const view = this.view = new EditorUIView( editor.locale );
 
-		// Clicking on the buttons should execute the editor command...
-		button.click( () => editor.execute( commandName ) );
+		// This is the main editor element in DOM.
+		view.element = $( '.ck-editor' );
 
-		// ...but it should not steal the focus so the editing is uninterrupted.
-		button.mousedown( evt => evt.preventDefault() );
+		// This is the editable view in DOM. It will replace the data container in DOM.
+		view.editable = new InlineEditableUIView( editor.locale );
 
-		// Commands can become disabled, e.g. when the editor is read-only.
-		// Make sure the buttons reflect this state change.
-		command.on( 'change:isEnabled', onIsEnabledChange );
-		onIsEnabledChange();
+		// References to the dropdown elements for further usage. See #_setupBootstrapHeadingDropdown.
+		view.dropdownMenu = view.element.find( '.dropdown-menu' );
+		view.dropdownToggle = view.element.find( '.dropdown-toggle' );
 
-		// Bold, Italic and Underline commands have a value that changes
-		// when the selection starts in an element the command creates.
-		// The button should indicate that e.g. editing text which is already bold.
-		if ( !new Set( [ 'undo', 'redo' ] ).has( commandName ) ) {
-			command.on( 'change:value', onValueChange );
-			onValueChange();
-		}
+		// References to the toolbar buttons for further usage. See #_setupBootstrapToolbarButtons.
+		view.toolbarButtons = {};
 
-		function onValueChange() {
-			button.toggleClass( 'active', command.value );
-		}
-
-		function onIsEnabledChange() {
-			button.attr( 'disabled', () => !command.isEnabled );
-		}
-	} );
-}
-
-// This function activates the headings dropdown in the toolbar.
-function setupHeadingDropdown( editor ) {
-	const menu = $( '.ck-editor .dropdown-menu' );
-	const button = $( '.ck-editor .dropdown-toggle' );
-
-	// Create a dropdown menu entry for each heading configuration option.
-	editor.config.get( 'heading.options' ).map( option => {
-		// Retrieve the editor command corresponding with the configuration option.
-		const command = editor.commands.get( option.modelElement );
-
-		// Create the menu item DOM element.
-		const menuItem = $(
-			`<a href="#" class="dropdown-item heading-item_${ option.modelElement }">` +
-				`${ option.title }` +
-			'</a>' );
-
-		// Upon click, the dropdown menua item should execute the command and focus
-		// the editing view to keep the editing process uninterrupted.
-		menuItem.click( () => {
-			editor.execute( option.modelElement );
-			editor.editing.view.focus();
+		[ 'bold', 'italic', 'underline', 'undo', 'redo' ].forEach( name => {
+			// Retrieve the jQuery object corresponding with the button in DOM.
+			view.toolbarButtons[ name ] = view.element.find( `#${ name }` );
 		} );
 
-		menu.append( menuItem );
+		// Mandatory EditorUI interface components.
+		this.componentFactory = new ComponentFactory( editor );
+		this.focusTracker = new FocusTracker();
+	}
 
-		// Make sure the dropdown and its items reflect the state of the
-		// currently active command.
-		command.on( 'change:value', onValueChange );
-		onValueChange();
+	init() {
+		const editor = this.editor;
+		const view = this.view;
 
-		// Heading commands can become disabled, e.g. when the editor is read-only.
-		// Make sure the UI reflects this state change.
-		command.on( 'change:isEnabled', onIsEnabledChange );
-		onIsEnabledChange();
+		// Render the editable component in DOM first.
+		view.editable.render();
 
-		function onValueChange() {
-			if ( command.value ) {
-				button.children( ':first' ).text( option.title );
+		// Create an editing root in the editing layer. It will correspond with the
+		// document root created in the constructor().
+		const editingRoot = editor.editing.view.document.getRoot();
+
+		// Bind the basic attributes of the editable in DOM with the editing layer.
+		view.editable.bind( 'isReadOnly' ).to( editingRoot );
+		view.editable.bind( 'isFocused' ).to( editor.editing.view.document );
+		view.editable.name = editingRoot.rootName;
+
+		// Setup the existing, external Bootstrap UI so it works with the rest of the editor.
+		this._setupBootstrapToolbarButtons();
+		this._setupBootstrapHeadingDropdown();
+	}
+
+	destroy() {
+		this.view.editable.destroy();
+	}
+
+	// This method activates Bold, Italic, Underline, Undo and Redo buttons in the toolbar.
+	_setupBootstrapToolbarButtons() {
+		const editor = this.editor;
+
+		for ( const name in this.view.toolbarButtons ) {
+			// Retrieve the editor command corresponding with the id of the button in DOM.
+			const command = editor.commands.get( name );
+			const button = this.view.toolbarButtons[ name ];
+
+			// Clicking on the buttons should execute the editor command...
+			button.click( () => editor.execute( name ) );
+
+			// ...but it should not steal the focus so the editing is uninterrupted.
+			button.mousedown( evt => evt.preventDefault() );
+
+			const onValueChange = () => {
+				button.toggleClass( 'active', command.value );
+			};
+
+			const onIsEnabledChange = () => {
+				button.attr( 'disabled', () => !command.isEnabled );
+			};
+
+			// Commands can become disabled, e.g. when the editor is read-only.
+			// Make sure the buttons reflect this state change.
+			command.on( 'change:isEnabled', onIsEnabledChange );
+			onIsEnabledChange();
+
+			// Bold, Italic and Underline commands have a value that changes
+			// when the selection starts in an element the command creates.
+			// The button should indicate that e.g. editing text which is already bold.
+			if ( !new Set( [ 'undo', 'redo' ] ).has( name ) ) {
+				command.on( 'change:value', onValueChange );
+				onValueChange();
+			}
+		}
+	}
+
+	// This method activates the headings dropdown in the toolbar.
+	_setupBootstrapHeadingDropdown() {
+		const editor = this.editor;
+		const dropdownMenu = this.view.dropdownMenu;
+		const dropdownToggle = this.view.dropdownToggle;
+
+		// Create a dropdown menu entry for each heading configuration option.
+		editor.config.get( 'heading.options' ).map( option => {
+			// Retrieve the editor command corresponding with the configuration option.
+			const command = editor.commands.get( option.model );
+
+			// Create the menu item DOM element.
+			const menuItem = $(
+				`<a href="#" class="dropdown-item heading-item_${ option.model }">` +
+					`${ option.title }` +
+				'</a>' );
+
+			// Upon click, the dropdown menua item should execute the command and focus
+			// the editing view to keep the editing process uninterrupted.
+			menuItem.click( () => {
+				editor.execute( option.model );
+				editor.editing.view.focus();
+			} );
+
+			dropdownMenu.append( menuItem );
+
+			// Make sure the dropdown and its items reflect the state of the
+			// currently active command.
+			command.on( 'change:value', onValueChange );
+			onValueChange();
+
+			// Heading commands can become disabled, e.g. when the editor is read-only.
+			// Make sure the UI reflects this state change.
+			command.on( 'change:isEnabled', onIsEnabledChange );
+			onIsEnabledChange();
+
+			function onValueChange() {
+				if ( command.value ) {
+					dropdownToggle.children( ':first' ).text( option.title );
+				}
+
+				menuItem.toggleClass( 'active', command.value );
 			}
 
-			menuItem.toggleClass( 'active', command.value );
-		}
-
-		function onIsEnabledChange() {
-			button.attr( 'disabled', () => !command.isEnabled );
-		}
-	} );
+			function onIsEnabledChange() {
+				dropdownToggle.attr( 'disabled', () => !command.isEnabled );
+			}
+		} );
+	}
 }
 
 // Finally, create the BootstrapEditor instance with a selected set of features.
