@@ -48,4 +48,18 @@
 			border-left-color: var(--ck-color-split-button-hover-border);
 		}
 	}
+
+	/* Don't round the bottom left and right corners of the buttons when "open"
+	https://github.com/ckeditor/ckeditor5/issues/816 */
+	&.ck-splitbutton_open {
+		@mixin ck-rounded-corners {
+			& > .ck-splitbutton__action {
+				border-bottom-left-radius: 0;
+			}
+
+			& > .ck-splitbutton__arrow {
+				border-bottom-right-radius: 0;
+			}
+		}
+	}
 }
