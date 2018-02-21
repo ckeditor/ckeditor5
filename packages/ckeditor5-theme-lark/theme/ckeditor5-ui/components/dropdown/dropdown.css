@@ -56,7 +56,8 @@
 	@mixin ck-rounded-corners;
 	@mixin ck-drop-shadow;
 
-	/* Disabled radius of top-left border to be consistent with .dropdown__button */
+	/* Disabled radius of top-left border to be consistent with .dropdown__button
+	https://github.com/ckeditor/ckeditor5/issues/816 */
 	@mixin ck-rounded-corners {
 		border-top-left-radius: 0;
 	}
