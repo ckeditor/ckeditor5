@@ -18,7 +18,6 @@ import ViewElement from '../../../src/view/element';
 import ViewPosition from '../../../src/view/position';
 import { isBlockFiller, BR_FILLER } from '../../../src/view/filler';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'view', () => {
 	const DEFAULT_OBSERVERS_COUNT = 5;
@@ -502,19 +501,22 @@ describe( 'view', () => {
 				sinon.assert.callOrder( beforeSpy, renderSpy, afterSpy );
 			} );
 
-			it( 'should throw when someone tries to change view during rendering', () => {
+			it( 'should create separate change block if view.change() is called during "render" event', () => {
 				const domDiv = document.createElement( 'div' );
 				const viewRoot = createViewRoot( viewDocument, 'div', 'main' );
-				let renderingCalled = false;
 				view.attachDomRoot( domDiv );
+
+				const renderingEndSpy = sinon.spy();
+				view.on( 'render', renderingEndSpy, { priority: 'lowest' } );
+
+				const nestedChange = sinon.spy();
 
 				view.change( writer => {
 					const p = writer.createContainerElement( 'p' );
 					const ui = writer.createUIElement( 'span', null, function( domDocument ) {
 						const element = this.toDomElement( domDocument );
 
-						expect( () => view.change( () => {} ) ).to.throw( CKEditorError, /^applying-view-changes-on-rendering/ );
-						renderingCalled = true;
+						view.change( nestedChange );
 
 						return element;
 					} );
@@ -522,23 +524,25 @@ describe( 'view', () => {
 					writer.insert( ViewPosition.createAt( viewRoot ), p );
 				} );
 
-				expect( renderingCalled ).to.be.true;
+				sinon.assert.calledTwice( renderingEndSpy );
+				sinon.assert.callOrder( renderingEndSpy, nestedChange );
 				domDiv.remove();
 			} );
 
-			it( 'should throw when someone tries to call render() during rendering', () => {
+			it( 'should create separate change block if view.render() is called during "render" event', () => {
 				const domDiv = document.createElement( 'div' );
 				const viewRoot = createViewRoot( viewDocument, 'div', 'main' );
-				let renderingCalled = false;
 				view.attachDomRoot( domDiv );
+
+				const renderingEndSpy = sinon.spy();
+				view.on( 'render', renderingEndSpy, { priority: 'lowest' } );
 
 				view.change( writer => {
 					const p = writer.createContainerElement( 'p' );
 					const ui = writer.createUIElement( 'span', null, function( domDocument ) {
 						const element = this.toDomElement( domDocument );
 
-						expect( () => view.render() ).to.throw( CKEditorError, /^applying-view-changes-on-rendering/ );
-						renderingCalled = true;
+						view.render();
 
 						return element;
 					} );
@@ -546,7 +550,7 @@ describe( 'view', () => {
 					writer.insert( ViewPosition.createAt( viewRoot ), p );
 				} );
 
-				expect( renderingCalled ).to.be.true;
+				sinon.assert.calledTwice( renderingEndSpy );
 				domDiv.remove();
 			} );
 
@@ -567,6 +571,23 @@ describe( 'view', () => {
 				sinon.assert.calledTwice( spy );
 			} );
 
+			it( 'should create separate render event when change() called on high priority', () => {
+				let called = false;
+
+				const spy = sinon.spy( () => {
+					// Prevent infinite loop.
+					if ( !called ) {
+						called = true;
+						view.change( () => {} );
+					}
+				} );
+
+				view.on( 'render', spy, { priority: 'high' } );
+
+				view.change( () => {} );
+				sinon.assert.calledTwice( spy );
+			} );
+
 			it( 'should create separate render event when render() called on low priority', () => {
 				let called = false;
 
@@ -579,6 +600,23 @@ describe( 'view', () => {
 				} );
 
 				view.on( 'render', spy, { priority: 'low' } );
+
+				view.render();
+				sinon.assert.calledTwice( spy );
+			} );
+
+			it( 'should create separate render event when render() called on high priority', () => {
+				let called = false;
+
+				const spy = sinon.spy( () => {
+					// Prevent infinite loop.
+					if ( !called ) {
+						called = true;
+						view.render();
+					}
+				} );
+
+				view.on( 'render', spy, { priority: 'high' } );
 
 				view.render();
 				sinon.assert.calledTwice( spy );
@@ -612,22 +650,6 @@ describe( 'view', () => {
 				sinon.assert.calledTwice( lowestSpy );
 
 				expect( order ).to.deep.equal( [ 'low1', 'low2', 'lowest', 'low1', 'low2', 'lowest' ] );
-			} );
-
-			it( 'should NOT throw when someone tries to call change() before rendering', () => {
-				view.on( 'render', () => {
-					expect( () => view.change( () => {} ) ).not.to.throw( CKEditorError, /^applying-view-changes-on-rendering/ );
-				}, { priority: 'normal' } );
-
-				view.change( () => {} );
-			} );
-
-			it( 'should NOT throw when someone tries to call render() before rendering', () => {
-				view.on( 'render', () => {
-					expect( () => view.render() ).not.to.throw( CKEditorError, /^applying-view-changes-on-rendering/ );
-				}, { priority: 'normal' } );
-
-				view.change( () => {} );
 			} );
 		} );
 	} );

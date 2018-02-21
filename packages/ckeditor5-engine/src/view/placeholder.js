@@ -103,9 +103,11 @@ function updateSinglePlaceholder( view, element, checkFunction ) {
 
 	// If checkFunction is provided and returns false - remove placeholder.
 	if ( checkFunction && !checkFunction() ) {
-		view.change( writer => {
-			writer.removeClass( 'ck-placeholder', element );
-		} );
+		if ( element.hasClass( 'ck-placeholder' ) ) {
+			view.change( writer => {
+				writer.removeClass( 'ck-placeholder', element );
+			} );
+		}
 
 		return;
 	}
@@ -116,21 +118,27 @@ function updateSinglePlaceholder( view, element, checkFunction ) {
 
 	// If element is empty and editor is blurred.
 	if ( !document.isFocused && isEmptyish ) {
-		view.change( writer => {
-			writer.addClass( 'ck-placeholder', element );
-		} );
+		if ( !element.hasClass( 'ck-placeholder' ) ) {
+			view.change( writer => {
+				writer.addClass( 'ck-placeholder', element );
+			} );
+		}
 
 		return;
 	}
 
 	// It there are no child elements and selection is not placed inside element.
 	if ( isEmptyish && anchor && anchor.parent !== element ) {
-		view.change( writer => {
-			writer.addClass( 'ck-placeholder', element );
-		} );
+		if ( !element.hasClass( 'ck-placeholder' ) ) {
+			view.change( writer => {
+				writer.addClass( 'ck-placeholder', element );
+			} );
+		}
 	} else {
-		view.change( writer => {
-			writer.removeClass( 'ck-placeholder', element );
-		} );
+		if ( element.hasClass( 'ck-placeholder' ) ) {
+			view.change( writer => {
+				writer.removeClass( 'ck-placeholder', element );
+			} );
+		}
 	}
 }

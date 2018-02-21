@@ -24,7 +24,6 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import { scrollViewportToShowTarget } from '@ckeditor/ckeditor5-utils/src/dom/scroll';
 import { injectUiElementHandling } from './uielement';
 import { injectQuirksHandling } from './filler';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * Editor's view controller class. Its main responsibility is DOM - View management for editing purposes, to provide
@@ -108,16 +107,8 @@ export default class View {
 		 */
 		this._ongoingChange = false;
 
-		/**
-		 * Is set to `true` when rendering view to DOM is in progress.
-		 * This is used to check whether view document can accept changes in current state.
-		 * From the moment when rendering to DOM is stared view tree is locked to prevent changes that will not be
-		 * reflected in the DOM.
-		 *
-		 * @private
-		 * @member {Boolean} module:engine/view/view~View#_renderingInProgress
-		 */
-		this._renderingInProgress = false;
+		this._renderingEventProcessing = false;
+		this._callbacksWaiting = [];
 
 		/**
 		 * Writer instance used in {@link #change change method) callbacks.
@@ -303,26 +294,47 @@ export default class View {
 	 *
 	 * Change block is executed immediately.
 	 *
-	 * When the outermost change block is done it fires
+	 * When the outermost change block is done and rendering to DOM is over it fires
 	 * {@link module:engine/view/view~View#event:render} event.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `applying-view-changes-on-rendering` when
-	 * change block is used when rendering to DOM is in progress.
+	 * change block is used after rendering to DOM has started.
 	 *
 	 * @param {Function} callback Callback function which may modify the view.
 	 */
 	change( callback ) {
-		// Check if change is performed in correct moment.
-		this._assertRenderingInProgress();
+		// When "render" event is processed all callbacks need to wait until processing of that event is complete.
+		// Those callbacks will be processed later and create separate "render" event.
+		if ( this._renderingEventProcessing ) {
+			this._callbacksWaiting.push( callback );
+			return;
+		}
 
-		// If other changes are in progress wait with rendering until every ongoing change is over.
+		// Recursive call to view.change() method - execute listener immediately.
 		if ( this._ongoingChange ) {
 			callback( this._writer );
 		} else {
+			// This lock will assure that all recursive calls to view.change() will end up in same block - one "render"
+			// event for all nested calls.
 			this._ongoingChange = true;
-
 			callback( this._writer );
+			this._ongoingChange = false;
+
+			// This lock will assure that all view.change() calls in listeners will wait until all callbacks are processed
+			// and will create separate "render" event.
+			this._renderingEventProcessing = true;
 			this.fire( 'render' );
+			this._renderingEventProcessing = false;
+
+			// Call waiting callbacks that were called during `render` event.
+			if ( this._callbacksWaiting.length ) {
+				const callbacks = this._callbacksWaiting;
+				this._callbacksWaiting = [];
+
+				while ( callbacks.length ) {
+					this.change( callbacks.shift() );
+				}
+			}
 		}
 	}
 
@@ -334,14 +346,7 @@ export default class View {
 	 * trying to re-render when rendering to DOM has already started.
 	 */
 	render() {
-		// Check if rendering is performed in correct moment.
-		this._assertRenderingInProgress();
-
-		// Render only if no ongoing changes are in progress. If there are some, view document will be rendered after all
-		// changes are done. This way view document will not be rendered in the middle of some changes.
-		if ( !this._ongoingChange ) {
-			this.change( () => {} );
-		}
+		this.change( () => {} );
 	}
 
 	/**
@@ -362,54 +367,18 @@ export default class View {
 	 * @private
 	 */
 	_render() {
-		this._renderingInProgress = true;
-
 		this.disableObservers();
 		this._renderer.render();
 		this.enableObservers();
-
-		// Current ongoing change is finished after rendering is done.
-		// Further render() or change() calls will create new ongoing change.
-		this._ongoingChange = false;
-		this._renderingInProgress = false;
 	}
 
 	/**
-	 * Throws `applying-view-changes-on-rendering` error when trying to modify or re-render view tree when rendering is
-	 * already started
+	 * Fired after a topmost {@link module:engine/view/view~View#change change block} is finished and the DOM rendering has
+	 * been executed.
 	 *
-	 * @private
-	 */
-	_assertRenderingInProgress() {
-		if ( this._renderingInProgress ) {
-			/**
-			 * There is an attempt to make changes in the view tree when the rendering process is in progress.
-			 * This may cause unexpected behaviour and inconsistency between the DOM and the view.
-			 * This may be caused by calling `view.change()` or `view.render()` methods during rendering process.
-			 *
-			 * @error applying-view-changes-on-rendering
-			 */
-			throw new CKEditorError(
-				'applying-view-changes-on-rendering: ' +
-				'Attempting to make changes in the view during rendering process. ' +
-				'This may cause some unexpected behaviour and inconsistency between the DOM and the view.'
-			);
-		}
-	}
-
-	/**
-	 * Fired after a topmost {@link module:engine/view/view~View#change change block} is finished.
-	 *
-	 * Actual rendering is performed on 'low' priority. This means that all listeners on 'normal' and higher priorities
+	 * Actual rendering is performed on 'low' priority. This means that all listeners on 'normal' and above priorities
 	 * will be executed after changes made to view tree but before rendering to the DOM. Use `low` priority for callbacks that
 	 * should be executed after rendering to the DOM.
-	 *
-	 * When listener on `normal` (or higher) priority call {@link module:engine/view/view~View#change change()} or
-	 * {@link module:engine/view/view~View#render render()} it will be included in currently executed change block (no
-	 * more `render` events will be fired).
-	 *
-	 * When listener on `low` (or lower) priority calls {@link module:engine/view/view~View#change change()} or
-	 * {@link module:engine/view/view~View#render render()} it will create a new change block (new `render` event will be fired).
 	 *
 	 * @event module:engine/view/view~View#event:render
 	 */
