@@ -83,6 +83,18 @@ describe( 'InsertTableCommand', () => {
 
 	describe( 'execute()', () => {
 		describe( 'collapsed selection', () => {
+			it( 'should insert table in empty root', () => {
+				setData( model, '[]' );
+
+				command.execute();
+
+				expect( getData( model ) ).to.equal(
+					'<table>' +
+					'<tableRow><tableCell></tableCell><tableCell></tableCell></tableRow>' +
+					'<tableRow><tableCell></tableCell><tableCell></tableCell></tableRow>' +
+					'</table>[]'
+				);
+			} );
 			it( 'should insert table with two rows and two columns after non-empty paragraph', () => {
 				setData( model, '<p>foo[]</p>' );
 

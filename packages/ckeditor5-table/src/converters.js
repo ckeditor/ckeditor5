@@ -27,8 +27,7 @@ export function downcastTableCell( dispatcher ) {
 			return;
 		}
 
-		const viewElementName = data.item.getAttribute( 'isHeading' ) ? 'th' : 'td';
-		const tableCellElement = conversionApi.writer.createContainerElement( viewElementName, {} );
+		const tableCellElement = conversionApi.writer.createContainerElement( 'td' );
 
 		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
 

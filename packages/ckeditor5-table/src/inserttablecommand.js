@@ -42,7 +42,9 @@ export default class InsertTableCommand extends Command {
 		const columns = parseInt( options.columns ) || 2;
 
 		const firstPosition = selection.getFirstPosition();
-		const insertTablePosition = Position.createAfter( firstPosition.parent || firstPosition );
+		// TODO does API has it?
+		const isRoot = firstPosition.parent === firstPosition.root;
+		const insertTablePosition = isRoot ? Position.createAt( firstPosition ) : Position.createAfter( firstPosition.parent );
 
 		model.change( writer => {
 			const table = writer.createElement( 'table' );
