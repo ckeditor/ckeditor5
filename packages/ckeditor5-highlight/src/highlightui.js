@@ -20,8 +20,6 @@ import ToolbarSeparatorView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarsepa
 import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview';
 import { createDropdown, addToolbarToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 
-import './../theme/highlight.css';
-
 /**
  * The default Highlight UI plugin. It introduces:
  * * the `'highlightDropdown'` drop-down,
@@ -125,13 +123,7 @@ export default class HighlightUI extends Plugin {
 		function decorateHighlightButton( button ) {
 			button.bind( 'isEnabled' ).to( command, 'isEnabled' );
 			button.bind( 'isOn' ).to( command, 'value', value => value === option.model );
-
-			button.extendTemplate( {
-				attributes: {
-					style: `color: ${ option.color }`,
-					class: 'ck-highlight-button'
-				}
-			} );
+			button.iconView.fillColor = option.color;
 		}
 	}
 
@@ -212,12 +204,6 @@ export default class HighlightUI extends Plugin {
 
 			splitButtonView.delegate( 'execute' ).to( dropdownView );
 
-			splitButtonView.extendTemplate( {
-				attributes: {
-					class: 'ck-highlight-button'
-				}
-			} );
-
 			// Create buttons array.
 			const buttons = options.map( option => {
 				// Get existing highlighter button.
@@ -237,14 +223,7 @@ export default class HighlightUI extends Plugin {
 			buttons.push( componentFactory.create( 'removeHighlight' ) );
 
 			addToolbarToDropdown( dropdownView, buttons );
-
-			bindIconStyleToColor( dropdownView );
-
-			dropdownView.extendTemplate( {
-				attributes: {
-					class: [ 'ck-highlight-dropdown' ]
-				}
-			} );
+			bindToolbarIconStyleToActiveColor( dropdownView );
 
 			// Execute current action from dropdown's split button action button.
 			splitButtonView.on( 'execute', () => {
@@ -268,19 +247,10 @@ export default class HighlightUI extends Plugin {
 }
 
 // Extends split button icon style to reflect last used button style.
-function bindIconStyleToColor( dropdownView ) {
+function bindToolbarIconStyleToActiveColor( dropdownView ) {
 	const actionView = dropdownView.buttonView.actionView;
 
-	const bind = actionView.bindTemplate;
-
-	// Color will propagate to iconView.
-	actionView.extendTemplate( {
-		attributes: {
-			style: bind.to( 'color', color => `color:${ color }` )
-		}
-	} );
-
-	actionView.bind( 'color' ).to( dropdownView.buttonView, 'color' );
+	actionView.iconView.bind( 'fillColor' ).to( dropdownView.buttonView, 'color' );
 }
 
 // Returns icon for given highlighter type.
