@@ -4,7 +4,7 @@
  */
 
 /**
- * @module table/tablecommand
+ * @module table/inserttablecommand
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
