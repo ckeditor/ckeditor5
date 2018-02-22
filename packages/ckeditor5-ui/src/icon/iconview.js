@@ -45,6 +45,15 @@ export default class IconView extends View {
 		 */
 		this.set( 'viewBox', '0 0 20 20' );
 
+		/**
+		 * The fill color of the child `path.ck-icon__fill`.
+		 *
+		 * @observable
+		 * @default ''
+		 * @member {String} #fillColor
+		 */
+		this.set( 'fillColor', '' );
+
 		this.setTemplate( {
 			tag: 'svg',
 			ns: 'http://www.w3.org/2000/svg',
@@ -62,10 +71,18 @@ export default class IconView extends View {
 		super.render();
 
 		this._updateXMLContent();
+		this._colorFillPaths();
 
 		// This is a hack for lack of innerHTML binding.
 		// See: https://github.com/ckeditor/ckeditor5-ui/issues/99.
-		this.on( 'change:content', () => this._updateXMLContent() );
+		this.on( 'change:content', () => {
+			this._updateXMLContent();
+			this._colorFillPaths();
+		} );
+
+		this.on( 'change:fillColor', () => {
+			this._colorFillPaths();
+		} );
 	}
 
 	/**
@@ -88,6 +105,19 @@ export default class IconView extends View {
 			while ( svg.childNodes.length > 0 ) {
 				this.element.appendChild( svg.childNodes[ 0 ] );
 			}
+		}
+	}
+
+	/**
+	 * Fills all child `path.ck-icon__fill` with the `#fillColor`.
+	 *
+	 * @private
+	 */
+	_colorFillPaths() {
+		if ( this.fillColor ) {
+			this.element.querySelectorAll( '.ck-icon__fill' ).forEach( path => {
+				path.style.fill = this.fillColor;
+			} );
 		}
 	}
 }

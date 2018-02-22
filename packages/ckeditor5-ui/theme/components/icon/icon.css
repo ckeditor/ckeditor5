@@ -4,29 +4,5 @@
  */
 
 svg.ck-icon {
-	/* Multiplied by the height of the line in "px" should give SVG "viewport" dimensions */
-	font-size: 0.8333333333em;
-
-	/* Must be consistent with .ck-button__label's vertical align. Otherwise, buttons with and
-	without labels (but with icons) have different sizes in Chrome */
 	vertical-align: middle;
-
-	color: inherit;
-
-	/* Inherit cursor style (#5). */
-	cursor: inherit;
-
-	/* This will prevent blurry icons on Firefox. See #340. */
-	will-change: transform;
-
-	& * {
-		/* Inherit cursor style (#5). */
-		cursor: inherit;
-
-		/* Allows dynamic coloring of the icons. */
-		color: inherit;
-
-		/* Needed by FF. */
-		fill: currentColor;
-	}
 }

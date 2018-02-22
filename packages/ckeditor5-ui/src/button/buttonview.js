@@ -81,11 +81,19 @@ export default class ButtonView extends View {
 		this.labelView = this._createLabelView();
 
 		/**
-		 * (Optional) The icon view of the button. Only present when the {@link #icon icon attribute} is defined.
+		 * The icon view of the button. Will be added to {@link #children} when the
+		 * {@link #icon icon attribute} is defined.
 		 *
 		 * @readonly
 		 * @member {module:ui/icon/iconview~IconView} #iconView
 		 */
+		this.iconView = new IconView();
+
+		this.iconView.extendTemplate( {
+			attributes: {
+				class: 'ck-button__icon'
+			}
+		} );
 
 		/**
 		 * Tooltip of the button bound to the template.
@@ -147,17 +155,8 @@ export default class ButtonView extends View {
 		super.render();
 
 		if ( this.icon ) {
-			const iconView = this.iconView = new IconView();
-
-			iconView.bind( 'content' ).to( this, 'icon' );
-
-			iconView.extendTemplate( {
-				attributes: {
-					class: 'ck-button__icon'
-				}
-			} );
-
-			this.children.add( iconView );
+			this.iconView.bind( 'content' ).to( this, 'icon' );
+			this.children.add( this.iconView );
 		}
 
 		this.children.add( this.tooltipView );
