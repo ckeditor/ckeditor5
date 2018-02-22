@@ -86,15 +86,10 @@ function _createTableSection( elementName, tableElement, rows, conversionApi ) {
 }
 
 function _downcastTableRow( tableRow, conversionApi, parent ) {
+	// Will always consume since we're converting <tableRow> element from a parent <table>.
+	conversionApi.consumable.consume( tableRow, 'insert' );
+
 	const tableRowElement = conversionApi.writer.createContainerElement( 'tr' );
-
-	if ( !tableRowElement ) {
-		return;
-	}
-
-	if ( !conversionApi.consumable.consume( tableRow, 'insert' ) ) {
-		return;
-	}
 
 	conversionApi.mapper.bindElements( tableRow, tableRowElement );
 	conversionApi.writer.insert( Position.createAt( parent, 'end' ), tableRowElement );

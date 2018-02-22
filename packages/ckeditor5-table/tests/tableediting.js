@@ -79,7 +79,7 @@ describe( 'TableEditing', () => {
 				editor.setData( '<table><tbody><tr><td>foo</td></tr></tbody></table>' );
 
 				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<table headingColumns="0" headingRows="0"><tableRow><tableCell>foo</tableCell></tableRow></table>' );
+					.to.equal( '<table><tableRow><tableCell>foo</tableCell></tableRow></table>' );
 			} );
 		} );
 	} );

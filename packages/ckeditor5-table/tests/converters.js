@@ -59,7 +59,7 @@ describe( 'Table converters', () => {
 			} );
 	} );
 
-	describe( 'createTable', () => {
+	describe( 'createTable()', () => {
 		function expectModel( data ) {
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( data );
 		}
@@ -151,7 +151,7 @@ describe( 'Table converters', () => {
 		} );
 	} );
 
-	describe( 'downcastTable', () => {
+	describe( 'downcastTable()', () => {
 		it( 'should create table with tbody', () => {
 			setModelData( model,
 				'<table>' +
@@ -202,6 +202,53 @@ describe( 'Table converters', () => {
 				'<tr><td>1</td></tr>' +
 				'<tr><td>2</td></tr>' +
 				'</thead>' +
+				'</table>'
+			);
+		} );
+
+		it( 'should be possible to overwrite', () => {
+			editor.conversion.elementToElement( { model: 'tableRow', view: 'tr' } );
+			editor.conversion.for( 'downcast' ).add( dispatcher => {
+				dispatcher.on( 'insert:table', ( evt, data, conversionApi ) => {
+					conversionApi.consumable.consume( data.item, 'insert' );
+
+					const tableElement = conversionApi.writer.createContainerElement( 'table', { foo: 'bar' } );
+					const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
+
+					conversionApi.mapper.bindElements( data.item, tableElement );
+					conversionApi.writer.insert( viewPosition, tableElement );
+				}, { priority: 'high' } );
+			} );
+
+			setModelData( model,
+				'<table>' +
+				'<tableRow><tableCell></tableCell></tableRow>' +
+				'</table>'
+			);
+
+			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+				'<table foo="bar">' +
+				'<tr><td></td></tr>' +
+				'</table>'
+			);
+		} );
+	} );
+
+	describe( 'downcastTableCell()', () => {
+		it( 'should be possible to overwrite row conversion', () => {
+			editor.conversion.elementToElement( { model: 'tableCell', view: { name: 'td', class: 'foo' }, priority: 'high' } );
+
+			setModelData( model,
+				'<table>' +
+				'<tableRow><tableCell></tableCell></tableRow>' +
+				'</table>'
+			);
+
+			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+				'<table>' +
+				'<tbody>' +
+				'<tr><td class="foo"></td></tr>' +
+				'</tbody>' +
 				'</table>'
 			);
 		} );
