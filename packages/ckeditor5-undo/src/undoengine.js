@@ -68,6 +68,9 @@ export default class UndoEngine extends Plugin {
 
 			// Do not register batch if the operation is not a document operation.
 			// This prevents from creating empty undo steps, where all operations where non-document operations.
+			// Non-document operations creates and alters content in detached tree fragments (for example, document fragments).
+			// Most of time this is preparing data before it is inserted into actual tree (for example during copy & paste).
+			// Such operations should not be reversed.
 			if ( !operation.isDocumentOperation ) {
 				return;
 			}
