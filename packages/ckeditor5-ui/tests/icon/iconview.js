@@ -47,25 +47,25 @@ describe( 'IconView', () => {
 
 		describe( 'inline svg', () => {
 			it( 'should react to changes in view#content', () => {
-				expect( view.element.innerHTML = '' );
+				expect( normalizeHtml( view.element.innerHTML ) ).to.equal( '' );
 
 				view.content = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg"><g id="test"></g></svg>';
-				expect( view.element.innerHTML = '<g id="test"></g>' );
+				expect( normalizeHtml( view.element.innerHTML ) ).to.equal( '<g id="test"></g>' );
 
 				view.content = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg"></svg>';
-				expect( view.element.innerHTML = '' );
+				expect( normalizeHtml( view.element.innerHTML ) ).to.equal( '' );
 			} );
 
 			it( 'works for #content with more than <svg> declaration', () => {
-				expect( view.element.innerHTML = '' );
+				expect( normalizeHtml( view.element.innerHTML ) ).to.equal( '' );
 
 				view.content =
 					'<?xml version="1.0" encoding="utf-8"?><svg version="1.1" xmlns="http://www.w3.org/2000/svg"><g id="test"></g></svg>';
-				expect( view.element.innerHTML = '<g id="test"></g>' );
+				expect( normalizeHtml( view.element.innerHTML ) ).to.equal( '<g id="test"></g>' );
 			} );
 
 			it( 'should respect parsed <svg>\'s viewBox attribute', () => {
-				expect( view.element.innerHTML = '' );
+				expect( normalizeHtml( view.element.innerHTML ) ).to.equal( '' );
 
 				view.content = '<svg version="1.1" viewBox="10 20 30 40" xmlns="http://www.w3.org/2000/svg"><g id="test"></g></svg>';
 				expect( view.viewBox ).to.equal( '10 20 30 40' );
