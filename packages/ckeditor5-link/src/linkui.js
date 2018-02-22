@@ -43,7 +43,7 @@ export default class LinkUI extends Plugin {
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'Link';
+		return 'LinkUI';
 	}
 
 	/**
