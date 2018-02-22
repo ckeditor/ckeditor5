@@ -13,6 +13,9 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import icon from '@ckeditor/ckeditor5-core/theme/icons/object-center.svg';
 
 export default class TableUI extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 
