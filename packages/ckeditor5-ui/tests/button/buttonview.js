@@ -36,6 +36,10 @@ describe( 'ButtonView', () => {
 		it( 'creates #labelView', () => {
 			expect( view.labelView ).to.be.instanceOf( View );
 		} );
+
+		it( 'creates #iconView', () => {
+			expect( view.iconView ).to.be.instanceOf( IconView );
+		} );
 	} );
 
 	describe( '<button> bindings', () => {
@@ -233,12 +237,15 @@ describe( 'ButtonView', () => {
 	} );
 
 	describe( 'icon', () => {
-		it( 'is not initially set', () => {
+		it( 'is omited in #children when view#icon is not defined', () => {
+			view = new ButtonView( locale );
+			view.render();
+
 			expect( view.element.childNodes ).to.have.length( 2 );
-			expect( view.iconView ).to.be.undefined;
+			expect( view.iconView.element ).to.be.null;
 		} );
 
-		it( 'is set when view#icon is defined', () => {
+		it( 'is added to the #children when view#icon is defined', () => {
 			view = new ButtonView( locale );
 			view.icon = '<svg></svg>';
 			view.render();
