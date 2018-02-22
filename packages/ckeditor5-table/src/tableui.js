@@ -17,7 +17,10 @@ export default class TableUI extends Plugin {
 		const editor = this.editor;
 
 		editor.ui.componentFactory.add( 'insertTable', locale => {
+			const command = editor.commands.get( 'insertTable' );
 			const buttonView = new ButtonView( locale );
+
+			buttonView.bind( 'isEnabled' ).to( command );
 
 			buttonView.set( {
 				label: 'Insert table',
