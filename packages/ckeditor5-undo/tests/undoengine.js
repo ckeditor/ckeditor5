@@ -56,6 +56,31 @@ describe( 'UndoEngine', () => {
 			expect( undo._undoCommand.addBatch.calledOnce ).to.be.true;
 		} );
 
+		it( 'should not add a batch that has only non-document operations', () => {
+			sinon.spy( undo._undoCommand, 'addBatch' );
+
+			model.change( writer => {
+				const docFrag = writer.createDocumentFragment();
+				const element = writer.createElement( 'paragraph' );
+				writer.insert( element, docFrag, 0 );
+				writer.insertText( 'foo', null, element, 0 );
+			} );
+
+			expect( undo._undoCommand.addBatch.called ).to.be.false;
+		} );
+
+		it( 'should add a batch that has both document and non-document operations', () => {
+			sinon.spy( undo._undoCommand, 'addBatch' );
+
+			model.change( writer => {
+				const element = writer.createElement( 'paragraph' );
+				writer.insertText( 'foo', null, element, 0 );
+				writer.insert( element, root, 0 );
+			} );
+
+			expect( undo._undoCommand.addBatch.calledOnce ).to.be.true;
+		} );
+
 		it( 'should add a batch to undo command, if it\'s type is undo and it comes from redo command', () => {
 			sinon.spy( undo._undoCommand, 'addBatch' );
 			sinon.spy( undo._redoCommand, 'clearStack' );
