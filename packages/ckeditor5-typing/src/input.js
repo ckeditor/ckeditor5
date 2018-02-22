@@ -202,6 +202,7 @@ class MutationHandler {
 		// trying to get a reasonable model ancestor. It will fell into the `if` below anyway.
 		// This situation happens for example for lists. If `<ul>` is a common ancestor, `currentModel` is `undefined`
 		// because `<ul>` is not mapped (`<li>`s are).
+		// See https://github.com/ckeditor/ckeditor5/issues/718.
 		if ( !currentModel ) {
 			return;
 		}
