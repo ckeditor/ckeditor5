@@ -24,6 +24,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import { scrollViewportToShowTarget } from '@ckeditor/ckeditor5-utils/src/dom/scroll';
 import { injectUiElementHandling } from './uielement';
 import { injectQuirksHandling } from './filler';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
  * Editor's view controller class. Its main responsibility is DOM - View management for editing purposes, to provide
@@ -107,8 +108,21 @@ export default class View {
 		 */
 		this._ongoingChange = false;
 
-		this._renderingEventProcessing = false;
-		this._callbacksWaiting = [];
+		/**
+		 * Used to prevent calling {@link #render} and {@link #change) during rendering view to the DOM.
+		 *
+		 * @private
+		 * @member {Boolean} module:engine/view/view~View#_renderingInProgress
+		 */
+		this._renderingInProgress = false;
+
+		/**
+		 * Used to prevent calling {@link #render} and {@link #change) during rendering view to the DOM.
+		 *
+		 * @private
+		 * @member {Boolean} module:engine/view/view~View#_renderingInProgress
+		 */
+		this._postFixersInProgress = false;
 
 		/**
 		 * Writer instance used in {@link #change change method) callbacks.
@@ -129,10 +143,10 @@ export default class View {
 		injectQuirksHandling( this );
 		injectUiElementHandling( this );
 
-		// Use 'low` priority so that all listeners on 'normal` priority will be executed before.
+		// Use 'normal' priority so that rendering is performed as first when using that priority.
 		this.on( 'render', () => {
 			this._render();
-		}, { priority: 'low' } );
+		} );
 	}
 
 	/**
@@ -303,39 +317,30 @@ export default class View {
 	 * @param {Function} callback Callback function which may modify the view.
 	 */
 	change( callback ) {
-		// When "render" event is processed all callbacks need to wait until processing of that event is complete.
-		// Those callbacks will be processed later and create separate "render" event.
-		if ( this._renderingEventProcessing ) {
-			this._callbacksWaiting.push( callback );
-			return;
+		if ( this._renderingInProgress || this._postFixersInProgress ) {
+			// TODO: better description
+			throw new CKEditorError( 'incorrect-view-change' );
 		}
 
 		// Recursive call to view.change() method - execute listener immediately.
 		if ( this._ongoingChange ) {
 			callback( this._writer );
-		} else {
-			// This lock will assure that all recursive calls to view.change() will end up in same block - one "render"
-			// event for all nested calls.
-			this._ongoingChange = true;
-			callback( this._writer );
-			this._ongoingChange = false;
 
-			// This lock will assure that all view.change() calls in listeners will wait until all callbacks are processed
-			// and will create separate "render" event.
-			this._renderingEventProcessing = true;
-			this.fire( 'render' );
-			this._renderingEventProcessing = false;
-
-			// Call waiting callbacks that were called during `render` event.
-			if ( this._callbacksWaiting.length ) {
-				const callbacks = this._callbacksWaiting;
-				this._callbacksWaiting = [];
-
-				while ( callbacks.length ) {
-					this.change( callbacks.shift() );
-				}
-			}
+			return;
 		}
+
+		// This lock will assure that all recursive calls to view.change() will end up in same block - one "render"
+		// event for all nested calls.
+		this._ongoingChange = true;
+		callback( this._writer );
+		this._ongoingChange = false;
+
+		// Execute all document post fixers after the change.
+		this._postFixersInProgress = true;
+		this.document._callPostFixers( this._writer );
+		this._postFixersInProgress = false;
+
+		this.fire( 'render' );
 	}
 
 	/**
@@ -367,12 +372,15 @@ export default class View {
 	 * @private
 	 */
 	_render() {
+		this._renderingInProgress = true;
 		this.disableObservers();
 		this._renderer.render();
 		this.enableObservers();
+		this._renderingInProgress = false;
 	}
 
 	/**
+	 * TODO: fix description
 	 * Fired after a topmost {@link module:engine/view/view~View#change change block} is finished and the DOM rendering has
 	 * been executed.
 	 *

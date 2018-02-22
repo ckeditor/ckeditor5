@@ -15,7 +15,6 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import ViewRange from '../../../src/view/range';
 import RootEditableElement from '../../../src/view/rooteditableelement';
 import ViewElement from '../../../src/view/element';
-import ViewPosition from '../../../src/view/position';
 import { isBlockFiller, BR_FILLER } from '../../../src/view/filler';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 
@@ -441,216 +440,108 @@ describe( 'view', () => {
 			view.destroy();
 			domRoot.remove();
 		} );
+	} );
 
-		describe( 'change()', () => {
-			it( 'should fire render event and it should trigger rendering on low priority', () => {
-				const renderSpy = sinon.spy( view._renderer, 'render' );
-				const beforeSpy = sinon.spy();
-				const afterSpy = sinon.spy();
+	describe( 'change()', () => {
+		it( 'should fire render event and it should trigger rendering before listeners on normal priority', () => {
+			const renderSpy = sinon.spy( view._renderer, 'render' );
+			const eventSpy = sinon.spy();
 
-				view.on( 'render', beforeSpy );
-				view.on( 'render', afterSpy, { priority: 'low' } );
+			view.on( 'render', eventSpy );
 
+			view.change( () => {} );
+
+			sinon.assert.callOrder( renderSpy, eventSpy );
+		} );
+
+		it( 'should fire render event once for nested change blocks', () => {
+			const renderSpy = sinon.spy( view._renderer, 'render' );
+			const eventSpy = sinon.spy();
+
+			view.on( 'render', eventSpy );
+
+			view.change( () => {
 				view.change( () => {} );
-
-				sinon.assert.callOrder( beforeSpy, renderSpy, afterSpy );
-			} );
-
-			it( 'should fire render event once for nested change blocks', () => {
-				const renderSpy = sinon.spy( view._renderer, 'render' );
-				const beforeSpy = sinon.spy();
-				const afterSpy = sinon.spy();
-
-				view.on( 'render', beforeSpy );
-				view.on( 'render', afterSpy, { priority: 'low' } );
-
 				view.change( () => {
 					view.change( () => {} );
-					view.change( () => {
-						view.change( () => {} );
-						view.change( () => {} );
-					} );
 					view.change( () => {} );
 				} );
-
-				sinon.assert.calledOnce( beforeSpy );
-				sinon.assert.calledOnce( renderSpy );
-				sinon.assert.calledOnce( afterSpy );
-				sinon.assert.callOrder( beforeSpy, renderSpy, afterSpy );
+				view.change( () => {} );
 			} );
 
-			it( 'should fire render event once even if render is called during the change', () => {
-				const renderSpy = sinon.spy( view._renderer, 'render' );
-				const beforeSpy = sinon.spy();
-				const afterSpy = sinon.spy();
+			sinon.assert.calledOnce( renderSpy );
+			sinon.assert.calledOnce( eventSpy );
+			sinon.assert.callOrder( renderSpy, eventSpy );
+		} );
 
-				view.on( 'render', beforeSpy );
-				view.on( 'render', afterSpy, { priority: 'low' } );
+		it( 'should fire render event once even if render is called during the change', () => {
+			const renderSpy = sinon.spy( view._renderer, 'render' );
+			const eventSpy = sinon.spy();
 
+			view.on( 'render', eventSpy );
+
+			view.change( () => {
+				view.render();
 				view.change( () => {
 					view.render();
-					view.change( () => {
-						view.render();
-					} );
-					view.render();
 				} );
-
-				sinon.assert.calledOnce( beforeSpy );
-				sinon.assert.calledOnce( renderSpy );
-				sinon.assert.calledOnce( afterSpy );
-				sinon.assert.callOrder( beforeSpy, renderSpy, afterSpy );
-			} );
-
-			it( 'should create separate change block if view.change() is called during "render" event', () => {
-				const domDiv = document.createElement( 'div' );
-				const viewRoot = createViewRoot( viewDocument, 'div', 'main' );
-				view.attachDomRoot( domDiv );
-
-				const renderingEndSpy = sinon.spy();
-				view.on( 'render', renderingEndSpy, { priority: 'lowest' } );
-
-				const nestedChange = sinon.spy();
-
-				view.change( writer => {
-					const p = writer.createContainerElement( 'p' );
-					const ui = writer.createUIElement( 'span', null, function( domDocument ) {
-						const element = this.toDomElement( domDocument );
-
-						view.change( nestedChange );
-
-						return element;
-					} );
-					writer.insert( ViewPosition.createAt( p ), ui );
-					writer.insert( ViewPosition.createAt( viewRoot ), p );
-				} );
-
-				sinon.assert.calledTwice( renderingEndSpy );
-				sinon.assert.callOrder( renderingEndSpy, nestedChange );
-				domDiv.remove();
-			} );
-
-			it( 'should create separate change block if view.render() is called during "render" event', () => {
-				const domDiv = document.createElement( 'div' );
-				const viewRoot = createViewRoot( viewDocument, 'div', 'main' );
-				view.attachDomRoot( domDiv );
-
-				const renderingEndSpy = sinon.spy();
-				view.on( 'render', renderingEndSpy, { priority: 'lowest' } );
-
-				view.change( writer => {
-					const p = writer.createContainerElement( 'p' );
-					const ui = writer.createUIElement( 'span', null, function( domDocument ) {
-						const element = this.toDomElement( domDocument );
-
-						view.render();
-
-						return element;
-					} );
-					writer.insert( ViewPosition.createAt( p ), ui );
-					writer.insert( ViewPosition.createAt( viewRoot ), p );
-				} );
-
-				sinon.assert.calledTwice( renderingEndSpy );
-				domDiv.remove();
-			} );
-
-			it( 'should create separate render event when change() called on low priority', () => {
-				let called = false;
-
-				const spy = sinon.spy( () => {
-					// Prevent infinite loop.
-					if ( !called ) {
-						called = true;
-						view.change( () => {} );
-					}
-				} );
-
-				view.on( 'render', spy, { priority: 'low' } );
-
-				view.change( () => {} );
-				sinon.assert.calledTwice( spy );
-			} );
-
-			it( 'should create separate render event when change() called on high priority', () => {
-				let called = false;
-
-				const spy = sinon.spy( () => {
-					// Prevent infinite loop.
-					if ( !called ) {
-						called = true;
-						view.change( () => {} );
-					}
-				} );
-
-				view.on( 'render', spy, { priority: 'high' } );
-
-				view.change( () => {} );
-				sinon.assert.calledTwice( spy );
-			} );
-
-			it( 'should create separate render event when render() called on low priority', () => {
-				let called = false;
-
-				const spy = sinon.spy( () => {
-					// Prevent infinite loop.
-					if ( !called ) {
-						called = true;
-						view.render();
-					}
-				} );
-
-				view.on( 'render', spy, { priority: 'low' } );
-
 				view.render();
-				sinon.assert.calledTwice( spy );
 			} );
 
-			it( 'should create separate render event when render() called on high priority', () => {
-				let called = false;
+			sinon.assert.calledOnce( renderSpy );
+			sinon.assert.calledOnce( eventSpy );
+			sinon.assert.callOrder( renderSpy, eventSpy );
+		} );
 
-				const spy = sinon.spy( () => {
-					// Prevent infinite loop.
-					if ( !called ) {
-						called = true;
-						view.render();
-					}
-				} );
+		it( 'should call post fixers after change but before rendering', () => {
+			const postFixer1 = sinon.spy( () => false );
+			const postFixer2 = sinon.spy( () => false );
+			const changeSpy = sinon.spy();
+			const eventSpy = sinon.spy();
 
-				view.on( 'render', spy, { priority: 'high' } );
+			viewDocument.registerPostFixer( postFixer1 );
+			viewDocument.registerPostFixer( postFixer2 );
+			view.on( 'render', eventSpy );
 
-				view.render();
-				sinon.assert.calledTwice( spy );
+			view.change( changeSpy );
+
+			sinon.assert.calledOnce( postFixer1 );
+			sinon.assert.calledOnce( postFixer2 );
+			sinon.assert.calledOnce( changeSpy );
+			sinon.assert.calledOnce( eventSpy );
+
+			sinon.assert.callOrder( changeSpy, postFixer1, postFixer2, eventSpy );
+		} );
+
+		it( 'should call post fixers until all are done', () => {
+			let called = false;
+			const postFixer1 = sinon.spy();
+			const postFixer2 = sinon.spy();
+			const changeSpy = sinon.spy();
+			const eventSpy = sinon.spy();
+
+			viewDocument.registerPostFixer( () => {
+				if ( !called ) {
+					called = true;
+					postFixer1();
+
+					return true;
+				}
+
+				postFixer2();
+
+				return false;
 			} );
+			view.on( 'render', eventSpy );
 
-			it( 'should call second render after the first is done', () => {
-				let called = false;
-				const order = [];
+			view.change( changeSpy );
 
-				const lowSpy = sinon.spy( () => {
-					order.push( 'low1' );
+			sinon.assert.calledOnce( postFixer1 );
+			sinon.assert.calledOnce( postFixer2 );
+			sinon.assert.calledOnce( changeSpy );
+			sinon.assert.calledOnce( eventSpy );
 
-					// Prevent infinite loop.
-					if ( !called ) {
-						called = true;
-						view.render();
-					}
-
-					order.push( 'low2' );
-				} );
-
-				const lowestSpy = sinon.spy( () => {
-					order.push( 'lowest' );
-				} );
-
-				view.on( 'render', lowSpy, { priority: 'low' } );
-				view.on( 'render', lowestSpy, { priority: 'lowest' } );
-
-				view.render();
-				sinon.assert.calledTwice( lowSpy );
-				sinon.assert.calledTwice( lowestSpy );
-
-				expect( order ).to.deep.equal( [ 'low1', 'low2', 'lowest', 'low1', 'low2', 'lowest' ] );
-			} );
+			sinon.assert.callOrder( changeSpy, postFixer1, postFixer2, eventSpy );
 		} );
 	} );
 
