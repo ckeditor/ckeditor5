@@ -49,6 +49,7 @@ describe( 'Alignment integration', () => {
 
 			expect( getModelData( model ) ).to.equal( '<image src="foo.png"><caption>Foo[]</caption></image>' );
 		} );
+
 		it( 'does not work inside image caption when selection overlaps image', () => {
 			setModelData(
 				model,

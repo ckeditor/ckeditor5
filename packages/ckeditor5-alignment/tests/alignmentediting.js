@@ -225,7 +225,7 @@ describe( 'AlignmentEditing', () => {
 } );
 
 function blockDefaultConversion( dispatcher ) {
-	dispatcher.on( 'attribute:alignment', ( evt, data, consumable ) => {
-		consumable.consume( data.item, evt.name );
+	dispatcher.on( 'attribute:alignment', ( evt, data, conversionApi ) => {
+		conversionApi.consumable.consume( data.item, evt.name );
 	}, { 'priority': 'high' } );
 }

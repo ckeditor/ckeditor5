@@ -8,9 +8,7 @@
  */
 
 import AlignmentCommand, { commandNameFromOptionName } from './alignmentcommand';
-
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { upcastAttributeToAttribute } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 
 /**
  * @extends module:core/plugin~Plugin
@@ -50,41 +48,20 @@ export default class AlignmentEditing extends Plugin {
 		const editor = this.editor;
 		const schema = editor.model.schema;
 
-		const enabledOptions = editor.config.get( 'alignment.options' );
+		// Filter out unsupported options.
+		const enabledOptions = editor.config.get( 'alignment.options' ).filter( isSupported );
 
 		// Allow alignment attribute on all blocks.
 		schema.extend( '$block', { allowAttributes: 'alignment' } );
 
-		editor.conversion.for( 'downcast' ).add( downcastAttributeToStyle() );
+		const definition = _buildDefinition( enabledOptions.filter( option => !isDefault( option ) ) );
 
-		// Convert `text-align` style property from element to model attribute alignment.
-		editor.conversion.for( 'upcast' )
-			.add( upcastAttributeToAttribute( {
-				view: {
-					key: 'style',
-					value: /text-align/
-				},
-				model: {
-					key: 'alignment',
-					value: viewElement => {
-						const textAlign = viewElement.getStyle( 'text-align' );
+		editor.conversion.attributeToAttribute( definition );
 
-						// Do not convert empty, default or unknown alignment values.
-						if ( !textAlign || isDefault( textAlign ) || !enabledOptions.includes( textAlign ) ) {
-							return;
-						}
-
-						return textAlign;
-					}
-				}
-			} ) );
-
-		// Add only enabled & supported commands.
-		enabledOptions
-			.filter( isSupported )
-			.forEach( option => {
-				editor.commands.add( commandNameFromOptionName( option ), new AlignmentCommand( editor, option, isDefault( option ) ) );
-			} );
+		// Add only enabled commands.
+		enabledOptions.forEach( option => {
+			editor.commands.add( commandNameFromOptionName( option ), new AlignmentCommand( editor, option, isDefault( option ) ) );
+		} );
 	}
 }
 
@@ -98,22 +75,27 @@ export function isSupported( option ) {
 	return AlignmentEditing.supportedOptions.includes( option );
 }
 
-// Dispatcher handler responsible for setting the style to a view element.
+// Utility function responsible for building converter definition.
 // @private
-function downcastAttributeToStyle() {
-	return dispatcher => {
-		dispatcher.on( 'attribute:alignment', ( evt, data, consumable, conversionApi ) => {
-			if ( !consumable.consume( data.item, evt.name ) ) {
-				return;
-			}
-
-			if ( data.attributeNewValue ) {
-				conversionApi.mapper.toViewElement( data.item ).setStyle( { 'text-align': data.attributeNewValue } );
-			} else {
-				conversionApi.mapper.toViewElement( data.item ).removeStyle( 'text-align' );
-			}
-		} );
+function _buildDefinition( options ) {
+	const definition = {
+		model: {
+			key: 'alignment',
+			values: options.slice()
+		},
+		view: {}
 	};
+
+	for ( const option of options ) {
+		definition.view[ option ] = {
+			key: 'style',
+			value: {
+				'text-align': option
+			}
+		};
+	}
+
+	return definition;
 }
 
 // Check whether alignment is the default one.
