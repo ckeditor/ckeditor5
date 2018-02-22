@@ -15,13 +15,6 @@
 	font-size: 14px;
 }
 
-/* Using absolute units to make sure each element has the same height and padding.
-https://github.com/ckeditor/ckeditor5-heading/issues/63 */
-[class*="ck-heading_"] {
-	line-height: 18px;
-	padding: 11px;
-}
-
 [class*="ck-heading_heading"] {
 	font-weight: bold;
 }

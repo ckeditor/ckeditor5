@@ -9,8 +9,6 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import { elementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/two-way-converters';
-
 import HeadingCommand from './headingcommand';
 
 const defaultModelElement = 'paragraph';
@@ -61,11 +59,7 @@ export default class HeadingEditing extends Plugin {
 					inheritAllFrom: '$block'
 				} );
 
-				elementToElement( editor.conversion, {
-					model: option.model,
-					view: option.view,
-					upcastAlso: option.upcastAlso
-				} );
+				editor.conversion.elementToElement( option );
 
 				// Register the heading command for this option.
 				editor.commands.add( option.model, new HeadingCommand( editor, option.model ) );
