@@ -8,11 +8,7 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-
 import BlockQuoteCommand from './blockquotecommand';
-
-import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
-import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 
 /**
  * The block quote editing.
@@ -43,11 +39,7 @@ export default class BlockQuoteEditing extends Plugin {
 			}
 		} );
 
-		editor.conversion.for( 'downcast' )
-			.add( downcastElementToElement( { model: 'blockQuote', view: 'blockquote' } ) );
-
-		editor.conversion.for( 'upcast' )
-			.add( upcastElementToElement( { model: 'blockQuote', view: 'blockquote' } ) );
+		editor.conversion.elementToElement( { model: 'blockQuote', view: 'blockquote' } );
 	}
 
 	/**
@@ -62,7 +54,7 @@ export default class BlockQuoteEditing extends Plugin {
 		// This listener is added in afterInit in order to register it after list's feature listener.
 		// We can't use a priority for this, because 'low' is already used by the enter feature, unless
 		// we'd use numeric priority in this case.
-		this.listenTo( this.editor.editing.view, 'enter', ( evt, data ) => {
+		this.listenTo( this.editor.editing.view.document, 'enter', ( evt, data ) => {
 			const doc = this.editor.model.document;
 			const positionParent = doc.selection.getLastPosition().parent;
 
