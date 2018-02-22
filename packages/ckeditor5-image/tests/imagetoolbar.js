@@ -79,11 +79,9 @@ describe( 'ImageToolbar', () => {
 
 			setData( model, '[<image src=""></image>]' );
 
-			expect( toolbar.element.classList.contains( 'ck-editor-toolbar' ) ).to.be.true;
-
 			sinon.assert.calledWithMatch( spy, {
 				view: toolbar,
-				balloonClassName: 'ck-toolbar-container ck-editor-toolbar-container'
+				balloonClassName: 'ck-toolbar-container'
 			} );
 		} );
 	} );
@@ -114,7 +112,7 @@ describe( 'ImageToolbar', () => {
 		} );
 	} );
 
-	describe( 'integration with the editor selection (#render event)', () => {
+	describe( 'integration with the editor selection (#change event)', () => {
 		beforeEach( () => {
 			editor.ui.focusTracker.isFocused = true;
 		} );
@@ -124,7 +122,7 @@ describe( 'ImageToolbar', () => {
 
 			expect( balloon.visibleView ).to.be.null;
 
-			editingView.fire( 'render' );
+			editingView.change( () => {} );
 			expect( balloon.visibleView ).to.be.null;
 
 			model.change( writer => {
@@ -136,9 +134,9 @@ describe( 'ImageToolbar', () => {
 
 			expect( balloon.visibleView ).to.equal( toolbar );
 
-			// Make sure successive render does not throw, e.g. attempting
+			// Make sure successive change does not throw, e.g. attempting
 			// to insert the toolbar twice.
-			editingView.fire( 'render' );
+			editingView.change( () => {} );
 			expect( balloon.visibleView ).to.equal( toolbar );
 		} );
 
@@ -152,7 +150,7 @@ describe( 'ImageToolbar', () => {
 			balloon.add( { view: lastView } );
 			expect( balloon.visibleView ).to.equal( lastView );
 
-			editingView.fire( 'render' );
+			editingView.change( () => {} );
 			expect( balloon.visibleView ).to.equal( lastView );
 		} );
 
@@ -170,9 +168,9 @@ describe( 'ImageToolbar', () => {
 
 			expect( balloon.visibleView ).to.be.null;
 
-			// Make sure successive render does not throw, e.g. attempting
+			// Make sure successive change does not throw, e.g. attempting
 			// to remove the toolbar twice.
-			editingView.fire( 'render' );
+			editingView.change( () => {} );
 			expect( balloon.visibleView ).to.be.null;
 		} );
 	} );

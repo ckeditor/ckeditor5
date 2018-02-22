@@ -23,6 +23,7 @@ describe( 'ImageTextAlternative', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
+				newEditor.editing.view.attachDomRoot( editorElement );
 				plugin = editor.plugins.get( ImageTextAlternative );
 			} );
 	} );

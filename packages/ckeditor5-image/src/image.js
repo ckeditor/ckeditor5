@@ -42,14 +42,14 @@ export default class Image extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const contextualToolbar = editor.plugins.get( 'ContextualToolbar' );
+		const balloonToolbar = editor.plugins.get( 'BalloonToolbar' );
 
-		// If `ContextualToolbar` plugin is loaded, it should be disabled for images
+		// If `BalloonToolbar` plugin is loaded, it should be disabled for images
 		// which have their own toolbar to avoid duplication.
 		// https://github.com/ckeditor/ckeditor5-image/issues/110
-		if ( contextualToolbar ) {
-			this.listenTo( contextualToolbar, 'show', evt => {
-				if ( isImageWidgetSelected( editor.editing.view.selection ) ) {
+		if ( balloonToolbar ) {
+			this.listenTo( balloonToolbar, 'show', evt => {
+				if ( isImageWidgetSelected( editor.editing.view.document.selection ) ) {
 					evt.stop();
 				}
 			}, { priority: 'high' } );

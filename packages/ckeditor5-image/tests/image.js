@@ -14,7 +14,7 @@ import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 describe( 'Image', () => {
-	let editorElement, model, editor, document, viewDocument;
+	let editorElement, model, view, editor, document, viewDocument;
 
 	beforeEach( () => {
 		editorElement = global.document.createElement( 'div' );
@@ -28,7 +28,8 @@ describe( 'Image', () => {
 				editor = newEditor;
 				model = editor.model;
 				document = model.document;
-				viewDocument = editor.editing.view;
+				view = editor.editing.view;
+				viewDocument = editor.editing.view.document;
 			} );
 	} );
 
@@ -58,7 +59,7 @@ describe( 'Image', () => {
 		it( 'should create fake selection', () => {
 			setModelData( model, '[<image alt="alt text" src="foo.png"></image>]' );
 
-			expect( getViewData( viewDocument ) ).to.equal(
+			expect( getViewData( view ) ).to.equal(
 				'[<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
 					'<img alt="alt text" src="foo.png"></img>' +
 				'</figure>]'
@@ -71,7 +72,7 @@ describe( 'Image', () => {
 		it( 'should create proper fake selection label when alt attribute is empty', () => {
 			setModelData( model, '[<image src="foo.png" alt=""></image>]' );
 
-			expect( getViewData( viewDocument ) ).to.equal(
+			expect( getViewData( view ) ).to.equal(
 				'[<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
 				'<img alt="" src="foo.png"></img>' +
 				'</figure>]'
@@ -87,7 +88,7 @@ describe( 'Image', () => {
 				'<image src="foo.png" alt="alt text"></image>'
 			);
 
-			expect( getViewData( viewDocument ) ).to.equal(
+			expect( getViewData( view ) ).to.equal(
 				'[<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
 				'<img alt="alt text" src="foo.png"></img>' +
 				'</figure>]' +
@@ -101,7 +102,7 @@ describe( 'Image', () => {
 				writer.setSelection( ModelRange.createOn( secondImage ) );
 			} );
 
-			expect( getViewData( viewDocument ) ).to.equal(
+			expect( getViewData( view ) ).to.equal(
 				'<figure class="ck-widget image" contenteditable="false">' +
 				'<img alt="alt text" src="foo.png"></img>' +
 				'</figure>' +

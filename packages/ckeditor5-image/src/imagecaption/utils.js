@@ -8,7 +8,6 @@
  */
 
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
-import ViewEditableElement from '@ckeditor/ckeditor5-engine/src/view/editableelement';
 import { attachPlaceholder } from '@ckeditor/ckeditor5-engine/src/view/placeholder';
 import { toWidgetEditable } from '@ckeditor/ckeditor5-widget/src/utils';
 
@@ -17,18 +16,17 @@ const captionSymbol = Symbol( 'imageCaption' );
 /**
  * Returns a function that creates a caption editable element for the given {@link module:engine/view/document~Document}.
  *
- * @param {module:engine/view/document~Document} viewDocument
+ * @param {module:engine/view/view~View} view
  * @param {String} placeholderText The text to be displayed when the caption is empty.
  * @return {Function}
  */
-export function captionElementCreator( viewDocument, placeholderText ) {
-	return () => {
-		const editable = new ViewEditableElement( 'figcaption' );
-		editable.document = viewDocument;
-		editable.setCustomProperty( captionSymbol, true );
-		attachPlaceholder( editable, placeholderText );
+export function captionElementCreator( view, placeholderText ) {
+	return writer => {
+		const editable = writer.createEditableElement( 'figcaption' );
+		writer.setCustomProperty( captionSymbol, true, editable );
+		attachPlaceholder( view, editable, placeholderText );
 
-		return toWidgetEditable( editable );
+		return toWidgetEditable( editable, writer );
 	};
 }
 

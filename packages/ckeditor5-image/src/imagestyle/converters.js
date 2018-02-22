@@ -17,8 +17,8 @@ import first from '@ckeditor/ckeditor5-utils/src/first';
  * @returns {Function} A model-to-view attribute converter.
  */
 export function modelToViewStyleAttribute( styles ) {
-	return ( evt, data, consumable, conversionApi ) => {
-		if ( !consumable.consume( data.item, evt.name ) ) {
+	return ( evt, data, conversionApi ) => {
+		if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 			return;
 		}
 
@@ -27,13 +27,14 @@ export function modelToViewStyleAttribute( styles ) {
 		const oldStyle = getStyleByName( data.attributeOldValue, styles );
 
 		const viewElement = conversionApi.mapper.toViewElement( data.item );
+		const viewWriter = conversionApi.writer;
 
 		if ( oldStyle ) {
-			viewElement.removeClass( oldStyle.className );
+			viewWriter.removeClass( oldStyle.className, viewElement );
 		}
 
 		if ( newStyle ) {
-			viewElement.addClass( newStyle.className );
+			viewWriter.addClass( newStyle.className, viewElement );
 		}
 	};
 }

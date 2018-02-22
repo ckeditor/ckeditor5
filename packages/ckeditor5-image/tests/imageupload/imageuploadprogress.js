@@ -25,7 +25,7 @@ describe( 'ImageUploadProgress', () => {
 
 	// eslint-disable-next-line max-len
 	const base64Sample = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
-	let editor, model, document, fileRepository, viewDocument, nativeReaderMock, loader, adapterMock;
+	let editor, model, document, fileRepository, view, nativeReaderMock, loader, adapterMock;
 
 	class UploadAdapterPluginMock extends Plugin {
 		init() {
@@ -56,7 +56,7 @@ describe( 'ImageUploadProgress', () => {
 				editor = newEditor;
 				model = editor.model;
 				document = model.document;
-				viewDocument = editor.editing.view;
+				view = editor.editing.view;
 
 				fileRepository = editor.plugins.get( FileRepository );
 				fileRepository.createUploadAdapter = newLoader => {
@@ -72,7 +72,7 @@ describe( 'ImageUploadProgress', () => {
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
 
-		expect( getViewData( viewDocument ) ).to.equal(
+		expect( getViewData( view ) ).to.equal(
 			'[<figure class="ck-appear ck-image-upload-placeholder ck-infinite-progress ck-widget image" contenteditable="false">' +
 				`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
 			'</figure>]<p>foo</p>'
@@ -84,7 +84,7 @@ describe( 'ImageUploadProgress', () => {
 		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
 
 		model.document.once( 'change', () => {
-			expect( getViewData( viewDocument ) ).to.equal(
+			expect( getViewData( view ) ).to.equal(
 				'[<figure class="ck-appear ck-widget image" contenteditable="false">' +
 					`<img src="${ base64Sample }"></img>` +
 					'<div class="ck-progress-bar"></div>' +
@@ -104,7 +104,7 @@ describe( 'ImageUploadProgress', () => {
 		model.document.once( 'change', () => {
 			adapterMock.mockProgress( 40, 100 );
 
-			expect( getViewData( viewDocument ) ).to.equal(
+			expect( getViewData( view ) ).to.equal(
 				'[<figure class="ck-appear ck-widget image" contenteditable="false">' +
 				`<img src="${ base64Sample }"></img>` +
 				'<div class="ck-progress-bar" style="width:40%"></div>' +
@@ -123,7 +123,7 @@ describe( 'ImageUploadProgress', () => {
 
 		model.document.once( 'change', () => {
 			model.document.once( 'change', () => {
-				expect( getViewData( viewDocument ) ).to.equal(
+				expect( getViewData( view ) ).to.equal(
 					'[<figure class="ck-widget image" contenteditable="false">' +
 						'<img src="image.png"></img>' +
 					'</figure>]<p>foo</p>'
@@ -145,7 +145,7 @@ describe( 'ImageUploadProgress', () => {
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
 
-		expect( getViewData( viewDocument ) ).to.equal(
+		expect( getViewData( view ) ).to.equal(
 			'[<figure class="ck-appear ck-image-upload-placeholder ck-infinite-progress ck-widget image" contenteditable="false">' +
 				`<img src="${ base64Sample }"></img>` +
 			'</figure>]<p>foo</p>'
@@ -153,14 +153,14 @@ describe( 'ImageUploadProgress', () => {
 	} );
 
 	it( 'should not process attribute change if it is already consumed', () => {
-		editor.editing.downcastDispatcher.on( 'attribute:uploadStatus:image', ( evt, data, consumable ) => {
-			consumable.consume( data.item, evt.name );
+		editor.editing.downcastDispatcher.on( 'attribute:uploadStatus:image', ( evt, data, conversionApi ) => {
+			conversionApi.consumable.consume( data.item, evt.name );
 		}, { priority: 'highest' } );
 
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
 
-		expect( getViewData( viewDocument ) ).to.equal(
+		expect( getViewData( view ) ).to.equal(
 			'[<figure class="ck-widget image" contenteditable="false"><img></img></figure>]<p>foo</p>'
 		);
 	} );
@@ -174,7 +174,7 @@ describe( 'ImageUploadProgress', () => {
 			writer.setAttribute( 'uploadStatus', 'uploading', image );
 		} );
 
-		expect( getViewData( viewDocument ) ).to.equal(
+		expect( getViewData( view ) ).to.equal(
 			'[<figure class="ck-appear ck-image-upload-placeholder ck-infinite-progress ck-widget image" contenteditable="false">' +
 				`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
 			'</figure>]'
@@ -184,7 +184,7 @@ describe( 'ImageUploadProgress', () => {
 			writer.setAttribute( 'uploadStatus', 'complete', image );
 		} );
 
-		expect( getViewData( viewDocument ) ).to.equal(
+		expect( getViewData( view ) ).to.equal(
 			'[<figure class="ck-widget image" contenteditable="false">' +
 				`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
 			'</figure>]'
