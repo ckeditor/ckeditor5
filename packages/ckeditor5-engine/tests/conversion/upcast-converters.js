@@ -35,19 +35,12 @@ describe( 'upcast-helpers', () => {
 		schema = model.schema;
 
 		schema.extend( '$text', {
-			allowIn: '$root'
-		} );
-
-		schema.register( '$marker', {
-			inheritAllFrom: '$block'
+			allowIn: '$root',
+			allowAttributes: [ 'bold' ]
 		} );
 
 		schema.register( 'paragraph', {
 			inheritAllFrom: '$block'
-		} );
-
-		schema.extend( '$text', {
-			allowAttributes: [ 'bold' ]
 		} );
 
 		upcastDispatcher = new UpcastDispatcher( { schema } );
@@ -579,6 +572,26 @@ describe( 'upcast-helpers', () => {
 			const marker = { name: 'comment:4', start: [ 3 ], end: [ 4 ] };
 
 			expectResult( frag, 'foobar', marker );
+		} );
+
+		it( 'marker is in a block element', () => {
+			conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'paragraph', view: 'p' } ) );
+
+			const helper = upcastElementToMarker( { view: 'marker-search', model: 'search' } );
+
+			conversion.for( 'upcast' ).add( helper );
+
+			const element = new ViewContainerElement( 'p', null, [
+				new ViewText( 'fo' ),
+				new ViewUIElement( 'marker-search' ),
+				new ViewText( 'oba' ),
+				new ViewUIElement( 'marker-search' ),
+				new ViewText( 'r' )
+			] );
+
+			const marker = { name: 'search', start: [ 0, 2 ], end: [ 0, 5 ] };
+
+			expectResult( element, '<paragraph>foobar</paragraph>', marker );
 		} );
 	} );
 
