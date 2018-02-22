@@ -4,7 +4,7 @@
  */
 
 /**
- * @module ui/toolbar/contextual/contextualtoolbar
+ * @module ui/toolbar/balloon/balloontoolbar
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -22,12 +22,12 @@ import normalizeToolbarConfig from '../normalizetoolbarconfig';
  *
  * @extends module:core/plugin~Plugin
  */
-export default class ContextualToolbar extends Plugin {
+export default class BalloonToolbar extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'ContextualToolbar';
+		return 'BalloonToolbar';
 	}
 
 	/**
@@ -53,7 +53,6 @@ export default class ContextualToolbar extends Plugin {
 		this.toolbarView.extendTemplate( {
 			attributes: {
 				class: [
-					'ck-editor-toolbar',
 					'ck-toolbar_floating'
 				]
 			}
@@ -84,7 +83,7 @@ export default class ContextualToolbar extends Plugin {
 		this._handleSelectionChange();
 		this._handleFocusChange();
 
-		// The appearance of the ContextualToolbar method is event–driven.
+		// The appearance of the BalloonToolbar method is event–driven.
 		// It is possible to stop the #show event and this prevent the toolbar from showing up.
 		this.decorate( 'show' );
 	}
@@ -96,7 +95,7 @@ export default class ContextualToolbar extends Plugin {
 	 * @inheritDoc
 	 */
 	afterInit() {
-		const config = normalizeToolbarConfig( this.editor.config.get( 'contextualToolbar' ) );
+		const config = normalizeToolbarConfig( this.editor.config.get( 'balloonToolbar' ) );
 		const factory = this.editor.ui.componentFactory;
 
 		this.toolbarView.fillFromConfig( config.items, factory );
@@ -129,7 +128,7 @@ export default class ContextualToolbar extends Plugin {
 	 */
 	_handleSelectionChange() {
 		const selection = this.editor.model.document.selection;
-		const editingView = this.editor.editing.view;
+		const viewDocument = this.editor.editing.view.document;
 
 		this.listenTo( selection, 'change:range', ( evt, data ) => {
 			// When the selection is not changed by a collaboration and when is not collapsed.
@@ -145,7 +144,7 @@ export default class ContextualToolbar extends Plugin {
 		// Hide the toolbar when the selection stops changing.
 		this.listenTo( this, '_selectionChangeDebounced', () => {
 			// This implementation assumes that only non–collapsed selections gets the contextual toolbar.
-			if ( editingView.isFocused && !editingView.selection.isCollapsed ) {
+			if ( viewDocument.isFocused && !viewDocument.selection.isCollapsed ) {
 				this.show();
 			}
 		} );
@@ -168,7 +167,7 @@ export default class ContextualToolbar extends Plugin {
 			return;
 		}
 
-		// Update the toolbar position upon #render (e.g. external document changes)
+		// Update the toolbar position upon change (e.g. external document changes)
 		// while it's visible.
 		this.listenTo( this.editor.editing.view, 'render', () => {
 			this._balloon.updatePosition( this._getBalloonPositionData() );
@@ -178,7 +177,7 @@ export default class ContextualToolbar extends Plugin {
 		this._balloon.add( {
 			view: this.toolbarView,
 			position: this._getBalloonPositionData(),
-			balloonClassName: 'ck-toolbar-container ck-editor-toolbar-container'
+			balloonClassName: 'ck-toolbar-container'
 		} );
 	}
 
@@ -201,10 +200,11 @@ export default class ContextualToolbar extends Plugin {
 	 */
 	_getBalloonPositionData() {
 		const editor = this.editor;
-		const editingView = editor.editing.view;
+		const view = editor.editing.view;
+		const viewDocument = view.document;
 
 		// Get direction of the selection.
-		const isBackward = editingView.selection.isBackward;
+		const isBackward = viewDocument.selection.isBackward;
 
 		return {
 			// Because the target for BalloonPanelView is a Rect (not DOMRange), it's geometry will stay fixed
@@ -212,8 +212,8 @@ export default class ContextualToolbar extends Plugin {
 			// computed and hence, the target is defined as a function instead of a static value.
 			// https://github.com/ckeditor/ckeditor5-ui/issues/195
 			target: () => {
-				const range = editingView.selection.getFirstRange();
-				const rangeRects = Rect.getDomRangeRects( editingView.domConverter.viewRangeToDom( range ) );
+				const range = viewDocument.selection.getFirstRange();
+				const rangeRects = Rect.getDomRangeRects( view.domConverter.viewRangeToDom( range ) );
 
 				// Select the proper range rect depending on the direction of the selection.
 				if ( isBackward ) {
@@ -283,20 +283,20 @@ function getBalloonPositions( isBackward ) {
 }
 
 /**
- * Contextual toolbar configuration. Used by the {@link module:ui/toolbar/contextual/contextualtoolbar~ContextualToolbar}
+ * Contextual toolbar configuration. Used by the {@link module:ui/toolbar/balloon/balloontoolbar~BalloonToolbar}
  * feature.
  *
  *		const config = {
- *			contextualToolbar: [ 'bold', 'italic', 'undo', 'redo' ]
+ *			balloonToolbar: [ 'bold', 'italic', 'undo', 'redo' ]
  *		};
  *
  * You can also use `'|'` to create a separator between groups of items:
  *
  *		const config = {
- *			contextualToolbar: [ 'bold', 'italic', | 'undo', 'redo' ]
+ *			balloonToolbar: [ 'bold', 'italic', | 'undo', 'redo' ]
  *		};
  *
  * Read also about configuring the main editor toolbar in {@link module:core/editor/editorconfig~EditorConfig#toolbar}.
  *
- * @member {Array.<String>|Object} module:core/editor/editorconfig~EditorConfig#contextualToolbar
+ * @member {Array.<String>|Object} module:core/editor/editorconfig~EditorConfig#balloonToolbar
  */

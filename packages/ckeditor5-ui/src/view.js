@@ -184,7 +184,7 @@ export default class View {
 		 */
 
 		/**
-		 * Cached {@link @link module:ui/template~BindChain bind chain} object created by the
+		 * Cached {@link module:ui/template~BindChain bind chain} object created by the
 		 * {@link #template}. See {@link #bindTemplate}.
 		 *
 		 * @private

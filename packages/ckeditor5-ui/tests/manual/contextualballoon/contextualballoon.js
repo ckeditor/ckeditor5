@@ -7,14 +7,14 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-import ContextualToolbar from '../../../src/toolbar/contextual/contextualtoolbar';
+import BalloonToolbar from '../../../src/toolbar/balloon/balloontoolbar';
 
 // Finally the editor.
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet, ContextualToolbar ],
+		plugins: [ ArticlePluginSet, BalloonToolbar ],
 		toolbar: [ 'bold', 'link' ],
-		contextualToolbar: [ 'bold', 'link' ]
+		balloonToolbar: [ 'bold', 'link' ]
 	} )
 	.then( editor => {
 		window.editor = editor;
