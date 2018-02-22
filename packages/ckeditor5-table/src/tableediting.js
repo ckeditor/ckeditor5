@@ -10,6 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 import { createTableCell, createTableRow, downcastTableCell, downcastTable } from './converters';
+import InsertTableCommand from './inserttablecommand';
 
 export default class TablesEditing extends Plugin {
 	/**
@@ -56,5 +57,7 @@ export default class TablesEditing extends Plugin {
 
 		conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
 		conversion.attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
+
+		editor.commands.add( 'insertTable', new InsertTableCommand( editor ) );
 	}
 }
