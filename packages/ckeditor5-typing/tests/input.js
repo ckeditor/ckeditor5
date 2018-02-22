@@ -26,7 +26,7 @@ import { getData as getModelData, setData as setModelData } from '@ckeditor/cked
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 describe( 'Input feature', () => {
-	let editor, model, modelRoot, view, viewRoot, listenter;
+	let editor, model, modelRoot, view, viewDocument, viewRoot, listenter;
 
 	testUtils.createSinonSandbox();
 
@@ -55,7 +55,8 @@ describe( 'Input feature', () => {
 				model = editor.model;
 				modelRoot = model.document.getRoot();
 				view = editor.editing.view;
-				viewRoot = view.getRoot();
+				viewDocument = view.document;
+				viewRoot = viewDocument.getRoot();
 			} );
 	} );
 
@@ -79,7 +80,7 @@ describe( 'Input feature', () => {
 
 	describe( 'mutations handling', () => {
 		it( 'should handle text mutation', () => {
-			view.fire( 'mutations', [
+			viewDocument.fire( 'mutations', [
 				{
 					type: 'text',
 					oldText: 'foobar',
@@ -93,7 +94,7 @@ describe( 'Input feature', () => {
 		} );
 
 		it( 'should handle text mutation change', () => {
-			view.fire( 'mutations', [
+			viewDocument.fire( 'mutations', [
 				{
 					type: 'text',
 					oldText: 'foobar',
@@ -109,7 +110,7 @@ describe( 'Input feature', () => {
 		it( 'should handle text node insertion', () => {
 			editor.setData( '<p></p>' );
 
-			view.fire( 'mutations', [
+			viewDocument.fire( 'mutations', [
 				{
 					type: 'children',
 					oldChildren: [],
@@ -129,7 +130,7 @@ describe( 'Input feature', () => {
 					italic: true
 				}
 			} );
-			view.fire( 'mutations', [
+			viewDocument.fire( 'mutations', [
 				{
 					type: 'children',
 					oldChildren: [],
@@ -146,7 +147,7 @@ describe( 'Input feature', () => {
 		it( 'should handle multiple text mutations', () => {
 			editor.setData( '<p>foo<strong>bar</strong></p>' );
 
-			view.fire( 'mutations', [
+			viewDocument.fire( 'mutations', [
 				{
 					type: 'text',
 					oldText: 'foo',
@@ -168,7 +169,7 @@ describe( 'Input feature', () => {
 		it( 'should handle multiple text node insertion', () => {
 			editor.setData( '<p></p><p></p>' );
 
-			view.fire( 'mutations', [
+			viewDocument.fire( 'mutations', [
 				{
 					type: 'children',
 					oldChildren: [],
@@ -190,7 +191,7 @@ describe( 'Input feature', () => {
 		it( 'should do nothing when two nodes were inserted', () => {
 			editor.setData( '<p></p>' );
 
-			view.fire( 'mutations', [
+			viewDocument.fire( 'mutations', [
 				{
 					type: 'children',
 					oldChildren: [],
@@ -204,7 +205,7 @@ describe( 'Input feature', () => {
 		} );
 
 		it( 'should do nothing when two nodes were inserted and one removed', () => {
-			view.fire( 'mutations', [
+			viewDocument.fire( 'mutations', [
 				{
 					type: 'children',
 					oldChildren: [ new ViewText( 'foobar' ) ],
@@ -220,7 +221,7 @@ describe( 'Input feature', () => {
 		it( 'should handle multiple children in the node', () => {
 			editor.setData( '<p>foo<img></img></p>' );
 
-			view.fire( 'mutations', [
+			viewDocument.fire( 'mutations', [
 				{
 					type: 'children',
 					oldChildren: [ new ViewText( 'foo' ), viewRoot.getChild( 0 ).getChild( 1 ) ],
@@ -234,7 +235,7 @@ describe( 'Input feature', () => {
 		} );
 
 		it( 'should do nothing when node was removed', () => {
-			view.fire( 'mutations', [
+			viewDocument.fire( 'mutations', [
 				{
 					type: 'children',
 					oldChildren: [ new ViewText( 'foobar' ) ],
@@ -250,7 +251,7 @@ describe( 'Input feature', () => {
 		it( 'should do nothing when element was inserted', () => {
 			editor.setData( '<p></p>' );
 
-			view.fire( 'mutations', [
+			viewDocument.fire( 'mutations', [
 				{
 					type: 'children',
 					oldChildren: [],
@@ -267,9 +268,9 @@ describe( 'Input feature', () => {
 			// This test case emulates spellchecker correction.
 
 			const viewSelection = new ViewSelection();
-			viewSelection.setTo( viewRoot.getChild( 0 ).getChild( 0 ), 6 );
+			viewSelection._setTo( viewRoot.getChild( 0 ).getChild( 0 ), 6 );
 
-			view.fire( 'mutations',
+			viewDocument.fire( 'mutations',
 				[ {
 					type: 'text',
 					oldText: 'foobar',
@@ -287,12 +288,12 @@ describe( 'Input feature', () => {
 			// This test case emulates spellchecker correction.
 
 			const viewSelection = new ViewSelection();
-			viewSelection.setTo( viewRoot.getChild( 0 ).getChild( 0 ), 6 );
+			viewSelection._setTo( viewRoot.getChild( 0 ).getChild( 0 ), 6 );
 
 			testUtils.sinon.spy( Writer.prototype, 'insert' );
 			testUtils.sinon.spy( Writer.prototype, 'remove' );
 
-			view.fire( 'mutations',
+			viewDocument.fire( 'mutations',
 				[ {
 					type: 'text',
 					oldText: 'foobar',
@@ -311,9 +312,9 @@ describe( 'Input feature', () => {
 			editor.setData( '<p>Foo hous a</p>' );
 
 			const viewSelection = new ViewSelection();
-			viewSelection.setTo( viewRoot.getChild( 0 ).getChild( 0 ), 9 );
+			viewSelection._setTo( viewRoot.getChild( 0 ).getChild( 0 ), 9 );
 
-			view.fire( 'mutations',
+			viewDocument.fire( 'mutations',
 				[ {
 					type: 'text',
 					oldText: 'Foo hous a',
@@ -332,9 +333,9 @@ describe( 'Input feature', () => {
 			editor.setData( '<p>Bar athat foo</p>' );
 
 			const viewSelection = new ViewSelection();
-			viewSelection.setTo( viewRoot.getChild( 0 ).getChild( 0 ), 8 );
+			viewSelection._setTo( viewRoot.getChild( 0 ).getChild( 0 ), 8 );
 
-			view.fire( 'mutations',
+			viewDocument.fire( 'mutations',
 				[ {
 					type: 'text',
 					oldText: 'Bar athat foo',
@@ -353,9 +354,9 @@ describe( 'Input feature', () => {
 			editor.setData( '<p>Foo hous e</p>' );
 
 			const viewSelection = new ViewSelection();
-			viewSelection.setTo( viewRoot.getChild( 0 ).getChild( 0 ), 9 );
+			viewSelection._setTo( viewRoot.getChild( 0 ).getChild( 0 ), 9 );
 
-			view.fire( 'mutations',
+			viewDocument.fire( 'mutations',
 				[ {
 					type: 'text',
 					oldText: 'Foo hous e',
@@ -373,10 +374,10 @@ describe( 'Input feature', () => {
 			editor.setData( '<p>Foo house</p>' );
 
 			const viewSelection = new ViewSelection();
-			viewSelection.setTo( viewRoot.getChild( 0 ).getChild( 0 ), 8 );
-			viewSelection.setFocus( viewRoot.getChild( 0 ).getChild( 0 ), 9 );
+			viewSelection._setTo( viewRoot.getChild( 0 ).getChild( 0 ), 8 );
+			viewSelection._setFocus( viewRoot.getChild( 0 ).getChild( 0 ), 9 );
 
-			view.fire( 'mutations',
+			viewDocument.fire( 'mutations',
 				[ {
 					type: 'text',
 					oldText: 'Foo house',
@@ -397,7 +398,7 @@ describe( 'Input feature', () => {
 				);
 			} );
 
-			view.fire( 'mutations', [
+			viewDocument.fire( 'mutations', [
 				{
 					type: 'text',
 					oldText: 'foobar',
@@ -417,7 +418,7 @@ describe( 'Input feature', () => {
 				);
 			} );
 
-			view.fire( 'mutations', [
+			viewDocument.fire( 'mutations', [
 				{
 					type: 'text',
 					oldText: 'foobar',
@@ -437,7 +438,7 @@ describe( 'Input feature', () => {
 				);
 			} );
 
-			view.fire( 'mutations', [
+			viewDocument.fire( 'mutations', [
 				{
 					type: 'text',
 					oldText: 'foobar',
@@ -458,7 +459,7 @@ describe( 'Input feature', () => {
 					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) );
 			} );
 
-			listenter.listenTo( view, 'keydown', () => {
+			listenter.listenTo( viewDocument, 'keydown', () => {
 				expect( getModelData( model ) ).to.equal( '<paragraph>fo[]ar</paragraph>' );
 			}, { priority: 'lowest' } );
 		} );
@@ -467,10 +468,10 @@ describe( 'Input feature', () => {
 		it( 'should remove contents and merge blocks', () => {
 			setModelData( model, '<paragraph>fo[o</paragraph><paragraph>b]ar</paragraph>' );
 
-			listenter.listenTo( view, 'keydown', () => {
+			listenter.listenTo( viewDocument, 'keydown', () => {
 				expect( getModelData( model ) ).to.equal( '<paragraph>fo[]ar</paragraph>' );
 
-				view.fire( 'mutations', [
+				viewDocument.fire( 'mutations', [
 					{
 						type: 'text',
 						oldText: 'foar',
@@ -480,7 +481,7 @@ describe( 'Input feature', () => {
 				] );
 			}, { priority: 'lowest' } );
 
-			view.fire( 'keydown', { keyCode: getCode( 'y' ) } );
+			viewDocument.fire( 'keydown', { keyCode: getCode( 'y' ) } );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>foy[]ar</paragraph>' );
 			expect( getViewData( view ) ).to.equal( '<p>foy{}ar</p>' );
@@ -492,7 +493,7 @@ describe( 'Input feature', () => {
 					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) );
 			} );
 
-			view.fire( 'keydown', { keyCode: getCode( 'arrowdown' ) } );
+			viewDocument.fire( 'keydown', { keyCode: getCode( 'arrowdown' ) } );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>fo[ob]ar</paragraph>' );
 		} );
@@ -503,7 +504,7 @@ describe( 'Input feature', () => {
 					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) );
 			} );
 
-			view.fire( 'keydown', { ctrlKey: true, keyCode: getCode( 'c' ) } );
+			viewDocument.fire( 'keydown', { ctrlKey: true, keyCode: getCode( 'c' ) } );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>fo[ob]ar</paragraph>' );
 		} );
@@ -514,9 +515,9 @@ describe( 'Input feature', () => {
 					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) );
 			} );
 
-			view.fire( 'keydown', { keyCode: 16 } ); // Shift
-			view.fire( 'keydown', { keyCode: 35 } ); // Home
-			view.fire( 'keydown', { keyCode: 112 } ); // F1
+			viewDocument.fire( 'keydown', { keyCode: 16 } ); // Shift
+			viewDocument.fire( 'keydown', { keyCode: 35 } ); // Home
+			viewDocument.fire( 'keydown', { keyCode: 112 } ); // F1
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>fo[ob]ar</paragraph>' );
 		} );
@@ -528,7 +529,7 @@ describe( 'Input feature', () => {
 					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) );
 			} );
 
-			view.fire( 'keydown', { keyCode: 9 } ); // Tab
+			viewDocument.fire( 'keydown', { keyCode: 9 } ); // Tab
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>fo[ob]ar</paragraph>' );
 		} );
@@ -540,13 +541,13 @@ describe( 'Input feature', () => {
 					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) );
 			} );
 
-			view.fire( 'keydown', { keyCode: 229 } );
+			viewDocument.fire( 'keydown', { keyCode: 229 } );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>fo[ob]ar</paragraph>' );
 		} );
 
 		it( 'should do nothing if selection is collapsed', () => {
-			view.fire( 'keydown', { ctrlKey: true, keyCode: getCode( 'c' ) } );
+			viewDocument.fire( 'keydown', { ctrlKey: true, keyCode: getCode( 'c' ) } );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
 		} );
@@ -561,7 +562,7 @@ describe( 'Input feature', () => {
 					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) );
 			} );
 
-			view.fire( 'keydown', { keyCode: getCode( 'y' ) } );
+			viewDocument.fire( 'keydown', { keyCode: getCode( 'y' ) } );
 
 			expect( lockSpy.calledOnce ).to.be.true;
 			expect( unlockSpy.calledOnce ).to.be.true;
@@ -572,9 +573,9 @@ describe( 'Input feature', () => {
 			const lockSpy = testUtils.sinon.spy( buffer, 'lock' );
 			const unlockSpy = testUtils.sinon.spy( buffer, 'unlock' );
 
-			view.fire( 'keydown', { keyCode: 16 } ); // Shift
-			view.fire( 'keydown', { keyCode: 35 } ); // Home
-			view.fire( 'keydown', { keyCode: 112 } ); // F1
+			viewDocument.fire( 'keydown', { keyCode: 16 } ); // Shift
+			viewDocument.fire( 'keydown', { keyCode: 35 } ); // Home
+			viewDocument.fire( 'keydown', { keyCode: 112 } ); // F1
 
 			expect( lockSpy.callCount ).to.be.equal( 0 );
 			expect( unlockSpy.callCount ).to.be.equal( 0 );
@@ -585,9 +586,9 @@ describe( 'Input feature', () => {
 			const lockSpy = testUtils.sinon.spy( buffer, 'lock' );
 			const unlockSpy = testUtils.sinon.spy( buffer, 'unlock' );
 
-			view.fire( 'keydown', { keyCode: getCode( 'b' ) } );
-			view.fire( 'keydown', { keyCode: getCode( 'a' ) } );
-			view.fire( 'keydown', { keyCode: getCode( 'z' ) } );
+			viewDocument.fire( 'keydown', { keyCode: getCode( 'b' ) } );
+			viewDocument.fire( 'keydown', { keyCode: getCode( 'a' ) } );
+			viewDocument.fire( 'keydown', { keyCode: getCode( 'z' ) } );
 
 			expect( lockSpy.callCount ).to.be.equal( 0 );
 			expect( unlockSpy.callCount ).to.be.equal( 0 );
@@ -598,7 +599,7 @@ describe( 'Input feature', () => {
 
 			editor.commands.get( 'input' ).isEnabled = false;
 
-			view.fire( 'keydown', { keyCode: getCode( 'b' ) } );
+			viewDocument.fire( 'keydown', { keyCode: getCode( 'b' ) } );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
 		} );
@@ -608,7 +609,7 @@ describe( 'Input feature', () => {
 
 			editor.commands.get( 'input' ).isEnabled = false;
 
-			view.fire( 'keydown', { keyCode: getCode( 'b' ) } );
+			viewDocument.fire( 'keydown', { keyCode: getCode( 'b' ) } );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>fo[ob]ar</paragraph>' );
 		} );

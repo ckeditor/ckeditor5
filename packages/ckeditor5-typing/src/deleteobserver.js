@@ -10,6 +10,7 @@
 import Observer from '@ckeditor/ckeditor5-engine/src/view/observer/observer';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 /**
  * Delete observer introduces the {@link module:engine/view/document~Document#event:delete} event.
@@ -17,9 +18,10 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
  * @extends module:engine/view/observer/observer~Observer
  */
 export default class DeleteObserver extends Observer {
-	constructor( document ) {
-		super( document );
+	constructor( view ) {
+		super( view );
 
+		const document = view.document;
 		let sequence = 0;
 
 		document.on( 'keyup', ( evt, data ) => {
@@ -41,7 +43,8 @@ export default class DeleteObserver extends Observer {
 				return;
 			}
 
-			deleteData.unit = data.altKey ? 'word' : deleteData.unit;
+			const hasWordModifier = env.isMac ? data.altKey : data.ctrlKey;
+			deleteData.unit = hasWordModifier ? 'word' : deleteData.unit;
 			deleteData.sequence = ++sequence;
 
 			// Save the event object to check later if it was stopped or not.

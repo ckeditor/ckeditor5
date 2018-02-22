@@ -26,17 +26,18 @@ export default class Delete extends Plugin {
 
 	init() {
 		const editor = this.editor;
-		const editingView = editor.editing.view;
+		const view = editor.editing.view;
+		const viewDocument = view.document;
 
-		editingView.addObserver( DeleteObserver );
+		view.addObserver( DeleteObserver );
 
 		editor.commands.add( 'forwardDelete', new DeleteCommand( editor, 'forward' ) );
 		editor.commands.add( 'delete', new DeleteCommand( editor, 'backward' ) );
 
-		this.listenTo( editingView, 'delete', ( evt, data ) => {
+		this.listenTo( viewDocument, 'delete', ( evt, data ) => {
 			editor.execute( data.direction == 'forward' ? 'forwardDelete' : 'delete', { unit: data.unit, sequence: data.sequence } );
 			data.preventDefault();
-			editingView.scrollToTheSelection();
+			view.scrollToTheSelection();
 		} );
 	}
 }

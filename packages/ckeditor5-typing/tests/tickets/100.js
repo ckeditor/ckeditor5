@@ -33,7 +33,7 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 // However, the code handling these mutations doesn't really care what's inside new/old children. It
 // just needs the mutations common ancestor to understand how big fragment of the tree has changed.
 describe( 'Bug ckeditor5-typing#100', () => {
-	let domElement, domRoot, editor, model, view, viewRoot;
+	let domElement, domRoot, editor, model, view, viewDocument, viewRoot;
 
 	beforeEach( () => {
 		domElement = document.createElement( 'div' );
@@ -44,7 +44,8 @@ describe( 'Bug ckeditor5-typing#100', () => {
 				editor = newEditor;
 				model = editor.model;
 				view = editor.editing.view;
-				viewRoot = view.getRoot();
+				viewDocument = view.document;
+				viewRoot = viewDocument.getRoot();
 				domRoot = view.getDomRoot();
 
 				// Mock image feature.
@@ -93,7 +94,7 @@ describe( 'Bug ckeditor5-typing#100', () => {
 
 		// Simulate mutations and DOM change.
 		domRoot.childNodes[ 0 ].innerHTML = '<i><a href="foo">text</a>x</i>';
-		view.fire( 'mutations', [
+		viewDocument.fire( 'mutations', [
 			// First mutation - remove all children from link element.
 			{
 				type: 'children',
@@ -140,7 +141,7 @@ describe( 'Bug ckeditor5-typing#100', () => {
 
 		// Simulate mutations and DOM change.
 		domRoot.childNodes[ 0 ].innerHTML = '<i>x<a href="foo">text</a></i>';
-		view.fire( 'mutations', [
+		viewDocument.fire( 'mutations', [
 			// First mutation - remove all children from link element.
 			{
 				type: 'children',
@@ -188,7 +189,7 @@ describe( 'Bug ckeditor5-typing#100', () => {
 
 		// Simulate mutations and DOM change.
 		domRoot.childNodes[ 0 ].innerHTML = 'xxx<i><a href="foo">text</a>x</i>';
-		view.fire( 'mutations', [
+		viewDocument.fire( 'mutations', [
 			// First mutation - remove all children from link element.
 			{
 				type: 'children',
@@ -234,7 +235,7 @@ describe( 'Bug ckeditor5-typing#100', () => {
 
 		// Simulate mutations and DOM change.
 		domRoot.childNodes[ 0 ].innerHTML = '<b>fixed text</b>';
-		view.fire( 'mutations', [
+		viewDocument.fire( 'mutations', [
 			// Replace `<strong>` with `<b>`.
 			{
 				type: 'children',
@@ -265,7 +266,7 @@ describe( 'Bug ckeditor5-typing#100', () => {
 
 		// Simulate mutations and DOM change.
 		domRoot.childNodes[ 0 ].childNodes[ 0 ].innerHTML = 'this is bar text';
-		view.fire( 'mutations', [
+		viewDocument.fire( 'mutations', [
 			{
 				type: 'children',
 				node: strong,
@@ -293,7 +294,7 @@ describe( 'Bug ckeditor5-typing#100', () => {
 
 		// Simulate mutations and DOM change.
 		domRoot.childNodes[ 0 ].innerHTML = '<strong>text</strong><img />';
-		view.fire( 'mutations', [
+		viewDocument.fire( 'mutations', [
 			{
 				type: 'children',
 				node: paragraph,
@@ -324,7 +325,7 @@ describe( 'Bug ckeditor5-typing#100', () => {
 
 		// Simulate mutations and DOM change.
 		domRoot.childNodes[ 0 ].innerHTML = '<strong>text</strong>';
-		view.fire( 'mutations', [
+		viewDocument.fire( 'mutations', [
 			{
 				type: 'children',
 				node: paragraph,
@@ -349,7 +350,7 @@ describe( 'Bug ckeditor5-typing#100', () => {
 
 		// Simulate mutations and DOM change.
 		domRoot.childNodes[ 0 ].innerHTML = '<strong>text</strong>';
-		view.fire( 'mutations', [] );
+		viewDocument.fire( 'mutations', [] );
 
 		expect( getViewData( view ) ).to.equal( '<p><strong>text{}</strong></p>' );
 	} );
@@ -370,7 +371,7 @@ describe( 'Bug ckeditor5-typing#100', () => {
 
 		// Simulate mutations and DOM change.
 		domRoot.childNodes[ 0 ].innerHTML = '<strong>text</strong>';
-		view.fire( 'mutations', [
+		viewDocument.fire( 'mutations', [
 			{
 				type: 'children',
 				node: paragraph,
@@ -405,7 +406,7 @@ describe( 'Bug ckeditor5-typing#100', () => {
 
 		// Simulate mutations and DOM change.
 		domRoot.childNodes[ 0 ].innerHTML = '<b>textx</b>';
-		view.fire( 'mutations', [
+		viewDocument.fire( 'mutations', [
 			// Replace `<strong>` with `<b>`.
 			{
 				type: 'children',
@@ -429,7 +430,7 @@ describe( 'Bug ckeditor5-typing#100', () => {
 
 		// Simulate mutations and DOM change.
 		domRoot.childNodes[ 0 ].innerHTML = '<strong>Foo bar </strong><b>apple</b>';
-		view.fire( 'mutations', [
+		viewDocument.fire( 'mutations', [
 			{
 				type: 'text',
 				oldText: 'Foo bar aple',
