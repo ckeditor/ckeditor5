@@ -5,13 +5,13 @@
 
 /* globals console, window, document */
 
-import ClassicEditor from '../../../ckeditor5-editor-classic/src/classiceditor';
-import ArticlePluginSet from '../../../ckeditor5-core/tests/_utils/articlepluginset';
-import Tables from '../../src/tables';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import Table from '../../src/table';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet, Tables ],
+		plugins: [ ArticlePluginSet, Table ],
 		toolbar: [
 			'headings', '|', 'bold', 'italic', 'undo', 'redo'
 		]

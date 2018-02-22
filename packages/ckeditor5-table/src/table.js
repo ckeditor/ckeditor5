@@ -4,13 +4,13 @@
  */
 
 /**
- * @module tables/tables
+ * @module table/table
  */
 
-import Plugin from '../../ckeditor5-core/src/plugin';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-import TablesEditing from './tablesediting';
-import TablesUI from './tablesui';
+import TablesEditing from './tableediting';
+import TablesUI from './tableui';
 
 export default class Tables extends Plugin {
 	/**

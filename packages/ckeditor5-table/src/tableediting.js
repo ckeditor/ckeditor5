@@ -4,11 +4,11 @@
  */
 
 /**
- * @module tables/tablesediting
+ * @module table/tableediting
  */
 
-import Plugin from '../../ckeditor5-core/src/plugin';
-import { upcastElementToElement } from '../../ckeditor5-engine/src/conversion/upcast-converters';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 import { createTableCell, createTableRow, downcastTableCell, downcastTable } from './converters';
 
 export default class TablesEditing extends Plugin {

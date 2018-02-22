@@ -5,16 +5,16 @@
 
 /* global document */
 
-import TablesEditing from '../src/tablesediting';
-import TablesUI from '../src/tablesui';
+import TableEditing from '../src/tableediting';
+import TableUI from '../src/tableui';
 
-import ClassicTestEditor from '../../ckeditor5-core/tests/_utils/classictesteditor';
-import testUtils from '../../ckeditor5-core/tests/_utils/utils';
-import { _clear as clearTranslations, add as addTranslations } from '../../ckeditor5-utils/src/translation-service';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import { _clear as clearTranslations, add as addTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
 
 testUtils.createSinonSandbox();
 
-describe( 'TablesUI', () => {
+describe( 'TableUI', () => {
 	let editor, element;
 
 	before( () => {
@@ -32,7 +32,7 @@ describe( 'TablesUI', () => {
 
 		return ClassicTestEditor
 			.create( element, {
-				plugins: [ TablesEditing, TablesUI ]
+				plugins: [ TableEditing, TableUI ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
