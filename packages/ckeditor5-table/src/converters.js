@@ -19,18 +19,19 @@ export function createTableCell( viewElement, modelWriter ) {
 	return modelWriter.createElement( 'tableCell', attributes );
 }
 
-export function createTableRow( viewElement, modelWriter ) {
-	const attributes = {};
+export function createTable( viewElement, modelWriter ) {
+	const attributes = {
+		headingRows: 0,
+		headingColumns: 0
+	};
 
-	if ( viewElement.parent.name === 'tfoot' ) {
-		attributes.isFooter = true;
+	const header = _getChildHeader( viewElement );
+
+	if ( header ) {
+		attributes.headingRows = header.childCount;
 	}
 
-	if ( viewElement.parent.name === 'thead' ) {
-		attributes.isHeading = true;
-	}
-
-	return modelWriter.createElement( 'tableRow', attributes );
+	return modelWriter.createElement( 'table', attributes );
 }
 
 export function downcastTableCell( dispatcher ) {
@@ -61,49 +62,41 @@ export function downcastTable( dispatcher ) {
 			return;
 		}
 
-		if ( !conversionApi.consumable.consume( data.item, 'insert' ) ) {
+		const table = data.item;
+
+		if ( !conversionApi.consumable.consume( table, 'insert' ) ) {
 			return;
 		}
 
-		const { headings, footers, rows } = _extractSectionsRows( data.item );
+		const headingRows = table.getAttribute( 'headingRows' );
 
-		if ( headings.length ) {
+		const tableRows = [ ...table.getChildren() ];
+		const headings = tableRows.slice( 0, headingRows );
+		const bodyRows = tableRows.slice( headingRows );
+
+		if ( headingRows ) {
 			_createTableSection( 'thead', tableElement, headings, conversionApi );
 		}
 
-		if ( rows.length ) {
-			_createTableSection( 'tbody', tableElement, rows, conversionApi );
-		}
-
-		if ( footers.length ) {
-			_createTableSection( 'tfoot', tableElement, footers, conversionApi );
+		if ( bodyRows.length ) {
+			_createTableSection( 'tbody', tableElement, bodyRows, conversionApi );
 		}
 
 		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
 
-		conversionApi.mapper.bindElements( data.item, tableElement );
+		conversionApi.mapper.bindElements( table, tableElement );
 		conversionApi.writer.insert( viewPosition, tableElement );
 	}, { priority: 'normal' } );
 }
 
-function _extractSectionsRows( table ) {
-	const tableRows = [ ...table.getChildren() ];
-
-	const headings = [];
-	const footers = [];
-	const rows = [];
-
-	for ( const tableRow of tableRows ) {
-		if ( tableRow.getAttribute( 'isHeading' ) ) {
-			headings.push( tableRow );
-		} else if ( tableRow.getAttribute( 'isFooter' ) ) {
-			footers.push( tableRow );
-		} else {
-			rows.push( tableRow );
+function _getChildHeader( table ) {
+	for ( const child of Array.from( table.getChildren() ) ) {
+		if ( child.name === 'thead' ) {
+			return child;
 		}
 	}
 
-	return { headings, footers, rows };
+	return false;
 }
 
 function _createTableSection( elementName, tableElement, rows, conversionApi ) {

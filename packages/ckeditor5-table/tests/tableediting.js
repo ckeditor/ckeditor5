@@ -40,38 +40,25 @@ describe( 'TableEditing', () => {
 				expect( editor.getData() ).to.equal( '<table><tbody><tr><td>foo</td></tr></tbody></table>' );
 			} );
 
-			it( 'should create tfoot section', () => {
-				setModelData( model, '<table><tableRow isFooter="true"><tableCell>foo[]</tableCell></tableRow></table>' );
-
-				expect( editor.getData() ).to.equal( '<table><tfoot><tr><td>foo</td></tr></tfoot></table>' );
-			} );
-
 			it( 'should create thead section', () => {
-				setModelData( model, '<table><tableRow isHeading="true"><tableCell>foo[]</tableCell></tableRow></table>' );
+				setModelData( model, '<table headingRows="1"><tableRow><tableCell>foo[]</tableCell></tableRow></table>' );
 
 				expect( editor.getData() ).to.equal( '<table><thead><tr><td>foo</td></tr></thead></table>' );
 			} );
 
-			it( 'should create thead, tbody and tfoot sections in proper order', () => {
-				setModelData( model, '<table>' +
-					'<tableRow><tableCell>foo[]</tableCell></tableRow>' +
-					'<tableRow isFooter="true"><tableCell>foo[]</tableCell></tableRow>' +
-					'<tableRow isHeading="true"><tableCell>foo[]</tableCell></tableRow>' +
+			it( 'should create thead and tbody sections in proper order', () => {
+				setModelData( model, '<table headingRows="1">' +
+					'<tableRow><tableCell>foo</tableCell></tableRow>' +
+					'<tableRow><tableCell>bar</tableCell></tableRow>' +
+					'<tableRow><tableCell>baz[]</tableCell></tableRow>' +
 					'</table>'
 				);
 
 				expect( editor.getData() ).to.equal( '<table>' +
 					'<thead><tr><td>foo</td></tr></thead>' +
-					'<tbody><tr><td>foo</td></tr></tbody>' +
-					'<tfoot><tr><td>foo</td></tr></tfoot>' +
+					'<tbody><tr><td>bar</td></tr><tr><td>baz</td></tr></tbody>' +
 					'</table>'
 				);
-			} );
-
-			it( 'should create th element for tableCell with attribute isHeading=true', () => {
-				setModelData( model, '<table><tableRow isHeading="true"><tableCell isHeading="true">foo[]</tableCell></tableRow></table>' );
-
-				expect( editor.getData() ).to.equal( '<table><thead><tr><th>foo</th></tr></thead></table>' );
 			} );
 
 			it( 'should convert rowspan on tableCell', () => {
@@ -88,11 +75,11 @@ describe( 'TableEditing', () => {
 		} );
 
 		describe( 'view to model', () => {
-			it( 'should convert image figure', () => {
+			it( 'should convert table', () => {
 				editor.setData( '<table><tbody><tr><td>foo</td></tr></tbody></table>' );
 
 				expect( getModelData( model, { withoutSelection: true } ) )
-					.to.equal( '<table><tableRow><tableCell>foo</tableCell></tableRow></table>' );
+					.to.equal( '<table headingColumns="0" headingRows="0"><tableRow><tableCell>foo</tableCell></tableRow></table>' );
 			} );
 		} );
 	} );

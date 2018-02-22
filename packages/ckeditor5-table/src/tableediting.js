@@ -9,7 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
-import { createTableCell, createTableRow, downcastTableCell, downcastTable } from './converters';
+import { createTableCell, createTable, downcastTableCell, downcastTable } from './converters';
 import InsertTableCommand from './inserttablecommand';
 
 export default class TablesEditing extends Plugin {
@@ -23,14 +23,14 @@ export default class TablesEditing extends Plugin {
 
 		schema.register( 'table', {
 			allowWhere: '$block',
-			allowAttributes: [],
+			allowAttributes: [ 'headingRows' ],
 			isBlock: true,
 			isObject: true
 		} );
 
 		schema.register( 'tableRow', {
 			allowIn: 'table',
-			allowAttributes: [ 'isHeading', 'isFooter' ],
+			allowAttributes: [],
 			isBlock: true,
 			isLimit: true
 		} );
@@ -38,17 +38,17 @@ export default class TablesEditing extends Plugin {
 		schema.register( 'tableCell', {
 			allowIn: 'tableRow',
 			allowContentOf: '$block',
-			allowAttributes: [ 'isHeading', 'colspan', 'rowspan' ],
+			allowAttributes: [ 'colspan', 'rowspan' ],
 			isBlock: true,
 			isLimit: true
 		} );
 
 		// Table conversion.
-		conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'table', view: 'table' } ) );
+		conversion.for( 'upcast' ).add( upcastElementToElement( { model: createTable, view: 'table' } ) );
 		conversion.for( 'downcast' ).add( downcastTable );
 
 		// Table row upcast only since downcast conversion is done in `downcastTable()`.
-		conversion.for( 'upcast' ).add( upcastElementToElement( { model: createTableRow, view: 'tr' } ) );
+		conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableRow', view: 'tr' } ) );
 
 		// Table cell conversion.
 		conversion.for( 'upcast' ).add( upcastElementToElement( { model: createTableCell, view: 'td' } ) );
