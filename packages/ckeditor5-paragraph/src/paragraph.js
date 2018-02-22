@@ -10,7 +10,6 @@
 import ParagraphCommand from './paragraphcommand';
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import { elementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/two-way-converters';
 import { SchemaContext } from '@ckeditor/ckeditor5-engine/src/model/schema';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
@@ -42,7 +41,7 @@ export default class Paragraph extends Plugin {
 		// Schema.
 		model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
-		elementToElement( editor.conversion, { model: 'paragraph', view: 'p' } );
+		editor.conversion.elementToElement( { model: 'paragraph', view: 'p' } );
 
 		// Content autoparagraphing. --------------------------------------------------
 
