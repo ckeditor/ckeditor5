@@ -82,16 +82,6 @@ describe( 'HighlightUI', () => {
 			expect( button ).to.have.property( 'icon', markerIcon );
 		} );
 
-		it( 'should add custom CSS class to dropdown and dropdown buttons', () => {
-			dropdown.render();
-
-			expect( dropdown.element.classList.contains( 'ck-highlight-dropdown' ) ).to.be.true;
-			expect( dropdown.buttonView.element.classList.contains( 'ck-highlight-button' ) ).to.be.true;
-			// There should be 5 highlight buttons, one separator and highlight remove button in toolbar.
-			expect( dropdown.toolbarView.items.map( button => button.element.classList.contains( 'ck-highlight-button' ) ) )
-				.to.deep.equal( [ true, true, true, true, true, true, false, false ] );
-		} );
-
 		it( 'should have proper icons in dropdown', () => {
 			const toolbar = dropdown.toolbarView;
 
@@ -100,6 +90,21 @@ describe( 'HighlightUI', () => {
 
 			expect( toolbar.items.map( item => item.icon ) )
 				.to.deep.equal( [ markerIcon, markerIcon, markerIcon, markerIcon, penIcon, penIcon, undefined, eraserIcon ] );
+		} );
+
+		it( 'should have proper colors in dropdown', () => {
+			const toolbar = dropdown.toolbarView;
+
+			expect( toolbar.items.map( item => item.iconView && item.iconView.fillColor ) ).to.deep.equal( [
+				'#fdfd77',
+				'#63f963',
+				'#fc7999',
+				'#72cdfd',
+				'#e91313',
+				'#118800',
+				undefined,
+				'',
+			] );
 		} );
 
 		it( 'should activate current option in dropdown', () => {
@@ -115,7 +120,8 @@ describe( 'HighlightUI', () => {
 			command.value = 'greenMarker';
 
 			// The second item is 'greenMarker' highlighter.
-			expect( toolbar.items.map( item => item.isOn ) ).to.deep.equal( [ false, true, false, false, false, false, undefined, false ] );
+			expect( toolbar.items.map( item => item.isOn ) )
+				.to.deep.equal( [ false, true, false, false, false, false, undefined, false ] );
 		} );
 
 		describe( 'toolbar button behavior', () => {
@@ -129,7 +135,7 @@ describe( 'HighlightUI', () => {
 
 			function validateButton( which ) {
 				expect( button.icon ).to.equal( buttons[ which ].icon );
-				expect( button.actionView.color ).to.equal( options[ which ].color );
+				expect( button.actionView.iconView.fillColor ).to.equal( options[ which ].color );
 			}
 
 			it( 'should have properties of first defined highlighter', () => {
