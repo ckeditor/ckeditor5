@@ -4,10 +4,10 @@
  */
 
 /**
- * @module tables/converters
+ * @module table/converters
  */
 
-import Position from '../../ckeditor5-engine/src/view/position';
+import Position from '@ckeditor/ckeditor5-engine/src/view/position';
 
 export function createTableCell( viewElement, modelWriter ) {
 	const attributes = {};
