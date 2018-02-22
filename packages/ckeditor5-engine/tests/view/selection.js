@@ -93,8 +93,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should be able to create a fake selection from the other fake selection', () => {
-			const otherSelection = new Selection( [ range2, range3 ], true );
-			otherSelection._setFake( true, { label: 'foo bar baz' } );
+			const otherSelection = new Selection( [ range2, range3 ], { fake: true, label: 'foo bar baz' } );
 			const selection = new Selection( otherSelection );
 
 			expect( selection.isFake ).to.be.true;
@@ -510,26 +509,21 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should return false if one selection is fake', () => {
-			const otherSelection = new Selection();
-			otherSelection._setFake( true );
+			const otherSelection = new Selection( null, { fake: true } );
 
 			expect( selection.isEqual( otherSelection ) ).to.be.false;
 		} );
 
 		it( 'should return true if both selection are fake', () => {
-			const otherSelection = new Selection( [ range1 ] );
-			otherSelection._setFake( true );
-			selection._setFake( true );
-			selection._setTo( range1 );
+			const otherSelection = new Selection( range1, { fake: true } );
+			selection._setTo( range1, { fake: true } );
 
 			expect( selection.isEqual( otherSelection ) ).to.be.true;
 		} );
 
 		it( 'should return false if both selection are fake but have different label', () => {
-			const otherSelection = new Selection( [ range1 ] );
-			otherSelection._setFake( true, { label: 'foo bar baz' } );
-			selection._setFake( true );
-			selection._setTo( range1 );
+			const otherSelection = new Selection( [ range1 ], { fake: true, label: 'foo bar baz' } );
+			selection._setTo( range1, { fake: true, label: 'foo' } );
 
 			expect( selection.isEqual( otherSelection ) ).to.be.false;
 		} );
@@ -609,38 +603,6 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( '_setRanges()', () => {
-		it( 'should throw an error when range is invalid', () => {
-			expect( () => {
-				selection._setRanges( [ { invalid: 'range' } ] );
-			} ).to.throw( CKEditorError, 'view-selection-invalid-range: Invalid Range.' );
-		} );
-
-		it( 'should add ranges and fire change event', done => {
-			selection._setTo( range1 );
-
-			selection.once( 'change', () => {
-				expect( selection.rangeCount ).to.equal( 2 );
-				expect( selection._ranges[ 0 ].isEqual( range2 ) ).to.be.true;
-				expect( selection._ranges[ 0 ] ).is.not.equal( range2 );
-				expect( selection._ranges[ 1 ].isEqual( range3 ) ).to.be.true;
-				expect( selection._ranges[ 1 ] ).is.not.equal( range3 );
-				done();
-			} );
-
-			selection._setRanges( [ range2, range3 ] );
-		} );
-
-		it( 'should throw when range is intersecting with already added range', () => {
-			const text = el.getChild( 0 );
-			const range2 = Range.createFromParentsAndOffsets( text, 7, text, 15 );
-
-			expect( () => {
-				selection._setRanges( [ range1, range2 ] );
-			} ).to.throw( CKEditorError, 'view-selection-range-intersects' );
-		} );
-	} );
-
 	describe( '_setTo()', () => {
 		describe( 'simple scenarios', () => {
 			it( 'should set selection ranges from the given selection', () => {
@@ -659,39 +621,27 @@ describe( 'Selection', () => {
 				expect( selection.anchor.isEqual( range3.end ) ).to.be.true;
 			} );
 
-			it( 'should set selection on the given Range using _setRanges method', () => {
-				const spy = sinon.spy( selection, '_setRanges' );
-
+			it( 'should set selection on the given Range', () => {
 				selection._setTo( range1 );
 
 				expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range1 ] );
 				expect( selection.isBackward ).to.be.false;
-				expect( selection._setRanges.calledOnce ).to.be.true;
-				spy.restore();
 			} );
 
-			it( 'should set selection on the given iterable of Ranges using _setRanges method', () => {
-				const spy = sinon.spy( selection, '_setRanges' );
-
+			it( 'should set selection on the given iterable of Ranges', () => {
 				selection._setTo( new Set( [ range1, range2 ] ) );
 
 				expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range1, range2 ] );
 				expect( selection.isBackward ).to.be.false;
-				expect( selection._setRanges.calledOnce ).to.be.true;
-				spy.restore();
 			} );
 
-			it( 'should set collapsed selection on the given Position using _setRanges method', () => {
-				const spy = sinon.spy( selection, '_setRanges' );
-
+			it( 'should set collapsed selection on the given Position', () => {
 				selection._setTo( range1.start );
 
 				expect( Array.from( selection.getRanges() ).length ).to.equal( 1 );
 				expect( Array.from( selection.getRanges() )[ 0 ].start ).to.deep.equal( range1.start );
 				expect( selection.isBackward ).to.be.false;
 				expect( selection.isCollapsed ).to.be.true;
-				expect( selection._setRanges.calledOnce ).to.be.true;
-				spy.restore();
 			} );
 
 			it( 'should fire change event', done => {
@@ -707,9 +657,8 @@ describe( 'Selection', () => {
 			} );
 
 			it( 'should set fake state and label', () => {
-				const otherSelection = new Selection();
 				const label = 'foo bar baz';
-				otherSelection._setFake( true, { label } );
+				const otherSelection = new Selection( null, { fake: true, label } );
 				selection._setTo( otherSelection );
 
 				expect( selection.isFake ).to.be.true;
@@ -869,6 +818,71 @@ describe( 'Selection', () => {
 				expect( fireSpy.notCalled ).to.be.true;
 			} );
 		} );
+
+		describe( 'setting fake selection', () => {
+			it( 'should allow to set selection to fake', () => {
+				selection._setTo( range1, { fake: true } );
+
+				expect( selection.isFake ).to.be.true;
+			} );
+
+			it( 'should allow to set fake selection label', () => {
+				const label = 'foo bar baz';
+				selection._setTo( range1, { fake: true, label } );
+
+				expect( selection.fakeSelectionLabel ).to.equal( label );
+			} );
+
+			it( 'should not set label when set to false', () => {
+				const label = 'foo bar baz';
+				selection._setTo( range1, { fake: false, label } );
+
+				expect( selection.fakeSelectionLabel ).to.equal( '' );
+			} );
+
+			it( 'should reset label when set to false', () => {
+				const label = 'foo bar baz';
+				selection._setTo( range1, { fake: true, label } );
+				selection._setTo( range1 );
+
+				expect( selection.fakeSelectionLabel ).to.equal( '' );
+			} );
+
+			it( 'should fire change event', done => {
+				selection.once( 'change', () => {
+					expect( selection.isFake ).to.be.true;
+					expect( selection.fakeSelectionLabel ).to.equal( 'foo bar baz' );
+
+					done();
+				} );
+
+				selection._setTo( range1, { fake: true, label: 'foo bar baz' } );
+			} );
+
+			it( 'should be possible to create an empty fake selection', () => {
+				selection._setTo( null, { fake: true, label: 'foo bar baz' } );
+
+				expect( selection.fakeSelectionLabel ).to.equal( 'foo bar baz' );
+				expect( selection.isFake ).to.be.true;
+			} );
+		} );
+
+		describe( 'throwing errors', () => {
+			it( 'should throw an error when range is invalid', () => {
+				expect( () => {
+					selection._setTo( [ { invalid: 'range' } ] );
+				} ).to.throw( CKEditorError, 'view-selection-invalid-range: Invalid Range.' );
+			} );
+
+			it( 'should throw when range is intersecting with already added range', () => {
+				const text = el.getChild( 0 );
+				const range2 = Range.createFromParentsAndOffsets( text, 7, text, 15 );
+
+				expect( () => {
+					selection._setTo( [ range1, range2 ] );
+				} ).to.throw( CKEditorError, 'view-selection-range-intersects' );
+			} );
+		} );
 	} );
 
 	describe( 'getEditableElement()', () => {
@@ -898,47 +912,6 @@ describe( 'Selection', () => {
 	describe( 'isFake', () => {
 		it( 'should be false for newly created instance', () => {
 			expect( selection.isFake ).to.be.false;
-		} );
-	} );
-
-	describe( '_setFake()', () => {
-		it( 'should allow to set selection to fake', () => {
-			selection._setFake( true );
-
-			expect( selection.isFake ).to.be.true;
-		} );
-
-		it( 'should allow to set fake selection label', () => {
-			const label = 'foo bar baz';
-			selection._setFake( true, { label } );
-
-			expect( selection.fakeSelectionLabel ).to.equal( label );
-		} );
-
-		it( 'should not set label when set to false', () => {
-			const label = 'foo bar baz';
-			selection._setFake( false, { label } );
-
-			expect( selection.fakeSelectionLabel ).to.equal( '' );
-		} );
-
-		it( 'should reset label when set to false', () => {
-			const label = 'foo bar baz';
-			selection._setFake( true, { label } );
-			selection._setFake( false );
-
-			expect( selection.fakeSelectionLabel ).to.equal( '' );
-		} );
-
-		it( 'should fire change event', done => {
-			selection.once( 'change', () => {
-				expect( selection.isFake ).to.be.true;
-				expect( selection.fakeSelectionLabel ).to.equal( 'foo bar baz' );
-
-				done();
-			} );
-
-			selection._setFake( true, { label: 'foo bar baz' } );
 		} );
 	} );
 
