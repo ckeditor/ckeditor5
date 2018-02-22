@@ -9,21 +9,8 @@
 
 import Position from '@ckeditor/ckeditor5-engine/src/view/position';
 
-export function createTableCell( viewElement, modelWriter ) {
-	const attributes = {};
-
-	if ( viewElement.name === 'th' ) {
-		attributes.isHeading = true;
-	}
-
-	return modelWriter.createElement( 'tableCell', attributes );
-}
-
 export function createTable( viewElement, modelWriter ) {
-	const attributes = {
-		headingRows: 0,
-		headingColumns: 0
-	};
+	const attributes = {};
 
 	const header = _getChildHeader( viewElement );
 
@@ -36,16 +23,12 @@ export function createTable( viewElement, modelWriter ) {
 
 export function downcastTableCell( dispatcher ) {
 	dispatcher.on( 'insert:tableCell', ( evt, data, conversionApi ) => {
-		const viewElementName = data.item.getAttribute( 'isHeading' ) ? 'th' : 'td';
-		const tableCellElement = conversionApi.writer.createContainerElement( viewElementName, {} );
-
-		if ( !tableCellElement ) {
-			return;
-		}
-
 		if ( !conversionApi.consumable.consume( data.item, 'insert' ) ) {
 			return;
 		}
+
+		const viewElementName = data.item.getAttribute( 'isHeading' ) ? 'th' : 'td';
+		const tableCellElement = conversionApi.writer.createContainerElement( viewElementName, {} );
 
 		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
 
@@ -56,17 +39,13 @@ export function downcastTableCell( dispatcher ) {
 
 export function downcastTable( dispatcher ) {
 	dispatcher.on( 'insert:table', ( evt, data, conversionApi ) => {
-		const tableElement = conversionApi.writer.createContainerElement( 'table' );
-
-		if ( !tableElement ) {
-			return;
-		}
-
 		const table = data.item;
 
 		if ( !conversionApi.consumable.consume( table, 'insert' ) ) {
 			return;
 		}
+
+		const tableElement = conversionApi.writer.createContainerElement( 'table' );
 
 		const headingRows = table.getAttribute( 'headingRows' );
 
