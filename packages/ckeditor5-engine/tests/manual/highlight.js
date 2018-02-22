@@ -49,8 +49,7 @@ class FancyWidget extends Plugin {
 
 		conversion.for( 'editingDowncast' ).add( downcastElementToElement( {
 			model: 'fancywidget',
-			view: ( modelItem, conversionApi ) => {
-				const viewWriter = conversionApi.writer;
+			view: ( modelItem, viewWriter ) => {
 				const widgetElement = viewWriter.createContainerElement( 'figure', { class: 'fancy-widget' } );
 				viewWriter.insert( ViewPosition.createAt( widgetElement ), viewWriter.createText( 'widget' ) );
 

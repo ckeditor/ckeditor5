@@ -50,6 +50,12 @@ describe( 'Model', () => {
 			expect( schema.checkChild( [ '$clipboardHolder' ], '$text' ) ).to.be.true;
 			expect( schema.checkChild( [ '$clipboardHolder' ], '$block' ) ).to.be.true;
 		} );
+
+		it( 'registers $marker to the schema', () => {
+			expect( schema.isRegistered( '$marker' ) ).to.be.true;
+			expect( schema.checkChild( [ '$root' ], '$marker' ), 1 ).to.be.true;
+			expect( schema.checkChild( [ '$block' ], '$marker' ), 1 ).to.be.true;
+		} );
 	} );
 
 	describe( 'change() & enqueueChange()', () => {
