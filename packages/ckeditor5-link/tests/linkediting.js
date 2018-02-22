@@ -102,7 +102,7 @@ describe( 'LinkEditing', () => {
 		it( 'should convert to link element instance', () => {
 			setModelData( model, '<paragraph><$text linkHref="url">foo</$text>bar</paragraph>' );
 
-			const element = editor.editing.view.getRoot().getChild( 0 ).getChild( 0 );
+			const element = editor.editing.view.document.getRoot().getChild( 0 ).getChild( 0 );
 			expect( isLinkElement( element ) ).to.be.true;
 		} );
 
@@ -110,7 +110,7 @@ describe( 'LinkEditing', () => {
 		it( 'should should set priority for `linkHref` higher than all other attribute elements', () => {
 			model.schema.extend( '$text', { allowAttributes: 'foo' } );
 
-			editor.conversion.for( 'downcast' ).add( downcastAttributeToElement( 'foo', { view: 'f' } ) );
+			editor.conversion.for( 'downcast' ).add( downcastAttributeToElement( { model: 'foo', view: 'f' } ) );
 
 			setModelData( model,
 				'<paragraph>' +

@@ -103,7 +103,7 @@ describe( 'LinkUI', () => {
 
 		beforeEach( () => {
 			balloonAddSpy = testUtils.sinon.spy( balloon, 'add' );
-			editor.editing.view.isFocused = true;
+			editor.editing.view.document.isFocused = true;
 		} );
 
 		it( 'should not work if the link command is disabled', () => {
@@ -219,27 +219,30 @@ describe( 'LinkUI', () => {
 			expect( formView.urlInputView.inputView.element.value ).to.equal( '' );
 		} );
 
-		describe( 'response to view#render', () => {
-			it( 'should not duplicate #render listeners', () => {
-				const viewDocument = editor.editing.view;
+		describe( 'response to view#change', () => {
+			let view, viewDocument;
 
+			beforeEach( () => {
+				view = editor.editing.view;
+				viewDocument = view.document;
+			} );
+
+			it( 'should not duplicate #change listeners', () => {
 				setModelData( editor.model, '<paragraph>f[]oo</paragraph>' );
 
 				const spy = testUtils.sinon.stub( balloon, 'updatePosition' ).returns( {} );
 
 				linkUIFeature._showUI();
-				viewDocument.render();
+				view.render();
 				linkUIFeature._hideUI();
 
 				linkUIFeature._showUI();
-				viewDocument.render();
+				view.render();
 				sinon.assert.calledTwice( spy );
 			} );
 
 			// https://github.com/ckeditor/ckeditor5-link/issues/113
 			it( 'updates the position of the panel – editing a link, then the selection remains in the link', () => {
-				const viewDocument = editor.editing.view;
-
 				setModelData( editor.model, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
 
 				linkUIFeature._showUI();
@@ -249,19 +252,18 @@ describe( 'LinkUI', () => {
 				const text = root.getChild( 0 ).getChild( 0 ).getChild( 0 );
 
 				// Move selection to foo[].
-				viewDocument.selection.setTo( Range.createFromParentsAndOffsets( text, 3, text, 3 ), true );
-				viewDocument.render();
+				view.change( writer => {
+					writer.setSelection( Range.createFromParentsAndOffsets( text, 3, text, 3 ), true );
+				} );
 
 				sinon.assert.calledOnce( spy );
 				sinon.assert.calledWithExactly( spy, {
-					target: viewDocument.domConverter.mapViewToDom( root.getChild( 0 ).getChild( 0 ) )
+					target: view.domConverter.mapViewToDom( root.getChild( 0 ).getChild( 0 ) )
 				} );
 			} );
 
 			// https://github.com/ckeditor/ckeditor5-link/issues/113
 			it( 'updates the position of the panel – creating a new link, then the selection moved', () => {
-				const viewDocument = editor.editing.view;
-
 				setModelData( editor.model, '<paragraph>f[]oo</paragraph>' );
 
 				linkUIFeature._showUI();
@@ -271,8 +273,9 @@ describe( 'LinkUI', () => {
 				const root = viewDocument.getRoot();
 				const text = root.getChild( 0 ).getChild( 0 );
 
-				viewDocument.selection.setTo( Range.createFromParentsAndOffsets( text, 3, text, 3 ), true );
-				viewDocument.render();
+				view.change( writer => {
+					writer.setSelection( Range.createFromParentsAndOffsets( text, 3, text, 3 ), true );
+				} );
 
 				sinon.assert.calledOnce( spy );
 				sinon.assert.calledWithExactly( spy, {
@@ -282,8 +285,6 @@ describe( 'LinkUI', () => {
 
 			// https://github.com/ckeditor/ckeditor5-link/issues/113
 			it( 'hides of the panel – editing a link, then the selection moved out of the link', () => {
-				const viewDocument = editor.editing.view;
-
 				setModelData( editor.model, '<paragraph><$text linkHref="url">f[]oo</$text>bar</paragraph>' );
 
 				linkUIFeature._showUI();
@@ -295,8 +296,9 @@ describe( 'LinkUI', () => {
 				const text = root.getChild( 0 ).getChild( 1 );
 
 				// Move selection to b[]ar.
-				viewDocument.selection.setTo( Range.createFromParentsAndOffsets( text, 1, text, 1 ), true );
-				viewDocument.render();
+				view.change( writer => {
+					writer.setSelection( Range.createFromParentsAndOffsets( text, 1, text, 1 ), true );
+				} );
 
 				sinon.assert.calledOnce( spyHide );
 				sinon.assert.notCalled( spyUpdate );
@@ -304,8 +306,6 @@ describe( 'LinkUI', () => {
 
 			// https://github.com/ckeditor/ckeditor5-link/issues/113
 			it( 'hides the panel – editing a link, then the selection expands', () => {
-				const viewDocument = editor.editing.view;
-
 				setModelData( editor.model, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
 
 				linkUIFeature._showUI();
@@ -317,8 +317,9 @@ describe( 'LinkUI', () => {
 				const text = root.getChild( 0 ).getChild( 0 ).getChild( 0 );
 
 				// Move selection to f[o]o.
-				viewDocument.selection.setTo( Range.createFromParentsAndOffsets( text, 1, text, 2 ), true );
-				viewDocument.render();
+				view.change( writer => {
+					writer.setSelection( Range.createFromParentsAndOffsets( text, 1, text, 2 ), true );
+				} );
 
 				sinon.assert.calledOnce( spyHide );
 				sinon.assert.notCalled( spyUpdate );
@@ -326,8 +327,6 @@ describe( 'LinkUI', () => {
 
 			// https://github.com/ckeditor/ckeditor5-link/issues/113
 			it( 'hides the panel – creating a new link, then the selection moved to another parent', () => {
-				const viewDocument = editor.editing.view;
-
 				setModelData( editor.model, '<paragraph>f[]oo</paragraph><paragraph>bar</paragraph>' );
 
 				linkUIFeature._showUI();
@@ -335,13 +334,13 @@ describe( 'LinkUI', () => {
 				const spyUpdate = testUtils.sinon.stub( balloon, 'updatePosition' ).returns( {} );
 				const spyHide = testUtils.sinon.spy( linkUIFeature, '_hideUI' );
 
-				// Fires #render.
 				const root = viewDocument.getRoot();
 				const text = root.getChild( 1 ).getChild( 0 );
 
 				// Move selection to f[o]o.
-				viewDocument.selection.setTo( Range.createFromParentsAndOffsets( text, 1, text, 2 ), true );
-				viewDocument.render();
+				view.change( writer => {
+					writer.setSelection( Range.createFromParentsAndOffsets( text, 1, text, 2 ), true );
+				} );
 
 				sinon.assert.calledOnce( spyHide );
 				sinon.assert.notCalled( spyUpdate );
@@ -386,7 +385,7 @@ describe( 'LinkUI', () => {
 
 			linkUIFeature.listenTo( editor.editing.view, 'render', spy );
 			linkUIFeature._hideUI();
-			editor.editing.view.render();
+			editor.editing.view.change( () => {} );
 
 			sinon.assert.notCalled( spy );
 		} );

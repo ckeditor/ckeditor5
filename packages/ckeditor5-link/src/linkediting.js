@@ -32,7 +32,7 @@ export default class LinkEditing extends Plugin {
 		editor.model.schema.extend( '$text', { allowAttributes: 'linkHref' } );
 
 		editor.conversion.for( 'downcast' )
-			.add( downcastAttributeToElement( 'linkHref', { view: linkHref => createLinkElement( linkHref ) } ) );
+			.add( downcastAttributeToElement( { model: 'linkHref', view: createLinkElement } ) );
 
 		editor.conversion.for( 'upcast' )
 			.add( upcastElementToAttribute( {
