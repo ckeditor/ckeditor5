@@ -139,6 +139,12 @@ export default class DocumentSelection {
 		return this._selection.isBackward;
 	}
 
+	/**
+	 * Describes whether gravity is overridden (using {@link ~DocumentSelection#_overrideGravity}) or not.
+	 *
+	 * @readonly
+	 * @return {boolean}
+	 */
 	get isGravityOverridden() {
 		return this._selection._isGravityOverriden;
 	}
@@ -393,18 +399,23 @@ export default class DocumentSelection {
 	}
 
 	/**
-	 * Temporarily and partially disables default gravity behaviour that tries to get attributes from nodes surrounding the caret.
+	 * Temporarily changes the gravity of the selection from left to right. The gravity defines from which direction
+	 * the selection inherits its attributes. If it's the default left gravity, the selection (after being moved by
+	 * the user) inherits attributes from its left hand side. This method allows to temporarily override this behavior
+	 * by forcing the gravity to the right.
 	 *
 	 * @see module:engine/model/writer~Writer#overrideSelectionGravity
 	 * @protected
-	 * @param {Boolean} [customRestore=false] When `true` then gravity won't be restored automatically.
+	 * @param {Boolean} [customRestore=false] When `true` then gravity won't be restored until
+	 * {@link ~DocumentSelection#_restoreGravity} will be called directly. When `false` then gravity is restored
+	 * after selection is moved by user.
 	 */
 	_overrideGravity( customRestore ) {
 		this._selection.overrideGravity( customRestore );
 	}
 
 	/**
-	 * Restore overridden gravity.
+	 * Restores {@link ~DocumentSelection#_overrideGravity overridden gravity}.
 	 *
 	 * @see module:engine/model/writer~Writer#restoreSelectionGravity
 	 * @protected

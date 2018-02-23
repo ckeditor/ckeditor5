@@ -71,7 +71,7 @@ export default function bindTwoStepCaretToAttribute( view, model, emitter, attri
 
 			// If caret sticks to the bound of Text with attribute it means that we are going to
 			// enter `foo{}<a>bar</a>biz` or leave `foo<a>bar{}</a>biz` the text with attribute.
-			if ( isStickToAttribute( position.nodeAfter, position.nodeBefore, attribute ) ) {
+			if ( isAtAttributeBoundary( position.nodeAfter, position.nodeBefore, attribute ) ) {
 				// So we need to prevent caret from being moved.
 				data.preventDefault();
 				// And override default selection gravity.
@@ -82,7 +82,7 @@ export default function bindTwoStepCaretToAttribute( view, model, emitter, attri
 		} else {
 			// If caret sticks to the bound of Text with attribute and gravity is already overridden it means that
 			// we are going to enter `foo<a>bar</a>{}biz` or leave `foo<a>{}bar</a>biz` text with attribute.
-			if ( modelSelection.isGravityOverridden && isStickToAttribute( position.nodeBefore, position.nodeAfter, attribute ) ) {
+			if ( modelSelection.isGravityOverridden && isAtAttributeBoundary( position.nodeBefore, position.nodeAfter, attribute ) ) {
 				// So we need to prevent cater from being moved.
 				data.preventDefault();
 				// And restore the gravity.
@@ -103,7 +103,7 @@ export default function bindTwoStepCaretToAttribute( view, model, emitter, attri
 			// When caret is going stick to the bound of Text with attribute after movement then we need to override
 			// the gravity before the move. But we need to do it in a custom way otherwise `selection#change:range`
 			// event following the overriding will restore the gravity.
-			if ( isStickToAttribute( nextPosition.nodeBefore, nextPosition.nodeAfter, attribute ) ) {
+			if ( isAtAttributeBoundary( nextPosition.nodeBefore, nextPosition.nodeAfter, attribute ) ) {
 				model.change( writer => {
 					let counter = 0;
 
@@ -127,7 +127,7 @@ export default function bindTwoStepCaretToAttribute( view, model, emitter, attri
 // @param {module:engine/model/node~Node} prevNode Node after the position.
 // @param {String} attribute Attribute name.
 // @returns {Boolean} `true` when position between the nodes sticks to the bound of text with given attribute.
-function isStickToAttribute( nextNode, prevNode, attribute ) {
+function isAtAttributeBoundary( nextNode, prevNode, attribute ) {
 	const isAttrInNext = nextNode ? nextNode.hasAttribute( attribute ) : false;
 	const isAttrInPrev = prevNode ? prevNode.hasAttribute( attribute ) : false;
 

@@ -1017,29 +1017,32 @@ export default class Writer {
 	}
 
 	/**
-	 * Disables default gravity behaviour that tries to get attributes from nodes surrounding the caret. When gravity is
-	 * marked as overridden then attributes from the node before the caret won't be taken into consideration while
-	 * updating selection attributes.
+	 * Temporarily changes the gravity of the selection from left to right. The gravity defines from which direction
+	 * the selection inherits its attributes. If it's the default left gravity, the selection (after being moved by
+	 * the user) inherits attributes from its left hand side. This method allows to temporarily override this behavior
+	 * by forcing the gravity to the right.
 	 *
 	 * For the following model fragment:
 	 *
 	 * 		<$text bold="true" linkHref="url">bar[]</$text><$text bold="true">biz</$text>
 	 *
-	 * Selection attribute keys before override will be equal `[ 'bold', 'linkHref' ]`
-	 * Selection attribute keys after override will be equal `[ 'bold' ]`
+	 * Default gravity: selection will have the `bold` and `linkHref` attributes.
+	 * Overridden gravity: selection will have `bold` attribute.
 	 *
-	 * As default gravity is automatically restored just after a direct selection change event but this behaviour
-	 * can be disabled by passing `true` flag as param.
+	 * By default the selection's gravity is automatically restored just after a direct selection change (when user
+	 * move caret) but you can pass customRestore = true in which case you will have to call
+	 * {@link ~Writer#restoreSelectionGravity} manually.
 	 *
 	 * @param {Boolean} [customRestore=false] When `true` then gravity won't be restored until
-	 * {@link ~Writer#overrideSelectionGravity} will be called directly.
+	 * {@link ~Writer#restoreSelectionGravity} will be called directly. When `false` then gravity is restored
+	 * after selection is moved by user.
 	 */
 	overrideSelectionGravity( customRestore ) {
 		this.model.document.selection._overrideGravity( customRestore );
 	}
 
 	/**
-	 * Restore overridden gravity to default.
+	 * Restores overridden gravity to default.
 	 */
 	restoreSelectionGravity() {
 		this.model.document.selection._restoreGravity();
