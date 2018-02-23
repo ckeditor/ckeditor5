@@ -8,17 +8,10 @@
  */
 
 import Position from '@ckeditor/ckeditor5-engine/src/view/position';
+import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 
-export function createTable( viewElement, modelWriter ) {
-	const attributes = {};
-
-	const header = _getChildHeader( viewElement );
-
-	if ( header ) {
-		attributes.headingRows = header.childCount;
-	}
-
-	return modelWriter.createElement( 'table', attributes );
+export function upcastTable() {
+	return upcastElementToElement( { model: _createModelTable, view: 'table' } );
 }
 
 export function downcastTableCell( dispatcher ) {
@@ -36,8 +29,8 @@ export function downcastTableCell( dispatcher ) {
 	}, { priority: 'normal' } );
 }
 
-export function downcastTable( dispatcher ) {
-	dispatcher.on( 'insert:table', ( evt, data, conversionApi ) => {
+export function downcastTable() {
+	return dispatcher => dispatcher.on( 'insert:table', ( evt, data, conversionApi ) => {
 		const table = data.item;
 
 		if ( !conversionApi.consumable.consume( table, 'insert' ) ) {
@@ -65,6 +58,18 @@ export function downcastTable( dispatcher ) {
 		conversionApi.mapper.bindElements( table, tableElement );
 		conversionApi.writer.insert( viewPosition, tableElement );
 	}, { priority: 'normal' } );
+}
+
+export function _createModelTable( viewElement, modelWriter ) {
+	const attributes = {};
+
+	const header = _getChildHeader( viewElement );
+
+	if ( header ) {
+		attributes.headingRows = header.childCount;
+	}
+
+	return modelWriter.createElement( 'table', attributes );
 }
 
 function _getChildHeader( table ) {

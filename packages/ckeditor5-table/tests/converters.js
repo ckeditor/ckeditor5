@@ -9,7 +9,7 @@ import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversio
 
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { createTable, downcastTable, downcastTableCell } from '../src/converters';
+import { downcastTable, downcastTableCell, upcastTable } from '../src/converters';
 
 describe( 'Table converters', () => {
 	let editor, model, viewDocument;
@@ -46,8 +46,8 @@ describe( 'Table converters', () => {
 					isLimit: true
 				} );
 
-				conversion.for( 'upcast' ).add( upcastElementToElement( { model: createTable, view: 'table' } ) );
-				conversion.for( 'downcast' ).add( downcastTable );
+				conversion.for( 'upcast' ).add( upcastTable() );
+				conversion.for( 'downcast' ).add( downcastTable() );
 
 				// Table row upcast only since downcast conversion is done in `downcastTable()`.
 				conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableRow', view: 'tr' } ) );

@@ -7,7 +7,7 @@ import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltestedit
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 import InsertTableCommand from '../src/inserttablecommand';
-import { createTable, downcastTable, downcastTableCell } from '../src/converters';
+import { _createModelTable, downcastTable, downcastTableCell } from '../src/converters';
 
 describe( 'InsertTableCommand', () => {
 	let editor, model, command;
@@ -47,7 +47,7 @@ describe( 'InsertTableCommand', () => {
 				model.schema.register( 'p', { inheritAllFrom: '$block' } );
 
 				// Table conversion.
-				conversion.for( 'upcast' ).add( upcastElementToElement( { model: createTable, view: 'table' } ) );
+				conversion.for( 'upcast' ).add( upcastElementToElement( { model: _createModelTable, view: 'table' } ) );
 				conversion.for( 'downcast' ).add( downcastTable );
 
 				// Table row upcast only since downcast conversion is done in `downcastTable()`.
