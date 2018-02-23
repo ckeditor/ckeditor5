@@ -330,6 +330,28 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 		expect( selection.isGravityOverridden ).to.false;
 	} );
 
+	it( 'should do nothing when alt key is pressed', () => {
+		setData( model, '<$text c="true">foo</$text><$text a="true" b="true">b[]ar</$text>' );
+
+		fireKeyDownEvent( {
+			keyCode: keyCodes.arrowleft,
+			altKey: true
+		} );
+
+		expect( selection.isGravityOverridden ).to.false;
+	} );
+
+	it( 'should do nothing when ctrl key is pressed', () => {
+		setData( model, '<$text c="true">foo</$text><$text a="true" b="true">b[]ar</$text>' );
+
+		fireKeyDownEvent( {
+			keyCode: keyCodes.arrowleft,
+			ctrlKey: true
+		} );
+
+		expect( selection.isGravityOverridden ).to.false;
+	} );
+
 	function fireKeyDownEvent( options ) {
 		const eventData = Object.assign( { domTarget: document.body }, options );
 

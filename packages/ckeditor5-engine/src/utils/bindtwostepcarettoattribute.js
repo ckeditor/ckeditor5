@@ -53,8 +53,9 @@ export default function bindTwoStepCaretToAttribute( view, model, emitter, attri
 			return;
 		}
 
-		// User tries to expand selection, so two-steps movement is not necessary.
-		if ( data.shiftKey ) {
+		// When user tries to expand selection or jump over the whole word or to the beginning/end then
+		// two-steps movement is not necessary.
+		if ( data.shiftKey || data.altKey || data.ctrlKey ) {
 			return;
 		}
 
