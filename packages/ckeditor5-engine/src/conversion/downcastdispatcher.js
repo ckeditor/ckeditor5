@@ -476,7 +476,6 @@ export default class DowncastDispatcher {
 	 * @param {Object} data Additional information about the change.
 	 * @param {module:engine/model/item~Item} data.item Inserted item.
 	 * @param {module:engine/model/range~Range} data.range Range spanning over inserted item.
-	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
 	 * @param {Object} conversionApi Conversion interface to be used by callback, passed in `DowncastDispatcher` constructor.
 	 */
 
