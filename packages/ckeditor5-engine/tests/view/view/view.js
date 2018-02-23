@@ -15,8 +15,10 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import ViewRange from '../../../src/view/range';
 import RootEditableElement from '../../../src/view/rooteditableelement';
 import ViewElement from '../../../src/view/element';
+import ViewPosition from '../../../src/view/position';
 import { isBlockFiller, BR_FILLER } from '../../../src/view/filler';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'view', () => {
 	const DEFAULT_OBSERVERS_COUNT = 5;
@@ -443,6 +445,45 @@ describe( 'view', () => {
 	} );
 
 	describe( 'change()', () => {
+		it( 'should throw when someone tries to change view during rendering', () => {
+			const domDiv = document.createElement( 'div' );
+			const viewRoot = createViewRoot( viewDocument, 'div', 'main' );
+			let renderingCalled = false;
+			view.attachDomRoot( domDiv );
+
+			view.change( writer => {
+				const p = writer.createContainerElement( 'p' );
+				const ui = writer.createUIElement( 'span', null, function( domDocument ) {
+					const element = this.toDomElement( domDocument );
+
+					expect( () => view.change( () => {} ) ).to.throw( CKEditorError, /^cannot-change-view-tree/ );
+					renderingCalled = true;
+
+					return element;
+				} );
+				writer.insert( ViewPosition.createAt( p ), ui );
+				writer.insert( ViewPosition.createAt( viewRoot ), p );
+			} );
+
+			expect( renderingCalled ).to.be.true;
+			domDiv.remove();
+		} );
+
+		it( 'should throw when someone tries to use change() method in post fixer', () => {
+			const domDiv = document.createElement( 'div' );
+			createViewRoot( viewDocument, 'div', 'main' );
+			view.attachDomRoot( domDiv );
+
+			viewDocument.registerPostFixer( () => {
+				expect( () => {
+					view.change( () => {} );
+				} ).to.throw( CKEditorError, /^cannot-change-view-tree/ );
+			} );
+
+			view.render();
+			domDiv.remove();
+		} );
+
 		it( 'should fire render event and it should trigger rendering before listeners on normal priority', () => {
 			const renderSpy = sinon.spy( view._renderer, 'render' );
 			const eventSpy = sinon.spy();

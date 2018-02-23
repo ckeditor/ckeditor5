@@ -318,7 +318,6 @@ export default class View {
 	 */
 	change( callback ) {
 		if ( this._renderingInProgress || this._postFixersInProgress ) {
-			// TODO: better description
 			/**
 			 * Thrown when there is an attempt to make changes to the view tree when it is in incorrect state. This may
 			 * cause some unexpected behaviour and inconsistency between the DOM and the view.

@@ -109,6 +109,7 @@ export default class Document {
 	 * Performs post-fixer loops. Executes post-fixer callbacks as long as none of them has done any changes to the model.
 	 *
 	 * @protected
+	 * @param {module:engine/view/writer~Writer} writer
 	 */
 	_callPostFixers( writer ) {
 		let wasFixed = false;
