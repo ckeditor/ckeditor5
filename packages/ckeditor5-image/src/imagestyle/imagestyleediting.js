@@ -104,7 +104,9 @@ export default class ImageStyleEditing extends Plugin {
 			styles.push( style );
 		}
 
-		return ( this._cachedImageStyles = styles );
+		this._cachedImageStyles = styles;
+
+		return styles;
 	}
 
 	/**

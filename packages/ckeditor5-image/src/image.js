@@ -11,7 +11,6 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ImageEditing from '../src/image/imageediting';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 import ImageTextAlternative from './imagetextalternative';
-import { isImageWidgetSelected } from './image/utils';
 
 import '../theme/image.css';
 
@@ -35,25 +34,6 @@ export default class Image extends Plugin {
 	 */
 	static get pluginName() {
 		return 'Image';
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	init() {
-		const editor = this.editor;
-		const balloonToolbar = editor.plugins.get( 'BalloonToolbar' );
-
-		// If `BalloonToolbar` plugin is loaded, it should be disabled for images
-		// which have their own toolbar to avoid duplication.
-		// https://github.com/ckeditor/ckeditor5-image/issues/110
-		if ( balloonToolbar ) {
-			this.listenTo( balloonToolbar, 'show', evt => {
-				if ( isImageWidgetSelected( editor.editing.view.document.selection ) ) {
-					evt.stop();
-				}
-			}, { priority: 'high' } );
-		}
 	}
 }
 

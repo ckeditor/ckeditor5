@@ -47,19 +47,14 @@ export default class ImageEditing extends Plugin {
 			allowAttributes: [ 'alt', 'src', 'srcset' ]
 		} );
 
-		const dataElementCreator = ( modelElement, viewWriter ) => createImageViewElement( viewWriter );
 		conversion.for( 'dataDowncast' ).add( downcastElementToElement( {
 			model: 'image',
-			view: dataElementCreator
+			view: ( modelElement, viewWriter ) => createImageViewElement( viewWriter )
 		} ) );
-
-		const editingElementCreator = ( modelElement, viewWriter ) => {
-			return toImageWidget( createImageViewElement( viewWriter ), viewWriter, t( 'image widget' ) );
-		};
 
 		conversion.for( 'editingDowncast' ).add( downcastElementToElement( {
 			model: 'image',
-			view: editingElementCreator
+			view: ( modelElement, viewWriter ) => toImageWidget( createImageViewElement( viewWriter ), viewWriter, t( 'image widget' ) )
 		} ) );
 
 		conversion.for( 'downcast' )

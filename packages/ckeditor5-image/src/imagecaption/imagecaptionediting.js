@@ -130,10 +130,7 @@ export default class ImageCaptionEditing extends Plugin {
 	 * @returns {Function}
 	 */
 	_fixCaptionVisibility( nodeFinder ) {
-		return ( evt, data, consumable, conversionApi ) => {
-			// There is no consumable on 'remove' event.
-			conversionApi = conversionApi ? conversionApi : consumable;
-
+		return ( evt, data, conversionApi ) => {
 			const node = nodeFinder( data );
 			const modelCaption = getParentCaption( node );
 			const mapper = this.editor.editing.mapper;
