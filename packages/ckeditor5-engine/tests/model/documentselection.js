@@ -757,6 +757,14 @@ describe( 'DocumentSelection', () => {
 			} );
 		} );
 
+		it( 'should mark gravity as overridden', () => {
+			expect( selection.isGravityOverridden ).to.false;
+
+			selection._overrideGravity();
+
+			expect( selection.isGravityOverridden ).to.true;
+		} );
+
 		it( 'should not inherit attributes from node before the caret', () => {
 			setData( model, '<$text bold="true" italic="true">foo[]</$text>' );
 
@@ -813,16 +821,18 @@ describe( 'DocumentSelection', () => {
 			} );
 		} );
 
-		it( 'should not revert default gravity when is overridden', () => {
+		it( 'should revert default gravity when is overridden', () => {
 			setData( model, '<$text bold="true" italic="true">foo[]</$text>' );
 
 			selection._overrideGravity();
 
 			expect( Array.from( selection.getAttributeKeys() ) ).to.length( 0 );
+			expect( selection.isGravityOverridden ).to.true;
 
 			selection._restoreGravity();
 
 			expect( Array.from( selection.getAttributeKeys() ) ).to.have.members( [ 'bold', 'italic' ] );
+			expect( selection.isGravityOverridden ).to.false;
 		} );
 
 		it( 'should do nothing when gravity is not overridden', () => {
@@ -832,7 +842,24 @@ describe( 'DocumentSelection', () => {
 				selection._restoreGravity();
 			} ).to.not.throw();
 
-			expect( Array.from( selection.getAttributeKeys() ) ).to.have.members( [ 'bold', 'italic' ] );
+			expect( selection.isGravityOverridden ).to.false;
+		} );
+
+		it( 'should be called the same number of times as gravity is overridden to restore it', () => {
+			setData( model, '<$text bold="true" italic="true">foo[]</$text>' );
+
+			selection._overrideGravity();
+			selection._overrideGravity();
+
+			expect( selection.isGravityOverridden ).to.true;
+
+			selection._restoreGravity();
+
+			expect( selection.isGravityOverridden ).to.true;
+
+			selection._restoreGravity();
+
+			expect( selection.isGravityOverridden ).to.false;
 		} );
 	} );
 

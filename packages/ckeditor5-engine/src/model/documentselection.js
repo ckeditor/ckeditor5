@@ -142,11 +142,13 @@ export default class DocumentSelection {
 	/**
 	 * Describes whether gravity is overridden (using {@link ~DocumentSelection#_overrideGravity}) or not.
 	 *
+	 * Note that gravity remains overridden as long as won't be restored the same number of times as was overridden.
+	 *
 	 * @readonly
 	 * @return {boolean}
 	 */
 	get isGravityOverridden() {
-		return this._selection._isGravityOverriden;
+		return this._selection.isGravityOverridden;
 	}
 
 	/**
@@ -417,6 +419,8 @@ export default class DocumentSelection {
 	/**
 	 * Restores {@link ~DocumentSelection#_overrideGravity overridden gravity}.
 	 *
+	 * Note that gravity remains overridden as long as won't be restored the same number of times as was overridden.
+	 *
 	 * @see module:engine/model/writer~Writer#restoreSelectionGravity
 	 * @protected
 	 */
@@ -501,12 +505,12 @@ class LiveSelection extends Selection {
 		// @member {Array} module:engine/model/liveselection~LiveSelection#_hasChangedRange
 		this._hasChangedRange = false;
 
-		// When is set as `true` then selection attributes on node before the caret won't be taken
-		// into consideration while updating selection attributes.
-		//
-		// @protected
-		// @type {Boolean}
-		this._isGravityOverriden = false;
+		// Each overriding gravity increase the counter and each restoring decrease it.
+		// Gravity is overridden when counter is greater than 0. This is to prevent conflicts when
+		// gravity is overridden by more than one feature at the same time.
+		// @private
+		// @type {Number}
+		this._overriddenGravityCounter = 0;
 
 		// Add events that will ensure selection correctness.
 		this.on( 'change:range', () => {
@@ -593,6 +597,15 @@ class LiveSelection extends Selection {
 		return this._ranges.length > 0;
 	}
 
+	// When set to `true` then selection attributes on node before the caret won't be taken
+	// into consideration while updating selection attributes.
+	//
+	// @protected
+	// @type {Boolean}
+	get isGravityOverridden() {
+		return this._overriddenGravityCounter > 0;
+	}
+
 	// Unbinds all events previously bound by live selection.
 	destroy() {
 		for ( let i = 0; i < this._ranges.length; i++ ) {
@@ -645,23 +658,28 @@ class LiveSelection extends Selection {
 	}
 
 	overrideGravity( customRestore ) {
-		this._isGravityOverriden = true;
+		this._overriddenGravityCounter++;
 
-		if ( !customRestore ) {
-			this.on( 'change:range', ( evt, data ) => {
-				if ( data.directChange ) {
-					this.restoreGravity();
-					evt.off();
-				}
-			} );
+		if ( this._overriddenGravityCounter == 1 ) {
+			if ( !customRestore ) {
+				this.on( 'change:range', ( evt, data ) => {
+					if ( data.directChange ) {
+						this.restoreGravity();
+						evt.off();
+					}
+				} );
+			}
+
+			this._updateAttributes();
 		}
-
-		this._updateAttributes();
 	}
 
 	restoreGravity() {
-		this._isGravityOverriden = false;
-		this._updateAttributes();
+		this._overriddenGravityCounter--;
+
+		if ( !this.isGravityOverridden ) {
+			this._updateAttributes();
+		}
 	}
 
 	// Removes all attributes from the selection and sets attributes according to the surrounding nodes.
@@ -915,7 +933,7 @@ class LiveSelection extends Selection {
 			const nodeAfter = position.textNode ? position.textNode : position.nodeAfter;
 
 			// When gravity is overridden then don't take node before into consideration.
-			if ( !this._isGravityOverriden ) {
+			if ( !this.isGravityOverridden ) {
 				// ...look at the node before caret and take attributes from it if it is a character node.
 				attrs = getAttrsIfCharacter( nodeBefore );
 			}
@@ -927,7 +945,7 @@ class LiveSelection extends Selection {
 
 			// 4. If not, try to find the first character on the left, that is in the same node.
 			// When gravity is overridden then don't take node before into consideration.
-			if ( !this._isGravityOverriden && !attrs ) {
+			if ( !this.isGravityOverridden && !attrs ) {
 				let node = nodeBefore;
 
 				while ( node && !attrs ) {

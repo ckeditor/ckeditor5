@@ -1033,6 +1033,10 @@ export default class Writer {
 	 * move caret) but you can pass customRestore = true in which case you will have to call
 	 * {@link ~Writer#restoreSelectionGravity} manually.
 	 *
+	 * When the selection's gravity is overridden more than once without restoring meanwhile then needs to be restored
+	 * the same number of times as was overridden to revert default behavior. This is to prevent conflicts when
+	 * more than one feature want independently override and restore selection's gravity.
+	 *
 	 * @param {Boolean} [customRestore=false] When `true` then gravity won't be restored until
 	 * {@link ~Writer#restoreSelectionGravity} will be called directly. When `false` then gravity is restored
 	 * after selection is moved by user.
@@ -1042,7 +1046,9 @@ export default class Writer {
 	}
 
 	/**
-	 * Restores overridden gravity to default.
+	 * Restores {@link ~Writer#overrideSelectionGravity} gravity to default.
+	 *
+	 * Note that selection's gravity remains overridden as long as won't be restored the same number of times as was overridden.
 	 */
 	restoreSelectionGravity() {
 		this.model.document.selection._restoreGravity();
