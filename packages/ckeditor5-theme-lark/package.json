@@ -17,6 +17,8 @@
     "@ckeditor/ckeditor5-editor-balloon": "^1.0.0-alpha.2",
     "@ckeditor/ckeditor5-editor-classic": "^1.0.0-alpha.2",
     "@ckeditor/ckeditor5-easy-image": "^1.0.0-alpha.2",
+    "@ckeditor/ckeditor5-font": "^0.0.1",
+    "@ckeditor/ckeditor5-highlight": "^0.0.1",
     "@ckeditor/ckeditor5-link": "^1.0.0-alpha.2",
     "@ckeditor/ckeditor5-list": "^1.0.0-alpha.2",
     "@ckeditor/ckeditor5-undo": "^1.0.0-alpha.2",

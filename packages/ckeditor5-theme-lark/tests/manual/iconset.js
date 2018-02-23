@@ -30,6 +30,13 @@ import objectFullWidth from '@ckeditor/ckeditor5-core/theme/icons/object-full-wi
 import pencil from '@ckeditor/ckeditor5-core/theme/icons/pencil.svg';
 import quote from '@ckeditor/ckeditor5-core/theme/icons/quote.svg';
 
+import fontFamily from '@ckeditor/ckeditor5-font/theme/icons/font-family.svg';
+import fontSize from '@ckeditor/ckeditor5-font/theme/icons/font-size.svg';
+
+import marker from '@ckeditor/ckeditor5-highlight/theme/icons/marker.svg';
+import pen from '@ckeditor/ckeditor5-highlight/theme/icons/pen.svg';
+import eraser from '@ckeditor/ckeditor5-highlight/theme/icons/eraser.svg';
+
 import link from '@ckeditor/ckeditor5-link/theme/icons/link.svg';
 import unlink from '@ckeditor/ckeditor5-link/theme/icons/unlink.svg';
 
@@ -51,6 +58,12 @@ const icons = {
 	// core
 	check, cancel, lowVision, quote, image, objectLeft, objectCenter, objectRight, objectFullWidth, pencil,
 
+	// font
+	fontFamily, fontSize,
+
+	// highlight
+	marker, pen, eraser,
+
 	// link
 	link, unlink,
 
@@ -71,6 +84,8 @@ for ( const i in icons ) {
 		icon: icons[ i ],
 		tooltip: true
 	} );
+
+	button.iconView.fillColor = '#FFDA51';
 
 	toolbar.items.add( button );
 }
