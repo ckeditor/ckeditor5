@@ -14,8 +14,8 @@ export function upcastTable() {
 	return upcastElementToElement( { model: _createModelTable, view: 'table' } );
 }
 
-export function downcastTableCell( dispatcher ) {
-	dispatcher.on( 'insert:tableCell', ( evt, data, conversionApi ) => {
+export function downcastTableCell() {
+	return dispatcher => dispatcher.on( 'insert:tableCell', ( evt, data, conversionApi ) => {
 		if ( !conversionApi.consumable.consume( data.item, 'insert' ) ) {
 			return;
 		}

@@ -55,11 +55,11 @@ describe( 'Table converters', () => {
 				// Table cell conversion.
 				conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'td' } ) );
 				conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'th' } ) );
-				conversion.for( 'downcast' ).add( downcastTableCell );
+				conversion.for( 'downcast' ).add( downcastTableCell() );
 			} );
 	} );
 
-	describe( 'createTable()', () => {
+	describe( 'upcastTable()', () => {
 		function expectModel( data ) {
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal( data );
 		}

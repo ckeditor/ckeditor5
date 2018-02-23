@@ -53,7 +53,7 @@ export default class TablesEditing extends Plugin {
 		// Table cell conversion.
 		conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'td' } ) );
 		conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'th' } ) );
-		conversion.for( 'downcast' ).add( downcastTableCell );
+		conversion.for( 'downcast' ).add( downcastTableCell() );
 
 		conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
 		conversion.attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
