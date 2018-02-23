@@ -43,6 +43,25 @@ export default class ImageToolbar extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	init() {
+		const editor = this.editor;
+		const balloonToolbar = editor.plugins.get( 'BalloonToolbar' );
+
+		// If `BalloonToolbar` plugin is loaded, it should be disabled for images
+		// which have their own toolbar to avoid duplication.
+		// https://github.com/ckeditor/ckeditor5-image/issues/110
+		if ( balloonToolbar ) {
+			this.listenTo( balloonToolbar, 'show', evt => {
+				if ( isImageWidgetSelected( editor.editing.view.document.selection ) ) {
+					evt.stop();
+				}
+			}, { priority: 'high' } );
+		}
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	afterInit() {
 		const editor = this.editor;
 		const toolbarConfig = editor.config.get( 'image.toolbar' );
