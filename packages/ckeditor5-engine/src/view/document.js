@@ -88,38 +88,16 @@ export default class Document {
 	}
 
 	/**
-	 * TODO: update docs
-	 * Used to register a post-fixer callback. A post-fixer mechanism guarantees that the features that listen to
-	 * the {@link module:engine/model/model~Model#event:_change model's change event} will operate on a correct model state.
+	 * Used to register a post-fixer callback. A post-fixer mechanism that allows to update view tree just before rendering
+	 * to the DOM is started.
 	 *
-	 * An execution of a feature may lead to an incorrect document tree state. The callbacks are used to fix the document tree after
-	 * it has changed. Post-fixers are fired just after all changes from the outermost change block were applied but
-	 * before the {@link module:engine/model/document~Document#event:change change event} is fired. If a post-fixer callback made
+	 * Post-fixers are fired just after all changes from the outermost change block were applied but
+	 * before the {@link module:engine/view/view~View#event:render render event} is fired. If a post-fixer callback made
 	 * a change, it should return `true`. When this happens, all post-fixers are fired again to check if something else should
 	 * not be fixed in the new document tree state.
 	 *
-	 * As a parameter, a post-fixer callback receives a {@link module:engine/model/writer~Writer writer} instance connected with the
-	 * executed changes block. Thanks to that, all changes done by the callback will be added to the same
-	 * {@link module:engine/model/batch~Batch batch} (and undo step) as the original changes. This makes post-fixer changes transparent
-	 * for the user.
-	 *
-	 * An example of a post-fixer is a callback that checks if all the data were removed from the editor. If so, the
-	 * callback should add an empty paragraph so that the editor is never empty:
-	 *
-	 *		document.registerPostFixer( writer => {
-	 *			const changes = document.differ.getChanges();
-	 *
-	 *			// Check if the changes lead to an empty root in the editor.
-	 *			for ( const entry of changes ) {
-	 *				if ( entry.type == 'remove' && entry.position.root.isEmpty ) {
-	 *					writer.insertElement( 'paragraph', entry.position.root, 0 );
-	 *
-	 *					// It is fine to return early, even if multiple roots would need to be fixed.
-	 *					// All post-fixers will be fired again, so if there are more empty roots, those will be fixed, too.
-	 *					return true;
-	 *				}
-	 *			}
-	 *		} );
+	 * As a parameter, a post-fixer callback receives a {@link module:engine/view/writer~Writer writer} instance connected with the
+	 * executed changes block.
 	 *
 	 * @param {Function} postFixer
 	 */

@@ -319,7 +319,19 @@ export default class View {
 	change( callback ) {
 		if ( this._renderingInProgress || this._postFixersInProgress ) {
 			// TODO: better description
-			throw new CKEditorError( 'incorrect-view-change' );
+			/**
+			 * Thrown when there is an attempt to make changes to the view tree when it is in incorrect state. This may
+			 * cause some unexpected behaviour and inconsistency between the DOM and the view.
+			 * This may be caused by:
+			 *   * calling {@link #change} or {@link #render} during rendering process,
+			 *   * calling {@link #change} or {@link #render} inside of
+			 *   {@link module:engine/view/document~Document#registerPostFixer post fixer function}.
+			 */
+			throw new CKEditorError(
+				'cannot-change-view-tree: ' +
+				'Attempting to make changes to the view when it is in incorrect state: rendering or post fixers are in progress. ' +
+				'This may cause some unexpected behaviour and inconsistency between the DOM and the view.'
+			);
 		}
 
 		// Recursive call to view.change() method - execute listener immediately.
@@ -380,13 +392,14 @@ export default class View {
 	}
 
 	/**
-	 * TODO: fix description
-	 * Fired after a topmost {@link module:engine/view/view~View#change change block} is finished and the DOM rendering has
-	 * been executed.
+	 * Fired after a topmost {@link module:engine/view/view~View#change change block} and all
+	 * {@link module:engine/view/document~Document#registerPostFixer post fixers} are executed.
 	 *
-	 * Actual rendering is performed on 'low' priority. This means that all listeners on 'normal' and above priorities
-	 * will be executed after changes made to view tree but before rendering to the DOM. Use `low` priority for callbacks that
-	 * should be executed after rendering to the DOM.
+	 * Actual rendering is performed as a first listener on 'normal' priority.
+	 *
+	 *		view.on( 'render', () => {
+	 *			// Rendering to the DOM is complete.
+	 *		} );
 	 *
 	 * @event module:engine/view/view~View#event:render
 	 */
