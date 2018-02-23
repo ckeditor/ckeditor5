@@ -16,6 +16,7 @@ const documentPlaceholders = new WeakMap();
  * Attaches placeholder to provided element and updates it's visibility. To change placeholder simply call this method
  * once again with new parameters.
  *
+ * @param {module:engine/view/view~View} view View controller.
  * @param {module:engine/view/element~Element} element Element to attach placeholder to.
  * @param {String} placeholderText Placeholder text to use.
  * @param {Function} [checkFunction] If provided it will be called before checking if placeholder should be displayed.
@@ -61,7 +62,8 @@ export function detachPlaceholder( view, element ) {
 // Updates all placeholders of given document.
 //
 // @private
-// @param {module:engine/view/view~View} view
+// @param {module:engine/view/document~Document} view
+// @param {module:engine/view/writer~Writer} writer
 function updateAllPlaceholders( document, writer ) {
 	const placeholders = documentPlaceholders.get( document );
 	let changed = false;
@@ -78,9 +80,9 @@ function updateAllPlaceholders( document, writer ) {
 // Updates placeholder class of given element.
 //
 // @private
-// @param {module:engine/view/view~View} view
+// @param {module:engine/view/writer~Writer} writer
 // @param {module:engine/view/element~Element} element
-// @param {Function} checkFunction
+// @param {Object} info
 function updateSinglePlaceholder( writer, element, info ) {
 	const document = element.document;
 	const text = info.placeholderText;

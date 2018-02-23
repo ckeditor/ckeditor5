@@ -67,7 +67,7 @@ export default class Document {
 		this.set( 'isFocused', false );
 
 		/**
-		 * Post-fixer callbacks registered to the model document.
+		 * Post-fixer callbacks registered to the view document.
 		 *
 		 * @private
 		 * @member {Set}
@@ -88,8 +88,8 @@ export default class Document {
 	}
 
 	/**
-	 * Used to register a post-fixer callback. A post-fixer mechanism that allows to update view tree just before rendering
-	 * to the DOM is started.
+	 * Used to register a post-fixer callback. A post-fixers mechanism allows to update view tree just before rendering
+	 * to the DOM.
 	 *
 	 * Post-fixers are fired just after all changes from the outermost change block were applied but
 	 * before the {@link module:engine/view/view~View#event:render render event} is fired. If a post-fixer callback made
