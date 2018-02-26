@@ -249,6 +249,14 @@ describe( 'LinkCommand', () => {
 
 				expect( getData( model ) ).to.equal( '<p>foo[]bar</p>' );
 			} );
+
+			it( 'should not insert text node if link is empty', () => {
+				setData( model, '<p>foo[]bar</p>' );
+
+				command.execute( '' );
+
+				expect( getData( model ) ).to.equal( '<p>foo[]bar</p>' );
+			} );
 		} );
 	} );
 } );
