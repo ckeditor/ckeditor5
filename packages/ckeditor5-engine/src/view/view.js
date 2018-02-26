@@ -109,7 +109,7 @@ export default class View {
 		this._ongoingChange = false;
 
 		/**
-		 * Used to prevent calling {@link #render} and {@link #change) during rendering view to the DOM.
+		 * Used to prevent calling {@link #render} and {@link #change} during rendering view to the DOM.
 		 *
 		 * @private
 		 * @member {Boolean} module:engine/view/view~View#_renderingInProgress
@@ -117,7 +117,7 @@ export default class View {
 		this._renderingInProgress = false;
 
 		/**
-		 * Used to prevent calling {@link #render} and {@link #change) during rendering view to the DOM.
+		 * Used to prevent calling {@link #render} and {@link #change} during rendering view to the DOM.
 		 *
 		 * @private
 		 * @member {Boolean} module:engine/view/view~View#_renderingInProgress
