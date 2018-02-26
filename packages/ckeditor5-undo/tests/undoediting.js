@@ -6,7 +6,7 @@
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
 import UndoEditing from '../src/undoediting';
-import { keyCodes } from '../../ckeditor5-utils/src/keyboard';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 describe( 'UndoEditing', () => {
 	let editor, undo, model, root;
