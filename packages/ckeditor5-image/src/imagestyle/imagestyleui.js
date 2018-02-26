@@ -21,11 +21,10 @@ import '../../theme/imagestyle.css';
  */
 export default class ImageStyleUI extends Plugin {
 	/**
-	 * Returns the default localized style titles provided by the plugin e.g. ready to
-	 * use in the {@link #imageStyles}.
+	 * Returns the default localized style titles provided by the plugin.
 	 *
 	 * The following localized titles corresponding with
-	 * {@link module:image/imagestyle/imagestyleediting~defaultStyles} are available:
+	 * {@link module:image/imagestyle/utils~defaultStyles} are available:
 	 *
 	 * * `'Full size image'`,
 	 * * `'Side image'`,

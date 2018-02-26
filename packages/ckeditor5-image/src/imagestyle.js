@@ -50,12 +50,12 @@ export default class ImageStyle extends Plugin {
  *  * the "full" style which doesn't apply any class, e.g. for images styled to span 100% width of the content,
  *  * the "side" style with the `.image-style-side` CSS class.
  *
- * See {@link module:image/imagestyle/imagestyleediting~ImageStyleEditing.defaultStyles} to learn more about default
+ * See {@link module:image/imagestyle/utils~defaultStyles} to learn more about default
  * styles provided by the image feature.
  *
- * The {@link module:image/imagestyle/imagestyleediting~ImageStyleEditing.defaultStyles default styles} can be customized,
+ * The {@link module:image/imagestyle/utils~defaultStyles default styles} can be customized,
  * e.g. to change the icon, title or CSS class of the style. The feature also provides several
- * {@link module:image/imagestyle/imagestyleediting~ImageStyleEditing.defaultIcons default icons} to chose from.
+ * {@link module:image/imagestyle/utils~defaultIcons default icons} to chose from.
  *
  *		import customIcon from 'custom-icon.svg';
  *
@@ -88,7 +88,7 @@ export default class ImageStyle extends Plugin {
  *			]
  *		};
  *
- * Note: Setting `title` to one of {@link module:image/imagestyle/imagestyleediting~ImageStyleEditing#localizedDefaultStylesTitles}
+ * Note: Setting `title` to one of {@link module:image/imagestyle/imagestyleui~ImageStyleUI#localizedDefaultStylesTitles}
  * will automatically translate it to the language of the editor.
  *
  * Read more about styling images in the {@glink features/image#Image-styles Image styles guide}.

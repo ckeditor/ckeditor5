@@ -89,7 +89,7 @@ export default class ImageStyleEditing extends Plugin {
  * A default style does not apply any CSS class to the view element.
  * @property {String} icon One of the following to be used when creating the style's button:
  *  * An SVG icon source (as an XML string),
- *  * One of {@link module:image/imagestyle/imagestyleediting~ImageStyleEditing.defaultIcons} to use a default icon provided by the plugin.
+ *  * One of {@link module:image/imagestyle/utils~defaultIcons} to use a default icon provided by the plugin.
  * @property {String} title The style's title.
  * @property {String} className The CSS class used to represent the style in view.
  */
