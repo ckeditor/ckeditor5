@@ -8,8 +8,9 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ImageStyleEditing from './imagestyleediting';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+
+import { normalizeImageStyles } from './utils';
 
 import '../../theme/imagestyle.css';
 
@@ -20,13 +21,42 @@ import '../../theme/imagestyle.css';
  */
 export default class ImageStyleUI extends Plugin {
 	/**
+	 * Returns the default localized style titles provided by the plugin e.g. ready to
+	 * use in the {@link #imageStyles}.
+	 *
+	 * The following localized titles corresponding with
+	 * {@link module:image/imagestyle/imagestyleediting~defaultStyles} are available:
+	 *
+	 * * `'Full size image'`,
+	 * * `'Side image'`,
+	 * * `'Left aligned image'`,
+	 * * `'Centered image'`,
+	 * * `'Right aligned image'`
+	 *
+	 * @returns {Object.<String,String>}
+	 */
+	get localizedDefaultStylesTitles() {
+		const t = this.editor.t;
+
+		return {
+			'Full size image': t( 'Full size image' ),
+			'Side image': t( 'Side image' ),
+			'Left aligned image': t( 'Left aligned image' ),
+			'Centered image': t( 'Centered image' ),
+			'Right aligned image': t( 'Right aligned image' )
+		};
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 	init() {
 		const editor = this.editor;
-		const styles = editor.plugins.get( ImageStyleEditing ).imageStyles;
+		const configuredStyles = editor.config.get( 'image.styles' );
 
-		for ( const style of styles ) {
+		const translatedStyles = translateStyles( normalizeImageStyles( configuredStyles ), this.localizedDefaultStylesTitles );
+
+		for ( const style of translatedStyles ) {
 			this._createButton( style );
 		}
 	}
@@ -58,4 +88,23 @@ export default class ImageStyleUI extends Plugin {
 			return view;
 		} );
 	}
+}
+
+/**
+ * Returns translated `title` from the passed styles array.
+ *
+ * @param {Array.<module:image/imagestyle/imagestyleediting~ImageStyleFormat>} styles
+ * @param titles
+ * @returns {Array.<module:image/imagestyle/imagestyleediting~ImageStyleFormat>}
+ */
+function translateStyles( styles, titles ) {
+	for ( const style of styles ) {
+		// Localize the titles of the styles, if a title corresponds with
+		// a localized default provided by the plugin.
+		if ( titles[ style.title ] ) {
+			style.title = titles[ style.title ];
+		}
+	}
+
+	return styles;
 }
