@@ -45,14 +45,14 @@ export default class Highlight extends Plugin {
  *			model: 'pinkMarker',
  *			class: 'marker-pink',
  *			title: 'Pink Marker',
- *			color: '#fc7999',
+ *			color: 'var(--ck-marker-pink)',
  *			type: 'marker'
  *		}
  *
  * @typedef {Object} module:highlight/highlight~HighlightOption
  * @property {String} title The user-readable title of the option.
  * @property {String} model The unique attribute value in the model.
- * @property {String} color The color used for the highlighter. It should match the `class` CSS definition.
+ * @property {String} color The name of CSS variable used for the highlighter. It should match the `class` CSS definition.
  * The color is used in the user interface to represent the highlighter.
  * @property {String} class The CSS class used on the `<mark>` element in the view. It should match the `color` setting.
  * @property {'marker'|'pen'} type The type of highlighter:
@@ -87,12 +87,12 @@ export default class Highlight extends Plugin {
  * The available highlighters options. The default value is:
  *
  *		options: [
- *			{ model: 'yellowMarker', class: 'marker-yellow', title: 'Yellow marker', color: '#fdfd77', type: 'marker' },
- *			{ model: 'greenMarker', class: 'marker-green', title: 'Green marker', color: '#63f963', type: 'marker' },
- *			{ model: 'pinkMarker', class: 'marker-pink', title: 'Pink marker', color: '#fc7999', type: 'marker' },
- *			{ model: 'blueMarker', class: 'marker-blue', title: 'Blue marker', color: '#72cdfd', type: 'marker' },
- *			{ model: 'redPen', class: 'pen-red', title: 'Red pen', color: '#e91313', type: 'pen' },
- *			{ model: 'greenPen', class: 'pen-green', title: 'Green pen', color: '#118800', type: 'pen' }
+ *			{ model: 'yellowMarker', class: 'marker-yellow', title: 'Yellow marker', color: 'var(--ck-marker-yellow)', type: 'marker' },
+ *			{ model: 'greenMarker', class: 'marker-green', title: 'Green marker', color: 'var(--ck-marker-green)', type: 'marker' },
+ *			{ model: 'pinkMarker', class: 'marker-pink', title: 'Pink marker', color: 'var(--ck-marker-pink)', type: 'marker' },
+ *			{ model: 'blueMarker', class: 'marker-blue', title: 'Blue marker', color: 'var(--ck-marker-blue)', type: 'marker' },
+ *			{ model: 'redPen', class: 'pen-red', title: 'Red pen', color: 'var(--ck-pen-red)', type: 'pen' },
+ *			{ model: 'greenPen', class: 'pen-green', title: 'Green pen', color: 'var(--ck-pen-green)', type: 'pen' }
  *		]
  *
  * There are two types of highlighters available:
@@ -100,7 +100,7 @@ export default class Highlight extends Plugin {
  * - `'pen'` - rendered as a `<mark>` element, styled with the font `color`.
  *
  * **Note**: A style sheet with CSS classes is required for the configuration to work properly.
- * The highlight feature does not provide the actual styles by itself.
+ * The highlight feature does provide actual stylesheet with default colors.
  *
  * **Note**: It is recommended that the `color` value should correspond to the class in the content
  * style sheet. It represents the highlighter in the user interface of the editor.
@@ -113,14 +113,14 @@ export default class Highlight extends Plugin {
  *							model: 'pinkMarker',
  *							class: 'marker-pink',
  *							title: 'Pink Marker',
- *							color: '#fc7999',
+ *							color: 'var(--ck-marker-pink)',
  *							type: 'marker'
  *						},
  *						{
  *							model: 'redPen',
  *							class: 'pen-red',
  *							title: 'Red Pen',
- *							color: '#e91313',
+ *							color: 'var(--ck-pen-red)',
  *							type: 'pen'
  *						},
  *					]

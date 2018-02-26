@@ -1,0 +1,36 @@
+/*
+ * Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+:root {
+	--ck-marker-yellow: #fdfd77;
+	--ck-marker-green: #63f963;
+	--ck-marker-pink: #fc7999;
+	--ck-marker-blue: #72cdfd;
+	--ck-pen-red: #e91313;
+	--ck-pen-green: #118800;
+}
+
+@define-mixin marker-color $color {
+	.marker-$color {
+		background-color: var(--ck-marker-$color);
+	}
+}
+
+@define-mixin pen-color $color {
+	.pen-$color {
+		color: var(--ck-pen-$color);
+
+		/* Override default `<mark>` yellow background from user agent stylesheet */
+		background-color: transparent;
+	}
+}
+
+@mixin marker-color yellow;
+@mixin marker-color green;
+@mixin marker-color pink;
+@mixin marker-color blue;
+
+@mixin pen-color red;
+@mixin pen-color green;
