@@ -58,4 +58,37 @@ describe( 'Document', () => {
 			expect( viewDocument.getRoot( 'not-existing' ) ).to.null;
 		} );
 	} );
+
+	describe( 'post fixers', () => {
+		it( 'should add a callback that is called on _callPostFixers', () => {
+			const spy1 = sinon.spy();
+			const spy2 = sinon.spy();
+			const writerMock = {};
+
+			viewDocument.registerPostFixer( spy1 );
+			viewDocument.registerPostFixer( spy2 );
+
+			sinon.assert.notCalled( spy1 );
+			sinon.assert.notCalled( spy2 );
+			viewDocument._callPostFixers( writerMock );
+			sinon.assert.calledOnce( spy1 );
+			sinon.assert.calledOnce( spy2 );
+			sinon.assert.calledWithExactly( spy1, writerMock );
+			sinon.assert.calledWithExactly( spy2, writerMock );
+		} );
+
+		it( 'should call post fixer until all returns false', () => {
+			let calls = 0;
+
+			const spy1 = sinon.spy( () => calls++ < 2 );
+			const spy2 = sinon.spy( () => calls++ < 2 );
+
+			viewDocument.registerPostFixer( spy1 );
+			viewDocument.registerPostFixer( spy2 );
+
+			viewDocument._callPostFixers();
+
+			expect( calls ).to.equal( 4 );
+		} );
+	} );
 } );

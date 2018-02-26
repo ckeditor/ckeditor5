@@ -65,6 +65,14 @@ export default class Document {
 		 * @member {Boolean} module:engine/view/document~Document#isFocused
 		 */
 		this.set( 'isFocused', false );
+
+		/**
+		 * Post-fixer callbacks registered to the view document.
+		 *
+		 * @private
+		 * @member {Set}
+		 */
+		this._postFixers = new Set();
 	}
 
 	/**
@@ -77,6 +85,44 @@ export default class Document {
 	 */
 	getRoot( name = 'main' ) {
 		return this.roots.get( name );
+	}
+
+	/**
+	 * Used to register a post-fixer callback. A post-fixers mechanism allows to update view tree just before rendering
+	 * to the DOM.
+	 *
+	 * Post-fixers are fired just after all changes from the outermost change block were applied but
+	 * before the {@link module:engine/view/view~View#event:render render event} is fired. If a post-fixer callback made
+	 * a change, it should return `true`. When this happens, all post-fixers are fired again to check if something else should
+	 * not be fixed in the new document tree state.
+	 *
+	 * As a parameter, a post-fixer callback receives a {@link module:engine/view/writer~Writer writer} instance connected with the
+	 * executed changes block.
+	 *
+	 * @param {Function} postFixer
+	 */
+	registerPostFixer( postFixer ) {
+		this._postFixers.add( postFixer );
+	}
+
+	/**
+	 * Performs post-fixer loops. Executes post-fixer callbacks as long as none of them has done any changes to the model.
+	 *
+	 * @protected
+	 * @param {module:engine/view/writer~Writer} writer
+	 */
+	_callPostFixers( writer ) {
+		let wasFixed = false;
+
+		do {
+			for ( const callback of this._postFixers ) {
+				wasFixed = callback( writer );
+
+				if ( wasFixed ) {
+					break;
+				}
+			}
+		} while ( wasFixed );
 	}
 }
 

@@ -170,12 +170,12 @@ describe( 'FocusObserver', () => {
 			view.render();
 
 			viewDocument.on( 'selectionChange', selectionChangeSpy );
-			view.on( 'render', renderSpy, { priority: 'low' } );
+			view.on( 'render', renderSpy );
 
 			view.on( 'render', () => {
 				sinon.assert.callOrder( selectionChangeSpy, renderSpy );
 				done();
-			}, { priority: 'low' } );
+			} );
 
 			// Mock selectionchange event after focus event. Render called by focus observer should be fired after
 			// async selection change.
@@ -192,14 +192,14 @@ describe( 'FocusObserver', () => {
 			const domEditable = domRoot.childNodes[ 0 ];
 
 			viewDocument.on( 'selectionChange', selectionChangeSpy );
-			view.on( 'render', renderSpy, { priority: 'low' } );
+			view.on( 'render', renderSpy );
 
 			view.on( 'render', () => {
 				sinon.assert.notCalled( selectionChangeSpy );
 				sinon.assert.called( renderSpy );
 
 				done();
-			}, { priority: 'low' } );
+			} );
 
 			observer.onDomEvent( { type: 'focus', target: domEditable } );
 		} );

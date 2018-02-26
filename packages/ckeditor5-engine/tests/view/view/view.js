@@ -442,145 +442,147 @@ describe( 'view', () => {
 			view.destroy();
 			domRoot.remove();
 		} );
+	} );
 
-		describe( 'change()', () => {
-			it( 'should fire render event and it should trigger rendering on low priority', () => {
-				const renderSpy = sinon.spy( view._renderer, 'render' );
-				const beforeSpy = sinon.spy();
-				const afterSpy = sinon.spy();
+	describe( 'change()', () => {
+		it( 'should throw when someone tries to change view during rendering', () => {
+			const domDiv = document.createElement( 'div' );
+			const viewRoot = createViewRoot( viewDocument, 'div', 'main' );
+			let renderingCalled = false;
+			view.attachDomRoot( domDiv );
 
-				view.on( 'render', beforeSpy );
-				view.on( 'render', afterSpy, { priority: 'low' } );
+			view.change( writer => {
+				const p = writer.createContainerElement( 'p' );
+				const ui = writer.createUIElement( 'span', null, function( domDocument ) {
+					const element = this.toDomElement( domDocument );
 
-				view.change( () => {} );
+					expect( () => view.change( () => {} ) ).to.throw( CKEditorError, /^cannot-change-view-tree/ );
+					renderingCalled = true;
 
-				sinon.assert.callOrder( beforeSpy, renderSpy, afterSpy );
+					return element;
+				} );
+				writer.insert( ViewPosition.createAt( p ), ui );
+				writer.insert( ViewPosition.createAt( viewRoot ), p );
 			} );
 
-			it( 'should fire render event once for nested change blocks', () => {
-				const renderSpy = sinon.spy( view._renderer, 'render' );
-				const beforeSpy = sinon.spy();
-				const afterSpy = sinon.spy();
+			expect( renderingCalled ).to.be.true;
+			domDiv.remove();
+		} );
 
-				view.on( 'render', beforeSpy );
-				view.on( 'render', afterSpy, { priority: 'low' } );
+		it( 'should throw when someone tries to use change() method in post fixer', () => {
+			const domDiv = document.createElement( 'div' );
+			createViewRoot( viewDocument, 'div', 'main' );
+			view.attachDomRoot( domDiv );
 
+			viewDocument.registerPostFixer( () => {
+				expect( () => {
+					view.change( () => {} );
+				} ).to.throw( CKEditorError, /^cannot-change-view-tree/ );
+			} );
+
+			view.render();
+			domDiv.remove();
+		} );
+
+		it( 'should fire render event and it should trigger rendering before listeners on normal priority', () => {
+			const renderSpy = sinon.spy( view._renderer, 'render' );
+			const eventSpy = sinon.spy();
+
+			view.on( 'render', eventSpy );
+
+			view.change( () => {} );
+
+			sinon.assert.callOrder( renderSpy, eventSpy );
+		} );
+
+		it( 'should fire render event once for nested change blocks', () => {
+			const renderSpy = sinon.spy( view._renderer, 'render' );
+			const eventSpy = sinon.spy();
+
+			view.on( 'render', eventSpy );
+
+			view.change( () => {
+				view.change( () => {} );
 				view.change( () => {
 					view.change( () => {} );
-					view.change( () => {
-						view.change( () => {} );
-						view.change( () => {} );
-					} );
 					view.change( () => {} );
 				} );
-
-				sinon.assert.calledOnce( beforeSpy );
-				sinon.assert.calledOnce( renderSpy );
-				sinon.assert.calledOnce( afterSpy );
-				sinon.assert.callOrder( beforeSpy, renderSpy, afterSpy );
+				view.change( () => {} );
 			} );
 
-			it( 'should fire render event once even if render is called during the change', () => {
-				const renderSpy = sinon.spy( view._renderer, 'render' );
-				const beforeSpy = sinon.spy();
-				const afterSpy = sinon.spy();
+			sinon.assert.calledOnce( renderSpy );
+			sinon.assert.calledOnce( eventSpy );
+			sinon.assert.callOrder( renderSpy, eventSpy );
+		} );
 
-				view.on( 'render', beforeSpy );
-				view.on( 'render', afterSpy, { priority: 'low' } );
+		it( 'should fire render event once even if render is called during the change', () => {
+			const renderSpy = sinon.spy( view._renderer, 'render' );
+			const eventSpy = sinon.spy();
 
+			view.on( 'render', eventSpy );
+
+			view.change( () => {
+				view.render();
 				view.change( () => {
 					view.render();
-					view.change( () => {
-						view.render();
-					} );
-					view.render();
 				} );
-
-				sinon.assert.calledOnce( beforeSpy );
-				sinon.assert.calledOnce( renderSpy );
-				sinon.assert.calledOnce( afterSpy );
-				sinon.assert.callOrder( beforeSpy, renderSpy, afterSpy );
+				view.render();
 			} );
 
-			it( 'should throw when someone tries to change view during rendering', () => {
-				const domDiv = document.createElement( 'div' );
-				const viewRoot = createViewRoot( viewDocument, 'div', 'main' );
-				let renderingCalled = false;
-				view.attachDomRoot( domDiv );
+			sinon.assert.calledOnce( renderSpy );
+			sinon.assert.calledOnce( eventSpy );
+			sinon.assert.callOrder( renderSpy, eventSpy );
+		} );
 
-				view.change( writer => {
-					const p = writer.createContainerElement( 'p' );
-					const ui = writer.createUIElement( 'span', null, function( domDocument ) {
-						const element = this.toDomElement( domDocument );
+		it( 'should call post fixers after change but before rendering', () => {
+			const postFixer1 = sinon.spy( () => false );
+			const postFixer2 = sinon.spy( () => false );
+			const changeSpy = sinon.spy();
+			const eventSpy = sinon.spy();
 
-						expect( () => view.change( () => {} ) ).to.throw( CKEditorError, /^applying-view-changes-on-rendering/ );
-						renderingCalled = true;
+			viewDocument.registerPostFixer( postFixer1 );
+			viewDocument.registerPostFixer( postFixer2 );
+			view.on( 'render', eventSpy );
 
-						return element;
-					} );
-					writer.insert( ViewPosition.createAt( p ), ui );
-					writer.insert( ViewPosition.createAt( viewRoot ), p );
-				} );
+			view.change( changeSpy );
 
-				expect( renderingCalled ).to.be.true;
-				domDiv.remove();
+			sinon.assert.calledOnce( postFixer1 );
+			sinon.assert.calledOnce( postFixer2 );
+			sinon.assert.calledOnce( changeSpy );
+			sinon.assert.calledOnce( eventSpy );
+
+			sinon.assert.callOrder( changeSpy, postFixer1, postFixer2, eventSpy );
+		} );
+
+		it( 'should call post fixers until all are done', () => {
+			let called = false;
+			const postFixer1 = sinon.spy();
+			const postFixer2 = sinon.spy();
+			const changeSpy = sinon.spy();
+			const eventSpy = sinon.spy();
+
+			viewDocument.registerPostFixer( () => {
+				if ( !called ) {
+					called = true;
+					postFixer1();
+
+					return true;
+				}
+
+				postFixer2();
+
+				return false;
 			} );
+			view.on( 'render', eventSpy );
 
-			it( 'should throw when someone tries to call render() during rendering', () => {
-				const domDiv = document.createElement( 'div' );
-				const viewRoot = createViewRoot( viewDocument, 'div', 'main' );
-				let renderingCalled = false;
-				view.attachDomRoot( domDiv );
+			view.change( changeSpy );
 
-				view.change( writer => {
-					const p = writer.createContainerElement( 'p' );
-					const ui = writer.createUIElement( 'span', null, function( domDocument ) {
-						const element = this.toDomElement( domDocument );
+			sinon.assert.calledOnce( postFixer1 );
+			sinon.assert.calledOnce( postFixer2 );
+			sinon.assert.calledOnce( changeSpy );
+			sinon.assert.calledOnce( eventSpy );
 
-						expect( () => view.render() ).to.throw( CKEditorError, /^applying-view-changes-on-rendering/ );
-						renderingCalled = true;
-
-						return element;
-					} );
-					writer.insert( ViewPosition.createAt( p ), ui );
-					writer.insert( ViewPosition.createAt( viewRoot ), p );
-				} );
-
-				expect( renderingCalled ).to.be.true;
-				domDiv.remove();
-			} );
-
-			it( 'should throw when someone tries to call change() after rendering is finished but still in change block', () => {
-				view.on( 'render', () => {
-					expect( () => view.change( () => {} ) ).to.throw( CKEditorError, /^applying-view-changes-on-rendering/ );
-				}, { priority: 'low' } );
-
-				view.change( () => {} );
-			} );
-
-			it( 'should throw when someone tries to call render() after rendering is finished but still in change block', () => {
-				view.on( 'render', () => {
-					expect( () => view.render() ).to.throw( CKEditorError, /^applying-view-changes-on-rendering/ );
-				}, { priority: 'low' } );
-
-				view.change( () => {} );
-			} );
-
-			it( 'should NOT throw when someone tries to call change() before rendering', () => {
-				view.on( 'render', () => {
-					expect( () => view.change( () => {} ) ).not.to.throw( CKEditorError, /^applying-view-changes-on-rendering/ );
-				}, { priority: 'normal' } );
-
-				view.change( () => {} );
-			} );
-
-			it( 'should NOT throw when someone tries to call render() before rendering', () => {
-				view.on( 'render', () => {
-					expect( () => view.render() ).not.to.throw( CKEditorError, /^applying-view-changes-on-rendering/ );
-				}, { priority: 'normal' } );
-
-				view.change( () => {} );
-			} );
+			sinon.assert.callOrder( changeSpy, postFixer1, postFixer2, eventSpy );
 		} );
 	} );
 
