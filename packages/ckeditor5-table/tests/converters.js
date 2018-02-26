@@ -26,7 +26,7 @@ describe( 'Table converters', () => {
 
 				schema.register( 'table', {
 					allowWhere: '$block',
-					allowAttributes: [ 'headingRows' ],
+					allowAttributes: [ 'headingRows', 'headingColumns' ],
 					isBlock: true,
 					isObject: true
 				} );
@@ -297,6 +297,44 @@ describe( 'Table converters', () => {
 				'<tr><th>1</th></tr>' +
 				'<tr><th>2</th></tr>' +
 				'</thead>' +
+				'</table>'
+			);
+		} );
+
+		it( 'should create table with headingColumns', () => {
+			setModelData( model,
+				'<table headingColumns="2">' +
+				'<tableRow><tableCell>11</tableCell><tableCell>12</tableCell><tableCell>13</tableCell></tableRow>' +
+				'<tableRow><tableCell>21</tableCell><tableCell>22</tableCell><tableCell>23</tableCell></tableRow>' +
+				'</table>'
+			);
+
+			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+				'<table>' +
+				'<tbody>' +
+				'<tr><th>11</th><th>12</th><td>13</td></tr>' +
+				'<tr><th>21</th><th>22</th><td>23</td></tr>' +
+				'</tbody>' +
+				'</table>'
+			);
+		} );
+
+		it( 'should create table with heading columns and rows', () => {
+			setModelData( model,
+				'<table headingColumns="2" headingRows="1">' +
+				'<tableRow><tableCell>11</tableCell><tableCell>12</tableCell><tableCell>13</tableCell></tableRow>' +
+				'<tableRow><tableCell>21</tableCell><tableCell>22</tableCell><tableCell>23</tableCell></tableRow>' +
+				'</table>'
+			);
+
+			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+				'<table>' +
+				'<thead>' +
+				'<tr><th>11</th><th>12</th><th>13</th></tr>' +
+				'</thead>' +
+				'<tbody>' +
+				'<tr><th>21</th><th>22</th><td>23</td></tr>' +
+				'</tbody>' +
 				'</table>'
 			);
 		} );

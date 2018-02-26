@@ -202,7 +202,10 @@ function isHead( tableCell ) {
 	const table = row.parent;
 	const rowIndex = table.getChildIndex( row );
 	const headingRows = table.getAttribute( 'headingRows' );
+	const headingColumns = table.getAttribute( 'headingColumns' );
 
-	return headingRows && headingRows > rowIndex;
+	const cellIndex = row.getChildIndex( tableCell );
+
+	return ( headingRows && headingRows > rowIndex ) || ( headingColumns && headingColumns > cellIndex );
 }
 

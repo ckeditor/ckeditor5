@@ -23,7 +23,7 @@ export default class TablesEditing extends Plugin {
 
 		schema.register( 'table', {
 			allowWhere: '$block',
-			allowAttributes: [ 'headingRows' ],
+			allowAttributes: [ 'headingRows', 'headingColumns' ],
 			isBlock: true,
 			isObject: true
 		} );
