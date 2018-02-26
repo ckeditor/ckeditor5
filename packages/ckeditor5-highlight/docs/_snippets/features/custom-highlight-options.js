@@ -14,8 +14,8 @@ ClassicEditor
 		},
 		highlight: {
 			options: [
-				{ model: 'greenMarker', class: 'marker-green', title: 'Green marker', color: '#66ff00', type: 'marker' },
-				{ model: 'redPen', class: 'pen-red', title: 'Red pen', color: '#e91313', type: 'pen' },
+				{ model: 'greenMarker', class: 'marker-green', title: 'Green marker', color: 'var(--ck-marker-green)', type: 'marker' },
+				{ model: 'redPen', class: 'pen-red', title: 'Red pen', color: 'var(--ck-pen-red)', type: 'pen' },
 			]
 		}
 	} )
