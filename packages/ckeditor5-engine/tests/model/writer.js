@@ -2347,6 +2347,89 @@ describe( 'Writer', () => {
 		} );
 	} );
 
+	describe( 'overrideSelectionGravity()', () => {
+		it( 'should use DocumentSelection#_overrideGravity', () => {
+			const overrideGravitySpy = sinon.spy( DocumentSelection.prototype, '_overrideGravity' );
+
+			overrideSelectionGravity();
+
+			sinon.assert.calledOnce( overrideGravitySpy );
+			overrideGravitySpy.restore();
+		} );
+
+		it( 'should not get attributes from the node before the caret when gravity is overridden', () => {
+			const root = doc.createRoot();
+			root.appendChildren( [
+				new Text( 'foo', { foo: true } ),
+				new Text( 'bar', { foo: true, bar: true } ),
+				new Text( 'biz', { foo: true } )
+			] );
+
+			setSelection( new Position( root, [ 6 ] ) );
+
+			expect( Array.from( model.document.selection.getAttributeKeys() ) ).to.deep.equal( [ 'foo', 'bar' ] );
+
+			overrideSelectionGravity();
+
+			expect( Array.from( model.document.selection.getAttributeKeys() ) ).to.deep.equal( [ 'foo' ] );
+			expect( model.document.selection.isGravityOverridden ).to.true;
+
+			// Disable override by moving selection.
+			setSelection( new Position( root, [ 5 ] ) );
+
+			expect( Array.from( model.document.selection.getAttributeKeys() ) ).to.deep.equal( [ 'foo', 'bar' ] );
+			expect( model.document.selection.isGravityOverridden ).to.false;
+		} );
+
+		it( 'should allow to restorer gravity in a custom way', () => {
+			const root = doc.createRoot();
+			root.appendChildren( [ new Text( 'foobar', { foo: true } ) ] );
+
+			setSelection( new Position( root, [ 1 ] ) );
+
+			overrideSelectionGravity( true );
+
+			// Moving selection does not restore gravity.
+			setSelection( new Position( root, [ 2 ] ) );
+			expect( model.document.selection.isGravityOverridden ).to.true;
+
+			// We need to do it manually.
+			restoreSelectionGravity();
+
+			expect( model.document.selection.isGravityOverridden ).to.false;
+		} );
+	} );
+
+	describe( 'restoreSelectionGravity()', () => {
+		it( 'should use DocumentSelection#_restoreGravity', () => {
+			const restoreGravitySpy = sinon.spy( DocumentSelection.prototype, '_restoreGravity' );
+
+			restoreSelectionGravity();
+
+			sinon.assert.calledOnce( restoreGravitySpy );
+			restoreGravitySpy.restore();
+		} );
+
+		it( 'should restore overridden gravity to default', () => {
+			const root = doc.createRoot();
+			root.appendChildren( [
+				new Text( 'foo', { foo: true } ),
+				new Text( 'bar', { foo: true, bar: true } ),
+				new Text( 'biz', { foo: true } )
+			] );
+
+			setSelection( new Position( root, [ 6 ] ) );
+
+			overrideSelectionGravity();
+
+			expect( Array.from( model.document.selection.getAttributeKeys() ) ).to.deep.equal( [ 'foo' ] );
+
+			restoreSelectionGravity();
+
+			expect( Array.from( model.document.selection.getAttributeKeys() ) ).to.deep.equal( [ 'foo', 'bar' ] );
+		} );
+	} );
+
 	function createText( data, attributes ) {
 		return model.change( writer => {
 			return writer.createText( data, attributes );
@@ -2504,6 +2587,18 @@ describe( 'Writer', () => {
 	function removeSelectionAttribute( key ) {
 		model.enqueueChange( batch, writer => {
 			writer.removeSelectionAttribute( key );
+		} );
+	}
+
+	function overrideSelectionGravity( customRestore ) {
+		model.change( writer => {
+			writer.overrideSelectionGravity( customRestore );
+		} );
+	}
+
+	function restoreSelectionGravity() {
+		model.change( writer => {
+			writer.restoreSelectionGravity();
 		} );
 	}
 } );

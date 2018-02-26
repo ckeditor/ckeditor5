@@ -140,6 +140,18 @@ export default class DocumentSelection {
 	}
 
 	/**
+	 * Describes whether the gravity is overridden (using {@link module:engine/model/writer~Writer#overrideSelectionGravity}) or not.
+	 *
+	 * Note that the gravity remains overridden as long as will not be restored the same number of times as it was overridden.
+	 *
+	 * @readonly
+	 * @return {Boolean}
+	 */
+	get isGravityOverridden() {
+		return this._selection.isGravityOverridden;
+	}
+
+	/**
 	 * Used for the compatibility with the {@link module:engine/model/selection~Selection#isEqual} method.
 	 *
 	 * @protected
@@ -389,6 +401,34 @@ export default class DocumentSelection {
 	}
 
 	/**
+	 * Temporarily changes the gravity of the selection from left to right. The gravity defines from which direction
+	 * the selection inherits its attributes. If it's the default left gravity, the selection (after being moved by
+	 * the user) inherits attributes from its left hand side. This method allows to temporarily override this behavior
+	 * by forcing the gravity to the right.
+	 *
+	 * @see module:engine/model/writer~Writer#overrideSelectionGravity
+	 * @protected
+	 * @param {Boolean} [customRestore=false] When `true` then gravity won't be restored until
+	 * {@link ~DocumentSelection#_restoreGravity} will be called directly. When `false` then gravity is restored
+	 * after selection is moved by user.
+	 */
+	_overrideGravity( customRestore ) {
+		this._selection.overrideGravity( customRestore );
+	}
+
+	/**
+	 * Restores {@link ~DocumentSelection#_overrideGravity overridden gravity}.
+	 *
+	 * Note that gravity remains overridden as long as won't be restored the same number of times as was overridden.
+	 *
+	 * @see module:engine/model/writer~Writer#restoreSelectionGravity
+	 * @protected
+	 */
+	_restoreGravity() {
+		this._selection.restoreGravity();
+	}
+
+	/**
 	 * Generates and returns an attribute key for selection attributes store, basing on original attribute key.
 	 *
 	 * @protected
@@ -464,6 +504,13 @@ class LiveSelection extends Selection {
 		// @private
 		// @member {Array} module:engine/model/liveselection~LiveSelection#_hasChangedRange
 		this._hasChangedRange = false;
+
+		// Each overriding gravity increase the counter and each restoring decrease it.
+		// Gravity is overridden when counter is greater than 0. This is to prevent conflicts when
+		// gravity is overridden by more than one feature at the same time.
+		// @private
+		// @type {Number}
+		this._overriddenGravityCounter = 0;
 
 		// Add events that will ensure selection correctness.
 		this.on( 'change:range', () => {
@@ -550,6 +597,15 @@ class LiveSelection extends Selection {
 		return this._ranges.length > 0;
 	}
 
+	// When set to `true` then selection attributes on node before the caret won't be taken
+	// into consideration while updating selection attributes.
+	//
+	// @protected
+	// @type {Boolean}
+	get isGravityOverridden() {
+		return this._overriddenGravityCounter > 0;
+	}
+
 	// Unbinds all events previously bound by live selection.
 	destroy() {
 		for ( let i = 0; i < this._ranges.length; i++ ) {
@@ -598,6 +654,31 @@ class LiveSelection extends Selection {
 			// Fire event with exact data.
 			const attributeKeys = [ key ];
 			this.fire( 'change:attribute', { attributeKeys, directChange: true } );
+		}
+	}
+
+	overrideGravity( customRestore ) {
+		this._overriddenGravityCounter++;
+
+		if ( this._overriddenGravityCounter == 1 ) {
+			if ( !customRestore ) {
+				this.on( 'change:range', ( evt, data ) => {
+					if ( data.directChange ) {
+						this.restoreGravity();
+						evt.off();
+					}
+				} );
+			}
+
+			this._updateAttributes();
+		}
+	}
+
+	restoreGravity() {
+		this._overriddenGravityCounter--;
+
+		if ( !this.isGravityOverridden ) {
+			this._updateAttributes();
 		}
 	}
 
@@ -851,8 +932,11 @@ class LiveSelection extends Selection {
 			const nodeBefore = position.textNode ? position.textNode : position.nodeBefore;
 			const nodeAfter = position.textNode ? position.textNode : position.nodeAfter;
 
-			// ...look at the node before caret and take attributes from it if it is a character node.
-			attrs = getAttrsIfCharacter( nodeBefore );
+			// When gravity is overridden then don't take node before into consideration.
+			if ( !this.isGravityOverridden ) {
+				// ...look at the node before caret and take attributes from it if it is a character node.
+				attrs = getAttrsIfCharacter( nodeBefore );
+			}
 
 			// 3. If not, look at the node after caret...
 			if ( !attrs ) {
@@ -860,7 +944,8 @@ class LiveSelection extends Selection {
 			}
 
 			// 4. If not, try to find the first character on the left, that is in the same node.
-			if ( !attrs ) {
+			// When gravity is overridden then don't take node before into consideration.
+			if ( !this.isGravityOverridden && !attrs ) {
 				let node = nodeBefore;
 
 				while ( node && !attrs ) {

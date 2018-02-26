@@ -199,17 +199,6 @@ describe( 'DocumentSelection', () => {
 		} );
 	} );
 
-	describe( 'setTo - set collapsed at', () => {
-		it( 'detaches all existing ranges', () => {
-			selection._setTo( [ range, liveRange ] );
-
-			const spy = testUtils.sinon.spy( LiveRange.prototype, 'detach' );
-			selection._setTo( root );
-
-			expect( spy.calledTwice ).to.be.true;
-		} );
-	} );
-
 	describe( 'destroy()', () => {
 		it( 'should unbind all events', () => {
 			selection._setTo( [ range, liveRange ] );
@@ -229,7 +218,45 @@ describe( 'DocumentSelection', () => {
 		} );
 	} );
 
-	describe( 'setFocus()', () => {
+	describe( 'getFirstRange()', () => {
+		it( 'should return default range if no ranges were added', () => {
+			const firstRange = selection.getFirstRange();
+
+			expect( firstRange.start.isEqual( new Position( root, [ 0, 0 ] ) ) );
+			expect( firstRange.end.isEqual( new Position( root, [ 0, 0 ] ) ) );
+		} );
+	} );
+
+	describe( 'getLastRange()', () => {
+		it( 'should return default range if no ranges were added', () => {
+			const lastRange = selection.getLastRange();
+
+			expect( lastRange.start.isEqual( new Position( root, [ 0, 0 ] ) ) );
+			expect( lastRange.end.isEqual( new Position( root, [ 0, 0 ] ) ) );
+		} );
+	} );
+
+	describe( 'getSelectedElement()', () => {
+		it( 'should return selected element', () => {
+			selection._setTo( liveRange );
+			const p = root.getChild( 0 );
+
+			expect( selection.getSelectedElement() ).to.equal( p );
+		} );
+	} );
+
+	describe( '_setTo() - set collapsed at', () => {
+		it( 'detaches all existing ranges', () => {
+			selection._setTo( [ range, liveRange ] );
+
+			const spy = testUtils.sinon.spy( LiveRange.prototype, 'detach' );
+			selection._setTo( root );
+
+			expect( spy.calledTwice ).to.be.true;
+		} );
+	} );
+
+	describe( '_setFocus()', () => {
 		it( 'modifies default range', () => {
 			const startPos = selection.getFirstPosition();
 			const endPos = Position.createAt( root, 'end' );
@@ -262,7 +289,7 @@ describe( 'DocumentSelection', () => {
 		} );
 	} );
 
-	describe( 'setTo - remove all ranges', () => {
+	describe( '_setTo() - remove all ranges', () => {
 		let spy, ranges;
 
 		beforeEach( () => {
@@ -304,7 +331,7 @@ describe( 'DocumentSelection', () => {
 		} );
 	} );
 
-	describe( 'setTo()', () => {
+	describe( '_setTo()', () => {
 		it( 'should throw an error when range is invalid', () => {
 			expect( () => {
 				selection._setTo( [ { invalid: 'range' } ] );
@@ -364,24 +391,6 @@ describe( 'DocumentSelection', () => {
 		} );
 	} );
 
-	describe( 'getFirstRange()', () => {
-		it( 'should return default range if no ranges were added', () => {
-			const firstRange = selection.getFirstRange();
-
-			expect( firstRange.start.isEqual( new Position( root, [ 0, 0 ] ) ) );
-			expect( firstRange.end.isEqual( new Position( root, [ 0, 0 ] ) ) );
-		} );
-	} );
-
-	describe( 'getLastRange()', () => {
-		it( 'should return default range if no ranges were added', () => {
-			const lastRange = selection.getLastRange();
-
-			expect( lastRange.start.isEqual( new Position( root, [ 0, 0 ] ) ) );
-			expect( lastRange.end.isEqual( new Position( root, [ 0, 0 ] ) ) );
-		} );
-	} );
-
 	describe( '_isStoreAttributeKey', () => {
 		it( 'should return true if given key is a key of an attribute stored in element by DocumentSelection', () => {
 			expect( DocumentSelection._isStoreAttributeKey( fooStoreAttrKey ) ).to.be.true;
@@ -392,12 +401,465 @@ describe( 'DocumentSelection', () => {
 		} );
 	} );
 
-	describe( 'getSelectedElement()', () => {
-		it( 'should return selected element', () => {
-			selection._setTo( liveRange );
-			const p = root.getChild( 0 );
+	describe( 'attributes', () => {
+		let fullP, emptyP, rangeInFullP, rangeInEmptyP;
 
-			expect( selection.getSelectedElement() ).to.equal( p );
+		beforeEach( () => {
+			root.removeChildren( 0, root.childCount );
+			root.appendChildren( [
+				new Element( 'p', [], new Text( 'foobar' ) ),
+				new Element( 'p', [], [] )
+			] );
+
+			fullP = root.getChild( 0 );
+			emptyP = root.getChild( 1 );
+
+			rangeInFullP = new Range( new Position( root, [ 0, 4 ] ), new Position( root, [ 0, 4 ] ) );
+			rangeInEmptyP = new Range( new Position( root, [ 1, 0 ] ), new Position( root, [ 1, 0 ] ) );
+
+			// I've lost 30 mins debugging why my tests fail and that was due to the above code reusing
+			// a root which wasn't empty (so the ranges didn't actually make much sense).
+			expect( root.childCount ).to.equal( 2 );
+		} );
+
+		describe( '_setAttribute()', () => {
+			it( 'should set attribute', () => {
+				selection._setTo( [ rangeInEmptyP ] );
+				selection._setAttribute( 'foo', 'bar' );
+
+				expect( selection.getAttribute( 'foo' ) ).to.equal( 'bar' );
+			} );
+		} );
+
+		describe( '_removeAttribute()', () => {
+			it( 'should remove attribute set on the text fragment', () => {
+				selection._setTo( [ rangeInFullP ] );
+				selection._setAttribute( 'foo', 'bar' );
+				selection._removeAttribute( 'foo' );
+
+				expect( selection.getAttribute( 'foo' ) ).to.be.undefined;
+			} );
+		} );
+
+		describe( '_getStoredAttributes()', () => {
+			it( 'should return no values if there are no ranges in selection', () => {
+				const values = Array.from( selection._getStoredAttributes() );
+
+				expect( values ).to.deep.equal( [] );
+			} );
+		} );
+
+		describe( 'are updated on a direct range change', () => {
+			beforeEach( () => {
+				root.insertChildren( 0, [
+					new Element( 'p', { p: true } ),
+					new Text( 'a', { a: true } ),
+					new Element( 'p', { p: true } ),
+					new Text( 'b', { b: true } ),
+					new Text( 'c', { c: true } ),
+					new Element( 'p', [], [
+						new Text( 'd', { d: true } )
+					] ),
+					new Element( 'p', { p: true } ),
+					new Text( 'e', { e: true } )
+				] );
+			} );
+
+			it( 'if selection is a range, should find first character in it and copy it\'s attributes', () => {
+				selection._setTo( [ new Range( new Position( root, [ 2 ] ), new Position( root, [ 5 ] ) ) ] );
+
+				expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'b', true ] ] );
+
+				// Step into elements when looking for first character:
+				selection._setTo( [ new Range( new Position( root, [ 5 ] ), new Position( root, [ 7 ] ) ) ] );
+
+				expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'd', true ] ] );
+			} );
+
+			it( 'if selection is collapsed it should seek a character to copy that character\'s attributes', () => {
+				// Take styles from character before selection.
+				selection._setTo( [ new Range( new Position( root, [ 2 ] ), new Position( root, [ 2 ] ) ) ] );
+				expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'a', true ] ] );
+
+				// If there are none,
+				// Take styles from character after selection.
+				selection._setTo( [ new Range( new Position( root, [ 3 ] ), new Position( root, [ 3 ] ) ) ] );
+				expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'b', true ] ] );
+
+				// If there are none,
+				// Look from the selection position to the beginning of node looking for character to take attributes from.
+				selection._setTo( [ new Range( new Position( root, [ 6 ] ), new Position( root, [ 6 ] ) ) ] );
+				expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'c', true ] ] );
+
+				// If there are none,
+				// Look from the selection position to the end of node looking for character to take attributes from.
+				selection._setTo( [ new Range( new Position( root, [ 0 ] ), new Position( root, [ 0 ] ) ) ] );
+				expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'a', true ] ] );
+
+				// If there are no characters to copy attributes from, use stored attributes.
+				selection._setTo( [ new Range( new Position( root, [ 0, 0 ] ), new Position( root, [ 0, 0 ] ) ) ] );
+				expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [] );
+			} );
+
+			it( 'should overwrite any previously set attributes', () => {
+				selection._setTo( new Position( root, [ 5, 0 ] ) );
+
+				selection._setAttribute( 'x', true );
+				selection._setAttribute( 'y', true );
+
+				expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'd', true ], [ 'x', true ], [ 'y', true ] ] );
+
+				selection._setTo( new Position( root, [ 1 ] ) );
+
+				expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'a', true ] ] );
+			} );
+
+			it( 'should fire change:attribute event', () => {
+				const spy = sinon.spy();
+				selection.on( 'change:attribute', spy );
+
+				selection._setTo( [ new Range( new Position( root, [ 2 ] ), new Position( root, [ 5 ] ) ) ] );
+
+				expect( spy.calledOnce ).to.be.true;
+			} );
+
+			it( 'should not fire change:attribute event if attributes did not change', () => {
+				selection._setTo( new Position( root, [ 5, 0 ] ) );
+
+				expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'd', true ] ] );
+
+				const spy = sinon.spy();
+				selection.on( 'change:attribute', spy );
+
+				selection._setTo( new Position( root, [ 5, 1 ] ) );
+
+				expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'd', true ] ] );
+				expect( spy.called ).to.be.false;
+			} );
+		} );
+
+		// #986
+		describe( 'are not inherited from the inside of object elements', () => {
+			beforeEach( () => {
+				model.schema.register( 'image', {
+					isObject: true
+				} );
+				model.schema.extend( 'image', { allowIn: '$root' } );
+				model.schema.extend( 'image', { allowIn: '$block' } );
+
+				model.schema.register( 'caption' );
+				model.schema.extend( 'caption', { allowIn: 'image' } );
+				model.schema.extend( '$text', {
+					allowIn: [ 'image', 'caption' ],
+					allowAttributes: 'bold'
+				} );
+			} );
+
+			it( 'ignores attributes inside an object if selection contains that object', () => {
+				setData( model, '<p>[<image><$text bold="true">Caption for the image.</$text></image>]</p>' );
+
+				expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
+			} );
+
+			it( 'ignores attributes inside an object if selection contains that object (deeper structure)', () => {
+				setData( model, '<p>[<image><caption><$text bold="true">Caption for the image.</$text></caption></image>]</p>' );
+
+				expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
+			} );
+
+			it( 'ignores attributes inside an object if selection contains that object (block level)', () => {
+				setData( model, '<p>foo</p>[<image><$text bold="true">Caption for the image.</$text></image>]<p>foo</p>' );
+
+				expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
+			} );
+
+			it( 'reads attributes from text even if the selection contains an object', () => {
+				setData( model, '<p>x<$text bold="true">[bar</$text><image></image>foo]</p>' );
+
+				expect( selection.getAttribute( 'bold' ) ).to.equal( true );
+			} );
+
+			it( 'reads attributes when the entire selection inside an object', () => {
+				setData( model, '<p><image><caption><$text bold="true">[bar]</$text></caption></image></p>' );
+
+				expect( selection.getAttribute( 'bold' ) ).to.equal( true );
+			} );
+
+			it( 'stops reading attributes if selection starts with an object', () => {
+				setData( model, '<p>[<image></image><$text bold="true">bar]</$text></p>' );
+
+				expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
+			} );
+		} );
+
+		describe( 'parent element\'s attributes', () => {
+			it( 'are set using a normal batch', () => {
+				const batchTypes = [];
+
+				model.on( 'applyOperation', ( event, args ) => {
+					const operation = args[ 0 ];
+					const batch = operation.delta.batch;
+
+					batchTypes.push( batch.type );
+				} );
+
+				selection._setTo( [ rangeInEmptyP ] );
+
+				model.change( writer => {
+					writer.setSelectionAttribute( 'foo', 'bar' );
+				} );
+
+				expect( batchTypes ).to.deep.equal( [ 'default' ] );
+				expect( emptyP.getAttribute( fooStoreAttrKey ) ).to.equal( 'bar' );
+			} );
+
+			it( 'are removed when any content is inserted (reuses the same batch)', () => {
+				// Dedupe batches by using a map (multiple change events will be fired).
+				const batchTypes = new Map();
+
+				selection._setTo( rangeInEmptyP );
+				selection._setAttribute( 'foo', 'bar' );
+				selection._setAttribute( 'abc', 'bar' );
+
+				model.on( 'applyOperation', ( event, args ) => {
+					const operation = args[ 0 ];
+					const batch = operation.delta.batch;
+
+					batchTypes.set( batch, batch.type );
+				} );
+
+				model.change( writer => {
+					writer.insertText( 'x', rangeInEmptyP.start );
+				} );
+
+				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
+				expect( emptyP.hasAttribute( abcStoreAttrKey ) ).to.be.false;
+
+				expect( Array.from( batchTypes.values() ) ).to.deep.equal( [ 'default' ] );
+			} );
+
+			it( 'are removed when any content is moved into', () => {
+				selection._setTo( rangeInEmptyP );
+				selection._setAttribute( 'foo', 'bar' );
+
+				model.change( writer => {
+					writer.move( Range.createOn( fullP.getChild( 0 ) ), rangeInEmptyP.start );
+				} );
+
+				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
+			} );
+
+			it( 'are removed when containing element is merged with a non-empty element', () => {
+				const emptyP2 = new Element( 'p', null, 'x' );
+				root.appendChildren( emptyP2 );
+
+				emptyP.setAttribute( fooStoreAttrKey, 'bar' );
+				emptyP2.setAttribute( fooStoreAttrKey, 'bar' );
+
+				model.change( writer => {
+					// <emptyP>{}<emptyP2>
+					writer.merge( Position.createAfter( emptyP ) );
+				} );
+
+				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
+				expect( emptyP.parent ).to.equal( root ); // Just to be sure we're checking the right element.
+			} );
+
+			it( 'are removed even when there is no selection in it', () => {
+				emptyP.setAttribute( fooStoreAttrKey, 'bar' );
+
+				selection._setTo( [ rangeInFullP ] );
+
+				model.change( writer => {
+					writer.insertText( 'x', rangeInEmptyP.start );
+				} );
+
+				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
+			} );
+
+			it( 'are removed only once in case of multi-op deltas', () => {
+				let batch;
+				const emptyP2 = new Element( 'p', null, 'x' );
+				root.appendChildren( emptyP2 );
+
+				emptyP.setAttribute( fooStoreAttrKey, 'bar' );
+				emptyP2.setAttribute( fooStoreAttrKey, 'bar' );
+
+				model.change( writer => {
+					batch = writer.batch;
+					// <emptyP>{}<emptyP2>
+					writer.merge( Position.createAfter( emptyP ) );
+				} );
+
+				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
+				// Attribute delta is only one.
+				expect( Array.from( batch.deltas, delta => delta.type ) ).to.deep.equal( [ 'merge', 'attribute' ] );
+			} );
+
+			it( 'uses model change to clear attributes', () => {
+				selection._setTo( [ rangeInEmptyP ] );
+
+				model.change( writer => {
+					writer.setSelectionAttribute( 'foo', 'bar' );
+					writer.insertText( 'x', rangeInEmptyP.start );
+
+					// `emptyP` still has the attribute, because attribute clearing is in enqueued block.
+					expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.true;
+				} );
+
+				// When the dust settles, `emptyP` should not have the attribute.
+				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
+			} );
+
+			it( 'are not removed or merged when containing element is merged with another empty element', () => {
+				const emptyP2 = new Element( 'p', null );
+				root.appendChildren( emptyP2 );
+
+				emptyP.setAttribute( fooStoreAttrKey, 'bar' );
+				emptyP2.setAttribute( abcStoreAttrKey, 'bar' );
+
+				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.true;
+				expect( emptyP.hasAttribute( abcStoreAttrKey ) ).to.be.false;
+
+				model.change( writer => {
+					// <emptyP>{}<emptyP2>
+					writer.merge( Position.createAfter( emptyP ) );
+				} );
+
+				expect( emptyP.getAttribute( fooStoreAttrKey ) ).to.equal( 'bar' );
+				expect( emptyP.parent ).to.equal( root ); // Just to be sure we're checking the right element.
+			} );
+
+			// Rename and some other deltas don't specify range in doc#change event.
+			// So let's see if there's no crash or something.
+			it( 'are not removed on rename', () => {
+				model.change( writer => {
+					writer.setSelection( rangeInEmptyP );
+					writer.setSelectionAttribute( 'foo', 'bar' );
+				} );
+
+				sinon.spy( model, 'enqueueChange' );
+
+				model.change( writer => {
+					writer.rename( emptyP, 'pnew' );
+				} );
+
+				expect( model.enqueueChange.called ).to.be.false;
+				expect( emptyP.getAttribute( fooStoreAttrKey ) ).to.equal( 'bar' );
+			} );
+		} );
+	} );
+
+	describe( '_overrideGravity()', () => {
+		beforeEach( () => {
+			model.schema.extend( '$text', {
+				allowIn: '$root'
+			} );
+		} );
+
+		it( 'should mark gravity as overridden', () => {
+			expect( selection.isGravityOverridden ).to.false;
+
+			selection._overrideGravity();
+
+			expect( selection.isGravityOverridden ).to.true;
+		} );
+
+		it( 'should not inherit attributes from node before the caret', () => {
+			setData( model, '<$text bold="true" italic="true">foo[]</$text>' );
+
+			expect( Array.from( selection.getAttributeKeys() ) ).to.have.members( [ 'bold', 'italic' ] );
+
+			selection._overrideGravity();
+
+			expect( Array.from( selection.getAttributeKeys() ) ).to.length( 0 );
+		} );
+
+		it( 'should inherit attributes from node after the caret', () => {
+			setData( model, '<$text>foo[]</$text><$text bold="true" italic="true">bar</$text>' );
+
+			expect( Array.from( selection.getAttributeKeys() ) ).to.length( 0 );
+
+			selection._overrideGravity();
+
+			expect( Array.from( selection.getAttributeKeys() ) ).to.have.members( [ 'bold', 'italic' ] );
+		} );
+
+		it( 'should retain attributes that are set explicit', () => {
+			setData( model, '<$text italic="true">foo[]</$text>' );
+
+			selection._setAttribute( 'bold', true );
+
+			expect( Array.from( selection.getAttributeKeys() ) ).to.have.members( [ 'bold', 'italic' ] );
+
+			selection._overrideGravity();
+
+			expect( Array.from( selection.getAttributeKeys() ) ).to.have.members( [ 'bold' ] );
+		} );
+
+		it( 'should retain overridden until selection will not change range by a direct change', () => {
+			setData( model, '<$text bold="true" italic="true">foo[]</$text><$text italic="true">bar</$text>' );
+
+			selection._overrideGravity();
+
+			// Changed range but not directly.
+			model.change( writer => writer.insertText( 'abc', new Position( root, [ 0 ] ) ) );
+
+			expect( Array.from( selection.getAttributeKeys() ) ).to.have.members( [ 'italic' ] );
+
+			// Changed range directly.
+			model.change( writer => writer.setSelection( new Position( root, [ 5 ] ) ) );
+
+			expect( Array.from( selection.getAttributeKeys() ) ).to.have.members( [ 'bold', 'italic' ] );
+		} );
+	} );
+
+	describe( '_restoreGravity()', () => {
+		beforeEach( () => {
+			model.schema.extend( '$text', {
+				allowIn: '$root'
+			} );
+		} );
+
+		it( 'should revert default gravity when is overridden', () => {
+			setData( model, '<$text bold="true" italic="true">foo[]</$text>' );
+
+			selection._overrideGravity();
+
+			expect( Array.from( selection.getAttributeKeys() ) ).to.length( 0 );
+			expect( selection.isGravityOverridden ).to.true;
+
+			selection._restoreGravity();
+
+			expect( Array.from( selection.getAttributeKeys() ) ).to.have.members( [ 'bold', 'italic' ] );
+			expect( selection.isGravityOverridden ).to.false;
+		} );
+
+		it( 'should do nothing when gravity is not overridden', () => {
+			setData( model, '<$text bold="true" italic="true">foo[]</$text>' );
+
+			expect( () => {
+				selection._restoreGravity();
+			} ).to.not.throw();
+
+			expect( selection.isGravityOverridden ).to.false;
+		} );
+
+		it( 'should be called the same number of times as gravity is overridden to restore it', () => {
+			setData( model, '<$text bold="true" italic="true">foo[]</$text>' );
+
+			selection._overrideGravity();
+			selection._overrideGravity();
+
+			expect( selection.isGravityOverridden ).to.true;
+
+			selection._restoreGravity();
+
+			expect( selection.isGravityOverridden ).to.true;
+
+			selection._restoreGravity();
+
+			expect( selection.isGravityOverridden ).to.false;
 		} );
 	} );
 
@@ -766,355 +1228,6 @@ describe( 'DocumentSelection', () => {
 			) );
 
 			expect( spyRange.calledOnce ).to.be.true;
-		} );
-	} );
-
-	describe( 'attributes', () => {
-		let fullP, emptyP, rangeInFullP, rangeInEmptyP;
-
-		beforeEach( () => {
-			root.removeChildren( 0, root.childCount );
-			root.appendChildren( [
-				new Element( 'p', [], new Text( 'foobar' ) ),
-				new Element( 'p', [], [] )
-			] );
-
-			fullP = root.getChild( 0 );
-			emptyP = root.getChild( 1 );
-
-			rangeInFullP = new Range( new Position( root, [ 0, 4 ] ), new Position( root, [ 0, 4 ] ) );
-			rangeInEmptyP = new Range( new Position( root, [ 1, 0 ] ), new Position( root, [ 1, 0 ] ) );
-
-			// I've lost 30 mins debugging why my tests fail and that was due to the above code reusing
-			// a root which wasn't empty (so the ranges didn't actually make much sense).
-			expect( root.childCount ).to.equal( 2 );
-		} );
-
-		describe( '_setAttribute()', () => {
-			it( 'should set attribute', () => {
-				selection._setTo( [ rangeInEmptyP ] );
-				selection._setAttribute( 'foo', 'bar' );
-
-				expect( selection.getAttribute( 'foo' ) ).to.equal( 'bar' );
-			} );
-		} );
-
-		describe( 'removeAttribute()', () => {
-			it( 'should remove attribute set on the text fragment', () => {
-				selection._setTo( [ rangeInFullP ] );
-				selection._setAttribute( 'foo', 'bar' );
-				selection._removeAttribute( 'foo' );
-
-				expect( selection.getAttribute( 'foo' ) ).to.be.undefined;
-			} );
-		} );
-
-		describe( '_getStoredAttributes()', () => {
-			it( 'should return no values if there are no ranges in selection', () => {
-				const values = Array.from( selection._getStoredAttributes() );
-
-				expect( values ).to.deep.equal( [] );
-			} );
-		} );
-
-		describe( 'are updated on a direct range change', () => {
-			beforeEach( () => {
-				root.insertChildren( 0, [
-					new Element( 'p', { p: true } ),
-					new Text( 'a', { a: true } ),
-					new Element( 'p', { p: true } ),
-					new Text( 'b', { b: true } ),
-					new Text( 'c', { c: true } ),
-					new Element( 'p', [], [
-						new Text( 'd', { d: true } )
-					] ),
-					new Element( 'p', { p: true } ),
-					new Text( 'e', { e: true } )
-				] );
-			} );
-
-			it( 'if selection is a range, should find first character in it and copy it\'s attributes', () => {
-				selection._setTo( [ new Range( new Position( root, [ 2 ] ), new Position( root, [ 5 ] ) ) ] );
-
-				expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'b', true ] ] );
-
-				// Step into elements when looking for first character:
-				selection._setTo( [ new Range( new Position( root, [ 5 ] ), new Position( root, [ 7 ] ) ) ] );
-
-				expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'd', true ] ] );
-			} );
-
-			it( 'if selection is collapsed it should seek a character to copy that character\'s attributes', () => {
-				// Take styles from character before selection.
-				selection._setTo( [ new Range( new Position( root, [ 2 ] ), new Position( root, [ 2 ] ) ) ] );
-				expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'a', true ] ] );
-
-				// If there are none,
-				// Take styles from character after selection.
-				selection._setTo( [ new Range( new Position( root, [ 3 ] ), new Position( root, [ 3 ] ) ) ] );
-				expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'b', true ] ] );
-
-				// If there are none,
-				// Look from the selection position to the beginning of node looking for character to take attributes from.
-				selection._setTo( [ new Range( new Position( root, [ 6 ] ), new Position( root, [ 6 ] ) ) ] );
-				expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'c', true ] ] );
-
-				// If there are none,
-				// Look from the selection position to the end of node looking for character to take attributes from.
-				selection._setTo( [ new Range( new Position( root, [ 0 ] ), new Position( root, [ 0 ] ) ) ] );
-				expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'a', true ] ] );
-
-				// If there are no characters to copy attributes from, use stored attributes.
-				selection._setTo( [ new Range( new Position( root, [ 0, 0 ] ), new Position( root, [ 0, 0 ] ) ) ] );
-				expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [] );
-			} );
-
-			it( 'should overwrite any previously set attributes', () => {
-				selection._setTo( new Position( root, [ 5, 0 ] ) );
-
-				selection._setAttribute( 'x', true );
-				selection._setAttribute( 'y', true );
-
-				expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'd', true ], [ 'x', true ], [ 'y', true ] ] );
-
-				selection._setTo( new Position( root, [ 1 ] ) );
-
-				expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'a', true ] ] );
-			} );
-
-			it( 'should fire change:attribute event', () => {
-				const spy = sinon.spy();
-				selection.on( 'change:attribute', spy );
-
-				selection._setTo( [ new Range( new Position( root, [ 2 ] ), new Position( root, [ 5 ] ) ) ] );
-
-				expect( spy.calledOnce ).to.be.true;
-			} );
-
-			it( 'should not fire change:attribute event if attributes did not change', () => {
-				selection._setTo( new Position( root, [ 5, 0 ] ) );
-
-				expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'd', true ] ] );
-
-				const spy = sinon.spy();
-				selection.on( 'change:attribute', spy );
-
-				selection._setTo( new Position( root, [ 5, 1 ] ) );
-
-				expect( Array.from( selection.getAttributes() ) ).to.deep.equal( [ [ 'd', true ] ] );
-				expect( spy.called ).to.be.false;
-			} );
-		} );
-
-		// #986
-		describe( 'are not inherited from the inside of object elements', () => {
-			beforeEach( () => {
-				model.schema.register( 'image', {
-					isObject: true
-				} );
-				model.schema.extend( 'image', { allowIn: '$root' } );
-				model.schema.extend( 'image', { allowIn: '$block' } );
-
-				model.schema.register( 'caption' );
-				model.schema.extend( 'caption', { allowIn: 'image' } );
-				model.schema.extend( '$text', {
-					allowIn: [ 'image', 'caption' ],
-					allowAttributes: 'bold'
-				} );
-			} );
-
-			it( 'ignores attributes inside an object if selection contains that object', () => {
-				setData( model, '<p>[<image><$text bold="true">Caption for the image.</$text></image>]</p>' );
-
-				expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
-			} );
-
-			it( 'ignores attributes inside an object if selection contains that object (deeper structure)', () => {
-				setData( model, '<p>[<image><caption><$text bold="true">Caption for the image.</$text></caption></image>]</p>' );
-
-				expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
-			} );
-
-			it( 'ignores attributes inside an object if selection contains that object (block level)', () => {
-				setData( model, '<p>foo</p>[<image><$text bold="true">Caption for the image.</$text></image>]<p>foo</p>' );
-
-				expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
-			} );
-
-			it( 'reads attributes from text even if the selection contains an object', () => {
-				setData( model, '<p>x<$text bold="true">[bar</$text><image></image>foo]</p>' );
-
-				expect( selection.getAttribute( 'bold' ) ).to.equal( true );
-			} );
-
-			it( 'reads attributes when the entire selection inside an object', () => {
-				setData( model, '<p><image><caption><$text bold="true">[bar]</$text></caption></image></p>' );
-
-				expect( selection.getAttribute( 'bold' ) ).to.equal( true );
-			} );
-
-			it( 'stops reading attributes if selection starts with an object', () => {
-				setData( model, '<p>[<image></image><$text bold="true">bar]</$text></p>' );
-
-				expect( selection.hasAttribute( 'bold' ) ).to.equal( false );
-			} );
-		} );
-
-		describe( 'parent element\'s attributes', () => {
-			it( 'are set using a normal batch', () => {
-				const batchTypes = [];
-
-				model.on( 'applyOperation', ( event, args ) => {
-					const operation = args[ 0 ];
-					const batch = operation.delta.batch;
-
-					batchTypes.push( batch.type );
-				} );
-
-				selection._setTo( [ rangeInEmptyP ] );
-
-				model.change( writer => {
-					writer.setSelectionAttribute( 'foo', 'bar' );
-				} );
-
-				expect( batchTypes ).to.deep.equal( [ 'default' ] );
-				expect( emptyP.getAttribute( fooStoreAttrKey ) ).to.equal( 'bar' );
-			} );
-
-			it( 'are removed when any content is inserted (reuses the same batch)', () => {
-				// Dedupe batches by using a map (multiple change events will be fired).
-				const batchTypes = new Map();
-
-				selection._setTo( rangeInEmptyP );
-				selection._setAttribute( 'foo', 'bar' );
-				selection._setAttribute( 'abc', 'bar' );
-
-				model.on( 'applyOperation', ( event, args ) => {
-					const operation = args[ 0 ];
-					const batch = operation.delta.batch;
-
-					batchTypes.set( batch, batch.type );
-				} );
-
-				model.change( writer => {
-					writer.insertText( 'x', rangeInEmptyP.start );
-				} );
-
-				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
-				expect( emptyP.hasAttribute( abcStoreAttrKey ) ).to.be.false;
-
-				expect( Array.from( batchTypes.values() ) ).to.deep.equal( [ 'default' ] );
-			} );
-
-			it( 'are removed when any content is moved into', () => {
-				selection._setTo( rangeInEmptyP );
-				selection._setAttribute( 'foo', 'bar' );
-
-				model.change( writer => {
-					writer.move( Range.createOn( fullP.getChild( 0 ) ), rangeInEmptyP.start );
-				} );
-
-				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
-			} );
-
-			it( 'are removed when containing element is merged with a non-empty element', () => {
-				const emptyP2 = new Element( 'p', null, 'x' );
-				root.appendChildren( emptyP2 );
-
-				emptyP.setAttribute( fooStoreAttrKey, 'bar' );
-				emptyP2.setAttribute( fooStoreAttrKey, 'bar' );
-
-				model.change( writer => {
-					// <emptyP>{}<emptyP2>
-					writer.merge( Position.createAfter( emptyP ) );
-				} );
-
-				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
-				expect( emptyP.parent ).to.equal( root ); // Just to be sure we're checking the right element.
-			} );
-
-			it( 'are removed even when there is no selection in it', () => {
-				emptyP.setAttribute( fooStoreAttrKey, 'bar' );
-
-				selection._setTo( [ rangeInFullP ] );
-
-				model.change( writer => {
-					writer.insertText( 'x', rangeInEmptyP.start );
-				} );
-
-				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
-			} );
-
-			it( 'are removed only once in case of multi-op deltas', () => {
-				let batch;
-				const emptyP2 = new Element( 'p', null, 'x' );
-				root.appendChildren( emptyP2 );
-
-				emptyP.setAttribute( fooStoreAttrKey, 'bar' );
-				emptyP2.setAttribute( fooStoreAttrKey, 'bar' );
-
-				model.change( writer => {
-					batch = writer.batch;
-					// <emptyP>{}<emptyP2>
-					writer.merge( Position.createAfter( emptyP ) );
-				} );
-
-				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
-				// Attribute delta is only one.
-				expect( Array.from( batch.deltas, delta => delta.type ) ).to.deep.equal( [ 'merge', 'attribute' ] );
-			} );
-
-			it( 'uses model change to clear attributes', () => {
-				selection._setTo( [ rangeInEmptyP ] );
-
-				model.change( writer => {
-					writer.setSelectionAttribute( 'foo', 'bar' );
-					writer.insertText( 'x', rangeInEmptyP.start );
-
-					// `emptyP` still has the attribute, because attribute clearing is in enqueued block.
-					expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.true;
-				} );
-
-				// When the dust settles, `emptyP` should not have the attribute.
-				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
-			} );
-
-			it( 'are not removed or merged when containing element is merged with another empty element', () => {
-				const emptyP2 = new Element( 'p', null );
-				root.appendChildren( emptyP2 );
-
-				emptyP.setAttribute( fooStoreAttrKey, 'bar' );
-				emptyP2.setAttribute( abcStoreAttrKey, 'bar' );
-
-				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.true;
-				expect( emptyP.hasAttribute( abcStoreAttrKey ) ).to.be.false;
-
-				model.change( writer => {
-					// <emptyP>{}<emptyP2>
-					writer.merge( Position.createAfter( emptyP ) );
-				} );
-
-				expect( emptyP.getAttribute( fooStoreAttrKey ) ).to.equal( 'bar' );
-				expect( emptyP.parent ).to.equal( root ); // Just to be sure we're checking the right element.
-			} );
-
-			// Rename and some other deltas don't specify range in doc#change event.
-			// So let's see if there's no crash or something.
-			it( 'are not removed on rename', () => {
-				model.change( writer => {
-					writer.setSelection( rangeInEmptyP );
-					writer.setSelectionAttribute( 'foo', 'bar' );
-				} );
-
-				sinon.spy( model, 'enqueueChange' );
-
-				model.change( writer => {
-					writer.rename( emptyP, 'pnew' );
-				} );
-
-				expect( model.enqueueChange.called ).to.be.false;
-				expect( emptyP.getAttribute( fooStoreAttrKey ) ).to.equal( 'bar' );
-			} );
 		} );
 	} );
 
