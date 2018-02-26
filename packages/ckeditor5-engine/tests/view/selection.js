@@ -764,15 +764,6 @@ describe( 'Selection', () => {
 
 				selection._setTo( selection.getFirstPosition() );
 			} );
-
-			it( 'should do nothing if no ranges present', () => {
-				const fireSpy = sinon.spy( selection, 'fire' );
-
-				selection._setTo( selection.getFirstPosition() );
-
-				fireSpy.restore();
-				expect( fireSpy.notCalled ).to.be.true;
-			} );
 		} );
 
 		describe( 'setting collapsed selection to end', () => {
@@ -787,15 +778,6 @@ describe( 'Selection', () => {
 
 				selection._setTo( selection.getLastPosition() );
 			} );
-
-			it( 'should do nothing if no ranges present', () => {
-				const fireSpy = sinon.spy( selection, 'fire' );
-
-				selection._setTo( selection.getLastPosition() );
-
-				fireSpy.restore();
-				expect( fireSpy.notCalled ).to.be.true;
-			} );
 		} );
 
 		describe( 'removing all ranges', () => {
@@ -808,14 +790,6 @@ describe( 'Selection', () => {
 				} );
 
 				selection._setTo( null );
-			} );
-
-			it( 'should do nothing when no ranges are present', () => {
-				const fireSpy = sinon.spy( selection, 'fire' );
-				selection._setTo( null );
-
-				fireSpy.restore();
-				expect( fireSpy.notCalled ).to.be.true;
 			} );
 		} );
 
@@ -864,6 +838,30 @@ describe( 'Selection', () => {
 
 				expect( selection.fakeSelectionLabel ).to.equal( 'foo bar baz' );
 				expect( selection.isFake ).to.be.true;
+			} );
+		} );
+
+		describe( 'setting selection to itself', () => {
+			it( 'should correctly set ranges when setting to the same selection', () => {
+				selection._setTo( [ range1, range2 ] );
+				selection._setTo( selection );
+
+				const ranges = Array.from( selection.getRanges() );
+				expect( ranges.length ).to.equal( 2 );
+
+				expect( ranges[ 0 ].isEqual( range1 ) ).to.be.true;
+				expect( ranges[ 1 ].isEqual( range2 ) ).to.be.true;
+			} );
+
+			it( 'should correctly set ranges when setting to the same selection\'s ranges', () => {
+				selection._setTo( [ range1, range2 ] );
+				selection._setTo( selection.getRanges() );
+
+				const ranges = Array.from( selection.getRanges() );
+				expect( ranges.length ).to.equal( 2 );
+
+				expect( ranges[ 0 ].isEqual( range1 ) ).to.be.true;
+				expect( ranges[ 1 ].isEqual( range2 ) ).to.be.true;
 			} );
 		} );
 

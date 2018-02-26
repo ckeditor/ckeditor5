@@ -490,6 +490,7 @@ export default class Selection {
 			this._setFakeOptions( options );
 		} else if ( isIterable( selectable ) ) {
 			// We assume that the selectable is an iterable of ranges.
+			// Array.from() is used to prevent setting ranges to the old iterable
 			this._setRanges( selectable, optionsOrPlaceOrOffset && optionsOrPlaceOrOffset.backward );
 			this._setFakeOptions( optionsOrPlaceOrOffset );
 		} else {
@@ -515,6 +516,10 @@ export default class Selection {
 	 * (`false`) or backward - from end to start (`true`). Defaults to `false`.
 	 */
 	_setRanges( newRanges, isLastBackward = false ) {
+		// New ranges should be copied to prevent removing them by setting them to `[]` first.
+		// Only applies to situations when selection is set to the same selection or same selection's ranges.
+		newRanges = Array.from( newRanges );
+
 		this._ranges = [];
 
 		for ( const range of newRanges ) {

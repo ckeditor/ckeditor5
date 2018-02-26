@@ -41,7 +41,7 @@ describe( 'FakeSelectionObserver', () => {
 	} );
 
 	it( 'should do nothing if selection is not fake', () => {
-		viewDocument.selection._setTo( null, { fake: true } );
+		viewDocument.selection._setTo( null, { fake: false } );
 
 		return checkEventPrevention( keyCodes.arrowleft, false );
 	} );
