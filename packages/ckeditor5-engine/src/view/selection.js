@@ -440,6 +440,7 @@ export default class Selection {
 	 *		selection.setTo( null );
 	 *
 	 * @protected
+	 * @fires change
 	 * @param {module:engine/view/selection~Selection|module:engine/view/position~Position|
 	 * Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|module:engine/view/item~Item|null} selectable
 	 * @param {Object|Number|'before'|'end'|'after'|'on'|'in'} [optionsOrPlaceOrOffset] Offset or place when selectable is an `Item`.
