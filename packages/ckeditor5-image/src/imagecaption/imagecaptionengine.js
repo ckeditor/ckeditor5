@@ -79,8 +79,8 @@ export default class ImageCaptionEngine extends Plugin {
 		// Hide caption when everything is removed from it.
 		editing.downcastDispatcher.on( 'remove', this._fixCaptionVisibility( data => data.position.parent ), { priority: 'high' } );
 
-		// Update view before each rendering.
-		this.listenTo( view, 'render', () => this._updateCaptionVisibility( view ) );
+		// Update caption visibility on view in post fixer.
+		view.document.registerPostFixer( writer => this._updateCaptionVisibility( writer ) );
 	}
 
 	/**
@@ -88,15 +88,13 @@ export default class ImageCaptionEngine extends Plugin {
 	 * and then visible when the image is selected.
 	 *
 	 * @private
+	 * @param {module:engine/view/writer~Writer} viewWriter
+	 * @returns {Boolean} Returns `true` when view is updated.
 	 */
-	_updateCaptionVisibility( view ) {
+	_updateCaptionVisibility( viewWriter ) {
 		const mapper = this.editor.editing.mapper;
+		const lastCaption = this._lastSelectedCaption;
 		let viewCaption;
-
-		// Hide last selected caption if have no child elements.
-		if ( this._lastSelectedCaption && !this._lastSelectedCaption.childCount ) {
-			view.change( writer => writer.addClass( 'ck-hidden', this._lastSelectedCaption ) );
-		}
 
 		// If whole image is selected.
 		const modelSelection = this.editor.model.document.selection;
@@ -115,9 +113,33 @@ export default class ImageCaptionEngine extends Plugin {
 			viewCaption = mapper.toViewElement( modelCaption );
 		}
 
+		// Is currently any caption selected?
 		if ( viewCaption ) {
-			view.change( writer => writer.removeClass( 'ck-hidden', viewCaption ) );
-			this._lastSelectedCaption = viewCaption;
+			// Was any caption selected before?
+			if ( lastCaption ) {
+				// Same caption as before?
+				if ( lastCaption === viewCaption ) {
+					return showCaption( viewCaption, viewWriter );
+				} else {
+					hideCaptionIfEmpty( lastCaption, viewWriter );
+					this._lastSelectedCaption = viewCaption;
+
+					return showCaption( viewCaption, viewWriter );
+				}
+			} else {
+				this._lastSelectedCaption = viewCaption;
+				return showCaption( viewCaption, viewWriter );
+			}
+		} else {
+			// Was any caption selected before?
+			if ( lastCaption ) {
+				const viewModified = hideCaptionIfEmpty( lastCaption, viewWriter );
+				this._lastSelectedCaption = null;
+
+				return viewModified;
+			} else {
+				return false;
+			}
 		}
 	}
 
@@ -130,10 +152,7 @@ export default class ImageCaptionEngine extends Plugin {
 	 * @returns {Function}
 	 */
 	_fixCaptionVisibility( nodeFinder ) {
-		return ( evt, data, consumable, conversionApi ) => {
-			// There is no consumable on 'remove' event.
-			conversionApi = conversionApi ? conversionApi : consumable;
-
+		return ( evt, data, conversionApi ) => {
 			const node = nodeFinder( data );
 			const modelCaption = getParentCaption( node );
 			const mapper = this.editor.editing.mapper;
@@ -241,4 +260,34 @@ function getParentCaption( node ) {
 	}
 
 	return null;
+}
+
+// Hides given caption in the view if it's empty.
+//
+// @private
+// @param {module:engine/view/containerelement~ContainerElement} caption
+// @param {module:engine/view/writer~Writer} viewWriter
+// @returns {Boolean} Returns `true` if view was modified.
+function hideCaptionIfEmpty( caption, viewWriter ) {
+	if ( !caption.childCount && !caption.hasClass( 'ck-hidden' ) ) {
+		viewWriter.addClass( 'ck-hidden', caption );
+		return true;
+	}
+
+	return false;
+}
+
+// Shows the caption
+//
+// @private
+// @param {module:engine/view/containerelement~ContainerElement} caption
+// @param {module:engine/view/writer~Writer} viewWriter
+// @returns {Boolean} Returns `true` if view was modified.
+function showCaption( caption, viewWriter ) {
+	if ( caption.hasClass( 'ck-hidden' ) ) {
+		viewWriter.removeClass( 'ck-hidden', caption );
+		return true;
+	}
+
+	return false;
 }
