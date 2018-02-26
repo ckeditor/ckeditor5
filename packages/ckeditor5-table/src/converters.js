@@ -131,12 +131,12 @@ function _downcastTableRow( tableRow, conversionApi, parent ) {
 	conversionApi.writer.insert( Position.createAt( parent, 'end' ), tableRowElement );
 }
 
-function _sortRows( table, conversionApi ) {
-	const rows = { header: [], body: [] };
+function _sortRows( viewTable, conversionApi ) {
+	const rows = { header: [], body: [], maxHeadings: 0 };
 
 	let firstThead;
 
-	for ( const viewChild of Array.from( table.getChildren() ) ) {
+	for ( const viewChild of Array.from( viewTable.getChildren() ) ) {
 		if ( viewChild.name === 'tbody' || viewChild.name === 'thead' || viewChild.name === 'tfoot' ) {
 			if ( viewChild.name === 'thead' && !firstThead ) {
 				firstThead = viewChild;
@@ -151,12 +151,12 @@ function _sortRows( table, conversionApi ) {
 	return rows;
 }
 
-function _upcastTableRows( table, modelTable, modelCursor, conversionApi ) {
+function _upcastTableRows( viewTable, modelTable, modelCursor, conversionApi ) {
 	const modelRange = new ModelRange( modelCursor );
 
-	const rows = _sortRows( table, conversionApi, modelCursor );
+	const tableMeta = _sortRows( viewTable, conversionApi, modelCursor );
 
-	const allRows = [ ...rows.header, ...rows.body ];
+	const allRows = [ ...tableMeta.header, ...tableMeta.body ];
 
 	for ( const rowDef of allRows ) {
 		const rowPosition = ModelPosition.createAt( modelTable, 'end' );
@@ -168,8 +168,12 @@ function _upcastTableRows( table, modelTable, modelCursor, conversionApi ) {
 		conversionApi.convertChildren( rowDef.view, childrenCursor );
 	}
 
-	if ( rows.header.length ) {
-		conversionApi.writer.setAttribute( 'headingRows', rows.header.length, modelTable );
+	if ( tableMeta.header.length ) {
+		conversionApi.writer.setAttribute( 'headingRows', tableMeta.header.length, modelTable );
+	}
+
+	if ( tableMeta.maxHeadings ) {
+		conversionApi.writer.setAttribute( 'headingColumns', tableMeta.maxHeadings, modelTable );
 	}
 
 	if ( !allRows.length ) {
@@ -194,6 +198,23 @@ function _createModelRow( row, rows, conversionApi, firstThead ) {
 		rows.header.push( { model: modelRow, view: row } );
 	} else {
 		rows.body.push( { model: modelRow, view: row } );
+	}
+
+	let headingCols = 0;
+
+	const tableCells = Array.from( row.getChildren() );
+
+	for ( const tableCell of tableCells ) {
+		const name = tableCell.name;
+		const cellIndex = row.getChildIndex( tableCell );
+
+		if ( name === 'th' && ( cellIndex === 0 || tableCells[ cellIndex - 1 ].name === 'th' ) ) {
+			headingCols = cellIndex + 1;
+		}
+	}
+
+	if ( headingCols > rows.maxHeadings ) {
+		rows.maxHeadings = headingCols;
 	}
 }
 

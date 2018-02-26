@@ -47,9 +47,6 @@ export default class TablesEditing extends Plugin {
 		conversion.for( 'upcast' ).add( upcastTable() );
 		conversion.for( 'downcast' ).add( downcastTable() );
 
-		// Table row upcast only since downcast conversion is done in `downcastTable()`.
-		conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableRow', view: 'tr' } ) );
-
 		// Table cell conversion.
 		conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'td' } ) );
 		conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'th' } ) );

@@ -244,6 +244,24 @@ describe( 'Table converters', () => {
 				'<fooTable></fooTable>'
 			);
 		} );
+
+		describe( 'headingColumns', () => {
+			it( 'should properly calculate heading columns', () => {
+				editor.setData(
+					'<table>' +
+					'<tbody>' +
+					'<tr><th>11</th><th>12</th><td>13</td></tr>' +
+					'</tbody>' +
+					'</table>'
+				);
+
+				expectModel(
+					'<table headingColumns="2">' +
+					'<tableRow><tableCell>11</tableCell><tableCell>12</tableCell><tableCell>13</tableCell></tableRow>' +
+					'</table>'
+				);
+			} );
+		} );
 	} );
 
 	describe( 'downcastTable()', () => {
