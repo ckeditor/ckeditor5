@@ -140,12 +140,12 @@ export default class DocumentSelection {
 	}
 
 	/**
-	 * Describes whether gravity is overridden (using {@link ~DocumentSelection#_overrideGravity}) or not.
+	 * Describes whether the gravity is overridden (using {@link module:engine/model/writer~Writer#overrideSelectionGravity}) or not.
 	 *
-	 * Note that gravity remains overridden as long as won't be restored the same number of times as was overridden.
+	 * Note that the gravity remains overridden as long as will not be restored the same number of times as it was overridden.
 	 *
 	 * @readonly
-	 * @return {boolean}
+	 * @return {Boolean}
 	 */
 	get isGravityOverridden() {
 		return this._selection.isGravityOverridden;

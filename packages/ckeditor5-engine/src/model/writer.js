@@ -1017,25 +1017,27 @@ export default class Writer {
 	}
 
 	/**
-	 * Temporarily changes the gravity of the selection from left to right. The gravity defines from which direction
-	 * the selection inherits its attributes. If it's the default left gravity, the selection (after being moved by
-	 * the user) inherits attributes from its left hand side. This method allows to temporarily override this behavior
-	 * by forcing the gravity to the right.
+	 * Temporarily changes the {@link module:engine/model/documentselection~DocumentSelection#isGravityOverridden gravity}
+	 * of the selection from left to right.
+	 *
+	 * The gravity defines from which direction the selection inherits its attributes. If it's the default left gravity,
+	 * then the selection (after being moved by the user) inherits attributes from its left-hand side.
+	 * This method allows to temporarily override this behavior by forcing the gravity to the right.
 	 *
 	 * For the following model fragment:
 	 *
-	 * 		<$text bold="true" linkHref="url">bar[]</$text><$text bold="true">biz</$text>
+	 *		<$text bold="true" linkHref="url">bar[]</$text><$text bold="true">biz</$text>
 	 *
-	 * Default gravity: selection will have the `bold` and `linkHref` attributes.
-	 * Overridden gravity: selection will have `bold` attribute.
+	 * * Default gravity: selection will have the `bold` and `linkHref` attributes.
+	 * * Overridden gravity: selection will have `bold` attribute.
 	 *
 	 * By default the selection's gravity is automatically restored just after a direct selection change (when user
-	 * move caret) but you can pass customRestore = true in which case you will have to call
+	 * moved the caret) but you can pass `customRestore = true` in which case you will have to call
 	 * {@link ~Writer#restoreSelectionGravity} manually.
 	 *
-	 * When the selection's gravity is overridden more than once without restoring meanwhile then needs to be restored
-	 * the same number of times as was overridden to revert default behavior. This is to prevent conflicts when
-	 * more than one feature want independently override and restore selection's gravity.
+	 * When the selection's gravity is overridden more than once without being restored in the meantime then it needs
+	 * to be restored the same number of times. This is to prevent conflicts when
+	 * more than one feature want to independently override and restore the selection's gravity.
 	 *
 	 * @param {Boolean} [customRestore=false] When `true` then gravity won't be restored until
 	 * {@link ~Writer#restoreSelectionGravity} will be called directly. When `false` then gravity is restored
@@ -1048,7 +1050,7 @@ export default class Writer {
 	/**
 	 * Restores {@link ~Writer#overrideSelectionGravity} gravity to default.
 	 *
-	 * Note that selection's gravity remains overridden as long as won't be restored the same number of times as was overridden.
+	 * Note that the gravity remains overridden as long as will not be restored the same number of times as it was overridden.
 	 */
 	restoreSelectionGravity() {
 		this.model.document.selection._restoreGravity();

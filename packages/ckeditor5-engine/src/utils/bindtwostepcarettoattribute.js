@@ -10,30 +10,31 @@
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 /**
- * This helper adds two-steps caret movement behaviour for given attribute.
+ * This helper adds two-step caret movement behavior for the given attribute.
  *
- * When caret is moving by arrow keys and reach bound of text with attribute for which behaviour is enabled
- * then typing does not expand this attribute. Additional arrow key press is needed to "enter" to the text
- * and start typing with this attribute. The same is is for leaving this text.
+ * For example, when this behavior is enabled for the `linkHref` attribute (which converts to `<a>` element in the view)
+ * and the caret is just before an `<a>` element (at a link boundary), then pressing
+ * the right arrow key will move caret into that `<a>`element instead of moving it after the next character:
  *
- * When behaviour is enabled for `linkHref` attribute and caret is just before the attribute element then pressing
- * right arrow will move caret inside the attribute element instead of moving after next character:
+ * * With two-step caret movement: `<p>foo{}<a>bar</a>biz<p>` + <kbd>→</kbd> => `<p>foo<a>{}bar</a>biz<p>`
+ * * Without two-step caret movement: `<p>foo{}<a>bar</a>biz<p>` + <kbd>→</kbd> => `<p>foo<a>b{}ar</a>biz<p>`
  *
- * 		<p>foo{}<a>bar</a>biz<p> `->` <p>foo<a>{}foo</a>barr<p>
+ * The same behavior will be changed fo "leaving" an attribute element:
  *
- * The same is for "leaving" attribute element:
- *
- * 		<p>foo<a>bar{}</a>biz<p> `->` <p>foo<a>bar</a>{}biz<p>
+ * * With two-step caret movement: `<p>foo<a>bar{}</a>biz<p>` + <kbd>→</kbd> => `<p>foo<a>bar</a>{}biz<p>`
+ * * Without two-step caret movement: `<p>foo<a>bar{}</a>biz<p>` + <kbd>→</kbd> => `<p>foo<a>bar</a>b{}iz<p>`
  *
  * And when moving left:
  *
- * 		<p>foo<a>bar</a>{}biz<p> `<-` <p>foo<a>bar{}</a>biz<p>
- * 		<p>foo<a>{}bar</a>biz<p> `<-` <p>foo{}<a>bar</a>biz<p>
+ * * With two-step caret movement: `<p>foo<a>bar</a>b{}iz<p>` + <kbd>←</kbd> => `<p>foo<a>bar</a>{}biz<p>` +
+ * <kbd>←</kbd> => `<p>foo<a>bar{}</a>biz<p>`
+ * * Without two-step caret movement: `<p>foo<a>bar</a>b{}iz<p>` + <kbd>←</kbd> => `<p>foo<a>bar{}</a>biz<p>`
  *
  * @param {module:engine/view/view~View} view View controller instance.
  * @param {module:engine/model/model~Model} model Data model instance.
- * @param {module:utils/dom/emittermixin~Emitter} emitter The emitter to which this behavior should be added.
- * @param {String} attribute Attribute for which behaviour will be added.
+ * @param {module:utils/dom/emittermixin~Emitter} emitter The emitter to which this behavior should be added
+ * (e.g. a plugin instance).
+ * @param {String} attribute Attribute for which this behavior will be added.
  */
 export default function bindTwoStepCaretToAttribute( view, model, emitter, attribute ) {
 	const modelSelection = model.document.selection;
