@@ -291,7 +291,7 @@ describe( 'Selection', () => {
 			} ).to.throw( /model-selection-setTo-not-selectable/ );
 		} );
 
-		it( 'should allow setting selection inside the element', () => {
+		it( 'should allow setting selection inside an element', () => {
 			const element = new Element( 'p', null, [ new Text( 'foo' ), new Text( 'bar' ) ] );
 
 			selection.setTo( element, 'in' );
@@ -304,7 +304,7 @@ describe( 'Selection', () => {
 			expect( ranges[ 0 ].end.offset ).to.deep.equal( 6 );
 		} );
 
-		it( 'should allow setting selection on the item', () => {
+		it( 'should allow setting selection on an item', () => {
 			const textNode1 = new Text( 'foo' );
 			const textNode2 = new Text( 'bar' );
 			const textNode3 = new Text( 'baz' );
@@ -320,7 +320,7 @@ describe( 'Selection', () => {
 			expect( ranges[ 0 ].end.offset ).to.deep.equal( 6 );
 		} );
 
-		it( 'should allow setting backward inside on the item', () => {
+		it( 'should allow setting backward selection on an item', () => {
 			const textNode1 = new Text( 'foo' );
 			const textNode2 = new Text( 'bar' );
 			const textNode3 = new Text( 'baz' );
@@ -334,7 +334,7 @@ describe( 'Selection', () => {
 			expect( ranges[ 0 ].start.offset ).to.deep.equal( 3 );
 			expect( ranges[ 0 ].end.parent ).to.equal( element );
 			expect( ranges[ 0 ].end.offset ).to.deep.equal( 6 );
-			expect( selection.isBackward ).to.equal( true );
+			expect( selection.isBackward ).to.be.true;
 		} );
 
 		// TODO - backward

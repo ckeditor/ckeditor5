@@ -881,6 +881,49 @@ describe( 'Selection', () => {
 				} ).to.throw( CKEditorError, 'view-selection-range-intersects' );
 			} );
 		} );
+
+		it( 'should allow setting selection on an item', () => {
+			const textNode1 = new Text( 'foo' );
+			const textNode2 = new Text( 'bar' );
+			const textNode3 = new Text( 'baz' );
+			const element = new Element( 'p', null, [ textNode1, textNode2, textNode3 ] );
+
+			selection._setTo( textNode2, 'on' );
+
+			const ranges = Array.from( selection.getRanges() );
+			expect( ranges.length ).to.equal( 1 );
+			expect( ranges[ 0 ].start.parent ).to.equal( element );
+			expect( ranges[ 0 ].start.offset ).to.deep.equal( 1 );
+			expect( ranges[ 0 ].end.parent ).to.equal( element );
+			expect( ranges[ 0 ].end.offset ).to.deep.equal( 2 );
+		} );
+
+		it( 'should allow setting selection inside an element', () => {
+			const element = new Element( 'p', null, [ new Text( 'foo' ), new Text( 'bar' ) ] );
+
+			selection._setTo( element, 'in' );
+
+			const ranges = Array.from( selection.getRanges() );
+			expect( ranges.length ).to.equal( 1 );
+			expect( ranges[ 0 ].start.parent ).to.equal( element );
+			expect( ranges[ 0 ].start.offset ).to.deep.equal( 0 );
+			expect( ranges[ 0 ].end.parent ).to.equal( element );
+			expect( ranges[ 0 ].end.offset ).to.deep.equal( 2 );
+		} );
+
+		it( 'should allow setting backward selection inside an element', () => {
+			const element = new Element( 'p', null, [ new Text( 'foo' ), new Text( 'bar' ) ] );
+
+			selection._setTo( element, 'in', { backward: true } );
+
+			const ranges = Array.from( selection.getRanges() );
+			expect( ranges.length ).to.equal( 1 );
+			expect( ranges[ 0 ].start.parent ).to.equal( element );
+			expect( ranges[ 0 ].start.offset ).to.deep.equal( 0 );
+			expect( ranges[ 0 ].end.parent ).to.equal( element );
+			expect( ranges[ 0 ].end.offset ).to.deep.equal( 2 );
+			expect( selection.isBackward ).to.be.true;
+		} );
 	} );
 
 	describe( 'getEditableElement()', () => {
