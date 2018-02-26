@@ -69,10 +69,15 @@ export default class Selection {
 	 *
 	 * @param {module:engine/view/selection~Selection|module:engine/view/position~Position|
 	 * Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|module:engine/view/item~Item|null} [selectable=null]
-	 * @param {Object|Number|'before'|'end'|'after'|'on'|'in'} [optionsOrPlaceOrOffset]
-	 * @param {Boolean} [optionsOrPlaceOrOffset.backward]
-	 * @param {Object} [options]
-	 * @param {Boolean} [options.backward]
+	 * @param {Object|Number|'before'|'end'|'after'|'on'|'in'} [optionsOrPlaceOrOffset] Offset or place when selectable is an `Item`.
+	 * Options otherwise.
+	 * @param {Boolean} [optionsOrPlaceOrOffset.backward] Sets this selection instance to be backward.
+	 * @param {Boolean} [optionsOrPlaceOrOffset.fake] Sets this selection instance to be marked as `fake`.
+	 * @param {Boolean} [optionsOrPlaceOrOffset.label] Label for the fake selection.
+	 * @param {Object} [options] Options when selectable is an `Item`.
+	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
+	 * @param {Boolean} [options.fake] Sets this selection instance to be marked as `fake`.
+	 * @param {String} [options.label] Label for the fake selection.
 	 */
 	constructor( selectable = null, optionsOrPlaceOrOffset, options ) {
 		/**
@@ -437,12 +442,13 @@ export default class Selection {
 	 * @protected
 	 * @param {module:engine/view/selection~Selection|module:engine/view/position~Position|
 	 * Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|module:engine/view/item~Item|null} selectable
-	 * @param {Object|Number|'before'|'end'|'after'|'on'|'in'} [optionsOrPlaceOrOffset]
-	 * @param {Boolean} [optionsOrPlaceOrOffset.backward] Sets this selection as backward.
+	 * @param {Object|Number|'before'|'end'|'after'|'on'|'in'} [optionsOrPlaceOrOffset] Offset or place when selectable is an `Item`.
+	 * Options otherwise.
+	 * @param {Boolean} [optionsOrPlaceOrOffset.backward] Sets this selection instance to be backward.
 	 * @param {Boolean} [optionsOrPlaceOrOffset.fake] Sets this selection instance to be marked as `fake`.
-	 * @param {String} [optionsOrPlaceOrOffset.label] Label for the fake selection.
-	 * @param {Object} [options]
-	 * @param {Boolean} [options.backward] Sets this selection as backward.
+	 * @param {Boolean} [optionsOrPlaceOrOffset.label] Label for the fake selection.
+	 * @param {Object} [options] Options when selectable is an `Item`.
+	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
 	 * @param {Boolean} [options.fake] Sets this selection instance to be marked as `fake`.
 	 * @param {String} [options.label] Label for the fake selection.
 	 */
@@ -463,20 +469,21 @@ export default class Selection {
 			const backward = !!options && !!options.backward;
 			let range;
 
-			if ( optionsOrPlaceOrOffset == 'in' ) {
-				range = Range.createIn( selectable );
-			} else if ( optionsOrPlaceOrOffset == 'on' ) {
-				range = Range.createOn( selectable );
-			} else if ( optionsOrPlaceOrOffset !== undefined ) {
-				range = Range.createCollapsedAt( selectable, optionsOrPlaceOrOffset );
-			} else {
+			if ( optionsOrPlaceOrOffset === undefined ) {
 				/**
 				 * Required second parameter when setting selection to node.
 				 *
 				 * @error view-selection-setTo-required-second-parameter
 				 */
 				throw new CKEditorError(
-					'view-selection-setTo-required-second-parameter: Required second parameter when setting selection to node.' );
+					'view-selection-setTo-required-second-parameter: Required second parameter when setting selection to node.'
+				);
+			} else if ( optionsOrPlaceOrOffset == 'in' ) {
+				range = Range.createIn( selectable );
+			} else if ( optionsOrPlaceOrOffset == 'on' ) {
+				range = Range.createOn( selectable );
+			} else {
+				range = Range.createCollapsedAt( selectable, optionsOrPlaceOrOffset );
 			}
 
 			this._setRanges( [ range ], backward );

@@ -10,23 +10,33 @@ import ViewPosition from '../../../src/view/position';
 import createViewRoot from '../_utils/createroot';
 
 describe( 'Writer', () => {
-	let writer, attributes, root;
+	let writer, attributes, root, doc;
 
 	before( () => {
 		attributes = { foo: 'bar', baz: 'quz' };
-		const document = new Document();
-		root = createViewRoot( document );
-		writer = new Writer( document );
+		doc = new Document();
+		root = createViewRoot( doc );
+		writer = new Writer( doc );
 	} );
 
 	describe( 'setSelection()', () => {
-		it( 'should use selection._setTo method internally', () => {
-			const spy = sinon.spy( writer.document.selection, '_setTo' );
+		it( 'should set document view selection', () => {
 			const position = ViewPosition.createAt( root );
 			writer.setSelection( position );
 
-			sinon.assert.calledWith( spy, position );
-			spy.restore();
+			const ranges = Array.from( doc.selection.getRanges() );
+
+			expect( ranges.length ).to.equal( 1 );
+			expect( ranges[ 0 ].start.compareWith( position ) ).to.equal( 'same' );
+			expect( ranges[ 0 ].end.compareWith( position ) ).to.equal( 'same' );
+		} );
+
+		it( 'should be able to set fake selection', () => {
+			const position = ViewPosition.createAt( root );
+			writer.setSelection( position, { fake: true, label: 'foo' } );
+
+			expect( doc.selection.isFake ).to.be.true;
+			expect( doc.selection.fakeSelectionLabel ).to.equal( 'foo' );
 		} );
 	} );
 
@@ -36,17 +46,6 @@ describe( 'Writer', () => {
 			writer.setSelectionFocus( root, 0 );
 
 			sinon.assert.calledWithExactly( spy, root, 0 );
-			spy.restore();
-		} );
-	} );
-
-	describe( 'setFakeSelection()', () => {
-		it( 'should use selection._setFake method internally', () => {
-			const spy = sinon.spy( writer.document.selection, '_setFake' );
-			const options = {};
-			writer.setFakeSelection( true, options );
-
-			sinon.assert.calledWithExactly( spy, true, options );
 			spy.restore();
 		} );
 	} );
