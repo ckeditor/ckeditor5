@@ -109,15 +109,20 @@ export default class View {
 		this._ongoingChange = false;
 
 		/**
-		 * Is set to `true` when rendering view to DOM was started.
-		 * This is used to check whether view document can accept changes in current state.
-		 * From the moment when rendering to DOM is stared view tree is locked to prevent changes that will not be
-		 * reflected in the DOM.
+		 * Used to prevent calling {@link #render} and {@link #change) during rendering view to the DOM.
 		 *
 		 * @private
-		 * @member {Boolean} module:engine/view/view~View#_renderingStarted
+		 * @member {Boolean} module:engine/view/view~View#_renderingInProgress
 		 */
-		this._renderingStarted = false;
+		this._renderingInProgress = false;
+
+		/**
+		 * Used to prevent calling {@link #render} and {@link #change) during rendering view to the DOM.
+		 *
+		 * @private
+		 * @member {Boolean} module:engine/view/view~View#_renderingInProgress
+		 */
+		this._postFixersInProgress = false;
 
 		/**
 		 * Writer instance used in {@link #change change method) callbacks.
@@ -138,10 +143,10 @@ export default class View {
 		injectQuirksHandling( this );
 		injectUiElementHandling( this );
 
-		// Use 'low` priority so that all listeners on 'normal` priority will be executed before.
+		// Use 'normal' priority so that rendering is performed as first when using that priority.
 		this.on( 'render', () => {
 			this._render();
-		}, { priority: 'low' } );
+		} );
 	}
 
 	/**
@@ -312,21 +317,41 @@ export default class View {
 	 * @param {Function} callback Callback function which may modify the view.
 	 */
 	change( callback ) {
-		// Check if change is performed in correct moment.
-		this._assertRenderingInProgress();
+		if ( this._renderingInProgress || this._postFixersInProgress ) {
+			/**
+			 * Thrown when there is an attempt to make changes to the view tree when it is in incorrect state. This may
+			 * cause some unexpected behaviour and inconsistency between the DOM and the view.
+			 * This may be caused by:
+			 *   * calling {@link #change} or {@link #render} during rendering process,
+			 *   * calling {@link #change} or {@link #render} inside of
+			 *   {@link module:engine/view/document~Document#registerPostFixer post fixer function}.
+			 */
+			throw new CKEditorError(
+				'cannot-change-view-tree: ' +
+				'Attempting to make changes to the view when it is in incorrect state: rendering or post fixers are in progress. ' +
+				'This may cause some unexpected behaviour and inconsistency between the DOM and the view.'
+			);
+		}
 
-		// If other changes are in progress wait with rendering until every ongoing change is over.
+		// Recursive call to view.change() method - execute listener immediately.
 		if ( this._ongoingChange ) {
 			callback( this._writer );
-		} else {
-			this._ongoingChange = true;
 
-			callback( this._writer );
-			this.fire( 'render' );
-
-			this._ongoingChange = false;
-			this._renderingStarted = false;
+			return;
 		}
+
+		// This lock will assure that all recursive calls to view.change() will end up in same block - one "render"
+		// event for all nested calls.
+		this._ongoingChange = true;
+		callback( this._writer );
+		this._ongoingChange = false;
+
+		// Execute all document post fixers after the change.
+		this._postFixersInProgress = true;
+		this.document._callPostFixers( this._writer );
+		this._postFixersInProgress = false;
+
+		this.fire( 'render' );
 	}
 
 	/**
@@ -337,15 +362,7 @@ export default class View {
 	 * trying to re-render when rendering to DOM has already started.
 	 */
 	render() {
-		// Check if rendering is performed in correct moment.
-		this._assertRenderingInProgress();
-
-		// Render only if no ongoing changes are in progress. If there are some, view document will be rendered after all
-		// changes are done. This way view document will not be rendered in the middle of some changes.
-		if ( !this._ongoingChange ) {
-			this.fire( 'render' );
-			this._renderingStarted = false;
-		}
+		this.change( () => {} );
 	}
 
 	/**
@@ -366,47 +383,22 @@ export default class View {
 	 * @private
 	 */
 	_render() {
-		this._renderingStarted = true;
-
+		this._renderingInProgress = true;
 		this.disableObservers();
 		this._renderer.render();
 		this.enableObservers();
+		this._renderingInProgress = false;
 	}
 
 	/**
-	 * Throws `applying-view-changes-on-rendering` error when trying to modify or re-render view tree when rendering is
-	 * already started
+	 * Fired after a topmost {@link module:engine/view/view~View#change change block} and all
+	 * {@link module:engine/view/document~Document#registerPostFixer post fixers} are executed.
 	 *
-	 * @private
-	 */
-	_assertRenderingInProgress() {
-		if ( this._renderingStarted ) {
-			/**
-			 * There is an attempt to make changes in the view tree after the rendering process
-			 * has started. This may cause unexpected behaviour and inconsistency between the DOM and the view.
-			 * This may be caused by:
-			 *   * calling `view.change()` or `view.render()` methods during rendering process,
-			 *   * calling `view.change()` or `view.render()` methods in callbacks to
-			 *   {module:engine/view/document~Document#event:change view document change event) on `low` priority, after
-			 *   rendering is over for current `change` block.
-			 *
-			 * @error applying-view-changes-on-rendering
-			 */
-			throw new CKEditorError(
-				'applying-view-changes-on-rendering: ' +
-				'Attempting to make changes in the view during rendering process. ' +
-				'This may cause some unexpected behaviour and inconsistency between the DOM and the view.'
-			);
-		}
-	}
-
-	/**
-	 * Fired after a topmost {@link module:engine/view/view~View#change change block} is finished and the DOM rendering has
-	 * been executed.
+	 * Actual rendering is performed as a first listener on 'normal' priority.
 	 *
-	 * Actual rendering is performed on 'low' priority. This means that all listeners on 'normal' and above priorities
-	 * will be executed after changes made to view tree but before rendering to the DOM. Use `low` priority for callbacks that
-	 * should be executed after rendering to the DOM.
+	 *		view.on( 'render', () => {
+	 *			// Rendering to the DOM is complete.
+	 *		} );
 	 *
 	 * @event module:engine/view/view~View#event:render
 	 */

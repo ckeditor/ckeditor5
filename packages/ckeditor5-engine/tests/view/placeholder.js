@@ -74,12 +74,17 @@ describe( 'placeholder', () => {
 		it( 'use check function if one is provided', () => {
 			setData( view, '<div></div><div>{another div}</div>' );
 			const element = viewRoot.getChild( 0 );
-			const spy = sinon.spy( () => false );
+			let result = true;
+			const spy = sinon.spy( () => result );
 
 			attachPlaceholder( view, element, 'foo bar baz', spy );
 
 			sinon.assert.called( spy );
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
+			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
+
+			result = false;
+			view.render();
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
 		} );
 
@@ -184,6 +189,16 @@ describe( 'placeholder', () => {
 
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
 			expect( element.hasClass( 'ck-placeholder' ) ).to.be.true;
+
+			detachPlaceholder( view, element );
+
+			expect( element.hasAttribute( 'data-placeholder' ) ).to.be.false;
+			expect( element.hasClass( 'ck-placeholder' ) ).to.be.false;
+		} );
+
+		it( 'should not blow up when called on element without placeholder', () => {
+			setData( view, '<div></div><div>{another div}</div>' );
+			const element = viewRoot.getChild( 0 );
 
 			detachPlaceholder( view, element );
 
