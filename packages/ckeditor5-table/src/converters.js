@@ -68,15 +68,17 @@ export function upcastTable() {
 
 export function downcastTableCell() {
 	return dispatcher => dispatcher.on( 'insert:tableCell', ( evt, data, conversionApi ) => {
-		if ( !conversionApi.consumable.consume( data.item, 'insert' ) ) {
+		const tableCell = data.item;
+
+		if ( !conversionApi.consumable.consume( tableCell, 'insert' ) ) {
 			return;
 		}
 
-		const tableCellElement = conversionApi.writer.createContainerElement( 'td' );
+		const tableCellElement = conversionApi.writer.createContainerElement( isHead( tableCell ) ? 'th' : 'td' );
 
 		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
 
-		conversionApi.mapper.bindElements( data.item, tableCellElement );
+		conversionApi.mapper.bindElements( tableCell, tableCellElement );
 		conversionApi.writer.insert( viewPosition, tableCellElement );
 	}, { priority: 'normal' } );
 }
@@ -193,5 +195,14 @@ function _createModelRow( row, rows, conversionApi, firstThead ) {
 	} else {
 		rows.body.push( { model: modelRow, view: row } );
 	}
+}
+
+function isHead( tableCell ) {
+	const row = tableCell.parent;
+	const table = row.parent;
+	const rowIndex = table.getChildIndex( row );
+	const headingRows = table.getAttribute( 'headingRows' );
+
+	return headingRows && headingRows > rowIndex;
 }
 

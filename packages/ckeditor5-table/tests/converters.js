@@ -274,7 +274,7 @@ describe( 'Table converters', () => {
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
 				'<table>' +
 				'<thead>' +
-				'<tr><td>1</td></tr>' +
+				'<tr><th>1</th></tr>' +
 				'</thead>' +
 				'<tbody>' +
 				'<tr><td>2</td></tr>' +
@@ -294,8 +294,8 @@ describe( 'Table converters', () => {
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
 				'<table>' +
 				'<thead>' +
-				'<tr><td>1</td></tr>' +
-				'<tr><td>2</td></tr>' +
+				'<tr><th>1</th></tr>' +
+				'<tr><th>2</th></tr>' +
 				'</thead>' +
 				'</table>'
 			);

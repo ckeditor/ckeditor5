@@ -43,7 +43,7 @@ describe( 'TableEditing', () => {
 			it( 'should create thead section', () => {
 				setModelData( model, '<table headingRows="1"><tableRow><tableCell>foo[]</tableCell></tableRow></table>' );
 
-				expect( editor.getData() ).to.equal( '<table><thead><tr><td>foo</td></tr></thead></table>' );
+				expect( editor.getData() ).to.equal( '<table><thead><tr><th>foo</th></tr></thead></table>' );
 			} );
 
 			it( 'should create thead and tbody sections in proper order', () => {
@@ -55,7 +55,7 @@ describe( 'TableEditing', () => {
 				);
 
 				expect( editor.getData() ).to.equal( '<table>' +
-					'<thead><tr><td>foo</td></tr></thead>' +
+					'<thead><tr><th>foo</th></tr></thead>' +
 					'<tbody><tr><td>bar</td></tr><tr><td>baz</td></tr></tbody>' +
 					'</table>'
 				);
