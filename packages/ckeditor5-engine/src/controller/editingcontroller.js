@@ -9,6 +9,7 @@
 
 import RootEditableElement from '../view/rooteditableelement';
 import View from '../view/view';
+import ViewWriter from '../view/writer';
 import Mapper from '../conversion/mapper';
 import DowncastDispatcher from '../conversion/downcastdispatcher';
 import {
@@ -106,6 +107,10 @@ export default class EditingController {
 		// `removedMarkers` keeps information which markers already has been removed to prevent removing them twice.
 		const removedMarkers = new Set();
 
+		// We don't want to render view when markers are converted, so we need to create view writer
+		// manually instead of using `View#change` block. See https://github.com/ckeditor/ckeditor5-engine/issues/1323.
+		const viewWriter = new ViewWriter( this.view.document );
+
 		this.listenTo( model, 'applyOperation', ( evt, args ) => {
 			// Before operation is applied...
 			const operation = args[ 0 ];
@@ -121,10 +126,7 @@ export default class EditingController {
 				if ( _operationAffectsMarker( operation, marker ) ) {
 					// And if the operation in any way modifies the marker, remove the marker from the view.
 					removedMarkers.add( marker.name );
-					this.view.change( writer => {
-						this.downcastDispatcher.convertMarkerRemove( marker.name, markerRange, writer );
-					} );
-
+					this.downcastDispatcher.convertMarkerRemove( marker.name, markerRange, viewWriter );
 					// TODO: This stinks but this is the safest place to have this code.
 					this.model.document.differ.bufferMarkerChange( marker.name, markerRange, markerRange );
 				}
@@ -135,10 +137,7 @@ export default class EditingController {
 		this.listenTo( model.markers, 'update', ( evt, marker, oldRange ) => {
 			if ( oldRange && !removedMarkers.has( marker.name ) ) {
 				removedMarkers.add( marker.name );
-
-				this.view.change( writer => {
-					this.downcastDispatcher.convertMarkerRemove( marker.name, oldRange, writer );
-				} );
+				this.downcastDispatcher.convertMarkerRemove( marker.name, oldRange, viewWriter );
 			}
 		} );
 
