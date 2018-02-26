@@ -400,6 +400,10 @@ export default class View {
 	 *			// Rendering to the DOM is complete.
 	 *		} );
 	 *
+	 * This event is useful when you want to update interface elements after the rendering, e.g. position of the
+	 * balloon panel. If you wants to change view structure use
+	 * {@link module:engine/view/document~Document#registerPostFixer post fixers}.
+	 *
 	 * @event module:engine/view/view~View#event:render
 	 */
 }

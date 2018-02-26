@@ -96,6 +96,10 @@ export default class Document {
 	 * a change, it should return `true`. When this happens, all post-fixers are fired again to check if something else should
 	 * not be fixed in the new document tree state.
 	 *
+	 * View post-fixers are useful when you wants to update view structure whenever it changes, for instance add some classes
+	 * to elements based on the view structure or selection. However, is you need DOM elements to be already updated, use
+	 * {@link module:engine/view/view~View#event:render render event}.
+	 *
 	 * As a parameter, a post-fixer callback receives a {@link module:engine/view/writer~Writer writer} instance connected with the
 	 * executed changes block.
 	 *
