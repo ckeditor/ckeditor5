@@ -107,7 +107,7 @@ export default class EditingController {
 		// `removedMarkers` keeps information which markers already has been removed to prevent removing them twice.
 		const removedMarkers = new Set();
 
-		// We don't want to render view in the middle of the `Model#change` block, so we need to create view writer
+		// We don't want to render view when markers are converted, so we need to create view writer
 		// manually instead of using `View#change` block. See https://github.com/ckeditor/ckeditor5-engine/issues/1323.
 		const viewWriter = new ViewWriter( this.view.document );
 
