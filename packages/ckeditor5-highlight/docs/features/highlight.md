@@ -27,14 +27,14 @@ ClassicEditor
 					model: 'greenMarker',
 					class: 'marker-green',
 					title: 'Green marker',
-					color: '#63f963',
+					color: 'var(--ck-marker-green)',
 					type: 'marker'
 				},
 				{
 					model: 'redPen',
 					class: 'pen-red',
 					title: 'Red pen',
-					color: '#e91313',
+					color: 'var(--ck-pen-red)',
 					type: 'pen'
 				}
 			]
@@ -112,12 +112,12 @@ The {@link module:highlight/highlight~Highlight} plugin registers:
 	The `value` corresponds to the `model` property in configuration object. For the default configuration:
 	```js
 	highlight.options = [
-		{ model: 'yellowMarker', class: 'marker-yellow', title: 'Yellow Marker', color: '#fdfd77', type: 'marker' },
-		{ model: 'greenMarker', class: 'marker-green', title: 'Green marker', color: '#63f963', type: 'marker' },
-		{ model: 'pinkMarker', class: 'marker-pink', title: 'Pink marker', color: '#fc7999', type: 'marker' },
-		{ model: 'blueMarker', class: 'marker-blue', title: 'Blue marker', color: '#72cdfd', type: 'marker' },
-		{ model: 'redPen', class: 'pen-red', title: 'Red pen', color: '#e91313', type: 'pen' },
-		{ model: 'greenPen', class: 'pen-green', title: 'Green pen', color: '#118800', type: 'pen' }
+		{ model: 'yellowMarker', class: 'marker-yellow', title: 'Yellow Marker', color: 'var(--ck-marker-yellow)', type: 'marker' },
+		{ model: 'greenMarker', class: 'marker-green', title: 'Green marker', color: 'var(--ck-marker-green)', type: 'marker' },
+		{ model: 'pinkMarker', class: 'marker-pink', title: 'Pink marker', color: 'var(--ck-marker-pink)', type: 'marker' },
+		{ model: 'blueMarker', class: 'marker-blue', title: 'Blue marker', color: 'var(--ck-marker-blue)', type: 'marker' },
+		{ model: 'redPen', class: 'pen-red', title: 'Red pen', color: 'var(--ck-pen-red)', type: 'pen' },
+		{ model: 'greenPen', class: 'pen-green', title: 'Green pen', color: 'var(--ck-pen-green)', type: 'pen' }
 	]
 	```
 
