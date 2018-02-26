@@ -22,7 +22,7 @@
 	.pen-$color {
 		color: var(--ck-pen-$color);
 
-		/* Override default `<mark>` yellow background from user agent stylesheet */
+		/* Override default yellow background of `<mark>` from user agent stylesheet */
 		background-color: transparent;
 	}
 }
