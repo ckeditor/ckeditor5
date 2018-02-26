@@ -69,7 +69,7 @@ describe( 'Link', () => {
 		expect( editor.plugins.get( ContextualBalloon ) ).to.be.instanceOf( ContextualBalloon );
 	} );
 
-	describe( 'init', () => {
+	describe( 'init()', () => {
 		it( 'should register click observer', () => {
 			expect( editor.editing.view.getObserver( ClickObserver ) ).to.be.instanceOf( ClickObserver );
 		} );
@@ -80,6 +80,26 @@ describe( 'Link', () => {
 
 		it( 'should create #formView', () => {
 			expect( formView ).to.be.instanceOf( LinkFormView );
+		} );
+
+		it( 'should bind two-step caret movement to `linkHref` attribute', () => {
+			// Let's check only the minimum to not duplicated `bindTwoStepCaretToAttribute()` tests.
+			// Testing minimum is better then testing using spies that might give false positive results.
+
+			// Put selection before the link element.
+			setModelData( editor.model, '<paragraph>foo[]<$text linkHref="url">b</$text>ar</paragraph>' );
+
+			// The selection's gravity is not overridden because selection land here not as a result of `keydown`.
+			expect( editor.model.document.selection.isGravityOverridden ).to.false;
+
+			// So let's simulate `keydown` event.
+			editor.editing.view.document.fire( 'keydown', {
+				keyCode: keyCodes.arrowright,
+				preventDefault: () => {},
+				domTarget: document.body
+			} );
+
+			expect( editor.model.document.selection.isGravityOverridden ).to.true;
 		} );
 
 		describe( 'link toolbar button', () => {

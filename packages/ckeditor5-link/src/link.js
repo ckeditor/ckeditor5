@@ -15,6 +15,7 @@ import { isLinkElement } from './utils';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
 
 import clickOutsideHandler from '@ckeditor/ckeditor5-ui/src/bindings/clickoutsidehandler';
+import bindTwoStepCaretToAttribute from '@ckeditor/ckeditor5-engine/src/utils/bindtwostepcarettoattribute';
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import LinkFormView from './ui/linkformview';
@@ -82,6 +83,9 @@ export default class Link extends Plugin {
 
 		// Attach lifecycle actions to the the balloon.
 		this._enableUserBalloonInteractions();
+
+		// Enable two-step caret movement for `linkHref` attribute.
+		bindTwoStepCaretToAttribute( editor.editing.view, editor.model, this, 'linkHref' );
 	}
 
 	/**
