@@ -122,7 +122,8 @@ describe( 'Table converters', () => {
 			editor.setData(
 				'<table>' +
 				'<thead><tr><td>1</td></tr></thead>' +
-				'<thead><tr><td>2</td></tr></thead>' +
+				'<tbody><tr><td>2</td></tr></tbody>' +
+				'<thead><tr><td>3</td></tr></thead>' +
 				'</table>'
 			);
 
@@ -130,11 +131,12 @@ describe( 'Table converters', () => {
 				'<table headingRows="1">' +
 				'<tableRow><tableCell>1</tableCell></tableRow>' +
 				'<tableRow><tableCell>2</tableCell></tableRow>' +
+				'<tableRow><tableCell>3</tableCell></tableRow>' +
 				'</table>'
 			);
 		} );
 
-		it.skip( 'should create table model from table with thead after the tbody', () => {
+		it( 'should create table model from table with thead after the tbody', () => {
 			editor.setData(
 				'<table>' +
 				'<tbody><tr><td>2</td></tr></tbody>' +
@@ -147,6 +149,99 @@ describe( 'Table converters', () => {
 				'<tableRow><tableCell>1</tableCell></tableRow>' +
 				'<tableRow><tableCell>2</tableCell></tableRow>' +
 				'</table>'
+			);
+		} );
+
+		it( 'should create table model from table with one tfoot with one row', () => {
+			editor.setData(
+				'<table>' +
+				'<tfoot><tr><td>1</td></tr></tfoot>' +
+				'</table>'
+			);
+
+			expectModel(
+				'<table>' +
+				'<tableRow><tableCell>1</tableCell></tableRow>' +
+				'</table>'
+			);
+		} );
+
+		it( 'should create valid table model from empty table', () => {
+			editor.setData(
+				'<table>' +
+				'</table>'
+			);
+
+			expectModel(
+				'<table><tableRow><tableCell></tableCell></tableRow></table>'
+			);
+		} );
+
+		it( 'should skip unknown table children', () => {
+			editor.setData(
+				'<table>' +
+				'<caption>foo</caption>' +
+				'<tr><td>bar</td></tr>' +
+				'</table>'
+			);
+
+			expectModel(
+				'<table><tableRow><tableCell>bar</tableCell></tableRow></table>'
+			);
+		} );
+
+		it( 'should create table model from some broken table', () => {
+			editor.setData(
+				'<table><td><p>foo</p></td></table>'
+			);
+
+			expectModel(
+				'<table><tableRow><tableCell>foo</tableCell></tableRow></table>'
+			);
+		} );
+
+		it( 'should fix if inside other blocks', () => {
+			editor.model.schema.register( 'p', {
+				inheritAllFrom: '$block'
+			} );
+			editor.conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'p', view: 'p' } ) );
+
+			editor.setData(
+				'<p>foo' +
+				'<table>' +
+				'<tbody><tr><td>2</td></tr></tbody>' +
+				'<thead><tr><td>1</td></tr></thead>' +
+				'</table>' +
+				'</p>'
+			);
+
+			expectModel(
+				'<p>foo</p>' +
+				'<table headingRows="1">' +
+				'<tableRow><tableCell>1</tableCell></tableRow>' +
+				'<tableRow><tableCell>2</tableCell></tableRow>' +
+				'</table>'
+			);
+		} );
+
+		it( 'should be possible to overwrite table conversion', () => {
+			editor.model.schema.register( 'fooTable', {
+				allowWhere: '$block',
+				allowAttributes: [ 'headingRows' ],
+				isBlock: true,
+				isObject: true
+			} );
+
+			editor.conversion.elementToElement( { model: 'fooTable', view: 'table', priority: 'high' } );
+
+			editor.setData(
+				'<table>' +
+				'<thead><tr><td>foo</td></tr></thead>' +
+				'</table>'
+			);
+
+			expectModel(
+				'<fooTable></fooTable>'
 			);
 		} );
 	} );
