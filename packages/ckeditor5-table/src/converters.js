@@ -30,8 +30,7 @@ export function upcastTable() {
 		conversionApi.writer.insert( modelTable, splitResult.position );
 
 		// Convert children and insert to element.
-		// TODO:
-		const childrenResult = _upcastTableRows( viewTable, modelTable, ModelPosition.createAt( modelTable ), conversionApi );
+		_upcastTableRows( viewTable, modelTable, conversionApi );
 
 		// Consume appropriate value from consumable values list.
 		conversionApi.consumable.consume( viewTable, { name: true } );
@@ -44,7 +43,7 @@ export function upcastTable() {
 			// element, so we need to move range after parent of the last converted child.
 			// before: <allowed>[]</allowed>
 			// after: <allowed>[<converted><child></child></converted><child></child><converted>]</converted></allowed>
-			ModelPosition.createAfter( childrenResult.modelCursor.parent )
+			ModelPosition.createAfter( modelTable )
 		);
 
 		// Now we need to check where the modelCursor should be.
@@ -114,6 +113,18 @@ export function downcastTable() {
 	}, { priority: 'normal' } );
 }
 
+function isHead( tableCell ) {
+	const row = tableCell.parent;
+	const table = row.parent;
+	const rowIndex = table.getChildIndex( row );
+	const headingRows = table.getAttribute( 'headingRows' );
+	const headingColumns = table.getAttribute( 'headingColumns' );
+
+	const cellIndex = row.getChildIndex( tableCell );
+
+	return ( headingRows && headingRows > rowIndex ) || ( headingColumns && headingColumns > cellIndex );
+}
+
 function _downcastTableSection( elementName, tableElement, rows, conversionApi ) {
 	const tableBodyElement = conversionApi.writer.createContainerElement( elementName );
 	conversionApi.writer.insert( Position.createAt( tableElement, 'end' ), tableBodyElement );
@@ -131,102 +142,102 @@ function _downcastTableRow( tableRow, conversionApi, parent ) {
 	conversionApi.writer.insert( Position.createAt( parent, 'end' ), tableRowElement );
 }
 
-function _sortRows( viewTable, conversionApi ) {
-	const rows = { header: [], body: [], maxHeadings: 0 };
+function _upcastTableRows( viewTable, modelTable, conversionApi ) {
+	const { rows, headingRows, headingColumns } = _scanTable( viewTable );
 
-	let firstThead;
+	for ( const viewRow of rows ) {
+		const modelRow = conversionApi.writer.createElement( 'tableRow' );
+		conversionApi.writer.insert( modelRow, ModelPosition.createAt( modelTable, 'end' ) );
+		conversionApi.consumable.consume( viewRow, { name: true } );
 
-	for ( const viewChild of Array.from( viewTable.getChildren() ) ) {
-		if ( viewChild.name === 'tbody' || viewChild.name === 'thead' || viewChild.name === 'tfoot' ) {
-			if ( viewChild.name === 'thead' && !firstThead ) {
-				firstThead = viewChild;
+		const childrenCursor = ModelPosition.createAt( modelRow );
+		conversionApi.convertChildren( viewRow, childrenCursor );
+	}
+
+	if ( headingRows ) {
+		conversionApi.writer.setAttribute( 'headingRows', headingRows, modelTable );
+	}
+
+	if ( headingColumns ) {
+		conversionApi.writer.setAttribute( 'headingColumns', headingColumns, modelTable );
+	}
+
+	if ( !rows.length ) {
+		// Create empty table with one row and one table cell.
+		const row = conversionApi.writer.createElement( 'tableRow' );
+		conversionApi.writer.insert( row, ModelPosition.createAt( modelTable, 'end' ) );
+		conversionApi.writer.insertElement( 'tableCell', ModelPosition.createAt( row, 'end' ) );
+	}
+}
+
+// This one scans table rows & extracts required metadata from table:
+//
+// headingRows    - number of rows that goes as table header.
+// headingColumns - max number of row headings.
+// rows           - sorted trs as they should go into the model - ie if <thead> is inserted after <tbody> in the view.
+function _scanTable( viewTable ) {
+	const tableMeta = {
+		headingRows: 0,
+		headingColumns: 0,
+		rows: {
+			head: [],
+			body: []
+		}
+	};
+
+	let firstTheadElement;
+
+	for ( const tableChild of Array.from( viewTable.getChildren() ) ) {
+		// Only <thead>, <tbody> & <tfoot> from allowed table children can have <tr>s.
+		// The else is for future purposes (mainly <caption>).
+		if ( tableChild.name === 'tbody' || tableChild.name === 'thead' || tableChild.name === 'tfoot' ) {
+			// Parse only the first <thead> in the table as table header - all other ones will be converted to table body rows.
+			if ( tableChild.name === 'thead' && !firstTheadElement ) {
+				firstTheadElement = tableChild;
 			}
 
-			for ( const childRow of Array.from( viewChild.getChildren() ) ) {
-				_createModelRow( childRow, rows, conversionApi, firstThead );
+			for ( const childRow of Array.from( tableChild.getChildren() ) ) {
+				_scanRow( childRow, tableMeta, firstTheadElement );
 			}
 		}
 	}
 
-	return rows;
+	// Unify returned table meta.
+	tableMeta.rows = [ ...tableMeta.rows.head, ...tableMeta.rows.body ];
+
+	return tableMeta;
 }
 
-function _upcastTableRows( viewTable, modelTable, modelCursor, conversionApi ) {
-	const modelRange = new ModelRange( modelCursor );
+// Scans <tr> and it's children for metadata:
+// - For heading row:
+//     - either add this row to heading or body rows.
+//     - updates number of heading rows.
+// - For body rows:
+//     - calculates number of column headings.
+function _scanRow( tr, tableMeta, firstThead ) {
+	if ( tr.parent.name === 'thead' && tr.parent === firstThead ) {
+		// It's a table header so only update it's meta.
+		tableMeta.headingRows++;
+		tableMeta.rows.head.push( tr );
 
-	const tableMeta = _sortRows( viewTable, conversionApi, modelCursor );
-
-	const allRows = [ ...tableMeta.header, ...tableMeta.body ];
-
-	for ( const rowDef of allRows ) {
-		const rowPosition = ModelPosition.createAt( modelTable, 'end' );
-
-		conversionApi.writer.insert( rowDef.model, rowPosition );
-		conversionApi.consumable.consume( rowDef.view, { name: true } );
-
-		const childrenCursor = ModelPosition.createAt( rowDef.model );
-		conversionApi.convertChildren( rowDef.view, childrenCursor );
+		return;
 	}
 
-	if ( tableMeta.header.length ) {
-		conversionApi.writer.setAttribute( 'headingRows', tableMeta.header.length, modelTable );
-	}
-
-	if ( tableMeta.maxHeadings ) {
-		conversionApi.writer.setAttribute( 'headingColumns', tableMeta.maxHeadings, modelTable );
-	}
-
-	if ( !allRows.length ) {
-		const rowPosition = ModelPosition.createAt( modelTable, 'end' );
-
-		const row = conversionApi.writer.createElement( 'tableRow' );
-
-		conversionApi.writer.insert( row, rowPosition );
-
-		const emptyCell = conversionApi.writer.createElement( 'tableCell' );
-
-		conversionApi.writer.insert( emptyCell, ModelPosition.createAt( row, 'end' ) );
-	}
-
-	return { modelRange, modelCursor };
-}
-
-function _createModelRow( row, rows, conversionApi, firstThead ) {
-	const modelRow = conversionApi.writer.createElement( 'tableRow' );
-
-	if ( row.parent.name === 'thead' && row.parent === firstThead ) {
-		rows.header.push( { model: modelRow, view: row } );
-	} else {
-		rows.body.push( { model: modelRow, view: row } );
-	}
+	// For normal row check how many column headings this row has.
+	tableMeta.rows.body.push( tr );
 
 	let headingCols = 0;
+	let index = 0;
+	const childCount = tr.childCount;
 
-	const tableCells = Array.from( row.getChildren() );
-
-	for ( const tableCell of tableCells ) {
-		const name = tableCell.name;
-		const cellIndex = row.getChildIndex( tableCell );
-
-		if ( name === 'th' && ( cellIndex === 0 || tableCells[ cellIndex - 1 ].name === 'th' ) ) {
-			headingCols = cellIndex + 1;
-		}
+	// Count starting adjacent <th> elements of a <tr>.
+	while ( index < childCount && tr.getChild( index ).name === 'th' ) {
+		headingCols++;
+		index++;
 	}
 
-	if ( headingCols > rows.maxHeadings ) {
-		rows.maxHeadings = headingCols;
+	if ( headingCols > tableMeta.headingColumns ) {
+		tableMeta.headingColumns = headingCols;
 	}
-}
-
-function isHead( tableCell ) {
-	const row = tableCell.parent;
-	const table = row.parent;
-	const rowIndex = table.getChildIndex( row );
-	const headingRows = table.getAttribute( 'headingRows' );
-	const headingColumns = table.getAttribute( 'headingColumns' );
-
-	const cellIndex = row.getChildIndex( tableCell );
-
-	return ( headingRows && headingRows > rowIndex ) || ( headingColumns && headingColumns > cellIndex );
 }
 

@@ -56,6 +56,9 @@ describe( 'Table converters', () => {
 				conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'td' } ) );
 				conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'th' } ) );
 				conversion.for( 'downcast' ).add( downcastTableCell() );
+
+				conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
+				conversion.attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
 			} );
 	} );
 
@@ -250,14 +253,39 @@ describe( 'Table converters', () => {
 				editor.setData(
 					'<table>' +
 					'<tbody>' +
-					'<tr><th>11</th><th>12</th><td>13</td></tr>' +
+					// This row starts with 1 th (3 total).
+					'<tr><th>21</th><td>22</td><th>23</th><th>24</th></tr>' +
+					// This row starts with 2 th (2 total). This one has max number of heading columns: 2.
+					'<tr><th>31</th><th>32</th><td>33</td><td>34</td></tr>' +
+					// This row starts with 1 th (1 total).
+					'<tr><th>41</th><td>42</td><td>43</td><td>44</td></tr>' +
+					// This row starts with 0 th (3 total).
+					'<tr><td>51</td><th>52</th><th>53</th><th>54</th></tr>' +
 					'</tbody>' +
+					'<thead>' +
+					// This row has 4 ths but it is a thead.
+					'<tr><th>11</th><th>12</th><th>13</th><th>14</th></tr>' +
+					'</thead>' +
 					'</table>'
 				);
 
 				expectModel(
-					'<table headingColumns="2">' +
-					'<tableRow><tableCell>11</tableCell><tableCell>12</tableCell><tableCell>13</tableCell></tableRow>' +
+					'<table headingColumns="2" headingRows="1">' +
+					'<tableRow>' +
+					'<tableCell>11</tableCell><tableCell>12</tableCell><tableCell>13</tableCell><tableCell>14</tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+					'<tableCell>21</tableCell><tableCell>22</tableCell><tableCell>23</tableCell><tableCell>24</tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+					'<tableCell>31</tableCell><tableCell>32</tableCell><tableCell>33</tableCell><tableCell>34</tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+					'<tableCell>41</tableCell><tableCell>42</tableCell><tableCell>43</tableCell><tableCell>44</tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+					'<tableCell>51</tableCell><tableCell>52</tableCell><tableCell>53</tableCell><tableCell>54</tableCell>' +
+					'</tableRow>' +
 					'</table>'
 				);
 			} );
@@ -339,19 +367,23 @@ describe( 'Table converters', () => {
 
 		it( 'should create table with heading columns and rows', () => {
 			setModelData( model,
-				'<table headingColumns="2" headingRows="1">' +
-				'<tableRow><tableCell>11</tableCell><tableCell>12</tableCell><tableCell>13</tableCell></tableRow>' +
-				'<tableRow><tableCell>21</tableCell><tableCell>22</tableCell><tableCell>23</tableCell></tableRow>' +
+				'<table headingColumns="3" headingRows="1">' +
+				'<tableRow>' +
+				'<tableCell>11</tableCell><tableCell>12</tableCell><tableCell>13</tableCell><tableCell>14</tableCell>' +
+				'</tableRow>' +
+				'<tableRow>' +
+				'<tableCell>21</tableCell><tableCell>22</tableCell><tableCell>23</tableCell><tableCell>24</tableCell>' +
+				'</tableRow>' +
 				'</table>'
 			);
 
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
 				'<table>' +
 				'<thead>' +
-				'<tr><th>11</th><th>12</th><th>13</th></tr>' +
+				'<tr><th>11</th><th>12</th><th>13</th><th>14</th></tr>' +
 				'</thead>' +
 				'<tbody>' +
-				'<tr><th>21</th><th>22</th><td>23</td></tr>' +
+				'<tr><th>21</th><th>22</th><th>23</th><td>24</td></tr>' +
 				'</tbody>' +
 				'</table>'
 			);
