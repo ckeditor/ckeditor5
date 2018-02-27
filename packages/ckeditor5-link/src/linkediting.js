@@ -13,6 +13,7 @@ import { upcastElementToAttribute } from '@ckeditor/ckeditor5-engine/src/convers
 import LinkCommand from './linkcommand';
 import UnlinkCommand from './unlinkcommand';
 import { createLinkElement } from './utils';
+import bindTwoStepCaretToAttribute from '@ckeditor/ckeditor5-engine/src/utils/bindtwostepcarettoattribute';
 
 /**
  * The link engine feature.
@@ -51,5 +52,8 @@ export default class LinkEditing extends Plugin {
 		// Create linking commands.
 		editor.commands.add( 'link', new LinkCommand( editor ) );
 		editor.commands.add( 'unlink', new UnlinkCommand( editor ) );
+
+		// Enable two-step caret movement for `linkHref` attribute.
+		bindTwoStepCaretToAttribute( editor.editing.view, editor.model, this, 'linkHref' );
 	}
 }
