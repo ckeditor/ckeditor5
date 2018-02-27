@@ -94,7 +94,7 @@ The highlight feature by default is using power of [CSS Variables](https://devel
 
 {@snippet features/custom-highlight-colors-variables}
 
-#### Inline color in config
+#### Inline
 
 There is also possibility to use inline color values like `rgb`, `hex` or `hsl` format. Firstly, you need to change values of markers and pens in {@link module:highlight/highlight~HighlightConfig#options `highlight.options`} .
 
@@ -148,7 +148,7 @@ Secondly you need to take care of changes in stylesheet classes due to skipping 
 }
 ```
 
-{@snippet features/custom-highlight-colors-normal}
+{@snippet features/custom-highlight-colors-inline}
 
 ## Installation
 
