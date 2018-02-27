@@ -3,22 +3,22 @@
  * For licensing, see LICENSE.md.
  */
 
-import UnderlineEngine from '../src/underlineengine';
+import UnderlineEditing from '../../src/underline/underlineediting';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import AttributeCommand from '../src/attributecommand';
+import AttributeCommand from '../../src/attributecommand';
 
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
-describe( 'UnderlineEngine', () => {
+describe( 'UnderlineEditing', () => {
 	let editor, model;
 
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Paragraph, UnderlineEngine ]
+				plugins: [ Paragraph, UnderlineEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -31,7 +31,7 @@ describe( 'UnderlineEngine', () => {
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( UnderlineEngine ) ).to.be.instanceOf( UnderlineEngine );
+		expect( editor.plugins.get( UnderlineEditing ) ).to.be.instanceOf( UnderlineEditing );
 	} );
 
 	it( 'should set proper schema rules', () => {

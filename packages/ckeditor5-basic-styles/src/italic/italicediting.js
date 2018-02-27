@@ -4,23 +4,23 @@
  */
 
 /**
- * @module basic-styles/italicengine
+ * @module basic-styles/italic/italicediting
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import AttributeCommand from './attributecommand';
+import AttributeCommand from '../attributecommand';
 
 const ITALIC = 'italic';
 
 /**
- * The italic engine feature.
+ * The italic editing feature.
  *
- * It registers the `italic` command and introduces the `italic` attribute in the model which renders to the view
- * as an `<em>` element.
+ * It registers the `italic` command, the <kbd>Ctrl+I</kbd> keystroke and introduces the `italic` attribute in the model
+ * which renders to the view as an `<em>` element.
  *
  * @extends module:core/plugin~Plugin
  */
-export default class ItalicEngine extends Plugin {
+export default class ItalicEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -45,5 +45,8 @@ export default class ItalicEngine extends Plugin {
 
 		// Create italic command.
 		editor.commands.add( ITALIC, new AttributeCommand( editor, ITALIC ) );
+
+		// Set the Ctrl+I keystroke.
+		editor.keystrokes.set( 'CTRL+I', ITALIC );
 	}
 }

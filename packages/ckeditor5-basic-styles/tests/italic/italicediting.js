@@ -3,22 +3,22 @@
  * For licensing, see LICENSE.md.
  */
 
-import ItalicEngine from '../src/italicengine';
+import ItalicEditing from '../../src/italic/italicediting';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import AttributeCommand from '../src/attributecommand';
+import AttributeCommand from '../../src/attributecommand';
 
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
-describe( 'ItalicEngine', () => {
+describe( 'ItalicEditing', () => {
 	let editor, model;
 
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Paragraph, ItalicEngine ]
+				plugins: [ Paragraph, ItalicEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -31,7 +31,7 @@ describe( 'ItalicEngine', () => {
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( ItalicEngine ) ).to.be.instanceOf( ItalicEngine );
+		expect( editor.plugins.get( ItalicEditing ) ).to.be.instanceOf( ItalicEditing );
 	} );
 
 	it( 'should set proper schema rules', () => {

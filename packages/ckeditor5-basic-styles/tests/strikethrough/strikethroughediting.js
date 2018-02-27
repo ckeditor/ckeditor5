@@ -3,22 +3,22 @@
  * For licensing, see LICENSE.md.
  */
 
-import StrikethroughEngine from '../src/strikethroughengine';
+import StrikethroughEditing from '../../src/strikethrough/strikethroughediting';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import AttributeCommand from '../src/attributecommand';
+import AttributeCommand from '../../src/attributecommand';
 
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
-describe( 'StrikethroughEngine', () => {
+describe( 'StrikethroughEditing', () => {
 	let editor, model;
 
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Paragraph, StrikethroughEngine ]
+				plugins: [ Paragraph, StrikethroughEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -31,7 +31,7 @@ describe( 'StrikethroughEngine', () => {
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( StrikethroughEngine ) ).to.be.instanceOf( StrikethroughEngine );
+		expect( editor.plugins.get( StrikethroughEditing ) ).to.be.instanceOf( StrikethroughEditing );
 	} );
 
 	it( 'should set proper schema rules', () => {

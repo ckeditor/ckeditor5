@@ -4,29 +4,28 @@
  */
 
 /**
- * @module basic-styles/boldengine
+ * @module basic-styles/bold/boldediting
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import AttributeCommand from './attributecommand';
+import AttributeCommand from '../attributecommand';
 
 const BOLD = 'bold';
 
 /**
- * The bold engine feature.
+ * The bold editing feature.
  *
  * It registers the `bold` command and introduces the `bold` attribute in the model which renders to the view
  * as a `<strong>` element.
  *
  * @extends module:core/plugin~Plugin
  */
-export default class BoldEngine extends Plugin {
+export default class BoldEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
 	init() {
 		const editor = this.editor;
-
 		// Allow bold attribute on text nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: BOLD } );
 
@@ -47,5 +46,8 @@ export default class BoldEngine extends Plugin {
 
 		// Create bold command.
 		editor.commands.add( BOLD, new AttributeCommand( editor, BOLD ) );
+
+		// Set the Ctrl+B keystroke.
+		editor.keystrokes.set( 'CTRL+B', BOLD );
 	}
 }

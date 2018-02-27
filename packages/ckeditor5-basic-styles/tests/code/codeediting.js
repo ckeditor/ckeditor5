@@ -3,22 +3,22 @@
  * For licensing, see LICENSE.md.
  */
 
-import CodeEngine from '../src/codeengine';
+import CodeEditing from '../../src/code/codeediting';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import AttributeCommand from '../src/attributecommand';
+import AttributeCommand from '../../src/attributecommand';
 
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
-describe( 'CodeEngine', () => {
+describe( 'CodeEditing', () => {
 	let editor, model;
 
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Paragraph, CodeEngine ]
+				plugins: [ Paragraph, CodeEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -31,7 +31,7 @@ describe( 'CodeEngine', () => {
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( CodeEngine ) ).to.be.instanceOf( CodeEngine );
+		expect( editor.plugins.get( CodeEditing ) ).to.be.instanceOf( CodeEditing );
 	} );
 
 	it( 'should set proper schema rules', () => {

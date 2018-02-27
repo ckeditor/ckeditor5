@@ -8,16 +8,16 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import CodeEngine from './codeengine';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import codeIcon from '../theme/icons/code.svg';
+import CodeEditing from './code/codeediting';
+import CodeUI from './code/codeui';
 
 import '../theme/code.css';
 
 /**
- * The code feature. It introduces the Code button.
+ * The code feature.
  *
- * It uses the {@link module:basic-styles/codeengine~CodeEngine code engine feature}.
+ * It loads the {@link module:basic-styles/code/codeediting~CodeEditing code editing feature}
+ * and {@link module:basic-styles/code/codeui~CodeUI code UI feature}.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -26,7 +26,7 @@ export default class Code extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ CodeEngine ];
+		return [ CodeEditing, CodeUI ];
 	}
 
 	/**
@@ -34,32 +34,5 @@ export default class Code extends Plugin {
 	 */
 	static get pluginName() {
 		return 'Code';
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	init() {
-		const editor = this.editor;
-		const t = editor.t;
-		const command = editor.commands.get( 'code' );
-
-		// Add code button to feature components.
-		editor.ui.componentFactory.add( 'code', locale => {
-			const view = new ButtonView( locale );
-
-			view.set( {
-				label: t( 'Code' ),
-				icon: codeIcon,
-				tooltip: true
-			} );
-
-			view.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
-
-			// Execute command.
-			this.listenTo( view, 'execute', () => editor.execute( 'code' ) );
-
-			return view;
-		} );
 	}
 }

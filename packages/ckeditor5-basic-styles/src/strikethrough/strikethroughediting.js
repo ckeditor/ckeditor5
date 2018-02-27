@@ -4,24 +4,24 @@
  */
 
 /**
- * @module basic-styles/strikethroughengine
+ * @module basic-styles/strikethrough/strikethroughediting
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import AttributeCommand from './attributecommand';
+import AttributeCommand from '../attributecommand';
 
 const STRIKETHROUGH = 'strikethrough';
 
 /**
- * The strikethrough engine feature.
+ * The strikethrough editing feature.
  *
- * It registers the `strikethrough` command and introduces the
+ * It registers the `strikethrough` command, the <kbd>Ctrl+Shift+X</kbd> keystroke and introduces the
  * `strikethroughsthrough` attribute in the model which renders to the view
  * as a `<s>` element.
  *
  * @extends module:core/plugin~Plugin
  */
-export default class StrikethroughEngine extends Plugin {
+export default class StrikethroughEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -47,5 +47,8 @@ export default class StrikethroughEngine extends Plugin {
 
 		// Create strikethrough command.
 		editor.commands.add( STRIKETHROUGH, new AttributeCommand( editor, STRIKETHROUGH ) );
+
+		// Set the Ctrl+Shift+X keystroke.
+		editor.keystrokes.set( 'CTRL+SHIFT+X', 'strikethrough' );
 	}
 }
