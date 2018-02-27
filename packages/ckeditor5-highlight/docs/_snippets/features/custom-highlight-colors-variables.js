@@ -5,7 +5,7 @@
 
 /* globals ClassicEditor, console, window, document */
 ClassicEditor
-	.create( document.querySelector( '#snippet-custom-highlight-colors-variables' ), {
+	.create( document.querySelector( '#snippet-highlight-custom-colors-variables' ), {
 		toolbar: {
 			items: [
 				'headings', '|', 'bulletedList', 'numberedList', 'highlightDropdown', 'undo', 'redo'

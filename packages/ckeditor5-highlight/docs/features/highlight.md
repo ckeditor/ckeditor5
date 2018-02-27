@@ -72,31 +72,30 @@ ClassicEditor
 
 {@snippet features/highlight-buttons}
 
-### Custom colors
+### Colors and styles
 
-#### CSS Variables
+#### Using CSS Variables
 
-The highlight feature by default is using power of [CSS Variables](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_variables) which are defined in the [stylesheet](https://github.com/ckeditor/ckeditor5-highlight/blob/master/src/highlight.css). Thanks to them, we can easily make customization with change of lightness, hue or completely different color.
+The highlight feature is using the power of [CSS Variables](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_variables) which are defined in the [stylesheet](https://github.com/ckeditor/ckeditor5-highlight/blob/master/theme/highlight.css). Thanks to that, both the UI and the content styles share the same color definitions, which can be easily customized.
 
 ```css
 :root {
-
 	/* Make green a little darker. */
 	--ck-highlight-marker-green: #199c19;
 
-	/* Change yellow to orange */
-	--ck-highlight-marker-yellow: #ffd11d;
+	/* Make the yellow more "dirty". */
+	--ck-highlight-marker-yellow: #cac407;
 
 	/* Make red more pinkish. */
-	--ck-highlight-pen-red: #ec3e98;
+	--ck-highlight-pen-red: #ec3e6e;
 }
 ```
 
 {@snippet features/custom-highlight-colors-variables}
 
-#### Inline
+#### Inline color definitions
 
-There is also possibility to use inline color values like `rgb`, `hex` or `hsl` format. Firstly, you need to change values of markers and pens in {@link module:highlight/highlight~HighlightConfig#options `highlight.options`} .
+It is possible to use the inline color values in the `RGB`, `HEX` or `HSL` formats instead of CSS variables. To do that, customize the {@link module:highlight/highlight~HighlightConfig#options options} and define the `color` properties for each option:
 
 ```js
 ClassicEditor
@@ -107,21 +106,21 @@ ClassicEditor
 					model: 'greenMarker',
 					class: 'marker-green',
 					title: 'Green marker',
-					color: 'rgb(24, 201, 32)',
+					color: 'rgb(25, 156, 25)',
 					type: 'marker'
 				},
 				{
 					model: 'yellowMarker',
 					class: 'marker-yellow',
 					title: 'Yellow marker',
-					color: '#f2ee28',
+					color: '#cac407',
 					type: 'marker'
 				},
 				{
 					model: 'redPen',
 					class: 'pen-red',
 					title: 'Red pen',
-					color: 'hsl(355, 78%, 49%)',
+					color: 'hsl(343, 82%, 58%)',
 					type: 'pen'
 				}
 			]
@@ -134,17 +133,17 @@ ClassicEditor
 	.catch( ... );
 ```
 
-Secondly you need to take care of changes in stylesheet classes due to skipping CSS Variables. You should also remember about removing inactive CSS definitions in [stylesheet](https://github.com/ckeditor/ckeditor5-highlight/blob/master/src/highlight.css) like mixins and variables.
+Then, update the classes in the style sheet so the content corresponds to the UI of the editor. It is recommended for the UI buttons and the actual highlights in the text to share the same colors.
 
 ```css
 .marker-green {
-	background-color: rgb(24, 201, 32);
+	background-color: rgb(25, 156, 25);
 }
 .marker-yellow {
-	background-color: #f2ee28;
+	background-color: #cac407;
 }
 .pen-red {
-	color: hsl(355, 78%, 49%);
+	color: hsl(343, 82%, 58%);
 }
 ```
 
