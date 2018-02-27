@@ -420,7 +420,7 @@ export function cleanList( evt, data, conversionApi ) {
 
 		for ( const child of children ) {
 			if ( !child.is( 'li' ) ) {
-				child.remove();
+				child._remove();
 			}
 		}
 	}
@@ -447,7 +447,7 @@ export function cleanListItem( evt, data, conversionApi ) {
 
 		for ( const child of children ) {
 			if ( foundList && !child.is( 'ul' ) && !child.is( 'ol' ) ) {
-				child.remove();
+				child._remove();
 			}
 
 			if ( child.is( 'text' ) ) {
@@ -779,7 +779,7 @@ export function modelIndentPasteFixer( evt, [ content, selection ] ) {
 			if ( indentChange > 0 ) {
 				// Adjust indent of all "first" list items in inserted data.
 				while ( item && item.is( 'listItem' ) ) {
-					item.setAttribute( 'indent', item.getAttribute( 'indent' ) + indentChange );
+					item._setAttribute( 'indent', item.getAttribute( 'indent' ) + indentChange );
 
 					item = item.nextSibling;
 				}
@@ -798,7 +798,7 @@ function generateLiInUl( modelItem, conversionApi ) {
 	const viewItem = createViewListItemElement();
 
 	const viewList = viewWriter.createContainerElement( listType, null );
-	viewList.appendChildren( viewItem );
+	viewList._appendChildren( viewItem );
 
 	mapper.bindElements( modelItem, viewItem );
 

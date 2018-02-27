@@ -30,19 +30,19 @@ describe( 'utils', () => {
 
 			it( 'should return 0 if item has only lists as children', () => {
 				const innerListItem1 = createViewListItemElement();
-				innerListItem1.appendChildren( new ViewText( 'foo' ) );
+				innerListItem1._appendChildren( new ViewText( 'foo' ) );
 				const innerListItem2 = createViewListItemElement();
-				innerListItem2.appendChildren( new ViewText( 'bar' ) );
+				innerListItem2._appendChildren( new ViewText( 'bar' ) );
 				const innerList = new ViewContainerElement( 'ul', null, [ innerListItem1, innerListItem2 ] );
 				const outerListItem = createViewListItemElement();
-				outerListItem.appendChildren( innerList );
+				outerListItem._appendChildren( innerList );
 
 				expect( outerListItem.getFillerOffset() ).to.equal( 0 );
 			} );
 
 			it( 'should return null if item has non-list contents', () => {
 				const item = createViewListItemElement();
-				item.appendChildren( new ViewText( 'foo' ) );
+				item._appendChildren( new ViewText( 'foo' ) );
 
 				expect( item.getFillerOffset() ).to.be.null;
 			} );

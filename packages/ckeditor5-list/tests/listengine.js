@@ -3390,7 +3390,7 @@ describe( 'ListEngine', () => {
 			const uiElement = new ViewUIElement( 'span' );
 
 			// Append ui element at the end of first <li>.
-			viewDoc.getRoot().getChild( 0 ).getChild( 0 ).appendChildren( [ uiElement ] );
+			viewDoc.getRoot().getChild( 0 ).getChild( 0 )._appendChildren( [ uiElement ] );
 
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
 				.to.equal( '<ul><li>Foo<span></span></li><li>Bar</li></ul>' );
@@ -3412,7 +3412,7 @@ describe( 'ListEngine', () => {
 			const uiElement = new ViewUIElement( 'span' );
 
 			// Append ui element at the end of first <li>.
-			viewRoot.getChild( 0 ).getChild( 0 ).appendChildren( [ uiElement ] );
+			viewRoot.getChild( 0 ).getChild( 0 )._appendChildren( [ uiElement ] );
 
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
 				.to.equal( '<ul><li>Foo<span></span></li><li>Bar<ul><li>Xxx</li><li>Yyy</li></ul></li></ul>' );
@@ -3440,7 +3440,7 @@ describe( 'ListEngine', () => {
 
 			it( 'ui element before <ul>', () => {
 				// Append ui element before <ul>.
-				viewRoot.insertChildren( 0, [ uiElement ] );
+				viewRoot._insertChildren( 0, [ uiElement ] );
 
 				model.change( writer => {
 					writer.remove( liFoo );
@@ -3452,7 +3452,7 @@ describe( 'ListEngine', () => {
 
 			it( 'ui element before first <li>', () => {
 				// Append ui element before <ul>.
-				viewRoot.getChild( 0 ).insertChildren( 0, [ uiElement ] );
+				viewRoot.getChild( 0 )._insertChildren( 0, [ uiElement ] );
 
 				model.change( writer => {
 					writer.remove( liFoo );
@@ -3464,7 +3464,7 @@ describe( 'ListEngine', () => {
 
 			it( 'ui element in the middle of list', () => {
 				// Append ui element before <ul>.
-				viewRoot.getChild( 0 ).insertChildren( 1, [ uiElement ] );
+				viewRoot.getChild( 0 )._insertChildren( 1, [ uiElement ] );
 
 				model.change( writer => {
 					writer.remove( liBar );
