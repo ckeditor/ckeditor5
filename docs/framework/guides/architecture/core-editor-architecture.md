@@ -9,13 +9,11 @@ The [`@ckeditor/ckeditor5-core`](https://www.npmjs.com/package/@ckeditor/ckedito
 
 ## Editor classes
 
-The {@link module:core/editor/editor~Editor} class representing the base of the editor.
-
-The editor is a root object, gluing all other components. It holds a couple of properties that you need to know:
+The {@link module:core/editor/editor~Editor} class represents the base of the editor. It's an entry point of the application, gluing all other components. It provides a couple of properties that you need to know:
 
 * {@link module:core/editor/editor~Editor#config} &ndash; The configuration object.
 * {@link module:core/editor/editor~Editor#plugins} and {@link module:core/editor/editor~Editor#commands} &ndash; The collection of loaded plugins and commands.
-* {@link module:core/editor/editor~Editor#document} &ndash; The document. It is the editing engine's entry point.
+* {@link module:core/editor/editor~Editor#model} &ndash; The entry point to editor's abstract data model.
 * {@link module:core/editor/editor~Editor#data} &ndash; The data controller. It controls how data is retrieved from the document and set inside it.
 * {@link module:core/editor/editor~Editor#editing} &ndash; The editing controller. It controls {@link module:engine/controller/editingcontroller~EditingController#document document} rendering, including selection handling.
 * {@link module:core/editor/editor~Editor#keystrokes} &ndash; The keystroke handler. It allows to bind keystrokes to actions.
@@ -227,4 +225,4 @@ You can find more about bindings in the {@link framework/guides/architecture/ui-
 
 ## Read next
 
-Once you learnt how to create plugins and commands you can read how to implement real editing features in the {@link framework/guides/architecture/editing-engine Editing engine} guide.
+Once you have learned how to create plugins and commands you can read how to implement real editing features in the {@link framework/guides/architecture/editing-engine Editing engine} guide.
