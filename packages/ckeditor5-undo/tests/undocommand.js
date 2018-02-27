@@ -7,7 +7,6 @@ import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltestedit
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
-import Text from '@ckeditor/ckeditor5-engine/src/model/text';
 import UndoCommand from '../src/undocommand';
 import { itemAt, getText } from '@ckeditor/ckeditor5-engine/tests/model/_utils/utils';
 
@@ -312,7 +311,10 @@ describe( 'UndoCommand', () => {
 				return text;
 			}
 
-			root.appendChildren( new Text( 'abcdef' ) );
+			model.change( writer => {
+				writer.appendText( 'abcdef', root );
+			} );
+
 			expect( getCaseText( root ) ).to.equal( 'abcdef' );
 
 			model.change( writer => {
