@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import InlineAutoformatEngine from '../src/inlineautoformatengine';
+import InlineAutoformatEditing from '../src/inlineautoformatediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
@@ -12,7 +12,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 testUtils.createSinonSandbox();
 
-describe( 'InlineAutoformatEngine', () => {
+describe( 'InlineAutoformatEditing', () => {
 	let editor, model, doc;
 
 	beforeEach( () => {
@@ -31,7 +31,7 @@ describe( 'InlineAutoformatEngine', () => {
 
 	describe( 'attribute', () => {
 		it( 'should stop early if there are less than 3 capture groups', () => {
-			new InlineAutoformatEngine( editor, /(\*)(.+?)\*/g, 'testAttribute' ); // eslint-disable-line no-new
+			new InlineAutoformatEditing( editor, /(\*)(.+?)\*/g, 'testAttribute' ); // eslint-disable-line no-new
 
 			setData( model, '<paragraph>*foobar[]</paragraph>' );
 			model.change( writer => {
@@ -42,7 +42,7 @@ describe( 'InlineAutoformatEngine', () => {
 		} );
 
 		it( 'should apply an attribute when the pattern is matched', () => {
-			new InlineAutoformatEngine( editor, /(\*)(.+?)(\*)/g, 'testAttribute' ); // eslint-disable-line no-new
+			new InlineAutoformatEditing( editor, /(\*)(.+?)(\*)/g, 'testAttribute' ); // eslint-disable-line no-new
 
 			setData( model, '<paragraph>*foobar[]</paragraph>' );
 			model.change( writer => {
@@ -53,7 +53,7 @@ describe( 'InlineAutoformatEngine', () => {
 		} );
 
 		it( 'should stop early if selection is not collapsed', () => {
-			new InlineAutoformatEngine( editor, /(\*)(.+?)\*/g, 'testAttribute' ); // eslint-disable-line no-new
+			new InlineAutoformatEditing( editor, /(\*)(.+?)\*/g, 'testAttribute' ); // eslint-disable-line no-new
 
 			setData( model, '<paragraph>*foob[ar]</paragraph>' );
 			model.change( writer => {
@@ -72,7 +72,7 @@ describe( 'InlineAutoformatEngine', () => {
 				remove: []
 			} );
 
-			new InlineAutoformatEngine( editor, testStub, formatSpy ); // eslint-disable-line no-new
+			new InlineAutoformatEditing( editor, testStub, formatSpy ); // eslint-disable-line no-new
 
 			setData( model, '<paragraph>*[]</paragraph>' );
 			model.change( writer => {
@@ -89,7 +89,7 @@ describe( 'InlineAutoformatEngine', () => {
 				remove: [ [] ]
 			} );
 
-			new InlineAutoformatEngine( editor, testStub, formatSpy ); // eslint-disable-line no-new
+			new InlineAutoformatEditing( editor, testStub, formatSpy ); // eslint-disable-line no-new
 
 			setData( model, '<paragraph>*[]</paragraph>' );
 			model.change( writer => {
@@ -106,7 +106,7 @@ describe( 'InlineAutoformatEngine', () => {
 				remove: [ [] ]
 			} );
 
-			new InlineAutoformatEngine( editor, testStub, formatSpy ); // eslint-disable-line no-new
+			new InlineAutoformatEditing( editor, testStub, formatSpy ); // eslint-disable-line no-new
 
 			setData( model, '<paragraph>[]</paragraph>' );
 			model.change( writer => {
@@ -123,7 +123,7 @@ describe( 'InlineAutoformatEngine', () => {
 				.callThrough()
 				.callsFake( ranges => ranges.map( saveDetachSpy ) );
 
-			new InlineAutoformatEngine( editor, /(\*)(.+?)(\*)/g, callback ); // eslint-disable-line no-new
+			new InlineAutoformatEditing( editor, /(\*)(.+?)(\*)/g, callback ); // eslint-disable-line no-new
 
 			setData( model, '<paragraph>*foobar[]</paragraph>' );
 
