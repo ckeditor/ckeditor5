@@ -5,9 +5,9 @@
 
 import AlignmentEditing from '../src/alignmentediting';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import ImageCaptionEngine from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionengine';
-import ListEngine from '@ckeditor/ckeditor5-list/src/listengine';
-import HeadingEngine from '@ckeditor/ckeditor5-heading/src/headingengine';
+import ImageCaptionEditing from '@ckeditor/ckeditor5-image/src/imagecaption/imagecaptionediting';
+import ListEditing from '@ckeditor/ckeditor5-list/src/listediting';
+import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
@@ -46,7 +46,7 @@ describe( 'AlignmentEditing', () => {
 		beforeEach( () => {
 			return VirtualTestEditor
 				.create( {
-					plugins: [ AlignmentEditing, ImageCaptionEngine, Paragraph, ListEngine, HeadingEngine ]
+					plugins: [ AlignmentEditing, ImageCaptionEditing, Paragraph, ListEditing, HeadingEditing ]
 				} )
 				.then( newEditor => {
 					editor = newEditor;

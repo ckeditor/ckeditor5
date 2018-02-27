@@ -137,9 +137,9 @@ export default class AlignmentUI extends Plugin {
 		const editor = this.editor;
 
 		const commandName = commandNameFromOptionName( option );
-		const command = editor.commands.get( commandName );
 
 		editor.ui.componentFactory.add( commandName, locale => {
+			const command = editor.commands.get( commandName );
 			const buttonView = new ButtonView( locale );
 
 			buttonView.set( {
