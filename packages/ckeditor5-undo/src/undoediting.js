@@ -31,7 +31,7 @@ export default class UndoEditing extends Plugin {
 		 * Created and registered during the {@link #init feature initialization}.
 		 *
 		 * @private
-		 * @member {undo.UndoEditingCommand} #_undoCommand
+		 * @member {module:undo/undocommand~UndoCommand} #_undoCommand
 		 */
 
 		/**
@@ -39,7 +39,7 @@ export default class UndoEditing extends Plugin {
 		 * Created and registered during the {@link #init feature initialization}.
 		 *
 		 * @private
-		 * @member {undo.UndoEditingCommand} #_redoCommand
+		 * @member {module:undo/undocommand~UndoCommand} #_redoCommand
 		 */
 
 		/**
