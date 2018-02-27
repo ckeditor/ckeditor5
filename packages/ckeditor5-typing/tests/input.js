@@ -3,17 +3,15 @@
  * For licensing, see LICENSE.md.
  */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
+import List from '@ckeditor/ckeditor5-list/src/list';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Input from '../src/input';
 
 import Writer from '@ckeditor/ckeditor5-engine/src/model/writer';
 import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
-
-import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
-import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 
 import ViewText from '@ckeditor/ckeditor5-engine/src/view/text';
 import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
@@ -25,31 +23,28 @@ import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
+/* global document */
+
 describe( 'Input feature', () => {
 	let editor, model, modelRoot, view, viewDocument, viewRoot, listenter;
 
 	testUtils.createSinonSandbox();
 
-	before( () => {
+	beforeEach( () => {
 		listenter = Object.create( EmitterMixin );
 
-		return VirtualTestEditor
-			.create( {
-				plugins: [ Input, Paragraph, BoldEditing ]
-			} )
+		const domElement = document.createElement( 'div' );
+		document.body.appendChild( domElement );
+
+		return ClassicTestEditor.create( domElement, { plugins: [ Input, Paragraph, Bold, List ] } )
 			.then( newEditor => {
 				// Mock image feature.
 				newEditor.model.schema.register( 'image', { allowWhere: '$text' } );
 
-				newEditor.conversion.for( 'downcast' ).add( downcastElementToElement( {
+				newEditor.conversion.elementToElement( {
 					model: 'image',
 					view: 'img'
-				} ) );
-
-				newEditor.conversion.for( 'upcast' ).add( upcastElementToElement( {
-					view: 'img',
-					model: 'image'
-				} ) );
+				} );
 
 				editor = newEditor;
 				model = editor.model;
@@ -449,6 +444,30 @@ describe( 'Input feature', () => {
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>foobar   baz[]</paragraph>' );
 			expect( getViewData( view ) ).to.equal( '<p>foobar   baz{}</p>' );
+		} );
+
+		// ckeditor5#718.
+		it( 'should not crash and prevent all changes if view common ancestor of mutations cannot be mapped to model', () => {
+			editor.setData( '<p>Foo</p><ul><li>Bar</li><li>Baz</li></ul>' );
+
+			const ul = viewRoot.getChild( 1 );
+
+			viewDocument.fire( 'mutations', [
+				{
+					type: 'text',
+					oldText: 'Bar',
+					newText: 'Bx',
+					node: ul.getChild( 0 )
+				},
+				{
+					type: 'children',
+					oldChildren: [ ul.getChild( 0 ), ul.getChild( 1 ) ],
+					newChildren: [ ul.getChild( 0 ) ],
+					node: ul
+				}
+			] );
+
+			expect( getViewData( view ) ).to.equal( '<p>{}Foo</p><ul><li>Bar</li><li>Baz</li></ul>' );
 		} );
 	} );
 
