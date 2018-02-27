@@ -74,9 +74,13 @@ ClassicEditor
 
 ### Colors and styles
 
+<info-box info>
+	See the plugin {@link module:highlight/highlight~HighlightConfig options} to learn more about defaults.
+</info-box>
+
 #### Using CSS Variables
 
-The highlight feature is using the power of [CSS Variables](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_variables) which are defined in the [stylesheet](https://github.com/ckeditor/ckeditor5-highlight/blob/master/theme/highlight.css). Thanks to that, both the UI and the content styles share the same color definitions, which can be easily customized.
+The highlight feature is using the power of [CSS variables](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_variables) which are defined in the [stylesheet](https://github.com/ckeditor/ckeditor5-highlight/blob/master/theme/highlight.css). Thanks to that, both the UI and the content styles share the same color definitions, which can be easily customized:
 
 ```css
 :root {
@@ -95,7 +99,7 @@ The highlight feature is using the power of [CSS Variables](https://developer.mo
 
 #### Inline color definitions
 
-It is possible to use the inline color values in the `RGB`, `HEX` or `HSL` formats instead of CSS variables. To do that, customize the {@link module:highlight/highlight~HighlightConfig#options options} and define the `color` properties for each option:
+It is possible to use the inline color values in the `rgba(R, G, B, A)`, `#RRGGBB[AA]` or `hsla(H, S, L, A)` formats instead of CSS variables. To do that, customize the {@link module:highlight/highlight~HighlightConfig#options options} and define the `color` property for each option:
 
 ```js
 ClassicEditor

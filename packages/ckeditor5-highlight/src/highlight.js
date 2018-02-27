@@ -136,13 +136,32 @@ export default class Highlight extends Plugin {
  * - `'marker'` - rendered as a `<mark>` element, styled with the `background-color`,
  * - `'pen'` - rendered as a `<mark>` element, styled with the font `color`.
  *
- * **Note**: A stylesheet with CSS classes is required for the configuration to work properly thanks to CSS Variables.
- * The highlight feature provides actual stylesheet with default colors. There is possibility to use default color format
- * like rgb, hex or hsl. In this situation colors apply only to the icons of marker and pen. You need to care about
- * color or background of `<mark>` by adding CSS classes definition.
+ * **Note**: The highlight feature provides a style sheet with the CSS classes and corresponding colors defined
+ * as CSS variables.
  *
- * **Note**: It is recommended that the `color` value should correspond to the class in the content
- * style sheet. It represents the highlighter in the user interface of the editor.
+ *		:root {
+ *			--ck-highlight-marker-yellow: #fdfd77;
+ *			--ck-highlight-marker-green: #63f963;
+ *			--ck-highlight-marker-pink: #fc7999;
+ *			--ck-highlight-marker-blue: #72cdfd;
+ *			--ck-highlight-pen-red: #e91313;
+ *			--ck-highlight-pen-green: #118800;
+ *		}
+ *
+ *		.marker-yellow { ... }
+ *		.marker-green { ... }
+ *		.marker-pink { ... }
+ *		.marker-blue { ... }
+ *		.pen-red { ... }
+ *		.pen-green { ... }
+ *
+ * **Note**: It is possible to define the `color` property directly as `rgba(R, G, B, A)`,
+ * `#RRGGBB[AA]` or `hsla(H, S, L, A)`. In such situation, the color will **only** apply to the UI of
+ * the editor and the `<mark>` elements in the content must be styled by custom classes provided by
+ * a dedicated style sheet.
+ *
+ * **Note**: It is recommended for the `color` property to correspond to the class in the content
+ * style sheet because it represents the highlighter in the user interface of the editor.
  *
  *		ClassicEditor
  *			.create( editorElement, {
