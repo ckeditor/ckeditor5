@@ -13,6 +13,8 @@ The {@link module:highlight/highlight~Highlight} feature offers a text marking t
 
 ## Configuring the highlight options
 
+### Dropdown
+
 It is possible to configure which highlight options are supported by the editor.
 You can use the {@link module:highlight/highlight~HighlightConfig#options `highlight.options`} configuration and define your own highlight styles.
 
@@ -49,6 +51,8 @@ ClassicEditor
 
 {@snippet features/custom-highlight-options}
 
+### Inline buttons
+
 Instead of using the (default) `highlightDropdown`, the feature also supports a configuration with separate buttons directly in the toolbar:
 
 ```js
@@ -67,6 +71,84 @@ ClassicEditor
 ```
 
 {@snippet features/highlight-buttons}
+
+### Custom colors
+
+#### CSS Variables
+
+The highlight feature by default is using power of [CSS Variables](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_variables) which are defined in the [stylesheet](https://github.com/ckeditor/ckeditor5-highlight/blob/master/src/highlight.css). Thanks to them, we can easily make customization with change of lightness, hue or completely different color.
+
+```css
+:root {
+
+	/* Make green a little darker. */
+	--ck-highlight-marker-green: #199c19;
+
+	/* Change yellow to orange */
+	--ck-highlight-marker-yellow: #ffd11d;
+
+	/* Make red more pinkish. */
+	--ck-highlight-pen-red: #ec3e98;
+}
+```
+
+{@snippet features/custom-highlight-colors-variables}
+
+#### Inline color in config
+
+There is also possibility to use inline color values like `rgb`, `hex` or `hsl` format. Firstly, you need to change values of markers and pens in {@link module:highlight/highlight~HighlightConfig#options `highlight.options`} .
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		highlight: {
+			options: [
+				{
+					model: 'greenMarker',
+					class: 'marker-green',
+					title: 'Green marker',
+					color: 'rgb(24, 201, 32)',
+					type: 'marker'
+				},
+				{
+					model: 'yellowMarker',
+					class: 'marker-yellow',
+					title: 'Yellow marker',
+					color: '#f2ee28',
+					type: 'marker'
+				},
+				{
+					model: 'redPen',
+					class: 'pen-red',
+					title: 'Red pen',
+					color: 'hsl(355, 78%, 49%)',
+					type: 'pen'
+				}
+			]
+		},
+		toolbar: [
+			'headings', '|', 'bulletedList', 'numberedList', 'highlightDropdown', 'undo', 'redo'
+		]
+	} )
+	.then( ... )
+	.catch( ... );
+```
+
+Secondly you need to take care of changes in stylesheet classes due to skipping CSS Variables. You should also remember about removing inactive CSS definitions in [stylesheet](https://github.com/ckeditor/ckeditor5-highlight/blob/master/src/highlight.css) like mixins and variables.
+
+```css
+.marker-green {
+	background-color: rgb(24, 201, 32);
+}
+.marker-yellow {
+	background-color: #f2ee28;
+}
+.pen-red {
+	color: hsl(355, 78%, 49%);
+}
+```
+
+{@snippet features/custom-highlight-colors-normal}
 
 ## Installation
 

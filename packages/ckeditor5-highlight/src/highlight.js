@@ -52,8 +52,9 @@ export default class Highlight extends Plugin {
  * @typedef {Object} module:highlight/highlight~HighlightOption
  * @property {String} title The user-readable title of the option.
  * @property {String} model The unique attribute value in the model.
- * @property {String} color The name of CSS variable used for the highlighter. It should match the `class` CSS definition.
- * The color is used in the user interface to represent the highlighter.
+ * @property {String} color The CSS var() used for the highlighter. The color is used in the user interface to represent the highlighter.
+ * It is possible to use default color format.
+ * See: {@link features/highlight#custom-colors Custom colors - Inline color in config}.
  * @property {String} class The CSS class used on the `<mark>` element in the view. It should match the `color` setting.
  * @property {'marker'|'pen'} type The type of highlighter:
  * - `'marker'` – uses the `color` as a `background-color` style,
@@ -135,8 +136,9 @@ export default class Highlight extends Plugin {
  * - `'marker'` - rendered as a `<mark>` element, styled with the `background-color`,
  * - `'pen'` - rendered as a `<mark>` element, styled with the font `color`.
  *
- * **Note**: A style sheet with CSS classes is required for the configuration to work properly.
- * The highlight feature does provide actual stylesheet with default colors.
+ * **Note**: A stylesheet with CSS classes is required for the configuration to work properly thanks to CSS Variables.
+ * The highlight feature provides actual stylesheet with default colors. It is possible to use inline color format
+ * like rgb/hex or hsl. See: {@link features/highlight#custom-colors Custom colors - Inline color in config}
  *
  * **Note**: It is recommended that the `color` value should correspond to the class in the content
  * style sheet. It represents the highlighter in the user interface of the editor.
