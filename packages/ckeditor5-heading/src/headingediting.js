@@ -4,7 +4,7 @@
  */
 
 /**
- * @module heading/headingengine
+ * @module heading/headingediting
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -16,10 +16,11 @@ const defaultModelElement = 'paragraph';
 /**
  * The headings engine feature. It handles switching between block formats &ndash; headings and paragraph.
  * This class represents the engine part of the heading feature. See also {@link module:heading/heading~Heading}.
+ * It introduces `heading1`-`headingN` commands which allow to convert paragraphs into headings.
  *
  * @extends module:core/plugin~Plugin
  */
-export default class HeadingEngine extends Plugin {
+export default class HeadingEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
