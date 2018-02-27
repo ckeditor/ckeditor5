@@ -641,6 +641,18 @@ describe( 'Differ', () => {
 				] );
 			} );
 		} );
+
+		it( 'inside a new element', () => {
+			// Since the rename is inside a new element, it should not be listed on changes list.
+			model.change( () => {
+				insert( new Element( 'blockQuote', null, new Element( 'paragraph' ) ), new Position( root, [ 2 ] ) );
+				rename( root.getChild( 2 ).getChild( 0 ), 'listItem' );
+
+				expectChanges( [
+					{ type: 'insert', name: 'blockQuote', length: 1, position: new Position( root, [ 2 ] ) }
+				] );
+			} );
+		} );
 	} );
 
 	describe( 'attribute', () => {
@@ -1230,7 +1242,10 @@ describe( 'Differ', () => {
 			} );
 		} );
 
-		it( 'proper filtering of changes in inserted elements', () => {
+		// In this scenario we create a new element, then remove something from before it to mess up with offsets,
+		// finally we insert some content into a new element. Since we are inserting into a new element, the
+		// inserted children should not be shown on changes list.
+		it( 'proper filtering of changes in inserted elements #1', () => {
 			root.removeChildren( 0, root.childCount );
 			root.appendChildren( new Element( 'image' ) );
 
@@ -1247,6 +1262,26 @@ describe( 'Differ', () => {
 				expectChanges( [
 					{ type: 'remove', name: 'image', length: 1, position: new Position( root, [ 0 ] ) },
 					{ type: 'insert', name: 'blockQuote', length: 1, position: new Position( root, [ 0 ] ) }
+				] );
+			} );
+		} );
+
+		// In this scenario we create a new element, then move another element that was before the new element into
+		// the new element. This way we mess up with offsets and insert content into a new element in one operation.
+		// Since we are inserting into a new element, the insertion of moved element should not be shown on changes list.
+		it( 'proper filtering of changes in inserted elements #2', () => {
+			root.removeChildren( 0, root.childCount );
+			root.appendChildren( new Element( 'image' ) );
+
+			model.change( () => {
+				// Insert `div` after `image`.
+				insert( new Element( 'div' ), new Position( root, [ 1 ] ) );
+				// Move `image` to the new `div`.
+				move( new Position( root, [ 0 ] ), 1, new Position( root, [ 1, 0 ] ) );
+
+				expectChanges( [
+					{ type: 'remove', name: 'image', length: 1, position: new Position( root, [ 0 ] ) },
+					{ type: 'insert', name: 'div', length: 1, position: new Position( root, [ 0 ] ) }
 				] );
 			} );
 		} );
@@ -1409,6 +1444,8 @@ describe( 'Differ', () => {
 
 	function expectChanges( expected, includeChangesInGraveyard = false ) {
 		const changes = differ.getChanges( { includeChangesInGraveyard } );
+
+		expect( changes.length ).to.equal( expected.length );
 
 		for ( let i = 0; i < expected.length; i++ ) {
 			for ( const key in expected[ i ] ) {
