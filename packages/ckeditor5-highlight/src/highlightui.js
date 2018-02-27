@@ -9,7 +9,6 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-import HighlightEditing from './highlightediting';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 import markerIcon from './../theme/icons/marker.svg';
@@ -68,13 +67,6 @@ export default class HighlightUI extends Plugin {
 			'Red pen': t( 'Red pen' ),
 			'Green pen': t( 'Green pen' )
 		};
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	static get requires() {
-		return [ HighlightEditing ];
 	}
 
 	/**
