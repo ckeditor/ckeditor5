@@ -465,12 +465,11 @@ describe( 'ImageCaptionEngine', () => {
 			} );
 
 			it( 'undo should work after inserting the image', () => {
-				const image = new ModelElement( 'image' );
-				image.setAttribute( 'src', '/foo.png' );
-
 				setModelData( model, '<paragraph>foo[]</paragraph>' );
 
 				model.change( writer => {
+					const image = writer.createElement( 'image', { src: '/foo.png' } );
+
 					writer.insert( image, doc.getRoot() );
 				} );
 
