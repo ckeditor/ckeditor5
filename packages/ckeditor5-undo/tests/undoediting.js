@@ -82,6 +82,31 @@ describe( 'UndoEditing', () => {
 		expect( undo._redoCommand.clearStack.called ).to.be.false;
 	} );
 
+	it( 'should not add a batch that has only non-document operations', () => {
+		sinon.spy( undo._undoCommand, 'addBatch' );
+
+		model.change( writer => {
+			const docFrag = writer.createDocumentFragment();
+			const element = writer.createElement( 'paragraph' );
+			writer.insert( element, docFrag, 0 );
+			writer.insertText( 'foo', null, element, 0 );
+		} );
+
+		expect( undo._undoCommand.addBatch.called ).to.be.false;
+	} );
+
+	it( 'should add a batch that has both document and non-document operations', () => {
+		sinon.spy( undo._undoCommand, 'addBatch' );
+
+		model.change( writer => {
+			const element = writer.createElement( 'paragraph' );
+			writer.insertText( 'foo', null, element, 0 );
+			writer.insert( element, root, 0 );
+		} );
+
+		expect( undo._undoCommand.addBatch.calledOnce ).to.be.true;
+	} );
+
 	it( 'should set CTRL+Z keystroke', () => {
 		const spy = sinon.stub( editor, 'execute' );
 

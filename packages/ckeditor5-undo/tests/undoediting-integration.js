@@ -918,7 +918,7 @@ describe( 'UndoEditing integration', () => {
 		} );
 	} );
 
-	describe( 'pasting', () => {
+	describe( 'clipboard', () => {
 		function pasteHtml( editor, html ) {
 			editor.editing.view.document.fire( 'paste', {
 				dataTransfer: createDataTransfer( { 'text/html': html } ),
@@ -930,7 +930,8 @@ describe( 'UndoEditing integration', () => {
 			return {
 				getData( type ) {
 					return data[ type ];
-				}
+				},
+				setData() {}
 			};
 		}
 
@@ -957,6 +958,22 @@ describe( 'UndoEditing integration', () => {
 
 			editor.execute( 'undo' );
 			output( '<paragraph>Foo[]</paragraph>' );
+		} );
+
+		// ckeditor5#781
+		it( 'cutting should not create empty undo step', () => {
+			input( '<paragraph>Fo[oba]r</paragraph>' );
+
+			editor.editing.view.document.fire( 'cut', {
+				dataTransfer: createDataTransfer(),
+				preventDefault() {},
+				method: 'cut'
+			} );
+
+			editor.execute( 'undo' );
+
+			output( '<paragraph>Fo[oba]r</paragraph>' );
+			undoDisabled();
 		} );
 	} );
 
