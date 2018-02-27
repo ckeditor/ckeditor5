@@ -4,19 +4,19 @@
  */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import ImageEngine from '../../src/image/imageengine';
+import ImageEditing from '../../src/image/imageediting';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { isImageWidget } from '../../src/image/utils';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 
-describe( 'ImageEngine', () => {
+describe( 'ImageEditing', () => {
 	let editor, model, document, view, viewDocument;
 
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ ImageEngine ]
+				plugins: [ ImageEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -28,7 +28,7 @@ describe( 'ImageEngine', () => {
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( ImageEngine ) ).to.be.instanceOf( ImageEngine );
+		expect( editor.plugins.get( ImageEditing ) ).to.be.instanceOf( ImageEditing );
 	} );
 
 	it( 'should set proper schema rules', () => {

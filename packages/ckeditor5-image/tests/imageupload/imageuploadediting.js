@@ -8,11 +8,11 @@
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ImageEngine from '../../src/image/imageengine';
+import ImageEditing from '../../src/image/imageediting';
 import ImageUploadEditing from '../../src/imageupload/imageuploadediting';
 import ImageUploadCommand from '../../src/imageupload/imageuploadcommand';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import UndoEngine from '@ckeditor/ckeditor5-undo/src/undoengine';
+import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 import DataTransfer from '@ckeditor/ckeditor5-clipboard/src/datatransfer';
 
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
@@ -54,7 +54,7 @@ describe( 'ImageUploadEditing', () => {
 
 		return VirtualTestEditor
 			.create( {
-				plugins: [ ImageEngine, ImageUploadEditing, Paragraph, UndoEngine, UploadAdapterPluginMock ]
+				plugins: [ ImageEditing, ImageUploadEditing, Paragraph, UndoEditing, UploadAdapterPluginMock ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;

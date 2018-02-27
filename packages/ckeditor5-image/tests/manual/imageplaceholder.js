@@ -6,11 +6,11 @@
 /* global document */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import ImageEngine from '../../src/image/imageengine';
+import ImageEditing from '../../src/image/imageediting';
 import ImageUploadEditing from '../../src/imageupload/imageuploadediting';
 import ImageUploadProgress from '../../src/imageupload/imageuploadprogress';
 
-VirtualTestEditor.create( { plugins: [ ImageEngine, ImageUploadEditing, ImageUploadProgress ] } )
+VirtualTestEditor.create( { plugins: [ ImageEditing, ImageUploadEditing, ImageUploadProgress ] } )
 	.then( editor => {
 		const imageUploadProgress = editor.plugins.get( ImageUploadProgress );
 		const img = document.createElement( 'img' );

@@ -4,7 +4,7 @@
  */
 
 /**
- * @module image/image/imageengine
+ * @module image/image/imageediting
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -29,7 +29,7 @@ import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
  *
  * @extends module:core/plugin~Plugin
  */
-export default class ImageEngine extends Plugin {
+export default class ImageEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -47,19 +47,14 @@ export default class ImageEngine extends Plugin {
 			allowAttributes: [ 'alt', 'src', 'srcset' ]
 		} );
 
-		const dataElementCreator = ( modelElement, viewWriter ) => createImageViewElement( viewWriter );
 		conversion.for( 'dataDowncast' ).add( downcastElementToElement( {
 			model: 'image',
-			view: dataElementCreator
+			view: ( modelElement, viewWriter ) => createImageViewElement( viewWriter )
 		} ) );
-
-		const editingElementCreator = ( modelElement, viewWriter ) => {
-			return toImageWidget( createImageViewElement( viewWriter ), viewWriter, t( 'image widget' ) );
-		};
 
 		conversion.for( 'editingDowncast' ).add( downcastElementToElement( {
 			model: 'image',
-			view: editingElementCreator
+			view: ( modelElement, viewWriter ) => toImageWidget( createImageViewElement( viewWriter ), viewWriter, t( 'image widget' ) )
 		} ) );
 
 		conversion.for( 'downcast' )
