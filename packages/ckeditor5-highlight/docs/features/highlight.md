@@ -75,7 +75,7 @@ ClassicEditor
 ### Colors and styles
 
 <info-box info>
-	See the plugin {@link module:highlight/highlight~HighlightConfig options} to learn more about defaults.
+	See the plugin {@link module:highlight/highlight~HighlightConfig#options options} to learn more about defaults.
 </info-box>
 
 #### Using CSS Variables
