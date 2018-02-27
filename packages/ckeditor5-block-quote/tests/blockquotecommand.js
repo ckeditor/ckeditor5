@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import BlockQuoteEngine from '../src/blockquoteengine';
+import BlockQuoteEditing from '../src/blockquoteediting';
 import BlockQuoteCommand from '../src/blockquotecommand';
 
 import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
@@ -20,7 +20,7 @@ describe( 'BlockQuoteCommand', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ BlockQuoteEngine ]
+				plugins: [ BlockQuoteEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
