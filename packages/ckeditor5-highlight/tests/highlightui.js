@@ -96,12 +96,12 @@ describe( 'HighlightUI', () => {
 			const toolbar = dropdown.toolbarView;
 
 			expect( toolbar.items.map( item => item.iconView && item.iconView.fillColor ) ).to.deep.equal( [
-				'var(--ck-marker-yellow)',
-				'var(--ck-marker-green)',
-				'var(--ck-marker-pink)',
-				'var(--ck-marker-blue)',
-				'var(--ck-pen-red)',
-				'var(--ck-pen-green)',
+				'var(--ck-highlight-marker-yellow)',
+				'var(--ck-highlight-marker-green)',
+				'var(--ck-highlight-marker-pink)',
+				'var(--ck-highlight-marker-blue)',
+				'var(--ck-highlight-pen-red)',
+				'var(--ck-highlight-pen-green)',
 				undefined,
 				'',
 			] );

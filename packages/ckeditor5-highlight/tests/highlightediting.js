@@ -89,42 +89,42 @@ describe( 'HighlightEditing', () => {
 							model: 'yellowMarker',
 							class: 'marker-yellow',
 							title: 'Yellow marker',
-							color: 'var(--ck-marker-yellow)',
+							color: 'var(--ck-highlight-marker-yellow)',
 							type: 'marker'
 						},
 						{
 							model: 'greenMarker',
 							class: 'marker-green',
 							title: 'Green marker',
-							color: 'var(--ck-marker-green)',
+							color: 'var(--ck-highlight-marker-green)',
 							type: 'marker'
 						},
 						{
 							model: 'pinkMarker',
 							class: 'marker-pink',
 							title: 'Pink marker',
-							color: 'var(--ck-marker-pink)',
+							color: 'var(--ck-highlight-marker-pink)',
 							type: 'marker'
 						},
 						{
 							model: 'blueMarker',
 							class: 'marker-blue',
 							title: 'Blue marker',
-							color: 'var(--ck-marker-blue)',
+							color: 'var(--ck-highlight-marker-blue)',
 							type: 'marker'
 						},
 						{
 							model: 'redPen',
 							class: 'pen-red',
 							title: 'Red pen',
-							color: 'var(--ck-pen-red)',
+							color: 'var(--ck-highlight-pen-red)',
 							type: 'pen'
 						},
 						{
 							model: 'greenPen',
 							class: 'pen-green',
 							title: 'Green pen',
-							color: 'var(--ck-pen-green)',
+							color: 'var(--ck-highlight-pen-green)',
 							type: 'pen'
 						}
 					]
