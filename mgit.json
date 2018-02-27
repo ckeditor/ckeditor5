@@ -22,7 +22,7 @@
     "@ckeditor/ckeditor5-essentials": "ckeditor/ckeditor5-essentials#5c2db3e",
     "@ckeditor/ckeditor5-font": "ckeditor/ckeditor5-font#c1f4da7",
     "@ckeditor/ckeditor5-heading": "ckeditor/ckeditor5-heading#263707b",
-    "@ckeditor/ckeditor5-highlight": "ckeditor/ckeditor5-highlight#b87b797",
+    "@ckeditor/ckeditor5-highlight": "ckeditor/ckeditor5-highlight#ea1f261",
     "@ckeditor/ckeditor5-image": "ckeditor/ckeditor5-image#70ea9ee",
     "@ckeditor/ckeditor5-link": "ckeditor/ckeditor5-link#985bb40",
     "@ckeditor/ckeditor5-list": "ckeditor/ckeditor5-list#a00eb4a",
