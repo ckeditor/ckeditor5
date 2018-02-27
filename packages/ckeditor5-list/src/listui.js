@@ -28,58 +28,6 @@ export default class ListUI extends Plugin {
 		const t = this.editor.t;
 		this._addButton( 'numberedList', t( 'Numbered List' ), numberedListIcon );
 		this._addButton( 'bulletedList', t( 'Bulleted List' ), bulletedListIcon );
-
-		// Overwrite default Enter key behavior.
-		// If Enter key is pressed with selection collapsed in empty list item, outdent it instead of breaking it.
-		this.listenTo( this.editor.editing.view, 'enter', ( evt, data ) => {
-			const doc = this.editor.model.document;
-			const positionParent = doc.selection.getLastPosition().parent;
-
-			if ( doc.selection.isCollapsed && positionParent.name == 'listItem' && positionParent.isEmpty ) {
-				this.editor.execute( 'outdentList' );
-
-				data.preventDefault();
-				evt.stop();
-			}
-		} );
-
-		// Overwrite default Backspace key behavior.
-		// If Backspace key is pressed with selection collapsed on first position in first list item, outdent it. #83
-		this.listenTo( this.editor.editing.view, 'delete', ( evt, data ) => {
-			// Check conditions from those that require less computations like those immediately available.
-			if ( data.direction !== 'backward' ) {
-				return;
-			}
-
-			const selection = this.editor.model.document.selection;
-
-			if ( !selection.isCollapsed ) {
-				return;
-			}
-
-			const firstPosition = selection.getFirstPosition();
-
-			if ( !firstPosition.isAtStart ) {
-				return;
-			}
-
-			const positionParent = firstPosition.parent;
-
-			if ( positionParent.name !== 'listItem' ) {
-				return;
-			}
-
-			const previousIsAListItem = positionParent.previousSibling && positionParent.previousSibling.name === 'listItem';
-
-			if ( previousIsAListItem ) {
-				return;
-			}
-
-			this.editor.execute( 'outdentList' );
-
-			data.preventDefault();
-			evt.stop();
-		}, { priority: 'high' } );
 	}
 
 	/**
