@@ -17,7 +17,7 @@ Browse the API documentation of this package by using the module tree on the lef
 <info-box>
 	The widget API is proposed in a very different way than it was in CKEditor 4. It is just a set of utilities that allow you to implement typical object-like entities. Most of the work actually happens in the {@link api/engine engine} and this API's role is only to properly conduct the engine.
 
-	Therefore, this is just one of the ways how widgets can be proposed. This API can be expected to change (grow) and for now, the only available documentation is in the {@link module:image/image/imageengine~ImageEngine}'s code (which is the only widget API consumer at this stage).
+	Therefore, this is just one of the ways how widgets can be proposed. This API can be expected to change (grow) and for now, the only available documentation is in the {@link module:image/image/imageediting~ImageEditing}'s code (which is the only widget API consumer at this stage).
 </info-box>
 
 ## Installation
