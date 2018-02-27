@@ -94,7 +94,7 @@ export default class ImageToolbar extends Plugin {
 		// Show balloon panel each time image widget is selected.
 		this.listenTo( editor.editing.view, 'render', () => {
 			this._checkIsVisible();
-		}, { priority: 'low' } );
+		} );
 
 		// There is no render method after focus is back in editor, we need to check if balloon panel should be visible.
 		this.listenTo( editor.ui.focusTracker, 'change:isFocused', () => {
