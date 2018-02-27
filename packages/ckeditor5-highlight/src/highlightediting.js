@@ -28,12 +28,48 @@ export default class HighlightEditing extends Plugin {
 
 		editor.config.define( 'highlight', {
 			options: [
-				{ model: 'yellowMarker', class: 'marker-yellow', title: 'Yellow marker', color: '#fdfd77', type: 'marker' },
-				{ model: 'greenMarker', class: 'marker-green', title: 'Green marker', color: '#63f963', type: 'marker' },
-				{ model: 'pinkMarker', class: 'marker-pink', title: 'Pink marker', color: '#fc7999', type: 'marker' },
-				{ model: 'blueMarker', class: 'marker-blue', title: 'Blue marker', color: '#72cdfd', type: 'marker' },
-				{ model: 'redPen', class: 'pen-red', title: 'Red pen', color: '#e91313', type: 'pen' },
-				{ model: 'greenPen', class: 'pen-green', title: 'Green pen', color: '#118800', type: 'pen' }
+				{
+					model: 'yellowMarker',
+					class: 'marker-yellow',
+					title: 'Yellow marker',
+					color: 'var(--ck-highlight-marker-yellow)',
+					type: 'marker'
+				},
+				{
+					model: 'greenMarker',
+					class: 'marker-green',
+					title: 'Green marker',
+					color: 'var(--ck-highlight-marker-green)',
+					type: 'marker'
+				},
+				{
+					model: 'pinkMarker',
+					class: 'marker-pink',
+					title: 'Pink marker',
+					color: 'var(--ck-highlight-marker-pink)',
+					type: 'marker'
+				},
+				{
+					model: 'blueMarker',
+					class: 'marker-blue',
+					title: 'Blue marker',
+					color: 'var(--ck-highlight-marker-blue)',
+					type: 'marker'
+				},
+				{
+					model: 'redPen',
+					class: 'pen-red',
+					title: 'Red pen',
+					color: 'var(--ck-highlight-pen-red)',
+					type: 'pen'
+				},
+				{
+					model: 'greenPen',
+					class: 'pen-green',
+					title: 'Green pen',
+					color: 'var(--ck-highlight-pen-green)',
+					type: 'pen'
+				}
 			]
 		} );
 	}

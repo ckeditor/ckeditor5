@@ -5,7 +5,7 @@
 
 /* globals ClassicEditor, console, window, document */
 ClassicEditor
-	.create( document.querySelector( '#snippet-highlight-custom-options' ), {
+	.create( document.querySelector( '#snippet-highlight-custom-colors-inline' ), {
 		toolbar: {
 			items: [
 				'headings', '|', 'bulletedList', 'numberedList', 'highlightDropdown', 'undo', 'redo'
@@ -18,16 +18,23 @@ ClassicEditor
 					model: 'greenMarker',
 					class: 'marker-green',
 					title: 'Green marker',
-					color: 'var(--ck-highlight-marker-green)',
+					color: 'rgb(25, 156, 25)',
+					type: 'marker'
+				},
+				{
+					model: 'yellowMarker',
+					class: 'marker-yellow',
+					title: 'Yellow marker',
+					color: '#cac407',
 					type: 'marker'
 				},
 				{
 					model: 'redPen',
 					class: 'pen-red',
 					title: 'Red pen',
-					color: 'var(--ck-highlight-pen-red)',
+					color: 'hsl(343, 82%, 58%)',
 					type: 'pen'
-				},
+				}
 			]
 		}
 	} )

@@ -20,6 +20,8 @@ import ToolbarSeparatorView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarsepa
 import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview';
 import { createDropdown, addToolbarToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 
+import './../theme/highlight.css';
+
 /**
  * The default Highlight UI plugin. It introduces:
  * * the `'highlightDropdown'` drop-down,

@@ -5,7 +5,7 @@
 
 /* globals ClassicEditor, console, window, document */
 ClassicEditor
-	.create( document.querySelector( '#snippet-highlight-custom-options' ), {
+	.create( document.querySelector( '#snippet-highlight-custom-colors-variables' ), {
 		toolbar: {
 			items: [
 				'headings', '|', 'bulletedList', 'numberedList', 'highlightDropdown', 'undo', 'redo'
@@ -19,6 +19,13 @@ ClassicEditor
 					class: 'marker-green',
 					title: 'Green marker',
 					color: 'var(--ck-highlight-marker-green)',
+					type: 'marker'
+				},
+				{
+					model: 'yellowMarker',
+					class: 'marker-yellow',
+					title: 'Yellow marker',
+					color: 'var(--ck-highlight-marker-yellow)',
 					type: 'marker'
 				},
 				{

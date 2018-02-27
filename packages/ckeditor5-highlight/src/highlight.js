@@ -45,15 +45,16 @@ export default class Highlight extends Plugin {
  *			model: 'pinkMarker',
  *			class: 'marker-pink',
  *			title: 'Pink Marker',
- *			color: '#fc7999',
+ *			color: 'var(--ck-highlight-marker-pink)',
  *			type: 'marker'
  *		}
  *
  * @typedef {Object} module:highlight/highlight~HighlightOption
  * @property {String} title The user-readable title of the option.
  * @property {String} model The unique attribute value in the model.
- * @property {String} color The color used for the highlighter. It should match the `class` CSS definition.
- * The color is used in the user interface to represent the highlighter.
+ * @property {String} color The CSS var() used for the highlighter. The color is used in the user interface to represent the highlighter.
+ * There is possibility to use default color format like rgb, hex or hsl, but you need to care about color of `<mark>`
+ * by adding CSS classes definition.
  * @property {String} class The CSS class used on the `<mark>` element in the view. It should match the `color` setting.
  * @property {'marker'|'pen'} type The type of highlighter:
  * - `'marker'` – uses the `color` as a `background-color` style,
@@ -87,23 +88,80 @@ export default class Highlight extends Plugin {
  * The available highlighters options. The default value is:
  *
  *		options: [
- *			{ model: 'yellowMarker', class: 'marker-yellow', title: 'Yellow marker', color: '#fdfd77', type: 'marker' },
- *			{ model: 'greenMarker', class: 'marker-green', title: 'Green marker', color: '#63f963', type: 'marker' },
- *			{ model: 'pinkMarker', class: 'marker-pink', title: 'Pink marker', color: '#fc7999', type: 'marker' },
- *			{ model: 'blueMarker', class: 'marker-blue', title: 'Blue marker', color: '#72cdfd', type: 'marker' },
- *			{ model: 'redPen', class: 'pen-red', title: 'Red pen', color: '#e91313', type: 'pen' },
- *			{ model: 'greenPen', class: 'pen-green', title: 'Green pen', color: '#118800', type: 'pen' }
+ *			{
+ *				model: 'yellowMarker',
+ *				class: 'marker-yellow',
+ *				title: 'Yellow marker',
+ *				color: 'var(--ck-highlight-marker-yellow)',
+ *				type: 'marker'
+ *			},
+ *			{
+ *				model: 'greenMarker',
+ *				class: 'marker-green',
+ *				title: 'Green marker',
+ *				color: 'var(--ck-highlight-marker-green)',
+ *				type: 'marker'
+ *			},
+ *			{
+ *				model: 'pinkMarker',
+ *				class: 'marker-pink',
+ *				title: 'Pink marker',
+ *				color: 'var(--ck-highlight-marker-pink)',
+ *				type: 'marker'
+ *			},
+ *			{
+ *				model: 'blueMarker',
+ *				class: 'marker-blue',
+ *				title: 'Blue marker',
+ *				color: 'var(--ck-highlight-marker-blue)',
+ *				type: 'marker'
+ *			},
+ *			{
+ *				model: 'redPen',
+ *				class: 'pen-red',
+ *				title: 'Red pen',
+ *				color: 'var(--ck-highlight-pen-red)',
+ *				type: 'pen'
+ *			},
+ *			{
+ *				model: 'greenPen',
+ *				class: 'pen-green',
+ *				title: 'Green pen',
+ *				color: 'var(--ck-highlight-pen-green)',
+ *				type: 'pen'
+ *			}
  *		]
  *
  * There are two types of highlighters available:
  * - `'marker'` - rendered as a `<mark>` element, styled with the `background-color`,
  * - `'pen'` - rendered as a `<mark>` element, styled with the font `color`.
  *
- * **Note**: A style sheet with CSS classes is required for the configuration to work properly.
- * The highlight feature does not provide the actual styles by itself.
+ * **Note**: The highlight feature provides a style sheet with the CSS classes and corresponding colors defined
+ * as CSS variables.
  *
- * **Note**: It is recommended that the `color` value should correspond to the class in the content
- * style sheet. It represents the highlighter in the user interface of the editor.
+ *		:root {
+ *			--ck-highlight-marker-yellow: #fdfd77;
+ *			--ck-highlight-marker-green: #63f963;
+ *			--ck-highlight-marker-pink: #fc7999;
+ *			--ck-highlight-marker-blue: #72cdfd;
+ *			--ck-highlight-pen-red: #e91313;
+ *			--ck-highlight-pen-green: #118800;
+ *		}
+ *
+ *		.marker-yellow { ... }
+ *		.marker-green { ... }
+ *		.marker-pink { ... }
+ *		.marker-blue { ... }
+ *		.pen-red { ... }
+ *		.pen-green { ... }
+ *
+ * **Note**: It is possible to define the `color` property directly as `rgba(R, G, B, A)`,
+ * `#RRGGBB[AA]` or `hsla(H, S, L, A)`. In such situation, the color will **only** apply to the UI of
+ * the editor and the `<mark>` elements in the content must be styled by custom classes provided by
+ * a dedicated style sheet.
+ *
+ * **Note**: It is recommended for the `color` property to correspond to the class in the content
+ * style sheet because it represents the highlighter in the user interface of the editor.
  *
  *		ClassicEditor
  *			.create( editorElement, {
@@ -113,14 +171,14 @@ export default class Highlight extends Plugin {
  *							model: 'pinkMarker',
  *							class: 'marker-pink',
  *							title: 'Pink Marker',
- *							color: '#fc7999',
+ *							color: 'var(--ck-highlight-marker-pink)',
  *							type: 'marker'
  *						},
  *						{
  *							model: 'redPen',
  *							class: 'pen-red',
  *							title: 'Red Pen',
- *							color: '#e91313',
+ *							color: 'var(--ck-highlight-pen-red)',
  *							type: 'pen'
  *						},
  *					]

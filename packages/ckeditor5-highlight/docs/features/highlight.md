@@ -13,6 +13,8 @@ The {@link module:highlight/highlight~Highlight} feature offers a text marking t
 
 ## Configuring the highlight options
 
+### Dropdown
+
 It is possible to configure which highlight options are supported by the editor.
 You can use the {@link module:highlight/highlight~HighlightConfig#options `highlight.options`} configuration and define your own highlight styles.
 
@@ -27,14 +29,14 @@ ClassicEditor
 					model: 'greenMarker',
 					class: 'marker-green',
 					title: 'Green marker',
-					color: '#63f963',
+					color: 'var(--ck-highlight-marker-green)',
 					type: 'marker'
 				},
 				{
 					model: 'redPen',
 					class: 'pen-red',
 					title: 'Red pen',
-					color: '#e91313',
+					color: 'var(--ck-highlight-pen-red)',
 					type: 'pen'
 				}
 			]
@@ -48,6 +50,8 @@ ClassicEditor
 ```
 
 {@snippet features/custom-highlight-options}
+
+### Inline buttons
 
 Instead of using the (default) `highlightDropdown`, the feature also supports a configuration with separate buttons directly in the toolbar:
 
@@ -67,6 +71,87 @@ ClassicEditor
 ```
 
 {@snippet features/highlight-buttons}
+
+### Colors and styles
+
+<info-box info>
+	See the plugin {@link module:highlight/highlight~HighlightConfig#options options} to learn more about defaults.
+</info-box>
+
+#### Using CSS Variables
+
+The highlight feature is using the power of [CSS variables](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_variables) which are defined in the [stylesheet](https://github.com/ckeditor/ckeditor5-highlight/blob/master/theme/highlight.css). Thanks to that, both the UI and the content styles share the same color definitions, which can be easily customized:
+
+```css
+:root {
+	/* Make green a little darker. */
+	--ck-highlight-marker-green: #199c19;
+
+	/* Make the yellow more "dirty". */
+	--ck-highlight-marker-yellow: #cac407;
+
+	/* Make red more pinkish. */
+	--ck-highlight-pen-red: #ec3e6e;
+}
+```
+
+{@snippet features/custom-highlight-colors-variables}
+
+#### Inline color definitions
+
+It is possible to use the inline color values in the `rgba(R, G, B, A)`, `#RRGGBB[AA]` or `hsla(H, S, L, A)` formats instead of CSS variables. To do that, customize the {@link module:highlight/highlight~HighlightConfig#options options} and define the `color` property for each option:
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		highlight: {
+			options: [
+				{
+					model: 'greenMarker',
+					class: 'marker-green',
+					title: 'Green marker',
+					color: 'rgb(25, 156, 25)',
+					type: 'marker'
+				},
+				{
+					model: 'yellowMarker',
+					class: 'marker-yellow',
+					title: 'Yellow marker',
+					color: '#cac407',
+					type: 'marker'
+				},
+				{
+					model: 'redPen',
+					class: 'pen-red',
+					title: 'Red pen',
+					color: 'hsl(343, 82%, 58%)',
+					type: 'pen'
+				}
+			]
+		},
+		toolbar: [
+			'headings', '|', 'bulletedList', 'numberedList', 'highlightDropdown', 'undo', 'redo'
+		]
+	} )
+	.then( ... )
+	.catch( ... );
+```
+
+Then, update the classes in the style sheet so the content corresponds to the UI of the editor. It is recommended for the UI buttons and the actual highlights in the text to share the same colors.
+
+```css
+.marker-green {
+	background-color: rgb(25, 156, 25);
+}
+.marker-yellow {
+	background-color: #cac407;
+}
+.pen-red {
+	color: hsl(343, 82%, 58%);
+}
+```
+
+{@snippet features/custom-highlight-colors-inline}
 
 ## Installation
 
@@ -112,12 +197,12 @@ The {@link module:highlight/highlight~Highlight} plugin registers:
 	The `value` corresponds to the `model` property in configuration object. For the default configuration:
 	```js
 	highlight.options = [
-		{ model: 'yellowMarker', class: 'marker-yellow', title: 'Yellow Marker', color: '#fdfd77', type: 'marker' },
-		{ model: 'greenMarker', class: 'marker-green', title: 'Green marker', color: '#63f963', type: 'marker' },
-		{ model: 'pinkMarker', class: 'marker-pink', title: 'Pink marker', color: '#fc7999', type: 'marker' },
-		{ model: 'blueMarker', class: 'marker-blue', title: 'Blue marker', color: '#72cdfd', type: 'marker' },
-		{ model: 'redPen', class: 'pen-red', title: 'Red pen', color: '#e91313', type: 'pen' },
-		{ model: 'greenPen', class: 'pen-green', title: 'Green pen', color: '#118800', type: 'pen' }
+		{ model: 'yellowMarker', class: 'marker-yellow', title: 'Yellow Marker', color: 'var(--ck-highlight-marker-yellow)', type: 'marker' },
+		{ model: 'greenMarker', class: 'marker-green', title: 'Green marker', color: 'var(--ck-highlight-marker-green)', type: 'marker' },
+		{ model: 'pinkMarker', class: 'marker-pink', title: 'Pink marker', color: 'var(--ck-highlight-marker-pink)', type: 'marker' },
+		{ model: 'blueMarker', class: 'marker-blue', title: 'Blue marker', color: 'var(--ck-highlight-marker-blue)', type: 'marker' },
+		{ model: 'redPen', class: 'pen-red', title: 'Red pen', color: 'var(--ck-highlight-pen-red)', type: 'pen' },
+		{ model: 'greenPen', class: 'pen-green', title: 'Green pen', color: 'var(--ck-highlight-pen-green)', type: 'pen' }
 	]
 	```
 
