@@ -7,7 +7,7 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import List from '@ckeditor/ckeditor5-list/src/list';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/boldengine';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Input from '../src/input';
 
 import Writer from '@ckeditor/ckeditor5-engine/src/model/writer';

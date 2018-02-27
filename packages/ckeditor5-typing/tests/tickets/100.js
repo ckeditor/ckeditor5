@@ -5,9 +5,9 @@
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/boldengine';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italicengine';
-import LinkEngine from '@ckeditor/ckeditor5-link/src/linkengine';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+import LinkEditing from '@ckeditor/ckeditor5-link/src/linkediting';
 import Input from '../../src/input';
 
 import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
@@ -39,7 +39,7 @@ describe( 'Bug ckeditor5-typing#100', () => {
 		domElement = document.createElement( 'div' );
 		document.body.appendChild( domElement );
 
-		return ClassicTestEditor.create( domElement, { plugins: [ Input, Paragraph, Bold, Italic, LinkEngine ] } )
+		return ClassicTestEditor.create( domElement, { plugins: [ Input, Paragraph, Bold, Italic, LinkEditing ] } )
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
