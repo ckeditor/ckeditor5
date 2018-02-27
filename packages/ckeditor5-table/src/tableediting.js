@@ -12,6 +12,11 @@ import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversio
 import { downcastTableCell, downcastTable, upcastTable } from './converters';
 import InsertTableCommand from './inserttablecommand';
 
+/**
+ * The table editing feature.
+ *
+ * @extends module:core/plugin~Plugin
+ */
 export default class TablesEditing extends Plugin {
 	/**
 	 * @inheritDoc

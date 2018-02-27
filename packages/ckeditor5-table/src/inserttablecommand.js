@@ -10,6 +10,11 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 
+/**
+ * The insert table command.
+ *
+ * @extends module:core/command~Command
+ */
 export default class InsertTableCommand extends Command {
 	/**
 	 * @inheritDoc
@@ -42,6 +47,7 @@ export default class InsertTableCommand extends Command {
 		const columns = parseInt( options.columns ) || 2;
 
 		const firstPosition = selection.getFirstPosition();
+
 		// TODO does API has it?
 		const isRoot = firstPosition.parent === firstPosition.root;
 		const insertTablePosition = isRoot ? Position.createAt( firstPosition ) : Position.createAfter( firstPosition.parent );
@@ -51,13 +57,15 @@ export default class InsertTableCommand extends Command {
 
 			writer.insert( table, insertTablePosition );
 
-			for ( let r = 0; r < rows; r++ ) {
+			// Create rows x columns table.
+			for ( let row = 0; row < rows; row++ ) {
 				const row = writer.createElement( 'tableRow' );
 
 				writer.insert( row, table, 'end' );
 
-				for ( let c = 0; c < columns; c++ ) {
+				for ( let column = 0; column < columns; column++ ) {
 					const cell = writer.createElement( 'tableCell' );
+
 					writer.insert( cell, row, 'end' );
 				}
 			}

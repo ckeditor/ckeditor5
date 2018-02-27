@@ -12,7 +12,12 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import TablesEditing from './tableediting';
 import TablesUI from './tableui';
 
-export default class Tables extends Plugin {
+/**
+ * The highlight plugin.
+ *
+ * @extends module:core/plugin~Plugin
+ */
+export default class Table extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -24,6 +29,6 @@ export default class Tables extends Plugin {
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'Tables';
+		return 'Table';
 	}
 }

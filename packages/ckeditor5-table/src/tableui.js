@@ -12,6 +12,11 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 import icon from '@ckeditor/ckeditor5-core/theme/icons/object-center.svg';
 
+/**
+ * The table UI plugin.
+ *
+ * @extends module:core/plugin~Plugin
+ */
 export default class TableUI extends Plugin {
 	/**
 	 * @inheritDoc
@@ -26,8 +31,8 @@ export default class TableUI extends Plugin {
 			buttonView.bind( 'isEnabled' ).to( command );
 
 			buttonView.set( {
-				label: 'Insert table',
 				icon,
+				label: 'Insert table',
 				tooltip: true
 			} );
 
