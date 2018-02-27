@@ -29,13 +29,13 @@ import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import UndoEngine from '@ckeditor/ckeditor5-undo/src/undoengine';
+import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 
 // Basic features to associated with the edited content.
-import BoldEngine from '@ckeditor/ckeditor5-basic-styles/src/boldengine';
-import ItalicEngine from '@ckeditor/ckeditor5-basic-styles/src/italicengine';
-import UnderlineEngine from '@ckeditor/ckeditor5-basic-styles/src/underlineengine';
-import HeadingEngine from '@ckeditor/ckeditor5-heading/src/headingengine';
+import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
+import ItalicEditing from '@ckeditor/ckeditor5-basic-styles/src/italic/italicediting';
+import UnderlineEditing from '@ckeditor/ckeditor5-basic-styles/src/underline/underlineediting';
+import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
 
 // The easy image integration.
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
@@ -265,7 +265,7 @@ BootstrapEditor
 	.create( $( '#editor' ).get( 0 ), {
 		plugins: [
 			Clipboard, Enter, Typing, Paragraph, EasyImage,
-			BoldEngine, ItalicEngine, UnderlineEngine, HeadingEngine, UndoEngine,
+			BoldEditing, ItalicEditing, UnderlineEditing, HeadingEditing, UndoEditing,
 		],
 		cloudServices: {
 			tokenUrl: TOKEN_URL

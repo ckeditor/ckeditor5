@@ -41,13 +41,13 @@ import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import UndoEngine from '@ckeditor/ckeditor5-undo/src/undoengine';
+import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoengine';
 
 // Basic features to associated with the edited content.
-import BoldEngine from '@ckeditor/ckeditor5-basic-styles/src/boldengine';
-import ItalicEngine from '@ckeditor/ckeditor5-basic-styles/src/italicengine';
-import UnderlineEngine from '@ckeditor/ckeditor5-basic-styles/src/underlineengine';
-import HeadingEngine from '@ckeditor/ckeditor5-heading/src/headingengine';
+import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
+import ItalicEditing from '@ckeditor/ckeditor5-basic-styles/src/italic/italicediting';
+import UnderlineEditing from '@ckeditor/ckeditor5-basic-styles/src/underline/underlineediting';
+import HeadingEditing from '@ckeditor/ckeditor5-heading/src/heading/headingediting';
 
 // The easy image integration.
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
@@ -55,9 +55,9 @@ import { TOKEN_URL } from '@ckeditor/ckeditor5-cloudservices/tests/_utils/clouds
 ```
 
 <info-box info>
-	Note that instead of {@link module:basic-styles/bold~Bold}, which is required for any editor with the default UI to work, just the {@link module:basic-styles/boldengine~BoldEngine} is imported. It provides the [engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine) features associated with editing any bold text but does not come with the actual UI.
+	Note that instead of {@link module:basic-styles/bold~Bold}, which loads default Bold UI and Bold editing feature, just the {@link module:basic-styles/bold/boldediting~BoldEditing} is imported. It provides the [engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine) features associated with editing any bold text but does not come with the actual UI.
 
-	Respectively, `ItalicEngine`, `UnderlineEngine`, `HeadingEngine` and `UndoEngine` are also imported.
+	Respectively, `ItalicEditing`, `UnderlineEditing`, `HeadingEditing` and `UndoEditing` are also imported.
 
 	This split between the engine and the UI part of features is not perfect yet. At the current stage, the UI part introduces some vital functionality, such as keystroke definitions (e.g. <kbd>Ctrl</kbd>+<kbd>B</kbd> to "bold"). This means that by dropping the UI part of features you also lose keystrokes. We [plan to improve](https://github.com/ckeditor/ckeditor5/issues/488) this situation.
 </info-box>
@@ -460,7 +460,7 @@ BootstrapEditor
 	.create( $( '#editor' ).get( 0 ), {
 		plugins: [
 			Clipboard, Enter, Typing, Paragraph,
-			BoldEngine, ItalicEngine, UnderlineEngine, HeadingEngine, UndoEngine
+			BoldEditing, ItalicEditing, UnderlineEditing, HeadingEditing, UndoEditing
 		]
 	} )
 	.then( editor => {
