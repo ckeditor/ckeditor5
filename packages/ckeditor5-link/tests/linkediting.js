@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import LinkEngine from '../src/linkengine';
+import LinkEditing from '../src/linkediting';
 import LinkCommand from '../src/linkcommand';
 import UnlinkCommand from '../src/unlinkcommand';
 
@@ -12,16 +12,19 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { isLinkElement } from '../src/utils';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 import { downcastAttributeToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
 
-describe( 'LinkEngine', () => {
+/* global document */
+
+describe( 'LinkEditing', () => {
 	let editor, model;
 
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Paragraph, LinkEngine ]
+				plugins: [ Paragraph, LinkEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -30,7 +33,7 @@ describe( 'LinkEngine', () => {
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( LinkEngine ) ).to.be.instanceOf( LinkEngine );
+		expect( editor.plugins.get( LinkEditing ) ).to.be.instanceOf( LinkEditing );
 	} );
 
 	it( 'should set proper schema rules', () => {
@@ -38,6 +41,26 @@ describe( 'LinkEngine', () => {
 		expect( model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'linkHref' ) ).to.be.true;
 
 		expect( model.schema.checkAttribute( [ '$block' ], 'linkHref' ) ).to.be.false;
+	} );
+
+	it( 'should bind two-step caret movement to `linkHref` attribute', () => {
+		// Let's check only the minimum to not duplicated `bindTwoStepCaretToAttribute()` tests.
+		// Testing minimum is better then testing using spies that might give false positive results.
+
+		// Put selection before the link element.
+		setModelData( editor.model, '<paragraph>foo[]<$text linkHref="url">b</$text>ar</paragraph>' );
+
+		// The selection's gravity is not overridden because selection land here not as a result of `keydown`.
+		expect( editor.model.document.selection.isGravityOverridden ).to.false;
+
+		// So let's simulate `keydown` event.
+		editor.editing.view.document.fire( 'keydown', {
+			keyCode: keyCodes.arrowright,
+			preventDefault: () => {},
+			domTarget: document.body
+		} );
+
+		expect( editor.model.document.selection.isGravityOverridden ).to.true;
 	} );
 
 	describe( 'command', () => {
