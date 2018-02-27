@@ -204,26 +204,28 @@ describe( 'Table converters', () => {
 		} );
 
 		it( 'should fix if inside other blocks', () => {
-			editor.model.schema.register( 'p', {
+			// Using <div> instead of <p> as it breaks on Edge.
+			editor.model.schema.register( 'div', {
 				inheritAllFrom: '$block'
 			} );
-			editor.conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'p', view: 'p' } ) );
+			editor.conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'div', view: 'div' } ) );
 
 			editor.setData(
-				'<p>foo' +
+				'<div>foo' +
 				'<table>' +
 				'<tbody><tr><td>2</td></tr></tbody>' +
 				'<thead><tr><td>1</td></tr></thead>' +
 				'</table>' +
-				'</p>'
+				'bar</div>'
 			);
 
 			expectModel(
-				'<p>foo</p>' +
+				'<div>foo</div>' +
 				'<table headingRows="1">' +
 				'<tableRow><tableCell>1</tableCell></tableRow>' +
 				'<tableRow><tableCell>2</tableCell></tableRow>' +
-				'</table>'
+				'</table>' +
+				'<div>bar</div>'
 			);
 		} );
 
