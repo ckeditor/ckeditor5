@@ -25,7 +25,7 @@ export default class Node {
 	 */
 	constructor() {
 		/**
-		 * Parent element. Null by default. Set by {@link module:engine/view/element~Element#insertChildren}.
+		 * Parent element. Null by default. Set by {@link module:engine/view/element~Element#_insertChildren}.
 		 *
 		 * @readonly
 		 * @member {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment|null}
@@ -164,9 +164,11 @@ export default class Node {
 
 	/**
 	 * Removes node from parent.
+	 *
+	 * @protected
 	 */
-	remove() {
-		this.parent.removeChildren( this.index );
+	_remove() {
+		this.parent._removeChildren( this.index );
 	}
 
 	/**

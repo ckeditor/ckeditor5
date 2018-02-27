@@ -19,8 +19,8 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  * However, it is **very important** that nodes already attached to model tree should be only changed through
  * {@link module:engine/model/writer~Writer Writer API}.
  *
- * Changes done by `Node` methods, like {@link module:engine/model/element~Element#insertChildren insertChildren} or
- * {@link module:engine/model/node~Node#setAttribute setAttribute}
+ * Changes done by `Node` methods, like {@link module:engine/model/element~Element#_insertChildren _insertChildren} or
+ * {@link module:engine/model/node~Node#_setAttribute _setAttribute}
  * do not generate {@link module:engine/model/operation/operation~Operation operations}
  * which are essential for correct editor work if you modify nodes in {@link module:engine/model/document~Document document} root.
  *
@@ -283,13 +283,6 @@ export default class Node {
 	}
 
 	/**
-	 * Removes this node from it's parent.
-	 */
-	remove() {
-		this.parent.removeChildren( this.index );
-	}
-
-	/**
 	 * Checks if the node has an attribute with given key.
 	 *
 	 * @param {String} key Key of attribute to check.
@@ -331,38 +324,52 @@ export default class Node {
 	}
 
 	/**
+	 * Removes this node from it's parent.
+	 *
+	 * @protected
+	 */
+	_remove() {
+		this.parent._removeChildren( this.index );
+	}
+
+	/**
 	 * Sets attribute on the node. If attribute with the same key already is set, it's value is overwritten.
 	 *
+	 * @protected
 	 * @param {String} key Key of attribute to set.
 	 * @param {*} value Attribute value.
 	 */
-	setAttribute( key, value ) {
+	_setAttribute( key, value ) {
 		this._attrs.set( key, value );
 	}
 
 	/**
 	 * Removes all attributes from the node and sets given attributes.
 	 *
+	 * @protected
 	 * @param {Object} [attrs] Attributes to set. See {@link module:utils/tomap~toMap} for a list of accepted values.
 	 */
-	setAttributesTo( attrs ) {
+	_setAttributesTo( attrs ) {
 		this._attrs = toMap( attrs );
 	}
 
 	/**
 	 * Removes an attribute with given key from the node.
 	 *
+	 * @protected
 	 * @param {String} key Key of attribute to remove.
 	 * @returns {Boolean} `true` if the attribute was set on the element, `false` otherwise.
 	 */
-	removeAttribute( key ) {
+	_removeAttribute( key ) {
 		return this._attrs.delete( key );
 	}
 
 	/**
 	 * Removes all attributes from the node.
+	 *
+	 * @protected
 	 */
-	clearAttributes() {
+	_clearAttributes() {
 		this._attrs.clear();
 	}
 

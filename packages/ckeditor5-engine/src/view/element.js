@@ -38,6 +38,10 @@ export default class Element extends Node {
 	 *		new Element( 'div', [ [ 'class', 'editor' ], [ 'contentEditable', 'true' ] ] ); // map-like iterator
 	 *		new Element( 'div', mapOfAttributes ); // map
 	 *
+	 * **Note:** Constructor of this class shouldn't be used directly in the code. Instead of use the
+	 * {@link module:engine/view/writer~Writer.createElement} method.
+	 *
+	 * @protected
 	 * @param {String} name Node name.
 	 * @param {Object|Iterable} [attrs] Collection of attributes.
 	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} [children]
@@ -71,7 +75,7 @@ export default class Element extends Node {
 		this._children = [];
 
 		if ( children ) {
-			this.insertChildren( 0, children );
+			this._insertChildren( 0, children );
 		}
 
 		/**
@@ -183,18 +187,6 @@ export default class Element extends Node {
 		cloned.getFillerOffset = this.getFillerOffset;
 
 		return cloned;
-	}
-
-	/**
-	 * {@link module:engine/view/element~Element#insertChildren Insert} a child node or a list of child nodes at the end of this node
-	 * and sets the parent of these nodes to this element.
-	 *
-	 * @fires module:engine/view/node~Node#change
-	 * @param {module:engine/view/item~Item|Iterable.<module:engine/view/item~Item>} items Items to be inserted.
-	 * @returns {Number} Number of appended nodes.
-	 */
-	appendChildren( items ) {
-		return this.insertChildren( this.childCount, items );
 	}
 
 	/**
@@ -315,55 +307,6 @@ export default class Element extends Node {
 		}
 
 		return this._attrs.has( key );
-	}
-
-	/**
-	 * Inserts a child node or a list of child nodes on the given index and sets the parent of these nodes to
-	 * this element.
-	 *
-	 * @param {Number} index Position where nodes should be inserted.
-	 * @param {module:engine/view/item~Item|Iterable.<module:engine/view/item~Item>} items Items to be inserted.
-	 * @fires module:engine/view/node~Node#change
-	 * @returns {Number} Number of inserted nodes.
-	 */
-	insertChildren( index, items ) {
-		this._fireChange( 'children', this );
-		let count = 0;
-
-		const nodes = normalize( items );
-
-		for ( const node of nodes ) {
-			// If node that is being added to this element is already inside another element, first remove it from the old parent.
-			if ( node.parent !== null ) {
-				node.remove();
-			}
-
-			node.parent = this;
-
-			this._children.splice( index, 0, node );
-			index++;
-			count++;
-		}
-
-		return count;
-	}
-
-	/**
-	 * Removes number of child nodes starting at the given index and set the parent of these nodes to `null`.
-	 *
-	 * @param {Number} index Number of the first node to remove.
-	 * @param {Number} [howMany=1] Number of nodes to remove.
-	 * @returns {Array.<module:engine/view/node~Node>} The array of removed nodes.
-	 * @fires module:engine/view/node~Node#change
-	 */
-	removeChildren( index, howMany = 1 ) {
-		this._fireChange( 'children', this );
-
-		for ( let i = index; i < index + howMany; i++ ) {
-			this._children[ i ].parent = null;
-		}
-
-		return this._children.splice( index, howMany );
 	}
 
 	/**
@@ -562,6 +505,68 @@ export default class Element extends Node {
 			( classes == '' ? '' : ` class="${ classes }"` ) +
 			( styles == '' ? '' : ` style="${ styles }"` ) +
 			( attributes == '' ? '' : ` ${ attributes }` );
+	}
+
+	/**
+	 * {@link module:engine/view/element~Element#_insertChildren Insert} a child node or a list of child nodes at the end of this node
+	 * and sets the parent of these nodes to this element.
+	 *
+	 * @fires module:engine/view/node~Node#change
+	 * @param {module:engine/view/item~Item|Iterable.<module:engine/view/item~Item>} items Items to be inserted.
+	 * @returns {Number} Number of appended nodes.
+	 */
+	_appendChildren( items ) {
+		return this._insertChildren( this.childCount, items );
+	}
+
+	/**
+	 * Inserts a child node or a list of child nodes on the given index and sets the parent of these nodes to
+	 * this element.
+	 *
+	 * @protected
+	 * @param {Number} index Position where nodes should be inserted.
+	 * @param {module:engine/view/item~Item|Iterable.<module:engine/view/item~Item>} items Items to be inserted.
+	 * @fires module:engine/view/node~Node#change
+	 * @returns {Number} Number of inserted nodes.
+	 */
+	_insertChildren( index, items ) {
+		this._fireChange( 'children', this );
+		let count = 0;
+
+		const nodes = normalize( items );
+
+		for ( const node of nodes ) {
+			// If node that is being added to this element is already inside another element, first remove it from the old parent.
+			if ( node.parent !== null ) {
+				node._remove();
+			}
+
+			node.parent = this;
+
+			this._children.splice( index, 0, node );
+			index++;
+			count++;
+		}
+
+		return count;
+	}
+
+	/**
+	 * Removes number of child nodes starting at the given index and set the parent of these nodes to `null`.
+	 *
+	 * @param {Number} index Number of the first node to remove.
+	 * @param {Number} [howMany=1] Number of nodes to remove.
+	 * @returns {Array.<module:engine/view/node~Node>} The array of removed nodes.
+	 * @fires module:engine/view/node~Node#change
+	 */
+	_removeChildren( index, howMany = 1 ) {
+		this._fireChange( 'children', this );
+
+		for ( let i = index; i < index + howMany; i++ ) {
+			this._children[ i ].parent = null;
+		}
+
+		return this._children.splice( index, howMany );
 	}
 
 	/**

@@ -419,7 +419,7 @@ export default class DomConverter {
 
 			if ( options.withChildren || options.withChildren === undefined ) {
 				for ( const child of this.domChildrenToView( domNode, options ) ) {
-					viewElement.appendChildren( child );
+					viewElement._appendChildren( child );
 				}
 			}
 

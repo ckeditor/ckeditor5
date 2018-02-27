@@ -203,7 +203,7 @@ describe( 'downcast-selection-converters', () => {
 				} );
 
 				// Remove view children manually (without firing additional conversion).
-				viewRoot.removeChildren( 0, viewRoot.childCount );
+				viewRoot._removeChildren( 0, viewRoot.childCount );
 
 				// Convert model to view.
 				view.change( writer => {
@@ -228,7 +228,7 @@ describe( 'downcast-selection-converters', () => {
 				} );
 
 				// Remove view children manually (without firing additional conversion).
-				viewRoot.removeChildren( 0, viewRoot.childCount );
+				viewRoot._removeChildren( 0, viewRoot.childCount );
 
 				// Convert model to view.
 				view.change( writer => {
@@ -255,7 +255,7 @@ describe( 'downcast-selection-converters', () => {
 				} );
 
 				// Remove view children manually (without firing additional conversion).
-				viewRoot.removeChildren( 0, viewRoot.childCount );
+				viewRoot._removeChildren( 0, viewRoot.childCount );
 
 				// Convert model to view.
 				view.change( writer => {
@@ -280,7 +280,7 @@ describe( 'downcast-selection-converters', () => {
 				} );
 
 				// Remove view children manually (without firing additional conversion).
-				viewRoot.removeChildren( 0, viewRoot.childCount );
+				viewRoot._removeChildren( 0, viewRoot.childCount );
 
 				// Convert model to view.
 				view.change( writer => {
@@ -299,7 +299,7 @@ describe( 'downcast-selection-converters', () => {
 				setModelData( model, '' );
 
 				// Add two ui elements to view.
-				viewRoot.appendChildren( [
+				viewRoot._appendChildren( [
 					new ViewUIElement( 'span' ),
 					new ViewUIElement( 'span' )
 				] );
@@ -334,7 +334,7 @@ describe( 'downcast-selection-converters', () => {
 
 					// Add ui element to view.
 					const uiElement = new ViewUIElement( 'span' );
-					viewRoot.insertChildren( 1, uiElement );
+					viewRoot._insertChildren( 1, uiElement );
 
 					dispatcher.convertSelection( docSelection, model.markers, writer );
 				} );
@@ -359,7 +359,7 @@ describe( 'downcast-selection-converters', () => {
 
 					// Add ui element to view.
 					const uiElement = new ViewUIElement( 'span' );
-					viewRoot.insertChildren( 1, uiElement, writer );
+					viewRoot._insertChildren( 1, uiElement, writer );
 					dispatcher.convertSelection( docSelection, model.markers, writer );
 				} );
 
@@ -589,7 +589,7 @@ describe( 'downcast-selection-converters', () => {
 		} );
 
 		// Remove view children manually (without firing additional conversion).
-		viewRoot.removeChildren( 0, viewRoot.childCount );
+		viewRoot._removeChildren( 0, viewRoot.childCount );
 
 		// Convert model to view.
 		view.change( writer => {

@@ -31,7 +31,7 @@ export default class NodeList {
 		this._nodes = [];
 
 		if ( nodes ) {
-			this.insertNodes( 0, nodes );
+			this._insertNodes( 0, nodes );
 		}
 	}
 
@@ -164,10 +164,11 @@ export default class NodeList {
 	/**
 	 * Inserts given nodes at given index.
 	 *
+	 * @protected
 	 * @param {Number} index Index at which nodes should be inserted.
 	 * @param {Iterable.<module:engine/model/node~Node>} nodes Nodes to be inserted.
 	 */
-	insertNodes( index, nodes ) {
+	_insertNodes( index, nodes ) {
 		// Validation.
 		for ( const node of nodes ) {
 			if ( !( node instanceof Node ) ) {
@@ -186,11 +187,12 @@ export default class NodeList {
 	/**
 	 * Removes one or more nodes starting at the given index.
 	 *
+	 * @protected
 	 * @param {Number} indexStart Index of the first node to remove.
 	 * @param {Number} [howMany=1] Number of nodes to remove.
 	 * @returns {Array.<module:engine/model/node~Node>} Array containing removed nodes.
 	 */
-	removeNodes( indexStart, howMany = 1 ) {
+	_removeNodes( indexStart, howMany = 1 ) {
 		return this._nodes.splice( indexStart, howMany );
 	}
 

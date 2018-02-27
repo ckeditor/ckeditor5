@@ -97,10 +97,10 @@ describe( 'Element', () => {
 		} );
 	} );
 
-	describe( 'insertChildren', () => {
+	describe( '_insertChildren', () => {
 		it( 'should add a child to the element', () => {
 			const element = new Element( 'elem', [], new Text( 'xy' ) );
-			element.insertChildren( 1, new Text( 'foo' ) );
+			element._insertChildren( 1, new Text( 'foo' ) );
 
 			expect( element.childCount ).to.equal( 2 );
 			expect( element.maxOffset ).to.equal( 5 );
@@ -110,7 +110,7 @@ describe( 'Element', () => {
 
 		it( 'should accept arrays and strings', () => {
 			const element = new Element( 'elem' );
-			element.insertChildren( 0, [ new Element( 'image' ), 'xy', new Element( 'list' ) ] );
+			element._insertChildren( 0, [ new Element( 'image' ), 'xy', new Element( 'list' ) ] );
 
 			expect( element.childCount ).to.equal( 3 );
 			expect( element.maxOffset ).to.equal( 4 );
@@ -121,7 +121,7 @@ describe( 'Element', () => {
 
 		it( 'should accept strings', () => {
 			const element = new Element( 'div' );
-			element.insertChildren( 0, 'abc' );
+			element._insertChildren( 0, 'abc' );
 
 			expect( element.childCount ).to.equal( 1 );
 			expect( element.maxOffset ).to.equal( 3 );
@@ -133,7 +133,7 @@ describe( 'Element', () => {
 			const text = new Text( 'abcxyz', { bold: true } );
 			const textProxy = new TextProxy( text, 2, 3 );
 
-			element.insertChildren( 0, textProxy );
+			element._insertChildren( 0, textProxy );
 
 			expect( element.childCount ).to.equal( 1 );
 			expect( element.maxOffset ).to.equal( 3 );
@@ -143,23 +143,23 @@ describe( 'Element', () => {
 		} );
 	} );
 
-	describe( 'appendChildren', () => {
-		it( 'should use insertChildren to add children at the end of the element', () => {
+	describe( '_appendChildren', () => {
+		it( 'should use _insertChildren to add children at the end of the element', () => {
 			const element = new Element( 'elem', [], new Text( 'xy' ) );
 
-			sinon.spy( element, 'insertChildren' );
+			sinon.spy( element, '_insertChildren' );
 
 			const text = new Text( 'foo' );
-			element.appendChildren( text );
+			element._appendChildren( text );
 
-			expect( element.insertChildren.calledWithExactly( 0, text ) );
+			expect( element._insertChildren.calledWithExactly( 0, text ) );
 		} );
 	} );
 
-	describe( 'removeChildren', () => {
+	describe( '_removeChildren', () => {
 		it( 'should remove children from the element and return them as an array', () => {
 			const element = new Element( 'elem', [], [ new Text( 'foobar' ), new Element( 'image' ) ] );
-			const removed = element.removeChildren( 1, 1 );
+			const removed = element._removeChildren( 1, 1 );
 
 			expect( element.childCount ).to.equal( 1 );
 			expect( element.maxOffset ).to.equal( 6 );
@@ -172,7 +172,7 @@ describe( 'Element', () => {
 
 		it( 'should remove one child when second parameter is not specified', () => {
 			const element = new Element( 'element', [], [ new Text( 'foo' ), new Element( 'image' ) ] );
-			const removed = element.removeChildren( 0 );
+			const removed = element._removeChildren( 0 );
 
 			expect( element.childCount ).to.equal( 1 );
 			expect( element.maxOffset ).to.equal( 1 );

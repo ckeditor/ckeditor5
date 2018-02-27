@@ -20,6 +20,10 @@ export default class DocumentFragment {
 	/**
 	 * Creates new DocumentFragment instance.
 	 *
+	 * **Note:** Constructor of this class shouldn't be used directly in the code. Instead of use the
+	 * {@link module:engine/view/writer~Writer.createDocumentFragment} method.
+	 *
+	 * @protected
 	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} [children] List of nodes to be inserted into
 	 * created document fragment.
 	 */
@@ -33,7 +37,7 @@ export default class DocumentFragment {
 		this._children = [];
 
 		if ( children ) {
-			this.insertChildren( 0, children );
+			this._insertChildren( 0, children );
 		}
 	}
 
@@ -101,14 +105,14 @@ export default class DocumentFragment {
 	}
 
 	/**
-	 * {@link module:engine/view/documentfragment~DocumentFragment#insertChildren Insert} a child node or a list of child nodes at the end
+	 * {@link module:engine/view/documentfragment~DocumentFragment#_insertChildren Insert} a child node or a list of child nodes at the end
 	 * and sets the parent of these nodes to this fragment.
 	 *
 	 * @param {module:engine/view/item~Item|Iterable.<module:engine/view/item~Item>} items Items to be inserted.
 	 * @returns {Number} Number of appended nodes.
 	 */
-	appendChildren( items ) {
-		return this.insertChildren( this.childCount, items );
+	_appendChildren( items ) {
+		return this._insertChildren( this.childCount, items );
 	}
 
 	/**
@@ -148,7 +152,7 @@ export default class DocumentFragment {
 	 * @param {module:engine/view/item~Item|Iterable.<module:engine/view/item~Item>} items Items to be inserted.
 	 * @returns {Number} Number of inserted nodes.
 	 */
-	insertChildren( index, items ) {
+	_insertChildren( index, items ) {
 		this._fireChange( 'children', this );
 		let count = 0;
 
@@ -157,7 +161,7 @@ export default class DocumentFragment {
 		for ( const node of nodes ) {
 			// If node that is being added to this element is already inside another element, first remove it from the old parent.
 			if ( node.parent !== null ) {
-				node.remove();
+				node._remove();
 			}
 
 			node.parent = this;
@@ -177,7 +181,7 @@ export default class DocumentFragment {
 	 * @param {Number} [howMany=1] Number of nodes to remove.
 	 * @returns {Array.<module:engine/view/node~Node>} The array of removed nodes.
 	 */
-	removeChildren( index, howMany = 1 ) {
+	_removeChildren( index, howMany = 1 ) {
 		this._fireChange( 'children', this );
 
 		for ( let i = index; i < index + howMany; i++ ) {

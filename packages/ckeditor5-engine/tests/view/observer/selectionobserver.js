@@ -37,7 +37,7 @@ describe( 'SelectionObserver', () => {
 		viewRoot = viewDocument.getRoot();
 
 		view.change( writer => {
-			viewRoot.appendChildren( parse(
+			viewRoot._appendChildren( parse(
 				'<container:p>xxx<ui:span></ui:span></container:p>' +
 				'<container:p>yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy</container:p>' ) );
 

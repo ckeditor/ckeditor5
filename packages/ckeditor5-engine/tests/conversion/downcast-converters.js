@@ -1030,8 +1030,8 @@ describe( 'downcast-converters', () => {
 		} );
 
 		it( 'should not remove view ui elements that are placed next to removed content', () => {
-			modelRoot.appendChildren( new ModelText( 'fozbar' ) );
-			viewRoot.appendChildren( [
+			modelRoot._appendChildren( new ModelText( 'fozbar' ) );
+			viewRoot._appendChildren( [
 				new ViewText( 'foz' ),
 				new ViewUIElement( 'span' ),
 				new ViewText( 'bar' )
@@ -1053,8 +1053,8 @@ describe( 'downcast-converters', () => {
 		} );
 
 		it( 'should remove correct amount of text when it is split by view ui element', () => {
-			modelRoot.appendChildren( new ModelText( 'fozbar' ) );
-			viewRoot.appendChildren( [
+			modelRoot._appendChildren( new ModelText( 'fozbar' ) );
+			viewRoot._appendChildren( [
 				new ViewText( 'foz' ),
 				new ViewUIElement( 'span' ),
 				new ViewText( 'bar' )
@@ -1129,8 +1129,8 @@ describe( 'downcast-converters', () => {
 			const viewUi2 = new ViewUIElement( 'span' );
 			const viewP2 = new ViewContainerElement( 'p' );
 
-			modelRoot.appendChildren( [ modelP1, modelP2 ] );
-			viewRoot.appendChildren( [ viewP1, viewUi1, viewUi2, viewP2 ] );
+			modelRoot._appendChildren( [ modelP1, modelP2 ] );
+			viewRoot._appendChildren( [ viewP1, viewUi1, viewUi2, viewP2 ] );
 
 			controller.mapper.bindElements( modelP1, viewP1 );
 			controller.mapper.bindElements( modelP2, viewP2 );

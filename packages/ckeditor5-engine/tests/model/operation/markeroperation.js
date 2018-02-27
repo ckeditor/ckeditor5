@@ -20,7 +20,7 @@ describe( 'MarkerOperation', () => {
 		model = new Model();
 		doc = model.document;
 		root = doc.createRoot();
-		root.appendChildren( new Text( 'foo' ) );
+		root._appendChildren( new Text( 'foo' ) );
 		range = Range.createFromParentsAndOffsets( root, 0, root, 0 );
 	} );
 

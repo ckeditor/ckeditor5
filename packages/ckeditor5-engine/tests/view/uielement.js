@@ -66,18 +66,18 @@ describe( 'UIElement', () => {
 		} );
 	} );
 
-	describe( 'appendChildren()', () => {
+	describe( '_appendChildren()', () => {
 		it( 'should throw when try to append new child element', () => {
 			expect( () => {
-				uiElement.appendChildren( new Element( 'i' ) );
+				uiElement._appendChildren( new Element( 'i' ) );
 			} ).to.throw( CKEditorError, 'view-uielement-cannot-add: Cannot add child nodes to UIElement instance.' );
 		} );
 	} );
 
-	describe( 'insertChildren()', () => {
+	describe( '_insertChildren()', () => {
 		it( 'should throw when try to insert new child element', () => {
 			expect( () => {
-				uiElement.insertChildren( 0, new Element( 'i' ) );
+				uiElement._insertChildren( 0, new Element( 'i' ) );
 			} ).to.throw( CKEditorError, 'view-uielement-cannot-add: Cannot add child nodes to UIElement instance.' );
 		} );
 	} );

@@ -57,7 +57,7 @@ describe( 'model test utils', () => {
 	describe( 'getData', () => {
 		it( 'should use stringify method', () => {
 			const stringifySpy = sandbox.spy( getData, '_stringify' );
-			root.appendChildren( new Element( 'b', null, new Text( 'btext' ) ) );
+			root._appendChildren( new Element( 'b', null, new Text( 'btext' ) ) );
 
 			expect( getData( model, { withoutSelection: true } ) ).to.equal( '<b>btext</b>' );
 			sinon.assert.calledOnce( stringifySpy );
@@ -66,7 +66,7 @@ describe( 'model test utils', () => {
 
 		it( 'should use stringify method with selection', () => {
 			const stringifySpy = sandbox.spy( getData, '_stringify' );
-			root.appendChildren( new Element( 'b', null, new Text( 'btext' ) ) );
+			root._appendChildren( new Element( 'b', null, new Text( 'btext' ) ) );
 			model.change( writer => {
 				writer.setSelection( Range.createFromParentsAndOffsets( root, 0, root, 1 ) );
 			} );
@@ -214,7 +214,7 @@ describe( 'model test utils', () => {
 		} );
 
 		it( 'writes elements and texts', () => {
-			root.appendChildren( [
+			root._appendChildren( [
 				new Element( 'a', null, new Text( 'atext' ) ),
 				new Element( 'b', null, [
 					new Element( 'c1' ),
@@ -230,7 +230,7 @@ describe( 'model test utils', () => {
 		} );
 
 		it( 'writes element attributes', () => {
-			root.appendChildren(
+			root._appendChildren(
 				new Element( 'a', { foo: true, bar: 1, car: false }, [
 					new Element( 'b', { fooBar: 'x y', barFoo: { x: 1, y: 2 } } )
 				] )
@@ -244,7 +244,7 @@ describe( 'model test utils', () => {
 		} );
 
 		it( 'writes text attributes', () => {
-			root.appendChildren( [
+			root._appendChildren( [
 				new Text( 'foo', { bold: true } ),
 				new Text( 'bar' ),
 				new Text( 'bom', { bold: true, italic: true } ),
@@ -260,7 +260,7 @@ describe( 'model test utils', () => {
 		} );
 
 		it( 'writes unicode text', () => {
-			root.appendChildren( new Text( 'நிலைக்கு' ) );
+			root._appendChildren( new Text( 'நிலைக்கு' ) );
 
 			expect( stringify( root ) ).to.equal( 'நிலைக்கு' );
 		} );
@@ -272,7 +272,7 @@ describe( 'model test utils', () => {
 				elA = new Element( 'a' );
 				elB = new Element( 'b' );
 
-				root.appendChildren( [
+				root._appendChildren( [
 					elA,
 					new Text( 'foo' ),
 					new Text( 'bar', { bold: true } ),
@@ -397,7 +397,7 @@ describe( 'model test utils', () => {
 			it( 'writes selection in unicode text', () => {
 				const root = document.createRoot( '$root', 'empty' );
 
-				root.appendChildren( new Text( 'நிலைக்கு' ) );
+				root._appendChildren( new Text( 'நிலைக்கு' ) );
 				model.change( writer => {
 					writer.setSelection( Range.createFromParentsAndOffsets( root, 2, root, 6 ) );
 				} );

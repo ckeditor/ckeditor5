@@ -73,7 +73,7 @@ describe( 'RootAttributeOperation', () => {
 	} );
 
 	it( 'should change attribute on the root element', () => {
-		root.setAttribute( 'isNew', false );
+		root._setAttribute( 'isNew', false );
 
 		model.applyOperation( wrapInDelta(
 			new RootAttributeOperation(
@@ -90,7 +90,7 @@ describe( 'RootAttributeOperation', () => {
 	} );
 
 	it( 'should remove attribute from the root element', () => {
-		root.setAttribute( 'x', true );
+		root._setAttribute( 'x', true );
 
 		model.applyOperation( wrapInDelta(
 			new RootAttributeOperation(
@@ -137,7 +137,7 @@ describe( 'RootAttributeOperation', () => {
 	} );
 
 	it( 'should undo changing attribute by applying reverse operation', () => {
-		root.setAttribute( 'isNew', false );
+		root._setAttribute( 'isNew', false );
 
 		const operation = new RootAttributeOperation(
 			root,
@@ -157,7 +157,7 @@ describe( 'RootAttributeOperation', () => {
 	} );
 
 	it( 'should undo remove attribute by applying reverse operation', () => {
-		root.setAttribute( 'foo', true );
+		root._setAttribute( 'foo', true );
 
 		const operation = new RootAttributeOperation(
 			root,
@@ -180,7 +180,7 @@ describe( 'RootAttributeOperation', () => {
 		it( 'should throw an error when trying to change non-root element', () => {
 			const child = new Element( 'p' );
 			const parent = new Element( 'p' );
-			parent.appendChildren( child );
+			parent._appendChildren( child );
 
 			expect( () => {
 				const op = new RootAttributeOperation(
@@ -224,7 +224,7 @@ describe( 'RootAttributeOperation', () => {
 		} );
 
 		it( 'should throw an error when trying to add an attribute that already exists', () => {
-			root.setAttribute( 'x', 1 );
+			root._setAttribute( 'x', 1 );
 
 			expect( () => {
 				const op = new RootAttributeOperation(

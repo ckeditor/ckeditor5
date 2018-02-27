@@ -25,6 +25,10 @@ export default class DocumentFragment {
 	/**
 	 * Creates an empty `DocumentFragment`.
 	 *
+	 * **Note:** Constructor of this class shouldn't be used directly in the code. Instead of use the
+	 * {@link module:engine/model/writer~Writer.createDocumentFragment} method.
+	 *
+	 * @protected
 	 * @param {module:engine/model/node~Node|Iterable.<module:engine/model/node~Node>} [children]
 	 * Nodes to be contained inside the `DocumentFragment`.
 	 */
@@ -47,7 +51,7 @@ export default class DocumentFragment {
 		this._children = new NodeList();
 
 		if ( children ) {
-			this.insertChildren( 0, children );
+			this._insertChildren( 0, children );
 		}
 	}
 
@@ -217,46 +221,49 @@ export default class DocumentFragment {
 	}
 
 	/**
-	 * {@link #insertChildren Inserts} one or more nodes at the end of this document fragment.
+	 * {@link #_insertChildren Inserts} one or more nodes at the end of this document fragment.
 	 *
+	 * @protected
 	 * @param {module:engine/model/item~Item|Iterable.<module:engine/model/item~Item>} items Items to be inserted.
 	 */
-	appendChildren( items ) {
-		this.insertChildren( this.childCount, items );
+	_appendChildren( items ) {
+		this._insertChildren( this.childCount, items );
 	}
 
 	/**
 	 * Inserts one or more nodes at the given index and sets {@link module:engine/model/node~Node#parent parent} of these nodes
 	 * to this document fragment.
 	 *
+	 * @protected
 	 * @param {Number} index Index at which nodes should be inserted.
 	 * @param {module:engine/model/item~Item|Iterable.<module:engine/model/item~Item>} items Items to be inserted.
 	 */
-	insertChildren( index, items ) {
+	_insertChildren( index, items ) {
 		const nodes = normalize( items );
 
 		for ( const node of nodes ) {
 			// If node that is being added to this element is already inside another element, first remove it from the old parent.
 			if ( node.parent !== null ) {
-				node.remove();
+				node._remove();
 			}
 
 			node.parent = this;
 		}
 
-		this._children.insertNodes( index, nodes );
+		this._children._insertNodes( index, nodes );
 	}
 
 	/**
 	 * Removes one or more nodes starting at the given index
 	 * and sets {@link module:engine/model/node~Node#parent parent} of these nodes to `null`.
 	 *
+	 * @protected
 	 * @param {Number} index Index of the first node to remove.
 	 * @param {Number} [howMany=1] Number of nodes to remove.
 	 * @returns {Array.<module:engine/model/node~Node>} Array containing removed nodes.
 	 */
-	removeChildren( index, howMany = 1 ) {
-		const nodes = this._children.removeNodes( index, howMany );
+	_removeChildren( index, howMany = 1 ) {
+		const nodes = this._children._removeNodes( index, howMany );
 
 		for ( const node of nodes ) {
 			node.parent = null;

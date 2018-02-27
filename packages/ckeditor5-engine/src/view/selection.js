@@ -408,26 +408,26 @@ export default class Selection {
 	 *
 	 *		// Sets ranges from the given range.
 	 *		const range = new Range( start, end );
-	 *		selection.setTo( range, isBackwardSelection );
+	 *		selection._setTo( range, isBackwardSelection );
 	 *
 	 *		// Sets ranges from the iterable of ranges.
 	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
-	 *		selection.setTo( range, isBackwardSelection );
+	 *		selection._setTo( range, isBackwardSelection );
 	 *
 	 *		// Sets ranges from the other selection.
 	 *		const otherSelection = new Selection();
-	 *		selection.setTo( otherSelection );
+	 *		selection._setTo( otherSelection );
 	 *
 	 * 		// Sets collapsed range at the given position.
 	 *		const position = new Position( root, path );
-	 *		selection.setTo( position );
+	 *		selection._setTo( position );
 	 *
 	 * 		// Sets collapsed range on the given item.
 	 *		const paragraph = writer.createElement( 'paragraph' );
-	 *		selection.setTo( paragraph, offset );
+	 *		selection._setTo( paragraph, offset );
 	 *
 	 * 		// Removes all ranges.
-	 *		selection.setTo( null );
+	 *		selection._setTo( null );
 	 *
 	 * @protected
 	 * @param {module:engine/view/selection~Selection|module:engine/view/position~Position|

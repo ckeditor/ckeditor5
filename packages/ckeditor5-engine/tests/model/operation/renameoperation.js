@@ -22,7 +22,7 @@ describe( 'RenameOperation', () => {
 		root = doc.createRoot();
 
 		element = new Element( oldName );
-		root.appendChildren( element );
+		root._appendChildren( element );
 
 		position = Position.createBefore( element );
 	} );

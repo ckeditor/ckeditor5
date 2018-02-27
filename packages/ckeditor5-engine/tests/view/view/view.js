@@ -408,7 +408,7 @@ describe( 'view', () => {
 			createRoot( 'div', 'main', viewDocument );
 			view.attachDomRoot( domDiv );
 
-			viewDocument.getRoot().appendChildren( new ViewElement( 'p' ) );
+			viewDocument.getRoot()._appendChildren( new ViewElement( 'p' ) );
 			view.render();
 
 			expect( domDiv.childNodes.length ).to.equal( 1 );
@@ -427,7 +427,7 @@ describe( 'view', () => {
 			view.attachDomRoot( domRoot );
 
 			const viewP = new ViewElement( 'p', { class: 'foo' } );
-			viewRoot.appendChildren( viewP );
+			viewRoot._appendChildren( viewP );
 			view.render();
 
 			expect( domRoot.childNodes.length ).to.equal( 1 );

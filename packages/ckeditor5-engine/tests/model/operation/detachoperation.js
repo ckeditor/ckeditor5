@@ -40,7 +40,7 @@ describe( 'DetachOperation', () => {
 			const root = doc.createRoot();
 			const element = new Element( 'element' );
 
-			root.appendChildren( [ element ] );
+			root._appendChildren( [ element ] );
 
 			const op = new DetachOperation( Position.createBefore( element ), 1 );
 

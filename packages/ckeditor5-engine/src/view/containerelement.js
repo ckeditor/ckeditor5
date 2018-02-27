@@ -48,6 +48,7 @@ export default class ContainerElement extends Element {
 	/**
 	 * Creates a container element.
 	 *
+	 * @protected
 	 * @see module:engine/view/element~Element
 	 */
 	constructor( name, attrs, children ) {
