@@ -7,19 +7,16 @@
  * @module list/list
  */
 
-import ListEngine from './listengine';
-
-import numberedListIcon from '../theme/icons/numberedlist.svg';
-import bulletedListIcon from '../theme/icons/bulletedlist.svg';
+import ListEditing from './listediting';
+import ListUI from './listui';
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 /**
- * The list feature. It introduces the `numberedList` and `bulletedList` buttons that
- * allow to convert paragraphs to and from list items and indent or outdent them.
+ * The list feature.
  *
- * See also {@link module:list/listengine~ListEngine}.
+ * It loads the {@link module:list/listediting~ListEditing list editing feature}
+ * and {@link module:list/listui~ListUI list UI feature}.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -28,7 +25,7 @@ export default class List extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ ListEngine ];
+		return [ ListEditing, ListUI ];
 	}
 
 	/**
@@ -36,114 +33,5 @@ export default class List extends Plugin {
 	 */
 	static get pluginName() {
 		return 'List';
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	init() {
-		// Create two buttons and link them with numberedList and bulletedList commands.
-		const t = this.editor.t;
-		this._addButton( 'numberedList', t( 'Numbered List' ), numberedListIcon );
-		this._addButton( 'bulletedList', t( 'Bulleted List' ), bulletedListIcon );
-
-		const viewDocument = this.editor.editing.view.document;
-
-		// Overwrite default Enter key behavior.
-		// If Enter key is pressed with selection collapsed in empty list item, outdent it instead of breaking it.
-		this.listenTo( viewDocument, 'enter', ( evt, data ) => {
-			const doc = this.editor.model.document;
-			const positionParent = doc.selection.getLastPosition().parent;
-
-			if ( doc.selection.isCollapsed && positionParent.name == 'listItem' && positionParent.isEmpty ) {
-				this.editor.execute( 'outdentList' );
-
-				data.preventDefault();
-				evt.stop();
-			}
-		} );
-
-		// Overwrite default Backspace key behavior.
-		// If Backspace key is pressed with selection collapsed on first position in first list item, outdent it. #83
-		this.listenTo( viewDocument, 'delete', ( evt, data ) => {
-			// Check conditions from those that require less computations like those immediately available.
-			if ( data.direction !== 'backward' ) {
-				return;
-			}
-
-			const selection = this.editor.model.document.selection;
-
-			if ( !selection.isCollapsed ) {
-				return;
-			}
-
-			const firstPosition = selection.getFirstPosition();
-
-			if ( !firstPosition.isAtStart ) {
-				return;
-			}
-
-			const positionParent = firstPosition.parent;
-
-			if ( positionParent.name !== 'listItem' ) {
-				return;
-			}
-
-			const previousIsAListItem = positionParent.previousSibling && positionParent.previousSibling.name === 'listItem';
-
-			if ( previousIsAListItem ) {
-				return;
-			}
-
-			this.editor.execute( 'outdentList' );
-
-			data.preventDefault();
-			evt.stop();
-		}, { priority: 'high' } );
-
-		const getCommandExecuter = commandName => {
-			return ( data, cancel ) => {
-				const command = this.editor.commands.get( commandName );
-
-				if ( command.isEnabled ) {
-					this.editor.execute( commandName );
-					cancel();
-				}
-			};
-		};
-
-		this.editor.keystrokes.set( 'Tab', getCommandExecuter( 'indentList' ) );
-		this.editor.keystrokes.set( 'Shift+Tab', getCommandExecuter( 'outdentList' ) );
-	}
-
-	/**
-	 * Helper method for initializing a button and linking it with an appropriate command.
-	 *
-	 * @private
-	 * @param {String} commandName The name of the command.
-	 * @param {Object} label The button label.
-	 * @param {String} icon The source of the icon.
-	 */
-	_addButton( commandName, label, icon ) {
-		const editor = this.editor;
-		const command = editor.commands.get( commandName );
-
-		editor.ui.componentFactory.add( commandName, locale => {
-			const buttonView = new ButtonView( locale );
-
-			buttonView.set( {
-				label,
-				icon,
-				tooltip: true
-			} );
-
-			// Bind button model to command.
-			buttonView.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
-
-			// Execute command.
-			this.listenTo( buttonView, 'execute', () => editor.execute( commandName ) );
-
-			return buttonView;
-		} );
 	}
 }

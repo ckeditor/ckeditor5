@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import ListEngine from '../src/listengine';
+import ListEditing from '../src/listediting';
 import ListCommand from '../src/listcommand';
 
 import ModelDocumentFragment from '@ckeditor/ckeditor5-engine/src/model/documentfragment';
@@ -14,10 +14,10 @@ import ModelText from '@ckeditor/ckeditor5-engine/src/model/text';
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import ViewUIElement from '@ckeditor/ckeditor5-engine/src/view/uielement';
 
-import BoldEngine from '@ckeditor/ckeditor5-basic-styles/src/boldengine';
-import UndoEngine from '@ckeditor/ckeditor5-undo/src/undoengine';
+import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
+import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
-import BlockQuoteEngine from '@ckeditor/ckeditor5-block-quote/src/blockquoteengine';
+import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getModelData, setData as setModelData, parse as parseModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -25,14 +25,15 @@ import { getData as getViewData, parse as parseView } from '@ckeditor/ckeditor5-
 
 import { insertElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
 import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
+import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
-describe( 'ListEngine', () => {
+describe( 'ListEditing', () => {
 	let editor, model, modelDoc, modelRoot, view, viewDoc, viewRoot;
 
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Clipboard, BoldEngine, ListEngine, UndoEngine, BlockQuoteEngine ]
+				plugins: [ Clipboard, BoldEditing, ListEditing, UndoEditing, BlockQuoteEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -48,7 +49,7 @@ describe( 'ListEngine', () => {
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( ListEngine ) ).to.be.instanceOf( ListEngine );
+		expect( editor.plugins.get( ListEditing ) ).to.be.instanceOf( ListEditing );
 	} );
 
 	it( 'should set proper schema rules', () => {
@@ -77,6 +78,240 @@ describe( 'ListEngine', () => {
 
 			expect( command ).to.be.instanceOf( ListCommand );
 			expect( command ).to.have.property( 'type', 'numbered' );
+		} );
+	} );
+
+	describe( 'enter key handling callback', () => {
+		it( 'should execute outdentList command on enter key in empty list', () => {
+			const domEvtDataStub = { preventDefault() {} };
+
+			sinon.spy( editor, 'execute' );
+
+			setModelData( model, '<listItem type="bulleted" indent="0">[]</listItem>' );
+
+			editor.editing.view.document.fire( 'enter', domEvtDataStub );
+
+			sinon.assert.calledOnce( editor.execute );
+			sinon.assert.calledWithExactly( editor.execute, 'outdentList' );
+		} );
+
+		it( 'should not execute outdentList command on enter key in non-empty list', () => {
+			const domEvtDataStub = { preventDefault() {} };
+
+			sinon.spy( editor, 'execute' );
+
+			setModelData( model, '<listItem type="bulleted" indent="0">foo[]</listItem>' );
+
+			editor.editing.view.document.fire( 'enter', domEvtDataStub );
+
+			sinon.assert.notCalled( editor.execute );
+		} );
+	} );
+
+	describe( 'delete key handling callback', () => {
+		it( 'should execute outdentList command on backspace key in first item of list', () => {
+			const domEvtDataStub = { preventDefault() {}, direction: 'backward' };
+
+			sinon.spy( editor, 'execute' );
+
+			setModelData( model, '<listItem type="bulleted" indent="0">[]foo</listItem>' );
+
+			editor.editing.view.document.fire( 'delete', domEvtDataStub );
+
+			sinon.assert.calledWithExactly( editor.execute, 'outdentList' );
+		} );
+
+		it( 'should execute outdentList command on backspace key in first item of list', () => {
+			const domEvtDataStub = { preventDefault() {}, direction: 'backward' };
+
+			sinon.spy( editor, 'execute' );
+
+			setModelData( model, '<paragraph>foo</paragraph><listItem type="bulleted" indent="0">[]foo</listItem>' );
+
+			editor.editing.view.document.fire( 'delete', domEvtDataStub );
+
+			sinon.assert.calledWithExactly( editor.execute, 'outdentList' );
+		} );
+
+		it( 'should not execute outdentList command on delete key in first item of list', () => {
+			const domEvtDataStub = { preventDefault() {}, direction: 'forward' };
+
+			sinon.spy( editor, 'execute' );
+
+			setModelData( model, '<listItem type="bulleted" indent="0">[]foo</listItem>' );
+
+			editor.editing.view.document.fire( 'delete', domEvtDataStub );
+
+			sinon.assert.notCalled( editor.execute );
+		} );
+
+		it( 'should not execute outdentList command when selection is not collapsed', () => {
+			const domEvtDataStub = { preventDefault() {}, direction: 'backward' };
+
+			sinon.spy( editor, 'execute' );
+
+			setModelData( model, '<listItem type="bulleted" indent="0">[fo]o</listItem>' );
+
+			editor.editing.view.document.fire( 'delete', domEvtDataStub );
+
+			sinon.assert.notCalled( editor.execute );
+		} );
+
+		it( 'should not execute outdentList command if not in list item', () => {
+			const domEvtDataStub = { preventDefault() {}, direction: 'backward' };
+
+			sinon.spy( editor, 'execute' );
+
+			setModelData( model, '<paragraph>[]foo</paragraph>' );
+
+			editor.editing.view.document.fire( 'delete', domEvtDataStub );
+
+			sinon.assert.notCalled( editor.execute );
+		} );
+
+		it( 'should not execute outdentList command if not in first list item', () => {
+			const domEvtDataStub = { preventDefault() {}, direction: 'backward' };
+
+			sinon.spy( editor, 'execute' );
+
+			setModelData(
+				model,
+				'<listItem type="bulleted" indent="0">foo</listItem><listItem type="bulleted" indent="0">[]foo</listItem>'
+			);
+
+			editor.editing.view.document.fire( 'delete', domEvtDataStub );
+
+			sinon.assert.notCalled( editor.execute );
+		} );
+
+		it( 'should not execute outdentList command when selection is not on first position', () => {
+			const domEvtDataStub = { preventDefault() {}, direction: 'backward' };
+
+			sinon.spy( editor, 'execute' );
+
+			setModelData( model, '<listItem type="bulleted" indent="0">fo[]o</listItem>' );
+
+			editor.editing.view.document.fire( 'delete', domEvtDataStub );
+
+			sinon.assert.notCalled( editor.execute );
+		} );
+
+		it( 'should not execute outdentList command when selection is not on first position', () => {
+			const domEvtDataStub = { preventDefault() {}, direction: 'backward' };
+
+			sinon.spy( editor, 'execute' );
+
+			setModelData( model, '<listItem type="bulleted" indent="0">fo[]o</listItem>' );
+
+			editor.editing.view.document.fire( 'delete', domEvtDataStub );
+
+			sinon.assert.notCalled( editor.execute );
+		} );
+
+		it( 'should outdent list when previous element is nested in block quote', () => {
+			const domEvtDataStub = { preventDefault() {}, direction: 'backward' };
+
+			sinon.spy( editor, 'execute' );
+
+			setModelData(
+				model,
+				'<blockQuote><paragraph>x</paragraph></blockQuote><listItem type="bulleted" indent="0">[]foo</listItem>'
+			);
+
+			editor.editing.view.document.fire( 'delete', domEvtDataStub );
+
+			sinon.assert.calledWithExactly( editor.execute, 'outdentList' );
+		} );
+
+		it( 'should outdent list when list is nested in block quote', () => {
+			const domEvtDataStub = { preventDefault() {}, direction: 'backward' };
+
+			sinon.spy( editor, 'execute' );
+
+			setModelData(
+				model,
+				'<paragraph>x</paragraph><blockQuote><listItem type="bulleted" indent="0">[]foo</listItem></blockQuote>'
+			);
+
+			editor.editing.view.document.fire( 'delete', domEvtDataStub );
+
+			sinon.assert.calledWithExactly( editor.execute, 'outdentList' );
+		} );
+	} );
+
+	describe( 'tab key handling callback', () => {
+		let domEvtDataStub;
+
+		beforeEach( () => {
+			domEvtDataStub = {
+				keyCode: getCode( 'Tab' ),
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			};
+
+			sinon.spy( editor, 'execute' );
+		} );
+
+		afterEach( () => {
+			editor.execute.restore();
+		} );
+
+		it( 'should execute indentList command on tab key', () => {
+			setModelData(
+				model,
+				'<listItem type="bulleted" indent="0">foo</listItem>' +
+				'<listItem type="bulleted" indent="0">[]bar</listItem>'
+			);
+
+			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+			sinon.assert.calledOnce( editor.execute );
+			sinon.assert.calledWithExactly( editor.execute, 'indentList' );
+			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+		} );
+
+		it( 'should execute outdentList command on Shift+Tab keystroke', () => {
+			domEvtDataStub.keyCode += getCode( 'Shift' );
+
+			setModelData(
+				model,
+				'<listItem type="bulleted" indent="0">foo</listItem>' +
+				'<listItem type="bulleted" indent="1">[]bar</listItem>'
+			);
+
+			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+			sinon.assert.calledOnce( editor.execute );
+			sinon.assert.calledWithExactly( editor.execute, 'outdentList' );
+			sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+			sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+		} );
+
+		it( 'should not indent if command is disabled', () => {
+			setModelData( model, '<listItem type="bulleted" indent="0">[]foo</listItem>' );
+
+			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+			expect( editor.execute.called ).to.be.false;
+			sinon.assert.notCalled( domEvtDataStub.preventDefault );
+			sinon.assert.notCalled( domEvtDataStub.stopPropagation );
+		} );
+
+		it( 'should not indent or outdent if alt+tab is pressed', () => {
+			domEvtDataStub.keyCode += getCode( 'alt' );
+
+			setModelData(
+				model,
+				'<listItem type="bulleted" indent="0">foo</listItem>' +
+				'<listItem type="bulleted" indent="0">[]bar</listItem>'
+			);
+
+			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+			expect( editor.execute.called ).to.be.false;
+			sinon.assert.notCalled( domEvtDataStub.preventDefault );
+			sinon.assert.notCalled( domEvtDataStub.stopPropagation );
 		} );
 	} );
 
