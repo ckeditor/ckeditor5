@@ -8,14 +8,14 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import UndoEngine from './undoengine';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-
-import undoIcon from '../theme/icons/undo.svg';
-import redoIcon from '../theme/icons/redo.svg';
+import UndoEditing from './undoediting';
+import UndoUI from './undoui';
 
 /**
- * The undo feature. It introduces the Undo and Redo buttons to the editor.
+ * The undo feature.
+ *
+ * It loads the {@link module:undo/undoediting~UndoEditing undo editing feature}
+ * and {@link module:undo/undoui~UndoUI undo UI feature}.
  *
  * Below is the explanation of the undo mechanism working together with {@link module:engine/model/history~History History}:
  *
@@ -106,7 +106,7 @@ export default class Undo extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ UndoEngine ];
+		return [ UndoEditing, UndoUI ];
 	}
 
 	/**
@@ -114,51 +114,5 @@ export default class Undo extends Plugin {
 	 */
 	static get pluginName() {
 		return 'Undo';
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	init() {
-		const editor = this.editor;
-		const t = editor.t;
-
-		this._addButton( 'undo', t( 'Undo' ), 'CTRL+Z', undoIcon );
-		this._addButton( 'redo', t( 'Redo' ), 'CTRL+Y', redoIcon );
-
-		editor.keystrokes.set( 'CTRL+Z', 'undo' );
-		editor.keystrokes.set( 'CTRL+Y', 'redo' );
-		editor.keystrokes.set( 'CTRL+SHIFT+Z', 'redo' );
-	}
-
-	/**
-	 * Creates a button for the specified command.
-	 *
-	 * @private
-	 * @param {String} name Command name.
-	 * @param {String} label Button label.
-	 * @param {String} keystroke Command keystroke.
-	 * @param {String} Icon Source of the icon.
-	 */
-	_addButton( name, label, keystroke, Icon ) {
-		const editor = this.editor;
-		const command = editor.commands.get( name );
-
-		editor.ui.componentFactory.add( name, locale => {
-			const view = new ButtonView( locale );
-
-			view.set( {
-				label,
-				icon: Icon,
-				keystroke,
-				tooltip: true
-			} );
-
-			view.bind( 'isEnabled' ).to( command, 'isEnabled' );
-
-			this.listenTo( view, 'execute', () => editor.execute( name ) );
-
-			return view;
-		} );
 	}
 }
