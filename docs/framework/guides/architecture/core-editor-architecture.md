@@ -9,13 +9,11 @@ The [`@ckeditor/ckeditor5-core`](https://www.npmjs.com/package/@ckeditor/ckedito
 
 ## Editor classes
 
-The {@link module:core/editor/editor~Editor} class representing the base of the editor.
-
-The editor is a root object, gluing all other components. It holds a couple of properties that you need to know:
+The {@link module:core/editor/editor~Editor} class represents the base of the editor. It's an entry point of the application, gluing all other components. It provides a couple of properties that you need to know:
 
 * {@link module:core/editor/editor~Editor#config} &ndash; The configuration object.
 * {@link module:core/editor/editor~Editor#plugins} and {@link module:core/editor/editor~Editor#commands} &ndash; The collection of loaded plugins and commands.
-* {@link module:core/editor/editor~Editor#document} &ndash; The document. It is the editing engine's entry point.
+* {@link module:core/editor/editor~Editor#model} &ndash; The entry point to editor's abstract data model.
 * {@link module:core/editor/editor~Editor#data} &ndash; The data controller. It controls how data is retrieved from the document and set inside it.
 * {@link module:core/editor/editor~Editor#editing} &ndash; The editing controller. It controls {@link module:engine/controller/editingcontroller~EditingController#document document} rendering, including selection handling.
 * {@link module:core/editor/editor~Editor#keystrokes} &ndash; The keystroke handler. It allows to bind keystrokes to actions.
@@ -37,7 +35,7 @@ The editor class is a base to implement your own editors. CKEditor 5 Framework c
 
 Plugins are a way to introduce editor features. In CKEditor 5 even {@link module:typing/typing~Typing typing} is a plugin. What is more, the {@link module:typing/typing~Typing} plugin requires {@link module:typing/input~Input} and {@link module:typing/delete~Delete} plugins which are responsible for handling, methods of inserting text and deleting content, respectively. At the same time, a couple of other plugins need to customize <kbd>Backspace</kbd> behavior in certain cases, which is handled by themselves. This leaves the base plugins free of any non-generic knowledge.
 
-Another important aspect of how existing CKEditor 5 plugins are implemented is the split into engine and UI parts. For example, the {@link module:basic-styles/boldengine~BoldEngine} plugin introduces schema definition, mechanisms rendering `<strong>` tags, commands to apply and remove bold from text, while the {@link module:basic-styles/bold~Bold} plugin adds the UI of the feature (i.e. a button). This feature split is meant to allow for greater reuse (one can take the engine part and implement their own UI for a feature) as well as for running CKEditor 5 on the server side. At the same time, the feature split [is not perfect yet and will be improved](https://github.com/ckeditor/ckeditor5/issues/488).
+Another important aspect of how existing CKEditor 5 plugins are implemented is the split into engine and UI parts. For example, the {@link module:basic-styles/bold/boldediting~BoldEditing} plugin introduces schema definition, mechanisms rendering `<strong>` tags, commands to apply and remove bold from text, while the {@link module:basic-styles/bold~Bold} plugin adds the UI of the feature (i.e. a button). This feature split is meant to allow for greater reuse (one can take the engine part and implement their own UI for a feature) as well as for running CKEditor 5 on the server side. At the same time, the feature split [is not perfect yet and will be improved](https://github.com/ckeditor/ckeditor5/issues/488).
 
 The tl;dr of this is that:
 
@@ -227,4 +225,4 @@ You can find more about bindings in the {@link framework/guides/architecture/ui-
 
 ## Read next
 
-Once you learnt how to create plugins and commands you can read how to implement real editing features in the {@link framework/guides/architecture/editing-engine Editing engine} guide.
+Once you have learned how to create plugins and commands you can read how to implement real editing features in the {@link framework/guides/architecture/editing-engine Editing engine} guide.
