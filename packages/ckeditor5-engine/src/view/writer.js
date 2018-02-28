@@ -46,51 +46,47 @@ export default class Writer {
 	 *
 	 * Usage:
 	 *
-	 *		// Sets ranges from the given range.
+	 *		// Sets selection to the given range.
 	 *		const range = new Range( start, end );
-	 *		writer.setSelection( range, isBackwardSelection );
+	 *		writer.setSelection( range, { backward, fake, label } );
 	 *
-	 *		// Sets ranges from the iterable of ranges.
+	 *		// Sets selection to given ranges.
 	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
-	 *		writer.setSelection( range, isBackwardSelection );
+	 *		writer.setSelection( range, { backward, fake, label } );
 	 *
-	 *		// Sets ranges from the other selection.
+	 *		// Sets selection to the other selection.
 	 *		const otherSelection = new Selection();
 	 *		writer.setSelection( otherSelection );
 	 *
-	 * 		// Sets collapsed range at the given position.
+	 * 		// Sets collapsed selection at the given position.
 	 *		const position = new Position( root, path );
-	 *		writer.setSelection( position );
+	 *		writer.setSelection( position, { fake, label } );
 	 *
-	 * 		// Sets collapsed range at the position of given item and offset.
+	 * 		// Sets collapsed selection at the position of given item and offset.
 	 *		const paragraph = writer.createElement( 'paragraph' );
-	 *		selection.setTo( paragraph, offset );
+	 *		selection.setTo( paragraph, offset, { fake, label } );
 	 *
-	 *		// Sets range inside the item.
+	 *		// Sets selection inside the item.
 	 *		const paragraph = writer.createElement( 'paragraph' );
-	 *		selection.setTo( paragraph, 'in' );
+	 *		selection.setTo( paragraph, 'in', { backward, fake, label } );
 	 *
-	 *		// Sets range on the item.
+	 *		// Sets selection on the item.
 	 *		const paragraph = writer.createElement( 'paragraph' );
-	 *		selection.setTo( paragraph, 'on' );
+	 *		selection.setTo( paragraph, 'on', { backward, fake, label } );
 	 *
 	 * 		// Removes all ranges.
 	 *		writer.setSelection( null );
 	 *
 	 * @param {module:engine/view/selection~Selection|module:engine/view/position~Position|
 	 * Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|module:engine/view/item~Item|null} selectable
-	 * @param {Object|Number|'before'|'end'|'after'|'on'|'in'} [optionsOrPlaceOrOffset] Offset or place when selectable is an `Item`.
-	 * Options otherwise.
-	 * @param {Boolean} [optionsOrPlaceOrOffset.backward] Sets this selection instance to be backward.
-	 * @param {Boolean} [optionsOrPlaceOrOffset.fake] Sets this selection instance to be marked as `fake`.
-	 * @param {Boolean} [optionsOrPlaceOrOffset.label] Label for the fake selection.
-	 * @param {Object} [options] Options when selectable is an `Item`.
+	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets offset or place of the selection.
+	 * @param {Object} [options]
 	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
 	 * @param {Boolean} [options.fake] Sets this selection instance to be marked as `fake`.
 	 * @param {String} [options.label] Label for the fake selection.
 	 */
-	setSelection( selectable, optionsOrPlaceOrOffset, options ) {
-		this.document.selection._setTo( selectable, optionsOrPlaceOrOffset, options );
+	setSelection( selectable, placeOrOffset, options ) {
+		this.document.selection._setTo( selectable, placeOrOffset, options );
 	}
 
 	/**

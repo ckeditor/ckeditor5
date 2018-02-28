@@ -404,11 +404,16 @@ export default class Selection {
 	 * {@link module:engine/view/item~Item item}, {@link module:engine/view/range~Range range},
 	 * an iterable of {@link module:engine/view/range~Range ranges} or null.
 	 *
+	 * This method provides option to create a fake selection.
+	 * Fake selection does not render as browser native selection over selected elements and is hidden to the user.
+	 * This way, no native selection UI artifacts are displayed to the user and selection over elements can be
+	 * represented in other way, for example by applying proper CSS class.
+	 *
 	 *		// Sets selection to the given range.
 	 *		const range = new Range( start, end );
 	 *		selection.setTo( range, { backward, fake, label } );
 	 *
-	 *		// Sets selection to the ranges.
+	 *		// Sets selection to given ranges.
 	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
 	 *		selection.setTo( range, { backward, fake, label } );
 	 *
@@ -432,14 +437,14 @@ export default class Selection {
 	 *		const paragraph = writer.createElement( 'paragraph' );
 	 *		selection.setTo( paragraph, 'on', { backward, fake, label } );
 	 *
-	 * 		// Clears selection. Removes all ranges and options
+	 * 		// Clears selection. Removes all ranges.
 	 *		selection.setTo( null );
 	 *
 	 * @protected
 	 * @fires change
 	 * @param {module:engine/view/selection~Selection|module:engine/view/position~Position|
 	 * Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|module:engine/view/item~Item|null} selectable
-	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Offset or place.
+	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets offset or place of the selection.
 	 * @param {Object} [options]
 	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
 	 * @param {Boolean} [options.fake] Sets this selection instance to be marked as `fake`.
