@@ -5,7 +5,7 @@
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Image from '../src/image';
-import ImageEngine from '../src/image/imageengine';
+import ImageEditing from '../src/image/imageediting';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 import ImageTextAlternative from '../src/imagetextalternative';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -43,8 +43,8 @@ describe( 'Image', () => {
 		expect( editor.plugins.get( Image ) ).to.instanceOf( Image );
 	} );
 
-	it( 'should load ImageEngine plugin', () => {
-		expect( editor.plugins.get( ImageEngine ) ).to.instanceOf( ImageEngine );
+	it( 'should load ImageEditing plugin', () => {
+		expect( editor.plugins.get( ImageEditing ) ).to.instanceOf( ImageEditing );
 	} );
 
 	it( 'should load Widget plugin', () => {

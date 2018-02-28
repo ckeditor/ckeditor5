@@ -9,9 +9,10 @@ import BalloonToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/balloon/balloonto
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import Image from '../src/image';
+import ImageToolbar from '../src/imagetoolbar';
 import View from '@ckeditor/ckeditor5-ui/src/view';
 
-describe( 'Image integration', () => {
+describe( 'ImageToolbar integration', () => {
 	describe( 'with the BalloonToolbar', () => {
 		let balloon, balloonToolbar, newEditor, editorElement;
 
@@ -21,7 +22,7 @@ describe( 'Image integration', () => {
 
 			return ClassicTestEditor
 				.create( editorElement, {
-					plugins: [ Image, BalloonToolbar, Paragraph ]
+					plugins: [ Image, ImageToolbar, BalloonToolbar, Paragraph ]
 				} )
 				.then( editor => {
 					newEditor = editor;

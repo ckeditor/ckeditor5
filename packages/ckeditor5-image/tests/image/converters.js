@@ -8,7 +8,7 @@ import {
 	modelToViewAttributeConverter
 } from '../../src/image/converters';
 import { toImageWidget } from '../../src/image/utils';
-import { createImageViewElement } from '../../src/image/imageengine';
+import { createImageViewElement } from '../../src/image/imageediting';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 
 import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';

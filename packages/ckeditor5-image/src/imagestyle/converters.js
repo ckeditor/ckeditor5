@@ -12,7 +12,7 @@ import first from '@ckeditor/ckeditor5-utils/src/first';
 /**
  * Returns a converter for the `imageStyle` attribute. It can be used for adding, changing and removing the attribute.
  *
- * @param {Object} styles An object containing available styles. See {@link module:image/imagestyle/imagestyleengine~ImageStyleFormat}
+ * @param {Object} styles An object containing available styles. See {@link module:image/imagestyle/imagestyleediting~ImageStyleFormat}
  * for more details.
  * @returns {Function} A model-to-view attribute converter.
  */
@@ -42,7 +42,7 @@ export function modelToViewStyleAttribute( styles ) {
 /**
  * Returns a view-to-model converter converting image CSS classes to a proper value in the model.
  *
- * @param {Array.<module:image/imagestyle/imagestyleengine~ImageStyleFormat>} styles Styles for which the converter is created.
+ * @param {Array.<module:image/imagestyle/imagestyleediting~ImageStyleFormat>} styles Styles for which the converter is created.
  * @returns {Function} A view-to-model converter.
  */
 export function viewToModelStyleAttribute( styles ) {
@@ -76,8 +76,8 @@ export function viewToModelStyleAttribute( styles ) {
 // Returns style with given `name` from array of styles.
 //
 // @param {String} name
-// @param {Array.<module:image/imagestyle/imagestyleengine~ImageStyleFormat> } styles
-// @return {module:image/imagestyle/imagestyleengine~ImageStyleFormat|undefined}
+// @param {Array.<module:image/imagestyle/imagestyleediting~ImageStyleFormat> } styles
+// @return {module:image/imagestyle/imagestyleediting~ImageStyleFormat|undefined}
 function getStyleByName( name, styles ) {
 	for ( const style of styles ) {
 		if ( style.name === name ) {
