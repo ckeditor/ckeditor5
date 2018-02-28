@@ -18,7 +18,7 @@ import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
- * The {@glink builds/guides/overview#Inline-editor inline editor} implementation.
+ * The {@glink builds/guides/overview#inline-editor inline editor} implementation.
  * It uses an inline editable and a floating toolbar.
  * See the {@glink examples/builds/inline-editor demo}.
  *
@@ -29,7 +29,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  *
  * The inline editor can be used directly from source (if you installed the
  * [`@ckeditor/ckeditor5-editor-inline`](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-inline) package)
- * but it is also available in the {@glink builds/guides/overview#Inline-editor inline build}.
+ * but it is also available in the {@glink builds/guides/overview#inline-editor inline build}.
  *
  * {@glink builds/guides/overview Builds} are ready-to-use editors with plugins bundled in. When using the editor from
  * source you need to take care of loading all plugins by yourself
