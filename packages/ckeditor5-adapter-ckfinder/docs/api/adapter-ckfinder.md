@@ -10,7 +10,7 @@ This package implements an upload adapter to [CKFinder](https://ckeditor.com/cke
 
 ## Documentation
 
-See the {@link module:adapter-ckfinder/uploadadapter~CKFinderUploadAdapter} plugin documentation and the {@link features/image#Image-upload Image upload} section in the {@link features/image Image feature} guide.
+See the {@link module:adapter-ckfinder/uploadadapter~CKFinderUploadAdapter} plugin documentation and the {@link features/image#image-upload Image upload} section in the {@link features/image Image feature} guide.
 
 ## Installation
 
