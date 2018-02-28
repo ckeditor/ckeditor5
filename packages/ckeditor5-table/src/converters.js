@@ -232,7 +232,13 @@ function _scanRow( tr, tableMeta, firstThead ) {
 
 	// Count starting adjacent <th> elements of a <tr>.
 	while ( index < childCount && tr.getChild( index ).name === 'th' ) {
-		headingCols++;
+		const td = tr.getChild( index );
+
+		// Adjust columns calculation by the number of extended columns.
+		const hasAttribute = td.hasAttribute( 'colspan' );
+		const tdSize = hasAttribute ? parseInt( td.getAttribute( 'colspan' ) ) : 1;
+
+		headingCols = headingCols + tdSize;
 		index++;
 	}
 
@@ -240,4 +246,3 @@ function _scanRow( tr, tableMeta, firstThead ) {
 		tableMeta.headingColumns = headingCols;
 	}
 }
-

@@ -291,6 +291,44 @@ describe( 'Table converters', () => {
 					'</table>'
 				);
 			} );
+
+			it( 'should calculate heading columns of cells with colspan', () => {
+				editor.setData(
+					'<table>' +
+					'<tbody>' +
+					// This row has colspan of 3 so it should be the whole table should have 3 heading columns.
+					'<tr><th colspan="3">21</th><td>24</td></tr>' +
+					'<tr><th>31</th><th>32</th><td>33</td><td>34</td></tr>' +
+					'<tr><th colspan="2">41</th><th>43</th><td>44</td></tr>' +
+					'<tr><td>51</td><th>52</th><th>53</th><th>54</th></tr>' +
+					'</tbody>' +
+					'<thead>' +
+					// This row has 4 ths but it is a thead.
+					'<tr><th>11</th><th>12</th><th>13</th><th>14</th></tr>' +
+					'</thead>' +
+					'</table>'
+				);
+
+				expectModel(
+					'<table headingColumns="3" headingRows="1">' +
+					'<tableRow>' +
+					'<tableCell>11</tableCell><tableCell>12</tableCell><tableCell>13</tableCell><tableCell>14</tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+					'<tableCell colspan="3">21</tableCell><tableCell>24</tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+					'<tableCell>31</tableCell><tableCell>32</tableCell><tableCell>33</tableCell><tableCell>34</tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+					'<tableCell colspan="2">41</tableCell><tableCell>43</tableCell><tableCell>44</tableCell>' +
+					'</tableRow>' +
+					'<tableRow>' +
+					'<tableCell>51</tableCell><tableCell>52</tableCell><tableCell>53</tableCell><tableCell>54</tableCell>' +
+					'</tableRow>' +
+					'</table>'
+				);
+			} );
 		} );
 	} );
 
