@@ -107,30 +107,54 @@ export default class Differ {
 	 */
 	bufferOperation( operation ) {
 		switch ( operation.type ) {
-			case 'insert':
+			case 'insert': {
+				if ( this._isInInsertedElement( operation.position.parent ) ) {
+					return;
+				}
+
 				this._markInsert( operation.position.parent, operation.position.offset, operation.nodes.maxOffset );
 
 				break;
+			}
 			case 'addAttribute':
 			case 'removeAttribute':
-			case 'changeAttribute':
+			case 'changeAttribute': {
 				for ( const item of operation.range.getItems() ) {
+					if ( this._isInInsertedElement( item.parent ) ) {
+						continue;
+					}
+
 					this._markAttribute( item );
 				}
 
 				break;
+			}
 			case 'remove':
 			case 'move':
-			case 'reinsert':
-				this._markRemove( operation.sourcePosition.parent, operation.sourcePosition.offset, operation.howMany );
-				this._markInsert( operation.targetPosition.parent, operation.getMovedRangeStart().offset, operation.howMany );
+			case 'reinsert': {
+				const sourceParentInserted = this._isInInsertedElement( operation.sourcePosition.parent );
+				const targetParentInserted = this._isInInsertedElement( operation.targetPosition.parent );
+
+				if ( !sourceParentInserted ) {
+					this._markRemove( operation.sourcePosition.parent, operation.sourcePosition.offset, operation.howMany );
+				}
+
+				if ( !targetParentInserted ) {
+					this._markInsert( operation.targetPosition.parent, operation.getMovedRangeStart().offset, operation.howMany );
+				}
 
 				break;
-			case 'rename':
+			}
+			case 'rename': {
+				if ( this._isInInsertedElement( operation.position.parent ) ) {
+					return;
+				}
+
 				this._markRemove( operation.position.parent, operation.position.offset, 1 );
 				this._markInsert( operation.position.parent, operation.position.offset, 1 );
 
 				break;
+			}
 		}
 
 		// Clear cache after each buffered operation as it is no longer valid.
@@ -396,10 +420,6 @@ export default class Differ {
 	 * @param {Number} howMany
 	 */
 	_markInsert( parent, offset, howMany ) {
-		if ( this._isInInsertedElement( parent ) ) {
-			return;
-		}
-
 		const changeItem = { type: 'insert', offset, howMany, count: this._changeCount++ };
 
 		this._markChange( parent, changeItem );
@@ -414,10 +434,6 @@ export default class Differ {
 	 * @param {Number} howMany
 	 */
 	_markRemove( parent, offset, howMany ) {
-		if ( this._isInInsertedElement( parent ) ) {
-			return;
-		}
-
 		const changeItem = { type: 'remove', offset, howMany, count: this._changeCount++ };
 
 		this._markChange( parent, changeItem );
@@ -432,10 +448,6 @@ export default class Differ {
 	 * @param {module:engine/model/item~Item} item
 	 */
 	_markAttribute( item ) {
-		if ( this._isInInsertedElement( item.parent ) ) {
-			return;
-		}
-
 		const changeItem = { type: 'attribute', offset: item.startOffset, howMany: item.offsetSize, count: this._changeCount++ };
 
 		this._markChange( item.parent, changeItem );
