@@ -19,7 +19,7 @@ import attachToForm from '@ckeditor/ckeditor5-core/src/editor/utils/attachtoform
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
- * The {@glink builds/guides/overview#Balloon-editor balloon editor} implementation (Medium-like editor).
+ * The {@glink builds/guides/overview#balloon-editor balloon editor} implementation (Medium-like editor).
  * It uses an inline editable and a toolbar based on the {@link module:ui/toolbar/balloon/balloontoolbar~BalloonToolbar}.
  * See the {@glink examples/builds/balloon-editor demo}.
  *
@@ -30,7 +30,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  *
  * The balloon editor can be used directly from source (if you installed the
  * [`@ckeditor/ckeditor5-editor-balloon`](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-balloon) package)
- * but it is also available in the {@glink builds/guides/overview#Balloon-editor balloon build}.
+ * but it is also available in the {@glink builds/guides/overview#balloon-editor balloon build}.
  *
  * {@glink builds/guides/overview Builds} are ready-to-use editors with plugins bundled in. When using the editor from
  * source you need to take care of loading all plugins by yourself
