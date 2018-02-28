@@ -41,11 +41,11 @@ export default class Selection {
 	 *
 	 *		// Creates selection at the given range.
 	 *		const range = new Range( start, end );
-	 *		const selection = new Selection( range, { backward } );
+	 *		const selection = new Selection( range, { backward, fake, label } );
 	 *
 	 *		// Creates selection at the given ranges
 	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
-	 *		const selection = new Selection( ranges, { backward } );
+	 *		const selection = new Selection( ranges, { backward, fake, label } );
 	 *
 	 *		// Creates selection from the other selection.
 	 *		const otherSelection = new Selection();
@@ -53,33 +53,29 @@ export default class Selection {
 	 *
 	 * 		// Creates selection at the given position.
 	 *		const position = new Position( root, path );
-	 *		const selection = new Selection( position );
+	 *		const selection = new Selection( position, { fake, label } );
 	 *
-	 * 		// Sets collapsed range at the position of given item and offset.
+	 * 		// Sets collapsed selection at the position of given item and offset.
 	 *		const paragraph = writer.createElement( 'paragraph' );
-	 *		selection.setTo( paragraph, offset );
+	 *		selection.setTo( paragraph, offset, { fake, label } );
 	 *
-	 *		// Sets range inside the item.
+	 *		// Sets selection inside the item.
 	 *		const paragraph = writer.createElement( 'paragraph' );
-	 *		selection.setTo( paragraph, 'in', { backward } );
+	 *		selection.setTo( paragraph, 'in', { backward, fake, label } );
 	 *
-	 *		// Sets range on the item.
+	 *		// Sets selection on the item.
 	 *		const paragraph = writer.createElement( 'paragraph' );
-	 *		selection.setTo( paragraph, 'on', { backward } );
+	 *		selection.setTo( paragraph, 'on', { backward, fake, label } );
 	 *
 	 * @param {module:engine/view/selection~Selection|module:engine/view/position~Position|
 	 * Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|module:engine/view/item~Item|null} [selectable=null]
-	 * @param {Object|Number|'before'|'end'|'after'|'on'|'in'} [optionsOrPlaceOrOffset] Offset or place when selectable is an `Item`.
-	 * Options otherwise.
-	 * @param {Boolean} [optionsOrPlaceOrOffset.backward] Sets this selection instance to be backward.
-	 * @param {Boolean} [optionsOrPlaceOrOffset.fake] Sets this selection instance to be marked as `fake`.
-	 * @param {Boolean} [optionsOrPlaceOrOffset.label] Label for the fake selection.
-	 * @param {Object} [options] Options when selectable is an `Item`.
+	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Offset or place when selectable is an `Item`.
+	 * @param {Object} [options]
 	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
 	 * @param {Boolean} [options.fake] Sets this selection instance to be marked as `fake`.
 	 * @param {String} [options.label] Label for the fake selection.
 	 */
-	constructor( selectable = null, optionsOrPlaceOrOffset, options ) {
+	constructor( selectable = null, placeOrOffset, options ) {
 		/**
 		 * Stores all ranges that are selected.
 		 *
@@ -112,7 +108,7 @@ export default class Selection {
 		 */
 		this._fakeSelectionLabel = '';
 
-		this._setTo( selectable, optionsOrPlaceOrOffset, options );
+		this._setTo( selectable, placeOrOffset, options );
 	}
 
 	/**
@@ -408,83 +404,80 @@ export default class Selection {
 	 * {@link module:engine/view/item~Item item}, {@link module:engine/view/range~Range range},
 	 * an iterable of {@link module:engine/view/range~Range ranges} or null.
 	 *
-	 *		// Sets ranges from the given range.
+	 *		// Sets selection to the given range.
 	 *		const range = new Range( start, end );
-	 *		selection.setTo( range, isBackwardSelection );
+	 *		selection.setTo( range, { backward, fake, label } );
 	 *
-	 *		// Sets ranges from the iterable of ranges.
+	 *		// Sets selection to the ranges.
 	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
-	 *		selection.setTo( range, isBackwardSelection );
+	 *		selection.setTo( range, { backward, fake, label } );
 	 *
-	 *		// Sets ranges from the other selection.
+	 *		// Sets selection to the other selection.
 	 *		const otherSelection = new Selection();
 	 *		selection.setTo( otherSelection );
 	 *
-	 * 		// Sets collapsed range at the given position.
+	 * 		// Sets collapsed selection at the given position.
 	 *		const position = new Position( root, path );
-	 *		selection.setTo( position );
+	 *		selection.setTo( position, { fake, label } );
 	 *
-	 * 		// Sets collapsed range at the position of given item and offset.
+	 * 		// Sets collapsed selection at the position of given item and offset.
 	 *		const paragraph = writer.createElement( 'paragraph' );
-	 *		selection.setTo( paragraph, offset );
+	 *		selection.setTo( paragraph, offset, { fake, label } );
 	 *
-	 *		// Sets range inside the item.
+	 *		// Sets selection inside the item.
 	 *		const paragraph = writer.createElement( 'paragraph' );
-	 *		selection.setTo( paragraph, 'in' );
+	 *		selection.setTo( paragraph, 'in', { backward, fake, label } );
 	 *
-	 *		// Sets range on the item.
+	 *		// Sets selection on the item.
 	 *		const paragraph = writer.createElement( 'paragraph' );
-	 *		selection.setTo( paragraph, 'on' );
+	 *		selection.setTo( paragraph, 'on', { backward, fake, label } );
 	 *
-	 * 		// Removes all ranges.
+	 * 		// Clears selection. Removes all ranges and options
 	 *		selection.setTo( null );
 	 *
 	 * @protected
 	 * @fires change
 	 * @param {module:engine/view/selection~Selection|module:engine/view/position~Position|
 	 * Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|module:engine/view/item~Item|null} selectable
-	 * @param {Object|Number|'before'|'end'|'after'|'on'|'in'} [optionsOrPlaceOrOffset] Offset or place when selectable is an `Item`.
-	 * Options otherwise.
-	 * @param {Boolean} [optionsOrPlaceOrOffset.backward] Sets this selection instance to be backward.
-	 * @param {Boolean} [optionsOrPlaceOrOffset.fake] Sets this selection instance to be marked as `fake`.
-	 * @param {Boolean} [optionsOrPlaceOrOffset.label] Label for the fake selection.
-	 * @param {Object} [options] Options when selectable is an `Item`.
+	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Offset or place.
+	 * @param {Object} [options]
 	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
 	 * @param {Boolean} [options.fake] Sets this selection instance to be marked as `fake`.
 	 * @param {String} [options.label] Label for the fake selection.
 	 */
-	_setTo( selectable, optionsOrPlaceOrOffset, options ) {
+	_setTo( selectable, placeOrOffset, options ) {
 		if ( selectable === null ) {
 			this._setRanges( [] );
-			this._setFakeOptions( optionsOrPlaceOrOffset );
+			this._setFakeOptions( placeOrOffset );
 		} else if ( selectable instanceof Selection ) {
 			this._setRanges( selectable.getRanges(), selectable.isBackward );
 			this._setFakeOptions( { fake: selectable.isFake, label: selectable.fakeSelectionLabel } );
 		} else if ( selectable instanceof Range ) {
-			this._setRanges( [ selectable ], optionsOrPlaceOrOffset && optionsOrPlaceOrOffset.backward );
-			this._setFakeOptions( optionsOrPlaceOrOffset );
+			this._setRanges( [ selectable ], placeOrOffset && placeOrOffset.backward );
+			this._setFakeOptions( placeOrOffset );
 		} else if ( selectable instanceof Position ) {
 			this._setRanges( [ new Range( selectable ) ] );
-			this._setFakeOptions( optionsOrPlaceOrOffset );
+			this._setFakeOptions( placeOrOffset );
 		} else if ( selectable instanceof Node ) {
 			const backward = !!options && !!options.backward;
 			let range;
 
-			if ( optionsOrPlaceOrOffset === undefined ) {
+			if ( placeOrOffset === undefined ) {
 				/**
-				 * Required second parameter when setting selection to node.
+				 * selection.setTo requires the second parameter when the first parameter is a node.
 				 *
 				 * @error view-selection-setTo-required-second-parameter
 				 */
 				throw new CKEditorError(
-					'view-selection-setTo-required-second-parameter: Required second parameter when setting selection to node.'
+					'view-selection-setTo-required-second-parameter: ' +
+					'selection.setTo requires the second parameter when the first parameter is a node.'
 				);
-			} else if ( optionsOrPlaceOrOffset == 'in' ) {
+			} else if ( placeOrOffset == 'in' ) {
 				range = Range.createIn( selectable );
-			} else if ( optionsOrPlaceOrOffset == 'on' ) {
+			} else if ( placeOrOffset == 'on' ) {
 				range = Range.createOn( selectable );
 			} else {
-				range = Range.createCollapsedAt( selectable, optionsOrPlaceOrOffset );
+				range = Range.createCollapsedAt( selectable, placeOrOffset );
 			}
 
 			this._setRanges( [ range ], backward );
@@ -492,8 +485,8 @@ export default class Selection {
 		} else if ( isIterable( selectable ) ) {
 			// We assume that the selectable is an iterable of ranges.
 			// Array.from() is used to prevent setting ranges to the old iterable
-			this._setRanges( selectable, optionsOrPlaceOrOffset && optionsOrPlaceOrOffset.backward );
-			this._setFakeOptions( optionsOrPlaceOrOffset );
+			this._setRanges( selectable, placeOrOffset && placeOrOffset.backward );
+			this._setFakeOptions( placeOrOffset );
 		} else {
 			/**
 			 * Cannot set selection to given place.
