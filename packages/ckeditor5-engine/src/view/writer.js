@@ -63,15 +63,12 @@ export default class Writer {
 	 *		writer.setSelection( position, { fake, label } );
 	 *
 	 * 		// Sets collapsed selection at the position of given item and offset.
-	 *		const paragraph = writer.createElement( 'paragraph' );
 	 *		selection.setTo( paragraph, offset, { fake, label } );
 	 *
 	 *		// Sets selection inside the item.
-	 *		const paragraph = writer.createElement( 'paragraph' );
 	 *		selection.setTo( paragraph, 'in', { backward, fake, label } );
 	 *
 	 *		// Sets selection on the item.
-	 *		const paragraph = writer.createElement( 'paragraph' );
 	 *		selection.setTo( paragraph, 'on', { backward, fake, label } );
 	 *
 	 * 		// Removes all ranges.

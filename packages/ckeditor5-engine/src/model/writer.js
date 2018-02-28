@@ -926,15 +926,12 @@ export default class Writer {
 	 *		writer.setSelection( position );
 	 *
 	 * 		// Sets collapsed selection at the position of the given node and an offset.
-	 *		const paragraph = writer.createElement( 'paragraph' );
 	 *		writer.setSelection( paragraph, offset );
 	 *
 	 *		// Sets selection inside the given node.
-	 *		const paragraph = writer.createElement( 'paragraph' );
 	 *		writer.setSelection( paragraph, 'in', { backward } );
 	 *
 	 *		// Sets selection on the given node.
-	 *		const paragraph = writer.createElement( 'paragraph' );
 	 *		writer.setSelection( paragraph, 'on', { backward } );
 	 *
 	 * 		// Removes all selection's ranges.

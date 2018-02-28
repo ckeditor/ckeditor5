@@ -333,16 +333,13 @@ export default class Selection {
 	 *		const position = new Position( root, path );
 	 *		selection.setTo( position );
 	 *
-	 * 		// Sets collapsed selection at the position of given node and offset.
-	 *		const paragraph = writer.createElement( 'paragraph' );
+	 * 		// Sets collapsed selection at the position of the given node and an offset.
 	 *		selection.setTo( paragraph, offset );
 	 *
 	 *		// Sets selection inside the given  node.
-	 *		const paragraph = writer.createElement( 'paragraph' );
 	 *		selection.setTo( paragraph, 'in', { backward } );
 	 *
 	 *		// Sets selection on the given node.
-	 *		const paragraph = writer.createElement( 'paragraph' );
 	 *		selection.setTo( paragraph, 'on', { backward } );
 	 *
 	 * 		// Removes all selection's ranges.
