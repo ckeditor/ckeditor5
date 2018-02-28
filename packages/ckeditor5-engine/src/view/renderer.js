@@ -104,6 +104,13 @@ export default class Renderer {
 		this.isFocused = false;
 
 		/**
+		 * Indicates if composition takes places inside view document.
+		 *
+		 * @member {Boolean}
+		 */
+		this.isComposing = false;
+
+		/**
 		 * DOM element containing fake selection.
 		 *
 		 * @private
