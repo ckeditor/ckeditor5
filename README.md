@@ -41,9 +41,9 @@ CKEditor 5 Builds are a set of ready to use rich text editors. Every "build" pro
 
 The following CKEditor 5 Builds are currently available:
 
-* [Classic editor](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/overview.html#Classic-editor)
-* [Inline editor](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/overview.html#Inline-editor)
-* [Balloon editor](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/overview.html#Balloon-editor)
+* [Classic editor](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/overview.html#classic-editor)
+* [Inline editor](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/overview.html#inline-editor)
+* [Balloon editor](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/overview.html#balloon-editor)
 
 #### Example
 

@@ -17,7 +17,7 @@ Therefore, **a prerequisite to this guide is that you are using webpack as your 
 
 ## Scenario 1: Integrating existing builds
 
-This is the simplest scenario. It assumes that you want to use {@link builds/guides/overview#Available-builds one of the existing builds} "as-is" (you can, of course, still {@link builds/guides/integration/configuration configure the editor}). It also gives the fastest build times.
+This is the simplest scenario. It assumes that you want to use {@link builds/guides/overview#available-builds one of the existing builds} "as-is" (you can, of course, still {@link builds/guides/integration/configuration configure the editor}). It also gives the fastest build times.
 
 First, install the build of your choice {@link builds/guides/integration/installation#npm from npm}:
 
@@ -218,7 +218,7 @@ ClassicEditor.build = {
 };
 ```
 
-This module will export an editor creator class which has all the plugins and configuration that you need already built-in. To use such editor, simply import that class and call the static `.create()` method like in all {@link builds/guides/integration/basic-api#Creating-an-editor examples}.
+This module will export an editor creator class which has all the plugins and configuration that you need already built-in. To use such editor, simply import that class and call the static `.create()` method like in all {@link builds/guides/integration/basic-api#creating-an-editor examples}.
 
 ```js
 import ClassicEditor from './ckeditor';

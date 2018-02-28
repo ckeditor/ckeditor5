@@ -83,7 +83,7 @@ ClassicEditor
 ```
 
 <info-box hint>
-	The above is a strict UI-related configuration. Removing a toolbar item does not remove the feature from the editor internals. If your goal with the toolbar configuration is to remove features, the right solution is to also remove their relative plugins. Check [Removing features](#Removing-features) above for more information.
+	The above is a strict UI-related configuration. Removing a toolbar item does not remove the feature from the editor internals. If your goal with the toolbar configuration is to remove features, the right solution is to also remove their relative plugins. Check [Removing features](#removing-features) above for more information.
 </info-box>
 
 ### Listing available items

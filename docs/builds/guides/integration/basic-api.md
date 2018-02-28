@@ -30,7 +30,7 @@ Add an element that CKEditor should replace to your HTML page:
 </textarea>
 ```
 
-Then call {@link module:editor-classic/classiceditor~ClassicEditor#create `ClassicEditor.create()`} to **replace** the `<textarea>` element with a {@link builds/guides/overview#Classic-editor Classic editor}:
+Then call {@link module:editor-classic/classiceditor~ClassicEditor#create `ClassicEditor.create()`} to **replace** the `<textarea>` element with a {@link builds/guides/overview#classic-editor Classic editor}:
 
 ```js
 ClassicEditor
@@ -55,7 +55,7 @@ Similarly to the previous example, add an element where CKEditor should initiali
 </div>
 ```
 
-Then call {@link module:editor-inline/inlineeditor~InlineEditor#create `InlineEditor.create()`} to **attach** {@link builds/guides/overview#Inline-editor Inline editor} to the `<div>` element:
+Then call {@link module:editor-inline/inlineeditor~InlineEditor#create `InlineEditor.create()`} to **attach** {@link builds/guides/overview#inline-editor Inline editor} to the `<div>` element:
 
 ```js
 InlineEditor
@@ -80,7 +80,7 @@ Add an element where CKEditor should initialize to your page:
 </div>
 ```
 
-Then call {@link module:editor-balloon/ballooneditor~BalloonEditor#create `BalloonEditor.create()`} to **attach** {@link builds/guides/overview#Balloon-editor Balloon editor} to the `<div>` element:
+Then call {@link module:editor-balloon/ballooneditor~BalloonEditor#create `BalloonEditor.create()`} to **attach** {@link builds/guides/overview#balloon-editor Balloon editor} to the `<div>` element:
 
 ```js
 BalloonEditor

@@ -22,11 +22,11 @@ Inserting images into the content is now very intuitive, with all technical aspe
 
 <iframe width="600" height="337" src="https://www.youtube.com/embed/WWT9pkPZSnI?rel=0&amp;" frameborder="0" allowfullscreen></iframe>
 
-The outdated concept of image alignment was dropped in favor of {@link features/image#Image-styles image styles}:
+The outdated concept of image alignment was dropped in favor of {@link features/image#image-styles image styles}:
 
 {@img assets/img/builds-image-styles.png 591 Image styles toolbar.}
 
-When integrated with {@link features/image-upload#Easy-Image Easy Image}, uploading, resizing and producing different image sizes for responsive design is all automated.
+When integrated with {@link features/image-upload#easy-image Easy Image}, uploading, resizing and producing different image sizes for responsive design is all automated.
 
 {@img assets/img/easy-image.png 1440 Responsive images with Easy Image.}
 

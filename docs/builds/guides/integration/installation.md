@@ -12,11 +12,11 @@ order: 10
 
 There are several options to download CKEditor 5 builds:
 
-* [CDN](#CDN)
+* [CDN](#cdn)
 * [npm](#npm)
-* [Zip download](#Zip-download)
+* [Zip download](#zip-download)
 
-For the list of available builds check the {@link builds/guides/overview#Available-builds Overview} page.
+For the list of available builds check the {@link builds/guides/overview#available-builds Overview} page.
 
 After downloading the editor jump to the {@link builds/guides/integration/basic-api Basic API guide} to see how to create editors.
 
@@ -63,7 +63,7 @@ After downloading and installing a CKEditor 5 build in your application, it is t
 Once the CKEditor script is loaded, you can {@link builds/guides/integration/basic-api use the API} to create editors in your page.
 
 <info-box>
-	The `build/ckeditor.js` file is generated in the [UMD format](https://github.com/umdjs/umd) so you can also import it into your application if you use CommonJS modules (like in Node.js) or AMD modules (like in Require.js). Read more in the {@link builds/guides/integration/basic-api#UMD-support Basic API guide}.
+	The `build/ckeditor.js` file is generated in the [UMD format](https://github.com/umdjs/umd) so you can also import it into your application if you use CommonJS modules (like in Node.js) or AMD modules (like in Require.js). Read more in the {@link builds/guides/integration/basic-api#umd-support Basic API guide}.
 
 	Also, for a more advanced setup, you may wish to bundle the CKEditor script with other scripts used by your application. See {@link builds/guides/integration/advanced-setup Advanced setup} for more information about it.
 </info-box>
