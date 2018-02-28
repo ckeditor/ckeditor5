@@ -905,39 +905,39 @@ export default class Writer {
 	 * {@link module:engine/model/element~Node node}, {@link module:engine/model/position~Position position},
 	 * {@link module:engine/model/range~Range range}, an iterable of {@link module:engine/model/range~Range ranges} or null.
 	 *
-	 *		// Sets ranges from the given range.
+	 *		// Sets selection to the given range.
 	 *		const range = new Range( start, end );
 	 *		writer.setSelection( range, { backward } );
 	 *
-	 *		// Sets ranges from the iterable of ranges.
+	 *		// Sets selection to given ranges.
 	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
 	 *		writer.setSelection( range, { backward } );
 	 *
-	 *		// Sets ranges from the other selection.
+	 *		// Sets selection to other selection.
 	 *		const otherSelection = new Selection();
 	 *		writer.setSelection( otherSelection );
 	 *
-	 * 		// Sets ranges from the given document selection's ranges.
+	 * 		// Sets selection to the given document selection.
 	 *		const documentSelection = new DocumentSelection( doc );
 	 *		writer.setSelection( documentSelection );
 	 *
-	 * 		// Sets collapsed range at the given position.
+	 * 		// Sets collapsed selection at the given position.
 	 *		const position = new Position( root, path );
 	 *		writer.setSelection( position );
 	 *
-	 * 		// Sets range at the position of given node and offset.
+	 * 		// Sets collapsed selection at the position of the given node and an offset.
 	 *		const paragraph = writer.createElement( 'paragraph' );
 	 *		writer.setSelection( paragraph, offset );
 	 *
-	 *		// Sets range inside the node.
-	 *		const paragraph = writer.createElement( 'paragraph', { backward } );
-	 *		writer.setSelection( paragraph, 'in' );
+	 *		// Sets selection inside the given node.
+	 *		const paragraph = writer.createElement( 'paragraph' );
+	 *		writer.setSelection( paragraph, 'in', { backward } );
 	 *
-	 *		// Sets range on the node.
-	 *		const paragraph = writer.createElement( 'paragraph', { backward } );
-	 *		writer.setSelection( paragraph, 'on' );
+	 *		// Sets selection on the given node.
+	 *		const paragraph = writer.createElement( 'paragraph' );
+	 *		writer.setSelection( paragraph, 'on', { backward } );
 	 *
-	 * 		// Removes all ranges.
+	 * 		// Removes all selection's ranges.
 	 *		writer.setSelection( null );
 	 *
 	 * Throws `writer-incorrect-use` error when the writer is used outside the `change()` block.
@@ -945,15 +945,14 @@ export default class Writer {
 	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
 	 * module:engine/model/position~Position|module:engine/model/node~Node|
 	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} selectable
-	 * @param {Object|Number|'before'|'end'|'after'|'on'|'in'} [optionsOrPlaceOrOffset]
-	 * @param {Boolean} [optionsOrPlaceOrOffset.backward]
+	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset]
 	 * @param {Object} [options]
 	 * @param {Boolean} [options.backward]
 	 */
-	setSelection( selectable, optionsOrPlaceOrOffset, options ) {
+	setSelection( selectable, placeOrOffset, options ) {
 		this._assertWriterUsedCorrectly();
 
-		this.model.document.selection._setTo( selectable, optionsOrPlaceOrOffset, options );
+		this.model.document.selection._setTo( selectable, placeOrOffset, options );
 	}
 
 	/**

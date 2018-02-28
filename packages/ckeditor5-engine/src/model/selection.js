@@ -324,7 +324,7 @@ export default class Selection {
 	 *		const otherSelection = new Selection();
 	 *		selection.setTo( otherSelection );
 	 *
-	 * 		// Sets selection to the document selection.
+	 * 		// Sets selection to the given document selection.
 	 *		// Note: It doesn't copies selection attributes.
 	 *		const documentSelection = new DocumentSelection( doc );
 	 *		selection.setTo( documentSelection );
@@ -337,15 +337,15 @@ export default class Selection {
 	 *		const paragraph = writer.createElement( 'paragraph' );
 	 *		selection.setTo( paragraph, offset );
 	 *
-	 *		// Sets selection inside the node.
+	 *		// Sets selection inside the given  node.
 	 *		const paragraph = writer.createElement( 'paragraph' );
 	 *		selection.setTo( paragraph, 'in', { backward } );
 	 *
-	 *		// Sets selection on the node.
+	 *		// Sets selection on the given node.
 	 *		const paragraph = writer.createElement( 'paragraph' );
 	 *		selection.setTo( paragraph, 'on', { backward } );
 	 *
-	 * 		// Clears selection. Removes all ranges.
+	 * 		// Removes all selection's ranges.
 	 *		selection.setTo( null );
 	 *
 	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
