@@ -4,7 +4,7 @@
  */
 
 /**
- * @module list/listengine
+ * @module list/listediting
  */
 
 import ListCommand from './listcommand';
@@ -35,7 +35,7 @@ import {
  *
  * @extends module:core/plugin~Plugin
  */
-export default class ListEngine extends Plugin {
+export default class ListEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -101,6 +101,74 @@ export default class ListEngine extends Plugin {
 		// Register commands for indenting.
 		editor.commands.add( 'indentList', new IndentCommand( editor, 'forward' ) );
 		editor.commands.add( 'outdentList', new IndentCommand( editor, 'backward' ) );
+
+		const viewDocument = this.editor.editing.view.document;
+
+		// Overwrite default Enter key behavior.
+		// If Enter key is pressed with selection collapsed in empty list item, outdent it instead of breaking it.
+		this.listenTo( viewDocument, 'enter', ( evt, data ) => {
+			const doc = this.editor.model.document;
+			const positionParent = doc.selection.getLastPosition().parent;
+
+			if ( doc.selection.isCollapsed && positionParent.name == 'listItem' && positionParent.isEmpty ) {
+				this.editor.execute( 'outdentList' );
+
+				data.preventDefault();
+				evt.stop();
+			}
+		} );
+
+		// Overwrite default Backspace key behavior.
+		// If Backspace key is pressed with selection collapsed on first position in first list item, outdent it. #83
+		this.listenTo( viewDocument, 'delete', ( evt, data ) => {
+			// Check conditions from those that require less computations like those immediately available.
+			if ( data.direction !== 'backward' ) {
+				return;
+			}
+
+			const selection = this.editor.model.document.selection;
+
+			if ( !selection.isCollapsed ) {
+				return;
+			}
+
+			const firstPosition = selection.getFirstPosition();
+
+			if ( !firstPosition.isAtStart ) {
+				return;
+			}
+
+			const positionParent = firstPosition.parent;
+
+			if ( positionParent.name !== 'listItem' ) {
+				return;
+			}
+
+			const previousIsAListItem = positionParent.previousSibling && positionParent.previousSibling.name === 'listItem';
+
+			if ( previousIsAListItem ) {
+				return;
+			}
+
+			this.editor.execute( 'outdentList' );
+
+			data.preventDefault();
+			evt.stop();
+		}, { priority: 'high' } );
+
+		const getCommandExecuter = commandName => {
+			return ( data, cancel ) => {
+				const command = this.editor.commands.get( commandName );
+
+				if ( command.isEnabled ) {
+					this.editor.execute( commandName );
+					cancel();
+				}
+			};
+		};
+
+		this.editor.keystrokes.set( 'Tab', getCommandExecuter( 'indentList' ) );
+		this.editor.keystrokes.set( 'Shift+Tab', getCommandExecuter( 'outdentList' ) );
 	}
 }
 
