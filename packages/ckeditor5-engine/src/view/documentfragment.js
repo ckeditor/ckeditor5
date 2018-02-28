@@ -20,9 +20,6 @@ export default class DocumentFragment {
 	/**
 	 * Creates new DocumentFragment instance.
 	 *
-	 * **Note:** Constructor of this class shouldn't be used directly in the code. Instead of use the
-	 * {@link module:engine/view/writer~Writer.createDocumentFragment} method.
-	 *
 	 * @protected
 	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} [children] List of nodes to be inserted into
 	 * created document fragment.

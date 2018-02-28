@@ -26,7 +26,7 @@ export default class DocumentFragment {
 	 * Creates an empty `DocumentFragment`.
 	 *
 	 * **Note:** Constructor of this class shouldn't be used directly in the code. Instead of use the
-	 * {@link module:engine/model/writer~Writer.createDocumentFragment} method.
+	 * {@link module:engine/model/writer~Writer#createDocumentFragment} method.
 	 *
 	 * @protected
 	 * @param {module:engine/model/node~Node|Iterable.<module:engine/model/node~Node>} [children]

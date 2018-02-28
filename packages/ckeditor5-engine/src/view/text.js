@@ -19,7 +19,7 @@ export default class Text extends Node {
 	 * Creates a tree view text node.
 	 *
 	 * **Note:** Constructor of this class shouldn't be used directly in the code. Instead of use the
-	 * {@link module:engine/view/writer~Writer.createText} method.
+	 * {@link module:engine/view/writer~Writer#createText} method.
 	 *
 	 * @protected
 	 * @param {String} data Text.
