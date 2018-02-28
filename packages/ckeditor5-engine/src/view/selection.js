@@ -441,7 +441,7 @@ export default class Selection {
 	 * @fires change
 	 * @param {module:engine/view/selection~Selection|module:engine/view/position~Position|
 	 * Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|module:engine/view/item~Item|null} selectable
-	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets offset or place of the selection.
+	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets place or offset of the selection.
 	 * @param {Object} [options]
 	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
 	 * @param {Boolean} [options.fake] Sets this selection instance to be marked as `fake`.
