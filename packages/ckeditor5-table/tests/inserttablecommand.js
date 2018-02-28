@@ -6,8 +6,9 @@
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
+
 import InsertTableCommand from '../src/inserttablecommand';
-import { upcastTable, downcastTable, downcastTableCell } from '../src/converters';
+import { upcastTable, downcastTable } from '../src/converters';
 
 describe( 'InsertTableCommand', () => {
 	let editor, model, command;
@@ -56,7 +57,6 @@ describe( 'InsertTableCommand', () => {
 				// Table cell conversion.
 				conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'td' } ) );
 				conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'th' } ) );
-				conversion.for( 'downcast' ).add( downcastTableCell );
 
 				conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
 				conversion.attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );

@@ -65,23 +65,6 @@ export function upcastTable() {
 	};
 }
 
-export function downcastTableCell() {
-	return dispatcher => dispatcher.on( 'insert:tableCell', ( evt, data, conversionApi ) => {
-		const tableCell = data.item;
-
-		if ( !conversionApi.consumable.consume( tableCell, 'insert' ) ) {
-			return;
-		}
-
-		const tableCellElement = conversionApi.writer.createContainerElement( isHead( tableCell ) ? 'th' : 'td' );
-
-		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
-
-		conversionApi.mapper.bindElements( tableCell, tableCellElement );
-		conversionApi.writer.insert( viewPosition, tableCellElement );
-	}, { priority: 'normal' } );
-}
-
 export function downcastTable() {
 	return dispatcher => dispatcher.on( 'insert:table', ( evt, data, conversionApi ) => {
 		const table = data.item;
@@ -113,16 +96,16 @@ export function downcastTable() {
 	}, { priority: 'normal' } );
 }
 
-function isHead( tableCell ) {
+function isHead( tableCell, headingColumnsLeft ) {
 	const row = tableCell.parent;
 	const table = row.parent;
 	const rowIndex = table.getChildIndex( row );
-	const headingRows = table.getAttribute( 'headingRows' );
-	const headingColumns = table.getAttribute( 'headingColumns' );
+	const headingRows = table.getAttribute( 'headingRows' ) || 0;
+	const headingColumns = table.getAttribute( 'headingColumns' ) || 0;
 
 	const cellIndex = row.getChildIndex( tableCell );
 
-	return ( headingRows && headingRows > rowIndex ) || ( headingColumns && headingColumns > cellIndex );
+	return ( !!headingRows && headingRows > rowIndex ) || ( !!headingColumnsLeft && headingColumns > cellIndex );
 }
 
 function _downcastTableSection( elementName, tableElement, rows, conversionApi ) {
@@ -136,10 +119,29 @@ function _downcastTableRow( tableRow, conversionApi, parent ) {
 	// Will always consume since we're converting <tableRow> element from a parent <table>.
 	conversionApi.consumable.consume( tableRow, 'insert' );
 
-	const tableRowElement = conversionApi.writer.createContainerElement( 'tr' );
+	const trElement = conversionApi.writer.createContainerElement( 'tr' );
 
-	conversionApi.mapper.bindElements( tableRow, tableRowElement );
-	conversionApi.writer.insert( Position.createAt( parent, 'end' ), tableRowElement );
+	conversionApi.mapper.bindElements( tableRow, trElement );
+	conversionApi.writer.insert( Position.createAt( parent, 'end' ), trElement );
+
+	let headingColumnsLeft = tableRow.parent.getAttribute( 'headingColumns' ) || 0;
+
+	for ( const tableCell of Array.from( tableRow.getChildren() ) ) {
+		// Will always consume since we're converting <tableRow> element from a parent <table>.
+		conversionApi.consumable.consume( tableCell, 'insert' );
+
+		const is = isHead( tableCell, headingColumnsLeft );
+
+		if ( headingColumnsLeft ) {
+			headingColumnsLeft -= tableCell.hasAttribute( 'colspan' ) ? tableCell.getAttribute( 'colspan' ) : 1;
+		}
+
+		const tableCellElement = conversionApi.writer.createContainerElement( is ? 'th' : 'td' );
+		const viewPosition = Position.createAt( trElement, 'end' );
+
+		conversionApi.mapper.bindElements( tableCell, tableCellElement );
+		conversionApi.writer.insert( viewPosition, tableCellElement );
+	}
 }
 
 function _upcastTableRows( viewTable, modelTable, conversionApi ) {
@@ -228,11 +230,14 @@ function _scanRow( tr, tableMeta, firstThead ) {
 
 	let headingCols = 0;
 	let index = 0;
-	const childCount = tr.childCount;
+
+	// Filter out empty text nodes from tr children.
+	const children = Array.from( tr.getChildren() )
+		.filter( child => child.name === 'th' || child.name === 'td' );
 
 	// Count starting adjacent <th> elements of a <tr>.
-	while ( index < childCount && tr.getChild( index ).name === 'th' ) {
-		const td = tr.getChild( index );
+	while ( index < children.length && children[ index ].name === 'th' ) {
+		const td = children[ index ];
 
 		// Adjust columns calculation by the number of extended columns.
 		const hasAttribute = td.hasAttribute( 'colspan' );

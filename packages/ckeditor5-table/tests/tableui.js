@@ -5,13 +5,13 @@
 
 /* global document */
 
-import TableEditing from '../src/tableediting';
-import TableUI from '../src/tableui';
-
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { _clear as clearTranslations, add as addTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+
+import TableEditing from '../src/tableediting';
+import TableUI from '../src/tableui';
 
 testUtils.createSinonSandbox();
 

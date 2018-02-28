@@ -4,12 +4,11 @@
  */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-
 import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
-
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
+
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { downcastTable, downcastTableCell, upcastTable } from '../src/converters';
+import { downcastTable, upcastTable } from '../src/converters';
 
 describe( 'Table converters', () => {
 	let editor, model, viewDocument;
@@ -55,7 +54,6 @@ describe( 'Table converters', () => {
 				// Table cell conversion.
 				conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'td' } ) );
 				conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'th' } ) );
-				conversion.for( 'downcast' ).add( downcastTableCell() );
 
 				conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
 				conversion.attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
@@ -297,10 +295,8 @@ describe( 'Table converters', () => {
 					'<table>' +
 					'<tbody>' +
 					// This row has colspan of 3 so it should be the whole table should have 3 heading columns.
-					'<tr><th colspan="3">21</th><td>24</td></tr>' +
-					'<tr><th>31</th><th>32</th><td>33</td><td>34</td></tr>' +
-					'<tr><th colspan="2">41</th><th>43</th><td>44</td></tr>' +
-					'<tr><td>51</td><th>52</th><th>53</th><th>54</th></tr>' +
+					'<tr><th>21</th><th>22</th><td>23</td><td>24</td></tr>' +
+					'<tr><th colspan="2">31</th><th>33</th><td>34</td></tr>' +
 					'</tbody>' +
 					'<thead>' +
 					// This row has 4 ths but it is a thead.
@@ -315,16 +311,10 @@ describe( 'Table converters', () => {
 					'<tableCell>11</tableCell><tableCell>12</tableCell><tableCell>13</tableCell><tableCell>14</tableCell>' +
 					'</tableRow>' +
 					'<tableRow>' +
-					'<tableCell colspan="3">21</tableCell><tableCell>24</tableCell>' +
+					'<tableCell>21</tableCell><tableCell>22</tableCell><tableCell>23</tableCell><tableCell>24</tableCell>' +
 					'</tableRow>' +
 					'<tableRow>' +
-					'<tableCell>31</tableCell><tableCell>32</tableCell><tableCell>33</tableCell><tableCell>34</tableCell>' +
-					'</tableRow>' +
-					'<tableRow>' +
-					'<tableCell colspan="2">41</tableCell><tableCell>43</tableCell><tableCell>44</tableCell>' +
-					'</tableRow>' +
-					'<tableRow>' +
-					'<tableCell>51</tableCell><tableCell>52</tableCell><tableCell>53</tableCell><tableCell>54</tableCell>' +
+					'<tableCell colspan="2">31</tableCell><tableCell>33</tableCell><tableCell>34</tableCell>' +
 					'</tableRow>' +
 					'</table>'
 				);
@@ -387,24 +377,6 @@ describe( 'Table converters', () => {
 			);
 		} );
 
-		it( 'should create table with headingColumns', () => {
-			setModelData( model,
-				'<table headingColumns="2">' +
-				'<tableRow><tableCell>11</tableCell><tableCell>12</tableCell><tableCell>13</tableCell></tableRow>' +
-				'<tableRow><tableCell>21</tableCell><tableCell>22</tableCell><tableCell>23</tableCell></tableRow>' +
-				'</table>'
-			);
-
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<table>' +
-				'<tbody>' +
-				'<tr><th>11</th><th>12</th><td>13</td></tr>' +
-				'<tr><th>21</th><th>22</th><td>23</td></tr>' +
-				'</tbody>' +
-				'</table>'
-			);
-		} );
-
 		it( 'should create table with heading columns and rows', () => {
 			setModelData( model,
 				'<table headingColumns="3" headingRows="1">' +
@@ -431,6 +403,7 @@ describe( 'Table converters', () => {
 
 		it( 'should be possible to overwrite', () => {
 			editor.conversion.elementToElement( { model: 'tableRow', view: 'tr' } );
+			editor.conversion.elementToElement( { model: 'tableCell', view: 'td' } );
 			editor.conversion.for( 'downcast' ).add( dispatcher => {
 				dispatcher.on( 'insert:table', ( evt, data, conversionApi ) => {
 					conversionApi.consumable.consume( data.item, 'insert' );
@@ -455,25 +428,45 @@ describe( 'Table converters', () => {
 				'</table>'
 			);
 		} );
-	} );
 
-	describe( 'downcastTableCell()', () => {
-		it( 'should be possible to overwrite row conversion', () => {
-			editor.conversion.elementToElement( { model: 'tableCell', view: { name: 'td', class: 'foo' }, priority: 'high' } );
+		describe( 'headingColumns attribute', () => {
+			it( 'should mark heading columns table cells', () => {
+				setModelData( model,
+					'<table headingColumns="2">' +
+					'<tableRow><tableCell>11</tableCell><tableCell>12</tableCell><tableCell>13</tableCell></tableRow>' +
+					'<tableRow><tableCell>21</tableCell><tableCell>22</tableCell><tableCell>23</tableCell></tableRow>' +
+					'</table>'
+				);
 
-			setModelData( model,
-				'<table>' +
-				'<tableRow><tableCell></tableCell></tableRow>' +
-				'</table>'
-			);
+				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+					'<table>' +
+					'<tbody>' +
+					'<tr><th>11</th><th>12</th><td>13</td></tr>' +
+					'<tr><th>21</th><th>22</th><td>23</td></tr>' +
+					'</tbody>' +
+					'</table>'
+				);
+			} );
 
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<table>' +
-				'<tbody>' +
-				'<tr><td class="foo"></td></tr>' +
-				'</tbody>' +
-				'</table>'
-			);
+			it( 'should mark heading columns table cells when one has colspan attribute', () => {
+				setModelData( model,
+					'<table headingColumns="3">' +
+					'<tableRow>' +
+					'<tableCell>11</tableCell><tableCell>12</tableCell><tableCell>13</tableCell><tableCell>14</tableCell>' +
+					'</tableRow>' +
+					'<tableRow><tableCell colspan="2">21</tableCell><tableCell>23</tableCell><tableCell>24</tableCell></tableRow>' +
+					'</table>'
+				);
+
+				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+					'<table>' +
+					'<tbody>' +
+					'<tr><th>11</th><th>12</th><th>13</th><td>14</td></tr>' +
+					'<tr><th colspan="2">21</th><th>23</th><td>24</td></tr>' +
+					'</tbody>' +
+					'</table>'
+				);
+			} );
 		} );
 	} );
 } );
