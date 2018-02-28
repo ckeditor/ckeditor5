@@ -60,7 +60,7 @@ The entire process of building and managing the styles boils down to three steps
 
 ## Customization with CSS variables
 
-Having {@link builds/guides/development/custom-builds#Forking-an-existing-build cloned} an existing build of CKEditor for a quick start, let's use the full potential of CSS variables. The customization in this guide will make the theme dark, with slightly bigger text and more rounded corners.
+Having {@link builds/guides/development/custom-builds#forking-an-existing-build cloned} an existing build of CKEditor for a quick start, let's use the full potential of CSS variables. The customization in this guide will make the theme dark, with slightly bigger text and more rounded corners.
 
 <info-box hint>
 	Check out the [colors sheet](https://github.com/ckeditor/ckeditor5-theme-lark/blob/master/theme/ckeditor5-ui/globals/_colors.css) for the full list of customizable colors. You can also browse [other files](https://github.com/ckeditor/ckeditor5-theme-lark/blob/master/theme/ckeditor5-ui/globals) to learn about other useful tools.
@@ -170,7 +170,7 @@ This file can be referenced directly in HTML **after the `<link>` tag injected b
 <link rel="stylesheet" href="custom.css" type="text/css">
 ```
 
-Alternatively, the style sheet can also be imported into a JavaScript file that is processed by webpack and the [loaders](#Styles-processing-and-bundling) becoming part of the build, e.g. an entry point of the application.
+Alternatively, the style sheet can also be imported into a JavaScript file that is processed by webpack and the [loaders](#styles-processing-and-bundling) becoming part of the build, e.g. an entry point of the application.
 
 <info-box info>
 	Learn more about {@link framework/guides/quick-start building the editor using webpack}.
