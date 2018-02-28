@@ -6,7 +6,7 @@ CKEditor 5 classic editor build
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-build-classic/status.svg)](https://david-dm.org/ckeditor/ckeditor5-build-classic)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-build-classic/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-build-classic?type=dev)
 
-The classic editor build for CKEditor 5. Read more about the [classic editor build](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/builds/guides/overview.html#Classic-editor) and see the [demo](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/examples/builds/classic-editor.html).
+The classic editor build for CKEditor 5. Read more about the [classic editor build](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/builds/guides/overview.html#classic-editor) and see the [demo](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/examples/builds/classic-editor.html).
 
 ## Documentation
 
