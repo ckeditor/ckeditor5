@@ -14,7 +14,7 @@ When compared to its predecessor, CKEditor 5 should be considered **a totally ne
 
 There is no "drop in" solution for migrating. In this guide we hope to summarize the most important aspects you need to consider before you proceed with installing CKEditor 5.
 
-Before starting, be sure that migrating is your best choice. Refer to {@link builds/guides/overview#When-NOT-to-use-builds When NOT to use CKEditor 5 Builds?} for more information.
+Before starting, be sure that migrating is your best choice. Refer to {@link builds/guides/overview#when-not-to-use-builds When NOT to use CKEditor 5 Builds?} for more information.
 
 ## Installation and integration
 
@@ -41,7 +41,7 @@ CKEditor 5 was designed with focus on creating quality content. There are thus g
 
 Image upload is handled differently with CKEditor 5, bringing a much better user experience. Solutions used with CKEditor 4 may not be compatible anymore and therefore a new approach is needed.
 
-CKEditor 5 Builds come with {@link features/image-upload#Easy-Image Easy Image} available out of the box. It is super simple to {@link features/image-upload#Easy-Image enable image upload with it}.
+CKEditor 5 Builds come with {@link features/image-upload#easy-image Easy Image} available out of the box. It is super simple to {@link features/image-upload#easy-image enable image upload with it}.
 
 ## Plugins
 
@@ -49,7 +49,7 @@ The trickiest migration challenge to be faced may be related to custom plugins y
 
 The same may apply for third-party plugins which may not have been ported to CKEditor 5 yet.
 
-Check the {@link builds/guides/development/plugins#Creating-plugins Creating plugins guide} for more information on the development of plugins.
+Check the {@link builds/guides/development/plugins#creating-plugins Creating plugins guide} for more information on the development of plugins.
 
 ## Themes (skins)
 
@@ -84,7 +84,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 <tbody>
 <tr>
 <td><span id="allowedContent"><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-allowedContent">allowedContent</a></span></td>
-<td><p>Extending the list of HTML tags or attributes that CKEditor should support can be achieved by writing a plugin that (ideally) provides also means to control (insert, edit, delete) such markup.</p><p>For more information on how to create plugins check the {@link framework/guides/quick-start#Creating-a-simple-plugin Creating a simple plugin} article. Looking at the source code of CKEditor 5 plugins may also give you a lot of inspiration.</p></td>
+<td><p>Extending the list of HTML tags or attributes that CKEditor should support can be achieved by writing a plugin that (ideally) provides also means to control (insert, edit, delete) such markup.</p><p>For more information on how to create plugins check the {@link framework/guides/quick-start#creating-a-simple-plugin Creating a simple plugin} article. Looking at the source code of CKEditor 5 plugins may also give you a lot of inspiration.</p></td>
 </tr>
 <tr>
 <td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-autoEmbed_widget">autoEmbed_widget</a></td>
@@ -332,7 +332,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 </tr>
 <tr>
 <td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-image2_alignClasses">image2_alignClasses</a></td>
-<td>Available via more powerful {@link module:image/image~ImageConfig#styles <code>image.styles</code>}, which allows for using also custom style definitions, not only left/right/center alignment. See <a href="https://docs.ckeditor.com/ckeditor5/latest/features/image.html#Image-styles" target="_blank" rel="noopener">Image styles feature overview</a>.</td>
+<td>Available via more powerful {@link module:image/image~ImageConfig#styles <code>image.styles</code>}, which allows for using also custom style definitions, not only left/right/center alignment. See <a href="https://docs.ckeditor.com/ckeditor5/latest/features/image.html#image-styles" target="_blank" rel="noopener">Image styles feature overview</a>.</td>
 </tr>
 <tr>
 <td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-image2_altRequired">image2_altRequired</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-image2_captionedClass">image2_captionedClass</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-image2_disableResizer">image2_disableResizer</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-image2_prefillDimensions">image2_prefillDimensions</a>.</td>
@@ -360,7 +360,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 </tr>
 <tr>
 <td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-keystrokes">keystrokes</a></td>
-<td><p>Keystroke handlers can be registered using {@link module:core/editingkeystrokehandler~EditingKeystrokeHandler <code>EditingKeystrokeHandler</code>}. More information and examples can be found in a dedicated {@link framework/guides/architecture/intro#Keystroke-handler Keystrokes and focus management} article.</p><p>Making keystrokes overridable through <code>config.keystrokes</code> is handled in a <a href="https://github.com/ckeditor/ckeditor5-core/issues/8" target="_blank" rel="noopener">dedicated issue</a>. There is also an issue about <a href="https://github.com/ckeditor/ckeditor5-core/issues/20" target="_blank" rel="noopener">improving keystroke handling</a>.</p></td>
+<td><p>Keystroke handlers can be registered using {@link module:core/editingkeystrokehandler~EditingKeystrokeHandler <code>EditingKeystrokeHandler</code>}. More information and examples can be found in a dedicated {@link framework/guides/architecture/intro#keystroke-handler Keystrokes and focus management} article.</p><p>Making keystrokes overridable through <code>config.keystrokes</code> is handled in a <a href="https://github.com/ckeditor/ckeditor5-core/issues/8" target="_blank" rel="noopener">dedicated issue</a>. There is also an issue about <a href="https://github.com/ckeditor/ckeditor5-core/issues/20" target="_blank" rel="noopener">improving keystroke handling</a>.</p></td>
 </tr>
 <tr>
 <td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-language">language</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-language_list">language_list</a></td>
@@ -536,7 +536,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 </tr>
 <tr>
 <td><span id="uploadUrl"><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-uploadUrl">uploadUrl</a></span></td>
-<td><p>Uploading images in CKEditor 5 is possible thanks to {@link features/image-upload#Easy-Image Easy Image} powered by <a href="https://ckeditor.com/ckeditor-cloud-services/" target="_blank" rel="noopener">CKEditor Cloud Services</a> which comes with a support for responsive images. To configure it, provide the {@link module:cloudservices/cloudservices~CloudServicesConfig cloud services configuration}. Uploading via CKFinder is available too, see {@link module:adapter-ckfinder/uploadadapter~CKFinderAdapterConfig#uploadUrl <code>ckfinder.uploadUrl</code>}. </p><p>Writing own image upload adapters is also possible, see <a href="https://stackoverflow.com/questions/46765197/how-to-enable-image-upload-support-in-ckeditor-5" target="_blank" rel="noopener">https://stackoverflow.com/questions/46765197/how-to-enable-image-upload-support-in-ckeditor-5</a>.</p></td>
+<td><p>Uploading images in CKEditor 5 is possible thanks to {@link features/image-upload#easy-image Easy Image} powered by <a href="https://ckeditor.com/ckeditor-cloud-services/" target="_blank" rel="noopener">CKEditor Cloud Services</a> which comes with a support for responsive images. To configure it, provide the {@link module:cloudservices/cloudservices~CloudServicesConfig cloud services configuration}. Uploading via CKFinder is available too, see {@link module:adapter-ckfinder/uploadadapter~CKFinderAdapterConfig#uploadUrl <code>ckfinder.uploadUrl</code>}. </p><p>Writing own image upload adapters is also possible, see <a href="https://stackoverflow.com/questions/46765197/how-to-enable-image-upload-support-in-ckeditor-5" target="_blank" rel="noopener">https://stackoverflow.com/questions/46765197/how-to-enable-image-upload-support-in-ckeditor-5</a>.</p></td>
 </tr>
 <tr>
 <td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-useComputedState">useComputedState</a></td>
@@ -553,4 +553,4 @@ Note: The number of options was reduced on purpose. We understood that configuri
 </tbody>
 </table>
 
-If you are missing any particular features or settings, feel free to {@link builds/guides/support/reporting-issues#Reporting-issues-1 report an issue}. Please be as precise as possible, explaining the exact use case, context where editor is used, and the expected behavior.
+If you are missing any particular features or settings, feel free to {@link builds/guides/support/reporting-issues#reporting-issues-2 report an issue}. Please be as precise as possible, explaining the exact use case, context where editor is used, and the expected behavior.
