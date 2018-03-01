@@ -39,9 +39,10 @@ export default class Text extends Node {
 		/**
 		 * Text data contained in this text node.
 		 *
+		 * @protected
 		 * @type {String}
 		 */
-		this.data = data || '';
+		this._data = data || '';
 	}
 
 	/**
@@ -49,6 +50,15 @@ export default class Text extends Node {
 	 */
 	get offsetSize() {
 		return this.data.length;
+	}
+
+	/**
+	 * Returns a text data contained in the node.
+	 *
+	 * @returns {String}
+	 */
+	get data() {
+		return this._data;
 	}
 
 	/**
