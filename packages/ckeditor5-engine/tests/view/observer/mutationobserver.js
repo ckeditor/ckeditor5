@@ -271,17 +271,17 @@ describe( 'MutationObserver', () => {
 
 	// https://github.com/ckeditor/ckeditor5/issues/692 Scenario 1.
 	it( 'should handle space after inline filler at the end of container', () => {
-		const { view, selection } = parse(
+		const { view: viewContainer, selection } = parse(
 			'<container:p>' +
 				'foo' +
 				'<attribute:b>[]</attribute:b>' +
 			'</container:p>'
 		);
 
-		viewRoot.appendChildren( view );
-		viewDocument.selection.setTo( selection );
-
-		viewDocument.render();
+		view.change( writer => {
+			viewRoot.appendChildren( viewContainer );
+			writer.setSelection( selection );
+		} );
 
 		// Appended container is third in the tree.
 		const container = domEditor.childNodes[ 2 ];
@@ -302,7 +302,7 @@ describe( 'MutationObserver', () => {
 
 	// https://github.com/ckeditor/ckeditor5/issues/692 Scenario 3.
 	it( 'should handle space after inline filler at the end of container #2', () => {
-		const { view, selection } = parse(
+		const { view: viewContainer, selection } = parse(
 			'<container:p>' +
 				'foo' +
 				'<attribute:b>bar</attribute:b>' +
@@ -310,10 +310,10 @@ describe( 'MutationObserver', () => {
 			'</container:p>'
 		);
 
-		viewRoot.appendChildren( view );
-		viewDocument.selection.setTo( selection );
-
-		viewDocument.render();
+		view.change( writer => {
+			viewRoot.appendChildren( viewContainer );
+			writer.setSelection( selection );
+		} );
 
 		// Appended container is third in the tree.
 		const container = domEditor.childNodes[ 2 ];
@@ -346,17 +346,17 @@ describe( 'MutationObserver', () => {
 
 	// https://github.com/ckeditor/ckeditor5/issues/692 Scenario 2.
 	it( 'should handle space after inline filler at the beginning of container', () => {
-		const { view, selection } = parse(
+		const { view: viewContainer, selection } = parse(
 			'<container:p>' +
 				'<attribute:b>[]</attribute:b>' +
 				'foo' +
 			'</container:p>'
 		);
 
-		viewRoot.appendChildren( view );
-		viewDocument.selection.setTo( selection );
-
-		viewDocument.render();
+		view.change( writer => {
+			viewRoot.appendChildren( viewContainer );
+			writer.setSelection( selection );
+		} );
 
 		// Appended container is third in the tree.
 		const container = domEditor.childNodes[ 2 ];
