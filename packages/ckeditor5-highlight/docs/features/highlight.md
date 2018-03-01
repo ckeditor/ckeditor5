@@ -60,9 +60,12 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		toolbar: {
 			items: [
-				'headings', '|', 'highlight:yellowMarker', 'highlight:greenMarker',
-				'highlight:pinkMarker', 'highlight:greenPen',
-				'highlight:redPen', 'removeHighlight', 'undo', 'redo'
+				'headings',
+				'|',
+				'highlight:yellowMarker', 'highlight:greenMarker', 'highlight:pinkMarker',
+				'highlight:greenPen', 'highlight:redPen', 'removeHighlight',
+				'|',
+				'undo', 'redo'
 			]
 		}
 	} )
@@ -195,6 +198,7 @@ The {@link module:highlight/highlight~Highlight} plugin registers:
 	```
 
 	The `value` corresponds to the `model` property in configuration object. For the default configuration:
+
 	```js
 	highlight.options = [
 		{ model: 'yellowMarker', class: 'marker-yellow', title: 'Yellow Marker', color: 'var(--ck-highlight-marker-yellow)', type: 'marker' },
@@ -207,12 +211,13 @@ The {@link module:highlight/highlight~Highlight} plugin registers:
 	```
 
 	the `highlight` command will accept the corresponding strings as values:
-	- `'yellowMarker'` – available as a `'highlight:yellowMarker'` button,
-	- `'greenMarker'` – available as a `'highlight:greenMarker'` button,
-	- `'pinkMarker'` – available as a `'highlight:pinkMarker'` button,
-	- `'blueMarker'` – available as a `'highlight:blueMarker'` button,
-	- `'redPen'` – available as a `'highlight:redPen'` button,
-	- `'greenPen'` – available as a `'highlight:greenPen'` button.
+
+	* `'yellowMarker'` – available as a `'highlight:yellowMarker'` button,
+	* `'greenMarker'` – available as a `'highlight:greenMarker'` button,
+	* `'pinkMarker'` – available as a `'highlight:pinkMarker'` button,
+	* `'blueMarker'` – available as a `'highlight:blueMarker'` button,
+	* `'redPen'` – available as a `'highlight:redPen'` button,
+	* `'greenPen'` – available as a `'highlight:greenPen'` button.
 
 	passing an empty `value` will remove any `highlight` from the selection:
 
