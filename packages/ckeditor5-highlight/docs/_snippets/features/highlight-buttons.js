@@ -9,7 +9,7 @@ ClassicEditor
 	.create( document.querySelector( '#snippet-highlight-buttons' ), {
 		toolbar: {
 			items: [
-				'headings', '|', 'highlight:marker', 'highlight:greenMarker', 'highlight:pinkMarker',
+				'headings', '|', 'highlight:yellowMarker', 'highlight:greenMarker', 'highlight:pinkMarker',
 				'highlight:greenPen', 'highlight:redPen', 'removeHighlight', '|', 'undo', 'redo'
 			],
 			viewportTopOffset: 60

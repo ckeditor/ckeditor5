@@ -60,7 +60,7 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		toolbar: {
 			items: [
-				'headings', '|', 'highlight:marker', 'highlight:greenMarker',
+				'headings', '|', 'highlight:yellowMarker', 'highlight:greenMarker',
 				'highlight:pinkMarker', 'highlight:greenPen',
 				'highlight:redPen', 'removeHighlight', 'undo', 'redo'
 			]

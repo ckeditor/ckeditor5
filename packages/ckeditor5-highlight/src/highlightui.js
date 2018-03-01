@@ -27,7 +27,7 @@ import './../theme/highlight.css';
  * * `'removeHighlight'` and `'highlight:*'` buttons.
  *
  * The default configuration includes the following buttons:
- * * `'highlight:marker'`
+ * * `'highlight:yellowMarker'`
  * * `'highlight:greenMarker'`
  * * `'highlight:pinkMarker'`
  * * `'highlight:blueMarker'`
