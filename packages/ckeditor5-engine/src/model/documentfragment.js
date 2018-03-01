@@ -25,8 +25,8 @@ export default class DocumentFragment {
 	/**
 	 * Creates an empty `DocumentFragment`.
 	 *
-	 * **Note:** Constructor of this class shouldn't be used directly in the code. Instead of use the
-	 * {@link module:engine/model/writer~Writer#createDocumentFragment} method.
+	 * **Note:** Constructor of this class shouldn't be used directly in the code.
+	 * Use the {@link module:engine/model/writer~Writer#createDocumentFragment} method instead.
 	 *
 	 * @protected
 	 * @param {module:engine/model/node~Node|Iterable.<module:engine/model/node~Node>} [children]
@@ -221,6 +221,45 @@ export default class DocumentFragment {
 	}
 
 	/**
+	 * Converts `DocumentFragment` instance to plain object and returns it.
+	 * Takes care of converting all of this document fragment's children.
+	 *
+	 * @returns {Object} `DocumentFragment` instance converted to plain object.
+	 */
+	toJSON() {
+		const json = [];
+
+		for ( const node of this._children ) {
+			json.push( node.toJSON() );
+		}
+
+		return json;
+	}
+
+	/**
+	 * Creates a `DocumentFragment` instance from given plain object (i.e. parsed JSON string).
+	 * Converts `DocumentFragment` children to proper nodes.
+	 *
+	 * @param {Object} json Plain object to be converted to `DocumentFragment`.
+	 * @returns {module:engine/model/documentfragment~DocumentFragment} `DocumentFragment` instance created using given plain object.
+	 */
+	static fromJSON( json ) {
+		const children = [];
+
+		for ( const child of json ) {
+			if ( child.name ) {
+				// If child has name property, it is an Element.
+				children.push( Element.fromJSON( child ) );
+			} else {
+				// Otherwise, it is a Text node.
+				children.push( Text.fromJSON( child ) );
+			}
+		}
+
+		return new DocumentFragment( children );
+	}
+
+	/**
 	 * {@link #_insertChildren Inserts} one or more nodes at the end of this document fragment.
 	 *
 	 * @protected
@@ -270,45 +309,6 @@ export default class DocumentFragment {
 		}
 
 		return nodes;
-	}
-
-	/**
-	 * Converts `DocumentFragment` instance to plain object and returns it.
-	 * Takes care of converting all of this document fragment's children.
-	 *
-	 * @returns {Object} `DocumentFragment` instance converted to plain object.
-	 */
-	toJSON() {
-		const json = [];
-
-		for ( const node of this._children ) {
-			json.push( node.toJSON() );
-		}
-
-		return json;
-	}
-
-	/**
-	 * Creates a `DocumentFragment` instance from given plain object (i.e. parsed JSON string).
-	 * Converts `DocumentFragment` children to proper nodes.
-	 *
-	 * @param {Object} json Plain object to be converted to `DocumentFragment`.
-	 * @returns {module:engine/model/documentfragment~DocumentFragment} `DocumentFragment` instance created using given plain object.
-	 */
-	static fromJSON( json ) {
-		const children = [];
-
-		for ( const child of json ) {
-			if ( child.name ) {
-				// If child has name property, it is an Element.
-				children.push( Element.fromJSON( child ) );
-			} else {
-				// Otherwise, it is a Text node.
-				children.push( Text.fromJSON( child ) );
-			}
-		}
-
-		return new DocumentFragment( children );
 	}
 }
 

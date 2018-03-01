@@ -25,8 +25,8 @@ export default class Element extends Node {
 	/**
 	 * Creates a model element.
 	 *
-	 * **Note:** Constructor of this class shouldn't be used directly in the code. Instead of use the
-	 * {@link module:engine/model/writer~Writer#createElement} method.
+	 * **Note:** Constructor of this class shouldn't be used directly in the code.
+	 * Use the {@link module:engine/model/writer~Writer#createElement} method instead.
 	 *
 	 * @protected
 	 * @param {String} name Element's name.

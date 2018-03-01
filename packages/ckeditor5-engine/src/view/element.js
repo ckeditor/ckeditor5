@@ -38,12 +38,12 @@ export default class Element extends Node {
 	 *		new Element( 'div', [ [ 'class', 'editor' ], [ 'contentEditable', 'true' ] ] ); // map-like iterator
 	 *		new Element( 'div', mapOfAttributes ); // map
 	 *
-	 * **Note:** Constructor of this class shouldn't be used directly in the code. Instead of use the
+	 * **Note:** Constructor of this class shouldn't be used directly in the code. Use the
 	 * {@link module:engine/view/writer~Writer#createAttributeElement} for inline element,
 	 * {@link module:engine/view/writer~Writer#createContainerElement} for block element,
 	 * {@link module:engine/view/writer~Writer#createEditableElement} for editable element,
 	 * {@link module:engine/view/writer~Writer#createEmptyElement} for empty element or
-	 * {@link module:engine/view/writer~Writer#createUIElement} for UI element.
+	 * {@link module:engine/view/writer~Writer#createUIElement} for UI element instead.
 	 *
 	 * @protected
 	 * @param {String} name Node name.

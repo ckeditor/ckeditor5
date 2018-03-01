@@ -26,8 +26,8 @@ export default class Text extends Node {
 	/**
 	 * Creates a text node.
 	 *
-	 * **Note:** Constructor of this class shouldn't be used directly in the code. Instead of use the
-	 * {@link module:engine/model/writer~Writer#createText} method.
+	 * **Note:** Constructor of this class shouldn't be used directly in the code.
+	 * Use the {@link module:engine/model/writer~Writer#createText} method instead.
 	 *
 	 * @protected
 	 * @param {String} data Node's text.
