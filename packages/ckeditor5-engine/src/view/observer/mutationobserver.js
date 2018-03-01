@@ -204,8 +204,8 @@ export default class MutationObserver extends Observer {
 		}
 
 		for ( const viewElement of mutatedElements ) {
-			const viewChildren = Array.from( viewElement.getChildren() );
 			const domElement = domConverter.mapViewToDom( viewElement );
+			const viewChildren = Array.from( viewElement.getChildren() );
 			const newViewChildren = Array.from( domConverter.domChildrenToView( domElement ) );
 
 			// It may happen that as a result of many changes (sth was inserted and then removed),
