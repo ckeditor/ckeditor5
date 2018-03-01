@@ -74,19 +74,27 @@ export function downcastTable() {
 		}
 
 		const tableElement = conversionApi.writer.createContainerElement( 'table' );
+		const headingRowsCount = table.getAttribute( 'headingRows' ) || 0;
+		const tableRows = Array.from( table.getChildren() );
+		const cellSpans = new CellSpans();
 
-		const headingRows = table.getAttribute( 'headingRows' );
+		const tHead = headingRowsCount ? _createTableSection( 'thead', tableElement, conversionApi ) : undefined;
+		const tBody = headingRowsCount < tableRows.length ? _createTableSection( 'tbody', tableElement, conversionApi ) : undefined;
 
-		const tableRows = [ ...table.getChildren() ];
-		const headings = tableRows.slice( 0, headingRows );
-		const bodyRows = tableRows.slice( headingRows );
+		let parent;
 
-		if ( headingRows ) {
-			_downcastTableSection( 'thead', tableElement, headings, conversionApi );
-		}
+		for ( let rowIndex = 0; rowIndex < tableRows.length; rowIndex++ ) {
+			if ( headingRowsCount && rowIndex < headingRowsCount ) {
+				parent = tHead;
+			} else {
+				parent = tBody;
+			}
 
-		if ( bodyRows.length ) {
-			_downcastTableSection( 'tbody', tableElement, bodyRows, conversionApi );
+			const row = tableRows[ rowIndex ];
+
+			_downcastTableRow( row, rowIndex, cellSpans, parent, conversionApi );
+
+			cellSpans.drop( rowIndex );
 		}
 
 		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
@@ -96,52 +104,63 @@ export function downcastTable() {
 	}, { priority: 'normal' } );
 }
 
-function isHead( tableCell, headingColumnsLeft ) {
-	const row = tableCell.parent;
-	const table = row.parent;
-	const rowIndex = table.getChildIndex( row );
-	const headingRows = table.getAttribute( 'headingRows' ) || 0;
-	const headingColumns = table.getAttribute( 'headingColumns' ) || 0;
-
-	const cellIndex = row.getChildIndex( tableCell );
-
-	return ( !!headingRows && headingRows > rowIndex ) || ( !!headingColumnsLeft && headingColumns > cellIndex );
-}
-
-function _downcastTableSection( elementName, tableElement, rows, conversionApi ) {
-	const tableBodyElement = conversionApi.writer.createContainerElement( elementName );
-	conversionApi.writer.insert( Position.createAt( tableElement, 'end' ), tableBodyElement );
-
-	rows.map( row => _downcastTableRow( row, conversionApi, tableBodyElement ) );
-}
-
-function _downcastTableRow( tableRow, conversionApi, parent ) {
+function _downcastTableRow( tableRow, rowIndex, cellSpans, parent, conversionApi ) {
 	// Will always consume since we're converting <tableRow> element from a parent <table>.
 	conversionApi.consumable.consume( tableRow, 'insert' );
-
 	const trElement = conversionApi.writer.createContainerElement( 'tr' );
 
 	conversionApi.mapper.bindElements( tableRow, trElement );
 	conversionApi.writer.insert( Position.createAt( parent, 'end' ), trElement );
 
-	let headingColumnsLeft = tableRow.parent.getAttribute( 'headingColumns' ) || 0;
+	let cellIndex = 0;
+
+	const headingColumns = tableRow.parent.getAttribute( 'headingColumns' ) || 0;
 
 	for ( const tableCell of Array.from( tableRow.getChildren() ) ) {
+		let shift = cellSpans.check( rowIndex, cellIndex ) || 0;
+
+		while ( shift ) {
+			cellIndex += shift;
+			shift = cellSpans.check( rowIndex, cellIndex );
+		}
+
+		const cellWidth = tableCell.hasAttribute( 'colspan' ) ? parseInt( tableCell.getAttribute( 'colspan' ) ) : 1;
+		const cellHeight = tableCell.hasAttribute( 'rowspan' ) ? parseInt( tableCell.getAttribute( 'rowspan' ) ) : 1;
+
+		if ( cellHeight > 1 ) {
+			cellSpans.update( rowIndex, cellIndex, cellHeight, cellWidth );
+		}
+
 		// Will always consume since we're converting <tableRow> element from a parent <table>.
 		conversionApi.consumable.consume( tableCell, 'insert' );
 
-		const is = isHead( tableCell, headingColumnsLeft );
+		const isHead = _isHead( tableCell, cellIndex, headingColumns );
 
-		if ( headingColumnsLeft ) {
-			headingColumnsLeft -= tableCell.hasAttribute( 'colspan' ) ? tableCell.getAttribute( 'colspan' ) : 1;
-		}
-
-		const tableCellElement = conversionApi.writer.createContainerElement( is ? 'th' : 'td' );
+		const tableCellElement = conversionApi.writer.createContainerElement( isHead ? 'th' : 'td' );
 		const viewPosition = Position.createAt( trElement, 'end' );
 
 		conversionApi.mapper.bindElements( tableCell, tableCellElement );
 		conversionApi.writer.insert( viewPosition, tableCellElement );
+
+		cellIndex += cellWidth;
 	}
+}
+
+function _isHead( tableCell, cellIndex, columnHeadings ) {
+	const row = tableCell.parent;
+	const table = row.parent;
+	const rowIndex = table.getChildIndex( row );
+	const headingRows = table.getAttribute( 'headingRows' ) || 0;
+
+	return ( !!headingRows && headingRows > rowIndex ) || ( !!columnHeadings && columnHeadings > cellIndex );
+}
+
+function _createTableSection( elementName, tableElement, conversionApi ) {
+	const tableChildElement = conversionApi.writer.createContainerElement( elementName );
+
+	conversionApi.writer.insert( Position.createAt( tableElement, 'end' ), tableChildElement );
+
+	return tableChildElement;
 }
 
 function _upcastTableRows( viewTable, modelTable, conversionApi ) {
@@ -249,5 +268,39 @@ function _scanRow( tr, tableMeta, firstThead ) {
 
 	if ( headingCols > tableMeta.headingColumns ) {
 		tableMeta.headingColumns = headingCols;
+	}
+}
+
+export class CellSpans {
+	constructor() {
+		this._spans = new Map();
+	}
+
+	check( row, column ) {
+		if ( !this._spans.has( row ) ) {
+			return false;
+		}
+
+		const rowSpans = this._spans.get( row );
+
+		return rowSpans.has( column ) ? rowSpans.get( column ) : false;
+	}
+
+	update( row, column, height, width ) {
+		if ( height > 1 ) {
+			for ( let nextRow = row + 1; nextRow < row + height; nextRow++ ) {
+				const rowSpans = this._spans.has( nextRow ) ? this._spans.get( nextRow ) : new Map();
+
+				rowSpans.set( column, width );
+
+				this._spans.set( nextRow, rowSpans );
+			}
+		}
+	}
+
+	drop( row ) {
+		if ( this._spans.has( row ) ) {
+			this._spans.delete( row );
+		}
 	}
 }
