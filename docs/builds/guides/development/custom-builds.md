@@ -16,7 +16,7 @@ Some of the reasons for creating custom builds are:
 
 * Adding features which are not included in the existing builds, either from a third party or custom developed.
 * Removing unnecessary features present in a build.
-* Changing the {@link builds/guides/integration/basic-api#Creators editor creator}.
+* Changing the {@link builds/guides/integration/basic-api#creators editor creator}.
 * Changing the {@link framework/guides/theme-customization editor theme}.
 * Changing the {@link features/ui-language localization language} of the editor.
 * Enabling bug fixes which are still not a part of any public release.
@@ -38,7 +38,7 @@ git remote add upstream https://github.com/ckeditor/ckeditor5-build-classic.git
 <info-box hint>
 	If you do not want to fork the official build, you can just clone it. However, you will not be able to commit and push your customizations back to GitHub.
 
-	Alternatively, instead of creating a custom build you can {@link builds/guides/integration/advanced-setup#Scenario-2-Building-from-source integrate CKEditor 5 directly from source}. This option allows even greater flexibility and requires less overhead (you will not need to fork the official build).
+	Alternatively, instead of creating a custom build you can {@link builds/guides/integration/advanced-setup#scenario-2-building-from-source integrate CKEditor 5 directly from source}. This option allows even greater flexibility and requires less overhead (you will not need to fork the official build).
 </info-box>
 
 <info-box warning>

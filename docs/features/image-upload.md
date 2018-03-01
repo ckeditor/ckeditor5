@@ -31,7 +31,7 @@ To make the above process possible, an image upload plugin must be available. Su
 
 Another great feature introduced with CKEditor 5 is the ability to have responsive images in the content. With a single image upload, several optimized versions of that image are created after upload, for different size of displays. All this is totally transparent to the end user who uploaded the image.
 
-Be sure to use image upload plugins with support for responsive images to enjoy this important additional benefit. [Easy Image](#Easy-Image) has support for responsive images out of the box, too.
+Be sure to use image upload plugins with support for responsive images to enjoy this important additional benefit. [Easy Image](#easy-image) has support for responsive images out of the box, too.
 
 ## Easy Image
 

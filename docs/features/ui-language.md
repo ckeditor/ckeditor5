@@ -16,9 +16,9 @@ See the demo of the editor in German:
 ## Loading additional languages from CDN, npm and zip file
 
 You can load additional languages using:
-* [CDN](#CDN),
+* [CDN](#cdn),
 * [npm](#npm),
-* [Zip download](#Zip).
+* [Zip download](#zip).
 
 Next, configure the editor to use chosen language:
 
@@ -44,7 +44,7 @@ To use different language than default one (English), you need to load the edito
 <script src="https://cdn.ckeditor.com/ckeditor5/[version.number]/[distribution]/translations/de.js"></script>
 ```
 
-See {@link builds/guides/integration/installation#CDN CDN installation guides} for more information.
+See {@link builds/guides/integration/installation#cdn CDN installation guides} for more information.
 
 ### npm
 
@@ -55,14 +55,14 @@ See {@link builds/guides/integration/installation#npm npm installation guides} f
 
 ### Zip
 
-All additional languages are included in `.zip` file. You need to include `ckeditor.js` file together with language file:
+All additional languages are included in the `.zip` file. You need to include `ckeditor.js` file together with language file:
 
 ```js
 <script src="[ckeditor-path]/ckeditor.js"></script>
 <script src="[ckeditor-path]/translations/de.js"></script>
 ```
 
-See {@link builds/guides/integration/installation#Zip-download zip installation guides} for more information.
+See {@link builds/guides/integration/installation#zip-download zip installation guides} for more information.
 
 ## Building the editor using a specific language
 
@@ -130,7 +130,7 @@ If you build CKEditor from scratch or integrate it directly into your applicatio
 	```
 
 <info-box>
-	We are aware that the current localization method is not sufficient for all needs. It doesn't support different bundlers (e.g. Rollup or Browserify). We will be extending the localization possibilities in the future.
+	We are aware that the current localization method is not sufficient for some needs. It does not support different bundlers (e.g. Rollup or Browserify). We will be extending the localization possibilities in the future.
 
 	You can read more about the used techniques in the ["Implement translation services" issue](https://github.com/ckeditor/ckeditor5/issues/387) and ["Implement translation services v2" issue](https://github.com/ckeditor/ckeditor5/issues/624).
 </info-box>

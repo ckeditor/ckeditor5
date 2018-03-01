@@ -47,7 +47,7 @@ cd ckeditor5
 
 And install all CKEditor 5 packages from the [npm registry](http://npmjs.com/).
 
-**Note:** If you plan to use the developement version of CKEditor 5 packages (see the [next section](#Switching-to-development-version-of-packages)), you can skip this step to save time.
+**Note:** If you plan to use the developement version of CKEditor 5 packages (see the [next section](#switching-to-development-version-of-packages)), you can skip this step to save time.
 
 ```bash
 npm install

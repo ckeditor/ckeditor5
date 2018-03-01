@@ -9,7 +9,7 @@ The standard UI library of CKEditor 5 is [`@ckeditor/ckeditor5-ui`](https://www.
 
 ## Views
 
-Views use [templates](#Templates) to build the UI. They also provide observable interfaces that other features (e.g. [plugins](#Plugins), [commands](#Commands), etc.) can use to change the DOM without any actual interaction with the native API.
+Views use [templates](#templates) to build the UI. They also provide observable interfaces that other features (e.g. {@link framework/guides/architecture/core-editor-architecture#plugins plugins}, {@link framework/guides/architecture/core-editor-architecture#commands commands}, etc.) can use to change the DOM without any actual interaction with the native API.
 
 ### Definition
 
@@ -59,7 +59,7 @@ class SampleInputView extends View {
 
 Note that views encapsulate the DOM they render. Because the UI is organized according to the *view-per-tree* rule, it is clear which view is responsible for which part of the UI so it is unlikely that a collision occurs between two features writing to the same DOM node.
 
-More often than not, views become children of other views (collections), nodes in the [UI view tree](#View-collections-and-the-UI-tree):
+More often than not, views become children of other views (collections), nodes in the [UI view tree](#view-collections-and-the-ui-tree):
 
 ```js
 class ParentView extends View {
@@ -113,7 +113,7 @@ will result in:
 <input class="foo ck-enabled" type="text" placeholder="Type some text" />
 ```
 
-Alternatively, they can [bind](#Event-system-and-observables) them directly to their own observable properties:
+Alternatively, they can [bind](#event-system-and-observables) them directly to their own observable properties:
 
 ```js
 view.bind( 'placeholder', 'isEnabled' ).to( observable, 'placeholderText', 'isEnabled' );
@@ -148,13 +148,13 @@ view.element.placeholder = 'A new placeholder';
 
 ## Templates
 
-{@link module:ui/template~Template Templates} render DOM elements and text nodes in the UI library. Used primarily by [views](#Views), they are the lowest layer of the UI connecting the application to the web page.
+{@link module:ui/template~Template Templates} render DOM elements and text nodes in the UI library. Used primarily by [views](#views), they are the lowest layer of the UI connecting the application to the web page.
 
 <info-box>
 	Check out the {@link module:ui/template~TemplateDefinition} to learn more about the template syntax and other advanced concepts.
 </info-box>
 
-Templates support [observable properties](#Event-system-and-observables) bindings and handle native DOM events. A very simple template can look like this:
+Templates support [observable properties](#event-system-and-observables) bindings and handle native DOM events. A very simple template can look like this:
 
 ```js
 new Template( {
@@ -183,7 +183,7 @@ and renders to an HTML element:
 <p class="foo bar" style="background-color: yellow;">A paragraph.</p>
 ```
 
-where `observable#className` is `"bar"`. The `observable` in the example above can be a [view](#Views) or any object which is {@link module:utils/observablemixin~Observable observable}. When the value of the `className` attribute changes, the template updates the `class` attribute in the DOM. From now on the element is permanently bound to the state of an application.
+where `observable#className` is `"bar"`. The `observable` in the example above can be a [view](#views) or any object which is {@link module:utils/observablemixin~Observable observable}. When the value of the `className` attribute changes, the template updates the `class` attribute in the DOM. From now on the element is permanently bound to the state of an application.
 
 Similarly, when rendered, the template also takes care of DOM events. A binding to the `click` event in the definition makes the `observable` always fire the `clicked` event upon an action in DOM. This way the `observable` provides an event interface of the DOM element and all the communication should pass through it.
 
@@ -269,7 +269,7 @@ toolbar.items.add( buttonFoo );
 toolbar.items.add( buttonBar );
 ```
 
-The toolbar can now join the [UI tree](##View-collections-and-the-UI-tree) or it can be injected straight into the DOM. To keep the example simple, proceed with the latter scenario:
+The toolbar can now join the [UI tree](#view-collections-and-the-ui-tree) or it can be injected straight into the DOM. To keep the example simple, proceed with the latter scenario:
 
 ```js
 toolbar.render();
@@ -428,7 +428,7 @@ This information is useful when implementing a certain type of UI whose behavior
 
 ### Keystroke handler
 
-The {@link module:utils/keystrokehandler~KeystrokeHandler `KeystrokeHandler`} listens to the keystroke events fired by an HTML element or any of its descendants and executes pre–defined actions when the keystroke is pressed. Usually, each [view](#Views) creates its own keystroke handler instance which takes care of the keystrokes fired by the elements the view has rendered.
+The {@link module:utils/keystrokehandler~KeystrokeHandler `KeystrokeHandler`} listens to the keystroke events fired by an HTML element or any of its descendants and executes pre–defined actions when the keystroke is pressed. Usually, each [view](#views) creates its own keystroke handler instance which takes care of the keystrokes fired by the elements the view has rendered.
 
 ```js
 import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';

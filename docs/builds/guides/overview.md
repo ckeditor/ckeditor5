@@ -17,9 +17,9 @@ CKEditor 5 Builds are a set of ready-to-use rich text editors. Every "build" pro
 
 The following CKEditor 5 Builds are currently available:
 
- * [Classic editor](#Classic-editor)
- * [Inline editor](#Inline-editor)
- * [Balloon editor](#Balloon-editor)
+ * [Classic editor](#classic-editor)
+ * [Inline editor](#inline-editor)
+ * [Balloon editor](#balloon-editor)
 
 ### Classic editor
 
@@ -35,7 +35,7 @@ In CKEditor 5 the concept of the "boxed" editor was reinvented:
 
 {@img assets/img/editor-classic.png 772 Screenshot of a classic editor.}
 
-To try it out online, check the {@link examples/builds/classic-editor classic editor example}. Jump to {@link builds/guides/quick-start#Classic-editor quick start} to start using it.
+To try it out online, check the {@link examples/builds/classic-editor classic editor example}. Jump to {@link builds/guides/quick-start#classic-editor quick start} to start using it.
 
 ### Inline editor
 
@@ -45,7 +45,7 @@ A common scenario for using inline editor is offering users the possibility to e
 
 {@img assets/img/editor-inline.png 774 Screenshot of an inline editor.}
 
-To try it out online, check the {@link examples/builds/inline-editor inline editor example}. Jump to {@link builds/guides/quick-start#Inline-editor quick start} to start using it.
+To try it out online, check the {@link examples/builds/inline-editor inline editor example}. Jump to {@link builds/guides/quick-start#inline-editor quick start} to start using it.
 
 ### Balloon editor
 
@@ -53,7 +53,7 @@ Balloon editor is very similar to inline editor. The difference between them is 
 
 {@img assets/img/editor-balloon.png 779 Screenshot of a balloon toolbar editor.}
 
-To try it out online, check the {@link examples/builds/balloon-editor balloon editor example}. Jump to {@link builds/guides/quick-start#Balloon-editor quick start} to start using it.
+To try it out online, check the {@link examples/builds/balloon-editor balloon editor example}. Jump to {@link builds/guides/quick-start#balloon-editor quick start} to start using it.
 
 ## Build customization
 
