@@ -9,7 +9,8 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
-import { downcastTable, upcastTable } from './converters';
+import upcastTable from './converters/upcasttable';
+import downcastTable from './converters/downcasttable';
 import InsertTableCommand from './inserttablecommand';
 
 /**

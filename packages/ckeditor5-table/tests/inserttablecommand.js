@@ -8,7 +8,8 @@ import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model
 import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 
 import InsertTableCommand from '../src/inserttablecommand';
-import { upcastTable, downcastTable } from '../src/converters';
+import downcastTable from '../src/converters/downcasttable';
+import upcastTable from '../src/converters/upcasttable';
 
 describe( 'InsertTableCommand', () => {
 	let editor, model, command;
