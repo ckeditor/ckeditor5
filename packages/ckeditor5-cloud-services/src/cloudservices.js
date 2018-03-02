@@ -101,7 +101,7 @@ CloudServices.Token = Token;
  * The token URL has to point to the service where the token is generated.
  *
  * You can read about creating token endpoints in the
- * {@glink @cs guides/tokenendpoint Creating token endpoint} guide
+ * {@glink @cs guides/token-endpoints/tokenendpoint Creating token endpoint} guide
  * in {@glink @cs index Cloud Services documentation}.
  *
  *		ClassicEditor
