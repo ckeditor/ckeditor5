@@ -8,7 +8,7 @@ import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversio
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import { downcastTable, CellSpans, upcastTable } from '../src/converters';
+import { downcastTable, upcastTable } from '../src/converters';
 
 describe( 'Table converters', () => {
 	let editor, model, viewDocument;
@@ -475,8 +475,8 @@ describe( 'Table converters', () => {
 				//                |
 				// +----+----+----+----+
 				// | 11 | 12 | 13 | 14 |
-				// |----+----+    +----+
-				// | 21 | 22 |    | 24 |
+				// |    +----+    +----+
+				// |    | 22 |    | 24 |
 				// |----+----+    +----+
 				// | 31      |    | 34 |
 				// |         +----+----+
@@ -486,9 +486,12 @@ describe( 'Table converters', () => {
 				setModelData( model,
 					'<table headingColumns="3">' +
 					'<tableRow>' +
-					'<tableCell>11</tableCell><tableCell>12</tableCell><tableCell rowspan="3">13</tableCell><tableCell>14</tableCell>' +
+					'<tableCell rowspan="2">11</tableCell>' +
+					'<tableCell>12</tableCell>' +
+					'<tableCell rowspan="3">13</tableCell>' +
+					'<tableCell>14</tableCell>' +
 					'</tableRow>' +
-					'<tableRow><tableCell>21</tableCell><tableCell>22</tableCell><tableCell>24</tableCell></tableRow>' +
+					'<tableRow><tableCell>22</tableCell><tableCell>24</tableCell></tableRow>' +
 					'<tableRow><tableCell colspan="2" rowspan="2">31</tableCell><tableCell>34</tableCell></tableRow>' +
 					'<tableRow><tableCell>43</tableCell><tableCell>44</tableCell></tableRow>' +
 					'</table>'
@@ -497,49 +500,14 @@ describe( 'Table converters', () => {
 				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
 					'<table>' +
 					'<tbody>' +
-					'<tr><th>11</th><th>12</th><th rowspan="3">13</th><td>14</td></tr>' +
-					'<tr><th>21</th><th>22</th><td>24</td></tr>' +
+					'<tr><th rowspan="2">11</th><th>12</th><th rowspan="3">13</th><td>14</td></tr>' +
+					'<tr><th>22</th><td>24</td></tr>' +
 					'<tr><th colspan="2" rowspan="2">31</th><td>34</td></tr>' +
 					'<tr><th>43</th><td>44</td></tr>' +
 					'</tbody>' +
 					'</table>'
 				);
 			} );
-		} );
-	} );
-
-	describe( 'spanner', () => {
-		let spanner;
-
-		beforeEach( () => {
-			spanner = new CellSpans();
-		} );
-
-		it( 'should work', () => {
-			expect( spanner.check( 2, 1 ) ).to.be.false;
-
-			spanner.update( 1, 1, 3, 2 );
-
-			expect( spanner.check( 2, 0 ) ).to.be.false;
-			expect( spanner.check( 2, 1 ) ).to.equal( 2 );
-			expect( spanner.check( 3, 1 ) ).to.equal( 2 );
-
-			spanner.drop( 2 );
-
-			expect( spanner.check( 2, 1 ) ).to.be.false;
-			expect( spanner.check( 3, 1 ) ).to.equal( 2 );
-
-			spanner.drop( 2 );
-
-			expect( spanner.check( 2, 1 ) ).to.be.false;
-			expect( spanner.check( 3, 1 ) ).to.equal( 2 );
-
-			spanner.update( 2, 4, 2, 3 );
-			expect( spanner.check( 3, 1 ) ).to.equal( 2 );
-			expect( spanner.check( 3, 4 ) ).to.equal( 3 );
-
-			spanner.update( 1, 1, 1, 5 );
-			expect( spanner.check( 1, 1 ) ).to.be.false;
 		} );
 	} );
 } );
