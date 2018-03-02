@@ -252,6 +252,9 @@ class MutationHandler {
 		} );
 	}
 
+	/**
+	 * @private
+	 */
 	_handleTextMutation( mutation, viewSelection ) {
 		if ( mutation.type != 'text' ) {
 			return;
@@ -294,6 +297,9 @@ class MutationHandler {
 		} );
 	}
 
+	/**
+	 * @private
+	 */
 	_handleTextNodeInsertion( mutation ) {
 		if ( mutation.type != 'children' ) {
 			return;
