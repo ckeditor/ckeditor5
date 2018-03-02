@@ -396,7 +396,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 </tr>
 <tr>
 <td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-on">on</a></td>
-<td><p>Using configuration file/setting to define event listeners was a bad practice so the support for it has been dropped.</p><p>When creating an editor, a <code>Promise</code> is returned. Use <code>then/catch</code> to define a callback when editor is initialised or fails to start. The promise returns the created editor instance, e.g. {@link module:editor-classic/classiceditor~ClassicEditor <code>ClassicEditor</code>}, you can listen to various {@link module:editor-classic/classiceditor~ClassicEditor#Events events} there.</p><p>Note: the editor instance is not the only object on which events are fired. You can also listen to e.g. {@link module:engine/model/document~Document#Events <code>Document</code> events}.</p></td>
+<td><p>Using configuration file/setting to define event listeners was a bad practice so the support for it has been dropped.</p><p>When creating an editor, a <code>Promise</code> is returned. Use <code>then/catch()</code> to define a callback when the editor is initialized or fails to start. The promise returns the created editor instance, e.g. {@link module:editor-classic/classiceditor~ClassicEditor <code>ClassicEditor</code>}, on which you can listen to its events.</p><p>Note: the editor instance is not the only object on which events are fired. You can also listen to e.g. {@link module:engine/model/document~Document `Document`} events.</p></td>
 </tr>
 <tr>
 <td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-pasteFilter">pasteFilter</a></td>

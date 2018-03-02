@@ -15,7 +15,7 @@ The {@link module:core/editor/editor~Editor} class represents the base of the ed
 * {@link module:core/editor/editor~Editor#plugins} and {@link module:core/editor/editor~Editor#commands} &ndash; The collection of loaded plugins and commands.
 * {@link module:core/editor/editor~Editor#model} &ndash; The entry point to editor's abstract data model.
 * {@link module:core/editor/editor~Editor#data} &ndash; The data controller. It controls how data is retrieved from the document and set inside it.
-* {@link module:core/editor/editor~Editor#editing} &ndash; The editing controller. It controls {@link module:engine/controller/editingcontroller~EditingController#document document} rendering, including selection handling.
+* {@link module:core/editor/editor~Editor#editing} &ndash; The editing controller. It controls {@link module:engine/model/model~Model#document document} rendering, including selection handling.
 * {@link module:core/editor/editor~Editor#keystrokes} &ndash; The keystroke handler. It allows to bind keystrokes to actions.
 
 Besides that, the editor exposes a few of methods:
@@ -109,9 +109,9 @@ refresh() {
 }
 ```
 
-This method is automatically called (by the command itself) when {@link module:engine/model/document~Document#event:changesDone any changes are applied to the model}. This means that the command automatically refreshes its own state when anything changes in the editor.
+This method is automatically called (by the command itself) when {@link module:engine/model/document~Document#event:change any changes are applied to the model}. This means that the command automatically refreshes its own state when anything changes in the editor.
 
-The important thing about commands is that every change in their state as well as calling the `execute()` method fires an event (e.g. {@link module:core/command~Command#event:change:{attribute} `change:value`} or {@link module:core/command~Command#event:execute `execute`}).
+The important thing about commands is that every change in their state as well as calling the `execute()` method fires an event (e.g. {@link module:core/command~Command#event-change:{property} `change:value`} or {@link module:core/command~Command#event:execute `execute`}).
 
 These events make it possible to control the command from the outside. For instance, if you want to disable specific commands when some condition is true (for example, according to your application's logic, they should be temporarily disabled) and there is no other, cleaner way to do that, you can block the command manually:
 
