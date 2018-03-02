@@ -96,8 +96,13 @@ CloudServices.Token = Token;
  */
 
 /**
- * The authentication token URL for CKEditor Cloud Services. The token is used to authenticate all plugins using Cloud Services,
- * for instance Easy Image. The token URL has to point to the service where the token is generated.
+ * The authentication token endpoint URL for CKEditor Cloud Services.
+ * The token endpoint is used to authenticate all plugins using Cloud Services (for instance – Easy Image).
+ * The token URL has to point to the service where the token is generated.
+ *
+ * You can read about creating token endpoints in the
+ * {@glink @cs guides/token-endpoints/tokenendpoint Creating token endpoint} guide
+ * in {@glink @cs index Cloud Services documentation}.
  *
  *		ClassicEditor
  *			.create( document.querySelector( '#editor' ), {
