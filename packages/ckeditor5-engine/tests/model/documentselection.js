@@ -1056,15 +1056,10 @@ describe( 'DocumentSelection', () => {
 					expect( data.attributeKeys ).to.deep.equal( [ 'foo' ] );
 				} );
 
-				model.applyOperation( wrapInDelta(
-					new AttributeOperation(
-						new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 5 ] ) ),
-						'foo',
-						null,
-						'bar',
-						doc.version
-					)
-				) );
+				model.change( writer => {
+					const range = new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 5 ] ) );
+					writer.setAttribute( 'foo', 'bar', range );
+				} );
 
 				expect( selection.getAttribute( 'foo' ) ).to.equal( 'bar' );
 				expect( spyAttribute.calledOnce ).to.be.true;
