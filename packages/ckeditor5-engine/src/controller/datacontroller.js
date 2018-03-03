@@ -99,6 +99,8 @@ export default class DataController {
 		this.upcastDispatcher.on( 'text', convertText(), { priority: 'lowest' } );
 		this.upcastDispatcher.on( 'element', convertToModelFragment(), { priority: 'lowest' } );
 		this.upcastDispatcher.on( 'documentFragment', convertToModelFragment(), { priority: 'lowest' } );
+
+		this.decorate( 'set' );
 	}
 
 	/**
@@ -176,6 +178,7 @@ export default class DataController {
 	 * This method also creates a batch with all the changes applied. If all you need is to parse data, use
 	 * the {@link #parse} method.
 	 *
+	 * @fires set
 	 * @param {String} data Input data.
 	 * @param {String} [rootName='main'] Root name.
 	 */
@@ -184,8 +187,6 @@ export default class DataController {
 		const modelRoot = this.model.document.getRoot( rootName );
 
 		this.model.enqueueChange( 'transparent', writer => {
-			// Clearing selection is a workaround for ticket #569 (LiveRange loses position after removing data from document).
-			// After fixing it this code should be removed.
 			writer.setSelection( null );
 			writer.removeSelectionAttribute( this.model.document.selection.getAttributeKeys() );
 
@@ -236,6 +237,13 @@ export default class DataController {
 	 * Removes all event listeners set by the DataController.
 	 */
 	destroy() {}
+
+	/**
+	 * Event fired by decorated {@link #set} method.
+	 * See {@link module:utils/observablemixin~ObservableMixin.decorate} for more information and samples.
+	 *
+	 * @event set
+	 */
 }
 
 mix( DataController, ObservableMixin );
