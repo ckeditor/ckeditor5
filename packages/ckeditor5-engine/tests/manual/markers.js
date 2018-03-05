@@ -29,7 +29,7 @@ let _uid = 1;
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Enter, Typing, Paragraph, Bold, Italic, List, Heading, Undo ],
-		toolbar: [ 'headings', '|', 'bold', 'italic', 'bulletedList', 'numberedList', 'undo', 'redo' ]
+		toolbar: [ 'heading', '|', 'bold', 'italic', 'bulletedList', 'numberedList', 'undo', 'redo' ]
 	} )
 	.then( editor => {
 		window.editor = editor;

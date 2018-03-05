@@ -13,7 +13,7 @@ ClassicEditor
 		plugins: [ ArticlePluginSet ],
 		toolbar: {
 			items: [
-				'headings',
+				'heading',
 				'bold',
 				'italic',
 				'link',
