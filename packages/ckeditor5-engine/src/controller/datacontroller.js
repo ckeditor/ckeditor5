@@ -178,6 +178,10 @@ export default class DataController {
 	 * This method also creates a batch with all the changes applied. If all you need is to parse data, use
 	 * the {@link #parse} method.
 	 *
+	 * **Note** This method is {@link module:utils/observablemixin~ObservableMixin#decorate decorated} which is
+	 * used by some plugins to change the behavior of this method. For example, the collaborative editing plugin changes
+	 * this method’s nature to asynchronous by returning a promise.
+	 *
 	 * @fires set
 	 * @param {String} data Input data.
 	 * @param {String} [rootName='main'] Root name.
