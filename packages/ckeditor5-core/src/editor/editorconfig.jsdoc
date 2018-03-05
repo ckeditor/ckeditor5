@@ -67,6 +67,11 @@
  *			removePlugins: [ 'Bold', 'Italic' ]
  *		};
  *
+ * **Note:** Be careful when removing plugins using `config.removePlugins` from CKEditor builds.
+ * If removed plugins were providing toolbar buttons, the default toolbar configuration included in a build
+ * will become invalid. In such case you need to provide the updated
+ * {@link module:core/editor/editorconfig~EditorConfig#toolbar toolbar configuration}.
+ *
  * @member {Array.<String>} module:core/editor/editorconfig~EditorConfig#removePlugins
  */
 
