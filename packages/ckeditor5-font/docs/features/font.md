@@ -32,7 +32,7 @@ ClassicEditor
 			]
 		},
 		toolbar: [
-			'headings', 'bulletedList', 'numberedList', 'fontFamily', 'undo', 'redo'
+			'heading', 'bulletedList', 'numberedList', 'fontFamily', 'undo', 'redo'
 		]
 	} )
 	.then( ... )
@@ -100,7 +100,7 @@ ClassicEditor
 			]
 		},
 		toolbar: [
-			'headings', 'bulletedList', 'numberedList', 'fontSize', 'undo', 'redo'
+			'heading', 'bulletedList', 'numberedList', 'fontSize', 'undo', 'redo'
 		]
 	} )
 	.then( ... )
@@ -137,7 +137,7 @@ ClassicEditor
 			]
 		},
 		toolbar: [
-			'headings', 'bulletedList', 'numberedList', 'fontSize', 'undo', 'redo'
+			'heading', 'bulletedList', 'numberedList', 'fontSize', 'undo', 'redo'
 		]
 	} )
 	.then( ... )
