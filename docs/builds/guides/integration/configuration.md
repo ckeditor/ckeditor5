@@ -15,7 +15,7 @@ When creating an editor in your page, it is possible to set up {@link module:cor
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		toolbar: [ 'headings', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
+		toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
 		heading: {
 			options: [
 				{ modelElement: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },

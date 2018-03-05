@@ -71,7 +71,7 @@ module.exports = {
 	config: {
 		toolbar: {
 			items: [
-				'headings',
+				'heading',
 				'alignmentDropdown', //                      <--- ADDED
 				'bold',
 				'italic',
@@ -201,7 +201,7 @@ ClassicEditor.build = {
 	config: {
 		toolbar: {
 			items: [
-				'headings',
+				'heading',
 				'bold',
 				// ...
 			]

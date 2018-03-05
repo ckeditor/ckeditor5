@@ -196,7 +196,7 @@ ClassicEditor.build = {
 	],
 	config: {
 		toolbar: [
-			'headings',
+			'heading',
 			'bold',
 			'italic',
 			'link',
@@ -275,7 +275,7 @@ ClassicEditor
 
 		// So is the rest of the default configuration.
 		toolbar: [
-			'headings',
+			'heading',
 			'bold',
 			'italic',
 			'link',
