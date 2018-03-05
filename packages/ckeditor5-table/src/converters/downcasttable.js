@@ -7,8 +7,15 @@
  * @module table/converters/downcasttable
  */
 
-import Position from '@ckeditor/ckeditor5-engine/src/view/position';
+import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 
+/**
+ * Model table element to view table element conversion helper.
+ *
+ * This conversion helper creates whole table element with child elements.
+ *
+ * @returns {Function} Conversion helper.
+ */
 export default function downcastTable() {
 	return dispatcher => dispatcher.on( 'insert:table', ( evt, data, conversionApi ) => {
 		const table = data.item;
@@ -17,18 +24,19 @@ export default function downcastTable() {
 			return;
 		}
 
+		// The <thead> and <tbody> elements are created on the fly when needed by inner `getTableSection()` function.
 		let tHead, tBody;
 
 		const tableElement = conversionApi.writer.createContainerElement( 'table' );
-		const headingRowsCount = parseInt( table.getAttribute( 'headingRows' ) ) || 0;
+		const headingRows = parseInt( table.getAttribute( 'headingRows' ) ) || 0;
 		const tableRows = Array.from( table.getChildren() );
 		const cellSpans = new CellSpans();
 
-		for ( const row of tableRows ) {
-			const rowIndex = tableRows.indexOf( row );
-			const parent = getParent( rowIndex, headingRowsCount, tableElement, conversionApi );
+		for ( const tableRow of tableRows ) {
+			const rowIndex = tableRows.indexOf( tableRow );
+			const tableSectionElement = getTableSection( rowIndex, headingRows, tableElement, conversionApi );
 
-			_downcastTableRow( row, rowIndex, cellSpans, parent, conversionApi );
+			downcastTableRow( tableRow, rowIndex, cellSpans, tableSectionElement, conversionApi );
 
 			// Drop table cell spans information for downcasted row.
 			cellSpans.drop( rowIndex );
@@ -40,17 +48,17 @@ export default function downcastTable() {
 		conversionApi.writer.insert( viewPosition, tableElement );
 
 		// Creates if not existing and returns <tbody> or <thead> element for given rowIndex.
-		function getParent( rowIndex, headingRowsCount, tableElement, conversionApi ) {
-			if ( headingRowsCount && rowIndex < headingRowsCount ) {
+		function getTableSection( rowIndex, headingRows, tableElement, conversionApi ) {
+			if ( headingRows && rowIndex < headingRows ) {
 				if ( !tHead ) {
-					tHead = _createTableSection( 'thead', tableElement, conversionApi );
+					tHead = createTableSection( 'thead', tableElement, conversionApi );
 				}
 
 				return tHead;
 			}
 
 			if ( !tBody ) {
-				tBody = _createTableSection( 'tbody', tableElement, conversionApi );
+				tBody = createTableSection( 'tbody', tableElement, conversionApi );
 			}
 
 			return tBody;
@@ -58,53 +66,87 @@ export default function downcastTable() {
 	}, { priority: 'normal' } );
 }
 
-function _downcastTableRow( tableRow, rowIndex, cellSpans, parent, conversionApi ) {
+// Downcast converter for tableRow model element. Converts tableCells as well.
+//
+// @param {module:engine/model/element~Element} tableRow
+// @param {Number} rowIndex
+// @param {CellSpans} cellSpans
+// @param {module:engine/view/containerelement~ContainerElement} tableSection
+// @param {Object} conversionApi
+function downcastTableRow( tableRow, rowIndex, cellSpans, tableSection, conversionApi ) {
 	// Will always consume since we're converting <tableRow> element from a parent <table>.
 	conversionApi.consumable.consume( tableRow, 'insert' );
 	const trElement = conversionApi.writer.createContainerElement( 'tr' );
 
 	conversionApi.mapper.bindElements( tableRow, trElement );
-	conversionApi.writer.insert( Position.createAt( parent, 'end' ), trElement );
+	conversionApi.writer.insert( ViewPosition.createAt( tableSection, 'end' ), trElement );
 
-	let cellIndex = 0;
+	// Defines tableCell horizontal position in table.
+	// Might be different then position of tableCell in parent tableRow
+	// as tableCells from previous rows might overlaps current row's cells.
+	let columnIndex = 0;
 
+	const headingRows = tableRow.parent.getAttribute( 'headingRows' ) || 0;
 	const headingColumns = tableRow.parent.getAttribute( 'headingColumns' ) || 0;
 
 	for ( const tableCell of Array.from( tableRow.getChildren() ) ) {
-		cellIndex = cellSpans.getColumnWithSpan( rowIndex, cellIndex );
+		// Check whether current columnIndex is overlapped by table cells from previous rows.
+		columnIndex = cellSpans.getNextFreeColumnIndex( rowIndex, columnIndex );
 
-		const cellWidth = tableCell.hasAttribute( 'colspan' ) ? parseInt( tableCell.getAttribute( 'colspan' ) ) : 1;
-		const cellHeight = tableCell.hasAttribute( 'rowspan' ) ? parseInt( tableCell.getAttribute( 'rowspan' ) ) : 1;
+		const colspan = tableCell.hasAttribute( 'colspan' ) ? parseInt( tableCell.getAttribute( 'colspan' ) ) : 1;
+		const rowspan = tableCell.hasAttribute( 'rowspan' ) ? parseInt( tableCell.getAttribute( 'rowspan' ) ) : 1;
 
-		cellSpans.updateSpans( rowIndex, cellIndex, cellHeight, cellWidth );
+		cellSpans.recordSpans( rowIndex, columnIndex, rowspan, colspan );
 
 		// Will always consume since we're converting <tableRow> element from a parent <table>.
 		conversionApi.consumable.consume( tableCell, 'insert' );
 
-		const isHead = _isHead( tableCell, rowIndex, cellIndex, headingColumns );
-		const cellElement = conversionApi.writer.createContainerElement( isHead ? 'th' : 'td' );
+		const cellElementName = getCellElementName( rowIndex, columnIndex, headingRows, headingColumns );
+		const cellElement = conversionApi.writer.createContainerElement( cellElementName );
 
 		conversionApi.mapper.bindElements( tableCell, cellElement );
-		conversionApi.writer.insert( Position.createAt( trElement, 'end' ), cellElement );
+		conversionApi.writer.insert( ViewPosition.createAt( trElement, 'end' ), cellElement );
 
-		cellIndex += cellWidth;
+		// Skip to next "free" column index.
+		columnIndex += colspan;
 	}
 }
 
-function _createTableSection( elementName, tableElement, conversionApi ) {
+// Creates table section at the end of a table.
+//
+// @param {String} elementName
+// @param {module:engine/view/element~Element} tableElement
+// @param conversionApi
+// @return {module:engine/view/containerelement~ContainerElement}
+function createTableSection( elementName, tableElement, conversionApi ) {
 	const tableChildElement = conversionApi.writer.createContainerElement( elementName );
 
-	conversionApi.writer.insert( Position.createAt( tableElement, 'end' ), tableChildElement );
+	conversionApi.writer.insert( ViewPosition.createAt( tableElement, 'end' ), tableChildElement );
 
 	return tableChildElement;
 }
 
-function _isHead( tableCell, rowIndex, cellIndex, columnHeadings ) {
-	const row = tableCell.parent;
-	const table = row.parent;
-	const headingRows = table.getAttribute( 'headingRows' ) || 0;
+// Returns `th` for heading cells and `td` for other cells.
+// It is based on tableCell location (rowIndex x columnIndex) and the sizes of column & row headings sizes.
+//
+// @param {Number} rowIndex
+// @param {Number} columnIndex
+// @param {Number} headingRows
+// @param {Number} headingColumns
+// @returns {String}
+function getCellElementName( rowIndex, columnIndex, headingRows, headingColumns ) {
+	// Column heading are all tableCells in the first `columnHeading` rows.
+	const isHeadingForAColumn = headingRows && headingRows > rowIndex;
 
-	return ( !!headingRows && headingRows > rowIndex ) || ( !!columnHeadings && columnHeadings > cellIndex );
+	// So a whole row gets <th> element.
+	if ( isHeadingForAColumn ) {
+		return 'th';
+	}
+
+	// Row heading are tableCells which columnIndex is lower then headingColumns.
+	const isHeadingForARow = headingColumns && headingColumns > columnIndex;
+
+	return isHeadingForARow ? 'th' : 'td';
 }
 
 /**
@@ -127,13 +169,13 @@ class CellSpans {
 	}
 
 	/**
-	 * Returns proper column index if current cell have span.
+	 * Returns proper column index if a current cell index is overlapped by other (has a span defined).
 	 *
 	 * @param {Number} row
 	 * @param {Number} column
 	 * @return {Number} Returns current column or updated column index.
 	 */
-	getColumnWithSpan( row, column ) {
+	getNextFreeColumnIndex( row, column ) {
 		let span = this._check( row, column ) || 0;
 
 		// Offset current table cell columnIndex by spanning cells from rows above.
@@ -146,11 +188,11 @@ class CellSpans {
 	}
 
 	/**
-	 * Updates spans based on current table cell height & width.
+	 * Updates spans based on current table cell height & width. Spans with height <= 1 will not be recorded.
 	 *
 	 * For instance if a table cell at row 0 and column 0 has height of 3 and width of 2 we're setting spans:
 	 *
-	 *        0 1 2
+	 *        0 1 2 3 4 5
 	 *     0:
 	 *     1: 2
 	 *     2: 2
@@ -158,58 +200,68 @@ class CellSpans {
 	 *
 	 * Adding another spans for a table cell at row 2 and column 1 that has height of 2 and width of 4 will update above to:
 	 *
-	 *        0 1 2
+	 *        0 1 2 3 4 5
 	 *     0:
 	 *     1: 2
 	 *     2: 2
 	 *     3:   4
 	 *
-	 * @param {Number} row
-	 * @param {Number} column
+	 * The above span mapping was calculated from a table below (cells 03 & 12 were not added as their height is 1):
+	 *
+	 *     +----+----+----+----+----+----+
+	 *     | 00      | 02 | 03      | 05 |
+	 *     |         +--- +----+----+----+
+	 *     |         | 12      | 24 | 25 |
+	 *     |         +----+----+----+----+
+	 *     |         | 22                |
+	 *     |----+----+                   +
+	 *     | 31 | 32 |                   |
+	 *     +----+----+----+----+----+----+
+	 *
+	 * @param {Number} rowIndex
+	 * @param {Number} columnIndex
 	 * @param {Number} height
 	 * @param {Number} width
 	 */
-	updateSpans( row, column, height, width ) {
-		// Omit horizontal spans as those are handled during current row conversion.
-
+	recordSpans( rowIndex, columnIndex, height, width ) {
 		// This will update all rows below up to row height with value of span width.
-		for ( let nextRow = row + 1; nextRow < row + height; nextRow++ ) {
-			if ( !this._spans.has( nextRow ) ) {
-				this._spans.set( nextRow, new Map() );
+		for ( let rowToUpdate = rowIndex + 1; rowToUpdate < rowIndex + height; rowToUpdate++ ) {
+			if ( !this._spans.has( rowToUpdate ) ) {
+				this._spans.set( rowToUpdate, new Map() );
 			}
 
-			const rowSpans = this._spans.get( nextRow );
+			const rowSpans = this._spans.get( rowToUpdate );
 
-			rowSpans.set( column, width );
+			rowSpans.set( columnIndex, width );
 		}
 	}
 
 	/**
-	 * Drops already downcasted row.
+	 * Removes row from mapping.
 	 *
-	 * @param {Number} row
+	 * @param {Number} rowIndex
 	 */
-	drop( row ) {
-		if ( this._spans.has( row ) ) {
-			this._spans.delete( row );
+	drop( rowIndex ) {
+		if ( this._spans.has( rowIndex ) ) {
+			this._spans.delete( rowIndex );
 		}
 	}
 
 	/**
 	 * Checks if given table cell is spanned by other.
 	 *
-	 * @param {Number} row
-	 * @param {Number} column
+	 * @param {Number} rowIndex
+	 * @param {Number} columnIndex
 	 * @return {Boolean|Number} Returns false or width of a span.
 	 * @private
 	 */
-	_check( row, column ) {
-		if ( !this._spans.has( row ) ) {
+	_check( rowIndex, columnIndex ) {
+		if ( !this._spans.has( rowIndex ) ) {
 			return false;
 		}
 
-		const rowSpans = this._spans.get( row );
+		const rowSpans = this._spans.get( rowIndex );
 
-		return rowSpans.has( column ) ? rowSpans.get( column ) : false;
+		return rowSpans.has( columnIndex ) ? rowSpans.get( columnIndex ) : false;
 	}
 }
