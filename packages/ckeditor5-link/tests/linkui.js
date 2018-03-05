@@ -9,6 +9,7 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import LinkEditing from '../src/linkediting';
@@ -248,8 +249,13 @@ describe( 'LinkUI', () => {
 				linkUIFeature._showUI();
 				const spy = testUtils.sinon.stub( balloon, 'updatePosition' ).returns( {} );
 
+				expect( getViewData( view ) ).to.equal(
+					'<p><span class="ck-link_selected"><a href="url">f{}oo</a></span></p>'
+				);
+
 				const root = viewDocument.getRoot();
-				const text = root.getChild( 0 ).getChild( 0 ).getChild( 0 );
+				const linkElement = root.getChild( 0 ).getChild( 0 ).getChild( 0 );
+				const text = linkElement.getChild( 0 );
 
 				// Move selection to foo[].
 				view.change( writer => {
@@ -258,7 +264,7 @@ describe( 'LinkUI', () => {
 
 				sinon.assert.calledOnce( spy );
 				sinon.assert.calledWithExactly( spy, {
-					target: view.domConverter.mapViewToDom( root.getChild( 0 ).getChild( 0 ) )
+					target: view.domConverter.mapViewToDom( linkElement )
 				} );
 			} );
 
@@ -313,8 +319,10 @@ describe( 'LinkUI', () => {
 				const spyUpdate = testUtils.sinon.stub( balloon, 'updatePosition' ).returns( {} );
 				const spyHide = testUtils.sinon.spy( linkUIFeature, '_hideUI' );
 
+				expect( getViewData( view ) ).to.equal( '<p><span class="ck-link_selected"><a href="url">f{}oo</a></span></p>' );
+
 				const root = viewDocument.getRoot();
-				const text = root.getChild( 0 ).getChild( 0 ).getChild( 0 );
+				const text = root.getChild( 0 ).getChild( 0 ).getChild( 0 ).getChild( 0 );
 
 				// Move selection to f[o]o.
 				view.change( writer => {
