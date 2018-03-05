@@ -30,7 +30,7 @@ ClassicEditor
 			Enter, Typing, Paragraph, Heading, Undo, Bold, Italic, Heading, List, Image, ImageToolbar, Clipboard,
 			ImageCaption, ImageStyle, ImageUpload
 		],
-		toolbar: [ 'headings', '|', 'undo', 'redo', 'bold', 'italic', 'bulletedList', 'numberedList', 'uploadImage' ],
+		toolbar: [ 'heading', '|', 'undo', 'redo', 'bold', 'italic', 'bulletedList', 'numberedList', 'uploadImage' ],
 		image: {
 			toolbar: [ 'imageStyleFull', 'imageStyleSide', '|', 'imageTextAlternative' ]
 		}
