@@ -45,7 +45,7 @@ InlineEditor.build = {
 	config: {
 		toolbar: {
 			items: [
-				'headings',
+				'heading',
 				'|',
 				'bold',
 				'italic',
