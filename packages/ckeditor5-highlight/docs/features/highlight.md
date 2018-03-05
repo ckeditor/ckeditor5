@@ -42,7 +42,7 @@ ClassicEditor
 			]
 		},
 		toolbar: [
-			'headings', '|', 'bulletedList', 'numberedList', 'highlightDropdown', 'undo', 'redo'
+			'heading', '|', 'bulletedList', 'numberedList', 'highlightDropdown', 'undo', 'redo'
 		]
 	} )
 	.then( ... )
@@ -60,7 +60,7 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		toolbar: {
 			items: [
-				'headings',
+				'heading',
 				'|',
 				'highlight:yellowMarker', 'highlight:greenMarker', 'highlight:pinkMarker',
 				'highlight:greenPen', 'highlight:redPen', 'removeHighlight',
@@ -133,7 +133,7 @@ ClassicEditor
 			]
 		},
 		toolbar: [
-			'headings', '|', 'bulletedList', 'numberedList', 'highlightDropdown', 'undo', 'redo'
+			'heading', '|', 'bulletedList', 'numberedList', 'highlightDropdown', 'undo', 'redo'
 		]
 	} )
 	.then( ... )

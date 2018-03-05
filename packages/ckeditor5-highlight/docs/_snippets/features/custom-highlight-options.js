@@ -12,7 +12,7 @@ ClassicEditor
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
-				'headings', '|', 'bulletedList', 'numberedList', 'highlightDropdown', 'undo', 'redo'
+				'heading', '|', 'bulletedList', 'numberedList', 'highlightDropdown', 'undo', 'redo'
 			],
 			viewportTopOffset: 60
 		},
