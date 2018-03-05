@@ -67,6 +67,18 @@ export default class Document {
 		this.set( 'isFocused', false );
 
 		/**
+		 * True if composition is in progress inside the document.
+		 *
+		 * This property is updated by the {@link module:engine/view/observer/compositionobserver~CompositionObserver}.
+		 * If the {@link module:engine/view/observer/compositionobserver~CompositionObserver} is disabled this property will not change.
+		 *
+		 * @readonly
+		 * @observable
+		 * @member {Boolean} module:engine/view/document~Document#isComposing
+		 */
+		this.set( 'isComposing', false );
+
+		/**
 		 * Post-fixer callbacks registered to the view document.
 		 *
 		 * @private
