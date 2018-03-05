@@ -136,10 +136,10 @@ describe( 'Node', () => {
 		} );
 	} );
 
-	describe( 'clone()', () => {
+	describe( '_clone()', () => {
 		it( 'should return a copy of cloned node', () => {
 			const node = new Node( { foo: 'bar' } );
-			const copy = node.clone();
+			const copy = node._clone();
 
 			expect( copy ).not.to.equal( node );
 			expect( Array.from( copy.getAttributes() ) ).to.deep.equal( Array.from( node.getAttributes() ) );

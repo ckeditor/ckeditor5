@@ -70,9 +70,9 @@ describe( 'EmptyElement', () => {
 		} );
 	} );
 
-	describe( 'clone', () => {
+	describe( '_clone()', () => {
 		it( 'should be cloned properly', () => {
-			const newEmptyElement = emptyElement.clone();
+			const newEmptyElement = emptyElement._clone();
 
 			expect( newEmptyElement.name ).to.equal( 'img' );
 			expect( newEmptyElement.getAttribute( 'alt' ) ).to.equal( 'alternative text' );

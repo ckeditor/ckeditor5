@@ -70,8 +70,11 @@ export default class Text extends Node {
 
 	/**
 	 * Creates a copy of this text node and returns it. Created text node has same text data and attributes as original text node.
+	 *
+	 * @protected
+	 * @returns {module:engine/model/text~Text} `Text` instance created using given plain object.
 	 */
-	clone() {
+	_clone() {
 		return new Text( this.data, this.getAttributes() );
 	}
 

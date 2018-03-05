@@ -86,7 +86,7 @@ describe( 'RootEditableElement', () => {
 		root._document = createDocumentMock();
 		root.rootName = 'header';
 
-		const newRoot = root.clone();
+		const newRoot = root._clone();
 
 		expect( newRoot._document ).to.equal( root._document );
 		expect( newRoot.rootName ).to.equal( root.rootName );

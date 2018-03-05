@@ -409,7 +409,7 @@ export default class Writer {
 		if ( position.isAtStart ) {
 			return Position.createBefore( element );
 		} else if ( !position.isAtEnd ) {
-			const newElement = element.clone( false );
+			const newElement = element._clone( false );
 
 			this.insert( Position.createAfter( element ), newElement );
 
@@ -885,7 +885,7 @@ export default class Writer {
 			// Wrap text, empty elements, ui elements or attributes with higher or equal priority.
 			if ( isText || isEmpty || isUI || ( isAttribute && shouldABeOutsideB( attribute, child ) ) ) {
 				// Clone attribute.
-				const newAttribute = attribute.clone();
+				const newAttribute = attribute._clone();
 
 				// Wrap current node with new attribute;
 				child._remove();
@@ -1378,7 +1378,7 @@ function _breakAttributes( position, forceSplitText = false ) {
 		const offsetAfter = positionParent.index + 1;
 
 		// Break element.
-		const clonedNode = positionParent.clone();
+		const clonedNode = positionParent._clone();
 
 		// Insert cloned node to position's parent node.
 		positionParent.parent._insertChildren( offsetAfter, clonedNode );

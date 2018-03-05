@@ -123,10 +123,10 @@ describe( 'Element', () => {
 		} );
 	} );
 
-	describe( 'clone', () => {
+	describe( '_clone()', () => {
 		it( 'should clone element', () => {
 			const el = new Element( 'p', { attr1: 'foo', attr2: 'bar' } );
-			const clone = el.clone();
+			const clone = el._clone();
 
 			expect( clone ).to.not.equal( el );
 			expect( clone.name ).to.equal( el.name );
@@ -140,7 +140,7 @@ describe( 'Element', () => {
 				new Element( 'span', { attr: 'qux' } )
 			] );
 			const count = el.childCount;
-			const clone = el.clone( true );
+			const clone = el._clone( true );
 
 			expect( clone ).to.not.equal( el );
 			expect( clone.name ).to.equal( el.name );
@@ -163,7 +163,7 @@ describe( 'Element', () => {
 				new Element( 'b', { attr: 'baz' } ),
 				new Element( 'span', { attr: 'qux' } )
 			] );
-			const clone = el.clone( false );
+			const clone = el._clone( false );
 
 			expect( clone ).to.not.equal( el );
 			expect( clone.name ).to.equal( el.name );
@@ -175,7 +175,7 @@ describe( 'Element', () => {
 		it( 'should clone class attribute', () => {
 			const el = new Element( 'p', { foo: 'bar' } );
 			el._addClass( [ 'baz', 'qux' ] );
-			const clone = el.clone( false );
+			const clone = el._clone( false );
 
 			expect( clone ).to.not.equal( el );
 			expect( clone.name ).to.equal( el.name );
@@ -185,7 +185,7 @@ describe( 'Element', () => {
 
 		it( 'should clone style attribute', () => {
 			const el = new Element( 'p', { style: 'color: red; font-size: 12px;' } );
-			const clone = el.clone( false );
+			const clone = el._clone( false );
 
 			expect( clone ).to.not.equal( el );
 			expect( clone.name ).to.equal( el.name );
@@ -201,7 +201,7 @@ describe( 'Element', () => {
 			el._setCustomProperty( 'foo', 'bar' );
 			el._setCustomProperty( symbol, 'baz' );
 
-			const cloned = el.clone();
+			const cloned = el._clone();
 
 			expect( cloned.getCustomProperty( 'foo' ) ).to.equal( 'bar' );
 			expect( cloned.getCustomProperty( symbol ) ).to.equal( 'baz' );
@@ -214,7 +214,7 @@ describe( 'Element', () => {
 			expect( el.getFillerOffset ).to.be.undefined;
 			el.getFillerOffset = fm;
 
-			const cloned = el.clone();
+			const cloned = el._clone();
 
 			expect( cloned.getFillerOffset ).to.equal( fm );
 		} );
@@ -237,16 +237,16 @@ describe( 'Element', () => {
 		} );
 
 		it( 'sould return false when name is not the same', () => {
-			const other = el.clone();
+			const other = el._clone();
 			other.name = 'div';
 
 			expect( el.isSimilar( other ) ).to.be.false;
 		} );
 
 		it( 'should return false when attributes are not the same', () => {
-			const other1 = el.clone();
-			const other2 = el.clone();
-			const other3 = el.clone();
+			const other1 = el._clone();
+			const other2 = el._clone();
+			const other3 = el._clone();
 			other1._setAttribute( 'baz', 'qux' );
 			other2._setAttribute( 'foo', 'not-bar' );
 			other3._removeAttribute( 'foo' );

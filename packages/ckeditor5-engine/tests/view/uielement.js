@@ -82,9 +82,9 @@ describe( 'UIElement', () => {
 		} );
 	} );
 
-	describe( 'clone()', () => {
+	describe( '_clone()', () => {
 		it( 'should be properly cloned', () => {
-			const newUIElement = uiElement.clone();
+			const newUIElement = uiElement._clone();
 
 			expect( newUIElement.name ).to.equal( 'span' );
 			expect( newUIElement.getAttribute( 'foo' ) ).to.equal( 'bar' );

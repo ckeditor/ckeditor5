@@ -62,13 +62,13 @@ describe( 'Element', () => {
 		} );
 	} );
 
-	describe( 'clone', () => {
+	describe( '_clone()', () => {
 		it( 'should return an element with same name, attributes and same instances of children if clone was not deep', () => {
 			const p = new Element( 'p' );
 			const foo = new Text( 'foo' );
 
 			const element = new Element( 'elem', { bold: true, italic: true }, [ p, foo ] );
-			const copy = element.clone();
+			const copy = element._clone();
 
 			expect( copy.name ).to.equal( 'elem' );
 			expect( Array.from( copy.getAttributes() ) ).to.deep.equal( [ [ 'bold', true ], [ 'italic', true ] ] );
@@ -81,7 +81,7 @@ describe( 'Element', () => {
 			const p = new Element( 'p', null, bar );
 
 			const element = new Element( 'elem', { bold: true, italic: true }, [ p, foo ] );
-			const copy = element.clone( true );
+			const copy = element._clone( true );
 
 			expect( copy.name ).to.equal( 'elem' );
 			expect( Array.from( copy.getAttributes() ) ).to.deep.equal( [ [ 'bold', true ], [ 'italic', true ] ] );

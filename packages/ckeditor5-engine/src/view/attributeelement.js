@@ -75,12 +75,13 @@ export default class AttributeElement extends Element {
 	/**
 	 * Clones provided element with priority.
 	 *
+	 * @protected
 	 * @param {Boolean} deep If set to `true` clones element and all its children recursively. When set to `false`,
 	 * element will be cloned without any children.
 	 * @returns {module:engine/view/attributeelement~AttributeElement} Clone of this element.
 	 */
-	clone( deep ) {
-		const cloned = super.clone( deep );
+	_clone( deep ) {
+		const cloned = super._clone( deep );
 
 		// Clone priority too.
 		cloned._priority = this._priority;

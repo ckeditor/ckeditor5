@@ -204,9 +204,10 @@ export default class Node {
 	/**
 	 * Creates a copy of this node, that is a node with exactly same attributes, and returns it.
 	 *
+	 * @protected
 	 * @returns {module:engine/model/node~Node} Node with same attributes as this node.
 	 */
-	clone() {
+	_clone() {
 		return new Node( this._attrs );
 	}
 

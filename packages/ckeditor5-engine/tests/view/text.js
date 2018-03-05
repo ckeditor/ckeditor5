@@ -40,10 +40,10 @@ describe( 'Text', () => {
 		} );
 	} );
 
-	describe( 'clone', () => {
+	describe( '_clone()', () => {
 		it( 'should return new text with same data', () => {
 			const text = new Text( 'foo bar' );
-			const clone = text.clone();
+			const clone = text._clone();
 
 			expect( clone ).to.not.equal( text );
 			expect( clone.data ).to.equal( text.data );
@@ -69,7 +69,7 @@ describe( 'Text', () => {
 		} );
 
 		it( 'should return false when data is not the same', () => {
-			const other = text.clone();
+			const other = text._clone();
 			other.data = 'not-foo';
 
 			expect( text.isSimilar( other ) ).to.be.false;

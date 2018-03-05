@@ -38,7 +38,7 @@ describe( 'EditableElement', () => {
 
 		it( 'should be cloned properly', () => {
 			element._document = docMock;
-			const newElement = element.clone();
+			const newElement = element._clone();
 
 			expect( newElement.document ).to.equal( docMock );
 		} );
