@@ -21,7 +21,7 @@ function initEditors() {
 		BalloonEditor
 			.create( document.querySelector( selector ), {
 				plugins: [ ArticlePluginSet ],
-				toolbar: [ 'headings', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
+				toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
 				image: {
 					toolbar: [ 'imageStyleFull', 'imageStyleSide', '|', 'imageTextAlternative' ]
 				}
