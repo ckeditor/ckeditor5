@@ -11,7 +11,7 @@
  * URL to the documentation with error codes.
  */
 export const DOCUMENTATION_URL =
-	'https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/framework/guides/support/error-codes.html';
+	'https://docs.ckeditor.com/ckeditor5/latest/framework/guides/support/error-codes.html';
 
 /**
  * The CKEditor error class.
@@ -82,5 +82,5 @@ export function attachLinkToDocumentation( message ) {
 		return message;
 	}
 
-	return message + ` Read more: ${ DOCUMENTATION_URL }#${ matchedErrorName[ 1 ] }\n`;
+	return message + ` Read more: ${ DOCUMENTATION_URL }#error-${ matchedErrorName[ 1 ] }\n`;
 }
