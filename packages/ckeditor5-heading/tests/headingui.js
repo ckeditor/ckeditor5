@@ -52,7 +52,7 @@ describe( 'HeadingUI', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-				dropdown = editor.ui.componentFactory.create( 'headings' );
+				dropdown = editor.ui.componentFactory.create( 'heading' );
 
 				// Set data so the commands will be enabled.
 				setData( editor.model, '<paragraph>f{}oo</paragraph>' );
@@ -67,7 +67,7 @@ describe( 'HeadingUI', () => {
 
 	describe( 'init()', () => {
 		it( 'should register options feature component', () => {
-			const dropdown = editor.ui.componentFactory.create( 'headings' );
+			const dropdown = editor.ui.componentFactory.create( 'heading' );
 
 			expect( dropdown ).to.be.instanceOf( DropdownView );
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
@@ -78,7 +78,7 @@ describe( 'HeadingUI', () => {
 
 		it( 'should execute format command on model execute event', () => {
 			const executeSpy = testUtils.sinon.spy( editor, 'execute' );
-			const dropdown = editor.ui.componentFactory.create( 'headings' );
+			const dropdown = editor.ui.componentFactory.create( 'heading' );
 
 			dropdown.commandName = 'paragraph';
 			dropdown.fire( 'execute' );
@@ -89,7 +89,7 @@ describe( 'HeadingUI', () => {
 
 		it( 'should focus view after command execution', () => {
 			const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
-			const dropdown = editor.ui.componentFactory.create( 'headings' );
+			const dropdown = editor.ui.componentFactory.create( 'heading' );
 
 			dropdown.commandName = 'paragraph';
 			dropdown.fire( 'execute' );
@@ -98,7 +98,7 @@ describe( 'HeadingUI', () => {
 		} );
 
 		it( 'should add custom CSS class to dropdown', () => {
-			const dropdown = editor.ui.componentFactory.create( 'headings' );
+			const dropdown = editor.ui.componentFactory.create( 'heading' );
 
 			dropdown.render();
 
@@ -226,7 +226,7 @@ describe( 'HeadingUI', () => {
 					} )
 					.then( newEditor => {
 						editor = newEditor;
-						dropdown = editor.ui.componentFactory.create( 'headings' );
+						dropdown = editor.ui.componentFactory.create( 'heading' );
 						commands = {};
 
 						editor.config.get( 'heading.options' ).forEach( ( { model } ) => {

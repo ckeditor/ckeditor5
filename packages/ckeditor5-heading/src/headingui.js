@@ -33,7 +33,7 @@ export default class HeadingUI extends Plugin {
 		const dropdownTooltip = t( 'Heading' );
 
 		// Register UI component.
-		editor.ui.componentFactory.add( 'headings', locale => {
+		editor.ui.componentFactory.add( 'heading', locale => {
 			const commands = [];
 			const dropdownItems = new Collection();
 
