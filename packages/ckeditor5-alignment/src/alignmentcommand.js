@@ -8,9 +8,11 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-
 import first from '@ckeditor/ckeditor5-utils/src/first';
-import upperFirst from '@ckeditor/ckeditor5-utils/src/lib/lodash/upperFirst';
+
+import { isDefault } from './utils';
+
+const ALIGNMENT = 'alignment';
 
 /**
  * The alignment command plugin.
@@ -19,43 +21,6 @@ import upperFirst from '@ckeditor/ckeditor5-utils/src/lib/lodash/upperFirst';
  */
 export default class AlignmentCommand extends Command {
 	/**
-	 * Creates an instance of the alignment command.
-	 *
-	 * @param {module:core/editor/editor~Editor} editor The editor instance.
-	 * @param {'left'|'right'|'center'|'justify'} alignment Alignment value to be handled by this command.
-	 * @param {Boolean} isDefault Indicates if the command is the default alignment.
-	 */
-	constructor( editor, alignment, isDefault ) {
-		super( editor );
-
-		/**
-		 * The alignment value handled by the command.
-		 *
-		 * @readonly
-		 * @member {'left'|'right'|'center'|'justify'}
-		 */
-		this.alignment = alignment;
-
-		/**
-		 * Whether this command is the default alignment.
-		 *
-		 * @readonly
-		 * @private
-		 * @member {Boolean}
-		 */
-		this._isDefault = isDefault;
-
-		/**
-		 * A flag indicating whether the command is active, which means that the selection starts in a block
-		 * which has the same alignment as {@link #alignment this command}.
-		 *
-		 * @observable
-		 * @readonly
-		 * @member {Boolean} #value
-		 */
-	}
-
-	/**
 	 * @inheritDoc
 	 */
 	refresh() {
@@ -63,29 +28,48 @@ export default class AlignmentCommand extends Command {
 
 		// As first check whether to enable or disable the command as the value will always be false if the command cannot be enabled.
 		this.isEnabled = !!firstBlock && this._canBeAligned( firstBlock );
-		this.value = this._getValue( firstBlock );
+
+		/**
+		 * A value of current block's alignment.
+		 *
+		 * @observable
+		 * @readonly
+		 * @member {String} #value
+		 */
+		this.value = this.isEnabled && firstBlock.hasAttribute( 'alignment' ) ? firstBlock.getAttribute( 'alignment' ) : 'left';
 	}
 
 	/**
-	 * Executes the command.
+	 * Executes the command. Applies the alignment `value` to the selected blocks.
+	 * If no `value` is passed, is a default one or is equal to currently selected block's alignment attribute,
+	 * it will remove the attribute from the selected blocks.
 	 *
-	 * @protected
+	 * @param {Object} [options] Options for the executed command.
+	 * @param {String} [options.value] a value to apply.
+	 * @fires execute
 	 */
-	execute() {
+	execute( options = {} ) {
 		const editor = this.editor;
 		const model = editor.model;
 		const doc = model.document;
 
+		const value = options.value;
+
 		model.change( writer => {
 			// Get only those blocks from selected that can have alignment set
 			const blocks = Array.from( doc.selection.getSelectedBlocks() ).filter( block => this._canBeAligned( block ) );
+			const currentAlignment = blocks[ 0 ].getAttribute( 'alignment' );
 
-			// Remove alignment attribute if current alignment is as selected or is default one.
-			// Default alignment should not be stored in model as it will bloat model data.
-			if ( this.value || this._isDefault ) {
+			// Remove alignment attribute if current alignment is:
+			// - default (should not be stored in model as it will bloat model data)
+			// - equal to currently set
+			// - or no value is passed - denotes default alignment.
+			const removeAlignment = isDefault( value ) || currentAlignment === value || !value;
+
+			if ( removeAlignment ) {
 				removeAlignmentFromSelection( blocks, writer );
 			} else {
-				setAlignmentOnSelection( blocks, writer, this.alignment );
+				setAlignmentOnSelection( blocks, writer, value );
 			}
 		} );
 	}
@@ -98,45 +82,15 @@ export default class AlignmentCommand extends Command {
 	 * @returns {Boolean}
 	 */
 	_canBeAligned( block ) {
-		return this.editor.model.schema.checkAttribute( block, 'alignment' );
+		return this.editor.model.schema.checkAttribute( block, ALIGNMENT );
 	}
-
-	/**
-	 * Checks the command's {@link #value}.
-	 *
-	 * @private
-	 * @param {module:engine/model/element~Element} firstBlock The first block in the selection to be checked.
-	 * @returns {Boolean} The current value.
-	 */
-	_getValue( firstBlock ) {
-		// The #_checkEnabled is checked as first so if command is disabled it's value is also false.
-		if ( !this.isEnabled || !firstBlock ) {
-			return false;
-		}
-
-		const selectionAlignment = firstBlock.getAttribute( 'alignment' );
-
-		// Command's value will be on when command's alignment matches the alignment of the current block,
-		// or when it's the default alignment and the block has no alignment set.
-		return selectionAlignment ? selectionAlignment === this.alignment : this._isDefault;
-	}
-}
-
-/**
- * Helper function that returns the command name for the alignment option.
- *
- * @param {String} option
- * @returns {String}
- */
-export function commandNameFromOptionName( option ) {
-	return `align${ upperFirst( option ) }`;
 }
 
 // Removes alignment attribute from blocks.
 // @private
 function removeAlignmentFromSelection( blocks, writer ) {
 	for ( const block of blocks ) {
-		writer.removeAttribute( 'alignment', block );
+		writer.removeAttribute( ALIGNMENT, block );
 	}
 }
 
@@ -144,6 +98,6 @@ function removeAlignmentFromSelection( blocks, writer ) {
 // @private
 function setAlignmentOnSelection( blocks, writer, alignment ) {
 	for ( const block of blocks ) {
-		writer.setAttribute( 'alignment', alignment, block );
+		writer.setAttribute( ALIGNMENT, alignment, block );
 	}
 }

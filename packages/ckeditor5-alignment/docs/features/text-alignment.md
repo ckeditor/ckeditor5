@@ -24,7 +24,7 @@ ClassicEditor
 			options: [ 'left', 'right' ]
 		},
 		toolbar: [
-			'headings', '|', 'bulletedList', 'numberedList', 'alignmentDropdown', 'undo', 'redo'
+			'headings', '|', 'bulletedList', 'numberedList', 'alignment', 'undo', 'redo'
 		]
 	} )
 	.then( ... )
@@ -35,13 +35,13 @@ ClassicEditor
 
 ## Configuring the toolbar
 
-You can choose to use the alignment drop-down (`'alignmentDropdown'`) or configure the toolbar to use separate buttons for each of the options:
+You can choose to use the alignment drop-down (`'alignment'`) or configure the toolbar to use separate buttons for each of the options:
 
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		toolbar: [
-			'headings', '|', 'alignLeft', 'alignRight', 'alignCenter', 'alignJustify'
+			'headings', '|', 'alignment:left', 'alignment:right', 'alignment:center', 'alignment:justify'
 		]
 	} )
 	.then( ... )
@@ -66,7 +66,7 @@ import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Alignment, ... ],
-		toolbar: [ 'alignmentDropdown', ... ]
+		toolbar: [ 'alignment', ... ]
 	} )
 	.then( ... )
 	.catch( ... );
@@ -80,15 +80,17 @@ ClassicEditor
 
 The {@link module:alignment/alignment~Alignment} plugin registers:
 
-* Drop-down: `'alignmentDropdown'`.
-* Buttons and commands: `'alignLeft'`, `'alignRight'`, `'alignCenter'`, `'alignJustify'`.
+* Drop-down: `'alignment'`.
+* Buttons: `'alignment:left'`, `'alignment:right'`, `'alignment:center'`, `'alignment:justify'`.
 
 	The number of options and their names are based on the {@link module:alignment/alignment~AlignmentConfig#options `alignment.options`} configuration option).
+
+* Command: `'alignment'`:
 
 	You can align the currently selected block(s) by executing one of these commands:
 
 	```js
-	editor.execute( 'alignCenter' );
+	editor.execute( 'align', { value: 'center' } );
 	```
 
 ## Contribute

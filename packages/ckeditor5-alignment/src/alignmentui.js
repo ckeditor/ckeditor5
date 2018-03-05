@@ -8,13 +8,10 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-
 import { createDropdown, addToolbarToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 
-import { commandNameFromOptionName } from './alignmentcommand';
-import { isSupported } from './alignmentediting';
+import { isSupported } from './utils';
 
 import alignLeftIcon from '../theme/icons/align-left.svg';
 import alignRightIcon from '../theme/icons/align-right.svg';
@@ -31,7 +28,7 @@ const icons = new Map( [
 /**
  * The default alignment UI plugin.
  *
- * It introduces the `'alignLeft'`, `'alignRight'`, `'alignCenter'` and `'alignJustify'` buttons
+ * It introduces the `'alignment:left'`, `'alignment:right'`, `'alignment:center'` and `'alignment:justify'` buttons
  * and the `'alignmentDropdown'` drop-down.
  *
  * @extends module:core/plugin~Plugin
@@ -82,11 +79,11 @@ export default class AlignmentUI extends Plugin {
 			.filter( isSupported )
 			.forEach( option => this._addButton( option ) );
 
-		componentFactory.add( 'alignmentDropdown', locale => {
+		componentFactory.add( 'alignment', locale => {
 			const dropdownView = createDropdown( locale );
 
 			// Add existing alignment buttons to dropdown's toolbar.
-			const buttons = options.map( option => componentFactory.create( commandNameFromOptionName( option ) ) );
+			const buttons = options.map( option => componentFactory.create( `alignment:${ option }` ) );
 			addToolbarToDropdown( dropdownView, buttons );
 
 			// Configure dropdown properties an behavior.
@@ -136,10 +133,8 @@ export default class AlignmentUI extends Plugin {
 	_addButton( option ) {
 		const editor = this.editor;
 
-		const commandName = commandNameFromOptionName( option );
-
-		editor.ui.componentFactory.add( commandName, locale => {
-			const command = editor.commands.get( commandName );
+		editor.ui.componentFactory.add( `alignment:${ option }`, locale => {
+			const command = editor.commands.get( 'alignment' );
 			const buttonView = new ButtonView( locale );
 
 			buttonView.set( {
@@ -149,11 +144,12 @@ export default class AlignmentUI extends Plugin {
 			} );
 
 			// Bind button model to command.
-			buttonView.bind( 'isOn', 'isEnabled' ).to( command, 'value', 'isEnabled' );
+			buttonView.bind( 'isEnabled' ).to( command );
+			buttonView.bind( 'isOn' ).to( command, 'value', value => value === option );
 
 			// Execute command.
 			this.listenTo( buttonView, 'execute', () => {
-				editor.execute( commandName );
+				editor.execute( 'alignment', { value: option } );
 				editor.editing.view.focus();
 			} );
 
