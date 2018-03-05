@@ -17,7 +17,7 @@ import List from '../../src/list';
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Enter, Typing, Heading, Paragraph, Undo, List, Clipboard ],
-		toolbar: [ 'headings', '|', 'bulletedList', 'numberedList', 'undo', 'redo' ]
+		toolbar: [ 'heading', '|', 'bulletedList', 'numberedList', 'undo', 'redo' ]
 	} )
 	.then( editor => {
 		window.editor = editor;
