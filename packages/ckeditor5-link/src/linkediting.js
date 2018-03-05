@@ -16,6 +16,8 @@ import { createLinkElement } from './utils';
 import bindTwoStepCaretToAttribute from '@ckeditor/ckeditor5-engine/src/utils/bindtwostepcarettoattribute';
 import findLinkRange from './findlinkrange';
 import '../theme/link.css';
+import DocumentSelection from '@ckeditor/ckeditor5-engine/src/model/documentselection';
+import ModelSelection from '@ckeditor/ckeditor5-engine/src/model/selection';
 
 /**
  * The link engine feature.
@@ -81,6 +83,23 @@ export default class LinkEditing extends Plugin {
 					priority: 1
 				}
 			} ) );
+
+		// editor.editing.downcastDispatcher.on( 'attribute:linkHref', ( evt, data, conversionApi ) => {
+		// 	if ( !( data.item instanceof DocumentSelection || data.item instanceof ModelSelection ) ) {
+		// 		return;
+		// 	}
+		//
+		// 	const selection = data.item;
+		//
+		// 	if ( !selection.isCollapsed ) {
+		// 		return;
+		// 	}
+		//
+		// 	const writer = conversionApi.writer;
+		// 	const viewSelection = writer.document.selection;
+		// 	const wrapper = writer.createAttributeElement( 'span', { class: 'ck-link_selected' }, 1 );
+		// 	conversionApi.writer.wrap( viewSelection.getFirstRange(), wrapper );
+		// }, { priority: 'lowest' } );
 
 		doc.on( 'change', () => {
 			const selection = doc.selection;
