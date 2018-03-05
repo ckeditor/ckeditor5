@@ -370,18 +370,6 @@ describe( 'view', () => {
 		} );
 	} );
 
-	describe( 'isComposing', () => {
-		it( 'should change renderer.isComposing too', () => {
-			expect( viewDocument.isComposing ).to.equal( false );
-			expect( view._renderer.isComposing ).to.equal( false );
-
-			viewDocument.isComposing = true;
-
-			expect( viewDocument.isComposing ).to.equal( true );
-			expect( view._renderer.isComposing ).to.equal( true );
-		} );
-	} );
-
 	describe( 'render()', () => {
 		it( 'disable observers, renders and enable observers', () => {
 			const observerMock = view.addObserver( ObserverMock );
