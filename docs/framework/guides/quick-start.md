@@ -185,7 +185,7 @@ Finally, it is time to create an HTML page:
 
 Open this page in your browser and you should see the editor up and running. Make sure to check the browser console in case anything seems wrong.
 
-{@img assets/img/framework-quick-start-classic-editor.png 837 Screenshot of a classic editor with bold and italic features.}
+{@img assets/img/framework-quick-start-classic-editor.png 976 Screenshot of a classic editor with bold and italic features.}
 
 ## Creating a simple plugin
 

@@ -33,7 +33,7 @@ In CKEditor 5 the concept of the "boxed" editor was reinvented:
  * The editor content is now placed inline in the page (without the surrounding `<iframe>` element) &mdash; it is now much easier to style it.
  * By default the editor now grows automatically with the content.
 
-{@img assets/img/editor-classic.png 772 Screenshot of a classic editor.}
+{@img assets/img/editor-classic.png 778 Screenshot of a classic editor.}
 
 To try it out online, check the {@link examples/builds/classic-editor classic editor example}. Jump to {@link builds/guides/quick-start#classic-editor quick start} to start using it.
 
@@ -43,7 +43,7 @@ Inline editor comes with a floating toolbar that becomes visible when the editor
 
 A common scenario for using inline editor is offering users the possibility to edit content in its real location on a web page instead of doing it in a separate administration section.
 
-{@img assets/img/editor-inline.png 774 Screenshot of an inline editor.}
+{@img assets/img/editor-inline.png 776 Screenshot of an inline editor.}
 
 To try it out online, check the {@link examples/builds/inline-editor inline editor example}. Jump to {@link builds/guides/quick-start#inline-editor quick start} to start using it.
 
@@ -51,7 +51,7 @@ To try it out online, check the {@link examples/builds/inline-editor inline edit
 
 Balloon editor is very similar to inline editor. The difference between them is that the toolbar appears in a balloon next to the selection (when the selection is not empty):
 
-{@img assets/img/editor-balloon.png 779 Screenshot of a balloon toolbar editor.}
+{@img assets/img/editor-balloon.png 789 Screenshot of a balloon toolbar editor.}
 
 To try it out online, check the {@link examples/builds/balloon-editor balloon editor example}. Jump to {@link builds/guides/quick-start#balloon-editor quick start} to start using it.
 

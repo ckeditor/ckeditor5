@@ -24,7 +24,7 @@ Inserting images into the content is now very intuitive, with all technical aspe
 
 The outdated concept of image alignment was dropped in favor of {@link features/image#image-styles image styles}:
 
-{@img assets/img/builds-image-styles.png 591 Image styles toolbar.}
+{@img assets/img/builds-image-styles.png 736 Image styles toolbar.}
 
 When integrated with {@link features/image-upload#easy-image Easy Image}, uploading, resizing and producing different image sizes for responsive design is all automated.
 
@@ -34,7 +34,8 @@ When integrated with {@link features/image-upload#easy-image Easy Image}, upload
 
 No more complex dialogs for links.
 
-{@img assets/img/feature-link.png 503 Simplified link dialog.}
+{@img assets/img/feature-link-preview.png 738 Simplified link preview popup.}
+{@img assets/img/feature-link-editing.png 738 Simplified link editing popup.}
 
 ### Autoformatting
 
