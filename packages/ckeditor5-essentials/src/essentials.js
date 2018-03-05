@@ -31,7 +31,17 @@ import Undo from '@ckeditor/ckeditor5-undo/src/undo';
  * @extends module:core/plugin~Plugin
  */
 export default class Essentials extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
 	static get requires() {
 		return [ Clipboard, Enter, Typing, Undo ];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	static get pluginName() {
+		return 'Essentials';
 	}
 }
