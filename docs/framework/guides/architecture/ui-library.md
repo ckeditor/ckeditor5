@@ -72,7 +72,7 @@ class ParentView extends View {
 		this.setTemplate( {
 			tag: 'div',
 			children: [
-				childA
+				childA,
 				childB
 			]
 		} );
@@ -170,7 +170,7 @@ new Template( {
 	},
 	on: {
 		click: bind.to( 'clicked' )
-	}
+	},
 	children: [
 		'A paragraph.'
 	]
@@ -289,6 +289,100 @@ buttonBar.delegate( 'execute' ).to( toolbar );
 
 toolbar.on( 'execute', evt => {
 	console.log( `The "${ evt.source.label }" button was clicked!` );
+} );
+```
+
+### Dropdowns
+
+The framework implements the {@link module:ui/dropdown/dropdownview~DropdownView dropdown} component which can host any sort of UI in its panel. It is composed of a {@link module:ui/dropdown/dropdownview~DropdownView#buttonView button} (to open the dropdown) and a {@link module:ui/dropdown/dropdownview~DropdownView#panelView panel} (the container).
+
+The button can be either:
+- a standard {@link module:ui/button/buttonview~ButtonView},
+- a {@link module:ui/dropdown/button/splitbuttonview~SplitButtonView}, for more complex use–cases.
+
+The dropdown panel exposes its {@link module:ui/dropdown/dropdownpanelview~DropdownPanelView#children children} collection which aggregates the child {@link module:ui/view~View views}. The most common views displayed in the dropdown panel are:
+- {@link module:ui/list/listview~ListView}
+- {@link module:ui/toolbar/toolbarview~ToolbarView}
+
+The framework provides a set of helpers to make the dropdown creation process easier, although it is still possible to compose a custom dropdown from scratch using the base classes.
+
+The {@link module:ui/dropdown/utils#createDropdown} helper creates a {@link module:ui/dropdown/dropdownview~DropdownView} with either a {@link module:ui/button/buttonview~ButtonView} or a {@link module:ui/dropdown/button/splitbuttonview~SplitButtonView}.
+
+```js
+import { createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
+import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview';
+
+const dropdownView = createDropdown( locale, SplitButtonView );
+```
+
+This kind of (default) dropdown comes with a set of behaviors:
+- It closes the panel when it loses the focus e.g. user moved the focus elsewhere,
+- It closes the panel upon the {@link module:ui/dropdown/dropdownview~DropdownView#execute `execute`} event,
+- It focuses the view hosted in the panel e.g. when navigating the toolbar using the keyboard.
+
+#### Adding a list to a dropdown
+
+The {@link module:ui/list/listview~ListView} can be added to a dropdown using the {@link module:ui/dropdown/utils#addListToDropdown} helper.
+
+```js
+import Model from '@ckeditor/ckeditor5-ui/src/model';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection';
+import { addListToDropdown, createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
+
+// The default dropdown.
+const dropdownView = createDropdown( locale );
+
+// The collection of the list items.
+const items = new Collection();
+
+items.add( new Model( { label: 'Foo' } ) );
+items.add( new Model( { label: 'Bar' } ) );
+
+// Create a dropdown with a list inside the panel.
+addListToDropdown( dropdownView, items );
+```
+
+#### Adding a toolbar to a dropdown
+
+A {@link module:ui/toolbar/toolbarview~ToolbarView} can be added to a dropdown using  the {@link module:ui/dropdown/utils#addToolbarToDropdown} helper.
+
+```js
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import { addToolbarToDropdown, createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
+import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview';
+
+const buttons = [];
+
+// Add a simple button to the array of toolbar items.
+buttons.push( new ButtonView() );
+
+// Add another component the array of toolbar items.
+buttons.push( componentFactory.create( 'componentName' ) );
+
+const dropdownView = createDropdown( locale, SplitButtonView );
+
+// Create a dropdown with a toolbar inside the panel.
+addToolbarToDropdown( dropdownView, buttons );
+```
+
+A common practice is making the main dropdown button {@link module:ui/dropdown/dropdownview~DropdownView#isEnabled enabled} when one of the toolbar items is enabled:
+
+```js
+// Enable the dropdown's button when any of the toolbar items is enabled.
+dropdownView.bind( 'isEnabled' ).toMany( buttons, 'isEnabled',
+	( ...areEnabled ) => areEnabled.some( isEnabled => isEnabled )
+);
+```
+
+### Best practices
+
+It is advised that for the best user experience the editing view gets {@link module:engine/view/view~View#focus focused} upon any user action (e.g. executing a command) to make sure the editor retains focus:
+
+```js
+// Execute some action on dropdown#execute event.
+dropdownView.buttonView.on( 'execute', () => {
+	editor.execute( 'command', { value: ... } );
+	editor.editing.view.focus();
 } );
 ```
 
