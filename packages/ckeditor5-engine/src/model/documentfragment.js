@@ -38,6 +38,7 @@ export default class DocumentFragment {
 		 * which will be set as Markers to {@link module:engine/model/model~Model#markers model markers collection}
 		 * when DocumentFragment will be inserted to the document.
 		 *
+		 * @readonly
 		 * @member {Map<String,module:engine/model/range~Range>} module:engine/model/documentfragment~DocumentFragment#markers
 		 */
 		this.markers = new Map();

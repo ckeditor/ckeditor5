@@ -40,6 +40,7 @@ export default class Element extends Node {
 		/**
 		 * Element name.
 		 *
+		 * @readonly
 		 * @member {String} module:engine/model/element~Element#name
 		 */
 		this.name = name;

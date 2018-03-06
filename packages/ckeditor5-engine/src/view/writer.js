@@ -27,6 +27,10 @@ import EditableElement from './editableelement';
  */
 export default class Writer {
 	constructor( document ) {
+		/**
+		 * @readonly
+		 * @type {module:engine/view/document~Document}
+		 */
 		this.document = document;
 	}
 

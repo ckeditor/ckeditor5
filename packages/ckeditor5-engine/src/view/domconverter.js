@@ -64,6 +64,7 @@ export default class DomConverter {
 		/**
 		 * Tag names of DOM `Element`s which are considered pre-formatted elements.
 		 *
+		 * @readonly
 		 * @member {Array.<String>} module:engine/view/domconverter~DomConverter#preElements
 		 */
 		this.preElements = [ 'pre' ];
@@ -71,6 +72,7 @@ export default class DomConverter {
 		/**
 		 * Tag names of DOM `Element`s which are considered block elements.
 		 *
+		 * @readonly
 		 * @member {Array.<String>} module:engine/view/domconverter~DomConverter#blockElements
 		 */
 		this.blockElements = [ 'p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ];

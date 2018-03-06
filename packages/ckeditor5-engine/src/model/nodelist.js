@@ -19,6 +19,7 @@ export default class NodeList {
 	/**
 	 * Creates an empty node list.
 	 *
+	 * @protected
 	 * @param {Iterable.<module:engine/model/node~Node>} nodes Nodes contained in this node list.
 	 */
 	constructor( nodes ) {
