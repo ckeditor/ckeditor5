@@ -26,7 +26,7 @@ describe( 'ClipboardObserver', () => {
 		root.appendChildren( el );
 		view.domConverter.viewToDom( root, document, { withChildren: true, bind: true } );
 
-		doc.selection._setTo( el );
+		doc.selection._setTo( el, 0 );
 		range = new Range( new Position( root, 1 ) );
 		// Just making sure that the following tests will check anything.
 		expect( range.isEqual( doc.selection.getFirstRange() ) ).to.be.false;
