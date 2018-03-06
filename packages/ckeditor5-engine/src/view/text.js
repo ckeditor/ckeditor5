@@ -32,7 +32,7 @@ export default class Text extends Node {
 		 *
 		 * Setting the data fires the {@link module:engine/view/node~Node#event:change:text change event}.
 		 *
-		 * @private
+		 * @protected
 		 * @member {String} module:engine/view/text~Text#_data
 		 */
 		this._data = data;
