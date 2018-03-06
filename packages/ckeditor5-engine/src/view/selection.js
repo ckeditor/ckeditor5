@@ -41,11 +41,11 @@ export default class Selection {
 	 *
 	 *		// Creates selection at the given range.
 	 *		const range = new Range( start, end );
-	 *		const selection = new Selection( range, { backward, fake, label } );
+	 *		const selection = new Selection( range );
 	 *
 	 *		// Creates selection at the given ranges
 	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
-	 *		const selection = new Selection( ranges, { backward, fake, label } );
+	 *		const selection = new Selection( ranges );
 	 *
 	 *		// Creates selection from the other selection.
 	 *		const otherSelection = new Selection();
@@ -53,19 +53,34 @@ export default class Selection {
 	 *
 	 * 		// Creates selection at the given position.
 	 *		const position = new Position( root, path );
-	 *		const selection = new Selection( position, { fake, label } );
+	 *		const selection = new Selection( position );
 	 *
-	 * 		// Sets collapsed selection at the position of given item and offset.
+	 * 		// Creates collapsed selection at the position of given item and offset.
 	 *		const paragraph = writer.createElement( 'paragraph' );
-	 *		selection.setTo( paragraph, offset, { fake, label } );
+	 *		const selection = new Selection( paragraph, offset );
 	 *
-	 *		// Sets selection inside the item.
+	 *		// Creates selection inside the item.
 	 *		const paragraph = writer.createElement( 'paragraph' );
-	 *		selection.setTo( paragraph, 'in', { backward, fake, label } );
+	 *		const selection = new Selection( paragraph, 'in' );
 	 *
-	 *		// Sets selection on the item.
+	 *		// Creates selection on the item.
 	 *		const paragraph = writer.createElement( 'paragraph' );
-	 *		selection.setTo( paragraph, 'on', { backward, fake, label } );
+	 *		const selection = new Selection( paragraph, 'on' );
+	 *
+	 * `Selection`'s constructor allow passing additional options (`backward`, `fake` and `label`) as the last argument.
+	 *
+	 *		// Creates backward selection.
+	 *		const selection = new Selection( range, { backward: true } );
+	 *
+	 *		// Creates fake selection.
+	 *		// Fake selection does not render as browser native selection over selected elements and is hidden to the user.
+	 * 		// This way, no native selection UI artifacts are displayed to the user and selection over elements can be
+	 * 		// represented in other way, for example by applying proper CSS class.
+	 *		const selection = new Selection( range, { fake: true } );
+	 *
+	 * 		// Additionally fake's selection label can be provided. It will be used to describe fake selection in DOM
+	 * 		// (and be  properly handled by screen readers).
+	 *		const selection = new Selection( range, { fake: true, label: 'foo' } );
 	 *
 	 * @param {module:engine/view/selection~Selection|module:engine/view/position~Position|
 	 * Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|module:engine/view/item~Item|null} [selectable=null]
@@ -404,18 +419,13 @@ export default class Selection {
 	 * {@link module:engine/view/item~Item item}, {@link module:engine/view/range~Range range},
 	 * an iterable of {@link module:engine/view/range~Range ranges} or null.
 	 *
-	 * This method provides option to create a fake selection.
-	 * Fake selection does not render as browser native selection over selected elements and is hidden to the user.
-	 * This way, no native selection UI artifacts are displayed to the user and selection over elements can be
-	 * represented in other way, for example by applying proper CSS class.
-	 *
 	 *		// Sets selection to the given range.
 	 *		const range = new Range( start, end );
-	 *		selection.setTo( range, { backward, fake, label } );
+	 *		selection.setTo( range );
 	 *
 	 *		// Sets selection to given ranges.
 	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
-	 *		selection.setTo( range, { backward, fake, label } );
+	 *		selection.setTo( range );
 	 *
 	 *		// Sets selection to the other selection.
 	 *		const otherSelection = new Selection();
@@ -423,19 +433,34 @@ export default class Selection {
 	 *
 	 * 		// Sets collapsed selection at the given position.
 	 *		const position = new Position( root, path );
-	 *		selection.setTo( position, { fake, label } );
+	 *		selection.setTo( position );
 	 *
 	 * 		// Sets collapsed selection at the position of given item and offset.
-	 *		selection.setTo( paragraph, offset, { fake, label } );
+	 *		selection.setTo( paragraph, offset );
 	 *
 	 *		// Sets selection inside the item.
-	 *		selection.setTo( paragraph, 'in', { backward, fake, label } );
+	 *		selection.setTo( paragraph, 'in' );
 	 *
 	 *		// Sets selection on the item.
-	 *		selection.setTo( paragraph, 'on', { backward, fake, label } );
+	 *		selection.setTo( paragraph, 'on' );
 	 *
 	 * 		// Clears selection. Removes all ranges.
 	 *		selection.setTo( null );
+	 *
+	 * `Selection#setTo()` method allow passing additional options (`backward`, `fake` and `label`) as the last argument.
+	 *
+	 *		// Sets selection as backward.
+	 *		selection.setTo( range, { backward: true } );
+	 *
+	 *		// Sets selection as fake.
+	 8		// Fake selection does not render as browser native selection over selected elements and is hidden to the user.
+	 * 		// This way, no native selection UI artifacts are displayed to the user and selection over elements can be
+	 * 		// represented in other way, for example by applying proper CSS class.
+	 *		selection.setTo( range, { fake: true } );
+	 *
+	 * 		// Additionally fake's selection label can be provided. It will be used to describe fake selection in DOM
+	 * 		// (and be  properly handled by screen readers).
+	 *		selection.setTo( range, { fake: true, label: 'foo' } );
 	 *
 	 * @protected
 	 * @fires change

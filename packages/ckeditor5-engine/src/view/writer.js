@@ -36,23 +36,19 @@ export default class Writer {
 	 * {@link module:engine/view/item~Item item}, {@link module:engine/view/range~Range range},
 	 * an iterable of {@link module:engine/view/range~Range ranges} or null.
 	 *
-	 * This method provides option to create a fake selection.
-	 * Fake selection does not render as browser native selection over selected elements and is hidden to the user.
-	 * This way, no native selection UI artifacts are displayed to the user and selection over elements can be
-	 * represented in other way, for example by applying proper CSS class.
-	 *
-	 * Additionally fake's selection label can be provided. It will be used to describe fake selection in DOM (and be
-	 * properly handled by screen readers).
-	 *
-	 * Usage:
+	 * ### Usage:
 	 *
 	 *		// Sets selection to the given range.
 	 *		const range = new Range( start, end );
-	 *		writer.setSelection( range, { backward, fake, label } );
+	 *		writer.setSelection( range );
+	 *
+	 *		// Sets backward selection to the given range.
+	 *		const range = new Range( start, end );
+	 *		writer.setSelection( range );
 	 *
 	 *		// Sets selection to given ranges.
 	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
-	 *		writer.setSelection( range, { backward, fake, label } );
+	 *		writer.setSelection( range );
 	 *
 	 *		// Sets selection to the other selection.
 	 *		const otherSelection = new Selection();
@@ -60,19 +56,34 @@ export default class Writer {
 	 *
 	 * 		// Sets collapsed selection at the given position.
 	 *		const position = new Position( root, path );
-	 *		writer.setSelection( position, { fake, label } );
+	 *		writer.setSelection( position );
 	 *
 	 * 		// Sets collapsed selection at the position of given item and offset.
-	 *		selection.setTo( paragraph, offset, { fake, label } );
+	 *		writer.setSelection( paragraph, offset );
 	 *
 	 *		// Sets selection inside the item.
-	 *		selection.setTo( paragraph, 'in', { backward, fake, label } );
+	 *		writer.setSelection( paragraph, 'in' );
 	 *
 	 *		// Sets selection on the item.
-	 *		selection.setTo( paragraph, 'on', { backward, fake, label } );
+	 *		writer.setSelection( paragraph, 'on' );
 	 *
 	 * 		// Removes all ranges.
 	 *		writer.setSelection( null );
+	 *
+	 *	`Writer#setSelection()` allow passing additional options (`backward`, `fake` and `label`) as the last argument.
+	 *
+	 *		// Sets selection as backward.
+	 *		writer.setSelection( range, { backward: true } );
+	 *
+	 *		// Sets selection as fake.
+	 *		// Fake selection does not render as browser native selection over selected elements and is hidden to the user.
+	 * 		// This way, no native selection UI artifacts are displayed to the user and selection over elements can be
+	 * 		// represented in other way, for example by applying proper CSS class.
+	 *		writer.setSelection( range, { fake: true } );
+	 *
+	 * 		// Additionally fake's selection label can be provided. It will be used to describe fake selection in DOM
+	 * 		// (and be  properly handled by screen readers).
+	 *		writer.setSelection( range, { fake: true, label: 'foo' } );
 	 *
 	 * @param {module:engine/view/selection~Selection|module:engine/view/position~Position|
 	 * Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|module:engine/view/item~Item|null} selectable

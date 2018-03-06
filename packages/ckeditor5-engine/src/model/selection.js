@@ -56,11 +56,11 @@ export default class Selection {
 	 *		const position = new Position( root, path );
 	 *		const selection = new Selection( position );
 	 *
-	 * 		// Creates selection inside the node.
+	 * 		// Creates selection inside the given node.
 	 *		const paragraph = writer.createElement( 'paragraph' );
 	 *		selection.setTo( paragraph, 'in', { backward } );
 	 *
-	 *		// Creates selection on the node.
+	 *		// Creates selection on the given node.
 	 *		const paragraph = writer.createElement( 'paragraph' );
 	 *		selection.setTo( paragraph, 'on', { backward } );
 	 *
@@ -71,9 +71,9 @@ export default class Selection {
 	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
 	 * module:engine/model/position~Position|module:engine/model/element~Element|
 	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} selectable
-	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset]
+	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets place or offset of the selection.
 	 * @param {Object} [options]
-	 * @param {Boolean} [options.backward]
+	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
 	 */
 	constructor( selectable, placeOrOffset, options ) {
 		/**
@@ -336,7 +336,7 @@ export default class Selection {
 	 * 		// Sets collapsed selection at the position of the given node and an offset.
 	 *		selection.setTo( paragraph, offset );
 	 *
-	 *		// Sets selection inside the given  node.
+	 *		// Sets selection inside the given node.
 	 *		selection.setTo( paragraph, 'in', { backward } );
 	 *
 	 *		// Sets selection on the given node.
