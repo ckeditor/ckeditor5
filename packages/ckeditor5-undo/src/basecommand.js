@@ -112,7 +112,7 @@ export default class BaseCommand extends Command {
 		// `selectionRanges` may be empty if all ranges ended up in graveyard. If that is the case, do not restore selection.
 		if ( selectionRanges.length ) {
 			model.change( writer => {
-				writer.setSelection( selectionRanges, isBackward );
+				writer.setSelection( selectionRanges, { backward: isBackward } );
 			} );
 		}
 	}
