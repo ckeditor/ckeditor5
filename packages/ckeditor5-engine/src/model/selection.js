@@ -56,20 +56,17 @@ export default class Selection {
 	 *		const position = new Position( root, path );
 	 *		const selection = new Selection( position );
 	 *
-	 * Creates a range inside an {@link module:engine/model/element~Element element} which starts before the first child of
- 	 * that element and ends after the last child of that element.
-	 *
-	 *		const paragraph = writer.createElement( 'paragraph' );
-	 *		const selection = new Selection( paragraph, 'in' );
-	 *
-	 * Creates a range on an {@link module:engine/model/item~Item item} which starts before the item and ends just after the item.
-	 *
-	 *		const paragraph = writer.createElement( 'paragraph' );
-	 *		const selection = new Selection( paragraph, 'on' );
-	 *
 	 * 		// Creates selection at the start position of the given element.
 	 *		const paragraph = writer.createElement( 'paragraph' );
 	 *		const selection = new Selection( paragraph, offset );
+	 *
+	 * 		// Creates a range inside an {@link module:engine/model/element~Element element} which starts before the
+	 * 		// first child of that element and ends after the last child of that element.
+	 *		const selection = new Selection( paragraph, 'in' );
+	 *
+	 * 		// Creates a range on an {@link module:engine/model/item~Item item} which starts before the item and ends
+	 * 		// just after the item.
+	 *		const selection = new Selection( paragraph, 'on' );
 	 *
 	 * `Selection`'s constructor allow passing additional options (`backward`) as the last argument.
 	 *

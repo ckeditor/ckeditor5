@@ -55,19 +55,16 @@ export default class Selection {
 	 *		const position = new Position( root, path );
 	 *		const selection = new Selection( position );
 	 *
-	 * 		// Creates collapsed selection at the position of given item and offset.
+	 *		// Creates collapsed selection at the position of given item and offset.
 	 *		const paragraph = writer.createElement( 'paragraph' );
 	 *		const selection = new Selection( paragraph, offset );
 	 *
-	 * Creates a range inside an {@link module:engine/view/element~Element element} which starts before the first child of
- 	 * that element and ends after the last child of that element.
-	 *
-	 *		const paragraph = writer.createElement( 'paragraph' );
+	 *		// Creates a range inside an {@link module:engine/view/element~Element element} which starts before the
+	 *		// first child of that element and ends after the last child of that element.
 	 *		const selection = new Selection( paragraph, 'in' );
 	 *
-	 * Creates a range on an {@link module:engine/view/item~Item item} which starts before the item and ends just after the item.
-	 *
-	 *		const paragraph = writer.createElement( 'paragraph' );
+	 *		// Creates a range on an {@link module:engine/view/item~Item item} which starts before the item and ends
+	 *		// just after the item.
 	 *		const selection = new Selection( paragraph, 'on' );
 	 *
 	 * `Selection`'s constructor allow passing additional options (`backward`, `fake` and `label`) as the last argument.
@@ -75,14 +72,14 @@ export default class Selection {
 	 *		// Creates backward selection.
 	 *		const selection = new Selection( range, { backward: true } );
 	 *
-	 *		// Creates fake selection.
-	 *		// Fake selection does not render as browser native selection over selected elements and is hidden to the user.
-	 * 		// This way, no native selection UI artifacts are displayed to the user and selection over elements can be
-	 * 		// represented in other way, for example by applying proper CSS class.
-	 *		const selection = new Selection( range, { fake: true } );
+	 * Fake selection does not render as browser native selection over selected elements and is hidden to the user.
+	 * This way, no native selection UI artifacts are displayed to the user and selection over elements can be
+	 * represented in other way, for example by applying proper CSS class.
 	 *
-	 * 		// Additionally fake's selection label can be provided. It will be used to describe fake selection in DOM
-	 * 		// (and be  properly handled by screen readers).
+	 * Additionally fake's selection label can be provided. It will be used to describe fake selection in DOM
+	 * (and be  properly handled by screen readers).
+	 *
+	 *		// Creates fake selection with label.
 	 *		const selection = new Selection( range, { fake: true, label: 'foo' } );
 	 *
 	 * @param {module:engine/view/selection~Selection|module:engine/view/position~Position|
@@ -458,14 +455,14 @@ export default class Selection {
 	 *		// Sets selection as backward.
 	 *		selection.setTo( range, { backward: true } );
 	 *
-	 *		// Sets selection as fake.
-	 *		// Fake selection does not render as browser native selection over selected elements and is hidden to the user.
-	 * 		// This way, no native selection UI artifacts are displayed to the user and selection over elements can be
-	 * 		// represented in other way, for example by applying proper CSS class.
-	 *		selection.setTo( range, { fake: true } );
+	 * Fake selection does not render as browser native selection over selected elements and is hidden to the user.
+	 * This way, no native selection UI artifacts are displayed to the user and selection over elements can be
+	 * represented in other way, for example by applying proper CSS class.
 	 *
-	 * 		// Additionally fake's selection label can be provided. It will be used to describe fake selection in DOM
-	 * 		// (and be  properly handled by screen readers).
+	 * Additionally fake's selection label can be provided. It will be used to describe fake selection in DOM
+	 * (and be  properly handled by screen readers).
+	 *
+	 *		// Creates fake selection with label.
 	 *		selection.setTo( range, { fake: true, label: 'foo' } );
 	 *
 	 * @protected
