@@ -258,29 +258,6 @@ describe( 'Writer', () => {
 			expect( spy.firstCall.args[ 0 ].delta.batch ).to.equal( batch );
 		} );
 
-		it( 'should move element from one parent to the other within different document (document -> docFrag)', () => {
-			const root = doc.createRoot();
-			const docFrag = createDocumentFragment();
-			const node = createText( 'foo' );
-
-			insert( node, root );
-
-			const spy = sinon.spy( model, 'applyOperation' );
-
-			insert( node, docFrag );
-
-			// Verify result.
-			expect( Array.from( root.getChildren() ) ).to.deep.equal( [] );
-			expect( Array.from( docFrag.getChildren() ) ).to.deep.equal( [ node ] );
-
-			// Verify deltas and operations.
-			sinon.assert.calledTwice( spy );
-			expect( spy.firstCall.args[ 0 ].type ).to.equal( 'remove' );
-			expect( spy.firstCall.args[ 0 ].delta.batch ).to.equal( batch );
-			expect( spy.secondCall.args[ 0 ].type ).to.equal( 'insert' );
-			expect( spy.secondCall.args[ 0 ].delta.batch ).to.equal( batch );
-		} );
-
 		it( 'should move element from one parent to the other within different document (docFragA -> docFragB)', () => {
 			const docFragA = createDocumentFragment();
 			const docFragB = createDocumentFragment();
@@ -302,6 +279,18 @@ describe( 'Writer', () => {
 			expect( spy.firstCall.args[ 0 ].delta.batch ).to.equal( batch );
 			expect( spy.secondCall.args[ 0 ].type ).to.equal( 'insert' );
 			expect( spy.secondCall.args[ 0 ].delta.batch ).to.equal( batch );
+		} );
+
+		it( 'should throw when moving element from document to document fragment', () => {
+			const root = doc.createRoot();
+			const docFrag = createDocumentFragment();
+			const node = createText( 'foo' );
+
+			insert( node, root );
+
+			expect( () => {
+				insert( node, docFrag );
+			} ).to.throw();
 		} );
 
 		it( 'should transfer markers from given DocumentFragment', () => {
@@ -608,7 +597,7 @@ describe( 'Writer', () => {
 			expect( spy.lastCall.args[ 0 ].delta.batch ).to.equal( batch );
 		} );
 
-		it( 'should move element from one parent to the other within the same document (documentA -> documentA)', () => {
+		it( 'should move element from one parent to the other within the same root (rootA -> rootA)', () => {
 			const rootA = doc.createRoot();
 
 			const parent1 = createElement( 'parent' );
@@ -633,7 +622,7 @@ describe( 'Writer', () => {
 			expect( spy.firstCall.args[ 0 ].delta.batch ).to.equal( batch );
 		} );
 
-		it( 'should move element from one parent to the other within the same document (documentA -> documentB)', () => {
+		it( 'should move element from one parent to the other within the same document (rootA -> rootB)', () => {
 			const rootA = doc.createRoot( '$root', 'A' );
 			const rootB = doc.createRoot( '$root', 'B' );
 			const node = createText( 'foo' );
@@ -654,7 +643,7 @@ describe( 'Writer', () => {
 			expect( spy.firstCall.args[ 0 ].delta.batch ).to.equal( batch );
 		} );
 
-		it( 'should move element from one parent to the other within the same document (docFragA -> docFragA)', () => {
+		it( 'should move element from one parent to the other within the same document fragment (docFragA -> docFragA)', () => {
 			const docFragA = createDocumentFragment();
 			const parent1 = createElement( 'parent' );
 			const parent2 = createElement( 'parent' );
@@ -678,30 +667,7 @@ describe( 'Writer', () => {
 			expect( spy.firstCall.args[ 0 ].delta.batch ).to.equal( batch );
 		} );
 
-		it( 'should move element from one parent to the other within different document (document -> docFrag)', () => {
-			const root = doc.createRoot();
-			const docFrag = createDocumentFragment();
-			const node = createText( 'foo' );
-
-			insert( node, root );
-
-			const spy = sinon.spy( model, 'applyOperation' );
-
-			append( node, docFrag );
-
-			// Verify result.
-			expect( Array.from( root.getChildren() ) ).to.deep.equal( [] );
-			expect( Array.from( docFrag.getChildren() ) ).to.deep.equal( [ node ] );
-
-			// Verify deltas and operations.
-			sinon.assert.calledTwice( spy );
-			expect( spy.firstCall.args[ 0 ].type ).to.equal( 'remove' );
-			expect( spy.firstCall.args[ 0 ].delta.batch ).to.equal( batch );
-			expect( spy.secondCall.args[ 0 ].type ).to.equal( 'insert' );
-			expect( spy.secondCall.args[ 0 ].delta.batch ).to.equal( batch );
-		} );
-
-		it( 'should move element from one parent to the other within different document (docFragA -> docFragB)', () => {
+		it( 'should move element from one parent to the other within different document fragments (docFragA -> docFragB)', () => {
 			const docFragA = createDocumentFragment();
 			const docFragB = createDocumentFragment();
 			const node = createText( 'foo' );
@@ -722,6 +688,18 @@ describe( 'Writer', () => {
 			expect( spy.firstCall.args[ 0 ].delta.batch ).to.equal( batch );
 			expect( spy.secondCall.args[ 0 ].type ).to.equal( 'insert' );
 			expect( spy.secondCall.args[ 0 ].delta.batch ).to.equal( batch );
+		} );
+
+		it( 'should throw when moving element from document to document fragment', () => {
+			const root = doc.createRoot();
+			const docFrag = createDocumentFragment();
+			const node = createText( 'foo' );
+
+			insert( node, root );
+
+			expect( () => {
+				append( node, docFrag );
+			} ).to.throw();
 		} );
 	} );
 
