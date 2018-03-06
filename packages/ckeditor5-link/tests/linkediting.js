@@ -226,5 +226,41 @@ describe( 'LinkEditing', () => {
 			expect( marker.getStart().path ).to.deep.equal( [ 1, 0 ] );
 			expect( marker.getEnd().path ).to.deep.equal( [ 1, 2 ] );
 		} );
+
+		it( 'should remove marker when selection is moved out from the link', () => {
+			setModelData( model,
+				'<paragraph>foo <$text linkHref="url">li{}nk</$text> baz</paragraph>'
+			);
+
+			expect( getViewData( view ) ).to.equal(
+				'<p>foo <span class="ck-link_selected"><a href="url">li{}nk</a></span> baz</p>'
+			);
+
+			expect( model.markers.has( 'linkBoundaries' ) ).to.be.true;
+			model.change( writer => writer.setSelection( model.document.getRoot().getChild( 0 ), 0 ) );
+
+			expect( model.markers.has( 'linkBoundaries' ) ).to.be.false;
+			expect( getViewData( view ) ).to.equal(
+				'<p>{}foo <a href="url">link</a> baz</p>'
+			);
+		} );
+
+		it( 'should work correctly when selection is moved inside link', () => {
+			setModelData( model,
+				'<paragraph>foo <$text linkHref="url">li{}nk</$text> baz</paragraph>'
+			);
+
+			expect( getViewData( view ) ).to.equal(
+				'<p>foo <span class="ck-link_selected"><a href="url">li{}nk</a></span> baz</p>'
+			);
+
+			expect( model.markers.has( 'linkBoundaries' ) ).to.be.true;
+			model.change( writer => writer.setSelection( model.document.getRoot().getChild( 0 ), 5 ) );
+
+			expect( model.markers.has( 'linkBoundaries' ) ).to.be.true;
+			expect( getViewData( view ) ).to.equal(
+				'<p>foo <span class="ck-link_selected"><a href="url">l{}ink</a></span> baz</p>'
+			);
+		} );
 	} );
 } );
