@@ -18,7 +18,7 @@ import findLinkRange from './findlinkrange';
 import '../theme/link.css';
 import DocumentSelection from '@ckeditor/ckeditor5-engine/src/model/documentselection';
 import ModelSelection from '@ckeditor/ckeditor5-engine/src/model/selection';
-import ViewAttributeElement from '../../ckeditor5-engine/src/view/attributeelement';
+import ViewAttributeElement from '@ckeditor/ckeditor5-engine/src/view/attributeelement';
 
 /**
  * The link engine feature.
