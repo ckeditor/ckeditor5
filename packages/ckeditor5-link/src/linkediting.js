@@ -66,7 +66,8 @@ export default class LinkEditing extends Plugin {
 	}
 
 	/**
-	 * Setups a highlight over selected link element.
+	 * Adds highlight over link which has selection inside, together with two-step caret movement indicates whenever
+	 * user is typing inside the link.
 	 *
 	 * @private
 	 */
@@ -128,8 +129,8 @@ export default class LinkEditing extends Plugin {
 			const writer = conversionApi.writer;
 			const viewSelection = writer.document.selection;
 			const wrapper = new HighlightAttributeElement( 'span', { class: 'ck-link_selected' } );
-			wrapper._priority = 1;
-			wrapper._setCustomProperty( 'highlightDescriptorId', 'linkBoundaries' );
+			wrapper._priority = highlightDescriptor.priority;
+			wrapper._setCustomProperty( 'highlightDescriptorId', highlightDescriptor.id );
 
 			conversionApi.writer.wrap( viewSelection.getFirstRange(), wrapper );
 		} );
