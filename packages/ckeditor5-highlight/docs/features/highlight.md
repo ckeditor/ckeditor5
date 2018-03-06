@@ -42,7 +42,7 @@ ClassicEditor
 			]
 		},
 		toolbar: [
-			'heading', '|', 'bulletedList', 'numberedList', 'highlightDropdown', 'undo', 'redo'
+			'heading', '|', 'bulletedList', 'numberedList', 'highlight', 'undo', 'redo'
 		]
 	} )
 	.then( ... )
@@ -53,7 +53,7 @@ ClassicEditor
 
 ### Inline buttons
 
-Instead of using the (default) `highlightDropdown`, the feature also supports a configuration with separate buttons directly in the toolbar:
+Instead of using the (default) `highlight`, the feature also supports a configuration with separate buttons directly in the toolbar:
 
 ```js
 ClassicEditor
@@ -133,7 +133,7 @@ ClassicEditor
 			]
 		},
 		toolbar: [
-			'heading', '|', 'bulletedList', 'numberedList', 'highlightDropdown', 'undo', 'redo'
+			'heading', '|', 'bulletedList', 'numberedList', 'highlight', 'undo', 'redo'
 		]
 	} )
 	.then( ... )
@@ -172,7 +172,7 @@ import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight';
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Highlight, ... ],
-		toolbar: [ 'highlightDropdown', ... ]
+		toolbar: [ 'highlight', ... ]
 	} )
 	.then( ... )
 	.catch( ... );
@@ -186,7 +186,7 @@ ClassicEditor
 
 The {@link module:highlight/highlight~Highlight} plugin registers:
 
-* The `'highlightDropdown'` dropdown,
+* The `'highlight'` dropdown,
 * The {@link module:highlight/highlightcommand~HighlightCommand `'highlight'`} command.
 
 	The number of options and their names correspond to the {@link module:highlight/highlight~HighlightConfig#options `highlight.options`} configuration option.

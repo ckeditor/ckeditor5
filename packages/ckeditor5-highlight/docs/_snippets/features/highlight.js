@@ -9,7 +9,7 @@ ClassicEditor
 	.create( document.querySelector( '#snippet-highlight' ), {
 		toolbar: {
 			items: [
-				'heading', '|', 'bulletedList', 'numberedList', 'highlightDropdown', 'undo', 'redo'
+				'heading', '|', 'bulletedList', 'numberedList', 'highlight', 'undo', 'redo'
 			],
 			viewportTopOffset: 60
 		}
