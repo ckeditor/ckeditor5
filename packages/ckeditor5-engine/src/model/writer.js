@@ -144,6 +144,9 @@ export default class Writer {
 	 *
 	 * Note that if the item already has parent it will be removed from the previous parent.
 	 *
+	 * Note that you cannot re-insert a node from a document to a different document or document fragment. In this case,
+	 * `model-writer-insert-forbidden-move` is thrown.
+	 *
 	 * If you want to move {@link module:engine/model/range~Range range} instead of an
 	 * {@link module:engine/model/item~Item item} use {@link module:engine/model/writer~Writer#move move}.
 	 *
@@ -172,8 +175,14 @@ export default class Writer {
 			}
 			// If it isn't the same root.
 			else {
-				// We need to remove this item from old position first.
-				this.remove( item );
+				if ( item.root.document ) {
+					// It is forbidden to move a node that was already in a document outside of it.
+					throw new Error( 'model-writer-insert-forbidden-move: Cannot move a node from a document to a different tree.' );
+				} else {
+					// Move between two different document fragments or from document fragment to a document is possible.
+					// In that case, remove the item from it's original parent.
+					this.remove( item );
+				}
 			}
 		}
 
