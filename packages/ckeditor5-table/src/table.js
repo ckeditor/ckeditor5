@@ -13,7 +13,7 @@ import TablesEditing from './tableediting';
 import TablesUI from './tableui';
 
 /**
- * The highlight plugin.
+ * The table plugin.
  *
  * @extends module:core/plugin~Plugin
  */

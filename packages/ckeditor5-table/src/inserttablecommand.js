@@ -31,10 +31,9 @@ export default class InsertTableCommand extends Command {
 	/**
 	 * Executes the command.
 	 *
-	 * @protected
 	 * @param {Object} [options] Options for the executed command.
-	 * @param {String} [options.rows=2] Number of rows to create in inserted table.
-	 * @param {String} [options.columns=2] Number of columns to create in inserted table.
+	 * @param {Number} [options.rows=2] Number of rows to create in inserted table.
+	 * @param {Number} [options.columns=2] Number of columns to create in inserted table.
 	 *
 	 * @fires execute
 	 */
