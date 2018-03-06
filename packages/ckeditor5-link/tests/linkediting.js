@@ -170,7 +170,7 @@ describe( 'LinkEditing', () => {
 			);
 		} );
 
-		it( 'should work whenever selection has linkHref attribute', () => {
+		it( 'should work whenever selection has linkHref attribute - link start', () => {
 			setModelData( model,
 				'<paragraph>foo {}<$text linkHref="url">bar</$text> baz</paragraph>'
 			);
@@ -186,6 +186,26 @@ describe( 'LinkEditing', () => {
 			const marker = model.markers.get( 'linkBoundaries' );
 			expect( marker.getStart().path ).to.deep.equal( [ 0, 4 ] );
 			expect( marker.getEnd().path ).to.deep.equal( [ 0, 7 ] );
+
+			expect( getViewData( view ) ).to.equal(
+				'<p>foo <span class="ck-link_selected"><a href="url">{}bar</a></span> baz</p>'
+			);
+		} );
+
+		it( 'should work whenever selection has linkHref attribute - link end', () => {
+			setModelData( model,
+				'<paragraph>foo <$text linkHref="url">bar</$text>{} baz</paragraph>'
+			);
+
+			expect( model.document.selection.hasAttribute( 'linkHref' ) ).to.be.true;
+			expect( model.markers.has( 'linkBoundaries' ) ).to.be.true;
+			const marker = model.markers.get( 'linkBoundaries' );
+			expect( marker.getStart().path ).to.deep.equal( [ 0, 4 ] );
+			expect( marker.getEnd().path ).to.deep.equal( [ 0, 7 ] );
+
+			expect( getViewData( view ) ).to.equal(
+				'<p>foo <span class="ck-link_selected"><a href="url">bar{}</a></span> baz</p>'
+			);
 		} );
 
 		it( 'should render highlight correctly after splitting the link', () => {

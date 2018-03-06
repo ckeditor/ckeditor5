@@ -18,6 +18,7 @@ import findLinkRange from './findlinkrange';
 import '../theme/link.css';
 import DocumentSelection from '@ckeditor/ckeditor5-engine/src/model/documentselection';
 import ModelSelection from '@ckeditor/ckeditor5-engine/src/model/selection';
+import ViewAttributeElement from '../../ckeditor5-engine/src/view/attributeelement';
 
 /**
  * The link engine feature.
@@ -73,34 +74,20 @@ export default class LinkEditing extends Plugin {
 		const editor = this.editor;
 		const model = this.editor.model;
 		const doc = model.document;
+		const highlightDescriptor = {
+			id: 'linkBoundaries',
+			class: 'ck-link_selected',
+			priority: 1
+		};
 
 		// Convert linkBoundaries marker to view highlight.
 		editor.conversion.for( 'editingDowncast' )
 			.add( downcastMarkerToHighlight( {
 				model: 'linkBoundaries',
-				view: {
-					class: 'ck-link_selected',
-					priority: 1
-				}
+				view: highlightDescriptor
 			} ) );
 
-		// editor.editing.downcastDispatcher.on( 'attribute:linkHref', ( evt, data, conversionApi ) => {
-		// 	if ( !( data.item instanceof DocumentSelection || data.item instanceof ModelSelection ) ) {
-		// 		return;
-		// 	}
-		//
-		// 	const selection = data.item;
-		//
-		// 	if ( !selection.isCollapsed ) {
-		// 		return;
-		// 	}
-		//
-		// 	const writer = conversionApi.writer;
-		// 	const viewSelection = writer.document.selection;
-		// 	const wrapper = writer.createAttributeElement( 'span', { class: 'ck-link_selected' }, 1 );
-		// 	conversionApi.writer.wrap( viewSelection.getFirstRange(), wrapper );
-		// }, { priority: 'lowest' } );
-
+		// Create marker over whole link when selection has "linkHref" attribute.
 		doc.on( 'change', () => {
 			const selection = doc.selection;
 
@@ -120,5 +107,42 @@ export default class LinkEditing extends Plugin {
 				} );
 			}
 		} );
+
+		// Custom converter for selection's "linkHref" attribute - when collapsed selection has this attribute it is
+		// wrapped with <span> similar to that used by highlighting mechanism. This <span> will be merged together with
+		// highlight wrapper. This prevents link splitting When selection is at the beginning or at the end of the link.
+		// Without this converter:
+		//
+		//		<a href="url">{}</a><span class="ck-link_selected"><a href="url">foo</a></span>
+		//
+		// When converter is applied:
+		//
+		//		<span class="ck-link_selected"><a href="url">{}foo</a></span>
+		editor.editing.downcastDispatcher.on( 'attribute:linkHref', ( evt, data, conversionApi ) => {
+			const selection = data.item;
+
+			if ( !( selection instanceof DocumentSelection || selection instanceof ModelSelection ) || !selection.isCollapsed ) {
+				return;
+			}
+
+			const writer = conversionApi.writer;
+			const viewSelection = writer.document.selection;
+			const wrapper = new HighlightAttributeElement( 'span', { class: 'ck-link_selected' } );
+			wrapper._priority = 1;
+			wrapper._setCustomProperty( 'highlightDescriptorId', 'linkBoundaries' );
+
+			conversionApi.writer.wrap( viewSelection.getFirstRange(), wrapper );
+		} );
+	}
+}
+
+// Private class used to wrap selection position until https://github.com/ckeditor/ckeditor5-engine/issues/1303 is solved.
+class HighlightAttributeElement extends ViewAttributeElement {
+	isSimilar( otherElement ) {
+		if ( otherElement.is( 'attributeElement' ) ) {
+			return this.getCustomProperty( 'highlightDescriptorId' ) === otherElement.getCustomProperty( 'highlightDescriptorId' );
+		}
+
+		return false;
 	}
 }
