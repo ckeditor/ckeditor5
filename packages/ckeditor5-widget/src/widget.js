@@ -73,7 +73,7 @@ export default class Widget extends Plugin {
 
 						// Check if widget is a single element selected.
 						if ( node == selectedElement ) {
-							viewWriter.setFakeSelection( true, { label: getLabel( selectedElement ) } );
+							viewWriter.setSelection( viewSelection.getRanges(), { fake: true, label: getLabel( selectedElement ) } );
 						}
 					}
 				}
