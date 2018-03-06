@@ -36,11 +36,11 @@ export default class Selection {
 	 *
 	 *		// Creates selection at the given range.
 	 *		const range = new Range( start, end );
-	 *		const selection = new Selection( range, { backward } );
+	 *		const selection = new Selection( range );
 	 *
 	 *		// Creates selection at the given ranges
 	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
-	 *		const selection = new Selection( ranges, { backward } );
+	 *		const selection = new Selection( ranges );
 	 *
 	 *		// Creates selection from the other selection.
 	 *		// Note: It doesn't copies selection attributes.
@@ -56,17 +56,25 @@ export default class Selection {
 	 *		const position = new Position( root, path );
 	 *		const selection = new Selection( position );
 	 *
-	 * 		// Creates selection inside the given node.
-	 *		const paragraph = writer.createElement( 'paragraph' );
-	 *		selection.setTo( paragraph, 'in', { backward } );
+	 * Creates a range inside an {@link module:engine/model/element~Element element} which starts before the first child of
+ 	 * that element and ends after the last child of that element.
 	 *
-	 *		// Creates selection on the given node.
 	 *		const paragraph = writer.createElement( 'paragraph' );
-	 *		selection.setTo( paragraph, 'on', { backward } );
+	 *		const selection = new Selection( paragraph, 'in' );
+	 *
+	 * Creates a range on an {@link module:engine/model/item~Item item} which starts before the item and ends just after the item.
+	 *
+	 *		const paragraph = writer.createElement( 'paragraph' );
+	 *		const selection = new Selection( paragraph, 'on' );
 	 *
 	 * 		// Creates selection at the start position of the given element.
 	 *		const paragraph = writer.createElement( 'paragraph' );
 	 *		const selection = new Selection( paragraph, offset );
+	 *
+	 * `Selection`'s constructor allow passing additional options (`backward`) as the last argument.
+	 *
+	 * 		// Creates backward selection.
+	 *		const selection = new Selection( range, { backward: true } );
 	 *
 	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
 	 * module:engine/model/position~Position|module:engine/model/element~Element|
@@ -311,13 +319,16 @@ export default class Selection {
 	 * {@link module:engine/model/element~Element element}, {@link module:engine/model/position~Position position},
 	 * {@link module:engine/model/range~Range range}, an iterable of {@link module:engine/model/range~Range ranges} or null.
 	 *
+	 * 		// Removes all selection's ranges.
+	 *		selection.setTo( null );
+	 *
 	 *		// Sets selection to the given range.
 	 *		const range = new Range( start, end );
-	 *		selection.setTo( range, { backward } );
+	 *		selection.setTo( range );
 	 *
 	 *		// Sets selection to given ranges.
 	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
-	 *		selection.setTo( ranges, { backward } );
+	 *		selection.setTo( ranges );
 	 *
 	 *		// Sets selection to other selection.
 	 *		// Note: It doesn't copies selection attributes.
@@ -336,14 +347,19 @@ export default class Selection {
 	 * 		// Sets collapsed selection at the position of the given node and an offset.
 	 *		selection.setTo( paragraph, offset );
 	 *
-	 *		// Sets selection inside the given node.
-	 *		selection.setTo( paragraph, 'in', { backward } );
+	 * Creates a range inside an {@link module:engine/model/element~Element element} which starts before the first child of
+ 	 * that element and ends after the last child of that element.
 	 *
-	 *		// Sets selection on the given node.
-	 *		selection.setTo( paragraph, 'on', { backward } );
+	 *		selection.setTo( paragraph, 'in' );
 	 *
-	 * 		// Removes all selection's ranges.
-	 *		selection.setTo( null );
+	 * Creates a range on an {@link module:engine/model/item~Item item} which starts before the item and ends just after the item.
+	 *
+	 *		selection.setTo( paragraph, 'on' );
+	 *
+	 * `Selection#setTo()`' method allow passing additional options (`backward`) as the last argument.
+	 *
+	 * 		// Sets backward selection.
+	 *		const selection = new Selection( range, { backward: true } );
 	 *
 	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
 	 * module:engine/model/position~Position|module:engine/model/node~Node|

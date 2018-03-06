@@ -59,11 +59,14 @@ export default class Selection {
 	 *		const paragraph = writer.createElement( 'paragraph' );
 	 *		const selection = new Selection( paragraph, offset );
 	 *
-	 *		// Creates selection inside the item.
+	 * Creates a range inside an {@link module:engine/view/element~Element element} which starts before the first child of
+ 	 * that element and ends after the last child of that element.
+	 *
 	 *		const paragraph = writer.createElement( 'paragraph' );
 	 *		const selection = new Selection( paragraph, 'in' );
 	 *
-	 *		// Creates selection on the item.
+	 * Creates a range on an {@link module:engine/view/item~Item item} which starts before the item and ends just after the item.
+	 *
 	 *		const paragraph = writer.createElement( 'paragraph' );
 	 *		const selection = new Selection( paragraph, 'on' );
 	 *
@@ -438,10 +441,13 @@ export default class Selection {
 	 * 		// Sets collapsed selection at the position of given item and offset.
 	 *		selection.setTo( paragraph, offset );
 	 *
-	 *		// Sets selection inside the item.
+	 * Creates a range inside an {@link module:engine/view/element~Element element} which starts before the first child of
+ 	 * that element and ends after the last child of that element.
+	 *
 	 *		selection.setTo( paragraph, 'in' );
 	 *
-	 *		// Sets selection on the item.
+	 * Creates a range on an {@link module:engine/view/item~Item item} which starts before the item and ends just after the item.
+	 *
 	 *		selection.setTo( paragraph, 'on' );
 	 *
 	 * 		// Clears selection. Removes all ranges.
@@ -453,7 +459,7 @@ export default class Selection {
 	 *		selection.setTo( range, { backward: true } );
 	 *
 	 *		// Sets selection as fake.
-	 8		// Fake selection does not render as browser native selection over selected elements and is hidden to the user.
+	 *		// Fake selection does not render as browser native selection over selected elements and is hidden to the user.
 	 * 		// This way, no native selection UI artifacts are displayed to the user and selection over elements can be
 	 * 		// represented in other way, for example by applying proper CSS class.
 	 *		selection.setTo( range, { fake: true } );

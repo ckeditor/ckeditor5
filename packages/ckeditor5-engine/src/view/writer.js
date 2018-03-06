@@ -61,16 +61,19 @@ export default class Writer {
 	 * 		// Sets collapsed selection at the position of given item and offset.
 	 *		writer.setSelection( paragraph, offset );
 	 *
-	 *		// Sets selection inside the item.
-	 *		writer.setSelection( paragraph, 'in' );
+	 * Creates a range inside an {@link module:engine/view/element~Element element} which starts before the first child of
+ 	 * that element and ends after the last child of that element.
 	 *
-	 *		// Sets selection on the item.
+	 * 		writer.setSelection( paragraph, 'in' );
+	 *
+	 * Creates a range on the {@link module:engine/view/item~Item item} which starts before the item and ends just after the item.
+	 *
 	 *		writer.setSelection( paragraph, 'on' );
 	 *
 	 * 		// Removes all ranges.
 	 *		writer.setSelection( null );
 	 *
-	 *	`Writer#setSelection()` allow passing additional options (`backward`, `fake` and `label`) as the last argument.
+	 * `Writer#setSelection()` allow passing additional options (`backward`, `fake` and `label`) as the last argument.
 	 *
 	 *		// Sets selection as backward.
 	 *		writer.setSelection( range, { backward: true } );

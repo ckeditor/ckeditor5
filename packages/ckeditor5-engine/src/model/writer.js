@@ -907,11 +907,11 @@ export default class Writer {
 	 *
 	 *		// Sets selection to the given range.
 	 *		const range = new Range( start, end );
-	 *		writer.setSelection( range, { backward } );
+	 *		writer.setSelection( range );
 	 *
 	 *		// Sets selection to given ranges.
 	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
-	 *		writer.setSelection( range, { backward } );
+	 *		writer.setSelection( range );
 	 *
 	 *		// Sets selection to other selection.
 	 *		const otherSelection = new Selection();
@@ -928,14 +928,22 @@ export default class Writer {
 	 * 		// Sets collapsed selection at the position of the given node and an offset.
 	 *		writer.setSelection( paragraph, offset );
 	 *
-	 *		// Sets selection inside the given node.
-	 *		writer.setSelection( paragraph, 'in', { backward } );
+	 * Creates a range inside an {@link module:engine/model/element~Element element} which starts before the first child of
+ 	 * that element and ends after the last child of that element.
 	 *
-	 *		// Sets selection on the given node.
-	 *		writer.setSelection( paragraph, 'on', { backward } );
+	 *		writer.setSelection( paragraph, 'in' );
+	 *
+	 * Creates a range on an {@link module:engine/model/item~Item item} which starts before the item and ends just after the item.
+	 *
+	 *		writer.setSelection( paragraph, 'on' );
 	 *
 	 * 		// Removes all selection's ranges.
 	 *		writer.setSelection( null );
+	 *
+	 * `Writer#setSelection()` allow passing additional options (`backward`) as the last argument.
+	 *
+	 * 		// Sets selection as backward.
+	 *		writer.setSelection( range, { backward: true } );
 	 *
 	 * Throws `writer-incorrect-use` error when the writer is used outside the `change()` block.
 	 *
