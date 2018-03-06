@@ -999,8 +999,11 @@ function getAttrsIfCharacter( node ) {
 }
 
 // Removes selection attributes from element which is not empty anymore.
+//
+// @private
+// @param {module:engine/model/model~Model} model
+// @param {module:engine/model/batch~Batch} batch
 function clearAttributesStoredInElement( model, batch ) {
-	// Clear attributes stored in selection;
 	const differ = model.document.differ;
 
 	for ( const entry of differ.getChanges() ) {
