@@ -911,7 +911,7 @@ export default class Writer {
 	/**
 	 * Sets this selection's ranges and direction to the specified location based on the given
 	 * {@link module:engine/model/selection~Selection selection}, {@link module:engine/model/position~Position position},
-	 * {@link module:engine/model/element~Node node}, {@link module:engine/model/position~Position position},
+	 * {@link module:engine/model/node~Node node}, {@link module:engine/model/position~Position position},
 	 * {@link module:engine/model/range~Range range}, an iterable of {@link module:engine/model/range~Range ranges} or null.
 	 *
 	 *		// Sets selection to the given range.
