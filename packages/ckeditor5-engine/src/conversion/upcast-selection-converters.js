@@ -37,7 +37,7 @@ export function convertSelectionChange( model, mapper ) {
 			ranges.push( mapper.toModelRange( viewRange ) );
 		}
 
-		modelSelection.setTo( ranges, viewSelection.isBackward );
+		modelSelection.setTo( ranges, { backward: viewSelection.isBackward } );
 
 		if ( !modelSelection.isEqual( model.document.selection ) ) {
 			model.change( writer => {

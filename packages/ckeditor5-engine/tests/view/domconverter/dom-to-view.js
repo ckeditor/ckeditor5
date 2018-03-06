@@ -6,7 +6,6 @@
 /* globals document */
 
 import ViewElement from '../../../src/view/element';
-import ViewRange from '../../../src/view/range';
 import ViewSelection from '../../../src/view/selection';
 import DomConverter from '../../../src/view/domconverter';
 import ViewDocumentFragment from '../../../src/view/documentfragment';
@@ -859,7 +858,7 @@ describe( 'DomConverter', () => {
 			domContainer.innerHTML = 'fake selection container';
 			document.body.appendChild( domContainer );
 
-			const viewSelection = new ViewSelection( ViewRange.createIn( new ViewElement() ) );
+			const viewSelection = new ViewSelection( new ViewElement(), 'in' );
 			converter.bindFakeSelection( domContainer, viewSelection );
 
 			const domRange = document.createRange();
@@ -880,7 +879,7 @@ describe( 'DomConverter', () => {
 			domContainer.innerHTML = 'fake selection container';
 			document.body.appendChild( domContainer );
 
-			const viewSelection = new ViewSelection( ViewRange.createIn( new ViewElement() ) );
+			const viewSelection = new ViewSelection( new ViewElement(), 'in' );
 			converter.bindFakeSelection( domContainer, viewSelection );
 
 			const domRange = document.createRange();

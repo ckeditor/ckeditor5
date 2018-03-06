@@ -20,8 +20,7 @@ import { convertSelectionChange } from '../conversion/upcast-selection-converter
 import {
 	convertRangeSelection,
 	convertCollapsedSelection,
-	clearAttributes,
-	clearFakeSelection
+	clearAttributes
 } from '../conversion/downcast-selection-converters';
 
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
@@ -95,7 +94,6 @@ export default class EditingController {
 
 		// Attach default model selection converters.
 		this.downcastDispatcher.on( 'selection', clearAttributes(), { priority: 'low' } );
-		this.downcastDispatcher.on( 'selection', clearFakeSelection(), { priority: 'low' } );
 		this.downcastDispatcher.on( 'selection', convertRangeSelection(), { priority: 'low' } );
 		this.downcastDispatcher.on( 'selection', convertCollapsedSelection(), { priority: 'low' } );
 

@@ -476,6 +476,8 @@ describe( 'Model', () => {
 
 			setData( model, '<paragraph>fo[ob]ar</paragraph>' );
 
+			expect( getData( model ) ).to.equal( '<paragraph>fo[ob]ar</paragraph>' );
+
 			model.modifySelection( model.document.selection, { direction: 'backward' } );
 
 			expect( getData( model ) ).to.equal( '<paragraph>fo[o]bar</paragraph>' );
