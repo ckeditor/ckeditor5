@@ -73,7 +73,7 @@ function enterBlock( model, writer, selection, schema ) {
 			//
 			// <h>x[x</h><p>y]y<p>	-> <h>x^</h><p>y</p>	-> <h>x</h><p>^y</p>
 			else {
-				writer.setSelection( endElement );
+				writer.setSelection( endElement, 0 );
 			}
 		}
 	}
@@ -97,5 +97,5 @@ function splitBlock( writer, selection, splitPos ) {
 		writer.split( splitPos );
 	}
 
-	writer.setSelection( splitPos.parent.nextSibling );
+	writer.setSelection( splitPos.parent.nextSibling, 0 );
 }
