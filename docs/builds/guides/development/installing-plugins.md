@@ -72,7 +72,7 @@ module.exports = {
 		toolbar: {
 			items: [
 				'heading',
-				'alignmentDropdown', //                      <--- ADDED
+				'alignment', //                      <--- ADDED
 				'bold',
 				'italic',
 				'link',
