@@ -18,7 +18,8 @@ import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
- * Maps elements and positions between {@link module:engine/view/document~Document view} and {@link module:engine/model/model model}.
+ * Maps elements, positions and markers between {@link module:engine/view/document~Document the view} and
+ * {@link module:engine/model/model the model}.
  *
  * Mapper use bound elements to find corresponding elements and positions, so, to get proper results,
  * all model elements should be {@link module:engine/conversion/mapper~Mapper#bindElements bound}.
@@ -61,6 +62,17 @@ export default class Mapper {
 		 * @member {Map}
 		 */
 		this._viewToModelLengthCallbacks = new Map();
+
+		/**
+		 * Model marker name to view elements mapping.
+		 *
+		 * Keys are `String`s while values are `Set`s with {@link module:engine/view/element~Element view elements}.
+		 * One marker (name) can be mapped to multiple elements.
+		 *
+		 * @private
+		 * @member {Map}
+		 */
+		this._markerNameToElements = new Map();
 
 		// Default mapper algorithm for mapping model position to view position.
 		this.on( 'modelToViewPosition', ( evt, data ) => {
@@ -150,11 +162,36 @@ export default class Mapper {
 	}
 
 	/**
+	 * Binds given marker name with given {@link module:engine/view/element~Element view element}. The element
+	 * will be added to the current set of elements bound with given marker name.
+	 *
+	 * @param {module:engine/view/element~Element} element Element to bind.
+	 * @param {String} name Marker name.
+	 */
+	bindElementToMarker( element, name ) {
+		const elements = this._markerNameToElements.get( name ) || new Set();
+
+		elements.add( element );
+
+		this._markerNameToElements.set( name, elements );
+	}
+
+	/**
+	 * Unbinds all elements from given marker name.
+	 *
+	 * @param {String} name Marker name.
+	 */
+	unbindElementsFromMarkerName( name ) {
+		this._markerNameToElements.delete( name );
+	}
+
+	/**
 	 * Removes all model to view and view to model bindings.
 	 */
 	clearBindings() {
 		this._modelToViewMapping = new WeakMap();
 		this._viewToModelMapping = new WeakMap();
+		this._markerNameToElements = new Map();
 	}
 
 	/**
@@ -237,6 +274,16 @@ export default class Mapper {
 		this.fire( 'modelToViewPosition', data );
 
 		return data.viewPosition;
+	}
+
+	/**
+	 * Gets all view elements bound to the given marker name.
+	 *
+	 * @param {String} name Marker name.
+	 * @returns {Set.<module:engine/view/element~Element>} View elements bound with given marker name.
+	 */
+	markerNameToElements( name ) {
+		return this._markerNameToElements.get( name );
 	}
 
 	/**

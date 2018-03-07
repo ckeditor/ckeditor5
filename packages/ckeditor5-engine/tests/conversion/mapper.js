@@ -610,6 +610,56 @@ describe( 'Mapper', () => {
 		}
 	} );
 
+	describe( 'Markers mapping', () => {
+		let mapper;
+
+		beforeEach( () => {
+			mapper = new Mapper();
+		} );
+
+		it( 'should bind element to a marker name', () => {
+			const view = new ViewElement( 'a' );
+
+			mapper.bindElementToMarker( view, 'marker' );
+
+			const elements = mapper.markerNameToElements( 'marker' );
+
+			expect( elements ).to.be.instanceof( Set );
+			expect( elements.size ).to.equal( 1 );
+			expect( elements.has( view ) ).to.be.true;
+		} );
+
+		it( 'should bind multiple elements to a marker name', () => {
+			const viewA = new ViewElement( 'a' );
+			const viewB = new ViewElement( 'b' );
+			const viewC = new ViewElement( 'c' );
+
+			mapper.bindElementToMarker( viewA, 'marker' );
+			mapper.bindElementToMarker( viewB, 'marker' );
+			mapper.bindElementToMarker( viewC, 'marker' );
+
+			const elements = Array.from( mapper.markerNameToElements( 'marker' ) );
+
+			expect( elements ).to.deep.equal( [ viewA, viewB, viewC ] );
+		} );
+
+		it( 'should unbind all elements from a marker name', () => {
+			const viewA = new ViewElement( 'a' );
+			const viewB = new ViewElement( 'b' );
+			const viewC = new ViewElement( 'c' );
+
+			mapper.bindElementToMarker( viewA, 'marker' );
+			mapper.bindElementToMarker( viewB, 'marker' );
+			mapper.bindElementToMarker( viewC, 'marker' );
+
+			mapper.unbindElementsFromMarkerName( 'marker' );
+
+			const elements = mapper.markerNameToElements( 'marker' );
+
+			expect( elements ).to.be.undefined;
+		} );
+	} );
+
 	it( 'should pass isPhantom flag to model-to-view position mapping callback', () => {
 		const mapper = new Mapper();
 
