@@ -19,7 +19,7 @@ ClassicEditor
 			viewportTopOffset: 60
 		},
 		image: {
-			toolbar: [ 'imageStyleFull', 'imageStyleSide', '|', 'imageTextAlternative' ]
+			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
 		},
 		cloudServices: CS_CONFIG
 	} )
