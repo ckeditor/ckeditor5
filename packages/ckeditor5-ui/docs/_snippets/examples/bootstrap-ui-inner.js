@@ -39,7 +39,7 @@ import HeadingEditing from '@ckeditor/ckeditor5-heading/src/headingediting';
 
 // The easy image integration.
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
-import { TOKEN_URL } from '@ckeditor/ckeditor5-cloudservices/tests/_utils/cloudservices-config';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloudservices/tests/_utils/cloudservices-config';
 
 // Extending the Editor class, which brings base editor API.
 export default class BootstrapEditor extends Editor {
@@ -267,9 +267,7 @@ BootstrapEditor
 			Clipboard, Enter, Typing, Paragraph, EasyImage,
 			BoldEditing, ItalicEditing, UnderlineEditing, HeadingEditing, UndoEditing,
 		],
-		cloudServices: {
-			tokenUrl: TOKEN_URL
-		}
+		cloudServices: CS_CONFIG
 	} )
 	.then( editor => {
 		window.editor = editor;

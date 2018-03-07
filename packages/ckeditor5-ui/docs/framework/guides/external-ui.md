@@ -48,18 +48,12 @@ import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
 import ItalicEditing from '@ckeditor/ckeditor5-basic-styles/src/italic/italicediting';
 import UnderlineEditing from '@ckeditor/ckeditor5-basic-styles/src/underline/underlineediting';
 import HeadingEditing from '@ckeditor/ckeditor5-heading/src/heading/headingediting';
-
-// The easy image integration.
-import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
-import { TOKEN_URL } from '@ckeditor/ckeditor5-cloudservices/tests/_utils/cloudservices-config';
 ```
 
 <info-box info>
 	Note that instead of {@link module:basic-styles/bold~Bold}, which loads default Bold UI and Bold editing feature, just the {@link module:basic-styles/bold/boldediting~BoldEditing} is imported. It provides the [engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine) features associated with editing any bold text but does not come with the actual UI.
 
 	Respectively, `ItalicEditing`, `UnderlineEditing`, `HeadingEditing` and `UndoEditing` are also imported.
-
-	This split between the engine and the UI part of features is not perfect yet. At the current stage, the UI part introduces some vital functionality, such as keystroke definitions (e.g. <kbd>Ctrl</kbd>+<kbd>B</kbd> to "bold"). This means that by dropping the UI part of features you also lose keystrokes. We [plan to improve](https://github.com/ckeditor/ckeditor5/issues/488) this situation.
 </info-box>
 
 Having imported the very basic editor components, you can define the custom `BootstrapEditor` class that extends the {@link module:core/editor/editor~Editor `Editor`}:
