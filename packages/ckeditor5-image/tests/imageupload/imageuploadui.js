@@ -63,7 +63,7 @@ describe( 'ImageUploadUI', () => {
 
 	it( 'should be disabled while ImageUploadCommand is disabled', () => {
 		const button = editor.ui.componentFactory.create( 'uploadImage' );
-		const command = editor.commands.get( 'imageUpload' );
+		const command = editor.commands.get( 'uploadImage' );
 
 		command.isEnabled = true;
 
@@ -77,7 +77,7 @@ describe( 'ImageUploadUI', () => {
 	// ckeditor5-upload/#77
 	it( 'should be properly bound with ImageUploadCommand', () => {
 		const button = editor.ui.componentFactory.create( 'uploadImage' );
-		const command = editor.commands.get( 'imageUpload' );
+		const command = editor.commands.get( 'uploadImage' );
 		const spy = sinon.spy();
 
 		button.render();
@@ -91,14 +91,14 @@ describe( 'ImageUploadUI', () => {
 		sinon.assert.notCalled( spy );
 	} );
 
-	it( 'should execute imageUpload command', () => {
+	it( 'should execute uploadImage command', () => {
 		const executeStub = sinon.stub( editor, 'execute' );
 		const button = editor.ui.componentFactory.create( 'uploadImage' );
 		const files = [ createNativeFileMock() ];
 
 		button.fire( 'done', files );
 		sinon.assert.calledOnce( executeStub );
-		expect( executeStub.firstCall.args[ 0 ] ).to.equal( 'imageUpload' );
+		expect( executeStub.firstCall.args[ 0 ] ).to.equal( 'uploadImage' );
 		expect( executeStub.firstCall.args[ 1 ].file ).to.equal( files[ 0 ] );
 	} );
 
@@ -137,7 +137,7 @@ describe( 'ImageUploadUI', () => {
 		);
 	} );
 
-	it( 'should not execute imageUpload if the file is not an image', () => {
+	it( 'should not execute uploadImage if the file is not an image', () => {
 		const executeStub = sinon.stub( editor, 'execute' );
 		const button = editor.ui.componentFactory.create( 'uploadImage' );
 		const file = {
@@ -159,7 +159,7 @@ describe( 'ImageUploadUI', () => {
 
 		button.fire( 'done', files );
 		sinon.assert.calledOnce( executeStub );
-		expect( executeStub.firstCall.args[ 0 ] ).to.equal( 'imageUpload' );
+		expect( executeStub.firstCall.args[ 0 ] ).to.equal( 'uploadImage' );
 		expect( executeStub.firstCall.args[ 1 ].file ).to.equal( files[ 0 ] );
 	} );
 } );
