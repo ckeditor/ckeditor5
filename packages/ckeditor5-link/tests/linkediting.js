@@ -9,6 +9,7 @@ import UnlinkCommand from '../src/unlinkcommand';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { isLinkElement } from '../src/utils';
@@ -19,16 +20,17 @@ import { downcastAttributeToElement } from '@ckeditor/ckeditor5-engine/src/conve
 /* global document */
 
 describe( 'LinkEditing', () => {
-	let editor, model;
+	let editor, model, view;
 
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Paragraph, LinkEditing ]
+				plugins: [ Paragraph, LinkEditing, Enter ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
+				view = editor.editing.view;
 			} );
 	} );
 
@@ -141,6 +143,124 @@ describe( 'LinkEditing', () => {
 				'</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><a href="url">a<f>b</f>c</a></p>' );
+		} );
+	} );
+
+	describe( 'highlight link boundaries', () => {
+		it( 'should create marker in model when selection is inside a link', () => {
+			expect( model.markers.has( 'linkBoundaries' ) ).to.be.false;
+
+			setModelData( model,
+				'<paragraph>foo <$text linkHref="url">b{}ar</$text> baz</paragraph>'
+			);
+
+			expect( model.markers.has( 'linkBoundaries' ) ).to.be.true;
+			const marker = model.markers.get( 'linkBoundaries' );
+			expect( marker.getStart().path ).to.deep.equal( [ 0, 4 ] );
+			expect( marker.getEnd().path ).to.deep.equal( [ 0, 7 ] );
+		} );
+
+		it( 'should convert link boundaries marker to proper view', () => {
+			setModelData( model,
+				'<paragraph>foo <$text linkHref="url">b{}ar</$text> baz</paragraph>'
+			);
+
+			expect( getViewData( view ) ).to.equal(
+				'<p>foo <span class="ck-link_selected"><a href="url">b{}ar</a></span> baz</p>'
+			);
+		} );
+
+		it( 'should work whenever selection has linkHref attribute - link start', () => {
+			setModelData( model,
+				'<paragraph>foo {}<$text linkHref="url">bar</$text> baz</paragraph>'
+			);
+
+			expect( model.document.selection.hasAttribute( 'linkHref' ) ).to.be.false;
+
+			model.change( writer => {
+				writer.setSelectionAttribute( 'linkHref', 'url' );
+			} );
+
+			expect( model.document.selection.hasAttribute( 'linkHref' ) ).to.be.true;
+			expect( model.markers.has( 'linkBoundaries' ) ).to.be.true;
+			const marker = model.markers.get( 'linkBoundaries' );
+			expect( marker.getStart().path ).to.deep.equal( [ 0, 4 ] );
+			expect( marker.getEnd().path ).to.deep.equal( [ 0, 7 ] );
+
+			expect( getViewData( view ) ).to.equal(
+				'<p>foo <span class="ck-link_selected"><a href="url">{}bar</a></span> baz</p>'
+			);
+		} );
+
+		it( 'should work whenever selection has linkHref attribute - link end', () => {
+			setModelData( model,
+				'<paragraph>foo <$text linkHref="url">bar</$text>{} baz</paragraph>'
+			);
+
+			expect( model.document.selection.hasAttribute( 'linkHref' ) ).to.be.true;
+			expect( model.markers.has( 'linkBoundaries' ) ).to.be.true;
+			const marker = model.markers.get( 'linkBoundaries' );
+			expect( marker.getStart().path ).to.deep.equal( [ 0, 4 ] );
+			expect( marker.getEnd().path ).to.deep.equal( [ 0, 7 ] );
+
+			expect( getViewData( view ) ).to.equal(
+				'<p>foo <span class="ck-link_selected"><a href="url">bar{}</a></span> baz</p>'
+			);
+		} );
+
+		it( 'should render highlight correctly after splitting the link', () => {
+			setModelData( model,
+				'<paragraph>foo <$text linkHref="url">li{}nk</$text> baz</paragraph>'
+			);
+
+			editor.execute( 'enter' );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>foo <$text linkHref="url">li</$text></paragraph>' +
+				'<paragraph><$text linkHref="url">[]nk</$text> baz</paragraph>'
+			);
+
+			expect( model.document.selection.hasAttribute( 'linkHref' ) ).to.be.true;
+			expect( model.markers.has( 'linkBoundaries' ) ).to.be.true;
+			const marker = model.markers.get( 'linkBoundaries' );
+			expect( marker.getStart().path ).to.deep.equal( [ 1, 0 ] );
+			expect( marker.getEnd().path ).to.deep.equal( [ 1, 2 ] );
+		} );
+
+		it( 'should remove marker when selection is moved out from the link', () => {
+			setModelData( model,
+				'<paragraph>foo <$text linkHref="url">li{}nk</$text> baz</paragraph>'
+			);
+
+			expect( getViewData( view ) ).to.equal(
+				'<p>foo <span class="ck-link_selected"><a href="url">li{}nk</a></span> baz</p>'
+			);
+
+			expect( model.markers.has( 'linkBoundaries' ) ).to.be.true;
+			model.change( writer => writer.setSelection( model.document.getRoot().getChild( 0 ), 0 ) );
+
+			expect( model.markers.has( 'linkBoundaries' ) ).to.be.false;
+			expect( getViewData( view ) ).to.equal(
+				'<p>{}foo <a href="url">link</a> baz</p>'
+			);
+		} );
+
+		it( 'should work correctly when selection is moved inside link', () => {
+			setModelData( model,
+				'<paragraph>foo <$text linkHref="url">li{}nk</$text> baz</paragraph>'
+			);
+
+			expect( getViewData( view ) ).to.equal(
+				'<p>foo <span class="ck-link_selected"><a href="url">li{}nk</a></span> baz</p>'
+			);
+
+			expect( model.markers.has( 'linkBoundaries' ) ).to.be.true;
+			model.change( writer => writer.setSelection( model.document.getRoot().getChild( 0 ), 5 ) );
+
+			expect( model.markers.has( 'linkBoundaries' ) ).to.be.true;
+			expect( getViewData( view ) ).to.equal(
+				'<p>foo <span class="ck-link_selected"><a href="url">l{}ink</a></span> baz</p>'
+			);
 		} );
 	} );
 } );
