@@ -6,7 +6,7 @@
 import MutationObserver from '../../src/view/observer/mutationobserver';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor.js';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import { getData as getModelData } from '../../src/dev-utils/model';
+import { getData as getModelData, setData as setModelData } from '../../src/dev-utils/model';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold.js';
 import { getData as getViewData } from '../../src/dev-utils/view';
 import { isInlineFiller } from '../../src/view/filler';
@@ -15,7 +15,7 @@ import Input from '@ckeditor/ckeditor5-typing/src/input';
 /* globals document */
 
 describe( 'Bug ckeditor5#692', () => {
-	let editorElement, editor, mutationObserver, view, domEditor, root;
+	let editorElement, editor, mutationObserver, view, domEditor;
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
@@ -30,7 +30,6 @@ describe( 'Bug ckeditor5#692', () => {
 				view = editor.editing.view;
 				mutationObserver = view.getObserver( MutationObserver );
 				domEditor = editor.ui.view.editableElement;
-				root = editor.model.document.getRoot();
 			} );
 	} );
 
@@ -43,14 +42,7 @@ describe( 'Bug ckeditor5#692', () => {
 	describe( 'DomConverter', () => {
 		// https://github.com/ckeditor/ckeditor5/issues/692 Scenario 1.
 		it( 'should handle space after inline filler at the end of container', () => {
-			editor.setData( '<p>foo</p>' );
-
-			const paragraph = root.getChild( 0 );
-
-			// Put caret after at <p>foo[]</p>.
-			editor.model.change( writer => {
-				writer.setSelection( paragraph, 3 );
-			} );
+			setModelData( editor.model, '<paragraph>foo[]</paragraph>' );
 
 			// Create Bold attribute at the end of paragraph.
 			editor.execute( 'bold' );
@@ -72,14 +64,7 @@ describe( 'Bug ckeditor5#692', () => {
 
 		// https://github.com/ckeditor/ckeditor5/issues/692 Scenario 2.
 		it( 'should handle space after inline filler at the end of container', () => {
-			editor.setData( '<p>foo</p>' );
-
-			const paragraph = root.getChild( 0 );
-
-			// Put caret after at <p>[]foo</p>.
-			editor.model.change( writer => {
-				writer.setSelection( paragraph, 0 );
-			} );
+			setModelData( editor.model, '<paragraph>[]foo</paragraph>' );
 
 			// Create Bold attribute at the end of paragraph.
 			editor.execute( 'bold' );
