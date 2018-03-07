@@ -4,8 +4,12 @@
  */
 
 /* globals ClassicEditor, console, window, document */
+
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloudservices/tests/_utils/cloudservices-config';
+
 ClassicEditor
 	.create( document.querySelector( '#snippet-highlight-custom-colors-variables' ), {
+		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
 				'headings', '|', 'bulletedList', 'numberedList', 'highlightDropdown', 'undo', 'redo'
