@@ -133,12 +133,12 @@ ClassicEditor
 The {@link module:heading/heading~Heading} plugin registers:
 
 * The `'heading'` dropdown.
-* The `'heading1'`, `'heading2'`, ..., `'headingN'` commands based on the {@link module:heading/heading~HeadingConfig#options `heading.options`} configuration option.
+* The `'heading'` command that accepts value based on the {@link module:heading/heading~HeadingConfig#options `heading.options`} configuration option.
 
 	You can turn the currently selected block(s) to headings by executing one of these commands:
 
 	```js
-	editor.execute( 'heading2' );
+	editor.execute( 'heading', { value: 'heading2' } );
 	```
 
 ## Contribute
