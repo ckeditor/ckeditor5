@@ -250,7 +250,7 @@ describe( 'DocumentSelection', () => {
 			selection._setTo( [ range, liveRange ] );
 
 			const spy = testUtils.sinon.spy( LiveRange.prototype, 'detach' );
-			selection._setTo( root );
+			selection._setTo( root, 0 );
 
 			expect( spy.calledTwice ).to.be.true;
 		} );

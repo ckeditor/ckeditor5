@@ -17,6 +17,7 @@ import KeyObserver from './observer/keyobserver';
 import FakeSelectionObserver from './observer/fakeselectionobserver';
 import SelectionObserver from './observer/selectionobserver';
 import FocusObserver from './observer/focusobserver';
+import CompositionObserver from './observer/compositionobserver';
 
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import log from '@ckeditor/ckeditor5-utils/src/log';
@@ -47,6 +48,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  * * {@link module:engine/view/observer/focusobserver~FocusObserver},
  * * {@link module:engine/view/observer/keyobserver~KeyObserver},
  * * {@link module:engine/view/observer/fakeselectionobserver~FakeSelectionObserver}.
+ * * {@link module:engine/view/observer/compositionobserver~CompositionObserver}.
  *
  * This class also {@link module:engine/view/view~View#attachDomRoot bind DOM and View elements}.
  *
@@ -138,6 +140,7 @@ export default class View {
 		this.addObserver( FocusObserver );
 		this.addObserver( KeyObserver );
 		this.addObserver( FakeSelectionObserver );
+		this.addObserver( CompositionObserver );
 
 		// Inject quirks handlers.
 		injectQuirksHandling( this );

@@ -283,7 +283,7 @@ describe( 'model test utils', () => {
 			it( 'writes selection in an empty root', () => {
 				const root = document.createRoot( '$root', 'empty' );
 				model.change( writer => {
-					writer.setSelection( root );
+					writer.setSelection( root, 0 );
 				} );
 
 				expect( stringify( root, selection ) ).to.equal(
@@ -293,7 +293,7 @@ describe( 'model test utils', () => {
 
 			it( 'writes selection collapsed in an element', () => {
 				model.change( writer => {
-					writer.setSelection( root );
+					writer.setSelection( root, 0 );
 				} );
 
 				expect( stringify( root, selection ) ).to.equal(
@@ -386,7 +386,7 @@ describe( 'model test utils', () => {
 
 			it( 'writes selection when is backward', () => {
 				model.change( writer => {
-					writer.setSelection( Range.createFromParentsAndOffsets( elA, 0, elB, 0 ), true );
+					writer.setSelection( Range.createFromParentsAndOffsets( elA, 0, elB, 0 ), { backward: true } );
 				} );
 
 				expect( stringify( root, selection ) ).to.equal(

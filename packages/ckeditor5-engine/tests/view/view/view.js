@@ -7,6 +7,7 @@ import KeyObserver from '../../../src/view/observer/keyobserver';
 import FakeSelectionObserver from '../../../src/view/observer/fakeselectionobserver';
 import SelectionObserver from '../../../src/view/observer/selectionobserver';
 import FocusObserver from '../../../src/view/observer/focusobserver';
+import CompositionObserver from '../../../src/view/observer/compositionobserver';
 import createViewRoot from '../_utils/createroot';
 import Observer from '../../../src/view/observer/observer';
 import log from '@ckeditor/ckeditor5-utils/src/log';
@@ -21,7 +22,7 @@ import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'view', () => {
-	const DEFAULT_OBSERVERS_COUNT = 5;
+	const DEFAULT_OBSERVERS_COUNT = 6;
 	let domRoot, view, viewDocument, ObserverMock, instantiated, enabled, ObserverMockGlobalCount;
 
 	testUtils.createSinonSandbox();
@@ -76,6 +77,7 @@ describe( 'view', () => {
 		expect( view.getObserver( FocusObserver ) ).to.be.instanceof( FocusObserver );
 		expect( view.getObserver( KeyObserver ) ).to.be.instanceof( KeyObserver );
 		expect( view.getObserver( FakeSelectionObserver ) ).to.be.instanceof( FakeSelectionObserver );
+		expect( view.getObserver( CompositionObserver ) ).to.be.instanceof( CompositionObserver );
 	} );
 
 	describe( 'attachDomRoot()', () => {

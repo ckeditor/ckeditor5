@@ -44,13 +44,13 @@ describe( 'Selection', () => {
 
 		it( 'should be able to create a selection from the given ranges and isLastBackward flag', () => {
 			const ranges = [ range1, range2, range3 ];
-			const selection = new Selection( ranges, true );
+			const selection = new Selection( ranges, { backward: true } );
 
 			expect( selection.isBackward ).to.be.true;
 		} );
 
 		it( 'should be able to create a selection from the given range and isLastBackward flag', () => {
-			const selection = new Selection( range1, true );
+			const selection = new Selection( range1, { backward: true } );
 
 			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range1 ] );
 			expect( selection.isBackward ).to.be.true;
@@ -58,7 +58,7 @@ describe( 'Selection', () => {
 
 		it( 'should be able to create a selection from the given iterable of ranges and isLastBackward flag', () => {
 			const ranges = new Set( [ range1, range2, range3 ] );
-			const selection = new Selection( ranges, false );
+			const selection = new Selection( ranges, { backward: false } );
 
 			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range1, range2, range3 ] );
 			expect( selection.isBackward ).to.be.false;
@@ -85,7 +85,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should be able to create a selection from the other selection', () => {
-			const otherSelection = new Selection( [ range2, range3 ], true );
+			const otherSelection = new Selection( [ range2, range3 ], { backward: true } );
 			const selection = new Selection( otherSelection );
 
 			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range2, range3 ] );
@@ -93,8 +93,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should be able to create a fake selection from the other fake selection', () => {
-			const otherSelection = new Selection( [ range2, range3 ], true );
-			otherSelection._setFake( true, { label: 'foo bar baz' } );
+			const otherSelection = new Selection( [ range2, range3 ], { fake: true, label: 'foo bar baz' } );
 			const selection = new Selection( otherSelection );
 
 			expect( selection.isFake ).to.be.true;
@@ -140,7 +139,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should return end of single range in selection when added as backward', () => {
-			selection._setTo( range1, true );
+			selection._setTo( range1, { backward: true } );
 			const anchor = selection.anchor;
 
 			expect( anchor.isEqual( range1.end ) ).to.be.true;
@@ -167,7 +166,7 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should return start of single range in selection when added as backward', () => {
-			selection._setTo( range1, true );
+			selection._setTo( range1, { backward: true } );
 			const focus = selection.focus;
 
 			expect( focus.isEqual( range1.start ) ).to.be.true;
@@ -254,7 +253,7 @@ describe( 'Selection', () => {
 			const endPos = Position.createAt( el, 2 );
 			const newEndPos = Position.createAt( el, 3 );
 
-			selection._setTo( new Range( startPos, endPos ), true );
+			selection._setTo( new Range( startPos, endPos ), { backward: true } );
 
 			selection._setFocus( newEndPos );
 
@@ -268,7 +267,7 @@ describe( 'Selection', () => {
 			const endPos = Position.createAt( el, 2 );
 			const newEndPos = Position.createAt( el, 0 );
 
-			selection._setTo( new Range( startPos, endPos ), true );
+			selection._setTo( new Range( startPos, endPos ), { backward: true } );
 
 			selection._setFocus( newEndPos );
 
@@ -376,7 +375,7 @@ describe( 'Selection', () => {
 			const range1 = Range.createFromParentsAndOffsets( el, 5, el, 10 );
 			const range2 = Range.createFromParentsAndOffsets( el, 15, el, 16 );
 
-			selection._setTo( range1, true );
+			selection._setTo( range1, { backward: true } );
 			expect( selection ).to.have.property( 'isBackward', true );
 
 			selection._setTo( [ range1, range2 ] );
@@ -386,7 +385,7 @@ describe( 'Selection', () => {
 		it( 'is false when last range is collapsed', () => {
 			const range = Range.createFromParentsAndOffsets( el, 5, el, 5 );
 
-			selection._setTo( range, true );
+			selection._setTo( range, { backward: true } );
 
 			expect( selection.isBackward ).to.be.false;
 		} );
@@ -478,9 +477,9 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should return true if backward selections equal', () => {
-			selection._setTo( range1, true );
+			selection._setTo( range1, { backward: true } );
 
-			const otherSelection = new Selection( [ range1 ], true );
+			const otherSelection = new Selection( [ range1 ], { backward: true } );
 
 			expect( selection.isEqual( otherSelection ) ).to.be.true;
 		} );
@@ -504,32 +503,27 @@ describe( 'Selection', () => {
 		it( 'should return false if directions do not equal', () => {
 			selection._setTo( range1 );
 
-			const otherSelection = new Selection( [ range1 ], true );
+			const otherSelection = new Selection( [ range1 ], { backward: true } );
 
 			expect( selection.isEqual( otherSelection ) ).to.be.false;
 		} );
 
 		it( 'should return false if one selection is fake', () => {
-			const otherSelection = new Selection();
-			otherSelection._setFake( true );
+			const otherSelection = new Selection( null, { fake: true } );
 
 			expect( selection.isEqual( otherSelection ) ).to.be.false;
 		} );
 
 		it( 'should return true if both selection are fake', () => {
-			const otherSelection = new Selection( [ range1 ] );
-			otherSelection._setFake( true );
-			selection._setFake( true );
-			selection._setTo( range1 );
+			const otherSelection = new Selection( range1, { fake: true } );
+			selection._setTo( range1, { fake: true } );
 
 			expect( selection.isEqual( otherSelection ) ).to.be.true;
 		} );
 
 		it( 'should return false if both selection are fake but have different label', () => {
-			const otherSelection = new Selection( [ range1 ] );
-			otherSelection._setFake( true, { label: 'foo bar baz' } );
-			selection._setFake( true );
-			selection._setTo( range1 );
+			const otherSelection = new Selection( [ range1 ], { fake: true, label: 'foo bar baz' } );
+			selection._setTo( range1, { fake: true, label: 'foo' } );
 
 			expect( selection.isEqual( otherSelection ) ).to.be.false;
 		} );
@@ -569,7 +563,7 @@ describe( 'Selection', () => {
 		it( 'should return false if directions are not equal', () => {
 			selection._setTo( range1 );
 
-			const otherSelection = new Selection( [ range1 ], true );
+			const otherSelection = new Selection( [ range1 ], { backward: true } );
 
 			expect( selection.isSimilar( otherSelection ) ).to.be.false;
 		} );
@@ -609,44 +603,12 @@ describe( 'Selection', () => {
 		} );
 	} );
 
-	describe( '_setRanges()', () => {
-		it( 'should throw an error when range is invalid', () => {
-			expect( () => {
-				selection._setRanges( [ { invalid: 'range' } ] );
-			} ).to.throw( CKEditorError, 'view-selection-invalid-range: Invalid Range.' );
-		} );
-
-		it( 'should add ranges and fire change event', done => {
-			selection._setTo( range1 );
-
-			selection.once( 'change', () => {
-				expect( selection.rangeCount ).to.equal( 2 );
-				expect( selection._ranges[ 0 ].isEqual( range2 ) ).to.be.true;
-				expect( selection._ranges[ 0 ] ).is.not.equal( range2 );
-				expect( selection._ranges[ 1 ].isEqual( range3 ) ).to.be.true;
-				expect( selection._ranges[ 1 ] ).is.not.equal( range3 );
-				done();
-			} );
-
-			selection._setRanges( [ range2, range3 ] );
-		} );
-
-		it( 'should throw when range is intersecting with already added range', () => {
-			const text = el.getChild( 0 );
-			const range2 = Range.createFromParentsAndOffsets( text, 7, text, 15 );
-
-			expect( () => {
-				selection._setRanges( [ range1, range2 ] );
-			} ).to.throw( CKEditorError, 'view-selection-range-intersects' );
-		} );
-	} );
-
 	describe( '_setTo()', () => {
 		describe( 'simple scenarios', () => {
 			it( 'should set selection ranges from the given selection', () => {
 				selection._setTo( range1 );
 
-				const otherSelection = new Selection( [ range2, range3 ], true );
+				const otherSelection = new Selection( [ range2, range3 ], { backward: true } );
 
 				selection._setTo( otherSelection );
 
@@ -659,39 +621,27 @@ describe( 'Selection', () => {
 				expect( selection.anchor.isEqual( range3.end ) ).to.be.true;
 			} );
 
-			it( 'should set selection on the given Range using _setRanges method', () => {
-				const spy = sinon.spy( selection, '_setRanges' );
-
+			it( 'should set selection on the given Range', () => {
 				selection._setTo( range1 );
 
 				expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range1 ] );
 				expect( selection.isBackward ).to.be.false;
-				expect( selection._setRanges.calledOnce ).to.be.true;
-				spy.restore();
 			} );
 
-			it( 'should set selection on the given iterable of Ranges using _setRanges method', () => {
-				const spy = sinon.spy( selection, '_setRanges' );
-
+			it( 'should set selection on the given iterable of Ranges', () => {
 				selection._setTo( new Set( [ range1, range2 ] ) );
 
 				expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range1, range2 ] );
 				expect( selection.isBackward ).to.be.false;
-				expect( selection._setRanges.calledOnce ).to.be.true;
-				spy.restore();
 			} );
 
-			it( 'should set collapsed selection on the given Position using _setRanges method', () => {
-				const spy = sinon.spy( selection, '_setRanges' );
-
+			it( 'should set collapsed selection on the given Position', () => {
 				selection._setTo( range1.start );
 
 				expect( Array.from( selection.getRanges() ).length ).to.equal( 1 );
 				expect( Array.from( selection.getRanges() )[ 0 ].start ).to.deep.equal( range1.start );
 				expect( selection.isBackward ).to.be.false;
 				expect( selection.isCollapsed ).to.be.true;
-				expect( selection._setRanges.calledOnce ).to.be.true;
-				spy.restore();
 			} );
 
 			it( 'should fire change event', done => {
@@ -707,9 +657,8 @@ describe( 'Selection', () => {
 			} );
 
 			it( 'should set fake state and label', () => {
-				const otherSelection = new Selection();
 				const label = 'foo bar baz';
-				otherSelection._setFake( true, { label } );
+				const otherSelection = new Selection( null, { fake: true, label } );
 				selection._setTo( otherSelection );
 
 				expect( selection.isFake ).to.be.true;
@@ -753,7 +702,7 @@ describe( 'Selection', () => {
 				const foo = new Text( 'foo' );
 				const p = new Element( 'p', null, foo );
 
-				selection._setTo( foo );
+				selection._setTo( foo, 0 );
 				let range = selection.getFirstRange();
 
 				expect( range.start.parent ).to.equal( foo );
@@ -766,6 +715,14 @@ describe( 'Selection', () => {
 				expect( range.start.parent ).to.equal( p );
 				expect( range.start.offset ).to.equal( 1 );
 				expect( range.start.isEqual( range.end ) ).to.be.true;
+			} );
+
+			it( 'should throw an error when the second parameter is not passed and first is an item', () => {
+				const foo = new Text( 'foo' );
+
+				expect( () => {
+					selection._setTo( foo );
+				} ).to.throw( CKEditorError, /view-selection-setTo-required-second-parameter/ );
 			} );
 
 			it( 'should collapse selection at node and flag', () => {
@@ -807,15 +764,6 @@ describe( 'Selection', () => {
 
 				selection._setTo( selection.getFirstPosition() );
 			} );
-
-			it( 'should do nothing if no ranges present', () => {
-				const fireSpy = sinon.spy( selection, 'fire' );
-
-				selection._setTo( selection.getFirstPosition() );
-
-				fireSpy.restore();
-				expect( fireSpy.notCalled ).to.be.true;
-			} );
 		} );
 
 		describe( 'setting collapsed selection to end', () => {
@@ -830,15 +778,6 @@ describe( 'Selection', () => {
 
 				selection._setTo( selection.getLastPosition() );
 			} );
-
-			it( 'should do nothing if no ranges present', () => {
-				const fireSpy = sinon.spy( selection, 'fire' );
-
-				selection._setTo( selection.getLastPosition() );
-
-				fireSpy.restore();
-				expect( fireSpy.notCalled ).to.be.true;
-			} );
 		} );
 
 		describe( 'removing all ranges', () => {
@@ -852,14 +791,138 @@ describe( 'Selection', () => {
 
 				selection._setTo( null );
 			} );
+		} );
 
-			it( 'should do nothing when no ranges are present', () => {
-				const fireSpy = sinon.spy( selection, 'fire' );
-				selection._setTo( null );
+		describe( 'setting fake selection', () => {
+			it( 'should allow to set selection to fake', () => {
+				selection._setTo( range1, { fake: true } );
 
-				fireSpy.restore();
-				expect( fireSpy.notCalled ).to.be.true;
+				expect( selection.isFake ).to.be.true;
 			} );
+
+			it( 'should allow to set fake selection label', () => {
+				const label = 'foo bar baz';
+				selection._setTo( range1, { fake: true, label } );
+
+				expect( selection.fakeSelectionLabel ).to.equal( label );
+			} );
+
+			it( 'should not set label when set to false', () => {
+				const label = 'foo bar baz';
+				selection._setTo( range1, { fake: false, label } );
+
+				expect( selection.fakeSelectionLabel ).to.equal( '' );
+			} );
+
+			it( 'should reset label when set to false', () => {
+				const label = 'foo bar baz';
+				selection._setTo( range1, { fake: true, label } );
+				selection._setTo( range1 );
+
+				expect( selection.fakeSelectionLabel ).to.equal( '' );
+			} );
+
+			it( 'should fire change event', done => {
+				selection.once( 'change', () => {
+					expect( selection.isFake ).to.be.true;
+					expect( selection.fakeSelectionLabel ).to.equal( 'foo bar baz' );
+
+					done();
+				} );
+
+				selection._setTo( range1, { fake: true, label: 'foo bar baz' } );
+			} );
+
+			it( 'should be possible to create an empty fake selection', () => {
+				selection._setTo( null, { fake: true, label: 'foo bar baz' } );
+
+				expect( selection.fakeSelectionLabel ).to.equal( 'foo bar baz' );
+				expect( selection.isFake ).to.be.true;
+			} );
+		} );
+
+		describe( 'setting selection to itself', () => {
+			it( 'should correctly set ranges when setting to the same selection', () => {
+				selection._setTo( [ range1, range2 ] );
+				selection._setTo( selection );
+
+				const ranges = Array.from( selection.getRanges() );
+				expect( ranges.length ).to.equal( 2 );
+
+				expect( ranges[ 0 ].isEqual( range1 ) ).to.be.true;
+				expect( ranges[ 1 ].isEqual( range2 ) ).to.be.true;
+			} );
+
+			it( 'should correctly set ranges when setting to the same selection\'s ranges', () => {
+				selection._setTo( [ range1, range2 ] );
+				selection._setTo( selection.getRanges() );
+
+				const ranges = Array.from( selection.getRanges() );
+				expect( ranges.length ).to.equal( 2 );
+
+				expect( ranges[ 0 ].isEqual( range1 ) ).to.be.true;
+				expect( ranges[ 1 ].isEqual( range2 ) ).to.be.true;
+			} );
+		} );
+
+		describe( 'throwing errors', () => {
+			it( 'should throw an error when range is invalid', () => {
+				expect( () => {
+					selection._setTo( [ { invalid: 'range' } ] );
+				} ).to.throw( CKEditorError, 'view-selection-invalid-range: Invalid Range.' );
+			} );
+
+			it( 'should throw when range is intersecting with already added range', () => {
+				const text = el.getChild( 0 );
+				const range2 = Range.createFromParentsAndOffsets( text, 7, text, 15 );
+
+				expect( () => {
+					selection._setTo( [ range1, range2 ] );
+				} ).to.throw( CKEditorError, 'view-selection-range-intersects' );
+			} );
+		} );
+
+		it( 'should allow setting selection on an item', () => {
+			const textNode1 = new Text( 'foo' );
+			const textNode2 = new Text( 'bar' );
+			const textNode3 = new Text( 'baz' );
+			const element = new Element( 'p', null, [ textNode1, textNode2, textNode3 ] );
+
+			selection._setTo( textNode2, 'on' );
+
+			const ranges = Array.from( selection.getRanges() );
+			expect( ranges.length ).to.equal( 1 );
+			expect( ranges[ 0 ].start.parent ).to.equal( element );
+			expect( ranges[ 0 ].start.offset ).to.deep.equal( 1 );
+			expect( ranges[ 0 ].end.parent ).to.equal( element );
+			expect( ranges[ 0 ].end.offset ).to.deep.equal( 2 );
+		} );
+
+		it( 'should allow setting selection inside an element', () => {
+			const element = new Element( 'p', null, [ new Text( 'foo' ), new Text( 'bar' ) ] );
+
+			selection._setTo( element, 'in' );
+
+			const ranges = Array.from( selection.getRanges() );
+			expect( ranges.length ).to.equal( 1 );
+			expect( ranges[ 0 ].start.parent ).to.equal( element );
+			expect( ranges[ 0 ].start.offset ).to.deep.equal( 0 );
+			expect( ranges[ 0 ].end.parent ).to.equal( element );
+			expect( ranges[ 0 ].end.offset ).to.deep.equal( 2 );
+		} );
+
+		it( 'should allow setting backward selection inside an element', () => {
+			const element = new Element( 'p', null, [ new Text( 'foo' ), new Text( 'bar' ) ] );
+
+			selection._setTo( element, 'in', { backward: true } );
+
+			const ranges = Array.from( selection.getRanges() );
+			expect( ranges.length ).to.equal( 1 );
+			expect( ranges[ 0 ].start.parent ).to.equal( element );
+			expect( ranges[ 0 ].start.offset ).to.deep.equal( 0 );
+			expect( ranges[ 0 ].end.parent ).to.equal( element );
+			expect( ranges[ 0 ].end.offset ).to.deep.equal( 2 );
+			expect( selection.isBackward ).to.be.true;
 		} );
 	} );
 
@@ -890,47 +953,6 @@ describe( 'Selection', () => {
 	describe( 'isFake', () => {
 		it( 'should be false for newly created instance', () => {
 			expect( selection.isFake ).to.be.false;
-		} );
-	} );
-
-	describe( '_setFake()', () => {
-		it( 'should allow to set selection to fake', () => {
-			selection._setFake( true );
-
-			expect( selection.isFake ).to.be.true;
-		} );
-
-		it( 'should allow to set fake selection label', () => {
-			const label = 'foo bar baz';
-			selection._setFake( true, { label } );
-
-			expect( selection.fakeSelectionLabel ).to.equal( label );
-		} );
-
-		it( 'should not set label when set to false', () => {
-			const label = 'foo bar baz';
-			selection._setFake( false, { label } );
-
-			expect( selection.fakeSelectionLabel ).to.equal( '' );
-		} );
-
-		it( 'should reset label when set to false', () => {
-			const label = 'foo bar baz';
-			selection._setFake( true, { label } );
-			selection._setFake( false );
-
-			expect( selection.fakeSelectionLabel ).to.equal( '' );
-		} );
-
-		it( 'should fire change event', done => {
-			selection.once( 'change', () => {
-				expect( selection.isFake ).to.be.true;
-				expect( selection.fakeSelectionLabel ).to.equal( 'foo bar baz' );
-
-				done();
-			} );
-
-			selection._setFake( true, { label: 'foo bar baz' } );
 		} );
 	} );
 

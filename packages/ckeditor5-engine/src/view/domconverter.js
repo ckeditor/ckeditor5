@@ -488,7 +488,7 @@ export default class DomConverter {
 			}
 		}
 
-		return new ViewSelection( viewRanges, isBackward );
+		return new ViewSelection( viewRanges, { backward: isBackward } );
 	}
 
 	/**

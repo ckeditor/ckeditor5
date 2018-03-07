@@ -39,7 +39,7 @@ export function convertRangeSelection() {
 			viewRanges.push( viewRange );
 		}
 
-		conversionApi.writer.setSelection( viewRanges, selection.isBackward );
+		conversionApi.writer.setSelection( viewRanges, { backward: selection.isBackward } );
 	};
 }
 
@@ -126,12 +126,4 @@ export function clearAttributes() {
 		}
 		viewWriter.setSelection( null );
 	};
-}
-
-/**
- * Function factory, creates a converter that clears fake selection marking after the previous
- * {@link module:engine/model/selection~Selection model selection} conversion.
- */
-export function clearFakeSelection() {
-	return ( evt, data, conversionApi ) => conversionApi.writer.setFakeSelection( false );
 }

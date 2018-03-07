@@ -40,35 +40,68 @@ export default class Writer {
 	 * {@link module:engine/view/item~Item item}, {@link module:engine/view/range~Range range},
 	 * an iterable of {@link module:engine/view/range~Range ranges} or null.
 	 *
-	 *		// Sets ranges from the given range.
+	 * ### Usage:
+	 *
+	 *		// Sets selection to the given range.
 	 *		const range = new Range( start, end );
-	 *		writer.setSelection( range, isBackwardSelection );
+	 *		writer.setSelection( range );
 	 *
-	 *		// Sets ranges from the iterable of ranges.
+	 *		// Sets backward selection to the given range.
+	 *		const range = new Range( start, end );
+	 *		writer.setSelection( range );
+	 *
+	 *		// Sets selection to given ranges.
 	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
-	 *		writer.setSelection( range, isBackwardSelection );
+	 *		writer.setSelection( range );
 	 *
-	 *		// Sets ranges from the other selection.
+	 *		// Sets selection to the other selection.
 	 *		const otherSelection = new Selection();
 	 *		writer.setSelection( otherSelection );
 	 *
-	 * 		// Sets collapsed range at the given position.
+	 * 		// Sets collapsed selection at the given position.
 	 *		const position = new Position( root, path );
 	 *		writer.setSelection( position );
 	 *
-	 * 		// Sets collapsed range on the given item.
-	 *		const paragraph = writer.createContainerElement( 'paragraph' );
+	 * 		// Sets collapsed selection at the position of given item and offset.
 	 *		writer.setSelection( paragraph, offset );
+	 *
+	 * Creates a range inside an {@link module:engine/view/element~Element element} which starts before the first child of
+ 	 * that element and ends after the last child of that element.
+	 *
+	 * 		writer.setSelection( paragraph, 'in' );
+	 *
+	 * Creates a range on the {@link module:engine/view/item~Item item} which starts before the item and ends just after the item.
+	 *
+	 *		writer.setSelection( paragraph, 'on' );
 	 *
 	 * 		// Removes all ranges.
 	 *		writer.setSelection( null );
 	 *
+	 * `Writer#setSelection()` allow passing additional options (`backward`, `fake` and `label`) as the last argument.
+	 *
+	 *		// Sets selection as backward.
+	 *		writer.setSelection( range, { backward: true } );
+	 *
+	 *		// Sets selection as fake.
+	 *		// Fake selection does not render as browser native selection over selected elements and is hidden to the user.
+	 * 		// This way, no native selection UI artifacts are displayed to the user and selection over elements can be
+	 * 		// represented in other way, for example by applying proper CSS class.
+	 *		writer.setSelection( range, { fake: true } );
+	 *
+	 * 		// Additionally fake's selection label can be provided. It will be used to describe fake selection in DOM
+	 * 		// (and be  properly handled by screen readers).
+	 *		writer.setSelection( range, { fake: true, label: 'foo' } );
+	 *
 	 * @param {module:engine/view/selection~Selection|module:engine/view/position~Position|
 	 * Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|module:engine/view/item~Item|null} selectable
-	 * @param {Boolean|Number|'before'|'end'|'after'} [backwardSelectionOrOffset]
+	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets place or offset of the selection.
+	 * @param {Object} [options]
+	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
+	 * @param {Boolean} [options.fake] Sets this selection instance to be marked as `fake`.
+	 * @param {String} [options.label] Label for the fake selection.
 	 */
-	setSelection( selectable, backwardSelectionOrOffset ) {
-		this.document.selection._setTo( selectable, backwardSelectionOrOffset );
+	setSelection( selectable, placeOrOffset, options ) {
+		this.document.selection._setTo( selectable, placeOrOffset, options );
 	}
 
 	/**
@@ -82,23 +115,6 @@ export default class Writer {
 	 */
 	setSelectionFocus( itemOrPosition, offset ) {
 		this.document.selection._setFocus( itemOrPosition, offset );
-	}
-
-	/**
-	 * Sets {@link module:engine/view/selection~Selection selection's} to be marked as `fake`. A fake selection does
-	 * not render as browser native selection over selected elements and is hidden to the user.
-	 * This way, no native selection UI artifacts are displayed to the user and selection over elements can be
-	 * represented in other way, for example by applying proper CSS class.
-	 *
-	 * Additionally fake's selection label can be provided. It will be used to describe fake selection in DOM (and be
-	 * properly handled by screen readers).
-	 *
-	 * @param {Boolean} [value=true] If set to true selection will be marked as `fake`.
-	 * @param {Object} [options] Additional options.
-	 * @param {String} [options.label=''] Fake selection label.
-	 */
-	setFakeSelection( value, options ) {
-		this.document.selection._setFake( value, options );
 	}
 
 	/**

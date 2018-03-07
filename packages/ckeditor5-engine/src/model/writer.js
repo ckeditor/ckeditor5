@@ -144,6 +144,9 @@ export default class Writer {
 	 *
 	 * Note that if the item already has parent it will be removed from the previous parent.
 	 *
+	 * Note that you cannot re-insert a node from a document to a different document or document fragment. In this case,
+	 * `model-writer-insert-forbidden-move` is thrown.
+	 *
 	 * If you want to move {@link module:engine/model/range~Range range} instead of an
 	 * {@link module:engine/model/item~Item item} use {@link module:engine/model/writer~Writer#move move}.
 	 *
@@ -172,8 +175,14 @@ export default class Writer {
 			}
 			// If it isn't the same root.
 			else {
-				// We need to remove this item from old position first.
-				this.remove( item );
+				if ( item.root.document ) {
+					// It is forbidden to move a node that was already in a document outside of it.
+					throw new Error( 'model-writer-insert-forbidden-move: Cannot move a node from a document to a different tree.' );
+				} else {
+					// Move between two different document fragments or from document fragment to a document is possible.
+					// In that case, remove the item from it's original parent.
+					this.remove( item );
+				}
 			}
 		}
 
@@ -902,47 +911,62 @@ export default class Writer {
 	/**
 	 * Sets this selection's ranges and direction to the specified location based on the given
 	 * {@link module:engine/model/selection~Selection selection}, {@link module:engine/model/position~Position position},
-	 * {@link module:engine/model/element~Element element}, {@link module:engine/model/position~Position position},
+	 * {@link module:engine/model/node~Node node}, {@link module:engine/model/position~Position position},
 	 * {@link module:engine/model/range~Range range}, an iterable of {@link module:engine/model/range~Range ranges} or null.
 	 *
-	 *		// Sets ranges from the given range.
+	 *		// Sets selection to the given range.
 	 *		const range = new Range( start, end );
-	 *		writer.setSelection( range, isBackwardSelection );
+	 *		writer.setSelection( range );
 	 *
-	 *		// Sets ranges from the iterable of ranges.
+	 *		// Sets selection to given ranges.
 	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
-	 *		writer.setSelection( range, isBackwardSelection );
+	 *		writer.setSelection( range );
 	 *
-	 *		// Sets ranges from the other selection.
+	 *		// Sets selection to other selection.
 	 *		const otherSelection = new Selection();
 	 *		writer.setSelection( otherSelection );
 	 *
-	 * 		// Sets ranges from the given document selection's ranges.
+	 * 		// Sets selection to the given document selection.
 	 *		const documentSelection = new DocumentSelection( doc );
 	 *		writer.setSelection( documentSelection );
 	 *
-	 * 		// Sets collapsed range at the given position.
+	 * 		// Sets collapsed selection at the given position.
 	 *		const position = new Position( root, path );
 	 *		writer.setSelection( position );
 	 *
-	 * 		// Sets collapsed range at the given offset in element.
-	 *		const paragraph = writer.createElement( 'paragraph' );
+	 * 		// Sets collapsed selection at the position of the given node and an offset.
 	 *		writer.setSelection( paragraph, offset );
 	 *
-	 * 		// Removes all ranges.
+	 * Creates a range inside an {@link module:engine/model/element~Element element} which starts before the first child of
+ 	 * that element and ends after the last child of that element.
+	 *
+	 *		writer.setSelection( paragraph, 'in' );
+	 *
+	 * Creates a range on an {@link module:engine/model/item~Item item} which starts before the item and ends just after the item.
+	 *
+	 *		writer.setSelection( paragraph, 'on' );
+	 *
+	 * 		// Removes all selection's ranges.
 	 *		writer.setSelection( null );
+	 *
+	 * `Writer#setSelection()` allow passing additional options (`backward`) as the last argument.
+	 *
+	 * 		// Sets selection as backward.
+	 *		writer.setSelection( range, { backward: true } );
 	 *
 	 * Throws `writer-incorrect-use` error when the writer is used outside the `change()` block.
 	 *
 	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
-	 * module:engine/model/position~Position|module:engine/model/element~Element|
+	 * module:engine/model/position~Position|module:engine/model/node~Node|
 	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} selectable
-	 * @param {Boolean|Number|'before'|'end'|'after'} [backwardSelectionOrOffset]
+	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets place or offset of the selection.
+	 * @param {Object} [options]
+	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
 	 */
-	setSelection( selectable, backwardSelectionOrOffset ) {
+	setSelection( selectable, placeOrOffset, options ) {
 		this._assertWriterUsedCorrectly();
 
-		this.model.document.selection._setTo( selectable, backwardSelectionOrOffset );
+		this.model.document.selection._setTo( selectable, placeOrOffset, options );
 	}
 
 	/**

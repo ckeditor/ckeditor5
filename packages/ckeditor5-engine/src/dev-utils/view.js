@@ -340,7 +340,7 @@ export function parse( data, options = {} ) {
 
 	// When ranges are present - return object containing view, and selection.
 	if ( ranges.length ) {
-		const selection = new Selection( ranges, !!options.lastRangeBackward );
+		const selection = new Selection( ranges, { backward: !!options.lastRangeBackward } );
 
 		return {
 			view,

@@ -17,7 +17,6 @@ import {
 	convertRangeSelection,
 	convertCollapsedSelection,
 	clearAttributes,
-	clearFakeSelection
 } from '../../src/conversion/downcast-selection-converters';
 
 import {
@@ -475,14 +474,13 @@ describe( 'downcast-selection-converters', () => {
 				const viewString = stringifyView( viewRoot, viewSelection, { showType: false } );
 				expect( viewString ).to.equal( '<div>f{}oobar</div>' );
 			} );
-		} );
 
-		describe( 'clearFakeSelection', () => {
 			it( 'should clear fake selection', () => {
-				dispatcher.on( 'selection', clearFakeSelection() );
+				const modelRange = ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 1 );
 
 				view.change( writer => {
-					writer.setFakeSelection( true );
+					writer.setSelection( modelRange, { fake: true } );
+
 					dispatcher.convertSelection( docSelection, model.markers, writer );
 				} );
 				expect( viewSelection.isFake ).to.be.false;
@@ -574,7 +572,7 @@ describe( 'downcast-selection-converters', () => {
 
 		const isBackward = selectionPaths[ 2 ] === 'backward';
 		model.change( writer => {
-			writer.setSelection( new ModelRange( startPos, endPos ), isBackward );
+			writer.setSelection( new ModelRange( startPos, endPos ), { backward: isBackward } );
 
 			// And add or remove passed attributes.
 			for ( const key in selectionAttributes ) {
