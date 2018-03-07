@@ -20,53 +20,53 @@ import rightIcon from '@ckeditor/ckeditor5-core/theme/icons/object-right.svg';
  *
  * Among them, 2 default semantic content styles are available:
  *
- * * `imageStyleFull` is a full–width image without any CSS class,
- * * `imageStyleSide` is a side image styled with the `image-style-side` CSS class
+ * * `full` is a full–width image without any CSS class,
+ * * `side` is a side image styled with the `image-style-side` CSS class
  *
  * There are also 3 styles focused on formatting:
  *
- * * `imageStyleAlignLeft` aligns the image to the left using the `image-style-align-left` class,
- * * `imageStyleAlignCenter` centers the image to the left using the `image-style-align-center` class,
- * * `imageStyleAlignRight` aligns the image to the right using the `image-style-align-right` class,
+ * * `alignLeft` aligns the image to the left using the `image-style-align-left` class,
+ * * `alignCenter` centers the image to the left using the `image-style-align-center` class,
+ * * `alignRight` aligns the image to the right using the `image-style-align-right` class,
  *
  * @member {Object.<String,Object>}
  */
 const defaultStyles = {
 	// This option is equal to situation when no style is applied.
-	imageStyleFull: {
-		name: 'imageStyleFull',
+	full: {
+		name: 'full',
 		title: 'Full size image',
 		icon: fullWidthIcon,
 		isDefault: true
 	},
 
 	// This represents side image.
-	imageStyleSide: {
-		name: 'imageStyleSide',
+	side: {
+		name: 'side',
 		title: 'Side image',
 		icon: rightIcon,
 		className: 'image-style-side'
 	},
 
 	// This style represents an imaged aligned to the left.
-	imageStyleAlignLeft: {
-		name: 'imageStyleAlignLeft',
+	alignLeft: {
+		name: 'alignLeft',
 		title: 'Left aligned image',
 		icon: leftIcon,
 		className: 'image-style-align-left'
 	},
 
 	// This style represents a centered imaged.
-	imageStyleAlignCenter: {
-		name: 'imageStyleAlignCenter',
+	alignCenter: {
+		name: 'alignCenter',
 		title: 'Centered image',
 		icon: centerIcon,
 		className: 'image-style-align-center'
 	},
 
 	// This style represents an imaged aligned to the right.
-	imageStyleAlignRight: {
-		name: 'imageStyleAlignRight',
+	alignRight: {
+		name: 'alignRight',
 		title: 'Right aligned image',
 		icon: rightIcon,
 		className: 'image-style-align-right'
@@ -110,8 +110,10 @@ function _normalizeStyle( style ) {
 	if ( typeof style == 'string' ) {
 		// If it's one of the defaults, just use it.
 		// Clone the style to avoid overriding defaults.
-		if ( defaultStyles[ style ] ) {
-			style = Object.assign( {}, defaultStyles[ style ] );
+		const styleName = style.indexOf( 'imageStyle:' ) === 0 ? style.substr( 11 ) : style;
+
+		if ( defaultStyles[ styleName ] ) {
+			style = Object.assign( {}, defaultStyles[ styleName ] );
 		}
 		// If it's just a name but none of the defaults, warn because probably it's a mistake.
 		else {
@@ -122,7 +124,7 @@ function _normalizeStyle( style ) {
 
 			// Normalize the style anyway to prevent errors.
 			style = {
-				name: style
+				name: styleName
 			};
 		}
 	}

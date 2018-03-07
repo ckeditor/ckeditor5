@@ -44,7 +44,7 @@ export default class ImageStyleEditing extends Plugin {
 		const editing = editor.editing;
 
 		// Define default configuration.
-		editor.config.define( 'image.styles', [ 'imageStyleFull', 'imageStyleSide' ] );
+		editor.config.define( 'image.styles', [ 'imageStyle:full', 'imageStyle:side' ] );
 
 		// Get configuration.
 		const styles = normalizeImageStyles( editor.config.get( 'image.styles' ) );
@@ -61,10 +61,8 @@ export default class ImageStyleEditing extends Plugin {
 		// Converter for figure element from view to model.
 		data.upcastDispatcher.on( 'element:figure', viewToModelStyleAttribute( styles ), { priority: 'low' } );
 
-		// Register separate command for each style.
-		for ( const style of styles ) {
-			editor.commands.add( style.name, new ImageStyleCommand( editor, style ) );
-		}
+		// Register imageStyle command.
+		editor.commands.add( 'imageStyle', new ImageStyleCommand( editor, styles ) );
 	}
 }
 

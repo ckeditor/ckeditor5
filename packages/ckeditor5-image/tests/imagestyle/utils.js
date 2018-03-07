@@ -27,7 +27,7 @@ describe( 'ImageStyle utils', () => {
 					{ name: 'baz', title: 'Side image', icon: 'custom', className: 'baz-class' },
 
 					// Customized default styles.
-					{ name: 'imageStyleFull', icon: 'left', title: 'Custom title' }
+					{ name: 'full', icon: 'left', title: 'Custom title' }
 				] );
 			} );
 
@@ -47,7 +47,7 @@ describe( 'ImageStyle utils', () => {
 
 			it( 'should extend one of default styles if #name matches', () => {
 				expect( imageStyles[ 3 ] ).to.deep.equal( {
-					name: 'imageStyleFull',
+					name: 'full',
 					title: 'Custom title',
 					icon: leftIcon,
 					isDefault: true
@@ -57,36 +57,36 @@ describe( 'ImageStyle utils', () => {
 
 		describe( 'string format', () => {
 			it( 'should use one of default styles if #name matches', () => {
-				expect( normalizeImageStyles( [ 'imageStyleFull' ] ) ).to.deep.equal( [ {
-					name: 'imageStyleFull',
+				expect( normalizeImageStyles( [ 'imageStyle:full' ] ) ).to.deep.equal( [ {
+					name: 'full',
 					title: 'Full size image',
 					icon: fullWidthIcon,
 					isDefault: true
 				} ] );
 
-				expect( normalizeImageStyles( [ 'imageStyleSide' ] ) ).to.deep.equal( [ {
-					name: 'imageStyleSide',
+				expect( normalizeImageStyles( [ 'imageStyle:side' ] ) ).to.deep.equal( [ {
+					name: 'side',
 					title: 'Side image',
 					icon: rightIcon,
 					className: 'image-style-side'
 				} ] );
 
-				expect( normalizeImageStyles( [ 'imageStyleAlignLeft' ] ) ).to.deep.equal( [ {
-					name: 'imageStyleAlignLeft',
+				expect( normalizeImageStyles( [ 'imageStyle:alignLeft' ] ) ).to.deep.equal( [ {
+					name: 'alignLeft',
 					title: 'Left aligned image',
 					icon: leftIcon,
 					className: 'image-style-align-left'
 				} ] );
 
-				expect( normalizeImageStyles( [ 'imageStyleAlignCenter' ] ) ).to.deep.equal( [ {
-					name: 'imageStyleAlignCenter',
+				expect( normalizeImageStyles( [ 'imageStyle:alignCenter' ] ) ).to.deep.equal( [ {
+					name: 'alignCenter',
 					title: 'Centered image',
 					icon: centerIcon,
 					className: 'image-style-align-center'
 				} ] );
 
-				expect( normalizeImageStyles( [ 'imageStyleAlignRight' ] ) ).to.deep.equal( [ {
-					name: 'imageStyleAlignRight',
+				expect( normalizeImageStyles( [ 'imageStyle:alignRight' ] ) ).to.deep.equal( [ {
+					name: 'alignRight',
 					title: 'Right aligned image',
 					icon: rightIcon,
 					className: 'image-style-align-right'

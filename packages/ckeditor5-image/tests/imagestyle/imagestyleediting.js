@@ -71,7 +71,7 @@ describe( 'ImageStyleEditing', () => {
 				.then( newEditor => {
 					editor = newEditor;
 
-					expect( newEditor.config.get( 'image.styles' ) ).to.deep.equal( [ 'imageStyleFull', 'imageStyleSide' ] );
+					expect( newEditor.config.get( 'image.styles' ) ).to.deep.equal( [ 'imageStyle:full', 'imageStyle:side' ] );
 				} );
 		} );
 
@@ -81,10 +81,8 @@ describe( 'ImageStyleEditing', () => {
 			expect( schema.checkAttribute( [ '$root', 'image' ], 'imageStyle' ) ).to.be.true;
 		} );
 
-		it( 'should register separate command for each style', () => {
-			expect( editor.commands.get( 'fullStyle' ) ).to.be.instanceOf( ImageStyleCommand );
-			expect( editor.commands.get( 'sideStyle' ) ).to.be.instanceOf( ImageStyleCommand );
-			expect( editor.commands.get( 'dummyStyle' ) ).to.be.instanceOf( ImageStyleCommand );
+		it( 'should register a command', () => {
+			expect( editor.commands.get( 'imageStyle' ) ).to.be.instanceOf( ImageStyleCommand );
 		} );
 
 		it( 'should convert from view to model', () => {
@@ -266,7 +264,7 @@ describe( 'ImageStyleEditing', () => {
 				.then( newEditor => {
 					editor = newEditor;
 
-					expect( newEditor.config.get( 'image.styles' ) ).to.deep.equal( [ 'imageStyleFull', 'imageStyleSide' ] );
+					expect( newEditor.config.get( 'image.styles' ) ).to.deep.equal( [ 'imageStyle:full', 'imageStyle:side' ] );
 				} );
 		} );
 
@@ -276,14 +274,14 @@ describe( 'ImageStyleEditing', () => {
 					plugins: [ ImageStyleEditing ],
 					image: {
 						styles: [
-							'imageStyleSide'
+							'imageStyle:side'
 						]
 					}
 				} )
 				.then( newEditor => {
 					editor = newEditor;
 
-					expect( newEditor.config.get( 'image.styles' ) ).to.deep.equal( [ 'imageStyleSide' ] );
+					expect( newEditor.config.get( 'image.styles' ) ).to.deep.equal( [ 'imageStyle:side' ] );
 				} );
 		} );
 
@@ -293,14 +291,14 @@ describe( 'ImageStyleEditing', () => {
 					plugins: [ ImageStyleEditing ],
 					image: {
 						styles: [
-							{ name: 'imageStyleSide' }
+							{ name: 'imageStyle:side' }
 						]
 					}
 				} )
 				.then( newEditor => {
 					editor = newEditor;
 
-					expect( newEditor.config.get( 'image.styles' ) ).to.deep.equal( [ { name: 'imageStyleSide' } ] );
+					expect( newEditor.config.get( 'image.styles' ) ).to.deep.equal( [ { name: 'imageStyle:side' } ] );
 				} );
 		} );
 	} );

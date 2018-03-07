@@ -43,9 +43,10 @@ describe( 'ImageStyleUI', () => {
 	it( 'should register buttons for each style', () => {
 		const spy = sinon.spy( editor, 'execute' );
 
+		const command = editor.commands.get( 'imageStyle' );
+
 		for ( const style of styles ) {
-			const command = editor.commands.get( style.name );
-			const buttonView = editor.ui.componentFactory.create( style.name );
+			const buttonView = editor.ui.componentFactory.create( `imageStyle:${ style.name }` );
 
 			expect( buttonView ).to.be.instanceOf( ButtonView );
 			expect( buttonView.label ).to.equal( style.title );
@@ -57,7 +58,7 @@ describe( 'ImageStyleUI', () => {
 			expect( buttonView.isEnabled ).to.be.false;
 
 			buttonView.fire( 'execute' );
-			sinon.assert.calledWithExactly( editor.execute, style.name );
+			sinon.assert.calledWithExactly( editor.execute, 'imageStyle', { value: style.name } );
 
 			spy.reset();
 		}
@@ -86,7 +87,7 @@ describe( 'ImageStyleUI', () => {
 			.then( newEditor => {
 				editor = newEditor;
 
-				const buttonView = editor.ui.componentFactory.create( 'style 1' );
+				const buttonView = editor.ui.componentFactory.create( 'imageStyle:style 1' );
 
 				expect( buttonView.label ).to.equal( 'Default title' );
 			} );

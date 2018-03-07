@@ -69,8 +69,10 @@ export default class ImageStyleUI extends Plugin {
 	_createButton( style ) {
 		const editor = this.editor;
 
-		editor.ui.componentFactory.add( style.name, locale => {
-			const command = editor.commands.get( style.name );
+		const componentName = `imageStyle:${ style.name }`;
+
+		editor.ui.componentFactory.add( componentName, locale => {
+			const command = editor.commands.get( 'imageStyle' );
 			const view = new ButtonView( locale );
 
 			view.set( {
@@ -80,9 +82,9 @@ export default class ImageStyleUI extends Plugin {
 			} );
 
 			view.bind( 'isEnabled' ).to( command, 'isEnabled' );
-			view.bind( 'isOn' ).to( command, 'value' );
+			view.bind( 'isOn' ).to( command, 'value', value => value === style.name );
 
-			this.listenTo( view, 'execute', () => editor.execute( style.name ) );
+			this.listenTo( view, 'execute', () => editor.execute( 'imageStyle', { value: style.name } ) );
 
 			return view;
 		} );

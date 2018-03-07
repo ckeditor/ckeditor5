@@ -118,17 +118,17 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		image: {
 			// You need to configure the image toolbar too, so it uses the new style buttons.
-			toolbar: [ 'imageTextAlternative', '|', 'imageStyleAlignLeft', 'imageStyleFull', 'imageStyleAlignRight' ],
+			toolbar: [ 'imageTextAlternative', '|', 'imageStyle:alignLeft', 'imageStyle:full', 'imageStyle:alignRight' ],
 
 			styles: [
 				// This option is equal to a situation where no style is applied.
-				'imageStyleFull',
+				'imageStyle:full',
 
 				// This represents an image aligned to left.
-				'imageStyleAlignLeft',
+				'imageStyle:alignLeft',
 
 				// This represents an image aligned to right.
-				'imageStyleAlignRight'
+				'imageStyle:alignRight'
 			]
 		}
 	} )
@@ -136,7 +136,7 @@ ClassicEditor
 	.catch( ... );
 ```
 
-In the code sample above we used predefined image styles – `'imageStyleFull'`, `'imageStyleAlignLeft'` and `'imageStyleAlignRight'`. The latter two apply, respectively, `.image-style-align-left` and  `.image-style-align-right` classes to the `<figure>` element.
+In the code sample above we used predefined image styles – `'imageStyle:full'`, `'imageStyle:alignLeft'` and `'imageStyle:alignRight'`. The latter two apply, respectively, `.image-style-align-left` and  `.image-style-align-right` classes to the `<figure>` element.
 
 See the result below:
 
@@ -150,11 +150,11 @@ See the result below:
 
 Besides using the {@link module:image/imagestyle/utils~defaultStyles 5 predefined styles}:
 
-* `'imageStyleFull'`,
-* `'imageStyleSide'`,
-* `'imageStyleAlignLeft'`,
-* `'imageStyleAlignCenter'`,
-* `'imageStyleAlignRight'`
+* `'full'`,
+* `'side'`,
+* `'alignLeft'`,
+* `'alignCenter'`,
+* `'alignRight'`
 
 you can also define your own styles or modify the existing ones.
 
@@ -194,7 +194,7 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Image, ImageToolbar, ImageCaption, ImageStyle ],
 		image: {
-			toolbar: [ 'imageTextAlternative', '|', 'imageStyleFull', 'imageStyleSide' ]
+			toolbar: [ 'imageTextAlternative', '|', 'imageStyle:full', 'imageStyle:side' ]
 		}
 	} )
 	.then( ... )
@@ -211,8 +211,8 @@ The {@link module:image/image~Image} plugin registers:
 
 The {@link module:image/imagestyle~ImageStyle} plugin registers:
 
-* A command for each defined style (based on the {@link module:image/image~ImageConfig#styles `image.styles`} configuration option) &mdash; e.g. `'imageStyleFull'` and `'imageStyleSide'`,
-* A button for each defined style &mdash; e.g. `'imageStyleFull'` and `'imageStyleSide'`.
+* A command for each defined style (based on the {@link module:image/image~ImageConfig#styles `image.styles`} configuration option) &mdash; e.g. `'imageStyle:full'` and `'imageStyle:side'`,
+* A button for each defined style &mdash; e.g. `'imageStyle:full'` and `'imageStyle:side'`.
 
 ## Contribute
 
