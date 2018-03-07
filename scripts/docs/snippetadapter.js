@@ -27,7 +27,7 @@ module.exports = function snippetAdapter( data ) {
 		entry: data.snippetSource.js,
 		outputPath,
 		language: snippetConfig.language,
-		minify: data.options.production
+		production: data.options.production
 	} );
 
 	let promise;
@@ -90,7 +90,7 @@ function getWebpackConfig( config ) {
 		} )
 	];
 
-	if ( config.minify ) {
+	if ( config.production ) {
 		plugins.push(
 			new BabelMinifyPlugin( null, {
 				comments: false
@@ -99,6 +99,12 @@ function getWebpackConfig( config ) {
 	}
 
 	return {
+		mode: config.production ? 'production' : 'development',
+
+		optimization: {
+			minimize: false
+		},
+
 		devtool: 'source-map',
 
 		entry: config.entry,
@@ -137,7 +143,7 @@ function getWebpackConfig( config ) {
 									themeImporter: {
 										themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
 									},
-									minify: config.minify
+									minify: config.production
 								} )
 							}
 						]
