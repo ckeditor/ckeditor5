@@ -21,15 +21,17 @@ describe( 'Bug ckeditor5#692', () => {
 		editorElement = document.createElement( 'div' );
 		document.body.appendChild( editorElement );
 
-		return ClassicTestEditor.create( editorElement, {
-			plugins: [ Paragraph, Bold, Input ]
-		} ).then( newEditor => {
-			editor = newEditor;
-			view = editor.editing.view;
-			mutationObserver = view.getObserver( MutationObserver );
-			domEditor = editor.ui.view.editableElement;
-			root = editor.model.document.getRoot();
-		} );
+		return ClassicTestEditor
+			.create( editorElement, {
+				plugins: [ Paragraph, Bold, Input ]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+				view = editor.editing.view;
+				mutationObserver = view.getObserver( MutationObserver );
+				domEditor = editor.ui.view.editableElement;
+				root = editor.model.document.getRoot();
+			} );
 	} );
 
 	afterEach( () => {
