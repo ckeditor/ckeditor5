@@ -8,6 +8,7 @@ import Position from '../../src/view/position';
 import Element from '../../src/view/element';
 import DocumentFragment from '../../src/view/documentfragment';
 import Text from '../../src/view/text';
+import TextProxy from '../../src/view/textproxy';
 import TreeWalker from '../../src/view/treewalker';
 import { parse, stringify } from '../../src/dev-utils/view';
 
@@ -672,6 +673,17 @@ describe( 'Range', () => {
 				expect( range.start.offset ).to.equal( 0 );
 				expect( range.end.parent ).to.equal( div );
 				expect( range.end.offset ).to.equal( 1 );
+			} );
+
+			it( 'should create a proper range on a text proxy', () => {
+				const text = new Text( 'foobar' );
+				const textProxy = new TextProxy( text, 2, 3 );
+				const range = Range.createOn( textProxy );
+
+				expect( range.start.parent ).to.equal( text );
+				expect( range.start.offset ).to.equal( 2 );
+				expect( range.end.parent ).to.equal( text );
+				expect( range.end.offset ).to.equal( 5 );
 			} );
 		} );
 
