@@ -73,6 +73,18 @@ export default class AttributeElement extends Element {
 	}
 
 	/**
+	 * Checks if this element is similar to other element.
+	 * Both elements should have the same name, attributes and priority to be considered as similar.
+	 * Two similar elements can contain different set of children nodes.
+	 *
+	 * @param {module:engine/view/element~Element} otherElement
+	 * @returns {Boolean}
+	 */
+	isSimilar( otherElement ) {
+		return super.isSimilar( otherElement ) && this.priority == otherElement.priority;
+	}
+
+	/**
 	 * Clones provided element with priority.
 	 *
 	 * @protected
@@ -87,18 +99,6 @@ export default class AttributeElement extends Element {
 		cloned._priority = this._priority;
 
 		return cloned;
-	}
-
-	/**
-	 * Checks if this element is similar to other element.
-	 * Both elements should have the same name, attributes and priority to be considered as similar.
-	 * Two similar elements can contain different set of children nodes.
-	 *
-	 * @param {module:engine/view/element~Element} otherElement
-	 * @returns {Boolean}
-	 */
-	isSimilar( otherElement ) {
-		return super.isSimilar( otherElement ) && this.priority == otherElement.priority;
 	}
 }
 

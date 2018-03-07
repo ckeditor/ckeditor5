@@ -202,16 +202,6 @@ export default class Node {
 	}
 
 	/**
-	 * Creates a copy of this node, that is a node with exactly same attributes, and returns it.
-	 *
-	 * @protected
-	 * @returns {module:engine/model/node~Node} Node with same attributes as this node.
-	 */
-	_clone() {
-		return new Node( this._attrs );
-	}
-
-	/**
 	 * Gets path to the node. The path is an array containing starting offsets of consecutive ancestors of this node,
 	 * beginning from {@link module:engine/model/node~Node#root root}, down to this node's starting offset. The path can be used to
 	 * create {@link module:engine/model/position~Position Position} instance.
@@ -325,6 +315,31 @@ export default class Node {
 	}
 
 	/**
+	 * Converts `Node` to plain object and returns it.
+	 *
+	 * @returns {Object} `Node` converted to plain object.
+	 */
+	toJSON() {
+		const json = {};
+
+		if ( this._attrs.size ) {
+			json.attributes = [ ...this._attrs ];
+		}
+
+		return json;
+	}
+
+	/**
+	 * Creates a copy of this node, that is a node with exactly same attributes, and returns it.
+	 *
+	 * @protected
+	 * @returns {module:engine/model/node~Node} Node with same attributes as this node.
+	 */
+	_clone() {
+		return new Node( this._attrs );
+	}
+
+	/**
 	 * Removes this node from it's parent.
 	 *
 	 * @protected
@@ -372,21 +387,6 @@ export default class Node {
 	 */
 	_clearAttributes() {
 		this._attrs.clear();
-	}
-
-	/**
-	 * Converts `Node` to plain object and returns it.
-	 *
-	 * @returns {Object} `Node` converted to plain object.
-	 */
-	toJSON() {
-		const json = {};
-
-		if ( this._attrs.size ) {
-			json.attributes = [ ...this._attrs ];
-		}
-
-		return json;
 	}
 
 	/**

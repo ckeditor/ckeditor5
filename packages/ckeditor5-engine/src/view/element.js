@@ -159,42 +159,6 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Clones provided element.
-	 *
-	 * @protected
-	 * @param {Boolean} [deep=false] If set to `true` clones element and all its children recursively. When set to `false`,
-	 * element will be cloned without any children.
-	 * @returns {module:engine/view/element~Element} Clone of this element.
-	 */
-	_clone( deep = false ) {
-		const childrenClone = [];
-
-		if ( deep ) {
-			for ( const child of this.getChildren() ) {
-				childrenClone.push( child._clone( deep ) );
-			}
-		}
-
-		// ContainerElement and AttributeElement should be also cloned properly.
-		const cloned = new this.constructor( this.name, this._attrs, childrenClone );
-
-		// Classes and styles are cloned separately - this solution is faster than adding them back to attributes and
-		// parse once again in constructor.
-		cloned._classes = new Set( this._classes );
-		cloned._styles = new Map( this._styles );
-
-		// Clone custom properties.
-		cloned._customProperties = new Map( this._customProperties );
-
-		// Clone filler offset method.
-		// We can't define this method in a prototype because it's behavior which
-		// is changed by e.g. toWidget() function from ckeditor5-widget. Perhaps this should be one of custom props.
-		cloned.getFillerOffset = this.getFillerOffset;
-
-		return cloned;
-	}
-
-	/**
 	 * Gets child at the given index.
 	 *
 	 * @param {Number} index Index of child.
@@ -510,6 +474,42 @@ export default class Element extends Node {
 			( classes == '' ? '' : ` class="${ classes }"` ) +
 			( styles == '' ? '' : ` style="${ styles }"` ) +
 			( attributes == '' ? '' : ` ${ attributes }` );
+	}
+
+	/**
+	 * Clones provided element.
+	 *
+	 * @protected
+	 * @param {Boolean} [deep=false] If set to `true` clones element and all its children recursively. When set to `false`,
+	 * element will be cloned without any children.
+	 * @returns {module:engine/view/element~Element} Clone of this element.
+	 */
+	_clone( deep = false ) {
+		const childrenClone = [];
+
+		if ( deep ) {
+			for ( const child of this.getChildren() ) {
+				childrenClone.push( child._clone( deep ) );
+			}
+		}
+
+		// ContainerElement and AttributeElement should be also cloned properly.
+		const cloned = new this.constructor( this.name, this._attrs, childrenClone );
+
+		// Classes and styles are cloned separately - this solution is faster than adding them back to attributes and
+		// parse once again in constructor.
+		cloned._classes = new Set( this._classes );
+		cloned._styles = new Map( this._styles );
+
+		// Clone custom properties.
+		cloned._customProperties = new Map( this._customProperties );
+
+		// Clone filler offset method.
+		// We can't define this method in a prototype because it's behavior which
+		// is changed by e.g. toWidget() function from ckeditor5-widget. Perhaps this should be one of custom props.
+		cloned.getFillerOffset = this.getFillerOffset;
+
+		return cloned;
 	}
 
 	/**

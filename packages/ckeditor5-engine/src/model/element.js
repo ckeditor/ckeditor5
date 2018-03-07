@@ -157,20 +157,6 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Creates a copy of this element and returns it. Created element has the same name and attributes as the original element.
-	 * If clone is deep, the original element's children are also cloned. If not, then empty element is removed.
-	 *
-	 * @protected
-	 * @param {Boolean} [deep=false] If set to `true` clones element and all its children recursively. When set to `false`,
-	 * element will be cloned without any child.
-	 */
-	_clone( deep = false ) {
-		const children = deep ? Array.from( this._children ).map( node => node._clone( true ) ) : null;
-
-		return new Element( this.name, this.getAttributes(), children );
-	}
-
-	/**
 	 * Returns index of a node that occupies given offset. If given offset is too low, returns `0`. If given offset is
 	 * too high, returns {@link module:engine/model/element~Element#getChildIndex index after last child}.
 	 *
@@ -231,6 +217,20 @@ export default class Element extends Node {
 		}
 
 		return json;
+	}
+
+	/**
+	 * Creates a copy of this element and returns it. Created element has the same name and attributes as the original element.
+	 * If clone is deep, the original element's children are also cloned. If not, then empty element is removed.
+	 *
+	 * @protected
+	 * @param {Boolean} [deep=false] If set to `true` clones element and all its children recursively. When set to `false`,
+	 * element will be cloned without any child.
+	 */
+	_clone( deep = false ) {
+		const children = deep ? Array.from( this._children ).map( node => node._clone( true ) ) : null;
+
+		return new Element( this.name, this.getAttributes(), children );
 	}
 
 	/**

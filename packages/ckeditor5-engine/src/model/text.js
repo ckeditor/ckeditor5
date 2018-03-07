@@ -69,16 +69,6 @@ export default class Text extends Node {
 	}
 
 	/**
-	 * Creates a copy of this text node and returns it. Created text node has same text data and attributes as original text node.
-	 *
-	 * @protected
-	 * @returns {module:engine/model/text~Text} `Text` instance created using given plain object.
-	 */
-	_clone() {
-		return new Text( this.data, this.getAttributes() );
-	}
-
-	/**
 	 * Converts `Text` instance to plain object and returns it.
 	 *
 	 * @returns {Object} `Text` instance converted to plain object.
@@ -89,6 +79,16 @@ export default class Text extends Node {
 		json.data = this.data;
 
 		return json;
+	}
+
+	/**
+	 * Creates a copy of this text node and returns it. Created text node has same text data and attributes as original text node.
+	 *
+	 * @protected
+	 * @returns {module:engine/model/text~Text} `Text` instance created using given plain object.
+	 */
+	_clone() {
+		return new Text( this.data, this.getAttributes() );
 	}
 
 	/**
