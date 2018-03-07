@@ -525,6 +525,30 @@ describe( 'DomConverter', () => {
 			// See also whitespace-handling-integration.js.
 			//
 		} );
+
+		describe( 'clearing auto filler', () => {
+			it( 'should remove inline filler when converting dom to view', () => {
+				const text = document.createTextNode( INLINE_FILLER + 'foo' );
+				const view = converter.domToView( text );
+
+				expect( view.data ).to.equal( 'foo' );
+			} );
+
+			// See https://github.com/ckeditor/ckeditor5/issues/692.
+			it( 'should not remove space after inline filler if previous node nor next node does not exist', () => {
+				const text = document.createTextNode( INLINE_FILLER + ' ' );
+				const view = converter.domToView( text );
+
+				expect( view.data ).to.equal( ' ' );
+			} );
+
+			it( 'should convert non breaking space to normal space after inline filler', () => {
+				const text = document.createTextNode( INLINE_FILLER + '\u00A0' );
+				const view = converter.domToView( text );
+
+				expect( view.data ).to.equal( ' ' );
+			} );
+		} );
 	} );
 
 	describe( 'domChildrenToView', () => {
