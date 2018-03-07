@@ -13,6 +13,7 @@
     "@ckeditor/ckeditor5-utils": "^1.0.0-alpha.2"
   },
   "devDependencies": {
+    "@ckeditor/ckeditor5-cloudservices": "^1.0.0-alpha.1",
     "@ckeditor/ckeditor5-editor-classic": "^1.0.0-alpha.2",
     "@ckeditor/ckeditor5-paragraph": "^1.0.0-alpha.2",
     "eslint": "^4.15.0",

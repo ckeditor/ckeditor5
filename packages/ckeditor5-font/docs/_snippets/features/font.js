@@ -5,8 +5,11 @@
 
 /* globals ClassicEditor, console, window, document */
 
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloudservices/tests/_utils/cloudservices-config';
+
 ClassicEditor
 	.create( document.querySelector( '#snippet-font' ), {
+		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
 				'headings', '|', 'fontSize', 'fontFamily', '|', 'bulletedList', 'numberedList', 'undo', 'redo'
