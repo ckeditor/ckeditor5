@@ -181,7 +181,7 @@ export default class Differ {
 			buffered.newRange = newRange;
 
 			if ( buffered.oldRange == null && buffered.newRange == null ) {
-				// The marker is going to be removed (`newRange == null`) but it did not exist before the change set
+				// The marker is going to be removed (`newRange == null`) but it did not exist before the first buffered change
 				// (`buffered.oldRange == null`). In this case, do not keep the marker in buffer at all.
 				this._changedMarkers.delete( markerName );
 			}
