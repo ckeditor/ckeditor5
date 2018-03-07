@@ -80,7 +80,7 @@ describe( 'Renderer', () => {
 		it( 'should mark text which need update', () => {
 			const viewText = new ViewText( 'foo' );
 			viewRoot._appendChildren( viewText );
-			viewText.data = 'bar';
+			viewText._data = 'bar';
 
 			renderer.markToSync( 'text', viewText );
 
@@ -93,7 +93,7 @@ describe( 'Renderer', () => {
 			viewRoot = new ViewElement( 'p' );
 
 			viewRoot._appendChildren( viewText );
-			viewText.data = 'bar';
+			viewText._data = 'bar';
 
 			renderer.markToSync( 'text', viewText );
 
@@ -205,7 +205,7 @@ describe( 'Renderer', () => {
 			expect( domRoot.childNodes.length ).to.equal( 1 );
 			expect( domRoot.childNodes[ 0 ].data ).to.equal( 'foo' );
 
-			viewText.data = 'bar';
+			viewText._data = 'bar';
 
 			renderer.markToSync( 'text', viewText );
 			renderer.render();
@@ -1914,7 +1914,7 @@ describe( 'Renderer', () => {
 				writer.unwrap( viewDoc.selection.getFirstRange(), new ViewAttributeElement( 'italic' ) );
 			} );
 
-			viewRoot.getChild( 0 ).getChild( 0 ).getChild( 0 ).data = 'bar';
+			viewRoot.getChild( 0 ).getChild( 0 ).getChild( 0 )._data = 'bar';
 			expect( getViewData( view ) ).to.equal( '<p>[<strong>bar</strong>]</p>' );
 
 			// Re-render changes in view to DOM.
@@ -1935,7 +1935,7 @@ describe( 'Renderer', () => {
 
 			// Change text and insert new element into paragraph.
 			const textNode = viewRoot.getChild( 0 ).getChild( 0 );
-			textNode.data = 'foobar';
+			textNode._data = 'foobar';
 
 			view.change( writer => {
 				writer.insert( ViewPosition.createAfter( textNode ), new ViewAttributeElement( 'img' ) );
@@ -1961,7 +1961,7 @@ describe( 'Renderer', () => {
 
 			// Change text and insert new element into paragraph.
 			const textNode = viewRoot.getChild( 0 ).getChild( 0 );
-			textNode.data = 'foobar';
+			textNode._data = 'foobar';
 
 			view.change( writer => {
 				writer.insert( ViewPosition.createBefore( textNode ), new ViewAttributeElement( 'img' ) );

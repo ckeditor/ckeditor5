@@ -1482,7 +1482,7 @@ function breakTextNode( position ) {
 	const textToMove = position.parent.data.slice( position.offset );
 
 	// Leave rest of the text in position's parent.
-	position.parent.data = position.parent.data.slice( 0, position.offset );
+	position.parent._data = position.parent.data.slice( 0, position.offset );
 
 	// Insert new text node after position's parent text node.
 	position.parent.parent._insertChildren( position.parent.index + 1, new Text( textToMove ) );
@@ -1500,7 +1500,7 @@ function breakTextNode( position ) {
 function mergeTextNodes( t1, t2 ) {
 	// Merge text data into first text node and remove second one.
 	const nodeBeforeLength = t1.data.length;
-	t1.data += t2.data;
+	t1._data += t2.data;
 	t2._remove();
 
 	return new Position( t1, nodeBeforeLength );

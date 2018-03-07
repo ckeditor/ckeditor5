@@ -449,7 +449,7 @@ class RangeParser {
 			}
 
 			text = text.replace( regexp, '' );
-			node.data = text;
+			node._data = text;
 			const index = node.index;
 			const parent = node.parent;
 

@@ -289,7 +289,7 @@ describe( 'Node', () => {
 			const parsed = JSON.parse( json );
 
 			expect( parsed ).to.deep.equal( {
-				_data: 'a'
+				_textData: 'a'
 			} );
 		} );
 	} );
@@ -380,9 +380,9 @@ describe( 'Node', () => {
 			} );
 		} );
 
-		describe( '_removeChildren()', () => {
+		describe( 'setText', () => {
 			it( 'should fire change event', () => {
-				text.data = 'bar';
+				text._data = 'bar';
 
 				sinon.assert.calledOnce( rootChangeSpy );
 				sinon.assert.calledWith( rootChangeSpy, 'text', text );
