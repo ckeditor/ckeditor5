@@ -26,6 +26,14 @@ export default class ImageStyleCommand extends Command {
 		super( editor );
 
 		/**
+		 * Cached name of a default style if present. If there is no default style it defaults to false.
+		 *
+		 * @type {Boolean|String}
+		 * @private
+		 */
+		this._defaultStyle = false;
+
+		/**
 		 * A style handled by this command.
 		 *
 		 * @readonly
@@ -40,14 +48,6 @@ export default class ImageStyleCommand extends Command {
 
 			return styles;
 		}, {} );
-
-		/**
-		 * Cached name of a default style if present. If there is no default style it defaults to false.
-		 *
-		 * @type {Boolean|String}
-		 * @private
-		 */
-		this._defaultStyle = false;
 	}
 
 	/**
