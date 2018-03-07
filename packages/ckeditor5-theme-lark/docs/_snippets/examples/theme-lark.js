@@ -8,7 +8,7 @@
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
-import { TOKEN_URL } from '@ckeditor/ckeditor5-cloudservices/tests/_utils/cloudservices-config';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloudservices/tests/_utils/cloudservices-config';
 import './custom.css';
 
 ClassicEditor
@@ -21,9 +21,7 @@ ClassicEditor
 		image: {
 			toolbar: [ 'imageStyleFull', 'imageStyleSide', '|', 'imageTextAlternative' ]
 		},
-		cloudServices: {
-			tokenUrl: TOKEN_URL
-		}
+		cloudServices: CS_CONFIG
 	} )
 	.then( editor => {
 		window.editor = editor;
