@@ -67,5 +67,34 @@ describe( 'Bug ckeditor5#692', () => {
 			expect( getModelData( editor.model ) ).to.equal( '<paragraph>foo<$text bold="true"> []</$text></paragraph>' );
 			expect( getViewData( editor.editing.view ) ).to.equal( '<p>foo<strong> {}</strong></p>' );
 		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/692 Scenario 2.
+		it( 'should handle space after inline filler at the end of container', () => {
+			editor.setData( '<p>foo</p>' );
+
+			const paragraph = root.getChild( 0 );
+
+			// Put caret after at <p>[]foo</p>.
+			editor.model.change( writer => {
+				writer.setSelection( paragraph, 0 );
+			} );
+
+			// Create Bold attribute at the end of paragraph.
+			editor.execute( 'bold' );
+
+			expect( getModelData( editor.model ) ).to.equal( '<paragraph><$text bold="true">[]</$text>foo</paragraph>' );
+
+			const domParagraph = domEditor.childNodes[ 0 ];
+			const textNode = domParagraph.childNodes[ 0 ].childNodes[ 0 ];
+
+			expect( isInlineFiller( textNode ) ).to.be.true;
+
+			// Add space inside the strong's text node.
+			textNode.data += ' ';
+			mutationObserver.flush();
+
+			expect( getModelData( editor.model ) ).to.equal( '<paragraph><$text bold="true"> []</$text>foo</paragraph>' );
+			expect( getViewData( editor.editing.view ) ).to.equal( '<p><strong> {}</strong>foo</p>' );
+		} );
 	} );
 } );
