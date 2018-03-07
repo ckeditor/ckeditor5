@@ -80,6 +80,32 @@ describe( 'AttributeElement', () => {
 
 			expect( b1.isSimilar( b2 ) ).to.be.false;
 		} );
+
+		it( 'should return true if ids are the same even if other properties are different', () => {
+			const element1 = new AttributeElement( 'b' );
+			element1._id = 'xyz';
+
+			const element2 = new AttributeElement( 'b', { foo: 'bar' } );
+			element2._id = 'xyz';
+
+			const element3 = new AttributeElement( 'span' );
+			element3._id = 'xyz';
+
+			expect( element1.isSimilar( element2 ) ).to.be.true;
+			expect( element1.isSimilar( element3 ) ).to.be.true;
+		} );
+
+		it( 'should return false if ids are different even if other properties are same', () => {
+			const element1 = new AttributeElement( 'span', { foo: 'bar' } );
+			element1._priority = 3;
+			element1._id = 'foo';
+
+			const element2 = new AttributeElement( 'span', { foo: 'bar' } );
+			element2._priority = 3;
+			element2._id = 'bar';
+
+			expect( element1.isSimilar( element2 ) ).to.be.false;
+		} );
 	} );
 
 	describe( 'getFillerOffset', () => {

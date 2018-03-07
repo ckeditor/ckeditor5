@@ -34,14 +34,21 @@ export default class AttributeElement extends Element {
 		super( name, attrs, children );
 
 		/**
-		 * Element priority. Attributes have to have the same priority to be
-		 * {@link module:engine/view/element~Element#isSimilar similar}. Setting different priorities on similar
- 		 * nodes may prevent merging, e.g. two `<abbr>` nodes next each other shouldn't be merged.
+		 * Element priority. Decides in what order elements are wrapped by {@link module:engine/view/writer~Writer}.
 		 *
 		 * @protected
 		 * @member {Number}
 		 */
 		this._priority = DEFAULT_PRIORITY;
+
+		/**
+		 * Element identifier. If set, it is used by {@link module:engine/view/element~Element#isSimilar},
+		 * and then two elements are considered similar if, and only if they have the same `_id`.
+		 *
+		 * @protected
+		 * @member {String|Number}
+		 */
+		this._id = null;
 
 		/**
 		 * Returns block {@link module:engine/view/filler filler} offset or `null` if block filler is not needed.
@@ -53,13 +60,24 @@ export default class AttributeElement extends Element {
 	}
 
 	/**
-	 * Priority of this element.
+	 * Element priority. Decides in what order elements are wrapped by {@link module:engine/view/writer~Writer}.
 	 *
 	 * @readonly
-	 * @return {Number}
+	 * @returns {Number}
 	 */
 	get priority() {
 		return this._priority;
+	}
+
+	/**
+	 * Element identifier. If set, it is used by {@link module:engine/view/element~Element#isSimilar},
+	 * and then two elements are considered similar if, and only if they have the same `_id`.
+	 *
+	 * @readonly
+	 * @returns {String|Number}
+	 */
+	get id() {
+		return this._id;
 	}
 
 	/**
@@ -75,13 +93,31 @@ export default class AttributeElement extends Element {
 
 	/**
 	 * Checks if this element is similar to other element.
-	 * Both elements should have the same name, attributes and priority to be considered as similar.
-	 * Two similar elements can contain different set of children nodes.
+	 *
+	 * If none of elements has set {@link module:engine/view/attributeelement~AttributeElement#id}, then both elements
+	 * should have the same name, attributes and priority to be considered as similar. Two similar elements can contain
+	 * different set of children nodes.
+	 *
+	 * If at least one element has {@link module:engine/view/attributeelement~AttributeElement#id} set, then both
+	 * elements have to have the same {@link module:engine/view/attributeelement~AttributeElement#id} value to be
+	 * considered similar.
+	 *
+	 * Similarity is important for {@link module:engine/view/writer~Writer}. For example:
+	 *
+	 * * two following similar elements can be merged together into one, longer element,
+	 * * {@link module:engine/view/writer~Writer#unwrap} checks similarity of passed element and processed element to
+	 * decide whether processed element should be unwrapped,
+	 * * etc.
 	 *
 	 * @param {module:engine/view/element~Element} otherElement
 	 * @returns {Boolean}
 	 */
 	isSimilar( otherElement ) {
+		// If any element has an `id` set, just compare the ids.
+		if ( this.id !== null || otherElement.id !== null ) {
+			return this.id === otherElement.id;
+		}
+
 		return super.isSimilar( otherElement ) && this.priority == otherElement.priority;
 	}
 
@@ -98,6 +134,9 @@ export default class AttributeElement extends Element {
 
 		// Clone priority too.
 		cloned._priority = this._priority;
+
+		// And id too.
+		cloned._id = this._id;
 
 		return cloned;
 	}
