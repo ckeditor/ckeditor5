@@ -59,7 +59,7 @@ describe( 'UndoCommand', () => {
 				 */
 				// Let's make things spicy and this time, make a backward selection.
 				model.change( writer => {
-					writer.setSelection( r( 2, 4 ), true );
+					writer.setSelection( r( 2, 4 ), { backward: true } );
 				} );
 				batch1 = new Batch();
 				undo.addBatch( batch1 );
