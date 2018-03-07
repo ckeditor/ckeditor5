@@ -5,8 +5,15 @@
 
 // WARNING: The URLs below should not be used for any other purpose than Easy Image plugin development.
 // Images uploaded using the testing token service may be deleted automatically at any moment.
-// If you would like to try the Easy Image service, please wait until the official launch of Easy Image and sign up for a free trial.
+// If you would like to try the Easy Image service, please sign up for a free trial (https://ckeditor.com/ckeditor-cloud-services/).
 // Images uploaded during the free trial will not be deleted for the whole trial period and additionally the trial service can be converted
 // into a subscription at any moment, allowing you to preserve all uploaded images.
 
-export const TOKEN_URL = 'https://j2sns7jmy0.execute-api.eu-central-1.amazonaws.com/prod/token-new';
+export const TOKEN_URL = 'https://33333.cke-cs.com/token/dev/ijrDsqFix838Gh3wGO3F77FSW94BwcLXprJ4APSp3XQ26xsUHTi0jcb1hoBt';
+
+export const UPLOAD_URL = 'https://33333.cke-cs.com/easyimage/upload/';
+
+export const CS_CONFIG = {
+	tokenUrl: TOKEN_URL,
+	uploadUrl: UPLOAD_URL
+};
