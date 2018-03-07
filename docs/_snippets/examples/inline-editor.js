@@ -6,7 +6,7 @@
 /* globals console, window, document */
 
 import InlineEditor from '@ckeditor/ckeditor5-build-inline/src/ckeditor';
-import { TOKEN_URL } from '@ckeditor/ckeditor5-cloudservices/tests/_utils/cloudservices-config';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloudservices/tests/_utils/cloudservices-config';
 
 const inlineInjectElements = document.querySelectorAll( '#snippet-inline-editor [data-inline-inject]' );
 
@@ -19,9 +19,7 @@ Array.from( inlineInjectElements ).forEach( inlineElement => {
 		toolbar: {
 			viewportTopOffset: 60
 		},
-		cloudServices: {
-			tokenUrl: TOKEN_URL
-		}
+		cloudServices: CS_CONFIG
 	};
 
 	if ( inlineElement.tagName.toLowerCase() == 'header' ) {

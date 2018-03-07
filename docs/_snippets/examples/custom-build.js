@@ -14,8 +14,9 @@ import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
 import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight';
+import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
 
-import { TOKEN_URL } from '@ckeditor/ckeditor5-cloudservices/tests/_utils/cloudservices-config';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloudservices/tests/_utils/cloudservices-config';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-custom-build' ), {
@@ -27,12 +28,14 @@ ClassicEditor
 			Underline,
 			Strikethrough,
 			Code,
-			Highlight
+			Highlight,
+			EasyImage
 		],
-		toolbar: [ 'bold', 'italic', 'underline', 'strikethrough', 'code', '|', 'highlightDropdown', '|', 'undo', 'redo' ],
-		cloudServices: {
-			tokenUrl: TOKEN_URL
-		}
+		toolbar: {
+			items: [ 'bold', 'italic', 'underline', 'strikethrough', 'code', '|', 'highlightDropdown', '|', 'undo', 'redo' ],
+			viewportTopOffset: 60
+		},
+		cloudServices: CS_CONFIG
 	} )
 	.then( editor => {
 		window.editor = editor;

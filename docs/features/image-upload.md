@@ -50,7 +50,8 @@ To make enabling image upload in CKEditor 5 a breeze, by default all builds incl
 	ClassicCreator
 		.create( document.querySelector( '#editor' ), {
 			cloudServices: {
-				tokenUrl: 'http://url-to-retrieve-token.example.com/'
+				tokenUrl: 'https://example.com/cs-token-endpoint',
+				uploadUrl: 'https://your-organization-id.cke-cs.com/easyimage/upload/'
 			}
 		} )
 		.then( ... )
