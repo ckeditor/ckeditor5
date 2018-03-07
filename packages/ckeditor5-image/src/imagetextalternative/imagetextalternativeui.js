@@ -89,7 +89,7 @@ export default class ImageTextAlternativeUI extends Plugin {
 		/**
 		 * A form containing a textarea and buttons, used to change the `alt` text value.
 		 *
-		 * @member {module:image/imagetextalternative/ui/textalternativeformview~TextAlternativeFormView} #form
+		 * @member {module:image/imagetextalternative/ui/textalternativeformview~TextAlternativeFormView}
 		 */
 		this._form = new TextAlternativeFormView( editor.locale );
 

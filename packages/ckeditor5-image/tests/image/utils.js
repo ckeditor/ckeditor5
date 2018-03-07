@@ -62,7 +62,7 @@ describe( 'image widget utils', () => {
 			// We need to create a container for the element to be able to create a Range on this element.
 			frag = new ViewDocumentFragment( [ element ] );
 
-			const selection = new ViewSelection( [ ViewRange.createOn( element ) ] );
+			const selection = new ViewSelection( element, 'on' );
 
 			expect( isImageWidgetSelected( selection ) ).to.be.true;
 		} );
@@ -73,7 +73,7 @@ describe( 'image widget utils', () => {
 			// We need to create a container for the element to be able to create a Range on this element.
 			frag = new ViewDocumentFragment( [ notWidgetizedElement ] );
 
-			const selection = new ViewSelection( [ ViewRange.createOn( notWidgetizedElement ) ] );
+			const selection = new ViewSelection( notWidgetizedElement, 'on' );
 
 			expect( isImageWidgetSelected( selection ) ).to.be.false;
 		} );
@@ -83,7 +83,7 @@ describe( 'image widget utils', () => {
 
 			frag = new ViewDocumentFragment( [ element, notWidgetizedElement ] );
 
-			const selection = new ViewSelection( [ ViewRange.createIn( frag ) ] );
+			const selection = new ViewSelection( ViewRange.createIn( frag ) );
 
 			expect( isImageWidgetSelected( selection ) ).to.be.false;
 		} );
