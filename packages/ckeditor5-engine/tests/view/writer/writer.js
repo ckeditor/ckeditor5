@@ -68,12 +68,13 @@ describe( 'Writer', () => {
 			assertElementAttributes( element, attributes );
 		} );
 
-		it( 'should allow to pass priority', () => {
-			const element = writer.createAttributeElement( 'foo', attributes, 99 );
+		it( 'should allow to pass additional options', () => {
+			const element = writer.createAttributeElement( 'foo', attributes, { priority: 99, id: 'bar' } );
 
 			expect( element.is( 'attributeElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'foo' );
 			expect( element.priority ).to.equal( 99 );
+			expect( element.id ).to.equal( 'bar' );
 			assertElementAttributes( element, attributes );
 		} );
 	} );

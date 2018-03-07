@@ -135,15 +135,28 @@ export default class Writer {
 	 *		writer.createAttributeElement( 'strong' );
 	 *		writer.createAttributeElement( 'strong', { 'alignment': 'center' } );
 	 *
+	 *		// Make `<a>` element contain other attributes element so the `<a>` element is not broken.
+	 *		writer.createAttributeElement( 'a', { href: 'foo.bar' }, { priority: 5 } );
+	 *
+	 *		// Set `id` of a marker element so it is not joined or merged with "normal" elements.
+	 *		writer.createAttributeElement( 'span', { class: 'myMarker' }, { id: 'marker:my' } );
+	 *
 	 * @param {String} name Name of the element.
-	 * @param {Object} [attributes] Elements attributes.
+	 * @param {Object} [attributes] Element's attributes.
+	 * @param {Object} [options] Element's options.
+	 * @param {Number} [options.priority] Element's {@link module:engine/view/attributeelement~AttributeElement#priority priority}.
+	 * @param {Number|String} [options.id] Element's {@link module:engine/view/attributeelement~AttributeElement#id id}.
 	 * @returns {module:engine/view/attributeelement~AttributeElement} Created element.
 	 */
-	createAttributeElement( name, attributes, priority ) {
+	createAttributeElement( name, attributes, options = {} ) {
 		const attributeElement = new AttributeElement( name, attributes );
 
-		if ( priority ) {
-			attributeElement._priority = priority;
+		if ( options.priority ) {
+			attributeElement._priority = options.priority;
+		}
+
+		if ( options.id ) {
+			attributeElement._id = options.id;
 		}
 
 		return attributeElement;
