@@ -208,8 +208,8 @@ ClassicEditor.build = {
 		],
 		image: {
 			toolbar: [
-				'imageStyleFull',
-				'imageStyleSide',
+				'imageStyle:full',
+				'imageStyle:side',
 				'|',
 				'imageTextAlternative'
 			]
@@ -287,8 +287,8 @@ ClassicEditor
 		],
 		image: {
 			toolbar: [
-				'imageStyleFull',
-				'imageStyleSide',
+				'imageStyle:full',
+				'imageStyle:side',
 				'|',
 				'imageTextAlternative'
 			]
