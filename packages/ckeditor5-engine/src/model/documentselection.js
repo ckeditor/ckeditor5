@@ -531,7 +531,7 @@ class LiveSelection extends Selection {
 			// Update selection's attributes.
 			this._updateAttributes( false );
 
-			// Clear selection attributes from element if no longer empty,
+			// Clear selection attributes from element if no longer empty.
 			clearAttributesStoredInElement( this._model, batch );
 		} );
 
