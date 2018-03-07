@@ -7,13 +7,11 @@
 
 import BalloonEditor from '@ckeditor/ckeditor5-build-balloon/src/ckeditor';
 
-import { TOKEN_URL } from '@ckeditor/ckeditor5-cloudservices/tests/_utils/cloudservices-config';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloudservices/tests/_utils/cloudservices-config';
 
 BalloonEditor
 	.create( document.querySelector( '#snippet-balloon-editor' ), {
-		cloudServices: {
-			tokenUrl: TOKEN_URL
-		}
+		cloudServices: CS_CONFIG
 	} )
 	.then( editor => {
 		window.editor = editor;
