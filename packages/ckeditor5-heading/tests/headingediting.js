@@ -49,9 +49,7 @@ describe( 'HeadingEditing', () => {
 
 	it( 'should register #commands', () => {
 		expect( editor.commands.get( 'paragraph' ) ).to.be.instanceOf( ParagraphCommand );
-		expect( editor.commands.get( 'heading1' ) ).to.be.instanceOf( HeadingCommand );
-		expect( editor.commands.get( 'heading2' ) ).to.be.instanceOf( HeadingCommand );
-		expect( editor.commands.get( 'heading3' ) ).to.be.instanceOf( HeadingCommand );
+		expect( editor.commands.get( 'heading' ) ).to.be.instanceOf( HeadingCommand );
 	} );
 
 	it( 'should convert heading1', () => {
@@ -153,9 +151,6 @@ describe( 'HeadingEditing', () => {
 					} )
 					.then( editor => {
 						model = editor.model;
-
-						expect( editor.commands.get( 'h4' ) ).to.be.instanceOf( HeadingCommand );
-						expect( editor.commands.get( 'paragraph' ) ).to.be.instanceOf( ParagraphCommand );
 
 						expect( model.schema.isRegistered( 'paragraph' ) ).to.be.true;
 						expect( model.schema.isRegistered( 'h4' ) ).to.be.true;

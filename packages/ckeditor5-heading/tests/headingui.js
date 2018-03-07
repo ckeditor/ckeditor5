@@ -106,41 +106,46 @@ describe( 'HeadingUI', () => {
 		} );
 
 		describe( 'model to command binding', () => {
-			let commands;
+			let command, paragraphCommand;
 
 			beforeEach( () => {
-				commands = {};
-
-				editor.config.get( 'heading.options' ).forEach( ( { model } ) => {
-					commands[ model ] = editor.commands.get( model );
-				} );
+				command = editor.commands.get( 'heading' );
+				paragraphCommand = editor.commands.get( 'paragraph' );
 			} );
 
 			it( 'isEnabled', () => {
-				for ( const name in commands ) {
-					commands[ name ].isEnabled = false;
-				}
+				command.isEnabled = false;
+				paragraphCommand.isEnabled = false;
 
 				expect( dropdown.buttonView.isEnabled ).to.be.false;
 
-				commands.heading2.isEnabled = true;
+				command.isEnabled = true;
+				expect( dropdown.buttonView.isEnabled ).to.be.true;
+
+				command.isEnabled = false;
+				expect( dropdown.buttonView.isEnabled ).to.be.false;
+
+				paragraphCommand.isEnabled = true;
 				expect( dropdown.buttonView.isEnabled ).to.be.true;
 			} );
 
 			it( 'label', () => {
-				for ( const name in commands ) {
-					commands[ name ].value = false;
-				}
+				command.value = false;
+				paragraphCommand.value = false;
 
 				expect( dropdown.buttonView.label ).to.equal( 'Choose heading' );
 
-				commands.heading2.value = true;
+				command.value = 'heading2';
 				expect( dropdown.buttonView.label ).to.equal( 'Heading 2' );
+				command.value = false;
+
+				paragraphCommand.value = true;
+				expect( dropdown.buttonView.label ).to.equal( 'Paragraph' );
 			} );
 		} );
 
 		describe( 'localization', () => {
-			let commands, editor, dropdown;
+			let command, paragraphCommand, editor, dropdown;
 
 			beforeEach( () => {
 				return localizedEditor( [
@@ -163,15 +168,15 @@ describe( 'HeadingUI', () => {
 
 				// Setting manually paragraph.value to `false` because there might be some content in editor
 				// after initialisation (for example empty <p></p> inserted when editor is empty).
-				commands.paragraph.value = false;
+				paragraphCommand.value = false;
 				expect( buttonView.label ).to.equal( 'Wybierz nagłówek' );
 				expect( buttonView.tooltip ).to.equal( 'Nagłówek' );
 
-				commands.paragraph.value = true;
+				paragraphCommand.value = true;
 				expect( buttonView.label ).to.equal( 'Akapit' );
 
-				commands.paragraph.value = false;
-				commands.heading1.value = true;
+				paragraphCommand.value = false;
+				command.value = 'heading1';
 				expect( buttonView.label ).to.equal( 'Nagłówek 1' );
 			} );
 
@@ -227,11 +232,8 @@ describe( 'HeadingUI', () => {
 					.then( newEditor => {
 						editor = newEditor;
 						dropdown = editor.ui.componentFactory.create( 'heading' );
-						commands = {};
-
-						editor.config.get( 'heading.options' ).forEach( ( { model } ) => {
-							commands[ model ] = editor.commands.get( model );
-						} );
+						command = editor.commands.get( 'heading' );
+						paragraphCommand = editor.commands.get( 'paragraph' );
 
 						editorElement.remove();
 

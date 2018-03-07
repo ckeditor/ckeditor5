@@ -20,9 +20,9 @@ export default class HeadingCommand extends Command {
 	 * Creates an instance of the command.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor Editor instance.
-	 * @param {String} modelElement Name of the element which this command will apply in the model.
+	 * @param {Array.<String>} modelElements Names of the element which this command can apply in the model.
 	 */
-	constructor( editor, modelElement ) {
+	constructor( editor, modelElements ) {
 		super( editor );
 
 		/**
@@ -34,13 +34,13 @@ export default class HeadingCommand extends Command {
 		 */
 
 		/**
-		 * Unique identifier of the command, also element's name in the model.
+		 * Set of defined model's elements names that this command recognise.
 		 * See {@link module:heading/heading~HeadingOption}.
 		 *
 		 * @readonly
-		 * @member {String}
+		 * @member {Array.<String>}
 		 */
-		this.modelElement = modelElement;
+		this.modelElements = modelElements;
 	}
 
 	/**
@@ -49,29 +49,44 @@ export default class HeadingCommand extends Command {
 	refresh() {
 		const block = first( this.editor.model.document.selection.getSelectedBlocks() );
 
-		this.value = !!block && block.is( this.modelElement );
-		this.isEnabled = !!block && checkCanBecomeHeading( block, this.modelElement, this.editor.model.schema );
+		/**
+		 * The name of a heading.
+		 *
+		 * @observable
+		 * @readonly
+		 * @member {Boolean|String} #value
+		 */
+		this.value = !!block && this.modelElements.includes( block.name ) && block.name;
+		this.isEnabled = !!block && this.modelElements.some( heading => checkCanBecomeHeading( block, heading, this.editor.model.schema ) );
 	}
 
 	/**
 	 * Executes the command. Applies the heading to the selected blocks or, if the first selected
 	 * block is a heading already, turns selected headings (of this level only) to paragraphs.
 	 *
+	 * @param {Object} options
+	 * @param {String} options.value Name of the element which this command will apply in the model.
 	 * @fires execute
 	 */
-	execute() {
+	execute( options = {} ) {
 		const model = this.editor.model;
 		const document = model.document;
+
+		const modelElement = options.value;
+
+		if ( !this.modelElements.includes( modelElement ) ) {
+			return;
+		}
 
 		model.change( writer => {
 			const blocks = Array.from( document.selection.getSelectedBlocks() )
 				.filter( block => {
-					return checkCanBecomeHeading( block, this.modelElement, model.schema );
+					return checkCanBecomeHeading( block, modelElement, model.schema );
 				} );
 
 			for ( const block of blocks ) {
-				if ( !block.is( this.modelElement ) ) {
-					writer.rename( block, this.modelElement );
+				if ( !block.is( modelElement ) ) {
+					writer.rename( block, modelElement );
 				}
 			}
 		} );

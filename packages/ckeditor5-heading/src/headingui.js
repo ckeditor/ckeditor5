@@ -34,23 +34,36 @@ export default class HeadingUI extends Plugin {
 
 		// Register UI component.
 		editor.ui.componentFactory.add( 'heading', locale => {
-			const commands = [];
+			const titles = {};
 			const dropdownItems = new Collection();
 
+			const headingCommand = editor.commands.get( 'heading' );
+			const paragraphCommand = editor.commands.get( 'paragraph' );
+
+			const commands = [ headingCommand ];
+
 			for ( const option of options ) {
-				const command = editor.commands.get( option.model );
 				const itemModel = new Model( {
-					commandName: option.model,
 					label: option.title,
 					class: option.class
 				} );
 
-				itemModel.bind( 'isActive' ).to( command, 'value' );
+				if ( option.model === 'paragraph' ) {
+					itemModel.bind( 'isActive' ).to( paragraphCommand, 'value' );
+					itemModel.set( 'commandName', 'paragraph' );
+					commands.push( paragraphCommand );
+				} else {
+					itemModel.bind( 'isActive' ).to( headingCommand, 'value', value => value === option.model );
+					itemModel.set( {
+						commandName: 'heading',
+						commandValue: option.model
+					} );
+				}
 
 				// Add the option to the collection.
 				dropdownItems.add( itemModel );
 
-				commands.push( command );
+				titles[ option.model ] = option.title;
 			}
 
 			const dropdownView = createDropdown( locale );
@@ -74,11 +87,10 @@ export default class HeadingUI extends Plugin {
 				return areEnabled.some( isEnabled => isEnabled );
 			} );
 
-			dropdownView.buttonView.bind( 'label' ).toMany( commands, 'value', ( ...areActive ) => {
-				const index = areActive.findIndex( value => value );
-
+			dropdownView.buttonView.bind( 'label' ).to( headingCommand, 'value', paragraphCommand, 'value', ( value, para ) => {
+				const whichModel = value || para && 'paragraph';
 				// If none of the commands is active, display default title.
-				return options[ index ] ? options[ index ].title : defaultTitle;
+				return titles[ whichModel ] ? titles[ whichModel ] : defaultTitle;
 			} );
 
 			// Execute command when an item from the dropdown is selected.
