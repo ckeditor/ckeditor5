@@ -178,6 +178,6 @@ export default class DeleteCommand extends Command {
 		writer.remove( Range.createIn( limitElement ) );
 		writer.insert( paragraph, limitElement );
 
-		writer.setSelection( paragraph );
+		writer.setSelection( paragraph, 0 );
 	}
 }
