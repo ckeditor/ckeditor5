@@ -128,6 +128,16 @@ describe( 'Writer', () => {
 		} );
 	} );
 
+	describe( 'setTextData()', () => {
+		it( 'should update the content for text node', () => {
+			const textNode = writer.createText( 'foo' );
+
+			writer.setTextData( 'bar', textNode );
+
+			expect( textNode.data ).to.equal( 'bar' );
+		} );
+	} );
+
 	describe( 'setAttribute()', () => {
 		it( 'should set attribute on given element', () => {
 			const element = writer.createAttributeElement( 'span' );

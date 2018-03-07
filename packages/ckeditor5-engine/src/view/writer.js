@@ -226,6 +226,16 @@ export default class Writer {
 	}
 
 	/**
+	 * Sets the text content for the specified `textNode`.
+	 *
+	 * @param {String} value New value.
+	 * @param {module:engine/view/text~Text} textNode Text node that will be updated.
+	 */
+	setTextData( value, textNode ) {
+		textNode._data = value;
+	}
+
+	/**
 	 * Adds or overwrite element's attribute with a specified key and value.
 	 *
 	 *		writer.setAttribute( 'href', 'http://ckeditor.com', linkElement );
