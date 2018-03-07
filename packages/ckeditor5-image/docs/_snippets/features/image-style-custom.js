@@ -5,7 +5,7 @@
 
 /* globals ClassicEditor, console, window, document */
 
-import { TOKEN_URL } from '@ckeditor/ckeditor5-cloudservices/tests/_utils/cloudservices-config.js';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloudservices/tests/_utils/cloudservices-config.js';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-image-style-custom' ), {
@@ -26,9 +26,7 @@ ClassicEditor
 		toolbar: {
 			viewportTopOffset: 60
 		},
-		cloudServices: {
-			tokenUrl: TOKEN_URL
-		}
+		cloudServices: CS_CONFIG
 	} )
 	.then( editor => {
 		window.editorStyleCustom = editor;
