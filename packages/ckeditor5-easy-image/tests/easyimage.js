@@ -45,6 +45,7 @@ describe( 'EasyImage', () => {
 				plugins: [ EasyImage ],
 				cloudServices: {
 					tokenUrl: 'abc',
+					uploadUrl: 'def'
 				}
 			} )
 			.then( editor => {
