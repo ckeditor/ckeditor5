@@ -39,7 +39,8 @@ describe( 'Writer', () => {
 				const { view, selection } = parse( input );
 				const newRange = writer.wrap( selection.getFirstRange(), parse( wrapAttribute ) );
 
-				expect( stringify( view.root, newRange, { showType: true, showPriority: true } ) ).to.equal( expected );
+				expect( stringify( view.root, newRange, { showType: true, showPriority: true, showAttributeElementId: true } ) )
+					.to.equal( expected );
 			}
 
 			it( 'wraps single text node', () => {
@@ -427,6 +428,48 @@ describe( 'Writer', () => {
 					'<container:p>' +
 						'[<attribute:span view-priority="10" name="bar">' +
 							'<attribute:span view-priority="10" name="foo">foo</attribute:span>' +
+						'</attribute:span>]' +
+					'</container:p>'
+				);
+			} );
+
+			it( 'should not join elements if element to wrap has id', () => {
+				test(
+					'<container:p>[<attribute:span foo="foo" view-id="foo">xyz</attribute:span>]</container:p>',
+
+					'<attribute:span bar="bar"></attribute:span>',
+
+					'<container:p>' +
+						'[<attribute:span view-priority="10" bar="bar">' +
+							'<attribute:span view-priority="10" view-id="foo" foo="foo">xyz</attribute:span>' +
+						'</attribute:span>]' +
+					'</container:p>'
+				);
+			} );
+
+			it( 'should not join elements if wrapper element has id', () => {
+				test(
+					'<container:p>[<attribute:span foo="foo">xyz</attribute:span>]</container:p>',
+
+					'<attribute:span bar="bar" view-id="foo"></attribute:span>',
+
+					'<container:p>' +
+						'[<attribute:span view-priority="10" view-id="foo" bar="bar">' +
+							'<attribute:span view-priority="10" foo="foo">xyz</attribute:span>' +
+						'</attribute:span>]' +
+					'</container:p>'
+				);
+			} );
+
+			it( 'should not join elements if they have different ids', () => {
+				test(
+					'<container:p>[<attribute:span foo="foo" view-id="foo">xyz</attribute:span>]</container:p>',
+
+					'<attribute:span bar="bar" view-id="bar"></attribute:span>',
+
+					'<container:p>' +
+						'[<attribute:span view-priority="10" view-id="bar" bar="bar">' +
+							'<attribute:span view-priority="10" view-id="foo" foo="foo">xyz</attribute:span>' +
 						'</attribute:span>]' +
 					'</container:p>'
 				);

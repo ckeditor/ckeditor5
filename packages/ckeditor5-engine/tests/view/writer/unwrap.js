@@ -372,5 +372,66 @@ describe( 'Writer', () => {
 				writer.unwrap( range, attribute );
 			} ).to.throw( CKEditorError, 'view-writer-cannot-break-ui-element' );
 		} );
+
+		it( 'should unwrap if both elements have same id', () => {
+			const unwrapper = writer.createAttributeElement( 'span', null, { id: 'foo' } );
+			const attribute = writer.createAttributeElement( 'span', null, { id: 'foo' } );
+			const container = writer.createContainerElement( 'div' );
+
+			writer.insert( Position.createAt( container, 0 ), attribute );
+			writer.unwrap( Range.createOn( attribute ), unwrapper );
+
+			expect( stringify( container, null, { showType: false, showPriority: false } ) ).to.equal( '<div></div>' );
+		} );
+
+		it( 'should always unwrap whole element if both elements have same id', () => {
+			const unwrapper = writer.createAttributeElement( 'b', null, { id: 'foo' } );
+			const attribute = writer.createAttributeElement( 'span', { foo: 'foo' }, { id: 'foo' } );
+			const container = writer.createContainerElement( 'div' );
+
+			writer.insert( Position.createAt( container, 0 ), attribute );
+			writer.unwrap( Range.createOn( attribute ), unwrapper );
+
+			expect( stringify( container, null, { showType: false, showPriority: false } ) ).to.equal( '<div></div>' );
+		} );
+
+		// Below are tests for elements with different ids.
+		// Only partial unwrapping is tested because elements with different ids are never similar.
+		// This means that unwrapping of whole element is not possible in this case.
+		it( 'should not unwrap matching attributes if the element to unwrap has id', () => {
+			const unwrapper = writer.createAttributeElement( 'span', { foo: 'foo' } );
+			const attribute = writer.createAttributeElement( 'span', { foo: 'foo', bar: 'bar' }, { id: 'id' } );
+			const container = writer.createContainerElement( 'div' );
+
+			writer.insert( Position.createAt( container, 0 ), attribute );
+			writer.unwrap( Range.createOn( attribute ), unwrapper );
+
+			const view = stringify( container, null, { showType: false, showPriority: false } );
+			expect( view ).to.equal( '<div><span bar="bar" foo="foo"></span></div>' );
+		} );
+
+		it( 'should not unwrap matching attributes if the unwrapping element has id', () => {
+			const unwrapper = writer.createAttributeElement( 'span', { foo: 'foo' }, { id: 'id' } );
+			const attribute = writer.createAttributeElement( 'span', { foo: 'foo', bar: 'bar' } );
+			const container = writer.createContainerElement( 'div' );
+
+			writer.insert( Position.createAt( container, 0 ), attribute );
+			writer.unwrap( Range.createOn( attribute ), unwrapper );
+
+			const view = stringify( container, null, { showType: false, showPriority: false } );
+			expect( view ).to.equal( '<div><span bar="bar" foo="foo"></span></div>' );
+		} );
+
+		it( 'should not unwrap matching attributes if the elements have different id', () => {
+			const unwrapper = writer.createAttributeElement( 'span', { foo: 'foo' }, { id: 'a' } );
+			const attribute = writer.createAttributeElement( 'span', { foo: 'foo', bar: 'bar' }, { id: 'b' } );
+			const container = writer.createContainerElement( 'div' );
+
+			writer.insert( Position.createAt( container, 0 ), attribute );
+			writer.unwrap( Range.createOn( attribute ), unwrapper );
+
+			const view = stringify( container, null, { showType: false, showPriority: false } );
+			expect( view ).to.equal( '<div><span bar="bar" foo="foo"></span></div>' );
+		} );
 	} );
 } );

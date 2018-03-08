@@ -179,10 +179,9 @@ export default class Writer {
 	/**
 	 * Creates new {@link module:engine/view/editableelement~EditableElement}.
 	 *
-	 *		writer.createEditableElement( document, 'div' );
-	 *		writer.createEditableElement( document, 'div', { 'alignment': 'center' } );
+	 *		writer.createEditableElement( 'div' );
+	 *		writer.createEditableElement( 'div', { 'alignment': 'center' } );
 	 *
-	 * @param {module:engine/view/document~Document} document View document.
 	 * @param {String} name Name of the element.
 	 * @param {Object} [attributes] Elements attributes.
 	 * @returns {module:engine/view/editableelement~EditableElement} Created element.
@@ -397,9 +396,9 @@ export default class Writer {
 	 */
 	breakAttributes( positionOrRange ) {
 		if ( positionOrRange instanceof Position ) {
-			return _breakAttributes( positionOrRange );
+			return this._breakAttributes( positionOrRange );
 		} else {
-			return _breakAttributesRange( positionOrRange );
+			return this._breakAttributesRange( positionOrRange );
 		}
 	}
 
@@ -506,6 +505,8 @@ export default class Writer {
 			const offset = positionParent.index;
 			positionParent._remove();
 
+			this._unlinkBrokenAttributeElement( positionParent );
+
 			return this.mergeAttributes( new Position( parent, offset ) );
 		}
 
@@ -521,12 +522,14 @@ export default class Writer {
 		if ( nodeBefore.is( 'text' ) && nodeAfter.is( 'text' ) ) {
 			return mergeTextNodes( nodeBefore, nodeAfter );
 		}
-		// When selection is between two same attribute elements.
+		// When position is between two same attribute elements.
 		else if ( nodeBefore.is( 'attributeElement' ) && nodeAfter.is( 'attributeElement' ) && nodeBefore.isSimilar( nodeAfter ) ) {
 			// Move all children nodes from node placed after selection and remove that node.
 			const count = nodeBefore.childCount;
 			nodeBefore._appendChildren( nodeAfter.getChildren() );
+
 			nodeAfter._remove();
+			this._unlinkBrokenAttributeElement( nodeAfter );
 
 			// New position is located inside the first node, before new nodes.
 			// Call this method recursively to merge again if needed.
@@ -613,7 +616,7 @@ export default class Writer {
 			throw new CKEditorError( 'view-writer-invalid-position-container' );
 		}
 
-		const insertionPosition = _breakAttributes( position, true );
+		const insertionPosition = this._breakAttributes( position, true );
 
 		const length = container._insertChildren( insertionPosition.offset, nodes );
 		const endPosition = insertionPosition.getShiftedBy( length );
@@ -654,13 +657,17 @@ export default class Writer {
 		}
 
 		// Break attributes at range start and end.
-		const { start: breakStart, end: breakEnd } = _breakAttributesRange( range, true );
+		const { start: breakStart, end: breakEnd } = this._breakAttributesRange( range, true );
 		const parentContainer = breakStart.parent;
 
 		const count = breakEnd.offset - breakStart.offset;
 
 		// Remove nodes in range.
 		const removed = parentContainer._removeChildren( breakStart.offset, count );
+
+		for ( const node of removed ) {
+			this._unlinkBrokenAttributeElement( node );
+		}
 
 		// Merge after removing.
 		const mergePosition = this.mergeAttributes( breakStart );
@@ -746,12 +753,12 @@ export default class Writer {
 		let nodes;
 
 		if ( targetPosition.isAfter( sourceRange.end ) ) {
-			targetPosition = _breakAttributes( targetPosition, true );
+			targetPosition = this._breakAttributes( targetPosition, true );
 
 			const parent = targetPosition.parent;
 			const countBefore = parent.childCount;
 
-			sourceRange = _breakAttributesRange( sourceRange, true );
+			sourceRange = this._breakAttributesRange( sourceRange, true );
 
 			nodes = this.remove( sourceRange );
 
@@ -842,7 +849,7 @@ export default class Writer {
 		}
 
 		// Break attributes at range start and end.
-		const { start: breakStart, end: breakEnd } = _breakAttributesRange( range, true );
+		const { start: breakStart, end: breakEnd } = this._breakAttributesRange( range, true );
 
 		// Range around one element - check if AttributeElement can be unwrapped partially when it's not similar.
 		// For example:
@@ -905,6 +912,24 @@ export default class Writer {
 	}
 
 	/**
+	 * For the given attribute element, returns that element and all the elements that were cloned from the given element
+	 * when the element was broken by `Writer`.
+	 *
+	 * @param {module:engine/view/attributeelement~AttributeElement} element
+	 * @returns {Array.<module:engine/view/attributeelement~AttributeElement>}
+	 */
+	getAllBrokenSiblings( element ) {
+		const original = element.getCustomProperty( 'originalAttributeElement' ) || element;
+		const clones = original.getCustomProperty( 'clonedAttributeElements' );
+
+		if ( clones ) {
+			return Array.from( clones ).concat( original );
+		} else {
+			return [ element ];
+		}
+	}
+
+	/**
 	 * Wraps children with provided `attribute`. Only children contained in `parent` element between
 	 * `startOffset` and `endOffset` will be wrapped.
 	 *
@@ -930,7 +955,7 @@ export default class Writer {
 				// Clone attribute.
 				const newAttribute = attribute._clone();
 
-				// Wrap current node with new attribute;
+				// Wrap current node with new attribute.
 				child._remove();
 				newAttribute._appendChildren( child );
 				parent._insertChildren( i, newAttribute );
@@ -993,6 +1018,8 @@ export default class Writer {
 
 				// Replace wrapper element with its children
 				child._remove();
+				this._unlinkBrokenAttributeElement( child );
+
 				parent._insertChildren( i, unwrapped );
 
 				// Save start and end position of moved items.
@@ -1062,7 +1089,7 @@ export default class Writer {
 		}
 
 		// Break attributes at range start and end.
-		const { start: breakStart, end: breakEnd } = _breakAttributesRange( range, true );
+		const { start: breakStart, end: breakEnd } = this._breakAttributesRange( range, true );
 
 		// Range around one element.
 		if ( breakEnd.isEqual( breakStart.getShiftedBy( 1 ) ) ) {
@@ -1165,6 +1192,10 @@ export default class Writer {
 	 * 	@returns {Boolean} Returns `true` if elements are merged.
 	 */
 	_wrapAttributeElement( wrapper, toWrap ) {
+		if ( !canBeJoined( wrapper, toWrap ) ) {
+			return false;
+		}
+
 		// Can't merge if name or priority differs.
 		if ( wrapper.name !== toWrap.name || wrapper.priority !== toWrap.priority ) {
 			return false;
@@ -1229,6 +1260,10 @@ export default class Writer {
 	 * @returns {Boolean} Returns `true` if elements are unwrapped.
 	 **/
 	_unwrapAttributeElement( wrapper, toUnwrap ) {
+		if ( !canBeJoined( wrapper, toUnwrap ) ) {
+			return false;
+		}
+
 		// Can't unwrap if name or priority differs.
 		if ( wrapper.name !== toUnwrap.name || wrapper.priority !== toUnwrap.priority ) {
 			return false;
@@ -1278,6 +1313,156 @@ export default class Writer {
 
 		return true;
 	}
+
+	_breakAttributesRange( range, forceSplitText = false ) {
+		const rangeStart = range.start;
+		const rangeEnd = range.end;
+
+		validateRangeContainer( range );
+
+		// Break at the collapsed position. Return new collapsed range.
+		if ( range.isCollapsed ) {
+			const position = this._breakAttributes( range.start, forceSplitText );
+
+			return new Range( position, position );
+		}
+
+		const breakEnd = this._breakAttributes( rangeEnd, forceSplitText );
+		const count = breakEnd.parent.childCount;
+		const breakStart = this._breakAttributes( rangeStart, forceSplitText );
+
+		// Calculate new break end offset.
+		breakEnd.offset += breakEnd.parent.childCount - count;
+
+		return new Range( breakStart, breakEnd );
+	}
+
+	_breakAttributes( position, forceSplitText = false ) {
+		const positionOffset = position.offset;
+		const positionParent = position.parent;
+
+		// If position is placed inside EmptyElement - throw an exception as we cannot break inside.
+		if ( position.parent.is( 'emptyElement' ) ) {
+			/**
+			 * Cannot break inside EmptyElement instance.
+			 *
+			 * @error view-writer-cannot-break-empty-element
+			 */
+			throw new CKEditorError( 'view-writer-cannot-break-empty-element' );
+		}
+
+		// If position is placed inside UIElement - throw an exception as we cannot break inside.
+		if ( position.parent.is( 'uiElement' ) ) {
+			/**
+			 * Cannot break inside UIElement instance.
+			 *
+			 * @error view-writer-cannot-break-ui-element
+			 */
+			throw new CKEditorError( 'view-writer-cannot-break-ui-element' );
+		}
+
+		// There are no attributes to break and text nodes breaking is not forced.
+		if ( !forceSplitText && positionParent.is( 'text' ) && isContainerOrFragment( positionParent.parent ) ) {
+			return Position.createFromPosition( position );
+		}
+
+		// Position's parent is container, so no attributes to break.
+		if ( isContainerOrFragment( positionParent ) ) {
+			return Position.createFromPosition( position );
+		}
+
+		// Break text and start again in new position.
+		if ( positionParent.is( 'text' ) ) {
+			return this._breakAttributes( breakTextNode( position ), forceSplitText );
+		}
+
+		const length = positionParent.childCount;
+
+		// <p>foo<b><u>bar{}</u></b></p>
+		// <p>foo<b><u>bar</u>[]</b></p>
+		// <p>foo<b><u>bar</u></b>[]</p>
+		if ( positionOffset == length ) {
+			const newPosition = new Position( positionParent.parent, positionParent.index + 1 );
+
+			return this._breakAttributes( newPosition, forceSplitText );
+		} else
+		// <p>foo<b><u>{}bar</u></b></p>
+		// <p>foo<b>[]<u>bar</u></b></p>
+		// <p>foo{}<b><u>bar</u></b></p>
+		if ( positionOffset === 0 ) {
+			const newPosition = new Position( positionParent.parent, positionParent.index );
+
+			return this._breakAttributes( newPosition, forceSplitText );
+		}
+		// <p>foo<b><u>b{}ar</u></b></p>
+		// <p>foo<b><u>b[]ar</u></b></p>
+		// <p>foo<b><u>b</u>[]<u>ar</u></b></p>
+		// <p>foo<b><u>b</u></b>[]<b><u>ar</u></b></p>
+		else {
+			const offsetAfter = positionParent.index + 1;
+
+			// Break element.
+			const clonedNode = positionParent._clone();
+
+			// Save that the `clonedNode` was created from `positionParent`.
+			this._linkBrokenAttributeElements( clonedNode, positionParent );
+
+			// Insert cloned node to position's parent node.
+			positionParent.parent._insertChildren( offsetAfter, clonedNode );
+
+			// Get nodes to move.
+			const count = positionParent.childCount - positionOffset;
+			const nodesToMove = positionParent._removeChildren( positionOffset, count );
+
+			// Move nodes to cloned node.
+			clonedNode._appendChildren( nodesToMove );
+
+			// Create new position to work on.
+			const newPosition = new Position( positionParent.parent, offsetAfter );
+
+			return this._breakAttributes( newPosition, forceSplitText );
+		}
+	}
+
+	/**
+	 * Links `clonedNode` element to `clonedFrom` element. Saves information that `clonedNode` was created as a clone
+	 * of `clonedFrom` when `clonedFrom` was broken into two elements by the `Writer`.
+	 *
+	 * @private
+	 * @param {module:engine/view/attributeelement~AttributeElement} clonedNode
+	 * @param {module:engine/view/attributeelement~AttributeElement} clonedFrom
+	 */
+	_linkBrokenAttributeElements( clonedNode, clonedFrom ) {
+		const original = clonedFrom.getCustomProperty( 'originalAttributeElement' ) || clonedFrom;
+		const clones = original.getCustomProperty( 'clonedAttributeElements' ) || new Set();
+
+		this.setCustomProperty( 'originalAttributeElement', original, clonedNode );
+
+		clones.add( clonedNode );
+		this.setCustomProperty( 'clonedAttributeElements', clones, original );
+	}
+
+	/**
+	 * Unlinks `element`. Removes information about how `element` was broken by the `Writer` from `element` and from
+	 * its original element (the element it was cloned from).
+	 *
+	 * @private
+	 * @param {module:engine/view/attributeelement~AttributeElement} element
+	 */
+	_unlinkBrokenAttributeElement( element ) {
+		if ( !element.is( 'element' ) ) {
+			return;
+		}
+
+		const original = element.getCustomProperty( 'originalAttributeElement' );
+
+		if ( original ) {
+			this.removeCustomProperty( 'originalAttributeElement', element );
+
+			const clones = original.getCustomProperty( 'clonedAttributeElements' );
+			clones.delete( element );
+		}
+	}
 }
 
 // Helper function for `view.writer.wrap`. Checks if given element has any children that are not ui elements.
@@ -1309,135 +1494,6 @@ function getParentContainer( position ) {
 	}
 
 	return parent;
-}
-
-// Function used by both public breakAttributes (without splitting text nodes) and by other methods (with
-// splitting text nodes).
-//
-// @param {module:engine/view/range~Range} range Range which `start` and `end` positions will be used to break attributes.
-// @param {Boolean} [forceSplitText = false] If set to `true`, will break text nodes even if they are directly in
-// container element. This behavior will result in incorrect view state, but is needed by other view writing methods
-// which then fixes view state. Defaults to `false`.
-// @returns {module:engine/view/range~Range} New range with located at break positions.
-function _breakAttributesRange( range, forceSplitText = false ) {
-	const rangeStart = range.start;
-	const rangeEnd = range.end;
-
-	validateRangeContainer( range );
-
-	// Break at the collapsed position. Return new collapsed range.
-	if ( range.isCollapsed ) {
-		const position = _breakAttributes( range.start, forceSplitText );
-
-		return new Range( position, position );
-	}
-
-	const breakEnd = _breakAttributes( rangeEnd, forceSplitText );
-	const count = breakEnd.parent.childCount;
-	const breakStart = _breakAttributes( rangeStart, forceSplitText );
-
-	// Calculate new break end offset.
-	breakEnd.offset += breakEnd.parent.childCount - count;
-
-	return new Range( breakStart, breakEnd );
-}
-
-// Function used by public breakAttributes (without splitting text nodes) and by other methods (with
-// splitting text nodes).
-//
-// Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-cannot-break-empty-element` when break position
-// is placed inside {@link module:engine/view/emptyelement~EmptyElement EmptyElement}.
-//
-// Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-cannot-break-ui-element` when break position
-// is placed inside {@link module:engine/view/uielement~UIElement UIElement}.
-//
-// @param {module:engine/view/position~Position} position Position where to break attributes.
-// @param {Boolean} [forceSplitText = false] If set to `true`, will break text nodes even if they are directly in
-// container element. This behavior will result in incorrect view state, but is needed by other view writing methods
-// which then fixes view state. Defaults to `false`.
-// @returns {module:engine/view/position~Position} New position after breaking the attributes.
-function _breakAttributes( position, forceSplitText = false ) {
-	const positionOffset = position.offset;
-	const positionParent = position.parent;
-
-	// If position is placed inside EmptyElement - throw an exception as we cannot break inside.
-	if ( position.parent.is( 'emptyElement' ) ) {
-		/**
-		 * Cannot break inside EmptyElement instance.
-		 *
-		 * @error view-writer-cannot-break-empty-element
-		 */
-		throw new CKEditorError( 'view-writer-cannot-break-empty-element' );
-	}
-
-	// If position is placed inside UIElement - throw an exception as we cannot break inside.
-	if ( position.parent.is( 'uiElement' ) ) {
-		/**
-		 * Cannot break inside UIElement instance.
-		 *
-		 * @error view-writer-cannot-break-ui-element
-		 */
-		throw new CKEditorError( 'view-writer-cannot-break-ui-element' );
-	}
-
-	// There are no attributes to break and text nodes breaking is not forced.
-	if ( !forceSplitText && positionParent.is( 'text' ) && isContainerOrFragment( positionParent.parent ) ) {
-		return Position.createFromPosition( position );
-	}
-
-	// Position's parent is container, so no attributes to break.
-	if ( isContainerOrFragment( positionParent ) ) {
-		return Position.createFromPosition( position );
-	}
-
-	// Break text and start again in new position.
-	if ( positionParent.is( 'text' ) ) {
-		return _breakAttributes( breakTextNode( position ), forceSplitText );
-	}
-
-	const length = positionParent.childCount;
-
-	// <p>foo<b><u>bar{}</u></b></p>
-	// <p>foo<b><u>bar</u>[]</b></p>
-	// <p>foo<b><u>bar</u></b>[]</p>
-	if ( positionOffset == length ) {
-		const newPosition = new Position( positionParent.parent, positionParent.index + 1 );
-
-		return _breakAttributes( newPosition, forceSplitText );
-	} else
-	// <p>foo<b><u>{}bar</u></b></p>
-	// <p>foo<b>[]<u>bar</u></b></p>
-	// <p>foo{}<b><u>bar</u></b></p>
-	if ( positionOffset === 0 ) {
-		const newPosition = new Position( positionParent.parent, positionParent.index );
-
-		return _breakAttributes( newPosition, forceSplitText );
-	}
-	// <p>foo<b><u>b{}ar</u></b></p>
-	// <p>foo<b><u>b[]ar</u></b></p>
-	// <p>foo<b><u>b</u>[]<u>ar</u></b></p>
-	// <p>foo<b><u>b</u></b>[]<b><u>ar</u></b></p>
-	else {
-		const offsetAfter = positionParent.index + 1;
-
-		// Break element.
-		const clonedNode = positionParent._clone();
-
-		// Insert cloned node to position's parent node.
-		positionParent.parent._insertChildren( offsetAfter, clonedNode );
-
-		// Get nodes to move.
-		const count = positionParent.childCount - positionOffset;
-		const nodesToMove = positionParent._removeChildren( positionOffset, count );
-
-		// Move nodes to cloned node.
-		clonedNode._appendChildren( nodesToMove );
-
-		// Create new position to work on.
-		const newPosition = new Position( positionParent.parent, offsetAfter );
-
-		return _breakAttributes( newPosition, forceSplitText );
-	}
 }
 
 // Checks if first {@link module:engine/view/attributeelement~AttributeElement AttributeElement} provided to the function
@@ -1604,4 +1660,15 @@ function validateRangeContainer( range ) {
 		 */
 		throw new CKEditorError( 'view-writer-invalid-range-container' );
 	}
+}
+
+// Checks if two attribute elements can be joined together. Elements can be joined together if, and only if
+// they do not have ids specified.
+//
+// @private
+// @param {module:engine/view/element~Element} a
+// @param {module:engine/view/element~Element} b
+// @returns {Boolean}
+function canBeJoined( a, b ) {
+	return a.id === null && b.id === null;
 }
