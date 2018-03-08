@@ -1012,7 +1012,7 @@ function clearAttributesStoredInElement( model, batch ) {
 	const differ = model.document.differ;
 
 	for ( const entry of differ.getChanges() ) {
-		if ( entry.type != 'insert' || !entry.position.parent ) {
+		if ( entry.type != 'insert' ) {
 			continue;
 		}
 
