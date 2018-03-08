@@ -1279,6 +1279,119 @@ describe( 'downcast-converters', () => {
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
 			} );
+
+			it( 'should correctly wrap and unwrap multiple, intersecting markers', () => {
+				const descriptorFoo = { class: 'foo' };
+				const descriptorBar = { class: 'bar' };
+				const descriptorXyz = { class: 'xyz' };
+
+				dispatcher.on( 'addMarker:markerFoo', highlightText( descriptorFoo ) );
+				dispatcher.on( 'addMarker:markerBar', highlightText( descriptorBar ) );
+				dispatcher.on( 'addMarker:markerXyz', highlightText( descriptorXyz ) );
+
+				dispatcher.on( 'removeMarker:markerFoo', removeHighlight( descriptorFoo ) );
+				dispatcher.on( 'removeMarker:markerBar', removeHighlight( descriptorBar ) );
+				dispatcher.on( 'removeMarker:markerXyz', removeHighlight( descriptorXyz ) );
+
+				const p1 = modelRoot.getChild( 0 );
+				const p2 = modelRoot.getChild( 1 );
+
+				model.change( writer => {
+					writer.setMarker( 'markerFoo', ModelRange.createFromParentsAndOffsets( p1, 0, p1, 3 ) );
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal(
+					'<div>' +
+						'<p>' +
+							'<span class="foo">foo</span>' +
+						'</p>' +
+						'<p>bar</p>' +
+					'</div>'
+				);
+
+				model.change( writer => {
+					writer.setMarker( 'markerBar', ModelRange.createFromParentsAndOffsets( p1, 1, p2, 2 ) );
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal(
+					'<div>' +
+						'<p>' +
+							'<span class="foo">f</span>' +
+							'<span class="bar">' +
+								'<span class="foo">oo</span>' +
+							'</span>' +
+						'</p>' +
+						'<p>' +
+							'<span class="bar">ba</span>' +
+							'r' +
+						'</p>' +
+					'</div>'
+				);
+
+				model.change( writer => {
+					writer.setMarker( 'markerXyz', ModelRange.createFromParentsAndOffsets( p1, 2, p2, 3 ) );
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal(
+					'<div>' +
+						'<p>' +
+							'<span class="foo">f</span>' +
+							'<span class="bar">' +
+								'<span class="foo">' +
+									'o' +
+									'<span class="xyz">o</span>' +
+								'</span>' +
+							'</span>' +
+						'</p>' +
+						'<p>' +
+							'<span class="bar">' +
+								'<span class="xyz">ba</span>' +
+							'</span>' +
+							'<span class="xyz">r</span>' +
+						'</p>' +
+					'</div>'
+				);
+
+				model.change( writer => {
+					writer.removeMarker( 'markerBar' );
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal(
+					'<div>' +
+						'<p>' +
+							'<span class="foo">' +
+								'fo' +
+								'<span class="xyz">o</span>' +
+							'</span>' +
+						'</p>' +
+						'<p>' +
+							'<span class="xyz">bar</span>' +
+						'</p>' +
+					'</div>'
+				);
+
+				model.change( writer => {
+					writer.removeMarker( 'markerFoo' );
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal(
+					'<div>' +
+						'<p>' +
+							'fo' +
+							'<span class="xyz">o</span>' +
+						'</p>' +
+						'<p>' +
+							'<span class="xyz">bar</span>' +
+						'</p>' +
+					'</div>'
+				);
+
+				model.change( writer => {
+					writer.removeMarker( 'markerXyz' );
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
+			} );
 		} );
 
 		describe( 'on element', () => {
@@ -1489,38 +1602,6 @@ describe( 'downcast-converters', () => {
 			expect( element.name ).to.equal( 'span' );
 			expect( element.priority ).to.equal( 7 );
 			expect( element.hasClass( 'foo-class' ) ).to.be.true;
-		} );
-
-		it( 'should create similar elements if they are created using same descriptor id', () => {
-			const a = createViewElementFromHighlightDescriptor( {
-				id: 'id',
-				class: 'classA',
-				priority: 1
-			} );
-
-			const b = createViewElementFromHighlightDescriptor( {
-				id: 'id',
-				class: 'classB',
-				priority: 2
-			} );
-
-			expect( a.isSimilar( b ) ).to.be.true;
-		} );
-
-		it( 'should create non-similar elements if they have different descriptor id', () => {
-			const a = createViewElementFromHighlightDescriptor( {
-				id: 'a',
-				class: 'foo',
-				priority: 1
-			} );
-
-			const b = createViewElementFromHighlightDescriptor( {
-				id: 'b',
-				class: 'foo',
-				priority: 1
-			} );
-
-			expect( a.isSimilar( b ) ).to.be.false;
 		} );
 	} );
 } );

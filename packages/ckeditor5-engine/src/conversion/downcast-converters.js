@@ -517,15 +517,16 @@ export function remove() {
 
 /**
  * Function factory, creates a converter that converts marker adding change to the view ui element.
- * The view ui element that will be added to the view depends on passed parameter. See {@link ~insertElement}.
- * In a case of collapsed range element will not wrap range but separate elements will be placed at the beginning
+ *
+ * The view ui element, that will be added to the view, depends on passed parameter. See {@link ~insertElement}.
+ * In a case of a non-collapsed range, the ui element will not wrap nodes but separate elements will be placed at the beginning
  * and at the end of the range.
  *
- * **Note:** unlike {@link ~insertElement}, the converter does not bind view element to model, because this converter
- * uses marker as "model source of data". This means that view ui element does not have corresponding model element.
+ * This converter binds created {@link module:engine/view/uielement~UIElement}s with marker name using
+ * the {@link module:engine/conversion/mapper~Mapper#bindElementToMarker}.
  *
- * @param {module:engine/view/uielement~UIElement|Function} elementCreator View ui element, or function returning a view element, which
- * will be inserted.
+ * @param {module:engine/view/uielement~UIElement|Function} elementCreator View ui element or a function returning a view element
+ * which will be inserted.
  * @returns {Function} Insert element event converter.
  */
 export function insertUIElement( elementCreator ) {
@@ -563,10 +564,12 @@ export function insertUIElement( elementCreator ) {
 
 		// Add "opening" element.
 		viewWriter.insert( mapper.toViewPosition( markerRange.start ), viewStartElement );
+		conversionApi.mapper.bindElementToMarker( viewStartElement, data.markerName );
 
 		// Add "closing" element only if range is not collapsed.
 		if ( !markerRange.isCollapsed ) {
 			viewWriter.insert( mapper.toViewPosition( markerRange.end ), viewEndElement );
+			conversionApi.mapper.bindElementToMarker( viewEndElement, data.markerName );
 		}
 
 		evt.stop();
@@ -574,38 +577,28 @@ export function insertUIElement( elementCreator ) {
 }
 
 /**
- * Function factory, creates a default downcast converter for removing {@link module:engine/view/uielement~UIElement ui element}
+ * Function factory, returns a default downcast converter for removing {@link module:engine/view/uielement~UIElement ui element}
  * basing on marker remove change.
  *
- * @param {module:engine/view/uielement~UIElement|Function} elementCreator View ui element, or function returning
- * a view ui element, which will be used as a pattern when look for element to remove at the marker start position.
+ * This converter unbinds elements from marker name.
+ *
  * @returns {Function} Remove ui element converter.
  */
-export function removeUIElement( elementCreator ) {
+export function removeUIElement() {
 	return ( evt, data, conversionApi ) => {
-		// Create two view elements. One will be used to remove "opening element", the other for "closing element".
-		// If marker was collapsed, only "opening" element will be removed.
-		data.isOpening = true;
-		const viewStartElement = elementCreator( data, conversionApi.writer );
+		const elements = conversionApi.mapper.markerNameToElements( data.markerName );
 
-		data.isOpening = false;
-		const viewEndElement = elementCreator( data, conversionApi.writer );
-
-		if ( !viewStartElement || !viewEndElement ) {
+		if ( !elements ) {
 			return;
 		}
 
-		const markerRange = data.markerRange;
+		conversionApi.mapper.unbindElementsFromMarkerName( data.markerName );
+
 		const viewWriter = conversionApi.writer;
 
-		// When removing the ui elements, we map the model range to view twice, because that view range
-		// may change after the first clearing.
-		if ( !markerRange.isCollapsed ) {
-			viewWriter.clear( conversionApi.mapper.toViewRange( markerRange ).getEnlarged(), viewEndElement );
+		for ( const element of elements ) {
+			viewWriter.clear( ViewRange.createOn( element ), element );
 		}
-
-		// Remove "opening" element.
-		viewWriter.clear( conversionApi.mapper.toViewRange( markerRange ).getEnlarged(), viewStartElement );
 
 		evt.stop();
 	};
@@ -778,6 +771,9 @@ export function wrap( elementCreator ) {
  *
  * If the highlight descriptor will not provide `id` property, name of the marker will be used.
  *
+ * This converter binds created {@link module:engine/view/attributeelement~AttributeElement}s with marker name using
+ * the {@link module:engine/conversion/mapper~Mapper#bindElementToMarker}.
+ *
  * @param {module:engine/conversion/downcast-converters~HighlightDescriptor|Function} highlightDescriptor
  * @return {Function}
  */
@@ -809,7 +805,13 @@ export function highlightText( highlightDescriptor ) {
 			viewWriter.wrap( viewSelection.getFirstRange(), viewElement, viewSelection );
 		} else {
 			const viewRange = conversionApi.mapper.toViewRange( data.range );
-			viewWriter.wrap( viewRange, viewElement );
+			const rangeAfterWrap = viewWriter.wrap( viewRange, viewElement );
+
+			for ( const element of rangeAfterWrap.getItems() ) {
+				if ( element.is( 'attributeElement' ) && element.isSimilar( viewElement ) ) {
+					conversionApi.mapper.bindElementToMarker( element, data.markerName );
+				}
+			}
 		}
 	};
 }
@@ -827,6 +829,9 @@ export function highlightText( highlightDescriptor ) {
  * If the highlight descriptor will not provide `priority` property, `10` will be used.
  *
  * If the highlight descriptor will not provide `id` property, name of the marker will be used.
+ *
+ * This converter binds altered {@link module:engine/view/containerelement~ContainerElement}s with marker name using
+ * the {@link module:engine/conversion/mapper~Mapper#bindElementToMarker}.
  *
  * @param {module:engine/conversion/downcast-converters~HighlightDescriptor|Function} highlightDescriptor
  * @return {Function}
@@ -863,14 +868,16 @@ export function highlightElement( highlightDescriptor ) {
 			}
 
 			viewElement.getCustomProperty( 'addHighlight' )( viewElement, descriptor, conversionApi.writer );
+
+			conversionApi.mapper.bindElementToMarker( viewElement, data.markerName );
 		}
 	};
 }
 
 /**
- * Function factory, creates a converter that converts model marker remove to the view.
+ * Function factory, creates a converter that converts removing model marker to the view.
  *
- * Both text nodes and elements are handled by this converter by they are handled a bit differently.
+ * Both text nodes and elements are handled by this converter but they are handled a bit differently.
  *
  * Text nodes are unwrapped using {@link module:engine/view/attributeelement~AttributeElement} created from provided
  * highlight descriptor. See {link module:engine/conversion/downcast-converters~highlightDescriptorToAttributeElement}.
@@ -885,6 +892,8 @@ export function highlightElement( highlightDescriptor ) {
  * If the highlight descriptor will not provide `priority` property, `10` will be used.
  *
  * If the highlight descriptor will not provide `id` property, name of the marker will be used.
+ *
+ * This converter unbinds elements from marker name.
  *
  * @param {module:engine/conversion/downcast-converters~HighlightDescriptor|Function} highlightDescriptor
  * @return {Function}
@@ -902,33 +911,37 @@ export function removeHighlight( highlightDescriptor ) {
 			return;
 		}
 
-		const viewRange = conversionApi.mapper.toViewRange( data.markerRange );
-
-		// Retrieve all items in the affected range. We will process them and remove highlight from them appropriately.
-		const items = new Set( viewRange.getItems() );
-
-		// First, iterate through all items and remove highlight from those container elements that have custom highlight handling.
-		for ( const item of items ) {
-			if ( item.is( 'containerElement' ) && item.getCustomProperty( 'removeHighlight' ) ) {
-				item.getCustomProperty( 'removeHighlight' )( item, descriptor.id, conversionApi.writer );
-
-				// If container element had custom handling, remove all it's children from further processing.
-				for ( const descendant of ViewRange.createIn( item ) ) {
-					items.delete( descendant );
-				}
-			}
-		}
-
-		// Then, iterate through all other items. Look for text nodes and unwrap them. Start from the end
-		// to prevent errors when view structure changes when unwrapping (and, for example, some attributes are merged).
+		// View element that will be used to unwrap `AttributeElement`s.
 		const viewHighlightElement = createViewElementFromHighlightDescriptor( descriptor );
-		const viewWriter = conversionApi.writer;
 
-		for ( const item of Array.from( items ).reverse() ) {
-			if ( item.is( 'textProxy' ) ) {
-				viewWriter.unwrap( ViewRange.createOn( item ), viewHighlightElement );
+		// Get all elements bound with given marker name.
+		const elements = conversionApi.mapper.markerNameToElements( data.markerName );
+		conversionApi.mapper.unbindElementsFromMarkerName( data.markerName );
+
+		for ( const element of elements ) {
+			if ( element.is( 'attributeElement' ) ) {
+				// If the bound element is an `AttributeElement`, get all other `AttributeElement`s that were created "from it"
+				// (when view.Writer broke it when handling other `AttributeElement`s).
+				const allAttributeElements = conversionApi.writer.getAllBrokenSiblings( element );
+
+				// Handle all those elements.
+				for ( const attributeElement of allAttributeElements ) {
+					// Filter out elements which got removed. For example, when converting from model to view,
+					// converter might have created two `AttributeElement`s, split by some other element (for
+					// example another marker). Then, that splitting element might got removed and the marker parts
+					// might got merged. In this case, previously bound element might got removed and now has to be filtered.
+					if ( attributeElement.parent ) {
+						// If the element is still in the tree, unwrap it.
+						conversionApi.writer.unwrap( ViewRange.createOn( attributeElement ), viewHighlightElement );
+					}
+				}
+			} else {
+				// If the bound element is a ContainerElement, just use `removeHighlight` function on it.
+				element.getCustomProperty( 'removeHighlight' )( element, descriptor.id, conversionApi.writer );
 			}
 		}
+
+		evt.stop();
 	};
 }
 
@@ -962,10 +975,10 @@ function _prepareDescriptor( highlightDescriptor, data, conversionApi ) {
  * is not provided in descriptor - default priority will be used.
  *
  * @param {module:engine/conversion/downcast-converters~HighlightDescriptor} descriptor
- * @return {module:engine/conversion/downcast-converters~HighlightAttributeElement}
+ * @returns {module:engine/view/attributeelement~AttributeElement}
  */
 export function createViewElementFromHighlightDescriptor( descriptor ) {
-	const viewElement = new HighlightAttributeElement( 'span', descriptor.attributes );
+	const viewElement = new ViewAttributeElement( 'span', descriptor.attributes );
 
 	if ( descriptor.class ) {
 		viewElement._addClass( descriptor.class );
@@ -975,30 +988,9 @@ export function createViewElementFromHighlightDescriptor( descriptor ) {
 		viewElement._priority = descriptor.priority;
 	}
 
-	viewElement._setCustomProperty( 'highlightDescriptorId', descriptor.id );
+	viewElement._id = descriptor.id;
 
 	return viewElement;
-}
-
-/**
- * Special kind of {@link module:engine/view/attributeelement~AttributeElement} that is created and used in
- * marker-to-highlight conversion.
- *
- * The difference between `HighlightAttributeElement` and {@link module:engine/view/attributeelement~AttributeElement}
- * is {@link module:engine/view/attributeelement~AttributeElement#isSimilar} method.
- *
- * For `HighlightAttributeElement` it checks just `highlightDescriptorId` custom property, that is set during marker-to-highlight
- * conversion basing on {@link module:engine/conversion/downcast-converters~HighlightDescriptor} object.
- * `HighlightAttributeElement`s with same `highlightDescriptorId` property are considered similar.
- */
-class HighlightAttributeElement extends ViewAttributeElement {
-	isSimilar( otherElement ) {
-		if ( otherElement.is( 'attributeElement' ) ) {
-			return this.getCustomProperty( 'highlightDescriptorId' ) === otherElement.getCustomProperty( 'highlightDescriptorId' );
-		}
-
-		return false;
-	}
 }
 
 /**
