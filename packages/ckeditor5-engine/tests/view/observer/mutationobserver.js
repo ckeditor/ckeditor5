@@ -279,7 +279,7 @@ describe( 'MutationObserver', () => {
 		);
 
 		view.change( writer => {
-			viewRoot.appendChildren( viewContainer );
+			viewRoot._appendChildren( viewContainer );
 			writer.setSelection( selection );
 		} );
 
@@ -311,7 +311,7 @@ describe( 'MutationObserver', () => {
 		);
 
 		view.change( writer => {
-			viewRoot.appendChildren( viewContainer );
+			viewRoot._appendChildren( viewContainer );
 			writer.setSelection( selection );
 		} );
 
@@ -354,7 +354,7 @@ describe( 'MutationObserver', () => {
 		);
 
 		view.change( writer => {
-			viewRoot.appendChildren( viewContainer );
+			viewRoot._appendChildren( viewContainer );
 			writer.setSelection( selection );
 		} );
 
