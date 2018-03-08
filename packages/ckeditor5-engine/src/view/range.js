@@ -386,9 +386,11 @@ export default class Range {
 	/**
 	 * Creates a range from given parents and offsets.
 	 *
-	 * @param {module:engine/view/element~Element} startElement Start position parent element.
+	 * @param {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment} startElement Start position
+	 * parent element.
 	 * @param {Number} startOffset Start position offset.
-	 * @param {module:engine/view/element~Element} endElement End position parent element.
+	 * @param {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment} endElement End position
+	 * parent element.
 	 * @param {Number} endOffset End position offset.
 	 * @returns {module:engine/view/range~Range} Created range.
 	 */
