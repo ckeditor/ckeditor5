@@ -130,7 +130,7 @@ module.exports = {
 				use: [ 'raw-loader' ]
 			},
 			{
-				// Or /ckeditor5-[^/]+\/theme\/[^/]+\.css$/ if you want to limit this loader
+				// Or /ckeditor5-[^/]+\/theme\/[\w-/]+\.css$/ if you want to limit this loader
 				// to CKEditor 5's theme only.
 				test: /\.css$/,
 				use: [
