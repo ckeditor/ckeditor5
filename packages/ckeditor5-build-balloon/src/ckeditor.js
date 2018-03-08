@@ -45,7 +45,7 @@ BalloonEditor.build = {
 	config: {
 		toolbar: {
 			items: [
-				'heading',
+				'headings',
 				'|',
 				'bold',
 				'italic',

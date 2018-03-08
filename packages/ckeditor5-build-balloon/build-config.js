@@ -37,7 +37,7 @@ module.exports = {
 	config: {
 		toolbar: {
 			items: [
-				'heading',
+				'headings',
 				'|',
 				'bold',
 				'italic',
