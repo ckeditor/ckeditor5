@@ -516,8 +516,10 @@ export default class Element extends Node {
 	 * {@link module:engine/view/element~Element#_insertChildren Insert} a child node or a list of child nodes at the end of this node
 	 * and sets the parent of these nodes to this element.
 	 *
-	 * @fires module:engine/view/node~Node#change
+	 * @see module:engine/view/writer~Writer#insert
+	 * @protected
 	 * @param {module:engine/view/item~Item|Iterable.<module:engine/view/item~Item>} items Items to be inserted.
+	 * @fires module:engine/view/node~Node#change
 	 * @returns {Number} Number of appended nodes.
 	 */
 	_appendChildren( items ) {
@@ -528,6 +530,7 @@ export default class Element extends Node {
 	 * Inserts a child node or a list of child nodes on the given index and sets the parent of these nodes to
 	 * this element.
 	 *
+	 * @see module:engine/view/writer~Writer#insert
 	 * @protected
 	 * @param {Number} index Position where nodes should be inserted.
 	 * @param {module:engine/view/item~Item|Iterable.<module:engine/view/item~Item>} items Items to be inserted.
@@ -559,10 +562,11 @@ export default class Element extends Node {
 	/**
 	 * Removes number of child nodes starting at the given index and set the parent of these nodes to `null`.
 	 *
+	 * @see module:engine/view/writer~Writer#remove
 	 * @param {Number} index Number of the first node to remove.
 	 * @param {Number} [howMany=1] Number of nodes to remove.
-	 * @returns {Array.<module:engine/view/node~Node>} The array of removed nodes.
 	 * @fires module:engine/view/node~Node#change
+	 * @returns {Array.<module:engine/view/node~Node>} The array of removed nodes.
 	 */
 	_removeChildren( index, howMany = 1 ) {
 		this._fireChange( 'children', this );
@@ -577,6 +581,7 @@ export default class Element extends Node {
 	/**
 	 * Adds or overwrite attribute with a specified key and value.
 	 *
+	 * @see module:engine/view/writer~Writer#setAttribute
 	 * @protected
 	 * @param {String} key Attribute key.
 	 * @param {String} value Attribute value.
@@ -599,6 +604,7 @@ export default class Element extends Node {
 	/**
 	 * Removes attribute from the element.
 	 *
+	 * @see module:engine/view/writer~Writer#removeAttribute
 	 * @protected
 	 * @param {String} key Attribute key.
 	 * @returns {Boolean} Returns true if an attribute existed and has been removed.
@@ -639,6 +645,7 @@ export default class Element extends Node {
 	 *		element._addClass( 'foo' ); // Adds 'foo' class.
 	 *		element._addClass( [ 'foo', 'bar' ] ); // Adds 'foo' and 'bar' classes.
 	 *
+	 * @see module:engine/view/writer~Writer#addClass
 	 * @protected
 	 * @param {Array.<String>|String} className
 	 * @fires module:engine/view/node~Node#change
@@ -656,6 +663,7 @@ export default class Element extends Node {
 	 *		element._removeClass( 'foo' );  // Removes 'foo' class.
 	 *		element._removeClass( [ 'foo', 'bar' ] ); // Removes both 'foo' and 'bar' classes.
 	 *
+	 * @see module:engine/view/writer~Writer#removeClass
 	 * @param {Array.<String>|String} className
 	 * @fires module:engine/view/node~Node#change
 	 */
@@ -675,6 +683,7 @@ export default class Element extends Node {
 	 *			position: 'fixed'
 	 *		} );
 	 *
+	 * @see module:engine/view/writer~Writer#setStyle
 	 * @protected
 	 * @param {String|Object} property Property name or object with key - value pairs.
 	 * @param {String} [value] Value to set. This parameter is ignored if object is provided as the first parameter.
@@ -700,6 +709,7 @@ export default class Element extends Node {
 	 *		element._removeStyle( 'color' );  // Removes 'color' style.
 	 *		element._removeStyle( [ 'color', 'border-top' ] ); // Removes both 'color' and 'border-top' styles.
 	 *
+	 * @see module:engine/view/writer~Writer#removeStyle
 	 * @protected
 	 * @param {Array.<String>|String} property
 	 * @fires module:engine/view/node~Node#change
@@ -715,6 +725,7 @@ export default class Element extends Node {
 	 * Sets a custom property. Unlike attributes, custom properties are not rendered to the DOM,
 	 * so they can be used to add special data to elements.
 	 *
+	 * @see module:engine/view/writer~Writer#setCustomProperty
 	 * @protected
 	 * @param {String|Symbol} key
 	 * @param {*} value
@@ -726,6 +737,7 @@ export default class Element extends Node {
 	/**
 	 * Removes the custom property stored under the given key.
 	 *
+	 * @see module:engine/view/writer~Writer#removeCustomProperty
 	 * @protected
 	 * @param {String|Symbol} key
 	 * @returns {Boolean} Returns true if property was removed.

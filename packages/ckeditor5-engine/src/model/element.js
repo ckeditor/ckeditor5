@@ -236,6 +236,7 @@ export default class Element extends Node {
 	/**
 	 * {@link module:engine/model/element~Element#_insertChildren Inserts} one or more nodes at the end of this element.
 	 *
+	 * @see module:engine/model/writer~Writer#append
 	 * @protected
 	 * @param {module:engine/model/item~Item|Iterable.<module:engine/model/item~Item>} nodes Nodes to be inserted.
 	 */
@@ -247,6 +248,7 @@ export default class Element extends Node {
 	 * Inserts one or more nodes at the given index and sets {@link module:engine/model/node~Node#parent parent} of these nodes
 	 * to this element.
 	 *
+	 * @see module:engine/model/writer~Writer#insert
 	 * @protected
 	 * @param {Number} index Index at which nodes should be inserted.
 	 * @param {module:engine/model/item~Item|Iterable.<module:engine/model/item~Item>} items Items to be inserted.
@@ -270,6 +272,7 @@ export default class Element extends Node {
 	 * Removes one or more nodes starting at the given index and sets
 	 * {@link module:engine/model/node~Node#parent parent} of these nodes to `null`.
 	 *
+	 * @see module:engine/model/writer~Writer#remove
 	 * @protected
 	 * @param {Number} index Index of the first node to remove.
 	 * @param {Number} [howMany=1] Number of nodes to remove.

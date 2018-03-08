@@ -26,6 +26,7 @@ export default class AttributeElement extends Element {
 	/**
 	 * Creates a attribute element.
 	 *
+	 * @see module:engine/view/writer~Writer#createAttributeElement
 	 * @protected
 	 * @see module:engine/view/element~Element
 	 */

@@ -342,6 +342,7 @@ export default class Node {
 	/**
 	 * Removes this node from it's parent.
 	 *
+	 * @see module:engine/model/writer~Writer#remove
 	 * @protected
 	 */
 	_remove() {
@@ -351,6 +352,7 @@ export default class Node {
 	/**
 	 * Sets attribute on the node. If attribute with the same key already is set, it's value is overwritten.
 	 *
+	 * @see module:engine/model/writer~Writer#setAttribute
 	 * @protected
 	 * @param {String} key Key of attribute to set.
 	 * @param {*} value Attribute value.
@@ -362,6 +364,7 @@ export default class Node {
 	/**
 	 * Removes all attributes from the node and sets given attributes.
 	 *
+	 * @see module:engine/model/writer~Writer#setAttributes
 	 * @protected
 	 * @param {Object} [attrs] Attributes to set. See {@link module:utils/tomap~toMap} for a list of accepted values.
 	 */
@@ -372,6 +375,7 @@ export default class Node {
 	/**
 	 * Removes an attribute with given key from the node.
 	 *
+	 * @see module:engine/model/writer~Writer#removeAttribute
 	 * @protected
 	 * @param {String} key Key of attribute to remove.
 	 * @returns {Boolean} `true` if the attribute was set on the element, `false` otherwise.
@@ -383,6 +387,7 @@ export default class Node {
 	/**
 	 * Removes all attributes from the node.
 	 *
+	 * @see module:engine/model/writer~Writer#clearAttributes
 	 * @protected
 	 */
 	_clearAttributes() {
