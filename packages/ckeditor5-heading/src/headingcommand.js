@@ -26,11 +26,12 @@ export default class HeadingCommand extends Command {
 		super( editor );
 
 		/**
-		 * Whether the selection starts in a heading of {@link #modelElements this level}.
+		 * If the selection starts in a one of headings of {@link #modelElements} the value gets name of heading model element.
+		 * Is set to false otherwise.
 		 *
 		 * @observable
 		 * @readonly
-		 * @member {Boolean} #value
+		 * @member {Boolean|String} #value
 		 */
 
 		/**
