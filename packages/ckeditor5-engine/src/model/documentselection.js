@@ -19,10 +19,6 @@ import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 
-const attrOpTypes = new Set(
-	[ 'addAttribute', 'removeAttribute', 'changeAttribute', 'addRootAttribute', 'removeRootAttribute', 'changeRootAttribute' ]
-);
-
 const storePrefix = 'selection:';
 
 /**
@@ -533,29 +529,13 @@ class LiveSelection extends Selection {
 			}
 		} );
 
-		this.listenTo( this._model, 'applyOperation', ( evt, args ) => {
-			const operation = args[ 0 ];
+		this.listenTo( this._document, 'change', ( evt, batch ) => {
+			// Update selection's attributes.
+			this._updateAttributes( false );
 
-			if ( !operation.isDocumentOperation ) {
-				return;
-			}
-
-			// Whenever attribute operation is performed on document, update selection attributes.
-			// This is not the most efficient way to update selection attributes, but should be okay for now.
-			if ( attrOpTypes.has( operation.type ) ) {
-				this._updateAttributes( false );
-			}
-
-			const batch = operation.delta.batch;
-
-			// Batch may not be passed to the document#change event in some tests.
-			// See https://github.com/ckeditor/ckeditor5-engine/issues/1001#issuecomment-314202352
-			if ( batch ) {
-				// Whenever element which had selection's attributes stored in it stops being empty,
-				// the attributes need to be removed.
-				clearAttributesStoredInElement( operation, this._model, batch );
-			}
-		}, { priority: 'low' } );
+			// Clear selection attributes from element if no longer empty.
+			clearAttributesStoredInElement( this._model, batch );
+		} );
 
 		this.listenTo( this._model, 'applyOperation', () => {
 			while ( this._fixGraveyardRangesData.length ) {
@@ -823,6 +803,9 @@ class LiveSelection extends Selection {
 	// Internal method for removing `LiveSelection` attribute. Supports attribute priorities (through `directChange`
 	// parameter).
 	//
+	// NOTE: Even if attribute is not present in the selection but is provided to this method, it's priority will
+	// be changed according to `directChange` parameter.
+	//
 	// @private
 	// @param {String} key Attribute key.
 	// @param {Boolean} [directChange=true] `true` if the change is caused by `Selection` API, `false` if change
@@ -837,15 +820,15 @@ class LiveSelection extends Selection {
 			return false;
 		}
 
+		// Update priorities map.
+		this._attributePriority.set( key, priority );
+
 		// Don't do anything if value has not changed.
 		if ( !super.hasAttribute( key ) ) {
 			return false;
 		}
 
 		this._attrs.delete( key );
-
-		// Update priorities map.
-		this._attributePriority.set( key, priority );
 
 		return true;
 	}
@@ -1021,24 +1004,30 @@ function getAttrsIfCharacter( node ) {
 }
 
 // Removes selection attributes from element which is not empty anymore.
-function clearAttributesStoredInElement( operation, model, batch ) {
-	let changeParent = null;
+//
+// @private
+// @param {module:engine/model/model~Model} model
+// @param {module:engine/model/batch~Batch} batch
+function clearAttributesStoredInElement( model, batch ) {
+	const differ = model.document.differ;
 
-	if ( operation.type == 'insert' ) {
-		changeParent = operation.position.parent;
-	} else if ( operation.type == 'move' || operation.type == 'reinsert' || operation.type == 'remove' ) {
-		changeParent = operation.getMovedRangeStart().parent;
-	}
-
-	if ( !changeParent || changeParent.isEmpty ) {
-		return;
-	}
-
-	model.enqueueChange( batch, writer => {
-		const storedAttributes = Array.from( changeParent.getAttributeKeys() ).filter( key => key.startsWith( storePrefix ) );
-
-		for ( const key of storedAttributes ) {
-			writer.removeAttribute( key, changeParent );
+	for ( const entry of differ.getChanges() ) {
+		if ( entry.type != 'insert' ) {
+			continue;
 		}
-	} );
+
+		const changeParent = entry.position.parent;
+		const isNoLongerEmpty = entry.length === changeParent.maxOffset;
+
+		if ( isNoLongerEmpty ) {
+			model.enqueueChange( batch, writer => {
+				const storedAttributes = Array.from( changeParent.getAttributeKeys() )
+					.filter( key => key.startsWith( storePrefix ) );
+
+				for ( const key of storedAttributes ) {
+					writer.removeAttribute( key, changeParent );
+				}
+			} );
+		}
+	}
 }
