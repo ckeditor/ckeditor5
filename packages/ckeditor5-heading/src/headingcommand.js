@@ -26,7 +26,7 @@ export default class HeadingCommand extends Command {
 		super( editor );
 
 		/**
-		 * Whether the selection starts in a heading of {@link #modelElement this level}.
+		 * Whether the selection starts in a heading of {@link #modelElements this level}.
 		 *
 		 * @observable
 		 * @readonly
