@@ -6,7 +6,7 @@
   * third paragraph should be centered,
   * fourth paragraph should be justified,
   * an image with caption between first and second paragraphs.
-2. Toolbar should have alignment button dropdown with four buttons for alignment control: left, right, center and justify.
+2. Toolbar should have four alignment buttons for alignment control: left, right, center and justify.
 
 ### Testing
 
@@ -24,11 +24,10 @@ You should be able to create blocks that can be aligned:
 3. lists
 
 Alignment UI should:
-1. change button dropdown to "left" and highlight "left" button when selection is inside left aligned block (default one)
-2. change button dropdown to "right" and highlight "right" button when selection is inside right aligned block
-3. change button dropdown to "center" and highlight "center" button when selection is inside centered block
-4. change button dropdown to "justify" and highlight "justify" button when selection is inside justified block
-5. be disabled if in figcaption
-6. only one button should be active at once inside dropdown
-7. alignment dropdown should be vertical
+1. make "left" button highlight "left" when selection is inside left aligned block (default one)
+2. make "right" button highlight "right" when selection is inside right aligned block
+3. make "center" button highlight "center" when selection is inside centered block
+4. make "justify" button highlight "justify" when selection is inside justified block
+5. only one button should be active at once inside dropdown
+
 
