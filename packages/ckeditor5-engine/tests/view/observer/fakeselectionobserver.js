@@ -33,7 +33,7 @@ describe( 'FakeSelectionObserver', () => {
 		root = createViewRoot( viewDocument );
 		view.attachDomRoot( domRoot );
 		observer = view.getObserver( FakeSelectionObserver );
-		viewDocument.selection._setFake();
+		viewDocument.selection._setTo( null, { fake: true } );
 	} );
 
 	afterEach( () => {
@@ -41,7 +41,7 @@ describe( 'FakeSelectionObserver', () => {
 	} );
 
 	it( 'should do nothing if selection is not fake', () => {
-		viewDocument.selection._setFake( false );
+		viewDocument.selection._setTo( null, { fake: false } );
 
 		return checkEventPrevention( keyCodes.arrowleft, false );
 	} );
@@ -200,7 +200,10 @@ describe( 'FakeSelectionObserver', () => {
 	//
 	// @param {Number} keyCode
 	function changeFakeSelectionPressing( keyCode ) {
-		viewDocument.selection._setFake();
+		viewDocument.selection._setTo( viewDocument.selection.getRanges(), {
+			backward: viewDocument.selection.isBackward,
+			fake: true
+		} );
 
 		const data = {
 			keyCode,

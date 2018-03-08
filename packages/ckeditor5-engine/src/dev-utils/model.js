@@ -131,7 +131,7 @@ export function setData( model, data, options = {} ) {
 				ranges.push( new ModelRange( start, end ) );
 			}
 
-			writer.setSelection( ranges, selection.isBackward );
+			writer.setSelection( ranges, { backward: selection.isBackward } );
 
 			if ( options.selectionAttributes ) {
 				writer.setSelectionAttribute( selection.getAttributes() );
@@ -326,7 +326,7 @@ export function parse( data, schema, options = {} ) {
 		}
 
 		// Create new selection.
-		selection = new ModelSelection( ranges, viewSelection.isBackward );
+		selection = new ModelSelection( ranges, { backward: viewSelection.isBackward } );
 
 		// Set attributes to selection if specified.
 		for ( const [ key, value ] of toMap( options.selectionAttributes || [] ) ) {

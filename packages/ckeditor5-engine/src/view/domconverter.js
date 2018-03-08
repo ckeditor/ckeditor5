@@ -7,7 +7,7 @@
  * @module engine/view/domconverter
  */
 
-/* globals document, Node, NodeFilter */
+/* globals document, Node, NodeFilter, Text */
 
 import ViewText from './text';
 import ViewElement from './element';
@@ -486,7 +486,7 @@ export default class DomConverter {
 			}
 		}
 
-		return new ViewSelection( viewRanges, isBackward );
+		return new ViewSelection( viewRanges, { backward: isBackward } );
 	}
 
 	/**
@@ -956,10 +956,10 @@ export default class DomConverter {
 	 * @private
 	 */
 	_processDataFromDomText( node ) {
-		let data = getDataWithoutFiller( node );
+		let data = node.data;
 
 		if ( _hasDomParentOfType( node, this.preElements ) ) {
-			return data;
+			return getDataWithoutFiller( node );
 		}
 
 		// Change all consecutive whitespace characters (from the [ \n\t\r] set –
@@ -978,9 +978,16 @@ export default class DomConverter {
 		}
 
 		// If next text node does not exist remove space character from the end of this text node.
-		if ( !nextNode ) {
+		if ( !nextNode && !startsWithFiller( node ) ) {
 			data = data.replace( / $/, '' );
 		}
+
+		// At the beginning and end of a block element, Firefox inserts normal space + <br> instead of non-breaking space.
+		// This means that the text node starts/end with normal space instead of non-breaking space.
+		// This causes a problem because the normal space would be removed in `.replace` calls above. To prevent that,
+		// the inline filler is removed only after the data is initially processed (by the `.replace` above). See ckeditor5#692.
+		data = getDataWithoutFiller( new Text( data ) );
+
 		// At this point we should have removed all whitespaces from DOM text data.
 
 		// Now we have to change &nbsp; chars, that were in DOM text data because of rendering reasons, to spaces.

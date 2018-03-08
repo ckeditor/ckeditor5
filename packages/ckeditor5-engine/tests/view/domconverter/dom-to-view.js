@@ -6,7 +6,6 @@
 /* globals document */
 
 import ViewElement from '../../../src/view/element';
-import ViewRange from '../../../src/view/range';
 import ViewSelection from '../../../src/view/selection';
 import DomConverter from '../../../src/view/domconverter';
 import ViewDocumentFragment from '../../../src/view/documentfragment';
@@ -526,6 +525,30 @@ describe( 'DomConverter', () => {
 			// See also whitespace-handling-integration.js.
 			//
 		} );
+
+		describe( 'clearing auto filler', () => {
+			it( 'should remove inline filler when converting dom to view', () => {
+				const text = document.createTextNode( INLINE_FILLER + 'foo' );
+				const view = converter.domToView( text );
+
+				expect( view.data ).to.equal( 'foo' );
+			} );
+
+			// See https://github.com/ckeditor/ckeditor5/issues/692.
+			it( 'should not remove space after inline filler if previous node nor next node does not exist', () => {
+				const text = document.createTextNode( INLINE_FILLER + ' ' );
+				const view = converter.domToView( text );
+
+				expect( view.data ).to.equal( ' ' );
+			} );
+
+			it( 'should convert non breaking space to normal space after inline filler', () => {
+				const text = document.createTextNode( INLINE_FILLER + '\u00A0' );
+				const view = converter.domToView( text );
+
+				expect( view.data ).to.equal( ' ' );
+			} );
+		} );
 	} );
 
 	describe( 'domChildrenToView', () => {
@@ -859,7 +882,7 @@ describe( 'DomConverter', () => {
 			domContainer.innerHTML = 'fake selection container';
 			document.body.appendChild( domContainer );
 
-			const viewSelection = new ViewSelection( ViewRange.createIn( new ViewElement() ) );
+			const viewSelection = new ViewSelection( new ViewElement(), 'in' );
 			converter.bindFakeSelection( domContainer, viewSelection );
 
 			const domRange = document.createRange();
@@ -880,7 +903,7 @@ describe( 'DomConverter', () => {
 			domContainer.innerHTML = 'fake selection container';
 			document.body.appendChild( domContainer );
 
-			const viewSelection = new ViewSelection( ViewRange.createIn( new ViewElement() ) );
+			const viewSelection = new ViewSelection( new ViewElement(), 'in' );
 			converter.bindFakeSelection( domContainer, viewSelection );
 
 			const domRange = document.createRange();

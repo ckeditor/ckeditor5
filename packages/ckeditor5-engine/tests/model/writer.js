@@ -2173,7 +2173,7 @@ describe( 'Writer', () => {
 			const firstParagraph = root.getNodeByPath( [ 1 ] );
 
 			const setToSpy = sinon.spy( DocumentSelection.prototype, '_setTo' );
-			setSelection( firstParagraph );
+			setSelection( firstParagraph, 0 );
 
 			expect( setToSpy.calledOnce ).to.be.true;
 			setToSpy.restore();
@@ -2182,7 +2182,7 @@ describe( 'Writer', () => {
 		it( 'should change document selection ranges', () => {
 			const range = new Range( new Position( root, [ 1 ] ), new Position( root, [ 2, 2 ] ) );
 
-			setSelection( range, true );
+			setSelection( range, { backward: true } );
 
 			expect( model.document.selection._ranges.length ).to.equal( 1 );
 			expect( model.document.selection._ranges[ 0 ].start.path ).to.deep.equal( [ 1 ] );
@@ -2544,9 +2544,9 @@ describe( 'Writer', () => {
 		} );
 	}
 
-	function setSelection( selectable, backwardSelectionOrOffset ) {
+	function setSelection( selectable, optionsOrPlaceOrOffset, options ) {
 		model.enqueueChange( batch, writer => {
-			writer.setSelection( selectable, backwardSelectionOrOffset );
+			writer.setSelection( selectable, optionsOrPlaceOrOffset, options );
 		} );
 	}
 

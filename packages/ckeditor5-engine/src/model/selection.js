@@ -9,6 +9,7 @@
 
 import Position from './position';
 import Element from './element';
+import Node from './node';
 import Range from './range';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
@@ -35,11 +36,11 @@ export default class Selection {
 	 *
 	 *		// Creates selection at the given range.
 	 *		const range = new Range( start, end );
-	 *		const selection = new Selection( range, isBackwardSelection );
+	 *		const selection = new Selection( range );
 	 *
 	 *		// Creates selection at the given ranges
 	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
-	 *		const selection = new Selection( ranges, isBackwardSelection );
+	 *		const selection = new Selection( ranges );
 	 *
 	 *		// Creates selection from the other selection.
 	 *		// Note: It doesn't copies selection attributes.
@@ -55,16 +56,31 @@ export default class Selection {
 	 *		const position = new Position( root, path );
 	 *		const selection = new Selection( position );
 	 *
-	 * 		// Creates selection at the start position of given element.
+	 * 		// Creates selection at the start position of the given element.
 	 *		const paragraph = writer.createElement( 'paragraph' );
 	 *		const selection = new Selection( paragraph, offset );
 	 *
+	 * 		// Creates a range inside an {@link module:engine/model/element~Element element} which starts before the
+	 * 		// first child of that element and ends after the last child of that element.
+	 *		const selection = new Selection( paragraph, 'in' );
+	 *
+	 * 		// Creates a range on an {@link module:engine/model/item~Item item} which starts before the item and ends
+	 * 		// just after the item.
+	 *		const selection = new Selection( paragraph, 'on' );
+	 *
+	 * `Selection`'s constructor allow passing additional options (`backward`) as the last argument.
+	 *
+	 * 		// Creates backward selection.
+	 *		const selection = new Selection( range, { backward: true } );
+	 *
 	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
 	 * module:engine/model/position~Position|module:engine/model/element~Element|
-	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range} [selectable]
-	 * @param {Boolean|Number|'before'|'end'|'after'} [backwardSelectionOrOffset]
+	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} selectable
+	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets place or offset of the selection.
+	 * @param {Object} [options]
+	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
 	 */
-	constructor( selectable, backwardSelectionOrOffset ) {
+	constructor( selectable, placeOrOffset, options ) {
 		/**
 		 * Specifies whether the last added range was added as a backward or forward range.
 		 *
@@ -90,7 +106,7 @@ export default class Selection {
 		this._attrs = new Map();
 
 		if ( selectable ) {
-			this.setTo( selectable, backwardSelectionOrOffset );
+			this.setTo( selectable, placeOrOffset, options );
 		}
 	}
 
@@ -300,58 +316,93 @@ export default class Selection {
 	 * {@link module:engine/model/element~Element element}, {@link module:engine/model/position~Position position},
 	 * {@link module:engine/model/range~Range range}, an iterable of {@link module:engine/model/range~Range ranges} or null.
 	 *
-	 *		// Sets ranges from the given range.
+	 * 		// Removes all selection's ranges.
+	 *		selection.setTo( null );
+	 *
+	 *		// Sets selection to the given range.
 	 *		const range = new Range( start, end );
-	 *		selection.setTo( range, isBackwardSelection );
+	 *		selection.setTo( range );
 	 *
-	 *		// Sets ranges from the iterable of ranges.
+	 *		// Sets selection to given ranges.
 	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
-	 *		selection.setTo( ranges, isBackwardSelection );
+	 *		selection.setTo( ranges );
 	 *
-	 *		// Sets ranges from the other selection.
+	 *		// Sets selection to other selection.
 	 *		// Note: It doesn't copies selection attributes.
 	 *		const otherSelection = new Selection();
 	 *		selection.setTo( otherSelection );
 	 *
-	 * 		// Sets ranges from the given document selection's ranges.
+	 * 		// Sets selection to the given document selection.
 	 *		// Note: It doesn't copies selection attributes.
 	 *		const documentSelection = new DocumentSelection( doc );
 	 *		selection.setTo( documentSelection );
 	 *
-	 * 		// Sets range at the given position.
+	 * 		// Sets collapsed selection at the given position.
 	 *		const position = new Position( root, path );
 	 *		selection.setTo( position );
 	 *
-	 * 		// Sets range at the position of given element and optional offset.
-	 *		const paragraph = writer.createElement( 'paragraph' );
+	 * 		// Sets collapsed selection at the position of the given node and an offset.
 	 *		selection.setTo( paragraph, offset );
 	 *
-	 * 		// Removes all ranges.
-	 *		selection.setTo( null );
+	 * Creates a range inside an {@link module:engine/model/element~Element element} which starts before the first child of
+ 	 * that element and ends after the last child of that element.
+	 *
+	 *		selection.setTo( paragraph, 'in' );
+	 *
+	 * Creates a range on an {@link module:engine/model/item~Item item} which starts before the item and ends just after the item.
+	 *
+	 *		selection.setTo( paragraph, 'on' );
+	 *
+	 * `Selection#setTo()`' method allow passing additional options (`backward`) as the last argument.
+	 *
+	 * 		// Sets backward selection.
+	 *		const selection = new Selection( range, { backward: true } );
 	 *
 	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|
-	 * module:engine/model/position~Position|module:engine/model/element~Element|
+	 * module:engine/model/position~Position|module:engine/model/node~Node|
 	 * Iterable.<module:engine/model/range~Range>|module:engine/model/range~Range|null} selectable
-	 * @param {Boolean|Number|'before'|'end'|'after'} [backwardSelectionOrOffset]
+	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets place or offset of the selection.
+	 * @param {Object} [options]
+	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
 	 */
-	setTo( selectable, backwardSelectionOrOffset ) {
+	setTo( selectable, placeOrOffset, options ) {
 		if ( selectable === null ) {
 			this._setRanges( [] );
 		} else if ( selectable instanceof Selection ) {
 			this._setRanges( selectable.getRanges(), selectable.isBackward );
-		} else if ( selectable && selectable._selection instanceof Selection ) {
+		} else if ( selectable && typeof selectable.getRanges == 'function' ) {
 			// We assume that the selectable is a DocumentSelection.
 			// It can't be imported here, because it would lead to circular imports.
 			this._setRanges( selectable.getRanges(), selectable.isBackward );
 		} else if ( selectable instanceof Range ) {
-			this._setRanges( [ selectable ], backwardSelectionOrOffset );
+			this._setRanges( [ selectable ], !!placeOrOffset && !!placeOrOffset.backward );
 		} else if ( selectable instanceof Position ) {
 			this._setRanges( [ new Range( selectable ) ] );
-		} else if ( selectable instanceof Element ) {
-			this._setRanges( [ Range.createCollapsedAt( selectable, backwardSelectionOrOffset ) ] );
+		} else if ( selectable instanceof Node ) {
+			const backward = !!options && !!options.backward;
+			let range;
+
+			if ( placeOrOffset == 'in' ) {
+				range = Range.createIn( selectable );
+			} else if ( placeOrOffset == 'on' ) {
+				range = Range.createOn( selectable );
+			} else if ( placeOrOffset !== undefined ) {
+				range = Range.createCollapsedAt( selectable, placeOrOffset );
+			} else {
+				/**
+				 * selection.setTo requires the second parameter when the first parameter is a node.
+				 *
+				 * @error model-selection-setTo-required-second-parameter
+				 */
+				throw new CKEditorError(
+					'model-selection-setTo-required-second-parameter: ' +
+					'selection.setTo requires the second parameter when the first parameter is a node.' );
+			}
+
+			this._setRanges( [ range ], backward );
 		} else if ( isIterable( selectable ) ) {
 			// We assume that the selectable is an iterable of ranges.
-			this._setRanges( selectable, backwardSelectionOrOffset );
+			this._setRanges( selectable, placeOrOffset && !!placeOrOffset.backward );
 		} else {
 			/**
 			 * Cannot set selection to given place.

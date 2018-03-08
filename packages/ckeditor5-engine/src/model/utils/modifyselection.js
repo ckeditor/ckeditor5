@@ -50,6 +50,7 @@ export default function modifySelection( model, selection, options = {} ) {
 	const unit = options.unit ? options.unit : 'character';
 
 	const focus = selection.focus;
+
 	const walker = new TreeWalker( {
 		boundaries: getSearchRange( focus, isForward ),
 		singleCharacters: true,
