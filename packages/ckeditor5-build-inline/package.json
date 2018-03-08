@@ -30,7 +30,7 @@
     "@ckeditor/ckeditor5-paragraph": "^1.0.0-alpha.2",
     "@ckeditor/ckeditor5-theme-lark": "^1.0.0-alpha.2",
     "@ckeditor/ckeditor5-upload": "^1.0.0-alpha.2",
-    "babel-minify-webpack-plugin": "^0.2.0",
+    "babel-minify-webpack-plugin": "^0.3.0",
     "postcss-loader": "^2.0.10",
     "raw-loader": "^0.5.1",
     "style-loader": "^0.19.1",
