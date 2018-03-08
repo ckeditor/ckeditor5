@@ -76,7 +76,7 @@ describe( 'HeadingUI', () => {
 			expect( dropdown.buttonView.tooltip ).to.equal( 'Heading' );
 		} );
 
-		it( 'should execute format command on model execute event', () => {
+		it( 'should execute format command on model execute event for paragraph', () => {
 			const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 			const dropdown = editor.ui.componentFactory.create( 'heading' );
 
@@ -84,7 +84,19 @@ describe( 'HeadingUI', () => {
 			dropdown.fire( 'execute' );
 
 			sinon.assert.calledOnce( executeSpy );
-			sinon.assert.calledWithExactly( executeSpy, 'paragraph' );
+			sinon.assert.calledWithExactly( executeSpy, 'paragraph', undefined );
+		} );
+
+		it( 'should execute format command on model execute event for heading', () => {
+			const executeSpy = testUtils.sinon.spy( editor, 'execute' );
+			const dropdown = editor.ui.componentFactory.create( 'heading' );
+
+			dropdown.commandName = 'heading';
+			dropdown.commandValue = 'heading1';
+			dropdown.fire( 'execute' );
+
+			sinon.assert.calledOnce( executeSpy );
+			sinon.assert.calledWithExactly( executeSpy, 'heading', { value: 'heading1' } );
 		} );
 
 		it( 'should focus view after command execution', () => {
