@@ -51,7 +51,7 @@ module.exports = {
 		},
 
 		image: {
-			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+			toolbar: [ 'imageStyleFull', 'imageStyleSide', '|', 'imageTextAlternative' ]
 		},
 
 		// UI language. Language codes follow the https://en.wikipedia.org/wiki/ISO_639-1 format.

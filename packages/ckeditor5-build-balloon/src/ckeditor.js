@@ -59,8 +59,8 @@ BalloonEditor.build = {
 		},
 		image: {
 			toolbar: [
-				'imageStyle:full',
-				'imageStyle:side',
+				'imageStyleFull',
+				'imageStyleSide',
 				'|',
 				'imageTextAlternative'
 			]
