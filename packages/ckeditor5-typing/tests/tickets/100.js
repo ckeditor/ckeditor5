@@ -79,27 +79,27 @@ describe( 'Bug ckeditor5-typing#100', () => {
 	it( 'should handle mutations switching inner and outer node when adding new text node after', () => {
 		setModelData( model,
 			'<paragraph>' +
-			'<$text italic="true" linkHref="foo">' +
+			'<$text italic="true" bold="true">' +
 			'text[]' +
 			'</$text>' +
 			'</paragraph>'
 		);
 
-		expect( getViewData( view ) ).to.equal( '<p><a href="foo"><i>text{}</i></a></p>' );
+		expect( getViewData( view ) ).to.equal( '<p><i><strong>text{}</strong></i></p>' );
 
 		const paragraph = viewRoot.getChild( 0 );
-		const link = paragraph.getChild( 0 );
-		const italic = link.getChild( 0 );
-		const text = italic.getChild( 0 );
+		const italic = paragraph.getChild( 0 );
+		const strong = italic.getChild( 0 );
+		const text = strong.getChild( 0 );
 
 		// Simulate mutations and DOM change.
-		domRoot.childNodes[ 0 ].innerHTML = '<i><a href="foo">text</a>x</i>';
+		domRoot.childNodes[ 0 ].innerHTML = '<strong><i>text</i>x</strong>';
 		viewDocument.fire( 'mutations', [
 			// First mutation - remove all children from link element.
 			{
 				type: 'children',
-				node: link,
-				oldChildren: [ italic ],
+				node: italic,
+				oldChildren: [ strong ],
 				newChildren: []
 			},
 
@@ -107,46 +107,46 @@ describe( 'Bug ckeditor5-typing#100', () => {
 			{
 				type: 'children',
 				node: paragraph,
-				oldChildren: [ link ],
+				oldChildren: [ italic ],
 				newChildren: [ new ViewElement( 'i' ) ]
 			},
 
 			// Third mutation - italic's new children.
 			{
 				type: 'children',
-				node: italic,
+				node: strong,
 				oldChildren: [ text ],
 				newChildren: [ new ViewElement( 'a', null, text._clone() ), new ViewText( 'x' ) ]
 			}
 		] );
 
-		expect( getViewData( view ) ).to.equal( '<p><a href="foo"><i>textx{}</i></a></p>' );
+		expect( getViewData( view ) ).to.equal( '<p><i><strong>textx{}</strong></i></p>' );
 	} );
 
 	it( 'should handle mutations switching inner and outer node when adding new text node before', () => {
 		setModelData( model,
 			'<paragraph>' +
-			'<$text italic="true" linkHref="foo">' +
+			'<$text italic="true" bold="true">' +
 			'[]text' +
 			'</$text>' +
 			'</paragraph>'
 		);
 
-		expect( getViewData( view ) ).to.equal( '<p><a href="foo"><i>{}text</i></a></p>' );
+		expect( getViewData( view ) ).to.equal( '<p><i><strong>{}text</strong></i></p>' );
 
 		const paragraph = viewRoot.getChild( 0 );
-		const link = paragraph.getChild( 0 );
-		const italic = link.getChild( 0 );
-		const text = italic.getChild( 0 );
+		const italic = paragraph.getChild( 0 );
+		const strong = italic.getChild( 0 );
+		const text = strong.getChild( 0 );
 
 		// Simulate mutations and DOM change.
-		domRoot.childNodes[ 0 ].innerHTML = '<i>x<a href="foo">text</a></i>';
+		domRoot.childNodes[ 0 ].innerHTML = '<strong>x<i>text</i></strong>';
 		viewDocument.fire( 'mutations', [
 			// First mutation - remove all children from link element.
 			{
 				type: 'children',
-				node: link,
-				oldChildren: [ italic ],
+				node: italic,
+				oldChildren: [ strong ],
 				newChildren: []
 			},
 
@@ -154,32 +154,32 @@ describe( 'Bug ckeditor5-typing#100', () => {
 			{
 				type: 'children',
 				node: paragraph,
-				oldChildren: [ link ],
+				oldChildren: [ italic ],
 				newChildren: [ new ViewElement( 'i' ) ]
 			},
 
 			// Third mutation - italic's new children.
 			{
 				type: 'children',
-				node: italic,
+				node: strong,
 				oldChildren: [ text ],
 				newChildren: [ new ViewText( 'x' ), new ViewElement( 'a', null, 'text' ) ]
 			}
 		] );
 
-		expect( getViewData( view ) ).to.equal( '<p><a href="foo"><i>x{}text</i></a></p>' );
+		expect( getViewData( view ) ).to.equal( '<p><i><strong>x{}text</strong></i></p>' );
 	} );
 
 	it( 'should handle mutations switching inner and outer node - with text before', () => {
 		setModelData( model,
 			'<paragraph>' +
-			'xxx<$text italic="true" linkHref="foo">' +
+			'xxx<$text italic="true" bold="true">' +
 			'text[]' +
 			'</$text>' +
 			'</paragraph>'
 		);
 
-		expect( getViewData( view ) ).to.equal( '<p>xxx<a href="foo"><i>text{}</i></a></p>' );
+		expect( getViewData( view ) ).to.equal( '<p>xxx<i><strong>text{}</strong></i></p>' );
 
 		const paragraph = viewRoot.getChild( 0 );
 		const textBefore = paragraph.getChild( 0 );
@@ -188,7 +188,7 @@ describe( 'Bug ckeditor5-typing#100', () => {
 		const text = italic.getChild( 0 );
 
 		// Simulate mutations and DOM change.
-		domRoot.childNodes[ 0 ].innerHTML = 'xxx<i><a href="foo">text</a>x</i>';
+		domRoot.childNodes[ 0 ].innerHTML = 'xxx<strong><i>text</i>x</strong>';
 		viewDocument.fire( 'mutations', [
 			// First mutation - remove all children from link element.
 			{
@@ -215,7 +215,7 @@ describe( 'Bug ckeditor5-typing#100', () => {
 			}
 		] );
 
-		expect( getViewData( view ) ).to.equal( '<p>xxx<a href="foo"><i>textx{}</i></a></p>' );
+		expect( getViewData( view ) ).to.equal( '<p>xxx<i><strong>textx{}</strong></i></p>' );
 	} );
 
 	// This happens when spell checker is applied on <strong> element and changes it to <b>.
