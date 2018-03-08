@@ -801,6 +801,9 @@ class LiveSelection extends Selection {
 	// Internal method for removing `LiveSelection` attribute. Supports attribute priorities (through `directChange`
 	// parameter).
 	//
+	// NOTE: Even if attribute is not present in the selection but is provided to this method, it's priority will
+	// be changed according to `directChange` parameter.
+	//
 	// @private
 	// @param {String} key Attribute key.
 	// @param {Boolean} [directChange=true] `true` if the change is caused by `Selection` API, `false` if change
@@ -815,15 +818,15 @@ class LiveSelection extends Selection {
 			return false;
 		}
 
+		// Update priorities map.
+		this._attributePriority.set( key, priority );
+
 		// Don't do anything if value has not changed.
 		if ( !super.hasAttribute( key ) ) {
 			return false;
 		}
 
 		this._attrs.delete( key );
-
-		// Update priorities map.
-		this._attributePriority.set( key, priority );
 
 		return true;
 	}

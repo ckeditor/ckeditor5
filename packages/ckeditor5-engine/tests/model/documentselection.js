@@ -439,6 +439,21 @@ describe( 'DocumentSelection', () => {
 
 				expect( selection.getAttribute( 'foo' ) ).to.be.undefined;
 			} );
+
+			it( 'should prevent auto update of the attribute even if attribute is not preset yet', () => {
+				selection._setTo( new Position( root, [ 0, 1 ] ) );
+
+				// Remove "foo" attribute that is not present in selection yet.
+				expect( selection.hasAttribute( 'foo' ) ).to.be.false;
+				selection._removeAttribute( 'foo' );
+
+				// Trigger selecton auto update on document change. It should not get attribute from surrounding text;
+				model.change( writer => {
+					writer.setAttribute( 'foo', 'bar', Range.createIn( fullP ) );
+				} );
+
+				expect( selection.getAttribute( 'foo' ) ).to.be.undefined;
+			} );
 		} );
 
 		describe( '_getStoredAttributes()', () => {
@@ -1056,10 +1071,18 @@ describe( 'DocumentSelection', () => {
 					expect( data.attributeKeys ).to.deep.equal( [ 'foo' ] );
 				} );
 
-				model.change( writer => {
-					const range = new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 5 ] ) );
-					writer.setAttribute( 'foo', 'bar', range );
-				} );
+				model.applyOperation( wrapInDelta(
+					new AttributeOperation(
+						new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 5 ] ) ),
+						'foo',
+						null,
+						'bar',
+						doc.version
+					)
+				) );
+
+				// Attributes are auto updated on document change.
+				model.change( () => {} );
 
 				expect( selection.getAttribute( 'foo' ) ).to.equal( 'bar' );
 				expect( spyAttribute.calledOnce ).to.be.true;
