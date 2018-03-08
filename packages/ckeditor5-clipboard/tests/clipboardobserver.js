@@ -24,7 +24,7 @@ describe( 'ClipboardObserver', () => {
 
 		// Create view and DOM structures.
 		el = writer.createContainerElement( 'p' );
-		root._appendChildren( el );
+		writer.insert( Position.createAt( root ), el );
 		view.domConverter.viewToDom( root, document, { withChildren: true, bind: true } );
 
 		doc.selection._setTo( el, 0 );
