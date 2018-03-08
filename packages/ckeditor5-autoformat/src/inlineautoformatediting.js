@@ -68,7 +68,7 @@ export default class InlineAutoformatEditing {
 	 */
 	constructor( editor, testRegexpOrCallback, attributeOrCallback ) {
 		let regExp;
-		let command;
+		let attributeKey;
 		let testCallback;
 		let formatCallback;
 
@@ -79,7 +79,7 @@ export default class InlineAutoformatEditing {
 		}
 
 		if ( typeof attributeOrCallback == 'string' ) {
-			command = attributeOrCallback;
+			attributeKey = attributeOrCallback;
 		} else {
 			formatCallback = attributeOrCallback;
 		}
@@ -132,8 +132,12 @@ export default class InlineAutoformatEditing {
 		// A format callback run on matched text.
 		formatCallback = formatCallback || ( ( writer, validRanges ) => {
 			for ( const range of validRanges ) {
-				writer.setAttribute( command, true, range );
+				writer.setAttribute( attributeKey, true, range );
 			}
+
+			// After applying attribute to the text, remove given attribute from the selection.
+			// This way user is able to type a text without attribute used by auto formatter.
+			writer.removeSelectionAttribute( attributeKey );
 		} );
 
 		editor.model.document.on( 'change', () => {
@@ -187,7 +191,7 @@ export default class InlineAutoformatEditing {
 
 				// Use enqueueChange to create new batch to separate typing batch from the auto-format changes.
 				editor.model.enqueueChange( writer => {
-					const validRanges = editor.model.schema.getValidRanges( rangesToFormat, command );
+					const validRanges = editor.model.schema.getValidRanges( rangesToFormat, attributeKey );
 
 					// Apply format.
 					formatCallback( writer, validRanges );
