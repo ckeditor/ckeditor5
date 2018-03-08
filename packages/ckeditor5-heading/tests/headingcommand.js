@@ -47,12 +47,6 @@ describe( 'HeadingCommand', () => {
 		} );
 	} );
 
-	afterEach( () => {
-		// for ( const modelElement in commands ) {
-		// 	commands[ modelElement ].destroy();
-		// }
-	} );
-
 	describe( 'modelElements', () => {
 		it( 'is set', () => {
 			expect( command.modelElements ).to.deep.equal( [ 'heading1', 'heading2', 'heading3' ] );
