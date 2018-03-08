@@ -4,7 +4,7 @@
   "dependencies": {
     "@ckeditor/ckeditor5-adapter-ckfinder": "ckeditor/ckeditor5-adapter-ckfinder#07dd1c1",
     "@ckeditor/ckeditor5-alignment": "ckeditor/ckeditor5-alignment#ee39852",
-    "@ckeditor/ckeditor5-autoformat": "ckeditor/ckeditor5-autoformat#37a920d",
+    "@ckeditor/ckeditor5-autoformat": "ckeditor/ckeditor5-autoformat#cf3b8cc",
     "@ckeditor/ckeditor5-basic-styles": "ckeditor/ckeditor5-basic-styles#51a4b61",
     "@ckeditor/ckeditor5-block-quote": "ckeditor/ckeditor5-block-quote#cc723c3",
     "@ckeditor/ckeditor5-build-balloon": "ckeditor/ckeditor5-build-balloon#ed3d224",
@@ -17,7 +17,7 @@
     "@ckeditor/ckeditor5-editor-balloon": "ckeditor/ckeditor5-editor-balloon#c4b3e92",
     "@ckeditor/ckeditor5-editor-classic": "ckeditor/ckeditor5-editor-classic#d46af9f",
     "@ckeditor/ckeditor5-editor-inline": "ckeditor/ckeditor5-editor-inline#4d6a2a2",
-    "@ckeditor/ckeditor5-engine": "ckeditor/ckeditor5-engine#3ea70f3",
+    "@ckeditor/ckeditor5-engine": "ckeditor/ckeditor5-engine#b91d967",
     "@ckeditor/ckeditor5-enter": "ckeditor/ckeditor5-enter#2082eaf",
     "@ckeditor/ckeditor5-essentials": "ckeditor/ckeditor5-essentials#cbc1254",
     "@ckeditor/ckeditor5-font": "ckeditor/ckeditor5-font#a47e911",
@@ -31,7 +31,7 @@
     "@ckeditor/ckeditor5-theme-lark": "ckeditor/ckeditor5-theme-lark#52d8fc7",
     "@ckeditor/ckeditor5-typing": "ckeditor/ckeditor5-typing#e60d22b",
     "@ckeditor/ckeditor5-ui": "ckeditor/ckeditor5-ui#cada5d8",
-    "@ckeditor/ckeditor5-undo": "ckeditor/ckeditor5-undo#27f0527",
+    "@ckeditor/ckeditor5-undo": "ckeditor/ckeditor5-undo#8ae86bd",
     "@ckeditor/ckeditor5-upload": "ckeditor/ckeditor5-upload#51eb1d0",
     "@ckeditor/ckeditor5-utils": "ckeditor/ckeditor5-utils#25ebf07",
     "@ckeditor/ckeditor5-widget": "ckeditor/ckeditor5-widget#44633c8"
