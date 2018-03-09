@@ -102,7 +102,7 @@ describe( 'DecoupledEditorUIView', () => {
 
 			view.destroy( false, true );
 
-			expect( view.toolbar.element.parentElement ).to.equal( document.body )
+			expect( view.toolbar.element.parentElement ).to.equal( document.body );
 			expect( view.editable.element.parentElement ).to.be.null;
 
 			view.toolbar.element.remove();
@@ -111,7 +111,6 @@ describe( 'DecoupledEditorUIView', () => {
 
 	describe( 'editableElement', () => {
 		it( 'returns editable\'s view element', () => {
-
 			expect( view.editableElement.getAttribute( 'contentEditable' ) ).to.equal( 'true' );
 			view.destroy();
 		} );

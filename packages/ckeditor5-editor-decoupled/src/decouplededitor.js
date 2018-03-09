@@ -12,7 +12,6 @@ import DataApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/dataapimixin
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import DecoupledEditorUI from './decouplededitorui';
 import DecoupledEditorUIView from './decouplededitoruiview';
-import ElementReplacer from '@ckeditor/ckeditor5-utils/src/elementreplacer';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
