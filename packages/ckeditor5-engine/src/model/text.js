@@ -26,6 +26,10 @@ export default class Text extends Node {
 	/**
 	 * Creates a text node.
 	 *
+	 * **Note:** Constructor of this class shouldn't be used directly in the code.
+	 * Use the {@link module:engine/model/writer~Writer#createText} method instead.
+	 *
+	 * @protected
 	 * @param {String} data Node's text.
 	 * @param {Object} [attrs] Node's attributes. See {@link module:utils/tomap~toMap} for a list of accepted values.
 	 */
@@ -35,9 +39,10 @@ export default class Text extends Node {
 		/**
 		 * Text data contained in this text node.
 		 *
+		 * @protected
 		 * @type {String}
 		 */
-		this.data = data || '';
+		this._data = data || '';
 	}
 
 	/**
@@ -48,17 +53,19 @@ export default class Text extends Node {
 	}
 
 	/**
+	 * Returns a text data contained in the node.
+	 *
+	 * @returns {String}
+	 */
+	get data() {
+		return this._data;
+	}
+
+	/**
 	 * @inheritDoc
 	 */
 	is( type ) {
 		return type == 'text';
-	}
-
-	/**
-	 * Creates a copy of this text node and returns it. Created text node has same text data and attributes as original text node.
-	 */
-	clone() {
-		return new Text( this.data, this.getAttributes() );
 	}
 
 	/**
@@ -72,6 +79,16 @@ export default class Text extends Node {
 		json.data = this.data;
 
 		return json;
+	}
+
+	/**
+	 * Creates a copy of this text node and returns it. Created text node has same text data and attributes as original text node.
+	 *
+	 * @protected
+	 * @returns {module:engine/model/text~Text} `Text` instance created using given plain object.
+	 */
+	_clone() {
+		return new Text( this.data, this.getAttributes() );
 	}
 
 	/**

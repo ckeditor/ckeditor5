@@ -47,7 +47,7 @@ class UIElementTestPlugin extends Plugin {
 		// Add some UIElement to each paragraph.
 		editing.downcastDispatcher.on( 'insert:paragraph', ( evt, data, conversionApi ) => {
 			const viewP = conversionApi.mapper.toViewElement( data.item );
-			viewP.appendChildren( createEndingUIElement( conversionApi.writer ) );
+			viewP._appendChildren( createEndingUIElement( conversionApi.writer ) );
 		}, { priority: 'lowest' } );
 	}
 }

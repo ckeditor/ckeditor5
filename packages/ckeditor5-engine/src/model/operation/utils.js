@@ -45,7 +45,7 @@ export function _insert( position, nodes ) {
 
 	// Insert nodes at given index. After splitting we have a proper index and insertion is between nodes,
 	// using basic `Element` API.
-	parent.insertChildren( index, nodes );
+	parent._insertChildren( index, nodes );
 
 	// Merge text nodes, if possible. Merging is needed only at points where inserted nodes "touch" "old" nodes.
 	_mergeNodesAtIndex( parent, index + nodes.length );
@@ -58,7 +58,7 @@ export function _insert( position, nodes ) {
  * Removed nodes in given range. Only {@link module:engine/model/range~Range#isFlat flat} ranges are accepted.
  *
  * @protected
- * @function module:engine/model/operation/utils~utils.remove
+ * @function module:engine/model/operation/utils~utils._remove
  * @param {module:engine/model/range~Range} range Range containing nodes to remove.
  * @returns {Array.<module:engine/model/node~Node>}
  */
@@ -80,7 +80,7 @@ export function _remove( range ) {
 	_splitNodeAtPosition( range.end );
 
 	// Remove the text nodes using basic `Element` API.
-	const removed = parent.removeChildren( range.start.index, range.end.index - range.start.index );
+	const removed = parent._removeChildren( range.start.index, range.end.index - range.start.index );
 
 	// Merge text nodes, if possible. After some nodes were removed, node before and after removed range will be
 	// touching at the position equal to the removed range beginning. We check merging possibility there.
@@ -122,7 +122,7 @@ export function _move( sourceRange, targetPosition ) {
  * Sets given attribute on nodes in given range.
  *
  * @protected
- * @function module:engine/model/operation/utils~utils.setAttribute
+ * @function module:engine/model/operation/utils~utils._setAttribute
  * @param {module:engine/model/range~Range} range Range containing nodes that should have the attribute set.
  * @param {String} key Key of attribute to set.
  * @param {*} value Attribute value.
@@ -140,9 +140,9 @@ export function _setAttribute( range, key, value ) {
 		const node = item.is( 'textProxy' ) ? item.textNode : item;
 
 		if ( value !== null ) {
-			node.setAttribute( key, value );
+			node._setAttribute( key, value );
 		} else {
-			node.removeAttribute( key );
+			node._removeAttribute( key );
 		}
 
 		// After attributes changing it may happen that some text nodes can be merged. Try to merge with previous node.
@@ -221,10 +221,10 @@ function _mergeNodesAtIndex( element, index ) {
 		const mergedNode = new Text( nodeBefore.data + nodeAfter.data, nodeBefore.getAttributes() );
 
 		// Remove separate text nodes.
-		element.removeChildren( index - 1, 2 );
+		element._removeChildren( index - 1, 2 );
 
 		// Insert merged text node.
-		element.insertChildren( index - 1, mergedNode );
+		element._insertChildren( index - 1, mergedNode );
 	}
 }
 
@@ -244,12 +244,12 @@ function _splitNodeAtPosition( position ) {
 		const offsetDiff = position.offset - textNode.startOffset;
 		const index = textNode.index;
 
-		element.removeChildren( index, 1 );
+		element._removeChildren( index, 1 );
 
 		const firstPart = new Text( textNode.data.substr( 0, offsetDiff ), textNode.getAttributes() );
 		const secondPart = new Text( textNode.data.substr( offsetDiff ), textNode.getAttributes() );
 
-		element.insertChildren( index, [ firstPart, secondPart ] );
+		element._insertChildren( index, [ firstPart, secondPart ] );
 	}
 }
 

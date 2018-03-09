@@ -27,7 +27,7 @@ describe( 'Differ', () => {
 
 		root = doc.createRoot();
 
-		root.appendChildren( [
+		root._appendChildren( [
 			new Element( 'paragraph', null, [
 				new Text( 'foo' )
 			] ),
@@ -615,7 +615,7 @@ describe( 'Differ', () => {
 		} );
 
 		it( 'reinsert removed element', () => {
-			doc.graveyard.appendChildren( new Element( 'listItem' ) );
+			doc.graveyard._appendChildren( new Element( 'listItem' ) );
 
 			const sourcePosition = new Position( doc.graveyard, [ 0 ] );
 			const targetPosition = new Position( root, [ 2 ] );
@@ -811,7 +811,7 @@ describe( 'Differ', () => {
 		it( 'remove and add attribute on text', () => {
 			const p = root.getChild( 1 );
 
-			p.getChild( 0 ).setAttribute( 'bold', true );
+			p.getChild( 0 )._setAttribute( 'bold', true );
 
 			const range = Range.createFromParentsAndOffsets( p, 1, p, 3 );
 
@@ -1215,8 +1215,8 @@ describe( 'Differ', () => {
 			// it appeared that `blockQuote` looks like it is removed because it had the same path as the already removed `<image>`.
 			// In a result, removing `paragraph` was discarded.
 			// The mistake was that the checking for removing was done at incorrect moment.
-			root.removeChildren( 0, root.childCount );
-			root.appendChildren( [
+			root._removeChildren( 0, root.childCount );
+			root._appendChildren( [
 				new Element( 'paragraph', null, new Text( 'foo' ) ),
 				new Element( 'image' ),
 				new Element( 'blockQuote', null, [
@@ -1245,9 +1245,9 @@ describe( 'Differ', () => {
 		// In this scenario we create a new element, then remove something from before it to mess up with offsets,
 		// finally we insert some content into a new element. Since we are inserting into a new element, the
 		// inserted children should not be shown on changes list.
-		it( 'proper filtering of changes in inserted elements #1', () => {
-			root.removeChildren( 0, root.childCount );
-			root.appendChildren( new Element( 'image' ) );
+		it( 'proper filtering of changes in inserted elements', () => {
+			root._removeChildren( 0, root.childCount );
+			root._appendChildren( new Element( 'image' ) );
 
 			const blockQuote = new Element( 'blockQuote', null, new Element( 'paragraph' ) );
 
@@ -1270,8 +1270,8 @@ describe( 'Differ', () => {
 		// the new element. This way we mess up with offsets and insert content into a new element in one operation.
 		// Since we are inserting into a new element, the insertion of moved element should not be shown on changes list.
 		it( 'proper filtering of changes in inserted elements #2', () => {
-			root.removeChildren( 0, root.childCount );
-			root.appendChildren( new Element( 'image' ) );
+			root._removeChildren( 0, root.childCount );
+			root._appendChildren( new Element( 'image' ) );
 
 			model.change( () => {
 				// Insert `div` after `image`.

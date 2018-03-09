@@ -40,15 +40,6 @@ import getSelectedContent from './utils/getselectedcontent';
 export default class Model {
 	constructor() {
 		/**
-		 * All callbacks added by {@link module:engine/model/model~Model#change} or
-		 * {@link module:engine/model/model~Model#enqueueChange} methods waiting to be executed.
-		 *
-		 * @private
-		 * @type {Array.<Function>}
-		 */
-		this._pendingChanges = [];
-
-		/**
 		 * Models markers' collection.
 		 *
 		 * @readonly
@@ -59,9 +50,27 @@ export default class Model {
 		/**
 		 * Editors document model.
 		 *
+		 * @readonly
 		 * @member {module:engine/model/document~Document}
 		 */
 		this.document = new Document( this );
+
+		/**
+		 * Schema for editors model.
+		 *
+		 * @readonly
+		 * @member {module:engine/model/schema~Schema}
+		 */
+		this.schema = new Schema();
+
+		/**
+		 * All callbacks added by {@link module:engine/model/model~Model#change} or
+		 * {@link module:engine/model/model~Model#enqueueChange} methods waiting to be executed.
+		 *
+		 * @private
+		 * @type {Array.<Function>}
+		 */
+		this._pendingChanges = [];
 
 		/**
 		 * The last created and currently used writer instance.
@@ -70,13 +79,6 @@ export default class Model {
 		 * @member {module:engine/model/writer~Writer}
 		 */
 		this._currentWriter = null;
-
-		/**
-		 * Schema for editors model.
-		 *
-		 * @member {module:engine/model/schema~Schema}
-		 */
-		this.schema = new Schema();
 
 		[ 'insertContent', 'deleteContent', 'modifySelection', 'getSelectedContent', 'applyOperation' ]
 			.forEach( methodName => this.decorate( methodName ) );

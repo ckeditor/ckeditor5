@@ -25,6 +25,10 @@ export default class Element extends Node {
 	/**
 	 * Creates a model element.
 	 *
+	 * **Note:** Constructor of this class shouldn't be used directly in the code.
+	 * Use the {@link module:engine/model/writer~Writer#createElement} method instead.
+	 *
+	 * @protected
 	 * @param {String} name Element's name.
 	 * @param {Object} [attrs] Element's attributes. See {@link module:utils/tomap~toMap} for a list of accepted values.
 	 * @param {module:engine/model/node~Node|Iterable.<module:engine/model/node~Node>} [children]
@@ -36,6 +40,7 @@ export default class Element extends Node {
 		/**
 		 * Element name.
 		 *
+		 * @readonly
 		 * @member {String} module:engine/model/element~Element#name
 		 */
 		this.name = name;
@@ -49,7 +54,7 @@ export default class Element extends Node {
 		this._children = new NodeList();
 
 		if ( children ) {
-			this.insertChildren( 0, children );
+			this._insertChildren( 0, children );
 		}
 	}
 
@@ -152,19 +157,6 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Creates a copy of this element and returns it. Created element has the same name and attributes as the original element.
-	 * If clone is deep, the original element's children are also cloned. If not, then empty element is removed.
-	 *
-	 * @param {Boolean} [deep=false] If set to `true` clones element and all its children recursively. When set to `false`,
-	 * element will be cloned without any child.
-	 */
-	clone( deep = false ) {
-		const children = deep ? Array.from( this._children ).map( node => node.clone( true ) ) : null;
-
-		return new Element( this.name, this.getAttributes(), children );
-	}
-
-	/**
 	 * Returns index of a node that occupies given offset. If given offset is too low, returns `0`. If given offset is
 	 * too high, returns {@link module:engine/model/element~Element#getChildIndex index after last child}.
 	 *
@@ -183,55 +175,6 @@ export default class Element extends Node {
 	 */
 	offsetToIndex( offset ) {
 		return this._children.offsetToIndex( offset );
-	}
-
-	/**
-	 * {@link module:engine/model/element~Element#insertChildren Inserts} one or more nodes at the end of this element.
-	 *
-	 * @param {module:engine/model/item~Item|Iterable.<module:engine/model/item~Item>} nodes Nodes to be inserted.
-	 */
-	appendChildren( nodes ) {
-		this.insertChildren( this.childCount, nodes );
-	}
-
-	/**
-	 * Inserts one or more nodes at the given index and sets {@link module:engine/model/node~Node#parent parent} of these nodes
-	 * to this element.
-	 *
-	 * @param {Number} index Index at which nodes should be inserted.
-	 * @param {module:engine/model/item~Item|Iterable.<module:engine/model/item~Item>} items Items to be inserted.
-	 */
-	insertChildren( index, items ) {
-		const nodes = normalize( items );
-
-		for ( const node of nodes ) {
-			// If node that is being added to this element is already inside another element, first remove it from the old parent.
-			if ( node.parent !== null ) {
-				node.remove();
-			}
-
-			node.parent = this;
-		}
-
-		this._children.insertNodes( index, nodes );
-	}
-
-	/**
-	 * Removes one or more nodes starting at the given index and sets
-	 * {@link module:engine/model/node~Node#parent parent} of these nodes to `null`.
-	 *
-	 * @param {Number} index Index of the first node to remove.
-	 * @param {Number} [howMany=1] Number of nodes to remove.
-	 * @returns {Array.<module:engine/model/node~Node>} Array containing removed nodes.
-	 */
-	removeChildren( index, howMany = 1 ) {
-		const nodes = this._children.removeNodes( index, howMany );
-
-		for ( const node of nodes ) {
-			node.parent = null;
-		}
-
-		return nodes;
 	}
 
 	/**
@@ -274,6 +217,75 @@ export default class Element extends Node {
 		}
 
 		return json;
+	}
+
+	/**
+	 * Creates a copy of this element and returns it. Created element has the same name and attributes as the original element.
+	 * If clone is deep, the original element's children are also cloned. If not, then empty element is removed.
+	 *
+	 * @protected
+	 * @param {Boolean} [deep=false] If set to `true` clones element and all its children recursively. When set to `false`,
+	 * element will be cloned without any child.
+	 */
+	_clone( deep = false ) {
+		const children = deep ? Array.from( this._children ).map( node => node._clone( true ) ) : null;
+
+		return new Element( this.name, this.getAttributes(), children );
+	}
+
+	/**
+	 * {@link module:engine/model/element~Element#_insertChildren Inserts} one or more nodes at the end of this element.
+	 *
+	 * @see module:engine/model/writer~Writer#append
+	 * @protected
+	 * @param {module:engine/model/item~Item|Iterable.<module:engine/model/item~Item>} nodes Nodes to be inserted.
+	 */
+	_appendChildren( nodes ) {
+		this._insertChildren( this.childCount, nodes );
+	}
+
+	/**
+	 * Inserts one or more nodes at the given index and sets {@link module:engine/model/node~Node#parent parent} of these nodes
+	 * to this element.
+	 *
+	 * @see module:engine/model/writer~Writer#insert
+	 * @protected
+	 * @param {Number} index Index at which nodes should be inserted.
+	 * @param {module:engine/model/item~Item|Iterable.<module:engine/model/item~Item>} items Items to be inserted.
+	 */
+	_insertChildren( index, items ) {
+		const nodes = normalize( items );
+
+		for ( const node of nodes ) {
+			// If node that is being added to this element is already inside another element, first remove it from the old parent.
+			if ( node.parent !== null ) {
+				node._remove();
+			}
+
+			node.parent = this;
+		}
+
+		this._children._insertNodes( index, nodes );
+	}
+
+	/**
+	 * Removes one or more nodes starting at the given index and sets
+	 * {@link module:engine/model/node~Node#parent parent} of these nodes to `null`.
+	 *
+	 * @see module:engine/model/writer~Writer#remove
+	 * @protected
+	 * @param {Number} index Index of the first node to remove.
+	 * @param {Number} [howMany=1] Number of nodes to remove.
+	 * @returns {Array.<module:engine/model/node~Node>} Array containing removed nodes.
+	 */
+	_removeChildren( index, howMany = 1 ) {
+		const nodes = this._children._removeNodes( index, howMany );
+
+		for ( const node of nodes ) {
+			node.parent = null;
+		}
+
+		return nodes;
 	}
 
 	/**

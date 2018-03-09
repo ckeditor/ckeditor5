@@ -100,9 +100,9 @@ describe( 'EditingController', () => {
 				writer.setSelection( null );
 			} );
 
-			modelRoot.removeChildren( 0, modelRoot.childCount );
+			modelRoot._removeChildren( 0, modelRoot.childCount );
 
-			viewRoot.removeChildren( 0, viewRoot.childCount );
+			viewRoot._removeChildren( 0, viewRoot.childCount );
 
 			const modelData = new ModelDocumentFragment( parse(
 				'<paragraph>foo</paragraph>' +

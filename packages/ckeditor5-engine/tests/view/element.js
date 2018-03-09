@@ -123,10 +123,10 @@ describe( 'Element', () => {
 		} );
 	} );
 
-	describe( 'clone', () => {
+	describe( '_clone()', () => {
 		it( 'should clone element', () => {
 			const el = new Element( 'p', { attr1: 'foo', attr2: 'bar' } );
-			const clone = el.clone();
+			const clone = el._clone();
 
 			expect( clone ).to.not.equal( el );
 			expect( clone.name ).to.equal( el.name );
@@ -140,7 +140,7 @@ describe( 'Element', () => {
 				new Element( 'span', { attr: 'qux' } )
 			] );
 			const count = el.childCount;
-			const clone = el.clone( true );
+			const clone = el._clone( true );
 
 			expect( clone ).to.not.equal( el );
 			expect( clone.name ).to.equal( el.name );
@@ -163,7 +163,7 @@ describe( 'Element', () => {
 				new Element( 'b', { attr: 'baz' } ),
 				new Element( 'span', { attr: 'qux' } )
 			] );
-			const clone = el.clone( false );
+			const clone = el._clone( false );
 
 			expect( clone ).to.not.equal( el );
 			expect( clone.name ).to.equal( el.name );
@@ -175,7 +175,7 @@ describe( 'Element', () => {
 		it( 'should clone class attribute', () => {
 			const el = new Element( 'p', { foo: 'bar' } );
 			el._addClass( [ 'baz', 'qux' ] );
-			const clone = el.clone( false );
+			const clone = el._clone( false );
 
 			expect( clone ).to.not.equal( el );
 			expect( clone.name ).to.equal( el.name );
@@ -185,7 +185,7 @@ describe( 'Element', () => {
 
 		it( 'should clone style attribute', () => {
 			const el = new Element( 'p', { style: 'color: red; font-size: 12px;' } );
-			const clone = el.clone( false );
+			const clone = el._clone( false );
 
 			expect( clone ).to.not.equal( el );
 			expect( clone.name ).to.equal( el.name );
@@ -201,7 +201,7 @@ describe( 'Element', () => {
 			el._setCustomProperty( 'foo', 'bar' );
 			el._setCustomProperty( symbol, 'baz' );
 
-			const cloned = el.clone();
+			const cloned = el._clone();
 
 			expect( cloned.getCustomProperty( 'foo' ) ).to.equal( 'bar' );
 			expect( cloned.getCustomProperty( symbol ) ).to.equal( 'baz' );
@@ -214,7 +214,7 @@ describe( 'Element', () => {
 			expect( el.getFillerOffset ).to.be.undefined;
 			el.getFillerOffset = fm;
 
-			const cloned = el.clone();
+			const cloned = el._clone();
 
 			expect( cloned.getFillerOffset ).to.equal( fm );
 		} );
@@ -237,16 +237,16 @@ describe( 'Element', () => {
 		} );
 
 		it( 'sould return false when name is not the same', () => {
-			const other = el.clone();
+			const other = el._clone();
 			other.name = 'div';
 
 			expect( el.isSimilar( other ) ).to.be.false;
 		} );
 
 		it( 'should return false when attributes are not the same', () => {
-			const other1 = el.clone();
-			const other2 = el.clone();
-			const other3 = el.clone();
+			const other1 = el._clone();
+			const other2 = el._clone();
+			const other3 = el._clone();
 			other1._setAttribute( 'baz', 'qux' );
 			other2._setAttribute( 'foo', 'not-bar' );
 			other3._removeAttribute( 'foo' );
@@ -305,8 +305,8 @@ describe( 'Element', () => {
 
 		describe( 'insertion', () => {
 			it( 'should insert children', () => {
-				const count1 = parent.insertChildren( 0, [ el1, el3 ] );
-				const count2 = parent.insertChildren( 1, el2 );
+				const count1 = parent._insertChildren( 0, [ el1, el3 ] );
+				const count2 = parent._insertChildren( 1, el2 );
 
 				expect( parent.childCount ).to.equal( 3 );
 				expect( parent.getChild( 0 ) ).to.have.property( 'name' ).that.equals( 'el1' );
@@ -317,22 +317,22 @@ describe( 'Element', () => {
 			} );
 
 			it( 'should accept strings', () => {
-				parent.insertChildren( 0, 'abc' );
+				parent._insertChildren( 0, 'abc' );
 
 				expect( parent.childCount ).to.equal( 1 );
 				expect( parent.getChild( 0 ) ).to.have.property( 'data' ).that.equals( 'abc' );
 
-				parent.removeChildren( 0, 1 );
-				parent.insertChildren( 0, [ new Element( 'p' ), 'abc' ] );
+				parent._removeChildren( 0, 1 );
+				parent._insertChildren( 0, [ new Element( 'p' ), 'abc' ] );
 
 				expect( parent.childCount ).to.equal( 2 );
 				expect( parent.getChild( 1 ) ).to.have.property( 'data' ).that.equals( 'abc' );
 			} );
 
 			it( 'should append children', () => {
-				const count1 = parent.insertChildren( 0, el1 );
-				const count2 = parent.appendChildren( el2 );
-				const count3 = parent.appendChildren( el3 );
+				const count1 = parent._insertChildren( 0, el1 );
+				const count2 = parent._appendChildren( el2 );
+				const count3 = parent._appendChildren( el3 );
 
 				expect( parent.childCount ).to.equal( 3 );
 				expect( parent.getChild( 0 ) ).to.have.property( 'name' ).that.equals( 'el1' );
@@ -348,7 +348,7 @@ describe( 'Element', () => {
 				const text = new Text( 'abcxyz' );
 				const textProxy = new TextProxy( text, 2, 3 );
 
-				element.insertChildren( 0, textProxy );
+				element._insertChildren( 0, textProxy );
 
 				expect( element.childCount ).to.equal( 1 );
 				expect( element.getChild( 0 ) ).to.be.instanceof( Text );
@@ -358,9 +358,9 @@ describe( 'Element', () => {
 
 		describe( 'getChildIndex', () => {
 			it( 'should return child index', () => {
-				parent.appendChildren( el1 );
-				parent.appendChildren( el2 );
-				parent.appendChildren( el3 );
+				parent._appendChildren( el1 );
+				parent._appendChildren( el2 );
+				parent._appendChildren( el3 );
 
 				expect( parent.childCount ).to.equal( 3 );
 				expect( parent.getChildIndex( el1 ) ).to.equal( 0 );
@@ -371,9 +371,9 @@ describe( 'Element', () => {
 
 		describe( 'getChildren', () => {
 			it( 'should renturn children iterator', () => {
-				parent.appendChildren( el1 );
-				parent.appendChildren( el2 );
-				parent.appendChildren( el3 );
+				parent._appendChildren( el1 );
+				parent._appendChildren( el2 );
+				parent._appendChildren( el3 );
 
 				const expected = [ el1, el2, el3 ];
 				let i = 0;
@@ -387,14 +387,14 @@ describe( 'Element', () => {
 			} );
 		} );
 
-		describe( 'removeChildren', () => {
+		describe( '_removeChildren', () => {
 			it( 'should remove children', () => {
-				parent.appendChildren( el1 );
-				parent.appendChildren( el2 );
-				parent.appendChildren( el3 );
-				parent.appendChildren( el4 );
+				parent._appendChildren( el1 );
+				parent._appendChildren( el2 );
+				parent._appendChildren( el3 );
+				parent._appendChildren( el4 );
 
-				parent.removeChildren( 1, 2 );
+				parent._removeChildren( 1, 2 );
 
 				expect( parent.childCount ).to.equal( 2 );
 				expect( parent.getChild( 0 ) ).to.have.property( 'name' ).that.equals( 'el1' );
@@ -407,11 +407,11 @@ describe( 'Element', () => {
 			} );
 
 			it( 'should remove one child when second parameter is not specified', () => {
-				parent.appendChildren( el1 );
-				parent.appendChildren( el2 );
-				parent.appendChildren( el3 );
+				parent._appendChildren( el1 );
+				parent._appendChildren( el2 );
+				parent._appendChildren( el3 );
 
-				const removed = parent.removeChildren( 1 );
+				const removed = parent._removeChildren( 1 );
 
 				expect( parent.childCount ).to.equal( 2 );
 				expect( parent.getChild( 0 ) ).to.have.property( 'name' ).that.equals( 'el1' );

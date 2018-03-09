@@ -39,7 +39,7 @@ describe( 'RenameDelta', () => {
 		} );
 
 		it( 'should return correct RenameDelta', () => {
-			root.appendChildren( new Element( 'p', null, new Text( 'abc' ) ) );
+			root._appendChildren( new Element( 'p', null, new Text( 'abc' ) ) );
 
 			model.change( writer => {
 				writer.rename( root.getChild( 0 ), 'h' );

@@ -156,9 +156,9 @@ export default class RootAttributeOperation extends Operation {
 	 */
 	_execute() {
 		if ( this.newValue !== null ) {
-			this.root.setAttribute( this.key, this.newValue );
+			this.root._setAttribute( this.key, this.newValue );
 		} else {
-			this.root.removeAttribute( this.key );
+			this.root._removeAttribute( this.key );
 		}
 	}
 

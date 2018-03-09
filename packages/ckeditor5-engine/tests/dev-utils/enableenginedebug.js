@@ -233,7 +233,7 @@ describe( 'debug tools', () => {
 
 		describe( 'for operations', () => {
 			beforeEach( () => {
-				modelRoot.appendChildren( [ new ModelText( 'foobar' ) ] );
+				modelRoot._appendChildren( [ new ModelText( 'foobar' ) ] );
 			} );
 
 			it( 'AttributeOperation', () => {
@@ -256,7 +256,7 @@ describe( 'debug tools', () => {
 
 			it( 'DetachOperation (element)', () => {
 				const element = new ModelElement( 'element' );
-				modelRoot.insertChildren( 0, element );
+				modelRoot._insertChildren( 0, element );
 
 				const op = new DetachOperation( ModelPosition.createBefore( element ), 1 );
 
@@ -268,7 +268,7 @@ describe( 'debug tools', () => {
 
 			it( 'DetachOperation (multiple nodes)', () => {
 				const element = new ModelElement( 'element' );
-				modelRoot.insertChildren( 0, element );
+				modelRoot._insertChildren( 0, element );
 
 				const op = new DetachOperation( ModelPosition.createBefore( element ), 2 );
 
@@ -376,7 +376,7 @@ describe( 'debug tools', () => {
 			} );
 
 			it( 'AttributeDelta', () => {
-				modelRoot.appendChildren( new ModelText( 'foobar' ) );
+				modelRoot._appendChildren( new ModelText( 'foobar' ) );
 
 				const delta = new AttributeDelta();
 				const op = new AttributeOperation( ModelRange.createIn( modelRoot ), 'key', null, { foo: 'bar' }, 0 );
@@ -427,7 +427,7 @@ describe( 'debug tools', () => {
 			} );
 
 			it( 'MarkerDelta', () => {
-				modelRoot.appendChildren( new ModelText( 'foobar' ) );
+				modelRoot._appendChildren( new ModelText( 'foobar' ) );
 
 				const delta = new MarkerDelta();
 				const op = new MarkerOperation( 'marker', null, ModelRange.createIn( modelRoot ), modelDoc.markers, 0 );
@@ -445,7 +445,7 @@ describe( 'debug tools', () => {
 				const firstEle = new ModelElement( 'paragraph' );
 				const removedEle = new ModelElement( 'paragraph', null, [ new ModelText( 'foo' ) ] );
 
-				otherRoot.appendChildren( [ firstEle, removedEle ] );
+				otherRoot._appendChildren( [ firstEle, removedEle ] );
 
 				const graveyard = modelDoc.graveyard;
 				const delta = new MergeDelta();
@@ -471,7 +471,7 @@ describe( 'debug tools', () => {
 				const firstEle = new ModelElement( 'paragraph' );
 				const removedEle = new ModelElement( 'paragraph', null, [ new ModelText( 'foo' ) ] );
 
-				otherRoot.appendChildren( [ firstEle, removedEle ] );
+				otherRoot._appendChildren( [ firstEle, removedEle ] );
 
 				const delta = new MergeDelta();
 				const move = new MoveOperation( ModelPosition.createAt( removedEle, 0 ), 3, ModelPosition.createAt( firstEle, 0 ), 0 );
@@ -527,7 +527,7 @@ describe( 'debug tools', () => {
 				const otherRoot = modelDoc.createRoot( 'main', 'otherRoot' );
 				const splitEle = new ModelElement( 'paragraph', null, [ new ModelText( 'foo' ) ] );
 
-				otherRoot.appendChildren( [ splitEle ] );
+				otherRoot._appendChildren( [ splitEle ] );
 
 				const delta = new SplitDelta();
 				const insert = new InsertOperation( ModelPosition.createAt( otherRoot, 1 ), [ new ModelElement( 'paragraph' ) ], 0 );
@@ -546,7 +546,7 @@ describe( 'debug tools', () => {
 				const otherRoot = modelDoc.createRoot( 'main', 'otherRoot' );
 				const splitEle = new ModelElement( 'paragraph', null, [ new ModelText( 'foo' ) ] );
 
-				otherRoot.appendChildren( [ splitEle ] );
+				otherRoot._appendChildren( [ splitEle ] );
 
 				const delta = new SplitDelta();
 				const insert = new InsertOperation( ModelPosition.createAt( otherRoot, 1 ), [ new ModelElement( 'paragraph' ) ], 0 );
@@ -581,7 +581,7 @@ describe( 'debug tools', () => {
 				const otherRoot = modelDoc.createRoot( 'main', 'otherRoot' );
 				const unwrapEle = new ModelElement( 'paragraph', null, [ new ModelText( 'foo' ) ] );
 
-				otherRoot.appendChildren( [ unwrapEle ] );
+				otherRoot._appendChildren( [ unwrapEle ] );
 
 				const graveyard = modelDoc.graveyard;
 				const delta = new UnwrapDelta();
@@ -630,7 +630,7 @@ describe( 'debug tools', () => {
 			const modelDoc = model.document;
 			const modelRoot = modelDoc.createRoot();
 
-			modelRoot.appendChildren( [
+			modelRoot._appendChildren( [
 				new ModelElement( 'paragraph', { foo: 'bar' }, [
 					new ModelText( 'This is ' ), new ModelText( 'bold', { bold: true } ), new ModelText( '.' )
 				] ),
@@ -699,7 +699,7 @@ describe( 'debug tools', () => {
 			const viewDoc = new ViewDocument();
 			const viewRoot = createViewRoot( viewDoc );
 
-			viewRoot.appendChildren( [
+			viewRoot._appendChildren( [
 				new ViewContainerElement( 'p', { foo: 'bar' }, [
 					new ViewText( 'This is ' ), new ViewAttributeElement( 'b', null, new ViewText( 'bold' ) ), new ViewText( '.' )
 				] ),
@@ -904,7 +904,7 @@ describe( 'debug tools', () => {
 			const firstEle = new ModelElement( 'paragraph' );
 			const removedEle = new ModelElement( 'paragraph', null, [ new ModelText( 'foo' ) ] );
 
-			otherRoot.appendChildren( [ firstEle, removedEle ] );
+			otherRoot._appendChildren( [ firstEle, removedEle ] );
 
 			const delta = new MergeDelta();
 			const graveyard = modelDoc.graveyard;
@@ -930,7 +930,7 @@ describe( 'debug tools', () => {
 			const firstEle = new ModelElement( 'paragraph' );
 			const removedEle = new ModelElement( 'paragraph', null, [ new ModelText( 'foo' ) ] );
 
-			otherRoot.appendChildren( [ firstEle, removedEle ] );
+			otherRoot._appendChildren( [ firstEle, removedEle ] );
 
 			const delta = new MergeDelta();
 			const graveyard = modelDoc.graveyard;

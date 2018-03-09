@@ -27,6 +27,7 @@ export default class Position {
 		/**
 		 * Position parent.
 		 *
+		 * @readonly
 		 * @member {module:engine/view/node~Node|module:engine/view/documentfragment~DocumentFragment}
 		 * module:engine/view/position~Position#parent
 		 */
@@ -35,6 +36,7 @@ export default class Position {
 		/**
 		 * Position offset.
 		 *
+		 * @readonly
 		 * @member {Number} module:engine/view/position~Position#offset
 		 */
 		this.offset = offset;

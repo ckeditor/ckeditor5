@@ -54,25 +54,25 @@ describe( 'EmptyElement', () => {
 		} ).to.throw( CKEditorError, 'view-emptyelement-cannot-add: Cannot add child nodes to EmptyElement instance.' );
 	} );
 
-	describe( 'appendChildren', () => {
+	describe( '_appendChildren', () => {
 		it( 'should throw when try to append new child element', () => {
 			expect( () => {
-				emptyElement.appendChildren( element );
+				emptyElement._appendChildren( element );
 			} ).to.throw( CKEditorError, 'view-emptyelement-cannot-add: Cannot add child nodes to EmptyElement instance.' );
 		} );
 	} );
 
-	describe( 'insertChildren', () => {
+	describe( '_insertChildren', () => {
 		it( 'should throw when try to insert new child element', () => {
 			expect( () => {
-				emptyElement.insertChildren( 0, element );
+				emptyElement._insertChildren( 0, element );
 			} ).to.throw( CKEditorError, 'view-emptyelement-cannot-add: Cannot add child nodes to EmptyElement instance.' );
 		} );
 	} );
 
-	describe( 'clone', () => {
+	describe( '_clone()', () => {
 		it( 'should be cloned properly', () => {
-			const newEmptyElement = emptyElement.clone();
+			const newEmptyElement = emptyElement._clone();
 
 			expect( newEmptyElement.name ).to.equal( 'img' );
 			expect( newEmptyElement.getAttribute( 'alt' ) ).to.equal( 'alternative text' );

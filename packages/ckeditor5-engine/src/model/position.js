@@ -104,6 +104,7 @@ export default class Position {
 		 *		     |- LI
 		 *		        |- b^a|r  ^ has path: [ 1, 1, 1 ]   | has path: [ 1, 1, 2 ]
 		 *
+		 * @readonly
 		 * @member {Array.<Number>} module:engine/model/position~Position#path
 		 */
 		this.path = path;

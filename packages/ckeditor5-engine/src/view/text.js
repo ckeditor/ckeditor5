@@ -18,6 +18,10 @@ export default class Text extends Node {
 	/**
 	 * Creates a tree view text node.
 	 *
+	 * **Note:** Constructor of this class shouldn't be used directly in the code.
+	 * Use the {@link module:engine/view/writer~Writer#createText} method instead.
+	 *
+	 * @protected
 	 * @param {String} data Text.
 	 */
 	constructor( data ) {
@@ -28,19 +32,10 @@ export default class Text extends Node {
 		 *
 		 * Setting the data fires the {@link module:engine/view/node~Node#event:change:text change event}.
 		 *
-		 * @private
-		 * @member {String} module:engine/view/text~Text#_data
+		 * @protected
+		 * @member {String} module:engine/view/text~Text#_textData
 		 */
-		this._data = data;
-	}
-
-	/**
-	 * Clones this node.
-	 *
-	 * @returns {module:engine/view/text~Text} Text node that is a clone of this node.
-	 */
-	clone() {
-		return new Text( this.data );
+		this._textData = data;
 	}
 
 	/**
@@ -53,16 +48,41 @@ export default class Text extends Node {
 	/**
 	 * The text content.
 	 *
-	 * Setting the data fires the {@link module:engine/view/node~Node#event:change:text change event}.
+	 * @returns {String}
 	 */
 	get data() {
-		return this._data;
+		return this._textData;
 	}
 
-	set data( data ) {
+	/**
+	 * This getter is required when using the addition assignment operator on protected property:
+	 *
+	 *		const foo = new Text( 'foo' );
+	 *		const bar = new Text( 'bar' );
+	 *
+	 *		foo._data += bar.data;   // executes: `foo._data = foo._data + bar.data`
+	 *		console.log( foo.data ); // prints: 'foobar'
+	 *
+	 * If the protected getter didn't exist, `foo._data` will return `undefined` and result of the merge will be invalid.
+	 *
+	 * @protected
+	 * @returns {String}
+	 */
+	get _data() {
+		return this.data;
+	}
+
+	/**
+	 * Sets data and fires the {@link module:engine/view/node~Node#event:change:text change event}.
+	 *
+	 * @protected
+	 * @fires change:text
+	 * @param {String} data New data for the text node.
+	 */
+	set _data( data ) {
 		this._fireChange( 'text', this );
 
-		this._data = data;
+		this._textData = data;
 	}
 
 	/**
@@ -78,5 +98,15 @@ export default class Text extends Node {
 		}
 
 		return this === otherNode || this.data === otherNode.data;
+	}
+
+	/**
+	 * Clones this node.
+	 *
+	 * @protected
+	 * @returns {module:engine/view/text~Text} Text node that is a clone of this node.
+	 */
+	_clone() {
+		return new Text( this.data );
 	}
 }

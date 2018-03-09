@@ -66,6 +66,7 @@ export default class DataController {
 		 * cleared directly after the data are converted. However, the mapper is defined as a class property, because
 		 * it needs to be passed to the `DowncastDispatcher` as a conversion API.
 		 *
+		 * @readonly
 		 * @member {module:engine/conversion/mapper~Mapper}
 		 */
 		this.mapper = new Mapper();
