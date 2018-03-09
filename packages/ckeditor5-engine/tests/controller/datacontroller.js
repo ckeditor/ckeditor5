@@ -7,6 +7,7 @@ import Model from '../../src/model/model';
 import Range from '../../src/model/range';
 import DataController from '../../src/controller/datacontroller';
 import HtmlDataProcessor from '../../src/dataprocessor/htmldataprocessor';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 import ModelDocumentFragment from '../../src/model/documentfragment';
 import ViewDocumentFragment from '../../src/view/documentfragment';
@@ -149,6 +150,61 @@ describe( 'DataController', () => {
 
 			// Model fragment in inline root.
 			expect( stringify( data.toModel( viewFragment, [ 'inlineRoot' ] ) ) ).to.equal( 'foo' );
+		} );
+	} );
+
+	describe( 'init()', () => {
+		it( 'should be decorated', () => {
+			const spy = sinon.spy();
+
+			data.on( 'init', spy );
+
+			data.init( 'foo bar' );
+
+			sinon.assert.calledWithExactly( spy, sinon.match.any, [ 'foo bar' ] );
+		} );
+
+		it( 'should throw an error when document data is already initialized', () => {
+			data.init( '<p>Foo</p>' );
+
+			expect( () => {
+				data.init( '<p>Bar</p>' );
+			} ).to.throw(
+				CKEditorError,
+				'datacontroller-init-document-not-empty: Trying to set initial data to not empty document.'
+			);
+		} );
+
+		it( 'should set data to default main root', () => {
+			schema.extend( '$text', { allowIn: '$root' } );
+			data.init( 'foo' );
+
+			expect( getData( model, { withoutSelection: true } ) ).to.equal( 'foo' );
+		} );
+
+		it( 'should get root name as a parameter', () => {
+			schema.extend( '$text', { allowIn: '$root' } );
+			data.init( 'foo', 'title' );
+
+			expect( getData( model, { withoutSelection: true, rootName: 'title' } ) ).to.equal( 'foo' );
+		} );
+
+		it( 'should create a batch', () => {
+			schema.extend( '$text', { allowIn: '$root' } );
+			data.init( 'foo' );
+
+			expect( count( modelDocument.history.getDeltas() ) ).to.equal( 1 );
+		} );
+
+		it( 'should cause firing change event', () => {
+			const spy = sinon.spy();
+
+			schema.extend( '$text', { allowIn: '$root' } );
+			model.document.on( 'change', spy );
+
+			data.init( 'foo' );
+
+			expect( spy.calledOnce ).to.be.true;
 		} );
 	} );
 
