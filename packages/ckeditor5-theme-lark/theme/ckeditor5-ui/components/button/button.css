@@ -34,6 +34,9 @@ a.ck-button {
 	/* Avoid flickering when the foucs border shows up. */
 	border: 1px solid transparent;
 
+	/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/157 */
+	outline: 0;
+
 	&:focus {
 		@mixin ck-focus-ring;
 		@mixin ck-box-shadow var(--ck-focus-outer-shadow);
