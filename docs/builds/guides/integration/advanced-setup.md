@@ -108,7 +108,7 @@ The minimal configuration, assuming that you use the same methods of handling as
 
 ```js
 const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' );
-const { getPostCssConfig } = require( '@ckeditor/ckeditor5-dev-utils' ).styles;
+const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 
 module.exports = {
 	plugins: [
@@ -142,7 +142,7 @@ module.exports = {
 					},
 					{
 						loader: 'postcss-loader',
-						options: getPostCssConfig( {
+						options: styles.getPostCssConfig( {
 							themeImporter: {
 								themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
 							},
@@ -341,7 +341,7 @@ module.exports = {
 					use: [
 						{
 							loader: 'postcss-loader',
-							options: getPostCssConfig( {
+							options: styles.getPostCssConfig( {
 								themeImporter: {
 									themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
 								},
