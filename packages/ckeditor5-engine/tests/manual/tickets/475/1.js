@@ -19,8 +19,6 @@ import {
 	downcastAttributeToElement,
 } from '../../../../src/conversion/downcast-converters';
 
-import AttributeElement from '../../../../src/view/attributeelement';
-
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -33,8 +31,11 @@ class Link extends Plugin {
 		// Allow bold attribute on all inline nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: 'link' } );
 
-		editor.conversion.for( 'downcast' ).add( downcastAttributeToElement( 'link', {
-			view: attributeValue => new AttributeElement( 'a', { href: attributeValue } )
+		editor.conversion.for( 'downcast' ).add( downcastAttributeToElement( {
+			model: 'link',
+			view: ( modelAttributeValue, viewWriter ) => {
+				return viewWriter.createAttributeElement( 'a', { href: modelAttributeValue } );
+			}
 		} ) );
 
 		editor.conversion.for( 'upcast' ).add( upcastElementToAttribute( {
@@ -53,16 +54,12 @@ class AutoLinker extends Plugin {
 			const changes = this.editor.model.document.differ.getChanges();
 
 			for ( const entry of changes ) {
-				if ( entry.type != 'insert' || entry.name != '$text' || !entry.position.textNode ) {
+				if ( entry.type != 'insert' || entry.name != '$text' || !entry.position.parent ) {
 					continue;
 				}
 
-				const textNode = entry.position.textNode;
-				const text = textNode.data;
-
-				if ( !text ) {
-					return;
-				}
+				const parent = entry.position.parent;
+				const text = Array.from( parent.getChildren() ).map( item => item.data ).join( '' );
 
 				const regexp = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)/g;
 				let match;
@@ -73,7 +70,7 @@ class AutoLinker extends Plugin {
 					const length = url.length;
 
 					if ( entry.position.offset + entry.length == index + length ) {
-						const livePos = LivePosition.createFromParentAndOffset( textNode.parent, index );
+						const livePos = LivePosition.createFromParentAndOffset( parent, index );
 						this.editor.model.enqueueChange( writer => {
 							const urlRange = Range.createFromPositionAndShift( livePos, length );
 							writer.setAttribute( 'link', url, urlRange );
