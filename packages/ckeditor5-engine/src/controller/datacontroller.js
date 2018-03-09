@@ -187,13 +187,13 @@ export default class DataController {
 	init( data, rootName = 'main' ) {
 		if ( this.model.document.version ) {
 			/**
-			 * Cannot initialize already initialized data. Data should be initialized only once, during
-			 * {@link module:core/editor/editor~Editor} initialization, when there is no content in
-			 * the {@link module:engine/model/document~Document} yet.
+			 * Cannot set initial data to not empty {@link module:engine/model/document~Document}.
+			 * Initial data should be set once, during {@link module:core/editor/editor~Editor} initialization,
+			 * when the {@link module:engine/model/document~Document#version} is equal 0.
 			 *
-			 * @error datacontroller-init-data-already-initialized
+			 * @error datacontroller-init-document-not-empty
 			 */
-			throw new CKEditorError( 'datacontroller-init-data-already-initialized: Trying to set initial data to initialized document.' );
+			throw new CKEditorError( 'datacontroller-init-document-not-empty: Trying to set initial data to not empty document.' );
 		}
 
 		const modelRoot = this.model.document.getRoot( rootName );

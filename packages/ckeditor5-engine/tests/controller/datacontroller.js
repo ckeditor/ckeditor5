@@ -171,7 +171,7 @@ describe( 'DataController', () => {
 				data.init( '<p>Bar</p>' );
 			} ).to.throw(
 				CKEditorError,
-				'datacontroller-init-data-already-initialized: Trying to set initial data to initialized document.'
+				'datacontroller-init-document-not-empty: Trying to set initial data to not empty document.'
 			);
 		} );
 
