@@ -15,6 +15,7 @@ import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/html
 import ClassicEditorUI from './classiceditorui';
 import ClassicEditorUIView from './classiceditoruiview';
 import ElementReplacer from '@ckeditor/ckeditor5-utils/src/elementreplacer';
+import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
@@ -145,7 +146,7 @@ export default class ClassicEditor extends Editor {
 						editor.fire( 'uiReady' );
 					} )
 					.then( () => editor.editing.view.attachDomRoot( editor.ui.view.editableElement ) )
-					.then( () => editor.loadDataFromElement() )
+					.then( () => editor.data.init( getDataFromElement( element ) ) )
 					.then( () => {
 						editor.fire( 'dataReady' );
 						editor.fire( 'ready' );
