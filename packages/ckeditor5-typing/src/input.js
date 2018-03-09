@@ -100,7 +100,7 @@ export default class Input extends Plugin {
 	 * @private
 	 * @param {Array.<module:engine/view/observer/mutationobserver~MutatedText|
 	 * module:engine/view/observer/mutationobserver~MutatedChildren>} mutations
-	 * @param {module:engine/view/selection~Selection|null} viewSelection
+	 * @param {module:engine/view/documentselection~DocumentSelection|null} viewSelection
 	 */
 	_handleMutations( mutations, viewSelection ) {
 		new MutationHandler( this.editor ).handle( mutations, viewSelection );
@@ -141,7 +141,7 @@ class MutationHandler {
 	 *
 	 * @param {Array.<module:engine/view/observer/mutationobserver~MutatedText|
 	 * module:engine/view/observer/mutationobserver~MutatedChildren>} mutations
-	 * @param {module:engine/view/selection~Selection|null} viewSelection
+	 * @param {module:engine/view/documentselection~DocumentSelection|null} viewSelection
 	 */
 	handle( mutations, viewSelection ) {
 		if ( containerChildrenMutated( mutations ) ) {
@@ -171,7 +171,7 @@ class MutationHandler {
 	 * @private
 	 * @param {Array.<module:engine/view/observer/mutationobserver~MutatedText|
 	 * module:engine/view/observer/mutationobserver~MutatedChildren>} mutations
-	 * @param {module:engine/view/selection~Selection|null} viewSelection
+	 * @param {module:engine/view/documentselection~DocumentSelection|null} viewSelection
 	 */
 	_handleContainerChildrenMutations( mutations, viewSelection ) {
 		// Get common ancestor of all mutations.
