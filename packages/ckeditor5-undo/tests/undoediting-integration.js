@@ -1019,7 +1019,9 @@ describe( 'UndoEditing integration', () => {
 			input( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
 
 			// Remove children from graveyard because they are inserted there after `input` call.
-			doc.graveyard.removeChildren( 0, doc.graveyard.childCount );
+			model.change( writer => {
+				writer.remove( Range.createIn( doc.graveyard ) );
+			} );
 
 			const batchWithMerge = new Batch();
 
