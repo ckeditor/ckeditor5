@@ -420,7 +420,7 @@ export function cleanList( evt, data, conversionApi ) {
 
 		for ( const child of children ) {
 			if ( !child.is( 'li' ) ) {
-				child.remove();
+				child._remove();
 			}
 		}
 	}
@@ -447,18 +447,18 @@ export function cleanListItem( evt, data, conversionApi ) {
 
 		for ( const child of children ) {
 			if ( foundList && !child.is( 'ul' ) && !child.is( 'ol' ) ) {
-				child.remove();
+				child._remove();
 			}
 
 			if ( child.is( 'text' ) ) {
 				// If this is the first node and it's a text node, left-trim it.
 				if ( firstNode ) {
-					child.data = child.data.replace( /^\s+/, '' );
+					conversionApi.writer.setTextData( child.data.replace( /^\s+/, '' ), child );
 				}
 
 				// If this is the last text node before <ul> or <ol>, right-trim it.
 				if ( !child.nextSibling || ( child.nextSibling.is( 'ul' ) || child.nextSibling.is( 'ol' ) ) ) {
-					child.data = child.data.replace( /\s+$/, '' );
+					conversionApi.writer.setTextData( child.data.replace( /\s+$/, '' ), child );
 				}
 			} else if ( child.is( 'ul' ) || child.is( 'ol' ) ) {
 				// If this is a <ul> or <ol>, do not process it, just mark that we already visited list element.
@@ -779,7 +779,7 @@ export function modelIndentPasteFixer( evt, [ content, selection ] ) {
 			if ( indentChange > 0 ) {
 				// Adjust indent of all "first" list items in inserted data.
 				while ( item && item.is( 'listItem' ) ) {
-					item.setAttribute( 'indent', item.getAttribute( 'indent' ) + indentChange );
+					item._setAttribute( 'indent', item.getAttribute( 'indent' ) + indentChange );
 
 					item = item.nextSibling;
 				}
@@ -795,10 +795,10 @@ function generateLiInUl( modelItem, conversionApi ) {
 	const mapper = conversionApi.mapper;
 	const viewWriter = conversionApi.writer;
 	const listType = modelItem.getAttribute( 'type' ) == 'numbered' ? 'ol' : 'ul';
-	const viewItem = createViewListItemElement();
+	const viewItem = createViewListItemElement( viewWriter );
 
 	const viewList = viewWriter.createContainerElement( listType, null );
-	viewList.appendChildren( viewItem );
+	viewWriter.insert( ViewPosition.createAt( viewList ), viewItem );
 
 	mapper.bindElements( modelItem, viewItem );
 
