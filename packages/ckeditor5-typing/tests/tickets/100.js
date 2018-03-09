@@ -116,7 +116,7 @@ describe( 'Bug ckeditor5-typing#100', () => {
 				type: 'children',
 				node: strong,
 				oldChildren: [ text ],
-				newChildren: [ new ViewElement( 'a', null, text.clone() ), new ViewText( 'x' ) ]
+				newChildren: [ new ViewElement( 'a', null, text._clone() ), new ViewText( 'x' ) ]
 			}
 		] );
 
