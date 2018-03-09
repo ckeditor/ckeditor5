@@ -265,10 +265,10 @@ export default class DataController {
 	destroy() {}
 
 	/**
-	 * Event fired by decorated {@link #set} method.
+	 * Event fired by decorated {@link #init} method.
 	 * See {@link module:utils/observablemixin~ObservableMixin.decorate} for more information and samples.
 	 *
-	 * @event set
+	 * @event init
 	 */
 }
 
