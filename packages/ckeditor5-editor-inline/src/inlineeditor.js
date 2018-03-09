@@ -15,6 +15,7 @@ import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/html
 import InlineEditorUI from './inlineeditorui';
 import InlineEditorUIView from './inlineeditoruiview';
 import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement';
+import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
@@ -138,7 +139,7 @@ export default class InlineEditor extends Editor {
 						editor.ui.init();
 						editor.fire( 'uiReady' );
 					} )
-					.then( () => editor.loadDataFromElement() )
+					.then( () => editor.data.init( getDataFromElement( element ) ) )
 					.then( () => {
 						editor.fire( 'dataReady' );
 						editor.fire( 'ready' );
