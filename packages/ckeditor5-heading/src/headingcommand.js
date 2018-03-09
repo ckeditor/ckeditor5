@@ -26,8 +26,9 @@ export default class HeadingCommand extends Command {
 		super( editor );
 
 		/**
-		 * If the selection starts in a one of headings of {@link #modelElements} the value gets name of heading model element.
-		 * Is set to false otherwise.
+		 * If the selection starts in a heading (which {@link #modelElements is supported by this command})
+		 * the value is set to the name of that heading model element.
+		 * It is  set to `false` otherwise.
 		 *
 		 * @observable
 		 * @readonly
@@ -35,7 +36,7 @@ export default class HeadingCommand extends Command {
 		 */
 
 		/**
-		 * Set of defined model's elements names that this command recognise.
+		 * Set of defined model's elements names that this command support.
 		 * See {@link module:heading/heading~HeadingOption}.
 		 *
 		 * @readonly
@@ -50,13 +51,6 @@ export default class HeadingCommand extends Command {
 	refresh() {
 		const block = first( this.editor.model.document.selection.getSelectedBlocks() );
 
-		/**
-		 * The name of a heading.
-		 *
-		 * @observable
-		 * @readonly
-		 * @member {Boolean|String} #value
-		 */
 		this.value = !!block && this.modelElements.includes( block.name ) && block.name;
 		this.isEnabled = !!block && this.modelElements.some( heading => checkCanBecomeHeading( block, heading, this.editor.model.schema ) );
 	}
