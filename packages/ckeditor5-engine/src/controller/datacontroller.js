@@ -9,6 +9,7 @@
 
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 import Mapper from '../conversion/mapper';
 
@@ -100,7 +101,7 @@ export default class DataController {
 		this.upcastDispatcher.on( 'element', convertToModelFragment(), { priority: 'lowest' } );
 		this.upcastDispatcher.on( 'documentFragment', convertToModelFragment(), { priority: 'lowest' } );
 
-		this.decorate( 'set' );
+		this.decorate( 'init' );
 	}
 
 	/**
@@ -172,17 +173,38 @@ export default class DataController {
 	}
 
 	/**
+	 * Sets initial input data parsed by the {@link #processor data processor} and
+	 * converted by the {@link #upcastDispatcher view-to-model converters}.
+	 * Initial data can be set only to document that {@link module:engine/model/document~Document#version} is equal 0.
+	 *
+	 * **Note** This method is {@link module:utils/observablemixin~ObservableMixin#decorate decorated} which is
+	 * used by e.g. collaborative editing plugin that syncs remote data on init.
+	 *
+	 * @fires set
+	 * @param {String} data Input data.
+	 * @param {String} [rootName='main'] Root name.
+	 */
+	init( data, rootName = 'main' ) {
+		if ( this.model.document.version ) {
+			throw new CKEditorError( 'datacontroller-init-document-data-initialized: Trying to set initial data to initialized document.' );
+		}
+
+		const modelRoot = this.model.document.getRoot( rootName );
+
+		this.model.enqueueChange( 'transparent', writer => {
+			writer.insert( this.parse( data, modelRoot ), modelRoot );
+		} );
+	}
+
+	/**
 	 * Sets input data parsed by the {@link #processor data processor} and
 	 * converted by the {@link #upcastDispatcher view-to-model converters}.
+	 * This method can be used any time to replace existing editor data by the new one without clearing the
+	 * {@link module:engine/model/document~Document#history document history}.
 	 *
 	 * This method also creates a batch with all the changes applied. If all you need is to parse data, use
 	 * the {@link #parse} method.
 	 *
-	 * **Note** This method is {@link module:utils/observablemixin~ObservableMixin#decorate decorated} which is
-	 * used by some plugins to change the behavior of this method. For example, the collaborative editing plugin changes
-	 * this method’s nature to asynchronous by returning a promise.
-	 *
-	 * @fires set
 	 * @param {String} data Input data.
 	 * @param {String} [rootName='main'] Root name.
 	 */
