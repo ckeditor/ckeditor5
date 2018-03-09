@@ -7,23 +7,24 @@
 
 import ClipboardObserver from '../src/clipboardobserver';
 import View from '@ckeditor/ckeditor5-engine/src/view/view';
-import Element from '@ckeditor/ckeditor5-engine/src/view/element';
+import Writer from '@ckeditor/ckeditor5-engine/src/view/writer';
 import Range from '@ckeditor/ckeditor5-engine/src/view/range';
 import Position from '@ckeditor/ckeditor5-engine/src/view/position';
 import DataTransfer from '../src/datatransfer';
 import createViewRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot';
 
 describe( 'ClipboardObserver', () => {
-	let view, doc, observer, root, el, range, eventSpy, preventDefaultSpy;
+	let view, doc, writer, observer, root, el, range, eventSpy, preventDefaultSpy;
 
 	beforeEach( () => {
 		view = new View();
 		doc = view.document;
+		writer = new Writer( doc );
 		root = createViewRoot( doc );
 
 		// Create view and DOM structures.
-		el = new Element( 'p' );
-		root.appendChildren( el );
+		el = writer.createContainerElement( 'p' );
+		writer.insert( Position.createAt( root ), el );
 		view.domConverter.viewToDom( root, document, { withChildren: true, bind: true } );
 
 		doc.selection._setTo( el, 0 );
