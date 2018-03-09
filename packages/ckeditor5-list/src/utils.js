@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
-
 /**
  * @module list/utils
  */
@@ -12,10 +10,11 @@ import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containere
 /**
  * Creates list item {@link module:engine/view/containerelement~ContainerElement}.
  *
+ * @param {module:engine/view/writer~Writer} writer The writer instance.
  * @returns {module:engine/view/containerelement~ContainerElement}
  */
-export function createViewListItemElement() {
-	const viewItem = new ViewContainerElement( 'li' );
+export function createViewListItemElement( writer ) {
+	const viewItem = writer.createContainerElement( 'li' );
 	viewItem.getFillerOffset = getFillerOffset;
 
 	return viewItem;
