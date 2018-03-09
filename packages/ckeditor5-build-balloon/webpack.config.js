@@ -9,8 +9,7 @@
 
 const path = require( 'path' );
 const webpack = require( 'webpack' );
-const { bundler } = require( '@ckeditor/ckeditor5-dev-utils' );
-const { getPostCssConfig } = require( '@ckeditor/ckeditor5-dev-utils' ).styles;
+const { bundler, styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' );
 const BabiliPlugin = require( 'babel-minify-webpack-plugin' );
 const buildConfig = require( './build-config' );
@@ -60,7 +59,7 @@ module.exports = {
 					},
 					{
 						loader: 'postcss-loader',
-						options: getPostCssConfig( {
+						options: styles.getPostCssConfig( {
 							themeImporter: {
 								themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
 							},
