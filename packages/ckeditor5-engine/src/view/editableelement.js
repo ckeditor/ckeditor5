@@ -26,6 +26,9 @@ const documentSymbol = Symbol( 'document' );
 export default class EditableElement extends ContainerElement {
 	/**
 	 * Creates an editable element.
+	 *
+	 * @see module:engine/view/writer~Writer#createEditableElement
+	 * @protected
 	 */
 	constructor( name, attrs, children ) {
 		super( name, attrs, children );

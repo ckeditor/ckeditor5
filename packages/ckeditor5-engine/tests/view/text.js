@@ -40,10 +40,10 @@ describe( 'Text', () => {
 		} );
 	} );
 
-	describe( 'clone', () => {
+	describe( '_clone()', () => {
 		it( 'should return new text with same data', () => {
 			const text = new Text( 'foo bar' );
-			const clone = text.clone();
+			const clone = text._clone();
 
 			expect( clone ).to.not.equal( text );
 			expect( clone.data ).to.equal( text.data );
@@ -69,8 +69,8 @@ describe( 'Text', () => {
 		} );
 
 		it( 'should return false when data is not the same', () => {
-			const other = text.clone();
-			other.data = 'not-foo';
+			const other = text._clone();
+			other._data = 'not-foo';
 
 			expect( text.isSimilar( other ) ).to.be.false;
 		} );
@@ -79,9 +79,17 @@ describe( 'Text', () => {
 	describe( 'setText', () => {
 		it( 'should change the text', () => {
 			const text = new Text( 'foo' );
-			text.data = 'bar';
+			text._data = 'bar';
 
 			expect( text.data ).to.equal( 'bar' );
+		} );
+
+		it( 'works when using addition assignment operator (+=)', () => {
+			const foo = new Text( 'foo' );
+			const bar = new Text( 'bar' );
+
+			foo._data += bar.data;
+			expect( foo.data ).to.equal( 'foobar' );
 		} );
 	} );
 } );

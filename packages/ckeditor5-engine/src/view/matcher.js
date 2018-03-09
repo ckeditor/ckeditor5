@@ -19,6 +19,10 @@ export default class Matcher {
 	 * more information.
 	 */
 	constructor( ...pattern ) {
+		/**
+		 * @private
+		 * @type {Array<String|RegExp|Object>}
+		 */
 		this._patterns = [];
 
 		this.add( ...pattern );

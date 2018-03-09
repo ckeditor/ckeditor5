@@ -26,6 +26,8 @@ export default class AttributeElement extends Element {
 	/**
 	 * Creates a attribute element.
 	 *
+	 * @see module:engine/view/writer~Writer#createAttributeElement
+	 * @protected
 	 * @see module:engine/view/element~Element
 	 */
 	constructor( name, attrs, children ) {
@@ -72,22 +74,6 @@ export default class AttributeElement extends Element {
 	}
 
 	/**
-	 * Clones provided element with priority.
-	 *
-	 * @param {Boolean} deep If set to `true` clones element and all its children recursively. When set to `false`,
-	 * element will be cloned without any children.
-	 * @returns {module:engine/view/attributeelement~AttributeElement} Clone of this element.
-	 */
-	clone( deep ) {
-		const cloned = super.clone( deep );
-
-		// Clone priority too.
-		cloned._priority = this._priority;
-
-		return cloned;
-	}
-
-	/**
 	 * Checks if this element is similar to other element.
 	 * Both elements should have the same name, attributes and priority to be considered as similar.
 	 * Two similar elements can contain different set of children nodes.
@@ -97,6 +83,23 @@ export default class AttributeElement extends Element {
 	 */
 	isSimilar( otherElement ) {
 		return super.isSimilar( otherElement ) && this.priority == otherElement.priority;
+	}
+
+	/**
+	 * Clones provided element with priority.
+	 *
+	 * @protected
+	 * @param {Boolean} deep If set to `true` clones element and all its children recursively. When set to `false`,
+	 * element will be cloned without any children.
+	 * @returns {module:engine/view/attributeelement~AttributeElement} Clone of this element.
+	 */
+	_clone( deep ) {
+		const cloned = super._clone( deep );
+
+		// Clone priority too.
+		cloned._priority = this._priority;
+
+		return cloned;
 	}
 }
 

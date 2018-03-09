@@ -322,10 +322,10 @@ export function parse( data, options = {} ) {
 	// If custom root is provided - move all nodes there.
 	if ( options.rootElement ) {
 		const root = options.rootElement;
-		const nodes = view.removeChildren( 0, view.childCount );
+		const nodes = view._removeChildren( 0, view.childCount );
 
-		root.removeChildren( 0, root.childCount );
-		root.appendChildren( nodes );
+		root._removeChildren( 0, root.childCount );
+		root._appendChildren( nodes );
 
 		view = root;
 	}
@@ -350,7 +350,7 @@ export function parse( data, options = {} ) {
 
 	// If single element is returned without selection - remove it from parent and return detached element.
 	if ( view.parent ) {
-		view.remove();
+		view._remove();
 	}
 
 	return view;
@@ -449,13 +449,13 @@ class RangeParser {
 			}
 
 			text = text.replace( regexp, '' );
-			node.data = text;
+			node._data = text;
 			const index = node.index;
 			const parent = node.parent;
 
 			// Remove empty text nodes.
 			if ( !text ) {
-				node.remove();
+				node._remove();
 			}
 
 			for ( const item of brackets ) {
@@ -887,7 +887,7 @@ function _convertViewElements( rootNode ) {
 				throw new Error( 'Parse error - cannot parse inside UIElement.' );
 			}
 
-			convertedElement.appendChildren( _convertViewElements( child ) );
+			convertedElement._appendChildren( _convertViewElements( child ) );
 		}
 
 		return convertedElement;

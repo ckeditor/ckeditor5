@@ -43,6 +43,7 @@ export default class Renderer {
 		/**
 		 * Set of DOM Documents instances.
 		 *
+		 * @readonly
 		 * @member {Set.<Document>}
 		 */
 		this.domDocuments = new Set();

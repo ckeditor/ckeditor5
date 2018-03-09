@@ -27,6 +27,10 @@ import EditableElement from './editableelement';
  */
 export default class Writer {
 	constructor( document ) {
+		/**
+		 * @readonly
+		 * @type {module:engine/view/document~Document}
+		 */
 		this.document = document;
 	}
 
@@ -219,6 +223,16 @@ export default class Writer {
 		}
 
 		return uiElement;
+	}
+
+	/**
+	 * Sets the text content for the specified `textNode`.
+	 *
+	 * @param {String} value New value.
+	 * @param {module:engine/view/text~Text} textNode Text node that will be updated.
+	 */
+	setTextData( value, textNode ) {
+		textNode._data = value;
 	}
 
 	/**
@@ -425,7 +439,7 @@ export default class Writer {
 		if ( position.isAtStart ) {
 			return Position.createBefore( element );
 		} else if ( !position.isAtEnd ) {
-			const newElement = element.clone( false );
+			const newElement = element._clone( false );
 
 			this.insert( Position.createAfter( element ), newElement );
 
@@ -477,7 +491,7 @@ export default class Writer {
 		if ( positionParent.is( 'attributeElement' ) && positionParent.childCount === 0 ) {
 			const parent = positionParent.parent;
 			const offset = positionParent.index;
-			positionParent.remove();
+			positionParent._remove();
 
 			return this.mergeAttributes( new Position( parent, offset ) );
 		}
@@ -498,8 +512,8 @@ export default class Writer {
 		else if ( nodeBefore.is( 'attributeElement' ) && nodeAfter.is( 'attributeElement' ) && nodeBefore.isSimilar( nodeAfter ) ) {
 			// Move all children nodes from node placed after selection and remove that node.
 			const count = nodeBefore.childCount;
-			nodeBefore.appendChildren( nodeAfter.getChildren() );
-			nodeAfter.remove();
+			nodeBefore._appendChildren( nodeAfter.getChildren() );
+			nodeAfter._remove();
 
 			// New position is located inside the first node, before new nodes.
 			// Call this method recursively to merge again if needed.
@@ -588,7 +602,7 @@ export default class Writer {
 
 		const insertionPosition = _breakAttributes( position, true );
 
-		const length = container.insertChildren( insertionPosition.offset, nodes );
+		const length = container._insertChildren( insertionPosition.offset, nodes );
 		const endPosition = insertionPosition.getShiftedBy( length );
 		const start = this.mergeAttributes( insertionPosition );
 
@@ -633,7 +647,7 @@ export default class Writer {
 		const count = breakEnd.offset - breakStart.offset;
 
 		// Remove nodes in range.
-		const removed = parentContainer.removeChildren( breakStart.offset, count );
+		const removed = parentContainer._removeChildren( breakStart.offset, count );
 
 		// Merge after removing.
 		const mergePosition = this.mergeAttributes( breakStart );
@@ -901,12 +915,12 @@ export default class Writer {
 			// Wrap text, empty elements, ui elements or attributes with higher or equal priority.
 			if ( isText || isEmpty || isUI || ( isAttribute && shouldABeOutsideB( attribute, child ) ) ) {
 				// Clone attribute.
-				const newAttribute = attribute.clone();
+				const newAttribute = attribute._clone();
 
 				// Wrap current node with new attribute;
-				child.remove();
-				newAttribute.appendChildren( child );
-				parent.insertChildren( i, newAttribute );
+				child._remove();
+				newAttribute._appendChildren( child );
+				parent._insertChildren( i, newAttribute );
 
 				wrapPositions.push(	new Position( parent, i ) );
 			}
@@ -965,8 +979,8 @@ export default class Writer {
 				const count = child.childCount;
 
 				// Replace wrapper element with its children
-				child.remove();
-				parent.insertChildren( i, unwrapped );
+				child._remove();
+				parent._insertChildren( i, unwrapped );
 
 				// Save start and end position of moved items.
 				unwrapPositions.push(
@@ -1103,7 +1117,7 @@ export default class Writer {
 		fakePosition.isSimilar = () => false;
 
 		// Insert fake element in position location.
-		position.parent.insertChildren( position.offset, fakePosition );
+		position.parent._insertChildren( position.offset, fakePosition );
 
 		// Range around inserted fake attribute element.
 		const wrapRange = new Range( position, position.getShiftedBy( 1 ) );
@@ -1113,7 +1127,7 @@ export default class Writer {
 
 		// Remove fake element and place new position there.
 		const newPosition = new Position( fakePosition.parent, fakePosition.index );
-		fakePosition.remove();
+		fakePosition._remove();
 
 		// If position is placed between text nodes - merge them and return position inside.
 		const nodeBefore = newPosition.nodeBefore;
@@ -1394,17 +1408,17 @@ function _breakAttributes( position, forceSplitText = false ) {
 		const offsetAfter = positionParent.index + 1;
 
 		// Break element.
-		const clonedNode = positionParent.clone();
+		const clonedNode = positionParent._clone();
 
 		// Insert cloned node to position's parent node.
-		positionParent.parent.insertChildren( offsetAfter, clonedNode );
+		positionParent.parent._insertChildren( offsetAfter, clonedNode );
 
 		// Get nodes to move.
 		const count = positionParent.childCount - positionOffset;
-		const nodesToMove = positionParent.removeChildren( positionOffset, count );
+		const nodesToMove = positionParent._removeChildren( positionOffset, count );
 
 		// Move nodes to cloned node.
-		clonedNode.appendChildren( nodesToMove );
+		clonedNode._appendChildren( nodesToMove );
 
 		// Create new position to work on.
 		const newPosition = new Position( positionParent.parent, offsetAfter );
@@ -1478,10 +1492,10 @@ function breakTextNode( position ) {
 	const textToMove = position.parent.data.slice( position.offset );
 
 	// Leave rest of the text in position's parent.
-	position.parent.data = position.parent.data.slice( 0, position.offset );
+	position.parent._data = position.parent.data.slice( 0, position.offset );
 
 	// Insert new text node after position's parent text node.
-	position.parent.parent.insertChildren( position.parent.index + 1, new Text( textToMove ) );
+	position.parent.parent._insertChildren( position.parent.index + 1, new Text( textToMove ) );
 
 	// Return new position between two newly created text nodes.
 	return new Position( position.parent.parent, position.parent.index + 1 );
@@ -1496,8 +1510,8 @@ function breakTextNode( position ) {
 function mergeTextNodes( t1, t2 ) {
 	// Merge text data into first text node and remove second one.
 	const nodeBeforeLength = t1.data.length;
-	t1.data += t2.data;
-	t2.remove();
+	t1._data += t2.data;
+	t2._remove();
 
 	return new Position( t1, nodeBeforeLength );
 }

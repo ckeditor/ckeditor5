@@ -121,14 +121,14 @@ describe( 'NodeList', () => {
 		} );
 	} );
 
-	describe( 'insertNodes', () => {
+	describe( '_insertNodes', () => {
 		it( 'should insert nodes at given index', () => {
 			const newImg = new Element( 'image' );
-			nodes.insertNodes( 1, [ newImg ] );
+			nodes._insertNodes( 1, [ newImg ] );
 
 			const bar = new Text( 'bar', { bold: true } );
 			const xyz = new Text( 'xyz' );
-			nodes.insertNodes( 4, [ bar, xyz ] );
+			nodes._insertNodes( 4, [ bar, xyz ] );
 
 			expect( nodes.length ).to.equal( 6 );
 			expect( nodes.maxOffset ).to.equal( 12 );
@@ -159,14 +159,14 @@ describe( 'NodeList', () => {
 
 		it( 'should throw if not a Node is inserted', () => {
 			expect( () => {
-				nodes.insertNodes( 0, [ 'foo' ] );
+				nodes._insertNodes( 0, [ 'foo' ] );
 			} ).to.throw( CKEditorError, /nodelist-insertNodes-not-node/ );
 		} );
 	} );
 
-	describe( 'removeNodes', () => {
+	describe( '_removeNodes', () => {
 		it( 'should remove one or more nodes from given index', () => {
-			nodes.removeNodes( 0, 2 );
+			nodes._removeNodes( 0, 2 );
 
 			expect( nodes.length ).to.equal( 1 );
 			expect( nodes.maxOffset ).to.equal( 1 );
@@ -177,7 +177,7 @@ describe( 'NodeList', () => {
 		} );
 
 		it( 'should remove one node if howMany parameter was not specified', () => {
-			nodes.removeNodes( 1 );
+			nodes._removeNodes( 1 );
 
 			expect( nodes.length ).to.equal( 2 );
 			expect( nodes.maxOffset ).to.equal( 2 );

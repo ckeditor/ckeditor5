@@ -29,6 +29,10 @@ export default class Conversion {
 	 * Creates new Conversion instance.
 	 */
 	constructor() {
+		/**
+		 * @private
+		 * @member {Map}
+		 */
 		this._dispatchersGroups = new Map();
 	}
 

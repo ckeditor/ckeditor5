@@ -36,7 +36,7 @@ export default class HtmlDataProcessor {
 		 * A DOM converter used to convert DOM elements to view elements.
 		 *
 		 * @private
-		 * @member
+		 * @member {module:engine/view/domconverter~DomConverter}
 		 */
 		this._domConverter = new DomConverter( { blockFiller: NBSP_FILLER } );
 

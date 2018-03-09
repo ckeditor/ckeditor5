@@ -26,6 +26,7 @@ export default class Range {
 		/**
 		 * Start position.
 		 *
+		 * @readonly
 		 * @member {module:engine/view/position~Position}
 		 */
 		this.start = Position.createFromPosition( start );
@@ -33,6 +34,7 @@ export default class Range {
 		/**
 		 * End position.
 		 *
+		 * @readonly
 		 * @member {module:engine/view/position~Position}
 		 */
 		this.end = end ? Position.createFromPosition( end ) : Position.createFromPosition( start );

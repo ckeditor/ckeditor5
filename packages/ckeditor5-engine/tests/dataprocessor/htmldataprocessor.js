@@ -97,7 +97,7 @@ describe( 'HtmlDataProcessor', () => {
 
 		it( 'should return text if document fragment with single text node is passed', () => {
 			const fragment = new ViewDocumentFragment();
-			fragment.appendChildren( parse( 'foo bar' ) );
+			fragment._appendChildren( parse( 'foo bar' ) );
 
 			expect( dataProcessor.toData( fragment ) ).to.equal( 'foo bar' );
 		} );

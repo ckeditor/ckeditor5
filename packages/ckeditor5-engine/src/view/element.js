@@ -38,6 +38,14 @@ export default class Element extends Node {
 	 *		new Element( 'div', [ [ 'class', 'editor' ], [ 'contentEditable', 'true' ] ] ); // map-like iterator
 	 *		new Element( 'div', mapOfAttributes ); // map
 	 *
+	 * **Note:** Constructor of this class shouldn't be used directly in the code. Use the
+	 * {@link module:engine/view/writer~Writer#createAttributeElement} for inline element,
+	 * {@link module:engine/view/writer~Writer#createContainerElement} for block element,
+	 * {@link module:engine/view/writer~Writer#createEditableElement} for editable element,
+	 * {@link module:engine/view/writer~Writer#createEmptyElement} for empty element or
+	 * {@link module:engine/view/writer~Writer#createUIElement} for UI element instead.
+	 *
+	 * @protected
 	 * @param {String} name Node name.
 	 * @param {Object|Iterable} [attrs] Collection of attributes.
 	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} [children]
@@ -71,7 +79,7 @@ export default class Element extends Node {
 		this._children = [];
 
 		if ( children ) {
-			this.insertChildren( 0, children );
+			this._insertChildren( 0, children );
 		}
 
 		/**
@@ -148,53 +156,6 @@ export default class Element extends Node {
 		} else {
 			return type == 'element' && name == this.name;
 		}
-	}
-
-	/**
-	 * Clones provided element.
-	 *
-	 * @param {Boolean} [deep=false] If set to `true` clones element and all its children recursively. When set to `false`,
-	 * element will be cloned without any children.
-	 * @returns {module:engine/view/element~Element} Clone of this element.
-	 */
-	clone( deep = false ) {
-		const childrenClone = [];
-
-		if ( deep ) {
-			for ( const child of this.getChildren() ) {
-				childrenClone.push( child.clone( deep ) );
-			}
-		}
-
-		// ContainerElement and AttributeElement should be also cloned properly.
-		const cloned = new this.constructor( this.name, this._attrs, childrenClone );
-
-		// Classes and styles are cloned separately - this solution is faster than adding them back to attributes and
-		// parse once again in constructor.
-		cloned._classes = new Set( this._classes );
-		cloned._styles = new Map( this._styles );
-
-		// Clone custom properties.
-		cloned._customProperties = new Map( this._customProperties );
-
-		// Clone filler offset method.
-		// We can't define this method in a prototype because it's behavior which
-		// is changed by e.g. toWidget() function from ckeditor5-widget. Perhaps this should be one of custom props.
-		cloned.getFillerOffset = this.getFillerOffset;
-
-		return cloned;
-	}
-
-	/**
-	 * {@link module:engine/view/element~Element#insertChildren Insert} a child node or a list of child nodes at the end of this node
-	 * and sets the parent of these nodes to this element.
-	 *
-	 * @fires module:engine/view/node~Node#change
-	 * @param {module:engine/view/item~Item|Iterable.<module:engine/view/item~Item>} items Items to be inserted.
-	 * @returns {Number} Number of appended nodes.
-	 */
-	appendChildren( items ) {
-		return this.insertChildren( this.childCount, items );
 	}
 
 	/**
@@ -315,55 +276,6 @@ export default class Element extends Node {
 		}
 
 		return this._attrs.has( key );
-	}
-
-	/**
-	 * Inserts a child node or a list of child nodes on the given index and sets the parent of these nodes to
-	 * this element.
-	 *
-	 * @param {Number} index Position where nodes should be inserted.
-	 * @param {module:engine/view/item~Item|Iterable.<module:engine/view/item~Item>} items Items to be inserted.
-	 * @fires module:engine/view/node~Node#change
-	 * @returns {Number} Number of inserted nodes.
-	 */
-	insertChildren( index, items ) {
-		this._fireChange( 'children', this );
-		let count = 0;
-
-		const nodes = normalize( items );
-
-		for ( const node of nodes ) {
-			// If node that is being added to this element is already inside another element, first remove it from the old parent.
-			if ( node.parent !== null ) {
-				node.remove();
-			}
-
-			node.parent = this;
-
-			this._children.splice( index, 0, node );
-			index++;
-			count++;
-		}
-
-		return count;
-	}
-
-	/**
-	 * Removes number of child nodes starting at the given index and set the parent of these nodes to `null`.
-	 *
-	 * @param {Number} index Number of the first node to remove.
-	 * @param {Number} [howMany=1] Number of nodes to remove.
-	 * @returns {Array.<module:engine/view/node~Node>} The array of removed nodes.
-	 * @fires module:engine/view/node~Node#change
-	 */
-	removeChildren( index, howMany = 1 ) {
-		this._fireChange( 'children', this );
-
-		for ( let i = index; i < index + howMany; i++ ) {
-			this._children[ i ].parent = null;
-		}
-
-		return this._children.splice( index, howMany );
 	}
 
 	/**
@@ -565,8 +477,111 @@ export default class Element extends Node {
 	}
 
 	/**
+	 * Clones provided element.
+	 *
+	 * @protected
+	 * @param {Boolean} [deep=false] If set to `true` clones element and all its children recursively. When set to `false`,
+	 * element will be cloned without any children.
+	 * @returns {module:engine/view/element~Element} Clone of this element.
+	 */
+	_clone( deep = false ) {
+		const childrenClone = [];
+
+		if ( deep ) {
+			for ( const child of this.getChildren() ) {
+				childrenClone.push( child._clone( deep ) );
+			}
+		}
+
+		// ContainerElement and AttributeElement should be also cloned properly.
+		const cloned = new this.constructor( this.name, this._attrs, childrenClone );
+
+		// Classes and styles are cloned separately - this solution is faster than adding them back to attributes and
+		// parse once again in constructor.
+		cloned._classes = new Set( this._classes );
+		cloned._styles = new Map( this._styles );
+
+		// Clone custom properties.
+		cloned._customProperties = new Map( this._customProperties );
+
+		// Clone filler offset method.
+		// We can't define this method in a prototype because it's behavior which
+		// is changed by e.g. toWidget() function from ckeditor5-widget. Perhaps this should be one of custom props.
+		cloned.getFillerOffset = this.getFillerOffset;
+
+		return cloned;
+	}
+
+	/**
+	 * {@link module:engine/view/element~Element#_insertChildren Insert} a child node or a list of child nodes at the end of this node
+	 * and sets the parent of these nodes to this element.
+	 *
+	 * @see module:engine/view/writer~Writer#insert
+	 * @protected
+	 * @param {module:engine/view/item~Item|Iterable.<module:engine/view/item~Item>} items Items to be inserted.
+	 * @fires module:engine/view/node~Node#change
+	 * @returns {Number} Number of appended nodes.
+	 */
+	_appendChildren( items ) {
+		return this._insertChildren( this.childCount, items );
+	}
+
+	/**
+	 * Inserts a child node or a list of child nodes on the given index and sets the parent of these nodes to
+	 * this element.
+	 *
+	 * @see module:engine/view/writer~Writer#insert
+	 * @protected
+	 * @param {Number} index Position where nodes should be inserted.
+	 * @param {module:engine/view/item~Item|Iterable.<module:engine/view/item~Item>} items Items to be inserted.
+	 * @fires module:engine/view/node~Node#change
+	 * @returns {Number} Number of inserted nodes.
+	 */
+	_insertChildren( index, items ) {
+		this._fireChange( 'children', this );
+		let count = 0;
+
+		const nodes = normalize( items );
+
+		for ( const node of nodes ) {
+			// If node that is being added to this element is already inside another element, first remove it from the old parent.
+			if ( node.parent !== null ) {
+				node._remove();
+			}
+
+			node.parent = this;
+
+			this._children.splice( index, 0, node );
+			index++;
+			count++;
+		}
+
+		return count;
+	}
+
+	/**
+	 * Removes number of child nodes starting at the given index and set the parent of these nodes to `null`.
+	 *
+	 * @see module:engine/view/writer~Writer#remove
+	 * @param {Number} index Number of the first node to remove.
+	 * @param {Number} [howMany=1] Number of nodes to remove.
+	 * @fires module:engine/view/node~Node#change
+	 * @returns {Array.<module:engine/view/node~Node>} The array of removed nodes.
+	 */
+	_removeChildren( index, howMany = 1 ) {
+		this._fireChange( 'children', this );
+
+		for ( let i = index; i < index + howMany; i++ ) {
+			this._children[ i ].parent = null;
+		}
+
+		return this._children.splice( index, howMany );
+	}
+
+	/**
 	 * Adds or overwrite attribute with a specified key and value.
 	 *
+	 * @see module:engine/view/writer~Writer#setAttribute
 	 * @protected
 	 * @param {String} key Attribute key.
 	 * @param {String} value Attribute value.
@@ -589,6 +604,7 @@ export default class Element extends Node {
 	/**
 	 * Removes attribute from the element.
 	 *
+	 * @see module:engine/view/writer~Writer#removeAttribute
 	 * @protected
 	 * @param {String} key Attribute key.
 	 * @returns {Boolean} Returns true if an attribute existed and has been removed.
@@ -629,6 +645,7 @@ export default class Element extends Node {
 	 *		element._addClass( 'foo' ); // Adds 'foo' class.
 	 *		element._addClass( [ 'foo', 'bar' ] ); // Adds 'foo' and 'bar' classes.
 	 *
+	 * @see module:engine/view/writer~Writer#addClass
 	 * @protected
 	 * @param {Array.<String>|String} className
 	 * @fires module:engine/view/node~Node#change
@@ -646,6 +663,7 @@ export default class Element extends Node {
 	 *		element._removeClass( 'foo' );  // Removes 'foo' class.
 	 *		element._removeClass( [ 'foo', 'bar' ] ); // Removes both 'foo' and 'bar' classes.
 	 *
+	 * @see module:engine/view/writer~Writer#removeClass
 	 * @param {Array.<String>|String} className
 	 * @fires module:engine/view/node~Node#change
 	 */
@@ -665,6 +683,7 @@ export default class Element extends Node {
 	 *			position: 'fixed'
 	 *		} );
 	 *
+	 * @see module:engine/view/writer~Writer#setStyle
 	 * @protected
 	 * @param {String|Object} property Property name or object with key - value pairs.
 	 * @param {String} [value] Value to set. This parameter is ignored if object is provided as the first parameter.
@@ -690,6 +709,7 @@ export default class Element extends Node {
 	 *		element._removeStyle( 'color' );  // Removes 'color' style.
 	 *		element._removeStyle( [ 'color', 'border-top' ] ); // Removes both 'color' and 'border-top' styles.
 	 *
+	 * @see module:engine/view/writer~Writer#removeStyle
 	 * @protected
 	 * @param {Array.<String>|String} property
 	 * @fires module:engine/view/node~Node#change
@@ -705,6 +725,7 @@ export default class Element extends Node {
 	 * Sets a custom property. Unlike attributes, custom properties are not rendered to the DOM,
 	 * so they can be used to add special data to elements.
 	 *
+	 * @see module:engine/view/writer~Writer#setCustomProperty
 	 * @protected
 	 * @param {String|Symbol} key
 	 * @param {*} value
@@ -716,6 +737,7 @@ export default class Element extends Node {
 	/**
 	 * Removes the custom property stored under the given key.
 	 *
+	 * @see module:engine/view/writer~Writer#removeCustomProperty
 	 * @protected
 	 * @param {String|Symbol} key
 	 * @returns {Boolean} Returns true if property was removed.

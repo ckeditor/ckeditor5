@@ -114,7 +114,7 @@ describe( 'View', () => {
 				// Do this both in the view and in the DOM to simulate typing and to avoid rendering (which would remove the filler).
 				const viewB = writer.document.selection.getFirstPosition().parent;
 				const viewTextX = parse( 'x' );
-				viewB.appendChildren( viewTextX );
+				viewB._appendChildren( viewTextX );
 				writer.setSelection( viewTextX, 1 );
 
 				const domB = view.getDomRoot( 'main' ).querySelector( 'b' );

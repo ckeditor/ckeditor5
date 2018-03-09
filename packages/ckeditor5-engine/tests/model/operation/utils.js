@@ -29,7 +29,7 @@ describe( 'Operation utils', () => {
 		// offset:	0123456789
 		// data:	foobarIxyz
 		// bold:	___BBBB___
-		root.appendChildren( [
+		root._appendChildren( [
 			new Text( 'foo' ),
 			new Text( 'bar', { bold: true } ),
 			new Element( 'image', { src: 'img.jpg' } ),

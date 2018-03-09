@@ -152,7 +152,7 @@ describe( 'DowncastDispatcher', () => {
 
 	describe( 'convertInsert', () => {
 		it( 'should fire event with correct parameters for every item in passed range', () => {
-			root.appendChildren( [
+			root._appendChildren( [
 				new ModelText( 'foo', { bold: true } ),
 				new ModelElement( 'image' ),
 				new ModelText( 'bar' ),
@@ -206,7 +206,7 @@ describe( 'DowncastDispatcher', () => {
 		} );
 
 		it( 'should not fire events for already consumed parts of model', () => {
-			root.appendChildren( [
+			root._appendChildren( [
 				new ModelElement( 'image', { src: 'foo.jpg', title: 'bar', bold: true }, [
 					new ModelElement( 'caption', {}, new ModelText( 'title' ) )
 				] )
@@ -252,7 +252,7 @@ describe( 'DowncastDispatcher', () => {
 		beforeEach( () => {
 			dispatcher.off( 'selection' );
 
-			root.appendChildren( new ModelText( 'foobar' ) );
+			root._appendChildren( new ModelText( 'foobar' ) );
 			model.change( writer => {
 				writer.setSelection( [
 					new ModelRange( new ModelPosition( root, [ 1 ] ), new ModelPosition( root, [ 3 ] ) ),
@@ -373,12 +373,12 @@ describe( 'DowncastDispatcher', () => {
 
 		it( 'should not fire event for marker if selection is in a element with custom highlight handling', () => {
 			// Clear after `beforeEach`.
-			root.removeChildren( 0, root.childCount );
+			root._removeChildren( 0, root.childCount );
 
 			const text = new ModelText( 'abc' );
 			const caption = new ModelElement( 'caption', null, text );
 			const image = new ModelElement( 'image', null, caption );
-			root.appendChildren( [ image ] );
+			root._appendChildren( [ image ] );
 
 			// Create view elements that will be "mapped" to model elements.
 			const viewCaption = new ViewContainerElement( 'caption' );
@@ -441,7 +441,7 @@ describe( 'DowncastDispatcher', () => {
 		beforeEach( () => {
 			text = new ModelText( 'foo bar baz' );
 			element = new ModelElement( 'paragraph', null, [ text ] );
-			root.appendChildren( [ element ] );
+			root._appendChildren( [ element ] );
 
 			range = ModelRange.createFromParentsAndOffsets( element, 0, element, 4 );
 		} );
@@ -521,7 +521,7 @@ describe( 'DowncastDispatcher', () => {
 		beforeEach( () => {
 			text = new ModelText( 'foo bar baz' );
 			element = new ModelElement( 'paragraph', null, [ text ] );
-			root.appendChildren( [ element ] );
+			root._appendChildren( [ element ] );
 
 			range = ModelRange.createFromParentsAndOffsets( element, 0, element, 4 );
 		} );

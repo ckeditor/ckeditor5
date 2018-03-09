@@ -195,7 +195,7 @@ export default class Selection {
 	 * Returns number of ranges in selection.
 	 *
 	 * @type {Number}
-     */
+	 */
 	get rangeCount() {
 		return this._ranges.length;
 	}
@@ -421,39 +421,39 @@ export default class Selection {
 	 *
 	 *		// Sets selection to the given range.
 	 *		const range = new Range( start, end );
-	 *		selection.setTo( range );
+	 *		selection._setTo( range );
 	 *
 	 *		// Sets selection to given ranges.
 	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
-	 *		selection.setTo( range );
+	 *		selection._setTo( range );
 	 *
 	 *		// Sets selection to the other selection.
 	 *		const otherSelection = new Selection();
-	 *		selection.setTo( otherSelection );
+	 *		selection._setTo( otherSelection );
 	 *
 	 * 		// Sets collapsed selection at the given position.
 	 *		const position = new Position( root, path );
-	 *		selection.setTo( position );
+	 *		selection._setTo( position );
 	 *
 	 * 		// Sets collapsed selection at the position of given item and offset.
-	 *		selection.setTo( paragraph, offset );
+	 *		selection._setTo( paragraph, offset );
 	 *
 	 * Creates a range inside an {@link module:engine/view/element~Element element} which starts before the first child of
- 	 * that element and ends after the last child of that element.
+	 * that element and ends after the last child of that element.
 	 *
-	 *		selection.setTo( paragraph, 'in' );
+	 *		selection._setTo( paragraph, 'in' );
 	 *
 	 * Creates a range on an {@link module:engine/view/item~Item item} which starts before the item and ends just after the item.
 	 *
-	 *		selection.setTo( paragraph, 'on' );
+	 *		selection._setTo( paragraph, 'on' );
 	 *
 	 * 		// Clears selection. Removes all ranges.
-	 *		selection.setTo( null );
+	 *		selection._setTo( null );
 	 *
-	 * `Selection#setTo()` method allow passing additional options (`backward`, `fake` and `label`) as the last argument.
+	 * `Selection#_setTo()` method allow passing additional options (`backward`, `fake` and `label`) as the last argument.
 	 *
 	 *		// Sets selection as backward.
-	 *		selection.setTo( range, { backward: true } );
+	 *		selection._setTo( range, { backward: true } );
 	 *
 	 * Fake selection does not render as browser native selection over selected elements and is hidden to the user.
 	 * This way, no native selection UI artifacts are displayed to the user and selection over elements can be
@@ -463,7 +463,7 @@ export default class Selection {
 	 * (and be  properly handled by screen readers).
 	 *
 	 *		// Creates fake selection with label.
-	 *		selection.setTo( range, { fake: true, label: 'foo' } );
+	 *		selection._setTo( range, { fake: true, label: 'foo' } );
 	 *
 	 * @protected
 	 * @fires change

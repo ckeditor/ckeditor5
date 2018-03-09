@@ -48,12 +48,12 @@ describe( 'AttributeElement', () => {
 		} );
 	} );
 
-	describe( 'clone', () => {
+	describe( '_clone()', () => {
 		it( 'should clone element with priority', () => {
 			const el = new AttributeElement( 'b' );
 			el._priority = 7;
 
-			const clone = el.clone();
+			const clone = el._clone();
 
 			expect( clone ).to.not.equal( el );
 			expect( clone.name ).to.equal( el.name );

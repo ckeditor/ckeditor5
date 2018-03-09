@@ -327,7 +327,7 @@ describe( 'DataController utils', () => {
 					// <pparent>x<paragraph>x<pchild>fo[o</pchild></paragraph></pparent>
 					// <pparent><paragraph><pchild>b]ar</pchild>y</paragraph>y</pparent>
 
-					root.appendChildren(
+					root._appendChildren(
 						new Element( 'pparent', null, [
 							'x',
 							new Element( 'paragraph', null, [
@@ -337,7 +337,7 @@ describe( 'DataController utils', () => {
 						] )
 					);
 
-					root.appendChildren(
+					root._appendChildren(
 						new Element( 'pparent', null, [
 							new Element( 'paragraph', null, [
 								new Element( 'pchild', null, 'bar' ),
@@ -380,7 +380,7 @@ describe( 'DataController utils', () => {
 					// We need to use the raw API due to https://github.com/ckeditor/ckeditor5-engine/issues/905.
 					// <pparent>x<paragraph>foo<pchild>ba[r</pchild></paragraph></pparent><paragraph>b]om</paragraph>
 
-					root.appendChildren(
+					root._appendChildren(
 						new Element( 'pparent', null, [
 							'x',
 							new Element( 'paragraph', null, [
@@ -390,7 +390,7 @@ describe( 'DataController utils', () => {
 						] )
 					);
 
-					root.appendChildren(
+					root._appendChildren(
 						new Element( 'paragraph', null, 'bom' )
 					);
 
@@ -427,11 +427,11 @@ describe( 'DataController utils', () => {
 					// We need to use the raw API due to https://github.com/ckeditor/ckeditor5-engine/issues/905.
 					// <paragraph>fo[o</paragraph><pparent><paragraph><pchild>bar]</pchild></paragraph></pparent>
 
-					root.appendChildren(
+					root._appendChildren(
 						new Element( 'paragraph', null, 'foo' )
 					);
 
-					root.appendChildren(
+					root._appendChildren(
 						new Element( 'pparent', null, [
 							new Element( 'paragraph', null, [
 								new Element( 'pchild', null, 'bar' )

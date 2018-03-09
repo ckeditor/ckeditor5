@@ -690,7 +690,7 @@ describe( 'transform', () => {
 			} );
 
 			it( 'attribute removed from split element', () => {
-				splitDelta.operations[ 0 ].nodes.getNode( 0 ).setAttribute( 'key', 'oldValue' );
+				splitDelta.operations[ 0 ].nodes.getNode( 0 )._setAttribute( 'key', 'oldValue' );
 				const attributeDelta = new AttributeDelta();
 
 				attributeDelta.addOperation( new AttributeOperation(

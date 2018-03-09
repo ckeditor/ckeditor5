@@ -46,7 +46,7 @@ describe( 'MoveOperation', () => {
 		const p1 = new Element( 'p1', [], new Element( 'x' ) );
 		const p2 = new Element( 'p2' );
 
-		root.insertChildren( 0, [ p1, p2 ] );
+		root._insertChildren( 0, [ p1, p2 ] );
 
 		model.applyOperation( wrapInDelta(
 			new MoveOperation(
@@ -67,7 +67,7 @@ describe( 'MoveOperation', () => {
 	} );
 
 	it( 'should move position of children in one node backward', () => {
-		root.insertChildren( 0, new Text( 'xbarx' ) );
+		root._insertChildren( 0, new Text( 'xbarx' ) );
 
 		model.applyOperation( wrapInDelta(
 			new MoveOperation(
@@ -84,7 +84,7 @@ describe( 'MoveOperation', () => {
 	} );
 
 	it( 'should move position of children in one node forward', () => {
-		root.insertChildren( 0, new Text( 'xbarx' ) );
+		root._insertChildren( 0, new Text( 'xbarx' ) );
 
 		model.applyOperation( wrapInDelta(
 			new MoveOperation(
@@ -124,7 +124,7 @@ describe( 'MoveOperation', () => {
 		const p1 = new Element( 'p1', [], new Element( 'x' ) );
 		const p2 = new Element( 'p2' );
 
-		root.insertChildren( 0, [ p1, p2 ] );
+		root._insertChildren( 0, [ p1, p2 ] );
 
 		const operation = new MoveOperation(
 			new Position( root, [ 0, 0 ] ),
@@ -152,7 +152,7 @@ describe( 'MoveOperation', () => {
 
 	describe( '_validate()', () => {
 		it( 'should throw an error if number of nodes to move exceeds the number of existing nodes in given element', () => {
-			root.insertChildren( 0, new Text( 'xbarx' ) );
+			root._insertChildren( 0, new Text( 'xbarx' ) );
 
 			const operation = new MoveOperation(
 				new Position( root, [ 3 ] ),
@@ -166,8 +166,8 @@ describe( 'MoveOperation', () => {
 
 		it( 'should throw an error if target or source parent-element specified by position does not exist', () => {
 			const p = new Element( 'p' );
-			p.insertChildren( 0, new Text( 'foo' ) );
-			root.insertChildren( 0, [ new Text( 'ab' ), p ] );
+			p._insertChildren( 0, new Text( 'foo' ) );
+			root._insertChildren( 0, [ new Text( 'ab' ), p ] );
 
 			const operation = new MoveOperation(
 				new Position( root, [ 2, 0 ] ),
@@ -176,13 +176,13 @@ describe( 'MoveOperation', () => {
 				doc.version
 			);
 
-			root.removeChildren( 1 );
+			root._removeChildren( 1 );
 
 			expect( () => operation._validate() ).to.throw( CKEditorError, /move-operation-position-invalid/ );
 		} );
 
 		it( 'should throw an error if operation tries to move a range between the beginning and the end of that range', () => {
-			root.insertChildren( 0, new Text( 'xbarx' ) );
+			root._insertChildren( 0, new Text( 'xbarx' ) );
 
 			const operation = new MoveOperation(
 				new Position( root, [ 1 ] ),
@@ -196,7 +196,7 @@ describe( 'MoveOperation', () => {
 
 		it( 'should throw an error if operation tries to move a range into a sub-tree of a node that is in that range', () => {
 			const p = new Element( 'p', [], [ new Element( 'p' ) ] );
-			root.insertChildren( 0, [ new Text( 'ab' ), p, new Text( 'xy' ) ] );
+			root._insertChildren( 0, [ new Text( 'ab' ), p, new Text( 'xy' ) ] );
 
 			const operation = new MoveOperation(
 				new Position( root, [ 1 ] ),
@@ -210,7 +210,7 @@ describe( 'MoveOperation', () => {
 
 		it( 'should not throw an error if operation move a range into a sibling', () => {
 			const p = new Element( 'p' );
-			root.insertChildren( 0, [ new Text( 'ab' ), p, new Text( 'xy' ) ] );
+			root._insertChildren( 0, [ new Text( 'ab' ), p, new Text( 'xy' ) ] );
 
 			const operation = new MoveOperation(
 				new Position( root, [ 1 ] ),
@@ -224,8 +224,8 @@ describe( 'MoveOperation', () => {
 
 		it( 'should not throw when operation paths looks like incorrect but move is between different roots', () => {
 			const p = new Element( 'p' );
-			root.insertChildren( 0, [ new Text( 'a' ), p, new Text( 'b' ) ] );
-			doc.graveyard.insertChildren( 0, new Text( 'abc' ) );
+			root._insertChildren( 0, [ new Text( 'a' ), p, new Text( 'b' ) ] );
+			doc.graveyard._insertChildren( 0, new Text( 'abc' ) );
 
 			const operation = new MoveOperation(
 				new Position( doc.graveyard, [ 0 ] ),

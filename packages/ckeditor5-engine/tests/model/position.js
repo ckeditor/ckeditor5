@@ -56,7 +56,7 @@ describe( 'Position', () => {
 
 		p = new Element( 'p' );
 
-		root.insertChildren( 0, [ p, ul ] );
+		root._insertChildren( 0, [ p, ul ] );
 	} );
 
 	describe( 'constructor()', () => {
@@ -868,7 +868,7 @@ describe( 'Position', () => {
 
 			const p = new Element( 'p', null, 'foobar' );
 
-			root.appendChildren( p );
+			root._appendChildren( p );
 
 			const postion = new Position( root, [ 0, 3 ] ); // <p>foo^bar</p>
 
@@ -897,7 +897,7 @@ describe( 'Position', () => {
 
 			const p = new Element( 'p', null, new Element( 'a' ) );
 
-			root.appendChildren( p );
+			root._appendChildren( p );
 
 			const postion = new Position( root, [ 0, 0 ] ); // <p>^<a></a></p>
 
