@@ -27,23 +27,6 @@ describe( 'ElementApiMixin', () => {
 		editor.destroy();
 	} );
 
-	describe( 'loadDataFromElement()', () => {
-		it( 'should be added to editor interface', () => {
-			expect( editor ).have.property( 'loadDataFromElement' ).to.be.a( 'function' );
-		} );
-
-		it( 'sets data to editor element', () => {
-			const editorElement = document.createElement( 'div' );
-
-			editor.element = editorElement;
-			editorElement.innerHTML = 'foo bar';
-
-			editor.loadDataFromElement();
-
-			expect( editorElement.innerHTML ).to.equal( 'foo bar' );
-		} );
-	} );
-
 	describe( 'updateEditorElement()', () => {
 		it( 'should be added to editor interface', () => {
 			expect( editor ).have.property( 'updateElement' ).to.be.a( 'function' );
