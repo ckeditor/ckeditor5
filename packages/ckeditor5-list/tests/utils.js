@@ -4,45 +4,69 @@
  */
 
 import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
-import ViewText from '@ckeditor/ckeditor5-engine/src/view/text';
+import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
+import ViewWriter from '@ckeditor/ckeditor5-engine/src/view/writer';
 import { createViewListItemElement } from '../src/utils';
 
 describe( 'utils', () => {
+	let writer;
+
+	beforeEach( () => {
+		writer = new ViewWriter( {} );
+	} );
+
 	describe( 'createViewListItemElement()', () => {
 		it( 'should create ViewContainerElement', () => {
-			const item = createViewListItemElement();
+			const item = createViewListItemElement( writer );
 
 			expect( item ).to.be.instanceof( ViewContainerElement );
 		} );
 
 		it( 'should have li name', () => {
-			const item = createViewListItemElement();
+			const item = createViewListItemElement( writer );
 
 			expect( item.name ).to.equal( 'li' );
 		} );
 
 		describe( 'getFillerOffset', () => {
 			it( 'should return 0 if item is empty', () => {
-				const item = createViewListItemElement();
+				const item = createViewListItemElement( writer );
 
 				expect( item.getFillerOffset() ).to.equal( 0 );
 			} );
 
 			it( 'should return 0 if item has only lists as children', () => {
-				const innerListItem1 = createViewListItemElement();
-				innerListItem1._appendChildren( new ViewText( 'foo' ) );
-				const innerListItem2 = createViewListItemElement();
-				innerListItem2._appendChildren( new ViewText( 'bar' ) );
-				const innerList = new ViewContainerElement( 'ul', null, [ innerListItem1, innerListItem2 ] );
-				const outerListItem = createViewListItemElement();
-				outerListItem._appendChildren( innerList );
+				const innerListItem1 = createViewListItemElement( writer );
+
+				writer.insert(
+					ViewPosition.createAt( innerListItem1 ),
+					writer.createText( 'foo' )
+				);
+
+				const innerListItem2 = createViewListItemElement( writer );
+
+				writer.insert(
+					ViewPosition.createAt( innerListItem2 ),
+					writer.createText( 'bar' )
+				);
+
+				const innerList = writer.createContainerElement( 'ul' );
+				writer.insert( ViewPosition.createAt( innerList ), innerListItem1 );
+				writer.insert( ViewPosition.createAt( innerList ), innerListItem2 );
+
+				const outerListItem = createViewListItemElement( writer );
+				writer.insert( ViewPosition.createAt( outerListItem ), innerList );
 
 				expect( outerListItem.getFillerOffset() ).to.equal( 0 );
 			} );
 
 			it( 'should return null if item has non-list contents', () => {
-				const item = createViewListItemElement();
-				item._appendChildren( new ViewText( 'foo' ) );
+				const item = createViewListItemElement( writer );
+
+				writer.insert(
+					ViewPosition.createAt( item ),
+					writer.createText( 'foo' )
+				);
 
 				expect( item.getFillerOffset() ).to.be.null;
 			} );

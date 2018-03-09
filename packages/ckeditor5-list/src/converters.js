@@ -795,10 +795,10 @@ function generateLiInUl( modelItem, conversionApi ) {
 	const mapper = conversionApi.mapper;
 	const viewWriter = conversionApi.writer;
 	const listType = modelItem.getAttribute( 'type' ) == 'numbered' ? 'ol' : 'ul';
-	const viewItem = createViewListItemElement();
+	const viewItem = createViewListItemElement( viewWriter );
 
 	const viewList = viewWriter.createContainerElement( listType, null );
-	viewList._appendChildren( viewItem );
+	viewWriter.insert( ViewPosition.createAt( viewList ), viewItem );
 
 	mapper.bindElements( modelItem, viewItem );
 
