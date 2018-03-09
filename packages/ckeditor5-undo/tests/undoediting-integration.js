@@ -323,20 +323,22 @@ describe( 'UndoEditing integration', () => {
 				writer.setAttribute( 'bold', true, doc.selection.getFirstRange() );
 			} );
 			output( '<paragraph>fo[<$text bold="true">ob</$text>]ar</paragraph>' );
+			expect( doc.selection.getAttribute( 'bold' ) ).to.be.true;
 
 			model.change( writer => {
 				setSelection( [ 0, 3 ], [ 0, 3 ] );
 				writer.insertText( 'zzz', doc.selection.getFirstPosition() );
 			} );
-			output( '<paragraph>fo<$text bold="true">o</$text>zzz<$text bold="true">[]b</$text>ar</paragraph>' );
-			expect( doc.selection.getAttribute( 'bold' ) ).to.true;
+			output( '<paragraph>fo<$text bold="true">o</$text>zzz[]<$text bold="true">b</$text>ar</paragraph>' );
+			expect( doc.selection.getAttribute( 'bold' ) ).to.be.undefined;
 
 			editor.execute( 'undo' );
 			output( '<paragraph>fo<$text bold="true">o[]b</$text>ar</paragraph>' );
-			expect( doc.selection.getAttribute( 'bold' ) ).to.true;
+			expect( doc.selection.getAttribute( 'bold' ) ).to.be.true;
 
 			editor.execute( 'undo' );
 			output( '<paragraph>fo[ob]ar</paragraph>' );
+			expect( doc.selection.getAttribute( 'bold' ) ).to.be.undefined;
 
 			undoDisabled();
 		} );
@@ -1017,7 +1019,9 @@ describe( 'UndoEditing integration', () => {
 			input( '<paragraph>Foo</paragraph><paragraph>Bar</paragraph>' );
 
 			// Remove children from graveyard because they are inserted there after `input` call.
-			doc.graveyard.removeChildren( 0, doc.graveyard.childCount );
+			model.change( writer => {
+				writer.remove( Range.createIn( doc.graveyard ) );
+			} );
 
 			const batchWithMerge = new Batch();
 
