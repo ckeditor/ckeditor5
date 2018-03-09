@@ -33,6 +33,9 @@ import ElementApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/elementap
 // Helper function for adding interfaces to the Editor class.
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
+// Helper function that gets data from HTML element that the Editor is attached to.
+import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
+
 // Helper function that binds editor with HTMLForm element.
 import attachToForm from '@ckeditor/ckeditor5-core/src/editor/utils/attachtoform';
 
@@ -117,7 +120,7 @@ export default class BootstrapEditor extends Editor {
 					// Bind the editor editing layer to the editable in DOM.
 					.then( () => editor.editing.view.attachDomRoot( editable.element ) )
 					// Fill the editable with the intial data.
-					.then( () => editor.loadDataFromElement() )
+					.then( () => editor.data.init( getDataFromElement( element ) ) )
 					// Fire the events that announce that the editor is complete and ready to use.
 					.then( () => {
 						editor.fire( 'dataReady' );
