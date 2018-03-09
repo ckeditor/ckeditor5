@@ -11,6 +11,7 @@ import ClassicTestEditorUI from './classictesteditorui';
 import BoxedEditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/boxed/boxededitoruiview';
 import ElementReplacer from '@ckeditor/ckeditor5-utils/src/elementreplacer';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
+import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
@@ -71,7 +72,7 @@ export default class ClassicTestEditor extends Editor {
 						editor.fire( 'uiReady' );
 					} )
 					.then( () => editor.editing.view.attachDomRoot( editor.ui.view.editableElement ) )
-					.then( () => editor.loadDataFromElement() )
+					.then( () => editor.data.init( getDataFromElement( element ) ) )
 					.then( () => {
 						editor.fire( 'dataReady' );
 						editor.fire( 'ready' );
