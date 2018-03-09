@@ -14,7 +14,7 @@ import ContainerElement from '../../src/view/containerelement';
 import EmptyElement from '../../src/view/emptyelement';
 import UIElement from '../../src/view/uielement';
 import Text from '../../src/view/text';
-import Selection from '../../src/view/selection';
+import DocumentSelection from '../../src/view/documentselection';
 import Range from '../../src/view/range';
 import View from '../../src/view/view';
 import XmlDataProcessor from '../../src/dataprocessor/xmldataprocessor';
@@ -167,7 +167,7 @@ describe( 'view test utils', () => {
 			const b2 = new Element( 'b', null, text2 );
 			const p = new Element( 'p', null, [ b1, b2 ] );
 			const range = Range.createFromParentsAndOffsets( p, 1, p, 2 );
-			const selection = new Selection( [ range ] );
+			const selection = new DocumentSelection( [ range ] );
 			expect( stringify( p, selection ) ).to.equal( '<p><b>foobar</b>[<b>bazqux</b>]</p>' );
 		} );
 
@@ -176,7 +176,7 @@ describe( 'view test utils', () => {
 			const b = new Element( 'b', null, text );
 			const p = new Element( 'p', null, b );
 			const range = Range.createFromParentsAndOffsets( p, 0, text, 4 );
-			const selection = new Selection( [ range ] );
+			const selection = new DocumentSelection( [ range ] );
 
 			expect( stringify( p, selection ) ).to.equal( '<p>[<b>நிலை}க்கு</b></p>' );
 		} );
@@ -185,7 +185,7 @@ describe( 'view test utils', () => {
 			const text = new Text( 'foobar' );
 			const p = new Element( 'p', null, text );
 			const range = Range.createFromParentsAndOffsets( p, 0, p, 0 );
-			const selection = new Selection( [ range ] );
+			const selection = new DocumentSelection( [ range ] );
 			expect( stringify( p, selection ) ).to.equal( '<p>[]foobar</p>' );
 		} );
 
@@ -196,7 +196,7 @@ describe( 'view test utils', () => {
 			const b2 = new Element( 'b', null, text2 );
 			const p = new Element( 'p', null, [ b1, b2 ] );
 			const range = Range.createFromParentsAndOffsets( text1, 1, text1, 5 );
-			const selection = new Selection( [ range ] );
+			const selection = new DocumentSelection( [ range ] );
 			expect( stringify( p, selection ) ).to.equal( '<p><b>f{ooba}r</b><b>bazqux</b></p>' );
 		} );
 
@@ -207,7 +207,7 @@ describe( 'view test utils', () => {
 			const b2 = new Element( 'b', null, text2 );
 			const p = new Element( 'p', null, [ b1, b2 ] );
 			const range = Range.createFromParentsAndOffsets( text1, 1, text1, 5 );
-			const selection = new Selection( [ range ] );
+			const selection = new DocumentSelection( [ range ] );
 			expect( stringify( p, selection, { sameSelectionCharacters: true } ) )
 				.to.equal( '<p><b>f[ooba]r</b><b>bazqux</b></p>' );
 		} );
@@ -216,7 +216,7 @@ describe( 'view test utils', () => {
 			const text = new Text( 'foobar' );
 			const p = new Element( 'p', null, text );
 			const range = Range.createFromParentsAndOffsets( text, 0, text, 0 );
-			const selection = new Selection( [ range ] );
+			const selection = new DocumentSelection( [ range ] );
 			expect( stringify( p, selection ) ).to.equal( '<p>{}foobar</p>' );
 		} );
 
@@ -227,7 +227,7 @@ describe( 'view test utils', () => {
 			const b2 = new Element( 'b', null, text2 );
 			const p = new Element( 'p', null, [ b1, b2 ] );
 			const range = Range.createFromParentsAndOffsets( p, 0, text2, 5 );
-			const selection = new Selection( [ range ] );
+			const selection = new DocumentSelection( [ range ] );
 			expect( stringify( p, selection ) ).to.equal( '<p>[<b>foobar</b><b>bazqu}x</b></p>' );
 		} );
 
@@ -307,7 +307,7 @@ describe( 'view test utils', () => {
 			const p = new Element( 'p', null, [ b1, b2 ] );
 			const range1 = Range.createFromParentsAndOffsets( p, 0, p, 1 );
 			const range2 = Range.createFromParentsAndOffsets( p, 1, p, 1 );
-			const selection = new Selection( [ range2, range1 ] );
+			const selection = new DocumentSelection( [ range2, range1 ] );
 
 			expect( stringify( p, selection ) ).to.equal( '<p>[<b>foobar</b>][]<b>bazqux</b></p>' );
 		} );
@@ -321,7 +321,7 @@ describe( 'view test utils', () => {
 			const range2 = Range.createFromParentsAndOffsets( text2, 0, text2, 3 );
 			const range3 = Range.createFromParentsAndOffsets( text2, 3, text2, 4 );
 			const range4 = Range.createFromParentsAndOffsets( p, 1, p, 1 );
-			const selection = new Selection( [ range1, range2, range3, range4 ] );
+			const selection = new DocumentSelection( [ range1, range2, range3, range4 ] );
 
 			expect( stringify( p, selection ) ).to.equal( '<p>[<b>foobar</b>][]{baz}{q}ux</p>' );
 		} );

@@ -15,7 +15,7 @@ import View from '../view/view';
 import ViewDocumentFragment from '../view/documentfragment';
 import XmlDataProcessor from '../dataprocessor/xmldataprocessor';
 import ViewElement from '../view/element';
-import Selection from '../view/selection';
+import DocumentSelection from '../view/documentselection';
 import Range from '../view/range';
 import Position from '../view/position';
 import AttributeElement from '../view/attributeelement';
@@ -220,7 +220,7 @@ export function stringify( node, selectionOrPositionOrRange = null, options = {}
 		selectionOrPositionOrRange instanceof Position ||
 		selectionOrPositionOrRange instanceof Range
 	) {
-		selection = new Selection( selectionOrPositionOrRange );
+		selection = new DocumentSelection( selectionOrPositionOrRange );
 	} else {
 		selection = selectionOrPositionOrRange;
 	}
@@ -340,7 +340,7 @@ export function parse( data, options = {} ) {
 
 	// When ranges are present - return object containing view, and selection.
 	if ( ranges.length ) {
-		const selection = new Selection( ranges, { backward: !!options.lastRangeBackward } );
+		const selection = new DocumentSelection( ranges, { backward: !!options.lastRangeBackward } );
 
 		return {
 			view,

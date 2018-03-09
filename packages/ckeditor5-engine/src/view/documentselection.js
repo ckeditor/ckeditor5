@@ -4,7 +4,7 @@
  */
 
 /**
- * @module engine/view/selection
+ * @module engine/view/documentselection
  */
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
@@ -21,18 +21,20 @@ import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
  * Class representing selection in tree view.
  *
  * Selection can consist of {@link module:engine/view/range~Range ranges} that can be set using
- * {@link module:engine/view/selection~Selection#_setTo} method.
+ * {@link module:engine/view/documentselection~DocumentSelection#_setTo} method.
  * That method create copies of provided ranges and store those copies internally. Further modifications to passed
  * ranges will not change selection's state.
- * Selection's ranges can be obtained via {@link module:engine/view/selection~Selection#getRanges getRanges},
- * {@link module:engine/view/selection~Selection#getFirstRange getFirstRange}
- * and {@link module:engine/view/selection~Selection#getLastRange getLastRange}
+ * Selection's ranges can be obtained via {@link module:engine/view/documentselection~DocumentSelection#getRanges getRanges},
+ * {@link module:engine/view/documentselection~DocumentSelection#getFirstRange getFirstRange}
+ * and {@link module:engine/view/documentselection~DocumentSelection#getLastRange getLastRange}
  * methods, which return copies of ranges stored inside selection. Modifications made on these copies will not change
- * selection's state. Similar situation occurs when getting {@link module:engine/view/selection~Selection#anchor anchor},
- * {@link module:engine/view/selection~Selection#focus focus}, {@link module:engine/view/selection~Selection#getFirstPosition first} and
- * {@link module:engine/view/selection~Selection#getLastPosition last} positions - all will return copies of requested positions.
+ * selection's state. Similar situation occurs when getting {@link module:engine/view/documentselection~DocumentSelection#anchor anchor},
+ * {@link module:engine/view/documentselection~DocumentSelection#focus focus},
+ * {@link module:engine/view/documentselection~DocumentSelection#getFirstPosition first} and
+ * {@link module:engine/view/documentselection~DocumentSelection#getLastPosition last} positions - all will return
+ * copies of requested positions.
  */
-export default class Selection {
+export default class DocumentSelection {
 	/**
 	 * Creates new selection instance.
 	 *
@@ -82,7 +84,7 @@ export default class Selection {
 	 *		// Creates fake selection with label.
 	 *		const selection = new Selection( range, { fake: true, label: 'foo' } );
 	 *
-	 * @param {module:engine/view/selection~Selection|module:engine/view/position~Position|
+	 * @param {module:engine/view/documentselection~DocumentSelection|module:engine/view/position~Position|
 	 * Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|module:engine/view/item~Item|null} [selectable=null]
 	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Offset or place when selectable is an `Item`.
 	 * @param {Object} [options]
@@ -303,7 +305,7 @@ export default class Selection {
 	 * Checks whether, this selection is equal to given selection. Selections are equal if they have same directions,
 	 * same number of ranges and all ranges from one selection equal to a range from other selection.
 	 *
-	 * @param {module:engine/view/selection~Selection} otherSelection Selection to compare with.
+	 * @param {module:engine/view/documentselection~DocumentSelection} otherSelection Selection to compare with.
 	 * @returns {Boolean} `true` if selections are equal, `false` otherwise.
 	 */
 	isEqual( otherSelection ) {
@@ -348,7 +350,7 @@ export default class Selection {
 	 * number of ranges, and all {@link module:engine/view/range~Range#getTrimmed trimmed} ranges from one selection are
 	 * equal to any trimmed range from other selection.
 	 *
-	 * @param {module:engine/view/selection~Selection} otherSelection Selection to compare with.
+	 * @param {module:engine/view/documentselection~DocumentSelection} otherSelection Selection to compare with.
 	 * @returns {Boolean} `true` if selections are similar, `false` otherwise.
 	 */
 	isSimilar( otherSelection ) {
@@ -415,7 +417,7 @@ export default class Selection {
 
 	/**
 	 * Sets this selection's ranges and direction to the specified location based on the given
-	 * {@link module:engine/view/selection~Selection selection}, {@link module:engine/view/position~Position position},
+	 * {@link module:engine/view/documentselection~DocumentSelection selection}, {@link module:engine/view/position~Position position},
 	 * {@link module:engine/view/item~Item item}, {@link module:engine/view/range~Range range},
 	 * an iterable of {@link module:engine/view/range~Range ranges} or null.
 	 *
@@ -467,7 +469,7 @@ export default class Selection {
 	 *
 	 * @protected
 	 * @fires change
-	 * @param {module:engine/view/selection~Selection|module:engine/view/position~Position|
+	 * @param {module:engine/view/documentselection~DocumentSelection|module:engine/view/position~Position|
 	 * Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|module:engine/view/item~Item|null} selectable
 	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets place or offset of the selection.
 	 * @param {Object} [options]
@@ -479,7 +481,7 @@ export default class Selection {
 		if ( selectable === null ) {
 			this._setRanges( [] );
 			this._setFakeOptions( placeOrOffset );
-		} else if ( selectable instanceof Selection ) {
+		} else if ( selectable instanceof DocumentSelection ) {
 			this._setRanges( selectable.getRanges(), selectable.isBackward );
 			this._setFakeOptions( { fake: selectable.isFake, label: selectable.fakeSelectionLabel } );
 		} else if ( selectable instanceof Range ) {
@@ -669,7 +671,7 @@ export default class Selection {
 	}
 }
 
-mix( Selection, EmitterMixin );
+mix( DocumentSelection, EmitterMixin );
 
 /**
  * Fired whenever selection ranges are changed through {@link ~Selection Selection API}.

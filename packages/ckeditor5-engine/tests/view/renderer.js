@@ -12,7 +12,7 @@ import ViewAttributeElement from '../../src/view/attributeelement';
 import ViewText from '../../src/view/text';
 import ViewRange from '../../src/view/range';
 import ViewPosition from '../../src/view/position';
-import Selection from '../../src/view/selection';
+import DocumentSelection from '../../src/view/documentselection';
 import DomConverter from '../../src/view/domconverter';
 import Renderer from '../../src/view/renderer';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
@@ -29,7 +29,7 @@ describe( 'Renderer', () => {
 	let selection, domConverter, renderer;
 
 	beforeEach( () => {
-		selection = new Selection();
+		selection = new DocumentSelection();
 		domConverter = new DomConverter();
 		renderer = new Renderer( domConverter, selection );
 		renderer.domDocuments.add( document );

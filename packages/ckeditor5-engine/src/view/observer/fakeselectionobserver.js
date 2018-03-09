@@ -8,7 +8,7 @@
  */
 
 import Observer from './observer';
-import ViewSelection from '../selection';
+import ViewDocumentSelection from '../documentselection';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import debounce from '@ckeditor/ckeditor5-utils/src/lib/lodash/debounce';
 
@@ -82,7 +82,7 @@ export default class FakeSelectionObserver extends Observer {
 	 */
 	_handleSelectionMove( keyCode ) {
 		const selection = this.document.selection;
-		const newSelection = new ViewSelection( selection.getRanges(), { backward: selection.isBackward, fake: false } );
+		const newSelection = new ViewDocumentSelection( selection.getRanges(), { backward: selection.isBackward, fake: false } );
 
 		// Left or up arrow pressed - move selection to start.
 		if ( keyCode == keyCodes.arrowleft || keyCode == keyCodes.arrowup ) {

@@ -13,7 +13,7 @@ import ViewText from './text';
 import ViewElement from './element';
 import ViewPosition from './position';
 import ViewRange from './range';
-import ViewSelection from './selection';
+import ViewDocumentSelection from './documentselection';
 import ViewDocumentFragment from './documentfragment';
 import ViewTreeWalker from './treewalker';
 import { BR_FILLER, INLINE_FILLER_LENGTH, isBlockFiller, isInlineFiller, startsWithFiller, getDataWithoutFiller } from './filler';
@@ -111,7 +111,7 @@ export default class DomConverter {
 	 * @param {module:engine/view/selection~Selection} viewSelection
 	 */
 	bindFakeSelection( domElement, viewSelection ) {
-		this._fakeSelectionMapping.set( domElement, new ViewSelection( viewSelection ) );
+		this._fakeSelectionMapping.set( domElement, new ViewDocumentSelection( viewSelection ) );
 	}
 
 	/**
@@ -488,7 +488,7 @@ export default class DomConverter {
 			}
 		}
 
-		return new ViewSelection( viewRanges, { backward: isBackward } );
+		return new ViewDocumentSelection( viewRanges, { backward: isBackward } );
 	}
 
 	/**

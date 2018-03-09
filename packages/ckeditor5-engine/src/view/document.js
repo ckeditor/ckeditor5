@@ -7,7 +7,7 @@
  * @module engine/view/document
  */
 
-import Selection from './selection';
+import DocumentSelection from './documentselection';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
@@ -29,7 +29,7 @@ export default class Document {
 		 * @readonly
 		 * @member {module:engine/view/selection~Selection} module:engine/view/document~Document#selection
 		 */
-		this.selection = new Selection();
+		this.selection = new DocumentSelection();
 
 		/**
 		 * Roots of the view tree. Collection of the {module:engine/view/element~Element view elements}.

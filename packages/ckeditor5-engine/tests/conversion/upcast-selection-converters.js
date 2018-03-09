@@ -4,7 +4,7 @@
  */
 
 import View from '../../src/view/view';
-import ViewSelection from '../../src/view/selection';
+import ViewDocumentSelection from '../../src/view/documentselection';
 import ViewRange from '../../src/view/range';
 import createViewRoot from '../view/_utils/createroot';
 
@@ -45,7 +45,7 @@ describe( 'convertSelectionChange', () => {
 	} );
 
 	it( 'should convert collapsed selection', () => {
-		const viewSelection = new ViewSelection();
+		const viewSelection = new ViewDocumentSelection();
 		viewSelection._setTo( ViewRange.createFromParentsAndOffsets(
 			viewRoot.getChild( 0 ).getChild( 0 ), 1, viewRoot.getChild( 0 ).getChild( 0 ), 1 ) );
 
@@ -62,7 +62,7 @@ describe( 'convertSelectionChange', () => {
 		// Re-bind elements that were just re-set.
 		mapper.bindElements( modelRoot.getChild( 0 ), viewRoot.getChild( 0 ) );
 
-		const viewSelection = new ViewSelection( [
+		const viewSelection = new ViewDocumentSelection( [
 			ViewRange.createFromParentsAndOffsets( viewRoot.getChild( 0 ).getChild( 0 ), 2, viewRoot.getChild( 0 ).getChild( 0 ), 6 )
 		] );
 
@@ -72,7 +72,7 @@ describe( 'convertSelectionChange', () => {
 	} );
 
 	it( 'should convert multi ranges selection', () => {
-		const viewSelection = new ViewSelection( [
+		const viewSelection = new ViewDocumentSelection( [
 			ViewRange.createFromParentsAndOffsets(
 				viewRoot.getChild( 0 ).getChild( 0 ), 1, viewRoot.getChild( 0 ).getChild( 0 ), 2 ),
 			ViewRange.createFromParentsAndOffsets(
@@ -99,7 +99,7 @@ describe( 'convertSelectionChange', () => {
 	} );
 
 	it( 'should convert reverse selection', () => {
-		const viewSelection = new ViewSelection( [
+		const viewSelection = new ViewDocumentSelection( [
 			ViewRange.createFromParentsAndOffsets(
 				viewRoot.getChild( 0 ).getChild( 0 ), 1, viewRoot.getChild( 0 ).getChild( 0 ), 2 ),
 			ViewRange.createFromParentsAndOffsets(
@@ -113,7 +113,7 @@ describe( 'convertSelectionChange', () => {
 	} );
 
 	it( 'should not enqueue changes if selection has not changed', () => {
-		const viewSelection = new ViewSelection( [
+		const viewSelection = new ViewDocumentSelection( [
 			ViewRange.createFromParentsAndOffsets(
 				viewRoot.getChild( 0 ).getChild( 0 ), 1, viewRoot.getChild( 0 ).getChild( 0 ), 1 )
 		] );

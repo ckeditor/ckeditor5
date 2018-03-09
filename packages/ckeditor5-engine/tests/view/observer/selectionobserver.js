@@ -7,7 +7,7 @@
 
 import ViewRange from '../../../src/view/range';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import ViewSelection from '../../../src/view/selection';
+import ViewSelection from '../../../src/view/documentselection';
 import View from '../../../src/view/view';
 import SelectionObserver from '../../../src/view/observer/selectionobserver';
 import FocusObserver from '../../../src/view/observer/focusobserver';

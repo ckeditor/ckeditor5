@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Selection from '../../src/view/selection';
+import DocumentSelection from '../../src/view/documentselection';
 import Range from '../../src/view/range';
 import Document from '../../src/view/document';
 import Element from '../../src/view/element';
@@ -21,7 +21,7 @@ describe( 'Selection', () => {
 		const text = new Text( 'xxxxxxxxxxxxxxxxxxxx' );
 		el = new Element( 'p', null, text );
 
-		selection = new Selection();
+		selection = new DocumentSelection();
 
 		range1 = Range.createFromParentsAndOffsets( text, 5, text, 10 );
 		range2 = Range.createFromParentsAndOffsets( text, 1, text, 2 );
@@ -30,27 +30,27 @@ describe( 'Selection', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should be able to create an empty selection', () => {
-			const selection = new Selection();
+			const selection = new DocumentSelection();
 
 			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [] );
 		} );
 
 		it( 'should be able to create a selection from the given ranges', () => {
 			const ranges = [ range1, range2, range3 ];
-			const selection = new Selection( ranges );
+			const selection = new DocumentSelection( ranges );
 
 			expect( Array.from( selection.getRanges() ) ).to.deep.equal( ranges );
 		} );
 
 		it( 'should be able to create a selection from the given ranges and isLastBackward flag', () => {
 			const ranges = [ range1, range2, range3 ];
-			const selection = new Selection( ranges, { backward: true } );
+			const selection = new DocumentSelection( ranges, { backward: true } );
 
 			expect( selection.isBackward ).to.be.true;
 		} );
 
 		it( 'should be able to create a selection from the given range and isLastBackward flag', () => {
-			const selection = new Selection( range1, { backward: true } );
+			const selection = new DocumentSelection( range1, { backward: true } );
 
 			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range1 ] );
 			expect( selection.isBackward ).to.be.true;
@@ -58,7 +58,7 @@ describe( 'Selection', () => {
 
 		it( 'should be able to create a selection from the given iterable of ranges and isLastBackward flag', () => {
 			const ranges = new Set( [ range1, range2, range3 ] );
-			const selection = new Selection( ranges, { backward: false } );
+			const selection = new DocumentSelection( ranges, { backward: false } );
 
 			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range1, range2, range3 ] );
 			expect( selection.isBackward ).to.be.false;
@@ -66,7 +66,7 @@ describe( 'Selection', () => {
 
 		it( 'should be able to create a collapsed selection at the given position', () => {
 			const position = range1.start;
-			const selection = new Selection( position );
+			const selection = new DocumentSelection( position );
 
 			expect( Array.from( selection.getRanges() ).length ).to.equal( 1 );
 			expect( selection.getFirstRange().start ).to.deep.equal( position );
@@ -76,7 +76,7 @@ describe( 'Selection', () => {
 
 		it( 'should be able to create a collapsed selection at the given position', () => {
 			const position = range1.start;
-			const selection = new Selection( position );
+			const selection = new DocumentSelection( position );
 
 			expect( Array.from( selection.getRanges() ).length ).to.equal( 1 );
 			expect( selection.getFirstRange().start ).to.deep.equal( position );
@@ -85,16 +85,16 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should be able to create a selection from the other selection', () => {
-			const otherSelection = new Selection( [ range2, range3 ], { backward: true } );
-			const selection = new Selection( otherSelection );
+			const otherSelection = new DocumentSelection( [ range2, range3 ], { backward: true } );
+			const selection = new DocumentSelection( otherSelection );
 
 			expect( Array.from( selection.getRanges() ) ).to.deep.equal( [ range2, range3 ] );
 			expect( selection.isBackward ).to.be.true;
 		} );
 
 		it( 'should be able to create a fake selection from the other fake selection', () => {
-			const otherSelection = new Selection( [ range2, range3 ], { fake: true, label: 'foo bar baz' } );
-			const selection = new Selection( otherSelection );
+			const otherSelection = new DocumentSelection( [ range2, range3 ], { fake: true, label: 'foo bar baz' } );
+			const selection = new DocumentSelection( otherSelection );
 
 			expect( selection.isFake ).to.be.true;
 			expect( selection.fakeSelectionLabel ).to.equal( 'foo bar baz' );
@@ -103,7 +103,7 @@ describe( 'Selection', () => {
 		it( 'should throw an error when range is invalid', () => {
 			expect( () => {
 				// eslint-disable-next-line no-new
-				new Selection( [ { invalid: 'range' } ] );
+				new DocumentSelection( [ { invalid: 'range' } ] );
 			} ).to.throw( CKEditorError, 'view-selection-invalid-range: Invalid Range.' );
 		} );
 
@@ -113,14 +113,14 @@ describe( 'Selection', () => {
 
 			expect( () => {
 				// eslint-disable-next-line no-new
-				new Selection( [ range1, range2 ] );
+				new DocumentSelection( [ range1, range2 ] );
 			} ).to.throw( CKEditorError, 'view-selection-range-intersects' );
 		} );
 
 		it( 'should throw an error when trying to set to not selectable', () => {
 			expect( () => {
 				// eslint-disable-next-line no-new
-				new Selection( {} );
+				new DocumentSelection( {} );
 			} ).to.throw( /view-selection-setTo-not-selectable/ );
 		} );
 	} );
@@ -470,7 +470,7 @@ describe( 'Selection', () => {
 		it( 'should return true if selections equal', () => {
 			selection._setTo( [ range1, range2 ] );
 
-			const otherSelection = new Selection();
+			const otherSelection = new DocumentSelection();
 			otherSelection._setTo( [ range1, range2 ] );
 
 			expect( selection.isEqual( otherSelection ) ).to.be.true;
@@ -479,7 +479,7 @@ describe( 'Selection', () => {
 		it( 'should return true if backward selections equal', () => {
 			selection._setTo( range1, { backward: true } );
 
-			const otherSelection = new Selection( [ range1 ], { backward: true } );
+			const otherSelection = new DocumentSelection( [ range1 ], { backward: true } );
 
 			expect( selection.isEqual( otherSelection ) ).to.be.true;
 		} );
@@ -487,7 +487,7 @@ describe( 'Selection', () => {
 		it( 'should return false if ranges count does not equal', () => {
 			selection._setTo( [ range1, range2 ] );
 
-			const otherSelection = new Selection( [ range1 ] );
+			const otherSelection = new DocumentSelection( [ range1 ] );
 
 			expect( selection.isEqual( otherSelection ) ).to.be.false;
 		} );
@@ -495,7 +495,7 @@ describe( 'Selection', () => {
 		it( 'should return false if ranges (other than the last added one) do not equal', () => {
 			selection._setTo( [ range1, range3 ] );
 
-			const otherSelection = new Selection( [ range2, range3 ] );
+			const otherSelection = new DocumentSelection( [ range2, range3 ] );
 
 			expect( selection.isEqual( otherSelection ) ).to.be.false;
 		} );
@@ -503,33 +503,33 @@ describe( 'Selection', () => {
 		it( 'should return false if directions do not equal', () => {
 			selection._setTo( range1 );
 
-			const otherSelection = new Selection( [ range1 ], { backward: true } );
+			const otherSelection = new DocumentSelection( [ range1 ], { backward: true } );
 
 			expect( selection.isEqual( otherSelection ) ).to.be.false;
 		} );
 
 		it( 'should return false if one selection is fake', () => {
-			const otherSelection = new Selection( null, { fake: true } );
+			const otherSelection = new DocumentSelection( null, { fake: true } );
 
 			expect( selection.isEqual( otherSelection ) ).to.be.false;
 		} );
 
 		it( 'should return true if both selection are fake', () => {
-			const otherSelection = new Selection( range1, { fake: true } );
+			const otherSelection = new DocumentSelection( range1, { fake: true } );
 			selection._setTo( range1, { fake: true } );
 
 			expect( selection.isEqual( otherSelection ) ).to.be.true;
 		} );
 
 		it( 'should return false if both selection are fake but have different label', () => {
-			const otherSelection = new Selection( [ range1 ], { fake: true, label: 'foo bar baz' } );
+			const otherSelection = new DocumentSelection( [ range1 ], { fake: true, label: 'foo bar baz' } );
 			selection._setTo( range1, { fake: true, label: 'foo' } );
 
 			expect( selection.isEqual( otherSelection ) ).to.be.false;
 		} );
 
 		it( 'should return true if both selections are empty', () => {
-			const otherSelection = new Selection();
+			const otherSelection = new DocumentSelection();
 
 			expect( selection.isEqual( otherSelection ) ).to.be.true;
 		} );
@@ -539,7 +539,7 @@ describe( 'Selection', () => {
 		it( 'should return true if selections equal', () => {
 			selection._setTo( [ range1, range2 ] );
 
-			const otherSelection = new Selection( [ range1, range2 ] );
+			const otherSelection = new DocumentSelection( [ range1, range2 ] );
 
 			expect( selection.isSimilar( otherSelection ) ).to.be.true;
 		} );
@@ -547,7 +547,7 @@ describe( 'Selection', () => {
 		it( 'should return false if ranges count does not equal', () => {
 			selection._setTo( [ range1, range2 ] );
 
-			const otherSelection = new Selection( [ range1 ] );
+			const otherSelection = new DocumentSelection( [ range1 ] );
 
 			expect( selection.isSimilar( otherSelection ) ).to.be.false;
 		} );
@@ -555,7 +555,7 @@ describe( 'Selection', () => {
 		it( 'should return false if trimmed ranges (other than the last added one) are not equal', () => {
 			selection._setTo( [ range1, range3 ] );
 
-			const otherSelection = new Selection( [ range2, range3 ] );
+			const otherSelection = new DocumentSelection( [ range2, range3 ] );
 
 			expect( selection.isSimilar( otherSelection ) ).to.be.false;
 		} );
@@ -563,13 +563,13 @@ describe( 'Selection', () => {
 		it( 'should return false if directions are not equal', () => {
 			selection._setTo( range1 );
 
-			const otherSelection = new Selection( [ range1 ], { backward: true } );
+			const otherSelection = new DocumentSelection( [ range1 ], { backward: true } );
 
 			expect( selection.isSimilar( otherSelection ) ).to.be.false;
 		} );
 
 		it( 'should return true if both selections are empty', () => {
-			const otherSelection = new Selection();
+			const otherSelection = new DocumentSelection();
 
 			expect( selection.isSimilar( otherSelection ) ).to.be.true;
 		} );
@@ -593,7 +593,7 @@ describe( 'Selection', () => {
 
 			selection._setTo( [ rangeA1, rangeA2 ] );
 
-			const otherSelection = new Selection( [ rangeB2, rangeB1 ] );
+			const otherSelection = new DocumentSelection( [ rangeB2, rangeB1 ] );
 
 			expect( selection.isSimilar( otherSelection ) ).to.be.true;
 			expect( otherSelection.isSimilar( selection ) ).to.be.true;
@@ -608,7 +608,7 @@ describe( 'Selection', () => {
 			it( 'should set selection ranges from the given selection', () => {
 				selection._setTo( range1 );
 
-				const otherSelection = new Selection( [ range2, range3 ], { backward: true } );
+				const otherSelection = new DocumentSelection( [ range2, range3 ], { backward: true } );
 
 				selection._setTo( otherSelection );
 
@@ -651,14 +651,14 @@ describe( 'Selection', () => {
 					done();
 				} );
 
-				const otherSelection = new Selection( [ range1 ] );
+				const otherSelection = new DocumentSelection( [ range1 ] );
 
 				selection._setTo( otherSelection );
 			} );
 
 			it( 'should set fake state and label', () => {
 				const label = 'foo bar baz';
-				const otherSelection = new Selection( null, { fake: true, label } );
+				const otherSelection = new DocumentSelection( null, { fake: true, label } );
 				selection._setTo( otherSelection );
 
 				expect( selection.isFake ).to.be.true;
@@ -666,7 +666,7 @@ describe( 'Selection', () => {
 			} );
 
 			it( 'should throw an error when trying to set to not selectable', () => {
-				const otherSelection = new Selection();
+				const otherSelection = new DocumentSelection();
 
 				expect( () => {
 					otherSelection._setTo( {} );
@@ -674,7 +674,7 @@ describe( 'Selection', () => {
 			} );
 
 			it( 'should throw an error when trying to set to not selectable #2', () => {
-				const otherSelection = new Selection();
+				const otherSelection = new DocumentSelection();
 
 				expect( () => {
 					otherSelection._setTo();
