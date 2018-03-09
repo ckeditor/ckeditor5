@@ -62,7 +62,9 @@ export default class ComponentFactory {
 	 * @returns {Iterable.<String>}
 	 */
 	* names() {
-		yield* this._components.keys();
+		for ( const value of this._components.values() ) {
+			yield value.originalName;
+		}
 	}
 
 	/**
@@ -87,7 +89,7 @@ export default class ComponentFactory {
 			);
 		}
 
-		this._components.set( getNormalized( name ), callback );
+		this._components.set( getNormalized( name ), { callback, originalName: name } );
 	}
 
 	/**
@@ -115,7 +117,7 @@ export default class ComponentFactory {
 			);
 		}
 
-		return this._components.get( getNormalized( name ) )( this.editor.locale );
+		return this._components.get( getNormalized( name ) ).callback( this.editor.locale );
 	}
 
 	/**
