@@ -30,13 +30,13 @@ export default class AlignmentCommand extends Command {
 		this.isEnabled = !!firstBlock && this._canBeAligned( firstBlock );
 
 		/**
-		 * A value of current block's alignment.
+		 * A value of the current block's alignment.
 		 *
 		 * @observable
 		 * @readonly
 		 * @member {String} #value
 		 */
-		this.value = this.isEnabled && firstBlock.hasAttribute( 'alignment' ) ? firstBlock.getAttribute( 'alignment' ) : 'left';
+		this.value = ( this.isEnabled && firstBlock.hasAttribute( 'alignment' ) ) ? firstBlock.getAttribute( 'alignment' ) : 'left';
 	}
 
 	/**
@@ -45,7 +45,7 @@ export default class AlignmentCommand extends Command {
 	 * it will remove the attribute from the selected blocks.
 	 *
 	 * @param {Object} [options] Options for the executed command.
-	 * @param {String} [options.value] a value to apply.
+	 * @param {String} [options.value] The value to apply.
 	 * @fires execute
 	 */
 	execute( options = {} ) {
