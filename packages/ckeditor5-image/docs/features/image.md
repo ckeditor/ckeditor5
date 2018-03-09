@@ -11,10 +11,10 @@ The [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckedit
 * {@link module:image/imagetoolbar~ImageToolbar} adds the image feature's contextual toolbar,
 * {@link module:image/imagecaption~ImageCaption} adds support for captions,
 * {@link module:image/imagestyle~ImageStyle} adds support for image styles,
-* {@link module:image/imageupload~ImageUpload} adds support for uploading dropped or pasted images (note: it is currently located in the [`@ckeditor/ckeditor5-upload`](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload) package but will be moved to the `@ckeditor/ckeditor5-image` package).
+* {@link module:image/imageupload~ImageUpload} adds support for uploading dropped or pasted images (see: {@link features/image-upload Image upload}).
 
 <info-box info>
-	The first four features listed above (so all except the upload support) are enabled by default in all builds.
+	All features listed above are enabled by default in all builds.
 </info-box>
 
 ## Base image support
@@ -100,7 +100,7 @@ A side image:
 <info-box>
 	The actual styling of the images is the developer's job. The editor comes with some default styles, but they will only be applied to images inside the editor. The developer needs to style them on the target pages.
 
-	Here you can find the source of the default styles applied by the editor: [`ckeditor5-image/theme/theme.scss`](https://github.com/ckeditor/ckeditor5-image/blob/master/theme/theme.scss).
+	Here you can find the source of the default styles applied by the editor: [`ckeditor5-image/theme/imagestyle.css`](https://github.com/ckeditor/ckeditor5-image/blob/master/theme/imagestyle.css).
 </info-box>
 
 Below you can see a demo of the editor with the image styles feature enabled. The default configuration is used. You can change the styles of images through the image's contextual toolbar.
