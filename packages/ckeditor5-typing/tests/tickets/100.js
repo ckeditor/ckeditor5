@@ -16,7 +16,7 @@ import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversio
 import ViewText from '@ckeditor/ckeditor5-engine/src/view/text';
 import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
 import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
-import ViewSelection from '@ckeditor/ckeditor5-engine/src/view/selection';
+import ViewDocumentSelection from '@ckeditor/ckeditor5-engine/src/view/documentselection';
 import MutationObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mutationobserver';
 
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -402,7 +402,7 @@ describe( 'Bug ckeditor5-typing#100', () => {
 
 		const paragraph = viewRoot.getChild( 0 );
 		const strong = paragraph.getChild( 0 );
-		const viewSelection = new ViewSelection( paragraph, 0 );
+		const viewSelection = new ViewDocumentSelection( paragraph, 0 );
 
 		// Simulate mutations and DOM change.
 		domRoot.childNodes[ 0 ].innerHTML = '<b>textx</b>';
@@ -426,7 +426,7 @@ describe( 'Bug ckeditor5-typing#100', () => {
 
 		const paragraph = viewRoot.getChild( 0 );
 		const strong = paragraph.getChild( 0 );
-		const viewSelection = new ViewSelection( paragraph, 0 );
+		const viewSelection = new ViewDocumentSelection( paragraph, 0 );
 
 		// Simulate mutations and DOM change.
 		domRoot.childNodes[ 0 ].innerHTML = '<strong>Foo bar </strong><b>apple</b>';
