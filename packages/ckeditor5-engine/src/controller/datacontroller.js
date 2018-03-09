@@ -180,13 +180,20 @@ export default class DataController {
 	 * **Note** This method is {@link module:utils/observablemixin~ObservableMixin#decorate decorated} which is
 	 * used by e.g. collaborative editing plugin that syncs remote data on init.
 	 *
-	 * @fires set
+	 * @fires init
 	 * @param {String} data Input data.
 	 * @param {String} [rootName='main'] Root name.
 	 */
 	init( data, rootName = 'main' ) {
 		if ( this.model.document.version ) {
-			throw new CKEditorError( 'datacontroller-init-document-data-initialized: Trying to set initial data to initialized document.' );
+			/**
+			 * Cannot initialize already initialized data. Data should be initialized only once, during
+			 * {@link module:core/editor/editor~Editor} initialization, when there is no content in
+			 * the {@link module:engine/model/document~Document} yet.
+			 *
+			 * @error datacontroller-init-data-already-initialized
+			 */
+			throw new CKEditorError( 'datacontroller-init-data-already-initialized: Trying to set initial data to initialized document.' );
 		}
 
 		const modelRoot = this.model.document.getRoot( rootName );
