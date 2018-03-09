@@ -123,8 +123,8 @@ setData._parse = parse;
  *
  *		stringify( fragment ); // '<p style="color:red;"></p><b name="test">foobar</b>'
  *
- * Additionally, a {@link module:engine/view/selection~Selection selection} instance can be provided. Ranges from the selection
- * will then be included in output data.
+ * Additionally, a {@link module:engine/view/documentselection~DocumentSelection selection} instance can be provided.
+ * Ranges from the selection will then be included in output data.
  * If a range position is placed inside the element node, it will be represented with `[` and `]`:
  *
  *		const text = new Text( 'foobar' );
@@ -161,9 +161,9 @@ setData._parse = parse;
  *		stringify( text, selection ); // '{f}oo{ba}r'
  *
  * A {@link module:engine/view/range~Range range} or {@link module:engine/view/position~Position position} instance can be provided
- * instead of the {@link module:engine/view/selection~Selection selection} instance. If a range instance is provided, it will be
- * converted to a selection containing this range. If a position instance is provided, it will be converted to a selection
- * containing one range collapsed at this position.
+ * instead of the {@link module:engine/view/documentselection~DocumentSelection selection} instance. If a range instance
+ * is provided, it will be converted to a selection containing this range. If a position instance is provided, it will
+ * be converted to a selection containing one range collapsed at this position.
  *
  *		const text = new Text( 'foobar' );
  *		const range = Range.createFromParentsAndOffsets( text, 0, text, 1 );
@@ -197,7 +197,7 @@ setData._parse = parse;
  *
  * @param {module:engine/view/text~Text|module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment}
  * node The node to stringify.
- * @param {module:engine/view/selection~Selection|module:engine/view/position~Position|module:engine/view/range~Range}
+ * @param {module:engine/view/documentselection~DocumentSelection|module:engine/view/position~Position|module:engine/view/range~Range}
  * [selectionOrPositionOrRange = null ]
  * A selection instance whose ranges will be included in the returned string data. If a range instance is provided, it will be
  * converted to a selection containing this range. If a position instance is provided, it will be converted to a selection
@@ -246,7 +246,7 @@ export function stringify( node, selectionOrPositionOrRange = null, options = {}
  *		parse( '<b>foo</b><i>bar</i>' ); // Returns a document fragment with two child elements.
  *
  * The method can parse multiple {@link module:engine/view/range~Range ranges} provided in string data and return a
- * {@link module:engine/view/selection~Selection selection} instance containing these ranges. Ranges placed inside
+ * {@link module:engine/view/documentselection~DocumentSelection selection} instance containing these ranges. Ranges placed inside
  * {@link module:engine/view/text~Text text} nodes should be marked using `{` and `}` brackets:
  *
  *		const { text, selection } = parse( 'f{ooba}r' );
@@ -267,8 +267,9 @@ export function stringify( node, selectionOrPositionOrRange = null, options = {}
  * In the example above, the first range (`{fo}`) will be added to the selection as the second one, the second range (`{ar}`) will be
  * added as the third and the third range (`{ba}`) will be added as the first one.
  *
- * If the selection's last range should be added as a backward one (so the {@link module:engine/view/selection~Selection#anchor selection
- * anchor} is represented by the `end` position and {@link module:engine/view/selection~Selection#focus selection focus} is
+ * If the selection's last range should be added as a backward one
+ * (so the {@link module:engine/view/documentselection~DocumentSelection#anchor selection anchor} is represented
+ * by the `end` position and {@link module:engine/view/documentselection~DocumentSelection#focus selection focus} is
  * represented by the `start` position), use the `lastRangeBackward` flag:
  *
  *		const { root, selection } = parse( `{foo}bar{baz}`, { lastRangeBackward: true } );
@@ -287,11 +288,11 @@ export function stringify( node, selectionOrPositionOrRange = null, options = {}
  * @param {String} data An HTML-like string to be parsed.
  * @param {Object} options
  * @param {Array.<Number>} [options.order] An array with the order of parsed ranges added to the returned
- * {@link module:engine/view/selection~Selection Selection} instance. Each element should represent the desired position of each range in
- * the selection instance. For example: `[2, 3, 1]` means that the first range will be placed as the second, the second as the third and
- * the third as the first.
+ * {@link module:engine/view/documentselection~DocumentSelection Selection} instance. Each element should represent the
+ * desired position of each range in the selection instance. For example: `[2, 3, 1]` means that the first range will be
+ * placed as the second, the second as the third and the third as the first.
  * @param {Boolean} [options.lastRangeBackward=false] If set to `true`, the last range will be added as backward to the returned
- * {@link module:engine/view/selection~Selection selection} instance.
+ * {@link module:engine/view/documentselection~DocumentSelection selection} instance.
  * @param {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment}
  * [options.rootElement=null] The default root to use when parsing elements.
  * When set to `null`, the root element will be created automatically. If set to
@@ -583,7 +584,8 @@ class ViewStringify {
 	 * Creates a view stringify instance.
 	 *
 	 * @param root
-	 * @param {module:engine/view/selection~Selection} selection A selection whose ranges should also be converted to a string.
+	 * @param {module:engine/view/documentselection~DocumentSelection} selection A selection whose ranges
+	 * should also be converted to a string.
 	 * @param {Object} options An options object.
 	 * @param {Boolean} [options.showType=false] When set to `true`, the type of elements will be printed (`<container:p>`
 	 * instead of `<p>`, `<attribute:b>` instead of `<b>` and `<empty:img>` instead of `<img>`).

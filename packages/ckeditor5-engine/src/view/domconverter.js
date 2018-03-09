@@ -103,23 +103,23 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Binds given DOM element that represents fake selection to {@link module:engine/view/selection~Selection view selection}.
-	 * View selection copy is stored and can be retrieved by {@link module:engine/view/domconverter~DomConverter#fakeSelectionToView}
-	 * method.
+	 * Binds given DOM element that represents fake selection to {@link module:engine/view/documentselection~DocumentSelection
+	 * view selection}. View selection copy is stored and can be retrieved by
+	 * {@link module:engine/view/domconverter~DomConverter#fakeSelectionToView} method.
 	 *
 	 * @param {HTMLElement} domElement
-	 * @param {module:engine/view/selection~Selection} viewSelection
+	 * @param {module:engine/view/documentselection~DocumentSelection} viewSelection
 	 */
 	bindFakeSelection( domElement, viewSelection ) {
 		this._fakeSelectionMapping.set( domElement, new ViewDocumentSelection( viewSelection ) );
 	}
 
 	/**
-	 * Returns {@link module:engine/view/selection~Selection view selection} instance corresponding to given DOM element that represents
-	 * fake selection. Returns `undefined` if binding to given DOM element does not exists.
+	 * Returns {@link module:engine/view/documentselection~DocumentSelection view selection} instance corresponding to
+	 * given DOM element that represents fake selection. Returns `undefined` if binding to given DOM element does not exists.
 	 *
 	 * @param {HTMLElement} domElement
-	 * @returns {module:engine/view/selection~Selection|undefined}
+	 * @returns {module:engine/view/documentselection~DocumentSelection|undefined}
 	 */
 	fakeSelectionToView( domElement ) {
 		return this._fakeSelectionMapping.get( domElement );
@@ -450,11 +450,11 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Converts DOM selection to view {@link module:engine/view/selection~Selection}.
+	 * Converts DOM selection to view {@link module:engine/view/documentselection~DocumentSelection}.
 	 * Ranges which cannot be converted will be omitted.
 	 *
 	 * @param {Selection} domSelection DOM selection.
-	 * @returns {module:engine/view/selection~Selection} View selection.
+	 * @returns {module:engine/view/documentselection~DocumentSelection} View selection.
 	 */
 	domSelectionToView( domSelection ) {
 		// DOM selection might be placed in fake selection container.

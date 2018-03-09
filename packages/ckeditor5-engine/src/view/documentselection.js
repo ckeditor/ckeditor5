@@ -674,7 +674,7 @@ export default class DocumentSelection {
 mix( DocumentSelection, EmitterMixin );
 
 /**
- * Fired whenever selection ranges are changed through {@link ~Selection Selection API}.
+ * Fired whenever selection ranges are changed through {@link ~DocumentSelection Selection API}.
  *
  * @event change
  */

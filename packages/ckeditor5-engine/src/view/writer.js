@@ -35,10 +35,10 @@ export default class Writer {
 	}
 
 	/**
-	 * Sets {@link module:engine/view/selection~Selection selection's} ranges and direction to the specified location based on the given
-	 * {@link module:engine/view/selection~Selection selection}, {@link module:engine/view/position~Position position},
-	 * {@link module:engine/view/item~Item item}, {@link module:engine/view/range~Range range},
-	 * an iterable of {@link module:engine/view/range~Range ranges} or null.
+	 * Sets {@link module:engine/view/documentselection~DocumentSelection selection's} ranges and direction to the
+	 * specified location based on the given {@link module:engine/view/documentselection~DocumentSelection selection},
+	 * {@link module:engine/view/position~Position position}, {@link module:engine/view/item~Item item},
+	 * {@link module:engine/view/range~Range range}, an iterable of {@link module:engine/view/range~Range ranges} or null.
 	 *
 	 * ### Usage:
 	 *
@@ -92,7 +92,7 @@ export default class Writer {
 	 * 		// (and be  properly handled by screen readers).
 	 *		writer.setSelection( range, { fake: true, label: 'foo' } );
 	 *
-	 * @param {module:engine/view/selection~Selection|module:engine/view/position~Position|
+	 * @param {module:engine/view/documentselection~DocumentSelection|module:engine/view/position~Position|
 	 * Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|module:engine/view/item~Item|null} selectable
 	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets place or offset of the selection.
 	 * @param {Object} [options]
@@ -105,7 +105,7 @@ export default class Writer {
 	}
 
 	/**
-	 * Moves {@link module:engine/view/selection~Selection#focus selection's focus} to the specified location.
+	 * Moves {@link module:engine/view/documentselection~DocumentSelection#focus selection's focus} to the specified location.
 	 *
 	 * The location can be specified in the same form as {@link module:engine/view/position~Position.createAt} parameters.
 	 *
