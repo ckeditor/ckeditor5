@@ -17,7 +17,7 @@ import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Enter, Typing, Paragraph, Heading, Undo, Bold, Italic ],
-		toolbar: [ 'headings', '|', 'bold', 'italic', 'undo', 'redo' ]
+		toolbar: [ 'heading', '|', 'bold', 'italic', 'undo', 'redo' ]
 	} )
 	.then( editor => {
 		window.editor = editor;
