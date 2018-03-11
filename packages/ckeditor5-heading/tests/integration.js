@@ -109,4 +109,43 @@ describe( 'Heading integration', () => {
 			expect( editor.commands.get( 'undo' ).isEnabled ).to.be.false;
 		} );
 	} );
+
+	// Remember to sync docs/_snippets/features/custom-heading-elements.js and docs/features/headings.md
+	// with this test when changing it.
+	describe( 'fancy heading sample in the docs', () => {
+		it( 'upcasts the <h2> and <h2 class=fancy> elements when configured to do so', () => {
+			const element = document.createElement( 'div' );
+			document.body.appendChild( element );
+
+			return ClassicTestEditor
+				.create( element, {
+					plugins: [ Paragraph, Heading ],
+					heading: {
+						options: [
+							{ model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+							{ model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+							{
+								model: 'headingFancy',
+								view: {
+									name: 'h2',
+									class: 'fancy'
+								},
+								title: 'Heading 2 (fancy)',
+								class: 'ck-heading_heading2_fancy',
+								priority: 'high'
+							}
+						]
+					}
+				} )
+				.then( editor => {
+					editor.setData( '<h2>Heading 2</h2><h2 class="fancy">Fancy Heading 2</h2>' );
+
+					expect( editor.getData() )
+						.to.equal( '<h2>Heading 2</h2><h2 class="fancy">Fancy Heading 2</h2>' );
+
+					editor.destroy();
+					element.remove();
+				} );
+		} );
+	} );
 } );

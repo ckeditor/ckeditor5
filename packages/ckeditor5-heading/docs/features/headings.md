@@ -85,13 +85,13 @@ ClassicEditor
 					model: 'headingFancy',
 					view: {
 						name: 'h2',
-						class: 'fancy',
-
-						// It needs to be converted before the standard 'heading2'.
-						priority: 'high'
+						class: 'fancy'
 					},
 					title: 'Heading 2 (fancy)',
-					class: 'ck-heading_heading2_fancy'
+					class: 'ck-heading_heading2_fancy',
+
+					// It needs to be converted before the standard 'heading2'.
+					priority: 'high'
 				}
 			]
 		}
