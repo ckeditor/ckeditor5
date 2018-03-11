@@ -12,12 +12,12 @@
  *
  * * may be defined as an `Array`:
  *
- * 		toolbar: [ 'headings', 'bold', 'italic', 'link', ... ]
+ * 		toolbar: [ 'heading', 'bold', 'italic', 'link', ... ]
  *
  * * or an `Object`:
  *
  *		toolbar: {
- *			items: [ 'headings', 'bold', 'italic', 'link', ... ],
+ *			items: [ 'heading', 'bold', 'italic', 'link', ... ],
  *			...
  *		}
  *
