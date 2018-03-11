@@ -11,7 +11,7 @@ import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articleplugi
 InlineEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ ArticlePluginSet ],
-		toolbar: [ 'headings', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ]
+		toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ]
 	} )
 	.then( editor => {
 		window.editor = editor;
