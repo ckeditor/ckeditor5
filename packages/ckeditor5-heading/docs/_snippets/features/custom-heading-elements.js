@@ -16,10 +16,11 @@ ClassicEditor
 					model: 'headingFancy',
 					view: {
 						name: 'h2',
-						class: 'fancy',
-						priority: 'high'
+						class: 'fancy'
 					},
-					title: 'Heading 2 (fancy)', class: 'ck-heading_heading2_fancy'
+					title: 'Heading 2 (fancy)',
+					class: 'ck-heading_heading2_fancy',
+					priority: 'high'
 				}
 			]
 		},
