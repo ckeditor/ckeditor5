@@ -668,7 +668,7 @@ function attachBindToListeners( observable, toBindings ) {
  *
  *		observable.prop = 2; // -> 'prop has changed from 1 to 2'
  *
- * @event #change:{property}
+ * @event change:{property}
  * @param {String} name The property name.
  * @param {*} value The new property value.
  * @param {*} oldValue The previous property value.
