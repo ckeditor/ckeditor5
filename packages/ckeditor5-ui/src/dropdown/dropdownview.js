@@ -196,7 +196,7 @@ export default class DropdownView extends View {
 		 * **Note**: Only supported when dropdown has list view added using {@link module:ui/dropdown/utils~addListToDropdown}
 		 * or {@link module:ui/dropdown/utils~addToolbarToDropdown}.
 		 *
-		 * @event #execute
+		 * @event execute
 		 */
 	}
 
