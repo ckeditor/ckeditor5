@@ -13,7 +13,7 @@ import { stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-u
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ ArticlePluginSet ],
-		toolbar: [ 'headings', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'undo', 'redo' ]
+		toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'undo', 'redo' ]
 	} )
 	.then( editor => {
 		window.editor = editor;
