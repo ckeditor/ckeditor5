@@ -72,7 +72,7 @@ describe( 'HighlightUI', () => {
 
 		beforeEach( () => {
 			command = editor.commands.get( 'highlight' );
-			dropdown = editor.ui.componentFactory.create( 'highlightDropdown' );
+			dropdown = editor.ui.componentFactory.create( 'highlight' );
 		} );
 
 		it( 'button has the base properties', () => {
@@ -223,7 +223,7 @@ describe( 'HighlightUI', () => {
 					} )
 					.then( newEditor => {
 						editor = newEditor;
-						dropdown = editor.ui.componentFactory.create( 'highlightDropdown' );
+						dropdown = editor.ui.componentFactory.create( 'highlight' );
 						command = editor.commands.get( 'highlight' );
 
 						editorElement.remove();

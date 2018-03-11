@@ -23,7 +23,7 @@ import './../theme/highlight.css';
 
 /**
  * The default Highlight UI plugin. It introduces:
- * * the `'highlightDropdown'` drop-down,
+ * * the `'highlight'` drop-down,
  * * `'removeHighlight'` and `'highlight:*'` buttons.
  *
  * The default configuration includes the following buttons:
@@ -175,7 +175,7 @@ export default class HighlightUI extends Plugin {
 			return retVal;
 		}, {} );
 
-		componentFactory.add( 'highlightDropdown', locale => {
+		componentFactory.add( 'highlight', locale => {
 			const command = editor.commands.get( 'highlight' );
 			const dropdownView = createDropdown( locale, SplitButtonView );
 			const splitButtonView = dropdownView.buttonView;
