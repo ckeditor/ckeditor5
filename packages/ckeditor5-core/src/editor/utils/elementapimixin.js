@@ -3,7 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
 import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement';
 
 /**
@@ -22,13 +21,6 @@ const ElementApiMixin = {
 	 */
 	updateElement() {
 		setDataInElement( this.element, this.data.get() );
-	},
-
-	/**
-	 * @inheritDoc
-	 */
-	loadDataFromElement() {
-		this.data.set( getDataFromElement( this.element ) );
 	}
 };
 
@@ -51,10 +43,4 @@ export default ElementApiMixin;
  * Updates the {@link #element editor element}'s content with the data.
  *
  * @method #updateElement
- */
-
-/**
- * Loads the data from the {@link #element editor element} to the main root.
- *
- * @method #loadDataFromElement
  */
