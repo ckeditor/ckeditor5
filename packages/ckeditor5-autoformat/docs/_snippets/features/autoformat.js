@@ -14,7 +14,7 @@ ClassicEditor
 		plugins: ClassicEditor.build.plugins.concat( [ Code ] ),
 		toolbar: {
 			items: [
-				'headings',
+				'heading',
 				'|',
 				'bold',
 				'italic',
