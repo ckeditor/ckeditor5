@@ -5,7 +5,7 @@ category: features
 
 {@snippet features/build-text-alignment-source}
 
-The {@link module:alignment/alignment~Alignment} feature enables support for text alignment. You can use it to align your content to left, right and center or justify it. 
+The {@link module:alignment/alignment~Alignment} feature enables support for text alignment. You can use it to align your content to left, right and center or justify it.
 
 ## Demo
 
@@ -80,7 +80,7 @@ ClassicEditor
 
 The {@link module:alignment/alignment~Alignment} plugin registers:
 
-* Drop-down: `'alignment'`.
+* Dropdown: `'alignment'`.
 * Buttons: `'alignment:left'`, `'alignment:right'`, `'alignment:center'`, `'alignment:justify'`.
 
 	The number of options and their names are based on the {@link module:alignment/alignment~AlignmentConfig#options `alignment.options`} configuration option).
