@@ -30,10 +30,10 @@
     "@ckeditor/ckeditor5-paragraph": "ckeditor/ckeditor5-paragraph#ae010e1",
     "@ckeditor/ckeditor5-theme-lark": "ckeditor/ckeditor5-theme-lark#52d8fc7",
     "@ckeditor/ckeditor5-typing": "ckeditor/ckeditor5-typing#67fb696",
-    "@ckeditor/ckeditor5-ui": "ckeditor/ckeditor5-ui#431d191",
+    "@ckeditor/ckeditor5-ui": "ckeditor/ckeditor5-ui#74867f2",
     "@ckeditor/ckeditor5-undo": "ckeditor/ckeditor5-undo#7e515dc",
     "@ckeditor/ckeditor5-upload": "ckeditor/ckeditor5-upload#51eb1d0",
-    "@ckeditor/ckeditor5-utils": "ckeditor/ckeditor5-utils#25ebf07",
+    "@ckeditor/ckeditor5-utils": "ckeditor/ckeditor5-utils#eeafdc3",
     "@ckeditor/ckeditor5-widget": "ckeditor/ckeditor5-widget#44633c8"
   }
 }
