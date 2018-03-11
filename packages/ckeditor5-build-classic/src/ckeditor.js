@@ -45,7 +45,7 @@ ClassicEditor.build = {
 	config: {
 		toolbar: {
 			items: [
-				'headings',
+				'heading',
 				'|',
 				'bold',
 				'italic',
@@ -59,8 +59,8 @@ ClassicEditor.build = {
 		},
 		image: {
 			toolbar: [
-				'imageStyleFull',
-				'imageStyleSide',
+				'imageStyle:full',
+				'imageStyle:side',
 				'|',
 				'imageTextAlternative'
 			]
