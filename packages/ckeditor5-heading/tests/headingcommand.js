@@ -16,23 +16,28 @@ const options = [
 ];
 
 describe( 'HeadingCommand', () => {
-	let editor, model, document, commands, root, schema;
+	let editor, model, document, command, root, schema;
 
 	beforeEach( () => {
 		return ModelTestEditor.create().then( newEditor => {
 			editor = newEditor;
 			model = editor.model;
 			document = model.document;
-			commands = {};
 			schema = model.schema;
 
 			editor.commands.add( 'paragraph', new ParagraphCommand( editor ) );
 			schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 
+			const modelElements = [];
+
 			for ( const option of options ) {
-				commands[ option.model ] = new HeadingCommand( editor, option.model );
+				modelElements.push( option.model );
 				schema.register( option.model, { inheritAllFrom: '$block' } );
 			}
+
+			command = new HeadingCommand( editor, modelElements );
+			editor.commands.add( 'heading', command );
+			schema.register( 'heading', { inheritAllFrom: '$block' } );
 
 			schema.register( 'notBlock' );
 			schema.extend( 'notBlock', { allowIn: '$root' } );
@@ -42,15 +47,9 @@ describe( 'HeadingCommand', () => {
 		} );
 	} );
 
-	afterEach( () => {
-		for ( const modelElement in commands ) {
-			commands[ modelElement ].destroy();
-		}
-	} );
-
-	describe( 'modelElement', () => {
+	describe( 'modelElements', () => {
 		it( 'is set', () => {
-			expect( commands.heading1.modelElement ).to.equal( 'heading1' );
+			expect( command.modelElements ).to.deep.equal( [ 'heading1', 'heading2', 'heading3' ] );
 		} );
 	} );
 
@@ -70,13 +69,13 @@ describe( 'HeadingCommand', () => {
 					];
 					writer.setSelection( ranges );
 				} );
-				expect( commands[ modelElement ].value ).to.be.true;
+				expect( command.value ).to.equal( modelElement );
 			} );
 
 			it( 'equals false if inside to non-block element', () => {
 				setData( model, '<notBlock>[foo]</notBlock>' );
 
-				expect( commands[ modelElement ].value ).to.be.false;
+				expect( command.value ).to.be.false;
 			} );
 
 			it( `equals false if moved from ${ modelElement } to non-block element`, () => {
@@ -87,18 +86,17 @@ describe( 'HeadingCommand', () => {
 					writer.setSelection( Range.createIn( element ) );
 				} );
 
-				expect( commands[ modelElement ].value ).to.be.false;
+				expect( command.value ).to.be.false;
 			} );
 
 			it( 'should be refreshed after calling refresh()', () => {
-				const command = commands[ modelElement ];
 				setData( model, `<${ modelElement }>[foo]</${ modelElement }><notBlock>foo</notBlock>` );
 				const element = document.getRoot().getChild( 1 );
 
 				model.change( writer => {
 					writer.setSelection( Range.createIn( element ) );
 
-					expect( command.value ).to.be.true;
+					expect( command.value ).to.equal( modelElement );
 					command.refresh();
 					expect( command.value ).to.be.false;
 				} );
@@ -108,13 +106,11 @@ describe( 'HeadingCommand', () => {
 
 	describe( 'execute()', () => {
 		it( 'should update value after execution', () => {
-			const command = commands.heading1;
-
 			setData( model, '<paragraph>[]</paragraph>' );
-			command.execute();
+			command.execute( { value: 'heading1' } );
 
 			expect( getData( model ) ).to.equal( '<heading1>[]</heading1>' );
-			expect( command.value ).to.be.true;
+			expect( command.value ).to.equal( 'heading1' );
 		} );
 
 		// https://github.com/ckeditor/ckeditor5-heading/issues/73
@@ -134,7 +130,7 @@ describe( 'HeadingCommand', () => {
 				'<fooBlock>de]f</fooBlock>'
 			);
 
-			commands.heading1.execute();
+			command.execute( { value: 'heading1' } );
 
 			expect( getData( model ) ).to.equal(
 				'<heading1>a[bc</heading1>' +
@@ -157,7 +153,7 @@ describe( 'HeadingCommand', () => {
 				'<paragraph>de]f</paragraph>'
 			);
 
-			commands.heading1.execute();
+			command.execute( { value: 'heading1' } );
 
 			expect( getData( model ) ).to.equal(
 				'<heading1>a[bc</heading1>' +
@@ -167,17 +163,31 @@ describe( 'HeadingCommand', () => {
 		} );
 
 		it( 'should use parent batch', () => {
-			const command = commands.heading1;
-
 			setData( model, '<paragraph>foo[]bar</paragraph>' );
 
 			model.change( writer => {
 				expect( writer.batch.deltas.length ).to.equal( 0 );
 
-				command.execute();
+				command.execute( { value: 'heading1' } );
 
 				expect( writer.batch.deltas.length ).to.be.above( 0 );
 			} );
+		} );
+
+		it( 'should do nothing on non-registered model elements', () => {
+			setData( model, '<heading1>[]</heading1>' );
+			command.execute( { value: 'paragraph' } );
+
+			expect( getData( model ) ).to.equal( '<heading1>[]</heading1>' );
+			expect( command.value ).to.equal( 'heading1' );
+		} );
+
+		it( 'should do nothing when empty value is passed', () => {
+			setData( model, '<heading1>[]</heading1>' );
+			command.execute();
+
+			expect( getData( model ) ).to.equal( '<heading1>[]</heading1>' );
+			expect( command.value ).to.equal( 'heading1' );
 		} );
 
 		describe( 'collapsed selection', () => {
@@ -191,7 +201,7 @@ describe( 'HeadingCommand', () => {
 			it( 'does nothing when executed with already applied option', () => {
 				setData( model, '<heading1>foo[]bar</heading1>' );
 
-				commands.heading1.execute();
+				command.execute( { value: 'heading1' } );
 				expect( getData( model ) ).to.equal( '<heading1>foo[]bar</heading1>' );
 			} );
 
@@ -200,7 +210,7 @@ describe( 'HeadingCommand', () => {
 				schema.extend( '$text', { allowIn: 'inlineImage' } );
 
 				setData( model, '<paragraph><inlineImage>foo[]</inlineImage>bar</paragraph>' );
-				commands.heading1.execute();
+				command.execute( { value: 'heading1' } );
 
 				expect( getData( model ) ).to.equal( '<heading1><inlineImage>foo[]</inlineImage>bar</heading1>' );
 			} );
@@ -208,7 +218,7 @@ describe( 'HeadingCommand', () => {
 			function test( from, to ) {
 				it( `converts ${ from.model } to ${ to.model } on collapsed selection`, () => {
 					setData( model, `<${ from.model }>foo[]bar</${ from.model }>` );
-					commands[ to.model ].execute();
+					command.execute( { value: to.model } );
 
 					expect( getData( model ) ).to.equal( `<${ to.model }>foo[]bar</${ to.model }>` );
 				} );
@@ -226,7 +236,7 @@ describe( 'HeadingCommand', () => {
 			it( 'converts all elements where selection is applied', () => {
 				setData( model, '<heading1>foo[</heading1><heading2>bar</heading2><heading3>baz]</heading3>' );
 
-				commands.heading3.execute();
+				command.execute( { value: 'heading3' } );
 
 				expect( getData( model ) ).to.equal(
 					'<heading3>foo[</heading3><heading3>bar</heading3><heading3>baz]</heading3>'
@@ -235,7 +245,7 @@ describe( 'HeadingCommand', () => {
 
 			it( 'does nothing to the elements with same option (#1)', () => {
 				setData( model, '<heading1>[foo</heading1><heading1>bar]</heading1>' );
-				commands.heading1.execute();
+				command.execute( { value: 'heading1' } );
 
 				expect( getData( model ) ).to.equal(
 					'<heading1>[foo</heading1><heading1>bar]</heading1>'
@@ -244,7 +254,7 @@ describe( 'HeadingCommand', () => {
 
 			it( 'does nothing to the elements with same option (#2)', () => {
 				setData( model, '<heading1>[foo</heading1><heading1>bar</heading1><heading2>baz]</heading2>' );
-				commands.heading1.execute();
+				command.execute( { value: 'heading1' } );
 
 				expect( getData( model ) ).to.equal(
 					'<heading1>[foo</heading1><heading1>bar</heading1><heading1>baz]</heading1>'
@@ -258,7 +268,7 @@ describe( 'HeadingCommand', () => {
 						`<${ fromElement }>foo[bar</${ fromElement }><${ fromElement }>baz]qux</${ fromElement }>`
 					);
 
-					commands[ toElement ].execute();
+					command.execute( { value: toElement } );
 
 					expect( getData( model ) ).to.equal(
 						`<${ toElement }>foo[bar</${ toElement }><${ toElement }>baz]qux</${ toElement }>`
@@ -274,12 +284,6 @@ describe( 'HeadingCommand', () => {
 		}
 
 		function test( modelElement ) {
-			let command;
-
-			beforeEach( () => {
-				command = commands[ modelElement ];
-			} );
-
 			describe( `${ modelElement } command`, () => {
 				it( 'should be enabled when inside another block', () => {
 					setData( model, '<paragraph>f{}oo</paragraph>' );

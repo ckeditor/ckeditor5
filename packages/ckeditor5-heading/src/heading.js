@@ -95,10 +95,10 @@ export default class Heading extends Plugin {
  * That's assumption is used by features like {@link module:autoformat/autoformat~Autoformat} to know which element
  * they should use when applying the first level heading.
  *
- * The defined headings are also available in {@link module:core/commandcollection~CommandCollection} under their model names.
+ * The defined headings are also available as values passed to `heading` command under their model names.
  * For example, the below code will apply `<heading1>` to the current selection:
  *
- *		editor.execute( 'heading1' );
+ *		editor.execute( 'heading', { value: 'heading1' } );
  *
  * @member {Array.<module:heading/heading~HeadingOption>} module:heading/heading~HeadingConfig#options
  */

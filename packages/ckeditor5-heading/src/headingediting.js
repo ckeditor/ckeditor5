@@ -51,6 +51,8 @@ export default class HeadingEditing extends Plugin {
 		const editor = this.editor;
 		const options = editor.config.get( 'heading.options' );
 
+		const modelElements = [];
+
 		for ( const option of options ) {
 			// Skip paragraph - it is defined in required Paragraph feature.
 			if ( option.model !== defaultModelElement ) {
@@ -61,10 +63,12 @@ export default class HeadingEditing extends Plugin {
 
 				editor.conversion.elementToElement( option );
 
-				// Register the heading command for this option.
-				editor.commands.add( option.model, new HeadingCommand( editor, option.model ) );
+				modelElements.push( option.model );
 			}
 		}
+
+		// Register the heading command for this option.
+		editor.commands.add( 'heading', new HeadingCommand( editor, modelElements ) );
 	}
 
 	/**

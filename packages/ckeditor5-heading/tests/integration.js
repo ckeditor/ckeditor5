@@ -78,7 +78,7 @@ describe( 'Heading integration', () => {
 				'<paragraph>b]ar</paragraph>'
 			);
 
-			editor.execute( 'heading1' );
+			editor.execute( 'heading', { value: 'heading1' } );
 
 			expect( getModelData( model ) ).to.equal(
 				'<heading1>fo[o</heading1>' +
@@ -94,7 +94,7 @@ describe( 'Heading integration', () => {
 		it( 'does not create undo steps when applied to an existing heading (collapsed selection)', () => {
 			setModelData( model, '<heading1>foo[]bar</heading1>' );
 
-			editor.execute( 'heading1' );
+			editor.execute( 'heading', { value: 'heading1' } );
 			expect( getModelData( model ) ).to.equal( '<heading1>foo[]bar</heading1>' );
 
 			expect( editor.commands.get( 'undo' ).isEnabled ).to.be.false;
@@ -103,7 +103,7 @@ describe( 'Heading integration', () => {
 		it( 'does not create undo steps when applied to an existing heading (non–collapsed selection)', () => {
 			setModelData( model, '<heading1>[foo</heading1><heading1>bar]</heading1>' );
 
-			editor.execute( 'heading1' );
+			editor.execute( 'heading', { value: 'heading1' } );
 			expect( getModelData( model ) ).to.equal( '<heading1>[foo</heading1><heading1>bar]</heading1>' );
 
 			expect( editor.commands.get( 'undo' ).isEnabled ).to.be.false;
