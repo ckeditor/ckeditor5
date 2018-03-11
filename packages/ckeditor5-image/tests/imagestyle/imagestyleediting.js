@@ -71,7 +71,7 @@ describe( 'ImageStyleEditing', () => {
 				.then( newEditor => {
 					editor = newEditor;
 
-					expect( newEditor.config.get( 'image.styles' ) ).to.deep.equal( [ 'imageStyle:full', 'imageStyle:side' ] );
+					expect( newEditor.config.get( 'image.styles' ) ).to.deep.equal( [ 'full', 'side' ] );
 				} );
 		} );
 
@@ -264,7 +264,7 @@ describe( 'ImageStyleEditing', () => {
 				.then( newEditor => {
 					editor = newEditor;
 
-					expect( newEditor.config.get( 'image.styles' ) ).to.deep.equal( [ 'imageStyle:full', 'imageStyle:side' ] );
+					expect( newEditor.config.get( 'image.styles' ) ).to.deep.equal( [ 'full', 'side' ] );
 				} );
 		} );
 
@@ -274,14 +274,14 @@ describe( 'ImageStyleEditing', () => {
 					plugins: [ ImageStyleEditing ],
 					image: {
 						styles: [
-							'imageStyle:side'
+							'side'
 						]
 					}
 				} )
 				.then( newEditor => {
 					editor = newEditor;
 
-					expect( newEditor.config.get( 'image.styles' ) ).to.deep.equal( [ 'imageStyle:side' ] );
+					expect( newEditor.config.get( 'image.styles' ) ).to.deep.equal( [ 'side' ] );
 				} );
 		} );
 
@@ -291,14 +291,14 @@ describe( 'ImageStyleEditing', () => {
 					plugins: [ ImageStyleEditing ],
 					image: {
 						styles: [
-							{ name: 'imageStyle:side' }
+							{ name: 'side' }
 						]
 					}
 				} )
 				.then( newEditor => {
 					editor = newEditor;
 
-					expect( newEditor.config.get( 'image.styles' ) ).to.deep.equal( [ { name: 'imageStyle:side' } ] );
+					expect( newEditor.config.get( 'image.styles' ) ).to.deep.equal( [ { name: 'side' } ] );
 				} );
 		} );
 	} );

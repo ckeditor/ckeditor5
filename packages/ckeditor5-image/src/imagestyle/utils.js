@@ -108,18 +108,18 @@ export function normalizeImageStyles( configuredStyles = [] ) {
 function _normalizeStyle( style ) {
 	// Just the name of the style has been passed.
 	if ( typeof style == 'string' ) {
-		// If it's one of the defaults, just use it.
-		// Clone the style to avoid overriding defaults.
-		const styleName = style.indexOf( 'imageStyle:' ) === 0 ? style.substr( 11 ) : style;
+		const styleName = style;
 
+		// If it's one of the defaults, just use it.
 		if ( defaultStyles[ styleName ] ) {
+			// Clone the style to avoid overriding defaults.
 			style = Object.assign( {}, defaultStyles[ styleName ] );
 		}
 		// If it's just a name but none of the defaults, warn because probably it's a mistake.
 		else {
 			log.warn(
 				'image-style-not-found: There is no such image style of given name.',
-				{ name: style }
+				{ name: styleName }
 			);
 
 			// Normalize the style anyway to prevent errors.
@@ -128,7 +128,6 @@ function _normalizeStyle( style ) {
 			};
 		}
 	}
-
 	// If an object style has been passed and if the name matches one of the defaults,
 	// extend it with defaults – the user wants to customize a default style.
 	// Note: Don't override the user–defined style object, clone it instead.

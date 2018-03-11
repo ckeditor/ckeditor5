@@ -18,7 +18,13 @@ testUtils.createSinonSandbox();
 describe( 'ImageStyle utils', () => {
 	let imageStyles;
 
-	describe( 'imageStyles()', () => {
+	describe( 'normalizeImageStyles()', () => {
+		// Since this function is all about normalizing the config object, make sure it doesn't throw
+		// if the config is empty (which may happen e.g. if only ImageStyleUI was loaded).
+		it( 'does not throw when given undefined', () => {
+			expect( normalizeImageStyles() ).to.deep.equal( [] );
+		} );
+
 		describe( 'object format', () => {
 			beforeEach( () => {
 				imageStyles = normalizeImageStyles( [
@@ -57,35 +63,35 @@ describe( 'ImageStyle utils', () => {
 
 		describe( 'string format', () => {
 			it( 'should use one of default styles if #name matches', () => {
-				expect( normalizeImageStyles( [ 'imageStyle:full' ] ) ).to.deep.equal( [ {
+				expect( normalizeImageStyles( [ 'full' ] ) ).to.deep.equal( [ {
 					name: 'full',
 					title: 'Full size image',
 					icon: fullWidthIcon,
 					isDefault: true
 				} ] );
 
-				expect( normalizeImageStyles( [ 'imageStyle:side' ] ) ).to.deep.equal( [ {
+				expect( normalizeImageStyles( [ 'side' ] ) ).to.deep.equal( [ {
 					name: 'side',
 					title: 'Side image',
 					icon: rightIcon,
 					className: 'image-style-side'
 				} ] );
 
-				expect( normalizeImageStyles( [ 'imageStyle:alignLeft' ] ) ).to.deep.equal( [ {
+				expect( normalizeImageStyles( [ 'alignLeft' ] ) ).to.deep.equal( [ {
 					name: 'alignLeft',
 					title: 'Left aligned image',
 					icon: leftIcon,
 					className: 'image-style-align-left'
 				} ] );
 
-				expect( normalizeImageStyles( [ 'imageStyle:alignCenter' ] ) ).to.deep.equal( [ {
+				expect( normalizeImageStyles( [ 'alignCenter' ] ) ).to.deep.equal( [ {
 					name: 'alignCenter',
 					title: 'Centered image',
 					icon: centerIcon,
 					className: 'image-style-align-center'
 				} ] );
 
-				expect( normalizeImageStyles( [ 'imageStyle:alignRight' ] ) ).to.deep.equal( [ {
+				expect( normalizeImageStyles( [ 'alignRight' ] ) ).to.deep.equal( [ {
 					name: 'alignRight',
 					title: 'Right aligned image',
 					icon: rightIcon,

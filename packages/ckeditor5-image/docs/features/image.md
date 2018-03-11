@@ -122,13 +122,13 @@ ClassicEditor
 
 			styles: [
 				// This option is equal to a situation where no style is applied.
-				'imageStyle:full',
+				'full',
 
 				// This represents an image aligned to left.
-				'imageStyle:alignLeft',
+				'alignLeft',
 
 				// This represents an image aligned to right.
-				'imageStyle:alignRight'
+				'alignRight'
 			]
 		}
 	} )
@@ -136,7 +136,7 @@ ClassicEditor
 	.catch( ... );
 ```
 
-In the code sample above we used predefined image styles – `'imageStyle:full'`, `'imageStyle:alignLeft'` and `'imageStyle:alignRight'`. The latter two apply, respectively, `.image-style-align-left` and  `.image-style-align-right` classes to the `<figure>` element.
+In the code sample above we used predefined image styles – `'full'`, `'alignLeft'` and `'alignRight'`. The latter two apply, respectively, `.image-style-align-left` and  `.image-style-align-right` classes to the `<figure>` element.
 
 See the result below:
 
@@ -162,7 +162,9 @@ you can also define your own styles or modify the existing ones.
 	Reusing (or modifying) predefined styles has this advantage that CKEditor 5 will use its official translations for the defined button titles.
 </info-box>
 
-TODO (example)...
+You can find advanced examples in the {@link module:image/image~ImageConfig#styles `image.styles`} configuration option's documentation.
+
+TODO (live example)...
 
 ## Image upload
 
@@ -211,7 +213,12 @@ The {@link module:image/image~Image} plugin registers:
 
 The {@link module:image/imagestyle~ImageStyle} plugin registers:
 
-* A command for each defined style (based on the {@link module:image/image~ImageConfig#styles `image.styles`} configuration option) &mdash; e.g. `'imageStyle:full'` and `'imageStyle:side'`,
+* The `'imageStyle'` command that accepts value based on the {@link module:image/image~ImageConfig#styles `image.styles`} configuration option (e.g. `'full'` and `'side'`):
+
+	```js
+	editor.execute( 'imageStyle', { value: 'side' } );
+	```
+
 * A button for each defined style &mdash; e.g. `'imageStyle:full'` and `'imageStyle:side'`.
 
 ## Contribute

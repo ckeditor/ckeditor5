@@ -26,7 +26,7 @@ export default class ImageStyleCommand extends Command {
 		super( editor );
 
 		/**
-		 * Cached name of a default style if present. If there is no default style it defaults to false.
+		 * Cached name of the default style if present. If there is no default style it defaults to `false`.
 		 *
 		 * @type {Boolean|String}
 		 * @private
@@ -71,8 +71,11 @@ export default class ImageStyleCommand extends Command {
 	/**
 	 * Executes the command.
 	 *
+	 *		editor.execute( 'imageStyle', { value: 'side' } );
+	 *
 	 * @param {Object} options
-	 * @param {String} options.value
+	 * @param {String} options.value The name of the style (based on the
+	 * {@link module:image/image~ImageConfig#styles `image.styles`} configuration option).
 	 * @fires execute
 	 */
 	execute( options = {} ) {

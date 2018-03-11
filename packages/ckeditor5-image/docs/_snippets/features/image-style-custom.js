@@ -12,13 +12,13 @@ ClassicEditor
 		image: {
 			styles: [
 				// This option is equal to a situation where no style is applied.
-				'imageStyle:full',
+				'full',
 
 				// This represents an image aligned to left.
-				'imageStyle:alignLeft',
+				'alignLeft',
 
 				// This represents an image aligned to right.
-				'imageStyle:alignRight'
+				'alignRight'
 			],
 
 			toolbar: [ 'imageTextAlternative', '|', 'imageStyle:alignLeft', 'imageStyle:full', 'imageStyle:alignRight' ]

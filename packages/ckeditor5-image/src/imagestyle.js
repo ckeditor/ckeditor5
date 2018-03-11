@@ -37,12 +37,11 @@ export default class ImageStyle extends Plugin {
 
 /**
  * Available image styles.
- * The option is used by the {@link module:image/imagestyle/imagestyleediting~ImageStyleEditing} feature.
  *
  * The default value is:
  *
  *		const imageConfig = {
- *			styles: [ 'imageStyle:full', 'imageStyle:side' ]
+ *			styles: [ 'full', 'side' ]
  *		};
  *
  * which configures two default styles:
@@ -96,11 +95,11 @@ export default class ImageStyle extends Plugin {
  * The feature creates commands based on defined styles, so you can change the style of a selected image by executing
  * the following command:
  *
- *		editor.execute( 'imageStyle:side' );
+ *		editor.execute( 'imageStyle' { value: 'side' } );
  *
- * The features creates also buttons which execute the commands, so assuming that you use the
- * default image styles setting you can {@link module:image/image~ImageConfig#toolbar configure the image toolbar}
- * to contain these options:
+ * The feature creates also buttons which execute the command. So, assuming that you use the
+ * default image styles setting, you can {@link module:image/image~ImageConfig#toolbar configure the image toolbar}
+ * (or any other toolbar) to contain these options:
  *
  *		const imageConfig = {
  *			toolbar: [ 'imageStyle:full', 'imageStyle:side' ]
