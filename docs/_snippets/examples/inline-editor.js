@@ -14,7 +14,7 @@ Array.from( inlineInjectElements ).forEach( inlineElement => {
 	const config = {
 		image: {
 			toolbar: [ 'imageTextAlternative', '|', 'imageStyle:alignLeft', 'imageStyle:full', 'imageStyle:alignRight' ],
-			styles: [ 'imageStyle:full', 'imageStyle:alignLeft', 'imageStyle:alignRight' ]
+			styles: [ 'full', 'alignLeft', 'alignRight' ]
 		},
 		toolbar: {
 			viewportTopOffset: 60
