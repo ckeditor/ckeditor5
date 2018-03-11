@@ -191,7 +191,7 @@ describe( 'DeleteCommand integration', () => {
 			setData( model,
 				'<listItem indent="0" type="numbered">OL List i[tem 1</listItem>' +
 				'<listItem indent="0" type="numbered">OL List item 2</listItem>]' +
-				'<image alt="bar" imageStyle="imageStyleSide" src="sample.jpg"><caption>[Caption</caption></image>' +
+				'<image alt="bar" imageStyle="side" src="sample.jpg"><caption>[Caption</caption></image>' +
 				'<blockQuote>' +
 					'<paragraph>Quote</paragraph>' +
 					'<listItem indent="0" type="bulleted">Quoted UL List item 1</listItem>' +
