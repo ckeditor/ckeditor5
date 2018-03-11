@@ -71,8 +71,8 @@ module.exports = {
 	config: {
 		toolbar: {
 			items: [
-				'headings',
-				'alignmentDropdown', //                      <--- ADDED
+				'heading',
+				'alignment', //                      <--- ADDED
 				'bold',
 				'italic',
 				'link',
@@ -85,7 +85,7 @@ module.exports = {
 		},
 
 		image: {
-			toolbar: [ 'imageStyleFull', 'imageStyleSide', '|', 'imageTextAlternative' ]
+			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
 		},
 
 		// UI language. Language codes follow the https://en.wikipedia.org/wiki/ISO_639-1 format.
@@ -201,7 +201,7 @@ ClassicEditor.build = {
 	config: {
 		toolbar: {
 			items: [
-				'headings',
+				'heading',
 				'bold',
 				// ...
 			]

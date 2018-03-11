@@ -13,8 +13,8 @@ const inlineInjectElements = document.querySelectorAll( '#snippet-inline-editor 
 Array.from( inlineInjectElements ).forEach( inlineElement => {
 	const config = {
 		image: {
-			toolbar: [ 'imageTextAlternative', '|', 'imageStyleAlignLeft', 'imageStyleFull', 'imageStyleAlignRight' ],
-			styles: [ 'imageStyleFull', 'imageStyleAlignLeft', 'imageStyleAlignRight' ]
+			toolbar: [ 'imageTextAlternative', '|', 'imageStyle:alignLeft', 'imageStyle:full', 'imageStyle:alignRight' ],
+			styles: [ 'full', 'alignLeft', 'alignRight' ]
 		},
 		toolbar: {
 			viewportTopOffset: 60
@@ -34,7 +34,7 @@ Array.from( inlineInjectElements ).forEach( inlineElement => {
 			'EasyImage',
 			'CKFinderUploadAdapter'
 		];
-		config.toolbar.items = [ 'headings', '|', 'bold', 'italic', 'link' ];
+		config.toolbar.items = [ 'heading', '|', 'bold', 'italic', 'link' ];
 	}
 
 	InlineEditor
