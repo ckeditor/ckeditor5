@@ -14,7 +14,7 @@ import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
 
 const config = {
 	plugins: [ ArticlePluginSet, Strikethrough, Code ],
-	toolbar: [ 'headings', '|', 'bold', 'italic', 'strikethrough', 'code', 'link', '|', 'undo', 'redo' ]
+	toolbar: [ 'heading', '|', 'bold', 'italic', 'strikethrough', 'code', 'link', '|', 'undo', 'redo' ]
 };
 
 ClassicEditor

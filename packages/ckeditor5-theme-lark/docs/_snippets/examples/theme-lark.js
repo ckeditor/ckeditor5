@@ -15,11 +15,11 @@ ClassicEditor
 	.create( document.querySelector( '#snippet-classic-editor' ), {
 		plugins: [ ArticlePluginSet, EasyImage ],
 		toolbar: {
-			items: [ 'headings', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
+			items: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
 			viewportTopOffset: 60
 		},
 		image: {
-			toolbar: [ 'imageStyleFull', 'imageStyleSide', '|', 'imageTextAlternative' ]
+			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
 		},
 		cloudServices: CS_CONFIG
 	} )
