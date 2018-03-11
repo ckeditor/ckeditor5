@@ -11,14 +11,13 @@ describe( 'ImageStyleCommand', () => {
 	const defaultStyle = { name: 'defaultStyle', title: 'foo bar', icon: 'icon-1', isDefault: true };
 	const otherStyle = { name: 'otherStyle', title: 'baz', icon: 'icon-2', className: 'other-class-name' };
 
-	let model, defaultStyleCommand, otherStyleCommand;
+	let model, command;
 
 	beforeEach( () => {
 		return ModelTestEditor.create()
 			.then( newEditor => {
 				model = newEditor.model;
-				defaultStyleCommand = new ImageStyleCommand( newEditor, defaultStyle );
-				otherStyleCommand = new ImageStyleCommand( newEditor, otherStyle );
+				command = new ImageStyleCommand( newEditor, [ defaultStyle, otherStyle ] );
 
 				model.schema.register( 'p', { inheritAllFrom: '$block' } );
 
@@ -34,35 +33,31 @@ describe( 'ImageStyleCommand', () => {
 	it( 'command value should be false if no image is selected', () => {
 		setData( model, '[]<image></image>' );
 
-		expect( defaultStyleCommand.value ).to.be.false;
-		expect( otherStyleCommand.value ).to.be.false;
+		expect( command.value ).to.be.false;
 	} );
 
 	it( 'should match default style if no imageStyle attribute is present', () => {
 		setData( model, '[<image></image>]' );
 
-		expect( defaultStyleCommand.value ).to.be.true;
-		expect( otherStyleCommand.value ).to.be.false;
+		expect( command.value ).to.equal( 'defaultStyle' );
 	} );
 
 	it( 'proper command should have true value when imageStyle attribute is present', () => {
 		setData( model, '[<image imageStyle="otherStyle"></image>]' );
 
-		expect( defaultStyleCommand.value ).to.be.false;
-		expect( otherStyleCommand.value ).to.be.true;
+		expect( command.value ).to.equal( 'otherStyle' );
 	} );
 
 	it( 'should have false value if style does not match', () => {
 		setData( model, '[<image imageStyle="foo"></image>]' );
 
-		expect( defaultStyleCommand.value ).to.be.false;
-		expect( otherStyleCommand.value ).to.be.false;
+		expect( command.value ).to.be.false;
 	} );
 
 	it( 'should set proper value when executed', () => {
 		setData( model, '[<image></image>]' );
 
-		otherStyleCommand.execute();
+		command.execute( { value: 'otherStyle' } );
 
 		expect( getData( model ) ).to.equal( '[<image imageStyle="otherStyle"></image>]' );
 	} );
@@ -70,7 +65,23 @@ describe( 'ImageStyleCommand', () => {
 	it( 'should do nothing when attribute already present', () => {
 		setData( model, '[<image imageStyle="otherStyle"></image>]' );
 
-		otherStyleCommand.execute();
+		command.execute( { value: 'otherStyle' } );
+
+		expect( getData( model ) ).to.equal( '[<image imageStyle="otherStyle"></image>]' );
+	} );
+
+	it( 'should do nothing attribute is not known', () => {
+		setData( model, '[<image imageStyle="otherStyle"></image>]' );
+
+		command.execute( { value: 'someNotExistingStyle' } );
+
+		expect( getData( model ) ).to.equal( '[<image imageStyle="otherStyle"></image>]' );
+	} );
+
+	it( 'should do nothing when value is not passed', () => {
+		setData( model, '[<image imageStyle="otherStyle"></image>]' );
+
+		command.execute();
 
 		expect( getData( model ) ).to.equal( '[<image imageStyle="otherStyle"></image>]' );
 	} );
@@ -81,7 +92,7 @@ describe( 'ImageStyleCommand', () => {
 		model.change( writer => {
 			expect( writer.batch.deltas ).to.length( 0 );
 
-			otherStyleCommand.execute();
+			command.execute( { value: 'otherStyle' } );
 
 			expect( writer.batch.deltas ).to.length.above( 0 );
 		} );
@@ -90,38 +101,33 @@ describe( 'ImageStyleCommand', () => {
 	it( 'should be enabled on image element', () => {
 		setData( model, '[<image></image>]' );
 
-		expect( defaultStyleCommand.isEnabled ).to.be.true;
-		expect( otherStyleCommand.isEnabled ).to.be.true;
+		expect( command.isEnabled ).to.be.true;
 	} );
 
 	it( 'should be disabled when not placed on image', () => {
 		setData( model, '[<p></p>]' );
 
-		expect( defaultStyleCommand.isEnabled ).to.be.false;
-		expect( otherStyleCommand.isEnabled ).to.be.false;
+		expect( command.isEnabled ).to.be.false;
 	} );
 
 	it( 'should be disabled when not placed directly on image', () => {
 		setData( model, '[<p></p><image></image>]' );
 
-		expect( defaultStyleCommand.isEnabled ).to.be.false;
-		expect( otherStyleCommand.isEnabled ).to.be.false;
+		expect( command.isEnabled ).to.be.false;
 	} );
 
 	it( 'default style should be active after executing it after another style', () => {
 		setData( model, '[<image></image>]' );
 
-		expect( defaultStyleCommand.value ).to.be.true;
-		expect( otherStyleCommand.value ).to.be.false;
+		expect( command.value ).to.equal( 'defaultStyle' );
 
-		otherStyleCommand.execute();
+		command.execute( { value: 'otherStyle' } );
 
 		expect( getData( model ) ).to.equal( '[<image imageStyle="otherStyle"></image>]' );
 
-		defaultStyleCommand.execute();
+		command.execute( { value: 'defaultStyle' } );
 
 		expect( getData( model ) ).to.equal( '[<image></image>]' );
-		expect( defaultStyleCommand.value ).to.be.true;
-		expect( otherStyleCommand.value ).to.be.false;
+		expect( command.value ).to.equal( 'defaultStyle' );
 	} );
 } );

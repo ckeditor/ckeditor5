@@ -26,9 +26,9 @@ ClassicEditor
 			Enter, Typing, Paragraph, Heading, Image, ImageToolbar,
 			Undo, Clipboard, ImageCaption, ImageStyle, Bold, Italic, Heading, List
 		],
-		toolbar: [ 'headings', '|', 'undo', 'redo', 'bold', 'italic', 'bulletedList', 'numberedList' ],
+		toolbar: [ 'heading', '|', 'undo', 'redo', 'bold', 'italic', 'bulletedList', 'numberedList' ],
 		image: {
-			toolbar: [ 'imageStyleFull', 'imageStyleSide', '|', 'imageTextAlternative' ]
+			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
 		}
 	} )
 	.then( editor => {

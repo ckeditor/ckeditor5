@@ -29,7 +29,7 @@ export default class ImageUploadUI extends Plugin {
 		// Setup `uploadImage` button.
 		editor.ui.componentFactory.add( 'uploadImage', locale => {
 			const view = new FileDialogButtonView( locale );
-			const command = editor.commands.get( 'imageUpload' );
+			const command = editor.commands.get( 'uploadImage' );
 
 			view.set( {
 				acceptedType: 'image/*',
@@ -49,7 +49,7 @@ export default class ImageUploadUI extends Plugin {
 					const insertAt = findOptimalInsertionPosition( editor.model.document.selection );
 
 					if ( isImageType( file ) ) {
-						editor.execute( 'imageUpload', { file, insertAt } );
+						editor.execute( 'uploadImage', { file, insertAt } );
 					}
 				}
 			} );

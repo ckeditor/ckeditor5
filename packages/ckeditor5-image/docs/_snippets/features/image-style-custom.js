@@ -12,16 +12,16 @@ ClassicEditor
 		image: {
 			styles: [
 				// This option is equal to a situation where no style is applied.
-				'imageStyleFull',
+				'full',
 
 				// This represents an image aligned to left.
-				'imageStyleAlignLeft',
+				'alignLeft',
 
 				// This represents an image aligned to right.
-				'imageStyleAlignRight'
+				'alignRight'
 			],
 
-			toolbar: [ 'imageTextAlternative', '|', 'imageStyleAlignLeft', 'imageStyleFull', 'imageStyleAlignRight' ]
+			toolbar: [ 'imageTextAlternative', '|', 'imageStyle:alignLeft', 'imageStyle:full', 'imageStyle:alignRight' ]
 		},
 		toolbar: {
 			viewportTopOffset: 60

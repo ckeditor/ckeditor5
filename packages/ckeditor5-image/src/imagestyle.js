@@ -37,12 +37,11 @@ export default class ImageStyle extends Plugin {
 
 /**
  * Available image styles.
- * The option is used by the {@link module:image/imagestyle/imagestyleediting~ImageStyleEditing} feature.
  *
  * The default value is:
  *
  *		const imageConfig = {
- *			styles: [ 'imageStyleFull', 'imageStyleSide' ]
+ *			styles: [ 'full', 'side' ]
  *		};
  *
  * which configures two default styles:
@@ -65,10 +64,10 @@ export default class ImageStyle extends Plugin {
  *			styles: [
  *				// This will only customize the icon of the "full" style.
  *				// Note: 'right' is one of default icons provided by the feature.
- *				{ name: 'imageStyleFull', icon: 'right' },
+ *				{ name: 'full', icon: 'right' },
  *
  *				// This will customize the icon, title and CSS class of the default "side" style.
- *				{ name: 'imageStyleSide', icon: customIcon, title: 'My side style', class: 'custom-side-image' }
+ *				{ name: 'side', icon: customIcon, title: 'My side style', class: 'custom-side-image' }
  *			]
  *		};
  *
@@ -96,14 +95,14 @@ export default class ImageStyle extends Plugin {
  * The feature creates commands based on defined styles, so you can change the style of a selected image by executing
  * the following command:
  *
- *		editor.execute( 'imageStyleSide' );
+ *		editor.execute( 'imageStyle' { value: 'side' } );
  *
- * The features creates also buttons which execute the commands, so assuming that you use the
- * default image styles setting you can {@link module:image/image~ImageConfig#toolbar configure the image toolbar}
- * to contain these options:
+ * The feature creates also buttons which execute the command. So, assuming that you use the
+ * default image styles setting, you can {@link module:image/image~ImageConfig#toolbar configure the image toolbar}
+ * (or any other toolbar) to contain these options:
  *
  *		const imageConfig = {
- *			toolbar: [ 'imageStyleFull', 'imageStyleSide' ]
+ *			toolbar: [ 'imageStyle:full', 'imageStyle:side' ]
  *		};
  *
  * @member {Array.<module:image/imagestyle/imagestyleediting~ImageStyleFormat>} module:image/image~ImageConfig#styles

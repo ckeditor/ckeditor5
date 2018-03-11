@@ -178,10 +178,10 @@ export default class ImageToolbar extends Plugin {
  * * {@link module:image/imagetextalternative~ImageTextAlternative}.
  *
  * Three toolbar items will be available in {@link module:ui/componentfactory~ComponentFactory}:
- * `'imageStyleFull'`, `'imageStyleSide'`, and `'imageTextAlternative'` so you can configure the toolbar like this:
+ * `'imageStyle:full'`, `'imageStyle:side'`, and `'imageTextAlternative'` so you can configure the toolbar like this:
  *
  *		const imageConfig = {
- *			toolbar: [ 'imageStyleFull', 'imageStyleSide', '|', 'imageTextAlternative' ]
+ *			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
  *		};
  *
  * Of course, the same buttons can also be used in the

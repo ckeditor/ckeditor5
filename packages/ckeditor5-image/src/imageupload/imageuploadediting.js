@@ -41,8 +41,8 @@ export default class ImageUploadEditing extends Plugin {
 			allowAttributes: [ 'uploadId', 'uploadStatus' ]
 		} );
 
-		// Register imageUpload command.
-		editor.commands.add( 'imageUpload', new ImageUploadCommand( editor ) );
+		// Register uploadImage command.
+		editor.commands.add( 'uploadImage', new ImageUploadCommand( editor ) );
 
 		// Execute imageUpload command when image is dropped or pasted.
 		editor.editing.view.document.on( 'clipboardInput', ( evt, data ) => {
@@ -60,7 +60,7 @@ export default class ImageUploadEditing extends Plugin {
 				const insertAt = findOptimalInsertionPosition( targetModelSelection );
 
 				if ( isImageType( file ) ) {
-					editor.execute( 'imageUpload', { file, insertAt } );
+					editor.execute( 'uploadImage', { file, insertAt } );
 					evt.stop();
 				}
 
