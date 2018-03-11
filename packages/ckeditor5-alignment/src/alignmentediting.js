@@ -7,10 +7,14 @@
  * @module alignment/alignmentediting
  */
 
-import AlignmentCommand, { commandNameFromOptionName } from './alignmentcommand';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
+import AlignmentCommand from './alignmentcommand';
+import { isDefault, isSupported, supportedOptions } from './utils';
+
 /**
+ * The alignment editing feature. It introduces the {@link module:alignment/alignmentcommand~AlignmentCommand command} and adds
+ * the `alignment` attribute of block elements in the {@link module:engine/model/model~Model model}.
  * @extends module:core/plugin~Plugin
  */
 export default class AlignmentEditing extends Plugin {
@@ -21,24 +25,8 @@ export default class AlignmentEditing extends Plugin {
 		super( editor );
 
 		editor.config.define( 'alignment', {
-			options: [ ...this.constructor.supportedOptions ]
+			options: [ ...supportedOptions ]
 		} );
-	}
-
-	/**
-	 * The list of supported alignment options:
-	 *
-	 * * `'left'`,
-	 * * `'right'`,
-	 * * `'center'`,
-	 * * `'justify'`
-	 *
-	 * @static
-	 * @readonly
-	 * @member {Array.<String>} module:alignment/alignmentediting~AlignmentEditing.supportedOptions
-	 */
-	static get supportedOptions() {
-		return [ 'left', 'right', 'center', 'justify' ];
 	}
 
 	/**
@@ -58,21 +46,8 @@ export default class AlignmentEditing extends Plugin {
 
 		editor.conversion.attributeToAttribute( definition );
 
-		// Add only enabled commands.
-		enabledOptions.forEach( option => {
-			editor.commands.add( commandNameFromOptionName( option ), new AlignmentCommand( editor, option, isDefault( option ) ) );
-		} );
+		editor.commands.add( 'alignment', new AlignmentCommand( editor ) );
 	}
-}
-
-/**
- * Checks whether the passed option is supported by {@link module:alignment/alignmentediting~AlignmentEditing}.
- *
- * @param {String} option The option value to check.
- * @returns {Boolean}
- */
-export function isSupported( option ) {
-	return AlignmentEditing.supportedOptions.includes( option );
 }
 
 // Utility function responsible for building converter definition.
@@ -96,11 +71,4 @@ function _buildDefinition( options ) {
 	}
 
 	return definition;
-}
-
-// Check whether alignment is the default one.
-// @private
-function isDefault( textAlign ) {
-	// Right now only LTR is supported so 'left' value is always the default one.
-	return textAlign === 'left';
 }

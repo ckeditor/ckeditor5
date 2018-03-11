@@ -31,11 +31,8 @@ describe( 'AlignmentEditing', () => {
 		editor.destroy();
 	} );
 
-	it( 'adds alignment commands', () => {
-		expect( editor.commands.get( 'alignLeft' ) ).to.be.instanceOf( AlignmentCommand );
-		expect( editor.commands.get( 'alignRight' ) ).to.be.instanceOf( AlignmentCommand );
-		expect( editor.commands.get( 'alignCenter' ) ).to.be.instanceOf( AlignmentCommand );
-		expect( editor.commands.get( 'alignJustify' ) ).to.be.instanceOf( AlignmentCommand );
+	it( 'adds alignment command', () => {
+		expect( editor.commands.get( 'alignment' ) ).to.be.instanceOf( AlignmentCommand );
 	} );
 
 	it( 'allows for alignment in $blocks', () => {
@@ -73,7 +70,7 @@ describe( 'AlignmentEditing', () => {
 		} );
 	} );
 
-	describe( 'alignLeft', () => {
+	describe( 'left alignment', () => {
 		it( 'adds converters to the data pipeline', () => {
 			const data = '<p style="text-align:left;">x</p>';
 
@@ -88,15 +85,13 @@ describe( 'AlignmentEditing', () => {
 
 			expect( editor.getData() ).to.equal( '<p style="text-align:center;">x</p>' );
 
-			const command = editor.commands.get( 'alignLeft' );
-
-			command.execute();
+			editor.execute( 'alignment' );
 
 			expect( editor.getData() ).to.equal( '<p>x</p>' );
 		} );
 	} );
 
-	describe( 'alignCenter', () => {
+	describe( 'center alignment', () => {
 		it( 'adds converters to the data pipeline', () => {
 			const data = '<p style="text-align:center;">x</p>';
 
@@ -117,15 +112,13 @@ describe( 'AlignmentEditing', () => {
 
 			expect( editor.getData() ).to.equal( '<p style="text-align:right;">x</p>' );
 
-			const command = editor.commands.get( 'alignCenter' );
-
-			command.execute();
+			editor.execute( 'alignment', { value: 'center' } );
 
 			expect( editor.getData() ).to.equal( '<p style="text-align:center;">x</p>' );
 		} );
 	} );
 
-	describe( 'alignRight', () => {
+	describe( 'right alignment', () => {
 		it( 'adds converters to the data pipeline', () => {
 			const data = '<p style="text-align:right;">x</p>';
 
@@ -142,7 +135,7 @@ describe( 'AlignmentEditing', () => {
 		} );
 	} );
 
-	describe( 'alignJustify', () => {
+	describe( 'justify alignment', () => {
 		it( 'adds converters to the data pipeline', () => {
 			const data = '<p style="text-align:justify;">x</p>';
 
@@ -172,8 +165,7 @@ describe( 'AlignmentEditing', () => {
 
 			expect( editor.getData() ).to.equal( '<p>x</p>' );
 
-			const command = editor.commands.get( 'alignLeft' );
-			command.execute();
+			editor.execute( 'alignment' );
 
 			expect( editor.getData() ).to.equal( '<p>x</p>' );
 		} );
@@ -205,20 +197,6 @@ describe( 'AlignmentEditing', () => {
 				it( 'should be set', () => {
 					expect( editor.config.get( 'alignment.options' ) ).to.deep.equal( [ 'left', 'right', 'center', 'justify' ] );
 				} );
-			} );
-
-			it( 'should customize commands', () => {
-				return VirtualTestEditor
-					.create( {
-						alignment: { options: [ 'left', 'right' ] },
-						plugins: [ AlignmentEditing, Paragraph ]
-					} )
-					.then( editor => {
-						expect( editor.commands.get( 'alignLeft' ), 'adds alignLeft' ).to.be.instanceof( AlignmentCommand );
-						expect( editor.commands.get( 'alignRight' ), 'adds alignLeft' ).to.be.instanceof( AlignmentCommand );
-						expect( editor.commands.get( 'alignCenter' ), 'does not add alignCenter' ).to.be.undefined;
-						expect( editor.commands.get( 'alignJustify' ), 'does not add alignJustify' ).to.be.undefined;
-					} );
 			} );
 		} );
 	} );

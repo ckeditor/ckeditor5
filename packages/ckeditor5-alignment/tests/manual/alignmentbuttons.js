@@ -13,10 +13,9 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ ArticlePluginSet, Alignment ],
 		toolbar: [
-			'heading', '|', 'alignment', '|', 'alignment:left', 'alignment:right', 'alignment:center', 'alignment:justify', '|',
+			'heading', '|', 'alignment:left', 'alignment:right', 'alignment:center', 'alignment:justify', '|',
 			'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'
-		],
-		alignment: { options: [ 'center', 'justify' ] }
+		]
 	} )
 	.then( editor => {
 		window.editor = editor;

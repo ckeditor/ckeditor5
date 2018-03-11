@@ -9,7 +9,7 @@ ClassicEditor
 	.create( document.querySelector( '#snippet-text-alignment' ), {
 		toolbar: {
 			items: [
-				'headings', '|', 'bulletedList', 'numberedList', 'alignmentDropdown', 'undo', 'redo'
+				'heading', '|', 'bulletedList', 'numberedList', 'alignment', 'undo', 'redo'
 			],
 			viewportTopOffset: 60
 		}

@@ -45,7 +45,7 @@ describe( 'Alignment integration', () => {
 		it( 'does not work inside image caption', () => {
 			setModelData( model, '<image src="foo.png"><caption>Foo[]</caption></image>' );
 
-			editor.execute( 'alignCenter' );
+			editor.execute( 'alignment', { value: 'center' } );
 
 			expect( getModelData( model ) ).to.equal( '<image src="foo.png"><caption>Foo[]</caption></image>' );
 		} );
@@ -58,7 +58,7 @@ describe( 'Alignment integration', () => {
 				'<paragraph>baz]baz</paragraph>'
 			);
 
-			editor.execute( 'alignCenter' );
+			editor.execute( 'alignment', { value: 'center' } );
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph alignment="center">foo[foo</paragraph>' +
@@ -72,7 +72,7 @@ describe( 'Alignment integration', () => {
 		it( 'does work inside BlockQuote on paragraph', () => {
 			setModelData( model, '<blockQuote><paragraph>Foo[]</paragraph></blockQuote>' );
 
-			editor.execute( 'alignCenter' );
+			editor.execute( 'alignment', { value: 'center' } );
 
 			expect( getModelData( model ) ).to.equal( '<blockQuote><paragraph alignment="center">Foo[]</paragraph></blockQuote>' );
 		} );
@@ -80,7 +80,7 @@ describe( 'Alignment integration', () => {
 		it( 'does work inside blockQuote on heading', () => {
 			setModelData( model, '<blockQuote><heading1>Foo[]</heading1></blockQuote>' );
 
-			editor.execute( 'alignCenter' );
+			editor.execute( 'alignment', { value: 'center' } );
 
 			expect( getModelData( model ) ).to.equal( '<blockQuote><heading1 alignment="center">Foo[]</heading1></blockQuote>' );
 		} );
@@ -88,7 +88,7 @@ describe( 'Alignment integration', () => {
 		it( 'does work inside blockQuote on listItem', () => {
 			setModelData( model, '<blockQuote><listItem indent="0" type="numbered">Foo[]</listItem></blockQuote>' );
 
-			editor.execute( 'alignCenter' );
+			editor.execute( 'alignment', { value: 'center' } );
 
 			expect( getModelData( model ) ).to.equal(
 				'<blockQuote><listItem alignment="center" indent="0" type="numbered">Foo[]</listItem></blockQuote>'

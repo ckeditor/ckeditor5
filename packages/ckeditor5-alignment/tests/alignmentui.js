@@ -49,10 +49,10 @@ describe( 'Alignment UI', () => {
 		} );
 	} );
 
-	describe( 'alignLeft button', () => {
+	describe( 'alignment:left button', () => {
 		beforeEach( () => {
-			command = editor.commands.get( 'alignLeft' );
-			button = editor.ui.componentFactory.create( 'alignLeft' );
+			command = editor.commands.get( 'alignment' );
+			button = editor.ui.componentFactory.create( 'alignment:left' );
 		} );
 
 		it( 'has the base properties', () => {
@@ -65,8 +65,11 @@ describe( 'Alignment UI', () => {
 			command.value = false;
 			expect( button ).to.have.property( 'isOn', false );
 
-			command.value = true;
+			command.value = 'left';
 			expect( button ).to.have.property( 'isOn', true );
+
+			command.value = 'justify';
+			expect( button ).to.have.property( 'isOn', false );
 		} );
 
 		it( 'has isEnabled bound to command\'s isEnabled', () => {
@@ -83,14 +86,15 @@ describe( 'Alignment UI', () => {
 			button.fire( 'execute' );
 
 			expect( spy.calledOnce ).to.be.true;
-			expect( spy.args[ 0 ][ 0 ] ).to.equal( 'alignLeft' );
+			expect( spy.args[ 0 ][ 0 ] ).to.equal( 'alignment' );
+			expect( spy.args[ 0 ][ 1 ] ).to.deep.equal( { value: 'left' } );
 		} );
 	} );
 
-	describe( 'alignRight button', () => {
+	describe( 'alignment:right button', () => {
 		beforeEach( () => {
-			command = editor.commands.get( 'alignRight' );
-			button = editor.ui.componentFactory.create( 'alignRight' );
+			command = editor.commands.get( 'alignment' );
+			button = editor.ui.componentFactory.create( 'alignment:right' );
 		} );
 
 		it( 'has the base properties', () => {
@@ -103,8 +107,11 @@ describe( 'Alignment UI', () => {
 			command.value = false;
 			expect( button ).to.have.property( 'isOn', false );
 
-			command.value = true;
+			command.value = 'right';
 			expect( button ).to.have.property( 'isOn', true );
+
+			command.value = 'justify';
+			expect( button ).to.have.property( 'isOn', false );
 		} );
 
 		it( 'has isEnabled bound to command\'s isEnabled', () => {
@@ -121,14 +128,15 @@ describe( 'Alignment UI', () => {
 			button.fire( 'execute' );
 
 			expect( spy.calledOnce ).to.be.true;
-			expect( spy.args[ 0 ][ 0 ] ).to.equal( 'alignRight' );
+			expect( spy.args[ 0 ][ 0 ] ).to.equal( 'alignment' );
+			expect( spy.args[ 0 ][ 1 ] ).to.deep.equal( { value: 'right' } );
 		} );
 	} );
 
-	describe( 'alignCenter button', () => {
+	describe( 'alignment:center button', () => {
 		beforeEach( () => {
-			command = editor.commands.get( 'alignCenter' );
-			button = editor.ui.componentFactory.create( 'alignCenter' );
+			command = editor.commands.get( 'alignment' );
+			button = editor.ui.componentFactory.create( 'alignment:center' );
 		} );
 
 		it( 'has the base properties', () => {
@@ -141,8 +149,11 @@ describe( 'Alignment UI', () => {
 			command.value = false;
 			expect( button ).to.have.property( 'isOn', false );
 
-			command.value = true;
+			command.value = 'center';
 			expect( button ).to.have.property( 'isOn', true );
+
+			command.value = 'justify';
+			expect( button ).to.have.property( 'isOn', false );
 		} );
 
 		it( 'has isEnabled bound to command\'s isEnabled', () => {
@@ -159,14 +170,15 @@ describe( 'Alignment UI', () => {
 			button.fire( 'execute' );
 
 			expect( spy.calledOnce ).to.be.true;
-			expect( spy.args[ 0 ][ 0 ] ).to.equal( 'alignCenter' );
+			expect( spy.args[ 0 ][ 0 ] ).to.equal( 'alignment' );
+			expect( spy.args[ 0 ][ 1 ] ).to.deep.equal( { value: 'center' } );
 		} );
 	} );
 
-	describe( 'alignJustify button', () => {
+	describe( 'alignment:justify button', () => {
 		beforeEach( () => {
-			command = editor.commands.get( 'alignJustify' );
-			button = editor.ui.componentFactory.create( 'alignJustify' );
+			command = editor.commands.get( 'alignment' );
+			button = editor.ui.componentFactory.create( 'alignment:justify' );
 		} );
 
 		it( 'has the base properties', () => {
@@ -179,8 +191,11 @@ describe( 'Alignment UI', () => {
 			command.value = false;
 			expect( button ).to.have.property( 'isOn', false );
 
-			command.value = true;
+			command.value = 'justify';
 			expect( button ).to.have.property( 'isOn', true );
+
+			command.value = 'center';
+			expect( button ).to.have.property( 'isOn', false );
 		} );
 
 		it( 'has isEnabled bound to command\'s isEnabled', () => {
@@ -197,16 +212,17 @@ describe( 'Alignment UI', () => {
 			button.fire( 'execute' );
 
 			expect( spy.calledOnce ).to.be.true;
-			expect( spy.args[ 0 ][ 0 ] ).to.equal( 'alignJustify' );
+			expect( spy.args[ 0 ][ 0 ] ).to.equal( 'alignment' );
+			expect( spy.args[ 0 ][ 1 ] ).to.deep.equal( { value: 'justify' } );
 		} );
 	} );
 
-	describe( 'alignmentDropdown', () => {
+	describe( 'alignment', () => {
 		let dropdown;
 
 		beforeEach( () => {
-			command = editor.commands.get( 'alignLeft' );
-			dropdown = editor.ui.componentFactory.create( 'alignmentDropdown' );
+			command = editor.commands.get( 'alignment' );
+			dropdown = editor.ui.componentFactory.create( 'alignment' );
 		} );
 
 		it( '#buttonView has the base properties', () => {
@@ -253,9 +269,9 @@ describe( 'Alignment UI', () => {
 					.then( newEditor => {
 						editor = newEditor;
 
-						dropdown = editor.ui.componentFactory.create( 'alignmentDropdown' );
-						command = editor.commands.get( 'alignCenter' );
-						button = editor.ui.componentFactory.create( 'alignCenter' );
+						dropdown = editor.ui.componentFactory.create( 'alignment' );
+						command = editor.commands.get( 'alignment' );
+						button = editor.ui.componentFactory.create( 'alignment:center' );
 					} );
 			} );
 
@@ -273,7 +289,7 @@ describe( 'Alignment UI', () => {
 			} );
 
 			it( 'should change icon to active alignment', () => {
-				command.value = true;
+				command.value = 'center';
 
 				expect( dropdown.buttonView.icon ).to.equal( button.icon );
 			} );
