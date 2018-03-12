@@ -7,5 +7,7 @@
 	"Right aligned image": "Label for the Right aligned image option",
 	"Change image text alternative": "Label for the Change image text alternative button.",
 	"Text alternative": "Label for the image text alternative input.",
-	"Enter image caption": "Placeholder text for image caption displayed when caption is empty."
+	"Enter image caption": "Placeholder text for image caption displayed when caption is empty.",
+	"Insert image": "Label for the insert image toolbar button.",
+	"Upload failed": "Title of the notification displayed when upload fails."
 }
