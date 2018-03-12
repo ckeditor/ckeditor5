@@ -90,6 +90,8 @@ describe( 'DecoupledDocumentEditor build', () => {
 				'<p>',
 				'<strong>Test:strong</strong>',
 				'<i>Test:i</i>',
+				'<u>Test:u</u>',
+				'<s>Test:s</s>',
 				'</p>'
 			].join( '' );
 
@@ -144,6 +146,34 @@ describe( 'DecoupledDocumentEditor build', () => {
 
 		it( 'link works', () => {
 			const data = '<p><a href="//ckeditor.com">CKEditor.com</a></p>';
+
+			editor.setData( data );
+			expect( editor.getData() ).to.equal( data );
+		} );
+
+		it( 'font size works', () => {
+			const data = '<p><span class="text-big">foo</span></p>';
+
+			editor.setData( data );
+			expect( editor.getData() ).to.equal( data );
+		} );
+
+		it( 'font family works', () => {
+			const data = '<p><span style="font-family:Georgia, serif;">foo</span></p>';
+
+			editor.setData( data );
+			expect( editor.getData() ).to.equal( data );
+		} );
+
+		it( 'highlight works', () => {
+			const data = '<p><mark class="marker-green">foo</mark></p>';
+
+			editor.setData( data );
+			expect( editor.getData() ).to.equal( data );
+		} );
+
+		it( 'alignment works', () => {
+			const data = '<p style="text-align:right;">foo</p>';
 
 			editor.setData( data );
 			expect( editor.getData() ).to.equal( data );
