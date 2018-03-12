@@ -7,9 +7,4 @@
 .ck-link_selected {
 	background: var(--ck-color-link-selected-background);
 	outline: 1px solid var(--ck-color-link-selected-background);
-
-	/* #155. Let's keep the same background inside Highlight feature. */
-	& mark {
-		background: var(--ck-color-link-selected-background);
-	}
 }
