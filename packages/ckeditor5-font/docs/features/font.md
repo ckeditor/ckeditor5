@@ -63,9 +63,7 @@ Each size is represented in the view as a `<span>` element with the `text-*` cla
 <span class="text-tiny">...</span>
 ```
 
-The CSS definition for the classes (presets) must be included:
-- in the web page's styles where the editor runs (backend),
-- in the web page's styles where the edited content is rendered (frontend)
+The CSS definition for the classes (presets) must be included in the web page's styles where the edited content is rendered.
 
 Here's an example of the font size CSS classes:
 
@@ -86,6 +84,22 @@ Here's an example of the font size CSS classes:
 	font-size: 1.8em;
 }
 ```
+
+#### Using CSS Variables
+
+The font size feature is using the power of [CSS variables](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_variables) which are defined in the [stylesheet](https://github.com/ckeditor/ckeditor5-font/blob/master/theme/fontsize.css). Thanks to that, both the UI and the content styles share the same font-size definitions, which can be easily customized:
+
+```css
+:root {
+	/* Make big text a bit bigger */
+	--ck-fontsize-big: 1.6em;
+	
+	/* Make huge text really huge. */
+	--ck-fontsize-huge: 3em;
+}
+```
+
+#### Example configuration
 
 An example of the editor that supports only two font sizes:
 

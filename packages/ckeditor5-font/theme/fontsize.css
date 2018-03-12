@@ -1,0 +1,22 @@
+/*
+ * Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+:root {
+	--ck-fontsize-tiny: .7em;
+	--ck-fontsize-small: .85em;
+	--ck-fontsize-big: 1.4em;
+	--ck-fontsize-huge: 1.8em;
+}
+
+@define-mixin fontsize-preset $size {
+	.text-$size {
+		font-size: var(--ck-fontsize-$size);
+	}
+}
+
+@mixin fontsize-preset tiny;
+@mixin fontsize-preset small;
+@mixin fontsize-preset big;
+@mixin fontsize-preset huge;
