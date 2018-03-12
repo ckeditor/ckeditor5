@@ -14,7 +14,7 @@ import { isImageType, findOptimalInsertionPosition } from './utils';
 
 /**
  * Image upload button plugin.
- * Adds `uploadImage` button to UI component factory.
+ * Adds `imageUpload` button to UI component factory.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -26,10 +26,10 @@ export default class ImageUploadUI extends Plugin {
 		const editor = this.editor;
 		const t = editor.t;
 
-		// Setup `uploadImage` button.
-		editor.ui.componentFactory.add( 'uploadImage', locale => {
+		// Setup `imageUpload` button.
+		editor.ui.componentFactory.add( 'imageUpload', locale => {
 			const view = new FileDialogButtonView( locale );
-			const command = editor.commands.get( 'uploadImage' );
+			const command = editor.commands.get( 'imageUpload' );
 
 			view.set( {
 				acceptedType: 'image/*',
@@ -49,7 +49,7 @@ export default class ImageUploadUI extends Plugin {
 					const insertAt = findOptimalInsertionPosition( editor.model.document.selection );
 
 					if ( isImageType( file ) ) {
-						editor.execute( 'uploadImage', { file, insertAt } );
+						editor.execute( 'imageUpload', { file, insertAt } );
 					}
 				}
 			} );
