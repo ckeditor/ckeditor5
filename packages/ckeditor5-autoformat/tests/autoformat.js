@@ -19,7 +19,7 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-import Command from '@ckeditor/ckeditor5-core/src/command';
+import HeadingCommand from '@ckeditor/ckeditor5-heading/src/headingcommand';
 
 testUtils.createSinonSandbox();
 
@@ -148,23 +148,12 @@ describe( 'Autoformat', () => {
 		} );
 
 		it( 'should work with heading1-heading6 commands regardless of the config of the heading feature', () => {
-			const spy1 = sinon.spy();
-			const spy6 = sinon.spy();
+			const command = new HeadingCommand( editor, [ 'heading1', 'heading6' ] );
 
-			class Heading6 extends Command {
-				execute() {
-					spy6();
-				}
-			}
-			class Heading1 extends Command {
-				execute() {
-					spy1();
-				}
-			}
+			const spy = sinon.spy( command, 'execute' );
 
 			function HeadingPlugin( editor ) {
-				editor.commands.add( 'heading1', new Heading1( editor ) );
-				editor.commands.add( 'heading6', new Heading6( editor ) );
+				editor.commands.add( 'heading', command );
 			}
 
 			return VirtualTestEditor
@@ -182,14 +171,18 @@ describe( 'Autoformat', () => {
 						writer.insertText( ' ', doc.selection.getFirstPosition() );
 					} );
 
-					expect( spy1.calledOnce ).to.be.true;
+					sinon.assert.calledOnce( spy );
+					sinon.assert.calledWithExactly( spy, { value: 'heading1' } );
+
+					spy.resetHistory();
 
 					setData( model, '<paragraph>######[]</paragraph>' );
 					model.change( writer => {
 						writer.insertText( ' ', doc.selection.getFirstPosition() );
 					} );
 
-					expect( spy6.calledOnce ).to.be.true;
+					sinon.assert.calledOnce( spy );
+					sinon.assert.calledWithExactly( spy, { value: 'heading6' } );
 
 					return editor.destroy();
 				} );

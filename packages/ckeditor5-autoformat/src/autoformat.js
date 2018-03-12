@@ -103,24 +103,28 @@ export default class Autoformat extends Plugin {
 	 *
 	 * It is using a number at the end of the command name to associate it with the proper trigger:
 	 *
-	 * * `heading1` will be executed when typing `#`,
-	 * * `heading2` will be executed when typing `##`,
+	 * * `heading` with value `heading1` will be executed when typing `#`,
+	 * * `heading` with value `heading2` will be executed when typing `##`,
 	 * * ... up to `heading6` and `######`.
 	 *
 	 * @private
 	 */
 	_addHeadingAutoformats() {
-		Array.from( this.editor.commands.names() )
-			.filter( name => name.match( /^heading[1-6]$/ ) )
-			.forEach( commandName => {
-				const level = commandName[ 7 ];
-				const pattern = new RegExp( `^(#{${ level }})\\s$` );
+		const command = this.editor.commands.get( 'heading' );
 
-				// eslint-disable-next-line no-new
-				new BlockAutoformatEditing( this.editor, pattern, () => {
-					this.editor.execute( commandName );
+		if ( command ) {
+			command.modelElements
+				.filter( name => name.match( /^heading[1-6]$/ ) )
+				.forEach( commandValue => {
+					const level = commandValue[ 7 ];
+					const pattern = new RegExp( `^(#{${ level }})\\s$` );
+
+					// eslint-disable-next-line no-new
+					new BlockAutoformatEditing( this.editor, pattern, () => {
+						this.editor.execute( 'heading', { value: commandValue } );
+					} );
 				} );
-			} );
+		}
 	}
 
 	/**
