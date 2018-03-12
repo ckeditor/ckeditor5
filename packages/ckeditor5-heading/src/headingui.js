@@ -17,7 +17,7 @@ import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import '../theme/heading.css';
 
 /**
- * The headings UI feature. It introduces the `headings` drop-down.
+ * The headings UI feature. It introduces the `headings` dropdown.
  *
  * @extends module:core/plugin~Plugin
  */

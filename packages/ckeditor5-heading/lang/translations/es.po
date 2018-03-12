@@ -5,26 +5,26 @@ msgstr ""
 "Language-Team: Spanish (https://www.transifex.com/ckeditor/teams/11143/es/)\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgctxt "Drop-down option label for the paragraph format."
+msgctxt "Dropdown option label for the paragraph format."
 msgid "Paragraph"
 msgstr "Párrafo"
 
-msgctxt "Tooltip for the heading drop-down."
+msgctxt "Tooltip for the heading dropdown."
 msgid "Heading"
 msgstr "Encabezado"
 
-msgctxt "Default label for the heading drop-down."
+msgctxt "Default label for the heading dropdown."
 msgid "Choose heading"
 msgstr "Elegir Encabezado"
 
-msgctxt "Drop-down option label for the heading level 1 format."
+msgctxt "Dropdown option label for the heading level 1 format."
 msgid "Heading 1"
 msgstr "Encabezado 1"
 
-msgctxt "Drop-down option label for the heading level 2 format."
+msgctxt "Dropdown option label for the heading level 2 format."
 msgid "Heading 2"
 msgstr "Encabezado 2"
 
-msgctxt "Drop-down option label for the heading level 3 format."
+msgctxt "Dropdown option label for the heading level 3 format."
 msgid "Heading 3"
 msgstr "Encabezado 3"

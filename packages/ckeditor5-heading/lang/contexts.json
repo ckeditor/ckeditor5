@@ -1,8 +1,8 @@
 {
-	"Paragraph": "Drop-down option label for the paragraph format.",
-	"Heading": "Tooltip for the heading drop-down.",
-	"Choose heading": "Default label for the heading drop-down.",
-	"Heading 1": "Drop-down option label for the heading level 1 format.",
-	"Heading 2": "Drop-down option label for the heading level 2 format.",
-	"Heading 3": "Drop-down option label for the heading level 3 format."
+	"Paragraph": "Dropdown option label for the paragraph format.",
+	"Heading": "Tooltip for the heading dropdown.",
+	"Choose heading": "Default label for the heading dropdown.",
+	"Heading 1": "Dropdown option label for the heading level 1 format.",
+	"Heading 2": "Dropdown option label for the heading level 2 format.",
+	"Heading 3": "Dropdown option label for the heading level 3 format."
 }
