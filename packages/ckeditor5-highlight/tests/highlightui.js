@@ -29,7 +29,7 @@ describe( 'HighlightUI', () => {
 			'Pink marker': 'Pink marker',
 			'Red pen': 'Red pen',
 			'Blue pen': 'Blue pen',
-			'Remove highlighting': 'Remove highlighting'
+			'Remove highlight': 'Remove highlight'
 		} );
 
 		addTranslations( 'pl', {
@@ -40,7 +40,7 @@ describe( 'HighlightUI', () => {
 			'Blue marker': 'Niebieski marker',
 			'Red pen': 'Czerwony długopis',
 			'Green pen': 'Zielony długopis',
-			'Remove highlighting': 'Usuń zaznaczenie'
+			'Remove highlight': 'Usuń zaznaczenie'
 		} );
 	} );
 

@@ -23,10 +23,12 @@ import './../theme/highlight.css';
 
 /**
  * The default Highlight UI plugin. It introduces:
- * * the `'highlight'` drop-down,
+ *
+ * * the `'highlight'` dropdown,
  * * `'removeHighlight'` and `'highlight:*'` buttons.
  *
  * The default configuration includes the following buttons:
+ *
  * * `'highlight:yellowMarker'`
  * * `'highlight:greenMarker'`
  * * `'highlight:pinkMarker'`
@@ -99,7 +101,7 @@ export default class HighlightUI extends Plugin {
 	_addRemoveHighlightButton() {
 		const t = this.editor.t;
 
-		this._addButton( 'removeHighlight', t( 'Remove highlighting' ), eraserIcon );
+		this._addButton( 'removeHighlight', t( 'Remove highlight' ), eraserIcon );
 	}
 
 	/**
