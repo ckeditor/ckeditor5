@@ -7,7 +7,7 @@
  * @module autoformat/inlineautoformatediting
  */
 
-import LiveRange from '@ckeditor/ckeditor5-engine/src/model/liverange';
+import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 
 /**
  * The inline autoformatting engine. It allows to format various inline patterns. For example,
@@ -144,7 +144,7 @@ export default class InlineAutoformatEditing {
 			const selection = editor.model.document.selection;
 
 			// Do nothing if selection is not collapsed.
-			if ( !selection.isCollapsed || !selection.focus || !selection.focus.parent ) {
+			if ( !selection.isCollapsed ) {
 				return;
 			}
 
@@ -152,40 +152,15 @@ export default class InlineAutoformatEditing {
 			const entry = changes[ 0 ];
 
 			// Typing is represented by only a single change.
-			if ( changes.length != 1 || entry.type !== 'insert' || entry.name != '$text' ) {
+			if ( changes.length != 1 || entry.type !== 'insert' || entry.name != '$text' || entry.length != 1 ) {
 				return;
 			}
 
 			const block = selection.focus.parent;
 			const text = getText( block ).slice( 0, selection.focus.offset );
-			const ranges = testCallback( text );
-			const rangesToFormat = [];
-
-			// Apply format before deleting text.
-			ranges.format.forEach( range => {
-				if ( range[ 0 ] === undefined || range[ 1 ] === undefined ) {
-					return;
-				}
-
-				rangesToFormat.push( LiveRange.createFromParentsAndOffsets(
-					block, range[ 0 ],
-					block, range[ 1 ]
-				) );
-			} );
-
-			const rangesToRemove = [];
-
-			// Reverse order to not mix the offsets while removing.
-			ranges.remove.slice().reverse().forEach( range => {
-				if ( range[ 0 ] === undefined || range[ 1 ] === undefined ) {
-					return;
-				}
-
-				rangesToRemove.push( LiveRange.createFromParentsAndOffsets(
-					block, range[ 0 ],
-					block, range[ 1 ]
-				) );
-			} );
+			const testOutput = testCallback( text );
+			const rangesToFormat = testOutputToRanges( block, testOutput.format );
+			const rangesToRemove = testOutputToRanges( block, testOutput.remove );
 
 			if ( !( rangesToFormat.length && rangesToRemove.length ) ) {
 				return;
@@ -198,16 +173,9 @@ export default class InlineAutoformatEditing {
 				// Apply format.
 				formatCallback( writer, validRanges );
 
-				// Detach ranges used to apply Autoformat. Prevents memory leaks. #39
-				rangesToFormat.forEach( range => range.detach() );
-
-				// Remove delimiters.
-				for ( const range of rangesToRemove ) {
+				// Remove delimiters - use reversed order to not mix the offsets while removing.
+				for ( const range of rangesToRemove.reverse() ) {
 					writer.remove( range );
-
-					// Prevents memory leaks.
-					// https://github.com/ckeditor/ckeditor5-autoformat/issues/39
-					range.detach();
 				}
 			} );
 		} );
@@ -221,4 +189,20 @@ export default class InlineAutoformatEditing {
 // @returns {String}
 function getText( element ) {
 	return Array.from( element.getChildren() ).reduce( ( a, b ) => a + b.data, '' );
+}
+
+// Converts output of the test function provided to the InlineAutoformatEditing and converts it to the model ranges
+// inside provided block.
+//
+// @private
+// @param {module:engine/model/element~Element} block
+// @param {Array.<Array>} arrays
+function testOutputToRanges( block, arrays ) {
+	return arrays.map( array => {
+		if ( array[ 0 ] === undefined || array[ 1 ] === undefined ) {
+			return;
+		}
+
+		return ModelRange.createFromParentsAndOffsets( block, array[ 0 ], block, array[ 1 ] );
+	} ).filter( range => !!range );
 }

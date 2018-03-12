@@ -115,32 +115,5 @@ describe( 'InlineAutoformatEditing', () => {
 
 			sinon.assert.notCalled( formatSpy );
 		} );
-
-		it( 'should detach removed ranges', () => {
-			const detachSpies = [];
-			const callback = fixBatch => testUtils.sinon.stub( fixBatch, 'remove' ).callsFake( saveDetachSpy );
-			testUtils.sinon.stub( editor.model.schema, 'getValidRanges' )
-				.callThrough()
-				.callsFake( ranges => ranges.map( saveDetachSpy ) );
-
-			new InlineAutoformatEditing( editor, /(\*)(.+?)(\*)/g, callback ); // eslint-disable-line no-new
-
-			setData( model, '<paragraph>*foobar[]</paragraph>' );
-
-			model.change( writer => {
-				writer.insertText( '*', doc.selection.getFirstPosition() );
-			} );
-
-			// There should be two removed ranges and one range used to apply autoformat.
-			expect( detachSpies ).to.have.length( 3 );
-
-			for ( const spy of detachSpies ) {
-				testUtils.sinon.assert.calledOnce( spy );
-			}
-
-			function saveDetachSpy( range ) {
-				detachSpies.push( testUtils.sinon.spy( range, 'detach' ) );
-			}
-		} );
 	} );
 } );
