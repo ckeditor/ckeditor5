@@ -3,20 +3,18 @@
  * For licensing, see LICENSE.md.
  */
 
-:root {
-	--ck-fontsize-tiny: .7em;
-	--ck-fontsize-small: .85em;
-	--ck-fontsize-big: 1.4em;
-	--ck-fontsize-huge: 1.8em;
+.text-tiny {
+	font-size: .7em;
 }
 
-@define-mixin fontsize-preset $size {
-	.text-$size {
-		font-size: var(--ck-fontsize-$size);
-	}
+.text-small {
+	font-size: .85em;
 }
 
-@mixin fontsize-preset tiny;
-@mixin fontsize-preset small;
-@mixin fontsize-preset big;
-@mixin fontsize-preset huge;
+.text-big {
+	font-size: 1.4em;
+}
+
+.text-huge {
+	font-size: 1.8em;
+}
