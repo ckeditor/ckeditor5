@@ -27,6 +27,7 @@ module.exports = {
 		'@ckeditor/ckeditor5-image/src/imagecaption',
 		'@ckeditor/ckeditor5-image/src/imagestyle',
 		'@ckeditor/ckeditor5-image/src/imagetoolbar',
+		'@ckeditor/ckeditor5-image/src/imageupload',
 		'@ckeditor/ckeditor5-link/src/link',
 		'@ckeditor/ckeditor5-list/src/list',
 		'@ckeditor/ckeditor5-paragraph/src/paragraph',
@@ -44,6 +45,7 @@ module.exports = {
 				'link',
 				'bulletedList',
 				'numberedList',
+				'imageUpload',
 				'blockQuote',
 				'undo',
 				'redo'
