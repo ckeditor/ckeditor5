@@ -25,7 +25,7 @@ The image insertion, therefore, is made of a few steps, which are transparent to
 
 <!-- TODO [ Drawing: workflow ( User Inserts Image ) -> ( Temporary Image Inserted ) -> ( Image Uploaded ) -> ( URL Returned ) -> ( Temporary Image Replaced with Definitive ) ] -->
 
-To make the above process possible, an image upload plugin must be available. Such plugin will handle both the upload and URL returning steps in the above workflow.
+To make the above process possible, an image upload plugin (such as {@link module:easy-image/easyimage~EasyImage}) must be available. Such plugin will handle both the upload and URL returning steps in the above workflow.
 
 ## Responsive images
 
@@ -47,7 +47,7 @@ To make enabling image upload in CKEditor 5 a breeze, by default all builds incl
 4. Configure CKEditor to use the security token entry point:
 
 	```js
-	ClassicCreator
+	ClassicEditor
 		.create( document.querySelector( '#editor' ), {
 			cloudServices: {
 				tokenUrl: 'https://example.com/cs-token-endpoint',
@@ -59,6 +59,14 @@ To make enabling image upload in CKEditor 5 a breeze, by default all builds incl
 	```
 
 This is all. At this point, image upload will be automatically enabled in your application.
+
+### Demo
+
+The demo below uses the {@link builds/guides/overview#classic-editor Classic editor} configured (like above) to use the Easy Image service provided by CKEditor Cloud Services:
+
+{@snippet build-classic-source}
+
+{@snippet features/image-upload}
 
 ## What's next?
 
