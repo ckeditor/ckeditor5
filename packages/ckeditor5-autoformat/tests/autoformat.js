@@ -190,7 +190,7 @@ describe( 'Autoformat', () => {
 	} );
 
 	describe( 'Block quote', () => {
-		it( 'should replace greater-than character with heading', () => {
+		it( 'should replace greater-than character with block quote', () => {
 			setData( model, '<paragraph>>[]</paragraph>' );
 			model.change( writer => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
