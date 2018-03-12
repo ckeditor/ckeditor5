@@ -5,30 +5,30 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-msgctxt "Tooltip for the font size drop-down."
+msgctxt "Tooltip for the font size dropdown."
 msgid "Font Size"
 msgstr "Font Size"
 
-msgctxt "Drop-down option label for the 'tiny' font size preset."
+msgctxt "Dropdown option label for the 'tiny' font size preset."
 msgid "Tiny"
 msgstr "Tiny"
 
-msgctxt "Drop-down option label for the 'small' font size preset."
+msgctxt "Dropdown option label for the 'small' font size preset."
 msgid "Small"
 msgstr "Small"
 
-msgctxt "Drop-down option label for the 'big' font size preset."
+msgctxt "Dropdown option label for the 'big' font size preset."
 msgid "Big"
 msgstr "Big"
 
-msgctxt "Drop-down option label for the 'huge' font size preset."
+msgctxt "Dropdown option label for the 'huge' font size preset."
 msgid "Huge"
 msgstr "Huge"
 
-msgctxt "Tooltip for the font family drop-down."
+msgctxt "Tooltip for the font family dropdown."
 msgid "Font Family"
 msgstr "Font Family"
 
-msgctxt "Drop-down option label for the default font family."
+msgctxt "Dropdown option label for the default font family."
 msgid "Default"
 msgstr "Default"

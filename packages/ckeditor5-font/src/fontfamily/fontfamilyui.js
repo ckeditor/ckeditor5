@@ -16,7 +16,7 @@ import { normalizeOptions } from './utils';
 import fontFamilyIcon from '../../theme/icons/font-family.svg';
 
 /**
- * The font family UI plugin. It introduces the `'fontFamily'` drop-down.
+ * The font family UI plugin. It introduces the `'fontFamily'` dropdown.
  *
  * @extends module:core/plugin~Plugin
  */
