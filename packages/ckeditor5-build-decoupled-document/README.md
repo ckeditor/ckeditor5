@@ -6,7 +6,7 @@ CKEditor 5 decoupled document build
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-build-decoupled-document/status.svg)](https://david-dm.org/ckeditor/ckeditor5-build-decoupled-document)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-build-decoupled-document/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-build-decoupled-document?type=dev)
 
-The decoupled document build for CKEditor 5. Read more about the [decoupled document build](TODO) and see the [demo](TODO).
+The decoupled document build for CKEditor 5. Read more about the [decoupled document build]((https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/builds/guides/overview.html#document-editor) and see the [demo](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/examples/builds/document-editor.html).
 
 ## Documentation
 
