@@ -198,11 +198,7 @@ function getText( element ) {
 // @param {module:engine/model/element~Element} block
 // @param {Array.<Array>} arrays
 function testOutputToRanges( block, arrays ) {
-	return arrays.map( array => {
-		if ( array[ 0 ] === undefined || array[ 1 ] === undefined ) {
-			return;
-		}
-
-		return ModelRange.createFromParentsAndOffsets( block, array[ 0 ], block, array[ 1 ] );
-	} ).filter( range => !!range );
+	return arrays
+		.filter( array => ( array[ 0 ] !== undefined && array[ 1 ] !== undefined ) )
+		.map( array => ModelRange.createFromParentsAndOffsets( block, array[ 0 ], block, array[ 1 ] ) );
 }
