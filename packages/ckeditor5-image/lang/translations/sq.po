@@ -1,50 +1,50 @@
 # Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
 msgid ""
 msgstr ""
-"Language: ko\n"
-"Language-Team: Korean (https://www.transifex.com/ckeditor/teams/11143/ko/)\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Language: sq\n"
+"Language-Team: Albanian (https://www.transifex.com/ckeditor/teams/11143/sq/)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "Label for the image widget."
 msgid "image widget"
-msgstr "이미지 위젯"
+msgstr "Vegla e fotos"
 
 msgctxt "Label for the Side image option."
 msgid "Side image"
-msgstr "내부 우측 정렬"
+msgstr "Foto anësore"
 
 msgctxt "Label for the Full size image option."
 msgid "Full size image"
-msgstr "문서 너비"
+msgstr "Foto me madhësi të plotë"
 
 msgctxt "Label for the Left aligned image option"
 msgid "Left aligned image"
-msgstr "왼쪽 정렬"
+msgstr "Foto e vendosur majtas"
 
 msgctxt "Label for the Centered image option"
 msgid "Centered image"
-msgstr "가운데 정렬"
+msgstr "Foto e vendosur në mes"
 
 msgctxt "Label for the Right aligned image option"
 msgid "Right aligned image"
-msgstr "오른쪽 정렬"
+msgstr "Foto e vendosur djathtas"
 
 msgctxt "Label for the Change image text alternative button."
 msgid "Change image text alternative"
-msgstr "대체 텍스트 변경"
+msgstr "Ndrysho tekstin alternativ të fotos"
 
 msgctxt "Label for the image text alternative input."
 msgid "Text alternative"
-msgstr "대체 텍스트"
+msgstr "Teksti alternativ"
 
 msgctxt "Placeholder text for image caption displayed when caption is empty."
 msgid "Enter image caption"
-msgstr "이미지 설명을 입력하세요"
+msgstr "Shto përshkrimin e fotos"
 
 msgctxt "Label for the insert image toolbar button."
 msgid "Insert image"
-msgstr ""
+msgstr "Shto Foto"
 
 msgctxt "Title of the notification displayed when upload fails."
 msgid "Upload failed"
-msgstr ""
+msgstr "Ngarkimi dishtoi"
