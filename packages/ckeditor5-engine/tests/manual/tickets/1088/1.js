@@ -13,7 +13,7 @@ ClassicEditor
 		plugins: [ ArticlePluginSet ],
 		toolbar: {
 			items: [
-				'headings',
+				'heading',
 				'bold',
 				'italic',
 				'link',
@@ -26,8 +26,8 @@ ClassicEditor
 		},
 		image: {
 			toolbar: [
-				'imageStyleFull',
-				'imageStyleSide',
+				'imageStyle:full',
+				'imageStyle:side',
 				'|',
 				'imageTextAlternative'
 			]
