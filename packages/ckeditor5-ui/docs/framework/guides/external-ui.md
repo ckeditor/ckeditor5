@@ -152,7 +152,7 @@ With the Bootstrap framework loaded in the web page, you can define the actual U
 <div class="ck-editor">
 	<!-- The toolbar of the editor. -->
 	<div class="btn-toolbar" role="toolbar" aria-label="Editor toolbar">
-		<!-- The headings drop-down. -->
+		<!-- The headings dropdown. -->
 		<div class="btn-group mr-2" role="group" aria-label="Headings">
 			<div class="dropdown" id="heading">
 			  <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Headings</span></button>
@@ -210,7 +210,7 @@ Although Bootstrap provides most of the CSS, it does not come with styles dedica
 	color: hsl(0, 0%, 47%);
 }
 
-/* Make sure the headings drop-down button does not change its size
+/* Make sure the headings dropdown button does not change its size
 as different headings are selected. */
 .ck-editor .dropdown-toggle span {
 	display: inline-block;
@@ -221,7 +221,7 @@ as different headings are selected. */
 	vertical-align: bottom;
 }
 
-/* Make the headings drop-down items visually distinctive. */
+/* Make the headings dropdown items visually distinctive. */
 .ck-editor .heading-item_heading1 { font-size: 1.5em; }
 .ck-editor .heading-item_heading2 { font-size: 1.3em; }
 .ck-editor .heading-item_heading3 { font-size: 1.1em; }
@@ -390,11 +390,11 @@ _setupBootstrapToolbarButtons() {
 }
 ```
 
-### Binding the drop-down to the heading commands
+### Binding the dropdown to the heading commands
 
-The drop-down in the toolbar is a more complex case.
+The dropdown in the toolbar is a more complex case.
 
-First, it must be populated with heading options for the users to select from. Then, clicking each option must execute a related heading command in the editor. Finally, the drop-down button and the drop-down menu items must reflect the state of the editor, for example, when the selection lands in a heading, a proper menu item should become active and the button should show the name of the heading level.
+First, it must be populated with heading options for the users to select from. Then, clicking each option must execute a related heading command in the editor. Finally, the dropdown button and the dropdown menu items must reflect the state of the editor, for example, when the selection lands in a heading, a proper menu item should become active and the button should show the name of the heading level.
 
 ```js
 // This method activates the headings dropdown in the toolbar.
