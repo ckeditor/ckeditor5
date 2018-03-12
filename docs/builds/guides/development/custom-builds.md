@@ -112,7 +112,7 @@ module.exports = {
 
 	// Editor configuration.
 	config: {
-		toolbar: [ 'headings', '|', 'bold', 'italic', 'custombutton' ],
+		toolbar: [ 'heading', '|', 'bold', 'italic', 'custombutton' ],
 
 		// UI language. Language codes follow the https://en.wikipedia.org/wiki/ISO_639-1 format.
 		language: 'en'

@@ -32,7 +32,7 @@ ClassicEditor
 			EasyImage
 		],
 		toolbar: {
-			items: [ 'bold', 'italic', 'underline', 'strikethrough', 'code', '|', 'highlightDropdown', '|', 'undo', 'redo' ],
+			items: [ 'bold', 'italic', 'underline', 'strikethrough', 'code', '|', 'highlight', '|', 'undo', 'redo' ],
 			viewportTopOffset: 60
 		},
 		cloudServices: CS_CONFIG

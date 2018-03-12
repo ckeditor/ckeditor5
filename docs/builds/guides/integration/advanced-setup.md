@@ -196,7 +196,7 @@ ClassicEditor.build = {
 	],
 	config: {
 		toolbar: [
-			'headings',
+			'heading',
 			'bold',
 			'italic',
 			'link',
@@ -208,8 +208,8 @@ ClassicEditor.build = {
 		],
 		image: {
 			toolbar: [
-				'imageStyleFull',
-				'imageStyleSide',
+				'imageStyle:full',
+				'imageStyle:side',
 				'|',
 				'imageTextAlternative'
 			]
@@ -275,7 +275,7 @@ ClassicEditor
 
 		// So is the rest of the default configuration.
 		toolbar: [
-			'headings',
+			'heading',
 			'bold',
 			'italic',
 			'link',
@@ -287,8 +287,8 @@ ClassicEditor
 		],
 		image: {
 			toolbar: [
-				'imageStyleFull',
-				'imageStyleSide',
+				'imageStyle:full',
+				'imageStyle:side',
 				'|',
 				'imageTextAlternative'
 			]
