@@ -33,7 +33,7 @@ And use it in your website:
 </div>
 <script src="./node_modules/@ckeditor/ckeditor5-build-decoupled-document/build/ckeditor.js"></script>
 <script>
-	ClassicEditor
+	DecoupledDocumentEditor
 		.create( '<h2>Hello world!</h2>', {
 			toolbarContainer: '.toolbar-container',
 			editableContainer: '.editable-container'
@@ -50,12 +50,12 @@ And use it in your website:
 Or in your JavaScript application:
 
 ```js
-import ClassicEditor from '@ckeditor/ckeditor5-build-decoupled-document';
+import DecoupledDocumentEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 
 // Or using CommonJS verion:
-// const ClassicEditor = require( '@ckeditor/ckeditor5-build-decoupled-document' );
+// const DecoupledDocumentEditor = require( '@ckeditor/ckeditor5-build-decoupled-document' );
 
-ClassicEditor
+DecoupledDocumentEditor
 	.create( '<h2>Hello world!</h2>', {
 			toolbarContainer: '.toolbar-container',
 			editableContainer: '.editable-container'
