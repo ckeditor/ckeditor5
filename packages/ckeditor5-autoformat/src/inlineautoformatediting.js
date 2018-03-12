@@ -151,7 +151,7 @@ export default class InlineAutoformatEditing {
 			const changes = Array.from( editor.model.document.differ.getChanges() );
 			const entry = changes[ 0 ];
 
-			// Typing is only a single change.
+			// Typing is represented by only a single change.
 			if ( changes.length != 1 || entry.type !== 'insert' || entry.name != '$text' ) {
 				return;
 			}
