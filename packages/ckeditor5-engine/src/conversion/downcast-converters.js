@@ -916,6 +916,11 @@ export function removeHighlight( highlightDescriptor ) {
 
 		// Get all elements bound with given marker name.
 		const elements = conversionApi.mapper.markerNameToElements( data.markerName );
+
+		if ( !elements ) {
+			return;
+		}
+
 		conversionApi.mapper.unbindElementsFromMarkerName( data.markerName );
 
 		for ( const element of elements ) {

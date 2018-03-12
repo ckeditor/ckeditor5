@@ -1392,6 +1392,28 @@ describe( 'downcast-converters', () => {
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
 			} );
+
+			it( 'should do nothing if marker is applied and removed on empty-ish range', () => {
+				dispatcher.on( 'addMarker:marker', highlightText( highlightDescriptor ) );
+				dispatcher.on( 'removeMarker:marker', removeHighlight( highlightDescriptor ) );
+
+				const p1 = modelRoot.getChild( 0 );
+				const p2 = modelRoot.getChild( 1 );
+
+				const markerRange = ModelRange.createFromParentsAndOffsets( p1, 3, p2, 0 );
+
+				model.change( writer => {
+					writer.setMarker( 'marker', markerRange );
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
+
+				model.change( writer => {
+					writer.removeMarker( 'marker', markerRange );
+				} );
+
+				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
+			} );
 		} );
 
 		describe( 'on element', () => {
