@@ -16,7 +16,7 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		cloudServices: CS_CONFIG,
 		plugins: [ ArticlePluginSet, EasyImage ],
-		toolbar: [ 'heading', '|', 'undo', 'redo', 'uploadImage' ],
+		toolbar: [ 'heading', '|', 'undo', 'redo', 'imageUpload' ],
 		image: {
 			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
 		}
