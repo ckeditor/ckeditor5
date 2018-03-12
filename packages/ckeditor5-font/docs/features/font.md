@@ -52,10 +52,11 @@ The font size feature supports two ways of defining configuration: using  predef
 ### Configuration using the predefined named presets
 
 The font size feature defines 4 named presets:
-- `'tiny'`
-- `'small'`
-- `'big'`
-- `'huge'`
+
+* `'tiny'`
+* `'small'`
+* `'big'`
+* `'huge'`
 
 Each size is represented in the view as a `<span>` element with the `text-*` class. For example, the `'tiny'` preset looks as follows in the editor data:
 
@@ -65,7 +66,7 @@ Each size is represented in the view as a `<span>` element with the `text-*` cla
 
 The CSS definition for the classes (presets) must be included in the web page's styles where the edited content is rendered.
 
-Here's an example of the font size CSS classes:
+Here is an example of the font size CSS classes:
 
 ```css
 .text-tiny {
@@ -118,7 +119,7 @@ For example, `14` will be represented in the editor data as:
 <span style="font-size: 14px">...</span>
 ```
 
-Here's an example of the editor that supports numerical font sizes. Note that `'normal'` is controlled by the default styles of the web page:
+Here is an example of the editor that supports numerical font sizes. Note that `'normal'` is controlled by the default styles of the web page:
 
 ```js
 ClassicEditor
@@ -200,6 +201,7 @@ The {@link module:font/fontfamily~FontFamily} plugin registers:
 	```
 
 	The `value` must correspond to the first font name in the configuration string. For the following default configuration:
+
 	```js
 	fontFamily.options = [
 		'default',
@@ -215,6 +217,7 @@ The {@link module:font/fontfamily~FontFamily} plugin registers:
 	```
 
 	the `fontFamily` command will accept the corresponding strings as values:
+
 	* `'Arial'`
 	* `'Courier New'`
 	* `'Georgia'`
@@ -251,6 +254,7 @@ The {@link module:font/fontsize~FontSize} plugin registers the following compone
 	```js
 	editor.execute( 'fontSize' );
 	```
+
 ## Contribute
 
 The source code of the feature is available on GitHub in https://github.com/ckeditor/ckeditor5-font.
