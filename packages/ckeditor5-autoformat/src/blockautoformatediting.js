@@ -64,34 +64,35 @@ export default class BlockAutoformatEditing {
 		}
 
 		editor.model.document.on( 'change', () => {
-			const changes = editor.model.document.differ.getChanges();
+			const changes = Array.from( editor.model.document.differ.getChanges() );
+			const entry = changes[ 0 ];
 
-			for ( const entry of changes ) {
-				if ( entry.type == 'insert' && entry.name == '$text' ) {
-					const item = entry.position.textNode || entry.position.nodeAfter;
-
-					if ( !item.parent.is( 'paragraph' ) ) {
-						continue;
-					}
-
-					const match = pattern.exec( item.data );
-
-					if ( !match ) {
-						continue;
-					}
-
-					// Use enqueueChange to create new batch to separate typing batch from the auto-format changes.
-					editor.model.enqueueChange( writer => {
-						// Matched range.
-						const range = Range.createFromParentsAndOffsets( item.parent, 0, item.parent, match[ 0 ].length );
-
-						// Remove matched text.
-						writer.remove( range );
-
-						callback( { match } );
-					} );
-				}
+			// Typing is represented by only a single change.
+			if ( changes.length != 1 || entry.type !== 'insert' || entry.name != '$text' || entry.length != 1 ) {
+				return;
 			}
+			const item = entry.position.textNode || entry.position.nodeAfter;
+
+			if ( !item.parent.is( 'paragraph' ) ) {
+				return;
+			}
+
+			const match = pattern.exec( item.data );
+
+			if ( !match ) {
+				return;
+			}
+
+			// Use enqueueChange to create new batch to separate typing batch from the auto-format changes.
+			editor.model.enqueueChange( writer => {
+				// Matched range.
+				const range = Range.createFromParentsAndOffsets( item.parent, 0, item.parent, match[ 0 ].length );
+
+				// Remove matched text.
+				writer.remove( range );
+
+				callback( { match } );
+			} );
 		} );
 	}
 }
