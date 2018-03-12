@@ -13,7 +13,7 @@ The {@link module:font/font~Font} plugin enables the following features in the e
 
 {@snippet features/font}
 
-## Configuring the font family
+## Configuring the font family feature
 
 It is possible to configure which font family options are supported by the editor. Use the {@link module:font/fontfamily~FontFamilyConfig#options `fontFamily.options`} configuration option to do so.
 
@@ -41,7 +41,7 @@ ClassicEditor
 
 {@snippet features/custom-font-family-options}
 
-## Configuring the font size
+## Configuring the font size feature
 
 It is possible to configure which font size options are supported by the editor. Use the {@link module:font/fontsize~FontSizeConfig#options `fontSize.options`} configuration option to do so.
 
@@ -49,7 +49,7 @@ Use the special `'normal'` keyword to use the default font size defined in the w
 
 The font size feature supports two ways of defining configuration: using  predefined (named) presets or simple numeric values.
 
-### Configuration using the predefined named presets
+### Using the predefined presets
 
 The font size feature defines 4 named presets:
 
@@ -108,7 +108,7 @@ ClassicEditor
 
 {@snippet features/custom-font-size-named-options}
 
-### Configuration using numerical values
+### Using numerical values
 
 The font feature also supports numerical values.
 
