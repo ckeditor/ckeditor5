@@ -16,7 +16,7 @@ Below is a list of the most important keystrokes supported by CKEditor 5 and its
 | Bold | <kbd>Ctrl</kbd> + <kbd>B</kbd> | <kbd>⌘</kbd> + <kbd>I</kbd> |
 | Italic | <kbd>Ctrl</kbd> + <kbd>I</kbd> | <kbd>⌘</kbd> + <kbd>I</kbd> |
 | Link | <kbd>Ctrl</kbd> + <kbd>K</kbd> | <kbd>⌘</kbd> + <kbd>K</kbd> |
-| Close contextual balloons and UI components like drop-downs | <kbd>Esc</kbd> | <kbd>Esc</kbd> |
+| Close contextual balloons and UI components like dropdowns | <kbd>Esc</kbd> | <kbd>Esc</kbd> |
 | Nest the current list item (when in a list) | <kbd>Tab</kbd> | <kbd>Tab</kbd> |
 | Move focus to the visible contextual balloon | <kbd>Tab</kbd> | <kbd>Tab</kbd> |
 | Move focus between fields (inputs and buttons) in contextual balloons | <kbd>Tab</kbd> | <kbd>Tab</kbd> |
