@@ -20,3 +20,7 @@ msgstr "Sottolineato"
 msgctxt "Toolbar button tooltip for the Code feature."
 msgid "Code"
 msgstr "Codice"
+
+msgctxt "Toolbar button tooltip for the Strikethrough feature."
+msgid "Strikethrough"
+msgstr ""

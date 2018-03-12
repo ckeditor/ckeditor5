@@ -20,3 +20,7 @@ msgstr "下划线"
 msgctxt "Toolbar button tooltip for the Code feature."
 msgid "Code"
 msgstr "代码"
+
+msgctxt "Toolbar button tooltip for the Strikethrough feature."
+msgid "Strikethrough"
+msgstr ""

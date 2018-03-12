@@ -19,4 +19,8 @@ msgstr "Understreking"
 
 msgctxt "Toolbar button tooltip for the Code feature."
 msgid "Code"
+msgstr "Kode"
+
+msgctxt "Toolbar button tooltip for the Strikethrough feature."
+msgid "Strikethrough"
 msgstr ""

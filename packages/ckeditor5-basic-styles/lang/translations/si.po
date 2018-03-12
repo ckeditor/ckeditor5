@@ -1,25 +1,25 @@
 # Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
 msgid ""
 msgstr ""
-"Language: en_AU\n"
-"Language-Team: English (Australia) (https://www.transifex.com/ckeditor/teams/11143/en_AU/)\n"
+"Language: si_LK\n"
+"Language-Team: Sinhala (Sri Lanka) (https://www.transifex.com/ckeditor/teams/11143/si_LK/)\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "Toolbar button tooltip for the Bold feature."
 msgid "Bold"
-msgstr "Bold"
+msgstr "තදකුරු"
 
 msgctxt "Toolbar button tooltip for the Italic feature."
 msgid "Italic"
-msgstr "Italic"
+msgstr "ඇලකුරු"
 
 msgctxt "Toolbar button tooltip for the Underline feature."
 msgid "Underline"
-msgstr "Underline"
+msgstr ""
 
 msgctxt "Toolbar button tooltip for the Code feature."
 msgid "Code"
-msgstr "Code"
+msgstr ""
 
 msgctxt "Toolbar button tooltip for the Strikethrough feature."
 msgid "Strikethrough"

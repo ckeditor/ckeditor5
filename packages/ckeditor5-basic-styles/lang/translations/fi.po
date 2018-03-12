@@ -20,3 +20,7 @@ msgstr "Alleviivaus"
 msgctxt "Toolbar button tooltip for the Code feature."
 msgid "Code"
 msgstr "Koodi"
+
+msgctxt "Toolbar button tooltip for the Strikethrough feature."
+msgid "Strikethrough"
+msgstr ""

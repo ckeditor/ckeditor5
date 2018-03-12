@@ -20,3 +20,7 @@ msgstr "નીચે લિટી - અન્ડરલાઇન્"
 msgctxt "Toolbar button tooltip for the Code feature."
 msgid "Code"
 msgstr ""
+
+msgctxt "Toolbar button tooltip for the Strikethrough feature."
+msgid "Strikethrough"
+msgstr ""

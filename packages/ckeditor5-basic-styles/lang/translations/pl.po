@@ -20,3 +20,7 @@ msgstr "Podkreślenie"
 msgctxt "Toolbar button tooltip for the Code feature."
 msgid "Code"
 msgstr "Kod"
+
+msgctxt "Toolbar button tooltip for the Strikethrough feature."
+msgid "Strikethrough"
+msgstr ""

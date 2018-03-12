@@ -15,8 +15,12 @@ msgstr "İtalik"
 
 msgctxt "Toolbar button tooltip for the Underline feature."
 msgid "Underline"
-msgstr ""
+msgstr "Altı Çizgili"
 
 msgctxt "Toolbar button tooltip for the Code feature."
 msgid "Code"
+msgstr "Kod"
+
+msgctxt "Toolbar button tooltip for the Strikethrough feature."
+msgid "Strikethrough"
 msgstr ""
