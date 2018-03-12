@@ -5,6 +5,6 @@ msgstr ""
 "Language-Team: Chinese (Taiwan) (https://www.transifex.com/ckeditor/teams/11143/zh_TW/)\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-msgctxt ""
+msgctxt "A generic error message displayed on upload failure. The file name is concatenated to this text."
 msgid "Cannot upload file:"
 msgstr "無法上傳檔案："

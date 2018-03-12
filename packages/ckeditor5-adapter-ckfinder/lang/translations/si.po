@@ -1,10 +1,10 @@
 # Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
 msgid ""
 msgstr ""
-"Language: nb\n"
-"Language-Team: Norwegian Bokmål (https://www.transifex.com/ckeditor/teams/11143/nb/)\n"
+"Language: si_LK\n"
+"Language-Team: Sinhala (Sri Lanka) (https://www.transifex.com/ckeditor/teams/11143/si_LK/)\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "A generic error message displayed on upload failure. The file name is concatenated to this text."
 msgid "Cannot upload file:"
-msgstr "Kan ikke laste opp fil:"
+msgstr "ගොනුව යාවත්කාලීන කළ නොහැක:"

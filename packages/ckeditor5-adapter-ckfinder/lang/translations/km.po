@@ -5,6 +5,6 @@ msgstr ""
 "Language-Team: Khmer (https://www.transifex.com/ckeditor/teams/11143/km/)\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-msgctxt ""
+msgctxt "A generic error message displayed on upload failure. The file name is concatenated to this text."
 msgid "Cannot upload file:"
 msgstr "មិនអាច​អាប់ឡូត​ឯកសារ៖"
