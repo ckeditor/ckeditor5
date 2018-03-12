@@ -31,30 +31,25 @@ To make the above process possible, an image upload plugin must be available. Su
 
 Another great feature introduced with CKEditor 5 is the ability to have responsive images in the content. With a single image upload, several optimized versions of that image are created after upload, for different size of displays. All this is totally transparent to the end user who uploaded the image.
 
-Be sure to use image upload plugins with support for responsive images to enjoy this important additional benefit. [Easy Image](#Easy-Image) has support for responsive images out of the box, too.
+Be sure to use image upload plugins with support for responsive images to enjoy this important additional benefit. [Easy Image](#easy-image) has support for responsive images out of the box, too.
 
 ## Easy Image
 
 To make enabling image upload in CKEditor 5 a breeze, by default all builds include the {@link module:easy-image/easyimage~EasyImage `EasyImage` plugin}, which integrates with the Easy Image service provided by [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/). Enabling it is straightforward and the results are immediate:
 
-<info-box warning>
-	CKEditor Cloud Services are in private beta. [Contact us](https://ckeditor.com/contact/) to learn more.
-</info-box>
-
-1. Create an account in CKEditor Cloud Services (CS).
-2. Create an API key in your CS account.
-3. Create a security token entry point in your application.
-4. Configure CKEditor to use the security token entry point:
+1. Follow [Cloud Services - Quick start](https://docs.ckeditor.com/cs/latest/guides/quick-start.html) guide to setup an account.
+2. Configure CKEditor (see {@link @ckeditor5 module:cloudservices/cloudservices~CloudServicesConfig `CloudServicesConfig`}):
 
 	```js
-	ClassicCreator
-		.create( document.querySelector( '#editor' ), {
-			cloudServices: {
-				tokenUrl: 'http://url-to-retrieve-token.example.com/'
-			}
-		} )
-		.then( ... )
-		.catch( ... );
+	ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		cloudServices: {
+			tokenUrl: 'https://example.com/cs-token-endpoint',
+			uploadUrl: 'https://your-organization-id.cke-cs.com/easyimage/upload/'
+		}
+	} )
+	.then( ... )
+	.catch( ... );
 	```
 
 This is all. At this point, image upload will be automatically enabled in your application.
