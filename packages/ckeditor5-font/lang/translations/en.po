@@ -1,0 +1,34 @@
+# Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+"Language: \n"
+"Language-Team: \n"
+"Plural-Forms: \n"
+
+msgctxt "Tooltip for the font size dropdown."
+msgid "Font Size"
+msgstr "Font Size"
+
+msgctxt "Dropdown option label for the 'tiny' font size preset."
+msgid "Tiny"
+msgstr "Tiny"
+
+msgctxt "Dropdown option label for the 'small' font size preset."
+msgid "Small"
+msgstr "Small"
+
+msgctxt "Dropdown option label for the 'big' font size preset."
+msgid "Big"
+msgstr "Big"
+
+msgctxt "Dropdown option label for the 'huge' font size preset."
+msgid "Huge"
+msgstr "Huge"
+
+msgctxt "Tooltip for the font family dropdown."
+msgid "Font Family"
+msgstr "Font Family"
+
+msgctxt "Dropdown option label for the default font family."
+msgid "Default"
+msgstr "Default"

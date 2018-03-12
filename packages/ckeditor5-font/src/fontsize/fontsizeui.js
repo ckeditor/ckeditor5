@@ -18,7 +18,7 @@ import fontSizeIcon from '../../theme/icons/font-size.svg';
 import '../../theme/fontsize.css';
 
 /**
- * The font family UI plugin. It introduces the `'fontSize'` drop-down.
+ * The font family UI plugin. It introduces the `'fontSize'` dropdown.
  *
  * @extends module:core/plugin~Plugin
  */
