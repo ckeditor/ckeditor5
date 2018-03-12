@@ -45,7 +45,7 @@ InlineEditor.build = {
 	config: {
 		toolbar: {
 			items: [
-				'headings',
+				'heading',
 				'|',
 				'bold',
 				'italic',
@@ -59,8 +59,8 @@ InlineEditor.build = {
 		},
 		image: {
 			toolbar: [
-				'imageStyleFull',
-				'imageStyleSide',
+				'imageStyle:full',
+				'imageStyle:side',
 				'|',
 				'imageTextAlternative'
 			]
