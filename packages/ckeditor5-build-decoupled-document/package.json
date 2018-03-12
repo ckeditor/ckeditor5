@@ -1,0 +1,61 @@
+{
+  "name": "@ckeditor/ckeditor5-build-decoupled-document",
+  "version": "1.0.0-alpha.2",
+  "description": "CKEditor 5 decoupled document editor build.",
+  "keywords": [
+    "ckeditor5",
+    "ckeditor5-build",
+    "text editor",
+    "WYSIWYG",
+    "rich-text editor"
+  ],
+  "main": "./build/ckeditor.js",
+  "files": [
+    "build"
+  ],
+  "devDependencies": {
+    "@ckeditor/ckeditor5-adapter-ckfinder": "^1.0.0-alpha.2",
+    "@ckeditor/ckeditor5-alignment": "^0.0.1",
+    "@ckeditor/ckeditor5-autoformat": "^1.0.0-alpha.2",
+    "@ckeditor/ckeditor5-basic-styles": "^1.0.0-alpha.2",
+    "@ckeditor/ckeditor5-block-quote": "^1.0.0-alpha.2",
+    "@ckeditor/ckeditor5-dev-utils": "^7.0.3",
+    "@ckeditor/ckeditor5-dev-webpack-plugin": "^3.0.4",
+    "@ckeditor/ckeditor5-easy-image": "^1.0.0-alpha.2",
+    "@ckeditor/ckeditor5-editor-decoupled": "^0.0.1",
+    "@ckeditor/ckeditor5-essentials": "^1.0.0-alpha.2",
+    "@ckeditor/ckeditor5-font": "^0.0.1",
+    "@ckeditor/ckeditor5-heading": "^1.0.0-alpha.2",
+    "@ckeditor/ckeditor5-highlight": "^0.0.1",
+    "@ckeditor/ckeditor5-image": "^1.0.0-alpha.2",
+    "@ckeditor/ckeditor5-link": "^1.0.0-alpha.2",
+    "@ckeditor/ckeditor5-list": "^1.0.0-alpha.2",
+    "@ckeditor/ckeditor5-paragraph": "^1.0.0-alpha.2",
+    "@ckeditor/ckeditor5-theme-lark": "^1.0.0-alpha.2",
+    "@ckeditor/ckeditor5-upload": "^1.0.0-alpha.2",
+    "babel-minify-webpack-plugin": "^0.3.0",
+    "postcss-loader": "^2.0.10",
+    "raw-loader": "^0.5.1",
+    "style-loader": "^0.19.1",
+    "webpack": "^3.10.0",
+    "webpack-sources": "1.0.1"
+  },
+  "engines": {
+    "node": ">=6.0.0",
+    "npm": ">=3.0.0"
+  },
+  "author": "CKSource (http://cksource.com/)",
+  "license": "(GPL-2.0 OR LGPL-2.1 OR MPL-1.1)",
+  "homepage": "https://ckeditor5.github.io",
+  "bugs": "https://github.com/ckeditor/ckeditor5-build-decoupled-document/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ckeditor/ckeditor5-build-decoupled-document.git"
+  },
+  "scripts": {
+    "build": "npm run create-entry-file && npm run build-ckeditor",
+    "create-entry-file": "node bin/create-entry-file.js",
+    "build-ckeditor": "sh bin/build-ckeditor.sh",
+    "preversion": "npm run build; if [ -n \"$(git status src/ckeditor.js build/ --porcelain)\" ]; then git add -u src/ckeditor.js build/ && git commit -m 'Internal: Build.'; fi"
+  }
+}
