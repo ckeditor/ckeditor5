@@ -22,14 +22,17 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * This type of an editor is dedicated for integrations which require a customized UI with an open
  * structure, allowing developers to specify the exact location of the interface.
  *
- * See the document editor {@glink TODO demo} to learn about possible use cases for the decoupled editor.
+ * See the document editor {@glink examples/builds/document-editor demo} to learn about possible use cases
+ * for the decoupled editor.
  *
  * In order to create a decoupled editor instance, use the static
  * {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`} method.
  *
+ * # Decoupled editor and document build
+ *
  * The decoupled editor can be used directly from source (if you installed the
  * [`@ckeditor/ckeditor5-editor-decoupled`](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-decoupled) package)
- * but it is also available in the {@glink builds/guides/overview#TODO TODO}.
+ * but it is also available in the {@glink builds/guides/overview#document-editor document build}.
  *
  * {@glink builds/guides/overview Builds} are ready-to-use editors with plugins bundled in. When using the editor from
  * source you need to take care of loading all plugins by yourself
