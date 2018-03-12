@@ -2,5 +2,6 @@
 	"Align left": "Toolbar button tooltip for aligning text to the left.",
 	"Align right": "Toolbar button tooltip for aligning text to the right.",
 	"Align center": "Toolbar button tooltip for aligning text to center.",
-	"Justify": "Toolbar button tooltip for making text justified."
+	"Justify": "Toolbar button tooltip for making text justified.",
+	"Text alignment": "Dropdown button tooltip for the text alignment feature."
 }
