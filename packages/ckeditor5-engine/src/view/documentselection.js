@@ -7,15 +7,9 @@
  * @module engine/view/documentselection
  */
 
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import Range from './range';
-import Position from './position';
+import Selection from './selection';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
-import Node from './node';
-import Element from './element';
-import count from '@ckeditor/ckeditor5-utils/src/count';
-import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 
 /**
  * Class representing selection in tree view.
@@ -93,39 +87,10 @@ export default class DocumentSelection {
 	 * @param {String} [options.label] Label for the fake selection.
 	 */
 	constructor( selectable = null, placeOrOffset, options ) {
-		/**
-		 * Stores all ranges that are selected.
-		 *
-		 * @protected
-		 * @member {Array.<module:engine/view/range~Range>}
-		 */
-		this._ranges = [];
+		this._selection = new Selection( selectable, placeOrOffset, options );
 
-		/**
-		 * Specifies whether the last added range was added as a backward or forward range.
-		 *
-		 * @protected
-		 * @member {Boolean}
-		 */
-		this._lastRangeBackward = false;
-
-		/**
-		 * Specifies whether selection instance is fake.
-		 *
-		 * @private
-		 * @member {Boolean}
-		 */
-		this._isFake = false;
-
-		/**
-		 * Fake selection's label.
-		 *
-		 * @private
-		 * @member {String}
-		 */
-		this._fakeSelectionLabel = '';
-
-		this._setTo( selectable, placeOrOffset, options );
+		// Delegate change event to be fired on DocumentSelection instance.
+		this._selection.delegate( 'change' ).to( this );
 	}
 
 	/**
@@ -135,7 +100,7 @@ export default class DocumentSelection {
 	 * @returns {Boolean}
 	 */
 	get isFake() {
-		return this._isFake;
+		return this._selection.isFake;
 	}
 
 	/**
@@ -145,7 +110,7 @@ export default class DocumentSelection {
 	 * @returns {String}
 	 */
 	get fakeSelectionLabel() {
-		return this._fakeSelectionLabel;
+		return this._selection.fakeSelectionLabel;
 	}
 
 	/**
@@ -158,13 +123,7 @@ export default class DocumentSelection {
 	 * @type {module:engine/view/position~Position}
 	 */
 	get anchor() {
-		if ( !this._ranges.length ) {
-			return null;
-		}
-		const range = this._ranges[ this._ranges.length - 1 ];
-		const anchor = this._lastRangeBackward ? range.end : range.start;
-
-		return Position.createFromPosition( anchor );
+		return this._selection.anchor;
 	}
 
 	/**
@@ -174,13 +133,7 @@ export default class DocumentSelection {
 	 * @type {module:engine/view/position~Position}
 	 */
 	get focus() {
-		if ( !this._ranges.length ) {
-			return null;
-		}
-		const range = this._ranges[ this._ranges.length - 1 ];
-		const focus = this._lastRangeBackward ? range.start : range.end;
-
-		return Position.createFromPosition( focus );
+		return this._selection.focus;
 	}
 
 	/**
@@ -190,7 +143,7 @@ export default class DocumentSelection {
 	 * @type {Boolean}
 	 */
 	get isCollapsed() {
-		return this.rangeCount === 1 && this._ranges[ 0 ].isCollapsed;
+		return this._selection.isCollapsed;
 	}
 
 	/**
@@ -199,7 +152,7 @@ export default class DocumentSelection {
 	 * @type {Number}
 	 */
 	get rangeCount() {
-		return this._ranges.length;
+		return this._selection.rangeCount;
 	}
 
 	/**
@@ -208,7 +161,7 @@ export default class DocumentSelection {
 	 * @type {Boolean}
 	 */
 	get isBackward() {
-		return !this.isCollapsed && this._lastRangeBackward;
+		return this._selection.isBackward;
 	}
 
 	/**
@@ -218,11 +171,7 @@ export default class DocumentSelection {
 	 * @type {module:engine/view/editableelement~EditableElement|null}
 	 */
 	get editableElement() {
-		if ( this.anchor ) {
-			return this.anchor.editableElement;
-		}
-
-		return null;
+		return this._selection.editableElement;
 	}
 
 	/**
@@ -231,9 +180,7 @@ export default class DocumentSelection {
 	 * @returns {Iterable.<module:engine/view/range~Range>}
 	 */
 	* getRanges() {
-		for ( const range of this._ranges ) {
-			yield Range.createFromRange( range );
-		}
+		yield* this._selection.getRanges();
 	}
 
 	/**
@@ -245,15 +192,7 @@ export default class DocumentSelection {
 	 * @returns {module:engine/view/range~Range|null}
 	 */
 	getFirstRange() {
-		let first = null;
-
-		for ( const range of this._ranges ) {
-			if ( !first || range.start.isBefore( first.start ) ) {
-				first = range;
-			}
-		}
-
-		return first ? Range.createFromRange( first ) : null;
+		return this._selection.getFirstRange();
 	}
 
 	/**
@@ -264,15 +203,7 @@ export default class DocumentSelection {
 	 * @returns {module:engine/view/range~Range|null}
 	 */
 	getLastRange() {
-		let last = null;
-
-		for ( const range of this._ranges ) {
-			if ( !last || range.end.isAfter( last.end ) ) {
-				last = range;
-			}
-		}
-
-		return last ? Range.createFromRange( last ) : null;
+		return this._selection.getLastRange();
 	}
 
 	/**
@@ -283,9 +214,7 @@ export default class DocumentSelection {
 	 * @returns {module:engine/view/position~Position|null}
 	 */
 	getFirstPosition() {
-		const firstRange = this.getFirstRange();
-
-		return firstRange ? Position.createFromPosition( firstRange.start ) : null;
+		return this._selection.getFirstPosition();
 	}
 
 	/**
@@ -296,104 +225,7 @@ export default class DocumentSelection {
 	 * @returns {module:engine/view/position~Position|null}
 	 */
 	getLastPosition() {
-		const lastRange = this.getLastRange();
-
-		return lastRange ? Position.createFromPosition( lastRange.end ) : null;
-	}
-
-	/**
-	 * Checks whether, this selection is equal to given selection. Selections are equal if they have same directions,
-	 * same number of ranges and all ranges from one selection equal to a range from other selection.
-	 *
-	 * @param {module:engine/view/documentselection~DocumentSelection} otherSelection Selection to compare with.
-	 * @returns {Boolean} `true` if selections are equal, `false` otherwise.
-	 */
-	isEqual( otherSelection ) {
-		if ( this.isFake != otherSelection.isFake ) {
-			return false;
-		}
-
-		if ( this.isFake && this.fakeSelectionLabel != otherSelection.fakeSelectionLabel ) {
-			return false;
-		}
-
-		if ( this.rangeCount != otherSelection.rangeCount ) {
-			return false;
-		} else if ( this.rangeCount === 0 ) {
-			return true;
-		}
-
-		if ( !this.anchor.isEqual( otherSelection.anchor ) || !this.focus.isEqual( otherSelection.focus ) ) {
-			return false;
-		}
-
-		for ( const thisRange of this._ranges ) {
-			let found = false;
-
-			for ( const otherRange of otherSelection._ranges ) {
-				if ( thisRange.isEqual( otherRange ) ) {
-					found = true;
-					break;
-				}
-			}
-
-			if ( !found ) {
-				return false;
-			}
-		}
-
-		return true;
-	}
-
-	/**
-	 * Checks whether this selection is similar to given selection. Selections are similar if they have same directions, same
-	 * number of ranges, and all {@link module:engine/view/range~Range#getTrimmed trimmed} ranges from one selection are
-	 * equal to any trimmed range from other selection.
-	 *
-	 * @param {module:engine/view/documentselection~DocumentSelection} otherSelection Selection to compare with.
-	 * @returns {Boolean} `true` if selections are similar, `false` otherwise.
-	 */
-	isSimilar( otherSelection ) {
-		if ( this.isBackward != otherSelection.isBackward ) {
-			return false;
-		}
-
-		const numOfRangesA = count( this.getRanges() );
-		const numOfRangesB = count( otherSelection.getRanges() );
-
-		// If selections have different number of ranges, they cannot be similar.
-		if ( numOfRangesA != numOfRangesB ) {
-			return false;
-		}
-
-		// If both selections have no ranges, they are similar.
-		if ( numOfRangesA == 0 ) {
-			return true;
-		}
-
-		// Check if each range in one selection has a similar range in other selection.
-		for ( let rangeA of this.getRanges() ) {
-			rangeA = rangeA.getTrimmed();
-
-			let found = false;
-
-			for ( let rangeB of otherSelection.getRanges() ) {
-				rangeB = rangeB.getTrimmed();
-
-				if ( rangeA.start.isEqual( rangeB.start ) && rangeA.end.isEqual( rangeB.end ) ) {
-					found = true;
-					break;
-				}
-			}
-
-			// For `rangeA`, neither range in `otherSelection` was similar. So selections are not similar.
-			if ( !found ) {
-				return false;
-			}
-		}
-
-		// There were no ranges that weren't matched. Selections are similar.
-		return true;
+		return this._selection.getLastPosition();
 	}
 
 	/**
@@ -404,15 +236,7 @@ export default class DocumentSelection {
 	 * @returns {module:engine/view/element~Element|null}
 	 */
 	getSelectedElement() {
-		if ( this.rangeCount !== 1 ) {
-			return null;
-		}
-
-		const range = this.getFirstRange();
-		const nodeAfterStart = range.start.nodeAfter;
-		const nodeBeforeEnd = range.end.nodeBefore;
-
-		return ( nodeAfterStart instanceof Element && nodeAfterStart == nodeBeforeEnd ) ? nodeAfterStart : null;
+		return this._selection.getSelectedElement();
 	}
 
 	/**
@@ -478,81 +302,7 @@ export default class DocumentSelection {
 	 * @param {String} [options.label] Label for the fake selection.
 	 */
 	_setTo( selectable, placeOrOffset, options ) {
-		if ( selectable === null ) {
-			this._setRanges( [] );
-			this._setFakeOptions( placeOrOffset );
-		} else if ( selectable instanceof DocumentSelection ) {
-			this._setRanges( selectable.getRanges(), selectable.isBackward );
-			this._setFakeOptions( { fake: selectable.isFake, label: selectable.fakeSelectionLabel } );
-		} else if ( selectable instanceof Range ) {
-			this._setRanges( [ selectable ], placeOrOffset && placeOrOffset.backward );
-			this._setFakeOptions( placeOrOffset );
-		} else if ( selectable instanceof Position ) {
-			this._setRanges( [ new Range( selectable ) ] );
-			this._setFakeOptions( placeOrOffset );
-		} else if ( selectable instanceof Node ) {
-			const backward = !!options && !!options.backward;
-			let range;
-
-			if ( placeOrOffset === undefined ) {
-				/**
-				 * selection.setTo requires the second parameter when the first parameter is a node.
-				 *
-				 * @error view-selection-setTo-required-second-parameter
-				 */
-				throw new CKEditorError(
-					'view-selection-setTo-required-second-parameter: ' +
-					'selection.setTo requires the second parameter when the first parameter is a node.'
-				);
-			} else if ( placeOrOffset == 'in' ) {
-				range = Range.createIn( selectable );
-			} else if ( placeOrOffset == 'on' ) {
-				range = Range.createOn( selectable );
-			} else {
-				range = Range.createCollapsedAt( selectable, placeOrOffset );
-			}
-
-			this._setRanges( [ range ], backward );
-			this._setFakeOptions( options );
-		} else if ( isIterable( selectable ) ) {
-			// We assume that the selectable is an iterable of ranges.
-			// Array.from() is used to prevent setting ranges to the old iterable
-			this._setRanges( selectable, placeOrOffset && placeOrOffset.backward );
-			this._setFakeOptions( placeOrOffset );
-		} else {
-			/**
-			 * Cannot set selection to given place.
-			 *
-			 * @error view-selection-setTo-not-selectable
-			 */
-			throw new CKEditorError( 'view-selection-setTo-not-selectable: Cannot set selection to given place.' );
-		}
-
-		this.fire( 'change' );
-	}
-
-	/**
-	 * Replaces all ranges that were added to the selection with given array of ranges. Last range of the array
-	 * is treated like the last added range and is used to set {@link #anchor anchor} and {@link #focus focus}.
-	 * Accepts a flag describing in which way the selection is made.
-	 *
-	 * @private
-	 * @param {Iterable.<module:engine/view/range~Range>} newRanges Iterable object of ranges to set.
-	 * @param {Boolean} [isLastBackward=false] Flag describing if last added range was selected forward - from start to end
-	 * (`false`) or backward - from end to start (`true`). Defaults to `false`.
-	 */
-	_setRanges( newRanges, isLastBackward = false ) {
-		// New ranges should be copied to prevent removing them by setting them to `[]` first.
-		// Only applies to situations when selection is set to the same selection or same selection's ranges.
-		newRanges = Array.from( newRanges );
-
-		this._ranges = [];
-
-		for ( const range of newRanges ) {
-			this._addRange( range );
-		}
-
-		this._lastRangeBackward = !!isLastBackward;
+		this._selection.setTo( selectable, placeOrOffset, options );
 	}
 
 	/**
@@ -567,114 +317,14 @@ export default class DocumentSelection {
 	 * first parameter is a {@link module:engine/view/item~Item view item}.
 	 */
 	_setFocus( itemOrPosition, offset ) {
-		if ( this.anchor === null ) {
-			/**
-			 * Cannot set selection focus if there are no ranges in selection.
-			 *
-			 * @error view-selection-setFocus-no-ranges
-			 */
-			throw new CKEditorError(
-				'view-selection-setFocus-no-ranges: Cannot set selection focus if there are no ranges in selection.'
-			);
-		}
-
-		const newFocus = Position.createAt( itemOrPosition, offset );
-
-		if ( newFocus.compareWith( this.focus ) == 'same' ) {
-			return;
-		}
-
-		const anchor = this.anchor;
-
-		this._ranges.pop();
-
-		if ( newFocus.compareWith( anchor ) == 'before' ) {
-			this._addRange( new Range( newFocus, anchor ), true );
-		} else {
-			this._addRange( new Range( anchor, newFocus ) );
-		}
-
-		this.fire( 'change' );
+		this._selection.setFocus( itemOrPosition, offset );
 	}
 
 	/**
-	 * Sets this selection instance to be marked as `fake`. A fake selection does not render as browser native selection
-	 * over selected elements and is hidden to the user. This way, no native selection UI artifacts are displayed to
-	 * the user and selection over elements can be represented in other way, for example by applying proper CSS class.
+	 * Fired whenever selection ranges are changed through {@link ~DocumentSelection Selection API}.
 	 *
-	 * Additionally fake's selection label can be provided. It will be used to describe fake selection in DOM (and be
-	 * properly handled by screen readers).
-	 *
-	 * @private
-	 * @param {Object} [options] Options.
-	 * @param {Boolean} [options.fake] If set to true selection will be marked as `fake`.
-	 * @param {String} [options.label=''] Fake selection label.
+	 * @event change
 	 */
-	_setFakeOptions( options = {} ) {
-		this._isFake = !!options.fake;
-		this._fakeSelectionLabel = options.fake ? options.label || '' : '';
-	}
-
-	/**
-	 * Adds a range to the selection. Added range is copied. This means that passed range is not saved in the
-	 * selection instance and you can safely operate on it.
-	 *
-	 * Accepts a flag describing in which way the selection is made - passed range might be selected from
-	 * {@link module:engine/view/range~Range#start start} to {@link module:engine/view/range~Range#end end}
-	 * or from {@link module:engine/view/range~Range#end end} to {@link module:engine/view/range~Range#start start}.
-	 * The flag is used to set {@link #anchor anchor} and {@link #focus focus} properties.
-	 *
-	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-selection-range-intersects` if added range intersects
-	 * with ranges already stored in Selection instance.
-	 *
-	 * @private
-	 * @fires change
-	 * @param {module:engine/view/range~Range} range
-	 * @param {Boolean} [isBackward]
-	 */
-	_addRange( range, isBackward = false ) {
-		if ( !( range instanceof Range ) ) {
-			throw new CKEditorError( 'view-selection-invalid-range: Invalid Range.' );
-		}
-
-		this._pushRange( range );
-		this._lastRangeBackward = !!isBackward;
-	}
-
-	/**
-	 * Adds range to selection - creates copy of given range so it can be safely used and modified.
-	 *
-	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-selection-range-intersects` if added range intersects
-	 * with ranges already stored in selection instance.
-	 *
-	 * @private
-	 * @param {module:engine/view/range~Range} range
-	 */
-	_pushRange( range ) {
-		for ( const storedRange of this._ranges ) {
-			if ( range.isIntersecting( storedRange ) ) {
-				/**
-				 * Trying to add a range that intersects with another range from selection.
-				 *
-				 * @error view-selection-range-intersects
-				 * @param {module:engine/view/range~Range} addedRange Range that was added to the selection.
-				 * @param {module:engine/view/range~Range} intersectingRange Range from selection that intersects with `addedRange`.
-				 */
-				throw new CKEditorError(
-					'view-selection-range-intersects: Trying to add a range that intersects with another range from selection.',
-					{ addedRange: range, intersectingRange: storedRange }
-				);
-			}
-		}
-
-		this._ranges.push( Range.createFromRange( range ) );
-	}
 }
 
 mix( DocumentSelection, EmitterMixin );
-
-/**
- * Fired whenever selection ranges are changed through {@link ~DocumentSelection Selection API}.
- *
- * @event change
- */
