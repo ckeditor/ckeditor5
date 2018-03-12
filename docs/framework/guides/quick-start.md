@@ -40,7 +40,7 @@ The minimal webpack configuration needed to enable building CKEditor 5 is:
 'use strict';
 
 const path = require( 'path' );
-const { getPostCssConfig } = require( '@ckeditor/ckeditor5-dev-utils' ).styles;
+const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 
 module.exports = {
 	// https://webpack.js.org/configuration/entry-context/
@@ -74,7 +74,7 @@ module.exports = {
 					},
 					{
 						loader: 'postcss-loader',
-						options: getPostCssConfig( {
+						options: styles.getPostCssConfig( {
 							themeImporter: {
 								themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
 							},
