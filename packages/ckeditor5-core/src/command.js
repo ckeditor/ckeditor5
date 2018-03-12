@@ -45,7 +45,7 @@ export default class Command {
 		 * For example, the `bold` command's value is whether the selection starts in a bolded text.
 		 * And the value of the `link` command may be an object with links details.
 		 *
-		 * It's possible for a command to have no value (e.g. for stateless actions such as `uploadImage`).
+		 * It's possible for a command to have no value (e.g. for stateless actions such as `imageUpload`).
 		 *
 		 * @observable
 		 * @readonly
