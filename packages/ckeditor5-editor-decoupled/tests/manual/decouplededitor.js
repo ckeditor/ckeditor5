@@ -22,7 +22,7 @@ function initEditor() {
 	DecoupledEditor
 		.create( editorData, {
 			plugins: [ Enter, Typing, Paragraph, Undo, Heading, Bold, Italic ],
-			toolbar: [ 'headings', '|', 'bold', 'italic', 'undo', 'redo' ],
+			toolbar: [ 'heading', '|', 'bold', 'italic', 'undo', 'redo' ],
 
 			toolbarContainer: '.toolbar-container',
 			editableContainer: '.editable-container',
