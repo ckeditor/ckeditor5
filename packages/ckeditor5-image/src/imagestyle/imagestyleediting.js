@@ -44,7 +44,7 @@ export default class ImageStyleEditing extends Plugin {
 		const editing = editor.editing;
 
 		// Define default configuration.
-		editor.config.define( 'image.styles', [ 'imageStyleFull', 'imageStyleSide' ] );
+		editor.config.define( 'image.styles', [ 'full', 'side' ] );
 
 		// Get configuration.
 		const styles = normalizeImageStyles( editor.config.get( 'image.styles' ) );
@@ -61,35 +61,42 @@ export default class ImageStyleEditing extends Plugin {
 		// Converter for figure element from view to model.
 		data.upcastDispatcher.on( 'element:figure', viewToModelStyleAttribute( styles ), { priority: 'low' } );
 
-		// Register separate command for each style.
-		for ( const style of styles ) {
-			editor.commands.add( style.name, new ImageStyleCommand( editor, style ) );
-		}
+		// Register imageStyle command.
+		editor.commands.add( 'imageStyle', new ImageStyleCommand( editor, styles ) );
 	}
 }
 
 /**
  * Image style format descriptor.
  *
- *		import fullWidthIcon from 'path/to/icon.svg`;
+ *		import fullSizeIcon from 'path/to/icon.svg';
  *
  *		const imageStyleFormat = {
- *			name: 'fullSizeImage',
- *			icon: fullWidthIcon,
+ *			name: 'fullSize',
+ *			icon: fullSizeIcon,
  *			title: 'Full size image',
  *			className: 'image-full-size'
  *		}
  *
  * @typedef {Object} module:image/imagestyle/imagestyleediting~ImageStyleFormat
+ *
  * @property {String} name The unique name of the style. It will be used to:
- * * register the {@link module:core/command~Command command} which will apply this style,
- * * store the style's button in the editor {@link module:ui/componentfactory~ComponentFactory},
- * * store the style in the `imageStyle` model attribute.
+ *
+ * * store the chosen style in the model by setting the `imageStyle` attribute of the `<image>` element,
+ * * as a value of the {@link module:image/imagestyle/imagestylecommand~ImageStyleCommand#execute `imageStyle` command},
+ * * when registering button for each of the styles (`'imageStyle:{name}'`) in the
+ * {@link module:ui/componentfactory~ComponentFactory UI components factory} (this functionality is provided by the
+ * {@link module:image/imagestyle/imagestyleui~ImageStyleUI} plugin),
+ *
  * @property {Boolean} [isDefault] When set, the style will be used as the default one.
  * A default style does not apply any CSS class to the view element.
+ *
  * @property {String} icon One of the following to be used when creating the style's button:
- *  * An SVG icon source (as an XML string),
- *  * One of {@link module:image/imagestyle/utils~defaultIcons} to use a default icon provided by the plugin.
+ *
+ * * An SVG icon source (as an XML string),
+ * * One of {@link module:image/imagestyle/utils~defaultIcons} to use a default icon provided by the plugin.
+ *
  * @property {String} title The style's title.
+ *
  * @property {String} className The CSS class used to represent the style in view.
  */

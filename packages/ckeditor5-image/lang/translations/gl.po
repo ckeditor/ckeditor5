@@ -40,3 +40,11 @@ msgstr "Texto alternativo"
 msgctxt "Placeholder text for image caption displayed when caption is empty."
 msgid "Enter image caption"
 msgstr "Introduza o título da imaxe"
+
+msgctxt "Label for the insert image toolbar button."
+msgid "Insert image"
+msgstr "Inserir imaxe"
+
+msgctxt "Title of the notification displayed when upload fails."
+msgid "Upload failed"
+msgstr "Fallou o envío"
