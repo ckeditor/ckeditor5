@@ -13,6 +13,18 @@ msgctxt "Toolbar button tooltip for the Link feature."
 msgid "Link"
 msgstr "តំណ"
 
-msgctxt "Label for the URL input in the Link dialog."
+msgctxt "Label for the URL input in the Link URL editing balloon."
 msgid "Link URL"
-msgstr "URL តំណ"
+msgstr ""
+
+msgctxt "Button opening the Link URL editing balloon."
+msgid "Edit link"
+msgstr ""
+
+msgctxt "Button opening the link in new browser tab."
+msgid "Open link in new tab"
+msgstr ""
+
+msgctxt "Label explaining that a link has no URL set (the URL is empty)."
+msgid "This link has no URL"
+msgstr ""
