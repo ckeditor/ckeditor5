@@ -98,16 +98,26 @@ CloudServices.Token = Token;
  */
 
 /**
- * The authentication token URL for CKEditor Cloud Services. The token is used to authenticate all plugins using Cloud Services,
- * for instance Easy Image. The token URL has to point to the service where the token is generated.
+ * The URL to a security token endpoint in your application. The role of this endpoint is to securely authorise
+ * end users of your application to use [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services), only
+ * if they should have access e.g. to upload files with Easy Image.
  *
- * See [Cloud Services Quick Start](https://docs.ckeditor.com/cs/latest/guides/quick-start.html).
+ * You can find more information about token endpoints in {@glink @cs guides/quick-start#create-token-endpoint Cloud Services - Quick start}
+ * and {@glink @cs guides/token-endpoints/tokenendpoint Cloud Services - Creating token endpoint} documentation.
+ *
+ * Without properly working token endpoint (token URL) CKEditor plugins will not be able to connect to CKEditor Cloud Services.
  *
  * @member {String} module:cloudservices/cloudservices~CloudServicesConfig#tokenUrl
  */
 
 /**
- * The URL to which the files should be uploaded.
+ * The endpoint URL for [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services) uploads.
+ * This option must be set for Easy Image to work correctly.
+ *
+ * The upload URL is unique for each customer and can be found in the [CKEditor Ecosystem dashboard](https://dashboard.ckeditor.com) after subscribing to Easy Image service.
+ * To learn how to start using Easy Image check {@glink @cs guides/quick-start Cloud Services - Quick start} documentation.
+ *
+ * Note: make sure to set also the {@link module:cloudservices/cloudservices~CloudServicesConfig#tokenUrl} configuration option.
  *
  * @member {String} [module:cloudservices/cloudservices~CloudServicesConfig#uploadUrl]
  */
