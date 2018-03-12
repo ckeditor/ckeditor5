@@ -35,7 +35,7 @@ ClassicEditor
 
 ## Configuring the toolbar
 
-You can choose to use the alignment drop-down (`'alignment'`) or configure the toolbar to use separate buttons for each of the options:
+You can choose to use the alignment dropdown (`'alignment'`) or configure the toolbar to use separate buttons for each of the options:
 
 ```js
 ClassicEditor
