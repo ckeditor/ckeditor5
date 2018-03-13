@@ -22,17 +22,16 @@ import DocumentSelection from './documentselection';
  * Class representing selection in tree view.
  *
  * Selection can consist of {@link module:engine/view/range~Range ranges} that can be set using
- * {@link module:engine/view/documentselection~DocumentSelection#_setTo} method.
+ * {@link module:engine/view/selection~Selection#setTo setTo} method.
  * That method create copies of provided ranges and store those copies internally. Further modifications to passed
  * ranges will not change selection's state.
- * Selection's ranges can be obtained via {@link module:engine/view/documentselection~DocumentSelection#getRanges getRanges},
- * {@link module:engine/view/documentselection~DocumentSelection#getFirstRange getFirstRange}
- * and {@link module:engine/view/documentselection~DocumentSelection#getLastRange getLastRange}
- * methods, which return copies of ranges stored inside selection. Modifications made on these copies will not change
- * selection's state. Similar situation occurs when getting {@link module:engine/view/documentselection~DocumentSelection#anchor anchor},
- * {@link module:engine/view/documentselection~DocumentSelection#focus focus},
- * {@link module:engine/view/documentselection~DocumentSelection#getFirstPosition first} and
- * {@link module:engine/view/documentselection~DocumentSelection#getLastPosition last} positions - all will return
+ * Selection's ranges can be obtained via {@link module:engine/view/selection~Selection#getRanges getRanges},
+ * {@link module:engine/view/selection~Selection#getFirstRange getFirstRange} and
+ * {@link module:engine/view/selection~Selection#getLastRange getLastRange} methods, which return copies of ranges
+ * stored inside selection. Modifications made on these copies will not change selection's state. Similar situation
+ * occurs when getting {@link module:engine/view/selection~Selection#anchor anchor},
+ * {@link module:engine/view/selection~Selection#focus focus}, {@link module:engine/view/selection~Selection#getFirstPosition first}
+ * and {@link module:engine/view/selection~Selection#getLastPosition last} positions - all will return
  * copies of requested positions.
  */
 export default class Selection {
@@ -53,6 +52,10 @@ export default class Selection {
 	 *		// Creates selection from the other selection.
 	 *		const otherSelection = new Selection();
 	 *		const selection = new Selection( otherSelection );
+	 *
+	 *		// Creates selection from the document selection.
+	 *		const documentSelection = new DocumentSelection();
+	 *		const selection = new Selection( documentSelection );
 	 *
 	 * 		// Creates selection at the given position.
 	 *		const position = new Position( root, path );
@@ -85,8 +88,9 @@ export default class Selection {
 	 *		// Creates fake selection with label.
 	 *		const selection = new Selection( range, { fake: true, label: 'foo' } );
 	 *
-	 * @param {module:engine/view/documentselection~DocumentSelection|module:engine/view/position~Position|
-	 * Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|module:engine/view/item~Item|null} [selectable=null]
+	 * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection|
+	 * module:engine/view/position~Position|Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|
+	 * module:engine/view/item~Item|null} [selectable=null]
 	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Offset or place when selectable is an `Item`.
 	 * @param {Object} [options]
 	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
@@ -132,7 +136,7 @@ export default class Selection {
 	/**
 	 * Returns true if selection instance is marked as `fake`.
 	 *
-	 * @see #_setTo
+	 * @see #setTo
 	 * @returns {Boolean}
 	 */
 	get isFake() {
@@ -142,7 +146,7 @@ export default class Selection {
 	/**
 	 * Returns fake selection label.
 	 *
-	 * @see #_setTo
+	 * @see #setTo
 	 * @returns {String}
 	 */
 	get fakeSelectionLabel() {
@@ -306,7 +310,8 @@ export default class Selection {
 	 * Checks whether, this selection is equal to given selection. Selections are equal if they have same directions,
 	 * same number of ranges and all ranges from one selection equal to a range from other selection.
 	 *
-	 * @param {module:engine/view/documentselection~DocumentSelection} otherSelection Selection to compare with.
+	 * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection} otherSelection
+	 * Selection to compare with.
 	 * @returns {Boolean} `true` if selections are equal, `false` otherwise.
 	 */
 	isEqual( otherSelection ) {
@@ -351,7 +356,8 @@ export default class Selection {
 	 * number of ranges, and all {@link module:engine/view/range~Range#getTrimmed trimmed} ranges from one selection are
 	 * equal to any trimmed range from other selection.
 	 *
-	 * @param {module:engine/view/documentselection~DocumentSelection} otherSelection Selection to compare with.
+	 * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection} otherSelection
+	 * Selection to compare with.
 	 * @returns {Boolean} `true` if selections are similar, `false` otherwise.
 	 */
 	isSimilar( otherSelection ) {
@@ -418,45 +424,50 @@ export default class Selection {
 
 	/**
 	 * Sets this selection's ranges and direction to the specified location based on the given
-	 * {@link module:engine/view/documentselection~DocumentSelection selection}, {@link module:engine/view/position~Position position},
+	 * {@link module:engine/view/documentselection~DocumentSelection document selection},
+	 * {@link module:engine/view/selection~Selection selection}, {@link module:engine/view/position~Position position},
 	 * {@link module:engine/view/item~Item item}, {@link module:engine/view/range~Range range},
 	 * an iterable of {@link module:engine/view/range~Range ranges} or null.
 	 *
 	 *		// Sets selection to the given range.
 	 *		const range = new Range( start, end );
-	 *		selection._setTo( range );
+	 *		selection.setTo( range );
 	 *
 	 *		// Sets selection to given ranges.
 	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
-	 *		selection._setTo( range );
+	 *		selection.setTo( range );
 	 *
 	 *		// Sets selection to the other selection.
 	 *		const otherSelection = new Selection();
-	 *		selection._setTo( otherSelection );
+	 *		selection.setTo( otherSelection );
+	 *
+	 *	 	// Sets selection to contents of DocumentSelection.
+	 *		const documentSelection = new DocumentSelection();
+	 *		selection.setTo( documentSelection );
 	 *
 	 * 		// Sets collapsed selection at the given position.
 	 *		const position = new Position( root, path );
-	 *		selection._setTo( position );
+	 *		selection.setTo( position );
 	 *
 	 * 		// Sets collapsed selection at the position of given item and offset.
-	 *		selection._setTo( paragraph, offset );
+	 *		selection.setTo( paragraph, offset );
 	 *
 	 * Creates a range inside an {@link module:engine/view/element~Element element} which starts before the first child of
 	 * that element and ends after the last child of that element.
 	 *
-	 *		selection._setTo( paragraph, 'in' );
+	 *		selection.setTo( paragraph, 'in' );
 	 *
 	 * Creates a range on an {@link module:engine/view/item~Item item} which starts before the item and ends just after the item.
 	 *
-	 *		selection._setTo( paragraph, 'on' );
+	 *		selection.setTo( paragraph, 'on' );
 	 *
 	 * 		// Clears selection. Removes all ranges.
-	 *		selection._setTo( null );
+	 *		selection.setTo( null );
 	 *
-	 * `Selection#_setTo()` method allow passing additional options (`backward`, `fake` and `label`) as the last argument.
+	 * `Selection#setTo()` method allow passing additional options (`backward`, `fake` and `label`) as the last argument.
 	 *
 	 *		// Sets selection as backward.
-	 *		selection._setTo( range, { backward: true } );
+	 *		selection.setTo( range, { backward: true } );
 	 *
 	 * Fake selection does not render as browser native selection over selected elements and is hidden to the user.
 	 * This way, no native selection UI artifacts are displayed to the user and selection over elements can be
@@ -466,12 +477,12 @@ export default class Selection {
 	 * (and be  properly handled by screen readers).
 	 *
 	 *		// Creates fake selection with label.
-	 *		selection._setTo( range, { fake: true, label: 'foo' } );
+	 *		selection.setTo( range, { fake: true, label: 'foo' } );
 	 *
-	 * @protected
 	 * @fires change
-	 * @param {module:engine/view/documentselection~DocumentSelection|module:engine/view/position~Position|
-	 * Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|module:engine/view/item~Item|null} selectable
+	 * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection|
+	 * module:engine/view/position~Position|Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|
+	 * module:engine/view/item~Item|null} selectable
 	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets place or offset of the selection.
 	 * @param {Object} [options]
 	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
@@ -537,7 +548,6 @@ export default class Selection {
 	 *
 	 * The location can be specified in the same form as {@link module:engine/view/position~Position.createAt} parameters.
 	 *
-	 * @protected
 	 * @fires change
 	 * @param {module:engine/view/item~Item|module:engine/view/position~Position} itemOrPosition
 	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
