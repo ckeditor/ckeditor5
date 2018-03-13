@@ -4,7 +4,7 @@
  */
 
 import View from '../../src/view/view';
-import ViewDocumentSelection from '../../src/view/documentselection';
+import ViewDocumentSelection from '../../src/view/selection';
 import ViewRange from '../../src/view/range';
 import createViewRoot from '../view/_utils/createroot';
 
