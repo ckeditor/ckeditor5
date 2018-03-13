@@ -15,7 +15,7 @@ import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 
 import ViewText from '@ckeditor/ckeditor5-engine/src/view/text';
 import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
-import ViewDocumentSelection from '@ckeditor/ckeditor5-engine/src/view/documentselection';
+import ViewSelection from '@ckeditor/ckeditor5-engine/src/view/selection';
 
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
@@ -262,8 +262,8 @@ describe( 'Input feature', () => {
 		it( 'should set model selection appropriately to view selection passed in mutations event', () => {
 			// This test case emulates spellchecker correction.
 
-			const viewSelection = new ViewDocumentSelection();
-			viewSelection._setTo( viewRoot.getChild( 0 ).getChild( 0 ), 6 );
+			const viewSelection = new ViewSelection();
+			viewSelection.setTo( viewRoot.getChild( 0 ).getChild( 0 ), 6 );
 
 			viewDocument.fire( 'mutations',
 				[ {
@@ -282,8 +282,8 @@ describe( 'Input feature', () => {
 		it( 'should use up to one insert and remove operations (spellchecker)', () => {
 			// This test case emulates spellchecker correction.
 
-			const viewSelection = new ViewDocumentSelection();
-			viewSelection._setTo( viewRoot.getChild( 0 ).getChild( 0 ), 6 );
+			const viewSelection = new ViewSelection();
+			viewSelection.setTo( viewRoot.getChild( 0 ).getChild( 0 ), 6 );
 
 			testUtils.sinon.spy( Writer.prototype, 'insert' );
 			testUtils.sinon.spy( Writer.prototype, 'remove' );
@@ -306,8 +306,8 @@ describe( 'Input feature', () => {
 			// This test case emulates spellchecker correction.
 			editor.setData( '<p>Foo hous a</p>' );
 
-			const viewSelection = new ViewDocumentSelection();
-			viewSelection._setTo( viewRoot.getChild( 0 ).getChild( 0 ), 9 );
+			const viewSelection = new ViewSelection();
+			viewSelection.setTo( viewRoot.getChild( 0 ).getChild( 0 ), 9 );
 
 			viewDocument.fire( 'mutations',
 				[ {
@@ -327,8 +327,8 @@ describe( 'Input feature', () => {
 			// This test case emulates spellchecker correction.
 			editor.setData( '<p>Bar athat foo</p>' );
 
-			const viewSelection = new ViewDocumentSelection();
-			viewSelection._setTo( viewRoot.getChild( 0 ).getChild( 0 ), 8 );
+			const viewSelection = new ViewSelection();
+			viewSelection.setTo( viewRoot.getChild( 0 ).getChild( 0 ), 8 );
 
 			viewDocument.fire( 'mutations',
 				[ {
@@ -348,8 +348,8 @@ describe( 'Input feature', () => {
 			// This test case emulates spellchecker correction.
 			editor.setData( '<p>Foo hous e</p>' );
 
-			const viewSelection = new ViewDocumentSelection();
-			viewSelection._setTo( viewRoot.getChild( 0 ).getChild( 0 ), 9 );
+			const viewSelection = new ViewSelection();
+			viewSelection.setTo( viewRoot.getChild( 0 ).getChild( 0 ), 9 );
 
 			viewDocument.fire( 'mutations',
 				[ {
@@ -368,9 +368,9 @@ describe( 'Input feature', () => {
 		it( 'should place non-collapsed selection after changing single character (composition)', () => {
 			editor.setData( '<p>Foo house</p>' );
 
-			const viewSelection = new ViewDocumentSelection();
-			viewSelection._setTo( viewRoot.getChild( 0 ).getChild( 0 ), 8 );
-			viewSelection._setFocus( viewRoot.getChild( 0 ).getChild( 0 ), 9 );
+			const viewSelection = new ViewSelection();
+			viewSelection.setTo( viewRoot.getChild( 0 ).getChild( 0 ), 8 );
+			viewSelection.setFocus( viewRoot.getChild( 0 ).getChild( 0 ), 9 );
 
 			viewDocument.fire( 'mutations',
 				[ {
