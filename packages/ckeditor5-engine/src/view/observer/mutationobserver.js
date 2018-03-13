@@ -10,7 +10,7 @@
 /* globals window */
 
 import Observer from './observer';
-import DocumentViewSelection from '../documentselection';
+import ViewSelection from '../selection';
 import { startsWithFiller, getDataWithoutFiller } from '../filler';
 import isEqualWith from '@ckeditor/ckeditor5-utils/src/lib/lodash/isEqualWith';
 
@@ -239,8 +239,8 @@ export default class MutationObserver extends Observer {
 
 			// Anchor and focus has to be properly mapped to view.
 			if ( viewSelectionAnchor && viewSelectionFocus ) {
-				viewSelection = new DocumentViewSelection( viewSelectionAnchor );
-				viewSelection._setFocus( viewSelectionFocus );
+				viewSelection = new ViewSelection( viewSelectionAnchor );
+				viewSelection.setFocus( viewSelectionFocus );
 			}
 		}
 

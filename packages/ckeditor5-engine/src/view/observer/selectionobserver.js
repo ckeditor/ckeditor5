@@ -209,7 +209,7 @@ export default class SelectionObserver extends Observer {
  * @param {Object} data
  * @param {module:engine/view/documentselection~DocumentSelection} data.oldSelection Old View selection which is
  * {@link module:engine/view/document~Document#selection}.
- * @param {module:engine/view/documentselection~DocumentSelection} data.newSelection New View selection which is converted DOM selection.
+ * @param {module:engine/view/selection~Selection} data.newSelection New View selection which is converted DOM selection.
  * @param {Selection} data.domSelection Native DOM selection.
  */
 
@@ -226,6 +226,6 @@ export default class SelectionObserver extends Observer {
  * @param {Object} data
  * @param {module:engine/view/documentselection~DocumentSelection} data.oldSelection Old View selection which is
  * {@link module:engine/view/document~Document#selection}.
- * @param {module:engine/view/documentselection~DocumentSelection} data.newSelection New View selection which is converted DOM selection.
+ * @param {module:engine/view/selection~Selection} data.newSelection New View selection which is converted DOM selection.
  * @param {Selection} data.domSelection Native DOM selection.
  */
