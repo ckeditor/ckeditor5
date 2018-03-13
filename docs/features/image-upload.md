@@ -37,14 +37,8 @@ Be sure to use image upload plugins with support for responsive images to enjoy 
 
 To make enabling image upload in CKEditor 5 a breeze, by default all builds include the {@link module:easy-image/easyimage~EasyImage `EasyImage` plugin}, which integrates with the Easy Image service provided by [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/). Enabling it is straightforward and the results are immediate:
 
-<info-box warning>
-	CKEditor Cloud Services are in private beta. [Contact us](https://ckeditor.com/contact/) to learn more.
-</info-box>
-
-1. Create an account in CKEditor Cloud Services (CS).
-2. Create an API key in your CS account.
-3. Create a security token entry point in your application.
-4. Configure CKEditor to use the security token entry point:
+1. Follow {@link @cs guides/quick-start Cloud Services - Quick start} guide to setup an account.
+2. Configure CKEditor (see {@link @ckeditor5 module:cloudservices/cloudservices~CloudServicesConfig `CloudServicesConfig`}):
 
 	```js
 	ClassicEditor
