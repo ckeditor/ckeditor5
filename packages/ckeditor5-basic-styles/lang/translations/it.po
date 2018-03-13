@@ -23,4 +23,4 @@ msgstr "Codice"
 
 msgctxt "Toolbar button tooltip for the Strikethrough feature."
 msgid "Strikethrough"
-msgstr ""
+msgstr "Barrato"

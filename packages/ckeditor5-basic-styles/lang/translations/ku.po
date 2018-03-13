@@ -23,4 +23,4 @@ msgstr "کۆد"
 
 msgctxt "Toolbar button tooltip for the Strikethrough feature."
 msgid "Strikethrough"
-msgstr ""
+msgstr "هێڵ بەسەرداهاتوو"

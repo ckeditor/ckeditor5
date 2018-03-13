@@ -19,8 +19,8 @@ msgstr "Subliñado"
 
 msgctxt "Toolbar button tooltip for the Code feature."
 msgid "Code"
-msgstr ""
+msgstr "Código"
 
 msgctxt "Toolbar button tooltip for the Strikethrough feature."
 msgid "Strikethrough"
-msgstr ""
+msgstr "Riscado"
