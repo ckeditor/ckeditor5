@@ -175,6 +175,15 @@ export default class DocumentSelection {
 	}
 
 	/**
+	 * Used for the compatibility with the {@link module:engine/view/selection~Selection#isEqual} method.
+	 *
+	 * @protected
+	 */
+	get _ranges() {
+		return this._selection._ranges;
+	}
+
+	/**
 	 * Returns an iterable that contains copies of all ranges added to the selection.
 	 *
 	 * @returns {Iterable.<module:engine/view/range~Range>}
@@ -237,6 +246,29 @@ export default class DocumentSelection {
 	 */
 	getSelectedElement() {
 		return this._selection.getSelectedElement();
+	}
+
+	/**
+	 * Checks whether this selection is equal to given selection. Selections are equal if they have same directions,
+	 * same number of ranges and all ranges from one selection equal to a range from other selection.
+	 *
+	 * @param {module:engine/model/selection~Selection} otherSelection Selection to compare with.
+	 * @returns {Boolean} `true` if selections are equal, `false` otherwise.
+	 */
+	isEqual( otherSelection ) {
+		return this._selection.isEqual( otherSelection );
+	}
+
+	/**
+	 * Checks whether this selection is similar to given selection. Selections are similar if they have same directions, same
+	 * number of ranges, and all {@link module:engine/view/range~Range#getTrimmed trimmed} ranges from one selection are
+	 * equal to any trimmed range from other selection.
+	 *
+	 * @param {module:engine/view/documentselection~DocumentSelection} otherSelection Selection to compare with.
+	 * @returns {Boolean} `true` if selections are similar, `false` otherwise.
+	 */
+	isSimilar( otherSelection ) {
+		return this._selection.isSimilar( otherSelection );
 	}
 
 	/**
