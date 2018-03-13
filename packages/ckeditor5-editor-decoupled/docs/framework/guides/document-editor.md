@@ -43,7 +43,7 @@ DecoupledDocumentEditor
 
 You may have noticed two configuration options used here: {@link module:core/editor/editorconfig~EditorConfig#toolbarContainer `config.toolbarContainer`} and {@link module:core/editor/editorconfig~EditorConfig#editableContainer `config.editableContainer`}. They specify the location of the editor toolbar and editable in your application, either as [`document.querySelector()`](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector)–friendly strings or direct DOM element references.
 
-If you don't specify these configuration options, then you have to make sure the editor UI is injected into your application after it fires the {@link module:core/editor/editorwithui#event:uiReady `uiReady`} event. The toolbar element is accessible via `editor.ui.view.toolbar.element` and the editable element can be found under `editor.ui.view.editable.element`.
+If you don't specify these configuration options, then you have to make sure the editor UI is injected into your application after it fires the {@link module:core/editor/editorwithui~EditorWithUI#event:uiReady `uiReady`} event. The toolbar element is accessible via `editor.ui.view.toolbar.element` and the editable element can be found under `editor.ui.view.editable.element`.
 
 <info-box>
 	The document editor supports the Easy Image provided by [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/) out of the box. Please refer to the {@link features/image-upload#easy-image documentation} to learn more.
@@ -233,6 +233,6 @@ A finishing touch that makes the block quotes more sophisticated and the styling
 
 ## Summary
 
-The document editor is ready to use. Still, you may want to configure some features like {@link module:highlight/highlight~HighlightConfig highlight}, {@link module:font/fontsize~FontSizeConfig font size}, {@link module:font/fontsize~FontFamilyConfig font family} for the best editing experience.
+The document editor is ready to use. Still, you may want to configure some features like {@link module:highlight/highlight~HighlightConfig highlight}, {@link module:font/fontsize~FontSizeConfig font size}, {@link module:font/fontfamily~FontFamilyConfig font family} for the best editing experience.
 
 Thanks to the {@link module:editor-decoupled/decouplededitor~DecoupledEditor `DecoupledEditor`} used as a foundation, you can experiment and create custom user interface layouts quickly while preserving the feature set, accessibility support (e.g. {@link features/keyboard-support keyboard navigation} in the toolbar) and more.
