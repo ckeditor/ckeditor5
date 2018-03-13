@@ -173,6 +173,72 @@ Call the {@link module:editor-balloon/ballooneditor~BalloonEditor#create `Balloo
 </html>
 ```
 
+## Document editor
+
+Load the decoupled document editor build (here [CDN](https://cdn.ckeditor.com/) location is used):
+
+```html
+<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/decoupled-document/ckeditor.js"></script>
+```
+
+Call the {@link module:editor-decoupled/decouplededitor~DecoupledEditor#create `DecoupledDocumentEditor.create()`} method.
+
+The decoupled editor requires you to define the containers for the toolbar and editable using {@link module:core/editor/editorconfig~EditorConfig#toolbarContainer `config.toolbarContainer`} and {@link module:core/editor/editorconfig~EditorConfig#editableContainer `config.editableContainer`}.
+
+<info-box>
+	The following snippet will run the document editor but to make the most of it check out the {@link framework/guides/document-editor comprehensive tutorial} which explains step—by—step how to configure and style the the application for the best editing experience.
+</info-box>
+
+```html
+<script>
+	DecoupledDocumentEditor
+		.create( '<p>The initial editor data</p>', {
+			// Define the containers for the toolbar and editable.
+			// Use the document.querySelector-friendly strings here or references to existing DOM elements.
+			toolbarContainer: '.toolbar-container',
+			editableContainer: '.editable-container'
+		} )
+		.catch( error => {
+			console.error( error );
+		} );
+</script>
+```
+
+### Example
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>CKEditor 5 – document editor</title>
+	<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/decoupled-document/ckeditor.js"></script>
+</head>
+<body>
+	<h1>Document editor</h1>
+
+	<!-- The toolbar will be rendered in this container -->
+	<div class="toolbar-container"></div>
+
+	<!-- The editable will be rendered in this container -->
+	<div class="editable-container"></div>
+
+	<script>
+		DecoupledDocumentEditor
+			.create( '<p>The initial editor data</p>', {
+				// Define the containers for the toolbar and editable.
+				// Use the document.querySelector-friendly strings here or references to existing DOM elements.
+				toolbarContainer: '.toolbar-container',
+				editableContainer: '.editable-container'
+			} )
+			.catch( error => {
+				console.error( error );
+			} );
+	</script>
+</body>
+</html>
+```
+
 ## Next steps
 
 Check the {@link builds/guides/integration/configuration Configuration guide} to learn how to configure the editor – e.g. change the default toolbar.

@@ -1,0 +1,146 @@
+<div class="document-editor ck-reset ck-rounded-corners">
+	<div class="document-editor__toolbar ck-reset_all"></div>
+	<div class="document-editor__editable"></div>
+</div>
+
+<style>
+	.document-editor {
+		border: 1px solid var(--ck-color-base-border);
+		border-radius: var(--ck-border-radius);
+		max-height: 700px;
+
+		display: flex;
+		flex-flow: column nowrap;
+		overflow: hidden;
+	}
+
+	.document-editor__toolbar {
+		z-index: 1;
+		box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+		border-bottom: 1px solid var(--ck-color-toolbar-border);
+	}
+
+	.document-editor__toolbar .ck-toolbar {
+		border: 0;
+		border-radius: 0;
+	}
+
+	.document-editor__editable {
+		padding: calc(2*var(--ck-spacing-large));
+		background: var(--ck-color-base-foreground);
+		overflow-y: scroll;
+	}
+
+	.document-editor__editable .ck-editor__editable {
+		width: 15.8cm;
+		min-height: 21cm;
+
+		padding: 1cm 2cm 2cm;
+		margin: 0.5cm auto;
+
+		border: 1px #D3D3D3 solid;
+		border-radius: var(--ck-border-radius);
+		background: white;
+		box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+
+		margin: 0 auto;
+	}
+
+	.document-editor .ck-content,
+	.document-editor .ck-heading-dropdown .ck-list {
+		font: 16px/1.6 "Helvetica Neue", Helvetica, Arial, sans-serif;
+	}
+
+	.document-editor .ck-heading-dropdown .ck-dropdown__panel .ck-list > .ck-list__item {
+		line-height: calc(1.2 * var(--ck-line-height-base)*var(--ck-font-size-base));
+		min-width: 8em;
+	}
+
+	.document-editor .ck-content h2,
+	.document-editor .ck-heading-dropdown .ck-heading_heading1 {
+		font-size: 2.18em;
+	}
+
+	.document-editor .ck-content h2 {
+		line-height: 1.37em;
+		padding-top: 0.342em;
+		margin-bottom: 0.142em;
+	}
+
+	.document-editor .ck-content h3,
+	.document-editor .ck-heading-dropdown .ck-heading_heading2 {
+		font-size: 1.75em;
+		color: hsl(203, 100%, 50%);
+	}
+
+	.document-editor .ck-heading-dropdown .ck-heading_heading2.ck-list__item_active {
+		color: var(--ck-color-list-item-text-active);
+	}
+
+	.document-editor .ck-content h3 {
+		line-height: 1.86em;
+		padding-top: 0.171em;
+		margin-bottom: 0.357em;
+	}
+
+	.document-editor .ck-content h4,
+	.document-editor .ck-heading-dropdown .ck-heading_heading3 {
+		font-size: 1.31em;
+	}
+
+	.document-editor .ck-content h4 {
+		line-height: 1.24em;
+		padding-top: 0.286em;
+		margin-bottom: 0.952em;
+	}
+
+	.document-editor .ck-content p,
+	.document-editor .ck-heading-dropdown .ck-heading_paragraph {
+		font-size: 1.00em;
+	}
+
+	.document-editor .ck-content p {
+		line-height: 1.63em;
+		padding-top: 0.500em;
+		margin-bottom: 1.13em;
+	}
+
+	.document-editor .ck-content blockquote {
+		font-family: Georgia, serif;
+		margin-left: calc(2*var(--ck-spacing-large));
+		margin-right: calc(2*var(--ck-spacing-large));
+	}
+
+	.document-editor__data {
+		display: none;
+	}
+</style>
+
+<div class="document-editor__data">
+	<h2 style="text-align:center;">The Flavorful Tuscany Meetup</h2>
+	<h3 style="text-align:center;">Welcome letter</h3>
+
+	<p>Dear Guest,</p>
+	<p>We are delighted to welcome you to the annual <em>Flavorful Tuscany Meetup</em> and hope you will enjoy the programme as well as your stay at the <a href="http://ckeditor.com">Bilancino Hotel</a>.</p>
+	<p>Please find below the full schedule of the event.</p>
+
+	<ul>
+		<li>9:30 AM - 11:30 AM	Americano vs. Brewed - “know your coffee” session with <strong>Stefano Garau</strong></li>
+		<li>1:00 PM - 3:00 PM	Pappardelle al pomodoro - live cooking session with <strong>Rita Fresco</strong></li>
+		<li>5:00 PM - 8:00 PM	Tuscan vineyards at a glance - wine-tasting session with <strong>Frederico Riscoli</strong></li>
+	</ul>
+
+	<blockquote>
+		<p>The annual Flavorful Tuscany meetups are always a culinary discovery. You get the best of Tuscan flavors during an intense one-day stay at one of the top hotels of the region. All the sessions are lead by top chefs passionate about their profession. I would certainly recommend to save the date in your calendar for this one!</p>
+
+		<p>Angelina Calvino, food journalist</p>
+	</blockquote>
+
+	<p>Please arrive at the <a href="http://ckeditor.com">Bilancino Hotel</a> reception desk at least <strong>half an hour earlier</strong> to make sure that the registration process goes as smoothly as possible.</p>
+
+	<p>We look forward to welcoming you to the event.</p>
+
+	<p><strong>Victoria Valc</strong></p>
+	<p><strong>Event Manager</strong></p>
+	<p><strong>Bilancino Hotel</strong></p>
+</div>
