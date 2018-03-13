@@ -61,7 +61,7 @@ module.exports = {
 				'|',
 				'link',
 				'blockquote',
-				'uploadImage',
+				'imageUpload',
 				'|',
 				'undo',
 				'redo'

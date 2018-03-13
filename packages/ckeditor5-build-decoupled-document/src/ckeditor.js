@@ -75,7 +75,7 @@ DecoupledDocumentEditor.build = {
 				'|',
 				'link',
 				'blockquote',
-				'uploadImage',
+				'imageUpload',
 				'|',
 				'undo',
 				'redo'
