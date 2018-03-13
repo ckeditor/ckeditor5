@@ -13,7 +13,7 @@ import ViewText from './text';
 import ViewElement from './element';
 import ViewPosition from './position';
 import ViewRange from './range';
-import ViewDocumentSelection from './documentselection';
+import ViewSelection from './selection';
 import ViewDocumentFragment from './documentfragment';
 import ViewTreeWalker from './treewalker';
 import { BR_FILLER, INLINE_FILLER_LENGTH, isBlockFiller, isInlineFiller, startsWithFiller, getDataWithoutFiller } from './filler';
@@ -108,10 +108,10 @@ export default class DomConverter {
 	 * {@link module:engine/view/domconverter~DomConverter#fakeSelectionToView} method.
 	 *
 	 * @param {HTMLElement} domElement
-	 * @param {module:engine/view/documentselection~DocumentSelection} viewSelection
+	 * @param {module:engine/view/documentselection~DocumentSelection} viewDocumentSelection
 	 */
-	bindFakeSelection( domElement, viewSelection ) {
-		this._fakeSelectionMapping.set( domElement, new ViewDocumentSelection( viewSelection ) );
+	bindFakeSelection( domElement, viewDocumentSelection ) {
+		this._fakeSelectionMapping.set( domElement, new ViewSelection( viewDocumentSelection ) );
 	}
 
 	/**
@@ -454,7 +454,7 @@ export default class DomConverter {
 	 * Ranges which cannot be converted will be omitted.
 	 *
 	 * @param {Selection} domSelection DOM selection.
-	 * @returns {module:engine/view/documentselection~DocumentSelection} View selection.
+	 * @returns {module:engine/view/selection~Selection} View selection.
 	 */
 	domSelectionToView( domSelection ) {
 		// DOM selection might be placed in fake selection container.
@@ -488,7 +488,7 @@ export default class DomConverter {
 			}
 		}
 
-		return new ViewDocumentSelection( viewRanges, { backward: isBackward } );
+		return new ViewSelection( viewRanges, { backward: isBackward } );
 	}
 
 	/**
