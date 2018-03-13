@@ -280,6 +280,18 @@ For more CKEditor 5 release blog posts [browse the CKEditor blog](https://ckedit
 	</td>
 </tr>
 
+<tr>
+	<td>
+		<a href="https://github.com/ckeditor/ckeditor5-editor-decoupled"><code>@ckeditor/ckeditor5-editor-decoupled</code></a>
+	</td>
+	<td>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-decoupled"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-editor-decoupled.svg" alt="@ckeditor/ckeditor5-editor-decoupled npm package badge"></a>
+	</td>
+	<td>
+		The editor implementation with a decoupled UI.
+	</td>
+</tr>
+
 </tbody>
 </table>
 
@@ -393,6 +405,18 @@ For more CKEditor 5 release blog posts [browse the CKEditor blog](https://ckedit
 
 <tr>
 	<td>
+		<a href="https://github.com/ckeditor/ckeditor5-font"><code>@ckeditor/ckeditor5-font</code></a>
+	</td>
+	<td>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-font"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-font.svg" alt="@ckeditor/ckeditor5-font npm package badge"></a>
+	</td>
+	<td>
+		Introduces the font size and font family features.
+	</td>
+</tr>
+
+<tr>
+	<td>
 		<a href="https://github.com/ckeditor/ckeditor5-heading"><code>@ckeditor/ckeditor5-heading</code></a>
 	</td>
 	<td>
@@ -400,6 +424,18 @@ For more CKEditor 5 release blog posts [browse the CKEditor blog](https://ckedit
 	</td>
 	<td>
 		Introduces the heading feature.
+	</td>
+</tr>
+
+<tr>
+	<td>
+		<a href="https://github.com/ckeditor/ckeditor5-highlight"><code>@ckeditor/ckeditor5-highlight</code></a>
+	</td>
+	<td>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-highlight"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-highlight.svg" alt="@ckeditor/ckeditor5-highlight npm package badge"></a>
+	</td>
+	<td>
+		Introduces the highlight feature (markers and pens).
 	</td>
 </tr>
 
@@ -566,6 +602,18 @@ For more CKEditor 5 release blog posts [browse the CKEditor blog](https://ckedit
 	</td>
 	<td>
 		The balloon editor (Medium-like) build.
+	</td>
+</tr>
+
+<tr>
+	<td>
+		<a href="https://github.com/ckeditor/ckeditor5-build-decoupled-document"><code>@ckeditor/ckeditor5-build-decoupled-document</code></a>
+	</td>
+	<td>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-build-decoupled-document"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-build-decoupled-document.svg" alt="@ckeditor/ckeditor5-build-decoupled-document npm package badge"></a>
+	</td>
+	<td>
+		The document editor build, featuring the decoupled UI editor implementation.
 	</td>
 </tr>
 
