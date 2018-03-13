@@ -88,6 +88,12 @@ It breaks CKEditor 5 (see how <p><code>[]</code></p> looks). */
 	font-size: 1.6rem;
 }
 
+/* examples/builds/document-editor.html */
+
+.live-snippet .document-editor {
+	margin: 1.5em 0;
+}
+
 .demo-row {
 	width: 100%;
 	display: -ms-flexbox;

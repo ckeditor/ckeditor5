@@ -55,6 +55,14 @@ Balloon editor is very similar to inline editor. The difference between them is 
 
 To try it out online, check the {@link examples/builds/balloon-editor balloon editor example}. Jump to {@link builds/guides/quick-start#balloon-editor quick start} to start using it.
 
+### Document editor
+
+The document editor is focused on rich text editing experience similar to the native word processors. It works best for creating documents which are usually later printed or exported to PDF files.
+
+{@img assets/img/editor-document.png 786 Screenshot of the user interface of the document editor.}
+
+To try it out online, check the {@link examples/builds/document-editor document editor example}. Jump to {@link builds/guides/quick-start#document-editor quick start} to start using it.
+
 ## Build customization
 
 Every build comes with a default set of features and their default configuration. Although the builds try to fit many use cases, they may still need to be adjusted in some integrations. The following modifications are possible:
