@@ -230,8 +230,9 @@ class BootstrapEditorUI {
 			// Create the menu item DOM element.
 			const menuItem = $(
 				`<a href="#" class="dropdown-item heading-item_${ option.model }">` +
-				`${ option.title }` +
-				'</a>' );
+					`${ option.title }` +
+				'</a>'
+			);
 
 			// Upon click, the dropdown menu item should execute the command and focus
 			// the editing view to keep the editing process uninterrupted.
