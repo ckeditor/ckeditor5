@@ -42,6 +42,10 @@ describe( 'DecoupledEditorUIView', () => {
 				expect( view.isRendered ).to.be.true;
 				expect( view.toolbar.element.parentElement ).to.be.null;
 			} );
+
+			it( 'gets the .ck-reset_all class', () => {
+				expect( view.toolbar.element.classList.contains( 'ck-reset_all' ) ).to.be.true;
+			} );
 		} );
 
 		describe( '#editable', () => {

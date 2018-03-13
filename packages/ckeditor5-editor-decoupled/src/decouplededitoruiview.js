@@ -10,6 +10,7 @@
 import EditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/editoruiview';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
+import Template from '@ckeditor/ckeditor5-ui/src/template';
 
 import '../theme/decouplededitor.css';
 
@@ -49,6 +50,13 @@ export default class DecoupledEditorUIView extends EditorUIView {
 		 * @member {module:ui/editableui/inline/inlineeditableuiview~InlineEditableUIView}
 		 */
 		this.editable = new InlineEditableUIView( locale );
+
+		// This toolbar may be placed anywhere in the page so things like font-size needs to be reset in it.
+		Template.extend( this.toolbar.template, {
+			attributes: {
+				class: 'ck-reset_all'
+			}
+		} );
 	}
 
 	/**
