@@ -12,8 +12,6 @@ import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/i
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
 
-import '../theme/decouplededitor.css';
-
 /**
  * The decoupled editor UI view. It's a virtual view providing an inline
  * {@link module:editor-decoupled/decouplededitoruiview~DecoupledEditorUIView#editable} and a
