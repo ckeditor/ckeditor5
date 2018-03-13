@@ -15,16 +15,16 @@ msgstr "Odkaz"
 
 msgctxt "Label for the URL input in the Link URL editing balloon."
 msgid "Link URL"
-msgstr ""
+msgstr "URL adresa"
 
 msgctxt "Button opening the Link URL editing balloon."
 msgid "Edit link"
-msgstr ""
+msgstr "Upraviť odkaz"
 
 msgctxt "Button opening the link in new browser tab."
 msgid "Open link in new tab"
-msgstr ""
+msgstr "Otvoriť odkaz v novom okne"
 
 msgctxt "Label explaining that a link has no URL set (the URL is empty)."
 msgid "This link has no URL"
-msgstr ""
+msgstr "Tento odkaz nemá nastavenú URL adresu"

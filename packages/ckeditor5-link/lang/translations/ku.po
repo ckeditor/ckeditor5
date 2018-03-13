@@ -15,16 +15,16 @@ msgstr "بەستەر"
 
 msgctxt "Label for the URL input in the Link URL editing balloon."
 msgid "Link URL"
-msgstr ""
+msgstr "ناونیشانی بەستەر"
 
 msgctxt "Button opening the Link URL editing balloon."
 msgid "Edit link"
-msgstr ""
+msgstr "دەسککاری بەستەر"
 
 msgctxt "Button opening the link in new browser tab."
 msgid "Open link in new tab"
-msgstr ""
+msgstr "کردنەوەی بەستەرەکە لە پەڕەیەکی نوێ"
 
 msgctxt "Label explaining that a link has no URL set (the URL is empty)."
 msgid "This link has no URL"
-msgstr ""
+msgstr "ئەم بەستەررە ناونیشانی نیە"
