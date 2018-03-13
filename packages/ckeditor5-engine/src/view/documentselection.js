@@ -12,12 +12,11 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 
 /**
- * Class representing selection in tree view.
+ * Class representing document selection in tree view. It's instance is stored at
+ * {@link module:engine/view/document~Document#selection}. It is similar to {@link module:engine/view/selection~Selection} but
+ * it has read-only API and can be modified only by writer obtained by using {@link module:engine/view/view~View#change} method.
  *
- * Selection can consist of {@link module:engine/view/range~Range ranges} that can be set using
- * {@link module:engine/view/documentselection~DocumentSelection#_setTo} method.
- * That method create copies of provided ranges and store those copies internally. Further modifications to passed
- * ranges will not change selection's state.
+ * Selection can consist of {@link module:engine/view/range~Range ranges}.
  * Selection's ranges can be obtained via {@link module:engine/view/documentselection~DocumentSelection#getRanges getRanges},
  * {@link module:engine/view/documentselection~DocumentSelection#getFirstRange getFirstRange}
  * and {@link module:engine/view/documentselection~DocumentSelection#getLastRange getLastRange}
@@ -33,40 +32,44 @@ export default class DocumentSelection {
 	 * Creates new selection instance.
 	 *
 	 * 		// Creates empty selection without ranges.
-	 *		const selection = new Selection();
+	 *		const selection = new DocumentSelection();
 	 *
 	 *		// Creates selection at the given range.
 	 *		const range = new Range( start, end );
-	 *		const selection = new Selection( range );
+	 *		const selection = new DocumentSelection( range );
 	 *
 	 *		// Creates selection at the given ranges
 	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
-	 *		const selection = new Selection( ranges );
+	 *		const selection = new DocumentSelection( ranges );
 	 *
 	 *		// Creates selection from the other selection.
 	 *		const otherSelection = new Selection();
-	 *		const selection = new Selection( otherSelection );
+	 *		const selection = new DocumentSelection( otherSelection );
+	 *
+	 *		// Creates selection from the document selection.
+	 *		const documentSelection = new DocumentSelection();
+	 *		const selection = new DocumentSelection( documentSelection );
 	 *
 	 * 		// Creates selection at the given position.
 	 *		const position = new Position( root, path );
-	 *		const selection = new Selection( position );
+	 *		const selection = new DocumentSelection( position );
 	 *
 	 *		// Creates collapsed selection at the position of given item and offset.
 	 *		const paragraph = writer.createElement( 'paragraph' );
-	 *		const selection = new Selection( paragraph, offset );
+	 *		const selection = new DocumentSelection( paragraph, offset );
 	 *
 	 *		// Creates a range inside an {@link module:engine/view/element~Element element} which starts before the
 	 *		// first child of that element and ends after the last child of that element.
-	 *		const selection = new Selection( paragraph, 'in' );
+	 *		const selection = new DocumentSelection( paragraph, 'in' );
 	 *
 	 *		// Creates a range on an {@link module:engine/view/item~Item item} which starts before the item and ends
 	 *		// just after the item.
-	 *		const selection = new Selection( paragraph, 'on' );
+	 *		const selection = new DocumentSelection( paragraph, 'on' );
 	 *
 	 * `Selection`'s constructor allow passing additional options (`backward`, `fake` and `label`) as the last argument.
 	 *
 	 *		// Creates backward selection.
-	 *		const selection = new Selection( range, { backward: true } );
+	 *		const selection = new DocumentSelection( range, { backward: true } );
 	 *
 	 * Fake selection does not render as browser native selection over selected elements and is hidden to the user.
 	 * This way, no native selection UI artifacts are displayed to the user and selection over elements can be
@@ -76,10 +79,11 @@ export default class DocumentSelection {
 	 * (and be  properly handled by screen readers).
 	 *
 	 *		// Creates fake selection with label.
-	 *		const selection = new Selection( range, { fake: true, label: 'foo' } );
+	 *		const selection = new DocumentSelection( range, { fake: true, label: 'foo' } );
 	 *
-	 * @param {module:engine/view/documentselection~DocumentSelection|module:engine/view/position~Position|
-	 * Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|module:engine/view/item~Item|null} [selectable=null]
+	 * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection|
+	 * module:engine/view/position~Position|Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|
+	 * module:engine/view/item~Item|null} [selectable=null]
 	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Offset or place when selectable is an `Item`.
 	 * @param {Object} [options]
 	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
@@ -87,10 +91,14 @@ export default class DocumentSelection {
 	 * @param {String} [options.label] Label for the fake selection.
 	 */
 	constructor( selectable = null, placeOrOffset, options ) {
-		this._selection = new Selection( selectable, placeOrOffset, options );
+		// TODO: docs
+		this._selection = new Selection();
 
 		// Delegate change event to be fired on DocumentSelection instance.
 		this._selection.delegate( 'change' ).to( this );
+
+		// Set selection data.
+		this._selection.setTo( selectable, placeOrOffset, options );
 	}
 
 	/**
