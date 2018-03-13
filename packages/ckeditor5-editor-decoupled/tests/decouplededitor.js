@@ -92,6 +92,33 @@ describe( 'DecoupledEditor', () => {
 				} );
 		} );
 
+		// https://github.com/ckeditor/ckeditor5-editor-decoupled/issues/3
+		it( 'initializes the data controller', () => {
+			let dataInitSpy;
+
+			class DataInitAssertPlugin extends Plugin {
+				constructor( editor ) {
+					super();
+
+					this.editor = editor;
+				}
+
+				init() {
+					dataInitSpy = sinon.spy( this.editor.data, 'init' );
+				}
+			}
+
+			return DecoupledEditor
+				.create( editorData, {
+					plugins: [ Paragraph, Bold, DataInitAssertPlugin ]
+				} )
+				.then( newEditor => {
+					sinon.assert.calledOnce( dataInitSpy );
+
+					return newEditor.destroy();
+				} );
+		} );
+
 		describe( 'ui', () => {
 			it( 'attaches editable UI as view\'s DOM root', () => {
 				expect( editor.editing.view.getDomRoot() ).to.equal( editor.ui.view.editable.element );

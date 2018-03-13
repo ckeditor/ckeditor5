@@ -157,7 +157,7 @@ export default class DecoupledEditor extends Editor {
 						editor.fire( 'uiReady' );
 					} )
 					.then( () => editor.editing.view.attachDomRoot( editor.ui.view.editableElement ) )
-					.then( () => editor.data.set( data ) )
+					.then( () => editor.data.init( data ) )
 					.then( () => {
 						editor.fire( 'dataReady' );
 						editor.fire( 'ready' );
