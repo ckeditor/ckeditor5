@@ -218,37 +218,58 @@ class BootstrapEditorUI {
 		const dropdownMenu = this.view.dropdownMenu;
 		const dropdownToggle = this.view.dropdownToggle;
 
+		// Retrieve the editor commands for heading and paragraph.
+		const headingCommand = editor.commands.get( 'heading' );
+		const paragraphCommand = editor.commands.get( 'paragraph' );
+
 		// Create a dropdown menu entry for each heading configuration option.
 		editor.config.get( 'heading.options' ).map( option => {
-			// Retrieve the editor command corresponding with the configuration option.
-			const command = editor.commands.get( option.model );
+			// Check is options is paragraph or heading as their commands slightly differ.
+			const isParagraph = option.model === 'paragraph';
 
 			// Create the menu item DOM element.
 			const menuItem = $(
 				`<a href="#" class="dropdown-item heading-item_${ option.model }">` +
-					`${ option.title }` +
+				`${ option.title }` +
 				'</a>' );
 
-			// Upon click, the dropdown menua item should execute the command and focus
+			// Upon click, the dropdown menu item should execute the command and focus
 			// the editing view to keep the editing process uninterrupted.
 			menuItem.click( () => {
-				editor.execute( option.model );
+				const commandName = isParagraph ? 'paragraph' : 'heading';
+				const commandValue = isParagraph ? undefined : { value: option.model };
+
+				editor.execute( commandName, commandValue );
 				editor.editing.view.focus();
 			} );
 
 			dropdownMenu.append( menuItem );
 
+			const command = isParagraph ? paragraphCommand : headingCommand;
+
 			// Make sure the dropdown and its items reflect the state of the
 			// currently active command.
+			const onValueChange = isParagraph ? onValueChangeParagraph : onValueChangeHeading;
 			command.on( 'change:value', onValueChange );
 			onValueChange();
 
 			// Heading commands can become disabled, e.g. when the editor is read-only.
 			// Make sure the UI reflects this state change.
 			command.on( 'change:isEnabled', onIsEnabledChange );
+
 			onIsEnabledChange();
 
-			function onValueChange() {
+			function onValueChangeHeading() {
+				const isActive = !isParagraph && command.value === option.model;
+
+				if ( isActive ) {
+					dropdownToggle.children( ':first' ).text( option.title );
+				}
+
+				menuItem.toggleClass( 'active', isActive );
+			}
+
+			function onValueChangeParagraph() {
 				if ( command.value ) {
 					dropdownToggle.children( ':first' ).text( option.title );
 				}
@@ -268,7 +289,7 @@ BootstrapEditor
 	.create( $( '#editor' ).get( 0 ), {
 		plugins: [
 			Clipboard, Enter, Typing, Paragraph, EasyImage,
-			BoldEditing, ItalicEditing, UnderlineEditing, HeadingEditing, UndoEditing,
+			BoldEditing, ItalicEditing, UnderlineEditing, HeadingEditing, UndoEditing
 		],
 		cloudServices: CS_CONFIG
 	} )
@@ -282,4 +303,3 @@ BootstrapEditor
 	.catch( err => {
 		console.error( err.stack );
 	} );
-
