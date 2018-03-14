@@ -54,6 +54,8 @@ To make enabling image upload in CKEditor 5 a breeze, by default all builds incl
 
 This is all. At this point, image upload will be automatically enabled in your application.
 
+If you're having troubles in setting up Easy Image, please [contact us](https://ckeditor.com/contact/).
+
 ## What's next?
 
 See the {@link features/image Image feature} guide to learn more about handling images in CKEditor 5.
