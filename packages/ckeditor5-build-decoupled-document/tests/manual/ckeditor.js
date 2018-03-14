@@ -46,8 +46,8 @@ iterations of the project. Stay tuned for some updates soon!</p>`;
 
 DecoupledDocumentEditor
 	.create( editorData, {
-		toolbarContainer: '.toolbar-container',
-		editableContainer: '.editable-container'
+		toolbarContainer: document.querySelector( '.toolbar-container' ),
+		editableContainer: document.querySelector( '.editable-container' )
 	} )
 	.then( editor => {
 		window.editor = editor;

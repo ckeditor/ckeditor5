@@ -58,8 +58,8 @@
 		<p>You can use this sample to validate whether your <a href="https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/builds/guides/development/custom-builds.html">custom build</a> works fine.</p>`;
 
 	DecoupledDocumentEditor.create( editorData, {
-		toolbarContainer: '.toolbar-container',
-		editableContainer: '.editable-container'
+		toolbarContainer: document.querySelector( '.toolbar-container' ),
+		editableContainer: document.querySelector( '.editable-container' )
 	} )
 	.then( editor => {
 		window.editor = editor;

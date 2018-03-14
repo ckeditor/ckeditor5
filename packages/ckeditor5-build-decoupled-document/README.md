@@ -35,8 +35,8 @@ And use it in your website:
 <script>
 	DecoupledDocumentEditor
 		.create( '<h2>Hello world!</h2>', {
-			toolbarContainer: '.toolbar-container',
-			editableContainer: '.editable-container'
+			toolbarContainer: document.querySelector( '.toolbar-container' ),
+			editableContainer: document.querySelector( '.editable-container' )
 		} )
 		.then( editor => {
 			window.editor = editor;
@@ -57,8 +57,8 @@ import DecoupledDocumentEditor from '@ckeditor/ckeditor5-build-decoupled-documen
 
 DecoupledDocumentEditor
 	.create( '<h2>Hello world!</h2>', {
-			toolbarContainer: '.toolbar-container',
-			editableContainer: '.editable-container'
+			toolbarContainer: document.querySelector( '.toolbar-container' ),
+			editableContainer: document.querySelector( '.editable-container' )
 		} )
 	.then( editor => {
 		window.editor = editor;
