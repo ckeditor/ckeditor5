@@ -656,7 +656,7 @@ describe( 'Mapper', () => {
 
 			const elements = mapper.markerNameToElements( 'marker' );
 
-			expect( elements ).to.be.undefined;
+			expect( elements ).to.be.null;
 		} );
 	} );
 

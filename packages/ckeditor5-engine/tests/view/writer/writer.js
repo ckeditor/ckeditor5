@@ -263,8 +263,57 @@ describe( 'Writer', () => {
 		} );
 	} );
 
-	describe( 'getAllBrokenSiblings()', () => {
-		it( 'should return all clones of a broken attribute element', () => {
+	describe( 'getAllClonedElements()', () => {
+		it( 'should return all clones of a broken attribute element with id', () => {
+			const container = writer.createContainerElement( 'div' );
+			const text = writer.createText( 'abccccde' );
+
+			writer.insert( ViewPosition.createAt( container, 0 ), text );
+
+			const span = writer.createAttributeElement( 'span', null, { id: 'foo' } );
+			span._priority = 20;
+
+			// <div>ab<span>cccc</span>de</div>
+			writer.wrap( ViewRange.createFromParentsAndOffsets( text, 2, text, 6 ), span );
+
+			const i = writer.createAttributeElement( 'i' );
+
+			// <div>a<i>b<span>c</span></i><span>cc</span>de</div>
+			writer.wrap(
+				ViewRange.createFromParentsAndOffsets(
+					container.getChild( 0 ), 1,
+					container.getChild( 1 ).getChild( 0 ), 1
+				),
+				i
+			);
+
+			// <div>a<i>b<span>c</span></i><span>c</span><i><span>cc</span>d</i>e</div>
+			writer.wrap(
+				ViewRange.createFromParentsAndOffsets(
+					container.getChild( 2 ).getChild( 0 ), 1,
+					container.getChild( 3 ), 1
+				),
+				i
+			);
+
+			// Find all spans.
+			const allSpans = Array.from( ViewRange.createIn( container ).getItems() ).filter( element => element.is( 'span' ) );
+
+			// For each of the spans created above...
+			for ( const oneOfAllSpans of allSpans ) {
+				const brokenSet = writer.getAllClonedElements( oneOfAllSpans );
+				const brokenArray = Array.from( brokenSet );
+
+				// Check if all spans are included.
+				for ( const s of allSpans ) {
+					expect( brokenSet.has( s ) ).to.be.true;
+				}
+
+				expect( brokenArray.length ).to.equal( allSpans.length );
+			}
+		} );
+
+		it( 'should return null if an element without id is given (even if it was broken)', () => {
 			const container = writer.createContainerElement( 'div' );
 			const text = writer.createText( 'abccccde' );
 
@@ -287,33 +336,13 @@ describe( 'Writer', () => {
 				i
 			);
 
-			// <div>a<i>b<span>c</span></i><span>c</span><i><span>c</span>d</i>e</div>
-			writer.wrap(
-				ViewRange.createFromParentsAndOffsets(
-					container.getChild( 2 ).getChild( 0 ), 1,
-					container.getChild( 3 ), 1
-				),
-				i
-			);
+			const spanFromView = container.getChild( 2 );
 
-			// Find all spans.
-			const allSpans = Array.from( ViewRange.createIn( container ).getItems() ).filter( element => element.is( 'span' ) );
+			// Make sure a proper element was taken.
+			expect( spanFromView.is( 'span' ) ).to.be.true;
+			expect( spanFromView.id ).to.be.null;
 
-			// For each of the spans created above...
-			for ( const oneOfAllSpans of allSpans ) {
-				// Find all broken siblings of that span...
-				const brokenArray = writer.getAllBrokenSiblings( oneOfAllSpans );
-
-				// Convert to set because we don't care about order.
-				const brokenSet = new Set( brokenArray );
-
-				// Check if all spans are included.
-				for ( const s of allSpans ) {
-					expect( brokenSet.has( s ) ).to.be.true;
-				}
-
-				expect( brokenArray.length ).to.equal( allSpans.length );
-			}
+			expect( writer.getAllClonedElements( spanFromView ) ).to.be.null;
 		} );
 	} );
 

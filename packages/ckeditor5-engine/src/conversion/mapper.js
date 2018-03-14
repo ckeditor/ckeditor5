@@ -280,10 +280,29 @@ export default class Mapper {
 	 * Gets all view elements bound to the given marker name.
 	 *
 	 * @param {String} name Marker name.
-	 * @returns {Set.<module:engine/view/element~Element>} View elements bound with given marker name.
+	 * @returns {Set.<module:engine/view/element~Element>|null} View elements bound with given marker name or `null`
+	 * if no elements are bound to given marker name.
 	 */
 	markerNameToElements( name ) {
-		return this._markerNameToElements.get( name );
+		const boundElements = this._markerNameToElements.get( name );
+
+		if ( !boundElements ) {
+			return null;
+		}
+
+		const elements = new Set();
+
+		for ( const element of boundElements ) {
+			if ( element.is( 'attributeElement' ) ) {
+				for ( const clone of element.getCustomProperty( 'clonedElements' ) ) {
+					elements.add( clone );
+				}
+			} else {
+				elements.add( element );
+			}
+		}
+
+		return elements;
 	}
 
 	/**

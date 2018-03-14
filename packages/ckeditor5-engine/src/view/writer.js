@@ -32,6 +32,15 @@ export default class Writer {
 		 * @type {module:engine/view/document~Document}
 		 */
 		this.document = document;
+
+		/**
+		 * Holds references to the attribute groups that share the same {@link module:engine/view/attributeelement~AttributeElement#id id}.
+		 * The keys are `id`s, the values are `Set`s holding {@link module:engine/view/attributeelement~AttributeElement}s.
+		 *
+		 * @private
+		 * @type {Map}
+		 */
+		this._cloneGroups = new Map();
 	}
 
 	/**
@@ -503,9 +512,9 @@ export default class Writer {
 		if ( positionParent.is( 'attributeElement' ) && positionParent.childCount === 0 ) {
 			const parent = positionParent.parent;
 			const offset = positionParent.index;
-			positionParent._remove();
 
-			this._unlinkBrokenAttributeElement( positionParent );
+			positionParent._remove();
+			this._removeFromClonedElementsGroup( positionParent );
 
 			return this.mergeAttributes( new Position( parent, offset ) );
 		}
@@ -529,7 +538,7 @@ export default class Writer {
 			nodeBefore._appendChildren( nodeAfter.getChildren() );
 
 			nodeAfter._remove();
-			this._unlinkBrokenAttributeElement( nodeAfter );
+			this._removeFromClonedElementsGroup( nodeAfter );
 
 			// New position is located inside the first node, before new nodes.
 			// Call this method recursively to merge again if needed.
@@ -617,8 +626,12 @@ export default class Writer {
 		}
 
 		const insertionPosition = this._breakAttributes( position, true );
-
 		const length = container._insertChildren( insertionPosition.offset, nodes );
+
+		for ( const node of nodes ) {
+			this._addToClonedElementsGroup( node );
+		}
+
 		const endPosition = insertionPosition.getShiftedBy( length );
 		const start = this.mergeAttributes( insertionPosition );
 
@@ -666,7 +679,7 @@ export default class Writer {
 		const removed = parentContainer._removeChildren( breakStart.offset, count );
 
 		for ( const node of removed ) {
-			this._unlinkBrokenAttributeElement( node );
+			this._removeFromClonedElementsGroup( node );
 		}
 
 		// Merge after removing.
@@ -912,21 +925,22 @@ export default class Writer {
 	}
 
 	/**
-	 * For the given attribute element, returns that element and all the elements that were cloned from the given element
-	 * when the element was broken by `Writer`.
+	 * For given {@link module:engine/view/attributeelement~AttributeElement attribute element}, returns all other
+	 * attribute elements with the same {@link module:engine/view/attributeelement~AttributeElement#id id} that
+	 * were inserted by `Writer` to the view tree.
 	 *
 	 * @param {module:engine/view/attributeelement~AttributeElement} element
-	 * @returns {Array.<module:engine/view/attributeelement~AttributeElement>}
+	 * @returns {Set.<module:engine/view/attributeelement~AttributeElement>|null} Set containing all the attribute elements
+	 * with the same `id` or `null` if given element had no `id`.
 	 */
-	getAllBrokenSiblings( element ) {
-		const original = element.getCustomProperty( 'originalAttributeElement' ) || element;
-		const clones = original.getCustomProperty( 'clonedAttributeElements' );
+	getAllClonedElements( element ) {
+		const id = element.id;
 
-		if ( clones ) {
-			return Array.from( clones ).concat( original );
-		} else {
-			return [ element ];
+		if ( !id ) {
+			return null;
 		}
+
+		return this._cloneGroups.get( id );
 	}
 
 	/**
@@ -954,6 +968,7 @@ export default class Writer {
 			if ( isText || isEmpty || isUI || ( isAttribute && shouldABeOutsideB( attribute, child ) ) ) {
 				// Clone attribute.
 				const newAttribute = attribute._clone();
+				this._addToClonedElementsGroup( newAttribute );
 
 				// Wrap current node with new attribute.
 				child._remove();
@@ -1018,7 +1033,7 @@ export default class Writer {
 
 				// Replace wrapper element with its children
 				child._remove();
-				this._unlinkBrokenAttributeElement( child );
+				this._removeFromClonedElementsGroup( child );
 
 				parent._insertChildren( i, unwrapped );
 
@@ -1314,6 +1329,15 @@ export default class Writer {
 		return true;
 	}
 
+	/**
+	 * Helper function used by other `Writer` methods. Breaks attribute elements at the boundaries of given range.
+	 *
+	 * @private
+	 * @param {module:engine/view/range~Range} range Range which `start` and `end` positions will be used to break attributes.
+	 * @param {Boolean} [forceSplitText=false] If set to `true`, will break text nodes even if they are directly in container element.
+	 * This behavior will result in incorrect view state, but is needed by other view writing methods which then fixes view state.
+	 * @returns {module:engine/view/range~Range} New range with located at break positions.
+	 */
 	_breakAttributesRange( range, forceSplitText = false ) {
 		const rangeStart = range.start;
 		const rangeEnd = range.end;
@@ -1337,6 +1361,21 @@ export default class Writer {
 		return new Range( breakStart, breakEnd );
 	}
 
+	/**
+	 * Helper function used by other `Writer` methods. Breaks attribute elements at given position.
+	 *
+	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-cannot-break-empty-element` when break position
+	 * is placed inside {@link module:engine/view/emptyelement~EmptyElement EmptyElement}.
+	 *
+	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-writer-cannot-break-ui-element` when break position
+	 * is placed inside {@link module:engine/view/uielement~UIElement UIElement}.
+	 *
+	 * @private
+	 * @param {module:engine/view/position~Position} position Position where to break attributes.
+	 * @param {Boolean} [forceSplitText=false] If set to `true`, will break text nodes even if they are directly in container element.
+	 * This behavior will result in incorrect view state, but is needed by other view writing methods which then fixes view state.
+	 * @returns {module:engine/view/position~Position} New position after breaking the attributes.
+	 */
 	_breakAttributes( position, forceSplitText = false ) {
 		const positionOffset = position.offset;
 		const positionParent = position.parent;
@@ -1403,9 +1442,7 @@ export default class Writer {
 
 			// Break element.
 			const clonedNode = positionParent._clone();
-
-			// Save that the `clonedNode` was created from `positionParent`.
-			this._linkBrokenAttributeElements( clonedNode, positionParent );
+			this._addToClonedElementsGroup( clonedNode );
 
 			// Insert cloned node to position's parent node.
 			positionParent.parent._insertChildren( offsetAfter, clonedNode );
@@ -1425,42 +1462,65 @@ export default class Writer {
 	}
 
 	/**
-	 * Links `clonedNode` element to `clonedFrom` element. Saves information that `clonedNode` was created as a clone
-	 * of `clonedFrom` when `clonedFrom` was broken into two elements by the `Writer`.
+	 * Stores the information that an {@link module:engine/view/attributeelement~AttributeElement attribute element} was
+	 * added to the tree. Saves the reference to the group in the given element and updates the group, so other elements
+	 * from the group now keep a reference to the given attribute element.
+	 *
+	 * The clones group can be accessed from the element, under `clonedElements` custom property:
+	 *
+	 *		attributeElement.getCustomProperty( 'clonedElements' );
+	 *
+	 * Does nothing if added element has no {@link module:engine/view/attributeelement~AttributeElement#id id}.
 	 *
 	 * @private
-	 * @param {module:engine/view/attributeelement~AttributeElement} clonedNode
-	 * @param {module:engine/view/attributeelement~AttributeElement} clonedFrom
+	 * @param {module:engine/view/attributeelement~AttributeElement} element Attribute element to save.
 	 */
-	_linkBrokenAttributeElements( clonedNode, clonedFrom ) {
-		const original = clonedFrom.getCustomProperty( 'originalAttributeElement' ) || clonedFrom;
-		const clones = original.getCustomProperty( 'clonedAttributeElements' ) || new Set();
+	_addToClonedElementsGroup( element ) {
+		const id = element.id;
 
-		this.setCustomProperty( 'originalAttributeElement', original, clonedNode );
-
-		clones.add( clonedNode );
-		this.setCustomProperty( 'clonedAttributeElements', clones, original );
-	}
-
-	/**
-	 * Unlinks `element`. Removes information about how `element` was broken by the `Writer` from `element` and from
-	 * its original element (the element it was cloned from).
-	 *
-	 * @private
-	 * @param {module:engine/view/attributeelement~AttributeElement} element
-	 */
-	_unlinkBrokenAttributeElement( element ) {
-		if ( !element.is( 'element' ) ) {
+		if ( !id ) {
 			return;
 		}
 
-		const original = element.getCustomProperty( 'originalAttributeElement' );
+		let group = this._cloneGroups.get( id );
 
-		if ( original ) {
-			this.removeCustomProperty( 'originalAttributeElement', element );
+		if ( !group ) {
+			group = new Set();
+			this._cloneGroups.set( id, group );
+		}
 
-			const clones = original.getCustomProperty( 'clonedAttributeElements' );
-			clones.delete( element );
+		group.add( element );
+		this.setCustomProperty( 'clonedElements', group, element );
+	}
+
+	/**
+	 * Removes all the information about the given {@link module:engine/view/attributeelement~AttributeElement attribute element}
+	 * from its clones group.
+	 *
+	 * Keep in mind, that the element will still keep a reference to the group (but the group will not keep a reference to it).
+	 * This allows to reference the whole group even if the element was already removed from the tree.
+	 *
+	 * Does nothing if the element has no {@link module:engine/view/attributeelement~AttributeElement#id id}.
+	 *
+	 * @private
+	 * @param {module:engine/view/attributeelement~AttributeElement} element Attribute element to remove.
+	 */
+	_removeFromClonedElementsGroup( element ) {
+		const id = element.id;
+
+		if ( !id ) {
+			return;
+		}
+
+		const group = this._cloneGroups.get( id );
+
+		group.delete( element );
+		// Not removing group from element on purpose!
+		// If other parts of code have reference to this element, they will be able to get references to other elements from the group.
+		// If all other elements are removed from the set, everything will be garbage collected.
+
+		if ( group.size === 0 ) {
+			this._cloneGroups.delete( id );
 		}
 	}
 }
