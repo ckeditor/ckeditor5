@@ -96,7 +96,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 </tr>
 <tr>
 <td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-autoUpdateElement">autoUpdateElement</a></td>
-<td>Defaults to true, cannot be disabled.</td>
+<td>CKEditor 5 always updates the replaced element. This behavior cannot be disabled.</td>
 </tr>
 <tr>
 <td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-baseFloatZIndex">baseFloatZIndex</a></td>
@@ -136,7 +136,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 </tr>
 <tr>
 <td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-colorButton_backStyle">colorButton_backStyle</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-colorButton_colors">colorButton_colors</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-colorButton_colorsPerRow">colorButton_colorsPerRow</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-colorButton_enableAutomatic">colorButton_enableAutomatic</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-colorButton_enableMore">colorButton_enableMore</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-colorButton_foreStyle">colorButton_foreStyle</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-colorButton_normalizeBackground">colorButton_normalizeBackground</a></td>
-<td><p>The &#x201C;classic&#x201D; font/background color feature will be provided in the future.</p><p>At the same time, we are already working on a new Highlight plugin, which will allow for highlighting parts of the text with the <code>&lt;mark&gt;</code> element with different CSS classes, that can be easily styled. For more information see <a href="https://github.com/ckeditor/ckeditor5-highlight/issues/3" target="_blank" rel="noopener">https://github.com/ckeditor/ckeditor5-highlight/issues/3</a>.</p></td>
+<td><p>The &#x201C;classic&#x201D; font/background color feature will be provided in the future.</p><p>At the same time, we are already provide a new Highlight plugin, which allow for highlighting parts of the text with the <code>&lt;mark&gt;</code> element with different CSS classes, that can be easily styled. For more information see {@link features/highlight Highlight feature example}.</p></td>
 </tr>
 <tr>
 <td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-contentsCss">contentsCss</a></td>
@@ -183,8 +183,8 @@ Note: The number of options was reduced on purpose. We understood that configuri
 <td>N/A</td>
 </tr>
 <tr>
-<td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-defaultLanguage">defaultLanguage</a></td>
-<td>The support for multiple translations has just been implemented and will be included in the upcoming version of CKEditor 5 (1.0.0-alpha.3). Related documentation will be coming soon.</td>
+<td><span id="defaultLanguage"><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-defaultLanguage">defaultLanguage</a></span></td>
+<td>The support for multiple translations is supported by a translations service. See {@link features/ui-language}</td>
 </tr>
 <tr>
 <td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-devtools_styles">devtools_styles</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-devtools_textCallback">devtools_textCallback</a></td>
@@ -284,7 +284,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 </tr>
 <tr>
 <td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-fontSize_defaultLabel">fontSize_defaultLabel</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-fontSize_sizes">fontSize_sizes</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-fontSize_style">fontSize_style</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-font_defaultLabel">font_defaultLabel</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-font_names">font_names</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-font_style">font_style</a></td>
-<td>The font size/family feature is not available yet and is tracked in <a href="https://github.com/ckeditor/ckeditor5/issues/638" target="_blank" rel="noopener">https://github.com/ckeditor/ckeditor5/issues/638</a>.</td>
+<td>The font size/family editing features are available in Font feature. See {@link features/font font feature example}.</td>
 </tr>
 <tr>
 <td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-forceEnterMode">forceEnterMode</a></td>
@@ -356,7 +356,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 </tr>
 <tr>
 <td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-justifyClasses">justifyClasses</a></td>
-<td>The text alignment feature is under development: <a href="https://github.com/ckeditor/ckeditor5-alignment" target="_blank" rel="noopener">https://github.com/ckeditor/ckeditor5-alignment</a>.</td>
+<td>See {@link features/text-alignment text alignment feature example}.</td>
 </tr>
 <tr>
 <td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-keystrokes">keystrokes</a></td>
@@ -364,7 +364,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 </tr>
 <tr>
 <td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-language">language</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-language_list">language_list</a></td>
-<td>The support for multiple translations has just been implemented and will be included in the upcoming version of CKEditor 5 (1.0.0-alpha.3). Related documentation will be coming soon.</td>
+<td>See <a href="#defaultLanguage"><code>config.uploadUrl</code></a>.</td>
 </tr>
 <tr>
 <td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-linkJavaScriptLinksAllowed">linkJavaScriptLinksAllowed</a></td>
@@ -444,7 +444,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 </tr>
 <tr>
 <td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-sharedSpaces">sharedSpaces</a></td>
-<td>N/A. CKEditor 5 Framework architecture allows for writing a custom editor that contains multiple editable elements (document roots).</td>
+<td>N/A. CKEditor 5 Framework architecture allows for writing a custom editor that contains multiple editable elements (document roots). See {@link framework/guides/document-editor document editor tutorial}.</td>
 </tr>
 <tr>
 <td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-shiftEnterMode">shiftEnterMode</a></td>
