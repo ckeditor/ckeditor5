@@ -15,6 +15,7 @@
     "@ckeditor/ckeditor5-theme-lark": "^1.0.0-alpha.2"
   },
   "devDependencies": {
+    "@ckeditor/ckeditor5-cloudservices": "^1.0.0-alpha.1",
     "@ckeditor/ckeditor5-editor-classic": "^1.0.0-alpha.2",
     "@ckeditor/ckeditor5-enter": "^1.0.0-alpha.2",
     "@ckeditor/ckeditor5-image": "^1.0.0-alpha.2",

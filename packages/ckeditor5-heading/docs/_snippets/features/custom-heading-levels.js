@@ -5,8 +5,11 @@
 
 /* globals ClassicEditor, console, window, document */
 
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloudservices/tests/_utils/cloudservices-config';
+
 ClassicEditor
 	.create( document.querySelector( '#snippet-custom-heading-levels' ), {
+		cloudServices: CS_CONFIG,
 		heading: {
 			options: [
 				{ model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
