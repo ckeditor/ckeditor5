@@ -9,7 +9,7 @@
     "@ckeditor/ckeditor5-block-quote": "ckeditor/ckeditor5-block-quote#664896a",
     "@ckeditor/ckeditor5-build-balloon": "ckeditor/ckeditor5-build-balloon#b55e01c",
     "@ckeditor/ckeditor5-build-classic": "ckeditor/ckeditor5-build-classic#980efd6",
-    "@ckeditor/ckeditor5-build-decoupled-document": "ckeditor/ckeditor5-build-decoupled-document#319a124",
+    "@ckeditor/ckeditor5-build-decoupled-document": "ckeditor/ckeditor5-build-decoupled-document#f9e5669",
     "@ckeditor/ckeditor5-build-inline": "ckeditor/ckeditor5-build-inline#2becd82",
     "@ckeditor/ckeditor5-clipboard": "ckeditor/ckeditor5-clipboard#dac9433",
     "@ckeditor/ckeditor5-cloudservices": "ckeditor/ckeditor5-cloudservices#d3f9db7",

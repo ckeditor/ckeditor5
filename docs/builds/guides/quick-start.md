@@ -194,9 +194,8 @@ The decoupled editor requires you to define the containers for the toolbar and e
 	DecoupledDocumentEditor
 		.create( '<p>The initial editor data</p>', {
 			// Define the containers for the toolbar and editable.
-			// Use the document.querySelector-friendly strings here or references to existing DOM elements.
-			toolbarContainer: '.toolbar-container',
-			editableContainer: '.editable-container'
+			toolbarContainer: document.querySelector( '.toolbar-container' ),
+			editableContainer: document.querySelector( '.editable-container' )
 		} )
 		.catch( error => {
 			console.error( error );
@@ -227,9 +226,8 @@ The decoupled editor requires you to define the containers for the toolbar and e
 		DecoupledDocumentEditor
 			.create( '<p>The initial editor data</p>', {
 				// Define the containers for the toolbar and editable.
-				// Use the document.querySelector-friendly strings here or references to existing DOM elements.
-				toolbarContainer: '.toolbar-container',
-				editableContainer: '.editable-container'
+				toolbarContainer: document.querySelector( '.toolbar-container' ),
+				editableContainer: document.querySelector( '.editable-container' )
 			} )
 			.catch( error => {
 				console.error( error );
