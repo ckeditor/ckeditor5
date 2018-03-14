@@ -399,13 +399,24 @@ export default class Range {
 		for ( const operation of delta.operations ) {
 			if ( supportedTypes.has( operation.type ) ) {
 				for ( let i = 0; i < ranges.length; i++ ) {
-					const result = ranges[ i ]._getTransformedByDocumentChange(
-						operation.type,
-						delta.type,
-						operation.targetPosition || operation.position,
-						operation.howMany || operation.nodes.maxOffset,
-						operation.sourcePosition
-					);
+					let result;
+
+					if ( operation.type == 'insert' ) {
+						result = ranges[ i ]._getTransformedByDocumentChange(
+							operation.type,
+							delta.type,
+							operation.position,
+							operation.nodes.maxOffset
+						);
+					} else {
+						result = ranges[ i ]._getTransformedByDocumentChange(
+							operation.type,
+							delta.type,
+							operation.targetPosition,
+							operation.howMany,
+							operation.sourcePosition
+						);
+					}
 
 					ranges.splice( i, 1, ...result );
 
