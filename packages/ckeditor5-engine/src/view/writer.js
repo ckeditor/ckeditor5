@@ -36,9 +36,10 @@ export default class Writer {
 
 	/**
 	 * Sets {@link module:engine/view/documentselection~DocumentSelection selection's} ranges and direction to the
-	 * specified location based on the given {@link module:engine/view/documentselection~DocumentSelection selection},
-	 * {@link module:engine/view/position~Position position}, {@link module:engine/view/item~Item item},
-	 * {@link module:engine/view/range~Range range}, an iterable of {@link module:engine/view/range~Range ranges} or null.
+	 * specified location based on the given {@link module:engine/view/documentselection~DocumentSelection document selection},
+	 * {@link module:engine/view/selection~Selection selection}, {@link module:engine/view/position~Position position},
+	 * {@link module:engine/view/item~Item item}, {@link module:engine/view/range~Range range},
+	 * an iterable of {@link module:engine/view/range~Range ranges} or null.
 	 *
 	 * ### Usage:
 	 *
@@ -92,8 +93,9 @@ export default class Writer {
 	 * 		// (and be  properly handled by screen readers).
 	 *		writer.setSelection( range, { fake: true, label: 'foo' } );
 	 *
-	 * @param {module:engine/view/documentselection~DocumentSelection|module:engine/view/position~Position|
-	 * Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|module:engine/view/item~Item|null} selectable
+	 * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection|
+	 * module:engine/view/position~Position|Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|
+	 * module:engine/view/item~Item|null} selectable
 	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets place or offset of the selection.
 	 * @param {Object} [options]
 	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
