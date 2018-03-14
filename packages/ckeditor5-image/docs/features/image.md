@@ -210,16 +210,21 @@ If you are using an editor build, see how to {@link builds/guides/development/cu
 The {@link module:image/image~Image} plugin registers:
 
 * The `'imageTextAlternative'` button.
+* * The {@link module:image/imagetextalternative/imagetextalternativecommand~ImageTextAlternativeCommand `'imageTextAlternative'` command}
 
 The {@link module:image/imagestyle~ImageStyle} plugin registers:
 
-* The `'imageStyle'` command that accepts value based on the {@link module:image/image~ImageConfig#styles `image.styles`} configuration option (e.g. `'full'` and `'side'`):
+* A button for each defined style &mdash; e.g. `'imageStyle:full'` and `'imageStyle:side'`.
+* The {@link module:image/imagestyle/imagestylecommand~ImageStyleCommand `'imageStyle'` command} which accepts value based on the {@link module:image/image~ImageConfig#styles `image.styles`} configuration option (e.g. `'full'` and `'side'`):
 
 	```js
 	editor.execute( 'imageStyle', { value: 'side' } );
 	```
 
-* A button for each defined style &mdash; e.g. `'imageStyle:full'` and `'imageStyle:side'`.
+The {@link module:image/imageupload~ImageUpload} plugin registers:
+
+* The `'imageUpload'` button which opens the native file browser to ley you upload a file directly from your disk.
+* The {@link module:image/imageupload/imageuploadcommand~ImageUploadCommand `'imageUpload'` command} which accepts the file to upload.
 
 ## Contribute
 
