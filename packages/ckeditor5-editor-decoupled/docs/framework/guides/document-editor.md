@@ -26,8 +26,8 @@ import DecoupledDocumentEditor from '@ckeditor/ckeditor5-build-decoupled-documen
 
 DecoupledDocumentEditor
 	.create( '<p>Initial editor data.</p>', {
-		toolbarContainer: '.document-editor__toolbar',
-		editableContainer: '.document-editor__editable',
+		toolbarContainer: document.querySelector( '.document-editor__toolbar' ),
+		editableContainer: document.querySelector( '.document-editor__editable' ),
 
 		cloudServices: {
 			....
@@ -41,7 +41,7 @@ DecoupledDocumentEditor
 	} );
 ```
 
-You may have noticed two configuration options used here: {@link module:core/editor/editorconfig~EditorConfig#toolbarContainer `config.toolbarContainer`} and {@link module:core/editor/editorconfig~EditorConfig#editableContainer `config.editableContainer`}. They specify the location of the editor toolbar and editable in your application, either as [`document.querySelector()`](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector)–friendly strings or direct DOM element references.
+You may have noticed two configuration options used here: {@link module:core/editor/editorconfig~EditorConfig#toolbarContainer `config.toolbarContainer`} and {@link module:core/editor/editorconfig~EditorConfig#editableContainer `config.editableContainer`}. They specify the location of the editor toolbar and editable in your application.
 
 If you don't specify these configuration options, then you have to make sure the editor UI is injected into your application after it fires the {@link module:core/editor/editorwithui~EditorWithUI#event:uiReady `uiReady`} event. The toolbar element is accessible via `editor.ui.view.toolbar.element` and the editable element can be found under `editor.ui.view.editable.element`.
 

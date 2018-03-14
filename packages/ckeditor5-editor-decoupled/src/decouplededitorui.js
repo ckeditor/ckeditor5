@@ -11,7 +11,6 @@ import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import enableToolbarKeyboardFocus from '@ckeditor/ckeditor5-ui/src/toolbar/enabletoolbarkeyboardfocus';
 import normalizeToolbarConfig from '@ckeditor/ckeditor5-ui/src/toolbar/normalizetoolbarconfig';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 /**
  * The decoupled editor UI class.
@@ -69,14 +68,6 @@ export default class DecoupledEditorUI {
 		 * @private
 		 */
 		this._editableContainer = editor.config.get( 'editableContainer' );
-
-		if ( this._toolbarContainer && typeof this._toolbarContainer == 'string' ) {
-			this._toolbarContainer = global.document.querySelector( this._toolbarContainer );
-		}
-
-		if ( this._editableContainer && typeof this._editableContainer == 'string' ) {
-			this._editableContainer = global.document.querySelector( this._editableContainer );
-		}
 	}
 
 	/**

@@ -86,10 +86,10 @@ export default class DecoupledEditor extends Editor {
 	 *		DecoupledEditor
 	 *			.create( '<p>Editor data</p>', {
 	 *				// The location of the toolbar in DOM.
-	 *				toolbarContainer: 'body div.toolbar-container',
+	 *				toolbarContainer: document.querySelector( 'body div.toolbar-container' ),
 	 *
 	 *				// The location of the editable in DOM.
-	 *				editableContainer: 'body div.editable-container'
+	 *				editableContainer: document.querySelector( 'body div.editable-container' )
 	 *			} )
 	 *			.then( editor => {
 	 *				console.log( 'Editor was initialized', editor );
@@ -112,10 +112,10 @@ export default class DecoupledEditor extends Editor {
 	 *				toolbar: [ 'bold', 'italic', ... ],
 	 *
 	 *				// The location of the toolbar in DOM.
-	 *				toolbarContainer: 'div.toolbar-container',
+	 *				toolbarContainer: document.querySelector( 'div.toolbar-container' ),
 	 *
 	 *				// The location of the editable in DOM.
-	 *				editableContainer: 'div.editable-container'
+	 *				editableContainer: document.querySelector( 'div.editable-container' )
 	 *			} )
 	 *			.then( editor => {
 	 *				console.log( 'Editor was initialized', editor );
@@ -173,8 +173,7 @@ mix( DecoupledEditor, DataApiMixin );
 /**
  * A configuration of the {@link module:editor-decoupled/decouplededitor~DecoupledEditor}.
  *
- * When specified, it controls the location of the {@link module:editor-decoupled/decouplededitoruiview~DecoupledEditorUIView#toolbar}.
- * It can be defined as a DOM element:
+ * When specified, it controls the location of the {@link module:editor-decoupled/decouplededitoruiview~DecoupledEditorUIView#toolbar}:
  *
  *		DecoupledEditor
  *			.create( '<p>Hello world!</p>', {
@@ -188,32 +187,17 @@ mix( DecoupledEditor, DataApiMixin );
  *				console.error( error );
  *			} );
  *
- * or a selector string corresponding to the CSS selector:
- *
- *		DecoupledEditor
- *			.create( '<p>Hello world!</p>', {
- *				// Append the toolbar to the <div class="container">...</div>
- *				toolbarContainer: 'div.container'
- *			} )
- *			.then( editor => {
- *				console.log( editor );
- *			} )
- *			.catch( error => {
- *				console.error( error );
- *			} );
- *
  * **Note**: If not specified, the toolbar must be manually injected into DOM. See
  * {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`}
  * to learn more.
  *
- * @member {String|HTMLElement} module:core/editor/editorconfig~EditorConfig#toolbarContainer
+ * @member {HTMLElement} module:core/editor/editorconfig~EditorConfig#toolbarContainer
  */
 
 /**
  * A configuration of the {@link module:editor-decoupled/decouplededitor~DecoupledEditor}.
  *
- * When specified, it controls the location of the {@link module:editor-decoupled/decouplededitoruiview~DecoupledEditorUIView#editable}.
- * It can be defined as a DOM element:
+ * When specified, it controls the location of the {@link module:editor-decoupled/decouplededitoruiview~DecoupledEditorUIView#editable}:
  *
  *		DecoupledEditor
  *			.create( '<p>Hello world!</p>', {
@@ -227,23 +211,9 @@ mix( DecoupledEditor, DataApiMixin );
  *				console.error( error );
  *			} );
  *
- * or a selector string corresponding to the CSS selector:
- *
- *		DecoupledEditor
- *			.create( '<p>Hello world!</p>', {
- *				// Append the editable to the <div class="container">...</div>.
- *				editableContainer: 'div.container'
- *			} )
- *			.then( editor => {
- *				console.log( editor );
- *			} )
- *			.catch( error => {
- *				console.error( error );
- *			} );
- *
  * **Note**: If not specified, the editable must be manually injected into DOM. See
  * {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`}
  * to learn more.
  *
- * @member {String|HTMLElement} module:core/editor/editorconfig~EditorConfig#editableContainer
+ * @member {HTMLElement} module:core/editor/editorconfig~EditorConfig#editableContainer
  */
