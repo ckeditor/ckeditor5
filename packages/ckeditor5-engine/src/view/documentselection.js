@@ -14,7 +14,7 @@ import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 /**
  * Class representing document selection in tree view. It's instance is stored at
  * {@link module:engine/view/document~Document#selection}. It is similar to {@link module:engine/view/selection~Selection} but
- * it has read-only API and can be modified only by writer obtained by using {@link module:engine/view/view~View#change} method.
+ * it has read-only API and can be modified only by writer obtained from {@link module:engine/view/view~View#change} method.
  *
  * Selection can consist of {@link module:engine/view/range~Range ranges}.
  * Selection's ranges can be obtained via {@link module:engine/view/documentselection~DocumentSelection#getRanges getRanges},
@@ -29,7 +29,7 @@ import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
  */
 export default class DocumentSelection {
 	/**
-	 * Creates new selection instance.
+	 * Creates new DocumentSelection instance.
 	 *
 	 * 		// Creates empty selection without ranges.
 	 *		const selection = new DocumentSelection();
@@ -91,7 +91,12 @@ export default class DocumentSelection {
 	 * @param {String} [options.label] Label for the fake selection.
 	 */
 	constructor( selectable = null, placeOrOffset, options ) {
-		// TODO: docs
+		/**
+		 * Selection is used internally (`DocumentSelection` is a proxy to that selection).
+		 *
+		 * @private
+		 * @member {module:engine/view/selection~Selection}
+		 */
 		this._selection = new Selection();
 
 		// Delegate change event to be fired on DocumentSelection instance.
@@ -257,10 +262,11 @@ export default class DocumentSelection {
 	}
 
 	/**
-	 * Checks whether this selection is equal to given selection. Selections are equal if they have same directions,
+	 * Checks whether, this selection is equal to given selection. Selections are equal if they have same directions,
 	 * same number of ranges and all ranges from one selection equal to a range from other selection.
 	 *
-	 * @param {module:engine/model/selection~Selection} otherSelection Selection to compare with.
+	 * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection} otherSelection
+	 * Selection to compare with.
 	 * @returns {Boolean} `true` if selections are equal, `false` otherwise.
 	 */
 	isEqual( otherSelection ) {
@@ -272,7 +278,8 @@ export default class DocumentSelection {
 	 * number of ranges, and all {@link module:engine/view/range~Range#getTrimmed trimmed} ranges from one selection are
 	 * equal to any trimmed range from other selection.
 	 *
-	 * @param {module:engine/view/documentselection~DocumentSelection} otherSelection Selection to compare with.
+	 * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection} otherSelection
+	 * Selection to compare with.
 	 * @returns {Boolean} `true` if selections are similar, `false` otherwise.
 	 */
 	isSimilar( otherSelection ) {
@@ -281,45 +288,50 @@ export default class DocumentSelection {
 
 	/**
 	 * Sets this selection's ranges and direction to the specified location based on the given
-	 * {@link module:engine/view/documentselection~DocumentSelection selection}, {@link module:engine/view/position~Position position},
+	 * {@link module:engine/view/documentselection~DocumentSelection document selection},
+	 * {@link module:engine/view/selection~Selection selection}, {@link module:engine/view/position~Position position},
 	 * {@link module:engine/view/item~Item item}, {@link module:engine/view/range~Range range},
 	 * an iterable of {@link module:engine/view/range~Range ranges} or null.
 	 *
 	 *		// Sets selection to the given range.
 	 *		const range = new Range( start, end );
-	 *		selection._setTo( range );
+	 *		documentSelection._setTo( range );
 	 *
 	 *		// Sets selection to given ranges.
 	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
-	 *		selection._setTo( range );
+	 *		documentSelection._setTo( range );
 	 *
 	 *		// Sets selection to the other selection.
 	 *		const otherSelection = new Selection();
-	 *		selection._setTo( otherSelection );
+	 *		documentSelection._setTo( otherSelection );
+	 *
+	 *	 	// Sets selection to contents of DocumentSelection.
+	 *		const documentSelection = new DocumentSelection();
+	 *		documentSelection._setTo( documentSelection );
 	 *
 	 * 		// Sets collapsed selection at the given position.
 	 *		const position = new Position( root, path );
-	 *		selection._setTo( position );
+	 *		documentSelection._setTo( position );
 	 *
 	 * 		// Sets collapsed selection at the position of given item and offset.
-	 *		selection._setTo( paragraph, offset );
+	 *		documentSelection._setTo( paragraph, offset );
 	 *
 	 * Creates a range inside an {@link module:engine/view/element~Element element} which starts before the first child of
 	 * that element and ends after the last child of that element.
 	 *
-	 *		selection._setTo( paragraph, 'in' );
+	 *		documentSelection._setTo( paragraph, 'in' );
 	 *
 	 * Creates a range on an {@link module:engine/view/item~Item item} which starts before the item and ends just after the item.
 	 *
-	 *		selection._setTo( paragraph, 'on' );
+	 *		documentSelection._setTo( paragraph, 'on' );
 	 *
 	 * 		// Clears selection. Removes all ranges.
-	 *		selection._setTo( null );
+	 *		documentSelection._setTo( null );
 	 *
 	 * `Selection#_setTo()` method allow passing additional options (`backward`, `fake` and `label`) as the last argument.
 	 *
 	 *		// Sets selection as backward.
-	 *		selection._setTo( range, { backward: true } );
+	 *		documentSelection._setTo( range, { backward: true } );
 	 *
 	 * Fake selection does not render as browser native selection over selected elements and is hidden to the user.
 	 * This way, no native selection UI artifacts are displayed to the user and selection over elements can be
@@ -329,7 +341,7 @@ export default class DocumentSelection {
 	 * (and be  properly handled by screen readers).
 	 *
 	 *		// Creates fake selection with label.
-	 *		selection._setTo( range, { fake: true, label: 'foo' } );
+	 *		documentSelection._setTo( range, { fake: true, label: 'foo' } );
 	 *
 	 * @protected
 	 * @fires change
