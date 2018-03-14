@@ -61,6 +61,19 @@ It breaks CKEditor 5 (see how <p><code>[]</code></p> looks). */
 	margin-bottom: 1.5rem;
 }
 
+/* https://github.com/ckeditor/ckeditor5/issues/896 */
+.live-snippet .ck-content h2,
+.live-snippet .ck-content h3,
+.live-snippet .ck-content h4 {
+	position: static;
+}
+
+/* https://github.com/ckeditor/ckeditor5/issues/899 */
+.live-snippet .ck-dropdown .ck-list {
+	margin: 0;
+	padding: 0;
+}
+
 #snippet-inline-editor .ck-editor__editable {
 	margin-bottom: 1rem;
 	padding: 2rem;
