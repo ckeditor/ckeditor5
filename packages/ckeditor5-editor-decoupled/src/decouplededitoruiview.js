@@ -55,16 +55,8 @@ export default class DecoupledEditorUIView extends EditorUIView {
 				class: 'ck-reset_all'
 			}
 		} );
-	}
 
-	/**
-	 * @inheritDoc
-	 */
-	render() {
-		super.render();
-
-		this.toolbar.render();
-		this.editable.render();
+		this.registerChildren( [ this.toolbar, this.editable ] );
 	}
 
 	/**
@@ -84,9 +76,6 @@ export default class DecoupledEditorUIView extends EditorUIView {
 		if ( removeEditable ) {
 			this.editable.element.remove();
 		}
-
-		this.toolbar.destroy();
-		this.editable.destroy();
 	}
 
 	/**
