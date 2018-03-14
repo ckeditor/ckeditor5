@@ -967,14 +967,16 @@ describe( 'Selection', () => {
 
 	describe( 'getSelectedElement()', () => {
 		it( 'should return selected element', () => {
-			const { selection, view } = parse( 'foo [<b>bar</b>] baz' );
+			const { selection: docSelection, view } = parse( 'foo [<b>bar</b>] baz' );
 			const b = view.getChild( 1 );
+			const selection = new Selection( docSelection );
 
 			expect( selection.getSelectedElement() ).to.equal( b );
 		} );
 
 		it( 'should return null if there is more than one range', () => {
-			const { selection } = parse( 'foo [<b>bar</b>] [<i>baz</i>]' );
+			const { selection: docSelection } = parse( 'foo [<b>bar</b>] [<i>baz</i>]' );
+			const selection = new Selection( docSelection );
 
 			expect( selection.getSelectedElement() ).to.be.null;
 		} );
@@ -984,13 +986,15 @@ describe( 'Selection', () => {
 		} );
 
 		it( 'should return null if selection is not over single element #1', () => {
-			const { selection } = parse( 'foo [<b>bar</b> ba}z' );
+			const { selection: docSelection } = parse( 'foo [<b>bar</b> ba}z' );
+			const selection = new Selection( docSelection );
 
 			expect( selection.getSelectedElement() ).to.be.null;
 		} );
 
 		it( 'should return null if selection is not over single element #2', () => {
-			const { selection } = parse( 'foo <b>{bar}</b> baz' );
+			const { selection: docSelection } = parse( 'foo <b>{bar}</b> baz' );
+			const selection = new Selection( docSelection );
 
 			expect( selection.getSelectedElement() ).to.be.null;
 		} );
