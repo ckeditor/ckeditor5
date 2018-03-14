@@ -5,6 +5,8 @@
 
 /* globals ClassicEditor, console, window, document */
 
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloudservices/tests/_utils/cloudservices-config';
+
 ClassicEditor
 	.create( document.querySelector( '#snippet-text-alignment' ), {
 		toolbar: {
@@ -12,7 +14,8 @@ ClassicEditor
 				'heading', '|', 'bulletedList', 'numberedList', 'alignment', 'undo', 'redo'
 			],
 			viewportTopOffset: 60
-		}
+		},
+		cloudServices: CS_CONFIG
 	} )
 	.then( editor => {
 		window.editor = editor;
