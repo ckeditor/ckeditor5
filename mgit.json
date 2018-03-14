@@ -32,7 +32,7 @@
     "@ckeditor/ckeditor5-paragraph": "ckeditor/ckeditor5-paragraph#ae010e1",
     "@ckeditor/ckeditor5-theme-lark": "ckeditor/ckeditor5-theme-lark#a7f1925",
     "@ckeditor/ckeditor5-typing": "ckeditor/ckeditor5-typing#1f59562",
-    "@ckeditor/ckeditor5-ui": "ckeditor/ckeditor5-ui#d13f684",
+    "@ckeditor/ckeditor5-ui": "ckeditor/ckeditor5-ui#5f2973f",
     "@ckeditor/ckeditor5-undo": "ckeditor/ckeditor5-undo#bd62780",
     "@ckeditor/ckeditor5-upload": "ckeditor/ckeditor5-upload#e486785",
     "@ckeditor/ckeditor5-utils": "ckeditor/ckeditor5-utils#eeafdc3",
