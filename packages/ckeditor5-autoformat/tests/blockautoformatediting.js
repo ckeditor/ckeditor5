@@ -94,6 +94,18 @@ describe( 'BlockAutoformatEditing', () => {
 			sinon.assert.notCalled( spy );
 		} );
 	} );
+
+	it( 'should ignore transparent batches', () => {
+		const spy = testUtils.sinon.spy();
+		new BlockAutoformatEditing( editor, /^[*]\s$/, spy ); // eslint-disable-line no-new
+
+		setData( model, '<paragraph>*[]</paragraph>' );
+		model.enqueueChange( 'transparent', writer => {
+			writer.insertText( ' ', doc.selection.getFirstPosition() );
+		} );
+
+		sinon.assert.notCalled( spy );
+	} );
 } );
 
 /**

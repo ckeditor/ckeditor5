@@ -140,7 +140,11 @@ export default class InlineAutoformatEditing {
 			writer.removeSelectionAttribute( attributeKey );
 		} );
 
-		editor.model.document.on( 'change', () => {
+		editor.model.document.on( 'change', ( evt, batch ) => {
+			if ( batch.type == 'transparent' ) {
+				return;
+			}
+
 			const selection = editor.model.document.selection;
 
 			// Do nothing if selection is not collapsed.
