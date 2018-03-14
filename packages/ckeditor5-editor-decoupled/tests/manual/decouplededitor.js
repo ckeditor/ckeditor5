@@ -24,8 +24,8 @@ function initEditor() {
 			plugins: [ Enter, Typing, Paragraph, Undo, Heading, Bold, Italic ],
 			toolbar: [ 'heading', '|', 'bold', 'italic', 'undo', 'redo' ],
 
-			toolbarContainer: '.toolbar-container',
-			editableContainer: '.editable-container',
+			toolbarContainer: document.querySelector( '.toolbar-container' ),
+			editableContainer: document.querySelector( '.editable-container' )
 		} )
 		.then( newEditor => {
 			console.log( 'Editor was initialized', newEditor );

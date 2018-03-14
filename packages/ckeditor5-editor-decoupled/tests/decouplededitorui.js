@@ -69,72 +69,36 @@ describe( 'DecoupledEditorUI', () => {
 				expect( view.editable.element.parentElement ).to.be.null;
 			} );
 
-			describe( 'toolbarContainer', () => {
-				it( 'allocates view#toolbar (selector)', () => {
-					return VirtualDecoupledTestEditor
-						.create( {
-							toolbar: [ 'foo', 'bar' ],
-							toolbarContainer: 'body'
-						} )
-						.then( newEditor => {
-							expect( newEditor.ui.view.toolbar.element.parentElement ).to.equal( document.body );
+			it( 'allocates view#toolbar', () => {
+				return VirtualDecoupledTestEditor
+					.create( {
+						toolbar: [ 'foo', 'bar' ],
+						toolbarContainer: document.body
+					} )
+					.then( newEditor => {
+						expect( newEditor.ui.view.toolbar.element.parentElement ).to.equal( document.body );
 
-							return newEditor;
-						} )
-						.then( newEditor => {
-							newEditor.destroy();
-						} );
-				} );
-
-				it( 'allocates view#toolbar (element)', () => {
-					return VirtualDecoupledTestEditor
-						.create( {
-							toolbar: [ 'foo', 'bar' ],
-							toolbarContainer: document.body
-						} )
-						.then( newEditor => {
-							expect( newEditor.ui.view.toolbar.element.parentElement ).to.equal( document.body );
-
-							return newEditor;
-						} )
-						.then( newEditor => {
-							newEditor.destroy();
-						} );
-				} );
+						return newEditor;
+					} )
+					.then( newEditor => {
+						newEditor.destroy();
+					} );
 			} );
 
-			describe( 'editableContainer', () => {
-				it( 'allocates view#toolbar (selector)', () => {
-					return VirtualDecoupledTestEditor
-						.create( {
-							toolbar: [ 'foo', 'bar' ],
-							editableContainer: 'body'
-						} )
-						.then( newEditor => {
-							expect( newEditor.ui.view.editable.element.parentElement ).to.equal( document.body );
+			it( 'allocates view#editable', () => {
+				return VirtualDecoupledTestEditor
+					.create( {
+						toolbar: [ 'foo', 'bar' ],
+						editableContainer: document.body
+					} )
+					.then( newEditor => {
+						expect( newEditor.ui.view.editable.element.parentElement ).to.equal( document.body );
 
-							return newEditor;
-						} )
-						.then( newEditor => {
-							newEditor.destroy();
-						} );
-				} );
-
-				it( 'allocates view#toolbar (element)', () => {
-					return VirtualDecoupledTestEditor
-						.create( {
-							toolbar: [ 'foo', 'bar' ],
-							editableContainer: document.body
-						} )
-						.then( newEditor => {
-							expect( newEditor.ui.view.editable.element.parentElement ).to.equal( document.body );
-
-							return newEditor;
-						} )
-						.then( newEditor => {
-							newEditor.destroy();
-						} );
-				} );
+						return newEditor;
+					} )
+					.then( newEditor => {
+						newEditor.destroy();
+					} );
 			} );
 		} );
 
@@ -253,7 +217,7 @@ describe( 'DecoupledEditorUI', () => {
 			return VirtualDecoupledTestEditor
 				.create( {
 					toolbar: [ 'foo', 'bar' ],
-					toolbarContainer: 'body'
+					toolbarContainer: document.body
 				} )
 				.then( newEditor => {
 					spy = sinon.spy( newEditor.ui.view, 'destroy' );
@@ -271,7 +235,7 @@ describe( 'DecoupledEditorUI', () => {
 			return VirtualDecoupledTestEditor
 				.create( {
 					toolbar: [ 'foo', 'bar' ],
-					editableContainer: 'body'
+					editableContainer: document.body
 				} )
 				.then( newEditor => {
 					spy = sinon.spy( newEditor.ui.view, 'destroy' );
