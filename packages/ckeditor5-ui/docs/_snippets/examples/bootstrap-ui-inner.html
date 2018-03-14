@@ -105,6 +105,11 @@
 			.ck-editor #bold { font-weight: bold; }
 			.ck-editor #italic { font-style: italic; }
 			.ck-editor #underline { text-decoration: underline; }
+
+			/* https://github.com/ckeditor/ckeditor5/issues/903 */
+			.ck-editor .ck-content > :first-child {
+				margin-top: 0;
+			}
 		</style>
 	</body>
 </html>
