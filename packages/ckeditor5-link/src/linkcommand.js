@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -8,9 +8,9 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import Text from '@ckeditor/ckeditor5-engine/src/model/text';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import findLinkRange from './findlinkrange';
+import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 
 /**
  * The link command. It is used by the {@link module:link/link~Link link feature}.
@@ -30,10 +30,11 @@ export default class LinkCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		const doc = this.editor.document;
+		const model = this.editor.model;
+		const doc = model.document;
 
 		this.value = doc.selection.getAttribute( 'linkHref' );
-		this.isEnabled = doc.schema.checkAttributeInSelection( doc.selection, 'linkHref' );
+		this.isEnabled = model.schema.checkAttributeInSelection( doc.selection, 'linkHref' );
 	}
 
 	/**
@@ -53,13 +54,10 @@ export default class LinkCommand extends Command {
 	 * @param {String} href Link destination.
 	 */
 	execute( href ) {
-		const doc = this.editor.document;
-		const selection = doc.selection;
+		const model = this.editor.model;
+		const selection = model.document.selection;
 
-		doc.enqueueChanges( () => {
-			// Keep it as one undo step.
-			const batch = doc.batch();
-
+		model.change( writer => {
 			// If selection is collapsed then update selected link or insert new one at the place of caret.
 			if ( selection.isCollapsed ) {
 				const position = selection.getFirstPosition();
@@ -69,27 +67,33 @@ export default class LinkCommand extends Command {
 					// Then update `linkHref` value.
 					const linkRange = findLinkRange( selection.getFirstPosition(), selection.getAttribute( 'linkHref' ) );
 
-					batch.setAttribute( linkRange, 'linkHref', href );
+					writer.setAttribute( 'linkHref', href, linkRange );
 
 					// Create new range wrapping changed link.
-					selection.setRanges( [ linkRange ] );
+					writer.setSelection( linkRange );
 				}
 				// If not then insert text node with `linkHref` attribute in place of caret.
-				else {
-					const node = new Text( href, { linkHref: href } );
+				// However, since selection in collapsed, attribute value will be used as data for text node.
+				// So, if `href` is empty, do not create text node.
+				else if ( href !== '' ) {
+					const attributes = toMap( selection.getAttributes() );
 
-					batch.insert( position, node );
+					attributes.set( 'linkHref', href );
+
+					const node = writer.createText( href, attributes );
+
+					writer.insert( node, position );
 
 					// Create new range wrapping created node.
-					selection.setRanges( [ Range.createOn( node ) ] );
+					writer.setSelection( Range.createOn( node ) );
 				}
 			} else {
 				// If selection has non-collapsed ranges, we change attribute on nodes inside those ranges
 				// omitting nodes where `linkHref` attribute is disallowed.
-				const ranges = doc.schema.getValidRanges( selection.getRanges(), 'linkHref' );
+				const ranges = model.schema.getValidRanges( selection.getRanges(), 'linkHref' );
 
 				for ( const range of ranges ) {
-					batch.setAttribute( range, 'linkHref', href );
+					writer.setAttribute( 'linkHref', href, range );
 				}
 			}
 		} );

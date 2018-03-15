@@ -1,26 +1,27 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
 import findLinkRange from '../src/findlinkrange';
-import Document from '@ckeditor/ckeditor5-engine/src/model/document';
+import Model from '@ckeditor/ckeditor5-engine/src/model/model';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'findLinkRange', () => {
-	let document, root;
+	let model, document, root;
 
 	beforeEach( () => {
-		document = new Document();
+		model = new Model();
+		document = model.document;
 		root = document.createRoot();
-		document.schema.allow( { name: '$text', inside: '$root' } );
-		document.schema.registerItem( 'p', '$block' );
+		model.schema.extend( '$text', { allowIn: '$root' } );
+		model.schema.register( 'p', { inheritAllFrom: '$block' } );
 	} );
 
 	it( 'should find link range searching from the center of the link #1', () => {
-		setData( document, '<$text linkHref="url">foobar</$text>' );
+		setData( model, '<$text linkHref="url">foobar</$text>' );
 
 		const startPosition = new Position( root, [ 3 ] );
 		const result = findLinkRange( startPosition, 'url' );
@@ -30,7 +31,7 @@ describe( 'findLinkRange', () => {
 	} );
 
 	it( 'should find link range searching from the center of the link #2', () => {
-		setData( document, 'abc <$text linkHref="url">foobar</$text> abc' );
+		setData( model, 'abc <$text linkHref="url">foobar</$text> abc' );
 
 		const startPosition = new Position( root, [ 7 ] );
 		const result = findLinkRange( startPosition, 'url' );
@@ -40,7 +41,7 @@ describe( 'findLinkRange', () => {
 	} );
 
 	it( 'should find link range searching from the beginning of the link #1', () => {
-		setData( document, '<$text linkHref="url">foobar</$text>' );
+		setData( model, '<$text linkHref="url">foobar</$text>' );
 
 		const startPosition = new Position( root, [ 0 ] );
 		const result = findLinkRange( startPosition, 'url' );
@@ -50,7 +51,7 @@ describe( 'findLinkRange', () => {
 	} );
 
 	it( 'should find link range searching from the beginning of the link #2', () => {
-		setData( document, 'abc <$text linkHref="url">foobar</$text> abc' );
+		setData( model, 'abc <$text linkHref="url">foobar</$text> abc' );
 
 		const startPosition = new Position( root, [ 4 ] );
 		const result = findLinkRange( startPosition, 'url' );
@@ -60,7 +61,7 @@ describe( 'findLinkRange', () => {
 	} );
 
 	it( 'should find link range searching from the end of the link #1', () => {
-		setData( document, '<$text linkHref="url">foobar</$text>' );
+		setData( model, '<$text linkHref="url">foobar</$text>' );
 
 		const startPosition = new Position( root, [ 6 ] );
 		const result = findLinkRange( startPosition, 'url' );
@@ -70,7 +71,7 @@ describe( 'findLinkRange', () => {
 	} );
 
 	it( 'should find link range searching from the end of the link #2', () => {
-		setData( document, 'abc <$text linkHref="url">foobar</$text> abc' );
+		setData( model, 'abc <$text linkHref="url">foobar</$text> abc' );
 
 		const startPosition = new Position( root, [ 10 ] );
 		const result = findLinkRange( startPosition, 'url' );
@@ -80,7 +81,7 @@ describe( 'findLinkRange', () => {
 	} );
 
 	it( 'should find link range when link stick to other link searching from the center of the link', () => {
-		setData( document, '<$text linkHref="other">abc</$text><$text linkHref="url">foobar</$text><$text linkHref="other">abc</$text>' );
+		setData( model, '<$text linkHref="other">abc</$text><$text linkHref="url">foobar</$text><$text linkHref="other">abc</$text>' );
 
 		const startPosition = new Position( root, [ 6 ] );
 		const result = findLinkRange( startPosition, 'url' );
@@ -90,7 +91,7 @@ describe( 'findLinkRange', () => {
 	} );
 
 	it( 'should find link range when link stick to other link searching from the beginning of the link', () => {
-		setData( document, '<$text linkHref="other">abc</$text><$text linkHref="url">foobar</$text><$text linkHref="other">abc</$text>' );
+		setData( model, '<$text linkHref="other">abc</$text><$text linkHref="url">foobar</$text><$text linkHref="other">abc</$text>' );
 
 		const startPosition = new Position( root, [ 3 ] );
 		const result = findLinkRange( startPosition, 'url' );
@@ -100,7 +101,7 @@ describe( 'findLinkRange', () => {
 	} );
 
 	it( 'should find link range when link stick to other link searching from the end of the link', () => {
-		setData( document, '<$text linkHref="other">abc</$text><$text linkHref="url">foobar</$text><$text linkHref="other">abc</$text>' );
+		setData( model, '<$text linkHref="other">abc</$text><$text linkHref="url">foobar</$text><$text linkHref="other">abc</$text>' );
 
 		const startPosition = new Position( root, [ 9 ] );
 		const result = findLinkRange( startPosition, 'url' );
@@ -111,7 +112,7 @@ describe( 'findLinkRange', () => {
 
 	it( 'should find link range only inside current parent', () => {
 		setData(
-			document,
+			model,
 			'<p><$text linkHref="url">foobar</$text></p>' +
 			'<p><$text linkHref="url">foobar</$text></p>' +
 			'<p><$text linkHref="url">foobar</$text></p>'

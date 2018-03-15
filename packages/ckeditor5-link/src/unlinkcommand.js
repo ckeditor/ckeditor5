@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -20,7 +20,7 @@ export default class UnlinkCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		this.isEnabled = this.editor.document.selection.hasAttribute( 'linkHref' );
+		this.isEnabled = this.editor.model.document.selection.hasAttribute( 'linkHref' );
 	}
 
 	/**
@@ -32,20 +32,17 @@ export default class UnlinkCommand extends Command {
 	 * @fires execute
 	 */
 	execute() {
-		const document = this.editor.document;
-		const selection = document.selection;
+		const model = this.editor.model;
+		const selection = model.document.selection;
 
-		document.enqueueChanges( () => {
+		model.change( writer => {
 			// Get ranges to unlink.
 			const rangesToUnlink = selection.isCollapsed ?
 				[ findLinkRange( selection.getFirstPosition(), selection.getAttribute( 'linkHref' ) ) ] : selection.getRanges();
 
-			// Keep it as one undo step.
-			const batch = document.batch();
-
 			// Remove `linkHref` attribute from specified ranges.
 			for ( const range of rangesToUnlink ) {
-				batch.removeAttribute( range, 'linkHref' );
+				writer.removeAttribute( 'linkHref', range );
 			}
 		} );
 	}

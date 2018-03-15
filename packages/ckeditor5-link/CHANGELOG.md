@@ -1,6 +1,29 @@
 Changelog
 =========
 
+## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-link/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
+
+### Features
+
+* Added two-step caret movement for links. Closes [#72](https://github.com/ckeditor/ckeditor5-link/issues/72). ([985bb40](https://github.com/ckeditor/ckeditor5-link/commit/985bb40))
+* Implemented a 2–step link UI with a refreshed look&feel (see [ckeditor/ckeditor5#645](https://github.com/ckeditor/ckeditor5/issues/645)). Closes [#31](https://github.com/ckeditor/ckeditor5-link/issues/31). ([6baee95](https://github.com/ckeditor/ckeditor5-link/commit/6baee95))
+
+### Bug fixes
+
+* Link feature should not create empty text nodes with `linkHref` attribute. Closes [#169](https://github.com/ckeditor/ckeditor5-link/issues/169). ([0641978](https://github.com/ckeditor/ckeditor5-link/commit/0641978))
+
+### Other changes
+
+* Aligned feature class naming to the new scheme. ([5d8e67d](https://github.com/ckeditor/ckeditor5-link/commit/5d8e67d))
+* Migrated package styles to PostCSS. Moved visual styles to `@ckeditor/ckeditor5-theme-lark` (see [ckeditor/ckeditor5-ui#144](https://github.com/ckeditor/ckeditor5-ui/issues/144)). ([f16d263](https://github.com/ckeditor/ckeditor5-link/commit/f16d263))
+* Removed `LinkElement`. We should be using custom properties instead. Closes [#162](https://github.com/ckeditor/ckeditor5-link/issues/162). ([3785e50](https://github.com/ckeditor/ckeditor5-link/commit/3785e50))
+* Updated translations. ([d285ad3](https://github.com/ckeditor/ckeditor5-link/commit/d285ad3))
+
+### BREAKING CHANGES
+
+* The structure of the link UI has changed dramatically. Some pieces of the `LinkFormView` belong now to the `LinkActionsView` class. The CSS classes have also changed along with component templates.
+
+
 ## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-link/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
 
 ### Other changes

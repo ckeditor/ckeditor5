@@ -1,4 +1,4 @@
-# Copyright (c) Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+# Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
 msgid ""
 msgstr ""
 "Language: hr\n"
@@ -13,6 +13,18 @@ msgctxt "Toolbar button tooltip for the Link feature."
 msgid "Link"
 msgstr "Veza"
 
-msgctxt "Label for the URL input in the Link dialog."
+msgctxt "Label for the URL input in the Link URL editing balloon."
 msgid "Link URL"
 msgstr "URL veze"
+
+msgctxt "Button opening the Link URL editing balloon."
+msgid "Edit link"
+msgstr "Uredi vezu"
+
+msgctxt "Button opening the link in new browser tab."
+msgid "Open link in new tab"
+msgstr "Otvori vezu u novoj kartici"
+
+msgctxt "Label explaining that a link has no URL set (the URL is empty)."
+msgid "This link has no URL"
+msgstr "Ova veza nema URL"
