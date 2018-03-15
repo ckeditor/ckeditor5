@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
+
+### Other changes
+
+* Migrated the editor styles to PostCSS (see [ckeditor/ckeditor5-ui#144](https://github.com/ckeditor/ckeditor5-ui/issues/144)). ([9fbecae](https://github.com/ckeditor/ckeditor5-editor-inline/commit/9fbecae))
+* Removed the `.ck-editor-toolbar` class from the toolbar (see [ckeditor/ckeditor5-theme-lark#135](https://github.com/ckeditor/ckeditor5-theme-lark/issues/135)). ([213ddfd](https://github.com/ckeditor/ckeditor5-editor-inline/commit/213ddfd))
+
+
 ## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-editor-inline/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
 
 ### Other changes
