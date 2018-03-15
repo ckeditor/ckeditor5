@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -47,7 +47,7 @@ export default class CKFinderUploadAdapter extends Plugin {
 		}
 
 		// Register CKFinderAdapter
-		this.editor.plugins.get( FileRepository ).createAdapter = loader => new Adapter( loader, url, this.editor.t );
+		this.editor.plugins.get( FileRepository ).createUploadAdapter = loader => new UploadAdapter( loader, url, this.editor.t );
 	}
 }
 
@@ -55,9 +55,9 @@ export default class CKFinderUploadAdapter extends Plugin {
  * Upload adapter for CKFinder.
  *
  * @private
- * @implements module:upload/filerepository~Adapter
+ * @implements module:upload/filerepository~UploadAdapter
  */
-class Adapter {
+class UploadAdapter {
 	/**
 	 * Creates a new adapter instance.
 	 *
@@ -91,7 +91,7 @@ class Adapter {
 	/**
 	 * Starts the upload process.
 	 *
-	 * @see module:upload/filerepository~Adapter#upload
+	 * @see module:upload/filerepository~UploadAdapter#upload
 	 * @returns {Promise}
 	 */
 	upload() {
@@ -105,7 +105,7 @@ class Adapter {
 	/**
 	 * Aborts the upload process.
 	 *
-	 * @see module:upload/filerepository~Adapter#abort
+	 * @see module:upload/filerepository~UploadAdapter#abort
 	 * @returns {Promise}
 	 */
 	abort() {

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -19,7 +19,7 @@ import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import List from '@ckeditor/ckeditor5-list/src/list';
-import ImageUpload from '@ckeditor/ckeditor5-upload/src/imageupload';
+import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 import CKFinderUploadAdapter from '../../src/uploadadapter';
 
 ClassicEditor
@@ -28,7 +28,7 @@ ClassicEditor
 			Enter, Typing, Paragraph, Heading, Undo, Bold, Italic, Heading, List, Image, ImageToolbar, Clipboard,
 			ImageCaption, ImageStyle, ImageUpload, CKFinderUploadAdapter
 		],
-		toolbar: [ 'headings', 'undo', 'redo', 'bold', 'italic', 'bulletedList', 'numberedList', 'insertImage' ],
+		toolbar: [ 'heading', '|', 'undo', 'redo', 'bold', 'italic', 'bulletedList', 'numberedList', 'imageUpload' ],
 		ckfinder: {
 			// eslint-disable-next-line max-len
 			uploadUrl: 'https://cksource.com/weuy2g4ryt278ywiue/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'

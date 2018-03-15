@@ -1,12 +1,12 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
 /* globals document */
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Image from '@ckeditor/ckeditor5-image/src/image';
-import ImageUpload from '@ckeditor/ckeditor5-upload/src/imageupload';
+import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 import CKFinderUploadAdapter from '../src/uploadadapter';
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
 import { createNativeFileMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
@@ -42,7 +42,7 @@ describe( 'CKFinderUploadAdapter', () => {
 		expect( editor.plugins.get( CKFinderUploadAdapter ) ).to.be.instanceOf( CKFinderUploadAdapter );
 	} );
 
-	describe( 'Adapter', () => {
+	describe( 'UploadAdapter', () => {
 		let adapter, loaderMock;
 
 		beforeEach( () => {
@@ -50,7 +50,7 @@ describe( 'CKFinderUploadAdapter', () => {
 			file.name = 'image.jpeg';
 			loaderMock = { file	};
 
-			adapter = editor.plugins.get( FileRepository ).createAdapter( loaderMock );
+			adapter = editor.plugins.get( FileRepository ).createUploadAdapter( loaderMock );
 		} );
 
 		it( 'crateAdapter method should be registered and have upload and abort methods', () => {
@@ -59,7 +59,7 @@ describe( 'CKFinderUploadAdapter', () => {
 			expect( adapter.abort ).to.be.a( 'function' );
 		} );
 
-		it( 'should not set the FileRepository.createAdapter factory if not configured', () => {
+		it( 'should not set the FileRepository.createUploadAdapter factory if not configured', () => {
 			const editorElement = document.createElement( 'div' );
 			document.body.appendChild( editorElement );
 
@@ -70,7 +70,7 @@ describe( 'CKFinderUploadAdapter', () => {
 				.then( editor => {
 					const fileRepository = editor.plugins.get( FileRepository );
 
-					expect( fileRepository ).to.not.have.property( 'createAdapter' );
+					expect( fileRepository ).to.not.have.property( 'createUploadAdapter' );
 
 					editorElement.remove();
 
