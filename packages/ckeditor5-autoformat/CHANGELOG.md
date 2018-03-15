@@ -12,8 +12,7 @@ Changelog
 
 ### Other changes
 
-* Align feature class naming to a new scheme. ([5f5b4a9](https://github.com/ckeditor/ckeditor5-autoformat/commit/5f5b4a9))
-* Callbacks should listen to new `model.Document#event:change` and use `model.Document#differ`. ([2d83221](https://github.com/ckeditor/ckeditor5-autoformat/commit/2d83221))
+* Aligned feature class naming to the new scheme. ([5f5b4a9](https://github.com/ckeditor/ckeditor5-autoformat/commit/5f5b4a9))
 
 
 ## 0.0.1 (2017-10-27)
