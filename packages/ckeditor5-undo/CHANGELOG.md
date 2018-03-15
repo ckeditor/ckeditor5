@@ -13,10 +13,7 @@ Changelog
 
 ### Other changes
 
-* Align feature class naming to a new scheme. ([d4f0cc2](https://github.com/ckeditor/ckeditor5-undo/commit/d4f0cc2))
-* Aligned code to the changes API in `ckeditor5-engine`. Read more [ckeditor/ckeditor5-engine#738](https://github.com/ckeditor/ckeditor5-engine/issues/738). ([7e515dc](https://github.com/ckeditor/ckeditor5-undo/commit/7e515dc))
-* Aligned code to the changes in the engine. ([6df3253](https://github.com/ckeditor/ckeditor5-undo/commit/6df3253))
-* Changes after model events refactor in ckeditor5-engine. ([325a684](https://github.com/ckeditor/ckeditor5-undo/commit/325a684))
+* Aligned feature class naming to the new scheme. ([d4f0cc2](https://github.com/ckeditor/ckeditor5-undo/commit/d4f0cc2))
 * Updated translations. ([33171d5](https://github.com/ckeditor/ckeditor5-undo/commit/33171d5))
 
 
