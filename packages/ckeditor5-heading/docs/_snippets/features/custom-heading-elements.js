@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -8,13 +8,23 @@
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloudservices/tests/_utils/cloudservices-config';
 
 ClassicEditor
-	.create( document.querySelector( '#snippet-custom-heading-levels' ), {
+	.create( document.querySelector( '#snippet-custom-heading-elements' ), {
 		cloudServices: CS_CONFIG,
 		heading: {
 			options: [
 				{ model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
 				{ model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
-				{ model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' }
+				{ model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+				{
+					model: 'headingFancy',
+					view: {
+						name: 'h2',
+						class: 'fancy'
+					},
+					title: 'Heading 2 (fancy)',
+					class: 'ck-heading_heading2_fancy',
+					priority: 'high'
+				}
 			]
 		},
 		toolbar: {

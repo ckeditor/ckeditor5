@@ -25,7 +25,6 @@ It is, of course, possible to configure which heading levels the editor should s
 
 For example, the following editor will support only two levels of headings &mdash; `<h1>` and `<h2>`:
 
-
 ```html
 <div id="editor">
 	<h1>Heading 1</h1>
@@ -39,9 +38,9 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		heading: {
 			options: [
-				{ modelElement: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
-				{ modelElement: 'heading1', viewElement: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
-				{ modelElement: 'heading2', viewElement: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' }
+				{ model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+				{ model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+				{ model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' }
 			]
 		}
 	} )
@@ -50,6 +49,58 @@ ClassicEditor
 ```
 
 {@snippet features/custom-heading-levels}
+
+### Configuring custom heading elements
+
+It is also possible to define fully custom elements for headings by using the {@link module:engine/view/elementdefinition~ElementDefinition advanced format} of the {@link module:heading/heading~HeadingConfig#options `heading.options`} configuration option.
+
+For example, the following editor will support the following two heading options at the same time: `<h2 class="fancy">` and `<h2>`:
+
+```html
+<style>
+	// Styles for the heading in the content and for the dropdown item.
+	h2.fancy, .ck-heading_heading2_fancy {
+		color: #ff0050;
+		font-size: 17px;
+	}
+</style>
+
+<div id="snippet-custom-heading-levels">
+	<h1>Heading 1</h1>
+	<h2>Heading 2</h2>
+	<h2 class="fancy">Fancy Heading 2</h2>
+	<p>This is <a href="https://ckeditor5.github.io">CKEditor 5</a>.</p>
+</div>
+```
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		heading: {
+			options: [
+				{ model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+				{ model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+				{ model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+				{
+					model: 'headingFancy',
+					view: {
+						name: 'h2',
+						class: 'fancy'
+					},
+					title: 'Heading 2 (fancy)',
+					class: 'ck-heading_heading2_fancy',
+
+					// It needs to be converted before the standard 'heading2'.
+					priority: 'high'
+				}
+			]
+		}
+	} )
+	.then( ... )
+	.catch( ... );
+```
+
+{@snippet features/custom-heading-elements}
 
 ## Installation
 
@@ -71,7 +122,7 @@ import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Heading, ... ],
-		toolbar: [ 'headings', ... ]
+		toolbar: [ 'heading', ... ]
 	} )
 	.then( ... )
 	.catch( ... );
@@ -81,13 +132,13 @@ ClassicEditor
 
 The {@link module:heading/heading~Heading} plugin registers:
 
-* The `'headings'` dropdown.
-* The `'heading1'`, `'heading2'`, ..., `'headingN'` commands based on the {@link module:heading/heading~HeadingConfig#options `heading.options`} configuration option.
+* The `'heading'` dropdown.
+* The `'heading'` command that accepts value based on the {@link module:heading/heading~HeadingConfig#options `heading.options`} configuration option.
 
 	You can turn the currently selected block(s) to headings by executing one of these commands:
 
 	```js
-	editor.execute( 'heading2' );
+	editor.execute( 'heading', { value: 'heading2' } );
 	```
 
 ## Contribute

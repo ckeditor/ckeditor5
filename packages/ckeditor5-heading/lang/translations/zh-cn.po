@@ -1,30 +1,30 @@
-# Copyright (c) Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+# Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
 msgid ""
 msgstr ""
 "Language: zh_CN\n"
 "Language-Team: Chinese (China) (https://www.transifex.com/ckeditor/teams/11143/zh_CN/)\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-msgctxt "Drop-down option label for the paragraph format."
+msgctxt "Dropdown option label for the paragraph format."
 msgid "Paragraph"
 msgstr "段落"
 
-msgctxt "Tooltip for the heading drop-down."
+msgctxt "Tooltip for the heading dropdown."
 msgid "Heading"
 msgstr "标题"
 
-msgctxt "Default label for the heading drop-down."
+msgctxt "Default label for the heading dropdown."
 msgid "Choose heading"
 msgstr "标题类型"
 
-msgctxt "Drop-down option label for the heading level 1 format."
+msgctxt "Dropdown option label for the heading level 1 format."
 msgid "Heading 1"
 msgstr "标题 1"
 
-msgctxt "Drop-down option label for the heading level 2 format."
+msgctxt "Dropdown option label for the heading level 2 format."
 msgid "Heading 2"
 msgstr "标题 2"
 
-msgctxt "Drop-down option label for the heading level 3 format."
+msgctxt "Dropdown option label for the heading level 3 format."
 msgid "Heading 3"
 msgstr "标题 3"

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -15,7 +15,7 @@ import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Enter, Typing, Undo, Heading, Paragraph ],
-		toolbar: [ 'headings', 'undo', 'redo' ]
+		toolbar: [ 'heading', '|', 'undo', 'redo' ]
 	} )
 	.then( editor => {
 		window.editor = editor;

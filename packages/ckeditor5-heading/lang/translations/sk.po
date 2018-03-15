@@ -1,30 +1,30 @@
-# Copyright (c) Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+# Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
 msgid ""
 msgstr ""
 "Language: sk\n"
 "Language-Team: Slovak (https://www.transifex.com/ckeditor/teams/11143/sk/)\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
-msgctxt "Drop-down option label for the paragraph format."
+msgctxt "Dropdown option label for the paragraph format."
 msgid "Paragraph"
 msgstr "Paragraf"
 
-msgctxt "Tooltip for the heading drop-down."
+msgctxt "Tooltip for the heading dropdown."
 msgid "Heading"
 msgstr "Nadpis"
 
-msgctxt "Default label for the heading drop-down."
+msgctxt "Default label for the heading dropdown."
 msgid "Choose heading"
 msgstr "Vyberte nadpis"
 
-msgctxt "Drop-down option label for the heading level 1 format."
+msgctxt "Dropdown option label for the heading level 1 format."
 msgid "Heading 1"
 msgstr "Nadpis 1"
 
-msgctxt "Drop-down option label for the heading level 2 format."
+msgctxt "Dropdown option label for the heading level 2 format."
 msgid "Heading 2"
 msgstr "Nadpis 2"
 
-msgctxt "Drop-down option label for the heading level 3 format."
+msgctxt "Dropdown option label for the heading level 3 format."
 msgid "Heading 3"
 msgstr "Nadpis 3"

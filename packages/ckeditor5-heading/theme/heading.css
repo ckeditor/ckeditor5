@@ -1,0 +1,20 @@
+/*
+ * Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+.ck-heading_heading1 {
+	font-size: 20px;
+}
+
+.ck-heading_heading2 {
+	font-size: 17px;
+}
+
+.ck-heading_heading3 {
+	font-size: 14px;
+}
+
+[class*="ck-heading_heading"] {
+	font-weight: bold;
+}
