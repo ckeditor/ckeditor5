@@ -42,6 +42,9 @@
 	--ck-color-button-action-disabled-background: 				hsl(104, 44%, 58%);
 	--ck-color-button-action-text: 								var(--ck-color-base-background);
 
+	--ck-color-button-save: 									hsl(120, 100%, 27%);
+	--ck-color-button-cancel: 									hsl(15, 100%, 43%);
+
 	/* -- Dropdown ------------------------------------------------------------------------------ */
 
 	--ck-color-dropdown-panel-background: 						var(--ck-color-base-background);

@@ -23,6 +23,9 @@ import LabeledInputView from '@ckeditor/ckeditor5-ui/src/labeledinput/labeledinp
 
 import boldIcon from '@ckeditor/ckeditor5-basic-styles/theme/icons/bold.svg';
 import italicIcon from '@ckeditor/ckeditor5-basic-styles/theme/icons/italic.svg';
+import checkIcon from '@ckeditor/ckeditor5-core/theme/icons/check.svg';
+import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
+
 import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview';
 
 class TextView extends View {
@@ -114,9 +117,11 @@ function renderButton() {
 	const actionButton = button( { label: 'Action button' } );
 	const roundedButton = button( { label: 'Rounded corners' } );
 	const boldButton = button( { label: 'Bold text' } );
+	const saveButton = button( { label: 'Save', withText: false, icon: checkIcon } );
+	const cancelButton = button( { label: 'Cancel', withText: false, icon: cancelIcon } );
 
 	ui.buttonTypes.add( toolbar( [
-		actionButton, roundedButton, boldButton
+		actionButton, roundedButton, boldButton, saveButton, cancelButton
 	] ) );
 
 	// TODO: It requires model interface.
@@ -127,6 +132,9 @@ function renderButton() {
 
 	// TODO: It requires model interface.
 	boldButton.element.classList.add( 'ck-button-bold' );
+
+	saveButton.element.classList.add( 'ck-button-save' );
+	cancelButton.element.classList.add( 'ck-button-cancel' );
 
 	// --- Icon ------------------------------------------------------------
 

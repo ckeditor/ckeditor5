@@ -111,6 +111,9 @@ The file containing custom variables will be named `custom.css` and it will look
 	--ck-color-button-action-disabled-background: hsl(168, 76%, 42%);
 	--ck-color-button-action-text: var(--ck-custom-white);
 
+	--ck-color-button-save: hsl(120, 100%, 46%);
+	--ck-color-button-cancel: hsl(15, 100%, 56%);
+
 	/* -- Overrides the default .ck-dropdown class colors --------------------------------------- */
 
 	--ck-color-dropdown-panel-background: var(--ck-custom-background);
