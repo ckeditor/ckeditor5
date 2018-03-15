@@ -1,6 +1,45 @@
 Changelog
 =========
 
+## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-image/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
+
+### Features
+
+* Intorduced the `ImageUpload` feature. It was moved from the `@ckeditor/ckeditor5-upload` package. See [ckeditor/ckeditor5-upload#22](https://github.com/ckeditor/ckeditor5-upload/issues/22). ([b974bb0](https://github.com/ckeditor/ckeditor5-image/commit/b974bb0))
+* Simplified the text alternative UI, aligning the image package to the redesigned Lark theme (see [ckeditor/ckeditor5#645](https://github.com/ckeditor/ckeditor5/issues/645)). ([9a069b0](https://github.com/ckeditor/ckeditor5-image/commit/9a069b0))
+
+### Other changes
+
+* Align feature class naming to a new scheme. ([8690765](https://github.com/ckeditor/ckeditor5-image/commit/8690765))
+* Aligned code to the changes API in `ckeditor5-engine`. Read more [ckeditor/ckeditor5-engine#738](https://github.com/ckeditor/ckeditor5-engine/issues/738). ([8b60192](https://github.com/ckeditor/ckeditor5-image/commit/8b60192))
+* Aligned to changes in ckeditor5-engine. ([988a0f4](https://github.com/ckeditor/ckeditor5-image/commit/988a0f4))
+* Aligning with new conversion helpers API. ([b9e62c4](https://github.com/ckeditor/ckeditor5-image/commit/b9e62c4))
+* Event names don't have to be normalized to consumable types anymore. ([dff8b47](https://github.com/ckeditor/ckeditor5-image/commit/dff8b47))
+* Migrated package styles to PostCSS. Moved visual styles to ckeditor5-theme-lark (see [ckeditor/ckeditor5-ui#144](https://github.com/ckeditor/ckeditor5-ui/issues/144)). ([ed6e1cf](https://github.com/ckeditor/ckeditor5-image/commit/ed6e1cf))
+* Removed the `.ck-editor-toolbar` and `.ck-editor-toolbar-container` classes from the UI (see [ckeditor/ckeditor5-theme-lark#135](https://github.com/ckeditor/ckeditor5-theme-lark/issues/135)). ([1c08fdd](https://github.com/ckeditor/ckeditor5-image/commit/1c08fdd))
+* Renamed `uploadImage` command and button to `imageUpload`. Closes [#184](https://github.com/ckeditor/ckeditor5-image/issues/184). ([6f891b8](https://github.com/ckeditor/ckeditor5-image/commit/6f891b8))
+* Update API usage after changes in the engine in [#1312](https://github.com/ckeditor/ckeditor5-image/issues/1312). ([70ea9ee](https://github.com/ckeditor/ckeditor5-image/commit/70ea9ee))
+* Updated naming of UI components & commands. ([2e7fbee](https://github.com/ckeditor/ckeditor5-image/commit/2e7fbee))
+* Updated translations. ([02f9cf5](https://github.com/ckeditor/ckeditor5-image/commit/02f9cf5))
+* Use new Matcher API. ([2d491e2](https://github.com/ckeditor/ckeditor5-image/commit/2d491e2))
+* Use post-fixer API. ([b2e4439](https://github.com/ckeditor/ckeditor5-image/commit/b2e4439))
+
+### BREAKING CHANGES
+
+* `uploadImage` command and button are now called `imageUpload`.
+* Renamed the `'imageUpload'` command to `'uploadImage'`.
+* The `'imageStyleFull'`, `'imageStyleSide'`, `'imageStyleAlignLeft'`, `'imageStyleAlignRight'` and `'imageStyleAlignCenter'` commands are no longer available. They were replaced by the `'imageStyle'` command that accepts name of an image style as a value.
+* The `'imageStyleFull'`, `'imageStyleSide'`, `'imageStyleAlignLeft'`, `'imageStyleAlignRight'` and `'imageStyleAlignCenter'` UI components are no longer available. Replaced by `'imageStyle:full'`, `'imageStyle:side'`, `'imageStyle:alignLeft'`, `'imageStyle:alignRight'` and `'imageStyle:alignCenter'`.
+* The `ImageStyleCommand#value` property is no longer a boolean only. Now it represents a name of an image style of the currently selected image element.
+* The `ImageStyleCommand` constructor's second parameter is now an array of supported image styles.
+* The DOM structure of the text alternative form has changed.
+
+
+## 0.0.1 (2017-11-06)
+
+Internal changes only (updated dependencies, documentation, etc.).
+
+
 ## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-image/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
 
 ### Bug fixes
