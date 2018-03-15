@@ -11,10 +11,7 @@ Changelog
 
 ### Other changes
 
-* Align feature class naming to a new scheme. ([9c2cb9d](https://github.com/ckeditor/ckeditor5-typing/commit/9c2cb9d))
-* Aligned code to the changes API in `ckeditor5-engine`. Read more [ckeditor/ckeditor5-engine#738](https://github.com/ckeditor/ckeditor5-engine/issues/738). ([67fb696](https://github.com/ckeditor/ckeditor5-typing/commit/67fb696))
-* Aligned code to the changes in the engine. ([8f10f70](https://github.com/ckeditor/ckeditor5-typing/commit/8f10f70))
-* Changes after model events refactor in ckeditor5-engine. ([8a4c498](https://github.com/ckeditor/ckeditor5-typing/commit/8a4c498))
+* Aligned feature class naming to the new scheme. ([9c2cb9d](https://github.com/ckeditor/ckeditor5-typing/commit/9c2cb9d))
 
 
 ## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-typing/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
