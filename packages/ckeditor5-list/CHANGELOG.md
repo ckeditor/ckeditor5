@@ -1,6 +1,24 @@
 Changelog
 =========
 
+## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-list/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
+
+### Features
+
+* Updated icons for compatibility with the refreshed Lark theme. Minor adjustments in toolbar configurations (see [ckeditor/ckeditor5#645](https://github.com/ckeditor/ckeditor5/issues/645)). ([d1fae4b](https://github.com/ckeditor/ckeditor5-list/commit/d1fae4b))
+
+### Other changes
+
+* Align feature class naming to a new scheme. ([d677fb6](https://github.com/ckeditor/ckeditor5-list/commit/d677fb6))
+* Aligned code to the changes API in `ckeditor5-engine`. Read more [ckeditor/ckeditor5-engine#738](https://github.com/ckeditor/ckeditor5-engine/issues/738). ([8fcb33c](https://github.com/ckeditor/ckeditor5-list/commit/8fcb33c))
+* Aligned code to the changes in the engine. ([6ae5c6a](https://github.com/ckeditor/ckeditor5-list/commit/6ae5c6a))
+* Aligned to changes in ckeditor5-engine. ([a00eb4a](https://github.com/ckeditor/ckeditor5-list/commit/a00eb4a))
+* Aligning with new conversion helpers API. ([fdafa69](https://github.com/ckeditor/ckeditor5-list/commit/fdafa69))
+* Removed ViewListItemElement class and introduced createViewListItemElement utility method. Closes [#89](https://github.com/ckeditor/ckeditor5-list/issues/89). ([e4ac704](https://github.com/ckeditor/ckeditor5-list/commit/e4ac704))
+* Updated translations. ([762a9ed](https://github.com/ckeditor/ckeditor5-list/commit/762a9ed))
+* Use post-fixer API. ([835dc55](https://github.com/ckeditor/ckeditor5-list/commit/835dc55))
+
+
 ## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-list/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
 
 ### Bug fixes
