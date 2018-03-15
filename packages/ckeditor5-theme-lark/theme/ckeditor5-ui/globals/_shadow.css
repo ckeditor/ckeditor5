@@ -1,0 +1,16 @@
+/*
+ * Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+:root {
+	/**
+	 * A visual style of element's inner shadow (i.e. input).
+	 */
+	--ck-inner-shadow: 2px 2px 3px var(--ck-color-shadow-inner) inset;
+
+	/**
+	 * A visual style of element's drop shadow (i.e. panel).
+	 */
+	--ck-drop-shadow: 0 1px 2px 1px var(--ck-color-shadow-drop);
+}

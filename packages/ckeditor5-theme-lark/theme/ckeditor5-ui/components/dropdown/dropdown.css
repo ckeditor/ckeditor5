@@ -1,0 +1,72 @@
+/*
+ * Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+@import "../../../mixins/_rounded.css";
+@import "../../../mixins/_disabled.css";
+@import "../../../mixins/_shadow.css";
+
+:root {
+	--ck-dropdown-arrow-size: calc(0.5 * var(--ck-icon-size));
+}
+
+.ck-dropdown {
+	/* Enable font size inheritance, which allows fluid UI scaling. */
+	font-size: inherit;
+
+	& .ck-dropdown__arrow {
+		right: var(--ck-spacing-standard);
+		width: var(--ck-dropdown-arrow-size);
+	}
+
+	&.ck-disabled .ck-dropdown__arrow {
+		@mixin ck-disabled;
+	}
+
+	& .ck-button.ck-dropdown__button {
+		/* A space to accommodate the triangle. */
+		padding-right: calc(2.5 * var(--ck-spacing-standard));
+
+		&:not(.ck-button_with-text) {
+			/* Make sure dropdowns with just an icon have the right inner spacing */
+			padding-left: var(--ck-spacing-small);
+		}
+
+		/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/70 */
+		&.ck-disabled .ck-button__label {
+			@mixin ck-disabled;
+		}
+
+		/* https://github.com/ckeditor/ckeditor5/issues/816 */
+		&.ck-on {
+			border-bottom-left-radius: 0;
+			border-bottom-right-radius: 0;
+		}
+
+		/* #23 */
+		& .ck-button__label {
+			width: 7em;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+	}
+}
+
+.ck-dropdown__panel {
+	@mixin ck-rounded-corners;
+	@mixin ck-drop-shadow;
+
+	/* Disabled radius of top-left border to be consistent with .dropdown__button
+	https://github.com/ckeditor/ckeditor5/issues/816 */
+	@mixin ck-rounded-corners {
+		border-top-left-radius: 0;
+	}
+
+	background: var(--ck-color-dropdown-panel-background);
+	border: 1px solid var(--ck-color-dropdown-panel-border);
+	bottom: 0;
+
+	/* Make sure the panel is at least as wide as the dropdown's button. */
+	min-width: 100%;
+}

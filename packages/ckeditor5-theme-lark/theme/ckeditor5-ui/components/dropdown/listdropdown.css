@@ -1,0 +1,21 @@
+/*
+ * Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+@import "../../../mixins/_rounded.css";
+
+.ck-dropdown .ck-dropdown__panel .ck-list {
+	/* Disabled radius of top-left border to be consistent with .dropdown__button
+	https://github.com/ckeditor/ckeditor5/issues/816 */
+	@mixin ck-rounded-corners {
+		border-top-left-radius: 0;
+	}
+
+	/* Using absolute units to make sure each element has the same height and padding.
+	https://github.com/ckeditor/ckeditor5-heading/issues/63 */
+	& > .ck-list__item {
+		line-height: calc(.8*var(--ck-line-height-base)*var(--ck-font-size-base));
+		padding: calc(.4*var(--ck-line-height-base)*var(--ck-font-size-base));
+	}
+}

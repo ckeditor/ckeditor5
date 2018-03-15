@@ -1,0 +1,11 @@
+/*
+ * Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+/* Resize dropdown's button label. */
+.ck-dropdown.ck-heading-dropdown {
+	& .ck-dropdown__button .ck-button__label {
+		width: 8em;
+	}
+}

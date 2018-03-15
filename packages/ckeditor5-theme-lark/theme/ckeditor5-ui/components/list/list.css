@@ -1,0 +1,41 @@
+/*
+ * Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+@import "../../../mixins/_rounded.css";
+@import "../../../mixins/_shadow.css";
+
+.ck-list {
+	@mixin ck-rounded-corners;
+
+	list-style-type: none;
+	background: var(--ck-color-list-background);
+}
+
+.ck-list__item {
+	padding: var(--ck-spacing-medium);
+	cursor: default;
+	min-width: 12em;
+
+	&:hover,
+	&:focus {
+		background: var(--ck-color-list-item-background-hover);
+	}
+
+	&:focus {
+		@mixin ck-box-shadow var(--ck-focus-outer-shadow);
+
+		outline: none;
+	}
+}
+
+.ck-list__item_active {
+	background: var(--ck-color-list-item-background-active);
+	color: var(--ck-color-list-item-text-active);
+
+	&:hover,
+	&:focus {
+		background: var(--ck-color-list-item-background-active-focus);
+	}
+}

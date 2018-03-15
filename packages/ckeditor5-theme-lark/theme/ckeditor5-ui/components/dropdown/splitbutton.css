@@ -1,0 +1,65 @@
+/*
+ * Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+@import "../../../mixins/_rounded.css";
+
+:root {
+	--ck-color-split-button-hover-background: hsl(0, 0%, 92%);
+	--ck-color-split-button-hover-border: hsl(0, 0%, 70%);
+}
+
+.ck-splitbutton {
+	& > .ck-splitbutton__action {
+		/* Don't round the first button on the right side */
+		@mixin ck-rounded-corners {
+			border-top-right-radius: unset;
+			border-bottom-right-radius: unset;
+		}
+	}
+
+	& > .ck-splitbutton__arrow {
+		/* It's a text-less button but still, it should not be square. */
+		min-width: unset;
+
+		/* Don't round the arrow button on the right side */
+		@mixin ck-rounded-corners {
+			border-top-left-radius: unset;
+			border-bottom-left-radius: unset;
+		}
+
+		& svg {
+			width: var(--ck-dropdown-arrow-size);
+		}
+	}
+
+	/* When the split button is "open" (the arrow is on) or being hovered, it should get some styling
+	as a whole. The background of both buttons should stand out and there should be a visual
+	separation between both buttons. */
+	&.ck-splitbutton_open,
+	&:hover {
+		/* When the split button hovered as a whole, not as individual buttons. */
+		& > .ck-button:not(.ck-on):not(:hover) {
+			background: var(--ck-color-split-button-hover-background);
+		}
+
+		& > .ck-splitbutton__arrow {
+			border-left-color: var(--ck-color-split-button-hover-border);
+		}
+	}
+
+	/* Don't round the bottom left and right corners of the buttons when "open"
+	https://github.com/ckeditor/ckeditor5/issues/816 */
+	&.ck-splitbutton_open {
+		@mixin ck-rounded-corners {
+			& > .ck-splitbutton__action {
+				border-bottom-left-radius: 0;
+			}
+
+			& > .ck-splitbutton__arrow {
+				border-bottom-right-radius: 0;
+			}
+		}
+	}
+}

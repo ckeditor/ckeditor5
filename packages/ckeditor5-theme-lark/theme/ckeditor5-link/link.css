@@ -1,0 +1,10 @@
+/*
+ * Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+/* Class added to span element surrounding currently selected link. */
+.ck-link_selected {
+	background: var(--ck-color-link-selected-background);
+	outline: 1px solid var(--ck-color-link-selected-background);
+}

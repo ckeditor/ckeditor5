@@ -1,0 +1,48 @@
+/*
+ * Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+@import "../../../mixins/_rounded.css";
+@import "../../../mixins/_disabled.css";
+@import "../../../mixins/_shadow.css";
+@import "../../../mixins/_focus.css";
+@import "../../mixins/_button.css";
+
+.ck-editor__editable {
+	@mixin ck-rounded-corners;
+
+	&.ck-focused {
+		@mixin ck-focus-ring;
+		@mixin ck-box-shadow var(--ck-inner-shadow);
+	}
+}
+
+.ck-editor__editable_inline {
+	overflow: auto;
+	padding: 0 var(--ck-spacing-standard);
+	border: 1px solid transparent;
+
+	/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/116 */
+	& > *:first-child {
+		margin-top: var(--ck-spacing-large);
+	}
+
+	/* https://github.com/ckeditor/ckeditor5/issues/847 */
+	& > *:last-child {
+		margin-bottom: var(--ck-spacing-large);
+	}
+}
+
+/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/111 */
+.ck-toolbar-container[class*="arrow_n"] {
+	&::after {
+		border-bottom-color: var(--ck-color-base-foreground);
+	}
+}
+
+.ck-toolbar-container[class*="arrow_s"] {
+	&::after {
+		border-top-color: var(--ck-color-base-foreground);
+	}
+}

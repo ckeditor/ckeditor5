@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -13,7 +13,9 @@ import View from '@ckeditor/ckeditor5-ui/src/view';
 
 import IconView from '@ckeditor/ckeditor5-ui/src/icon/iconview';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import createListDropdown from '@ckeditor/ckeditor5-ui/src/dropdown/list/createlistdropdown';
+
+import { createDropdown, addListToDropdown, addToolbarToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
+
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import ToolbarSeparatorView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarseparatorview';
 import InputTextView from '@ckeditor/ckeditor5-ui/src/inputtext/inputtextview';
@@ -21,8 +23,7 @@ import LabeledInputView from '@ckeditor/ckeditor5-ui/src/labeledinput/labeledinp
 
 import boldIcon from '@ckeditor/ckeditor5-basic-styles/theme/icons/bold.svg';
 import italicIcon from '@ckeditor/ckeditor5-basic-styles/theme/icons/italic.svg';
-
-import '../../theme/theme.scss';
+import SplitButtonView from '@ckeditor/ckeditor5-ui/src/dropdown/button/splitbuttonview';
 
 class TextView extends View {
 	constructor() {
@@ -62,7 +63,8 @@ const ui = testUtils.createTestUIView( {
 	'buttonResponsive3': '#button-responsive-3',
 	'buttonTooltip': '#button-tooltip',
 
-	dropdown: '#dropdown',
+	listDropdown: '#list-dropdown',
+	buttonDropdown: '#button-dropdown',
 
 	'toolbarText': '#toolbar-text',
 	'toolbarButton': '#toolbar-button',
@@ -93,19 +95,19 @@ function renderIcon() {
 function renderButton() {
 	// --- States ------------------------------------------------------------
 
-	ui.buttonStates.add( button( {
-		label: 'State: normal (none)',
-	} ) );
-
-	ui.buttonStates.add( button( {
-		label: 'State: disabled',
-		isEnabled: false
-	} ) );
-
-	ui.buttonStates.add( button( {
-		label: 'State: on',
-		isOn: true
-	} ) );
+	ui.buttonStates.add( toolbar( [
+		button( {
+			label: 'State: normal (none)',
+		} ),
+		button( {
+			label: 'State: disabled',
+			isEnabled: false
+		} ),
+		button( {
+			label: 'State: on',
+			isOn: true
+		} )
+	] ) );
 
 	// --- Types ------------------------------------------------------------
 
@@ -113,9 +115,9 @@ function renderButton() {
 	const roundedButton = button( { label: 'Rounded corners' } );
 	const boldButton = button( { label: 'Bold text' } );
 
-	ui.buttonTypes.add( actionButton );
-	ui.buttonTypes.add( roundedButton );
-	ui.buttonTypes.add( boldButton );
+	ui.buttonTypes.add( toolbar( [
+		actionButton, roundedButton, boldButton
+	] ) );
 
 	// TODO: It requires model interface.
 	actionButton.element.classList.add( 'ck-button-action' );
@@ -128,26 +130,22 @@ function renderButton() {
 
 	// --- Icon ------------------------------------------------------------
 
-	ui.buttonIcon.add( button( {
-		label: 'Bold',
-		icon: boldIcon
-	} ) );
+	ui.buttonIcon.add( toolbar( [
+		button( {
+			label: 'Bold',
+			icon: boldIcon
+		} )
+	] ) );
 
 	const styledButton = button( {
 		label: 'Button with an icon and custom styles',
 		icon: italicIcon
 	} );
 
-	ui.buttonIconCustom.add( styledButton );
+	ui.buttonIconCustom.add( toolbar( [ styledButton ] ) );
 
 	// TODO: It probably requires model interface.
 	styledButton.element.setAttribute( 'style', 'border-radius: 100px; border: 0' );
-
-	ui.buttonIconStates.add( button( {
-		label: 'Disabled',
-		icon: boldIcon,
-		isEnabled: false
-	} ) );
 
 	const disabledActionButton = button( {
 		label: 'Disabled action',
@@ -155,32 +153,27 @@ function renderButton() {
 		isEnabled: false
 	} );
 
-	ui.buttonIconStates.add( disabledActionButton );
+	ui.buttonIconStates.add( toolbar( [
+		button( {
+			label: 'Disabled',
+			icon: boldIcon,
+			isEnabled: false
+		} ),
+		disabledActionButton,
+		button( {
+			label: 'Bold',
+			withText: false,
+			tooltip: true,
+			icon: boldIcon
+		} )
+	] ) );
 
 	// TODO: It requires model interface.
 	disabledActionButton.element.classList.add( 'ck-button-action' );
 
-	ui.buttonIconStates.add( button( {
-		label: 'Bold',
-		withText: false,
-		tooltip: true,
-		icon: boldIcon
-	} ) );
-
 	// --- Responsive ------------------------------------------------------------
 
 	for ( let i = 1; i < 4; i++ ) {
-		ui[ `buttonResponsive${ i }` ].add( button( {
-			label: 'A button',
-			isEnabled: true
-		} ) );
-
-		ui[ `buttonResponsive${ i }` ].add( button( {
-			label: 'Bold',
-			icon: boldIcon,
-			isEnabled: true
-		} ) );
-
 		const notextButton = button( {
 			label: 'Bold',
 			withText: false,
@@ -188,7 +181,18 @@ function renderButton() {
 			icon: boldIcon
 		} );
 
-		ui[ `buttonResponsive${ i }` ].add( notextButton );
+		ui[ `buttonResponsive${ i }` ].add( toolbar( [
+			button( {
+				label: 'A button',
+				isEnabled: true
+			} ),
+			button( {
+				label: 'Bold',
+				icon: boldIcon,
+				isEnabled: true
+			} ),
+			notextButton
+		] ) );
 
 		// TODO: It requires model interface.
 		notextButton.element.classList.add( 'ck-button-action' );
@@ -196,19 +200,20 @@ function renderButton() {
 
 	// --- Tooltip ------------------------------------------------------------
 
-	ui.buttonTooltip.add( button( {
-		label: 'This button has a tooltip (south)',
-		withText: true,
-		tooltip: 'The content of the tooltip',
-	} ) );
-
-	ui.buttonTooltip.add( button( {
-		label: 'This one too – north',
-		withText: true,
-		keystroke: 'Ctrl+N',
-		tooltip: true,
-		tooltipPosition: 'n'
-	} ) );
+	ui.buttonTooltip.add( toolbar( [
+		button( {
+			label: 'This button has a tooltip (south)',
+			withText: true,
+			tooltip: 'The content of the tooltip',
+		} ),
+		button( {
+			label: 'This one too – north',
+			withText: true,
+			keystroke: 'Ctrl+N',
+			tooltip: true,
+			tooltipPosition: 'n'
+		} )
+	] ) );
 }
 
 function renderDropdown() {
@@ -223,21 +228,55 @@ function renderDropdown() {
 		} ) );
 	} );
 
-	const itemListModel = new Model( {
-		items: collection
-	} );
+	ui.listDropdown.add( toolbar( [
+		listDropdown( {
+			label: 'Normal state',
+			isEnabled: true,
+			items: collection
+		} ),
+		listDropdown( {
+			label: 'Disabled',
+			isEnabled: false,
+			items: collection
+		} )
+	] ) );
 
-	ui.dropdown.add( dropdown( {
-		label: 'Normal state',
-		isEnabled: true,
-		content: itemListModel
-	} ) );
-
-	ui.dropdown.add( dropdown( {
-		label: 'Disabled',
-		isEnabled: false,
-		content: itemListModel
-	} ) );
+	ui.buttonDropdown.add( toolbar( [
+		toolbarDropdown( {
+			label: 'Normal state',
+			isEnabled: true,
+			buttons: [
+				button( {
+					withText: false,
+					label: 'foo',
+					icon: boldIcon
+				} ),
+				button( {
+					withText: false,
+					label: 'foo',
+					icon: italicIcon
+				} )
+			]
+		} ),
+		toolbarDropdown( {
+			label: 'Disabled',
+			isEnabled: false,
+			buttons: [
+				button( {
+					withText: false,
+					isEnabled: false,
+					label: 'foo',
+					icon: boldIcon
+				} ),
+				button( {
+					withText: false,
+					isEnabled: false,
+					label: 'foo',
+					icon: italicIcon
+				} )
+			]
+		} )
+	] ) );
 }
 
 function renderToolbar() {
@@ -257,7 +296,12 @@ function renderToolbar() {
 			label: 'Button with an icon',
 			icon: boldIcon
 		} ),
-		dropdown(),
+		listDropdown(),
+		splitButtonDropdown( {
+			label: 'Split button dropdown',
+			withText: false,
+			icon: boldIcon
+		} ),
 		button()
 	] ) );
 
@@ -368,15 +412,52 @@ function toolbar( children = [] ) {
 	return toolbar;
 }
 
-function dropdown( {
+function listDropdown( {
 	label = 'Dropdown',
 	isEnabled = true,
 	isOn = false,
 	withText = true,
 	items = new Collection( { idProperty: 'label' } )
 } = {} ) {
-	const model = new Model( { label, isEnabled, items, isOn, withText } );
-	const dropdown = createListDropdown( model, {} );
+	const dropdown = createDropdown( {} );
+	addListToDropdown( dropdown, items );
+
+	dropdown.buttonView.set( { label, isEnabled, isOn, withText } );
+
+	return dropdown;
+}
+
+function toolbarDropdown( {
+	label = 'Button dropdown',
+	isEnabled = true,
+	isOn = false,
+	withText = true,
+	isVertical = true,
+	buttons = []
+} = {} ) {
+	const dropdown = createDropdown( {} );
+
+	addToolbarToDropdown( dropdown, buttons );
+
+	dropdown.buttonView.set( { label, isEnabled, isVertical, isOn, withText } );
+
+	return dropdown;
+}
+
+function splitButtonDropdown( {
+	label = 'Button dropdown',
+	icon = undefined,
+	isEnabled = true,
+	isOn = false,
+	withText = true,
+	isVertical = true,
+	buttons = []
+} = {} ) {
+	const dropdown = createDropdown( {}, SplitButtonView );
+
+	addToolbarToDropdown( dropdown, buttons );
+
+	dropdown.buttonView.set( { icon, label, isEnabled, isVertical, isOn, withText } );
 
 	return dropdown;
 }

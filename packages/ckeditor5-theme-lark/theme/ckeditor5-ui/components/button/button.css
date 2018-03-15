@@ -1,0 +1,102 @@
+/*
+ * Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+@import "../../../mixins/_focus.css";
+@import "../../../mixins/_shadow.css";
+@import "../../../mixins/_disabled.css";
+@import "../../../mixins/_rounded.css";
+@import "../../mixins/_button.css";
+
+.ck-button,
+a.ck-button {
+	@mixin ck-button-colors --ck-color-button-default;
+	@mixin ck-rounded-corners;
+
+	white-space: nowrap;
+	cursor: default;
+	vertical-align: middle;
+	padding: var(--ck-spacing-tiny);
+	text-align: center;
+
+	/* A very important piece of styling. Go to variable declaration to learn more. */
+	min-width: var(--ck-ui-component-min-height);
+	min-height: var(--ck-ui-component-min-height);
+
+	/* Normalize the height of the line. Removing this will break consistent height
+	among text and text-less buttons (with icons). */
+	line-height: 1;
+
+	/* Enable font size inheritance, which allows fluid UI scaling. */
+	font-size: inherit;
+
+	/* Avoid flickering when the foucs border shows up. */
+	border: 1px solid transparent;
+
+	&:focus {
+		@mixin ck-focus-ring;
+		@mixin ck-box-shadow var(--ck-focus-outer-shadow);
+
+		/* Disable border part of the focus ring for the buttons. It is too much. */
+		border-color: transparent;
+	}
+
+	/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/70 */
+	&.ck-disabled {
+		& .ck-button__icon {
+			@mixin ck-disabled;
+		}
+
+		/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/98 */
+		& .ck-button__label {
+			@mixin ck-disabled;
+		}
+	}
+
+	&.ck-button_with-text {
+		padding: var(--ck-spacing-tiny) var(--ck-spacing-standard);
+
+		& .ck-button__icon {
+			margin-left: calc(-1 * var(--ck-spacing-small));
+			margin-right: var(--ck-spacing-small);
+		}
+	}
+
+	/* A style of the button which is currently on, e.g. its feature is active. */
+	&.ck-on {
+		@mixin ck-button-colors --ck-color-button-on;
+	}
+
+	& .ck-button__icon {
+		& use,
+		& use * {
+			color: inherit;
+		}
+	}
+
+	& .ck-button__label {
+		/* Enable font size inheritance, which allows fluid UI scaling. */
+		font-size: inherit;
+		font-weight: inherit;
+		color: inherit;
+		cursor: inherit;
+
+		/* Must be consistent with .ck-icon's vertical align. Otherwise, buttons with and
+		without labels (but with icons) have different sizes in Chrome */
+		vertical-align: middle;
+	}
+}
+
+/* A style of the button which handles the primary action. */
+.ck-button-action,
+a.ck-button-action {
+	@mixin ck-button-colors --ck-color-button-action;
+
+	color: var(--ck-color-button-action-text);
+}
+
+.ck-button-bold,
+a.ck-button-bold {
+	font-weight: bold;
+}

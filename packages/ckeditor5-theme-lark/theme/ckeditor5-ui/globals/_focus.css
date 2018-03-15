@@ -1,0 +1,16 @@
+/*
+ * Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+:root {
+	/**
+	 * A visual style of focused element's outer shadow.
+	 */
+	--ck-focus-outer-shadow: 0 0 3px var(--ck-color-focus-shadow);
+
+	/**
+	 * A visual style of focused element's border or outline.
+	 */
+	--ck-focus-ring: 1px solid var(--ck-color-focus-border);
+}

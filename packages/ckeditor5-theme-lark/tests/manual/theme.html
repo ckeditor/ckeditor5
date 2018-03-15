@@ -5,9 +5,9 @@
 			line-height: 3em;
 		}
 
-		*[id^="icon"] .ck-icon + .ck-icon,
-		*[id^="button"] .ck-button + .ck-button,
-		*[id^="dropdown"] .ck-dropdown + .ck-dropdown {
+		*:not(.ck-toolbar) > .ck-icon + .ck-icon,
+		*:not(.ck-toolbar) > .ck-button + .ck-button:not(.ck-splitbutton__arrow),
+		*:not(.ck-toolbar) > .ck-dropdown + .ck-dropdown {
 			margin-left: 0.3em;
 		}
 
@@ -54,7 +54,6 @@
 		<div id="button-icon-custom"></div>
 
 		<br/>
-		<br/>
 
 		<div id="button-icon-states"></div>
 	</div>
@@ -68,14 +67,14 @@
 
 	<h3>Button: Tooltip</h3>
 	<div id="button-tooltip" class="ck-reset_all"></div>
-<hr/>
 
 <h2>Dropdown</h2>
 
 	<h3>ListDropdown</h3>
-	<div id="dropdown" class="ck-reset_all"></div>
+	<div id="list-dropdown" class="ck-reset_all"></div>
 
-<hr/>
+	<h3>ButtonDropdown</h3>
+	<div id="button-dropdown" class="ck-reset_all"></div>
 
 <h2>Toolbar</h2>
 
@@ -96,8 +95,6 @@
 
 	<h3>Toolbar: Multi-row</h3>
 	<div id="toolbar-multi-row" class="ck-reset_all"></div>
-
-<hr/>
 
 <h2>Inputs</h2>
 

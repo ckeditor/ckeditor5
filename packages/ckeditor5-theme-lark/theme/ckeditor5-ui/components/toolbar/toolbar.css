@@ -1,0 +1,62 @@
+/*
+ * Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+@import "../../../mixins/_rounded.css";
+
+.ck-toolbar {
+	@mixin ck-rounded-corners;
+
+	background: var(--ck-color-toolbar-background);
+	padding: 0 var(--ck-spacing-small);
+	border: 1px solid var(--ck-color-toolbar-border);
+
+	& > * {
+		/* (#11) Separate toolbar items. */
+		margin-right: var(--ck-spacing-small);
+
+		/* Make sure items wrapped to the next line have v-spacing */
+		margin-top: var(--ck-spacing-small);
+		margin-bottom: var(--ck-spacing-small);
+	}
+
+	&.ck-toolbar_vertical {
+		/* Items in a vertical toolbar span the entire width. */
+		padding: 0;
+
+		& > * {
+			/* Items in a vertical toolbar should span the horizontal space. */
+			width: 100%;
+
+			/* Items in a vertical toolbar should have no margin. */
+			margin: 0;
+
+			/* Items in a vertical toolbar span the entire width so rounded corners are pointless. */
+			border-radius: 0;
+
+			/* Items in a vertical toolbar span the entire width so any border is pointless. */
+			border: 0;
+		}
+	}
+
+	& > *:last-child {
+		margin-right: 0;
+	}
+
+	@nest .ck-toolbar-container & {
+		border: 0;
+	}
+}
+
+.ck-toolbar__separator {
+	align-self: stretch;
+	width: 1px;
+	margin-top: 0;
+	margin-bottom: 0;
+	background: var(--ck-color-toolbar-border);
+}
+
+.ck-toolbar__newline {
+	margin: 0;
+}

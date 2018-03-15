@@ -1,0 +1,61 @@
+/*
+ * Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+@import "@ckeditor/ckeditor5-ui/theme/components/tooltip/mixins/_tooltip.css";
+@import "@ckeditor/ckeditor5-ui/theme/mixins/_unselectable.css";
+@import "../mixins/_focus.css";
+@import "../mixins/_shadow.css";
+
+.ck-link-actions {
+	padding: var(--ck-spacing-standard);
+
+	& .ck-button.ck-link-actions__preview {
+		padding-left: 0;
+		padding-right: 0;
+
+		&,
+		&:hover,
+		&:focus,
+		&:active {
+			background: none;
+		}
+
+		&:active {
+			box-shadow: none;
+		}
+
+		&:focus {
+			& .ck-button__label {
+				text-decoration: underline;
+			}
+		}
+
+		& .ck-button__label {
+			padding: 0 var(--ck-spacing-standard);
+			color: var(--ck-color-link-default);
+			text-overflow: ellipsis;
+			cursor: pointer;
+
+			/* Match the box model of the link editor form's input so the balloon
+			does not change width when moving between actions and the form. */
+			max-width: var(--ck-input-text-width);
+			min-width: 3em;
+			text-align: center;
+
+			&:hover {
+				text-decoration: underline;
+			}
+		}
+	}
+
+	&:focus {
+		/* https://github.com/ckeditor/ckeditor5-link/issues/90 */
+		outline: none;
+	}
+
+	& > :not(:first-child) {
+		margin-left: var(--ck-spacing-standard);
+	}
+}

@@ -1,0 +1,46 @@
+/*
+ * Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+@import "../mixins/_focus.css";
+@import "../mixins/_shadow.css";
+
+:root {
+	--ck-widget-outline-thickness: 3px;
+	--ck-color-widget-border-blurred: hsl(0, 0%, 87%);
+	--ck-color-widget-border-hover: hsl(43, 100%, 68%);
+	--ck-color-widget-editable-focused-background: var(--ck-color-base-background),
+}
+
+.ck-widget {
+	margin: var(--ck-spacing-standard) 0;
+	padding: 0;
+
+	&.ck-widget_selected,
+	&.ck-widget_selected:hover {
+		outline: var(--ck-widget-outline-thickness) solid var(--ck-color-focus-border);
+	}
+
+	@nest .ck-editor__editable.ck-blurred &.ck-widget_selected {
+		outline: var(--ck-widget-outline-thickness) solid var(--ck-color-widget-border-blurred);
+	}
+
+	&:hover {
+		outline: var(--ck-widget-outline-thickness) solid var(--ck-color-widget-border-hover);
+	}
+
+	& .ck-editable {
+		border: 1px solid transparent;
+
+		/* The :focus style is applied before .ck-editable_focused class is rendered in the view.
+		These styles show a different border for a blink of an eye, so `:focus` need to have same styles applied. */
+		&.ck-editable_focused,
+		&:focus {
+			@mixin ck-focus-ring;
+			@mixin ck-box-shadow var(--ck-inner-shadow);
+
+			background-color: var(--ck-color-widget-editable-focused-background);
+		}
+	}
+}
