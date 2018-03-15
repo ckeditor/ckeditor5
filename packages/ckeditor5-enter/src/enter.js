@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -26,17 +26,18 @@ export default class Enter extends Plugin {
 
 	init() {
 		const editor = this.editor;
-		const editingView = editor.editing.view;
+		const view = editor.editing.view;
+		const viewDocument = view.document;
 
-		editingView.addObserver( EnterObserver );
+		view.addObserver( EnterObserver );
 
 		editor.commands.add( 'enter', new EnterCommand( editor ) );
 
 		// TODO We may use the keystroke handler for that.
-		this.listenTo( editingView, 'enter', ( evt, data ) => {
+		this.listenTo( viewDocument, 'enter', ( evt, data ) => {
 			editor.execute( 'enter' );
 			data.preventDefault();
-			editingView.scrollToTheSelection();
+			view.scrollToTheSelection();
 		}, { priority: 'low' } );
 	}
 }

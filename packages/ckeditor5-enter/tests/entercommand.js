@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -9,56 +9,55 @@ import InsertDelta from '@ckeditor/ckeditor5-engine/src/model/delta/insertdelta'
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'EnterCommand', () => {
-	let editor, doc, schema, command;
+	let editor, model, doc, schema, command;
 
 	beforeEach( () => {
 		return ModelTestEditor.create()
 			.then( newEditor => {
 				editor = newEditor;
-				doc = editor.document;
+				model = editor.model;
+				doc = model.document;
 
 				command = new EnterCommand( editor );
 				editor.commands.add( 'enter', command );
 
-				schema = doc.schema;
+				schema = model.schema;
 
 				// Note: We could use real names like 'paragraph', but that would make test patterns too long.
 				// Plus, this is actually a good test that the algorithm can be used for any model.
-				schema.registerItem( 'img', '$inline' );
-				schema.registerItem( 'p', '$block' );
-				schema.registerItem( 'h', '$block' );
-				schema.registerItem( 'inlineLimit' );
-				schema.registerItem( 'blockLimit' );
-
-				schema.allow( { name: 'inlineLimit', inside: 'p' } );
-				schema.allow( { name: '$text', inside: 'inlineLimit' } );
-				schema.allow( { name: '$text', inside: '$root' } );
-				schema.allow( { name: 'blockLimit', inside: '$root' } );
-				schema.allow( { name: 'p', inside: 'blockLimit' } );
-
-				schema.limits.add( 'inlineLimit' );
-				schema.limits.add( 'blockLimit' );
+				schema.register( 'img', { allowWhere: '$block' } );
+				schema.register( 'p', {
+					inheritAllFrom: '$block',
+					allowIn: 'blockLimit'
+				} );
+				schema.register( 'h', { inheritAllFrom: '$block' } );
+				schema.register( 'inlineLimit', {
+					allowIn: 'p',
+					isLimit: true
+				} );
+				schema.register( 'blockLimit', {
+					allowIn: '$root',
+					isLimit: true
+				} );
+				schema.extend( '$text', {
+					allowIn: [ 'inlineLimit', '$root' ]
+				} );
 			} );
 	} );
 
 	describe( 'EnterCommand', () => {
-		it( 'enters a block using enqueueChanges', () => {
-			setData( doc, '<p>foo[]</p>' );
+		it( 'enters a block using parent batch', () => {
+			setData( model, '<p>foo[]</p>' );
 
-			doc.enqueueChanges( () => {
+			model.change( writer => {
+				expect( writer.batch.deltas ).to.length( 0 );
 				editor.execute( 'enter' );
-
-				// We expect that command is executed in enqueue changes block. Since we are already in
-				// an enqueued block, the command execution will be postponed. Hence, no changes.
-				expect( getData( doc, { withoutSelection: true } ) ).to.equal( '<p>foo</p>' );
+				expect( writer.batch.deltas ).to.length.above( 0 );
 			} );
-
-			// After all enqueued changes are done, the command execution is reflected.
-			expect( getData( doc, { withoutSelection: true } ) ).to.equal( '<p>foo</p><p></p>' );
 		} );
 
 		it( 'creates InsertDelta if enter is at the beginning of block', () => {
-			setData( doc, '<p>[]foo</p>' );
+			setData( model, '<p>[]foo</p>' );
 
 			editor.execute( 'enter' );
 
@@ -68,7 +67,7 @@ describe( 'EnterCommand', () => {
 		} );
 
 		it( 'creates InsertDelta if enter is at the end of block', () => {
-			setData( doc, '<p>foo[]</p>' );
+			setData( model, '<p>foo[]</p>' );
 
 			editor.execute( 'enter' );
 
@@ -167,21 +166,21 @@ describe( 'EnterCommand', () => {
 			);
 
 			it( 'leaves one empty element after two were fully selected (backward)', () => {
-				setData( doc, '<p>[abc</p><p>def]</p>' );
+				setData( model, '<p>[abc</p><p>def]</p>' );
 				// @TODO: Add option for setting selection direction to model utils.
 				doc.selection._lastRangeBackward = true;
 
 				command.execute();
 
-				expect( getData( doc ) ).to.equal( '<p>[]</p>' );
+				expect( getData( model ) ).to.equal( '<p>[]</p>' );
 			} );
 
 			it( 'uses DataController.deleteContent', () => {
 				const spy = sinon.spy();
 
-				editor.data.on( 'deleteContent', spy );
+				editor.model.on( 'deleteContent', spy );
 
-				setData( doc, '<p>[x]</p>' );
+				setData( model, '<p>[x]</p>' );
 
 				command.execute();
 
@@ -191,11 +190,11 @@ describe( 'EnterCommand', () => {
 
 		function test( title, input, output ) {
 			it( title, () => {
-				setData( doc, input );
+				setData( model, input );
 
 				command.execute();
 
-				expect( getData( doc ) ).to.equal( output );
+				expect( getData( model ) ).to.equal( output );
 			} );
 		}
 	} );

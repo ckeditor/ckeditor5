@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -17,12 +17,24 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
  * @extends module:engine/view/observer~Observer
  */
 export default class EnterObserver extends Observer {
-	constructor( document ) {
-		super( document );
+	constructor( view ) {
+		super( view );
+
+		const document = this.document;
 
 		document.on( 'keydown', ( evt, data ) => {
 			if ( this.isEnabled && data.keyCode == keyCodes.enter ) {
+				// Save the event object to check later if it was stopped or not.
+				let event;
+				document.once( 'enter', evt => ( event = evt ), { priority: 'highest' } );
+
 				document.fire( 'enter', new DomEventData( document, data.domEvent ) );
+
+				// Stop `keydown` event if `enter` event was stopped.
+				// https://github.com/ckeditor/ckeditor5/issues/753
+				if ( event && event.stop.called ) {
+					evt.stop();
+				}
 			}
 		} );
 	}

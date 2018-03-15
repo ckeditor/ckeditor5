@@ -1,6 +1,17 @@
 Changelog
 =========
 
+## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-enter/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
+
+### Bug fixes
+
+* `EnterObserver` will stop the `keydown` event when the `enter` event is stopped. Closes: https://github.com/ckeditor/ckeditor5/issues/753. ([b9a7a1e](https://github.com/ckeditor/ckeditor5-enter/commit/b9a7a1e))
+
+### Other changes
+
+* Aligned code to the changes in the engine. ([39e4b4c](https://github.com/ckeditor/ckeditor5-enter/commit/39e4b4c))
+
+
 ## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-enter/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
 
 Internal changes only (updated dependencies, documentation, etc.).
