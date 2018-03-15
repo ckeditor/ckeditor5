@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -280,7 +280,7 @@ describe( 'EmitterMixin', () => {
 	} );
 
 	describe( 'once', () => {
-		it( 'should be called just once', () => {
+		it( 'should be called just once for general event', () => {
 			const spy1 = sinon.spy();
 			const spy2 = sinon.spy();
 			const spy3 = sinon.spy();
@@ -297,6 +297,23 @@ describe( 'EmitterMixin', () => {
 			sinon.assert.calledTwice( spy3 );
 		} );
 
+		it( 'should be called just once for namespaced event', () => {
+			const spy1 = sinon.spy();
+			const spy2 = sinon.spy();
+			const spy3 = sinon.spy();
+
+			emitter.on( 'foo:bar', spy1 );
+			emitter.once( 'foo:bar', spy2 );
+			emitter.on( 'foo:bar', spy3 );
+
+			emitter.fire( 'foo:bar' );
+			emitter.fire( 'foo:bar' );
+
+			sinon.assert.calledTwice( spy1 );
+			sinon.assert.calledOnce( spy2 );
+			sinon.assert.calledTwice( spy3 );
+		} );
+
 		it( 'should have proper arguments', () => {
 			const spy = sinon.spy();
 
@@ -305,6 +322,22 @@ describe( 'EmitterMixin', () => {
 			emitter.fire( 'test', 1, 2, 3 );
 
 			sinon.assert.calledWithExactly( spy, sinon.match.instanceOf( EventInfo ), 1, 2, 3 );
+		} );
+
+		it( 'should be removed only after exact event fired', () => {
+			const spy1 = sinon.spy();
+			const spy2 = sinon.spy();
+
+			emitter.on( 'foo', spy1 );
+			emitter.once( 'foo', spy2 );
+
+			emitter.fire( 'foo:bar' );
+			emitter.fire( 'foo' );
+			emitter.fire( 'foo:bar' );
+			emitter.fire( 'foo' );
+
+			sinon.assert.callCount( spy1, 4 );
+			sinon.assert.calledTwice( spy2 );
 		} );
 	} );
 
@@ -330,8 +363,30 @@ describe( 'EmitterMixin', () => {
 			sinon.assert.calledThrice( spy3 );
 		} );
 
+		it( 'should remove all callbacks for event', () => {
+			const spy1 = sinon.spy();
+			const spy2 = sinon.spy();
+
+			emitter.on( 'test', spy1 );
+			emitter.on( 'test', spy2 );
+
+			emitter.fire( 'test' );
+
+			emitter.off( 'test' );
+
+			emitter.fire( 'test' );
+			emitter.fire( 'test' );
+
+			sinon.assert.calledOnce( spy1 );
+			sinon.assert.calledOnce( spy2 );
+		} );
+
 		it( 'should not fail with unknown events', () => {
-			emitter.off( 'test', () => {} );
+			emitter.off( 'foo', () => {} );
+			emitter.off( 'foo:bar', () => {} );
+
+			emitter.off( 'foo' );
+			emitter.off( 'foo:bar' );
 		} );
 
 		it( 'should remove all entries for the same callback', () => {
@@ -351,6 +406,34 @@ describe( 'EmitterMixin', () => {
 
 			sinon.assert.callCount( spy1, 2 );
 			sinon.assert.callCount( spy2, 4 );
+		} );
+
+		it( 'should not remove all namespaced entries when removing namespace inner group', () => {
+			const spy1 = sinon.spy().named( 'foo' );
+			const spy2 = sinon.spy().named( 'foo:bar' );
+			const spy3 = sinon.spy().named( 'foo:bar:baz' );
+			const spy4 = sinon.spy().named( 'foo:bar:baz:abc' );
+
+			emitter.on( 'foo', spy1 );
+			emitter.on( 'foo:bar', spy2 );
+			emitter.on( 'foo:bar:baz', spy3 );
+			emitter.on( 'foo:bar:baz:abc', spy4 );
+
+			emitter.fire( 'foo:bar:baz:abc' );
+
+			sinon.assert.calledOnce( spy1 );
+			sinon.assert.calledOnce( spy2 );
+			sinon.assert.calledOnce( spy3 );
+			sinon.assert.calledOnce( spy4 );
+
+			emitter.off( 'foo:bar' );
+
+			emitter.fire( 'foo:bar:baz:abc' );
+
+			sinon.assert.calledTwice( spy1 );
+			sinon.assert.calledOnce( spy2 );
+			sinon.assert.calledTwice( spy3 );
+			sinon.assert.calledTwice( spy4 );
 		} );
 
 		it( 'should properly remove callbacks for namespaced events', () => {
@@ -403,19 +486,29 @@ describe( 'EmitterMixin', () => {
 		it( 'should correctly listen to namespaced events', () => {
 			const spyFoo = sinon.spy();
 			const spyBar = sinon.spy();
+			const spyBaz = sinon.spy();
 
 			listener.listenTo( emitter, 'foo', spyFoo );
 			listener.listenTo( emitter, 'foo:bar', spyBar );
+			listener.listenTo( emitter, 'foo:bar:baz', spyBaz );
 
-			emitter.fire( 'foo:bar' );
+			emitter.fire( 'foo:bar:baz' );
 
 			sinon.assert.calledOnce( spyFoo );
 			sinon.assert.calledOnce( spyBar );
+			sinon.assert.calledOnce( spyBaz );
+
+			emitter.fire( 'foo:bar' );
+
+			sinon.assert.calledTwice( spyFoo );
+			sinon.assert.calledTwice( spyBar );
+			sinon.assert.calledOnce( spyBaz );
 
 			emitter.fire( 'foo' );
 
-			sinon.assert.calledTwice( spyFoo );
-			sinon.assert.calledOnce( spyBar );
+			sinon.assert.calledThrice( spyFoo );
+			sinon.assert.calledTwice( spyBar );
+			sinon.assert.calledOnce( spyBaz );
 		} );
 	} );
 
@@ -464,42 +557,62 @@ describe( 'EmitterMixin', () => {
 		it( 'should stop listening to all events from given emitter', () => {
 			const spy1 = sinon.spy();
 			const spy2 = sinon.spy();
+			const spy3 = sinon.spy();
+			const spy4 = sinon.spy();
 
 			listener.listenTo( emitter, 'event1', spy1 );
 			listener.listenTo( emitter, 'event2', spy2 );
+			listener.listenTo( emitter, 'foo', spy3 );
+			listener.listenTo( emitter, 'foo:bar:baz', spy4 );
 
 			emitter.fire( 'event1' );
 			emitter.fire( 'event2' );
+			emitter.fire( 'foo:bar:baz' );
 
 			listener.stopListening( emitter );
 
 			emitter.fire( 'event1' );
 			emitter.fire( 'event2' );
+			emitter.fire( 'foo:bar:baz' );
 
 			sinon.assert.calledOnce( spy1 );
 			sinon.assert.calledOnce( spy2 );
+			sinon.assert.calledOnce( spy3 );
+			sinon.assert.calledOnce( spy4 );
 		} );
 
 		it( 'should stop listening to everything', () => {
 			const spy1 = sinon.spy();
 			const spy2 = sinon.spy();
+			const spy3 = sinon.spy();
+			const spy4 = sinon.spy();
 
 			const emitter1 = getEmitterInstance();
 			const emitter2 = getEmitterInstance();
 
 			listener.listenTo( emitter1, 'event1', spy1 );
 			listener.listenTo( emitter2, 'event2', spy2 );
+			listener.listenTo( emitter1, 'foo', spy3 );
+			listener.listenTo( emitter1, 'foo:bar:baz', spy4 );
 
 			emitter1.fire( 'event1' );
 			emitter2.fire( 'event2' );
+			emitter1.fire( 'foo' );
+			emitter1.fire( 'foo:bar' );
+			emitter1.fire( 'foo:bar:baz' );
 
 			listener.stopListening();
 
 			emitter1.fire( 'event1' );
 			emitter2.fire( 'event2' );
+			emitter1.fire( 'foo' );
+			emitter1.fire( 'foo:bar' );
+			emitter1.fire( 'foo:bar:baz' );
 
 			sinon.assert.calledOnce( spy1 );
 			sinon.assert.calledOnce( spy2 );
+			sinon.assert.calledThrice( spy3 );
+			sinon.assert.calledOnce( spy4 );
 		} );
 
 		it( 'should not stop other emitters when a non-listened emitter is provided', () => {
@@ -520,16 +633,65 @@ describe( 'EmitterMixin', () => {
 		it( 'should correctly stop listening to namespaced events', () => {
 			const spyFoo = sinon.spy();
 			const spyBar = sinon.spy();
+			const spyBaz = sinon.spy();
 
 			listener.listenTo( emitter, 'foo', spyFoo );
 			listener.listenTo( emitter, 'foo:bar', spyBar );
+			listener.listenTo( emitter, 'foo:bar:baz', spyBaz );
 
 			listener.stopListening( emitter, 'foo' );
 
-			emitter.fire( 'foo:bar' );
+			emitter.fire( 'foo:bar:baz' );
 
 			sinon.assert.notCalled( spyFoo );
 			sinon.assert.calledOnce( spyBar );
+			sinon.assert.calledOnce( spyBaz );
+		} );
+
+		it( 'should correctly stop listening to namespaced events when removing specialised event', () => {
+			const spyFoo = sinon.spy();
+			const spyBar = sinon.spy();
+			const spyBaz = sinon.spy();
+
+			listener.listenTo( emitter, 'foo', spyFoo );
+			listener.listenTo( emitter, 'foo:bar', spyBar );
+			listener.listenTo( emitter, 'foo:bar:baz', spyBaz );
+
+			listener.stopListening( emitter, 'foo:bar' );
+
+			emitter.fire( 'foo:bar:baz' );
+
+			sinon.assert.calledOnce( spyFoo );
+			sinon.assert.notCalled( spyBar );
+			sinon.assert.calledOnce( spyBaz );
+		} );
+
+		it( 'should not fail with unknown events', () => {
+			listener.stopListening( emitter, 'foo', () => {} );
+			listener.stopListening( emitter, 'foo:bar', () => {} );
+			listener.stopListening( emitter, 'foo' );
+			listener.stopListening( emitter, 'foo:bar' );
+		} );
+
+		it( 'should not fail with unknown emitter', () => {
+			listener.listenTo( emitter, 'foo:bar', () => {} );
+
+			listener.stopListening( {}, 'foo', () => {} );
+			listener.stopListening( {}, 'foo:bar', () => {} );
+			listener.stopListening( {}, 'foo' );
+			listener.stopListening( {}, 'foo:bar' );
+			listener.stopListening( {} );
+		} );
+
+		it( 'should not fail with unknown callbacks', () => {
+			const spy = sinon.spy();
+
+			listener.listenTo( emitter, 'foo', spy );
+			listener.stopListening( emitter, 'foo', () => {} );
+
+			emitter.fire( 'foo' );
+
+			sinon.assert.calledOnce( spy );
 		} );
 	} );
 

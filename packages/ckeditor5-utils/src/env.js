@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -21,9 +21,9 @@ const env = {
 	 * Indicates that application is running on Macintosh.
 	 *
 	 * @static
-	 * @member {Boolean} module:utils/env~env#mac
+	 * @member {Boolean} module:utils/env~env#isMac
 	 */
-	mac: isMac( userAgent )
+	isMac: isMac( userAgent )
 };
 
 export default env;

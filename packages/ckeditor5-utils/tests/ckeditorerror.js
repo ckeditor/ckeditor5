@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -56,7 +56,7 @@ describe( 'CKEditorError', () => {
 		const error = new CKEditorError( 'model-schema-no-item: Specified item cannot be found.' );
 
 		const errorMessage = 'model-schema-no-item: Specified item cannot be found. ' +
-			`Read more: ${ DOCUMENTATION_URL }#model-schema-no-item\n`;
+			`Read more: ${ DOCUMENTATION_URL }#error-model-schema-no-item\n`;
 
 		expect( error ).to.have.property( 'message', errorMessage );
 	} );
@@ -65,7 +65,7 @@ describe( 'CKEditorError', () => {
 		const error = new CKEditorError( 'model-schema-no-item: Specified item cannot be found.', { foo: 1, bar: 2 } );
 
 		const errorMessage = 'model-schema-no-item: Specified item cannot be found. ' +
-			`Read more: ${ DOCUMENTATION_URL }#model-schema-no-item\n ` +
+			`Read more: ${ DOCUMENTATION_URL }#error-model-schema-no-item\n ` +
 			'{"foo":1,"bar":2}';
 
 		expect( error ).to.have.property( 'message', errorMessage );

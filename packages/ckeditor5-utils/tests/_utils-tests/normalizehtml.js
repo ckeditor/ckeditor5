@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -8,29 +8,29 @@ import normalizeHtml from '../../tests/_utils/normalizehtml';
 describe( 'utils', () => {
 	describe( 'normalizeHtml', () => {
 		it( 'should sort attributes', () => {
-			const actual = '<a style="border:1px;" class="" href="file://"></a>';
-			const expected = '<a class="" href="file://" style="border:1px;"></a>';
+			const actual = '<a style="border:1px" class="" href="file://"></a>';
+			const expected = '<a class="" href="file://" style="border:1px"></a>';
 
 			expect( normalizeHtml( actual ) ).to.equal( expected );
 		} );
 
 		it( 'should normalize styles', () => {
 			const actual = '<a style="border:1px"></a>';
-			const expected = '<a style="border:1px;"></a>';
+			const expected = '<a style="border:1px"></a>';
 
 			expect( normalizeHtml( actual ) ).to.equal( expected );
 		} );
 
 		it( 'should lowercase attributes', () => {
-			const actual = '<A CLASS="" HREF="file://" STYLE="border:1px;"></A>';
-			const expected = '<a class="" href="file://" style="border:1px;"></a>';
+			const actual = '<A CLASS="" HREF="file://" STYLE="border:1px"></A>';
+			const expected = '<a class="" href="file://" style="border:1px"></a>';
 
 			expect( normalizeHtml( actual ) ).to.equal( expected );
 		} );
 
 		it( 'should trim whitespace', () => {
 			const actual = '<a class="  " href="file://"      style="border:  1px"></a>';
-			const expected = '<a class="" href="file://" style="border:1px;"></a>';
+			const expected = '<a class="" href="file://" style="border:1px"></a>';
 
 			expect( normalizeHtml( actual ) ).to.equal( expected );
 		} );
@@ -49,9 +49,9 @@ describe( 'utils', () => {
 			expect( normalizeHtml( actual ) ).to.equal( expected );
 		} );
 
-		it( 'should not sort attribute value', () => {
+		it( 'should sort attribute value', () => {
 			const actual = '<a class="b c a"></a>';
-			const expected = actual;
+			const expected = '<a class="a b c"></a>';
 
 			expect( normalizeHtml( actual ) ).to.equal( expected );
 		} );

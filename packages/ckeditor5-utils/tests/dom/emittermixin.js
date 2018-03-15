@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -116,6 +116,46 @@ describe( 'DomEmitterMixin', () => {
 	} );
 
 	describe( 'stopListening', () => {
+		it( 'should stop listening to EmitterMixin events, specific event', () => {
+			const spy1 = testUtils.sinon.spy();
+			const spy2 = testUtils.sinon.spy();
+
+			domEmitter.listenTo( emitter, 'foo', spy1 );
+			domEmitter.listenTo( emitter, 'foo:bar', spy2 );
+
+			emitter.fire( 'foo:bar' );
+
+			sinon.assert.calledOnce( spy1 );
+			sinon.assert.calledOnce( spy2 );
+
+			domEmitter.stopListening( emitter, 'foo' );
+
+			emitter.fire( 'foo:bar' );
+
+			sinon.assert.calledOnce( spy1 );
+			sinon.assert.calledTwice( spy2 );
+		} );
+
+		it( 'should stop listening to EmitterMixin events, specific emitter', () => {
+			const spy1 = testUtils.sinon.spy();
+			const spy2 = testUtils.sinon.spy();
+
+			domEmitter.listenTo( emitter, 'foo', spy1 );
+			domEmitter.listenTo( emitter, 'foo:bar', spy2 );
+
+			emitter.fire( 'foo:bar' );
+
+			sinon.assert.calledOnce( spy1 );
+			sinon.assert.calledOnce( spy2 );
+
+			domEmitter.stopListening( emitter );
+
+			emitter.fire( 'foo:bar' );
+
+			sinon.assert.calledOnce( spy1 );
+			sinon.assert.calledOnce( spy2 );
+		} );
+
 		it( 'should stop listening to a specific event callback', () => {
 			const spy1 = testUtils.sinon.spy();
 			const spy2 = testUtils.sinon.spy();
@@ -132,6 +172,34 @@ describe( 'DomEmitterMixin', () => {
 			node.dispatchEvent( new Event( 'event2' ) );
 
 			sinon.assert.calledOnce( spy1 );
+			sinon.assert.calledTwice( spy2 );
+		} );
+
+		it( 'should stop listening to a specific event callback (only from the given node)', () => {
+			const spy1 = testUtils.sinon.spy();
+			const spy2 = testUtils.sinon.spy();
+
+			const node1 = document.createElement( 'div' );
+			const node2 = document.createElement( 'div' );
+
+			domEmitter.listenTo( node1, 'event1', spy1 );
+			domEmitter.listenTo( node1, 'event2', spy2 );
+			domEmitter.listenTo( node2, 'event1', spy1 );
+
+			node1.dispatchEvent( new Event( 'event1' ) );
+			node1.dispatchEvent( new Event( 'event2' ) );
+			node2.dispatchEvent( new Event( 'event1' ) );
+
+			sinon.assert.calledTwice( spy1 );
+			sinon.assert.calledOnce( spy2 );
+
+			domEmitter.stopListening( node1, 'event1', spy1 );
+
+			node1.dispatchEvent( new Event( 'event1' ) );
+			node1.dispatchEvent( new Event( 'event2' ) );
+			node2.dispatchEvent( new Event( 'event1' ) );
+
+			sinon.assert.calledThrice( spy1 );
 			sinon.assert.calledTwice( spy2 );
 		} );
 
@@ -192,26 +260,53 @@ describe( 'DomEmitterMixin', () => {
 			sinon.assert.calledOnce( spy2 );
 		} );
 
-		it( 'should stop listening to everything', () => {
+		it( 'should stop listening to all events from a specific node (only that node)', () => {
 			const spy1 = testUtils.sinon.spy();
 			const spy2 = testUtils.sinon.spy();
 
 			const node1 = document.createElement( 'div' );
 			const node2 = document.createElement( 'div' );
 
+			domEmitter.listenTo( node1, 'event', spy1 );
+			domEmitter.listenTo( node2, 'event', spy2 );
+
+			node1.dispatchEvent( new Event( 'event' ) );
+			node2.dispatchEvent( new Event( 'event' ) );
+
+			domEmitter.stopListening( node1 );
+
+			node1.dispatchEvent( new Event( 'event' ) );
+			node2.dispatchEvent( new Event( 'event' ) );
+
+			sinon.assert.calledOnce( spy1 );
+			sinon.assert.calledTwice( spy2 );
+		} );
+
+		it( 'should stop listening to everything', () => {
+			const spy1 = testUtils.sinon.spy();
+			const spy2 = testUtils.sinon.spy();
+			const spy3 = testUtils.sinon.spy();
+
+			const node1 = document.createElement( 'div' );
+			const node2 = document.createElement( 'div' );
+
 			domEmitter.listenTo( node1, 'event1', spy1 );
 			domEmitter.listenTo( node2, 'event2', spy2 );
+			domEmitter.listenTo( emitter, 'event3', spy3 );
 
 			node1.dispatchEvent( new Event( 'event1' ) );
 			node2.dispatchEvent( new Event( 'event2' ) );
+			emitter.fire( 'event3' );
 
 			domEmitter.stopListening();
 
 			node1.dispatchEvent( new Event( 'event1' ) );
 			node2.dispatchEvent( new Event( 'event2' ) );
+			emitter.fire( 'event3' );
 
 			sinon.assert.calledOnce( spy1 );
 			sinon.assert.calledOnce( spy2 );
+			sinon.assert.calledOnce( spy3 );
 		} );
 
 		it( 'should stop listening to everything what left', () => {
@@ -413,28 +508,35 @@ describe( 'DomEmitterMixin', () => {
 			const spy1b = testUtils.sinon.spy();
 			const spy1c = testUtils.sinon.spy();
 			const spy1d = testUtils.sinon.spy();
+			const spyEl2 = testUtils.sinon.spy();
+			const node2 = document.createElement( 'div' );
 
 			domEmitter.listenTo( node, 'test1', spy1a );
 			domEmitter.listenTo( node, 'test2', spy1b );
+			domEmitter.listenTo( node2, 'test1', spyEl2 );
 
 			const proxyEmitter = domEmitter._getProxyEmitter( node );
 			const spy2 = testUtils.sinon.spy( proxyEmitter, 'fire' );
 
 			node.dispatchEvent( new Event( 'test1' ) );
 			node.dispatchEvent( new Event( 'test2' ) );
+			node2.dispatchEvent( new Event( 'test1' ) );
 
 			sinon.assert.calledOnce( spy1a );
 			sinon.assert.calledOnce( spy1b );
 			sinon.assert.calledTwice( spy2 );
+			sinon.assert.calledOnce( spyEl2 );
 
 			domEmitter.stopListening();
 
 			node.dispatchEvent( new Event( 'test1' ) );
 			node.dispatchEvent( new Event( 'test2' ) );
+			node2.dispatchEvent( new Event( 'test1' ) );
 
 			sinon.assert.calledOnce( spy1a );
 			sinon.assert.calledOnce( spy1b );
 			sinon.assert.calledTwice( spy2 );
+			sinon.assert.calledOnce( spyEl2 );
 
 			// Attach same event again.
 			domEmitter.listenTo( node, 'test1', spy1c );
@@ -455,6 +557,7 @@ describe( 'DomEmitterMixin', () => {
 			sinon.assert.calledOnce( spy1d );
 			sinon.assert.calledTwice( spy2 );
 			sinon.assert.calledTwice( spy3 );
+			sinon.assert.calledOnce( spyEl2 );
 		} );
 
 		// #187

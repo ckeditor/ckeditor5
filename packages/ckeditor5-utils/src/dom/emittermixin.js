@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -10,7 +10,8 @@
 import { default as EmitterMixin, _getEmitterListenedTo, _setEmitterId } from '../emittermixin';
 import uid from '../uid';
 import extend from '../lib/lodash/extend';
-import isDomNode from './isdomnode';
+import isNode from './isnode';
+import isWindow from './iswindow';
 
 /**
  * Mixin that injects the DOM events API into its host. It provides the API
@@ -30,7 +31,7 @@ import isDomNode from './isdomnode';
  *			console.log( evt, domEvt );
  *		} );
  *
- * @mixin module:utils/dom/emittermixin~EmitterMixin
+ * @mixin EmitterMixin
  * @mixes module:utils/emittermixin~EmitterMixin
  * @implements module:utils/dom/emittermixin~Emitter
  */
@@ -48,20 +49,20 @@ const DomEmitterMixin = extend( {}, EmitterMixin, {
 	 * order they were added.
 	 * @param {Boolean} [options.useCapture=false] Indicates that events of this type will be dispatched to the registered
 	 * listener before being dispatched to any EventTarget beneath it in the DOM tree.
-	 *
-	 * @method module:utils/dom/emittermixin~EmitterMixin#listenTo
 	 */
-	listenTo( ...args ) {
-		const emitter = args[ 0 ];
-
+	listenTo( emitter, ...rest ) {
 		// Check if emitter is an instance of DOM Node. If so, replace the argument with
 		// corresponding ProxyEmitter (or create one if not existing).
-		if ( isDomNode( emitter ) ) {
-			args[ 0 ] = this._getProxyEmitter( emitter ) || new ProxyEmitter( emitter );
+		if ( isNode( emitter ) || isWindow( emitter ) ) {
+			const proxy = this._getProxyEmitter( emitter ) || new ProxyEmitter( emitter );
+
+			proxy.attach( ...rest );
+
+			emitter = proxy;
 		}
 
 		// Execute parent class method with Emitter (or ProxyEmitter) instance.
-		EmitterMixin.listenTo.apply( this, args );
+		EmitterMixin.listenTo.call( this, emitter, ...rest );
 	},
 
 	/**
@@ -78,14 +79,10 @@ const DomEmitterMixin = extend( {}, EmitterMixin, {
 	 * for all events from `emitter`.
 	 * @param {Function} [callback] (Requires the `event`) The function to be removed from the call list for the given
 	 * `event`.
-	 *
-	 * @method module:utils/dom/emittermixin~EmitterMixin#stopListening
 	 */
-	stopListening( ...args ) {
-		const emitter = args[ 0 ];
-
+	stopListening( emitter, event, callback ) {
 		// Check if emitter is an instance of DOM Node. If so, replace the argument with corresponding ProxyEmitter.
-		if ( isDomNode( emitter ) ) {
+		if ( isNode( emitter ) || isWindow( emitter ) ) {
 			const proxy = this._getProxyEmitter( emitter );
 
 			// Element has no listeners.
@@ -93,19 +90,23 @@ const DomEmitterMixin = extend( {}, EmitterMixin, {
 				return;
 			}
 
-			args[ 0 ] = proxy;
+			emitter = proxy;
 		}
 
 		// Execute parent class method with Emitter (or ProxyEmitter) instance.
-		EmitterMixin.stopListening.apply( this, args );
+		EmitterMixin.stopListening.call( this, emitter, event, callback );
+
+		if ( emitter instanceof ProxyEmitter ) {
+			emitter.detach( event );
+		}
 	},
 
 	/**
 	 * Retrieves ProxyEmitter instance for given DOM Node residing in this Host.
 	 *
+	 * @pivate
 	 * @param {Node} node DOM Node of the ProxyEmitter.
-	 * @method module:utils/dom/emittermixin~EmitterMixin#_getProxyEmitter
-	 * @return {module:utils/dom/emittermixin~ProxyEmitter} ProxyEmitter instance or null.
+	 * @returns {module:utils/dom/emittermixin~ProxyEmitter} ProxyEmitter instance or null.
 	 */
 	_getProxyEmitter( node ) {
 		return _getEmitterListenedTo( this, getNodeUID( node ) );
@@ -172,21 +173,14 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 	 * It attaches a native DOM listener to the DOM Node. When fired,
 	 * a corresponding Emitter event will also fire with DOM Event object as an argument.
 	 *
+	 * @method module:utils/dom/emittermixin~ProxyEmitter#attach
 	 * @param {String} event The name of the event.
 	 * @param {Function} callback The function to be called on event.
 	 * @param {Object} [options={}] Additional options.
-	 * @param {module:utils/priorities~PriorityString|Number} [options.priority='normal'] The priority of this event callback. The higher
-	 * the priority value the sooner the callback will be fired. Events having the same priority are called in the
-	 * order they were added.
 	 * @param {Boolean} [options.useCapture=false] Indicates that events of this type will be dispatched to the registered
 	 * listener before being dispatched to any EventTarget beneath it in the DOM tree.
-	 *
-	 * @method module:utils/dom/emittermixin~ProxyEmitter#on
 	 */
-	on( event, callback, options = {} ) {
-		// Execute parent class method first.
-		EmitterMixin.on.call( this, event, callback, options );
-
+	attach( event, callback, options = {} ) {
 		// If the DOM Listener for given event already exist it is pointless
 		// to attach another one.
 		if ( this._domListeners && this._domListeners[ event ] ) {
@@ -210,20 +204,15 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 	/**
 	 * Stops executing the callback on the given event.
 	 *
+	 * @method module:utils/dom/emittermixin~ProxyEmitter#detach
 	 * @param {String} event The name of the event.
-	 * @param {Function} callback The function to stop being called.
-	 *
-	 * @method module:utils/dom/emittermixin~ProxyEmitter#off
 	 */
-	off( event, callback ) {
-		// Execute parent class method first.
-		EmitterMixin.off.call( this, event, callback );
-
+	detach( event ) {
 		let events;
 
 		// Remove native DOM listeners which are orphans. If no callbacks
 		// are awaiting given event, detach native DOM listener from DOM Node.
-		// See: {@link on}.
+		// See: {@link attach}.
 
 		if ( this._domListeners[ event ] && ( !( events = this._events[ event ] ) || !events.callbacks.length ) ) {
 			this._domListeners[ event ].removeListener();
@@ -231,13 +220,11 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 	},
 
 	/**
-	 * Create a native DOM listener callback. When the native DOM event
+	 * Creates a native DOM listener callback. When the native DOM event
 	 * is fired it will fire corresponding event on this ProxyEmitter.
 	 * Note: A native DOM Event is passed as an argument.
 	 *
 	 * @private
-	 * @param {String} event
-	 *
 	 * @method module:utils/dom/emittermixin~ProxyEmitter#_createDomListener
 	 * @param {String} event The name of the event.
 	 * @param {Boolean} useCapture Indicates whether the listener was created for capturing event.
@@ -250,7 +237,7 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 
 		// Supply the DOM listener callback with a function that will help
 		// detach it from the DOM Node, when it is no longer necessary.
-		// See: {@link off}.
+		// See: {@link detach}.
 		domListener.removeListener = () => {
 			this._domNode.removeEventListener( event, domListener, useCapture );
 			delete this._domListeners[ event ];

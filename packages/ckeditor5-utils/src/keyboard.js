@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -11,6 +11,18 @@
 
 import CKEditorError from './ckeditorerror';
 import env from './env';
+
+const macGlyphsToModifiers = {
+	'⌘': 'ctrl',
+	'⇧': 'shift',
+	'⌥': 'alt'
+};
+
+const modifiersToMacGlyphs = {
+	'ctrl': '⌘',
+	'shift': '⇧',
+	'alt': '⌥'
+};
 
 /**
  * Object with `keyName => keyCode` pairs for a set of known keys.
@@ -96,15 +108,22 @@ export function parseKeystroke( keystroke ) {
  * @returns {String} Keystroke text specific for the environment.
  */
 export function getEnvKeystrokeText( keystroke ) {
-	const split = splitKeystrokeText( keystroke );
-
-	if ( env.mac ) {
-		if ( split[ 0 ].toLowerCase() == 'ctrl' ) {
-			return '⌘' + ( split[ 1 ] || '' );
-		}
+	if ( !env.isMac ) {
+		return keystroke;
 	}
 
-	return keystroke;
+	return splitKeystrokeText( keystroke )
+		// Replace modifiers (e.g. "ctrl") with Mac glyphs (e.g. "⌘") first.
+		.map( key => modifiersToMacGlyphs[ key.toLowerCase() ] || key )
+
+		// Decide whether to put "+" between keys in the keystroke or not.
+		.reduce( ( value, key ) => {
+			if ( value.slice( -1 ) in macGlyphsToModifiers ) {
+				return value + key;
+			} else {
+				return value + '+' + key;
+			}
+		} );
 }
 
 function generateKnownKeyCodes() {

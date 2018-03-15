@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -12,13 +12,13 @@ import CKEditorError from './ckeditorerror';
 import extend from './lib/lodash/extend';
 import isObject from './lib/lodash/isObject';
 
-const attributesSymbol = Symbol( 'attributes' );
+const observablePropertiesSymbol = Symbol( 'observableProperties' );
 const boundObservablesSymbol = Symbol( 'boundObservables' );
-const boundAttributesSymbol = Symbol( 'boundAttributes' );
+const boundPropertiesSymbol = Symbol( 'boundProperties' );
 
 /**
- * Mixin that injects the "observable attributes" and data binding functionality.
- * Used mainly in the {@link module:ui/model~Model} class.
+ * Mixin that injects the "observable properties" and data binding functionality described in the
+ * {@link ~Observable} interface.
  *
  * @mixin ObservableMixin
  * @mixes module:utils/emittermixin~EmitterMixin
@@ -26,24 +26,13 @@ const boundAttributesSymbol = Symbol( 'boundAttributes' );
  */
 const ObservableMixin = {
 	/**
-	 * Creates and sets the value of an observable attribute of this object. Such an attribute becomes a part
-	 * of the state and is be observable.
-	 *
-	 * It accepts also a single object literal containing key/value pairs with attributes to be set.
-	 *
-	 * This method throws the observable-set-cannot-override error if the observable instance already
-	 * have a property with a given attribute name. This prevents from mistakenly overriding existing
-	 * properties and methods, but means that `foo.set( 'bar', 1 )` may be slightly slower than `foo.bar = 1`.
-	 *
-	 * @method #set
-	 * @param {String} name The attributes name.
-	 * @param {*} value The attributes value.
+	 * @inheritDoc
 	 */
 	set( name, value ) {
 		// If the first parameter is an Object, iterate over its properties.
 		if ( isObject( name ) ) {
-			Object.keys( name ).forEach( attr => {
-				this.set( attr, name[ attr ] );
+			Object.keys( name ).forEach( property => {
+				this.set( property, name[ property ] );
 			}, this );
 
 			return;
@@ -51,21 +40,21 @@ const ObservableMixin = {
 
 		initObservable( this );
 
-		const attributes = this[ attributesSymbol ];
+		const properties = this[ observablePropertiesSymbol ];
 
-		if ( ( name in this ) && !attributes.has( name ) ) {
+		if ( ( name in this ) && !properties.has( name ) ) {
 			/**
 			 * Cannot override an existing property.
 			 *
-			 * This error is thrown when trying to {@link ~Observable#set set} an attribute with
+			 * This error is thrown when trying to {@link ~Observable#set set} an property with
 			 * a name of an already existing property. For example:
 			 *
 			 *		let observable = new Model();
 			 *		observable.property = 1;
-			 *		observable.set( 'property', 2 );		// throws
+			 *		observable.set( 'property', 2 );			// throws
 			 *
-			 *		observable.set( 'attr', 1 );
-			 *		observable.set( 'attr', 2 );			// ok, because this is an existing attribute.
+			 *		observable.set( 'property', 1 );
+			 *		observable.set( 'property', 2 );			// ok, because this is an existing property.
 			 *
 			 * @error observable-set-cannot-override
 			 */
@@ -77,16 +66,16 @@ const ObservableMixin = {
 			configurable: true,
 
 			get() {
-				return attributes.get( name );
+				return properties.get( name );
 			},
 
 			set( value ) {
-				const oldValue = attributes.get( name );
+				const oldValue = properties.get( name );
 
 				// Allow undefined as an initial value like A.define( 'x', undefined ) (#132).
-				// Note: When attributes map has no such own property, then its value is undefined.
-				if ( oldValue !== value || !attributes.has( name ) ) {
-					attributes.set( name, value );
+				// Note: When properties map has no such own property, then its value is undefined.
+				if ( oldValue !== value || !properties.has( name ) ) {
+					properties.set( name, value );
 					this.fire( 'change:' + name, name, value, oldValue );
 				}
 			}
@@ -96,148 +85,127 @@ const ObservableMixin = {
 	},
 
 	/**
-	 * Binds observable attributes to another objects implementing {@link ~ObservableMixin}
-	 * interface (like {@link module:ui/model~Model}).
-	 *
-	 * Once bound, the observable will immediately share the current state of attributes
-	 * of the observable it is bound to and react to the changes to these attributes
-	 * in the future.
-	 *
-	 * **Note**: To release the binding use {@link module:utils/observablemixin~ObservableMixin#unbind}.
-	 *
-	 *		A.bind( 'a' ).to( B );
-	 *		A.bind( 'a' ).to( B, 'b' );
-	 *		A.bind( 'a', 'b' ).to( B, 'c', 'd' );
-	 *		A.bind( 'a' ).to( B, 'b', C, 'd', ( b, d ) => b + d );
-	 *
-	 * @method #bind
-	 * @param {...String} bindAttrs Observable attributes that will be bound to another observable(s).
-	 * @returns {module:utils/observablemixin~BindChain}
+	 * @inheritDoc
 	 */
-	bind( ...bindAttrs ) {
-		if ( !bindAttrs.length || !isStringArray( bindAttrs ) ) {
+	bind( ...bindProperties ) {
+		if ( !bindProperties.length || !isStringArray( bindProperties ) ) {
 			/**
-			 * All attributes must be strings.
+			 * All properties must be strings.
 			 *
-			 * @error observable-bind-wrong-attrs
+			 * @error observable-bind-wrong-properties
 			 */
-			throw new CKEditorError( 'observable-bind-wrong-attrs: All attributes must be strings.' );
+			throw new CKEditorError( 'observable-bind-wrong-properties: All properties must be strings.' );
 		}
 
-		if ( ( new Set( bindAttrs ) ).size !== bindAttrs.length ) {
+		if ( ( new Set( bindProperties ) ).size !== bindProperties.length ) {
 			/**
-			 * Attributes must be unique.
+			 * Properties must be unique.
 			 *
-			 * @error observable-bind-duplicate-attrs
+			 * @error observable-bind-duplicate-properties
 			 */
-			throw new CKEditorError( 'observable-bind-duplicate-attrs: Attributes must be unique.' );
+			throw new CKEditorError( 'observable-bind-duplicate-properties: Properties must be unique.' );
 		}
 
 		initObservable( this );
 
-		const boundAttributes = this[ boundAttributesSymbol ];
+		const boundProperties = this[ boundPropertiesSymbol ];
 
-		bindAttrs.forEach( attrName => {
-			if ( boundAttributes.has( attrName ) ) {
+		bindProperties.forEach( propertyName => {
+			if ( boundProperties.has( propertyName ) ) {
 				/**
-				 * Cannot bind the same attribute more that once.
+				 * Cannot bind the same property more that once.
 				 *
 				 * @error observable-bind-rebind
 				 */
-				throw new CKEditorError( 'observable-bind-rebind: Cannot bind the same attribute more that once.' );
+				throw new CKEditorError( 'observable-bind-rebind: Cannot bind the same property more that once.' );
 			}
 		} );
 
 		const bindings = new Map();
 
-		/**
-		 * @typedef Binding
-		 * @type Object
-		 * @property {Array} attr Attribute which is bound.
-		 * @property {Array} to Array of observable–attribute components of the binding (`{ observable: ..., attr: .. }`).
-		 * @property {Array} callback A function which processes `to` components.
-		 */
-		bindAttrs.forEach( a => {
-			const binding = { attr: a, to: [] };
+		// @typedef {Object} Binding
+		// @property {Array} property Property which is bound.
+		// @property {Array} to Array of observable–property components of the binding (`{ observable: ..., property: .. }`).
+		// @property {Array} callback A function which processes `to` components.
+		bindProperties.forEach( a => {
+			const binding = { property: a, to: [] };
 
-			boundAttributes.set( a, binding );
+			boundProperties.set( a, binding );
 			bindings.set( a, binding );
 		} );
 
-		/**
-		 * @typedef BindChain
-		 * @type Object
-		 * @property {Function} to See {@link ~ObservableMixin#_bindTo}.
-		 * @property {module:utils/observablemixin~Observable} _observable The observable which initializes the binding.
-		 * @property {Array} _bindAttrs Array of `_observable` attributes to be bound.
-		 * @property {Array} _to Array of `to()` observable–attributes (`{ observable: toObservable, attrs: ...toAttrs }`).
-		 * @property {Map} _bindings Stores bindings to be kept in
-		 *  {@link ~ObservableMixin#_boundAttributes}/{@link ~ObservableMixin#_boundObservables}
-		 * initiated in this binding chain.
-		 */
+		// @typedef {Object} BindChain
+		// @property {Function} to See {@link ~ObservableMixin#_bindTo}.
+		// @property {Function} toMany See {@link ~ObservableMixin#_bindToMany}.
+		// @property {module:utils/observablemixin~Observable} _observable The observable which initializes the binding.
+		// @property {Array} _bindProperties Array of `_observable` properties to be bound.
+		// @property {Array} _to Array of `to()` observable–properties (`{ observable: toObservable, properties: ...toProperties }`).
+		// @property {Map} _bindings Stores bindings to be kept in
+		// {@link ~ObservableMixin#_boundProperties}/{@link ~ObservableMixin#_boundObservables}
+		// initiated in this binding chain.
 		return {
 			to: bindTo,
+			toMany: bindToMany,
 
 			_observable: this,
-			_bindAttrs: bindAttrs,
+			_bindProperties: bindProperties,
 			_to: [],
 			_bindings: bindings
 		};
 	},
 
 	/**
-	 * Removes the binding created with {@link ~ObservableMixin#bind}.
-	 *
-	 *		A.unbind( 'a' );
-	 *		A.unbind();
-	 *
-	 * @method #unbind
-	 * @param {...String} [unbindAttrs] Observable attributes to be unbound. All the bindings will
-	 * be released if no attributes provided.
+	 * @inheritDoc
 	 */
-	unbind( ...unbindAttrs ) {
+	unbind( ...unbindProperties ) {
 		// Nothing to do here if not inited yet.
-		if ( !( attributesSymbol in this ) ) {
+		if ( !( observablePropertiesSymbol in this ) ) {
 			return;
 		}
 
-		const boundAttributes = this[ boundAttributesSymbol ];
+		const boundProperties = this[ boundPropertiesSymbol ];
 		const boundObservables = this[ boundObservablesSymbol ];
 
-		if ( unbindAttrs.length ) {
-			if ( !isStringArray( unbindAttrs ) ) {
+		if ( unbindProperties.length ) {
+			if ( !isStringArray( unbindProperties ) ) {
 				/**
-				 * Attributes must be strings.
+				 * Properties must be strings.
 				 *
-				 * @error observable-unbind-wrong-attrs
+				 * @error observable-unbind-wrong-properties
 				 */
-				throw new CKEditorError( 'observable-unbind-wrong-attrs: Attributes must be strings.' );
+				throw new CKEditorError( 'observable-unbind-wrong-properties: Properties must be strings.' );
 			}
 
-			unbindAttrs.forEach( attrName => {
-				const binding = boundAttributes.get( attrName );
-				let toObservable, toAttr, toAttrs, toAttrBindings;
+			unbindProperties.forEach( propertyName => {
+				const binding = boundProperties.get( propertyName );
+
+				// Nothing to do if the binding is not defined
+				if ( !binding ) {
+					return;
+				}
+
+				let toObservable, toProperty, toProperties, toPropertyBindings;
 
 				binding.to.forEach( to => {
 					// TODO: ES6 destructuring.
 					toObservable = to[ 0 ];
-					toAttr = to[ 1 ];
-					toAttrs = boundObservables.get( toObservable );
-					toAttrBindings = toAttrs[ toAttr ];
+					toProperty = to[ 1 ];
+					toProperties = boundObservables.get( toObservable );
+					toPropertyBindings = toProperties[ toProperty ];
 
-					toAttrBindings.delete( binding );
+					toPropertyBindings.delete( binding );
 
-					if ( !toAttrBindings.size ) {
-						delete toAttrs[ toAttr ];
+					if ( !toPropertyBindings.size ) {
+						delete toProperties[ toProperty ];
 					}
 
-					if ( !Object.keys( toAttrs ).length ) {
+					if ( !Object.keys( toProperties ).length ) {
 						boundObservables.delete( toObservable );
 						this.stopListening( toObservable, 'change' );
 					}
 				} );
 
-				boundAttributes.delete( attrName );
+				boundProperties.delete( propertyName );
 			} );
 		} else {
 			boundObservables.forEach( ( bindings, boundObservable ) => {
@@ -245,66 +213,12 @@ const ObservableMixin = {
 			} );
 
 			boundObservables.clear();
-			boundAttributes.clear();
+			boundProperties.clear();
 		}
 	},
 
 	/**
-	 * Turns the given methods of this object into event-based ones. This means that the new method will fire an event
-	 * (named after the method) and the original action will be plugged as a listener to that event.
-	 *
-	 * This is a very simplified method decoration. Itself it doesn't change the behavior of a method (expect adding the event),
-	 * but it allows to modify it later on by listening to the method's event.
-	 *
-	 * For example, in order to cancel the method execution one can stop the event:
-	 *
-	 *		class Foo {
-	 *			constructor() {
-	 *				this.decorate( 'method' );
-	 *			}
-	 *
-	 *			method() {
-	 *				console.log( 'called!' );
-	 *			}
-	 *		}
-	 *
-	 *		const foo = new Foo();
-	 *		foo.on( 'method', ( evt ) => {
-	 *			evt.stop();
-	 *		}, { priority: 'high' } );
-	 *
-	 *		foo.method(); // Nothing is logged.
-	 *
-	 *
-	 * Note: we used a high priority listener here to execute this callback before the one which
-	 * calls the orignal method (which used the default priority).
-	 *
-	 * It's also possible to change the return value:
-	 *
-	 *		foo.on( 'method', ( evt ) => {
-	 *			evt.return = 'Foo!';
-	 *		} );
-	 *
-	 *		foo.method(); // -> 'Foo'
-	 *
-	 * Finally, it's possible to access and modify the parameters:
-	 *
-	 *		method( a, b ) {
-	 *			console.log( `${ a }, ${ b }`  );
-	 *		}
-	 *
-	 *		// ...
-	 *
-	 *		foo.on( 'method', ( evt, args ) => {
-	 *			args[ 0 ] = 3;
-	 *
-	 *			console.log( args[ 1 ] ); // -> 2
-	 *		}, { priority: 'high' } );
-	 *
-	 *		foo.method( 1, 2 ); // -> '3, 2'
-	 *
-	 * @method #decorate
-	 * @param {String} methodName Name of the method to decorate.
+	 * @inheritDoc
 	 */
 	decorate( methodName ) {
 		const originalMethod = this[ methodName ];
@@ -331,22 +245,9 @@ const ObservableMixin = {
 			return this.fire( methodName, args );
 		};
 	}
-
-	/**
-	 * @private
-	 * @member ~ObservableMixin#_boundAttributes
-	 */
-
-	/**
-	 * @private
-	 * @member ~ObservableMixin#_boundObservables
-	 */
-
-	/**
-	 * @private
-	 * @member ~ObservableMixin#_bindTo
-	 */
 };
+
+extend( ObservableMixin, EmitterMixin );
 
 export default ObservableMixin;
 
@@ -356,7 +257,7 @@ export default ObservableMixin;
 // @param {module:utils/observablemixin~ObservableMixin} observable
 function initObservable( observable ) {
 	// Do nothing if already inited.
-	if ( attributesSymbol in observable ) {
+	if ( observablePropertiesSymbol in observable ) {
 		return;
 	}
 
@@ -364,13 +265,13 @@ function initObservable( observable ) {
 	//
 	// @private
 	// @type {Map}
-	Object.defineProperty( observable, attributesSymbol, {
+	Object.defineProperty( observable, observablePropertiesSymbol, {
 		value: new Map()
 	} );
 
 	// Map containing bindings to external observables. It shares the binding objects
-	// (`{ observable: A, attr: 'a', to: ... }`) with {@link module:utils/observablemixin~ObservableMixin#_boundAttributes} and
-	// it is used to observe external observables to update own attributes accordingly.
+	// (`{ observable: A, property: 'a', to: ... }`) with {@link module:utils/observablemixin~ObservableMixin#_boundProperties} and
+	// it is used to observe external observables to update own properties accordingly.
 	// See {@link module:utils/observablemixin~ObservableMixin#bind}.
 	//
 	//		A.bind( 'a', 'b', 'c' ).to( B, 'x', 'y', 'x' );
@@ -379,11 +280,11 @@ function initObservable( observable ) {
 	//			Map( {
 	//				B: {
 	//					x: Set( [
-	//						{ observable: A, attr: 'a', to: [ [ B, 'x' ] ] },
-	//						{ observable: A, attr: 'c', to: [ [ B, 'x' ] ] }
+	//						{ observable: A, property: 'a', to: [ [ B, 'x' ] ] },
+	//						{ observable: A, property: 'c', to: [ [ B, 'x' ] ] }
 	//					] ),
 	//					y: Set( [
-	//						{ observable: A, attr: 'b', to: [ [ B, 'y' ] ] },
+	//						{ observable: A, property: 'b', to: [ [ B, 'y' ] ] },
 	//					] )
 	//				}
 	//			} )
@@ -394,19 +295,19 @@ function initObservable( observable ) {
 	//			Map( {
 	//				B: {
 	//					x: Set( [
-	//						{ observable: A, attr: 'a', to: [ [ B, 'x' ] ] },
-	//						{ observable: A, attr: 'c', to: [ [ B, 'x' ] ] }
+	//						{ observable: A, property: 'a', to: [ [ B, 'x' ] ] },
+	//						{ observable: A, property: 'c', to: [ [ B, 'x' ] ] }
 	//					] ),
 	//					y: Set( [
-	//						{ observable: A, attr: 'b', to: [ [ B, 'y' ] ] },
+	//						{ observable: A, property: 'b', to: [ [ B, 'y' ] ] },
 	//					] ),
 	//					z: Set( [
-	//						{ observable: A, attr: 'd', to: [ [ B, 'z' ], [ C, 'w' ] ], callback: callback }
+	//						{ observable: A, property: 'd', to: [ [ B, 'z' ], [ C, 'w' ] ], callback: callback }
 	//					] )
 	//				},
 	//				C: {
 	//					w: Set( [
-	//						{ observable: A, attr: 'd', to: [ [ B, 'z' ], [ C, 'w' ] ], callback: callback }
+	//						{ observable: A, property: 'd', to: [ [ B, 'z' ], [ C, 'w' ] ], callback: callback }
 	//					] )
 	//				}
 	//			} )
@@ -417,35 +318,35 @@ function initObservable( observable ) {
 		value: new Map()
 	} );
 
-	// Object that stores which attributes of this observable are bound and how. It shares
-	// the binding objects (`{ observable: A, attr: 'a', to: ... }`) with {@link utils.ObservableMixin#_boundObservables}.
+	// Object that stores which properties of this observable are bound and how. It shares
+	// the binding objects (`{ observable: A, property: 'a', to: ... }`) with {@link utils.ObservableMixin#_boundObservables}.
 	// This data structure is a reverse of {@link utils.ObservableMixin#_boundObservables} and it is helpful for
 	// {@link utils.ObservableMixin#unbind}.
 	//
 	// See {@link utils.ObservableMixin#bind}.
 	//
 	//		A.bind( 'a', 'b', 'c' ).to( B, 'x', 'y', 'x' );
-	//		console.log( A._boundAttributes );
+	//		console.log( A._boundProperties );
 	//
 	//			Map( {
-	//				a: { observable: A, attr: 'a', to: [ [ B, 'x' ] ] },
-	//				b: { observable: A, attr: 'b', to: [ [ B, 'y' ] ] },
-	//				c: { observable: A, attr: 'c', to: [ [ B, 'x' ] ] }
+	//				a: { observable: A, property: 'a', to: [ [ B, 'x' ] ] },
+	//				b: { observable: A, property: 'b', to: [ [ B, 'y' ] ] },
+	//				c: { observable: A, property: 'c', to: [ [ B, 'x' ] ] }
 	//			} )
 	//
 	//		A.bind( 'd' ).to( B, 'z' ).to( C, 'w' ).as( callback );
-	//		console.log( A._boundAttributes );
+	//		console.log( A._boundProperties );
 	//
 	//			Map( {
-	//				a: { observable: A, attr: 'a', to: [ [ B, 'x' ] ] },
-	//				b: { observable: A, attr: 'b', to: [ [ B, 'y' ] ] },
-	//				c: { observable: A, attr: 'c', to: [ [ B, 'x' ] ] },
-	//				d: { observable: A, attr: 'd', to: [ [ B, 'z' ], [ C, 'w' ] ], callback: callback }
+	//				a: { observable: A, property: 'a', to: [ [ B, 'x' ] ] },
+	//				b: { observable: A, property: 'b', to: [ [ B, 'y' ] ] },
+	//				c: { observable: A, property: 'c', to: [ [ B, 'x' ] ] },
+	//				d: { observable: A, property: 'd', to: [ [ B, 'z' ], [ C, 'w' ] ], callback: callback }
 	//			} )
 	//
 	// @private
 	// @type {Map}
-	Object.defineProperty( observable, boundAttributesSymbol, {
+	Object.defineProperty( observable, boundPropertiesSymbol, {
 		value: new Map()
 	} );
 }
@@ -472,28 +373,28 @@ function bindTo( ...args ) {
 	// Eliminate A.bind( 'x', 'y' ).to( B, callback )
 	if ( numberOfBindings > 1 && parsedArgs.callback ) {
 		/**
-		 * Cannot bind multiple attributes and use a callback in one binding.
+		 * Cannot bind multiple properties and use a callback in one binding.
 		 *
 		 * @error observable-bind-to-extra-callback
 		 */
-		throw new CKEditorError( 'observable-bind-to-extra-callback: Cannot bind multiple attributes and use a callback in one binding.' );
+		throw new CKEditorError( 'observable-bind-to-extra-callback: Cannot bind multiple properties and use a callback in one binding.' );
 	}
 
 	parsedArgs.to.forEach( to => {
 		// Eliminate A.bind( 'x', 'y' ).to( B, 'a' )
-		if ( to.attrs.length && to.attrs.length !== numberOfBindings ) {
+		if ( to.properties.length && to.properties.length !== numberOfBindings ) {
 			/**
-			 * The number of attributes must match.
+			 * The number of properties must match.
 			 *
-			 * @error observable-bind-to-attrs-length
+			 * @error observable-bind-to-properties-length
 			 */
-			throw new CKEditorError( 'observable-bind-to-attrs-length: The number of attributes must match.' );
+			throw new CKEditorError( 'observable-bind-to-properties-length: The number of properties must match.' );
 		}
 
-		// When no to.attrs specified, observing source attributes instead i.e.
+		// When no to.properties specified, observing source properties instead i.e.
 		// A.bind( 'x', 'y' ).to( B ) -> Observe B.x and B.y
-		if ( !to.attrs.length ) {
-			to.attrs = this._bindAttrs;
+		if ( !to.properties.length ) {
+			to.properties = this._bindProperties;
 		}
 	} );
 
@@ -506,13 +407,50 @@ function bindTo( ...args ) {
 
 	attachBindToListeners( this._observable, this._to );
 
-	// Update observable._boundAttributes and observable._boundObservables.
+	// Update observable._boundProperties and observable._boundObservables.
 	updateBindToBound( this );
 
-	// Set initial values of bound attributes.
-	this._bindAttrs.forEach( attrName => {
-		updateBoundObservableAttr( this._observable, attrName );
+	// Set initial values of bound properties.
+	this._bindProperties.forEach( propertyName => {
+		updateBoundObservableProperty( this._observable, propertyName );
 	} );
+}
+
+// Binds to an attribute in a set of iterable observables.
+//
+// @private
+// @param {Array.<Observable>} observables
+// @param {String} attribute
+// @param {Function} callback
+function bindToMany( observables, attribute, callback ) {
+	if ( this._bindings.size > 1 ) {
+		/**
+		 * Binding one attribute to many observables only possible with one attribute.
+		 *
+		 * @error observable-bind-to-many-not-one-binding
+		 */
+		throw new CKEditorError( 'observable-bind-to-many-not-one-binding: Cannot bind multiple properties with toMany().' );
+	}
+
+	this.to(
+		// Bind to #attribute of each observable...
+		...getBindingTargets( observables, attribute ),
+		// ...using given callback to parse attribute values.
+		callback
+	);
+}
+
+// Returns an array of binding components for
+// {@link Observable#bind} from a set of iterable observables.
+//
+// @param {Array.<Observable>} observables
+// @param {String} attribute
+// @returns {Array.<String|Observable>}
+function getBindingTargets( observables, attribute ) {
+	const observableAndAttributePairs = observables.map( observable => [ observable, attribute ] );
+
+	// Merge pairs to one-dimension array of observables and attributes.
+	return Array.prototype.concat.apply( [], observableAndAttributePairs );
 }
 
 // Check if all entries of the array are of `String` type.
@@ -533,8 +471,8 @@ function isStringArray( arr ) {
 //
 //		{
 //			to: [
-//				{ observable: B, attrs: [ 'a' ] },
-//				{ observable: C, attrs: [ 'b' ] },
+//				{ observable: B, properties: [ 'a' ] },
+//				{ observable: C, properties: [ 'b' ] },
 //			],
 //			callback: call
 // 		}
@@ -562,9 +500,9 @@ function parseBindToArgs( ...args ) {
 
 	args.forEach( a => {
 		if ( typeof a == 'string' ) {
-			lastObservable.attrs.push( a );
+			lastObservable.properties.push( a );
 		} else if ( typeof a == 'object' ) {
-			lastObservable = { observable: a, attrs: [] };
+			lastObservable = { observable: a, properties: [] };
 			parsed.to.push( lastObservable );
 		} else {
 			throw new CKEditorError( 'observable-bind-to-parse-error: Invalid argument syntax in `to()`.' );
@@ -579,25 +517,25 @@ function parseBindToArgs( ...args ) {
 // @private
 // @param {Binding} binding A binding to store in {@link Observable#_boundObservables}.
 // @param {Observable} toObservable A observable, which is a new component of `binding`.
-// @param {String} toAttrName A name of `toObservable`'s attribute, a new component of the `binding`.
-function updateBoundObservables( observable, binding, toObservable, toAttrName ) {
+// @param {String} toPropertyName A name of `toObservable`'s property, a new component of the `binding`.
+function updateBoundObservables( observable, binding, toObservable, toPropertyName ) {
 	const boundObservables = observable[ boundObservablesSymbol ];
 	const bindingsToObservable = boundObservables.get( toObservable );
 	const bindings = bindingsToObservable || {};
 
-	if ( !bindings[ toAttrName ] ) {
-		bindings[ toAttrName ] = new Set();
+	if ( !bindings[ toPropertyName ] ) {
+		bindings[ toPropertyName ] = new Set();
 	}
 
 	// Pass the binding to a corresponding Set in `observable._boundObservables`.
-	bindings[ toAttrName ].add( binding );
+	bindings[ toPropertyName ].add( binding );
 
 	if ( !bindingsToObservable ) {
 		boundObservables.set( toObservable, bindings );
 	}
 }
 
-// Synchronizes {@link Observable#_boundAttributes} and {@link Observable#_boundObservables}
+// Synchronizes {@link Observable#_boundProperties} and {@link Observable#_boundObservables}
 // with {@link BindChain}.
 //
 // Assuming the following binding being created
@@ -607,16 +545,16 @@ function updateBoundObservables( observable, binding, toObservable, toAttrName )
 // the following bindings were initialized by {@link Observable#bind} in {@link BindChain#_bindings}:
 //
 // 		{
-// 			a: { observable: A, attr: 'a', to: [] },
-// 			b: { observable: A, attr: 'b', to: [] },
+// 			a: { observable: A, property: 'a', to: [] },
+// 			b: { observable: A, property: 'b', to: [] },
 // 		}
 //
 // Iterate over all bindings in this chain and fill their `to` properties with
 // corresponding to( ... ) arguments (components of the binding), so
 //
 // 		{
-// 			a: { observable: A, attr: 'a', to: [ B, 'x' ] },
-// 			b: { observable: A, attr: 'b', to: [ B, 'y' ] },
+// 			a: { observable: A, property: 'a', to: [ B, 'x' ] },
+// 			b: { observable: A, property: 'b', to: [ B, 'y' ] },
 // 		}
 //
 // Then update the structure of {@link Observable#_boundObservables} with updated
@@ -625,10 +563,10 @@ function updateBoundObservables( observable, binding, toObservable, toAttrName )
 // 		Map( {
 // 			B: {
 // 				x: Set( [
-// 					{ observable: A, attr: 'a', to: [ [ B, 'x' ] ] }
+// 					{ observable: A, property: 'a', to: [ [ B, 'x' ] ] }
 // 				] ),
 // 				y: Set( [
-// 					{ observable: A, attr: 'b', to: [ [ B, 'y' ] ] },
+// 					{ observable: A, property: 'b', to: [ [ B, 'y' ] ] },
 // 				] )
 //			}
 // 		} )
@@ -636,31 +574,31 @@ function updateBoundObservables( observable, binding, toObservable, toAttrName )
 // @private
 // @param {BindChain} chain The binding initialized by {@link Observable#bind}.
 function updateBindToBound( chain ) {
-	let toAttr;
+	let toProperty;
 
-	chain._bindings.forEach( ( binding, attrName ) => {
+	chain._bindings.forEach( ( binding, propertyName ) => {
 		// Note: For a binding without a callback, this will run only once
 		// like in A.bind( 'x', 'y' ).to( B, 'a', 'b' )
 		// TODO: ES6 destructuring.
 		chain._to.forEach( to => {
-			toAttr = to.attrs[ binding.callback ? 0 : chain._bindAttrs.indexOf( attrName ) ];
+			toProperty = to.properties[ binding.callback ? 0 : chain._bindProperties.indexOf( propertyName ) ];
 
-			binding.to.push( [ to.observable, toAttr ] );
-			updateBoundObservables( chain._observable, binding, to.observable, toAttr );
+			binding.to.push( [ to.observable, toProperty ] );
+			updateBoundObservables( chain._observable, binding, to.observable, toProperty );
 		} );
 	} );
 }
 
-// Updates an attribute of a {@link Observable} with a value
-// determined by an entry in {@link Observable#_boundAttributes}.
+// Updates an property of a {@link Observable} with a value
+// determined by an entry in {@link Observable#_boundProperties}.
 //
 // @private
-// @param {Observable} observable A observable which attribute is to be updated.
-// @param {String} attrName An attribute to be updated.
-function updateBoundObservableAttr( observable, attrName ) {
-	const boundAttributes = observable[ boundAttributesSymbol ];
-	const binding = boundAttributes.get( attrName );
-	let attrValue;
+// @param {Observable} observable A observable which property is to be updated.
+// @param {String} propertyName An property to be updated.
+function updateBoundObservableProperty( observable, propertyName ) {
+	const boundProperties = observable[ boundPropertiesSymbol ];
+	const binding = boundProperties.get( propertyName );
+	let propertyValue;
 
 	// When a binding with callback is created like
 	//
@@ -668,21 +606,21 @@ function updateBoundObservableAttr( observable, attrName ) {
 	//
 	// collect B.b and C.c, then pass them to callback to set A.a.
 	if ( binding.callback ) {
-		attrValue = binding.callback.apply( observable, binding.to.map( to => to[ 0 ][ to[ 1 ] ] ) );
+		propertyValue = binding.callback.apply( observable, binding.to.map( to => to[ 0 ][ to[ 1 ] ] ) );
 	} else {
-		attrValue = binding.to[ 0 ];
-		attrValue = attrValue[ 0 ][ attrValue[ 1 ] ];
+		propertyValue = binding.to[ 0 ];
+		propertyValue = propertyValue[ 0 ][ propertyValue[ 1 ] ];
 	}
 
-	if ( observable.hasOwnProperty( attrName ) ) {
-		observable[ attrName ] = attrValue;
+	if ( observable.hasOwnProperty( propertyName ) ) {
+		observable[ propertyName ] = propertyValue;
 	} else {
-		observable.set( attrName, attrValue );
+		observable.set( propertyName, propertyValue );
 	}
 }
 
 // Starts listening to changes in {@link BindChain._to} observables to update
-// {@link BindChain._observable} {@link BindChain._bindAttrs}. Also sets the
+// {@link BindChain._observable} {@link BindChain._bindProperties}. Also sets the
 // initial state of {@link BindChain._observable}.
 //
 // @private
@@ -695,14 +633,14 @@ function attachBindToListeners( observable, toBindings ) {
 		// If there's already a chain between the observables (`observable` listens to
 		// `to.observable`), there's no need to create another `change` event listener.
 		if ( !boundObservables.get( to.observable ) ) {
-			observable.listenTo( to.observable, 'change', ( evt, attrName ) => {
-				bindings = boundObservables.get( to.observable )[ attrName ];
+			observable.listenTo( to.observable, 'change', ( evt, propertyName ) => {
+				bindings = boundObservables.get( to.observable )[ propertyName ];
 
-				// Note: to.observable will fire for any attribute change, react
-				// to changes of attributes which are bound only.
+				// Note: to.observable will fire for any property change, react
+				// to changes of properties which are bound only.
 				if ( bindings ) {
 					bindings.forEach( binding => {
-						updateBoundObservableAttr( observable, binding.attr );
+						updateBoundObservableProperty( observable, binding.property );
 					} );
 				}
 			} );
@@ -710,10 +648,17 @@ function attachBindToListeners( observable, toBindings ) {
 	} );
 }
 
-extend( ObservableMixin, EmitterMixin );
+/**
+ * Interface which adds "observable properties" and data binding functionality.
+ *
+ * Can be easily implemented by a class by mixing the {@link module:utils/observablemixin~ObservableMixin} mixin.
+ *
+ * @interface Observable
+ * @extends module:utils/emittermixin~Emitter
+ */
 
 /**
- * Fired when an attribute changed value.
+ * Fired when a property changed value.
  *
  *		observable.set( 'prop', 1 );
  *
@@ -723,14 +668,119 @@ extend( ObservableMixin, EmitterMixin );
  *
  *		observable.prop = 2; // -> 'prop has changed from 1 to 2'
  *
- * @event module:utils/observablemixin~ObservableMixin#change:{attribute}
- * @param {String} name The attribute name.
- * @param {*} value The new attribute value.
- * @param {*} oldValue The previous attribute value.
+ * @event change:{property}
+ * @param {String} name The property name.
+ * @param {*} value The new property value.
+ * @param {*} oldValue The previous property value.
  */
 
 /**
- * Interface representing classes which mix in {@link module:utils/observablemixin~ObservableMixin}.
+ * Creates and sets the value of an observable property of this object. Such an property becomes a part
+ * of the state and is be observable.
  *
- * @interface Observable
+ * It accepts also a single object literal containing key/value pairs with properties to be set.
+ *
+ * This method throws the `observable-set-cannot-override` error if the observable instance already
+ * have a property with the given property name. This prevents from mistakenly overriding existing
+ * properties and methods, but means that `foo.set( 'bar', 1 )` may be slightly slower than `foo.bar = 1`.
+ *
+ * @method #set
+ * @param {String|Object} name The property's name or object with `name=>value` pairs.
+ * @param {*} [value] The property's value (if `name` was passed in the first parameter).
+ */
+
+/**
+ * Binds observable properties to another objects implementing {@link module:utils/observablemixin~Observable}
+ * interface (like {@link module:ui/model~Model}).
+ *
+ * Once bound, the observable will immediately share the current state of properties
+ * of the observable it is bound to and react to the changes to these properties
+ * in the future.
+ *
+ * **Note**: To release the binding use {@link module:utils/observablemixin~Observable#unbind}.
+ *
+ * Using `bind().to()` chain:
+ *
+ *		A.bind( 'a' ).to( B );
+ *		A.bind( 'a' ).to( B, 'b' );
+ *		A.bind( 'a', 'b' ).to( B, 'c', 'd' );
+ *		A.bind( 'a' ).to( B, 'b', C, 'd', ( b, d ) => b + d );
+ *
+ * It is also possible to bind to the same property in a observables collection using `bind().toMany()` chain:
+ *
+ *		A.bind( 'a' ).toMany( [ B, C, D ], 'x', ( a, b, c ) => a + b + c );
+ *		A.bind( 'a' ).toMany( [ B, C, D ], 'x', ( ...x ) => x.every( x => x ) );
+ *
+ * @method #bind
+ * @param {...String} bindProperties Observable properties that will be bound to another observable(s).
+ * @returns {Object} The bind chain with the `to()` and `toMany()` methods.
+ */
+
+/**
+ * Removes the binding created with {@link #bind}.
+ *
+ *		A.unbind( 'a' );
+ *		A.unbind();
+ *
+ * @method #unbind
+ * @param {...String} [unbindProperties] Observable properties to be unbound. All the bindings will
+ * be released if no properties provided.
+ */
+
+/**
+ * Turns the given methods of this object into event-based ones. This means that the new method will fire an event
+ * (named after the method) and the original action will be plugged as a listener to that event.
+ *
+ * This is a very simplified method decoration. Itself it doesn't change the behavior of a method (expect adding the event),
+ * but it allows to modify it later on by listening to the method's event.
+ *
+ * For example, in order to cancel the method execution one can stop the event:
+ *
+ *		class Foo {
+ *			constructor() {
+ *				this.decorate( 'method' );
+ *			}
+ *
+ *			method() {
+ *				console.log( 'called!' );
+ *			}
+ *		}
+ *
+ *		const foo = new Foo();
+ *		foo.on( 'method', ( evt ) => {
+ *			evt.stop();
+ *		}, { priority: 'high' } );
+ *
+ *		foo.method(); // Nothing is logged.
+ *
+ *
+ * Note: we used a high priority listener here to execute this callback before the one which
+ * calls the original method (which used the default priority).
+ *
+ * It's also possible to change the return value:
+ *
+ *		foo.on( 'method', ( evt ) => {
+ *			evt.return = 'Foo!';
+ *		} );
+ *
+ *		foo.method(); // -> 'Foo'
+ *
+ * Finally, it's possible to access and modify the parameters:
+ *
+ *		method( a, b ) {
+ *			console.log( `${ a }, ${ b }`  );
+ *		}
+ *
+ *		// ...
+ *
+ *		foo.on( 'method', ( evt, args ) => {
+ *			args[ 0 ] = 3;
+ *
+ *			console.log( args[ 1 ] ); // -> 2
+ *		}, { priority: 'high' } );
+ *
+ *		foo.method( 1, 2 ); // -> '3, 2'
+ *
+ * @method #decorate
+ * @param {String} methodName Name of the method to decorate.
  */

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -448,9 +448,9 @@ describe( 'Collection', () => {
 			collection.remove( 'bom' );	// by id
 
 			sinon.assert.calledThrice( spy );
-			sinon.assert.calledWithExactly( spy, sinon.match.has( 'source', collection ), item1 );
-			sinon.assert.calledWithExactly( spy, sinon.match.has( 'source', collection ), item2 );
-			sinon.assert.calledWithExactly( spy, sinon.match.has( 'source', collection ), item3 );
+			sinon.assert.calledWithExactly( spy, sinon.match.has( 'source', collection ), item1, 0 );
+			sinon.assert.calledWithExactly( spy, sinon.match.has( 'source', collection ), item2, 1 );
+			sinon.assert.calledWithExactly( spy, sinon.match.has( 'source', collection ), item3, 0 );
 		} );
 
 		it( 'should throw an error on invalid index', () => {
@@ -767,6 +767,34 @@ describe( 'Collection', () => {
 					expect( collection.get( 0 ).value ).to.equal( 'foo' );
 					expect( collection.get( 1 ).value ).to.equal( 'bar' );
 				} );
+
+				it( 'skips when there is no item', () => {
+					// Add before collection is bound.
+					items.add( { value: 1, skip: true } );
+
+					expect( collection ).to.have.length( 0 );
+
+					collection.bindTo( items ).using( item => {
+						if ( item.skip ) {
+							return null;
+						}
+
+						return item;
+					} );
+
+					// Still 0 because initial item was skipped.
+					expect( collection ).to.have.length( 0 );
+
+					items.add( { value: 2, skip: false } );
+					items.add( { value: 3, skip: true } );
+					items.add( { value: 4, skip: false } );
+
+					expect( Array.from( collection, item => item.value ) ).to.deep.equal( [ 2, 4 ] );
+
+					items.add( { value: 5, skip: false }, 2 );
+
+					expect( Array.from( collection, item => item.value ) ).to.deep.equal( [ 2, 5, 4 ] );
+				} );
 			} );
 
 			describe( 'property name', () => {
@@ -801,6 +829,25 @@ describe( 'Collection', () => {
 
 					items.remove( 0 );
 					expect( collection ).to.have.length( 0 );
+				} );
+
+				it( 'skips when there is no item', () => {
+					items.add( { prop: null } );
+
+					collection.bindTo( items ).using( 'prop' );
+
+					// Still 0 because initial item was skipped.
+					expect( collection ).to.have.length( 0 );
+
+					items.add( { prop: { value: 2, skip: false } } );
+					items.add( { prop: null } );
+					items.add( { prop: { value: 4, skip: false } } );
+
+					expect( Array.from( collection, item => item.value ) ).to.deep.equal( [ 2, 4 ] );
+
+					items.add( { prop: { value: 5 } }, 2 );
+
+					expect( Array.from( collection, item => item.value ) ).to.deep.equal( [ 2, 5, 4 ] );
 				} );
 			} );
 		} );
@@ -1031,6 +1078,115 @@ describe( 'Collection', () => {
 				sinon.assert.callCount( spyAddB, 3 );
 				sinon.assert.callCount( spyRemoveA, 2 );
 				sinon.assert.callCount( spyRemoveB, 2 );
+			} );
+
+			describe( 'skipping items', () => {
+				let collectionA, collectionB;
+
+				beforeEach( () => {
+					collectionA = new Collection();
+					collectionB = new Collection();
+
+					// A<--->B
+					collectionA.bindTo( collectionB ).using( item => {
+						if ( item.skip ) {
+							return null;
+						}
+
+						return item;
+					} );
+
+					collectionB.bindTo( collectionA ).using( item => {
+						if ( item.skip ) {
+							return null;
+						}
+
+						return item;
+					} );
+				} );
+
+				it( 'should add items at the enf of collections when includes skipped items', () => {
+					collectionA.add( { v: 'A' } );
+					collectionA.add( { v: 'B', skip: true } );
+					collectionA.add( { v: 'C', skip: true } );
+					collectionA.add( { v: 'D' } );
+
+					expect( collectionA._skippedIndexesFromExternal ).to.have.members( [] );
+					expect( collectionB._skippedIndexesFromExternal ).to.have.members( [ 1, 2 ] );
+					assertItems( collectionA, [ 'A', 'B', 'C', 'D' ] );
+					assertItems( collectionB, [ 'A', 'D' ] );
+
+					collectionB.add( { v: 'E' } );
+					collectionB.add( { v: 'F', skip: true } );
+					collectionB.add( { v: 'G' } );
+
+					expect( collectionA._skippedIndexesFromExternal ).to.have.members( [ 3 ] );
+					expect( collectionB._skippedIndexesFromExternal ).to.have.members( [ 1, 2 ] );
+					assertItems( collectionA, [ 'A', 'B', 'C', 'D', 'E', 'G' ] );
+					assertItems( collectionB, [ 'A', 'D', 'E', 'F', 'G' ] );
+				} );
+
+				it( 'should add items between skipped items', () => {
+					collectionA.add( { v: 'A' } );
+					collectionA.add( { v: 'B', skip: true } );
+					collectionA.add( { v: 'C', skip: true } );
+					collectionA.add( { v: 'D' } );
+
+					collectionB.add( { v: 'E' } );
+					collectionB.add( { v: 'F', skip: true } );
+					collectionB.add( { v: 'G', skip: true } );
+					collectionB.add( { v: 'H' } );
+
+					expect( collectionA._skippedIndexesFromExternal ).to.have.members( [ 3, 4 ] );
+					expect( collectionB._skippedIndexesFromExternal ).to.have.members( [ 1, 2 ] );
+					assertItems( collectionA, [ 'A', 'B', 'C', 'D', 'E', 'H' ] );
+					assertItems( collectionB, [ 'A', 'D', 'E', 'F', 'G', 'H' ] );
+
+					collectionA.add( { v: 'I' }, 2 );
+
+					expect( collectionA._skippedIndexesFromExternal ).to.have.members( [ 4, 5 ] );
+					expect( collectionB._skippedIndexesFromExternal ).to.have.members( [ 1, 2 ] );
+					assertItems( collectionA, [ 'A', 'B', 'I', 'C', 'D', 'E', 'H' ] );
+					assertItems( collectionB, [ 'A', 'I', 'D', 'E', 'F', 'G', 'H' ] );
+
+					collectionB.add( { v: 'J' }, 5 );
+
+					expect( collectionA._skippedIndexesFromExternal ).to.have.members( [ 4, 5 ] );
+					expect( collectionB._skippedIndexesFromExternal ).to.have.members( [ 1, 2 ] );
+					assertItems( collectionA, [ 'A', 'B', 'I', 'C', 'D', 'E', 'J', 'H' ] );
+					assertItems( collectionB, [ 'A', 'I', 'D', 'E', 'F', 'J', 'G', 'H' ] );
+				} );
+
+				it( 'should properly remove skipped items and update skipped indexes', () => {
+					collectionA.add( { v: 'A' } );
+					collectionA.add( { v: 'B', skip: true } );
+					collectionA.add( { v: 'C', skip: true } );
+					collectionA.add( { v: 'D' } );
+
+					collectionB.add( { v: 'E' } );
+					collectionB.add( { v: 'F', skip: true } );
+					collectionB.add( { v: 'G', skip: true } );
+					collectionB.add( { v: 'H' } );
+
+					expect( collectionA._skippedIndexesFromExternal ).to.have.members( [ 3, 4 ] );
+					expect( collectionB._skippedIndexesFromExternal ).to.have.members( [ 1, 2 ] );
+					assertItems( collectionA, [ 'A', 'B', 'C', 'D', 'E', 'H' ] );
+					assertItems( collectionB, [ 'A', 'D', 'E', 'F', 'G', 'H' ] );
+
+					collectionA.remove( 2 );
+
+					expect( collectionA._skippedIndexesFromExternal ).to.have.members( [ 3, 4 ] );
+					expect( collectionB._skippedIndexesFromExternal ).to.have.members( [ 1 ] );
+					assertItems( collectionA, [ 'A', 'B', 'D', 'E', 'H' ] );
+					assertItems( collectionB, [ 'A', 'D', 'E', 'F', 'G', 'H' ] );
+
+					collectionB.remove( 3 );
+
+					expect( collectionA._skippedIndexesFromExternal ).to.have.members( [ 3 ] );
+					expect( collectionB._skippedIndexesFromExternal ).to.have.members( [ 1 ] );
+					assertItems( collectionA, [ 'A', 'B', 'D', 'E', 'H' ] );
+					assertItems( collectionB, [ 'A', 'D', 'E', 'G', 'H' ] );
+				} );
 			} );
 		} );
 	} );

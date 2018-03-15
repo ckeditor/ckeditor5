@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -103,15 +103,15 @@ describe( 'Keyboard', () => {
 	} );
 
 	describe( 'getEnvKeystrokeText', () => {
-		const initialEnvMac = env.mac;
+		const initialEnvMac = env.isMac;
 
 		afterEach( () => {
-			env.mac = initialEnvMac;
+			env.isMac = initialEnvMac;
 		} );
 
 		describe( 'on Macintosh', () => {
 			beforeEach( () => {
-				env.mac = true;
+				env.isMac = true;
 			} );
 
 			it( 'replaces CTRL with ⌘', () => {
@@ -120,21 +120,42 @@ describe( 'Keyboard', () => {
 				expect( getEnvKeystrokeText( 'ctrl+A' ) ).to.equal( '⌘A' );
 			} );
 
+			it( 'replaces SHIFT with ⇧', () => {
+				expect( getEnvKeystrokeText( 'SHIFT' ) ).to.equal( '⇧' );
+				expect( getEnvKeystrokeText( 'SHIFT+A' ) ).to.equal( '⇧A' );
+				expect( getEnvKeystrokeText( 'shift+A' ) ).to.equal( '⇧A' );
+			} );
+
+			it( 'replaces ALT with ⌥', () => {
+				expect( getEnvKeystrokeText( 'ALT' ) ).to.equal( '⌥' );
+				expect( getEnvKeystrokeText( 'ALT+A' ) ).to.equal( '⌥A' );
+				expect( getEnvKeystrokeText( 'alt+A' ) ).to.equal( '⌥A' );
+			} );
+
+			it( 'work for multiple modifiers', () => {
+				expect( getEnvKeystrokeText( 'CTRL+SHIFT+X' ) ).to.equal( '⌘⇧X' );
+				expect( getEnvKeystrokeText( 'ALT+SHIFT+X' ) ).to.equal( '⌥⇧X' );
+			} );
+
 			it( 'does not touch other keys', () => {
-				expect( getEnvKeystrokeText( 'SHIFT+A' ) ).to.equal( 'SHIFT+A' );
+				expect( getEnvKeystrokeText( 'ESC+A' ) ).to.equal( 'ESC+A' );
+				expect( getEnvKeystrokeText( 'TAB' ) ).to.equal( 'TAB' );
 				expect( getEnvKeystrokeText( 'A' ) ).to.equal( 'A' );
+				expect( getEnvKeystrokeText( 'A+CTRL+B' ) ).to.equal( 'A+⌘B' );
 			} );
 		} );
 
 		describe( 'on non–Macintosh', () => {
 			beforeEach( () => {
-				env.mac = false;
+				env.isMac = false;
 			} );
 
 			it( 'does not touch anything', () => {
 				expect( getEnvKeystrokeText( 'CTRL+A' ) ).to.equal( 'CTRL+A' );
 				expect( getEnvKeystrokeText( 'ctrl+A' ) ).to.equal( 'ctrl+A' );
 				expect( getEnvKeystrokeText( 'SHIFT+A' ) ).to.equal( 'SHIFT+A' );
+				expect( getEnvKeystrokeText( 'alt+A' ) ).to.equal( 'alt+A' );
+				expect( getEnvKeystrokeText( 'CTRL+SHIFT+A' ) ).to.equal( 'CTRL+SHIFT+A' );
 				expect( getEnvKeystrokeText( 'A' ) ).to.equal( 'A' );
 			} );
 		} );

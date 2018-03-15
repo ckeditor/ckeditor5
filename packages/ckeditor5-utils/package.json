@@ -1,19 +1,19 @@
 {
   "name": "@ckeditor/ckeditor5-utils",
-  "version": "1.0.0-alpha.2",
+  "version": "1.0.0-beta.1",
   "description": "Miscellaneous utils used by CKEditor 5.",
   "keywords": [
     "ckeditor5",
     "ckeditor5-lib"
   ],
   "devDependencies": {
-    "@ckeditor/ckeditor5-core": "^1.0.0-alpha.2",
-    "@ckeditor/ckeditor5-engine": "^1.0.0-alpha.2",
+    "@ckeditor/ckeditor5-core": "^1.0.0-beta.1",
+    "@ckeditor/ckeditor5-engine": "^1.0.0-beta.1",
     "del": "^2.2.0",
-    "eslint": "^4.8.0",
-    "eslint-config-ckeditor5": "^1.0.6",
+    "eslint": "^4.15.0",
+    "eslint-config-ckeditor5": "^1.0.7",
     "husky": "^0.14.3",
-    "lint-staged": "^4.2.3",
+    "lint-staged": "^6.0.0",
     "lodash-cli": "^4"
   },
   "engines": {

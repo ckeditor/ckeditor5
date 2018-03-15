@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -79,6 +79,14 @@ export default class Collection {
 		 * @member {WeakMap}
 		 */
 		this._bindToInternalToExternalMap = new WeakMap();
+
+		/**
+		 * Stores indexes of skipped items from bound external collection.
+		 *
+		 * @private
+		 * @member {Array}
+		 */
+		this._skippedIndexesFromExternal = [];
 
 		/**
 		 * A collection instance this collection is bound to as a result
@@ -271,7 +279,7 @@ export default class Collection {
 		this._bindToInternalToExternalMap.delete( item );
 		this._bindToExternalToInternalMap.delete( externalItem );
 
-		this.fire( 'remove', item );
+		this.fire( 'remove', item, index );
 
 		return item;
 	}
@@ -402,9 +410,28 @@ export default class Collection {
 	 *		console.log( target.get( 0 ).value ); // 'foo'
 	 *		console.log( target.get( 1 ).value ); // 'bar'
 	 *
+	 * It's possible to skip specified items by returning falsy value:
+	 *
+	 *		const source = new Collection();
+	 *		const target = new Collection();
+	 *
+	 *		target.bindTo( source ).using( item => {
+	 *			if ( item.hidden ) {
+	 *				return null;
+	 *			}
+	 *
+	 *			return item;
+	 *		} );
+	 *
+	 *		source.add( { hidden: true } );
+	 *		source.add( { hidden: false } );
+	 *
+	 *		console.log( source.length ); // 2
+	 *		console.log( target.length ); // 1
+	 *
 	 * **Note**: {@link #clear} can be used to break the binding.
 	 *
-	 * @param {module:utils/collection~Collection} collection A collection to be bound.
+	 * @param {module:utils/collection~Collection} externalCollection A collection to be bound.
 	 * @returns {Object}
 	 * @returns {module:utils/collection~Collection#bindTo#as} return.as
 	 * @returns {module:utils/collection~Collection#bindTo#using} return.using
@@ -476,33 +503,109 @@ export default class Collection {
 			} else {
 				const item = factory( externalItem );
 
+				// When there is no item we need to remember skipped index first and then we can skip this item.
+				if ( !item ) {
+					this._skippedIndexesFromExternal.push( index );
+
+					return;
+				}
+
+				// Lets try to put item at the same index as index in external collection
+				// but when there are a skipped items in one or both collections we need to recalculate this index.
+				let finalIndex = index;
+
+				// When we try to insert item after some skipped items from external collection we need
+				// to include this skipped items and decrease index.
+				//
+				// For the following example:
+				// external -> [ 'A', 'B - skipped for internal', 'C - skipped for internal' ]
+				// internal -> [ A ]
+				//
+				// Another item is been added at the end of external collection:
+				// external.add( 'D' )
+				// external -> [ 'A', 'B - skipped for internal', 'C - skipped for internal', 'D' ]
+				//
+				// We can't just add 'D' to internal at the same index as index in external because
+				// this will produce empty indexes what is invalid:
+				// internal -> [ 'A', empty, empty, 'D' ]
+				//
+				// So we need to include skipped items and decrease index
+				// internal -> [ 'A', 'D' ]
+				for ( const skipped of this._skippedIndexesFromExternal ) {
+					if ( index > skipped ) {
+						finalIndex--;
+					}
+				}
+
+				// We need to take into consideration that external collection could skip some items from
+				// internal collection.
+				//
+				// For the following example:
+				// internal -> [ 'A', 'B - skipped for external', 'C - skipped for external' ]
+				// external -> [ A ]
+				//
+				// Another item is been added at the end of external collection:
+				// external.add( 'D' )
+				// external -> [ 'A', 'D' ]
+				//
+				// We need to include skipped items and place new item after them:
+				// internal -> [ 'A', 'B - skipped for external', 'C - skipped for external', 'D' ]
+				for ( const skipped of externalCollection._skippedIndexesFromExternal ) {
+					if ( finalIndex >= skipped ) {
+						finalIndex++;
+					}
+				}
+
 				this._bindToExternalToInternalMap.set( externalItem, item );
 				this._bindToInternalToExternalMap.set( item, externalItem );
+				this.add( item, finalIndex );
 
-				this.add( item, index );
+				// After adding new element to internal collection we need update indexes
+				// of skipped items in external collection.
+				for ( let i = 0; i < externalCollection._skippedIndexesFromExternal.length; i++ ) {
+					if ( finalIndex <= externalCollection._skippedIndexesFromExternal[ i ] ) {
+						externalCollection._skippedIndexesFromExternal[ i ]++;
+					}
+				}
 			}
 		};
 
 		// Load the initial content of the collection.
 		for ( const externalItem of externalCollection ) {
-			addItem( null, externalItem );
+			addItem( null, externalItem, externalCollection.getIndex( externalItem ) );
 		}
 
 		// Synchronize the with collection as new items are added.
 		this.listenTo( externalCollection, 'add', addItem );
 
 		// Synchronize the with collection as new items are removed.
-		this.listenTo( externalCollection, 'remove', ( evt, externalItem ) => {
+		this.listenTo( externalCollection, 'remove', ( evt, externalItem, index ) => {
 			const item = this._bindToExternalToInternalMap.get( externalItem );
 
 			if ( item ) {
 				this.remove( item );
 			}
+
+			// After removing element from external collection we need update/remove indexes
+			// of skipped items in internal collection.
+			this._skippedIndexesFromExternal = this._skippedIndexesFromExternal.reduce( ( result, skipped ) => {
+				if ( index < skipped ) {
+					result.push( skipped - 1 );
+				}
+
+				if ( index > skipped ) {
+					result.push( skipped );
+				}
+
+				return result;
+			}, [] );
 		} );
 	}
 
 	/**
-	 * Collection iterator.
+	 * Iterable interface.
+	 *
+	 * @returns {Iterable.<*>}
 	 */
 	[ Symbol.iterator ]() {
 		return this._items[ Symbol.iterator ]();
@@ -520,6 +623,7 @@ export default class Collection {
 	 *
 	 * @event remove
 	 * @param {Object} item The removed item.
+	 * @param {Number} index Index from which item was removed.
 	 */
 }
 

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -38,7 +38,7 @@ describe( 'log', () => {
 			log.warn( 'model-schema-no-item: Specified item cannot be found.' );
 
 			const logMessage = 'model-schema-no-item: Specified item cannot be found. ' +
-				`Read more: ${ DOCUMENTATION_URL }#model-schema-no-item\n`;
+				`Read more: ${ DOCUMENTATION_URL }#error-model-schema-no-item\n`;
 
 			sinon.assert.calledOnce( spy );
 			sinon.assert.calledWith( spy, logMessage );
@@ -66,7 +66,7 @@ describe( 'log', () => {
 			log.error( 'model-schema-no-item: Specified item cannot be found.' );
 
 			const logMessage = 'model-schema-no-item: Specified item cannot be found. ' +
-				`Read more: ${ DOCUMENTATION_URL }#model-schema-no-item\n`;
+				`Read more: ${ DOCUMENTATION_URL }#error-model-schema-no-item\n`;
 
 			sinon.assert.calledOnce( spy );
 			sinon.assert.calledWith( spy, logMessage );

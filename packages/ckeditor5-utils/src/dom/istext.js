@@ -4,15 +4,15 @@
  */
 
 /**
- * @module utils/dom/isrange
+ * @module utils/dom/istext
  */
 
 /**
- * Checks if the object is a native DOM Range.
+ * Checks if the object is a native DOM Text node.
  *
  * @param {*} obj
  * @returns {Boolean}
  */
-export default function isRange( obj ) {
-	return Object.prototype.toString.apply( obj ) == '[object Range]';
+export default function isText( obj ) {
+	return Object.prototype.toString.call( obj ) == '[object Text]';
 }

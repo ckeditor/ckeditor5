@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -16,20 +16,20 @@ export default class Locale {
 	/**
 	 * Creates a new instance of the Locale class.
 	 *
-	 * @param {String} [lang='en'] The language code in [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) format.
+	 * @param {String} [language='en'] The language code in [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) format.
 	 */
-	constructor( lang ) {
+	constructor( language ) {
 		/**
 		 * The language code in [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) format.
 		 *
 		 * @readonly
 		 * @member {String}
 		 */
-		this.lang = lang || 'en';
+		this.language = language || 'en';
 
 		/**
-		 * Translates the given string to the {@link #lang}. This method is also availble in {@link module:core/editor/editor~Editor#t} and
-		 * {@link module:ui/view~View#t}.
+		 * Translates the given string to the {@link #language}. This method is also available in {@link module:core/editor/editor~Editor#t}
+		 * and {@link module:ui/view~View#t}.
 		 *
 		 * The strings may contain placeholders (`%<index>`) for values which are passed as the second argument.
 		 * `<index>` is the index in the `values` array.
@@ -55,7 +55,7 @@ export default class Locale {
 	 * @private
 	 */
 	_t( str, values ) {
-		let translatedString = translate( this.lang, str );
+		let translatedString = translate( this.language, str );
 
 		if ( values ) {
 			translatedString = translatedString.replace( /%(\d+)/g, ( match, index ) => {

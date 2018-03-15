@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -8,10 +8,10 @@
  */
 
 /**
- * Returns a unique id. This id is a number (starting from 1) which will never get repeated on successive calls
- * to this method.
+ * Returns a unique id. This id consist of an 'e' character and a randomly generated string of 32 aphanumeric characters.
+ * Each character in uid string represents a hexadecimal digit (base 16).
  *
- * @returns {String} A number representing the id.
+ * @returns {String} A hexadecimal number representing the id.
  */
 export default function uid() {
 	let uuid = 'e'; // Make sure that id does not start with number.

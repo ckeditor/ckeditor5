@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -12,6 +12,7 @@ import isWindow from './iswindow';
 import isElement from '../lib/lodash/isElement';
 import getBorderWidths from './getborderwidths';
 import log from '../log';
+import isText from './istext';
 
 /**
  * A helper class representing a `ClientRect` object, e.g. value returned by
@@ -361,12 +362,19 @@ export default class Rect {
 		// If there's no client rects for the Range, use parent container's bounding rect
 		// instead and adjust rect's width to simulate the actual geometry of such range.
 		// https://github.com/ckeditor/ckeditor5-utils/issues/153
+		// https://github.com/ckeditor/ckeditor5-ui/issues/317
 		else {
-			const startContainerRect = new Rect( range.startContainer.getBoundingClientRect() );
-			startContainerRect.right = startContainerRect.left;
-			startContainerRect.width = 0;
+			let startContainer = range.startContainer;
 
-			rects.push( startContainerRect );
+			if ( isText( startContainer ) ) {
+				startContainer = startContainer.parentNode;
+			}
+
+			const rect = new Rect( startContainer.getBoundingClientRect() );
+			rect.right = rect.left;
+			rect.width = 0;
+
+			rects.push( rect );
 		}
 
 		return rects;

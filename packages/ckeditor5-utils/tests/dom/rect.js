@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -435,7 +435,7 @@ describe( 'Rect', () => {
 			ancestorA = document.createElement( 'div' );
 			ancestorB = document.createElement( 'div' );
 
-			ancestorA.append( element );
+			ancestorA.appendChild( element );
 			document.body.appendChild( ancestorA );
 		} );
 
@@ -575,7 +575,7 @@ describe( 'Rect', () => {
 		} );
 
 		it( 'should return the visible rect (HTMLElement), partially cropped, deep ancestor overflow', () => {
-			ancestorB.append( ancestorA );
+			ancestorB.appendChild( ancestorA );
 			document.body.appendChild( ancestorB );
 
 			testUtils.sinon.stub( element, 'getBoundingClientRect' ).returns( {
@@ -909,6 +909,9 @@ describe( 'Rect', () => {
 					height: 230
 				} );
 
+				// Safari fails because of "afterEach()" hook tries to restore values from removed element.
+				// We need to restore these values manually.
+				testUtils.sinon.restore();
 				iframe.remove();
 				done();
 			} );
@@ -950,6 +953,27 @@ describe( 'Rect', () => {
 			const element = document.createElement( 'div' );
 
 			range.setStart( element, 0 );
+			range.collapse();
+			testUtils.sinon.stub( range, 'getClientRects' ).returns( [] );
+			testUtils.sinon.stub( element, 'getBoundingClientRect' ).returns( geometry );
+
+			const expectedGeometry = Object.assign( {}, geometry );
+			expectedGeometry.right = expectedGeometry.left;
+			expectedGeometry.width = 0;
+
+			const rects = Rect.getDomRangeRects( range );
+			expect( rects ).to.have.length( 1 );
+			assertRect( rects[ 0 ], expectedGeometry );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5-ui/issues/317
+		it( 'should return rects for a text node\'s parent (collapsed, no Range rects available)', () => {
+			const range = document.createRange();
+			const element = document.createElement( 'div' );
+			const textNode = document.createTextNode( 'abc' );
+			element.appendChild( textNode );
+
+			range.setStart( textNode, 3 );
 			range.collapse();
 			testUtils.sinon.stub( range, 'getClientRects' ).returns( [] );
 			testUtils.sinon.stub( element, 'getBoundingClientRect' ).returns( geometry );

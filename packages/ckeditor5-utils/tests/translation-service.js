@@ -1,12 +1,14 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
+
+/* globals window */
 
 import { translate, add, _clear } from '../src/translation-service';
 
 describe( 'translation-service', () => {
-	beforeEach( () => {
+	afterEach( () => {
 		_clear();
 	} );
 
@@ -45,6 +47,17 @@ describe( 'translation-service', () => {
 		expect( translation ).to.be.equal( 'Bold' );
 	} );
 
+	it( 'should use provided language if only one is provided', () => {
+		add( 'pl', {
+			'OK': 'OK',
+			'Cancel [context: reject]': 'Anuluj'
+		} );
+
+		const translation = translate( 'de', 'Cancel [context: reject]' );
+
+		expect( translation ).to.be.equal( 'Anuluj' );
+	} );
+
 	it( 'should be able to merge translations', () => {
 		add( 'pl', {
 			'OK': 'OK',
@@ -61,5 +74,10 @@ describe( 'translation-service', () => {
 
 		expect( translationPL ).to.be.equal( 'Anuluj' );
 		expect( translationEN ).to.be.equal( 'Cancel' );
+	} );
+
+	it( 'should expose `add` function globally', () => {
+		expect( window.CKEDITOR_TRANSLATIONS ).to.be.an( 'object' );
+		expect( window.CKEDITOR_TRANSLATIONS.add ).to.be.a( 'function' );
 	} );
 } );

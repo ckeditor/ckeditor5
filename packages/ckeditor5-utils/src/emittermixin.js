@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -15,81 +15,21 @@ const _listeningTo = Symbol( 'listeningTo' );
 const _emitterId = Symbol( 'emitterId' );
 
 /**
- * Mixin that injects the events API into its host.
+ * Mixin that injects the {@link ~Emitter events API} into its host.
  *
  * @mixin EmitterMixin
  * @implements module:utils/emittermixin~Emitter
  */
 const EmitterMixin = {
 	/**
-	 * Registers a callback function to be executed when an event is fired.
-	 *
-	 * Events can be grouped in namespaces using `:`.
-	 * When namespaced event is fired, it additionally fires all callbacks for that namespace.
-	 *
-	 *		myEmitter.on( 'myGroup', genericCallback );
-	 *		myEmitter.on( 'myGroup:myEvent', specificCallback );
-	 *
-	 *		// genericCallback is fired.
-	 *		myEmitter.fire( 'myGroup' );
-	 *		// both genericCallback and specificCallback are fired.
-	 *		myEmitter.fire( 'myGroup:myEvent' );
-	 *		// genericCallback is fired even though there are no callbacks for "foo".
-	 *		myEmitter.fire( 'myGroup:foo' );
-	 *
-	 * An event callback can {@link module:utils/eventinfo~EventInfo#stop stop the event} and
-	 * set the {@link module:utils/eventinfo~EventInfo#return return value} of the {@link #fire} method.
-	 *
-	 * @method #on
-	 * @param {String} event The name of the event.
-	 * @param {Function} callback The function to be called on event.
-	 * @param {Object} [options={}] Additional options.
-	 * @param {module:utils/priorities~PriorityString|Number} [options.priority='normal'] The priority of this event callback. The higher
-	 * the priority value the sooner the callback will be fired. Events having the same priority are called in the
-	 * order they were added.
+	 * @inheritDoc
 	 */
 	on( event, callback, options = {} ) {
-		createEventNamespace( this, event );
-		const lists = getCallbacksListsForNamespace( this, event );
-		const priority = priorities.get( options.priority );
-
-		callback = {
-			callback,
-			priority
-		};
-
-		// Add the callback to all callbacks list.
-		for ( const callbacks of lists ) {
-			// Add the callback to the list in the right priority position.
-			let added = false;
-
-			for ( let i = 0; i < callbacks.length; i++ ) {
-				if ( callbacks[ i ].priority < priority ) {
-					callbacks.splice( i, 0, callback );
-					added = true;
-
-					break;
-				}
-			}
-
-			// Add at the end, if right place was not found.
-			if ( !added ) {
-				callbacks.push( callback );
-			}
-		}
+		this.listenTo( this, event, callback, options );
 	},
 
 	/**
-	 * Registers a callback function to be executed on the next time the event is fired only. This is similar to
-	 * calling {@link #on} followed by {@link #off} in the callback.
-	 *
-	 * @method #once
-	 * @param {String} event The name of the event.
-	 * @param {Function} callback The function to be called on event.
-	 * @param {Object} [options={}] Additional options.
-	 * @param {module:utils/priorities~PriorityString|Number} [options.priority='normal'] The priority of this event callback. The higher
-	 * the priority value the sooner the callback will be fired. Events having the same priority are called in the
-	 * order they were added.
+	 * @inheritDoc
 	 */
 	once( event, callback, options ) {
 		const onceCallback = function( event, ...args ) {
@@ -101,43 +41,20 @@ const EmitterMixin = {
 		};
 
 		// Make a similar on() call, simply replacing the callback.
-		this.on( event, onceCallback, options );
+		this.listenTo( this, event, onceCallback, options );
 	},
 
 	/**
-	 * Stops executing the callback on the given event.
-	 *
-	 * @method #off
-	 * @param {String} event The name of the event.
-	 * @param {Function} callback The function to stop being called.
+	 * @inheritDoc
 	 */
 	off( event, callback ) {
-		const lists = getCallbacksListsForNamespace( this, event );
-
-		for ( const callbacks of lists ) {
-			for ( let i = 0; i < callbacks.length; i++ ) {
-				if ( callbacks[ i ].callback == callback ) {
-					// Remove the callback from the list (fixing the next index).
-					callbacks.splice( i, 1 );
-					i--;
-				}
-			}
-		}
+		this.stopListening( this, event, callback );
 	},
 
 	/**
-	 * Registers a callback function to be executed when an event is fired in a specific (emitter) object.
-	 *
-	 * @method #listenTo
-	 * @param {module:utils/emittermixin~Emitter} emitter The object that fires the event.
-	 * @param {String} event The name of the event.
-	 * @param {Function} callback The function to be called on event.
-	 * @param {Object} [options={}] Additional options.
-	 * @param {module:utils/priorities~PriorityString|Number} [options.priority='normal'] The priority of this event callback. The higher
-	 * the priority value the sooner the callback will be fired. Events having the same priority are called in the
-	 * order they were added.
+	 * @inheritDoc
 	 */
-	listenTo( emitter, event, callback, options ) {
+	listenTo( emitter, event, callback, options = {} ) {
 		let emitterInfo, eventCallbacks;
 
 		// _listeningTo contains a list of emitters that this object is listening to.
@@ -180,23 +97,38 @@ const EmitterMixin = {
 		eventCallbacks.push( callback );
 
 		// Finally register the callback to the event.
-		emitter.on( event, callback, options );
+		createEventNamespace( emitter, event );
+		const lists = getCallbacksListsForNamespace( emitter, event );
+		const priority = priorities.get( options.priority );
+
+		const callbackDefinition = {
+			callback,
+			priority
+		};
+
+		// Add the callback to all callbacks list.
+		for ( const callbacks of lists ) {
+			// Add the callback to the list in the right priority position.
+			let added = false;
+
+			for ( let i = 0; i < callbacks.length; i++ ) {
+				if ( callbacks[ i ].priority < priority ) {
+					callbacks.splice( i, 0, callbackDefinition );
+					added = true;
+
+					break;
+				}
+			}
+
+			// Add at the end, if right place was not found.
+			if ( !added ) {
+				callbacks.push( callbackDefinition );
+			}
+		}
 	},
 
 	/**
-	 * Stops listening for events. It can be used at different levels:
-	 *
-	 * * To stop listening to a specific callback.
-	 * * To stop listening to a specific event.
-	 * * To stop listening to all events fired by a specific object.
-	 * * To stop listening to all events fired by all object.
-	 *
-	 * @method #stopListening
-	 * @param {module:utils/emittermixin~Emitter} [emitter] The object to stop listening to. If omitted, stops it for all objects.
-	 * @param {String} [event] (Requires the `emitter`) The name of the event to stop listening to. If omitted, stops it
-	 * for all events from `emitter`.
-	 * @param {Function} [callback] (Requires the `event`) The function to be removed from the call list for the given
-	 * `event`.
+	 * @inheritDoc
 	 */
 	stopListening( emitter, event, callback ) {
 		const emitters = this[ _listeningTo ];
@@ -211,13 +143,14 @@ const EmitterMixin = {
 
 		// All params provided. off() that single callback.
 		if ( callback ) {
-			emitter.off( event, callback );
+			removeCallback( emitter, event, callback );
 		}
 		// Only `emitter` and `event` provided. off() all callbacks for that event.
 		else if ( eventCallbacks ) {
 			while ( ( callback = eventCallbacks.pop() ) ) {
-				emitter.off( event, callback );
+				removeCallback( emitter, event, callback );
 			}
+
 			delete emitterInfo.callbacks[ event ];
 		}
 		// Only `emitter` provided. off() all events for that emitter.
@@ -237,17 +170,7 @@ const EmitterMixin = {
 	},
 
 	/**
-	 * Fires an event, executing all callbacks registered for it.
-	 *
-	 * The first parameter passed to callbacks is an {@link module:utils/eventinfo~EventInfo} object,
-	 * followed by the optional `args` provided in the `fire()` method call.
-	 *
-	 * @method #fire
-	 * @param {String|module:utils/eventinfo~EventInfo} eventOrInfo The name of the event or `EventInfo` object if event is delegated.
-	 * @param {...*} [args] Additional arguments to be passed to the callbacks.
-	 * @returns {*} By default the method returns `undefined`. However, the return value can be changed by listeners
-	 * through modification of the {@link module:utils/eventinfo~EventInfo#return}'s value (the event info
-	 * is the first param of every callback).
+	 * @inheritDoc
 	 */
 	fire( eventOrInfo, ...args ) {
 		const eventInfo = eventOrInfo instanceof EventInfo ? eventOrInfo : new EventInfo( this, eventOrInfo );
@@ -277,7 +200,7 @@ const EmitterMixin = {
 					// Remove the called mark for the next calls.
 					delete eventInfo.off.called;
 
-					this.off( event, callbacks[ i ].callback );
+					removeCallback( this, event, callbacks[ i ].callback );
 				}
 
 				// Do not execute next callbacks if stop() was called.
@@ -305,22 +228,7 @@ const EmitterMixin = {
 	},
 
 	/**
-	 * Delegates selected events to another {@link module:utils/emittermixin~Emitter}. For instance:
-	 *
-	 *		emitterA.delegate( 'eventX' ).to( emitterB );
-	 *		emitterA.delegate( 'eventX', 'eventY' ).to( emitterC );
-	 *
-	 * then `eventX` is delegated (fired by) `emitterB` and `emitterC` along with `data`:
-	 *
-	 *		emitterA.fire( 'eventX', data );
-	 *
-	 * and `eventY` is delegated (fired by) `emitterC` along with `data`:
-	 *
-	 *		emitterA.fire( 'eventY', data );
-	 *
-	 * @method #delegate
-	 * @param {...String} events Event names that will be delegated to another emitter.
-	 * @returns {module:utils/emittermixin~EmitterMixinDelegateChain}
+	 * @inheritDoc
 	 */
 	delegate( ...events ) {
 		return {
@@ -343,16 +251,7 @@ const EmitterMixin = {
 	},
 
 	/**
-	 * Stops delegating events. It can be used at different levels:
-	 *
-	 * * To stop delegating all events.
-	 * * To stop delegating a specific event to all emitters.
-	 * * To stop delegating a specific event to a specific emitter.
-	 *
-	 * @method #stopDelegating
-	 * @param {String} [event] The name of the event to stop delegating. If omitted, stops it all delegations.
-	 * @param {module:utils/emittermixin~Emitter} [emitter] (requires `event`) The object to stop delegating a particular event to.
-	 * If omitted, stops delegation of `event` to all emitters.
+	 * @inheritDoc
 	 */
 	stopDelegating( event, emitter ) {
 		if ( !this._delegations ) {
@@ -374,6 +273,143 @@ const EmitterMixin = {
 };
 
 export default EmitterMixin;
+
+/**
+ * Emitter/listener interface.
+ *
+ * Can be easily implemented by a class by mixing the {@link module:utils/emittermixin~EmitterMixin} mixin.
+ *
+ * @interface Emitter
+ */
+
+/**
+ * Registers a callback function to be executed when an event is fired.
+ *
+ * Shorthand for {@link #listenTo `this.listenTo( this, event, callback, options )`} (it makes the emitter
+ * listen on itself).
+ *
+ * @method #on
+ * @param {String} event The name of the event.
+ * @param {Function} callback The function to be called on event.
+ * @param {Object} [options={}] Additional options.
+ * @param {module:utils/priorities~PriorityString|Number} [options.priority='normal'] The priority of this event callback. The higher
+ * the priority value the sooner the callback will be fired. Events having the same priority are called in the
+ * order they were added.
+ */
+
+/**
+ * Registers a callback function to be executed on the next time the event is fired only. This is similar to
+ * calling {@link #on} followed by {@link #off} in the callback.
+ *
+ * @method #once
+ * @param {String} event The name of the event.
+ * @param {Function} callback The function to be called on event.
+ * @param {Object} [options={}] Additional options.
+ * @param {module:utils/priorities~PriorityString|Number} [options.priority='normal'] The priority of this event callback. The higher
+ * the priority value the sooner the callback will be fired. Events having the same priority are called in the
+ * order they were added.
+ */
+
+/**
+ * Stops executing the callback on the given event.
+ * Shorthand for {@link #stopListening `this.stopListening( this, event, callback )`}.
+ *
+ * @method #off
+ * @param {String} event The name of the event.
+ * @param {Function} callback The function to stop being called.
+ */
+
+/**
+ * Registers a callback function to be executed when an event is fired in a specific (emitter) object.
+ *
+ * Events can be grouped in namespaces using `:`.
+ * When namespaced event is fired, it additionally fires all callbacks for that namespace.
+ *
+ *		// myEmitter.on( ... ) is a shorthand for myEmitter.listenTo( myEmitter, ... ).
+ *		myEmitter.on( 'myGroup', genericCallback );
+ *		myEmitter.on( 'myGroup:myEvent', specificCallback );
+ *
+ *		// genericCallback is fired.
+ *		myEmitter.fire( 'myGroup' );
+ *		// both genericCallback and specificCallback are fired.
+ *		myEmitter.fire( 'myGroup:myEvent' );
+ *		// genericCallback is fired even though there are no callbacks for "foo".
+ *		myEmitter.fire( 'myGroup:foo' );
+ *
+ * An event callback can {@link module:utils/eventinfo~EventInfo#stop stop the event} and
+ * set the {@link module:utils/eventinfo~EventInfo#return return value} of the {@link #fire} method.
+ *
+ * @method #listenTo
+ * @param {module:utils/emittermixin~Emitter} emitter The object that fires the event.
+ * @param {String} event The name of the event.
+ * @param {Function} callback The function to be called on event.
+ * @param {Object} [options={}] Additional options.
+ * @param {module:utils/priorities~PriorityString|Number} [options.priority='normal'] The priority of this event callback. The higher
+ * the priority value the sooner the callback will be fired. Events having the same priority are called in the
+ * order they were added.
+ */
+
+/**
+ * Stops listening for events. It can be used at different levels:
+ *
+ * * To stop listening to a specific callback.
+ * * To stop listening to a specific event.
+ * * To stop listening to all events fired by a specific object.
+ * * To stop listening to all events fired by all objects.
+ *
+ * @method #stopListening
+ * @param {module:utils/emittermixin~Emitter} [emitter] The object to stop listening to. If omitted, stops it for all objects.
+ * @param {String} [event] (Requires the `emitter`) The name of the event to stop listening to. If omitted, stops it
+ * for all events from `emitter`.
+ * @param {Function} [callback] (Requires the `event`) The function to be removed from the call list for the given
+ * `event`.
+ */
+
+/**
+ * Fires an event, executing all callbacks registered for it.
+ *
+ * The first parameter passed to callbacks is an {@link module:utils/eventinfo~EventInfo} object,
+ * followed by the optional `args` provided in the `fire()` method call.
+ *
+ * @method #fire
+ * @param {String|module:utils/eventinfo~EventInfo} eventOrInfo The name of the event or `EventInfo` object if event is delegated.
+ * @param {...*} [args] Additional arguments to be passed to the callbacks.
+ * @returns {*} By default the method returns `undefined`. However, the return value can be changed by listeners
+ * through modification of the {@link module:utils/eventinfo~EventInfo#return `evt.return`}'s property (the event info
+ * is the first param of every callback).
+ */
+
+/**
+ * Delegates selected events to another {@link module:utils/emittermixin~Emitter}. For instance:
+ *
+ *		emitterA.delegate( 'eventX' ).to( emitterB );
+ *		emitterA.delegate( 'eventX', 'eventY' ).to( emitterC );
+ *
+ * then `eventX` is delegated (fired by) `emitterB` and `emitterC` along with `data`:
+ *
+ *		emitterA.fire( 'eventX', data );
+ *
+ * and `eventY` is delegated (fired by) `emitterC` along with `data`:
+ *
+ *		emitterA.fire( 'eventY', data );
+ *
+ * @method #delegate
+ * @param {...String} events Event names that will be delegated to another emitter.
+ * @returns {module:utils/emittermixin~EmitterMixinDelegateChain}
+ */
+
+/**
+ * Stops delegating events. It can be used at different levels:
+ *
+ * * To stop delegating all events.
+ * * To stop delegating a specific event to all emitters.
+ * * To stop delegating a specific event to a specific emitter.
+ *
+ * @method #stopDelegating
+ * @param {String} [event] The name of the event to stop delegating. If omitted, stops it all delegations.
+ * @param {module:utils/emittermixin~Emitter} [emitter] (requires `event`) The object to stop delegating a particular event to.
+ * If omitted, stops delegation of `event` to all emitters.
+ */
 
 /**
  * Checks if `listeningEmitter` listens to an emitter with given `listenedToEmitterId` and if so, returns that emitter.
@@ -508,7 +544,6 @@ function createEventNamespace( source, eventName ) {
 // Gets an array containing callbacks list for a given event and it's more specific events.
 // I.e. if given event is foo:bar and there is also foo:bar:abc event registered, this will
 // return callback list of foo:bar and foo:bar:abc (but not foo).
-// Returns empty array if given event has not been yet registered.
 function getCallbacksListsForNamespace( source, eventName ) {
 	const eventNode = getEvents( source )[ eventName ];
 
@@ -570,11 +605,24 @@ function fireDelegatedEvents( destinations, eventInfo, fireArgs ) {
 	}
 }
 
-/**
- * Interface representing classes which mix in {@link module:utils/emittermixin~EmitterMixin}.
- *
- * @interface Emitter
- */
+// Removes callback from emitter for given event.
+//
+// @param {module:utils/emittermixin~Emitter} emitter
+// @param {String} event
+// @param {Function} callback
+function removeCallback( emitter, event, callback ) {
+	const lists = getCallbacksListsForNamespace( emitter, event );
+
+	for ( const callbacks of lists ) {
+		for ( let i = 0; i < callbacks.length; i++ ) {
+			if ( callbacks[ i ].callback == callback ) {
+				// Remove the callback from the list (fixing the next index).
+				callbacks.splice( i, 1 );
+				i--;
+			}
+		}
+	}
+}
 
 /**
  * The return value of {@link ~EmitterMixin#delegate}.
