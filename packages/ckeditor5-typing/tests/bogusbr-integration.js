@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -44,12 +44,12 @@ describe( 'Typing – bogus BR integration', () => {
 		// a little different in every browser (as native mutations may be different in different browsers).
 
 		it( 'space is inserted on the end of the line (paragraph)', done => {
-			editor.document.enqueueChanges( () => {
+			editor.model.change( () => {
 				editor.editing.view.getDomRoot().focus();
-				setData( editor.document, '<paragraph>Foo[]</paragraph>' );
+				setData( editor.model, '<paragraph>Foo[]</paragraph>' );
 			} );
 
-			editor.document.once( 'changesDone', () => {
+			editor.model.document.once( 'change', () => {
 				expect( editor.getData() ).to.equal( '<p>Foo&nbsp;</p>' );
 				done();
 			}, { priority: 'low' } );
@@ -58,12 +58,12 @@ describe( 'Typing – bogus BR integration', () => {
 		} );
 
 		it( 'space is inserted on the end of the line (empty paragraph)', done => {
-			editor.document.enqueueChanges( () => {
+			editor.model.change( () => {
 				editor.editing.view.getDomRoot().focus();
-				setData( editor.document, '<paragraph>[]</paragraph>' );
+				setData( editor.model, '<paragraph>[]</paragraph>' );
 			} );
 
-			editor.document.once( 'changesDone', () => {
+			editor.model.document.once( 'change', () => {
 				expect( editor.getData() ).to.equal( '<p>&nbsp;</p>' );
 				done();
 			}, { priority: 'low' } );
@@ -72,12 +72,12 @@ describe( 'Typing – bogus BR integration', () => {
 		} );
 
 		it( 'space is inserted on the end of the line (bold)', done => {
-			editor.document.enqueueChanges( () => {
+			editor.model.change( () => {
 				editor.editing.view.getDomRoot().focus();
-				setData( editor.document, '<paragraph><$text bold="true">Foo[]</$text></paragraph>' );
+				setData( editor.model, '<paragraph><$text bold="true">Foo[]</$text></paragraph>' );
 			} );
 
-			editor.document.once( 'changesDone', () => {
+			editor.model.document.once( 'change', () => {
 				expect( editor.getData() ).to.equal( '<p><strong>Foo&nbsp;</strong></p>' );
 				done();
 			}, { priority: 'low' } );
@@ -90,12 +90,12 @@ describe( 'Typing – bogus BR integration', () => {
 		// This tests use fixed list of mutation mocks to simulate specific browser behaviours.
 
 		it( 'space is inserted on the end of the paragraph', done => {
-			editor.document.enqueueChanges( () => {
+			editor.model.change( () => {
 				editor.editing.view.getDomRoot().focus();
-				setData( editor.document, '<paragraph>Foo[]</paragraph>' );
+				setData( editor.model, '<paragraph>Foo[]</paragraph>' );
 			} );
 
-			editor.document.once( 'changesDone', () => {
+			editor.model.document.once( 'change', () => {
 				expect( editor.getData() ).to.equal( '<p>Foo&nbsp;</p>' );
 				done();
 			}, { priority: 'low' } );
@@ -116,12 +116,12 @@ describe( 'Typing – bogus BR integration', () => {
 		} );
 
 		it( 'space is inserted on the end of the line paragraph (with bogus br)', done => {
-			editor.document.enqueueChanges( () => {
+			editor.model.change( () => {
 				editor.editing.view.getDomRoot().focus();
-				setData( editor.document, '<paragraph>Foo[]</paragraph>' );
+				setData( editor.model, '<paragraph>Foo[]</paragraph>' );
 			} );
 
-			editor.document.once( 'changesDone', () => {
+			editor.model.document.once( 'change', () => {
 				expect( editor.getData() ).to.equal( '<p>Foo&nbsp;</p>' );
 				done();
 			}, { priority: 'low' } );
@@ -145,12 +145,12 @@ describe( 'Typing – bogus BR integration', () => {
 		} );
 
 		it( 'word is properly corrected on the end of the block element (with bogus br)', done => {
-			editor.document.enqueueChanges( () => {
+			editor.model.change( () => {
 				editor.editing.view.getDomRoot().focus();
-				setData( editor.document, '<paragraph>Foo hous[]</paragraph>' );
+				setData( editor.model, '<paragraph>Foo hous[]</paragraph>' );
 			} );
 
-			editor.document.once( 'changesDone', () => {
+			editor.model.document.once( 'change', () => {
 				expect( editor.getData() ).to.equal( '<p>Foo house</p>' );
 				done();
 			}, { priority: 'low' } );

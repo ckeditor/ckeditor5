@@ -1,6 +1,19 @@
 Changelog
 =========
 
+## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-typing/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
+
+### Bug fixes
+
+* `DeleteObserver` will stop the `keydown` event when the `delete` event is stopped. Closes: https://github.com/ckeditor/ckeditor5/issues/753. ([479d043](https://github.com/ckeditor/ckeditor5-typing/commit/479d043))
+* Editor should not crash in scenarios when mutations' common ancestor could not be mapped to the model. Closes [ckeditor/ckeditor5#718](https://github.com/ckeditor/ckeditor5/issues/718). ([db0fe8f](https://github.com/ckeditor/ckeditor5-typing/commit/db0fe8f))
+* Properly discover delete-word keyboard modifier on mac and non-mac computers. Closes [#92](https://github.com/ckeditor/ckeditor5-typing/issues/92). ([81f5b76](https://github.com/ckeditor/ckeditor5-typing/commit/81f5b76))
+
+### Other changes
+
+* Aligned feature class naming to the new scheme. ([9c2cb9d](https://github.com/ckeditor/ckeditor5-typing/commit/9c2cb9d))
+
+
 ## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-typing/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
 
 Internal changes only (updated dependencies, documentation, etc.).

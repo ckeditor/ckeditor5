@@ -1,29 +1,21 @@
-/*
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+/**
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
-/* global document */
-
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import Bold from '@ckeditor/ckeditor5-basic-styles/src/boldengine';
-import Italic from '@ckeditor/ckeditor5-basic-styles/src/italicengine';
-import LinkEngine from '@ckeditor/ckeditor5-link/src/linkengine';
+import List from '@ckeditor/ckeditor5-list/src/list';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Input from '../src/input';
 
-import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
+import Writer from '@ckeditor/ckeditor5-engine/src/model/writer';
 import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
-import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
-import buildViewConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildviewconverter';
 
 import ViewText from '@ckeditor/ckeditor5-engine/src/view/text';
 import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
-import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
 import ViewSelection from '@ckeditor/ckeditor5-engine/src/view/selection';
-import MutationObserver from '@ckeditor/ckeditor5-engine/src/view/observer/mutationobserver';
 
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
@@ -31,35 +23,35 @@ import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
+/* global document */
+
 describe( 'Input feature', () => {
-	let editor, model, modelRoot, view, viewRoot, listenter;
+	let editor, model, modelRoot, view, viewDocument, viewRoot, listenter;
 
 	testUtils.createSinonSandbox();
 
-	before( () => {
+	beforeEach( () => {
 		listenter = Object.create( EmitterMixin );
 
-		return VirtualTestEditor
-			.create( {
-				plugins: [ Input, Paragraph, Bold ]
-			} )
+		const domElement = document.createElement( 'div' );
+		document.body.appendChild( domElement );
+
+		return ClassicTestEditor.create( domElement, { plugins: [ Input, Paragraph, Bold, List ] } )
 			.then( newEditor => {
 				// Mock image feature.
-				newEditor.document.schema.registerItem( 'image', '$inline' );
+				newEditor.model.schema.register( 'image', { allowWhere: '$text' } );
 
-				buildModelConverter().for( newEditor.data.modelToView, newEditor.editing.modelToView )
-					.fromElement( 'image' )
-					.toElement( 'img' );
-
-				buildViewConverter().for( newEditor.data.viewToModel )
-					.fromElement( 'img' )
-					.toElement( 'image' );
+				newEditor.conversion.elementToElement( {
+					model: 'image',
+					view: 'img'
+				} );
 
 				editor = newEditor;
-				model = editor.editing.model;
-				modelRoot = model.getRoot();
+				model = editor.model;
+				modelRoot = model.document.getRoot();
 				view = editor.editing.view;
-				viewRoot = view.getRoot();
+				viewDocument = view.document;
+				viewRoot = viewDocument.getRoot();
 			} );
 	} );
 
@@ -70,10 +62,10 @@ describe( 'Input feature', () => {
 	beforeEach( () => {
 		editor.setData( '<p>foobar</p>' );
 
-		model.enqueueChanges( () => {
-			model.selection.setRanges( [
+		model.change( writer => {
+			writer.setSelection(
 				ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 3, modelRoot.getChild( 0 ), 3 )
-			] );
+			);
 		} );
 	} );
 
@@ -83,7 +75,7 @@ describe( 'Input feature', () => {
 
 	describe( 'mutations handling', () => {
 		it( 'should handle text mutation', () => {
-			view.fire( 'mutations', [
+			viewDocument.fire( 'mutations', [
 				{
 					type: 'text',
 					oldText: 'foobar',
@@ -97,7 +89,7 @@ describe( 'Input feature', () => {
 		} );
 
 		it( 'should handle text mutation change', () => {
-			view.fire( 'mutations', [
+			viewDocument.fire( 'mutations', [
 				{
 					type: 'text',
 					oldText: 'foobar',
@@ -113,7 +105,7 @@ describe( 'Input feature', () => {
 		it( 'should handle text node insertion', () => {
 			editor.setData( '<p></p>' );
 
-			view.fire( 'mutations', [
+			viewDocument.fire( 'mutations', [
 				{
 					type: 'children',
 					oldChildren: [],
@@ -126,10 +118,31 @@ describe( 'Input feature', () => {
 			expect( getViewData( view ) ).to.equal( '<p>x{}</p>' );
 		} );
 
+		it( 'should apply selection attributes to the inserted text', () => {
+			setModelData( model, '<paragraph>[]</paragraph>', {
+				selectionAttributes: {
+					bold: true,
+					italic: true
+				}
+			} );
+			viewDocument.fire( 'mutations', [
+				{
+					type: 'children',
+					oldChildren: [],
+					newChildren: [ new ViewText( 'x' ) ],
+					node: viewRoot.getChild( 0 )
+				}
+			] );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph><$text bold="true" italic="true">x[]</$text></paragraph>'
+			);
+		} );
+
 		it( 'should handle multiple text mutations', () => {
 			editor.setData( '<p>foo<strong>bar</strong></p>' );
 
-			view.fire( 'mutations', [
+			viewDocument.fire( 'mutations', [
 				{
 					type: 'text',
 					oldText: 'foo',
@@ -151,7 +164,7 @@ describe( 'Input feature', () => {
 		it( 'should handle multiple text node insertion', () => {
 			editor.setData( '<p></p><p></p>' );
 
-			view.fire( 'mutations', [
+			viewDocument.fire( 'mutations', [
 				{
 					type: 'children',
 					oldChildren: [],
@@ -173,7 +186,7 @@ describe( 'Input feature', () => {
 		it( 'should do nothing when two nodes were inserted', () => {
 			editor.setData( '<p></p>' );
 
-			view.fire( 'mutations', [
+			viewDocument.fire( 'mutations', [
 				{
 					type: 'children',
 					oldChildren: [],
@@ -187,7 +200,7 @@ describe( 'Input feature', () => {
 		} );
 
 		it( 'should do nothing when two nodes were inserted and one removed', () => {
-			view.fire( 'mutations', [
+			viewDocument.fire( 'mutations', [
 				{
 					type: 'children',
 					oldChildren: [ new ViewText( 'foobar' ) ],
@@ -203,7 +216,7 @@ describe( 'Input feature', () => {
 		it( 'should handle multiple children in the node', () => {
 			editor.setData( '<p>foo<img></img></p>' );
 
-			view.fire( 'mutations', [
+			viewDocument.fire( 'mutations', [
 				{
 					type: 'children',
 					oldChildren: [ new ViewText( 'foo' ), viewRoot.getChild( 0 ).getChild( 1 ) ],
@@ -217,7 +230,7 @@ describe( 'Input feature', () => {
 		} );
 
 		it( 'should do nothing when node was removed', () => {
-			view.fire( 'mutations', [
+			viewDocument.fire( 'mutations', [
 				{
 					type: 'children',
 					oldChildren: [ new ViewText( 'foobar' ) ],
@@ -233,7 +246,7 @@ describe( 'Input feature', () => {
 		it( 'should do nothing when element was inserted', () => {
 			editor.setData( '<p></p>' );
 
-			view.fire( 'mutations', [
+			viewDocument.fire( 'mutations', [
 				{
 					type: 'children',
 					oldChildren: [],
@@ -250,9 +263,9 @@ describe( 'Input feature', () => {
 			// This test case emulates spellchecker correction.
 
 			const viewSelection = new ViewSelection();
-			viewSelection.setCollapsedAt( viewRoot.getChild( 0 ).getChild( 0 ), 6 );
+			viewSelection._setTo( viewRoot.getChild( 0 ).getChild( 0 ), 6 );
 
-			view.fire( 'mutations',
+			viewDocument.fire( 'mutations',
 				[ {
 					type: 'text',
 					oldText: 'foobar',
@@ -270,12 +283,12 @@ describe( 'Input feature', () => {
 			// This test case emulates spellchecker correction.
 
 			const viewSelection = new ViewSelection();
-			viewSelection.setCollapsedAt( viewRoot.getChild( 0 ).getChild( 0 ), 6 );
+			viewSelection._setTo( viewRoot.getChild( 0 ).getChild( 0 ), 6 );
 
-			testUtils.sinon.spy( Batch.prototype, 'weakInsert' );
-			testUtils.sinon.spy( Batch.prototype, 'remove' );
+			testUtils.sinon.spy( Writer.prototype, 'insert' );
+			testUtils.sinon.spy( Writer.prototype, 'remove' );
 
-			view.fire( 'mutations',
+			viewDocument.fire( 'mutations',
 				[ {
 					type: 'text',
 					oldText: 'foobar',
@@ -285,8 +298,8 @@ describe( 'Input feature', () => {
 				viewSelection
 			);
 
-			expect( Batch.prototype.weakInsert.calledOnce ).to.be.true;
-			expect( Batch.prototype.remove.calledOnce ).to.be.true;
+			expect( Writer.prototype.insert.calledOnce ).to.be.true;
+			expect( Writer.prototype.remove.calledOnce ).to.be.true;
 		} );
 
 		it( 'should place selection after when correcting to longer word (spellchecker)', () => {
@@ -294,9 +307,9 @@ describe( 'Input feature', () => {
 			editor.setData( '<p>Foo hous a</p>' );
 
 			const viewSelection = new ViewSelection();
-			viewSelection.setCollapsedAt( viewRoot.getChild( 0 ).getChild( 0 ), 9 );
+			viewSelection._setTo( viewRoot.getChild( 0 ).getChild( 0 ), 9 );
 
-			view.fire( 'mutations',
+			viewDocument.fire( 'mutations',
 				[ {
 					type: 'text',
 					oldText: 'Foo hous a',
@@ -315,9 +328,9 @@ describe( 'Input feature', () => {
 			editor.setData( '<p>Bar athat foo</p>' );
 
 			const viewSelection = new ViewSelection();
-			viewSelection.setCollapsedAt( viewRoot.getChild( 0 ).getChild( 0 ), 8 );
+			viewSelection._setTo( viewRoot.getChild( 0 ).getChild( 0 ), 8 );
 
-			view.fire( 'mutations',
+			viewDocument.fire( 'mutations',
 				[ {
 					type: 'text',
 					oldText: 'Bar athat foo',
@@ -336,9 +349,9 @@ describe( 'Input feature', () => {
 			editor.setData( '<p>Foo hous e</p>' );
 
 			const viewSelection = new ViewSelection();
-			viewSelection.setCollapsedAt( viewRoot.getChild( 0 ).getChild( 0 ), 9 );
+			viewSelection._setTo( viewRoot.getChild( 0 ).getChild( 0 ), 9 );
 
-			view.fire( 'mutations',
+			viewDocument.fire( 'mutations',
 				[ {
 					type: 'text',
 					oldText: 'Foo hous e',
@@ -356,10 +369,10 @@ describe( 'Input feature', () => {
 			editor.setData( '<p>Foo house</p>' );
 
 			const viewSelection = new ViewSelection();
-			viewSelection.setCollapsedAt( viewRoot.getChild( 0 ).getChild( 0 ), 8 );
-			viewSelection.moveFocusTo( viewRoot.getChild( 0 ).getChild( 0 ), 9 );
+			viewSelection._setTo( viewRoot.getChild( 0 ).getChild( 0 ), 8 );
+			viewSelection._setFocus( viewRoot.getChild( 0 ).getChild( 0 ), 9 );
 
-			view.fire( 'mutations',
+			viewDocument.fire( 'mutations',
 				[ {
 					type: 'text',
 					oldText: 'Foo house',
@@ -374,13 +387,13 @@ describe( 'Input feature', () => {
 		} );
 
 		it( 'should replace last &nbsp; with space', () => {
-			model.enqueueChanges( () => {
-				model.selection.setRanges( [
+			model.change( writer => {
+				writer.setSelection(
 					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 6, modelRoot.getChild( 0 ), 6 )
-				] );
+				);
 			} );
 
-			view.fire( 'mutations', [
+			viewDocument.fire( 'mutations', [
 				{
 					type: 'text',
 					oldText: 'foobar',
@@ -394,13 +407,13 @@ describe( 'Input feature', () => {
 		} );
 
 		it( 'should replace first &nbsp; with space', () => {
-			model.enqueueChanges( () => {
-				model.selection.setRanges( [
+			model.change( writer => {
+				writer.setSelection(
 					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 0, modelRoot.getChild( 0 ), 0 )
-				] );
+				);
 			} );
 
-			view.fire( 'mutations', [
+			viewDocument.fire( 'mutations', [
 				{
 					type: 'text',
 					oldText: 'foobar',
@@ -414,13 +427,13 @@ describe( 'Input feature', () => {
 		} );
 
 		it( 'should replace all &nbsp; with spaces', () => {
-			model.enqueueChanges( () => {
-				model.selection.setRanges( [
+			model.change( writer => {
+				writer.setSelection(
 					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 6, modelRoot.getChild( 0 ), 6 )
-				] );
+				);
 			} );
 
-			view.fire( 'mutations', [
+			viewDocument.fire( 'mutations', [
 				{
 					type: 'text',
 					oldText: 'foobar',
@@ -432,16 +445,40 @@ describe( 'Input feature', () => {
 			expect( getModelData( model ) ).to.equal( '<paragraph>foobar   baz[]</paragraph>' );
 			expect( getViewData( view ) ).to.equal( '<p>foobar   baz{}</p>' );
 		} );
+
+		// ckeditor5#718.
+		it( 'should not crash and prevent all changes if view common ancestor of mutations cannot be mapped to model', () => {
+			editor.setData( '<p>Foo</p><ul><li>Bar</li><li>Baz</li></ul>' );
+
+			const ul = viewRoot.getChild( 1 );
+
+			viewDocument.fire( 'mutations', [
+				{
+					type: 'text',
+					oldText: 'Bar',
+					newText: 'Bx',
+					node: ul.getChild( 0 )
+				},
+				{
+					type: 'children',
+					oldChildren: [ ul.getChild( 0 ), ul.getChild( 1 ) ],
+					newChildren: [ ul.getChild( 0 ) ],
+					node: ul
+				}
+			] );
+
+			expect( getViewData( view ) ).to.equal( '<p>{}Foo</p><ul><li>Bar</li><li>Baz</li></ul>' );
+		} );
 	} );
 
 	describe( 'keystroke handling', () => {
 		it( 'should remove contents', () => {
-			model.enqueueChanges( () => {
-				model.selection.setRanges( [
-					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) ] );
+			model.change( writer => {
+				writer.setSelection(
+					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) );
 			} );
 
-			listenter.listenTo( view, 'keydown', () => {
+			listenter.listenTo( viewDocument, 'keydown', () => {
 				expect( getModelData( model ) ).to.equal( '<paragraph>fo[]ar</paragraph>' );
 			}, { priority: 'lowest' } );
 		} );
@@ -450,10 +487,10 @@ describe( 'Input feature', () => {
 		it( 'should remove contents and merge blocks', () => {
 			setModelData( model, '<paragraph>fo[o</paragraph><paragraph>b]ar</paragraph>' );
 
-			listenter.listenTo( view, 'keydown', () => {
+			listenter.listenTo( viewDocument, 'keydown', () => {
 				expect( getModelData( model ) ).to.equal( '<paragraph>fo[]ar</paragraph>' );
 
-				view.fire( 'mutations', [
+				viewDocument.fire( 'mutations', [
 					{
 						type: 'text',
 						oldText: 'foar',
@@ -463,73 +500,73 @@ describe( 'Input feature', () => {
 				] );
 			}, { priority: 'lowest' } );
 
-			view.fire( 'keydown', { keyCode: getCode( 'y' ) } );
+			viewDocument.fire( 'keydown', { keyCode: getCode( 'y' ) } );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>foy[]ar</paragraph>' );
 			expect( getViewData( view ) ).to.equal( '<p>foy{}ar</p>' );
 		} );
 
 		it( 'should do nothing on arrow key', () => {
-			model.enqueueChanges( () => {
-				model.selection.setRanges( [
-					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) ] );
+			model.change( writer => {
+				writer.setSelection(
+					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) );
 			} );
 
-			view.fire( 'keydown', { keyCode: getCode( 'arrowdown' ) } );
+			viewDocument.fire( 'keydown', { keyCode: getCode( 'arrowdown' ) } );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>fo[ob]ar</paragraph>' );
 		} );
 
 		it( 'should do nothing on ctrl combinations', () => {
-			model.enqueueChanges( () => {
-				model.selection.setRanges( [
-					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) ] );
+			model.change( writer => {
+				writer.setSelection(
+					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) );
 			} );
 
-			view.fire( 'keydown', { ctrlKey: true, keyCode: getCode( 'c' ) } );
+			viewDocument.fire( 'keydown', { ctrlKey: true, keyCode: getCode( 'c' ) } );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>fo[ob]ar</paragraph>' );
 		} );
 
 		it( 'should do nothing on non printable keys', () => {
-			model.enqueueChanges( () => {
-				model.selection.setRanges( [
-					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) ] );
+			model.change( writer => {
+				writer.setSelection(
+					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) );
 			} );
 
-			view.fire( 'keydown', { keyCode: 16 } ); // Shift
-			view.fire( 'keydown', { keyCode: 35 } ); // Home
-			view.fire( 'keydown', { keyCode: 112 } ); // F1
+			viewDocument.fire( 'keydown', { keyCode: 16 } ); // Shift
+			viewDocument.fire( 'keydown', { keyCode: 35 } ); // Home
+			viewDocument.fire( 'keydown', { keyCode: 112 } ); // F1
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>fo[ob]ar</paragraph>' );
 		} );
 
 		// #69
 		it( 'should do nothing on tab key', () => {
-			model.enqueueChanges( () => {
-				model.selection.setRanges( [
-					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) ] );
+			model.change( writer => {
+				writer.setSelection(
+					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) );
 			} );
 
-			view.fire( 'keydown', { keyCode: 9 } ); // Tab
+			viewDocument.fire( 'keydown', { keyCode: 9 } ); // Tab
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>fo[ob]ar</paragraph>' );
 		} );
 
 		// #82
 		it( 'should do nothing on composition start key', () => {
-			model.enqueueChanges( () => {
-				model.selection.setRanges( [
-					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) ] );
+			model.change( writer => {
+				writer.setSelection(
+					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) );
 			} );
 
-			view.fire( 'keydown', { keyCode: 229 } );
+			viewDocument.fire( 'keydown', { keyCode: 229 } );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>fo[ob]ar</paragraph>' );
 		} );
 
 		it( 'should do nothing if selection is collapsed', () => {
-			view.fire( 'keydown', { ctrlKey: true, keyCode: getCode( 'c' ) } );
+			viewDocument.fire( 'keydown', { ctrlKey: true, keyCode: getCode( 'c' ) } );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
 		} );
@@ -539,12 +576,12 @@ describe( 'Input feature', () => {
 			const lockSpy = testUtils.sinon.spy( buffer, 'lock' );
 			const unlockSpy = testUtils.sinon.spy( buffer, 'unlock' );
 
-			model.enqueueChanges( () => {
-				model.selection.setRanges( [
-					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) ] );
+			model.change( writer => {
+				writer.setSelection(
+					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) );
 			} );
 
-			view.fire( 'keydown', { keyCode: getCode( 'y' ) } );
+			viewDocument.fire( 'keydown', { keyCode: getCode( 'y' ) } );
 
 			expect( lockSpy.calledOnce ).to.be.true;
 			expect( unlockSpy.calledOnce ).to.be.true;
@@ -555,9 +592,9 @@ describe( 'Input feature', () => {
 			const lockSpy = testUtils.sinon.spy( buffer, 'lock' );
 			const unlockSpy = testUtils.sinon.spy( buffer, 'unlock' );
 
-			view.fire( 'keydown', { keyCode: 16 } ); // Shift
-			view.fire( 'keydown', { keyCode: 35 } ); // Home
-			view.fire( 'keydown', { keyCode: 112 } ); // F1
+			viewDocument.fire( 'keydown', { keyCode: 16 } ); // Shift
+			viewDocument.fire( 'keydown', { keyCode: 35 } ); // Home
+			viewDocument.fire( 'keydown', { keyCode: 112 } ); // F1
 
 			expect( lockSpy.callCount ).to.be.equal( 0 );
 			expect( unlockSpy.callCount ).to.be.equal( 0 );
@@ -568,9 +605,9 @@ describe( 'Input feature', () => {
 			const lockSpy = testUtils.sinon.spy( buffer, 'lock' );
 			const unlockSpy = testUtils.sinon.spy( buffer, 'unlock' );
 
-			view.fire( 'keydown', { keyCode: getCode( 'b' ) } );
-			view.fire( 'keydown', { keyCode: getCode( 'a' ) } );
-			view.fire( 'keydown', { keyCode: getCode( 'z' ) } );
+			viewDocument.fire( 'keydown', { keyCode: getCode( 'b' ) } );
+			viewDocument.fire( 'keydown', { keyCode: getCode( 'a' ) } );
+			viewDocument.fire( 'keydown', { keyCode: getCode( 'z' ) } );
 
 			expect( lockSpy.callCount ).to.be.equal( 0 );
 			expect( unlockSpy.callCount ).to.be.equal( 0 );
@@ -581,7 +618,7 @@ describe( 'Input feature', () => {
 
 			editor.commands.get( 'input' ).isEnabled = false;
 
-			view.fire( 'keydown', { keyCode: getCode( 'b' ) } );
+			viewDocument.fire( 'keydown', { keyCode: getCode( 'b' ) } );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>foo[]bar</paragraph>' );
 		} );
@@ -591,435 +628,9 @@ describe( 'Input feature', () => {
 
 			editor.commands.get( 'input' ).isEnabled = false;
 
-			view.fire( 'keydown', { keyCode: getCode( 'b' ) } );
+			viewDocument.fire( 'keydown', { keyCode: getCode( 'b' ) } );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>fo[ob]ar</paragraph>' );
-		} );
-	} );
-
-	// NOTE: In all these tests we need to simulate the mutations. However, it's really tricky to tell what
-	// should be in "newChildren" because we don't have yet access to these nodes. We pass new instances,
-	// but this means that DomConverter which is used somewhere internally may return a different instance
-	// (which wouldn't happen in practice because it'd cache it). Besides, it's really hard to tell if the
-	// browser will keep the instances of the old elements when modifying the tree when the user is typing
-	// or if it will create new instances itself too.
-	// However, the code handling these mutations doesn't really care what's inside new/old children. It
-	// just needs the mutations common ancestor to understand how big fragment of the tree has changed.
-	describe( '#100', () => {
-		let domElement, domRoot;
-
-		beforeEach( () => {
-			domElement = document.createElement( 'div' );
-			document.body.appendChild( domElement );
-
-			return ClassicTestEditor.create( domElement, { plugins: [ Input, Paragraph, Bold, Italic, LinkEngine ] } )
-				.then( newEditor => {
-					editor = newEditor;
-					model = editor.document;
-					modelRoot = model.getRoot();
-					view = editor.editing.view;
-					viewRoot = view.getRoot();
-					domRoot = view.getDomRoot();
-
-					// Mock image feature.
-					newEditor.document.schema.registerItem( 'image', '$inline' );
-
-					buildModelConverter().for( newEditor.data.modelToView, newEditor.editing.modelToView )
-						.fromElement( 'image' )
-						.toElement( 'img' );
-
-					buildViewConverter().for( newEditor.data.viewToModel )
-						.fromElement( 'img' )
-						.toElement( 'image' );
-
-					// Disable MO completely and in a way it won't be reenabled on some Document#render() call.
-					const mutationObserver = view.getObserver( MutationObserver );
-
-					mutationObserver.disable();
-					mutationObserver.enable = () => {};
-				} );
-		} );
-
-		afterEach( () => {
-			domElement.remove();
-
-			return editor.destroy();
-		} );
-
-		// This happens when browser automatically switches parent and child nodes.
-		it( 'should handle mutations switching inner and outer node when adding new text node after', () => {
-			setModelData( model,
-				'<paragraph>' +
-					'<$text italic="true" linkHref="foo">' +
-						'text[]' +
-					'</$text>' +
-				'</paragraph>'
-			);
-
-			expect( getViewData( view ) ).to.equal( '<p><a href="foo"><i>text{}</i></a></p>' );
-
-			const paragraph = viewRoot.getChild( 0 );
-			const link = paragraph.getChild( 0 );
-			const italic = link.getChild( 0 );
-			const text = italic.getChild( 0 );
-
-			// Simulate mutations and DOM change.
-			domRoot.childNodes[ 0 ].innerHTML = '<i><a href="foo">text</a>x</i>';
-			view.fire( 'mutations', [
-				// First mutation - remove all children from link element.
-				{
-					type: 'children',
-					node: link,
-					oldChildren: [ italic ],
-					newChildren: []
-				},
-
-				// Second mutation - remove link from paragraph and put italic there.
-				{
-					type: 'children',
-					node: paragraph,
-					oldChildren: [ link ],
-					newChildren: [ new ViewElement( 'i' ) ]
-				},
-
-				// Third mutation - italic's new children.
-				{
-					type: 'children',
-					node: italic,
-					oldChildren: [ text ],
-					newChildren: [ new ViewElement( 'a', null, text.clone() ), new ViewText( 'x' ) ]
-				}
-			] );
-
-			expect( getViewData( view ) ).to.equal( '<p><a href="foo"><i>textx{}</i></a></p>' );
-		} );
-
-		it( 'should handle mutations switching inner and outer node when adding new text node before', () => {
-			setModelData( model,
-				'<paragraph>' +
-					'<$text italic="true" linkHref="foo">' +
-						'[]text' +
-					'</$text>' +
-				'</paragraph>'
-			);
-
-			expect( getViewData( view ) ).to.equal( '<p><a href="foo"><i>{}text</i></a></p>' );
-
-			const paragraph = viewRoot.getChild( 0 );
-			const link = paragraph.getChild( 0 );
-			const italic = link.getChild( 0 );
-			const text = italic.getChild( 0 );
-
-			// Simulate mutations and DOM change.
-			domRoot.childNodes[ 0 ].innerHTML = '<i>x<a href="foo">text</a></i>';
-			view.fire( 'mutations', [
-				// First mutation - remove all children from link element.
-				{
-					type: 'children',
-					node: link,
-					oldChildren: [ italic ],
-					newChildren: []
-				},
-
-				// Second mutation - remove link from paragraph and put italic there.
-				{
-					type: 'children',
-					node: paragraph,
-					oldChildren: [ link ],
-					newChildren: [ new ViewElement( 'i' ) ]
-				},
-
-				// Third mutation - italic's new children.
-				{
-					type: 'children',
-					node: italic,
-					oldChildren: [ text ],
-					newChildren: [ new ViewText( 'x' ), new ViewElement( 'a', null, 'text' ) ]
-				}
-			] );
-
-			expect( getViewData( view ) ).to.equal( '<p><a href="foo"><i>x{}text</i></a></p>' );
-		} );
-
-		it( 'should handle mutations switching inner and outer node - with text before', () => {
-			setModelData( model,
-				'<paragraph>' +
-					'xxx<$text italic="true" linkHref="foo">' +
-						'text[]' +
-					'</$text>' +
-				'</paragraph>'
-			);
-
-			expect( getViewData( view ) ).to.equal( '<p>xxx<a href="foo"><i>text{}</i></a></p>' );
-
-			const paragraph = viewRoot.getChild( 0 );
-			const textBefore = paragraph.getChild( 0 );
-			const link = paragraph.getChild( 1 );
-			const italic = link.getChild( 0 );
-			const text = italic.getChild( 0 );
-
-			// Simulate mutations and DOM change.
-			domRoot.childNodes[ 0 ].innerHTML = 'xxx<i><a href="foo">text</a>x</i>';
-			view.fire( 'mutations', [
-				// First mutation - remove all children from link element.
-				{
-					type: 'children',
-					node: link,
-					oldChildren: [ italic ],
-					newChildren: []
-				},
-
-				// Second mutation - remove link from paragraph and put italic there.
-				{
-					type: 'children',
-					node: paragraph,
-					oldChildren: [ textBefore, link ],
-					newChildren: [ new ViewText( 'xxx' ), new ViewElement( 'i' ) ]
-				},
-
-				// Third mutation - italic's new children.
-				{
-					type: 'children',
-					node: italic,
-					oldChildren: [ text ],
-					newChildren: [ new ViewElement( 'a', null, 'text' ), new ViewText( 'x' ) ]
-				}
-			] );
-
-			expect( getViewData( view ) ).to.equal( '<p>xxx<a href="foo"><i>textx{}</i></a></p>' );
-		} );
-
-		// This happens when spell checker is applied on <strong> element and changes it to <b>.
-		it( 'should handle mutations replacing node', () => {
-			setModelData( model,
-				'<paragraph>' +
-					'<$text bold="true">' +
-						'text[]' +
-					'</$text>' +
-				'</paragraph>'
-			);
-
-			expect( getViewData( view ) ).to.equal( '<p><strong>text{}</strong></p>' );
-
-			const paragraph = viewRoot.getChild( 0 );
-			const strong = paragraph.getChild( 0 );
-
-			// Simulate mutations and DOM change.
-			domRoot.childNodes[ 0 ].innerHTML = '<b>fixed text</b>';
-			view.fire( 'mutations', [
-				// Replace `<strong>` with `<b>`.
-				{
-					type: 'children',
-					node: paragraph,
-					oldChildren: [ strong ],
-					newChildren: [ new ViewElement( 'b', null, 'fixed text' ) ]
-				}
-			] );
-
-			expect( getViewData( view, { withoutSelection: true } ) ).to.equal( '<p><strong>fixed text</strong></p>' );
-		} );
-
-		// Spell checker splits text inside attributes to two text nodes.
-		it( 'should handle mutations inside attribute element', () => {
-			setModelData( model,
-				'<paragraph>' +
-					'<$text bold="true">' +
-						'this is foo text[]' +
-					'</$text>' +
-				'</paragraph>'
-			);
-
-			expect( getViewData( view ) ).to.equal( '<p><strong>this is foo text{}</strong></p>' );
-
-			const paragraph = viewRoot.getChild( 0 );
-			const strong = paragraph.getChild( 0 );
-			const text = strong.getChild( 0 );
-
-			// Simulate mutations and DOM change.
-			domRoot.childNodes[ 0 ].childNodes[ 0 ].innerHTML = 'this is bar text';
-			view.fire( 'mutations', [
-				{
-					type: 'children',
-					node: strong,
-					oldChildren: [ text ],
-					newChildren: [ new ViewText( 'this is bar' ), new ViewText( ' text' ) ]
-				}
-			] );
-
-			expect( getViewData( view, { withoutSelection: true } ) ).to.equal( '<p><strong>this is bar text</strong></p>' );
-		} );
-
-		it( 'should do nothing if elements mutated', () => {
-			setModelData( model,
-				'<paragraph>' +
-					'<$text bold="true">' +
-						'text[]' +
-					'</$text>' +
-				'</paragraph>'
-			);
-
-			expect( getViewData( view ) ).to.equal( '<p><strong>text{}</strong></p>' );
-
-			const paragraph = viewRoot.getChild( 0 );
-			const strong = paragraph.getChild( 0 );
-
-			// Simulate mutations and DOM change.
-			domRoot.childNodes[ 0 ].innerHTML = '<strong>text</strong><img />';
-			view.fire( 'mutations', [
-				{
-					type: 'children',
-					node: paragraph,
-					oldChildren: [ strong ],
-					newChildren: [
-						new ViewElement( 'strong', null, new ViewText( 'text' ) ),
-						new ViewElement( 'img' )
-					]
-				}
-			] );
-
-			expect( getViewData( view ) ).to.equal( '<p><strong>text{}</strong></p>' );
-		} );
-
-		it( 'should do nothing if text is not changed', () => {
-			setModelData( model,
-				'<paragraph>' +
-					'<$text bold="true">' +
-						'text[]' +
-					'</$text>' +
-				'</paragraph>'
-			);
-
-			expect( getViewData( view ) ).to.equal( '<p><strong>text{}</strong></p>' );
-
-			const paragraph = viewRoot.getChild( 0 );
-			const strong = paragraph.getChild( 0 );
-
-			// Simulate mutations and DOM change.
-			domRoot.childNodes[ 0 ].innerHTML = '<strong>text</strong>';
-			view.fire( 'mutations', [
-				{
-					type: 'children',
-					node: paragraph,
-					oldChildren: [ strong ],
-					newChildren: [ new ViewElement( 'strong', null, new ViewText( 'text' ) ) ]
-				}
-			] );
-
-			expect( getViewData( view ) ).to.equal( '<p><strong>text{}</strong></p>' );
-		} );
-
-		it( 'should do nothing on empty mutations', () => {
-			setModelData( model,
-				'<paragraph>' +
-					'<$text bold="true">' +
-						'text[]' +
-					'</$text>' +
-				'</paragraph>'
-			);
-
-			expect( getViewData( view ) ).to.equal( '<p><strong>text{}</strong></p>' );
-
-			// Simulate mutations and DOM change.
-			domRoot.childNodes[ 0 ].innerHTML = '<strong>text</strong>';
-			view.fire( 'mutations', [] );
-
-			expect( getViewData( view ) ).to.equal( '<p><strong>text{}</strong></p>' );
-		} );
-
-		it( 'should do nothing if mutations does not have common ancestor', () => {
-			setModelData( model,
-				'<paragraph>' +
-					'<$text bold="true">' +
-						'text[]' +
-					'</$text>' +
-				'</paragraph>'
-			);
-
-			expect( getViewData( view ) ).to.equal( '<p><strong>text{}</strong></p>' );
-
-			const paragraph = viewRoot.getChild( 0 );
-			const strong = paragraph.getChild( 0 );
-
-			// Simulate mutations and DOM change.
-			domRoot.childNodes[ 0 ].innerHTML = '<strong>text</strong>';
-			view.fire( 'mutations', [
-				{
-					type: 'children',
-					node: paragraph,
-					oldChildren: [ strong ],
-					newChildren: [ strong ]
-				},
-				{
-					type: 'children',
-					node: new ViewContainerElement( 'div' ),
-					oldChildren: [],
-					newChildren: [ new ViewText( 'foo' ), new ViewText( 'bar' ) ]
-				}
-			] );
-
-			expect( getViewData( view ) ).to.equal( '<p><strong>text{}</strong></p>' );
-		} );
-
-		it( 'should handle view selection if one is returned from mutations', () => {
-			setModelData( model,
-				'<paragraph>' +
-					'<$text bold="true">' +
-						'text[]' +
-					'</$text>' +
-				'</paragraph>'
-			);
-
-			expect( getViewData( view ) ).to.equal( '<p><strong>text{}</strong></p>' );
-
-			const paragraph = viewRoot.getChild( 0 );
-			const strong = paragraph.getChild( 0 );
-			const viewSelection = new ViewSelection();
-			viewSelection.setCollapsedAt( paragraph, 0 );
-
-			// Simulate mutations and DOM change.
-			domRoot.childNodes[ 0 ].innerHTML = '<b>textx</b>';
-			view.fire( 'mutations', [
-				// Replace `<strong>` with `<b>`.
-				{
-					type: 'children',
-					node: paragraph,
-					oldChildren: [ strong ],
-					newChildren: [ new ViewElement( 'b', null, new ViewText( 'textx' ) ) ]
-				}
-			], viewSelection );
-
-			expect( getModelData( model ) ).to.equal( '<paragraph><$text bold="true">[]textx</$text></paragraph>' );
-			expect( getViewData( view ) ).to.equal( '<p><strong>{}textx</strong></p>' );
-		} );
-
-		// #117.
-		it( 'should handle mixed mutations', () => {
-			setModelData( model, '<paragraph><$text bold="true">Foo bar aple</$text></paragraph>' );
-
-			const paragraph = viewRoot.getChild( 0 );
-			const strong = paragraph.getChild( 0 );
-			const viewSelection = new ViewSelection();
-			viewSelection.setCollapsedAt( paragraph, 0 );
-
-			// Simulate mutations and DOM change.
-			domRoot.childNodes[ 0 ].innerHTML = '<strong>Foo bar </strong><b>apple</b>';
-			view.fire( 'mutations', [
-				{
-					type: 'text',
-					oldText: 'Foo bar aple',
-					newText: 'Foo bar ',
-					node: viewRoot.getChild( 0 ).getChild( 0 )
-				},
-				{
-					type: 'children',
-					oldChildren: [ strong ],
-					newChildren: [ strong, new ViewElement( 'b', null, new ViewText( 'apple' ) ) ],
-					node: paragraph
-				}
-			], viewSelection );
-
-			expect( getModelData( model ) ).to.equal( '<paragraph><$text bold="true">[]Foo bar apple</$text></paragraph>' );
-			expect( getViewData( view ) ).to.equal( '<p><strong>{}Foo bar apple</strong></p>' );
 		} );
 	} );
 } );

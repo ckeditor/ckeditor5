@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -20,21 +20,21 @@ ClassicEditor
 	.then( editor => {
 		window.editor = editor;
 
-		editor.document.schema.allow( { name: '$text', inside: '$root' } );
+		editor.model.schema.extend( '$text', { allowIn: '$root' } );
 
 		const editable = editor.ui.view.editableElement;
 
 		document.querySelector( '#nbsp' ).addEventListener( 'click', () => {
-			editor.document.enqueueChanges( () => {
-				editor.document.selection.collapseToStart();
-				editor.document.batch().weakInsert( editor.document.selection.getFirstPosition(), '\u00A0' );
+			editor.model.change( writer => {
+				writer.setSelection( editor.model.document.selection.getFirstRange().start );
+				writer.insertText( '\u00A0', editor.model.document.selection.getFirstPosition() );
 			} );
 		} );
 
-		editor.document.on( 'changesDone', () => {
+		editor.model.document.on( 'change', () => {
 			console.clear();
 
-			const modelData = getModelData( editor.document, { withoutSelection: true } );
+			const modelData = getModelData( editor.model, { withoutSelection: true } );
 			console.log( 'model:', modelData.replace( /\u00A0/g, '&nbsp;' ) );
 
 			const viewData = getViewData( editor.editing.view, { withoutSelection: true } );

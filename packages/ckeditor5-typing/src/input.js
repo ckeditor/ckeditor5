@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -42,11 +42,11 @@ export default class Input extends Plugin {
 
 		editor.commands.add( 'input', inputCommand );
 
-		this.listenTo( editingView, 'keydown', ( evt, data ) => {
+		this.listenTo( editingView.document, 'keydown', ( evt, data ) => {
 			this._handleKeydown( data, inputCommand );
 		}, { priority: 'lowest' } );
 
-		this.listenTo( editingView, 'mutations', ( evt, mutations, viewSelection ) => {
+		this.listenTo( editingView.document, 'mutations', ( evt, mutations, viewSelection ) => {
 			this._handleMutations( mutations, viewSelection );
 		} );
 	}
@@ -68,7 +68,8 @@ export default class Input extends Plugin {
 	 * @param {module:typing/inputcommand~InputCommand} inputCommand
 	 */
 	_handleKeydown( evtData, inputCommand ) {
-		const doc = this.editor.document;
+		const model = this.editor.model;
+		const doc = model.document;
 		const buffer = inputCommand.buffer;
 
 		// By relying on the state of the input command we allow disabling the entire input easily
@@ -86,8 +87,8 @@ export default class Input extends Plugin {
 
 		buffer.lock();
 
-		doc.enqueueChanges( () => {
-			this.editor.data.deleteContent( doc.selection, buffer.batch );
+		model.enqueueChange( buffer.batch, () => {
+			this.editor.model.deleteContent( doc.selection );
 		} );
 
 		buffer.unlock();
@@ -186,17 +187,25 @@ class MutationHandler {
 		// Get common ancestor in DOM.
 		const domMutationCommonAncestor = domConverter.mapViewToDom( mutationsCommonAncestor );
 
-		if ( !domMutationCommonAncestor ) {
-			return;
-		}
-
 		// Create fresh DomConverter so it will not use existing mapping and convert current DOM to model.
 		// This wouldn't be needed if DomConverter would allow to create fresh view without checking any mappings.
 		const freshDomConverter = new DomConverter();
-		const modelFromCurrentDom = this.editor.data.toModel( freshDomConverter.domToView( domMutationCommonAncestor ) ).getChild( 0 );
+		const modelFromCurrentDom = this.editor.data.toModel(
+			freshDomConverter.domToView( domMutationCommonAncestor )
+		).getChild( 0 );
 
 		// Current model.
 		const currentModel = this.editor.editing.mapper.toModelElement( mutationsCommonAncestor );
+
+		// If common ancestor is not mapped, do not do anything. It probably is a parent of another view element.
+		// That means that we would need to diff model elements (see `if` below). Better return early instead of
+		// trying to get a reasonable model ancestor. It will fell into the `if` below anyway.
+		// This situation happens for example for lists. If `<ul>` is a common ancestor, `currentModel` is `undefined`
+		// because `<ul>` is not mapped (`<li>`s are).
+		// See https://github.com/ckeditor/ckeditor5/issues/718.
+		if ( !currentModel ) {
+			return;
+		}
 
 		// Get children from both ancestors.
 		const modelFromDomChildren = Array.from( modelFromCurrentDom.getChildren() );
@@ -243,6 +252,9 @@ class MutationHandler {
 		} );
 	}
 
+	/**
+	 * @private
+	 */
 	_handleTextMutation( mutation, viewSelection ) {
 		if ( mutation.type != 'text' ) {
 			return;
@@ -285,6 +297,9 @@ class MutationHandler {
 		} );
 	}
 
+	/**
+	 * @private
+	 */
 	_handleTextNodeInsertion( mutation ) {
 		if ( mutation.type != 'children' ) {
 			return;

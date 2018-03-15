@@ -1,33 +1,33 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
 import ChangeBuffer from '../src/changebuffer';
-import Document from '@ckeditor/ckeditor5-engine/src/model/document';
+import Model from '@ckeditor/ckeditor5-engine/src/model/model';
 import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 
 describe( 'ChangeBuffer', () => {
 	const CHANGE_LIMIT = 3;
-	let doc, buffer, root;
+	let model, doc, buffer, root;
 
 	beforeEach( () => {
-		doc = new Document();
+		model = new Model();
+		doc = model.document;
 		root = doc.createRoot();
-		buffer = new ChangeBuffer( doc, CHANGE_LIMIT );
+		buffer = new ChangeBuffer( model, CHANGE_LIMIT );
 	} );
 
 	describe( 'constructor()', () => {
 		it( 'sets all properties', () => {
-			expect( buffer ).to.have.property( 'document', doc );
+			expect( buffer ).to.have.property( 'model', model );
 			expect( buffer ).to.have.property( 'limit', CHANGE_LIMIT );
 			expect( buffer ).to.have.property( 'size', 0 );
 			expect( buffer ).to.have.property( 'isLocked', false );
 		} );
 
 		it( 'sets limit property according to default value', () => {
-			buffer = new ChangeBuffer( doc );
+			buffer = new ChangeBuffer( model );
 
 			expect( buffer ).to.have.property( 'limit', 20 );
 		} );
@@ -91,7 +91,9 @@ describe( 'ChangeBuffer', () => {
 			// Ensure that size is reset too.
 			buffer.input( 1 );
 
-			doc.batch().insert( Position.createAt( root, 0 ), 'a' );
+			model.change( writer => {
+				writer.insertText( 'a', root );
+			} );
 
 			expect( buffer.batch ).to.not.equal( batch1 );
 			expect( buffer.size ).to.equal( 0 );
@@ -100,31 +102,48 @@ describe( 'ChangeBuffer', () => {
 		it( 'is not reset when changes are added to the buffer\'s batch', () => {
 			const batch1 = buffer.batch;
 
-			buffer.batch.insert( Position.createAt( root, 0 ), 'a' );
+			model.enqueueChange( buffer.batch, writer => {
+				writer.insert( 'a', root );
+			} );
 			expect( buffer.batch ).to.equal( batch1 );
 
-			buffer.batch.insert( Position.createAt( root, 0 ), 'b' );
+			model.enqueueChange( buffer.batch, writer => {
+				writer.insert( 'b', root );
+			} );
 			expect( buffer.batch ).to.equal( batch1 );
 		} );
 
 		it( 'is not reset when changes are added to batch which existed previously', () => {
-			const externalBatch = doc.batch();
+			const externalBatch = new Batch();
 
-			externalBatch.insert( Position.createAt( root, 0 ), 'a' );
+			model.change( writer => {
+				writer.insertText( 'a', root );
+			} );
+
+			model.enqueueChange( externalBatch, writer => {
+				writer.insertText( 'a', root );
+			} );
 
 			const bufferBatch = buffer.batch;
 
-			buffer.batch.insert( Position.createAt( root, 0 ), 'b' );
+			model.enqueueChange( bufferBatch, writer => {
+				writer.insertText( 'b', root );
+			} );
+
 			expect( buffer.batch ).to.equal( bufferBatch );
 
-			doc.batch().insert( Position.createAt( root, 0 ), 'c' );
+			model.change( writer => {
+				writer.insertText( 'c', root );
+			} );
 			expect( buffer.batch ).to.not.equal( bufferBatch );
 		} );
 
 		it( 'is not reset when changes are applied in transparent batch', () => {
 			const bufferBatch = buffer.batch;
 
-			doc.batch( 'transparent' ).insert( Position.createAt( root, 0 ), 'a' );
+			model.enqueueChange( 'transparent', writer => {
+				writer.insert( 'a', root );
+			} );
 
 			expect( buffer.batch ).to.equal( bufferBatch );
 		} );
@@ -175,7 +194,9 @@ describe( 'ChangeBuffer', () => {
 
 			buffer.lock();
 
-			doc.batch().insert( Position.createAt( root, 0 ), 'a' );
+			model.change( writer => {
+				writer.insertText( 'a', root );
+			} );
 
 			buffer.unlock();
 
@@ -236,7 +257,9 @@ describe( 'ChangeBuffer', () => {
 
 			buffer.destroy();
 
-			doc.batch().insert( Position.createAt( root, 0 ), 'a' );
+			model.change( writer => {
+				writer.insertText( 'a', root );
+			} );
 
 			expect( buffer.batch ).to.equal( batch1 );
 		} );

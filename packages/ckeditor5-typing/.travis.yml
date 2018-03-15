@@ -1,24 +1,28 @@
 sudo: required
 dist: trusty
 addons:
+  firefox: "latest"
   apt:
     sources:
-      - google-chrome
+    - google-chrome
     packages:
-      - google-chrome-stable
+    - google-chrome-stable
 language: node_js
 node_js:
-  - "6"
+- '6'
 cache:
-  - node_modules
+- node_modules
 before_install:
-  - export DISPLAY=:99.0
-  - sh -e /etc/init.d/xvfb start
+- export DISPLAY=:99.0
+- sh -e /etc/init.d/xvfb start
 install:
-  - npm install @ckeditor/ckeditor5-dev-tests
-  - ckeditor5-dev-tests-install-dependencies
+- npm install @ckeditor/ckeditor5-dev-tests
+- ckeditor5-dev-tests-install-dependencies
 script:
-  - ckeditor5-dev-tests-travis
+- ckeditor5-dev-tests-travis
 after_success:
-  - codeclimate-test-reporter < coverage/lcov.info
-  - ckeditor5-dev-tests-save-revision
+- ckeditor5-dev-tests-save-revision
+env:
+  global:
+  - secure: sgO6VC3Bn9qK+da6p4nF5jj+fYUaDQRUchajKd2GsxRl0zjxljuoxQCYi0lhI2mlcfvNSDt+aF/cYFczECt6pf8vTudXeCEfM1ecAf4UQ5NVgIp71bBZdxrKyVwbe37EYL+IO2KFMnZqH1OR6WS0TW9VOt6Ia8PBsZSvOXQ4C8WCc+uEkFqUdfvkqy3t2CNYGILa8MVQs85WJTe9NFRQqVve67S8ayL4UvYpXHdeYDCgbt7CbhQU7jwIYNmw1B0JsQOWXxE7vJiKsn60fLP7+V3S23jfPI+r2pWW6lCTBrUM7/u06JUoze1SrAAlVjY4c3/tYEfiiUjNvfNphC501Orpaub7u2U74ZTOlUgAMy9MLCKBV28gQfyR5erFBFkSifbHRD6BxXLpmjtC03RIxyBNHPxLkzSz1Bz+oe6rxuS4J6f+M17ZF6e5E3AcI76hpNZgTSHOqnHAZ6IgEiOMLL/070JWBoq40uHaOhDWYvTEHB/hYpiLMnVP00gABb8tvrtQst3woFRFJqQzmu/EMAkMGXgpvPaTpm2FYJCfOPKoLvutVoqZR18IoSKEZ88mLsSco5J1t2NKeczukKMP1po0+lXgkRj/xtqEXAz9HWPDmi2rBXk+qvBeMNT6d4YPV5fk1YoIC3xPEtmPOOEhz+dWoc7MpOFeULVNwrqlOXQ=
+  - secure: I48fZzp10VFbXD4pPvjdxSM7VKo9mkrQ2Bu/JP5zSwdRlVEW+vJI/yKC6t5//5gCp/XC0vibaxdmbg73fvJUYvcAGc/yBKChGfR1sjt10kTQYcUwbuVuE4vlStbD3td4vhEZMOL4k0b11tNsuUe43WLJsqdQ3/Znr6sD/+VAlJBUXKUQRGhpAwgw0rpL5U/3wCPbhjmA4SSMUlWjPIPFeWIUcCBEWruk2WjZ3OgYrjcnSw1tQ3LNZgYydaS1XT5MQbU9YeIEmTKWOXJVCTZ8hGYdeubZ10v9KrkFj/lny3m5XiU+Ae+rhV0LJpFuYl1XD897xXrquo4zTSk+Txu95NxfMFdLtt9nfZ+2y+oEUx8qUGxO+dXeg9vtITaa6QL/kWxofmprDurSZqGW+BicSRK7FxShhQZtJ4VKYe2976edIeNOqFtpP9iLOuVKt9LIsuqmbDSDMlC7RnVg33FbEiyOsrXzw/3gYQEyVymiUWUWX8vET6k7O8iz25wufHO4tAIZDG44R4HdCSYXlMHXGHqDQjfYXFxIA88hH1mCk3/EVDjn6ZEqf2nw8r5sUU3CPHXHVv/Ap1UylUvkdLb3GF6MTIdICGE/d5cmbx3T63o0xpDYO1SmeZZ/nIicmdgmK2Ny3hMjTCv33J1Ra3bAv0t2/vJ7/dZU+kgMXfgaXYo=

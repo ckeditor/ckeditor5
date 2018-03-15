@@ -1,27 +1,39 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
 /* globals document */
 
 import DeleteObserver from '../src/deleteobserver';
-import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
+import View from '@ckeditor/ckeditor5-engine/src/view/view';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
+import createViewRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import env from '@ckeditor/ckeditor5-utils/src/env';
+
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+
+testUtils.createSinonSandbox();
 
 describe( 'DeleteObserver', () => {
-	let viewDocument;
+	let view, viewDocument;
 
 	beforeEach( () => {
-		viewDocument = new ViewDocument();
-		viewDocument.addObserver( DeleteObserver );
+		view = new View();
+		viewDocument = view.document;
+		view.addObserver( DeleteObserver );
+	} );
+
+	afterEach( () => {
+		view.destroy();
 	} );
 
 	// See ckeditor/ckeditor5-enter#10.
 	it( 'can be initialized', () => {
 		expect( () => {
-			viewDocument.createRoot( document.createElement( 'div' ) );
+			createViewRoot( viewDocument );
+			view.attachDomRoot( document.createElement( 'div' ) );
 		} ).to.not.throw();
 	} );
 
@@ -43,14 +55,36 @@ describe( 'DeleteObserver', () => {
 			expect( data ).to.have.property( 'sequence', 1 );
 		} );
 
-		it( 'is fired with a proper direction and unit', () => {
+		it( 'is fired with a proper direction and unit (on Mac)', () => {
 			const spy = sinon.spy();
+
+			testUtils.sinon.stub( env, 'isMac' ).value( true );
 
 			viewDocument.on( 'delete', spy );
 
 			viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
 				keyCode: getCode( 'backspace' ),
 				altKey: true
+			} ) );
+
+			expect( spy.calledOnce ).to.be.true;
+
+			const data = spy.args[ 0 ][ 1 ];
+			expect( data ).to.have.property( 'direction', 'backward' );
+			expect( data ).to.have.property( 'unit', 'word' );
+			expect( data ).to.have.property( 'sequence', 1 );
+		} );
+
+		it( 'is fired with a proper direction and unit (on non-Mac)', () => {
+			const spy = sinon.spy();
+
+			testUtils.sinon.stub( env, 'isMac' ).value( false );
+
+			viewDocument.on( 'delete', spy );
+
+			viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
+				keyCode: getCode( 'backspace' ),
+				ctrlKey: true
 			} ) );
 
 			expect( spy.calledOnce ).to.be.true;
@@ -166,6 +200,30 @@ describe( 'DeleteObserver', () => {
 
 			expect( spy.args[ 0 ][ 1 ] ).to.have.property( 'sequence', 1 );
 			expect( spy.args[ 1 ][ 1 ] ).to.have.property( 'sequence', 2 );
+		} );
+
+		it( 'should stop keydown event when delete event is stopped', () => {
+			const keydownSpy = sinon.spy();
+			viewDocument.on( 'keydown', keydownSpy );
+			viewDocument.on( 'delete', evt => evt.stop() );
+
+			viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
+				keyCode: getCode( 'delete' )
+			} ) );
+
+			sinon.assert.notCalled( keydownSpy );
+		} );
+
+		it( 'should not stop keydown event when delete event is not stopped', () => {
+			const keydownSpy = sinon.spy();
+			viewDocument.on( 'keydown', keydownSpy );
+			viewDocument.on( 'delete', evt => evt.stop() );
+
+			viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
+				keyCode: getCode( 'x' )
+			} ) );
+
+			sinon.assert.calledOnce( keydownSpy );
 		} );
 	} );
 

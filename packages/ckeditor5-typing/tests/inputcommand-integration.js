@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -21,7 +21,7 @@ import { setData as setModelData, getData as getModelData } from '@ckeditor/cked
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 describe( 'Typing – InputCommand integration', () => {
-	let editor, doc, viewDocument, boldView, italicView, editorElement;
+	let editor, model, doc, viewDocument, boldView, italicView, editorElement;
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
@@ -34,7 +34,8 @@ describe( 'Typing – InputCommand integration', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-				doc = editor.document;
+				model = editor.model;
+				doc = model.document;
 				viewDocument = editor.editing.view;
 
 				boldView = editor.ui.componentFactory.create( 'bold' );
@@ -49,7 +50,7 @@ describe( 'Typing – InputCommand integration', () => {
 	} );
 
 	function expectOutput( modelOutput, viewOutput ) {
-		expect( getModelData( editor.document ) ).to.equal( modelOutput );
+		expect( getModelData( model ) ).to.equal( modelOutput );
 		expect( getViewData( viewDocument ) ).to.equal( viewOutput );
 	}
 
@@ -72,12 +73,14 @@ describe( 'Typing – InputCommand integration', () => {
 	}
 
 	function setSelection( pathA, pathB ) {
-		doc.selection.setRanges( [ new Range( new Position( doc.getRoot(), pathA ), new Position( doc.getRoot(), pathB ) ) ] );
+		model.change( writer => {
+			writer.setSelection( new Range( new Position( doc.getRoot(), pathA ), new Position( doc.getRoot(), pathB ) ) );
+		} );
 	}
 
 	describe( 'InputCommand integration', () => {
 		it( 'resets the buffer on typing respecting typing.undoStep', () => {
-			setModelData( doc, '<paragraph>0[]</paragraph>' );
+			setModelData( model, '<paragraph>0[]</paragraph>' );
 
 			simulateTyping( '123456789' );
 
@@ -97,7 +100,7 @@ describe( 'Typing – InputCommand integration', () => {
 		} );
 
 		it( 'resets the buffer on text insertion respecting typing.undoStep', () => {
-			setModelData( doc, '<paragraph>0[]</paragraph>' );
+			setModelData( model, '<paragraph>0[]</paragraph>' );
 
 			simulateBatches( [ '1234', '5', '678', '9' ] );
 
@@ -117,7 +120,7 @@ describe( 'Typing – InputCommand integration', () => {
 		} );
 
 		it( 'resets the buffer when selection changes', () => {
-			setModelData( doc, '<paragraph>Foo[] Bar</paragraph>' );
+			setModelData( model, '<paragraph>Foo[] Bar</paragraph>' );
 
 			setSelection( [ 0, 5 ], [ 0, 5 ] );
 			simulateTyping( '1' );
@@ -141,7 +144,7 @@ describe( 'Typing – InputCommand integration', () => {
 		} );
 
 		it( 'resets the buffer when selection changes (with enter)', () => {
-			setModelData( doc, '<paragraph>Foo[]Bar</paragraph>' );
+			setModelData( model, '<paragraph>Foo[]Bar</paragraph>' );
 
 			simulateTyping( '1' );
 			editor.execute( 'enter' );
@@ -177,7 +180,7 @@ describe( 'Typing – InputCommand integration', () => {
 		} );
 
 		it( 'resets the buffer when attribute changes', () => {
-			setModelData( doc, '<paragraph>Foo[] Bar</paragraph>' );
+			setModelData( model, '<paragraph>Foo[] Bar</paragraph>' );
 
 			simulateTyping( ' ' );
 
@@ -192,16 +195,14 @@ describe( 'Typing – InputCommand integration', () => {
 			simulateTyping( 'z' );
 
 			expectOutput(
-				'<paragraph>Foo <$text bold="true">B<$text italic="true">a</$text></$text>z[] Bar</paragraph>',
+				'<paragraph>Foo <$text bold="true">B</$text><$text bold="true" italic="true">a</$text>z[] Bar</paragraph>',
 				'<p>Foo <strong>B</strong><i><strong>a</strong></i>z{} Bar</p>'
 			);
 
 			editor.execute( 'undo' );
 
 			expectOutput(
-				'<paragraph>' +
-					'Foo <$text bold="true">B<$text italic="true">a[]</$text></$text> Bar' +
-				'</paragraph>',
+				'<paragraph>Foo <$text bold="true">B</$text><$text bold="true" italic="true">a[]</$text> Bar</paragraph>',
 				'<p>Foo <strong>B</strong><i><strong>a{}</strong></i> Bar</p>'
 			);
 

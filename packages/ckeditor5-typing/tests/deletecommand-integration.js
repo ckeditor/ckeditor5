@@ -1,39 +1,50 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
-import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
+/* global document */
+
+import Typing from '../src/typing';
 import DeleteCommand from '../src/deletecommand';
-import UndoEngine from '@ckeditor/ckeditor5-undo/src/undoengine';
+import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading';
+import List from '@ckeditor/ckeditor5-list/src/list';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Image from '@ckeditor/ckeditor5-image/src/image';
+import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
+import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'DeleteCommand integration', () => {
-	let editor, doc;
+	let editor, model;
 
 	beforeEach( () => {
 		return ModelTestEditor
 			.create( {
-				plugins: [ UndoEngine ],
+				plugins: [ UndoEditing ],
 				typing: {
 					undoStep: 3
 				}
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-				doc = editor.document;
+				model = editor.model;
 
 				const command = new DeleteCommand( editor, 'backward' );
 				editor.commands.add( 'delete', command );
 
 				// Mock paragraph feature.
-				doc.schema.registerItem( 'paragraph', '$block' );
-				doc.schema.allow( { name: 'paragraph', inside: '$block' } );
+				model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+				model.schema.extend( 'paragraph', { allowIn: '$block' } );
 
-				doc.schema.registerItem( 'img', '$inline' );
-				doc.schema.allow( { name: '$text', inside: 'img' } );
-
-				doc.schema.objects.add( 'img' );
+				model.schema.register( 'img', {
+					allowWhere: '$text',
+					isObject: true
+				} );
+				model.schema.extend( '$text', { allowIn: 'img' } );
 			} );
 	} );
 
@@ -42,12 +53,12 @@ describe( 'DeleteCommand integration', () => {
 	} );
 
 	function assertOutput( output ) {
-		expect( getData( doc ) ).to.equal( output );
+		expect( getData( model ) ).to.equal( output );
 	}
 
 	describe( 'with undo', () => {
 		it( 'deletes characters (and group changes in batches) and rollbacks', () => {
-			setData( doc, '<paragraph>123456789[]</paragraph>' );
+			setData( model, '<paragraph>123456789[]</paragraph>' );
 
 			for ( let i = 0; i < 3; ++i ) {
 				editor.execute( 'delete' );
@@ -59,7 +70,7 @@ describe( 'DeleteCommand integration', () => {
 		} );
 
 		it( 'deletes characters (and group changes in batches) and rollbacks - test step', () => {
-			setData( doc, '<paragraph>123456789[]</paragraph>' );
+			setData( model, '<paragraph>123456789[]</paragraph>' );
 
 			for ( let i = 0; i < 6; ++i ) {
 				editor.execute( 'delete' );
@@ -75,7 +86,7 @@ describe( 'DeleteCommand integration', () => {
 		} );
 
 		it( 'deletes elements (and group changes in batches) and rollbacks', () => {
-			setData( doc, '<paragraph><img>1</img><img>2</img><img>3</img><img>4</img><img>5</img><img>6</img>[]</paragraph>' );
+			setData( model, '<paragraph><img>1</img><img>2</img><img>3</img><img>4</img><img>5</img><img>6</img>[]</paragraph>' );
 
 			for ( let i = 0; i < 3; ++i ) {
 				editor.execute( 'delete' );
@@ -87,7 +98,7 @@ describe( 'DeleteCommand integration', () => {
 		} );
 
 		it( 'merges elements (and group changes in batches) and rollbacks', () => {
-			setData( doc, '<paragraph>123456</paragraph><paragraph>[]78</paragraph>' );
+			setData( model, '<paragraph>123456</paragraph><paragraph>[]78</paragraph>' );
 
 			for ( let i = 0; i < 6; ++i ) {
 				editor.execute( 'delete' );
@@ -107,7 +118,7 @@ describe( 'DeleteCommand integration', () => {
 		} );
 
 		it( 'merges elements (and group changes in batches) and rollbacks - non-collapsed selection', () => {
-			setData( doc, '<paragraph>12345[6</paragraph><paragraph>7]8</paragraph>' );
+			setData( model, '<paragraph>12345[6</paragraph><paragraph>7]8</paragraph>' );
 
 			editor.execute( 'delete' );
 			editor.execute( 'delete' );
@@ -125,11 +136,11 @@ describe( 'DeleteCommand integration', () => {
 
 	describe( 'with DataController.deleteContent', () => {
 		beforeEach( () => {
-			doc.schema.registerItem( 'h1', '$block' );
+			model.schema.register( 'h1', { inheritAllFrom: '$block' } );
 		} );
 
 		it( 'should replace content with paragraph - if whole content is selected', () => {
-			setData( doc, '<h1>[foo</h1><paragraph>bar]</paragraph>' );
+			setData( model, '<h1>[foo</h1><paragraph>bar]</paragraph>' );
 
 			editor.execute( 'delete' );
 
@@ -137,7 +148,7 @@ describe( 'DeleteCommand integration', () => {
 		} );
 
 		it( 'should not replace content with paragraph - if not whole content is selected', () => {
-			setData( doc, '<h1>f[oo</h1><paragraph>bar]</paragraph>' );
+			setData( model, '<h1>f[oo</h1><paragraph>bar]</paragraph>' );
 
 			editor.execute( 'delete' );
 
@@ -145,11 +156,53 @@ describe( 'DeleteCommand integration', () => {
 		} );
 
 		it( 'should not replace content with paragraph - if selection was collapsed', () => {
-			setData( doc, '<h1></h1><paragraph>[]</paragraph>' );
+			setData( model, '<h1></h1><paragraph>[]</paragraph>' );
 
 			editor.execute( 'delete' );
 
 			assertOutput( '<h1>[]</h1>' );
+		} );
+	} );
+
+	describe( 'with multi-range selection', () => {
+		let element, editor, model;
+
+		beforeEach( () => {
+			element = document.createElement( 'div' );
+			document.body.appendChild( element );
+
+			return ClassicEditor
+				.create( element, {
+					plugins: [ Typing, Heading, List, Image, ImageCaption, Paragraph, BlockQuote ]
+				} )
+				.then( newEditor => {
+					editor = newEditor;
+					model = editor.model;
+				} );
+		} );
+
+		afterEach( () => {
+			element.remove();
+
+			return editor.destroy();
+		} );
+
+		it( 'should not throw an error if content with the image is being removed', () => {
+			setData( model,
+				'<listItem indent="0" type="numbered">OL List i[tem 1</listItem>' +
+				'<listItem indent="0" type="numbered">OL List item 2</listItem>]' +
+				'<image alt="bar" imageStyle="side" src="sample.jpg"><caption>[Caption</caption></image>' +
+				'<blockQuote>' +
+					'<paragraph>Quote</paragraph>' +
+					'<listItem indent="0" type="bulleted">Quoted UL List item 1</listItem>' +
+					'<listItem indent="0" type="bulleted">Quote]d UL List item 2</listItem>' +
+					'<paragraph>Quote</paragraph>' +
+				'</blockQuote>'
+			);
+
+			expect( () => {
+				editor.execute( 'delete' );
+			} ).to.not.throw();
 		} );
 	} );
 } );

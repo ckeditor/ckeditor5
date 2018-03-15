@@ -1,9 +1,9 @@
 /*
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
-/* globals window, document */
+/* globals window, document, setTimeout */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
@@ -43,7 +43,7 @@ describe( 'Typing – spellchecking integration', () => {
 
 	beforeEach( () => {
 		if ( onChangesDone ) {
-			editor.document.off( 'changesDone', onChangesDone );
+			editor.model.document.off( 'change', onChangesDone );
 			onChangesDone = null;
 		}
 
@@ -233,12 +233,12 @@ describe( 'Typing – spellchecking integration', () => {
 
 function emulateSpellcheckerMutation( editor, nodeIndex, resultPositionIndex, oldText, newText ) {
 	const view = editor.editing.view;
-	const viewRoot = view.getRoot();
+	const viewRoot = view.document.getRoot();
 	const viewSelection = new ViewSelection();
 
-	viewSelection.setCollapsedAt( viewRoot.getChild( nodeIndex ).getChild( 0 ), resultPositionIndex );
+	viewSelection._setTo( viewRoot.getChild( nodeIndex ).getChild( 0 ), resultPositionIndex );
 
-	view.fire( 'mutations',
+	view.document.fire( 'mutations',
 		[ {
 			type: 'text',
 			oldText,
@@ -250,24 +250,26 @@ function emulateSpellcheckerMutation( editor, nodeIndex, resultPositionIndex, ol
 }
 
 function emulateSpellcheckerInsertText( editor, nodeIndex, rangeStart, rangeEnd, text, onChangesDoneCallback ) {
-	const model = editor.editing.model;
-	const modelRoot = model.getRoot();
+	const model = editor.model;
+	const modelRoot = model.document.getRoot();
 
+	window.focus();
 	editor.editing.view.focus();
 
-	model.enqueueChanges( () => {
-		model.selection.setRanges( [
+	model.change( writer => {
+		writer.setSelection(
 			ModelRange.createFromParentsAndOffsets( modelRoot.getChild( nodeIndex ), rangeStart, modelRoot.getChild( nodeIndex ), rangeEnd )
-		] );
+		);
 	} );
 
-	editor.document.once( 'changesDone', onChangesDoneCallback, { priority: 'low' } );
+	model.document.once( 'change', () => {
+		setTimeout( onChangesDoneCallback, 100 );
+	}, { priority: 'low' } );
 
 	window.document.execCommand( 'insertText', false, text );
 }
 
 function expectContent( editor, expectedModel, expectedView ) {
-	expect( getModelData( editor.editing.model ) ).to.equal( expectedModel );
+	expect( getModelData( editor.model ) ).to.equal( expectedModel );
 	expect( getViewData( editor.editing.view ) ).to.equal( expectedView );
 }
-

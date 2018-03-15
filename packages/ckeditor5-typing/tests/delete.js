@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -8,14 +8,14 @@ import Delete from '../src/delete';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 
 describe( 'Delete feature', () => {
-	let editor, editingView;
+	let editor, viewDocument;
 
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( { plugins: [ Delete ] } )
 			.then( newEditor => {
 				editor = newEditor;
-				editingView = editor.editing.view;
+				viewDocument = editor.editing.view.document;
 			} );
 	} );
 
@@ -28,12 +28,12 @@ describe( 'Delete feature', () => {
 		expect( editor.commands.get( 'forwardDelete' ) ).to.have.property( 'direction', 'forward' );
 	} );
 
-	it( 'listens to the editing view delete event', () => {
+	it( 'listens to the editing view document delete event', () => {
 		const spy = editor.execute = sinon.spy();
-		const view = editor.editing.view;
+		const viewDocument = editor.editing.view.document;
 		const domEvt = getDomEvent();
 
-		view.fire( 'delete', new DomEventData( editingView, domEvt, {
+		viewDocument.fire( 'delete', new DomEventData( viewDocument, domEvt, {
 			direction: 'forward',
 			unit: 'character',
 			sequence: 1
@@ -44,7 +44,7 @@ describe( 'Delete feature', () => {
 
 		expect( domEvt.preventDefault.calledOnce ).to.be.true;
 
-		view.fire( 'delete', new DomEventData( editingView, getDomEvent(), {
+		viewDocument.fire( 'delete', new DomEventData( viewDocument, getDomEvent(), {
 			direction: 'backward',
 			unit: 'character',
 			sequence: 5
@@ -55,10 +55,10 @@ describe( 'Delete feature', () => {
 	} );
 
 	it( 'scrolls the editing document to the selection after executing the command', () => {
-		const scrollSpy = sinon.stub( editingView, 'scrollToTheSelection' );
+		const scrollSpy = sinon.stub( editor.editing.view, 'scrollToTheSelection' );
 		const executeSpy = editor.execute = sinon.spy();
 
-		editingView.fire( 'delete', new DomEventData( editingView, getDomEvent(), {
+		viewDocument.fire( 'delete', new DomEventData( viewDocument, getDomEvent(), {
 			direction: 'backward',
 			unit: 'character'
 		} ) );
