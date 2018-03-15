@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -10,15 +10,9 @@
 import Delta from './delta';
 import DeltaFactory from './deltafactory';
 import SplitDelta from './splitdelta';
-import { register } from '../batch';
-import Position from '../position';
-import Element from '../element';
-import RemoveOperation from '../operation/removeoperation';
-import MoveOperation from '../operation/moveoperation';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
- * To provide specific OT behavior and better collisions solving, {@link module:engine/model/batch~Batch#merge} method
+ * To provide specific OT behavior and better collisions solving, {@link module:engine/model/writer~Writer#merge} method
  * uses the `MergeDelta` class which inherits from the `Delta` class and may overwrite some methods.
  *
  * @extends module:engine/model/delta/delta~Delta
@@ -69,64 +63,5 @@ export default class MergeDelta extends Delta {
 		return 'engine.model.delta.MergeDelta';
 	}
 }
-
-/**
- * Merges two siblings at the given position.
- *
- * Node before and after the position have to be an element. Otherwise `batch-merge-no-element-before` or
- * `batch-merge-no-element-after` error will be thrown.
- *
- * @chainable
- * @method module:engine/model/batch~Batch#merge
- * @param {module:engine/model/position~Position} position Position of merge.
- */
-register( 'merge', function( position ) {
-	const delta = new MergeDelta();
-	this.addDelta( delta );
-
-	const nodeBefore = position.nodeBefore;
-	const nodeAfter = position.nodeAfter;
-
-	if ( !( nodeBefore instanceof Element ) ) {
-		/**
-		 * Node before merge position must be an element.
-		 *
-		 * @error batch-merge-no-element-before
-		 */
-		throw new CKEditorError( 'batch-merge-no-element-before: Node before merge position must be an element.' );
-	}
-
-	if ( !( nodeAfter instanceof Element ) ) {
-		/**
-		 * Node after merge position must be an element.
-		 *
-		 * @error batch-merge-no-element-after
-		 */
-		throw new CKEditorError( 'batch-merge-no-element-after: Node after merge position must be an element.' );
-	}
-
-	const positionAfter = Position.createFromParentAndOffset( nodeAfter, 0 );
-	const positionBefore = Position.createFromParentAndOffset( nodeBefore, nodeBefore.maxOffset );
-
-	const move = new MoveOperation(
-		positionAfter,
-		nodeAfter.maxOffset,
-		positionBefore,
-		this.document.version
-	);
-
-	move.isSticky = true;
-	delta.addOperation( move );
-	this.document.applyOperation( move );
-
-	const graveyard = this.document.graveyard;
-	const gyPosition = new Position( graveyard, [ 0 ] );
-
-	const remove = new RemoveOperation( position, 1, gyPosition, this.document.version );
-	delta.addOperation( remove );
-	this.document.applyOperation( remove );
-
-	return this;
-} );
 
 DeltaFactory.register( MergeDelta );

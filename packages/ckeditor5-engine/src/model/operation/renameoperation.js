@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -26,7 +26,8 @@ export default class RenameOperation extends Operation {
 	 * @param {module:engine/model/position~Position} position Position before an element to change.
 	 * @param {String} oldName Current name of the element.
 	 * @param {String} newName New name for the element.
-	 * @param {Number} baseVersion {@link module:engine/model/document~Document#version} on which the operation can be applied.
+	 * @param {Number|null} baseVersion Document {@link module:engine/model/document~Document#version} on which operation
+	 * can be applied or `null` if the operation operates on detached (non-document) tree.
 	 */
 	constructor( position, oldName, newName, baseVersion ) {
 		super( baseVersion );
@@ -81,8 +82,7 @@ export default class RenameOperation extends Operation {
 	/**
 	 * @inheritDoc
 	 */
-	_execute() {
-		// Validation.
+	_validate() {
 		const element = this.position.nodeAfter;
 
 		if ( !( element instanceof Element ) ) {
@@ -104,14 +104,15 @@ export default class RenameOperation extends Operation {
 				'rename-operation-wrong-name: Element to change has different name than operation\'s old name.'
 			);
 		}
+	}
 
-		// If value to set is same as old value, don't do anything.
-		if ( element.name != this.newName ) {
-			// Execution.
-			element.name = this.newName;
-		}
+	/**
+	 * @inheritDoc
+	 */
+	_execute() {
+		const element = this.position.nodeAfter;
 
-		return { element, oldName: this.oldName };
+		element.name = this.newName;
 	}
 
 	/**

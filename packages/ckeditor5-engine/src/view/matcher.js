@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -19,6 +19,10 @@ export default class Matcher {
 	 * more information.
 	 */
 	constructor( ...pattern ) {
+		/**
+		 * @private
+		 * @type {Array<String|RegExp|Object>}
+		 */
 		this._patterns = [];
 
 		this.add( ...pattern );
@@ -27,62 +31,18 @@ export default class Matcher {
 	/**
 	 * Adds pattern or patterns to matcher instance.
 	 *
-	 * Example patterns matching element's name:
-	 *
 	 *		// String.
 	 *		matcher.add( 'div' );
-	 *		matcher.add( { name: 'div' } );
 	 *
 	 *		// Regular expression.
 	 *		matcher.add( /^\w/ );
-	 *		matcher.add( { name: /^\w/ } );
-	 *
-	 * Example pattern matching element's attributes:
-	 *
-	 *		matcher.add( {
-	 *			attribute: {
-	 *				title: 'foobar',
-	 *				foo: /^\w+/
-	 *			}
-	 *		} );
-	 *
-	 * Example patterns matching element's classes:
 	 *
 	 *		// Single class.
 	 *		matcher.add( {
 	 *			class: 'foobar'
 	 *		} );
 	 *
-	 *		// Single class using regular expression.
-	 *		matcher.add( {
-	 *			class: /foo.../
-	 *		} );
-	 *
-	 *		// Multiple classes to match.
-	 *		matcher.add( {
-	 *			class: [ 'baz', 'bar', /foo.../ ]
-	 *		} ):
-	 *
-	 * Example pattern matching element's styles:
-	 *
-	 *		matcher.add( {
-	 *			style: {
-	 *				position: 'absolute',
-	 *				color: /^\w*blue$/
-	 *			}
-	 *		} );
-	 *
-	 * Example function pattern:
-	 *
-	 *		matcher.add( ( element ) => {
-	 *			// Result of this function will be included in `match`
-	 *			// property of the object returned from matcher.match() call.
-	 *			if ( element.name === 'div' && element.childCount > 0 ) {
-	 *				return { name: true };
-	 *			}
-	 *
-	 *			return null;
-	 *		} );
+	 * See {@link module:engine/view/matcher~MatcherPattern} for more examples.
 	 *
 	 * Multiple patterns can be added in one call:
 	 *
@@ -95,8 +55,10 @@ export default class Matcher {
 	 * {@link module:engine/view/matcher~Matcher#match match} or {@link module:engine/view/matcher~Matcher#matchAll matchAll} methods.
 	 * @param {String|RegExp} [pattern.name] Name or regular expression to match element's name.
 	 * @param {Object} [pattern.attribute] Object with key-value pairs representing attributes to match. Each object key
-	 * represents attribute name. Value under that key can be either a string or a regular expression and it will be
-	 * used to match attribute value.
+	 * represents attribute name. Value under that key can be either:
+	 * * `true` - then attribute is just required (can be empty),
+	 * * a string - then attribute has to be equal, or
+	 * * a regular expression - then attribute has to match the expression.
 	 * @param {String|RegExp|Array} [pattern.class] Class name or array of class names to match. Each name can be
 	 * provided in a form of string or regular expression.
 	 * @param {Object} [pattern.style] Object with key-value pairs representing styles to match. Each object key
@@ -295,7 +257,9 @@ function matchAttributes( patterns, element ) {
 		if ( element.hasAttribute( name ) ) {
 			const attribute = element.getAttribute( name );
 
-			if ( pattern instanceof RegExp ) {
+			if ( pattern === true ) {
+				match.push( name );
+			} else if ( pattern instanceof RegExp ) {
 				if ( pattern.test( attribute ) ) {
 					match.push( name );
 				} else {
@@ -378,3 +342,105 @@ function matchStyles( patterns, element ) {
 
 	return match;
 }
+
+/**
+ * An entity that is a valid pattern recognized by a matcher. `MatcherPattern` is used by {@link ~Matcher} to recognize
+ * if a view element fits in a group of view elements described by the pattern.
+ *
+ * `MatcherPattern` can be given as a `String`, a `RegExp`, an `Object` or a `Function`.
+ *
+ * If `MatcherPattern` is given as a `String` or `RegExp`, it will match any view element that has a matching name:
+ *
+ *		// Match any element with name equal to 'div'.
+ *		const pattern = 'div';
+ *
+ *		// Match any element which name starts on 'p'.
+ *		const pattern = /^p/;
+ *
+ * If `MatcherPattern` is given as an `Object`, all the object's properties will be matched with view element properties.
+ *
+ *		// Match view element's name.
+ *		const pattern = { name: /^p/ };
+ *
+ *		// Match view element which has matching attributes.
+ *		const pattern = {
+ *			attribute: {
+ *				title: 'foobar',	// Attribute title should equal 'foobar'.
+ *				foo: /^\w+/,		// Attribute foo should match /^\w+/ regexp.
+ *				bar: true			// Attribute bar should be set (can be empty).
+ *			}
+ *		};
+ *
+ *		// Match view element which has given class.
+ *		const pattern = {
+ *			class: 'foobar'
+ *		};
+ *
+ *		// Match view element class using regular expression.
+ *		const pattern = {
+ *			class: /foo.../
+ *		};
+ *
+ *		// Multiple classes to match.
+ *		const pattern = {
+ *			class: [ 'baz', 'bar', /foo.../ ]
+ *		}:
+ *
+ *		// Match view element which has given styles.
+ *		const pattern = {
+ *			style: {
+ *				position: 'absolute',
+ *				color: /^\w*blue$/
+ *			}
+ *		};
+ *
+ *		// Pattern with multiple properties.
+ *		const pattern = {
+ *			name: 'span',
+ *			style: {
+ *				'font-weight': 'bold'
+ *			},
+ *			class: 'highlighted'
+ *		};
+ *
+ * If `MatcherPattern` is given as a `Function`, the function takes a view element as a first and only parameter and
+ * the function should decide whether that element matches. If so, it should return what part of the view element has been matched.
+ * Otherwise, the function should return `null`. The returned result will be included in `match` property of the object
+ * returned by {@link ~Matcher#match} call.
+ *
+ *		// Match an empty <div> element.
+ *		const pattern = element => {
+ *			if ( element.name == 'div' && element.childCount > 0 ) {
+ *				// Return which part of the element was matched.
+ *				return { name: true };
+ *			}
+ *
+ *			return null;
+ *		};
+ *
+ *		// Match a <p> element with big font ("heading-like" element).
+ *		const pattern = element => {
+ *			if ( element.name == 'p' ) {
+ *				const fontSize = element.getStyle( 'font-size' );
+ *				const size = fontSize.match( /(\d+)/px );
+ *
+ *				if ( size && Number( size[ 1 ] ) > 26 ) {
+ *					return { name: true, attribute: [ 'font-size' ] };
+ *				}
+ *			}
+ *
+ *			return null;
+ *		};
+ *
+ * `MatcherPattern` is defined in a way that it is a superset of {@link module:engine/view/elementdefinition~ElementDefinition},
+ * that is, every `ElementDefinition` also can be used as a `MatcherPattern`.
+ *
+ * @typedef {String|RegExp|Object|Function} module:engine/view/matcher~MatcherPattern
+ *
+ * @property {String|RegExp} [name] View element name to match.
+ * @property {String|RegExp|Array.<String|RegExp>} [class] View element's class name(s) to match.
+ * @property {Object} [style] Object with key-value pairs representing styles to match.
+ * Each object key represents style name. Value can be given as `String` or `RegExp`.
+ * @property {Object} [attribute] Object with key-value pairs representing attributes to match.
+ * Each object key represents attribute name. Value can be given as `String` or `RegExp`.
+ */

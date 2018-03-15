@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -26,6 +26,7 @@ export default class Range {
 		/**
 		 * Start position.
 		 *
+		 * @readonly
 		 * @member {module:engine/view/position~Position}
 		 */
 		this.start = Position.createFromPosition( start );
@@ -33,13 +34,16 @@ export default class Range {
 		/**
 		 * End position.
 		 *
+		 * @readonly
 		 * @member {module:engine/view/position~Position}
 		 */
 		this.end = end ? Position.createFromPosition( end ) : Position.createFromPosition( start );
 	}
 
 	/**
-	 * Returns an iterator that iterates over all {@link module:engine/view/item~Item view items} that are in this range and returns
+	 * Iterable interface.
+	 *
+	 * Iterates over all {@link module:engine/view/item~Item view items} that are in this range and returns
 	 * them together with additional information like length or {@link module:engine/view/position~Position positions},
 	 * grouped as {@link module:engine/view/treewalker~TreeWalkerValue}.
 	 *
@@ -438,7 +442,9 @@ export default class Range {
 	 * @returns {module:engine/view/range~Range}
 	 */
 	static createOn( item ) {
-		return this.createFromPositionAndShift( Position.createBefore( item ), 1 );
+		const size = item.is( 'textProxy' ) ? item.offsetSize : 1;
+
+		return this.createFromPositionAndShift( Position.createBefore( item ), size );
 	}
 
 	/**

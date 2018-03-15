@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -7,7 +7,6 @@
 
 import ViewElement from '../../../src/view/element';
 import ViewSelection from '../../../src/view/selection';
-import ViewRange from '../../../src/view/range';
 import DomConverter from '../../../src/view/domconverter';
 import ViewDocumentFragment from '../../../src/view/documentfragment';
 import { INLINE_FILLER } from '../../../src/view/filler';
@@ -270,8 +269,7 @@ describe( 'DomConverter', () => {
 		beforeEach( () => {
 			viewElement = new ViewElement();
 			domEl = document.createElement( 'div' );
-			selection = new ViewSelection();
-			selection.addRange( ViewRange.createIn( viewElement ) );
+			selection = new ViewSelection( viewElement, 'in' );
 			converter.bindFakeSelection( domEl, selection );
 		} );
 
@@ -282,9 +280,9 @@ describe( 'DomConverter', () => {
 		} );
 
 		it( 'should keep a copy of selection', () => {
-			const selectionCopy = ViewSelection.createFromSelection( selection );
+			const selectionCopy = new ViewSelection( selection );
 
-			selection.addRange( ViewRange.createIn( new ViewElement() ), true );
+			selection._setTo( new ViewElement(), 'in', { backward: true } );
 			const bindSelection = converter.fakeSelectionToView( domEl );
 
 			expect( bindSelection ).to.not.equal( selection );

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -39,7 +39,7 @@ export function getNodesAndText( range ) {
 }
 
 /**
- * Returns object JSON representation. It pases an object by JSON.stringify and JSON.parse functions.
+ * Returns object JSON representation. It passes an object by JSON.stringify and JSON.parse functions.
  *
  * @param {Object|Array} object
  */

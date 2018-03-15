@@ -1,26 +1,23 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
-import Document from '../../../src/model/document';
+import Model from '../../../src/model/model';
 import NoOperation from '../../../src/model/operation/nooperation';
 import { jsonParseStringify, wrapInDelta } from '../../../tests/model/_utils/utils';
 
 describe( 'NoOperation', () => {
-	let noop, doc;
+	let model, noop, doc;
 
 	beforeEach( () => {
 		noop = new NoOperation( 0 );
-		doc = new Document();
+		model = new Model();
+		doc = model.document;
 	} );
 
 	it( 'should not throw an error when applied', () => {
-		expect( () => doc.applyOperation( wrapInDelta( noop ) ) ).to.not.throw( Error );
-	} );
-
-	it( 'should return empty object when executed', () => {
-		expect( noop._execute() ).to.deep.equal( {} );
+		expect( () => model.applyOperation( wrapInDelta( noop ) ) ).to.not.throw( Error );
 	} );
 
 	it( 'should create a NoOperation as a reverse', () => {

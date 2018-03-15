@@ -1,22 +1,25 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
-import Document from '../../../src/model/document';
+import Model from '../../../src/model/model';
 import ReinsertOperation from '../../../src/model/operation/reinsertoperation';
 import RemoveOperation from '../../../src/model/operation/removeoperation';
 import MoveOperation from '../../../src/model/operation/moveoperation';
 import Position from '../../../src/model/position';
-import Text from '../../../src/model/text';
+import DocumentFragment from '../../../src/model/documentfragment';
 import Element from '../../../src/model/element';
+import Text from '../../../src/model/text';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { jsonParseStringify, wrapInDelta } from '../../../tests/model/_utils/utils';
 
 describe( 'RemoveOperation', () => {
-	let doc, root, graveyard;
+	let model, doc, root, graveyard;
 
 	beforeEach( () => {
-		doc = new Document();
+		model = new Model();
+		doc = model.document;
 		root = doc.createRoot();
 		graveyard = doc.graveyard;
 	} );
@@ -55,9 +58,9 @@ describe( 'RemoveOperation', () => {
 	} );
 
 	it( 'should be able to remove set of nodes and append them to graveyard root', () => {
-		root.insertChildren( 0, new Text( 'fozbar' ) );
+		root._insertChildren( 0, new Text( 'fozbar' ) );
 
-		doc.applyOperation( wrapInDelta(
+		model.applyOperation( wrapInDelta(
 			new RemoveOperation(
 				new Position( root, [ 2 ] ),
 				2,
@@ -112,14 +115,14 @@ describe( 'RemoveOperation', () => {
 		const operation = new RemoveOperation( position, 3, new Position( doc.graveyard, [ 0 ] ), 0 );
 		const reverse = operation.getReversed();
 
-		root.insertChildren( 0, new Text( 'bar' ) );
+		root._insertChildren( 0, new Text( 'bar' ) );
 
-		doc.applyOperation( wrapInDelta( operation ) );
+		model.applyOperation( wrapInDelta( operation ) );
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.maxOffset ).to.equal( 0 );
 
-		doc.applyOperation( wrapInDelta( reverse ) );
+		model.applyOperation( wrapInDelta( reverse ) );
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.maxOffset ).to.equal( 3 );
@@ -127,17 +130,37 @@ describe( 'RemoveOperation', () => {
 	} );
 
 	it( 'should properly remove a node that is already in a graveyard', () => {
-		doc.graveyard.appendChildren( [ new Element( 'x' ), new Element( 'y' ), new Element( 'z' ) ] );
+		doc.graveyard._appendChildren( [ new Element( 'x' ), new Element( 'y' ), new Element( 'z' ) ] );
 
 		const position = new Position( doc.graveyard, [ 2 ] );
 		const operation = new RemoveOperation( position, 1, new Position( doc.graveyard, [ 0 ] ), 0 );
 
-		doc.applyOperation( wrapInDelta( operation ) );
+		model.applyOperation( wrapInDelta( operation ) );
 
 		expect( doc.graveyard.childCount ).to.equal( 3 );
 		expect( doc.graveyard.getChild( 0 ).name ).to.equal( 'z' );
 		expect( doc.graveyard.getChild( 1 ).name ).to.equal( 'x' );
 		expect( doc.graveyard.getChild( 2 ).name ).to.equal( 'y' );
+	} );
+
+	describe( '_validate()', () => {
+		it( 'should throw when is executed on detached item', () => {
+			const docFrag = new DocumentFragment();
+			const item = new Element( 'foo' );
+
+			docFrag._appendChildren( [ item ] );
+
+			const op = new RemoveOperation(
+				new Position( docFrag, [ 0 ] ),
+				1,
+				new Position( doc.graveyard, [ 0 ] ),
+				doc.version
+			);
+
+			expect( () => {
+				op._validate();
+			} ).to.throw( CKEditorError, /^remove-operation-on-detached-item/ );
+		} );
 	} );
 
 	describe( 'toJSON', () => {

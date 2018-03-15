@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -13,7 +13,6 @@
 
 // Import default suite of deltas so a feature have to include only Batch class file.
 import './attributedelta';
-import './insertdelta';
 import './mergedelta';
 import './movedelta';
 import './removedelta';

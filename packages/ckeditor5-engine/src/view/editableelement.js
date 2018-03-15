@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -26,6 +26,9 @@ const documentSymbol = Symbol( 'document' );
 export default class EditableElement extends ContainerElement {
 	/**
 	 * Creates an editable element.
+	 *
+	 * @see module:engine/view/writer~Writer#createEditableElement
+	 * @protected
 	 */
 	constructor( name, attrs, children ) {
 		super( name, attrs, children );
@@ -41,8 +44,8 @@ export default class EditableElement extends ContainerElement {
 		/**
 		 * Whether the editable is focused.
 		 *
-		 * This property updates when {@link module:engine/view/document~Document#isFocused document.isFocused} is changed and after each
-		 * {@link module:engine/view/document~Document#render render} method call.
+		 * This property updates when {@link module:engine/view/document~Document#isFocused document.isFocused} or view
+		 * selection is changed.
 		 *
 		 * @readonly
 		 * @observable
@@ -60,11 +63,23 @@ export default class EditableElement extends ContainerElement {
 		 */
 	}
 
+	/**
+	 * Returns document associated with the editable.
+	 *
+	 * @readonly
+	 * @return {module:engine/view/document~Document}
+	 */
 	get document() {
 		return this.getCustomProperty( documentSymbol );
 	}
 
-	set document( document ) {
+	/**
+	 * Sets document of this editable element.
+	 *
+	 * @protected
+	 * @param {module:engine/view/document~Document} document
+	 */
+	set _document( document ) {
 		if ( this.getCustomProperty( documentSymbol ) ) {
 			/**
 			 * View document is already set. It can only be set once.
@@ -74,7 +89,7 @@ export default class EditableElement extends ContainerElement {
 			throw new CKEditorError( 'view-editableelement-document-already-set: View document is already set.' );
 		}
 
-		this.setCustomProperty( documentSymbol, document );
+		this._setCustomProperty( documentSymbol, document );
 
 		this.bind( 'isReadOnly' ).to( document );
 
@@ -84,11 +99,10 @@ export default class EditableElement extends ContainerElement {
 			isFocused => isFocused && document.selection.editableElement == this
 		);
 
-		// Update focus state before each rendering. Rendering should not change neither the selection nor the value of
-		// document.isFocused property.
-		this.listenTo( document, 'render', () => {
+		// Update focus state based on selection changes.
+		this.listenTo( document.selection, 'change', () => {
 			this.isFocused = document.isFocused && document.selection.editableElement == this;
-		}, { priority: 'high' } );
+		} );
 	}
 }
 

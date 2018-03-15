@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -23,8 +23,8 @@ import Element from './element';
  * DOM properly. {@link module:engine/view/domconverter~DomConverter} will ensure that `ContainerElement` is editable and it is possible
  * to put caret inside it, even if the container is empty.
  *
- * Secondly, {@link module:engine/view/writer~writer view writer} uses this information.
- * Nodes {@link module:engine/view/writer~writer.breakAttributes breaking} and {@link module:engine/view/writer~writer.mergeAttributes
+ * Secondly, {@link module:engine/view/writer~Writer view writer} uses this information.
+ * Nodes {@link module:engine/view/writer~Writer#breakAttributes breaking} and {@link module:engine/view/writer~Writer#mergeAttributes
  * merging}
  * is performed only in a bounds of a container nodes.
  *
@@ -32,7 +32,7 @@ import Element from './element';
  *
  *		<p><b>fo^o</b></p>
  *
- * {@link module:engine/view/writer~writer.breakAttributes breakAttributes} will create:
+ * {@link module:engine/view/writer~Writer#breakAttributes breakAttributes} will create:
  *
  *		<p><b>fo</b><b>o</b></p>
  *
@@ -49,6 +49,8 @@ export default class ContainerElement extends Element {
 	 * Creates a container element.
 	 *
 	 * @see module:engine/view/element~Element
+	 * @see module:engine/view/writer~Writer#createContainerElement
+	 * @protected
 	 */
 	constructor( name, attrs, children ) {
 		super( name, attrs, children );

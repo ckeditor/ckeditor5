@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -18,7 +18,7 @@ describe( 'EditableElement', () => {
 		} );
 
 		it( 'should allow to set document', () => {
-			element.document = docMock;
+			element._document = docMock;
 
 			expect( element.document ).to.equal( docMock );
 		} );
@@ -28,17 +28,17 @@ describe( 'EditableElement', () => {
 		} );
 
 		it( 'should throw if trying to set document again', () => {
-			element.document = docMock;
+			element._document = docMock;
 			const newDoc = createDocumentMock();
 
 			expect( () => {
-				element.document = newDoc;
+				element._document = newDoc;
 			} ).to.throw( CKEditorError, 'view-editableelement-document-already-set: View document is already set.' );
 		} );
 
 		it( 'should be cloned properly', () => {
-			element.document = docMock;
-			const newElement = element.clone();
+			element._document = docMock;
+			const newElement = element._clone();
 
 			expect( newElement.document ).to.equal( docMock );
 		} );
@@ -51,16 +51,16 @@ describe( 'EditableElement', () => {
 			docMock = createDocumentMock();
 
 			viewMain = new RootEditableElement( 'div' );
-			viewMain.document = docMock;
+			viewMain._document = docMock;
 
 			viewHeader = new RootEditableElement( 'h1' );
-			viewHeader.document = docMock;
+			viewHeader._document = docMock;
 			viewHeader.rootName = 'header';
 		} );
 
 		it( 'should be observable', () => {
 			const root = new RootEditableElement( 'div' );
-			root.document = createDocumentMock();
+			root._document = createDocumentMock();
 
 			expect( root.isFocused ).to.be.false;
 
@@ -75,48 +75,25 @@ describe( 'EditableElement', () => {
 			expect( isFocusedSpy.calledOnce ).to.be.true;
 		} );
 
-		it( 'should change isFocused on document render event', () => {
+		it( 'should change isFocused when selection changes', () => {
 			const rangeMain = Range.createFromParentsAndOffsets( viewMain, 0, viewMain, 0 );
 			const rangeHeader = Range.createFromParentsAndOffsets( viewHeader, 0, viewHeader, 0 );
-			docMock.selection.addRange( rangeMain );
+			docMock.selection._setTo( rangeMain );
 			docMock.isFocused = true;
 
 			expect( viewMain.isFocused ).to.be.true;
 			expect( viewHeader.isFocused ).to.be.false;
 
-			docMock.selection.setRanges( [ rangeHeader ] );
-			docMock.fire( 'render' );
+			docMock.selection._setTo( [ rangeHeader ] );
 
 			expect( viewMain.isFocused ).to.be.false;
 			expect( viewHeader.isFocused ).to.be.true;
 		} );
 
-		it( 'should change isFocus before actual rendering', done => {
-			const rangeMain = Range.createFromParentsAndOffsets( viewMain, 0, viewMain, 0 );
-			const rangeHeader = Range.createFromParentsAndOffsets( viewHeader, 0, viewHeader, 0 );
-			docMock.render = sinon.spy();
-
-			docMock.selection.addRange( rangeMain );
-			docMock.isFocused = true;
-
-			expect( viewMain.isFocused ).to.be.true;
-			expect( viewHeader.isFocused ).to.be.false;
-
-			docMock.selection.setRanges( [ rangeHeader ] );
-
-			viewHeader.on( 'change:isFocused', ( evt, propertyName, value ) => {
-				expect( value ).to.be.true;
-				sinon.assert.notCalled( docMock.render );
-				done();
-			} );
-
-			docMock.fire( 'render' );
-		} );
-
 		it( 'should change isFocused when document.isFocus changes', () => {
 			const rangeMain = Range.createFromParentsAndOffsets( viewMain, 0, viewMain, 0 );
 			const rangeHeader = Range.createFromParentsAndOffsets( viewHeader, 0, viewHeader, 0 );
-			docMock.selection.addRange( rangeMain );
+			docMock.selection._setTo( rangeMain );
 			docMock.isFocused = true;
 
 			expect( viewMain.isFocused ).to.be.true;
@@ -127,7 +104,7 @@ describe( 'EditableElement', () => {
 			expect( viewMain.isFocused ).to.be.false;
 			expect( viewHeader.isFocused ).to.be.false;
 
-			docMock.selection.setRanges( [ rangeHeader ] );
+			docMock.selection._setTo( [ rangeHeader ] );
 
 			expect( viewMain.isFocused ).to.be.false;
 			expect( viewHeader.isFocused ).to.be.false;
@@ -137,7 +114,7 @@ describe( 'EditableElement', () => {
 	describe( 'isReadOnly', () => {
 		it( 'should be observable', () => {
 			const root = new RootEditableElement( 'div' );
-			root.document = createDocumentMock();
+			root._document = createDocumentMock();
 
 			expect( root.isReadOnly ).to.be.false;
 
@@ -154,7 +131,7 @@ describe( 'EditableElement', () => {
 
 		it( 'should be bound to the document#isReadOnly', () => {
 			const root = new RootEditableElement( 'div' );
-			root.document = createDocumentMock();
+			root._document = createDocumentMock();
 
 			root.document.isReadOnly = false;
 
@@ -170,7 +147,7 @@ describe( 'EditableElement', () => {
 		it( 'should return document', () => {
 			const docMock = createDocumentMock();
 			const root = new RootEditableElement( 'div' );
-			root.document = docMock;
+			root._document = docMock;
 
 			expect( root.document ).to.equal( docMock );
 		} );

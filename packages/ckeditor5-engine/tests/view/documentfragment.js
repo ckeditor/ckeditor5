@@ -1,11 +1,13 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
 import DocumentFragment from '../../src/view/documentfragment';
 import Element from '../../src/view/element';
 import Node from '../../src/view/node';
+import Text from '../../src/view/text';
+import TextProxy from '../../src/view/textproxy';
 
 describe( 'DocumentFragment', () => {
 	describe( 'constructor()', () => {
@@ -105,8 +107,8 @@ describe( 'DocumentFragment', () => {
 
 		describe( 'insertion', () => {
 			it( 'should insert children', () => {
-				const count1 = fragment.insertChildren( 0, [ el1, el3 ] );
-				const count2 = fragment.insertChildren( 1, el2 );
+				const count1 = fragment._insertChildren( 0, [ el1, el3 ] );
+				const count2 = fragment._insertChildren( 1, el2 );
 
 				expect( fragment.childCount ).to.equal( 3 );
 				expect( fragment.getChild( 0 ) ).to.have.property( 'name' ).that.equals( 'el1' );
@@ -117,22 +119,22 @@ describe( 'DocumentFragment', () => {
 			} );
 
 			it( 'should accept strings', () => {
-				fragment.insertChildren( 0, 'abc' );
+				fragment._insertChildren( 0, 'abc' );
 
 				expect( fragment.childCount ).to.equal( 1 );
 				expect( fragment.getChild( 0 ) ).to.have.property( 'data' ).that.equals( 'abc' );
 
-				fragment.removeChildren( 0, 1 );
-				fragment.insertChildren( 0, [ new Element( 'p' ), 'abc' ] );
+				fragment._removeChildren( 0, 1 );
+				fragment._insertChildren( 0, [ new Element( 'p' ), 'abc' ] );
 
 				expect( fragment.childCount ).to.equal( 2 );
 				expect( fragment.getChild( 1 ) ).to.have.property( 'data' ).that.equals( 'abc' );
 			} );
 
 			it( 'should append children', () => {
-				const count1 = fragment.insertChildren( 0, el1 );
-				const count2 = fragment.appendChildren( el2 );
-				const count3 = fragment.appendChildren( el3 );
+				const count1 = fragment._insertChildren( 0, el1 );
+				const count2 = fragment._appendChildren( el2 );
+				const count3 = fragment._appendChildren( el3 );
 
 				expect( fragment.childCount ).to.equal( 3 );
 				expect( fragment.getChild( 0 ) ).to.have.property( 'name' ).that.equals( 'el1' );
@@ -149,7 +151,7 @@ describe( 'DocumentFragment', () => {
 					done();
 				} );
 
-				fragment.insertChildren( 0, el1 );
+				fragment._insertChildren( 0, el1 );
 			} );
 
 			it( 'should fire change event when appending', done => {
@@ -158,15 +160,27 @@ describe( 'DocumentFragment', () => {
 					done();
 				} );
 
-				fragment.appendChildren( el1 );
+				fragment._appendChildren( el1 );
+			} );
+
+			it( 'should accept and correctly handle text proxies', () => {
+				const frag = new DocumentFragment();
+				const text = new Text( 'abcxyz' );
+				const textProxy = new TextProxy( text, 2, 3 );
+
+				frag._insertChildren( 0, textProxy );
+
+				expect( frag.childCount ).to.equal( 1 );
+				expect( frag.getChild( 0 ) ).to.be.instanceof( Text );
+				expect( frag.getChild( 0 ).data ).to.equal( 'cxy' );
 			} );
 		} );
 
 		describe( 'getChildIndex', () => {
 			it( 'should return child index', () => {
-				fragment.appendChildren( el1 );
-				fragment.appendChildren( el2 );
-				fragment.appendChildren( el3 );
+				fragment._appendChildren( el1 );
+				fragment._appendChildren( el2 );
+				fragment._appendChildren( el3 );
 
 				expect( fragment.childCount ).to.equal( 3 );
 				expect( fragment.getChildIndex( el1 ) ).to.equal( 0 );
@@ -177,9 +191,9 @@ describe( 'DocumentFragment', () => {
 
 		describe( 'getChildren', () => {
 			it( 'should renturn children iterator', () => {
-				fragment.appendChildren( el1 );
-				fragment.appendChildren( el2 );
-				fragment.appendChildren( el3 );
+				fragment._appendChildren( el1 );
+				fragment._appendChildren( el2 );
+				fragment._appendChildren( el3 );
 
 				const expected = [ el1, el2, el3 ];
 				let i = 0;
@@ -193,14 +207,14 @@ describe( 'DocumentFragment', () => {
 			} );
 		} );
 
-		describe( 'removeChildren', () => {
+		describe( '_removeChildren', () => {
 			it( 'should remove children', () => {
-				fragment.appendChildren( el1 );
-				fragment.appendChildren( el2 );
-				fragment.appendChildren( el3 );
-				fragment.appendChildren( el4 );
+				fragment._appendChildren( el1 );
+				fragment._appendChildren( el2 );
+				fragment._appendChildren( el3 );
+				fragment._appendChildren( el4 );
 
-				fragment.removeChildren( 1, 2 );
+				fragment._removeChildren( 1, 2 );
 
 				expect( fragment.childCount ).to.equal( 2 );
 				expect( fragment.getChild( 0 ) ).to.have.property( 'name' ).that.equals( 'el1' );
@@ -213,11 +227,11 @@ describe( 'DocumentFragment', () => {
 			} );
 
 			it( 'should remove one child when second parameter is not specified', () => {
-				fragment.appendChildren( el1 );
-				fragment.appendChildren( el2 );
-				fragment.appendChildren( el3 );
+				fragment._appendChildren( el1 );
+				fragment._appendChildren( el2 );
+				fragment._appendChildren( el3 );
 
-				const removed = fragment.removeChildren( 1 );
+				const removed = fragment._removeChildren( 1 );
 
 				expect( fragment.childCount ).to.equal( 2 );
 				expect( fragment.getChild( 0 ) ).to.have.property( 'name' ).that.equals( 'el1' );
@@ -228,14 +242,14 @@ describe( 'DocumentFragment', () => {
 			} );
 
 			it( 'should fire change event', done => {
-				fragment.appendChildren( el1 );
+				fragment._appendChildren( el1 );
 
 				fragment.once( 'change:children', ( event, node ) => {
 					expect( node ).to.equal( fragment );
 					done();
 				} );
 
-				fragment.removeChildren( 0 );
+				fragment._removeChildren( 0 );
 			} );
 		} );
 	} );
@@ -277,14 +291,14 @@ describe( 'DocumentFragment', () => {
 			expect( node3.previousSibling ).to.equal( node2 );
 		} );
 
-		it( 'remove() should remove node from fragment', () => {
+		it( '_remove() should remove node from fragment', () => {
 			const node1 = new Node();
 			const node2 = new Node();
 			const node3 = new Node();
 			const fragment = new DocumentFragment( [ node1, node2, node3 ] );
 
-			node1.remove();
-			node3.remove();
+			node1._remove();
+			node3._remove();
 
 			expect( fragment.childCount ).to.equal( 1 );
 			expect( node1.parent ).to.be.null;

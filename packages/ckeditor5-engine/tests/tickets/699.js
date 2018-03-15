@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -8,8 +8,13 @@
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
-import buildViewConverter from '../../src/conversion/buildviewconverter';
-import buildModelConverter from '../../src/conversion/buildmodelconverter';
+import {
+	upcastElementToElement
+} from '../../src/conversion/upcast-converters';
+
+import {
+	downcastElementToElement
+} from '../../src/conversion/downcast-converters';
 
 import { getData as getModelData } from '../../src/dev-utils/model';
 import { getData as getViewData } from '../../src/dev-utils/view';
@@ -33,7 +38,7 @@ describe( 'Bug ckeditor5-engine#699', () => {
 			.then( editor => {
 				editor.setData( '<widget></widget><p>foo</p>' );
 
-				expect( getModelData( editor.document ) ).to.equal( '[<widget></widget>]<paragraph>foo</paragraph>' );
+				expect( getModelData( editor.model ) ).to.equal( '[<widget></widget>]<paragraph>foo</paragraph>' );
 				expect( getViewData( editor.editing.view ) ).to.equal( '[<widget></widget>]<p>foo</p>' );
 
 				return editor.destroy();
@@ -42,17 +47,20 @@ describe( 'Bug ckeditor5-engine#699', () => {
 } );
 
 function WidgetPlugin( editor ) {
-	const schema = editor.document.schema;
+	const schema = editor.model.schema;
 
-	schema.registerItem( 'widget' );
-	schema.allow( { name: 'widget', inside: '$root' } );
-	schema.objects.add( 'widget' );
+	schema.register( 'widget', {
+		isObject: true
+	} );
+	schema.extend( 'widget', { allowIn: '$root' } );
 
-	buildModelConverter().for( editor.data.modelToView, editor.editing.modelToView )
-		.fromElement( 'widget' )
-		.toElement( 'widget' );
+	editor.conversion.for( 'downcast' ).add( downcastElementToElement( {
+		model: 'widget',
+		view: 'widget'
+	} ) );
 
-	buildViewConverter().for( editor.data.viewToModel )
-		.fromElement( 'widget' )
-		.toElement( 'widget' );
+	editor.conversion.for( 'upcast' ).add( upcastElementToElement( {
+		model: 'widget',
+		view: 'widget'
+	} ) );
 }

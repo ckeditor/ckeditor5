@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -28,7 +28,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  * parameter of methods.
  *
  * **Note:** `TextProxy` is a readonly interface. If you want to perform changes on model data represented by a `TextProxy`
- * use {@link module:engine/model/writer~writer model writer API}.
+ * use {@link module:engine/model/writer~Writer model writer API}.
  *
  * **Note:** `TextProxy` instances are created on the fly, basing on the current state of model. Because of this, it is
  * highly unrecommended to store references to `TextProxy` instances. `TextProxy` instances are not refreshed when
@@ -256,7 +256,7 @@ export default class TextProxy {
 	/**
 	 * Returns iterator that iterates over this node's attribute keys.
 	 *
-	 * @returns {Iterator.<String>}
+	 * @returns {Iterable.<String>}
 	 */
 	getAttributeKeys() {
 		return this.textNode.getAttributeKeys();

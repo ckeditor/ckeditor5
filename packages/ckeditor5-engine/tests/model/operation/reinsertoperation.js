@@ -1,22 +1,25 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
-import Document from '../../../src/model/document';
+import Model from '../../../src/model/model';
 import ReinsertOperation from '../../../src/model/operation/reinsertoperation';
 import RemoveOperation from '../../../src/model/operation/removeoperation';
 import MoveOperation from '../../../src/model/operation/moveoperation';
 import Position from '../../../src/model/position';
+import DocumentFragment from '../../../src/model/documentfragment';
 import Element from '../../../src/model/element';
 import Text from '../../../src/model/text';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { jsonParseStringify, wrapInDelta } from '../../../tests/model/_utils/utils';
 
 describe( 'ReinsertOperation', () => {
-	let doc, root, graveyard, operation, graveyardPosition, rootPosition;
+	let model, doc, root, graveyard, operation, graveyardPosition, rootPosition;
 
 	beforeEach( () => {
-		doc = new Document();
+		model = new Model();
+		doc = model.document;
 		root = doc.createRoot();
 		graveyard = doc.graveyard;
 
@@ -62,7 +65,7 @@ describe( 'ReinsertOperation', () => {
 	} );
 
 	it( 'should create RemoveOperation as a reverse', () => {
-		graveyard.appendChildren( new Element( 'x' ) );
+		graveyard._appendChildren( new Element( 'x' ) );
 
 		const reverse = operation.getReversed();
 
@@ -84,19 +87,53 @@ describe( 'ReinsertOperation', () => {
 	it( 'should undo reinsert set of nodes by applying reverse operation', () => {
 		const reverse = operation.getReversed();
 
-		graveyard.insertChildren( 0, new Text( 'xx' ) );
+		graveyard._insertChildren( 0, new Text( 'xx' ) );
 
-		doc.applyOperation( wrapInDelta( operation ) );
+		model.applyOperation( wrapInDelta( operation ) );
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.maxOffset ).to.equal( 2 );
 		expect( graveyard.maxOffset ).to.equal( 0 );
 
-		doc.applyOperation( wrapInDelta( reverse ) );
+		model.applyOperation( wrapInDelta( reverse ) );
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.maxOffset ).to.equal( 0 );
 		expect( graveyard.maxOffset ).to.equal( 2 );
+	} );
+
+	describe( '_validate()', () => {
+		it( 'should throw when target position is not in the document', () => {
+			const docFrag = new DocumentFragment();
+
+			graveyard._insertChildren( 0, new Text( 'xx' ) );
+
+			operation = new ReinsertOperation(
+				graveyardPosition,
+				1,
+				Position.createAt( docFrag ),
+				doc.version
+			);
+
+			expect( () => {
+				operation._validate();
+			} ).to.throw( CKEditorError, /^reinsert-operation-to-detached-parent/ );
+		} );
+
+		it( 'should throw when source position is not in the document', () => {
+			const docFrag = new DocumentFragment( new Text( 'xx' ) );
+
+			operation = new ReinsertOperation(
+				Position.createAt( docFrag ),
+				1,
+				rootPosition,
+				doc.version
+			);
+
+			expect( () => {
+				operation._validate();
+			} ).to.throw( CKEditorError, /^reinsert-operation-on-detached-item/ );
+		} );
 	} );
 
 	describe( 'toJSON', () => {

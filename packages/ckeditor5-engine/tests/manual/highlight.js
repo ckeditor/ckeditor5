@@ -1,9 +1,21 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
 /* global console, window, document */
+
+import ModelRange from '../../src/model/range';
+import ViewPosition from '../../src/view/position';
+
+import {
+	upcastElementToElement,
+} from '../../src/conversion/upcast-converters';
+
+import {
+	downcastElementToElement,
+	downcastMarkerToHighlight
+} from '../../src/conversion/downcast-converters';
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
@@ -15,12 +27,6 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import List from '@ckeditor/ckeditor5-list/src/list';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
-import buildModelConverter from '../../src/conversion/buildmodelconverter';
-import buildViewConverter from '../../src/conversion/buildviewconverter';
-import ModelRange from '../../src/model/range';
-import ModelElement from '../../src/model/element';
-import ViewContainerElement from '../../src/view/containerelement';
-import ViewText from '../../src/view/text';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
@@ -32,43 +38,46 @@ class FancyWidget extends Plugin {
 
 	init() {
 		const editor = this.editor;
-		const doc = editor.document;
-		const schema = doc.schema;
-		const data = editor.data;
-		const editing = editor.editing;
+		const schema = editor.model.schema;
+		const conversion = editor.conversion;
 
 		// Configure schema.
-		schema.registerItem( 'fancywidget' );
-		schema.allow( { name: 'fancywidget', inside: '$root' } );
-		schema.objects.add( 'fancywidget' );
+		schema.register( 'fancywidget', {
+			isObject: true
+		} );
+		schema.extend( 'fancywidget', { allowIn: '$root' } );
 
-		// Build converter from model to view for editing pipeline.
-		buildModelConverter().for( editing.modelToView )
-			.fromElement( 'fancywidget' )
-			.toElement( () => {
-				const widgetElement = new ViewContainerElement( 'figure', { class: 'fancy-widget' }, new ViewText( 'widget' ) );
+		conversion.for( 'editingDowncast' ).add( downcastElementToElement( {
+			model: 'fancywidget',
+			view: ( modelItem, viewWriter ) => {
+				const widgetElement = viewWriter.createContainerElement( 'figure', { class: 'fancy-widget' } );
+				viewWriter.insert( ViewPosition.createAt( widgetElement ), viewWriter.createText( 'widget' ) );
 
-				return toWidget( widgetElement );
-			} );
+				return toWidget( widgetElement, viewWriter );
+			}
+		} ) );
 
-		// Build converter from view element to model element for data pipeline.
-		buildViewConverter().for( data.viewToModel )
-			.fromElement( 'figure' )
-			.toElement( () => new ModelElement( 'fancywidget' ) );
+		conversion.for( 'upcast' )
+			.add( upcastElementToElement( {
+				view: 'figure',
+				model: 'fancywidget'
+			} ) );
 	}
 }
 
 ClassicEditor.create( global.document.querySelector( '#editor' ), {
 	plugins: [ Enter, Typing, Paragraph, Undo, Heading, Bold, Italic, List, FancyWidget ],
-	toolbar: [ 'headings', 'undo', 'redo', 'bold', 'italic', 'numberedList', 'bulletedList' ]
+	toolbar: [ 'heading', '|', 'undo', 'redo', 'bold', 'italic', 'numberedList', 'bulletedList' ]
 } )
 	.then( editor => {
 		window.editor = editor;
 
-		buildModelConverter()
-			.for( editor.editing.modelToView )
-			.fromMarker( 'marker' )
-			.toHighlight( data => ( { class: 'highlight-' + data.markerName.split( ':' )[ 1 ] } ) );
+		editor.conversion.for( 'editingDowncast' ).add( downcastMarkerToHighlight( {
+			model: 'marker',
+			view: data => ( {
+				class: 'highlight-' + data.markerName.split( ':' )[ 1 ]
+			} )
+		} ) );
 
 		document.getElementById( 'add-marker-yellow' ).addEventListener( 'mousedown', evt => {
 			addMarker( editor, 'yellow' );
@@ -101,11 +110,11 @@ ClassicEditor.create( global.document.querySelector( '#editor' ), {
 		} );
 
 		document.getElementById( 'remove-markers' ).addEventListener( 'mousedown', evt => {
-			const markers = editor.document.markers;
+			const markers = editor.model.markers;
 
-			editor.document.enqueueChanges( () => {
+			editor.model.change( writer => {
 				for ( const marker of markers ) {
-					markers.remove( marker );
+					writer.removeMarker( marker );
 				}
 			} );
 
@@ -117,18 +126,14 @@ ClassicEditor.create( global.document.querySelector( '#editor' ), {
 	} );
 
 function addMarker( editor, color ) {
-	const model = editor.document;
-
-	editor.document.enqueueChanges( () => {
-		const range = ModelRange.createFromRange( model.selection.getFirstRange() );
-		model.markers.set( 'marker:' + color, range );
+	editor.model.change( writer => {
+		const range = ModelRange.createFromRange( editor.model.document.selection.getFirstRange() );
+		writer.setMarker( 'marker:' + color, range );
 	} );
 }
 
 function removeMarker( editor, color ) {
-	const model = editor.document;
-
-	editor.document.enqueueChanges( () => {
-		model.markers.remove( 'marker:' + color );
+	editor.model.change( writer => {
+		writer.removeMarker( 'marker:' + color );
 	} );
 }

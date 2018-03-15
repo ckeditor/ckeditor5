@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -24,6 +24,20 @@ describe( 'Operation', () => {
 		const parsedOutside = jsonParseStringify( opOutsideDelta );
 
 		expect( parsedOutside.delta ).to.be.undefined;
+	} );
+
+	describe( 'isDocumentOperation', () => {
+		it( 'operation is a document operation if it has base version set', () => {
+			const op = new Operation( 0 );
+
+			expect( op.isDocumentOperation ).to.be.true;
+		} );
+
+		it( 'operation is not a document operation if base version is null', () => {
+			const op = new Operation( null );
+
+			expect( op.isDocumentOperation ).to.be.false;
+		} );
 	} );
 
 	describe( 'toJSON', () => {

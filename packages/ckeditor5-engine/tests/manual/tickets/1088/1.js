@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -11,21 +11,60 @@ import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articleplugi
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ ArticlePluginSet ],
-		toolbar: [ 'headings', 'undo', 'redo' ],
+		toolbar: {
+			items: [
+				'heading',
+				'bold',
+				'italic',
+				'link',
+				'bulletedList',
+				'numberedList',
+				'blockQuote',
+				'undo',
+				'redo'
+			]
+		},
 		image: {
-			toolbar: [ 'imageTextAlternative' ]
+			toolbar: [
+				'imageStyle:full',
+				'imageStyle:side',
+				'|',
+				'imageTextAlternative'
+			]
 		}
 	} )
 	.then( editor => {
 		window.editor = editor;
 
-		const schema = editor.document.schema;
+		const schema = editor.model.schema;
 
-		schema.disallow( { name: '$text', attributes: [ 'linkHref', 'italic' ], inside: 'heading1' } );
-		schema.disallow( { name: '$text', attributes: [ 'italic' ], inside: 'heading2' } );
-		schema.disallow( { name: '$text', attributes: [ 'linkHref' ], inside: 'blockQuote listItem' } );
-		schema.disallow( { name: '$text', attributes: [ 'bold' ], inside: 'paragraph' } );
-		schema.disallow( { name: 'heading3', inside: '$root' } );
+		schema.addAttributeCheck( ( ctx, attributeName ) => {
+			if ( ctx.endsWith( 'heading1 $text' ) && [ 'linkHref', 'italic' ].includes( attributeName ) ) {
+				return false;
+			}
+
+			if ( ctx.endsWith( 'heading2 $text' ) && attributeName == 'italic' ) {
+				return false;
+			}
+
+			if ( ctx.endsWith( 'heading2 $text' ) && attributeName == 'italic' ) {
+				return false;
+			}
+
+			if ( ctx.endsWith( 'blockQuote listItem $text' ) && attributeName == 'linkHref' ) {
+				return false;
+			}
+
+			if ( ctx.endsWith( 'paragraph $text' ) && attributeName == 'bold' ) {
+				return false;
+			}
+		} );
+
+		schema.addChildCheck( ( ctx, childDef ) => {
+			if ( ctx.endsWith( '$root' ) && childDef.name == 'heading3' ) {
+				return false;
+			}
+		} );
 	} )
 	.catch( err => {
 		console.error( err.stack );

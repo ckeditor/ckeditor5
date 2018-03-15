@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -17,16 +17,17 @@ import { attachPlaceholder } from '../../src/view/placeholder';
 ClassicEditor
 	.create( global.document.querySelector( '#editor' ), {
 		plugins: [ Enter, Typing, Paragraph, Undo, Heading ],
-		toolbar: [ 'headings', 'undo', 'redo' ]
+		toolbar: [ 'heading', '|', 'undo', 'redo' ]
 	} )
 	.then( editor => {
-		const viewDoc = editor.editing.view;
+		const view = editor.editing.view;
+		const viewDoc = view.document;
 		const header = viewDoc.getRoot().getChild( 0 );
 		const paragraph = viewDoc.getRoot().getChild( 1 );
 
-		attachPlaceholder( header, 'Type some header text...' );
-		attachPlaceholder( paragraph, 'Type some paragraph text...' );
-		viewDoc.render();
+		attachPlaceholder( view, header, 'Type some header text...' );
+		attachPlaceholder( view, paragraph, 'Type some paragraph text...' );
+		view.render();
 	} )
 	.catch( err => {
 		console.error( err.stack );

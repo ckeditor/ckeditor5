@@ -1,28 +1,30 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
 /* globals console, document */
 
-import Document from '../../../src/view/document';
+import View from '../../../src/view/view';
 import { setData } from '../../../src/dev-utils/view';
+import createViewRoot from '../_utils/createroot';
 
-const viewDocument = new Document();
-viewDocument.createRoot( document.getElementById( 'editor' ) );
+const view = new View();
+const viewDocument = view.document;
+createViewRoot( viewDocument );
+view.attachDomRoot( document.getElementById( 'editor' ) );
 
-viewDocument.isFocused = true;
-
-setData( viewDocument,
+setData( view,
 	'<container:p>fo{}o</container:p>' +
 	'<container:p></container:p>' +
 	'<container:p><attribute:strong></attribute:strong></container:p>' +
 	'<container:p>bar</container:p>' );
 
+view.focus();
+
 viewDocument.on( 'selectionChange', ( evt, data ) => {
 	const node = data.newSelection.getFirstPosition().parent;
 	console.log( node.name ? node.name : node._data );
-	viewDocument.selection.setTo( data.newSelection );
-} );
 
-viewDocument.render();
+	view.change( writer => writer.setSelection( data.newSelection ) );
+} );

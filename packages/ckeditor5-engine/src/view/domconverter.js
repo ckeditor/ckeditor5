@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -7,7 +7,7 @@
  * @module engine/view/domconverter
  */
 
-/* globals document, Node, NodeFilter */
+/* globals document, Node, NodeFilter, Text */
 
 import ViewText from './text';
 import ViewElement from './element';
@@ -22,6 +22,7 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import indexOf from '@ckeditor/ckeditor5-utils/src/dom/indexof';
 import getAncestors from '@ckeditor/ckeditor5-utils/src/dom/getancestors';
 import getCommonAncestor from '@ckeditor/ckeditor5-utils/src/dom/getcommonancestor';
+import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
 
 /**
  * DomConverter is a set of tools to do transformations between DOM nodes and view nodes. It also handles
@@ -63,6 +64,7 @@ export default class DomConverter {
 		/**
 		 * Tag names of DOM `Element`s which are considered pre-formatted elements.
 		 *
+		 * @readonly
 		 * @member {Array.<String>} module:engine/view/domconverter~DomConverter#preElements
 		 */
 		this.preElements = [ 'pre' ];
@@ -70,6 +72,7 @@ export default class DomConverter {
 		/**
 		 * Tag names of DOM `Element`s which are considered block elements.
 		 *
+		 * @readonly
 		 * @member {Array.<String>} module:engine/view/domconverter~DomConverter#blockElements
 		 */
 		this.blockElements = [ 'p', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6' ];
@@ -108,7 +111,7 @@ export default class DomConverter {
 	 * @param {module:engine/view/selection~Selection} viewSelection
 	 */
 	bindFakeSelection( domElement, viewSelection ) {
-		this._fakeSelectionMapping.set( domElement, ViewSelection.createFromSelection( viewSelection ) );
+		this._fakeSelectionMapping.set( domElement, new ViewSelection( viewSelection ) );
 	}
 
 	/**
@@ -339,7 +342,7 @@ export default class DomConverter {
 
 			// If there is an inline filler at position return position inside the filler. We should never return
 			// the position before the inline filler.
-			if ( this.isText( domAfter ) && startsWithFiller( domAfter ) ) {
+			if ( isText( domAfter ) && startsWithFiller( domAfter ) ) {
 				return { parent: domAfter, offset: INLINE_FILLER_LENGTH };
 			}
 
@@ -375,7 +378,7 @@ export default class DomConverter {
 			return uiElement;
 		}
 
-		if ( this.isText( domNode ) ) {
+		if ( isText( domNode ) ) {
 			if ( isInlineFiller( domNode ) ) {
 				return null;
 			} else {
@@ -412,13 +415,13 @@ export default class DomConverter {
 				const attrs = domNode.attributes;
 
 				for ( let i = attrs.length - 1; i >= 0; i-- ) {
-					viewElement.setAttribute( attrs[ i ].name, attrs[ i ].value );
+					viewElement._setAttribute( attrs[ i ].name, attrs[ i ].value );
 				}
 			}
 
 			if ( options.withChildren || options.withChildren === undefined ) {
 				for ( const child of this.domChildrenToView( domNode, options ) ) {
-					viewElement.appendChildren( child );
+					viewElement._appendChildren( child );
 				}
 			}
 
@@ -460,7 +463,7 @@ export default class DomConverter {
 			let container = domSelection.getRangeAt( 0 ).startContainer;
 
 			// The DOM selection might be moved to the text node inside the fake selection container.
-			if ( this.isText( container ) ) {
+			if ( isText( container ) ) {
 				container = container.parentNode;
 			}
 
@@ -471,8 +474,9 @@ export default class DomConverter {
 			}
 		}
 
-		const viewSelection = new ViewSelection();
 		const isBackward = this.isDomSelectionBackward( domSelection );
+
+		const viewRanges = [];
 
 		for ( let i = 0; i < domSelection.rangeCount; i++ ) {
 			// DOM Range have correct start and end, no matter what is the DOM Selection direction. So we don't have to fix anything.
@@ -480,11 +484,11 @@ export default class DomConverter {
 			const viewRange = this.domRangeToView( domRange );
 
 			if ( viewRange ) {
-				viewSelection.addRange( viewRange, isBackward );
+				viewRanges.push( viewRange );
 			}
 		}
 
-		return viewSelection;
+		return new ViewSelection( viewRanges, { backward: isBackward } );
 	}
 
 	/**
@@ -532,7 +536,7 @@ export default class DomConverter {
 			return ViewPosition.createBefore( viewElement );
 		}
 
-		if ( this.isText( domParent ) ) {
+		if ( isText( domParent ) ) {
 			if ( isInlineFiller( domParent ) ) {
 				return this.domPositionToView( domParent.parentNode, indexOf( domParent ) );
 			}
@@ -561,7 +565,7 @@ export default class DomConverter {
 				}
 			} else {
 				const domBefore = domParent.childNodes[ domOffset - 1 ];
-				const viewBefore = this.isText( domBefore ) ?
+				const viewBefore = isText( domBefore ) ?
 					this.findCorrespondingViewText( domBefore ) :
 					this.mapDomToView( domBefore );
 
@@ -749,16 +753,6 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Returns `true` when `node.nodeType` equals `Node.TEXT_NODE`.
-	 *
-	 * @param {Node} node Node to check.
-	 * @returns {Boolean}
-	 */
-	isText( node ) {
-		return node && node.nodeType == Node.TEXT_NODE;
-	}
-
-	/**
 	 * Returns `true` when `node.nodeType` equals `Node.ELEMENT_NODE`.
 	 *
 	 * @param {Node} node Node to check.
@@ -863,7 +857,7 @@ export default class DomConverter {
 	 */
 	_isDomSelectionPositionCorrect( domParent, offset ) {
 		// If selection is before or in the middle of inline filler string, it is incorrect.
-		if ( this.isText( domParent ) && startsWithFiller( domParent ) && offset < INLINE_FILLER_LENGTH ) {
+		if ( isText( domParent ) && startsWithFiller( domParent ) && offset < INLINE_FILLER_LENGTH ) {
 			// Selection in a text node, at wrong position (before or in the middle of filler).
 			return false;
 		}
@@ -964,10 +958,10 @@ export default class DomConverter {
 	 * @private
 	 */
 	_processDataFromDomText( node ) {
-		let data = getDataWithoutFiller( node );
+		let data = node.data;
 
 		if ( _hasDomParentOfType( node, this.preElements ) ) {
-			return data;
+			return getDataWithoutFiller( node );
 		}
 
 		// Change all consecutive whitespace characters (from the [ \n\t\r] set –
@@ -986,9 +980,16 @@ export default class DomConverter {
 		}
 
 		// If next text node does not exist remove space character from the end of this text node.
-		if ( !nextNode ) {
+		if ( !nextNode && !startsWithFiller( node ) ) {
 			data = data.replace( / $/, '' );
 		}
+
+		// At the beginning and end of a block element, Firefox inserts normal space + <br> instead of non-breaking space.
+		// This means that the text node starts/end with normal space instead of non-breaking space.
+		// This causes a problem because the normal space would be removed in `.replace` calls above. To prevent that,
+		// the inline filler is removed only after the data is initially processed (by the `.replace` above). See ckeditor5#692.
+		data = getDataWithoutFiller( new Text( data ) );
+
 		// At this point we should have removed all whitespaces from DOM text data.
 
 		// Now we have to change &nbsp; chars, that were in DOM text data because of rendering reasons, to spaces.
@@ -1036,7 +1037,7 @@ export default class DomConverter {
 				// ViewContainerElement is found on a way to next ViewText node, so given `node` was first/last
 				// text node in its container element.
 				return null;
-			} else if ( value.item.is( 'text' ) ) {
+			} else if ( value.item.is( 'textProxy' ) ) {
 				// Found a text node in the same container element.
 				return value.item;
 			}
@@ -1061,7 +1062,9 @@ export default class DomConverter {
 
 		const direction = getNext ? 'nextNode' : 'previousNode';
 		const document = node.ownerDocument;
-		const treeWalker = document.createTreeWalker( document.childNodes[ 0 ], NodeFilter.SHOW_TEXT );
+		const topmostParent = getAncestors( node )[ 0 ];
+
+		const treeWalker = document.createTreeWalker( topmostParent, NodeFilter.SHOW_TEXT );
 
 		treeWalker.currentNode = node;
 

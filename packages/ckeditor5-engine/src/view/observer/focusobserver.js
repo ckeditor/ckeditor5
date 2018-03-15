@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -17,16 +17,17 @@ import DomEventObserver from './domeventobserver';
  * Focus observer handle also {@link module:engine/view/rooteditableelement~RootEditableElement#isFocused isFocused} property of the
  * {@link module:engine/view/rooteditableelement~RootEditableElement root elements}.
  *
- * Note that this observer is attached by the {@link module:engine/view/document~Document} and is available by default.
+ * Note that this observer is attached by the {@link module:engine/view/view~View} and is available by default.
  *
  * @extends module:engine/view/observer/domeventobserver~DomEventObserver
  */
 export default class FocusObserver extends DomEventObserver {
-	constructor( document ) {
-		super( document );
+	constructor( view ) {
+		super( view );
 
 		this.domEventType = [ 'focus', 'blur' ];
 		this.useCapture = true;
+		const document = this.document;
 
 		document.on( 'focus', () => {
 			document.isFocused = true;
@@ -35,7 +36,8 @@ export default class FocusObserver extends DomEventObserver {
 			// We need to wait until `SelectionObserver` handle the event and then render. Otherwise rendering will
 			// overwrite new DOM selection with selection from the view.
 			// See https://github.com/ckeditor/ckeditor5-engine/issues/795 for more details.
-			this._renderTimeoutId = setTimeout( () => document.render(), 0 );
+			// Long timeout is needed to solve #676 and https://github.com/ckeditor/ckeditor5-engine/issues/1157 issues.
+			this._renderTimeoutId = setTimeout( () => view.render(), 50 );
 		} );
 
 		document.on( 'blur', ( evt, data ) => {
@@ -45,7 +47,7 @@ export default class FocusObserver extends DomEventObserver {
 				document.isFocused = false;
 
 				// Re-render the document to update view elements.
-				document.render();
+				view.render();
 			}
 		} );
 
@@ -79,8 +81,7 @@ export default class FocusObserver extends DomEventObserver {
  * Introduced by {@link module:engine/view/observer/focusobserver~FocusObserver}.
  *
  * Note that because {@link module:engine/view/observer/focusobserver~FocusObserver} is attached by the
- * {@link module:engine/view/document~Document}
- * this event is available by default.
+ * {@link module:engine/view/view~View} this event is available by default.
  *
  * @see module:engine/view/observer/focusobserver~FocusObserver
  * @event module:engine/view/document~Document#event:focus
@@ -93,8 +94,7 @@ export default class FocusObserver extends DomEventObserver {
  * Introduced by {@link module:engine/view/observer/focusobserver~FocusObserver}.
  *
  * Note that because {@link module:engine/view/observer/focusobserver~FocusObserver} is attached by the
- * {@link module:engine/view/document~Document}
- * this event is available by default.
+ * {@link module:engine/view/view~View} this event is available by default.
  *
  * @see module:engine/view/observer/focusobserver~FocusObserver
  * @event module:engine/view/document~Document#event:blur

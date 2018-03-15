@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -12,7 +12,7 @@ import Position from '../position';
 import Range from '../range';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
-import writer from './../writer';
+import { _move } from './utils';
 
 /**
  * Operation to move a range of {@link module:engine/model/item~Item model items}
@@ -29,7 +29,8 @@ export default class MoveOperation extends Operation {
 	 * @param {Number} howMany Offset size of moved range. Moved range will start from `sourcePosition` and end at
 	 * `sourcePosition` with offset shifted by `howMany`.
 	 * @param {module:engine/model/position~Position} targetPosition Position at which moved nodes will be inserted.
-	 * @param {Number} baseVersion {@link module:engine/model/document~Document#version} on which operation can be applied.
+	 * @param {Number|null} baseVersion Document {@link module:engine/model/document~Document#version} on which operation
+	 * can be applied or `null` if the operation operates on detached (non-document) tree.
 	 */
 	constructor( sourcePosition, howMany, targetPosition, baseVersion ) {
 		super( baseVersion );
@@ -120,7 +121,7 @@ export default class MoveOperation extends Operation {
 	/**
 	 * @inheritDoc
 	 */
-	_execute() {
+	_validate() {
 		const sourceElement = this.sourcePosition.parent;
 		const targetElement = this.targetPosition.parent;
 		const sourceOffset = this.sourcePosition.offset;
@@ -172,13 +173,13 @@ export default class MoveOperation extends Operation {
 				}
 			}
 		}
+	}
 
-		const range = writer.move( Range.createFromPositionAndShift( this.sourcePosition, this.howMany ), this.targetPosition );
-
-		return {
-			sourcePosition: this.sourcePosition,
-			range
-		};
+	/**
+	 * @inheritDoc
+	 */
+	_execute() {
+		_move( Range.createFromPositionAndShift( this.sourcePosition, this.howMany ), this.targetPosition );
 	}
 
 	/**

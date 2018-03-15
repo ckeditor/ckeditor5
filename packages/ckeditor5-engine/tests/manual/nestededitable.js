@@ -1,9 +1,20 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
 /* global console */
+
+import {
+	upcastElementToElement
+} from '../../src/conversion/upcast-converters';
+
+import {
+	downcastElementToElement
+} from '../../src/conversion/downcast-converters';
+
+import { getData } from '../../src/dev-utils/model';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -11,61 +22,62 @@ import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
-import buildModelConverter from '../../src/conversion/buildmodelconverter';
-import buildViewConverter from '../../src/conversion/buildviewconverter';
-import ViewContainerElement from '../../src/view/containerelement';
-import ViewEditableElement from '../../src/view/editableelement';
-import { getData } from '../../src/dev-utils/model';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
-import './nestededitable.scss';
+import './nestededitable.css';
 
 class NestedEditable extends Plugin {
 	init() {
 		const editor = this.editor;
-		const document = editor.document;
 		const editing = editor.editing;
-		const viewDocument = editing.view;
-		const data = editor.data;
-		const schema = document.schema;
+		const schema = editor.model.schema;
 
-		schema.registerItem( 'figure' );
-		schema.registerItem( 'figcaption' );
-		schema.allow( { name: 'figure', inside: '$root' } );
-		schema.allow( { name: 'figcaption', inside: 'figure' } );
-		schema.objects.add( 'figure' );
+		schema.register( 'figure', {
+			isObject: true
+		} );
+		schema.register( 'figcaption' );
+		schema.extend( 'figure', { allowIn: '$root' } );
+		schema.extend( 'figcaption', { allowIn: 'figure' } );
+		schema.extend( '$text', {
+			allowIn: [ 'figure', 'figcaption' ]
+		} );
 
-		schema.allow( { name: '$inline', inside: 'figure' } );
-		schema.allow( { name: '$inline', inside: 'figcaption' } );
+		editor.conversion.for( 'downcast' ).add( downcastElementToElement( {
+			model: 'figure',
+			view: {
+				name: 'figure',
+				attribute: {
+					contenteditable: 'false'
+				}
+			}
+		} ) );
 
-		buildModelConverter().for( data.modelToView, editing.modelToView )
-			.fromElement( 'figure' )
-			.toElement( () => new ViewContainerElement( 'figure', { contenteditable: 'false' } ) );
+		editor.conversion.for( 'upcast' ).add( upcastElementToElement( {
+			model: 'figure',
+			view: 'figure'
+		} ) );
 
-		buildViewConverter().for( data.viewToModel )
-			.fromElement( 'figure' )
-			.toElement( 'figure' );
-
-		buildModelConverter().for( data.modelToView, editing.modelToView )
-			.fromElement( 'figcaption' )
-			.toElement( () => {
-				const element = new ViewEditableElement( 'figcaption', { contenteditable: 'true' } );
-				element.document = viewDocument;
+		editor.conversion.for( 'downcast' ).add( downcastElementToElement( {
+			model: 'figcaption',
+			view: ( modelItem, conversionApi ) => {
+				const viewWriter = conversionApi.writer;
+				const element = viewWriter.createEditableElement( 'figcaption', { contenteditable: 'true' } );
 
 				element.on( 'change:isFocused', ( evt, property, is ) => {
 					if ( is ) {
-						element.addClass( 'focused' );
+						editing.view.change( writer => writer.addClass( 'focused', element ) );
 					} else {
-						element.removeClass( 'focused' );
+						editing.view.change( writer => writer.removeClass( 'focused', element ) );
 					}
 				} );
 
 				return element;
-			} );
+			}
+		} ) );
 
-		buildViewConverter().for( data.viewToModel )
-			.fromElement( 'figcaption' )
-			.toElement( 'figcaption' );
+		editor.conversion.for( 'upcast' ).add( upcastElementToElement( {
+			model: 'figcaption',
+			view: 'figcaption'
+		} ) );
 	}
 }
 
@@ -75,7 +87,7 @@ ClassicEditor
 		toolbar: [ 'undo', 'redo' ]
 	} )
 	.then( editor => {
-		editor.document.on( 'changesDone', () => {
+		editor.model.document.on( 'change', () => {
 			printModelContents( editor );
 		} );
 
@@ -87,5 +99,5 @@ ClassicEditor
 
 const modelDiv = global.document.querySelector( '#model' );
 function printModelContents( editor ) {
-	modelDiv.innerText = getData( editor.document );
+	modelDiv.innerText = getData( editor.model );
 }

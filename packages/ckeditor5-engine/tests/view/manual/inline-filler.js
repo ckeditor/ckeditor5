@@ -1,26 +1,31 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
 /* globals document */
 
-import Document from '../../../src/view/document';
+import View from '../../../src/view/view';
+import createViewRoot from '../_utils/createroot';
 import { setData } from '../../../src/dev-utils/view';
 
-const viewDocument = new Document();
-viewDocument.createRoot( document.getElementById( 'editor' ) );
+const view = new View();
+const viewDocument = view.document;
+createViewRoot( viewDocument );
+view.attachDomRoot( document.getElementById( 'editor' ) );
 
-viewDocument.isFocused = true;
+setData(
+	view,
+	'<container:p><attribute:strong>foo</attribute:strong>[]<attribute:strong>bar</attribute:strong></container:p>'
+);
 
-setData( viewDocument,
-	'<container:p><attribute:strong>foo</attribute:strong>[]<attribute:strong>bar</attribute:strong></container:p>' );
+view.focus();
 
 viewDocument.on( 'selectionChange', ( evt, data ) => {
-	viewDocument.selection.setTo( data.newSelection );
-
-	// Needed due to https://github.com/ckeditor/ckeditor5-engine/issues/796.
-	viewDocument.render();
+	view.change( writer => {
+		// Re-render view selection each time selection is changed.
+		// See https://github.com/ckeditor/ckeditor5-engine/issues/796.
+		writer.setSelection( data.newSelection );
+	} );
 } );
 
-viewDocument.render();

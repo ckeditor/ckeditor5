@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -9,6 +9,7 @@
 
 import Node from './node';
 import Text from './text';
+import TextProxy from './textproxy';
 import objectToMap from '@ckeditor/ckeditor5-utils/src/objecttomap';
 import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 import isPlainObject from '@ckeditor/ckeditor5-utils/src/lib/lodash/isPlainObject';
@@ -37,6 +38,14 @@ export default class Element extends Node {
 	 *		new Element( 'div', [ [ 'class', 'editor' ], [ 'contentEditable', 'true' ] ] ); // map-like iterator
 	 *		new Element( 'div', mapOfAttributes ); // map
 	 *
+	 * **Note:** Constructor of this class shouldn't be used directly in the code. Use the
+	 * {@link module:engine/view/writer~Writer#createAttributeElement} for inline element,
+	 * {@link module:engine/view/writer~Writer#createContainerElement} for block element,
+	 * {@link module:engine/view/writer~Writer#createEditableElement} for editable element,
+	 * {@link module:engine/view/writer~Writer#createEmptyElement} for empty element or
+	 * {@link module:engine/view/writer~Writer#createUIElement} for UI element instead.
+	 *
+	 * @protected
 	 * @param {String} name Node name.
 	 * @param {Object|Iterable} [attrs] Collection of attributes.
 	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} [children]
@@ -59,11 +68,7 @@ export default class Element extends Node {
 		 * @protected
 		 * @member {Map} #_attrs
 		 */
-		if ( isPlainObject( attrs ) ) {
-			this._attrs = objectToMap( attrs );
-		} else {
-			this._attrs = new Map( attrs );
-		}
+		this._attrs = parseAttributes( attrs );
 
 		/**
 		 * Array of child nodes.
@@ -74,7 +79,7 @@ export default class Element extends Node {
 		this._children = [];
 
 		if ( children ) {
-			this.insertChildren( 0, children );
+			this._insertChildren( 0, children );
 		}
 
 		/**
@@ -154,53 +159,6 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Clones provided element.
-	 *
-	 * @param {Boolean} [deep=false] If set to `true` clones element and all its children recursively. When set to `false`,
-	 * element will be cloned without any children.
-	 * @returns {module:engine/view/element~Element} Clone of this element.
-	 */
-	clone( deep = false ) {
-		const childrenClone = [];
-
-		if ( deep ) {
-			for ( const child of this.getChildren() ) {
-				childrenClone.push( child.clone( deep ) );
-			}
-		}
-
-		// ContainerElement and AttributeElement should be also cloned properly.
-		const cloned = new this.constructor( this.name, this._attrs, childrenClone );
-
-		// Classes and styles are cloned separately - this solution is faster than adding them back to attributes and
-		// parse once again in constructor.
-		cloned._classes = new Set( this._classes );
-		cloned._styles = new Map( this._styles );
-
-		// Clone custom properties.
-		cloned._customProperties = new Map( this._customProperties );
-
-		// Clone filler offset method.
-		// We can't define this method in a prototype because it's behavior which
-		// is changed by e.g. toWidget() function from ckeditor5-widget. Perhaps this should be one of custom props.
-		cloned.getFillerOffset = this.getFillerOffset;
-
-		return cloned;
-	}
-
-	/**
-	 * {@link module:engine/view/element~Element#insertChildren Insert} a child node or a list of child nodes at the end of this node
-	 * and sets the parent of these nodes to this element.
-	 *
-	 * @fires module:engine/view/node~Node#change
-	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} nodes Node or the list of nodes to be inserted.
-	 * @returns {Number} Number of appended nodes.
-	 */
-	appendChildren( nodes ) {
-		return this.insertChildren( this.childCount, nodes );
-	}
-
-	/**
 	 * Gets child at the given index.
 	 *
 	 * @param {Number} index Index of child.
@@ -232,7 +190,7 @@ export default class Element extends Node {
 	/**
 	 * Returns an iterator that contains the keys for attributes. Order of inserting attributes is not preserved.
 	 *
-	 * @returns {Iterator.<String>} Keys for attributes.
+	 * @returns {Iterable.<String>} Keys for attributes.
 	 */
 	* getAttributeKeys() {
 		if ( this._classes.size > 0 ) {
@@ -321,110 +279,6 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Adds or overwrite attribute with a specified key and value.
-	 *
-	 * @param {String} key Attribute key.
-	 * @param {String} value Attribute value.
-	 * @fires module:engine/view/node~Node#change
-	 */
-	setAttribute( key, value ) {
-		this._fireChange( 'attributes', this );
-
-		if ( key == 'class' ) {
-			parseClasses( this._classes, value );
-		} else if ( key == 'style' ) {
-			parseInlineStyles( this._styles, value );
-		} else {
-			this._attrs.set( key, value );
-		}
-	}
-
-	/**
-	 * Inserts a child node or a list of child nodes on the given index and sets the parent of these nodes to
-	 * this element.
-	 *
-	 * @param {Number} index Position where nodes should be inserted.
-	 * @param {module:engine/view/node~Node|Iterable.<module:engine/view/node~Node>} nodes Node or the list of nodes to be inserted.
-	 * @fires module:engine/view/node~Node#change
-	 * @returns {Number} Number of inserted nodes.
-	 */
-	insertChildren( index, nodes ) {
-		this._fireChange( 'children', this );
-		let count = 0;
-
-		nodes = normalize( nodes );
-
-		for ( const node of nodes ) {
-			// If node that is being added to this element is already inside another element, first remove it from the old parent.
-			if ( node.parent !== null ) {
-				node.remove();
-			}
-
-			node.parent = this;
-
-			this._children.splice( index, 0, node );
-			index++;
-			count++;
-		}
-
-		return count;
-	}
-
-	/**
-	 * Removes attribute from the element.
-	 *
-	 * @param {String} key Attribute key.
-	 * @returns {Boolean} Returns true if an attribute existed and has been removed.
-	 * @fires module:engine/view/node~Node#change
-	 */
-	removeAttribute( key ) {
-		this._fireChange( 'attributes', this );
-
-		// Remove class attribute.
-		if ( key == 'class' ) {
-			if ( this._classes.size > 0 ) {
-				this._classes.clear();
-
-				return true;
-			}
-
-			return false;
-		}
-
-		// Remove style attribute.
-		if ( key == 'style' ) {
-			if ( this._styles.size > 0 ) {
-				this._styles.clear();
-
-				return true;
-			}
-
-			return false;
-		}
-
-		// Remove other attributes.
-		return this._attrs.delete( key );
-	}
-
-	/**
-	 * Removes number of child nodes starting at the given index and set the parent of these nodes to `null`.
-	 *
-	 * @param {Number} index Number of the first node to remove.
-	 * @param {Number} [howMany=1] Number of nodes to remove.
-	 * @returns {Array.<module:engine/view/node~Node>} The array of removed nodes.
-	 * @fires module:engine/view/node~Node#change
-	 */
-	removeChildren( index, howMany = 1 ) {
-		this._fireChange( 'children', this );
-
-		for ( let i = index; i < index + howMany; i++ ) {
-			this._children[ i ].parent = null;
-		}
-
-		return this._children.splice( index, howMany );
-	}
-
-	/**
 	 * Checks if this element is similar to other element.
 	 * Both elements should have the same name and attributes to be considered as similar. Two similar elements
 	 * can contain different set of children nodes.
@@ -478,34 +332,6 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Adds specified class.
-	 *
-	 *		element.addClass( 'foo' ); // Adds 'foo' class.
-	 *		element.addClass( 'foo', 'bar' ); // Adds 'foo' and 'bar' classes.
-	 *
-	 * @param {...String} className
-	 * @fires module:engine/view/node~Node#change
-	 */
-	addClass( ...className ) {
-		this._fireChange( 'attributes', this );
-		className.forEach( name => this._classes.add( name ) );
-	}
-
-	/**
-	 * Removes specified class.
-	 *
- 	 *		element.removeClass( 'foo' );  // Removes 'foo' class.
-	 *		element.removeClass( 'foo', 'bar' ); // Removes both 'foo' and 'bar' classes.
-	 *
-	 * @param {...String} className
-	 * @fires module:engine/view/node~Node#change
-	 */
-	removeClass( ...className ) {
-		this._fireChange( 'attributes', this );
-		className.forEach( name => this._classes.delete( name ) );
-	}
-
-	/**
 	 * Returns true if class is present.
 	 * If more then one class is provided - returns true only when all classes are present.
 	 *
@@ -527,37 +353,10 @@ export default class Element extends Node {
 	/**
 	 * Returns iterator that contains all class names.
 	 *
-	 * @returns {Iterator.<String>}
+	 * @returns {Iterable.<String>}
 	 */
 	getClassNames() {
 		return this._classes.keys();
-	}
-
-	/**
-	 * Adds style to the element.
-	 *
-	 *		element.setStyle( 'color', 'red' );
-	 *		element.setStyle( {
-	 *			color: 'red',
-	 *			position: 'fixed'
-	 *		} );
-	 *
-	 * @param {String|Object} property Property name or object with key - value pairs.
-	 * @param {String} [value] Value to set. This parameter is ignored if object is provided as the first parameter.
-	 * @fires module:engine/view/node~Node#change
-	 */
-	setStyle( property, value ) {
-		this._fireChange( 'attributes', this );
-
-		if ( isPlainObject( property ) ) {
-			const keys = Object.keys( property );
-
-			for ( const key of keys ) {
-				this._styles.set( key, property[ key ] );
-			}
-		} else {
-			this._styles.set( property, value );
-		}
 	}
 
 	/**
@@ -574,7 +373,7 @@ export default class Element extends Node {
 	/**
 	 * Returns iterator that contains all style names.
 	 *
-	 * @returns {Iterator.<String>}
+	 * @returns {Iterable.<String>}
 	 */
 	getStyleNames() {
 		return this._styles.keys();
@@ -597,20 +396,6 @@ export default class Element extends Node {
 		}
 
 		return true;
-	}
-
-	/**
-	 * Removes specified style.
-	 *
-	 *		element.removeStyle( 'color' );  // Removes 'color' style.
-	 *		element.removeStyle( 'color', 'border-top' ); // Removes both 'color' and 'border-top' styles.
-	 *
-	 * @param {...String} property
-	 * @fires module:engine/view/node~Node#change
-	 */
-	removeStyle( ...property ) {
-		this._fireChange( 'attributes', this );
-		property.forEach( name => this._styles.delete( name ) );
 	}
 
 	/**
@@ -638,17 +423,6 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Sets a custom property. Unlike attributes, custom properties are not rendered to the DOM,
-	 * so they can be used to add special data to elements.
-	 *
-	 * @param {String|Symbol} key
-	 * @param {*} value
-	 */
-	setCustomProperty( key, value ) {
-		this._customProperties.set( key, value );
-	}
-
-	/**
 	 * Returns the custom property value for the given key.
 	 *
 	 * @param {String|Symbol} key
@@ -659,18 +433,8 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * Removes the custom property stored under the given key.
-	 *
-	 * @param {String|Symbol} key
-	 * @returns {Boolean} Returns true if property was removed.
-	 */
-	removeCustomProperty( key ) {
-		return this._customProperties.delete( key );
-	}
-
-	/**
 	 * Returns an iterator which iterates over this element's custom properties.
-	 * Iterator provides [key, value] pair for each stored property.
+	 * Iterator provides `[ key, value ]` pairs for each stored property.
 	 *
 	 * @returns {Iterable.<*>}
 	 */
@@ -687,12 +451,12 @@ export default class Element extends Node {
  	 *
 	 * For example:
 	 *
-	 *		const element = new ViewElement( 'foo' );
-	 *		element.setAttribute( 'banana', '10' );
-	 *		element.setAttribute( 'apple', '20' );
-	 *		element.setStyle( 'color', 'red' );
-	 *		element.setStyle( 'border-color', 'white' );
-	 *		element.addClass( 'baz' );
+	 *		const element = writer.createContainerElement( 'foo', {
+	 *			banana: '10',
+	 *			apple: '20',
+	 *			style: 'color: red; border-color: white;',
+	 *			class: 'baz'
+	 *		} );
 	 *
 	 *		// returns 'foo class="baz" style="border-color:white;color:red" apple="20" banana="10"'
 	 *		element.getIdentity();
@@ -713,11 +477,305 @@ export default class Element extends Node {
 	}
 
 	/**
+	 * Clones provided element.
+	 *
+	 * @protected
+	 * @param {Boolean} [deep=false] If set to `true` clones element and all its children recursively. When set to `false`,
+	 * element will be cloned without any children.
+	 * @returns {module:engine/view/element~Element} Clone of this element.
+	 */
+	_clone( deep = false ) {
+		const childrenClone = [];
+
+		if ( deep ) {
+			for ( const child of this.getChildren() ) {
+				childrenClone.push( child._clone( deep ) );
+			}
+		}
+
+		// ContainerElement and AttributeElement should be also cloned properly.
+		const cloned = new this.constructor( this.name, this._attrs, childrenClone );
+
+		// Classes and styles are cloned separately - this solution is faster than adding them back to attributes and
+		// parse once again in constructor.
+		cloned._classes = new Set( this._classes );
+		cloned._styles = new Map( this._styles );
+
+		// Clone custom properties.
+		cloned._customProperties = new Map( this._customProperties );
+
+		// Clone filler offset method.
+		// We can't define this method in a prototype because it's behavior which
+		// is changed by e.g. toWidget() function from ckeditor5-widget. Perhaps this should be one of custom props.
+		cloned.getFillerOffset = this.getFillerOffset;
+
+		return cloned;
+	}
+
+	/**
+	 * {@link module:engine/view/element~Element#_insertChildren Insert} a child node or a list of child nodes at the end of this node
+	 * and sets the parent of these nodes to this element.
+	 *
+	 * @see module:engine/view/writer~Writer#insert
+	 * @protected
+	 * @param {module:engine/view/item~Item|Iterable.<module:engine/view/item~Item>} items Items to be inserted.
+	 * @fires module:engine/view/node~Node#change
+	 * @returns {Number} Number of appended nodes.
+	 */
+	_appendChildren( items ) {
+		return this._insertChildren( this.childCount, items );
+	}
+
+	/**
+	 * Inserts a child node or a list of child nodes on the given index and sets the parent of these nodes to
+	 * this element.
+	 *
+	 * @see module:engine/view/writer~Writer#insert
+	 * @protected
+	 * @param {Number} index Position where nodes should be inserted.
+	 * @param {module:engine/view/item~Item|Iterable.<module:engine/view/item~Item>} items Items to be inserted.
+	 * @fires module:engine/view/node~Node#change
+	 * @returns {Number} Number of inserted nodes.
+	 */
+	_insertChildren( index, items ) {
+		this._fireChange( 'children', this );
+		let count = 0;
+
+		const nodes = normalize( items );
+
+		for ( const node of nodes ) {
+			// If node that is being added to this element is already inside another element, first remove it from the old parent.
+			if ( node.parent !== null ) {
+				node._remove();
+			}
+
+			node.parent = this;
+
+			this._children.splice( index, 0, node );
+			index++;
+			count++;
+		}
+
+		return count;
+	}
+
+	/**
+	 * Removes number of child nodes starting at the given index and set the parent of these nodes to `null`.
+	 *
+	 * @see module:engine/view/writer~Writer#remove
+	 * @param {Number} index Number of the first node to remove.
+	 * @param {Number} [howMany=1] Number of nodes to remove.
+	 * @fires module:engine/view/node~Node#change
+	 * @returns {Array.<module:engine/view/node~Node>} The array of removed nodes.
+	 */
+	_removeChildren( index, howMany = 1 ) {
+		this._fireChange( 'children', this );
+
+		for ( let i = index; i < index + howMany; i++ ) {
+			this._children[ i ].parent = null;
+		}
+
+		return this._children.splice( index, howMany );
+	}
+
+	/**
+	 * Adds or overwrite attribute with a specified key and value.
+	 *
+	 * @see module:engine/view/writer~Writer#setAttribute
+	 * @protected
+	 * @param {String} key Attribute key.
+	 * @param {String} value Attribute value.
+	 * @fires module:engine/view/node~Node#change
+	 */
+	_setAttribute( key, value ) {
+		value = String( value );
+
+		this._fireChange( 'attributes', this );
+
+		if ( key == 'class' ) {
+			parseClasses( this._classes, value );
+		} else if ( key == 'style' ) {
+			parseInlineStyles( this._styles, value );
+		} else {
+			this._attrs.set( key, value );
+		}
+	}
+
+	/**
+	 * Removes attribute from the element.
+	 *
+	 * @see module:engine/view/writer~Writer#removeAttribute
+	 * @protected
+	 * @param {String} key Attribute key.
+	 * @returns {Boolean} Returns true if an attribute existed and has been removed.
+	 * @fires module:engine/view/node~Node#change
+	 */
+	_removeAttribute( key ) {
+		this._fireChange( 'attributes', this );
+
+		// Remove class attribute.
+		if ( key == 'class' ) {
+			if ( this._classes.size > 0 ) {
+				this._classes.clear();
+
+				return true;
+			}
+
+			return false;
+		}
+
+		// Remove style attribute.
+		if ( key == 'style' ) {
+			if ( this._styles.size > 0 ) {
+				this._styles.clear();
+
+				return true;
+			}
+
+			return false;
+		}
+
+		// Remove other attributes.
+		return this._attrs.delete( key );
+	}
+
+	/**
+	 * Adds specified class.
+	 *
+	 *		element._addClass( 'foo' ); // Adds 'foo' class.
+	 *		element._addClass( [ 'foo', 'bar' ] ); // Adds 'foo' and 'bar' classes.
+	 *
+	 * @see module:engine/view/writer~Writer#addClass
+	 * @protected
+	 * @param {Array.<String>|String} className
+	 * @fires module:engine/view/node~Node#change
+	 */
+	_addClass( className ) {
+		this._fireChange( 'attributes', this );
+
+		className = Array.isArray( className ) ? className : [ className ];
+		className.forEach( name => this._classes.add( name ) );
+	}
+
+	/**
+	 * Removes specified class.
+	 *
+	 *		element._removeClass( 'foo' );  // Removes 'foo' class.
+	 *		element._removeClass( [ 'foo', 'bar' ] ); // Removes both 'foo' and 'bar' classes.
+	 *
+	 * @see module:engine/view/writer~Writer#removeClass
+	 * @param {Array.<String>|String} className
+	 * @fires module:engine/view/node~Node#change
+	 */
+	_removeClass( className ) {
+		this._fireChange( 'attributes', this );
+
+		className = Array.isArray( className ) ? className : [ className ];
+		className.forEach( name => this._classes.delete( name ) );
+	}
+
+	/**
+	 * Adds style to the element.
+	 *
+	 *		element._setStyle( 'color', 'red' );
+	 *		element._setStyle( {
+	 *			color: 'red',
+	 *			position: 'fixed'
+	 *		} );
+	 *
+	 * @see module:engine/view/writer~Writer#setStyle
+	 * @protected
+	 * @param {String|Object} property Property name or object with key - value pairs.
+	 * @param {String} [value] Value to set. This parameter is ignored if object is provided as the first parameter.
+	 * @fires module:engine/view/node~Node#change
+	 */
+	_setStyle( property, value ) {
+		this._fireChange( 'attributes', this );
+
+		if ( isPlainObject( property ) ) {
+			const keys = Object.keys( property );
+
+			for ( const key of keys ) {
+				this._styles.set( key, property[ key ] );
+			}
+		} else {
+			this._styles.set( property, value );
+		}
+	}
+
+	/**
+	 * Removes specified style.
+	 *
+	 *		element._removeStyle( 'color' );  // Removes 'color' style.
+	 *		element._removeStyle( [ 'color', 'border-top' ] ); // Removes both 'color' and 'border-top' styles.
+	 *
+	 * @see module:engine/view/writer~Writer#removeStyle
+	 * @protected
+	 * @param {Array.<String>|String} property
+	 * @fires module:engine/view/node~Node#change
+	 */
+	_removeStyle( property ) {
+		this._fireChange( 'attributes', this );
+
+		property = Array.isArray( property ) ? property : [ property ];
+		property.forEach( name => this._styles.delete( name ) );
+	}
+
+	/**
+	 * Sets a custom property. Unlike attributes, custom properties are not rendered to the DOM,
+	 * so they can be used to add special data to elements.
+	 *
+	 * @see module:engine/view/writer~Writer#setCustomProperty
+	 * @protected
+	 * @param {String|Symbol} key
+	 * @param {*} value
+	 */
+	_setCustomProperty( key, value ) {
+		this._customProperties.set( key, value );
+	}
+
+	/**
+	 * Removes the custom property stored under the given key.
+	 *
+	 * @see module:engine/view/writer~Writer#removeCustomProperty
+	 * @protected
+	 * @param {String|Symbol} key
+	 * @returns {Boolean} Returns true if property was removed.
+	 */
+	_removeCustomProperty( key ) {
+		return this._customProperties.delete( key );
+	}
+
+	/**
 	 * Returns block {@link module:engine/view/filler filler} offset or `null` if block filler is not needed.
 	 *
 	 * @abstract
 	 * @method module:engine/view/element~Element#getFillerOffset
 	 */
+}
+
+// Parses attributes provided to the element constructor before they are applied to an element. If attributes are passed
+// as an object (instead of `Map`), the object is transformed to the map. Attributes with `null` value are removed.
+// Attributes with non-`String` value are converted to `String`.
+//
+// @param {Object|Map} attrs Attributes to parse.
+// @returns {Map} Parsed attributes.
+function parseAttributes( attrs ) {
+	if ( isPlainObject( attrs ) ) {
+		attrs = objectToMap( attrs );
+	} else {
+		attrs = new Map( attrs );
+	}
+
+	for ( const [ key, value ] of attrs ) {
+		if ( value === null ) {
+			attrs.delete( key );
+		} else if ( typeof value != 'string' ) {
+			attrs.set( key, String( value ) );
+		}
+	}
+
+	return attrs;
 }
 
 // Parses inline styles and puts property - value pairs into styles map.
@@ -809,7 +867,7 @@ function parseClasses( classesSet, classesString ) {
 
 // Converts strings to Text and non-iterables to arrays.
 //
-// @param {String|module:engine/view/node~Node|Iterable.<String|module:engine/view/node~Node>}
+// @param {String|module:engine/view/item~Item|Iterable.<String|module:engine/view/item~Item>}
 // @return {Iterable.<module:engine/view/node~Node>}
 function normalize( nodes ) {
 	// Separate condition because string is iterable.
@@ -824,6 +882,14 @@ function normalize( nodes ) {
 	// Array.from to enable .map() on non-arrays.
 	return Array.from( nodes )
 		.map( node => {
-			return typeof node == 'string' ? new Text( node ) : node;
+			if ( typeof node == 'string' ) {
+				return new Text( node );
+			}
+
+			if ( node instanceof TextProxy ) {
+				return new Text( node.data );
+			}
+
+			return node;
 		} );
 }

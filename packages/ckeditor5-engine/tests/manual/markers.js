@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -15,7 +15,10 @@ import List from '@ckeditor/ckeditor5-list/src/list';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 
-import buildModelConverter from '../../src/conversion/buildmodelconverter';
+import {
+	downcastMarkerToHighlight
+} from '../../src/conversion/downcast-converters';
+
 import Position from '../../src/model/position';
 import Range from '../../src/model/range';
 
@@ -26,22 +29,23 @@ let _uid = 1;
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Enter, Typing, Paragraph, Bold, Italic, List, Heading, Undo ],
-		toolbar: [ 'headings', 'bold', 'italic', 'bulletedList', 'numberedList', 'undo', 'redo' ]
+		toolbar: [ 'heading', '|', 'bold', 'italic', 'bulletedList', 'numberedList', 'undo', 'redo' ]
 	} )
 	.then( editor => {
 		window.editor = editor;
-		model = window.editor.editing.model;
+		model = editor.model;
 
-		buildModelConverter().for( editor.editing.modelToView )
-			.fromMarker( 'highlight' )
-			.toHighlight( data => {
+		editor.conversion.for( 'editingDowncast' ).add( downcastMarkerToHighlight( {
+			model: 'highlight',
+			view: data => {
 				const color = data.markerName.split( ':' )[ 1 ];
 
 				return {
 					class: 'h-' + color,
 					priority: 1
 				};
-			} );
+			}
+		} ) );
 
 		window.document.getElementById( 'add-yellow' ).addEventListener( 'mousedown', e => {
 			e.preventDefault();
@@ -73,13 +77,13 @@ ClassicEditor
 			moveSelectionByOffset( 1 );
 		} );
 
-		model.enqueueChanges( () => {
-			const root = model.getRoot();
+		model.change( writer => {
+			const root = model.document.getRoot();
 			const range = new Range( new Position( root, [ 0, 10 ] ), new Position( root, [ 0, 16 ] ) );
 			const name = 'highlight:yellow:' + uid();
 
 			markerNames.push( name );
-			model.markers.set( name, range );
+			writer.setMarker( name, range );
 		} );
 	} )
 	.catch( err => {
@@ -91,18 +95,18 @@ function uid() {
 }
 
 function addHighlight( color ) {
-	model.enqueueChanges( () => {
-		const range = Range.createFromRange( model.selection.getFirstRange() );
+	model.change( writer => {
+		const range = Range.createFromRange( model.document.selection.getFirstRange() );
 		const name = 'highlight:' + color + ':' + uid();
 
 		markerNames.push( name );
-		model.markers.set( name, range );
+		writer.setMarker( name, range );
 	} );
 }
 
 function removeHighlight() {
-	model.enqueueChanges( () => {
-		const pos = model.selection.getFirstPosition();
+	model.change( writer => {
+		const pos = model.document.selection.getFirstPosition();
 
 		for ( let i = 0; i < markerNames.length; i++ ) {
 			const name = markerNames[ i ];
@@ -110,7 +114,7 @@ function removeHighlight() {
 			const range = marker.getRange();
 
 			if ( range.containsPosition( pos ) || range.start.isEqual( pos ) || range.end.isEqual( pos ) ) {
-				model.markers.remove( name );
+				writer.removeMarker( name );
 
 				markerNames.splice( i, 1 );
 				break;
@@ -120,22 +124,22 @@ function removeHighlight() {
 }
 
 function moveSelectionToStart() {
-	const range = model.selection.getFirstRange();
+	const range = model.document.selection.getFirstRange();
 
 	if ( range.isFlat ) {
-		model.enqueueChanges( () => {
-			model.batch().move( range, new Position( model.getRoot(), [ 0, 0 ] ) );
+		model.change( writer => {
+			writer.move( range, new Position( model.document.getRoot(), [ 0, 0 ] ) );
 		} );
 	}
 }
 
 function moveSelectionByOffset( offset ) {
-	const range = model.selection.getFirstRange();
+	const range = model.document.selection.getFirstRange();
 	const pos = offset < 0 ? range.start : range.end;
 
 	if ( range.isFlat ) {
-		model.enqueueChanges( () => {
-			model.batch().move( range, pos.getShiftedBy( offset ) );
+		model.change( writer => {
+			writer.move( range, pos.getShiftedBy( offset ) );
 		} );
 	}
 }

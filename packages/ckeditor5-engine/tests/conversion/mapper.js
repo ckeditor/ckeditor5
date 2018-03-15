@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -69,6 +69,24 @@ describe( 'Mapper', () => {
 			expect( mapper.toModelElement( viewA ) ).to.be.undefined;
 			expect( mapper.toViewElement( modelA ) ).to.be.undefined;
 		} );
+
+		it( 'should not remove binding between view and model element if view element got rebound', () => {
+			const viewA = new ViewElement( 'a' );
+			const modelA = new ModelElement( 'a' );
+			const modelB = new ModelElement( 'b' );
+
+			const mapper = new Mapper();
+			mapper.bindElements( modelA, viewA );
+			mapper.bindElements( modelB, viewA );
+
+			// `modelA` is still bound to `viewA` even though `viewA` got rebound.
+			expect( mapper.toViewElement( modelA ) ).to.equal( viewA );
+
+			mapper.unbindModelElement( modelA );
+
+			expect( mapper.toViewElement( modelA ) ).to.be.undefined;
+			expect( mapper.toModelElement( viewA ) ).to.equal( modelB );
+		} );
 	} );
 
 	describe( 'unbindViewElement', () => {
@@ -86,6 +104,24 @@ describe( 'Mapper', () => {
 
 			expect( mapper.toModelElement( viewA ) ).to.be.undefined;
 			expect( mapper.toViewElement( modelA ) ).to.be.undefined;
+		} );
+
+		it( 'should not remove binding between model and view element if model element got rebound', () => {
+			const viewA = new ViewElement( 'a' );
+			const viewB = new ViewElement( 'b' );
+			const modelA = new ModelElement( 'a' );
+
+			const mapper = new Mapper();
+			mapper.bindElements( modelA, viewA );
+			mapper.bindElements( modelA, viewB );
+
+			// `viewA` is still bound to `modelA`, even though `modelA` got rebound.
+			expect( mapper.toModelElement( viewA ) ).to.equal( modelA );
+
+			mapper.unbindViewElement( viewA );
+
+			expect( mapper.toModelElement( viewA ) ).to.be.undefined;
+			expect( mapper.toViewElement( modelA ) ).to.equal( viewB );
 		} );
 	} );
 
@@ -145,7 +181,7 @@ describe( 'Mapper', () => {
 			] );
 
 			modelDiv = new ModelRootElement();
-			modelDiv.appendChildren( [
+			modelDiv._appendChildren( [
 				new ModelText( 'x' ),
 				modelP,
 				new ModelText( 'zz' )
@@ -415,7 +451,7 @@ describe( 'Mapper', () => {
 			modelCaption = new ModelElement( 'caption', {}, new ModelText( 'foo' ) );
 			modelWidget = new ModelElement( 'widget', {}, [ modelImg, modelCaption ] );
 			modelDiv = new ModelRootElement();
-			modelDiv.appendChildren( [ new ModelText( 'x' ), modelWidget, new ModelText( 'zz' ) ] );
+			modelDiv._appendChildren( [ new ModelText( 'x' ), modelWidget, new ModelText( 'zz' ) ] );
 
 			viewTextX = new ViewText( 'y' );
 			viewTextZZ = new ViewText( 'zz' );
@@ -572,6 +608,18 @@ describe( 'Mapper', () => {
 			expect( modelPosition.parent ).to.equal( modelElement );
 			expect( modelPosition.offset ).to.equal( modelOffset );
 		}
+	} );
+
+	it( 'should pass isPhantom flag to model-to-view position mapping callback', () => {
+		const mapper = new Mapper();
+
+		mapper.on( 'modelToViewPosition', ( evt, data ) => {
+			expect( data.isPhantom ).to.be.true;
+
+			evt.stop();
+		} );
+
+		mapper.toViewPosition( {}, { isPhantom: true } );
 	} );
 
 	describe( 'getModelLength', () => {

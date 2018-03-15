@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -8,16 +8,17 @@
 import ViewRange from '../../../src/view/range';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import ViewSelection from '../../../src/view/selection';
-import ViewDocument from '../../../src/view/document';
+import View from '../../../src/view/view';
 import SelectionObserver from '../../../src/view/observer/selectionobserver';
 import FocusObserver from '../../../src/view/observer/focusobserver';
 import log from '@ckeditor/ckeditor5-utils/src/log';
+import createViewRoot from '../_utils/createroot';
 import { parse } from '../../../src/dev-utils/view';
 
 testUtils.createSinonSandbox();
 
 describe( 'SelectionObserver', () => {
-	let viewDocument, viewRoot, selectionObserver, domRoot, domMain, domDocument;
+	let view, viewDocument, viewRoot, selectionObserver, domRoot, domMain, domDocument;
 
 	beforeEach( done => {
 		domDocument = document;
@@ -26,23 +27,26 @@ describe( 'SelectionObserver', () => {
 		domMain = domRoot.childNodes[ 0 ];
 		domDocument.body.appendChild( domRoot );
 
-		viewDocument = new ViewDocument();
-		viewDocument.createRoot( domMain );
+		view = new View();
+		viewDocument = view.document;
+		createViewRoot( viewDocument );
+		view.attachDomRoot( domMain );
 
-		selectionObserver = viewDocument.getObserver( SelectionObserver );
+		selectionObserver = view.getObserver( SelectionObserver );
 
 		viewRoot = viewDocument.getRoot();
 
-		viewRoot.appendChildren( parse(
-			'<container:p>xxx<ui:span></ui:span></container:p>' +
-			'<container:p>yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy</container:p>' ) );
+		view.change( writer => {
+			viewRoot._appendChildren( parse(
+				'<container:p>xxx<ui:span></ui:span></container:p>' +
+				'<container:p>yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy</container:p>' ) );
 
-		viewDocument.render();
+			writer.setSelection( null );
+			domDocument.getSelection().removeAllRanges();
 
-		viewDocument.selection.removeAllRanges();
-		domDocument.getSelection().removeAllRanges();
-
-		viewDocument.isFocused = true;
+			viewDocument.isFocused = true;
+			domMain.focus();
+		} );
 
 		selectionObserver.enable();
 
@@ -53,7 +57,7 @@ describe( 'SelectionObserver', () => {
 	afterEach( () => {
 		domRoot.parentElement.removeChild( domRoot );
 
-		viewDocument.destroy();
+		view.destroy();
 	} );
 
 	it( 'should fire selectionChange when it is the only change', done => {
@@ -82,7 +86,8 @@ describe( 'SelectionObserver', () => {
 
 	it( 'should add only one listener to one document', done => {
 		// Add second roots to ensure that listener is added once.
-		viewDocument.createRoot( domDocument.getElementById( 'additional' ), 'additional' );
+		createViewRoot( viewDocument, 'div', 'additional' );
+		view.attachDomRoot( domDocument.getElementById( 'additional' ), 'additional' );
 
 		viewDocument.on( 'selectionChange', () => {
 			done();
@@ -99,12 +104,14 @@ describe( 'SelectionObserver', () => {
 		setTimeout( done, 70 );
 
 		const viewBar = viewDocument.getRoot().getChild( 1 ).getChild( 0 );
-		viewDocument.selection.addRange( ViewRange.createFromParentsAndOffsets( viewBar, 1, viewBar, 2 ) );
-		viewDocument.render();
+
+		view.change( writer => {
+			writer.setSelection( ViewRange.createFromParentsAndOffsets( viewBar, 1, viewBar, 2 ) );
+		} );
 	} );
 
 	it( 'should not fired if observer is disabled', done => {
-		viewDocument.getObserver( SelectionObserver ).disable();
+		view.getObserver( SelectionObserver ).disable();
 
 		viewDocument.on( 'selectionChange', () => {
 			throw 'selectionChange on render';
@@ -147,7 +154,7 @@ describe( 'SelectionObserver', () => {
 		viewDocument.on( 'selectionChange', spy );
 
 		setTimeout( () => {
-			sinon.assert.calledOnce( spy );
+			sinon.assert.called( spy );
 			done();
 		}, 70 );
 
@@ -155,11 +162,12 @@ describe( 'SelectionObserver', () => {
 	} );
 
 	it( 'should warn and not enter infinite loop', () => {
-		// Selectionchange event is called twice per `changeDomSelection()` execution.
-		let counter = 35;
+		let counter = 70;
 
 		const viewFoo = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
-		viewDocument.selection.addRange( ViewRange.createFromParentsAndOffsets( viewFoo, 0, viewFoo, 0 ) );
+		view.change( writer => {
+			writer.setSelection( viewFoo, 0 );
+		} );
 
 		return new Promise( ( resolve, reject ) => {
 			testUtils.sinon.stub( log, 'warn' ).callsFake( msg => {
@@ -183,7 +191,7 @@ describe( 'SelectionObserver', () => {
 
 	it( 'should not be treated as an infinite loop if selection is changed only few times', done => {
 		const viewFoo = viewDocument.getRoot().getChild( 0 ).getChild( 0 );
-		viewDocument.selection.addRange( ViewRange.createFromParentsAndOffsets( viewFoo, 0, viewFoo, 0 ) );
+		viewDocument.selection._setTo( ViewRange.createFromParentsAndOffsets( viewFoo, 0, viewFoo, 0 ) );
 		const spy = testUtils.sinon.spy( log, 'warn' );
 
 		viewDocument.on( 'selectionChangeDone', () => {
@@ -205,8 +213,8 @@ describe( 'SelectionObserver', () => {
 		// We need to recreate SelectionObserver, so it will use mocked setInterval.
 		selectionObserver.disable();
 		selectionObserver.destroy();
-		viewDocument._observers.delete( SelectionObserver );
-		viewDocument.addObserver( SelectionObserver );
+		view._observers.delete( SelectionObserver );
+		view.addObserver( SelectionObserver );
 
 		return doChanges()
 			.then( doChanges )
@@ -215,8 +223,6 @@ describe( 'SelectionObserver', () => {
 				clock.restore();
 			} );
 
-		// Selectionchange event is called twice per `changeDomSelection()` execution. We call it 25 times to get
-		// 50 events. Infinite loop counter is reset, so calling this method twice should not show any warning.
 		function doChanges() {
 			return new Promise( resolve => {
 				viewDocument.once( 'selectionChangeDone', () => {
@@ -224,7 +230,7 @@ describe( 'SelectionObserver', () => {
 					resolve();
 				} );
 
-				for ( let i = 0; i < 30; i++ ) {
+				for ( let i = 0; i < 50; i++ ) {
 					changeDomSelection();
 				}
 			} );
@@ -237,7 +243,7 @@ describe( 'SelectionObserver', () => {
 		viewDocument.on( 'selectionChangeDone', spy );
 
 		// Disable focus observer to not re-render view on each focus.
-		viewDocument.getObserver( FocusObserver ).disable();
+		view.getObserver( FocusObserver ).disable();
 
 		// Change selection.
 		changeDomSelection();
@@ -305,20 +311,21 @@ describe( 'SelectionObserver', () => {
 
 	it( 'should re-render view if selections are similar if DOM selection is in incorrect place', done => {
 		const sel = domDocument.getSelection();
+		const domParagraph = domMain.childNodes[ 0 ];
+		const domText = domParagraph.childNodes[ 0 ];
+		const domUI = domParagraph.childNodes[ 1 ];
 
 		// Add rendering on selectionChange event to check this feature.
 		viewDocument.on( 'selectionChange', () => {
 			// Manually set selection because no handlers are set for selectionChange event in this test.
 			// Normally this is handled by view -> model -> view selection converters chain.
-			const viewSel = viewDocument.selection;
+			const viewAnchor = view.domConverter.domPositionToView( sel.anchorNode, sel.anchorOffset );
+			const viewFocus = view.domConverter.domPositionToView( sel.focusNode, sel.focusOffset );
 
-			const viewAnchor = viewDocument.domConverter.domPositionToView( sel.anchorNode, sel.anchorOffset );
-			const viewFocus = viewDocument.domConverter.domPositionToView( sel.focusNode, sel.focusOffset );
-
-			viewSel.setCollapsedAt( viewAnchor );
-			viewSel.moveFocusTo( viewFocus );
-
-			viewDocument.render();
+			view.change( writer => {
+				writer.setSelection( viewAnchor );
+				writer.setSelectionFocus( viewFocus );
+			} );
 		} );
 
 		viewDocument.once( 'selectionChange', () => {
@@ -326,7 +333,7 @@ describe( 'SelectionObserver', () => {
 
 			selectionObserver.listenTo( domDocument, 'selectionchange', () => {
 				// 4. Check if view was re-rendered.
-				expect( viewDocument.render.called ).to.be.true;
+				expect( view.render.called ).to.be.true;
 
 				done();
 			}, { priority: 'lowest' } );
@@ -334,12 +341,22 @@ describe( 'SelectionObserver', () => {
 			// 3. Now, collapse selection in similar position, but in UI element.
 			// Current and new selection position are similar in view (but not equal!).
 			// Also add a spy to `viewDocument#render` to see if view will be re-rendered.
-			sel.collapse( domMain.childNodes[ 0 ].childNodes[ 1 ], 0 );
-			sinon.spy( viewDocument, 'render' );
+			sel.collapse( domUI, 0 );
+			sinon.spy( view, 'render' );
+
+			// Some browsers like Safari won't allow to put selection inside empty ui element.
+			// In that situation selection should stay in correct place.
+			if ( sel.anchorNode !== domUI ) {
+				expect( sel.anchorNode ).to.equal( domText );
+				expect( sel.anchorOffset ).to.equal( 3 );
+				expect( sel.isCollapsed ).to.be.true;
+
+				done();
+			}
 		}, { priority: 'lowest' } );
 
 		// 1. Collapse in a text node, before ui element, and wait for async selectionchange to fire selection change handling.
-		sel.collapse( domMain.childNodes[ 0 ].childNodes[ 0 ], 3 );
+		sel.collapse( domText, 3 );
 	} );
 
 	function changeDomSelection() {
@@ -347,7 +364,6 @@ describe( 'SelectionObserver', () => {
 		const domFoo = domMain.childNodes[ 1 ].childNodes[ 0 ];
 		const offset = domSelection.anchorOffset;
 
-		domSelection.removeAllRanges();
 		domSelection.collapse( domFoo, offset == 2 ? 3 : 2 );
 	}
 } );

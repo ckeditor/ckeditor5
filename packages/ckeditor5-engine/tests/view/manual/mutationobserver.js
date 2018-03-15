@@ -1,23 +1,25 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
 /* globals console, document */
 
-import Document from '../../../src/view/document';
+import View from '../../../src/view/view';
+import createViewRoot from '../_utils/createroot';
 import { setData } from '../../../src/dev-utils/view';
 
-const viewDocument = new Document();
-viewDocument.createRoot( document.getElementById( 'editor' ) );
+const view = new View();
+const viewDocument = view.document;
+createViewRoot( viewDocument );
+view.attachDomRoot( document.getElementById( 'editor' ) );
 
 viewDocument.on( 'mutations', ( evt, mutations ) => console.log( mutations ) );
 viewDocument.on( 'selectionChange', ( evt, data ) => {
-	viewDocument.selection.setTo( data.newSelection );
+	view.change( writer => writer.setSelection( data.newSelection ) );
 } );
 
-setData( viewDocument,
+setData( view,
 	'<container:p>foo</container:p>' +
-	'<container:p>bar</container:p>' );
-
-viewDocument.render();
+	'<container:p>bar</container:p>'
+);

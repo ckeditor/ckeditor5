@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -12,22 +12,22 @@
 import DeltaFactory from '../model/delta/deltafactory';
 
 /**
- * DeltaReplayer is a dev-tool created for easily replaying operations on the document from stringified deltas.
+ * Delta replayer is a development tool created for easy replaying of operations on the document from stringified deltas.
  */
 export default class DeltaReplayer {
 	/**
-	 * @param {module:engine/model/document~Document} document Document to replay deltas on.
+	 * @param {module:engine/model/model~Model} model Data model.
 	 * @param {String} logSeparator Separator between deltas.
 	 * @param {String} stringifiedDeltas Deltas to replay.
 	 */
-	constructor( document, logSeparator, stringifiedDeltas ) {
-		this._document = document;
+	constructor( model, logSeparator, stringifiedDeltas ) {
+		this._model = model;
 		this._logSeparator = logSeparator;
 		this.setStringifiedDeltas( stringifiedDeltas );
 	}
 
 	/**
-	 * Parses given string containing stringified deltas and sets parsed deltas as deltas to replay.
+	 * Parses the given string containing stringified deltas and sets parsed deltas as deltas to replay.
 	 *
 	 * @param {String} stringifiedDeltas Stringified deltas to replay.
 	 */
@@ -53,7 +53,7 @@ export default class DeltaReplayer {
 	}
 
 	/**
-	 * Applies all deltas with delay between actions.
+	 * Applies all deltas with a delay between actions.
 	 *
 	 * @param {Number} timeInterval Time between applying deltas.
 	 * @returns {Promise}
@@ -81,7 +81,7 @@ export default class DeltaReplayer {
 	/**
 	 * Applies `numberOfDeltas` deltas, beginning after the last applied delta (or first delta, if no deltas were applied).
 	 *
-	 * @param {Number} numberOfDeltas Number of deltas to apply.
+	 * @param {Number} numberOfDeltas The number of deltas to apply.
 	 * @returns {Promise}
 	 */
 	applyDeltas( numberOfDeltas ) {
@@ -112,29 +112,28 @@ export default class DeltaReplayer {
 	}
 
 	/**
-	 * Applies the next delta to replay. Returns promise with `isFinished` parameter that is `true` if the last
-	 * delta in replayer has been applied, `false` otherwise.
+	 * Applies the next delta to replay. Returns a promise with the `isFinished` parameter that is `true` if the last
+	 * delta in the replayer has been applied, `false` otherwise.
 	 *
 	 * @returns {Promise.<Boolean>}
 	 */
 	applyNextDelta() {
-		const document = this._document;
+		const model = this._model;
 
 		return new Promise( res => {
-			document.enqueueChanges( () => {
+			model.enqueueChange( writer => {
 				const jsonDelta = this._deltasToReplay.shift();
 
 				if ( !jsonDelta ) {
 					return res( true );
 				}
 
-				const delta = DeltaFactory.fromJSON( jsonDelta, this._document );
+				const delta = DeltaFactory.fromJSON( jsonDelta, model.document );
 
-				const batch = document.batch();
-				batch.addDelta( delta );
+				writer.batch.addDelta( delta );
 
 				for ( const operation of delta.operations ) {
-					document.applyOperation( operation );
+					model.applyOperation( operation );
 				}
 
 				res( false );

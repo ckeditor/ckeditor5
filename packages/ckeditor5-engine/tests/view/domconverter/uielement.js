@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -12,13 +12,17 @@ import DomConverter from '../../../src/view/domconverter';
 describe( 'DOMConverter UIElement integration', () => {
 	let converter;
 
-	class MyUIElement extends ViewUIElement {
-		render( domDocument ) {
-			const root = super.render( domDocument );
+	function createUIElement( name ) {
+		const element = new ViewUIElement( name );
+
+		element.render = function( domDocument ) {
+			const root = this.toDomElement( domDocument );
 			root.innerHTML = '<p><span>foo</span> bar</p>';
 
 			return root;
-		}
+		};
+
+		return element;
 	}
 
 	beforeEach( () => {
@@ -34,7 +38,7 @@ describe( 'DOMConverter UIElement integration', () => {
 		} );
 
 		it( 'should create DOM structure from UIElement', () => {
-			const myElement = new MyUIElement( 'div' );
+			const myElement = createUIElement( 'div' );
 			const domElement = converter.viewToDom( myElement, document );
 
 			expect( domElement ).to.be.instanceOf( HTMLElement );
@@ -42,7 +46,7 @@ describe( 'DOMConverter UIElement integration', () => {
 		} );
 
 		it( 'should create DOM structure that all is mapped to single UIElement', () => {
-			const myElement = new MyUIElement( 'div' );
+			const myElement = createUIElement( 'div' );
 			const domElement = converter.viewToDom( myElement, document, { bind: true } );
 			const domParagraph = domElement.childNodes[ 0 ];
 
@@ -54,14 +58,14 @@ describe( 'DOMConverter UIElement integration', () => {
 
 	describe( 'domToView()', () => {
 		it( 'should return UIElement itself', () => {
-			const uiElement = new MyUIElement( 'div' );
+			const uiElement = createUIElement( 'div' );
 			const domElement = converter.viewToDom( uiElement, document, { bind: true } );
 
 			expect( converter.domToView( domElement ) ).to.equal( uiElement );
 		} );
 
 		it( 'should return UIElement for nodes inside', () => {
-			const uiElement = new MyUIElement( 'div' );
+			const uiElement = createUIElement( 'div' );
 			const domElement = converter.viewToDom( uiElement, document, { bind: true } );
 
 			const domParagraph = domElement.childNodes[ 0 ];
@@ -76,7 +80,7 @@ describe( 'DOMConverter UIElement integration', () => {
 
 	describe( 'domPositionToView()', () => {
 		it( 'should convert position inside UIElement to position before it', () => {
-			const uiElement = new MyUIElement( 'h1' );
+			const uiElement = createUIElement( 'h1' );
 			const container = new ViewContainer( 'div', null, [ new ViewContainer( 'div' ), uiElement ] );
 			const domContainer = converter.viewToDom( container, document, { bind: true } );
 
@@ -87,7 +91,7 @@ describe( 'DOMConverter UIElement integration', () => {
 		} );
 
 		it( 'should convert position inside UIElement children to position before UIElement', () => {
-			const uiElement = new MyUIElement( 'h1' );
+			const uiElement = createUIElement( 'h1' );
 			const container = new ViewContainer( 'div', null, [ new ViewContainer( 'div' ), uiElement ] );
 			const domContainer = converter.viewToDom( container, document, { bind: true } );
 
@@ -100,7 +104,7 @@ describe( 'DOMConverter UIElement integration', () => {
 
 	describe( 'mapDomToView()', () => {
 		it( 'should return UIElement for DOM elements inside', () => {
-			const myElement = new MyUIElement( 'div' );
+			const myElement = createUIElement( 'div' );
 			const domElement = converter.viewToDom( myElement, document, { bind: true } );
 
 			expect( converter.mapDomToView( domElement ) ).to.equal( myElement );
@@ -115,7 +119,7 @@ describe( 'DOMConverter UIElement integration', () => {
 
 	describe( 'findCorrespondingViewText()', () => {
 		it( 'should return UIElement for DOM text inside', () => {
-			const myElement = new MyUIElement( 'div' );
+			const myElement = createUIElement( 'div' );
 			const domElement = converter.viewToDom( myElement, document, { bind: true } );
 
 			const domText = domElement.querySelector( 'span' ).childNodes[ 0 ];
@@ -125,7 +129,7 @@ describe( 'DOMConverter UIElement integration', () => {
 
 	describe( 'getParentUIElement()', () => {
 		it( 'should return UIElement for DOM children', () => {
-			const uiElement = new MyUIElement( 'div' );
+			const uiElement = createUIElement( 'div' );
 			const domElement = converter.viewToDom( uiElement, document, { bind: true } );
 
 			const domParagraph = domElement.childNodes[ 0 ];
@@ -136,7 +140,7 @@ describe( 'DOMConverter UIElement integration', () => {
 		} );
 
 		it( 'should return null for element itself', () => {
-			const uiElement = new MyUIElement( 'div' );
+			const uiElement = createUIElement( 'div' );
 			const domElement = converter.viewToDom( uiElement, document, { bind: true } );
 
 			expect( converter.getParentUIElement( domElement ) ).to.be.null;

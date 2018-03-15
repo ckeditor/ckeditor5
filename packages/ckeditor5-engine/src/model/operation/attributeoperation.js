@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -10,7 +10,7 @@
 import Operation from './operation';
 import Range from '../range';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import writer from '../writer';
+import { _setAttribute } from './utils';
 import isEqual from '@ckeditor/ckeditor5-utils/src/lib/lodash/isEqual';
 
 /**
@@ -37,7 +37,8 @@ export default class AttributeOperation extends Operation {
 	 * @param {String} key Key of an attribute to change or remove.
 	 * @param {*} oldValue Old value of the attribute with given key or `null`, if attribute was not set before.
 	 * @param {*} newValue New value of the attribute with given key or `null`, if operation should remove attribute.
-	 * @param {Number} baseVersion {@link module:engine/model/document~Document#version} on which the operation can be applied.
+	 * @param {Number|null} baseVersion Document {@link module:engine/model/document~Document#version} on which operation
+	 * can be applied or `null` if the operation operates on detached (non-document) tree.
 	 */
 	constructor( range, key, oldValue, newValue, baseVersion ) {
 		super( baseVersion );
@@ -109,14 +110,13 @@ export default class AttributeOperation extends Operation {
 	/**
 	 * @inheritDoc
 	 */
-	_execute() {
-		// Validation.
+	_validate() {
 		for ( const item of this.range.getItems() ) {
 			if ( this.oldValue !== null && !isEqual( item.getAttribute( this.key ), this.oldValue ) ) {
 				/**
 				 * Changed node has different attribute value than operation's old attribute value.
 				 *
-				 * @error operation-attribute-wrong-old-value
+				 * @error attribute-operation-wrong-old-value
 				 * @param {module:engine/model/item~Item} item
 				 * @param {String} key
 				 * @param {*} value
@@ -142,14 +142,17 @@ export default class AttributeOperation extends Operation {
 				);
 			}
 		}
+	}
 
+	/**
+	 * @inheritDoc
+	 */
+	_execute() {
 		// If value to set is same as old value, don't do anything.
 		if ( !isEqual( this.oldValue, this.newValue ) ) {
 			// Execution.
-			writer.setAttribute( this.range, this.key, this.newValue );
+			_setAttribute( this.range, this.key, this.newValue );
 		}
-
-		return { range: this.range, key: this.key, oldValue: this.oldValue, newValue: this.newValue };
 	}
 
 	/**

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -78,6 +78,12 @@ describe( 'TextProxy', () => {
 		} );
 	} );
 
+	describe( 'offsetSize', () => {
+		it( 'should be equal to the number of characters in text proxy', () => {
+			expect( textProxy.offsetSize ).to.equal( 3 );
+		} );
+	} );
+
 	describe( 'getDocument', () => {
 		it( 'should return null if any parent has not set Document', () => {
 			expect( textProxy.document ).to.be.null;
@@ -86,7 +92,7 @@ describe( 'TextProxy', () => {
 		it( 'should return Document attached to the parent element', () => {
 			const docMock = createDocumentMock();
 			const root = new RootEditableElement( 'div' );
-			root.document = docMock;
+			root._document = docMock;
 
 			wrapper.parent = root;
 
@@ -103,7 +109,7 @@ describe( 'TextProxy', () => {
 	describe( 'getRoot', () => {
 		it( 'should return root element', () => {
 			const root = new RootEditableElement( 'div' );
-			root.document = createDocumentMock();
+			root._document = createDocumentMock();
 
 			wrapper.parent = root;
 

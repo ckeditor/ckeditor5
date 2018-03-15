@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -16,8 +16,9 @@ import UIElement from '../../src/view/uielement';
 import Text from '../../src/view/text';
 import Selection from '../../src/view/selection';
 import Range from '../../src/view/range';
-import Document from '../../src/view/document';
+import View from '../../src/view/view';
 import XmlDataProcessor from '../../src/dataprocessor/xmldataprocessor';
+import createViewRoot from '../view/_utils/createroot';
 
 describe( 'view test utils', () => {
 	describe( 'getData, setData', () => {
@@ -35,12 +36,13 @@ describe( 'view test utils', () => {
 			it( 'should use stringify method', () => {
 				const element = document.createElement( 'div' );
 				const stringifySpy = sandbox.spy( getData, '_stringify' );
-				const viewDocument = new Document();
+				const view = new View();
+				const viewDocument = view.document;
 				const options = { showType: false, showPriority: false, withoutSelection: true };
-				const root = viewDocument.createRoot( element );
-				root.appendChildren( new Element( 'p' ) );
+				const root = createAttachedRoot( viewDocument, element );
+				root._appendChildren( new Element( 'p' ) );
 
-				expect( getData( viewDocument, options ) ).to.equal( '<p></p>' );
+				expect( getData( view, options ) ).to.equal( '<p></p>' );
 				sinon.assert.calledOnce( stringifySpy );
 				expect( stringifySpy.firstCall.args[ 0 ] ).to.equal( root );
 				expect( stringifySpy.firstCall.args[ 1 ] ).to.equal( null );
@@ -49,20 +51,23 @@ describe( 'view test utils', () => {
 				expect( stringifyOptions ).to.have.property( 'showPriority' ).that.equals( false );
 				expect( stringifyOptions ).to.have.property( 'ignoreRoot' ).that.equals( true );
 
-				viewDocument.destroy();
+				view.destroy();
 			} );
 
 			it( 'should use stringify method with selection', () => {
 				const element = document.createElement( 'div' );
 				const stringifySpy = sandbox.spy( getData, '_stringify' );
-				const viewDocument = new Document();
+				const view = new View();
+				const viewDocument = view.document;
 				const options = { showType: false, showPriority: false };
-				const root = viewDocument.createRoot( element );
-				root.appendChildren( new Element( 'p' ) );
+				const root = createAttachedRoot( viewDocument, element );
+				root._appendChildren( new Element( 'p' ) );
 
-				viewDocument.selection.addRange( Range.createFromParentsAndOffsets( root, 0, root, 1 ) );
+				view.change( writer => {
+					writer.setSelection( Range.createFromParentsAndOffsets( root, 0, root, 1 ) );
+				} );
 
-				expect( getData( viewDocument, options ) ).to.equal( '[<p></p>]' );
+				expect( getData( view, options ) ).to.equal( '[<p></p>]' );
 				sinon.assert.calledOnce( stringifySpy );
 				expect( stringifySpy.firstCall.args[ 0 ] ).to.equal( root );
 				expect( stringifySpy.firstCall.args[ 1 ] ).to.equal( viewDocument.selection );
@@ -71,56 +76,58 @@ describe( 'view test utils', () => {
 				expect( stringifyOptions ).to.have.property( 'showPriority' ).that.equals( false );
 				expect( stringifyOptions ).to.have.property( 'ignoreRoot' ).that.equals( true );
 
-				viewDocument.destroy();
+				view.destroy();
 			} );
 
 			it( 'should throw an error when passing invalid document', () => {
 				expect( () => {
-					getData( { invalid: 'document' } );
-				} ).to.throw( TypeError, 'Document needs to be an instance of module:engine/view/document~Document.' );
+					getData( { invalid: 'view' } );
+				} ).to.throw( TypeError, 'View needs to be an instance of module:engine/view/view~View.' );
 			} );
 		} );
 
 		describe( 'setData', () => {
 			it( 'should use parse method', () => {
-				const viewDocument = new Document();
+				const view = new View();
+				const viewDocument = view.document;
 				const data = 'foobar<b>baz</b>';
 				const parseSpy = sandbox.spy( setData, '_parse' );
 
-				viewDocument.createRoot( document.createElement( 'div' ) );
-				setData( viewDocument, data );
+				createAttachedRoot( viewDocument, document.createElement( 'div' ) );
+				setData( view, data );
 
-				expect( getData( viewDocument ) ).to.equal( 'foobar<b>baz</b>' );
+				expect( getData( view ) ).to.equal( 'foobar<b>baz</b>' );
 				sinon.assert.calledOnce( parseSpy );
 				const args = parseSpy.firstCall.args;
 				expect( args[ 0 ] ).to.equal( data );
 				expect( args[ 1 ] ).to.be.an( 'object' );
 				expect( args[ 1 ].rootElement ).to.equal( viewDocument.getRoot() );
 
-				viewDocument.destroy();
+				view.destroy();
 			} );
 
 			it( 'should use parse method with selection', () => {
-				const viewDocument = new Document();
+				const view = new View();
+				const viewDocument = view.document;
 				const data = '[<b>baz</b>]';
 				const parseSpy = sandbox.spy( setData, '_parse' );
 
-				viewDocument.createRoot( document.createElement( 'div' ) );
-				setData( viewDocument, data );
+				createAttachedRoot( viewDocument, document.createElement( 'div' ) );
+				setData( view, data );
 
-				expect( getData( viewDocument ) ).to.equal( '[<b>baz</b>]' );
+				expect( getData( view ) ).to.equal( '[<b>baz</b>]' );
 				const args = parseSpy.firstCall.args;
 				expect( args[ 0 ] ).to.equal( data );
 				expect( args[ 1 ] ).to.be.an( 'object' );
 				expect( args[ 1 ].rootElement ).to.equal( viewDocument.getRoot() );
 
-				viewDocument.destroy();
+				view.destroy();
 			} );
 
 			it( 'should throw an error when passing invalid document', () => {
 				expect( () => {
-					setData( { invalid: 'document' } );
-				} ).to.throw( TypeError, 'Document needs to be an instance of module:engine/view/document~Document.' );
+					setData( { invalid: 'view' } );
+				} ).to.throw( TypeError, 'View needs to be an instance of module:engine/view/view~View.' );
 			} );
 		} );
 	} );
@@ -160,8 +167,7 @@ describe( 'view test utils', () => {
 			const b2 = new Element( 'b', null, text2 );
 			const p = new Element( 'p', null, [ b1, b2 ] );
 			const range = Range.createFromParentsAndOffsets( p, 1, p, 2 );
-			const selection = new Selection();
-			selection.addRange( range );
+			const selection = new Selection( [ range ] );
 			expect( stringify( p, selection ) ).to.equal( '<p><b>foobar</b>[<b>bazqux</b>]</p>' );
 		} );
 
@@ -170,8 +176,7 @@ describe( 'view test utils', () => {
 			const b = new Element( 'b', null, text );
 			const p = new Element( 'p', null, b );
 			const range = Range.createFromParentsAndOffsets( p, 0, text, 4 );
-			const selection = new Selection();
-			selection.addRange( range );
+			const selection = new Selection( [ range ] );
 
 			expect( stringify( p, selection ) ).to.equal( '<p>[<b>நிலை}க்கு</b></p>' );
 		} );
@@ -180,8 +185,7 @@ describe( 'view test utils', () => {
 			const text = new Text( 'foobar' );
 			const p = new Element( 'p', null, text );
 			const range = Range.createFromParentsAndOffsets( p, 0, p, 0 );
-			const selection = new Selection();
-			selection.addRange( range );
+			const selection = new Selection( [ range ] );
 			expect( stringify( p, selection ) ).to.equal( '<p>[]foobar</p>' );
 		} );
 
@@ -192,8 +196,7 @@ describe( 'view test utils', () => {
 			const b2 = new Element( 'b', null, text2 );
 			const p = new Element( 'p', null, [ b1, b2 ] );
 			const range = Range.createFromParentsAndOffsets( text1, 1, text1, 5 );
-			const selection = new Selection();
-			selection.addRange( range );
+			const selection = new Selection( [ range ] );
 			expect( stringify( p, selection ) ).to.equal( '<p><b>f{ooba}r</b><b>bazqux</b></p>' );
 		} );
 
@@ -204,8 +207,7 @@ describe( 'view test utils', () => {
 			const b2 = new Element( 'b', null, text2 );
 			const p = new Element( 'p', null, [ b1, b2 ] );
 			const range = Range.createFromParentsAndOffsets( text1, 1, text1, 5 );
-			const selection = new Selection();
-			selection.addRange( range );
+			const selection = new Selection( [ range ] );
 			expect( stringify( p, selection, { sameSelectionCharacters: true } ) )
 				.to.equal( '<p><b>f[ooba]r</b><b>bazqux</b></p>' );
 		} );
@@ -214,8 +216,7 @@ describe( 'view test utils', () => {
 			const text = new Text( 'foobar' );
 			const p = new Element( 'p', null, text );
 			const range = Range.createFromParentsAndOffsets( text, 0, text, 0 );
-			const selection = new Selection();
-			selection.addRange( range );
+			const selection = new Selection( [ range ] );
 			expect( stringify( p, selection ) ).to.equal( '<p>{}foobar</p>' );
 		} );
 
@@ -226,8 +227,7 @@ describe( 'view test utils', () => {
 			const b2 = new Element( 'b', null, text2 );
 			const p = new Element( 'p', null, [ b1, b2 ] );
 			const range = Range.createFromParentsAndOffsets( p, 0, text2, 5 );
-			const selection = new Selection();
-			selection.addRange( range );
+			const selection = new Selection( [ range ] );
 			expect( stringify( p, selection ) ).to.equal( '<p>[<b>foobar</b><b>bazqu}x</b></p>' );
 		} );
 
@@ -307,8 +307,7 @@ describe( 'view test utils', () => {
 			const p = new Element( 'p', null, [ b1, b2 ] );
 			const range1 = Range.createFromParentsAndOffsets( p, 0, p, 1 );
 			const range2 = Range.createFromParentsAndOffsets( p, 1, p, 1 );
-			const selection = new Selection();
-			selection.setRanges( [ range2, range1 ] );
+			const selection = new Selection( [ range2, range1 ] );
 
 			expect( stringify( p, selection ) ).to.equal( '<p>[<b>foobar</b>][]<b>bazqux</b></p>' );
 		} );
@@ -322,8 +321,7 @@ describe( 'view test utils', () => {
 			const range2 = Range.createFromParentsAndOffsets( text2, 0, text2, 3 );
 			const range3 = Range.createFromParentsAndOffsets( text2, 3, text2, 4 );
 			const range4 = Range.createFromParentsAndOffsets( p, 1, p, 1 );
-			const selection = new Selection();
-			selection.setRanges( [ range1, range2, range3, range4 ] );
+			const selection = new Selection( [ range1, range2, range3, range4 ] );
 
 			expect( stringify( p, selection ) ).to.equal( '<p>[<b>foobar</b>][]{baz}{q}ux</p>' );
 		} );
@@ -354,6 +352,24 @@ describe( 'view test utils', () => {
 			const p = new ContainerElement( 'p', null, span );
 			expect( stringify( p, null, { showType: true } ) )
 				.to.equal( '<container:p><ui:span></ui:span></container:p>' );
+		} );
+
+		it( 'should sort classes in specified element', () => {
+			const text = new Text( 'foobar' );
+			const b = new Element( 'b', {
+				class: 'zz xx aa'
+			}, text );
+
+			expect( stringify( b ) ).to.equal( '<b class="aa xx zz">foobar</b>' );
+		} );
+
+		it( 'should sort styles in specified element', () => {
+			const text = new Text( 'foobar' );
+			const i = new Element( 'i', {
+				style: 'text-decoration: underline; font-weight: bold'
+			}, text );
+
+			expect( stringify( i ) ).to.equal( '<i style="font-weight:bold;text-decoration:underline">foobar</i>' );
 		} );
 	} );
 
@@ -439,10 +455,10 @@ describe( 'view test utils', () => {
 		it( 'should parse element priority', () => {
 			const parsed1 = parse( '<b view-priority="12"></b>' );
 			const attribute1 = new AttributeElement( 'b' );
-			attribute1.priority = 12;
+			attribute1._priority = 12;
 			const parsed2 = parse( '<attribute:b view-priority="44"></attribute:b>' );
 			const attribute2 = new AttributeElement( 'b' );
-			attribute2.priority = 44;
+			attribute2._priority = 44;
 
 			parsed1.isSimilar( attribute1 );
 			expect( parsed1.isSimilar( attribute1 ) ).to.be.true;
@@ -659,3 +675,13 @@ describe( 'view test utils', () => {
 		} );
 	} );
 } );
+
+function createAttachedRoot( viewDocument, element ) {
+	const root = createViewRoot( viewDocument );
+
+	// Set name of view root the same as dom root.
+	// This is a mock of attaching view root to dom root.
+	root._name = element.tagName.toLowerCase();
+
+	return root;
+}

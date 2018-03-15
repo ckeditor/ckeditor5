@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -19,7 +19,8 @@ export default class MarkerOperation extends Operation {
 	 * @param {module:engine/model/range~Range} oldRange Marker range before the change.
 	 * @param {module:engine/model/range~Range} newRange Marker range after the change.
 	 * @param {module:engine/model/markercollection~MarkerCollection} markers Marker collection on which change should be executed.
-	 * @param {Number} baseVersion {@link module:engine/model/document~Document#version} on which the operation can be applied.
+	 * @param {Number|null} baseVersion Document {@link module:engine/model/document~Document#version} on which operation
+	 * can be applied or `null` if the operation operates on detached (non-document) tree.
 	 */
 	constructor( name, oldRange, newRange, markers, baseVersion ) {
 		super( baseVersion );
@@ -86,11 +87,9 @@ export default class MarkerOperation extends Operation {
 	 * @inheritDoc
 	 */
 	_execute() {
-		const type = this.newRange ? 'set' : 'remove';
+		const type = this.newRange ? '_set' : '_remove';
 
-		this._markers[ type ]( this.name, this.newRange );
-
-		return { name: this.name, type };
+		this._markers[ type ]( this.name, this.newRange, true );
 	}
 
 	/**
@@ -123,7 +122,7 @@ export default class MarkerOperation extends Operation {
 			json.name,
 			json.oldRange ? Range.fromJSON( json.oldRange, document ) : null,
 			json.newRange ? Range.fromJSON( json.newRange, document ) : null,
-			document.markers,
+			document.model.markers,
 			json.baseVersion
 		);
 	}

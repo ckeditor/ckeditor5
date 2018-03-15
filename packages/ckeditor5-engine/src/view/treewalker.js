@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -132,7 +132,9 @@ export default class TreeWalker {
 	}
 
 	/**
-	 * Iterator interface.
+	 * Iterable interface.
+	 *
+	 * @returns {Iterable.<module:engine/view/treewalker~TreeWalkerValue>}
 	 */
 	[ Symbol.iterator ]() {
 		return this;
@@ -165,10 +167,10 @@ export default class TreeWalker {
 	}
 
 	/**
-	 * Iterator interface method.
-	 * Detects walking direction and makes step forward or backward.
+	 * Gets the next tree walker's value.
 	 *
-	 * @returns {Object} Object implementing iterator interface, returning information about taken step.
+	 * @returns {module:engine/view/treewalker~TreeWalkerValue} Object implementing iterator interface, returning
+	 * information about taken step.
 	 */
 	next() {
 		if ( this.direction == 'forward' ) {
@@ -236,7 +238,7 @@ export default class TreeWalker {
 				return this._next();
 			} else {
 				let charactersCount = node.data.length;
-				let item = node;
+				let item;
 
 				// If text stick out of walker range, we need to cut it and wrap by TextProxy.
 				if ( node == this._boundaryEndParent ) {
@@ -244,6 +246,7 @@ export default class TreeWalker {
 					item = new TextProxy( node, 0, charactersCount );
 					position = Position.createAfter( item );
 				} else {
+					item = new TextProxy( node, 0, node.data.length );
 					// If not just keep moving forward.
 					position.offset++;
 				}
@@ -347,7 +350,7 @@ export default class TreeWalker {
 				return this._previous();
 			} else {
 				let charactersCount = node.data.length;
-				let item = node;
+				let item;
 
 				// If text stick out of walker range, we need to cut it and wrap by TextProxy.
 				if ( node == this._boundaryStartParent ) {
@@ -357,6 +360,7 @@ export default class TreeWalker {
 					charactersCount = item.data.length;
 					position = Position.createBefore( item );
 				} else {
+					item = new TextProxy( node, 0, node.data.length );
 					// If not just keep moving backward.
 					position.offset--;
 				}

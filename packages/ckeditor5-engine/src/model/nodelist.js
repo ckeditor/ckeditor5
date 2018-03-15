@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -19,6 +19,7 @@ export default class NodeList {
 	/**
 	 * Creates an empty node list.
 	 *
+	 * @protected
 	 * @param {Iterable.<module:engine/model/node~Node>} nodes Nodes contained in this node list.
 	 */
 	constructor( nodes ) {
@@ -31,14 +32,16 @@ export default class NodeList {
 		this._nodes = [];
 
 		if ( nodes ) {
-			this.insertNodes( 0, nodes );
+			this._insertNodes( 0, nodes );
 		}
 	}
 
 	/**
-	 * Returns an iterator that iterates over all nodes contained inside this node list.
+	 * Iterable interface.
 	 *
-	 * @returns {Iterator.<module:engine/model/node~Node>}
+	 * Iterates over all nodes contained inside this node list.
+	 *
+	 * @returns {Iterable.<module:engine/model/node~Node>}
 	 */
 	[ Symbol.iterator ]() {
 		return this._nodes[ Symbol.iterator ]();
@@ -162,10 +165,11 @@ export default class NodeList {
 	/**
 	 * Inserts given nodes at given index.
 	 *
+	 * @protected
 	 * @param {Number} index Index at which nodes should be inserted.
 	 * @param {Iterable.<module:engine/model/node~Node>} nodes Nodes to be inserted.
 	 */
-	insertNodes( index, nodes ) {
+	_insertNodes( index, nodes ) {
 		// Validation.
 		for ( const node of nodes ) {
 			if ( !( node instanceof Node ) ) {
@@ -184,11 +188,12 @@ export default class NodeList {
 	/**
 	 * Removes one or more nodes starting at the given index.
 	 *
+	 * @protected
 	 * @param {Number} indexStart Index of the first node to remove.
 	 * @param {Number} [howMany=1] Number of nodes to remove.
 	 * @returns {Array.<module:engine/model/node~Node>} Array containing removed nodes.
 	 */
-	removeNodes( indexStart, howMany = 1 ) {
+	_removeNodes( indexStart, howMany = 1 ) {
 		return this._nodes.splice( indexStart, howMany );
 	}
 

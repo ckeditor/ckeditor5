@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -34,7 +34,7 @@ import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
  *
  * Whenever the {@link module:engine/model/document~Document document}
  * has different {@link module:engine/model/document~Document#version}
- * than the operation you want to {@link module:engine/model/document~Document#applyOperation apply}, you need to transform that
+ * than the operation you want to {@link module:engine/model/model~Model#applyOperation apply}, you need to transform that
  * operation by all operations which were already applied to the {@link module:engine/model/document~Document document} and have greater
  * {@link module:engine/model/document~Document#version} than the operation being applied. Transform them in the same order as those
  * operations which were applied. This way all modifications done to the Tree Data Model will be reflected

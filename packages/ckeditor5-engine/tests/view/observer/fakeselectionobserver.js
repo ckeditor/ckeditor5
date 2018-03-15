@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -7,13 +7,14 @@
 
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 import FakeSelectionObserver from '../../../src/view/observer/fakeselectionobserver';
-import ViewDocument from '../../../src/view/document';
+import View from '../../../src/view/view';
 import DomEventData from '../../../src/view/observer/domeventdata';
+import createViewRoot from '../_utils/createroot';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { setData, stringify } from '../../../src/dev-utils/view';
 
 describe( 'FakeSelectionObserver', () => {
-	let observer, viewDocument, root, domRoot;
+	let observer, view, viewDocument, root, domRoot;
 
 	before( () => {
 		domRoot = createElement( document, 'div', {
@@ -27,18 +28,20 @@ describe( 'FakeSelectionObserver', () => {
 	} );
 
 	beforeEach( () => {
-		viewDocument = new ViewDocument();
-		root = viewDocument.createRoot( domRoot );
-		observer = viewDocument.getObserver( FakeSelectionObserver );
-		viewDocument.selection.setFake();
+		view = new View();
+		viewDocument = view.document;
+		root = createViewRoot( viewDocument );
+		view.attachDomRoot( domRoot );
+		observer = view.getObserver( FakeSelectionObserver );
+		viewDocument.selection._setTo( null, { fake: true } );
 	} );
 
 	afterEach( () => {
-		viewDocument.destroy();
+		view.destroy();
 	} );
 
 	it( 'should do nothing if selection is not fake', () => {
-		viewDocument.selection.setFake( false );
+		viewDocument.selection._setTo( null, { fake: false } );
 
 		return checkEventPrevention( keyCodes.arrowleft, false );
 	} );
@@ -188,7 +191,7 @@ describe( 'FakeSelectionObserver', () => {
 				resolve();
 			} );
 
-			setData( viewDocument, initialData );
+			setData( view, initialData );
 			changeFakeSelectionPressing( keyCode );
 		} );
 	}
@@ -197,7 +200,10 @@ describe( 'FakeSelectionObserver', () => {
 	//
 	// @param {Number} keyCode
 	function changeFakeSelectionPressing( keyCode ) {
-		viewDocument.selection.setFake();
+		viewDocument.selection._setTo( viewDocument.selection.getRanges(), {
+			backward: viewDocument.selection.isBackward,
+			fake: true
+		} );
 
 		const data = {
 			keyCode,

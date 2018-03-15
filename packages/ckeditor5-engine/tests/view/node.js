@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -100,7 +100,7 @@ describe( 'Node', () => {
 		it( 'should return ancestors including DocumentFragment', () => {
 			const fragment = new DocumentFragment( root );
 			const result = img.getAncestors();
-			root.remove();
+			root._remove();
 
 			expect( result.length ).to.equal( 3 );
 			expect( result[ 0 ] ).to.equal( fragment );
@@ -222,7 +222,7 @@ describe( 'Node', () => {
 		it( 'should return Document attached to the parent element', () => {
 			const docMock = createDocumentMock();
 			const parent = new RootEditableElement( 'div' );
-			parent.document = docMock;
+			parent._document = docMock;
 			const child = new Element( 'p' );
 
 			child.parent = parent;
@@ -248,7 +248,7 @@ describe( 'Node', () => {
 
 		it( 'should return root element', () => {
 			const parent = new RootEditableElement( 'div' );
-			parent.document = createDocumentMock();
+			parent._document = createDocumentMock();
 			const child = new Element( 'p' );
 
 			child.parent = parent;
@@ -258,24 +258,24 @@ describe( 'Node', () => {
 		} );
 	} );
 
-	describe( 'remove()', () => {
+	describe( '_remove()', () => {
 		it( 'should remove node from its parent', () => {
 			const char = new Text( 'a' );
 			const parent = new Element( 'p', null, [ char ] );
-			char.remove();
+			char._remove();
 
 			expect( parent.getChildIndex( char ) ).to.equal( -1 );
 		} );
 
-		it( 'uses parent.removeChildren method', () => {
+		it( 'uses parent._removeChildren method', () => {
 			const char = new Text( 'a' );
 			const parent = new Element( 'p', null, [ char ] );
-			const removeChildrenSpy = sinon.spy( parent, 'removeChildren' );
+			const _removeChildrenSpy = sinon.spy( parent, '_removeChildren' );
 			const index = char.index;
-			char.remove();
-			removeChildrenSpy.restore();
-			sinon.assert.calledOnce( removeChildrenSpy );
-			sinon.assert.calledWithExactly( removeChildrenSpy, index );
+			char._remove();
+			_removeChildrenSpy.restore();
+			sinon.assert.calledOnce( _removeChildrenSpy );
+			sinon.assert.calledWithExactly( _removeChildrenSpy, index );
 		} );
 	} );
 
@@ -283,13 +283,13 @@ describe( 'Node', () => {
 		it( 'should prevent circular reference when stringifying a node', () => {
 			const char = new Text( 'a' );
 			const parent = new Element( 'p', null );
-			parent.appendChildren( char );
+			parent._appendChildren( char );
 
 			const json = JSON.stringify( char );
 			const parsed = JSON.parse( json );
 
 			expect( parsed ).to.deep.equal( {
-				_data: 'a'
+				_textData: 'a'
 			} );
 		} );
 	} );
@@ -303,11 +303,10 @@ describe( 'Node', () => {
 
 		beforeEach( () => {
 			text = new Text( 'foo' );
-			img = new Element( 'img' );
-			img.setAttribute( 'src', 'img.png' );
+			img = new Element( 'img', { 'src': 'img.png' } );
 
 			root = new Element( 'p', { renderer: { markToSync: rootChangeSpy } } );
-			root.appendChildren( [ text, img ] );
+			root._appendChildren( [ text, img ] );
 
 			root.on( 'change:children', ( evt, node ) => rootChangeSpy( 'children', node ) );
 			root.on( 'change:attributes', ( evt, node ) => rootChangeSpy( 'attributes', node ) );
@@ -323,67 +322,67 @@ describe( 'Node', () => {
 				imgChangeSpy( 'attributes', node );
 			} );
 
-			img.setAttribute( 'width', 100 );
+			img._setAttribute( 'width', 100 );
 
 			sinon.assert.calledOnce( imgChangeSpy );
 			sinon.assert.calledWith( imgChangeSpy, 'attributes', img );
 		} );
 
 		it( 'should be fired on the parent', () => {
-			img.setAttribute( 'width', 100 );
+			img._setAttribute( 'width', 100 );
 
 			sinon.assert.calledOnce( rootChangeSpy );
 			sinon.assert.calledWith( rootChangeSpy, 'attributes', img );
 		} );
 
-		describe( 'setAttribute()', () => {
+		describe( '_setAttribute()', () => {
 			it( 'should fire change event', () => {
-				img.setAttribute( 'width', 100 );
+				img._setAttribute( 'width', 100 );
 
 				sinon.assert.calledOnce( rootChangeSpy );
 				sinon.assert.calledWith( rootChangeSpy, 'attributes', img );
 			} );
 		} );
 
-		describe( 'removeAttribute()', () => {
+		describe( '_removeAttribute()', () => {
 			it( 'should fire change event', () => {
-				img.removeAttribute( 'src' );
+				img._removeAttribute( 'src' );
 
 				sinon.assert.calledOnce( rootChangeSpy );
 				sinon.assert.calledWith( rootChangeSpy, 'attributes', img );
 			} );
 		} );
 
-		describe( 'insertChildren()', () => {
+		describe( '_insertChildren()', () => {
 			it( 'should fire change event', () => {
-				root.insertChildren( 1, new Element( 'img' ) );
+				root._insertChildren( 1, new Element( 'img' ) );
 
 				sinon.assert.calledOnce( rootChangeSpy );
 				sinon.assert.calledWith( rootChangeSpy, 'children', root );
 			} );
 		} );
 
-		describe( 'appendChildren()', () => {
+		describe( '_appendChildren()', () => {
 			it( 'should fire change event', () => {
-				root.appendChildren( new Element( 'img' ) );
+				root._appendChildren( new Element( 'img' ) );
 
 				sinon.assert.calledOnce( rootChangeSpy );
 				sinon.assert.calledWith( rootChangeSpy, 'children', root );
 			} );
 		} );
 
-		describe( 'removeChildren()', () => {
+		describe( '_removeChildren()', () => {
 			it( 'should fire change event', () => {
-				root.removeChildren( 1, 1 );
+				root._removeChildren( 1, 1 );
 
 				sinon.assert.calledOnce( rootChangeSpy );
 				sinon.assert.calledWith( rootChangeSpy, 'children', root );
 			} );
 		} );
 
-		describe( 'removeChildren()', () => {
+		describe( 'setText', () => {
 			it( 'should fire change event', () => {
-				text.data = 'bar';
+				text._data = 'bar';
 
 				sinon.assert.calledOnce( rootChangeSpy );
 				sinon.assert.calledWith( rootChangeSpy, 'text', text );

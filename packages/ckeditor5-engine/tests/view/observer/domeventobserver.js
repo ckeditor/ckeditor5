@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -7,12 +7,13 @@
 
 import DomEventObserver from '../../../src/view/observer/domeventobserver';
 import Observer from '../../../src/view/observer/observer';
-import ViewDocument from '../../../src/view/document';
+import View from '../../../src/view/view';
 import UIElement from '../../../src/view/uielement';
+import createViewRoot from '../_utils/createroot';
 
 class ClickObserver extends DomEventObserver {
-	constructor( document ) {
-		super( document );
+	constructor( view ) {
+		super( view );
 
 		this.domEventType = 'click';
 	}
@@ -23,8 +24,8 @@ class ClickObserver extends DomEventObserver {
 }
 
 class MultiObserver extends DomEventObserver {
-	constructor( document ) {
-		super( document );
+	constructor( view ) {
+		super( view );
 
 		this.domEventType = [ 'evt1', 'evt2' ];
 	}
@@ -35,22 +36,23 @@ class MultiObserver extends DomEventObserver {
 }
 
 class ClickCapturingObserver extends ClickObserver {
-	constructor( document ) {
-		super( document );
+	constructor( view ) {
+		super( view );
 
 		this.useCapture = true;
 	}
 }
 
 describe( 'DomEventObserver', () => {
-	let viewDocument;
+	let view, viewDocument;
 
 	beforeEach( () => {
-		viewDocument = new ViewDocument();
+		view = new View();
+		viewDocument = view.document;
 	} );
 
 	afterEach( () => {
-		viewDocument.destroy();
+		view.destroy();
 	} );
 
 	describe( 'constructor()', () => {
@@ -66,8 +68,9 @@ describe( 'DomEventObserver', () => {
 		const domEvent = new MouseEvent( 'click' );
 		const evtSpy = sinon.spy();
 
-		viewDocument.createRoot( domElement, 'root' );
-		viewDocument.addObserver( ClickObserver );
+		createViewRoot( viewDocument );
+		view.attachDomRoot( domElement );
+		view.addObserver( ClickObserver );
 		viewDocument.on( 'click', evtSpy );
 
 		domElement.dispatchEvent( domEvent );
@@ -88,8 +91,9 @@ describe( 'DomEventObserver', () => {
 		const evtSpy1 = sinon.spy();
 		const evtSpy2 = sinon.spy();
 
-		viewDocument.createRoot( domElement, 'root' );
-		viewDocument.addObserver( MultiObserver );
+		createViewRoot( viewDocument );
+		view.attachDomRoot( domElement );
+		view.addObserver( MultiObserver );
 		viewDocument.on( 'evt1', evtSpy1 );
 		viewDocument.on( 'evt2', evtSpy2 );
 
@@ -105,8 +109,9 @@ describe( 'DomEventObserver', () => {
 		const domEvent = new MouseEvent( 'click' );
 		const evtSpy = sinon.spy();
 
-		viewDocument.createRoot( domElement, 'root' );
-		const testObserver = viewDocument.addObserver( ClickObserver );
+		createViewRoot( viewDocument );
+		view.attachDomRoot( domElement );
+		const testObserver = view.addObserver( ClickObserver );
 		viewDocument.on( 'click', evtSpy );
 
 		testObserver.disable();
@@ -121,8 +126,9 @@ describe( 'DomEventObserver', () => {
 		const domEvent = new MouseEvent( 'click' );
 		const evtSpy = sinon.spy();
 
-		viewDocument.createRoot( domElement, 'root' );
-		const testObserver = viewDocument.addObserver( ClickObserver );
+		createViewRoot( viewDocument );
+		view.attachDomRoot( domElement );
+		const testObserver = view.addObserver( ClickObserver );
 		viewDocument.on( 'click', evtSpy );
 
 		testObserver.disable();
@@ -143,8 +149,9 @@ describe( 'DomEventObserver', () => {
 		const childDomElement = document.createElement( 'p' );
 		const domEvent = new MouseEvent( 'click' );
 		domElement.appendChild( childDomElement );
-		viewDocument.createRoot( domElement, 'root' );
-		viewDocument.addObserver( ClickCapturingObserver );
+		createViewRoot( viewDocument );
+		view.attachDomRoot( domElement );
+		view.addObserver( ClickCapturingObserver );
 
 		viewDocument.on( 'click', ( evt, domEventData ) => {
 			expect( domEventData.domEvent.eventPhase ).to.equal( domEventData.domEvent.CAPTURING_PHASE );
@@ -157,25 +164,30 @@ describe( 'DomEventObserver', () => {
 	describe( 'integration with UIElement', () => {
 		let domRoot, domEvent, evtSpy, uiElement;
 
-		class MyUIElement extends UIElement {
-			render( domDocument ) {
-				const root = super.render( domDocument );
+		function createUIElement( name ) {
+			const element = new UIElement( name );
+
+			element.render = function( domDocument ) {
+				const root = this.toDomElement( domDocument );
 				root.innerHTML = '<span>foo bar</span>';
 
 				return root;
-			}
+			};
+
+			return element;
 		}
 
 		beforeEach( () => {
 			domRoot = document.createElement( 'div' );
-			const viewRoot = viewDocument.createRoot( domRoot, 'root' );
-			uiElement = new MyUIElement( 'p' );
-			viewRoot.appendChildren( uiElement );
-			viewDocument.render();
+			const viewRoot = createViewRoot( viewDocument );
+			view.attachDomRoot( domRoot );
+			uiElement = createUIElement( 'p' );
+			viewRoot._appendChildren( uiElement );
+			view.render();
 
 			domEvent = new MouseEvent( 'click', { bubbles: true } );
 			evtSpy = sinon.spy();
-			viewDocument.addObserver( ClickObserver );
+			view.addObserver( ClickObserver );
 			viewDocument.on( 'click', evtSpy );
 		} );
 
@@ -202,7 +214,7 @@ describe( 'DomEventObserver', () => {
 
 	describe( 'fire', () => {
 		it( 'should do nothing if observer is disabled', () => {
-			const testObserver = new ClickObserver( viewDocument );
+			const testObserver = new ClickObserver( view );
 			const fireSpy = sinon.spy( viewDocument, 'fire' );
 
 			testObserver.disable();

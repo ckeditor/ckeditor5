@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -104,6 +104,7 @@ export default class Position {
 		 *		     |- LI
 		 *		        |- b^a|r  ^ has path: [ 1, 1, 1 ]   | has path: [ 1, 1, 2 ]
 		 *
+		 * @readonly
 		 * @member {Array.<Number>} module:engine/model/position~Position#path
 		 */
 		this.path = path;
@@ -764,7 +765,7 @@ export default class Position {
 			return new Position( doc.graveyard, json.path );
 		}
 
-		if ( !doc.hasRoot( json.root ) ) {
+		if ( !doc.getRoot( json.root ) ) {
 			/**
 			 * Cannot create position for document. Root with specified name does not exist.
 			 *

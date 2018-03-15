@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -7,56 +7,57 @@
  * @module engine/controller/editingcontroller
  */
 
-import ViewDocument from '../view/document';
+import RootEditableElement from '../view/rooteditableelement';
+import View from '../view/view';
+import ViewWriter from '../view/writer';
 import Mapper from '../conversion/mapper';
-import ModelConversionDispatcher from '../conversion/modelconversiondispatcher';
+import DowncastDispatcher from '../conversion/downcastdispatcher';
 import {
 	insertText,
 	remove
-} from '../conversion/model-to-view-converters';
-import { convertSelectionChange } from '../conversion/view-selection-to-model-converters';
+} from '../conversion/downcast-converters';
+import { convertSelectionChange } from '../conversion/upcast-selection-converters';
 import {
 	convertRangeSelection,
 	convertCollapsedSelection,
-	clearAttributes,
-	clearFakeSelection
-} from '../conversion/model-selection-to-view-converters';
+	clearAttributes
+} from '../conversion/downcast-selection-converters';
 
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
  * Controller for the editing pipeline. The editing pipeline controls {@link ~EditingController#model model} rendering,
- * including selection handling. It also creates {@link ~EditingController#view view document} which build a
- * browser-independent virtualization over the DOM elements. Editing controller also attach default converters.
+ * including selection handling. It also creates the {@link ~EditingController#view view document} which builds a
+ * browser-independent virtualization over the DOM elements. The editing controller also attaches default converters.
  *
  * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class EditingController {
 	/**
-	 * Creates editing controller instance.
+	 * Creates an editing controller instance.
 	 *
-	 * @param {module:engine/model/document~Document} model Document model.
+	 * @param {module:engine/model/model~Model} model Editing model.
 	 */
 	constructor( model ) {
 		/**
-		 * Document model.
+		 * Editing model.
 		 *
 		 * @readonly
-		 * @member {module:engine/model/document~Document}
+		 * @member {module:engine/model/model~Model}
 		 */
 		this.model = model;
 
 		/**
-		 * View document.
+		 * Editing view controller.
 		 *
 		 * @readonly
-		 * @member {module:engine/view/document~Document}
+		 * @member {module:engine/view/view~View}
 		 */
-		this.view = new ViewDocument();
+		this.view = new View();
 
 		/**
-		 * Mapper which describes model-view binding.
+		 * Mapper which describes the model-view binding.
 		 *
 		 * @readonly
 		 * @member {module:engine/conversion/mapper~Mapper}
@@ -64,86 +65,102 @@ export default class EditingController {
 		this.mapper = new Mapper();
 
 		/**
-		 * Model to view conversion dispatcher, which converts changes from the model to
-		 * {@link #view editing view}.
-		 *
-		 * To attach model to view converter to the editing pipeline you need to add lister to this property:
-		 *
-		 *		editing.modelToView( 'insert:$element', customInsertConverter );
-		 *
-		 * Or use {@link module:engine/conversion/buildmodelconverter~ModelConverterBuilder}:
-		 *
-		 *		buildModelConverter().for( editing.modelToView ).fromAttribute( 'bold' ).toElement( 'b' );
+		 * Downcast dispatcher that converts changes from the model to {@link #view the editing view}.
 		 *
 		 * @readonly
-		 * @member {module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher} #modelToView
+		 * @member {module:engine/conversion/downcastdispatcher~DowncastDispatcher} #downcastDispatcher
 		 */
-		this.modelToView = new ModelConversionDispatcher( this.model, {
-			mapper: this.mapper,
-			viewSelection: this.view.selection
+		this.downcastDispatcher = new DowncastDispatcher( {
+			mapper: this.mapper
 		} );
 
-		// Convert changes in model to view.
-		this.listenTo( this.model, 'change', ( evt, type, changes ) => {
-			this.modelToView.convertChange( type, changes );
+		const doc = this.model.document;
+		const selection = doc.selection;
+		const markers = this.model.markers;
+
+		this.listenTo( doc, 'change', () => {
+			this.view.change( writer => {
+				this.downcastDispatcher.convertChanges( doc.differ, writer );
+				this.downcastDispatcher.convertSelection( selection, markers, writer );
+			} );
 		}, { priority: 'low' } );
 
-		// Convert model selection to view.
-		this.listenTo( this.model, 'changesDone', () => {
-			const selection = this.model.selection;
+		// Convert selection from view to model.
+		this.listenTo( this.view.document, 'selectionChange', convertSelectionChange( this.model, this.mapper ) );
 
-			this.modelToView.convertSelection( selection );
-			this.view.render();
+		// Attach default model converters.
+		this.downcastDispatcher.on( 'insert:$text', insertText(), { priority: 'lowest' } );
+		this.downcastDispatcher.on( 'remove', remove(), { priority: 'low' } );
+
+		// Attach default model selection converters.
+		this.downcastDispatcher.on( 'selection', clearAttributes(), { priority: 'low' } );
+		this.downcastDispatcher.on( 'selection', convertRangeSelection(), { priority: 'low' } );
+		this.downcastDispatcher.on( 'selection', convertCollapsedSelection(), { priority: 'low' } );
+
+		// Convert markers removal.
+		//
+		// Markers should be removed from the view before changes to the model are applied. This is because otherwise
+		// it would be impossible to map some markers to the view (if, for example, the marker's boundary parent got removed).
+		//
+		// `removedMarkers` keeps information which markers already has been removed to prevent removing them twice.
+		const removedMarkers = new Set();
+
+		// We don't want to render view when markers are converted, so we need to create view writer
+		// manually instead of using `View#change` block. See https://github.com/ckeditor/ckeditor5-engine/issues/1323.
+		const viewWriter = new ViewWriter( this.view.document );
+
+		this.listenTo( model, 'applyOperation', ( evt, args ) => {
+			// Before operation is applied...
+			const operation = args[ 0 ];
+
+			for ( const marker of model.markers ) {
+				// Check all markers, that aren't already removed...
+				if ( removedMarkers.has( marker.name ) ) {
+					continue;
+				}
+
+				const markerRange = marker.getRange();
+
+				if ( _operationAffectsMarker( operation, marker ) ) {
+					// And if the operation in any way modifies the marker, remove the marker from the view.
+					removedMarkers.add( marker.name );
+					this.downcastDispatcher.convertMarkerRemove( marker.name, markerRange, viewWriter );
+					// TODO: This stinks but this is the safest place to have this code.
+					this.model.document.differ.bufferMarkerChange( marker.name, markerRange, markerRange );
+				}
+			}
+		}, { priority: 'high' } );
+
+		// If an existing marker is updated through `model.Model#markers` directly (not through operation), just remove it.
+		this.listenTo( model.markers, 'update', ( evt, marker, oldRange ) => {
+			if ( oldRange && !removedMarkers.has( marker.name ) ) {
+				removedMarkers.add( marker.name );
+				this.downcastDispatcher.convertMarkerRemove( marker.name, oldRange, viewWriter );
+			}
+		} );
+
+		// When all changes are done, clear `removedMarkers` set.
+		this.listenTo( model, '_change', () => {
+			removedMarkers.clear();
 		}, { priority: 'low' } );
 
-		// Convert model markers changes.
-		this.listenTo( this.model.markers, 'add', ( evt, marker ) => {
-			this.modelToView.convertMarker( 'addMarker', marker.name, marker.getRange() );
+		// Binds {@link module:engine/view/document~Document#roots view roots collection} to
+		// {@link module:engine/model/document~Document#roots model roots collection} so creating
+		// model root automatically creates corresponding view root.
+		this.view.document.roots.bindTo( this.model.document.roots ).using( root => {
+			// $graveyard is a special root that has no reflection in the view.
+			if ( root.rootName == '$graveyard' ) {
+				return null;
+			}
+
+			const viewRoot = new RootEditableElement( root.name );
+
+			viewRoot.rootName = root.rootName;
+			viewRoot._document = this.view.document;
+			this.mapper.bindElements( root, viewRoot );
+
+			return viewRoot;
 		} );
-
-		this.listenTo( this.model.markers, 'remove', ( evt, marker ) => {
-			this.modelToView.convertMarker( 'removeMarker', marker.name, marker.getRange() );
-		} );
-
-		// Convert view selection to model.
-		this.listenTo( this.view, 'selectionChange', convertSelectionChange( this.model, this.mapper ) );
-
-		// Attach default content converters.
-		this.modelToView.on( 'insert:$text', insertText(), { priority: 'lowest' } );
-		this.modelToView.on( 'remove', remove(), { priority: 'low' } );
-
-		// Attach default selection converters.
-		this.modelToView.on( 'selection', clearAttributes(), { priority: 'low' } );
-		this.modelToView.on( 'selection', clearFakeSelection(), { priority: 'low' } );
-		this.modelToView.on( 'selection', convertRangeSelection(), { priority: 'low' } );
-		this.modelToView.on( 'selection', convertCollapsedSelection(), { priority: 'low' } );
-	}
-
-	/**
-	 * {@link module:engine/view/document~Document#createRoot Creates} a view root
-	 * and {@link module:engine/conversion/mapper~Mapper#bindElements binds}
-	 * the model root with view root and and view root with DOM element:
-	 *
-	 *		editing.createRoot( document.querySelector( div#editor ) );
-	 *
-	 * If the DOM element is not available at the time you want to create a view root, for instance it is iframe body
-	 * element, it is possible to create view element and bind the DOM element later:
-	 *
-	 *		editing.createRoot( 'body' );
-	 *		editing.view.attachDomRoot( iframe.contentDocument.body );
-	 *
-	 * @param {Element|String} domRoot DOM root element or the name of view root element if the DOM element will be
-	 * attached later.
-	 * @param {String} [name='main'] Root name.
-	 * @returns {module:engine/view/containerelement~ContainerElement} View root element.
-	 */
-	createRoot( domRoot, name = 'main' ) {
-		const viewRoot = this.view.createRoot( domRoot, name );
-		const modelRoot = this.model.getRoot( name );
-
-		this.mapper.bindElements( modelRoot, viewRoot );
-
-		return viewRoot;
 	}
 
 	/**
@@ -157,3 +174,23 @@ export default class EditingController {
 }
 
 mix( EditingController, ObservableMixin );
+
+// Helper function which checks whether given operation will affect given marker after the operation is applied.
+function _operationAffectsMarker( operation, marker ) {
+	const range = marker.getRange();
+
+	if ( operation.type == 'insert' || operation.type == 'rename' ) {
+		return _positionAffectsRange( operation.position, range );
+	} else if ( operation.type == 'move' || operation.type == 'remove' || operation.type == 'reinsert' ) {
+		return _positionAffectsRange( operation.targetPosition, range ) || _positionAffectsRange( operation.sourcePosition, range );
+	} else if ( operation.type == 'marker' && operation.name == marker.name ) {
+		return true;
+	}
+
+	return false;
+}
+
+// Helper function which checks whether change at given position affects given range.
+function _positionAffectsRange( position, range ) {
+	return range.containsPosition( position ) || !range.start._getTransformedByInsertion( position, 1, true ).isEqual( range.start );
+}

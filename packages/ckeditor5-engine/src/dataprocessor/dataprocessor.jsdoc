@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -8,25 +8,25 @@
  */
 
 /**
- * DataProcessor interface. It should be implemented by actual DataProcessors.
- * Each data processor implements a certain format of the data. E.g. `MarkdownDataProcessor` will convert the data
- * (Markdown string) to a {@link module:engine/view/documentfragment~DocumentFragment DocumentFragment} and back.
+ * The data processor interface. It should be implemented by actual data processors.
+ * Each data processor implements a certain format of the data. For example, Markdown data processor will convert the data
+ * (a Markdown string) to a {@link module:engine/view/documentfragment~DocumentFragment document fragment} and back.
  *
  * @interface DataProcessor
  */
 
 /**
- * Converts a {@link module:engine/view/documentfragment~DocumentFragment DocumentFragment} to data.
+ * Converts a {@link module:engine/view/documentfragment~DocumentFragment document fragment} to data.
  *
  * @method #toData
- * @param {module:engine/view/documentfragment~DocumentFragment} fragment DocumentFragment to be processed.
+ * @param {module:engine/view/documentfragment~DocumentFragment} fragment The document fragment to be processed.
  * @returns {*}
  */
 
 /**
- * Converts data to a {@link module:engine/view/documentfragment~DocumentFragment DocumentFragment}.
+ * Converts the data to a {@link module:engine/view/documentfragment~DocumentFragment document fragment}.
  *
  * @method #toView
- * @param {*} data Data to be processed.
+ * @param {*} data The data to be processed.
  * @returns {module:engine/view/documentfragment~DocumentFragment}
  */

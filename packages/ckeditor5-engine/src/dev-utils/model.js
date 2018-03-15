@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -8,96 +8,96 @@
  */
 
 /**
- * Collection of methods for manipulating {@link module:engine/model/model model} for testing purposes.
+ * Collection of methods for manipulating the {@link module:engine/model/model model} for testing purposes.
  */
 
 import RootElement from '../model/rootelement';
-import ModelDocument from '../model/document';
+import Model from '../model/model';
+import Batch from '../model/batch';
 import ModelRange from '../model/range';
 import ModelPosition from '../model/position';
-import ModelConversionDispatcher from '../conversion/modelconversiondispatcher';
 import ModelSelection from '../model/selection';
 import ModelDocumentFragment from '../model/documentfragment';
-import ModelElement from '../model/element';
-import ModelText from '../model/text';
-import modelWriter from '../model/writer';
+import DocumentSelection from '../model/documentselection';
 
-import ViewConversionDispatcher from '../conversion/viewconversiondispatcher';
-import ViewSelection from '../view/selection';
-import ViewDocumentFragment from '../view/documentfragment';
+import View from '../view/view';
 import ViewContainerElement from '../view/containerelement';
-import ViewAttributeElement from '../view/attributeelement';
+import ViewRootEditableElement from '../view/rooteditableelement';
 
-import Mapper from '../conversion/mapper';
 import { parse as viewParse, stringify as viewStringify } from '../../src/dev-utils/view';
+
+import DowncastDispatcher from '../conversion/downcastdispatcher';
+import UpcastDispatcher from '../conversion/upcastdispatcher';
+import Mapper from '../conversion/mapper';
 import {
 	convertRangeSelection,
 	convertCollapsedSelection,
-	convertSelectionAttribute
-} from '../conversion/model-selection-to-view-converters';
-import { insertText, insertElement, wrapItem } from '../conversion/model-to-view-converters';
+} from '../conversion/downcast-selection-converters';
+import { insertText, insertElement, wrap } from '../conversion/downcast-converters';
+
 import isPlainObject from '@ckeditor/ckeditor5-utils/src/lib/lodash/isPlainObject';
+import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 
 /**
- * Writes the contents of the {@link module:engine/model/document~Document Document} to an HTML-like string.
+ * Writes the content of the {@link module:engine/model/document~Document document} to an HTML-like string.
  *
- * **Note:** {@link module:engine/model/text~Text text} node contains attributes will be represented as:
+ * **Note:** A {@link module:engine/model/text~Text text} node that contains attributes will be represented as:
  *
  *		<$text attribute="value">Text data</$text>
  *
- * @param {module:engine/model/document~Document} document
+ * @param {module:engine/model/model~Model} model
  * @param {Object} [options]
- * @param {Boolean} [options.withoutSelection=false] Whether to write the selection. When set to `true` selection will
- * be not included in returned string.
- * @param {Boolean} [options.rootName='main'] Name of the root from which data should be stringified. If not provided
- * default `main` name will be used.
+ * @param {Boolean} [options.withoutSelection=false] Whether to write the selection. When set to `true`, the selection will
+ * not be included in the returned string.
+ * @param {String} [options.rootName='main'] The name of the root from which the data should be stringified. If not provided,
+ * the default `main` name will be used.
  * @returns {String} The stringified data.
  */
-export function getData( document, options = {} ) {
-	if ( !( document instanceof ModelDocument ) ) {
-		throw new TypeError( 'Document needs to be an instance of module:engine/model/document~Document.' );
+export function getData( model, options = {} ) {
+	if ( !( model instanceof Model ) ) {
+		throw new TypeError( 'Model needs to be an instance of module:engine/model/model~Model.' );
 	}
 
-	const withoutSelection = !!options.withoutSelection;
+	const withoutSelection = options.withoutSelection;
 	const rootName = options.rootName || 'main';
-	const root = document.getRoot( rootName );
+	const root = model.document.getRoot( rootName );
 
-	return withoutSelection ? getData._stringify( root ) : getData._stringify( root, document.selection );
+	return withoutSelection ? getData._stringify( root ) : getData._stringify( root, model.document.selection );
 }
 
 // Set stringify as getData private method - needed for testing/spying.
 getData._stringify = stringify;
 
 /**
- * Sets the contents of the {@link module:engine/model/document~Document Document} provided as HTML-like string.
- * It uses {@link module:engine/model/document~Document#enqueueChanges enqueueChanges} method.
+ * Sets the content of the {@link module:engine/model/document~Document document} provided as an HTML-like string.
  *
- * **Note:** Remember to register elements in {@link module:engine/model/document~Document#schema document's schema} before inserting them.
+ * **Note:** Remember to register elements in the {@link module:engine/model/model~Model#schema model's schema} before inserting them.
  *
- * **Note:** To create {@link module:engine/model/text~Text text} node witch containing attributes use:
+ * **Note:** To create a {@link module:engine/model/text~Text text} node that contains attributes use:
  *
  *		<$text attribute="value">Text data</$text>
  *
- * @param {module:engine/model/document~Document} document
- * @param {String} data HTML-like string to write into Document.
+ * @param {module:engine/model/model~Model} model
+ * @param {String} data HTML-like string to write into the document.
  * @param {Object} options
- * @param {String} [options.rootName='main'] Root name where parsed data will be stored. If not provided, default `main`
+ * @param {String} [options.rootName='main'] Root name where parsed data will be stored. If not provided, the default `main`
  * name will be used.
- * @param {Array<Object>} [options.selectionAttributes] List of attributes which will be passed to the selection.
- * @param {Boolean} [options.lastRangeBackward=false] If set to true last range will be added as backward.
+ * @param {Array<Object>} [options.selectionAttributes] A list of attributes which will be passed to the selection.
+ * @param {Boolean} [options.lastRangeBackward=false] If set to `true`, the last range will be added as backward.
  * @param {String} [options.batchType='transparent'] Batch type used for inserting elements.
  * See {@link module:engine/model/batch~Batch#type}.
  */
-export function setData( document, data, options = {} ) {
-	if ( !( document instanceof ModelDocument ) ) {
-		throw new TypeError( 'Document needs to be an instance of module:engine/model/document~Document.' );
+export function setData( model, data, options = {} ) {
+	if ( !( model instanceof Model ) ) {
+		throw new TypeError( 'Model needs to be an instance of module:engine/model/model~Model.' );
 	}
 
 	let modelDocumentFragment, selection;
-	const modelRoot = document.getRoot( options.rootName || 'main' );
+	const modelRoot = model.document.getRoot( options.rootName || 'main' );
+	const batch = new Batch( options.batchType || 'transparent' );
 
 	// Parse data string to model.
-	const parsedResult = setData._parse( data, document.schema, {
+	const parsedResult = setData._parse( data, model.schema, {
 		lastRangeBackward: options.lastRangeBackward,
 		selectionAttributes: options.selectionAttributes,
 		context: [ modelRoot.name ]
@@ -111,15 +111,14 @@ export function setData( document, data, options = {} ) {
 		modelDocumentFragment = parsedResult;
 	}
 
-	document.enqueueChanges( () => {
+	model.enqueueChange( batch, writer => {
 		// Replace existing model in document by new one.
-		document.batch( options.batchType || 'transparent' )
-			.remove( ModelRange.createIn( modelRoot ) )
-			.insert( ModelPosition.createAt( modelRoot, 0 ), modelDocumentFragment );
+		writer.remove( ModelRange.createIn( modelRoot ) );
+		writer.insert( modelDocumentFragment, modelRoot );
 
 		// Clean up previous document selection.
-		document.selection.clearAttributes();
-		document.selection.removeAllRanges();
+		writer.setSelection( null );
+		writer.removeSelectionAttribute( model.document.selection.getAttributeKeys() );
 
 		// Update document selection if specified.
 		if ( selection ) {
@@ -132,10 +131,10 @@ export function setData( document, data, options = {} ) {
 				ranges.push( new ModelRange( start, end ) );
 			}
 
-			document.selection.setRanges( ranges, selection.isBackward );
+			writer.setSelection( ranges, { backward: selection.isBackward } );
 
 			if ( options.selectionAttributes ) {
-				document.selection.setAttributesTo( selection.getAttributes() );
+				writer.setSelectionAttribute( selection.getAttributes() );
 			}
 		}
 	} );
@@ -147,21 +146,21 @@ setData._parse = parse;
 /**
  * Converts model nodes to HTML-like string representation.
  *
- * **Note:** {@link module:engine/model/text~Text text} node contains attributes will be represented as:
+ * **Note:** A {@link module:engine/model/text~Text text} node that contains attributes will be represented as:
  *
  *		<$text attribute="value">Text data</$text>
  *
  * @param {module:engine/model/rootelement~RootElement|module:engine/model/element~Element|module:engine/model/text~Text|
- * module:engine/model/documentfragment~DocumentFragment} node Node to stringify.
+ * module:engine/model/documentfragment~DocumentFragment} node A node to stringify.
  * @param {module:engine/model/selection~Selection|module:engine/model/position~Position|
  * module:engine/model/range~Range} [selectionOrPositionOrRange=null]
- * Selection instance which ranges will be included in returned string data. If Range instance is provided - it will be
- * converted to selection containing this range. If Position instance is provided - it will be converted to selection
+ * A selection instance whose ranges will be included in the returned string data. If a range instance is provided, it will be
+ * converted to a selection containing this range. If a position instance is provided, it will be converted to a selection
  * containing one range collapsed at this position.
- * @returns {String} HTML-like string representing the model.
+ * @returns {String} An HTML-like string representing the model.
  */
 export function stringify( node, selectionOrPositionOrRange = null ) {
-	const modelDoc = new ModelDocument();
+	const model = new Model();
 	const mapper = new Mapper();
 	let selection, range;
 
@@ -184,72 +183,92 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 	// Get selection from passed selection or position or range if at least one is specified.
 	if ( selectionOrPositionOrRange instanceof ModelSelection ) {
 		selection = selectionOrPositionOrRange;
+	} else if ( selectionOrPositionOrRange instanceof DocumentSelection ) {
+		selection = selectionOrPositionOrRange;
 	} else if ( selectionOrPositionOrRange instanceof ModelRange ) {
-		selection = new ModelSelection();
-		selection.addRange( selectionOrPositionOrRange );
+		selection = new ModelSelection( selectionOrPositionOrRange );
 	} else if ( selectionOrPositionOrRange instanceof ModelPosition ) {
-		selection = new ModelSelection();
-		selection.addRange( new ModelRange( selectionOrPositionOrRange, selectionOrPositionOrRange ) );
+		selection = new ModelSelection( selectionOrPositionOrRange );
 	}
 
-	// Setup model to view converter.
-	const viewDocumentFragment = new ViewDocumentFragment();
-	const viewSelection = new ViewSelection();
-	const modelToView = new ModelConversionDispatcher( modelDoc, { mapper, viewSelection } );
+	// Set up conversion.
+	// Create a temporary view controller.
+	const view = new View();
+	const viewDocument = view.document;
+	const viewRoot = new ViewRootEditableElement( 'div' );
+
+	// Create a temporary root element in view document.
+	viewRoot._document = view.document;
+	viewRoot.rootName = 'main';
+	viewDocument.roots.add( viewRoot );
+
+	// Create and setup downcast dispatcher.
+	const downcastDispatcher = new DowncastDispatcher( { mapper } );
 
 	// Bind root elements.
-	mapper.bindElements( node.root, viewDocumentFragment );
+	mapper.bindElements( node.root, viewRoot );
 
-	modelToView.on( 'insert:$text', insertText() );
-	modelToView.on( 'addAttribute', wrapItem( ( value, data ) => {
-		if ( data.item.is( 'textProxy' ) ) {
-			return new ViewAttributeElement( 'model-text-with-attributes', { [ data.attributeKey ]: stringifyAttributeValue( value ) } );
+	downcastDispatcher.on( 'insert:$text', insertText() );
+	downcastDispatcher.on( 'attribute', ( evt, data, conversionApi ) => {
+		if ( data.item instanceof ModelSelection || data.item instanceof DocumentSelection || data.item.is( 'textProxy' ) ) {
+			const converter = wrap( ( modelAttributeValue, viewWriter ) => {
+				return viewWriter.createAttributeElement(
+					'model-text-with-attributes',
+					{ [ data.attributeKey ]: stringifyAttributeValue( modelAttributeValue ) }
+				);
+			} );
+
+			converter( evt, data, conversionApi );
 		}
-	} ) );
-	modelToView.on( 'insert', insertElement( data => {
+	} );
+	downcastDispatcher.on( 'insert', insertElement( modelItem => {
 		// Stringify object types values for properly display as an output string.
-		const attributes = convertAttributes( data.item.getAttributes(), stringifyAttributeValue );
+		const attributes = convertAttributes( modelItem.getAttributes(), stringifyAttributeValue );
 
-		return new ViewContainerElement( data.item.name, attributes );
+		return new ViewContainerElement( modelItem.name, attributes );
 	} ) );
-	modelToView.on( 'selection', convertRangeSelection() );
-	modelToView.on( 'selection', convertCollapsedSelection() );
-	modelToView.on( 'selectionAttribute', convertSelectionAttribute( ( value, data ) => {
-		return new ViewAttributeElement( 'model-text-with-attributes', { [ data.key ]: value } );
-	} ) );
+	downcastDispatcher.on( 'selection', convertRangeSelection() );
+	downcastDispatcher.on( 'selection', convertCollapsedSelection() );
 
 	// Convert model to view.
-	modelToView.convertInsertion( range );
+	const writer = view._writer;
+	downcastDispatcher.convertInsert( range, writer );
 
 	// Convert model selection to view selection.
 	if ( selection ) {
-		modelToView.convertSelection( selection, [] );
+		downcastDispatcher.convertSelection( selection, model.markers, writer );
 	}
 
 	// Parse view to data string.
-	const data = viewStringify( viewDocumentFragment, viewSelection, { sameSelectionCharacters: true } );
+	let data = viewStringify( viewRoot, viewDocument.selection, { sameSelectionCharacters: true } );
+
+	// Removing unneccessary <div> and </div> added because `viewRoot` was also stringified alongside input data.
+	data = data.substr( 5, data.length - 11 );
+
+	view.destroy();
 
 	// Replace valid XML `model-text-with-attributes` element name to `$text`.
 	return data.replace( new RegExp( 'model-text-with-attributes', 'g' ), '$text' );
 }
 
 /**
- * Parses HTML-like string and returns model {@link module:engine/model/rootelement~RootElement rootElement}.
+ * Parses an HTML-like string and returns the model {@link module:engine/model/rootelement~RootElement rootElement}.
  *
- * **Note:** To create {@link module:engine/model/text~Text text} node witch containing attributes use:
+ * **Note:** To create a {@link module:engine/model/text~Text text} node that contains attributes use:
  *
  *		<$text attribute="value">Text data</$text>
  *
  * @param {String} data HTML-like string to be parsed.
- * @param {module:engine/model/schema~Schema} schema Schema instance uses by converters for element validation.
- * @param {Object} options Additional configuration.
- * @param {Array<Object>} [options.selectionAttributes] List of attributes which will be passed to the selection.
- * @param {Boolean} [options.lastRangeBackward=false] If set to true last range will be added as backward.
- * @param {module:engine/model/schema~SchemaPath} [options.context=[ '$root' ]] The conversion context.
- * If not provided default `[ '$root' ]` will be used.
+ * @param {module:engine/model/schema~Schema} schema A schema instance used by converters for element validation.
+ * @param {module:engine/model/batch~Batch} batch A batch used for conversion.
+ * @param {Object} [options={}] Additional configuration.
+ * @param {Array<Object>} [options.selectionAttributes] A list of attributes which will be passed to the selection.
+ * @param {Boolean} [options.lastRangeBackward=false] If set to `true`, the last range will be added as backward.
+ * @param {module:engine/model/schema~SchemaContextDefinition} [options.context='$root'] The conversion context.
+ * If not provided, the default `'$root'` will be used.
  * @returns {module:engine/model/element~Element|module:engine/model/text~Text|
- * module:engine/model/documentfragment~DocumentFragment|Object} Returns parsed model node or
- * object with two fields `model` and `selection` when selection ranges were included in data to parse.
+ * module:engine/model/documentfragment~DocumentFragment|Object} Returns the parsed model node or
+ * an object with two fields: `model` and `selection`, when selection ranges were included in the data to parse.
  */
 export function parse( data, schema, options = {} ) {
 	const mapper = new Mapper();
@@ -273,19 +292,26 @@ export function parse( data, schema, options = {} ) {
 		viewDocumentFragment = parsedResult;
 	}
 
-	// Setup view to model converter.
-	const viewToModel = new ViewConversionDispatcher( { schema, mapper } );
+	// Set up upcast dispatcher.
+	const modelController = new Model();
+	const upcastDispatcher = new UpcastDispatcher( { schema, mapper } );
 
-	viewToModel.on( 'documentFragment', convertToModelFragment() );
-	viewToModel.on( 'element:model-text-with-attributes', convertToModelText( true ) );
-	viewToModel.on( 'element', convertToModelElement() );
-	viewToModel.on( 'text', convertToModelText() );
+	upcastDispatcher.on( 'documentFragment', convertToModelFragment() );
+	upcastDispatcher.on( 'element:model-text-with-attributes', convertToModelText( true ) );
+	upcastDispatcher.on( 'element', convertToModelElement() );
+	upcastDispatcher.on( 'text', convertToModelText() );
+
+	upcastDispatcher.isDebug = true;
 
 	// Convert view to model.
-	let model = viewToModel.convert( viewDocumentFragment.root, { context: options.context || [ '$root' ] } );
+	let model = modelController.change(
+		writer => upcastDispatcher.convert( viewDocumentFragment.root, writer, options.context || '$root' )
+	);
+
+	mapper.bindElements( model, viewDocumentFragment.root );
 
 	// If root DocumentFragment contains only one element - return that element.
-	if ( model.is( 'documentFragment' ) && model.childCount == 1 ) {
+	if ( model.childCount == 1 ) {
 		model = model.getChild( 0 );
 	}
 
@@ -296,16 +322,15 @@ export function parse( data, schema, options = {} ) {
 
 		// Convert ranges.
 		for ( const viewRange of viewSelection.getRanges() ) {
-			ranges.push( ( mapper.toModelRange( viewRange ) ) );
+			ranges.push( mapper.toModelRange( viewRange ) );
 		}
 
 		// Create new selection.
-		selection = new ModelSelection();
-		selection.setRanges( ranges, viewSelection.isBackward );
+		selection = new ModelSelection( ranges, { backward: viewSelection.isBackward } );
 
 		// Set attributes to selection if specified.
-		if ( options.selectionAttributes ) {
-			selection.setAttributesTo( options.selectionAttributes );
+		for ( const [ key, value ] of toMap( options.selectionAttributes || [] ) ) {
+			selection.setAttribute( key, value );
 		}
 	}
 
@@ -321,52 +346,47 @@ export function parse( data, schema, options = {} ) {
 // -- Converters view -> model -----------------------------------------------------
 
 function convertToModelFragment() {
-	return ( evt, data, consumable, conversionApi ) => {
-		const convertedChildren = conversionApi.convertChildren( data.input, consumable, data );
+	return ( evt, data, conversionApi ) => {
+		const childrenResult = conversionApi.convertChildren( data.viewItem, data.modelCursor );
 
-		data.output = new ModelDocumentFragment( modelWriter.normalizeNodes( convertedChildren ) );
-		conversionApi.mapper.bindElements( data.output, data.input );
+		conversionApi.mapper.bindElements( data.modelCursor.parent, data.viewItem );
+
+		data = Object.assign( data, childrenResult );
 
 		evt.stop();
 	};
 }
 
 function convertToModelElement() {
-	return ( evt, data, consumable, conversionApi ) => {
-		const schemaQuery = {
-			name: data.input.name,
-			attributes: Array.from( data.input.getAttributeKeys() ),
-			inside: data.context
-		};
+	return ( evt, data, conversionApi ) => {
+		const elementName = data.viewItem.name;
 
-		if ( !conversionApi.schema.check( schemaQuery ) ) {
-			throw new Error( `Element '${ schemaQuery.name }' not allowed in context ${ JSON.stringify( data.context ) }.` );
+		if ( !conversionApi.schema.checkChild( data.modelCursor, elementName ) ) {
+			throw new Error( `Element '${ elementName }' was not allowed in given position.` );
 		}
 
 		// View attribute value is a string so we want to typecast it to the original type.
 		// E.g. `bold="true"` - value will be parsed from string `"true"` to boolean `true`.
-		const attributes = convertAttributes( data.input.getAttributes(), parseAttributeValue );
+		const attributes = convertAttributes( data.viewItem.getAttributes(), parseAttributeValue );
+		const element = conversionApi.writer.createElement( data.viewItem.name, attributes );
 
-		data.output = new ModelElement( data.input.name, attributes );
-		conversionApi.mapper.bindElements( data.output, data.input );
+		conversionApi.writer.insert( element, data.modelCursor );
 
-		data.context.push( data.output );
-		data.output.appendChildren( conversionApi.convertChildren( data.input, consumable, data ) );
-		data.context.pop();
+		conversionApi.mapper.bindElements( element, data.viewItem );
+
+		conversionApi.convertChildren( data.viewItem, ModelPosition.createAt( element ) );
+
+		data.modelRange = ModelRange.createOn( element );
+		data.modelCursor = data.modelRange.end;
 
 		evt.stop();
 	};
 }
 
 function convertToModelText( withAttributes = false ) {
-	return ( evt, data, consumable, conversionApi ) => {
-		const schemaQuery = {
-			name: '$text',
-			inside: data.context
-		};
-
-		if ( !conversionApi.schema.check( schemaQuery ) ) {
-			throw new Error( `Element '${ schemaQuery.name }' not allowed in context ${ JSON.stringify( data.context ) }.` );
+	return ( evt, data, conversionApi ) => {
+		if ( !conversionApi.schema.checkChild( data.modelCursor, '$text' ) ) {
+			throw new Error( 'Text was not allowed in given position.' );
 		}
 
 		let node;
@@ -374,14 +394,17 @@ function convertToModelText( withAttributes = false ) {
 		if ( withAttributes ) {
 			// View attribute value is a string so we want to typecast it to the original type.
 			// E.g. `bold="true"` - value will be parsed from string `"true"` to boolean `true`.
-			const attributes = convertAttributes( data.input.getAttributes(), parseAttributeValue );
+			const attributes = convertAttributes( data.viewItem.getAttributes(), parseAttributeValue );
 
-			node = new ModelText( data.input.getChild( 0 ).data, attributes );
+			node = conversionApi.writer.createText( data.viewItem.getChild( 0 ).data, attributes );
 		} else {
-			node = new ModelText( data.input.data );
+			node = conversionApi.writer.createText( data.viewItem.data );
 		}
 
-		data.output = node;
+		conversionApi.writer.insert( node, data.modelCursor );
+
+		data.modelRange = ModelRange.createFromPositionAndShift( data.modelCursor, node.offsetSize );
+		data.modelCursor = data.modelRange.end;
 
 		evt.stop();
 	};

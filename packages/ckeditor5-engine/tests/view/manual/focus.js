@@ -1,36 +1,50 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
 /* globals document */
 
-import Document from '../../../src/view/document';
-import { parse } from '../../../src/dev-utils/view';
+import View from '../../../src/view/view';
+import ViewPosition from '../../../src/view/position';
+import ViewRange from '../../../src/view/range';
+import createViewRoot from '../_utils/createroot';
 
-const viewDocument = new Document();
+const view = new View();
+const viewDocument = view.document;
 
 const domEditable1 = document.getElementById( 'editable1' );
 const domEditable2 = document.getElementById( 'editable2' );
 
-const editable1 = viewDocument.createRoot( domEditable1, 'editable1' );
-const editable2 = viewDocument.createRoot( domEditable2, 'editable2' );
+const editable1 = createViewRoot( viewDocument, 'div', 'editable1' );
+view.attachDomRoot( domEditable1, 'editable1' );
 
-viewDocument.on( 'selectionChange', ( evt, data ) => {
-	viewDocument.selection.setTo( data.newSelection );
+const editable2 = createViewRoot( viewDocument, 'div', 'editable2' );
+view.attachDomRoot( domEditable2, 'editable2' );
+
+let text1, text2;
+
+view.change( writer => {
+	text1 = writer.createText( 'Foo bar baz' );
+	text2 = writer.createText( 'Foo bar baz' );
+
+	writer.insert( ViewPosition.createAt( editable1 ), text1 );
+	writer.insert( ViewPosition.createAt( editable2 ), text2 );
 } );
 
-const { selection: selection1 } = parse( '<p>Foo {bar} baz.</p>', { rootElement: editable1 } );
-const { selection: selection2 } = parse( '<p>{Foo} bar baz.</p>', { rootElement: editable2 } );
-
 document.getElementById( 'button1' ).addEventListener( 'click', () => {
-	viewDocument.selection.setTo( selection1 );
-	viewDocument.focus();
+	view.change( writer => {
+		writer.setSelection( ViewRange.createFromParentsAndOffsets( text1, 4, text1, 7 ) );
+	} );
+
+	view.focus();
 } );
 
 document.getElementById( 'button2' ).addEventListener( 'click', () => {
-	viewDocument.selection.setTo( selection2 );
-	viewDocument.focus();
+	view.change( writer => {
+		writer.setSelection( ViewRange.createFromParentsAndOffsets( text2, 0, text2, 3 ) );
+	} );
+
+	view.focus();
 } );
 
-viewDocument.render();

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -10,14 +10,14 @@
 /* globals document */
 
 /**
- * Basic HTML writer, it uses the native `innerHTML` property for basic conversion
- * from DocumentFragment to an HTML string.
+ * Basic HTML writer. It uses the native `innerHTML` property for basic conversion
+ * from a document fragment to an HTML string.
  *
  * @implements module:engine/dataprocessor/htmlwriter~HtmlWriter
  */
 export default class BasicHtmlWriter {
 	/**
-	 * Returns HTML string created from DocumentFragment.
+	 * Returns an HTML string created from the document fragment.
 	 *
 	 * @param {DocumentFragment} fragment
 	 * @returns {String}

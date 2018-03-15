@@ -1,23 +1,24 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
 /* globals document */
 
 import ClickObserver from '../../../src/view/observer/clickobserver';
-import ViewDocument from '../../../src/view/document';
+import View from '../../../src/view/view';
 
 describe( 'ClickObserver', () => {
-	let viewDocument, observer;
+	let view, viewDocument, observer;
 
 	beforeEach( () => {
-		viewDocument = new ViewDocument();
-		observer = viewDocument.addObserver( ClickObserver );
+		view = new View();
+		viewDocument = view.document;
+		observer = view.addObserver( ClickObserver );
 	} );
 
 	afterEach( () => {
-		viewDocument.destroy();
+		view.destroy();
 	} );
 
 	it( 'should define domEventType', () => {

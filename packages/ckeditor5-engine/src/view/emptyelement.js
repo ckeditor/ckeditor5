@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -21,6 +21,8 @@ export default class EmptyElement extends Element {
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-emptyelement-cannot-add` when third parameter is passed,
 	 * to inform that usage of EmptyElement is incorrect (adding child nodes to EmptyElement is forbidden).
 	 *
+	 * @see module:engine/view/writer~Writer#createEmptyElement
+	 * @protected
 	 * @param {String} name Node name.
 	 * @param {Object|Iterable} [attributes] Collection of attributes.
 	 */
@@ -48,11 +50,13 @@ export default class EmptyElement extends Element {
 	}
 
 	/**
-	 * Overrides {@link module:engine/view/element~Element#insertChildren} method.
+	 * Overrides {@link module:engine/view/element~Element#_insertChildren} method.
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-emptyelement-cannot-add` to prevent
 	 * adding any child nodes to EmptyElement.
+	 *
+	 * @protected
 	 */
-	insertChildren( index, nodes ) {
+	_insertChildren( index, nodes ) {
 		if ( nodes && ( nodes instanceof Node || Array.from( nodes ).length > 0 ) ) {
 			/**
 			 * Cannot add children to {@link module:engine/view/emptyelement~EmptyElement}.

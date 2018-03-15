@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -40,7 +40,7 @@ describe( 'DomConverter', () => {
 		beforeEach( () => {
 			viewDocument = new ViewDocument();
 			viewEditable = new ViewEditable( 'div' );
-			viewEditable.document = viewDocument;
+			viewEditable._document = viewDocument;
 
 			domEditable = document.createElement( 'div' );
 			domEditableParent = document.createElement( 'div' );
@@ -51,8 +51,10 @@ describe( 'DomConverter', () => {
 		} );
 
 		afterEach( () => {
+			converter.unbindDomElement( domEditable );
 			document.body.removeChild( domEditableParent );
-			viewDocument.destroy();
+
+			document.body.focus();
 		} );
 
 		it( 'should call focus on corresponding DOM editable', () => {
@@ -140,19 +142,6 @@ describe( 'DomConverter', () => {
 			comment = document.createComment( 'a' );
 		} );
 
-		describe( 'isText()', () => {
-			it( 'should return true for Text nodes', () => {
-				expect( converter.isText( text ) ).to.be.true;
-			} );
-
-			it( 'should return false for other arguments', () => {
-				expect( converter.isText( element ) ).to.be.false;
-				expect( converter.isText( documentFragment ) ).to.be.false;
-				expect( converter.isText( comment ) ).to.be.false;
-				expect( converter.isText( {} ) ).to.be.false;
-			} );
-		} );
-
 		describe( 'isElement()', () => {
 			it( 'should return true for HTMLElement nodes', () => {
 				expect( converter.isElement( element ) ).to.be.true;
@@ -226,6 +215,10 @@ describe( 'DomConverter', () => {
 			document.body.appendChild( domP );
 		} );
 
+		afterEach( () => {
+			domP.remove();
+		} );
+
 		it( 'should return true for correct dom selection', () => {
 			// <p>INLINE_FILLER{foo}<span></span></p>.
 			const sel1 = domSelection( domFillerTextNode, INLINE_FILLER_LENGTH, domFillerTextNode, INLINE_FILLER_LENGTH + 3 );
@@ -272,22 +265,27 @@ describe( 'DomConverter', () => {
 			} );
 
 			it( 'if anchor or focus is directly inside dom element that represents view ui element', () => {
+				// Set text indside ui element to put selection there.
+				domUiSpan.innerText = 'xxx';
 				// Tests forward and backward selection.
-				// <p>INLINE_FILLER{foo<span-ui>]<span-container></span></span></p>.
-				const sel1 = domSelection( domFillerTextNode, INLINE_FILLER_LENGTH + 3, domUiSpan, 0 );
+				// <p>INLINE_FILLER{foo<span-ui>xxx]<span-container></span></span></p>.
+				const sel1 = domSelection( domFillerTextNode, INLINE_FILLER_LENGTH, domUiSpan, 1 );
+
 				expect( converter.isDomSelectionCorrect( sel1 ) ).to.be.false;
 
-				const sel2 = domSelection( domUiSpan, 0, domFillerTextNode, INLINE_FILLER_LENGTH + 3 );
+				const sel2 = domSelection( domUiSpan, 1, domFillerTextNode, INLINE_FILLER_LENGTH );
 				expect( converter.isDomSelectionCorrect( sel2 ) ).to.be.false;
 			} );
 
 			it( 'if anchor or focus is inside deep ui element structure (not directly in ui element)', () => {
+				// Set text indside ui element to put selection there.
+				domUiDeepSpan.innerText = 'xxx';
 				// Tests forward and backward selection.
-				// <p>INLINE_FILLER{foo<span-ui><span-container>]</span></span></p>.
-				const sel1 = domSelection( domFillerTextNode, INLINE_FILLER_LENGTH + 3, domUiDeepSpan, 0 );
+				// <p>INLINE_FILLER{foo<span-ui><span-container>xxx]</span></span></p>.
+				const sel1 = domSelection( domFillerTextNode, INLINE_FILLER_LENGTH, domUiDeepSpan, 1 );
 				expect( converter.isDomSelectionCorrect( sel1 ) ).to.be.false;
 
-				const sel2 = domSelection( domUiDeepSpan, 0, domFillerTextNode, INLINE_FILLER_LENGTH + 3 );
+				const sel2 = domSelection( domUiDeepSpan, 1, domFillerTextNode, INLINE_FILLER_LENGTH );
 				expect( converter.isDomSelectionCorrect( sel2 ) ).to.be.false;
 			} );
 		} );

@@ -1,9 +1,9 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
-import { unwrap } from '../../../src/view/writer';
+import Writer from '../../../src/view/writer';
 import Element from '../../../src/view/element';
 import ContainerElement from '../../../src/view/containerelement';
 import AttributeElement from '../../../src/view/attributeelement';
@@ -14,23 +14,28 @@ import Range from '../../../src/view/range';
 import Text from '../../../src/view/text';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { stringify, parse } from '../../../src/dev-utils/view';
+import Document from '../../../src/view/document';
 
-describe( 'writer', () => {
-	/**
-	 * Executes test using `parse` and `stringify` utils functions.
-	 *
-	 * @param {String} input
-	 * @param {String} unwrapAttribute
-	 * @param {String} expected
-	 */
-	function test( input, unwrapAttribute, expected ) {
-		const { view, selection } = parse( input );
+describe( 'Writer', () => {
+	describe( 'unwrap()', () => {
+		let writer;
 
-		const newRange = unwrap( selection.getFirstRange(), parse( unwrapAttribute ) );
-		expect( stringify( view.root, newRange, { showType: true, showPriority: true } ) ).to.equal( expected );
-	}
+		// Executes test using `parse` and `stringify` utils functions.
+		//
+		// @param {String} input
+		// @param {String} unwrapAttribute
+		// @param {String} expected
+		function test( input, unwrapAttribute, expected ) {
+			const { view, selection } = parse( input );
 
-	describe( 'unwrap', () => {
+			const newRange = writer.unwrap( selection.getFirstRange(), parse( unwrapAttribute ) );
+			expect( stringify( view.root, newRange, { showType: true, showPriority: true } ) ).to.equal( expected );
+		}
+
+		before( () => {
+			writer = new Writer( new Document() );
+		} );
+
 		it( 'should do nothing on collapsed ranges', () => {
 			test(
 				'<container:p>f{}oo</container:p>',
@@ -56,7 +61,7 @@ describe( 'writer', () => {
 			const b = new Element( 'b' );
 
 			expect( () => {
-				unwrap( range, b );
+				writer.unwrap( range, b );
 			} ).to.throw( CKEditorError, 'view-writer-unwrap-invalid-attribute' );
 		} );
 
@@ -70,7 +75,7 @@ describe( 'writer', () => {
 			const b = new AttributeElement( 'b' );
 
 			expect( () => {
-				unwrap( range, b );
+				writer.unwrap( range, b );
 			} ).to.throw( CKEditorError, 'view-writer-invalid-range-container' );
 		} );
 
@@ -79,7 +84,7 @@ describe( 'writer', () => {
 			const b = new AttributeElement( 'b' );
 
 			expect( () => {
-				unwrap( Range.createFromParentsAndOffsets( el, 0, el, 0 ), b );
+				writer.unwrap( Range.createFromParentsAndOffsets( el, 0, el, 0 ), b );
 			} ).to.throw( CKEditorError, 'view-writer-invalid-range-container' );
 		} );
 
@@ -259,7 +264,7 @@ describe( 'writer', () => {
 
 		it( 'should unwrap single element by removing matching classes', () => {
 			test(
-				'<container:p>[<attribute:b view-priority="1" class="foo bar baz">test</attribute:b>]</container:p>',
+				'<container:p>[<attribute:b view-priority="1" class="bar baz foo">test</attribute:b>]</container:p>',
 				'<attribute:b view-priority="1" class="baz foo"></attribute:b>',
 				'<container:p>[<attribute:b view-priority="1" class="bar">test</attribute:b>]</container:p>'
 			);
@@ -267,9 +272,9 @@ describe( 'writer', () => {
 
 		it( 'should not unwrap single element when classes are different', () => {
 			test(
-				'<container:p>[<attribute:b view-priority="1" class="foo bar baz">test</attribute:b>]</container:p>',
+				'<container:p>[<attribute:b view-priority="1" class="bar baz foo">test</attribute:b>]</container:p>',
 				'<attribute:b view-priority="1" class="baz foo qux"></attribute:b>',
-				'<container:p>[<attribute:b view-priority="1" class="foo bar baz">test</attribute:b>]</container:p>'
+				'<container:p>[<attribute:b view-priority="1" class="bar baz foo">test</attribute:b>]</container:p>'
 			);
 		} );
 
@@ -279,18 +284,45 @@ describe( 'writer', () => {
 					'[<attribute:b view-priority="1" style="color:red;position:absolute;top:10px;">test</attribute:b>]' +
 				'</container:p>',
 				'<attribute:b view-priority="1" style="position: absolute;"></attribute:b>',
-				'<container:p>[<attribute:b view-priority="1" style="color:red;top:10px;">test</attribute:b>]</container:p>'
+				'<container:p>[<attribute:b view-priority="1" style="color:red;top:10px">test</attribute:b>]</container:p>'
 			);
 		} );
 
 		it( 'should not unwrap single element when styles are different', () => {
 			test(
 				'<container:p>' +
-					'[<attribute:b view-priority="1" style="color:red;position:absolute;top:10px;">test</attribute:b>]' +
+					'[<attribute:b view-priority="1" style="color:red;position:absolute;top:10px">test</attribute:b>]' +
 				'</container:p>',
 				'<attribute:b view-priority="1" style="position: relative;"></attribute:b>',
 				'<container:p>' +
-					'[<attribute:b view-priority="1" style="color:red;position:absolute;top:10px;">test</attribute:b>]' +
+					'[<attribute:b view-priority="1" style="color:red;position:absolute;top:10px">test</attribute:b>]' +
+				'</container:p>'
+			);
+		} );
+
+		it( 'should partially unwrap part of a node', () => {
+			test(
+				'<container:p>' +
+					'[<attribute:b view-priority="1" baz="qux" foo="bar">foo}bar</attribute:b>' +
+				'</container:p>',
+				'<attribute:b view-priority="1" foo="bar"></attribute:b>',
+				'<container:p>' +
+					'[<attribute:b view-priority="1" baz="qux">foo</attribute:b>]' +
+					'<attribute:b view-priority="1" baz="qux" foo="bar">bar</attribute:b>' +
+				'</container:p>'
+			);
+		} );
+
+		it( 'should be merged after being partially unwrapped', () => {
+			test(
+				'<container:p>' +
+					'<attribute:b view-priority="1" baz="qux">xyz</attribute:b>' +
+					'[<attribute:b view-priority="1" baz="qux" foo="bar">foo}bar</attribute:b>' +
+				'</container:p>',
+				'<attribute:b view-priority="1" foo="bar"></attribute:b>',
+				'<container:p>' +
+					'<attribute:b view-priority="1" baz="qux">xyz{foo</attribute:b>]' +
+					'<attribute:b view-priority="1" baz="qux" foo="bar">bar</attribute:b>' +
 				'</container:p>'
 			);
 		} );
@@ -318,7 +350,7 @@ describe( 'writer', () => {
 			const range = Range.createFromParentsAndOffsets( empty, 0, container, 2 );
 
 			expect( () => {
-				unwrap( range, attribute );
+				writer.unwrap( range, attribute );
 			} ).to.throw( CKEditorError, 'view-writer-cannot-break-empty-element' );
 		} );
 
@@ -337,7 +369,7 @@ describe( 'writer', () => {
 			const range = Range.createFromParentsAndOffsets( uiElement, 0, container, 2 );
 
 			expect( () => {
-				unwrap( range, attribute );
+				writer.unwrap( range, attribute );
 			} ).to.throw( CKEditorError, 'view-writer-cannot-break-ui-element' );
 		} );
 	} );

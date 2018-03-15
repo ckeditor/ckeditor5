@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -76,7 +76,7 @@ export default class History {
 	 * that deltas from the first one will be returned.
 	 * @param {Number} [to=Number.POSITIVE_INFINITY] Base version up to which deltas should be returned (exclusive).
 	 * Defaults to `Number.POSITIVE_INFINITY` which means that deltas up to the last one will be returned.
-	 * @returns {Iterator.<module:engine/model/delta/delta~Delta>} Deltas added to the history from given base versions range.
+	 * @returns {Iterable.<module:engine/model/delta/delta~Delta>} Deltas added to the history from given base versions range.
 	 */
 	* getDeltas( from = 0, to = Number.POSITIVE_INFINITY ) {
 		// No deltas added, nothing to yield.

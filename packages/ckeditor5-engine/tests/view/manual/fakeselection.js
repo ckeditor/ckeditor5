@@ -1,22 +1,26 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
 /* globals document, console */
 
-import ViewDocument from '../../../src/view/document';
+import View from '../../../src/view/view';
 import DomEventObserver from '../../../src/view/observer/domeventobserver';
 import ViewRange from '../../../src/view/range';
+import createViewRoot from '../_utils/createroot';
 import { setData } from '../../../src/dev-utils/view';
 
-const viewDocument = new ViewDocument();
+const view = new View();
+const viewDocument = view.document;
 const domEditable = document.getElementById( 'editor' );
-const viewRoot = viewDocument.createRoot( domEditable );
+const viewRoot = createViewRoot( viewDocument );
 let viewStrong;
 
+view.attachDomRoot( domEditable );
+
 // Add mouseup oberver.
-viewDocument.addObserver( class extends DomEventObserver {
+view.addObserver( class extends DomEventObserver {
 	get domEventType() {
 		return [ 'mousedown', 'mouseup' ];
 	}
@@ -27,19 +31,18 @@ viewDocument.addObserver( class extends DomEventObserver {
 } );
 
 viewDocument.on( 'selectionChange', ( evt, data ) => {
-	viewDocument.selection.setTo( data.newSelection );
-	viewDocument.render();
+	view.change( writer => {
+		writer.setSelection( data.newSelection );
+	} );
 } );
 
 viewDocument.on( 'mouseup', ( evt, data ) => {
 	if ( data.target == viewStrong ) {
 		console.log( 'Making selection around the <strong>.' );
 
-		const range = ViewRange.createOn( viewStrong );
-		viewDocument.selection.setRanges( [ range ] );
-		viewDocument.selection.setFake( true, { label: 'fake selection over bar' } );
-
-		viewDocument.render();
+		view.change( writer => {
+			writer.setSelection( ViewRange.createOn( viewStrong ), { fake: true, label: 'fake selection over bar' } );
+		} );
 
 		data.preventDefault();
 	}
@@ -54,28 +57,26 @@ viewDocument.selection.on( 'change', () => {
 	const lastPos = viewDocument.selection.getLastPosition();
 
 	if ( firstPos && lastPos && firstPos.nodeAfter == viewStrong && lastPos.nodeBefore == viewStrong ) {
-		viewStrong.addClass( 'selected' );
+		view.change( writer => writer.addClass( 'selected', viewStrong ) );
 	} else {
-		viewStrong.removeClass( 'selected' );
+		view.change( writer => writer.removeClass( 'selected', viewStrong ) );
 	}
 } );
 
 viewDocument.on( 'focus', () => {
-	viewStrong.addClass( 'focused' );
-	viewDocument.render();
+	view.change( writer => writer.addClass( 'focused', viewStrong ) );
 
 	console.log( 'The document was focused.' );
 } );
 
 viewDocument.on( 'blur', () => {
-	viewStrong.removeClass( 'focused' );
-	viewDocument.render();
+	view.change( writer => writer.removeClass( 'focused', viewStrong ) );
 
 	console.log( 'The document was blurred.' );
 } );
 
-setData( viewDocument, '<container:p>{}foo<strong contenteditable="false">bar</strong>baz</container:p>' );
+setData( view, '<container:p>{}foo<strong contenteditable="false">bar</strong>baz</container:p>' );
 const viewP = viewRoot.getChild( 0 );
 viewStrong = viewP.getChild( 1 );
 
-viewDocument.focus();
+view.focus();

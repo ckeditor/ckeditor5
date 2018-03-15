@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -14,7 +14,7 @@ import ReinsertOperation from '../../../src/model/operation/reinsertoperation';
 import RemoveOperation from '../../../src/model/operation/removeoperation';
 import RootAttributeOperation from '../../../src/model/operation/rootattributeoperation';
 import DeltaFactory from '../../../src/model/delta/deltafactory';
-import Document from '../../../src/model/document';
+import Model from '../../../src/model/model';
 import Position from '../../../src/model/position';
 import Range from '../../../src/model/range';
 import { jsonParseStringify } from '../../../tests/model/_utils/utils';
@@ -148,9 +148,10 @@ describe( 'Delta', () => {
 		} );
 
 		beforeEach( () => {
-			delta = new FooDelta();
+			const model = new Model();
 
-			doc = new Document();
+			delta = new FooDelta();
+			doc = model.document;
 			root = doc.createRoot();
 		} );
 

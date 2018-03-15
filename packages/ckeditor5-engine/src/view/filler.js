@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -146,10 +146,10 @@ export function isBlockFiller( domNode, blockFiller ) {
  * Assign key observer which move cursor from the end of the inline filler to the beginning of it when
  * the left arrow is pressed, so the filler does not break navigation.
  *
- * @param {module:engine/view/document~Document} document Document instance we should inject quirks handling on.
+ * @param {module:engine/view/view~View} view View controller instance we should inject quirks handling on.
  */
-export function injectQuirksHandling( document ) {
-	document.on( 'keydown', jumpOverInlineFiller );
+export function injectQuirksHandling( view ) {
+	view.document.on( 'keydown', jumpOverInlineFiller );
 }
 
 // Move cursor from the end of the inline filler to the beginning of it when, so the filler does not break navigation.

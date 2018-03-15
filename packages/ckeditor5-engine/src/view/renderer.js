@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -17,6 +17,7 @@ import insertAt from '@ckeditor/ckeditor5-utils/src/dom/insertat';
 import remove from '@ckeditor/ckeditor5-utils/src/dom/remove';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
 
 /**
  * Renderer updates DOM structure and selection, to make them a reflection of the view structure and selection.
@@ -42,6 +43,7 @@ export default class Renderer {
 		/**
 		 * Set of DOM Documents instances.
 		 *
+		 * @readonly
 		 * @member {Set.<Document>}
 		 */
 		this.domDocuments = new Set();
@@ -256,7 +258,7 @@ export default class Renderer {
 		const childNodes = domParentOrArray instanceof Array ? domParentOrArray : domParentOrArray.childNodes;
 		const nodeAfterFiller = childNodes[ offset ];
 
-		if ( this.domConverter.isText( nodeAfterFiller ) ) {
+		if ( isText( nodeAfterFiller ) ) {
 			nodeAfterFiller.data = INLINE_FILLER + nodeAfterFiller.data;
 
 			return nodeAfterFiller;
@@ -321,7 +323,7 @@ export default class Renderer {
 		const selectionPosition = this.selection.getFirstPosition();
 		const position = this.domConverter.viewPositionToDom( selectionPosition );
 
-		if ( position && this.domConverter.isText( position.parent ) && startsWithFiller( position.parent ) ) {
+		if ( position && isText( position.parent ) && startsWithFiller( position.parent ) ) {
 			return true;
 		}
 
@@ -515,7 +517,7 @@ export default class Renderer {
 				return true;
 			}
 			// Texts.
-			else if ( domConverter.isText( actualDomChild ) && domConverter.isText( expectedDomChild ) ) {
+			else if ( isText( actualDomChild ) && isText( expectedDomChild ) ) {
 				return actualDomChild.data === expectedDomChild.data;
 			}
 			// Block fillers.
@@ -567,35 +569,42 @@ export default class Renderer {
 	 */
 	_updateFakeSelection( domRoot ) {
 		const domDocument = domRoot.ownerDocument;
+		let container = this._fakeSelectionContainer;
 
 		// Create fake selection container if one does not exist.
-		if ( !this._fakeSelectionContainer ) {
-			this._fakeSelectionContainer = domDocument.createElement( 'div' );
-			this._fakeSelectionContainer.style.position = 'fixed';
-			this._fakeSelectionContainer.style.top = 0;
-			this._fakeSelectionContainer.style.left = '-9999px';
-			this._fakeSelectionContainer.appendChild( domDocument.createTextNode( '\u00A0' ) );
+		if ( !container ) {
+			this._fakeSelectionContainer = container = domDocument.createElement( 'div' );
+
+			Object.assign( container.style, {
+				position: 'fixed',
+				top: 0,
+				left: '-9999px',
+				// See https://github.com/ckeditor/ckeditor5/issues/752.
+				width: '42px'
+			} );
+
+			// Fill it with a text node so we can update it later.
+			container.appendChild( domDocument.createTextNode( '\u00A0' ) );
 		}
 
 		// Add fake container if not already added.
-		if ( !this._fakeSelectionContainer.parentElement ) {
-			domRoot.appendChild( this._fakeSelectionContainer );
+		if ( !container.parentElement ) {
+			domRoot.appendChild( container );
 		}
 
 		// Update contents.
-		const content = this.selection.fakeSelectionLabel || '\u00A0';
-		this._fakeSelectionContainer.firstChild.data = content;
+		container.firstChild.data = this.selection.fakeSelectionLabel || '\u00A0';
 
 		// Update selection.
 		const domSelection = domDocument.getSelection();
-		domSelection.removeAllRanges();
-
 		const domRange = domDocument.createRange();
-		domRange.selectNodeContents( this._fakeSelectionContainer );
+
+		domSelection.removeAllRanges();
+		domRange.selectNodeContents( container );
 		domSelection.addRange( domRange );
 
 		// Bind fake selection container with current selection.
-		this.domConverter.bindFakeSelection( this._fakeSelectionContainer, this.selection );
+		this.domConverter.bindFakeSelection( container, this.selection );
 	}
 
 	/**
@@ -619,6 +628,10 @@ export default class Renderer {
 		// selected. If there is any editable selected, it is okay (editable is taken from selection anchor).
 		const anchor = this.domConverter.viewPositionToDom( this.selection.anchor );
 		const focus = this.domConverter.viewPositionToDom( this.selection.focus );
+
+		// Focus the new editing host.
+		// Otherwise, FF may throw an error (https://github.com/ckeditor/ckeditor5/issues/721).
+		domRoot.focus();
 
 		domSelection.collapse( anchor.parent, anchor.offset );
 		domSelection.extend( focus.parent, focus.offset );

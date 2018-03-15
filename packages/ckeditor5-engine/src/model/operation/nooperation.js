@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -42,11 +42,7 @@ export default class NoOperation extends Operation {
 		return new NoOperation( this.baseVersion + 1 );
 	}
 
-	/**
-	 * @inheritDoc
-	 */
 	_execute() {
-		return {};
 	}
 
 	/**

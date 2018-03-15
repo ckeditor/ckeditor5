@@ -1,9 +1,9 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
-import { move } from '../../../src/view/writer';
+import Writer from '../../../src/view/writer';
 import { stringify, parse } from '../../../src/dev-utils/view';
 import ContainerElement from '../../../src/view/containerelement';
 import AttributeElement from '../../../src/view/attributeelement';
@@ -12,27 +12,32 @@ import UIElement from '../../../src/view/uielement';
 import Range from '../../../src/view/range';
 import Position from '../../../src/view/position';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import Document from '../../../src/view/document';
 
-describe( 'writer', () => {
-	/**
-	 * Executes test using `parse` and `stringify` utils functions. Uses range delimiters `[]{}` to create and
-	 * test ranges.
-	 *
-	 * @param {String} input
-	 * @param {String} expectedResult
-	 * @param {String} expectedRemoved
-	 */
-	function test( source, destination, sourceAfterMove, destinationAfterMove ) {
-		const { view: srcView, selection: srcSelection } = parse( source );
-		const { view: dstView, selection: dstSelection } = parse( destination );
+describe( 'Writer', () => {
+	describe( 'move()', () => {
+		let writer;
 
-		const newRange = move( srcSelection.getFirstRange(), dstSelection.getFirstPosition() );
+		// Executes test using `parse` and `stringify` utils functions. Uses range delimiters `[]{}` to create and
+		// test ranges.
+		//
+		// @param {String} input
+		// @param {String} expectedResult
+		// @param {String} expectedRemoved
+		function test( source, destination, sourceAfterMove, destinationAfterMove ) {
+			const { view: srcView, selection: srcSelection } = parse( source );
+			const { view: dstView, selection: dstSelection } = parse( destination );
 
-		expect( stringify( dstView, newRange, { showType: true, showPriority: true } ) ).to.equal( destinationAfterMove );
-		expect( stringify( srcView, null, { showType: true, showPriority: true } ) ).to.equal( sourceAfterMove );
-	}
+			const newRange = writer.move( srcSelection.getFirstRange(), dstSelection.getFirstPosition() );
 
-	describe( 'move', () => {
+			expect( stringify( dstView, newRange, { showType: true, showPriority: true } ) ).to.equal( destinationAfterMove );
+			expect( stringify( srcView, null, { showType: true, showPriority: true } ) ).to.equal( sourceAfterMove );
+		}
+
+		before( () => {
+			writer = new Writer( new Document() );
+		} );
+
 		it( 'should move single text node', () => {
 			test(
 				'<container:p>[foobar]</container:p>',
@@ -111,7 +116,7 @@ describe( 'writer', () => {
 		it( 'should correctly move text nodes inside same parent', () => {
 			const { view, selection } = parse( '<container:p>[<attribute:b>a</attribute:b>]b<attribute:b>c</attribute:b></container:p>' );
 
-			const newRange = move( selection.getFirstRange(), Position.createAt( view, 2 ) );
+			const newRange = writer.move( selection.getFirstRange(), Position.createAt( view, 2 ) );
 
 			const expectedView = '<container:p>b[<attribute:b>a}c</attribute:b></container:p>';
 			expect( stringify( view, newRange, { showType: true } ) ).to.equal( expectedView );
@@ -123,7 +128,7 @@ describe( 'writer', () => {
 			);
 
 			const viewText = view.getChild( 3 );
-			const newRange = move( selection.getFirstRange(), Position.createAt( viewText, 1 ) );
+			const newRange = writer.move( selection.getFirstRange(), Position.createAt( viewText, 1 ) );
 
 			expect( stringify( view, newRange, { showType: true } ) ).to.equal(
 				'<container:p><attribute:b>ad</attribute:b>y[<attribute:b>b</attribute:b>xx<attribute:b>c</attribute:b>]y</container:p>'
@@ -149,7 +154,7 @@ describe( 'writer', () => {
 			const dstPosition = new Position( dstEmpty, 0 );
 
 			expect( () => {
-				move( srcRange, dstPosition );
+				writer.move( srcRange, dstPosition );
 			} ).to.throw( CKEditorError, 'view-writer-cannot-break-empty-element' );
 		} );
 
@@ -172,7 +177,7 @@ describe( 'writer', () => {
 			const dstPosition = new Position( dstUI, 0 );
 
 			expect( () => {
-				move( srcRange, dstPosition );
+				writer.move( srcRange, dstPosition );
 			} ).to.throw( CKEditorError, 'view-writer-cannot-break-ui-element' );
 		} );
 	} );

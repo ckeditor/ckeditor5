@@ -1,10 +1,11 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
 import Element from '../../src/model/element';
 import Text from '../../src/model/text';
+import TextProxy from '../../src/model/textproxy';
 import DocumentFragment from '../../src/model/documentfragment';
 import { jsonParseStringify } from '../../tests/model/_utils/utils';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
@@ -124,10 +125,10 @@ describe( 'DocumentFragment', () => {
 		} );
 	} );
 
-	describe( 'insertChildren', () => {
+	describe( '_insertChildren', () => {
 		it( 'should add children to the document fragment', () => {
 			const frag = new DocumentFragment( new Text( 'xy' ) );
-			frag.insertChildren( 1, new Text( 'foo' ) );
+			frag._insertChildren( 1, new Text( 'foo' ) );
 
 			expect( frag.childCount ).to.equal( 2 );
 			expect( frag.maxOffset ).to.equal( 5 );
@@ -138,25 +139,39 @@ describe( 'DocumentFragment', () => {
 		it( 'should accept strings and arrays', () => {
 			const frag = new DocumentFragment();
 
-			frag.insertChildren( 0, 'abc' );
+			frag._insertChildren( 0, 'abc' );
 			expect( frag.childCount ).to.equal( 1 );
 			expect( frag.maxOffset ).to.equal( 3 );
 			expect( frag.getChild( 0 ) ).to.have.property( 'data' ).that.equals( 'abc' );
 
-			frag.removeChildren( 0, 1 );
-			frag.insertChildren( 0, [ new Element( 'p' ), 'abc' ] );
+			frag._removeChildren( 0, 1 );
+			frag._insertChildren( 0, [ new Element( 'p' ), 'abc' ] );
 
 			expect( frag.childCount ).to.equal( 2 );
 			expect( frag.maxOffset ).to.equal( 4 );
 			expect( frag.getChild( 0 ) ).to.have.property( 'name' ).that.equals( 'p' );
 			expect( frag.getChild( 1 ) ).to.have.property( 'data' ).that.equals( 'abc' );
 		} );
+
+		it( 'should accept and correctly handle text proxies', () => {
+			const frag = new DocumentFragment();
+			const text = new Text( 'abcxyz', { bold: true } );
+			const textProxy = new TextProxy( text, 2, 3 );
+
+			frag._insertChildren( 0, textProxy );
+
+			expect( frag.childCount ).to.equal( 1 );
+			expect( frag.maxOffset ).to.equal( 3 );
+			expect( frag.getChild( 0 ) ).to.be.instanceof( Text );
+			expect( frag.getChild( 0 ).data ).to.equal( 'cxy' );
+			expect( frag.getChild( 0 ).getAttribute( 'bold' ) ).to.equal( true );
+		} );
 	} );
 
-	describe( 'appendChildren', () => {
+	describe( '_appendChildren', () => {
 		it( 'should add children to the end of the element', () => {
 			const frag = new DocumentFragment( new Text( 'xy' ) );
-			frag.appendChildren( new Text( 'foo' ) );
+			frag._appendChildren( new Text( 'foo' ) );
 
 			expect( frag.childCount ).to.equal( 2 );
 			expect( frag.maxOffset ).to.equal( 5 );
@@ -165,10 +180,10 @@ describe( 'DocumentFragment', () => {
 		} );
 	} );
 
-	describe( 'removeChildren', () => {
+	describe( '_removeChildren', () => {
 		it( 'should remove children from the element and return them as an array', () => {
 			const frag = new DocumentFragment( [ new Text( 'foobar' ), new Element( 'image' ) ] );
-			const removed = frag.removeChildren( 1, 1 );
+			const removed = frag._removeChildren( 1, 1 );
 
 			expect( frag.childCount ).to.equal( 1 );
 			expect( frag.maxOffset ).to.equal( 6 );
@@ -181,7 +196,7 @@ describe( 'DocumentFragment', () => {
 
 		it( 'should remove one child when second parameter is not specified', () => {
 			const frag = new DocumentFragment( [ new Text( 'foo' ), new Element( 'image' ) ] );
-			const removed = frag.removeChildren( 0 );
+			const removed = frag._removeChildren( 0 );
 
 			expect( frag.childCount ).to.equal( 1 );
 			expect( frag.maxOffset ).to.equal( 1 );

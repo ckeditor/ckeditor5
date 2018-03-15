@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -18,8 +18,8 @@ ClassicEditor
 	.then( editor => {
 		window.editor = editor;
 
-		editor.editing.view.on( 'selectionChange', () => {
-			editor.document.enqueueChanges( () => {
+		editor.editing.view.document.on( 'selectionChange', () => {
+			editor.model.change( () => {
 			} );
 			console.log( 'selectionChange', ( new Date() ).getTime() );
 		} );

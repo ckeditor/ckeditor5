@@ -1,9 +1,9 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
-import Document from '../../src/model/document';
+import Model from '../../src/model/model';
 import DocumentFragment from '../../src/model/documentfragment';
 import Element from '../../src/model/element';
 import Text from '../../src/model/text';
@@ -30,8 +30,9 @@ describe( 'Position', () => {
 	//        |- a   Before: [ 1, 1, 1 ] After: [ 1, 1, 2 ]
 	//        |- r   Before: [ 1, 1, 2 ] After: [ 1, 1, 3 ]
 	before( () => {
-		doc = new Document();
+		const model = new Model();
 
+		doc = model.document;
 		root = doc.createRoot();
 		otherRoot = doc.createRoot( '$root', 'otherRoot' );
 
@@ -55,7 +56,7 @@ describe( 'Position', () => {
 
 		p = new Element( 'p' );
 
-		root.insertChildren( 0, [ p, ul ] );
+		root._insertChildren( 0, [ p, ul ] );
 	} );
 
 	describe( 'constructor()', () => {
@@ -861,12 +862,13 @@ describe( 'Position', () => {
 		} );
 
 		it( 'for two the same positions returns the parent element #2', () => {
-			const doc = new Document();
+			const model = new Model();
+			const doc = model.document;
 			const root = doc.createRoot();
 
 			const p = new Element( 'p', null, 'foobar' );
 
-			root.appendChildren( p );
+			root._appendChildren( p );
 
 			const postion = new Position( root, [ 0, 3 ] ); // <p>foo^bar</p>
 
@@ -889,12 +891,13 @@ describe( 'Position', () => {
 
 		// Checks if by mistake someone didn't use getCommonPath() + getNodeByPath().
 		it( 'works if position is located before an element', () => {
-			const doc = new Document();
+			const model = new Model();
+			const doc = model.document;
 			const root = doc.createRoot();
 
 			const p = new Element( 'p', null, new Element( 'a' ) );
 
-			root.appendChildren( p );
+			root._appendChildren( p );
 
 			const postion = new Position( root, [ 0, 0 ] ); // <p>^<a></a></p>
 

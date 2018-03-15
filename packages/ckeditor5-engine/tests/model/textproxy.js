@@ -1,25 +1,26 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
 import Element from '../../src/model/element';
 import Text from '../../src/model/text';
 import TextProxy from '../../src/model/textproxy';
-import Document from '../../src/model/document';
+import Model from '../../src/model/model';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'TextProxy', () => {
-	let doc, element, textProxy, root, textProxyNoParent, text, textNoParent;
+	let model, doc, element, textProxy, root, textProxyNoParent, text, textNoParent;
 
 	beforeEach( () => {
-		doc = new Document();
+		model = new Model();
+		doc = model.document;
 		root = doc.createRoot();
 		element = new Element( 'div' );
-		root.insertChildren( 0, element );
+		root._insertChildren( 0, element );
 
 		text = new Text( 'foobar', { foo: 'bar' } );
-		element.insertChildren( 0, [ new Text( 'abc' ), text ] );
+		element._insertChildren( 0, [ new Text( 'abc' ), text ] );
 		textProxy = new TextProxy( text, 2, 3 );
 
 		textNoParent = new Text( 'abcxyz' );

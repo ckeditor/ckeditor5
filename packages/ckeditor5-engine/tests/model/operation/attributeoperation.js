@@ -1,9 +1,9 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
-import Document from '../../../src/model/document';
+import Model from '../../../src/model/model';
 import Element from '../../../src/model/element';
 import Text from '../../../src/model/text';
 import AttributeOperation from '../../../src/model/operation/attributeoperation';
@@ -14,10 +14,11 @@ import count from '@ckeditor/ckeditor5-utils/src/count';
 import { jsonParseStringify, wrapInDelta } from '../../../tests/model/_utils/utils';
 
 describe( 'AttributeOperation', () => {
-	let doc, root;
+	let model, doc, root;
 
 	beforeEach( () => {
-		doc = new Document();
+		model = new Model();
+		doc = model.document;
 		root = doc.createRoot();
 	} );
 
@@ -60,9 +61,9 @@ describe( 'AttributeOperation', () => {
 	} );
 
 	it( 'should insert attribute to the set of nodes', () => {
-		root.insertChildren( 0, new Text( 'bar' ) );
+		root._insertChildren( 0, new Text( 'bar' ) );
 
-		doc.applyOperation( wrapInDelta(
+		model.applyOperation( wrapInDelta(
 			new AttributeOperation(
 				new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) ),
 				'isNew',
@@ -81,9 +82,9 @@ describe( 'AttributeOperation', () => {
 	} );
 
 	it( 'should add attribute to the existing attributes', () => {
-		root.insertChildren( 0, new Text( 'x', { foo: true, bar: true } ) );
+		root._insertChildren( 0, new Text( 'x', { foo: true, bar: true } ) );
 
-		doc.applyOperation( wrapInDelta(
+		model.applyOperation( wrapInDelta(
 			new AttributeOperation(
 				new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ),
 				'isNew',
@@ -102,9 +103,9 @@ describe( 'AttributeOperation', () => {
 	} );
 
 	it( 'should change attribute to the set of nodes', () => {
-		root.insertChildren( 0, new Text( 'bar', { isNew: false } ) );
+		root._insertChildren( 0, new Text( 'bar', { isNew: false } ) );
 
-		doc.applyOperation( wrapInDelta(
+		model.applyOperation( wrapInDelta(
 			new AttributeOperation(
 				new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) ),
 				'isNew',
@@ -123,9 +124,9 @@ describe( 'AttributeOperation', () => {
 	} );
 
 	it( 'should change attribute in the middle of existing attributes', () => {
-		root.insertChildren( 0, new Text( 'x', { foo: true, x: 1, bar: true } ) );
+		root._insertChildren( 0, new Text( 'x', { foo: true, x: 1, bar: true } ) );
 
-		doc.applyOperation( wrapInDelta(
+		model.applyOperation( wrapInDelta(
 			new AttributeOperation(
 				new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ),
 				'x',
@@ -143,10 +144,29 @@ describe( 'AttributeOperation', () => {
 		expect( root.getChild( 0 ).getAttribute( 'bar' ) ).to.be.true;
 	} );
 
-	it( 'should remove attribute', () => {
-		root.insertChildren( 0, new Text( 'x', { foo: true, x: true, bar: true } ) );
+	it( 'should work correctly if old and new value are same', () => {
+		root._insertChildren( 0, new Text( 'bar', { foo: 'bar' } ) );
 
-		doc.applyOperation( wrapInDelta(
+		model.applyOperation( wrapInDelta(
+			new AttributeOperation(
+				new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) ),
+				'foo',
+				'bar',
+				'bar',
+				doc.version
+			)
+		) );
+
+		expect( doc.version ).to.equal( 1 );
+		expect( root.childCount ).to.equal( 1 );
+		expect( count( root.getChild( 0 ).getAttributes() ) ).to.equal( 1 );
+		expect( root.getChild( 0 ).getAttribute( 'foo' ) ).to.equal( 'bar' );
+	} );
+
+	it( 'should remove attribute', () => {
+		root._insertChildren( 0, new Text( 'x', { foo: true, x: true, bar: true } ) );
+
+		model.applyOperation( wrapInDelta(
 			new AttributeOperation(
 				new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ),
 				'x',
@@ -163,20 +183,70 @@ describe( 'AttributeOperation', () => {
 		expect( root.getChild( 0 ).hasAttribute( 'bar' ) ).to.be.true;
 	} );
 
-	it( 'should not throw for non-primitive attribute values', () => {
-		root.insertChildren( 0, new Text( 'x', { foo: [ 'bar', 'xyz' ] } ) );
+	describe( '_validate()', () => {
+		it( 'should not throw for non-primitive attribute values', () => {
+			root._insertChildren( 0, new Text( 'x', { foo: [ 'bar', 'xyz' ] } ) );
 
-		expect( () => {
-			doc.applyOperation( wrapInDelta(
-				new AttributeOperation(
+			expect( () => {
+				const operation = new AttributeOperation(
 					new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ),
 					'foo',
 					[ 'bar', 'xyz' ],
 					true,
 					doc.version
-				)
-			) );
-		} ).to.not.throw( Error );
+				);
+
+				operation._validate();
+			} ).to.not.throw( Error );
+		} );
+
+		it( 'should throw an error when one try to remove and the attribute does not exists', () => {
+			root._insertChildren( 0, new Text( 'x' ) );
+
+			expect( () => {
+				const operation = new AttributeOperation(
+					new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ),
+					'foo',
+					true,
+					null,
+					doc.version
+				);
+
+				operation._validate();
+			} ).to.throw( CKEditorError, /attribute-operation-wrong-old-value/ );
+		} );
+
+		it( 'should throw an error when one try to insert and the attribute already exists', () => {
+			root._insertChildren( 0, new Text( 'x', { x: 1 } ) );
+
+			expect( () => {
+				const operation = new AttributeOperation(
+					new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ),
+					'x',
+					null,
+					2,
+					doc.version
+				);
+
+				operation._validate();
+			} ).to.throw( CKEditorError, /attribute-operation-attribute-exists/ );
+		} );
+
+		it( 'should not throw when attribute value is the same', () => {
+			root._insertChildren( 0, new Text( 'x', { foo: true } ) );
+
+			expect( () => {
+				const operation = new AttributeOperation(
+					new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ),
+					'foo',
+					true,
+					true,
+					doc.version
+				);
+
+				operation._validate();
+			} ).to.not.throw();
+		} );
 	} );
 
 	it( 'should create an AttributeOperation as a reverse', () => {
@@ -193,7 +263,7 @@ describe( 'AttributeOperation', () => {
 	} );
 
 	it( 'should undo adding attribute by applying reverse operation', () => {
-		root.insertChildren( 0, new Text( 'bar' ) );
+		root._insertChildren( 0, new Text( 'bar' ) );
 
 		const operation = new AttributeOperation(
 			new Range( new Position( root, [ 0 ] ), new Position( root, [ 3 ] ) ),
@@ -205,8 +275,8 @@ describe( 'AttributeOperation', () => {
 
 		const reverse = operation.getReversed();
 
-		doc.applyOperation( wrapInDelta( operation ) );
-		doc.applyOperation( wrapInDelta( reverse ) );
+		model.applyOperation( wrapInDelta( operation ) );
+		model.applyOperation( wrapInDelta( reverse ) );
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.maxOffset ).to.equal( 3 );
@@ -217,9 +287,9 @@ describe( 'AttributeOperation', () => {
 		const eleA = new Element( 'a', [], new Text( 'abc' ) );
 		const eleB = new Element( 'b', [], new Text( 'xyz' ) );
 
-		root.insertChildren( 0, [ eleA, eleB ] );
+		root._insertChildren( 0, [ eleA, eleB ] );
 
-		doc.applyOperation( wrapInDelta(
+		model.applyOperation( wrapInDelta(
 			new AttributeOperation(
 				new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 1, 2 ] ) ),
 				'foo',
@@ -238,9 +308,9 @@ describe( 'AttributeOperation', () => {
 		const eleA = new Element( 'a', fooAttr, new Text( 'abc' ) );
 		const eleB = new Element( 'b', fooAttr, new Text( 'xyz' ) );
 
-		root.insertChildren( 0, [ eleA, eleB ] );
+		root._insertChildren( 0, [ eleA, eleB ] );
 
-		doc.applyOperation( wrapInDelta(
+		model.applyOperation( wrapInDelta(
 			new AttributeOperation(
 				new Range( new Position( root, [ 0, 3 ] ), new Position( root, [ 1, 0 ] ) ),
 				'foo',
@@ -254,7 +324,7 @@ describe( 'AttributeOperation', () => {
 	} );
 
 	it( 'should undo changing attribute by applying reverse operation', () => {
-		root.insertChildren( 0, new Text( 'bar', { isNew: false } ) );
+		root._insertChildren( 0, new Text( 'bar', { isNew: false } ) );
 
 		const operation = new AttributeOperation(
 			new Range( new Position( root, [ 0 ] ), new Position( root, [ 3 ] ) ),
@@ -266,8 +336,8 @@ describe( 'AttributeOperation', () => {
 
 		const reverse = operation.getReversed();
 
-		doc.applyOperation( wrapInDelta( operation ) );
-		doc.applyOperation( wrapInDelta( reverse ) );
+		model.applyOperation( wrapInDelta( operation ) );
+		model.applyOperation( wrapInDelta( reverse ) );
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.maxOffset ).to.equal( 3 );
@@ -276,7 +346,7 @@ describe( 'AttributeOperation', () => {
 	} );
 
 	it( 'should undo remove attribute by applying reverse operation', () => {
-		root.insertChildren( 0, new Text( 'bar', { foo: true } ) );
+		root._insertChildren( 0, new Text( 'bar', { foo: true } ) );
 
 		const operation = new AttributeOperation(
 			new Range( new Position( root, [ 0 ] ), new Position( root, [ 3 ] ) ),
@@ -288,45 +358,13 @@ describe( 'AttributeOperation', () => {
 
 		const reverse = operation.getReversed();
 
-		doc.applyOperation( wrapInDelta( operation ) );
-		doc.applyOperation( wrapInDelta( reverse ) );
+		model.applyOperation( wrapInDelta( operation ) );
+		model.applyOperation( wrapInDelta( reverse ) );
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.maxOffset ).to.equal( 3 );
 		expect( count( root.getChild( 0 ).getAttributes() ) ).to.equal( 1 );
 		expect( root.getChild( 0 ).getAttribute( 'foo' ) ).to.be.true;
-	} );
-
-	it( 'should throw an error when one try to remove and the attribute does not exists', () => {
-		root.insertChildren( 0, new Text( 'x' ) );
-
-		expect( () => {
-			doc.applyOperation( wrapInDelta(
-				new AttributeOperation(
-					new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ),
-					'foo',
-					true,
-					null,
-					doc.version
-				)
-			) );
-		} ).to.throw( CKEditorError, /attribute-operation-wrong-old-value/ );
-	} );
-
-	it( 'should throw an error when one try to insert and the attribute already exists', () => {
-		root.insertChildren( 0, new Text( 'x', { x: 1 } ) );
-
-		expect( () => {
-			doc.applyOperation( wrapInDelta(
-				new AttributeOperation(
-					new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ),
-					'x',
-					null,
-					2,
-					doc.version
-				)
-			) );
-		} ).to.throw( CKEditorError, /attribute-operation-attribute-exists/ );
 	} );
 
 	it( 'should create an AttributeOperation with the same parameters when cloned', () => {
@@ -352,10 +390,10 @@ describe( 'AttributeOperation', () => {
 		const attrA = { foo: 'a' };
 		const attrB = { foo: 'b' };
 
-		root.insertChildren( 0, new Text( 'abc', attrA ) );
-		root.insertChildren( 1, new Text( 'xyz', attrB ) );
+		root._insertChildren( 0, new Text( 'abc', attrA ) );
+		root._insertChildren( 1, new Text( 'xyz', attrB ) );
 
-		doc.applyOperation( wrapInDelta(
+		model.applyOperation( wrapInDelta(
 			new AttributeOperation(
 				new Range( new Position( root, [ 1 ] ), new Position( root, [ 3 ] ) ),
 				'foo',

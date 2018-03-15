@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -10,6 +10,7 @@
 import NodeList from './nodelist';
 import Element from './element';
 import Text from './text';
+import TextProxy from './textproxy';
 import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 
 /**
@@ -17,23 +18,28 @@ import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
  * can be seen as siblings. In other words, it is a detached part of model tree, without a root.
  *
  * DocumentFragment has own {@link module:engine/model/markercollection~MarkerCollection}. Markers from this collection
- * will be set to the {@link module:engine/model/document~Document#markers document markers} by a
- * {@link module:engine/model/writer~writer.insert} function.
+ * will be set to the {@link module:engine/model/model~Model#markers model markers} by a
+ * {@link module:engine/model/writer~Writer#insert} function.
  */
 export default class DocumentFragment {
 	/**
 	 * Creates an empty `DocumentFragment`.
 	 *
+	 * **Note:** Constructor of this class shouldn't be used directly in the code.
+	 * Use the {@link module:engine/model/writer~Writer#createDocumentFragment} method instead.
+	 *
+	 * @protected
 	 * @param {module:engine/model/node~Node|Iterable.<module:engine/model/node~Node>} [children]
 	 * Nodes to be contained inside the `DocumentFragment`.
 	 */
 	constructor( children ) {
 		/**
 		 * DocumentFragment static markers map. This is a list of names and {@link module:engine/model/range~Range ranges}
-		 * which will be set as Markers to {@link module:engine/model/document~Document#markers document markers collection}
+		 * which will be set as Markers to {@link module:engine/model/model~Model#markers model markers collection}
 		 * when DocumentFragment will be inserted to the document.
 		 *
-		 * @member {Map<String, {module:engine/model/range~Range}>} module:engine/model/documentfragment~DocumentFragment#markers
+		 * @readonly
+		 * @member {Map<String,module:engine/model/range~Range>} module:engine/model/documentfragment~DocumentFragment#markers
 		 */
 		this.markers = new Map();
 
@@ -46,14 +52,14 @@ export default class DocumentFragment {
 		this._children = new NodeList();
 
 		if ( children ) {
-			this.insertChildren( 0, children );
+			this._insertChildren( 0, children );
 		}
 	}
 
 	/**
 	 * Returns an iterator that iterates over all nodes contained inside this document fragment.
 	 *
-	 * @returns {Iterator.<module:engine/model/node~Node>}
+	 * @returns {Iterable.<module:engine/model/node~Node>}
 	 */
 	[ Symbol.iterator ]() {
 		return this.getChildren();
@@ -216,55 +222,6 @@ export default class DocumentFragment {
 	}
 
 	/**
-	 * {@link #insertChildren Inserts} one or more nodes at the end of this document fragment.
-	 *
-	 * @param {module:engine/model/node~Node|Iterable.<module:engine/model/node~Node>} nodes Nodes to be inserted.
-	 */
-	appendChildren( nodes ) {
-		this.insertChildren( this.childCount, nodes );
-	}
-
-	/**
-	 * Inserts one or more nodes at the given index and sets {@link module:engine/model/node~Node#parent parent} of these nodes
-	 * to this document fragment.
-	 *
-	 * @param {Number} index Index at which nodes should be inserted.
-	 * @param {module:engine/model/node~Node|Iterable.<module:engine/model/node~Node>} nodes Nodes to be inserted.
-	 */
-	insertChildren( index, nodes ) {
-		nodes = normalize( nodes );
-
-		for ( const node of nodes ) {
-			// If node that is being added to this element is already inside another element, first remove it from the old parent.
-			if ( node.parent !== null ) {
-				node.remove();
-			}
-
-			node.parent = this;
-		}
-
-		this._children.insertNodes( index, nodes );
-	}
-
-	/**
-	 * Removes one or more nodes starting at the given index
-	 * and sets {@link module:engine/model/node~Node#parent parent} of these nodes to `null`.
-	 *
-	 * @param {Number} index Index of the first node to remove.
-	 * @param {Number} [howMany=1] Number of nodes to remove.
-	 * @returns {Array.<module:engine/model/node~Node>} Array containing removed nodes.
-	 */
-	removeChildren( index, howMany = 1 ) {
-		const nodes = this._children.removeNodes( index, howMany );
-
-		for ( const node of nodes ) {
-			node.parent = null;
-		}
-
-		return nodes;
-	}
-
-	/**
 	 * Converts `DocumentFragment` instance to plain object and returns it.
 	 * Takes care of converting all of this document fragment's children.
 	 *
@@ -302,11 +259,63 @@ export default class DocumentFragment {
 
 		return new DocumentFragment( children );
 	}
+
+	/**
+	 * {@link #_insertChildren Inserts} one or more nodes at the end of this document fragment.
+	 *
+	 * @protected
+	 * @param {module:engine/model/item~Item|Iterable.<module:engine/model/item~Item>} items Items to be inserted.
+	 */
+	_appendChildren( items ) {
+		this._insertChildren( this.childCount, items );
+	}
+
+	/**
+	 * Inserts one or more nodes at the given index and sets {@link module:engine/model/node~Node#parent parent} of these nodes
+	 * to this document fragment.
+	 *
+	 * @protected
+	 * @param {Number} index Index at which nodes should be inserted.
+	 * @param {module:engine/model/item~Item|Iterable.<module:engine/model/item~Item>} items Items to be inserted.
+	 */
+	_insertChildren( index, items ) {
+		const nodes = normalize( items );
+
+		for ( const node of nodes ) {
+			// If node that is being added to this element is already inside another element, first remove it from the old parent.
+			if ( node.parent !== null ) {
+				node._remove();
+			}
+
+			node.parent = this;
+		}
+
+		this._children._insertNodes( index, nodes );
+	}
+
+	/**
+	 * Removes one or more nodes starting at the given index
+	 * and sets {@link module:engine/model/node~Node#parent parent} of these nodes to `null`.
+	 *
+	 * @protected
+	 * @param {Number} index Index of the first node to remove.
+	 * @param {Number} [howMany=1] Number of nodes to remove.
+	 * @returns {Array.<module:engine/model/node~Node>} Array containing removed nodes.
+	 */
+	_removeChildren( index, howMany = 1 ) {
+		const nodes = this._children._removeNodes( index, howMany );
+
+		for ( const node of nodes ) {
+			node.parent = null;
+		}
+
+		return nodes;
+	}
 }
 
 // Converts strings to Text and non-iterables to arrays.
 //
-// @param {String|module:engine/model/node~Node|Iterable.<String|module:engine/model/node~Node>}
+// @param {String|module:engine/model/item~Item|Iterable.<module:engine/model/item~Item>}
 // @return {Iterable.<module:engine/model/node~Node>}
 function normalize( nodes ) {
 	// Separate condition because string is iterable.
@@ -321,6 +330,14 @@ function normalize( nodes ) {
 	// Array.from to enable .map() on non-arrays.
 	return Array.from( nodes )
 		.map( node => {
-			return typeof node == 'string' ? new Text( node ) : node;
+			if ( typeof node == 'string' ) {
+				return new Text( node );
+			}
+
+			if ( node instanceof TextProxy ) {
+				return new Text( node.data, node.getAttributes() );
+			}
+
+			return node;
 		} );
 }

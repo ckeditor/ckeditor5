@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -15,14 +15,18 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
- * Creates, stores and manages {@link ~Marker markers}.
+ * The collection of all {@link module:engine/model/markercollection~Marker markers} attached to the document.
+ * It lets you {@link module:engine/model/markercollection~MarkerCollection#get get} markers or track them using
+ * {@link module:engine/model/markercollection~MarkerCollection#event:update} event.
  *
- * Markers are created by {@link ~MarkerCollection#set setting} a name for a {@link module:engine/model/liverange~LiveRange live range}
- * in `MarkerCollection`. Name is used to group and identify markers. Names have to be unique, but markers can be grouped by
- * using common prefixes, separated with `:`, for example: `user:john` or `search:3`.
+ * To create, change or remove makers use {@link module:engine/model/writer~Writer model writers'} methods:
+ * {@link module:engine/model/writer~Writer#setMarker} or {@link module:engine/model/writer~Writer#removeMarker}. Since
+ * the writer is the only proper way to change the data model it is not possible to change markers directly using this
+ * collection. All markers created by the writer will be automatically added to this collection.
  *
- * Since markers are based on {@link module:engine/model/liverange~LiveRange live ranges}, for efficiency reasons, it's
- * best to create and keep at least markers as possible.
+ * By default there is one marker collection available as {@link module:engine/model/model~Model#markers model property}.
+ *
+ * @see module:engine/model/markercollection~Marker
  */
 export default class MarkerCollection {
 	/**
@@ -39,9 +43,11 @@ export default class MarkerCollection {
 	}
 
 	/**
-	 * Returns an iterator that iterates over all {@link ~Marker markers} added to the collection.
+	 * Iterable interface.
 	 *
-	 * @returns {Iterator}
+	 * Iterates over all {@link ~Marker markers} added to the collection.
+	 *
+	 * @returns {Iterable}
 	 */
 	[ Symbol.iterator ]() {
 		return this._markers.values();
@@ -72,35 +78,48 @@ export default class MarkerCollection {
 	 * Creates and adds a {@link ~Marker marker} to the `MarkerCollection` with given name on given
 	 * {@link module:engine/model/range~Range range}.
 	 *
-	 * If `MarkerCollection` already had a marker with given name (or {@link ~Marker marker} was passed) and the range to
-	 * set is different, the marker in collection is removed and then new marker is added. If the range was same, nothing
-	 * happens and `false` is returned.
+	 * If `MarkerCollection` already had a marker with given name (or {@link ~Marker marker} was passed), the marker in
+	 * collection is updated and {@link module:engine/model/markercollection~MarkerCollection#event:update} event is fired
+	 * but only if there was a change (marker range or {@link module:engine/model/markercollection~Marker#managedUsingOperations}
+	 * flag has changed.
 	 *
-	 * @fires module:engine/model/markercollection~MarkerCollection#event:add
-	 * @fires module:engine/model/markercollection~MarkerCollection#event:remove
-	 * @param {String|module:engine/model/markercollection~Marker} markerOrName Name of marker to add or Marker instance to update.
+	 * @protected
+	 * @fires module:engine/model/markercollection~MarkerCollection#event:update
+	 * @param {String|module:engine/model/markercollection~Marker} markerOrName Name of marker to set or marker instance to update.
 	 * @param {module:engine/model/range~Range} range Marker range.
-	 * @returns {module:engine/model/markercollection~Marker} `Marker` instance added to the collection.
+	 * @param {Boolean} [managedUsingOperations=false] Specifies whether the marker is managed using operations.
+	 * @returns {module:engine/model/markercollection~Marker} `Marker` instance which was added or updated.
 	 */
-	set( markerOrName, range ) {
+	_set( markerOrName, range, managedUsingOperations = false ) {
 		const markerName = markerOrName instanceof Marker ? markerOrName.name : markerOrName;
 		const oldMarker = this._markers.get( markerName );
 
 		if ( oldMarker ) {
 			const oldRange = oldMarker.getRange();
+			let hasChanged = false;
 
-			if ( oldRange.isEqual( range ) ) {
-				return oldMarker;
+			if ( !oldRange.isEqual( range ) ) {
+				oldMarker._attachLiveRange( LiveRange.createFromRange( range ) );
+				hasChanged = true;
 			}
 
-			this.remove( markerName );
+			if ( managedUsingOperations != oldMarker.managedUsingOperations ) {
+				oldMarker._managedUsingOperations = managedUsingOperations;
+				hasChanged = true;
+			}
+
+			if ( hasChanged ) {
+				this.fire( 'update:' + markerName, oldMarker, oldRange, range );
+			}
+
+			return oldMarker;
 		}
 
 		const liveRange = LiveRange.createFromRange( range );
-		const marker = new Marker( markerName, liveRange );
+		const marker = new Marker( markerName, liveRange, managedUsingOperations );
 
 		this._markers.set( markerName, marker );
-		this.fire( 'add:' + markerName, marker );
+		this.fire( 'update:' + markerName, marker, null, range );
 
 		return marker;
 	}
@@ -108,16 +127,18 @@ export default class MarkerCollection {
 	/**
 	 * Removes given {@link ~Marker marker} or a marker with given name from the `MarkerCollection`.
 	 *
+	 * @protected
+	 * @fires module:engine/model/markercollection~MarkerCollection#event:update
 	 * @param {String} markerOrName Marker or name of a marker to remove.
 	 * @returns {Boolean} `true` if marker was found and removed, `false` otherwise.
 	 */
-	remove( markerOrName ) {
+	_remove( markerOrName ) {
 		const markerName = markerOrName instanceof Marker ? markerOrName.name : markerOrName;
 		const oldMarker = this._markers.get( markerName );
 
 		if ( oldMarker ) {
 			this._markers.delete( markerName );
-			this.fire( 'remove:' + markerName, oldMarker );
+			this.fire( 'update:' + markerName, oldMarker, oldMarker.getRange(), null );
 
 			this._destroyMarker( oldMarker );
 
@@ -131,7 +152,7 @@ export default class MarkerCollection {
 	 * Returns iterator that iterates over all markers, which ranges contain given {@link module:engine/model/position~Position position}.
 	 *
 	 * @param {module:engine/model/position~Position} position
-	 * @returns {Iterator.<module:engine/model/markercollection~Marker>}
+	 * @returns {Iterable.<module:engine/model/markercollection~Marker>}
 	 */
 	* getMarkersAtPosition( position ) {
 		for ( const marker of this ) {
@@ -165,7 +186,7 @@ export default class MarkerCollection {
 	 *		Array.from( markersCollection.getMarkersGroup( 'a' ) ); // []
 	 *
 	 * @param prefix
-	 * @returns {Iterator.<module:engine/model/markercollection~Marker>}
+	 * @returns {Iterable.<module:engine/model/markercollection~Marker>}
 	 */
 	* getMarkersGroup( prefix ) {
 		for ( const marker of this._markers.values() ) {
@@ -183,22 +204,18 @@ export default class MarkerCollection {
 	 */
 	_destroyMarker( marker ) {
 		marker.stopListening();
-		marker._liveRange.detach();
-		marker._liveRange = null;
+		marker._detachLiveRange();
 	}
 
 	/**
-	 * Fired whenever marker is added to `MarkerCollection`.
+	 * Fired whenever marker is added, updated or removed from `MarkerCollection`.
 	 *
-	 * @event add
-	 * @param {module:engine/model/markercollection~Marker} The added marker.
-	 */
-
-	/**
-	 * Fired whenever marker is removed from `MarkerCollection`.
-	 *
-	 * @event remove
-	 * @param {module:engine/model/markercollection~Marker} marker The removed marker.
+	 * @event update
+	 * @param {module:engine/model/markercollection~Marker} Updated Marker.
+	 * @param {module:engine/model/range~Range|null} oldRange Marker range before the update. When is not defined it
+	 * means that marker is just added.
+	 * @param {module:engine/model/range~Range|null} newRange Marker range after update. When is not defined it
+	 * means that marker is just removed.
 	 */
 }
 
@@ -207,24 +224,67 @@ mix( MarkerCollection, EmitterMixin );
 /**
  * `Marker` is a continuous parts of model (like a range), is named and represent some kind of information about marked
  * part of model document. In contrary to {@link module:engine/model/node~Node nodes}, which are building blocks of
- * model document tree, markers are not stored directly in document tree. Still, they are document data, by giving
+ * model document tree, markers are not stored directly in document tree but in
+ * {@link module:engine/model/model~Model#markers model markers' collection}. Still, they are document data, by giving
  * additional meaning to the part of a model document between marker start and marker end.
  *
  * In this sense, markers are similar to adding and converting attributes on nodes. The difference is that attribute is
  * connected with a given node (e.g. a character is bold no matter if it gets moved or content around it changes).
- * Markers on the other hand are continuous ranges and are characterised by their start and end position. This means that
+ * Markers on the other hand are continuous ranges and are characterized by their start and end position. This means that
  * any character in the marker is marked by the marker. For example, if a character is moved outside of marker it stops being
  * "special" and the marker is shrunk. Similarly, when a character is moved into the marker from other place in document
  * model, it starts being "special" and the marker is enlarged.
  *
- * Since markers are based on {@link module:engine/model/liverange~LiveRange live ranges}, for efficiency reasons, it's
- * best to create and keep at least markers as possible.
+ * Another upside of markers is that finding marked part of document is fast and easy. Using attributes to mark some nodes
+ * and then trying to find that part of document would require traversing whole document tree. Marker gives instant access
+ * to the range which it is marking at the moment.
  *
- * Markers can be converted to view by adding appropriate converters for
- * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:addMarker} and
- * {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher#event:removeMarker}
- * events, or by building converters for {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher}
- * using {@link module:engine/conversion/buildmodelconverter~buildModelConverter model converter builder}.
+ * Markers are built from a name and a range.
+ *
+ * Range of the marker is updated automatically when document changes, using
+ * {@link module:engine/model/liverange~LiveRange live range} mechanism.
+ *
+ * Name is used to group and identify markers. Names have to be unique, but markers can be grouped by
+ * using common prefixes, separated with `:`, for example: `user:john` or `search:3`. That's useful in term of creating
+ * namespaces for custom elements (e.g. comments, highlights). You can use this prefixes in
+ * {@link module:engine/model/markercollection~MarkerCollection#event:update} listeners to listen on changes in a group of markers.
+ * For instance: `model.markers.on( 'set:user', callback );` will be called whenever any `user:*` markers changes.
+ *
+ * There are two types of markers.
+ *
+ * 1. Markers managed directly, without using operations. They are added directly by {@link module:engine/model/writer~Writer}
+ * to the {@link module:engine/model/markercollection~MarkerCollection} without any additional mechanism. They can be used
+ * as bookmarks or visual markers. They are great for showing results of the find, or select link when the focus is in the input.
+ *
+ * 1. Markers managed using operations. These markers are also stored in {@link module:engine/model/markercollection~MarkerCollection}
+ * but changes in these markers is managed the same way all other changes in the model structure - using operations.
+ * Therefore, they are handled in the undo stack and synchronized between clients if the collaboration plugin is enabled.
+ * This type of markers is useful for solutions like spell checking or comments.
+ *
+ * Both type of them should be added / updated by {@link module:engine/model/writer~Writer#setMarker}
+ * and removed by {@link module:engine/model/writer~Writer#removeMarker} methods.
+ *
+ *		model.change( ( writer ) => {
+ * 			const marker = writer.setMarker( name, range, { usingOperation: true } );
+ *
+ * 			// ...
+ *
+ * 			writer.removeMarker( marker );
+ *		} );
+ *
+ * See {@link module:engine/model/writer~Writer} to find more examples.
+ *
+ * Since markers need to track change in the document, for efficiency reasons, it is best to create and keep as little
+ * markers as possible and remove them as soon as they are not needed anymore.
+ *
+ * Markers can be downcasted and upcasted.
+ *
+ * Markers downcast happens on {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:addMarker} and
+ * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:removeMarker} events.
+ * Use {@link module:engine/conversion/downcast-converters downcast converters} or attach a custom converter to mentioned events.
+ * For {@link module:engine/controller/datacontroller~DataController data pipeline}, marker should be downcasted to an element.
+ * Then, it can be upcasted back to a marker. Again, use {@link module:engine/conversion/upcast-converters upcast converters} or
+ * attach a custom converter to {@link module:engine/conversion/upcastdispatcher~UpcastDispatcher#event:element}.
  *
  * Another upside of markers is that finding marked part of document is fast and easy. Using attributes to mark some nodes
  * and then trying to find that part of document would require traversing whole document tree. Marker gives instant access
@@ -238,27 +298,47 @@ class Marker {
 	 *
 	 * @param {String} name Marker name.
 	 * @param {module:engine/model/liverange~LiveRange} liveRange Range marked by the marker.
+	 * @param {Boolean} managedUsingOperations Specifies whether the marker is managed using operations.
 	 */
-	constructor( name, liveRange ) {
+	constructor( name, liveRange, managedUsingOperations ) {
 		/**
 		 * Marker's name.
 		 *
 		 * @readonly
-		 * @member {String} #name
+		 * @type {String}
 		 */
 		this.name = name;
 
 		/**
-		 * Range marked by the marker.
+		 * Flag indicates if the marker is managed using operations or not.
 		 *
 		 * @protected
+		 * @member {Boolean}
+		 */
+		this._managedUsingOperations = managedUsingOperations;
+
+		/**
+		 * Range marked by the marker.
+		 *
+		 * @private
 		 * @member {module:engine/model/liverange~LiveRange} #_liveRange
 		 */
-		this._liveRange = liveRange;
+		this._liveRange = this._attachLiveRange( liveRange );
+	}
 
-		// Delegating does not work with namespaces. Alternatively, we could delegate all events (using `*`).
-		this._liveRange.delegate( 'change:range' ).to( this );
-		this._liveRange.delegate( 'change:content' ).to( this );
+	/**
+	 * Returns value of flag indicates if the marker is managed using operations or not.
+	 * See {@link ~Marker marker class description} to learn more about marker types.
+	 * See {@link module:engine/model/writer~Writer#setMarker}.
+	 *
+	 * @returns {Boolean}
+	 */
+	get managedUsingOperations() {
+		if ( !this._liveRange ) {
+			throw new CKEditorError( 'marker-destroyed: Cannot use a destroyed marker instance.' );
+		}
+
+		return this._managedUsingOperations;
 	}
 
 	/**
@@ -308,12 +388,45 @@ class Marker {
 	}
 
 	/**
+	 * Binds new live range to marker and detach the old one if is attached.
+	 *
+	 * @protected
+	 * @param {module:engine/model/liverange~LiveRange} liveRange Live range to attach
+	 * @return {module:engine/model/liverange~LiveRange} Attached live range.
+	 */
+	_attachLiveRange( liveRange ) {
+		if ( this._liveRange ) {
+			this._detachLiveRange();
+		}
+
+		// Delegating does not work with namespaces. Alternatively, we could delegate all events (using `*`).
+		liveRange.delegate( 'change:range' ).to( this );
+		liveRange.delegate( 'change:content' ).to( this );
+
+		this._liveRange = liveRange;
+
+		return liveRange;
+	}
+
+	/**
+	 * Unbinds and destroys currently attached live range.
+	 *
+	 * @protected
+	 */
+	_detachLiveRange() {
+		this._liveRange.stopDelegating( 'change:range', this );
+		this._liveRange.stopDelegating( 'change:content', this );
+		this._liveRange.detach();
+		this._liveRange = null;
+	}
+
+	/**
 	 * Fired whenever {@link ~Marker#_liveRange marker range} is changed due to changes on {@link module:engine/model/document~Document}.
 	 * This is a delegated {@link module:engine/model/liverange~LiveRange#event:change:range LiveRange change:range event}.
 	 *
 	 * When marker is removed from {@link module:engine/model/markercollection~MarkerCollection MarkerCollection},
 	 * all event listeners listening to it should be removed. It is best to do it on
-	 * {@link module:engine/model/markercollection~MarkerCollection#event:remove MarkerCollection remove event}.
+	 * {@link module:engine/model/markercollection~MarkerCollection#event:update MarkerCollection update event}.
 	 *
 	 * @see module:engine/model/liverange~LiveRange#event:change:range
 	 * @event change:range
@@ -327,7 +440,7 @@ class Marker {
 	 *
 	 * When marker is removed from {@link module:engine/model/markercollection~MarkerCollection MarkerCollection},
 	 * all event listeners listening to it should be removed. It is best to do it on
-	 * {@link module:engine/model/markercollection~MarkerCollection#event:remove MarkerCollection remove event}.
+	 * {@link module:engine/model/markercollection~MarkerCollection#event:update MarkerCollection update event}.
 	 *
 	 * @see module:engine/model/liverange~LiveRange#event:change:content
 	 * @event change:content

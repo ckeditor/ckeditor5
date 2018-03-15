@@ -1,9 +1,7 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
-
-/* globals document */
 
 import Document from '../../src/view/document';
 import DocumentFragment from '../../src/view/documentfragment';
@@ -13,6 +11,7 @@ import Text from '../../src/view/text';
 import TreeWalker from '../../src/view/treewalker';
 import Position from '../../src/view/position';
 import Range from '../../src/view/range';
+import createViewRoot from './_utils/createroot';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'TreeWalker', () => {
@@ -20,7 +19,7 @@ describe( 'TreeWalker', () => {
 
 	before( () => {
 		doc = new Document();
-		root = doc.createRoot( document.createElement( 'div' ) );
+		root = createViewRoot( doc );
 
 		// root
 		//  |- img1
@@ -43,14 +42,10 @@ describe( 'TreeWalker', () => {
 		paragraph = new ContainerElement( 'p', null, [ bold, charY, img2, charX ] );
 		img1 = new ContainerElement( 'img1' );
 
-		root.insertChildren( 0, [ img1, paragraph ] );
+		root._insertChildren( 0, [ img1, paragraph ] );
 
 		rootBeginning = new Position( root, 0 );
 		rootEnding = new Position( root, 2 );
-	} );
-
-	afterEach( () => {
-		doc.destroy();
 	} );
 
 	describe( 'constructor()', () => {
@@ -1005,14 +1000,53 @@ describe( 'TreeWalker', () => {
 		const b = new AttributeElement( 'b', null, bar );
 		const docFrag = new DocumentFragment( [ p, b ] );
 
-		const iterator = new TreeWalker( {
-			startPosition: new Position( docFrag, 0 ),
-			ignoreElementEnd: true
-		} );
+		const expected = [
+			{
+				type: 'elementStart',
+				item: p,
+				previousPosition: new Position( docFrag, 0 ),
+				nextPosition: new Position( p, 0 )
+			},
+			{
+				type: 'text',
+				text: 'foo',
+				previousPosition: new Position( p, 0 ),
+				nextPosition: new Position( p, 1 )
+			},
+			{
+				type: 'elementEnd',
+				item: p,
+				previousPosition: new Position( p, 1 ),
+				nextPosition: new Position( docFrag, 1 )
+			},
+			{
+				type: 'elementStart',
+				item: b,
+				previousPosition: new Position( docFrag, 1 ),
+				nextPosition: new Position( b, 0 )
+			},
+			{
+				type: 'text',
+				text: 'bar',
+				previousPosition: new Position( b, 0 ),
+				nextPosition: new Position( b, 1 )
+			},
+			{
+				type: 'elementEnd',
+				item: b,
+				previousPosition: new Position( b, 1 ),
+				nextPosition: new Position( docFrag, 2 )
+			}
+		];
 
-		const nodes = Array.from( iterator ).map( step => step.item );
+		const iterator = new TreeWalker( { boundaries: Range.createIn( docFrag ) } );
+		let i = 0;
 
-		expect( nodes ).to.deep.equal( [ p, foo, b, bar ] );
+		for ( const value of iterator ) {
+			expectValue( value, expected[ i++ ] );
+		}
+
+		expect( i ).to.equal( expected.length );
 	} );
 
 	describe( 'skip', () => {

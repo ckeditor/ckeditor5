@@ -1,13 +1,10 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
-import Document from '../../../src/model/document';
+import Model from '../../../src/model/model';
 import Position from '../../../src/model/position';
-import Element from '../../../src/model/element';
-import Text from '../../../src/model/text';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 import MergeDelta from '../../../src/model/delta/mergedelta';
 import SplitDelta from '../../../src/model/delta/splitdelta';
@@ -16,70 +13,13 @@ import MoveOperation from '../../../src/model/operation/moveoperation';
 import RemoveOperation from '../../../src/model/operation/removeoperation';
 import ReinsertOperation from '../../../src/model/operation/reinsertoperation';
 
-import count from '@ckeditor/ckeditor5-utils/src/count';
-
-describe( 'Batch', () => {
-	let doc, root, p1, p2, batch;
-
-	beforeEach( () => {
-		doc = new Document();
-		root = doc.createRoot();
-
-		p1 = new Element( 'p', { key1: 'value1' }, new Text( 'foo' ) );
-		p2 = new Element( 'p', { key2: 'value2' }, new Text( 'bar' ) );
-
-		root.insertChildren( 0, [ p1, p2 ] );
-	} );
-
-	describe( 'merge', () => {
-		it( 'should merge foo and bar into foobar', () => {
-			doc.batch().merge( new Position( root, [ 1 ] ) );
-
-			expect( root.maxOffset ).to.equal( 1 );
-			expect( root.getChild( 0 ).name ).to.equal( 'p' );
-			expect( root.getChild( 0 ).maxOffset ).to.equal( 6 );
-			expect( count( root.getChild( 0 ).getAttributes() ) ).to.equal( 1 );
-			expect( root.getChild( 0 ).getAttribute( 'key1' ) ).to.equal( 'value1' );
-			expect( root.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foobar' );
-		} );
-
-		it( 'should throw if there is no element after', () => {
-			expect( () => {
-				doc.batch().merge( new Position( root, [ 2 ] ) );
-			} ).to.throw( CKEditorError, /^batch-merge-no-element-after/ );
-		} );
-
-		it( 'should throw if there is no element before', () => {
-			expect( () => {
-				doc.batch().merge( new Position( root, [ 0, 2 ] ) );
-			} ).to.throw( CKEditorError, /^batch-merge-no-element-before/ );
-		} );
-
-		it( 'should be chainable', () => {
-			batch = doc.batch();
-
-			const chain = batch.merge( new Position( root, [ 1 ] ) );
-			expect( chain ).to.equal( batch );
-		} );
-
-		it( 'should add delta to batch and operation to delta before applying operation', () => {
-			sinon.spy( doc, 'applyOperation' );
-			batch = doc.batch().merge( new Position( root, [ 1 ] ) );
-
-			const correctDeltaMatcher = sinon.match( operation => {
-				return operation.delta && operation.delta.batch && operation.delta.batch == batch;
-			} );
-
-			expect( doc.applyOperation.calledWith( correctDeltaMatcher ) ).to.be.true;
-		} );
-	} );
-} );
-
 describe( 'MergeDelta', () => {
 	let mergeDelta, doc, root;
 
 	beforeEach( () => {
-		doc = new Document();
+		const model = new Model();
+
+		doc = model.document;
 		root = doc.createRoot();
 		mergeDelta = new MergeDelta();
 	} );

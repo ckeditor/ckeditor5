@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -7,7 +7,7 @@ import transformations from '../../../../src/model/delta/basic-transformations';
 import deltaTransform from '../../../../src/model/delta/transform';
 const transformDeltaSets = deltaTransform.transformDeltaSets;
 
-import Document from '../../../../src/model/document';
+import Model from '../../../../src/model/model';
 import Element from '../../../../src/model/element';
 import Text from '../../../../src/model/text';
 import Position from '../../../../src/model/position';
@@ -39,10 +39,12 @@ describe( 'transform', () => {
 	let doc, root, baseVersion;
 
 	beforeEach( () => {
-		doc = new Document();
+		const model = new Model();
+
+		doc = model.document;
 		root = doc.createRoot();
 
-		root.appendChildren( new Element( 'p', null, new Text( 'foobar' ) ) );
+		root._appendChildren( new Element( 'p', null, new Text( 'foobar' ) ) );
 
 		baseVersion = doc.version;
 	} );

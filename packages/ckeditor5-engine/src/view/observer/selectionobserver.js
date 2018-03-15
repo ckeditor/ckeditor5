@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -21,14 +21,14 @@ import debounce from '@ckeditor/ckeditor5-utils/src/lib/lodash/debounce';
  * {@link module:engine/view/document~Document#event:selectionChange} event only if selection change was the only change in the document
  * and DOM selection is different then the view selection.
  *
- * Note that this observer is attached by the {@link module:engine/view/document~Document} and is available by default.
+ * Note that this observer is attached by the {@link module:engine/view/view~View} and is available by default.
  *
  * @see module:engine/view/observer/mutationobserver~MutationObserver
  * @extends module:engine/view/observer/observer~Observer
  */
 export default class SelectionObserver extends Observer {
-	constructor( document ) {
-		super( document );
+	constructor( view ) {
+		super( view );
 
 		/**
 		 * Instance of the mutation observer. Selection observer calls
@@ -39,15 +39,7 @@ export default class SelectionObserver extends Observer {
 		 * @member {module:engine/view/observer/mutationobserver~MutationObserver}
 		 * module:engine/view/observer/selectionobserver~SelectionObserver#mutationObserver
 		 */
-		this.mutationObserver = document.getObserver( MutationObserver );
-
-		/**
-		 * Reference to the {@link module:engine/view/document~Document} object.
-		 *
-		 * @readonly
-		 * @member {module:engine/view/document~Document} module:engine/view/observer/selectionobserver~SelectionObserver#document
-		 */
-		this.document = document;
+		this.mutationObserver = view.getObserver( MutationObserver );
 
 		/**
 		 * Reference to the view {@link module:engine/view/selection~Selection} object used to compare new selection with it.
@@ -55,17 +47,17 @@ export default class SelectionObserver extends Observer {
 		 * @readonly
 		 * @member {module:engine/view/selection~Selection} module:engine/view/observer/selectionobserver~SelectionObserver#selection
 		 */
-		this.selection = document.selection;
+		this.selection = this.document.selection;
 
 		/* eslint-disable max-len */
 		/**
-		 * Reference to the {@link module:engine/view/document~Document#domConverter}.
+		 * Reference to the {@link module:engine/view/view~View#domConverter}.
 		 *
 		 * @readonly
 		 * @member {module:engine/view/domconverter~DomConverter} module:engine/view/observer/selectionobserver~SelectionObserver#domConverter
 		 */
 		/* eslint-enable max-len */
-		this.domConverter = document.domConverter;
+		this.domConverter = view.domConverter;
 
 		/**
 		 * Set of documents which have added "selectionchange" listener to avoid adding listener twice to the same
@@ -172,7 +164,7 @@ export default class SelectionObserver extends Observer {
 		if ( this.selection.isSimilar( newViewSelection ) ) {
 			// If selection was equal and we are at this point of algorithm, it means that it was incorrect.
 			// Just re-render it, no need to fire any events, etc.
-			this.document.render();
+			this.view.render();
 		} else {
 			const data = {
 				oldSelection: this.selection,
@@ -208,8 +200,7 @@ export default class SelectionObserver extends Observer {
  * Introduced by {@link module:engine/view/observer/selectionobserver~SelectionObserver}.
  *
  * Note that because {@link module:engine/view/observer/selectionobserver~SelectionObserver} is attached by the
- * {@link module:engine/view/document~Document}
- * this event is available by default.
+ * {@link module:engine/view/view~View} this event is available by default.
  *
  * @see module:engine/view/observer/selectionobserver~SelectionObserver
  * @event module:engine/view/document~Document#event:selectionChange
@@ -226,8 +217,7 @@ export default class SelectionObserver extends Observer {
  * Introduced by {@link module:engine/view/observer/selectionobserver~SelectionObserver}.
  *
  * Note that because {@link module:engine/view/observer/selectionobserver~SelectionObserver} is attached by the
- * {@link module:engine/view/document~Document}
- * this event is available by default.
+ * {@link module:engine/view/view~View} this event is available by default.
  *
  * @see module:engine/view/observer/selectionobserver~SelectionObserver
  * @event module:engine/view/document~Document#event:selectionChangeDone

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -89,7 +89,7 @@ describe( 'XmlDataProcessor', () => {
 
 		it( 'should return text if document fragment with single text node is passed', () => {
 			const fragment = new ViewDocumentFragment();
-			fragment.appendChildren( parse( 'foo bar' ) );
+			fragment._appendChildren( parse( 'foo bar' ) );
 
 			expect( dataProcessor.toData( fragment ) ).to.equal( 'foo bar' );
 		} );

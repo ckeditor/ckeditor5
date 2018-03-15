@@ -1,20 +1,23 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
 import MarkerCollection from '../../src/model/markercollection';
 import Position from '../../src/model/position';
 import Range from '../../src/model/range';
+import LiveRange from '../../src/model/liverange';
 import Text from '../../src/model/text';
-import Document from '../../src/model/document';
+import Model from '../../src/model/model';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'MarkerCollection', () => {
 	let markers, range, range2, doc, root;
 
 	beforeEach( () => {
-		doc = new Document();
+		const model = new Model();
+
+		doc = model.document;
 		markers = new MarkerCollection();
 
 		root = doc.createRoot();
@@ -24,8 +27,8 @@ describe( 'MarkerCollection', () => {
 
 	describe( 'iterator', () => {
 		it( 'should return markers added to the marker collection', () => {
-			markers.set( 'a', range );
-			markers.set( 'b', range );
+			markers._set( 'a', range );
+			markers._set( 'b', range );
 
 			const markerA = markers.get( 'a' );
 			const markerB = markers.get( 'b' );
@@ -38,56 +41,80 @@ describe( 'MarkerCollection', () => {
 		} );
 	} );
 
-	describe( 'set', () => {
-		it( 'should create a marker, fire add:<markerName> event and return true', () => {
+	describe( '_set', () => {
+		it( 'should create a marker and fire update:<markerName>', () => {
 			sinon.spy( markers, 'fire' );
 
-			const result = markers.set( 'name', range );
+			const result = markers._set( 'name', range );
 			const marker = markers.get( 'name' );
 
 			expect( result ).to.equal( marker );
 			expect( marker.name ).to.equal( 'name' );
+			expect( marker.managedUsingOperations ).to.false;
 			expect( marker.getRange().isEqual( range ) ).to.be.true;
-			expect( markers.fire.calledWithExactly( 'add:name', marker ) ).to.be.true;
+			sinon.assert.calledWithExactly( markers.fire, 'update:name', result, null, range );
 		} );
 
-		it( 'should fire remove:<markerName> event, and create a new marker if marker with given name was in the collection', () => {
-			const marker1 = markers.set( 'name', range );
+		it( 'should create a marker marked as managed by operations', () => {
+			const marker = markers._set( 'name', range, true );
+
+			expect( marker.managedUsingOperations ).to.true;
+		} );
+
+		it( 'should update marker range and fire update:<markerName> event if marker with given name was in the collection', () => {
+			const marker = markers._set( 'name', range );
+
+			sinon.spy( markers, 'fire' );
+			sinon.spy( marker, '_detachLiveRange' );
+			sinon.spy( marker, '_attachLiveRange' );
+
+			const result = markers._set( 'name', range2 );
+
+			expect( result ).to.equal( marker );
+			expect( marker.getRange().isEqual( range2 ) ).to.be.true;
+
+			sinon.assert.calledWithExactly( markers.fire, 'update:name', marker, range, range2 );
+			sinon.assert.calledOnce( marker._detachLiveRange );
+			sinon.assert.calledOnce( marker._detachLiveRange );
+		} );
+
+		it( 'should update marker#managedUsingOperations and fire update:<markerName> event if marker with given name ' +
+			'was in the collection',
+		() => {
+			const marker = markers._set( 'name', range );
+
+			sinon.spy( markers, 'fire' );
+			sinon.spy( marker, '_detachLiveRange' );
+			sinon.spy( marker, '_attachLiveRange' );
+
+			const result = markers._set( 'name', range, true );
+
+			expect( result ).to.equal( marker );
+			expect( marker.managedUsingOperations ).to.true;
+			expect( marker.getRange().isEqual( range ) ).to.be.true;
+
+			sinon.assert.calledWithExactly( markers.fire, 'update:name', marker, range, range );
+			sinon.assert.notCalled( marker._detachLiveRange );
+			sinon.assert.notCalled( marker._attachLiveRange );
+		} );
+
+		it( 'should not fire event if given marker has not changed', () => {
+			const marker = markers._set( 'name', range );
 
 			sinon.spy( markers, 'fire' );
 
-			const marker2 = markers.set( 'name', range2 );
+			const result = markers._set( 'name', range );
 
-			expect( markers.fire.calledWithExactly( 'remove:name', marker1 ) ).to.be.true;
-			expect( markers.fire.calledWithExactly( 'add:name', marker2 ) ).to.be.true;
-
-			expect( marker2.name ).to.equal( 'name' );
-			expect( marker2.getRange().isEqual( range2 ) ).to.be.true;
-
-			expect( marker1 ).not.to.equal( marker2 );
-		} );
-
-		it( 'should not fire event and return the same marker if given marker has a range equal to given range', () => {
-			const marker1 = markers.set( 'name', range );
-
-			sinon.spy( markers, 'fire' );
-
-			const marker2 = markers.set( 'name', range );
-
-			expect( marker1 ).to.equal( marker2 );
-			expect( markers.fire.notCalled ).to.be.true;
+			expect( marker ).to.equal( result );
+			sinon.assert.notCalled( markers.fire );
 		} );
 
 		it( 'should accept marker instance instead of name', () => {
-			markers.set( 'name', range );
-			const marker1 = markers.get( 'name' );
+			const marker = markers._set( 'name', range );
 
-			const result = markers.set( marker1, range2 );
-			const marker2 = markers.get( 'name' );
+			markers._set( marker, range2 );
 
-			expect( result ).to.equal( marker2 );
-			expect( marker2.getRange().isEqual( range2 ) );
-			expect( marker1 ).not.to.equal( marker2 );
+			expect( marker.getRange().isEqual( range2 ) ).to.true;
 		} );
 	} );
 
@@ -97,7 +124,7 @@ describe( 'MarkerCollection', () => {
 		} );
 
 		it( 'should return true if marker with given name is in the collection', () => {
-			markers.set( 'name', range );
+			markers._set( 'name', range );
 			expect( markers.has( 'name' ) ).to.be.true;
 		} );
 	} );
@@ -112,63 +139,61 @@ describe( 'MarkerCollection', () => {
 		} );
 	} );
 
-	describe( 'remove', () => {
-		it( 'should remove marker, return true and fire remove:<markerName> event', () => {
-			const marker = markers.set( 'name', range );
+	describe( '_remove', () => {
+		it( 'should remove marker, return true and fire update:<markerName> event', () => {
+			const marker = markers._set( 'name', range );
 
 			sinon.spy( markers, 'fire' );
 
-			const result = markers.remove( 'name' );
+			const result = markers._remove( 'name' );
 
 			expect( result ).to.be.true;
-			expect( markers.fire.calledWithExactly( 'remove:name', marker ) ).to.be.true;
 			expect( markers.get( 'name' ) ).to.be.null;
+			sinon.assert.calledWithExactly( markers.fire, 'update:name', marker, range, null );
 		} );
 
 		it( 'should destroy marker instance', () => {
-			const marker = markers.set( 'name', range );
-			const liveRange = marker._liveRange;
+			const marker = markers._set( 'name', range );
 
 			sinon.spy( marker, 'stopListening' );
-			sinon.spy( liveRange, 'detach' );
+			sinon.spy( marker, '_detachLiveRange' );
 
-			markers.remove( 'name' );
+			markers._remove( 'name' );
 
 			expect( marker.stopListening.calledOnce ).to.be.true;
-			expect( marker._liveRange ).to.be.null;
-			expect( liveRange.detach.calledOnce ).to.be.true;
+			expect( marker._detachLiveRange.calledOnce ).to.be.true;
 		} );
 
 		it( 'should return false if name has not been found in collection', () => {
-			markers.set( 'name', range );
+			markers._set( 'name', range );
 
 			sinon.spy( markers, 'fire' );
 
-			const result = markers.remove( 'other' );
+			const result = markers._remove( 'other' );
 
 			expect( result ).to.be.false;
 			expect( markers.fire.notCalled ).to.be.true;
 		} );
 
 		it( 'should accept marker instance instead of name', () => {
-			const marker = markers.set( 'name', range );
+			const marker = markers._set( 'name', range );
 
 			sinon.spy( markers, 'fire' );
 
-			const result = markers.remove( marker );
+			const result = markers._remove( marker );
 
 			expect( result ).to.be.true;
-			expect( markers.fire.calledWithExactly( 'remove:name', marker ) ).to.be.true;
+			expect( markers.fire.calledWithExactly( 'update:name', marker, range, null ) ).to.be.true;
 			expect( markers.get( 'name' ) ).to.be.null;
 		} );
 	} );
 
 	describe( 'getMarkersGroup', () => {
 		it( 'returns all markers which names start on given prefix', () => {
-			const markerFooA = markers.set( 'foo:a', range );
-			const markerFooB = markers.set( 'foo:b', range );
-			markers.set( 'bar:a', range );
-			markers.set( 'foobar:a', range );
+			const markerFooA = markers._set( 'foo:a', range );
+			const markerFooB = markers._set( 'foo:b', range );
+			markers._set( 'bar:a', range );
+			markers._set( 'foobar:a', range );
 
 			expect( Array.from( markers.getMarkersGroup( 'foo' ) ) ).to.deep.equal( [ markerFooA, markerFooB ] );
 			expect( Array.from( markers.getMarkersGroup( 'a' ) ) ).to.deep.equal( [] );
@@ -177,8 +202,8 @@ describe( 'MarkerCollection', () => {
 
 	describe( 'getMarkersAtPosition', () => {
 		it( 'should return iterator iterating over all markers that contains given position', () => {
-			markers.set( 'a', range );
-			const markerB = markers.set( 'b', range2 );
+			markers._set( 'a', range );
+			const markerB = markers._set( 'b', range2 );
 
 			const result = Array.from( markers.getMarkersAtPosition( Position.createAt( root, 1 ) ) );
 
@@ -188,8 +213,8 @@ describe( 'MarkerCollection', () => {
 
 	describe( 'destroy', () => {
 		it( 'should make MarkerCollection stop listening to all events and destroy all markers', () => {
-			const markerA = markers.set( 'a', range );
-			const markerB = markers.set( 'b', range2 );
+			const markerA = markers._set( 'a', range );
+			const markerB = markers._set( 'b', range2 );
 
 			sinon.spy( markers, 'stopListening' );
 			sinon.spy( markerA, 'stopListening' );
@@ -207,25 +232,26 @@ describe( 'MarkerCollection', () => {
 } );
 
 describe( 'Marker', () => {
-	let doc, root;
+	let model, doc, root;
 
 	beforeEach( () => {
-		doc = new Document();
+		model = new Model();
+		doc = model.document;
 		root = doc.createRoot();
 	} );
 
 	it( 'should provide API that returns up-to-date marker range parameters', () => {
-		root.appendChildren( new Text( 'foo' ) );
+		root._appendChildren( new Text( 'foo' ) );
 
 		const range = Range.createFromParentsAndOffsets( root, 1, root, 2 );
-		const marker = doc.markers.set( 'name', range );
+		const marker = model.markers._set( 'name', range );
 
 		expect( marker.getRange().isEqual( range ) ).to.be.true;
 		expect( marker.getStart().isEqual( range.start ) ).to.be.true;
 		expect( marker.getEnd().isEqual( range.end ) ).to.be.true;
 
-		doc.enqueueChanges( () => {
-			doc.batch().insert( Position.createAt( root, 0 ), 'abc' );
+		model.change( writer => {
+			writer.insertText( 'abc', root );
 		} );
 
 		const updatedRange = Range.createFromParentsAndOffsets( root, 4, root, 5 );
@@ -237,9 +263,9 @@ describe( 'Marker', () => {
 
 	it( 'should throw when using the API if marker was removed from markers collection', () => {
 		const range = Range.createFromParentsAndOffsets( root, 1, root, 2 );
-		const marker = doc.markers.set( 'name', range );
+		const marker = model.markers._set( 'name', range );
 
-		doc.markers.remove( 'name' );
+		model.markers._remove( 'name' );
 
 		expect( () => {
 			marker.getRange();
@@ -252,11 +278,15 @@ describe( 'Marker', () => {
 		expect( () => {
 			marker.getEnd();
 		} ).to.throw( CKEditorError, /^marker-destroyed/ );
+
+		expect( () => {
+			marker.managedUsingOperations;
+		} ).to.throw( CKEditorError, /^marker-destroyed/ );
 	} );
 
-	it( 'should delegate events from live range', () => {
+	it( 'should attach live range to marker', () => {
 		const range = Range.createFromParentsAndOffsets( root, 1, root, 2 );
-		const marker = doc.markers.set( 'name', range );
+		const marker = model.markers._set( 'name', range );
 
 		const eventRange = sinon.spy();
 		const eventContent = sinon.spy();
@@ -269,5 +299,71 @@ describe( 'Marker', () => {
 
 		expect( eventRange.calledOnce ).to.be.true;
 		expect( eventContent.calledOnce ).to.be.true;
+	} );
+
+	it( 'should detach live range from marker', () => {
+		const range = Range.createFromParentsAndOffsets( root, 1, root, 2 );
+		const marker = model.markers._set( 'name', range );
+		const liveRange = marker._liveRange;
+
+		const eventRange = sinon.spy();
+		const eventContent = sinon.spy();
+		sinon.spy( liveRange, 'detach' );
+
+		marker.on( 'change:range', eventRange );
+		marker.on( 'change:content', eventContent );
+
+		marker._detachLiveRange();
+
+		liveRange.fire( 'change:range', null, {} );
+		liveRange.fire( 'change:content', null, {} );
+
+		expect( eventRange.notCalled ).to.be.true;
+		expect( eventContent.notCalled ).to.be.true;
+		expect( liveRange.detach.calledOnce ).to.true;
+	} );
+
+	it( 'should reattach live range to marker', () => {
+		const range = Range.createFromParentsAndOffsets( root, 1, root, 2 );
+		const marker = model.markers._set( 'name', range );
+		const oldLiveRange = marker._liveRange;
+		const newLiveRange = LiveRange.createFromParentsAndOffsets( root, 0, root, 1 );
+
+		const eventRange = sinon.spy();
+		const eventContent = sinon.spy();
+		sinon.spy( oldLiveRange, 'detach' );
+
+		marker.on( 'change:range', eventRange );
+		marker.on( 'change:content', eventContent );
+
+		marker._attachLiveRange( newLiveRange );
+
+		oldLiveRange.fire( 'change:range', null, {} );
+		oldLiveRange.fire( 'change:content', null, {} );
+
+		expect( eventRange.notCalled ).to.be.true;
+		expect( eventContent.notCalled ).to.be.true;
+		expect( oldLiveRange.detach.calledOnce ).to.true;
+
+		newLiveRange.fire( 'change:range', null, {} );
+		newLiveRange.fire( 'change:content', null, {} );
+
+		expect( eventRange.calledOnce ).to.be.true;
+		expect( eventContent.calledOnce ).to.be.true;
+	} );
+
+	it( 'should change managedUsingOperations flag', () => {
+		const range = Range.createFromParentsAndOffsets( root, 1, root, 2 );
+		const marker = model.markers._set( 'name', range, false );
+
+		expect( marker.managedUsingOperations ).to.false;
+
+		marker._managedUsingOperations = true;
+
+		expect( marker.managedUsingOperations ).to.true;
+
+		marker._managedUsingOperations = false;
+
+		expect( marker.managedUsingOperations ).to.false;
 	} );
 } );

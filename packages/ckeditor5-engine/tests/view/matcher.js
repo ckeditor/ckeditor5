@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -123,6 +123,34 @@ describe( 'Matcher', () => {
 			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
 			expect( result ).to.have.property( 'match' ).that.has.property( 'attribute' ).that.is.an( 'array' );
 			expect( result.match.attribute[ 0 ] ).equal( 'title' );
+			expect( matcher.match( el3 ) ).to.be.null;
+		} );
+
+		it( 'should match if element has given attribute', () => {
+			const pattern = {
+				attribute: {
+					title: true
+				}
+			};
+			const matcher = new Matcher( pattern );
+			const el1 = new Element( 'p', { title: 'foobar'	} );
+			const el2 = new Element( 'p', { title: '' } );
+			const el3 = new Element( 'p' );
+
+			let result = matcher.match( el1 );
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).that.equal( el1 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'attribute' ).that.is.an( 'array' );
+			expect( result.match.attribute[ 0 ] ).equal( 'title' );
+
+			result = matcher.match( el2 );
+			expect( result ).to.be.an( 'object' );
+			expect( result ).to.have.property( 'element' ).that.equal( el2 );
+			expect( result ).to.have.property( 'pattern' ).that.equal( pattern );
+			expect( result ).to.have.property( 'match' ).that.has.property( 'attribute' ).that.is.an( 'array' );
+			expect( result.match.attribute[ 0 ] ).equal( 'title' );
+
 			expect( matcher.match( el3 ) ).to.be.null;
 		} );
 
@@ -278,7 +306,7 @@ describe( 'Matcher', () => {
 			};
 			const matcher = new Matcher( pattern );
 			const el = new Element( 'a' );
-			el.addClass( 'foo', 'bar', 'baz' );
+			el._addClass( [ 'foo', 'bar', 'baz' ] );
 
 			const result = matcher.match( el );
 			expect( result ).to.be.an( 'object' );
@@ -300,7 +328,7 @@ describe( 'Matcher', () => {
 			};
 			const matcher = new Matcher( pattern );
 			const el = new Element( 'a' );
-			el.setStyle( {
+			el._setStyle( {
 				color: 'red',
 				position: 'relative'
 			} );
@@ -348,9 +376,9 @@ describe( 'Matcher', () => {
 			const el2 = new Element( 'p' );
 			const el3 = new Element( 'p' );
 
-			el1.addClass( 'red-foreground' );
-			el2.addClass( 'red-background' );
-			el3.addClass( 'blue-text' );
+			el1._addClass( 'red-foreground' );
+			el2._addClass( 'red-background' );
+			el3._addClass( 'blue-text' );
 
 			const result = matcher.matchAll( el1, el2, el3 );
 			expect( result ).to.be.an( 'array' );

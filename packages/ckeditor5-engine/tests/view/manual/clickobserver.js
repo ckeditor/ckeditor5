@@ -1,18 +1,23 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
 /* globals console, document */
 
-import Document from '../../../src/view/document';
+import View from '../../../src/view/view';
 import DomEventObserver from '../../../src/view/observer/domeventobserver';
+import createViewRoot from '../_utils/createroot';
 
-const viewDocument = new Document();
+const view = new View();
+const viewDocument = view.document;
+
+// Disable rendering for this example, because it re-enables all observers each time view is rendered.
+view.render = () => {};
 
 class ClickObserver1 extends DomEventObserver {
-	constructor( viewDocument ) {
-		super( viewDocument );
+	constructor( view ) {
+		super( view );
 
 		this.id = 1;
 		this.domEventType = 'click';
@@ -24,8 +29,8 @@ class ClickObserver1 extends DomEventObserver {
 }
 
 class ClickObserver2 extends DomEventObserver {
-	constructor( viewDocument ) {
-		super( viewDocument );
+	constructor( view ) {
+		super( view );
 
 		this.id = 2;
 		this.domEventType = 'click';
@@ -36,17 +41,16 @@ class ClickObserver2 extends DomEventObserver {
 	}
 }
 
-const observer1 = new ClickObserver1( viewDocument );
-
 viewDocument.on( 'click', ( evt, evtData ) => console.log( 'click', evtData.id, evtData.domTarget.id ) );
-document.getElementById( 'enable1' ).addEventListener( 'click', () => observer1.enable() );
-document.getElementById( 'disable1' ).addEventListener( 'click', () => observer1.disable() );
 
 // Random order.
-viewDocument.addObserver( ClickObserver1 );
+view.addObserver( ClickObserver1 );
+createViewRoot( viewDocument, 'div', 'clickerA' );
+view.attachDomRoot( document.getElementById( 'clickerA' ), 'clickerA' );
 
-viewDocument.createRoot( document.getElementById( 'clickerA' ), 'clickerA' );
+view.addObserver( ClickObserver2 );
+createViewRoot( viewDocument, 'div', 'clickerB' );
+view.attachDomRoot( document.getElementById( 'clickerB' ), 'clickerB' );
 
-viewDocument.addObserver( ClickObserver2 );
-
-viewDocument.createRoot( document.getElementById( 'clickerB' ), 'clickerB' );
+document.getElementById( 'enable1' ).addEventListener( 'click', () => view.getObserver( ClickObserver1 ).enable() );
+document.getElementById( 'disable1' ).addEventListener( 'click', () => view.getObserver( ClickObserver1 ).disable() );

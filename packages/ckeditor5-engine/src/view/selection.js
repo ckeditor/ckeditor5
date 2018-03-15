@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -12,6 +12,7 @@ import Range from './range';
 import Position from './position';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
+import Node from './node';
 import Element from './element';
 import count from '@ckeditor/ckeditor5-utils/src/count';
 import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
@@ -19,10 +20,9 @@ import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
 /**
  * Class representing selection in tree view.
  *
- * Selection can consist of {@link module:engine/view/range~Range ranges} that can be added using
- * {@link module:engine/view/selection~Selection#addRange addRange}
- * and {@link module:engine/view/selection~Selection#setRanges setRanges} methods.
- * Both methods create copies of provided ranges and store those copies internally. Further modifications to passed
+ * Selection can consist of {@link module:engine/view/range~Range ranges} that can be set using
+ * {@link module:engine/view/selection~Selection#_setTo} method.
+ * That method create copies of provided ranges and store those copies internally. Further modifications to passed
  * ranges will not change selection's state.
  * Selection's ranges can be obtained via {@link module:engine/view/selection~Selection#getRanges getRanges},
  * {@link module:engine/view/selection~Selection#getFirstRange getFirstRange}
@@ -36,11 +36,61 @@ export default class Selection {
 	/**
 	 * Creates new selection instance.
 	 *
-	 * @param {Iterable.<module:engine/view/range~Range>} [ranges] An optional array of ranges to set.
-	 * @param {Boolean} [isLastBackward] An optional flag describing if last added range was selected forward - from start to end
-	 * (`false`) or backward - from end to start (`true`). Defaults to `false`.
+	 * 		// Creates empty selection without ranges.
+	 *		const selection = new Selection();
+	 *
+	 *		// Creates selection at the given range.
+	 *		const range = new Range( start, end );
+	 *		const selection = new Selection( range );
+	 *
+	 *		// Creates selection at the given ranges
+	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
+	 *		const selection = new Selection( ranges );
+	 *
+	 *		// Creates selection from the other selection.
+	 *		const otherSelection = new Selection();
+	 *		const selection = new Selection( otherSelection );
+	 *
+	 * 		// Creates selection at the given position.
+	 *		const position = new Position( root, path );
+	 *		const selection = new Selection( position );
+	 *
+	 *		// Creates collapsed selection at the position of given item and offset.
+	 *		const paragraph = writer.createElement( 'paragraph' );
+	 *		const selection = new Selection( paragraph, offset );
+	 *
+	 *		// Creates a range inside an {@link module:engine/view/element~Element element} which starts before the
+	 *		// first child of that element and ends after the last child of that element.
+	 *		const selection = new Selection( paragraph, 'in' );
+	 *
+	 *		// Creates a range on an {@link module:engine/view/item~Item item} which starts before the item and ends
+	 *		// just after the item.
+	 *		const selection = new Selection( paragraph, 'on' );
+	 *
+	 * `Selection`'s constructor allow passing additional options (`backward`, `fake` and `label`) as the last argument.
+	 *
+	 *		// Creates backward selection.
+	 *		const selection = new Selection( range, { backward: true } );
+	 *
+	 * Fake selection does not render as browser native selection over selected elements and is hidden to the user.
+	 * This way, no native selection UI artifacts are displayed to the user and selection over elements can be
+	 * represented in other way, for example by applying proper CSS class.
+	 *
+	 * Additionally fake's selection label can be provided. It will be used to describe fake selection in DOM
+	 * (and be  properly handled by screen readers).
+	 *
+	 *		// Creates fake selection with label.
+	 *		const selection = new Selection( range, { fake: true, label: 'foo' } );
+	 *
+	 * @param {module:engine/view/selection~Selection|module:engine/view/position~Position|
+	 * Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|module:engine/view/item~Item|null} [selectable=null]
+	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Offset or place when selectable is an `Item`.
+	 * @param {Object} [options]
+	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
+	 * @param {Boolean} [options.fake] Sets this selection instance to be marked as `fake`.
+	 * @param {String} [options.label] Label for the fake selection.
 	 */
-	constructor( ranges, isLastBackward ) {
+	constructor( selectable = null, placeOrOffset, options ) {
 		/**
 		 * Stores all ranges that are selected.
 		 *
@@ -73,35 +123,13 @@ export default class Selection {
 		 */
 		this._fakeSelectionLabel = '';
 
-		if ( ranges ) {
-			this.setRanges( ranges, isLastBackward );
-		}
-	}
-
-	/**
-	 * Sets this selection instance to be marked as `fake`. A fake selection does not render as browser native selection
-	 * over selected elements and is hidden to the user. This way, no native selection UI artifacts are displayed to
-	 * the user and selection over elements can be represented in other way, for example by applying proper CSS class.
-	 *
-	 * Additionally fake's selection label can be provided. It will be used to describe fake selection in DOM (and be
-	 * properly handled by screen readers).
-	 *
-	 * @fires change
-	 * @param {Boolean} [value=true] If set to true selection will be marked as `fake`.
-	 * @param {Object} [options] Additional options.
-	 * @param {String} [options.label=''] Fake selection label.
-	 */
-	setFake( value = true, options = {} ) {
-		this._isFake = value;
-		this._fakeSelectionLabel = value ? options.label || '' : '';
-
-		this.fire( 'change' );
+		this._setTo( selectable, placeOrOffset, options );
 	}
 
 	/**
 	 * Returns true if selection instance is marked as `fake`.
 	 *
-	 * @see #setFake
+	 * @see #_setTo
 	 * @returns {Boolean}
 	 */
 	get isFake() {
@@ -111,7 +139,7 @@ export default class Selection {
 	/**
 	 * Returns fake selection label.
 	 *
-	 * @see #setFake
+	 * @see #_setTo
 	 * @returns {String}
 	 */
 	get fakeSelectionLabel() {
@@ -167,7 +195,7 @@ export default class Selection {
 	 * Returns number of ranges in selection.
 	 *
 	 * @type {Number}
-     */
+	 */
 	get rangeCount() {
 		return this._ranges.length;
 	}
@@ -196,35 +224,9 @@ export default class Selection {
 	}
 
 	/**
-	 * Adds a range to the selection. Added range is copied. This means that passed range is not saved in the
-	 * selection instance and you can safely operate on it.
+	 * Returns an iterable that contains copies of all ranges added to the selection.
 	 *
-	 * Accepts a flag describing in which way the selection is made - passed range might be selected from
-	 * {@link module:engine/view/range~Range#start start} to {@link module:engine/view/range~Range#end end}
-	 * or from {@link module:engine/view/range~Range#end end} to {@link module:engine/view/range~Range#start start}.
-	 * The flag is used to set {@link #anchor anchor} and {@link #focus focus} properties.
-	 *
-	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-selection-range-intersects` if added range intersects
-	 * with ranges already stored in Selection instance.
-	 *
-	 * @fires change
-	 * @param {module:engine/view/range~Range} range
-	 * @param {Boolean} isBackward
-	 */
-	addRange( range, isBackward ) {
-		if ( !( range instanceof Range ) ) {
-			throw new CKEditorError( 'view-selection-invalid-range: Invalid Range.' );
-		}
-
-		this._pushRange( range );
-		this._lastRangeBackward = !!isBackward;
-		this.fire( 'change' );
-	}
-
-	/**
-	 * Returns an iterator that contains copies of all ranges added to the selection.
-	 *
-	 * @returns {Iterator.<module:engine/view/range~Range>}
+	 * @returns {Iterable.<module:engine/view/range~Range>}
 	 */
 	* getRanges() {
 		for ( const range of this._ranges ) {
@@ -393,171 +395,6 @@ export default class Selection {
 	}
 
 	/**
-	 * Removes all ranges that were added to the selection.
-	 *
-	 * @fires change
-	 */
-	removeAllRanges() {
-		if ( this._ranges.length ) {
-			this._ranges = [];
-			this.fire( 'change' );
-		}
-	}
-
-	/**
-	 * Replaces all ranges that were added to the selection with given array of ranges. Last range of the array
-	 * is treated like the last added range and is used to set {@link #anchor anchor} and {@link #focus focus}.
-	 * Accepts a flag describing in which way the selection is made (see {@link #addRange addRange}).
-	 *
-	 * @fires change
-	 * @param {Iterable.<module:engine/view/range~Range>} newRanges Iterable object of ranges to set.
-	 * @param {Boolean} [isLastBackward] Flag describing if last added range was selected forward - from start to end
-	 * (`false`) or backward - from end to start (`true`). Defaults to `false`.
-	 */
-	setRanges( newRanges, isLastBackward ) {
-		this._ranges = [];
-
-		for ( const range of newRanges ) {
-			if ( !( range instanceof Range ) ) {
-				throw new CKEditorError( 'view-selection-invalid-range: Invalid Range.' );
-			}
-
-			this._pushRange( range );
-		}
-
-		this._lastRangeBackward = !!isLastBackward;
-		this.fire( 'change' );
-	}
-
-	/**
-	 * Sets this selection's ranges and direction to the specified location based on the given
-	 * {@link module:engine/view/selection~Selection selection}, {@link module:engine/view/position~Position position},
-	 * {@link module:engine/view/range~Range range} or an iterable of {@link module:engine/view/range~Range ranges}.
-	 *
-	 * @param {module:engine/view/selection~Selection|module:engine/view/position~Position|
-	 * Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range} selectable
-	 */
-	setTo( selectable ) {
-		if ( selectable instanceof Selection ) {
-			this._isFake = selectable._isFake;
-			this._fakeSelectionLabel = selectable._fakeSelectionLabel;
-			this.setRanges( selectable.getRanges(), selectable.isBackward );
-		} else if ( selectable instanceof Range ) {
-			this.setRanges( [ selectable ] );
-		} else if ( isIterable( selectable ) ) {
-			// We assume that the selectable is an iterable of ranges.
-			this.setRanges( selectable );
-		} else {
-			// We assume that the selectable is a position.
-			this.setRanges( [ new Range( selectable ) ] );
-		}
-	}
-
-	/**
-	 * Sets this selection in the provided element.
-	 *
-	 * @param {module:engine/view/element~Element} element
-	 */
-	setIn( element ) {
-		this.setRanges( [ Range.createIn( element ) ] );
-	}
-
-	/**
-	 * Sets this selection on the provided item.
-	 *
-	 * @param {module:engine/view/item~Item} item
-	 */
-	setOn( item ) {
-		this.setRanges( [ Range.createOn( item ) ] );
-	}
-
-	/**
-	 * Sets collapsed selection at the specified location.
-	 *
-	 * The location can be specified in the same form as {@link module:engine/view/position~Position.createAt} parameters.
-	 *
-	 * @fires change
-	 * @param {module:engine/view/item~Item|module:engine/view/position~Position} itemOrPosition
-	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
-	 * first parameter is a {@link module:engine/view/item~Item view item}.
-	 */
-	setCollapsedAt( itemOrPosition, offset ) {
-		const pos = Position.createAt( itemOrPosition, offset );
-		const range = new Range( pos, pos );
-
-		this.setRanges( [ range ] );
-	}
-
-	/**
-	 * Collapses selection to the selection's {@link #getFirstPosition first position}.
-	 * All ranges, besides the collapsed one, will be removed. Nothing will change if there are no ranges stored
-	 * inside selection.
-	 *
-	 * @fires change
-	 */
-	collapseToStart() {
-		const startPosition = this.getFirstPosition();
-
-		if ( startPosition !== null ) {
-			this.setRanges( [ new Range( startPosition, startPosition ) ] );
-		}
-	}
-
-	/**
-	 * Collapses selection to the selection's {@link #getLastPosition last position}.
-	 * All ranges, besides the collapsed one, will be removed. Nothing will change if there are no ranges stored
-	 * inside selection.
-	 *
-	 * @fires change
-	 */
-	collapseToEnd() {
-		const endPosition = this.getLastPosition();
-
-		if ( endPosition !== null ) {
-			this.setRanges( [ new Range( endPosition, endPosition ) ] );
-		}
-	}
-
-	/**
-	 * Moves {@link #focus} to the specified location.
-	 *
-	 * The location can be specified in the same form as {@link module:engine/view/position~Position.createAt} parameters.
-	 *
-	 * @fires change
-	 * @param {module:engine/view/item~Item|module:engine/view/position~Position} itemOrPosition
-	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
-	 * first parameter is a {@link module:engine/view/item~Item view item}.
-	 */
-	moveFocusTo( itemOrPosition, offset ) {
-		if ( this.anchor === null ) {
-			/**
-			 * Cannot set selection focus if there are no ranges in selection.
-			 *
-			 * @error view-selection-moveFocusTo-no-ranges
-			 */
-			throw new CKEditorError(
-				'view-selection-moveFocusTo-no-ranges: Cannot set selection focus if there are no ranges in selection.'
-			);
-		}
-
-		const newFocus = Position.createAt( itemOrPosition, offset );
-
-		if ( newFocus.compareWith( this.focus ) == 'same' ) {
-			return;
-		}
-
-		const anchor = this.anchor;
-
-		this._ranges.pop();
-
-		if ( newFocus.compareWith( anchor ) == 'before' ) {
-			this.addRange( new Range( newFocus, anchor ), true );
-		} else {
-			this.addRange( new Range( anchor, newFocus ) );
-		}
-	}
-
-	/**
 	 * Returns the selected element. {@link module:engine/view/element~Element Element} is considered as selected if there is only
 	 * one range in the selection, and that range contains exactly one element.
 	 * Returns `null` if there is no selected element.
@@ -577,17 +414,229 @@ export default class Selection {
 	}
 
 	/**
-	 * Creates and returns an instance of `Selection` that is a clone of given selection, meaning that it has same
-	 * ranges and same direction as this selection.
+	 * Sets this selection's ranges and direction to the specified location based on the given
+	 * {@link module:engine/view/selection~Selection selection}, {@link module:engine/view/position~Position position},
+	 * {@link module:engine/view/item~Item item}, {@link module:engine/view/range~Range range},
+	 * an iterable of {@link module:engine/view/range~Range ranges} or null.
 	 *
-	 * @params {module:engine/view/selection~Selection} otherSelection Selection to be cloned.
-	 * @returns {module:engine/view/selection~Selection} `Selection` instance that is a clone of given selection.
+	 *		// Sets selection to the given range.
+	 *		const range = new Range( start, end );
+	 *		selection._setTo( range );
+	 *
+	 *		// Sets selection to given ranges.
+	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
+	 *		selection._setTo( range );
+	 *
+	 *		// Sets selection to the other selection.
+	 *		const otherSelection = new Selection();
+	 *		selection._setTo( otherSelection );
+	 *
+	 * 		// Sets collapsed selection at the given position.
+	 *		const position = new Position( root, path );
+	 *		selection._setTo( position );
+	 *
+	 * 		// Sets collapsed selection at the position of given item and offset.
+	 *		selection._setTo( paragraph, offset );
+	 *
+	 * Creates a range inside an {@link module:engine/view/element~Element element} which starts before the first child of
+	 * that element and ends after the last child of that element.
+	 *
+	 *		selection._setTo( paragraph, 'in' );
+	 *
+	 * Creates a range on an {@link module:engine/view/item~Item item} which starts before the item and ends just after the item.
+	 *
+	 *		selection._setTo( paragraph, 'on' );
+	 *
+	 * 		// Clears selection. Removes all ranges.
+	 *		selection._setTo( null );
+	 *
+	 * `Selection#_setTo()` method allow passing additional options (`backward`, `fake` and `label`) as the last argument.
+	 *
+	 *		// Sets selection as backward.
+	 *		selection._setTo( range, { backward: true } );
+	 *
+	 * Fake selection does not render as browser native selection over selected elements and is hidden to the user.
+	 * This way, no native selection UI artifacts are displayed to the user and selection over elements can be
+	 * represented in other way, for example by applying proper CSS class.
+	 *
+	 * Additionally fake's selection label can be provided. It will be used to describe fake selection in DOM
+	 * (and be  properly handled by screen readers).
+	 *
+	 *		// Creates fake selection with label.
+	 *		selection._setTo( range, { fake: true, label: 'foo' } );
+	 *
+	 * @protected
+	 * @fires change
+	 * @param {module:engine/view/selection~Selection|module:engine/view/position~Position|
+	 * Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|module:engine/view/item~Item|null} selectable
+	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets place or offset of the selection.
+	 * @param {Object} [options]
+	 * @param {Boolean} [options.backward] Sets this selection instance to be backward.
+	 * @param {Boolean} [options.fake] Sets this selection instance to be marked as `fake`.
+	 * @param {String} [options.label] Label for the fake selection.
 	 */
-	static createFromSelection( otherSelection ) {
-		const selection = new Selection();
-		selection.setTo( otherSelection );
+	_setTo( selectable, placeOrOffset, options ) {
+		if ( selectable === null ) {
+			this._setRanges( [] );
+			this._setFakeOptions( placeOrOffset );
+		} else if ( selectable instanceof Selection ) {
+			this._setRanges( selectable.getRanges(), selectable.isBackward );
+			this._setFakeOptions( { fake: selectable.isFake, label: selectable.fakeSelectionLabel } );
+		} else if ( selectable instanceof Range ) {
+			this._setRanges( [ selectable ], placeOrOffset && placeOrOffset.backward );
+			this._setFakeOptions( placeOrOffset );
+		} else if ( selectable instanceof Position ) {
+			this._setRanges( [ new Range( selectable ) ] );
+			this._setFakeOptions( placeOrOffset );
+		} else if ( selectable instanceof Node ) {
+			const backward = !!options && !!options.backward;
+			let range;
 
-		return selection;
+			if ( placeOrOffset === undefined ) {
+				/**
+				 * selection.setTo requires the second parameter when the first parameter is a node.
+				 *
+				 * @error view-selection-setTo-required-second-parameter
+				 */
+				throw new CKEditorError(
+					'view-selection-setTo-required-second-parameter: ' +
+					'selection.setTo requires the second parameter when the first parameter is a node.'
+				);
+			} else if ( placeOrOffset == 'in' ) {
+				range = Range.createIn( selectable );
+			} else if ( placeOrOffset == 'on' ) {
+				range = Range.createOn( selectable );
+			} else {
+				range = Range.createCollapsedAt( selectable, placeOrOffset );
+			}
+
+			this._setRanges( [ range ], backward );
+			this._setFakeOptions( options );
+		} else if ( isIterable( selectable ) ) {
+			// We assume that the selectable is an iterable of ranges.
+			// Array.from() is used to prevent setting ranges to the old iterable
+			this._setRanges( selectable, placeOrOffset && placeOrOffset.backward );
+			this._setFakeOptions( placeOrOffset );
+		} else {
+			/**
+			 * Cannot set selection to given place.
+			 *
+			 * @error view-selection-setTo-not-selectable
+			 */
+			throw new CKEditorError( 'view-selection-setTo-not-selectable: Cannot set selection to given place.' );
+		}
+
+		this.fire( 'change' );
+	}
+
+	/**
+	 * Replaces all ranges that were added to the selection with given array of ranges. Last range of the array
+	 * is treated like the last added range and is used to set {@link #anchor anchor} and {@link #focus focus}.
+	 * Accepts a flag describing in which way the selection is made.
+	 *
+	 * @private
+	 * @param {Iterable.<module:engine/view/range~Range>} newRanges Iterable object of ranges to set.
+	 * @param {Boolean} [isLastBackward=false] Flag describing if last added range was selected forward - from start to end
+	 * (`false`) or backward - from end to start (`true`). Defaults to `false`.
+	 */
+	_setRanges( newRanges, isLastBackward = false ) {
+		// New ranges should be copied to prevent removing them by setting them to `[]` first.
+		// Only applies to situations when selection is set to the same selection or same selection's ranges.
+		newRanges = Array.from( newRanges );
+
+		this._ranges = [];
+
+		for ( const range of newRanges ) {
+			this._addRange( range );
+		}
+
+		this._lastRangeBackward = !!isLastBackward;
+	}
+
+	/**
+	 * Moves {@link #focus} to the specified location.
+	 *
+	 * The location can be specified in the same form as {@link module:engine/view/position~Position.createAt} parameters.
+	 *
+	 * @protected
+	 * @fires change
+	 * @param {module:engine/view/item~Item|module:engine/view/position~Position} itemOrPosition
+	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
+	 * first parameter is a {@link module:engine/view/item~Item view item}.
+	 */
+	_setFocus( itemOrPosition, offset ) {
+		if ( this.anchor === null ) {
+			/**
+			 * Cannot set selection focus if there are no ranges in selection.
+			 *
+			 * @error view-selection-setFocus-no-ranges
+			 */
+			throw new CKEditorError(
+				'view-selection-setFocus-no-ranges: Cannot set selection focus if there are no ranges in selection.'
+			);
+		}
+
+		const newFocus = Position.createAt( itemOrPosition, offset );
+
+		if ( newFocus.compareWith( this.focus ) == 'same' ) {
+			return;
+		}
+
+		const anchor = this.anchor;
+
+		this._ranges.pop();
+
+		if ( newFocus.compareWith( anchor ) == 'before' ) {
+			this._addRange( new Range( newFocus, anchor ), true );
+		} else {
+			this._addRange( new Range( anchor, newFocus ) );
+		}
+
+		this.fire( 'change' );
+	}
+
+	/**
+	 * Sets this selection instance to be marked as `fake`. A fake selection does not render as browser native selection
+	 * over selected elements and is hidden to the user. This way, no native selection UI artifacts are displayed to
+	 * the user and selection over elements can be represented in other way, for example by applying proper CSS class.
+	 *
+	 * Additionally fake's selection label can be provided. It will be used to describe fake selection in DOM (and be
+	 * properly handled by screen readers).
+	 *
+	 * @private
+	 * @param {Object} [options] Options.
+	 * @param {Boolean} [options.fake] If set to true selection will be marked as `fake`.
+	 * @param {String} [options.label=''] Fake selection label.
+	 */
+	_setFakeOptions( options = {} ) {
+		this._isFake = !!options.fake;
+		this._fakeSelectionLabel = options.fake ? options.label || '' : '';
+	}
+
+	/**
+	 * Adds a range to the selection. Added range is copied. This means that passed range is not saved in the
+	 * selection instance and you can safely operate on it.
+	 *
+	 * Accepts a flag describing in which way the selection is made - passed range might be selected from
+	 * {@link module:engine/view/range~Range#start start} to {@link module:engine/view/range~Range#end end}
+	 * or from {@link module:engine/view/range~Range#end end} to {@link module:engine/view/range~Range#start start}.
+	 * The flag is used to set {@link #anchor anchor} and {@link #focus focus} properties.
+	 *
+	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-selection-range-intersects` if added range intersects
+	 * with ranges already stored in Selection instance.
+	 *
+	 * @private
+	 * @fires change
+	 * @param {module:engine/view/range~Range} range
+	 * @param {Boolean} [isBackward]
+	 */
+	_addRange( range, isBackward = false ) {
+		if ( !( range instanceof Range ) ) {
+			throw new CKEditorError( 'view-selection-invalid-range: Invalid Range.' );
+		}
+
+		this._pushRange( range );
+		this._lastRangeBackward = !!isBackward;
 	}
 
 	/**

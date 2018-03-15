@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -13,30 +13,30 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
-import UIElement from '../../../src/view/uielement';
 import Position from '../../../src/view/position';
-import writer from '../../../src/view/writer';
 
-class EndingUIElement extends UIElement {
-	render( domDocument ) {
-		const root = super.render( domDocument );
-
+function createEndingUIElement( writer ) {
+	const element = writer.createUIElement( 'span', null, function( domDocument ) {
+		const root = this.toDomElement( domDocument );
 		root.classList.add( 'ui-element' );
 		root.innerHTML = 'END OF PARAGRAPH';
 
 		return root;
-	}
+	} );
+
+	return element;
 }
 
-class MiddleUIElement extends UIElement {
-	render( domDocument ) {
-		const root = super.render( domDocument );
-
+function createMiddleUIElement( writer ) {
+	const element = writer.createUIElement( 'span', null, function( domDocument ) {
+		const root = this.toDomElement( domDocument );
 		root.classList.add( 'ui-element' );
 		root.innerHTML = 'X';
 
 		return root;
-	}
+	} );
+
+	return element;
 }
 
 class UIElementTestPlugin extends Plugin {
@@ -45,9 +45,9 @@ class UIElementTestPlugin extends Plugin {
 		const editing = editor.editing;
 
 		// Add some UIElement to each paragraph.
-		editing.modelToView.on( 'insert:paragraph', ( evt, data, consumable, conversionApi ) => {
+		editing.downcastDispatcher.on( 'insert:paragraph', ( evt, data, conversionApi ) => {
 			const viewP = conversionApi.mapper.toViewElement( data.item );
-			viewP.appendChildren( new EndingUIElement( 'span' ) );
+			viewP._appendChildren( createEndingUIElement( conversionApi.writer ) );
 		}, { priority: 'lowest' } );
 	}
 }
@@ -59,18 +59,19 @@ ClassicEditor
 	} )
 	.then( editor => {
 		window.editor = editor;
+		const view = editor.editing.view;
 
 		// Add some UI elements.
-		const viewRoot = editor.editing.view.getRoot();
+		const viewRoot = editor.editing.view.document.getRoot();
 		const viewText1 = viewRoot.getChild( 0 ).getChild( 0 );
 		const viewText2 = viewRoot.getChild( 1 ).getChild( 0 );
 
-		writer.insert( new Position( viewText1, 20 ), new MiddleUIElement( 'span' ) );
-		writer.insert( new Position( viewText1, 20 ), new MiddleUIElement( 'span' ) );
-		writer.insert( new Position( viewText2, 0 ), new MiddleUIElement( 'span' ) );
-		writer.insert( new Position( viewText2, 6 ), new MiddleUIElement( 'span' ) );
-
-		editor.editing.view.render();
+		view.change( writer => {
+			writer.insert( new Position( viewText1, 20 ), createMiddleUIElement( writer ) );
+			writer.insert( new Position( viewText1, 20 ), createMiddleUIElement( writer ) );
+			writer.insert( new Position( viewText2, 0 ), createMiddleUIElement( writer ) );
+			writer.insert( new Position( viewText2, 6 ), createMiddleUIElement( writer ) );
+		} );
 	} )
 	.catch( err => {
 		console.error( err.stack );

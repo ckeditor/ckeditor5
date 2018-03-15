@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -31,7 +31,8 @@ export default class RootAttributeOperation extends Operation {
 	 * @param {String} key Key of an attribute to change or remove.
 	 * @param {*} oldValue Old value of the attribute with given key or `null` if adding a new attribute.
 	 * @param {*} newValue New value to set for the attribute. If `null`, then the operation just removes the attribute.
-	 * @param {Number} baseVersion {@link module:engine/model/document~Document#version} on which the operation can be applied.
+	 * @param {Number|null} baseVersion Document {@link module:engine/model/document~Document#version} on which operation
+	 * can be applied or `null` if the operation operates on detached (non-document) tree.
 	 */
 	constructor( root, key, oldValue, newValue, baseVersion ) {
 		super( baseVersion );
@@ -69,6 +70,9 @@ export default class RootAttributeOperation extends Operation {
 		this.newValue = newValue;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	get type() {
 		if ( this.oldValue === null ) {
 			return 'addRootAttribute';
@@ -97,7 +101,25 @@ export default class RootAttributeOperation extends Operation {
 		return new RootAttributeOperation( this.root, this.key, this.newValue, this.oldValue, this.baseVersion + 1 );
 	}
 
-	_execute() {
+	/**
+	 * @inheritDoc
+	 */
+	_validate() {
+		if ( this.root != this.root.root || this.root.is( 'documentFragment' ) ) {
+			/**
+			 * The element to change is not a root element.
+			 *
+			 * @error rootattribute-operation-not-a-root
+			 * @param {module:engine/model/rootelement~RootElement} root
+			 * @param {String} key
+			 * @param {*} value
+			 */
+			throw new CKEditorError(
+				'rootattribute-operation-not-a-root: The element to change is not a root element.',
+				{ root: this.root, key: this.key }
+			);
+		}
+
 		if ( this.oldValue !== null && this.root.getAttribute( this.key ) !== this.oldValue ) {
 			/**
 			 * The attribute which should be removed does not exists for the given node.
@@ -127,14 +149,17 @@ export default class RootAttributeOperation extends Operation {
 				{ root: this.root, key: this.key }
 			);
 		}
+	}
 
+	/**
+	 * @inheritDoc
+	 */
+	_execute() {
 		if ( this.newValue !== null ) {
-			this.root.setAttribute( this.key, this.newValue );
+			this.root._setAttribute( this.key, this.newValue );
 		} else {
-			this.root.removeAttribute( this.key );
+			this.root._removeAttribute( this.key );
 		}
-
-		return { root: this.root, key: this.key, oldValue: this.oldValue, newValue: this.newValue };
 	}
 
 	/**
@@ -152,7 +177,7 @@ export default class RootAttributeOperation extends Operation {
 	 * @returns {module:engine/model/operation/rootattributeoperation~RootAttributeOperation}
 	 */
 	static fromJSON( json, document ) {
-		if ( !document.hasRoot( json.root ) ) {
+		if ( !document.getRoot( json.root ) ) {
 			/**
 			 * Cannot create RootAttributeOperation for document. Root with specified name does not exist.
 			 *

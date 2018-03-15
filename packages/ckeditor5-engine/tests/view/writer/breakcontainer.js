@@ -1,30 +1,35 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
-import { breakContainer } from '../../../src/view/writer';
+import Writer from '../../../src/view/writer';
 import { stringify, parse } from '../../../src/dev-utils/view';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import ContainerElement from '../../../src/view/containerelement';
 import Position from '../../../src/view/position';
+import Document from '../../../src/view/document';
 
-describe( 'writer', () => {
-	/**
-	 * Executes test using `parse` and `stringify` utils functions. Uses range delimiters `[]{}` to create and
-	 * test break position.
-	 *
-	 * @param {String} input
-	 * @param {String} expected
-	 */
-	function test( input, expected ) {
-		const { view, selection } = parse( input );
+describe( 'Writer', () => {
+	describe( 'breakContainer()', () => {
+		let writer;
 
-		const newPosition = breakContainer( selection.getFirstPosition() );
-		expect( stringify( view.root, newPosition, { showType: true, showPriority: false } ) ).to.equal( expected );
-	}
+		// Executes test using `parse` and `stringify` utils functions. Uses range delimiters `[]{}` to create and
+		// test break position.
+		//
+		// @param {String} input
+		// @param {String} expected
+		function test( input, expected ) {
+			const { view, selection } = parse( input );
 
-	describe( 'breakContainer', () => {
+			const newPosition = writer.breakContainer( selection.getFirstPosition() );
+			expect( stringify( view.root, newPosition, { showType: true, showPriority: false } ) ).to.equal( expected );
+		}
+
+		before( () => {
+			writer = new Writer( new Document() );
+		} );
+
 		it( 'break inside element - should break container element at given position', () => {
 			test(
 				'<container:div>' +
@@ -62,7 +67,7 @@ describe( 'writer', () => {
 			const { selection } = parse( '<container:div>foo{}bar</container:div>' );
 
 			expect( () => {
-				breakContainer( selection.getFirstPosition() );
+				writer.breakContainer( selection.getFirstPosition() );
 			} ).to.throw( CKEditorError, /view-writer-break-non-container-element/ );
 		} );
 
@@ -71,7 +76,7 @@ describe( 'writer', () => {
 			const position = Position.createAt( element, 0 );
 
 			expect( () => {
-				breakContainer( position );
+				writer.breakContainer( position );
 			} ).to.throw( CKEditorError, /view-writer-break-root/ );
 		} );
 	} );

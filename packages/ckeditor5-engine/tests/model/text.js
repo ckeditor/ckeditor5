@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -52,10 +52,10 @@ describe( 'Text', () => {
 		} );
 	} );
 
-	describe( 'clone', () => {
+	describe( '_clone()', () => {
 		it( 'should return a new Text instance, with data and attributes equal to cloned text node', () => {
 			const text = new Text( 'foo', { bold: true } );
-			const copy = text.clone();
+			const copy = text._clone();
 
 			expect( copy.data ).to.equal( 'foo' );
 			expect( Array.from( copy.getAttributes() ) ).to.deep.equal( [ [ 'bold', true ] ] );

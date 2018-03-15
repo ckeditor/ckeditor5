@@ -1,10 +1,11 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
-import enableEngineDebug from '../../src/dev-utils/enableenginedebug';
-import StandardEditor from '@ckeditor/ckeditor5-core/src/editor/standardeditor';
+import { default as enableEngineDebug, disableEngineDebug } from '../../src/dev-utils/enableenginedebug';
+import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
+import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import ModelPosition from '../../src/model/position';
@@ -13,6 +14,7 @@ import ModelText from '../../src/model/text';
 import ModelTextProxy from '../../src/model/textproxy';
 import ModelElement from '../../src/model/element';
 import AttributeOperation from '../../src/model/operation/attributeoperation';
+import DetachOperation from '../../src/model/operation/detachoperation';
 import InsertOperation from '../../src/model/operation/insertoperation';
 import MarkerOperation from '../../src/model/operation/markeroperation';
 import MoveOperation from '../../src/model/operation/moveoperation';
@@ -22,17 +24,18 @@ import RootAttributeOperation from '../../src/model/operation/rootattributeopera
 import RemoveOperation from '../../src/model/operation/removeoperation';
 import DeltaFactory from '../../src/model/delta/deltafactory';
 import Delta from '../../src/model/delta/delta';
-import { default as AttributeDelta, RootAttributeDelta } from '../../src/model/delta/attributedelta';
+import AttributeDelta from '../../src/model/delta/attributedelta';
 import InsertDelta from '../../src/model/delta/insertdelta';
 import MarkerDelta from '../../src/model/delta/markerdelta';
 import MergeDelta from '../../src/model/delta/mergedelta';
 import MoveDelta from '../../src/model/delta/movedelta';
 import RenameDelta from '../../src/model/delta/renamedelta';
+import RootAttributeDelta from '../../src/model/delta/rootattributedelta';
 import SplitDelta from '../../src/model/delta/splitdelta';
 import UnwrapDelta from '../../src/model/delta/unwrapdelta';
 import WrapDelta from '../../src/model/delta/wrapdelta';
 import deltaTransform from '../../src/model/delta/transform';
-import ModelDocument from '../../src/model/document';
+import Model from '../../src/model/model';
 import ModelDocumentFragment from '../../src/model/documentfragment';
 
 import ViewDocument from '../../src/view/document';
@@ -41,10 +44,18 @@ import ViewContainerElement from '../../src/view/containerelement';
 import ViewText from '../../src/view/text';
 import ViewTextProxy from '../../src/view/textproxy';
 import ViewDocumentFragment from '../../src/view/documentfragment';
+import ViewElement from '../../src/view/element';
 
-/* global document */
+import createViewRoot from '../view/_utils/createroot';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+
+testUtils.createSinonSandbox();
 
 describe( 'enableEngineDebug', () => {
+	afterEach( () => {
+		disableEngineDebug();
+	} );
+
 	it( 'should return plugin class', () => {
 		const result = enableEngineDebug();
 
@@ -60,17 +71,37 @@ describe( 'enableEngineDebug', () => {
 	} );
 } );
 
+describe( 'disableEngineDebug', () => {
+	it( 'restores modified stubs', () => {
+		expect( ModelPosition.prototype.log ).to.equal( undefined, 'Initial value (model/position)' );
+		expect( ModelElement.prototype.printTree ).to.equal( undefined, 'Initial value (model/element)' );
+		expect( Delta.prototype.log ).to.equal( undefined, 'Initial value (model/delta/delta)' );
+		expect( ViewElement.prototype.printTree ).to.equal( undefined, 'Initial value (view/element)' );
+		expect( Model.prototype.createReplayer ).to.equal( undefined, 'Initial value (model/document)' );
+		expect( Editor.prototype.logDocuments ).to.equal( undefined, 'Initial value (core~editor/editor)' );
+
+		enableEngineDebug();
+
+		expect( ModelPosition.prototype.log ).to.be.a( 'function', 'After enabling engine debug (model/position)' );
+		expect( ModelElement.prototype.printTree ).to.be.a( 'function', 'After enabling engine debug (model/element)' );
+		expect( Delta.prototype.log ).to.be.a( 'function', 'After enabling engine debug (model/delta/delta)' );
+		expect( ViewElement.prototype.printTree ).to.be.a( 'function', 'After enabling engine debug (view/element)' );
+		expect( Model.prototype.createReplayer ).to.be.a( 'function', 'After enabling engine debug (model/document)' );
+		expect( Editor.prototype.logDocuments ).to.be.a( 'function', 'After enabling engine debug (core~editor/editor)' );
+
+		disableEngineDebug();
+
+		expect( ModelPosition.prototype.log ).to.equal( undefined, 'After disabling engine debug (model/position)' );
+		expect( ModelElement.prototype.printTree ).to.equal( undefined, 'After disabling engine debug (model/element)' );
+		expect( Delta.prototype.log ).to.equal( undefined, 'After disabling engine debug (model/delta/delta)' );
+		expect( ViewElement.prototype.printTree ).to.equal( undefined, 'After disabling engine debug (view/element)' );
+		expect( Model.prototype.createReplayer ).to.equal( undefined, 'After disabling engine debug (model/document)' );
+		expect( Editor.prototype.logDocuments ).to.equal( undefined, 'After disabling engine debug (core~editor/editor)' );
+	} );
+} );
+
 describe( 'debug tools', () => {
 	let DebugPlugin, log, error;
-
-	class TestEditor extends StandardEditor {
-		constructor( ...args ) {
-			super( ...args );
-
-			this.document.createRoot( 'main' );
-			this.editing.createRoot( this.element, 'main' );
-		}
-	}
 
 	before( () => {
 		log = sinon.spy();
@@ -78,15 +109,20 @@ describe( 'debug tools', () => {
 		DebugPlugin = enableEngineDebug( { log, error } );
 	} );
 
+	after( () => {
+		disableEngineDebug();
+	} );
+
 	afterEach( () => {
 		log.reset();
 	} );
 
 	describe( 'should provide logging tools', () => {
-		let modelDoc, modelRoot, modelElement, modelDocFrag;
+		let model, modelDoc, modelRoot, modelElement, modelDocFrag;
 
 		beforeEach( () => {
-			modelDoc = new ModelDocument();
+			model = new Model();
+			modelDoc = model.document;
 			modelRoot = modelDoc.createRoot();
 			modelElement = new ModelElement( 'paragraph', null, new ModelText( 'foo' ) );
 			modelDocFrag = new ModelDocumentFragment( [ new ModelText( 'bar' ) ] );
@@ -197,13 +233,46 @@ describe( 'debug tools', () => {
 
 		describe( 'for operations', () => {
 			beforeEach( () => {
-				modelRoot.appendChildren( [ new ModelText( 'foobar' ) ] );
+				modelRoot._appendChildren( [ new ModelText( 'foobar' ) ] );
 			} );
 
 			it( 'AttributeOperation', () => {
 				const op = new AttributeOperation( ModelRange.createIn( modelRoot ), 'key', null, { foo: 'bar' }, 0 );
 
 				expect( op.toString() ).to.equal( 'AttributeOperation( 0 ): "key": null -> {"foo":"bar"}, main [ 0 ] - [ 6 ]' );
+
+				op.log();
+				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
+			} );
+
+			it( 'DetachOperation (text node)', () => {
+				const op = new DetachOperation( ModelPosition.createAt( modelRoot, 0 ), 3 );
+
+				expect( op.toString() ).to.equal( 'DetachOperation( null ): #foo -> main [ 0 ] - [ 3 ]' );
+
+				op.log();
+				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
+			} );
+
+			it( 'DetachOperation (element)', () => {
+				const element = new ModelElement( 'element' );
+				modelRoot._insertChildren( 0, element );
+
+				const op = new DetachOperation( ModelPosition.createBefore( element ), 1 );
+
+				expect( op.toString() ).to.equal( 'DetachOperation( null ): <element> -> main [ 0 ] - [ 1 ]' );
+
+				op.log();
+				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
+			} );
+
+			it( 'DetachOperation (multiple nodes)', () => {
+				const element = new ModelElement( 'element' );
+				modelRoot._insertChildren( 0, element );
+
+				const op = new DetachOperation( ModelPosition.createBefore( element ), 2 );
+
+				expect( op.toString() ).to.equal( 'DetachOperation( null ): [ 2 ] -> main [ 0 ] - [ 2 ]' );
 
 				op.log();
 				expect( log.calledWithExactly( op.toString() ) ).to.be.true;
@@ -307,7 +376,7 @@ describe( 'debug tools', () => {
 			} );
 
 			it( 'AttributeDelta', () => {
-				modelRoot.appendChildren( new ModelText( 'foobar' ) );
+				modelRoot._appendChildren( new ModelText( 'foobar' ) );
 
 				const delta = new AttributeDelta();
 				const op = new AttributeOperation( ModelRange.createIn( modelRoot ), 'key', null, { foo: 'bar' }, 0 );
@@ -358,7 +427,7 @@ describe( 'debug tools', () => {
 			} );
 
 			it( 'MarkerDelta', () => {
-				modelRoot.appendChildren( new ModelText( 'foobar' ) );
+				modelRoot._appendChildren( new ModelText( 'foobar' ) );
 
 				const delta = new MarkerDelta();
 				const op = new MarkerOperation( 'marker', null, ModelRange.createIn( modelRoot ), modelDoc.markers, 0 );
@@ -376,7 +445,7 @@ describe( 'debug tools', () => {
 				const firstEle = new ModelElement( 'paragraph' );
 				const removedEle = new ModelElement( 'paragraph', null, [ new ModelText( 'foo' ) ] );
 
-				otherRoot.appendChildren( [ firstEle, removedEle ] );
+				otherRoot._appendChildren( [ firstEle, removedEle ] );
 
 				const graveyard = modelDoc.graveyard;
 				const delta = new MergeDelta();
@@ -402,7 +471,7 @@ describe( 'debug tools', () => {
 				const firstEle = new ModelElement( 'paragraph' );
 				const removedEle = new ModelElement( 'paragraph', null, [ new ModelText( 'foo' ) ] );
 
-				otherRoot.appendChildren( [ firstEle, removedEle ] );
+				otherRoot._appendChildren( [ firstEle, removedEle ] );
 
 				const delta = new MergeDelta();
 				const move = new MoveOperation( ModelPosition.createAt( removedEle, 0 ), 3, ModelPosition.createAt( firstEle, 0 ), 0 );
@@ -458,7 +527,7 @@ describe( 'debug tools', () => {
 				const otherRoot = modelDoc.createRoot( 'main', 'otherRoot' );
 				const splitEle = new ModelElement( 'paragraph', null, [ new ModelText( 'foo' ) ] );
 
-				otherRoot.appendChildren( [ splitEle ] );
+				otherRoot._appendChildren( [ splitEle ] );
 
 				const delta = new SplitDelta();
 				const insert = new InsertOperation( ModelPosition.createAt( otherRoot, 1 ), [ new ModelElement( 'paragraph' ) ], 0 );
@@ -477,7 +546,7 @@ describe( 'debug tools', () => {
 				const otherRoot = modelDoc.createRoot( 'main', 'otherRoot' );
 				const splitEle = new ModelElement( 'paragraph', null, [ new ModelText( 'foo' ) ] );
 
-				otherRoot.appendChildren( [ splitEle ] );
+				otherRoot._appendChildren( [ splitEle ] );
 
 				const delta = new SplitDelta();
 				const insert = new InsertOperation( ModelPosition.createAt( otherRoot, 1 ), [ new ModelElement( 'paragraph' ) ], 0 );
@@ -512,7 +581,7 @@ describe( 'debug tools', () => {
 				const otherRoot = modelDoc.createRoot( 'main', 'otherRoot' );
 				const unwrapEle = new ModelElement( 'paragraph', null, [ new ModelText( 'foo' ) ] );
 
-				otherRoot.appendChildren( [ unwrapEle ] );
+				otherRoot._appendChildren( [ unwrapEle ] );
 
 				const graveyard = modelDoc.graveyard;
 				const delta = new UnwrapDelta();
@@ -549,7 +618,7 @@ describe( 'debug tools', () => {
 			const op = new InsertOperation( ModelPosition.createAt( modelRoot, 0 ), [ new ModelText( 'foo' ) ], 0 );
 			delta.addOperation( op );
 
-			modelDoc.applyOperation( op );
+			model.applyOperation( op );
 
 			expect( log.calledWithExactly( 'Applying InsertOperation( 0 ): #foo -> main [ 0 ]' ) ).to.be.true;
 		} );
@@ -557,10 +626,11 @@ describe( 'debug tools', () => {
 
 	describe( 'should provide tree printing tools', () => {
 		it( 'for model', () => {
-			const modelDoc = new ModelDocument();
+			const model = new Model();
+			const modelDoc = model.document;
 			const modelRoot = modelDoc.createRoot();
 
-			modelRoot.appendChildren( [
+			modelRoot._appendChildren( [
 				new ModelElement( 'paragraph', { foo: 'bar' }, [
 					new ModelText( 'This is ' ), new ModelText( 'bold', { bold: true } ), new ModelText( '.' )
 				] ),
@@ -627,9 +697,9 @@ describe( 'debug tools', () => {
 
 		it( 'for view', () => {
 			const viewDoc = new ViewDocument();
-			const viewRoot = viewDoc.createRoot( 'div' );
+			const viewRoot = createViewRoot( viewDoc );
 
-			viewRoot.appendChildren( [
+			viewRoot._appendChildren( [
 				new ViewContainerElement( 'p', { foo: 'bar' }, [
 					new ViewText( 'This is ' ), new ViewAttributeElement( 'b', null, new ViewText( 'bold' ) ), new ViewText( '.' )
 				] ),
@@ -707,9 +777,7 @@ describe( 'debug tools', () => {
 		let editor;
 
 		beforeEach( () => {
-			const div = document.createElement( 'div' );
-
-			return TestEditor.create( div, {
+			return VirtualTestEditor.create( {
 				plugins: [ DebugPlugin ]
 			} ).then( _editor => {
 				editor = _editor;
@@ -717,26 +785,30 @@ describe( 'debug tools', () => {
 		} );
 
 		it( 'should store model and view state after each applied operation', () => {
-			const model = editor.document;
-			const modelRoot = model.getRoot();
+			const model = editor.model;
+			const modelDoc = model.document;
+			const modelRoot = modelDoc.getRoot();
 			const view = editor.editing.view;
+			const viewDoc = view.document;
 
-			const insert = new InsertOperation( ModelPosition.createAt( modelRoot, 0 ), new ModelText( 'foobar' ), 0 );
-			model.applyOperation( wrapInDelta( insert ) );
+			model.change( () => {
+				const insert = new InsertOperation( ModelPosition.createAt( modelRoot, 0 ), new ModelText( 'foobar' ), 0 );
+				model.applyOperation( wrapInDelta( insert ) );
 
-			const graveyard = model.graveyard;
-			const remove = new RemoveOperation( ModelPosition.createAt( modelRoot, 1 ), 2, ModelPosition.createAt( graveyard, 0 ), 1 );
-			model.applyOperation( wrapInDelta( remove ) );
+				const graveyard = modelDoc.graveyard;
+				const remove = new RemoveOperation( ModelPosition.createAt( modelRoot, 1 ), 2, ModelPosition.createAt( graveyard, 0 ), 1 );
+				model.applyOperation( wrapInDelta( remove ) );
+			} );
 
 			log.reset();
 
-			model.log( 0 );
+			modelDoc.log( 0 );
 			expectLog(
 				'<$graveyard></$graveyard>' +
 				'\n<main></main>'
 			);
 
-			model.log( 1 );
+			modelDoc.log( 1 );
 			expectLog(
 				'<$graveyard></$graveyard>' +
 				'\n<main>' +
@@ -744,7 +816,7 @@ describe( 'debug tools', () => {
 				'\n</main>'
 			);
 
-			model.log( 2 );
+			modelDoc.log( 2 );
 			expectLog(
 				'<$graveyard>' +
 				'\n\too' +
@@ -754,7 +826,7 @@ describe( 'debug tools', () => {
 				'\n</main>'
 			);
 
-			model.log();
+			modelDoc.log();
 			expectLog(
 				'<$graveyard>' +
 				'\n\too' +
@@ -764,80 +836,75 @@ describe( 'debug tools', () => {
 				'\n</main>'
 			);
 
-			view.log( 0 );
+			viewDoc.log( 0 );
 			expectLog(
-				'<div></div>'
+				'<$root></$root>'
 			);
 
-			view.log( 1 );
+			viewDoc.log( 2 );
 			expectLog(
-				'<div>' +
-				'\n\tfoobar' +
-				'\n</div>'
-			);
-
-			view.log( 2 );
-			expectLog(
-				'<div>' +
+				'<$root>' +
 				'\n\tfbar' +
-				'\n</div>'
+				'\n</$root>'
 			);
 
-			sinon.spy( model, 'log' );
-			sinon.spy( view, 'log' );
+			sinon.spy( modelDoc, 'log' );
+			sinon.spy( viewDoc, 'log' );
 
 			editor.logModel( 1 );
-			expect( model.log.calledWithExactly( 1 ) ).to.be.true;
+			expect( modelDoc.log.calledWithExactly( 1 ), 1 ).to.be.true;
 
 			editor.logView( 2 );
-			expect( view.log.calledWithExactly( 2 ) ).to.be.true;
+			expect( viewDoc.log.calledWithExactly( 2 ), 2 ).to.be.true;
 
-			model.log.reset();
-			view.log.reset();
+			modelDoc.log.reset();
+			viewDoc.log.reset();
 
 			editor.logModel();
-			expect( model.log.calledWithExactly( 2 ) ).to.be.true;
+			expect( modelDoc.log.calledWithExactly( 2 ), 3 ).to.be.true;
 
-			model.log.reset();
-			view.log.reset();
+			modelDoc.log.reset();
+			viewDoc.log.reset();
 
 			editor.logDocuments();
-			expect( model.log.calledWithExactly( 2 ) ).to.be.true;
-			expect( view.log.calledWithExactly( 2 ) ).to.be.true;
+			expect( modelDoc.log.calledWithExactly( 2 ), 4 ).to.be.true;
+			expect( viewDoc.log.calledWithExactly( 2 ), 5 ).to.be.true;
 
-			model.log.reset();
-			view.log.reset();
+			modelDoc.log.reset();
+			viewDoc.log.reset();
 
 			editor.logDocuments( 1 );
-			expect( model.log.calledWithExactly( 1 ) ).to.be.true;
-			expect( view.log.calledWithExactly( 1 ) ).to.be.true;
+			expect( modelDoc.log.calledWithExactly( 1 ), 6 ).to.be.true;
+			expect( viewDoc.log.calledWithExactly( 1 ), 7 ).to.be.true;
 		} );
 
 		it( 'should remove old states', () => {
-			const model = editor.document;
-			const modelRoot = model.getRoot();
+			const model = editor.model;
+			const modelDoc = model.document;
+			const modelRoot = model.document.getRoot();
 
 			for ( let i = 0; i < 25; i++ ) {
-				const insert = new InsertOperation( ModelPosition.createAt( modelRoot, 0 ), new ModelText( 'foobar' ), model.version );
+				const insert = new InsertOperation( ModelPosition.createAt( modelRoot, 0 ), new ModelText( 'foobar' ), modelDoc.version );
 				model.applyOperation( wrapInDelta( insert ) );
 			}
 
-			model.log( 0 );
+			modelDoc.log( 0 );
 			expectLog( 'Tree log unavailable for given version: 0' );
 		} );
 	} );
 
 	describe( 'should provide methods for delta replayer', () => {
 		it( 'getAppliedDeltas()', () => {
-			const modelDoc = new ModelDocument();
+			const model = new Model();
+			const modelDoc = model.document;
 
-			expect( modelDoc.getAppliedDeltas() ).to.equal( '' );
+			expect( model.getAppliedDeltas() ).to.equal( '' );
 
 			const otherRoot = modelDoc.createRoot( '$root', 'otherRoot' );
 			const firstEle = new ModelElement( 'paragraph' );
 			const removedEle = new ModelElement( 'paragraph', null, [ new ModelText( 'foo' ) ] );
 
-			otherRoot.appendChildren( [ firstEle, removedEle ] );
+			otherRoot._appendChildren( [ firstEle, removedEle ] );
 
 			const delta = new MergeDelta();
 			const graveyard = modelDoc.graveyard;
@@ -847,22 +914,23 @@ describe( 'debug tools', () => {
 			delta.addOperation( move );
 			delta.addOperation( remove );
 
-			modelDoc.applyOperation( move );
-			modelDoc.applyOperation( remove );
+			model.applyOperation( move );
+			model.applyOperation( remove );
 
-			const stringifiedDeltas = modelDoc.getAppliedDeltas();
+			const stringifiedDeltas = model.getAppliedDeltas();
 
 			expect( stringifiedDeltas ).to.equal( JSON.stringify( delta.toJSON() ) );
 		} );
 
 		it( 'createReplayer()', () => {
-			const modelDoc = new ModelDocument();
+			const model = new Model();
+			const modelDoc = model.document;
 
 			const otherRoot = modelDoc.createRoot( '$root', 'otherRoot' );
 			const firstEle = new ModelElement( 'paragraph' );
 			const removedEle = new ModelElement( 'paragraph', null, [ new ModelText( 'foo' ) ] );
 
-			otherRoot.appendChildren( [ firstEle, removedEle ] );
+			otherRoot._appendChildren( [ firstEle, removedEle ] );
 
 			const delta = new MergeDelta();
 			const graveyard = modelDoc.graveyard;
@@ -874,17 +942,18 @@ describe( 'debug tools', () => {
 
 			const stringifiedDeltas = JSON.stringify( delta.toJSON() );
 
-			const deltaReplayer = modelDoc.createReplayer( stringifiedDeltas );
+			const deltaReplayer = model.createReplayer( stringifiedDeltas );
 
 			expect( deltaReplayer.getDeltasToReplay() ).to.deep.equal( [ JSON.parse( stringifiedDeltas ) ] );
 		} );
 	} );
 
 	describe( 'should provide debug tools for delta transformation', () => {
-		let document, root, otherRoot;
+		let model, document, root, otherRoot;
 
 		beforeEach( () => {
-			document = new ModelDocument();
+			model = new Model();
+			document = model.document;
 			root = document.createRoot();
 			otherRoot = document.createRoot( 'other', 'other' );
 		} );
@@ -985,7 +1054,11 @@ describe( 'debug tools', () => {
 			const firstResultWithoutHistory = result[ 0 ].clone();
 			delete firstResultWithoutHistory.history;
 
-			result = deltaTransform.transform( result[ 0 ], deltaC, { isStrong: true, document, wasAffected: new Map() } );
+			result = deltaTransform.transform( result[ 0 ], deltaC, {
+				isStrong: true,
+				document,
+				wasAffected: new Map()
+			} );
 			expect( result[ 0 ].history ).not.to.be.undefined;
 			expect( result[ 0 ].history.length ).to.equal( 2 );
 
@@ -1020,7 +1093,11 @@ describe( 'debug tools', () => {
 			deltaC.addOperation( opC );
 
 			let original = deltaTransform.transform( deltaA, deltaB, { document, wasAffected: new Map() } );
-			original = deltaTransform.transform( original[ 0 ], deltaC, { isStrong: true, document, wasAffected: new Map() } )[ 0 ];
+			original = deltaTransform.transform( original[ 0 ], deltaC, {
+				isStrong: true,
+				document,
+				wasAffected: new Map()
+			} )[ 0 ];
 
 			const history = original.history;
 
@@ -1056,9 +1133,7 @@ describe( 'debug tools', () => {
 				const opB = new InsertOperation( ModelPosition.createAt( root, 0 ), new ModelText( 'a' ), 0 );
 				deltaB.addOperation( opB );
 
-				deltaTransform.defaultTransform = () => {
-					throw new Error();
-				};
+				testUtils.sinon.stub( deltaTransform, 'defaultTransform' ).throws( new Error() );
 
 				expect( () => deltaTransform.transform( deltaA, deltaB, { isStrong: true } ) ).to.throw( Error );
 				expect( error.calledWith( deltaA.toString() + ' (important)' ) ).to.be.true;
@@ -1074,9 +1149,7 @@ describe( 'debug tools', () => {
 				const opB = new InsertOperation( ModelPosition.createAt( root, 0 ), new ModelText( 'a' ), 0 );
 				deltaB.addOperation( opB );
 
-				deltaTransform.defaultTransform = () => {
-					throw new Error();
-				};
+				testUtils.sinon.stub( deltaTransform, 'defaultTransform' ).throws( new Error() );
 
 				expect( () => deltaTransform.transform( deltaA, deltaB, { isStrong: false } ) ).to.throw( Error );
 				expect( error.calledWith( deltaA.toString() ) ).to.be.true;

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -17,10 +17,10 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  *
  * **Note:** If a node is detached from the model tree, you can manipulate it using it's API.
  * However, it is **very important** that nodes already attached to model tree should be only changed through
- * {@link module:engine/model/document~Document#batch Batch API}.
+ * {@link module:engine/model/writer~Writer Writer API}.
  *
- * Changes done by `Node` methods, like {@link module:engine/model/element~Element#insertChildren insertChildren} or
- * {@link module:engine/model/node~Node#setAttribute setAttribute}
+ * Changes done by `Node` methods, like {@link module:engine/model/element~Element#_insertChildren _insertChildren} or
+ * {@link module:engine/model/node~Node#_setAttribute _setAttribute}
  * do not generate {@link module:engine/model/operation/operation~Operation operations}
  * which are essential for correct editor work if you modify nodes in {@link module:engine/model/document~Document document} root.
  *
@@ -30,9 +30,9 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  * 3. Change `Node` that was already added to the model using `Batch` API.
  *
  * Similarly, you cannot use `Batch` API on a node that has not been added to the model tree, with the exception
- * of {@link module:engine/model/batch~Batch#insert inserting} that node to the model tree.
+ * of {@link module:engine/model/writer~Writer#insert inserting} that node to the model tree.
  *
- * Be aware that using {@link module:engine/model/batch~Batch#remove remove from Batch API} does not allow to use `Node` API because
+ * Be aware that using {@link module:engine/model/writer~Writer#remove remove from Batch API} does not allow to use `Node` API because
  * the information about `Node` is still kept in model document.
  *
  * In case of {@link module:engine/model/element~Element element node}, adding and removing children also counts as changing a node and
@@ -202,15 +202,6 @@ export default class Node {
 	}
 
 	/**
-	 * Creates a copy of this node, that is a node with exactly same attributes, and returns it.
-	 *
-	 * @returns {module:engine/model/node~Node} Node with same attributes as this node.
-	 */
-	clone() {
-		return new Node( this._attrs );
-	}
-
-	/**
 	 * Gets path to the node. The path is an array containing starting offsets of consecutive ancestors of this node,
 	 * beginning from {@link module:engine/model/node~Node#root root}, down to this node's starting offset. The path can be used to
 	 * create {@link module:engine/model/position~Position Position} instance.
@@ -283,13 +274,6 @@ export default class Node {
 	}
 
 	/**
-	 * Removes this node from it's parent.
-	 */
-	remove() {
-		this.parent.removeChildren( this.index );
-	}
-
-	/**
 	 * Checks if the node has an attribute with given key.
 	 *
 	 * @param {String} key Key of attribute to check.
@@ -324,46 +308,10 @@ export default class Node {
 	/**
 	 * Returns iterator that iterates over this node's attribute keys.
 	 *
-	 * @returns {Iterator.<String>}
+	 * @returns {Iterable.<String>}
 	 */
 	getAttributeKeys() {
 		return this._attrs.keys();
-	}
-
-	/**
-	 * Sets attribute on the node. If attribute with the same key already is set, it's value is overwritten.
-	 *
-	 * @param {String} key Key of attribute to set.
-	 * @param {*} value Attribute value.
-	 */
-	setAttribute( key, value ) {
-		this._attrs.set( key, value );
-	}
-
-	/**
-	 * Removes all attributes from the node and sets given attributes.
-	 *
-	 * @param {Object} [attrs] Attributes to set. See {@link module:utils/tomap~toMap} for a list of accepted values.
-	 */
-	setAttributesTo( attrs ) {
-		this._attrs = toMap( attrs );
-	}
-
-	/**
-	 * Removes an attribute with given key from the node.
-	 *
-	 * @param {String} key Key of attribute to remove.
-	 * @returns {Boolean} `true` if the attribute was set on the element, `false` otherwise.
-	 */
-	removeAttribute( key ) {
-		return this._attrs.delete( key );
-	}
-
-	/**
-	 * Removes all attributes from the node.
-	 */
-	clearAttributes() {
-		this._attrs.clear();
 	}
 
 	/**
@@ -379,6 +327,71 @@ export default class Node {
 		}
 
 		return json;
+	}
+
+	/**
+	 * Creates a copy of this node, that is a node with exactly same attributes, and returns it.
+	 *
+	 * @protected
+	 * @returns {module:engine/model/node~Node} Node with same attributes as this node.
+	 */
+	_clone() {
+		return new Node( this._attrs );
+	}
+
+	/**
+	 * Removes this node from it's parent.
+	 *
+	 * @see module:engine/model/writer~Writer#remove
+	 * @protected
+	 */
+	_remove() {
+		this.parent._removeChildren( this.index );
+	}
+
+	/**
+	 * Sets attribute on the node. If attribute with the same key already is set, it's value is overwritten.
+	 *
+	 * @see module:engine/model/writer~Writer#setAttribute
+	 * @protected
+	 * @param {String} key Key of attribute to set.
+	 * @param {*} value Attribute value.
+	 */
+	_setAttribute( key, value ) {
+		this._attrs.set( key, value );
+	}
+
+	/**
+	 * Removes all attributes from the node and sets given attributes.
+	 *
+	 * @see module:engine/model/writer~Writer#setAttributes
+	 * @protected
+	 * @param {Object} [attrs] Attributes to set. See {@link module:utils/tomap~toMap} for a list of accepted values.
+	 */
+	_setAttributesTo( attrs ) {
+		this._attrs = toMap( attrs );
+	}
+
+	/**
+	 * Removes an attribute with given key from the node.
+	 *
+	 * @see module:engine/model/writer~Writer#removeAttribute
+	 * @protected
+	 * @param {String} key Key of attribute to remove.
+	 * @returns {Boolean} `true` if the attribute was set on the element, `false` otherwise.
+	 */
+	_removeAttribute( key ) {
+		return this._attrs.delete( key );
+	}
+
+	/**
+	 * Removes all attributes from the node.
+	 *
+	 * @see module:engine/model/writer~Writer#clearAttributes
+	 * @protected
+	 */
+	_clearAttributes() {
+		this._attrs.clear();
 	}
 
 	/**

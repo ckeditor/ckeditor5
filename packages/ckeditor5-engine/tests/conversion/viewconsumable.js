@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -474,8 +474,8 @@ describe( 'ViewConsumable', () => {
 		} );
 
 		it( 'should add all attributes', () => {
-			el.setAttribute( 'title', 'foobar' );
-			el.setAttribute( 'href', 'https://ckeditor.com' );
+			el._setAttribute( 'title', 'foobar' );
+			el._setAttribute( 'href', 'https://ckeditor.com' );
 
 			const consumables = ViewConsumable.consumablesFromElement( el );
 			expect( consumables.attribute.length ).to.equal( 2 );
@@ -487,7 +487,7 @@ describe( 'ViewConsumable', () => {
 		} );
 
 		it( 'should add all classes', () => {
-			el.addClass( 'foo', 'bar', 'baz' );
+			el._addClass( [ 'foo', 'bar', 'baz' ] );
 
 			const consumables = ViewConsumable.consumablesFromElement( el );
 			expect( consumables.class.length ).to.equal( 3 );
@@ -500,7 +500,7 @@ describe( 'ViewConsumable', () => {
 		} );
 
 		it( 'should add all styles', () => {
-			el.setStyle( {
+			el._setStyle( {
 				color: 'red',
 				position: 'absolute'
 			} );
@@ -537,7 +537,7 @@ describe( 'ViewConsumable', () => {
 			const child1 = new ViewElement( 'p', { 'title': 'baz' }, [ text1 ] );
 			const child2 = new ViewElement( 'p' );
 			const child3 = new ViewElement( 'p', { 'style': 'top:10px;', 'class': 'qux bar' }, [ text2, child2 ] );
-			el.appendChildren( [ child1, child3 ] );
+			el._appendChildren( [ child1, child3 ] );
 
 			const newConsumable = ViewConsumable.createFrom( el );
 

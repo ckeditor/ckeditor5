@@ -1,9 +1,9 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
-import Document from '../../src/model/document';
+import Model from '../../src/model/model';
 import DocumentFragment from '../../src/model/documentfragment';
 import Node from '../../src/model/node';
 import Element from '../../src/model/element';
@@ -17,6 +17,8 @@ describe( 'Node', () => {
 		textBA, textR, img;
 
 	beforeEach( () => {
+		const model = new Model();
+
 		node = new Node();
 
 		one = new Element( 'one' );
@@ -26,9 +28,9 @@ describe( 'Node', () => {
 		textR = two.getChild( 2 );
 		three = new Element( 'three' );
 
-		doc = new Document();
+		doc = model.document;
 		root = doc.createRoot();
-		root.appendChildren( [ one, two, three ] );
+		root._appendChildren( [ one, two, three ] );
 	} );
 
 	describe( 'should have a correct property', () => {
@@ -89,7 +91,7 @@ describe( 'Node', () => {
 
 			// DocumentFragment does not have document property, so node's document property should be null.
 			const docFrag = new DocumentFragment();
-			docFrag.appendChildren( node );
+			docFrag._appendChildren( node );
 			expect( node ).to.have.property( 'document' ).that.is.null;
 		} );
 	} );
@@ -134,22 +136,22 @@ describe( 'Node', () => {
 		} );
 	} );
 
-	describe( 'clone()', () => {
+	describe( '_clone()', () => {
 		it( 'should return a copy of cloned node', () => {
 			const node = new Node( { foo: 'bar' } );
-			const copy = node.clone();
+			const copy = node._clone();
 
 			expect( copy ).not.to.equal( node );
 			expect( Array.from( copy.getAttributes() ) ).to.deep.equal( Array.from( node.getAttributes() ) );
 		} );
 	} );
 
-	describe( 'remove()', () => {
+	describe( '_remove()', () => {
 		it( 'should remove node from it\'s parent', () => {
 			const element = new Element( 'p' );
-			element.appendChildren( node );
+			element._appendChildren( node );
 
-			node.remove();
+			node._remove();
 
 			expect( element.childCount ).to.equal( 0 );
 			expect( node.parent ).to.be.null;
@@ -157,7 +159,7 @@ describe( 'Node', () => {
 
 		it( 'should throw if node does not have a parent', () => {
 			expect( () => {
-				node.remove();
+				node._remove();
 			} ).to.throw;
 		} );
 	} );
@@ -346,46 +348,46 @@ describe( 'Node', () => {
 			} );
 		} );
 
-		describe( 'setAttribute', () => {
+		describe( '_setAttribute', () => {
 			it( 'should set given attribute on the element', () => {
-				node.setAttribute( 'foo', 'bar' );
+				node._setAttribute( 'foo', 'bar' );
 
 				expect( node.getAttribute( 'foo' ) ).to.equal( 'bar' );
 			} );
 		} );
 
-		describe( 'setAttributesTo', () => {
+		describe( '_setAttributesTo', () => {
 			it( 'should remove all attributes set on element and set the given ones', () => {
-				node.setAttribute( 'abc', 'xyz' );
-				node.setAttributesTo( { foo: 'bar' } );
+				node._setAttribute( 'abc', 'xyz' );
+				node._setAttributesTo( { foo: 'bar' } );
 
 				expect( node.getAttribute( 'foo' ) ).to.equal( 'bar' );
 				expect( node.getAttribute( 'abc' ) ).to.be.undefined;
 			} );
 		} );
 
-		describe( 'removeAttribute', () => {
+		describe( '_removeAttribute', () => {
 			it( 'should remove attribute set on the element and return true', () => {
-				node.setAttribute( 'foo', 'bar' );
-				const result = node.removeAttribute( 'foo' );
+				node._setAttribute( 'foo', 'bar' );
+				const result = node._removeAttribute( 'foo' );
 
 				expect( node.getAttribute( 'foo' ) ).to.be.undefined;
 				expect( result ).to.be.true;
 			} );
 
 			it( 'should return false if element does not contain given attribute', () => {
-				const result = node.removeAttribute( 'foo' );
+				const result = node._removeAttribute( 'foo' );
 
 				expect( result ).to.be.false;
 			} );
 		} );
 
-		describe( 'clearAttributes', () => {
+		describe( '_clearAttributes', () => {
 			it( 'should remove all attributes from the element', () => {
-				node.setAttribute( 'foo', 'bar' );
-				node.setAttribute( 'abc', 'xyz' );
+				node._setAttribute( 'foo', 'bar' );
+				node._setAttribute( 'abc', 'xyz' );
 
-				node.clearAttributes();
+				node._clearAttributes();
 
 				expect( node.getAttribute( 'foo' ) ).to.be.undefined;
 				expect( node.getAttribute( 'abc' ) ).to.be.undefined;

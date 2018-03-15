@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -23,6 +23,8 @@ export default class UIElement extends Element {
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-uielement-cannot-add` when third parameter is passed,
 	 * to inform that usage of UIElement is incorrect (adding child nodes to UIElement is forbidden).
 	 *
+	 * @see module:engine/view/writer~Writer#createUIElement
+	 * @protected
 	 * @param {String} name Node name.
 	 * @param {Object|Iterable} [attributes] Collection of attributes.
 	 */
@@ -50,11 +52,11 @@ export default class UIElement extends Element {
 	}
 
 	/**
-	 * Overrides {@link module:engine/view/element~Element#insertChildren} method.
+	 * Overrides {@link module:engine/view/element~Element#_insertChildren} method.
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-uielement-cannot-add` to prevent adding any child nodes
 	 * to UIElement.
 	 */
-	insertChildren( index, nodes ) {
+	_insertChildren( index, nodes ) {
 		if ( nodes && ( nodes instanceof Node || Array.from( nodes ).length > 0 ) ) {
 			/**
 			 * Cannot add children to {@link module:engine/view/uielement~UIElement}.
@@ -68,11 +70,31 @@ export default class UIElement extends Element {
 	/**
 	 * Renders this {@link module:engine/view/uielement~UIElement} to DOM. This method is called by
 	 * {@link module:engine/view/domconverter~DomConverter}.
+	 * Do not use inheritance to create custom rendering method, replace `render()` method instead:
+	 *
+	 *		const myUIElement = new UIElement( 'span' );
+	 *		myUIElement.render = function( domDocument ) {
+	 *			const domElement = this.toDomElement( domDocument );
+	 *			domElement.innerHTML = '<b>this is ui element</b>';
+	 *
+	 *			return domElement;
+	 *		};
 	 *
 	 * @param {Document} domDocument
 	 * @return {HTMLElement}
 	 */
 	render( domDocument ) {
+		return this.toDomElement( domDocument );
+	}
+
+	/**
+	 * Creates DOM element based on this view UIElement.
+	 * Note that each time this method is called new DOM element is created.
+	 *
+	 * @param {Document} domDocument
+	 * @returns {HTMLElement}
+	 */
+	toDomElement( domDocument ) {
 		const domElement = domDocument.createElement( this.name );
 
 		for ( const key of this.getAttributeKeys() ) {
@@ -90,10 +112,10 @@ export default class UIElement extends Element {
  * The callback handles the situation when right arrow key is pressed and selection is collapsed before a UI element.
  * Without this handler, it would be impossible to "jump over" UI element using right arrow key.
  *
- * @param {module:engine/view/document~Document} document Document to which the quirks handling will be injected.
+ * @param {module:engine/view/view~View} view View controller to which the quirks handling will be injected.
  */
-export function injectUiElementHandling( document ) {
-	document.on( 'keydown', ( evt, data ) => jumpOverUiElement( evt, data, document.domConverter ) );
+export function injectUiElementHandling( view ) {
+	view.document.on( 'keydown', ( evt, data ) => jumpOverUiElement( evt, data, view.domConverter ) );
 }
 
 // Returns `null` because block filler is not needed for UIElements.

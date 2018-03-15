@@ -1,9 +1,9 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
-import Document from '../../../src/model/document';
+import Model from '../../../src/model/model';
 import Element from '../../../src/model/element';
 import RenameOperation from '../../../src/model/operation/renameoperation';
 import Position from '../../../src/model/position';
@@ -14,14 +14,15 @@ describe( 'RenameOperation', () => {
 	const oldName = 'oldName';
 	const newName = 'newName';
 
-	let doc, root, element, position;
+	let model, doc, root, element, position;
 
 	beforeEach( () => {
-		doc = new Document();
+		model = new Model();
+		doc = model.document;
 		root = doc.createRoot();
 
 		element = new Element( oldName );
-		root.appendChildren( element );
+		root._appendChildren( element );
 
 		position = Position.createBefore( element );
 	} );
@@ -35,7 +36,7 @@ describe( 'RenameOperation', () => {
 	it( 'should change name of given element', () => {
 		const op = new RenameOperation( position, oldName, newName, doc.version );
 
-		doc.applyOperation( wrapInDelta( op ) );
+		model.applyOperation( wrapInDelta( op ) );
 
 		expect( element.name ).to.equal( newName );
 	} );
@@ -55,27 +56,37 @@ describe( 'RenameOperation', () => {
 		const op = new RenameOperation( position, oldName, newName, doc.version );
 		const reverse = op.getReversed();
 
-		doc.applyOperation( wrapInDelta( op ) );
-		doc.applyOperation( wrapInDelta( reverse ) );
+		model.applyOperation( wrapInDelta( op ) );
+		model.applyOperation( wrapInDelta( reverse ) );
 
 		expect( doc.version ).to.equal( 2 );
 		expect( element.name ).to.equal( oldName );
 	} );
 
-	it( 'should throw an error if position is not before an element', () => {
-		const op = new RenameOperation( Position.createAt( root, 'end' ), oldName, newName, doc.version );
+	describe( '_validate()', () => {
+		it( 'should throw an error if position is not before an element', () => {
+			const op = new RenameOperation( Position.createAt( root, 'end' ), oldName, newName, doc.version );
 
-		expect( () => {
-			doc.applyOperation( wrapInDelta( op ) );
-		} ).to.throw( CKEditorError, /rename-operation-wrong-position/ );
-	} );
+			expect( () => {
+				op._validate();
+			} ).to.throw( CKEditorError, /rename-operation-wrong-position/ );
+		} );
 
-	it( 'should throw an error if oldName is different than renamed element name', () => {
-		const op = new RenameOperation( position, 'foo', newName, doc.version );
+		it( 'should throw an error if oldName is different than renamed element name', () => {
+			const op = new RenameOperation( position, 'foo', newName, doc.version );
 
-		expect( () => {
-			doc.applyOperation( wrapInDelta( op ) );
-		} ).to.throw( CKEditorError, /rename-operation-wrong-name/ );
+			expect( () => {
+				op._validate();
+			} ).to.throw( CKEditorError, /rename-operation-wrong-name/ );
+		} );
+
+		it( 'should not throw when new name is the same as previous', () => {
+			const op = new RenameOperation( position, oldName, oldName, doc.version );
+
+			expect( () => {
+				op._validate();
+			} ).to.not.throw();
+		} );
 	} );
 
 	it( 'should create a RenameOperation with the same parameters when cloned', () => {

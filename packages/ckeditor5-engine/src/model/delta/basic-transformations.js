@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -369,9 +369,9 @@ addTransformationCase( SplitDelta, AttributeDelta, ( a, b, context ) => {
 	for ( const operation of b.operations ) {
 		if ( operation.range.containsPosition( splitPosition ) || operation.range.start.isEqual( splitPosition ) ) {
 			if ( operation.newValue !== null ) {
-				a._cloneOperation.nodes.getNode( 0 ).setAttribute( operation.key, operation.newValue );
+				a._cloneOperation.nodes.getNode( 0 )._setAttribute( operation.key, operation.newValue );
 			} else {
-				a._cloneOperation.nodes.getNode( 0 ).removeAttribute( operation.key );
+				a._cloneOperation.nodes.getNode( 0 )._removeAttribute( operation.key );
 			}
 
 			break;

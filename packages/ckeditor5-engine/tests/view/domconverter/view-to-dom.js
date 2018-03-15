@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -29,12 +29,10 @@ describe( 'DomConverter', () => {
 		it( 'should create tree of DOM elements from view elements', () => {
 			const viewImg = new ViewElement( 'img' );
 			const viewText = new ViewText( 'foo' );
-			const viewP = new ViewElement( 'p' );
+			const viewP = new ViewElement( 'p', { class: 'foo' } );
 
-			viewP.setAttribute( 'class', 'foo' );
-
-			viewP.appendChildren( viewImg );
-			viewP.appendChildren( viewText );
+			viewP._appendChildren( viewImg );
+			viewP._appendChildren( viewText );
 
 			const domImg = document.createElement( 'img' );
 
@@ -59,12 +57,10 @@ describe( 'DomConverter', () => {
 		it( 'should create tree of DOM elements from view elements and bind elements', () => {
 			const viewImg = new ViewElement( 'img' );
 			const viewText = new ViewText( 'foo' );
-			const viewP = new ViewElement( 'p' );
+			const viewP = new ViewElement( 'p', { class: 'foo' } );
 
-			viewP.setAttribute( 'class', 'foo' );
-
-			viewP.appendChildren( viewImg );
-			viewP.appendChildren( viewText );
+			viewP._appendChildren( viewImg );
+			viewP._appendChildren( viewText );
 
 			const domP = converter.viewToDom( viewP, document, { bind: true } );
 
@@ -98,12 +94,10 @@ describe( 'DomConverter', () => {
 		it( 'should create tree of DOM elements from view element without children', () => {
 			const viewImg = new ViewElement( 'img' );
 			const viewText = new ViewText( 'foo' );
-			const viewP = new ViewElement( 'p' );
+			const viewP = new ViewElement( 'p', { class: 'foo' } );
 
-			viewP.setAttribute( 'class', 'foo' );
-
-			viewP.appendChildren( viewImg );
-			viewP.appendChildren( viewText );
+			viewP._appendChildren( viewImg );
+			viewP._appendChildren( viewText );
 
 			const domImg = document.createElement( 'img' );
 
@@ -126,8 +120,8 @@ describe( 'DomConverter', () => {
 			const viewText = new ViewText( 'foo' );
 			const viewFragment = new ViewDocumentFragment();
 
-			viewFragment.appendChildren( viewImg );
-			viewFragment.appendChildren( viewText );
+			viewFragment._appendChildren( viewImg );
+			viewFragment._appendChildren( viewText );
 
 			const domFragment = converter.viewToDom( viewFragment, document, { bind: true } );
 
@@ -145,8 +139,8 @@ describe( 'DomConverter', () => {
 			const viewText = new ViewText( 'foo' );
 			const viewFragment = new ViewDocumentFragment();
 
-			viewFragment.appendChildren( viewImg );
-			viewFragment.appendChildren( viewText );
+			viewFragment._appendChildren( viewImg );
+			viewFragment._appendChildren( viewText );
 
 			const domImg = document.createElement( 'img' );
 
@@ -250,7 +244,7 @@ describe( 'DomConverter', () => {
 					const viewElement = new ViewContainerElement( 'p' );
 
 					for ( const text of inputTexts ) {
-						viewElement.appendChildren( new ViewText( text.replace( /_/g, '\u00A0' ) ) );
+						viewElement._appendChildren( new ViewText( text.replace( /_/g, '\u00A0' ) ) );
 					}
 
 					const domElement = converter.viewToDom( viewElement, document );

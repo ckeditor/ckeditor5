@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -42,7 +42,9 @@ export default class Range {
 	}
 
 	/**
-	 * Returns an iterator that iterates over all {@link module:engine/model/item~Item items} that are in this range and returns
+	 * Iterable interface.
+	 *
+	 * Iterates over all {@link module:engine/model/item~Item items} that are in this range and returns
 	 * them together with additional information like length or {@link module:engine/model/position~Position positions},
 	 * grouped as {@link module:engine/model/treewalker~TreeWalkerValue}.
 	 * It iterates over all {@link module:engine/model/textproxy~TextProxy text contents} that are inside the range

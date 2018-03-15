@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -8,7 +8,7 @@
  */
 
 /**
- * Item is a {@link module:engine/model/node~Node Node} or {module:engine/model/textproxy~TextProxy TextProxy}.
+ * Item is a {@link module:engine/model/node~Node} or {@link module:engine/model/textproxy~TextProxy}.
  *
  * @typedef {module:engine/model/node~Node|module:engine/model/textproxy~TextProxy} module:engine/model/item~Item
  */

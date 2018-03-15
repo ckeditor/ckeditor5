@@ -1,9 +1,9 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
-import Document from '../../src/model/document';
+import Model from '../../src/model/model';
 import DocumentFragment from '../../src/model/documentfragment';
 import Element from '../../src/model/element';
 import Text from '../../src/model/text';
@@ -13,11 +13,12 @@ import Range from '../../src/model/range';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'TreeWalker', () => {
-	let doc, root, img1, paragraph, ba, r, img2, x,
+	let model, doc, root, img1, paragraph, ba, r, img2, x,
 		rootBeginning, rootEnding;
 
 	before( () => {
-		doc = new Document();
+		model = new Model();
+		doc = model.document;
 		root = doc.createRoot();
 
 		// root
@@ -39,7 +40,7 @@ describe( 'TreeWalker', () => {
 		paragraph = new Element( 'p', [], [ ba, r, img2, x ] );
 		img1 = new Element( 'img1' );
 
-		root.insertChildren( 0, [ img1, paragraph ] );
+		root._insertChildren( 0, [ img1, paragraph ] );
 
 		rootBeginning = new Position( root, [ 0 ] );
 		rootEnding = new Position( root, [ 2 ] );

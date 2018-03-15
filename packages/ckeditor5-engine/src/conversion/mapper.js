@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -110,23 +110,43 @@ export default class Mapper {
 	/**
 	 * Unbinds given {@link module:engine/view/element~Element view element} from the map.
 	 *
+	 * **Note:** view-to-model binding will be removed, if it existed. However, corresponding model-to-view binding
+	 * will be removed only if model element is still bound to passed `viewElement`.
+	 *
+	 * This behavior lets for re-binding model element to another view element without fear of losing the new binding
+	 * when the previously bound view element is unbound.
+	 *
 	 * @param {module:engine/view/element~Element} viewElement View element to unbind.
 	 */
 	unbindViewElement( viewElement ) {
 		const modelElement = this.toModelElement( viewElement );
 
-		this._unbindElements( modelElement, viewElement );
+		this._viewToModelMapping.delete( viewElement );
+
+		if ( this._modelToViewMapping.get( modelElement ) == viewElement ) {
+			this._modelToViewMapping.delete( modelElement );
+		}
 	}
 
 	/**
 	 * Unbinds given {@link module:engine/model/element~Element model element} from the map.
+	 *
+	 * **Note:** model-to-view binding will be removed, if it existed. However, corresponding view-to-model binding
+	 * will be removed only if view element is still bound to passed `modelElement`.
+	 *
+	 * This behavior lets for re-binding view element to another model element without fear of losing the new binding
+	 * when the previously bound model element is unbound.
 	 *
 	 * @param {module:engine/model/element~Element} modelElement Model element to unbind.
 	 */
 	unbindModelElement( modelElement ) {
 		const viewElement = this.toViewElement( modelElement );
 
-		this._unbindElements( modelElement, viewElement );
+		this._modelToViewMapping.delete( modelElement );
+
+		if ( this._viewToModelMapping.get( viewElement ) == modelElement ) {
+			this._viewToModelMapping.delete( viewElement );
+		}
 	}
 
 	/**
@@ -202,12 +222,16 @@ export default class Mapper {
 	 *
 	 * @fires modelToViewPosition
 	 * @param {module:engine/model/position~Position} modelPosition Model position.
+	 * @param {Object} [options] Additional options for position mapping process.
+	 * @param {Boolean} [options.isPhantom=false] Should be set to `true` if the model position to map is pointing to a place
+	 * in model tree which no longer exists. For example, it could be an end of a removed model range.
 	 * @returns {module:engine/view/position~Position} Corresponding view position.
 	 */
-	toViewPosition( modelPosition ) {
+	toViewPosition( modelPosition, options = { isPhantom: false } ) {
 		const data = {
 			modelPosition,
-			mapper: this
+			mapper: this,
+			isPhantom: options.isPhantom
 		};
 
 		this.fire( 'modelToViewPosition', data );
@@ -290,18 +314,6 @@ export default class Mapper {
 		}
 
 		return modelOffset;
-	}
-
-	/**
-	 * Removes binding between given elements.
-	 *
-	 * @private
-	 * @param {module:engine/model/element~Element} modelElement Model element to unbind.
-	 * @param {module:engine/view/element~Element} viewElement View element to unbind.
-	 */
-	_unbindElements( modelElement, viewElement ) {
-		this._viewToModelMapping.delete( viewElement );
-		this._modelToViewMapping.delete( modelElement );
 	}
 
 	/**
@@ -460,19 +472,33 @@ export default class Mapper {
 	 *			}
 	 *		} );
 	 *
-	 * **Note:** keep in mind that custom callback provided for this event should use provided `data.modelPosition` only to check
-	 * what is before the position (or position's parent). This is important when model-to-view position mapping is used in
-	 * remove change conversion. Model after the removed position (that is being mapped) does not correspond to view, so it cannot be used:
+	 * **Note:** keep in mind that sometimes a "phantom" model position is being converted. "Phantom" model position is
+	 * a position that points to a non-existing place in model. Such position might still be valid for conversion, though
+	 * (it would point to a correct place in view when converted). One example of such situation is when a range is
+	 * removed from model, there may be a need to map the range's end (which is no longer valid model position). To
+	 * handle such situation, check `data.isPhantom` flag:
 	 *
-	 *		// Incorrect:
-	 *		const modelElement = data.modelPosition.nodeAfter;
-	 *		const viewElement = data.mapper.toViewElement( modelElement );
-	 *		// ... Do something with `viewElement` and set `data.viewPosition`.
+	 * 		// Assume that there is "customElement" model element and whenever position is before it, we want to move it
+	 * 		// to the inside of the view element bound to "customElement".
+	 *		mapper.on( 'modelToViewPosition', ( evt, data ) => {
+	 *			if ( data.isPhantom ) {
+	 *				return;
+	 *			}
 	 *
-	 *		// Correct:
-	 *		const prevModelElement = data.modelPosition.nodeBefore;
-	 *		const prevViewElement = data.mapper.toViewElement( prevModelElement );
-	 *		// ... Use `prevViewElement` to find correct `data.viewPosition`.
+	 *			// Below line might crash for phantom position that does not exist in model.
+	 *			const sibling = data.modelPosition.nodeBefore;
+	 *
+	 *			// Check if this is the element we are interested in.
+	 *			if ( !sibling.is( 'customElement' ) ) {
+	 *				return;
+	 *			}
+	 *
+	 *			const viewElement = data.mapper.toViewElement( sibling );
+	 *
+	 *			data.viewPosition = new ViewPosition( sibling, 0 );
+	 *
+	 *			evt.stop();
+	 *		} );
 	 *
 	 * **Note:** default mapping callback is provided with `low` priority setting and does not cancel the event, so it is possible to
 	 * attach a custom callback after default callback and also use `data.viewPosition` calculated by default callback

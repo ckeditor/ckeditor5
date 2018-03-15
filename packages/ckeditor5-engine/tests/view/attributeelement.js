@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -48,12 +48,12 @@ describe( 'AttributeElement', () => {
 		} );
 	} );
 
-	describe( 'clone', () => {
+	describe( '_clone()', () => {
 		it( 'should clone element with priority', () => {
 			const el = new AttributeElement( 'b' );
-			el.priority = 7;
+			el._priority = 7;
 
-			const clone = el.clone();
+			const clone = el._clone();
 
 			expect( clone ).to.not.equal( el );
 			expect( clone.name ).to.equal( el.name );
@@ -64,17 +64,17 @@ describe( 'AttributeElement', () => {
 	describe( 'isSimilar', () => {
 		it( 'should return true if priorities are the same', () => {
 			const b1 = new AttributeElement( 'b' );
-			b1.priority = 7;
+			b1._priority = 7;
 
 			const b2 = new AttributeElement( 'b' );
-			b2.priority = 7;
+			b2._priority = 7;
 
 			expect( b1.isSimilar( b2 ) ).to.be.true;
 		} );
 
 		it( 'should return false if priorities are different', () => {
 			const b1 = new AttributeElement( 'b' );
-			b1.priority = 7;
+			b1._priority = 7;
 
 			const b2 = new AttributeElement( 'b' ); // default priority
 

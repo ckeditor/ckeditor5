@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -17,18 +17,28 @@ import clone from '@ckeditor/ckeditor5-utils/src/lib/lodash/clone';
 export default class Operation {
 	/**
 	 * Base operation constructor.
-	 * @param {Number} baseVersion {@link module:engine/model/document~Document#version} on which the operation can be applied.
+	 *
+	 * @param {Number|null} baseVersion Document {@link module:engine/model/document~Document#version} on which operation
+	 * can be applied or `null` if the operation operates on detached (non-document) tree.
 	 */
 	constructor( baseVersion ) {
 		/**
 		 * {@link module:engine/model/document~Document#version} on which operation can be applied. If you try to
-		 * {@link module:engine/model/document~Document#applyOperation apply} operation with different base version than the
+		 * {@link module:engine/model/model~Model#applyOperation apply} operation with different base version than the
 		 * {@link module:engine/model/document~Document#version document version} the
 		 * {@link module:utils/ckeditorerror~CKEditorError model-document-applyOperation-wrong-version} error is thrown.
 		 *
 		 * @member {Number}
 		 */
 		this.baseVersion = baseVersion;
+
+		/**
+		 * Defines whether operation is executed on attached or detached {@link module:engine/model/item~Item items}.
+		 *
+		 * @readonly
+		 * @member {Boolean} #isDocumentOperation
+		 */
+		this.isDocumentOperation = this.baseVersion !== null;
 
 		/**
 		 * Operation type.
@@ -66,14 +76,21 @@ export default class Operation {
 		 */
 
 		/**
-		 * Executes the operation - modifications described by the operation attributes
-		 * will be applied to the tree model.
+		 * Executes the operation - modifications described by the operation properties will be applied to the model tree.
 		 *
 		 * @protected
 		 * @method #_execute
-		 * @returns {Object} Object with additional information about the applied changes. It properties depends on the
-		 * operation type.
 		 */
+	}
+
+	/**
+	 * Checks whether the operation's parameters are correct and the operation can be correctly executed. Throws
+	 * an error if operation is not valid.
+	 *
+	 * @protected
+	 * @method #_validate
+	 */
+	_validate() {
 	}
 
 	/**
@@ -89,6 +106,9 @@ export default class Operation {
 
 		// Remove parent delta to avoid circular dependencies.
 		delete json.delta;
+
+		// Only document operations are shared with other clients so it is not necessary to keep this information.
+		delete json.isDocumentOperation;
 
 		return json;
 	}

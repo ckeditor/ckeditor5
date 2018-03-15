@@ -1,11 +1,11 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
 /* globals document, window, NodeFilter */
 
-import ViewDocument from '../../src/view/document';
+import View from '../../src/view/view';
 import ViewElement from '../../src/view/element';
 import ViewContainerElement from '../../src/view/containerelement';
 import ViewAttributeElement from '../../src/view/attributeelement';
@@ -19,8 +19,8 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { parse, setData as setViewData, getData as getViewData } from '../../src/dev-utils/view';
 import { INLINE_FILLER, INLINE_FILLER_LENGTH, isBlockFiller, BR_FILLER } from '../../src/view/filler';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import createViewRoot from './_utils/createroot';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
-import { unwrap, insert, remove } from '../../src/view/writer';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 
 testUtils.createSinonSandbox();
@@ -43,7 +43,7 @@ describe( 'Renderer', () => {
 
 			const domRoot = document.createElement( 'p' );
 			domConverter.bindElements( domRoot, viewRoot );
-			viewRoot.appendChildren( new ViewText( 'foo' ) );
+			viewRoot._appendChildren( new ViewText( 'foo' ) );
 
 			renderer.markedTexts.clear();
 			renderer.markedAttributes.clear();
@@ -51,7 +51,7 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should mark attributes which need update', () => {
-			viewRoot.setAttribute( 'class', 'foo' );
+			viewRoot._setAttribute( 'class', 'foo' );
 
 			renderer.markToSync( 'attributes', viewRoot );
 
@@ -59,7 +59,7 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should mark children which need update', () => {
-			viewRoot.appendChildren( new ViewText( 'foo' ) );
+			viewRoot._appendChildren( new ViewText( 'foo' ) );
 
 			renderer.markToSync( 'children', viewRoot );
 
@@ -70,7 +70,7 @@ describe( 'Renderer', () => {
 			// Overwrite viewRoot with node without coresponding DOM node.
 			viewRoot = new ViewElement( 'p' );
 
-			viewRoot.appendChildren( new ViewText( 'foo' ) );
+			viewRoot._appendChildren( new ViewText( 'foo' ) );
 
 			renderer.markToSync( 'children', viewRoot );
 
@@ -79,8 +79,8 @@ describe( 'Renderer', () => {
 
 		it( 'should mark text which need update', () => {
 			const viewText = new ViewText( 'foo' );
-			viewRoot.appendChildren( viewText );
-			viewText.data = 'bar';
+			viewRoot._appendChildren( viewText );
+			viewText._data = 'bar';
 
 			renderer.markToSync( 'text', viewText );
 
@@ -92,8 +92,8 @@ describe( 'Renderer', () => {
 			// Overwrite viewRoot with node without coresponding DOM node.
 			viewRoot = new ViewElement( 'p' );
 
-			viewRoot.appendChildren( viewText );
-			viewText.data = 'bar';
+			viewRoot._appendChildren( viewText );
+			viewText._data = 'bar';
 
 			renderer.markToSync( 'text', viewText );
 
@@ -121,8 +121,7 @@ describe( 'Renderer', () => {
 			renderer.markedAttributes.clear();
 			renderer.markedChildren.clear();
 
-			selection.removeAllRanges();
-			selection.setFake( false );
+			selection._setTo( null );
 
 			selectionEditable = viewRoot;
 
@@ -136,8 +135,12 @@ describe( 'Renderer', () => {
 			} );
 		} );
 
+		afterEach( () => {
+			domRoot.remove();
+		} );
+
 		it( 'should update attributes', () => {
-			viewRoot.setAttribute( 'class', 'foo' );
+			viewRoot._setAttribute( 'class', 'foo' );
 
 			renderer.markToSync( 'attributes', viewRoot );
 			renderer.render();
@@ -148,7 +151,7 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should remove attributes', () => {
-			viewRoot.setAttribute( 'class', 'foo' );
+			viewRoot._setAttribute( 'class', 'foo' );
 			domRoot.setAttribute( 'id', 'bar' );
 			domRoot.setAttribute( 'class', 'bar' );
 
@@ -162,7 +165,7 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should add children', () => {
-			viewRoot.appendChildren( new ViewText( 'foo' ) );
+			viewRoot._appendChildren( new ViewText( 'foo' ) );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -174,7 +177,7 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should remove children', () => {
-			viewRoot.appendChildren( new ViewText( 'foo' ) );
+			viewRoot._appendChildren( new ViewText( 'foo' ) );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -182,7 +185,7 @@ describe( 'Renderer', () => {
 			expect( domRoot.childNodes.length ).to.equal( 1 );
 			expect( domRoot.childNodes[ 0 ].data ).to.equal( 'foo' );
 
-			viewRoot.removeChildren( 0, 1 );
+			viewRoot._removeChildren( 0, 1 );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -194,7 +197,7 @@ describe( 'Renderer', () => {
 
 		it( 'should update text', () => {
 			const viewText = new ViewText( 'foo' );
-			viewRoot.appendChildren( viewText );
+			viewRoot._appendChildren( viewText );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -202,7 +205,7 @@ describe( 'Renderer', () => {
 			expect( domRoot.childNodes.length ).to.equal( 1 );
 			expect( domRoot.childNodes[ 0 ].data ).to.equal( 'foo' );
 
-			viewText.data = 'bar';
+			viewText._data = 'bar';
 
 			renderer.markToSync( 'text', viewText );
 			renderer.render();
@@ -216,7 +219,7 @@ describe( 'Renderer', () => {
 		it( 'should not update text parent child list changed', () => {
 			const viewImg = new ViewElement( 'img' );
 			const viewText = new ViewText( 'foo' );
-			viewRoot.appendChildren( [ viewImg, viewText ] );
+			viewRoot._appendChildren( [ viewImg, viewText ] );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.markToSync( 'text', viewText );
@@ -229,7 +232,7 @@ describe( 'Renderer', () => {
 
 		it( 'should not change text if it is the same during text rendering', () => {
 			const viewText = new ViewText( 'foo' );
-			viewRoot.appendChildren( viewText );
+			viewRoot._appendChildren( viewText );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -246,7 +249,7 @@ describe( 'Renderer', () => {
 
 		it( 'should not change text if it is the same during children rendering', () => {
 			const viewText = new ViewText( 'foo' );
-			viewRoot.appendChildren( viewText );
+			viewRoot._appendChildren( viewText );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -263,7 +266,7 @@ describe( 'Renderer', () => {
 
 		it( 'should not change element if it is the same', () => {
 			const viewImg = new ViewElement( 'img' );
-			viewRoot.appendChildren( viewImg );
+			viewRoot._appendChildren( viewImg );
 
 			// This should not be changed during the render.
 			const domImg = document.createElement( 'img' );
@@ -280,14 +283,14 @@ describe( 'Renderer', () => {
 
 		it( 'should change element if it is different', () => {
 			const viewImg = new ViewElement( 'img' );
-			viewRoot.appendChildren( viewImg );
+			viewRoot._appendChildren( viewImg );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
 
 			const viewP = new ViewElement( 'p' );
-			viewRoot.removeChildren( 0, 1 );
-			viewRoot.appendChildren( viewP );
+			viewRoot._removeChildren( 0, 1 );
+			viewRoot._appendChildren( viewP );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -301,18 +304,18 @@ describe( 'Renderer', () => {
 			const viewP = new ViewElement( 'p', null, viewFoo );
 			const viewDiv = new ViewElement( 'div', null, viewP );
 
-			viewRoot.appendChildren( viewDiv );
+			viewRoot._appendChildren( viewDiv );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
 
-			viewDiv.removeChildren( 0, 1 );
+			viewDiv._removeChildren( 0, 1 );
 			renderer.markToSync( 'children', viewDiv );
 			renderer.render();
 
-			viewP.removeChildren( 0, 1 );
+			viewP._removeChildren( 0, 1 );
 
-			viewDiv.appendChildren( viewP );
+			viewDiv._appendChildren( viewP );
 			renderer.markToSync( 'children', viewDiv );
 			renderer.render();
 
@@ -334,21 +337,21 @@ describe( 'Renderer', () => {
 			const viewP = new ViewElement( 'p' );
 			const viewDivInner = new ViewElement( 'div', null, viewP );
 			const viewDivOuter = new ViewElement( 'div', null, viewDivInner );
-			viewRoot.appendChildren( viewDivOuter );
+			viewRoot._appendChildren( viewDivOuter );
 
 			// Render view tree to DOM.
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
 
 			// Remove div "outer" from root and render it.
-			viewDivOuter.remove();
+			viewDivOuter._remove();
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
 
 			// Remove p from div "child" -- div "inner" won't be marked because it is in document fragment not view root.
-			viewP.remove();
+			viewP._remove();
 			// Add div "outer" back to root.
-			viewRoot.appendChildren( viewDivOuter );
+			viewRoot._appendChildren( viewDivOuter );
 			renderer.markToSync( 'children', viewRoot );
 
 			// Render changes, view is: root -> div "outer" -> div "inner".
@@ -373,18 +376,18 @@ describe( 'Renderer', () => {
 			const viewP = new ViewElement( 'p', null, viewFoo );
 			const viewDiv = new ViewElement( 'div', null, viewP );
 
-			viewRoot.appendChildren( viewDiv );
+			viewRoot._appendChildren( viewDiv );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
 
-			viewRoot.removeChildren( 0, 1 );
+			viewRoot._removeChildren( 0, 1 );
 			renderer.markToSync( 'children', viewRoot );
 
-			viewDiv.removeChildren( 0, 1 );
+			viewDiv._removeChildren( 0, 1 );
 			renderer.markToSync( 'children', viewDiv );
 
-			viewP.removeChildren( 0, 1 );
+			viewP._removeChildren( 0, 1 );
 			renderer.markToSync( 'children', viewP );
 
 			renderer.render();
@@ -399,8 +402,8 @@ describe( 'Renderer', () => {
 				'<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>' );
 
 			const viewRoot = new ViewElement( 'p' );
-			viewRoot.appendChildren( viewP );
-			selection.setTo( newSelection );
+			viewRoot._appendChildren( viewP );
+			selection._setTo( newSelection );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -413,8 +416,8 @@ describe( 'Renderer', () => {
 			const { view: viewP, selection: newSelection } = parse(
 				'<container:p>foo<attribute:b contenteditable="false">[]</attribute:b>bar</container:p>' );
 
-			viewRoot.appendChildren( viewP );
-			selection.setTo( newSelection );
+			viewRoot._appendChildren( viewP );
+			selection._setTo( newSelection );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -435,8 +438,8 @@ describe( 'Renderer', () => {
 			const { view: viewP, selection: newSelection } = parse(
 				'<container:p contenteditable="false">foo<attribute:b>[]</attribute:b>bar</container:p>' );
 
-			viewRoot.appendChildren( viewP );
-			selection.setTo( newSelection );
+			viewRoot._appendChildren( viewP );
+			selection._setTo( newSelection );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -460,8 +463,8 @@ describe( 'Renderer', () => {
 			const { view: viewP, selection: newSelection } = parse(
 				'<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>' );
 
-			viewRoot.appendChildren( viewP );
-			selection.setTo( newSelection );
+			viewRoot._appendChildren( viewP );
+			selection._setTo( newSelection );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -490,8 +493,7 @@ describe( 'Renderer', () => {
 			renderAndExpectNoChanges( renderer, domRoot );
 
 			// Step 3: <p>foo{}<b></b></p>
-			selection.removeAllRanges();
-			selection.addRange( ViewRange.createFromParentsAndOffsets( viewP.getChild( 0 ), 3, viewP.getChild( 0 ), 3 ) );
+			selection._setTo( ViewRange.createFromParentsAndOffsets( viewP.getChild( 0 ), 3, viewP.getChild( 0 ), 3 ) );
 
 			renderer.render();
 
@@ -520,8 +522,8 @@ describe( 'Renderer', () => {
 			const { view: viewP, selection: newSelection } = parse(
 				'<container:p>[]<attribute:b>foo</attribute:b></container:p>' );
 
-			viewRoot.appendChildren( viewP );
-			selection.setTo( newSelection );
+			viewRoot._appendChildren( viewP );
+			selection._setTo( newSelection );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -544,8 +546,7 @@ describe( 'Renderer', () => {
 			renderAndExpectNoChanges( renderer, domRoot );
 
 			// Step 3: <p><b>{}foo</b></p>
-			selection.removeAllRanges();
-			selection.addRange( ViewRange.createFromParentsAndOffsets(
+			selection._setTo( ViewRange.createFromParentsAndOffsets(
 				viewP.getChild( 0 ).getChild( 0 ), 0, viewP.getChild( 0 ).getChild( 0 ), 0 ) );
 
 			renderer.render();
@@ -572,8 +573,8 @@ describe( 'Renderer', () => {
 			const { view: viewP, selection: newSelection } = parse(
 				'<container:p><attribute:b>foo</attribute:b>[]</container:p>' );
 
-			viewRoot.appendChildren( viewP );
-			selection.setTo( newSelection );
+			viewRoot._appendChildren( viewP );
+			selection._setTo( newSelection );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -596,8 +597,7 @@ describe( 'Renderer', () => {
 			renderAndExpectNoChanges( renderer, domRoot );
 
 			// Step 3: <p><b>foo{}</b></p>
-			selection.removeAllRanges();
-			selection.addRange( ViewRange.createFromParentsAndOffsets(
+			selection._setTo( ViewRange.createFromParentsAndOffsets(
 				viewP.getChild( 0 ).getChild( 0 ), 3, viewP.getChild( 0 ).getChild( 0 ), 3 ) );
 
 			renderer.render();
@@ -623,8 +623,8 @@ describe( 'Renderer', () => {
 			const { view: viewP, selection: newSelection } = parse(
 				'<container:p><attribute:b>foo</attribute:b>[]<attribute:b>bar</attribute:b></container:p>' );
 
-			viewRoot.appendChildren( viewP );
-			selection.setTo( newSelection );
+			viewRoot._appendChildren( viewP );
+			selection._setTo( newSelection );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -651,8 +651,8 @@ describe( 'Renderer', () => {
 			const { view: viewP, selection: newSelection } = parse(
 				'<container:p>foo<attribute:b>[]</attribute:b><attribute:i></attribute:i></container:p>' );
 
-			viewRoot.appendChildren( viewP );
-			selection.setTo( newSelection );
+			viewRoot._appendChildren( viewP );
+			selection._setTo( newSelection );
 
 			renderer.markToSync( 'children', viewRoot );
 
@@ -669,9 +669,8 @@ describe( 'Renderer', () => {
 			expect( domP.childNodes[ 2 ].childNodes.length ).to.equal( 0 );
 
 			// Step 2: <p>foo<b></b><i>"FILLER{}"</i></p>
-			selection.removeAllRanges();
 			const viewI = viewP.getChild( 2 );
-			selection.addRange( ViewRange.createFromParentsAndOffsets( viewI, 0, viewI, 0 ) );
+			selection._setTo( ViewRange.createFromParentsAndOffsets( viewI, 0, viewI, 0 ) );
 
 			renderer.render();
 
@@ -688,8 +687,8 @@ describe( 'Renderer', () => {
 			// Step 1: <p>foo<b>"FILLER{}"</b></p>
 			const { view: viewP, selection: newSelection } = parse( '<container:p>foo<attribute:b>[]</attribute:b></container:p>' );
 			const viewB = viewP.getChild( 1 );
-			viewRoot.appendChildren( viewP );
-			selection.setTo( newSelection );
+			viewRoot._appendChildren( viewP );
+			selection._setTo( newSelection );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -703,15 +702,14 @@ describe( 'Renderer', () => {
 
 			// Step 2: Add text node.
 			const viewText = new ViewText( 'x' );
-			viewB.appendChildren( viewText );
-			selection.removeAllRanges();
-			selection.addRange( ViewRange.createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
+			viewB._appendChildren( viewText );
+			selection._setTo( ViewRange.createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
 
 			renderer.markToSync( 'children', viewB );
 			renderer.render();
 
 			// Step 3: Remove selection from the view.
-			selection.removeAllRanges();
+			selection._setTo( null );
 
 			renderer.render();
 
@@ -728,8 +726,8 @@ describe( 'Renderer', () => {
 		it( 'should remove filler from a modified DOM in case <p>bar<b>foo</b>[]</p>', () => {
 			// Step 1: <p>bar<b>foo</b>"FILLER{}"</p>
 			const { view: viewP, selection: newSelection } = parse( '<container:p>bar<attribute:b>foo</attribute:b>[]</container:p>' );
-			viewRoot.appendChildren( viewP );
-			selection.setTo( newSelection );
+			viewRoot._appendChildren( viewP );
+			selection._setTo( newSelection );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -739,10 +737,9 @@ describe( 'Renderer', () => {
 			expect( domP.childNodes[ 2 ].data ).to.equal( INLINE_FILLER );
 
 			// Step 2: Remove the <b> and update the selection (<p>bar[]</p>).
-			viewP.removeChildren( 1 );
+			viewP._removeChildren( 1 );
 
-			selection.removeAllRanges();
-			selection.addRange( ViewRange.createFromParentsAndOffsets( viewP, 1, viewP, 1 ) );
+			selection._setTo( ViewRange.createFromParentsAndOffsets( viewP, 1, viewP, 1 ) );
 
 			renderer.markToSync( 'children', viewP );
 			renderer.render();
@@ -758,8 +755,8 @@ describe( 'Renderer', () => {
 			const { view: viewFragment, selection: newSelection } = parse(
 				'<container:p><attribute:b>foo</attribute:b>[]<attribute:b>bar</attribute:b></container:p><container:p></container:p>'
 			);
-			viewRoot.appendChildren( viewFragment );
-			selection.setTo( newSelection );
+			viewRoot._appendChildren( viewFragment );
+			selection._setTo( newSelection );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -775,12 +772,11 @@ describe( 'Renderer', () => {
 			// <p>[]</p><p><b>foo</b><b>bar</b></p>
 			const viewP = viewRoot.getChild( 0 );
 			const viewP2 = viewRoot.getChild( 1 );
-			const removedChildren = viewP.removeChildren( 0, 2 );
+			const removedChildren = viewP._removeChildren( 0, 2 );
 
-			viewP2.appendChildren( removedChildren );
+			viewP2._appendChildren( removedChildren );
 
-			selection.removeAllRanges();
-			selection.addRange( ViewRange.createFromParentsAndOffsets( viewP, 0, viewP, 0 ) );
+			selection._setTo( ViewRange.createFromParentsAndOffsets( viewP, 0, viewP, 0 ) );
 
 			renderer.markToSync( 'children', viewP );
 			renderer.markToSync( 'children', viewP2 );
@@ -801,8 +797,8 @@ describe( 'Renderer', () => {
 		it( 'should not break when selection is moved to a new element, when filler exists', () => {
 			// Step 1: <p>bar<b>"FILLER{}"</b></p>
 			const { view: viewP, selection: newSelection } = parse( '<container:p>bar<attribute:b>[]</attribute:b></container:p>' );
-			viewRoot.appendChildren( viewP );
-			selection.setTo( newSelection );
+			viewRoot._appendChildren( viewP );
+			selection._setTo( newSelection );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -812,13 +808,12 @@ describe( 'Renderer', () => {
 			expect( domP.childNodes[ 1 ].childNodes[ 0 ].data ).to.equal( INLINE_FILLER );
 
 			// Step 2: Move selection to a new attribute element and remove the previous one
-			viewP.removeChildren( 1 ); // Remove <b>.
+			viewP._removeChildren( 1 ); // Remove <b>.
 
 			const viewI = parse( '<attribute:i></attribute:i>' );
-			viewP.appendChildren( viewI );
+			viewP._appendChildren( viewI );
 
-			selection.removeAllRanges();
-			selection.addRange( ViewRange.createFromParentsAndOffsets( viewI, 0, viewI, 0 ) );
+			selection._setTo( ViewRange.createFromParentsAndOffsets( viewI, 0, viewI, 0 ) );
 
 			renderer.markToSync( 'children', viewP );
 			renderer.render();
@@ -834,8 +829,8 @@ describe( 'Renderer', () => {
 		it( 'should remove inline filler if selection is before a view element not bound to dom', () => {
 			// Step 1: <p>bar<b>abc</b>"FILLER"{}</p>
 			const { view: viewP, selection: newSelection } = parse( '<container:p>bar<attribute:b>abc</attribute:b>[]</container:p>' );
-			viewRoot.appendChildren( viewP );
-			selection.setTo( newSelection );
+			viewRoot._appendChildren( viewP );
+			selection._setTo( newSelection );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -846,10 +841,9 @@ describe( 'Renderer', () => {
 
 			// Step 2: Move selection to a new attribute element.
 			const viewAbc = parse( 'abc' );
-			viewP.appendChildren( viewAbc );
+			viewP._appendChildren( viewAbc );
 
-			selection.removeAllRanges();
-			selection.addRange( ViewRange.createFromParentsAndOffsets( viewP, 3, viewP, 3 ) );
+			selection._setTo( ViewRange.createFromParentsAndOffsets( viewP, 3, viewP, 3 ) );
 
 			renderer.markToSync( 'children', viewP );
 			renderer.render();
@@ -864,8 +858,8 @@ describe( 'Renderer', () => {
 
 			const { view: viewP, selection: newSelection } = parse( '<container:p>[]</container:p>' );
 
-			viewRoot.appendChildren( viewP );
-			selection.setTo( newSelection );
+			viewRoot._appendChildren( viewP );
+			selection._setTo( newSelection );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -891,9 +885,8 @@ describe( 'Renderer', () => {
 			domSelection.addRange( domRange );
 
 			const viewText = new ViewText( 'x' );
-			viewP.appendChildren( viewText );
-			selection.removeAllRanges();
-			selection.addRange( ViewRange.createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
+			viewP._appendChildren( viewText );
+			selection._setTo( ViewRange.createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
 
 			renderer.markToSync( 'children', viewP );
 			renderAndExpectNoChanges( renderer, domRoot );
@@ -904,8 +897,8 @@ describe( 'Renderer', () => {
 
 			const { view: viewP, selection: newSelection } = parse( '<container:p>[]</container:p>' );
 
-			viewRoot.appendChildren( viewP );
-			selection.setTo( newSelection );
+			viewRoot._appendChildren( viewP );
+			selection._setTo( newSelection );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -922,9 +915,8 @@ describe( 'Renderer', () => {
 
 			// Add text node only in View <p>x{}</p>
 			const viewText = new ViewText( 'x' );
-			viewP.appendChildren( viewText );
-			selection.removeAllRanges();
-			selection.addRange( ViewRange.createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
+			viewP._appendChildren( viewText );
+			selection._setTo( ViewRange.createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
 
 			renderer.markToSync( 'children', viewP );
 			renderer.render();
@@ -943,8 +935,8 @@ describe( 'Renderer', () => {
 
 			const { view: viewP, selection: newSelection } = parse( '<container:p>x{}</container:p>' );
 
-			viewRoot.appendChildren( viewP );
-			selection.setTo( newSelection );
+			viewRoot._appendChildren( viewP );
+			selection._setTo( newSelection );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -969,10 +961,9 @@ describe( 'Renderer', () => {
 			domRange.collapse( true );
 			domSelection.addRange( domRange );
 
-			viewP.removeChildren( 0 );
+			viewP._removeChildren( 0 );
 
-			selection.removeAllRanges();
-			selection.addRange( ViewRange.createFromParentsAndOffsets( viewP, 0, viewP, 0 ) );
+			selection._setTo( ViewRange.createFromParentsAndOffsets( viewP, 0, viewP, 0 ) );
 
 			renderer.markToSync( 'children', viewP );
 			renderAndExpectNoChanges( renderer, domRoot );
@@ -986,8 +977,8 @@ describe( 'Renderer', () => {
 			const { view: viewP, selection: newSelection } = parse(
 				'<container:p><attribute:b>[]</attribute:b>foo</container:p>' );
 
-			viewRoot.appendChildren( viewP );
-			selection.setTo( newSelection );
+			viewRoot._appendChildren( viewP );
+			selection._setTo( newSelection );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -1022,9 +1013,8 @@ describe( 'Renderer', () => {
 			domSelection.addRange( domRange );
 
 			const viewText = new ViewText( 'x' );
-			viewB.appendChildren( viewText );
-			selection.removeAllRanges();
-			selection.addRange( ViewRange.createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
+			viewB._appendChildren( viewText );
+			selection._setTo( ViewRange.createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
 
 			renderer.markToSync( 'children', viewP );
 			renderAndExpectNoChanges( renderer, domRoot );
@@ -1038,14 +1028,13 @@ describe( 'Renderer', () => {
 			const { view: viewP, selection: newSelection } = parse(
 				'<container:p><attribute:b>[]</attribute:b>foo</container:p>' );
 
-			viewRoot.appendChildren( viewP );
-			selection.setTo( newSelection );
+			viewRoot._appendChildren( viewP );
+			selection._setTo( newSelection );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
 
 			// 2. Check the DOM.
-
 			const domP = domRoot.childNodes[ 0 ];
 
 			expect( domP.childNodes.length ).to.equal( 2 );
@@ -1063,12 +1052,12 @@ describe( 'Renderer', () => {
 			expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( INLINE_FILLER_LENGTH );
 			expect( domSelection.getRangeAt( 0 ).collapsed ).to.be.true;
 
+			domSelection.removeAllRanges();
 			// 3. Add text node only to the view: <p><b>x{}</b>foo</p>.
 
 			const viewText = new ViewText( 'x' );
-			viewB.appendChildren( viewText );
-			selection.removeAllRanges();
-			selection.addRange( ViewRange.createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
+			viewB._appendChildren( viewText );
+			selection._setTo( ViewRange.createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
 
 			renderer.markToSync( 'children', viewB );
 			renderer.render();
@@ -1077,9 +1066,21 @@ describe( 'Renderer', () => {
 			expect( domB.childNodes[ 0 ].data ).to.equal( INLINE_FILLER + 'x' );
 
 			expect( domSelection.rangeCount ).to.equal( 1 );
-			expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domB.childNodes[ 0 ] );
-			expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( INLINE_FILLER_LENGTH + 1 );
-			expect( domSelection.getRangeAt( 0 ).collapsed ).to.be.true;
+
+			// Depending on the browser selection may end up at the end of the text node or after the text node.
+			const firstRange = domSelection.getRangeAt( 0 );
+
+			const assertSelectionAtEndOfTextNode = () => {
+				expect( firstRange.startOffset ).to.equal( INLINE_FILLER_LENGTH + 1 );
+			};
+
+			const assertSelectionInsideTextNode = () => {
+				expect( firstRange.startContainer ).to.equal( domB );
+				expect( firstRange.startOffset ).to.equal( 1 );
+			};
+
+			testUtils.checkAssertions( assertSelectionAtEndOfTextNode, assertSelectionInsideTextNode );
+			expect( firstRange.collapsed ).to.be.true;
 		} );
 
 		it( 'should handle typing in empty attribute as a text change, render if needed', () => {
@@ -1090,8 +1091,8 @@ describe( 'Renderer', () => {
 			const { view: viewP, selection: newSelection } = parse(
 				'<container:p><attribute:b>[]</attribute:b>foo</container:p>' );
 
-			viewRoot.appendChildren( viewP );
-			selection.setTo( newSelection );
+			viewRoot._appendChildren( viewP );
+			selection._setTo( newSelection );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -1118,9 +1119,8 @@ describe( 'Renderer', () => {
 			// 3. Add text node only to the view: <p><b>x{}</b>foo</p>.
 
 			const viewText = new ViewText( 'x' );
-			viewB.appendChildren( viewText );
-			selection.removeAllRanges();
-			selection.addRange( ViewRange.createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
+			viewB._appendChildren( viewText );
+			selection._setTo( ViewRange.createFromParentsAndOffsets( viewText, 1, viewText, 1 ) );
 
 			renderer.markToSync( 'text', viewText );
 			renderer.render();
@@ -1142,8 +1142,8 @@ describe( 'Renderer', () => {
 			const { view: viewP, selection: newSelection } = parse(
 				'<container:p>fo{o<attribute:b>b}ar</attribute:b></container:p>' );
 
-			viewRoot.appendChildren( viewP );
-			selection.setTo( newSelection );
+			viewRoot._appendChildren( viewP );
+			selection._setTo( newSelection );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -1167,30 +1167,43 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should not change selection if there is no editable with selection', () => {
-			const domDiv = createElement( document, 'div', null, 'not editable' );
+			const domDiv = createElement( document, 'div', { contenteditable: true }, 'not editable' );
 			document.body.appendChild( domDiv );
+			domDiv.focus();
 
 			const domSelection = document.getSelection();
 
 			domSelection.removeAllRanges();
-			const domRange = document.createRange();
-			domRange.setStart( domDiv, 0 );
-			domRange.collapse( true );
-			domSelection.addRange( domRange );
+			domSelection.collapse( domDiv, 0 );
 
 			selectionEditable = null;
 
 			const { view: viewP, selection: newSelection } = parse( '<container:p>fo{o}</container:p>' );
 
-			viewRoot.appendChildren( viewP );
-			selection.setTo( newSelection );
+			viewRoot._appendChildren( viewP );
+			selection._setTo( newSelection );
 
 			renderer.render();
 
 			expect( domSelection.rangeCount ).to.equal( 1 );
-			expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domDiv );
-			expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( 0 );
-			expect( domSelection.getRangeAt( 0 ).collapsed ).to.equal( true );
+
+			// Depending on the browser selection may end up before the text node or at the beginning of it.
+			const domRange = domSelection.getRangeAt( 0 );
+
+			const assertSelectionAtEndOfTextNode = () => {
+				expect( domRange.startContainer ).to.equal( domDiv );
+			};
+
+			const assertSelectionInsideTextNode = () => {
+				expect( domRange.startContainer ).to.equal( domDiv.childNodes[ 0 ] );
+			};
+
+			testUtils.checkAssertions( assertSelectionAtEndOfTextNode, assertSelectionInsideTextNode );
+
+			expect( domRange.startOffset ).to.equal( 0 );
+			expect( domRange.collapsed ).to.be.true;
+
+			domDiv.remove();
 		} );
 
 		it( 'should not change selection if there is no focus', () => {
@@ -1209,22 +1222,37 @@ describe( 'Renderer', () => {
 
 			const { view: viewP, selection: newSelection } = parse( '<container:p>fo{o}</container:p>' );
 
-			viewRoot.appendChildren( viewP );
-			selection.setTo( newSelection );
+			viewRoot._appendChildren( viewP );
+			selection._setTo( newSelection );
 
 			renderer.render();
 
 			expect( domSelection.rangeCount ).to.equal( 1 );
-			expect( domSelection.getRangeAt( 0 ).startContainer ).to.equal( domDiv );
-			expect( domSelection.getRangeAt( 0 ).startOffset ).to.equal( 0 );
-			expect( domSelection.getRangeAt( 0 ).collapsed ).to.equal( true );
+
+			// Depending on the browser selection may end up before the text node or at the beginning of it.
+			const domSelectionRange = domSelection.getRangeAt( 0 );
+
+			const assertSelectionAtEndOfTextNode = () => {
+				expect( domSelectionRange.startContainer ).to.equal( domDiv );
+			};
+
+			const assertSelectionInsideTextNode = () => {
+				expect( domSelectionRange.startContainer ).to.equal( domDiv.childNodes[ 0 ] );
+			};
+
+			testUtils.checkAssertions( assertSelectionAtEndOfTextNode, assertSelectionInsideTextNode );
+
+			expect( domSelectionRange.startOffset ).to.equal( 0 );
+			expect( domSelectionRange.collapsed ).to.be.true;
+
+			domDiv.remove();
 		} );
 
 		it( 'should not add inline filler after text node', () => {
 			const { view: viewP, selection: newSelection } = parse( '<container:p>foo[]</container:p>' );
 
-			viewRoot.appendChildren( viewP );
-			selection.setTo( newSelection );
+			viewRoot._appendChildren( viewP );
+			selection._setTo( newSelection );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -1238,8 +1266,8 @@ describe( 'Renderer', () => {
 			const { view: viewP, selection: newSelection } = parse(
 				'<container:p>foo<attribute:b>[]</attribute:b>bar</container:p>' );
 
-			viewRoot.appendChildren( viewP );
-			selection.setTo( newSelection );
+			viewRoot._appendChildren( viewP );
+			selection._setTo( newSelection );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -1252,7 +1280,7 @@ describe( 'Renderer', () => {
 			// Remove filler.
 			domB.childNodes[ 0 ].data = '';
 
-			selection.removeAllRanges();
+			selection._setTo( null );
 			renderer.markToSync( 'children', viewB );
 
 			expect( () => {
@@ -1271,8 +1299,8 @@ describe( 'Renderer', () => {
 
 			const { view: view, selection: newSelection } = parse( inputView );
 
-			viewRoot.appendChildren( view );
-			selection.setTo( newSelection );
+			viewRoot._appendChildren( view );
+			selection._setTo( newSelection );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -1282,9 +1310,9 @@ describe( 'Renderer', () => {
 
 			// 3. Move the inline filler parent to a newly created element.
 			const viewLi = view.getChild( 0 );
-			const viewLiIndented = view.removeChildren( 1, 1 ); // Array with one element.
+			const viewLiIndented = view._removeChildren( 1, 1 ); // Array with one element.
 			const viewUl = new ViewContainerElement( 'ul', null, viewLiIndented );
-			viewLi.appendChildren( viewUl );
+			viewLi._appendChildren( viewUl );
 
 			// 4. Mark changed items and render the view.
 			renderer.markToSync( 'children', view );
@@ -1332,15 +1360,15 @@ describe( 'Renderer', () => {
 				const { view: viewP, selection: newSelection } = parse(
 					'<container:p>[foo bar]</container:p>'
 				);
-				viewRoot.appendChildren( viewP );
-				selection.setTo( newSelection );
+				viewRoot._appendChildren( viewP );
+				selection._setTo( newSelection );
 				renderer.markToSync( 'children', viewRoot );
 				renderer.render();
 			} );
 
 			it( 'should render fake selection', () => {
 				const label = 'fake selection label';
-				selection.setFake( true, { label } );
+				selection._setTo( selection.getRanges(), { fake: true, label } );
 				renderer.render();
 
 				expect( domRoot.childNodes.length ).to.equal( 2 );
@@ -1357,7 +1385,7 @@ describe( 'Renderer', () => {
 			} );
 
 			it( 'should render &nbsp; if no selection label is provided', () => {
-				selection.setFake( true );
+				selection._setTo( selection.getRanges(), { fake: true } );
 				renderer.render();
 
 				expect( domRoot.childNodes.length ).to.equal( 2 );
@@ -1373,10 +1401,10 @@ describe( 'Renderer', () => {
 			} );
 
 			it( 'should remove fake selection container when selection is no longer fake', () => {
-				selection.setFake( true );
+				selection._setTo( selection.getRanges(), { fake: true } );
 				renderer.render();
 
-				selection.setFake( false );
+				selection._setTo( selection.getRanges(), { fake: false } );
 				renderer.render();
 
 				expect( domRoot.childNodes.length ).to.equal( 1 );
@@ -1392,14 +1420,14 @@ describe( 'Renderer', () => {
 			it( 'should reuse fake selection container #1', () => {
 				const label = 'fake selection label';
 
-				selection.setFake( true, { label } );
+				selection._setTo( selection.getRanges(), { fake: true, label } );
 				renderer.render();
 
 				expect( domRoot.childNodes.length ).to.equal( 2 );
 
 				const container = domRoot.childNodes[ 1 ];
 
-				selection.setFake( true, { label } );
+				selection._setTo( selection.getRanges(), { fake: true, label } );
 				renderer.render();
 
 				expect( domRoot.childNodes.length ).to.equal( 2 );
@@ -1413,19 +1441,19 @@ describe( 'Renderer', () => {
 			} );
 
 			it( 'should reuse fake selection container #2', () => {
-				selection.setFake( true, { label: 'label 1' } );
+				selection._setTo( selection.getRanges(), { fake: true, label: 'label 1' } );
 				renderer.render();
 
 				expect( domRoot.childNodes.length ).to.equal( 2 );
 
 				const container = domRoot.childNodes[ 1 ];
 
-				selection.setFake( false );
+				selection._setTo( selection.getRanges(), { fake: false } );
 				renderer.render();
 
 				expect( domRoot.childNodes.length ).to.equal( 1 );
 
-				selection.setFake( true, { label: 'label 2' } );
+				selection._setTo( selection.getRanges(), { fake: true, label: 'label 2' } );
 				renderer.render();
 
 				expect( domRoot.childNodes.length ).to.equal( 2 );
@@ -1439,14 +1467,14 @@ describe( 'Renderer', () => {
 			} );
 
 			it( 'should reuse fake selection container #3', () => {
-				selection.setFake( true, { label: 'label 1' } );
+				selection._setTo( selection.getRanges(), { fake: true, label: 'label 1' } );
 				renderer.render();
 
 				expect( domRoot.childNodes.length ).to.equal( 2 );
 
 				const container = domRoot.childNodes[ 1 ];
 
-				selection.setFake( true, { label: 'label 2' } );
+				selection._setTo( selection.getRanges(), { fake: true, label: 'label 2' } );
 				renderer.render();
 
 				expect( domRoot.childNodes.length ).to.equal( 2 );
@@ -1460,7 +1488,7 @@ describe( 'Renderer', () => {
 			} );
 
 			it( 'should style fake selection container properly', () => {
-				selection.setFake( true, { label: 'fake selection' } );
+				selection._setTo( selection.getRanges(), { fake: true, label: 'fake selection' } );
 				renderer.render();
 
 				expect( domRoot.childNodes.length ).to.equal( 2 );
@@ -1473,7 +1501,7 @@ describe( 'Renderer', () => {
 			} );
 
 			it( 'should bind fake selection container to view selection', () => {
-				selection.setFake( true, { label: 'fake selection' } );
+				selection._setTo( selection.getRanges(), { fake: true, label: 'fake selection' } );
 				renderer.render();
 
 				expect( domRoot.childNodes.length ).to.equal( 2 );
@@ -1522,8 +1550,8 @@ describe( 'Renderer', () => {
 				const { view: viewP, selection: newSelection } = parse(
 					'<container:p>foo{}<attribute:b>bar</attribute:b></container:p>' );
 
-				viewRoot.appendChildren( viewP );
-				selection.setTo( newSelection );
+				viewRoot._appendChildren( viewP );
+				selection._setTo( newSelection );
 
 				renderer.markToSync( 'children', viewRoot );
 				renderer.render();
@@ -1543,7 +1571,7 @@ describe( 'Renderer', () => {
 				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
 
 				// <container:p>foo<attribute:b>{}bar</attribute:b></container:p>
-				selection.setRanges( [
+				selection._setTo( [
 					new ViewRange( new ViewPosition( viewB.getChild( 0 ), 0 ), new ViewPosition( viewB.getChild( 0 ), 0 ) )
 				] );
 
@@ -1562,8 +1590,8 @@ describe( 'Renderer', () => {
 				const { view: viewP, selection: newSelection } = parse(
 					'<container:p>foo<attribute:b>[]</attribute:b></container:p>' );
 
-				viewRoot.appendChildren( viewP );
-				selection.setTo( newSelection );
+				viewRoot._appendChildren( viewP );
+				selection._setTo( newSelection );
 
 				renderer.markToSync( 'children', viewRoot );
 				renderer.render();
@@ -1582,7 +1610,7 @@ describe( 'Renderer', () => {
 				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
 
 				// <container:p>foo{}<attribute:b></attribute:b></container:p>
-				selection.setRanges( [
+				selection._setTo( [
 					new ViewRange( new ViewPosition( viewP.getChild( 0 ), 3 ), new ViewPosition( viewP.getChild( 0 ), 3 ) )
 				] );
 
@@ -1601,8 +1629,8 @@ describe( 'Renderer', () => {
 				const { view: viewP, selection: newSelection } = parse(
 					'<container:p>fo{o}<attribute:b>bar</attribute:b></container:p>' );
 
-				viewRoot.appendChildren( viewP );
-				selection.setTo( newSelection );
+				viewRoot._appendChildren( viewP );
+				selection._setTo( newSelection );
 
 				renderer.markToSync( 'children', viewRoot );
 				renderer.render();
@@ -1622,7 +1650,7 @@ describe( 'Renderer', () => {
 				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
 
 				// <container:p>fo{o<attribute:b>b}ar</attribute:b></container:p>
-				selection.setRanges( [
+				selection._setTo( [
 					new ViewRange( new ViewPosition( viewP.getChild( 0 ), 2 ), new ViewPosition( viewB.getChild( 0 ), 1 ) )
 				] );
 
@@ -1640,8 +1668,8 @@ describe( 'Renderer', () => {
 
 				const { view: viewP, selection: newSelection } = parse( '<container:p>foo[]<ui:span></ui:span></container:p>' );
 
-				viewRoot.appendChildren( viewP );
-				selection.setTo( newSelection );
+				viewRoot._appendChildren( viewP );
+				selection._setTo( newSelection );
 
 				renderer.markToSync( 'children', viewRoot );
 				renderer.render();
@@ -1658,10 +1686,22 @@ describe( 'Renderer', () => {
 				renderer.render();
 
 				// Expect that after calling `renderer.render()` the DOM selection was re-rendered (and set at correct position).
-				expect( domSelection.anchorNode ).to.equal( domP );
-				expect( domSelection.anchorOffset ).to.equal( 1 );
-				expect( domSelection.focusNode ).to.equal( domP );
-				expect( domSelection.focusOffset ).to.equal( 1 );
+				// Depending on the browser selection may end up at the end of the text node or after the text node.
+
+				const assertSelectionAtEndOfTextNode = () => {
+					expect( domSelection.anchorNode ).to.equal( domP );
+					expect( domSelection.anchorOffset ).to.equal( 1 );
+				};
+
+				const assertSelectionInsideTextNode = () => {
+					const textNode = domP.childNodes[ 0 ];
+					expect( domSelection.anchorNode ).to.equal( textNode );
+					expect( domSelection.anchorOffset ).to.equal( 3 );
+				};
+
+				testUtils.checkAssertions( assertSelectionAtEndOfTextNode, assertSelectionInsideTextNode );
+
+				expect( domSelection.getRangeAt( 0 ).collapsed ).to.be.true;
 			} );
 
 			it( 'should not render non-collapsed selection it is similar (element start)', () => {
@@ -1670,8 +1710,8 @@ describe( 'Renderer', () => {
 				const { view: viewP, selection: newSelection } = parse(
 					'<container:p>foo<attribute:b>{ba}r</attribute:b></container:p>' );
 
-				viewRoot.appendChildren( viewP );
-				selection.setTo( newSelection );
+				viewRoot._appendChildren( viewP );
+				selection._setTo( newSelection );
 
 				renderer.markToSync( 'children', viewRoot );
 				renderer.render();
@@ -1691,7 +1731,7 @@ describe( 'Renderer', () => {
 				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
 
 				// <container:p>foo{<attribute:b>ba}r</attribute:b></container:p>
-				selection.setRanges( [
+				selection._setTo( [
 					new ViewRange( new ViewPosition( viewP.getChild( 0 ), 3 ), new ViewPosition( viewB.getChild( 0 ), 2 ) )
 				] );
 
@@ -1708,8 +1748,8 @@ describe( 'Renderer', () => {
 				const { view: viewP, selection: newSelection } = parse(
 					'<container:p>foo<attribute:b>b{ar}</attribute:b>baz</container:p>' );
 
-				viewRoot.appendChildren( viewP );
-				selection.setTo( newSelection );
+				viewRoot._appendChildren( viewP );
+				selection._setTo( newSelection );
 
 				renderer.markToSync( 'children', viewRoot );
 				renderer.render();
@@ -1729,7 +1769,7 @@ describe( 'Renderer', () => {
 				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
 
 				// <container:p>foo<attribute:b>b{ar</attribute:b>}baz</container:p>
-				selection.setRanges( [
+				selection._setTo( [
 					new ViewRange( new ViewPosition( viewB.getChild( 0 ), 1 ), new ViewPosition( viewP.getChild( 2 ), 0 ) )
 				] );
 
@@ -1746,8 +1786,8 @@ describe( 'Renderer', () => {
 				const { view: viewP, selection: newSelection } = parse(
 					'<container:p>foo<attribute:b><attribute:i>{ba}r</attribute:i></attribute:b></container:p>' );
 
-				viewRoot.appendChildren( viewP );
-				selection.setTo( newSelection );
+				viewRoot._appendChildren( viewP );
+				selection._setTo( newSelection );
 
 				renderer.markToSync( 'children', viewRoot );
 				renderer.render();
@@ -1767,7 +1807,7 @@ describe( 'Renderer', () => {
 				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
 
 				// <container:p>foo{<attribute:b><attribute:i>ba}r</attribute:i></attribute:b></container:p>
-				selection.setRanges( [
+				selection._setTo( [
 					new ViewRange( new ViewPosition( viewP.getChild( 0 ), 3 ), new ViewPosition( viewI.getChild( 0 ), 2 ) )
 				] );
 
@@ -1784,8 +1824,8 @@ describe( 'Renderer', () => {
 				const { view: viewP, selection: newSelection } = parse(
 					'<container:p>f{oo<attribute:b><attribute:i>bar}</attribute:i></attribute:b>baz</container:p>' );
 
-				viewRoot.appendChildren( viewP );
-				selection.setTo( newSelection );
+				viewRoot._appendChildren( viewP );
+				selection._setTo( newSelection );
 
 				renderer.markToSync( 'children', viewRoot );
 				renderer.render();
@@ -1804,7 +1844,7 @@ describe( 'Renderer', () => {
 				selectionExtendSpy = sinon.spy( window.Selection.prototype, 'extend' );
 
 				// <container:p>f{oo<attribute:b><attribute:i>bar</attribute:i></attribute:b>}baz</container:p>
-				selection.setRanges( [
+				selection._setTo( [
 					new ViewRange( new ViewPosition( viewP.getChild( 0 ), 1 ), new ViewPosition( viewP.getChild( 2 ), 0 ) )
 				] );
 
@@ -1818,18 +1858,20 @@ describe( 'Renderer', () => {
 	} );
 
 	describe( '#922', () => {
-		let viewDoc, viewRoot, domRoot, converter;
+		let view, viewDoc, viewRoot, domRoot, converter;
 
 		beforeEach( () => {
-			viewDoc = new ViewDocument();
+			view = new View();
+			viewDoc = view.document;
 			domRoot = document.createElement( 'div' );
 			document.body.appendChild( domRoot );
-			viewRoot = viewDoc.createRoot( domRoot );
-			converter = viewDoc.domConverter;
+			viewRoot = createViewRoot( viewDoc );
+			view.attachDomRoot( domRoot );
+			converter = view.domConverter;
 		} );
 
 		it( 'should properly render unwrapped attributes #1', () => {
-			setViewData( viewDoc,
+			setViewData( view,
 				'<container:p>' +
 					'[<attribute:italic>' +
 						'<attribute:strong>f</attribute:strong>' +
@@ -1839,14 +1881,17 @@ describe( 'Renderer', () => {
 			);
 
 			// Render it to DOM to create initial DOM <-> view mappings.
-			viewDoc.render();
+			view.render();
 
 			// Unwrap italic attribute element.
-			unwrap( viewDoc.selection.getFirstRange(), new ViewAttributeElement( 'italic' ) );
-			expect( getViewData( viewDoc ) ).to.equal( '<p>[<strong>foo</strong>]</p>' );
+			view.change( writer => {
+				writer.unwrap( viewDoc.selection.getFirstRange(), new ViewAttributeElement( 'italic' ) );
+			} );
+
+			expect( getViewData( view ) ).to.equal( '<p>[<strong>foo</strong>]</p>' );
 
 			// Re-render changes in view to DOM.
-			viewDoc.render();
+			view.render();
 
 			// Check if DOM is rendered correctly.
 			expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p><strong>foo</strong></p>' );
@@ -1854,7 +1899,7 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should properly render unwrapped attributes #2', () => {
-			setViewData( viewDoc,
+			setViewData( view,
 				'<container:p>' +
 					'[<attribute:italic>' +
 						'<attribute:strong>foo</attribute:strong>' +
@@ -1862,15 +1907,18 @@ describe( 'Renderer', () => {
 				'</container:p>' );
 
 			// Render it to DOM to create initial DOM <-> view mappings.
-			viewDoc.render();
+			view.render();
 
 			// Unwrap italic attribute element and change text inside.
-			unwrap( viewDoc.selection.getFirstRange(), new ViewAttributeElement( 'italic' ) );
-			viewRoot.getChild( 0 ).getChild( 0 ).getChild( 0 ).data = 'bar';
-			expect( getViewData( viewDoc ) ).to.equal( '<p>[<strong>bar</strong>]</p>' );
+			view.change( writer => {
+				writer.unwrap( viewDoc.selection.getFirstRange(), new ViewAttributeElement( 'italic' ) );
+			} );
+
+			viewRoot.getChild( 0 ).getChild( 0 ).getChild( 0 )._data = 'bar';
+			expect( getViewData( view ) ).to.equal( '<p>[<strong>bar</strong>]</p>' );
 
 			// Re-render changes in view to DOM.
-			viewDoc.render();
+			view.render();
 
 			// Check if DOM is rendered correctly.
 			expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p><strong>bar</strong></p>' );
@@ -1878,21 +1926,25 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should properly render if text is changed and element is inserted into same node #1', () => {
-			setViewData( viewDoc,
+			setViewData( view,
 				'<container:p>foo</container:p>'
 			);
 
 			// Render it to DOM to create initial DOM <-> view mappings.
-			viewDoc.render();
+			view.render();
 
 			// Change text and insert new element into paragraph.
 			const textNode = viewRoot.getChild( 0 ).getChild( 0 );
-			textNode.data = 'foobar';
-			insert( ViewPosition.createAfter( textNode ), new ViewAttributeElement( 'img' ) );
-			expect( getViewData( viewDoc ) ).to.equal( '<p>foobar<img></img></p>' );
+			textNode._data = 'foobar';
+
+			view.change( writer => {
+				writer.insert( ViewPosition.createAfter( textNode ), new ViewAttributeElement( 'img' ) );
+			} );
+
+			expect( getViewData( view ) ).to.equal( '<p>foobar<img></img></p>' );
 
 			// Re-render changes in view to DOM.
-			viewDoc.render();
+			view.render();
 
 			// Check if DOM is rendered correctly.
 			expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p>foobar<img></img></p>' );
@@ -1900,21 +1952,25 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should properly render if text is changed and element is inserted into same node #2', () => {
-			setViewData( viewDoc,
+			setViewData( view,
 				'<container:p>foo</container:p>'
 			);
 
 			// Render it to DOM to create initial DOM <-> view mappings.
-			viewDoc.render();
+			view.render();
 
 			// Change text and insert new element into paragraph.
 			const textNode = viewRoot.getChild( 0 ).getChild( 0 );
-			textNode.data = 'foobar';
-			insert( ViewPosition.createBefore( textNode ), new ViewAttributeElement( 'img' ) );
-			expect( getViewData( viewDoc ) ).to.equal( '<p><img></img>foobar</p>' );
+			textNode._data = 'foobar';
+
+			view.change( writer => {
+				writer.insert( ViewPosition.createBefore( textNode ), new ViewAttributeElement( 'img' ) );
+			} );
+
+			expect( getViewData( view ) ).to.equal( '<p><img></img>foobar</p>' );
 
 			// Re-render changes in view to DOM.
-			viewDoc.render();
+			view.render();
 
 			// Check if DOM is rendered correctly.
 			expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p><img></img>foobar</p>' );
@@ -1922,7 +1978,7 @@ describe( 'Renderer', () => {
 		} );
 
 		it( 'should not unbind elements that are removed and reinserted to DOM', () => {
-			setViewData( viewDoc,
+			setViewData( view,
 				'<container:p>' +
 					'<attribute:b></attribute:b>' +
 					'<attribute:i></attribute:i>' +
@@ -1931,18 +1987,21 @@ describe( 'Renderer', () => {
 			);
 
 			// Render it to DOM to create initial DOM <-> view mappings.
-			viewDoc.render();
+			view.render();
 
 			// Remove first element and reinsert it at the end.
 			const container = viewRoot.getChild( 0 );
 			const firstElement = container.getChild( 0 );
 
-			remove( ViewRange.createOn( firstElement ) );
-			insert( new ViewPosition( container, 2 ), firstElement );
-			expect( getViewData( viewDoc ) ).to.equal( '<p><i></i><span></span><b></b></p>' );
+			view.change( writer => {
+				writer.remove( ViewRange.createOn( firstElement ) );
+				writer.insert( new ViewPosition( container, 2 ), firstElement );
+			} );
+
+			expect( getViewData( view ) ).to.equal( '<p><i></i><span></span><b></b></p>' );
 
 			// Re-render changes in view to DOM.
-			viewDoc.render();
+			view.render();
 
 			// Check if DOM is rendered correctly.
 			expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( '<p><i></i><span></span><b></b></p>' );

@@ -1,26 +1,26 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
 import DeltaReplayer from '../../src/dev-utils/deltareplayer';
-import Document from '../../src/model/document';
+import Model from '../../src/model/model';
 
 describe( 'DeltaReplayer', () => {
 	describe( 'constructor()', () => {
 		it( 'should be able to initialize replayer without deltas', () => {
-			const doc = getDocument();
+			const model = getModel();
 			const stringifiedDeltas = '';
-			const deltaReplayer = new DeltaReplayer( doc, '---', stringifiedDeltas );
+			const deltaReplayer = new DeltaReplayer( model, '---', stringifiedDeltas );
 
 			expect( deltaReplayer.getDeltasToReplay() ).to.deep.equal( [] );
 		} );
 
 		it( 'should be able to initialize replayer with deltas', () => {
-			const doc = getDocument();
+			const model = getModel();
 			const delta = getFirstDelta();
 
-			const deltaReplayer = new DeltaReplayer( doc, '---', JSON.stringify( delta ) );
+			const deltaReplayer = new DeltaReplayer( model, '---', JSON.stringify( delta ) );
 
 			expect( deltaReplayer.getDeltasToReplay() ).to.deep.equal( [ delta ] );
 		} );
@@ -28,10 +28,10 @@ describe( 'DeltaReplayer', () => {
 
 	describe( 'applyNextDelta()', () => {
 		it( 'should remove first delta from stack', () => {
-			const doc = getDocument();
+			const model = getModel();
 			const delta = getFirstDelta();
 
-			const deltaReplayer = new DeltaReplayer( doc, '---', JSON.stringify( delta ) );
+			const deltaReplayer = new DeltaReplayer( model, '---', JSON.stringify( delta ) );
 
 			return deltaReplayer.applyNextDelta().then( isFinished => {
 				expect( deltaReplayer.getDeltasToReplay() ).to.deep.equal( [] );
@@ -40,19 +40,19 @@ describe( 'DeltaReplayer', () => {
 		} );
 
 		it( 'should apply first delta on the document', () => {
-			const doc = getDocument();
+			const model = getModel();
 			const delta = getFirstDelta();
 
-			const deltaReplayer = new DeltaReplayer( doc, '---', JSON.stringify( delta ) );
+			const deltaReplayer = new DeltaReplayer( model, '---', JSON.stringify( delta ) );
 
 			return deltaReplayer.applyNextDelta().then( () => {
-				expect( Array.from( doc.getRoot().getChildren() ).length ).to.equal( 1 );
+				expect( Array.from( model.document.getRoot().getChildren() ).length ).to.equal( 1 );
 			} );
 		} );
 
 		it( 'should resolve with true if 0 deltas are provided', () => {
-			const doc = getDocument();
-			const deltaReplayer = new DeltaReplayer( doc, '---', '' );
+			const model = getModel();
+			const deltaReplayer = new DeltaReplayer( model, '---', '' );
 
 			return deltaReplayer.applyNextDelta().then( isFinished => {
 				expect( isFinished ).to.equal( true );
@@ -62,16 +62,16 @@ describe( 'DeltaReplayer', () => {
 
 	describe( 'applyAllDeltas()', () => {
 		it( 'should apply all deltas on the document', () => {
-			const doc = getDocument();
+			const model = getModel();
 
 			const stringifiedDeltas = [ getFirstDelta(), getSecondDelta() ]
 				.map( d => JSON.stringify( d ) )
 				.join( '---' );
 
-			const deltaReplayer = new DeltaReplayer( doc, '---', stringifiedDeltas );
+			const deltaReplayer = new DeltaReplayer( model, '---', stringifiedDeltas );
 
 			return deltaReplayer.applyAllDeltas().then( () => {
-				expect( Array.from( doc.getRoot().getChildren() ).length ).to.equal( 2 );
+				expect( Array.from( model.document.getRoot().getChildren() ).length ).to.equal( 2 );
 				expect( deltaReplayer.getDeltasToReplay().length ).to.equal( 0 );
 			} );
 		} );
@@ -79,31 +79,31 @@ describe( 'DeltaReplayer', () => {
 
 	describe( 'applyDeltas()', () => {
 		it( 'should apply certain number of deltas on the document', () => {
-			const doc = getDocument();
+			const model = getModel();
 
 			const stringifiedDeltas = [ getFirstDelta(), getSecondDelta() ]
 				.map( d => JSON.stringify( d ) )
 				.join( '---' );
 
-			const deltaReplayer = new DeltaReplayer( doc, '---', stringifiedDeltas );
+			const deltaReplayer = new DeltaReplayer( model, '---', stringifiedDeltas );
 
 			return deltaReplayer.applyDeltas( 1 ).then( () => {
-				expect( Array.from( doc.getRoot().getChildren() ).length ).to.equal( 1 );
+				expect( Array.from( model.document.getRoot().getChildren() ).length ).to.equal( 1 );
 				expect( deltaReplayer.getDeltasToReplay().length ).to.equal( 1 );
 			} );
 		} );
 
 		it( 'should not throw an error if the number of deltas is lower than number of expected deltas to replay', () => {
-			const doc = getDocument();
+			const model = getModel();
 
 			const stringifiedDeltas = [ getFirstDelta(), getSecondDelta() ]
 				.map( d => JSON.stringify( d ) )
 				.join( '---' );
 
-			const deltaReplayer = new DeltaReplayer( doc, '---', stringifiedDeltas );
+			const deltaReplayer = new DeltaReplayer( model, '---', stringifiedDeltas );
 
 			return deltaReplayer.applyDeltas( 3 ).then( () => {
-				expect( Array.from( doc.getRoot().getChildren() ).length ).to.equal( 2 );
+				expect( Array.from( model.document.getRoot().getChildren() ).length ).to.equal( 2 );
 				expect( deltaReplayer.getDeltasToReplay().length ).to.equal( 0 );
 			} );
 		} );
@@ -111,13 +111,13 @@ describe( 'DeltaReplayer', () => {
 
 	describe( 'play()', () => {
 		it( 'should play deltas with time interval', () => {
-			const doc = getDocument();
+			const model = getModel();
 
 			const stringifiedDeltas = [ getFirstDelta(), getSecondDelta() ]
 				.map( d => JSON.stringify( d ) )
 				.join( '---' );
 
-			const deltaReplayer = new DeltaReplayer( doc, '---', stringifiedDeltas );
+			const deltaReplayer = new DeltaReplayer( model, '---', stringifiedDeltas );
 
 			return deltaReplayer.play( 0 ).then( () => {
 				expect( deltaReplayer.getDeltasToReplay().length ).to.equal( 0 );
@@ -125,15 +125,15 @@ describe( 'DeltaReplayer', () => {
 		} );
 
 		it( 'should work with default time interval', () => {
-			const doc = getDocument();
+			const model = getModel();
 
-			const deltaReplayer = new DeltaReplayer( doc, '---', '' );
+			const deltaReplayer = new DeltaReplayer( model, '---', '' );
 
 			return deltaReplayer.play();
 		} );
 
 		it( 'should correctly handle errors coming from the engine', () => {
-			const doc = getDocument();
+			const model = getModel();
 
 			const invalidDelta = getSecondDelta();
 			invalidDelta.operations[ 0 ].baseVersion = 3;
@@ -142,7 +142,7 @@ describe( 'DeltaReplayer', () => {
 				.map( d => JSON.stringify( d ) )
 				.join( '---' );
 
-			const deltaReplayer = new DeltaReplayer( doc, '---', stringifiedDeltas );
+			const deltaReplayer = new DeltaReplayer( model, '---', stringifiedDeltas );
 
 			return deltaReplayer.play( 1 )
 				.then( () => {
@@ -154,11 +154,12 @@ describe( 'DeltaReplayer', () => {
 	} );
 } );
 
-function getDocument() {
-	const doc = new Document();
-	doc.createRoot( 'main' );
+function getModel() {
+	const model = new Model();
 
-	return doc;
+	model.document.createRoot();
+
+	return model;
 }
 
 function getFirstDelta() {

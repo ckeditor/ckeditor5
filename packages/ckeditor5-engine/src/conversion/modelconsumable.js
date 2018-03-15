@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -15,7 +15,7 @@ import TextProxy from '../model/textproxy';
  * Consumables are various aspects of the model. A model item can be broken down into singular properties that might be
  * taken into consideration when converting that item.
  *
- * `ModelConsumable` is used by {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher} while analyzing changed
+ * `ModelConsumable` is used by {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher} while analyzing changed
  * parts of {@link module:engine/model/document~Document the document}. The added / changed / removed model items are broken down
  * into singular properties (the item itself and it's attributes). All those parts are saved in `ModelConsumable`. Then,
  * during conversion, when given part of model item is converted (i.e. the view element has been inserted into the view,
@@ -24,12 +24,12 @@ import TextProxy from '../model/textproxy';
  * For model items, `ModelConsumable` stores consumable values of one of following types: `insert`, `addAttribute:<attributeKey>`,
  * `changeAttribute:<attributeKey>`, `removeAttribute:<attributeKey>`.
  *
- * In most cases, it is enough to let {@link module:engine/conversion/modelconversiondispatcher~ModelConversionDispatcher}
+ * In most cases, it is enough to let {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}
  * gather consumable values, so there is no need to use
- * @link module:engine/conversion/modelconsumable~ModelConsumable#add add method} directly.
+ * {@link module:engine/conversion/modelconsumable~ModelConsumable#add add method} directly.
  * However, it is important to understand how consumable values can be
  * {@link module:engine/conversion/modelconsumable~ModelConsumable#consume consumed}.
- * See {@link module:engine/conversion/model-selection-to-view-converters default model to view converters} for more information.
+ * See {@link module:engine/conversion/downcast-selection-converters default downcast converters} for more information.
  *
  * Keep in mind, that one conversion event may have multiple callbacks (converters) attached to it. Each of those is
  * able to convert one or more parts of the model. However, when one of those callbacks actually converts
@@ -53,9 +53,9 @@ import TextProxy from '../model/textproxy';
  *		//   ├─ <img />
  *		//   └─ <caption>
  *		//       └─ foo
- *		modelConversionDispatcher.on( 'insert:image', ( evt, data, consumable, conversionApi ) => {
+ *		modelConversionDispatcher.on( 'insert:image', ( evt, data, conversionApi ) => {
  *			// First, consume the `image` element.
- *			consumable.consume( data.item, 'insert' );
+ *			conversionApi.consumable.consume( data.item, 'insert' );
  *
  *			// Just create normal image element for the view.
  *			// Maybe it will be "decorated" later.
@@ -69,7 +69,7 @@ import TextProxy from '../model/textproxy';
  *				// `modelCaption` insertion change is consumed from consumable values.
  *				// It will not be converted by other converters, but it's children (probably some text) will be.
  *				// Through mapping, converters for text will know where to insert contents of `modelCaption`.
- *				if ( consumable.consume( modelCaption, 'insert' ) ) {
+ *				if ( conversionApi.consumable.consume( modelCaption, 'insert' ) ) {
  *					const viewCaption = new ViewElement( 'figcaption' );
  *
  *					const viewImageHolder = new ViewElement( 'figure', null, [ viewImage, viewCaption ] );
@@ -120,14 +120,16 @@ export default class ModelConsumable {
 	 *		modelConsumable.add( modelElement, 'addAttribute:bold' ); // Add `bold` attribute insertion on `modelElement` change.
 	 *		modelConsumable.add( modelElement, 'removeAttribute:bold' ); // Add `bold` attribute removal on `modelElement` change.
 	 *		modelConsumable.add( modelSelection, 'selection' ); // Add `modelSelection` to consumable values.
-	 *		modelConsumable.add( modelSelection, 'selectionAttribute:bold' ); // Add `bold` attribute on `modelSelection` to consumables.
 	 *		modelConsumable.add( modelRange, 'range' ); // Add `modelRange` to consumable values.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/selection~Selection|module:engine/model/range~Range} item
 	 * Model item, range or selection that has the consumable.
-	 * @param {String} type Consumable type.
+	 * @param {String} type Consumable type. Will be normalized to a proper form, that is either `<word>` or `<part>:<part>`.
+	 * Second colon and everything after will be cut. Passing event name is a safe and good practice.
 	 */
 	add( item, type ) {
+		type = _normalizeConsumableType( type );
+
 		if ( item instanceof TextProxy ) {
 			item = this._getSymbolForTextProxy( item );
 		}
@@ -146,15 +148,17 @@ export default class ModelConsumable {
 	 *		modelConsumable.consume( modelElement, 'addAttribute:bold' ); // Remove `bold` attribute insertion on `modelElement` change.
 	 *		modelConsumable.consume( modelElement, 'removeAttribute:bold' ); // Remove `bold` attribute removal on `modelElement` change.
 	 *		modelConsumable.consume( modelSelection, 'selection' ); // Remove `modelSelection` from consumable values.
-	 *		modelConsumable.consume( modelSelection, 'selectionAttribute:bold' ); // Remove `bold` on `modelSelection` from consumables.
 	 *		modelConsumable.consume( modelRange, 'range' ); // Remove 'modelRange' from consumable values.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/selection~Selection|module:engine/model/range~Range} item
 	 * Model item, range or selection from which consumable will be consumed.
-	 * @param {String} type Consumable type.
+	 * @param {String} type Consumable type. Will be normalized to a proper form, that is either `<word>` or `<part>:<part>`.
+	 * Second colon and everything after will be cut. Passing event name is a safe and good practice.
 	 * @returns {Boolean} `true` if consumable value was available and was consumed, `false` otherwise.
 	 */
 	consume( item, type ) {
+		type = _normalizeConsumableType( type );
+
 		if ( item instanceof TextProxy ) {
 			item = this._getSymbolForTextProxy( item );
 		}
@@ -175,16 +179,18 @@ export default class ModelConsumable {
 	 *		modelConsumable.test( modelElement, 'addAttribute:bold' ); // Check for `bold` attribute insertion on `modelElement` change.
 	 *		modelConsumable.test( modelElement, 'removeAttribute:bold' ); // Check for `bold` attribute removal on `modelElement` change.
 	 *		modelConsumable.test( modelSelection, 'selection' ); // Check if `modelSelection` is consumable.
-	 *		modelConsumable.test( modelSelection, 'selectionAttribute:bold' ); // Check if `bold` on `modelSelection` is consumable.
 	 *		modelConsumable.test( modelRange, 'range' ); // Check if `modelRange` is consumable.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/selection~Selection|module:engine/model/range~Range} item
 	 * Model item, range or selection to be tested.
-	 * @param {String} type Consumable type.
+	 * @param {String} type Consumable type. Will be normalized to a proper form, that is either `<word>` or `<part>:<part>`.
+	 * Second colon and everything after will be cut. Passing event name is a safe and good practice.
 	 * @returns {null|Boolean} `null` if such consumable was never added, `false` if the consumable values was
 	 * already consumed or `true` if it was added and not consumed yet.
 	 */
 	test( item, type ) {
+		type = _normalizeConsumableType( type );
+
 		if ( item instanceof TextProxy ) {
 			item = this._getSymbolForTextProxy( item );
 		}
@@ -211,7 +217,6 @@ export default class ModelConsumable {
 	 *		modelConsumable.revert( modelElement, 'addAttribute:bold' ); // Revert consuming `bold` attribute insert from `modelElement`.
 	 *		modelConsumable.revert( modelElement, 'removeAttribute:bold' ); // Revert consuming `bold` attribute remove from `modelElement`.
 	 *		modelConsumable.revert( modelSelection, 'selection' ); // Revert consuming `modelSelection`.
-	 *		modelConsumable.revert( modelSelection, 'selectionAttribute:bold' ); // Revert consuming `bold` from `modelSelection`.
 	 *		modelConsumable.revert( modelRange, 'range' ); // Revert consuming `modelRange`.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/selection~Selection|module:engine/model/range~Range} item
@@ -221,6 +226,8 @@ export default class ModelConsumable {
 	 * never been added.
 	 */
 	revert( item, type ) {
+		type = _normalizeConsumableType( type );
+
 		if ( item instanceof TextProxy ) {
 			item = this._getSymbolForTextProxy( item );
 		}
@@ -301,4 +308,16 @@ export default class ModelConsumable {
 
 		return symbol;
 	}
+}
+
+// Returns a normalized consumable type name from given string. A normalized consumable type name is a string that has
+// at most one colon, for example: `insert` or `addMarker:highlight`. If string to normalize has more "parts" (more colons),
+// the other parts are dropped, for example: `addAttribute:bold:$text` -> `addAttribute:bold`.
+//
+// @param {String} type Consumable type.
+// @returns {String} Normalized consumable type.
+function _normalizeConsumableType( type ) {
+	const parts = type.split( ':' );
+
+	return parts.length > 1 ? parts[ 0 ] + ':' + parts[ 1 ] : parts[ 0 ];
 }

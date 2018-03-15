@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -28,7 +28,7 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 		it( 'new line at the end of the content is ignored', () => {
 			editor.setData( '<p>foo</p>\n' );
 
-			expect( getData( editor.document, { withoutSelection: true } ) )
+			expect( getData( editor.model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph>foo</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p>foo</p>' );
@@ -37,7 +37,7 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 		it( 'whitespaces at the end of the content are ignored', () => {
 			editor.setData( '<p>foo</p>\n\r\n \t' );
 
-			expect( getData( editor.document, { withoutSelection: true } ) )
+			expect( getData( editor.model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph>foo</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p>foo</p>' );
@@ -47,7 +47,7 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 		it( 'nbsp at the end of the content is not ignored', () => {
 			editor.setData( '<p>foo</p>' );
 
-			expect( getData( editor.document, { withoutSelection: true } ) )
+			expect( getData( editor.model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph>foo</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p>foo</p>' );
@@ -56,7 +56,7 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 		it( 'new line at the beginning of the content is ignored', () => {
 			editor.setData( '\n<p>foo</p>' );
 
-			expect( getData( editor.document, { withoutSelection: true } ) )
+			expect( getData( editor.model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph>foo</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p>foo</p>' );
@@ -65,7 +65,7 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 		it( 'whitespaces at the beginning of the content are ignored', () => {
 			editor.setData( '\n\n \t<p>foo</p>' );
 
-			expect( getData( editor.document, { withoutSelection: true } ) )
+			expect( getData( editor.model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph>foo</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p>foo</p>' );
@@ -75,7 +75,7 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 		it( 'nbsp at the beginning of the content is not ignored', () => {
 			editor.setData( '<p>foo</p>' );
 
-			expect( getData( editor.document, { withoutSelection: true } ) )
+			expect( getData( editor.model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph>foo</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p>foo</p>' );
@@ -84,7 +84,7 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 		it( 'new line between blocks is ignored', () => {
 			editor.setData( '<p>foo</p>\n<p>bar</p>' );
 
-			expect( getData( editor.document, { withoutSelection: true } ) )
+			expect( getData( editor.model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p>foo</p><p>bar</p>' );
@@ -93,7 +93,7 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 		it( 'whitespaces between blocks are ignored', () => {
 			editor.setData( '<p>foo</p>\n\n \t<p>bar</p>' );
 
-			expect( getData( editor.document, { withoutSelection: true } ) )
+			expect( getData( editor.model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p>foo</p><p>bar</p>' );
@@ -103,7 +103,7 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 		it( 'nbsp between blocks is not ignored', () => {
 			editor.setData( '<p>foo</p>&nbsp;<p>bar</p>' );
 
-			expect( getData( editor.document, { withoutSelection: true } ) )
+			expect( getData( editor.model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p>foo</p><p>bar</p>' );
@@ -112,7 +112,7 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 		it( 'new lines inside blocks are ignored', () => {
 			editor.setData( '<p>\nfoo\n</p>' );
 
-			expect( getData( editor.document, { withoutSelection: true } ) )
+			expect( getData( editor.model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph>foo</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p>foo</p>' );
@@ -121,7 +121,7 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 		it( 'whitespaces inside blocks are ignored', () => {
 			editor.setData( '<p>\n\n \tfoo\n\n \t</p>' );
 
-			expect( getData( editor.document, { withoutSelection: true } ) )
+			expect( getData( editor.model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph>foo</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p>foo</p>' );
@@ -130,7 +130,7 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 		it( 'nbsp inside blocks are not ignored', () => {
 			editor.setData( '<p>&nbsp;foo&nbsp;</p>' );
 
-			expect( getData( editor.document, { withoutSelection: true } ) )
+			expect( getData( editor.model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph> foo </paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p>&nbsp;foo&nbsp;</p>' );
@@ -139,7 +139,7 @@ describe( 'DomConverter – whitespace handling – integration', () => {
 		it( 'all whitespaces together are ignored', () => {
 			editor.setData( '\n<p>foo\n\r\n \t</p>\n<p> bar</p>' );
 
-			expect( getData( editor.document, { withoutSelection: true } ) )
+			expect( getData( editor.model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph>foo</paragraph><paragraph>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p>foo</p><p>bar</p>' );

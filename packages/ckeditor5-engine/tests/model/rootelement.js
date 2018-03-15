@@ -1,9 +1,9 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
-import Document from '../../src/model/document';
+import Model from '../../src/model/model';
 import Element from '../../src/model/element';
 import RootElement from '../../src/model/rootelement';
 import count from '@ckeditor/ckeditor5-utils/src/count';
@@ -11,7 +11,8 @@ import count from '@ckeditor/ckeditor5-utils/src/count';
 describe( 'RootElement', () => {
 	describe( 'constructor()', () => {
 		it( 'should create root element without attributes', () => {
-			const doc = new Document();
+			const model = new Model();
+			const doc = model.document;
 			const root = new RootElement( doc );
 
 			expect( root ).to.be.an.instanceof( Element );
@@ -25,7 +26,9 @@ describe( 'RootElement', () => {
 		let root;
 
 		before( () => {
-			const doc = new Document();
+			const model = new Model();
+			const doc = model.document;
+
 			root = new RootElement( doc, '$root' );
 		} );
 

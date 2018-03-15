@@ -1,11 +1,11 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
 import transform from '../../../src/model/operation/transform';
 
-import Document from '../../../src/model/document';
+import Model from '../../../src/model/model';
 import RootElement from '../../../src/model/rootelement';
 import Node from '../../../src/model/node';
 import Position from '../../../src/model/position';
@@ -21,10 +21,11 @@ import RenameOperation from '../../../src/model/operation/renameoperation';
 import NoOperation from '../../../src/model/operation/nooperation';
 
 describe( 'transform', () => {
-	let doc, root, op, nodeA, nodeB, expected, baseVersion;
+	let model, doc, root, op, nodeA, nodeB, expected, baseVersion;
 
 	beforeEach( () => {
-		doc = new Document();
+		model = new Model();
+		doc = model.document;
 		root = doc.createRoot();
 
 		nodeA = new Node();
@@ -474,7 +475,7 @@ describe( 'transform', () => {
 		describe( 'by MarkerOperation', () => {
 			it( 'no position update', () => {
 				const newRange = new Range( new Position( root, [ 0, 2, 0 ] ), new Position( root, [ 0, 2, 4 ] ) );
-				const transformBy = new MarkerOperation( 'name', null, newRange, doc.markers, baseVersion );
+				const transformBy = new MarkerOperation( 'name', null, newRange, model.markers, baseVersion );
 
 				const transOp = transform( op, transformBy );
 
@@ -1198,7 +1199,7 @@ describe( 'transform', () => {
 			describe( 'by MarkerOperation', () => {
 				it( 'no operation update', () => {
 					const newRange = new Range( new Position( root, [ 0, 2, 0 ] ), new Position( root, [ 0, 2, 8 ] ) );
-					const transformBy = new MarkerOperation( 'name', null, newRange, doc.markers, baseVersion );
+					const transformBy = new MarkerOperation( 'name', null, newRange, model.markers, baseVersion );
 
 					const transOp = transform( op, transformBy );
 
@@ -1678,7 +1679,7 @@ describe( 'transform', () => {
 		describe( 'by MarkerOperation', () => {
 			it( 'no position update', () => {
 				const newRange = new Range( new Position( root, [ 0, 2, 0 ] ), new Position( root, [ 0, 2, 8 ] ) );
-				const transformBy = new MarkerOperation( 'name', null, newRange, doc.markers, baseVersion );
+				const transformBy = new MarkerOperation( 'name', null, newRange, model.markers, baseVersion );
 
 				const transOp = transform( op, transformBy );
 
@@ -2885,7 +2886,7 @@ describe( 'transform', () => {
 		describe( 'by MarkerOperation', () => {
 			it( 'no position update', () => {
 				const newRange = new Range( new Position( root, [ 2, 2, 3 ] ), new Position( root, [ 2, 2, 8 ] ) );
-				const transformBy = new MarkerOperation( 'name', null, newRange, doc.markers, baseVersion );
+				const transformBy = new MarkerOperation( 'name', null, newRange, model.markers, baseVersion );
 
 				const transOp = transform( op, transformBy );
 
@@ -3024,7 +3025,7 @@ describe( 'transform', () => {
 		describe( 'by MarkerOperation', () => {
 			it( 'no position update', () => {
 				const newRange = new Range( new Position( root, [ 0, 2, 0 ] ), new Position( root, [ 0, 2, 8 ] ) );
-				const transformBy = new MarkerOperation( 'name', null, newRange, doc.markers, baseVersion );
+				const transformBy = new MarkerOperation( 'name', null, newRange, model.markers, baseVersion );
 
 				const transOp = transform( op, transformBy );
 
@@ -3148,7 +3149,7 @@ describe( 'transform', () => {
 		describe( 'by MarkerOperation', () => {
 			it( 'no operation update', () => {
 				const newRange = new Range( new Position( root, [ 0, 2, 0 ] ), new Position( root, [ 0, 2, 8 ] ) );
-				const transformBy = new MarkerOperation( 'name', null, newRange, doc.markers, baseVersion );
+				const transformBy = new MarkerOperation( 'name', null, newRange, model.markers, baseVersion );
 
 				const transOp = transform( op, transformBy );
 
@@ -3317,7 +3318,7 @@ describe( 'transform', () => {
 		beforeEach( () => {
 			oldRange = Range.createFromParentsAndOffsets( root, 1, root, 4 );
 			newRange = Range.createFromParentsAndOffsets( root, 10, root, 12 );
-			op = new MarkerOperation( 'name', oldRange, newRange, doc.markers, baseVersion );
+			op = new MarkerOperation( 'name', oldRange, newRange, model.markers, baseVersion );
 
 			expected = {
 				name: 'name',
@@ -3467,7 +3468,7 @@ describe( 'transform', () => {
 
 		describe( 'by MarkerOperation', () => {
 			it( 'different marker name: no operation update', () => {
-				const transformBy = new MarkerOperation( 'otherName', oldRange, newRange, doc.markers, baseVersion );
+				const transformBy = new MarkerOperation( 'otherName', oldRange, newRange, model.markers, baseVersion );
 
 				const transOp = transform( op, transformBy );
 
@@ -3477,7 +3478,7 @@ describe( 'transform', () => {
 
 			it( 'same marker name and is important: convert to NoOperation', () => {
 				const anotherRange = Range.createFromParentsAndOffsets( root, 2, root, 2 );
-				const transformBy = new MarkerOperation( 'name', oldRange, anotherRange, doc.markers, baseVersion );
+				const transformBy = new MarkerOperation( 'name', oldRange, anotherRange, model.markers, baseVersion );
 
 				const transOp = transform( op, transformBy );
 
@@ -3490,7 +3491,7 @@ describe( 'transform', () => {
 
 			it( 'same marker name and is less important: update oldRange parameter', () => {
 				const anotherRange = Range.createFromParentsAndOffsets( root, 2, root, 2 );
-				const transformBy = new MarkerOperation( 'name', oldRange, anotherRange, doc.markers, baseVersion );
+				const transformBy = new MarkerOperation( 'name', oldRange, anotherRange, model.markers, baseVersion );
 
 				const transOp = transform( op, transformBy, { isStrong: true } );
 

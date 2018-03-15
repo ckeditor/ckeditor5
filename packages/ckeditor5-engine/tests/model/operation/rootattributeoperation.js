@@ -1,18 +1,21 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
-import Document from '../../../src/model/document';
+import Model from '../../../src/model/model';
+import DocumentFragment from '../../../src/model/documentfragment';
+import Element from '../../../src/model/element';
 import RootAttributeOperation from '../../../src/model/operation/rootattributeoperation';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { jsonParseStringify, wrapInDelta } from '../../../tests/model/_utils/utils';
 
 describe( 'RootAttributeOperation', () => {
-	let doc, root;
+	let model, doc, root;
 
 	beforeEach( () => {
-		doc = new Document();
+		model = new Model();
+		doc = model.document;
 		root = doc.createRoot();
 	} );
 
@@ -55,7 +58,7 @@ describe( 'RootAttributeOperation', () => {
 	} );
 
 	it( 'should add attribute on the root element', () => {
-		doc.applyOperation( wrapInDelta(
+		model.applyOperation( wrapInDelta(
 			new RootAttributeOperation(
 				root,
 				'isNew',
@@ -70,9 +73,9 @@ describe( 'RootAttributeOperation', () => {
 	} );
 
 	it( 'should change attribute on the root element', () => {
-		root.setAttribute( 'isNew', false );
+		root._setAttribute( 'isNew', false );
 
-		doc.applyOperation( wrapInDelta(
+		model.applyOperation( wrapInDelta(
 			new RootAttributeOperation(
 				root,
 				'isNew',
@@ -87,9 +90,9 @@ describe( 'RootAttributeOperation', () => {
 	} );
 
 	it( 'should remove attribute from the root element', () => {
-		root.setAttribute( 'x', true );
+		root._setAttribute( 'x', true );
 
-		doc.applyOperation( wrapInDelta(
+		model.applyOperation( wrapInDelta(
 			new RootAttributeOperation(
 				root,
 				'x',
@@ -126,15 +129,15 @@ describe( 'RootAttributeOperation', () => {
 
 		const reverse = operation.getReversed();
 
-		doc.applyOperation( wrapInDelta( operation ) );
-		doc.applyOperation( wrapInDelta( reverse ) );
+		model.applyOperation( wrapInDelta( operation ) );
+		model.applyOperation( wrapInDelta( reverse ) );
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.hasAttribute( 'x' ) ).to.be.false;
 	} );
 
 	it( 'should undo changing attribute by applying reverse operation', () => {
-		root.setAttribute( 'isNew', false );
+		root._setAttribute( 'isNew', false );
 
 		const operation = new RootAttributeOperation(
 			root,
@@ -146,15 +149,15 @@ describe( 'RootAttributeOperation', () => {
 
 		const reverse = operation.getReversed();
 
-		doc.applyOperation( wrapInDelta( operation ) );
-		doc.applyOperation( wrapInDelta( reverse ) );
+		model.applyOperation( wrapInDelta( operation ) );
+		model.applyOperation( wrapInDelta( reverse ) );
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.getAttribute( 'isNew' ) ).to.be.false;
 	} );
 
 	it( 'should undo remove attribute by applying reverse operation', () => {
-		root.setAttribute( 'foo', true );
+		root._setAttribute( 'foo', true );
 
 		const operation = new RootAttributeOperation(
 			root,
@@ -166,41 +169,75 @@ describe( 'RootAttributeOperation', () => {
 
 		const reverse = operation.getReversed();
 
-		doc.applyOperation( wrapInDelta( operation ) );
-		doc.applyOperation( wrapInDelta( reverse ) );
+		model.applyOperation( wrapInDelta( operation ) );
+		model.applyOperation( wrapInDelta( reverse ) );
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.getAttribute( 'foo' ) ).to.be.true;
 	} );
 
-	it( 'should throw an error when one try to remove and the attribute does not exists', () => {
-		expect( () => {
-			doc.applyOperation( wrapInDelta(
-				new RootAttributeOperation(
+	describe( '_validate()', () => {
+		it( 'should throw an error when trying to change non-root element', () => {
+			const child = new Element( 'p' );
+			const parent = new Element( 'p' );
+			parent._appendChildren( child );
+
+			expect( () => {
+				const op = new RootAttributeOperation(
+					child,
+					'foo',
+					null,
+					'bar',
+					null
+				);
+
+				op._validate();
+			} ).to.throw( CKEditorError, /rootattribute-operation-not-a-root/ );
+		} );
+
+		it( 'should throw an error when trying to change document fragment', () => {
+			expect( () => {
+				const op = new RootAttributeOperation(
+					new DocumentFragment(),
+					'foo',
+					null,
+					'bar',
+					null
+				);
+
+				op._validate();
+			} ).to.throw( CKEditorError, /rootattribute-operation-not-a-root/ );
+		} );
+
+		it( 'should throw an error when trying to remove an attribute that does not exists', () => {
+			expect( () => {
+				const op = new RootAttributeOperation(
 					root,
 					'foo',
 					true,
 					null,
 					doc.version
-				)
-			) );
-		} ).to.throw( CKEditorError, /rootattribute-operation-wrong-old-value/ );
-	} );
+				);
 
-	it( 'should throw an error when one try to insert and the attribute already exists', () => {
-		root.setAttribute( 'x', 1 );
+				op._validate();
+			} ).to.throw( CKEditorError, /rootattribute-operation-wrong-old-value/ );
+		} );
 
-		expect( () => {
-			doc.applyOperation( wrapInDelta(
-				new RootAttributeOperation(
+		it( 'should throw an error when trying to add an attribute that already exists', () => {
+			root._setAttribute( 'x', 1 );
+
+			expect( () => {
+				const op = new RootAttributeOperation(
 					root,
 					'x',
 					null,
 					2,
 					doc.version
-				)
-			) );
-		} ).to.throw( CKEditorError, /rootattribute-operation-attribute-exists/ );
+				);
+
+				op._validate();
+			} ).to.throw( CKEditorError, /rootattribute-operation-attribute-exists/ );
+		} );
 	} );
 
 	it( 'should create a RootAttributeOperation with the same parameters when cloned', () => {
@@ -269,7 +306,7 @@ describe( 'RootAttributeOperation', () => {
 
 			expect( () => {
 				RootAttributeOperation.fromJSON( serialized, doc );
-			} ).to.throw( CKEditorError, /rootattribute-operation-fromjson-no-roo/ );
+			} ).to.throw( CKEditorError, /rootattribute-operation-fromjson-no-root/ );
 		} );
 	} );
 } );

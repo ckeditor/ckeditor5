@@ -1,11 +1,12 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
 import Node from '../../src/model/node';
 import Element from '../../src/model/element';
 import Text from '../../src/model/text';
+import TextProxy from '../../src/model/textproxy';
 import { jsonParseStringify } from '../../tests/model/_utils/utils';
 import count from '@ckeditor/ckeditor5-utils/src/count';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
@@ -61,13 +62,13 @@ describe( 'Element', () => {
 		} );
 	} );
 
-	describe( 'clone', () => {
+	describe( '_clone()', () => {
 		it( 'should return an element with same name, attributes and same instances of children if clone was not deep', () => {
 			const p = new Element( 'p' );
 			const foo = new Text( 'foo' );
 
 			const element = new Element( 'elem', { bold: true, italic: true }, [ p, foo ] );
-			const copy = element.clone();
+			const copy = element._clone();
 
 			expect( copy.name ).to.equal( 'elem' );
 			expect( Array.from( copy.getAttributes() ) ).to.deep.equal( [ [ 'bold', true ], [ 'italic', true ] ] );
@@ -80,7 +81,7 @@ describe( 'Element', () => {
 			const p = new Element( 'p', null, bar );
 
 			const element = new Element( 'elem', { bold: true, italic: true }, [ p, foo ] );
-			const copy = element.clone( true );
+			const copy = element._clone( true );
 
 			expect( copy.name ).to.equal( 'elem' );
 			expect( Array.from( copy.getAttributes() ) ).to.deep.equal( [ [ 'bold', true ], [ 'italic', true ] ] );
@@ -96,10 +97,10 @@ describe( 'Element', () => {
 		} );
 	} );
 
-	describe( 'insertChildren', () => {
+	describe( '_insertChildren', () => {
 		it( 'should add a child to the element', () => {
 			const element = new Element( 'elem', [], new Text( 'xy' ) );
-			element.insertChildren( 1, new Text( 'foo' ) );
+			element._insertChildren( 1, new Text( 'foo' ) );
 
 			expect( element.childCount ).to.equal( 2 );
 			expect( element.maxOffset ).to.equal( 5 );
@@ -109,7 +110,7 @@ describe( 'Element', () => {
 
 		it( 'should accept arrays and strings', () => {
 			const element = new Element( 'elem' );
-			element.insertChildren( 0, [ new Element( 'image' ), 'xy', new Element( 'list' ) ] );
+			element._insertChildren( 0, [ new Element( 'image' ), 'xy', new Element( 'list' ) ] );
 
 			expect( element.childCount ).to.equal( 3 );
 			expect( element.maxOffset ).to.equal( 4 );
@@ -120,31 +121,45 @@ describe( 'Element', () => {
 
 		it( 'should accept strings', () => {
 			const element = new Element( 'div' );
-			element.insertChildren( 0, 'abc' );
+			element._insertChildren( 0, 'abc' );
 
 			expect( element.childCount ).to.equal( 1 );
 			expect( element.maxOffset ).to.equal( 3 );
 			expect( element.getChild( 0 ) ).to.have.property( 'data' ).that.equals( 'abc' );
 		} );
-	} );
 
-	describe( 'appendChildren', () => {
-		it( 'should use insertChildren to add children at the end of the element', () => {
-			const element = new Element( 'elem', [], new Text( 'xy' ) );
+		it( 'should accept and correctly handle text proxies', () => {
+			const element = new Element( 'div' );
+			const text = new Text( 'abcxyz', { bold: true } );
+			const textProxy = new TextProxy( text, 2, 3 );
 
-			sinon.spy( element, 'insertChildren' );
+			element._insertChildren( 0, textProxy );
 
-			const text = new Text( 'foo' );
-			element.appendChildren( text );
-
-			expect( element.insertChildren.calledWithExactly( 0, text ) );
+			expect( element.childCount ).to.equal( 1 );
+			expect( element.maxOffset ).to.equal( 3 );
+			expect( element.getChild( 0 ) ).to.be.instanceof( Text );
+			expect( element.getChild( 0 ).data ).to.equal( 'cxy' );
+			expect( element.getChild( 0 ).getAttribute( 'bold' ) ).to.equal( true );
 		} );
 	} );
 
-	describe( 'removeChildren', () => {
+	describe( '_appendChildren', () => {
+		it( 'should use _insertChildren to add children at the end of the element', () => {
+			const element = new Element( 'elem', [], new Text( 'xy' ) );
+
+			sinon.spy( element, '_insertChildren' );
+
+			const text = new Text( 'foo' );
+			element._appendChildren( text );
+
+			expect( element._insertChildren.calledWithExactly( 0, text ) );
+		} );
+	} );
+
+	describe( '_removeChildren', () => {
 		it( 'should remove children from the element and return them as an array', () => {
 			const element = new Element( 'elem', [], [ new Text( 'foobar' ), new Element( 'image' ) ] );
-			const removed = element.removeChildren( 1, 1 );
+			const removed = element._removeChildren( 1, 1 );
 
 			expect( element.childCount ).to.equal( 1 );
 			expect( element.maxOffset ).to.equal( 6 );
@@ -157,7 +172,7 @@ describe( 'Element', () => {
 
 		it( 'should remove one child when second parameter is not specified', () => {
 			const element = new Element( 'element', [], [ new Text( 'foo' ), new Element( 'image' ) ] );
-			const removed = element.removeChildren( 0 );
+			const removed = element._removeChildren( 0 );
 
 			expect( element.childCount ).to.equal( 1 );
 			expect( element.maxOffset ).to.equal( 1 );

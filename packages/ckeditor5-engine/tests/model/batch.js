@@ -1,67 +1,63 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
-import deltas from '../../src/model/delta/basic-deltas'; // eslint-disable-line no-unused-vars
-
-import Document from '../../src/model/document';
-import { default as Batch, register } from '../../src/model/batch';
+import Batch from '../../src/model/batch';
 import Delta from '../../src/model/delta/delta';
 import Operation from '../../src/model/operation/operation';
-import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'Batch', () => {
-	it( 'should have registered basic methods', () => {
-		const batch = new Batch( new Document() );
-
-		expect( batch.setAttribute ).to.be.a( 'function' );
-		expect( batch.removeAttribute ).to.be.a( 'function' );
-	} );
-
 	describe( 'type', () => {
-		it( 'should default to "default"', () => {
-			const batch = new Batch( new Document() );
+		it( 'should default be "default"', () => {
+			const batch = new Batch();
 
 			expect( batch.type ).to.equal( 'default' );
 		} );
 
 		it( 'should be set to the value set in constructor', () => {
-			const batch = new Batch( new Document(), 'ignore' );
+			const batch = new Batch( 'ignore' );
 
 			expect( batch.type ).to.equal( 'ignore' );
 		} );
 	} );
 
-	describe( 'register', () => {
-		afterEach( () => {
-			delete Batch.prototype.foo;
+	describe( 'baseVersion', () => {
+		it( 'should return base version of first delta from the batch', () => {
+			const batch = new Batch();
+			const delta = new Delta();
+			const operation = new Operation( 2 );
+			delta.addOperation( operation );
+			batch.addDelta( delta );
+
+			expect( batch.baseVersion ).to.equal( 2 );
 		} );
 
-		it( 'should register function to the batch prototype', () => {
-			const spy = sinon.spy();
+		it( 'should return null if there are no deltas in batch', () => {
+			const batch = new Batch();
 
-			register( 'foo', spy );
-
-			const batch = new Batch( new Document() );
-
-			batch.foo();
-
-			expect( spy.calledOnce ).to.be.true;
+			expect( batch.baseVersion ).to.be.null;
 		} );
 
-		it( 'should throw if one try to register the same batch twice', () => {
-			register( 'foo', () => {} );
+		it( 'should return null if all deltas in batch have base version set to null', () => {
+			const batch = new Batch();
 
-			expect( () => {
-				register( 'foo', () => {} );
-			} ).to.throw( CKEditorError, /^model-batch-register-taken/ );
+			const deltaA = new Delta();
+			deltaA.addOperation( new Operation( null ) );
+
+			const deltaB = new Delta();
+			deltaB.addOperation( new Operation( null ) );
+
+			batch.addDelta( deltaA );
+			batch.addDelta( deltaB );
+
+			expect( batch.baseVersion ).to.equal( null );
 		} );
 	} );
 
-	describe( 'addDelta', () => {
+	describe( 'addDelta()', () => {
 		it( 'should add delta to the batch', () => {
-			const batch = new Batch( new Document() );
+			const batch = new Batch();
 			const deltaA = new Delta();
 			const deltaB = new Delta();
 			batch.addDelta( deltaA );
@@ -73,16 +69,15 @@ describe( 'Batch', () => {
 		} );
 	} );
 
-	describe( 'getOperations', () => {
+	describe( 'getOperations()', () => {
 		it( 'should return collection of operations from all deltas', () => {
-			const doc = new Document();
-			const batch = new Batch( doc );
+			const batch = new Batch();
 			const deltaA = new Delta();
 			const deltaB = new Delta();
 			const ops = [
-				new Operation( doc.version ),
-				new Operation( doc.version + 1 ),
-				new Operation( doc.version + 2 )
+				new Operation( 0 ),
+				new Operation( 1 ),
+				new Operation( 2 )
 			];
 
 			batch.addDelta( deltaA );
@@ -93,24 +88,6 @@ describe( 'Batch', () => {
 
 			expect( Array.from( batch.getOperations() ) ).to.deep.equal( ops );
 			expect( batch.getOperations() ).to.have.property( 'next' );
-		} );
-	} );
-
-	describe( 'baseVersion', () => {
-		it( 'should return base version of first delta from the batch', () => {
-			const batch = new Batch( new Document() );
-			const delta = new Delta();
-			const operation = new Operation( 2 );
-			delta.addOperation( operation );
-			batch.addDelta( delta );
-
-			expect( batch.baseVersion ).to.equal( 2 );
-		} );
-
-		it( 'should return null if there are no deltas in batch', () => {
-			const batch = new Batch( new Document() );
-
-			expect( batch.baseVersion ).to.be.null;
 		} );
 	} );
 } );
