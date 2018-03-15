@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -8,6 +8,8 @@
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloudservices/tests/_utils/cloudservices-config';
 
 import GFMDataProcessor from '@ckeditor/ckeditor5-markdown-gfm/src/gfmdataprocessor';
 
@@ -17,18 +19,19 @@ function Markdown( editor ) {
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-markdown' ), {
-		plugins: [ ArticlePluginSet, Markdown ],
-		toolbar: [ 'headings', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
+		plugins: [ ArticlePluginSet, EasyImage, Markdown ],
+		toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
 		image: {
-			toolbar: [ 'imageStyleFull', 'imageStyleSide', '|', 'imageTextAlternative' ]
-		}
+			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+		},
+		cloudServices: CS_CONFIG
 	} )
 	.then( editor => {
 		window.editor = editor;
 
 		const outputElement = document.querySelector( '#snippet-markdown-output' );
 
-		editor.document.on( 'changesDone', () => {
+		editor.model.document.on( 'change', () => {
 			outputElement.innerText = editor.getData();
 		} );
 

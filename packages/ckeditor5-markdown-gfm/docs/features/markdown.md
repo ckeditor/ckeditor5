@@ -3,7 +3,7 @@ title: Markdown output
 category: features
 ---
 
-The {@link module:markdown-gfm/gfmdataprocessor~GFMDataProcessor} class implements a {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor} which changes CKEditor output from HTML to Markdown. This means that you can {@link module:core/editor/standardeditor~StandardEditor#setData set} or {@link module:core/editor/standardeditor~StandardEditor#getData get} data from the editor in the Markdown format:
+The {@link module:markdown-gfm/gfmdataprocessor~GFMDataProcessor} class implements a {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor} which changes CKEditor output from HTML to Markdown. This means that you can {@link module:core/editor/utils/dataapimixin~DataApi#setData set} or {@link module:core/editor/utils/dataapimixin~DataApi#getData get} data from the editor in the Markdown format:
 
 ```js
 editor.getData(); // -> 'This is [CKEditor 5](https://ckeditor5.github.io).'
