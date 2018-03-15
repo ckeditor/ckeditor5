@@ -5,11 +5,8 @@ Changelog
 
 ### Other changes
 
-* Align feature class naming to a new scheme. ([23991a4](https://github.com/ckeditor/ckeditor5-widget/commit/23991a4))
-* Aligned code to the changes in the engine. ([2c21f05](https://github.com/ckeditor/ckeditor5-widget/commit/2c21f05))
-* Aligned to changes in ckeditor5-engine. ([c897101](https://github.com/ckeditor/ckeditor5-widget/commit/c897101))
-* Aligning with new conversion helpers API. ([3ab82c9](https://github.com/ckeditor/ckeditor5-widget/commit/3ab82c9))
-* Migrated package styles to PostCSS. Moved visual styles to ckeditor5-theme-lark (see [ckeditor/ckeditor5-ui#144](https://github.com/ckeditor/ckeditor5-ui/issues/144)). ([857d6d4](https://github.com/ckeditor/ckeditor5-widget/commit/857d6d4))
+* Aligned feature class naming to the new scheme. ([23991a4](https://github.com/ckeditor/ckeditor5-widget/commit/23991a4))
+* Migrated package styles to PostCSS. Moved visual styles to `@ckeditor/ckeditor5-theme-lark` (see [ckeditor/ckeditor5-ui#144](https://github.com/ckeditor/ckeditor5-ui/issues/144)). ([857d6d4](https://github.com/ckeditor/ckeditor5-widget/commit/857d6d4))
 * Switched to handling deletion around widgets by using the `delete` event instead of listening directly on key events. Closes [#29](https://github.com/ckeditor/ckeditor5-widget/issues/29). ([ee6cc95](https://github.com/ckeditor/ckeditor5-widget/commit/ee6cc95))
 
 
