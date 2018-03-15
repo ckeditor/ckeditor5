@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -7,8 +7,8 @@
  * @module autoformat/autoformat
  */
 
-import BlockAutoformatEngine from './blockautoformatengine';
-import InlineAutoformatEngine from './inlineautoformatengine';
+import BlockAutoformatEditing from './blockautoformatediting';
+import InlineAutoformatEditing from './inlineautoformatediting';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 /**
@@ -49,12 +49,12 @@ export default class Autoformat extends Plugin {
 
 		if ( commands.get( 'bulletedList' ) ) {
 			// eslint-disable-next-line no-new
-			new BlockAutoformatEngine( this.editor, /^[*-]\s$/, 'bulletedList' );
+			new BlockAutoformatEditing( this.editor, /^[*-]\s$/, 'bulletedList' );
 		}
 
 		if ( commands.get( 'numberedList' ) ) {
 			// eslint-disable-next-line no-new
-			new BlockAutoformatEngine( this.editor, /^\d+[.|)]?\s$/, 'numberedList' );
+			new BlockAutoformatEditing( this.editor, /^\d+[.|)]\s$/, 'numberedList' );
 		}
 	}
 
@@ -76,8 +76,8 @@ export default class Autoformat extends Plugin {
 
 		if ( commands.get( 'bold' ) ) {
 			/* eslint-disable no-new */
-			new InlineAutoformatEngine( this.editor, /(\*\*)([^*]+)(\*\*)$/g, 'bold' );
-			new InlineAutoformatEngine( this.editor, /(__)([^_]+)(__)$/g, 'bold' );
+			new InlineAutoformatEditing( this.editor, /(\*\*)([^*]+)(\*\*)$/g, 'bold' );
+			new InlineAutoformatEditing( this.editor, /(__)([^_]+)(__)$/g, 'bold' );
 			/* eslint-enable no-new */
 		}
 
@@ -86,14 +86,14 @@ export default class Autoformat extends Plugin {
 			// text before the pattern (e.g. `(?:^|[^\*])`).
 
 			/* eslint-disable no-new */
-			new InlineAutoformatEngine( this.editor, /(?:^|[^*])(\*)([^*_]+)(\*)$/g, 'italic' );
-			new InlineAutoformatEngine( this.editor, /(?:^|[^_])(_)([^_]+)(_)$/g, 'italic' );
+			new InlineAutoformatEditing( this.editor, /(?:^|[^*])(\*)([^*_]+)(\*)$/g, 'italic' );
+			new InlineAutoformatEditing( this.editor, /(?:^|[^_])(_)([^_]+)(_)$/g, 'italic' );
 			/* eslint-enable no-new */
 		}
 
 		if ( commands.get( 'code' ) ) {
 			/* eslint-disable no-new */
-			new InlineAutoformatEngine( this.editor, /(`)([^`]+)(`)$/g, 'code' );
+			new InlineAutoformatEditing( this.editor, /(`)([^`]+)(`)$/g, 'code' );
 			/* eslint-enable no-new */
 		}
 	}
@@ -103,26 +103,28 @@ export default class Autoformat extends Plugin {
 	 *
 	 * It is using a number at the end of the command name to associate it with the proper trigger:
 	 *
-	 * * `heading1` will be executed when typing `#`,
-	 * * `heading2` will be executed when typing `##`,
+	 * * `heading` with value `heading1` will be executed when typing `#`,
+	 * * `heading` with value `heading2` will be executed when typing `##`,
 	 * * ... up to `heading6` and `######`.
 	 *
 	 * @private
 	 */
 	_addHeadingAutoformats() {
-		Array.from( this.editor.commands.names() )
-			.filter( name => name.match( /^heading[1-6]$/ ) )
-			.forEach( commandName => {
-				const level = commandName[ 7 ];
-				const pattern = new RegExp( `^(#{${ level }})\\s$` );
+		const command = this.editor.commands.get( 'heading' );
 
-				// eslint-disable-next-line no-new
-				new BlockAutoformatEngine( this.editor, pattern, context => {
-					const { batch } = context;
+		if ( command ) {
+			command.modelElements
+				.filter( name => name.match( /^heading[1-6]$/ ) )
+				.forEach( commandValue => {
+					const level = commandValue[ 7 ];
+					const pattern = new RegExp( `^(#{${ level }})\\s$` );
 
-					this.editor.execute( commandName, { batch } );
+					// eslint-disable-next-line no-new
+					new BlockAutoformatEditing( this.editor, pattern, () => {
+						this.editor.execute( 'heading', { value: commandValue } );
+					} );
 				} );
-			} );
+		}
 	}
 
 	/**
@@ -136,7 +138,7 @@ export default class Autoformat extends Plugin {
 	_addBlockQuoteAutoformats() {
 		if ( this.editor.commands.get( 'blockQuote' ) ) {
 			// eslint-disable-next-line no-new
-			new BlockAutoformatEngine( this.editor, /^>\s$/, 'blockQuote' );
+			new BlockAutoformatEditing( this.editor, /^>\s$/, 'blockQuote' );
 		}
 	}
 }

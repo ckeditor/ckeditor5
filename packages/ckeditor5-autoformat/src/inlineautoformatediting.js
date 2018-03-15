@@ -1,13 +1,13 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
 /**
- * @module autoformat/inlineautoformatengine
+ * @module autoformat/inlineautoformatediting
  */
 
-import LiveRange from '@ckeditor/ckeditor5-engine/src/model/liverange';
+import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 
 /**
  * The inline autoformatting engine. It allows to format various inline patterns. For example,
@@ -20,7 +20,7 @@ import LiveRange from '@ckeditor/ckeditor5-engine/src/model/liverange';
  * the {@link module:autoformat/autoformat~Autoformat} feature which enables a set of default autoformatters
  * (lists, headings, bold and italic).
  */
-export default class InlineAutoformatEngine {
+export default class InlineAutoformatEditing {
 	/**
 	 * Enables autoformatting mechanism for a given {@link module:core/editor/editor~Editor}.
 	 *
@@ -38,7 +38,7 @@ export default class InlineAutoformatEngine {
 	 *		// - The first to match the starting `**` delimiter.
 	 *		// - The second to match the text to format.
 	 *		// - The third to match the ending `**` delimiter.
-	 *		new InlineAutoformatEngine( editor, /(\*\*)([^\*]+?)(\*\*)$/g, 'bold' );
+	 *		new InlineAutoformatEditing( editor, /(\*\*)([^\*]+?)(\*\*)$/g, 'bold' );
 	 *
 	 * When a function is provided instead of the regular expression, it will be executed with the text to match as a parameter.
 	 * The function should return proper "ranges" to delete and format.
@@ -57,18 +57,18 @@ export default class InlineAutoformatEngine {
 	 * formatting.
 	 *
 	 *		// Use attribute name:
-	 *		new InlineAutoformatEngine( editor, /(\*\*)([^\*]+?)(\*\*)$/g, 'bold' );
+	 *		new InlineAutoformatEditing( editor, /(\*\*)([^\*]+?)(\*\*)$/g, 'bold' );
 	 *
 	 *		// Use formatting callback:
-	 *		new InlineAutoformatEngine( editor, /(\*\*)([^\*]+?)(\*\*)$/g, ( batch, validRanges ) => {
+	 *		new InlineAutoformatEditing( editor, /(\*\*)([^\*]+?)(\*\*)$/g, ( writer, validRanges ) => {
 	 *			for ( let range of validRanges ) {
-	 *				batch.setAttribute( range, command, true );
+	 *				writer.setAttribute( command, true, range );
 	 *			}
 	 *		} );
 	 */
 	constructor( editor, testRegexpOrCallback, attributeOrCallback ) {
 		let regExp;
-		let command;
+		let attributeKey;
 		let testCallback;
 		let formatCallback;
 
@@ -79,7 +79,7 @@ export default class InlineAutoformatEngine {
 		}
 
 		if ( typeof attributeOrCallback == 'string' ) {
-			command = attributeOrCallback;
+			attributeKey = attributeOrCallback;
 		} else {
 			formatCallback = attributeOrCallback;
 		}
@@ -130,81 +130,52 @@ export default class InlineAutoformatEngine {
 		} );
 
 		// A format callback run on matched text.
-		formatCallback = formatCallback || ( ( batch, validRanges ) => {
+		formatCallback = formatCallback || ( ( writer, validRanges ) => {
 			for ( const range of validRanges ) {
-				batch.setAttribute( range, command, true );
+				writer.setAttribute( attributeKey, true, range );
 			}
+
+			// After applying attribute to the text, remove given attribute from the selection.
+			// This way user is able to type a text without attribute used by auto formatter.
+			writer.removeSelectionAttribute( attributeKey );
 		} );
 
-		editor.document.on( 'change', ( evt, type, changes, batch ) => {
-			if ( batch.type == 'transparent' ) {
+		editor.model.document.on( 'change', () => {
+			const selection = editor.model.document.selection;
+
+			// Do nothing if selection is not collapsed.
+			if ( !selection.isCollapsed ) {
 				return;
 			}
 
-			if ( type !== 'insert' ) {
-				return;
-			}
+			const changes = Array.from( editor.model.document.differ.getChanges() );
+			const entry = changes[ 0 ];
 
-			const selection = editor.document.selection;
-
-			if ( !selection.isCollapsed || !selection.focus || !selection.focus.parent ) {
+			// Typing is represented by only a single change.
+			if ( changes.length != 1 || entry.type !== 'insert' || entry.name != '$text' || entry.length != 1 ) {
 				return;
 			}
 
 			const block = selection.focus.parent;
 			const text = getText( block ).slice( 0, selection.focus.offset );
-			const ranges = testCallback( text );
-			const rangesToFormat = [];
-
-			// Apply format before deleting text.
-			ranges.format.forEach( range => {
-				if ( range[ 0 ] === undefined || range[ 1 ] === undefined ) {
-					return;
-				}
-
-				rangesToFormat.push( LiveRange.createFromParentsAndOffsets(
-					block, range[ 0 ],
-					block, range[ 1 ]
-				) );
-			} );
-
-			const rangesToRemove = [];
-
-			// Reverse order to not mix the offsets while removing.
-			ranges.remove.slice().reverse().forEach( range => {
-				if ( range[ 0 ] === undefined || range[ 1 ] === undefined ) {
-					return;
-				}
-
-				rangesToRemove.push( LiveRange.createFromParentsAndOffsets(
-					block, range[ 0 ],
-					block, range[ 1 ]
-				) );
-			} );
+			const testOutput = testCallback( text );
+			const rangesToFormat = testOutputToRanges( block, testOutput.format );
+			const rangesToRemove = testOutputToRanges( block, testOutput.remove );
 
 			if ( !( rangesToFormat.length && rangesToRemove.length ) ) {
 				return;
 			}
 
-			editor.document.enqueueChanges( () => {
-				// Create new batch to separate typing batch from the Autoformat changes.
-				const fixBatch = editor.document.batch();
-
-				const validRanges = editor.document.schema.getValidRanges( rangesToFormat, command );
+			// Use enqueueChange to create new batch to separate typing batch from the auto-format changes.
+			editor.model.enqueueChange( writer => {
+				const validRanges = editor.model.schema.getValidRanges( rangesToFormat, attributeKey );
 
 				// Apply format.
-				formatCallback( fixBatch, validRanges );
+				formatCallback( writer, validRanges );
 
-				// Detach ranges used to apply Autoformat. Prevents memory leaks. #39
-				rangesToFormat.forEach( range => range.detach() );
-
-				// Remove delimiters.
-				for ( const range of rangesToRemove ) {
-					fixBatch.remove( range );
-
-					// Prevents memory leaks.
-					// https://github.com/ckeditor/ckeditor5-autoformat/issues/39
-					range.detach();
+				// Remove delimiters - use reversed order to not mix the offsets while removing.
+				for ( const range of rangesToRemove.reverse() ) {
+					writer.remove( range );
 				}
 			} );
 		} );
@@ -218,4 +189,16 @@ export default class InlineAutoformatEngine {
 // @returns {String}
 function getText( element ) {
 	return Array.from( element.getChildren() ).reduce( ( a, b ) => a + b.data, '' );
+}
+
+// Converts output of the test function provided to the InlineAutoformatEditing and converts it to the model ranges
+// inside provided block.
+//
+// @private
+// @param {module:engine/model/element~Element} block
+// @param {Array.<Array>} arrays
+function testOutputToRanges( block, arrays ) {
+	return arrays
+		.filter( array => ( array[ 0 ] !== undefined && array[ 1 ] !== undefined ) )
+		.map( array => ModelRange.createFromParentsAndOffsets( block, array[ 0 ], block, array[ 1 ] ) );
 }

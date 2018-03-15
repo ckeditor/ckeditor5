@@ -1,14 +1,13 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
 /**
- * @module autoformat/blockautoformatengine
+ * @module autoformat/blockautoformatediting
  */
 
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
-import TextProxy from '@ckeditor/ckeditor5-engine/src/model/textproxy';
 
 /**
  * The block autoformatting engine. It allows to format various block patterns. For example,
@@ -21,7 +20,7 @@ import TextProxy from '@ckeditor/ckeditor5-engine/src/model/textproxy';
  * the {@link module:autoformat/autoformat~Autoformat} feature which enables a set of default autoformatters
  * (lists, headings, bold and italic).
  */
-export default class BlockAutoformatEngine {
+export default class BlockAutoformatEditing {
 	/**
 	 * Creates a listener triggered on `change` event in the document.
 	 * Calls the callback when inserted text matches the regular expression or the command name
@@ -31,16 +30,15 @@ export default class BlockAutoformatEngine {
 	 *
 	 * To convert a paragraph to heading 1 when `- ` is typed, using just the commmand name:
 	 *
-	 *		new BlockAutoformatEngine( editor, /^\- $/, 'heading1' );
+	 *		new BlockAutoformatEditing( editor, /^\- $/, 'heading1' );
 	 *
 	 * To convert a paragraph to heading 1 when `- ` is typed, using just the callback:
 	 *
-	 *		new BlockAutoformatEngine( editor, /^\- $/, ( context ) => {
-	 *			const { batch, match } = context;
+	 *		new BlockAutoformatEditing( editor, /^\- $/, ( context ) => {
+	 *			const { match } = context;
 	 *			const headingLevel = match[ 1 ].length;
 	 *
 	 *			editor.execute( 'heading', {
-	 *				batch,
 	 *				formatId: `heading${ headingLevel }`
 	 *			} );
 	 * 		} );
@@ -48,8 +46,7 @@ export default class BlockAutoformatEngine {
 	 * @param {module:core/editor/editor~Editor} editor The editor instance.
 	 * @param {RegExp} pattern The regular expression to execute on just inserted text.
 	 * @param {Function|String} callbackOrCommand The callback to execute or the command to run when the text is matched.
-	 * In case of providing the callback, it receives the following parameters:
-	 * * {module:engine/model/batch~Batch} batch Newly created batch for autoformat changes.
+	 * In case of providing the callback, it receives the following parameter:
 	 * * {Object} match RegExp.exec() result of matching the pattern to inserted text.
 	 */
 	constructor( editor, pattern, callbackOrCommand ) {
@@ -61,56 +58,40 @@ export default class BlockAutoformatEngine {
 			// We assume that the actual command name was provided.
 			const command = callbackOrCommand;
 
-			callback = context => {
-				const { batch } = context;
-
-				// Create new batch for removal and command execution.
-				editor.execute( command, { batch } );
+			callback = () => {
+				editor.execute( command );
 			};
 		}
 
-		editor.document.on( 'change', ( event, type, changes, batch ) => {
-			if ( batch.type == 'transparent' ) {
+		editor.model.document.on( 'change', () => {
+			const changes = Array.from( editor.model.document.differ.getChanges() );
+			const entry = changes[ 0 ];
+
+			// Typing is represented by only a single change.
+			if ( changes.length != 1 || entry.type !== 'insert' || entry.name != '$text' || entry.length != 1 ) {
+				return;
+			}
+			const item = entry.position.textNode || entry.position.nodeAfter;
+
+			if ( !item.parent.is( 'paragraph' ) ) {
 				return;
 			}
 
-			if ( type != 'insert' ) {
-				return;
-			}
-
-			// Take the first element. Typing shouldn't add more than one element at once.
-			// And if it is not typing (e.g. paste), Autoformat should not be fired.
-			const value = changes.range.getItems().next().value;
-
-			if ( !( value instanceof TextProxy ) ) {
-				return;
-			}
-
-			const textNode = value.textNode;
-			const text = textNode.data;
-
-			// Run matching only on non-empty paragraphs.
-			if ( textNode.parent.name !== 'paragraph' || !text ) {
-				return;
-			}
-
-			const match = pattern.exec( text );
+			const match = pattern.exec( item.data );
 
 			if ( !match ) {
 				return;
 			}
 
-			editor.document.enqueueChanges( () => {
-				// Create new batch to separate typing batch from the Autoformat changes.
-				const fixBatch = editor.document.batch();
-
+			// Use enqueueChange to create new batch to separate typing batch from the auto-format changes.
+			editor.model.enqueueChange( writer => {
 				// Matched range.
-				const range = Range.createFromParentsAndOffsets( textNode.parent, 0, textNode.parent, match[ 0 ].length );
+				const range = Range.createFromParentsAndOffsets( item.parent, 0, item.parent, match[ 0 ].length );
 
 				// Remove matched text.
-				fixBatch.remove( range );
+				writer.remove( range );
 
-				callback( { fixBatch, match } );
+				callback( { match } );
 			} );
 		} );
 	}

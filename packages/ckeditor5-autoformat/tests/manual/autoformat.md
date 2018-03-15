@@ -6,7 +6,9 @@
 
 1. Type `>` and press the space in an empty paragraph to replace it with a block quote.
 
-1. Type a number from the range **1-3** to replace an empty paragraph with a numbered list item.
+1. Type a number from the range **1-3** followed by a `.` and press space to replace an empty paragraph with a numbered list item.
+
+1. Type a number from the range **1-3** followed by a `)` and press space to replace an empty paragraph with a numbered list item.
 
 1. Type `*foobar*`/`_foobar_` to italicize `foobar`. `*`/`_` should be removed.
 
