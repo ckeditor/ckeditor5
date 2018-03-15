@@ -9,9 +9,7 @@ Changelog
 
 ### Other changes
 
-* Aligned code to the changes in the engine. ([0fe248a](https://github.com/ckeditor/ckeditor5-upload/commit/0fe248a))
-* Event names don't have to be normalized to consumable types anymore. ([0c0a673](https://github.com/ckeditor/ckeditor5-upload/commit/0c0a673))
-* Migrated package styles to PostCSS. Moved visual styles to ckeditor5-theme-lark (see [ckeditor/ckeditor5-ui#144](https://github.com/ckeditor/ckeditor5-ui/issues/144)). ([faf6100](https://github.com/ckeditor/ckeditor5-upload/commit/faf6100))
+* Migrated package styles to PostCSS. Moved visual styles to `@ckeditor/ckeditor5-theme-lark` (see [ckeditor/ckeditor5-ui#144](https://github.com/ckeditor/ckeditor5-ui/issues/144)). ([faf6100](https://github.com/ckeditor/ckeditor5-upload/commit/faf6100))
 * Moved the image upload plugins to the `@ckeditor/ckeditor5-image` package. Minor cleanup in the API. Closes [#22](https://github.com/ckeditor/ckeditor5-upload/issues/22). ([55697a9](https://github.com/ckeditor/ckeditor5-upload/commit/55697a9))
 * Use post-fixer API. ([08e9d09](https://github.com/ckeditor/ckeditor5-upload/commit/08e9d09))
 
