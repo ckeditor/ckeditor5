@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -51,17 +51,18 @@ export default class BalloonEditorUI {
 	init() {
 		const editor = this.editor;
 		const view = this.view;
-		const contextualToolbar = editor.plugins.get( 'ContextualToolbar' );
+		const balloonToolbar = editor.plugins.get( 'BalloonToolbar' );
 
 		view.render();
 
 		// Setup the editable.
-		const editingRoot = editor.editing.createRoot( view.editableElement );
+		const editingRoot = editor.editing.view.document.getRoot();
 		view.editable.bind( 'isReadOnly' ).to( editingRoot );
 
 		// Bind to focusTracker instead of editor.editing.view because otherwise
 		// focused editable styles disappear when view#toolbar is focused.
 		view.editable.bind( 'isFocused' ).to( this.focusTracker );
+		editor.editing.view.attachDomRoot( view.editableElement );
 		view.editable.name = editingRoot.rootName;
 
 		this.focusTracker.add( view.editableElement );
@@ -70,12 +71,12 @@ export default class BalloonEditorUI {
 			origin: editor.editing.view,
 			originFocusTracker: this.focusTracker,
 			originKeystrokeHandler: editor.keystrokes,
-			toolbar: contextualToolbar.toolbarView,
+			toolbar: balloonToolbar.toolbarView,
 			beforeFocus() {
-				contextualToolbar.show();
+				balloonToolbar.show();
 			},
 			afterBlur() {
-				contextualToolbar.hide();
+				balloonToolbar.hide();
 			}
 		} );
 	}

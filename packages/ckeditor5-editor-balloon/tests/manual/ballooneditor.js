@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -21,9 +21,9 @@ function initEditors() {
 		BalloonEditor
 			.create( document.querySelector( selector ), {
 				plugins: [ ArticlePluginSet ],
-				toolbar: [ 'headings', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
+				toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote' ],
 				image: {
-					toolbar: [ 'imageStyleFull', 'imageStyleSide', '|', 'imageTextAlternative' ]
+					toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
 				}
 			} )
 			.then( editor => {
@@ -31,7 +31,7 @@ function initEditors() {
 				console.log( 'It has been added to global `editors` and `editables`.' );
 
 				window.editors[ selector ] = editor;
-				window.editables.push( editor.editing.view.getRoot() );
+				window.editables.push( editor.editing.view.document.getRoot() );
 
 				const observer = testUtils.createObserver();
 

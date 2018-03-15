@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -9,7 +9,7 @@ import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
 import BalloonEditorUI from '../src/ballooneditorui';
 import BalloonEditorUIView from '../src/ballooneditoruiview';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import ContextualToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/contextual/contextualtoolbar';
+import BalloonToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/balloon/balloontoolbar';
 import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import utils from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
@@ -20,7 +20,7 @@ describe( 'BalloonEditorUI', () => {
 	beforeEach( () => {
 		return VirtualBalloonTestEditor
 			.create( {
-				plugins: [ ContextualToolbar ]
+				plugins: [ BalloonToolbar ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -49,12 +49,53 @@ describe( 'BalloonEditorUI', () => {
 		it( 'creates #focusTracker', () => {
 			expect( ui.focusTracker ).to.be.instanceOf( FocusTracker );
 		} );
+	} );
+
+	describe( 'init()', () => {
+		it( 'initializes the #view', () => {
+			expect( view.isRendered ).to.be.true;
+		} );
+
+		it( 'initializes keyboard navigation between view#toolbar and view#editable', () => {
+			const toolbar = editor.plugins.get( 'BalloonToolbar' );
+			const toolbarFocusSpy = sinon.stub( toolbar.toolbarView, 'focus' ).returns( {} );
+			const toolbarShowSpy = sinon.stub( toolbar, 'show' ).returns( {} );
+			const toolbarHideSpy = sinon.stub( toolbar, 'hide' ).returns( {} );
+			const editingFocusSpy = sinon.stub( editor.editing.view, 'focus' ).returns( {} );
+
+			ui.focusTracker.isFocused = true;
+
+			// #show and #hide are mocked so mocking the focus as well.
+			toolbar.toolbarView.focusTracker.isFocused = false;
+
+			editor.keystrokes.press( {
+				keyCode: keyCodes.f10,
+				altKey: true,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			} );
+
+			sinon.assert.callOrder( toolbarShowSpy, toolbarFocusSpy );
+			sinon.assert.notCalled( toolbarHideSpy );
+			sinon.assert.notCalled( editingFocusSpy );
+
+			// #show and #hide are mocked so mocking the focus as well.
+			toolbar.toolbarView.focusTracker.isFocused = true;
+
+			toolbar.toolbarView.keystrokes.press( {
+				keyCode: keyCodes.esc,
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			} );
+
+			sinon.assert.callOrder( editingFocusSpy, toolbarHideSpy );
+		} );
 
 		describe( 'editable', () => {
 			let editable;
 
 			beforeEach( () => {
-				editable = editor.editing.view.getRoot();
+				editable = editor.editing.view.document.getRoot();
 			} );
 
 			it( 'registers view.editable#element in editor focus tracker', () => {
@@ -89,47 +130,6 @@ describe( 'BalloonEditorUI', () => {
 					{ isReadOnly: true }
 				);
 			} );
-		} );
-	} );
-
-	describe( 'init()', () => {
-		it( 'initializes the #view', () => {
-			expect( view.isRendered ).to.be.true;
-		} );
-
-		it( 'initializes keyboard navigation between view#toolbar and view#editable', () => {
-			const toolbar = editor.plugins.get( 'ContextualToolbar' );
-			const toolbarFocusSpy = sinon.stub( toolbar.toolbarView, 'focus' ).returns( {} );
-			const toolbarShowSpy = sinon.stub( toolbar, 'show' ).returns( {} );
-			const toolbarHideSpy = sinon.stub( toolbar, 'hide' ).returns( {} );
-			const editingFocusSpy = sinon.stub( editor.editing.view, 'focus' ).returns( {} );
-
-			ui.focusTracker.isFocused = true;
-
-			// #show and #hide are mocked so mocking the focus as well.
-			toolbar.toolbarView.focusTracker.isFocused = false;
-
-			editor.keystrokes.press( {
-				keyCode: keyCodes.f10,
-				altKey: true,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
-			} );
-
-			sinon.assert.callOrder( toolbarShowSpy, toolbarFocusSpy );
-			sinon.assert.notCalled( toolbarHideSpy );
-			sinon.assert.notCalled( editingFocusSpy );
-
-			// #show and #hide are mocked so mocking the focus as well.
-			toolbar.toolbarView.focusTracker.isFocused = true;
-
-			toolbar.toolbarView.keystrokes.press( {
-				keyCode: keyCodes.esc,
-				preventDefault: sinon.spy(),
-				stopPropagation: sinon.spy()
-			} );
-
-			sinon.assert.callOrder( editingFocusSpy, toolbarHideSpy );
 		} );
 	} );
 

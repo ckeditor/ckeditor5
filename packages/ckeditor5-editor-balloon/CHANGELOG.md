@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-editor-balloon/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
+
+### Other changes
+
+* Migrated the editor styles to PostCSS (see [ckeditor/ckeditor5-ui#144](https://github.com/ckeditor/ckeditor5-ui/issues/144)). ([bd239e9](https://github.com/ckeditor/ckeditor5-editor-balloon/commit/bd239e9))
+
+
 ## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-editor-balloon/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
 
 ### Other changes
