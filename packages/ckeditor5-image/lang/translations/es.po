@@ -1,4 +1,4 @@
-# Copyright (c) Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+# Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
 msgid ""
 msgstr ""
 "Language: es\n"
@@ -7,27 +7,27 @@ msgstr ""
 
 msgctxt "Label for the image widget."
 msgid "image widget"
-msgstr "Imagen de widget"
+msgstr "Widget de imagen"
 
 msgctxt "Label for the Side image option."
 msgid "Side image"
-msgstr ""
+msgstr "Imagen lateral"
 
 msgctxt "Label for the Full size image option."
 msgid "Full size image"
-msgstr "Imagen tamaño completo"
+msgstr "Imagen a tamaño completo"
 
 msgctxt "Label for the Left aligned image option"
 msgid "Left aligned image"
-msgstr ""
+msgstr "Imagen alineada a la izquierda"
 
 msgctxt "Label for the Centered image option"
 msgid "Centered image"
-msgstr ""
+msgstr "Imagen centrada"
 
 msgctxt "Label for the Right aligned image option"
 msgid "Right aligned image"
-msgstr ""
+msgstr "Imagen alineada a la derecha"
 
 msgctxt "Label for the Change image text alternative button."
 msgid "Change image text alternative"
@@ -39,4 +39,12 @@ msgstr "Texto alternativo"
 
 msgctxt "Placeholder text for image caption displayed when caption is empty."
 msgid "Enter image caption"
-msgstr ""
+msgstr "Introducir título de la imagen"
+
+msgctxt "Label for the insert image toolbar button."
+msgid "Insert image"
+msgstr "Insertar imagen"
+
+msgctxt "Title of the notification displayed when upload fails."
+msgid "Upload failed"
+msgstr "Fallo en la subida"

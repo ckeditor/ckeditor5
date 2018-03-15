@@ -1,0 +1,50 @@
+# Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+"Language: nl\n"
+"Language-Team: Dutch (https://www.transifex.com/ckeditor/teams/11143/nl/)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "Label for the image widget."
+msgid "image widget"
+msgstr "Afbeeldingswidget"
+
+msgctxt "Label for the Side image option."
+msgid "Side image"
+msgstr "Afbeelding naast tekst"
+
+msgctxt "Label for the Full size image option."
+msgid "Full size image"
+msgstr "Afbeelding op volledige grootte"
+
+msgctxt "Label for the Left aligned image option"
+msgid "Left aligned image"
+msgstr "Links uitgelijnde afbeelding"
+
+msgctxt "Label for the Centered image option"
+msgid "Centered image"
+msgstr "Gecentreerde afbeelding"
+
+msgctxt "Label for the Right aligned image option"
+msgid "Right aligned image"
+msgstr "Rechts uitgelijnde afbeelding"
+
+msgctxt "Label for the Change image text alternative button."
+msgid "Change image text alternative"
+msgstr "Verander alt-tekst van de afbeelding"
+
+msgctxt "Label for the image text alternative input."
+msgid "Text alternative"
+msgstr "Alt-tekst"
+
+msgctxt "Placeholder text for image caption displayed when caption is empty."
+msgid "Enter image caption"
+msgstr "Typ een afbeeldingsbijschrift"
+
+msgctxt "Label for the insert image toolbar button."
+msgid "Insert image"
+msgstr "Afbeelding toevoegen"
+
+msgctxt "Title of the notification displayed when upload fails."
+msgid "Upload failed"
+msgstr "Opladen afbeelding mislukt"

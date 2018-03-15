@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -20,71 +20,81 @@ export default class ImageStyleCommand extends Command {
 	 * Creates an instance of the image style command. Each command instance is handling one style.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor The editor instance.
-	 * @param {module:image/imagestyle/imagestyleengine~ImageStyleFormat} styles A style to be applied by this command.
+	 * @param {Array.<module:image/imagestyle/imagestyleediting~ImageStyleFormat>} styles A styles that this command supports.
 	 */
-	constructor( editor, style ) {
+	constructor( editor, styles ) {
 		super( editor );
 
 		/**
-		 * The value of the command &mdash; `true` if a style handled by the command is applied on a currently selected image,
-		 * `false` otherwise.
+		 * Cached name of the default style if present. If there is no default style it defaults to `false`.
 		 *
-		 * @readonly
-		 * @observable
-		 * @member {Boolean} #value
+		 * @type {Boolean|String}
+		 * @private
 		 */
+		this._defaultStyle = false;
 
 		/**
 		 * A style handled by this command.
 		 *
 		 * @readonly
-		 * @member {module:image/imagestyle/imagestyleengine~ImageStyleFormat} #style
+		 * @member {Array.<module:image/imagestyle/imagestyleediting~ImageStyleFormat>} #styles
 		 */
-		this.style = style;
+		this.styles = styles.reduce( ( styles, style ) => {
+			styles[ style.name ] = style;
+
+			if ( style.isDefault ) {
+				this._defaultStyle = style.name;
+			}
+
+			return styles;
+		}, {} );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	refresh() {
-		const element = this.editor.document.selection.getSelectedElement();
+		const element = this.editor.model.document.selection.getSelectedElement();
 
 		this.isEnabled = isImage( element );
 
 		if ( !element ) {
 			this.value = false;
-		} else if ( this.style.isDefault ) {
-			this.value = !element.hasAttribute( 'imageStyle' );
+		} else if ( element.hasAttribute( 'imageStyle' ) ) {
+			const attributeValue = element.getAttribute( 'imageStyle' );
+			this.value = this.styles[ attributeValue ] ? attributeValue : false;
 		} else {
-			this.value = ( element.getAttribute( 'imageStyle' ) == this.style.name );
+			this.value = this._defaultStyle;
 		}
 	}
 
 	/**
 	 * Executes the command.
 	 *
-	 * @fires execute
+	 *		editor.execute( 'imageStyle', { value: 'side' } );
+	 *
 	 * @param {Object} options
-	 * @param {module:engine/model/batch~Batch} [options.batch] A batch to collect all the change steps. A new batch will be
-	 * created if this option is not set.
+	 * @param {String} options.value The name of the style (based on the
+	 * {@link module:image/image~ImageConfig#styles `image.styles`} configuration option).
+	 * @fires execute
 	 */
 	execute( options = {} ) {
-		if ( this.value ) {
+		const styleName = options.value;
+
+		if ( !this.styles[ styleName ] ) {
 			return;
 		}
 
-		const doc = this.editor.document;
-		const imageElement = doc.selection.getSelectedElement();
+		const model = this.editor.model;
+		const imageElement = model.document.selection.getSelectedElement();
 
-		doc.enqueueChanges( () => {
-			const batch = options.batch || doc.batch();
-
+		model.change( writer => {
 			// Default style means that there is no `imageStyle` attribute in the model.
 			// https://github.com/ckeditor/ckeditor5-image/issues/147
-			if ( this.style.isDefault ) {
-				batch.removeAttribute( imageElement, 'imageStyle' );
+			if ( this.styles[ styleName ].isDefault ) {
+				writer.removeAttribute( 'imageStyle', imageElement );
 			} else {
-				batch.setAttribute( imageElement, 'imageStyle', this.style.name );
+				writer.setAttribute( 'imageStyle', styleName, imageElement );
 			}
 		} );
 	}

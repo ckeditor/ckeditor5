@@ -1,0 +1,50 @@
+# Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+"Language: et\n"
+"Language-Team: Estonian (https://www.transifex.com/ckeditor/teams/11143/et/)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "Label for the image widget."
+msgid "image widget"
+msgstr "pildi vidin"
+
+msgctxt "Label for the Side image option."
+msgid "Side image"
+msgstr "Pilt küljel"
+
+msgctxt "Label for the Full size image option."
+msgid "Full size image"
+msgstr "Täissuuruses pilt"
+
+msgctxt "Label for the Left aligned image option"
+msgid "Left aligned image"
+msgstr "Vasakule joondatud pilt"
+
+msgctxt "Label for the Centered image option"
+msgid "Centered image"
+msgstr "Keskele joondatud pilt"
+
+msgctxt "Label for the Right aligned image option"
+msgid "Right aligned image"
+msgstr "Paremale joondatud pilt"
+
+msgctxt "Label for the Change image text alternative button."
+msgid "Change image text alternative"
+msgstr "Muuda pildi tekstilist alternatiivi"
+
+msgctxt "Label for the image text alternative input."
+msgid "Text alternative"
+msgstr "Alternatiivne tekst"
+
+msgctxt "Placeholder text for image caption displayed when caption is empty."
+msgid "Enter image caption"
+msgstr "Sisesta pildi pealkiri"
+
+msgctxt "Label for the insert image toolbar button."
+msgid "Insert image"
+msgstr "Siseta pilt"
+
+msgctxt "Title of the notification displayed when upload fails."
+msgid "Upload failed"
+msgstr "Üleslaadimine ebaõnnestus"

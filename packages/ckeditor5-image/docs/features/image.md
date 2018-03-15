@@ -11,10 +11,10 @@ The [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckedit
 * {@link module:image/imagetoolbar~ImageToolbar} adds the image feature's contextual toolbar,
 * {@link module:image/imagecaption~ImageCaption} adds support for captions,
 * {@link module:image/imagestyle~ImageStyle} adds support for image styles,
-* {@link module:upload/imageupload~ImageUpload} adds support for uploading dropped or pasted images (note: it is currently located in the [`@ckeditor/ckeditor5-upload`](https://www.npmjs.com/package/@ckeditor/ckeditor5-upload) package but will be moved to the `@ckeditor/ckeditor5-image` package).
+* {@link module:image/imageupload~ImageUpload} adds support for uploading dropped or pasted images (see: {@link features/image-upload Image upload}).
 
 <info-box info>
-	The first four features listed above (so all except the upload support) are enabled by default in all builds.
+	All features listed above are enabled by default in all builds.
 </info-box>
 
 ## Base image support
@@ -100,7 +100,7 @@ A side image:
 <info-box>
 	The actual styling of the images is the developer's job. The editor comes with some default styles, but they will only be applied to images inside the editor. The developer needs to style them on the target pages.
 
-	Here you can find the source of the default styles applied by the editor: [`ckeditor5-image/theme/theme.scss`](https://github.com/ckeditor/ckeditor5-image/blob/master/theme/theme.scss).
+	Here you can find the source of the default styles applied by the editor: [`ckeditor5-image/theme/imagestyle.css`](https://github.com/ckeditor/ckeditor5-image/blob/master/theme/imagestyle.css).
 </info-box>
 
 Below you can see a demo of the editor with the image styles feature enabled. The default configuration is used. You can change the styles of images through the image's contextual toolbar.
@@ -118,17 +118,17 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		image: {
 			// You need to configure the image toolbar too, so it uses the new style buttons.
-			toolbar: [ 'imageTextAlternative', '|', 'imageStyleAlignLeft', 'imageStyleFull', 'imageStyleAlignRight' ],
+			toolbar: [ 'imageTextAlternative', '|', 'imageStyle:alignLeft', 'imageStyle:full', 'imageStyle:alignRight' ],
 
 			styles: [
 				// This option is equal to a situation where no style is applied.
-				'imageStyleFull',
+				'full',
 
 				// This represents an image aligned to left.
-				'imageStyleAlignLeft',
+				'alignLeft',
 
 				// This represents an image aligned to right.
-				'imageStyleAlignRight'
+				'alignRight'
 			]
 		}
 	} )
@@ -136,7 +136,7 @@ ClassicEditor
 	.catch( ... );
 ```
 
-In the code sample above we used predefined image styles – `'imageStyleFull'`, `'imageStyleAlignLeft'` and `'imageStyleAlignRight'`. The latter two apply, respectively, `.image-style-align-left` and  `.image-style-align-right` classes to the `<figure>` element.
+In the code sample above we used predefined image styles – `'full'`, `'alignLeft'` and `'alignRight'`. The latter two apply, respectively, `.image-style-align-left` and  `.image-style-align-right` classes to the `<figure>` element.
 
 See the result below:
 
@@ -148,13 +148,13 @@ See the result below:
 
 ### Defining custom styles
 
-Besides using the {@link module:image/imagestyle/imagestyleengine~ImageStyleEngine.defaultStyles 5 predefined styles}:
+Besides using the {@link module:image/imagestyle/utils~defaultStyles 5 predefined styles}:
 
-* `'imageStyleFull'`,
-* `'imageStyleSide'`,
-* `'imageStyleAlignLeft'`,
-* `'imageStyleAlignCenter'`,
-* `'imageStyleAlignRight'`
+* `'full'`,
+* `'side'`,
+* `'alignLeft'`,
+* `'alignCenter'`,
+* `'alignRight'`
 
 you can also define your own styles or modify the existing ones.
 
@@ -162,7 +162,9 @@ you can also define your own styles or modify the existing ones.
 	Reusing (or modifying) predefined styles has this advantage that CKEditor 5 will use its official translations for the defined button titles.
 </info-box>
 
-TODO (example)...
+You can find advanced examples in the {@link module:image/image~ImageConfig#styles `image.styles`} configuration option's documentation.
+
+TODO (live example)...
 
 ## Image upload
 
@@ -194,7 +196,7 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Image, ImageToolbar, ImageCaption, ImageStyle ],
 		image: {
-			toolbar: [ 'imageTextAlternative', '|', 'imageStyleFull', 'imageStyleSide' ]
+			toolbar: [ 'imageTextAlternative', '|', 'imageStyle:full', 'imageStyle:side' ]
 		}
 	} )
 	.then( ... )
@@ -208,11 +210,21 @@ If you are using an editor build, see how to {@link builds/guides/development/cu
 The {@link module:image/image~Image} plugin registers:
 
 * The `'imageTextAlternative'` button.
+* * The {@link module:image/imagetextalternative/imagetextalternativecommand~ImageTextAlternativeCommand `'imageTextAlternative'` command}
 
 The {@link module:image/imagestyle~ImageStyle} plugin registers:
 
-* A command for each defined style (based on the {@link module:image/image~ImageConfig#styles `image.styles`} configuration option) &mdash; e.g. `'imageStyleFull'` and `'imageStyleSide'`,
-* A button for each defined style &mdash; e.g. `'imageStyleFull'` and `'imageStyleSide'`.
+* A button for each defined style &mdash; e.g. `'imageStyle:full'` and `'imageStyle:side'`.
+* The {@link module:image/imagestyle/imagestylecommand~ImageStyleCommand `'imageStyle'` command} which accepts value based on the {@link module:image/image~ImageConfig#styles `image.styles`} configuration option (e.g. `'full'` and `'side'`):
+
+	```js
+	editor.execute( 'imageStyle', { value: 'side' } );
+	```
+
+The {@link module:image/imageupload~ImageUpload} plugin registers:
+
+* The `'imageUpload'` button which opens the native file browser to ley you upload a file directly from your disk.
+* The {@link module:image/imageupload/imageuploadcommand~ImageUploadCommand `'imageUpload'` command} which accepts the file to upload.
 
 ## Contribute
 

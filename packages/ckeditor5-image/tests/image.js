@@ -1,11 +1,11 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import Image from '../src/image';
-import ImageEngine from '../src/image/imageengine';
+import ImageEditing from '../src/image/imageediting';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 import ImageTextAlternative from '../src/imagetextalternative';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -14,7 +14,7 @@ import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 describe( 'Image', () => {
-	let editorElement, editor, document, viewDocument;
+	let editorElement, model, view, editor, document, viewDocument;
 
 	beforeEach( () => {
 		editorElement = global.document.createElement( 'div' );
@@ -26,8 +26,10 @@ describe( 'Image', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-				document = editor.document;
-				viewDocument = editor.editing.view;
+				model = editor.model;
+				document = model.document;
+				view = editor.editing.view;
+				viewDocument = editor.editing.view.document;
 			} );
 	} );
 
@@ -41,8 +43,8 @@ describe( 'Image', () => {
 		expect( editor.plugins.get( Image ) ).to.instanceOf( Image );
 	} );
 
-	it( 'should load ImageEngine plugin', () => {
-		expect( editor.plugins.get( ImageEngine ) ).to.instanceOf( ImageEngine );
+	it( 'should load ImageEditing plugin', () => {
+		expect( editor.plugins.get( ImageEditing ) ).to.instanceOf( ImageEditing );
 	} );
 
 	it( 'should load Widget plugin', () => {
@@ -55,10 +57,10 @@ describe( 'Image', () => {
 
 	describe( 'selection', () => {
 		it( 'should create fake selection', () => {
-			setModelData( document, '[<image alt="alt text" src="foo.png"></image>]' );
+			setModelData( model, '[<image alt="alt text" src="foo.png"></image>]' );
 
-			expect( getViewData( viewDocument ) ).to.equal(
-				'[<figure class="image ck-widget ck-widget_selected" contenteditable="false">' +
+			expect( getViewData( view ) ).to.equal(
+				'[<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
 					'<img alt="alt text" src="foo.png"></img>' +
 				'</figure>]'
 			);
@@ -68,10 +70,10 @@ describe( 'Image', () => {
 		} );
 
 		it( 'should create proper fake selection label when alt attribute is empty', () => {
-			setModelData( document, '[<image src="foo.png" alt=""></image>]' );
+			setModelData( model, '[<image src="foo.png" alt=""></image>]' );
 
-			expect( getViewData( viewDocument ) ).to.equal(
-				'[<figure class="image ck-widget ck-widget_selected" contenteditable="false">' +
+			expect( getViewData( view ) ).to.equal(
+				'[<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
 				'<img alt="" src="foo.png"></img>' +
 				'</figure>]'
 			);
@@ -81,30 +83,30 @@ describe( 'Image', () => {
 		} );
 
 		it( 'should remove selected class from previously selected element', () => {
-			setModelData( document,
+			setModelData( model,
 				'[<image src="foo.png" alt="alt text"></image>]' +
 				'<image src="foo.png" alt="alt text"></image>'
 			);
 
-			expect( getViewData( viewDocument ) ).to.equal(
-				'[<figure class="image ck-widget ck-widget_selected" contenteditable="false">' +
+			expect( getViewData( view ) ).to.equal(
+				'[<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
 				'<img alt="alt text" src="foo.png"></img>' +
 				'</figure>]' +
-				'<figure class="image ck-widget" contenteditable="false">' +
+				'<figure class="ck-widget image" contenteditable="false">' +
 				'<img alt="alt text" src="foo.png"></img>' +
 				'</figure>'
 			);
 
-			document.enqueueChanges( () => {
+			model.change( writer => {
 				const secondImage = document.getRoot().getChild( 1 );
-				document.selection.setRanges( [ ModelRange.createOn( secondImage ) ] );
+				writer.setSelection( ModelRange.createOn( secondImage ) );
 			} );
 
-			expect( getViewData( viewDocument ) ).to.equal(
-				'<figure class="image ck-widget" contenteditable="false">' +
+			expect( getViewData( view ) ).to.equal(
+				'<figure class="ck-widget image" contenteditable="false">' +
 				'<img alt="alt text" src="foo.png"></img>' +
 				'</figure>' +
-				'[<figure class="image ck-widget ck-widget_selected" contenteditable="false">' +
+				'[<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
 				'<img alt="alt text" src="foo.png"></img>' +
 				'</figure>]'
 			);

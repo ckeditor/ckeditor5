@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -18,7 +18,7 @@ import ImageToolbar from '../../src/imagetoolbar';
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ EnterPlugin, TypingPlugin, ParagraphPlugin, HeadingPlugin, ImagePlugin, UndoPlugin, ClipboardPlugin, ImageToolbar ],
-		toolbar: [ 'headings', 'undo', 'redo' ],
+		toolbar: [ 'heading', '|', 'undo', 'redo' ],
 		image: {
 			toolbar: [ 'imageTextAlternative' ]
 		}

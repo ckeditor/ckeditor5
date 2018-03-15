@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -7,7 +7,7 @@
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import ImageCaption from '../src/imagecaption';
-import ImageCaptionEngine from '../src/imagecaption/imagecaptionengine';
+import ImageCaptionEditing from '../src/imagecaption/imagecaptionediting';
 
 describe( 'ImageCaption', () => {
 	let editor;
@@ -29,7 +29,7 @@ describe( 'ImageCaption', () => {
 		expect( editor.plugins.get( ImageCaption ) ).to.instanceOf( ImageCaption );
 	} );
 
-	it( 'should load ImageCaptionEngine plugin', () => {
-		expect( editor.plugins.get( ImageCaptionEngine ) ).to.instanceOf( ImageCaptionEngine );
+	it( 'should load ImageCaptionEditing plugin', () => {
+		expect( editor.plugins.get( ImageCaptionEditing ) ).to.instanceOf( ImageCaptionEditing );
 	} );
 } );

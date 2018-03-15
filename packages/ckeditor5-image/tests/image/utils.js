@@ -1,23 +1,26 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
 import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
 import ViewSelection from '@ckeditor/ckeditor5-engine/src/view/selection';
 import ViewDocumentFragment from '@ckeditor/ckeditor5-engine/src/view/documentfragment';
+import ViewWriter from '@ckeditor/ckeditor5-engine/src/view/writer';
+import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
 import ViewRange from '@ckeditor/ckeditor5-engine/src/view/range';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import { toImageWidget, isImageWidget, isImageWidgetSelected, isImage } from '../../src/image/utils';
 import { isWidget, getLabel } from '@ckeditor/ckeditor5-widget/src/utils';
 
 describe( 'image widget utils', () => {
-	let element, image;
+	let element, image, writer;
 
 	beforeEach( () => {
+		writer = new ViewWriter( new ViewDocument() );
 		image = new ViewElement( 'img' );
 		element = new ViewElement( 'figure', null, image );
-		toImageWidget( element, 'image widget' );
+		toImageWidget( element, writer, 'image widget' );
 	} );
 
 	describe( 'toImageWidget()', () => {
@@ -30,12 +33,12 @@ describe( 'image widget utils', () => {
 		} );
 
 		it( 'should set element\'s label combined with alt attribute', () => {
-			image.setAttribute( 'alt', 'foo bar baz' );
+			writer.setAttribute( 'alt', 'foo bar baz', image );
 			expect( getLabel( element ) ).to.equal( 'foo bar baz image widget' );
 		} );
 
 		it( 'provided label creator should always return same label', () => {
-			image.setAttribute( 'alt', 'foo bar baz' );
+			writer.setAttribute( 'alt', 'foo bar baz', image );
 
 			expect( getLabel( element ) ).to.equal( 'foo bar baz image widget' );
 			expect( getLabel( element ) ).to.equal( 'foo bar baz image widget' );
@@ -59,7 +62,7 @@ describe( 'image widget utils', () => {
 			// We need to create a container for the element to be able to create a Range on this element.
 			frag = new ViewDocumentFragment( [ element ] );
 
-			const selection = new ViewSelection( [ ViewRange.createOn( element ) ] );
+			const selection = new ViewSelection( element, 'on' );
 
 			expect( isImageWidgetSelected( selection ) ).to.be.true;
 		} );
@@ -70,7 +73,7 @@ describe( 'image widget utils', () => {
 			// We need to create a container for the element to be able to create a Range on this element.
 			frag = new ViewDocumentFragment( [ notWidgetizedElement ] );
 
-			const selection = new ViewSelection( [ ViewRange.createOn( notWidgetizedElement ) ] );
+			const selection = new ViewSelection( notWidgetizedElement, 'on' );
 
 			expect( isImageWidgetSelected( selection ) ).to.be.false;
 		} );
@@ -80,7 +83,7 @@ describe( 'image widget utils', () => {
 
 			frag = new ViewDocumentFragment( [ element, notWidgetizedElement ] );
 
-			const selection = new ViewSelection( [ ViewRange.createIn( frag ) ] );
+			const selection = new ViewSelection( ViewRange.createIn( frag ) );
 
 			expect( isImageWidgetSelected( selection ) ).to.be.false;
 		} );

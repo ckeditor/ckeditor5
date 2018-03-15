@@ -1,0 +1,50 @@
+# Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+"Language: ne_NP\n"
+"Language-Team: Nepali (Nepal) (https://www.transifex.com/ckeditor/teams/11143/ne_NP/)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "Label for the image widget."
+msgid "image widget"
+msgstr ""
+
+msgctxt "Label for the Side image option."
+msgid "Side image"
+msgstr ""
+
+msgctxt "Label for the Full size image option."
+msgid "Full size image"
+msgstr ""
+
+msgctxt "Label for the Left aligned image option"
+msgid "Left aligned image"
+msgstr ""
+
+msgctxt "Label for the Centered image option"
+msgid "Centered image"
+msgstr ""
+
+msgctxt "Label for the Right aligned image option"
+msgid "Right aligned image"
+msgstr ""
+
+msgctxt "Label for the Change image text alternative button."
+msgid "Change image text alternative"
+msgstr ""
+
+msgctxt "Label for the image text alternative input."
+msgid "Text alternative"
+msgstr ""
+
+msgctxt "Placeholder text for image caption displayed when caption is empty."
+msgid "Enter image caption"
+msgstr ""
+
+msgctxt "Label for the insert image toolbar button."
+msgid "Insert image"
+msgstr "तस्वीर सम्मिलित गर्नुहोस्"
+
+msgctxt "Title of the notification displayed when upload fails."
+msgid "Upload failed"
+msgstr ""

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -20,7 +20,7 @@ import { isImageWidgetSelected } from '../utils';
 export function repositionContextualBalloon( editor ) {
 	const balloon = editor.plugins.get( 'ContextualBalloon' );
 
-	if ( isImageWidgetSelected( editor.editing.view.selection ) ) {
+	if ( isImageWidgetSelected( editor.editing.view.document.selection ) ) {
 		const position = getBalloonPositionData( editor );
 
 		balloon.updatePosition( position );
@@ -40,10 +40,14 @@ export function getBalloonPositionData( editor ) {
 	const defaultPositions = BalloonPanelView.defaultPositions;
 
 	return {
-		target: editingView.domConverter.viewToDom( editingView.selection.getSelectedElement() ),
+		target: editingView.domConverter.viewToDom( editingView.document.selection.getSelectedElement() ),
 		positions: [
 			defaultPositions.northArrowSouth,
-			defaultPositions.southArrowNorth
+			defaultPositions.northArrowSouthWest,
+			defaultPositions.northArrowSouthEast,
+			defaultPositions.southArrowNorth,
+			defaultPositions.southArrowNorthWest,
+			defaultPositions.southArrowNorthEast
 		]
 	};
 }

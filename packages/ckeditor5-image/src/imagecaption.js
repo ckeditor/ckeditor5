@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -8,8 +8,9 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ImageCaptionEngine from './imagecaption/imagecaptionengine';
-import '../theme/imagecaption/theme.scss';
+import ImageCaptionEditing from './imagecaption/imagecaptionediting';
+
+import '../theme/imagecaption.css';
 
 /**
  * The image caption plugin.
@@ -21,7 +22,7 @@ export default class ImageCaption extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ ImageCaptionEngine ];
+		return [ ImageCaptionEditing ];
 	}
 
 	/**

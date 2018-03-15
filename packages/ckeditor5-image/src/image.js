@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -8,17 +8,16 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ImageEngine from './image/imageengine';
+import ImageEditing from '../src/image/imageediting';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 import ImageTextAlternative from './imagetextalternative';
-import { isImageWidgetSelected } from './image/utils';
 
-import '../theme/theme.scss';
+import '../theme/image.css';
 
 /**
  * The image plugin.
  *
- * Uses the {@link module:image/image/imageengine~ImageEngine}.
+ * Uses the {@link module:image/image/imageediting~ImageEditing}.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -27,7 +26,7 @@ export default class Image extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ ImageEngine, Widget, ImageTextAlternative ];
+		return [ ImageEditing, Widget, ImageTextAlternative ];
 	}
 
 	/**
@@ -35,25 +34,6 @@ export default class Image extends Plugin {
 	 */
 	static get pluginName() {
 		return 'Image';
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	init() {
-		const editor = this.editor;
-		const contextualToolbar = editor.plugins.get( 'ContextualToolbar' );
-
-		// If `ContextualToolbar` plugin is loaded, it should be disabled for images
-		// which have their own toolbar to avoid duplication.
-		// https://github.com/ckeditor/ckeditor5-image/issues/110
-		if ( contextualToolbar ) {
-			this.listenTo( contextualToolbar, 'show', evt => {
-				if ( isImageWidgetSelected( editor.editing.view.selection ) ) {
-					evt.stop();
-				}
-			}, { priority: 'high' } );
-		}
 	}
 }
 

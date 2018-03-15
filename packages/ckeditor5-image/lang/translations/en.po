@@ -1,4 +1,4 @@
-# Copyright (c) Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+# Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
 msgid ""
 msgstr ""
 "Language: \n"
@@ -40,3 +40,11 @@ msgstr "Text alternative"
 msgctxt "Placeholder text for image caption displayed when caption is empty."
 msgid "Enter image caption"
 msgstr "Enter image caption"
+
+msgctxt "Label for the insert image toolbar button."
+msgid "Insert image"
+msgstr "Insert image"
+
+msgctxt "Title of the notification displayed when upload fails."
+msgid "Upload failed"
+msgstr "Upload failed"

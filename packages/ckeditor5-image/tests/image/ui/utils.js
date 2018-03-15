@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -14,7 +14,7 @@ import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { repositionContextualBalloon, getBalloonPositionData } from '../../../src/image/ui/utils';
 
 describe( 'Utils', () => {
-	let editor, doc, editingView, balloon, editorElement;
+	let editor, editingView, balloon, editorElement;
 
 	beforeEach( () => {
 		editorElement = global.document.createElement( 'div' );
@@ -26,7 +26,6 @@ describe( 'Utils', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-				doc = editor.document;
 				editingView = editor.editing.view;
 				balloon = editor.plugins.get( 'ContextualBalloon' );
 			} );
@@ -53,14 +52,18 @@ describe( 'Utils', () => {
 				}
 			} );
 
-			setData( doc, '[<image src=""></image>]' );
+			setData( editor.model, '[<image src=""></image>]' );
 			repositionContextualBalloon( editor );
 
 			sinon.assert.calledWithExactly( spy, {
-				target: editingView.domConverter.viewToDom( editingView.selection.getSelectedElement() ),
+				target: editingView.domConverter.viewToDom( editingView.document.selection.getSelectedElement() ),
 				positions: [
 					defaultPositions.northArrowSouth,
-					defaultPositions.southArrowNorth
+					defaultPositions.northArrowSouthWest,
+					defaultPositions.northArrowSouthEast,
+					defaultPositions.southArrowNorth,
+					defaultPositions.southArrowNorthWest,
+					defaultPositions.southArrowNorthEast
 				]
 			} );
 		} );
@@ -68,7 +71,7 @@ describe( 'Utils', () => {
 		it( 'should not engage with no image is selected', () => {
 			const spy = sinon.spy( balloon, 'updatePosition' );
 
-			setData( doc, '<paragraph>foo</paragraph>' );
+			setData( editor.model, '<paragraph>foo</paragraph>' );
 
 			repositionContextualBalloon( editor );
 			sinon.assert.notCalled( spy );
@@ -79,14 +82,18 @@ describe( 'Utils', () => {
 		it( 'returns the position data', () => {
 			const defaultPositions = BalloonPanelView.defaultPositions;
 
-			setData( doc, '[<image src=""></image>]' );
+			setData( editor.model, '[<image src=""></image>]' );
 			const data = getBalloonPositionData( editor );
 
 			expect( data ).to.deep.equal( {
-				target: editingView.domConverter.viewToDom( editingView.selection.getSelectedElement() ),
+				target: editingView.domConverter.viewToDom( editingView.document.selection.getSelectedElement() ),
 				positions: [
 					defaultPositions.northArrowSouth,
-					defaultPositions.southArrowNorth
+					defaultPositions.northArrowSouthWest,
+					defaultPositions.northArrowSouthEast,
+					defaultPositions.southArrowNorth,
+					defaultPositions.southArrowNorthWest,
+					defaultPositions.southArrowNorthEast
 				]
 			} );
 		} );

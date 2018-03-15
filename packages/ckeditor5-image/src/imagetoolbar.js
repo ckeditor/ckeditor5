@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -13,7 +13,7 @@ import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextu
 import { isImageWidgetSelected } from './image/utils';
 import { repositionContextualBalloon, getBalloonPositionData } from './image/ui/utils';
 
-const balloonClassName = 'ck-toolbar-container ck-editor-toolbar-container';
+const balloonClassName = 'ck-toolbar-container';
 
 /**
  * The image toolbar class. Creates an image toolbar that shows up when the image widget is selected.
@@ -38,6 +38,25 @@ export default class ImageToolbar extends Plugin {
 	 */
 	static get pluginName() {
 		return 'ImageToolbar';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	init() {
+		const editor = this.editor;
+		const balloonToolbar = editor.plugins.get( 'BalloonToolbar' );
+
+		// If `BalloonToolbar` plugin is loaded, it should be disabled for images
+		// which have their own toolbar to avoid duplication.
+		// https://github.com/ckeditor/ckeditor5-image/issues/110
+		if ( balloonToolbar ) {
+			this.listenTo( balloonToolbar, 'show', evt => {
+				if ( isImageWidgetSelected( editor.editing.view.document.selection ) ) {
+					evt.stop();
+				}
+			}, { priority: 'high' } );
+		}
 	}
 
 	/**
@@ -69,20 +88,13 @@ export default class ImageToolbar extends Plugin {
 		 */
 		this._toolbar = new ToolbarView();
 
-		// Add CSS class to the toolbar.
-		this._toolbar.extendTemplate( {
-			attributes: {
-				class: 'ck-editor-toolbar'
-			}
-		} );
-
 		// Add buttons to the toolbar.
 		this._toolbar.fillFromConfig( toolbarConfig, editor.ui.componentFactory );
 
 		// Show balloon panel each time image widget is selected.
 		this.listenTo( editor.editing.view, 'render', () => {
 			this._checkIsVisible();
-		}, { priority: 'low' } );
+		} );
 
 		// There is no render method after focus is back in editor, we need to check if balloon panel should be visible.
 		this.listenTo( editor.ui.focusTracker, 'change:isFocused', () => {
@@ -102,7 +114,7 @@ export default class ImageToolbar extends Plugin {
 		if ( !editor.ui.focusTracker.isFocused ) {
 			this._hideToolbar();
 		} else {
-			if ( isImageWidgetSelected( editor.editing.view.selection ) ) {
+			if ( isImageWidgetSelected( editor.editing.view.document.selection ) ) {
 				this._showToolbar();
 			} else {
 				this._hideToolbar();
@@ -166,10 +178,10 @@ export default class ImageToolbar extends Plugin {
  * * {@link module:image/imagetextalternative~ImageTextAlternative}.
  *
  * Three toolbar items will be available in {@link module:ui/componentfactory~ComponentFactory}:
- * `'imageStyleFull'`, `'imageStyleSide'`, and `'imageTextAlternative'` so you can configure the toolbar like this:
+ * `'imageStyle:full'`, `'imageStyle:side'`, and `'imageTextAlternative'` so you can configure the toolbar like this:
  *
  *		const imageConfig = {
- *			toolbar: [ 'imageStyleFull', 'imageStyleSide', '|', 'imageTextAlternative' ]
+ *			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
  *		};
  *
  * Of course, the same buttons can also be used in the
