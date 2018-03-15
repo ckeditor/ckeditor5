@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -172,7 +172,7 @@ describe( 'ClassicEditor build', () => {
 		} );
 
 		// https://github.com/ckeditor/ckeditor5/issues/572
-		it( 'allows configure toolbar items through config.toolbar', () => {
+		it( 'allows configuring toolbar items through config.toolbar', () => {
 			return ClassicEditor
 				.create( editorElement, {
 					toolbar: [ 'bold' ]
@@ -185,7 +185,7 @@ describe( 'ClassicEditor build', () => {
 		} );
 
 		// https://github.com/ckeditor/ckeditor5/issues/572
-		it( 'allows configure toolbar offset without overriding toolbar items', () => {
+		it( 'allows configuring toolbar offset without overriding toolbar items', () => {
 			return ClassicEditor
 				.create( editorElement, {
 					toolbar: {
@@ -195,7 +195,7 @@ describe( 'ClassicEditor build', () => {
 				.then( newEditor => {
 					editor = newEditor;
 
-					expect( editor.ui.view.toolbar.items.length ).to.equal( 9 );
+					expect( editor.ui.view.toolbar.items.length ).to.equal( 11 );
 					expect( editor.ui.view.stickyPanel.viewportTopOffset ).to.equal( 42 );
 				} );
 		} );
