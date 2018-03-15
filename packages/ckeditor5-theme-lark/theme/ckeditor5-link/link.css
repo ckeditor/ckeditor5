@@ -3,8 +3,23 @@
  * For licensing, see LICENSE.md.
  */
 
+:root {
+	--ck-color-link-form-save-icon: hsl(120, 100%, 27%);
+	--ck-color-link-form-cancel-icon: hsl(15, 100%, 43%);
+}
+
 /* Class added to span element surrounding currently selected link. */
 .ck-link_selected {
 	background: var(--ck-color-link-selected-background);
 	outline: 1px solid var(--ck-color-link-selected-background);
+}
+
+.ck-link-form .ck-button {
+	&:first-of-type {
+		color: var(--ck-color-link-form-save-icon);
+	}
+
+	&:last-of-type {
+		color: var(--ck-color-link-form-cancel-icon);
+	}
 }
