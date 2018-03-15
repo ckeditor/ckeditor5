@@ -43,6 +43,11 @@ describe( 'TextAlternativeFormView', () => {
 			expect( view.labeledInput ).to.be.instanceOf( View );
 			expect( view.saveButtonView ).to.be.instanceOf( View );
 			expect( view.cancelButtonView ).to.be.instanceOf( View );
+
+			view.render();
+
+			expect( view.saveButtonView.element.classList.contains( 'ck-button-save' ) ).to.be.true;
+			expect( view.cancelButtonView.element.classList.contains( 'ck-button-cancel' ) ).to.be.true;
 		} );
 
 		it( 'should create #_focusCycler instance', () => {
