@@ -35,8 +35,8 @@ describe( 'LinkFormView', () => {
 			expect( view.saveButtonView ).to.be.instanceOf( View );
 			expect( view.cancelButtonView ).to.be.instanceOf( View );
 
-			expect( view.saveButtonView.element.classList.contains( 'ck-button_save' ) ).to.be.true;
-			expect( view.cancelButtonView.element.classList.contains( 'ck-button_cancel' ) ).to.be.true;
+			expect( view.saveButtonView.element.classList.contains( 'ck-button-save' ) ).to.be.true;
+			expect( view.cancelButtonView.element.classList.contains( 'ck-button-cancel' ) ).to.be.true;
 
 			expect( view._unboundChildren.get( 0 ) ).to.equal( view.urlInputView );
 			expect( view._unboundChildren.get( 1 ) ).to.equal( view.saveButtonView );

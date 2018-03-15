@@ -67,7 +67,7 @@ export default class LinkFormView extends View {
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
-		this.saveButtonView = this._createButton( t( 'Save' ), checkIcon, 'ck-button_save' );
+		this.saveButtonView = this._createButton( t( 'Save' ), checkIcon, 'ck-button-save' );
 		this.saveButtonView.type = 'submit';
 
 		/**
@@ -75,7 +75,7 @@ export default class LinkFormView extends View {
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
-		this.cancelButtonView = this._createButton( t( 'Cancel' ), cancelIcon, 'ck-button_cancel', 'cancel' );
+		this.cancelButtonView = this._createButton( t( 'Cancel' ), cancelIcon, 'ck-button-cancel', 'cancel' );
 
 		/**
 		 * A collection of views which can be focused in the form.
