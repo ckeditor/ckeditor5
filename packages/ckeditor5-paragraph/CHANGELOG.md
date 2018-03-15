@@ -1,6 +1,15 @@
 Changelog
 =========
 
+## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-paragraph/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
+
+### Other changes
+
+* Align feature class naming to a new scheme. ([69e98d3](https://github.com/ckeditor/ckeditor5-paragraph/commit/69e98d3))
+* Aligning with new conversion helpers API. ([9f0ec01](https://github.com/ckeditor/ckeditor5-paragraph/commit/9f0ec01))
+* Use post-fixer API. ([0343075](https://github.com/ckeditor/ckeditor5-paragraph/commit/0343075))
+
+
 ## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-paragraph/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
 
 Internal changes only (updated dependencies, documentation, etc.).
