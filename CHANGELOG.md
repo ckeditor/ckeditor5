@@ -46,24 +46,6 @@ Major releases (contain breaking changes):
 * [@ckeditor/ckeditor5-utils](https://www.npmjs.com/package/@ckeditor/ckeditor5-utils): v1.0.0-alpha.2 => [v1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-utils/releases/tag/v1.0.0-beta.1)
 * [@ckeditor/ckeditor5-widget](https://www.npmjs.com/package/@ckeditor/ckeditor5-widget): v1.0.0-alpha.2 => [v1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-widget/releases/tag/v1.0.0-beta.1)
 
-### Features
-
-Besides new features introduced by the dependencies, this version also introduces the following features:
-
-* Introduced `@ckeditor/ckeditor5-editor-decoupled` and `@ckeditor/ckeditor5-build-decoupled-document`. See [#874](https://github.com/ckeditor/ckeditor5/issues/874) and [#873](https://github.com/ckeditor/ckeditor5/issues/873). ([1930514](https://github.com/ckeditor/ckeditor5/commit/1930514))
-* Introduced the @ckeditor/ckeditor5-highlight feature. ([4a3751c](https://github.com/ckeditor/ckeditor5/commit/4a3751c))
-
-### Bug fixes
-
-Besides changes in the dependencies, this version also contains the following bug fixes:
-
-* Both npm test scripts (`npm run test` and `npm run test:manual`) are working on Windows environments. Closes [#686](https://github.com/ckeditor/ckeditor5/issues/686). ([59286d0](https://github.com/ckeditor/ckeditor5/commit/59286d0))
-* Documentation validation script will return proper exit code in case of validation errors. Closes [#690](https://github.com/ckeditor/ckeditor5/issues/690). ([9c967e6](https://github.com/ckeditor/ckeditor5/commit/9c967e6))
-
-### Other changes
-
-* Align code to the changes in naming UI components & commands. ([f6416ca](https://github.com/ckeditor/ckeditor5/commit/f6416ca))
-* Align feature class naming to a new scheme. ([8d60827](https://github.com/ckeditor/ckeditor5/commit/8d60827))
 
 ## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5.git/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
 
