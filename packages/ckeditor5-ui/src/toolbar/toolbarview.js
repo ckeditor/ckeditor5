@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -15,10 +15,13 @@ import ToolbarSeparatorView from './toolbarseparatorview';
 import preventDefault from '../bindings/preventdefault.js';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 
+import '../../theme/components/toolbar/toolbar.css';
+
 /**
  * The toolbar view class.
  *
  * @extends module:ui/view~View
+ * @implements module:ui/dropdown/dropdownpanelfocusable~DropdownPanelFocusable
  */
 export default class ToolbarView extends View {
 	/**
@@ -26,6 +29,8 @@ export default class ToolbarView extends View {
 	 */
 	constructor( locale ) {
 		super( locale );
+
+		const bind = this.bindTemplate;
 
 		/**
 		 * Collection of the toolbar items (like buttons).
@@ -52,6 +57,22 @@ export default class ToolbarView extends View {
 		this.keystrokes = new KeystrokeHandler();
 
 		/**
+		 * Controls the orientation of toolbar items.
+		 *
+		 * @observable
+		 * @member {Boolean} #isVertical
+		 */
+		this.set( 'isVertical', false );
+
+		/**
+		 * An additional CSS class added to the {@link #element}.
+		 *
+		 * @observable
+		 * @member {String} #className
+		 */
+		this.set( 'className' );
+
+		/**
 		 * Helps cycling over focusable {@link #items} in the toolbar.
 		 *
 		 * @readonly
@@ -75,7 +96,9 @@ export default class ToolbarView extends View {
 			tag: 'div',
 			attributes: {
 				class: [
-					'ck-toolbar'
+					'ck-toolbar',
+					bind.if( 'isVertical', 'ck-toolbar_vertical' ),
+					bind.to( 'className' )
 				]
 			},
 
@@ -116,6 +139,13 @@ export default class ToolbarView extends View {
 	 */
 	focus() {
 		this._focusCycler.focusFirst();
+	}
+
+	/**
+	 * Focuses the last focusable in {@link #items}.
+	 */
+	focusLast() {
+		this._focusCycler.focusLast();
 	}
 
 	/**

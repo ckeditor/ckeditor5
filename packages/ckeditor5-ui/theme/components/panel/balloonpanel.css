@@ -1,0 +1,51 @@
+/*
+ * Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+.ck-balloon-panel {
+	display: none;
+	position: absolute;
+
+	z-index: var(--ck-z-modal);
+
+	&.ck-balloon-panel_with-arrow {
+		&::before,
+		&::after {
+			content: "";
+			position: absolute;
+		}
+
+		&::before {
+			z-index: var(--ck-z-default);
+		}
+
+		&::after {
+			z-index: calc(var(--ck-z-default) + 1 );
+		}
+	}
+
+	&[class*="arrow_n"] {
+		&::before {
+			z-index: var(--ck-z-default);
+		}
+
+		&::after {
+			z-index: calc(var(--ck-z-default) + 1);
+		}
+	}
+
+	&[class*="arrow_s"] {
+		&::before {
+			z-index: var(--ck-z-default);
+		}
+
+		&::after {
+			z-index: calc(var(--ck-z-default) + 1);
+		}
+	}
+}
+
+.ck-balloon-panel_visible {
+	display: block;
+}

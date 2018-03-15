@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -59,10 +59,12 @@ export default class ComponentFactory {
 	/**
 	 * Returns an iterator of registered component names. Names are returned in lower case.
 	 *
-	 * @returns {Iterator.<String>}
+	 * @returns {Iterable.<String>}
 	 */
 	* names() {
-		yield* this._components.keys();
+		for ( const value of this._components.values() ) {
+			yield value.originalName;
+		}
 	}
 
 	/**
@@ -87,7 +89,7 @@ export default class ComponentFactory {
 			);
 		}
 
-		this._components.set( getNormalized( name ), callback );
+		this._components.set( getNormalized( name ), { callback, originalName: name } );
 	}
 
 	/**
@@ -115,7 +117,7 @@ export default class ComponentFactory {
 			);
 		}
 
-		return this._components.get( getNormalized( name ) )( this.editor.locale );
+		return this._components.get( getNormalized( name ) ).callback( this.editor.locale );
 	}
 
 	/**

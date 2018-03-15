@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -36,7 +36,9 @@ export default class EditableUIView extends View {
 			attributes: {
 				class: [
 					bind.to( 'isFocused', value => value ? 'ck-focused' : 'ck-blurred' ),
+					'ck',
 					'ck-editor__editable',
+					'ck-content',
 					'ck-rounded-corners'
 				],
 				contenteditable: bind.to( 'isReadOnly', value => !value ),

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -16,7 +16,7 @@ import View from './view';
 import ViewCollection from './viewcollection';
 import cloneDeepWith from '@ckeditor/ckeditor5-utils/src/lib/lodash/cloneDeepWith';
 import isObject from '@ckeditor/ckeditor5-utils/src/lib/lodash/isObject';
-import isDomNode from '@ckeditor/ckeditor5-utils/src/dom/isdomnode';
+import isNode from '@ckeditor/ckeditor5-utils/src/dom/isnode';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 
 const xhtmlNs = 'http://www.w3.org/1999/xhtml';
@@ -237,7 +237,7 @@ export default class Template {
 	 *			console.log( view );
 	 *		}
 	 *
-	 * @returns {Iterator.<module:ui/view~View>}
+	 * @returns {Iterable.<module:ui/view~View>}
 	 */
 	* getViews() {
 		function* search( def ) {
@@ -703,7 +703,7 @@ export default class Template {
 
 					container.appendChild( child.element );
 				}
-			} else if ( isDomNode( child ) ) {
+			} else if ( isNode( child ) ) {
 				container.appendChild( child );
 			} else {
 				if ( isApplying ) {
@@ -1177,7 +1177,7 @@ function normalize( def ) {
 				children.push( def.children );
 			} else {
 				for ( const child of def.children ) {
-					if ( isTemplate( child ) || isView( child ) || isDomNode( child ) ) {
+					if ( isTemplate( child ) || isView( child ) || isNode( child ) ) {
 						children.push( child );
 					} else {
 						children.push( new Template( child ) );

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -12,6 +12,8 @@ import IconView from '../icon/iconview';
 import TooltipView from '../tooltip/tooltipview';
 
 import { getEnvKeystrokeText } from '@ckeditor/ckeditor5-utils/src/keyboard';
+
+import '../../theme/components/button/button.css';
 
 /**
  * The button view class.
@@ -30,6 +32,7 @@ import { getEnvKeystrokeText } from '@ckeditor/ckeditor5-utils/src/keyboard';
  *		document.body.append( view.element );
  *
  * @extends module:ui/view~View
+ * @implements module:ui/button/button~Button
  */
 export default class ButtonView extends View {
 	/**
@@ -40,117 +43,18 @@ export default class ButtonView extends View {
 
 		const bind = this.bindTemplate;
 
-		/**
-		 * The label of the button view visible to the user when {@link #withText} is `true`.
-		 * It can also be used to create a {@link #tooltip}.
-		 *
-		 * @observable
-		 * @member {String} #label
-		 */
-		this.set( 'label' );
-
-		/**
-		 * (Optional) The keystroke associated with the button, i.e. <kbd>CTRL+B</kbd>,
-		 * in the string format compatible with {@link module:utils/keyboard}.
-		 *
-		 * @observable
-		 * @member {Boolean} #keystroke
-		 */
-		this.set( 'keystroke' );
-
-		/**
-		 * (Optional) Tooltip of the button, i.e. displayed when hovering the button with the mouse cursor.
-		 *
-		 * * If defined as a `Boolean` (e.g. `true`), then combination of `label` and `keystroke` will be set as a tooltip.
-		 * * If defined as a `String`, tooltip will equal the exact text of that `String`.
-		 * * If defined as a `Function`, `label` and `keystroke` will be passed to that function, which is to return
-		 * a string with the tooltip text.
-		 *
-		 *		const view = new ButtonView( locale );
-		 *		view.tooltip = ( label, keystroke ) => `A tooltip for ${ label } and ${ keystroke }.`
-		 *
-		 * @observable
-		 * @default false
-		 * @member {Boolean|String|Function} #tooltip
-		 */
-		this.set( 'tooltip' );
-
-		/**
-		 * (Optional) The position of the tooltip. See {@link module:ui/tooltip/tooltipview~TooltipView#position}
-		 * to learn more about the available position values.
-		 *
-		 * **Note:** It makes sense only when the {@link #tooltip `tooltip` attribute} is defined.
-		 *
-		 * @observable
-		 * @default 's'
-		 * @member {'s'|'n'} #position
-		 */
-		this.set( 'tooltipPosition', 's' );
-
-		/**
-		 * The HTML type of the button. Default `button`.
-		 *
-		 * @observable
-		 * @member {'button'|'submit'|'reset'|'menu'} #type
-		 */
-		this.set( 'type', 'button' );
-
-		/**
-		 * Controls whether the button view is "on". It makes sense when a feature it represents
-		 * is currently active, e.g. a bold button is "on" when the selection is in the bold text.
-		 *
-		 * To disable the button, use {@link #isEnabled} instead.
-		 *
-		 * @observable
-		 * @member {Boolean} #isOn
-		 */
-		this.set( 'isOn', false );
-
-		/**
-		 * Controls whether the button view is enabled, i.e. it can be clicked and execute an action.
-		 *
-		 * To change the "on" state of the button, use {@link #isOn} instead.
-		 *
-		 * @observable
-		 * @member {Boolean} #isEnabled
-		 */
-		this.set( 'isEnabled', true );
-
-		/**
-		 * Controls whether the button view is visible. Visible by default, buttons are hidden
-		 * using a CSS class.
-		 *
-		 * @observable
-		 * @member {Boolean} #isVisible
-		 */
-		this.set( 'isVisible', true );
-
-		/**
-		 * (Optional) Controls whether the label of the button is hidden (e.g. an icon–only button).
-		 *
-		 * @observable
-		 * @member {Boolean} #withText
-		 */
-		this.set( 'withText', false );
-
-		/**
-		 * (Optional) An XML {@link module:ui/icon/iconview~IconView#content content} of the icon.
-		 * When defined, an {@link #iconView} will be added to the button.
-		 *
-		 * @observable
-		 * @member {String} #icon
-		 */
+		// Implement the Button interface.
 		this.set( 'icon' );
-
-		/**
-		 * (Optional) Controls the `tabindex` HTML attribute of the button. By default, the button is focusable
-		 * but does not included in the <kbd>Tab</kbd> order.
-		 *
-		 * @observable
-		 * @default -1
-		 * @member {String} #tabindex
-		 */
+		this.set( 'isEnabled', true );
+		this.set( 'isOn', false );
+		this.set( 'isVisible', true );
+		this.set( 'keystroke' );
+		this.set( 'label' );
 		this.set( 'tabindex', -1 );
+		this.set( 'tooltip' );
+		this.set( 'tooltipPosition', 's' );
+		this.set( 'type', 'button' );
+		this.set( 'withText', false );
 
 		/**
 		 * Collection of the child views inside of the button {@link #element}.
@@ -177,6 +81,21 @@ export default class ButtonView extends View {
 		this.labelView = this._createLabelView();
 
 		/**
+		 * The icon view of the button. Will be added to {@link #children} when the
+		 * {@link #icon icon attribute} is defined.
+		 *
+		 * @readonly
+		 * @member {module:ui/icon/iconview~IconView} #iconView
+		 */
+		this.iconView = new IconView();
+
+		this.iconView.extendTemplate( {
+			attributes: {
+				class: 'ck-button__icon'
+			}
+		} );
+
+		/**
 		 * Tooltip of the button bound to the template.
 		 *
 		 * @see #tooltip
@@ -191,13 +110,6 @@ export default class ButtonView extends View {
 			this, 'keystroke',
 			this._getTooltipString.bind( this )
 		);
-
-		/**
-		 * (Optional) The icon view of the button. Only present when the {@link #icon icon attribute} is defined.
-		 *
-		 * @readonly
-		 * @member {module:ui/icon/iconview~IconView} #iconView
-		 */
 
 		this.setTemplate( {
 			tag: 'button',
@@ -234,13 +146,6 @@ export default class ButtonView extends View {
 				} )
 			}
 		} );
-
-		/**
-		 * Fired when the button view is clicked. It won't be fired when the button {@link #isEnabled}
-		 * is `false`.
-		 *
-		 * @event execute
-		 */
 	}
 
 	/**
@@ -250,11 +155,8 @@ export default class ButtonView extends View {
 		super.render();
 
 		if ( this.icon ) {
-			const iconView = this.iconView = new IconView();
-
-			iconView.bind( 'content' ).to( this, 'icon' );
-
-			this.children.add( iconView );
+			this.iconView.bind( 'content' ).to( this, 'icon' );
+			this.children.add( this.iconView );
 		}
 
 		this.children.add( this.tooltipView );

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -15,6 +15,8 @@ import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import isIterable from '@ckeditor/ckeditor5-utils/src/isiterable';
+
+import '../theme/globals/globals.css';
 
 /**
  * The basic view class, which represents an HTML element created out of a
@@ -109,7 +111,7 @@ export default class View {
 		 *
 		 *		const view = new SampleView();
 		 *
-		 *		// Renders the #template
+		 *		// Renders the #template.
 		 *		view.render();
 		 *
 		 *		// Append the HTML element of the view to <body>.
@@ -182,12 +184,14 @@ export default class View {
 		 */
 
 		/**
-		 * Cached {@link @link module:ui/template~BindChain bind chain} object created by the
+		 * Cached {@link module:ui/template~BindChain bind chain} object created by the
 		 * {@link #template}. See {@link #bindTemplate}.
 		 *
 		 * @private
 		 * @member {Object} #_bindTemplate
 		 */
+
+		this.decorate( 'render' );
 	}
 
 	/**
@@ -490,6 +494,15 @@ export default class View {
 
 		this._viewCollections.map( c => c.destroy() );
 	}
+
+	/**
+	 * Event fired by the {@link #render} method. Actual rendering is executed as a listener to
+	 * this event with the default priority.
+	 *
+	 * See {@link module:utils/observablemixin~ObservableMixin.decorate} for more information and samples.
+	 *
+	 * @event render
+	 */
 }
 
 mix( View, DomEmitterMixin );

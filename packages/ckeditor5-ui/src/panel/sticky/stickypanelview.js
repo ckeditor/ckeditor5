@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -11,6 +11,8 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import View from '../../view';
 import Template from '../../template';
 import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
+
+import '../../../theme/components/panel/stickypanel.css';
 
 const toPx = toUnit( 'px' );
 

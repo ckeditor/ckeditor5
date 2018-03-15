@@ -1,12 +1,10 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
 import testUtils from '../../../_utils/utils';
 import StickyPanelView from '../../../../src/panel/sticky/stickypanelview';
-
-import '@ckeditor/ckeditor5-theme-lark/theme/theme.scss';
 
 const ui = testUtils.createTestUIView( {
 	stickyToTheTop: '.ck-sticky_to-the-top .ck-editor__top',

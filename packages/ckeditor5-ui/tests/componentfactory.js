@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -33,7 +33,7 @@ describe( 'ComponentFactory', () => {
 			factory.add( 'bar', () => {} );
 			factory.add( 'Baz', () => {} );
 
-			expect( Array.from( factory.names() ) ).to.have.members( [ 'foo', 'bar', 'baz' ] );
+			expect( Array.from( factory.names() ) ).to.have.members( [ 'foo', 'bar', 'Baz' ] );
 		} );
 	} );
 
@@ -52,6 +52,12 @@ describe( 'ComponentFactory', () => {
 			expect( () => {
 				factory.add( 'foo', () => {} );
 			} ).to.throw( CKEditorError, /^componentfactory-item-exists/ );
+		} );
+
+		it( 'does not normalize component names', () => {
+			factory.add( 'FoO', () => {} );
+
+			expect( Array.from( factory.names() ) ).to.have.members( [ 'FoO' ] );
 		} );
 	} );
 

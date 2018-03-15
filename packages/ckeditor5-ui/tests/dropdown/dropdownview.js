@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -40,6 +40,10 @@ describe( 'DropdownView', () => {
 			expect( view.isOpen ).to.be.false;
 		} );
 
+		it( 'sets view#isEnabled true', () => {
+			expect( view.isEnabled ).to.be.true;
+		} );
+
 		it( 'creates #focusTracker instance', () => {
 			expect( view.focusTracker ).to.be.instanceOf( FocusTracker );
 		} );
@@ -50,8 +54,9 @@ describe( 'DropdownView', () => {
 
 		it( 'creates #element from template', () => {
 			expect( view.element.classList.contains( 'ck-dropdown' ) ).to.be.true;
-			expect( view.element.firstChild ).to.equal( buttonView.element );
-			expect( view.element.lastChild ).to.equal( panelView.element );
+			expect( view.element.children ).to.have.length( 2 );
+			expect( view.element.children[ 0 ] ).to.equal( buttonView.element );
+			expect( view.element.children[ 1 ] ).to.equal( panelView.element );
 		} );
 
 		it( 'sets view#buttonView class', () => {
@@ -59,7 +64,7 @@ describe( 'DropdownView', () => {
 		} );
 
 		describe( 'bindings', () => {
-			describe( 'view#isOpen to view.buttonView#execute', () => {
+			describe( 'view#isOpen to view.buttonView#select', () => {
 				it( 'is activated', () => {
 					const values = [];
 
@@ -67,9 +72,9 @@ describe( 'DropdownView', () => {
 						values.push( view.isOpen );
 					} );
 
-					view.buttonView.fire( 'execute' );
-					view.buttonView.fire( 'execute' );
-					view.buttonView.fire( 'execute' );
+					view.buttonView.fire( 'open' );
+					view.buttonView.fire( 'open' );
+					view.buttonView.fire( 'open' );
 
 					expect( values ).to.have.members( [ true, false, true ] );
 				} );
@@ -88,6 +93,18 @@ describe( 'DropdownView', () => {
 					view.isOpen = true;
 
 					expect( values ).to.have.members( [ true, false, true ] );
+				} );
+			} );
+
+			describe( 'DOM', () => {
+				describe( 'view#element .ck-disabled class to view#isEnabled', () => {
+					it( 'is activated', () => {
+						view.isEnabled = true;
+						expect( view.element.classList.contains( 'ck-disabled' ) ).to.be.false;
+
+						view.isEnabled = false;
+						expect( view.element.classList.contains( 'ck-disabled' ) ).to.be.true;
+					} );
 				} );
 			} );
 		} );

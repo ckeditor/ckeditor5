@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -35,6 +35,10 @@ describe( 'ButtonView', () => {
 
 		it( 'creates #labelView', () => {
 			expect( view.labelView ).to.be.instanceOf( View );
+		} );
+
+		it( 'creates #iconView', () => {
+			expect( view.iconView ).to.be.instanceOf( IconView );
 		} );
 	} );
 
@@ -99,7 +103,7 @@ describe( 'ButtonView', () => {
 
 			it( 'it reacts to #tooltipPosition attribute', () => {
 				view.tooltip = 'foo';
-				view.icon = 'bar';
+				view.icon = '<svg></svg>';
 
 				expect( view.tooltipPosition ).to.equal( 's' );
 				expect( view.tooltipView.position ).to.equal( 's' );
@@ -233,29 +237,33 @@ describe( 'ButtonView', () => {
 	} );
 
 	describe( 'icon', () => {
-		it( 'is not initially set', () => {
+		it( 'is omited in #children when view#icon is not defined', () => {
+			view = new ButtonView( locale );
+			view.render();
+
 			expect( view.element.childNodes ).to.have.length( 2 );
-			expect( view.iconView ).to.be.undefined;
+			expect( view.iconView.element ).to.be.null;
 		} );
 
-		it( 'is set when view#icon is defined', () => {
+		it( 'is added to the #children when view#icon is defined', () => {
 			view = new ButtonView( locale );
-			view.icon = 'foo';
+			view.icon = '<svg></svg>';
 			view.render();
 
 			expect( view.element.childNodes ).to.have.length( 3 );
 			expect( view.element.childNodes[ 0 ] ).to.equal( view.iconView.element );
 
 			expect( view.iconView ).to.instanceOf( IconView );
-			expect( view.iconView.content ).to.equal( 'foo' );
+			expect( view.iconView.content ).to.equal( '<svg></svg>' );
+			expect( view.iconView.element.classList.contains( 'ck-button__icon' ) ).to.be.true;
 
-			view.icon = 'bar';
-			expect( view.iconView.content ).to.equal( 'bar' );
+			view.icon = '<svg>bar</svg>';
+			expect( view.iconView.content ).to.equal( '<svg>bar</svg>' );
 		} );
 
 		it( 'is destroyed with the view', () => {
 			view = new ButtonView( locale );
-			view.icon = 'foo';
+			view.icon = '<svg></svg>';
 			view.render();
 
 			const spy = sinon.spy( view.iconView, 'destroy' );

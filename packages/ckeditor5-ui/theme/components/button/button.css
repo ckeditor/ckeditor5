@@ -1,0 +1,34 @@
+/*
+ * Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+@import "../../mixins/_unselectable.css";
+@import "../tooltip/mixins/_tooltip.css";
+
+.ck-button,
+a.ck-button {
+	@mixin ck-unselectable;
+	@mixin ck-tooltip_enabled;
+
+	position: relative;
+
+	&.ck-button_with-text {
+		& .ck-button__label {
+			display: inline-block;
+		}
+	}
+
+	&:hover {
+		@mixin ck-tooltip_visible;
+	}
+
+	/* Get rid of the native focus outline around the tooltip when focused (but not :hover). */
+	&:focus:not(:hover) {
+		@mixin ck-tooltip_disabled;
+	}
+
+	& .ck-button__label {
+		display: none;
+	}
+}

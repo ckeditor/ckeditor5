@@ -1,4 +1,4 @@
-## Link panel opened from ContextualToolbar should be updated on external changes.
+## Link panel opened from BalloonToolbar should be updated on external changes.
 
 ### Create #1:
 

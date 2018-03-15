@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2016, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -12,7 +12,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ViewContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
 import ViewEditableElement from '@ckeditor/ckeditor5-engine/src/view/editableelement';
-import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
+import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 /* global document, Event */
@@ -74,18 +74,19 @@ describe( 'ContextualBalloon', () => {
 		} );
 
 		describe( 'positionLimiter', () => {
-			let doc, viewDocument, root;
+			let model, view, viewDocument, root;
 
 			beforeEach( () => {
-				doc = editor.document;
-				viewDocument = editor.editing.view;
+				model = editor.model;
+				view = editor.editing.view;
+				viewDocument = view.document;
 				root = viewDocument.getRoot();
 			} );
 
 			it( 'obtains the root of the selection', () => {
-				setModelData( doc, '<paragraph>[]bar</paragraph>' );
+				setModelData( model, '<paragraph>[]bar</paragraph>' );
 
-				expect( balloon.positionLimiter() ).to.equal( viewDocument.domConverter.mapViewToDom( root ) );
+				expect( balloon.positionLimiter() ).to.equal( view.domConverter.mapViewToDom( root ) );
 			} );
 
 			it( 'does not fail if selection has no #editableElement', () => {
@@ -95,26 +96,26 @@ describe( 'ContextualBalloon', () => {
 			} );
 
 			it( 'obtains the farthest root of the selection (nested editable)', () => {
-				doc.schema.registerItem( 'widget' );
-				doc.schema.registerItem( 'nestededitable' );
+				model.schema.register( 'widget', {
+					allowIn: '$root',
+					isObject: true
+				} );
+				model.schema.register( 'nestedEditable', { allowIn: 'widget' } );
+				model.schema.extend( '$text', { allowIn: 'nestedEditable' } );
 
-				doc.schema.objects.add( 'widget' );
+				editor.conversion.for( 'downcast' ).add( downcastElementToElement( {
+					model: 'widget',
+					view: () => new ViewContainerElement( 'figure', { contenteditable: 'false' } )
+				} ) );
 
-				doc.schema.allow( { name: 'widget', inside: '$root' } );
-				doc.schema.allow( { name: 'nestededitable', inside: 'widget' } );
-				doc.schema.allow( { name: '$inline', inside: 'nestededitable' } );
+				editor.conversion.for( 'downcast' ).add( downcastElementToElement( {
+					model: 'nestedEditable',
+					view: () => new ViewEditableElement( 'figcaption', { contenteditable: 'true' } )
+				} ) );
 
-				buildModelConverter().for( editor.data.modelToView, editor.editing.modelToView )
-					.fromElement( 'widget' )
-					.toElement( () => new ViewContainerElement( 'figure', { contenteditable: 'false' } ) );
+				setModelData( model, '<widget><nestedEditable>[]foo</nestedEditable></widget>' );
 
-				buildModelConverter().for( editor.data.modelToView, editor.editing.modelToView )
-					.fromElement( 'nestededitable' )
-					.toElement( () => new ViewEditableElement( 'figcaption', { contenteditable: 'true' } ) );
-
-				setModelData( doc, '<widget><nestededitable>[]foo</nestededitable></widget>' );
-
-				expect( balloon.positionLimiter() ).to.equal( viewDocument.domConverter.mapViewToDom( root ) );
+				expect( balloon.positionLimiter() ).to.equal( view.domConverter.mapViewToDom( root ) );
 			} );
 		} );
 

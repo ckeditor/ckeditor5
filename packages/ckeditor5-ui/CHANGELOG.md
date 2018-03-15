@@ -1,6 +1,52 @@
 Changelog
 =========
 
+## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-ui/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
+
+### Features
+
+* Implemented the `IconView#fillColor` observable which fills child `.ck-icon__fill` paths  with the color (see [ckeditor/ckeditor5-theme-lark#148](https://github.com/ckeditor/ckeditor5-theme-lark/issues/148)). ([728a691](https://github.com/ckeditor/ckeditor5-ui/commit/728a691))
+* Initial implementation of the `ButtonDropdownView`. Closes [#333](https://github.com/ckeditor/ckeditor5-ui/issues/333). ([6e9c6e4](https://github.com/ckeditor/ckeditor5-ui/commit/6e9c6e4))
+
+  Also:
+
+  * Allowed vertical layout of the `ToolbarView` thanks to the `#isVertical` attribute.
+  * Implemented `ToolbarView#className` attribute.
+  * Implemented `DropdownView#isEnabled` attribute along with the CSS class binding.
+* Updated UI components to bring the support for the refreshed Lark theme (see [ckeditor/ckeditor5#645](https://github.com/ckeditor/ckeditor5/issues/645)). ([623d536](https://github.com/ckeditor/ckeditor5-ui/commit/623d536))
+
+### Bug fixes
+
+* Button icon styles should not touch the dropdown's arrow. Closes [ckeditor/ckeditor5#831](https://github.com/ckeditor/ckeditor5/issues/831). ([507549f](https://github.com/ckeditor/ckeditor5-ui/commit/507549f))
+
+### Other changes
+
+* Added a CSS class to the SplitButtonView when the arrow is on (see [ckeditor/ckeditor5-theme-lark#134](https://github.com/ckeditor/ckeditor5-theme-lark/issues/134)). ([d490d61](https://github.com/ckeditor/ckeditor5-ui/commit/d490d61))
+* Added the `.ck-content` CSS class to the `EditableUIView` in order to simplify styling the editor content. Closes [#176](https://github.com/ckeditor/ckeditor5-ui/issues/176). ([f38ae70](https://github.com/ckeditor/ckeditor5-ui/commit/f38ae70))
+* Align feature class naming to a new scheme. ([1c500f6](https://github.com/ckeditor/ckeditor5-ui/commit/1c500f6))
+* Aligned code to changes (`config.lang` to `config.languages`). Part of the Translation Service v2 ([ckeditor/ckeditor5#624](https://github.com/ckeditor/ckeditor5/issues/624)). ([876f681](https://github.com/ckeditor/ckeditor5-ui/commit/876f681))
+* ComponentFactory.names() will return original component names (instead of normalized names). Closes [#376](https://github.com/ckeditor/ckeditor5-ui/issues/376). ([b6b39d7](https://github.com/ckeditor/ckeditor5-ui/commit/b6b39d7))
+* CSS classes should be prefixed with `ck-` instead of `cke-`. Closes [#112](https://github.com/ckeditor/ckeditor5-ui/issues/112). ([7973f83](https://github.com/ckeditor/ckeditor5-ui/commit/7973f83))
+* Introduced `SplitButtonView` and new dropdown creation helpers (`createDropdown()`, `addListToDropdown()` and `addToolbarToDropdown()`) Closes [#344](https://github.com/ckeditor/ckeditor5-ui/issues/344). Closes [#356](https://github.com/ckeditor/ckeditor5-ui/issues/356). ([0f26ca8](https://github.com/ckeditor/ckeditor5-ui/commit/0f26ca8))
+* Migrated the package styles from SASS to PostCSS to bring theme support and avoid duplicates in some editor builds. Closes [#144](https://github.com/ckeditor/ckeditor5-ui/issues/144). Closes [ckeditor/ckeditor5#420](https://github.com/ckeditor/ckeditor5/issues/420). ([f152dfc](https://github.com/ckeditor/ckeditor5-ui/commit/f152dfc))
+* Moved ck-button-icon mixin from ckeditor5-theme-lark. ([8757d27](https://github.com/ckeditor/ckeditor5-ui/commit/8757d27))
+* Removed the `.ck-editor-toolbar` and `.ck-editor-toolbar-container` classes (see [ckeditor/ckeditor5-theme-lark#135](https://github.com/ckeditor/ckeditor5-theme-lark/issues/135)). ([352d056](https://github.com/ckeditor/ckeditor5-ui/commit/352d056))
+* Rename `ContextualToolbar` to `BalloonToolbar`.  Closes [ckeditor/ckeditor5#550](https://github.com/ckeditor/ckeditor5/issues/550). ([28f59df](https://github.com/ckeditor/ckeditor5-ui/commit/28f59df))
+* The `closeDropdownOnBlur()` helper should use `clickOutsideHandler()`. Decorated the `View#render()` method. Closes [#311](https://github.com/ckeditor/ckeditor5-ui/issues/311). ([269e97b](https://github.com/ckeditor/ckeditor5-ui/commit/269e97b))
+* Updated translations. ([f657be2](https://github.com/ckeditor/ckeditor5-ui/commit/f657be2))
+
+### BREAKING CHANGES
+
+* Renamed `contextual/contextualtoolbar~ContextualToolbar` to `balloon/balloontoolbar~BalloonToolbar`.
+* Renamed `contextualToolbar` configuration option to `balloonToolbar`.
+* Removed `DropdownModel` interface – you can use dropdown properties directly now. See [#356](https://github.com/ckeditor/ckeditor5-ui/issues/356).
+* Removed `createButtonDropdown()` and `ButtonDropdownView`. See [#356](https://github.com/ckeditor/ckeditor5-ui/issues/356).
+* Removed `createListDropdown()` and `ListDropdownView`. See [#356](https://github.com/ckeditor/ckeditor5-ui/issues/356).
+* The DOM structure of the dropdown component has changed. Please refer to the documentation to find out more.
+* Basic properties of the balloon panel component have changed (i.e. the location of the arrow, the default positions), which may have an impact on existing integrations.
+* The styles are no longer developed in SASS which means the `.scss` files became unavailable. Please refer to the [Theme Customization](https://docs.ckeditor.com/ckeditor5/latest/framework/guides/ui/theme-customization.html) guide to learn more about migration to PostCSS.
+
+
 ## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-ui/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
 
 ### Bug fixes
@@ -16,7 +62,7 @@ Changelog
 
    Additionally, from now on `View#setTemplate()` and `View#extendTemplate()` methods are recommended as a shorthand for `view.template = new Template( { ... } )` and `Template.extend( view.template )`.
 
-    Please refer to the updated [documentation](https://docs.ckeditor.com/ckeditor5/latest/framework/guides/architecture/intro.html#UI-library) to learn more.
+    Please refer to the updated [documentation](https://docs.ckeditor.com/ckeditor5/latest/framework/guides/architecture/intro.html#ui-library) to learn more.
 * Removed legacy `width` and `height` attributes from the `BoxedEditorUIView`. Closes [#25](https://github.com/ckeditor/ckeditor5-ui/issues/25). ([ffa419a](https://github.com/ckeditor/ckeditor5-ui/commit/ffa419a))
 * The `ComponentFactory` should be case-insensitive. Closes [#324](https://github.com/ckeditor/ckeditor5-ui/issues/324). ([94417e9](https://github.com/ckeditor/ckeditor5-ui/commit/94417e9))
 * Updated translations. ([186f365](https://github.com/ckeditor/ckeditor5-ui/commit/186f365))
@@ -65,7 +111,7 @@ refer to the `KeystrokeHandler` helper to learn more.
 * `ContextualToolbar` should have proper editor toolbar styling. Closes [#230](https://github.com/ckeditor/ckeditor5-ui/issues/230). ([4e2ee36](https://github.com/ckeditor/ckeditor5-ui/commit/4e2ee36))
 * BalloonPanelView should prevent native #selectstart event. Closes [#243](https://github.com/ckeditor/ckeditor5-ui/issues/243). ([cba3fb1](https://github.com/ckeditor/ckeditor5-ui/commit/cba3fb1))
 * Button tooltip should not look blurry on low-DPI screens. Closes [#142](https://github.com/ckeditor/ckeditor5-ui/issues/142). Closes [#133](https://github.com/ckeditor/ckeditor5-ui/issues/133). ([a497aff](https://github.com/ckeditor/ckeditor5-ui/commit/a497aff))
-* Clicking and dragging in a drop-down panel should not break the selection. Closes [#228](https://github.com/ckeditor/ckeditor5-ui/issues/228). ([6066a09](https://github.com/ckeditor/ckeditor5-ui/commit/6066a09))
+* Clicking and dragging in a dropdown panel should not break the selection. Closes [#228](https://github.com/ckeditor/ckeditor5-ui/issues/228). ([6066a09](https://github.com/ckeditor/ckeditor5-ui/commit/6066a09))
 * Contextual toolbar should re–position correctly on window scroll. Closes [#227](https://github.com/ckeditor/ckeditor5-ui/issues/227). ([e5ea25f](https://github.com/ckeditor/ckeditor5-ui/commit/e5ea25f))
 * `DropdownView` should open upon arrow down key press. Closes [#249](https://github.com/ckeditor/ckeditor5-ui/issues/249). ([c1e6afc](https://github.com/ckeditor/ckeditor5-ui/commit/c1e6afc))
 * List items should handle Enter and Space key press when focused. Closes [#153](https://github.com/ckeditor/ckeditor5-ui/issues/153). ([403b64a](https://github.com/ckeditor/ckeditor5-ui/commit/403b64a))

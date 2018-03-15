@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -195,6 +195,17 @@ describe( 'View', () => {
 	} );
 
 	describe( 'render()', () => {
+		it( 'is decorated', done => {
+			const view = new View();
+
+			view.on( 'render', () => {
+				expect( view.isRendered ).to.be.true;
+				done();
+			} );
+
+			view.render();
+		} );
+
 		it( 'should throw if already rendered', () => {
 			const view = new View();
 

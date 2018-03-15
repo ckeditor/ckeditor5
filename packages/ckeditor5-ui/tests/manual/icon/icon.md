@@ -1,7 +1,16 @@
 ## Icons with inline SVG
 
-1. First icon should be small size and dark color.
-1. Second icon should be medium size and dark color.
-1. Third icon should be large size and dark color.
-1. Fourth icon should be large size and red color.
-1. Fifth icon should be large size and blue color (inherited).
+### Sizing
+1. First icon should be small and dark.
+1. Second icon should be medium and dark.
+1. Third icon should be large and dark.
+
+## Colors
+1. First icon should be small and red.
+1. Second icon should be small and blue, just like text around.
+
+## Dirtiness
+1. First icon should be large and green.
+
+## ViewBox
+1. First icon should be large and green, same as the previous one.

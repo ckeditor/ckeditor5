@@ -1,0 +1,13 @@
+/*
+ * Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+/**
+ * A class which hides an element in DOM.
+ */
+.ck-hidden {
+	/* Override selector specificity. Otherwise, all elements with some display
+	style defined will override this one, which is not a desired result. */
+	display: none !important;
+}

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -279,18 +279,21 @@ describe( 'Template', () => {
 						}
 					} );
 
-					expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p style="color:red;"></p>' );
+					expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p style="color:red"></p>' );
 				} );
 
 				it( 'renders as a static value (Array of values)', () => {
 					setElement( {
 						tag: 'p',
 						attributes: {
-							style: [ 'color: red;', 'display: block;' ]
+							style: {
+								color: 'red',
+								display: 'block'
+							}
 						}
 					} );
 
-					expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p style="color:red;display:block;"></p>' );
+					expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p style="color:red;display:block"></p>' );
 				} );
 
 				it( 'renders as a value bound to the model', () => {
@@ -301,11 +304,11 @@ describe( 'Template', () => {
 						}
 					} );
 
-					expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p style="width:10px;"></p>' );
+					expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p style="width:10px"></p>' );
 
 					observable.width = '1em';
 
-					expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p style="width:1em;"></p>' );
+					expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p style="width:1em"></p>' );
 				} );
 
 				it( 'renders as a value bound to the model (Array of bindings)', () => {
@@ -319,11 +322,11 @@ describe( 'Template', () => {
 						}
 					} );
 
-					expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p style="width:10px;background-color:yellow;"></p>' );
+					expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p style="background-color:yellow;width:10px"></p>' );
 
 					observable.width = '1em';
 
-					expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p style="width:1em;background-color:yellow;"></p>' );
+					expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p style="background-color:yellow;width:1em"></p>' );
 				} );
 
 				describe( 'object', () => {
@@ -340,13 +343,13 @@ describe( 'Template', () => {
 						} );
 
 						expect( normalizeHtml( el.outerHTML ) )
-							.to.equal( '<p style="width:10px;height:10px;background-color:yellow;"></p>' );
+							.to.equal( '<p style="background-color:yellow;height:10px;width:10px"></p>' );
 
 						observable.width = '20px';
 						observable.backgroundColor = 'green';
 
 						expect( normalizeHtml( el.outerHTML ) )
-							.to.equal( '<p style="width:20px;height:10px;background-color:green;"></p>' );
+							.to.equal( '<p style="background-color:green;height:10px;width:20px"></p>' );
 					} );
 
 					it( 'renders with empty string attributes', () => {
@@ -360,7 +363,7 @@ describe( 'Template', () => {
 							}
 						} );
 
-						expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p style="background-color:yellow;"></p>' );
+						expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p style="background-color:yellow"></p>' );
 
 						observable.backgroundColor = '';
 
@@ -801,7 +804,7 @@ describe( 'Template', () => {
 				} ).apply( el );
 
 				expect( normalizeHtml( el.outerHTML ) ).to.equal(
-					'<div class="default a b" x="bar"></div>'
+					'<div class="a b default" x="bar"></div>'
 				);
 			} );
 
@@ -852,7 +855,7 @@ describe( 'Template', () => {
 						}
 					} ).apply( el );
 
-					expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p style="color:red;display:block;"></p>' );
+					expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p style="color:red;display:block"></p>' );
 				} );
 
 				it( 'applies as a static value (Array of values)', () => {
@@ -870,7 +873,7 @@ describe( 'Template', () => {
 					} ).apply( el );
 
 					expect( normalizeHtml( el.outerHTML ) ).to.equal(
-						'<p style="color:red;display:block;float:left;overflow:hidden;"></p>'
+						'<p style="color:red;display:block;float:left;overflow:hidden"></p>'
 					);
 				} );
 
@@ -895,7 +898,7 @@ describe( 'Template', () => {
 					} ).apply( el );
 
 					expect( normalizeHtml( el.outerHTML ) )
-						.to.equal( '<p style="width:20px;height:10px;float:left;background-color:green;"></p>' );
+						.to.equal( '<p style="background-color:green;float:left;height:10px;width:20px"></p>' );
 				} );
 
 				it( 'applies when bound to observable', () => {
@@ -919,13 +922,13 @@ describe( 'Template', () => {
 					} ).apply( el );
 
 					expect( normalizeHtml( el.outerHTML ) ).to.equal(
-						'<p style="left:20px;width:10px;float:left;background-color:green;"></p>'
+						'<p style="background-color:green;float:left;left:20px;width:10px"></p>'
 					);
 
 					observable.width = '100px';
 
 					expect( normalizeHtml( el.outerHTML ) ).to.equal(
-						'<p style="left:20px;width:100px;float:left;background-color:green;"></p>'
+						'<p style="background-color:green;float:left;left:20px;width:100px"></p>'
 					);
 				} );
 			} );
@@ -1067,14 +1070,14 @@ describe( 'Template', () => {
 
 				expect( normalizeHtml( el.outerHTML ) ).to.equal( '<div class="applied-parent-qux" id="BAR">' +
 					'<a class="a1 a2 applied-A-bar" id="applied-A">applied-a</a>' +
-					'<b class="b1 b2 applied-B-qux" id="applied-B">applied-b</b>' +
+					'<b class="applied-B-qux b1 b2" id="applied-B">applied-b</b>' +
 				'</div>' );
 
 				observable.foo = 'updated';
 
 				expect( normalizeHtml( el.outerHTML ) ).to.equal( '<div class="applied-parent-qux" id="UPDATED">' +
 					'<a class="a1 a2 applied-A-updated" id="applied-A">applied-a</a>' +
-					'<b class="b1 b2 applied-B-qux" id="applied-B">applied-b</b>' +
+					'<b class="applied-B-qux b1 b2" id="applied-B">applied-b</b>' +
 				'</div>' );
 
 				document.body.appendChild( el );
@@ -1381,22 +1384,22 @@ describe( 'Template', () => {
 
 					tpl.apply( el );
 					expect( normalizeHtml( el.outerHTML ) ).to.equal(
-						'<a style="font-weight:bold;overflow:visible;">' +
-							'<b style="color:red;display:block;"></b>' +
+						'<a style="font-weight:bold;overflow:visible">' +
+							'<b style="color:red;display:block"></b>' +
 						'</a>'
 					);
 
 					tpl.revert( el );
 					expect( normalizeHtml( el.outerHTML ) ).to.equal(
-						'<a style="font-weight:bold;">' +
-							'<b style="color:red;"></b>' +
+						'<a style="font-weight:bold">' +
+							'<b style="color:red"></b>' +
 						'</a>'
 					);
 
 					observable.overflow = 'hidden';
 					expect( normalizeHtml( el.outerHTML ) ).to.equal(
-						'<a style="font-weight:bold;">' +
-							'<b style="color:red;"></b>' +
+						'<a style="font-weight:bold">' +
+							'<b style="color:red"></b>' +
 						'</a>'
 					);
 				} );
@@ -1472,17 +1475,17 @@ describe( 'Template', () => {
 
 				tpl.apply( el );
 				expect( normalizeHtml( el.outerHTML ) ).to.equal(
-					'<div class="div1 div2" style="font-weight:bold;">' +
+					'<div class="div1 div2" style="font-weight:bold">' +
 						'<a class="a1 a2 x y" data-new-attr="foo">applied-a</a>' +
-						'<b class="b1 b2 a b bar">applied-b</b>' +
+						'<b class="a b b1 b2 bar">applied-b</b>' +
 					'</div>'
 				);
 
 				observable.foo = 'baz';
 				expect( normalizeHtml( el.outerHTML ) ).to.equal(
-					'<div class="div1 div2" style="font-weight:bold;">' +
+					'<div class="div1 div2" style="font-weight:bold">' +
 						'<a class="a1 a2 x y" data-new-attr="foo">applied-a</a>' +
-						'<b class="b1 b2 a b baz">applied-b</b>' +
+						'<b class="a b b1 b2 baz">applied-b</b>' +
 					'</div>'
 				);
 
@@ -1932,11 +1935,11 @@ describe( 'Template', () => {
 
 					observable.foo = 'a';
 					observable.baz = 'b';
-					expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p class="ck-class a b foo-is-a ck-end">abc</p>' );
+					expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p class="a b ck-class ck-end foo-is-a">abc</p>' );
 
 					observable.foo = 'c';
 					observable.baz = 'd';
-					expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p class="ck-class c d foo-is-c ck-end">abc</p>' );
+					expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p class="c ck-class ck-end d foo-is-c">abc</p>' );
 				} );
 
 				it( 'allows binding attribute to the observable – array of bindings (Text Node)', () => {
@@ -2172,10 +2175,10 @@ describe( 'Template', () => {
 					} );
 
 					observable.foo = observable.bar = true;
-					expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p class="ck-class foo-set ck-end">abc</p>' );
+					expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p class="ck-class ck-end foo-set">abc</p>' );
 
 					observable.foo = observable.bar = false;
-					expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p class="ck-class bar-not-set ck-end">abc</p>' );
+					expect( normalizeHtml( el.outerHTML ) ).to.equal( '<p class="bar-not-set ck-class ck-end">abc</p>' );
 				} );
 
 				it( 'allows binding attribute to the observable – value of an attribute processed by a callback', () => {
@@ -2791,7 +2794,7 @@ describe( 'Template', () => {
 							}
 						]
 					},
-					'<p><span class="foo bar"></span></p>'
+					'<p><span class="bar foo"></span></p>'
 				);
 			} );
 

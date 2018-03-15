@@ -1,0 +1,22 @@
+/*
+ * Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+@import "../../mixins/_unselectable.css";
+
+.ck-list {
+	@mixin ck-unselectable;
+
+	/* Crop the the items when the list has huge border-radius. */
+	overflow: hidden;
+}
+
+.ck-list__item {
+	display: block;
+
+	&:focus {
+		position: relative;
+		z-index: var(--ck-z-default);
+	}
+}

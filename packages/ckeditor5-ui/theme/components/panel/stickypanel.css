@@ -1,0 +1,19 @@
+/*
+ * Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+.ck-editor {
+	& .ck-sticky-panel {
+		& .ck-sticky-panel__content_sticky {
+			z-index: var(--ck-z-modal); /* #315 */
+			position: fixed;
+			top: 0;
+		}
+
+		& .ck-sticky-panel__content_sticky_bottom-limit {
+			top: auto;
+			position: absolute;
+		}
+	}
+}

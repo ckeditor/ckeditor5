@@ -1,25 +1,23 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
 /* globals console:false, document, setTimeout */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
-import ContextualToolbar from '../../../src/toolbar/contextual/contextualtoolbar';
+import BalloonToolbar from '../../../src/toolbar/balloon/balloontoolbar';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 
-import Element from '@ckeditor/ckeditor5-engine/src/model/element';
-import Text from '@ckeditor/ckeditor5-engine/src/model/text';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 
 // Editor for the external insert.
 ClassicEditor
 	.create( document.querySelector( '#editor-insert' ), {
-		plugins: [ ArticlePluginSet, ContextualToolbar ],
+		plugins: [ ArticlePluginSet, BalloonToolbar ],
 		toolbar: [ 'bold', 'link' ],
-		contextualToolbar: [ 'bold', 'link' ]
+		balloonToolbar: [ 'bold', 'link' ]
 	} )
 	.then( editor => {
 		const element = document.querySelector( '#button-insert' );
@@ -34,9 +32,9 @@ ClassicEditor
 // Editor for the external delete.
 ClassicEditor
 	.create( document.querySelector( '#editor-delete' ), {
-		plugins: [ ArticlePluginSet, ContextualToolbar ],
+		plugins: [ ArticlePluginSet, BalloonToolbar ],
 		toolbar: [ 'bold', 'link' ],
-		contextualToolbar: [ 'bold', 'link' ]
+		balloonToolbar: [ 'bold', 'link' ]
 	} )
 	.then( editor => {
 		const element = document.querySelector( '#button-delete' );
@@ -55,18 +53,17 @@ function wait( delay ) {
 }
 
 function startExternalInsert( editor ) {
-	const document = editor.document;
-	const bath = document.batch( 'transparent' );
+	const model = editor.model;
 
 	function type( path, text ) {
 		return new Promise( resolve => {
-			let position = new Position( document.getRoot(), path );
+			let position = new Position( model.document.getRoot(), path );
 			let index = 0;
 
 			function typing() {
 				wait( 40 ).then( () => {
-					document.enqueueChanges( () => {
-						bath.insert( position, new Text( text[ index ] ) );
+					model.enqueueChange( 'transparent', writer => {
+						writer.insertText( text[ index ], position );
 						position = position.getShiftedBy( 1 );
 
 						const nextLetter = text[ ++index ];
@@ -87,8 +84,8 @@ function startExternalInsert( editor ) {
 
 	function insertNewLine( path ) {
 		return wait( 200 ).then( () => {
-			document.enqueueChanges( () => {
-				bath.insert( new Position( document.getRoot(), path ), new Element( 'paragraph' ) );
+			model.enqueueChange( 'transparent', writer => {
+				writer.insertElement( 'paragraph', new Position( model.document.getRoot(), path ) );
 			} );
 
 			return Promise.resolve();
@@ -108,12 +105,11 @@ function startExternalInsert( editor ) {
 }
 
 function startExternalDelete( editor ) {
-	const document = editor.document;
-	const bath = document.batch( 'transparent' );
+	const model = editor.model;
 
 	wait( 3000 ).then( () => {
-		document.enqueueChanges( () => {
-			bath.remove( Range.createFromPositionAndShift( new Position( document.getRoot(), [ 1 ] ), 1 ) );
+		model.enqueueChange( 'transparent', writer => {
+			writer.remove( Range.createFromPositionAndShift( new Position( model.document.getRoot(), [ 1 ] ), 1 ) );
 		} );
 	} );
 }

@@ -1,0 +1,51 @@
+/*
+ * Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+@import "../tooltip/mixins/_tooltip.css";
+
+.ck-dropdown {
+	display: inline-block;
+	position: relative;
+
+	& .ck-dropdown__arrow {
+		pointer-events: none;
+		z-index: var(--ck-z-default);
+
+		position: absolute;
+		top: 50%;
+		transform: translate3d( 0, -50%, 0 );
+	}
+
+	/* Dropdown button should span horizontally, e.g. in vertical toolbars */
+	& .ck-button.ck-dropdown__button {
+		width: 100%;
+
+		/* Disable main button's tooltip when the dropdown is open. Otherwise the panel may
+		partially cover the tooltip */
+		&.ck-on {
+			@mixin ck-tooltip_disabled;
+		}
+	}
+}
+
+.ck-dropdown__panel {
+	/* This is to get rid of flickering when the tooltip is shown under the panel,
+	which looks like the panel moves vertically a pixel down and up. */
+	-webkit-backface-visibility: hidden;
+
+	display: none;
+	z-index: var(--ck-z-modal);
+
+	position: absolute;
+	left: 0px;
+	transform: translate3d( 0, 100%, 0 );
+}
+
+.ck-dropdown__panel-visible {
+	display: inline-block;
+
+	/* This will prevent blurry icons in dropdown on Firefox. See #340. */
+	will-change: transform;
+}
