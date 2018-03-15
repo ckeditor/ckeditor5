@@ -3,6 +3,14 @@ Changelog
 
 ## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-engine/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
 
+### Major refactoring
+
+In 1.0.0-beta.1 the engine's API has underwent a thorough review which resulted in a deep refactoring. Most of the underlying concepts and architecture remained untouched. The API, though, is brand new. The changes are huge and, in this package exclusively, resulted in changing 40.000 LOC. Therefore, the list of changes below is neither complete nor will explain you how the engine is structured now and how to should migrate to this version.
+
+Instead, we recommend reading https://docs.ckeditor.com/ckeditor5/latest/framework/guides/architecture/editing-engine.html once more (it will be updated in a couple of days after the release).
+
+The good news is that the our focus when designing the new API was on developer experience. APIs which were dangerous or confusing were removed or hidden and new APIs were added in their place. The engine is now safer and more useful library and we hope you'll enjoy it :).
+
 ### Features
 
 * Add support for the `'word'` unit in the `modifySelection()` helper. ([f37a97a](https://github.com/ckeditor/ckeditor5-engine/commit/f37a97a))
@@ -10,8 +18,8 @@ Changelog
 * Consumable type name is now normalized inside `conversion.ModelConsumable` methods. Closes [#1214](https://github.com/ckeditor/ckeditor5-engine/issues/1214). ([131e9c8](https://github.com/ckeditor/ckeditor5-engine/commit/131e9c8))
 * Convert view to model using position. Closes [#1213](https://github.com/ckeditor/ckeditor5-engine/issues/1213). Closes [#1250](https://github.com/ckeditor/ckeditor5-engine/issues/1250). ([1961395](https://github.com/ckeditor/ckeditor5-engine/commit/1961395))
 
-  Feature: `Schema#findAllowedParent` has been introduced.
-  Feature: `SchemaContext#concat` has been introduced.
+  Feature: `Schema#findAllowedParent()` has been introduced.
+  Feature: `SchemaContext#concat()` has been introduced.
 * Engine debug tools can be easily disabled using disableEngineDebug() function. Closes [#1193](https://github.com/ckeditor/ckeditor5-engine/issues/1193). ([0934496](https://github.com/ckeditor/ckeditor5-engine/commit/0934496))
 * Introduced `ViewElementDefinition` and `definition-based-converters` module with a set of utils allowing to turn element definitions to converters. Closes [#1198](https://github.com/ckeditor/ckeditor5-engine/issues/1198). ([d2e9f06](https://github.com/ckeditor/ckeditor5-engine/commit/d2e9f06))
 * Introduced composition observer. Closes [#1329](https://github.com/ckeditor/ckeditor5-engine/issues/1329). ([a0ad8fe](https://github.com/ckeditor/ckeditor5-engine/commit/a0ad8fe))
@@ -68,9 +76,10 @@ Changelog
 
 ### BREAKING CHANGES
 
+* **Note:** See the "Major refactoring" section above.
 * `view.Writer` is no longer an object literal with functions but a class.
-* Introduced new method of creating custom UIElements. 
-* View document is now separated from the DOM. `view.Renderer`, `view.DomConverter` and observers are moved to `view.View`. 
+* Introduced new method of creating custom UIElements.
+* View document is now separated from the DOM. `view.Renderer`, `view.DomConverter` and observers are moved to `view.View`.
 * `view#event:render` is introduced to indicate a moment when all changes are applied and document may be rendered to the DOM.
 * Downcast converter helpers no longer accepts view elements instances as constructors are now protected. Callbacks using view writer should be used.
 * Writer should be now used to set or remove markers, instead of MarkerCollection.
