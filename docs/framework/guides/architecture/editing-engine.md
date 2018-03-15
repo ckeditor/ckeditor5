@@ -25,14 +25,6 @@ The model is implemented by a DOM-like tree structure of {@link module:engine/mo
 
 All changes made to the document structure are done by applying {@link module:engine/model/operation/operation~Operation operations}. The concept of operations comes from [Operational Transformation](https://en.wikipedia.org/wiki/Operational_transformation) (in short: OT), a technology enabling collaboration functionality. Since OT requires that a system is able to transform every operation by every other one (to figure out the result of concurrently applied operations), the set of operations needs to be small. CKEditor 5 features a non-linear model (normally, OT implementations use flat, array-like models while CKEditor 5 uses a tree structure), hence the set of potential semantic changes is more complex. To handle that, the editing engine implements a small set of operations and a bigger set of {@link module:engine/model/delta/delta~Delta "deltas"} &mdash; groups of operations with additional semantics attached. Finally, deltas are grouped in {@link module:engine/model/batch~Batch batches}. A batch can be understood as a single undo step.
 
-<info-box>
-	The technology implemented by CKEditor 5 is experimental. The subject of applying Operational Transformation to tree structures is not yet well researched and, in early 2015 when we started designing and implementing our own system, we were aware of just one existing and proven implementation (of which there was little information).
-
-	During the last 3 years we changed our approach and reworked the implementation multiple times. In fact, we are still learning about new types of issues and constantly align and improve the engine. One of the most important things that we learned was that implementing OT is just a part of the job on your way to real-time collaborative editing. We needed to create additional mechanisms and align the whole architecture to enable concurrent editing by multiple users with features like undo and ability to display selections of other users.
-
-	After we released v1.0.0-alpha.2 (a fully functional version of the editor and collaborative editing features) in November 2017, we decided to review the entire API and, as a result, rewrote most of it. This took us 3 months but ensured that in the future the API will need to change less and allowed us to highly improve the developer experience. Still, we may expect that the API will change with time as we learn even more.
-</info-box>
-
 As mentioned earlier, going into details would make an awfully long article, so only a few more notable facts will be explained here.
 
 ### Text attributes
