@@ -16,7 +16,7 @@ Changelog
 
 ### Other changes
 
-* `ObservableMixin#unbind` should not throw if used for an attribute which is not bound. Closes [#5](https://github.com/ckeditor/ckeditor5-utils/issues/5). ([848a818](https://github.com/ckeditor/ckeditor5-utils/commit/848a818))
+* `ObservableMixin#unbind()` should not throw if used for an attribute which is not bound. Closes [#5](https://github.com/ckeditor/ckeditor5-utils/issues/5). ([848a818](https://github.com/ckeditor/ckeditor5-utils/commit/848a818))
 * Aligned behaviors of `EmitterMixin` methods responsible for adding end removing listeners. Closes [#144](https://github.com/ckeditor/ckeditor5-utils/issues/144). ([460d7f4](https://github.com/ckeditor/ckeditor5-utils/commit/460d7f4))
 
   The `emitter.on()` now has the same behavior as `emitter.listenTo( emitter )` as well as `emitter.off()` is the same as `emitter.stopListening( emitter )`. This made `emitter.stopListening()` correctly remove all listeners added in any way to it which prevents memory leaks.
