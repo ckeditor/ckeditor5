@@ -1,0 +1,34 @@
+# Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+"Language: et\n"
+"Language-Team: Estonian (https://www.transifex.com/ckeditor/teams/11143/et/)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "Tooltip for the font size dropdown."
+msgid "Font Size"
+msgstr "Teksti suurus"
+
+msgctxt "Dropdown option label for the 'tiny' font size preset."
+msgid "Tiny"
+msgstr "Imepisike"
+
+msgctxt "Dropdown option label for the 'small' font size preset."
+msgid "Small"
+msgstr "Väike"
+
+msgctxt "Dropdown option label for the 'big' font size preset."
+msgid "Big"
+msgstr "Suur"
+
+msgctxt "Dropdown option label for the 'huge' font size preset."
+msgid "Huge"
+msgstr "Ülisuur"
+
+msgctxt "Tooltip for the font family dropdown."
+msgid "Font Family"
+msgstr "Kirjastiil"
+
+msgctxt "Dropdown option label for the default font family."
+msgid "Default"
+msgstr "Vaikeväärtus"
