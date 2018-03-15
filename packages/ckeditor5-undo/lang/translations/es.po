@@ -1,0 +1,14 @@
+# Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+"Language: es\n"
+"Language-Team: Spanish (https://www.transifex.com/ckeditor/teams/11143/es/)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "Toolbar button tooltip for the Undo feature."
+msgid "Undo"
+msgstr "Deshacer"
+
+msgctxt "Toolbar button tooltip for the Redo feature."
+msgid "Redo"
+msgstr "Rehacer"
