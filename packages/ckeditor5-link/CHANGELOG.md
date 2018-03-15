@@ -5,22 +5,19 @@ Changelog
 
 ### Features
 
-* Added two-step caret movement for links. See [#72](https://github.com/ckeditor/ckeditor5-link/issues/72). ([985bb40](https://github.com/ckeditor/ckeditor5-link/commit/985bb40))
+* Added two-step caret movement for links. Closes [#72](https://github.com/ckeditor/ckeditor5-link/issues/72). ([985bb40](https://github.com/ckeditor/ckeditor5-link/commit/985bb40))
 * Implemented a 2–step link UI with a refreshed look&feel (see [ckeditor/ckeditor5#645](https://github.com/ckeditor/ckeditor5/issues/645)). Closes [#31](https://github.com/ckeditor/ckeditor5-link/issues/31). ([6baee95](https://github.com/ckeditor/ckeditor5-link/commit/6baee95))
-* Link will be now highlighted when selection is inside it. Closes [#72](https://github.com/ckeditor/ckeditor5-link/issues/72). ([01b74ec](https://github.com/ckeditor/ckeditor5-link/commit/01b74ec))
 
 ### Bug fixes
 
-* Link feature was creating empty text nodes with `linkHref` attribute. Closes [#169](https://github.com/ckeditor/ckeditor5-link/issues/169). ([0641978](https://github.com/ckeditor/ckeditor5-link/commit/0641978))
+* Link feature should not create empty text nodes with `linkHref` attribute. Closes [#169](https://github.com/ckeditor/ckeditor5-link/issues/169). ([0641978](https://github.com/ckeditor/ckeditor5-link/commit/0641978))
 
 ### Other changes
 
-* Align feature class naming to a new scheme. ([5d8e67d](https://github.com/ckeditor/ckeditor5-link/commit/5d8e67d))
-* Aligning with new conversion helpers API. ([592d38c](https://github.com/ckeditor/ckeditor5-link/commit/592d38c))
-* Migrated package styles to PostCSS. Moved visual styles to ckeditor5-theme-lark (see [ckeditor/ckeditor5-ui#144](https://github.com/ckeditor/ckeditor5-ui/issues/144)). ([f16d263](https://github.com/ckeditor/ckeditor5-link/commit/f16d263))
-* Removed LinkElement, using custom properties instead. Closes [#162](https://github.com/ckeditor/ckeditor5-link/issues/162). ([3785e50](https://github.com/ckeditor/ckeditor5-link/commit/3785e50))
+* Aligned feature class naming to the new scheme. ([5d8e67d](https://github.com/ckeditor/ckeditor5-link/commit/5d8e67d))
+* Migrated package styles to PostCSS. Moved visual styles to `@ckeditor/ckeditor5-theme-lark` (see [ckeditor/ckeditor5-ui#144](https://github.com/ckeditor/ckeditor5-ui/issues/144)). ([f16d263](https://github.com/ckeditor/ckeditor5-link/commit/f16d263))
+* Removed `LinkElement`. We should be using custom properties instead. Closes [#162](https://github.com/ckeditor/ckeditor5-link/issues/162). ([3785e50](https://github.com/ckeditor/ckeditor5-link/commit/3785e50))
 * Updated translations. ([d285ad3](https://github.com/ckeditor/ckeditor5-link/commit/d285ad3))
-* Use new Matcher API. ([c3ffe33](https://github.com/ckeditor/ckeditor5-link/commit/c3ffe33))
 
 ### BREAKING CHANGES
 
