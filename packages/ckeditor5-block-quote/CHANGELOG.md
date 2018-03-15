@@ -5,9 +5,8 @@ Changelog
 
 ### Other changes
 
-* Align feature class naming to a new scheme. ([cc723c3](https://github.com/ckeditor/ckeditor5-block-quote/commit/cc723c3))
-* Aligning with new conversion helpers API. ([6535e8f](https://github.com/ckeditor/ckeditor5-block-quote/commit/6535e8f))
-* Migrated package styles to PostCSS. Moved the visual styles to ckeditor5-theme-lark (see [ckeditor/ckeditor5-ui#144](https://github.com/ckeditor/ckeditor5-ui/issues/144)). ([c973931](https://github.com/ckeditor/ckeditor5-block-quote/commit/c973931))
+* Aligned feature class naming to the new scheme. ([cc723c3](https://github.com/ckeditor/ckeditor5-block-quote/commit/cc723c3))
+* Migrated package styles to PostCSS. Moved the visual styles to `@ckeditor/ckeditor5-theme-lark` (see [ckeditor/ckeditor5-ui#144](https://github.com/ckeditor/ckeditor5-ui/issues/144)). ([c973931](https://github.com/ckeditor/ckeditor5-block-quote/commit/c973931))
 
 
 ## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-block-quote/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
