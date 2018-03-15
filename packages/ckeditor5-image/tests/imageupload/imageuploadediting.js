@@ -289,6 +289,39 @@ describe( 'ImageUploadEditing', () => {
 		}, 0 );
 	} );
 
+	it( 'should throw when other error happens during upload', done => {
+		const file = createNativeFileMock();
+		const error = new Error( 'Foo bar baz' );
+		const uploadEditing = editor.plugins.get( ImageUploadEditing );
+		const loadSpy = sinon.spy( uploadEditing, '_load' );
+		const catchSpy = sinon.spy();
+
+		// Throw an error when async attribute change occur.
+		editor.editing.downcastDispatcher.on( 'attribute:uploadStatus:image', ( evt, data ) => {
+			if ( data.attributeNewValue == 'uploading' ) {
+				throw error;
+			}
+		} );
+
+		setModelData( model, '<paragraph>{}foo bar</paragraph>' );
+		editor.execute( 'imageUpload', { file } );
+
+		sinon.assert.calledOnce( loadSpy );
+
+		const promise = loadSpy.returnValues[ 0 ];
+
+		// Check if error can be caught.
+		promise.catch( catchSpy );
+
+		nativeReaderMock.mockSuccess();
+
+		setTimeout( () => {
+			sinon.assert.calledOnce( catchSpy );
+			sinon.assert.calledWithExactly( catchSpy, error );
+			done();
+		}, 0 );
+	} );
+
 	it( 'should do nothing if image does not have uploadId', () => {
 		setModelData( model, '<image src="image.png"></image>' );
 
