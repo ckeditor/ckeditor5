@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -34,12 +34,12 @@ export default class UndoCommand extends BaseCommand {
 
 		const item = this._stack.splice( batchIndex, 1 )[ 0 ];
 
-		// All changes has to be done in one `enqueueChanges` callback so other listeners will not
+		// All changes has to be done in one `enqueueChange` callback so other listeners will not
 		// step between consecutive deltas, or won't do changes to the document before selection is properly restored.
-		this.editor.document.enqueueChanges( () => {
+		this.editor.model.enqueueChange( () => {
 			const undoingBatch = this._undo( item.batch );
 
-			const deltas = this.editor.document.history.getDeltas( item.batch.baseVersion );
+			const deltas = this.editor.model.document.history.getDeltas( item.batch.baseVersion );
 			this._restoreSelection( item.selection.ranges, item.selection.isBackward, deltas );
 
 			this.fire( 'revert', item.batch, undoingBatch );

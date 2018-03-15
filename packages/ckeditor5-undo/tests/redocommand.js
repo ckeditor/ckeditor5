@@ -1,25 +1,26 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
+import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
 import UndoCommand from '../src/undocommand';
 import RedoCommand from '../src/redocommand';
 import { itemAt, getText } from '@ckeditor/ckeditor5-engine/tests/model/_utils/utils';
 
 describe( 'RedoCommand', () => {
-	let editor, doc, root, redo, undo;
+	let editor, model, root, redo, undo;
 
 	beforeEach( () => {
 		editor = new ModelTestEditor();
 		redo = new RedoCommand( editor );
 
-		doc = editor.document;
+		model = editor.model;
 
-		root = doc.getRoot();
+		root = model.document.getRoot();
 	} );
 
 	afterEach( () => {
@@ -49,10 +50,14 @@ describe( 'RedoCommand', () => {
 				 [root]
 				 - {}
 				 */
-				editor.document.selection.setRanges( [ r( 0, 0 ) ] );
-				batch0 = doc.batch();
+				model.change( writer => {
+					writer.setSelection( r( 0, 0 ) );
+				} );
+				batch0 = new Batch();
 				undo.addBatch( batch0 );
-				batch0.insert( p( 0 ), 'foobar' );
+				model.enqueueChange( batch0, writer => {
+					writer.insertText( 'foobar', p( 0 ) );
+				} );
 
 				/*
 				 [root]
@@ -64,10 +69,14 @@ describe( 'RedoCommand', () => {
 				 - r{}
 				 */
 				// Let's make things spicy and this time, make a backward selection.
-				editor.document.selection.setRanges( [ r( 2, 4 ) ], true );
-				batch1 = doc.batch();
+				model.change( writer => {
+					writer.setSelection( r( 2, 4 ), { backward: true } );
+				} );
+				batch1 = new Batch();
 				undo.addBatch( batch1 );
-				batch1.setAttribute( r( 2, 4 ), 'key', 'value' );
+				model.enqueueChange( batch1, writer => {
+					writer.setAttribute( 'key', 'value', r( 2, 4 ) );
+				} );
 
 				/*
 				 [root]
@@ -78,10 +87,14 @@ describe( 'RedoCommand', () => {
 				 - a
 				 - r
 				 */
-				editor.document.selection.setRanges( [ r( 1, 3 ) ] );
-				batch2 = doc.batch();
+				model.change( writer => {
+					writer.setSelection( r( 1, 3 ) );
+				} );
+				batch2 = new Batch();
 				undo.addBatch( batch2 );
-				batch2.move( r( 1, 3 ), p( 6 ) );
+				model.enqueueChange( batch2, writer => {
+					writer.move( r( 1, 3 ), p( 6 ) );
+				} );
 
 				/*
 				 [root]
@@ -112,8 +125,8 @@ describe( 'RedoCommand', () => {
 				expect( itemAt( root, 1 ).getAttribute( 'key' ) ).to.equal( 'value' );
 				expect( itemAt( root, 5 ).getAttribute( 'key' ) ).to.equal( 'value' );
 
-				expect( editor.document.selection.getRanges().next().value.isEqual( r( 4, 6 ) ) ).to.be.true;
-				expect( editor.document.selection.isBackward ).to.be.false;
+				expect( editor.model.document.selection.getRanges().next().value.isEqual( r( 4, 6 ) ) ).to.be.true;
+				expect( editor.model.document.selection.isBackward ).to.be.false;
 			} );
 
 			it( 'should redo series of batches undone by undo command', () => {
@@ -135,8 +148,8 @@ describe( 'RedoCommand', () => {
 				expect( getText( root ) ).to.equal( 'foobar' );
 				expect( Array.from( root.getChildren() ).find( node => node.hasAttribute( 'key' ) ) ).to.be.undefined;
 
-				expect( editor.document.selection.getRanges().next().value.isEqual( r( 6, 6 ) ) ).to.be.true;
-				expect( editor.document.selection.isBackward ).to.be.false;
+				expect( editor.model.document.selection.getRanges().next().value.isEqual( r( 6, 6 ) ) ).to.be.true;
+				expect( editor.model.document.selection.isBackward ).to.be.false;
 
 				redo.execute();
 				// Should be like after applying `batch1`:
@@ -153,8 +166,8 @@ describe( 'RedoCommand', () => {
 				expect( itemAt( root, 2 ).getAttribute( 'key' ) ).to.equal( 'value' );
 				expect( itemAt( root, 3 ).getAttribute( 'key' ) ).to.equal( 'value' );
 
-				expect( editor.document.selection.getRanges().next().value.isEqual( r( 2, 4 ) ) ).to.be.true;
-				expect( editor.document.selection.isBackward ).to.be.true;
+				expect( editor.model.document.selection.getRanges().next().value.isEqual( r( 2, 4 ) ) ).to.be.true;
+				expect( editor.model.document.selection.isBackward ).to.be.true;
 
 				redo.execute();
 				// Should be like after applying `batch2`:
@@ -171,8 +184,8 @@ describe( 'RedoCommand', () => {
 				expect( itemAt( root, 1 ).getAttribute( 'key' ) ).to.equal( 'value' );
 				expect( itemAt( root, 5 ).getAttribute( 'key' ) ).to.equal( 'value' );
 
-				expect( editor.document.selection.getRanges().next().value.isEqual( r( 4, 6 ) ) ).to.be.true;
-				expect( editor.document.selection.isBackward ).to.be.false;
+				expect( editor.model.document.selection.getRanges().next().value.isEqual( r( 4, 6 ) ) ).to.be.true;
+				expect( editor.model.document.selection.isBackward ).to.be.false;
 			} );
 
 			it( 'should redo batch selectively undone by undo command', () => {
@@ -193,8 +206,8 @@ describe( 'RedoCommand', () => {
 				expect( itemAt( root, 1 ).getAttribute( 'key' ) ).to.equal( 'value' );
 				expect( itemAt( root, 5 ).getAttribute( 'key' ) ).to.equal( 'value' );
 
-				expect( editor.document.selection.getRanges().next().value.isEqual( r( 6, 6 ) ) ).to.be.true;
-				expect( editor.document.selection.isBackward ).to.be.false;
+				expect( editor.model.document.selection.getRanges().next().value.isEqual( r( 6, 6 ) ) ).to.be.true;
+				expect( editor.model.document.selection.isBackward ).to.be.false;
 			} );
 
 			it( 'should redo batch selectively undone by undo command #2', () => {
@@ -217,8 +230,8 @@ describe( 'RedoCommand', () => {
 				expect( itemAt( root, 1 ).getAttribute( 'key' ) ).to.equal( 'value' );
 				expect( itemAt( root, 5 ).getAttribute( 'key' ) ).to.equal( 'value' );
 
-				expect( editor.document.selection.getRanges().next().value.isEqual( r( 1, 2 ) ) ).to.be.true;
-				expect( editor.document.selection.isBackward ).to.be.true;
+				expect( editor.model.document.selection.getRanges().next().value.isEqual( r( 1, 2 ) ) ).to.be.true;
+				expect( editor.model.document.selection.isBackward ).to.be.true;
 			} );
 
 			it( 'should transform redo batch by changes written in history that happened after undo but before redo #2', () => {
@@ -227,13 +240,17 @@ describe( 'RedoCommand', () => {
 				undo.execute();
 
 				// Remove "ar".
-				doc.batch().remove( r( 4, 6 ) );
+				model.change( writer => {
+					writer.remove( r( 4, 6 ) );
+				} );
 
 				// Undo setting attribute on "ob". Now it is "foob".
 				undo.execute();
 
 				// Append "xx" at the beginning. Now it is "xxfoob".
-				doc.batch().insert( p( 0 ), 'xx' );
+				model.change( writer => {
+					writer.insertText( 'xx', p( 0 ) );
+				} );
 
 				// Redo setting attribute on "ob". Now it is "xxfoOB".
 				redo.execute();
@@ -241,8 +258,8 @@ describe( 'RedoCommand', () => {
 				expect( getText( root ) ).to.equal( 'xxfoob' );
 				expect( itemAt( root, 4 ).getAttribute( 'key' ) ).to.equal( 'value' );
 				expect( itemAt( root, 5 ).getAttribute( 'key' ) ).to.equal( 'value' );
-				expect( editor.document.selection.getFirstRange().isEqual( r( 4, 6 ) ) ).to.be.true;
-				expect( editor.document.selection.isBackward ).to.be.true;
+				expect( editor.model.document.selection.getFirstRange().isEqual( r( 4, 6 ) ) ).to.be.true;
+				expect( editor.model.document.selection.isBackward ).to.be.true;
 
 				// Redo moving "oo". Now it is "xxfBoO". Selection is expected to be on just moved "oO".
 				redo.execute();
@@ -250,8 +267,8 @@ describe( 'RedoCommand', () => {
 				expect( getText( root ) ).to.equal( 'xxfboo' );
 				expect( itemAt( root, 3 ).getAttribute( 'key' ) ).to.equal( 'value' );
 				expect( itemAt( root, 5 ).getAttribute( 'key' ) ).to.equal( 'value' );
-				expect( editor.document.selection.getFirstRange().isEqual( r( 4, 6 ) ) ).to.be.true;
-				expect( editor.document.selection.isBackward ).to.be.false;
+				expect( editor.model.document.selection.getFirstRange().isEqual( r( 4, 6 ) ) ).to.be.true;
+				expect( editor.model.document.selection.isBackward ).to.be.false;
 			} );
 		} );
 	} );

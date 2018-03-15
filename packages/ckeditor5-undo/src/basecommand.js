@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -8,6 +8,7 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
+import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
 
 /**
  * Base class for undo feature commands: {@link module:undo/undocommand~UndoCommand} and {@link module:undo/redocommand~RedoCommand}.
@@ -56,7 +57,7 @@ export default class BaseCommand extends Command {
 	 * @param {module:engine/model/batch~Batch} batch The batch to add.
 	 */
 	addBatch( batch ) {
-		const docSelection = this.editor.document.selection;
+		const docSelection = this.editor.model.document.selection;
 
 		const selection = {
 			ranges: docSelection.hasOwnRange ? Array.from( docSelection.getRanges() ) : [],
@@ -84,7 +85,8 @@ export default class BaseCommand extends Command {
 	 * @param {Array.<module:engine/model/delta/delta~Delta>} deltas Deltas which has been applied since selection has been stored.
 	 */
 	_restoreSelection( ranges, isBackward, deltas ) {
-		const document = this.editor.document;
+		const model = this.editor.model;
+		const document = model.document;
 
 		// This will keep the transformed selection ranges.
 		const selectionRanges = [];
@@ -109,7 +111,9 @@ export default class BaseCommand extends Command {
 
 		// `selectionRanges` may be empty if all ranges ended up in graveyard. If that is the case, do not restore selection.
 		if ( selectionRanges.length ) {
-			document.selection.setRanges( selectionRanges, isBackward );
+			model.change( writer => {
+				writer.setSelection( selectionRanges, { backward: isBackward } );
+			} );
 		}
 	}
 
@@ -121,10 +125,11 @@ export default class BaseCommand extends Command {
 	 * @param {module:engine/model/batch~Batch} batchToUndo The batch to be undone.
 	 */
 	_undo( batchToUndo ) {
-		const document = this.editor.document;
+		const model = this.editor.model;
+		const document = model.document;
 
 		// All changes done by the command execution will be saved as one batch.
-		const undoingBatch = document.batch();
+		const undoingBatch = new Batch();
 		this._createdBatches.add( undoingBatch );
 
 		const deltasToUndo = batchToUndo.deltas.slice();
@@ -133,29 +138,34 @@ export default class BaseCommand extends Command {
 		// We will process each delta from `batchToUndo`, in reverse order. If there were deltas A, B and C in undone batch,
 		// we need to revert them in reverse order, so first C' (reversed C), then B', then A'.
 		for ( const deltaToUndo of deltasToUndo ) {
-			// Keep in mind that transformation algorithms return arrays. That's because the transformation might result in multiple
-			// deltas, so we need arrays to handle them. To simplify algorithms, it is better to always operate on arrays.
-			const nextBaseVersion = deltaToUndo.baseVersion + deltaToUndo.operations.length;
+			// For now let's skip deltas with operation applied on detached document.
+			// We assumed that there is no deltas with mixed (document and document fragment) operations
+			// so we can skip entire delta.
+			if ( deltaToUndo.operations.some( op => op.isDocumentOperation ) ) {
+				// Keep in mind that transformation algorithms return arrays. That's because the transformation might result in multiple
+				// deltas, so we need arrays to handle them. To simplify algorithms, it is better to always operate on arrays.
+				const nextBaseVersion = deltaToUndo.baseVersion + deltaToUndo.operations.length;
 
-			// Reverse delta from the history.
-			const historyDeltas = Array.from( document.history.getDeltas( nextBaseVersion ) );
-			const transformedSets = document.transformDeltas( [ deltaToUndo.getReversed() ], historyDeltas, true );
-			const reversedDeltas = transformedSets.deltasA;
+				// Reverse delta from the history.
+				const historyDeltas = Array.from( document.history.getDeltas( nextBaseVersion ) );
+				const transformedSets = model.transformDeltas( [ deltaToUndo.getReversed() ], historyDeltas, true );
+				const reversedDeltas = transformedSets.deltasA;
 
-			// After reversed delta has been transformed by all history deltas, apply it.
-			for ( const delta of reversedDeltas ) {
-				// Fix base version.
-				delta.baseVersion = document.version;
+				// After reversed delta has been transformed by all history deltas, apply it.
+				for ( const delta of reversedDeltas ) {
+					// Fix base version.
+					delta.baseVersion = document.version;
 
-				// Before applying, add the delta to the `undoingBatch`.
-				undoingBatch.addDelta( delta );
+					// Before applying, add the delta to the `undoingBatch`.
+					undoingBatch.addDelta( delta );
 
-				// Now, apply all operations of the delta.
-				for ( const operation of delta.operations ) {
-					document.applyOperation( operation );
+					// Now, apply all operations of the delta.
+					for ( const operation of delta.operations ) {
+						model.applyOperation( operation );
+					}
+
+					document.history.setDeltaAsUndone( deltaToUndo, delta );
 				}
-
-				document.history.setDeltaAsUndone( deltaToUndo, delta );
 			}
 		}
 

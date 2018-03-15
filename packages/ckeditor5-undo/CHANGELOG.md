@@ -1,6 +1,22 @@
 Changelog
 =========
 
+## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-undo/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
+
+### Features
+
+* Updated icons for compatibility with the refreshed Lark theme. Minor adjustment in toolbar configuration (see [ckeditor/ckeditor5#645](https://github.com/ckeditor/ckeditor5/issues/645)). ([254cd89](https://github.com/ckeditor/ckeditor5-undo/commit/254cd89))
+
+### Bug fixes
+
+* Do not register batches which have only non-document operations. Closes [#79](https://github.com/ckeditor/ckeditor5-undo/issues/79). Closes [ckeditor/ckeditor5#781](https://github.com/ckeditor/ckeditor5/issues/781). ([60ac1ab](https://github.com/ckeditor/ckeditor5-undo/commit/60ac1ab))
+
+### Other changes
+
+* Aligned feature class naming to the new scheme. ([d4f0cc2](https://github.com/ckeditor/ckeditor5-undo/commit/d4f0cc2))
+* Updated translations. ([33171d5](https://github.com/ckeditor/ckeditor5-undo/commit/33171d5))
+
+
 ## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-undo/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
 
 ### Other changes

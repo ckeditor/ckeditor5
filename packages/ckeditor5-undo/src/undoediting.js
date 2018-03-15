@@ -1,10 +1,10 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
 /**
- * @module undo/undoengine
+ * @module undo/undoediting
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -15,11 +15,11 @@ import RedoCommand from './redocommand';
  * The undo engine feature.
  *
  * Undo brings in possibility to undo and redo changes done in the model by deltas through
- * the {@link module:engine/model/document~Document#batch Batch API}.
+ * the {@link module:engine/model/writer~Writer Writer API}.
  *
  * @extends module:core/plugin~Plugin
  */
-export default class UndoEngine extends Plugin {
+export default class UndoEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
@@ -31,7 +31,7 @@ export default class UndoEngine extends Plugin {
 		 * Created and registered during the {@link #init feature initialization}.
 		 *
 		 * @private
-		 * @member {undo.UndoEngineCommand} #_undoCommand
+		 * @member {module:undo/undocommand~UndoCommand} #_undoCommand
 		 */
 
 		/**
@@ -39,7 +39,7 @@ export default class UndoEngine extends Plugin {
 		 * Created and registered during the {@link #init feature initialization}.
 		 *
 		 * @private
-		 * @member {undo.UndoEngineCommand} #_redoCommand
+		 * @member {module:undo/undocommand~UndoCommand} #_redoCommand
 		 */
 
 		/**
@@ -55,15 +55,30 @@ export default class UndoEngine extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
+		const editor = this.editor;
+
 		// Create commands.
-		this._undoCommand = new UndoCommand( this.editor );
-		this._redoCommand = new RedoCommand( this.editor );
+		this._undoCommand = new UndoCommand( editor );
+		this._redoCommand = new RedoCommand( editor );
 
 		// Register command to the editor.
-		this.editor.commands.add( 'undo', this._undoCommand );
-		this.editor.commands.add( 'redo', this._redoCommand );
+		editor.commands.add( 'undo', this._undoCommand );
+		editor.commands.add( 'redo', this._redoCommand );
 
-		this.listenTo( this.editor.document, 'change', ( evt, type, changes, batch ) => {
+		this.listenTo( editor.model, 'applyOperation', ( evt, args ) => {
+			const operation = args[ 0 ];
+
+			// Do not register batch if the operation is not a document operation.
+			// This prevents from creating empty undo steps, where all operations where non-document operations.
+			// Non-document operations creates and alters content in detached tree fragments (for example, document fragments).
+			// Most of time this is preparing data before it is inserted into actual tree (for example during copy & paste).
+			// Such operations should not be reversed.
+			if ( !operation.isDocumentOperation ) {
+				return;
+			}
+
+			const batch = operation.delta.batch;
+
 			// If changes are not a part of a batch or this is not a new batch, omit those changes.
 			if ( this._batchRegistry.has( batch ) || batch.type == 'transparent' ) {
 				return;
@@ -86,5 +101,9 @@ export default class UndoEngine extends Plugin {
 		this.listenTo( this._undoCommand, 'revert', ( evt, undoneBatch, undoingBatch ) => {
 			this._redoCommand.addBatch( undoingBatch );
 		} );
+
+		editor.keystrokes.set( 'CTRL+Z', 'undo' );
+		editor.keystrokes.set( 'CTRL+Y', 'redo' );
+		editor.keystrokes.set( 'CTRL+SHIFT+Z', 'redo' );
 	}
 }

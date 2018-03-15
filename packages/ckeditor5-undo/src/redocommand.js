@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -31,12 +31,12 @@ export default class RedoCommand extends BaseCommand {
 	execute() {
 		const item = this._stack.pop();
 
-		// All changes have to be done in one `enqueueChanges` callback so other listeners will not
+		// All changes have to be done in one `enqueueChange` callback so other listeners will not
 		// step between consecutive deltas, or won't do changes to the document before selection is properly restored.
-		this.editor.document.enqueueChanges( () => {
+		this.editor.model.enqueueChange( () => {
 			const lastDelta = item.batch.deltas[ item.batch.deltas.length - 1 ];
 			const nextBaseVersion = lastDelta.baseVersion + lastDelta.operations.length;
-			const deltas = this.editor.document.history.getDeltas( nextBaseVersion );
+			const deltas = this.editor.model.document.history.getDeltas( nextBaseVersion );
 
 			this._restoreSelection( item.selection.ranges, item.selection.isBackward, deltas );
 			this._undo( item.batch );
