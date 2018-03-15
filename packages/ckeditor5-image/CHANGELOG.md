@@ -10,19 +10,12 @@ Changelog
 
 ### Other changes
 
-* Align feature class naming to a new scheme. ([8690765](https://github.com/ckeditor/ckeditor5-image/commit/8690765))
-* Aligned code to the changes API in `ckeditor5-engine`. Read more [ckeditor/ckeditor5-engine#738](https://github.com/ckeditor/ckeditor5-engine/issues/738). ([8b60192](https://github.com/ckeditor/ckeditor5-image/commit/8b60192))
-* Aligned to changes in ckeditor5-engine. ([988a0f4](https://github.com/ckeditor/ckeditor5-image/commit/988a0f4))
-* Aligning with new conversion helpers API. ([b9e62c4](https://github.com/ckeditor/ckeditor5-image/commit/b9e62c4))
-* Event names don't have to be normalized to consumable types anymore. ([dff8b47](https://github.com/ckeditor/ckeditor5-image/commit/dff8b47))
-* Migrated package styles to PostCSS. Moved visual styles to ckeditor5-theme-lark (see [ckeditor/ckeditor5-ui#144](https://github.com/ckeditor/ckeditor5-ui/issues/144)). ([ed6e1cf](https://github.com/ckeditor/ckeditor5-image/commit/ed6e1cf))
+* Aligned feature class naming to the new scheme. ([8690765](https://github.com/ckeditor/ckeditor5-image/commit/8690765))
+* Migrated package styles to PostCSS. Moved visual styles to `@ckeditor/ckeditor5-theme-lark` (see [ckeditor/ckeditor5-ui#144](https://github.com/ckeditor/ckeditor5-ui/issues/144)). ([ed6e1cf](https://github.com/ckeditor/ckeditor5-image/commit/ed6e1cf))
 * Removed the `.ck-editor-toolbar` and `.ck-editor-toolbar-container` classes from the UI (see [ckeditor/ckeditor5-theme-lark#135](https://github.com/ckeditor/ckeditor5-theme-lark/issues/135)). ([1c08fdd](https://github.com/ckeditor/ckeditor5-image/commit/1c08fdd))
 * Renamed `uploadImage` command and button to `imageUpload`. Closes [#184](https://github.com/ckeditor/ckeditor5-image/issues/184). ([6f891b8](https://github.com/ckeditor/ckeditor5-image/commit/6f891b8))
-* Update API usage after changes in the engine in [#1312](https://github.com/ckeditor/ckeditor5-image/issues/1312). ([70ea9ee](https://github.com/ckeditor/ckeditor5-image/commit/70ea9ee))
 * Updated naming of UI components & commands. ([2e7fbee](https://github.com/ckeditor/ckeditor5-image/commit/2e7fbee))
 * Updated translations. ([02f9cf5](https://github.com/ckeditor/ckeditor5-image/commit/02f9cf5))
-* Use new Matcher API. ([2d491e2](https://github.com/ckeditor/ckeditor5-image/commit/2d491e2))
-* Use post-fixer API. ([b2e4439](https://github.com/ckeditor/ckeditor5-image/commit/b2e4439))
 
 ### BREAKING CHANGES
 
