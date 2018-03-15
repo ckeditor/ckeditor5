@@ -176,13 +176,13 @@ describe( 'HeadingCommand', () => {
 
 		it( 'should do nothing on non-registered model elements', () => {
 			setData( model, '<heading1>[]</heading1>' );
-			command.execute( { value: 'paragraph' } );
+			command.execute( { value: 'heading5' } );
 
 			expect( getData( model ) ).to.equal( '<heading1>[]</heading1>' );
 			expect( command.value ).to.equal( 'heading1' );
 		} );
 
-		it( 'should do nothing when empty value is passed', () => {
+		it.skip( 'should do nothing when empty value is passed', () => {
 			setData( model, '<heading1>[]</heading1>' );
 			command.execute();
 
