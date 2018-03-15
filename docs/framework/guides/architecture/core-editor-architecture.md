@@ -25,7 +25,7 @@ Besides that, the editor exposes a few of methods:
 * {@link module:core/editor/editor~Editor#execute `execute()`} &ndash; Executes the given command.
 * {@link module:core/editor/utils/dataapimixin~DataApi#setData `setData()`} and {@link module:core/editor/utils/dataapimixin~DataApi#getData `getData()`} &ndash; A way to retrieve data from the editor and set data in the editor. The data format is controlled by the {@link module:engine/controller/datacontroller~DataController#processor data controller's data processor} and it does not need to be a string (it can be e.g. JSON if you implement such a {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor}). See, for example, how to {@link features/markdown produce Markdown output}.
 
-For the full list of methods check the {@link api API docs} of the specific editor class you use. Specific editor implementations may provide additional methods.
+For the full list of methods check the {@link api/index API docs} of the specific editor class you use. Specific editor implementations may provide additional methods.
 
 The {@link module:core/editor/editor~Editor `Editor`} class is a base to implement your own editors. CKEditor 5 Framework comes with a few editor types (for example, {@link module:editor-classic/classiceditor~ClassicEditor classic}, {@link module:editor-inline/inlineeditor~InlineEditor inline} and {@link module:editor-balloon/ballooneditor~BalloonEditor balloon}) but you can freely implement editors which work and look completely different. The only requirement is that you implement the {@link module:core/editor/editor~Editor} interface.
 
