@@ -9,6 +9,7 @@ Changelog
 * Implemented styles for the ButtonDropdown (see: [ckeditor/ckeditor5-ui#333](https://github.com/ckeditor/ckeditor5-ui/issues/333)). Fixed spacing issues with toolbar items wrapped to the new line. Closes [ckeditor/ckeditor5#682](https://github.com/ckeditor/ckeditor5/issues/682). ([ef4d421](https://github.com/ckeditor/ckeditor5-theme-lark/commit/ef4d421))
 
   Also:
+
   * Various improvements to visual styles of the dropdowns.
   * Migrated toolbar to CSS `flex`.
   * Allowed vertical toolbars.
