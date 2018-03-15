@@ -67,7 +67,7 @@ export default class LinkFormView extends View {
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
-		this.saveButtonView = this._createButton( t( 'Save' ), checkIcon );
+		this.saveButtonView = this._createButton( t( 'Save' ), checkIcon, 'ck-button_save' );
 		this.saveButtonView.type = 'submit';
 
 		/**
@@ -75,7 +75,7 @@ export default class LinkFormView extends View {
 		 *
 		 * @member {module:ui/button/buttonview~ButtonView}
 		 */
-		this.cancelButtonView = this._createButton( t( 'Cancel' ), cancelIcon, 'cancel' );
+		this.cancelButtonView = this._createButton( t( 'Cancel' ), cancelIcon, 'ck-button_cancel', 'cancel' );
 
 		/**
 		 * A collection of views which can be focused in the form.
@@ -184,16 +184,23 @@ export default class LinkFormView extends View {
 	 * @private
 	 * @param {String} label The button label.
 	 * @param {String} icon The button's icon.
+	 * @param {String} className The additional button CSS class name.
 	 * @param {String} [eventName] An event name that the `ButtonView#execute` event will be delegated to.
 	 * @returns {module:ui/button/buttonview~ButtonView} The button view instance.
 	 */
-	_createButton( label, icon, eventName ) {
+	_createButton( label, icon, className, eventName ) {
 		const button = new ButtonView( this.locale );
 
 		button.set( {
 			label,
 			icon,
 			tooltip: true
+		} );
+
+		button.extendTemplate( {
+			attributes: {
+				class: className
+			}
 		} );
 
 		if ( eventName ) {
