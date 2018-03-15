@@ -1,6 +1,26 @@
 Changelog
 =========
 
+## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-autoformat/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
+
+### Bug fixes
+
+* Fixed integration with undo. Closes [#53](https://github.com/ckeditor/ckeditor5-autoformat/issues/53). ([f5d68f4](https://github.com/ckeditor/ckeditor5-autoformat/commit/f5d68f4))
+* Ordered list will now be triggered by a numer and `.` or `)`. Closes [#42](https://github.com/ckeditor/ckeditor5-autoformat/issues/42). ([bcc4e3b](https://github.com/ckeditor/ckeditor5-autoformat/commit/bcc4e3b))
+
+  Thanks to [@vladikoff](https://github.com/vladikoff)!
+
+### Other changes
+
+* Align feature class naming to a new scheme. ([5f5b4a9](https://github.com/ckeditor/ckeditor5-autoformat/commit/5f5b4a9))
+* Callbacks should listen to new `model.Document#event:change` and use `model.Document#differ`. ([2d83221](https://github.com/ckeditor/ckeditor5-autoformat/commit/2d83221))
+
+
+## 0.0.1 (2017-10-27)
+
+Internal changes only (updated dependencies, documentation, etc.).
+
+
 ## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-autoformat/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
 
 ### Bug fixes
