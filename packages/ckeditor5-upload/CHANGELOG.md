@@ -1,6 +1,31 @@
 Changelog
 =========
 
+## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-upload/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
+
+### Bug fixes
+
+* Fixed incorrect `ImageUploadButton` and `ImageUploadCommand` binding. Closes [#77](https://github.com/ckeditor/ckeditor5-upload/issues/77). Closes https://github.com/ckeditor/ckeditor5-ui/issues/357. ([d231ea6](https://github.com/ckeditor/ckeditor5-upload/commit/d231ea6))
+
+### Other changes
+
+* Aligned code to the changes in the engine. ([0fe248a](https://github.com/ckeditor/ckeditor5-upload/commit/0fe248a))
+* Event names don't have to be normalized to consumable types anymore. ([0c0a673](https://github.com/ckeditor/ckeditor5-upload/commit/0c0a673))
+* Migrated package styles to PostCSS. Moved visual styles to ckeditor5-theme-lark (see [ckeditor/ckeditor5-ui#144](https://github.com/ckeditor/ckeditor5-ui/issues/144)). ([faf6100](https://github.com/ckeditor/ckeditor5-upload/commit/faf6100))
+* Moved the image upload plugins to the `@ckeditor/ckeditor5-image` package. Minor cleanup in the API. Closes [#22](https://github.com/ckeditor/ckeditor5-upload/issues/22). ([55697a9](https://github.com/ckeditor/ckeditor5-upload/commit/55697a9))
+* Use post-fixer API. ([08e9d09](https://github.com/ckeditor/ckeditor5-upload/commit/08e9d09))
+
+### BREAKING CHANGES
+
+* Renamed `Adapter` to `UploadAdapter`.
+* Removed `ImageUpload` plugin. It can be no found in ckeditor5-image repository.
+* Removed `ImageUploadEngine` plugin. It can be no found in ckeditor5-image repository.
+* Removed `ImageUploadProgress` plugin. It can be no found in ckeditor5-image repository.
+* Removed `ImageUploadButton` plugin. It can be no found in ckeditor5-image repository.
+* Renamed `FileRepository#createAdapter()` to `FileRepository#createUploadAdapter()`.
+* Renamed `filerepository-no-adapter` error to `filerepository-no-upload-adapter`.
+
+
 ## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-upload/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
 
 ### Bug fixes
