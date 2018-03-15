@@ -68,11 +68,11 @@ a.ck-button {
 		@mixin ck-button-colors --ck-color-button-on;
 	}
 
-	&.ck-button_save {
+	&.ck-button-save {
 		color: var(--ck-color-button-save);
 	}
 
-	&.ck-button_cancel {
+	&.ck-button-cancel {
 		color: var(--ck-color-button-cancel);
 	}
 
