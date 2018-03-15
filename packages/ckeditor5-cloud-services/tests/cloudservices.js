@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -53,7 +53,7 @@ describe( 'CloudServices', () => {
 				} );
 		} );
 
-		it( 'should expose default uploadUrl if is not provided', () => {
+		it( 'should not expose any default uploadUrl', () => {
 			return ClassicTestEditor
 				.create( element, {
 					plugins: [ CloudServices ]
@@ -61,7 +61,7 @@ describe( 'CloudServices', () => {
 				.then( editor => {
 					const cloudServicesPlugin = editor.plugins.get( CloudServices );
 
-					expect( cloudServicesPlugin.uploadUrl ).to.equal( 'https://files.cke-cs.com/upload/' );
+					expect( cloudServicesPlugin.uploadUrl ).to.be.undefined;
 				} );
 		} );
 

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -45,10 +45,6 @@ export default class CloudServices extends Plugin {
 		 * @member {String} #uploadUrl
 		 */
 
-		if ( !this.uploadUrl ) {
-			this.uploadUrl = 'https://files.cke-cs.com/upload/';
-		}
-
 		/**
 		 * Other plugins use this token for the authorization process. It handles token requesting and refreshing.
 		 * Its value is `null` when {@link module:cloudservices/cloudservices~CloudServicesConfig#tokenUrl} is not provided.
@@ -85,8 +81,8 @@ CloudServices.Token = Token;
  *		ClassicEditor
  *			.create( document.querySelector( '#editor' ), {
  *				cloudServices: {
- *					uploadUrl: 'https://your-organisation-id.cke-cs.com/easyimage/upload/',
- *					tokenUrl: 'https://example.com/cs-token-endpoint'
+ *					tokenUrl: 'https://example.com/cs-token-endpoint',
+ *					uploadUrl: 'https://your-organization-id.cke-cs.com/easyimage/upload/'
  *				}
  *			} )
  *			.then( ... )
@@ -121,5 +117,7 @@ CloudServices.Token = Token;
  *
  * Note: Make sure to also set the {@link module:cloudservices/cloudservices~CloudServicesConfig#tokenUrl} configuration option.
  *
- * @member {String} [module:cloudservices/cloudservices~CloudServicesConfig#uploadUrl]
+ * Read more in [Cloud Services Quick start](https://docs.ckeditor.com/cs/latest/guides/quick-start.html).
+ *
+ * @member {String} module:cloudservices/cloudservices~CloudServicesConfig#uploadUrl
  */
