@@ -40,12 +40,9 @@ Besides new features introduced by the dependencies, this version also introduce
 
 ### Other changes
 
-* Adjusted toolbar configuration of the build (see [ckeditor/ckeditor5#645](https://github.com/ckeditor/ckeditor5/issues/645)). ([c12bc46](https://github.com/ckeditor/ckeditor5-build-balloon/commit/c12bc46))
 * Aligned build and `webpack.config.js` to the new Translation Service ([ckeditor/ckeditor5#624](https://github.com/ckeditor/ckeditor5/issues/624)). ([3dc566b](https://github.com/ckeditor/ckeditor5-build-balloon/commit/3dc566b))
 * Changed the webpack configuration so the styles are processed using PostCSS instead of SASS (see [ckeditor/ckeditor5-ui#144](https://github.com/ckeditor/ckeditor5-ui/issues/144)). ([480719e](https://github.com/ckeditor/ckeditor5-build-balloon/commit/480719e))
-* Rename ImageStyle options, UI components and merge commands into one command. ([c61d03f](https://github.com/ckeditor/ckeditor5-build-balloon/commit/c61d03f))
-* Renamed 'headings' ui component to 'heading'. ([e005e9d](https://github.com/ckeditor/ckeditor5-build-balloon/commit/e005e9d))
-* Unify the `getPostCssConfig()` import from `@ckeditor/ckeditor5-dev-utils` package. See [ckeditor/ckeditor5#724](https://github.com/ckeditor/ckeditor5/issues/724). ([78bdce6](https://github.com/ckeditor/ckeditor5-build-balloon/commit/78bdce6))
+
 
 ## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-build-balloon.git/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
 
