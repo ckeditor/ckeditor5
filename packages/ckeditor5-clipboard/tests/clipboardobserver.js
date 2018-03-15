@@ -1,35 +1,38 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
 /* globals document */
 
 import ClipboardObserver from '../src/clipboardobserver';
-import Document from '@ckeditor/ckeditor5-engine/src/view/document';
-import Element from '@ckeditor/ckeditor5-engine/src/view/element';
+import View from '@ckeditor/ckeditor5-engine/src/view/view';
+import Writer from '@ckeditor/ckeditor5-engine/src/view/writer';
 import Range from '@ckeditor/ckeditor5-engine/src/view/range';
 import Position from '@ckeditor/ckeditor5-engine/src/view/position';
 import DataTransfer from '../src/datatransfer';
+import createViewRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot';
 
 describe( 'ClipboardObserver', () => {
-	let doc, observer, root, el, range, eventSpy, preventDefaultSpy;
+	let view, doc, writer, observer, root, el, range, eventSpy, preventDefaultSpy;
 
 	beforeEach( () => {
-		doc = new Document();
-		root = doc.createRoot( 'div' );
+		view = new View();
+		doc = view.document;
+		writer = new Writer( doc );
+		root = createViewRoot( doc );
 
 		// Create view and DOM structures.
-		el = new Element( 'p' );
-		root.appendChildren( el );
-		doc.domConverter.viewToDom( root, document, { withChildren: true, bind: true } );
+		el = writer.createContainerElement( 'p' );
+		writer.insert( Position.createAt( root ), el );
+		view.domConverter.viewToDom( root, document, { withChildren: true, bind: true } );
 
-		doc.selection.setCollapsedAt( el );
+		doc.selection._setTo( el, 0 );
 		range = new Range( new Position( root, 1 ) );
 		// Just making sure that the following tests will check anything.
 		expect( range.isEqual( doc.selection.getFirstRange() ) ).to.be.false;
 
-		observer = doc.addObserver( ClipboardObserver );
+		observer = view.addObserver( ClipboardObserver );
 
 		eventSpy = sinon.spy();
 		preventDefaultSpy = sinon.spy();
@@ -117,7 +120,7 @@ describe( 'ClipboardObserver', () => {
 		it( 'should be fired with the right event data – dropRange (when document.caretRangeFromPoint present)', () => {
 			let caretRangeFromPointCalledWith;
 
-			const domRange = doc.domConverter.viewRangeToDom( range );
+			const domRange = view.domConverter.viewRangeToDom( range );
 			const dataTransfer = mockDomDataTransfer();
 			const targetElement = mockDomTargetElement( {
 				caretRangeFromPoint( x, y ) {
@@ -147,7 +150,7 @@ describe( 'ClipboardObserver', () => {
 		} );
 
 		it( 'should be fired with the right event data – dropRange (when evt.rangeParent|Offset present)', () => {
-			const domRange = doc.domConverter.viewRangeToDom( range );
+			const domRange = view.domConverter.viewRangeToDom( range );
 			const dataTransfer = mockDomDataTransfer();
 			const targetElement = mockDomTargetElement( {
 				createRange() {

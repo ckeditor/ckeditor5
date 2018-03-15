@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -7,22 +7,19 @@
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
-
-import Text from '@ckeditor/ckeditor5-engine/src/model/text';
-import Selection from '@ckeditor/ckeditor5-engine/src/model/selection';
-
 // import { stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ ArticlePluginSet ],
-		toolbar: [ 'headings', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'undo', 'redo' ]
+		toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'undo', 'redo' ]
 	} )
 	.then( editor => {
 		window.editor = editor;
+		const viewDocument = editor.editing.view.document;
 		// const clipboard = editor.plugins.get( 'Clipboard' );
 
-		editor.editing.view.on( 'drop', ( evt, data ) => {
+		viewDocument.on( 'drop', ( evt, data ) => {
 			console.clear();
 
 			console.log( '----- drop -----' );
@@ -33,10 +30,10 @@ ClassicEditor
 			data.preventDefault();
 			evt.stop();
 
-			editor.document.enqueueChanges( () => {
-				const insertAtSelection = new Selection( [ editor.editing.mapper.toModelRange( data.dropRange ) ] );
-				editor.data.insertContent( new Text( '@' ), insertAtSelection );
-				editor.document.selection.setTo( insertAtSelection );
+			editor.model.change( writer => {
+				const dropRange = editor.editing.mapper.toModelRange( data.dropRange );
+				writer.insert( writer.createText( '@' ), dropRange.start );
+				writer.setSelection( dropRange );
 			} );
 		} );
 

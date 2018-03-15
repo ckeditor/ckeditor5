@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -88,7 +88,7 @@ import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/html
  *
  * The default action is to:
  *
- * 1. {@link module:engine/controller/datacontroller~DataController#getSelectedContent get selected content} from the editor,
+ * 1. {@link module:engine/model/model~Model#getSelectedContent get selected content} from the editor,
  * 2. prevent the default action of the native `copy` or `cut` event,
  * 3. fire {@link module:engine/view/document~Document#event:clipboardOutput} with a clone of the selected content
  * converted to a {@link module:engine/view/documentfragment~DocumentFragment view document fragment}.
@@ -118,8 +118,9 @@ export default class Clipboard extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const doc = editor.document;
-		const editingView = editor.editing.view;
+		const modelDocument = editor.model.document;
+		const view = editor.editing.view;
+		const viewDocument = view.document;
 
 		/**
 		 * Data processor used to convert pasted HTML to a view structure.
@@ -129,11 +130,11 @@ export default class Clipboard extends Plugin {
 		 */
 		this._htmlDataProcessor = new HtmlDataProcessor();
 
-		editingView.addObserver( ClipboardObserver );
+		view.addObserver( ClipboardObserver );
 
 		// The clipboard paste pipeline.
 
-		this.listenTo( editingView, 'clipboardInput', ( evt, data ) => {
+		this.listenTo( viewDocument, 'clipboardInput', ( evt, data ) => {
 			// Pasting and dropping is disabled when editor is read-only.
 			// See: https://github.com/ckeditor/ckeditor5-clipboard/issues/26.
 			if ( editor.isReadOnly ) {
@@ -153,12 +154,13 @@ export default class Clipboard extends Plugin {
 
 			this.fire( 'inputTransformation', { content } );
 
-			editingView.scrollToTheSelection();
+			view.scrollToTheSelection();
 		}, { priority: 'low' } );
 
 		this.listenTo( this, 'inputTransformation', ( evt, data ) => {
 			if ( !data.content.isEmpty ) {
 				const dataController = this.editor.data;
+				const model = this.editor.model;
 
 				// Convert the pasted content to a model document fragment.
 				// Conversion is contextual, but in this case we need an "all allowed" context and for that
@@ -169,9 +171,7 @@ export default class Clipboard extends Plugin {
 					return;
 				}
 
-				doc.enqueueChanges( () => {
-					dataController.insertContent( modelFragment, doc.selection );
-				} );
+				model.insertContent( modelFragment, modelDocument.selection );
 			}
 		}, { priority: 'low' } );
 
@@ -179,15 +179,16 @@ export default class Clipboard extends Plugin {
 
 		function onCopyCut( evt, data ) {
 			const dataTransfer = data.dataTransfer;
-			const content = editor.data.toView( editor.data.getSelectedContent( doc.selection ) );
 
 			data.preventDefault();
 
-			editingView.fire( 'clipboardOutput', { dataTransfer, content, method: evt.name } );
+			const content = editor.data.toView( editor.model.getSelectedContent( modelDocument.selection ) );
+
+			viewDocument.fire( 'clipboardOutput', { dataTransfer, content, method: evt.name } );
 		}
 
-		this.listenTo( editingView, 'copy', onCopyCut, { priority: 'low' } );
-		this.listenTo( editingView, 'cut', ( evt, data ) => {
+		this.listenTo( viewDocument, 'copy', onCopyCut, { priority: 'low' } );
+		this.listenTo( viewDocument, 'cut', ( evt, data ) => {
 			// Cutting is disabled when editor is read-only.
 			// See: https://github.com/ckeditor/ckeditor5-clipboard/issues/26.
 			if ( editor.isReadOnly ) {
@@ -197,16 +198,14 @@ export default class Clipboard extends Plugin {
 			}
 		}, { priority: 'low' } );
 
-		this.listenTo( editingView, 'clipboardOutput', ( evt, data ) => {
+		this.listenTo( viewDocument, 'clipboardOutput', ( evt, data ) => {
 			if ( !data.content.isEmpty ) {
 				data.dataTransfer.setData( 'text/html', this._htmlDataProcessor.toData( data.content ) );
 				data.dataTransfer.setData( 'text/plain', viewToPlainText( data.content ) );
 			}
 
 			if ( data.method == 'cut' ) {
-				doc.enqueueChanges( () => {
-					editor.data.deleteContent( doc.selection, doc.batch() );
-				} );
+				editor.model.deleteContent( modelDocument.selection );
 			}
 		}, { priority: 'low' } );
 	}

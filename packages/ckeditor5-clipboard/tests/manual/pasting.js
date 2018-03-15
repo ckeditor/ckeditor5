@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -13,13 +13,13 @@ import { stringify as stringifyView } from '@ckeditor/ckeditor5-engine/src/dev-u
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ ArticlePluginSet ],
-		toolbar: [ 'headings', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'undo', 'redo' ]
+		toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'undo', 'redo' ]
 	} )
 	.then( editor => {
 		window.editor = editor;
 		const clipboard = editor.plugins.get( 'Clipboard' );
 
-		editor.editing.view.on( 'paste', ( evt, data ) => {
+		editor.editing.view.document.on( 'paste', ( evt, data ) => {
 			console.clear();
 
 			console.log( '----- paste -----' );

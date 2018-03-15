@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -14,25 +14,27 @@ import DataTransfer from './datatransfer';
  * {@link module:engine/view/document~Document#event:paste Paste} event observer.
  *
  * Note that this observer is not available by default. To make it available it needs to be added to
- * {@link module:engine/view/document~Document} by the {@link module:engine/view/document~Document#addObserver} method.
+ * {@link module:engine/view/document~Document} by the {@link module:engine/view/view~View#addObserver} method.
  *
  * @extends module:engine/view/observer/domeventobserver~DomEventObserver
  */
 export default class ClipboardObserver extends DomEventObserver {
-	constructor( doc ) {
-		super( doc );
+	constructor( view ) {
+		super( view );
+
+		const viewDocument = this.document;
 
 		this.domEventType = [ 'paste', 'copy', 'cut', 'drop', 'dragover' ];
 
-		this.listenTo( doc, 'paste', handleInput, { priority: 'low' } );
-		this.listenTo( doc, 'drop', handleInput, { priority: 'low' } );
+		this.listenTo( viewDocument, 'paste', handleInput, { priority: 'low' } );
+		this.listenTo( viewDocument, 'drop', handleInput, { priority: 'low' } );
 
 		function handleInput( evt, data ) {
 			data.preventDefault();
 
-			const targetRanges = data.dropRange ? [ data.dropRange ] : Array.from( doc.selection.getRanges() );
+			const targetRanges = data.dropRange ? [ data.dropRange ] : Array.from( viewDocument.selection.getRanges() );
 
-			doc.fire( 'clipboardInput', {
+			viewDocument.fire( 'clipboardInput', {
 				dataTransfer: data.dataTransfer,
 				targetRanges
 			} );
@@ -45,14 +47,14 @@ export default class ClipboardObserver extends DomEventObserver {
 		};
 
 		if ( domEvent.type == 'drop' ) {
-			evtData.dropRange = getDropViewRange( this.document, domEvent );
+			evtData.dropRange = getDropViewRange( this.view, domEvent );
 		}
 
 		this.fire( domEvent.type, domEvent, evtData );
 	}
 }
 
-function getDropViewRange( doc, domEvent ) {
+function getDropViewRange( view, domEvent ) {
 	const domDoc = domEvent.target.ownerDocument;
 	const x = domEvent.clientX;
 	const y = domEvent.clientY;
@@ -70,9 +72,9 @@ function getDropViewRange( doc, domEvent ) {
 	}
 
 	if ( domRange ) {
-		return doc.domConverter.domRangeToView( domRange );
+		return view.domConverter.domRangeToView( domRange );
 	} else {
-		return doc.selection.getFirstRange();
+		return view.document.selection.getFirstRange();
 	}
 }
 
@@ -84,7 +86,7 @@ function getDropViewRange( doc, domEvent ) {
  * and inserted into the editor.
  *
  * Note that this event is not available by default. To make it available {@link module:clipboard/clipboardobserver~ClipboardObserver}
- * needs to be added to {@link module:engine/view/document~Document} by the {@link module:engine/view/document~Document#addObserver} method.
+ * needs to be added to {@link module:engine/view/document~Document} by the {@link module:engine/view/view~View#addObserver} method.
  * It's done by the {@link module:clipboard/clipboard~Clipboard} feature. If it's not loaded, it must be done manually.
  *
  * @see module:clipboard/clipboardobserver~ClipboardObserver
@@ -104,7 +106,7 @@ function getDropViewRange( doc, domEvent ) {
  * Introduced by {@link module:clipboard/clipboardobserver~ClipboardObserver}.
  *
  * Note that this event is not available by default. To make it available {@link module:clipboard/clipboardobserver~ClipboardObserver}
- * needs to be added to {@link module:engine/view/document~Document} by the {@link module:engine/view/document~Document#addObserver} method.
+ * needs to be added to {@link module:engine/view/document~Document} by the {@link module:engine/view/view~View#addObserver} method.
  * It's done by the {@link module:clipboard/clipboard~Clipboard} feature. If it's not loaded, it must be done manually.
  *
  * @see module:engine/view/document~Document#event:clipboardInput
@@ -118,7 +120,7 @@ function getDropViewRange( doc, domEvent ) {
  * Introduced by {@link module:clipboard/clipboardobserver~ClipboardObserver}.
  *
  * Note that this event is not available by default. To make it available {@link module:clipboard/clipboardobserver~ClipboardObserver}
- * needs to be added to {@link module:engine/view/document~Document} by the {@link module:engine/view/document~Document#addObserver} method.
+ * needs to be added to {@link module:engine/view/document~Document} by the {@link module:engine/view/view~View#addObserver} method.
  * It's done by the {@link module:clipboard/clipboard~Clipboard} feature. If it's not loaded, it must be done manually.
  *
  * @see module:engine/view/document~Document#event:clipboardInput
@@ -133,7 +135,7 @@ function getDropViewRange( doc, domEvent ) {
  * Introduced by {@link module:clipboard/clipboardobserver~ClipboardObserver}.
  *
  * Note that this event is not available by default. To make it available {@link module:clipboard/clipboardobserver~ClipboardObserver}
- * needs to be added to {@link module:engine/view/document~Document} by the {@link module:engine/view/document~Document#addObserver} method.
+ * needs to be added to {@link module:engine/view/document~Document} by the {@link module:engine/view/view~View#addObserver} method.
  * It's done by the {@link module:clipboard/clipboard~Clipboard} feature. If it's not loaded, it must be done manually.
  *
  * @see module:engine/view/document~Document#event:clipboardInput
@@ -147,7 +149,7 @@ function getDropViewRange( doc, domEvent ) {
  * Introduced by {@link module:clipboard/clipboardobserver~ClipboardObserver}.
  *
  * Note that this event is not available by default. To make it available {@link module:clipboard/clipboardobserver~ClipboardObserver}
- * needs to be added to {@link module:engine/view/document~Document} by the {@link module:engine/view/document~Document#addObserver} method.
+ * needs to be added to {@link module:engine/view/document~Document} by the {@link module:engine/view/view~View#addObserver} method.
  * It's done by the {@link module:clipboard/clipboard~Clipboard} feature. If it's not loaded, it must be done manually.
  *
  * @see module:clipboard/clipboardobserver~ClipboardObserver
@@ -161,7 +163,7 @@ function getDropViewRange( doc, domEvent ) {
  * Introduced by {@link module:clipboard/clipboardobserver~ClipboardObserver}.
  *
  * Note that this event is not available by default. To make it available {@link module:clipboard/clipboardobserver~ClipboardObserver}
- * needs to be added to {@link module:engine/view/document~Document} by the {@link module:engine/view/document~Document#addObserver} method.
+ * needs to be added to {@link module:engine/view/document~Document} by the {@link module:engine/view/view~View#addObserver} method.
  * It's done by the {@link module:clipboard/clipboard~Clipboard} feature. If it's not loaded, it must be done manually.
  *
  * @see module:clipboard/clipboardobserver~ClipboardObserver
