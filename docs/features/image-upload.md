@@ -54,6 +54,8 @@ To make enabling image upload in CKEditor 5 a breeze, by default all builds incl
 
 This is all. At this point, image upload will be automatically enabled in your application.
 
+If you're having troubles in setting up Easy Image, please [contact us](https://ckeditor.com/contact/).
+
 ### Demo
 
 The demo below uses the {@link builds/guides/overview#classic-editor Classic editor} configured (like above) to use the Easy Image service provided by CKEditor Cloud Services:
