@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -8,7 +8,7 @@
 import EasyImage from '../src/easyimage';
 import CloudServicesUploadAdapter from '../src/cloudservicesuploadadapter';
 import Image from '@ckeditor/ckeditor5-image/src/image';
-import ImageUpload from '@ckeditor/ckeditor5-upload/src/imageupload';
+import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import UploadGatewayMock from './_utils/uploadgatewaymock';
 import { createNativeFileMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
@@ -45,6 +45,7 @@ describe( 'EasyImage', () => {
 				plugins: [ EasyImage ],
 				cloudServices: {
 					tokenUrl: 'abc',
+					uploadUrl: 'def'
 				}
 			} )
 			.then( editor => {
@@ -112,7 +113,7 @@ describe( 'EasyImage', () => {
 							reject( new Error( data.title ) );
 						} );
 
-						editor.document.on( 'change', () => {
+						editor.model.document.on( 'change', () => {
 							// Check whether the image is uploaded and the image's src is replaced correctly.
 							if ( editor.getData() === '<figure class="image"><img src="http://image.mock.url/"></figure>' ) {
 								editor.destroy().then( resolve );

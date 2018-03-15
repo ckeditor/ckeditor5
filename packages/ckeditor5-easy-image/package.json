@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-easy-image",
-  "version": "1.0.0-alpha.2",
+  "version": "1.0.0-beta.1",
   "description": "Easy Image feature for CKEditor 5.",
   "keywords": [
     "ckeditor5",
@@ -8,19 +8,19 @@
   ],
   "dependencies": {
     "@ckeditor/ckeditor-cloudservices-core": "^0.2.0",
-    "@ckeditor/ckeditor5-cloudservices": "^1.0.0-alpha.1",
-    "@ckeditor/ckeditor5-core": "^1.0.0-alpha.2",
-    "@ckeditor/ckeditor5-image": "^1.0.0-alpha.2",
-    "@ckeditor/ckeditor5-upload": "^1.0.0-alpha.2"
+    "@ckeditor/ckeditor5-cloudservices": "^1.0.0-beta.1",
+    "@ckeditor/ckeditor5-core": "^1.0.0-beta.1",
+    "@ckeditor/ckeditor5-image": "^1.0.0-beta.1",
+    "@ckeditor/ckeditor5-upload": "^1.0.0-beta.1"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-editor-classic": "^1.0.0-alpha.2",
-    "@ckeditor/ckeditor5-paragraph": "^1.0.0-alpha.2",
-    "@ckeditor/ckeditor5-utils": "^1.0.0-alpha.2",
-    "eslint": "^4.8.0",
-    "eslint-config-ckeditor5": "^1.0.6",
+    "@ckeditor/ckeditor5-editor-classic": "^1.0.0-beta.1",
+    "@ckeditor/ckeditor5-paragraph": "^1.0.0-beta.1",
+    "@ckeditor/ckeditor5-utils": "^1.0.0-beta.1",
+    "eslint": "^4.15.0",
+    "eslint-config-ckeditor5": "^1.0.7",
     "husky": "^0.14.3",
-    "lint-staged": "^4.2.3"
+    "lint-staged": "^6.0.0"
   },
   "engines": {
     "node": ">=6.0.0",

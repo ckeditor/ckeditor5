@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -47,7 +47,7 @@ export default class CloudServicesUploadAdapter extends Plugin {
 
 		this._uploadGateway = new CloudServicesUploadAdapter._UploadGateway( token, uploadUrl );
 
-		editor.plugins.get( FileRepository ).createAdapter = loader => {
+		editor.plugins.get( FileRepository ).createUploadAdapter = loader => {
 			return new Adapter( this._uploadGateway, loader );
 		};
 	}
