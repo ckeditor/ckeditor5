@@ -1,0 +1,14 @@
+# Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+"Language: tt\n"
+"Language-Team: Tatar (https://www.transifex.com/ckeditor/teams/11143/tt/)\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "Label for the Save button."
+msgid "Save"
+msgstr "Сакла"
+
+msgctxt "Label for the Cancel button."
+msgid "Cancel"
+msgstr ""

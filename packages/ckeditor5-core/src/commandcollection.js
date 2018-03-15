@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -70,7 +70,7 @@ export default class CommandCollection {
 	/**
 	 * Returns iterator of command names.
 	 *
-	 * @returns {Iterator.<String>}
+	 * @returns {Iterable.<String>}
 	 */
 	* names() {
 		yield* this._commands.keys();
@@ -79,14 +79,18 @@ export default class CommandCollection {
 	/**
 	 * Returns iterator of command instances.
 	 *
-	 * @returns {Iterator.<module:core/command~Command>}
+	 * @returns {Iterable.<module:core/command~Command>}
 	 */
 	* commands() {
 		yield* this._commands.values();
 	}
 
 	/**
-	 * Collection iterator.
+	 * Iterable interface.
+	 *
+	 * Returns `[ commandName, commandInstance ]` pairs.
+	 *
+	 * @returns {Iterable.<Array>}
 	 */
 	[ Symbol.iterator ]() {
 		return this._commands[ Symbol.iterator ]();

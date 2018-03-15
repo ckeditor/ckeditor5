@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -67,6 +67,11 @@
  *			removePlugins: [ 'Bold', 'Italic' ]
  *		};
  *
+ * **Note:** Be careful when removing plugins using `config.removePlugins` from CKEditor builds.
+ * If removed plugins were providing toolbar buttons, the default toolbar configuration included in a build
+ * will become invalid. In such case you need to provide the updated
+ * {@link module:core/editor/editorconfig~EditorConfig#toolbar toolbar configuration}.
+ *
  * @member {Array.<String>} module:core/editor/editorconfig~EditorConfig#removePlugins
  */
 
@@ -105,4 +110,36 @@
  * (e.g. the top menu). Thanks to setting the toolbar offset the toolbar won't be positioned underneath or above the page's UI.
  *
  * @member {Array.<String>|Object} module:core/editor/editorconfig~EditorConfig#toolbar
+ */
+
+/**
+ * Editor UI's language.
+ *
+ * The language code is defined in the [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) standard.
+ * CKEditor 5 currently supports around 20 languages and the number is growing.
+ *
+ * Note: You don't have to specify this option if your build is optimized for one language or if it's the default language
+ * (English is the default language for CDN builds).
+ *
+ * Simple usage:
+ *
+ *		ClassicEditor
+ *			.create( document.querySelector( '#editor' ), {
+ *				language: 'de'
+ *			} )
+ *			.then( editor => {
+ *				console.log( editor );
+ *			} )
+ *			.catch( error => {
+ *				console.error( error );
+ *			} );
+ *
+ * After this step you need to attach the corresponding translation file. Translation files are available at CDN for predefined builds:
+ *		`<script src="https://cdn.ckeditor.com/ckeditor5/[version.number]/[distribution]/lang/[lang].js"></script>`
+ *
+ * But you can add them manually by coping from the `node_modules/@ckeditor/ckeditor5-build-[name]/build/lang/[lang].js'`.
+ *
+ * Check the {@glink features/ui-language UI language guide} for more information about the localization options and translation process.
+ *
+ * @member {String} module:core/editor/editorconfig~EditorConfig#language
  */

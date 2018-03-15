@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -45,7 +45,7 @@ export default class Command {
 		 * For example, the `bold` command's value is whether the selection starts in a bolded text.
 		 * And the value of the `link` command may be an object with links details.
 		 *
-		 * It's possible for a command to have no value (e.g. for stateless actions such as `uploadImage`).
+		 * It's possible for a command to have no value (e.g. for stateless actions such as `imageUpload`).
 		 *
 		 * @observable
 		 * @readonly
@@ -66,7 +66,7 @@ export default class Command {
 		this.decorate( 'execute' );
 
 		// By default every command is refreshed when changes are applied to the model.
-		this.listenTo( this.editor.document, 'changesDone', () => {
+		this.listenTo( this.editor.model.document, 'change', () => {
 			this.refresh();
 		} );
 
@@ -99,7 +99,7 @@ export default class Command {
 	 * in this method.
 	 *
 	 * This method is automatically called when
-	 * {@link module:engine/model/document~Document#event:changesDone any changes are applied to the model}.
+	 * {@link module:engine/model/document~Document#event:change any changes are applied to the document}.
 	 */
 	refresh() {
 		this.isEnabled = true;

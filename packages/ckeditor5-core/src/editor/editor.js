@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -8,19 +8,26 @@
  */
 
 import Config from '@ckeditor/ckeditor5-utils/src/config';
+import EditingController from '@ckeditor/ckeditor5-engine/src/controller/editingcontroller';
 import PluginCollection from '../plugincollection';
 import CommandCollection from '../commandcollection';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 import DataController from '@ckeditor/ckeditor5-engine/src/controller/datacontroller';
-import Document from '@ckeditor/ckeditor5-engine/src/model/document';
+import Conversion from '@ckeditor/ckeditor5-engine/src/conversion/conversion';
+import Model from '@ckeditor/ckeditor5-engine/src/model/model';
+import EditingKeystrokeHandler from '../editingkeystrokehandler';
 
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
- * Class representing a basic editor. It contains a base architecture, without much additional logic.
+ * Class representing the base of the editor. It is the API all plugins can expect to get when using `editor` property.
+ * It should be enough to implement editing part of feature (schema definition, conversion, commands, keystrokes, etc.).
+ * However it does not define editor UI, which is defined in {@link module:core/editor/editorwithui~EditorWithUI}.
  *
- * See also {@link module:core/editor/standardeditor~StandardEditor}.
+ * All editors implementation (like {@link module:editor-classic/classiceditor~ClassicEditor} or
+ * {@link module:editor-inline/inlineeditor~InlineEditor}) should extend this class. They can add their
+ * own methods and properties.
  *
  * @mixes module:utils/observablemixin~ObservableMixin
  */
@@ -63,7 +70,7 @@ export default class Editor {
 		 * @readonly
 		 * @member {module:utils/locale~Locale}
 		 */
-		this.locale = new Locale( this.config.get( 'lang' ) );
+		this.locale = new Locale( this.config.get( 'language' ) );
 
 		/**
 		 * Shorthand for {@link module:utils/locale~Locale#t}.
@@ -72,33 +79,6 @@ export default class Editor {
 		 * @method #t
 		 */
 		this.t = this.locale.t;
-
-		/**
-		 * The editor's model document.
-		 *
-		 * The center of the editor's abstract data model. The document contains
-		 * {@link module:engine/model/document~Document#getRoot all editing roots},
-		 * {@link module:engine/model/document~Document#selection} and allows
-		 * applying changes to through the {@link module:engine/model/document~Document#batch batch interface}.
-		 *
-		 * Besides the model document, the editor usually contains two controllers –
-		 * {@link #data data controller} and {@link #editing editing controller}.
-		 * The former is used e.g. when setting or retrieving editor data and contains a useful
-		 * set of methods for operating on the content. The latter controls user input and rendering
-		 * the content for editing.
-		 *
-		 * @readonly
-		 * @member {module:engine/model/document~Document}
-		 */
-		this.document = new Document();
-
-		/**
-		 * The {@link module:engine/controller/datacontroller~DataController data controller}.
-		 *
-		 * @readonly
-		 * @member {module:engine/controller/datacontroller~DataController}
-		 */
-		this.data = new DataController( this.document );
 
 		/**
 		 * Defines whether this editor is in read-only mode.
@@ -112,17 +92,59 @@ export default class Editor {
 		this.set( 'isReadOnly', false );
 
 		/**
-		 * The {@link module:engine/controller/editingcontroller~EditingController editing controller}.
+		 * The editor's model.
 		 *
-		 * This property is set by more specialized editor classes (such as {@link module:core/editor/standardeditor~StandardEditor}),
-		 * however, it's required for features to work as their engine-related parts will try to connect converters.
-		 *
-		 * When defining a virtual editor class, like one working in Node.js, it's possible to plug a virtual
-		 * editing controller which only instantiates necessary properties, but without any observers and listeners.
+		 * The center of the editor's abstract data model.
 		 *
 		 * @readonly
-		 * @member {module:engine/controller/editingcontroller~EditingController} #editing
+		 * @member {module:engine/model/model~Model}
 		 */
+		this.model = new Model();
+
+		/**
+		 * The {@link module:engine/controller/datacontroller~DataController data controller}.
+		 * Used e.g. for setting or retrieving editor data.
+		 *
+		 * @readonly
+		 * @member {module:engine/controller/datacontroller~DataController}
+		 */
+		this.data = new DataController( this.model );
+
+		/**
+		 * The {@link module:engine/controller/editingcontroller~EditingController editing controller}.
+		 * Controls user input and rendering the content for editing.
+		 *
+		 * @readonly
+		 * @member {module:engine/controller/editingcontroller~EditingController}
+		 */
+		this.editing = new EditingController( this.model );
+		this.editing.view.document.bind( 'isReadOnly' ).to( this );
+
+		/**
+		 * Conversion manager to which conversion dispatchers are registered. Used to add converters to the editor.
+		 *
+		 * See {@link module:engine/conversion/conversion~Conversion#for} to learn how to use conversion helpers in order to
+		 * add converters to the editor.
+		 *
+		 * @readonly
+		 * @member {module:engine/conversion/conversion~Conversion}
+		 */
+		this.conversion = new Conversion();
+
+		this.conversion.register( 'downcast', [ this.editing.downcastDispatcher, this.data.downcastDispatcher ] );
+		this.conversion.register( 'editingDowncast', [ this.editing.downcastDispatcher ] );
+		this.conversion.register( 'dataDowncast', [ this.data.downcastDispatcher ] );
+
+		this.conversion.register( 'upcast', [ this.data.upcastDispatcher ] );
+
+		/**
+		 * Instance of the {@link module:core/editingkeystrokehandler~EditingKeystrokeHandler}.
+		 *
+		 * @readonly
+		 * @member {module:core/editingkeystrokehandler~EditingKeystrokeHandler}
+		 */
+		this.keystrokes = new EditingKeystrokeHandler( this );
+		this.keystrokes.listenTo( this.editing.view.document );
 	}
 
 	/**
@@ -174,8 +196,10 @@ export default class Editor {
 
 		return this.plugins.destroy()
 			.then( () => {
-				this.document.destroy();
+				this.model.destroy();
 				this.data.destroy();
+				this.editing.destroy();
+				this.keystrokes.destroy();
 			} );
 	}
 
@@ -226,12 +250,6 @@ mix( Editor, ObservableMixin );
  */
 
 /**
- * Fired when the editor UI is ready. This event won't be fired if the editor has no UI.
- *
- * @event uiReady
- */
-
-/**
  * Fired when the data loaded to the editor is ready. If a specific editor doesn't load
  * any data initially, this event will be fired right before {@link #event:ready}.
  *
@@ -239,8 +257,14 @@ mix( Editor, ObservableMixin );
  */
 
 /**
- * Fired when {@link #event:pluginsReady plugins}, {@link #event:uiReady UI} and {@link #event:dataReady data} and all additional
+ * Fired when {@link #event:pluginsReady plugins}, and {@link #event:dataReady data} and all additional
  * editor components are ready.
+ *
+ * Note: This event is most useful for plugin developers. When integrating the editor with your website or
+ * application you do not have to listen to `editor#ready` because when the promise returned by the static
+ * {@link module:core/editor/editor~Editor.create `Editor.create()`} event is resolved, the editor is already ready.
+ * In fact, since the first moment when the editor instance is available to you is inside `then()`'s callback,
+ * you cannot even add a listener to the `editor#ready` event.
  *
  * @event ready
  */

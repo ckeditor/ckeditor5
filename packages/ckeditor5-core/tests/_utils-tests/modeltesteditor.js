@@ -1,13 +1,16 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
 import Editor from '../../src/editor/editor';
+import EditingController from '@ckeditor/ckeditor5-engine/src/controller/editingcontroller';
 import ModelTestEditor from '../../tests/_utils/modeltesteditor';
 
 import Plugin from '../../src/plugin';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
+import DataApiMixin from '../../src/editor/utils/dataapimixin';
+import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
 
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
@@ -21,15 +24,28 @@ describe( 'ModelTestEditor', () => {
 			const editor = new ModelTestEditor( { foo: 1 } );
 
 			expect( editor ).to.be.instanceof( Editor );
-
 			expect( editor.config.get( 'foo' ) ).to.equal( 1 );
+			expect( editor.data.processor ).to.be.instanceof( HtmlDataProcessor );
 		} );
 
-		it( 'creates model and view roots', () => {
+		it( 'should disable editing pipeline', () => {
+			const spy = sinon.spy( EditingController.prototype, 'destroy' );
 			const editor = new ModelTestEditor( { foo: 1 } );
 
-			expect( editor.document.getRoot() ).to.have.property( 'name', '$root' );
-			expect( editor.data.processor ).to.be.instanceof( HtmlDataProcessor );
+			sinon.assert.calledOnce( spy );
+
+			spy.restore();
+			return editor.destroy();
+		} );
+
+		it( 'creates main root element', () => {
+			const editor = new ModelTestEditor();
+
+			expect( editor.model.document.getRoot( 'main' ) ).to.instanceof( RootElement );
+		} );
+
+		it( 'mixes DataApiMixin', () => {
+			expect( testUtils.isMixed( ModelTestEditor, DataApiMixin ) ).to.true;
 		} );
 	} );
 
@@ -76,16 +92,16 @@ describe( 'ModelTestEditor', () => {
 				.then( newEditor => {
 					editor = newEditor;
 
-					editor.document.schema.allow( { name: '$text', inside: '$root' } );
+					editor.model.schema.extend( '$text', { allowIn: '$root' } );
 				} );
 		} );
 
 		it( 'should set data of the first root', () => {
-			editor.document.createRoot( '$root', 'secondRoot' );
+			editor.model.document.createRoot( '$root', 'secondRoot' );
 
 			editor.setData( 'foo' );
 
-			expect( getData( editor.document, { rootName: 'main', withoutSelection: true } ) ).to.equal( 'foo' );
+			expect( getData( editor.model, { rootName: 'main', withoutSelection: true } ) ).to.equal( 'foo' );
 		} );
 	} );
 
@@ -97,12 +113,12 @@ describe( 'ModelTestEditor', () => {
 				.then( newEditor => {
 					editor = newEditor;
 
-					editor.document.schema.allow( { name: '$text', inside: '$root' } );
+					editor.model.schema.extend( '$text', { allowIn: '$root' } );
 				} );
 		} );
 
 		it( 'should set data of the first root', () => {
-			setData( editor.document, 'foo' );
+			setData( editor.model, 'foo' );
 
 			expect( editor.getData() ).to.equal( 'foo' );
 		} );

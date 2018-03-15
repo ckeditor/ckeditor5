@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -31,6 +31,69 @@ const utils = {
 		afterEach( () => {
 			utils.sinon.restore();
 		} );
+	},
+
+	/**
+	 * Executes specified assertions. It expects that at least one function will not throw an error.
+	 *
+	 * Some of the tests fail because different browsers renders selection differently when it comes to element boundaries.
+	 * Using this method we can check few scenarios.
+	 *
+	 * See https://github.com/ckeditor/ckeditor5-core/issues/107.
+	 *
+	 * Usage:
+	 *
+	 *      it( 'test', () => {
+	 *          // Test bootstrapping...
+	 *
+	 *          const assertEdge = () => {
+	 *              // expect();
+	 *          };
+	 *
+	 *          const assertAll = () => {
+	 *              // expect();
+	 *          };
+	 *
+	 *          testUtils.checkAssertions( assertEdge, assertAll );
+	 *      } );
+	 *
+	 * @param {...Function} assertions Functions that will be executed.
+	 */
+	checkAssertions( ...assertions ) {
+		const errors = [];
+
+		for ( const assertFn of assertions ) {
+			try {
+				assertFn();
+
+				return;
+			} catch ( err ) {
+				errors.push( err.message );
+			}
+		}
+
+		throw new Error( errors.join( '\n\n' ) );
+	},
+
+	/**
+	 * Checks if given mixin i mixed to given class using {@link module:utils/mix mix} util.
+	 *
+	 * @param {Function} targetClass Class to check.
+	 * @param {Object} mixin Mixin to check.
+	 * @returns {Boolean} `True` when mixin is mixed to to target class, `false` otherwise.
+	 */
+	isMixed( targetClass, mixin ) {
+		let isValid = true;
+
+		for ( const property in mixin ) {
+			if ( mixin.hasOwnProperty( property ) ) {
+				if ( targetClass.prototype[ property ] !== mixin[ property ] ) {
+					isValid = false;
+				}
+			}
+		}
+
+		return isValid;
 	}
 };
 

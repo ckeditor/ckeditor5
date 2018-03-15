@@ -1,10 +1,12 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
 import Editor from '../../src/editor/editor';
+import DataApiMixin from '../../src/editor/utils/dataapimixin';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
  * A simple editor implementation with a functional model part of the engine (the document).
@@ -18,31 +20,20 @@ export default class ModelTestEditor extends Editor {
 	constructor( config ) {
 		super( config );
 
-		this.document.createRoot();
-
+		// Use the HTML data processor in this editor.
 		this.data.processor = new HtmlDataProcessor();
-	}
 
-	/**
-	 * Sets the data in the editor's main root.
-	 *
-	 * @param {*} data The data to load.
-	 */
-	setData( data ) {
-		this.data.set( data );
-	}
+		// Disable editing pipeline.
+		this.editing.destroy();
 
-	/**
-	 * Gets the data from the editor's main root.
-	 */
-	getData() {
-		return this.data.get();
+		// Create the ("main") root element of the model tree.
+		this.model.document.createRoot();
 	}
 
 	/**
 	 * Creates a virtual, element-less editor instance.
 	 *
-	 * @param {Object} config See {@link core.editor.StandardEditor}'s param.
+	 * @param {Object} config See {@link core.editor.Editor}'s param.
 	 * @returns {Promise} Promise resolved once editor is ready.
 	 * @returns {core.editor.VirtualTestEditor} return.editor The editor instance.
 	 */
@@ -61,3 +52,5 @@ export default class ModelTestEditor extends Editor {
 		} );
 	}
 }
+
+mix( ModelTestEditor, DataApiMixin );

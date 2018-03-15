@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -55,7 +55,11 @@ export default class PluginCollection {
 	}
 
 	/**
-	 * Collection iterator. Returns `[ PluginConstructor, pluginInstance ]` pairs.
+	 * Iterable interface.
+	 *
+	 * Returns `[ PluginConstructor, pluginInstance ]` pairs.
+	 *
+	 * @returns {Iterable.<Array>}
 	 */
 	* [ Symbol.iterator ]() {
 		for ( const entry of this._plugins ) {
@@ -116,7 +120,7 @@ export default class PluginCollection {
 			 * that you tried loading plugins by name. However, unlike CKEditor 4, CKEditor 5 does not implement a "plugin loader".
 			 * This means that CKEditor 5 does not know where to load the plugin modules from. Therefore, you need to
 			 * provide each plugin through reference (as a constructor function). Check out the examples in
-			 * {@glink builds/guides/integration/advanced-setup#Scenario-2-Building-from-source "Building from source"}.
+			 * {@glink builds/guides/integration/advanced-setup#scenario-2-building-from-source "Building from source"}.
 			 *
 			 * @error plugincollection-plugin-not-found
 			 * @param {Array.<String>} plugins The name of the plugins which could not be loaded.

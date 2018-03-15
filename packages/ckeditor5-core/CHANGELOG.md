@@ -1,6 +1,21 @@
 Changelog
 =========
 
+## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-core/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
+
+### Other changes
+
+* Moved `EditingController`, `DataController` and `EditingKeystrokeHandler` from `StandardEditor` to the `Editor` class. Closes [#110](https://github.com/ckeditor/ckeditor5-core/issues/110). ([5a2031e](https://github.com/ckeditor/ckeditor5-core/commit/5a2031e))
+* Removed the `StandardEditor` class in favor of `DataInterface` and `ElementInterface` mixins. Added `EditorWithUI` interface. Closes [#115](https://github.com/ckeditor/ckeditor5-core/issues/115). Closes [#113](https://github.com/ckeditor/ckeditor5-core/issues/113). Closes https://github.com/ckeditor/ckeditor5/issues/303. ([fe81992](https://github.com/ckeditor/ckeditor5-core/commit/fe81992))
+* `Command` should listen to `model.Document#event:change`. ([912570d](https://github.com/ckeditor/ckeditor5-core/commit/912570d))
+* Changed `config.lang` to `config.language` to align to the naming convention. ([8720973](https://github.com/ckeditor/ckeditor5-core/commit/8720973))
+* Removed `loadDataFromElement()` method from `ElementApiMixin`. Closes [#120](https://github.com/ckeditor/ckeditor5-core/issues/120). ([4976e10](https://github.com/ckeditor/ckeditor5-core/commit/4976e10))
+
+### BREAKING CHANGES
+
+* The `StandardEditor` class was removed. Use `Editor` class with `DataInterface` and `ElementInterface` mixins.
+
+
 ## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-core/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
 
 ### Other changes

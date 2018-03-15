@@ -12,7 +12,7 @@ Together with the {@link api/engine editing engine} and the {@link api/ui standa
 
 ## Documentation
 
-See the introduction to the {@link framework/guides/architecture/intro#Core-editor-architecture core editor's architecture}.
+See the introduction to the {@link framework/guides/architecture/intro#core-editor-architecture core editor's architecture}.
 
 You can also browse the API documentation of this package by using the module tree on the left.
 
