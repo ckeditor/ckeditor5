@@ -27,7 +27,10 @@ const ElementApiMixin = {
 export default ElementApiMixin;
 
 /**
- * Mixin provides method for setting and getting data from/to element on which editor has been initialized.
+ * Interface describing an editor which replaced a DOM element (was "initialized on an element").
+ *
+ * Such an editor should provide a method to
+ * {@link module:core/editor/utils/elementapimixin~ElementApi#updateElement update the replaced element with the current data}.
  *
  * @interface ElementApi
  */

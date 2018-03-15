@@ -32,8 +32,8 @@ const DataApiMixin = {
 export default DataApiMixin;
 
 /**
- * Mixin provides methods for setting and getting data to/from editor main root element of the model tree
- * using {@link module:core/editor/editor~Editor#data data pipeline}.
+ * Interface for setting and getting data to/from the editor's main root element
+ * using the {@link module:core/editor/editor~Editor#data data pipeline}.
  *
  * @interface DataApi
  */
