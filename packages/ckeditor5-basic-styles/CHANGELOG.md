@@ -5,20 +5,15 @@ Changelog
 
 ### Features
 
-* Added strikethrough feature. ([78719c9](https://github.com/ckeditor/ckeditor5-basic-styles/commit/78719c9))
+* Added the strikethrough feature. ([78719c9](https://github.com/ckeditor/ckeditor5-basic-styles/commit/78719c9))
 
   Thanks to [@Natim](https://github.com/Natim)!
 * Updated icons for compatibility with the refreshed Lark theme (see [ckeditor/ckeditor5#645](https://github.com/ckeditor/ckeditor5/issues/645)). ([170fec2](https://github.com/ckeditor/ckeditor5-basic-styles/commit/170fec2))
 
-### Bug fixes
-
-* The bold icon should be centered in the view box. Closes https://github.com/ckeditor/ckeditor5/issues/811. ([4281eca](https://github.com/ckeditor/ckeditor5-basic-styles/commit/4281eca))
-
 ### Other changes
 
-* Align feature class naming to a new scheme. ([51a4b61](https://github.com/ckeditor/ckeditor5-basic-styles/commit/51a4b61))
-* Aligning with new conversion helpers API. ([5cccbe8](https://github.com/ckeditor/ckeditor5-basic-styles/commit/5cccbe8))
-* Migrated package styles to PostCSS. Moved the visual styles to ckeditor5-theme-lark (see [ckeditor/ckeditor5-ui#144](https://github.com/ckeditor/ckeditor5-ui/issues/144)). ([a5d5d9e](https://github.com/ckeditor/ckeditor5-basic-styles/commit/a5d5d9e))
+* Aligned feature class naming to the new scheme. ([51a4b61](https://github.com/ckeditor/ckeditor5-basic-styles/commit/51a4b61))
+* Migrated package styles to PostCSS. Moved the visual styles to `@ckeditor/ckeditor5-theme-lark` (see [ckeditor/ckeditor5-ui#144](https://github.com/ckeditor/ckeditor5-ui/issues/144)). ([a5d5d9e](https://github.com/ckeditor/ckeditor5-basic-styles/commit/a5d5d9e))
 * Updated translations. ([1ff4312](https://github.com/ckeditor/ckeditor5-basic-styles/commit/1ff4312))
 
 
