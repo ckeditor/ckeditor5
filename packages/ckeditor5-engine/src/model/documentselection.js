@@ -26,8 +26,8 @@ const storePrefix = 'selection:';
  * {@link module:engine/model/document~Document#selection document's selection}.
  * There can be only one instance of `DocumentSelection` per document.
  *
- * All selection modifiers should be used from the {@link module:engine/model/writer~Writer} instance
- * inside the {@link module:engine/model/model~Model#change} block, as it provides a secure way to modify model.
+ * Document selection can only be changed by using the {@link module:engine/model/writer~Writer} instance
+ * inside the {@link module:engine/model/model~Model#change `change()`} block, as it provides a secure way to modify model.
  *
  * `DocumentSelection` is automatically updated upon changes in the {@link module:engine/model/document~Document document}
  * to always contain valid ranges. Its attributes are inherited from the text unless set explicitly.

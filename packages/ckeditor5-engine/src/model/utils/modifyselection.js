@@ -37,9 +37,15 @@ const wordBoundaryCharacters = ' ,.?!:;"-()';
  *
  * **Note:** if you extend a forward selection in a backward direction you will in fact shrink it.
  *
+ * **Note:** Use {@link module:engine/model/model~Model#modifySelection} instead of this function.
+ * This function is only exposed to be reusable in algorithms
+ * which change the {@link module:engine/model/model~Model#modifySelection}
+ * method's behavior.
+ *
  * @param {module:engine/model/model~Model} model The model in context of which
  * the selection modification should be performed.
- * @param {module:engine/model/selection~Selection} selection The selection to modify.
+ * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
+ * The selection to modify.
  * @param {Object} [options]
  * @param {'forward'|'backward'} [options.direction='forward'] The direction in which the selection should be modified.
  * @param {'character'|'codePoint'|'word'} [options.unit='character'] The unit by which selection should be modified.
