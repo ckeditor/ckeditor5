@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -15,7 +15,7 @@ ClassicEditor
 		plugins: [
 			ArticlePluginSet
 		],
-		toolbar: [ 'headings', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ]
+		toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ]
 	} )
 	.then( editor => {
 		window.editor = editor;
@@ -25,5 +25,5 @@ ClassicEditor
 	} );
 
 window.setInterval( function() {
-	console.log( getData( window.editor.document ) );
+	console.log( getData( window.editor.model ) );
 }, 3000 );

@@ -1,0 +1,13 @@
+/**
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+.ck-content blockquote {
+	/* See #12 */
+	overflow: hidden;
+	padding-left: 1.5em;
+	margin-left: 0;
+	font-style: italic;
+	border-left: solid 5px hsl(0, 0%, 80%);
+}

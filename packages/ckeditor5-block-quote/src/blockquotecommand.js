@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -42,19 +42,16 @@ export default class BlockQuoteCommand extends Command {
 	 * a block quote.
 	 *
 	 * @fires execute
-	 * @param {Object} [options] Options for executed command.
-	 * @param {module:engine/model/batch~Batch} [options.batch] Batch to collect all the change steps.
-	 * A new batch will be created if this option is not set.
 	 */
-	execute( options = {} ) {
-		const doc = this.editor.document;
-		const schema = doc.schema;
-		const batch = options.batch || doc.batch();
+	execute() {
+		const model = this.editor.model;
+		const doc = model.document;
+		const schema = model.schema;
 		const blocks = Array.from( doc.selection.getSelectedBlocks() );
 
-		doc.enqueueChanges( () => {
+		model.change( writer => {
 			if ( this.value ) {
-				this._removeQuote( batch, blocks.filter( findQuote ) );
+				this._removeQuote( writer, blocks.filter( findQuote ) );
 			} else {
 				const blocksToQuote = blocks.filter( block => {
 					// Already quoted blocks needs to be considered while quoting too
@@ -62,7 +59,7 @@ export default class BlockQuoteCommand extends Command {
 					return findQuote( block ) || checkCanBeQuoted( schema, block );
 				} );
 
-				this._applyQuote( batch, blocksToQuote );
+				this._applyQuote( writer, blocksToQuote );
 			}
 		} );
 	}
@@ -74,7 +71,7 @@ export default class BlockQuoteCommand extends Command {
 	 * @returns {Boolean} The current value.
 	 */
 	_getValue() {
-		const firstBlock = first( this.editor.document.selection.getSelectedBlocks() );
+		const firstBlock = first( this.editor.model.document.selection.getSelectedBlocks() );
 
 		// In the current implementation, the block quote must be an immediate parent of a block element.
 		return !!( firstBlock && findQuote( firstBlock ) );
@@ -91,8 +88,8 @@ export default class BlockQuoteCommand extends Command {
 			return true;
 		}
 
-		const selection = this.editor.document.selection;
-		const schema = this.editor.document.schema;
+		const selection = this.editor.model.document.selection;
+		const schema = this.editor.model.schema;
 
 		const firstBlock = first( selection.getSelectedBlocks() );
 
@@ -111,14 +108,14 @@ export default class BlockQuoteCommand extends Command {
 	 * will be moved out of it, so other quoted blocks remained quoted.
 	 *
 	 * @private
-	 * @param {module:engine/model/batch~Batch} batch
+	 * @param {module:engine/model/writer~Writer} writer
 	 * @param {Array.<module:engine/model/element~Element>} blocks
 	 */
-	_removeQuote( batch, blocks ) {
+	_removeQuote( writer, blocks ) {
 		// Unquote all groups of block. Iterate in the reverse order to not break following ranges.
 		getRangesOfBlockGroups( blocks ).reverse().forEach( groupRange => {
 			if ( groupRange.start.isAtStart && groupRange.end.isAtEnd ) {
-				batch.unwrap( groupRange.start.parent );
+				writer.unwrap( groupRange.start.parent );
 
 				return;
 			}
@@ -127,7 +124,7 @@ export default class BlockQuoteCommand extends Command {
 			if ( groupRange.start.isAtStart ) {
 				const positionBefore = Position.createBefore( groupRange.start.parent );
 
-				batch.move( groupRange, positionBefore );
+				writer.move( groupRange, positionBefore );
 
 				return;
 			}
@@ -135,14 +132,14 @@ export default class BlockQuoteCommand extends Command {
 			// The blocks are in the middle of an <bQ> so we need to split the <bQ> after the last block
 			// so we move the items there.
 			if ( !groupRange.end.isAtEnd ) {
-				batch.split( groupRange.end );
+				writer.split( groupRange.end );
 			}
 
 			// Now we are sure that groupRange.end.isAtEnd is true, so let's move the blocks right.
 
 			const positionAfter = Position.createAfter( groupRange.end.parent );
 
-			batch.move( groupRange, positionAfter );
+			writer.move( groupRange, positionAfter );
 		} );
 	}
 
@@ -150,10 +147,10 @@ export default class BlockQuoteCommand extends Command {
 	 * Applies the quote to given blocks.
 	 *
 	 * @private
-	 * @param {module:engine/model/batch~Batch} batch
+	 * @param {module:engine/model/writer~Writer} writer
 	 * @param {Array.<module:engine/model/element~Element>} blocks
 	 */
-	_applyQuote( batch, blocks ) {
+	_applyQuote( writer, blocks ) {
 		const quotesToMerge = [];
 
 		// Quote all groups of block. Iterate in the reverse order to not break following ranges.
@@ -163,7 +160,7 @@ export default class BlockQuoteCommand extends Command {
 			if ( !quote ) {
 				quote = new Element( 'blockQuote' );
 
-				batch.wrap( groupRange, quote );
+				writer.wrap( groupRange, quote );
 			}
 
 			quotesToMerge.push( quote );
@@ -175,7 +172,7 @@ export default class BlockQuoteCommand extends Command {
 		// we want to keep the reference to the first (furthest left) one.
 		quotesToMerge.reverse().reduce( ( currentQuote, nextQuote ) => {
 			if ( currentQuote.nextSibling == nextQuote ) {
-				batch.merge( Position.createAfter( currentQuote ) );
+				writer.merge( Position.createAfter( currentQuote ) );
 
 				return currentQuote;
 			}
@@ -223,15 +220,9 @@ function getRangesOfBlockGroups( blocks ) {
 
 // Checks whether <bQ> can wrap the block.
 function checkCanBeQuoted( schema, block ) {
-	const isBQAllowed = schema.check( {
-		name: 'blockQuote',
-		inside: Position.createBefore( block )
-	} );
-	const isBlockAllowedInBQ = schema.check( {
-		name: block.name,
-		attributes: Array.from( block.getAttributeKeys() ),
-		inside: 'blockQuote'
-	} );
+	// TMP will be replaced with schema.checkWrap().
+	const isBQAllowed = schema.checkChild( block.parent, 'blockQuote' );
+	const isBlockAllowedInBQ = schema.checkChild( [ '$root', 'blockQuote' ], block );
 
 	return isBQAllowed && isBlockAllowedInBQ;
 }

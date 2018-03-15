@@ -1,12 +1,12 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
-import BlockQuoteEngine from '../src/blockquoteengine';
+import BlockQuoteEditing from '../src/blockquoteediting';
 import BlockQuoteCommand from '../src/blockquotecommand';
 
-import buildModelConverter from '@ckeditor/ckeditor5-engine/src/conversion/buildmodelconverter';
+import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -15,38 +15,31 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
 describe( 'BlockQuoteCommand', () => {
-	let editor, doc, command;
+	let editor, model, command;
 
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ BlockQuoteEngine ]
+				plugins: [ BlockQuoteEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
 
-				doc = editor.document;
+				model = editor.model;
 
-				doc.schema.registerItem( 'paragraph', '$block' );
-				doc.schema.registerItem( 'heading', '$block' );
-				doc.schema.registerItem( 'widget' );
+				model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+				model.schema.register( 'heading', { inheritAllFrom: '$block' } );
+				model.schema.register( 'widget' );
 
-				doc.schema.allow( { name: 'widget', inside: '$root' } );
-				doc.schema.allow( { name: '$text', inside: 'widget' } );
+				model.schema.extend( 'widget', {
+					allowIn: '$root',
+					isLimit: true
+				} );
+				model.schema.extend( '$text', { allowIn: 'widget' } );
 
-				doc.schema.limits.add( 'widget' );
-
-				buildModelConverter().for( editor.editing.modelToView )
-					.fromElement( 'paragraph' )
-					.toElement( 'p' );
-
-				buildModelConverter().for( editor.editing.modelToView )
-					.fromElement( 'heading' )
-					.toElement( 'h' );
-
-				buildModelConverter().for( editor.editing.modelToView )
-					.fromElement( 'widget' )
-					.toElement( 'widget' );
+				editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'paragraph', view: 'p' } ) );
+				editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'heading', view: 'h' } ) );
+				editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'widget', view: 'widget' } ) );
 
 				command = editor.commands.get( 'blockQuote' );
 			} );
@@ -63,33 +56,33 @@ describe( 'BlockQuoteCommand', () => {
 
 	describe( 'value', () => {
 		it( 'is false when selection is not in a block quote', () => {
-			setModelData( doc, '<paragraph>x[]x</paragraph>' );
+			setModelData( model, '<paragraph>x[]x</paragraph>' );
 
 			expect( command ).to.have.property( 'value', false );
 		} );
 
 		it( 'is false when start of the selection is not in a block quote', () => {
-			setModelData( doc, '<paragraph>x[x</paragraph><blockQuote><paragraph>y]y</paragraph></blockQuote>' );
+			setModelData( model, '<paragraph>x[x</paragraph><blockQuote><paragraph>y]y</paragraph></blockQuote>' );
 
 			expect( command ).to.have.property( 'value', false );
 		} );
 
 		it( 'is false when selection starts in a blockless space', () => {
-			doc.schema.allow( { name: '$text', inside: '$root' } );
+			model.schema.extend( '$text', { allowIn: '$root' } );
 
-			setModelData( doc, 'x[]x' );
+			setModelData( model, 'x[]x' );
 
 			expect( command ).to.have.property( 'value', false );
 		} );
 
 		it( 'is true when selection is in a block quote', () => {
-			setModelData( doc, '<blockQuote><paragraph>x[]x</paragraph></blockQuote>' );
+			setModelData( model, '<blockQuote><paragraph>x[]x</paragraph></blockQuote>' );
 
 			expect( command ).to.have.property( 'value', true );
 		} );
 
 		it( 'is true when selection starts in a block quote', () => {
-			setModelData( doc, '<blockQuote><paragraph>x[x</paragraph></blockQuote><paragraph>y]y</paragraph>' );
+			setModelData( model, '<blockQuote><paragraph>x[x</paragraph></blockQuote><paragraph>y]y</paragraph>' );
 
 			expect( command ).to.have.property( 'value', true );
 		} );
@@ -97,25 +90,25 @@ describe( 'BlockQuoteCommand', () => {
 
 	describe( 'isEnabled', () => {
 		it( 'is true when selection is in a block which can be wrapped with blockQuote', () => {
-			setModelData( doc, '<paragraph>x[]x</paragraph>' );
+			setModelData( model, '<paragraph>x[]x</paragraph>' );
 
 			expect( command ).to.have.property( 'isEnabled', true );
 		} );
 
 		it( 'is true when selection is in a block which is already in blockQuote', () => {
-			setModelData( doc, '<blockQuote><paragraph>x[]x</paragraph></blockQuote>' );
+			setModelData( model, '<blockQuote><paragraph>x[]x</paragraph></blockQuote>' );
 
 			expect( command ).to.have.property( 'isEnabled', true );
 		} );
 
 		it( 'is true when selection starts in a block which can be wrapped with blockQuote', () => {
-			setModelData( doc, '<paragraph>x[x</paragraph><widget>y]y</widget>' );
+			setModelData( model, '<paragraph>x[x</paragraph><widget>y]y</widget>' );
 
 			expect( command ).to.have.property( 'isEnabled', true );
 		} );
 
 		it( 'is false when selection is in an element which cannot be wrapped with blockQuote (because it cannot be its child)', () => {
-			setModelData( doc, '<widget>x[]x</widget>' );
+			setModelData( model, '<widget>x[]x</widget>' );
 
 			expect( command ).to.have.property( 'isEnabled', false );
 		} );
@@ -124,9 +117,13 @@ describe( 'BlockQuoteCommand', () => {
 			'is false when selection is in an element which cannot be wrapped with blockQuote' +
 			'(because mQ is not allowed in its parent)',
 			() => {
-				doc.schema.disallow( { name: 'blockQuote', inside: '$root' } );
+				model.schema.addChildCheck( ( ctx, childDef ) => {
+					if ( childDef.name == 'blockQuote' ) {
+						return false;
+					}
+				} );
 
-				setModelData( doc, '<paragraph>x[]x</paragraph>' );
+				setModelData( model, '<paragraph>x[]x</paragraph>' );
 
 				expect( command ).to.have.property( 'isEnabled', false );
 			}
@@ -134,7 +131,7 @@ describe( 'BlockQuoteCommand', () => {
 
 		// https://github.com/ckeditor/ckeditor5-engine/issues/826
 		// it( 'is false when selection starts in an element which cannot be wrapped with blockQuote', () => {
-		// 	setModelData( doc, '<widget>x[x</widget><paragraph>y]y</paragraph>' );
+		// 	setModelData( model, '<widget>x[x</widget><paragraph>y]y</paragraph>' );
 
 		// 	expect( command ).to.have.property( 'isEnabled', false );
 		// } );
@@ -144,7 +141,7 @@ describe( 'BlockQuoteCommand', () => {
 		describe( 'applying quote', () => {
 			it( 'should wrap a single block', () => {
 				setModelData(
-					doc,
+					model,
 					'<paragraph>abc</paragraph>' +
 					'<paragraph>x[]x</paragraph>' +
 					'<paragraph>def</paragraph>'
@@ -152,7 +149,7 @@ describe( 'BlockQuoteCommand', () => {
 
 				editor.execute( 'blockQuote' );
 
-				expect( getModelData( doc ) ).to.equal(
+				expect( getModelData( model ) ).to.equal(
 					'<paragraph>abc</paragraph>' +
 					'<blockQuote><paragraph>x[]x</paragraph></blockQuote>' +
 					'<paragraph>def</paragraph>'
@@ -165,7 +162,7 @@ describe( 'BlockQuoteCommand', () => {
 
 			it( 'should wrap multiple blocks', () => {
 				setModelData(
-					doc,
+					model,
 					'<heading>a[bc</heading>' +
 					'<paragraph>xx</paragraph>' +
 					'<paragraph>de]f</paragraph>'
@@ -173,7 +170,7 @@ describe( 'BlockQuoteCommand', () => {
 
 				editor.execute( 'blockQuote' );
 
-				expect( getModelData( doc ) ).to.equal(
+				expect( getModelData( model ) ).to.equal(
 					'<blockQuote>' +
 						'<heading>a[bc</heading>' +
 						'<paragraph>xx</paragraph>' +
@@ -188,7 +185,7 @@ describe( 'BlockQuoteCommand', () => {
 
 			it( 'should merge with an existing quote', () => {
 				setModelData(
-					doc,
+					model,
 					'<heading>a[bc</heading>' +
 					'<blockQuote><paragraph>x]x</paragraph><paragraph>yy</paragraph></blockQuote>' +
 					'<paragraph>def</paragraph>'
@@ -196,7 +193,7 @@ describe( 'BlockQuoteCommand', () => {
 
 				editor.execute( 'blockQuote' );
 
-				expect( getModelData( doc ) ).to.equal(
+				expect( getModelData( model ) ).to.equal(
 					'<blockQuote>' +
 						'<heading>a[bc</heading>' +
 						'<paragraph>x]x</paragraph>' +
@@ -212,14 +209,14 @@ describe( 'BlockQuoteCommand', () => {
 
 			it( 'should not merge with a quote preceding the current block', () => {
 				setModelData(
-					doc,
+					model,
 					'<blockQuote><paragraph>abc</paragraph></blockQuote>' +
 					'<paragraph>x[]x</paragraph>'
 				);
 
 				editor.execute( 'blockQuote' );
 
-				expect( getModelData( doc ) ).to.equal(
+				expect( getModelData( model ) ).to.equal(
 					'<blockQuote><paragraph>abc</paragraph></blockQuote>' +
 					'<blockQuote><paragraph>x[]x</paragraph></blockQuote>'
 				);
@@ -232,14 +229,14 @@ describe( 'BlockQuoteCommand', () => {
 
 			it( 'should not merge with a quote following the current block', () => {
 				setModelData(
-					doc,
+					model,
 					'<paragraph>x[]x</paragraph>' +
 					'<blockQuote><paragraph>abc</paragraph></blockQuote>'
 				);
 
 				editor.execute( 'blockQuote' );
 
-				expect( getModelData( doc ) ).to.equal(
+				expect( getModelData( model ) ).to.equal(
 					'<blockQuote><paragraph>x[]x</paragraph></blockQuote>' +
 					'<blockQuote><paragraph>abc</paragraph></blockQuote>'
 				);
@@ -252,7 +249,7 @@ describe( 'BlockQuoteCommand', () => {
 
 			it( 'should merge with an existing quote (more blocks)', () => {
 				setModelData(
-					doc,
+					model,
 					'<heading>a[bc</heading>' +
 					'<paragraph>def</paragraph>' +
 					'<blockQuote><paragraph>x]x</paragraph></blockQuote>' +
@@ -261,7 +258,7 @@ describe( 'BlockQuoteCommand', () => {
 
 				editor.execute( 'blockQuote' );
 
-				expect( getModelData( doc ) ).to.equal(
+				expect( getModelData( model ) ).to.equal(
 					'<blockQuote>' +
 						'<heading>a[bc</heading>' +
 						'<paragraph>def</paragraph>' +
@@ -277,7 +274,7 @@ describe( 'BlockQuoteCommand', () => {
 
 			it( 'should not wrap non-block content', () => {
 				setModelData(
-					doc,
+					model,
 					'<paragraph>a[bc</paragraph>' +
 					'<widget>xx</widget>' +
 					'<paragraph>de]f</paragraph>'
@@ -285,7 +282,7 @@ describe( 'BlockQuoteCommand', () => {
 
 				editor.execute( 'blockQuote' );
 
-				expect( getModelData( doc ) ).to.equal(
+				expect( getModelData( model ) ).to.equal(
 					'<blockQuote>' +
 						'<paragraph>a[bc</paragraph>' +
 					'</blockQuote>' +
@@ -302,7 +299,7 @@ describe( 'BlockQuoteCommand', () => {
 
 			it( 'should correctly wrap and merge groups of blocks', () => {
 				setModelData(
-					doc,
+					model,
 					'<paragraph>a[bc</paragraph>' +
 					'<widget>xx</widget>' +
 					'<paragraph>def</paragraph>' +
@@ -313,7 +310,7 @@ describe( 'BlockQuoteCommand', () => {
 
 				editor.execute( 'blockQuote' );
 
-				expect( getModelData( doc ) ).to.equal(
+				expect( getModelData( model ) ).to.equal(
 					'<blockQuote><paragraph>a[bc</paragraph></blockQuote>' +
 					'<widget>xx</widget>' +
 					'<blockQuote><paragraph>def</paragraph><paragraph>ghi</paragraph></blockQuote>' +
@@ -332,7 +329,7 @@ describe( 'BlockQuoteCommand', () => {
 
 			it( 'should correctly merge a couple of subsequent quotes', () => {
 				setModelData(
-					doc,
+					model,
 					'<paragraph>x</paragraph>' +
 					'<paragraph>a[bc</paragraph>' +
 					'<blockQuote><paragraph>def</paragraph></blockQuote>' +
@@ -344,7 +341,7 @@ describe( 'BlockQuoteCommand', () => {
 
 				editor.execute( 'blockQuote' );
 
-				expect( getModelData( doc ) ).to.equal(
+				expect( getModelData( model ) ).to.equal(
 					'<paragraph>x</paragraph>' +
 					'<blockQuote>' +
 						'<paragraph>a[bc</paragraph>' +
@@ -371,14 +368,17 @@ describe( 'BlockQuoteCommand', () => {
 
 			it( 'should not wrap a block which can not be in a quote', () => {
 				// blockQuote is allowed in root, but fooBlock can not be inside blockQuote.
-				doc.schema.registerItem( 'fooBlock', '$block' );
-				doc.schema.disallow( { name: 'fooBlock', inside: 'blockQuote' } );
-				buildModelConverter().for( editor.editing.modelToView )
-					.fromElement( 'fooBlock' )
-					.toElement( 'fooblock' );
+				model.schema.register( 'fooBlock', { inheritAllFrom: '$block' } );
+				model.schema.addChildCheck( ( ctx, childDef ) => {
+					if ( ctx.endsWith( 'blockQuote' ) && childDef.name == 'fooBlock' ) {
+						return false;
+					}
+				} );
+
+				editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'fooBlock', view: 'fooblock' } ) );
 
 				setModelData(
-					doc,
+					model,
 					'<paragraph>a[bc</paragraph>' +
 					'<fooBlock>xx</fooBlock>' +
 					'<paragraph>de]f</paragraph>'
@@ -386,7 +386,7 @@ describe( 'BlockQuoteCommand', () => {
 
 				editor.execute( 'blockQuote' );
 
-				expect( getModelData( doc ) ).to.equal(
+				expect( getModelData( model ) ).to.equal(
 					'<blockQuote>' +
 						'<paragraph>a[bc</paragraph>' +
 					'</blockQuote>' +
@@ -399,21 +399,17 @@ describe( 'BlockQuoteCommand', () => {
 
 			it( 'should not wrap a block which parent does not allow quote inside itself', () => {
 				// blockQuote is not be allowed in fooWrapper, but fooBlock can be inside blockQuote.
-				doc.schema.registerItem( 'fooWrapper' );
-				doc.schema.registerItem( 'fooBlock', '$block' );
+				model.schema.register( 'fooWrapper' );
+				model.schema.register( 'fooBlock', { inheritAllFrom: '$block' } );
 
-				doc.schema.allow( { name: 'fooWrapper', inside: '$root' } );
-				doc.schema.allow( { name: 'fooBlock', inside: 'fooWrapper' } );
+				model.schema.extend( 'fooWrapper', { allowIn: '$root' } );
+				model.schema.extend( 'fooBlock', { allowIn: 'fooWrapper' } );
 
-				buildModelConverter().for( editor.editing.modelToView )
-					.fromElement( 'fooWrapper' )
-					.toElement( 'foowrapper' );
-				buildModelConverter().for( editor.editing.modelToView )
-					.fromElement( 'fooBlock' )
-					.toElement( 'fooblock' );
+				editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'fooWrapper', view: 'foowrapper' } ) );
+				editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'fooBlock', view: 'fooblock' } ) );
 
 				setModelData(
-					doc,
+					model,
 					'<paragraph>a[bc</paragraph>' +
 					'<fooWrapper><fooBlock>xx</fooBlock></fooWrapper>' +
 					'<paragraph>de]f</paragraph>'
@@ -421,7 +417,7 @@ describe( 'BlockQuoteCommand', () => {
 
 				editor.execute( 'blockQuote' );
 
-				expect( getModelData( doc ) ).to.equal(
+				expect( getModelData( model ) ).to.equal(
 					'<blockQuote>' +
 						'<paragraph>a[bc</paragraph>' +
 					'</blockQuote>' +
@@ -436,7 +432,7 @@ describe( 'BlockQuoteCommand', () => {
 		describe( 'removing quote', () => {
 			it( 'should unwrap a single block', () => {
 				setModelData(
-					doc,
+					model,
 					'<paragraph>abc</paragraph>' +
 					'<blockQuote><paragraph>x[]x</paragraph></blockQuote>' +
 					'<paragraph>def</paragraph>'
@@ -444,7 +440,7 @@ describe( 'BlockQuoteCommand', () => {
 
 				editor.execute( 'blockQuote' );
 
-				expect( getModelData( doc ) ).to.equal(
+				expect( getModelData( model ) ).to.equal(
 					'<paragraph>abc</paragraph>' +
 					'<paragraph>x[]x</paragraph>' +
 					'<paragraph>def</paragraph>'
@@ -457,7 +453,7 @@ describe( 'BlockQuoteCommand', () => {
 
 			it( 'should unwrap multiple blocks', () => {
 				setModelData(
-					doc,
+					model,
 					'<blockQuote>' +
 						'<paragraph>a[bc</paragraph>' +
 						'<paragraph>xx</paragraph>' +
@@ -467,7 +463,7 @@ describe( 'BlockQuoteCommand', () => {
 
 				editor.execute( 'blockQuote' );
 
-				expect( getModelData( doc ) ).to.equal(
+				expect( getModelData( model ) ).to.equal(
 					'<paragraph>a[bc</paragraph>' +
 					'<paragraph>xx</paragraph>' +
 					'<paragraph>de]f</paragraph>'
@@ -480,7 +476,7 @@ describe( 'BlockQuoteCommand', () => {
 
 			it( 'should unwrap only the selected blocks - at the beginning', () => {
 				setModelData(
-					doc,
+					model,
 					'<paragraph>xx</paragraph>' +
 					'<blockQuote>' +
 						'<paragraph>a[b]c</paragraph>' +
@@ -491,7 +487,7 @@ describe( 'BlockQuoteCommand', () => {
 
 				editor.execute( 'blockQuote' );
 
-				expect( getModelData( doc ) ).to.equal(
+				expect( getModelData( model ) ).to.equal(
 					'<paragraph>xx</paragraph>' +
 					'<paragraph>a[b]c</paragraph>' +
 					'<blockQuote>' +
@@ -507,7 +503,7 @@ describe( 'BlockQuoteCommand', () => {
 
 			it( 'should unwrap only the selected blocks - at the end', () => {
 				setModelData(
-					doc,
+					model,
 					'<blockQuote>' +
 						'<paragraph>abc</paragraph>' +
 						'<paragraph>x[x</paragraph>' +
@@ -517,7 +513,7 @@ describe( 'BlockQuoteCommand', () => {
 
 				editor.execute( 'blockQuote' );
 
-				expect( getModelData( doc ) ).to.equal(
+				expect( getModelData( model ) ).to.equal(
 					'<blockQuote>' +
 						'<paragraph>abc</paragraph>' +
 					'</blockQuote>' +
@@ -532,7 +528,7 @@ describe( 'BlockQuoteCommand', () => {
 
 			it( 'should unwrap only the selected blocks - in the middle', () => {
 				setModelData(
-					doc,
+					model,
 					'<paragraph>xx</paragraph>' +
 					'<blockQuote>' +
 						'<paragraph>abc</paragraph>' +
@@ -544,7 +540,7 @@ describe( 'BlockQuoteCommand', () => {
 
 				editor.execute( 'blockQuote' );
 
-				expect( getModelData( doc ) ).to.equal(
+				expect( getModelData( model ) ).to.equal(
 					'<paragraph>xx</paragraph>' +
 					'<blockQuote><paragraph>abc</paragraph></blockQuote>' +
 					'<paragraph>c[]de</paragraph>' +
@@ -563,7 +559,7 @@ describe( 'BlockQuoteCommand', () => {
 
 			it( 'should remove multiple quotes', () => {
 				setModelData(
-					doc,
+					model,
 					'<blockQuote><paragraph>a[bc</paragraph></blockQuote>' +
 					'<paragraph>xx</paragraph>' +
 					'<blockQuote><paragraph>def</paragraph><paragraph>ghi</paragraph></blockQuote>' +
@@ -573,7 +569,7 @@ describe( 'BlockQuoteCommand', () => {
 
 				editor.execute( 'blockQuote' );
 
-				expect( getModelData( doc ) ).to.equal(
+				expect( getModelData( model ) ).to.equal(
 					'<paragraph>a[bc</paragraph>' +
 					'<paragraph>xx</paragraph>' +
 					'<paragraph>def</paragraph><paragraph>ghi</paragraph>' +
