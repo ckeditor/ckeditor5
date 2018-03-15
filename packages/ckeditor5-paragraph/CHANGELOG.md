@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-paragraph/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
+
+### Other changes
+
+* Aligned feature class naming to the new scheme. ([69e98d3](https://github.com/ckeditor/ckeditor5-paragraph/commit/69e98d3))
+
+
 ## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-paragraph/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
 
 Internal changes only (updated dependencies, documentation, etc.).
