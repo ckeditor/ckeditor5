@@ -3,15 +3,13 @@ Changelog
 
 ## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-clipboard/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
 
-### Other changes
-
-* Aligned code to the changes API in `ckeditor5-engine`. Read more [ckeditor/ckeditor5-engine#738](https://github.com/ckeditor/ckeditor5-engine/issues/738). ([e7509bd](https://github.com/ckeditor/ckeditor5-clipboard/commit/e7509bd))
-* Aligned code to the changes in the engine. ([44264c2](https://github.com/ckeditor/ckeditor5-clipboard/commit/44264c2))
+Internal changes only (updated dependencies, documentation, etc.).
 
 
 ## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-clipboard/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
 
 Internal changes only (updated dependencies, documentation, etc.).
+
 
 ## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-clipboard/compare/v0.7.0...v1.0.0-alpha.1) (2017-10-03)
 
