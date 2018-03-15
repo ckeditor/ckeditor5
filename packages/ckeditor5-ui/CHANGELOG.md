@@ -8,7 +8,8 @@ Changelog
 * Implemented the `IconView#fillColor` observable which fills child `.ck-icon__fill` paths  with the color (see [ckeditor/ckeditor5-theme-lark#148](https://github.com/ckeditor/ckeditor5-theme-lark/issues/148)). ([728a691](https://github.com/ckeditor/ckeditor5-ui/commit/728a691))
 * Initial implementation of the `ButtonDropdownView`. Closes [#333](https://github.com/ckeditor/ckeditor5-ui/issues/333). ([6e9c6e4](https://github.com/ckeditor/ckeditor5-ui/commit/6e9c6e4))
 
-  Also: 
+  Also:
+
   * Allowed vertical layout of the `ToolbarView` thanks to the `#isVertical` attribute.
   * Implemented `ToolbarView#className` attribute.
   * Implemented `DropdownView#isEnabled` attribute along with the CSS class binding.
