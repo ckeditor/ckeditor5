@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -42,10 +42,6 @@ describe( 'ClassicEditorUIView', () => {
 		describe( '#toolbar', () => {
 			it( 'is created', () => {
 				expect( view.toolbar ).to.be.instanceof( ToolbarView );
-			} );
-
-			it( 'is given the right CSS class', () => {
-				expect( view.toolbar.element.classList.contains( 'ck-editor-toolbar' ) ).to.be.true;
 			} );
 
 			it( 'is given a locate object', () => {

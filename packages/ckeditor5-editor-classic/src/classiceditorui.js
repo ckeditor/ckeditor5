@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -72,9 +72,9 @@ export default class ClassicEditorUI {
 		}
 
 		// Setup the editable.
-		const editingRoot = editor.editing.createRoot( 'div' );
+		const editingRoot = editor.editing.view.document.getRoot();
 		view.editable.bind( 'isReadOnly' ).to( editingRoot );
-		view.editable.bind( 'isFocused' ).to( editor.editing.view );
+		view.editable.bind( 'isFocused' ).to( editor.editing.view.document );
 		view.editable.name = editingRoot.rootName;
 
 		this.focusTracker.add( this.view.editableElement );

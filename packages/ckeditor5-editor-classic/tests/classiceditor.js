@@ -1,9 +1,9 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
-/* globals document */
+/* globals document, Event */
 
 import ClassicEditorUI from '../src/classiceditorui';
 import ClassicEditorUIView from '../src/classiceditoruiview';
@@ -14,9 +14,11 @@ import ClassicEditor from '../src/classiceditor';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import DataApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/dataapimixin';
+import ElementApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/elementapimixin';
+import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import count from '@ckeditor/ckeditor5-utils/src/count';
 
 testUtils.createSinonSandbox();
 
@@ -39,24 +41,54 @@ describe( 'ClassicEditor', () => {
 			editor = new ClassicEditor( editorElement );
 		} );
 
-		it( 'creates a single document root', () => {
-			expect( count( editor.document.getRootNames() ) ).to.equal( 1 );
-			expect( editor.document.getRoot() ).to.have.property( 'name', '$root' );
-		} );
-
 		it( 'uses HTMLDataProcessor', () => {
 			expect( editor.data.processor ).to.be.instanceof( HtmlDataProcessor );
 		} );
 
-		describe( 'ui', () => {
-			it( 'creates a single div editable root in the view', () => {
-				editor.ui.init();
+		it( 'has a Data Interface', () => {
+			testUtils.isMixed( ClassicEditor, DataApiMixin );
+		} );
 
-				expect( editor.editing.view.getRoot() ).to.have.property( 'name', 'div' );
+		it( 'has a Element Interface', () => {
+			testUtils.isMixed( ClassicEditor, ElementApiMixin );
+		} );
 
-				editor.ui.destroy();
+		it( 'creates main root element', () => {
+			expect( editor.model.document.getRoot( 'main' ) ).to.instanceof( RootElement );
+		} );
+
+		it( 'handles form element', () => {
+			const form = document.createElement( 'form' );
+			const textarea = document.createElement( 'textarea' );
+			form.appendChild( textarea );
+			document.body.appendChild( form );
+
+			// Prevents page realods in Firefox ;|
+			form.addEventListener( 'submit', evt => {
+				evt.preventDefault();
 			} );
 
+			return ClassicEditor.create( textarea, {
+				plugins: [ Paragraph ]
+			} ).then( editor => {
+				expect( textarea.value ).to.equal( '' );
+
+				editor.setData( '<p>Foo</p>' );
+
+				form.dispatchEvent( new Event( 'submit', {
+					// We need to be able to do preventDefault() to prevent page reloads in Firefox.
+					cancelable: true
+				} ) );
+
+				expect( textarea.value ).to.equal( '<p>Foo</p>' );
+
+				return editor.destroy().then( () => {
+					form.remove();
+				} );
+			} );
+		} );
+
+		describe( 'ui', () => {
 			it( 'creates the UI using BoxedEditorUI classes', () => {
 				expect( editor.ui ).to.be.instanceof( ClassicEditorUI );
 				expect( editor.ui.view ).to.be.instanceof( ClassicEditorUIView );

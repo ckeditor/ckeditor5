@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -11,6 +11,8 @@ import BoxedEditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/boxed/boxeded
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
 import StickyPanelView from '@ckeditor/ckeditor5-ui/src/panel/sticky/stickypanelview';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
+
+import '../theme/classiceditor.css';
 
 /**
  * Classic editor UI view. Uses an inline editable and a sticky toolbar, all
@@ -43,12 +45,6 @@ export default class ClassicEditorUIView extends BoxedEditorUIView {
 		 * @member {module:ui/toolbar/toolbarview~ToolbarView}
 		 */
 		this.toolbar = new ToolbarView( locale );
-
-		this.toolbar.extendTemplate( {
-			attributes: {
-				class: 'ck-editor-toolbar'
-			}
-		} );
 
 		/**
 		 * Editable UI view.

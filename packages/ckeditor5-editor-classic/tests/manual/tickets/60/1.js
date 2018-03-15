@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -18,7 +18,7 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Enter, Typing, Paragraph, Undo, Heading, Bold, Italic ],
 		toolbar: {
-			items: [ 'headings', 'bold', 'italic', 'undo', 'redo' ],
+			items: [ 'heading', '|', 'bold', 'italic', 'undo', 'redo' ],
 			viewportTopOffset: 100
 		}
 	} )
