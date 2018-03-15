@@ -5,9 +5,7 @@ Changelog
 
 ### Other changes
 
-* Align feature class naming to a new scheme. ([69e98d3](https://github.com/ckeditor/ckeditor5-paragraph/commit/69e98d3))
-* Aligning with new conversion helpers API. ([9f0ec01](https://github.com/ckeditor/ckeditor5-paragraph/commit/9f0ec01))
-* Use post-fixer API. ([0343075](https://github.com/ckeditor/ckeditor5-paragraph/commit/0343075))
+* Aligned feature class naming to the new scheme. ([69e98d3](https://github.com/ckeditor/ckeditor5-paragraph/commit/69e98d3))
 
 
 ## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-paragraph/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
