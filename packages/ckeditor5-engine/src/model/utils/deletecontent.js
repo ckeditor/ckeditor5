@@ -15,6 +15,11 @@ import DocumentSelection from '../documentselection';
 /**
  * Deletes content of the selection and merge siblings. The resulting selection is always collapsed.
  *
+ * **Note:** Use {@link module:engine/model/model~Model#deleteContent} instead of this function.
+ * This function is only exposed to be reusable in algorithms
+ * which change the {@link module:engine/model/model~Model#deleteContent}
+ * method's behavior.
+ *
  * @param {module:engine/model/model~Model} model The model in context of which the insertion
  * should be performed.
  * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
@@ -34,7 +39,7 @@ import DocumentSelection from '../documentselection';
  * @param {Boolean} [options.doNotResetEntireContent=false] Whether to skip replacing the entire content with a
  * paragraph when the entire content was selected.
  *
- * For example `<heading>[x</heading><paragraph>y]</paragraph> will become:
+ * For example `<heading>[x</heading><paragraph>y]</paragraph>` will become:
  *
  * * `<paragraph>^</paragraph>` with the option disabled (`doNotResetEntireContent == false`)
  * * `<heading>^</heading>` with enabled (`doNotResetEntireContent == true`).
