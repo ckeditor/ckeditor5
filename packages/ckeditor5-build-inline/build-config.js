@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -27,25 +27,25 @@ module.exports = {
 		'@ckeditor/ckeditor5-image/src/imagecaption',
 		'@ckeditor/ckeditor5-image/src/imagestyle',
 		'@ckeditor/ckeditor5-image/src/imagetoolbar',
+		'@ckeditor/ckeditor5-image/src/imageupload',
 		'@ckeditor/ckeditor5-link/src/link',
 		'@ckeditor/ckeditor5-list/src/list',
 		'@ckeditor/ckeditor5-paragraph/src/paragraph',
-		'@ckeditor/ckeditor5-upload/src/imageupload'
+		'@ckeditor/ckeditor5-image/src/imageupload'
 	],
-
-	// UI language. Language codes follow the https://en.wikipedia.org/wiki/ISO_639-1 format.
-	language: 'en',
 
 	// Editor config.
 	config: {
 		toolbar: {
 			items: [
-				'headings',
+				'heading',
+				'|',
 				'bold',
 				'italic',
 				'link',
 				'bulletedList',
 				'numberedList',
+				'imageUpload',
 				'blockQuote',
 				'undo',
 				'redo'
@@ -53,7 +53,10 @@ module.exports = {
 		},
 
 		image: {
-			toolbar: [ 'imageStyleFull', 'imageStyleSide', '|', 'imageTextAlternative' ]
-		}
+			toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+		},
+
+		// UI language. Language codes follow the https://en.wikipedia.org/wiki/ISO_639-1 format.
+		language: 'en'
 	}
 };
