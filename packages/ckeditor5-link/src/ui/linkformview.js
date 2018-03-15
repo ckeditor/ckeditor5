@@ -106,14 +106,6 @@ export default class LinkFormView extends View {
 			}
 		} );
 
-		this.saveButtonView.extendTemplate( {
-			attributes: {
-				class: [
-					'ck-button-action'
-				]
-			}
-		} );
-
 		this.setTemplate( {
 			tag: 'form',
 
