@@ -1,6 +1,19 @@
 Changelog
 =========
 
+## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-list/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
+
+### Features
+
+* Updated icons for compatibility with the refreshed Lark theme. Minor adjustments in toolbar configurations (see [ckeditor/ckeditor5#645](https://github.com/ckeditor/ckeditor5/issues/645)). ([d1fae4b](https://github.com/ckeditor/ckeditor5-list/commit/d1fae4b))
+
+### Other changes
+
+* Aligned feature class naming to the new scheme. ([d677fb6](https://github.com/ckeditor/ckeditor5-list/commit/d677fb6))
+* Removed `ViewListItemElement` class and introduced `createViewListItemElement()` utility method. Closes [#89](https://github.com/ckeditor/ckeditor5-list/issues/89). ([e4ac704](https://github.com/ckeditor/ckeditor5-list/commit/e4ac704))
+* Updated translations. ([762a9ed](https://github.com/ckeditor/ckeditor5-list/commit/762a9ed))
+
+
 ## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-list/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
 
 ### Bug fixes

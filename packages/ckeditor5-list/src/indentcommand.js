@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -49,11 +49,11 @@ export default class IndentCommand extends Command {
 	 * @fires execute
 	 */
 	execute() {
-		const doc = this.editor.document;
-		const batch = doc.batch();
+		const model = this.editor.model;
+		const doc = model.document;
 		let itemsToChange = Array.from( doc.selection.getSelectedBlocks() );
 
-		doc.enqueueChanges( () => {
+		model.change( writer => {
 			const lastItem = itemsToChange[ itemsToChange.length - 1 ];
 
 			// Indenting a list item should also indent all the items that are already sub-items of indented item.
@@ -83,22 +83,12 @@ export default class IndentCommand extends Command {
 					// To keep the model as correct as possible, first rename listItem, then remove attributes,
 					// as listItem without attributes is very incorrect and will cause problems in converters.
 					// No need to remove attributes, will be removed by post fixer.
-					batch.rename( item, 'paragraph' );
+					writer.rename( item, 'paragraph' );
 				}
 				// If indent is >= 0, change the attribute value.
 				else {
-					batch.setAttribute( item, 'indent', indent );
+					writer.setAttribute( 'indent', indent, item );
 				}
-			}
-
-			// Check whether some of changed list items' type should not be fixed.
-			// But first, reverse `itemsToChange` again -- we always want to perform those fixes starting from first item (source-wise).
-			if ( this._indentBy < 0 ) {
-				itemsToChange = itemsToChange.reverse();
-			}
-
-			for ( const item of itemsToChange ) {
-				_fixType( item, batch );
 			}
 		} );
 	}
@@ -111,7 +101,7 @@ export default class IndentCommand extends Command {
 	 */
 	_checkEnabled() {
 		// Check whether any of position's ancestor is a list item.
-		const listItem = first( this.editor.document.selection.getSelectedBlocks() );
+		const listItem = first( this.editor.model.document.selection.getSelectedBlocks() );
 
 		// If selection is not in a list item, the command is disabled.
 		if ( !listItem || !listItem.is( 'listItem' ) ) {
@@ -145,45 +135,4 @@ export default class IndentCommand extends Command {
 		// If we are outdenting it is enough to be in list item. Every list item can always be outdented.
 		return true;
 	}
-}
-
-// Fixes type of `item` element after it was indented/outdented. Looks for a sibling of `item` that has the same
-// indent and sets `item`'s type to the same as that sibling.
-function _fixType( item, batch ) {
-	// Find a preceding sibling of `item` that is a list item of the same list as `item`.
-	const prev = _seekListItem( item, false );
-
-	// If found, fix type.
-	if ( prev ) {
-		batch.setAttribute( item, 'type', prev.getAttribute( 'type' ) );
-
-		return;
-	}
-
-	// If not found, find a following sibling of `item` that is a list item of the same list as `item`.
-	const next = _seekListItem( item, true );
-
-	// If found, fix type.
-	if ( next ) {
-		batch.setAttribute( item, 'type', next.getAttribute( 'type' ) );
-	}
-}
-
-// Seeks for a list item that has same indent as given `item`. May look through next siblings (`seekForward = true`) or
-// previous siblings (`seekForward = false`). Returns found list item or `null` if item has not been found.
-function _seekListItem( item, seekForward ) {
-	let result = item[ seekForward ? 'nextSibling' : 'previousSibling' ];
-
-	// Look for the previous/next sibling that has same indent and is before a list item element with lower indent.
-	// If elements are split by an element with lower indent, they are on different lists.
-	while ( result && result.is( 'listItem' ) && result.getAttribute( 'indent' ) >= item.getAttribute( 'indent' ) ) {
-		if ( result.getAttribute( 'indent' ) == item.getAttribute( 'indent' ) ) {
-			// We found sibling that is on the same list.
-			return result;
-		}
-
-		result = result[ seekForward ? 'nextSibling' : 'previousSibling' ];
-	}
-
-	return null;
 }

@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -8,7 +8,6 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import first from '@ckeditor/ckeditor5-utils/src/first';
 
 /**
@@ -55,22 +54,18 @@ export default class ListCommand extends Command {
 	 * Executes the command.
 	 *
 	 * @protected
-	 * @param {Object} [options] Options for the executed command.
-	 * @param {module:engine/model/batch~Batch} [options.batch] A batch to collect all the change steps.
-	 * A new batch will be created if this option is not set.
 	 */
-	execute( options = {} ) {
-		const document = this.editor.document;
+	execute() {
+		const model = this.editor.model;
+		const document = model.document;
 		const blocks = Array.from( document.selection.getSelectedBlocks() )
-			.filter( block => checkCanBecomeListItem( block, document.schema ) );
+			.filter( block => checkCanBecomeListItem( block, model.schema ) );
 
 		// Whether we are turning off some items.
 		const turnOff = this.value === true;
 		// If we are turning off items, we are going to rename them to paragraphs.
 
-		document.enqueueChanges( () => {
-			const batch = options.batch || document.batch();
-
+		model.change( writer => {
 			// If part of a list got turned off, we need to handle (outdent) all of sub-items of the last turned-off item.
 			// To be sure that model is all the time in a good state, we first fix items below turned-off item.
 			if ( turnOff ) {
@@ -154,7 +149,7 @@ export default class ListCommand extends Command {
 				changes = changes.reverse();
 
 				for ( const item of changes ) {
-					batch.setAttribute( item.element, 'indent', item.indent );
+					writer.setAttribute( 'indent', item.indent, item.element );
 				}
 			}
 
@@ -204,15 +199,16 @@ export default class ListCommand extends Command {
 				if ( turnOff && element.name == 'listItem' ) {
 					// We are turning off and the element is a `listItem` - it should be converted to `paragraph`.
 					// List item specific attributes are removed by post fixer.
-					batch.rename( element, 'paragraph' );
+					writer.rename( element, 'paragraph' );
 				} else if ( !turnOff && element.name != 'listItem' ) {
 					// We are turning on and the element is not a `listItem` - it should be converted to `listItem`.
 					// The order of operations is important to keep model in correct state.
-					batch.setAttribute( element, 'type', this.type ).setAttribute( element, 'indent', 0 ).rename( element, 'listItem' );
+					writer.setAttributes( { type: this.type, indent: 0 }, element );
+					writer.rename( element, 'listItem' );
 				} else if ( !turnOff && element.name == 'listItem' && element.getAttribute( 'type' ) != this.type ) {
 					// We are turning on and the element is a `listItem` but has different type - change it's type and
 					// type of it's all siblings that have same indent.
-					batch.setAttribute( element, 'type', this.type );
+					writer.setAttribute( 'type', this.type, element );
 				}
 			}
 		} );
@@ -226,7 +222,7 @@ export default class ListCommand extends Command {
 	 */
 	_getValue() {
 		// Check whether closest `listItem` ancestor of the position has a correct type.
-		const listItem = first( this.editor.document.selection.getSelectedBlocks() );
+		const listItem = first( this.editor.model.document.selection.getSelectedBlocks() );
 
 		return !!listItem && listItem.is( 'listItem' ) && listItem.getAttribute( 'type' ) == this.type;
 	}
@@ -243,8 +239,8 @@ export default class ListCommand extends Command {
 			return true;
 		}
 
-		const selection = this.editor.document.selection;
-		const schema = this.editor.document.schema;
+		const selection = this.editor.model.document.selection;
+		const schema = this.editor.model.schema;
 
 		const firstBlock = first( selection.getSelectedBlocks() );
 
@@ -311,9 +307,5 @@ function _fixType( blocks, isBackward, lowestIndent ) {
 // @param {module:engine/model/schema~Schema} schema The schema of the document.
 // @returns {Boolean}
 function checkCanBecomeListItem( block, schema ) {
-	return schema.check( {
-		name: 'listItem',
-		attributes: [ 'type', 'indent' ],
-		inside: Position.createBefore( block )
-	} );
+	return schema.checkChild( block.parent, 'listItem' ) && !schema.isObject( block );
 }

@@ -1,24 +1,28 @@
 sudo: required
 dist: trusty
 addons:
+  firefox: "latest"
   apt:
     sources:
-      - google-chrome
+    - google-chrome
     packages:
-      - google-chrome-stable
+    - google-chrome-stable
 language: node_js
 node_js:
-  - "6"
+- '6'
 cache:
-  - node_modules
+- node_modules
 before_install:
-  - export DISPLAY=:99.0
-  - sh -e /etc/init.d/xvfb start
+- export DISPLAY=:99.0
+- sh -e /etc/init.d/xvfb start
 install:
-  - npm install @ckeditor/ckeditor5-dev-tests
-  - ckeditor5-dev-tests-install-dependencies
+- npm install @ckeditor/ckeditor5-dev-tests
+- ckeditor5-dev-tests-install-dependencies
 script:
-  - ckeditor5-dev-tests-travis
+- ckeditor5-dev-tests-travis
 after_success:
-  - codeclimate-test-reporter < coverage/lcov.info
-  - ckeditor5-dev-tests-save-revision
+- ckeditor5-dev-tests-save-revision
+env:
+  global:
+  - secure: nhtYqSDpY1g+H6osP85fi2cZRkpl0W+N8/C8Y/ZxgbV2W39gpmdTNtpAE2xSnF6oVRbhzOhd8WzAMKyK7aC/m8SkkPG2AVOTxj1atjPRaSrZSqCbxrucyxDCSyxQURuXFLknfa5jHBrLsTO+j3Tpzsvrj8M0+8WSImulcY+Ea+UyN7SOmvad1RBUR7lZhYYdyviEWt5YtGIHXlrX3ahfulYpknL6r9wAbhwjdizgNuwFpquU5+piAgRvJkoL8No9K0yh0EtltjHF1JC38qmfcxkh2U3GPAQs7wKd0C+siZ8c5ppNZrGYS/08VOGPLdyyc30o17BZj8eG/3TG/FzcK9TdqlmCHYloAU9RiO0j53NZezYJ1N9uIELSchm/LcU7DtDYKsP0i3UgsaXuJNF4HP2Pas8rig2NrDohsZ00G4a3AD4YCzmKAtejphCH/gx6m0KyZy6QpBgOFM2+50RfB8qMIeGp/FNx1BVYr9yv5YiLeRj1ZocHXgPazwYN8bv1QubowNuMhmsBH8ktRvq7WsuOBbwBSpWgAWghoBKhRzGWmHsuVoHBt54rse+dg2pc/cYtkQsAcuMQAggnW8A3CFx1zwydYpKg8QZBwXwGRmWHILJufogbFefA6pjT1JKNun3+8KAm0NEF2q60+PwZRvcqFrqMhWXT5+NUYiIx0CM=
+  - secure: XCJTk13WNQaM23ovdNigh8zldhxx9WfS3kTcEI87JTI174UEIqKiUVDuXwMQOSBKGI7pzfA4noZEFrn5eU1FqRdcu3F4Rmw/ndLxKFSH8TUz8R4UMosRlPu4Sj68gtfR/BVs0ykkQRTFuD0tXOrb+7cVJVHKDg1OnEIq5FCOl0PeUPHD6U2hr+DX4Okt4ZoPRMGAYuNAUgBc3sWuud32IP/9rri+t7tp+e0cIqYsVoJrkzlXNdGxhnVfCd9bjwkpdILZBrVigmp42NDLon+Ven1RRjWSDunFcljHHtpMUfAmen3cir4fo2e5+HthToQT+1tAXM1885jYvl3mPi2s8KMPkLYtdpscyhzhK8i4gqb6J6i6xNK0PPBWYHhM9s/NCz99zeXMMwEVpS/jiHTlCF6bMWOBaEQUxRVRzLIWxqXS0sqBz5nQEPmP+BleDDQ9xRhYsbfvUFODdOTY+VFYBl8oC5f66H4KBYryY8kISg/1B6rUeWauYgXVdixY4WSeDsU51hLuAR5TyGVKvLcUS1KgA3dJw7bMpgZRGl+BetUE2T1WkJa0FhQUBGhXTr8tXevqDfcCtp25NOb2ozjtEswwjkuUiHDrLYKBJxDZ6wqGLe7GdKwCjQzKJy3PuI/tBx3A4ODTgOgPKt5cD3oeczbOWC1MkYtaOBXEFioDHG8=

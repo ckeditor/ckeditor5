@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -18,12 +18,12 @@ import List from '../../src/list';
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Enter, Typing, Heading, Paragraph, Undo, List, Clipboard, Link ],
-		toolbar: [ 'headings', 'bulletedList', 'numberedList', 'undo', 'redo' ]
+		toolbar: [ 'heading', '|', 'bulletedList', 'numberedList', 'undo', 'redo' ]
 	} )
 	.then( editor => {
 		window.editor = editor;
-		window.modelRoot = editor.document.getRoot();
-		window.viewRoot = editor.editing.view.getRoot();
+		window.modelRoot = editor.model.document.getRoot();
+		window.viewRoot = editor.editing.view.document.getRoot();
 	} )
 	.catch( err => {
 		console.error( err.stack );
