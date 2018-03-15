@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -56,6 +56,12 @@ describe( 'InlineEditorUI', () => {
 		it( 'creates #focusTracker', () => {
 			expect( ui.focusTracker ).to.be.instanceOf( FocusTracker );
 		} );
+	} );
+
+	describe( 'init()', () => {
+		it( 'renders the #view', () => {
+			expect( view.isRendered ).to.be.true;
+		} );
 
 		describe( 'panel', () => {
 			it( 'binds view.panel#isVisible to editor.ui#focusTracker', () => {
@@ -93,12 +99,12 @@ describe( 'InlineEditorUI', () => {
 
 				view.panel.hide();
 
-				editor.editing.view.fire( 'render' );
+				editor.editing.view.render();
 				sinon.assert.notCalled( spy );
 
 				view.panel.show();
 
-				editor.editing.view.fire( 'render' );
+				editor.editing.view.render();
 				sinon.assert.calledOnce( spy );
 				sinon.assert.calledWithExactly( spy, {
 					target: view.editableElement,
@@ -111,7 +117,7 @@ describe( 'InlineEditorUI', () => {
 			let editable;
 
 			beforeEach( () => {
-				editable = editor.editing.view.getRoot();
+				editable = editor.editing.view.document.getRoot();
 			} );
 
 			it( 'registers view.editable#element in editor focus tracker', () => {
@@ -146,12 +152,6 @@ describe( 'InlineEditorUI', () => {
 					{ isReadOnly: true }
 				);
 			} );
-		} );
-	} );
-
-	describe( 'init()', () => {
-		it( 'renders the #view', () => {
-			expect( view.isRendered ).to.be.true;
 		} );
 
 		describe( 'view.toolbar#items', () => {

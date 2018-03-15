@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -21,14 +21,14 @@ function initEditors() {
 		InlineEditor
 			.create( document.querySelector( selector ), {
 				plugins: [ ArticlePluginSet ],
-				toolbar: [ 'headings', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ]
+				toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ]
 			} )
 			.then( editor => {
 				console.log( `${ selector } has been initialized`, editor );
 				console.log( 'It has been added to global `editors` and `editables`.' );
 
 				window.editors[ selector ] = editor;
-				window.editables.push( editor.editing.view.getRoot() );
+				window.editables.push( editor.editing.view.document.getRoot() );
 
 				const observer = testUtils.createObserver();
 

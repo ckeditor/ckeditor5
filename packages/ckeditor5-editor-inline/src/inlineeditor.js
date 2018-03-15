@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -7,27 +7,30 @@
  * @module editor-inline/inlineeditor
  */
 
-import StandardEditor from '@ckeditor/ckeditor5-core/src/editor/standardeditor';
+import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
+import DataApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/dataapimixin';
+import ElementApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/elementapimixin';
+import attachToForm from '@ckeditor/ckeditor5-core/src/editor/utils/attachtoform';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import InlineEditorUI from './inlineeditorui';
 import InlineEditorUIView from './inlineeditoruiview';
 import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement';
-
-import '../theme/theme.scss';
+import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
+import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
- * The {@glink builds/guides/overview#Inline-editor inline editor} implementation.
+ * The {@glink builds/guides/overview#inline-editor inline editor} implementation.
  * It uses an inline editable and a floating toolbar.
  * See the {@glink examples/builds/inline-editor demo}.
  *
  * In order to create a inline editor instance, use the static
- * {@link module:editor-inline/inlineeditor~InlineEditor#create `InlineEditor.create()`} method.
+ * {@link module:editor-inline/inlineeditor~InlineEditor.create `InlineEditor.create()`} method.
  *
  * # Inline editor and inline build
  *
  * The inline editor can be used directly from source (if you installed the
  * [`@ckeditor/ckeditor5-editor-inline`](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-inline) package)
- * but it is also available in the {@glink builds/guides/overview#Inline-editor inline build}.
+ * but it is also available in the {@glink builds/guides/overview#inline-editor inline build}.
  *
  * {@glink builds/guides/overview Builds} are ready-to-use editors with plugins bundled in. When using the editor from
  * source you need to take care of loading all plugins by yourself
@@ -35,16 +38,19 @@ import '../theme/theme.scss';
  * Using the editor from source gives much better flexibility and allows easier customization.
  *
  * Read more about initializing the editor from source or as a build in
- * {@link module:editor-inline/inlineeditor~InlineEditor#create `InlineEditor.create()`}.
+ * {@link module:editor-inline/inlineeditor~InlineEditor.create `InlineEditor.create()`}.
  *
- * @extends module:core/editor/standardeditor~StandardEditor
+ * @mixes module:core/editor/utils/dataapimixin~DataApiMixin
+ * @mixes module:core/editor/utils/elementapimixin~ElementApiMixin
+ * @implements module:core/editor/editorwithui~EditorWithUI
+ * @extends module:core/editor/editor~Editor
  */
-export default class InlineEditor extends StandardEditor {
+export default class InlineEditor extends Editor {
 	/**
 	 * Creates an instance of the inline editor.
 	 *
 	 * **Note:** do not use the constructor to create editor instances. Use the static
-	 * {@link module:editor-inline/inlineeditor~InlineEditor#create `InlineEditor.create()`} method instead.
+	 * {@link module:editor-inline/inlineeditor~InlineEditor.create `InlineEditor.create()`} method instead.
 	 *
 	 * @protected
 	 * @param {HTMLElement} element The DOM element that will be the source for the created editor
@@ -52,11 +58,17 @@ export default class InlineEditor extends StandardEditor {
 	 * @param {module:core/editor/editorconfig~EditorConfig} config The editor configuration.
 	 */
 	constructor( element, config ) {
-		super( element, config );
+		super( config );
 
-		this.document.createRoot();
+		this.element = element;
+
 		this.data.processor = new HtmlDataProcessor();
+
+		this.model.document.createRoot();
+
 		this.ui = new InlineEditorUI( this, new InlineEditorUIView( this.locale, element ) );
+
+		attachToForm( this );
 	}
 
 	/**
@@ -127,7 +139,7 @@ export default class InlineEditor extends StandardEditor {
 						editor.ui.init();
 						editor.fire( 'uiReady' );
 					} )
-					.then( () => editor.loadDataFromEditorElement() )
+					.then( () => editor.data.init( getDataFromElement( element ) ) )
 					.then( () => {
 						editor.fire( 'dataReady' );
 						editor.fire( 'ready' );
@@ -137,3 +149,6 @@ export default class InlineEditor extends StandardEditor {
 		} );
 	}
 }
+
+mix( InlineEditor, DataApiMixin );
+mix( InlineEditor, ElementApiMixin );

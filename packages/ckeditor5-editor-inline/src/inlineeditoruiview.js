@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -52,8 +52,6 @@ export default class InlineEditorUIView extends EditorUIView {
 		this.toolbar.extendTemplate( {
 			attributes: {
 				class: [
-					'ck-editor-toolbar',
-
 					// https://github.com/ckeditor/ckeditor5-editor-inline/issues/11
 					'ck-toolbar_floating'
 				]

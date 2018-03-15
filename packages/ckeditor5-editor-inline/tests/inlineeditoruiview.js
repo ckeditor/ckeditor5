@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -33,7 +33,6 @@ describe( 'InlineEditorUIView', () => {
 			} );
 
 			it( 'is given the right CSS classes', () => {
-				expect( view.toolbar.element.classList.contains( 'ck-editor-toolbar' ) ).to.be.true;
 				expect( view.toolbar.element.classList.contains( 'ck-toolbar_floating' ) ).to.be.true;
 			} );
 
