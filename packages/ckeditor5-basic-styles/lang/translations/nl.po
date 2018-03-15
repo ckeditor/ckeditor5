@@ -1,4 +1,4 @@
-# Copyright (c) Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+# Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
 msgid ""
 msgstr ""
 "Language: nl\n"
@@ -11,12 +11,16 @@ msgstr "Vet"
 
 msgctxt "Toolbar button tooltip for the Italic feature."
 msgid "Italic"
-msgstr ""
+msgstr "Cursief"
 
 msgctxt "Toolbar button tooltip for the Underline feature."
 msgid "Underline"
-msgstr ""
+msgstr "Onderlijnen"
 
 msgctxt "Toolbar button tooltip for the Code feature."
 msgid "Code"
+msgstr "Code"
+
+msgctxt "Toolbar button tooltip for the Strikethrough feature."
+msgid "Strikethrough"
 msgstr ""

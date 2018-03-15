@@ -1,4 +1,4 @@
-# Copyright (c) Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+# Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
 msgid ""
 msgstr ""
 "Language: eo\n"
@@ -19,4 +19,8 @@ msgstr ""
 
 msgctxt "Toolbar button tooltip for the Code feature."
 msgid "Code"
+msgstr ""
+
+msgctxt "Toolbar button tooltip for the Strikethrough feature."
+msgid "Strikethrough"
 msgstr ""

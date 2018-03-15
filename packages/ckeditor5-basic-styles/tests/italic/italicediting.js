@@ -1,29 +1,28 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
-import ItalicEngine from '../src/italicengine';
+import ItalicEditing from '../../src/italic/italicediting';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import AttributeCommand from '../src/attributecommand';
+import AttributeCommand from '../../src/attributecommand';
 
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
-describe( 'ItalicEngine', () => {
-	let editor, doc;
+describe( 'ItalicEditing', () => {
+	let editor, model;
 
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Paragraph, ItalicEngine ]
+				plugins: [ Paragraph, ItalicEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-
-				doc = editor.document;
+				model = editor.model;
 			} );
 	} );
 
@@ -32,13 +31,12 @@ describe( 'ItalicEngine', () => {
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( ItalicEngine ) ).to.be.instanceOf( ItalicEngine );
+		expect( editor.plugins.get( ItalicEditing ) ).to.be.instanceOf( ItalicEditing );
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( doc.schema.check( { name: '$inline', attributes: 'italic', inside: '$root' } ) ).to.be.false;
-		expect( doc.schema.check( { name: '$inline', attributes: 'italic', inside: '$block' } ) ).to.be.true;
-		expect( doc.schema.check( { name: '$inline', attributes: 'italic', inside: '$clipboardHolder' } ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$root', '$block', '$text' ], 'italic' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'italic' ) ).to.be.true;
 	} );
 
 	describe( 'command', () => {
@@ -54,7 +52,7 @@ describe( 'ItalicEngine', () => {
 		it( 'should convert <em> to italic attribute', () => {
 			editor.setData( '<p><em>foo</em>bar</p>' );
 
-			expect( getModelData( doc, { withoutSelection: true } ) )
+			expect( getModelData( model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph><$text italic="true">foo</$text>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><i>foo</i>bar</p>' );
@@ -63,7 +61,7 @@ describe( 'ItalicEngine', () => {
 		it( 'should convert <i> to italic attribute', () => {
 			editor.setData( '<p><i>foo</i>bar</p>' );
 
-			expect( getModelData( doc, { withoutSelection: true } ) )
+			expect( getModelData( model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph><$text italic="true">foo</$text>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><i>foo</i>bar</p>' );
@@ -72,27 +70,25 @@ describe( 'ItalicEngine', () => {
 		it( 'should convert font-weight:italic to italic attribute', () => {
 			editor.setData( '<p><span style="font-style: italic;">foo</span>bar</p>' );
 
-			expect( getModelData( doc, { withoutSelection: true } ) )
+			expect( getModelData( model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph><$text italic="true">foo</$text>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><i>foo</i>bar</p>' );
 		} );
 
 		it( 'should be integrated with autoparagraphing', () => {
-			// Incorrect results because autoparagraphing works incorrectly (issue in paragraph).
-			// https://github.com/ckeditor/ckeditor5-paragraph/issues/10
+			editor.setData( '<i>foo</i>bar' );
 
-			editor.setData( '<em>foo</em>bar' );
+			expect( getModelData( model, { withoutSelection: true } ) )
+				.to.equal( '<paragraph><$text italic="true">foo</$text>bar</paragraph>' );
 
-			expect( getModelData( doc, { withoutSelection: true } ) ).to.equal( '<paragraph>foobar</paragraph>' );
-
-			expect( editor.getData() ).to.equal( '<p>foobar</p>' );
+			expect( editor.getData() ).to.equal( '<p><i>foo</i>bar</p>' );
 		} );
 	} );
 
 	describe( 'editing pipeline conversion', () => {
 		it( 'should convert attribute', () => {
-			setModelData( doc, '<paragraph><$text italic="true">foo</$text>bar</paragraph>' );
+			setModelData( model, '<paragraph><$text italic="true">foo</$text>bar</paragraph>' );
 
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p><i>foo</i>bar</p>' );
 		} );

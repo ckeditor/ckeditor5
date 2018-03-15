@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -16,7 +16,7 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
  * `AttributeCommand` uses {@link module:engine/model/document~Document#selection}
  * to decide which nodes (if any) should be changed, and applies or removes the attribute from them.
  *
- * The command checks the {@link module:engine/model/document~Document#schema} to decide if it can be enabled
+ * The command checks the {@link module:engine/model/model~Model#schema} to decide if it can be enabled
  * for the current selection and to which nodes the attribute can be applied.
  *
  * @extends module:core/command~Command
@@ -55,10 +55,11 @@ export default class AttributeCommand extends Command {
 	 * Updates the command's {@link #value} and {@link #isEnabled} based on the current selection.
 	 */
 	refresh() {
-		const doc = this.editor.document;
+		const model = this.editor.model;
+		const doc = model.document;
 
 		this.value = doc.selection.hasAttribute( this.attributeKey );
-		this.isEnabled = doc.schema.checkAttributeInSelection( doc.selection, this.attributeKey );
+		this.isEnabled = model.schema.checkAttributeInSelection( doc.selection, this.attributeKey );
 	}
 
 	/**
@@ -80,29 +81,28 @@ export default class AttributeCommand extends Command {
 	 * @param {Boolean} [options.forceValue] If set, it will force the command behavior. If `true`, the command will apply the attribute,
 	 * otherwise the command will remove the attribute.
 	 * If not set, the command will look for its current value to decide what it should do.
-	 * @param {module:engine/model/batch~Batch} [options.batch] A batch to group undo steps.
 	 */
 	execute( options = {} ) {
-		const doc = this.editor.document;
+		const model = this.editor.model;
+		const doc = model.document;
 		const selection = doc.selection;
 		const value = ( options.forceValue === undefined ) ? !this.value : options.forceValue;
 
-		doc.enqueueChanges( () => {
+		model.change( writer => {
 			if ( selection.isCollapsed ) {
 				if ( value ) {
-					selection.setAttribute( this.attributeKey, true );
+					writer.setSelectionAttribute( this.attributeKey, true );
 				} else {
-					selection.removeAttribute( this.attributeKey );
+					writer.removeSelectionAttribute( this.attributeKey );
 				}
 			} else {
-				const ranges = doc.schema.getValidRanges( selection.getRanges(), this.attributeKey );
-				const batch = options.batch || doc.batch();
+				const ranges = model.schema.getValidRanges( selection.getRanges(), this.attributeKey );
 
 				for ( const range of ranges ) {
 					if ( value ) {
-						batch.setAttribute( range, this.attributeKey, value );
+						writer.setAttribute( this.attributeKey, value, range );
 					} else {
-						batch.removeAttribute( range, this.attributeKey );
+						writer.removeAttribute( this.attributeKey, range );
 					}
 				}
 			}

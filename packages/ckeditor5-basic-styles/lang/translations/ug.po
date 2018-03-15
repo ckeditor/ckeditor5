@@ -1,0 +1,26 @@
+# Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+"Language: ug\n"
+"Language-Team: Uighur (https://www.transifex.com/ckeditor/teams/11143/ug/)\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "Toolbar button tooltip for the Bold feature."
+msgid "Bold"
+msgstr "توم"
+
+msgctxt "Toolbar button tooltip for the Italic feature."
+msgid "Italic"
+msgstr "يانتۇ"
+
+msgctxt "Toolbar button tooltip for the Underline feature."
+msgid "Underline"
+msgstr "ئاستى سىزىق"
+
+msgctxt "Toolbar button tooltip for the Code feature."
+msgid "Code"
+msgstr "كودى"
+
+msgctxt "Toolbar button tooltip for the Strikethrough feature."
+msgid "Strikethrough"
+msgstr ""

@@ -1,29 +1,28 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
-import UnderlineEngine from '../src/underlineengine';
+import UnderlineEditing from '../../src/underline/underlineediting';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
-import AttributeCommand from '../src/attributecommand';
+import AttributeCommand from '../../src/attributecommand';
 
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
-describe( 'UnderlineEngine', () => {
-	let editor, doc;
+describe( 'UnderlineEditing', () => {
+	let editor, model;
 
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Paragraph, UnderlineEngine ]
+				plugins: [ Paragraph, UnderlineEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
-
-				doc = editor.document;
+				model = editor.model;
 			} );
 	} );
 
@@ -32,13 +31,12 @@ describe( 'UnderlineEngine', () => {
 	} );
 
 	it( 'should be loaded', () => {
-		expect( editor.plugins.get( UnderlineEngine ) ).to.be.instanceOf( UnderlineEngine );
+		expect( editor.plugins.get( UnderlineEditing ) ).to.be.instanceOf( UnderlineEditing );
 	} );
 
 	it( 'should set proper schema rules', () => {
-		expect( doc.schema.check( { name: '$inline', attributes: 'underline', inside: '$root' } ) ).to.be.false;
-		expect( doc.schema.check( { name: '$inline', attributes: 'underline', inside: '$block' } ) ).to.be.true;
-		expect( doc.schema.check( { name: '$inline', attributes: 'underline', inside: '$clipboardHolder' } ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$root', '$block', '$text' ], 'underline' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$clipboardHolder', '$text' ], 'underline' ) ).to.be.true;
 	} );
 
 	describe( 'command', () => {
@@ -54,7 +52,7 @@ describe( 'UnderlineEngine', () => {
 		it( 'should convert <u> to underline attribute', () => {
 			editor.setData( '<p><u>foo</u>bar</p>' );
 
-			expect( getModelData( doc, { withoutSelection: true } ) )
+			expect( getModelData( model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph><$text underline="true">foo</$text>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><u>foo</u>bar</p>' );
@@ -63,27 +61,25 @@ describe( 'UnderlineEngine', () => {
 		it( 'should convert text-decoration:underline to underline attribute', () => {
 			editor.setData( '<p><span style="text-decoration: underline;">foo</span>bar</p>' );
 
-			expect( getModelData( doc, { withoutSelection: true } ) )
+			expect( getModelData( model, { withoutSelection: true } ) )
 				.to.equal( '<paragraph><$text underline="true">foo</$text>bar</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><u>foo</u>bar</p>' );
 		} );
 
 		it( 'should be integrated with autoparagraphing', () => {
-			// Incorrect results because autoparagraphing works incorrectly (issue in paragraph).
-			// https://github.com/ckeditor/ckeditor5-paragraph/issues/10
-
 			editor.setData( '<u>foo</u>bar' );
 
-			expect( getModelData( doc, { withoutSelection: true } ) ).to.equal( '<paragraph>foobar</paragraph>' );
+			expect( getModelData( model, { withoutSelection: true } ) )
+				.to.equal( '<paragraph><$text underline="true">foo</$text>bar</paragraph>' );
 
-			expect( editor.getData() ).to.equal( '<p>foobar</p>' );
+			expect( editor.getData() ).to.equal( '<p><u>foo</u>bar</p>' );
 		} );
 	} );
 
 	describe( 'editing pipeline conversion', () => {
 		it( 'should convert attribute', () => {
-			setModelData( doc, '<paragraph><$text underline="true">foo</$text>bar</paragraph>' );
+			setModelData( model, '<paragraph><$text underline="true">foo</$text>bar</paragraph>' );
 
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p><u>foo</u>bar</p>' );
 		} );

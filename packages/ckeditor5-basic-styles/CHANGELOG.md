@@ -1,6 +1,22 @@
 Changelog
 =========
 
+## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-basic-styles/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
+
+### Features
+
+* Added the strikethrough feature. ([78719c9](https://github.com/ckeditor/ckeditor5-basic-styles/commit/78719c9))
+
+  Thanks to [@Natim](https://github.com/Natim)!
+* Updated icons for compatibility with the refreshed Lark theme (see [ckeditor/ckeditor5#645](https://github.com/ckeditor/ckeditor5/issues/645)). ([170fec2](https://github.com/ckeditor/ckeditor5-basic-styles/commit/170fec2))
+
+### Other changes
+
+* Aligned feature class naming to the new scheme. ([51a4b61](https://github.com/ckeditor/ckeditor5-basic-styles/commit/51a4b61))
+* Migrated package styles to PostCSS. Moved the visual styles to `@ckeditor/ckeditor5-theme-lark` (see [ckeditor/ckeditor5-ui#144](https://github.com/ckeditor/ckeditor5-ui/issues/144)). ([a5d5d9e](https://github.com/ckeditor/ckeditor5-basic-styles/commit/a5d5d9e))
+* Updated translations. ([1ff4312](https://github.com/ckeditor/ckeditor5-basic-styles/commit/1ff4312))
+
+
 ## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-basic-styles/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
 
 ### Other changes

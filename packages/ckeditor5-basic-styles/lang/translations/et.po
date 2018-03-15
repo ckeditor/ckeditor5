@@ -1,0 +1,26 @@
+# Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+"Language: et\n"
+"Language-Team: Estonian (https://www.transifex.com/ckeditor/teams/11143/et/)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "Toolbar button tooltip for the Bold feature."
+msgid "Bold"
+msgstr "Rasvane"
+
+msgctxt "Toolbar button tooltip for the Italic feature."
+msgid "Italic"
+msgstr "Kaldkiri"
+
+msgctxt "Toolbar button tooltip for the Underline feature."
+msgid "Underline"
+msgstr "Allajoonitud"
+
+msgctxt "Toolbar button tooltip for the Code feature."
+msgid "Code"
+msgstr "Kood"
+
+msgctxt "Toolbar button tooltip for the Strikethrough feature."
+msgid "Strikethrough"
+msgstr "Läbijoonitud"

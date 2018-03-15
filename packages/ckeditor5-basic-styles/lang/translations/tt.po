@@ -1,0 +1,26 @@
+# Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+"Language: tt\n"
+"Language-Team: Tatar (https://www.transifex.com/ckeditor/teams/11143/tt/)\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "Toolbar button tooltip for the Bold feature."
+msgid "Bold"
+msgstr "Калын"
+
+msgctxt "Toolbar button tooltip for the Italic feature."
+msgid "Italic"
+msgstr ""
+
+msgctxt "Toolbar button tooltip for the Underline feature."
+msgid "Underline"
+msgstr ""
+
+msgctxt "Toolbar button tooltip for the Code feature."
+msgid "Code"
+msgstr "Код"
+
+msgctxt "Toolbar button tooltip for the Strikethrough feature."
+msgid "Strikethrough"
+msgstr ""
