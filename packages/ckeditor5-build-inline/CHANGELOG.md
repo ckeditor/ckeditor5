@@ -40,10 +40,9 @@ Besides new features introduced by the dependencies, this version also introduce
 
 ### Other changes
 
-* Adjusted toolbar configuration of the build (see [ckeditor/ckeditor5#645](https://github.com/ckeditor/ckeditor5/issues/645)). ([69853bb](https://github.com/ckeditor/ckeditor5-build-inline/commit/69853bb))
 * Aligned build and `webpack.config.js` to the new Translation Service ([ckeditor/ckeditor5#624](https://github.com/ckeditor/ckeditor5/issues/624)). ([6ab5d5f](https://github.com/ckeditor/ckeditor5-build-inline/commit/6ab5d5f))
 * Changed the webpack configuration so the styles are processed using PostCSS instead of SASS (see [ckeditor/ckeditor5-ui#144](https://github.com/ckeditor/ckeditor5-ui/issues/144)). ([22c0a63](https://github.com/ckeditor/ckeditor5-build-inline/commit/22c0a63))
-* Unify the `getPostCssConfig()` import from `@ckeditor/ckeditor5-dev-utils` package. See [ckeditor/ckeditor5#724](https://github.com/ckeditor/ckeditor5/issues/724). ([e70bcf1](https://github.com/ckeditor/ckeditor5-build-inline/commit/e70bcf1))
+
 
 ## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-build-inline.git/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
 
