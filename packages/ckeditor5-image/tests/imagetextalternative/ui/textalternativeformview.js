@@ -46,8 +46,8 @@ describe( 'TextAlternativeFormView', () => {
 
 			view.render();
 
-			expect( view.saveButtonView.element.classList.contains( 'ck-button_save' ) ).to.be.true;
-			expect( view.cancelButtonView.element.classList.contains( 'ck-button_cancel' ) ).to.be.true;
+			expect( view.saveButtonView.element.classList.contains( 'ck-button-save' ) ).to.be.true;
+			expect( view.cancelButtonView.element.classList.contains( 'ck-button-cancel' ) ).to.be.true;
 		} );
 
 		it( 'should create #_focusCycler instance', () => {
