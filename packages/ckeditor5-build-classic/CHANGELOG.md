@@ -38,18 +38,11 @@ Besides new features introduced by the dependencies, this version also introduce
 
 * Added the image upload button to the build. See [ckeditor/ckeditor5#870](https://github.com/ckeditor/ckeditor5/issues/870). ([f6cab12](https://github.com/ckeditor/ckeditor5-build-classic/commit/f6cab12))
 
-### Bug fixes
-
-Besides changes in the dependencies, this version also contains the following bug fixes:
-
-* Removed English translations. ([fd32264](https://github.com/ckeditor/ckeditor5-build-classic/commit/fd32264))
-
 ### Other changes
 
-* Adjusted toolbar configuration of the build (see [ckeditor/ckeditor5#645](https://github.com/ckeditor/ckeditor5/issues/645)). ([18ccb43](https://github.com/ckeditor/ckeditor5-build-classic/commit/18ccb43))
 * Aligned build and `webpack.config.js` to the new Translation Service ([ckeditor/ckeditor5#624](https://github.com/ckeditor/ckeditor5/issues/624)). ([a349ffb](https://github.com/ckeditor/ckeditor5-build-classic/commit/a349ffb))
 * Changed the webpack configuration so the styles are processed using PostCSS instead of SASS (see [ckeditor/ckeditor5-ui#144](https://github.com/ckeditor/ckeditor5-ui/issues/144)). ([040b92f](https://github.com/ckeditor/ckeditor5-build-classic/commit/040b92f))
-* Unify the `getPostCssConfig()` import from `@ckeditor/ckeditor5-dev-utils` package. See [ckeditor/ckeditor5#724](https://github.com/ckeditor/ckeditor5/issues/724). ([1fe7f09](https://github.com/ckeditor/ckeditor5-build-classic/commit/1fe7f09))
+
 
 ## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-build-classic.git/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
 
