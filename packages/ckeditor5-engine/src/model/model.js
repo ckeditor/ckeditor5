@@ -213,35 +213,6 @@ export default class Model {
 	}
 
 	/**
-	 * Common part of {@link module:engine/model/model~Model#change} and {@link module:engine/model/model~Model#enqueueChange}
-	 * which calls callbacks and returns array of values returned by these callbacks.
-	 *
-	 * @private
-	 * @returns {Array.<*>} Array of values returned by callbacks.
-	 */
-	_runPendingChanges() {
-		const ret = [];
-
-		while ( this._pendingChanges.length ) {
-			// Create a new writer using batch instance created for this chain of changes.
-			const currentBatch = this._pendingChanges[ 0 ].batch;
-			this._currentWriter = new Writer( this, currentBatch );
-
-			// Execute changes callback and gather the returned value.
-			const callbackReturnValue = this._pendingChanges[ 0 ].callback( this._currentWriter );
-			ret.push( callbackReturnValue );
-
-			// Fire internal `_change` event.
-			this.fire( '_change', this._currentWriter );
-
-			this._pendingChanges.shift();
-			this._currentWriter = null;
-		}
-
-		return ret;
-	}
-
-	/**
 	 * {@link module:utils/observablemixin~ObservableMixin#decorate Decorated} function to apply
 	 * {@link module:engine/model/operation/operation~Operation operations} on the model.
 	 *
@@ -357,6 +328,35 @@ export default class Model {
 	destroy() {
 		this.document.destroy();
 		this.stopListening();
+	}
+
+	/**
+	 * Common part of {@link module:engine/model/model~Model#change} and {@link module:engine/model/model~Model#enqueueChange}
+	 * which calls callbacks and returns array of values returned by these callbacks.
+	 *
+	 * @private
+	 * @returns {Array.<*>} Array of values returned by callbacks.
+	 */
+	_runPendingChanges() {
+		const ret = [];
+
+		while ( this._pendingChanges.length ) {
+			// Create a new writer using batch instance created for this chain of changes.
+			const currentBatch = this._pendingChanges[ 0 ].batch;
+			this._currentWriter = new Writer( this, currentBatch );
+
+			// Execute changes callback and gather the returned value.
+			const callbackReturnValue = this._pendingChanges[ 0 ].callback( this._currentWriter );
+			ret.push( callbackReturnValue );
+
+			// Fire internal `_change` event.
+			this.fire( '_change', this._currentWriter );
+
+			this._pendingChanges.shift();
+			this._currentWriter = null;
+		}
+
+		return ret;
 	}
 
 	/**
