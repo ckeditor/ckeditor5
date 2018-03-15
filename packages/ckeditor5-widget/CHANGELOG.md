@@ -1,6 +1,15 @@
 Changelog
 =========
 
+## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-widget/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
+
+### Other changes
+
+* Aligned feature class naming to the new scheme. ([23991a4](https://github.com/ckeditor/ckeditor5-widget/commit/23991a4))
+* Migrated package styles to PostCSS. Moved visual styles to `@ckeditor/ckeditor5-theme-lark` (see [ckeditor/ckeditor5-ui#144](https://github.com/ckeditor/ckeditor5-ui/issues/144)). ([857d6d4](https://github.com/ckeditor/ckeditor5-widget/commit/857d6d4))
+* Switched to handling deletion around widgets by using the `delete` event instead of listening directly on key events. Closes [#29](https://github.com/ckeditor/ckeditor5-widget/issues/29). ([ee6cc95](https://github.com/ckeditor/ckeditor5-widget/commit/ee6cc95))
+
+
 ## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-widget/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
 
 ### Bug fixes

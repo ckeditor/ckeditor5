@@ -1,8 +1,9 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
+import Writer from '@ckeditor/ckeditor5-engine/src/view/writer';
 import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
 import ViewEditableElement from '@ckeditor/ckeditor5-engine/src/view/editableelement';
 import ViewDocument from '@ckeditor/ckeditor5-engine/src/view/document';
@@ -17,11 +18,14 @@ import {
 } from '../src/utils';
 
 describe( 'widget utils', () => {
-	let element;
+	let element, writer, viewDocument;
 
 	beforeEach( () => {
-		element = new ViewElement( 'div' );
-		toWidget( element );
+		viewDocument = new ViewDocument();
+		writer = new Writer( viewDocument );
+
+		element = writer.createContainerElement( 'div' );
+		toWidget( element, writer );
 	} );
 
 	describe( 'toWidget()', () => {
@@ -39,19 +43,19 @@ describe( 'widget utils', () => {
 		} );
 
 		it( 'should add element\'s label if one is provided', () => {
-			toWidget( element, { label: 'foo bar baz label' } );
+			toWidget( element, writer, { label: 'foo bar baz label' } );
 
 			expect( getLabel( element ) ).to.equal( 'foo bar baz label' );
 		} );
 
 		it( 'should add element\'s label if one is provided as function', () => {
-			toWidget( element, { label: () => 'foo bar baz label' } );
+			toWidget( element, writer, { label: () => 'foo bar baz label' } );
 
 			expect( getLabel( element ) ).to.equal( 'foo bar baz label' );
 		} );
 
 		it( 'should set default highlight handling methods', () => {
-			toWidget( element );
+			toWidget( element, writer );
 
 			const set = element.getCustomProperty( 'addHighlight' );
 			const remove = element.getCustomProperty( 'removeHighlight' );
@@ -59,15 +63,15 @@ describe( 'widget utils', () => {
 			expect( typeof set ).to.equal( 'function' );
 			expect( typeof remove ).to.equal( 'function' );
 
-			set( element, { priority: 1, class: 'highlight', id: 'highlight' } );
+			set( element, { priority: 1, class: 'highlight', id: 'highlight' }, writer );
 			expect( element.hasClass( 'highlight' ) ).to.be.true;
 
-			remove( element, 'highlight' );
+			remove( element, 'highlight', writer );
 			expect( element.hasClass( 'highlight' ) ).to.be.false;
 		} );
 
 		it( 'should set default highlight handling methods - CSS classes array', () => {
-			toWidget( element );
+			toWidget( element, writer );
 
 			const set = element.getCustomProperty( 'addHighlight' );
 			const remove = element.getCustomProperty( 'removeHighlight' );
@@ -75,11 +79,11 @@ describe( 'widget utils', () => {
 			expect( typeof set ).to.equal( 'function' );
 			expect( typeof remove ).to.equal( 'function' );
 
-			set( element, { priority: 1, class: [ 'highlight', 'foo' ], id: 'highlight' } );
+			set( element, { priority: 1, class: [ 'highlight', 'foo' ], id: 'highlight' }, writer );
 			expect( element.hasClass( 'highlight' ) ).to.be.true;
 			expect( element.hasClass( 'foo' ) ).to.be.true;
 
-			remove( element, 'highlight' );
+			remove( element, 'highlight', writer );
 			expect( element.hasClass( 'highlight' ) ).to.be.false;
 			expect( element.hasClass( 'foo' ) ).to.be.false;
 		} );
@@ -98,7 +102,7 @@ describe( 'widget utils', () => {
 	describe( 'label utils', () => {
 		it( 'should allow to set label for element', () => {
 			const element = new ViewElement( 'p' );
-			setLabel( element, 'foo bar baz' );
+			setLabel( element, 'foo bar baz', writer );
 
 			expect( getLabel( element ) ).to.equal( 'foo bar baz' );
 		} );
@@ -112,7 +116,7 @@ describe( 'widget utils', () => {
 		it( 'should allow to use a function as label creator', () => {
 			const element = new ViewElement( 'p' );
 			let caption = 'foo';
-			setLabel( element, () => caption );
+			setLabel( element, () => caption, writer );
 
 			expect( getLabel( element ) ).to.equal( 'foo' );
 			caption = 'bar';
@@ -126,8 +130,8 @@ describe( 'widget utils', () => {
 		beforeEach( () => {
 			viewDocument = new ViewDocument();
 			element = new ViewEditableElement( 'div' );
-			element.document = viewDocument;
-			toWidgetEditable( element );
+			element._document = viewDocument;
+			toWidgetEditable( element, writer );
 		} );
 
 		it( 'should be created in context of proper document', () => {
@@ -140,9 +144,9 @@ describe( 'widget utils', () => {
 
 		it( 'should add proper contenteditable value when element is read-only - initialization', () => {
 			const element = new ViewEditableElement( 'div' );
-			element.document = viewDocument;
+			element._document = viewDocument;
 			element.isReadOnly = true;
-			toWidgetEditable( element );
+			toWidgetEditable( element, writer );
 
 			expect( element.getAttribute( 'contenteditable' ) ).to.equal( 'false' );
 		} );
@@ -172,7 +176,7 @@ describe( 'widget utils', () => {
 			addSpy = sinon.spy();
 			removeSpy = sinon.spy();
 
-			setHighlightHandling( element, addSpy, removeSpy );
+			setHighlightHandling( element, writer, addSpy, removeSpy );
 			set = element.getCustomProperty( 'addHighlight' );
 			remove = element.getCustomProperty( 'removeHighlight' );
 		} );
@@ -185,14 +189,14 @@ describe( 'widget utils', () => {
 		it( 'should call highlight methods when descriptor is added and removed', () => {
 			const descriptor = { priority: 10, class: 'highlight', id: 'highlight' };
 
-			set( element, descriptor );
-			remove( element, descriptor.id );
+			set( element, descriptor, writer );
+			remove( element, descriptor.id, writer );
 
 			sinon.assert.calledOnce( addSpy );
-			sinon.assert.calledWithExactly( addSpy, element, descriptor );
+			sinon.assert.calledWithExactly( addSpy, element, descriptor, writer );
 
 			sinon.assert.calledOnce( removeSpy );
-			sinon.assert.calledWithExactly( removeSpy, element, descriptor );
+			sinon.assert.calledWithExactly( removeSpy, element, descriptor, writer );
 		} );
 
 		it( 'should call highlight methods when next descriptor is added', () => {

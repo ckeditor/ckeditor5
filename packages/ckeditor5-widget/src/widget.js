@@ -1,5 +1,5 @@
 /**
- * @license Copyright (c) 2003-2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
  */
 
@@ -17,7 +17,7 @@ import RootEditableElement from '@ckeditor/ckeditor5-engine/src/view/rooteditabl
 import { isWidget, WIDGET_SELECTED_CLASS_NAME, getLabel } from './utils';
 import { keyCodes, getCode, parseKeystroke } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
-import '../theme/theme.scss';
+import '../theme/widget.css';
 
 const selectAllKeystrokeCode = parseKeystroke( 'Ctrl+A' );
 
@@ -42,7 +42,8 @@ export default class Widget extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
-		const viewDocument = this.editor.editing.view;
+		const view = this.editor.editing.view;
+		const viewDocument = view.document;
 
 		/**
 		 * Holds previously selected widgets.
@@ -54,11 +55,12 @@ export default class Widget extends Plugin {
 
 		// Model to view selection converter.
 		// Converts selection placed over widget element to fake selection
-		this.editor.editing.modelToView.on( 'selection', ( evt, data, consumable, conversionApi ) => {
+		this.editor.editing.downcastDispatcher.on( 'selection', ( evt, data, conversionApi ) => {
 			// Remove selected class from previously selected widgets.
-			this._clearPreviouslySelectedWidgets();
+			this._clearPreviouslySelectedWidgets( conversionApi.writer );
 
-			const viewSelection = conversionApi.viewSelection;
+			const viewWriter = conversionApi.writer;
+			const viewSelection = viewWriter.document.selection;
 			const selectedElement = viewSelection.getSelectedElement();
 
 			for ( const range of viewSelection.getRanges() ) {
@@ -66,12 +68,12 @@ export default class Widget extends Plugin {
 					const node = value.item;
 
 					if ( node.is( 'element' ) && isWidget( node ) ) {
-						node.addClass( WIDGET_SELECTED_CLASS_NAME );
+						viewWriter.addClass( WIDGET_SELECTED_CLASS_NAME, node );
 						this._previouslySelected.add( node );
 
 						// Check if widget is a single element selected.
 						if ( node == selectedElement ) {
-							viewSelection.setFake( true, { label: getLabel( selectedElement ) } );
+							viewWriter.setSelection( viewSelection.getRanges(), { fake: true, label: getLabel( selectedElement ) } );
 						}
 					}
 				}
@@ -79,11 +81,19 @@ export default class Widget extends Plugin {
 		}, { priority: 'low' } );
 
 		// If mouse down is pressed on widget - create selection over whole widget.
-		viewDocument.addObserver( MouseObserver );
+		view.addObserver( MouseObserver );
 		this.listenTo( viewDocument, 'mousedown', ( ...args ) => this._onMousedown( ...args ) );
 
 		// Handle custom keydown behaviour.
 		this.listenTo( viewDocument, 'keydown', ( ...args ) => this._onKeydown( ...args ), { priority: 'high' } );
+
+		// Handle custom delete behaviour.
+		this.listenTo( viewDocument, 'delete', ( evt, data ) => {
+			if ( this._handleDelete( data.direction == 'forward' ) ) {
+				data.preventDefault();
+				evt.stop();
+			}
+		}, { priority: 'high' } );
 	}
 
 	/**
@@ -95,7 +105,8 @@ export default class Widget extends Plugin {
 	 */
 	_onMousedown( eventInfo, domEventData ) {
 		const editor = this.editor;
-		const viewDocument = editor.editing.view;
+		const view = editor.editing.view;
+		const viewDocument = view.document;
 		let element = domEventData.target;
 
 		// Do nothing if inside nested editable.
@@ -116,13 +127,13 @@ export default class Widget extends Plugin {
 
 		// Focus editor if is not focused already.
 		if ( !viewDocument.isFocused ) {
-			viewDocument.focus();
+			view.focus();
 		}
 
 		// Create model selection over widget.
 		const modelElement = editor.editing.mapper.toModelElement( element );
 
-		editor.document.enqueueChanges( ( ) => {
+		editor.model.change( () => {
 			this._setSelectionOverElement( modelElement );
 		} );
 	}
@@ -141,9 +152,7 @@ export default class Widget extends Plugin {
 
 		// Checks if the keys were handled and then prevents the default event behaviour and stops
 		// the propagation.
-		if ( isDeleteKeyCode( keyCode ) ) {
-			wasHandled = this._handleDelete( isForward );
-		} else if ( isArrowKeyCode( keyCode ) ) {
+		if ( isArrowKeyCode( keyCode ) ) {
 			wasHandled = this._handleArrowKeys( isForward );
 		} else if ( isSelectAllKeyCode( domEventData ) ) {
 			wasHandled = this._selectAllNestedEditableContent() || this._selectAllContent();
@@ -168,7 +177,7 @@ export default class Widget extends Plugin {
 			return;
 		}
 
-		const modelDocument = this.editor.document;
+		const modelDocument = this.editor.model.document;
 		const modelSelection = modelDocument.selection;
 
 		// Do nothing on non-collapsed selection.
@@ -179,8 +188,7 @@ export default class Widget extends Plugin {
 		const objectElement = this._getObjectElementNextToSelection( isForward );
 
 		if ( objectElement ) {
-			modelDocument.enqueueChanges( () => {
-				const batch = modelDocument.batch();
+			this.editor.model.change( writer => {
 				let previousNode = modelSelection.anchor.parent;
 
 				// Remove previous element if empty.
@@ -188,7 +196,7 @@ export default class Widget extends Plugin {
 					const nodeToRemove = previousNode;
 					previousNode = nodeToRemove.parent;
 
-					batch.remove( nodeToRemove );
+					writer.remove( nodeToRemove );
 				}
 
 				this._setSelectionOverElement( objectElement );
@@ -205,19 +213,20 @@ export default class Widget extends Plugin {
 	 * @returns {Boolean|undefined} Returns `true` if keys were handled correctly.
 	 */
 	_handleArrowKeys( isForward ) {
-		const modelDocument = this.editor.document;
-		const schema = modelDocument.schema;
+		const model = this.editor.model;
+		const schema = model.schema;
+		const modelDocument = model.document;
 		const modelSelection = modelDocument.selection;
 		const objectElement = modelSelection.getSelectedElement();
 
-		// if object element is selected.
-		if ( objectElement && schema.objects.has( objectElement.name ) ) {
+		// If object element is selected.
+		if ( objectElement && schema.isObject( objectElement ) ) {
 			const position = isForward ? modelSelection.getLastPosition() : modelSelection.getFirstPosition();
-			const newRange = modelDocument.getNearestSelectionRange( position, isForward ? 'forward' : 'backward' );
+			const newRange = schema.getNearestSelectionRange( position, isForward ? 'forward' : 'backward' );
 
 			if ( newRange ) {
-				modelDocument.enqueueChanges( () => {
-					modelSelection.setRanges( [ newRange ] );
+				model.change( writer => {
+					writer.setSelection( newRange );
 				} );
 			}
 
@@ -232,8 +241,8 @@ export default class Widget extends Plugin {
 
 		const objectElement2 = this._getObjectElementNextToSelection( isForward );
 
-		if ( objectElement2 instanceof ModelElement && modelDocument.schema.objects.has( objectElement2.name ) ) {
-			modelDocument.enqueueChanges( () => {
+		if ( objectElement2 instanceof ModelElement && schema.isObject( objectElement2 ) ) {
+			model.change( () => {
 				this._setSelectionOverElement( objectElement2 );
 			} );
 
@@ -250,17 +259,16 @@ export default class Widget extends Plugin {
 	 * @private
 	 */
 	_selectAllNestedEditableContent() {
-		const modelDocument = this.editor.document;
-		const modelSelection = modelDocument.selection;
-		const schema = modelDocument.schema;
-		const limitElement = schema.getLimitElement( modelSelection );
+		const model = this.editor.model;
+		const documentSelection = model.document.selection;
+		const limitElement = model.schema.getLimitElement( documentSelection );
 
-		if ( modelSelection.getFirstRange().root == limitElement ) {
+		if ( documentSelection.getFirstRange().root == limitElement ) {
 			return false;
 		}
 
-		modelDocument.enqueueChanges( () => {
-			modelSelection.setIn( limitElement );
+		model.change( writer => {
+			writer.setSelection( ModelRange.createIn( limitElement ) );
 		} );
 
 		return true;
@@ -273,10 +281,10 @@ export default class Widget extends Plugin {
 	 * @returns {Boolean} Returns true if widget was selected and selecting all was handled by this method.
 	 */
 	_selectAllContent() {
-		const modelDocument = this.editor.document;
-		const modelSelection = modelDocument.selection;
+		const model = this.editor.model;
 		const editing = this.editor.editing;
-		const viewDocument = editing.view;
+		const view = editing.view;
+		const viewDocument = view.document;
 		const viewSelection = viewDocument.selection;
 
 		const selectedElement = viewSelection.getSelectedElement();
@@ -286,8 +294,8 @@ export default class Widget extends Plugin {
 		if ( selectedElement && isWidget( selectedElement ) ) {
 			const widgetParent = editing.mapper.toModelElement( selectedElement.parent );
 
-			modelDocument.enqueueChanges( () => {
-				modelSelection.setRanges( [ ModelRange.createIn( widgetParent ) ] );
+			model.change( writer => {
+				writer.setSelection( ModelRange.createIn( widgetParent ) );
 			} );
 
 			return true;
@@ -303,7 +311,9 @@ export default class Widget extends Plugin {
 	 * @param {module:engine/model/element~Element} element
 	 */
 	_setSelectionOverElement( element ) {
-		this.editor.document.selection.setRanges( [ ModelRange.createOn( element ) ] );
+		this.editor.model.change( writer => {
+			writer.setSelection( ModelRange.createOn( element ) );
+		} );
 	}
 
 	/**
@@ -316,18 +326,17 @@ export default class Widget extends Plugin {
 	 * @returns {module:engine/model/element~Element|null}
 	 */
 	_getObjectElementNextToSelection( forward ) {
-		const modelDocument = this.editor.document;
-		const schema = modelDocument.schema;
-		const modelSelection = modelDocument.selection;
-		const dataController = this.editor.data;
+		const model = this.editor.model;
+		const schema = model.schema;
+		const modelSelection = model.document.selection;
 
 		// Clone current selection to use it as a probe. We must leave default selection as it is so it can return
 		// to its current state after undo.
-		const probe = ModelSelection.createFromSelection( modelSelection );
-		dataController.modifySelection( probe, { direction: forward ? 'forward' : 'backward' } );
+		const probe = new ModelSelection( modelSelection );
+		model.modifySelection( probe, { direction: forward ? 'forward' : 'backward' } );
 		const objectElement = forward ? probe.focus.nodeBefore : probe.focus.nodeAfter;
 
-		if ( objectElement instanceof ModelElement && schema.objects.has( objectElement.name ) ) {
+		if ( objectElement instanceof ModelElement && schema.isObject( objectElement ) ) {
 			return objectElement;
 		}
 
@@ -336,11 +345,13 @@ export default class Widget extends Plugin {
 
 	/**
 	 * Removes CSS class from previously selected widgets.
+	 *
 	 * @private
+	 * @param {module:engine/view/writer~Writer} writer
 	 */
-	_clearPreviouslySelectedWidgets() {
+	_clearPreviouslySelectedWidgets( writer ) {
 		for ( const widget of this._previouslySelected ) {
-			widget.removeClass( WIDGET_SELECTED_CLASS_NAME );
+			writer.removeClass( WIDGET_SELECTED_CLASS_NAME, widget );
 		}
 
 		this._previouslySelected.clear();
@@ -356,14 +367,6 @@ function isArrowKeyCode( keyCode ) {
 		keyCode == keyCodes.arrowleft ||
 		keyCode == keyCodes.arrowup ||
 		keyCode == keyCodes.arrowdown;
-}
-
-// Returns 'true' if provided key code represents one of the delete keys: delete or backspace.
-//
-// @param {Number} keyCode
-// @returns {Boolean}
-function isDeleteKeyCode( keyCode ) {
-	return keyCode == keyCodes.delete || keyCode == keyCodes.backspace;
 }
 
 // Returns 'true' if provided (DOM) key event data corresponds with the Ctrl+A keystroke.
