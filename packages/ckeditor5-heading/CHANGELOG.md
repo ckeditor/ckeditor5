@@ -5,12 +5,9 @@ Changelog
 
 ### Other changes
 
-* Align feature class naming to a new scheme. ([511a9d8](https://github.com/ckeditor/ckeditor5-heading/commit/511a9d8))
-* Aligned code to changes (`config.lang` to `config.languages`). Part of the Translation Service v2 ([ckeditor/ckeditor5#624](https://github.com/ckeditor/ckeditor5/issues/624)). ([eb00e22](https://github.com/ckeditor/ckeditor5-heading/commit/eb00e22))
-* Aligned tests to changes made in TranslationService. ([f2772ac](https://github.com/ckeditor/ckeditor5-heading/commit/f2772ac))
-* Aligning with new conversion helpers API. ([263707b](https://github.com/ckeditor/ckeditor5-heading/commit/263707b))
-* Migrated package styles to PostCSS. Moved visual styles to ckeditor5-theme-lark (see [ckeditor/ckeditor5-ui#144](https://github.com/ckeditor/ckeditor5-ui/issues/144)). ([965179e](https://github.com/ckeditor/ckeditor5-heading/commit/965179e))
-* Update naming of UI components & commands. ([72ee3d6](https://github.com/ckeditor/ckeditor5-heading/commit/72ee3d6))
+* Aligned feature class naming to the new scheme. ([511a9d8](https://github.com/ckeditor/ckeditor5-heading/commit/511a9d8))
+* Migrated package styles to PostCSS. Moved visual styles to `@ckeditor/ckeditor5-theme-lark` (see [ckeditor/ckeditor5-ui#144](https://github.com/ckeditor/ckeditor5-ui/issues/144)). ([965179e](https://github.com/ckeditor/ckeditor5-heading/commit/965179e))
+* Updated naming of UI components & commands. ([72ee3d6](https://github.com/ckeditor/ckeditor5-heading/commit/72ee3d6))
 
 ### BREAKING CHANGES
 
