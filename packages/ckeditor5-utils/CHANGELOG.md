@@ -1,6 +1,36 @@
 Changelog
 =========
 
+## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-utils/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
+
+### Features
+
+* Introduce `bind().toMany()` binding chain in `ObservableMixin`. Closes [#224](https://github.com/ckeditor/ckeditor5-utils/issues/224). ([cfa7d0e](https://github.com/ckeditor/ckeditor5-utils/commit/cfa7d0e))
+* Introduced skipping items when binding collections. Closes [#215](https://github.com/ckeditor/ckeditor5-utils/issues/215). Closes https://github.com/ckeditor/ckeditor5-ui/issues/92. ([6e0d063](https://github.com/ckeditor/ckeditor5-utils/commit/6e0d063))
+
+### Bug fixes
+
+* `Rect.getDomRangeRects()` should not throw if the provided DOM range starts in a text node. Closes [ckeditor/ckeditor5-ui#317](https://github.com/ckeditor/ckeditor5-ui/issues/317). ([bfa55e9](https://github.com/ckeditor/ckeditor5-utils/commit/bfa55e9))
+* Bulletproofed `isDomNode()` helper when used in iframes. Removed `isWindow()` logic from the helper. Closes [#201](https://github.com/ckeditor/ckeditor5-utils/issues/201). ([84ccda2](https://github.com/ckeditor/ckeditor5-utils/commit/84ccda2))
+* Long keystrokes should be handled properly by getEnvKeystrokeText on Mac. Added support for ⇧ and ⌥ modifiers. Closes [#206](https://github.com/ckeditor/ckeditor5-utils/issues/206). ([d8443e2](https://github.com/ckeditor/ckeditor5-utils/commit/d8443e2))
+
+### Other changes
+
+* `ObservableMixin#unbind` should not throw if used for an attribute which is not bound. Closes [#5](https://github.com/ckeditor/ckeditor5-utils/issues/5). ([848a818](https://github.com/ckeditor/ckeditor5-utils/commit/848a818))
+* Aligned behaviors of `EmitterMixin` methods responsible for adding end removing listeners. Closes [#144](https://github.com/ckeditor/ckeditor5-utils/issues/144). ([460d7f4](https://github.com/ckeditor/ckeditor5-utils/commit/460d7f4))
+
+  The `emitter.on()` now has the same behavior as `emitter.listenTo( emitter )` as well as `emitter.off()` is the same as `emitter.stopListening( emitter )`. This made `emitter.stopListening()` correctly remove all listeners added in any way to it which prevents memory leaks.
+* Aligned code to the new Translation Service ([ckeditor/ckeditor5#624](https://github.com/ckeditor/ckeditor5/issues/624)). ([a51767a](https://github.com/ckeditor/ckeditor5-utils/commit/a51767a))
+* Introduced the `isText()` helper. Closes [#214](https://github.com/ckeditor/ckeditor5-utils/issues/214). ([a9a6bec](https://github.com/ckeditor/ckeditor5-utils/commit/a9a6bec))
+* Renamed `env.mac` to `env.isMac`. Closes [#222](https://github.com/ckeditor/ckeditor5-utils/issues/222). ([dc6b226](https://github.com/ckeditor/ckeditor5-utils/commit/dc6b226))
+* Renamed `isDomNode()` to `isNode()`. Closes [#219](https://github.com/ckeditor/ckeditor5-utils/issues/219). ([1823196](https://github.com/ckeditor/ckeditor5-utils/commit/1823196))
+
+### BREAKING CHANGES
+
+* Renamed `env.mac` to `env.isMac`.
+* `isDomNode()` was renamed to `isNode()`.
+
+
 ## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-utils/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
 
 ### Bug fixes
