@@ -141,7 +141,31 @@ This makes them ideal for storing and maintaining additional data in the model �
 
 ### Schema
 
-TODO
+The {@link module:engine/model/schema~Schema model's schema} defines several aspects of how the model should look:
+
+* where a node is allowed or disallowed (e.g. `paragraph` is allowed in `$root`, but not in `heading1`),
+* what attributes are allowed on a certain node (e.g. `image` can have `src` and `alt` attributes),
+* additional semantics of model nodes (e.g. `image` is of the "object" type and paragraph of the "block" type).
+
+This information is then used by features and the engine to make decisions how to process the model. For instance, the information from the schema will affect:
+
+* what happens with a pasted content - what is filtered out (note: in case of pasting the other important mechanism is the conversion – HTML elements and attributes which are not upcasted by any of the registered converters are filtered out before they even become model nodes, so the schema is not applied to them; we'll cover conversion later in this guide),
+* to which elements the heading feature can be applied (which blocks can be turned to headings and which elements are blocks in the first place),
+* which elements can be wrapped with a block quote,
+* whether the bold button is enabled when the selection is in a heading (and whether text in this heading can be bolded),
+* where the selection can be placed (which is – only in text nodes and on object elements),
+* etc.
+
+The schema is, by default, configured by editor plugins. It is recommended that every editor feature come with rules which enable and preconfigure it in the editor. This will make sure that the plugin's user can enable it without worrying to re-configure her/his schema.
+
+<info-box>
+	Currently, there is [no straightforward way to override the schema](https://github.com/ckeditor/ckeditor5-engine/issues/1367) preconfigured by features. If you want to override the default settings when initializing the editor, the best solution is to replace `editor.model.schema` with a new instance of. This, however, requires rebuilding the editor.
+</info-box>
+
+The instance of the schema is available in {@link module:engine/model/model~Model#schema `editor.model.schema`}. Read an extensive guide about using the schema API in {@link module:engine/model/schema~Schema API docs for the `Schema` class}.
+
+
+
 
 ## View
 
