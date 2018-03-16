@@ -8,6 +8,7 @@
  */
 
 import Element from './element';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 // Default attribute priority.
 const DEFAULT_PRIORITY = 10;
@@ -34,9 +35,15 @@ export default class AttributeElement extends Element {
 		super( name, attrs, children );
 
 		/**
-		 * Element priority. Attributes have to have the same priority to be
-		 * {@link module:engine/view/element~Element#isSimilar similar}. Setting different priorities on similar
- 		 * nodes may prevent merging, e.g. two `<abbr>` nodes next each other shouldn't be merged.
+		 * Returns block {@link module:engine/view/filler filler} offset or `null` if block filler is not needed.
+		 *
+		 * @method #getFillerOffset
+		 * @returns {Number|null} Block filler offset or `null` if block filler is not needed.
+		 */
+		this.getFillerOffset = getFillerOffset;
+
+		/**
+		 * Element priority. Decides in what order elements are wrapped by {@link module:engine/view/writer~Writer}.
 		 *
 		 * @protected
 		 * @member {Number}
@@ -44,22 +51,73 @@ export default class AttributeElement extends Element {
 		this._priority = DEFAULT_PRIORITY;
 
 		/**
-		 * Returns block {@link module:engine/view/filler filler} offset or `null` if block filler is not needed.
+		 * Element identifier. If set, it is used by {@link module:engine/view/element~Element#isSimilar},
+		 * and then two elements are considered similar if, and only if they have the same `_id`.
 		 *
-		 * @method #getFillerOffset
-		 * @returns {Number|null} Block filler offset or `null` if block filler is not needed.
+		 * @protected
+		 * @member {String|Number}
 		 */
-		this.getFillerOffset = getFillerOffset;
+		this._id = null;
+
+		/**
+		 * Keeps all the attribute elements that have the same {@link module:engine/view/attributeelement~AttributeElement#id ids}
+		 * and still exist in the view tree.
+		 *
+		 * This property is managed by {@link module:engine/view/writer~Writer}.
+		 *
+		 * @protected
+		 * @member {Set|null}
+		 */
+		this._clonesGroup = null;
 	}
 
 	/**
-	 * Priority of this element.
+	 * Element priority. Decides in what order elements are wrapped by {@link module:engine/view/writer~Writer}.
 	 *
 	 * @readonly
-	 * @return {Number}
+	 * @returns {Number}
 	 */
 	get priority() {
 		return this._priority;
+	}
+
+	/**
+	 * Element identifier. If set, it is used by {@link module:engine/view/element~Element#isSimilar},
+	 * and then two elements are considered similar if, and only if they have the same `id`.
+	 *
+	 * @readonly
+	 * @returns {String|Number}
+	 */
+	get id() {
+		return this._id;
+	}
+
+	/**
+	 * Returns all {@link module:engine/view/attributeelement~AttributeElement attribute elements} that has the
+	 * same {@link module:engine/view/attributeelement~AttributeElement#id id} and are in the view tree (were not removed).
+	 *
+	 * Note: If this element has been removed from the tree, returned set will not include it.
+	 *
+	 * Throws {@link module:utils/ckeditorerror~CKEditorError attribute-element-get-elements-with-same-id-no-id}
+	 * if this element has no `id`.
+	 *
+	 * @returns {Set.<module:engine/view/attributeelement~AttributeElement>} Set containing all the attribute elements
+	 * with the same `id` that were added and not removed from the view tree.
+	 */
+	getElementsWithSameId() {
+		if ( this.id === null ) {
+			/**
+			 * Cannot get elements with the same id for an attribute element without id.
+			 *
+			 * @error attribute-element-get-elements-with-same-id-no-id
+			 */
+			throw new CKEditorError(
+				'attribute-element-get-elements-with-same-id-no-id: ' +
+				'Cannot get elements with the same id for an attribute element without id.'
+			);
+		}
+
+		return new Set( this._clonesGroup );
 	}
 
 	/**
@@ -75,13 +133,31 @@ export default class AttributeElement extends Element {
 
 	/**
 	 * Checks if this element is similar to other element.
-	 * Both elements should have the same name, attributes and priority to be considered as similar.
-	 * Two similar elements can contain different set of children nodes.
+	 *
+	 * If none of elements has set {@link module:engine/view/attributeelement~AttributeElement#id}, then both elements
+	 * should have the same name, attributes and priority to be considered as similar. Two similar elements can contain
+	 * different set of children nodes.
+	 *
+	 * If at least one element has {@link module:engine/view/attributeelement~AttributeElement#id} set, then both
+	 * elements have to have the same {@link module:engine/view/attributeelement~AttributeElement#id} value to be
+	 * considered similar.
+	 *
+	 * Similarity is important for {@link module:engine/view/writer~Writer}. For example:
+	 *
+	 * * two following similar elements can be merged together into one, longer element,
+	 * * {@link module:engine/view/writer~Writer#unwrap} checks similarity of passed element and processed element to
+	 * decide whether processed element should be unwrapped,
+	 * * etc.
 	 *
 	 * @param {module:engine/view/element~Element} otherElement
 	 * @returns {Boolean}
 	 */
 	isSimilar( otherElement ) {
+		// If any element has an `id` set, just compare the ids.
+		if ( this.id !== null || otherElement.id !== null ) {
+			return this.id === otherElement.id;
+		}
+
 		return super.isSimilar( otherElement ) && this.priority == otherElement.priority;
 	}
 
@@ -98,6 +174,9 @@ export default class AttributeElement extends Element {
 
 		// Clone priority too.
 		cloned._priority = this._priority;
+
+		// And id too.
+		cloned._id = this._id;
 
 		return cloned;
 	}

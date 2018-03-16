@@ -9,13 +9,9 @@
 
 import RootEditableElement from '../view/rooteditableelement';
 import View from '../view/view';
-import ViewWriter from '../view/writer';
 import Mapper from '../conversion/mapper';
 import DowncastDispatcher from '../conversion/downcastdispatcher';
-import {
-	insertText,
-	remove
-} from '../conversion/downcast-converters';
+import { insertText, remove } from '../conversion/downcast-converters';
 import { convertSelectionChange } from '../conversion/upcast-selection-converters';
 import {
 	convertRangeSelection,
@@ -28,7 +24,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
  * Controller for the editing pipeline. The editing pipeline controls {@link ~EditingController#model model} rendering,
- * including selection handling. It also creates the {@link ~EditingController#view view document} which builds a
+ * including selection handling. It also creates the {@link ~EditingController#view view} which builds a
  * browser-independent virtualization over the DOM elements. The editing controller also attaches default converters.
  *
  * @mixes module:utils/observablemixin~ObservableMixin
@@ -41,7 +37,7 @@ export default class EditingController {
 	 */
 	constructor( model ) {
 		/**
-		 * Editing model.
+		 * Editor model.
 		 *
 		 * @readonly
 		 * @member {module:engine/model/model~Model}
@@ -78,6 +74,9 @@ export default class EditingController {
 		const selection = doc.selection;
 		const markers = this.model.markers;
 
+		// Whenever model document is changed, convert those changes to the view (using model.Document#differ).
+		// Do it on 'low' priority, so changes are converted after other listeners did their job.
+		// Also convert model selection.
 		this.listenTo( doc, 'change', () => {
 			this.view.change( writer => {
 				this.downcastDispatcher.convertChanges( doc.differ, writer );
@@ -85,7 +84,7 @@ export default class EditingController {
 			} );
 		}, { priority: 'low' } );
 
-		// Convert selection from view to model.
+		// Convert selection from the view to the model when it changes in the view.
 		this.listenTo( this.view.document, 'selectionChange', convertSelectionChange( this.model, this.mapper ) );
 
 		// Attach default model converters.
@@ -96,53 +95,6 @@ export default class EditingController {
 		this.downcastDispatcher.on( 'selection', clearAttributes(), { priority: 'low' } );
 		this.downcastDispatcher.on( 'selection', convertRangeSelection(), { priority: 'low' } );
 		this.downcastDispatcher.on( 'selection', convertCollapsedSelection(), { priority: 'low' } );
-
-		// Convert markers removal.
-		//
-		// Markers should be removed from the view before changes to the model are applied. This is because otherwise
-		// it would be impossible to map some markers to the view (if, for example, the marker's boundary parent got removed).
-		//
-		// `removedMarkers` keeps information which markers already has been removed to prevent removing them twice.
-		const removedMarkers = new Set();
-
-		// We don't want to render view when markers are converted, so we need to create view writer
-		// manually instead of using `View#change` block. See https://github.com/ckeditor/ckeditor5-engine/issues/1323.
-		const viewWriter = new ViewWriter( this.view.document );
-
-		this.listenTo( model, 'applyOperation', ( evt, args ) => {
-			// Before operation is applied...
-			const operation = args[ 0 ];
-
-			for ( const marker of model.markers ) {
-				// Check all markers, that aren't already removed...
-				if ( removedMarkers.has( marker.name ) ) {
-					continue;
-				}
-
-				const markerRange = marker.getRange();
-
-				if ( _operationAffectsMarker( operation, marker ) ) {
-					// And if the operation in any way modifies the marker, remove the marker from the view.
-					removedMarkers.add( marker.name );
-					this.downcastDispatcher.convertMarkerRemove( marker.name, markerRange, viewWriter );
-					// TODO: This stinks but this is the safest place to have this code.
-					this.model.document.differ.bufferMarkerChange( marker.name, markerRange, markerRange );
-				}
-			}
-		}, { priority: 'high' } );
-
-		// If an existing marker is updated through `model.Model#markers` directly (not through operation), just remove it.
-		this.listenTo( model.markers, 'update', ( evt, marker, oldRange ) => {
-			if ( oldRange && !removedMarkers.has( marker.name ) ) {
-				removedMarkers.add( marker.name );
-				this.downcastDispatcher.convertMarkerRemove( marker.name, oldRange, viewWriter );
-			}
-		} );
-
-		// When all changes are done, clear `removedMarkers` set.
-		this.listenTo( model, '_change', () => {
-			removedMarkers.clear();
-		}, { priority: 'low' } );
 
 		// Binds {@link module:engine/view/document~Document#roots view roots collection} to
 		// {@link module:engine/model/document~Document#roots model roots collection} so creating
@@ -174,23 +126,3 @@ export default class EditingController {
 }
 
 mix( EditingController, ObservableMixin );
-
-// Helper function which checks whether given operation will affect given marker after the operation is applied.
-function _operationAffectsMarker( operation, marker ) {
-	const range = marker.getRange();
-
-	if ( operation.type == 'insert' || operation.type == 'rename' ) {
-		return _positionAffectsRange( operation.position, range );
-	} else if ( operation.type == 'move' || operation.type == 'remove' || operation.type == 'reinsert' ) {
-		return _positionAffectsRange( operation.targetPosition, range ) || _positionAffectsRange( operation.sourcePosition, range );
-	} else if ( operation.type == 'marker' && operation.name == marker.name ) {
-		return true;
-	}
-
-	return false;
-}
-
-// Helper function which checks whether change at given position affects given range.
-function _positionAffectsRange( position, range ) {
-	return range.containsPosition( position ) || !range.start._getTransformedByInsertion( position, 1, true ).isEqual( range.start );
-}

@@ -254,6 +254,16 @@ describe( 'view test utils', () => {
 				.to.equal( '<p><b view-priority="10">foobar</b></p>' );
 		} );
 
+		it( 'should write elements id when needed', () => {
+			const text = new Text( 'foobar' );
+			const span = new AttributeElement( 'span', null, text );
+			span._id = 'foo';
+			const p = new ContainerElement( 'p', null, span );
+
+			expect( stringify( p, null, { showAttributeElementId: true } ) )
+				.to.equal( '<p><span view-id="foo">foobar</span></p>' );
+		} );
+
 		it( 'should parse DocumentFragment as root', () => {
 			const text1 = new Text( 'foobar' );
 			const text2 = new Text( 'bazqux' );
@@ -463,6 +473,14 @@ describe( 'view test utils', () => {
 			parsed1.isSimilar( attribute1 );
 			expect( parsed1.isSimilar( attribute1 ) ).to.be.true;
 			expect( parsed2.isSimilar( attribute2 ) ).to.be.true;
+		} );
+
+		it( 'should parse attribute element id', () => {
+			const parsed1 = parse( '<attribute:span view-id="foo"></attribute:span>' );
+			expect( parsed1.id ).to.equal( 'foo' );
+
+			const parsed2 = parse( '<container:div view-id="bar"></container:div>' );
+			expect( parsed2.id ).to.be.undefined;
 		} );
 
 		it( 'should paste nested elements and texts', () => {
