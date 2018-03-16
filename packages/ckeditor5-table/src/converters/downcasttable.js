@@ -154,7 +154,7 @@ function getCellElementName( rowIndex, columnIndex, headingRows, headingColumns 
  *
  * @private
  */
-class CellSpans {
+export class CellSpans {
 	/**
 	 * Creates CellSpans instance.
 	 */

@@ -7,11 +7,12 @@ import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltestedit
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 
-import InsertTableCommand from '../src/inserttablecommand';
+import InsertRowCommand from '../src/insertrowcommand';
 import downcastTable from '../src/converters/downcasttable';
 import upcastTable from '../src/converters/upcasttable';
+import { formatModelTable, formattedModelTable, modelTable } from './_utils/utils';
 
-describe( 'InsertTableCommand', () => {
+describe( 'InsertRowCommand', () => {
 	let editor, model, command;
 
 	beforeEach( () => {
@@ -19,7 +20,7 @@ describe( 'InsertTableCommand', () => {
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
-				command = new InsertTableCommand( editor );
+				command = new InsertRowCommand( editor );
 
 				const conversion = editor.conversion;
 				const schema = model.schema;
@@ -70,59 +71,81 @@ describe( 'InsertTableCommand', () => {
 
 	describe( 'isEnabled', () => {
 		describe( 'when selection is collapsed', () => {
-			it( 'should be true if in paragraph', () => {
+			it( 'should be false if wrong node', () => {
 				setData( model, '<p>foo[]</p>' );
-				expect( command.isEnabled ).to.be.true;
+				expect( command.isEnabled ).to.be.false;
 			} );
 
-			it( 'should be false if in table', () => {
-				setData( model, '<table><tableRow><tableCell>foo[]</tableCell></tableRow></table>' );
-				expect( command.isEnabled ).to.be.false;
+			it( 'should be true if in table', () => {
+				setData( model, modelTable( 1, [ '[]' ] ) );
+				expect( command.isEnabled ).to.be.true;
 			} );
 		} );
 	} );
 
 	describe( 'execute()', () => {
-		describe( 'collapsed selection', () => {
-			it( 'should insert table in empty root', () => {
-				setData( model, '[]' );
+		it( 'should insert row in given table at given index', () => {
+			setData( model, modelTable( 2, [
+				'11[]', '12',
+				'21', '22'
+			] ) );
 
-				command.execute();
+			command.execute( { at: 1 } );
 
-				expect( getData( model ) ).to.equal(
-					'<table>' +
-					'<tableRow><tableCell></tableCell><tableCell></tableCell></tableRow>' +
-					'<tableRow><tableCell></tableCell><tableCell></tableCell></tableRow>' +
-					'</table>[]'
-				);
-			} );
+			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( 2, [
+				'11[]', '12',
+				'', '',
+				'21', '22'
+			] ) );
+		} );
 
-			it( 'should insert table with two rows and two columns after non-empty paragraph', () => {
-				setData( model, '<p>foo[]</p>' );
+		it( 'should insert row in given table at default index', () => {
+			setData( model, modelTable( 2, [
+				'11[]', '12',
+				'21', '22'
+			] ) );
 
-				command.execute();
+			command.execute();
 
-				expect( getData( model ) ).to.equal( '<p>foo[]</p>' +
-					'<table>' +
-					'<tableRow><tableCell></tableCell><tableCell></tableCell></tableRow>' +
-					'<tableRow><tableCell></tableCell><tableCell></tableCell></tableRow>' +
-					'</table>'
-				);
-			} );
+			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( 2, [
+				'', '',
+				'11[]', '12',
+				'21', '22'
+			] ) );
+		} );
 
-			it( 'should insert table with given rows and columns after non-empty paragraph', () => {
-				setData( model, '<p>foo[]</p>' );
+		it( 'should update table heading rows attribute when inserting row in headings section', () => {
+			setData( model, modelTable( 2, [
+				'11[]', '12',
+				'21', '22',
+				'31', '32'
+			], { headingRows: 2 } ) );
 
-				command.execute( { rows: 3, columns: 4 } );
+			command.execute( { at: 1 } );
 
-				expect( getData( model ) ).to.equal( '<p>foo[]</p>' +
-					'<table>' +
-					'<tableRow><tableCell></tableCell><tableCell></tableCell><tableCell></tableCell><tableCell></tableCell></tableRow>' +
-					'<tableRow><tableCell></tableCell><tableCell></tableCell><tableCell></tableCell><tableCell></tableCell></tableRow>' +
-					'<tableRow><tableCell></tableCell><tableCell></tableCell><tableCell></tableCell><tableCell></tableCell></tableRow>' +
-					'</table>'
-				);
-			} );
+			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( 2, [
+				'11[]', '12',
+				'', '',
+				'21', '22',
+				'31', '32'
+			], { headingRows: 3 } ) );
+		} );
+
+		it( 'should not update table heading rows attribute when inserting row after headings section', () => {
+			setData( model, modelTable( 2, [
+				'11[]', '12',
+				'21', '22',
+				'31', '32'
+			], { headingRows: 2 } ) );
+
+			command.execute( { at: 2 } );
+
+			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( 2, [
+				'11[]', '12',
+				'21', '22',
+				'', '',
+				'31', '32'
+			], { headingRows: 2 } ) );
 		} );
 	} );
 } );
