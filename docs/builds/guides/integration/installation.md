@@ -36,6 +36,8 @@ npm install --save @ckeditor/ckeditor5-build-classic
 npm install --save @ckeditor/ckeditor5-build-inline
 # Or:
 npm install --save @ckeditor/ckeditor5-build-balloon
+# Or:
+npm install --save @ckeditor/ckeditor5-build-decoupled-document
 ```
 
 CKEditor will then be available at `node_modules/@ckeditor/ckeditor5-build-[name]/build/ckeditor.js`. It can also be imported directly to your code by `require( '@ckeditor/ckeditor5-build-[name]' )`.
@@ -50,6 +52,7 @@ Extract the `.zip` file into a dedicated directory inside your project. It is re
 
 * `ckeditor.js` – the ready-to-use editor bundle, containing the editor and all plugins.
 * `ckeditor.js.map` – the source map for the editor bundle.
+* `translations/` – editor UI translations (see {@link features/ui-language Setting UI language}).
 * `README.md` and `LICENSE.md`
 
 ## Loading the API
