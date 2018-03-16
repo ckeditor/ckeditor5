@@ -116,6 +116,7 @@ export default class ImageUploadEditing extends Plugin {
 	 * @private
 	 * @param {module:upload/filerepository~FileLoader} loader
 	 * @param {module:engine/model/element~Element} imageElement
+	 * @returns {Promise}
 	 */
 	_load( loader, imageElement ) {
 		const editor = this.editor;
@@ -128,7 +129,7 @@ export default class ImageUploadEditing extends Plugin {
 			writer.setAttribute( 'uploadStatus', 'reading', imageElement );
 		} );
 
-		loader.read()
+		return loader.read()
 			.then( data => {
 				const viewFigure = editor.editing.mapper.toViewElement( imageElement );
 				const viewImg = viewFigure.getChild( 0 );
@@ -178,10 +179,16 @@ export default class ImageUploadEditing extends Plugin {
 
 				clean();
 			} )
-			.catch( msg => {
+			.catch( error => {
+				// If status is not 'error' nor 'aborted' - throw error because it means that something else went wrong,
+				// it might be generic error and it would be real pain to find what is going on.
+				if ( loader.status !== 'error' && loader.status !== 'aborted' ) {
+					throw error;
+				}
+
 				// Might be 'aborted'.
 				if ( loader.status == 'error' ) {
-					notification.showWarning( msg, {
+					notification.showWarning( error, {
 						title: t( 'Upload failed' ),
 						namespace: 'upload'
 					} );
