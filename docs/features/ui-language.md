@@ -1,6 +1,5 @@
 ---
 category: features
-toc: false
 ---
 
 # Setting the UI language
@@ -15,16 +14,18 @@ See the demo of the editor in German:
 
 ## Loading additional languages from CDN, npm and zip file
 
-You can load additional languages using:
+ By default, the editor will display in English. This is the language built into the `ckeditor.js` files. In order to change the language of the editor UI, you need to load additional language file(s). Check out the following sections to see how to do that:
+
 * [CDN](#cdn),
 * [npm](#npm),
 * [Zip download](#zip).
 
-Next, configure the editor to use chosen language:
+Next, you can configure the editor to use the chosen language:
 
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		// The language code is defined in the https://en.wikipedia.org/wiki/ISO_639-1 standard.
 		language: 'de'
 	} )
 	.then( editor => {
@@ -41,7 +42,14 @@ To use different language than default one (English), you need to load the edito
 
 ```html
 <script src="https://cdn.ckeditor.com/ckeditor5/[version.number]/[distribution]/ckeditor.js"></script>
-<script src="https://cdn.ckeditor.com/ckeditor5/[version.number]/[distribution]/translations/de.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/[version.number]/[distribution]/translations/[lang].js"></script>
+```
+
+For example:
+
+```html
+<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/classic/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/classic/translations/de.js"></script>
 ```
 
 See {@link builds/guides/integration/installation#cdn CDN installation guides} for more information.
@@ -49,15 +57,16 @@ See {@link builds/guides/integration/installation#cdn CDN installation guides} f
 ### npm
 
 After installing the build from npm, languages will be available at `node_modules/@ckeditor/ckeditor5-build-[name]/build/translations/[lang].js`.
-Single language can be loaded directly to your code by importing `'@ckeditor/ckeditor5-build-[name]/build/translations/de.js'`.
+
+Single language can be loaded directly to your code by importing e.g. `'@ckeditor/ckeditor5-build-classic/build/translations/de.js'`.
 
 See {@link builds/guides/integration/installation#npm npm installation guides} for more information.
 
 ### Zip
 
-All additional languages are included in the `.zip` file. You need to include `ckeditor.js` file together with language file:
+All additional languages are included in the `.zip` file. You need to include `ckeditor.js` file together with the chosen language file:
 
-```js
+```html
 <script src="[ckeditor-path]/ckeditor.js"></script>
 <script src="[ckeditor-path]/translations/de.js"></script>
 ```
