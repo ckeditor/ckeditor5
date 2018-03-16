@@ -15,6 +15,7 @@ import ViewPosition from '../../src/view/position';
 import Selection from '../../src/view/selection';
 import DomConverter from '../../src/view/domconverter';
 import Renderer from '../../src/view/renderer';
+import DocumentFragment from '../../src/view/documentfragment';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { parse, setData as setViewData, getData as getViewData } from '../../src/dev-utils/view';
 import { INLINE_FILLER, INLINE_FILLER_LENGTH, isBlockFiller, BR_FILLER } from '../../src/view/filler';
@@ -1355,6 +1356,171 @@ describe( 'Renderer', () => {
 			expect( domFocusSpy.called ).to.be.false;
 		} );
 
+		it( 'should render NBSP as first space in inline element after another space', () => {
+			const viewP = parse( '<container:p>x <attribute:b>y</attribute:b></container:p>' );
+
+			viewRoot._appendChildren( viewP );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			const domP = domRoot.childNodes[ 0 ];
+			const domB = domP.childNodes[ 1 ];
+
+			expect( domP.childNodes[ 0 ].data ).to.equal( 'x ' );
+			expect( domB.childNodes[ 0 ].data ).to.equal( 'y' );
+			expect( domP.innerHTML ).to.equal( 'x <b>y</b>' );
+
+			// Insert space resulting in '<p>x <b> y</b></p>'.
+			const viewB = viewP.getChild( 1 );
+			viewB._removeChildren( 0 );
+			viewB._appendChildren( new ViewText( ' y' ) );
+
+			renderer.markToSync( 'children', viewP );
+			renderer.render();
+
+			expect( domP.childNodes[ 0 ].data ).to.equal( 'x ' );
+			expect( domB.childNodes[ 0 ].data ).to.equal( '\u00A0y' );
+			expect( domP.innerHTML ).to.equal( 'x <b>&nbsp;y</b>' );
+		} );
+
+		it( 'should update sibling after, when node before is removed', () => {
+			const viewP = parse( '<container:p>x<attribute:b> y</attribute:b></container:p>' );
+
+			viewRoot._appendChildren( viewP );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			const domP = domRoot.childNodes[ 0 ];
+			const domB = domP.childNodes[ 1 ];
+
+			expect( domP.childNodes[ 0 ].data ).to.equal( 'x' );
+			expect( domB.childNodes[ 0 ].data ).to.equal( ' y' );
+			expect( domP.innerHTML ).to.equal( 'x<b> y</b>' );
+
+			// Remove 'x' resulting in '<p><b> y</b></p>'.
+			viewP._removeChildren( 0 );
+
+			renderer.markToSync( 'children', viewP );
+			renderer.render();
+
+			expect( domB.childNodes[ 0 ].data ).to.equal( '\u00A0y' );
+			expect( domP.innerHTML ).to.equal( '<b>&nbsp;y</b>' );
+		} );
+
+		it( 'should update sibling before, when node after is removed', () => {
+			const viewP = parse( '<container:p>x <attribute:b>y</attribute:b></container:p>' );
+
+			viewRoot._appendChildren( viewP );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			const domP = domRoot.childNodes[ 0 ];
+			const domB = domP.childNodes[ 1 ];
+
+			expect( domP.childNodes[ 0 ].data ).to.equal( 'x ' );
+			expect( domB.childNodes[ 0 ].data ).to.equal( 'y' );
+			expect( domP.innerHTML ).to.equal( 'x <b>y</b>' );
+
+			// Remove '<b>y</b>' resulting in '<p>x </p>'.
+			viewP._removeChildren( 1 );
+
+			renderer.markToSync( 'children', viewP );
+			renderer.render();
+
+			expect( domP.childNodes[ 0 ].data ).to.equal( 'x\u00A0' );
+			expect( domP.innerHTML ).to.equal( 'x&nbsp;' );
+		} );
+
+		// #1093
+		it( 'should update siblings after space is inserted in element before - text-element', () => {
+			const viewP = parse( '<container:p>x<attribute:b> y</attribute:b></container:p>' );
+
+			viewRoot._appendChildren( viewP );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			const domP = domRoot.childNodes[ 0 ];
+			const domB = domP.childNodes[ 1 ];
+
+			expect( domP.childNodes[ 0 ].data ).to.equal( 'x' );
+			expect( domB.childNodes[ 0 ].data ).to.equal( ' y' );
+			expect( domP.innerHTML ).to.equal( 'x<b> y</b>' );
+
+			// Insert space resulting in '<p>x <b> y</b></p>'.
+			viewP._removeChildren( 0 );
+			viewP._insertChildren( 0, new ViewText( 'x ' ) );
+
+			renderer.markToSync( 'children', viewP );
+			renderer.render();
+
+			expect( domP.childNodes[ 0 ].data ).to.equal( 'x ' );
+			expect( domB.childNodes[ 0 ].data ).to.equal( '\u00A0y' );
+			expect( domP.innerHTML ).to.equal( 'x <b>&nbsp;y</b>' );
+		} );
+
+		// #1093
+		it( 'should update siblings after space is inserted in element before - element-text', () => {
+			const viewP = parse( '<container:p><attribute:b>x</attribute:b> y</container:p>' );
+
+			viewRoot._appendChildren( viewP );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			const domP = domRoot.childNodes[ 0 ];
+			const domB = domP.childNodes[ 0 ];
+
+			expect( domB.childNodes[ 0 ].data ).to.equal( 'x' );
+			expect( domP.childNodes[ 1 ].data ).to.equal( ' y' );
+			expect( domP.innerHTML ).to.equal( '<b>x</b> y' );
+
+			// Insert space resulting in '<p><b>x </b> y</p>'.
+			const viewB = viewP.getChild( 0 );
+			viewB._removeChildren( 0 );
+			viewB._insertChildren( 0, new ViewText( 'x ' ) );
+
+			renderer.markToSync( 'children', viewP );
+			renderer.render();
+
+			expect( domB.childNodes[ 0 ].data ).to.equal( 'x ' );
+			expect( domP.childNodes[ 1 ].data ).to.equal( '\u00A0y' );
+			expect( domP.innerHTML ).to.equal( '<b>x </b>&nbsp;y' );
+		} );
+
+		// #1093
+		it( 'should update siblings after space is inserted in element before - element-element', () => {
+			const viewP = parse( '<container:p><attribute:b>x</attribute:b><attribute:i> y</attribute:i></container:p>' );
+
+			viewRoot._appendChildren( viewP );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			const domP = domRoot.childNodes[ 0 ];
+			const domB = domP.childNodes[ 0 ];
+			const domI = domP.childNodes[ 1 ];
+
+			expect( domB.childNodes[ 0 ].data ).to.equal( 'x' );
+			expect( domI.childNodes[ 0 ].data ).to.equal( ' y' );
+			expect( domP.innerHTML ).to.equal( '<b>x</b><i> y</i>' );
+
+			// Insert space resulting in '<p><b>x </b><i> y</i></p>'.
+			const viewB = viewP.getChild( 0 );
+			viewB._removeChildren( 0 );
+			viewB._insertChildren( 0, new ViewText( 'x ' ) );
+
+			renderer.markToSync( 'children', viewP );
+			renderer.render();
+
+			expect( domB.childNodes[ 0 ].data ).to.equal( 'x ' );
+			expect( domI.childNodes[ 0 ].data ).to.equal( '\u00A0y' );
+			expect( domP.innerHTML ).to.equal( '<b>x </b><i>&nbsp;y</i>' );
+		} );
+
 		describe( 'fake selection', () => {
 			beforeEach( () => {
 				const { view: viewP, selection: newSelection } = parse(
@@ -2022,6 +2188,73 @@ describe( 'Renderer', () => {
 
 			return true;
 		}
+	} );
+
+	describe( '_markDescendantTextToSync', () => {
+		let viewRoot;
+
+		beforeEach( () => {
+			viewRoot = new ViewElement( 'div' );
+
+			renderer.markedTexts.clear();
+			renderer.markedAttributes.clear();
+			renderer.markedChildren.clear();
+		} );
+
+		it( 'should handle null values', () => {
+			// Such situation occurs when renderer encounters inline filler in 'renderer._updateChildren'.
+			renderer._markDescendantTextToSync( null );
+
+			expect( renderer.markedChildren.size ).to.equal( 0 );
+			expect( renderer.markedAttributes.size ).to.equal( 0 );
+			expect( renderer.markedTexts.size ).to.equal( 0 );
+		} );
+
+		it( 'should handle element nodes', () => {
+			const viewP = parse( '<container:p>foo<attribute:b>bar<attribute:i>baz</attribute:i></attribute:b></container:p>' );
+
+			viewRoot._appendChildren( viewP );
+
+			renderer._markDescendantTextToSync( viewP );
+
+			expect( renderer.markedChildren.size ).to.equal( 0 );
+			expect( renderer.markedAttributes.size ).to.equal( 0 );
+			expect( renderer.markedTexts.size ).to.equal( 3 );
+		} );
+
+		it( 'should handle text nodes', () => {
+			const viewP = parse( '<container:p><attribute:b>bar<attribute:i>baz</attribute:i></attribute:b></container:p>' );
+
+			viewRoot._appendChildren( viewP );
+
+			renderer._markDescendantTextToSync( viewP.getChild( 0 ).getChild( 0 ) );
+
+			expect( renderer.markedChildren.size ).to.equal( 0 );
+			expect( renderer.markedAttributes.size ).to.equal( 0 );
+			expect( renderer.markedTexts.size ).to.equal( 1 );
+		} );
+
+		it( 'should handle document fragment', () => {
+			const fragment = new DocumentFragment();
+
+			renderer._markDescendantTextToSync( fragment );
+
+			expect( renderer.markedChildren.size ).to.equal( 0 );
+			expect( renderer.markedAttributes.size ).to.equal( 0 );
+			expect( renderer.markedTexts.size ).to.equal( 0 );
+		} );
+
+		it( 'should handle empty element nodes', () => {
+			const viewP = parse( '<container:p></container:p>' );
+
+			viewRoot._appendChildren( viewP );
+
+			renderer._markDescendantTextToSync( viewP );
+
+			expect( renderer.markedChildren.size ).to.equal( 0 );
+			expect( renderer.markedAttributes.size ).to.equal( 0 );
+			expect( renderer.markedTexts.size ).to.equal( 0 );
+		} );
 	} );
 } );
 
