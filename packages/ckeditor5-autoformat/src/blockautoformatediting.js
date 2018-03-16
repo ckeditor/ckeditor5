@@ -63,7 +63,11 @@ export default class BlockAutoformatEditing {
 			};
 		}
 
-		editor.model.document.on( 'change', () => {
+		editor.model.document.on( 'change', ( evt, batch ) => {
+			if ( batch.type == 'transparent' ) {
+				return;
+			}
+
 			const changes = Array.from( editor.model.document.differ.getChanges() );
 			const entry = changes[ 0 ];
 

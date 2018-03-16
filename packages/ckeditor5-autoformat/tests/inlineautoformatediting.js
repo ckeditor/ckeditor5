@@ -116,4 +116,15 @@ describe( 'InlineAutoformatEditing', () => {
 			sinon.assert.notCalled( formatSpy );
 		} );
 	} );
+
+	it( 'should ignore transparent batches', () => {
+		new InlineAutoformatEditing( editor, /(\*)(.+?)(\*)/g, 'testAttribute' ); // eslint-disable-line no-new
+
+		setData( model, '<paragraph>*foobar[]</paragraph>' );
+		model.enqueueChange( 'transparent', writer => {
+			writer.insertText( '*', doc.selection.getFirstPosition() );
+		} );
+
+		expect( getData( model ) ).to.equal( '<paragraph>*foobar*[]</paragraph>' );
+	} );
 } );
