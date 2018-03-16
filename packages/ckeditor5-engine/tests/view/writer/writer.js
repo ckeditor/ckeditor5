@@ -263,7 +263,7 @@ describe( 'Writer', () => {
 		} );
 	} );
 
-	describe( 'getAllClonedElements()', () => {
+	describe( 'manages AttributeElement#_clonesGroup', () => {
 		it( 'should return all clones of a broken attribute element with id', () => {
 			const container = writer.createContainerElement( 'div' );
 			const text = writer.createText( 'abccccde' );
@@ -301,7 +301,7 @@ describe( 'Writer', () => {
 
 			// For each of the spans created above...
 			for ( const oneOfAllSpans of allSpans ) {
-				const brokenSet = writer.getAllClonedElements( oneOfAllSpans );
+				const brokenSet = oneOfAllSpans.getElementsWithSameId();
 				const brokenArray = Array.from( brokenSet );
 
 				// Check if all spans are included.
@@ -311,38 +311,6 @@ describe( 'Writer', () => {
 
 				expect( brokenArray.length ).to.equal( allSpans.length );
 			}
-		} );
-
-		it( 'should return null if an element without id is given (even if it was broken)', () => {
-			const container = writer.createContainerElement( 'div' );
-			const text = writer.createText( 'abccccde' );
-
-			writer.insert( ViewPosition.createAt( container, 0 ), text );
-
-			const span = writer.createAttributeElement( 'span' );
-			span._priority = 20;
-
-			// <div>ab<span>cccc</span>de</div>
-			writer.wrap( ViewRange.createFromParentsAndOffsets( text, 2, text, 6 ), span );
-
-			const i = writer.createAttributeElement( 'i' );
-
-			// <div>a<i>b<span>c</span></i><span>cc</span>de</div>
-			writer.wrap(
-				ViewRange.createFromParentsAndOffsets(
-					container.getChild( 0 ), 1,
-					container.getChild( 1 ).getChild( 0 ), 1
-				),
-				i
-			);
-
-			const spanFromView = container.getChild( 2 );
-
-			// Make sure a proper element was taken.
-			expect( spanFromView.is( 'span' ) ).to.be.true;
-			expect( spanFromView.id ).to.be.null;
-
-			expect( writer.getAllClonedElements( spanFromView ) ).to.be.null;
 		} );
 	} );
 

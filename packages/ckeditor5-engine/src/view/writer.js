@@ -925,25 +925,6 @@ export default class Writer {
 	}
 
 	/**
-	 * For given {@link module:engine/view/attributeelement~AttributeElement attribute element}, returns all other
-	 * attribute elements with the same {@link module:engine/view/attributeelement~AttributeElement#id id} that
-	 * were inserted by `Writer` to the view tree.
-	 *
-	 * @param {module:engine/view/attributeelement~AttributeElement} element
-	 * @returns {Set.<module:engine/view/attributeelement~AttributeElement>|null} Set containing all the attribute elements
-	 * with the same `id` or `null` if given element had no `id`.
-	 */
-	getAllClonedElements( element ) {
-		const id = element.id;
-
-		if ( !id ) {
-			return null;
-		}
-
-		return this._cloneGroups.get( id );
-	}
-
-	/**
 	 * Wraps children with provided `attribute`. Only children contained in `parent` element between
 	 * `startOffset` and `endOffset` will be wrapped.
 	 *
@@ -1466,9 +1447,7 @@ export default class Writer {
 	 * added to the tree. Saves the reference to the group in the given element and updates the group, so other elements
 	 * from the group now keep a reference to the given attribute element.
 	 *
-	 * The clones group can be accessed from the element, under `clonedElements` custom property:
-	 *
-	 *		attributeElement.getCustomProperty( 'clonedElements' );
+	 * The clones group can be obtained using {@link module:engine/view/attributeelement~AttributeElement#getElementsWithSameId}.
 	 *
 	 * Does nothing if added element has no {@link module:engine/view/attributeelement~AttributeElement#id id}.
 	 *
@@ -1490,7 +1469,7 @@ export default class Writer {
 		}
 
 		group.add( element );
-		this.setCustomProperty( 'clonedElements', group, element );
+		element._clonesGroup = group;
 	}
 
 	/**

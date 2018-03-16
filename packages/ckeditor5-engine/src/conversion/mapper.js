@@ -294,7 +294,7 @@ export default class Mapper {
 
 		for ( const element of boundElements ) {
 			if ( element.is( 'attributeElement' ) ) {
-				for ( const clone of element.getCustomProperty( 'clonedElements' ) ) {
+				for ( const clone of element.getElementsWithSameId() ) {
 					elements.add( clone );
 				}
 			} else {

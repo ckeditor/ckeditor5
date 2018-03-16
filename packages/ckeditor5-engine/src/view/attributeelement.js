@@ -8,6 +8,7 @@
  */
 
 import Element from './element';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 // Default attribute priority.
 const DEFAULT_PRIORITY = 10;
@@ -34,6 +35,14 @@ export default class AttributeElement extends Element {
 		super( name, attrs, children );
 
 		/**
+		 * Returns block {@link module:engine/view/filler filler} offset or `null` if block filler is not needed.
+		 *
+		 * @method #getFillerOffset
+		 * @returns {Number|null} Block filler offset or `null` if block filler is not needed.
+		 */
+		this.getFillerOffset = getFillerOffset;
+
+		/**
 		 * Element priority. Decides in what order elements are wrapped by {@link module:engine/view/writer~Writer}.
 		 *
 		 * @protected
@@ -51,12 +60,15 @@ export default class AttributeElement extends Element {
 		this._id = null;
 
 		/**
-		 * Returns block {@link module:engine/view/filler filler} offset or `null` if block filler is not needed.
+		 * Keeps all the attribute elements that have the same {@link module:engine/view/attributeelement~AttributeElement#id ids}
+		 * and still exist in the view tree.
 		 *
-		 * @method #getFillerOffset
-		 * @returns {Number|null} Block filler offset or `null` if block filler is not needed.
+		 * This property is managed by {@link module:engine/view/writer~Writer}.
+		 *
+		 * @protected
+		 * @member {Set|null}
 		 */
-		this.getFillerOffset = getFillerOffset;
+		this._clonesGroup = null;
 	}
 
 	/**
@@ -71,13 +83,41 @@ export default class AttributeElement extends Element {
 
 	/**
 	 * Element identifier. If set, it is used by {@link module:engine/view/element~Element#isSimilar},
-	 * and then two elements are considered similar if, and only if they have the same `_id`.
+	 * and then two elements are considered similar if, and only if they have the same `id`.
 	 *
 	 * @readonly
 	 * @returns {String|Number}
 	 */
 	get id() {
 		return this._id;
+	}
+
+	/**
+	 * Returns all {@link module:engine/view/attributeelement~AttributeElement attribute elements} that has the
+	 * same {@link module:engine/view/attributeelement~AttributeElement#id id} and are in the view tree (were not removed).
+	 *
+	 * Note: If this element has been removed from the tree, returned set will not include it.
+	 *
+	 * Throws {@link module:utils/ckeditorerror~CKEditorError attribute-element-get-elements-with-same-id-no-id}
+	 * if this element has no `id`.
+	 *
+	 * @returns {Set.<module:engine/view/attributeelement~AttributeElement>|null} Set containing all the attribute elements
+	 * with the same `id` that were added and not removed from the view tree.
+	 */
+	getElementsWithSameId() {
+		if ( this.id === null ) {
+			/**
+			 * Cannot get elements with the same id for an attribute element without id.
+			 *
+			 * @error attribute-element-get-elements-with-same-id-no-id
+			 */
+			throw new CKEditorError(
+				'attribute-element-get-elements-with-same-id-no-id: ' +
+				'Cannot get elements with the same id for an attribute element without id.'
+			);
+		}
+
+		return new Set( this._clonesGroup );
 	}
 
 	/**

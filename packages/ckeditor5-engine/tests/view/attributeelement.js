@@ -6,6 +6,7 @@
 import AttributeElement from '../../src/view/attributeelement';
 import Element from '../../src/view/element';
 import { parse } from '../../src/dev-utils/view';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'AttributeElement', () => {
 	describe( 'constructor()', () => {
@@ -105,6 +106,31 @@ describe( 'AttributeElement', () => {
 			element2._id = 'bar';
 
 			expect( element1.isSimilar( element2 ) ).to.be.false;
+		} );
+	} );
+
+	// More tests are available in Writer tests.
+	describe( 'getElementsWithSameId', () => {
+		it( 'should return a copy of _clonesGroup set', () => {
+			const attributeA = new AttributeElement( 'b' );
+			const attributeB = new AttributeElement( 'b' );
+
+			attributeA._id = 'foo';
+			attributeB._id = 'foo';
+
+			attributeA._clonesGroup = attributeB._clonesGroup = new Set( [ attributeA, attributeB ] );
+
+			expect( attributeA.getElementsWithSameId() ).to.deep.equal( attributeA._clonesGroup );
+			expect( attributeA.getElementsWithSameId() ).not.to.equal( attributeA._clonesGroup );
+			expect( attributeA.getElementsWithSameId() ).to.deep.equal( attributeB.getElementsWithSameId() );
+		} );
+
+		it( 'should throw if attribute element has no id', () => {
+			const attribute = new AttributeElement( 'b' );
+
+			expect( () => {
+				attribute.getElementsWithSameId();
+			} ).to.throw( CKEditorError, /attribute-element-get-elements-with-same-id-no-id/ );
 		} );
 	} );
 
