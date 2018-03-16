@@ -101,7 +101,7 @@ export default class AttributeElement extends Element {
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError attribute-element-get-elements-with-same-id-no-id}
 	 * if this element has no `id`.
 	 *
-	 * @returns {Set.<module:engine/view/attributeelement~AttributeElement>|null} Set containing all the attribute elements
+	 * @returns {Set.<module:engine/view/attributeelement~AttributeElement>} Set containing all the attribute elements
 	 * with the same `id` that were added and not removed from the view tree.
 	 */
 	getElementsWithSameId() {
