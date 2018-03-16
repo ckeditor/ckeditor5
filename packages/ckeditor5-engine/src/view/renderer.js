@@ -198,18 +198,18 @@ export default class Renderer {
 			this.markedChildren.add( inlineFillerPosition.parent );
 		}
 
-		for ( const node of this.markedTexts ) {
-			if ( !this.markedChildren.has( node.parent ) && this.domConverter.mapViewToDom( node.parent ) ) {
-				this._updateText( node, { inlineFillerPosition } );
-			}
-		}
-
 		for ( const element of this.markedAttributes ) {
 			this._updateAttrs( element );
 		}
 
 		for ( const element of this.markedChildren ) {
 			this._updateChildren( element, { inlineFillerPosition } );
+		}
+
+		for ( const node of this.markedTexts ) {
+			if ( !this.markedChildren.has( node.parent ) && this.domConverter.mapViewToDom( node.parent ) ) {
+				this._updateText( node, { inlineFillerPosition } );
+			}
 		}
 
 		// Check whether the inline filler is required and where it really is in the DOM.
@@ -498,6 +498,8 @@ export default class Renderer {
 				nodesToUnbind.add( actualDomChildren[ i ] );
 				remove( actualDomChildren[ i ] );
 			} else { // 'equal'
+				// Inserted nodes are already up to date, so we mark to sync those which was not rerendered (#1125).
+				this._markDescendantTextToSync( domConverter.domToView( expectedDomChildren[ i ] ) );
 				i++;
 			}
 		}
@@ -528,6 +530,25 @@ export default class Renderer {
 
 			// Not matching types.
 			return false;
+		}
+	}
+
+	/**
+	 * Marks all text nodes in a tree starting from passed element to be synced.
+	 *
+	 * @private
+	 * @param {module:engine/view/element~Element} viewElement View element whose all 'text' children should
+	 * be marked to sync. If element is 'text' itself it will be marked too.
+	 */
+	_markDescendantTextToSync( viewElement ) {
+		if ( viewElement ) {
+			if ( viewElement.is( 'text' ) ) {
+				this.markedTexts.add( viewElement );
+			} else if ( viewElement.is( 'element' ) ) {
+				for ( const child of viewElement.getChildren() ) {
+					this._markDescendantTextToSync( child );
+				}
+			}
 		}
 	}
 
