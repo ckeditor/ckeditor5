@@ -64,6 +64,7 @@ export default class Writer {
 	 *		writer.setSelection( position );
 	 *
 	 * 		// Sets collapsed selection at the position of given item and offset.
+	 *		const paragraph = writer.createContainerElement( 'paragraph' );
 	 *		writer.setSelection( paragraph, offset );
 	 *
 	 * Creates a range inside an {@link module:engine/view/element~Element element} which starts before the first child of

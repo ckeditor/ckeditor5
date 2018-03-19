@@ -51,7 +51,7 @@ export default class DocumentSelection {
 	 *		const selection = new DocumentSelection( position );
 	 *
 	 *		// Creates collapsed selection at the position of given item and offset.
-	 *		const paragraph = writer.createElement( 'paragraph' );
+	 *		const paragraph = writer.createContainerElement( 'paragraph' );
 	 *		const selection = new DocumentSelection( paragraph, offset );
 	 *
 	 *		// Creates a range inside an {@link module:engine/view/element~Element element} which starts before the
