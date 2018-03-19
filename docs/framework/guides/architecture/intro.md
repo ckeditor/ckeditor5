@@ -1,6 +1,7 @@
 ---
 category: framework-architecture
 order: 10
+toc: false
 ---
 
 # Introduction
