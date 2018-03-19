@@ -45,7 +45,7 @@
 
 	.document-editor__editable .ck-editor__editable {
 		/* Set the dimensions of the "page". */
-		width: 15.8cm;
+		width: 15cm;
 		min-height: 21cm;
 
 		/* Keep the "page" off the boundaries of the container. */
@@ -60,6 +60,11 @@
 
 		/* Center the "page". */
 		margin: 0 auto;
+	}
+
+	/* Override the page's width in the "Examples" section which is wider. */
+	.main__content-wide .document-editor__editable .ck-editor__editable {
+		width: 18cm;
 	}
 
 	/* Set the default font for the "page" of the content. */

@@ -14,7 +14,11 @@ The framework is made of several [npm packages](https://npmjs.com). To install i
 * [Node.js](https://nodejs.org/en/) >= 6.0.0
 * npm 4.x (**note:** using npm 5 [is not recommended](https://github.com/npm/npm/issues/16991))
 
-Besides Node.js and npm you also need [webpack](https://webpack.js.org) (>=2.0.0) with a few additional packages to use the framework. They are needed to bundle the source code. Read more about building CKEditor 5 in the {@link builds/guides/integration/advanced-setup CKEditor 5 Builds Advanced setup} guide.
+Besides Node.js and npm you also need [webpack@3.x](https://webpack.js.org) with a few additional packages to use the framework. They are needed to bundle the source code. Read more about building CKEditor 5 in the {@link builds/guides/integration/advanced-setup CKEditor 5 Builds Advanced setup} guide.
+
+<info-box warning>
+	Unfortunately, at the moment of writing this note, [webpack@4.x causes issues](https://github.com/ckeditor/ckeditor5-dev/issues/371).
+</info-box>
 
 <!-- TODO replace the link above when the Framework will get its own building guide. -->
 
@@ -29,7 +33,7 @@ npm install --save \
 	postcss-loader \
 	raw-loader \
 	style-loader \
-	webpack
+	webpack@^3.11.0
 ```
 
 The minimal webpack configuration needed to enable building CKEditor 5 is:
@@ -176,11 +180,19 @@ bundle.js.map   2.2 MB       0  [emitted]         main
 Finally, it is time to create an HTML page:
 
 ```html
-<div id="editor">
-	<p>Editor content goes here.</p>
-</div>
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>CKEditor 5 Framework – Quick start</title>
+	</head>
 
-<script src="dist/bundle.js"></script>
+	<div id="editor">
+		<p>Editor content goes here.</p>
+	</div>
+
+	<script src="dist/bundle.js"></script>
+</html>
 ```
 
 Open this page in your browser and you should see the editor up and running. Make sure to check the browser console in case anything seems wrong.
@@ -201,12 +213,17 @@ Start from installing necessary dependencies:
 
 * The [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckeditor5-image) package that contains the image feature (on which the plugin will rely).
 * The [`@ckeditor/ckeditor5-core`](https://www.npmjs.com/package/@ckeditor/ckeditor5-core) package which contains the {@link module:core/plugin~Plugin} and {@link module:core/command~Command} classes.
-* The [`@ckeditor/ckeditor5-engine`](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine) package which contains the editing engine.
 * The [`@ckeditor/ckeditor5-ui`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui) package which contains the UI library and framework.
 
 ```bash
-npm install --save @ckeditor/ckeditor5-image @ckeditor/ckeditor5-core @ckeditor/ckeditor5-engine
+npm install --save @ckeditor/ckeditor5-image \
+	@ckeditor/ckeditor5-core \
+	@ckeditor/ckeditor5-ui
 ```
+
+<info-box>
+	Most of the time, you will also want to install the [`@ckeditor/ckeditor5-engine`](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine) package (it contains the {@link framework/guides/architecture/editing-engine editing engine}). It was omitted in this guide because it is unnecessary for a simple plugin like this one.
+</info-box>
 
 Now, open the `app.js` file and start adding code there. Usually, when implementing more complex features you will want to split the code into multiple files (modules). However, to make this guide simpler the entire code will be kept in `app.js`.
 
@@ -234,7 +251,7 @@ Save the file and run webpack. Refresh the page in your browser (**remember abou
 	<p>Simple image:</p>
 
 	<figure class="image">
-		<img src="https://via.placeholder.com/1000x300/02c7cd/fff?text=Placeholder image" alt="CKEditor 5 rocks!">
+		<img src="https://via.placeholder.com/1000x300/02c7cd/fff?text=Placeholder%20image" alt="CKEditor 5 rocks!">
 	</figure>
 </div>
 ```
@@ -319,22 +336,37 @@ Rebuild the application and refresh the page. You should see a new button in the
 ### Step 4. Inserting a new image
 
 ```js
-import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
+class InsertImage extends Plugin {
+	init() {
+		const editor = this.editor;
 
-// ...
+		editor.ui.componentFactory.add( 'insertImage', locale => {
+			const view = new ButtonView( locale );
 
-view.on( 'execute', () => {
-	const imageUrl = prompt( 'Image URL' );
+			view.set( {
+				label: 'Insert image',
+				icon: imageIcon,
+				tooltip: true
+			} );
 
-	editor.document.enqueueChanges( () => {
-		const imageElement = new ModelElement( 'image', {
-			src: imageUrl
+			// Callback executed once the image is clicked.
+			view.on( 'execute', () => {
+				const imageUrl = prompt( 'Image URL' );
+
+				editor.model.change( writer => {
+					const imageElement = writer.createElement( 'image', {
+						src: imageUrl
+					} );
+
+					// Insert the image in the current selection location.
+					editor.model.insertContent( imageElement, editor.model.document.selection );
+				} );
+			} );
+
+			return view;
 		} );
-
-		// Insert the image in the current selection location.
-		editor.data.insertContent( imageElement, editor.document.selection );
-	} );
-} );
+	}
+}
 ```
 
 If you refresh the page, you should now be able to insert new images into the content:
@@ -388,11 +420,10 @@ import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';;
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
-import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 
-import imageIcon from '@ckeditor/ckeditor5-core/theme/icons/image.svg';
+import imageIcon from '@ckeditor/ckeditor5-core/theme/icons/image.svg'
 
 class InsertImage extends Plugin {
 	init() {
@@ -407,15 +438,17 @@ class InsertImage extends Plugin {
 				tooltip: true
 			} );
 
+			// Callback executed once the image is clicked.
 			view.on( 'execute', () => {
 				const imageUrl = prompt( 'Image URL' );
 
-				editor.document.enqueueChanges( () => {
-					const imageElement = new ModelElement( 'image', {
+				editor.model.change( writer => {
+					const imageElement = writer.createElement( 'image', {
 						src: imageUrl
 					} );
 
-					editor.data.insertContent( imageElement, editor.document.selection );
+					// Insert the image in the current selection location.
+					editor.model.insertContent( imageElement, editor.model.document.selection );
 				} );
 			} );
 

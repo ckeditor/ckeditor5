@@ -88,13 +88,18 @@ The second step is to install dependencies needed to build the editor. The list 
 ```bash
 npm install --save \
 	@ckeditor/ckeditor5-dev-webpack-plugin \
+	@ckeditor/ckeditor5-dev-utils \
 	postcss-loader \
 	raw-loader \
 	style-loader \
-	webpack
+	webpack@^3.11.0
 ```
 
 You may also want to install [`babel-minify-webpack-plugin`](https://github.com/webpack-contrib/babel-minify-webpack-plugin) if you plan to minify ES6+ code.
+
+<info-box warning>
+	Unfortunately, at the moment of writing this note, [webpack@4.x causes issues](https://github.com/ckeditor/ckeditor5-dev/issues/371).
+</info-box>
 
 ### Webpack configuration
 
