@@ -6,7 +6,7 @@
 /* globals document */
 
 import ViewElement from '../../../src/view/element';
-import ViewSelection from '../../../src/view/selection';
+import ViewDocumentSelection from '../../../src/view/documentselection';
 import DomConverter from '../../../src/view/domconverter';
 import ViewDocumentFragment from '../../../src/view/documentfragment';
 import { INLINE_FILLER, INLINE_FILLER_LENGTH, NBSP_FILLER } from '../../../src/view/filler';
@@ -882,7 +882,7 @@ describe( 'DomConverter', () => {
 			domContainer.innerHTML = 'fake selection container';
 			document.body.appendChild( domContainer );
 
-			const viewSelection = new ViewSelection( new ViewElement(), 'in' );
+			const viewSelection = new ViewDocumentSelection( new ViewElement(), 'in' );
 			converter.bindFakeSelection( domContainer, viewSelection );
 
 			const domRange = document.createRange();
@@ -903,7 +903,7 @@ describe( 'DomConverter', () => {
 			domContainer.innerHTML = 'fake selection container';
 			document.body.appendChild( domContainer );
 
-			const viewSelection = new ViewSelection( new ViewElement(), 'in' );
+			const viewSelection = new ViewDocumentSelection( new ViewElement(), 'in' );
 			converter.bindFakeSelection( domContainer, viewSelection );
 
 			const domRange = document.createRange();
