@@ -401,7 +401,7 @@ export default class Node {
 	 * may return {@link module:engine/model/documentfragment~DocumentFragment} or {@link module:engine/model/node~Node}
 	 * that can be either text node or element. This method can be used to check what kind of object is returned.
 	 *
-	 *		obj.is( 'node' ); // true for any node, false for document fragment
+	 *		obj.is( 'node' ); // true for any node, false for document fragment and text fragment
 	 *		obj.is( 'documentFragment' ); // true for document fragment, false for any node
 	 *		obj.is( 'element' ); // true for any element, false for text node or document fragment
 	 *		obj.is( 'element', 'paragraph' ); // true only for element which name is 'paragraph'
@@ -413,6 +413,9 @@ export default class Node {
 	 * @param {'element'|'rootElement'|'text'|'textProxy'|'documentFragment'} type
 	 * @returns {Boolean}
 	 */
+	is( type ) {
+		return type == 'node';
+	}
 }
 
 /**

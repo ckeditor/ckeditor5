@@ -89,7 +89,8 @@ describe( 'Element', () => {
 			el = new Element( 'p' );
 		} );
 
-		it( 'should return true for element, element with correct name and element name', () => {
+		it( 'should return true for node, element, element with correct name and element name', () => {
+			expect( el.is( 'node' ) ).to.be.true;
 			expect( el.is( 'element' ) ).to.be.true;
 			expect( el.is( 'element', 'p' ) ).to.be.true;
 			expect( el.is( 'p' ) ).to.be.true;

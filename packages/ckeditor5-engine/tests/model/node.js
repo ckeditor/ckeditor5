@@ -164,6 +164,12 @@ describe( 'Node', () => {
 		} );
 	} );
 
+	describe( 'is()', () => {
+		it( 'should return true for node', () => {
+			expect( node.is( 'node' ) ).to.be.true;
+		} );
+	} );
+
 	describe( 'startOffset', () => {
 		it( 'should return null if the parent is null', () => {
 			expect( root.startOffset ).to.be.null;

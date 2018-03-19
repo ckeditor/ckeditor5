@@ -107,6 +107,7 @@ describe( 'TextProxy', () => {
 		} );
 
 		it( 'should return false for other accept values', () => {
+			expect( textProxy.is( 'node' ) ).to.be.false;
 			expect( textProxy.is( 'text' ) ).to.be.false;
 			expect( textProxy.is( 'element' ) ).to.be.false;
 			expect( textProxy.is( 'documentFragment' ) ).to.be.false;

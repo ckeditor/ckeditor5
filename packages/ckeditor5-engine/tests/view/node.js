@@ -5,6 +5,7 @@
 
 import Element from '../../src/view/element';
 import Text from '../../src/view/text';
+import Node from '../../src/view/node';
 import DocumentFragment from '../../src/view/documentfragment';
 import RootEditableElement from '../../src/view/rooteditableelement';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
@@ -27,6 +28,14 @@ describe( 'Node', () => {
 		three = new Element( 'three' );
 
 		root = new Element( null, null, [ one, two, three ] );
+	} );
+
+	describe( 'is()', () => {
+		it( 'should return true for node', () => {
+			const node = new Node();
+
+			expect( node.is( 'node' ) ).to.be.true;
+		} );
 	} );
 
 	describe( 'getNextSibling/getPreviousSibling()', () => {

@@ -65,7 +65,7 @@ export default class Text extends Node {
 	 * @inheritDoc
 	 */
 	is( type ) {
-		return type == 'text';
+		return type == 'text' || super.is( type );
 	}
 
 	/**
