@@ -9,6 +9,7 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import { CellSpans } from './converters/downcasttable';
+import Position from '../../ckeditor5-engine/src/model/position';
 
 /**
  * The insert column command.
@@ -43,11 +44,9 @@ export default class InsertColumnCommand extends Command {
 		const selection = document.selection;
 
 		const columns = parseInt( options.columns ) || 1;
-		const startingAt = parseInt( options.at ) || 0;
+		const insertAt = parseInt( options.at ) || 0;
 
 		const table = getValidParent( selection.getFirstPosition() );
-
-		const maxColumns = getColumns( table );
 
 		const cellSpans = new CellSpans();
 
@@ -56,28 +55,44 @@ export default class InsertColumnCommand extends Command {
 
 			const headingColumns = table.getAttribute( 'headingColumns' );
 
-			if ( startingAt < headingColumns ) {
+			if ( insertAt < headingColumns ) {
 				writer.setAttribute( 'headingColumns', headingColumns + columns, table );
 			}
 
 			for ( const row of table.getChildren() ) {
-				const insertAt = startingAt > maxColumns ? maxColumns : startingAt;
+				// TODO: what to do with max columns?
 
 				let columnIndex = 0;
 
-				for ( const tableCell of row.getChildren() ) {
+				// Cache original children.
+				const children = [ ...row.getChildren() ];
+
+				for ( const tableCell of children ) {
+					let colspan = tableCell.hasAttribute( 'colspan' ) ? parseInt( tableCell.getAttribute( 'colspan' ) ) : 1;
+					const rowspan = tableCell.hasAttribute( 'rowspan' ) ? parseInt( tableCell.getAttribute( 'rowspan' ) ) : 1;
+
 					columnIndex = cellSpans.getNextFreeColumnIndex( rowIndex, columnIndex );
+
+					// TODO: this is not cool:
+					const shouldExpandSpan = colspan > 1 &&
+						( columnIndex !== insertAt ) &&
+						( columnIndex <= insertAt ) &&
+						( columnIndex <= insertAt + columns ) &&
+						( columnIndex + colspan > insertAt );
+
+					if ( shouldExpandSpan ) {
+						colspan += columns;
+
+						writer.setAttribute( 'colspan', colspan, tableCell );
+					}
 
 					while ( columnIndex >= insertAt && columnIndex < insertAt + columns ) {
 						const cell = writer.createElement( 'tableCell' );
 
-						writer.insert( cell, row, insertAt );
+						writer.insert( cell, Position.createBefore( tableCell ) );
 
 						columnIndex++;
 					}
-
-					const colspan = tableCell.hasAttribute( 'colspan' ) ? parseInt( tableCell.getAttribute( 'colspan' ) ) : 1;
-					const rowspan = tableCell.hasAttribute( 'rowspan' ) ? parseInt( tableCell.getAttribute( 'rowspan' ) ) : 1;
 
 					cellSpans.recordSpans( rowIndex, columnIndex, rowspan, colspan );
 
@@ -88,7 +103,7 @@ export default class InsertColumnCommand extends Command {
 				while ( columnIndex >= insertAt && columnIndex < insertAt + columns ) {
 					const cell = writer.createElement( 'tableCell' );
 
-					writer.insert( cell, row, insertAt );
+					writer.insert( cell, row, 'end' );
 
 					columnIndex++;
 				}
@@ -109,14 +124,4 @@ function getValidParent( firstPosition ) {
 
 		parent = parent.parent;
 	}
-}
-
-function getColumns( table ) {
-	const row = table.getChild( 0 );
-
-	return [ ...row.getChildren() ].reduce( ( columns, row ) => {
-		const columnWidth = parseInt( row.getAttribute( 'colspan' ) ) || 1;
-
-		return columns + ( columnWidth );
-	}, 0 );
 }

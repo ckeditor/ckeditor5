@@ -42,7 +42,7 @@ export default class InsertRowCommand extends Command {
 		const selection = document.selection;
 
 		const rows = parseInt( options.rows ) || 1;
-		const startingAt = parseInt( options.at ) || 0;
+		const insertAt = parseInt( options.at ) || 0;
 
 		const table = getValidParent( selection.getFirstPosition() );
 
@@ -51,8 +51,6 @@ export default class InsertRowCommand extends Command {
 		const columns = getColumns( table );
 
 		model.change( writer => {
-			let insertAt = startingAt > table.childCount ? table.childCount : startingAt;
-
 			if ( headingRows > insertAt ) {
 				writer.setAttribute( 'headingRows', headingRows + rows, table );
 			}
@@ -66,8 +64,6 @@ export default class InsertRowCommand extends Command {
 
 					writer.insert( cell, row, 'end' );
 				}
-
-				insertAt++;
 			}
 		} );
 	}

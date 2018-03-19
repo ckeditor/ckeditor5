@@ -3,30 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/**
- * @param {Number} columns
- * @param {Array.<String>} tableData
- * @param {Object} [attributes]
- *
- * @returns {String}
- */
-export function modelTable( columns, tableData, attributes ) {
-	const tableRows = tableData
-		.map( cellData => `<tableCell>${ cellData }</tableCell>` )
-		.reduce( ( table, tableCell, index ) => {
-			if ( index % columns === 0 ) {
-				table += '<tableRow>';
-			}
-
-			table += tableCell;
-
-			if ( index % columns === columns - 1 ) {
-				table += '</tableRow>';
-			}
-
-			return table;
-		}, '' );
-
+function formatAttributes( attributes ) {
 	let attributesString = '';
 
 	if ( attributes ) {
@@ -34,8 +11,38 @@ export function modelTable( columns, tableData, attributes ) {
 
 		attributesString = ' ' + entries.map( entry => `${ entry[ 0 ] }="${ entry[ 1 ] }"` ).join( ' ' );
 	}
+	return attributesString;
+}
 
-	return `<table${ attributesString }>${ tableRows }</table>`;
+/**
+ * @param {Number} columns
+ * @param {Array.<String>} tableData
+ * @param {Object} [attributes]
+ *
+ * @returns {String}
+ */
+export function modelTable( tableData, attributes ) {
+	const tableRows = tableData
+		.reduce( ( previousRowsString, tableRow ) => {
+			const tableRowString = tableRow.reduce( ( tableRowString, tableCellData ) => {
+				let tableCell = tableCellData;
+
+				const isObject = typeof tableCellData === 'object';
+
+				if ( isObject ) {
+					tableCell = tableCellData.contents;
+					delete tableCellData.contents;
+				}
+
+				tableRowString += `<tableCell${ formatAttributes( isObject ? tableCellData : '' ) }>${ tableCell }</tableCell>`;
+
+				return tableRowString;
+			}, '' );
+
+			return `${ previousRowsString }<tableRow>${ tableRowString }</tableRow>`;
+		}, '' );
+
+	return `<table${ formatAttributes( attributes ) }>${ tableRows }</table>`;
 }
 
 export function formatModelTable( tableString ) {
@@ -45,8 +52,8 @@ export function formatModelTable( tableString ) {
 		.replace( /<\/table>/g, '\n</table>' );
 }
 
-export function formattedModelTable( columns, tableData, attributes ) {
-	const tableString = modelTable( columns, tableData, attributes );
+export function formattedModelTable( tableData, attributes ) {
+	const tableString = modelTable( tableData, attributes );
 
 	return formatModelTable( tableString );
 }

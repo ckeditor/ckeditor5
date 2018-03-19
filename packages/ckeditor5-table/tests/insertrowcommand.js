@@ -77,7 +77,7 @@ describe( 'InsertRowCommand', () => {
 			} );
 
 			it( 'should be true if in table', () => {
-				setData( model, modelTable( 1, [ '[]' ] ) );
+				setData( model, modelTable( [ [ '[]' ] ] ) );
 				expect( command.isEnabled ).to.be.true;
 			} );
 		} );
@@ -85,66 +85,66 @@ describe( 'InsertRowCommand', () => {
 
 	describe( 'execute()', () => {
 		it( 'should insert row in given table at given index', () => {
-			setData( model, modelTable( 2, [
-				'11[]', '12',
-				'21', '22'
+			setData( model, modelTable( [
+				[ '11[]', '12' ],
+				[ '21', '22' ]
 			] ) );
 
 			command.execute( { at: 1 } );
 
-			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( 2, [
-				'11[]', '12',
-				'', '',
-				'21', '22'
+			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '11[]', '12' ],
+				[ '', '' ],
+				[ '21', '22' ]
 			] ) );
 		} );
 
 		it( 'should insert row in given table at default index', () => {
-			setData( model, modelTable( 2, [
-				'11[]', '12',
-				'21', '22'
+			setData( model, modelTable( [
+				[ '11[]', '12' ],
+				[ '21', '22' ]
 			] ) );
 
 			command.execute();
 
-			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( 2, [
-				'', '',
-				'11[]', '12',
-				'21', '22'
+			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '', '' ],
+				[ '11[]', '12' ],
+				[ '21', '22' ]
 			] ) );
 		} );
 
 		it( 'should update table heading rows attribute when inserting row in headings section', () => {
-			setData( model, modelTable( 2, [
-				'11[]', '12',
-				'21', '22',
-				'31', '32'
+			setData( model, modelTable( [
+				[ '11[]', '12' ],
+				[ '21', '22' ],
+				[ '31', '32' ]
 			], { headingRows: 2 } ) );
 
 			command.execute( { at: 1 } );
 
-			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( 2, [
-				'11[]', '12',
-				'', '',
-				'21', '22',
-				'31', '32'
+			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '11[]', '12' ],
+				[ '', '' ],
+				[ '21', '22' ],
+				[ '31', '32' ]
 			], { headingRows: 3 } ) );
 		} );
 
 		it( 'should not update table heading rows attribute when inserting row after headings section', () => {
-			setData( model, modelTable( 2, [
-				'11[]', '12',
-				'21', '22',
-				'31', '32'
+			setData( model, modelTable( [
+				[ '11[]', '12' ],
+				[ '21', '22' ],
+				[ '31', '32' ]
 			], { headingRows: 2 } ) );
 
 			command.execute( { at: 2 } );
 
-			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( 2, [
-				'11[]', '12',
-				'21', '22',
-				'', '',
-				'31', '32'
+			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '11[]', '12' ],
+				[ '21', '22' ],
+				[ '', '' ],
+				[ '31', '32' ]
 			], { headingRows: 2 } ) );
 		} );
 	} );

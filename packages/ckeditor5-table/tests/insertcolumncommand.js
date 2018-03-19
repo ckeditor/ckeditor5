@@ -77,7 +77,7 @@ describe( 'InsertColumnCommand', () => {
 			} );
 
 			it( 'should be true if in table', () => {
-				setData( model, modelTable( 1, [ '[]' ] ) );
+				setData( model, modelTable( [ [ '[]' ] ] ) );
 				expect( command.isEnabled ).to.be.true;
 			} );
 		} );
@@ -85,63 +85,123 @@ describe( 'InsertColumnCommand', () => {
 
 	describe( 'execute()', () => {
 		it( 'should insert column in given table at given index', () => {
-			setData( model, modelTable( 2, [
-				'11[]', '12',
-				'21', '22'
+			setData( model, modelTable( [
+				[ '11[]', '12' ],
+				[ '21', '22' ]
 			] ) );
 
 			command.execute( { at: 1 } );
 
-			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( 3, [
-				'11[]', '', '12',
-				'21', '', '22'
+			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '11[]', '', '12' ],
+				[ '21', '', '22' ]
 			] ) );
 		} );
 
 		it( 'should insert column in given table at default index', () => {
-			setData( model, modelTable( 2, [
-				'11[]', '12',
-				'21', '22'
+			setData( model, modelTable( [
+				[ '11[]', '12' ],
+				[ '21', '22' ]
 			] ) );
 
 			command.execute();
 
-			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( 3, [
-				'', '11[]', '12',
-				'', '21', '22'
+			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '', '11[]', '12' ],
+				[ '', '21', '22' ]
+			] ) );
+		} );
+
+		it( 'should insert columns at table end', () => {
+			setData( model, modelTable( [
+				[ '11[]', '12' ],
+				[ '21', '22' ]
+			] ) );
+
+			command.execute( { at: 2, columns: 2 } );
+
+			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '11[]', '12', '', '' ],
+				[ '21', '22', '', '' ]
 			] ) );
 		} );
 
 		it( 'should update table heading columns attribute when inserting column in headings section', () => {
-			setData( model, modelTable( 2, [
-				'11[]', '12',
-				'21', '22',
-				'31', '32'
+			setData( model, modelTable( [
+				[ '11[]', '12' ],
+				[ '21', '22' ],
+				[ '31', '32' ]
 			], { headingColumns: 2 } ) );
 
 			command.execute( { at: 1 } );
 
-			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( 3, [
-				'11[]', '', '12',
-				'21', '', '22',
-				'31', '', '32'
+			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '11[]', '', '12' ],
+				[ '21', '', '22' ],
+				[ '31', '', '32' ]
 			], { headingColumns: 3 } ) );
 		} );
 
 		it( 'should not update table heading columns attribute when inserting column after headings section', () => {
-			setData( model, modelTable( 2, [
-				'11[]', '12',
-				'21', '22',
-				'31', '32'
+			setData( model, modelTable( [
+				[ '11[]', '12' ],
+				[ '21', '22' ],
+				[ '31', '32' ]
 			], { headingColumns: 2 } ) );
 
 			command.execute( { at: 2 } );
 
-			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( 3, [
-				'11[]', '12', '',
-				'21', '22', '',
-				'31', '32', ''
+			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '11[]', '12', '' ],
+				[ '21', '22', '' ],
+				[ '31', '32', '' ]
 			], { headingColumns: 2 } ) );
+		} );
+
+		it( 'should skip spanned columns', () => {
+			setData( model, modelTable( [
+				[ '11[]', '12' ],
+				[ { colspan: 2, contents: '21' } ],
+				[ '31', '32' ]
+			], { headingColumns: 2 } ) );
+
+			command.execute( { at: 1 } );
+
+			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '11[]', '', '12' ],
+				[ { colspan: 3, contents: '21' } ],
+				[ '31', '', '32' ]
+			], { headingColumns: 3 } ) );
+		} );
+
+		it( 'should skip wide spanned columns', () => {
+			setData( model, modelTable( [
+				[ '11[]', '12', '13', '14', '15' ],
+				[ '21', '22', { colspan: 2, contents: '23' }, '25' ],
+				[ { colspan: 4, contents: '31' }, { colspan: 2, contents: '34' } ]
+			], { headingColumns: 4 } ) );
+
+			command.execute( { at: 2, columns: 2 } );
+
+			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '11[]', '12', '', '', '13', '14', '15' ],
+				[ '21', '22', '', '', { colspan: 2, contents: '23' }, '25' ],
+				[ { colspan: 6, contents: '31' }, { colspan: 2, contents: '34' } ]
+			], { headingColumns: 6 } ) );
+		} );
+
+		it( 'should skip row spanned cells', () => {
+			setData( model, modelTable( [
+				[ { colspan: 2, rowspan: 2, contents: '11[]' }, '13' ],
+				[ '23' ]
+			], { headingColumns: 2 } ) );
+
+			command.execute( { at: 1, columns: 2 } );
+
+			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ { colspan: 4, rowspan: 2, contents: '11[]' }, '13' ],
+				[ '23' ]
+			], { headingColumns: 4 } ) );
 		} );
 	} );
 } );
