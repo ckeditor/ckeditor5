@@ -124,7 +124,7 @@ describe( 'ContextualBalloon', () => {
 		} );
 
 		it( 'should register balloon panel element in editor.ui#focusTracker', () => {
-			editor.ui.focusTracker.isfocused = false;
+			editor.ui.focusTracker.isFocused = false;
 
 			balloon.add( {
 				view: viewB,
