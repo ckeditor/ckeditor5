@@ -46,10 +46,6 @@ export default class DocumentSelection {
 	 *		const otherSelection = new Selection();
 	 *		const selection = new DocumentSelection( otherSelection );
 	 *
-	 *		// Creates selection from the document selection.
-	 *		const documentSelection = new DocumentSelection();
-	 *		const selection = new DocumentSelection( documentSelection );
-	 *
 	 * 		// Creates selection at the given position.
 	 *		const position = new Position( root, path );
 	 *		const selection = new DocumentSelection( position );
@@ -81,8 +77,8 @@ export default class DocumentSelection {
 	 *		// Creates fake selection with label.
 	 *		const selection = new DocumentSelection( range, { fake: true, label: 'foo' } );
 	 *
-	 * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection|
-	 * module:engine/view/position~Position|Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|
+	 * @param {module:engine/view/selection~Selection|module:engine/view/position~Position|
+	 * Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|
 	 * module:engine/view/item~Item|null} [selectable=null]
 	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Offset or place when selectable is an `Item`.
 	 * @param {Object} [options]
@@ -305,10 +301,6 @@ export default class DocumentSelection {
 	 *		const otherSelection = new Selection();
 	 *		documentSelection._setTo( otherSelection );
 	 *
-	 *	 	// Sets selection to contents of DocumentSelection.
-	 *		const documentSelection = new DocumentSelection();
-	 *		documentSelection._setTo( documentSelection );
-	 *
 	 * 		// Sets collapsed selection at the given position.
 	 *		const position = new Position( root, path );
 	 *		documentSelection._setTo( position );
@@ -337,7 +329,7 @@ export default class DocumentSelection {
 	 * This way, no native selection UI artifacts are displayed to the user and selection over elements can be
 	 * represented in other way, for example by applying proper CSS class.
 	 *
-	 * Additionally fake's selection label can be provided. It will be used to describe fake selection in DOM
+	 * Additionally fake's selection label can be provided. It will be used to des cribe fake selection in DOM
 	 * (and be  properly handled by screen readers).
 	 *
 	 *		// Creates fake selection with label.
@@ -345,7 +337,7 @@ export default class DocumentSelection {
 	 *
 	 * @protected
 	 * @fires change
-	 * @param {module:engine/view/documentselection~DocumentSelection|module:engine/view/position~Position|
+	 * @param {module:engine/view/selection~Selection|module:engine/view/position~Position|
 	 * Iterable.<module:engine/view/range~Range>|module:engine/view/range~Range|module:engine/view/item~Item|null} selectable
 	 * @param {Number|'before'|'end'|'after'|'on'|'in'} [placeOrOffset] Sets place or offset of the selection.
 	 * @param {Object} [options]
