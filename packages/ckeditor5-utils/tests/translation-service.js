@@ -5,11 +5,11 @@
 
 /* globals window */
 
-import { translate, add, _clear } from '../src/translation-service';
+import { translate } from '../src/translation-service';
 
 describe( 'translation-service', () => {
 	afterEach( () => {
-		_clear();
+		window.CKEDITOR_TRANSLATIONS = {};
 	} );
 
 	it( 'should return english string if no translation exists', () => {
@@ -76,8 +76,14 @@ describe( 'translation-service', () => {
 		expect( translationEN ).to.be.equal( 'Cancel' );
 	} );
 
-	it( 'should expose `add` function globally', () => {
-		expect( window.CKEDITOR_TRANSLATIONS ).to.be.an( 'object' );
-		expect( window.CKEDITOR_TRANSLATIONS.add ).to.be.a( 'function' );
-	} );
+	function add( lang, translations ) {
+		if ( !window.CKEDITOR_TRANSLATIONS ) {
+			window.CKEDITOR_TRANSLATIONS = {};
+		}
+
+		const dictionary = window.CKEDITOR_TRANSLATIONS[ lang ] || ( window.CKEDITOR_TRANSLATIONS[ lang ] = {} );
+
+		// Extend the dictionary for the given language.
+		Object.assign( dictionary, translations );
+	}
 } );
