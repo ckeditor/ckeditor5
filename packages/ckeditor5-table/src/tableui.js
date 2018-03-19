@@ -73,7 +73,7 @@ export default class TableUI extends Plugin {
 
 			buttonView.set( {
 				icon: insertColumnIcon,
-				label: 'Insert row',
+				label: 'Insert column',
 				tooltip: true
 			} );
 
