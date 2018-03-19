@@ -575,7 +575,8 @@ export default class Schema {
 	 * Returns the lowest {@link module:engine/model/schema~Schema#isLimit limit element} containing the entire
 	 * selection or the root otherwise.
 	 *
-	 * @param {module:engine/model/selection~Selection} selection Selection which returns the common ancestor.
+	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
+	 * Selection which returns the common ancestor.
 	 * @returns {module:engine/model/element~Element}
 	 */
 	getLimitElement( selection ) {
@@ -609,7 +610,8 @@ export default class Schema {
 	 * * if the selection is collapsed, then checks if on the selection position there's a text with the
 	 * specified attribute allowed.
 	 *
-	 * @param {module:engine/model/selection~Selection} selection Selection which will be checked.
+	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
+	 * Selection which will be checked.
 	 * @param {String} attribute The name of the attribute to check.
 	 * @returns {Boolean}
 	 */
