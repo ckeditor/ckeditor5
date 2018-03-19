@@ -671,14 +671,15 @@ export default class Schema {
 	}
 
 	/**
-	 * Basing on given `position`, finds and returns a {@link module:engine/model/range~Range Range} instance that is
+	 * Basing on given the `position`, finds and returns a {@link module:engine/model/range~Range range} which is
 	 * nearest to that `position` and is a correct range for selection.
 	 *
-	 * Correct selection range might be collapsed - when it's located in position where text node can be placed.
-	 * Non-collapsed range is returned when selection can be placed around element marked as "object" in
-	 * {@link module:engine/model/schema~Schema schema}.
+	 * The correct selection range might be collapsed when it is located in a position where the text node can be placed.
+	 * Non-collapsed range is returned when selection can be placed around element marked as an "object" in
+	 * the {@link module:engine/model/schema~Schema schema}.
 	 *
-	 * Direction of searching for nearest correct selection range can be specified as:
+	 * Direction of searching for the nearest correct selection range can be specified as:
+	 *
 	 * * `both` - searching will be performed in both ways,
 	 * * `forward` - searching will be performed only forward,
 	 * * `backward` - searching will be performed only backward.
