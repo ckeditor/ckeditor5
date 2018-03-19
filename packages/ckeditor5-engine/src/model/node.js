@@ -9,6 +9,7 @@
 
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
 
 /**
  * Model node. Most basic structure of model tree.
@@ -271,6 +272,63 @@ export default class Node {
 		}
 
 		return i === 0 ? null : ancestorsA[ i - 1 ];
+	}
+
+	/**
+	 * Returns whether this node is before given node. `false` is returned if nodes are in different trees (for example,
+	 * in different {@link module:engine/model/documentfragment~DocumentFragment}s).
+	 *
+	 * @param {module:engine/model/node~Node} node Node to compare with.
+	 * @returns {Boolean}
+	 */
+	isBefore( node ) {
+		// Given node is not before this node if they are same.
+		if ( this == node ) {
+			return false;
+		}
+
+		// Return `false` if it is impossible to compare nodes.
+		if ( this.root !== node.root ) {
+			return false;
+		}
+
+		const thisPath = this.getPath();
+		const nodePath = node.getPath();
+
+		const result = compareArrays( thisPath, nodePath );
+
+		switch ( result ) {
+			case 'prefix':
+				return true;
+
+			case 'extension':
+				return false;
+
+			default:
+				return thisPath[ result ] < nodePath[ result ];
+		}
+	}
+
+	/**
+	 * Returns whether this node is after given node. `false` is returned if nodes are in different trees (for example,
+	 * in different {@link module:engine/model/documentfragment~DocumentFragment}s).
+	 *
+	 * @param {module:engine/model/node~Node} node Node to compare with.
+	 * @returns {Boolean}
+	 */
+	isAfter( node ) {
+		// Given node is not before this node if they are same.
+		if ( this == node ) {
+			return false;
+		}
+
+		// Return `false` if it is impossible to compare nodes.
+		if ( this.root !== node.root ) {
+			return false;
+		}
+
+		// In other cases, just check if the `node` is before, and return the opposite.
+		return !this.isBefore( node );
 	}
 
 	/**
