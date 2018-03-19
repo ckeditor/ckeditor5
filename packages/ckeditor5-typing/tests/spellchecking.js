@@ -236,7 +236,7 @@ function emulateSpellcheckerMutation( editor, nodeIndex, resultPositionIndex, ol
 	const viewRoot = view.document.getRoot();
 	const viewSelection = new ViewSelection();
 
-	viewSelection._setTo( viewRoot.getChild( nodeIndex ).getChild( 0 ), resultPositionIndex );
+	viewSelection.setTo( viewRoot.getChild( nodeIndex ).getChild( 0 ), resultPositionIndex );
 
 	view.document.fire( 'mutations',
 		[ {
