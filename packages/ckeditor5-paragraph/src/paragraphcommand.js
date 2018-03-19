@@ -42,7 +42,8 @@ export default class ParagraphCommand extends Command {
 	 *
 	 * @fires execute
 	 * @param {Object} [options] Options for the executed command.
-	 * @param {module:engine/model/selection~Selection} [options.selection] The selection that the command should be applied to.
+	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} [options.selection]
+	 * The selection that the command should be applied to.
 	 * By default, if not provided, the command is applied to the {@link module:engine/model/document~Document#selection}.
 	 */
 	execute( options = {} ) {
