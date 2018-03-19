@@ -7,6 +7,7 @@ import Writer from '../../../src/view/writer';
 import Document from '../../../src/view/document';
 import EditableElement from '../../../src/view/editableelement';
 import ViewPosition from '../../../src/view/position';
+import ViewRange from '../../../src/view/range';
 import createViewRoot from '../_utils/createroot';
 
 describe( 'Writer', () => {
@@ -68,12 +69,13 @@ describe( 'Writer', () => {
 			assertElementAttributes( element, attributes );
 		} );
 
-		it( 'should allow to pass priority', () => {
-			const element = writer.createAttributeElement( 'foo', attributes, 99 );
+		it( 'should allow to pass additional options', () => {
+			const element = writer.createAttributeElement( 'foo', attributes, { priority: 99, id: 'bar' } );
 
 			expect( element.is( 'attributeElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'foo' );
 			expect( element.priority ).to.equal( 99 );
+			expect( element.id ).to.equal( 'bar' );
 			assertElementAttributes( element, attributes );
 		} );
 	} );
@@ -258,6 +260,57 @@ describe( 'Writer', () => {
 
 			writer.removeCustomProperty( 'foo', element );
 			expect( element.getCustomProperty( 'foo' ) ).to.be.undefined;
+		} );
+	} );
+
+	describe( 'manages AttributeElement#_clonesGroup', () => {
+		it( 'should return all clones of a broken attribute element with id', () => {
+			const container = writer.createContainerElement( 'div' );
+			const text = writer.createText( 'abccccde' );
+
+			writer.insert( ViewPosition.createAt( container, 0 ), text );
+
+			const span = writer.createAttributeElement( 'span', null, { id: 'foo' } );
+			span._priority = 20;
+
+			// <div>ab<span>cccc</span>de</div>
+			writer.wrap( ViewRange.createFromParentsAndOffsets( text, 2, text, 6 ), span );
+
+			const i = writer.createAttributeElement( 'i' );
+
+			// <div>a<i>b<span>c</span></i><span>cc</span>de</div>
+			writer.wrap(
+				ViewRange.createFromParentsAndOffsets(
+					container.getChild( 0 ), 1,
+					container.getChild( 1 ).getChild( 0 ), 1
+				),
+				i
+			);
+
+			// <div>a<i>b<span>c</span></i><span>c</span><i><span>cc</span>d</i>e</div>
+			writer.wrap(
+				ViewRange.createFromParentsAndOffsets(
+					container.getChild( 2 ).getChild( 0 ), 1,
+					container.getChild( 3 ), 1
+				),
+				i
+			);
+
+			// Find all spans.
+			const allSpans = Array.from( ViewRange.createIn( container ).getItems() ).filter( element => element.is( 'span' ) );
+
+			// For each of the spans created above...
+			for ( const oneOfAllSpans of allSpans ) {
+				const brokenSet = oneOfAllSpans.getElementsWithSameId();
+				const brokenArray = Array.from( brokenSet );
+
+				// Check if all spans are included.
+				for ( const s of allSpans ) {
+					expect( brokenSet.has( s ) ).to.be.true;
+				}
+
+				expect( brokenArray.length ).to.equal( allSpans.length );
+			}
 		} );
 	} );
 

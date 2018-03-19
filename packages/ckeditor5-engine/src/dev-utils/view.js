@@ -47,6 +47,8 @@ const allowedTypes = {
  * instead of `<p>`, `<attribute:b>` instead of `<b>` and `<empty:img>` instead of `<img>`).
  * @param {Boolean} [options.showPriority=false] When set to `true`, attribute element's priority will be printed
  * (`<span view-priority="12">`, `<b view-priority="10">`).
+ * @param {Boolean} [options.showAttributeElementId=false] When set to `true`, attribute element's id will be printed
+ * (`<span id="marker:foo">`).
  * @returns {String} The stringified data.
  */
 export function getData( view, options = {} ) {
@@ -195,6 +197,13 @@ setData._parse = parse;
  *		attribute._priority = 20;
  *		getData( attribute, null, { showPriority: true } ); // <b view-priority="20"></b>
  *
+ * If `options.showAttributeElementId` is set to `true`, the attribute element's id will be displayed for all
+ * {@link module:engine/view/attributeelement~AttributeElement attribute elements} that have it set.
+ *
+ *		const attribute = new AttributeElement( 'span' );
+ *		attribute._id = 'marker:foo';
+ *		getData( attribute, null, { showAttributeElementId: true } ); // <span view-id="marker:foo"></span>
+ *
  * @param {module:engine/view/text~Text|module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment}
  * node The node to stringify.
  * @param {module:engine/view/documentselection~DocumentSelection|module:engine/view/position~Position|module:engine/view/range~Range}
@@ -207,6 +216,8 @@ setData._parse = parse;
  * instead of `<p>`, `<attribute:b>` instead of `<b>` and `<empty:img>` instead of `<img>`).
  * @param {Boolean} [options.showPriority=false] When set to `true`,  the attribute element's priority will be printed
  * (`<span view-priority="12">`, `<b view-priority="10">`).
+ * @param {Boolean} [options.showAttributeElementId=false] When set to `true`, attribute element's id will be printed
+ * (`<span id="marker:foo">`).
  * @param {Boolean} [options.ignoreRoot=false] When set to `true`, the root's element opening and closing will not be printed.
  * Mainly used by the `getData` function to ignore the {@link module:engine/view/document~Document document's} root element.
  * @param {Boolean} [options.sameSelectionCharacters=false] When set to `true`, the selection inside the text will be marked as
@@ -606,6 +617,7 @@ class ViewStringify {
 
 		this.showType = !!options.showType;
 		this.showPriority = !!options.showPriority;
+		this.showAttributeElementId = !!options.showAttributeElementId;
 		this.ignoreRoot = !!options.ignoreRoot;
 		this.sameSelectionCharacters = !!options.sameSelectionCharacters;
 	}
@@ -746,9 +758,11 @@ class ViewStringify {
 
 	/**
 	 * Converts the passed {@link module:engine/view/element~Element element} to an opening tag.
+	 *
 	 * Depending on the current configuration, the opening tag can be simple (`<a>`), contain a type prefix (`<container:p>`,
-	 * `<attribute:a>` or `<empty:img>`) or contain priority information ( `<attribute:a view-priority="20">` ).
-	 * Element attributes will also be included (`<a href="https://ckeditor.com" name="foobar">`).
+	 * `<attribute:a>` or `<empty:img>`), contain priority information ( `<attribute:a view-priority="20">` ),
+	 * or contain element id ( `<attribute:span view-id="foo">` ). Element attributes will also be included
+	 * (`<a href="https://ckeditor.com" name="foobar">`).
 	 *
 	 * @private
 	 * @param {module:engine/view/element~Element} element
@@ -756,11 +770,12 @@ class ViewStringify {
 	 */
 	_stringifyElementOpen( element ) {
 		const priority = this._stringifyElementPriority( element );
+		const id = this._stringifyElementId( element );
 
 		const type = this._stringifyElementType( element );
 		const name = [ type, element.name ].filter( i => i !== '' ).join( ':' );
 		const attributes = this._stringifyElementAttributes( element );
-		const parts = [ name, priority, attributes ];
+		const parts = [ name, priority, id, attributes ];
 
 		return `<${ parts.filter( i => i !== '' ).join( ' ' ) }>`;
 	}
@@ -809,6 +824,7 @@ class ViewStringify {
 
 	/**
 	 * Converts the passed {@link module:engine/view/element~Element element} to its priority representation.
+	 *
 	 * The priority string representation will be returned when the passed element is an instance of
 	 * {@link module:engine/view/attributeelement~AttributeElement attribute element} and the current configuration allows to show the
 	 * priority. Otherwise returns an empty string.
@@ -820,6 +836,25 @@ class ViewStringify {
 	_stringifyElementPriority( element ) {
 		if ( this.showPriority && element.is( 'attributeElement' ) ) {
 			return `view-priority="${ element.priority }"`;
+		}
+
+		return '';
+	}
+
+	/**
+	 * Converts the passed {@link module:engine/view/element~Element element} to its id representation.
+	 *
+	 * The id string representation will be returned when the passed element is an instance of
+	 * {@link module:engine/view/attributeelement~AttributeElement attribute element}, the element has an id
+	 * and the current configuration allows to show the id. Otherwise returns an empty string.
+	 *
+	 * @private
+	 * @param {module:engine/view/element~Element} element
+	 * @returns {String}
+	 */
+	_stringifyElementId( element ) {
+		if ( this.showAttributeElementId && element.is( 'attributeElement' ) && element.id ) {
+			return `view-id="${ element.id }"`;
 		}
 
 		return '';
@@ -903,8 +938,10 @@ function _convertViewElements( rootNode ) {
 // {@link module:engine/view/containerelement~ContainerElement container element},
 // {@link module:engine/view/emptyelement~EmptyElement empty element} or
 // {@link module:engine/view/uielement~UIElement UI element}.
-// If the element's name is in the format of `attribute:b` with `view-priority="11"` attribute, it will be converted to
+// If the element's name is in the format of `attribute:b`, it will be converted to
 // an {@link module:engine/view/attributeelement~AttributeElement attribute element} with a priority of 11.
+// Additionally, attribute elements may have specified priority (for example `view-priority="11"`) and/or
+// id (for example `view-id="foo"`).
 // If the element's name is in the format of `container:p`, it will be converted to
 // a {@link module:engine/view/containerelement~ContainerElement container element}.
 // If the element's name is in the format of `empty:img`, it will be converted to
@@ -920,13 +957,17 @@ function _convertViewElements( rootNode ) {
 // module:engine/view/containerelement~ContainerElement} A tree view
 // element converted according to its name.
 function _convertElement( viewElement ) {
-	const info = _convertElementNameAndPriority( viewElement );
+	const info = _convertElementNameAndInfo( viewElement );
 	const ElementConstructor = allowedTypes[ info.type ];
 	const newElement = ElementConstructor ? new ElementConstructor( info.name ) : new ViewElement( info.name );
 
 	if ( newElement.is( 'attributeElement' ) ) {
 		if ( info.priority !== null ) {
 			newElement._priority = info.priority;
+		}
+
+		if ( info.id !== null ) {
+			newElement._id = info.id;
 		}
 	}
 
@@ -951,16 +992,21 @@ function _convertElement( viewElement ) {
 // @returns {String} info.name The parsed name of the element.
 // @returns {String|null} info.type The parsed type of the element. It can be `attribute`, `container` or `empty`.
 // returns {Number|null} info.priority The parsed priority of the element.
-function _convertElementNameAndPriority( viewElement ) {
+function _convertElementNameAndInfo( viewElement ) {
 	const parts = viewElement.name.split( ':' );
+
 	const priority = _convertPriority( viewElement.getAttribute( 'view-priority' ) );
+	const id = viewElement.hasAttribute( 'view-id' ) ? viewElement.getAttribute( 'view-id' ) : null;
+
 	viewElement._removeAttribute( 'view-priority' );
+	viewElement._removeAttribute( 'view-id' );
 
 	if ( parts.length == 1 ) {
 		return {
 			name: parts[ 0 ],
 			type: priority !== null ? 'attribute' : null,
-			priority
+			priority,
+			id
 		};
 	}
 
@@ -971,7 +1017,8 @@ function _convertElementNameAndPriority( viewElement ) {
 		return {
 			name: parts[ 1 ],
 			type,
-			priority
+			priority,
+			id
 		};
 	}
 

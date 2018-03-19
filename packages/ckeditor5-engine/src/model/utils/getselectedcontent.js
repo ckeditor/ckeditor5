@@ -15,15 +15,20 @@ import Position from '../position';
  *
  * For example, for the following selection:
  *
- *		<p>x</p><quote><p>y</p><h>fir[st</h></quote><p>se]cond</p><p>z</p>
+ * ```html
+ * <p>x</p><quote><p>y</p><h>fir[st</h></quote><p>se]cond</p><p>z</p>
+ * ```
  *
  * It will return a document fragment with such a content:
  *
- *		<quote><h>st</h></quote><p>se</p>
+ * ```html
+ * <quote><h>st</h></quote><p>se</p>
+ * ```
  *
  * @param {module:engine/model/model~Model} model The model in context of which
  * the selection modification should be performed.
- * @param {module:engine/model/selection~Selection} selection The selection of which content will be returned.
+ * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
+ * The selection of which content will be returned.
  * @returns {module:engine/model/documentfragment~DocumentFragment}
  */
 export default function getSelectedContent( model, selection ) {

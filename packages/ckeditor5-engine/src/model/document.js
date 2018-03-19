@@ -165,8 +165,8 @@ export default class Document {
 			// Whenever marker is updated, buffer that change.
 			this.differ.bufferMarkerChange( marker.name, oldRange, newRange );
 
-			if ( !oldRange ) {
-				// Whenever marker changes, buffer that.
+			if ( oldRange === null ) {
+				// If this is a new marker, add a listener that will buffer change whenever marker changes.
 				marker.on( 'change', ( evt, oldRange ) => {
 					this.differ.bufferMarkerChange( marker.name, oldRange, marker.getRange() );
 				} );
@@ -368,7 +368,7 @@ export default class Document {
 	 * during that block execution.
 	 *
 	 * @event change
-	 * @param {@link module:engine/model/batch~Batch} batch The batch that was used in the executed changes block.
+	 * @param {module:engine/model/batch~Batch} batch The batch that was used in the executed changes block.
 	 */
 }
 

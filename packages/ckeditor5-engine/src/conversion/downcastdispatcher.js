@@ -123,6 +123,11 @@ export default class DowncastDispatcher {
 	 * @param {module:engine/view/writer~Writer} writer View writer that should be used to modify view document.
 	 */
 	convertChanges( differ, writer ) {
+		// Before the view is updated, remove markers which have changed.
+		for ( const change of differ.getMarkersToRemove() ) {
+			this.convertMarkerRemove( change.name, change.range, writer );
+		}
+
 		// Convert changes that happened on model tree.
 		for ( const entry of differ.getChanges() ) {
 			if ( entry.type == 'insert' ) {
@@ -135,7 +140,7 @@ export default class DowncastDispatcher {
 			}
 		}
 
-		// After the view is updated, convert markers which has changed.
+		// After the view is updated, convert markers which have changed.
 		for ( const change of differ.getMarkersToAdd() ) {
 			this.convertMarkerAdd( change.name, change.range, writer );
 		}

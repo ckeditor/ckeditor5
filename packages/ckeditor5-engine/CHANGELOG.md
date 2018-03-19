@@ -1,6 +1,98 @@
 Changelog
 =========
 
+## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-engine/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
+
+### Major refactoring
+
+In 1.0.0-beta.1 the engine's API has underwent a thorough review which resulted in a deep refactoring. Most of the underlying concepts and architecture remained untouched. The API, though, is brand new. The changes are huge and, in this package exclusively, resulted in changing 40.000 LOC. Therefore, the list of changes below is neither complete nor will explain you how the engine is structured now and how to should migrate to this version.
+
+Instead, we recommend reading https://docs.ckeditor.com/ckeditor5/latest/framework/guides/architecture/editing-engine.html once more (it will be updated in a couple of days after the release).
+
+The good news is that the our focus when designing the new API was on developer experience. APIs which were dangerous or confusing were removed or hidden and new APIs were added in their place. The engine is now safer and more useful library and we hope you'll enjoy it :).
+
+### Features
+
+* Add support for the `'word'` unit in the `modifySelection()` helper. ([f37a97a](https://github.com/ckeditor/ckeditor5-engine/commit/f37a97a))
+* Allowed passing `true` as `view.Matcher`'s attribute match to check if that attribute is set. Closes [#1239](https://github.com/ckeditor/ckeditor5-engine/issues/1239). ([bc1c3e5](https://github.com/ckeditor/ckeditor5-engine/commit/bc1c3e5))
+* Consumable type name is now normalized inside `conversion.ModelConsumable` methods. Closes [#1214](https://github.com/ckeditor/ckeditor5-engine/issues/1214). ([131e9c8](https://github.com/ckeditor/ckeditor5-engine/commit/131e9c8))
+* Convert view to model using position. Closes [#1213](https://github.com/ckeditor/ckeditor5-engine/issues/1213). Closes [#1250](https://github.com/ckeditor/ckeditor5-engine/issues/1250). ([1961395](https://github.com/ckeditor/ckeditor5-engine/commit/1961395))
+
+  Feature: `Schema#findAllowedParent()` has been introduced.
+  Feature: `SchemaContext#concat()` has been introduced.
+* Engine debug tools can be easily disabled using disableEngineDebug() function. Closes [#1193](https://github.com/ckeditor/ckeditor5-engine/issues/1193). ([0934496](https://github.com/ckeditor/ckeditor5-engine/commit/0934496))
+* Introduced `ViewElementDefinition` and `definition-based-converters` module with a set of utils allowing to turn element definitions to converters. Closes [#1198](https://github.com/ckeditor/ckeditor5-engine/issues/1198). ([d2e9f06](https://github.com/ckeditor/ckeditor5-engine/commit/d2e9f06))
+* Introduced composition observer. Closes [#1329](https://github.com/ckeditor/ckeditor5-engine/issues/1329). ([a0ad8fe](https://github.com/ckeditor/ckeditor5-engine/commit/a0ad8fe))
+* Introduced decorable DataController#init metohd. Closes [ckeditor/ckeditor5-core#120](https://github.com/ckeditor/ckeditor5-core/issues/120). ([d20d660](https://github.com/ckeditor/ckeditor5-engine/commit/d20d660))
+* Introduced two-step caret movement mechanism. Closes [#1289](https://github.com/ckeditor/ckeditor5-engine/issues/1289). ([88bb94c](https://github.com/ckeditor/ckeditor5-engine/commit/88bb94c))
+
+### Bug fixes
+
+* [Firefox] Added fix for typing space on the edge of inline elements. Closes [ckeditor/ckeditor5#692](https://github.com/ckeditor/ckeditor5/issues/692). ([3ea70f3](https://github.com/ckeditor/ckeditor5-engine/commit/3ea70f3))
+* `DocumenSelection#change:range` event will be fired only once after multiple selection live ranges have changed. Closes [#1281](https://github.com/ckeditor/ckeditor5-engine/issues/1281). ([b26935c](https://github.com/ckeditor/ckeditor5-engine/commit/b26935c))
+* `model.DocumentSelection` should update it's attributes after each change, including external changes. Closes [#1267](https://github.com/ckeditor/ckeditor5-engine/issues/1267). ([b91d967](https://github.com/ckeditor/ckeditor5-engine/commit/b91d967))
+* `Model#insertContent()` will not merge nodes if the model after the merge would violate schema rules. Closes [ckeditor/ckeditor5#730](https://github.com/ckeditor/ckeditor5/issues/730). ([2a73830](https://github.com/ckeditor/ckeditor5-engine/commit/2a73830))
+* `Schema#getLimitElement()` will return a proper limit element (the root element) if one of the selection's ranges have the root element as the limit element. Closes [#1275](https://github.com/ckeditor/ckeditor5-engine/issues/1275). ([050a415](https://github.com/ckeditor/ckeditor5-engine/commit/050a415))
+* Added a 50ms timeout after `Document#focus` event before rendering to be sure that selection changes are processed on Firefox and Safari. Closes [ckeditor/ckeditor5#676](https://github.com/ckeditor/ckeditor5/issues/676). Closes [#1157](https://github.com/ckeditor/ckeditor5-engine/issues/1157). Closes [#1155](https://github.com/ckeditor/ckeditor5-engine/issues/1155). Closes [#1153](https://github.com/ckeditor/ckeditor5-engine/issues/1153). ([aba8e68](https://github.com/ckeditor/ckeditor5-engine/commit/aba8e68))
+* Added missing parse context in `DataController#set()`. Closes [#1278](https://github.com/ckeditor/ckeditor5-engine/issues/1278). ([8c56dce](https://github.com/ckeditor/ckeditor5-engine/commit/8c56dce))
+* Corrected how change items in `model.Differ` are dismissed if they are in inserted/removed parent. Closes https://github.com/ckeditor/ckeditor5/issues/733. ([e70ab96](https://github.com/ckeditor/ckeditor5-engine/commit/e70ab96))
+* Corrected offsets transformation in `model.Differ` when multiple change items interfere with each other. Closes [#1309](https://github.com/ckeditor/ckeditor5-engine/issues/1309). Closes https://github.com/ckeditor/ckeditor5/issues/849. ([30dcf6c](https://github.com/ckeditor/ckeditor5-engine/commit/30dcf6c))
+* Fixed a bug where Firefox would throw an `NS_ERROR_FAILURE` error when moving selection from a nested editable to the root editable. Closes [ckeditor/ckeditor5#721](https://github.com/ckeditor/ckeditor5/issues/721). ([4b7d435](https://github.com/ckeditor/ckeditor5-engine/commit/4b7d435))
+* Fixed memory leak in `DocumentSelection`. Closes [#903](https://github.com/ckeditor/ckeditor5-engine/issues/903). ([7e352e3](https://github.com/ckeditor/ckeditor5-engine/commit/7e352e3))
+* Improved how `model.Differ` checks whether the operation should be buffered or not. Closes [#1326](https://github.com/ckeditor/ckeditor5-engine/issues/1326). ([3e9f81b](https://github.com/ckeditor/ckeditor5-engine/commit/3e9f81b))
+* It should not be possible to move a `model.Node` from a `model.Document` to a `model.DocumentFragment`. Closes [#1337](https://github.com/ckeditor/ckeditor5-engine/issues/1337). ([24b97f5](https://github.com/ckeditor/ckeditor5-engine/commit/24b97f5))
+* Registered $marker element in Schema. Closes [#1317](https://github.com/ckeditor/ckeditor5-engine/issues/1317). ([2d1d62f](https://github.com/ckeditor/ckeditor5-engine/commit/2d1d62f))
+* The fake selection container will not leak into the viewport. Closes [ckeditor/ckeditor5#752](https://github.com/ckeditor/ckeditor5/issues/752). ([3f059a7](https://github.com/ckeditor/ckeditor5-engine/commit/3f059a7))
+* View stringify utility now sorts CSS classes and values in `style` attribute. Closes [#1179](https://github.com/ckeditor/ckeditor5-engine/issues/1179). ([fc7da80](https://github.com/ckeditor/ckeditor5-engine/commit/fc7da80))
+
+### Other changes
+
+* Cleaned up the model, document and controllers API. Closes [#1208](https://github.com/ckeditor/ckeditor5-engine/issues/1208). ([aea6119](https://github.com/ckeditor/ckeditor5-engine/commit/aea6119))
+* Conversion utilities refactor. Closes [#1236](https://github.com/ckeditor/ckeditor5-engine/issues/1236). ([fd128a1](https://github.com/ckeditor/ckeditor5-engine/commit/fd128a1))
+* Fix `render()` and `change()` flow. Introduce postfixers in view. Closes [#1312](https://github.com/ckeditor/ckeditor5-engine/issues/1312). ([63b9d14](https://github.com/ckeditor/ckeditor5-engine/commit/63b9d14))
+* Introduced several improvements to conversion helpers. Closes [#1295](https://github.com/ckeditor/ckeditor5-engine/issues/1295). Closes [#1293](https://github.com/ckeditor/ckeditor5-engine/issues/1293). Closes [#1292](https://github.com/ckeditor/ckeditor5-engine/issues/1292). Closes [#1291](https://github.com/ckeditor/ckeditor5-engine/issues/1291). Closes [#1290](https://github.com/ckeditor/ckeditor5-engine/issues/1290). Closes [#1305](https://github.com/ckeditor/ckeditor5-engine/issues/1305). ([809ea24](https://github.com/ckeditor/ckeditor5-engine/commit/809ea24))
+* Keep the same marker instance when marker is updated. ([8eba5e9](https://github.com/ckeditor/ckeditor5-engine/commit/8eba5e9))
+* Make `Position` and `Range` immutable in model and view. Closes [#897](https://github.com/ckeditor/ckeditor5-engine/issues/897). ([836dfd8](https://github.com/ckeditor/ckeditor5-engine/commit/836dfd8))
+* Manual test for [#475](https://github.com/ckeditor/ckeditor5-engine/issues/475) now works correctly. Closes [#1271](https://github.com/ckeditor/ckeditor5-engine/issues/1271). ([c2d4cec](https://github.com/ckeditor/ckeditor5-engine/commit/c2d4cec))
+* Methods which modify the model's and view's tree are now protected and shouldn't be used directly in the code. Iinstance of `Writer` should be used instead. Closes [#738](https://github.com/ckeditor/ckeditor5-engine/issues/738). ([a4f3dad](https://github.com/ckeditor/ckeditor5-engine/commit/a4f3dad))
+* Migrated package styles to PostCSS. Moved visual styles to ckeditor5-theme-lark (see [ckeditor/ckeditor5-ui#144](https://github.com/ckeditor/ckeditor5-ui/issues/144)). ([5f65823](https://github.com/ckeditor/ckeditor5-engine/commit/5f65823))
+* Moved `consumable` parameter to `conversionApi` parameter in downcast. Closes [#1294](https://github.com/ckeditor/ckeditor5-engine/issues/1294). Closes [#1261](https://github.com/ckeditor/ckeditor5-engine/issues/1261). ([731db37](https://github.com/ckeditor/ckeditor5-engine/commit/731db37))
+* Moved `Document#getNearesetSelectionRange` to `Schema`. Closes [#1227](https://github.com/ckeditor/ckeditor5-engine/issues/1227). ([d1838a4](https://github.com/ckeditor/ckeditor5-engine/commit/d1838a4))
+* Moved selection methods to `Writer`, introduced `LiveSelection`. Closes [#1209](https://github.com/ckeditor/ckeditor5-engine/issues/1209). ([7db1fee](https://github.com/ckeditor/ckeditor5-engine/commit/7db1fee))
+* Operations that do not operate on a document should have `baseVersion` set to `null`. Closes [#1211](https://github.com/ckeditor/ckeditor5-engine/issues/1211). ([b527d7f](https://github.com/ckeditor/ckeditor5-engine/commit/b527d7f))
+
+  Fixed: Markers again are properly converted in `engine.controller.DataController`.
+  Fixed: Markers are cleared now before an operation is applied to `model.Document` tree to fix scenarios where marker range could not be converted to the view after the model changed.
+* Prevented `Writer` from usage outside of the `change` block. Closes [#1212](https://github.com/ckeditor/ckeditor5-engine/issues/1212). ([2592bf1](https://github.com/ckeditor/ckeditor5-engine/commit/2592bf1))
+* Provided one API for two types of markers, improved docs. Closes [#1086](https://github.com/ckeditor/ckeditor5-engine/issues/1086). ([bfe23c9](https://github.com/ckeditor/ckeditor5-engine/commit/bfe23c9))
+* Refactor: engine/model reorganization, introducing new chnage and enqueueChange block, split batch/writer. Related: [#1186](https://github.com/ckeditor/ckeditor5-engine/issues/1186). ([5be1ad6](https://github.com/ckeditor/ckeditor5-engine/commit/5be1ad6))
+* Refactored events fired by model classes. Closes [#1207](https://github.com/ckeditor/ckeditor5-engine/issues/1207). ([f56bddf](https://github.com/ckeditor/ckeditor5-engine/commit/f56bddf))
+* Refactoring of the view API. Closes [#1210](https://github.com/ckeditor/ckeditor5-engine/issues/1210). ([dd9ae51](https://github.com/ckeditor/ckeditor5-engine/commit/dd9ae51))
+* Refactoring: Conversion refactoring. Introduced `model.Differ`. Changes now will be converted after all changes in a change block are done. Closes [#1172](https://github.com/ckeditor/ckeditor5-engine/issues/1172). ([6479bfd](https://github.com/ckeditor/ckeditor5-engine/commit/6479bfd))
+* Refactoring: make writer a protected operations util. ([440dfc7](https://github.com/ckeditor/ckeditor5-engine/commit/440dfc7))
+* Rewritten the Schema API. Closes [#532](https://github.com/ckeditor/ckeditor5-engine/issues/532). ([4e4f5c3](https://github.com/ckeditor/ckeditor5-engine/commit/4e4f5c3))
+* Simplified model to view selection conversion. Closes [#1238](https://github.com/ckeditor/ckeditor5-engine/issues/1238). ([9a53251](https://github.com/ckeditor/ckeditor5-engine/commit/9a53251))
+* UIElement custom `render()` method can be now provided without using inheritance. Closes [#1254](https://github.com/ckeditor/ckeditor5-engine/issues/1254). ([e05b8b1](https://github.com/ckeditor/ckeditor5-engine/commit/e05b8b1))
+
+### BREAKING CHANGES
+
+* **Note:** See the "Major refactoring" section above.
+* `view.Writer` is no longer an object literal with functions but a class.
+* Introduced new method of creating custom UIElements.
+* View document is now separated from the DOM. `view.Renderer`, `view.DomConverter` and observers are moved to `view.View`.
+* `view#event:render` is introduced to indicate a moment when all changes are applied and document may be rendered to the DOM.
+* Downcast converter helpers no longer accepts view elements instances as constructors are now protected. Callbacks using view writer should be used.
+* Writer should be now used to set or remove markers, instead of MarkerCollection.
+* View controller `view.View` is introduced. Changes to the view document tree structure should be done by using writer provided to callback in `view.change()` method.
+* `ViewConversionApi#splitToAllowedParent` has been introduced.
+* `ViewConversionApi#storage` has been introduced.
+* `ViewConsumable` has been merged to `ViewConversionApi`.
+* Format od data object passed across conversion callback has been changed.
+Feature: `Schema#findAllowedParent` has been introduced.
+Feature: `SchemaContext#concat` has been introduced.
+* `DataController#parse`, `DataController#toModel`, `ViewConversionDispatcher#convert` gets `SchemaContextDefinition` as a contex instead of `String`.
+
+
 ## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-engine/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
 
 ### Bug fixes

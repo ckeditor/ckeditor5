@@ -933,6 +933,18 @@ describe( 'Range', () => {
 				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 1 ] );
 				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 2, 1 ] );
 			} );
+
+			// #1358
+			it( 'should not crash and not transform the range if move delta moves 0 nodes', () => {
+				const range = new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 0, 4 ] ) );
+				const delta = getMoveDelta( new Position( root, [ 0, 1 ] ), 0, new Position( root, [ 0, 3 ] ), 1 );
+
+				const transformed = range.getTransformedByDelta( delta );
+
+				expect( transformed.length ).to.equal( 1 );
+				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 2 ] );
+				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 0, 4 ] );
+			} );
 		} );
 
 		describe( 'by RemoveDelta', () => {
