@@ -32,8 +32,8 @@ export function isImageType( file ) {
  * is then passed to {@link module:engine/model/model~Model#insertContent}
  * that block will be fully replaced by the image.
  *
- * @param {module:engine/model/selection~Selection} selection Selection based on which the
- * insertion position should be calculated.
+ * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
+ * Selection based on which the insertion position should be calculated.
  * @returns {module:engine/model/position~Position} The optimal position.
  */
 export function findOptimalInsertionPosition( selection ) {
