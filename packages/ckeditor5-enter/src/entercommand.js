@@ -33,7 +33,8 @@ export default class EnterCommand extends Command {
 //
 // @param {module:engine/model~Model} model
 // @param {module:engine/model/writer~Writer} writer
-// @param {module:engine/model/selection~Selection} selection Selection on which the action should be performed.
+// @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
+// Selection on which the action should be performed.
 // @param {module:engine/model/schema~Schema} schema
 function enterBlock( model, writer, selection, schema ) {
 	const isSelectionEmpty = selection.isCollapsed;
