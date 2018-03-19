@@ -54,8 +54,7 @@ export default class Selection {
 	 *		const selection = new Selection( otherSelection );
 	 *
 	 *		// Creates selection from the document selection.
-	 *		const documentSelection = new DocumentSelection();
-	 *		const selection = new Selection( documentSelection );
+	 *		const selection = new Selection( editor.editing.view.document.selection );
 	 *
 	 * 		// Creates selection at the given position.
 	 *		const position = new Position( root, path );
@@ -442,8 +441,7 @@ export default class Selection {
 	 *		selection.setTo( otherSelection );
 	 *
 	 *	 	// Sets selection to contents of DocumentSelection.
-	 *		const documentSelection = new DocumentSelection();
-	 *		selection.setTo( documentSelection );
+	 *		selection.setTo( editor.editing.view.document.selection );
 	 *
 	 * 		// Sets collapsed selection at the given position.
 	 *		const position = new Position( root, path );
