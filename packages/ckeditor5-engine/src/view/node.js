@@ -119,6 +119,33 @@ export default class Node {
 	}
 
 	/**
+	 * Gets a path to the node. The path is an array containing indices of consecutive ancestors of this node,
+	 * beginning from {@link module:engine/view/node~Node#root root}, down to this node's index.
+	 *
+	 *		const abc = new Text( 'abc' );
+	 *		const foo = new Text( 'foo' );
+	 *		const h1 = new Element( 'h1', null, new Text( 'header' ) );
+	 *		const p = new Element( 'p', null, [ abc, foo ] );
+	 *		const div = new Element( 'div', null, [ h1, p ] );
+	 *		foo.getPath(); // Returns [ 1, 3 ]. `foo` is in `p` which is in `div`. `p` starts at offset 1, while `foo` at 3.
+	 *		h1.getPath(); // Returns [ 0 ].
+	 *		div.getPath(); // Returns [].
+	 *
+	 * @returns {Array.<Number>} The path.
+	 */
+	getPath() {
+		const path = [];
+		let node = this; // eslint-disable-line consistent-this
+
+		while ( node.parent ) {
+			path.unshift( node.index );
+			node = node.parent;
+		}
+
+		return path;
+	}
+
+	/**
 	 * Returns ancestors array of this node.
 	 *
 	 * @param {Object} options Options object.

@@ -223,6 +223,20 @@ describe( 'Node', () => {
 		} );
 	} );
 
+	describe( 'getPath()', () => {
+		it( 'should return empty array is the element is the root', () => {
+			expect( root.getPath() ).to.deep.equal( [] );
+		} );
+
+		it( 'should return array with indices of given element and its ancestors starting from top-most one', () => {
+			expect( one.getPath() ).to.deep.equal( [ 0 ] );
+			expect( two.getPath() ).to.deep.equal( [ 1 ] );
+			expect( img.getPath() ).to.deep.equal( [ 1, 2 ] );
+			expect( charR.getPath() ).to.deep.equal( [ 1, 3 ] );
+			expect( three.getPath() ).to.deep.equal( [ 2 ] );
+		} );
+	} );
+
 	describe( 'getDocument()', () => {
 		it( 'should return null if any parent has not set Document', () => {
 			expect( charA.document ).to.be.null;
