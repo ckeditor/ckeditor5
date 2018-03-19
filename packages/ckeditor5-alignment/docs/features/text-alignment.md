@@ -5,7 +5,7 @@ category: features
 
 {@snippet features/build-text-alignment-source}
 
-The {@link module:alignment/alignment~Alignment} feature enables support for text alignment. You can use it to align your content to left, right and center or justify it.
+The {@link module:alignment/alignment~Alignment} feature enables support for text alignment. You can use it to align your content to left, right and center or to justify it.
 
 ## Demo
 
@@ -52,9 +52,9 @@ ClassicEditor
 
 ## Installation
 
-To add this feature to your editor install the [`@ckeditor/ckeditor5-alignment`](https://www.npmjs.com/package/@ckeditor/ckeditor5-alignment) package:
+To add this feature to your editor, install the [`@ckeditor/ckeditor5-alignment`](https://www.npmjs.com/package/@ckeditor/ckeditor5-alignment) package:
 
-```
+```bash
 npm install --save @ckeditor/ckeditor5-alignment
 ```
 
