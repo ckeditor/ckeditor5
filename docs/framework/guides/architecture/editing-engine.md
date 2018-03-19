@@ -21,21 +21,23 @@ Let's now talk about each layer separately.
 
 ## Model
 
-The model is implemented by a DOM-like tree structure of {@link module:engine/model/element~Element elements} and {@link module:engine/model/text~Text text nodes}. Like in the DOM, this structure is contained within a {@link module:engine/model/document~Document document} which contains {@link module:engine/model/document~Document#roots root elements} (the model, as well as the view, may have multiple roots). The document also holds its {@link module:engine/model/documentselection~DocumentSelection selection} and the {@link module:engine/model/history~History history of its changes}. Finally, the document, its {@link module:engine/model/schema~Schema schema} and {@link module:engine/model/markercollection~MarkerCollection document markers} are properties of the {@link module:engine/model/model~Model}. Instance of the `Model` class is available in the {@link module:core/editor/editor~Editor#model `editor.model`} property. The model, besides holding the properties described above, provides also the API for changing the document and its markers.
+The model is implemented by a DOM-like tree structure of {@link module:engine/model/element~Element elements} and {@link module:engine/model/text~Text text nodes}. Unlike in the DOM, in the model, both, elements and text nodes can have attributes.
+
+Like in the DOM, the model's structure is contained within a {@link module:engine/model/document~Document document} which contains {@link module:engine/model/document~Document#roots root elements} (the model, as well as the view, may have multiple roots). The document also holds its {@link module:engine/model/documentselection~DocumentSelection selection} and the {@link module:engine/model/history~History history of its changes}.
+
+Finally, the document, its {@link module:engine/model/schema~Schema schema} and {@link module:engine/model/markercollection~MarkerCollection document markers} are properties of the {@link module:engine/model/model~Model}. Instance of the `Model` class is available in the {@link module:core/editor/editor~Editor#model `editor.model`} property. The model, besides holding the properties described above, provides also the API for changing the document and its markers.
 
 ```js
 editor.model;                       // -> The data model
 editor.model.document;              // -> The document
 editor.model.document.getRoot();    // -> Document's root
-editor.model.document.selection;    // -> Document selection
+editor.model.document.selection;    // -> Document's selection
 editor.model.schema;                // -> Model's schema
 ```
 
 ### Changing the model
 
-All changes made to the document structure are done by applying {@link module:engine/model/operation/operation~Operation operations}. The concept of operations comes from [Operational Transformation](https://en.wikipedia.org/wiki/Operational_transformation) (in short: OT), a technology enabling collaboration functionality. Since OT requires that a system is able to transform every operation by every other one (to figure out the result of concurrently applied operations), the set of operations needs to be small. CKEditor 5 features a non-linear model (normally, OT implementations use flat, array-like models while CKEditor 5 uses a tree structure), hence the set of potential semantic changes is more complex. To handle that, the editing engine implements a small set of operations and a bigger set of {@link module:engine/model/delta/delta~Delta "deltas"} &mdash; groups of operations with additional semantics attached. Finally, deltas are grouped in {@link module:engine/model/batch~Batch batches}. A batch can be understood as a single undo step.
-
-All changes, in the document structure, of the document selection and even creation of document elements, can only be done through the {@link module:engine/model/writer~Writer model writer} in {@link module:engine/model/model~Model#change `change()`} and {@link module:engine/model/model~Model#change `enqueueChange()`} blocks.
+All changes in the document structure, of the document's selection and even creation of elements, can only be done by using the {@link module:engine/model/writer~Writer model writer}. Its instance is available in {@link module:engine/model/model~Model#change `change()`} and {@link module:engine/model/model~Model#enqueueChange `enqueueChange()`} blocks.
 
 ```js
 // Inserts text "foo" at the selection position.
@@ -50,6 +52,24 @@ editor.model.change( writer => {
 	}
 } );
 ```
+
+All changes done within a single `change()` block are combined into one undo step (they are added to a single {@link module:engine/model/batch~Batch batch}). When nesting `change()` blocks, all changes are added to the outermost `change()` block's batch. For example, the below code will create a single undo step:
+
+```js
+editor.model.change( writer => {
+	writer.insertText( 'foo', paragraph, 'end' ); // foo.
+
+	editor.model.change( writer => {
+		writer.insertText( 'bar', paragraph, 'end' ); // foobar.
+	} );
+
+	writer.insertText( 'bom', paragraph, 'end' ); // foobarbom.
+} );
+```
+
+<info-box>
+	All changes made to the document structure are done by applying {@link module:engine/model/operation/operation~Operation operations}. The concept of operations comes from [Operational Transformation](https://en.wikipedia.org/wiki/Operational_transformation) (in short: OT), a technology enabling collaboration functionality. Since OT requires that a system is able to transform every operation by every other one (to figure out the result of concurrently applied operations), the set of operations needs to be small. CKEditor 5 features a non-linear model (normally, OT implementations use flat, array-like models while CKEditor 5 uses a tree structure), hence the set of potential semantic changes is more complex. To handle that, the editing engine implements a small set of operations and a bigger set of {@link module:engine/model/delta/delta~Delta "deltas"} &mdash; groups of operations with additional semantics attached. Finally, deltas are grouped in {@link module:engine/model/batch~Batch batches}. A batch can be understood as a single undo step.
+</info-box>
 
 ### Text attributes
 
