@@ -9,7 +9,7 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import { CellSpans } from './converters/downcasttable';
-import Position from '../../ckeditor5-engine/src/model/position';
+import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 
 /**
  * The insert column command.

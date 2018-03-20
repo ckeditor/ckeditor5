@@ -30,13 +30,14 @@ export default function downcastTable() {
 		const tableElement = conversionApi.writer.createContainerElement( 'table' );
 		const headingRows = parseInt( table.getAttribute( 'headingRows' ) ) || 0;
 		const tableRows = Array.from( table.getChildren() );
-		const cellSpans = new CellSpans();
+
+		const cellSpans = ensureCellSpans( table, 0, conversionApi );
 
 		for ( const tableRow of tableRows ) {
 			const rowIndex = tableRows.indexOf( tableRow );
 			const tableSectionElement = getTableSection( rowIndex, headingRows, tableElement, conversionApi );
 
-			downcastTableRow( tableRow, rowIndex, cellSpans, tableSectionElement, conversionApi );
+			downcastTableRow( tableRow, rowIndex, tableSectionElement, conversionApi );
 
 			// Drop table cell spans information for downcasted row.
 			cellSpans.drop( rowIndex );
@@ -66,6 +67,64 @@ export default function downcastTable() {
 	}, { priority: 'normal' } );
 }
 
+export function downcastInsertRow() {
+	return dispatcher => dispatcher.on( 'insert:tableRow', ( evt, data, conversionApi ) => {
+		const tableRow = data.item;
+
+		if ( !conversionApi.consumable.consume( tableRow, 'insert' ) ) {
+			return;
+		}
+
+		const table = tableRow.parent;
+
+		const tableElement = conversionApi.mapper.toViewElement( table );
+
+		const headingRows = parseInt( table.getAttribute( 'headingRows' ) ) || 0;
+
+		const rowIndex = table.getChildIndex( tableRow );
+		const isHeadingRow = rowIndex < headingRows;
+
+		const tableSection = Array.from( tableElement.getChildren() )
+			.filter( child => child.name === isHeadingRow ? 'thead' : 'tbody' )[ 0 ];
+
+		ensureCellSpans( table, rowIndex, conversionApi );
+
+		downcastTableRow( tableRow, rowIndex, tableSection, conversionApi );
+	}, { priority: 'normal' } );
+}
+
+function ensureCellSpans( table, currentRowIndex, conversionApi ) {
+	if ( !conversionApi.store ) {
+		conversionApi.store = {};
+	}
+
+	if ( !conversionApi.store.cellSpans ) {
+		const cellSpans = new CellSpans();
+
+		conversionApi.store.cellSpans = cellSpans;
+
+		for ( let rowIndex = 0; rowIndex < currentRowIndex; rowIndex++ ) {
+			const row = table.getChild( rowIndex );
+
+			let columnIndex = 0;
+
+			for ( const tableCell of Array.from( row.getChildren() ) ) {
+				columnIndex = cellSpans.getNextFreeColumnIndex( rowIndex, columnIndex );
+
+				const colspan = tableCell.hasAttribute( 'colspan' ) ? parseInt( tableCell.getAttribute( 'colspan' ) ) : 1;
+				const rowspan = tableCell.hasAttribute( 'rowspan' ) ? parseInt( tableCell.getAttribute( 'rowspan' ) ) : 1;
+
+				cellSpans.recordSpans( rowIndex, columnIndex, rowspan, colspan );
+
+				// Skip to next "free" column index.
+				columnIndex += colspan;
+			}
+		}
+	}
+
+	return conversionApi.store.cellSpans;
+}
+
 // Downcast converter for tableRow model element. Converts tableCells as well.
 //
 // @param {module:engine/model/element~Element} tableRow
@@ -73,13 +132,17 @@ export default function downcastTable() {
 // @param {CellSpans} cellSpans
 // @param {module:engine/view/containerelement~ContainerElement} tableSection
 // @param {Object} conversionApi
-function downcastTableRow( tableRow, rowIndex, cellSpans, tableSection, conversionApi ) {
+function downcastTableRow( tableRow, rowIndex, tableSection, conversionApi ) {
 	// Will always consume since we're converting <tableRow> element from a parent <table>.
 	conversionApi.consumable.consume( tableRow, 'insert' );
-	const trElement = conversionApi.writer.createContainerElement( 'tr' );
 
+	const trElement = conversionApi.writer.createContainerElement( 'tr' );
 	conversionApi.mapper.bindElements( tableRow, trElement );
-	conversionApi.writer.insert( ViewPosition.createAt( tableSection, 'end' ), trElement );
+
+	const position = ViewPosition.createAt( tableSection, 'end' );
+	conversionApi.writer.insert( position, trElement );
+
+	const cellSpans = conversionApi.store.cellSpans;
 
 	// Defines tableCell horizontal position in table.
 	// Might be different then position of tableCell in parent tableRow

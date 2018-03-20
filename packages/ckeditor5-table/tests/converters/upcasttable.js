@@ -5,8 +5,8 @@
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
-
 import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+
 import upcastTable from '../../src/converters/upcasttable';
 
 describe( 'upcastTable()', () => {

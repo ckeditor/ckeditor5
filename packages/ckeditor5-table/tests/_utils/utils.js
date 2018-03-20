@@ -14,14 +14,7 @@ function formatAttributes( attributes ) {
 	return attributesString;
 }
 
-/**
- * @param {Number} columns
- * @param {Array.<String>} tableData
- * @param {Object} [attributes]
- *
- * @returns {String}
- */
-export function modelTable( tableData, attributes ) {
+function makeRows( tableData, cellElement, rowElement ) {
 	const tableRows = tableData
 		.reduce( ( previousRowsString, tableRow ) => {
 			const tableRowString = tableRow.reduce( ( tableRowString, tableCellData ) => {
@@ -34,15 +27,41 @@ export function modelTable( tableData, attributes ) {
 					delete tableCellData.contents;
 				}
 
-				tableRowString += `<tableCell${ formatAttributes( isObject ? tableCellData : '' ) }>${ tableCell }</tableCell>`;
+				const formattedAttributes = formatAttributes( isObject ? tableCellData : '' );
+				tableRowString += `<${ cellElement }${ formattedAttributes }>${ tableCell }</${ cellElement }>`;
 
 				return tableRowString;
 			}, '' );
 
-			return `${ previousRowsString }<tableRow>${ tableRowString }</tableRow>`;
+			return `${ previousRowsString }<${ rowElement }>${ tableRowString }</${ rowElement }>`;
 		}, '' );
+	return tableRows;
+}
+
+/**
+ * @param {Number} columns
+ * @param {Array.<String>} tableData
+ * @param {Object} [attributes]
+ *
+ * @returns {String}
+ */
+export function modelTable( tableData, attributes ) {
+	const tableRows = makeRows( tableData, 'tableCell', 'tableRow' );
 
 	return `<table${ formatAttributes( attributes ) }>${ tableRows }</table>`;
+}
+
+/**
+ * @param {Number} columns
+ * @param {Array.<String>} tableData
+ * @param {Object} [attributes]
+ *
+ * @returns {String}
+ */
+export function viewTable( tableData, attributes ) {
+	const tableRows = makeRows( tableData, 'td', 'tr' );
+
+	return `<table${ formatAttributes( attributes ) }><tbody>${ tableRows }</tbody></table>`;
 }
 
 export function formatModelTable( tableString ) {

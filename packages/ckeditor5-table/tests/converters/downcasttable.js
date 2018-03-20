@@ -5,18 +5,21 @@
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
-
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
-import downcastTable from '../../src/converters/downcasttable';
+
+import downcastTable, { downcastInsertRow } from '../../src/converters/downcasttable';
+import { modelTable, viewTable } from '../_utils/utils';
 
 describe( 'downcastTable()', () => {
-	let editor, model, viewDocument;
+	let editor, model, doc, root, viewDocument;
 
 	beforeEach( () => {
 		return VirtualTestEditor.create()
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
+				doc = model.document;
+				root = doc.getRoot( 'main' );
 				viewDocument = editor.editing.view;
 
 				const conversion = editor.conversion;
@@ -47,6 +50,9 @@ describe( 'downcastTable()', () => {
 				conversion.for( 'downcast' ).add( downcastTable() );
 				conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
 				conversion.attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
+
+				// Insert conversion
+				conversion.for( 'downcast' ).add( downcastInsertRow() );
 			} );
 	} );
 
@@ -129,8 +135,8 @@ describe( 'downcastTable()', () => {
 	} );
 
 	it( 'should be possible to overwrite', () => {
-		editor.conversion.elementToElement( { model: 'tableRow', view: 'tr' } );
-		editor.conversion.elementToElement( { model: 'tableCell', view: 'td' } );
+		editor.conversion.elementToElement( { model: 'tableRow', view: 'tr', priority: 'high' } );
+		editor.conversion.elementToElement( { model: 'tableCell', view: 'td', priority: 'high' } );
 		editor.conversion.for( 'downcast' ).add( dispatcher => {
 			dispatcher.on( 'insert:table', ( evt, data, conversionApi ) => {
 				conversionApi.consumable.consume( data.item, 'insert' );
@@ -234,6 +240,60 @@ describe( 'downcastTable()', () => {
 				'</tbody>' +
 				'</table>'
 			);
+		} );
+	} );
+
+	describe( 'model change', () => {
+		it( 'should react to changed rows', () => {
+			setModelData( model, modelTable( [
+				[ '11', '12' ]
+			] ) );
+
+			const table = root.getChild( 0 );
+
+			model.change( writer => {
+				const row = writer.createElement( 'tableRow' );
+
+				writer.insert( row, table, 1 );
+
+				for ( let i = 0; i < 2; i++ ) {
+					const cell = writer.createElement( 'tableCell' );
+
+					writer.insert( cell, row, 'end' );
+				}
+			} );
+
+			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( viewTable( [
+				[ '11', '12' ],
+				[ '', '' ]
+			] ) );
+		} );
+
+		it( 'should react to changed rows when previous rows\' cells has rowspans', () => {
+			setModelData( model, modelTable( [
+				[ { rowspan: 3, contents: '11' }, '12' ],
+				[ '22' ]
+			] ) );
+
+			const table = root.getChild( 0 );
+
+			model.change( writer => {
+				const row = writer.createElement( 'tableRow' );
+
+				writer.insert( row, table, 2 );
+
+				for ( let i = 0; i < 1; i++ ) {
+					const cell = writer.createElement( 'tableCell' );
+
+					writer.insert( cell, row, 'end' );
+				}
+			} );
+
+			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( viewTable( [
+				[ { rowspan: 3, contents: '11' }, '12' ],
+				[ '22' ],
+				[ '' ]
+			] ) );
 		} );
 	} );
 } );
