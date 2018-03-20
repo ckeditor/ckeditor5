@@ -363,9 +363,30 @@ export default class Document {
 	}
 
 	/**
-	 * Fired after an {@link module:engine/model/model~Model#enqueueChange enqueue change block} or the outermost
-	 * {@link module:engine/model/model~Model#change change block} was executed and the document model tree was changed
-	 * during that block execution.
+	 * Fired after each {@link module:engine/model/model~Model#enqueueChange `enqueueChange()` block} or the outermost
+	 * {@link module:engine/model/model~Model#change `change()` block} was executed and the document was changed
+	 * during that block's execution.
+	 *
+	 * The changes which this event will cover include:
+	 *
+	 * * document structure changes,
+	 * * selection changes,
+	 * * marker changes.
+	 *
+	 * If you want to be notified about all these changes, then simply listen to this event like this:
+	 *
+	 *		model.document.on( 'change', () => {
+	 *			console.log( 'The Document has changed!' );
+	 *		} );
+	 *
+	 * If, however, you only want to be notified about structure changes, then check whether the
+	 * {@link module:engine/model/differ~Differ differ} contains any changes:
+	 *
+	 *		model.document.on( 'change', () => {
+	 *			if ( model.document.differ.getChanges().length > 0 ) {
+	 *				console.log( 'The Document has changed!' );
+	 *			}
+	 *		} );
 	 *
 	 * @event change
 	 * @param {module:engine/model/batch~Batch} batch The batch that was used in the executed changes block.
