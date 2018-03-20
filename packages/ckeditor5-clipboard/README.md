@@ -14,7 +14,7 @@ This package implements the clipboard (copy, cut, paste) support for CKEditor 5.
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-clipboard` package](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/api/clipboard.html) page in [CKEditor 5 documentation](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/).
+See the [`@ckeditor/ckeditor5-clipboard` package](https://docs.ckeditor.com/ckeditor5/latest/api/clipboard.html) page in [CKEditor 5 documentation](https://docs.ckeditor.com/ckeditor5/latest/).
 
 ## License
 
