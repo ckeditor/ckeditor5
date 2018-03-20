@@ -14,7 +14,7 @@ This package implements support for typing (inputting and deleting text) in CKEd
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-typing` package](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/api/typing.html) page in [CKEditor 5 documentation](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/).
+See the [`@ckeditor/ckeditor5-typing` package](https://docs.ckeditor.com/ckeditor5/latest/api/typing.html) page in [CKEditor 5 documentation](https://docs.ckeditor.com/ckeditor5/latest/).
 
 ## License
 
