@@ -14,7 +14,7 @@ This package implements undo support for CKEditor 5.
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-undo` package](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/api/undo.html) page in [CKEditor 5 documentation](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/).
+See the [`@ckeditor/ckeditor5-undo` package](https://docs.ckeditor.com/ckeditor5/latest/api/undo.html) page in [CKEditor 5 documentation](https://docs.ckeditor.com/ckeditor5/latest/).
 
 ## License
 
