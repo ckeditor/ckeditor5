@@ -29,7 +29,7 @@ For example, the following editor will support only two levels of headings &mdas
 <div id="editor">
 	<h1>Heading 1</h1>
 	<h2>Heading 2</h2>
-	<p>This is <a href="https://ckeditor5.github.io">CKEditor 5</a>.</p>
+	<p>This is <a href="https://ckeditor.com">CKEditor 5</a>.</p>
 </div>
 ```
 
@@ -69,7 +69,7 @@ For example, the following editor will support the following two heading options
 	<h1>Heading 1</h1>
 	<h2>Heading 2</h2>
 	<h2 class="fancy">Fancy Heading 2</h2>
-	<p>This is <a href="https://ckeditor5.github.io">CKEditor 5</a>.</p>
+	<p>This is <a href="https://ckeditor.com">CKEditor 5</a>.</p>
 </div>
 ```
 
