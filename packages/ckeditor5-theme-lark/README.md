@@ -14,7 +14,7 @@ This package implements Lark theme &mdash; the default CKEditor 5 theme.
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-theme-lark` package](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/api/theme-lark.html) page in [CKEditor 5 documentation](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/).
+See the [`@ckeditor/ckeditor5-theme-lark` package](https://docs.ckeditor.com/ckeditor5/latest/api/theme-lark.html) page in [CKEditor 5 documentation](https://docs.ckeditor.com/ckeditor5/latest/).
 
 ## License
 
