@@ -105,6 +105,16 @@ export function downcastElementToElement( config ) {
  * 			}
  * 		} );
  *
+ *		downcastAttributeToElement( {
+ *			model: {
+ *				key: 'color',
+ *				name: '$text'
+ *			},
+ *			view: ( modelAttributeValue, viewWriter ) => {
+ *				return viewWriter.createAttributeElement( 'span', { style: 'color:' + modelAttributeValue } );
+ *			}
+ *		} );
+ *
  * See {@link module:engine/conversion/conversion~Conversion#for} to learn how to add converter to conversion process.
  *
  * @param {Object} config Conversion configuration.
@@ -120,6 +130,11 @@ export function downcastAttributeToElement( config ) {
 	config = cloneDeep( config );
 
 	const modelKey = config.model.key ? config.model.key : config.model;
+	let eventName = 'attribute:' + modelKey;
+
+	if ( config.model.name ) {
+		eventName += ':' + config.model.name;
+	}
 
 	if ( config.model.values ) {
 		for ( const modelValue of config.model.values ) {
@@ -132,7 +147,7 @@ export function downcastAttributeToElement( config ) {
 	const elementCreator = _getFromAttributeCreator( config );
 
 	return dispatcher => {
-		dispatcher.on( 'attribute:' + modelKey, wrap( elementCreator ), { priority: config.priority || 'normal' } );
+		dispatcher.on( eventName, wrap( elementCreator ), { priority: config.priority || 'normal' } );
 	};
 }
 
