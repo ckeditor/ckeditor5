@@ -184,12 +184,62 @@ The schema is, by default, configured by editor plugins. It is recommended that 
 
 The instance of the schema is available in {@link module:engine/model/model~Model#schema `editor.model.schema`}. Read an extensive guide about using the schema API in {@link module:engine/model/schema~Schema API docs for the `Schema` class}.
 
-
-
-
 ## View
 
-## Controller
+Let's again take a look at the editing engine's architecture:
+
+[{@img assets/img/framework-architecture-engine-diagram.png Diagram of the engine's MVC architecture.}](%BASE_PATH%/assets/img/framework-architecture-engine-diagram.png)
+
+So far, we talked about the topmost layer of this diagram – the model. The role of the model layer is to create an abstraction over the data. Its format was designed to allow storing and modifying the data in the most convenient way, while enabling implementation of complex features. Most features operate (read from it and change it) on the model.
+
+The view, on the other hand, is an abstract representation of the DOM structure which should be presented to the user (for editing) and which should (in most cases) represent the editor's input/output (i.e. data returned by `editor.getData()`, data set by `editor.setData()`, pasted content, etc.).
+
+What this means is that:
+
+* The view is yet another custom structure.
+* It resembles the DOM. While the model's tree structure only slightly resembled the DOM (e.g. by introducing text attributes), the view is much closer to the DOM. In other words, it is a **virtual DOM**.
+* There are two "pipelines" – the **editing pipeline** (also called the "editing view") and the **data pipeline** ("the data view"). Treat them as two separate views of one model. The editing pipeline renders and handles the DOM which the user sees and can edit. The data pipeline is used when you call `editor.getData()`, `editor.setData()` or paste content into the editor.
+
+The fact that there are two views is visible in the API:
+
+```js
+editor.editing;                 // The editing pipeline (EditingController).
+editor.editing.view;            // Editing view's controller.
+editor.editing.view.document;   // Editing view's document.
+editor.data;                    // The data pipeline (DataController).
+```
+
+<info-box>
+	Technically, the data pipeline does not have a document and a view controller. It operates on detached view structures, created for the purposes of processing a data.
+
+	It is much simpler than the editing pipeline and in the following part of this section we will be talking about the editing view.
+
+	Check out the {@link module:engine/controller/editingcontroller~EditingController}'s and {@link module:engine/controller/datacontroller~DataController}'s API.
+</info-box>
+
+### Changing the view
+
+Do not change the view manually, unless you really know what you do. If the view needs to be changed, in most cases, it means that the model should be changed first. Then, the changes you apply to the model are converted ([conversion](#conversion) is covered below) to the view by specific converters.
+
+The view may need to be changed manually if the cause of such a change is not represented in the model. For example, the model does not store information about the focus, which is a {@link module:engine/view/document~Document#isFocused property of the view}. When the focus changes, and you want to represent that in some element's class, you need to change that class manually.
+
+For that, just like in the model, you should use the `change()` block (of the view) in which you will have access to the view writer.
+
+```js
+editor.data.view.change( writer => {
+	writer.insert( position1, writer.createText( 'foo' ) );
+} );
+```
+
+### Element types
+
+### Positions
+
+### Observers
+
+## Conversion
+
+TODO: upcasting, downcasting, why and how.
 
 ## Read next
 
