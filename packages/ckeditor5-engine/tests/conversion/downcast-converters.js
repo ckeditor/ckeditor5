@@ -615,7 +615,7 @@ describe( 'downcast-converters', () => {
 		} );
 	} );
 
-	describe( 'setAttribute', () => {
+	describe( 'changeAttribute', () => {
 		it( 'should convert attribute insert/change/remove on a model node', () => {
 			const modelElement = new ModelElement( 'paragraph', { class: 'foo' }, new ModelText( 'foobar' ) );
 
@@ -685,6 +685,26 @@ describe( 'downcast-converters', () => {
 
 			// No attribute set.
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+		} );
+
+		it( 'should not convert or consume if element creator returned null', () => {
+			const spy = sinon.spy();
+
+			dispatcher.on( 'attribute:class', changeAttribute( () => {
+				spy();
+
+				return null;
+			} ) );
+
+			const modelElement = new ModelElement( 'paragraph', { class: 'foo' }, new ModelText( 'foobar' ) );
+
+			model.change( writer => {
+				writer.insert( modelElement, modelRootStart );
+			} );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p class="foo">foobar</p></div>' );
+
+			expect( spy.called ).to.be.true;
 		} );
 	} );
 
