@@ -7,7 +7,7 @@ import DecoupledDocumentEditor from '../../build/ckeditor';
 
 const editorData = `<h2>About CKEditor&nbsp;5</h2>
 
-<p>This is <a href="https://ckeditor5.github.io">CKEditor&nbsp;5</a>.</p>
+<p>This is <a href="https://ckeditor.com">CKEditor&nbsp;5</a>.</p>
 
 <figure class="image">
 	<img src="./sample.jpg" alt="Autumn fields" />
@@ -29,7 +29,7 @@ applications.</p></blockquote>
 
 <h3>Notes</h3>
 
-<p><a href="https://ckeditor5.github.io">CKEditor&nbsp;5</a> is <i>under heavy development</i> and this demo
+<p><a href="https://ckeditor.com">CKEditor&nbsp;5</a> is <i>under heavy development</i> and this demo
 is not production-ready software. For example:</p>
 
 <ul>
