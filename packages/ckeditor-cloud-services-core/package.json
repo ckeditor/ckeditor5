@@ -1,16 +1,16 @@
 {
-  "name": "@ckeditor/ckeditor-cloudservices-core",
+  "name": "@ckeditor/ckeditor-cloud-services-core",
   "version": "0.2.0",
   "description": "CKEditor Cloud Services Core API",
   "license": "(GPL-2.0 OR LGPL-2.1 OR MPL-1.1)",
   "repository": {
     "type": "git",
-    "url": "git@github.com:ckeditor/ckeditor-cloudservices-core.git"
+    "url": "git@github.com:ckeditor/ckeditor-cloud-services-core.git"
   },
   "author": "CKSource (http://cksource.com/)",
-  "bugs": "https://github.com/ckeditor/ckeditor-cloudservices-core/issues",
-  "url": "https://github.com/ckeditor/ckeditor-cloudservices-core/issues",
-  "homepage": "https://github.com/ckeditor/ckeditor-cloudservices-core#readme",
+  "bugs": "https://github.com/ckeditor/ckeditor-cloud-services-core/issues",
+  "url": "https://github.com/ckeditor/ckeditor-cloud-services-core/issues",
+  "homepage": "https://github.com/ckeditor/ckeditor-cloud-services-core#readme",
   "scripts": {
     "test": "karma start --single-run",
     "lint": "eslint src tests"
