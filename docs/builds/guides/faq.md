@@ -91,16 +91,18 @@ At the same time, we recommend you to {@link builds/guides/development/installin
 
 ## How to customize the CKEditor 5 icons?
 
-The easiest way is to use Webpack's [`NormalModuleReplacementPlugin`](https://webpack.js.org/plugins/normal-module-replacement-plugin/) plugin. To replace the bold icon with the italic (both provided by [ckeditor5-basic-styles](https://www.npmjs.com/package/@ckeditor/ckeditor5-basic-styles)) use the following code in your `webpack.config.js`:
+The easiest way is to use Webpack's [`NormalModuleReplacementPlugin`](https://webpack.js.org/plugins/normal-module-replacement-plugin/) plugin. To replace the bold icon use the following code in your `webpack.config.js`:
 
 ```js
 ...
 plugins: [
 	new webpack.NormalModuleReplacementPlugin(
 		/bold\.svg/,
-		'../../theme/icons/italic.svg'
+		'/absolute/path/to/my/icon.svg'
 	)
 ]
 ```
+
+You can also use the relative path which is resolved relative to the resource that imports `bold.svg` (the {@link module:basic-styles/bold/boldui~BoldUI `BoldUI`} class file in this scenario).
 
 Learn more about {@link builds/guides/integration/advanced-setup#webpack-configuration building CKEditor 5 using Webpack}.
