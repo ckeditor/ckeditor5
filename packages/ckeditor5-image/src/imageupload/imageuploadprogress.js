@@ -110,18 +110,28 @@ export default class ImageUploadProgress extends Plugin {
 // Symbol added to progress bar UIElement to distinguish it from other elements.
 const progressBarSymbol = Symbol( 'progress-bar' );
 
+// Adds ck-appear class to the image figure if one is not already applied.
+//
+// @param {module:engine/view/containerelement~ContainerElement} viewFigure
+// @param {module:engine/view/writer~Writer} writer
 function _startAppearEffect( viewFigure, writer ) {
 	if ( !viewFigure.hasClass( 'ck-appear' ) ) {
 		writer.addClass( 'ck-appear', viewFigure );
 	}
 }
 
+// Removes ck-appear class to the image figure if one is not already removed.
+//
+// @param {module:engine/view/containerelement~ContainerElement} viewFigure
+// @param {module:engine/view/writer~Writer} writer
 function _stopAppearAffect( viewFigure, writer ) {
-	if ( viewFigure.hasClass( 'ck-appear' ) ) {
-		writer.removeClass( 'ck-appear', viewFigure );
-	}
+	writer.removeClass( 'ck-appear', viewFigure );
 }
 
+// Shows placeholder together with infinite progress bar on given image figure.
+//
+// @param {module:engine/view/containerelement~ContainerElement} viewFigure
+// @param {module:engine/view/writer~Writer} writer
 function _showPlaceholder( placeholder, viewFigure, writer ) {
 	if ( !viewFigure.hasClass( 'ck-image-upload-placeholder' ) ) {
 		writer.addClass( 'ck-image-upload-placeholder', viewFigure );
@@ -138,6 +148,10 @@ function _showPlaceholder( placeholder, viewFigure, writer ) {
 	}
 }
 
+// Removes placeholder together with infinite progress bar on given image figure.
+//
+// @param {module:engine/view/containerelement~ContainerElement} viewFigure
+// @param {module:engine/view/writer~Writer} writer
 function _hidePlaceholder( viewFigure, writer ) {
 	if ( viewFigure.hasClass( 'ck-image-upload-placeholder' ) ) {
 		writer.removeClass( 'ck-image-upload-placeholder', viewFigure );
@@ -148,6 +162,13 @@ function _hidePlaceholder( viewFigure, writer ) {
 	}
 }
 
+// Shows progress bar displaying upload progress.
+// Attaches it to the file loader to update when upload percentace is changed.
+//
+// @param {module:engine/view/containerelement~ContainerElement} viewFigure
+// @param {module:engine/view/writer~Writer} writer
+// @param {module:upload/filerepository~FileLoader} loader
+// @param {module:engine/view/view~View} view
 function _showProgressBar( viewFigure, writer, loader, view ) {
 	const progressBar = createProgressBar( writer );
 	writer.insert( ViewPosition.createAt( viewFigure, 'end' ), progressBar );
@@ -160,6 +181,10 @@ function _showProgressBar( viewFigure, writer, loader, view ) {
 	} );
 }
 
+// Hides upload progress bar.
+//
+// @param {module:engine/view/containerelement~ContainerElement} viewFigure
+// @param {module:engine/view/writer~Writer} writer
 function _hideProgressBar( viewFigure, writer ) {
 	const progressBar = getProgressBar( viewFigure );
 
