@@ -27,7 +27,7 @@
 }
 
 /* Note: Use ck-editor__main to make sure these styles don't apply to other editor types */
-.ck-editor__main .ck-editor__editable {
+.ck-editor__main > .ck-editor__editable {
 	/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/113 */
 	background: var(--ck-color-base-background);
 
