@@ -238,11 +238,7 @@ export default class Position {
 				return 'after';
 
 			default:
-				if ( this.path[ result ] < otherPosition.path[ result ] ) {
-					return 'before';
-				} else {
-					return 'after';
-				}
+				return this.path[ result ] < otherPosition.path[ result ] ? 'before' : 'after';
 		}
 	}
 

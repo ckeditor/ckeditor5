@@ -11,6 +11,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import clone from '@ckeditor/ckeditor5-utils/src/lib/lodash/clone';
+import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
 
 /**
  * Abstract tree view node class.
@@ -119,6 +120,33 @@ export default class Node {
 	}
 
 	/**
+	 * Gets a path to the node. The path is an array containing indices of consecutive ancestors of this node,
+	 * beginning from {@link module:engine/view/node~Node#root root}, down to this node's index.
+	 *
+	 *		const abc = new Text( 'abc' );
+	 *		const foo = new Text( 'foo' );
+	 *		const h1 = new Element( 'h1', null, new Text( 'header' ) );
+	 *		const p = new Element( 'p', null, [ abc, foo ] );
+	 *		const div = new Element( 'div', null, [ h1, p ] );
+	 *		foo.getPath(); // Returns [ 1, 3 ]. `foo` is in `p` which is in `div`. `p` starts at offset 1, while `foo` at 3.
+	 *		h1.getPath(); // Returns [ 0 ].
+	 *		div.getPath(); // Returns [].
+	 *
+	 * @returns {Array.<Number>} The path.
+	 */
+	getPath() {
+		const path = [];
+		let node = this; // eslint-disable-line consistent-this
+
+		while ( node.parent ) {
+			path.unshift( node.index );
+			node = node.parent;
+		}
+
+		return path;
+	}
+
+	/**
 	 * Returns ancestors array of this node.
 	 *
 	 * @param {Object} options Options object.
@@ -163,6 +191,63 @@ export default class Node {
 	}
 
 	/**
+	 * Returns whether this node is before given node. `false` is returned if nodes are in different trees (for example,
+	 * in different {@link module:engine/view/documentfragment~DocumentFragment}s).
+	 *
+	 * @param {module:engine/view/node~Node} node Node to compare with.
+	 * @returns {Boolean}
+	 */
+	isBefore( node ) {
+		// Given node is not before this node if they are same.
+		if ( this == node ) {
+			return false;
+		}
+
+		// Return `false` if it is impossible to compare nodes.
+		if ( this.root !== node.root ) {
+			return false;
+		}
+
+		const thisPath = this.getPath();
+		const nodePath = node.getPath();
+
+		const result = compareArrays( thisPath, nodePath );
+
+		switch ( result ) {
+			case 'prefix':
+				return true;
+
+			case 'extension':
+				return false;
+
+			default:
+				return thisPath[ result ] < nodePath[ result ];
+		}
+	}
+
+	/**
+	 * Returns whether this node is after given node. `false` is returned if nodes are in different trees (for example,
+	 * in different {@link module:engine/view/documentfragment~DocumentFragment}s).
+	 *
+	 * @param {module:engine/view/node~Node} node Node to compare with.
+	 * @returns {Boolean}
+	 */
+	isAfter( node ) {
+		// Given node is not before this node if they are same.
+		if ( this == node ) {
+			return false;
+		}
+
+		// Return `false` if it is impossible to compare nodes.
+		if ( this.root !== node.root ) {
+			return false;
+		}
+
+		// In other cases, just check if the `node` is before, and return the opposite.
+		return !this.isBefore( node );
+	}
+
+	/**
 	 * Removes node from parent.
 	 *
 	 * @protected
@@ -199,27 +284,13 @@ export default class Node {
 	}
 
 	/**
-	 * Clones this node.
-	 *
-	 * @method #clone
-	 * @returns {module:engine/view/node~Node} Clone of this node.
-	 */
-
-	/**
-	 * Checks if provided node is similar to this node.
-	 *
-	 * @method #isSimilar
-	 * @returns {Boolean} True if nodes are similar.
-	 */
-
-	/**
 	 * Checks whether given view tree object is of given type.
 	 *
 	 * This method is useful when processing view tree objects that are of unknown type. For example, a function
 	 * may return {@link module:engine/view/documentfragment~DocumentFragment} or {@link module:engine/view/node~Node}
 	 * that can be either text node or element. This method can be used to check what kind of object is returned.
 	 *
-	 *		obj.is( 'node' ); // true for any node, false for document fragment
+	 *		obj.is( 'node' ); // true for any node, false for document fragment and text fragment
 	 *		obj.is( 'documentFragment' ); // true for document fragment, false for any node
 	 *		obj.is( 'element' ); // true for any element, false for text node or document fragment
 	 *		obj.is( 'element', 'p' ); // true only for element which name is 'p'
@@ -230,6 +301,24 @@ export default class Node {
 	 * @param {'element'|'containerElement'|'attributeElement'|'emptyElement'|'uiElement'|
 	 * 'rootElement'|'documentFragment'|'text'|'textProxy'} type
 	 * @returns {Boolean}
+	 */
+	is( type ) {
+		return type == 'node';
+	}
+
+	/**
+	 * Clones this node.
+	 *
+	 * @protected
+	 * @method #_clone
+	 * @returns {module:engine/view/node~Node} Clone of this node.
+	 */
+
+	/**
+	 * Checks if provided node is similar to this node.
+	 *
+	 * @method #isSimilar
+	 * @returns {Boolean} True if nodes are similar.
 	 */
 }
 

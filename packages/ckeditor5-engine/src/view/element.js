@@ -152,7 +152,7 @@ export default class Element extends Node {
 	 */
 	is( type, name = null ) {
 		if ( !name ) {
-			return type == 'element' || type == this.name;
+			return type == 'element' || type == this.name || super.is( type );
 		} else {
 			return type == 'element' && name == this.name;
 		}
