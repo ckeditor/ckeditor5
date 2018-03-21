@@ -309,7 +309,8 @@ export default class Node {
 	/**
 	 * Clones this node.
 	 *
-	 * @method #clone
+	 * @protected
+	 * @method #_clone
 	 * @returns {module:engine/view/node~Node} Clone of this node.
 	 */
 
