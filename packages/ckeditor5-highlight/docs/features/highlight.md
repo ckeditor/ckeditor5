@@ -5,7 +5,7 @@ category: features
 
 {@snippet features/build-highlight-source}
 
-The {@link module:highlight/highlight~Highlight} feature offers a text marking tools that help content authors speed up their work, e.g. reviewing content or marking it for the future reference. It uses inline `<marker>` elements in the view, supports both markers (background color) and pens (text color), and comes with a flexible configuration.
+The {@link module:highlight/highlight~Highlight} feature offers text marking tools that help content authors speed up their work, for example when reviewing content or marking it for future reference. It uses inline `<mark>` elements in the view, supports both markers (background color) and pens (text color), and comes with a flexible configuration.
 
 ## Demo
 
@@ -53,7 +53,7 @@ ClassicEditor
 
 ### Inline buttons
 
-Instead of using the (default) `highlight`, the feature also supports a configuration with separate buttons directly in the toolbar:
+Instead of using the (default) `highlight` button, the feature also supports a configuration with separate buttons available directly in the toolbar:
 
 ```js
 ClassicEditor
@@ -81,9 +81,9 @@ ClassicEditor
 	See the plugin {@link module:highlight/highlight~HighlightConfig#options options} to learn more about defaults.
 </info-box>
 
-#### Using CSS Variables
+#### Using CSS variables
 
-The highlight feature is using the power of [CSS variables](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_variables) which are defined in the [stylesheet](https://github.com/ckeditor/ckeditor5-highlight/blob/master/theme/highlight.css). Thanks to that, both the UI and the content styles share the same color definitions, which can be easily customized:
+The highlight feature is using the power of [CSS variables](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_variables) which are defined in the [stylesheet](https://github.com/ckeditor/ckeditor5-highlight/blob/master/theme/highlight.css). Thanks to that, both the UI and the content styles share the same color definitions which can be easily customized:
 
 ```css
 :root {
@@ -102,7 +102,7 @@ The highlight feature is using the power of [CSS variables](https://developer.mo
 
 #### Inline color definitions
 
-It is possible to use the inline color values in the `rgba(R, G, B, A)`, `#RRGGBB[AA]` or `hsla(H, S, L, A)` formats instead of CSS variables. To do that, customize the {@link module:highlight/highlight~HighlightConfig#options options} and define the `color` property for each option:
+It is possible to use inline color values in the `rgba(R, G, B, A)`, `#RRGGBB[AA]` or `hsla(H, S, L, A)` formats instead of CSS variables. To do that, customize the {@link module:highlight/highlight~HighlightConfig#options options} and define the `color` property for each option:
 
 ```js
 ClassicEditor
@@ -140,7 +140,7 @@ ClassicEditor
 	.catch( ... );
 ```
 
-Then, update the classes in the style sheet so the content corresponds to the UI of the editor. It is recommended for the UI buttons and the actual highlights in the text to share the same colors.
+Then, update the classes in the stylesheet so the content corresponds to the UI of the editor. It is recommended for the UI buttons and the actual highlights in the text to share the same colors.
 
 ```css
 .marker-green {
@@ -160,7 +160,7 @@ Then, update the classes in the style sheet so the content corresponds to the UI
 
 To add this feature to your editor install the [`@ckeditor/ckeditor5-highlight`](https://www.npmjs.com/package/@ckeditor/ckeditor5-highlight) package:
 
-```
+```bash
 npm install --save @ckeditor/ckeditor5-highlight
 ```
 
@@ -197,7 +197,7 @@ The {@link module:highlight/highlight~Highlight} plugin registers:
 	editor.execute( 'highlight', { value: 'yellowMarker' } );
 	```
 
-	The `value` corresponds to the `model` property in configuration object. For the default configuration:
+	The `value` corresponds to the `model` property in the configuration object. For the default configuration:
 
 	```js
 	highlight.options = [
@@ -212,14 +212,14 @@ The {@link module:highlight/highlight~Highlight} plugin registers:
 
 	the `highlight` command will accept the corresponding strings as values:
 
-	* `'yellowMarker'` – available as a `'highlight:yellowMarker'` button,
-	* `'greenMarker'` – available as a `'highlight:greenMarker'` button,
-	* `'pinkMarker'` – available as a `'highlight:pinkMarker'` button,
-	* `'blueMarker'` – available as a `'highlight:blueMarker'` button,
-	* `'redPen'` – available as a `'highlight:redPen'` button,
-	* `'greenPen'` – available as a `'highlight:greenPen'` button.
+	* `'yellowMarker'` &ndash; available as the `'highlight:yellowMarker'` button,
+	* `'greenMarker'` &ndash; available as the `'highlight:greenMarker'` button,
+	* `'pinkMarker'` &ndash; available as the `'highlight:pinkMarker'` button,
+	* `'blueMarker'` &ndash; available as the `'highlight:blueMarker'` button,
+	* `'redPen'` &ndash; available as the `'highlight:redPen'` button,
+	* `'greenPen'` &ndash; available as the `'highlight:greenPen'` button.
 
-	passing an empty `value` will remove any `highlight` from the selection:
+	Passing an empty `value` will remove any `highlight` from the selection:
 
 	```js
 	editor.execute( 'highlight' );

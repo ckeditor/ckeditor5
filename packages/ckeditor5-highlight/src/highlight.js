@@ -18,7 +18,7 @@ import HighlightUI from './highlightui';
  * It loads the {@link module:highlight/highlightediting~HighlightEditing} and
  * {@link module:highlight/highlightui~HighlightUI} plugins.
  *
- * Read more about the feature in the {@glink api/highlight highlight package} page.
+ * For a detailed overview, check the {@glink features/highlight highlight feature} documentation.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -39,7 +39,7 @@ export default class Highlight extends Plugin {
 }
 
 /**
- * The highlight option descriptor. See the {@link module:highlight/highlight~HighlightConfig} to learn more.
+ * The highlight option descriptor. See {@link module:highlight/highlight~HighlightConfig} to learn more.
  *
  *		{
  *			model: 'pinkMarker',
@@ -52,13 +52,14 @@ export default class Highlight extends Plugin {
  * @typedef {Object} module:highlight/highlight~HighlightOption
  * @property {String} title The user-readable title of the option.
  * @property {String} model The unique attribute value in the model.
- * @property {String} color The CSS var() used for the highlighter. The color is used in the user interface to represent the highlighter.
- * There is possibility to use default color format like rgb, hex or hsl, but you need to care about color of `<mark>`
+ * @property {String} color The CSS `var()` used for the highlighter. The color is used in the user interface to represent the highlighter.
+ * There is a possibility to use the default color format like rgb, hex or hsl, but you need to care about the color of `<mark>`
  * by adding CSS classes definition.
  * @property {String} class The CSS class used on the `<mark>` element in the view. It should match the `color` setting.
  * @property {'marker'|'pen'} type The type of highlighter:
- * - `'marker'` – uses the `color` as a `background-color` style,
- * - `'pen'` – uses the `color` as a font `color` style.
+ *
+ * * `'marker'` &ndash; Uses the `color` as the `background-color` style,
+ * * `'pen'` &ndash; Uses the `color` as the font `color` style.
  */
 
 /**
@@ -70,11 +71,11 @@ export default class Highlight extends Plugin {
  */
 
 /**
- * The configuration of the {@link module:highlight/highlight~Highlight Highlight feature}.
+ * The configuration of the {@link module:highlight/highlight~Highlight highlight feature}.
  *
  *		ClassicEditor
  *			.create( editorElement, {
- * 				highlight:  ... // Highlight feature config.
+ * 				highlight:  ... // Highlight feature configuration.
  *			} )
  *			.then( ... )
  *			.catch( ... );
@@ -85,7 +86,7 @@ export default class Highlight extends Plugin {
  */
 
 /**
- * The available highlighters options. The default value is:
+ * The available highlight options. The default value is:
  *
  *		options: [
  *			{
@@ -133,10 +134,11 @@ export default class Highlight extends Plugin {
  *		]
  *
  * There are two types of highlighters available:
- * - `'marker'` - rendered as a `<mark>` element, styled with the `background-color`,
- * - `'pen'` - rendered as a `<mark>` element, styled with the font `color`.
  *
- * **Note**: The highlight feature provides a style sheet with the CSS classes and corresponding colors defined
+ * * `'marker'` &ndash; Rendered as a `<mark>` element, styled with the `background-color`.
+ * * `'pen'` &ndash; Rendered as a `<mark>` element, styled with the font `color`.
+ *
+ * **Note**: The highlight feature provides a stylesheet with the CSS classes and corresponding colors defined
  * as CSS variables.
  *
  *		:root {
@@ -155,13 +157,13 @@ export default class Highlight extends Plugin {
  *		.pen-red { ... }
  *		.pen-green { ... }
  *
- * **Note**: It is possible to define the `color` property directly as `rgba(R, G, B, A)`,
+ * It is possible to define the `color` property directly as `rgba(R, G, B, A)`,
  * `#RRGGBB[AA]` or `hsla(H, S, L, A)`. In such situation, the color will **only** apply to the UI of
  * the editor and the `<mark>` elements in the content must be styled by custom classes provided by
- * a dedicated style sheet.
+ * a dedicated stylesheet.
  *
  * **Note**: It is recommended for the `color` property to correspond to the class in the content
- * style sheet because it represents the highlighter in the user interface of the editor.
+ * stylesheet because it represents the highlighter in the user interface of the editor.
  *
  *		ClassicEditor
  *			.create( editorElement, {

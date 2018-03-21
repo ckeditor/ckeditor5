@@ -22,10 +22,10 @@ import { createDropdown, addToolbarToDropdown } from '@ckeditor/ckeditor5-ui/src
 import './../theme/highlight.css';
 
 /**
- * The default Highlight UI plugin. It introduces:
+ * The default highlight UI plugin. It introduces:
  *
- * * the `'highlight'` dropdown,
- * * `'removeHighlight'` and `'highlight:*'` buttons.
+ * * The `'highlight'` dropdown,
+ * * The `'removeHighlight'` and `'highlight:*'` buttons.
  *
  * The default configuration includes the following buttons:
  *
@@ -94,7 +94,7 @@ export default class HighlightUI extends Plugin {
 	}
 
 	/**
-	 * Creates remove highlight button.
+	 * Creates the "Remove highlight" button.
 	 *
 	 * @private
 	 */
@@ -105,7 +105,7 @@ export default class HighlightUI extends Plugin {
 	}
 
 	/**
-	 * Creates toolbar button from provided highlight option.
+	 * Creates a toolbar button from the provided highlight option.
 	 *
 	 * @param {module:highlight/highlight~HighlightOption} option
 	 * @private
@@ -126,10 +126,10 @@ export default class HighlightUI extends Plugin {
 	/**
 	 * Internal method for creating highlight buttons.
 	 *
-	 * @param {String} name Name of a button.
-	 * @param {String} label Label for button.
-	 * @param {String} icon Button's icon.
-	 * @param {Function} [decorateButton=()=>{}] Additional method for extending button.
+	 * @param {String} name The name of the button.
+	 * @param {String} label The label for the button.
+	 * @param {String} icon The button icon.
+	 * @param {Function} [decorateButton=()=>{}] Additional method for extending the button.
 	 * @private
 	 */
 	_addButton( name, label, icon, value, decorateButton = () => {} ) {
@@ -159,7 +159,7 @@ export default class HighlightUI extends Plugin {
 	}
 
 	/**
-	 * Creates split button dropdown UI from provided highlight options.
+	 * Creates the split button dropdown UI from the provided highlight options.
 	 *
 	 * @param {Array.<module:highlight/highlight~HighlightOption>} options
 	 * @private
