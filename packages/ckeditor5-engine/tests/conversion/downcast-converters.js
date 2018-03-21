@@ -688,13 +688,9 @@ describe( 'downcast-converters', () => {
 		} );
 
 		it( 'should not convert or consume if element creator returned null', () => {
-			const spy = sinon.spy();
+			const callback = sinon.stub().returns( null );
 
-			dispatcher.on( 'attribute:class', changeAttribute( () => {
-				spy();
-
-				return null;
-			} ) );
+			dispatcher.on( 'attribute:class', changeAttribute( callback ) );
 
 			const modelElement = new ModelElement( 'paragraph', { class: 'foo' }, new ModelText( 'foobar' ) );
 
@@ -704,7 +700,7 @@ describe( 'downcast-converters', () => {
 
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p class="foo">foobar</p></div>' );
 
-			expect( spy.called ).to.be.true;
+			sinon.assert.called( callback );
 		} );
 	} );
 
