@@ -14,7 +14,7 @@ Various utilities used by CKEditor 5 and its features. This is a sort of  CKEdit
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-utils` package](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/api/utils.html) page in [CKEditor 5 documentation](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/).
+See the [`@ckeditor/ckeditor5-utils` package](https://docs.ckeditor.com/ckeditor5/latest/api/utils.html) page in [CKEditor 5 documentation](https://docs.ckeditor.com/ckeditor5/latest/).
 
 ## License
 
