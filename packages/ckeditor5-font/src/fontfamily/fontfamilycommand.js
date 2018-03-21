@@ -10,7 +10,7 @@
 import FontCommand from '../fontcommand';
 
 /**
- * The font family command. It is used by the {@link module:font/fontfamily/fontfamilyediting~FontFamilyEditing}
+ * The font family command. It is used by {@link module:font/fontfamily/fontfamilyediting~FontFamilyEditing}
  * to apply the font family.
  *
  *		editor.execute( 'fontFamily', { value: 'Arial' } );

@@ -62,12 +62,12 @@ export default class FontFamilyUI extends Plugin {
 	}
 
 	/**
-	 * Returns options as defined in `config.fontFamily.options` but processed to consider
+	 * Returns options as defined in `config.fontFamily.options` but processed to account for
 	 * editor localization, i.e. to display {@link module:font/fontfamily~FontFamilyOption}
 	 * in the correct language.
 	 *
-	 * Note: The reason behind this method is that there's no way to use {@link module:utils/locale~Locale#t}
-	 * when the user config is defined because the editor does not exist yet.
+	 * Note: The reason behind this method is that there is no way to use {@link module:utils/locale~Locale#t}
+	 * when the user configuration is defined because the editor does not exist yet.
 	 *
 	 * @private
 	 * @returns {Array.<module:font/fontfamily~FontFamilyOption>}.

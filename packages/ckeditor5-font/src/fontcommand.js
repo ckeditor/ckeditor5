@@ -19,7 +19,7 @@ export default class FontCommand extends Command {
 	 * Creates an instance of the command.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor Editor instance.
-	 * @param {String} attributeKey Name of an model attribute on which this command operates.
+	 * @param {String} attributeKey The name of a model attribute on which this command operates.
 	 */
 	constructor( editor, attributeKey ) {
 		super( editor );
@@ -58,7 +58,7 @@ export default class FontCommand extends Command {
 	 *
 	 * @protected
 	 * @param {Object} [options] Options for the executed command.
-	 * @param {String} [options.value] a value to apply.
+	 * @param {String} [options.value] The value to apply.
 	 * @fires execute
 	 */
 	execute( options = {} ) {
