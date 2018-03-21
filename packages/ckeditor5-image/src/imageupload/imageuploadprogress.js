@@ -65,16 +65,16 @@ export default class ImageUploadProgress extends Plugin {
 		}
 
 		const fileRepository = editor.plugins.get( FileRepository );
-		const placeholder = this.placeholder;
 		const status = data.attributeNewValue;
+		const placeholder = this.placeholder;
 		const viewFigure = editor.editing.mapper.toViewElement( modelImage );
 		const viewWriter = conversionApi.writer;
 
-		// Show placeholder with infinite progress bar on the top while image is read from disk.
 		if ( status == 'reading' ) {
-			viewWriter.addClass( [ 'ck-appear', 'ck-infinite-progress', 'ck-image-upload-placeholder' ], viewFigure );
-			const viewImg = viewFigure.getChild( 0 );
-			viewWriter.setAttribute( 'src', placeholder, viewImg );
+			// Start "appearing" effect and show placeholder with infinite progress bar on the top
+			// while image is read from disk.
+			_startAppearEffect( viewFigure, viewWriter );
+			_showPlaceholder( placeholder, viewFigure, viewWriter );
 
 			return;
 		}
@@ -83,38 +83,90 @@ export default class ImageUploadProgress extends Plugin {
 		if ( status == 'uploading' ) {
 			const loader = fileRepository.loaders.get( uploadId );
 
-			if ( loader ) {
-				const progressBar = createProgressBar( viewWriter );
+			// Start appear effect if needed - see https://github.com/ckeditor/ckeditor5-image/issues/191.
+			_startAppearEffect( viewFigure, viewWriter );
 
-				viewWriter.removeClass( [ 'ck-infinite-progress', 'ck-image-upload-placeholder' ], viewFigure );
-				viewWriter.insert( ViewPosition.createAt( viewFigure, 'end' ), progressBar );
-
-				// Update progress bar width when uploadedPercent is changed.
-				loader.on( 'change:uploadedPercent', ( evt, name, value ) => {
-					editor.editing.view.change( writer => {
-						writer.setStyle( 'width', value + '%', progressBar );
-					} );
-				} );
+			if ( !loader ) {
+				// There is no loader associated with uploadId - this means that image came from external changes.
+				// In such cases we still want to show the placeholder until image is fully uploaded.
+				// Show placeholder if needed - see https://github.com/ckeditor/ckeditor5-image/issues/191.
+				_showPlaceholder( placeholder, viewFigure, viewWriter );
+			} else {
+				// Hide placeholder and initialize progress bar showing upload progress.
+				_hidePlaceholder( viewFigure, viewWriter );
+				_showProgressBar( viewFigure, viewWriter, loader, editor.editing.view );
 			}
 
 			return;
 		}
 
-		// Hide progress bar and clean up classes.
-		const progressBar = getProgressBar( viewFigure );
-
-		if ( progressBar ) {
-			viewWriter.remove( ViewRange.createOn( progressBar ) );
-		} else {
-			viewWriter.removeClass( 'ck-infinite-progress', viewFigure );
-		}
-
-		viewWriter.removeClass( [ 'ck-appear', 'ck-image-upload-placeholder' ], viewFigure );
+		// Clean up.
+		_hideProgressBar( viewFigure, viewWriter );
+		_hidePlaceholder( viewFigure, viewWriter );
+		_stopAppearAffect( viewFigure, viewWriter );
 	}
 }
 
 // Symbol added to progress bar UIElement to distinguish it from other elements.
 const progressBarSymbol = Symbol( 'progress-bar' );
+
+function _startAppearEffect( viewFigure, writer ) {
+	if ( !viewFigure.hasClass( 'ck-appear' ) ) {
+		writer.addClass( 'ck-appear', viewFigure );
+	}
+}
+
+function _stopAppearAffect( viewFigure, writer ) {
+	if ( viewFigure.hasClass( 'ck-appear' ) ) {
+		writer.removeClass( 'ck-appear', viewFigure );
+	}
+}
+
+function _showPlaceholder( placeholder, viewFigure, writer ) {
+	if ( !viewFigure.hasClass( 'ck-image-upload-placeholder' ) ) {
+		writer.addClass( 'ck-image-upload-placeholder', viewFigure );
+	}
+
+	if ( !viewFigure.hasClass( 'ck-infinite-progress' ) ) {
+		writer.addClass( 'ck-infinite-progress', viewFigure );
+	}
+
+	const viewImg = viewFigure.getChild( 0 );
+
+	if ( viewImg.getAttribute( 'src' ) !== placeholder ) {
+		writer.setAttribute( 'src', placeholder, viewImg );
+	}
+}
+
+function _hidePlaceholder( viewFigure, writer ) {
+	if ( viewFigure.hasClass( 'ck-image-upload-placeholder' ) ) {
+		writer.removeClass( 'ck-image-upload-placeholder', viewFigure );
+	}
+
+	if ( viewFigure.hasClass( 'ck-infinite-progress' ) ) {
+		writer.removeClass( 'ck-infinite-progress', viewFigure );
+	}
+}
+
+function _showProgressBar( viewFigure, writer, loader, view ) {
+	const progressBar = createProgressBar( writer );
+	writer.insert( ViewPosition.createAt( viewFigure, 'end' ), progressBar );
+
+	// Update progress bar width when uploadedPercent is changed.
+	loader.on( 'change:uploadedPercent', ( evt, name, value ) => {
+		view.change( writer => {
+			writer.setStyle( 'width', value + '%', progressBar );
+		} );
+	} );
+}
+
+function _hideProgressBar( viewFigure, writer ) {
+	const progressBar = getProgressBar( viewFigure );
+
+	if ( progressBar ) {
+		writer.remove( ViewRange.createOn( progressBar ) );
+	}
+}
 
 // Create progress bar element using {@link module:engine/view/uielement~UIElement}.
 //
