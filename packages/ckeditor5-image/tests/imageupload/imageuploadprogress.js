@@ -97,6 +97,46 @@ describe( 'ImageUploadProgress', () => {
 		nativeReaderMock.mockSuccess( base64Sample );
 	} );
 
+	it( 'should work correctly when there is no "reading" status and go straight to "uploading"', () => {
+		const fileRepository = editor.plugins.get( FileRepository );
+		const file = createNativeFileMock();
+		const loader = fileRepository.createLoader( file );
+
+		setModelData( model, '<image></image>' );
+		const image = document.getRoot().getChild( 0 );
+
+		// Set attributes directly on image to simulate instant "uploading" status.
+		model.change( writer => {
+			writer.setAttribute( 'uploadStatus', 'uploading', image );
+			writer.setAttribute( 'uploadId', loader.id, image );
+			writer.setAttribute( 'src', 'image.png', image );
+		} );
+
+		expect( getViewData( view ) ).to.equal(
+			'[<figure class="ck-appear ck-widget image" contenteditable="false">' +
+				'<img src="image.png"></img>' +
+				'<div class="ck-progress-bar"></div>' +
+			'</figure>]'
+		);
+	} );
+
+	it( 'should work correctly when there is no "reading" status and go straight to "uploading" - external changes', () => {
+		setModelData( model, '<image></image>' );
+		const image = document.getRoot().getChild( 0 );
+
+		// Set attributes directly on image to simulate instant "uploading" status.
+		model.change( writer => {
+			writer.setAttribute( 'uploadStatus', 'uploading', image );
+			writer.setAttribute( 'uploadId', '12345', image );
+		} );
+
+		expect( getViewData( view ) ).to.equal(
+			'[<figure class="ck-appear ck-image-upload-placeholder ck-infinite-progress ck-widget image" contenteditable="false">' +
+				`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
+			'</figure>]'
+		);
+	} );
+
 	it( 'should update progressbar width on progress', done => {
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 		editor.execute( 'imageUpload', { file: createNativeFileMock() } );

@@ -65,16 +65,16 @@ export default class ImageUploadProgress extends Plugin {
 		}
 
 		const fileRepository = editor.plugins.get( FileRepository );
-		const placeholder = this.placeholder;
 		const status = data.attributeNewValue;
+		const placeholder = this.placeholder;
 		const viewFigure = editor.editing.mapper.toViewElement( modelImage );
 		const viewWriter = conversionApi.writer;
 
-		// Show placeholder with infinite progress bar on the top while image is read from disk.
 		if ( status == 'reading' ) {
-			viewWriter.addClass( [ 'ck-appear', 'ck-infinite-progress', 'ck-image-upload-placeholder' ], viewFigure );
-			const viewImg = viewFigure.getChild( 0 );
-			viewWriter.setAttribute( 'src', placeholder, viewImg );
+			// Start "appearing" effect and show placeholder with infinite progress bar on the top
+			// while image is read from disk.
+			_startAppearEffect( viewFigure, viewWriter );
+			_showPlaceholder( placeholder, viewFigure, viewWriter );
 
 			return;
 		}
@@ -83,38 +83,115 @@ export default class ImageUploadProgress extends Plugin {
 		if ( status == 'uploading' ) {
 			const loader = fileRepository.loaders.get( uploadId );
 
-			if ( loader ) {
-				const progressBar = createProgressBar( viewWriter );
+			// Start appear effect if needed - see https://github.com/ckeditor/ckeditor5-image/issues/191.
+			_startAppearEffect( viewFigure, viewWriter );
 
-				viewWriter.removeClass( [ 'ck-infinite-progress', 'ck-image-upload-placeholder' ], viewFigure );
-				viewWriter.insert( ViewPosition.createAt( viewFigure, 'end' ), progressBar );
-
-				// Update progress bar width when uploadedPercent is changed.
-				loader.on( 'change:uploadedPercent', ( evt, name, value ) => {
-					editor.editing.view.change( writer => {
-						writer.setStyle( 'width', value + '%', progressBar );
-					} );
-				} );
+			if ( !loader ) {
+				// There is no loader associated with uploadId - this means that image came from external changes.
+				// In such cases we still want to show the placeholder until image is fully uploaded.
+				// Show placeholder if needed - see https://github.com/ckeditor/ckeditor5-image/issues/191.
+				_showPlaceholder( placeholder, viewFigure, viewWriter );
+			} else {
+				// Hide placeholder and initialize progress bar showing upload progress.
+				_hidePlaceholder( viewFigure, viewWriter );
+				_showProgressBar( viewFigure, viewWriter, loader, editor.editing.view );
 			}
 
 			return;
 		}
 
-		// Hide progress bar and clean up classes.
-		const progressBar = getProgressBar( viewFigure );
-
-		if ( progressBar ) {
-			viewWriter.remove( ViewRange.createOn( progressBar ) );
-		} else {
-			viewWriter.removeClass( 'ck-infinite-progress', viewFigure );
-		}
-
-		viewWriter.removeClass( [ 'ck-appear', 'ck-image-upload-placeholder' ], viewFigure );
+		// Clean up.
+		_hideProgressBar( viewFigure, viewWriter );
+		_hidePlaceholder( viewFigure, viewWriter );
+		_stopAppearEffect( viewFigure, viewWriter );
 	}
 }
 
 // Symbol added to progress bar UIElement to distinguish it from other elements.
 const progressBarSymbol = Symbol( 'progress-bar' );
+
+// Adds ck-appear class to the image figure if one is not already applied.
+//
+// @param {module:engine/view/containerelement~ContainerElement} viewFigure
+// @param {module:engine/view/writer~Writer} writer
+function _startAppearEffect( viewFigure, writer ) {
+	if ( !viewFigure.hasClass( 'ck-appear' ) ) {
+		writer.addClass( 'ck-appear', viewFigure );
+	}
+}
+
+// Removes ck-appear class to the image figure if one is not already removed.
+//
+// @param {module:engine/view/containerelement~ContainerElement} viewFigure
+// @param {module:engine/view/writer~Writer} writer
+function _stopAppearEffect( viewFigure, writer ) {
+	writer.removeClass( 'ck-appear', viewFigure );
+}
+
+// Shows placeholder together with infinite progress bar on given image figure.
+//
+// @param {module:engine/view/containerelement~ContainerElement} viewFigure
+// @param {module:engine/view/writer~Writer} writer
+function _showPlaceholder( placeholder, viewFigure, writer ) {
+	if ( !viewFigure.hasClass( 'ck-image-upload-placeholder' ) ) {
+		writer.addClass( 'ck-image-upload-placeholder', viewFigure );
+	}
+
+	if ( !viewFigure.hasClass( 'ck-infinite-progress' ) ) {
+		writer.addClass( 'ck-infinite-progress', viewFigure );
+	}
+
+	const viewImg = viewFigure.getChild( 0 );
+
+	if ( viewImg.getAttribute( 'src' ) !== placeholder ) {
+		writer.setAttribute( 'src', placeholder, viewImg );
+	}
+}
+
+// Removes placeholder together with infinite progress bar on given image figure.
+//
+// @param {module:engine/view/containerelement~ContainerElement} viewFigure
+// @param {module:engine/view/writer~Writer} writer
+function _hidePlaceholder( viewFigure, writer ) {
+	if ( viewFigure.hasClass( 'ck-image-upload-placeholder' ) ) {
+		writer.removeClass( 'ck-image-upload-placeholder', viewFigure );
+	}
+
+	if ( viewFigure.hasClass( 'ck-infinite-progress' ) ) {
+		writer.removeClass( 'ck-infinite-progress', viewFigure );
+	}
+}
+
+// Shows progress bar displaying upload progress.
+// Attaches it to the file loader to update when upload percentace is changed.
+//
+// @param {module:engine/view/containerelement~ContainerElement} viewFigure
+// @param {module:engine/view/writer~Writer} writer
+// @param {module:upload/filerepository~FileLoader} loader
+// @param {module:engine/view/view~View} view
+function _showProgressBar( viewFigure, writer, loader, view ) {
+	const progressBar = createProgressBar( writer );
+	writer.insert( ViewPosition.createAt( viewFigure, 'end' ), progressBar );
+
+	// Update progress bar width when uploadedPercent is changed.
+	loader.on( 'change:uploadedPercent', ( evt, name, value ) => {
+		view.change( writer => {
+			writer.setStyle( 'width', value + '%', progressBar );
+		} );
+	} );
+}
+
+// Hides upload progress bar.
+//
+// @param {module:engine/view/containerelement~ContainerElement} viewFigure
+// @param {module:engine/view/writer~Writer} writer
+function _hideProgressBar( viewFigure, writer ) {
+	const progressBar = getProgressBar( viewFigure );
+
+	if ( progressBar ) {
+		writer.remove( ViewRange.createOn( progressBar ) );
+	}
+}
 
 // Create progress bar element using {@link module:engine/view/uielement~UIElement}.
 //
