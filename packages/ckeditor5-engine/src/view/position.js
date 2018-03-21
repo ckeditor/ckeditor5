@@ -251,13 +251,9 @@ export default class Position {
 			return 'same';
 		}
 
-		// Get path from root to position's parent element. "Indexify" the paths (change elements to indices).
-		const thisPath = this.getAncestors().map( element => element.index );
-		const otherPath = otherPosition.getAncestors().map( element => element.index );
-
-		// Remove `null`s that came from root elements.
-		thisPath.shift();
-		otherPath.shift();
+		// Get path from root to position's parent element.
+		const thisPath = this.parent.is( 'node' ) ? this.parent.getPath() : [];
+		const otherPath = otherPosition.parent.is( 'node' ) ? otherPosition.parent.getPath() : [];
 
 		// Add the positions' offsets to the parents offsets.
 		thisPath.push( this.offset );
