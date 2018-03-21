@@ -103,7 +103,7 @@ export default class ImageUploadProgress extends Plugin {
 		// Clean up.
 		_hideProgressBar( viewFigure, viewWriter );
 		_hidePlaceholder( viewFigure, viewWriter );
-		_stopAppearAffect( viewFigure, viewWriter );
+		_stopAppearEffect( viewFigure, viewWriter );
 	}
 }
 
@@ -124,7 +124,7 @@ function _startAppearEffect( viewFigure, writer ) {
 //
 // @param {module:engine/view/containerelement~ContainerElement} viewFigure
 // @param {module:engine/view/writer~Writer} writer
-function _stopAppearAffect( viewFigure, writer ) {
+function _stopAppearEffect( viewFigure, writer ) {
 	writer.removeClass( 'ck-appear', viewFigure );
 }
 
