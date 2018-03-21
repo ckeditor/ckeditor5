@@ -407,6 +407,49 @@ describe( 'Conversion', () => {
 					'<p>Foo bar</p>'
 				);
 			} );
+
+			it( 'config.model.name is given', () => {
+				schema.extend( '$text', {
+					allowAttributes: [ 'textDecoration' ]
+				} );
+
+				conversion.attributeToElement( {
+					model: {
+						key: 'textDecoration',
+						values: [ 'underline', 'lineThrough' ],
+						name: '$text'
+					},
+					view: {
+						underline: {
+							name: 'span',
+							style: {
+								'text-decoration': 'underline'
+							}
+						},
+						lineThrough: {
+							name: 'span',
+							style: {
+								'text-decoration': 'line-through'
+							}
+						}
+					}
+				} );
+
+				test(
+					'<p><span style="text-decoration:underline">Foo</span></p>',
+					'<paragraph><$text textDecoration="underline">Foo</$text></paragraph>'
+				);
+
+				test(
+					'<p><span style="text-decoration:line-through">Foo</span></p>',
+					'<paragraph><$text textDecoration="lineThrough">Foo</$text></paragraph>'
+				);
+
+				test(
+					'<p><span style="text-decoration:underline">Foo</span></p>',
+					'<paragraph><$text textDecoration="underline">Foo</$text></paragraph>'
+				);
+			} );
 		} );
 
 		describe( 'attributeToAttribute', () => {
