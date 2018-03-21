@@ -139,7 +139,7 @@ describe( 'widget utils', () => {
 		} );
 
 		it( 'should add proper class', () => {
-			expect( element.hasClass( 'ck-editable' ) ).to.be.true;
+			expect( element.hasClass( 'ck-editor__editable', 'ck-editor__nested-editable' ) ).to.be.true;
 		} );
 
 		it( 'should add proper contenteditable value when element is read-only - initialization', () => {
@@ -161,10 +161,10 @@ describe( 'widget utils', () => {
 
 		it( 'should add proper class when element is focused', () => {
 			element.isFocused = true;
-			expect( element.hasClass( 'ck-editable_focused' ) ).to.be.true;
+			expect( element.hasClass( 'ck-editor__nested-editable_focused' ) ).to.be.true;
 
 			element.isFocused = false;
-			expect( element.hasClass( 'ck-editable_focused' ) ).to.be.false;
+			expect( element.hasClass( 'ck-editor__nested-editable_focused' ) ).to.be.false;
 		} );
 	} );
 

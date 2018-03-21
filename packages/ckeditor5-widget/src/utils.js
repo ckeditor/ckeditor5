@@ -109,7 +109,7 @@ export function setHighlightHandling( element, writer, add, remove ) {
  *
  * @param {module:engine/view/element~Element} element
  * @param {String|Function} labelOrCreator
- *  * @param {module:engine/view/writer~Writer} writer
+ * @param {module:engine/view/writer~Writer} writer
  */
 export function setLabel( element, labelOrCreator, writer ) {
 	writer.setCustomProperty( labelSymbol, labelOrCreator, element );
@@ -133,16 +133,17 @@ export function getLabel( element ) {
 
 /**
  * Adds functionality to provided {module:engine/view/editableelement~EditableElement} to act as a widget's editable:
- * * adds `ck-editable` CSS class,
+ * * adds `ck-editor__editable` and `ck-editor__nested-editable` CSS classes,
  * * sets `contenteditable` as `true` when {module:engine/view/editableelement~EditableElement#isReadOnly} is `false`
  * otherwise set `false`,
- * * adds `ck-editable_focused` CSS class when editable is focused and removes it when it's blurred.
+ * * adds `ck-editor__nested-editable` CSS class when editable is focused and removes it when it's blurred.
  *
  * @param {module:engine/view/editableelement~EditableElement} editable
+ * @param {module:engine/view/writer~Writer} writer
  * @returns {module:engine/view/editableelement~EditableElement} Returns same element that was provided in `editable` param.
  */
 export function toWidgetEditable( editable, writer ) {
-	writer.addClass( 'ck-editable', editable );
+	writer.addClass( [ 'ck-editor__editable', 'ck-editor__nested-editable' ], editable );
 
 	// Set initial contenteditable value.
 	writer.setAttribute( 'contenteditable', editable.isReadOnly ? 'false' : 'true', editable );
@@ -154,9 +155,9 @@ export function toWidgetEditable( editable, writer ) {
 
 	editable.on( 'change:isFocused', ( evt, property, is ) => {
 		if ( is ) {
-			writer.addClass( 'ck-editable_focused', editable );
+			writer.addClass( 'ck-editor__nested-editable_focused', editable );
 		} else {
-			writer.removeClass( 'ck-editable_focused', editable );
+			writer.removeClass( 'ck-editor__nested-editable_focused', editable );
 		}
 	} );
 
