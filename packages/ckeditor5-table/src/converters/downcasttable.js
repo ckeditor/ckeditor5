@@ -93,10 +93,66 @@ export function downcastInsertRow() {
 	}, { priority: 'normal' } );
 }
 
+function getColumnIndex( tableRow, columnIndex, cellSpans, rowIndex, tableCell ) {
+	for ( const tableCellA of Array.from( tableRow.getChildren() ) ) {
+		// Check whether current columnIndex is overlapped by table cells from previous rows.
+		columnIndex = cellSpans.getNextFreeColumnIndex( rowIndex, columnIndex );
+
+		// Up to here only!
+		if ( tableCellA === tableCell ) {
+			return columnIndex;
+		}
+
+		const colspan = tableCellA.hasAttribute( 'colspan' ) ? parseInt( tableCellA.getAttribute( 'colspan' ) ) : 1;
+		const rowspan = tableCellA.hasAttribute( 'rowspan' ) ? parseInt( tableCellA.getAttribute( 'rowspan' ) ) : 1;
+
+		cellSpans.recordSpans( rowIndex, columnIndex, rowspan, colspan );
+
+		// Skip to next "free" column index.
+		columnIndex += colspan;
+	}
+}
+
+export function downcastInsertCell() {
+	return dispatcher => dispatcher.on( 'insert:tableCell', ( evt, data, conversionApi ) => {
+		const tableCell = data.item;
+
+		if ( !conversionApi.consumable.consume( tableCell, 'insert' ) ) {
+			return;
+		}
+
+		const tableRow = tableCell.parent;
+		const table = tableRow.parent;
+
+		const trElement = conversionApi.mapper.toViewElement( tableRow );
+
+		const headingRows = parseInt( table.getAttribute( 'headingRows' ) ) || 0;
+		const headingColumns = parseInt( table.getAttribute( 'headingColumns' ) ) || 0;
+
+		const rowIndex = table.getChildIndex( tableRow );
+
+		const cellIndex = tableRow.getChildIndex( tableCell );
+
+		let columnIndex = 0;
+
+		const cellSpans = ensureCellSpans( table, rowIndex, columnIndex );
+
+		// check last row up to
+		columnIndex = getColumnIndex( tableRow, columnIndex, cellSpans, rowIndex, tableCell );
+
+		// Check whether current columnIndex is overlapped by table cells from previous rows.
+		columnIndex = cellSpans.getNextFreeColumnIndex( rowIndex, columnIndex );
+
+		const cellElementName = getCellElementName( rowIndex, columnIndex, headingRows, headingColumns );
+
+		downcastTableCell( tableCell, rowIndex, columnIndex, cellSpans, cellElementName, trElement, conversionApi, cellIndex );
+	}, { priority: 'normal' } );
+}
+
 function ensureCellSpans( table, currentRowIndex ) {
 	const cellSpans = new CellSpans();
 
-	for ( let rowIndex = 0; rowIndex < currentRowIndex; rowIndex++ ) {
+	for ( let rowIndex = 0; rowIndex <= currentRowIndex; rowIndex++ ) {
 		const row = table.getChild( rowIndex );
 
 		let columnIndex = 0;
@@ -123,6 +179,26 @@ function ensureCellSpans( table, currentRowIndex ) {
 // @param {Number} rowIndex
 // @param {CellSpans} cellSpans
 // @param {module:engine/view/containerelement~ContainerElement} tableSection
+function downcastTableCell( tableCell, rowIndex, columnIndex, cellSpans, cellElementName, trElement, conversionApi, offset = 'end' ) {
+	const colspan = tableCell.hasAttribute( 'colspan' ) ? parseInt( tableCell.getAttribute( 'colspan' ) ) : 1;
+	const rowspan = tableCell.hasAttribute( 'rowspan' ) ? parseInt( tableCell.getAttribute( 'rowspan' ) ) : 1;
+
+	cellSpans.recordSpans( rowIndex, columnIndex, rowspan, colspan );
+
+	// Will always consume since we're converting <tableRow> element from a parent <table>.
+	conversionApi.consumable.consume( tableCell, 'insert' );
+
+	const cellElement = conversionApi.writer.createContainerElement( cellElementName );
+
+	conversionApi.mapper.bindElements( tableCell, cellElement );
+	conversionApi.writer.insert( ViewPosition.createAt( trElement, offset ), cellElement );
+
+	// Skip to next "free" column index.
+	columnIndex += colspan;
+
+	return columnIndex;
+}
+
 // @param {Object} conversionApi
 function downcastTableRow( tableRow, rowIndex, tableSection, cellSpans, conversionApi ) {
 	// Will always consume since we're converting <tableRow> element from a parent <table>.
@@ -149,22 +225,9 @@ function downcastTableRow( tableRow, rowIndex, tableSection, cellSpans, conversi
 		// Check whether current columnIndex is overlapped by table cells from previous rows.
 		columnIndex = cellSpans.getNextFreeColumnIndex( rowIndex, columnIndex );
 
-		const colspan = tableCell.hasAttribute( 'colspan' ) ? parseInt( tableCell.getAttribute( 'colspan' ) ) : 1;
-		const rowspan = tableCell.hasAttribute( 'rowspan' ) ? parseInt( tableCell.getAttribute( 'rowspan' ) ) : 1;
-
-		cellSpans.recordSpans( rowIndex, columnIndex, rowspan, colspan );
-
-		// Will always consume since we're converting <tableRow> element from a parent <table>.
-		conversionApi.consumable.consume( tableCell, 'insert' );
-
 		const cellElementName = getCellElementName( rowIndex, columnIndex, headingRows, headingColumns );
-		const cellElement = conversionApi.writer.createContainerElement( cellElementName );
 
-		conversionApi.mapper.bindElements( tableCell, cellElement );
-		conversionApi.writer.insert( ViewPosition.createAt( trElement, 'end' ), cellElement );
-
-		// Skip to next "free" column index.
-		columnIndex += colspan;
+		columnIndex = downcastTableCell( tableCell, rowIndex, columnIndex, cellSpans, cellElementName, trElement, conversionApi );
 	}
 }
 

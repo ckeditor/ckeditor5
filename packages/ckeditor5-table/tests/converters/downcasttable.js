@@ -7,8 +7,8 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-import downcastTable, { downcastInsertRow } from '../../src/converters/downcasttable';
-import { modelTable, viewTable } from '../_utils/utils';
+import downcastTable, { downcastInsertCell, downcastInsertRow } from '../../src/converters/downcasttable';
+import { formatModelTable, formattedViewTable, modelTable, viewTable } from '../_utils/utils';
 
 describe( 'downcastTable()', () => {
 	let editor, model, doc, root, viewDocument;
@@ -53,6 +53,7 @@ describe( 'downcastTable()', () => {
 
 				// Insert conversion
 				conversion.for( 'downcast' ).add( downcastInsertRow() );
+				conversion.for( 'downcast' ).add( downcastInsertCell() );
 			} );
 	} );
 
@@ -243,7 +244,7 @@ describe( 'downcastTable()', () => {
 		} );
 	} );
 
-	describe( 'model change', () => {
+	describe( 'downcastInsertRow()', () => {
 		it( 'should react to changed rows', () => {
 			setModelData( model, modelTable( [
 				[ '11', '12' ]
@@ -256,11 +257,8 @@ describe( 'downcastTable()', () => {
 
 				writer.insert( row, table, 1 );
 
-				for ( let i = 0; i < 2; i++ ) {
-					const cell = writer.createElement( 'tableCell' );
-
-					writer.insert( cell, row, 'end' );
-				}
+				writer.insertElement( 'tableCell', row, 'end' );
+				writer.insertElement( 'tableCell', row, 'end' );
 			} );
 
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( viewTable( [
@@ -416,6 +414,104 @@ describe( 'downcastTable()', () => {
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( viewTable( [
 				[ { colspan: 2, rowspan: 2, contents: '11', isHeading: true }, { isHeading: true, contents: '13' }, '14' ],
 				[ { contents: '', isHeading: true }, '' ]
+			] ) );
+		} );
+	} );
+
+	describe( 'downcastInsertCell()', () => {
+		it( 'should add tableCell on proper index in tr', () => {
+			setModelData( model, modelTable( [
+				[ '11', '12' ]
+			] ) );
+
+			const table = root.getChild( 0 );
+
+			model.change( writer => {
+				const row = table.getChild( 0 );
+
+				writer.insertElement( 'tableCell', row, 1 );
+			} );
+
+			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( viewTable( [
+				[ '11', '', '12' ]
+			] ) );
+		} );
+
+		it( 'should add tableCell on proper index in tr when previous have colspans', () => {
+			setModelData( model, modelTable( [
+				[ { colspan: 2, contents: '11' }, '13' ]
+			] ) );
+
+			const table = root.getChild( 0 );
+
+			model.change( writer => {
+				const row = table.getChild( 0 );
+
+				writer.insertElement( 'tableCell', row, 1 );
+			} );
+
+			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( viewTable( [
+				[ { colspan: 2, contents: '11' }, '', '13' ]
+			] ) );
+		} );
+
+		it( 'should add tableCell on proper index in tr when previous row have rowspans', () => {
+			setModelData( model, modelTable( [
+				[ { rowspan: 2, contents: '11' }, '13' ],
+				[ '22', '23' ]
+			] ) );
+
+			const table = root.getChild( 0 );
+
+			model.change( writer => {
+				writer.insertElement( 'tableCell', table.getChild( 0 ), 1 );
+				writer.insertElement( 'tableCell', table.getChild( 1 ), 0 );
+			} );
+
+			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( viewTable( [
+				[ { rowspan: 2, contents: '11' }, '', '13' ],
+				[ '', '22', '23' ]
+			] ) );
+		} );
+
+		it( 'should work with heading columns', () => {
+			setModelData( model, modelTable( [
+				[ { rowspan: 2, contents: '11' }, '12', '13', '14' ],
+				[ '22', '23', '24' ],
+				[ { colspan: 2, contents: '31' }, '33', '34' ]
+			], { headingColumns: 2 } ) );
+
+			const table = root.getChild( 0 );
+
+			model.change( writer => {
+				// Inserting column in heading columns so update table's attribute also
+				writer.setAttribute( 'headingColumns', 3, table );
+
+				writer.insertElement( 'tableCell', table.getChild( 0 ), 2 );
+				writer.insertElement( 'tableCell', table.getChild( 1 ), 1 );
+				writer.insertElement( 'tableCell', table.getChild( 2 ), 1 );
+			} );
+
+			expect( formatModelTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+				[
+					{ isHeading: true, rowspan: 2, contents: '11' },
+					{ isHeading: true, contents: '12' },
+					{ isHeading: true, contents: '' },
+					'13',
+					'14'
+				],
+				[
+					{ isHeading: true, contents: '22' },
+					{ isHeading: true, contents: '' },
+					'23',
+					'24'
+				],
+				[
+					{ isHeading: true, colspan: 2, contents: '31' },
+					{ isHeading: true, contents: '' },
+					'33',
+					'34'
+				]
 			] ) );
 		} );
 	} );

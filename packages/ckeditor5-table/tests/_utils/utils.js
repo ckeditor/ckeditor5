@@ -80,7 +80,13 @@ export function viewTable( tableData, attributes = {} ) {
 export function formatModelTable( tableString ) {
 	return tableString
 		.replace( /<tableRow>/g, '\n<tableRow>\n    ' )
+		.replace( /<thead>/g, '\n<thead>\n    ' )
+		.replace( /<tbody>/g, '\n<tbody>\n    ' )
+		.replace( /<tr>/g, '\n<tr>\n    ' )
 		.replace( /<\/tableRow>/g, '\n</tableRow>' )
+		.replace( /<\/thead>/g, '\n</thead>' )
+		.replace( /<\/tbody>/g, '\n</tbody>' )
+		.replace( /<\/tr>/g, '\n</tr>' )
 		.replace( /<\/table>/g, '\n</table>' );
 }
 
@@ -88,4 +94,8 @@ export function formattedModelTable( tableData, attributes ) {
 	const tableString = modelTable( tableData, attributes );
 
 	return formatModelTable( tableString );
+}
+
+export function formattedViewTable( tableData, attributes ) {
+	return formatModelTable( viewTable( tableData, attributes ) );
 }
