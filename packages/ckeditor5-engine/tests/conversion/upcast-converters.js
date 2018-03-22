@@ -36,11 +36,7 @@ describe( 'upcast-helpers', () => {
 
 		schema.extend( '$text', {
 			allowIn: '$root',
-			allowAttributes: [ 'bold' ]
-		} );
-		schema.extend( '$text', {
-			allowIn: '$root',
-			allowAttributes: [ 'attribA', 'attribB' ]
+			allowAttributes: [ 'bold', 'attribA', 'attribB' ]
 		} );
 
 		schema.register( 'paragraph', {
