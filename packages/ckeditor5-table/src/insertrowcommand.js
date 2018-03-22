@@ -55,8 +55,10 @@ export default class InsertRowCommand extends Command {
 				writer.setAttribute( 'headingRows', headingRows + rows, table );
 			}
 
+			// TODO: test me - I'm wrong
 			for ( let rowIndex = 0; rowIndex < rows; rowIndex++ ) {
 				const row = writer.createElement( 'tableRow' );
+
 				writer.insert( row, table, insertAt );
 
 				for ( let column = 0; column < columns; column++ ) {

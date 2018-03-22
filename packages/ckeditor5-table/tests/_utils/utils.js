@@ -9,12 +9,14 @@ function formatAttributes( attributes ) {
 	if ( attributes ) {
 		const entries = Object.entries( attributes );
 
-		attributesString = ' ' + entries.map( entry => `${ entry[ 0 ] }="${ entry[ 1 ] }"` ).join( ' ' );
+		if ( entries.length ) {
+			attributesString = ' ' + entries.map( entry => `${ entry[ 0 ] }="${ entry[ 1 ] }"` ).join( ' ' );
+		}
 	}
 	return attributesString;
 }
 
-function makeRows( tableData, cellElement, rowElement ) {
+function makeRows( tableData, cellElement, rowElement, headingElement = 'th' ) {
 	const tableRows = tableData
 		.reduce( ( previousRowsString, tableRow ) => {
 			const tableRowString = tableRow.reduce( ( tableRowString, tableCellData ) => {
@@ -22,13 +24,21 @@ function makeRows( tableData, cellElement, rowElement ) {
 
 				const isObject = typeof tableCellData === 'object';
 
+				let resultingCellElement = cellElement;
+
 				if ( isObject ) {
 					tableCell = tableCellData.contents;
+
+					if ( tableCellData.isHeading ) {
+						resultingCellElement = headingElement;
+					}
+
 					delete tableCellData.contents;
+					delete tableCellData.isHeading;
 				}
 
 				const formattedAttributes = formatAttributes( isObject ? tableCellData : '' );
-				tableRowString += `<${ cellElement }${ formattedAttributes }>${ tableCell }</${ cellElement }>`;
+				tableRowString += `<${ resultingCellElement }${ formattedAttributes }>${ tableCell }</${ resultingCellElement }>`;
 
 				return tableRowString;
 			}, '' );
@@ -58,10 +68,13 @@ export function modelTable( tableData, attributes ) {
  *
  * @returns {String}
  */
-export function viewTable( tableData, attributes ) {
-	const tableRows = makeRows( tableData, 'td', 'tr' );
+export function viewTable( tableData, attributes = {} ) {
+	const headingRows = attributes.headingRows || 0;
 
-	return `<table${ formatAttributes( attributes ) }><tbody>${ tableRows }</tbody></table>`;
+	const thead = headingRows > 0 ? `<thead>${ makeRows( tableData.slice( 0, headingRows ), 'th', 'tr' ) }</thead>` : '';
+	const tbody = tableData.length > headingRows ? `<tbody>${ makeRows( tableData.slice( headingRows ), 'td', 'tr' ) }</tbody>` : '';
+
+	return `<table>${ thead }${ tbody }</table>`;
 }
 
 export function formatModelTable( tableString ) {

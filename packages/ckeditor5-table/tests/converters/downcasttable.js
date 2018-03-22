@@ -269,6 +269,84 @@ describe( 'downcastTable()', () => {
 			] ) );
 		} );
 
+		it( 'should insert row on proper index', () => {
+			setModelData( model, modelTable( [
+				[ '11', '12' ],
+				[ '21', '22' ],
+				[ '31', '32' ]
+			] ) );
+
+			const table = root.getChild( 0 );
+
+			model.change( writer => {
+				const row = writer.createElement( 'tableRow' );
+
+				writer.insert( row, table, 1 );
+
+				writer.insertElement( 'tableCell', row, 'end' );
+				writer.insertElement( 'tableCell', row, 'end' );
+			} );
+
+			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( viewTable( [
+				[ '11', '12' ],
+				[ '', '' ],
+				[ '21', '22' ],
+				[ '31', '32' ]
+			] ) );
+		} );
+
+		it( 'should insert row on proper index when table has heading rows defined - insert in body', () => {
+			setModelData( model, modelTable( [
+				[ '11', '12' ],
+				[ '21', '22' ],
+				[ '31', '32' ]
+			], { headingRows: 1 } ) );
+
+			const table = root.getChild( 0 );
+
+			model.change( writer => {
+				const row = writer.createElement( 'tableRow' );
+
+				writer.insert( row, table, 1 );
+
+				writer.insertElement( 'tableCell', row, 'end' );
+				writer.insertElement( 'tableCell', row, 'end' );
+			} );
+
+			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( viewTable( [
+				[ '11', '12' ],
+				[ '', '' ],
+				[ '21', '22' ],
+				[ '31', '32' ]
+			], { headingRows: 1 } ) );
+		} );
+
+		it( 'should insert row on proper index when table has heading rows defined - insert in heading', () => {
+			setModelData( model, modelTable( [
+				[ '11', '12' ],
+				[ '21', '22' ],
+				[ '31', '32' ]
+			], { headingRows: 2 } ) );
+
+			const table = root.getChild( 0 );
+
+			model.change( writer => {
+				const row = writer.createElement( 'tableRow' );
+
+				writer.insert( row, table, 1 );
+
+				writer.insertElement( 'tableCell', row, 'end' );
+				writer.insertElement( 'tableCell', row, 'end' );
+			} );
+
+			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( viewTable( [
+				[ '11', '12' ],
+				[ '', '' ],
+				[ '21', '22' ],
+				[ '31', '32' ]
+			], { headingRows: 3 } ) );
+		} );
+
 		it( 'should react to changed rows when previous rows\' cells has rowspans', () => {
 			setModelData( model, modelTable( [
 				[ { rowspan: 3, contents: '11' }, '12' ],
@@ -281,18 +359,63 @@ describe( 'downcastTable()', () => {
 				const row = writer.createElement( 'tableRow' );
 
 				writer.insert( row, table, 2 );
-
-				for ( let i = 0; i < 1; i++ ) {
-					const cell = writer.createElement( 'tableCell' );
-
-					writer.insert( cell, row, 'end' );
-				}
+				writer.insertElement( 'tableCell', row, 'end' );
 			} );
 
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( viewTable( [
 				[ { rowspan: 3, contents: '11' }, '12' ],
 				[ '22' ],
 				[ '' ]
+			] ) );
+		} );
+
+		it( 'should properly create row headings', () => {
+			setModelData( model, modelTable( [
+				[ { rowspan: 3, contents: '11' }, '12' ],
+				[ '22' ]
+			], { headingColumns: 1 } ) );
+
+			const table = root.getChild( 0 );
+
+			model.change( writer => {
+				const firstRow = writer.createElement( 'tableRow' );
+
+				writer.insert( firstRow, table, 2 );
+				writer.insert( writer.createElement( 'tableCell' ), firstRow, 'end' );
+
+				const secondRow = writer.createElement( 'tableRow' );
+
+				writer.insert( secondRow, table, 3 );
+				writer.insert( writer.createElement( 'tableCell' ), secondRow, 'end' );
+				writer.insert( writer.createElement( 'tableCell' ), secondRow, 'end' );
+			} );
+
+			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( viewTable( [
+				[ { rowspan: 3, contents: '11', isHeading: true }, '12' ],
+				[ '22' ],
+				[ '' ],
+				[ { contents: '', isHeading: true }, '' ]
+			] ) );
+		} );
+
+		it( 'should properly create row headings when previous has colspan', () => {
+			setModelData( model, modelTable( [
+				[ { rowspan: 2, colspan: 2, contents: '11' }, '13', '14' ]
+			], { headingColumns: 3 } ) );
+
+			const table = root.getChild( 0 );
+
+			model.change( writer => {
+				const firstRow = writer.createElement( 'tableRow' );
+
+				writer.insert( firstRow, table, 1 );
+				writer.insert( writer.createElement( 'tableCell' ), firstRow, 'end' );
+				writer.insert( writer.createElement( 'tableCell' ), firstRow, 'end' );
+			} );
+
+			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( viewTable( [
+				[ { colspan: 2, rowspan: 2, contents: '11', isHeading: true }, { isHeading: true, contents: '13' }, '14' ],
+				[ { contents: '', isHeading: true }, '' ]
 			] ) );
 		} );
 	} );
