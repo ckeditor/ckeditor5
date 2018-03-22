@@ -2,6 +2,7 @@
 	"name": "CKEditor 5",
 	"slug": "ckeditor5",
 	"hexo-config": "docs/hexo-custom-config.json",
+	"extraStyles": "assets/styles.css",
 	"path": "docs",
 	"observablesdocs": "module:utils/observablemixin~ObservableMixin",
 	"scripts": {

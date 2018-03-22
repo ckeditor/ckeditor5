@@ -10,8 +10,8 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloudservices/tests/_utils/clouds
 
 DecoupledDocumentEditor
 	.create( document.querySelector( '.document-editor__data' ).innerHTML, {
-		toolbarContainer: '.document-editor__toolbar',
-		editableContainer: '.document-editor__editable',
+		toolbarContainer: document.querySelector( '.document-editor__toolbar' ),
+		editableContainer: document.querySelector( '.document-editor__editable' ),
 
 		cloudServices: CS_CONFIG
 	} )

@@ -9,13 +9,13 @@ The [`@ckeditor/ckeditor5-core`](https://www.npmjs.com/package/@ckeditor/ckedito
 
 ## Editor classes
 
-The {@link module:core/editor/editor~Editor} class represents the base of the editor. It's an entry point of the application, gluing all other components. It provides a couple of properties that you need to know:
+The {@link module:core/editor/editor~Editor} class represents the base of the editor. It is an entry point of the application, gluing all other components. It provides a couple of properties that you need to know:
 
 * {@link module:core/editor/editor~Editor#config} &ndash; The configuration object.
 * {@link module:core/editor/editor~Editor#plugins} and {@link module:core/editor/editor~Editor#commands} &ndash; The collection of loaded plugins and commands.
-* {@link module:core/editor/editor~Editor#model} &ndash; The entry point to editor's abstract data model.
+* {@link module:core/editor/editor~Editor#model} &ndash; The entry point to the {@link framework/guides/architecture/editing-engine#model editor's data model}.
 * {@link module:core/editor/editor~Editor#data} &ndash; The data controller. It controls how data is retrieved from the document and set inside it.
-* {@link module:core/editor/editor~Editor#editing} &ndash; The editing controller. It controls {@link module:engine/model/model~Model#document document} rendering, including selection handling.
+* {@link module:core/editor/editor~Editor#editing} &ndash; The editing controller. It controls how the model is rendered to the user for editing.
 * {@link module:core/editor/editor~Editor#keystrokes} &ndash; The keystroke handler. It allows to bind keystrokes to actions.
 
 Besides that, the editor exposes a few of methods:
@@ -23,13 +23,11 @@ Besides that, the editor exposes a few of methods:
 * {@link module:core/editor/editor~Editor.create `create()`} &ndash; The static `create()` method. Editor constructors are protected and you should create editors using this static method. It allows the initialization process to be asynchronous.
 * {@link module:core/editor/editor~Editor#destroy `destroy()`} &ndash; Destroys the editor.
 * {@link module:core/editor/editor~Editor#execute `execute()`} &ndash; Executes the given command.
+* {@link module:core/editor/utils/dataapimixin~DataApi#setData `setData()`} and {@link module:core/editor/utils/dataapimixin~DataApi#getData `getData()`} &ndash; A way to retrieve data from the editor and set data in the editor. The data format is controlled by the {@link module:engine/controller/datacontroller~DataController#processor data controller's data processor} and it does not need to be a string (it can be e.g. JSON if you implement such a {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor}). See, for example, how to {@link features/markdown produce Markdown output}.
 
-You can also extend the editor interface using API interfaces:
+For the full list of methods check the {@link api/index API docs} of the specific editor class you use. Specific editor implementations may provide additional methods.
 
-* {@link module:core/editor/utils/elementapimixin~ElementApi} &ndash; A way to retrieve and set data from/to element on which the editor has been initialized.
-* {@link module:core/editor/utils/dataapimixin~DataApi} &ndash; A way to retrieve data from the editor and set data in the editor. The data format is controlled by the {@link module:engine/controller/datacontroller~DataController#processor data controller's data processor} and it does not need to be a string (it can be e.g. JSON if you implement such a {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor}). See, for example, how to {@link features/markdown produce Markdown output}.
-
-The editor class is a base to implement your own editors. CKEditor 5 Framework comes with a few editor types (for example, {@link module:editor-classic/classiceditor~ClassicEditor classic}, {@link module:editor-inline/inlineeditor~InlineEditor inline} and {@link module:editor-balloon/ballooneditor~BalloonEditor balloon}) but you can freely implement editors which work and look completely different. The only requirement is that you implement the {@link module:core/editor/editor~Editor} interface.
+The {@link module:core/editor/editor~Editor `Editor`} class is a base to implement your own editors. CKEditor 5 Framework comes with a few editor types (for example, {@link module:editor-classic/classiceditor~ClassicEditor classic}, {@link module:editor-inline/inlineeditor~InlineEditor inline} and {@link module:editor-balloon/ballooneditor~BalloonEditor balloon}) but you can freely implement editors which work and look completely different. The only requirement is that you implement the {@link module:core/editor/editor~Editor} interface.
 
 ## Plugins
 
