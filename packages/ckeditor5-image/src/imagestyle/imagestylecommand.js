@@ -78,12 +78,8 @@ export default class ImageStyleCommand extends Command {
 	 * {@link module:image/image~ImageConfig#styles `image.styles`} configuration option).
 	 * @fires execute
 	 */
-	execute( options = {} ) {
+	execute( options ) {
 		const styleName = options.value;
-
-		if ( !this.styles[ styleName ] ) {
-			return;
-		}
 
 		const model = this.editor.model;
 		const imageElement = model.document.selection.getSelectedElement();
