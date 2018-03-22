@@ -63,15 +63,11 @@ export default class HeadingCommand extends Command {
 	 * @param {String} options.value Name of the element which this command will apply in the model.
 	 * @fires execute
 	 */
-	execute( options = {} ) {
+	execute( options ) {
 		const model = this.editor.model;
 		const document = model.document;
 
 		const modelElement = options.value;
-
-		if ( !this.modelElements.includes( modelElement ) ) {
-			return;
-		}
 
 		model.change( writer => {
 			const blocks = Array.from( document.selection.getSelectedBlocks() )
