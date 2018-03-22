@@ -10,7 +10,7 @@ const fs = require( 'fs' );
 const webpack = require( 'webpack' );
 const { bundler, styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' );
-const ExtractTextPlugin = require( 'extract-text-webpack-plugin' );
+const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
 const BabelMinifyPlugin = require( 'babel-minify-webpack-plugin' );
 
 const webpackProcesses = new Map();
@@ -80,7 +80,7 @@ module.exports = function snippetAdapter( data ) {
 
 function getWebpackConfig( config ) {
 	const plugins = [
-		new ExtractTextPlugin( 'snippet.css' ),
+		new MiniCssExtractPlugin( { filename: 'snippet.css' } ),
 		new CKEditorWebpackPlugin( {
 			language: config.language || 'en'
 		} ),
@@ -134,20 +134,19 @@ function getWebpackConfig( config ) {
 				},
 				{
 					test: /\.css$/,
-					use: ExtractTextPlugin.extract( {
-						fallback: 'style-loader',
-						use: [
-							{
-								loader: 'postcss-loader',
-								options: styles.getPostCssConfig( {
-									themeImporter: {
-										themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
-									},
-									minify: config.production
-								} )
-							}
-						]
-					} )
+					use: [
+						MiniCssExtractPlugin.loader,
+						'css-loader',
+						{
+							loader: 'postcss-loader',
+							options: styles.getPostCssConfig( {
+								themeImporter: {
+									themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
+								},
+								minify: config.production
+							} )
+						}
+					]
 				}
 			]
 		}
