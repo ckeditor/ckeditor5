@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-.ck-content .image > figcaption {
+.ck-content .ck.image > figcaption {
 	color: hsl(0, 0%, 20%);
 	background-color: hsl(0, 0%, 97%);
 	padding: .6em;

@@ -60,7 +60,7 @@ describe( 'Image', () => {
 			setModelData( model, '[<image alt="alt text" src="foo.png"></image>]' );
 
 			expect( getViewData( view ) ).to.equal(
-				'[<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
+				'[<figure class="ck ck-widget ck-widget_selected image" contenteditable="false">' +
 					'<img alt="alt text" src="foo.png"></img>' +
 				'</figure>]'
 			);
@@ -73,7 +73,7 @@ describe( 'Image', () => {
 			setModelData( model, '[<image src="foo.png" alt=""></image>]' );
 
 			expect( getViewData( view ) ).to.equal(
-				'[<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
+				'[<figure class="ck ck-widget ck-widget_selected image" contenteditable="false">' +
 				'<img alt="" src="foo.png"></img>' +
 				'</figure>]'
 			);
@@ -89,10 +89,10 @@ describe( 'Image', () => {
 			);
 
 			expect( getViewData( view ) ).to.equal(
-				'[<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
+				'[<figure class="ck ck-widget ck-widget_selected image" contenteditable="false">' +
 				'<img alt="alt text" src="foo.png"></img>' +
 				'</figure>]' +
-				'<figure class="ck-widget image" contenteditable="false">' +
+				'<figure class="ck ck-widget image" contenteditable="false">' +
 				'<img alt="alt text" src="foo.png"></img>' +
 				'</figure>'
 			);
@@ -103,10 +103,10 @@ describe( 'Image', () => {
 			} );
 
 			expect( getViewData( view ) ).to.equal(
-				'<figure class="ck-widget image" contenteditable="false">' +
+				'<figure class="ck ck-widget image" contenteditable="false">' +
 				'<img alt="alt text" src="foo.png"></img>' +
 				'</figure>' +
-				'[<figure class="ck-widget ck-widget_selected image" contenteditable="false">' +
+				'[<figure class="ck ck-widget ck-widget_selected image" contenteditable="false">' +
 				'<img alt="alt text" src="foo.png"></img>' +
 				'</figure>]'
 			);

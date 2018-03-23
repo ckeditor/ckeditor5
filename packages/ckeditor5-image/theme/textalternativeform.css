@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-.ck-text-alternative-form {
+.ck.ck-text-alternative-form {
 	& .ck-labeled-input {
 		display: inline-block;
 	}

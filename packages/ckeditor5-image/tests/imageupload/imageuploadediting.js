@@ -205,7 +205,7 @@ describe( 'ImageUploadEditing', () => {
 		setModelData( model, '<image uploadId="1234"></image>' );
 
 		expect( getViewData( view ) ).to.equal(
-			'[<figure class="ck-widget image" contenteditable="false">' +
+			'[<figure class="ck ck-widget image" contenteditable="false">' +
 				'<img></img>' +
 			'</figure>]' );
 	} );
@@ -217,7 +217,7 @@ describe( 'ImageUploadEditing', () => {
 
 		model.once( '_change', () => {
 			expect( getViewData( view ) ).to.equal(
-				'[<figure class="ck-widget image" contenteditable="false">' +
+				'[<figure class="ck ck-widget image" contenteditable="false">' +
 				`<img src="${ base64Sample }"></img>` +
 				'</figure>]' +
 				'<p>foo bar</p>' );
@@ -238,7 +238,7 @@ describe( 'ImageUploadEditing', () => {
 		model.document.once( 'change', () => {
 			model.document.once( 'change', () => {
 				expect( getViewData( view ) ).to.equal(
-					'[<figure class="ck-widget image" contenteditable="false"><img src="image.png"></img></figure>]<p>foo bar</p>'
+					'[<figure class="ck ck-widget image" contenteditable="false"><img src="image.png"></img></figure>]<p>foo bar</p>'
 				);
 				expect( loader.status ).to.equal( 'idle' );
 
@@ -326,7 +326,7 @@ describe( 'ImageUploadEditing', () => {
 		setModelData( model, '<image src="image.png"></image>' );
 
 		expect( getViewData( view ) ).to.equal(
-			'[<figure class="ck-widget image" contenteditable="false"><img src="image.png"></img></figure>]'
+			'[<figure class="ck ck-widget image" contenteditable="false"><img src="image.png"></img></figure>]'
 		);
 	} );
 
@@ -443,7 +443,7 @@ describe( 'ImageUploadEditing', () => {
 		model.document.once( 'change', () => {
 			model.document.once( 'change', () => {
 				expect( getViewData( view ) ).to.equal(
-					'[<figure class="ck-widget image" contenteditable="false">' +
+					'[<figure class="ck ck-widget image" contenteditable="false">' +
 						'<img sizes="100vw" src="image.png" srcset="image-500.png 500w, image-800.png 800w" width="800"></img>' +
 					'</figure>]<p>foo bar</p>'
 				);
