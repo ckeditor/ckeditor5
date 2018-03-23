@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-.ck-link-form {
+.ck.ck-link-form {
 	& .ck-labeled-input {
 		display: inline-block;
 	}

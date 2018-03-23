@@ -111,6 +111,7 @@ export default class LinkFormView extends View {
 
 			attributes: {
 				class: [
+					'ck',
 					'ck-link-form',
 				],
 
