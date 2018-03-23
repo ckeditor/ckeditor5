@@ -184,7 +184,7 @@ describe( 'Widget', () => {
 		setModelData( model, '[<widget>foo bar</widget>]' );
 
 		expect( getViewData( view ) ).to.equal(
-			'[<div class="ck-widget ck-widget_selected" contenteditable="false">foo bar<b></b></div>]'
+			'[<div class="ck ck-widget ck-widget_selected" contenteditable="false">foo bar<b></b></div>]'
 		);
 		expect( viewDocument.selection.isFake ).to.be.true;
 	} );
@@ -202,8 +202,8 @@ describe( 'Widget', () => {
 		expect( getViewData( view ) ).to.equal(
 			'[' +
 			'<p>foo</p>' +
-			'<div class="ck-widget ck-widget_selected" contenteditable="false"><b></b></div>' +
-			'<div class="ck-widget ck-widget_selected" contenteditable="false"><b></b></div>' +
+			'<div class="ck ck-widget ck-widget_selected" contenteditable="false"><b></b></div>' +
+			'<div class="ck ck-widget ck-widget_selected" contenteditable="false"><b></b></div>' +
 			']'
 		);
 	} );
@@ -218,7 +218,7 @@ describe( 'Widget', () => {
 		setModelData( model, '<paragraph>foo</paragraph>[<widget>foo</widget>]' );
 
 		expect( getViewData( view ) ).to.equal(
-			'<p>foo</p>[<div class="ck-widget ck-widget_selected" contenteditable="false">foo<b></b></div>]'
+			'<p>foo</p>[<div class="ck ck-widget ck-widget_selected" contenteditable="false">foo<b></b></div>]'
 		);
 
 		model.change( writer => {
@@ -226,7 +226,7 @@ describe( 'Widget', () => {
 		} );
 
 		expect( getViewData( view ) ).to.equal(
-			'<p>{}foo</p><div class="ck-widget" contenteditable="false">foo<b></b></div>'
+			'<p>{}foo</p><div class="ck ck-widget" contenteditable="false">foo<b></b></div>'
 		);
 	} );
 
@@ -234,7 +234,7 @@ describe( 'Widget', () => {
 		setModelData( model, '<widget><editable>foo bar</editable></widget><editable>[baz]</editable>' );
 
 		expect( getViewData( view ) ).to.equal(
-			'<div class="ck-widget" contenteditable="false">' +
+			'<div class="ck ck-widget" contenteditable="false">' +
 				'<figcaption contenteditable="true">foo bar</figcaption>' +
 				'<b></b>' +
 			'</div>' +
@@ -676,7 +676,7 @@ describe( 'Widget', () => {
 				'<paragraph>foo</paragraph>[<widget></widget>]<paragraph>bar</paragraph>',
 				{ keyCode: keyCodes.a, ctrlKey: true },
 				'[<paragraph>foo</paragraph><widget></widget><paragraph>bar</paragraph>]',
-				'[<p>foo</p><div class="ck-widget ck-widget_selected" contenteditable="false"><b></b></div><p>bar</p>]'
+				'[<p>foo</p><div class="ck ck-widget ck-widget_selected" contenteditable="false"><b></b></div><p>bar</p>]'
 
 			);
 		} );

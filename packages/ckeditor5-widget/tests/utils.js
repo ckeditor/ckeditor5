@@ -139,6 +139,7 @@ describe( 'widget utils', () => {
 		} );
 
 		it( 'should add proper class', () => {
+			expect( element.hasClass( 'ck' ) ).to.be.true;
 			expect( element.hasClass( 'ck-editable' ) ).to.be.true;
 		} );
 
