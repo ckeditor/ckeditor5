@@ -90,7 +90,7 @@ describe( 'View', () => {
 		} );
 	} );
 
-	describe( 'registerChildren()', () => {
+	describe( 'registerChild()', () => {
 		beforeEach( () => {
 			setTestViewClass();
 			setTestViewInstance();
@@ -101,7 +101,7 @@ describe( 'View', () => {
 
 			const child = new View();
 
-			view.registerChildren( child );
+			view.registerChild( child );
 			expect( view._unboundChildren ).to.have.length( 1 );
 			expect( view._unboundChildren.get( 0 ) ).to.equal( child );
 		} );
@@ -109,12 +109,12 @@ describe( 'View', () => {
 		it( 'should support iterables', () => {
 			expect( view._unboundChildren ).to.have.length( 0 );
 
-			view.registerChildren( [ new View(), new View(), new View() ] );
+			view.registerChild( [ new View(), new View(), new View() ] );
 			expect( view._unboundChildren ).to.have.length( 3 );
 		} );
 	} );
 
-	describe( 'deregisterChildren()', () => {
+	describe( 'deregisterChild()', () => {
 		beforeEach( () => {
 			setTestViewClass();
 			setTestViewInstance();
@@ -124,11 +124,11 @@ describe( 'View', () => {
 			const child1 = new View();
 			const child2 = new View();
 
-			view.registerChildren( child1 );
-			view.registerChildren( child2 );
+			view.registerChild( child1 );
+			view.registerChild( child2 );
 			expect( view._unboundChildren ).to.have.length( 2 );
 
-			view.deregisterChildren( child2 );
+			view.deregisterChild( child2 );
 			expect( view._unboundChildren ).to.have.length( 1 );
 			expect( view._unboundChildren.get( 0 ) ).to.equal( child1 );
 		} );
@@ -138,10 +138,10 @@ describe( 'View', () => {
 			const child2 = new View();
 			const child3 = new View();
 
-			view.registerChildren( [ child1, child2, child3 ] );
+			view.registerChild( [ child1, child2, child3 ] );
 			expect( view._unboundChildren ).to.have.length( 3 );
 
-			view.deregisterChildren( [ child2, child3 ] );
+			view.deregisterChild( [ child2, child3 ] );
 			expect( view._unboundChildren ).to.have.length( 1 );
 			expect( view._unboundChildren.get( 0 ) ).to.equal( child1 );
 		} );
@@ -343,7 +343,7 @@ describe( 'View', () => {
 		it( 'should not clear the #_unboundChildren', () => {
 			const cached = view._unboundChildren;
 
-			view.registerChildren( [ new View(), new View() ] );
+			view.registerChild( [ new View(), new View() ] );
 			expect( cached ).to.have.length( 4 );
 
 			view.destroy();

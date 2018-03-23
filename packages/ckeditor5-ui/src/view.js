@@ -23,7 +23,7 @@ import '../theme/globals/globals.css';
  * {@link module:ui/view~View#template}. Views are building blocks of the user interface and handle
  * interaction
  *
- * Views {@link module:ui/view~View#registerChildren aggregate} children in
+ * Views {@link module:ui/view~View#registerChild aggregate} children in
  * {@link module:ui/view~View#createCollection collections} and manage the life cycle of DOM
  * listeners e.g. by handling rendering and destruction.
  *
@@ -291,7 +291,7 @@ export default class View {
 	 * view is managed by its parent, including {@link #render rendering}
 	 * and {@link #destroy destruction}.
 	 *
-	 * To revert this, use {@link #deregisterChildren}.
+	 * To revert this, use {@link #deregisterChild}.
 	 *
 	 *		class SampleView extends View {
 	 *			constructor( locale ) {
@@ -303,7 +303,7 @@ export default class View {
 	 *				this.setTemplate( { tag: 'p' } );
 	 *
 	 *				// Register the children.
-	 *				this.registerChildren( [ this.childA, this.childB ] );
+	 *				this.registerChild( [ this.childA, this.childB ] );
 	 *			}
 	 *
 	 *			render() {
@@ -335,7 +335,7 @@ export default class View {
 	 *					tag: 'p',
 	 *
  	 *					// These children will be added automatically. There's no
- 	 *					// need to call {@link #registerChildren} for any of them.
+ 	 *					// need to call {@link #registerChild} for any of them.
 	 *					children: [ this.childA, this.childB ]
 	 *				} );
 	 *			}
@@ -345,7 +345,7 @@ export default class View {
 	 *
 	 * @param {module:ui/view~View|Iterable.<module:ui/view~View>} children Children views to be registered.
 	 */
-	registerChildren( children ) {
+	registerChild( children ) {
 		if ( !isIterable( children ) ) {
 			children = [ children ];
 		}
@@ -356,14 +356,14 @@ export default class View {
 	}
 
 	/**
-	 * The opposite of {@link #registerChildren}. Removes a child view from this view instance.
+	 * The opposite of {@link #registerChild}. Removes a child view from this view instance.
 	 * Once removed, the child is no longer managed by its parent, e.g. it can safely
 	 * become a child of another parent view.
 	 *
-	 * @see #registerChildren
+	 * @see #registerChild
 	 * @param {module:ui/view~View|Iterable.<module:ui/view~View>} children Child views to be removed.
 	 */
-	deregisterChildren( children ) {
+	deregisterChild( children ) {
 		if ( !isIterable( children ) ) {
 			children = [ children ];
 		}
@@ -413,7 +413,7 @@ export default class View {
 	 * **Note**: The children of the view:
 	 * * defined directly in the {@link #template}
 	 * * residing in collections created by the {@link #createCollection} method,
-	 * * and added by {@link #registerChildren}
+	 * * and added by {@link #registerChild}
 	 * are also rendered in the process.
 	 *
 	 * In general, `render()` method is the right place to keep the code which refers to the
@@ -475,14 +475,14 @@ export default class View {
 			this.element = this.template.render();
 
 			// Auto–register view children from #template.
-			this.registerChildren( this.template.getViews() );
+			this.registerChild( this.template.getViews() );
 		}
 
 		this.isRendered = true;
 	}
 
 	/**
-	 * Recursively destroys the view instance and child views added by {@link #registerChildren} and
+	 * Recursively destroys the view instance and child views added by {@link #registerChild} and
 	 * residing in collections created by the {@link #createCollection}.
 	 *
 	 * Destruction disables all event listeners:
