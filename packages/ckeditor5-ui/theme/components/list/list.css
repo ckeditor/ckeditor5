@@ -5,18 +5,18 @@
 
 @import "../../mixins/_unselectable.css";
 
-.ck-list {
+.ck.ck-list {
 	@mixin ck-unselectable;
 
 	/* Crop the the items when the list has huge border-radius. */
 	overflow: hidden;
-}
 
-.ck-list__item {
-	display: block;
+	& .ck-list__item {
+		display: block;
 
-	&:focus {
-		position: relative;
-		z-index: var(--ck-z-default);
+		&:focus {
+			position: relative;
+			z-index: var(--ck-z-default);
+		}
 	}
 }

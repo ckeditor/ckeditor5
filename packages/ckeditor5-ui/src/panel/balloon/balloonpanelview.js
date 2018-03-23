@@ -149,6 +149,7 @@ export default class BalloonPanelView extends View {
 			tag: 'div',
 			attributes: {
 				class: [
+					'ck',
 					'ck-balloon-panel',
 					bind.to( 'position', value => `ck-balloon-panel_${ value }` ),
 					bind.if( 'isVisible', 'ck-balloon-panel_visible' ),

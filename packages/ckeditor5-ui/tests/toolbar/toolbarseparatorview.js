@@ -17,6 +17,7 @@ describe( 'ToolbarSeparatorView', () => {
 	describe( 'template', () => {
 		it( 'should create element from template', () => {
 			expect( view.element.tagName ).to.equal( 'SPAN' );
+			expect( view.element.classList.contains( 'ck' ) ).to.true;
 			expect( view.element.classList.contains( 'ck-toolbar__separator' ) ).to.true;
 		} );
 	} );

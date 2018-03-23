@@ -16,6 +16,7 @@ describe( 'IframeView', () => {
 			view.render();
 			document.body.appendChild( view.element );
 
+			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-reset_all' ) ).to.be.true;
 			expect( view.element.attributes.getNamedItem( 'sandbox' ).value ).to.equal( 'allow-same-origin allow-scripts' );
 

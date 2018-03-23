@@ -17,10 +17,12 @@ describe( 'TooltipView', () => {
 	describe( 'constructor()', () => {
 		it( 'should create element from template', () => {
 			expect( view.element.tagName ).to.equal( 'SPAN' );
+			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-tooltip' ) ).to.be.true;
 			expect( view.element.childNodes ).to.have.length( 1 );
 
 			expect( text.tagName ).to.equal( 'SPAN' );
+			expect( text.classList.contains( 'ck' ) ).to.be.true;
 			expect( text.classList.contains( 'ck-tooltip__text' ) ).to.be.true;
 		} );
 

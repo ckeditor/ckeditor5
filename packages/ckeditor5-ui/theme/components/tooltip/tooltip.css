@@ -3,8 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
-.ck-tooltip,
-.ck-tooltip__text::after {
+.ck.ck-tooltip,
+.ck.ck-tooltip .ck-tooltip__text::after {
 	position: absolute;
 
 	/* Without this, hovering the tooltip could keep it visible. */
@@ -21,15 +21,14 @@
 	opacity: 0;
 	display: none;
 	z-index: var(--ck-z-modal);
-}
 
-.ck-tooltip__text {
-	display: inline-block;
+	& .ck-tooltip__text {
+		display: inline-block;
 
-	&::after {
-		content: "";
-		width: 0;
-		height: 0;
+		&::after {
+			content: "";
+			width: 0;
+			height: 0;
+		}
 	}
 }
-

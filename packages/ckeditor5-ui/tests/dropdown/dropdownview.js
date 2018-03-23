@@ -53,6 +53,7 @@ describe( 'DropdownView', () => {
 		} );
 
 		it( 'creates #element from template', () => {
+			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-dropdown' ) ).to.be.true;
 			expect( view.element.children ).to.have.length( 2 );
 			expect( view.element.children[ 0 ] ).to.equal( buttonView.element );

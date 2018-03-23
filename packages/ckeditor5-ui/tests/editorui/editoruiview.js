@@ -41,6 +41,7 @@ describe( 'EditorUIView', () => {
 			const el = view._bodyCollectionContainer;
 
 			expect( el.parentNode ).to.equal( document.body );
+			expect( el.classList.contains( 'ck' ) ).to.be.true;
 			expect( el.classList.contains( 'ck-body' ) ).to.be.true;
 			expect( el.classList.contains( 'ck-rounded-corners' ) ).to.be.true;
 			expect( el.classList.contains( 'ck-reset_all' ) ).to.be.true;

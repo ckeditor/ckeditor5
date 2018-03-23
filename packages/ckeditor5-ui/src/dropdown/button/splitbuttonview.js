@@ -108,6 +108,7 @@ export default class SplitButtonView extends View {
 
 			attributes: {
 				class: [
+					'ck',
 					'ck-splitbutton',
 					bind.if( 'isVisible', 'ck-hidden', value => !value ),
 					this.arrowView.bindTemplate.if( 'isOn', 'ck-splitbutton_open' )

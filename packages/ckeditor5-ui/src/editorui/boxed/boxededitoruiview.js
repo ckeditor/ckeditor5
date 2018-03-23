@@ -60,6 +60,7 @@ export default class BoxedEditorUIView extends EditorUIView {
 
 			attributes: {
 				class: [
+					'ck',
 					'ck-reset',
 					'ck-editor',
 					'ck-rounded-corners'
@@ -75,7 +76,11 @@ export default class BoxedEditorUIView extends EditorUIView {
 				{
 					tag: 'div',
 					attributes: {
-						class: 'ck-editor__top ck-reset_all',
+						class: [
+							'ck',
+							'ck-editor__top',
+							'ck-reset_all'
+						],
 						role: 'presentation'
 					},
 					children: this.top
@@ -83,7 +88,10 @@ export default class BoxedEditorUIView extends EditorUIView {
 				{
 					tag: 'div',
 					attributes: {
-						class: 'ck-editor__main',
+						class: [
+							'ck',
+							'ck-editor__main'
+						],
 						role: 'presentation'
 					},
 					children: this.main

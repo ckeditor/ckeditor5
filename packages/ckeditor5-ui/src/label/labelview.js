@@ -45,6 +45,7 @@ export default class LabelView extends View {
 			tag: 'label',
 			attributes: {
 				class: [
+					'ck',
 					'ck-label'
 				],
 				for: bind.to( 'for' )

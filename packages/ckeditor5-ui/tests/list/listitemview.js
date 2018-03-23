@@ -23,6 +23,7 @@ describe( 'ListItemView', () => {
 
 	describe( 'constructor()', () => {
 		it( 'creates element from template', () => {
+			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-list__item' ) ).to.be.true;
 		} );
 
@@ -74,7 +75,7 @@ describe( 'ListItemView', () => {
 	describe( 'DOM bindings', () => {
 		describe( '"class" attribute', () => {
 			it( 'reacts on view#class', () => {
-				expect( view.element.classList ).to.have.length( 1 );
+				expect( view.element.classList ).to.have.length( 2 );
 
 				view.set( 'class', 'foo' );
 
@@ -82,7 +83,7 @@ describe( 'ListItemView', () => {
 			} );
 
 			it( 'reacts on view#isActive', () => {
-				expect( view.element.classList ).to.have.length( 1 );
+				expect( view.element.classList ).to.have.length( 2 );
 
 				view.set( 'isActive', true );
 
