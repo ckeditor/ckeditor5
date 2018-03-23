@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-.ck-placeholder::before {
+.ck.ck-placeholder::before {
 	content: attr( data-placeholder );
 
 	/* See ckeditor/ckeditor5#469. */
