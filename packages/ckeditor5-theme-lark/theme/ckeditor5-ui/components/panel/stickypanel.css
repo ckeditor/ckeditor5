@@ -5,14 +5,12 @@
 
 @import "../../../mixins/_shadow.css";
 
-.ck-editor {
-	& .ck-sticky-panel {
-		& .ck-sticky-panel__content_sticky {
-			@mixin ck-drop-shadow;
+.ck.ck-sticky-panel {
+	& .ck-sticky-panel__content_sticky {
+		@mixin ck-drop-shadow;
 
-			border-width: 0 1px 1px;
-			border-top-left-radius: 0;
-			border-top-right-radius: 0;
-		}
+		border-width: 0 1px 1px;
+		border-top-left-radius: 0;
+		border-top-right-radius: 0;
 	}
 }

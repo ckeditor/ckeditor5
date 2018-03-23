@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-.ck-text-alternative-form {
+.ck.ck-text-alternative-form {
 	padding: var(--ck-spacing-standard);
 
 	&:focus {

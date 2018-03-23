@@ -7,7 +7,7 @@
 	--ck-icon-size: calc(var(--ck-line-height-base) * var(--ck-font-size-normal));
 }
 
-svg.ck-icon {
+svg.ck.ck-icon {
 	width: var(--ck-icon-size);
 	height: var(--ck-icon-size);
 

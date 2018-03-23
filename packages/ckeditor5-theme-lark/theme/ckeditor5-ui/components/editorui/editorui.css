@@ -9,7 +9,7 @@
 @import "../../../mixins/_focus.css";
 @import "../../mixins/_button.css";
 
-.ck-editor__editable {
+.ck.ck-editor__editable {
 	@mixin ck-rounded-corners;
 
 	&.ck-focused {
@@ -18,7 +18,7 @@
 	}
 }
 
-.ck-editor__editable_inline {
+.ck.ck-editor__editable_inline {
 	overflow: auto;
 	padding: 0 var(--ck-spacing-standard);
 	border: 1px solid transparent;
@@ -35,13 +35,13 @@
 }
 
 /* https://github.com/ckeditor/ckeditor5-theme-lark/issues/111 */
-.ck-toolbar-container[class*="arrow_n"] {
+.ck.ck-toolbar-container[class*="arrow_n"] {
 	&::after {
 		border-bottom-color: var(--ck-color-base-foreground);
 	}
 }
 
-.ck-toolbar-container[class*="arrow_s"] {
+.ck.ck-toolbar-container[class*="arrow_s"] {
 	&::after {
 		border-top-color: var(--ck-color-base-foreground);
 	}

@@ -8,7 +8,7 @@
 @import "../mixins/_focus.css";
 @import "../mixins/_shadow.css";
 
-.ck-link-actions {
+.ck.ck-link-actions {
 	padding: var(--ck-spacing-standard);
 
 	& .ck-button.ck-link-actions__preview {

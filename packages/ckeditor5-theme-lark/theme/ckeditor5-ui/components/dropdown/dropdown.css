@@ -11,7 +11,7 @@
 	--ck-dropdown-arrow-size: calc(0.5 * var(--ck-icon-size));
 }
 
-.ck-dropdown {
+.ck.ck-dropdown {
 	/* Enable font size inheritance, which allows fluid UI scaling. */
 	font-size: inherit;
 
@@ -53,7 +53,7 @@
 	}
 }
 
-.ck-dropdown__panel {
+.ck.ck-dropdown__panel {
 	@mixin ck-rounded-corners;
 	@mixin ck-drop-shadow;
 

@@ -12,7 +12,7 @@
 	--ck-balloon-arrow-half-width: 8px;
 }
 
-.ck-balloon-panel {
+.ck.ck-balloon-panel {
 	@mixin ck-rounded-corners;
 	@mixin ck-drop-shadow;
 

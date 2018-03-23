@@ -11,7 +11,7 @@
 	--ck-input-text-width: 18em;
 }
 
-.ck-input-text {
+.ck.ck-input-text {
 	@mixin ck-rounded-corners;
 	@mixin ck-box-shadow var(--ck-inner-shadow);
 
