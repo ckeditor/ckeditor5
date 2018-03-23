@@ -64,7 +64,7 @@ ClassicEditor.build.plugins.map( plugin => plugin.pluginName );
 
 ## Adding features
 
-As CKEditor builds come with all features enabled, the only way to add more features to them is to {@link builds/guides/development/custom-builds create a custom build}.
+As CKEditor builds do not include all possible features, the only way to add more features to them is to {@link builds/guides/development/custom-builds create a custom build}.
 
 ## Toolbar setup
 
