@@ -160,7 +160,7 @@ describe( 'Range', () => {
 		beforeEach( () => {
 			p = new Element( 'p', [], new Text( 'foz' ) );
 
-			root._insertChildren( 0, [ p ] );
+			root._insertChild( 0, [ p ] );
 		} );
 
 		describe( 'createIn()', () => {
@@ -245,7 +245,7 @@ describe( 'Range', () => {
 			}
 
 			beforeEach( () => {
-				root._appendChildren( new Text( 'abcdefghijklmnopqrtuvwxyz' ) );
+				root._appendChild( new Text( 'abcdefghijklmnopqrtuvwxyz' ) );
 			} );
 
 			it( 'should throw if empty array is passed', () => {
@@ -337,9 +337,9 @@ describe( 'Range', () => {
 			const e1 = new Element( 'e1' );
 			const e2 = new Element( 'e2' );
 
-			e1._insertChildren( 0, [ a, b ] );
-			e2._insertChildren( 0, [ x, y ] );
-			root._insertChildren( 0, [ e1, e2 ] );
+			e1._insertChild( 0, [ a, b ] );
+			e2._insertChild( 0, [ x, y ] );
+			root._insertChild( 0, [ e1, e2 ] );
 
 			const range = new Range(
 				new Position( root, [ 0, 1 ] ),
@@ -462,9 +462,9 @@ describe( 'Range', () => {
 			d = new Element( 'd' );
 
 			xxx = new Text( 'xxx' );
-			b._appendChildren( xxx );
+			b._appendChild( xxx );
 
-			root._appendChildren( [ a, b, c, d ] );
+			root._appendChild( [ a, b, c, d ] );
 		} );
 
 		it( 'should return true if element is inside range and false when it is not inside range', () => {
@@ -1233,7 +1233,7 @@ describe( 'Range', () => {
 
 	describe( 'getTransformedByDeltas()', () => {
 		beforeEach( () => {
-			root._appendChildren( new Text( 'foobar' ) );
+			root._appendChild( new Text( 'foobar' ) );
 			range = Range.createFromParentsAndOffsets( root, 2, root, 5 );
 		} );
 
@@ -1357,7 +1357,7 @@ describe( 'Range', () => {
 	}
 
 	function prepareRichRoot() {
-		root._insertChildren( 0, [
+		root._insertChild( 0, [
 			new Element( 'div', [], [
 				new Element( 'h', [], new Text( 'first' ) ),
 				new Element( 'p', [], new Text( 'lorem ipsum' ) )

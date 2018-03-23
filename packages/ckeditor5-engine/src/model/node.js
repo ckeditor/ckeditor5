@@ -20,7 +20,7 @@ import compareArrays from '@ckeditor/ckeditor5-utils/src/comparearrays';
  * However, it is **very important** that nodes already attached to model tree should be only changed through
  * {@link module:engine/model/writer~Writer Writer API}.
  *
- * Changes done by `Node` methods, like {@link module:engine/model/element~Element#_insertChildren _insertChildren} or
+ * Changes done by `Node` methods, like {@link module:engine/model/element~Element#_insertChild _insertChild} or
  * {@link module:engine/model/node~Node#_setAttribute _setAttribute}
  * do not generate {@link module:engine/model/operation/operation~Operation operations}
  * which are essential for correct editor work if you modify nodes in {@link module:engine/model/document~Document document} root.

@@ -298,7 +298,7 @@ describe( 'downcast-selection-converters', () => {
 				setModelData( model, '' );
 
 				// Add two ui elements to view.
-				viewRoot._appendChildren( [
+				viewRoot._appendChild( [
 					new ViewUIElement( 'span' ),
 					new ViewUIElement( 'span' )
 				] );
@@ -333,7 +333,7 @@ describe( 'downcast-selection-converters', () => {
 
 					// Add ui element to view.
 					const uiElement = new ViewUIElement( 'span' );
-					viewRoot._insertChildren( 1, uiElement );
+					viewRoot._insertChild( 1, uiElement );
 
 					dispatcher.convertSelection( docSelection, model.markers, writer );
 				} );
@@ -358,7 +358,7 @@ describe( 'downcast-selection-converters', () => {
 
 					// Add ui element to view.
 					const uiElement = new ViewUIElement( 'span' );
-					viewRoot._insertChildren( 1, uiElement, writer );
+					viewRoot._insertChild( 1, uiElement, writer );
 					dispatcher.convertSelection( docSelection, model.markers, writer );
 				} );
 

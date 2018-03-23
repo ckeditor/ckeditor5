@@ -17,10 +17,10 @@ describe( 'TextProxy', () => {
 		doc = model.document;
 		root = doc.createRoot();
 		element = new Element( 'div' );
-		root._insertChildren( 0, element );
+		root._insertChild( 0, element );
 
 		text = new Text( 'foobar', { foo: 'bar' } );
-		element._insertChildren( 0, [ new Text( 'abc' ), text ] );
+		element._insertChild( 0, [ new Text( 'abc' ), text ] );
 		textProxy = new TextProxy( text, 2, 3 );
 
 		textNoParent = new Text( 'abcxyz' );

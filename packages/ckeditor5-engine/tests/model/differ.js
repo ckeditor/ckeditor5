@@ -27,7 +27,7 @@ describe( 'Differ', () => {
 
 		root = doc.createRoot();
 
-		root._appendChildren( [
+		root._appendChild( [
 			new Element( 'paragraph', null, [
 				new Text( 'foo' )
 			] ),
@@ -615,7 +615,7 @@ describe( 'Differ', () => {
 		} );
 
 		it( 'reinsert removed element', () => {
-			doc.graveyard._appendChildren( new Element( 'listItem' ) );
+			doc.graveyard._appendChild( new Element( 'listItem' ) );
 
 			const sourcePosition = new Position( doc.graveyard, [ 0 ] );
 			const targetPosition = new Position( root, [ 2 ] );
@@ -1252,7 +1252,7 @@ describe( 'Differ', () => {
 			// In a result, removing `paragraph` was discarded.
 			// The mistake was that the checking for removing was done at incorrect moment.
 			root._removeChildren( 0, root.childCount );
-			root._appendChildren( [
+			root._appendChild( [
 				new Element( 'paragraph', null, new Text( 'foo' ) ),
 				new Element( 'image' ),
 				new Element( 'blockQuote', null, [
@@ -1283,7 +1283,7 @@ describe( 'Differ', () => {
 		// inserted children should not be shown on changes list.
 		it( 'proper filtering of changes in inserted elements', () => {
 			root._removeChildren( 0, root.childCount );
-			root._appendChildren( new Element( 'image' ) );
+			root._appendChild( new Element( 'image' ) );
 
 			const blockQuote = new Element( 'blockQuote', null, new Element( 'paragraph' ) );
 
@@ -1307,7 +1307,7 @@ describe( 'Differ', () => {
 		// Since we are inserting into a new element, the insertion of moved element should not be shown on changes list.
 		it( 'proper filtering of changes in inserted elements #2', () => {
 			root._removeChildren( 0, root.childCount );
-			root._appendChildren( new Element( 'image' ) );
+			root._appendChild( new Element( 'image' ) );
 
 			model.change( () => {
 				// Insert `div` after `image`.

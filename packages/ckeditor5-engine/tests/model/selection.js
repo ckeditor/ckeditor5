@@ -25,7 +25,7 @@ describe( 'Selection', () => {
 		model = new Model();
 		doc = model.document;
 		root = doc.createRoot();
-		root._appendChildren( [
+		root._appendChild( [
 			new Element( 'p' ),
 			new Element( 'p' ),
 			new Element( 'p', [], new Text( 'foobar' ) ),
@@ -1128,7 +1128,7 @@ describe( 'Selection', () => {
 		let rangeInFullP;
 
 		beforeEach( () => {
-			root._insertChildren( 0, [
+			root._insertChild( 0, [
 				new Element( 'p', [], new Text( 'foobar' ) ),
 				new Element( 'p', [], [] )
 			] );

@@ -54,7 +54,7 @@ export default class Element extends Node {
 		this._children = new NodeList();
 
 		if ( children ) {
-			this._insertChildren( 0, children );
+			this._insertChild( 0, children );
 		}
 	}
 
@@ -234,14 +234,14 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * {@link module:engine/model/element~Element#_insertChildren Inserts} one or more nodes at the end of this element.
+	 * {@link module:engine/model/element~Element#_insertChild Inserts} one or more nodes at the end of this element.
 	 *
 	 * @see module:engine/model/writer~Writer#append
 	 * @protected
 	 * @param {module:engine/model/item~Item|Iterable.<module:engine/model/item~Item>} nodes Nodes to be inserted.
 	 */
-	_appendChildren( nodes ) {
-		this._insertChildren( this.childCount, nodes );
+	_appendChild( nodes ) {
+		this._insertChild( this.childCount, nodes );
 	}
 
 	/**
@@ -253,7 +253,7 @@ export default class Element extends Node {
 	 * @param {Number} index Index at which nodes should be inserted.
 	 * @param {module:engine/model/item~Item|Iterable.<module:engine/model/item~Item>} items Items to be inserted.
 	 */
-	_insertChildren( index, items ) {
+	_insertChild( index, items ) {
 		const nodes = normalize( items );
 
 		for ( const node of nodes ) {

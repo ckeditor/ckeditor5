@@ -537,7 +537,7 @@ export default class Writer {
 		else if ( nodeBefore.is( 'attributeElement' ) && nodeAfter.is( 'attributeElement' ) && nodeBefore.isSimilar( nodeAfter ) ) {
 			// Move all children nodes from node placed after selection and remove that node.
 			const count = nodeBefore.childCount;
-			nodeBefore._appendChildren( nodeAfter.getChildren() );
+			nodeBefore._appendChild( nodeAfter.getChildren() );
 
 			nodeAfter._remove();
 			this._removeFromClonedElementsGroup( nodeAfter );
@@ -628,7 +628,7 @@ export default class Writer {
 		}
 
 		const insertionPosition = this._breakAttributes( position, true );
-		const length = container._insertChildren( insertionPosition.offset, nodes );
+		const length = container._insertChild( insertionPosition.offset, nodes );
 
 		for ( const node of nodes ) {
 			this._addToClonedElementsGroup( node );
@@ -955,8 +955,8 @@ export default class Writer {
 
 				// Wrap current node with new attribute.
 				child._remove();
-				newAttribute._appendChildren( child );
-				parent._insertChildren( i, newAttribute );
+				newAttribute._appendChild( child );
+				parent._insertChild( i, newAttribute );
 
 				wrapPositions.push(	new Position( parent, i ) );
 			}
@@ -1018,7 +1018,7 @@ export default class Writer {
 				child._remove();
 				this._removeFromClonedElementsGroup( child );
 
-				parent._insertChildren( i, unwrapped );
+				parent._insertChild( i, unwrapped );
 
 				// Save start and end position of moved items.
 				unwrapPositions.push(
@@ -1155,7 +1155,7 @@ export default class Writer {
 		fakePosition.isSimilar = () => false;
 
 		// Insert fake element in position location.
-		position.parent._insertChildren( position.offset, fakePosition );
+		position.parent._insertChild( position.offset, fakePosition );
 
 		// Range around inserted fake attribute element.
 		const wrapRange = new Range( position, position.getShiftedBy( 1 ) );
@@ -1428,14 +1428,14 @@ export default class Writer {
 			this._addToClonedElementsGroup( clonedNode );
 
 			// Insert cloned node to position's parent node.
-			positionParent.parent._insertChildren( offsetAfter, clonedNode );
+			positionParent.parent._insertChild( offsetAfter, clonedNode );
 
 			// Get nodes to move.
 			const count = positionParent.childCount - positionOffset;
 			const nodesToMove = positionParent._removeChildren( positionOffset, count );
 
 			// Move nodes to cloned node.
-			clonedNode._appendChildren( nodesToMove );
+			clonedNode._appendChild( nodesToMove );
 
 			// Create new position to work on.
 			const newPosition = new Position( positionParent.parent, offsetAfter );
@@ -1605,7 +1605,7 @@ function breakTextNode( position ) {
 	position.parent._data = position.parent.data.slice( 0, position.offset );
 
 	// Insert new text node after position's parent text node.
-	position.parent.parent._insertChildren( position.parent.index + 1, new Text( textToMove ) );
+	position.parent.parent._insertChild( position.parent.index + 1, new Text( textToMove ) );
 
 	// Return new position between two newly created text nodes.
 	return new Position( position.parent.parent, position.parent.index + 1 );

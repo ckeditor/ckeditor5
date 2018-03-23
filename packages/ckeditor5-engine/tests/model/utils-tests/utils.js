@@ -32,7 +32,7 @@ describe( 'getNodesAndText', () => {
 		div = new Element( 'div', [], new Text( 'foobar' ) );
 		p = new Element( 'p', [], new Text( 'abcxyz' ) );
 
-		root._insertChildren( 0, [ div, p ] );
+		root._insertChild( 0, [ div, p ] );
 	} );
 
 	it( 'reads two elements with text', () => {
@@ -120,7 +120,7 @@ describe( 'createRangeOnElementOnly', () => {
 	it( 'should create a range that contains only the given element', () => {
 		const parent = new Element( 'parent' );
 		const element = new Element( 'elem' );
-		parent._appendChildren( element );
+		parent._appendChild( element );
 
 		const range = createRangeOnElementOnly( element );
 

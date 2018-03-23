@@ -1288,7 +1288,7 @@ describe( 'Writer', () => {
 		it( 'should not add empty delta to the batch', () => {
 			const nodeA = new Element( 'p', { a: 1 } );
 			const nodeB = new Element( 'p', { b: 2 } );
-			root._insertChildren( 0, [ nodeA, nodeB ] );
+			root._insertChild( 0, [ nodeA, nodeB ] );
 
 			setAttribute( 'a', 1, nodeA );
 
@@ -1413,7 +1413,7 @@ describe( 'Writer', () => {
 			p1 = new Element( 'p', { key1: 'value1' }, new Text( 'foo' ) );
 			p2 = new Element( 'p', { key2: 'value2' }, new Text( 'bar' ) );
 
-			root._insertChildren( 0, [ p1, p2 ] );
+			root._insertChild( 0, [ p1, p2 ] );
 		} );
 
 		it( 'should merge foo and bar into foobar', () => {
@@ -1469,10 +1469,10 @@ describe( 'Writer', () => {
 			div = new Element( 'div', [], new Text( 'foobar' ) );
 			p = new Element( 'p', [], new Text( 'abcxyz' ) );
 
-			div._insertChildren( 0, [ new Element( 'p', [], new Text( 'gggg' ) ) ] );
-			div._insertChildren( 2, [ new Element( 'p', [], new Text( 'hhhh' ) ) ] );
+			div._insertChild( 0, [ new Element( 'p', [], new Text( 'gggg' ) ) ] );
+			div._insertChild( 2, [ new Element( 'p', [], new Text( 'hhhh' ) ) ] );
 
-			root._insertChildren( 0, [ div, p ] );
+			root._insertChild( 0, [ div, p ] );
 
 			range = new Range( new Position( root, [ 0, 3 ] ), new Position( root, [ 0, 7 ] ) );
 		} );
@@ -1657,7 +1657,7 @@ describe( 'Writer', () => {
 			const root = doc.createRoot();
 			const p = new Element( 'p', null, new Text( 'abc' ) );
 
-			root._appendChildren( p );
+			root._appendChild( p );
 
 			rename( p, 'h' );
 
@@ -1669,7 +1669,7 @@ describe( 'Writer', () => {
 			const docFrag = new DocumentFragment();
 			const p = new Element( 'p' );
 
-			docFrag._appendChildren( p );
+			docFrag._appendChild( p );
 
 			rename( p, 'h' );
 
@@ -1701,7 +1701,7 @@ describe( 'Writer', () => {
 
 			p = new Element( 'p', { key: 'value' }, new Text( 'foobar' ) );
 
-			root._insertChildren( 0, p );
+			root._insertChild( 0, p );
 		} );
 
 		it( 'should split foobar to foo and bar', () => {
@@ -1724,7 +1724,7 @@ describe( 'Writer', () => {
 
 		it( 'should split inside document fragment', () => {
 			const docFrag = new DocumentFragment();
-			docFrag._appendChildren( new Element( 'p', null, new Text( 'foobar' ) ) );
+			docFrag._appendChild( new Element( 'p', null, new Text( 'foobar' ) ) );
 
 			split( new Position( docFrag, [ 0, 3 ] ) );
 
@@ -1782,7 +1782,7 @@ describe( 'Writer', () => {
 			const div = new Element( 'div', null, p );
 			const section = new Element( 'section', null, div );
 
-			root._insertChildren( 0, section );
+			root._insertChild( 0, section );
 
 			split( new Position( p, [ 3 ] ), section );
 
@@ -1806,8 +1806,8 @@ describe( 'Writer', () => {
 			const div = new Element( 'div', null, p );
 			const section = new Element( 'section', null, div );
 
-			root._insertChildren( 0, div );
-			root._insertChildren( 1, section );
+			root._insertChild( 0, div );
+			root._insertChild( 1, section );
 
 			expect( () => {
 				split( new Position( p, [ 3 ] ), section );
@@ -1829,7 +1829,7 @@ describe( 'Writer', () => {
 		beforeEach( () => {
 			root = doc.createRoot();
 
-			root._insertChildren( 0, new Text( 'foobar' ) );
+			root._insertChild( 0, new Text( 'foobar' ) );
 
 			range = new Range( new Position( root, [ 2 ] ), new Position( root, [ 4 ] ) );
 		} );
@@ -1866,7 +1866,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should throw if range to wrap is not flat', () => {
-			root._insertChildren( 1, [ new Element( 'p', [], new Text( 'xyz' ) ) ] );
+			root._insertChild( 1, [ new Element( 'p', [], new Text( 'xyz' ) ) ] );
 			const notFlatRange = new Range( new Position( root, [ 3 ] ), new Position( root, [ 6, 2 ] ) );
 
 			expect( () => {
@@ -1884,7 +1884,7 @@ describe( 'Writer', () => {
 
 		it( 'should throw if element to wrap with has children #2', () => {
 			const p = new Element( 'p' );
-			root._insertChildren( 0, p );
+			root._insertChild( 0, p );
 
 			expect( () => {
 				wrap( range, p );
@@ -1907,7 +1907,7 @@ describe( 'Writer', () => {
 			root = doc.createRoot();
 
 			p = new Element( 'p', [], new Text( 'xyz' ) );
-			root._insertChildren( 0, [ new Text( 'a' ), p, new Text( 'b' ) ] );
+			root._insertChild( 0, [ new Text( 'a' ), p, new Text( 'b' ) ] );
 		} );
 
 		it( 'should unwrap given element', () => {
@@ -1948,7 +1948,7 @@ describe( 'Writer', () => {
 
 		beforeEach( () => {
 			root = doc.createRoot();
-			root._appendChildren( new Text( 'foo' ) );
+			root._appendChild( new Text( 'foo' ) );
 			range = Range.createIn( root );
 		} );
 
@@ -2114,7 +2114,7 @@ describe( 'Writer', () => {
 
 		beforeEach( () => {
 			root = doc.createRoot();
-			root._appendChildren( new Text( 'foo' ) );
+			root._appendChild( new Text( 'foo' ) );
 			range = Range.createIn( root );
 		} );
 
@@ -2172,7 +2172,7 @@ describe( 'Writer', () => {
 			model.schema.extend( 'p', { allowIn: '$root' } );
 
 			root = doc.createRoot();
-			root._appendChildren( [
+			root._appendChild( [
 				new Element( 'p' ),
 				new Element( 'p' ),
 				new Element( 'p', [], new Text( 'foo' ) )
@@ -2209,7 +2209,7 @@ describe( 'Writer', () => {
 			model.schema.extend( 'p', { allowIn: '$root' } );
 
 			root = doc.createRoot();
-			root._appendChildren( [
+			root._appendChild( [
 				new Element( 'p' ),
 				new Element( 'p' ),
 				new Element( 'p', [], new Text( 'foo' ) )
@@ -2245,7 +2245,7 @@ describe( 'Writer', () => {
 			model.schema.extend( 'p', { allowIn: '$root' } );
 
 			root = doc.createRoot();
-			root._appendChildren( [
+			root._appendChild( [
 				new Element( 'p', [], [] ),
 				new Element( 'p' ),
 				new Element( 'p', [], new Text( 'foo' ) )
@@ -2290,7 +2290,7 @@ describe( 'Writer', () => {
 			model.schema.extend( 'p', { allowIn: '$root' } );
 
 			root = doc.createRoot();
-			root._appendChildren( [
+			root._appendChild( [
 				new Element( 'p', [], [] ),
 				new Element( 'p' ),
 				new Element( 'p', [], new Text( 'foo' ) )
@@ -2347,7 +2347,7 @@ describe( 'Writer', () => {
 
 		it( 'should not get attributes from the node before the caret when gravity is overridden', () => {
 			const root = doc.createRoot();
-			root._appendChildren( [
+			root._appendChild( [
 				new Text( 'foo', { foo: true } ),
 				new Text( 'bar', { foo: true, bar: true } ),
 				new Text( 'biz', { foo: true } )
@@ -2371,7 +2371,7 @@ describe( 'Writer', () => {
 
 		it( 'should allow to restorer gravity in a custom way', () => {
 			const root = doc.createRoot();
-			root._appendChildren( [ new Text( 'foobar', { foo: true } ) ] );
+			root._appendChild( [ new Text( 'foobar', { foo: true } ) ] );
 
 			setSelection( new Position( root, [ 1 ] ) );
 
@@ -2400,7 +2400,7 @@ describe( 'Writer', () => {
 
 		it( 'should restore overridden gravity to default', () => {
 			const root = doc.createRoot();
-			root._appendChildren( [
+			root._appendChild( [
 				new Text( 'foo', { foo: true } ),
 				new Text( 'bar', { foo: true, bar: true } ),
 				new Text( 'biz', { foo: true } )

@@ -537,7 +537,7 @@ describe( 'ViewConsumable', () => {
 			const child1 = new ViewElement( 'p', { 'title': 'baz' }, [ text1 ] );
 			const child2 = new ViewElement( 'p' );
 			const child3 = new ViewElement( 'p', { 'style': 'top:10px;', 'class': 'qux bar' }, [ text2, child2 ] );
-			el._appendChildren( [ child1, child3 ] );
+			el._appendChild( [ child1, child3 ] );
 
 			const newConsumable = ViewConsumable.createFrom( el );
 
