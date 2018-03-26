@@ -23,7 +23,7 @@
     "@ckeditor/ckeditor5-build-decoupled-document": "^1.0.0-beta.1",
     "@ckeditor/ckeditor5-build-inline": "^1.0.0-beta.1",
     "@ckeditor/ckeditor5-clipboard": "^1.0.0-beta.1",
-    "@ckeditor/ckeditor5-cloudservices": "^1.0.0-beta.1",
+    "@ckeditor/ckeditor5-cloud-services": "^1.0.0-beta.1",
     "@ckeditor/ckeditor5-core": "^1.0.0-beta.1",
     "@ckeditor/ckeditor5-easy-image": "^1.0.0-beta.1",
     "@ckeditor/ckeditor5-editor-balloon": "^1.0.0-beta.1",
