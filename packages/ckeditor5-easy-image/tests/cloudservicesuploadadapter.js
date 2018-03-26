@@ -8,11 +8,11 @@
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import CloudServicesUploadAdapter from '../src/cloudservicesuploadadapter';
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
-import CloudServices from '@ckeditor/ckeditor5-cloudservices/src/cloudservices';
+import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 
 import UploadGatewayMock from './_utils/uploadgatewaymock';
 import { createNativeFileMock } from '@ckeditor/ckeditor5-upload/tests/_utils/mocks';
-import TokenMock from '@ckeditor/ckeditor5-cloudservices/tests/_utils/tokenmock';
+import TokenMock from '@ckeditor/ckeditor5-cloud-services/tests/_utils/tokenmock';
 
 // Store original uploader.
 const CSUploader = CloudServicesUploadAdapter._UploadGateway;

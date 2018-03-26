@@ -9,8 +9,8 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
-import UploadGateway from '@ckeditor/ckeditor-cloudservices-core/src/uploadgateway/uploadgateway';
-import CloudServices from '@ckeditor/ckeditor5-cloudservices/src/cloudservices';
+import UploadGateway from '@ckeditor/ckeditor-cloud-services-core/src/uploadgateway/uploadgateway';
+import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 
 /**
  * A plugin which enables upload to Cloud Services.
@@ -18,7 +18,7 @@ import CloudServices from '@ckeditor/ckeditor5-cloudservices/src/cloudservices';
  * It is mainly used by the {@link module:easy-image/easyimage~EasyImage} feature.
  *
  * After enabling this adapter you need to configure the Cloud Services integration through
- * {@link module:cloudservices/cloudservices~CloudServicesConfig `config.cloudServices`}.
+ * {@link module:cloud-services/cloudservices~CloudServicesConfig `config.cloudServices`}.
  *
  * @extends module:core/plugin~Plugin
  */
