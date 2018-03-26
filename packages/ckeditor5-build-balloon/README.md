@@ -21,7 +21,7 @@ See:
 
 First, install the build from npm:
 
-```
+```bash
 npm install --save @ckeditor/ckeditor5-build-balloon
 ```
 
@@ -49,7 +49,7 @@ Or in your JavaScript application:
 ```js
 import BalloonEditor from '@ckeditor/ckeditor5-build-balloon';
 
-// Or using CommonJS verion:
+// Or using the CommonJS version:
 // const BalloonEditor = require( '@ckeditor/ckeditor5-build-balloon' );
 
 BalloonEditor
