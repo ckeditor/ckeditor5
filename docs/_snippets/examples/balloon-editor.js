@@ -7,7 +7,7 @@
 
 import BalloonEditor from '@ckeditor/ckeditor5-build-balloon/src/ckeditor';
 
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloudservices/tests/_utils/cloudservices-config';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 BalloonEditor
 	.create( document.querySelector( '#snippet-balloon-editor' ), {
