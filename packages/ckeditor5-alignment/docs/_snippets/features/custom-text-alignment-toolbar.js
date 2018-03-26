@@ -5,7 +5,7 @@
 
 /* globals ClassicEditor, console, window, document */
 
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloudservices/tests/_utils/cloudservices-config';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-custom-text-alignment-toolbar' ), {
