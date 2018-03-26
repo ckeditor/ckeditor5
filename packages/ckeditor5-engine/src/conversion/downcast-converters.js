@@ -427,7 +427,14 @@ function _normalizeToAttributeConfig( view ) {
 	if ( typeof view == 'string' ) {
 		return modelAttributeValue => ( { key: view, value: modelAttributeValue } );
 	} else if ( typeof view == 'object' ) {
-		return () => view;
+		// { key, value, ... }
+		if ( view.value ) {
+			return () => view;
+		}
+		// { key, ... }
+		else {
+			return modelAttributeValue => ( { key: view.key, value: modelAttributeValue } );
+		}
 	} else {
 		// function.
 		return view;

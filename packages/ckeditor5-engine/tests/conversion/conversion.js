@@ -585,6 +585,25 @@ describe( 'Conversion', () => {
 					'<p class="align-center">Foo</p>'
 				);
 			} );
+
+			it( 'config.view and config.model have name and key set', () => {
+				schema.extend( 'image', {
+					allowAttributes: [ 'source' ]
+				} );
+
+				conversion.attributeToAttribute( {
+					model: {
+						name: 'image',
+						key: 'source'
+					},
+					view: {
+						name: 'img',
+						key: 'src'
+					}
+				} );
+
+				test( '<img src="foo.jpg"></img>', '<image source="foo.jpg"></image>' );
+			} );
 		} );
 
 		function test( input, expectedModel, expectedView = null ) {

@@ -384,6 +384,21 @@ describe( 'upcast-helpers', () => {
 			);
 		} );
 
+		it( 'config.view has only key and name set', () => {
+			schema.extend( 'image', {
+				allowAttributes: [ 'source' ]
+			} );
+
+			const helper = upcastAttributeToAttribute( { view: { name: 'img', key: 'src' }, model: { name: 'image', key: 'source' } } );
+
+			conversion.for( 'upcast' ).add( helper );
+
+			expectResult(
+				new ViewAttributeElement( 'img', { src: 'foo.jpg' } ),
+				'<image source="foo.jpg"></image>'
+			);
+		} );
+
 		it( 'can be overwritten using priority', () => {
 			schema.extend( 'image', {
 				allowAttributes: [ 'src', 'source' ]

@@ -430,7 +430,11 @@ function _normalizeModelAttributeConfig( config, viewAttributeKeyToCopy = null )
 	const defaultModelValue = viewAttributeKeyToCopy === null ? true : viewElement => viewElement.getAttribute( viewAttributeKeyToCopy );
 
 	const key = typeof config.model != 'object' ? config.model : config.model.key;
-	const value = typeof config.model != 'object' ? defaultModelValue : config.model.value;
+	let value = typeof config.model != 'object' ? defaultModelValue : config.model.value;
+
+	if ( typeof value == 'undefined' ) {
+		value = defaultModelValue;
+	}
 
 	config.model = { key, value };
 }
