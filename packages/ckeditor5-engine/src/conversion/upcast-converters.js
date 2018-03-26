@@ -424,17 +424,13 @@ function _normalizeViewAttributeKeyValueConfig( config ) {
 // `config.model` is an `Object` with `key` and `value` properties.
 //
 // @param {Object} config Conversion config.
-// @param {String} viewAttributeKeyToCopy Key of the  converted view attribute. If it is set, model attribute value
+// @param {String} viewAttributeKeyToCopy Key of the converted view attribute. If it is set, model attribute value
 // will be equal to view attribute value.
 function _normalizeModelAttributeConfig( config, viewAttributeKeyToCopy = null ) {
 	const defaultModelValue = viewAttributeKeyToCopy === null ? true : viewElement => viewElement.getAttribute( viewAttributeKeyToCopy );
 
 	const key = typeof config.model != 'object' ? config.model : config.model.key;
-	let value = typeof config.model != 'object' ? defaultModelValue : config.model.value;
-
-	if ( typeof value == 'undefined' ) {
-		value = defaultModelValue;
-	}
+	const value = typeof config.model != 'object' || typeof config.model.value == 'undefined' ? defaultModelValue : config.model.value;
 
 	config.model = { key, value };
 }
