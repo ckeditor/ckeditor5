@@ -21,7 +21,7 @@ See:
 
 First, install the build from npm:
 
-```
+```bash
 npm install --save @ckeditor/ckeditor5-build-inline
 ```
 
@@ -49,7 +49,7 @@ Or in your JavaScript application:
 ```js
 import InlineEditor from '@ckeditor/ckeditor5-build-inline';
 
-// Or using CommonJS verion:
+// Or using the CommonJS version:
 // const InlineEditor = require( '@ckeditor/ckeditor5-build-inline' );
 
 InlineEditor
