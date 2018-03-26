@@ -19,7 +19,20 @@ import Range from './range';
  * elements and new ones and returns a change set.
  */
 export default class Differ {
-	constructor() {
+	/**
+	 * Creates a `Differ` instance.
+	 *
+	 * @param {module:engine/model/markercollection~MarkerCollection} markerCollection Model's marker collection.
+	 */
+	constructor( markerCollection ) {
+		/**
+		 * Reference to the model's marker collection.
+		 *
+		 * @private
+		 * @type {module:engine/model/markercollection~MarkerCollection}
+		 */
+		this._markerCollection = markerCollection;
+
 		/**
 		 * A map that stores changes that happened in a given element.
 		 *
@@ -152,6 +165,14 @@ export default class Differ {
 
 				this._markRemove( operation.position.parent, operation.position.offset, 1 );
 				this._markInsert( operation.position.parent, operation.position.offset, 1 );
+
+				const range = Range.createFromPositionAndShift( operation.position, 1 );
+
+				for ( const marker of this._markerCollection.getMarkersIntersectingRange( range ) ) {
+					const markerRange = marker.getRange();
+
+					this.bufferMarkerChange( marker.name, markerRange, markerRange );
+				}
 
 				break;
 			}
