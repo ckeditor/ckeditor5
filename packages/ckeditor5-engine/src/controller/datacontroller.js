@@ -184,6 +184,7 @@ export default class DataController {
 	 * @fires init
 	 * @param {String} data Input data.
 	 * @param {String} [rootName='main'] Root name.
+	 * @returns {Promise} Promise that is resolved after the data is set on the editor.
 	 */
 	init( data, rootName = 'main' ) {
 		if ( this.model.document.version ) {
@@ -202,6 +203,8 @@ export default class DataController {
 		this.model.enqueueChange( 'transparent', writer => {
 			writer.insert( this.parse( data, modelRoot ), modelRoot );
 		} );
+
+		return Promise.resolve();
 	}
 
 	/**

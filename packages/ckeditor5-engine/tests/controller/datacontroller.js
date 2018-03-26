@@ -206,6 +206,14 @@ describe( 'DataController', () => {
 
 			expect( spy.calledOnce ).to.be.true;
 		} );
+
+		it( 'should return a resolved Promise', () => {
+			const promise = data.init( '<p>Foo</p>' );
+
+			expect( promise ).to.be.instanceof( Promise );
+
+			return promise;
+		} );
 	} );
 
 	describe( 'set()', () => {
