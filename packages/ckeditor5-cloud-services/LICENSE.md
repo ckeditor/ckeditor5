@@ -1,7 +1,7 @@
 Software License Agreement
 ==========================
 
-**CKEditor 5 Cloud Services** – https://github.com/ckeditor/ckeditor5-cloudservices <br>
+**CKEditor 5 Cloud Services** – https://github.com/ckeditor/ckeditor5-cloud-services <br>
 Copyright (c) 2003-2018, [CKSource](http://cksource.com) Frederico Knabben. All rights reserved.
 
 Licensed under the terms of any of the following licenses at your choice:

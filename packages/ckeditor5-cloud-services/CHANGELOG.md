@@ -1,11 +1,11 @@
 Changelog
 =========
 
-## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-cloudservices/compare/v1.0.0-alpha.1...v1.0.0-beta.1) (2018-03-15)
+## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-cloud-services/compare/v1.0.0-alpha.1...v1.0.0-beta.1) (2018-03-15)
 
 ### Other changes
 
-* Removed the default value of `config.cloudServices.uploadUrl`. Closes [#12](https://github.com/ckeditor/ckeditor5-cloudservices/issues/12). ([d718e54](https://github.com/ckeditor/ckeditor5-cloudservices/commit/d718e54))
+* Removed the default value of `config.cloudServices.uploadUrl`. Closes [#12](https://github.com/ckeditor/ckeditor5-cloud-services/issues/12). ([d718e54](https://github.com/ckeditor/ckeditor5-cloud-services/commit/d718e54))
 
 ### BREAKING CHANGES
 
@@ -16,4 +16,4 @@ Changelog
 
 ### Features
 
-* Introduced the `CloudeServices` plugin. Closes [#1](https://github.com/ckeditor/ckeditor5-cloudservices/issues/1). ([fbf04dd](https://github.com/ckeditor/ckeditor5-cloudservices/commit/fbf04dd))
+* Introduced the `CloudeServices` plugin. Closes [#1](https://github.com/ckeditor/ckeditor5-cloud-services/issues/1). ([fbf04dd](https://github.com/ckeditor/ckeditor5-cloud-services/commit/fbf04dd))

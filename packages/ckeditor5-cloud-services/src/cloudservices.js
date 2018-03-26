@@ -4,15 +4,15 @@
  */
 
 /**
- * @module cloudservices/cloudservices
+ * @module cloud-services/cloudservices
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import Token from '@ckeditor/ckeditor-cloudservices-core/src/token/token';
+import Token from '@ckeditor/ckeditor-cloud-services-core/src/token/token';
 
 /**
  * Plugin introducing CKEditor 5's Cloud Services integration.
- * It takes care of the {@link module:cloudservices/cloudservices~CloudServicesConfig `config.cloudService`}
+ * It takes care of the {@link module:cloud-services/cloudservices~CloudServicesConfig `config.cloudService`}
  * configuration options and initializes the token provider.
  *
  * @extends module:core/plugin~Plugin
@@ -47,7 +47,7 @@ export default class CloudServices extends Plugin {
 
 		/**
 		 * Other plugins use this token for the authorization process. It handles token requesting and refreshing.
-		 * Its value is `null` when {@link module:cloudservices/cloudservices~CloudServicesConfig#tokenUrl} is not provided.
+		 * Its value is `null` when {@link module:cloud-services/cloudservices~CloudServicesConfig#tokenUrl} is not provided.
 		 *
 		 * @readonly
 		 * @member {Object|null} #token
@@ -68,11 +68,11 @@ export default class CloudServices extends Plugin {
 CloudServices.Token = Token;
 
 /**
- * The configuration of CKEditor Cloud Services. Introduced by the {@link module:cloudservices/cloudservices~CloudServices} plugin.
+ * The configuration of CKEditor Cloud Services. Introduced by the {@link module:cloud-services/cloudservices~CloudServices} plugin.
  *
- * Read more in {@link module:cloudservices/cloudservices~CloudServicesConfig}.
+ * Read more in {@link module:cloud-services/cloudservices~CloudServicesConfig}.
  *
- * @member {module:cloudservices/cloudservices~CloudServicesConfig} module:core/editor/editorconfig~EditorConfig#cloudServices
+ * @member {module:cloud-services/cloudservices~CloudServicesConfig} module:core/editor/editorconfig~EditorConfig#cloudServices
  */
 
 /**
@@ -104,7 +104,7 @@ CloudServices.Token = Token;
  *
  * Without a properly working token endpoint (token URL) CKEditor plugins will not be able to connect to CKEditor Cloud Services.
  *
- * @member {String} module:cloudservices/cloudservices~CloudServicesConfig#tokenUrl
+ * @member {String} module:cloud-services/cloudservices~CloudServicesConfig#tokenUrl
  */
 
 /**
@@ -115,9 +115,9 @@ CloudServices.Token = Token;
  * after subscribing to Easy Image service.
  * To learn how to start using Easy Image check {@glink @cs guides/quick-start Cloud Services - Quick start} documentation.
  *
- * Note: Make sure to also set the {@link module:cloudservices/cloudservices~CloudServicesConfig#tokenUrl} configuration option.
+ * Note: Make sure to also set the {@link module:cloud-services/cloudservices~CloudServicesConfig#tokenUrl} configuration option.
  *
  * Read more in [Cloud Services Quick start](https://docs.ckeditor.com/cs/latest/guides/quick-start.html).
  *
- * @member {String} module:cloudservices/cloudservices~CloudServicesConfig#uploadUrl
+ * @member {String} module:cloud-services/cloudservices~CloudServicesConfig#uploadUrl
  */

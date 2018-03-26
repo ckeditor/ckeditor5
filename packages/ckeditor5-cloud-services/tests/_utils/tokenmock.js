@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import Token from '@ckeditor/ckeditor-cloudservices-core/src/token/token';
+import Token from '@ckeditor/ckeditor-cloud-services-core/src/token/token';
 
 export default class TokenMock extends Token {
 	/**
