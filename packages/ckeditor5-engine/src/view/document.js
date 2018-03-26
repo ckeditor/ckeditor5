@@ -7,14 +7,14 @@
  * @module engine/view/document
  */
 
-import Selection from './selection';
+import DocumentSelection from './documentselection';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 
 /**
  * Document class creates an abstract layer over the content editable area, contains a tree of view elements and
- * {@link module:engine/view/selection~Selection view selection} associated with this document.
+ * {@link module:engine/view/documentselection~DocumentSelection view selection} associated with this document.
  *
  * @mixes module:utils/observablemixin~ObservableMixin
  */
@@ -27,9 +27,9 @@ export default class Document {
 		 * Selection done on this document.
 		 *
 		 * @readonly
-		 * @member {module:engine/view/selection~Selection} module:engine/view/document~Document#selection
+		 * @member {module:engine/view/documentselection~DocumentSelection} module:engine/view/document~Document#selection
 		 */
-		this.selection = new Selection();
+		this.selection = new DocumentSelection();
 
 		/**
 		 * Roots of the view tree. Collection of the {module:engine/view/element~Element view elements}.

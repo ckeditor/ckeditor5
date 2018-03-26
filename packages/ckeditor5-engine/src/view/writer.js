@@ -44,7 +44,8 @@ export default class Writer {
 	}
 
 	/**
-	 * Sets {@link module:engine/view/selection~Selection selection's} ranges and direction to the specified location based on the given
+	 * Sets {@link module:engine/view/documentselection~DocumentSelection selection's} ranges and direction to the
+	 * specified location based on the given {@link module:engine/view/documentselection~DocumentSelection document selection},
 	 * {@link module:engine/view/selection~Selection selection}, {@link module:engine/view/position~Position position},
 	 * {@link module:engine/view/item~Item item}, {@link module:engine/view/range~Range range},
 	 * an iterable of {@link module:engine/view/range~Range ranges} or null.
@@ -72,6 +73,7 @@ export default class Writer {
 	 *		writer.setSelection( position );
 	 *
 	 * 		// Sets collapsed selection at the position of given item and offset.
+	 *		const paragraph = writer.createContainerElement( 'paragraph' );
 	 *		writer.setSelection( paragraph, offset );
 	 *
 	 * Creates a range inside an {@link module:engine/view/element~Element element} which starts before the first child of
@@ -114,7 +116,7 @@ export default class Writer {
 	}
 
 	/**
-	 * Moves {@link module:engine/view/selection~Selection#focus selection's focus} to the specified location.
+	 * Moves {@link module:engine/view/documentselection~DocumentSelection#focus selection's focus} to the specified location.
 	 *
 	 * The location can be specified in the same form as {@link module:engine/view/position~Position.createAt} parameters.
 	 *

@@ -4,7 +4,7 @@
  */
 
 /**
- * Contains {@link module:engine/view/selection~Selection view selection}
+ * Contains {@link module:engine/view/documentselection~DocumentSelection view selection}
  * to {@link module:engine/model/selection~Selection model selection} conversion helpers.
  *
  * @module engine/conversion/upcast-selection-converters
@@ -13,8 +13,8 @@
 import ModelSelection from '../model/selection';
 
 /**
- * Function factory, creates a callback function which converts a {@link module:engine/view/selection~Selection view selection} taken
- * from the {@link module:engine/view/document~Document#event:selectionChange} event
+ * Function factory, creates a callback function which converts a {@link module:engine/view/selection~Selection
+ * view selection} taken from the {@link module:engine/view/document~Document#event:selectionChange} event
  * and sets in on the {@link module:engine/model/document~Document#selection model}.
  *
  * **Note**: because there is no view selection change dispatcher nor any other advanced view selection to model

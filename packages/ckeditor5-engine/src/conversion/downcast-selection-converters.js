@@ -5,7 +5,7 @@
 
 /**
  * Contains {@link module:engine/model/selection~Selection model selection} to
- * {@link module:engine/view/selection~Selection view selection} converters for
+ * {@link module:engine/view/documentselection~DocumentSelection view selection} converters for
  * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}.
  *
  * @module engine/conversion/downcast-selection-converters
@@ -13,8 +13,8 @@
 
 /**
  * Function factory, creates a converter that converts non-collapsed {@link module:engine/model/selection~Selection model selection} to
- * {@link module:engine/view/selection~Selection view selection}. The converter consumes appropriate value from `consumable` object
- * and maps model positions from selection to view positions.
+ * {@link module:engine/view/documentselection~DocumentSelection view selection}. The converter consumes appropriate
+ * value from `consumable` object and maps model positions from selection to view positions.
  *
  *		modelDispatcher.on( 'selection', convertRangeSelection() );
  *
@@ -45,9 +45,9 @@ export function convertRangeSelection() {
 
 /**
  * Function factory, creates a converter that converts collapsed {@link module:engine/model/selection~Selection model selection} to
- * {@link module:engine/view/selection~Selection view selection}. The converter consumes appropriate value from `consumable` object,
- * maps model selection position to view position and breaks {@link module:engine/view/attributeelement~AttributeElement attribute elements}
- * at the selection position.
+ * {@link module:engine/view/documentselection~DocumentSelection view selection}. The converter consumes appropriate
+ * value from `consumable` object, maps model selection position to view position and breaks
+ * {@link module:engine/view/attributeelement~AttributeElement attribute elements} at the selection position.
  *
  *		modelDispatcher.on( 'selection', convertCollapsedSelection() );
  *

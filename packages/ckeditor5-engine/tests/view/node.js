@@ -5,6 +5,7 @@
 
 import Element from '../../src/view/element';
 import Text from '../../src/view/text';
+import Node from '../../src/view/node';
 import DocumentFragment from '../../src/view/documentfragment';
 import RootEditableElement from '../../src/view/rooteditableelement';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
@@ -27,6 +28,14 @@ describe( 'Node', () => {
 		three = new Element( 'three' );
 
 		root = new Element( null, null, [ one, two, three ] );
+	} );
+
+	describe( 'is()', () => {
+		it( 'should return true for node', () => {
+			const node = new Node();
+
+			expect( node.is( 'node' ) ).to.be.true;
+		} );
 	} );
 
 	describe( 'getNextSibling/getPreviousSibling()', () => {
@@ -214,6 +223,20 @@ describe( 'Node', () => {
 		} );
 	} );
 
+	describe( 'getPath()', () => {
+		it( 'should return empty array is the element is the root', () => {
+			expect( root.getPath() ).to.deep.equal( [] );
+		} );
+
+		it( 'should return array with indices of given element and its ancestors starting from top-most one', () => {
+			expect( one.getPath() ).to.deep.equal( [ 0 ] );
+			expect( two.getPath() ).to.deep.equal( [ 1 ] );
+			expect( img.getPath() ).to.deep.equal( [ 1, 2 ] );
+			expect( charR.getPath() ).to.deep.equal( [ 1, 3 ] );
+			expect( three.getPath() ).to.deep.equal( [ 2 ] );
+		} );
+	} );
+
 	describe( 'getDocument()', () => {
 		it( 'should return null if any parent has not set Document', () => {
 			expect( charA.document ).to.be.null;
@@ -255,6 +278,82 @@ describe( 'Node', () => {
 
 			expect( parent.root ).to.equal( parent );
 			expect( child.root ).to.equal( parent );
+		} );
+	} );
+
+	describe( 'isBefore()', () => {
+		// Model is: <root><one></one><two>ba<img></img>r</two><three></three>
+		it( 'should return true if the element is before given element', () => {
+			expect( one.isBefore( two ) ).to.be.true;
+			expect( one.isBefore( img ) ).to.be.true;
+
+			expect( two.isBefore( charB ) ).to.be.true;
+			expect( two.isBefore( charR ) ).to.be.true;
+			expect( two.isBefore( three ) ).to.be.true;
+
+			expect( root.isBefore( one ) ).to.be.true;
+		} );
+
+		it( 'should return false if the element is after given element', () => {
+			expect( two.isBefore( one ) ).to.be.false;
+			expect( img.isBefore( one ) ).to.be.false;
+
+			expect( charB.isBefore( two ) ).to.be.false;
+			expect( charR.isBefore( two ) ).to.be.false;
+			expect( three.isBefore( two ) ).to.be.false;
+
+			expect( one.isBefore( root ) ).to.be.false;
+		} );
+
+		it( 'should return false if the same element is given', () => {
+			expect( one.isBefore( one ) ).to.be.false;
+		} );
+
+		it( 'should return false if elements are in different roots', () => {
+			const otherRoot = new Element( 'root' );
+			const otherElement = new Element( 'element' );
+
+			otherRoot._appendChildren( otherElement );
+
+			expect( otherElement.isBefore( three ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'isAfter()', () => {
+		// Model is: <root><one></one><two>ba<img></img>r</two><three></three>
+		it( 'should return true if the element is after given element', () => {
+			expect( two.isAfter( one ) ).to.be.true;
+			expect( img.isAfter( one ) ).to.be.true;
+
+			expect( charB.isAfter( two ) ).to.be.true;
+			expect( charR.isAfter( two ) ).to.be.true;
+			expect( three.isAfter( two ) ).to.be.true;
+
+			expect( one.isAfter( root ) ).to.be.true;
+		} );
+
+		it( 'should return false if the element is before given element', () => {
+			expect( one.isAfter( two ) ).to.be.false;
+			expect( one.isAfter( img ) ).to.be.false;
+
+			expect( two.isAfter( charB ) ).to.be.false;
+			expect( two.isAfter( charR ) ).to.be.false;
+			expect( two.isAfter( three ) ).to.be.false;
+
+			expect( root.isAfter( one ) ).to.be.false;
+		} );
+
+		it( 'should return false if the same element is given', () => {
+			expect( one.isAfter( one ) ).to.be.false;
+		} );
+
+		it( 'should return false if elements are in different roots', () => {
+			const otherRoot = new Element( 'root' );
+			const otherElement = new Element( 'element' );
+
+			otherRoot._appendChildren( otherElement );
+
+			expect( three.isAfter( otherElement ) ).to.be.false;
 		} );
 	} );
 

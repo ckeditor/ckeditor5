@@ -42,10 +42,12 @@ export default class SelectionObserver extends Observer {
 		this.mutationObserver = view.getObserver( MutationObserver );
 
 		/**
-		 * Reference to the view {@link module:engine/view/selection~Selection} object used to compare new selection with it.
+		 * Reference to the view {@link module:engine/view/documentselection~DocumentSelection} object used to compare
+		 * new selection with it.
 		 *
 		 * @readonly
-		 * @member {module:engine/view/selection~Selection} module:engine/view/observer/selectionobserver~SelectionObserver#selection
+		 * @member {module:engine/view/documentselection~DocumentSelection}
+		 * module:engine/view/observer/selectionobserver~SelectionObserver#selection
 		 */
 		this.selection = this.document.selection;
 
@@ -205,7 +207,7 @@ export default class SelectionObserver extends Observer {
  * @see module:engine/view/observer/selectionobserver~SelectionObserver
  * @event module:engine/view/document~Document#event:selectionChange
  * @param {Object} data
- * @param {module:engine/view/selection~Selection} data.oldSelection Old View selection which is
+ * @param {module:engine/view/documentselection~DocumentSelection} data.oldSelection Old View selection which is
  * {@link module:engine/view/document~Document#selection}.
  * @param {module:engine/view/selection~Selection} data.newSelection New View selection which is converted DOM selection.
  * @param {Selection} data.domSelection Native DOM selection.
@@ -222,7 +224,7 @@ export default class SelectionObserver extends Observer {
  * @see module:engine/view/observer/selectionobserver~SelectionObserver
  * @event module:engine/view/document~Document#event:selectionChangeDone
  * @param {Object} data
- * @param {module:engine/view/selection~Selection} data.oldSelection Old View selection which is
+ * @param {module:engine/view/documentselection~DocumentSelection} data.oldSelection Old View selection which is
  * {@link module:engine/view/document~Document#selection}.
  * @param {module:engine/view/selection~Selection} data.newSelection New View selection which is converted DOM selection.
  * @param {Selection} data.domSelection Native DOM selection.

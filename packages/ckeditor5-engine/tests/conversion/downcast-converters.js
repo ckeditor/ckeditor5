@@ -209,6 +209,37 @@ describe( 'downcast-helpers', () => {
 
 			expectResult( '<span style="font-weight:500">foo</span>' );
 		} );
+
+		it( 'config.model.name is given', () => {
+			const helper = downcastAttributeToElement( {
+				model: {
+					key: 'color',
+					name: '$text'
+				},
+				view: ( modelAttributeValue, viewWriter ) => {
+					return viewWriter.createAttributeElement( 'span', { style: 'color:' + modelAttributeValue } );
+				}
+			} );
+
+			conversion.for( 'downcast' )
+				.add( helper )
+				.add( downcastElementToElement( {
+					model: 'smiley',
+					view: ( modelElement, viewWriter ) => {
+						return viewWriter.createEmptyElement( 'img', {
+							src: 'smile.jpg',
+							class: 'smiley'
+						} );
+					}
+				} ) );
+
+			model.change( writer => {
+				writer.insertText( 'foo', { color: '#FF0000' }, modelRoot, 0 );
+				writer.insertElement( 'smiley', { color: '#FF0000' }, modelRoot, 3 );
+			} );
+
+			expectResult( '<span style="color:#FF0000">foo</span><img class="smiley" src="smile.jpg"></img>' );
+		} );
 	} );
 
 	describe( 'downcastAttributeToAttribute', () => {
@@ -615,7 +646,7 @@ describe( 'downcast-converters', () => {
 		} );
 	} );
 
-	describe( 'setAttribute', () => {
+	describe( 'changeAttribute', () => {
 		it( 'should convert attribute insert/change/remove on a model node', () => {
 			const modelElement = new ModelElement( 'paragraph', { class: 'foo' }, new ModelText( 'foobar' ) );
 
@@ -685,6 +716,22 @@ describe( 'downcast-converters', () => {
 
 			// No attribute set.
 			expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
+		} );
+
+		it( 'should not convert or consume if element creator returned null', () => {
+			const callback = sinon.stub().returns( null );
+
+			dispatcher.on( 'attribute:class', changeAttribute( callback ) );
+
+			const modelElement = new ModelElement( 'paragraph', { class: 'foo' }, new ModelText( 'foobar' ) );
+
+			model.change( writer => {
+				writer.insert( modelElement, modelRootStart );
+			} );
+
+			expect( viewToString( viewRoot ) ).to.equal( '<div><p class="foo">foobar</p></div>' );
+
+			sinon.assert.called( callback );
 		} );
 	} );
 

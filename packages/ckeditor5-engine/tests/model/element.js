@@ -46,7 +46,8 @@ describe( 'Element', () => {
 			element = new Element( 'paragraph' );
 		} );
 
-		it( 'should return true for element, element with same name and element name', () => {
+		it( 'should return true for node, element, element with same name and element name', () => {
+			expect( element.is( 'node' ) ).to.be.true;
 			expect( element.is( 'element' ) ).to.be.true;
 			expect( element.is( 'element', 'paragraph' ) ).to.be.true;
 			expect( element.is( 'paragraph' ) ).to.be.true;

@@ -105,6 +105,16 @@ export function downcastElementToElement( config ) {
  * 			}
  * 		} );
  *
+ *		downcastAttributeToElement( {
+ *			model: {
+ *				key: 'color',
+ *				name: '$text'
+ *			},
+ *			view: ( modelAttributeValue, viewWriter ) => {
+ *				return viewWriter.createAttributeElement( 'span', { style: 'color:' + modelAttributeValue } );
+ *			}
+ *		} );
+ *
  * See {@link module:engine/conversion/conversion~Conversion#for} to learn how to add converter to conversion process.
  *
  * @param {Object} config Conversion configuration.
@@ -120,6 +130,11 @@ export function downcastAttributeToElement( config ) {
 	config = cloneDeep( config );
 
 	const modelKey = config.model.key ? config.model.key : config.model;
+	let eventName = 'attribute:' + modelKey;
+
+	if ( config.model.name ) {
+		eventName += ':' + config.model.name;
+	}
 
 	if ( config.model.values ) {
 		for ( const modelValue of config.model.values ) {
@@ -132,7 +147,7 @@ export function downcastAttributeToElement( config ) {
 	const elementCreator = _getFromAttributeCreator( config );
 
 	return dispatcher => {
-		dispatcher.on( 'attribute:' + modelKey, wrap( elementCreator ), { priority: config.priority || 'normal' } );
+		dispatcher.on( eventName, wrap( elementCreator ), { priority: config.priority || 'normal' } );
 	};
 }
 
@@ -639,6 +654,13 @@ export function changeAttribute( attributeCreator ) {
 	attributeCreator = attributeCreator || ( ( value, data ) => ( { value, key: data.attributeKey } ) );
 
 	return ( evt, data, conversionApi ) => {
+		const oldAttribute = attributeCreator( data.attributeOldValue, data );
+		const newAttribute = attributeCreator( data.attributeNewValue, data );
+
+		if ( !oldAttribute && !newAttribute ) {
+			return;
+		}
+
 		if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 			return;
 		}
@@ -647,8 +669,6 @@ export function changeAttribute( attributeCreator ) {
 		const viewWriter = conversionApi.writer;
 
 		// First remove the old attribute if there was one.
-		const oldAttribute = attributeCreator( data.attributeOldValue, data );
-
 		if ( data.attributeOldValue !== null && oldAttribute ) {
 			if ( oldAttribute.key == 'class' ) {
 				const classes = Array.isArray( oldAttribute.value ) ? oldAttribute.value : [ oldAttribute.value ];
@@ -667,9 +687,7 @@ export function changeAttribute( attributeCreator ) {
 			}
 		}
 
-		// Then, if conversion was successful, set the new attribute.
-		const newAttribute = attributeCreator( data.attributeNewValue, data );
-
+		// Then set the new attribute.
 		if ( data.attributeNewValue !== null && newAttribute ) {
 			if ( newAttribute.key == 'class' ) {
 				const classes = Array.isArray( newAttribute.value ) ? newAttribute.value : [ newAttribute.value ];

@@ -24,7 +24,8 @@ describe( 'Text', () => {
 			text = new Text( 'foo' );
 		} );
 
-		it( 'should return true for text', () => {
+		it( 'should return true for node, text', () => {
+			expect( text.is( 'node' ) ).to.be.true;
 			expect( text.is( 'text' ) ).to.be.true;
 		} );
 

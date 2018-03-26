@@ -43,25 +43,27 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import uid from '@ckeditor/ckeditor5-utils/src/uid';
 
 /**
- * Model writer it the proper way of modifying model. It should be used whenever you wants to create node, modify
- * child nodes, attributes or text. To get writer use {@link module:engine/model/model~Model#change} or
- * {@link module:engine/model/model~Model#enqueueChange}.
+ * The model can only be modified by using the writer. It should be used whenever you want to create a node, modify
+ * child nodes, attributes or text, set the selection's position and its attributes.
+ *
+ * The instance of the writer is only available in the {@link module:engine/model/model~Model#change `change()`} or
+ * {@link module:engine/model/model~Model#enqueueChange `enqueueChange()`}.
  *
  *		model.change( writer => {
  *			writer.insertText( 'foo', paragraph, 'end' );
  *		} );
  *
- * Note that writer can be passed to a nested function but you should never store and use it outside the `change` or
- * `enqueueChange` block.
+ * Note that the should never be stored and used outside of the `change()` or
+ * `enqueueChange()` blocks.
  *
  * @see module:engine/model/model~Model#change
  * @see module:engine/model/model~Model#enqueueChange
  */
 export default class Writer {
 	/**
-	 * Writer class constructor.
+	 * Creates a writer instance.
 	 *
-	 * It is not recommended to use it directly, use {@link module:engine/model/model~Model#change} or
+	 * **Note:** It is not recommended to use it directly. Use {@link module:engine/model/model~Model#change} or
 	 * {@link module:engine/model/model~Model#enqueueChange} instead.
 	 *
 	 * @protected

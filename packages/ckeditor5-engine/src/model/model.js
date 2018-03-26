@@ -36,7 +36,7 @@ import getSelectedContent from './utils/getselectedcontent';
 export default class Model {
 	constructor() {
 		/**
-		 * Models markers' collection.
+		 * Model's marker collection.
 		 *
 		 * @readonly
 		 * @member {module:engine/model/markercollection~MarkerCollection}
@@ -44,7 +44,7 @@ export default class Model {
 		this.markers = new MarkerCollection();
 
 		/**
-		 * Editors document model.
+		 * Model's document.
 		 *
 		 * @readonly
 		 * @member {module:engine/model/document~Document}
@@ -52,7 +52,7 @@ export default class Model {
 		this.document = new Document( this );
 
 		/**
-		 * Schema for editors model.
+		 * Model's schema.
 		 *
 		 * @readonly
 		 * @member {module:engine/model/schema~Schema}
@@ -114,15 +114,17 @@ export default class Model {
 	}
 
 	/**
-	 * Change method is the primary way of changing the model. You should use it to modify any node, including detached
-	 * nodes (not added to the {@link module:engine/model/model~Model#document model document}).
+	 * The `change()` method is the primary way of changing the model. You should use it to modify all document nodes
+	 * (including detached nodes – i.e. nodes not added to the {@link module:engine/model/model~Model#document model document}),
+	 * the {@link module:engine/model/document~Document#selection document's selection}, and
+	 * {@link module:engine/model/model~Model#markers model markers}.
 	 *
 	 *		model.change( writer => {
 	 *			writer.insertText( 'foo', paragraph, 'end' );
 	 *		} );
 	 *
-	 * All changes inside the change block use the same {@link module:engine/model/batch~Batch} so they share the same
-	 * undo step.
+	 * All changes inside the change block use the same {@link module:engine/model/batch~Batch} so they are combined
+	 * into a single undo step.
 	 *
 	 *		model.change( writer => {
 	 *			writer.insertText( 'foo', paragraph, 'end' ); // foo.
@@ -134,7 +136,7 @@ export default class Model {
 	 * 			writer.insertText( 'bom', paragraph, 'end' ); // foobarbom.
 	 *		} );
 	 *
-	 * Change block is executed immediately.
+	 * The callback of the `change()` block is executed synchronously.
 	 *
 	 * You can also return a value from the change block.
 	 *
@@ -161,7 +163,7 @@ export default class Model {
 	/**
 	 * The `enqueueChange()` method performs similar task as the {@link #change `change()` method}, with two major differences.
 	 *
-	 * First, the callback of the `enqueueChange` is executed when all other changes are done. It might be executed
+	 * First, the callback of `enqueueChange()` is executed when all other enqueued changes are done. It might be executed
 	 * immediately if it is not nested in any other change block, but if it is nested in another (enqueue)change block,
 	 * it will be delayed and executed after the outermost block.
 	 *
@@ -179,15 +181,15 @@ export default class Model {
 	 * By default, a new batch is created. In the sample above, `change` and `enqueueChange` blocks use a different
 	 * batch (and different {@link module:engine/model/writer~Writer} since each of them operates on the separate batch).
 	 *
-	 * Using `enqueueChange` block you can also add some changes to the batch you used before.
+	 * When using the `enqueueChange()` block you can also add some changes to the batch you used before.
 	 *
 	 *		model.enqueueChange( batch, writer => {
 	 *			writer.insertText( 'foo', paragraph, 'end' );
 	 *		} );
 	 *
-	 * `Batch` instance can be obtained from {@link module:engine/model/writer~Writer#batch the writer}.
+	 * The batch instance can be obtained from {@link module:engine/model/writer~Writer#batch the writer}.
 	 *
-	 * @param {module:engine/model/batch~Batch|String} batchOrType Batch or batch type should be used in the callback.
+	 * @param {module:engine/model/batch~Batch|'transparent'|'default'} batchOrType Batch or batch type should be used in the callback.
 	 * If not defined, a new batch will be created.
 	 * @param {Function} callback Callback function which may modify the model.
 	 */

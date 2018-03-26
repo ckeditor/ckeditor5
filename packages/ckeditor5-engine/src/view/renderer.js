@@ -37,7 +37,7 @@ export default class Renderer {
 	 * Creates a renderer instance.
 	 *
 	 * @param {module:engine/view/domconverter~DomConverter} domConverter Converter instance.
-	 * @param {module:engine/view/selection~Selection} selection View selection.
+	 * @param {module:engine/view/documentselection~DocumentSelection} selection View selection.
 	 */
 	constructor( domConverter, selection ) {
 		/**
@@ -84,7 +84,7 @@ export default class Renderer {
 		 * View selection. Renderer updates DOM selection based on the view selection.
 		 *
 		 * @readonly
-		 * @member {module:engine/view/selection~Selection}
+		 * @member {module:engine/view/documentselection~DocumentSelection}
 		 */
 		this.selection = selection;
 

@@ -7,6 +7,7 @@
 
 import ViewRange from '../../../src/view/range';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import DocumentSelection from '../../../src/view/documentselection';
 import ViewSelection from '../../../src/view/selection';
 import View from '../../../src/view/view';
 import SelectionObserver from '../../../src/view/observer/selectionobserver';
@@ -64,7 +65,7 @@ describe( 'SelectionObserver', () => {
 		viewDocument.on( 'selectionChange', ( evt, data ) => {
 			expect( data ).to.have.property( 'domSelection' ).that.equals( domDocument.getSelection() );
 
-			expect( data ).to.have.property( 'oldSelection' ).that.is.instanceof( ViewSelection );
+			expect( data ).to.have.property( 'oldSelection' ).that.is.instanceof( DocumentSelection );
 			expect( data.oldSelection.rangeCount ).to.equal( 0 );
 
 			expect( data ).to.have.property( 'newSelection' ).that.is.instanceof( ViewSelection );
@@ -265,7 +266,7 @@ describe( 'SelectionObserver', () => {
 				expect( spy.calledOnce ).to.true;
 				expect( data ).to.have.property( 'domSelection' ).to.equal( domDocument.getSelection() );
 
-				expect( data ).to.have.property( 'oldSelection' ).to.instanceof( ViewSelection );
+				expect( data ).to.have.property( 'oldSelection' ).to.instanceof( DocumentSelection );
 				expect( data.oldSelection.rangeCount ).to.equal( 0 );
 
 				expect( data ).to.have.property( 'newSelection' ).to.instanceof( ViewSelection );

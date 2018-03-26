@@ -243,61 +243,35 @@ export default class Position {
 	 * @returns {module:engine/view/position~PositionRelation}
 	 */
 	compareWith( otherPosition ) {
+		if ( this.root !== otherPosition.root ) {
+			return 'different';
+		}
+
 		if ( this.isEqual( otherPosition ) ) {
 			return 'same';
 		}
 
-		// If positions have same parent.
-		if ( this.parent === otherPosition.parent ) {
-			return this.offset - otherPosition.offset < 0 ? 'before' : 'after';
-		}
-
 		// Get path from root to position's parent element.
-		const path = this.getAncestors();
-		const otherPath = otherPosition.getAncestors();
+		const thisPath = this.parent.is( 'node' ) ? this.parent.getPath() : [];
+		const otherPath = otherPosition.parent.is( 'node' ) ? otherPosition.parent.getPath() : [];
+
+		// Add the positions' offsets to the parents offsets.
+		thisPath.push( this.offset );
+		otherPath.push( otherPosition.offset );
 
 		// Compare both path arrays to find common ancestor.
-		const result = compareArrays( path, otherPath );
-
-		let commonAncestorIndex;
+		const result = compareArrays( thisPath, otherPath );
 
 		switch ( result ) {
-			case 0:
-				// No common ancestors found.
-				return 'different';
-
 			case 'prefix':
-				commonAncestorIndex = path.length - 1;
-				break;
+				return 'before';
 
 			case 'extension':
-				commonAncestorIndex = otherPath.length - 1;
-				break;
+				return 'after';
 
 			default:
-				commonAncestorIndex = result - 1;
+				return thisPath[ result ] < otherPath[ result ] ? 'before' : 'after';
 		}
-
-		// Common ancestor of two positions.
-		const commonAncestor = path[ commonAncestorIndex ];
-		const nextAncestor1 = path[ commonAncestorIndex + 1 ];
-		const nextAncestor2 = otherPath[ commonAncestorIndex + 1 ];
-
-		// Check if common ancestor is not one of the parents.
-		if ( commonAncestor === this.parent ) {
-			const index = this.offset - nextAncestor2.index;
-
-			return index <= 0 ? 'before' : 'after';
-		} else if ( commonAncestor === otherPosition.parent ) {
-			const index = nextAncestor1.index - otherPosition.offset;
-
-			return index < 0 ? 'before' : 'after';
-		}
-
-		const index = nextAncestor1.index - nextAncestor2.index;
-
-		// Compare indexes of next ancestors inside common one.
-		return index < 0 ? 'before' : 'after';
 	}
 
 	/**
