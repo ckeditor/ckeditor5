@@ -53,8 +53,8 @@ describe( 'HighlightEditing', () => {
 		it( 'should convert only one defined marker classes', () => {
 			editor.setData( '<p>f<mark class="marker-green marker-yellow">o</mark>o</p>' );
 
-			expect( getModelData( model ) ).to.equal( '<paragraph>[]f<$text highlight="yellowMarker">o</$text>o</paragraph>' );
-			expect( editor.getData() ).to.equal( '<p>f<mark class="marker-yellow">o</mark>o</p>' );
+			expect( getModelData( model ) ).to.equal( '<paragraph>[]f<$text highlight="greenMarker">o</$text>o</paragraph>' );
+			expect( editor.getData() ).to.equal( '<p>f<mark class="marker-green">o</mark>o</p>' );
 		} );
 
 		it( 'should not convert undefined marker classes', () => {
