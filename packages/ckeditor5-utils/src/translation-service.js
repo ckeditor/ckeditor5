@@ -7,37 +7,37 @@
 
 /**
  * @module utils/translation-service
- */
-
-let dictionaries = {};
-
-/**
- * Adds package translations to existing ones.
- * These translations will later be available for {@link module:utils/translation-service~translate translate}.
  *
- *		add( 'pl', {
- *			'OK': 'OK',
- *			'Cancel [context: reject]': 'Anuluj'
- *		} );
- *
- * That function is accessible globally via `window.CKEDITOR_TRANSLATIONS.add()`. So it's possible to add translation from
- * the other script, just after that one.
+ * Translation service provides {module:utils/translation-service.translate translate} method which can be used
+ * to translate phrase to the given language. Translation should be previously added directly to
+ * the `window.CKEDITOR_TRANSLATIONS` variable, safely extending current ones.
  *
  *		<script src="./path/to/ckeditor.js"></script>
- *		<script src="./path/to/translations/en.js"></script>
+ *		<script src="./path/to/translations/de.js"></script>
  *
- * @param {String} lang Target language.
- * @param {Object.<String, String>} translations Translations which will be added to the dictionary.
+ * Example of the function that can add translations to the given language.
+ *
+ *		function addTranslations( lang, translations ) {
+ *			if ( !window.CKEDITOR_TRANSLATIONS ) {
+ *				window.CKEDITOR_TRANSLATIONS = {};
+ *			}
+ *
+ *			const dictionary = window.CKEDITOR_TRANSLATIONS[ lang ] || ( window.CKEDITOR_TRANSLATIONS[ lang ] = {} );
+ *
+ *			// Extend the dictionary for the given language.
+ *			Object.assign( dictionary, translations );
+ *		}
  */
-export function add( lang, translations ) {
-	dictionaries[ lang ] = dictionaries[ lang ] || {};
 
-	Object.assign( dictionaries[ lang ], translations );
+// Initialize CKEDITOR_TRANSLATIONS if it's not initialized.
+if ( !window.CKEDITOR_TRANSLATIONS ) {
+	window.CKEDITOR_TRANSLATIONS = {};
 }
 
 /**
- * Translates string if the translation of the string was previously {@link module:utils/translation-service~add added}
- * to the dictionary. This happens in a multi-language mode were translation modules are created by the bundler.
+ * Translates string if the translation of the string was previously added to the dictionary.
+ * See {@link module:utils/translation-service Translation Service}.
+ * This happens in a multi-language mode were translation modules are created by the bundler.
  *
  * When no translation is defined in the dictionary or the dictionary doesn't exist this function returns
  * the original string without the `'[context: ]'` (happens in development and single-language modes).
@@ -57,39 +57,27 @@ export function translate( lang, translationKey ) {
 	if ( numberOfLanguages === 1 ) {
 		// Override the language to the only supported one.
 		// This can't be done in the `Locale` class, because the translations comes after the `Locale` class initialization.
-		lang = Object.keys( dictionaries )[ 0 ];
+		lang = Object.keys( window.CKEDITOR_TRANSLATIONS )[ 0 ];
 	}
 
 	if ( numberOfLanguages === 0 || !hasTranslation( lang, translationKey ) ) {
 		return translationKey.replace( / \[context: [^\]]+\]$/, '' );
 	}
 
+	const dictionary = window.CKEDITOR_TRANSLATIONS[ lang ];
+
 	// In case of missing translations we still need to cut off the `[context: ]` parts.
-	return dictionaries[ lang ][ translationKey ].replace( / \[context: [^\]]+\]$/, '' );
+	return dictionary[ translationKey ].replace( / \[context: [^\]]+\]$/, '' );
 }
 
 // Checks whether the dictionary exists and translation in that dictionary exists.
 function hasTranslation( lang, translationKey ) {
 	return (
-		( lang in dictionaries ) &&
-		( translationKey in dictionaries[ lang ] )
+		( lang in window.CKEDITOR_TRANSLATIONS ) &&
+		( translationKey in window.CKEDITOR_TRANSLATIONS[ lang ] )
 	);
 }
 
-/**
- * Clears dictionaries for test purposes.
- *
- * @protected
- */
-export function _clear() {
-	dictionaries = {};
-}
-
 function getNumberOfLanguages() {
-	return Object.keys( dictionaries ).length;
+	return Object.keys( window.CKEDITOR_TRANSLATIONS ).length;
 }
-
-// Export globally add function to enable adding later translations.
-// See https://github.com/ckeditor/ckeditor5/issues/624
-window.CKEDITOR_TRANSLATIONS = window.CKEDITOR_TRANSLATIONS || {};
-window.CKEDITOR_TRANSLATIONS.add = add;
