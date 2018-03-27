@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>CKEditor 5 – classic editor build – RequireJS integration test</title>
+	<style>
+		body {
+			max-width: 800px;
+			margin: 20px auto;
+		}
+	</style>
+</head>
+<body>
+
+<h1>CKEditor 5 – classic editor build – RequireJS integration test (see <a href="https://github.com/ckeditor/ckeditor5/issues/914">#914</a>)</h1>
+
+<h2>In the default language</h2>
+
+<div id="editor">
+	<h2>About CKEditor&nbsp;5</h2>
+
+	<p>This is <a href="https://ckeditor.com">CKEditor&nbsp;5</a>.</p>
+</div>
+
+<h2>In German</h2>
+
+<div id="editor-de">
+	<h2>About CKEditor&nbsp;5</h2>
+
+	<p>This is <a href="https://ckeditor.com">CKEditor&nbsp;5</a>.</p>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.5/require.js"></script>
+<script>
+	require( [ '../../build/ckeditor.js' ], ( ClassicEditor ) => {
+		ClassicEditor.create( document.getElementById( 'editor' ) )
+			.then( editor => {
+				window.editor = editor;
+			} )
+			.catch( err => {
+				console.error( err.stack );
+			} );
+	} );
+
+	require( [ '../../build/ckeditor.js', '../../build/translations/de.js' ], ( ClassicEditor ) => {
+		ClassicEditor
+			.create( document.getElementById( 'editor-de' ), {
+				language: 'de'
+			} )
+			.then( editor => {
+				window.editor = editor;
+			} )
+			.catch( err => {
+				console.error( err.stack );
+			} );
+	} );
+</script>
+
+</body>
+</html>
