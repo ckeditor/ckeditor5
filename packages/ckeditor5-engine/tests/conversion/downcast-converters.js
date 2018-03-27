@@ -390,6 +390,41 @@ describe( 'downcast-helpers', () => {
 			expectResult( '<p></p>' );
 		} );
 
+		it( 'config.view is an object, only name and key are provided', () => {
+			conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'paragraph', view: 'p' } ) );
+
+			const helper = downcastAttributeToAttribute( {
+				model: {
+					name: 'paragraph',
+					key: 'class'
+				},
+				view: {
+					name: 'paragraph',
+					key: 'class'
+				}
+			} );
+
+			conversion.for( 'downcast' ).add( helper );
+
+			model.change( writer => {
+				writer.insertElement( 'paragraph', { class: 'dark' }, modelRoot, 0 );
+			} );
+
+			expectResult( '<p class="dark"></p>' );
+
+			model.change( writer => {
+				writer.setAttribute( 'class', 'light', modelRoot.getChild( 0 ) );
+			} );
+
+			expectResult( '<p class="light"></p>' );
+
+			model.change( writer => {
+				writer.removeAttribute( 'class', modelRoot.getChild( 0 ) );
+			} );
+
+			expectResult( '<p></p>' );
+		} );
+
 		it( 'config.view is a function', () => {
 			const helper = downcastAttributeToAttribute( {
 				model: 'styled',
