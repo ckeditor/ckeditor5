@@ -1,6 +1,35 @@
-<div class="document-editor">
+<div class="document-editor ck-rounded-corners">
 	<div class="document-editor__toolbar"></div>
-	<div class="document-editor__editable"></div>
+	<div class="document-editor__editable-container">
+		<div class="document-editor__editable">
+			<h2 style="text-align:center;">The Flavorful Tuscany Meetup</h2>
+			<h3 style="text-align:center;">Welcome letter</h3>
+
+			<p>Dear Guest,</p>
+			<p>We are delighted to welcome you to the annual <em>Flavorful Tuscany Meetup</em> and hope you will enjoy the programme as well as your stay at the <a href="http://ckeditor.com">Bilancino Hotel</a>.</p>
+			<p>Please find below the full schedule of the event.</p>
+
+			<ul>
+				<li>9:30 AM - 11:30 AM	Americano vs. Brewed - “know your coffee” session with <strong>Stefano Garau</strong></li>
+				<li>1:00 PM - 3:00 PM	Pappardelle al pomodoro - live cooking session with <strong>Rita Fresco</strong></li>
+				<li>5:00 PM - 8:00 PM	Tuscan vineyards at a glance - wine-tasting session with <strong>Frederico Riscoli</strong></li>
+			</ul>
+
+			<blockquote>
+				<p>The annual Flavorful Tuscany meetups are always a culinary discovery. You get the best of Tuscan flavors during an intense one-day stay at one of the top hotels of the region. All the sessions are lead by top chefs passionate about their profession. I would certainly recommend to save the date in your calendar for this one!</p>
+
+				<p>Angelina Calvino, food journalist</p>
+			</blockquote>
+
+			<p>Please arrive at the <a href="http://ckeditor.com">Bilancino Hotel</a> reception desk at least <strong>half an hour earlier</strong> to make sure that the registration process goes as smoothly as possible.</p>
+
+			<p>We look forward to welcoming you to the event.</p>
+
+			<p><strong>Victoria Valc</strong></p>
+			<p><strong>Event Manager</strong></p>
+			<p><strong>Bilancino Hotel</strong></p>
+		</div>
+	</div>
 </div>
 
 <style>
@@ -35,7 +64,7 @@
 	}
 
 	/* Make the editable container look like the inside of a native word processor app. */
-	.document-editor__editable {
+	.document-editor__editable-container {
 		padding: calc( 2 * var(--ck-spacing-large) );
 		background: var(--ck-color-base-foreground);
 
@@ -43,9 +72,9 @@
 		overflow-y: scroll;
 	}
 
-	.document-editor__editable .ck-editor__editable {
+	.document-editor__editable-container .ck-editor__editable {
 		/* Set the dimensions of the "page". */
-		width: 15cm;
+		width: 15.8cm;
 		min-height: 21cm;
 
 		/* Keep the "page" off the boundaries of the container. */
@@ -139,37 +168,4 @@
 		margin-left: calc( 2 * var(--ck-spacing-large) );
 		margin-right: calc( 2 * var(--ck-spacing-large) );
 	}
-
-	.document-editor__data {
-		display: none;
-	}
 </style>
-
-<div class="document-editor__data">
-	<h2 style="text-align:center;">The Flavorful Tuscany Meetup</h2>
-	<h3 style="text-align:center;">Welcome letter</h3>
-
-	<p>Dear Guest,</p>
-	<p>We are delighted to welcome you to the annual <em>Flavorful Tuscany Meetup</em> and hope you will enjoy the programme as well as your stay at the <a href="http://ckeditor.com">Bilancino Hotel</a>.</p>
-	<p>Please find below the full schedule of the event.</p>
-
-	<ul>
-		<li>9:30 AM - 11:30 AM	Americano vs. Brewed - “know your coffee” session with <strong>Stefano Garau</strong></li>
-		<li>1:00 PM - 3:00 PM	Pappardelle al pomodoro - live cooking session with <strong>Rita Fresco</strong></li>
-		<li>5:00 PM - 8:00 PM	Tuscan vineyards at a glance - wine-tasting session with <strong>Frederico Riscoli</strong></li>
-	</ul>
-
-	<blockquote>
-		<p>The annual Flavorful Tuscany meetups are always a culinary discovery. You get the best of Tuscan flavors during an intense one-day stay at one of the top hotels of the region. All the sessions are lead by top chefs passionate about their profession. I would certainly recommend to save the date in your calendar for this one!</p>
-
-		<p>Angelina Calvino, food journalist</p>
-	</blockquote>
-
-	<p>Please arrive at the <a href="http://ckeditor.com">Bilancino Hotel</a> reception desk at least <strong>half an hour earlier</strong> to make sure that the registration process goes as smoothly as possible.</p>
-
-	<p>We look forward to welcoming you to the event.</p>
-
-	<p><strong>Victoria Valc</strong></p>
-	<p><strong>Event Manager</strong></p>
-	<p><strong>Bilancino Hotel</strong></p>
-</div>
