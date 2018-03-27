@@ -67,9 +67,9 @@
     "minimatch": "^3.0.4",
     "postcss-loader": "^2.0.10",
     "raw-loader": "^0.5.1",
-    "style-loader": "^0.19.1",
+    "style-loader": "^0.20.3",
     "umberto": "^0.4.0",
-    "webpack": "^3.10.0",
+    "webpack": "^3.11.0",
     "webpack-sources": "1.0.1"
   },
   "engines": {
