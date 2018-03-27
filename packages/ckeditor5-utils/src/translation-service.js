@@ -23,8 +23,8 @@ let dictionaries = {};
  * That function is accessible globally via `window.CKEDITOR_TRANSLATIONS.add()`. So it's possible to add translation from
  * the other script, just after that one.
  *
- * 		<script src="./path/to/ckeditor.js"></script>
- * 		<script src="./path/to/translations/en.js"></script>
+ *		<script src="./path/to/ckeditor.js"></script>
+ *		<script src="./path/to/translations/en.js"></script>
  *
  * @param {String} lang Target language.
  * @param {Object.<String, String>} translations Translations which will be added to the dictionary.
