@@ -62,14 +62,14 @@
     "glob": "^7.1.2",
     "husky": "^0.14.3",
     "lerna": "^2.2.0",
-    "lint-staged": "^6.0.0",
+    "lint-staged": "^7.0.0",
     "mgit2": "^0.7.2",
     "minimatch": "^3.0.4",
     "postcss-loader": "^2.0.10",
     "raw-loader": "^0.5.1",
-    "style-loader": "^0.19.1",
+    "style-loader": "^0.20.3",
     "umberto": "^0.4.0",
-    "webpack": "^3.10.0",
+    "webpack": "^3.11.0",
     "webpack-sources": "1.0.1"
   },
   "engines": {
