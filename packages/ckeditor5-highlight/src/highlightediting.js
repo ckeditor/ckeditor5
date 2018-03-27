@@ -14,7 +14,7 @@ import HighlightCommand from './highlightcommand';
 /**
  * The highlight editing feature. It introduces the {@link module:highlight/highlightcommand~HighlightCommand command} and the `highlight`
  * attribute in the {@link module:engine/model/model~Model model} which renders in the {@link module:engine/view/view view}
- * as a `<mark>` element with the class attribute (`<span class="marker-green">...</span>`) depending
+ * as a `<mark>` element with the class attribute (`<mark class="marker-green">...</mark>`) depending
  * on the {@link module:highlight/highlight~HighlightConfig configuration}.
  *
  * @extends module:core/plugin~Plugin
