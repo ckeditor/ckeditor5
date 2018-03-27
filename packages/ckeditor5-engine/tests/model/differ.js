@@ -653,6 +653,42 @@ describe( 'Differ', () => {
 				] );
 			} );
 		} );
+
+		it( 'markers refreshing', () => {
+			// Since rename is "translated" to remove+insert pair, we need to refresh all the markers that
+			// intersect with the renamed element.
+
+			model.change( () => {
+				// Renamed element contains marker.
+				model.markers._set( 'markerA', new Range( new Position( root, [ 1, 1 ] ), new Position( root, [ 1, 2 ] ) ) );
+
+				// Marker contains renamed element.
+				model.markers._set( 'markerB', new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) ) );
+
+				// Intersecting.
+				model.markers._set( 'markerC', new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 1, 2 ] ) ) );
+
+				// Not intersecting.
+				model.markers._set( 'markerD', new Range( new Position( root, [ 0, 0 ] ), new Position( root, [ 1 ] ) ) );
+			} );
+
+			const markersToRefresh = [ 'markerA', 'markerB', 'markerC' ];
+
+			model.change( () => {
+				rename( root.getChild( 1 ), 'listItem' );
+
+				expectChanges( [
+					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 1 ] ) },
+					{ type: 'insert', name: 'listItem', length: 1, position: new Position( root, [ 1 ] ) }
+				] );
+
+				const markersToRemove = differ.getMarkersToRemove().map( entry => entry.name );
+				const markersToAdd = differ.getMarkersToAdd().map( entry => entry.name );
+
+				expect( markersToRefresh ).to.deep.equal( markersToRemove );
+				expect( markersToRefresh ).to.deep.equal( markersToAdd );
+			} );
+		} );
 	} );
 
 	describe( 'attribute', () => {
