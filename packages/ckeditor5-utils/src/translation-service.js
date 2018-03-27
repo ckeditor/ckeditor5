@@ -7,31 +7,43 @@
 
 /**
  * @module utils/translation-service
+ */
+
+if ( !window.CKEDITOR_TRANSLATIONS ) {
+	window.CKEDITOR_TRANSLATIONS = {};
+}
+
+/**
+ * Adds translations to existing ones.
+ * These translations will later be available for the {@link module:utils/translation-service~translate `translate()`} function.
  *
- * Translation service provides {module:utils/translation-service.translate translate} method which can be used
- * to translate phrase to the given language. Translation should be previously added directly to
- * the `window.CKEDITOR_TRANSLATIONS` variable, safely extending current ones.
+ *		add( 'pl', {
+ *			'OK': 'OK',
+ *			'Cancel [context: reject]': 'Anuluj'
+ *		} );
  *
- *		<script src="./path/to/ckeditor.js"></script>
- *		<script src="./path/to/translations/de.js"></script>
+ * If you cannot import this function from this module (e.g. because you use a CKEditor 5 build), then you can
+ * still add translations by extending the global `window.CKEDITOR_TRANSLATIONS` object by using a function like
+ * the one below:
  *
- * Example of the function that can add translations to the given language.
- *
- *		function addTranslations( lang, translations ) {
+ *		function addTranslations( language, translations ) {
  *			if ( !window.CKEDITOR_TRANSLATIONS ) {
  *				window.CKEDITOR_TRANSLATIONS = {};
  *			}
  *
- *			const dictionary = window.CKEDITOR_TRANSLATIONS[ lang ] || ( window.CKEDITOR_TRANSLATIONS[ lang ] = {} );
+ *			const dictionary = window.CKEDITOR_TRANSLATIONS[ language ] || ( window.CKEDITOR_TRANSLATIONS[ language ] = {} );
  *
  *			// Extend the dictionary for the given language.
  *			Object.assign( dictionary, translations );
  *		}
+ *
+ * @param {String} language Target language.
+ * @param {Object.<String, String>} translations Translations which will be added to the dictionary.
  */
+export function add( language, translations ) {
+	const dictionary = window.CKEDITOR_TRANSLATIONS[ language ] || ( window.CKEDITOR_TRANSLATIONS[ language ] = {} );
 
-// Initialize CKEDITOR_TRANSLATIONS if it's not initialized.
-if ( !window.CKEDITOR_TRANSLATIONS ) {
-	window.CKEDITOR_TRANSLATIONS = {};
+	Object.assign( dictionary, translations );
 }
 
 /**
@@ -47,34 +59,43 @@ if ( !window.CKEDITOR_TRANSLATIONS ) {
  *
  *		translate( 'pl', 'Cancel [context: reject]' );
  *
- * @param {String} lang Target language.
+ * @param {String} language Target language.
  * @param {String} translationKey String that will be translated.
  * @returns {String} Translated sentence.
  */
-export function translate( lang, translationKey ) {
+export function translate( language, translationKey ) {
 	const numberOfLanguages = getNumberOfLanguages();
 
 	if ( numberOfLanguages === 1 ) {
 		// Override the language to the only supported one.
 		// This can't be done in the `Locale` class, because the translations comes after the `Locale` class initialization.
-		lang = Object.keys( window.CKEDITOR_TRANSLATIONS )[ 0 ];
+		language = Object.keys( window.CKEDITOR_TRANSLATIONS )[ 0 ];
 	}
 
-	if ( numberOfLanguages === 0 || !hasTranslation( lang, translationKey ) ) {
+	if ( numberOfLanguages === 0 || !hasTranslation( language, translationKey ) ) {
 		return translationKey.replace( / \[context: [^\]]+\]$/, '' );
 	}
 
-	const dictionary = window.CKEDITOR_TRANSLATIONS[ lang ];
+	const dictionary = window.CKEDITOR_TRANSLATIONS[ language ];
 
 	// In case of missing translations we still need to cut off the `[context: ]` parts.
 	return dictionary[ translationKey ].replace( / \[context: [^\]]+\]$/, '' );
 }
 
+/**
+ * Clears dictionaries for test purposes.
+ *
+ * @protected
+ */
+export function _clear() {
+	window.CKEDITOR_TRANSLATIONS = {};
+}
+
 // Checks whether the dictionary exists and translation in that dictionary exists.
-function hasTranslation( lang, translationKey ) {
+function hasTranslation( language, translationKey ) {
 	return (
-		( lang in window.CKEDITOR_TRANSLATIONS ) &&
-		( translationKey in window.CKEDITOR_TRANSLATIONS[ lang ] )
+		( language in window.CKEDITOR_TRANSLATIONS ) &&
+		( translationKey in window.CKEDITOR_TRANSLATIONS[ language ] )
 	);
 }
 

@@ -3,13 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals window */
-
-import { translate } from '../src/translation-service';
+import { translate, add, _clear } from '../src/translation-service';
 
 describe( 'translation-service', () => {
 	afterEach( () => {
-		window.CKEDITOR_TRANSLATIONS = {};
+		_clear();
 	} );
 
 	it( 'should return english string if no translation exists', () => {
@@ -75,15 +73,4 @@ describe( 'translation-service', () => {
 		expect( translationPL ).to.be.equal( 'Anuluj' );
 		expect( translationEN ).to.be.equal( 'Cancel' );
 	} );
-
-	function add( lang, translations ) {
-		if ( !window.CKEDITOR_TRANSLATIONS ) {
-			window.CKEDITOR_TRANSLATIONS = {};
-		}
-
-		const dictionary = window.CKEDITOR_TRANSLATIONS[ lang ] || ( window.CKEDITOR_TRANSLATIONS[ lang ] = {} );
-
-		// Extend the dictionary for the given language.
-		Object.assign( dictionary, translations );
-	}
 } );
