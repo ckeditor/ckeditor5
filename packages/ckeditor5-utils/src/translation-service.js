@@ -10,14 +10,14 @@
  *
  * Translation service provides {module:utils/translation-service.translate translate} method which can be used
  * to translate phrase to the given language. Translation should be previously added directly to
- * the window.CKEDITOR_TRANSLATIONS variable, safely extending current ones.
+ * the `window.CKEDITOR_TRANSLATIONS` variable, safely extending current ones.
  *
- * 		<script src="./path/to/ckeditor.js"></script>
- * 		<script src="./path/to/translations/de.js"></script>
+ *		<script src="./path/to/ckeditor.js"></script>
+ *		<script src="./path/to/translations/de.js"></script>
  *
  * Example of the function that can add translations to the given language.
  *
- * 		function addTranslations( lang, translations ) {
+ *		function addTranslations( lang, translations ) {
  *			if ( !window.CKEDITOR_TRANSLATIONS ) {
  *				window.CKEDITOR_TRANSLATIONS = {};
  *			}
