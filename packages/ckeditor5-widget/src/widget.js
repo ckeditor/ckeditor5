@@ -133,9 +133,7 @@ export default class Widget extends Plugin {
 		// Create model selection over widget.
 		const modelElement = editor.editing.mapper.toModelElement( element );
 
-		editor.model.change( () => {
-			this._setSelectionOverElement( modelElement );
-		} );
+		this._setSelectionOverElement( modelElement );
 	}
 
 	/**
@@ -242,9 +240,7 @@ export default class Widget extends Plugin {
 		const objectElement2 = this._getObjectElementNextToSelection( isForward );
 
 		if ( objectElement2 instanceof ModelElement && schema.isObject( objectElement2 ) ) {
-			model.change( () => {
-				this._setSelectionOverElement( objectElement2 );
-			} );
+			this._setSelectionOverElement( objectElement2 );
 
 			return true;
 		}
