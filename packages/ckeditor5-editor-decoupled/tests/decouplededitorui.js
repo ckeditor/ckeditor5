@@ -63,45 +63,6 @@ describe( 'DecoupledEditorUI', () => {
 			expect( view.isRendered ).to.be.true;
 		} );
 
-		describe( 'config', () => {
-			it( 'does nothing if not specified', () => {
-				expect( view.toolbar.element.parentElement ).to.be.null;
-				expect( view.editable.element.parentElement ).to.be.null;
-			} );
-
-			it( 'allocates view#toolbar', () => {
-				return VirtualDecoupledTestEditor
-					.create( {
-						toolbar: [ 'foo', 'bar' ],
-						toolbarContainer: document.body
-					} )
-					.then( newEditor => {
-						expect( newEditor.ui.view.toolbar.element.parentElement ).to.equal( document.body );
-
-						return newEditor;
-					} )
-					.then( newEditor => {
-						newEditor.destroy();
-					} );
-			} );
-
-			it( 'allocates view#editable', () => {
-				return VirtualDecoupledTestEditor
-					.create( {
-						toolbar: [ 'foo', 'bar' ],
-						editableContainer: document.body
-					} )
-					.then( newEditor => {
-						expect( newEditor.ui.view.editable.element.parentElement ).to.equal( document.body );
-
-						return newEditor;
-					} )
-					.then( newEditor => {
-						newEditor.destroy();
-					} );
-			} );
-		} );
-
 		describe( 'editable', () => {
 			it( 'registers view.editable#element in editor focus tracker', () => {
 				ui.focusTracker.isFocused = false;
@@ -138,6 +99,10 @@ describe( 'DecoupledEditorUI', () => {
 					],
 					{ isReadOnly: true }
 				);
+			} );
+
+			it( 'attaches editable UI as view\'s DOM root', () => {
+				expect( editor.editing.view.getDomRoot() ).to.equal( view.editable.element );
 			} );
 		} );
 
@@ -207,43 +172,7 @@ describe( 'DecoupledEditorUI', () => {
 			return editor.destroy()
 				.then( () => {
 					sinon.assert.calledOnce( spy );
-					sinon.assert.calledWithExactly( spy, false, false );
-				} );
-		} );
-
-		it( 'removes view#toolbar from DOM, if config.toolbarContainer is specified', () => {
-			let spy;
-
-			return VirtualDecoupledTestEditor
-				.create( {
-					toolbar: [ 'foo', 'bar' ],
-					toolbarContainer: document.body
-				} )
-				.then( newEditor => {
-					spy = sinon.spy( newEditor.ui.view, 'destroy' );
-
-					newEditor.destroy();
-				} )
-				.then( () => {
-					sinon.assert.calledWithExactly( spy, true, false );
-				} );
-		} );
-
-		it( 'removes view#editable from DOM, if config.editableContainer is specified', () => {
-			let spy;
-
-			return VirtualDecoupledTestEditor
-				.create( {
-					toolbar: [ 'foo', 'bar' ],
-					editableContainer: document.body
-				} )
-				.then( newEditor => {
-					spy = sinon.spy( newEditor.ui.view, 'destroy' );
-
-					newEditor.destroy();
-				} )
-				.then( () => {
-					sinon.assert.calledWithExactly( spy, false, true );
+					sinon.assert.calledWithExactly( spy );
 				} );
 		} );
 	} );

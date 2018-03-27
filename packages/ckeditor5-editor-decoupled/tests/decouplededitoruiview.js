@@ -53,13 +53,24 @@ describe( 'DecoupledEditorUIView', () => {
 				expect( view.editable ).to.be.instanceof( InlineEditableUIView );
 			} );
 
-			it( 'is given a locate object', () => {
+			it( 'is given a locale object', () => {
 				expect( view.editable.locale ).to.equal( locale );
 			} );
 
 			it( 'is rendered but gets no parent', () => {
 				expect( view.isRendered ).to.be.true;
 				expect( view.editable.element.parentElement ).to.be.null;
+			} );
+
+			it( 'can be created out of an existing DOM element', () => {
+				const editableElement = document.createElement( 'div' );
+				const testView = new DecoupledEditorUIView( locale, editableElement );
+
+				testView.render();
+
+				expect( testView.editable.element ).to.equal( editableElement );
+
+				testView.destroy();
 			} );
 		} );
 	} );
@@ -86,30 +97,6 @@ describe( 'DecoupledEditorUIView', () => {
 
 			view.toolbar.element.remove();
 			view.editable.element.remove();
-		} );
-
-		it( 'removes toolbar#element on demand', () => {
-			document.body.appendChild( view.toolbar.element );
-			document.body.appendChild( view.editable.element );
-
-			view.destroy( true );
-
-			expect( view.toolbar.element.parentElement ).to.be.null;
-			expect( view.editable.element.parentElement ).to.equal( document.body );
-
-			view.editable.element.remove();
-		} );
-
-		it( 'removes editable#element on demand', () => {
-			document.body.appendChild( view.toolbar.element );
-			document.body.appendChild( view.editable.element );
-
-			view.destroy( false, true );
-
-			expect( view.toolbar.element.parentElement ).to.equal( document.body );
-			expect( view.editable.element.parentElement ).to.be.null;
-
-			view.toolbar.element.remove();
 		} );
 	} );
 

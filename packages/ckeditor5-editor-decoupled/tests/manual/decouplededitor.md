@@ -5,8 +5,8 @@
 3. Click "Destroy editor".
 4. Expected:
   * Editor should be destroyed.
-  * The editor UI should disappear from the containers.
-  * The 'ck-body region' should be removed.
+  * **The editor UI should remain in the containers**.
+  * The `.ck-body` region should be removed.
 
 ## Notes:
 

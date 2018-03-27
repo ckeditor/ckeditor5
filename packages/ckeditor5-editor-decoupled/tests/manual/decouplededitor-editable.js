@@ -15,12 +15,11 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import testUtils from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
-const editorData = '<h2>Hello world</h2><p>This is the decoupled editor.</p>';
 let editor, editable, observer;
 
 function initEditor() {
 	DecoupledEditor
-		.create( editorData, {
+		.create( document.querySelector( '.editor__editable' ), {
 			plugins: [ Enter, Typing, Paragraph, Undo, Heading, Bold, Italic ],
 			toolbar: [ 'heading', '|', 'bold', 'italic', 'undo', 'redo' ]
 		} )
@@ -29,7 +28,6 @@ function initEditor() {
 			console.log( 'You can now play with it using global `editor` and `editable` variables.' );
 
 			document.querySelector( '.toolbar-container' ).appendChild( newEditor.ui.view.toolbar.element );
-			document.querySelector( '.editable-container' ).appendChild( newEditor.ui.view.editable.element );
 
 			window.editor = editor = newEditor;
 			window.editable = editable = editor.editing.view.document.getRoot();
