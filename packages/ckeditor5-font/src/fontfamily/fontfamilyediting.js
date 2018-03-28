@@ -20,7 +20,7 @@ const FONT_FAMILY = 'fontFamily';
  *
  * It introduces the {@link module:font/fontfamily/fontfamilycommand~FontFamilyCommand command} and
  * the `fontFamily` attribute in the {@link module:engine/model/model~Model model} which renders
- * in the {@link module:engine/view/view view} as an inline span (`<span style="font-family: Arial">`),
+ * in the {@link module:engine/view/view view} as an inline `<span>` element (`<span style="font-family: Arial">`),
  * depending on the {@link module:font/fontfamily~FontFamilyConfig configuration}.
  *
  * @extends module:core/plugin~Plugin

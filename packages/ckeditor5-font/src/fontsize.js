@@ -17,6 +17,8 @@ import FontSizeUI from './fontsize/fontsizeui';
  * It enables {@link module:font/fontsize/fontsizeediting~FontSizeEditing} and
  * {@link module:font/fontsize/fontsizeui~FontSizeUI} features in the editor.
  *
+ * For a detailed overview, check the {@glink features/font font feature} documentation.
+ *
  * @extends module:core/plugin~Plugin
  */
 export default class FontSize extends Plugin {
@@ -36,20 +38,20 @@ export default class FontSize extends Plugin {
 }
 
 /**
- * Font size option descriptor.
+ * The font size option descriptor.
  *
  * @typedef {Object} module:font/fontsize~FontSizeOption
  *
  * @property {String} title The user-readable title of the option.
- * @property {String} model Attribute's unique value in the model.
+ * @property {String} model The attribute's unique value in the model.
  * @property {module:engine/view/elementdefinition~ElementDefinition} view View element configuration.
  * @property {Array.<module:engine/view/elementdefinition~ElementDefinition>} [upcastAlso] An array with all matched elements that
- * view to model conversion should also accept.
+ * the view-to-model conversion should also accept.
  */
 
 /**
  * The configuration of the font size feature.
- * Introduced by the {@link module:font/fontsize/fontsizeediting~FontSizeEditing} feature.
+ * It is introduced by the {@link module:font/fontsize/fontsizeediting~FontSizeEditing} feature.
  *
  * Read more in {@link module:font/fontsize~FontSizeConfig}.
  *
@@ -58,11 +60,11 @@ export default class FontSize extends Plugin {
 
 /**
  * The configuration of the font size feature.
- * The option is used by the {@link module:font/fontsize/fontsizeediting~FontSizeEditing} feature.
+ * This option is used by the {@link module:font/fontsize/fontsizeediting~FontSizeEditing} feature.
  *
  * 		ClassicEditor
  * 			.create( {
- * 				fontSize: ... // Font size feature config.
+ * 				fontSize: ... // Font size feature configuration.
  *			} )
  * 			.then( ... )
  * 			.catch( ... );
@@ -88,26 +90,26 @@ export default class FontSize extends Plugin {
  *			]
  *		};
  *
- * It defines 4 sizes: **tiny**, **small**, **big**, and **huge**. These values will be rendered as `span` elements in view.
+ * It defines 4 sizes: **tiny**, **small**, **big**, and **huge**. These values will be rendered as `<span>` elements in the view.
  * The **default** defines a text without the `fontSize` attribute.
  *
- * Each `span` has the `class` attribute set to the corresponding size name. For instance, this is what the **small** size looks
+ * Each `<span>` has the the `class` attribute set to the corresponding size name. For instance, this is what the **small** size looks
  * like in the view:
  *
  * 		<span class="text-small">...</span>
  *
- * As an alternative, the font size might be defined using the numerical values (either as a `Number` or as a `String`):
+ * As an alternative, the font size might be defined using numerical values (either as a `Number` or as a `String`):
  *
  * 		const fontSizeConfig = {
  * 			options: [ 9, 10, 11, 12, 13, 14, 15 ]
  * 		};
  *
  * Font size can be applied using the command API. To do that, use the `fontSize` command and pass the desired font size as a `value`.
- * For example, the below code will apply the `fontSize` attribute with the **tiny** value to the current selection:
+ * For example, the following code will apply the `fontSize` attribute with the **tiny** value to the current selection:
  *
  *		editor.execute( 'fontSize', { value: 'tiny' } );
  *
- * Executing `fontSize` command without value will remove `fontSize` attribute from the current selection.
+ * Executing the `fontSize` command without value will remove the `fontSize` attribute from the current selection.
  *
  * @member {Array.<String|Number|module:font/fontsize~FontSizeOption>} module:font/fontsize~FontSizeConfig#options
  */

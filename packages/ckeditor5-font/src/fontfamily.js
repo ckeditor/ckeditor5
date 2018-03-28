@@ -17,6 +17,8 @@ import FontFamilyUI from './fontfamily/fontfamilyui';
  * It enables {@link module:font/fontfamily/fontfamilyediting~FontFamilyEditing} and
  * {@link module:font/fontfamily/fontfamilyui~FontFamilyUI} features in the editor.
  *
+ * For a detailed overview, check the {@glink features/font font feature} documentation.
+ *
  * @extends module:core/plugin~Plugin
  */
 export default class FontFamily extends Plugin {
@@ -36,20 +38,20 @@ export default class FontFamily extends Plugin {
 }
 
 /**
- * Font family option descriptor.
+ * The font family option descriptor.
  *
  * @typedef {Object} module:font/fontfamily~FontFamilyOption
  *
  * @property {String} title The user-readable title of the option.
- * @property {String} model Attribute's unique value in the model.
+ * @property {String} model The attribute's unique value in the model.
  * @property {module:engine/view/elementdefinition~ElementDefinition} view View element configuration.
  * @property {Array.<module:engine/view/elementdefinition~ElementDefinition>} [upcastAlso] An array with all matched elements that
- * view to model conversion should also accept.
+ * the view-to-model conversion should also accept.
  */
 
 /**
  * The configuration of the font family feature.
- * Introduced by the {@link module:font/fontfamily/fontfamilyediting~FontFamilyEditing} feature.
+ * It is introduced by the {@link module:font/fontfamily/fontfamilyediting~FontFamilyEditing} feature.
  *
  * Read more in {@link module:font/fontfamily~FontFamilyConfig}.
  *
@@ -58,11 +60,11 @@ export default class FontFamily extends Plugin {
 
 /**
  * The configuration of the font family feature.
- * The option is used by the {@link module:font/fontfamily/fontfamilyediting~FontFamilyEditing} feature.
+ * This option is used by the {@link module:font/fontfamily/fontfamilyediting~FontFamilyEditing} feature.
  *
  *		ClassicEditor
  *			.create( {
- * 				fontFamily: ... // Font family feature config.
+ * 				fontFamily: ... // Font family feature configuration.
  *			} )
  *			.then( ... )
  *			.catch( ... );
@@ -89,8 +91,8 @@ export default class FontFamily extends Plugin {
  *			]
  *		};
  *
- * which configures 8 font family options. Each option consist of one or more comma–separated font-family names. The first font name is
- * used as a dropdown item description in the UI.
+ * which configures 8 font family options. Each option consists of one or more comma–separated font family names. The first font name is
+ * used as the dropdown item description in the UI.
  *
  * **Note:** The family names that consist of spaces should not have quotes (as opposed to the CSS standard). The necessary quotes
  * will be added automatically in the view. For example, the `"Lucida Sans Unicode"` will render as follows:
@@ -105,7 +107,7 @@ export default class FontFamily extends Plugin {
  *
  *		editor.execute( 'fontFamily', { value: 'Arial' } );
  *
- * Executing `fontFamily` command without any value will remove `fontFamily` attribute from the current selection.
+ * Executing the `fontFamily` command without any value will remove the `fontFamily` attribute from the current selection.
  *
  * @member {Array.<String|module:font/fontfamily~FontFamilyOption>} module:font/fontfamily~FontFamilyConfig#options
  */

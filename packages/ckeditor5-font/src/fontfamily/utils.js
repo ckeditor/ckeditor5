@@ -8,10 +8,10 @@
  */
 
 /**
- * Normalizes the {@link module:font/fontfamily~FontFamilyConfig#options config options}
+ * Normalizes the {@link module:font/fontfamily~FontFamilyConfig#options configuration options}
  * to the {@link module:font/fontfamily~FontFamilyOption} format.
  *
- * @param {Array.<String|Object>} configuredOptions An array of options taken from configuration.
+ * @param {Array.<String|Object>} configuredOptions An array of options taken from the configuration.
  * @returns {Array.<module:font/fontfamily~FontFamilyOption>}
  */
 export function normalizeOptions( configuredOptions ) {

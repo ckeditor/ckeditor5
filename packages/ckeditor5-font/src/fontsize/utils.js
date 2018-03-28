@@ -8,10 +8,10 @@
  */
 
 /**
- * Normalizes and translates the {@link module:font/fontsize~FontSizeConfig#options config options}
+ * Normalizes and translates the {@link module:font/fontsize~FontSizeConfig#options configuration options}
  * to the {@link module:font/fontsize~FontSizeOption} format.
  *
- * @param {Array.<String|Number|Object>} configuredOptions An array of options taken from configuration.
+ * @param {Array.<String|Number|Object>} configuredOptions An array of options taken from the configuration.
  * @returns {Array.<module:font/fontsize~FontSizeOption>}
  */
 export function normalizeOptions( configuredOptions ) {

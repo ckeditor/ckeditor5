@@ -10,7 +10,7 @@
 import FontCommand from '../fontcommand';
 
 /**
- * The font size command. It is used by the {@link module:font/fontsize/fontsizeediting~FontSizeEditing}
+ * The font size command. It is used by {@link module:font/fontsize/fontsizeediting~FontSizeEditing}
  * to apply the font size.
  *
  *		editor.execute( 'fontSize', { value: 'small' } );

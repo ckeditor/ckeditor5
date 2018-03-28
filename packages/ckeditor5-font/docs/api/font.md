@@ -11,7 +11,7 @@ This package implements the font family and font size features for CKEditor 5.
 ## Documentation
 
 See the {@link features/font Font feature} guide 
-with corresponding {@link module:font/fontfamily~FontFamily} and {@link module:font/fontsize~FontSize} plugin documentation.
+with the corresponding {@link module:font/fontfamily~FontFamily} and {@link module:font/fontsize~FontSize} plugins documentation.
 
 ## Installation
 

@@ -6,8 +6,8 @@ category: features
 {@snippet features/build-font-source}
 
 The {@link module:font/font~Font} plugin enables the following features in the editor:
-* {@link module:font/fontfamily~FontFamily} – allows to change the font family by applying inline `<span>` elements with a `font-family` in the `style` attribute,
-* {@link module:font/fontsize~FontSize} – allows to control size by applying inline `<span>` elements that either have a CSS class or a `font-size` in the `style` attribute.
+* {@link module:font/fontfamily~FontFamily} &ndash; Allows to change the font family by applying inline `<span>` elements with a `font-family` in the `style` attribute.
+* {@link module:font/fontsize~FontSize} &ndash; Allows to control the font size by applying inline `<span>` elements that either have a CSS class or a `font-size` in the `style` attribute.
 
 ## Demo
 
@@ -17,9 +17,9 @@ The {@link module:font/font~Font} plugin enables the following features in the e
 
 It is possible to configure which font family options are supported by the editor. Use the {@link module:font/fontfamily~FontFamilyConfig#options `fontFamily.options`} configuration option to do so.
 
-Use the special `'default'` keyword to use the default `font-family` defined in the web page styles (removes any custom font family).
+Use the special `'default'` keyword to use the default font family defined in the web page styles. It removes any custom font family.
 
-For example, the following editor supports only two font families besides the "default" one:
+For example, the following editor supports only two font families besides the default one:
 
 ```js
 ClassicEditor
@@ -45,9 +45,9 @@ ClassicEditor
 
 It is possible to configure which font size options are supported by the editor. Use the {@link module:font/fontsize~FontSizeConfig#options `fontSize.options`} configuration option to do so.
 
-Use the special `'normal'` keyword to use the default font size defined in the web page styles (removes any custom size).
+Use the special `'normal'` keyword to use the default font size defined in the web page styles. It removes any custom font size.
 
-The font size feature supports two ways of defining configuration: using  predefined (named) presets or simple numeric values.
+The font size feature supports two ways of defining the configuration: using  predefined (named) presets or simple numeric values.
 
 ### Using the predefined presets
 
@@ -64,7 +64,7 @@ Each size is represented in the view as a `<span>` element with the `text-*` cla
 <span class="text-tiny">...</span>
 ```
 
-The CSS definition for the classes (presets) must be included in the web page's styles where the edited content is rendered.
+The CSS definition for the classes (presets) must be included in the web page styles where the edited content is rendered.
 
 Here is an example of the font size CSS classes:
 
@@ -147,13 +147,13 @@ ClassicEditor
 
 ## Installation
 
-To add this feature to your editor install the [`@ckeditor/ckeditor5-font`](https://www.npmjs.com/package/@ckeditor/ckeditor5-font) package:
+To add this feature to your editor, install the [`@ckeditor/ckeditor5-font`](https://www.npmjs.com/package/@ckeditor/ckeditor5-font) package:
 
-```
+```bash
 npm install --save @ckeditor/ckeditor5-font
 ```
 
-And add it to your plugin list and the toolbar configuration:
+Then add it to your plugin list and the toolbar configuration:
 
 ```js
 import Font from '@ckeditor/ckeditor5-font/src/font';
@@ -167,7 +167,7 @@ ClassicEditor
 	.catch( ... );
 ```
 
-or add one of the font features to your plugin list and the toolbar configuration:
+You can also add one of the font features to your plugin list and the toolbar configuration:
 
 ```js
 import FontFamily from '@ckeditor/ckeditor5-font/src/fontfamily';
@@ -249,7 +249,8 @@ The {@link module:font/fontsize~FontSize} plugin registers the following compone
 	// For named presets:
 	editor.execute( 'fontSize', { value: 'small' } );
 	```
-	passing an empty value will remove any `fontSize` set:
+	
+	Passing an empty value will remove any `fontSize` set:
 
 	```js
 	editor.execute( 'fontSize' );
