@@ -834,16 +834,16 @@ export default class Writer {
 		if ( markerOrNameOrRange instanceof Range ) {
 			markerName = uid();
 			newRange = markerOrNameOrRange;
-			usingOperation = !!rangeOrOptions && !!rangeOrOptions.usingOperation;
+			usingOperation = _checkUsingOptionsIsDefined( rangeOrOptions );
 		} else {
 			markerName = typeof markerOrNameOrRange === 'string' ? markerOrNameOrRange : markerOrNameOrRange.name;
 
 			if ( rangeOrOptions instanceof Range ) {
 				newRange = rangeOrOptions;
-				usingOperation = !!options && !!options.usingOperation;
+				usingOperation = _checkUsingOptionsIsDefined( options );
 			} else {
 				newRange = null;
-				usingOperation = !!rangeOrOptions && !!rangeOrOptions.usingOperation;
+				usingOperation = _checkUsingOptionsIsDefined( rangeOrOptions );
 			}
 		}
 
@@ -884,6 +884,16 @@ export default class Writer {
 		}
 
 		return this.model.markers.get( markerName );
+
+		function _checkUsingOptionsIsDefined( options ) {
+			if ( !options || typeof options.usingOperation != 'boolean' ) {
+				throw new CKEditorError(
+					'writer-setMarker-no-usingOperations: The options.usingOperations parameter is required when adding a new marker.'
+				);
+			}
+
+			return options.usingOperation;
+		}
 	}
 
 	/**

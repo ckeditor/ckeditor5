@@ -1952,14 +1952,32 @@ describe( 'Writer', () => {
 			range = Range.createIn( root );
 		} );
 
+		it( 'should throw if options.usingOperations is not defined', () => {
+			expect( () => {
+				setMarker( 'name' );
+			} ).to.throw( CKEditorError, /^writer-setMarker-no-usingOperations/ );
+		} );
+
+		it( 'should throw if name and range is defined but options.usingOperations is not defined', () => {
+			expect( () => {
+				setMarker( 'name', range );
+			} ).to.throw( CKEditorError, /^writer-setMarker-no-usingOperations/ );
+		} );
+
+		it( 'should throw range is defined but options.usingOperations is not defined', () => {
+			expect( () => {
+				setMarker( range );
+			} ).to.throw( CKEditorError, /^writer-setMarker-no-usingOperations/ );
+		} );
+
 		it( 'should add marker to the document marker collection', () => {
-			setMarker( 'name', range );
+			setMarker( 'name', range, { usingOperation: false } );
 
 			expect( model.markers.get( 'name' ).getRange().isEqual( range ) ).to.be.true;
 		} );
 
 		it( 'should return marker if that was set directly', () => {
-			const marker = setMarker( 'name', range );
+			const marker = setMarker( 'name', range, { usingOperation: false } );
 
 			expect( model.markers.get( 'name' ) ).to.equal( marker );
 		} );
@@ -1977,16 +1995,16 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should return marker with properly set managedUsingOperations (to false)', () => {
-			const marker = setMarker( 'name', range );
+			const marker = setMarker( 'name', range, { usingOperation: false } );
 
 			expect( marker.managedUsingOperations ).to.equal( false );
 		} );
 
 		it( 'should update marker in the document marker collection', () => {
-			const marker = setMarker( 'name', range );
+			const marker = setMarker( 'name', range, { usingOperation: false } );
 
 			const range2 = Range.createFromParentsAndOffsets( root, 0, root, 0 );
-			setMarker( 'name', range2 );
+			setMarker( 'name', range2, { usingOperation: false } );
 
 			expect( marker.getRange().isEqual( range2 ) ).to.be.true;
 		} );
@@ -2023,7 +2041,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should create a unique id if the first param is type of range', () => {
-			const marker = setMarker( range );
+			const marker = setMarker( range, { usingOperation: false } );
 
 			expect( marker.name ).to.be.a( 'string' );
 		} );
@@ -2060,7 +2078,7 @@ describe( 'Writer', () => {
 
 		it( 'should throw if marker is set directly and range is not passed', () => {
 			expect( () => {
-				setMarker( 'name' );
+				setMarker( 'name', { usingOperation: false } );
 			} ).to.throw( CKEditorError, /^writer-setMarker-no-range/ );
 		} );
 
@@ -2069,7 +2087,7 @@ describe( 'Writer', () => {
 			model.on( 'applyOperation', spy );
 
 			setMarker( 'name', range, { usingOperation: true } );
-			const marker = setMarker( 'name', range );
+			const marker = setMarker( 'name', range, { usingOperation: false } );
 			const op1 = batch.deltas[ 0 ].operations[ 0 ];
 			const op2 = batch.deltas[ 1 ].operations[ 0 ];
 
@@ -2090,7 +2108,7 @@ describe( 'Writer', () => {
 			const spy = sinon.spy();
 			model.on( 'applyOperation', spy );
 
-			setMarker( 'name', range );
+			setMarker( 'name', range, { usingOperation: false } );
 			const marker = setMarker( 'name', range, { usingOperation: true } );
 
 			expect( spy.calledOnce ).to.be.true;
@@ -2100,7 +2118,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
-			const marker = setMarker( 'name', range );
+			const marker = setMarker( 'name', range, { usingOperation: false } );
 			const writer = new Writer( model, batch );
 
 			expect( () => {
@@ -2119,7 +2137,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should remove marker from the document marker collection', () => {
-			setMarker( 'name', range );
+			setMarker( 'name', range, { usingOperation: false } );
 			removeMarker( 'name' );
 
 			expect( model.markers.get( 'name' ) ).to.be.null;
@@ -2140,7 +2158,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should accept marker instance', () => {
-			setMarker( 'name', range );
+			setMarker( 'name', range, { usingOperation: false } );
 			const marker = model.markers.get( 'name' );
 
 			removeMarker( marker );
