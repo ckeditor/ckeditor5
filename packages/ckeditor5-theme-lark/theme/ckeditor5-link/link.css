@@ -6,5 +6,4 @@
 /* Class added to span element surrounding currently selected link. */
 .ck.ck-link_selected {
 	background: var(--ck-color-link-selected-background);
-	outline: 1px solid var(--ck-color-link-selected-background);
 }
