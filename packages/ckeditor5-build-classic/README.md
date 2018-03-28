@@ -21,7 +21,7 @@ See:
 
 First, install the build from npm:
 
-```
+```bash
 npm install --save @ckeditor/ckeditor5-build-classic
 ```
 
@@ -49,7 +49,7 @@ Or in your JavaScript application:
 ```js
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
-// Or using CommonJS verion:
+// Or using the CommonJS version:
 // const ClassicEditor = require( '@ckeditor/ckeditor5-build-classic' );
 
 ClassicEditor
