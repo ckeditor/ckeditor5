@@ -1,4 +1,4 @@
-CKEditor 5 decoupled document build
+CKEditor 5 document editor build
 ========================================
 
 [![Join the chat at https://gitter.im/ckeditor/ckeditor5](https://badges.gitter.im/ckeditor/ckeditor5.svg)](https://gitter.im/ckeditor/ckeditor5?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
@@ -6,7 +6,7 @@ CKEditor 5 decoupled document build
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-build-decoupled-document/status.svg)](https://david-dm.org/ckeditor/ckeditor5-build-decoupled-document)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-build-decoupled-document/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-build-decoupled-document?type=dev)
 
-The decoupled document build for CKEditor 5. Read more about the [decoupled document build]((https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/builds/guides/overview.html#document-editor) and see the [demo](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/examples/builds/document-editor.html).
+The document editor build for CKEditor 5, featuring the decoupled UI editor implementation. Read more about the [document editor build](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/builds/guides/overview.html#document-editor) and see the [demo](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/examples/builds/document-editor.html).
 
 ## Documentation
 
@@ -21,7 +21,7 @@ See:
 
 First, install the build from npm:
 
-```
+```bash
 npm install --save @ckeditor/ckeditor5-build-decoupled-document
 ```
 
@@ -52,7 +52,7 @@ Or in your JavaScript application:
 ```js
 import DecoupledDocumentEditor from '@ckeditor/ckeditor5-build-decoupled-document';
 
-// Or using CommonJS verion:
+// Or using the CommonJS version:
 // const DecoupledDocumentEditor = require( '@ckeditor/ckeditor5-build-decoupled-document' );
 
 DecoupledDocumentEditor
