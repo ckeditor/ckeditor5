@@ -15,6 +15,8 @@ import '../theme/imagecaption.css';
 /**
  * The image caption plugin.
  *
+ * For a detailed overview, check the {@glink features/image#image-captions image caption} documentation.
+ *
  * @extends module:core/plugin~Plugin
  */
 export default class ImageCaption extends Plugin {

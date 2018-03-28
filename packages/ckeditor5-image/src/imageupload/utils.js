@@ -10,7 +10,7 @@
 import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 
 /**
- * Checks if given file is an image.
+ * Checks if a given file is an image.
  *
  * @param {File} file
  * @returns {Boolean}
@@ -24,16 +24,16 @@ export function isImageType( file ) {
 /**
  * Returns a model position which is optimal (in terms of UX) for inserting an image.
  *
- * For instance, if a selection is in a middle of a paragraph, position before this paragraph
- * will be returned, so that it's not split. If the selection is at the end of a paragraph,
- * position after this paragraph will be returned.
+ * For instance, if a selection is in the middle of a paragraph, the position before this paragraph
+ * will be returned so that it is not split. If the selection is at the end of a paragraph,
+ * the position after this paragraph will be returned.
  *
- * Note: If selection is placed in an empty block, that block will be returned. If that position
- * is then passed to {@link module:engine/model/model~Model#insertContent}
- * that block will be fully replaced by the image.
+ * Note: If the selection is placed in an empty block, that block will be returned. If that position
+ * is then passed to {@link module:engine/model/model~Model#insertContent},
+ * the block will be fully replaced by the image.
  *
  * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
- * Selection based on which the insertion position should be calculated.
+ * The selection based on which the insertion position should be calculated.
  * @returns {module:engine/model/position~Position} The optimal position.
  */
 export function findOptimalInsertionPosition( selection ) {

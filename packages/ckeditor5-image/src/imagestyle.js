@@ -17,6 +17,8 @@ import ImageStyleUI from './imagestyle/imagestyleui';
  * It loads the {@link module:image/imagestyle/imagestyleediting~ImageStyleEditing}
  * and {@link module:image/imagestyle/imagestyleui~ImageStyleUI} plugins.
  *
+ * For a detailed overview, check the {@glink features/image#image-styles image styles} documentation.
+ *
  * @extends module:core/plugin~Plugin
  */
 export default class ImageStyle extends Plugin {
@@ -46,7 +48,7 @@ export default class ImageStyle extends Plugin {
  *
  * which configures two default styles:
  *
- *  * the "full" style which doesn't apply any class, e.g. for images styled to span 100% width of the content,
+ *  * the "full" style which does not apply any class, e.g. for images styled to span 100% width of the content,
  *  * the "side" style with the `.image-style-side` CSS class.
  *
  * See {@link module:image/imagestyle/utils~defaultStyles} to learn more about default
@@ -54,7 +56,7 @@ export default class ImageStyle extends Plugin {
  *
  * The {@link module:image/imagestyle/utils~defaultStyles default styles} can be customized,
  * e.g. to change the icon, title or CSS class of the style. The feature also provides several
- * {@link module:image/imagestyle/utils~defaultIcons default icons} to chose from.
+ * {@link module:image/imagestyle/utils~defaultIcons default icons} to choose from.
  *
  *		import customIcon from 'custom-icon.svg';
  *
@@ -71,7 +73,7 @@ export default class ImageStyle extends Plugin {
  *			]
  *		};
  *
- * If none of the default styles is good enough, it is possible to define independent custom styles too:
+ * If none of the default styles is good enough, it is possible to define independent custom styles, too:
  *
  *		import fullSizeIcon from '@ckeditor/ckeditor5-core/theme/icons/object-center.svg';
  *		import sideIcon from '@ckeditor/ckeditor5-core/theme/icons/object-right.svg';
@@ -97,7 +99,7 @@ export default class ImageStyle extends Plugin {
  *
  *		editor.execute( 'imageStyle' { value: 'side' } );
  *
- * The feature creates also buttons which execute the command. So, assuming that you use the
+ * The feature also creates buttons that execute the commands. So, assuming that you use the
  * default image styles setting, you can {@link module:image/image~ImageConfig#toolbar configure the image toolbar}
  * (or any other toolbar) to contain these options:
  *

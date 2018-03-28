@@ -24,8 +24,8 @@ import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 
 /**
  * The image engine plugin.
- * Registers `<image>` as a block element in the document schema, and allows `alt`, `src` and `srcset` attributes.
- * Registers converters for editing and data pipelines.
+ * It registers `<image>` as a block element in the document schema, and allows `alt`, `src` and `srcset` attributes.
+ * It also egisters converters for editing and data pipelines.
  *
  * @extends module:core/plugin~Plugin
  */

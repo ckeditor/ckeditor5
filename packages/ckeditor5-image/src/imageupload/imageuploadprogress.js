@@ -16,8 +16,8 @@ import ViewRange from '@ckeditor/ckeditor5-engine/src/view/range';
 import '../../theme/imageuploadprogress.css';
 
 /**
- * Image upload progress plugin.
- * Shows placeholder when image is read from disk and progress bar while image is uploading.
+ * The image upload progress plugin.
+ * It shows a placeholder when the image is read from the disk and a progress bar while the image is uploading.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -29,7 +29,7 @@ export default class ImageUploadProgress extends Plugin {
 		super( editor );
 
 		/**
-		 * Image's placeholder that is displayed before real image data can be accessed.
+		 * The image placeholder that is displayed before real image data can be accessed.
 		 *
 		 * @protected
 		 * @member {String} #placeholder
@@ -48,9 +48,9 @@ export default class ImageUploadProgress extends Plugin {
 	}
 
 	/**
-	 * This ethod is called each time image's `uploadStatus` attribute is changed.
+	 * This method is called each time the image `uploadStatus` attribute is changed.
 	 *
-	 * @param {module:utils/eventinfo~EventInfo} evt Object containing information about the fired event.
+	 * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
 	 * @param {Object} data Additional information about the change.
 	 * @param {module:engine/conversion/modelconsumable~ModelConsumable} consumable Values to consume.
 	 * @param {Object} conversionApi
