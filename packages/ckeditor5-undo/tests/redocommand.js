@@ -282,10 +282,10 @@ describe( 'RedoCommand', () => {
 				sinon.assert.calledOnce( enqueueChangeSpy );
 				sinon.assert.calledOnce( undoSpy );
 
-				const redoingbatch = enqueueChangeSpy.firstCall.args[ 0 ];
+				const redoingBatch = enqueueChangeSpy.firstCall.args[ 0 ];
 
-				expect( redoingbatch instanceof Batch ).to.be.true;
-				expect( undoSpy.firstCall.args[ 1 ] ).to.equal( redoingbatch );
+				expect( redoingBatch instanceof Batch ).to.be.true;
+				expect( undoSpy.firstCall.args[ 1 ] ).to.equal( redoingBatch );
 			} );
 		} );
 	} );

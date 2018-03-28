@@ -122,7 +122,7 @@ export default class BaseCommand extends Command {
 	 *
 	 * @protected
 	 * @param {module:engine/model/batch~Batch} batchToUndo The batch to be undone.
-	 * @param {module:engine/model/batch~Batch} undoingBatch The batch with undoing changes.
+	 * @param {module:engine/model/batch~Batch} undoingBatch The batch that will contain undoing changes.
 	 */
 	_undo( batchToUndo, undoingBatch ) {
 		const model = this.editor.model;
