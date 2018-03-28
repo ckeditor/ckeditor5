@@ -182,8 +182,7 @@ export default class ImageTextAlternativeUI extends Plugin {
 	}
 
 	/**
-	 * Returns `true` when the {@link #_form} is the visible view
-	 * in the {@link #_balloon}.
+	 * Returns `true` when the {@link #_form} is the visible view in the {@link #_balloon}.
 	 *
 	 * @private
 	 * @type {Boolean}

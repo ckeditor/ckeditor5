@@ -67,7 +67,7 @@ export default class ImageStyleEditing extends Plugin {
 }
 
 /**
- * Image style format descriptor.
+ * The image style format descriptor.
  *
  *		import fullSizeIcon from 'path/to/icon.svg';
  *
@@ -82,21 +82,21 @@ export default class ImageStyleEditing extends Plugin {
  *
  * @property {String} name The unique name of the style. It will be used to:
  *
- * * store the chosen style in the model by setting the `imageStyle` attribute of the `<image>` element,
- * * as a value of the {@link module:image/imagestyle/imagestylecommand~ImageStyleCommand#execute `imageStyle` command},
- * * when registering button for each of the styles (`'imageStyle:{name}'`) in the
+ * * Store the chosen style in the model by setting the `imageStyle` attribute of the `<image>` element.
+ * * As a value of the {@link module:image/imagestyle/imagestylecommand~ImageStyleCommand#execute `imageStyle` command},
+ * * when registering a button for each of the styles (`'imageStyle:{name}'`) in the
  * {@link module:ui/componentfactory~ComponentFactory UI components factory} (this functionality is provided by the
- * {@link module:image/imagestyle/imagestyleui~ImageStyleUI} plugin),
+ * {@link module:image/imagestyle/imagestyleui~ImageStyleUI} plugin).
  *
  * @property {Boolean} [isDefault] When set, the style will be used as the default one.
  * A default style does not apply any CSS class to the view element.
  *
  * @property {String} icon One of the following to be used when creating the style's button:
  *
- * * An SVG icon source (as an XML string),
+ * * An SVG icon source (as an XML string).
  * * One of {@link module:image/imagestyle/utils~defaultIcons} to use a default icon provided by the plugin.
  *
  * @property {String} title The style's title.
  *
- * @property {String} className The CSS class used to represent the style in view.
+ * @property {String} className The CSS class used to represent the style in the view.
  */

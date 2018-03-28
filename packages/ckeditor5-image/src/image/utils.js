@@ -14,12 +14,12 @@ const imageSymbol = Symbol( 'isImage' );
 
 /**
  * Converts a given {@link module:engine/view/element~Element} to an image widget:
- * * adds a {@link module:engine/view/element~Element#_setCustomProperty custom property} allowing to recognize the image widget element,
- * * calls the {@link module:widget/utils~toWidget toWidget} function with the proper element's label creator.
+ * * Adds a {@link module:engine/view/element~Element#_setCustomProperty custom property} allowing to recognize the image widget element.
+ * * Calls the {@link module:widget/utils~toWidget} function with the proper element's label creator.
  *
  * @param {module:engine/view/element~Element} viewElement
- * @param {module:engine/view/writer~Writer} writer Instance of view writer.
- * @param {String} label Element's label. It will be concatenated with the image `alt` attribute if one is present.
+ * @param {module:engine/view/writer~Writer} writer An instance of the view writer.
+ * @param {String} label The element's label. It will be concatenated with the image `alt` attribute if one is present.
  * @returns {module:engine/view/element~Element}
  */
 export function toImageWidget( viewElement, writer, label ) {
