@@ -541,14 +541,16 @@ export default class Renderer {
 	 * @private
 	 * @param {module:engine/view/node~Node} viewNode View node to sync.
 	 */
-	_markDescendantTextToSync( viewElement ) {
-		if ( viewElement ) {
-			if ( viewElement.is( 'text' ) ) {
-				this.markedTexts.add( viewElement );
-			} else if ( viewElement.is( 'element' ) ) {
-				for ( const child of viewElement.getChildren() ) {
-					this._markDescendantTextToSync( child );
-				}
+	_markDescendantTextToSync( viewNode ) {
+		if ( !viewNode ) {
+			return;
+		}
+
+		if ( viewNode.is( 'text' ) ) {
+			this.markedTexts.add( viewNode );
+		} else if ( viewNode.is( 'element' ) ) {
+			for ( const child of viewNode.getChildren() ) {
+				this._markDescendantTextToSync( child );
 			}
 		}
 	}
