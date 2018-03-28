@@ -498,7 +498,7 @@ export default class Renderer {
 				nodesToUnbind.add( actualDomChildren[ i ] );
 				remove( actualDomChildren[ i ] );
 			} else { // 'equal'
-				// Inserted nodes are already up to date, so we mark to sync those which was not rerendered (#1125).
+				// Force updating text nodes inside elements which did not change and do not need to be re-rendered (#1125).
 				this._markDescendantTextToSync( domConverter.domToView( expectedDomChildren[ i ] ) );
 				i++;
 			}
@@ -534,11 +534,12 @@ export default class Renderer {
 	}
 
 	/**
-	 * Marks all text nodes in a tree starting from passed element to be synced.
+	 * Marks text nodes to be synced.
+	 *
+	 * If a text node is passed, it will be marked. If an element is passed, all descendant text nodes inside it will be marked.
 	 *
 	 * @private
-	 * @param {module:engine/view/element~Element} viewElement View element whose all 'text' children should
-	 * be marked to sync. If element is 'text' itself it will be marked too.
+	 * @param {module:engine/view/node~Node} viewNode View node to sync.
 	 */
 	_markDescendantTextToSync( viewElement ) {
 		if ( viewElement ) {
