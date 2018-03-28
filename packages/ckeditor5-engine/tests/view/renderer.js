@@ -15,6 +15,7 @@ import ViewPosition from '../../src/view/position';
 import DocumentSelection from '../../src/view/documentselection';
 import DomConverter from '../../src/view/domconverter';
 import Renderer from '../../src/view/renderer';
+import DocumentFragment from '../../src/view/documentfragment';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { parse, setData as setViewData, getData as getViewData } from '../../src/dev-utils/view';
 import { INLINE_FILLER, INLINE_FILLER_LENGTH, isBlockFiller, BR_FILLER } from '../../src/view/filler';
@@ -1355,6 +1356,310 @@ describe( 'Renderer', () => {
 			expect( domFocusSpy.called ).to.be.false;
 		} );
 
+		it( 'should render NBSP as first space in inline element after another space', () => {
+			const viewP = parse( '<container:p>x <attribute:b>y</attribute:b></container:p>' );
+
+			viewRoot._appendChildren( viewP );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			const domP = domRoot.childNodes[ 0 ];
+			const domB = domP.childNodes[ 1 ];
+
+			expect( domP.childNodes[ 0 ].data ).to.equal( 'x ' );
+			expect( domB.childNodes[ 0 ].data ).to.equal( 'y' );
+			expect( domP.innerHTML ).to.equal( 'x <b>y</b>' );
+
+			// Insert space resulting in '<p>x <b> y</b></p>'.
+			const viewB = viewP.getChild( 1 );
+			viewB._removeChildren( 0 );
+			viewB._appendChildren( new ViewText( ' y' ) );
+
+			renderer.markToSync( 'children', viewP );
+			renderer.render();
+
+			expect( domP.childNodes[ 0 ].data ).to.equal( 'x ' );
+			expect( domB.childNodes[ 0 ].data ).to.equal( '\u00A0y' );
+			expect( domP.innerHTML ).to.equal( 'x <b>&nbsp;y</b>' );
+		} );
+
+		it( 'should update sibling after, when node before is removed', () => {
+			const viewP = parse( '<container:p>x<attribute:b> y</attribute:b></container:p>' );
+
+			viewRoot._appendChildren( viewP );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			const domP = domRoot.childNodes[ 0 ];
+			const domB = domP.childNodes[ 1 ];
+
+			expect( domP.childNodes[ 0 ].data ).to.equal( 'x' );
+			expect( domB.childNodes[ 0 ].data ).to.equal( ' y' );
+			expect( domP.innerHTML ).to.equal( 'x<b> y</b>' );
+
+			// Remove 'x' resulting in '<p><b> y</b></p>'.
+			viewP._removeChildren( 0 );
+
+			renderer.markToSync( 'children', viewP );
+			renderer.render();
+
+			expect( domB.childNodes[ 0 ].data ).to.equal( '\u00A0y' );
+			expect( domP.innerHTML ).to.equal( '<b>&nbsp;y</b>' );
+		} );
+
+		it( 'should update sibling before, when node after is removed', () => {
+			const viewP = parse( '<container:p>x <attribute:b>y</attribute:b></container:p>' );
+
+			viewRoot._appendChildren( viewP );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			const domP = domRoot.childNodes[ 0 ];
+			const domB = domP.childNodes[ 1 ];
+
+			expect( domP.childNodes[ 0 ].data ).to.equal( 'x ' );
+			expect( domB.childNodes[ 0 ].data ).to.equal( 'y' );
+			expect( domP.innerHTML ).to.equal( 'x <b>y</b>' );
+
+			// Remove '<b>y</b>' resulting in '<p>x </p>'.
+			viewP._removeChildren( 1 );
+
+			renderer.markToSync( 'children', viewP );
+			renderer.render();
+
+			expect( domP.childNodes[ 0 ].data ).to.equal( 'x\u00A0' );
+			expect( domP.innerHTML ).to.equal( 'x&nbsp;' );
+		} );
+
+		// #1093
+		it( 'should update siblings after space is inserted in element before - text-element', () => {
+			const viewP = parse( '<container:p>x<attribute:b> y</attribute:b></container:p>' );
+
+			viewRoot._appendChildren( viewP );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			const domP = domRoot.childNodes[ 0 ];
+			const domB = domP.childNodes[ 1 ];
+
+			expect( domP.childNodes[ 0 ].data ).to.equal( 'x' );
+			expect( domB.childNodes[ 0 ].data ).to.equal( ' y' );
+			expect( domP.innerHTML ).to.equal( 'x<b> y</b>' );
+
+			// Insert space resulting in '<p>x <b> y</b></p>'.
+			viewP._removeChildren( 0 );
+			viewP._insertChildren( 0, new ViewText( 'x ' ) );
+
+			renderer.markToSync( 'children', viewP );
+			renderer.render();
+
+			expect( domP.childNodes[ 0 ].data ).to.equal( 'x ' );
+			expect( domB.childNodes[ 0 ].data ).to.equal( '\u00A0y' );
+			expect( domP.innerHTML ).to.equal( 'x <b>&nbsp;y</b>' );
+		} );
+
+		// #1093
+		it( 'should update siblings after space is inserted in element before - element-text', () => {
+			const viewP = parse( '<container:p><attribute:b>x</attribute:b> y</container:p>' );
+
+			viewRoot._appendChildren( viewP );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			const domP = domRoot.childNodes[ 0 ];
+			const domB = domP.childNodes[ 0 ];
+
+			expect( domB.childNodes[ 0 ].data ).to.equal( 'x' );
+			expect( domP.childNodes[ 1 ].data ).to.equal( ' y' );
+			expect( domP.innerHTML ).to.equal( '<b>x</b> y' );
+
+			// Insert space resulting in '<p><b>x </b> y</p>'.
+			const viewB = viewP.getChild( 0 );
+			viewB._removeChildren( 0 );
+			viewB._insertChildren( 0, new ViewText( 'x ' ) );
+
+			renderer.markToSync( 'children', viewP );
+			renderer.render();
+
+			expect( domB.childNodes[ 0 ].data ).to.equal( 'x ' );
+			expect( domP.childNodes[ 1 ].data ).to.equal( '\u00A0y' );
+			expect( domP.innerHTML ).to.equal( '<b>x </b>&nbsp;y' );
+		} );
+
+		// #1093
+		it( 'should update siblings after space is inserted in element before - element-element', () => {
+			const viewP = parse( '<container:p><attribute:b>x</attribute:b><attribute:i> y</attribute:i></container:p>' );
+
+			viewRoot._appendChildren( viewP );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			const domP = domRoot.childNodes[ 0 ];
+			const domB = domP.childNodes[ 0 ];
+			const domI = domP.childNodes[ 1 ];
+
+			expect( domB.childNodes[ 0 ].data ).to.equal( 'x' );
+			expect( domI.childNodes[ 0 ].data ).to.equal( ' y' );
+			expect( domP.innerHTML ).to.equal( '<b>x</b><i> y</i>' );
+
+			// Insert space resulting in '<p><b>x </b><i> y</i></p>'.
+			const viewB = viewP.getChild( 0 );
+			viewB._removeChildren( 0 );
+			viewB._insertChildren( 0, new ViewText( 'x ' ) );
+
+			renderer.markToSync( 'children', viewP );
+			renderer.render();
+
+			expect( domB.childNodes[ 0 ].data ).to.equal( 'x ' );
+			expect( domI.childNodes[ 0 ].data ).to.equal( '\u00A0y' );
+			expect( domP.innerHTML ).to.equal( '<b>x </b><i>&nbsp;y</i>' );
+		} );
+
+		// #1125
+		it( 'should properly rerender many changes done in one batch', () => {
+			// This test transforms:
+			//
+			//		<h2>He<strong>ding 1</strong></h2>
+			//		<p>Ph <strong>Bold</strong> <i>It<strong>alic</strong></i> <a><strong>Lin</strong>k</a></p>
+			//		<blockquote><ul><li>Quoted <strong>item 1</strong></li></ul></blockquote>
+			//
+			// into:
+			//
+			//		<h2>Heading 2</h2>
+			//		<p>Ph <i><strong>Italic</strong></i> <a><strong>L</strong>ink 1</a></p>
+			//		<blockquote><p>Qu<strong>ote</strong></p><ul><li><strong>Quoted item 1</strong></li></ul></blockquote>
+			//
+			// during one rerender to check if complex structure changes are rerendered correctly.
+			const viewContent = parse( '' +
+				'<container:h2>He' +
+					'<attribute:i>ading 1</attribute:i>' +
+				'</container:h2>' +
+				'<container:p>Ph ' +
+					'<attribute:strong>Bold</attribute:strong> ' +
+					'<attribute:i>It' +
+						'<attribute:strong>alic</attribute:strong>' +
+					'</attribute:i> ' +
+					'<attribute:a href="https://ckeditor.com">' +
+						'<attribute:strong>Lin</attribute:strong>' +
+					'k</attribute:a>' +
+				'</container:p>' +
+				'<container:blockquote>' +
+					'<container:ul>' +
+						'<container:li>Quoted <attribute:strong>item 1</attribute:strong></container:li>' +
+					'</container:ul>' +
+				'</container:blockquote>' );
+
+			viewRoot._appendChildren( viewContent );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			// '<h2>He<i>ading 1</i></h2>' -> '<h2>Heading 2</h2>'
+			const viewHeading = viewRoot.getChild( 0 );
+			viewHeading._removeChildren( 0, viewHeading.childCount );
+			viewHeading._insertChildren( 0, new ViewText( 'Heading 2' ) );
+
+			// Usually whole subtree is marked to sync so we mark root, changed element and all its direct children.
+			renderer.markToSync( 'children', viewRoot );
+			renderer.markToSync( 'children', viewHeading );
+			renderer.markToSync( 'text', viewHeading.getChild( 0 ) );
+
+			// '<p>Ph <strong>Bold</strong> <i>It<strong>alic</strong></i> <a><strong>Lin</strong>k</a></p>'
+			// ->
+			// '<p>Ph <i><strong>Italic</strong></i> <a><strong>L</strong>ink 1</a></p>'
+			const viewP = viewRoot.getChild( 1 );
+			viewP._removeChildren( 0, viewP.childCount );
+			viewP._insertChildren(
+				0,
+				parse(
+					'Ph <attribute:i><attribute:strong>Italic</attribute:strong></attribute:i> ' +
+					'<attribute:a href="https://ckeditor.com"><attribute:strong>L</attribute:strong>ink 1</attribute:a>'
+				)
+			);
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.markToSync( 'children', viewP );
+			renderer.markToSync( 'children', viewP.getChild( 1 ) );
+			renderer.markToSync( 'children', viewP.getChild( 3 ) );
+			renderer.markToSync( 'text', viewP.getChild( 0 ) );
+			renderer.markToSync( 'text', viewP.getChild( 2 ) );
+
+			// '<blockquote><ul><li>Quoted <strong>item 1</strong></li></ul></blockquote>'
+			// -> '<blockquote><p>Qu<strong>ote</strong></p><ul><li><strong>Quoted item 1</strong></li></ul></blockquote>'
+			const viewBq = viewRoot.getChild( 2 );
+			viewBq._removeChildren( 0, viewBq.childCount );
+			viewBq._insertChildren(
+				0,
+				parse(
+					'<container:p>Qu<attribute:strong>ote</attribute:strong></container:p>' +
+					'<container:ul><container:li><attribute:strong>Quoted item 1</attribute:strong></container:li></container:ul>'
+				)
+			);
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.markToSync( 'children', viewBq );
+			renderer.markToSync( 'children', viewBq.getChild( 0 ) );
+			renderer.markToSync( 'children', viewBq.getChild( 1 ) );
+
+			renderer.render();
+
+			expect( normalizeHtml( domRoot.innerHTML ) ).to.equal(
+				'<h2>Heading 2</h2>' +
+				'<p>Ph <i><strong>Italic</strong></i> <a href="https://ckeditor.com"><strong>L</strong>ink 1</a></p>' +
+				'<blockquote><p>Qu<strong>ote</strong></p><ul><li><strong>Quoted item 1</strong></li></ul></blockquote>'
+			);
+		} );
+
+		// #1125
+		it( 'should properly rerender changes when whole content replaced at once', () => {
+			// This test replaces:
+			//
+			//		<h1>Header</h1>
+			//		<blockquote><ul><li>Quoted <strong>item 1</strong></li><li>Item 2</li></ul></blockquote>
+			//
+			// with:
+			//
+			//		<h2>Header</h2>
+			//		<p>Not Quoted <strong>item 1</strong> and item 2</p>
+			//
+			// during one rerender to check if complex structure changes are rerendered correctly.
+			const viewContent = parse(
+				'<container:h1>Header</container:h1>' +
+				'<container:blockquote>' +
+					'<container:ul>' +
+						'<container:li>Quoted <attribute:strong>item 1</attribute:strong></container:li>' +
+						'<container:li>Item 2</container:li>' +
+					'</container:ul>' +
+				'</container:blockquote>'
+			);
+
+			viewRoot._appendChildren( viewContent );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			const newViewContent = parse(
+				'<container:h2>Header</container:h2>' +
+				'<container:p>Not Quoted <attribute:strong>item 1</attribute:strong> and item 2</container:p>'
+			);
+
+			viewRoot._removeChildren( 0, viewRoot.childCount );
+			viewRoot._appendChildren( newViewContent );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			expect( normalizeHtml( domRoot.innerHTML ) ).to.equal(
+				'<h2>Header</h2><p>Not Quoted <strong>item 1</strong> and item 2</p>'
+			);
+		} );
+
 		describe( 'fake selection', () => {
 			beforeEach( () => {
 				const { view: viewP, selection: newSelection } = parse(
@@ -2022,6 +2327,73 @@ describe( 'Renderer', () => {
 
 			return true;
 		}
+	} );
+
+	describe( '_markDescendantTextToSync', () => {
+		let viewRoot;
+
+		beforeEach( () => {
+			viewRoot = new ViewElement( 'div' );
+
+			renderer.markedTexts.clear();
+			renderer.markedAttributes.clear();
+			renderer.markedChildren.clear();
+		} );
+
+		it( 'should handle null values', () => {
+			// Such situation occurs when renderer encounters inline filler in 'renderer._updateChildren'.
+			renderer._markDescendantTextToSync( null );
+
+			expect( renderer.markedChildren.size ).to.equal( 0 );
+			expect( renderer.markedAttributes.size ).to.equal( 0 );
+			expect( renderer.markedTexts.size ).to.equal( 0 );
+		} );
+
+		it( 'should handle element nodes', () => {
+			const viewP = parse( '<container:p>foo<attribute:b>bar<attribute:i>baz</attribute:i></attribute:b></container:p>' );
+
+			viewRoot._appendChildren( viewP );
+
+			renderer._markDescendantTextToSync( viewP );
+
+			expect( renderer.markedChildren.size ).to.equal( 0 );
+			expect( renderer.markedAttributes.size ).to.equal( 0 );
+			expect( renderer.markedTexts.size ).to.equal( 3 );
+		} );
+
+		it( 'should handle text nodes', () => {
+			const viewP = parse( '<container:p><attribute:b>bar<attribute:i>baz</attribute:i></attribute:b></container:p>' );
+
+			viewRoot._appendChildren( viewP );
+
+			renderer._markDescendantTextToSync( viewP.getChild( 0 ).getChild( 0 ) );
+
+			expect( renderer.markedChildren.size ).to.equal( 0 );
+			expect( renderer.markedAttributes.size ).to.equal( 0 );
+			expect( renderer.markedTexts.size ).to.equal( 1 );
+		} );
+
+		it( 'should handle document fragment', () => {
+			const fragment = new DocumentFragment();
+
+			renderer._markDescendantTextToSync( fragment );
+
+			expect( renderer.markedChildren.size ).to.equal( 0 );
+			expect( renderer.markedAttributes.size ).to.equal( 0 );
+			expect( renderer.markedTexts.size ).to.equal( 0 );
+		} );
+
+		it( 'should handle empty element nodes', () => {
+			const viewP = parse( '<container:p></container:p>' );
+
+			viewRoot._appendChildren( viewP );
+
+			renderer._markDescendantTextToSync( viewP );
+
+			expect( renderer.markedChildren.size ).to.equal( 0 );
+			expect( renderer.markedAttributes.size ).to.equal( 0 );
+			expect( renderer.markedTexts.size ).to.equal( 0 );
+		} );
 	} );
 } );
 
