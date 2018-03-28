@@ -48,6 +48,10 @@ describe( 'UndoEditing integration', () => {
 			} );
 	} );
 
+	afterEach( () => {
+		return editor.destroy();
+	} );
+
 	function setSelection( pathA, pathB ) {
 		model.change( writer => {
 			writer.setSelection( new Range( new Position( root, pathA ), new Position( root, pathB ) ) );
