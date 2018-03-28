@@ -31,11 +31,11 @@ import isElement from '@ckeditor/ckeditor5-utils/src/lib/lodash/isElement';
  * In order to create a decoupled editor instance, use the static
  * {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`} method.
  *
- * # Decoupled editor and document build
+ * # Decoupled editor and document editor build
  *
  * The decoupled editor can be used directly from source (if you installed the
  * [`@ckeditor/ckeditor5-editor-decoupled`](https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-decoupled) package)
- * but it is also available in the {@glink builds/guides/overview#document-editor document build}.
+ * but it is also available in the {@glink builds/guides/overview#document-editor document editor build}.
  *
  * {@glink builds/guides/overview Builds} are ready-to-use editors with plugins bundled in. When using the editor from
  * source you need to take care of loading all plugins by yourself
@@ -123,7 +123,7 @@ export default class DecoupledEditor extends Editor {
 	/**
 	 * Creates a decoupled editor instance.
 	 *
-	 * Creating an instance when using the {@glink builds/index CKEditor build}:
+	 * Creating an instance when using the {@glink builds/index CKEditor 5 build}:
 	 *
 	 *		DecoupledEditor
 	 *			.create( document.querySelector( '#editor' ) )
