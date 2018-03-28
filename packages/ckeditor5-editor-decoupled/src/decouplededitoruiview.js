@@ -13,10 +13,10 @@ import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import Template from '@ckeditor/ckeditor5-ui/src/template';
 
 /**
- * The decoupled editor UI view. It's a virtual view providing an inline
+ * The decoupled editor UI view. It is a virtual view providing an inline
  * {@link module:editor-decoupled/decouplededitoruiview~DecoupledEditorUIView#editable} and a
  * {@link module:editor-decoupled/decouplededitoruiview~DecoupledEditorUIView#toolbar}, but without any
- * specific arrangement of the components in DOM.
+ * specific arrangement of the components in the DOM.
  *
  * See {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`}
  * to learn more about this view.
@@ -49,7 +49,7 @@ export default class DecoupledEditorUIView extends EditorUIView {
 		 */
 		this.editable = new InlineEditableUIView( locale, editableElement );
 
-		// This toolbar may be placed anywhere in the page so things like font-size needs to be reset in it.
+		// This toolbar may be placed anywhere in the page so things like font size need to be reset in it.
 		Template.extend( this.toolbar.template, {
 			attributes: {
 				class: 'ck-reset_all'

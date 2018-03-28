@@ -20,9 +20,9 @@ import isElement from '@ckeditor/ckeditor5-utils/src/lib/lodash/isElement';
 /**
  * The {@glink builds/guides/overview#decoupled-editor decoupled editor} implementation.
  * It provides an inline editable and a toolbar. However, unlike other editors,
- * it does not render these components anywhere in DOM unless configured.
+ * it does not render these components anywhere in the DOM unless configured.
  *
- * This type of an editor is dedicated for integrations which require a customized UI with an open
+ * This type of an editor is dedicated to integrations which require a customized UI with an open
  * structure, allowing developers to specify the exact location of the interface.
  *
  * See the document editor {@glink examples/builds/document-editor demo} to learn about possible use cases
@@ -40,7 +40,7 @@ import isElement from '@ckeditor/ckeditor5-utils/src/lib/lodash/isElement';
  * {@glink builds/guides/overview Builds} are ready-to-use editors with plugins bundled in. When using the editor from
  * source you need to take care of loading all plugins by yourself
  * (through the {@link module:core/editor/editorconfig~EditorConfig#plugins `config.plugins`} option).
- * Using the editor from source gives much better flexibility and allows easier customization.
+ * Using the editor from source gives much better flexibility and allows for easier customization.
  *
  * Read more about initializing the editor from source or as a build in
  * {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`}.
@@ -53,7 +53,7 @@ export default class DecoupledEditor extends Editor {
 	/**
 	 * Creates an instance of the decoupled editor.
 	 *
-	 * **Note:** do not use the constructor to create editor instances. Use the static
+	 * **Note:** Do not use the constructor to create editor instances. Use the static
 	 * {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`} method instead.
 	 *
 	 * @protected
@@ -123,7 +123,7 @@ export default class DecoupledEditor extends Editor {
 	/**
 	 * Creates a decoupled editor instance.
 	 *
-	 * Creating instance when using the {@glink builds/index CKEditor build}:
+	 * Creating an instance when using the {@glink builds/index CKEditor build}:
 	 *
 	 *		DecoupledEditor
 	 *			.create( document.querySelector( '#editor' ) )
@@ -137,7 +137,7 @@ export default class DecoupledEditor extends Editor {
 	 *				console.error( err.stack );
 	 *			} );
 	 *
-	 * Creating instance when using CKEditor from source (make sure to specify the list of plugins to load and the toolbar):
+	 * Creating an instance when using CKEditor from source (make sure to specify the list of plugins to load and the toolbar):
 	 *
 	 *		import DecoupledEditor from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor';
 	 *		import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
@@ -160,8 +160,8 @@ export default class DecoupledEditor extends Editor {
 	 *				console.error( err.stack );
 	 *			} );
 	 *
-	 * **Note**: It is possible to create the editor out of the pure data string. The editor will then render
-	 * an editable element that must be inserted into DOM for the editor to work properly:
+	 * **Note**: It is possible to create the editor out of a pure data string. The editor will then render
+	 * an editable element that must be inserted into the DOM for the editor to work properly:
 	 *
 	 *		DecoupledEditor
 	 *			.create( '<p>Editor data</p>' )

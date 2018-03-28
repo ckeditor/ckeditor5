@@ -63,7 +63,7 @@ export default class DecoupledEditorUI {
 
 		view.render();
 
-		// Setup the editable.
+		// Set up the editable.
 		const editingRoot = editor.editing.view.document.getRoot();
 		view.editable.bind( 'isReadOnly' ).to( editingRoot );
 		view.editable.bind( 'isFocused' ).to( editor.editing.view.document );
