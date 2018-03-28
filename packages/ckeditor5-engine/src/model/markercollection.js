@@ -163,6 +163,20 @@ export default class MarkerCollection {
 	}
 
 	/**
+	 * Returns iterator that iterates over all markers, which intersects with given {@link module:engine/model/range~Range range}.
+	 *
+	 * @param {module:engine/model/range~Range} range
+	 * @returns {Iterable.<module:engine/model/markercollection~Marker>}
+	 */
+	* getMarkersIntersectingRange( range ) {
+		for ( const marker of this ) {
+			if ( marker.getRange().getIntersection( range ) !== null ) {
+				yield marker;
+			}
+		}
+	}
+
+	/**
 	 * Destroys marker collection and all markers inside it.
 	 */
 	destroy() {

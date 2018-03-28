@@ -788,6 +788,13 @@ describe( 'Range', () => {
 			expect( common.start.path ).to.deep.equal( [ 3, 2 ] );
 			expect( common.end.path ).to.deep.equal( [ 4, 7 ] );
 		} );
+
+		it( 'should return a range equal to both ranges if both ranges are equal', () => {
+			const otherRange = Range.createFromRange( range );
+			const common = range.getIntersection( otherRange );
+
+			expect( common.isEqual( range ) ).to.be.true;
+		} );
 	} );
 
 	// Note: We don't create model element structure in these tests because this method

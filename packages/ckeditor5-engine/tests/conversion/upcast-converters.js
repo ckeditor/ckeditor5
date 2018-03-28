@@ -36,7 +36,7 @@ describe( 'upcast-helpers', () => {
 
 		schema.extend( '$text', {
 			allowIn: '$root',
-			allowAttributes: [ 'bold' ]
+			allowAttributes: [ 'bold', 'attribA', 'attribB' ]
 		} );
 
 		schema.register( 'paragraph', {
@@ -300,6 +300,49 @@ describe( 'upcast-helpers', () => {
 				'<$text bold="true">foo</$text>'
 			);
 		} );
+
+		it( 'should allow two converters to convert attributes on the same element', () => {
+			const helperA = upcastElementToAttribute( {
+				model: 'attribA',
+				view: { name: 'span', class: 'attrib-a' }
+			} );
+
+			const helperB = upcastElementToAttribute( {
+				model: 'attribB',
+				view: { name: 'span', style: { color: 'attrib-b' } }
+			} );
+
+			conversion.for( 'upcast' ).add( helperA ).add( helperB );
+
+			expectResult(
+				new ViewAttributeElement( 'span', { class: 'attrib-a', style: 'color:attrib-b;' }, new ViewText( 'foo' ) ),
+				'<$text attribA="true" attribB="true">foo</$text>'
+			);
+		} );
+
+		it( 'should consume element only when only is name specified', () => {
+			const helperBold = upcastElementToAttribute( {
+				model: 'bold',
+				view: { name: 'strong' }
+			} );
+
+			const helperA = upcastElementToAttribute( {
+				model: 'attribA',
+				view: { name: 'strong' }
+			} );
+
+			const helperB = upcastElementToAttribute( {
+				model: 'attribB',
+				view: { name: 'strong', class: 'foo' }
+			} );
+
+			conversion.for( 'upcast' ).add( helperBold ).add( helperA ).add( helperB );
+
+			expectResult(
+				new ViewAttributeElement( 'strong', { class: 'foo' }, new ViewText( 'foo' ) ),
+				'<$text attribB="true" bold="true">foo</$text>'
+			);
+		} );
 	} );
 
 	describe( 'upcastAttributeToAttribute', () => {
@@ -332,6 +375,21 @@ describe( 'upcast-helpers', () => {
 			} );
 
 			const helper = upcastAttributeToAttribute( { view: { key: 'src' }, model: 'source' } );
+
+			conversion.for( 'upcast' ).add( helper );
+
+			expectResult(
+				new ViewAttributeElement( 'img', { src: 'foo.jpg' } ),
+				'<image source="foo.jpg"></image>'
+			);
+		} );
+
+		it( 'config.view has only key and name set', () => {
+			schema.extend( 'image', {
+				allowAttributes: [ 'source' ]
+			} );
+
+			const helper = upcastAttributeToAttribute( { view: { name: 'img', key: 'src' }, model: { name: 'image', key: 'source' } } );
 
 			conversion.for( 'upcast' ).add( helper );
 

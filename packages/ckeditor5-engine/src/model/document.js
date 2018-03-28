@@ -87,7 +87,7 @@ export default class Document {
 		 * @readonly
 		 * @member {module:engine/model/differ~Differ}
 		 */
-		this.differ = new Differ();
+		this.differ = new Differ( model.markers );
 
 		/**
 		 * Post-fixer callbacks registered to the model document.

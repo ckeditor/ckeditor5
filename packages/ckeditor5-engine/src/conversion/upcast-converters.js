@@ -138,7 +138,7 @@ export function upcastElementToAttribute( config ) {
 
 	_normalizeModelAttributeConfig( config );
 
-	const converter = _prepareToAttributeConverter( config, true );
+	const converter = _prepareToAttributeConverter( config );
 
 	const elementName = _getViewElementNameFromConfig( config );
 	const eventName = elementName ? 'element:' + elementName : 'element';
@@ -223,7 +223,7 @@ export function upcastAttributeToAttribute( config ) {
 
 	_normalizeModelAttributeConfig( config, viewKey );
 
-	const converter = _prepareToAttributeConverter( config, false );
+	const converter = _prepareToAttributeConverter( config );
 
 	return dispatcher => {
 		dispatcher.on( 'element', converter, { priority: config.priority || 'low' } );
@@ -424,13 +424,13 @@ function _normalizeViewAttributeKeyValueConfig( config ) {
 // `config.model` is an `Object` with `key` and `value` properties.
 //
 // @param {Object} config Conversion config.
-// @param {String} viewAttributeKeyToCopy Key of the  converted view attribute. If it is set, model attribute value
+// @param {String} viewAttributeKeyToCopy Key of the converted view attribute. If it is set, model attribute value
 // will be equal to view attribute value.
 function _normalizeModelAttributeConfig( config, viewAttributeKeyToCopy = null ) {
 	const defaultModelValue = viewAttributeKeyToCopy === null ? true : viewElement => viewElement.getAttribute( viewAttributeKeyToCopy );
 
 	const key = typeof config.model != 'object' ? config.model : config.model.key;
-	const value = typeof config.model != 'object' ? defaultModelValue : config.model.value;
+	const value = typeof config.model != 'object' || typeof config.model.value == 'undefined' ? defaultModelValue : config.model.value;
 
 	config.model = { key, value };
 }
@@ -442,7 +442,7 @@ function _normalizeModelAttributeConfig( config, viewAttributeKeyToCopy = null )
 // @param {Object|Array.<Object>} config Conversion configuration. It is possible to provide multiple configurations in an array.
 // @param {Boolean} consumeName If set to `true` converter will try to consume name. If set to `false` converter will not try to
 // consume name. This flag overwrites parameter returned by `Matcher#match`.
-function _prepareToAttributeConverter( config, consumeName ) {
+function _prepareToAttributeConverter( config ) {
 	const matcher = new Matcher( config.view );
 
 	return ( evt, data, conversionApi ) => {
@@ -461,11 +461,11 @@ function _prepareToAttributeConverter( config, consumeName ) {
 			return;
 		}
 
-		if ( !consumeName ) {
+		if ( _onlyViewNameIsDefined( config ) ) {
+			match.match.name = true;
+		} else {
 			// Do not test or consume `name` consumable.
 			delete match.match.name;
-		} else {
-			match.match.name = true;
 		}
 
 		// Try to consume appropriate values from consumable values list.
@@ -487,6 +487,18 @@ function _prepareToAttributeConverter( config, consumeName ) {
 			conversionApi.consumable.consume( data.viewItem, match.match );
 		}
 	};
+}
+
+// Helper function that checks if element name should be consumed in attribute converters.
+//
+// @param {Object} config Conversion config.
+// @returns {Boolean}
+function _onlyViewNameIsDefined( config ) {
+	if ( typeof config.view == 'object' && !_getViewElementNameFromConfig( config ) ) {
+		return false;
+	}
+
+	return !config.view.class && !config.view.attribute && !config.view.style;
 }
 
 // Helper function for to-model-attribute converter. Sets model attribute on given range. Checks {@link module:engine/model/schema~Schema}
