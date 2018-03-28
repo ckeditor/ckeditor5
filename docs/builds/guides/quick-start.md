@@ -175,13 +175,13 @@ Call the {@link module:editor-balloon/ballooneditor~BalloonEditor#create `Balloo
 
 ## Document editor
 
-Load the decoupled document editor build (here [CDN](https://cdn.ckeditor.com/) location is used):
+Load the document editor build (here [CDN](https://cdn.ckeditor.com/) location is used):
 
 ```html
 <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/decoupled-document/ckeditor.js"></script>
 ```
 
-Call the {@link module:editor-decoupled/decouplededitor~DecoupledEditor#create `DecoupledDocumentEditor.create()`} method. The decoupled editor requires you to inject the toolbar into DOM and the best place to do that is somewhere in the promise chain (e.g. one of the `then( () => { ...} )` blocks).
+Call the {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledDocumentEditor.create()`} method. The decoupled editor requires you to inject the toolbar into DOM and the best place to do that is somewhere in the promise chain (e.g. one of the `then( () => { ... } )` blocks).
 
 <info-box>
 	The following snippet will run the document editor but to make the most of it check out the {@link framework/guides/document-editor comprehensive tutorial} which explains step—by—step how to configure and style the the application for the best editing experience.
