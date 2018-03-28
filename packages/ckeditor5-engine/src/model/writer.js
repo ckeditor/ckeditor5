@@ -818,25 +818,27 @@ export default class Writer {
 	 * Note: For efficiency reasons, it's best to create and keep as little markers as possible.
 	 *
 	 * @see module:engine/model/markercollection~Marker
-	 * @param {module:engine/model/markercollection~Marker|String} [markerOrName]
-	 * Name of a marker to create or update, or `Marker` instance to update, or range for the marker with a unique name.
-	 * @param {module:engine/model/range~Range} [range] Marker range.
-	 * @param {Object} [options]
-	 * @param {Boolean} [options.usingOperation=false] Flag indicated whether the marker should be added by MarkerOperation.
+	 * @param {String} [name]
+	 * Name of a marker to create or update, or range for the marker with a unique name.
+	 * @param {module:engine/model/range~Range} range Marker range.
+	 * @param {Object} options
+	 * @param {Boolean} options.usingOperation Flag indicated whether the marker should be added by MarkerOperation.
 	 * See {@link module:engine/model/markercollection~Marker#managedUsingOperations}.
 	 * @returns {module:engine/model/markercollection~Marker} Marker that was set.
 	 */
-	setMarker( markerOrNameOrRange, rangeOrOptions, options ) {
+	setMarker( nameOrRange, rangeOrOptions, options ) {
+		// TODO: change method signature - optional is first???
 		this._assertWriterUsedCorrectly();
 
 		let markerName, newRange, usingOperation;
 
-		if ( markerOrNameOrRange instanceof Range ) {
+		// TODO: method me ?
+		if ( nameOrRange instanceof Range ) {
 			markerName = uid();
-			newRange = markerOrNameOrRange;
+			newRange = nameOrRange;
 			usingOperation = _checkUsingOptionsIsDefined( rangeOrOptions );
 		} else {
-			markerName = typeof markerOrNameOrRange === 'string' ? markerOrNameOrRange : markerOrNameOrRange.name;
+			markerName = nameOrRange;
 
 			if ( rangeOrOptions instanceof Range ) {
 				newRange = rangeOrOptions;
@@ -849,16 +851,20 @@ export default class Writer {
 
 		const currentMarker = this.model.markers.get( markerName );
 
-		if ( !usingOperation ) {
-			if ( !newRange ) {
-				/**
-			 	 * Range parameter is required when adding a new marker.
-				 *
-				 * @error writer-setMarker-no-range
-				 */
-				throw new CKEditorError( 'writer-setMarker-no-range: Range parameter is required when adding a new marker.' );
-			}
+		if ( currentMarker ) {
+			throw new CKEditorError( 'writer-setMarker-marker-exists: Marker with provided name already exists.' );
+		}
 
+		if ( !newRange ) {
+			/**
+			 * Range parameter is required when adding a new marker.
+			 *
+			 * @error writer-setMarker-no-range
+			 */
+			throw new CKEditorError( 'writer-setMarker-no-range: Range parameter is required when adding a new marker.' );
+		}
+
+		if ( !usingOperation ) {
 			// If marker changes to marker that do not use operations then we need to create additional operation
 			// that removes that marker first.
 			if ( currentMarker && currentMarker.managedUsingOperations && !usingOperation ) {
@@ -866,10 +872,6 @@ export default class Writer {
 			}
 
 			return this.model.markers._set( markerName, newRange, usingOperation );
-		}
-
-		if ( !newRange && !currentMarker ) {
-			throw new CKEditorError( 'writer-setMarker-no-range: Range parameter is required when adding a new marker.' );
 		}
 
 		const currentRange = currentMarker ? currentMarker.getRange() : null;
@@ -887,6 +889,11 @@ export default class Writer {
 
 		function _checkUsingOptionsIsDefined( options ) {
 			if ( !options || typeof options.usingOperation != 'boolean' ) {
+				/**
+				 * The options.usingOperations parameter is required when adding a new marker.
+				 *
+				 * @error writer-setMarker-no-usingOperations
+				 */
 				throw new CKEditorError(
 					'writer-setMarker-no-usingOperations: The options.usingOperations parameter is required when adding a new marker.'
 				);

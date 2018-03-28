@@ -2000,16 +2000,18 @@ describe( 'Writer', () => {
 			expect( marker.managedUsingOperations ).to.equal( false );
 		} );
 
-		it( 'should update marker in the document marker collection', () => {
-			const marker = setMarker( 'name', range, { usingOperation: false } );
+		it( 'should throw when trying to update existing marker in the document marker collection', () => {
+			setMarker( 'name', range, { usingOperation: false } );
 
 			const range2 = Range.createFromParentsAndOffsets( root, 0, root, 0 );
-			setMarker( 'name', range2, { usingOperation: false } );
 
-			expect( marker.getRange().isEqual( range2 ) ).to.be.true;
+			expect( () => {
+				setMarker( 'name', range2, { usingOperation: false } );
+			} ).to.throw( CKEditorError, /^writer-setMarker-marker-exists/ );
 		} );
 
-		it( 'should accept marker instance', () => {
+		// TODO: move to updateMarker
+		it.skip( 'should accept marker instance', () => {
 			const marker = setMarker( 'name', range, { usingOperation: true } );
 			const range2 = Range.createFromParentsAndOffsets( root, 0, root, 0 );
 
@@ -2024,7 +2026,8 @@ describe( 'Writer', () => {
 			expect( op.newRange.isEqual( range2 ) ).to.be.true;
 		} );
 
-		it( 'should accept empty range parameter if marker instance is passed and usingOperation is set to true', () => {
+		// TODO: move to updateMarker
+		it.skip( 'should accept empty range parameter if marker instance is passed and usingOperation is set to true', () => {
 			const marker = setMarker( 'name', range, { usingOperation: true } );
 			const spy = sinon.spy();
 
@@ -2082,7 +2085,8 @@ describe( 'Writer', () => {
 			} ).to.throw( CKEditorError, /^writer-setMarker-no-range/ );
 		} );
 
-		it( 'should create additional operation when marker type changes to not managed using operation', () => {
+		// TODO: move to updateMarker
+		it.skip( 'should create additional operation when marker type changes to not managed using operation', () => {
 			const spy = sinon.spy();
 			model.on( 'applyOperation', spy );
 
@@ -2104,7 +2108,8 @@ describe( 'Writer', () => {
 			expect( marker.managedUsingOperations ).to.be.false;
 		} );
 
-		it( 'should enable changing marker to be not managed using operation', () => {
+		// TODO: move to updateMarker
+		it.skip( 'should enable changing marker to be not managed using operation', () => {
 			const spy = sinon.spy();
 			model.on( 'applyOperation', spy );
 
