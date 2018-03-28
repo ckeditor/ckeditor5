@@ -14,7 +14,7 @@ import HighlightCommand from './highlightcommand';
 /**
  * The highlight editing feature. It introduces the {@link module:highlight/highlightcommand~HighlightCommand command} and the `highlight`
  * attribute in the {@link module:engine/model/model~Model model} which renders in the {@link module:engine/view/view view}
- * as a `<mark>` element with the class attribute (`<mark class="marker-green">...</mark>`) depending
+ * as a `<mark>` element with a `class` attribute (`<mark class="marker-green">...</mark>`) depending
  * on the {@link module:highlight/highlight~HighlightConfig configuration}.
  *
  * @extends module:core/plugin~Plugin
@@ -92,9 +92,9 @@ export default class HighlightEditing extends Plugin {
 	}
 }
 
-// Converts options array to a converter definition.
+// Converts the options array to a converter definition.
 //
-// @param {Array.<module:highlight/highlight~HighlightOption>} options Array with configured options.
+// @param {Array.<module:highlight/highlight~HighlightOption>} options An array with configured options.
 // @returns {module:engine/conversion/conversion~ConverterDefinition}
 function _buildDefinition( options ) {
 	const definition = {

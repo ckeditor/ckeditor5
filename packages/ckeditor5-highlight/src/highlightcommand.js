@@ -16,7 +16,7 @@ import Range from '@ckeditor/ckeditor5-engine/src/model/range';
  *
  *		editor.execute( 'highlight', { value: 'greenMarker' } );
  *
- * **Note**: Executing the command without the value removes the attribute from the model. If the selection is collapsed
+ * **Note**: Executing the command without a value removes the attribute from the model. If the selection is collapsed
  * inside a text with the highlight attribute, the command will remove the attribute from the entire range
  * of that text.
  *
@@ -47,7 +47,7 @@ export default class HighlightCommand extends Command {
 	 *
 	 * @protected
 	 * @param {Object} [options] Options for the executed command.
-	 * @param {String} [options.value] a value to apply.
+	 * @param {String} [options.value] The value to apply.
 	 *
 	 * @fires execute
 	 */
