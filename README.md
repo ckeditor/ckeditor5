@@ -219,10 +219,10 @@ For more CKEditor 5 release blog posts [browse the CKEditor blog](https://ckedit
 
 <tr>
 	<td>
-		<a href="https://github.com/ckeditor/ckeditor5-cloudservices"><code>@ckeditor/ckeditor5-cloudservices</code></a>
+		<a href="https://github.com/ckeditor/ckeditor5-cloud-services"><code>@ckeditor/ckeditor5-cloud-services</code></a>
 	</td>
 	<td>
-		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-cloudservices"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-cloudservices.svg" alt="@ckeditor/ckeditor5-cloudservices npm package badge"></a>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-cloud-services"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-cloud-services.svg" alt="@ckeditor/ckeditor5-cloud-services npm package badge"></a>
 	</td>
 	<td>
 		CKEditor 5's Cloud Services integration layer.

@@ -16,7 +16,7 @@ import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
 import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight';
 import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
 
-import { CS_CONFIG } from '@ckeditor/ckeditor5-cloudservices/tests/_utils/cloudservices-config';
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-custom-build' ), {
