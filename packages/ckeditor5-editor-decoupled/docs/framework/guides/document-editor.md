@@ -5,9 +5,9 @@ order: 30
 
 # Document editor
 
-The {@link examples/builds/document-editor document editor example} showcases the {@link builds/guides/quick-start#document-editor document editor build} designed for document editing with a customized UI representing the layout of a sheet of paper. It has been created on top of the {@link module:editor-decoupled/decouplededitor~DecoupledEditor `DecoupledEditor`} and makes the best of what it offers: a freedom to choose the location of the crucial UI elements in the application.
+The {@link examples/builds/document-editor document editor example} showcases the {@link builds/guides/quick-start#document-editor document editor build} designed for document editing with a customized UI representing the layout of a sheet of paper. It was created on top of the {@link module:editor-decoupled/decouplededitor~DecoupledEditor `DecoupledEditor`} and makes the best of what it offers: the freedom to choose the location of the crucial UI elements in the application.
 
-In this tutorial, you'll learn how to create your own document editor with the customized user interface, step–by–step.
+In this tutorial you will learn how to create your own document editor with a customized user interface, step–by–step.
 
 {@snippet examples/document-editor}
 
@@ -19,7 +19,7 @@ The `DecoupledDocumentEditor` includes all the necessary features for the task. 
 	See the {@link builds/guides/quick-start#document-editor quick start guide} to learn how to install the document editor build.
 </info-box>
 
-Unlike the {@link builds/guides/overview#classic-editor classic editor}, the document editor does not require any data container in DOM. Instead, it accepts the string containing the initial data as a first argument of the static `create()` method. To get the output data, use the {@link module:core/editor/utils/dataapimixin~DataApi#getData `getData`} method.
+Unlike the {@link builds/guides/overview#classic-editor classic editor}, the document editor does not require any data container in the DOM. Instead, it accepts a string containing the initial data as the first argument of the static `create()` method. To get the output data, use the {@link module:core/editor/utils/dataapimixin~DataApi#getData `getData`} method.
 
 ```js
 import DecoupledDocumentEditor from '@ckeditor/ckeditor5-build-decoupled-document/src/ckeditor';
@@ -43,19 +43,19 @@ DecoupledDocumentEditor
 
 You may have noticed two configuration options used here: {@link module:core/editor/editorconfig~EditorConfig#toolbarContainer `config.toolbarContainer`} and {@link module:core/editor/editorconfig~EditorConfig#editableContainer `config.editableContainer`}. They specify the location of the editor toolbar and editable in your application.
 
-If you don't specify these configuration options, then you have to make sure the editor UI is injected into your application after it fires the {@link module:core/editor/editorwithui~EditorWithUI#event:uiReady `uiReady`} event. The toolbar element is accessible via `editor.ui.view.toolbar.element` and the editable element can be found under `editor.ui.view.editable.element`.
+If you do not specify these configuration options, you have to make sure the editor UI is injected into your application after it fires the {@link module:core/editor/editorwithui~EditorWithUI#event:uiReady `uiReady`} event. The toolbar element is accessible via `editor.ui.view.toolbar.element` and the editable element can be found under `editor.ui.view.editable.element`.
 
 <info-box>
-	The document editor supports the Easy Image provided by [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/) out of the box. Please refer to the {@link features/image-upload#easy-image documentation} to learn more.
+	The document editor supports the Easy Image plugin provided by [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/) out of the box. Please refer to the {@link features/image-upload#easy-image documentation} to learn more.
 </info-box>
 
 ## The user interface
 
-The code we just created will run the editor but still, the user interface is missing. Let's start off with a basic HTML structure to host the editor components (toolbar and editable).
+The code you have just created will run the editor but still, the user interface is missing. Start off with a basic HTML structure to host the editor components (toolbar and editable).
 
 ### HTML
 
-The following structure has two containers which correspond to the configuration we have just used. The editor will inject the toolbar and editable into respective containers as it starts.
+The following structure has two containers that correspond to the configuration you have just used. The editor will inject the toolbar and editable into respective containers as it starts.
 
 ```html
 <div class="document-editor">
@@ -64,15 +64,15 @@ The following structure has two containers which correspond to the configuration
 </div>
 ```
 
-The `<div class="document-editor">...</<div>` is the outermost container of the document editor and, although not mandatory, it is recommended to keep things together.
+The `<div class="document-editor">...</<div>` element is the outermost container of the document editor and, although not mandatory, it is recommended to keep things together.
 
 <info-box warning>
-	Make sure the HTML structure is available in DOM when the editor is created. To do so, put the editor bootstrap code somewhere later in HTML or use the [`DOMContentLoaded`](https://developer.mozilla.org/en-US/docs/Web/Events/DOMContentLoaded) event to defer your JavaScript execution until the DOM is up and ready.
+	Make sure the HTML structure is available in the DOM when the editor is created. To do so, put the editor bootstrap code somewhere later in HTML or use the [`DOMContentLoaded`](https://developer.mozilla.org/en-US/docs/Web/Events/DOMContentLoaded) event to defer your JavaScript execution until the DOM is up and ready.
 </info-box>
 
 ### Styles
 
-Styles are what the document editor really needs to materialize. Let's begin with the styles of the main container:
+Styles are what the document editor really needs to materialize. Begin with the styles of the main container:
 
 ```css
 .document-editor {
@@ -89,7 +89,7 @@ Styles are what the document editor really needs to materialize. Let's begin wit
 }
 ```
 
-Then, let's make the toolbar look like it floats over the "page":
+Then, make the toolbar look like it floats over the "page":
 
 ```css
 .document-editor__toolbar {
@@ -103,7 +103,7 @@ Then, let's make the toolbar look like it floats over the "page":
 	border-bottom: 1px solid var(--ck-color-toolbar-border);
 }
 
-/* Adjust the look of the toolbar inside of the container. */
+/* Adjust the look of the toolbar inside the container. */
 .document-editor__toolbar .ck-toolbar {
 	border: 0;
 	border-radius: 0;
@@ -113,7 +113,7 @@ Then, let's make the toolbar look like it floats over the "page":
 The editable should look like a sheet of paper, centered in its scrollable container:
 
 ```css
-/* Make the editable container look like the inside of a native word processor app. */
+/* Make the editable container look like the inside of a native word processor application. */
 .document-editor__editable {
 	padding: calc( 2 * var(--ck-spacing-large) );
 	background: var(--ck-color-base-foreground);
@@ -142,7 +142,7 @@ The editable should look like a sheet of paper, centered in its scrollable conta
 }
 ```
 
-All we need to do now is style the actual content of the editor. First things first, we need to define some basic font styles:
+All you need to do now is style the actual content of the editor. Start with defining some basic font styles:
 
 ```css
 /* Set the default font for the "page" of the content. */
@@ -152,10 +152,10 @@ All we need to do now is style the actual content of the editor. First things fi
 }
 ```
 
-Then let's focus on headings and paragraphs. Note that what the users see in the headings dropdown should correspond to the actual edited content for the best user experience.
+Then focus on headings and paragraphs. Note that what the users see in the headings dropdown should correspond to the actual edited content for the best user experience.
 
 <info-box>
-	It is recommended the `.ck-content` CSS class is used to visually style the content of the editor (headings, paragraphs, lists, etc.).
+	It is recommended to use the `.ck-content` CSS class to visually style the content of the editor (headings, paragraphs, lists, etc.).
 </info-box>
 
 ```css
@@ -165,7 +165,7 @@ Then let's focus on headings and paragraphs. Note that what the users see in the
 	min-width: 8em;
 }
 
-/* Set the styles for the "Heading 1". */
+/* Set the styles for "Heading 1". */
 .document-editor .ck-content h2,
 .document-editor .ck-heading-dropdown .ck-heading_heading1 {
 	font-size: 2.18em;
@@ -177,7 +177,7 @@ Then let's focus on headings and paragraphs. Note that what the users see in the
 	margin-bottom: .142em;
 }
 
-/* Set the styles for the "Heading 2". */
+/* Set the styles for "Heading 2". */
 .document-editor .ck-content h3,
 .document-editor .ck-heading-dropdown .ck-heading_heading2 {
 	font-size: 1.75em;
@@ -188,14 +188,14 @@ Then let's focus on headings and paragraphs. Note that what the users see in the
 	color: var(--ck-color-list-item-text-active);
 }
 
-/* Set the styles for the "Heading 2". */
+/* Set the styles for "Heading 2". */
 .document-editor .ck-content h3 {
 	line-height: 1.86em;
 	padding-top: .171em;
 	margin-bottom: .357em;
 }
 
-/* Set the styles for the "Heading 3". */
+/* Set the styles for "Heading 3". */
 .document-editor .ck-content h4,
 .document-editor .ck-heading-dropdown .ck-heading_heading3 {
 	font-size: 1.31em;
@@ -207,7 +207,7 @@ Then let's focus on headings and paragraphs. Note that what the users see in the
 	margin-bottom: .952em;
 }
 
-/* Set the styles for the "Paragraph". */
+/* Set the styles for "Paragraph". */
 .document-editor .ck-content p,
 .document-editor .ck-heading-dropdown .ck-heading_paragraph {
 	font-size: 1em;
@@ -233,6 +233,6 @@ A finishing touch that makes the block quotes more sophisticated and the styling
 
 ## Summary
 
-The document editor is ready to use. Still, you may want to configure some features like {@link module:highlight/highlight~HighlightConfig highlight}, {@link module:font/fontsize~FontSizeConfig font size}, {@link module:font/fontfamily~FontFamilyConfig font family} for the best editing experience.
+The document editor is ready to use. Still, you may want to configure some features like {@link module:highlight/highlight~HighlightConfig highlight}, {@link module:font/fontsize~FontSizeConfig font size} or {@link module:font/fontfamily~FontFamilyConfig font family} for the best editing experience.
 
 Thanks to the {@link module:editor-decoupled/decouplededitor~DecoupledEditor `DecoupledEditor`} used as a foundation, you can experiment and create custom user interface layouts quickly while preserving the feature set, accessibility support (e.g. {@link features/keyboard-support keyboard navigation} in the toolbar) and more.
