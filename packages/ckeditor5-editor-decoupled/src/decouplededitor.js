@@ -17,9 +17,9 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 /**
  * The {@glink builds/guides/overview#decoupled-editor decoupled editor} implementation.
  * It provides an inline editable and a toolbar. However, unlike other editors,
- * it does not render these components anywhere in DOM unless configured.
+ * it does not render these components anywhere in the DOM unless configured.
  *
- * This type of an editor is dedicated for integrations which require a customized UI with an open
+ * This type of an editor is dedicated to integrations which require a customized UI with an open
  * structure, allowing developers to specify the exact location of the interface.
  *
  * See the document editor {@glink examples/builds/document-editor demo} to learn about possible use cases
@@ -37,7 +37,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * {@glink builds/guides/overview Builds} are ready-to-use editors with plugins bundled in. When using the editor from
  * source you need to take care of loading all plugins by yourself
  * (through the {@link module:core/editor/editorconfig~EditorConfig#plugins `config.plugins`} option).
- * Using the editor from source gives much better flexibility and allows easier customization.
+ * Using the editor from source gives much better flexibility and allows for easier customization.
  *
  * Read more about initializing the editor from source or as a build in
  * {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`}.
@@ -50,7 +50,7 @@ export default class DecoupledEditor extends Editor {
 	/**
 	 * Creates an instance of the decoupled editor.
 	 *
-	 * **Note:** do not use the constructor to create editor instances. Use the static
+	 * **Note:** Do not use the constructor to create editor instances. Use the static
 	 * {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`} method instead.
 	 *
 	 * @protected
@@ -81,14 +81,14 @@ export default class DecoupledEditor extends Editor {
 	/**
 	 * Creates a decoupled editor instance.
 	 *
-	 * Creating instance when using the {@glink builds/index CKEditor build}:
+	 * Creating an instance when using the {@glink builds/index CKEditor build}:
 	 *
 	 *		DecoupledEditor
 	 *			.create( '<p>Editor data</p>', {
-	 *				// The location of the toolbar in DOM.
+	 *				// The location of the toolbar in the DOM.
 	 *				toolbarContainer: document.querySelector( 'body div.toolbar-container' ),
 	 *
-	 *				// The location of the editable in DOM.
+	 *				// The location of the editable in the DOM.
 	 *				editableContainer: document.querySelector( 'body div.editable-container' )
 	 *			} )
 	 *			.then( editor => {
@@ -98,7 +98,7 @@ export default class DecoupledEditor extends Editor {
 	 *				console.error( err.stack );
 	 *			} );
 	 *
-	 * Creating instance when using CKEditor from source (make sure to specify the list of plugins to load and the toolbar):
+	 * Creating an instance when using CKEditor from source (make sure to specify the list of plugins to load and the toolbar):
 	 *
 	 *		import DecoupledEditor from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor';
 	 *		import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
@@ -111,10 +111,10 @@ export default class DecoupledEditor extends Editor {
 	 *				plugins: [ Essentials, Bold, Italic, ... ],
 	 *				toolbar: [ 'bold', 'italic', ... ],
 	 *
-	 *				// The location of the toolbar in DOM.
+	 *				// The location of the toolbar in the DOM.
 	 *				toolbarContainer: document.querySelector( 'div.toolbar-container' ),
 	 *
-	 *				// The location of the editable in DOM.
+	 *				// The location of the editable in the DOM.
 	 *				editableContainer: document.querySelector( 'div.editable-container' )
 	 *			} )
 	 *			.then( editor => {
@@ -124,9 +124,9 @@ export default class DecoupledEditor extends Editor {
 	 *				console.error( err.stack );
 	 *			} );
 	 *
-	 * **Note**: {@link module:core/editor/editorconfig~EditorConfig#toolbarContainer `config.toolbarContainer`} and
-	 * {@link module:core/editor/editorconfig~EditorConfig#editableContainer `config.editableContainer`} are optional. It is
-	 * possible to define the location of the UI elements manually once the editor is up and running:
+	 * **Note**: The {@link module:core/editor/editorconfig~EditorConfig#toolbarContainer `config.toolbarContainer`} and
+	 * {@link module:core/editor/editorconfig~EditorConfig#editableContainer `config.editableContainer`} settings are optional.
+	 * It is possible to define the location of the UI elements manually once the editor is up and running:
 	 *
 	 *		DecoupledEditor
 	 *			.create( '<p>Editor data</p>' )
@@ -171,7 +171,7 @@ export default class DecoupledEditor extends Editor {
 mix( DecoupledEditor, DataApiMixin );
 
 /**
- * A configuration of the {@link module:editor-decoupled/decouplededitor~DecoupledEditor}.
+ * The configuration of the {@link module:editor-decoupled/decouplededitor~DecoupledEditor}.
  *
  * When specified, it controls the location of the {@link module:editor-decoupled/decouplededitoruiview~DecoupledEditorUIView#toolbar}:
  *
@@ -187,7 +187,7 @@ mix( DecoupledEditor, DataApiMixin );
  *				console.error( error );
  *			} );
  *
- * **Note**: If not specified, the toolbar must be manually injected into DOM. See
+ * **Note**: If not specified, the toolbar must be manually injected into the DOM. See
  * {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`}
  * to learn more.
  *
@@ -195,7 +195,7 @@ mix( DecoupledEditor, DataApiMixin );
  */
 
 /**
- * A configuration of the {@link module:editor-decoupled/decouplededitor~DecoupledEditor}.
+ * The configuration of the {@link module:editor-decoupled/decouplededitor~DecoupledEditor}.
  *
  * When specified, it controls the location of the {@link module:editor-decoupled/decouplededitoruiview~DecoupledEditorUIView#editable}:
  *
@@ -211,7 +211,7 @@ mix( DecoupledEditor, DataApiMixin );
  *				console.error( error );
  *			} );
  *
- * **Note**: If not specified, the editable must be manually injected into DOM. See
+ * **Note**: If not specified, the editable must be manually injected into the DOM. See
  * {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`}
  * to learn more.
  *

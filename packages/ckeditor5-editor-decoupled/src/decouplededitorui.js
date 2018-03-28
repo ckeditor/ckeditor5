@@ -54,7 +54,7 @@ export default class DecoupledEditorUI {
 		this._toolbarConfig = normalizeToolbarConfig( editor.config.get( 'toolbar' ) );
 
 		/**
-		 * A container of the {@link module:editor-decoupled/decouplededitoruiview~DecoupledEditorUIView#toolbar}.
+		 * The container for the {@link module:editor-decoupled/decouplededitoruiview~DecoupledEditorUIView#toolbar}.
 		 *
 		 * @type {HTMLElement|String}
 		 * @private
@@ -62,7 +62,7 @@ export default class DecoupledEditorUI {
 		this._toolbarContainer = editor.config.get( 'toolbarContainer' );
 
 		/**
-		 * A container of the {@link module:editor-decoupled/decouplededitoruiview~DecoupledEditorUIView#editable}.
+		 * The container for the {@link module:editor-decoupled/decouplededitoruiview~DecoupledEditorUIView#editable}.
 		 *
 		 * @type {HTMLElement|String}
 		 * @private
@@ -79,7 +79,7 @@ export default class DecoupledEditorUI {
 
 		view.render();
 
-		// Setup the editable.
+		// Set up the editable.
 		const editingRoot = editor.editing.view.document.getRoot();
 		view.editable.bind( 'isReadOnly' ).to( editingRoot );
 		view.editable.bind( 'isFocused' ).to( editor.editing.view.document );
