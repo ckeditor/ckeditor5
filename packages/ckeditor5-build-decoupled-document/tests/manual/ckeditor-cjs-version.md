@@ -1,4 +1,4 @@
-# CKEditor 5 decoupled document build – standard version (CommonJS `require()`)
+# CKEditor 5 document editor build – standard version (CommonJS `require()`)
 
 Just play with it.
 
