@@ -38,7 +38,7 @@ export default class ImageCaptionEditing extends Plugin {
 		const t = editor.t;
 
 		/**
-		 * Last selected caption editable.
+		 * The last selected caption editable.
 		 * It is used for hiding the editable when it is empty and the image widget is no longer selected.
 		 *
 		 * @private
@@ -89,7 +89,7 @@ export default class ImageCaptionEditing extends Plugin {
 	 *
 	 * @private
 	 * @param {module:engine/view/writer~Writer} viewWriter
-	 * @returns {Boolean} Returns `true` when view is updated.
+	 * @returns {Boolean} Returns `true` when the view is updated.
 	 */
 	_updateCaptionVisibility( viewWriter ) {
 		const mapper = this.editor.editing.mapper;
@@ -144,7 +144,7 @@ export default class ImageCaptionEditing extends Plugin {
 	}
 
 	/**
-	 * Returns converter that fixes caption visibility during the model-to-view conversion.
+	 * Returns a converter that fixes caption visibility during the model-to-view conversion.
 	 * Checks if the changed node is placed inside the caption element and fixes its visibility in the view.
 	 *
 	 * @private
@@ -173,12 +173,12 @@ export default class ImageCaptionEditing extends Plugin {
 	}
 
 	/**
-	 * Checks whether data inserted to the model document have image element that has no caption element inside it.
-	 * If there is none - adds it to the image element.
+	 * Checks whether the data inserted to the model document have an image element that has no caption element inside it.
+	 * If there is none, it adds it to the image element.
 	 *
 	 * @private
-	 * @param {module:engine/model/writer~Writer} writer Writer to make changes with.
-	 * @returns {Boolean} `true` if any change has been applied, `false` otherwise.
+	 * @param {module:engine/model/writer~Writer} writer The writer to make changes with.
+	 * @returns {Boolean} `true` if any change was applied, `false` otherwise.
 	 */
 	_insertMissingModelCaptionElement( writer ) {
 		const model = this.editor.model;
@@ -262,12 +262,12 @@ function getParentCaption( node ) {
 	return null;
 }
 
-// Hides given caption in the view if it's empty.
+// Hides a given caption in the view if it is empty.
 //
 // @private
 // @param {module:engine/view/containerelement~ContainerElement} caption
 // @param {module:engine/view/writer~Writer} viewWriter
-// @returns {Boolean} Returns `true` if view was modified.
+// @returns {Boolean} Returns `true` if the view was modified.
 function hideCaptionIfEmpty( caption, viewWriter ) {
 	if ( !caption.childCount && !caption.hasClass( 'ck-hidden' ) ) {
 		viewWriter.addClass( 'ck-hidden', caption );
@@ -277,12 +277,12 @@ function hideCaptionIfEmpty( caption, viewWriter ) {
 	return false;
 }
 
-// Shows the caption
+// Shows the caption.
 //
 // @private
 // @param {module:engine/view/containerelement~ContainerElement} caption
 // @param {module:engine/view/writer~Writer} viewWriter
-// @returns {Boolean} Returns `true` if view was modified.
+// @returns {Boolean} Returns `true` if the view was modified.
 function showCaption( caption, viewWriter ) {
 	if ( caption.hasClass( 'ck-hidden' ) ) {
 		viewWriter.removeClass( 'ck-hidden', caption );

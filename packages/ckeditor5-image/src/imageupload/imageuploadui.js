@@ -13,8 +13,8 @@ import imageIcon from '@ckeditor/ckeditor5-core/theme/icons/image.svg';
 import { isImageType, findOptimalInsertionPosition } from './utils';
 
 /**
- * Image upload button plugin.
- * Adds `imageUpload` button to UI component factory.
+ * The image upload button plugin.
+ * Adds the `imageUpload` button to the {@link module:ui/componentfactory~ComponentFactory UI component factory}.
  *
  * @extends module:core/plugin~Plugin
  */

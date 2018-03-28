@@ -70,22 +70,6 @@ describe( 'ImageStyleCommand', () => {
 		expect( getData( model ) ).to.equal( '[<image imageStyle="otherStyle"></image>]' );
 	} );
 
-	it( 'should do nothing attribute is not known', () => {
-		setData( model, '[<image imageStyle="otherStyle"></image>]' );
-
-		command.execute( { value: 'someNotExistingStyle' } );
-
-		expect( getData( model ) ).to.equal( '[<image imageStyle="otherStyle"></image>]' );
-	} );
-
-	it( 'should do nothing when value is not passed', () => {
-		setData( model, '[<image imageStyle="otherStyle"></image>]' );
-
-		command.execute();
-
-		expect( getData( model ) ).to.equal( '[<image imageStyle="otherStyle"></image>]' );
-	} );
-
 	it( 'should use parent batch', () => {
 		setData( model, '[<image></image>]' );
 

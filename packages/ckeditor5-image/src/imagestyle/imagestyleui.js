@@ -92,7 +92,7 @@ export default class ImageStyleUI extends Plugin {
 }
 
 /**
- * Returns translated `title` from the passed styles array.
+ * Returns the translated `title` from the passed styles array.
  *
  * @param {Array.<module:image/imagestyle/imagestyleediting~ImageStyleFormat>} styles
  * @param titles

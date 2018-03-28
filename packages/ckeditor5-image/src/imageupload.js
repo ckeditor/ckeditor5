@@ -13,12 +13,14 @@ import ImageUploadProgress from './imageupload/imageuploadprogress';
 import ImageUploadEditing from './imageupload/imageuploadediting';
 
 /**
- * Image upload plugin.
+ * The image upload plugin.
  *
- * This plugin do not do anything directly, but loads set of specific plugins to enable image uploading:
+ * This plugin does not do anything directly, but it loads a set of specific plugins to enable image uploading:
  * * {@link module:image/imageupload/imageuploadediting~ImageUploadEditing},
  * * {@link module:image/imageupload/imageuploadui~ImageUploadUI},
  * * {@link module:image/imageupload/imageuploadprogress~ImageUploadProgress}.
+ *
+ * For a detailed overview, check the {@glink features/image-upload image upload feature} documentation.
  *
  * @extends module:core/plugin~Plugin
  */

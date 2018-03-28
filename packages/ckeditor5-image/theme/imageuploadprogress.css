@@ -12,7 +12,7 @@
 	position: relative;
 	overflow: hidden;
 
-	/* Infinite progress bar on top while image is read. */
+	/* Infinite progress bar on top while the image is read. */
 	&.ck-infinite-progress::before {
 		content: "";
 		position: absolute;

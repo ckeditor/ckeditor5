@@ -42,7 +42,7 @@ export function modelToViewStyleAttribute( styles ) {
 /**
  * Returns a view-to-model converter converting image CSS classes to a proper value in the model.
  *
- * @param {Array.<module:image/imagestyle/imagestyleediting~ImageStyleFormat>} styles Styles for which the converter is created.
+ * @param {Array.<module:image/imagestyle/imagestyleediting~ImageStyleFormat>} styles The styles for which the converter is created.
  * @returns {Function} A view-to-model converter.
  */
 export function viewToModelStyleAttribute( styles ) {
@@ -73,7 +73,7 @@ export function viewToModelStyleAttribute( styles ) {
 	};
 }
 
-// Returns style with given `name` from array of styles.
+// Returns the style with a given `name` from an array of styles.
 //
 // @param {String} name
 // @param {Array.<module:image/imagestyle/imagestyleediting~ImageStyleFormat> } styles

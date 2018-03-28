@@ -110,8 +110,8 @@ export default class ImageUploadEditing extends Plugin {
 	}
 
 	/**
-	 * Performs image loading. Image is read from the disk and temporary data is displayed, after uploading process
-	 * is complete we replace temporary data with target image from the server.
+	 * Performs image loading. The image is read from the disk and temporary data is displayed. When the upload process
+	 * is complete the temporary data is replaced with the target image from the server.
 	 *
 	 * @private
 	 * @param {module:upload/filerepository~FileLoader} loader
@@ -213,7 +213,7 @@ export default class ImageUploadEditing extends Plugin {
 	}
 }
 
-// Returns true if non-empty `text/html` is included in data transfer.
+// Returns `true` if non-empty `text/html` is included in the data transfer.
 //
 // @param {module:clipboard/datatransfer~DataTransfer} dataTransfer
 // @returns {Boolean}
