@@ -270,6 +270,23 @@ describe( 'RedoCommand', () => {
 				expect( editor.model.document.selection.getFirstRange().isEqual( r( 4, 6 ) ) ).to.be.true;
 				expect( editor.model.document.selection.isBackward ).to.be.false;
 			} );
+
+			it( 'should pass redoing batch to enqueueChange method', () => {
+				undo.execute( batch2 );
+
+				const enqueueChangeSpy = sinon.spy( model, 'enqueueChange' );
+				const undoSpy = sinon.spy( redo, '_undo' );
+
+				redo.execute();
+
+				sinon.assert.calledOnce( enqueueChangeSpy );
+				sinon.assert.calledOnce( undoSpy );
+
+				const redoingbatch = enqueueChangeSpy.firstCall.args[ 0 ];
+
+				expect( redoingbatch instanceof Batch ).to.be.true;
+				expect( undoSpy.firstCall.args[ 1 ] ).to.equal( redoingbatch );
+			} );
 		} );
 	} );
 } );

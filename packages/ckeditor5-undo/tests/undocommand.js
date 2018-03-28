@@ -297,6 +297,21 @@ describe( 'UndoCommand', () => {
 				expect( element.getAttribute( 'foo' ) ).to.equal( 'bar' );
 				expect( root.getAttribute( 'foo' ) ).to.not.equal( 'bar' );
 			} );
+
+			it( 'should pass undoing batch to enqueueChange method', () => {
+				const enqueueChangeSpy = sinon.spy( model, 'enqueueChange' );
+				const undoSpy = sinon.spy( undo, '_undo' );
+
+				undo.execute();
+
+				sinon.assert.calledOnce( enqueueChangeSpy );
+				sinon.assert.calledOnce( undoSpy );
+
+				const undoingBatch = enqueueChangeSpy.firstCall.args[ 0 ];
+
+				expect( undoingBatch instanceof Batch ).to.be.true;
+				expect( undoSpy.firstCall.args[ 1 ] ).to.equal( undoingBatch );
+			} );
 		} );
 
 		it( 'merges touching ranges when restoring selection', () => {

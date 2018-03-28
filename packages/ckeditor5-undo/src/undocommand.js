@@ -8,6 +8,7 @@
  */
 
 import BaseCommand from './basecommand';
+import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
 
 /**
  * The undo command stores {@link module:engine/model/batch~Batch batches} applied to the
@@ -33,11 +34,12 @@ export default class UndoCommand extends BaseCommand {
 		const batchIndex = batch ? this._stack.findIndex( a => a.batch == batch ) : this._stack.length - 1;
 
 		const item = this._stack.splice( batchIndex, 1 )[ 0 ];
+		const undoingBatch = new Batch();
 
 		// All changes has to be done in one `enqueueChange` callback so other listeners will not
 		// step between consecutive deltas, or won't do changes to the document before selection is properly restored.
-		this.editor.model.enqueueChange( () => {
-			const undoingBatch = this._undo( item.batch );
+		this.editor.model.enqueueChange( undoingBatch, () => {
+			this._undo( item.batch, undoingBatch );
 
 			const deltas = this.editor.model.document.history.getDeltas( item.batch.baseVersion );
 			this._restoreSelection( item.selection.ranges, item.selection.isBackward, deltas );

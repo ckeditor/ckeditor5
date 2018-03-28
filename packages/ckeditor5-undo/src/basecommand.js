@@ -8,7 +8,6 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
 
 /**
  * Base class for undo feature commands: {@link module:undo/undocommand~UndoCommand} and {@link module:undo/redocommand~RedoCommand}.
@@ -123,13 +122,13 @@ export default class BaseCommand extends Command {
 	 *
 	 * @protected
 	 * @param {module:engine/model/batch~Batch} batchToUndo The batch to be undone.
+	 * @param {module:engine/model/batch~Batch} undoingBatch The batch with undoing changes.
 	 */
-	_undo( batchToUndo ) {
+	_undo( batchToUndo, undoingBatch ) {
 		const model = this.editor.model;
 		const document = model.document;
 
 		// All changes done by the command execution will be saved as one batch.
-		const undoingBatch = new Batch();
 		this._createdBatches.add( undoingBatch );
 
 		const deltasToUndo = batchToUndo.deltas.slice();
@@ -168,8 +167,6 @@ export default class BaseCommand extends Command {
 				}
 			}
 		}
-
-		return undoingBatch;
 	}
 }
 
