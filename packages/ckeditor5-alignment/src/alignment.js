@@ -80,7 +80,7 @@ export default class Alignment extends Plugin {
  *			.then( ... )
  *			.catch( ... );
  *
- * See a demo of {@glink features/text-alignment#configuring-alignment-options custom alignment options}.
+ * See the demo of {@glink features/text-alignment#configuring-alignment-options custom alignment options}.
  *
  * @member {Array.<String>} module:alignment/alignment~AlignmentConfig#options
  */

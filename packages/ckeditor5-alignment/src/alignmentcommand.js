@@ -41,8 +41,8 @@ export default class AlignmentCommand extends Command {
 
 	/**
 	 * Executes the command. Applies the alignment `value` to the selected blocks.
-	 * If no `value` is passed, is a default one or is equal to currently selected block's alignment attribute,
-	 * it will remove the attribute from the selected blocks.
+	 * If no `value` is passed, the `value` is the default one or it is equal to the currently selected block's alignment attribute,
+	 * the command will remove the attribute from the selected blocks.
 	 *
 	 * @param {Object} [options] Options for the executed command.
 	 * @param {String} [options.value] The value to apply.
@@ -78,7 +78,7 @@ export default class AlignmentCommand extends Command {
 	 * Checks whether a block can have alignment set.
 	 *
 	 * @private
-	 * @param {module:engine/model/element~Element} block A block to be checked.
+	 * @param {module:engine/model/element~Element} block The block to be checked.
 	 * @returns {Boolean}
 	 */
 	_canBeAligned( block ) {
@@ -86,7 +86,7 @@ export default class AlignmentCommand extends Command {
 	}
 }
 
-// Removes alignment attribute from blocks.
+// Removes the alignment attribute from blocks.
 // @private
 function removeAlignmentFromSelection( blocks, writer ) {
 	for ( const block of blocks ) {
@@ -94,7 +94,7 @@ function removeAlignmentFromSelection( blocks, writer ) {
 	}
 }
 
-// Sets alignment attribute on blocks.
+// Sets the alignment attribute on blocks.
 // @private
 function setAlignmentOnSelection( blocks, writer, alignment ) {
 	for ( const block of blocks ) {

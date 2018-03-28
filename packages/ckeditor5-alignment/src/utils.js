@@ -30,10 +30,10 @@ export function isSupported( option ) {
 /**
  * Checks whether alignment is the default one.
  *
- * @param {String} alignment Name of alignment to check.
+ * @param {String} alignment The name of the alignment to check.
  * @returns {Boolean}
  */
 export function isDefault( alignment ) {
-	// Right now only LTR is supported so 'left' value is always the default one.
+	// Right now only LTR is supported so the 'left' value is always the default one.
 	return alignment === 'left';
 }
