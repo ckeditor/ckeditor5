@@ -238,7 +238,8 @@ describe( 'Document', () => {
 			sinon.spy( doc.differ, 'bufferMarkerChange' );
 
 			model.change( writer => {
-				writer.setMarker( 'marker', Range.createCollapsedAt( doc.getRoot(), 0 ), { usingOperation: false } );
+				const range = Range.createCollapsedAt( doc.getRoot(), 0 );
+				writer.setMarker( 'marker', { range, usingOperation: false } );
 			} );
 
 			expect( doc.differ.bufferMarkerChange.called ).to.be.true;
@@ -288,7 +289,8 @@ describe( 'Document', () => {
 
 		it( 'should call all already processed callbacks again if a callback returned true', () => {
 			const callA = sinon.spy();
-			const callB = sinon.stub().onFirstCall().returns( true ).onSecondCall().returns( false );
+			const callB = sinon.stub();
+			callB.onFirstCall().returns( true ).onSecondCall().returns( false );
 			const callC = sinon.spy();
 
 			doc.registerPostFixer( callA );
@@ -299,9 +301,9 @@ describe( 'Document', () => {
 				writer.insertText( 'foo', doc.getRoot(), 0 );
 			} );
 
-			expect( callA.calledTwice ).to.be.true;
-			expect( callB.calledTwice ).to.be.true;
-			expect( callC.calledOnce ).to.be.true;
+			sinon.assert.calledTwice( callA );
+			sinon.assert.calledTwice( callB );
+			sinon.assert.calledOnce( callC );
 		} );
 	} );
 

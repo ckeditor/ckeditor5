@@ -279,7 +279,7 @@ mix( MarkerCollection, EmitterMixin );
  * and removed by {@link module:engine/model/writer~Writer#removeMarker} methods.
  *
  *		model.change( ( writer ) => {
- * 			const marker = writer.setMarker( name, range, { usingOperation: true } );
+ * 			const marker = writer.setMarker( name, { range, usingOperation: true } );
  *
  * 			// ...
  *

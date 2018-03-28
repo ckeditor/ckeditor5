@@ -40,7 +40,6 @@ import DocumentSelection from './documentselection';
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import uid from '@ckeditor/ckeditor5-utils/src/uid';
 
 /**
  * The model can only be modified by using the writer. It should be used whenever you want to create a node, modify
@@ -206,7 +205,7 @@ export default class Writer {
 					markerRange.end._getCombined( rangeRootPosition, position )
 				);
 
-				this.setMarker( markerName, range, { usingOperation: true } );
+				this.setMarker( markerName, { range, usingOperation: true } );
 			}
 		}
 	}
@@ -826,28 +825,24 @@ export default class Writer {
 	 * See {@link module:engine/model/markercollection~Marker#managedUsingOperations}.
 	 * @returns {module:engine/model/markercollection~Marker} Marker that was set.
 	 */
-	setMarker( nameOrRange, rangeOrOptions, options ) {
+	setMarker( name, options ) {
 		this._assertWriterUsedCorrectly();
 
-		let markerName, range, usingOperation;
-
-		if ( nameOrRange instanceof Range ) {
-			markerName = uid();
-			range = nameOrRange;
-			usingOperation = _checkUsingOptionsIsDefined( rangeOrOptions );
-		} else {
-			markerName = nameOrRange;
-
-			if ( rangeOrOptions instanceof Range ) {
-				range = rangeOrOptions;
-				usingOperation = _checkUsingOptionsIsDefined( options );
-			} else {
-				range = null;
-				usingOperation = _checkUsingOptionsIsDefined( rangeOrOptions );
-			}
+		if ( !options || typeof options.usingOperation != 'boolean' ) {
+			/**
+			 * The options.usingOperations parameter is required when adding a new marker.
+			 *
+			 * @error writer-setMarker-no-usingOperations
+			 */
+			throw new CKEditorError(
+				'writer-setMarker-no-usingOperations: The options.usingOperations parameter is required when adding a new marker.'
+			);
 		}
 
-		if ( this.model.markers.has( markerName ) ) {
+		const usingOperation = options.usingOperation;
+		const range = options.range;
+
+		if ( this.model.markers.has( name ) ) {
 			throw new CKEditorError( 'writer-setMarker-marker-exists: Marker with provided name already exists.' );
 		}
 
@@ -861,30 +856,15 @@ export default class Writer {
 		}
 
 		if ( !usingOperation ) {
-			return this.model.markers._set( markerName, range, usingOperation );
+			return this.model.markers._set( name, range, usingOperation );
 		}
 
-		applyMarkerOperation( this, markerName, null, range );
+		applyMarkerOperation( this, name, null, range );
 
-		return this.model.markers.get( markerName );
-
-		function _checkUsingOptionsIsDefined( options ) {
-			if ( !options || typeof options.usingOperation != 'boolean' ) {
-				/**
-				 * The options.usingOperations parameter is required when adding a new marker.
-				 *
-				 * @error writer-setMarker-no-usingOperations
-				 */
-				throw new CKEditorError(
-					'writer-setMarker-no-usingOperations: The options.usingOperations parameter is required when adding a new marker.'
-				);
-			}
-
-			return options.usingOperation;
-		}
+		return this.model.markers.get( name );
 	}
 
-	updateMarker( markerOrName, rangeOrOptions, options ) {
+	updateMarker( markerOrName, options ) {
 		this._assertWriterUsedCorrectly();
 
 		const markerName = typeof markerOrName == 'string' ? markerOrName : markerOrName.name;
@@ -895,15 +875,8 @@ export default class Writer {
 			throw new CKEditorError( 'writer-updateMarker-marker-not-exists: Marker with provided name does not exists.' );
 		}
 
-		let range, usingOperation;
-
-		if ( rangeOrOptions instanceof Range ) {
-			range = rangeOrOptions;
-			usingOperation = !!options && !!options.usingOperation;
-		} else {
-			range = null;
-			usingOperation = !!rangeOrOptions && !!rangeOrOptions.usingOperation;
-		}
+		const range = options && options.range;
+		const usingOperation = !!options && !!options.usingOperation;
 
 		if ( !usingOperation ) {
 			// If marker changes to a marker that do not use operations then we need to create additional operation
