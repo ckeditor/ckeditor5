@@ -948,7 +948,7 @@ describe( 'Element', () => {
 			const el2 = new Element( 'div', null, el1 );
 			const el3 = new Element( 'div', { class: 'foo bar' }, el2 );
 
-			expect( el1.findAncestor( { class: 'foo' } ) ).to.equal( el3 );
+			expect( el1.findAncestor( { classes: 'foo' } ) ).to.equal( el3 );
 		} );
 
 		it( 'should return null if no matches found', () => {
@@ -957,7 +957,7 @@ describe( 'Element', () => {
 
 			expect( el1.findAncestor( {
 				name: 'div',
-				class: 'container'
+				classes: 'container'
 			} ) ).to.be.null;
 		} );
 	} );

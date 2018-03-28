@@ -39,14 +39,14 @@ export default class Matcher {
 	 *
 	 *		// Single class.
 	 *		matcher.add( {
-	 *			class: 'foobar'
+	 *			classes: 'foobar'
 	 *		} );
 	 *
 	 * See {@link module:engine/view/matcher~MatcherPattern} for more examples.
 	 *
 	 * Multiple patterns can be added in one call:
 	 *
-	 * 		matcher.add( 'div', { class: 'foobar' } );
+	 * 		matcher.add( 'div', { classes: 'foobar' } );
 	 *
 	 * @param {Object|String|RegExp|Function} pattern Object describing pattern details. If string or regular expression
 	 * is provided it will be used to match element's name. Pattern can be also provided in a form
@@ -54,14 +54,14 @@ export default class Matcher {
 	 * Function's return value will be stored under `match` key of the object returned from
 	 * {@link module:engine/view/matcher~Matcher#match match} or {@link module:engine/view/matcher~Matcher#matchAll matchAll} methods.
 	 * @param {String|RegExp} [pattern.name] Name or regular expression to match element's name.
-	 * @param {Object} [pattern.attribute] Object with key-value pairs representing attributes to match. Each object key
+	 * @param {Object} [pattern.attributes] Object with key-value pairs representing attributes to match. Each object key
 	 * represents attribute name. Value under that key can be either:
 	 * * `true` - then attribute is just required (can be empty),
 	 * * a string - then attribute has to be equal, or
 	 * * a regular expression - then attribute has to match the expression.
-	 * @param {String|RegExp|Array} [pattern.class] Class name or array of class names to match. Each name can be
+	 * @param {String|RegExp|Array} [pattern.classes] Class name or array of class names to match. Each name can be
 	 * provided in a form of string or regular expression.
-	 * @param {Object} [pattern.style] Object with key-value pairs representing styles to match. Each object key
+	 * @param {Object} [pattern.styles] Object with key-value pairs representing styles to match. Each object key
 	 * represents style name. Value under that key can be either a string or a regular expression and it will be used
 	 * to match style value.
 	 */
@@ -73,8 +73,8 @@ export default class Matcher {
 			}
 
 			// Single class name/RegExp can be provided.
-			if ( item.class && ( typeof item.class == 'string' || item.class instanceof RegExp ) ) {
-				item.class = [ item.class ];
+			if ( item.classes && ( typeof item.classes == 'string' || item.classes instanceof RegExp ) ) {
+				item.classes = [ item.classes ];
 			}
 
 			this._patterns.push( item );
@@ -92,9 +92,9 @@ export default class Matcher {
 	 *			pattern: <pattern used to match found element>,
 	 *			match: {
 	 *				name: true,
-	 *				attribute: [ 'title', 'href' ],
-	 *				class: [ 'foo' ],
-	 *				style: [ 'color', 'position' ]
+	 *				attributes: [ 'title', 'href' ],
+	 *				classes: [ 'foo' ],
+	 *				styles: [ 'color', 'position' ]
 	 *			}
 	 *		}
 	 *
@@ -106,9 +106,9 @@ export default class Matcher {
 	 * @returns {Object|String|RegExp|Function} result.pattern Pattern that was used to find matched element.
 	 * @returns {Object} result.match Object representing matched element parts.
 	 * @returns {Boolean} [result.match.name] True if name of the element was matched.
-	 * @returns {Array} [result.match.attribute] Array with matched attribute names.
-	 * @returns {Array} [result.match.class] Array with matched class names.
-	 * @returns {Array} [result.match.style] Array with matched style names.
+	 * @returns {Array} [result.match.attributes] Array with matched attribute names.
+	 * @returns {Array} [result.match.classes] Array with matched class names.
+	 * @returns {Array} [result.match.styles] Array with matched style names.
 	 */
 	match( ...element ) {
 		for ( const singleElement of element ) {
@@ -199,28 +199,28 @@ function isElementMatching( element, pattern ) {
 	}
 
 	// Check element's attributes.
-	if ( pattern.attribute ) {
-		match.attribute = matchAttributes( pattern.attribute, element );
+	if ( pattern.attributes ) {
+		match.attributes = matchAttributes( pattern.attributes, element );
 
-		if ( !match.attribute ) {
+		if ( !match.attributes ) {
 			return null;
 		}
 	}
 
 	// Check element's classes.
-	if ( pattern.class ) {
-		match.class = matchClasses( pattern.class, element );
+	if ( pattern.classes ) {
+		match.classes = matchClasses( pattern.classes, element );
 
-		if ( !match.class ) {
+		if ( !match.classes ) {
 			return false;
 		}
 	}
 
 	// Check element's styles.
-	if ( pattern.style ) {
-		match.style = matchStyles( pattern.style, element );
+	if ( pattern.styles ) {
+		match.styles = matchStyles( pattern.styles, element );
 
-		if ( !match.style ) {
+		if ( !match.styles ) {
 			return false;
 		}
 	}
@@ -373,22 +373,22 @@ function matchStyles( patterns, element ) {
  *
  *		// Match view element which has given class.
  *		const pattern = {
- *			class: 'foobar'
+ *			classes: 'foobar'
  *		};
  *
  *		// Match view element class using regular expression.
  *		const pattern = {
- *			class: /foo.../
+ *			classes: /foo.../
  *		};
  *
  *		// Multiple classes to match.
  *		const pattern = {
- *			class: [ 'baz', 'bar', /foo.../ ]
+ *			classes: [ 'baz', 'bar', /foo.../ ]
  *		}:
  *
  *		// Match view element which has given styles.
  *		const pattern = {
- *			style: {
+ *			styles: {
  *				position: 'absolute',
  *				color: /^\w*blue$/
  *			}
@@ -397,10 +397,10 @@ function matchStyles( patterns, element ) {
  *		// Pattern with multiple properties.
  *		const pattern = {
  *			name: 'span',
- *			style: {
+ *			styles: {
  *				'font-weight': 'bold'
  *			},
- *			class: 'highlighted'
+ *			classes: 'highlighted'
  *		};
  *
  * If `MatcherPattern` is given as a `Function`, the function takes a view element as a first and only parameter and
@@ -438,9 +438,9 @@ function matchStyles( patterns, element ) {
  * @typedef {String|RegExp|Object|Function} module:engine/view/matcher~MatcherPattern
  *
  * @property {String|RegExp} [name] View element name to match.
- * @property {String|RegExp|Array.<String|RegExp>} [class] View element's class name(s) to match.
- * @property {Object} [style] Object with key-value pairs representing styles to match.
+ * @property {String|RegExp|Array.<String|RegExp>} [classes] View element's class name(s) to match.
+ * @property {Object} [styles] Object with key-value pairs representing styles to match.
  * Each object key represents style name. Value can be given as `String` or `RegExp`.
- * @property {Object} [attribute] Object with key-value pairs representing attributes to match.
+ * @property {Object} [attributes] Object with key-value pairs representing attributes to match.
  * Each object key represents attribute name. Value can be given as `String` or `RegExp`.
  */

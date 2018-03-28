@@ -55,26 +55,26 @@ export default class ViewConsumable {
 	 * {@link module:engine/view/documentfragment~DocumentFragment document fragment} as ready to be consumed.
 	 *
 	 *		viewConsumable.add( p, { name: true } ); // Adds element's name to consume.
-	 *		viewConsumable.add( p, { attribute: 'name' } ); // Adds element's attribute.
-	 *		viewConsumable.add( p, { class: 'foobar' } ); // Adds element's class.
-	 *		viewConsumable.add( p, { style: 'color' } ); // Adds element's style
-	 *		viewConsumable.add( p, { attribute: 'name', style: 'color' } ); // Adds attribute and style.
-	 *		viewConsumable.add( p, { class: [ 'baz', 'bar' ] } ); // Multiple consumables can be provided.
+	 *		viewConsumable.add( p, { attributes: 'name' } ); // Adds element's attribute.
+	 *		viewConsumable.add( p, { classes: 'foobar' } ); // Adds element's class.
+	 *		viewConsumable.add( p, { styles: 'color' } ); // Adds element's style
+	 *		viewConsumable.add( p, { attributes: 'name', styles: 'color' } ); // Adds attribute and style.
+	 *		viewConsumable.add( p, { classes: [ 'baz', 'bar' ] } ); // Multiple consumables can be provided.
 	 *		viewConsumable.add( textNode ); // Adds text node to consume.
 	 *		viewConsumable.add( docFragment ); // Adds document fragment to consume.
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `viewconsumable-invalid-attribute` when `class` or `style`
 	 * attribute is provided - it should be handled separately by providing actual style/class.
 	 *
-	 *		viewConsumable.add( p, { attribute: 'style' } ); // This call will throw an exception.
-	 *		viewConsumable.add( p, { style: 'color' } ); // This is properly handled style.
+	 *		viewConsumable.add( p, { attributes: 'style' } ); // This call will throw an exception.
+	 *		viewConsumable.add( p, { styles: 'color' } ); // This is properly handled style.
 	 *
 	 * @param {module:engine/view/element~Element|module:engine/view/text~Text|module:engine/view/documentfragment~DocumentFragment} element
 	 * @param {Object} [consumables] Used only if first parameter is {@link module:engine/view/element~Element view element} instance.
 	 * @param {Boolean} consumables.name If set to true element's name will be included.
-	 * @param {String|Array.<String>} consumables.attribute Attribute name or array of attribute names.
-	 * @param {String|Array.<String>} consumables.class Class name or array of class names.
-	 * @param {String|Array.<String>} consumables.style Style name or array of style names.
+	 * @param {String|Array.<String>} consumables.attributes Attribute name or array of attribute names.
+	 * @param {String|Array.<String>} consumables.classes Class name or array of class names.
+	 * @param {String|Array.<String>} consumables.styles Style name or array of style names.
 	 */
 	add( element, consumables ) {
 		let elementConsumables;
@@ -104,25 +104,25 @@ export default class ViewConsumable {
 	 * first already consumed item is found and `null` when first non-consumable item is found.
 	 *
 	 *		viewConsumable.test( p, { name: true } ); // Tests element's name.
-	 *		viewConsumable.test( p, { attribute: 'name' } ); // Tests attribute.
-	 *		viewConsumable.test( p, { class: 'foobar' } ); // Tests class.
-	 *		viewConsumable.test( p, { style: 'color' } ); // Tests style.
-	 *		viewConsumable.test( p, { attribute: 'name', style: 'color' } ); // Tests attribute and style.
-	 *		viewConsumable.test( p, { class: [ 'baz', 'bar' ] } ); // Multiple consumables can be tested.
+	 *		viewConsumable.test( p, { attributes: 'name' } ); // Tests attribute.
+	 *		viewConsumable.test( p, { classes: 'foobar' } ); // Tests class.
+	 *		viewConsumable.test( p, { styles: 'color' } ); // Tests style.
+	 *		viewConsumable.test( p, { attributes: 'name', styles: 'color' } ); // Tests attribute and style.
+	 *		viewConsumable.test( p, { classes: [ 'baz', 'bar' ] } ); // Multiple consumables can be tested.
 	 *		viewConsumable.test( textNode ); // Tests text node.
 	 *		viewConsumable.test( docFragment ); // Tests document fragment.
 	 *
 	 * Testing classes and styles as attribute will test if all added classes/styles can be consumed.
 	 *
-	 *		viewConsumable.test( p, { attribute: 'class' } ); // Tests if all added classes can be consumed.
-	 *		viewConsumable.test( p, { attribute: 'style' } ); // Tests if all added styles can be consumed.
+	 *		viewConsumable.test( p, { attributes: 'class' } ); // Tests if all added classes can be consumed.
+	 *		viewConsumable.test( p, { attributes: 'style' } ); // Tests if all added styles can be consumed.
 	 *
 	 * @param {module:engine/view/element~Element|module:engine/view/text~Text|module:engine/view/documentfragment~DocumentFragment} element
 	 * @param {Object} [consumables] Used only if first parameter is {@link module:engine/view/element~Element view element} instance.
 	 * @param {Boolean} consumables.name If set to true element's name will be included.
-	 * @param {String|Array.<String>} consumables.attribute Attribute name or array of attribute names.
-	 * @param {String|Array.<String>} consumables.class Class name or array of class names.
-	 * @param {String|Array.<String>} consumables.style Style name or array of style names.
+	 * @param {String|Array.<String>} consumables.attributes Attribute name or array of attribute names.
+	 * @param {String|Array.<String>} consumables.classes Class name or array of class names.
+	 * @param {String|Array.<String>} consumables.styles Style name or array of style names.
 	 * @returns {Boolean|null} Returns `true` when all items included in method's call can be consumed. Returns `false`
 	 * when first already consumed item is found and `null` when first non-consumable item is found.
 	 */
@@ -148,25 +148,25 @@ export default class ViewConsumable {
 	 * It returns `true` when all items included in method's call can be consumed, otherwise returns `false`.
 	 *
 	 *		viewConsumable.consume( p, { name: true } ); // Consumes element's name.
-	 *		viewConsumable.consume( p, { attribute: 'name' } ); // Consumes element's attribute.
-	 *		viewConsumable.consume( p, { class: 'foobar' } ); // Consumes element's class.
-	 *		viewConsumable.consume( p, { style: 'color' } ); // Consumes element's style.
-	 *		viewConsumable.consume( p, { attribute: 'name', style: 'color' } ); // Consumes attribute and style.
-	 *		viewConsumable.consume( p, { class: [ 'baz', 'bar' ] } ); // Multiple consumables can be consumed.
+	 *		viewConsumable.consume( p, { attributes: 'name' } ); // Consumes element's attribute.
+	 *		viewConsumable.consume( p, { classes: 'foobar' } ); // Consumes element's class.
+	 *		viewConsumable.consume( p, { styles: 'color' } ); // Consumes element's style.
+	 *		viewConsumable.consume( p, { attributes: 'name', styles: 'color' } ); // Consumes attribute and style.
+	 *		viewConsumable.consume( p, { classes: [ 'baz', 'bar' ] } ); // Multiple consumables can be consumed.
 	 *		viewConsumable.consume( textNode ); // Consumes text node.
 	 *		viewConsumable.consume( docFragment ); // Consumes document fragment.
 	 *
 	 * Consuming classes and styles as attribute will test if all added classes/styles can be consumed.
 	 *
-	 *		viewConsumable.consume( p, { attribute: 'class' } ); // Consume only if all added classes can be consumed.
-	 *		viewConsumable.consume( p, { attribute: 'style' } ); // Consume only if all added styles can be consumed.
+	 *		viewConsumable.consume( p, { attributes: 'class' } ); // Consume only if all added classes can be consumed.
+	 *		viewConsumable.consume( p, { attributes: 'style' } ); // Consume only if all added styles can be consumed.
 	 *
 	 * @param {module:engine/view/element~Element|module:engine/view/text~Text|module:engine/view/documentfragment~DocumentFragment} element
 	 * @param {Object} [consumables] Used only if first parameter is {@link module:engine/view/element~Element view element} instance.
 	 * @param {Boolean} consumables.name If set to true element's name will be included.
-	 * @param {String|Array.<String>} consumables.attribute Attribute name or array of attribute names.
-	 * @param {String|Array.<String>} consumables.class Class name or array of class names.
-	 * @param {String|Array.<String>} consumables.style Style name or array of style names.
+	 * @param {String|Array.<String>} consumables.attributes Attribute name or array of attribute names.
+	 * @param {String|Array.<String>} consumables.classes Class name or array of class names.
+	 * @param {String|Array.<String>} consumables.styles Style name or array of style names.
 	 * @returns {Boolean} Returns `true` when all items included in method's call can be consumed,
 	 * otherwise returns `false`.
 	 */
@@ -193,26 +193,26 @@ export default class ViewConsumable {
 	 * method's call.
 	 *
 	 *		viewConsumable.revert( p, { name: true } ); // Reverts element's name.
-	 *		viewConsumable.revert( p, { attribute: 'name' } ); // Reverts element's attribute.
-	 *		viewConsumable.revert( p, { class: 'foobar' } ); // Reverts element's class.
-	 *		viewConsumable.revert( p, { style: 'color' } ); // Reverts element's style.
-	 *		viewConsumable.revert( p, { attribute: 'name', style: 'color' } ); // Reverts attribute and style.
-	 *		viewConsumable.revert( p, { class: [ 'baz', 'bar' ] } ); // Multiple names can be reverted.
+	 *		viewConsumable.revert( p, { attributes: 'name' } ); // Reverts element's attribute.
+	 *		viewConsumable.revert( p, { classes: 'foobar' } ); // Reverts element's class.
+	 *		viewConsumable.revert( p, { styles: 'color' } ); // Reverts element's style.
+	 *		viewConsumable.revert( p, { attributes: 'name', styles: 'color' } ); // Reverts attribute and style.
+	 *		viewConsumable.revert( p, { classes: [ 'baz', 'bar' ] } ); // Multiple names can be reverted.
 	 *		viewConsumable.revert( textNode ); // Reverts text node.
 	 *		viewConsumable.revert( docFragment ); // Reverts document fragment.
 	 *
 	 * Reverting classes and styles as attribute will revert all classes/styles that were previously added for
 	 * consumption.
 	 *
-	 *		viewConsumable.revert( p, { attribute: 'class' } ); // Reverts all classes added for consumption.
-	 *		viewConsumable.revert( p, { attribute: 'style' } ); // Reverts all styles added for consumption.
+	 *		viewConsumable.revert( p, { attributes: 'class' } ); // Reverts all classes added for consumption.
+	 *		viewConsumable.revert( p, { attributes: 'style' } ); // Reverts all styles added for consumption.
 	 *
 	 * @param {module:engine/view/element~Element|module:engine/view/text~Text|module:engine/view/documentfragment~DocumentFragment} element
 	 * @param {Object} [consumables] Used only if first parameter is {@link module:engine/view/element~Element view element} instance.
 	 * @param {Boolean} consumables.name If set to true element's name will be included.
-	 * @param {String|Array.<String>} consumables.attribute Attribute name or array of attribute names.
-	 * @param {String|Array.<String>} consumables.class Class name or array of class names.
-	 * @param {String|Array.<String>} consumables.style Style name or array of style names.
+	 * @param {String|Array.<String>} consumables.attributes Attribute name or array of attribute names.
+	 * @param {String|Array.<String>} consumables.classes Class name or array of class names.
+	 * @param {String|Array.<String>} consumables.styles Style name or array of style names.
 	 */
 	revert( element, consumables ) {
 		const elementConsumables = this._consumables.get( element );
@@ -239,9 +239,9 @@ export default class ViewConsumable {
 	static consumablesFromElement( element ) {
 		const consumables = {
 			name: true,
-			attribute: [],
-			class: [],
-			style: []
+			attributes: [],
+			classes: [],
+			styles: []
 		};
 
 		const attributes = element.getAttributeKeys();
@@ -252,19 +252,19 @@ export default class ViewConsumable {
 				continue;
 			}
 
-			consumables.attribute.push( attribute );
+			consumables.attributes.push( attribute );
 		}
 
 		const classes = element.getClassNames();
 
 		for ( const className of classes ) {
-			consumables.class.push( className );
+			consumables.classes.push( className );
 		}
 
 		const styles = element.getStyleNames();
 
 		for ( const style of styles ) {
-			consumables.style.push( style );
+			consumables.styles.push( style );
 		}
 
 		return consumables;
@@ -335,9 +335,9 @@ class ViewElementConsumables {
 		 * @member {Object}
 		 */
 		this._consumables = {
-			attribute: new Map(),
-			style: new Map(),
-			class: new Map()
+			attributes: new Map(),
+			styles: new Map(),
+			classes: new Map()
 		};
 	}
 
@@ -350,17 +350,17 @@ class ViewElementConsumables {
 	 *
 	 * Attributes classes and styles:
 	 *
-	 *		consumables.add( { attribute: 'title', class: 'foo', style: 'color' } );
-	 *		consumables.add( { attribute: [ 'title', 'name' ], class: [ 'foo', 'bar' ] );
+	 *		consumables.add( { attributes: 'title', classes: 'foo', styles: 'color' } );
+	 *		consumables.add( { attributes: [ 'title', 'name' ], classes: [ 'foo', 'bar' ] );
 	 *
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `viewconsumable-invalid-attribute` when `class` or `style`
 	 * attribute is provided - it should be handled separately by providing `style` and `class` in consumables object.
 	 *
 	 * @param {Object} consumables Object describing which parts of the element can be consumed.
 	 * @param {Boolean} consumables.name If set to `true` element's name will be added as consumable.
-	 * @param {String|Array.<String>} consumables.attribute Attribute name or array of attribute names to add as consumable.
-	 * @param {String|Array.<String>} consumables.class Class name or array of class names to add as consumable.
-	 * @param {String|Array.<String>} consumables.style Style name or array of style names to add as consumable.
+	 * @param {String|Array.<String>} consumables.attributes Attribute name or array of attribute names to add as consumable.
+	 * @param {String|Array.<String>} consumables.classes Class name or array of class names to add as consumable.
+	 * @param {String|Array.<String>} consumables.styles Style name or array of style names to add as consumable.
 	 */
 	add( consumables ) {
 		if ( consumables.name ) {
@@ -383,14 +383,14 @@ class ViewElementConsumables {
 	 *
 	 * Attributes classes and styles:
 	 *
-	 *		consumables.test( { attribute: 'title', class: 'foo', style: 'color' } );
-	 *		consumables.test( { attribute: [ 'title', 'name' ], class: [ 'foo', 'bar' ] );
+	 *		consumables.test( { attributes: 'title', classes: 'foo', styles: 'color' } );
+	 *		consumables.test( { attributes: [ 'title', 'name' ], classes: [ 'foo', 'bar' ] );
 	 *
 	 * @param {Object} consumables Object describing which parts of the element should be tested.
 	 * @param {Boolean} consumables.name If set to `true` element's name will be tested.
-	 * @param {String|Array.<String>} consumables.attribute Attribute name or array of attribute names to test.
-	 * @param {String|Array.<String>} consumables.class Class name or array of class names to test.
-	 * @param {String|Array.<String>} consumables.style Style name or array of style names to test.
+	 * @param {String|Array.<String>} consumables.attributes Attribute name or array of attribute names to test.
+	 * @param {String|Array.<String>} consumables.classes Class name or array of class names to test.
+	 * @param {String|Array.<String>} consumables.styles Style name or array of style names to test.
 	 * @returns {Boolean|null} `true` when all tested items can be consumed, `null` when even one of the items
 	 * was never marked for consumption and `false` when even one of the items was already consumed.
 	 */
@@ -423,14 +423,14 @@ class ViewElementConsumables {
 	 *
 	 * Attributes classes and styles:
 	 *
-	 *		consumables.consume( { attribute: 'title', class: 'foo', style: 'color' } );
-	 *		consumables.consume( { attribute: [ 'title', 'name' ], class: [ 'foo', 'bar' ] );
+	 *		consumables.consume( { attributes: 'title', classes: 'foo', styles: 'color' } );
+	 *		consumables.consume( { attributes: [ 'title', 'name' ], classes: [ 'foo', 'bar' ] );
 	 *
 	 * @param {Object} consumables Object describing which parts of the element should be consumed.
 	 * @param {Boolean} consumables.name If set to `true` element's name will be consumed.
-	 * @param {String|Array.<String>} consumables.attribute Attribute name or array of attribute names to consume.
-	 * @param {String|Array.<String>} consumables.class Class name or array of class names to consume.
-	 * @param {String|Array.<String>} consumables.style Style name or array of style names to consume.
+	 * @param {String|Array.<String>} consumables.attributes Attribute name or array of attribute names to consume.
+	 * @param {String|Array.<String>} consumables.classes Class name or array of class names to consume.
+	 * @param {String|Array.<String>} consumables.styles Style name or array of style names to consume.
 	 */
 	consume( consumables ) {
 		if ( consumables.name ) {
@@ -452,14 +452,14 @@ class ViewElementConsumables {
 	 *
 	 * Attributes classes and styles:
 	 *
-	 *		consumables.revert( { attribute: 'title', class: 'foo', style: 'color' } );
-	 *		consumables.revert( { attribute: [ 'title', 'name' ], class: [ 'foo', 'bar' ] );
+	 *		consumables.revert( { attributes: 'title', classes: 'foo', styles: 'color' } );
+	 *		consumables.revert( { attributes: [ 'title', 'name' ], classes: [ 'foo', 'bar' ] );
 	 *
 	 * @param {Object} consumables Object describing which parts of the element should be reverted.
 	 * @param {Boolean} consumables.name If set to `true` element's name will be reverted.
-	 * @param {String|Array.<String>} consumables.attribute Attribute name or array of attribute names to revert.
-	 * @param {String|Array.<String>} consumables.class Class name or array of class names to revert.
-	 * @param {String|Array.<String>} consumables.style Style name or array of style names to revert.
+	 * @param {String|Array.<String>} consumables.attributes Attribute name or array of attribute names to revert.
+	 * @param {String|Array.<String>} consumables.classes Class name or array of class names to revert.
+	 * @param {String|Array.<String>} consumables.styles Style name or array of style names to revert.
 	 */
 	revert( consumables ) {
 		if ( consumables.name ) {
@@ -480,7 +480,7 @@ class ViewElementConsumables {
 	 * type is provided - it should be handled separately by providing actual style/class type.
 	 *
 	 * @private
-	 * @param {String} type Type of the consumable item: `attribute`, `class` or `style`.
+	 * @param {String} type Type of the consumable item: `attributes`, `classes` or `styles`.
 	 * @param {String|Array.<String>} item Consumable item or array of items.
 	 */
 	_add( type, item ) {
@@ -488,22 +488,22 @@ class ViewElementConsumables {
 		const consumables = this._consumables[ type ];
 
 		for ( const name of items ) {
-			if ( type === 'attribute' && ( name === 'class' || name === 'style' ) ) {
+			if ( type === 'attributes' && ( name === 'class' || name === 'style' ) ) {
 				/**
 				 * Class and style attributes should be handled separately in
 				 * {@link module:engine/conversion/viewconsumable~ViewConsumable#add `ViewConsumable#add()`}.
 				 *
 				 * What you have done is trying to use:
 				 *
-				 *		consumables.add( { attribute: [ 'class', 'style' ] } );
+				 *		consumables.add( { attributes: [ 'class', 'style' ] } );
 				 *
 				 * While each class and style should be registered separately:
 				 *
-				 *		consumables.add( { class: 'some-class', style: 'font-weight' } );
+				 *		consumables.add( { classes: 'some-class', styles: 'font-weight' } );
 				 *
 				 * @error viewconsumable-invalid-attribute
 				 */
-				throw new CKEditorError( 'viewconsumable-invalid-attribute: Classes and styles should be handled separately.' );
+				throw new CKEditorError( 'viewconsumable-invalid-attributes: Classes and styles should be handled separately.' );
 			}
 
 			consumables.set( name, true );
@@ -514,7 +514,7 @@ class ViewElementConsumables {
 	 * Helper method that tests consumables of a given type: attribute, class or style.
 	 *
 	 * @private
-	 * @param {String} type Type of the consumable item: `attribute`, `class` or `style`.
+	 * @param {String} type Type of the consumable item: `attributes`, `classes` or `styles`.
 	 * @param {String|Array.<String>} item Consumable item or array of items.
 	 * @returns {Boolean|null} Returns `true` if all items can be consumed, `null` when one of the items cannot be
 	 * consumed and `false` when one of the items is already consumed.
@@ -524,9 +524,11 @@ class ViewElementConsumables {
 		const consumables = this._consumables[ type ];
 
 		for ( const name of items ) {
-			if ( type === 'attribute' && ( name === 'class' || name === 'style' ) ) {
+			if ( type === 'attributes' && ( name === 'class' || name === 'style' ) ) {
+				const consumableName = name == 'class' ? 'classes' : 'styles';
+
 				// Check all classes/styles if class/style attribute is tested.
-				const value = this._test( name, [ ...this._consumables[ name ].keys() ] );
+				const value = this._test( consumableName, [ ...this._consumables[ consumableName ].keys() ] );
 
 				if ( value !== true ) {
 					return value;
@@ -551,7 +553,7 @@ class ViewElementConsumables {
 	 * Helper method that consumes items of a given type: attribute, class or style.
 	 *
 	 * @private
-	 * @param {String} type Type of the consumable item: `attribute`, `class` or `style`.
+	 * @param {String} type Type of the consumable item: `attributes`, `classes` or `styles`.
 	 * @param {String|Array.<String>} item Consumable item or array of items.
 	 */
 	_consume( type, item ) {
@@ -559,9 +561,11 @@ class ViewElementConsumables {
 		const consumables = this._consumables[ type ];
 
 		for ( const name of items ) {
-			if ( type === 'attribute' && ( name === 'class' || name === 'style' ) ) {
+			if ( type === 'attributes' && ( name === 'class' || name === 'style' ) ) {
+				const consumableName = name == 'class' ? 'classes' : 'styles';
+
 				// If class or style is provided for consumption - consume them all.
-				this._consume( name, [ ...this._consumables[ name ].keys() ] );
+				this._consume( consumableName, [ ...this._consumables[ consumableName ].keys() ] );
 			} else {
 				consumables.set( name, false );
 			}
@@ -572,7 +576,7 @@ class ViewElementConsumables {
 	 * Helper method that reverts items of a given type: attribute, class or style.
 	 *
 	 * @private
-	 * @param {String} type Type of the consumable item: `attribute`, `class` or , `style`.
+	 * @param {String} type Type of the consumable item: `attributes`, `classes` or , `styles`.
 	 * @param {String|Array.<String>} item Consumable item or array of items.
 	 */
 	_revert( type, item ) {
@@ -580,9 +584,11 @@ class ViewElementConsumables {
 		const consumables = this._consumables[ type ];
 
 		for ( const name of items ) {
-			if ( type === 'attribute' && ( name === 'class' || name === 'style' ) ) {
+			if ( type === 'attributes' && ( name === 'class' || name === 'style' ) ) {
+				const consumableName = name == 'class' ? 'classes' : 'styles';
+
 				// If class or style is provided for reverting - revert them all.
-				this._revert( name, [ ...this._consumables[ name ].keys() ] );
+				this._revert( consumableName, [ ...this._consumables[ consumableName ].keys() ] );
 			} else {
 				const value = consumables.get( name );
 

@@ -142,7 +142,7 @@ describe( 'Conversion', () => {
 					model: 'fancyParagraph',
 					view: {
 						name: 'p',
-						class: 'fancy'
+						classes: 'fancy'
 					}
 				} );
 
@@ -157,7 +157,7 @@ describe( 'Conversion', () => {
 						'div',
 						{
 							// Any element with `display: block` style.
-							style: {
+							styles: {
 								display: 'block'
 							}
 						}
@@ -237,7 +237,7 @@ describe( 'Conversion', () => {
 					model: 'bold',
 					view: {
 						name: 'span',
-						class: 'bold'
+						classes: 'bold'
 					}
 				} );
 
@@ -252,11 +252,11 @@ describe( 'Conversion', () => {
 						'b',
 						{
 							name: 'span',
-							class: 'bold'
+							classes: 'bold'
 						},
 						{
 							name: 'span',
-							style: {
+							styles: {
 								'font-weight': 'bold'
 							}
 						},
@@ -266,7 +266,7 @@ describe( 'Conversion', () => {
 							if ( viewElement.is( 'span' ) && fontWeight && /\d+/.test( fontWeight ) && Number( fontWeight ) > 500 ) {
 								return {
 									name: true,
-									style: [ 'font-weight' ]
+									styles: [ 'font-weight' ]
 								};
 							}
 						}
@@ -322,13 +322,13 @@ describe( 'Conversion', () => {
 					view: {
 						big: {
 							name: 'span',
-							style: {
+							styles: {
 								'font-size': '1.2em'
 							}
 						},
 						small: {
 							name: 'span',
-							style: {
+							styles: {
 								'font-size': '0.8em'
 							}
 						}
@@ -422,13 +422,13 @@ describe( 'Conversion', () => {
 					view: {
 						underline: {
 							name: 'span',
-							style: {
+							styles: {
 								'text-decoration': 'underline'
 							}
 						},
 						lineThrough: {
 							name: 'span',
-							style: {
+							styles: {
 								'text-decoration': 'line-through'
 							}
 						}
@@ -551,12 +551,12 @@ describe( 'Conversion', () => {
 					},
 					upcastAlso: {
 						right: {
-							style: {
+							styles: {
 								'text-align': 'right'
 							}
 						},
 						center: {
-							style: {
+							styles: {
 								'text-align': 'center'
 							}
 						}

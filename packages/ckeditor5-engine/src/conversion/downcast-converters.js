@@ -32,7 +32,7 @@ import cloneDeep from '@ckeditor/ckeditor5-utils/src/lib/lodash/cloneDeep';
  *			model: 'fancyParagraph',
  *			view: {
  *				name: 'p',
- *				class: 'fancy'
+ *				classes: 'fancy'
  *			}
  *		} );
  *
@@ -73,7 +73,7 @@ export function downcastElementToElement( config ) {
  *			model: 'invert',
  *			view: {
  *				name: 'span',
- *				class: [ 'font-light', 'bg-dark' ]
+ *				classes: [ 'font-light', 'bg-dark' ]
  *			}
  *		} );
  *
@@ -85,13 +85,13 @@ export function downcastElementToElement( config ) {
  *			view: {
  *				big: {
  *					name: 'span',
- *					style: {
+ *					styles: {
  *						'font-size': '1.2em'
  *					}
  *				},
  *				small: {
  *					name: 'span',
- *					style: {
+ *					styles: {
  *						'font-size': '0.8em'
  *					}
  *				}
@@ -244,7 +244,7 @@ export function downcastAttributeToAttribute( config ) {
  *			model: 'search',
  *			view: {
  *				name: 'span',
- *				attribute: {
+ *				attributes: {
  *					'data-marker': 'search'
  *				}
  *			}
@@ -305,9 +305,9 @@ export function downcastMarkerToElement( config ) {
  * to a container element, it is the container element instance itself which applies values from highlight descriptor.
  * So, in a sense, converter takes care of stating what should be applied on what, while element decides how to apply that.
  *
- *		downcastMarkerToHighlight( { model: 'comment', view: { class: 'comment' } } );
+ *		downcastMarkerToHighlight( { model: 'comment', view: { classes: 'comment' } } );
  *
- *		downcastMarkerToHighlight( { model: 'comment', view: { class: 'new-comment' }, priority: 'high' } );
+ *		downcastMarkerToHighlight( { model: 'comment', view: { classes: 'new-comment' }, priority: 'high' } );
  *
  * 		downcastMarkerToHighlight( {
  * 			model: 'comment',
@@ -316,7 +316,7 @@ export function downcastMarkerToElement( config ) {
  *	 			const commentType = data.markerName.split( ':' )[ 1 ];
  *
  *	 			return {
- *	 				class: [ 'comment', 'comment-' + commentType ]
+ *	 				classes: [ 'comment', 'comment-' + commentType ]
  *	 			};
  * 			}
  * 		} );
@@ -372,24 +372,24 @@ function _createViewElementFromDefinition( viewElementDefinition, viewWriter, vi
 	let element;
 
 	if ( viewElementType == 'container' ) {
-		element = viewWriter.createContainerElement( viewElementDefinition.name, Object.assign( {}, viewElementDefinition.attribute ) );
+		element = viewWriter.createContainerElement( viewElementDefinition.name, Object.assign( {}, viewElementDefinition.attributes ) );
 	} else if ( viewElementType == 'attribute' ) {
-		element = viewWriter.createAttributeElement( viewElementDefinition.name, Object.assign( {}, viewElementDefinition.attribute ) );
+		element = viewWriter.createAttributeElement( viewElementDefinition.name, Object.assign( {}, viewElementDefinition.attributes ) );
 	} else {
 		// 'ui'.
-		element = viewWriter.createUIElement( viewElementDefinition.name, Object.assign( {}, viewElementDefinition.attribute ) );
+		element = viewWriter.createUIElement( viewElementDefinition.name, Object.assign( {}, viewElementDefinition.attributes ) );
 	}
 
-	if ( viewElementDefinition.style ) {
-		const keys = Object.keys( viewElementDefinition.style );
+	if ( viewElementDefinition.styles ) {
+		const keys = Object.keys( viewElementDefinition.styles );
 
 		for ( const key of keys ) {
-			viewWriter.setStyle( key, viewElementDefinition.style[ key ], element );
+			viewWriter.setStyle( key, viewElementDefinition.styles[ key ], element );
 		}
 	}
 
-	if ( viewElementDefinition.class ) {
-		const classes = viewElementDefinition.class;
+	if ( viewElementDefinition.classes ) {
+		const classes = viewElementDefinition.classes;
 
 		if ( typeof classes == 'string' ) {
 			viewWriter.addClass( classes, element );
@@ -638,7 +638,7 @@ export function removeUIElement() {
  * The converter automatically consumes corresponding value from consumables list and stops the event (see
  * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}).
  *
- *		modelDispatcher.on( 'attribute:customAttr:myElem', changeAttribute( ( value, data ) => {
+ *		modelDispatcher.on( 'attributes:customAttr:myElem', changeAttribute( ( value, data ) => {
  *			// Change attribute key from `customAttr` to `class` in view.
  *			const key = 'class';
  *			let value = data.attributeNewValue;
@@ -738,7 +738,7 @@ export function changeAttribute( attributeCreator ) {
  * The converter automatically consumes corresponding value from consumables list, stops the event (see
  * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}).
  *
- *		modelDispatcher.on( 'attribute:bold', wrapItem( ( modelAttributeValue, viewWriter ) => {
+ *		modelDispatcher.on( 'attributes:bold', wrapItem( ( modelAttributeValue, viewWriter ) => {
  *			return viewWriter.createAttributeElement( 'strong' );
  *		} );
  *
@@ -1000,8 +1000,8 @@ function _prepareDescriptor( highlightDescriptor, data, conversionApi ) {
 export function createViewElementFromHighlightDescriptor( descriptor ) {
 	const viewElement = new ViewAttributeElement( 'span', descriptor.attributes );
 
-	if ( descriptor.class ) {
-		viewElement._addClass( descriptor.class );
+	if ( descriptor.classes ) {
+		viewElement._addClass( descriptor.classes );
 	}
 
 	if ( descriptor.priority ) {

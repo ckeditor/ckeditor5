@@ -51,7 +51,7 @@ describe( 'downcast-selection-converters', () => {
 		mapper = new Mapper();
 		mapper.bindElements( modelRoot, viewRoot );
 
-		highlightDescriptor = { class: 'marker', priority: 1 };
+		highlightDescriptor = { classes: 'marker', priority: 1 };
 
 		dispatcher = new DowncastDispatcher( { mapper, viewSelection } );
 
@@ -243,7 +243,7 @@ describe( 'downcast-selection-converters', () => {
 
 			it( 'in marker - using highlight descriptor creator', () => {
 				dispatcher.on( 'addMarker:marker2', highlightText(
-					data => ( { 'class': data.markerName } )
+					data => ( { classes: data.markerName } )
 				) );
 
 				setModelData( model, 'foobar' );

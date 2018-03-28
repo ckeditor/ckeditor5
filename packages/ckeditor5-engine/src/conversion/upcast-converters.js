@@ -31,7 +31,7 @@ import cloneDeep from '@ckeditor/ckeditor5-utils/src/lib/lodash/cloneDeep';
  *		upcastElementToElement( {
  *			view: {
  *				name: 'p',
- *				class: 'fancy'
+ *				classes: 'fancy'
  *			},
  *			model: 'fancyParagraph'
  *		} );
@@ -39,7 +39,7 @@ import cloneDeep from '@ckeditor/ckeditor5-utils/src/lib/lodash/cloneDeep';
  *		upcastElementToElement( {
  * 			view: {
  *				name: 'p',
- *				class: 'heading'
+ *				classes: 'heading'
  * 			},
  * 			model: ( viewElement, modelWriter ) => {
  * 				return modelWriter.createElement( 'heading', { level: viewElement.getAttribute( 'data-level' ) } );
@@ -83,7 +83,7 @@ export function upcastElementToElement( config ) {
  *		upcastElementToAttribute( {
  *			view: {
  *				name: 'span',
- *				class: 'bold'
+ *				classes: 'bold'
  *			},
  *			model: 'bold'
  *		} );
@@ -91,7 +91,7 @@ export function upcastElementToElement( config ) {
  *		upcastElementToAttribute( {
  *			view: {
  *				name: 'span',
- *				class: [ 'styled', 'styled-dark' ]
+ *				classes: [ 'styled', 'styled-dark' ]
  *			},
  *			model: {
  *				key: 'styled',
@@ -102,7 +102,7 @@ export function upcastElementToElement( config ) {
  * 		upcastElementToAttribute( {
  *			view: {
  *				name: 'span',
- *				style: {
+ *				styles: {
  *					'font-size': /[\s\S]+/
  *				}
  *			},
@@ -250,7 +250,7 @@ export function upcastAttributeToAttribute( config ) {
  *		upcastElementToMarker( {
  *			view: {
  *				name: 'span',
- *				attribute: {
+ *				attributes: {
  *					'data-marker': 'search'
  *				}
  *			},
@@ -397,14 +397,16 @@ function _normalizeViewAttributeKeyValueConfig( config ) {
 	let normalized;
 
 	if ( key == 'class' || key == 'style' ) {
+		const keyName = key == 'class' ? 'classes' : 'styles';
+
 		normalized = {
-			[ key ]: config.view.value
+			[ keyName ]: config.view.value
 		};
 	} else {
 		const value = typeof config.view.value == 'undefined' ? /[\s\S]*/ : config.view.value;
 
 		normalized = {
-			attribute: {
+			attributes: {
 				[ key ]: value
 			}
 		};
@@ -498,7 +500,7 @@ function _onlyViewNameIsDefined( config ) {
 		return false;
 	}
 
-	return !config.view.class && !config.view.attribute && !config.view.style;
+	return !config.view.classes && !config.view.attributes && !config.view.styles;
 }
 
 // Helper function for to-model-attribute converter. Sets model attribute on given range. Checks {@link module:engine/model/schema~Schema}
