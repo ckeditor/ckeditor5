@@ -37,7 +37,7 @@ export default class BoldEditing extends Plugin {
 			upcastAlso: [
 				'b',
 				{
-					style: {
+					styles: {
 						'font-weight': 'bold'
 					}
 				}

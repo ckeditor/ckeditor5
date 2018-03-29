@@ -34,7 +34,7 @@ export default class CodeEditing extends Plugin {
 			model: CODE,
 			view: 'code',
 			upcastAlso: {
-				style: {
+				styles: {
 					'word-wrap': 'break-word'
 				}
 			}

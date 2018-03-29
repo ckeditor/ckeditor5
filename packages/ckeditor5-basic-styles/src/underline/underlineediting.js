@@ -34,7 +34,7 @@ export default class UnderlineEditing extends Plugin {
 			model: UNDERLINE,
 			view: 'u',
 			upcastAlso: {
-				style: {
+				styles: {
 					'text-decoration': 'underline'
 				}
 			}

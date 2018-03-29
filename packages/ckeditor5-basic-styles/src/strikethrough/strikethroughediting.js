@@ -38,7 +38,7 @@ export default class StrikethroughEditing extends Plugin {
 				'del',
 				'strike',
 				{
-					style: {
+					styles: {
 						'text-decoration': 'line-through'
 					}
 				}
