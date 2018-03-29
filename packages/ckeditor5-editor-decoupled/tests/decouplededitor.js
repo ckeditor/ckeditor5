@@ -57,21 +57,7 @@ describe( 'DecoupledEditor', () => {
 	} );
 
 	describe( 'create()', () => {
-		afterEach( () => {
-			return editor.destroy();
-		} );
-
 		describe( 'editor with data', () => {
-			beforeEach( () => {
-				return DecoupledEditor
-					.create( editorData, {
-						plugins: [ Paragraph, Bold ]
-					} )
-					.then( newEditor => {
-						editor = newEditor;
-					} );
-			} );
-
 			test( () => editorData );
 		} );
 
@@ -81,14 +67,6 @@ describe( 'DecoupledEditor', () => {
 			beforeEach( () => {
 				editableElement = document.createElement( 'div' );
 				editableElement.innerHTML = editorData;
-
-				return DecoupledEditor
-					.create( editableElement, {
-						plugins: [ Paragraph, Bold ]
-					} )
-					.then( newEditor => {
-						editor = newEditor;
-					} );
 			} );
 
 			test( () => editableElement );
@@ -96,11 +74,27 @@ describe( 'DecoupledEditor', () => {
 
 		function test( getElementOrData ) {
 			it( 'creates an instance which inherits from the DecoupledEditor', () => {
-				expect( editor ).to.be.instanceof( DecoupledEditor );
+				return DecoupledEditor
+					.create( getElementOrData(), {
+						plugins: [ Paragraph, Bold ]
+					} )
+					.then( newEditor => {
+						expect( newEditor ).to.be.instanceof( DecoupledEditor );
+
+						return newEditor.destroy();
+					} );
 			} );
 
 			it( 'loads the initial data', () => {
-				expect( editor.getData() ).to.equal( '<p><strong>foo</strong> bar</p>' );
+				return DecoupledEditor
+					.create( getElementOrData(), {
+						plugins: [ Paragraph, Bold ]
+					} )
+					.then( newEditor => {
+						expect( newEditor.getData() ).to.equal( '<p><strong>foo</strong> bar</p>' );
+
+						return newEditor.destroy();
+					} );
 			} );
 
 			// https://github.com/ckeditor/ckeditor5-editor-classic/issues/53
