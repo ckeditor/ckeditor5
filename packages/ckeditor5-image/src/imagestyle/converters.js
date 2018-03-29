@@ -65,7 +65,7 @@ export function viewToModelStyleAttribute( styles ) {
 		// Convert style one by one.
 		for ( const style of filteredStyles ) {
 			// Try to consume class corresponding with style.
-			if ( conversionApi.consumable.consume( viewFigureElement, { class: style.className } ) ) {
+			if ( conversionApi.consumable.consume( viewFigureElement, { classes: style.className } ) ) {
 				// And convert this style to model attribute.
 				conversionApi.writer.setAttribute( 'imageStyle', style.name, modelImageElement );
 			}

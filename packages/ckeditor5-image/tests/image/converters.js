@@ -72,7 +72,7 @@ describe( 'Image converters', () => {
 				.add( upcastElementToElement( {
 					view: {
 						name: 'img',
-						attribute: {
+						attributes: {
 							src: true
 						}
 					},
