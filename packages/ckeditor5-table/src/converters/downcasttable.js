@@ -36,7 +36,7 @@ export default function downcastTable() {
 		const headingRows = getNumericAttribute( table, 'headingRows', 0 );
 		const tableRows = Array.from( table.getChildren() );
 
-		const cellSpans = ensureCellSpans( table, 0 );
+		const cellSpans = createPreviousCellSpans( table, 0 );
 
 		for ( const tableRow of tableRows ) {
 			const rowIndex = tableRows.indexOf( tableRow );
@@ -57,6 +57,13 @@ export default function downcastTable() {
 	}, { priority: 'normal' } );
 }
 
+/**
+ * Model row element to view <tr> element conversion helper.
+ *
+ * This conversion helper creates whole <tr> element with child elements.
+ *
+ * @returns {Function} Conversion helper.
+ */
 export function downcastInsertRow() {
 	return dispatcher => dispatcher.on( 'insert:tableRow', ( evt, data, conversionApi ) => {
 		const tableRow = data.item;
@@ -77,32 +84,19 @@ export function downcastInsertRow() {
 		const tableSection = Array.from( tableElement.getChildren() )
 			.filter( child => child.name === ( isHeadingRow ? 'thead' : 'tbody' ) )[ 0 ];
 
-		const cellSpans = ensureCellSpans( table, rowIndex );
+		const cellSpans = createPreviousCellSpans( table, rowIndex );
 
 		downcastTableRow( tableRow, rowIndex, tableSection, cellSpans, conversionApi );
 	}, { priority: 'normal' } );
 }
 
-function getColumnIndex( tableRow, columnIndex, cellSpans, rowIndex, tableCell ) {
-	for ( const tableCellA of Array.from( tableRow.getChildren() ) ) {
-		// Check whether current columnIndex is overlapped by table cells from previous rows.
-		columnIndex = cellSpans.getNextFreeColumnIndex( rowIndex, columnIndex );
-
-		// Up to here only!
-		if ( tableCellA === tableCell ) {
-			return columnIndex;
-		}
-
-		const colspan = getNumericAttribute( tableCellA, 'colspan', 1 );
-		const rowspan = getNumericAttribute( tableCellA, 'rowspan', 1 );
-
-		cellSpans.recordSpans( rowIndex, columnIndex, rowspan, colspan );
-
-		// Skip to next "free" column index.
-		columnIndex += colspan;
-	}
-}
-
+/**
+ * Model row element to view <tr> element conversion helper.
+ *
+ * This conversion helper creates whole <tr> element with child elements.
+ *
+ * @returns {Function} Conversion helper.
+ */
 export function downcastInsertCell() {
 	return dispatcher => dispatcher.on( 'insert:tableCell', ( evt, data, conversionApi ) => {
 		const tableCell = data.item;
@@ -125,7 +119,7 @@ export function downcastInsertCell() {
 
 		let columnIndex = 0;
 
-		const cellSpans = ensureCellSpans( table, rowIndex, columnIndex );
+		const cellSpans = createPreviousCellSpans( table, rowIndex, columnIndex );
 
 		// check last row up to
 		columnIndex = getColumnIndex( tableRow, columnIndex, cellSpans, rowIndex, tableCell );
@@ -139,6 +133,16 @@ export function downcastInsertCell() {
 	}, { priority: 'normal' } );
 }
 
+/**
+ * Conversion helper that acts on attribute change for headingColumns and headingRows attributes.
+ *
+ * Depending on changed attributes this converter will:
+ * - rename <td> to <th> elements or vice versa
+ * - create <thead> or <tbody> elements
+ * - remove empty <thead> or <tbody>
+ *
+ * @returns {Function} Conversion helper.
+ */
 export function downcastAttributeChange( attribute ) {
 	return dispatcher => dispatcher.on( `attribute:${ attribute }:table`, ( evt, data, conversionApi ) => {
 		const table = data.item;
@@ -153,7 +157,7 @@ export function downcastAttributeChange( attribute ) {
 
 		const tableRows = Array.from( table.getChildren() );
 
-		const cellSpans = ensureCellSpans( table, 0 );
+		const cellSpans = createPreviousCellSpans( table, 0 );
 
 		const cachedTableSections = {};
 
@@ -164,10 +168,8 @@ export function downcastAttributeChange( attribute ) {
 
 			const desiredParentName = rowIndex < headingRows ? 'thead' : 'tbody';
 
-			const actualParentName = tr.parent.name;
-
-			if ( desiredParentName !== actualParentName ) {
-				const moveToParent = getTableSection( desiredParentName, tableElement, conversionApi, cachedTableSections );
+			if ( desiredParentName !== tr.parent.name ) {
+				const tableSection = getTableSection( desiredParentName, tableElement, conversionApi, cachedTableSections );
 
 				let targetPosition;
 
@@ -175,14 +177,13 @@ export function downcastAttributeChange( attribute ) {
 					rowIndex === data.attributeNewValue &&
 					data.attributeNewValue < data.attributeOldValue
 				) {
-					targetPosition = ViewPosition.createAt( moveToParent, 'start' );
+					targetPosition = ViewPosition.createAt( tableSection, 'start' );
 				} else if ( rowIndex > 0 ) {
 					const previousTr = conversionApi.mapper.toViewElement( table.getChild( rowIndex - 1 ) );
 
 					targetPosition = ViewPosition.createAfter( previousTr );
 				} else {
-					// TODO: ???
-					targetPosition = ViewPosition.createAt( moveToParent, 'start' );
+					targetPosition = ViewPosition.createAt( tableSection, 'start' );
 				}
 
 				conversionApi.writer.move( ViewRange.createOn( tr ), targetPosition );
@@ -212,35 +213,11 @@ export function downcastAttributeChange( attribute ) {
 
 		// TODO: maybe a postfixer?
 		if ( headingRows === 0 ) {
-			removeIfExistsAndEmpty( tableElement, 'thead', conversionApi );
+			removeTableSectionIfEmpty( 'thead', tableElement, conversionApi );
 		} else if ( headingRows === table.childCount ) {
-			removeIfExistsAndEmpty( tableElement, 'tbody', conversionApi );
+			removeTableSectionIfEmpty( 'tbody', tableElement, conversionApi );
 		}
 	}, { priority: 'normal' } );
-}
-
-function ensureCellSpans( table, currentRowIndex ) {
-	const cellSpans = new CellSpans();
-
-	for ( let rowIndex = 0; rowIndex <= currentRowIndex; rowIndex++ ) {
-		const row = table.getChild( rowIndex );
-
-		let columnIndex = 0;
-
-		for ( const tableCell of Array.from( row.getChildren() ) ) {
-			columnIndex = cellSpans.getNextFreeColumnIndex( rowIndex, columnIndex );
-
-			const colspan = getNumericAttribute( tableCell, 'colspan', 1 );
-			const rowspan = getNumericAttribute( tableCell, 'rowspan', 1 );
-
-			cellSpans.recordSpans( rowIndex, columnIndex, rowspan, colspan );
-
-			// Skip to next "free" column index.
-			columnIndex += colspan;
-		}
-	}
-
-	return cellSpans;
 }
 
 // Downcast converter for tableRow model element. Converts tableCells as well.
@@ -301,20 +278,6 @@ function downcastTableRow( tableRow, rowIndex, tableSection, cellSpans, conversi
 	}
 }
 
-// Creates table section at the end of a table.
-//
-// @param {String} elementName
-// @param {module:engine/view/element~Element} tableElement
-// @param conversionApi
-// @return {module:engine/view/containerelement~ContainerElement}
-function createTableSection( elementName, tableElement, conversionApi ) {
-	const tableChildElement = conversionApi.writer.createContainerElement( elementName );
-
-	conversionApi.writer.insert( ViewPosition.createAt( tableElement, elementName == 'tbody' ? 'end' : 'start' ), tableChildElement );
-
-	return tableChildElement;
-}
-
 // Returns `th` for heading cells and `td` for other cells.
 // It is based on tableCell location (rowIndex x columnIndex) and the sizes of column & row headings sizes.
 //
@@ -336,6 +299,120 @@ function getCellElementName( rowIndex, columnIndex, headingRows, headingColumns 
 	const isHeadingForARow = headingColumns && headingColumns > columnIndex;
 
 	return isHeadingForARow ? 'th' : 'td';
+}
+
+// Creates or returns an existing <tbody> or <thead> element witch caching.
+//
+// @param {String} sectionName
+// @param {module:engine/view/element~Element} tableElement
+// @param conversionApi
+// @param {Object} cachedTableSection An object on which store cached elements.
+// @return {module:engine/view/containerelement~ContainerElement}
+function getTableSection( sectionName, tableElement, conversionApi, cachedTableSections ) {
+	if ( cachedTableSections[ sectionName ] ) {
+		return cachedTableSections[ sectionName ];
+	}
+
+	cachedTableSections[ sectionName ] = getOrCreateTableSection( sectionName, tableElement, conversionApi );
+
+	return cachedTableSections[ sectionName ];
+}
+
+// Creates or returns an existing <tbody> or <thead> element.
+//
+// @param {String} sectionName
+// @param {module:engine/view/element~Element} tableElement
+// @param conversionApi
+function getOrCreateTableSection( sectionName, tableElement, conversionApi ) {
+	return getExistingTableSectionElement( sectionName, tableElement ) || createTableSection( sectionName, tableElement, conversionApi );
+}
+
+// Finds an existing <tbody> or <thead> element or returns undefined.
+//
+// @param {String} sectionName
+// @param {module:engine/view/element~Element} tableElement
+// @param conversionApi
+function getExistingTableSectionElement( sectionName, tableElement ) {
+	for ( const tableSection of tableElement.getChildren() ) {
+		if ( tableSection.name == sectionName ) {
+			return tableSection;
+		}
+	}
+}
+
+// Creates table section at the end of a table.
+//
+// @param {String} sectionName
+// @param {module:engine/view/element~Element} tableElement
+// @param conversionApi
+// @return {module:engine/view/containerelement~ContainerElement}
+function createTableSection( sectionName, tableElement, conversionApi ) {
+	const tableChildElement = conversionApi.writer.createContainerElement( sectionName );
+
+	conversionApi.writer.insert( ViewPosition.createAt( tableElement, sectionName == 'tbody' ? 'end' : 'start' ), tableChildElement );
+
+	return tableChildElement;
+}
+
+// Removes an existing <tbody> or <thead> element if it is empty.
+//
+// @param {String} sectionName
+// @param {module:engine/view/element~Element} tableElement
+// @param conversionApi
+function removeTableSectionIfEmpty( sectionName, tableElement, conversionApi ) {
+	const tHead = getExistingTableSectionElement( sectionName, tableElement );
+
+	if ( tHead && tHead.childCount === 0 ) {
+		conversionApi.writer.remove( ViewRange.createOn( tHead ) );
+	}
+}
+
+function getNumericAttribute( element, attribute, defaultValue ) {
+	return element.hasAttribute( attribute ) ? parseInt( element.getAttribute( attribute ) ) : defaultValue;
+}
+
+function getColumnIndex( tableRow, columnIndex, cellSpans, rowIndex, tableCell ) {
+	for ( const tableCellA of Array.from( tableRow.getChildren() ) ) {
+		// Check whether current columnIndex is overlapped by table cells from previous rows.
+		columnIndex = cellSpans.getNextFreeColumnIndex( rowIndex, columnIndex );
+
+		// Up to here only!
+		if ( tableCellA === tableCell ) {
+			return columnIndex;
+		}
+
+		const colspan = getNumericAttribute( tableCellA, 'colspan', 1 );
+		const rowspan = getNumericAttribute( tableCellA, 'rowspan', 1 );
+
+		cellSpans.recordSpans( rowIndex, columnIndex, rowspan, colspan );
+
+		// Skip to next "free" column index.
+		columnIndex += colspan;
+	}
+}
+
+function createPreviousCellSpans( table, currentRowIndex ) {
+	const cellSpans = new CellSpans();
+
+	for ( let rowIndex = 0; rowIndex <= currentRowIndex; rowIndex++ ) {
+		const row = table.getChild( rowIndex );
+
+		let columnIndex = 0;
+
+		for ( const tableCell of Array.from( row.getChildren() ) ) {
+			columnIndex = cellSpans.getNextFreeColumnIndex( rowIndex, columnIndex );
+
+			const colspan = getNumericAttribute( tableCell, 'colspan', 1 );
+			const rowspan = getNumericAttribute( tableCell, 'rowspan', 1 );
+
+			cellSpans.recordSpans( rowIndex, columnIndex, rowspan, colspan );
+
+			// Skip to next "free" column index.
+			columnIndex += colspan;
+		}
+	}
+
+	return cellSpans;
 }
 
 /**
@@ -453,39 +530,4 @@ export class CellSpans {
 
 		return rowSpans.has( columnIndex ) ? rowSpans.get( columnIndex ) : false;
 	}
-}
-
-function getNumericAttribute( tableCell, attribute, defaultValue ) {
-	return tableCell.hasAttribute( attribute ) ? parseInt( tableCell.getAttribute( attribute ) ) : defaultValue;
-}
-
-function getOrCreate( tableElement, childName, conversionApi ) {
-	return getChildElement( tableElement, childName ) || createTableSection( childName, tableElement, conversionApi );
-}
-
-function getChildElement( tableElement, childName ) {
-	for ( const tableSection of tableElement.getChildren() ) {
-		if ( tableSection.name == childName ) {
-			return tableSection;
-		}
-	}
-}
-
-function removeIfExistsAndEmpty( tableElement, childName, conversionApi ) {
-	const tHead = getChildElement( tableElement, childName );
-
-	if ( tHead && tHead.childCount === 0 ) {
-		conversionApi.writer.remove( ViewRange.createOn( tHead ) );
-	}
-}
-
-// Creates if not existing and returns <tbody> or <thead> element for given rowIndex.
-function getTableSection( name, tableElement, conversionApi, cachedTableSections ) {
-	if ( cachedTableSections[ name ] ) {
-		return cachedTableSections[ name ];
-	}
-
-	cachedTableSections[ name ] = getOrCreate( tableElement, name, conversionApi );
-
-	return cachedTableSections[ name ];
 }
