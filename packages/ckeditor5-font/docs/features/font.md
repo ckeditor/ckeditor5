@@ -47,7 +47,7 @@ It is possible to configure which font size options are supported by the editor.
 
 Use the special `'default'` keyword to use the default font size defined in the web page styles. It removes any custom font size.
 
-The font size feature supports two ways of defining the configuration: using  predefined (named) presets or simple numeric values.
+The font size feature supports two ways of defining the configuration: using predefined (named) presets or simple numeric values.
 
 ### Using the predefined presets
 
