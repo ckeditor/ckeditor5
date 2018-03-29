@@ -20,11 +20,7 @@ describe( 'Document', () => {
 
 	beforeEach( () => {
 		model = new Model();
-		doc = new Document( model );
-
-		// Normally Model is the one who creates Document instance and keeps it as reference.
-		// We have to be sure that Model uses the right Document instance.
-		model.document = doc;
+		doc = model.document;
 	} );
 
 	describe( 'constructor()', () => {
@@ -288,7 +284,10 @@ describe( 'Document', () => {
 
 		it( 'should call all already processed callbacks again if a callback returned true', () => {
 			const callA = sinon.spy();
-			const callB = sinon.stub().onFirstCall().returns( true ).onSecondCall().returns( false );
+
+			const callB = sinon.stub();
+			callB.onFirstCall().returns( true ).onSecondCall().returns( false );
+
 			const callC = sinon.spy();
 
 			doc.registerPostFixer( callA );
