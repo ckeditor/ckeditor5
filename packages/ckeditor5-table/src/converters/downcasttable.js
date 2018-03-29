@@ -8,6 +8,7 @@
  */
 
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
+import ViewRange from '@ckeditor/ckeditor5-engine/src/view/range';
 
 /**
  * Model table element to view table element conversion helper.
@@ -24,18 +25,24 @@ export default function downcastTable() {
 			return;
 		}
 
-		// The <thead> and <tbody> elements are created on the fly when needed by inner `getTableSection()` function.
-		let tHead, tBody;
+		// Consume attributes if present to not fire attribute change downcast
+		conversionApi.consumable.consume( table, 'attribute:headingRows:table' );
+		conversionApi.consumable.consume( table, 'attribute:headingColumns:table' );
+
+		// The <thead> and <tbody> elements are created on the fly when needed & cached by `getTableSection()` function.
+		const tableSections = {};
 
 		const tableElement = conversionApi.writer.createContainerElement( 'table' );
-		const headingRows = parseInt( table.getAttribute( 'headingRows' ) ) || 0;
+		const headingRows = getNumericAttribute( table, 'headingRows', 0 );
 		const tableRows = Array.from( table.getChildren() );
 
 		const cellSpans = ensureCellSpans( table, 0 );
 
 		for ( const tableRow of tableRows ) {
 			const rowIndex = tableRows.indexOf( tableRow );
-			const tableSectionElement = getTableSection( rowIndex, headingRows, tableElement, conversionApi );
+			const isHead = headingRows && rowIndex < headingRows;
+
+			const tableSectionElement = getTableSection( isHead ? 'thead' : 'tbody', tableElement, conversionApi, tableSections );
 
 			downcastTableRow( tableRow, rowIndex, tableSectionElement, cellSpans, conversionApi );
 
@@ -47,23 +54,6 @@ export default function downcastTable() {
 
 		conversionApi.mapper.bindElements( table, tableElement );
 		conversionApi.writer.insert( viewPosition, tableElement );
-
-		// Creates if not existing and returns <tbody> or <thead> element for given rowIndex.
-		function getTableSection( rowIndex, headingRows, tableElement, conversionApi ) {
-			if ( headingRows && rowIndex < headingRows ) {
-				if ( !tHead ) {
-					tHead = createTableSection( 'thead', tableElement, conversionApi );
-				}
-
-				return tHead;
-			}
-
-			if ( !tBody ) {
-				tBody = createTableSection( 'tbody', tableElement, conversionApi );
-			}
-
-			return tBody;
-		}
 	}, { priority: 'normal' } );
 }
 
@@ -79,7 +69,7 @@ export function downcastInsertRow() {
 
 		const tableElement = conversionApi.mapper.toViewElement( table );
 
-		const headingRows = parseInt( table.getAttribute( 'headingRows' ) ) || 0;
+		const headingRows = getNumericAttribute( table, 'headingRows', 0 );
 
 		const rowIndex = table.getChildIndex( tableRow );
 		const isHeadingRow = rowIndex < headingRows;
@@ -103,8 +93,8 @@ function getColumnIndex( tableRow, columnIndex, cellSpans, rowIndex, tableCell )
 			return columnIndex;
 		}
 
-		const colspan = tableCellA.hasAttribute( 'colspan' ) ? parseInt( tableCellA.getAttribute( 'colspan' ) ) : 1;
-		const rowspan = tableCellA.hasAttribute( 'rowspan' ) ? parseInt( tableCellA.getAttribute( 'rowspan' ) ) : 1;
+		const colspan = getNumericAttribute( tableCellA, 'colspan', 1 );
+		const rowspan = getNumericAttribute( tableCellA, 'rowspan', 1 );
 
 		cellSpans.recordSpans( rowIndex, columnIndex, rowspan, colspan );
 
@@ -126,8 +116,8 @@ export function downcastInsertCell() {
 
 		const trElement = conversionApi.mapper.toViewElement( tableRow );
 
-		const headingRows = parseInt( table.getAttribute( 'headingRows' ) ) || 0;
-		const headingColumns = parseInt( table.getAttribute( 'headingColumns' ) ) || 0;
+		const headingRows = getNumericAttribute( table, 'headingRows', 0 );
+		const headingColumns = getNumericAttribute( table, 'headingColumns', 0 );
 
 		const rowIndex = table.getChildIndex( tableRow );
 
@@ -149,6 +139,86 @@ export function downcastInsertCell() {
 	}, { priority: 'normal' } );
 }
 
+export function downcastAttributeChange( attribute ) {
+	return dispatcher => dispatcher.on( `attribute:${ attribute }:table`, ( evt, data, conversionApi ) => {
+		const table = data.item;
+
+		if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
+			return;
+		}
+
+		const headingRows = getNumericAttribute( table, 'headingRows', 0 );
+		const headingColumns = getNumericAttribute( table, 'headingColumns', 0 );
+		const tableElement = conversionApi.mapper.toViewElement( table );
+
+		const tableRows = Array.from( table.getChildren() );
+
+		const cellSpans = ensureCellSpans( table, 0 );
+
+		const cachedTableSections = {};
+
+		for ( const tableRow of tableRows ) {
+			const rowIndex = tableRows.indexOf( tableRow );
+
+			const tr = conversionApi.mapper.toViewElement( tableRow );
+
+			const desiredParentName = rowIndex < headingRows ? 'thead' : 'tbody';
+
+			const actualParentName = tr.parent.name;
+
+			if ( desiredParentName !== actualParentName ) {
+				const moveToParent = getTableSection( desiredParentName, tableElement, conversionApi, cachedTableSections );
+
+				let targetPosition;
+
+				if ( desiredParentName === 'tbody' &&
+					rowIndex === data.attributeNewValue &&
+					data.attributeNewValue < data.attributeOldValue
+				) {
+					targetPosition = ViewPosition.createAt( moveToParent, 'start' );
+				} else if ( rowIndex > 0 ) {
+					const previousTr = conversionApi.mapper.toViewElement( table.getChild( rowIndex - 1 ) );
+
+					targetPosition = ViewPosition.createAfter( previousTr );
+				} else {
+					// TODO: ???
+					targetPosition = ViewPosition.createAt( moveToParent, 'start' );
+				}
+
+				conversionApi.writer.move( ViewRange.createOn( tr ), targetPosition );
+			}
+
+			// Check rows
+			let columnIndex = 0;
+
+			for ( const tableCell of Array.from( tableRow.getChildren() ) ) {
+				// Check whether current columnIndex is overlapped by table cells from previous rows.
+				columnIndex = cellSpans.getNextFreeColumnIndex( rowIndex, columnIndex );
+
+				const cellElementName = getCellElementName( rowIndex, columnIndex, headingRows, headingColumns );
+
+				const cell = conversionApi.mapper.toViewElement( tableCell );
+
+				if ( cell.name !== cellElementName ) {
+					conversionApi.writer.rename( cell, cellElementName );
+				}
+
+				columnIndex = columnIndex + getNumericAttribute( tableCell, 'colspan', 1 );
+			}
+
+			// Drop table cell spans information for checked rows.
+			cellSpans.drop( rowIndex );
+		}
+
+		// TODO: maybe a postfixer?
+		if ( headingRows === 0 ) {
+			removeIfExistsAndEmpty( tableElement, 'thead', conversionApi );
+		} else if ( headingRows === table.childCount ) {
+			removeIfExistsAndEmpty( tableElement, 'tbody', conversionApi );
+		}
+	}, { priority: 'normal' } );
+}
+
 function ensureCellSpans( table, currentRowIndex ) {
 	const cellSpans = new CellSpans();
 
@@ -160,8 +230,8 @@ function ensureCellSpans( table, currentRowIndex ) {
 		for ( const tableCell of Array.from( row.getChildren() ) ) {
 			columnIndex = cellSpans.getNextFreeColumnIndex( rowIndex, columnIndex );
 
-			const colspan = tableCell.hasAttribute( 'colspan' ) ? parseInt( tableCell.getAttribute( 'colspan' ) ) : 1;
-			const rowspan = tableCell.hasAttribute( 'rowspan' ) ? parseInt( tableCell.getAttribute( 'rowspan' ) ) : 1;
+			const colspan = getNumericAttribute( tableCell, 'colspan', 1 );
+			const rowspan = getNumericAttribute( tableCell, 'rowspan', 1 );
 
 			cellSpans.recordSpans( rowIndex, columnIndex, rowspan, colspan );
 
@@ -180,8 +250,8 @@ function ensureCellSpans( table, currentRowIndex ) {
 // @param {CellSpans} cellSpans
 // @param {module:engine/view/containerelement~ContainerElement} tableSection
 function downcastTableCell( tableCell, rowIndex, columnIndex, cellSpans, cellElementName, trElement, conversionApi, offset = 'end' ) {
-	const colspan = tableCell.hasAttribute( 'colspan' ) ? parseInt( tableCell.getAttribute( 'colspan' ) ) : 1;
-	const rowspan = tableCell.hasAttribute( 'rowspan' ) ? parseInt( tableCell.getAttribute( 'rowspan' ) ) : 1;
+	const colspan = getNumericAttribute( tableCell, 'colspan', 1 );
+	const rowspan = getNumericAttribute( tableCell, 'rowspan', 1 );
 
 	cellSpans.recordSpans( rowIndex, columnIndex, rowspan, colspan );
 
@@ -240,7 +310,7 @@ function downcastTableRow( tableRow, rowIndex, tableSection, cellSpans, conversi
 function createTableSection( elementName, tableElement, conversionApi ) {
 	const tableChildElement = conversionApi.writer.createContainerElement( elementName );
 
-	conversionApi.writer.insert( ViewPosition.createAt( tableElement, 'end' ), tableChildElement );
+	conversionApi.writer.insert( ViewPosition.createAt( tableElement, elementName == 'tbody' ? 'end' : 'start' ), tableChildElement );
 
 	return tableChildElement;
 }
@@ -383,4 +453,39 @@ export class CellSpans {
 
 		return rowSpans.has( columnIndex ) ? rowSpans.get( columnIndex ) : false;
 	}
+}
+
+function getNumericAttribute( tableCell, attribute, defaultValue ) {
+	return tableCell.hasAttribute( attribute ) ? parseInt( tableCell.getAttribute( attribute ) ) : defaultValue;
+}
+
+function getOrCreate( tableElement, childName, conversionApi ) {
+	return getChildElement( tableElement, childName ) || createTableSection( childName, tableElement, conversionApi );
+}
+
+function getChildElement( tableElement, childName ) {
+	for ( const tableSection of tableElement.getChildren() ) {
+		if ( tableSection.name == childName ) {
+			return tableSection;
+		}
+	}
+}
+
+function removeIfExistsAndEmpty( tableElement, childName, conversionApi ) {
+	const tHead = getChildElement( tableElement, childName );
+
+	if ( tHead && tHead.childCount === 0 ) {
+		conversionApi.writer.remove( ViewRange.createOn( tHead ) );
+	}
+}
+
+// Creates if not existing and returns <tbody> or <thead> element for given rowIndex.
+function getTableSection( name, tableElement, conversionApi, cachedTableSections ) {
+	if ( cachedTableSections[ name ] ) {
+		return cachedTableSections[ name ];
+	}
+
+	cachedTableSections[ name ] = getOrCreate( tableElement, name, conversionApi );
+
+	return cachedTableSections[ name ];
 }
