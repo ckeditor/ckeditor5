@@ -1452,7 +1452,7 @@ describe( 'Renderer', () => {
 
 			// Insert space resulting in '<p>x <b> y</b></p>'.
 			viewP._removeChildren( 0 );
-			viewP._insertChildren( 0, new ViewText( 'x ' ) );
+			viewP._insertChild( 0, new ViewText( 'x ' ) );
 
 			renderer.markToSync( 'children', viewP );
 			renderer.render();
@@ -1481,7 +1481,7 @@ describe( 'Renderer', () => {
 			// Insert space resulting in '<p><b>x </b> y</p>'.
 			const viewB = viewP.getChild( 0 );
 			viewB._removeChildren( 0 );
-			viewB._insertChildren( 0, new ViewText( 'x ' ) );
+			viewB._insertChild( 0, new ViewText( 'x ' ) );
 
 			renderer.markToSync( 'children', viewP );
 			renderer.render();
@@ -1511,7 +1511,7 @@ describe( 'Renderer', () => {
 			// Insert space resulting in '<p><b>x </b><i> y</i></p>'.
 			const viewB = viewP.getChild( 0 );
 			viewB._removeChildren( 0 );
-			viewB._insertChildren( 0, new ViewText( 'x ' ) );
+			viewB._insertChild( 0, new ViewText( 'x ' ) );
 
 			renderer.markToSync( 'children', viewP );
 			renderer.render();
@@ -1563,7 +1563,7 @@ describe( 'Renderer', () => {
 			// '<h2>He<i>ading 1</i></h2>' -> '<h2>Heading 2</h2>'
 			const viewHeading = viewRoot.getChild( 0 );
 			viewHeading._removeChildren( 0, viewHeading.childCount );
-			viewHeading._insertChildren( 0, new ViewText( 'Heading 2' ) );
+			viewHeading._insertChild( 0, new ViewText( 'Heading 2' ) );
 
 			// Usually whole subtree is marked to sync so we mark root, changed element and all its direct children.
 			renderer.markToSync( 'children', viewRoot );
@@ -1575,7 +1575,7 @@ describe( 'Renderer', () => {
 			// '<p>Ph <i><strong>Italic</strong></i> <a><strong>L</strong>ink 1</a></p>'
 			const viewP = viewRoot.getChild( 1 );
 			viewP._removeChildren( 0, viewP.childCount );
-			viewP._insertChildren(
+			viewP._insertChild(
 				0,
 				parse(
 					'Ph <attribute:i><attribute:strong>Italic</attribute:strong></attribute:i> ' +
@@ -1594,7 +1594,7 @@ describe( 'Renderer', () => {
 			// -> '<blockquote><p>Qu<strong>ote</strong></p><ul><li><strong>Quoted item 1</strong></li></ul></blockquote>'
 			const viewBq = viewRoot.getChild( 2 );
 			viewBq._removeChildren( 0, viewBq.childCount );
-			viewBq._insertChildren(
+			viewBq._insertChild(
 				0,
 				parse(
 					'<container:p>Qu<attribute:strong>ote</attribute:strong></container:p>' +
