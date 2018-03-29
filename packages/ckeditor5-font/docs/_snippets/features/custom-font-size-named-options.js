@@ -19,7 +19,7 @@ ClassicEditor
 		fontSize: {
 			options: [
 				'small',
-				'normal',
+				'default',
 				'big'
 			]
 		}
