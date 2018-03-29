@@ -18,9 +18,8 @@ import Template from '@ckeditor/ckeditor5-ui/src/template';
  * {@link module:editor-decoupled/decouplededitoruiview~DecoupledEditorUIView#toolbar}, but without any
  * specific arrangement of the components in the DOM.
  *
- * See {@link module:core/editor/editorconfig~EditorConfig#toolbarContainer `config.toolbarContainer`} and
- * {@link module:core/editor/editorconfig~EditorConfig#editableContainer `config.editableContainer`} to
- * learn more about the UI of the decoupled editor.
+ * See {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`}
+ * to learn more about this view.
  *
  * @extends module:ui/editorui/editoruiview~EditorUIView
  */
@@ -29,8 +28,9 @@ export default class DecoupledEditorUIView extends EditorUIView {
 	 * Creates an instance of the decoupled editor UI view.
 	 *
 	 * @param {module:utils/locale~Locale} locale The {@link module:core/editor/editor~Editor#locale} instance.
+	 * @param {HTMLElement} [editableElement] The DOM element to be used as editable.
 	 */
-	constructor( locale ) {
+	constructor( locale, editableElement ) {
 		super( locale );
 
 		/**
@@ -47,35 +47,20 @@ export default class DecoupledEditorUIView extends EditorUIView {
 		 * @readonly
 		 * @member {module:ui/editableui/inline/inlineeditableuiview~InlineEditableUIView}
 		 */
-		this.editable = new InlineEditableUIView( locale );
+		this.editable = new InlineEditableUIView( locale, editableElement );
 
 		// This toolbar may be placed anywhere in the page so things like font size need to be reset in it.
+		// Also because of the above, make sure the toolbar supports rounded corners.
 		Template.extend( this.toolbar.template, {
 			attributes: {
-				class: 'ck-reset_all'
+				class: [
+					'ck-reset_all',
+					'ck-rounded-corners'
+				]
 			}
 		} );
 
 		this.registerChildren( [ this.toolbar, this.editable ] );
-	}
-
-	/**
-	 * Destroys the view and removes the {@link #toolbar} and {@link #editable}
-	 * {@link module:ui/view~View#element `element`} from the DOM, if required.
-	 *
-	 * @param {Boolean} [removeToolbar] When `true`, remove the {@link #toolbar} element from the DOM.
-	 * @param {Boolean} [removeEditable] When `true`, remove the {@link #editable} element from the DOM.
-	 */
-	destroy( removeToolbar, removeEditable ) {
-		super.destroy();
-
-		if ( removeToolbar ) {
-			this.toolbar.element.remove();
-		}
-
-		if ( removeEditable ) {
-			this.editable.element.remove();
-		}
 	}
 
 	/**

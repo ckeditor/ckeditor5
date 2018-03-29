@@ -5,7 +5,7 @@ order: 30
 
 # Document editor
 
-The {@link examples/builds/document-editor document editor example} showcases the {@link builds/guides/quick-start#document-editor document editor build} designed for document editing with a customized UI representing the layout of a sheet of paper. It was created on top of the {@link module:editor-decoupled/decouplededitor~DecoupledEditor `DecoupledEditor`} and makes the best of what it offers: the freedom to choose the location of the crucial UI elements in the application.
+The {@link examples/builds/document-editor document editor example} showcases the {@link builds/guides/quick-start#document-editor document editor build} designed for document editing with a customized UI representing the layout of a sheet of paper. It was created on top of the {@link module:editor-decoupled/decouplededitor~DecoupledEditor `DecoupledEditor`} class and makes the best of what it offers: the freedom to choose the location of the crucial UI elements in the application.
 
 In this tutorial you will learn how to create your own document editor with a customized user interface, step–by–step.
 
@@ -13,27 +13,32 @@ In this tutorial you will learn how to create your own document editor with a cu
 
 ## The editor
 
-The `DecoupledDocumentEditor` includes all the necessary features for the task. All you need to do is import it and create a new instance.
+The document editor build includes all the necessary features for the task. All you need to do is import it and create a new instance.
 
 <info-box>
 	See the {@link builds/guides/quick-start#document-editor quick start guide} to learn how to install the document editor build.
 </info-box>
 
-Unlike the {@link builds/guides/overview#classic-editor classic editor}, the document editor does not require any data container in the DOM. Instead, it accepts a string containing the initial data as the first argument of the static `create()` method. To get the output data, use the {@link module:core/editor/utils/dataapimixin~DataApi#getData `getData`} method.
+The document editor can be created using the existing data container in the DOM. It can also accept a raw data string and create the editable by itself. To get the output data, use the {@link module:core/editor/utils/dataapimixin~DataApi#getData `getData()`} method.
+
+<info-box>
+	See the {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`} to learn about different approaches to the initialization of the editor.
+</info-box>
 
 ```js
 import DecoupledDocumentEditor from '@ckeditor/ckeditor5-build-decoupled-document/src/ckeditor';
 
 DecoupledDocumentEditor
-	.create( '<p>Initial editor data.</p>', {
-		toolbarContainer: document.querySelector( '.document-editor__toolbar' ),
-		editableContainer: document.querySelector( '.document-editor__editable' ),
-
+	.create( document.querySelector( '.document-editor__editable' ), {
 		cloudServices: {
 			....
 		}
 	} )
 	.then( editor => {
+		const toolbarContainer = document.querySelector( '.document-editor__toolbar' );
+
+		toolbarContainer.appendChild( editor.ui.view.toolbar.element );
+
 		window.editor = editor;
 	} )
 	.catch( err => {
@@ -41,9 +46,7 @@ DecoupledDocumentEditor
 	} );
 ```
 
-You may have noticed two configuration options used here: {@link module:core/editor/editorconfig~EditorConfig#toolbarContainer `config.toolbarContainer`} and {@link module:core/editor/editorconfig~EditorConfig#editableContainer `config.editableContainer`}. They specify the location of the editor toolbar and editable in your application.
-
-If you do not specify these configuration options, you have to make sure the editor UI is injected into your application after it fires the {@link module:core/editor/editorwithui~EditorWithUI#event:uiReady `uiReady`} event. The toolbar element is accessible via `editor.ui.view.toolbar.element` and the editable element can be found under `editor.ui.view.editable.element`.
+You may have noticed that you have to make sure the editor UI is injected into your application after it fires the {@link module:core/editor/editorwithui~EditorWithUI#event:uiReady `Editor#uiReady`} event. The toolbar element can be found under `editor.ui.view.toolbar.element`.
 
 <info-box>
 	The document editor supports the Easy Image plugin provided by [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/) out of the box. Please refer to the {@link features/image-upload#easy-image documentation} to learn more.
@@ -60,7 +63,11 @@ The following structure has two containers that correspond to the configuration 
 ```html
 <div class="document-editor">
 	<div class="document-editor__toolbar"></div>
-	<div class="document-editor__editable"></div>
+	<div class="document-editor__editable-container">
+		<div class="document-editor__editable">
+			<p>The initial editor data.</p>
+		</div>
+	</div>
 </div>
 ```
 
@@ -114,7 +121,7 @@ The editable should look like a sheet of paper, centered in its scrollable conta
 
 ```css
 /* Make the editable container look like the inside of a native word processor application. */
-.document-editor__editable {
+.document-editor__editable-container {
 	padding: calc( 2 * var(--ck-spacing-large) );
 	background: var(--ck-color-base-foreground);
 
@@ -122,7 +129,7 @@ The editable should look like a sheet of paper, centered in its scrollable conta
 	overflow-y: scroll;
 }
 
-.document-editor__editable .ck-editor__editable {
+.document-editor__editable-container .ck-editor__editable {
 	/* Set the dimensions of the "page". */
 	width: 15.8cm;
 	min-height: 21cm;
