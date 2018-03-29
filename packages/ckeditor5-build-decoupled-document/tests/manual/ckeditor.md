@@ -1,4 +1,4 @@
-# CKEditor 5 decoupled document build – standard version
+# CKEditor 5 document editor build – standard version
 
 Just play with it.
 
