@@ -50,9 +50,13 @@ export default class DecoupledEditorUIView extends EditorUIView {
 		this.editable = new InlineEditableUIView( locale, editableElement );
 
 		// This toolbar may be placed anywhere in the page so things like font size need to be reset in it.
+		// Also because of the above, make sure the toolbar supports rounded corners.
 		Template.extend( this.toolbar.template, {
 			attributes: {
-				class: 'ck-reset_all'
+				class: [
+					'ck-reset_all',
+					'ck-rounded-corners'
+				]
 			}
 		} );
 

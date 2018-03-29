@@ -43,8 +43,9 @@ describe( 'DecoupledEditorUIView', () => {
 				expect( view.toolbar.element.parentElement ).to.be.null;
 			} );
 
-			it( 'gets the .ck-reset_all class', () => {
+			it( 'gets the CSS classes', () => {
 				expect( view.toolbar.element.classList.contains( 'ck-reset_all' ) ).to.be.true;
+				expect( view.toolbar.element.classList.contains( 'ck-rounded-corners' ) ).to.be.true;
 			} );
 		} );
 

@@ -61,7 +61,7 @@ The code you have just created will run the editor but still, the user interface
 The following structure has two containers that correspond to the configuration you have just used. The editor will inject the toolbar and editable into respective containers as it starts.
 
 ```html
-<div class="document-editor ck-rounded-corners">
+<div class="document-editor">
 	<div class="document-editor__toolbar"></div>
 	<div class="document-editor__editable-container">
 		<div class="document-editor__editable">
