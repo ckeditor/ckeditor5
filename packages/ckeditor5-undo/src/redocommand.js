@@ -8,6 +8,7 @@
  */
 
 import BaseCommand from './basecommand';
+import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
 
 /**
  * The redo command stores {@link module:engine/model/batch~Batch batches} that were used to undo a batch by
@@ -30,16 +31,17 @@ export default class RedoCommand extends BaseCommand {
 	 */
 	execute() {
 		const item = this._stack.pop();
+		const redoingBatch = new Batch();
 
 		// All changes have to be done in one `enqueueChange` callback so other listeners will not
 		// step between consecutive deltas, or won't do changes to the document before selection is properly restored.
-		this.editor.model.enqueueChange( () => {
+		this.editor.model.enqueueChange( redoingBatch, () => {
 			const lastDelta = item.batch.deltas[ item.batch.deltas.length - 1 ];
 			const nextBaseVersion = lastDelta.baseVersion + lastDelta.operations.length;
 			const deltas = this.editor.model.document.history.getDeltas( nextBaseVersion );
 
 			this._restoreSelection( item.selection.ranges, item.selection.isBackward, deltas );
-			this._undo( item.batch );
+			this._undo( item.batch, redoingBatch );
 		} );
 
 		this.refresh();

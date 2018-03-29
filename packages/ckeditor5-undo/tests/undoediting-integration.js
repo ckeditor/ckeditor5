@@ -48,6 +48,10 @@ describe( 'UndoEditing integration', () => {
 			} );
 	} );
 
+	afterEach( () => {
+		return editor.destroy();
+	} );
+
 	function setSelection( pathA, pathB ) {
 		model.change( writer => {
 			writer.setSelection( new Range( new Position( root, pathA ), new Position( root, pathB ) ) );
@@ -1042,6 +1046,44 @@ describe( 'UndoEditing integration', () => {
 
 			output( '<paragraph>[]Foo</paragraph><paragraph>Bar</paragraph>' );
 		} );
+	} );
+
+	it( 'postfixers should not add another undo step when fixing undo changes', () => {
+		input( '<paragraph>[]</paragraph>' );
+		const paragraph = root.getChild( 0 );
+
+		// 1. Step - add text and marker to the paragraph.
+		model.change( writer => {
+			writer.appendText( 'foo', paragraph );
+			writer.setMarker( 'marker', Range.createIn( paragraph ), { usingOperation: true } );
+		} );
+
+		// 2. Step - remove text from paragraph.
+		model.change( writer => {
+			writer.remove( Range.createIn( paragraph ) );
+		} );
+
+		// Register post fixer to remove marker from non-empty paragraph.
+		model.document.registerPostFixer( writer => {
+			const hasMarker = model.markers.has( 'marker' );
+			const isEmpty = paragraph.childCount === 0;
+
+			// Remove marker when paragraph is empty.
+			if ( hasMarker && !isEmpty ) {
+				writer.removeMarker( 'marker' );
+
+				return true;
+			}
+
+			return false;
+		} );
+
+		editor.execute( 'undo' );
+
+		// Check if postfixer changes are executed together with undo and there is no additional undo steps.
+		expect( model.markers.has( 'marker' ) ).to.be.false;
+		expect( editor.commands.get( 'undo' )._stack.length ).to.equal( 1 );
+		output( '<paragraph>foo[]</paragraph>' );
 	} );
 
 	function split( path ) {
