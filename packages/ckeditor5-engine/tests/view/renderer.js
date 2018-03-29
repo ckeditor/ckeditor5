@@ -1359,7 +1359,7 @@ describe( 'Renderer', () => {
 		it( 'should render NBSP as first space in inline element after another space', () => {
 			const viewP = parse( '<container:p>x <attribute:b>y</attribute:b></container:p>' );
 
-			viewRoot._appendChildren( viewP );
+			viewRoot._appendChild( viewP );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -1374,7 +1374,7 @@ describe( 'Renderer', () => {
 			// Insert space resulting in '<p>x <b> y</b></p>'.
 			const viewB = viewP.getChild( 1 );
 			viewB._removeChildren( 0 );
-			viewB._appendChildren( new ViewText( ' y' ) );
+			viewB._appendChild( new ViewText( ' y' ) );
 
 			renderer.markToSync( 'children', viewP );
 			renderer.render();
@@ -1387,7 +1387,7 @@ describe( 'Renderer', () => {
 		it( 'should update sibling after, when node before is removed', () => {
 			const viewP = parse( '<container:p>x<attribute:b> y</attribute:b></container:p>' );
 
-			viewRoot._appendChildren( viewP );
+			viewRoot._appendChild( viewP );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -1412,7 +1412,7 @@ describe( 'Renderer', () => {
 		it( 'should update sibling before, when node after is removed', () => {
 			const viewP = parse( '<container:p>x <attribute:b>y</attribute:b></container:p>' );
 
-			viewRoot._appendChildren( viewP );
+			viewRoot._appendChild( viewP );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -1438,7 +1438,7 @@ describe( 'Renderer', () => {
 		it( 'should update siblings after space is inserted in element before - text-element', () => {
 			const viewP = parse( '<container:p>x<attribute:b> y</attribute:b></container:p>' );
 
-			viewRoot._appendChildren( viewP );
+			viewRoot._appendChild( viewP );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -1466,7 +1466,7 @@ describe( 'Renderer', () => {
 		it( 'should update siblings after space is inserted in element before - element-text', () => {
 			const viewP = parse( '<container:p><attribute:b>x</attribute:b> y</container:p>' );
 
-			viewRoot._appendChildren( viewP );
+			viewRoot._appendChild( viewP );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -1495,7 +1495,7 @@ describe( 'Renderer', () => {
 		it( 'should update siblings after space is inserted in element before - element-element', () => {
 			const viewP = parse( '<container:p><attribute:b>x</attribute:b><attribute:i> y</attribute:i></container:p>' );
 
-			viewRoot._appendChildren( viewP );
+			viewRoot._appendChild( viewP );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -1555,7 +1555,7 @@ describe( 'Renderer', () => {
 					'</container:ul>' +
 				'</container:blockquote>' );
 
-			viewRoot._appendChildren( viewContent );
+			viewRoot._appendChild( viewContent );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -1639,7 +1639,7 @@ describe( 'Renderer', () => {
 				'</container:blockquote>'
 			);
 
-			viewRoot._appendChildren( viewContent );
+			viewRoot._appendChild( viewContent );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -1650,7 +1650,7 @@ describe( 'Renderer', () => {
 			);
 
 			viewRoot._removeChildren( 0, viewRoot.childCount );
-			viewRoot._appendChildren( newViewContent );
+			viewRoot._appendChild( newViewContent );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -2352,7 +2352,7 @@ describe( 'Renderer', () => {
 		it( 'should handle element nodes', () => {
 			const viewP = parse( '<container:p>foo<attribute:b>bar<attribute:i>baz</attribute:i></attribute:b></container:p>' );
 
-			viewRoot._appendChildren( viewP );
+			viewRoot._appendChild( viewP );
 
 			renderer._markDescendantTextToSync( viewP );
 
@@ -2364,7 +2364,7 @@ describe( 'Renderer', () => {
 		it( 'should handle text nodes', () => {
 			const viewP = parse( '<container:p><attribute:b>bar<attribute:i>baz</attribute:i></attribute:b></container:p>' );
 
-			viewRoot._appendChildren( viewP );
+			viewRoot._appendChild( viewP );
 
 			renderer._markDescendantTextToSync( viewP.getChild( 0 ).getChild( 0 ) );
 
@@ -2386,7 +2386,7 @@ describe( 'Renderer', () => {
 		it( 'should handle empty element nodes', () => {
 			const viewP = parse( '<container:p></container:p>' );
 
-			viewRoot._appendChildren( viewP );
+			viewRoot._appendChild( viewP );
 
 			renderer._markDescendantTextToSync( viewP );
 
