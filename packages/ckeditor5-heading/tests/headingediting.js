@@ -85,7 +85,7 @@ describe( 'HeadingEditing', () => {
 								model: 'heading1',
 								view: 'h1',
 								upcastAlso: [
-									{ name: 'p', attribute: { 'data-heading': 'h1' } }
+									{ name: 'p', attributes: { 'data-heading': 'h1' } }
 								],
 								title: 'User H1',
 								priority: 'high'
