@@ -19,7 +19,7 @@ describe( 'FontFamily utils', () => {
 					model: 'comic',
 					view: {
 						name: 'span',
-						style: {
+						styles: {
 							'font-family': 'Comic Sans'
 						}
 					}
@@ -34,7 +34,7 @@ describe( 'FontFamily utils', () => {
 					model: 'comic',
 					view: {
 						name: 'span',
-						style: {
+						styles: {
 							'font-family': 'Comic Sans'
 						}
 					}
@@ -54,7 +54,7 @@ describe( 'FontFamily utils', () => {
 						model: 'Arial',
 						view: {
 							name: 'span',
-							style: {
+							styles: {
 								'font-family': 'Arial'
 							}
 						}
@@ -64,7 +64,7 @@ describe( 'FontFamily utils', () => {
 						model: 'Comic Sans MS',
 						view: {
 							name: 'span',
-							style: {
+							styles: {
 								'font-family': '\'Comic Sans MS\', sans-serif'
 							}
 						}
@@ -74,7 +74,7 @@ describe( 'FontFamily utils', () => {
 						model: 'Lucida Console',
 						view: {
 							name: 'span',
-							style: {
+							styles: {
 								'font-family': '\'Lucida Console\', \'Courier New\', Courier, monospace'
 							}
 						}

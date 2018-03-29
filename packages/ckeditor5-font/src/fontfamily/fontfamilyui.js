@@ -107,8 +107,8 @@ function _prepareListOptions( options, command ) {
 		itemModel.bind( 'isActive' ).to( command, 'value', value => value === option.model );
 
 		// Try to set a dropdown list item style.
-		if ( option.view && option.view.style ) {
-			itemModel.set( 'style', `font-family: ${ option.view.style[ 'font-family' ] }` );
+		if ( option.view && option.view.styles ) {
+			itemModel.set( 'style', `font-family: ${ option.view.styles[ 'font-family' ] }` );
 		}
 
 		dropdownItems.add( itemModel );

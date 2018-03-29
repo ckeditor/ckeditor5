@@ -203,11 +203,11 @@ describe( 'FontSizeUI', () => {
 			it( 'does not alter normalizeOptions() internals', () => {
 				const options = normalizeOptions( [ 'tiny', 'small', 'default', 'big', 'huge' ] );
 				expect( options ).to.deep.equal( [
-					{ title: 'Tiny', model: 'tiny', view: { name: 'span', class: 'text-tiny' } },
-					{ title: 'Small', model: 'small', view: { name: 'span', class: 'text-small' } },
+					{ title: 'Tiny', model: 'tiny', view: { name: 'span', classes: 'text-tiny' } },
+					{ title: 'Small', model: 'small', view: { name: 'span', classes: 'text-small' } },
 					{ title: 'Default', model: undefined },
-					{ title: 'Big', model: 'big', view: { name: 'span', class: 'text-big' } },
-					{ title: 'Huge', model: 'huge', view: { name: 'span', class: 'text-huge' } }
+					{ title: 'Big', model: 'big', view: { name: 'span', classes: 'text-big' } },
+					{ title: 'Huge', model: 'huge', view: { name: 'span', classes: 'text-huge' } }
 				] );
 			} );
 

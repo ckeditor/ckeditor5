@@ -59,8 +59,8 @@ describe( 'FontSizeEditing', () => {
 								model: 'my',
 								view: {
 									name: 'mark',
-									style: { 'font-size': '30px' },
-									class: 'my-style'
+									styles: { 'font-size': '30px' },
+									classes: 'my-style'
 								}
 							}
 						]
@@ -113,8 +113,8 @@ describe( 'FontSizeEditing', () => {
 								model: 'my',
 								view: {
 									name: 'mark',
-									style: { 'font-size': '30px' },
-									class: 'my-style'
+									styles: { 'font-size': '30px' },
+									classes: 'my-style'
 								}
 							},
 							{
@@ -122,7 +122,7 @@ describe( 'FontSizeEditing', () => {
 								model: 'big-multiple',
 								view: {
 									name: 'span',
-									class: [ 'foo', 'foo-big' ]
+									classes: [ 'foo', 'foo-big' ]
 								}
 							},
 							{
@@ -130,11 +130,11 @@ describe( 'FontSizeEditing', () => {
 								model: 'complex',
 								view: {
 									name: 'span',
-									class: [ 'text-complex' ]
+									classes: [ 'text-complex' ]
 								},
 								upcastAlso: [
-									{ name: 'span', style: { 'font-size': '77em' } },
-									{ name: 'span', attribute: { 'data-size': '77em' } }
+									{ name: 'span', styles: { 'font-size': '77em' } },
+									{ name: 'span', attributes: { 'data-size': '77em' } }
 								]
 							}
 						]
