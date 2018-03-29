@@ -39,7 +39,7 @@ It breaks CKEditor 5 (see how <p><code>[]</code></p> looks). */
 }
 
 /* examples/builds/inline-editor.html */
-.live-snippet .ck.image-style-left, .live-snippet .ck.image-style-right {
+.live-snippet .image-style-left, .live-snippet .image-style-right {
 	float: left;
 	height: auto;
 	width: 50%;
@@ -47,13 +47,13 @@ It breaks CKEditor 5 (see how <p><code>[]</code></p> looks). */
 	margin-right: 2.5rem;
 }
 
-.live-snippet .ck.image-style-right {
+.live-snippet .image-style-right {
 	float: right;
 	margin-right: 0;
 	margin-left: 2.5rem;
 }
 
-.live-snippet .ck.image img {
+.live-snippet .image img {
 	margin: 0 auto;
 }
 
