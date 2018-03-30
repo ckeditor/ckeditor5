@@ -23,6 +23,8 @@ const balloonClassName = 'ck-toolbar-container';
  *
  * The toolbar uses the {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon}.
  *
+ * For a detailed overview, check the {@glink features/image#image-contextual-toolbar image contextual toolbar} documentation.
+ *
  * @extends module:core/plugin~Plugin
  */
 export default class ImageToolbar extends Plugin {
@@ -47,7 +49,7 @@ export default class ImageToolbar extends Plugin {
 		const editor = this.editor;
 		const balloonToolbar = editor.plugins.get( 'BalloonToolbar' );
 
-		// If `BalloonToolbar` plugin is loaded, it should be disabled for images
+		// If the `BalloonToolbar` plugin is loaded, it should be disabled for images
 		// which have their own toolbar to avoid duplication.
 		// https://github.com/ckeditor/ckeditor5-image/issues/110
 		if ( balloonToolbar ) {
@@ -72,7 +74,7 @@ export default class ImageToolbar extends Plugin {
 		}
 
 		/**
-		 * The contextual balloon plugin instance.
+		 * A contextual balloon plugin instance.
 		 *
 		 * @private
 		 * @member {module:ui/panel/balloon/contextualballoon~ContextualBalloon}
@@ -80,8 +82,7 @@ export default class ImageToolbar extends Plugin {
 		this._balloon = this.editor.plugins.get( 'ContextualBalloon' );
 
 		/**
-		 * A `ToolbarView` instance used to display the buttons specific for image
-		 * editing.
+		 * A `ToolbarView` instance used to display the buttons specific for image editing.
 		 *
 		 * @protected
 		 * @type {module:ui/toolbar/toolbarview~ToolbarView}
@@ -103,8 +104,7 @@ export default class ImageToolbar extends Plugin {
 	}
 
 	/**
-	 * Checks whether the toolbar should show up or hide depending on the
-	 * current selection.
+	 * Checks whether the toolbar should show up or hide depending on the current selection.
 	 *
 	 * @private
 	 */
@@ -157,8 +157,7 @@ export default class ImageToolbar extends Plugin {
 	}
 
 	/**
-	 * Returns `true` when the {@link #_toolbar} is the visible view
-	 * in the {@link #_balloon}.
+	 * Returns `true` when the {@link #_toolbar} is the visible view in the {@link #_balloon}.
 	 *
 	 * @private
 	 * @type {Boolean}
@@ -170,14 +169,14 @@ export default class ImageToolbar extends Plugin {
 
 /**
  * Items to be placed in the image toolbar.
- * The option is used by the {@link module:image/imagetoolbar~ImageToolbar} feature.
+ * This option is used by the {@link module:image/imagetoolbar~ImageToolbar} feature.
  *
  * Assuming that you use the following features:
  *
  * * {@link module:image/imagestyle~ImageStyle} (with a default configuration),
- * * {@link module:image/imagetextalternative~ImageTextAlternative}.
+ * * {@link module:image/imagetextalternative~ImageTextAlternative},
  *
- * Three toolbar items will be available in {@link module:ui/componentfactory~ComponentFactory}:
+ * three toolbar items will be available in {@link module:ui/componentfactory~ComponentFactory}:
  * `'imageStyle:full'`, `'imageStyle:side'`, and `'imageTextAlternative'` so you can configure the toolbar like this:
  *
  *		const imageConfig = {

@@ -38,7 +38,7 @@ export default class TextAlternativeFormView extends View {
 		const t = this.locale.t;
 
 		/**
-		 * Tracks information about DOM focus in the form.
+		 * Tracks information about the DOM focus in the form.
 		 *
 		 * @readonly
 		 * @member {module:utils/focustracker~FocusTracker}
@@ -109,6 +109,7 @@ export default class TextAlternativeFormView extends View {
 
 			attributes: {
 				class: [
+					'ck',
 					'ck-text-alternative-form',
 				],
 

@@ -19,6 +19,8 @@ import '../theme/image.css';
  *
  * Uses the {@link module:image/image/imageediting~ImageEditing}.
  *
+ * For a detailed overview, check the {@glink features/image image feature} documentation.
+ *
  * @extends module:core/plugin~Plugin
  */
 export default class Image extends Plugin {
@@ -38,7 +40,7 @@ export default class Image extends Plugin {
 }
 
 /**
- * The configuration of the image features. Used by the image features in `@ckeditor/ckeditor5-image` package.
+ * The configuration of the image features. Used by the image features in the `@ckeditor/ckeditor5-image` package.
  *
  * Read more in {@link module:image/image~ImageConfig}.
  *
@@ -46,7 +48,7 @@ export default class Image extends Plugin {
  */
 
 /**
- * The configuration of the image features. Used by the image features in `@ckeditor/ckeditor5-image` package.
+ * The configuration of the image features. Used by the image features in the `@ckeditor/ckeditor5-image` package.
  *
  *		ClassicEditor
  *			.create( editorElement, {

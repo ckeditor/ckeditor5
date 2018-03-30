@@ -20,13 +20,13 @@ export default class ImageStyleCommand extends Command {
 	 * Creates an instance of the image style command. Each command instance is handling one style.
 	 *
 	 * @param {module:core/editor/editor~Editor} editor The editor instance.
-	 * @param {Array.<module:image/imagestyle/imagestyleediting~ImageStyleFormat>} styles A styles that this command supports.
+	 * @param {Array.<module:image/imagestyle/imagestyleediting~ImageStyleFormat>} styles The styles that this command supports.
 	 */
 	constructor( editor, styles ) {
 		super( editor );
 
 		/**
-		 * Cached name of the default style if present. If there is no default style it defaults to `false`.
+		 * The cached name of the default style if it is present. If there is no default style, it defaults to `false`.
 		 *
 		 * @type {Boolean|String}
 		 * @private
@@ -78,12 +78,8 @@ export default class ImageStyleCommand extends Command {
 	 * {@link module:image/image~ImageConfig#styles `image.styles`} configuration option).
 	 * @fires execute
 	 */
-	execute( options = {} ) {
+	execute( options ) {
 		const styleName = options.value;
-
-		if ( !this.styles[ styleName ] ) {
-			return;
-		}
 
 		const model = this.editor.model;
 		const imageElement = model.document.selection.getSelectedElement();

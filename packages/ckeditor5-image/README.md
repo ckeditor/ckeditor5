@@ -14,7 +14,7 @@ This package implements the image feature for CKEditor 5. The feature is introdu
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-image` package](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/api/image.html) page in [CKEditor 5 documentation](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/).
+See the [`@ckeditor/ckeditor5-image` package](https://docs.ckeditor.com/ckeditor5/latest/api/image.html) page in [CKEditor 5 documentation](https://docs.ckeditor.com/ckeditor5/latest/).
 
 ## License
 

@@ -66,7 +66,7 @@ export function viewFigureToModel() {
 }
 
 /**
- * Converter used to convert `srcset` model image's attribute to `srcset`, `sizes` and `width` attributes in the view.
+ * Converter used to convert the `srcset` model image attribute to the `srcset`, `sizes` and `width` attributes in the view.
  *
  * @return {Function}
  */

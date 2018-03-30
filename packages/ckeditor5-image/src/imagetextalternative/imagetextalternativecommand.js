@@ -11,7 +11,7 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 import { isImage } from '../image/utils';
 
 /**
- * The image text alternative command. It is used to change the `alt` attribute on `<image>` elements.
+ * The image text alternative command. It is used to change the `alt` attribute of `<image>` elements.
  *
  * @extends module:core/command~Command
  */
