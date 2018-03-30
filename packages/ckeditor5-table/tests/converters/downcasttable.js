@@ -60,7 +60,7 @@ describe( 'downcastTable()', () => {
 				conversion.for( 'downcast' ).add( downcastInsertCell() );
 
 				conversion.for( 'downcast' ).add( downcastAttributeChange( 'headingRows' ) );
-				conversion.for( 'downcast' ).add( downcastAttributeChange( 'headingColumns' ), { priority: 'log' } );
+				conversion.for( 'downcast' ).add( downcastAttributeChange( 'headingColumns' ) );
 			} );
 	} );
 
