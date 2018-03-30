@@ -335,6 +335,8 @@ Rebuild the application and refresh the page. You should see a new button in the
 
 ### Step 4. Inserting a new image
 
+Now, let's expand the button's `#execute` event listener, so it will actually insert new image into the content:
+
 ```js
 class InsertImage extends Plugin {
 	init() {
