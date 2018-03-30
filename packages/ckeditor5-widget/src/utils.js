@@ -136,7 +136,7 @@ export function getLabel( element ) {
  * * adds `ck-editor__editable` and `ck-editor__nested-editable` CSS classes,
  * * sets `contenteditable` as `true` when {module:engine/view/editableelement~EditableElement#isReadOnly} is `false`
  * otherwise set `false`,
- * * adds `ck-editor__nested-editable` CSS class when editable is focused and removes it when it's blurred.
+ * * adds `ck-editor__nested-editable_focused` CSS class when editable is focused and removes it when it's blurred.
  *
  * @param {module:engine/view/editableelement~EditableElement} editable
  * @param {module:engine/view/writer~Writer} writer
