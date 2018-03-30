@@ -59,8 +59,8 @@ describe( 'downcastTable()', () => {
 				conversion.for( 'downcast' ).add( downcastInsertRow() );
 				conversion.for( 'downcast' ).add( downcastInsertCell() );
 
-				conversion.for( 'downcast' ).add( downcastAttributeChange( 'headingRows' ), { priority: 'low' } );
-				conversion.for( 'downcast' ).add( downcastAttributeChange( 'headingColumns' ), { priority: 'low' } );
+				conversion.for( 'downcast' ).add( downcastAttributeChange( 'headingRows' ) );
+				conversion.for( 'downcast' ).add( downcastAttributeChange( 'headingColumns' ), { priority: 'log' } );
 			} );
 	} );
 
@@ -460,48 +460,6 @@ describe( 'downcastTable()', () => {
 			] ) );
 		} );
 
-		// TODO: something broke after adding attribute converter :/
-		it.skip( 'should work with heading columns', () => {
-			setModelData( model, modelTable( [
-				[ { rowspan: 2, contents: '11' }, '12', '13', '14' ],
-				[ '22', '23', '24' ],
-				[ { colspan: 2, contents: '31' }, '33', '34' ]
-			], { headingColumns: 2 } ) );
-
-			const table = root.getChild( 0 );
-
-			model.change( writer => {
-				// Inserting column in heading columns so update table's attribute also
-				writer.setAttribute( 'headingColumns', 3, table );
-
-				writer.insertElement( 'tableCell', table.getChild( 0 ), 2 );
-				writer.insertElement( 'tableCell', table.getChild( 1 ), 1 );
-				writer.insertElement( 'tableCell', table.getChild( 2 ), 1 );
-			} );
-
-			expect( formatModelTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
-				[
-					{ isHeading: true, rowspan: 2, contents: '11' },
-					{ isHeading: true, contents: '12' },
-					{ isHeading: true, contents: '' },
-					'13',
-					'14'
-				],
-				[
-					{ isHeading: true, contents: '22' },
-					{ isHeading: true, contents: '' },
-					'23',
-					'24'
-				],
-				[
-					{ isHeading: true, colspan: 2, contents: '31' },
-					{ isHeading: true, contents: '' },
-					'33',
-					'34'
-				]
-			] ) );
-		} );
-
 		it( 'split cell simulation - simple', () => {
 			setModelData( model, modelTable( [
 				[ '11', '12' ],
@@ -711,6 +669,47 @@ describe( 'downcastTable()', () => {
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
 				'<table headingColumns="1"><tbody><tr><td>11</td></tr></tbody></table>'
 			);
+		} );
+
+		it( 'should work with adding table cells', () => {
+			setModelData( model, modelTable( [
+				[ { rowspan: 2, contents: '11' }, '12', '13', '14' ],
+				[ '22', '23', '24' ],
+				[ { colspan: 2, contents: '31' }, '33', '34' ]
+			], { headingColumns: 2 } ) );
+
+			const table = root.getChild( 0 );
+
+			model.change( writer => {
+				// Inserting column in heading columns so update table's attribute also
+				writer.setAttribute( 'headingColumns', 3, table );
+
+				writer.insertElement( 'tableCell', table.getChild( 0 ), 2 );
+				writer.insertElement( 'tableCell', table.getChild( 1 ), 1 );
+				writer.insertElement( 'tableCell', table.getChild( 2 ), 1 );
+			} );
+
+			expect( formatModelTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+				[
+					{ isHeading: true, rowspan: 2, contents: '11' },
+					{ isHeading: true, contents: '12' },
+					{ isHeading: true, contents: '' },
+					'13',
+					'14'
+				],
+				[
+					{ isHeading: true, contents: '22' },
+					{ isHeading: true, contents: '' },
+					'23',
+					'24'
+				],
+				[
+					{ isHeading: true, colspan: 2, contents: '31' },
+					{ isHeading: true, contents: '' },
+					'33',
+					'34'
+				]
+			] ) );
 		} );
 	} );
 } );

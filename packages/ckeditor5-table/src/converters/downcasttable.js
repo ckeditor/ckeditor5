@@ -200,7 +200,9 @@ export function downcastAttributeChange( attribute ) {
 
 				const cell = conversionApi.mapper.toViewElement( tableCell );
 
-				if ( cell.name !== cellElementName ) {
+				// If in single change we're converting attribute changes and inserting cell the table cell might not be inserted into view
+				// because of child conversion is done after parent.
+				if ( cell && cell.name !== cellElementName ) {
 					conversionApi.writer.rename( cell, cellElementName );
 				}
 
