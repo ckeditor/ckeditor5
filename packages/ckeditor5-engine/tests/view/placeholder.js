@@ -27,7 +27,7 @@ describe( 'placeholder', () => {
 			attachPlaceholder( view, element, 'foo bar baz' );
 
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
-			expect( element.hasClass( 'ck ck-placeholder' ) ).to.be.true;
+			expect( element.hasClass( [ 'ck', 'ck-placeholder' ] ) ).to.be.true;
 		} );
 
 		it( 'if element has children set only data attribute', () => {
@@ -37,7 +37,7 @@ describe( 'placeholder', () => {
 			attachPlaceholder( view, element, 'foo bar baz' );
 
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
-			expect( element.hasClass( 'ck ck-placeholder' ) ).to.be.false;
+			expect( element.hasClass( [ 'ck', 'ck-placeholder' ] ) ).to.be.false;
 		} );
 
 		it( 'if element has only ui elements, set CSS class and data attribute', () => {
@@ -47,7 +47,7 @@ describe( 'placeholder', () => {
 			attachPlaceholder( view, element, 'foo bar baz' );
 
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
-			expect( element.hasClass( 'ck ck-placeholder' ) ).to.be.true;
+			expect( element.hasClass( [ 'ck', 'ck-placeholder' ] ) ).to.be.true;
 		} );
 
 		it( 'if element has selection inside set only data attribute', () => {
@@ -57,7 +57,7 @@ describe( 'placeholder', () => {
 			attachPlaceholder( view, element, 'foo bar baz' );
 
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
-			expect( element.hasClass( 'ck ck-placeholder' ) ).to.be.false;
+			expect( element.hasClass( [ 'ck', 'ck-placeholder' ] ) ).to.be.false;
 		} );
 
 		it( 'if element has selection inside but document is blurred should contain placeholder CSS class', () => {
@@ -68,7 +68,7 @@ describe( 'placeholder', () => {
 			attachPlaceholder( view, element, 'foo bar baz' );
 
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
-			expect( element.hasClass( 'ck ck-placeholder' ) ).to.be.true;
+			expect( element.hasClass( [ 'ck', 'ck-placeholder' ] ) ).to.be.true;
 		} );
 
 		it( 'use check function if one is provided', () => {
@@ -81,11 +81,11 @@ describe( 'placeholder', () => {
 
 			sinon.assert.called( spy );
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
-			expect( element.hasClass( 'ck ck-placeholder' ) ).to.be.true;
+			expect( element.hasClass( [ 'ck', 'ck-placeholder' ] ) ).to.be.true;
 
 			result = false;
 			view.render();
-			expect( element.hasClass( 'ck ck-placeholder' ) ).to.be.false;
+			expect( element.hasClass( [ 'ck', 'ck-placeholder' ] ) ).to.be.false;
 		} );
 
 		it( 'should remove CSS class if selection is moved inside', () => {
@@ -95,13 +95,13 @@ describe( 'placeholder', () => {
 			attachPlaceholder( view, element, 'foo bar baz' );
 
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
-			expect( element.hasClass( 'ck ck-placeholder' ) ).to.be.true;
+			expect( element.hasClass( [ 'ck', 'ck-placeholder' ] ) ).to.be.true;
 
 			view.change( writer => {
 				writer.setSelection( ViewRange.createIn( element ) );
 			} );
 
-			expect( element.hasClass( 'ck ck-placeholder' ) ).to.be.false;
+			expect( element.hasClass( [ 'ck', 'ck-placeholder' ] ) ).to.be.false;
 		} );
 
 		it( 'should change placeholder settings when called twice', () => {
@@ -112,7 +112,7 @@ describe( 'placeholder', () => {
 			attachPlaceholder( view, element, 'new text' );
 
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'new text' );
-			expect( element.hasClass( 'ck ck-placeholder' ) ).to.be.true;
+			expect( element.hasClass( [ 'ck', 'ck-placeholder' ] ) ).to.be.true;
 		} );
 
 		it( 'should not throw when element is no longer in document', () => {
@@ -140,10 +140,10 @@ describe( 'placeholder', () => {
 			attachPlaceholder( secondView, secondElement, 'second placeholder' );
 
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'first placeholder' );
-			expect( element.hasClass( 'ck ck-placeholder' ) ).to.be.true;
+			expect( element.hasClass( [ 'ck', 'ck-placeholder' ] ) ).to.be.true;
 
 			expect( secondElement.getAttribute( 'data-placeholder' ) ).to.equal( 'second placeholder' );
-			expect( secondElement.hasClass( 'ck ck-placeholder' ) ).to.be.true;
+			expect( secondElement.hasClass( [ 'ck', 'ck-placeholder' ] ) ).to.be.true;
 
 			// Move selection to the elements with placeholders.
 			view.change( writer => {
@@ -155,10 +155,10 @@ describe( 'placeholder', () => {
 			} );
 
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'first placeholder' );
-			expect( element.hasClass( 'ck ck-placeholder' ) ).to.be.false;
+			expect( element.hasClass( [ 'ck', 'ck-placeholder' ] ) ).to.be.false;
 
 			expect( secondElement.getAttribute( 'data-placeholder' ) ).to.equal( 'second placeholder' );
-			expect( secondElement.hasClass( 'ck ck-placeholder' ) ).to.be.false;
+			expect( secondElement.hasClass( [ 'ck', 'ck-placeholder' ] ) ).to.be.false;
 		} );
 
 		it( 'should update placeholder before rendering', () => {
@@ -172,11 +172,11 @@ describe( 'placeholder', () => {
 
 				// Here we are before rendering - placeholder is visible in first element;
 				expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
-				expect( element.hasClass( 'ck ck-placeholder' ) ).to.be.true;
+				expect( element.hasClass( [ 'ck', 'ck-placeholder' ] ) ).to.be.true;
 			} );
 
 			// After rendering - placeholder should be invisible since selection is moved there.
-			expect( element.hasClass( 'ck ck-placeholder' ) ).to.be.false;
+			expect( element.hasClass( [ 'ck', 'ck-placeholder' ] ) ).to.be.false;
 		} );
 	} );
 
@@ -188,12 +188,12 @@ describe( 'placeholder', () => {
 			attachPlaceholder( view, element, 'foo bar baz' );
 
 			expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
-			expect( element.hasClass( 'ck ck-placeholder' ) ).to.be.true;
+			expect( element.hasClass( [ 'ck', 'ck-placeholder' ] ) ).to.be.true;
 
 			detachPlaceholder( view, element );
 
 			expect( element.hasAttribute( 'data-placeholder' ) ).to.be.false;
-			expect( element.hasClass( 'ck ck-placeholder' ) ).to.be.false;
+			expect( element.hasClass( [ 'ck', 'ck-placeholder' ] ) ).to.be.false;
 		} );
 
 		it( 'should not blow up when called on element without placeholder', () => {
@@ -203,7 +203,7 @@ describe( 'placeholder', () => {
 			detachPlaceholder( view, element );
 
 			expect( element.hasAttribute( 'data-placeholder' ) ).to.be.false;
-			expect( element.hasClass( 'ck ck-placeholder' ) ).to.be.false;
+			expect( element.hasClass( [ 'ck', 'ck-placeholder' ] ) ).to.be.false;
 		} );
 	} );
 } );
