@@ -74,12 +74,12 @@ It breaks CKEditor 5 (see how <p><code>[]</code></p> looks). */
 	padding: 0;
 }
 
-#snippet-inline-editor .ck.ck-editor__editable {
+#snippet-inline-editor .ck-content {
 	margin-bottom: 1rem;
 	padding: 2rem;
 }
 
-#snippet-inline-editor .ck.ck-editor__editable:not(.ck-focused) {
+#snippet-inline-editor .ck-content:not(.ck-focused) {
 	border: 1px solid rgba(0, 0, 0, 0.15);
 }
 
