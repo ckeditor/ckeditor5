@@ -501,6 +501,49 @@ describe( 'downcastTable()', () => {
 				]
 			] ) );
 		} );
+
+		it( 'split cell simulation - simple', () => {
+			setModelData( model, modelTable( [
+				[ '11', '12' ],
+				[ '21', '22' ]
+			] ) );
+
+			const table = root.getChild( 0 );
+
+			model.change( writer => {
+				const firstRow = table.getChild( 0 );
+				const secondRow = table.getChild( 1 );
+
+				writer.insertElement( 'tableCell', firstRow, 1 );
+				writer.setAttribute( 'colspan', 2, secondRow.getChild( 0 ) );
+			} );
+
+			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( viewTable( [
+				[ '11', '', '12' ],
+				[ { colspan: 2, contents: '21' }, '22' ]
+			] ) );
+		} );
+
+		it( 'merge simulation - simple', () => {
+			setModelData( model, modelTable( [
+				[ '11', '12' ],
+				[ '21', '22' ]
+			] ) );
+
+			const table = root.getChild( 0 );
+
+			model.change( writer => {
+				const firstRow = table.getChild( 0 );
+
+				writer.setAttribute( 'colspan', 2, firstRow.getChild( 0 ) );
+				writer.remove( firstRow.getChild( 1 ) );
+			} );
+
+			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( viewTable( [
+				[ { colspan: 2, contents: '11' } ],
+				[ '21', '22' ]
+			] ) );
+		} );
 	} );
 
 	describe( 'table attribute change', () => {
@@ -669,8 +712,5 @@ describe( 'downcastTable()', () => {
 				'<table headingColumns="1"><tbody><tr><td>11</td></tr></tbody></table>'
 			);
 		} );
-	} );
-
-	describe( 'cell split', () => {
 	} );
 } );
