@@ -2,7 +2,7 @@
  * Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  */
 
-.ck-editor {
+.ck.ck-editor {
 	margin: 1.5em 0;
 }
 
@@ -33,7 +33,7 @@ It breaks CKEditor 5 (see how <p><code>[]</code></p> looks). */
 	display: none !important; /* Firefox is very stubborn. */
 }
 
-.ck-reset.ck-list {
+.ck.ck-list {
 	/* See https://github.com/ckeditor/ckeditor5/issues/494 */
 	margin-left: 0;
 }
@@ -62,14 +62,14 @@ It breaks CKEditor 5 (see how <p><code>[]</code></p> looks). */
 }
 
 /* https://github.com/ckeditor/ckeditor5/issues/896 */
-.live-snippet .ck-content h2,
-.live-snippet .ck-content h3,
-.live-snippet .ck-content h4 {
+.live-snippet .ck.ck-content h2,
+.live-snippet .ck.ck-content h3,
+.live-snippet .ck.ck-content h4 {
 	position: static;
 }
 
 /* https://github.com/ckeditor/ckeditor5/issues/899 */
-.live-snippet .ck-dropdown .ck-list {
+.live-snippet .ck-dropdown .ck.ck-list {
 	margin: 0;
 	padding: 0;
 }
@@ -88,14 +88,17 @@ It breaks CKEditor 5 (see how <p><code>[]</code></p> looks). */
 	padding-top: 0;
 	border-bottom: 0;
 }
-#snippet-inline-editor header {
+
+#snippet-inline-editor header.ck-content {
 	text-align: center;
 }
-#snippet-inline-editor header h2 {
+
+#snippet-inline-editor header.ck-content h2 {
 	margin-bottom: 0;
 	font-size: 2.1rem;
 }
-#snippet-inline-editor header h3 {
+
+#snippet-inline-editor header.ck-content h3 {
 	color: rgba(5, 22, 42, 0.59);
 	font-weight: 600;
 	font-size: 1.6rem;

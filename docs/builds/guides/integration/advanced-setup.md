@@ -120,7 +120,7 @@ module.exports = {
 		// ...
 
 		new CKEditorWebpackPlugin( {
-			// See https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/features/ui-language.html
+			// See https://docs.ckeditor.com/ckeditor5/latest/features/ui-language.html
 			language: 'pl'
 		} )
 	],
