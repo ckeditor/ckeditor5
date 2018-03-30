@@ -30,12 +30,12 @@
 		outline: var(--ck-widget-outline-thickness) solid var(--ck-color-widget-border-hover);
 	}
 
-	& .ck-editable {
+	& .ck-editor__nested-editable {
 		border: 1px solid transparent;
 
-		/* The :focus style is applied before .ck-editable_focused class is rendered in the view.
+		/* The :focus style is applied before .ck-editor__nested-editable_focused class is rendered in the view.
 		These styles show a different border for a blink of an eye, so `:focus` need to have same styles applied. */
-		&.ck-editable_focused,
+		&.ck-editor__nested-editable_focused,
 		&:focus {
 			@mixin ck-focus-ring;
 			@mixin ck-box-shadow var(--ck-inner-shadow);

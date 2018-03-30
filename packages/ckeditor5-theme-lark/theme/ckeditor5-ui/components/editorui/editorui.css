@@ -9,7 +9,7 @@
 @import "../../../mixins/_focus.css";
 @import "../../mixins/_button.css";
 
-.ck.ck-editor__editable {
+.ck.ck-editor__editable:not(.ck-editor__nested-editable) {
 	@mixin ck-rounded-corners;
 
 	&.ck-focused {
