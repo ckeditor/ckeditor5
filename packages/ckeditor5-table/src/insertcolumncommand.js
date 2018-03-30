@@ -8,7 +8,7 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import { CellSpans } from './converters/downcasttable';
+import CellSpans from './cellspans';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 
 /**
@@ -71,7 +71,7 @@ export default class InsertColumnCommand extends Command {
 					let colspan = tableCell.hasAttribute( 'colspan' ) ? parseInt( tableCell.getAttribute( 'colspan' ) ) : 1;
 					const rowspan = tableCell.hasAttribute( 'rowspan' ) ? parseInt( tableCell.getAttribute( 'rowspan' ) ) : 1;
 
-					columnIndex = cellSpans.getNextFreeColumnIndex( rowIndex, columnIndex );
+					columnIndex = cellSpans.getAdjustedColumnIndex( rowIndex, columnIndex );
 
 					// TODO: this is not cool:
 					const shouldExpandSpan = colspan > 1 &&

@@ -8,7 +8,8 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import { CellSpans, getNumericAttribute } from './converters/downcasttable';
+import { getNumericAttribute } from './converters/downcasttable';
+import CellSpans from './cellspans';
 
 /**
  * The insert row command.
@@ -68,7 +69,7 @@ export default class InsertRowCommand extends Command {
 					let columnIndex = 0;
 
 					for ( const tableCell of Array.from( tableRow.getChildren() ) ) {
-						columnIndex = cellSpans.getNextFreeColumnIndex( rowIndex, columnIndex );
+						columnIndex = cellSpans.getAdjustedColumnIndex( rowIndex, columnIndex );
 
 						const colspan = getNumericAttribute( tableCell, 'colspan', 1 );
 						let rowspan = getNumericAttribute( tableCell, 'rowspan', 1 );
@@ -93,7 +94,7 @@ export default class InsertRowCommand extends Command {
 					writer.insert( tableRow, table, insertAt );
 
 					for ( let columnIndex = 0; columnIndex < columns; columnIndex++ ) {
-						columnIndex = cellSpans.getNextFreeColumnIndex( rowIndex, columnIndex );
+						columnIndex = cellSpans.getAdjustedColumnIndex( rowIndex, columnIndex );
 
 						const cell = writer.createElement( 'tableCell' );
 
