@@ -353,8 +353,6 @@ describe( 'ImageCaptionEditing', () => {
 					'<img src=""></img>' +
 					'<figcaption class="ck ck-editor__editable ck-editor__nested-editable" ' +
 						'contenteditable="true" data-placeholder="Enter image caption">foo bar</figcaption>' +
-						'foo bar' +
-					'</figcaption>' +
 				'</figure>]'
 			);
 		} );
@@ -426,8 +424,6 @@ describe( 'ImageCaptionEditing', () => {
 					'<img src=""></img>' +
 					'<figcaption class="ck ck-editor__editable ck-editor__nested-editable" ' +
 						'contenteditable="true" data-placeholder="Enter image caption">foo bar</figcaption>' +
-						'foo bar' +
-					'</figcaption>' +
 				'</figure>' +
 				'[<figure class="ck ck-widget image" contenteditable="false">' +
 					'<img src=""></img>' +
