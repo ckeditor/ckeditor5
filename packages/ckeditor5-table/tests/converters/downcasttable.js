@@ -402,27 +402,6 @@ describe( 'downcastTable()', () => {
 				[ { contents: '', isHeading: true }, '' ]
 			] ) );
 		} );
-
-		it( 'should properly create row headings when previous has colspan', () => {
-			setModelData( model, modelTable( [
-				[ { rowspan: 2, colspan: 2, contents: '11' }, '13', '14' ]
-			], { headingColumns: 3 } ) );
-
-			const table = root.getChild( 0 );
-
-			model.change( writer => {
-				const firstRow = writer.createElement( 'tableRow' );
-
-				writer.insert( firstRow, table, 1 );
-				writer.insert( writer.createElement( 'tableCell' ), firstRow, 'end' );
-				writer.insert( writer.createElement( 'tableCell' ), firstRow, 'end' );
-			} );
-
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( viewTable( [
-				[ { colspan: 2, rowspan: 2, contents: '11', isHeading: true }, { isHeading: true, contents: '13' }, '14' ],
-				[ { contents: '', isHeading: true }, '' ]
-			] ) );
-		} );
 	} );
 
 	describe( 'downcastInsertCell()', () => {

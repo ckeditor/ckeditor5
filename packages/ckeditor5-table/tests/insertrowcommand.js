@@ -147,5 +147,43 @@ describe( 'InsertRowCommand', () => {
 				[ '31', '32' ]
 			], { headingRows: 2 } ) );
 		} );
+
+		it( 'should expand rowspan of a cell that overlaps inserted rows', () => {
+			setData( model, modelTable( [
+				[ { colspan: 2, contents: '11[]' }, '13', '14' ],
+				[ { colspan: 2, rowspan: 4, contents: '21' }, '23', '24' ],
+				[ '33', '34' ]
+			], { headingColumns: 3, headingRows: 1 } ) );
+
+			command.execute( { at: 2, rows: 3 } );
+
+			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ { colspan: 2, contents: '11[]' }, '13', '14' ],
+				[ { colspan: 2, rowspan: 7, contents: '21' }, '23', '24' ],
+				[ '', '' ],
+				[ '', '' ],
+				[ '', '' ],
+				[ '33', '34' ]
+			], { headingColumns: 3, headingRows: 1 } ) );
+		} );
+
+		it( 'should not expand rowspan of a cell that does not overlaps inserted rows', () => {
+			setData( model, modelTable( [
+				[ { rowspan: 2, contents: '11[]' }, '12', '13' ],
+				[ '22', '23', '24' ],
+				[ '33', '34' ]
+			], { headingColumns: 3, headingRows: 1 } ) );
+
+			command.execute( { at: 2, rows: 3 } );
+
+			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ { rowspan: 2, contents: '11[]' }, '12', '13' ],
+				[ '22', '23', '24' ],
+				[ '', '', '' ],
+				[ '', '', '' ],
+				[ '', '', '' ],
+				[ '33', '34' ]
+			], { headingColumns: 3, headingRows: 1 } ) );
+		} );
 	} );
 } );

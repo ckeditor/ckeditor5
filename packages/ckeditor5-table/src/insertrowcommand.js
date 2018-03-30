@@ -8,6 +8,7 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
+import { CellSpans, getNumericAttribute } from './converters/downcasttable';
 
 /**
  * The insert row command.
@@ -50,21 +51,54 @@ export default class InsertRowCommand extends Command {
 
 		const columns = getColumns( table );
 
+		const cellSpans = new CellSpans();
+
 		model.change( writer => {
 			if ( headingRows > insertAt ) {
 				writer.setAttribute( 'headingRows', headingRows + rows, table );
 			}
 
-			// TODO: test me - I'm wrong
-			for ( let rowIndex = 0; rowIndex < rows; rowIndex++ ) {
-				const row = writer.createElement( 'tableRow' );
+			let tableRow;
 
-				writer.insert( row, table, insertAt );
+			for ( let rowIndex = 0; rowIndex < insertAt + rows; rowIndex++ ) {
+				if ( rowIndex < insertAt ) {
+					tableRow = table.getChild( rowIndex );
 
-				for ( let column = 0; column < columns; column++ ) {
-					const cell = writer.createElement( 'tableCell' );
+					// Record spans, update rowspans
+					let columnIndex = 0;
 
-					writer.insert( cell, row, 'end' );
+					for ( const tableCell of Array.from( tableRow.getChildren() ) ) {
+						columnIndex = cellSpans.getNextFreeColumnIndex( rowIndex, columnIndex );
+
+						const colspan = getNumericAttribute( tableCell, 'colspan', 1 );
+						let rowspan = getNumericAttribute( tableCell, 'rowspan', 1 );
+
+						if ( rowspan > 1 ) {
+							// check whether rowspan overlaps inserts:
+							if ( rowIndex < insertAt && rowIndex + rowspan > insertAt ) {
+								rowspan = rowspan + rows;
+
+								writer.setAttribute( 'rowspan', rowspan, tableCell );
+							}
+
+							cellSpans.recordSpans( rowIndex, columnIndex, rowspan, colspan );
+						}
+
+						columnIndex = columnIndex + colspan;
+					}
+				} else {
+					// Create new rows
+					tableRow = writer.createElement( 'tableRow' );
+
+					writer.insert( tableRow, table, insertAt );
+
+					for ( let columnIndex = 0; columnIndex < columns; columnIndex++ ) {
+						columnIndex = cellSpans.getNextFreeColumnIndex( rowIndex, columnIndex );
+
+						const cell = writer.createElement( 'tableCell' );
+
+						writer.insert( cell, tableRow, 'end' );
+					}
 				}
 			}
 		} );

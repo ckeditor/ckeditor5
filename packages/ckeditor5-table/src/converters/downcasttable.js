@@ -367,7 +367,7 @@ function removeTableSectionIfEmpty( sectionName, tableElement, conversionApi ) {
 	}
 }
 
-function getNumericAttribute( element, attribute, defaultValue ) {
+export function getNumericAttribute( element, attribute, defaultValue ) {
 	return element.hasAttribute( attribute ) ? parseInt( element.getAttribute( attribute ) ) : defaultValue;
 }
 
