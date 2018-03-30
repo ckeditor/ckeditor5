@@ -105,7 +105,7 @@ function updateSinglePlaceholder( writer, element, info ) {
 
 	// If checkFunction is provided and returns false - remove placeholder.
 	if ( checkFunction && !checkFunction() ) {
-		if ( element.hasClass( [ 'ck', 'ck-placeholder' ] ) ) {
+		if ( element.hasClass( 'ck', 'ck-placeholder' ) ) {
 			writer.removeClass( [ 'ck', 'ck-placeholder' ], element );
 			changed = true;
 		}
@@ -119,7 +119,7 @@ function updateSinglePlaceholder( writer, element, info ) {
 
 	// If element is empty and editor is blurred.
 	if ( !document.isFocused && isEmptyish ) {
-		if ( !element.hasClass( [ 'ck', 'ck-placeholder' ] ) ) {
+		if ( !element.hasClass( 'ck', 'ck-placeholder' ) ) {
 			writer.addClass( [ 'ck', 'ck-placeholder' ], element );
 			changed = true;
 		}
@@ -129,12 +129,12 @@ function updateSinglePlaceholder( writer, element, info ) {
 
 	// It there are no child elements and selection is not placed inside element.
 	if ( isEmptyish && anchor && anchor.parent !== element ) {
-		if ( !element.hasClass( [ 'ck', 'ck-placeholder' ] ) ) {
+		if ( !element.hasClass( 'ck', 'ck-placeholder' ) ) {
 			writer.addClass( [ 'ck', 'ck-placeholder' ], element );
 			changed = true;
 		}
 	} else {
-		if ( element.hasClass( [ 'ck', 'ck-placeholder' ] ) ) {
+		if ( element.hasClass( 'ck', 'ck-placeholder' ) ) {
 			writer.removeClass( [ 'ck', 'ck-placeholder' ], element );
 			changed = true;
 		}
