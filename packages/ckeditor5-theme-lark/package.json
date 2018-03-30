@@ -12,7 +12,7 @@
   "devDependencies": {
     "@ckeditor/ckeditor5-alignment": "^1.0.0-beta.1",
     "@ckeditor/ckeditor5-basic-styles": "^1.0.0-beta.1",
-    "@ckeditor/ckeditor5-cloudservices": "^1.0.0-beta.1",
+    "@ckeditor/ckeditor5-cloud-services": "^1.0.0-beta.1",
     "@ckeditor/ckeditor5-core": "^1.0.0-beta.1",
     "@ckeditor/ckeditor5-editor-balloon": "^1.0.0-beta.1",
     "@ckeditor/ckeditor5-editor-classic": "^1.0.0-beta.1",
@@ -26,7 +26,7 @@
     "eslint": "^4.15.0",
     "eslint-config-ckeditor5": "^1.0.7",
     "husky": "^0.14.3",
-    "lint-staged": "^6.0.0"
+    "lint-staged": "^7.0.0"
   },
   "engines": {
     "node": ">=6.0.0",
@@ -34,7 +34,7 @@
   },
   "author": "CKSource (http://cksource.com/)",
   "license": "(GPL-2.0 OR LGPL-2.1 OR MPL-1.1)",
-  "homepage": "https://ckeditor5.github.io",
+  "homepage": "https://ckeditor.com",
   "bugs": "https://github.com/ckeditor/ckeditor5-theme-lark/issues",
   "repository": {
     "type": "git",

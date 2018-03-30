@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-.ck-link-form {
+.ck.ck-link-form {
 	padding: var(--ck-spacing-standard);
 
 	&:focus {

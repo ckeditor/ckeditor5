@@ -4,7 +4,7 @@
  */
 
 /* Resize dropdown's button label. */
-.ck-dropdown.ck-heading-dropdown {
+.ck.ck-dropdown.ck-heading-dropdown {
 	& .ck-dropdown__button .ck-button__label {
 		width: 8em;
 	}

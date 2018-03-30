@@ -5,7 +5,7 @@
 
 @import "../../../mixins/_rounded.css";
 
-.ck-dropdown .ck-dropdown__panel .ck-list {
+.ck.ck-dropdown .ck-dropdown__panel .ck-list {
 	/* Disabled radius of top-left border to be consistent with .dropdown__button
 	https://github.com/ckeditor/ckeditor5/issues/816 */
 	@mixin ck-rounded-corners {

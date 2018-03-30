@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-.ck-placeholder::before {
+.ck.ck-placeholder::before {
 	cursor: text;
 	color: var(--ck-color-engine-placeholder-text);
 }

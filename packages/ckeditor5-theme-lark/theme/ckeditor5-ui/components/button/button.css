@@ -9,8 +9,8 @@
 @import "../../../mixins/_rounded.css";
 @import "../../mixins/_button.css";
 
-.ck-button,
-a.ck-button {
+.ck.ck-button,
+a.ck.ck-button {
 	@mixin ck-button-colors --ck-color-button-default;
 	@mixin ck-rounded-corners;
 
@@ -34,6 +34,7 @@ a.ck-button {
 	/* Avoid flickering when the foucs border shows up. */
 	border: 1px solid transparent;
 
+	&:active,
 	&:focus {
 		@mixin ck-focus-ring;
 		@mixin ck-box-shadow var(--ck-focus-outer-shadow);
@@ -97,14 +98,14 @@ a.ck-button {
 }
 
 /* A style of the button which handles the primary action. */
-.ck-button-action,
-a.ck-button-action {
+.ck.ck-button-action,
+a.ck.ck-button-action {
 	@mixin ck-button-colors --ck-color-button-action;
 
 	color: var(--ck-color-button-action-text);
 }
 
-.ck-button-bold,
-a.ck-button-bold {
+.ck.ck-button-bold,
+a.ck.ck-button-bold {
 	font-weight: bold;
 }

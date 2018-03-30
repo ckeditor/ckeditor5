@@ -14,9 +14,9 @@
 /**
  * Resets an element, ignoring its children.
  */
-.ck-reset,
-.ck-reset_all,
-.ck-reset_all * {
+.ck.ck-reset,
+.ck.ck-reset_all,
+.ck.ck-reset_all * {
 	/* Do not include inheritable rules here. */
 	margin: 0;
 	padding: 0;
@@ -33,8 +33,8 @@
 /**
  * Resets an element AND its children.
  */
-.ck-reset_all,
-.ck-reset_all * {
+.ck.ck-reset_all,
+.ck.ck-reset_all * {
 	/* These are rule inherited by all children elements. */
 	border-collapse: collapse;
 	font: normal normal normal var(--ck-font-size-base)/var(--ck-line-height-base) var(--ck-font-face);
@@ -45,7 +45,7 @@
 	float: none;
 }
 
-.ck-reset_all {
+.ck.ck-reset_all {
 	& .ck-rtl * {
 		text-align: right;
 	}

@@ -9,7 +9,7 @@
 	--ck-tooltip-arrow-size: 5px;
 }
 
-.ck-tooltip {
+.ck.ck-tooltip {
 	left: 50%;
 
 	/**
@@ -53,27 +53,27 @@
 			border-width: var(--ck-tooltip-arrow-size) var(--ck-tooltip-arrow-size) 0 var(--ck-tooltip-arrow-size);
 		}
 	}
-}
 
-.ck-tooltip__text {
-	@mixin ck-rounded-corners;
+	& .ck-tooltip__text {
+		@mixin ck-rounded-corners;
 
-	font-size: .9em;
-	line-height: 1.5;
-	color: var(--ck-color-tooltip-text);
-	padding: var(--ck-spacing-small) var(--ck-spacing-medium);
-	background: var(--ck-color-tooltip-background);
-	position: relative;
-	left: -50%;
+		font-size: .9em;
+		line-height: 1.5;
+		color: var(--ck-color-tooltip-text);
+		padding: var(--ck-spacing-small) var(--ck-spacing-medium);
+		background: var(--ck-color-tooltip-background);
+		position: relative;
+		left: -50%;
 
-	&::after {
-		border-style: solid;
-		left: 50%;
+		&::after {
+			border-style: solid;
+			left: 50%;
+		}
 	}
 }
 
-.ck-tooltip,
-.ck-tooltip__text::after {
+.ck.ck-tooltip,
+.ck.ck-tooltip .ck-tooltip__text::after {
 	/* For the transition to work, the tooltip must be controlled
 	using visibility+opacity. A delay prevents a "tooltip avalanche"
 	i.e. when scanning the toolbar with mouse cursor. */
