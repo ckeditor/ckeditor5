@@ -21,19 +21,30 @@ import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
 /**
- * Class representing the base of the editor. It is the API all plugins can expect to get when using `editor` property.
- * It should be enough to implement editing part of feature (schema definition, conversion, commands, keystrokes, etc.).
- * However it does not define editor UI, which is defined in {@link module:core/editor/editorwithui~EditorWithUI}.
+ * Class representing a basic, generic editor.
  *
- * All editors implementation (like {@link module:editor-classic/classiceditor~ClassicEditor} or
+ * Check out the list of its subclasses to learn about specific editor implementations.
+ *
+ * All editor implementations (like {@link module:editor-classic/classiceditor~ClassicEditor} or
  * {@link module:editor-inline/inlineeditor~InlineEditor}) should extend this class. They can add their
  * own methods and properties.
+ *
+ * When you are implementing a plugin, then this editor represents the API
+ * which your plugin can expect to get when using its {@link module:core/plugin~Plugin#editor} property.
+ *
+ * This API should be sufficient in order to implement the "editing" part of your feature
+ * (schema definition, conversion, commands, keystrokes, etc.).
+ * It does not define the editor UI, which is available only if the
+ * the specific editor implements also the {@link module:core/editor/editorwithui~EditorWithUI} interface
+ * (as most editor implementations do).
  *
  * @mixes module:utils/observablemixin~ObservableMixin
  */
 export default class Editor {
 	/**
 	 * Creates a new instance of the Editor class.
+	 *
+	 * Usually, not to be used directly. See the static {@link module:core/editor/editor~Editor.create `create()`} method.
 	 *
 	 * @param {Object} config The editor config.
 	 */
@@ -218,7 +229,7 @@ export default class Editor {
 	}
 
 	/**
-	 * Creates a basic editor instance.
+	 * Creates and initializes a new editor instance.
 	 *
 	 * @param {Object} config The editor config. You can find the list of config options in
 	 * {@link module:core/editor/editorconfig~EditorConfig}.
