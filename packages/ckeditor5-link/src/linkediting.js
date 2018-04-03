@@ -9,9 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import {
-	downcastAttributeToElement,
-	downcastMarkerToHighlight,
-	createViewElementFromHighlightDescriptor
+	downcastAttributeToElement
 } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
 import { upcastElementToAttribute } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 import LinkCommand from './linkcommand';
@@ -20,8 +18,8 @@ import { createLinkElement } from './utils';
 import bindTwoStepCaretToAttribute from '@ckeditor/ckeditor5-engine/src/utils/bindtwostepcarettoattribute';
 import findLinkRange from './findlinkrange';
 import '../theme/link.css';
-import DocumentSelection from '@ckeditor/ckeditor5-engine/src/model/documentselection';
-import ModelSelection from '@ckeditor/ckeditor5-engine/src/model/selection';
+
+const HIGHLIGHT_CLASSES = [ 'ck', 'ck-link_selected' ];
 
 /**
  * The link engine feature.
@@ -69,74 +67,55 @@ export default class LinkEditing extends Plugin {
 	}
 
 	/**
-	 * Adds highlight over link which has selection inside, together with two-step caret movement indicates whenever
-	 * user is typing inside the link.
+	 * Adds the visual highlight style to a link in which the selection is anchored.
+	 * Together with two-step caret movement, it indicates the user is typing inside the link.
+	 *
+	 * The current implementation adds the `.ck .ck-link_selected` classes to the link in the view
+	 * in the following way:
+	 * * The classes are removed in the downcast dispatcher's chain with the highest possible
+	 * priority so they don't interfere during further conversion.
+	 * * The classes are added in the view post fixer, which is the last one to execute in
+	 * the {@link module:engine/view/view~View#change}.
 	 *
 	 * @private
 	 */
 	_setupLinkHighlight() {
 		const editor = this.editor;
-		const model = this.editor.model;
-		const doc = model.document;
-		const highlightDescriptor = {
-			id: 'linkBoundaries',
-			classes: [
-				'ck',
-				'ck-link_selected'
-			],
-			priority: 1
-		};
+		const view = editor.editing.view;
+		const highlightedLinks = new Set();
 
-		// Convert linkBoundaries marker to view highlight.
-		editor.conversion.for( 'editingDowncast' )
-			.add( downcastMarkerToHighlight( {
-				model: 'linkBoundaries',
-				view: highlightDescriptor
-			} ) );
+		// Adding the class.
+		view.document.registerPostFixer( writer => {
+			const selection = editor.model.document.selection;
 
-		// Create marker over whole link when selection has "linkHref" attribute.
-		doc.registerPostFixer( writer => {
-			const selection = doc.selection;
-			const marker = model.markers.get( 'linkBoundaries' );
-
-			// Create marker over link when selection is inside or remove marker otherwise.
 			if ( selection.hasAttribute( 'linkHref' ) ) {
 				const modelRange = findLinkRange( selection.getFirstPosition(), selection.getAttribute( 'linkHref' ) );
+				const viewRange = editor.editing.mapper.toViewRange( modelRange );
 
-				if ( !marker || !marker.getRange().isEqual( modelRange ) ) {
-					writer.setMarker( 'linkBoundaries', modelRange );
-					return true;
+				for ( const item of viewRange.getItems() ) {
+					if ( item.is( 'a' ) ) {
+						writer.addClass( HIGHLIGHT_CLASSES, item );
+						highlightedLinks.add( item );
+					}
 				}
-			} else if ( marker ) {
-				writer.removeMarker( 'linkBoundaries' );
-				return true;
 			}
-
-			return false;
 		} );
 
-		// Custom converter for selection's "linkHref" attribute - when collapsed selection has this attribute it is
-		// wrapped with <span> similar to that used by highlighting mechanism. This <span> will be merged together with
-		// highlight wrapper. This prevents link splitting When selection is at the beginning or at the end of the link.
-		// Without this converter:
-		//
-		//		<a href="url">{}</a><span class="ck-link_selected"><a href="url">foo</a></span>
-		//
-		// When converter is applied:
-		//
-		//		<span class="ck-link_selected"><a href="url">{}foo</a></span>
-		editor.editing.downcastDispatcher.on( 'attribute:linkHref', ( evt, data, conversionApi ) => {
-			const selection = data.item;
-
-			if ( !( selection instanceof DocumentSelection || selection instanceof ModelSelection ) || !selection.isCollapsed ) {
-				return;
-			}
-
-			const writer = conversionApi.writer;
-			const viewSelection = writer.document.selection;
-			const wrapper = createViewElementFromHighlightDescriptor( highlightDescriptor );
-
-			conversionApi.writer.wrap( viewSelection.getFirstRange(), wrapper );
+		editor.conversion.for( 'editingDowncast' ).add( dispatcher => {
+			dispatcher.on( 'insert', removeHighlight, { priority: 'highest' } );
+			dispatcher.on( 'attribute', removeHighlight, { priority: 'highest' } );
+			dispatcher.on( 'remove', removeHighlight, { priority: 'highest' } );
+			dispatcher.on( 'selection', removeHighlight, { priority: 'highest' } );
 		} );
+
+		// Removing the class.
+		function removeHighlight() {
+			view.change( writer => {
+				for ( const item of highlightedLinks.values() ) {
+					writer.removeClass( HIGHLIGHT_CLASSES, item );
+					highlightedLinks.delete( item );
+				}
+			} );
+		}
 	}
 }
