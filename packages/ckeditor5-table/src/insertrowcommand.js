@@ -8,8 +8,7 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import { getNumericAttribute } from './converters/downcasttable';
-import CellSpans from './cellspans';
+import TableIterator from './tableiterator';
 
 /**
  * The insert row command.
@@ -52,54 +51,43 @@ export default class InsertRowCommand extends Command {
 
 		const columns = getColumns( table );
 
-		const cellSpans = new CellSpans();
-
 		model.change( writer => {
 			if ( headingRows > insertAt ) {
 				writer.setAttribute( 'headingRows', headingRows + rows, table );
 			}
 
-			let tableRow;
+			const tableIterator = new TableIterator( table );
 
-			for ( let rowIndex = 0; rowIndex < insertAt + rows; rowIndex++ ) {
-				if ( rowIndex < insertAt ) {
-					tableRow = table.getChild( rowIndex );
+			let tableCellToInsert = 0;
 
-					// Record spans, update rowspans
-					let columnIndex = 0;
+			for ( const tableCellInfo of tableIterator.iterateOver() ) {
+				const { row, rowspan, colspan, cell } = tableCellInfo;
 
-					for ( const tableCell of Array.from( tableRow.getChildren() ) ) {
-						columnIndex = cellSpans.getAdjustedColumnIndex( rowIndex, columnIndex );
-
-						const colspan = getNumericAttribute( tableCell, 'colspan', 1 );
-						let rowspan = getNumericAttribute( tableCell, 'rowspan', 1 );
-
-						if ( rowspan > 1 ) {
-							// check whether rowspan overlaps inserts:
-							if ( rowIndex < insertAt && rowIndex + rowspan > insertAt ) {
-								rowspan = rowspan + rows;
-
-								writer.setAttribute( 'rowspan', rowspan, tableCell );
-							}
-
-							cellSpans.recordSpans( rowIndex, columnIndex, rowspan, colspan );
+				if ( row < insertAt ) {
+					if ( rowspan > 1 ) {
+						// check whether rowspan overlaps inserts:
+						if ( row < insertAt && row + rowspan > insertAt ) {
+							writer.setAttribute( 'rowspan', rowspan + rows, cell );
 						}
-
-						columnIndex = columnIndex + colspan;
 					}
-				} else {
-					// Create new rows
-					tableRow = writer.createElement( 'tableRow' );
+				} else if ( row === insertAt ) {
+					tableCellToInsert += colspan;
+				}
+			}
 
-					writer.insert( tableRow, table, insertAt );
+			if ( insertAt >= table.childCount ) {
+				tableCellToInsert = columns;
+			}
 
-					for ( let columnIndex = 0; columnIndex < columns; columnIndex++ ) {
-						columnIndex = cellSpans.getAdjustedColumnIndex( rowIndex, columnIndex );
+			for ( let i = 0; i < rows; i++ ) {
+				const tableRow = writer.createElement( 'tableRow' );
 
-						const cell = writer.createElement( 'tableCell' );
+				writer.insert( tableRow, table, insertAt );
 
-						writer.insert( cell, tableRow, 'end' );
-					}
+				for ( let columnIndex = 0; columnIndex < tableCellToInsert; columnIndex++ ) {
+					const cell = writer.createElement( 'tableCell' );
+
+					writer.insert( cell, tableRow, 'end' );
 				}
 			}
 		} );

@@ -4,15 +4,76 @@
  */
 
 /**
- * @module table/cellspans
+ * @module table/tableiterator
  */
+
+import { getNumericAttribute } from './converters/downcasttable';
+
+export default class TableIterator {
+	constructor( table ) {
+		this.table = table;
+		this.cellSpans = new CellSpans();
+	}
+
+	* iterateOver() {
+		let rowIndex = 0;
+
+		for ( const tableRow of Array.from( this.table.getChildren() ) ) {
+			let columnIndex = 0;
+
+			let i = 0;
+			let tableCell = tableRow.getChild( i );
+
+			while ( tableCell ) {
+				// for ( const tableCell of Array.from( tableRow.getChildren() ) ) {
+				columnIndex = this.cellSpans.getAdjustedColumnIndex( rowIndex, columnIndex );
+				const colspan = getNumericAttribute( tableCell, 'colspan', 1 );
+				const rowspan = getNumericAttribute( tableCell, 'rowspan', 1 );
+
+				yield {
+					column: columnIndex,
+					row: rowIndex,
+					cell: tableCell,
+					rowspan,
+					colspan
+				};
+
+				// Skip to next "free" column index.
+				const colspanAfter = getNumericAttribute( tableCell, 'colspan', 1 );
+
+				this.cellSpans.recordSpans( rowIndex, columnIndex, rowspan, colspanAfter );
+
+				columnIndex += colspanAfter;
+
+				i++;
+				tableCell = tableRow.getChild( i );
+			}
+
+			rowIndex++;
+		}
+	}
+
+	* iterateOverRow( rowIndex ) {
+		for ( const tableCellInfo of this.iterateOver() ) {
+			const { row } = tableCellInfo;
+
+			if ( row === rowIndex ) {
+				yield tableCellInfo;
+			}
+
+			if ( row > rowIndex ) {
+				return;
+			}
+		}
+	}
+}
 
 /**
  * Holds information about spanned table cells.
  *
  * @private
  */
-export default class CellSpans {
+class CellSpans {
 	/**
 	 * Creates CellSpans instance.
 	 */
@@ -91,17 +152,6 @@ export default class CellSpans {
 			const rowSpans = this._spans.get( rowToUpdate );
 
 			rowSpans.set( columnIndex, width );
-		}
-	}
-
-	/**
-	 * Removes row from mapping.
-	 *
-	 * @param {Number} rowIndex
-	 */
-	drop( rowIndex ) {
-		if ( this._spans.has( rowIndex ) ) {
-			this._spans.delete( rowIndex );
 		}
 	}
 

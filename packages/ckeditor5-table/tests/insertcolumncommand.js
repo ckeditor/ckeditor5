@@ -144,17 +144,17 @@ describe( 'InsertColumnCommand', () => {
 
 		it( 'should not update table heading columns attribute when inserting column after headings section', () => {
 			setData( model, modelTable( [
-				[ '11[]', '12' ],
-				[ '21', '22' ],
-				[ '31', '32' ]
+				[ '11[]', '12', '13' ],
+				[ '21', '22', '23' ],
+				[ '31', '32', '33' ]
 			], { headingColumns: 2 } ) );
 
 			command.execute( { at: 2 } );
 
 			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
-				[ '11[]', '12', '' ],
-				[ '21', '22', '' ],
-				[ '31', '32', '' ]
+				[ '11[]', '12', '', '13' ],
+				[ '21', '22', '', '23' ],
+				[ '31', '32', '', '33' ]
 			], { headingColumns: 2 } ) );
 		} );
 

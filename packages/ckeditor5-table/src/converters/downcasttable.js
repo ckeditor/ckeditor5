@@ -9,7 +9,7 @@
 
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import ViewRange from '@ckeditor/ckeditor5-engine/src/view/range';
-import CellSpans from '../cellspans';
+import TableIterator from './../tableiterator';
 
 /**
  * Model table element to view table element conversion helper.
@@ -35,20 +35,22 @@ export default function downcastTable() {
 
 		const tableElement = conversionApi.writer.createContainerElement( 'table' );
 		const headingRows = getNumericAttribute( table, 'headingRows', 0 );
-		const tableRows = Array.from( table.getChildren() );
+		const headingColumns = getNumericAttribute( table, 'headingColumns', 0 );
 
-		const cellSpans = getCellSpansWithPreviousFilled( table, 0 );
+		const tableIterator = new TableIterator( table );
 
-		for ( const tableRow of tableRows ) {
-			const rowIndex = tableRows.indexOf( tableRow );
-			const isHead = headingRows && rowIndex < headingRows;
+		for ( const tableCellInfo of tableIterator.iterateOver() ) {
+			const { row, column, cell: tableCell } = tableCellInfo;
+
+			const isHead = headingRows && row < headingRows;
 
 			const tableSectionElement = getTableSection( isHead ? 'thead' : 'tbody', tableElement, conversionApi, tableSections );
+			const tableRow = table.getChild( row );
 
-			downcastTableRow( tableRow, rowIndex, tableSectionElement, cellSpans, conversionApi );
+			// Check if row was converted
+			const trElement = getOrCreateTr( tableRow, row, tableSectionElement, conversionApi );
 
-			// Drop table cell spans information for downcasted row.
-			cellSpans.drop( rowIndex );
+			downcastTableCell( tableCell, getCellElementName( row, column, headingRows, headingColumns ), trElement, conversionApi );
 		}
 
 		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
@@ -78,6 +80,7 @@ export function downcastInsertRow() {
 		const tableElement = conversionApi.mapper.toViewElement( table );
 
 		const headingRows = getNumericAttribute( table, 'headingRows', 0 );
+		const headingColumns = getNumericAttribute( table, 'headingColumns', 0 );
 
 		const rowIndex = table.getChildIndex( tableRow );
 		const isHeadingRow = rowIndex < headingRows;
@@ -85,9 +88,16 @@ export function downcastInsertRow() {
 		const tableSection = Array.from( tableElement.getChildren() )
 			.filter( child => child.name === ( isHeadingRow ? 'thead' : 'tbody' ) )[ 0 ];
 
-		const cellSpans = getCellSpansWithPreviousFilled( table, rowIndex );
+		const tableIterator = new TableIterator( table );
 
-		downcastTableRow( tableRow, rowIndex, tableSection, cellSpans, conversionApi );
+		for ( const tableCellInfo of tableIterator.iterateOverRow( rowIndex ) ) {
+			const { cell: tableCell, column } = tableCellInfo;
+
+			const trElement = getOrCreateTr( tableRow, rowIndex, tableSection, conversionApi );
+			const cellElementName = getCellElementName( rowIndex, column, headingRows, headingColumns );
+
+			downcastTableCell( tableCell, cellElementName, trElement, conversionApi );
+		}
 	}, { priority: 'normal' } );
 }
 
@@ -116,21 +126,15 @@ export function downcastInsertCell() {
 
 		const rowIndex = table.getChildIndex( tableRow );
 
-		const cellIndex = tableRow.getChildIndex( tableCell );
+		const tableIterator = new TableIterator( table );
 
-		let columnIndex = 0;
+		for ( const { cell, column } of tableIterator.iterateOverRow( rowIndex ) ) {
+			if ( cell === tableCell ) {
+				const cellElementName = getCellElementName( rowIndex, column, headingRows, headingColumns );
 
-		const cellSpans = getCellSpansWithPreviousFilled( table, rowIndex, columnIndex );
-
-		// check last row up to
-		columnIndex = getColumnIndex( tableRow, columnIndex, cellSpans, rowIndex, tableCell );
-
-		// Check whether current columnIndex is overlapped by table cells from previous rows.
-		columnIndex = cellSpans.getAdjustedColumnIndex( rowIndex, columnIndex );
-
-		const cellElementName = getCellElementName( rowIndex, columnIndex, headingRows, headingColumns );
-
-		downcastTableCell( tableCell, rowIndex, columnIndex, cellSpans, cellElementName, trElement, conversionApi, cellIndex );
+				downcastTableCell( tableCell, cellElementName, trElement, conversionApi, tableRow.getChildIndex( tableCell ) );
+			}
+		}
 	}, { priority: 'normal' } );
 }
 
@@ -156,18 +160,16 @@ export function downcastAttributeChange( attribute ) {
 		const headingColumns = getNumericAttribute( table, 'headingColumns', 0 );
 		const tableElement = conversionApi.mapper.toViewElement( table );
 
-		const tableRows = Array.from( table.getChildren() );
-
-		const cellSpans = getCellSpansWithPreviousFilled( table, 0 );
-
 		const cachedTableSections = {};
 
-		for ( const tableRow of tableRows ) {
-			const rowIndex = tableRows.indexOf( tableRow );
+		const tableIterator = new TableIterator( table );
+		for ( const tableCellInfo of tableIterator.iterateOver() ) {
+			const { row, column, cell } = tableCellInfo;
+			const tableRow = table.getChild( row );
 
 			const tr = conversionApi.mapper.toViewElement( tableRow );
 
-			const desiredParentName = rowIndex < headingRows ? 'thead' : 'tbody';
+			const desiredParentName = row < headingRows ? 'thead' : 'tbody';
 
 			if ( desiredParentName !== tr.parent.name ) {
 				const tableSection = getTableSection( desiredParentName, tableElement, conversionApi, cachedTableSections );
@@ -175,12 +177,12 @@ export function downcastAttributeChange( attribute ) {
 				let targetPosition;
 
 				if ( desiredParentName === 'tbody' &&
-					rowIndex === data.attributeNewValue &&
+					row === data.attributeNewValue &&
 					data.attributeNewValue < data.attributeOldValue
 				) {
 					targetPosition = ViewPosition.createAt( tableSection, 'start' );
-				} else if ( rowIndex > 0 ) {
-					const previousTr = conversionApi.mapper.toViewElement( table.getChild( rowIndex - 1 ) );
+				} else if ( row > 0 ) {
+					const previousTr = conversionApi.mapper.toViewElement( table.getChild( row - 1 ) );
 
 					targetPosition = ViewPosition.createAfter( previousTr );
 				} else {
@@ -190,28 +192,17 @@ export function downcastAttributeChange( attribute ) {
 				conversionApi.writer.move( ViewRange.createOn( tr ), targetPosition );
 			}
 
-			// Check rows
-			let columnIndex = 0;
+			// Check whether current columnIndex is overlapped by table cells from previous rows.
 
-			for ( const tableCell of Array.from( tableRow.getChildren() ) ) {
-				// Check whether current columnIndex is overlapped by table cells from previous rows.
-				columnIndex = cellSpans.getAdjustedColumnIndex( rowIndex, columnIndex );
+			const cellElementName = getCellElementName( row, column, headingRows, headingColumns );
 
-				const cellElementName = getCellElementName( rowIndex, columnIndex, headingRows, headingColumns );
+			const viewCell = conversionApi.mapper.toViewElement( cell );
 
-				const cell = conversionApi.mapper.toViewElement( tableCell );
-
-				// If in single change we're converting attribute changes and inserting cell the table cell might not be inserted into view
-				// because of child conversion is done after parent.
-				if ( cell && cell.name !== cellElementName ) {
-					conversionApi.writer.rename( cell, cellElementName );
-				}
-
-				columnIndex = columnIndex + getNumericAttribute( tableCell, 'colspan', 1 );
+			// If in single change we're converting attribute changes and inserting cell the table cell might not be inserted into view
+			// because of child conversion is done after parent.
+			if ( viewCell && viewCell.name !== cellElementName ) {
+				conversionApi.writer.rename( viewCell, cellElementName );
 			}
-
-			// Drop table cell spans information for checked rows.
-			cellSpans.drop( rowIndex );
 		}
 
 		// TODO: maybe a postfixer?
@@ -229,12 +220,7 @@ export function downcastAttributeChange( attribute ) {
 // @param {Number} rowIndex
 // @param {module:table/cellspans~CellSpans} cellSpans
 // @param {module:engine/view/containerelement~ContainerElement} tableSection
-function downcastTableCell( tableCell, rowIndex, columnIndex, cellSpans, cellElementName, trElement, conversionApi, offset = 'end' ) {
-	const colspan = getNumericAttribute( tableCell, 'colspan', 1 );
-	const rowspan = getNumericAttribute( tableCell, 'rowspan', 1 );
-
-	cellSpans.recordSpans( rowIndex, columnIndex, rowspan, colspan );
-
+function downcastTableCell( tableCell, cellElementName, trElement, conversionApi, offset = 'end' ) {
 	// Will always consume since we're converting <tableRow> element from a parent <table>.
 	conversionApi.consumable.consume( tableCell, 'insert' );
 
@@ -242,43 +228,27 @@ function downcastTableCell( tableCell, rowIndex, columnIndex, cellSpans, cellEle
 
 	conversionApi.mapper.bindElements( tableCell, cellElement );
 	conversionApi.writer.insert( ViewPosition.createAt( trElement, offset ), cellElement );
-
-	// Skip to next "free" column index.
-	columnIndex += colspan;
-
-	return columnIndex;
 }
 
-// @param {Object} conversionApi
-function downcastTableRow( tableRow, rowIndex, tableSection, cellSpans, conversionApi ) {
+function getOrCreateTr( tableRow, rowIndex, tableSection, conversionApi ) {
 	// Will always consume since we're converting <tableRow> element from a parent <table>.
 	conversionApi.consumable.consume( tableRow, 'insert' );
 
 	const headingRows = tableRow.parent.getAttribute( 'headingRows' ) || 0;
 
-	const trElement = conversionApi.writer.createContainerElement( 'tr' );
-	conversionApi.mapper.bindElements( tableRow, trElement );
+	let trElement = conversionApi.mapper.toViewElement( tableRow );
 
-	const offset = headingRows > 0 && rowIndex >= headingRows ? rowIndex - headingRows : rowIndex;
+	if ( !trElement ) {
+		trElement = conversionApi.writer.createContainerElement( 'tr' );
+		conversionApi.mapper.bindElements( tableRow, trElement );
 
-	const position = ViewPosition.createAt( tableSection, offset );
-	conversionApi.writer.insert( position, trElement );
+		const offset = headingRows > 0 && rowIndex >= headingRows ? rowIndex - headingRows : rowIndex;
 
-	// Defines tableCell horizontal position in table.
-	// Might be different then position of tableCell in parent tableRow
-	// as tableCells from previous rows might overlaps current row's cells.
-	let columnIndex = 0;
-
-	const headingColumns = tableRow.parent.getAttribute( 'headingColumns' ) || 0;
-
-	for ( const tableCell of Array.from( tableRow.getChildren() ) ) {
-		// Check whether current columnIndex is overlapped by table cells from previous rows.
-		columnIndex = cellSpans.getAdjustedColumnIndex( rowIndex, columnIndex );
-
-		const cellElementName = getCellElementName( rowIndex, columnIndex, headingRows, headingColumns );
-
-		columnIndex = downcastTableCell( tableCell, rowIndex, columnIndex, cellSpans, cellElementName, trElement, conversionApi );
+		const position = ViewPosition.createAt( tableSection, offset );
+		conversionApi.writer.insert( position, trElement );
 	}
+
+	return trElement;
 }
 
 // Returns `th` for heading cells and `td` for other cells.
@@ -372,54 +342,4 @@ function removeTableSectionIfEmpty( sectionName, tableElement, conversionApi ) {
 
 export function getNumericAttribute( element, attribute, defaultValue ) {
 	return element.hasAttribute( attribute ) ? parseInt( element.getAttribute( attribute ) ) : defaultValue;
-}
-
-function getColumnIndex( tableRow, columnIndex, cellSpans, rowIndex, tableCell ) {
-	for ( const tableCellA of Array.from( tableRow.getChildren() ) ) {
-		// Check whether current columnIndex is overlapped by table cells from previous rows.
-		columnIndex = cellSpans.getAdjustedColumnIndex( rowIndex, columnIndex );
-
-		// Up to here only!
-		if ( tableCellA === tableCell ) {
-			return columnIndex;
-		}
-
-		const colspan = getNumericAttribute( tableCellA, 'colspan', 1 );
-		const rowspan = getNumericAttribute( tableCellA, 'rowspan', 1 );
-
-		cellSpans.recordSpans( rowIndex, columnIndex, rowspan, colspan );
-
-		// Skip to next "free" column index.
-		columnIndex += colspan;
-	}
-}
-
-// Helper method for creating a pre-filled cell span instance. Useful when converting part of a table.
-//
-// @param {module:engine/model/element~Element} table Model table instance.
-// @param currentRowIndex Current row index - all table rows up to this index will be analyzed (excluding provided row index).
-// @returns {module:table/cellspans~CellSpans}
-function getCellSpansWithPreviousFilled( table, currentRowIndex ) {
-	const cellSpans = new CellSpans();
-
-	for ( let rowIndex = 0; rowIndex <= currentRowIndex; rowIndex++ ) {
-		const row = table.getChild( rowIndex );
-
-		let columnIndex = 0;
-
-		// TODO: make this an iterator?
-		for ( const tableCell of Array.from( row.getChildren() ) ) {
-			columnIndex = cellSpans.getAdjustedColumnIndex( rowIndex, columnIndex );
-
-			const colspan = getNumericAttribute( tableCell, 'colspan', 1 );
-			const rowspan = getNumericAttribute( tableCell, 'rowspan', 1 );
-
-			cellSpans.recordSpans( rowIndex, columnIndex, rowspan, colspan );
-
-			// Skip to next "free" column index.
-			columnIndex += colspan;
-		}
-	}
-
-	return cellSpans;
 }

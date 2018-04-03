@@ -170,20 +170,56 @@ describe( 'InsertRowCommand', () => {
 		it( 'should not expand rowspan of a cell that does not overlaps inserted rows', () => {
 			setData( model, modelTable( [
 				[ { rowspan: 2, contents: '11[]' }, '12', '13' ],
-				[ '22', '23', '24' ],
-				[ '33', '34' ]
+				[ '22', '23' ],
+				[ '31', '32', '33' ]
 			], { headingColumns: 3, headingRows: 1 } ) );
 
 			command.execute( { at: 2, rows: 3 } );
 
 			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ { rowspan: 2, contents: '11[]' }, '12', '13' ],
-				[ '22', '23', '24' ],
+				[ '22', '23' ],
 				[ '', '', '' ],
 				[ '', '', '' ],
 				[ '', '', '' ],
-				[ '33', '34' ]
+				[ '31', '32', '33' ]
 			], { headingColumns: 3, headingRows: 1 } ) );
+		} );
+
+		it( 'should properly calculate columns if next row has colspans', () => {
+			setData( model, modelTable( [
+				[ { rowspan: 2, contents: '11[]' }, '12', '13' ],
+				[ '22', '23' ],
+				[ { colspan: 3, contents: '31' } ]
+			], { headingColumns: 3, headingRows: 1 } ) );
+
+			command.execute( { at: 2, rows: 3 } );
+
+			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ { rowspan: 2, contents: '11[]' }, '12', '13' ],
+				[ '22', '23' ],
+				[ '', '', '' ],
+				[ '', '', '' ],
+				[ '', '', '' ],
+				[ { colspan: 3, contents: '31' } ]
+			], { headingColumns: 3, headingRows: 1 } ) );
+		} );
+
+		it( 'should insert rows at the end of a table', () => {
+			setData( model, modelTable( [
+				[ '11[]', '12' ],
+				[ '21', '22' ]
+			] ) );
+
+			command.execute( { at: 2, rows: 3 } );
+
+			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '11[]', '12' ],
+				[ '21', '22' ],
+				[ '', '' ],
+				[ '', '' ],
+				[ '', '' ]
+			] ) );
 		} );
 	} );
 } );

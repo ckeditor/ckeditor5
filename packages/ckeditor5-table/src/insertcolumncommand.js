@@ -8,8 +8,16 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import CellSpans from './cellspans';
+import TableIterator from './tableiterator';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
+
+function createCells( columns, writer, insertPosition ) {
+	for ( let i = 0; i < columns; i++ ) {
+		const cell = writer.createElement( 'tableCell' );
+
+		writer.insert( cell, insertPosition );
+	}
+}
 
 /**
  * The insert column command.
@@ -48,10 +56,17 @@ export default class InsertColumnCommand extends Command {
 
 		const table = getValidParent( selection.getFirstPosition() );
 
-		const cellSpans = new CellSpans();
-
 		model.change( writer => {
-			let rowIndex = 0;
+			const tableColumns = getColumns( table );
+
+			// Inserting at the end of a table
+			if ( tableColumns <= insertAt ) {
+				for ( const tableRow of table.getChildren() ) {
+					createCells( columns, writer, Position.createAt( tableRow, 'end' ) );
+				}
+
+				return;
+			}
 
 			const headingColumns = table.getAttribute( 'headingColumns' );
 
@@ -59,56 +74,36 @@ export default class InsertColumnCommand extends Command {
 				writer.setAttribute( 'headingColumns', headingColumns + columns, table );
 			}
 
-			for ( const row of table.getChildren() ) {
-				// TODO: what to do with max columns?
+			const tableIterator = new TableIterator( table );
 
-				let columnIndex = 0;
+			let currentRow = -1;
+			let currentRowInserted = false;
 
-				// Cache original children.
-				const children = [ ...row.getChildren() ];
+			for ( const tableCellInfo of tableIterator.iterateOver() ) {
+				const { row, column, cell: tableCell, colspan } = tableCellInfo;
 
-				for ( const tableCell of children ) {
-					let colspan = tableCell.hasAttribute( 'colspan' ) ? parseInt( tableCell.getAttribute( 'colspan' ) ) : 1;
-					const rowspan = tableCell.hasAttribute( 'rowspan' ) ? parseInt( tableCell.getAttribute( 'rowspan' ) ) : 1;
-
-					columnIndex = cellSpans.getAdjustedColumnIndex( rowIndex, columnIndex );
-
-					// TODO: this is not cool:
-					const shouldExpandSpan = colspan > 1 &&
-						( columnIndex !== insertAt ) &&
-						( columnIndex <= insertAt ) &&
-						( columnIndex <= insertAt + columns ) &&
-						( columnIndex + colspan > insertAt );
-
-					if ( shouldExpandSpan ) {
-						colspan += columns;
-
-						writer.setAttribute( 'colspan', colspan, tableCell );
-					}
-
-					while ( columnIndex >= insertAt && columnIndex < insertAt + columns ) {
-						const cell = writer.createElement( 'tableCell' );
-
-						writer.insert( cell, Position.createBefore( tableCell ) );
-
-						columnIndex++;
-					}
-
-					cellSpans.recordSpans( rowIndex, columnIndex, rowspan, colspan );
-
-					columnIndex += colspan;
+				if ( currentRow !== row ) {
+					currentRow = row;
+					currentRowInserted = false;
 				}
 
-				// Insert at the end of column
-				while ( columnIndex >= insertAt && columnIndex < insertAt + columns ) {
-					const cell = writer.createElement( 'tableCell' );
+				const shouldExpandSpan = colspan > 1 &&
+					( column !== insertAt ) &&
+					( column <= insertAt ) &&
+					( column <= insertAt + columns ) &&
+					( column + colspan > insertAt );
 
-					writer.insert( cell, row, 'end' );
-
-					columnIndex++;
+				if ( shouldExpandSpan ) {
+					writer.setAttribute( 'colspan', colspan + columns, tableCell );
 				}
 
-				rowIndex++;
+				if ( column === insertAt || ( column < insertAt + columns && column > insertAt && !currentRowInserted ) ) {
+					const insertPosition = Position.createBefore( tableCell );
+
+					createCells( columns, writer, insertPosition );
+
+					currentRowInserted = true;
+				}
 			}
 		} );
 	}
@@ -124,4 +119,15 @@ function getValidParent( firstPosition ) {
 
 		parent = parent.parent;
 	}
+}
+
+// TODO: dup
+function getColumns( table ) {
+	const row = table.getChild( 0 );
+
+	return [ ...row.getChildren() ].reduce( ( columns, row ) => {
+		const columnWidth = parseInt( row.getAttribute( 'colspan' ) ) || 1;
+
+		return columns + ( columnWidth );
+	}, 0 );
 }
