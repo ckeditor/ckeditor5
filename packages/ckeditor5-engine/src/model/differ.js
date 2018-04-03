@@ -645,13 +645,11 @@ export default class Differ {
 				}
 
 				if ( old.type == 'remove' ) {
-					if ( inc.offset + inc.howMany <= old.offset ) {
+					if ( incEnd <= old.offset ) {
 						old.offset -= inc.howMany;
 					} else if ( inc.offset < old.offset ) {
-						old.offset = inc.offset;
-						old.howMany += inc.nodesToHandle;
-
-						inc.nodesToHandle = 0;
+						inc.nodesToHandle += old.howMany;
+						old.howMany = 0;
 					}
 				}
 
