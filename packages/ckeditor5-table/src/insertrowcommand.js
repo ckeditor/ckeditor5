@@ -60,7 +60,7 @@ export default class InsertRowCommand extends Command {
 
 			let tableCellToInsert = 0;
 
-			for ( const tableCellInfo of tableIterator.iterateOver() ) {
+			for ( const tableCellInfo of tableIterator.iterateOverRows( 0, insertAt + 1 ) ) {
 				const { row, rowspan, colspan, cell } = tableCellInfo;
 
 				if ( row < insertAt ) {

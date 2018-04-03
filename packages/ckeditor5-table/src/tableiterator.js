@@ -53,16 +53,20 @@ export default class TableIterator {
 		}
 	}
 
-	* iterateOverRow( rowIndex ) {
+	* iterateOverRows( fromRow, toRow ) {
+		const startRow = fromRow || 0;
+
+		const endRow = toRow || fromRow;
+
 		for ( const tableCellInfo of this.iterateOver() ) {
 			const { row } = tableCellInfo;
 
-			if ( row === rowIndex ) {
-				yield tableCellInfo;
+			if ( row > endRow ) {
+				return;
 			}
 
-			if ( row > rowIndex ) {
-				return;
+			if ( row >= startRow && row <= endRow ) {
+				yield tableCellInfo;
 			}
 		}
 	}

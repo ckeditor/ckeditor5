@@ -90,7 +90,7 @@ export function downcastInsertRow() {
 
 		const tableIterator = new TableIterator( table );
 
-		for ( const tableCellInfo of tableIterator.iterateOverRow( rowIndex ) ) {
+		for ( const tableCellInfo of tableIterator.iterateOverRows( rowIndex ) ) {
 			const { cell: tableCell, column } = tableCellInfo;
 
 			const trElement = getOrCreateTr( tableRow, rowIndex, tableSection, conversionApi );
@@ -128,7 +128,7 @@ export function downcastInsertCell() {
 
 		const tableIterator = new TableIterator( table );
 
-		for ( const { cell, column } of tableIterator.iterateOverRow( rowIndex ) ) {
+		for ( const { cell, column } of tableIterator.iterateOverRows( rowIndex ) ) {
 			if ( cell === tableCell ) {
 				const cellElementName = getCellElementName( rowIndex, column, headingRows, headingColumns );
 
