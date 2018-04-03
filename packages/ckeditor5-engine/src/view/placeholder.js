@@ -34,7 +34,14 @@ export function attachPlaceholder( view, element, placeholderText, checkFunction
 	}
 
 	// Store information about element with placeholder.
-	documentPlaceholders.get( document ).set( element, { placeholderText, checkFunction } );
+	documentPlaceholders.get( document ).set( element, {
+		placeholderText,
+		checkFunction,
+
+		// Store information if 'ck' class is already present and don't remove it when detaching placeholder.
+		// https://github.com/ckeditor/ckeditor5-image/issues/198#issuecomment-377542222
+		removeCkClass: !element.hasClass( 'ck' )
+	} );
 
 	// Update view right away.
 	view.render();
@@ -48,13 +55,22 @@ export function attachPlaceholder( view, element, placeholderText, checkFunction
  */
 export function detachPlaceholder( view, element ) {
 	const document = element.document;
+	let removeCkClass = false;
 
 	if ( documentPlaceholders.has( document ) ) {
+		const info = documentPlaceholders.get( document ).get( element );
+		removeCkClass = info.removeCkClass;
+
 		documentPlaceholders.get( document ).delete( element );
 	}
 
 	view.change( writer => {
-		writer.removeClass( [ 'ck', 'ck-placeholder' ], element );
+		writer.removeClass( 'ck-placeholder', element );
+
+		if ( removeCkClass ) {
+			writer.removeClass( 'ck', element );
+		}
+
 		writer.removeAttribute( 'data-placeholder', element );
 	} );
 }
@@ -105,8 +121,8 @@ function updateSinglePlaceholder( writer, element, info ) {
 
 	// If checkFunction is provided and returns false - remove placeholder.
 	if ( checkFunction && !checkFunction() ) {
-		if ( element.hasClass( 'ck', 'ck-placeholder' ) ) {
-			writer.removeClass( [ 'ck', 'ck-placeholder' ], element );
+		if ( element.hasClass( 'ck-placeholder' ) ) {
+			writer.removeClass( 'ck-placeholder', element );
 			changed = true;
 		}
 
@@ -119,7 +135,7 @@ function updateSinglePlaceholder( writer, element, info ) {
 
 	// If element is empty and editor is blurred.
 	if ( !document.isFocused && isEmptyish ) {
-		if ( !element.hasClass( 'ck', 'ck-placeholder' ) ) {
+		if ( !element.hasClass( 'ck-placeholder' ) ) {
 			writer.addClass( [ 'ck', 'ck-placeholder' ], element );
 			changed = true;
 		}
@@ -129,13 +145,13 @@ function updateSinglePlaceholder( writer, element, info ) {
 
 	// It there are no child elements and selection is not placed inside element.
 	if ( isEmptyish && anchor && anchor.parent !== element ) {
-		if ( !element.hasClass( 'ck', 'ck-placeholder' ) ) {
+		if ( !element.hasClass( 'ck-placeholder' ) ) {
 			writer.addClass( [ 'ck', 'ck-placeholder' ], element );
 			changed = true;
 		}
 	} else {
-		if ( element.hasClass( 'ck', 'ck-placeholder' ) ) {
-			writer.removeClass( [ 'ck', 'ck-placeholder' ], element );
+		if ( element.hasClass( 'ck-placeholder' ) ) {
+			writer.removeClass( 'ck-placeholder', element );
 			changed = true;
 		}
 	}
