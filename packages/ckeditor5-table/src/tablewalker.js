@@ -199,6 +199,12 @@ export default class TableWalker {
 		};
 	}
 
+	/**
+	 * Updates the cell spans of a previous cell.
+	 *
+	 * @returns {Number}
+	 * @private
+	 */
 	_updateSpans() {
 		const colspan = this._previousCell.getAttribute( 'colspan' ) || 1;
 		const rowspan = this._previousCell.getAttribute( 'rowspan' ) || 1;
