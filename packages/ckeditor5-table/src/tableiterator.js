@@ -7,8 +7,6 @@
  * @module table/tableiterator
  */
 
-import { getNumericAttribute } from './converters/downcasttable';
-
 export default class TableIterator {
 	constructor( table ) {
 		this.table = table;
@@ -18,6 +16,11 @@ export default class TableIterator {
 		let rowIndex = 0;
 
 		const cellSpans = new CellSpans();
+
+		const table = {
+			headingRows: this.table.getAttribute( 'headingRows' ) || 0,
+			headingColumns: this.table.getAttribute( 'headingColumns' ) || 0
+		};
 
 		for ( const tableRow of Array.from( this.table.getChildren() ) ) {
 			let columnIndex = 0;
@@ -29,19 +32,20 @@ export default class TableIterator {
 				// for ( const tableCell of Array.from( tableRow.getChildren() ) ) {
 				columnIndex = cellSpans.getAdjustedColumnIndex( rowIndex, columnIndex );
 
-				const colspan = getNumericAttribute( tableCell, 'colspan', 1 );
-				const rowspan = getNumericAttribute( tableCell, 'rowspan', 1 );
+				const colspan = tableCell.getAttribute( 'colspan' ) || 1;
+				const rowspan = tableCell.getAttribute( 'rowspan' ) || 1;
 
 				yield {
 					column: columnIndex,
 					row: rowIndex,
 					cell: tableCell,
 					rowspan,
-					colspan
+					colspan,
+					table
 				};
 
 				// Skip to next "free" column index.
-				const colspanAfter = getNumericAttribute( tableCell, 'colspan', 1 );
+				const colspanAfter = tableCell.getAttribute( 'colspan' ) || 1;
 
 				cellSpans.recordSpans( rowIndex, columnIndex, rowspan, colspanAfter );
 

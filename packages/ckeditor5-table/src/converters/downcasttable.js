@@ -34,13 +34,11 @@ export default function downcastTable() {
 		const tableSections = {};
 
 		const tableElement = conversionApi.writer.createContainerElement( 'table' );
-		const headingRows = getNumericAttribute( table, 'headingRows', 0 );
-		const headingColumns = getNumericAttribute( table, 'headingColumns', 0 );
 
 		const tableIterator = new TableIterator( table );
 
 		for ( const tableCellInfo of tableIterator.iterateOver() ) {
-			const { row, column, cell: tableCell } = tableCellInfo;
+			const { row, table: { headingRows } } = tableCellInfo;
 
 			const isHead = headingRows && row < headingRows;
 
@@ -50,7 +48,7 @@ export default function downcastTable() {
 			// Check if row was converted
 			const trElement = getOrCreateTr( tableRow, row, tableSectionElement, conversionApi );
 
-			downcastTableCell( tableCell, getCellElementName( row, column, headingRows, headingColumns ), trElement, conversionApi );
+			createViewTableCellElement( tableCellInfo, trElement, conversionApi );
 		}
 
 		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
@@ -79,24 +77,19 @@ export function downcastInsertRow() {
 
 		const tableElement = conversionApi.mapper.toViewElement( table );
 
-		const headingRows = getNumericAttribute( table, 'headingRows', 0 );
-		const headingColumns = getNumericAttribute( table, 'headingColumns', 0 );
+		const headingRows = table.getAttribute( 'headingRows' ) || 0;
 
-		const rowIndex = table.getChildIndex( tableRow );
-		const isHeadingRow = rowIndex < headingRows;
+		const row = table.getChildIndex( tableRow );
+		const isHeadingRow = row < headingRows;
 
-		const tableSection = Array.from( tableElement.getChildren() )
-			.filter( child => child.name === ( isHeadingRow ? 'thead' : 'tbody' ) )[ 0 ];
+		const tableSection = getOrCreateTableSection( isHeadingRow ? 'thead' : 'tbody', tableElement, conversionApi );
 
 		const tableIterator = new TableIterator( table );
 
-		for ( const tableCellInfo of tableIterator.iterateOverRows( rowIndex ) ) {
-			const { cell: tableCell, column } = tableCellInfo;
+		for ( const tableCellInfo of tableIterator.iterateOverRows( row ) ) {
+			const trElement = getOrCreateTr( tableRow, row, tableSection, conversionApi );
 
-			const trElement = getOrCreateTr( tableRow, rowIndex, tableSection, conversionApi );
-			const cellElementName = getCellElementName( rowIndex, column, headingRows, headingColumns );
-
-			downcastTableCell( tableCell, cellElementName, trElement, conversionApi );
+			createViewTableCellElement( tableCellInfo, trElement, conversionApi );
 		}
 	}, { priority: 'normal' } );
 }
@@ -119,20 +112,15 @@ export function downcastInsertCell() {
 		const tableRow = tableCell.parent;
 		const table = tableRow.parent;
 
-		const trElement = conversionApi.mapper.toViewElement( tableRow );
-
-		const headingRows = getNumericAttribute( table, 'headingRows', 0 );
-		const headingColumns = getNumericAttribute( table, 'headingColumns', 0 );
-
-		const rowIndex = table.getChildIndex( tableRow );
-
 		const tableIterator = new TableIterator( table );
 
-		for ( const { cell, column } of tableIterator.iterateOverRows( rowIndex ) ) {
-			if ( cell === tableCell ) {
-				const cellElementName = getCellElementName( rowIndex, column, headingRows, headingColumns );
+		for ( const tableCellInfo of tableIterator.iterateOver() ) {
+			if ( tableCellInfo.cell === tableCell ) {
+				const trElement = conversionApi.mapper.toViewElement( tableRow );
 
-				downcastTableCell( tableCell, cellElementName, trElement, conversionApi, tableRow.getChildIndex( tableCell ) );
+				createViewTableCellElement( tableCellInfo, trElement, conversionApi, tableRow.getChildIndex( tableCell ) );
+
+				return;
 			}
 		}
 	}, { priority: 'normal' } );
@@ -156,15 +144,15 @@ export function downcastAttributeChange( attribute ) {
 			return;
 		}
 
-		const headingRows = getNumericAttribute( table, 'headingRows', 0 );
-		const headingColumns = getNumericAttribute( table, 'headingColumns', 0 );
+		const headingRows = table.getAttribute( 'headingRows' ) || 0;
 		const tableElement = conversionApi.mapper.toViewElement( table );
 
 		const cachedTableSections = {};
 
 		const tableIterator = new TableIterator( table );
+
 		for ( const tableCellInfo of tableIterator.iterateOver() ) {
-			const { row, column, cell } = tableCellInfo;
+			const { row, cell } = tableCellInfo;
 			const tableRow = table.getChild( row );
 
 			const tr = conversionApi.mapper.toViewElement( tableRow );
@@ -193,8 +181,7 @@ export function downcastAttributeChange( attribute ) {
 			}
 
 			// Check whether current columnIndex is overlapped by table cells from previous rows.
-
-			const cellElementName = getCellElementName( row, column, headingRows, headingColumns );
+			const cellElementName = getCellElementName( tableCellInfo );
 
 			const viewCell = conversionApi.mapper.toViewElement( cell );
 
@@ -220,7 +207,11 @@ export function downcastAttributeChange( attribute ) {
 // @param {Number} rowIndex
 // @param {module:table/cellspans~CellSpans} cellSpans
 // @param {module:engine/view/containerelement~ContainerElement} tableSection
-function downcastTableCell( tableCell, cellElementName, trElement, conversionApi, offset = 'end' ) {
+function createViewTableCellElement( tableCellInfo, trElement, conversionApi, offset = 'end' ) {
+	const tableCell = tableCellInfo.cell;
+
+	const cellElementName = getCellElementName( tableCellInfo );
+
 	// Will always consume since we're converting <tableRow> element from a parent <table>.
 	conversionApi.consumable.consume( tableCell, 'insert' );
 
@@ -231,17 +222,16 @@ function downcastTableCell( tableCell, cellElementName, trElement, conversionApi
 }
 
 function getOrCreateTr( tableRow, rowIndex, tableSection, conversionApi ) {
-	// Will always consume since we're converting <tableRow> element from a parent <table>.
-	conversionApi.consumable.consume( tableRow, 'insert' );
-
-	const headingRows = tableRow.parent.getAttribute( 'headingRows' ) || 0;
-
 	let trElement = conversionApi.mapper.toViewElement( tableRow );
 
 	if ( !trElement ) {
+		// Will always consume since we're converting <tableRow> element from a parent <table>.
+		conversionApi.consumable.consume( tableRow, 'insert' );
+
 		trElement = conversionApi.writer.createContainerElement( 'tr' );
 		conversionApi.mapper.bindElements( tableRow, trElement );
 
+		const headingRows = tableRow.parent.getAttribute( 'headingRows' ) || 0;
 		const offset = headingRows > 0 && rowIndex >= headingRows ? rowIndex - headingRows : rowIndex;
 
 		const position = ViewPosition.createAt( tableSection, offset );
@@ -259,17 +249,21 @@ function getOrCreateTr( tableRow, rowIndex, tableSection, conversionApi ) {
 // @param {Number} headingRows
 // @param {Number} headingColumns
 // @returns {String}
-function getCellElementName( rowIndex, columnIndex, headingRows, headingColumns ) {
+function getCellElementName( tableCellInfo ) {
+	const headingRows = tableCellInfo.table.headingRows;
+
 	// Column heading are all tableCells in the first `columnHeading` rows.
-	const isHeadingForAColumn = headingRows && headingRows > rowIndex;
+	const isHeadingForAColumn = headingRows && headingRows > tableCellInfo.row;
 
 	// So a whole row gets <th> element.
 	if ( isHeadingForAColumn ) {
 		return 'th';
 	}
 
+	const headingColumns = tableCellInfo.table.headingColumns;
+
 	// Row heading are tableCells which columnIndex is lower then headingColumns.
-	const isHeadingForARow = headingColumns && headingColumns > columnIndex;
+	const isHeadingForARow = headingColumns && headingColumns > tableCellInfo.column;
 
 	return isHeadingForARow ? 'th' : 'td';
 }
@@ -338,8 +332,4 @@ function removeTableSectionIfEmpty( sectionName, tableElement, conversionApi ) {
 	if ( tHead && tHead.childCount === 0 ) {
 		conversionApi.writer.remove( ViewRange.createOn( tHead ) );
 	}
-}
-
-export function getNumericAttribute( element, attribute, defaultValue ) {
-	return element.hasAttribute( attribute ) ? parseInt( element.getAttribute( attribute ) ) : defaultValue;
 }
