@@ -2012,7 +2012,7 @@ describe( 'Writer', () => {
 			addMarker( 'name', { range, usingOperation: true } );
 			const op = batch.deltas[ 0 ].operations[ 0 ];
 
-			expect( spy.calledOnce ).to.be.true;
+			sinon.assert.calledOnce( spy );
 			expect( spy.firstCall.args[ 1 ][ 0 ].type ).to.equal( 'marker' );
 			expect( op.oldRange ).to.be.null;
 			expect( op.newRange.isEqual( range ) ).to.be.true;
@@ -2086,7 +2086,7 @@ describe( 'Writer', () => {
 
 			const op = batch.deltas[ 0 ].operations[ 0 ];
 
-			expect( spy.calledOnce ).to.be.true;
+			sinon.assert.calledOnce( spy );
 			expect( spy.firstCall.args[ 1 ][ 0 ].type ).to.equal( 'marker' );
 			expect( op.oldRange ).to.be.null;
 			expect( op.newRange.isEqual( range ) ).to.be.true;
@@ -2097,14 +2097,14 @@ describe( 'Writer', () => {
 			model.on( 'applyOperation', spy );
 
 			addMarker( 'name', { range, usingOperation: true } );
-			updateMarker( 'name', { range } );
+			updateMarker( 'name', { range, usingOperation: false } );
 
 			const marker = model.markers.get( 'name' );
 
 			const op1 = batch.deltas[ 0 ].operations[ 0 ];
 			const op2 = batch.deltas[ 1 ].operations[ 0 ];
 
-			expect( spy.calledTwice ).to.be.true;
+			sinon.assert.calledTwice( spy );
 			expect( spy.firstCall.args[ 1 ][ 0 ].type ).to.equal( 'marker' );
 			expect( spy.secondCall.args[ 1 ][ 0 ].type ).to.equal( 'marker' );
 
@@ -2117,6 +2117,22 @@ describe( 'Writer', () => {
 			expect( marker.managedUsingOperations ).to.be.false;
 		} );
 
+		it( 'should not create additional operation when using operation is not specified', () => {
+			const spy = sinon.spy();
+			model.on( 'applyOperation', spy );
+
+			addMarker( 'name', { range, usingOperation: true } );
+
+			sinon.assert.calledOnce( spy );
+
+			updateMarker( 'name', { range } );
+
+			const marker = model.markers.get( 'name' );
+
+			sinon.assert.calledOnce( spy );
+			expect( marker.managedUsingOperations ).to.be.true;
+		} );
+
 		it( 'should enable changing marker to be managed using operation', () => {
 			const spy = sinon.spy();
 			model.on( 'applyOperation', spy );
@@ -2126,7 +2142,7 @@ describe( 'Writer', () => {
 
 			const marker = model.markers.get( 'name' );
 
-			expect( spy.calledOnce ).to.be.true;
+			sinon.assert.calledOnce( spy );
 			expect( spy.firstCall.args[ 1 ][ 0 ].type ).to.equal( 'marker' );
 
 			expect( marker.managedUsingOperations ).to.be.true;
@@ -2210,7 +2226,7 @@ describe( 'Writer', () => {
 
 			removeMarker( marker );
 
-			expect( spy.calledOnce ).to.be.true;
+			sinon.assert.calledOnce( spy );
 			expect( spy.firstCall.args[ 1 ][ 0 ].type ).to.equal( 'marker' );
 			expect( model.markers.get( 'name' ) ).to.be.null;
 		} );

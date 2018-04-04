@@ -903,16 +903,18 @@ export default class Writer {
 		}
 
 		const range = options && options.range;
-		const usingOperation = !!options && !!options.usingOperation;
+
+		const hasUsingOperationDefined = !!options && typeof options.usingOperation == 'boolean';
+		const usingOperation = !!options && !!options.usingOperation; // : currentMarker.managedUsingOperations;
 
 		if ( !usingOperation ) {
 			// If marker changes to a marker that do not use operations then we need to create additional operation
 			// that removes that marker first.
-			if ( currentMarker.managedUsingOperations ) {
+			if ( hasUsingOperationDefined && currentMarker.managedUsingOperations ) {
 				applyMarkerOperation( this, markerName, currentMarker.getRange(), null );
 			}
 
-			this.model.markers._set( markerName, range, usingOperation );
+			this.model.markers._set( markerName, range, hasUsingOperationDefined ? usingOperation : currentMarker.managedUsingOperations );
 
 			return;
 		}
