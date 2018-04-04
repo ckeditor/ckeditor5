@@ -21,7 +21,7 @@ ClassicEditor
 				9,
 				11,
 				13,
-				'normal',
+				'default',
 				17,
 				19,
 				21

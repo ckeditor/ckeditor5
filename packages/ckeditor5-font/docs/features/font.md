@@ -45,9 +45,9 @@ ClassicEditor
 
 It is possible to configure which font size options are supported by the editor. Use the {@link module:font/fontsize~FontSizeConfig#options `fontSize.options`} configuration option to do so.
 
-Use the special `'normal'` keyword to use the default font size defined in the web page styles. It removes any custom font size.
+Use the special `'default'` keyword to use the default font size defined in the web page styles. It removes any custom font size.
 
-The font size feature supports two ways of defining the configuration: using  predefined (named) presets or simple numeric values.
+The font size feature supports two ways of defining the configuration: using predefined (named) presets or simple numeric values.
 
 ### Using the predefined presets
 
@@ -94,7 +94,7 @@ ClassicEditor
 		fontSize: {
 			options: [
 				'tiny',
-				'normal',
+				'default',
 				'big'
 			]
 		},
@@ -119,7 +119,7 @@ For example, `14` will be represented in the editor data as:
 <span style="font-size: 14px">...</span>
 ```
 
-Here is an example of the editor that supports numerical font sizes. Note that `'normal'` is controlled by the default styles of the web page:
+Here is an example of the editor that supports numerical font sizes. Note that `'default'` is controlled by the default styles of the web page:
 
 ```js
 ClassicEditor
@@ -129,7 +129,7 @@ ClassicEditor
 				9,
 				11,
 				13,
-				'normal',
+				'default',
 				17,
 				19,
 				21
