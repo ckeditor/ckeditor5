@@ -73,7 +73,7 @@ describe( 'ImageUploadProgress', () => {
 		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
 
 		expect( getViewData( view ) ).to.equal(
-			'[<figure class="ck-appear ck-image-upload-placeholder ck-infinite-progress ck-widget image" contenteditable="false">' +
+			'[<figure class="ck ck-appear ck-image-upload-placeholder ck-infinite-progress ck-widget image" contenteditable="false">' +
 				`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
 			'</figure>]<p>foo</p>'
 		);
@@ -85,7 +85,7 @@ describe( 'ImageUploadProgress', () => {
 
 		model.document.once( 'change', () => {
 			expect( getViewData( view ) ).to.equal(
-				'[<figure class="ck-appear ck-widget image" contenteditable="false">' +
+				'[<figure class="ck ck-appear ck-widget image" contenteditable="false">' +
 					`<img src="${ base64Sample }"></img>` +
 					'<div class="ck-progress-bar"></div>' +
 				'</figure>]<p>foo</p>'
@@ -113,7 +113,7 @@ describe( 'ImageUploadProgress', () => {
 		} );
 
 		expect( getViewData( view ) ).to.equal(
-			'[<figure class="ck-appear ck-widget image" contenteditable="false">' +
+			'[<figure class="ck ck-appear ck-widget image" contenteditable="false">' +
 				'<img src="image.png"></img>' +
 				'<div class="ck-progress-bar"></div>' +
 			'</figure>]'
@@ -131,7 +131,7 @@ describe( 'ImageUploadProgress', () => {
 		} );
 
 		expect( getViewData( view ) ).to.equal(
-			'[<figure class="ck-appear ck-image-upload-placeholder ck-infinite-progress ck-widget image" contenteditable="false">' +
+			'[<figure class="ck ck-appear ck-image-upload-placeholder ck-infinite-progress ck-widget image" contenteditable="false">' +
 				`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
 			'</figure>]'
 		);
@@ -145,7 +145,7 @@ describe( 'ImageUploadProgress', () => {
 			adapterMock.mockProgress( 40, 100 );
 
 			expect( getViewData( view ) ).to.equal(
-				'[<figure class="ck-appear ck-widget image" contenteditable="false">' +
+				'[<figure class="ck ck-appear ck-widget image" contenteditable="false">' +
 				`<img src="${ base64Sample }"></img>` +
 				'<div class="ck-progress-bar" style="width:40%"></div>' +
 				'</figure>]<p>foo</p>'
@@ -164,7 +164,7 @@ describe( 'ImageUploadProgress', () => {
 		model.document.once( 'change', () => {
 			model.document.once( 'change', () => {
 				expect( getViewData( view ) ).to.equal(
-					'[<figure class="ck-widget image" contenteditable="false">' +
+					'[<figure class="ck ck-widget image" contenteditable="false">' +
 						'<img src="image.png"></img>' +
 					'</figure>]<p>foo</p>'
 				);
@@ -186,7 +186,7 @@ describe( 'ImageUploadProgress', () => {
 		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
 
 		expect( getViewData( view ) ).to.equal(
-			'[<figure class="ck-appear ck-image-upload-placeholder ck-infinite-progress ck-widget image" contenteditable="false">' +
+			'[<figure class="ck ck-appear ck-image-upload-placeholder ck-infinite-progress ck-widget image" contenteditable="false">' +
 				`<img src="${ base64Sample }"></img>` +
 			'</figure>]<p>foo</p>'
 		);
@@ -201,7 +201,7 @@ describe( 'ImageUploadProgress', () => {
 		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
 
 		expect( getViewData( view ) ).to.equal(
-			'[<figure class="ck-widget image" contenteditable="false"><img></img></figure>]<p>foo</p>'
+			'[<figure class="ck ck-widget image" contenteditable="false"><img></img></figure>]<p>foo</p>'
 		);
 	} );
 
@@ -215,7 +215,7 @@ describe( 'ImageUploadProgress', () => {
 		} );
 
 		expect( getViewData( view ) ).to.equal(
-			'[<figure class="ck-appear ck-image-upload-placeholder ck-infinite-progress ck-widget image" contenteditable="false">' +
+			'[<figure class="ck ck-appear ck-image-upload-placeholder ck-infinite-progress ck-widget image" contenteditable="false">' +
 				`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
 			'</figure>]'
 		);
@@ -225,7 +225,7 @@ describe( 'ImageUploadProgress', () => {
 		} );
 
 		expect( getViewData( view ) ).to.equal(
-			'[<figure class="ck-widget image" contenteditable="false">' +
+			'[<figure class="ck ck-widget image" contenteditable="false">' +
 				`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
 			'</figure>]'
 		);
