@@ -116,6 +116,18 @@ export default class TableWalker {
 		 * @private
 		 */
 		this._cellSpans = new CellSpans();
+
+		/**
+		 * Cached table properties - returned for every yielded value.
+		 *
+		 * @readonly
+		 * @member {{headingRows: Number, headingColumns: Number}}
+		 * @private
+		 */
+		this._tableData = {
+			headingRows: this.table.getAttribute( 'headingRows' ) || 0,
+			headingColumns: this.table.getAttribute( 'headingColumns' ) || 0
+		};
 	}
 
 	/**
@@ -182,10 +194,7 @@ export default class TableWalker {
 				column: this.column,
 				rowspan: cell.getAttribute( 'rowspan' ) || 1,
 				colspan: cell.getAttribute( 'colspan' ) || 1,
-				table: {
-					headingRows: this.table.getAttribute( 'headingRows' ) || 0,
-					headingColumns: this.table.getAttribute( 'headingColumns' ) || 0
-				}
+				table: this._tableData
 			}
 		};
 	}
