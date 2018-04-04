@@ -811,16 +811,6 @@ describe( 'Writer', () => {
 		} );
 	} );
 
-	describe( 'setTextData()', () => {
-		it( 'should update the content for text node', () => {
-			const textNode = createText( 'foo' );
-
-			setTextData( 'bar', textNode );
-
-			expect( textNode.data ).to.equal( 'bar' );
-		} );
-	} );
-
 	describe( 'setAttribute() / removeAttribute()', () => {
 		let root, spy;
 
@@ -2469,12 +2459,6 @@ describe( 'Writer', () => {
 	function appendElement( name, attributes, parent ) {
 		model.enqueueChange( batch, writer => {
 			writer.appendElement( name, attributes, parent );
-		} );
-	}
-
-	function setTextData( value, textNode ) {
-		model.enqueueChange( batch, writer => {
-			writer.setTextData( value, textNode );
 		} );
 	}
 
