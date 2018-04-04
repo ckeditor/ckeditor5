@@ -35,20 +35,17 @@ export default function downcastTable() {
 
 		const tableElement = conversionApi.writer.createContainerElement( 'table' );
 
-		const tableIterator = new TableWalker( table );
+		const tableWalker = new TableWalker( table );
 
-		for ( const tableCellInfo of tableIterator ) {
-			const { row, table: { headingRows } } = tableCellInfo;
+		for ( const tableWalkerValue of tableWalker ) {
+			const { row } = tableWalkerValue;
 
-			const isHead = headingRows && row < headingRows;
-
-			const tableSectionElement = getTableSection( isHead ? 'thead' : 'tbody', tableElement, conversionApi, tableSections );
+			const tableSection = getOrCreateTableSection( getSectionName( tableWalkerValue ), tableElement, conversionApi, tableSections );
 			const tableRow = table.getChild( row );
 
 			// Check if row was converted
-			const trElement = getOrCreateTr( tableRow, row, tableSectionElement, conversionApi );
-
-			createViewTableCellElement( tableCellInfo, trElement, conversionApi );
+			const trElement = getOrCreateTr( tableRow, row, tableSection, conversionApi );
+			createViewTableCellElement( tableWalkerValue, ViewPosition.createAt( trElement, 'end' ), conversionApi );
 		}
 
 		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
@@ -56,6 +53,13 @@ export default function downcastTable() {
 		conversionApi.mapper.bindElements( table, tableElement );
 		conversionApi.writer.insert( viewPosition, tableElement );
 	}, { priority: 'normal' } );
+}
+
+function getSectionName( treeWalkerValue ) {
+	const { row, table: { headingRows } } = treeWalkerValue;
+	const isHead = row < headingRows;
+
+	return isHead ? 'thead' : 'tbody';
 }
 
 /**
@@ -77,19 +81,15 @@ export function downcastInsertRow() {
 
 		const tableElement = conversionApi.mapper.toViewElement( table );
 
-		const headingRows = table.getAttribute( 'headingRows' ) || 0;
-
 		const row = table.getChildIndex( tableRow );
-		const isHeadingRow = row < headingRows;
 
-		const tableSection = getOrCreateTableSection( isHeadingRow ? 'thead' : 'tbody', tableElement, conversionApi );
+		const tableWalker = new TableWalker( table, { startRow: row, endRow: row } );
 
-		const tableIterator = new TableWalker( table, { startRow: row, endRow: row } );
-
-		for ( const tableCellInfo of tableIterator ) {
+		for ( const tableWalkerValue of tableWalker ) {
+			const tableSection = getOrCreateTableSection( getSectionName( tableWalkerValue ), tableElement, conversionApi );
 			const trElement = getOrCreateTr( tableRow, row, tableSection, conversionApi );
 
-			createViewTableCellElement( tableCellInfo, trElement, conversionApi );
+			createViewTableCellElement( tableWalkerValue, ViewPosition.createAt( trElement, 'end' ), conversionApi );
 		}
 	}, { priority: 'normal' } );
 }
@@ -112,14 +112,17 @@ export function downcastInsertCell() {
 		const tableRow = tableCell.parent;
 		const table = tableRow.parent;
 
-		const tableIterator = new TableWalker( table );
+		const tableWalker = new TableWalker( table );
 
-		for ( const tableCellInfo of tableIterator ) {
-			if ( tableCellInfo.cell === tableCell ) {
+		// We need to iterate over a table in order to get proper row & column values from a walker
+		for ( const tableWalkerValue of tableWalker ) {
+			if ( tableWalkerValue.cell === tableCell ) {
 				const trElement = conversionApi.mapper.toViewElement( tableRow );
+				const insertPosition = ViewPosition.createAt( trElement, tableRow.getChildIndex( tableCell ) );
 
-				createViewTableCellElement( tableCellInfo, trElement, conversionApi, tableRow.getChildIndex( tableCell ) );
+				createViewTableCellElement( tableWalkerValue, insertPosition, conversionApi );
 
+				// No need to iterate further.
 				return;
 			}
 		}
@@ -144,44 +147,41 @@ export function downcastAttributeChange( attribute ) {
 			return;
 		}
 
-		const headingRows = table.getAttribute( 'headingRows' ) || 0;
 		const tableElement = conversionApi.mapper.toViewElement( table );
 
 		const cachedTableSections = {};
 
-		const tableIterator = new TableWalker( table );
+		const tableWalker = new TableWalker( table );
 
-		for ( const tableCellInfo of tableIterator ) {
-			const { row, cell } = tableCellInfo;
+		for ( const tableWalkerValue of tableWalker ) {
+			const { row, cell } = tableWalkerValue;
 			const tableRow = table.getChild( row );
 
-			const tr = conversionApi.mapper.toViewElement( tableRow );
+			const trElement = conversionApi.mapper.toViewElement( tableRow );
 
-			const desiredParentName = row < headingRows ? 'thead' : 'tbody';
+			const desiredParentName = getSectionName( tableWalkerValue );
 
-			if ( desiredParentName !== tr.parent.name ) {
-				const tableSection = getTableSection( desiredParentName, tableElement, conversionApi, cachedTableSections );
-
+			if ( desiredParentName !== trElement.parent.name ) {
 				let targetPosition;
 
-				if ( desiredParentName === 'tbody' &&
-					row === data.attributeNewValue &&
-					data.attributeNewValue < data.attributeOldValue
+				if (
+					( desiredParentName == 'tbody' && row === data.attributeNewValue && data.attributeNewValue < data.attributeOldValue ) ||
+					row === 0
 				) {
+					const tableSection = getOrCreateTableSection( desiredParentName, tableElement, conversionApi, cachedTableSections );
+
 					targetPosition = ViewPosition.createAt( tableSection, 'start' );
-				} else if ( row > 0 ) {
+				} else {
 					const previousTr = conversionApi.mapper.toViewElement( table.getChild( row - 1 ) );
 
 					targetPosition = ViewPosition.createAfter( previousTr );
-				} else {
-					targetPosition = ViewPosition.createAt( tableSection, 'start' );
 				}
 
-				conversionApi.writer.move( ViewRange.createOn( tr ), targetPosition );
+				conversionApi.writer.move( ViewRange.createOn( trElement ), targetPosition );
 			}
 
 			// Check whether current columnIndex is overlapped by table cells from previous rows.
-			const cellElementName = getCellElementName( tableCellInfo );
+			const cellElementName = getCellElementName( tableWalkerValue );
 
 			const viewCell = conversionApi.mapper.toViewElement( cell );
 
@@ -192,25 +192,20 @@ export function downcastAttributeChange( attribute ) {
 			}
 		}
 
-		// TODO: maybe a postfixer?
-		if ( headingRows === 0 ) {
-			removeTableSectionIfEmpty( 'thead', tableElement, conversionApi );
-		} else if ( headingRows === table.childCount ) {
-			removeTableSectionIfEmpty( 'tbody', tableElement, conversionApi );
-		}
+		removeTableSectionIfEmpty( 'thead', tableElement, conversionApi );
+		removeTableSectionIfEmpty( 'tbody', tableElement, conversionApi );
 	}, { priority: 'normal' } );
 }
 
-// Downcast converter for tableRow model element. Converts tableCells as well.
+// Creates a table cell element in a view.
 //
-// @param {module:engine/model/element~Element} tableRow
-// @param {Number} rowIndex
-// @param {module:table/cellspans~CellSpans} cellSpans
-// @param {module:engine/view/containerelement~ContainerElement} tableSection
-function createViewTableCellElement( tableCellInfo, trElement, conversionApi, offset = 'end' ) {
-	const tableCell = tableCellInfo.cell;
+// @param {module:table/tablewalker~TableWalkerValue} tableWalkerValue
+// @param {module:engine/view/position~Position} insertPosition
+// @param conversionApi
+function createViewTableCellElement( tableWalkerValue, insertPosition, conversionApi ) {
+	const tableCell = tableWalkerValue.cell;
 
-	const cellElementName = getCellElementName( tableCellInfo );
+	const cellElementName = getCellElementName( tableWalkerValue );
 
 	// Will always consume since we're converting <tableRow> element from a parent <table>.
 	conversionApi.consumable.consume( tableCell, 'insert' );
@@ -218,9 +213,10 @@ function createViewTableCellElement( tableCellInfo, trElement, conversionApi, of
 	const cellElement = conversionApi.writer.createContainerElement( cellElementName );
 
 	conversionApi.mapper.bindElements( tableCell, cellElement );
-	conversionApi.writer.insert( ViewPosition.createAt( trElement, offset ), cellElement );
+	conversionApi.writer.insert( insertPosition, cellElement );
 }
 
+// Creates or returns an existing tr element from a view.
 function getOrCreateTr( tableRow, rowIndex, tableSection, conversionApi ) {
 	let trElement = conversionApi.mapper.toViewElement( tableRow );
 
@@ -249,21 +245,21 @@ function getOrCreateTr( tableRow, rowIndex, tableSection, conversionApi ) {
 // @param {Number} headingRows
 // @param {Number} headingColumns
 // @returns {String}
-function getCellElementName( tableCellInfo ) {
-	const headingRows = tableCellInfo.table.headingRows;
+function getCellElementName( tableWalkerValue ) {
+	const headingRows = tableWalkerValue.table.headingRows;
 
 	// Column heading are all tableCells in the first `columnHeading` rows.
-	const isHeadingForAColumn = headingRows && headingRows > tableCellInfo.row;
+	const isHeadingForAColumn = headingRows && headingRows > tableWalkerValue.row;
 
 	// So a whole row gets <th> element.
 	if ( isHeadingForAColumn ) {
 		return 'th';
 	}
 
-	const headingColumns = tableCellInfo.table.headingColumns;
+	const headingColumns = tableWalkerValue.table.headingColumns;
 
 	// Row heading are tableCells which columnIndex is lower then headingColumns.
-	const isHeadingForARow = headingColumns && headingColumns > tableCellInfo.column;
+	const isHeadingForARow = headingColumns && headingColumns > tableWalkerValue.column;
 
 	return isHeadingForARow ? 'th' : 'td';
 }
@@ -275,23 +271,18 @@ function getCellElementName( tableCellInfo ) {
 // @param conversionApi
 // @param {Object} cachedTableSection An object on which store cached elements.
 // @return {module:engine/view/containerelement~ContainerElement}
-function getTableSection( sectionName, tableElement, conversionApi, cachedTableSections ) {
+function getOrCreateTableSection( sectionName, tableElement, conversionApi, cachedTableSections = {} ) {
 	if ( cachedTableSections[ sectionName ] ) {
 		return cachedTableSections[ sectionName ];
 	}
 
-	cachedTableSections[ sectionName ] = getOrCreateTableSection( sectionName, tableElement, conversionApi );
+	cachedTableSections[ sectionName ] = getExistingTableSectionElement( sectionName, tableElement );
+
+	if ( !cachedTableSections[ sectionName ] ) {
+		cachedTableSections[ sectionName ] = createTableSection( sectionName, tableElement, conversionApi );
+	}
 
 	return cachedTableSections[ sectionName ];
-}
-
-// Creates or returns an existing <tbody> or <thead> element.
-//
-// @param {String} sectionName
-// @param {module:engine/view/element~Element} tableElement
-// @param conversionApi
-function getOrCreateTableSection( sectionName, tableElement, conversionApi ) {
-	return getExistingTableSectionElement( sectionName, tableElement ) || createTableSection( sectionName, tableElement, conversionApi );
 }
 
 // Finds an existing <tbody> or <thead> element or returns undefined.
@@ -327,9 +318,9 @@ function createTableSection( sectionName, tableElement, conversionApi ) {
 // @param {module:engine/view/element~Element} tableElement
 // @param conversionApi
 function removeTableSectionIfEmpty( sectionName, tableElement, conversionApi ) {
-	const tHead = getExistingTableSectionElement( sectionName, tableElement );
+	const tableSection = getExistingTableSectionElement( sectionName, tableElement );
 
-	if ( tHead && tHead.childCount === 0 ) {
-		conversionApi.writer.remove( ViewRange.createOn( tHead ) );
+	if ( tableSection && tableSection.childCount === 0 ) {
+		conversionApi.writer.remove( ViewRange.createOn( tableSection ) );
 	}
 }
