@@ -80,7 +80,10 @@ export default class LinkEditing extends Plugin {
 		const doc = model.document;
 		const highlightDescriptor = {
 			id: 'linkBoundaries',
-			classes: 'ck-link_selected',
+			classes: [
+				'ck',
+				'ck-link_selected'
+			],
 			priority: 1
 		};
 

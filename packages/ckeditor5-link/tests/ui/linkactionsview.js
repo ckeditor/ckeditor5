@@ -24,6 +24,7 @@ describe( 'LinkActionsView', () => {
 
 	describe( 'constructor()', () => {
 		it( 'should create element from template', () => {
+			expect( view.element.classList.contains( 'ck' ) ).to.true;
 			expect( view.element.classList.contains( 'ck-link-actions' ) ).to.true;
 			expect( view.element.getAttribute( 'tabindex' ) ).to.equal( '-1' );
 		} );

@@ -166,7 +166,7 @@ describe( 'LinkEditing', () => {
 			);
 
 			expect( getViewData( view ) ).to.equal(
-				'<p>foo <span class="ck-link_selected"><a href="url">b{}ar</a></span> baz</p>'
+				'<p>foo <span class="ck ck-link_selected"><a href="url">b{}ar</a></span> baz</p>'
 			);
 		} );
 
@@ -188,7 +188,7 @@ describe( 'LinkEditing', () => {
 			expect( marker.getEnd().path ).to.deep.equal( [ 0, 7 ] );
 
 			expect( getViewData( view ) ).to.equal(
-				'<p>foo <span class="ck-link_selected"><a href="url">{}bar</a></span> baz</p>'
+				'<p>foo <span class="ck ck-link_selected"><a href="url">{}bar</a></span> baz</p>'
 			);
 		} );
 
@@ -204,7 +204,7 @@ describe( 'LinkEditing', () => {
 			expect( marker.getEnd().path ).to.deep.equal( [ 0, 7 ] );
 
 			expect( getViewData( view ) ).to.equal(
-				'<p>foo <span class="ck-link_selected"><a href="url">bar{}</a></span> baz</p>'
+				'<p>foo <span class="ck ck-link_selected"><a href="url">bar{}</a></span> baz</p>'
 			);
 		} );
 
@@ -233,7 +233,7 @@ describe( 'LinkEditing', () => {
 			);
 
 			expect( getViewData( view ) ).to.equal(
-				'<p>foo <span class="ck-link_selected"><a href="url">li{}nk</a></span> baz</p>'
+				'<p>foo <span class="ck ck-link_selected"><a href="url">li{}nk</a></span> baz</p>'
 			);
 
 			expect( model.markers.has( 'linkBoundaries' ) ).to.be.true;
@@ -251,7 +251,7 @@ describe( 'LinkEditing', () => {
 			);
 
 			expect( getViewData( view ) ).to.equal(
-				'<p>foo <span class="ck-link_selected"><a href="url">li{}nk</a></span> baz</p>'
+				'<p>foo <span class="ck ck-link_selected"><a href="url">li{}nk</a></span> baz</p>'
 			);
 
 			expect( model.markers.has( 'linkBoundaries' ) ).to.be.true;
@@ -259,7 +259,7 @@ describe( 'LinkEditing', () => {
 
 			expect( model.markers.has( 'linkBoundaries' ) ).to.be.true;
 			expect( getViewData( view ) ).to.equal(
-				'<p>foo <span class="ck-link_selected"><a href="url">l{}ink</a></span> baz</p>'
+				'<p>foo <span class="ck ck-link_selected"><a href="url">l{}ink</a></span> baz</p>'
 			);
 		} );
 	} );

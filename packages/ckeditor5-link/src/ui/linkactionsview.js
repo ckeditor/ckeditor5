@@ -114,6 +114,7 @@ export default class LinkActionsView extends View {
 
 			attributes: {
 				class: [
+					'ck',
 					'ck-link-actions',
 				],
 
@@ -202,6 +203,7 @@ export default class LinkActionsView extends View {
 		button.extendTemplate( {
 			attributes: {
 				class: [
+					'ck',
 					'ck-link-actions__preview'
 				],
 				href: bind.to( 'href' ),
