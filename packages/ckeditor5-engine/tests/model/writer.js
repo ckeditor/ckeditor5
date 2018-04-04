@@ -2606,9 +2606,9 @@ describe( 'Writer', () => {
 		return marker;
 	}
 
-	function updateMarker( markerOrNameOrRange, rangeOrManagedUsingOperations, options ) {
+	function updateMarker( markerOrName, options ) {
 		model.enqueueChange( batch, writer => {
-			writer.updateMarker( markerOrNameOrRange, rangeOrManagedUsingOperations, options );
+			writer.updateMarker( markerOrName, options );
 		} );
 	}
 
