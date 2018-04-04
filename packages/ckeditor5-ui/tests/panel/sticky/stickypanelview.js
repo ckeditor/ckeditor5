@@ -56,12 +56,15 @@ describe( 'StickyPanelView', () => {
 
 		it( 'should create element from template', () => {
 			expect( element.tagName ).to.equal( 'DIV' );
+			expect( element.classList.contains( 'ck' ) ).to.true;
 			expect( element.classList.contains( 'ck-sticky-panel' ) ).to.true;
 
 			expect( placeholderElement.tagName ).to.equal( 'DIV' );
+			expect( placeholderElement.classList.contains( 'ck' ) ).to.true;
 			expect( placeholderElement.classList.contains( 'ck-sticky-panel__placeholder' ) ).to.true;
 
 			expect( contentElement.tagName ).to.equal( 'DIV' );
+			expect( contentElement.classList.contains( 'ck' ) ).to.true;
 			expect( contentElement.classList.contains( 'ck-sticky-panel__content' ) ).to.true;
 		} );
 

@@ -58,6 +58,7 @@ export default class TooltipView extends View {
 			tag: 'span',
 			attributes: {
 				class: [
+					'ck',
 					'ck-tooltip',
 					bind.to( 'position', position => 'ck-tooltip_' + position ),
 					bind.if( 'text', 'ck-hidden', value => !value.trim() )
@@ -69,6 +70,7 @@ export default class TooltipView extends View {
 
 					attributes: {
 						class: [
+							'ck',
 							'ck-tooltip__text'
 						]
 					},

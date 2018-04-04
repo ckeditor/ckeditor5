@@ -25,6 +25,7 @@ export default class ToolbarSeparatorView extends View {
 			tag: 'span',
 			attributes: {
 				class: [
+					'ck',
 					'ck-toolbar__separator'
 				]
 			}

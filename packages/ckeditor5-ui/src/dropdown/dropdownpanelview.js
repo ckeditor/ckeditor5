@@ -50,6 +50,7 @@ export default class DropdownPanelView extends View {
 
 			attributes: {
 				class: [
+					'ck',
 					'ck-reset',
 					'ck-dropdown__panel',
 					bind.if( 'isVisible', 'ck-dropdown__panel-visible' )

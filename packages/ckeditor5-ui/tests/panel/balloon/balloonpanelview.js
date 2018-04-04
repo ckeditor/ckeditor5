@@ -34,6 +34,7 @@ describe( 'BalloonPanelView', () => {
 	describe( 'constructor()', () => {
 		it( 'should create element from template', () => {
 			expect( view.element.tagName ).to.equal( 'DIV' );
+			expect( view.element.classList.contains( 'ck' ) ).to.true;
 			expect( view.element.classList.contains( 'ck-balloon-panel' ) ).to.true;
 		} );
 

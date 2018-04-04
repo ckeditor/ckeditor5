@@ -6,8 +6,8 @@
 @import "../../mixins/_unselectable.css";
 @import "../tooltip/mixins/_tooltip.css";
 
-.ck-button,
-a.ck-button {
+.ck.ck-button,
+a.ck.ck-button {
 	@mixin ck-unselectable;
 	@mixin ck-tooltip_enabled;
 

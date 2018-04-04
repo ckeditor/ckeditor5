@@ -76,6 +76,7 @@ export default class ListView extends View {
 
 			attributes: {
 				class: [
+					'ck',
 					'ck-reset',
 					'ck-list'
 				]

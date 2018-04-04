@@ -29,7 +29,8 @@ describe( 'IconView', () => {
 
 		it( 'creates element from template', () => {
 			expect( view.element.tagName ).to.equal( 'svg' );
-			expect( view.element.getAttribute( 'class' ) ).to.equal( 'ck-icon' );
+			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
+			expect( view.element.classList.contains( 'ck-icon' ) ).to.be.true;
 			expect( view.element.getAttribute( 'viewBox' ) ).to.equal( '0 0 20 20' );
 		} );
 	} );

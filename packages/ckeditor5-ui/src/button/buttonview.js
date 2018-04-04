@@ -116,6 +116,7 @@ export default class ButtonView extends View {
 
 			attributes: {
 				class: [
+					'ck',
 					'ck-button',
 					bind.to( 'isEnabled', value => value ? 'ck-enabled' : 'ck-disabled' ),
 					bind.if( 'isVisible', 'ck-hidden', value => !value ),
@@ -199,7 +200,10 @@ export default class ButtonView extends View {
 			tag: 'span',
 
 			attributes: {
-				class: [ 'ck-button__label' ]
+				class: [
+					'ck',
+					'ck-button__label'
+				]
 			},
 
 			children: [

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-.ck-balloon-panel {
+.ck.ck-balloon-panel {
 	display: none;
 	position: absolute;
 
@@ -44,8 +44,8 @@
 			z-index: calc(var(--ck-z-default) + 1);
 		}
 	}
-}
 
-.ck-balloon-panel_visible {
-	display: block;
+	&.ck-balloon-panel_visible {
+		display: block;
+	}
 }

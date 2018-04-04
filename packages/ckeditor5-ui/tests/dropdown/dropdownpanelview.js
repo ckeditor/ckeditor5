@@ -34,6 +34,7 @@ describe( 'DropdownPanelView', () => {
 		} );
 
 		it( 'creates element from template', () => {
+			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-reset' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-dropdown__panel' ) ).to.be.true;
 		} );

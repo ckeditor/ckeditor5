@@ -17,6 +17,7 @@ describe( 'LabelView', () => {
 	describe( 'constructor()', () => {
 		it( 'should create element from template', () => {
 			expect( view.element.tagName ).to.equal( 'LABEL' );
+			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-label' ) ).to.be.true;
 		} );
 	} );

@@ -73,9 +73,10 @@ export default class EditorUIView extends View {
 			tag: 'div',
 			attributes: {
 				class: [
+					'ck',
+					'ck-reset_all',
 					'ck-body',
-					'ck-rounded-corners',
-					'ck-reset_all'
+					'ck-rounded-corners'
 				]
 			},
 			children: this.body

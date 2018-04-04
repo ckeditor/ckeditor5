@@ -154,6 +154,7 @@ export default class StickyPanelView extends View {
 			tag: 'div',
 			attributes: {
 				class: [
+					'ck',
 					'ck-sticky-panel__placeholder'
 				],
 				style: {
@@ -177,6 +178,7 @@ export default class StickyPanelView extends View {
 
 			attributes: {
 				class: [
+					'ck',
 					'ck-sticky-panel__content',
 					// Toggle class of the panel when "sticky" state changes in the view.
 					bind.if( 'isSticky', 'ck-sticky-panel__content_sticky' ),
@@ -206,6 +208,7 @@ export default class StickyPanelView extends View {
 			tag: 'div',
 			attributes: {
 				class: [
+					'ck',
 					'ck-sticky-panel'
 				]
 			},

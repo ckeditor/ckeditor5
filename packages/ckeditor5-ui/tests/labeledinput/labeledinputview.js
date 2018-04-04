@@ -38,6 +38,7 @@ describe( 'LabeledInputView', () => {
 
 	describe( 'template', () => {
 		it( 'should have the CSS class', () => {
+			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-labeled-input' ) ).to.be.true;
 		} );
 

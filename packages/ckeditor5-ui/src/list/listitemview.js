@@ -46,6 +46,7 @@ export default class ListItemView extends View {
 
 			attributes: {
 				class: [
+					'ck',
 					'ck-list__item',
 					bind.to( 'class' ),
 					bind.if( 'isActive', 'ck-list__item_active' )

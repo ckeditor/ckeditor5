@@ -38,6 +38,7 @@ describe( 'SplitButtonView', () => {
 
 		it( 'creates element from template', () => {
 			expect( view.element.tagName ).to.equal( 'DIV' );
+			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-splitbutton' ) ).to.be.true;
 		} );
 

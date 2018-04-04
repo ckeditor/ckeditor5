@@ -22,6 +22,7 @@ describe( 'InputTextView', () => {
 		it( 'should creates element from template', () => {
 			expect( view.element.tagName ).to.equal( 'INPUT' );
 			expect( view.element.type ).to.equal( 'text' );
+			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-input' ) ).to.be.true;
 			expect( view.element.classList.contains( 'ck-input-text' ) ).to.be.true;
 		} );

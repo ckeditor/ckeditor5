@@ -62,6 +62,7 @@ export default class InputTextView extends View {
 			attributes: {
 				type: 'text',
 				class: [
+					'ck',
 					'ck-input',
 					'ck-input-text'
 				],

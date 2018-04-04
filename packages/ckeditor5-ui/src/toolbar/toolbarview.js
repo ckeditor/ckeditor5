@@ -96,6 +96,7 @@ export default class ToolbarView extends View {
 			tag: 'div',
 			attributes: {
 				class: [
+					'ck',
 					'ck-toolbar',
 					bind.if( 'isVertical', 'ck-toolbar_vertical' ),
 					bind.to( 'className' )
