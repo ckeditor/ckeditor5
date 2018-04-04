@@ -544,7 +544,7 @@ export default class Selection {
 	/**
 	 * Removes an attribute with given key from the selection.
 	 *
-	 * If given attribute was set on the selection, fires the {@link #event:change} event with
+	 * If given attribute was set on the selection, fires the {@link #event:change:range} event with
 	 * removed attribute key.
 	 *
 	 * @fires change:attribute
@@ -561,7 +561,7 @@ export default class Selection {
 	/**
 	 * Sets attribute on the selection. If attribute with the same key already is set, it's value is overwritten.
 	 *
-	 * If the attribute value has changed, fires the {@link #event:change} event with
+	 * If the attribute value has changed, fires the {@link #event:change:range} event with
 	 * the attribute key.
 	 *
 	 * @fires change:attribute
@@ -725,25 +725,29 @@ export default class Selection {
 	}
 
 	/**
-	 * @event change
-	 */
-
-	/**
-	 * Fired whenever selection ranges are changed.
+	 * Fired when selection range(s) changed.
 	 *
 	 * @event change:range
-	 * @param {Boolean} directChange Specifies whether the range change was caused by direct usage of `Selection` API (`true`)
-	 * or by changes done to {@link module:engine/model/document~Document model document}
-	 * using {@link module:engine/model/batch~Batch Batch} API (`false`).
+	 * @param {Boolean} directChange In case of {@link module:engine/model/selection~Selection} class it is always set
+	 * to `true` which indicates that the selection change was caused by a direct use of selection's API.
+	 * The {@link module:engine/model/documentselection~DocumentSelection}, however, may change because its position
+	 * was directly changed through the {@link module:engine/model/writer~Writer writer} or because its position was
+	 * changed because the structure of the model has been changed (which means an indirect change).
+	 * The indirect change does not occur in case of normal (detached) selections because they are "static" (as "not live")
+	 * which mean that they are not updated once the document changes.
 	 */
 
 	/**
-	 * Fired whenever selection attributes are changed.
+	 * Fired when selection attribute changed.
 	 *
 	 * @event change:attribute
-	 * @param {Boolean} directChange Specifies whether the attributes changed by direct usage of the Selection API (`true`)
-	 * or by changes done to the {@link module:engine/model/document~Document model document}
-	 * using the {@link module:engine/model/batch~Batch Batch} API (`false`).
+	 * @param {Boolean} directChange In case of {@link module:engine/model/selection~Selection} class it is always set
+	 * to `true` which indicates that the selection change was caused by a direct use of selection's API.
+	 * The {@link module:engine/model/documentselection~DocumentSelection}, however, may change because its attributes
+	 * were directly changed through the {@link module:engine/model/writer~Writer writer} or because its position was
+	 * changed in the model and its attributes were refreshed (which means an indirect change).
+	 * The indirect change does not occur in case of normal (detached) selections because they are "static" (as "not live")
+	 * which mean that they are not updated once the document changes.
 	 * @param {Array.<String>} attributeKeys Array containing keys of attributes that changed.
 	 */
 }

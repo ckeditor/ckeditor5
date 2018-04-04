@@ -376,7 +376,7 @@ export default class DocumentSelection {
 
 	/**
 	 * Removes an attribute with given key from the selection.
-	 * If the given attribute was set on the selection, fires the {@link module:engine/model/selection~Selection#event:change}
+	 * If the given attribute was set on the selection, fires the {@link module:engine/model/selection~Selection#event:change:range}
 	 * event with removed attribute key.
 	 * Should be used only within the {@link module:engine/model/writer~Writer#removeSelectionAttribute} method.
 	 *
@@ -450,6 +450,33 @@ export default class DocumentSelection {
 }
 
 mix( DocumentSelection, EmitterMixin );
+
+/**
+ * Fired when selection range(s) changed.
+ *
+ * @event change:range
+ * @param {Boolean} directChange In case of {@link module:engine/model/selection~Selection} class it is always set
+ * to `true` which indicates that the selection change was caused by a direct use of selection's API.
+ * The {@link module:engine/model/documentselection~DocumentSelection}, however, may change because its position
+ * was directly changed through the {@link module:engine/model/writer~Writer writer} or because its position was
+ * changed because the structure of the model has been changed (which means an indirect change).
+ * The indirect change does not occur in case of normal (detached) selections because they are "static" (as "not live")
+ * which mean that they are not updated once the document changes.
+ */
+
+/**
+ * Fired when selection attribute changed.
+ *
+ * @event change:attribute
+ * @param {Boolean} directChange In case of {@link module:engine/model/selection~Selection} class it is always set
+ * to `true` which indicates that the selection change was caused by a direct use of selection's API.
+ * The {@link module:engine/model/documentselection~DocumentSelection}, however, may change because its attributes
+ * were directly changed through the {@link module:engine/model/writer~Writer writer} or because its position was
+ * changed in the model and its attributes were refreshed (which means an indirect change).
+ * The indirect change does not occur in case of normal (detached) selections because they are "static" (as "not live")
+ * which mean that they are not updated once the document changes.
+ * @param {Array.<String>} attributeKeys Array containing keys of attributes that changed.
+ */
 
 // `LiveSelection` is used internally by {@link module:engine/model/documentselection~DocumentSelection} and shouldn't be used directly.
 //
