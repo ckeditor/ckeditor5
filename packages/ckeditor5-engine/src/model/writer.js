@@ -804,8 +804,8 @@ export default class Writer {
 	 * @param {String} name Name of a marker to create - must be unique.
 	 * @param {Object} options
 	 * @param {Boolean} options.usingOperation Flag indicated whether the marker should be added by MarkerOperation.
-	 * @param {module:engine/model/range~Range} options.range Marker range.
 	 * See {@link module:engine/model/markercollection~Marker#managedUsingOperations}.
+	 * @param {module:engine/model/range~Range} options.range Marker range.
 	 * @returns {module:engine/model/markercollection~Marker} Marker that was set.
 	 */
 	setMarker( name, options ) {
@@ -867,12 +867,12 @@ export default class Writer {
 	 *
 	 * Update marker directly base on marker's name:
 	 *
-	 * 		setMarker( markerName, { range } );
+	 * 		updateMarker( markerName, { range } );
 	 *
 	 * Update marker using operation:
 	 *
-	 * 		setMarker( marker, { range, usingOperation: true } );
-	 * 		setMarker( markerName, { range, usingOperation: true } );
+	 * 		updateMarker( marker, { range, usingOperation: true } );
+	 * 		updateMarker( markerName, { range, usingOperation: true } );
 	 *
 	 * Change marker's option (start using operations to manage it):
 	 *
