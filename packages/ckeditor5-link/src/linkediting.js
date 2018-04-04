@@ -101,21 +101,22 @@ export default class LinkEditing extends Plugin {
 			}
 		} );
 
-		editor.conversion.for( 'editingDowncast' ).add( dispatcher => {
-			dispatcher.on( 'insert', removeHighlight, { priority: 'highest' } );
-			dispatcher.on( 'attribute', removeHighlight, { priority: 'highest' } );
-			dispatcher.on( 'remove', removeHighlight, { priority: 'highest' } );
-			dispatcher.on( 'selection', removeHighlight, { priority: 'highest' } );
-		} );
-
 		// Removing the class.
-		function removeHighlight() {
-			view.change( writer => {
-				for ( const item of highlightedLinks.values() ) {
-					writer.removeClass( HIGHLIGHT_CLASSES, item );
-					highlightedLinks.delete( item );
-				}
-			} );
-		}
+		editor.conversion.for( 'editingDowncast' ).add( dispatcher => {
+			// Make sure the highlight is remove on every possible event.
+			dispatcher.on( 'insert', removeHighlight, { priority: 'highest' } );
+			dispatcher.on( 'remove', removeHighlight, { priority: 'highest' } );
+			dispatcher.on( 'attribute', removeHighlight, { priority: 'highest' } );
+			dispatcher.on( 'selection', removeHighlight, { priority: 'highest' } );
+
+			function removeHighlight() {
+				view.change( writer => {
+					for ( const item of highlightedLinks.values() ) {
+						writer.removeClass( HIGHLIGHT_CLASSES, item );
+						highlightedLinks.delete( item );
+					}
+				} );
+			}
+		} );
 	}
 }
