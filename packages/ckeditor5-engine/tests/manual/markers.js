@@ -83,7 +83,7 @@ ClassicEditor
 			const name = 'highlight:yellow:' + uid();
 
 			markerNames.push( name );
-			writer.setMarker( name, { range, usingOperation: false } );
+			writer.addMarker( name, { range, usingOperation: false } );
 		} );
 	} )
 	.catch( err => {
@@ -100,7 +100,7 @@ function addHighlight( color ) {
 		const name = 'highlight:' + color + ':' + uid();
 
 		markerNames.push( name );
-		writer.setMarker( name, { range, usingOperation: false } );
+		writer.addMarker( name, { range, usingOperation: false } );
 	} );
 }
 

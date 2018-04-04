@@ -407,7 +407,7 @@ describe( 'DataController', () => {
 			model.change( writer => {
 				writer.insert( modelElement, modelRoot, 0 );
 				const range = Range.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 1 );
-				writer.setMarker( 'marker:a', { range, usingOperation: true } );
+				writer.addMarker( 'marker:a', { range, usingOperation: true } );
 			} );
 
 			const viewDocumentFragment = data.toView( modelElement );
@@ -432,8 +432,8 @@ describe( 'DataController', () => {
 				const rangeA = Range.createFromParentsAndOffsets( modelP1, 1, modelP1, 3 );
 				const rangeB = Range.createFromParentsAndOffsets( modelP2, 0, modelP2, 2 );
 
-				writer.setMarker( 'marker:a', { range: rangeA, usingOperation: true } );
-				writer.setMarker( 'marker:b', { range: rangeB, usingOperation: true } );
+				writer.addMarker( 'marker:a', { range: rangeA, usingOperation: true } );
+				writer.addMarker( 'marker:b', { range: rangeB, usingOperation: true } );
 			} );
 
 			const viewDocumentFragment = data.toView( modelP1 );

@@ -235,7 +235,7 @@ describe( 'Document', () => {
 
 			model.change( writer => {
 				const range = Range.createCollapsedAt( doc.getRoot(), 0 );
-				writer.setMarker( 'marker', { range, usingOperation: false } );
+				writer.addMarker( 'marker', { range, usingOperation: false } );
 			} );
 
 			expect( doc.differ.bufferMarkerChange.called ).to.be.true;

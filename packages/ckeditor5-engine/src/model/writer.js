@@ -205,7 +205,7 @@ export default class Writer {
 					markerRange.end._getCombined( rangeRootPosition, position )
 				);
 
-				this.setMarker( markerName, { range, usingOperation: true } );
+				this.addMarker( markerName, { range, usingOperation: true } );
 			}
 		}
 	}
@@ -792,11 +792,11 @@ export default class Writer {
 	 *
 	 * Create marker directly base on marker's name:
 	 *
-	 * 		setMarker( markerName, { range, usingOperation: false } );
+	 * 		addMarker( markerName, { range, usingOperation: false } );
 	 *
 	 * Create marker using operation:
 	 *
-	 * 		setMarker( markerName, { range, usingOperation: true } );
+	 * 		addMarker( markerName, { range, usingOperation: true } );
 	 *
 	 * Note: For efficiency reasons, it's best to create and keep as little markers as possible.
 	 *
@@ -808,17 +808,17 @@ export default class Writer {
 	 * @param {module:engine/model/range~Range} options.range Marker range.
 	 * @returns {module:engine/model/markercollection~Marker} Marker that was set.
 	 */
-	setMarker( name, options ) {
+	addMarker( name, options ) {
 		this._assertWriterUsedCorrectly();
 
 		if ( !options || typeof options.usingOperation != 'boolean' ) {
 			/**
 			 * The options.usingOperations parameter is required when adding a new marker.
 			 *
-			 * @error writer-setMarker-no-usingOperations
+			 * @error writer-addMarker-no-usingOperations
 			 */
 			throw new CKEditorError(
-				'writer-setMarker-no-usingOperations: The options.usingOperations parameter is required when adding a new marker.'
+				'writer-addMarker-no-usingOperations: The options.usingOperations parameter is required when adding a new marker.'
 			);
 		}
 
@@ -829,18 +829,18 @@ export default class Writer {
 			/**
 			 * Marker with provided name already exists.
 			 *
-			 * @error writer-setMarker-marker-exists
+			 * @error writer-addMarker-marker-exists
 			 */
-			throw new CKEditorError( 'writer-setMarker-marker-exists: Marker with provided name already exists.' );
+			throw new CKEditorError( 'writer-addMarker-marker-exists: Marker with provided name already exists.' );
 		}
 
 		if ( !range ) {
 			/**
 			 * Range parameter is required when adding a new marker.
 			 *
-			 * @error writer-setMarker-no-range
+			 * @error writer-addMarker-no-range
 			 */
-			throw new CKEditorError( 'writer-setMarker-no-range: Range parameter is required when adding a new marker.' );
+			throw new CKEditorError( 'writer-addMarker-no-range: Range parameter is required when adding a new marker.' );
 		}
 
 		if ( !usingOperation ) {

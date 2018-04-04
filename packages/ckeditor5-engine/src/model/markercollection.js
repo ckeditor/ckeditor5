@@ -20,7 +20,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
  * {@link module:engine/model/markercollection~MarkerCollection#event:update} event.
  *
  * To create, change or remove makers use {@link module:engine/model/writer~Writer model writers'} methods:
- * {@link module:engine/model/writer~Writer#setMarker} or {@link module:engine/model/writer~Writer#removeMarker}. Since
+ * {@link module:engine/model/writer~Writer#addMarker} or {@link module:engine/model/writer~Writer#removeMarker}. Since
  * the writer is the only proper way to change the data model it is not possible to change markers directly using this
  * collection. All markers created by the writer will be automatically added to this collection.
  *
@@ -275,11 +275,11 @@ mix( MarkerCollection, EmitterMixin );
  * Therefore, they are handled in the undo stack and synchronized between clients if the collaboration plugin is enabled.
  * This type of markers is useful for solutions like spell checking or comments.
  *
- * Both type of them should be added / updated by {@link module:engine/model/writer~Writer#setMarker}
+ * Both type of them should be added / updated by {@link module:engine/model/writer~Writer#addMarker}
  * and removed by {@link module:engine/model/writer~Writer#removeMarker} methods.
  *
  *		model.change( ( writer ) => {
- * 			const marker = writer.setMarker( name, { range, usingOperation: true } );
+ * 			const marker = writer.addMarker( name, { range, usingOperation: true } );
  *
  * 			// ...
  *
@@ -343,7 +343,7 @@ class Marker {
 	/**
 	 * Returns value of flag indicates if the marker is managed using operations or not.
 	 * See {@link ~Marker marker class description} to learn more about marker types.
-	 * See {@link module:engine/model/writer~Writer#setMarker}.
+	 * See {@link module:engine/model/writer~Writer#addMarker}.
 	 *
 	 * @returns {Boolean}
 	 */

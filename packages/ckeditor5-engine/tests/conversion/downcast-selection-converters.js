@@ -198,7 +198,7 @@ describe( 'downcast-selection-converters', () => {
 
 				model.change( writer => {
 					const range = ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 );
-					marker = writer.setMarker( 'marker', { range, usingOperation: false } );
+					marker = writer.addMarker( 'marker', { range, usingOperation: false } );
 					writer.setSelection( new ModelRange( ModelPosition.createAt( modelRoot, 3 ) ) );
 				} );
 
@@ -223,7 +223,7 @@ describe( 'downcast-selection-converters', () => {
 
 				model.change( writer => {
 					const range = ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 );
-					marker = writer.setMarker( 'marker', { range, usingOperation: false } );
+					marker = writer.addMarker( 'marker', { range, usingOperation: false } );
 					writer.setSelection( new ModelRange( ModelPosition.createAt( modelRoot, 3 ) ) );
 					writer.removeSelectionAttribute( 'bold' );
 				} );
@@ -252,7 +252,7 @@ describe( 'downcast-selection-converters', () => {
 
 				model.change( writer => {
 					const range = ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 );
-					marker = writer.setMarker( 'marker2', { range, usingOperation: false } );
+					marker = writer.addMarker( 'marker2', { range, usingOperation: false } );
 					writer.setSelection( new ModelRange( ModelPosition.createAt( modelRoot, 3 ) ) );
 				} );
 
@@ -278,7 +278,7 @@ describe( 'downcast-selection-converters', () => {
 
 				model.change( writer => {
 					const range = ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 );
-					marker = writer.setMarker( 'marker3', { range, usingOperation: false } );
+					marker = writer.addMarker( 'marker3', { range, usingOperation: false } );
 					writer.setSelection( new ModelRange( ModelPosition.createAt( modelRoot, 3 ) ) );
 				} );
 
