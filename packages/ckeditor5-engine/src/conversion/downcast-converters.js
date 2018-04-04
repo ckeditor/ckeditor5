@@ -638,7 +638,7 @@ export function removeUIElement() {
  * The converter automatically consumes corresponding value from consumables list and stops the event (see
  * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}).
  *
- *		modelDispatcher.on( 'attributes:customAttr:myElem', changeAttribute( ( value, data ) => {
+ *		modelDispatcher.on( 'attribute:customAttr:myElem', changeAttribute( ( value, data ) => {
  *			// Change attribute key from `customAttr` to `class` in view.
  *			const key = 'class';
  *			let value = data.attributeNewValue;
@@ -738,7 +738,7 @@ export function changeAttribute( attributeCreator ) {
  * The converter automatically consumes corresponding value from consumables list, stops the event (see
  * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}).
  *
- *		modelDispatcher.on( 'attributes:bold', wrapItem( ( modelAttributeValue, viewWriter ) => {
+ *		modelDispatcher.on( 'attribute:bold', wrapItem( ( modelAttributeValue, viewWriter ) => {
  *			return viewWriter.createAttributeElement( 'strong' );
  *		} );
  *

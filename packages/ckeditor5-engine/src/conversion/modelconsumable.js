@@ -21,7 +21,7 @@ import TextProxy from '../model/textproxy';
  * during conversion, when given part of model item is converted (i.e. the view element has been inserted into the view,
  * but without attributes), consumable value is removed from `ModelConsumable`.
  *
- * For model items, `ModelConsumable` stores consumable values of one of following types: `insert`, `addattributes:<attributeKey>`,
+ * For model items, `ModelConsumable` stores consumable values of one of following types: `insert`, `addattribute:<attributeKey>`,
  * `changeattributes:<attributeKey>`, `removeattributes:<attributeKey>`.
  *
  * In most cases, it is enough to let {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}
@@ -312,7 +312,7 @@ export default class ModelConsumable {
 
 // Returns a normalized consumable type name from given string. A normalized consumable type name is a string that has
 // at most one colon, for example: `insert` or `addMarker:highlight`. If string to normalize has more "parts" (more colons),
-// the other parts are dropped, for example: `addattributes:bold:$text` -> `addattributes:bold`.
+// the other parts are dropped, for example: `addattribute:bold:$text` -> `addattributes:bold`.
 //
 // @param {String} type Consumable type.
 // @returns {String} Normalized consumable type.

@@ -742,7 +742,7 @@ describe( 'downcast-converters', () => {
 			const modelElement = new ModelElement( 'paragraph', { classes: 'foo' }, new ModelText( 'foobar' ) );
 
 			dispatcher.on( 'attribute:class', ( evt, data, conversionApi ) => {
-				conversionApi.consumable.consume( data.item, 'attributes:class' );
+				conversionApi.consumable.consume( data.item, 'attribute:class' );
 			}, { priority: 'high' } );
 
 			model.change( writer => {
