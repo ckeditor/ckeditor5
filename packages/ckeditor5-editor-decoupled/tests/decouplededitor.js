@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* globals document */
+
 import DecoupledEditorUI from '../src/decouplededitorui';
 import DecoupledEditorUIView from '../src/decouplededitoruiview';
 
@@ -19,16 +21,19 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 testUtils.createSinonSandbox();
 
-describe( 'DecoupledEditor', () => {
-	let editor, editorData;
+const editorData = '<p><strong>foo</strong> bar</p>';
 
-	beforeEach( () => {
-		editorData = '<p><strong>foo</strong> bar</p>';
-	} );
+describe( 'DecoupledEditor', () => {
+	let editor;
 
 	describe( 'constructor()', () => {
 		beforeEach( () => {
 			editor = new DecoupledEditor();
+			editor.ui.init();
+		} );
+
+		afterEach( () => {
+			return editor.destroy();
 		} );
 
 		it( 'uses HTMLDataProcessor', () => {
@@ -52,173 +57,214 @@ describe( 'DecoupledEditor', () => {
 	} );
 
 	describe( 'create()', () => {
-		beforeEach( () => {
-			return DecoupledEditor
-				.create( editorData, {
-					plugins: [ Paragraph, Bold ]
-				} )
-				.then( newEditor => {
-					editor = newEditor;
-				} );
+		describe( 'editor with data', () => {
+			test( () => editorData );
 		} );
 
-		afterEach( () => {
-			return editor.destroy();
-		} );
+		describe( 'editor with editable element', () => {
+			let editableElement;
 
-		it( 'creates an instance which inherits from the DecoupledEditor', () => {
-			expect( editor ).to.be.instanceof( DecoupledEditor );
-		} );
-
-		it( 'loads the initial data', () => {
-			expect( editor.getData() ).to.equal( '<p><strong>foo</strong> bar</p>' );
-		} );
-
-		// #53
-		it( 'creates an instance of a DecoupledEditor child class', () => {
-			class CustomDecoupledEditor extends DecoupledEditor {}
-
-			return CustomDecoupledEditor
-				.create( editorData, {
-					plugins: [ Paragraph, Bold ]
-				} )
-				.then( newEditor => {
-					expect( newEditor ).to.be.instanceof( CustomDecoupledEditor );
-					expect( newEditor ).to.be.instanceof( DecoupledEditor );
-
-					expect( newEditor.getData() ).to.equal( '<p><strong>foo</strong> bar</p>' );
-
-					return newEditor.destroy();
-				} );
-		} );
-
-		// https://github.com/ckeditor/ckeditor5-editor-decoupled/issues/3
-		it( 'initializes the data controller', () => {
-			let dataInitSpy;
-
-			class DataInitAssertPlugin extends Plugin {
-				constructor( editor ) {
-					super();
-
-					this.editor = editor;
-				}
-
-				init() {
-					dataInitSpy = sinon.spy( this.editor.data, 'init' );
-				}
-			}
-
-			return DecoupledEditor
-				.create( editorData, {
-					plugins: [ Paragraph, Bold, DataInitAssertPlugin ]
-				} )
-				.then( newEditor => {
-					sinon.assert.calledOnce( dataInitSpy );
-
-					return newEditor.destroy();
-				} );
-		} );
-
-		describe( 'ui', () => {
-			it( 'attaches editable UI as view\'s DOM root', () => {
-				expect( editor.editing.view.getDomRoot() ).to.equal( editor.ui.view.editable.element );
+			beforeEach( () => {
+				editableElement = document.createElement( 'div' );
+				editableElement.innerHTML = editorData;
 			} );
-		} );
-	} );
 
-	describe( 'create - events', () => {
-		afterEach( () => {
-			return editor.destroy();
+			test( () => editableElement );
 		} );
 
-		it( 'fires all events in the right order', () => {
-			const fired = [];
+		function test( getElementOrData ) {
+			it( 'creates an instance which inherits from the DecoupledEditor', () => {
+				return DecoupledEditor
+					.create( getElementOrData(), {
+						plugins: [ Paragraph, Bold ]
+					} )
+					.then( newEditor => {
+						expect( newEditor ).to.be.instanceof( DecoupledEditor );
 
-			function spy( evt ) {
-				fired.push( evt.name );
-			}
-
-			class EventWatcher extends Plugin {
-				init() {
-					this.editor.on( 'pluginsReady', spy );
-					this.editor.on( 'uiReady', spy );
-					this.editor.on( 'dataReady', spy );
-					this.editor.on( 'ready', spy );
-				}
-			}
-
-			return DecoupledEditor
-				.create( editorData, {
-					plugins: [ EventWatcher ]
-				} )
-				.then( newEditor => {
-					expect( fired ).to.deep.equal( [ 'pluginsReady', 'uiReady', 'dataReady', 'ready' ] );
-
-					editor = newEditor;
-				} );
-		} );
-
-		it( 'fires dataReady once data is loaded', () => {
-			let data;
-
-			class EventWatcher extends Plugin {
-				init() {
-					this.editor.on( 'dataReady', () => {
-						data = this.editor.getData();
+						return newEditor.destroy();
 					} );
-				}
-			}
+			} );
 
-			return DecoupledEditor
-				.create( editorData, {
-					plugins: [ EventWatcher, Paragraph, Bold ]
-				} )
-				.then( newEditor => {
-					expect( data ).to.equal( '<p><strong>foo</strong> bar</p>' );
+			it( 'loads the initial data', () => {
+				return DecoupledEditor
+					.create( getElementOrData(), {
+						plugins: [ Paragraph, Bold ]
+					} )
+					.then( newEditor => {
+						expect( newEditor.getData() ).to.equal( '<p><strong>foo</strong> bar</p>' );
 
-					editor = newEditor;
-				} );
-		} );
-
-		it( 'fires uiReady once UI is rendered', () => {
-			let isReady;
-
-			class EventWatcher extends Plugin {
-				init() {
-					this.editor.on( 'uiReady', () => {
-						isReady = this.editor.ui.view.isRendered;
+						return newEditor.destroy();
 					} );
+			} );
+
+			// https://github.com/ckeditor/ckeditor5-editor-classic/issues/53
+			it( 'creates an instance of a DecoupledEditor child class', () => {
+				class CustomDecoupledEditor extends DecoupledEditor {}
+
+				return CustomDecoupledEditor
+					.create( getElementOrData(), {
+						plugins: [ Paragraph, Bold ]
+					} )
+					.then( newEditor => {
+						expect( newEditor ).to.be.instanceof( CustomDecoupledEditor );
+						expect( newEditor ).to.be.instanceof( DecoupledEditor );
+
+						expect( newEditor.getData() ).to.equal( '<p><strong>foo</strong> bar</p>' );
+
+						return newEditor.destroy();
+					} );
+			} );
+
+			// https://github.com/ckeditor/ckeditor5-editor-decoupled/issues/3
+			it( 'initializes the data controller', () => {
+				let dataInitSpy;
+
+				class DataInitAssertPlugin extends Plugin {
+					constructor( editor ) {
+						super();
+
+						this.editor = editor;
+					}
+
+					init() {
+						dataInitSpy = sinon.spy( this.editor.data, 'init' );
+					}
 				}
-			}
 
-			return DecoupledEditor
-				.create( editorData, {
-					plugins: [ EventWatcher ]
-				} )
-				.then( newEditor => {
-					expect( isReady ).to.be.true;
+				return DecoupledEditor
+					.create( getElementOrData(), {
+						plugins: [ Paragraph, Bold, DataInitAssertPlugin ]
+					} )
+					.then( newEditor => {
+						sinon.assert.calledOnce( dataInitSpy );
 
-					editor = newEditor;
+						return newEditor.destroy();
+					} );
+			} );
+
+			describe( 'events', () => {
+				it( 'fires all events in the right order', () => {
+					const fired = [];
+
+					function spy( evt ) {
+						fired.push( evt.name );
+					}
+
+					class EventWatcher extends Plugin {
+						init() {
+							this.editor.on( 'pluginsReady', spy );
+							this.editor.on( 'uiReady', spy );
+							this.editor.on( 'dataReady', spy );
+							this.editor.on( 'ready', spy );
+						}
+					}
+
+					return DecoupledEditor
+						.create( getElementOrData(), {
+							plugins: [ EventWatcher ]
+						} )
+						.then( newEditor => {
+							expect( fired ).to.deep.equal( [ 'pluginsReady', 'uiReady', 'dataReady', 'ready' ] );
+
+							return newEditor.destroy();
+						} );
 				} );
-		} );
+
+				it( 'fires dataReady once data is loaded', () => {
+					let data;
+
+					class EventWatcher extends Plugin {
+						init() {
+							this.editor.on( 'dataReady', () => {
+								data = this.editor.getData();
+							} );
+						}
+					}
+
+					return DecoupledEditor
+						.create( getElementOrData(), {
+							plugins: [ EventWatcher, Paragraph, Bold ]
+						} )
+						.then( newEditor => {
+							expect( data ).to.equal( '<p><strong>foo</strong> bar</p>' );
+
+							return newEditor.destroy();
+						} );
+				} );
+
+				it( 'fires uiReady once UI is rendered', () => {
+					let isReady;
+
+					class EventWatcher extends Plugin {
+						init() {
+							this.editor.on( 'uiReady', () => {
+								isReady = this.editor.ui.view.isRendered;
+							} );
+						}
+					}
+
+					return DecoupledEditor
+						.create( getElementOrData(), {
+							plugins: [ EventWatcher ]
+						} )
+						.then( newEditor => {
+							expect( isReady ).to.be.true;
+
+							return newEditor.destroy();
+						} );
+				} );
+			} );
+		}
 	} );
 
 	describe( 'destroy', () => {
-		beforeEach( function() {
-			return DecoupledEditor
-				.create( editorData, { plugins: [ Paragraph ] } )
-				.then( newEditor => {
-					editor = newEditor;
-				} );
+		describe( 'editor with data', () => {
+			beforeEach( function() {
+				return DecoupledEditor
+					.create( editorData, { plugins: [ Paragraph ] } )
+					.then( newEditor => {
+						editor = newEditor;
+					} );
+			} );
+
+			test( () => editorData );
 		} );
 
-		it( 'destroys the UI', () => {
-			const spy = sinon.spy( editor.ui, 'destroy' );
+		describe( 'editor with editable element', () => {
+			let editableElement;
 
-			return editor.destroy()
-				.then( () => {
-					sinon.assert.calledOnce( spy );
-				} );
+			beforeEach( function() {
+				editableElement = document.createElement( 'div' );
+				editableElement.innerHTML = editorData;
+
+				return DecoupledEditor
+					.create( editableElement, { plugins: [ Paragraph ] } )
+					.then( newEditor => {
+						editor = newEditor;
+					} );
+			} );
+
+			it( 'sets data back to the element', () => {
+				editor.setData( '<p>foo</p>' );
+
+				return editor.destroy()
+					.then( () => {
+						expect( editableElement.innerHTML ).to.equal( '<p>foo</p>' );
+					} );
+			} );
+
+			test( () => editableElement );
 		} );
+
+		function test() {
+			it( 'destroys the UI', () => {
+				const spy = sinon.spy( editor.ui, 'destroy' );
+
+				return editor.destroy()
+					.then( () => {
+						sinon.assert.calledOnce( spy );
+					} );
+			} );
+		}
 	} );
 } );

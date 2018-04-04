@@ -52,22 +52,6 @@ export default class DecoupledEditorUI {
 		 * @private
 		 */
 		this._toolbarConfig = normalizeToolbarConfig( editor.config.get( 'toolbar' ) );
-
-		/**
-		 * The container for the {@link module:editor-decoupled/decouplededitoruiview~DecoupledEditorUIView#toolbar}.
-		 *
-		 * @type {HTMLElement|String}
-		 * @private
-		 */
-		this._toolbarContainer = editor.config.get( 'toolbarContainer' );
-
-		/**
-		 * The container for the {@link module:editor-decoupled/decouplededitoruiview~DecoupledEditorUIView#editable}.
-		 *
-		 * @type {HTMLElement|String}
-		 * @private
-		 */
-		this._editableContainer = editor.config.get( 'editableContainer' );
 	}
 
 	/**
@@ -83,18 +67,11 @@ export default class DecoupledEditorUI {
 		const editingRoot = editor.editing.view.document.getRoot();
 		view.editable.bind( 'isReadOnly' ).to( editingRoot );
 		view.editable.bind( 'isFocused' ).to( editor.editing.view.document );
+		editor.editing.view.attachDomRoot( view.editableElement );
 		view.editable.name = editingRoot.rootName;
 
 		this.focusTracker.add( this.view.editableElement );
 		this.view.toolbar.fillFromConfig( this._toolbarConfig.items, this.componentFactory );
-
-		if ( this._toolbarContainer ) {
-			this._toolbarContainer.appendChild( view.toolbar.element );
-		}
-
-		if ( this._editableContainer ) {
-			this._editableContainer.appendChild( view.editable.element );
-		}
 
 		enableToolbarKeyboardFocus( {
 			origin: editor.editing.view,
@@ -108,6 +85,6 @@ export default class DecoupledEditorUI {
 	 * Destroys the UI.
 	 */
 	destroy() {
-		this.view.destroy( !!this._toolbarContainer, !!this._editableContainer );
+		this.view.destroy();
 	}
 }
