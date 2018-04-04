@@ -51,18 +51,71 @@ export default class TableWalker {
 	 * @param {Number} [options.endRow] A row index for which this iterator should end.
 	 */
 	constructor( table, options = {} ) {
+		/**
+		 * The walker's table element.
+		 *
+		 * @readonly
+		 * @member {module:engine/model/element~Element}
+		 */
 		this.table = table;
 
+		/**
+		 * A row index on which this iterator will start.
+		 *
+		 * @readonly
+		 * @member {Number}
+		 */
 		this.startRow = options.startRow || 0;
+
+		/**
+		 * A row index on which this iterator will end.
+		 *
+		 * @readonly
+		 * @member {Number}
+		 */
 		this.endRow = options.endRow;
 
-		this.previousCell = undefined;
-
+		/**
+		 * A current row index.
+		 *
+		 * @readonly
+		 * @member {Number}
+		 */
 		this.row = 0;
+
+		/**
+		 * A current cell index in a row.
+		 *
+		 * @readonly
+		 * @member {Number}
+		 */
 		this.cell = 0;
+
+		/**
+		 * A current column index.
+		 *
+		 * @readonly
+		 * @member {Number}
+		 */
 		this.column = 0;
 
-		this.cellSpans = new CellSpans();
+		/**
+		 * The previous cell in a row.
+		 *
+		 * @readonly
+		 * @member {module:engine/model/element~Element}
+		 * @private
+		 */
+		this._previousCell = undefined;
+
+		/**
+		 * Holds information about spanned table cells.
+		 *
+		 * @readonly
+		 * @member {CellSpans}
+		 * @private
+		 */
+		this._cellSpans = new CellSpans();
 	}
 
 	/**
@@ -86,38 +139,35 @@ export default class TableWalker {
 			return { done: true };
 		}
 
-		if ( this.previousCell ) {
-			const colspan = this.previousCell.getAttribute( 'colspan' ) || 1;
-			const rowspan = this.previousCell.getAttribute( 'rowspan' ) || 1;
+		// The previous cell is defined after the first cell in a row.
+		if ( this._previousCell ) {
+			const colspan = this._updateSpans();
 
-			this.cellSpans.recordSpans( this.row, this.column, rowspan, colspan );
-
+			// Update the column index by a width of a previous cell.
 			this.column += colspan;
 		}
 
 		const cell = row.getChild( this.cell );
 
+		// If there is no cell then it's end of a row so update spans and reset indexes.
 		if ( !cell ) {
-			const colspan = this.previousCell.getAttribute( 'colspan' ) || 1;
-			const rowspan = this.previousCell.getAttribute( 'rowspan' ) || 1;
+			// Record spans of the previous cell.
+			this._updateSpans();
 
-			this.cellSpans.recordSpans( this.row, this.column, rowspan, colspan );
-
+			// Reset indexes and move to next row.
 			this.cell = 0;
 			this.column = 0;
 			this.row++;
-			this.previousCell = undefined;
+			this._previousCell = undefined;
 
 			return this.next();
 		}
 
-		this.column = this.cellSpans.getAdjustedColumnIndex( this.row, this.column );
+		// Update the column index if the current column is overlapped by cells from previous rows that have rowspan attribute set.
+		this.column = this._cellSpans.getAdjustedColumnIndex( this.row, this.column );
 
-		const colspan = cell.getAttribute( 'colspan' ) || 1;
-		const rowspan = cell.getAttribute( 'rowspan' ) || 1;
-
-		this.previousCell = cell;
-
+		// Update the cell indexes before returning value.
+		this._previousCell = cell;
 		this.cell++;
 
 		if ( this.startRow > this.row || ( this.endRow && this.row > this.endRow ) ) {
@@ -127,17 +177,26 @@ export default class TableWalker {
 		return {
 			done: false,
 			value: {
-				column: this.column,
-				row: this.row,
 				cell,
-				rowspan,
-				colspan,
+				row: this.row,
+				column: this.column,
+				rowspan: cell.getAttribute( 'rowspan' ) || 1,
+				colspan: cell.getAttribute( 'colspan' ) || 1,
 				table: {
 					headingRows: this.table.getAttribute( 'headingRows' ) || 0,
 					headingColumns: this.table.getAttribute( 'headingColumns' ) || 0
 				}
 			}
 		};
+	}
+
+	_updateSpans() {
+		const colspan = this._previousCell.getAttribute( 'colspan' ) || 1;
+		const rowspan = this._previousCell.getAttribute( 'rowspan' ) || 1;
+
+		this._cellSpans.recordSpans( this.row, this.column, rowspan, colspan );
+
+		return colspan;
 	}
 }
 
@@ -147,7 +206,7 @@ class CellSpans {
 	constructor() {
 		// Holds table cell spans mapping.
 		//
-		// @type {Map<Number, Number>}
+		// @member {Map<Number, Number>}
 		// @private
 		this._spans = new Map();
 	}
