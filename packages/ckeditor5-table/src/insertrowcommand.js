@@ -8,7 +8,7 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import TableIterator from './tableiterator';
+import TableWalker from './tablewalker';
 
 /**
  * The insert row command.
@@ -56,11 +56,11 @@ export default class InsertRowCommand extends Command {
 				writer.setAttribute( 'headingRows', headingRows + rows, table );
 			}
 
-			const tableIterator = new TableIterator( table );
+			const tableIterator = new TableWalker( table, { endRow: insertAt + 1 } );
 
 			let tableCellToInsert = 0;
 
-			for ( const tableCellInfo of tableIterator.iterateOverRows( 0, insertAt + 1 ) ) {
+			for ( const tableCellInfo of tableIterator ) {
 				const { row, rowspan, colspan, cell } = tableCellInfo;
 
 				if ( row < insertAt ) {

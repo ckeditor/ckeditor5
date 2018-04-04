@@ -8,7 +8,7 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import TableIterator from './tableiterator';
+import TableWalker from './tablewalker';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 
 function createCells( columns, writer, insertPosition ) {
@@ -74,12 +74,12 @@ export default class InsertColumnCommand extends Command {
 				writer.setAttribute( 'headingColumns', headingColumns + columns, table );
 			}
 
-			const tableIterator = new TableIterator( table );
+			const tableIterator = new TableWalker( table );
 
 			let currentRow = -1;
 			let currentRowInserted = false;
 
-			for ( const tableCellInfo of tableIterator.iterateOver() ) {
+			for ( const tableCellInfo of tableIterator ) {
 				const { row, column, cell: tableCell, colspan } = tableCellInfo;
 
 				if ( currentRow !== row ) {

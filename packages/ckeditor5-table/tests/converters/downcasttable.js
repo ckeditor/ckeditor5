@@ -395,7 +395,7 @@ describe( 'downcastTable()', () => {
 				writer.insert( writer.createElement( 'tableCell' ), secondRow, 'end' );
 			} );
 
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( viewTable( [
+			expect( formatModelTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
 				[ { rowspan: 3, contents: '11', isHeading: true }, '12' ],
 				[ '22' ],
 				[ '' ],

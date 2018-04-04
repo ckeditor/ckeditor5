@@ -7,9 +7,9 @@ import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
 import { modelTable } from './_utils/utils';
 
-import TableIterator from '../src/tableiterator';
+import TableWalker from '../src/tablewalker';
 
-describe( 'TableIterator', () => {
+describe( 'TableWalker', () => {
 	let editor, model, doc, root;
 
 	beforeEach( () => {
@@ -46,14 +46,14 @@ describe( 'TableIterator', () => {
 			} );
 	} );
 
-	function testIterator( tableData, expected ) {
+	function testWalker( tableData, expected, options = {} ) {
 		setData( model, modelTable( tableData ) );
 
-		const iterator = new TableIterator( root.getChild( 0 ) );
+		const iterator = new TableWalker( root.getChild( 0 ), options );
 
 		const result = [];
 
-		for ( const tableInfo of iterator.iterateOver() ) {
+		for ( const tableInfo of iterator ) {
 			result.push( tableInfo );
 		}
 
@@ -62,7 +62,7 @@ describe( 'TableIterator', () => {
 	}
 
 	it( 'should iterate over a table', () => {
-		testIterator( [
+		testWalker( [
 			[ '11', '12' ]
 		], [
 			{ row: 0, column: 0, data: '11' },
@@ -71,7 +71,7 @@ describe( 'TableIterator', () => {
 	} );
 
 	it( 'should properly output column indexes of a table that has colspans', () => {
-		testIterator( [
+		testWalker( [
 			[ { colspan: 2, contents: '11' }, '13' ]
 		], [
 			{ row: 0, column: 0, data: '11' },
@@ -80,7 +80,7 @@ describe( 'TableIterator', () => {
 	} );
 
 	it( 'should properly output column indexes of a table that has rowspans', () => {
-		testIterator( [
+		testWalker( [
 			[ { colspan: 2, rowspan: 3, contents: '11' }, '13' ],
 			[ '23' ],
 			[ '33' ],

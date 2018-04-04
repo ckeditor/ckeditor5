@@ -9,7 +9,7 @@
 
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import ViewRange from '@ckeditor/ckeditor5-engine/src/view/range';
-import TableIterator from './../tableiterator';
+import TableWalker from './../tablewalker';
 
 /**
  * Model table element to view table element conversion helper.
@@ -35,9 +35,9 @@ export default function downcastTable() {
 
 		const tableElement = conversionApi.writer.createContainerElement( 'table' );
 
-		const tableIterator = new TableIterator( table );
+		const tableIterator = new TableWalker( table );
 
-		for ( const tableCellInfo of tableIterator.iterateOver() ) {
+		for ( const tableCellInfo of tableIterator ) {
 			const { row, table: { headingRows } } = tableCellInfo;
 
 			const isHead = headingRows && row < headingRows;
@@ -84,9 +84,9 @@ export function downcastInsertRow() {
 
 		const tableSection = getOrCreateTableSection( isHeadingRow ? 'thead' : 'tbody', tableElement, conversionApi );
 
-		const tableIterator = new TableIterator( table );
+		const tableIterator = new TableWalker( table, { startRow: row, endRow: row } );
 
-		for ( const tableCellInfo of tableIterator.iterateOverRows( row ) ) {
+		for ( const tableCellInfo of tableIterator ) {
 			const trElement = getOrCreateTr( tableRow, row, tableSection, conversionApi );
 
 			createViewTableCellElement( tableCellInfo, trElement, conversionApi );
@@ -112,9 +112,9 @@ export function downcastInsertCell() {
 		const tableRow = tableCell.parent;
 		const table = tableRow.parent;
 
-		const tableIterator = new TableIterator( table );
+		const tableIterator = new TableWalker( table );
 
-		for ( const tableCellInfo of tableIterator.iterateOver() ) {
+		for ( const tableCellInfo of tableIterator ) {
 			if ( tableCellInfo.cell === tableCell ) {
 				const trElement = conversionApi.mapper.toViewElement( tableRow );
 
@@ -149,9 +149,9 @@ export function downcastAttributeChange( attribute ) {
 
 		const cachedTableSections = {};
 
-		const tableIterator = new TableIterator( table );
+		const tableIterator = new TableWalker( table );
 
-		for ( const tableCellInfo of tableIterator.iterateOver() ) {
+		for ( const tableCellInfo of tableIterator ) {
 			const { row, cell } = tableCellInfo;
 			const tableRow = table.getChild( row );
 
