@@ -60,12 +60,12 @@ export default class ImageUploadProgress extends Plugin {
 		const modelImage = data.item;
 		const uploadId = modelImage.getAttribute( 'uploadId' );
 
-		if ( !conversionApi.consumable.consume( data.item, evt.name ) || !uploadId ) {
+		if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 			return;
 		}
 
 		const fileRepository = editor.plugins.get( FileRepository );
-		const status = data.attributeNewValue;
+		const status = uploadId ? data.attributeNewValue : null;
 		const placeholder = this.placeholder;
 		const viewFigure = editor.editing.mapper.toViewElement( modelImage );
 		const viewWriter = conversionApi.writer;
