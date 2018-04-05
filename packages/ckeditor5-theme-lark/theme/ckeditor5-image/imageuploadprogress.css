@@ -8,7 +8,7 @@
 	--ck-image-upload-progress-line-width: 30px;
 }
 
-.ck.image {
+.ck .image {
 	/* Showing animation. */
 	&.ck-appear {
 		animation: fadeIn 700ms;
