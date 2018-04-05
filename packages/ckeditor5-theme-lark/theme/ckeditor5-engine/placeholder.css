@@ -5,7 +5,7 @@
 
 /* See ckeditor/ckeditor5#936. */
 .ck.ck-placeholder, .ck .ck-placeholder {
-	::before {
+	&::before {
 		cursor: text;
 		color: var(--ck-color-engine-placeholder-text);
 	}
