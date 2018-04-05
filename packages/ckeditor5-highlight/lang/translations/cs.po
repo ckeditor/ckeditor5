@@ -1,0 +1,38 @@
+# Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+"Language: cs\n"
+"Language-Team: Czech (https://www.transifex.com/ckeditor/teams/11143/cs/)\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+msgctxt "Toolbar button tooltip for applying yellow marker (text highlight)."
+msgid "Yellow marker"
+msgstr "Žlutý fix"
+
+msgctxt "Toolbar button tooltip for applying green marker (text highlight)."
+msgid "Green marker"
+msgstr "Zelený fix"
+
+msgctxt "Toolbar button tooltip for applying pink marker (text highlight)."
+msgid "Pink marker"
+msgstr "Růžový fix"
+
+msgctxt "Toolbar button tooltip for applying blue marker (text highlight)."
+msgid "Blue marker"
+msgstr "Modrý fix"
+
+msgctxt "Toolbar button tooltip for applying red pen (text color)."
+msgid "Red pen"
+msgstr "Červený fix"
+
+msgctxt "Toolbar button tooltip for applying green pen (text color)."
+msgid "Green pen"
+msgstr "Zelené pero"
+
+msgctxt "Toolbar button tooltip for removing text highlight."
+msgid "Remove highlight"
+msgstr "Odstranit zvýraznění"
+
+msgctxt "Toolbar button tooltip for the text highlight feature."
+msgid "Highlight"
+msgstr "Zvýraznění"
