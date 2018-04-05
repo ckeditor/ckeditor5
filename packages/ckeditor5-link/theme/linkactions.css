@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-.ck.ck-link-actions {
+.ck .ck-link-actions {
 	& .ck-link-actions__preview {
 		display: inline-block;
 

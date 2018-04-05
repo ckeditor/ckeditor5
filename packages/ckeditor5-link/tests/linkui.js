@@ -276,7 +276,7 @@ describe( 'LinkUI', () => {
 				const spy = testUtils.sinon.stub( balloon, 'updatePosition' ).returns( {} );
 
 				expect( getViewData( view ) ).to.equal(
-					'<p><a class="ck ck-link_selected" href="url">f{}oo</a></p>'
+					'<p><a class="ck-link_selected" href="url">f{}oo</a></p>'
 				);
 
 				const root = viewDocument.getRoot();
@@ -345,7 +345,7 @@ describe( 'LinkUI', () => {
 				const spyUpdate = testUtils.sinon.stub( balloon, 'updatePosition' ).returns( {} );
 				const spyHide = testUtils.sinon.spy( linkUIFeature, '_hideUI' );
 
-				expect( getViewData( view ) ).to.equal( '<p><a class="ck ck-link_selected" href="url">f{}oo</a></p>' );
+				expect( getViewData( view ) ).to.equal( '<p><a class="ck-link_selected" href="url">f{}oo</a></p>' );
 
 				const root = viewDocument.getRoot();
 				const text = root.getChild( 0 ).getChild( 0 ).getChild( 0 );

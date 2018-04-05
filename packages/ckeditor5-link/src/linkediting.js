@@ -19,7 +19,7 @@ import bindTwoStepCaretToAttribute from '@ckeditor/ckeditor5-engine/src/utils/bi
 import findLinkRange from './findlinkrange';
 import '../theme/link.css';
 
-const HIGHLIGHT_CLASSES = [ 'ck', 'ck-link_selected' ];
+const HIGHLIGHT_CLASS = 'ck-link_selected';
 
 /**
  * The link engine feature.
@@ -70,11 +70,11 @@ export default class LinkEditing extends Plugin {
 	 * Adds a visual highlight style to a link in which the selection is anchored.
 	 * Together with two-step caret movement, they indicate that the user is typing inside the link.
 	 *
-	 * Highlight is turned on by adding `.ck .ck-link_selected` classes to the link in the view:
+	 * Highlight is turned on by adding `.ck-link_selected` class to the link in the view:
 	 *
-	 * * the classes are removed before conversion has started, as callbacks added with `'highest'` priority
+	 * * the class is removed before conversion has started, as callbacks added with `'highest'` priority
 	 * to {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher} events,
-	 * * the classes are added in the view post fixer, after other changes in the model tree were converted to the view.
+	 * * the class is added in the view post fixer, after other changes in the model tree were converted to the view.
 	 *
 	 * This way, adding and removing highlight does not interfere with conversion.
 	 *
@@ -97,7 +97,7 @@ export default class LinkEditing extends Plugin {
 				// broken by a UIElement.
 				for ( const item of viewRange.getItems() ) {
 					if ( item.is( 'a' ) ) {
-						writer.addClass( HIGHLIGHT_CLASSES, item );
+						writer.addClass( HIGHLIGHT_CLASS, item );
 						highlightedLinks.add( item );
 					}
 				}
@@ -115,7 +115,7 @@ export default class LinkEditing extends Plugin {
 			function removeHighlight() {
 				view.change( writer => {
 					for ( const item of highlightedLinks.values() ) {
-						writer.removeClass( HIGHLIGHT_CLASSES, item );
+						writer.removeClass( HIGHLIGHT_CLASS, item );
 						highlightedLinks.delete( item );
 					}
 				} );
