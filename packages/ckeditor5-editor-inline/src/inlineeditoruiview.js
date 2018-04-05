@@ -130,7 +130,7 @@ export default class InlineEditorUIView extends EditorUIView {
 		this.editable = new InlineEditableUIView( locale, editableElement );
 
 		this.body.add( this.panel );
-		this.registerChildren( this.editable );
+		this.registerChild( this.editable );
 	}
 
 	/**
