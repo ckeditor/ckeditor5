@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
+/* See ckeditor/ckeditor5#936. */
 .ck.ck-placeholder, .ck .ck-placeholder {
 	::before {
 		cursor: text;
