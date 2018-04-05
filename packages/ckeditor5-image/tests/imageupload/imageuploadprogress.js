@@ -137,6 +137,28 @@ describe( 'ImageUploadProgress', () => {
 		);
 	} );
 
+	it( 'should "clear" image when uploadId changes to null', () => {
+		setModelData( model, '<image></image>' );
+		const image = document.getRoot().getChild( 0 );
+
+		// Set attributes directly on image to simulate instant "uploading" status.
+		model.change( writer => {
+			writer.setAttribute( 'uploadStatus', 'uploading', image );
+			writer.setAttribute( 'uploadId', '12345', image );
+		} );
+
+		model.change( writer => {
+			writer.setAttribute( 'uploadStatus', null, image );
+			writer.setAttribute( 'uploadId', null, image );
+		} );
+
+		expect( getViewData( view ) ).to.equal(
+			'[<figure class="ck ck-widget image" contenteditable="false">' +
+			`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
+			'</figure>]'
+		);
+	} );
+
 	it( 'should update progressbar width on progress', done => {
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
