@@ -381,7 +381,7 @@ describe( 'ImageEditing', () => {
 				setModelData( model, '<image src="foo.png" alt="alt text"></image>' );
 
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<figure class="ck ck-widget image" contenteditable="false"><img alt="alt text" src="foo.png"></img></figure>'
+					'<figure class="ck-widget image" contenteditable="false"><img alt="alt text" src="foo.png"></img></figure>'
 				);
 			} );
 
@@ -402,7 +402,7 @@ describe( 'ImageEditing', () => {
 				} );
 
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<figure class="ck ck-widget image" contenteditable="false"><img alt="new text" src="foo.png"></img></figure>'
+					'<figure class="ck-widget image" contenteditable="false"><img alt="new text" src="foo.png"></img></figure>'
 				);
 			} );
 
@@ -415,7 +415,7 @@ describe( 'ImageEditing', () => {
 				} );
 
 				expect( getViewData( view, { withoutSelection: true } ) )
-					.to.equal( '<figure class="ck ck-widget image" contenteditable="false"><img src="foo.png"></img></figure>' );
+					.to.equal( '<figure class="ck-widget image" contenteditable="false"><img src="foo.png"></img></figure>' );
 			} );
 
 			it( 'should not convert change if is already consumed', () => {
@@ -431,7 +431,7 @@ describe( 'ImageEditing', () => {
 				} );
 
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<figure class="ck ck-widget image" contenteditable="false"><img alt="alt text" src="foo.png"></img></figure>'
+					'<figure class="ck-widget image" contenteditable="false"><img alt="alt text" src="foo.png"></img></figure>'
 				);
 			} );
 
@@ -444,7 +444,7 @@ describe( 'ImageEditing', () => {
 					'</image>' );
 
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<figure class="ck ck-widget image" contenteditable="false">' +
+					'<figure class="ck-widget image" contenteditable="false">' +
 						'<img alt="alt text" sizes="100vw" src="foo.png" srcset="small.png 148w, big.png 1024w"></img>' +
 					'</figure>'
 				);
@@ -464,7 +464,7 @@ describe( 'ImageEditing', () => {
 				} );
 
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<figure class="ck ck-widget image" contenteditable="false">' +
+					'<figure class="ck-widget image" contenteditable="false">' +
 						'<img alt="alt text" src="foo.png"></img>' +
 					'</figure>'
 				);
@@ -479,7 +479,7 @@ describe( 'ImageEditing', () => {
 					'</image>' );
 
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<figure class="ck ck-widget image" contenteditable="false">' +
+					'<figure class="ck-widget image" contenteditable="false">' +
 						'<img alt="alt text" sizes="100vw" src="foo.png" srcset="small.png 148w, big.png 1024w" width="1024"></img>' +
 					'</figure>'
 				);
@@ -494,7 +494,7 @@ describe( 'ImageEditing', () => {
 				} );
 
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<figure class="ck ck-widget image" contenteditable="false">' +
+					'<figure class="ck-widget image" contenteditable="false">' +
 						'<img src="foo.png"></img>' +
 					'</figure>'
 				);
@@ -514,7 +514,7 @@ describe( 'ImageEditing', () => {
 				} );
 
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<figure class="ck ck-widget image" contenteditable="false">' +
+					'<figure class="ck-widget image" contenteditable="false">' +
 					'<img src="foo.png"></img>' +
 					'</figure>'
 				);
@@ -536,7 +536,7 @@ describe( 'ImageEditing', () => {
 				);
 
 				expect( getViewData( view, { withoutSelection: true } ) ).to.equal(
-					'<figure class="ck ck-widget image" contenteditable="false">' +
+					'<figure class="ck-widget image" contenteditable="false">' +
 						'<img alt="alt text" src="foo.png"></img>' +
 					'</figure>'
 				);
