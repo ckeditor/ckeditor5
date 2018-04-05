@@ -69,7 +69,7 @@ function generateFontPreset( fontDefinition ) {
 		model: firstFontName,
 		view: {
 			name: 'span',
-			style: {
+			styles: {
 				'font-family': cssFontNames
 			}
 		}

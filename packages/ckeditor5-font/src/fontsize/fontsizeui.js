@@ -119,12 +119,12 @@ function _prepareListOptions( options, command ) {
 			class: 'ck-fontsize-option'
 		} );
 
-		if ( option.view && option.view.style ) {
-			itemModel.set( 'style', `font-size:${ option.view.style[ 'font-size' ] }` );
+		if ( option.view && option.view.styles ) {
+			itemModel.set( 'style', `font-size:${ option.view.styles[ 'font-size' ] }` );
 		}
 
-		if ( option.view && option.view.class ) {
-			itemModel.set( 'class', `${ itemModel.class } ${ option.view.class }` );
+		if ( option.view && option.view.classes ) {
+			itemModel.set( 'class', `${ itemModel.class } ${ option.view.classes }` );
 		}
 
 		itemModel.bind( 'isActive' ).to( command, 'value', value => value === option.model );

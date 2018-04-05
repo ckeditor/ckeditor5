@@ -68,7 +68,7 @@ describe( 'FontFamilyEditing', () => {
 								model: 'my',
 								view: {
 									name: 'mark',
-									class: 'my-style'
+									classes: 'my-style'
 								}
 							}
 						]
@@ -120,7 +120,7 @@ describe( 'FontFamilyEditing', () => {
 								model: 'my-other',
 								view: {
 									name: 'span',
-									style: { 'font-family': 'Other' }
+									styles: { 'font-family': 'Other' }
 								}
 							},
 							{
@@ -128,8 +128,8 @@ describe( 'FontFamilyEditing', () => {
 								model: 'my',
 								view: {
 									name: 'mark',
-									style: { 'font-family': 'Verdana' },
-									class: 'my-style'
+									styles: { 'font-family': 'Verdana' },
+									classes: 'my-style'
 								}
 							},
 							{
@@ -137,12 +137,12 @@ describe( 'FontFamilyEditing', () => {
 								model: 'complex',
 								view: {
 									name: 'span',
-									class: [ 'text-complex' ]
+									classes: [ 'text-complex' ]
 								},
 								upcastAlso: [
-									{ name: 'span', style: { 'font-family': 'Arial' } },
-									{ name: 'span', style: { 'font-family': 'Arial,sans-serif' } },
-									{ name: 'span', attribute: { 'data-font': 'Arial' } }
+									{ name: 'span', styles: { 'font-family': 'Arial' } },
+									{ name: 'span', styles: { 'font-family': 'Arial,sans-serif' } },
+									{ name: 'span', attributes: { 'data-font': 'Arial' } }
 								]
 							}
 						]
