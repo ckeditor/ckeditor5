@@ -325,16 +325,6 @@ export default class Writer {
 	}
 
 	/**
-	 * Sets the text content for the specified `textNode`.
-	 *
-	 * @param {String} value New value.
-	 * @param {module:engine/model/text~Text} textNode Text node that will be updated.
-	 */
-	setTextData( value, textNode ) {
-		textNode._data = value;
-	}
-
-	/**
 	 * Sets value of the attribute with given key on a {@link module:engine/model/item~Item model item}
 	 * or on a {@link module:engine/model/range~Range range}.
 	 *
