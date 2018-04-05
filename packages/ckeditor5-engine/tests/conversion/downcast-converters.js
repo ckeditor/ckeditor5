@@ -77,7 +77,7 @@ describe( 'downcast-helpers', () => {
 				model: 'fancyParagraph',
 				view: {
 					name: 'p',
-					class: 'fancy'
+					classes: 'fancy'
 				}
 			} );
 
@@ -137,7 +137,7 @@ describe( 'downcast-helpers', () => {
 				model: 'invert',
 				view: {
 					name: 'span',
-					class: [ 'font-light', 'bg-dark' ]
+					classes: [ 'font-light', 'bg-dark' ]
 				}
 			} );
 
@@ -159,13 +159,13 @@ describe( 'downcast-helpers', () => {
 				view: {
 					big: {
 						name: 'span',
-						style: {
+						styles: {
 							'font-size': '1.2em'
 						}
 					},
 					small: {
 						name: 'span',
-						style: {
+						styles: {
 							'font-size': '0.8em'
 						}
 					}
@@ -474,7 +474,7 @@ describe( 'downcast-helpers', () => {
 				model: 'search',
 				view: {
 					name: 'span',
-					attribute: {
+					attributes: {
 						'data-marker': 'search'
 					}
 				}
@@ -511,7 +511,7 @@ describe( 'downcast-helpers', () => {
 
 	describe( 'downcastMarkerToHighlight', () => {
 		it( 'config.view is a highlight descriptor', () => {
-			const helper = downcastMarkerToHighlight( { model: 'comment', view: { class: 'comment' } } );
+			const helper = downcastMarkerToHighlight( { model: 'comment', view: { classes: 'comment' } } );
 
 			conversion.for( 'downcast' ).add( helper );
 
@@ -524,8 +524,8 @@ describe( 'downcast-helpers', () => {
 		} );
 
 		it( 'can be overwritten using priority', () => {
-			const helperA = downcastMarkerToHighlight( { model: 'comment', view: { class: 'comment' } } );
-			const helperB = downcastMarkerToHighlight( { model: 'comment', view: { class: 'new-comment' }, priority: 'high' } );
+			const helperA = downcastMarkerToHighlight( { model: 'comment', view: { classes: 'comment' } } );
+			const helperB = downcastMarkerToHighlight( { model: 'comment', view: { classes: 'new-comment' }, priority: 'high' } );
 
 			conversion.for( 'downcast' ).add( helperA ).add( helperB );
 
@@ -544,7 +544,7 @@ describe( 'downcast-helpers', () => {
 					const commentType = data.markerName.split( ':' )[ 1 ];
 
 					return {
-						class: [ 'comment', 'comment-' + commentType ]
+						classes: [ 'comment', 'comment-' + commentType ]
 					};
 				}
 			} );
@@ -739,7 +739,7 @@ describe( 'downcast-converters', () => {
 		} );
 
 		it( 'should be possible to override setAttribute', () => {
-			const modelElement = new ModelElement( 'paragraph', { class: 'foo' }, new ModelText( 'foobar' ) );
+			const modelElement = new ModelElement( 'paragraph', { classes: 'foo' }, new ModelText( 'foobar' ) );
 
 			dispatcher.on( 'attribute:class', ( evt, data, conversionApi ) => {
 				conversionApi.consumable.consume( data.item, 'attribute:class' );
@@ -1112,8 +1112,8 @@ describe( 'downcast-converters', () => {
 		} );
 
 		it( 'should not remove view ui elements that are placed next to removed content', () => {
-			modelRoot._appendChildren( new ModelText( 'fozbar' ) );
-			viewRoot._appendChildren( [
+			modelRoot._appendChild( new ModelText( 'fozbar' ) );
+			viewRoot._appendChild( [
 				new ViewText( 'foz' ),
 				new ViewUIElement( 'span' ),
 				new ViewText( 'bar' )
@@ -1135,8 +1135,8 @@ describe( 'downcast-converters', () => {
 		} );
 
 		it( 'should remove correct amount of text when it is split by view ui element', () => {
-			modelRoot._appendChildren( new ModelText( 'fozbar' ) );
-			viewRoot._appendChildren( [
+			modelRoot._appendChild( new ModelText( 'fozbar' ) );
+			viewRoot._appendChild( [
 				new ViewText( 'foz' ),
 				new ViewUIElement( 'span' ),
 				new ViewText( 'bar' )
@@ -1211,8 +1211,8 @@ describe( 'downcast-converters', () => {
 			const viewUi2 = new ViewUIElement( 'span' );
 			const viewP2 = new ViewContainerElement( 'p' );
 
-			modelRoot._appendChildren( [ modelP1, modelP2 ] );
-			viewRoot._appendChildren( [ viewP1, viewUi1, viewUi2, viewP2 ] );
+			modelRoot._appendChild( [ modelP1, modelP2 ] );
+			viewRoot._appendChild( [ viewP1, viewUi1, viewUi2, viewP2 ] );
 
 			controller.mapper.bindElements( modelP1, viewP1 );
 			controller.mapper.bindElements( modelP2, viewP2 );
@@ -1244,7 +1244,7 @@ describe( 'downcast-converters', () => {
 	describe( 'highlight', () => {
 		describe( 'on text', () => {
 			const highlightDescriptor = {
-				class: 'highlight-class',
+				classes: 'highlight-class',
 				priority: 7,
 				attributes: { title: 'title' }
 			};
@@ -1294,7 +1294,7 @@ describe( 'downcast-converters', () => {
 				dispatcher.on( 'addMarker:marker', highlightElement( highlightDescriptor ) );
 				dispatcher.on( 'removeMarker:marker', removeHighlight( highlightDescriptor ) );
 
-				const newDescriptor = { class: 'override-class' };
+				const newDescriptor = { classes: 'override-class' };
 
 				dispatcher.on( 'addMarker:marker', highlightText( newDescriptor ), { priority: 'high' } );
 				dispatcher.on( 'addMarker:marker', highlightElement( newDescriptor ), { priority: 'high' } );
@@ -1341,7 +1341,7 @@ describe( 'downcast-converters', () => {
 			} );
 
 			it( 'should do nothing if collapsed marker is converted', () => {
-				const descriptor = { class: 'foo' };
+				const descriptor = { classes: 'foo' };
 
 				dispatcher.on( 'addMarker:marker', highlightText( descriptor ), { priority: 'high' } );
 				dispatcher.on( 'addMarker:marker', highlightElement( descriptor ), { priority: 'high' } );
@@ -1363,9 +1363,9 @@ describe( 'downcast-converters', () => {
 			} );
 
 			it( 'should correctly wrap and unwrap multiple, intersecting markers', () => {
-				const descriptorFoo = { class: 'foo' };
-				const descriptorBar = { class: 'bar' };
-				const descriptorXyz = { class: 'xyz' };
+				const descriptorFoo = { classes: 'foo' };
+				const descriptorBar = { classes: 'bar' };
+				const descriptorXyz = { classes: 'xyz' };
 
 				dispatcher.on( 'addMarker:markerFoo', highlightText( descriptorFoo ) );
 				dispatcher.on( 'addMarker:markerBar', highlightText( descriptorBar ) );
@@ -1500,7 +1500,7 @@ describe( 'downcast-converters', () => {
 
 		describe( 'on element', () => {
 			const highlightDescriptor = {
-				class: 'highlight-class',
+				classes: 'highlight-class',
 				priority: 7,
 				attributes: { title: 'title' },
 				id: 'customId'
@@ -1514,7 +1514,7 @@ describe( 'downcast-converters', () => {
 					const viewContainer = new ViewContainerElement( 'div' );
 
 					viewContainer._setCustomProperty( 'addHighlight', ( element, descriptor, writer ) => {
-						writer.addClass( descriptor.class, element );
+						writer.addClass( descriptor.classes, element );
 					} );
 
 					viewContainer._setCustomProperty( 'removeHighlight', ( element, id, writer ) => {
@@ -1558,7 +1558,7 @@ describe( 'downcast-converters', () => {
 			} );
 
 			it( 'should be possible to override', () => {
-				const newDescriptor = { class: 'override-class' };
+				const newDescriptor = { classes: 'override-class' };
 
 				dispatcher.on( 'addMarker:marker', highlightText( newDescriptor ), { priority: 'high' } );
 				dispatcher.on( 'addMarker:marker', highlightElement( newDescriptor ), { priority: 'high' } );
@@ -1627,7 +1627,7 @@ describe( 'downcast-converters', () => {
 	describe( 'createViewElementFromHighlightDescriptor()', () => {
 		it( 'should return attribute element from descriptor object', () => {
 			const descriptor = {
-				class: 'foo-class',
+				classes: 'foo-class',
 				attributes: { one: '1', two: '2' },
 				priority: 7,
 			};
@@ -1645,7 +1645,7 @@ describe( 'downcast-converters', () => {
 
 		it( 'should return attribute element from descriptor object - array with classes', () => {
 			const descriptor = {
-				class: [ 'foo-class', 'bar-class' ],
+				classes: [ 'foo-class', 'bar-class' ],
 				attributes: { one: '1', two: '2' },
 				priority: 7,
 			};
@@ -1680,7 +1680,7 @@ describe( 'downcast-converters', () => {
 
 		it( 'should create element without priority', () => {
 			const descriptor = {
-				class: 'foo-class',
+				classes: 'foo-class',
 				attributes: { one: '1', two: '2' },
 			};
 			const element = createViewElementFromHighlightDescriptor( descriptor );
@@ -1697,7 +1697,7 @@ describe( 'downcast-converters', () => {
 
 		it( 'should create element without attributes', () => {
 			const descriptor = {
-				class: 'foo-class',
+				classes: 'foo-class',
 				priority: 7
 			};
 			const element = createViewElementFromHighlightDescriptor( descriptor );

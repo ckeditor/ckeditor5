@@ -180,7 +180,7 @@ describe( 'RootAttributeOperation', () => {
 		it( 'should throw an error when trying to change non-root element', () => {
 			const child = new Element( 'p' );
 			const parent = new Element( 'p' );
-			parent._appendChildren( child );
+			parent._appendChild( child );
 
 			expect( () => {
 				const op = new RootAttributeOperation(

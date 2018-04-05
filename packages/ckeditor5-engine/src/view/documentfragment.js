@@ -34,7 +34,7 @@ export default class DocumentFragment {
 		this._children = [];
 
 		if ( children ) {
-			this._insertChildren( 0, children );
+			this._insertChild( 0, children );
 		}
 	}
 
@@ -102,14 +102,14 @@ export default class DocumentFragment {
 	}
 
 	/**
-	 * {@link module:engine/view/documentfragment~DocumentFragment#_insertChildren Insert} a child node or a list of child nodes at the end
+	 * {@link module:engine/view/documentfragment~DocumentFragment#_insertChild Insert} a child node or a list of child nodes at the end
 	 * and sets the parent of these nodes to this fragment.
 	 *
 	 * @param {module:engine/view/item~Item|Iterable.<module:engine/view/item~Item>} items Items to be inserted.
 	 * @returns {Number} Number of appended nodes.
 	 */
-	_appendChildren( items ) {
-		return this._insertChildren( this.childCount, items );
+	_appendChild( items ) {
+		return this._insertChild( this.childCount, items );
 	}
 
 	/**
@@ -149,7 +149,7 @@ export default class DocumentFragment {
 	 * @param {module:engine/view/item~Item|Iterable.<module:engine/view/item~Item>} items Items to be inserted.
 	 * @returns {Number} Number of inserted nodes.
 	 */
-	_insertChildren( index, items ) {
+	_insertChild( index, items ) {
 		this._fireChange( 'children', this );
 		let count = 0;
 

@@ -126,10 +126,10 @@ describe( 'DocumentFragment', () => {
 		} );
 	} );
 
-	describe( '_insertChildren', () => {
+	describe( '_insertChild', () => {
 		it( 'should add children to the document fragment', () => {
 			const frag = new DocumentFragment( new Text( 'xy' ) );
-			frag._insertChildren( 1, new Text( 'foo' ) );
+			frag._insertChild( 1, new Text( 'foo' ) );
 
 			expect( frag.childCount ).to.equal( 2 );
 			expect( frag.maxOffset ).to.equal( 5 );
@@ -140,13 +140,13 @@ describe( 'DocumentFragment', () => {
 		it( 'should accept strings and arrays', () => {
 			const frag = new DocumentFragment();
 
-			frag._insertChildren( 0, 'abc' );
+			frag._insertChild( 0, 'abc' );
 			expect( frag.childCount ).to.equal( 1 );
 			expect( frag.maxOffset ).to.equal( 3 );
 			expect( frag.getChild( 0 ) ).to.have.property( 'data' ).that.equals( 'abc' );
 
 			frag._removeChildren( 0, 1 );
-			frag._insertChildren( 0, [ new Element( 'p' ), 'abc' ] );
+			frag._insertChild( 0, [ new Element( 'p' ), 'abc' ] );
 
 			expect( frag.childCount ).to.equal( 2 );
 			expect( frag.maxOffset ).to.equal( 4 );
@@ -159,7 +159,7 @@ describe( 'DocumentFragment', () => {
 			const text = new Text( 'abcxyz', { bold: true } );
 			const textProxy = new TextProxy( text, 2, 3 );
 
-			frag._insertChildren( 0, textProxy );
+			frag._insertChild( 0, textProxy );
 
 			expect( frag.childCount ).to.equal( 1 );
 			expect( frag.maxOffset ).to.equal( 3 );
@@ -169,10 +169,10 @@ describe( 'DocumentFragment', () => {
 		} );
 	} );
 
-	describe( '_appendChildren', () => {
+	describe( '_appendChild', () => {
 		it( 'should add children to the end of the element', () => {
 			const frag = new DocumentFragment( new Text( 'xy' ) );
-			frag._appendChildren( new Text( 'foo' ) );
+			frag._appendChild( new Text( 'foo' ) );
 
 			expect( frag.childCount ).to.equal( 2 );
 			expect( frag.maxOffset ).to.equal( 5 );

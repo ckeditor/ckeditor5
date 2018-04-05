@@ -108,8 +108,8 @@ describe( 'DocumentFragment', () => {
 
 		describe( 'insertion', () => {
 			it( 'should insert children', () => {
-				const count1 = fragment._insertChildren( 0, [ el1, el3 ] );
-				const count2 = fragment._insertChildren( 1, el2 );
+				const count1 = fragment._insertChild( 0, [ el1, el3 ] );
+				const count2 = fragment._insertChild( 1, el2 );
 
 				expect( fragment.childCount ).to.equal( 3 );
 				expect( fragment.getChild( 0 ) ).to.have.property( 'name' ).that.equals( 'el1' );
@@ -120,22 +120,22 @@ describe( 'DocumentFragment', () => {
 			} );
 
 			it( 'should accept strings', () => {
-				fragment._insertChildren( 0, 'abc' );
+				fragment._insertChild( 0, 'abc' );
 
 				expect( fragment.childCount ).to.equal( 1 );
 				expect( fragment.getChild( 0 ) ).to.have.property( 'data' ).that.equals( 'abc' );
 
 				fragment._removeChildren( 0, 1 );
-				fragment._insertChildren( 0, [ new Element( 'p' ), 'abc' ] );
+				fragment._insertChild( 0, [ new Element( 'p' ), 'abc' ] );
 
 				expect( fragment.childCount ).to.equal( 2 );
 				expect( fragment.getChild( 1 ) ).to.have.property( 'data' ).that.equals( 'abc' );
 			} );
 
 			it( 'should append children', () => {
-				const count1 = fragment._insertChildren( 0, el1 );
-				const count2 = fragment._appendChildren( el2 );
-				const count3 = fragment._appendChildren( el3 );
+				const count1 = fragment._insertChild( 0, el1 );
+				const count2 = fragment._appendChild( el2 );
+				const count3 = fragment._appendChild( el3 );
 
 				expect( fragment.childCount ).to.equal( 3 );
 				expect( fragment.getChild( 0 ) ).to.have.property( 'name' ).that.equals( 'el1' );
@@ -152,7 +152,7 @@ describe( 'DocumentFragment', () => {
 					done();
 				} );
 
-				fragment._insertChildren( 0, el1 );
+				fragment._insertChild( 0, el1 );
 			} );
 
 			it( 'should fire change event when appending', done => {
@@ -161,7 +161,7 @@ describe( 'DocumentFragment', () => {
 					done();
 				} );
 
-				fragment._appendChildren( el1 );
+				fragment._appendChild( el1 );
 			} );
 
 			it( 'should accept and correctly handle text proxies', () => {
@@ -169,7 +169,7 @@ describe( 'DocumentFragment', () => {
 				const text = new Text( 'abcxyz' );
 				const textProxy = new TextProxy( text, 2, 3 );
 
-				frag._insertChildren( 0, textProxy );
+				frag._insertChild( 0, textProxy );
 
 				expect( frag.childCount ).to.equal( 1 );
 				expect( frag.getChild( 0 ) ).to.be.instanceof( Text );
@@ -179,9 +179,9 @@ describe( 'DocumentFragment', () => {
 
 		describe( 'getChildIndex', () => {
 			it( 'should return child index', () => {
-				fragment._appendChildren( el1 );
-				fragment._appendChildren( el2 );
-				fragment._appendChildren( el3 );
+				fragment._appendChild( el1 );
+				fragment._appendChild( el2 );
+				fragment._appendChild( el3 );
 
 				expect( fragment.childCount ).to.equal( 3 );
 				expect( fragment.getChildIndex( el1 ) ).to.equal( 0 );
@@ -192,9 +192,9 @@ describe( 'DocumentFragment', () => {
 
 		describe( 'getChildren', () => {
 			it( 'should renturn children iterator', () => {
-				fragment._appendChildren( el1 );
-				fragment._appendChildren( el2 );
-				fragment._appendChildren( el3 );
+				fragment._appendChild( el1 );
+				fragment._appendChild( el2 );
+				fragment._appendChild( el3 );
 
 				const expected = [ el1, el2, el3 ];
 				let i = 0;
@@ -210,10 +210,10 @@ describe( 'DocumentFragment', () => {
 
 		describe( '_removeChildren', () => {
 			it( 'should remove children', () => {
-				fragment._appendChildren( el1 );
-				fragment._appendChildren( el2 );
-				fragment._appendChildren( el3 );
-				fragment._appendChildren( el4 );
+				fragment._appendChild( el1 );
+				fragment._appendChild( el2 );
+				fragment._appendChild( el3 );
+				fragment._appendChild( el4 );
 
 				fragment._removeChildren( 1, 2 );
 
@@ -228,9 +228,9 @@ describe( 'DocumentFragment', () => {
 			} );
 
 			it( 'should remove one child when second parameter is not specified', () => {
-				fragment._appendChildren( el1 );
-				fragment._appendChildren( el2 );
-				fragment._appendChildren( el3 );
+				fragment._appendChild( el1 );
+				fragment._appendChild( el2 );
+				fragment._appendChild( el3 );
 
 				const removed = fragment._removeChildren( 1 );
 
@@ -243,7 +243,7 @@ describe( 'DocumentFragment', () => {
 			} );
 
 			it( 'should fire change event', done => {
-				fragment._appendChildren( el1 );
+				fragment._appendChild( el1 );
 
 				fragment.once( 'change:children', ( event, node ) => {
 					expect( node ).to.equal( fragment );

@@ -61,7 +61,7 @@ describe( 'AttributeOperation', () => {
 	} );
 
 	it( 'should insert attribute to the set of nodes', () => {
-		root._insertChildren( 0, new Text( 'bar' ) );
+		root._insertChild( 0, new Text( 'bar' ) );
 
 		model.applyOperation( wrapInDelta(
 			new AttributeOperation(
@@ -82,7 +82,7 @@ describe( 'AttributeOperation', () => {
 	} );
 
 	it( 'should add attribute to the existing attributes', () => {
-		root._insertChildren( 0, new Text( 'x', { foo: true, bar: true } ) );
+		root._insertChild( 0, new Text( 'x', { foo: true, bar: true } ) );
 
 		model.applyOperation( wrapInDelta(
 			new AttributeOperation(
@@ -103,7 +103,7 @@ describe( 'AttributeOperation', () => {
 	} );
 
 	it( 'should change attribute to the set of nodes', () => {
-		root._insertChildren( 0, new Text( 'bar', { isNew: false } ) );
+		root._insertChild( 0, new Text( 'bar', { isNew: false } ) );
 
 		model.applyOperation( wrapInDelta(
 			new AttributeOperation(
@@ -124,7 +124,7 @@ describe( 'AttributeOperation', () => {
 	} );
 
 	it( 'should change attribute in the middle of existing attributes', () => {
-		root._insertChildren( 0, new Text( 'x', { foo: true, x: 1, bar: true } ) );
+		root._insertChild( 0, new Text( 'x', { foo: true, x: 1, bar: true } ) );
 
 		model.applyOperation( wrapInDelta(
 			new AttributeOperation(
@@ -145,7 +145,7 @@ describe( 'AttributeOperation', () => {
 	} );
 
 	it( 'should work correctly if old and new value are same', () => {
-		root._insertChildren( 0, new Text( 'bar', { foo: 'bar' } ) );
+		root._insertChild( 0, new Text( 'bar', { foo: 'bar' } ) );
 
 		model.applyOperation( wrapInDelta(
 			new AttributeOperation(
@@ -164,7 +164,7 @@ describe( 'AttributeOperation', () => {
 	} );
 
 	it( 'should remove attribute', () => {
-		root._insertChildren( 0, new Text( 'x', { foo: true, x: true, bar: true } ) );
+		root._insertChild( 0, new Text( 'x', { foo: true, x: true, bar: true } ) );
 
 		model.applyOperation( wrapInDelta(
 			new AttributeOperation(
@@ -185,7 +185,7 @@ describe( 'AttributeOperation', () => {
 
 	describe( '_validate()', () => {
 		it( 'should not throw for non-primitive attribute values', () => {
-			root._insertChildren( 0, new Text( 'x', { foo: [ 'bar', 'xyz' ] } ) );
+			root._insertChild( 0, new Text( 'x', { foo: [ 'bar', 'xyz' ] } ) );
 
 			expect( () => {
 				const operation = new AttributeOperation(
@@ -201,7 +201,7 @@ describe( 'AttributeOperation', () => {
 		} );
 
 		it( 'should throw an error when one try to remove and the attribute does not exists', () => {
-			root._insertChildren( 0, new Text( 'x' ) );
+			root._insertChild( 0, new Text( 'x' ) );
 
 			expect( () => {
 				const operation = new AttributeOperation(
@@ -217,7 +217,7 @@ describe( 'AttributeOperation', () => {
 		} );
 
 		it( 'should throw an error when one try to insert and the attribute already exists', () => {
-			root._insertChildren( 0, new Text( 'x', { x: 1 } ) );
+			root._insertChild( 0, new Text( 'x', { x: 1 } ) );
 
 			expect( () => {
 				const operation = new AttributeOperation(
@@ -233,7 +233,7 @@ describe( 'AttributeOperation', () => {
 		} );
 
 		it( 'should not throw when attribute value is the same', () => {
-			root._insertChildren( 0, new Text( 'x', { foo: true } ) );
+			root._insertChild( 0, new Text( 'x', { foo: true } ) );
 
 			expect( () => {
 				const operation = new AttributeOperation(
@@ -263,7 +263,7 @@ describe( 'AttributeOperation', () => {
 	} );
 
 	it( 'should undo adding attribute by applying reverse operation', () => {
-		root._insertChildren( 0, new Text( 'bar' ) );
+		root._insertChild( 0, new Text( 'bar' ) );
 
 		const operation = new AttributeOperation(
 			new Range( new Position( root, [ 0 ] ), new Position( root, [ 3 ] ) ),
@@ -287,7 +287,7 @@ describe( 'AttributeOperation', () => {
 		const eleA = new Element( 'a', [], new Text( 'abc' ) );
 		const eleB = new Element( 'b', [], new Text( 'xyz' ) );
 
-		root._insertChildren( 0, [ eleA, eleB ] );
+		root._insertChild( 0, [ eleA, eleB ] );
 
 		model.applyOperation( wrapInDelta(
 			new AttributeOperation(
@@ -308,7 +308,7 @@ describe( 'AttributeOperation', () => {
 		const eleA = new Element( 'a', fooAttr, new Text( 'abc' ) );
 		const eleB = new Element( 'b', fooAttr, new Text( 'xyz' ) );
 
-		root._insertChildren( 0, [ eleA, eleB ] );
+		root._insertChild( 0, [ eleA, eleB ] );
 
 		model.applyOperation( wrapInDelta(
 			new AttributeOperation(
@@ -324,7 +324,7 @@ describe( 'AttributeOperation', () => {
 	} );
 
 	it( 'should undo changing attribute by applying reverse operation', () => {
-		root._insertChildren( 0, new Text( 'bar', { isNew: false } ) );
+		root._insertChild( 0, new Text( 'bar', { isNew: false } ) );
 
 		const operation = new AttributeOperation(
 			new Range( new Position( root, [ 0 ] ), new Position( root, [ 3 ] ) ),
@@ -346,7 +346,7 @@ describe( 'AttributeOperation', () => {
 	} );
 
 	it( 'should undo remove attribute by applying reverse operation', () => {
-		root._insertChildren( 0, new Text( 'bar', { foo: true } ) );
+		root._insertChild( 0, new Text( 'bar', { foo: true } ) );
 
 		const operation = new AttributeOperation(
 			new Range( new Position( root, [ 0 ] ), new Position( root, [ 3 ] ) ),
@@ -390,8 +390,8 @@ describe( 'AttributeOperation', () => {
 		const attrA = { foo: 'a' };
 		const attrB = { foo: 'b' };
 
-		root._insertChildren( 0, new Text( 'abc', attrA ) );
-		root._insertChildren( 1, new Text( 'xyz', attrB ) );
+		root._insertChild( 0, new Text( 'abc', attrA ) );
+		root._insertChild( 1, new Text( 'xyz', attrB ) );
 
 		model.applyOperation( wrapInDelta(
 			new AttributeOperation(

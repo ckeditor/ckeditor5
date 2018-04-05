@@ -402,7 +402,7 @@ describe( 'DataController', () => {
 			const modelElement = parseModel( '<div><paragraph>foobar</paragraph></div>', schema );
 			const modelRoot = model.document.getRoot();
 
-			downcastMarkerToHighlight( { model: 'marker:a', view: { class: 'a' } } )( data.downcastDispatcher );
+			downcastMarkerToHighlight( { model: 'marker:a', view: { classes: 'a' } } )( data.downcastDispatcher );
 
 			model.change( writer => {
 				writer.insert( modelElement, modelRoot, 0 );
@@ -419,8 +419,8 @@ describe( 'DataController', () => {
 			const modelElement = parseModel( '<div><paragraph>foo</paragraph><paragraph>bar</paragraph></div>', schema );
 			const modelRoot = model.document.getRoot();
 
-			downcastMarkerToHighlight( { model: 'marker:a', view: { class: 'a' } } )( data.downcastDispatcher );
-			downcastMarkerToHighlight( { model: 'marker:b', view: { class: 'b' } } )( data.downcastDispatcher );
+			downcastMarkerToHighlight( { model: 'marker:a', view: { classes: 'a' } } )( data.downcastDispatcher );
+			downcastMarkerToHighlight( { model: 'marker:b', view: { classes: 'b' } } )( data.downcastDispatcher );
 
 			const modelP1 = modelElement.getChild( 0 );
 			const modelP2 = modelElement.getChild( 1 );

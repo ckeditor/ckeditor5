@@ -152,7 +152,7 @@ describe( 'DowncastDispatcher', () => {
 
 	describe( 'convertInsert', () => {
 		it( 'should fire event with correct parameters for every item in passed range', () => {
-			root._appendChildren( [
+			root._appendChild( [
 				new ModelText( 'foo', { bold: true } ),
 				new ModelElement( 'image' ),
 				new ModelText( 'bar' ),
@@ -206,7 +206,7 @@ describe( 'DowncastDispatcher', () => {
 		} );
 
 		it( 'should not fire events for already consumed parts of model', () => {
-			root._appendChildren( [
+			root._appendChild( [
 				new ModelElement( 'image', { src: 'foo.jpg', title: 'bar', bold: true }, [
 					new ModelElement( 'caption', {}, new ModelText( 'title' ) )
 				] )
@@ -252,7 +252,7 @@ describe( 'DowncastDispatcher', () => {
 		beforeEach( () => {
 			dispatcher.off( 'selection' );
 
-			root._appendChildren( new ModelText( 'foobar' ) );
+			root._appendChild( new ModelText( 'foobar' ) );
 			model.change( writer => {
 				writer.setSelection( [
 					new ModelRange( new ModelPosition( root, [ 1 ] ), new ModelPosition( root, [ 3 ] ) ),
@@ -378,7 +378,7 @@ describe( 'DowncastDispatcher', () => {
 			const text = new ModelText( 'abc' );
 			const caption = new ModelElement( 'caption', null, text );
 			const image = new ModelElement( 'image', null, caption );
-			root._appendChildren( [ image ] );
+			root._appendChild( [ image ] );
 
 			// Create view elements that will be "mapped" to model elements.
 			const viewCaption = new ViewContainerElement( 'caption' );
@@ -441,7 +441,7 @@ describe( 'DowncastDispatcher', () => {
 		beforeEach( () => {
 			text = new ModelText( 'foo bar baz' );
 			element = new ModelElement( 'paragraph', null, [ text ] );
-			root._appendChildren( [ element ] );
+			root._appendChild( [ element ] );
 
 			range = ModelRange.createFromParentsAndOffsets( element, 0, element, 4 );
 		} );
@@ -521,7 +521,7 @@ describe( 'DowncastDispatcher', () => {
 		beforeEach( () => {
 			text = new ModelText( 'foo bar baz' );
 			element = new ModelElement( 'paragraph', null, [ text ] );
-			root._appendChildren( [ element ] );
+			root._appendChild( [ element ] );
 
 			range = ModelRange.createFromParentsAndOffsets( element, 0, element, 4 );
 		} );

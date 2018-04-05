@@ -34,7 +34,7 @@ describe( 'DocumentSelection', () => {
 		model = new Model();
 		doc = model.document;
 		root = doc.createRoot();
-		root._appendChildren( [
+		root._appendChild( [
 			new Element( 'p' ),
 			new Element( 'p' ),
 			new Element( 'p', [], new Text( 'foobar' ) ),
@@ -73,7 +73,7 @@ describe( 'DocumentSelection', () => {
 			model = new Model();
 			doc = model.document;
 			root = doc.createRoot();
-			root._insertChildren( 0, new Text( 'foobar' ) );
+			root._insertChild( 0, new Text( 'foobar' ) );
 			selection = doc.selection;
 
 			const ranges = Array.from( selection.getRanges() );
@@ -89,7 +89,7 @@ describe( 'DocumentSelection', () => {
 			model = new Model();
 			doc = model.document;
 			root = doc.createRoot();
-			root._insertChildren( 0, [
+			root._insertChild( 0, [
 				new Element( 'img' ),
 				new Element( 'p', [], new Text( 'foobar' ) )
 			] );
@@ -113,7 +113,7 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'should be false for the default range (object selection) ', () => {
-			root._insertChildren( 0, new Element( 'widget' ) );
+			root._insertChild( 0, new Element( 'widget' ) );
 
 			expect( selection.isCollapsed ).to.be.false;
 		} );
@@ -133,7 +133,7 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'should equal the default range\'s start (object selection)', () => {
-			root._insertChildren( 0, new Element( 'widget' ) );
+			root._insertChild( 0, new Element( 'widget' ) );
 
 			const expectedPos = new Position( root, [ 0 ] );
 
@@ -155,7 +155,7 @@ describe( 'DocumentSelection', () => {
 		} );
 
 		it( 'should equal the default range\'s end (object selection)', () => {
-			root._insertChildren( 0, new Element( 'widget' ) );
+			root._insertChild( 0, new Element( 'widget' ) );
 
 			const expectedPos = new Position( root, [ 1 ] );
 
@@ -406,7 +406,7 @@ describe( 'DocumentSelection', () => {
 
 		beforeEach( () => {
 			root._removeChildren( 0, root.childCount );
-			root._appendChildren( [
+			root._appendChild( [
 				new Element( 'p', [], new Text( 'foobar' ) ),
 				new Element( 'p', [], [] )
 			] );
@@ -466,7 +466,7 @@ describe( 'DocumentSelection', () => {
 
 		describe( 'are updated on a direct range change', () => {
 			beforeEach( () => {
-				root._insertChildren( 0, [
+				root._insertChild( 0, [
 					new Element( 'p', { p: true } ),
 					new Text( 'a', { a: true } ),
 					new Element( 'p', { p: true } ),
@@ -666,7 +666,7 @@ describe( 'DocumentSelection', () => {
 
 			it( 'are removed when containing element is merged with a non-empty element', () => {
 				const emptyP2 = new Element( 'p', null, 'x' );
-				root._appendChildren( emptyP2 );
+				root._appendChild( emptyP2 );
 
 				emptyP._setAttribute( fooStoreAttrKey, 'bar' );
 				emptyP2._setAttribute( fooStoreAttrKey, 'bar' );
@@ -695,7 +695,7 @@ describe( 'DocumentSelection', () => {
 			it( 'are removed only once in case of multi-op deltas', () => {
 				let batch;
 				const emptyP2 = new Element( 'p', null, 'x' );
-				root._appendChildren( emptyP2 );
+				root._appendChild( emptyP2 );
 
 				emptyP._setAttribute( fooStoreAttrKey, 'bar' );
 				emptyP2._setAttribute( fooStoreAttrKey, 'bar' );
@@ -728,7 +728,7 @@ describe( 'DocumentSelection', () => {
 
 			it( 'are not removed or merged when containing element is merged with another empty element', () => {
 				const emptyP2 = new Element( 'p', null );
-				root._appendChildren( emptyP2 );
+				root._appendChild( emptyP2 );
 
 				emptyP._setAttribute( fooStoreAttrKey, 'bar' );
 				emptyP2._setAttribute( abcStoreAttrKey, 'bar' );
@@ -885,7 +885,7 @@ describe( 'DocumentSelection', () => {
 
 		beforeEach( () => {
 			root._removeChildren( 0, root.childCount );
-			root._insertChildren( 0, [
+			root._insertChild( 0, [
 				new Element( 'p', [], new Text( 'abcdef' ) ),
 				new Element( 'p', [], new Text( 'foobar' ) ),
 				new Text( 'xyz' )
@@ -1223,7 +1223,7 @@ describe( 'DocumentSelection', () => {
 
 		it( '`DocumentSelection#change:range` event should be fire once even if selection contains multi-ranges', () => {
 			root._removeChildren( 0, root.childCount );
-			root._insertChildren( 0, [
+			root._insertChild( 0, [
 				new Element( 'p', [], new Text( 'abcdef' ) ),
 				new Element( 'p', [], new Text( 'foobar' ) ),
 				new Text( 'xyz #2' )
@@ -1251,7 +1251,7 @@ describe( 'DocumentSelection', () => {
 
 	it( 'should throw if one of ranges starts or ends inside surrogate pair', () => {
 		root._removeChildren( 0, root.childCount );
-		root._appendChildren( '\uD83D\uDCA9' );
+		root._appendChild( '\uD83D\uDCA9' );
 
 		expect( () => {
 			doc.selection._setTo( Range.createFromParentsAndOffsets( root, 0, root, 1 ) );
@@ -1264,7 +1264,7 @@ describe( 'DocumentSelection', () => {
 
 	it( 'should throw if one of ranges starts or ends between base character and combining mark', () => {
 		root._removeChildren( 0, root.childCount );
-		root._appendChildren( 'foo̻̐ͩbar' );
+		root._appendChild( 'foo̻̐ͩbar' );
 
 		expect( () => {
 			doc.selection._setTo( Range.createFromParentsAndOffsets( root, 3, root, 9 ) );

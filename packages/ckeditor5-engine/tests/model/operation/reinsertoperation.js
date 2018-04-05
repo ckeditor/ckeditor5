@@ -65,7 +65,7 @@ describe( 'ReinsertOperation', () => {
 	} );
 
 	it( 'should create RemoveOperation as a reverse', () => {
-		graveyard._appendChildren( new Element( 'x' ) );
+		graveyard._appendChild( new Element( 'x' ) );
 
 		const reverse = operation.getReversed();
 
@@ -87,7 +87,7 @@ describe( 'ReinsertOperation', () => {
 	it( 'should undo reinsert set of nodes by applying reverse operation', () => {
 		const reverse = operation.getReversed();
 
-		graveyard._insertChildren( 0, new Text( 'xx' ) );
+		graveyard._insertChild( 0, new Text( 'xx' ) );
 
 		model.applyOperation( wrapInDelta( operation ) );
 
@@ -106,7 +106,7 @@ describe( 'ReinsertOperation', () => {
 		it( 'should throw when target position is not in the document', () => {
 			const docFrag = new DocumentFragment();
 
-			graveyard._insertChildren( 0, new Text( 'xx' ) );
+			graveyard._insertChild( 0, new Text( 'xx' ) );
 
 			operation = new ReinsertOperation(
 				graveyardPosition,

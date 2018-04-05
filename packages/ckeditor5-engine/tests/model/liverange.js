@@ -34,7 +34,7 @@ describe( 'LiveRange', () => {
 		ul = new Element( 'ul', [], lis );
 		p = new Element( 'p', [], new Text( 'qwertyuiop' ) );
 
-		root._insertChildren( 0, [ ul, p, new Text( 'xyzxyz' ) ] );
+		root._insertChild( 0, [ ul, p, new Text( 'xyzxyz' ) ] );
 	} );
 
 	it( 'should be an instance of Range', () => {
