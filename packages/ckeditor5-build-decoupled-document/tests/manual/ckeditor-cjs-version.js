@@ -3,9 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-const DecoupledDocumentEditor = require( '../../build/ckeditor' );
+const DecoupledEditor = require( '../../build/ckeditor' );
 
-DecoupledDocumentEditor.create( document.querySelector( '#editor' ) )
+DecoupledEditor.create( document.querySelector( '#editor' ) )
 	.then( editor => {
 		document.querySelector( '.toolbar-container' ).appendChild( editor.ui.view.toolbar.element );
 

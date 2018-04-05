@@ -5,10 +5,10 @@
 
 /* globals document */
 
-import DecoupledDocumentEditor from '../src/ckeditor';
-import DecoupledEditor from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor';
+import DecoupledEditor from '../src/ckeditor';
+import BaseDecoupledEditor from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor';
 
-describe( 'DecoupledDocumentEditor build', () => {
+describe( 'DecoupledEditor build', () => {
 	let editor, editorData, editorElement;
 
 	beforeEach( () => {
@@ -27,11 +27,11 @@ describe( 'DecoupledDocumentEditor build', () => {
 
 	describe( 'buid', () => {
 		it( 'contains plugins', () => {
-			expect( DecoupledDocumentEditor.build.plugins ).to.not.be.empty;
+			expect( DecoupledEditor.build.plugins ).to.not.be.empty;
 		} );
 
 		it( 'contains config', () => {
-			expect( DecoupledDocumentEditor.build.config.toolbar ).to.not.be.empty;
+			expect( DecoupledEditor.build.config.toolbar ).to.not.be.empty;
 		} );
 	} );
 
@@ -39,7 +39,7 @@ describe( 'DecoupledDocumentEditor build', () => {
 		test( () => editorData );
 
 		it( 'does not define the UI DOM structure', () => {
-			return DecoupledDocumentEditor.create( editorData )
+			return DecoupledEditor.create( editorData )
 				.then( newEditor => {
 					expect( newEditor.ui.view.element ).to.be.null;
 					expect( newEditor.ui.view.toolbar.element.parentElement ).to.be.null;
@@ -52,7 +52,7 @@ describe( 'DecoupledDocumentEditor build', () => {
 		test( () => editorElement );
 
 		it( 'uses the provided editable element', () => {
-			return DecoupledDocumentEditor.create( editorElement )
+			return DecoupledEditor.create( editorElement )
 				.then( newEditor => {
 					expect( newEditor.ui.view.editable.element.parentElement ).to.equal( document.body );
 				} );
@@ -62,7 +62,7 @@ describe( 'DecoupledDocumentEditor build', () => {
 	function test( getEditorDataOrElement ) {
 		describe( 'create()', () => {
 			beforeEach( () => {
-				return DecoupledDocumentEditor.create( getEditorDataOrElement() )
+				return DecoupledEditor.create( getEditorDataOrElement() )
 					.then( newEditor => {
 						editor = newEditor;
 					} );
@@ -72,9 +72,9 @@ describe( 'DecoupledDocumentEditor build', () => {
 				return editor.destroy();
 			} );
 
-			it( 'creates an instance which inherits from the DecoupledDocumentEditor', () => {
-				expect( editor ).to.be.instanceof( DecoupledDocumentEditor );
-				expect( editor ).to.be.instanceof( DecoupledEditor );
+			it( 'creates an instance which inherits from the DecoupledEditor', () => {
+				expect( editor ).to.be.instanceof( BaseDecoupledEditor );
+				expect( editor ).to.be.instanceof( BaseDecoupledEditor );
 			} );
 
 			it( 'loads passed data', () => {
@@ -84,7 +84,7 @@ describe( 'DecoupledDocumentEditor build', () => {
 
 		describe( 'destroy()', () => {
 			beforeEach( () => {
-				return DecoupledDocumentEditor.create( getEditorDataOrElement() )
+				return DecoupledEditor.create( getEditorDataOrElement() )
 					.then( newEditor => {
 						editor = newEditor;
 					} );
@@ -93,7 +93,7 @@ describe( 'DecoupledDocumentEditor build', () => {
 
 		describe( 'plugins', () => {
 			beforeEach( () => {
-				return DecoupledDocumentEditor.create( getEditorDataOrElement() )
+				return DecoupledEditor.create( getEditorDataOrElement() )
 					.then( newEditor => {
 						editor = newEditor;
 					} );
@@ -212,7 +212,7 @@ describe( 'DecoupledDocumentEditor build', () => {
 
 			// https://github.com/ckeditor/ckeditor5/issues/572
 			it( 'allows configure toolbar items through config.toolbar', () => {
-				return DecoupledDocumentEditor
+				return DecoupledEditor
 					.create( getEditorDataOrElement(), {
 						toolbar: [ 'bold' ]
 					} )

@@ -10,7 +10,7 @@ module.exports = {
 	editor: '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor',
 
 	// The name under which the editor will be exported.
-	moduleName: 'DecoupledDocumentEditor',
+	moduleName: 'DecoupledEditor',
 
 	// Plugins to include in the build.
 	plugins: [

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import DecoupledDocumentEditorBase from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor';
+import DecoupledEditorBase from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor';
 import EssentialsPlugin from '@ckeditor/ckeditor5-essentials/src/essentials';
 import AlignmentPlugin from '@ckeditor/ckeditor5-alignment/src/alignment';
 import FontsizePlugin from '@ckeditor/ckeditor5-font/src/fontsize';
@@ -27,9 +27,9 @@ import LinkPlugin from '@ckeditor/ckeditor5-link/src/link';
 import ListPlugin from '@ckeditor/ckeditor5-list/src/list';
 import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
-export default class DecoupledDocumentEditor extends DecoupledDocumentEditorBase {}
+export default class DecoupledEditor extends DecoupledEditorBase {}
 
-DecoupledDocumentEditor.build = {
+DecoupledEditor.build = {
 	plugins: [
 		EssentialsPlugin,
 		AlignmentPlugin,
