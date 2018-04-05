@@ -453,12 +453,12 @@ export function cleanListItem( evt, data, conversionApi ) {
 			if ( child.is( 'text' ) ) {
 				// If this is the first node and it's a text node, left-trim it.
 				if ( firstNode ) {
-					conversionApi.writer.setTextData( child.data.replace( /^\s+/, '' ), child );
+					child._data = child.data.replace( /^\s+/, '' );
 				}
 
 				// If this is the last text node before <ul> or <ol>, right-trim it.
 				if ( !child.nextSibling || ( child.nextSibling.is( 'ul' ) || child.nextSibling.is( 'ol' ) ) ) {
-					conversionApi.writer.setTextData( child.data.replace( /\s+$/, '' ), child );
+					child._data = child.data.replace( /\s+$/, '' );
 				}
 			} else if ( child.is( 'ul' ) || child.is( 'ol' ) ) {
 				// If this is a <ul> or <ol>, do not process it, just mark that we already visited list element.
