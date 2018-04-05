@@ -67,15 +67,16 @@ export default class LinkEditing extends Plugin {
 	}
 
 	/**
-	 * Adds the visual highlight style to a link in which the selection is anchored.
-	 * Together with two-step caret movement, it indicates the user is typing inside the link.
+	 * Adds a visual highlight style to a link in which the selection is anchored.
+	 * Together with two-step caret movement, they indicate that the user is typing inside the link.
 	 *
-	 * The current implementation adds the `.ck .ck-link_selected` classes to the link in the view
-	 * in the following way:
-	 * * The classes are removed in the downcast dispatcher's chain with the highest possible
-	 * priority so they don't interfere during further conversion.
-	 * * The classes are added in the view post fixer, which is the last one to execute in
-	 * the {@link module:engine/view/view~View#change}.
+	 * Highlight is turned on by adding `.ck .ck-link_selected` classes to the link in the view:
+	 *
+	 * * the classes are removed before conversion has started, as callbacks added with `'highest'` priority
+	 * to {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher} events,
+	 * * the classes are added in the view post fixer, after other changes in the model tree were converted to the view.
+	 *
+	 * This way, adding and removing highlight does not interfere with conversion.
 	 *
 	 * @private
 	 */
@@ -92,6 +93,8 @@ export default class LinkEditing extends Plugin {
 				const modelRange = findLinkRange( selection.getFirstPosition(), selection.getAttribute( 'linkHref' ) );
 				const viewRange = editor.editing.mapper.toViewRange( modelRange );
 
+				// There might be multiple `a` elements in the `viewRange`, for example, when the `a` element is
+				// broken by a UIElement.
 				for ( const item of viewRange.getItems() ) {
 					if ( item.is( 'a' ) ) {
 						writer.addClass( HIGHLIGHT_CLASSES, item );
@@ -103,7 +106,7 @@ export default class LinkEditing extends Plugin {
 
 		// Removing the class.
 		editor.conversion.for( 'editingDowncast' ).add( dispatcher => {
-			// Make sure the highlight is remove on every possible event.
+			// Make sure the highlight is removed on every possible event, before conversion is started.
 			dispatcher.on( 'insert', removeHighlight, { priority: 'highest' } );
 			dispatcher.on( 'remove', removeHighlight, { priority: 'highest' } );
 			dispatcher.on( 'attribute', removeHighlight, { priority: 'highest' } );
