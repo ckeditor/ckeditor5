@@ -173,6 +173,32 @@ describe( 'LinkUI', () => {
 			} );
 		} );
 
+		// #https://github.com/ckeditor/ckeditor5-link/issues/181
+		it( 'should add #formView to the balloon when collapsed selection is inside the link and #actionsView is already visible', () => {
+			setModelData( editor.model, '<paragraph><$text linkHref="url">f[]oo</$text></paragraph>' );
+			const linkElement = editor.editing.view.getDomRoot().querySelector( 'a' );
+
+			linkUIFeature._showUI();
+
+			expect( balloon.visibleView ).to.equal( actionsView );
+			sinon.assert.calledWithExactly( balloonAddSpy, {
+				view: actionsView,
+				position: {
+					target: linkElement
+				}
+			} );
+
+			linkUIFeature._showUI();
+
+			expect( balloon.visibleView ).to.equal( formView );
+			sinon.assert.calledWithExactly( balloonAddSpy, {
+				view: formView,
+				position: {
+					target: linkElement
+				}
+			} );
+		} );
+
 		it( 'should disable #formView and #actionsView elements when link and unlink commands are disabled', () => {
 			setModelData( editor.model, '<paragraph>f[o]o</paragraph>' );
 
@@ -689,6 +715,23 @@ describe( 'LinkUI', () => {
 				actionsView.keystrokes.press( keyEvtData );
 				expect( balloon.visibleView ).to.equal( null );
 				expect( focusEditableSpy.calledOnce ).to.be.true;
+			} );
+
+			// #https://github.com/ckeditor/ckeditor5-link/issues/181
+			it( 'should add the #formView upon Ctrl+K keystroke press', () => {
+				const keyEvtData = {
+					keyCode: keyCodes.k,
+					ctrlKey: true,
+					preventDefault: sinon.spy(),
+					stopPropagation: sinon.spy()
+				};
+
+				linkUIFeature._showUI();
+				linkUIFeature._removeFormView();
+				expect( balloon.visibleView ).to.equal( actionsView );
+
+				actionsView.keystrokes.press( keyEvtData );
+				expect( balloon.visibleView ).to.equal( formView );
 			} );
 		} );
 	} );

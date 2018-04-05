@@ -109,6 +109,12 @@ export default class LinkUI extends Plugin {
 			cancel();
 		} );
 
+		// Open the form view on Ctrl+K when the **actions have focus**..
+		actionsView.keystrokes.set( linkKeystroke, ( data, cancel ) => {
+			this._addFormView();
+			cancel();
+		} );
+
 		return actionsView;
 	}
 
@@ -245,6 +251,10 @@ export default class LinkUI extends Plugin {
 	 * @protected
 	 */
 	_addActionsView() {
+		if ( this._areActionsInPanel ) {
+			return;
+		}
+
 		this._balloon.add( {
 			view: this.actionsView,
 			position: this._getBalloonPositionData()
@@ -257,6 +267,10 @@ export default class LinkUI extends Plugin {
 	 * @protected
 	 */
 	_addFormView() {
+		if ( this._isFormInPanel ) {
+			return;
+		}
+
 		const editor = this.editor;
 		const linkCommand = editor.commands.get( 'link' );
 
@@ -301,7 +315,7 @@ export default class LinkUI extends Plugin {
 		const editor = this.editor;
 		const linkCommand = editor.commands.get( 'link' );
 
-		if ( !linkCommand.isEnabled || this._isUIInPanel ) {
+		if ( !linkCommand.isEnabled ) {
 			return;
 		}
 
@@ -310,9 +324,16 @@ export default class LinkUI extends Plugin {
 			this._addActionsView();
 			this._addFormView();
 		}
-		// Otherwise display just the actions UI.
+		// If theres a link under the selection...
 		else {
-			this._addActionsView();
+			// Go to the editing UI if actions are already visible.
+			if ( this._areActionsVisible ) {
+				this._addFormView();
+			}
+			// Otherwise display just the actions UI.
+			else {
+				this._addActionsView();
+			}
 		}
 
 		// Begin responding to view#render once the UI is added.
