@@ -1,0 +1,14 @@
+# Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+"Language: cs\n"
+"Language-Team: Czech (https://www.transifex.com/ckeditor/teams/11143/cs/)\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+msgctxt "Label for the Save button."
+msgid "Save"
+msgstr "Uložit"
+
+msgctxt "Label for the Cancel button."
+msgid "Cancel"
+msgstr "Zrušit"
