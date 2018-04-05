@@ -109,7 +109,7 @@ function _buildDefinition( options ) {
 		definition.model.values.push( option.model );
 		definition.view[ option.model ] = {
 			name: 'mark',
-			class: option.class
+			classes: option.class
 		};
 	}
 
