@@ -1321,6 +1321,23 @@ describe( 'Differ', () => {
 				] );
 			} );
 		} );
+
+		// #1392.
+		it( 'remove is correctly transformed by multiple affecting changes', () => {
+			root._appendChildren( new Element( 'paragraph', null, new Text( 'xyz' ) ) );
+
+			model.change( () => {
+				rename( root.getChild( 1 ), 'heading' );
+				rename( root.getChild( 2 ), 'heading' );
+				remove( Position.createAt( root, 0 ), 3 );
+
+				expectChanges( [
+					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 0 ] ) },
+					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 0 ] ) },
+					{ type: 'remove', name: 'paragraph', length: 1, position: new Position( root, [ 0 ] ) }
+				] );
+			} );
+		} );
 	} );
 
 	describe( 'getChanges()', () => {
