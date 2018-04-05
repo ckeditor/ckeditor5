@@ -31,7 +31,7 @@ export function viewFigureToModel() {
 
 	function converter( evt, data, conversionApi ) {
 		// Do not convert if this is not an "image figure".
-		if ( !conversionApi.consumable.test( data.viewItem, { name: true, class: 'image' } ) ) {
+		if ( !conversionApi.consumable.test( data.viewItem, { name: true, classes: 'image' } ) ) {
 			return;
 		}
 

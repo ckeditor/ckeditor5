@@ -66,7 +66,7 @@ export default class ImageEditing extends Plugin {
 			.add( upcastElementToElement( {
 				view: {
 					name: 'img',
-					attribute: {
+					attributes: {
 						src: true
 					}
 				},
