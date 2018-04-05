@@ -1,26 +1,26 @@
 # Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
 msgid ""
 msgstr ""
-"Language: de\n"
-"Language-Team: German (https://www.transifex.com/ckeditor/teams/11143/de/)\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: cs\n"
+"Language-Team: Czech (https://www.transifex.com/ckeditor/teams/11143/cs/)\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
 msgctxt "Toolbar button tooltip for the Bold feature."
 msgid "Bold"
-msgstr "Fett"
+msgstr "Tučné"
 
 msgctxt "Toolbar button tooltip for the Italic feature."
 msgid "Italic"
-msgstr "Kursiv"
+msgstr "Kurzíva"
 
 msgctxt "Toolbar button tooltip for the Underline feature."
 msgid "Underline"
-msgstr "Unterstrichen"
+msgstr "Podtržené"
 
 msgctxt "Toolbar button tooltip for the Code feature."
 msgid "Code"
-msgstr "Code"
+msgstr "Kódový blok"
 
 msgctxt "Toolbar button tooltip for the Strikethrough feature."
 msgid "Strikethrough"
-msgstr "Durchgestrichen"
+msgstr "Přeškrtnuté"
