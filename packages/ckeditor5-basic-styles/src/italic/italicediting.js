@@ -36,7 +36,7 @@ export default class ItalicEditing extends Plugin {
 			upcastAlso: [
 				'em',
 				{
-					style: {
+					styles: {
 						'font-style': 'italic'
 					}
 				}
