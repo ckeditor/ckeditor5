@@ -206,4 +206,30 @@ describe( 'placeholder', () => {
 			expect( element.hasClass( 'ck', 'ck-placeholder' ) ).to.be.false;
 		} );
 	} );
+
+	it( 'should remove ck class when it was added by placeholder', () => {
+		setData( view, '<div></div><div>{another div}</div>' );
+		const element = viewRoot.getChild( 0 );
+
+		attachPlaceholder( view, element, 'foo bar baz' );
+
+		expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
+		expect( element.hasClass( 'ck', 'ck-placeholder' ) ).to.be.true;
+
+		detachPlaceholder( view, element );
+		expect( !element.hasClass( 'ck' ) ).to.be.true;
+	} );
+
+	it( 'should not remove ck class when it was applied already', () => {
+		setData( view, '<div class="ck"></div><div>{another div}</div>' );
+		const element = viewRoot.getChild( 0 );
+
+		attachPlaceholder( view, element, 'foo bar baz' );
+
+		expect( element.getAttribute( 'data-placeholder' ) ).to.equal( 'foo bar baz' );
+		expect( element.hasClass( 'ck', 'ck-placeholder' ) ).to.be.true;
+
+		detachPlaceholder( view, element );
+		expect( element.hasClass( 'ck' ) ).to.be.true;
+	} );
 } );
