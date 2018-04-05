@@ -1,0 +1,34 @@
+# Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+"Language: cs\n"
+"Language-Team: Czech (https://www.transifex.com/ckeditor/teams/11143/cs/)\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+msgctxt "Tooltip for the font size dropdown."
+msgid "Font Size"
+msgstr "Velikost písma"
+
+msgctxt "Dropdown option label for the 'tiny' font size preset."
+msgid "Tiny"
+msgstr "Drobné"
+
+msgctxt "Dropdown option label for the 'small' font size preset."
+msgid "Small"
+msgstr "Malé"
+
+msgctxt "Dropdown option label for the 'big' font size preset."
+msgid "Big"
+msgstr "Velké"
+
+msgctxt "Dropdown option label for the 'huge' font size preset."
+msgid "Huge"
+msgstr "Obrovské"
+
+msgctxt "Tooltip for the font family dropdown."
+msgid "Font Family"
+msgstr "Typ písma"
+
+msgctxt "Dropdown option label for the default font family."
+msgid "Default"
+msgstr "Výchozí"
