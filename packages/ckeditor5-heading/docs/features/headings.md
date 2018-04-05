@@ -85,7 +85,7 @@ ClassicEditor
 					model: 'headingFancy',
 					view: {
 						name: 'h2',
-						class: 'fancy'
+						classes: 'fancy'
 					},
 					title: 'Heading 2 (fancy)',
 					class: 'ck-heading_heading2_fancy',
