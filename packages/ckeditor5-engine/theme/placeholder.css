@@ -3,9 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
-.ck.ck-placeholder::before {
-	content: attr( data-placeholder );
+.ck.ck-placeholder, .ck .ck-placeholder {
+	&::before {
+		 content: attr(data-placeholder);
 
-	/* See ckeditor/ckeditor5#469. */
-	pointer-events: none;
+		 /* See ckeditor/ckeditor5#469. */
+		 pointer-events: none;
+	 }
 }

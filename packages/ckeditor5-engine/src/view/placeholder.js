@@ -36,11 +36,7 @@ export function attachPlaceholder( view, element, placeholderText, checkFunction
 	// Store information about element with placeholder.
 	documentPlaceholders.get( document ).set( element, {
 		placeholderText,
-		checkFunction,
-
-		// Whether to remove the ck class when detaching the placeholder.
-		// https://github.com/ckeditor/ckeditor5-image/issues/198#issuecomment-377542222
-		removeCkClass: !element.hasClass( 'ck' )
+		checkFunction
 	} );
 
 	// Update view right away.
@@ -58,12 +54,6 @@ export function detachPlaceholder( view, element ) {
 
 	view.change( writer => {
 		if ( documentPlaceholders.has( doc ) ) {
-			const info = documentPlaceholders.get( doc ).get( element );
-
-			if ( info.removeCkClass ) {
-				writer.removeClass( 'ck', element );
-			}
-
 			documentPlaceholders.get( doc ).delete( element );
 		}
 
@@ -133,7 +123,7 @@ function updateSinglePlaceholder( writer, element, info ) {
 	// If element is empty and editor is blurred.
 	if ( !document.isFocused && isEmptyish ) {
 		if ( !element.hasClass( 'ck-placeholder' ) ) {
-			writer.addClass( [ 'ck', 'ck-placeholder' ], element );
+			writer.addClass( 'ck-placeholder', element );
 			changed = true;
 		}
 
@@ -143,7 +133,7 @@ function updateSinglePlaceholder( writer, element, info ) {
 	// It there are no child elements and selection is not placed inside element.
 	if ( isEmptyish && anchor && anchor.parent !== element ) {
 		if ( !element.hasClass( 'ck-placeholder' ) ) {
-			writer.addClass( [ 'ck', 'ck-placeholder' ], element );
+			writer.addClass( 'ck-placeholder', element );
 			changed = true;
 		}
 	} else {
