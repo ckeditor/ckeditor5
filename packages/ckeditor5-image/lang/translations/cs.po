@@ -1,50 +1,50 @@
 # Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
 msgid ""
 msgstr ""
-"Language: de\n"
-"Language-Team: German (https://www.transifex.com/ckeditor/teams/11143/de/)\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: cs\n"
+"Language-Team: Czech (https://www.transifex.com/ckeditor/teams/11143/cs/)\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
 msgctxt "Label for the image widget."
 msgid "image widget"
-msgstr "Bild-Steuerelement"
+msgstr "ovládací prvek obrázku"
 
 msgctxt "Label for the Side image option."
 msgid "Side image"
-msgstr "Seitenbild"
+msgstr "Postranní obrázek"
 
 msgctxt "Label for the Full size image option."
 msgid "Full size image"
-msgstr "Bild in voller Größe"
+msgstr "Obrázek v plné velikosti"
 
 msgctxt "Label for the Left aligned image option"
 msgid "Left aligned image"
-msgstr "linksbündiges Bild"
+msgstr "Obrázek zarovnaný vlevo"
 
 msgctxt "Label for the Centered image option"
 msgid "Centered image"
-msgstr "zentriertes Bild"
+msgstr "Obrázek zarovnaný na střed"
 
 msgctxt "Label for the Right aligned image option"
 msgid "Right aligned image"
-msgstr "rechtsbündiges Bild"
+msgstr "Obrázek zarovnaný vpravo"
 
 msgctxt "Label for the Change image text alternative button."
 msgid "Change image text alternative"
-msgstr "Alternativ Text ändern"
+msgstr "Změnit alternativní text obrázku"
 
 msgctxt "Label for the image text alternative input."
 msgid "Text alternative"
-msgstr "Textalternative"
+msgstr "Alternativní text"
 
 msgctxt "Placeholder text for image caption displayed when caption is empty."
 msgid "Enter image caption"
-msgstr "Bildunterschrift eingeben"
+msgstr "Zadejte popis obrázku"
 
 msgctxt "Label for the insert image toolbar button."
 msgid "Insert image"
-msgstr "Bild einfügen"
+msgstr "Vložit obrázek"
 
 msgctxt "Title of the notification displayed when upload fails."
 msgid "Upload failed"
-msgstr "Hochladen fehlgeschlagen"
+msgstr "Nahrání selhalo"
