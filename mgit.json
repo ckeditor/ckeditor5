@@ -19,23 +19,23 @@
     "@ckeditor/ckeditor5-editor-classic": "ckeditor/ckeditor5-editor-classic#17b7ed3",
     "@ckeditor/ckeditor5-editor-decoupled": "ckeditor/ckeditor5-editor-decoupled#3ae598c",
     "@ckeditor/ckeditor5-editor-inline": "ckeditor/ckeditor5-editor-inline#ca24563",
-    "@ckeditor/ckeditor5-engine": "ckeditor/ckeditor5-engine#f386410",
+    "@ckeditor/ckeditor5-engine": "ckeditor/ckeditor5-engine#26bf582",
     "@ckeditor/ckeditor5-enter": "ckeditor/ckeditor5-enter#b36b71b",
     "@ckeditor/ckeditor5-essentials": "ckeditor/ckeditor5-essentials#8b98810",
     "@ckeditor/ckeditor5-font": "ckeditor/ckeditor5-font#1f7461b",
     "@ckeditor/ckeditor5-heading": "ckeditor/ckeditor5-heading#7393dff",
     "@ckeditor/ckeditor5-highlight": "ckeditor/ckeditor5-highlight#6bf618c",
-    "@ckeditor/ckeditor5-image": "ckeditor/ckeditor5-image#060c406",
-    "@ckeditor/ckeditor5-link": "ckeditor/ckeditor5-link#1d46653",
+    "@ckeditor/ckeditor5-image": "ckeditor/ckeditor5-image#4564bce",
+    "@ckeditor/ckeditor5-link": "ckeditor/ckeditor5-link#6a80570",
     "@ckeditor/ckeditor5-list": "ckeditor/ckeditor5-list#4cd74d1",
     "@ckeditor/ckeditor5-markdown-gfm": "ckeditor/ckeditor5-markdown-gfm#724b6da",
     "@ckeditor/ckeditor5-paragraph": "ckeditor/ckeditor5-paragraph#84112c7",
-    "@ckeditor/ckeditor5-theme-lark": "ckeditor/ckeditor5-theme-lark#508db7c",
+    "@ckeditor/ckeditor5-theme-lark": "ckeditor/ckeditor5-theme-lark#d025b18",
     "@ckeditor/ckeditor5-typing": "ckeditor/ckeditor5-typing#0127c18",
     "@ckeditor/ckeditor5-ui": "ckeditor/ckeditor5-ui#80d3bd2",
     "@ckeditor/ckeditor5-undo": "ckeditor/ckeditor5-undo#5ff3ab9",
     "@ckeditor/ckeditor5-upload": "ckeditor/ckeditor5-upload#de084e8",
     "@ckeditor/ckeditor5-utils": "ckeditor/ckeditor5-utils#e840b0c",
-    "@ckeditor/ckeditor5-widget": "ckeditor/ckeditor5-widget#051b326"
+    "@ckeditor/ckeditor5-widget": "ckeditor/ckeditor5-widget#0e7362c"
   }
 }
