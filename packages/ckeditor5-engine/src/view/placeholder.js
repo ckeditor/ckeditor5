@@ -54,18 +54,19 @@ export function attachPlaceholder( view, element, placeholderText, checkFunction
  * @param {module:engine/view/element~Element} element
  */
 export function detachPlaceholder( view, element ) {
-	const document = element.document;
-
-	if ( documentPlaceholders.has( document ) ) {
-		const info = documentPlaceholders.get( document ).get( element );
-		if ( info.removeCkClass ) {
-			view.change( writer => writer.removeClass( 'ck', element ) );
-		}
-
-		documentPlaceholders.get( document ).delete( element );
-	}
+	const doc = element.document;
 
 	view.change( writer => {
+		if ( documentPlaceholders.has( doc ) ) {
+			const info = documentPlaceholders.get( doc ).get( element );
+
+			if ( info.removeCkClass ) {
+				writer.removeClass( 'ck', element );
+			}
+
+			documentPlaceholders.get( doc ).delete( element );
+		}
+
 		writer.removeClass( 'ck-placeholder', element );
 		writer.removeAttribute( 'data-placeholder', element );
 	} );
