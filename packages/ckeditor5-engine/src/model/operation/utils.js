@@ -45,7 +45,7 @@ export function _insert( position, nodes ) {
 
 	// Insert nodes at given index. After splitting we have a proper index and insertion is between nodes,
 	// using basic `Element` API.
-	parent._insertChildren( index, nodes );
+	parent._insertChild( index, nodes );
 
 	// Merge text nodes, if possible. Merging is needed only at points where inserted nodes "touch" "old" nodes.
 	_mergeNodesAtIndex( parent, index + nodes.length );
@@ -224,7 +224,7 @@ function _mergeNodesAtIndex( element, index ) {
 		element._removeChildren( index - 1, 2 );
 
 		// Insert merged text node.
-		element._insertChildren( index - 1, mergedNode );
+		element._insertChild( index - 1, mergedNode );
 	}
 }
 
@@ -249,7 +249,7 @@ function _splitNodeAtPosition( position ) {
 		const firstPart = new Text( textNode.data.substr( 0, offsetDiff ), textNode.getAttributes() );
 		const secondPart = new Text( textNode.data.substr( offsetDiff ), textNode.getAttributes() );
 
-		element._insertChildren( index, [ firstPart, secondPart ] );
+		element._insertChild( index, [ firstPart, secondPart ] );
 	}
 }
 

@@ -40,7 +40,7 @@ describe( 'view test utils', () => {
 				const viewDocument = view.document;
 				const options = { showType: false, showPriority: false, withoutSelection: true };
 				const root = createAttachedRoot( viewDocument, element );
-				root._appendChildren( new Element( 'p' ) );
+				root._appendChild( new Element( 'p' ) );
 
 				expect( getData( view, options ) ).to.equal( '<p></p>' );
 				sinon.assert.calledOnce( stringifySpy );
@@ -61,7 +61,7 @@ describe( 'view test utils', () => {
 				const viewDocument = view.document;
 				const options = { showType: false, showPriority: false };
 				const root = createAttachedRoot( viewDocument, element );
-				root._appendChildren( new Element( 'p' ) );
+				root._appendChild( new Element( 'p' ) );
 
 				view.change( writer => {
 					writer.setSelection( Range.createFromParentsAndOffsets( root, 0, root, 1 ) );

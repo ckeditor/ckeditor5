@@ -79,7 +79,7 @@ export default class Element extends Node {
 		this._children = [];
 
 		if ( children ) {
-			this._insertChildren( 0, children );
+			this._insertChild( 0, children );
 		}
 
 		/**
@@ -513,7 +513,7 @@ export default class Element extends Node {
 	}
 
 	/**
-	 * {@link module:engine/view/element~Element#_insertChildren Insert} a child node or a list of child nodes at the end of this node
+	 * {@link module:engine/view/element~Element#_insertChild Insert} a child node or a list of child nodes at the end of this node
 	 * and sets the parent of these nodes to this element.
 	 *
 	 * @see module:engine/view/writer~Writer#insert
@@ -522,8 +522,8 @@ export default class Element extends Node {
 	 * @fires module:engine/view/node~Node#change
 	 * @returns {Number} Number of appended nodes.
 	 */
-	_appendChildren( items ) {
-		return this._insertChildren( this.childCount, items );
+	_appendChild( items ) {
+		return this._insertChild( this.childCount, items );
 	}
 
 	/**
@@ -537,7 +537,7 @@ export default class Element extends Node {
 	 * @fires module:engine/view/node~Node#change
 	 * @returns {Number} Number of inserted nodes.
 	 */
-	_insertChildren( index, items ) {
+	_insertChild( index, items ) {
 		this._fireChange( 'children', this );
 		let count = 0;
 

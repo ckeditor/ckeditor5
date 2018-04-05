@@ -181,7 +181,7 @@ describe( 'Mapper', () => {
 			] );
 
 			modelDiv = new ModelRootElement();
-			modelDiv._appendChildren( [
+			modelDiv._appendChild( [
 				new ModelText( 'x' ),
 				modelP,
 				new ModelText( 'zz' )
@@ -451,7 +451,7 @@ describe( 'Mapper', () => {
 			modelCaption = new ModelElement( 'caption', {}, new ModelText( 'foo' ) );
 			modelWidget = new ModelElement( 'widget', {}, [ modelImg, modelCaption ] );
 			modelDiv = new ModelRootElement();
-			modelDiv._appendChildren( [ new ModelText( 'x' ), modelWidget, new ModelText( 'zz' ) ] );
+			modelDiv._appendChild( [ new ModelText( 'x' ), modelWidget, new ModelText( 'zz' ) ] );
 
 			viewTextX = new ViewText( 'y' );
 			viewTextZZ = new ViewText( 'zz' );

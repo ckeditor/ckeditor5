@@ -40,7 +40,7 @@ describe( 'TreeWalker', () => {
 		paragraph = new Element( 'p', [], [ ba, r, img2, x ] );
 		img1 = new Element( 'img1' );
 
-		root._insertChildren( 0, [ img1, paragraph ] );
+		root._insertChild( 0, [ img1, paragraph ] );
 
 		rootBeginning = new Position( root, [ 0 ] );
 		rootEnding = new Position( root, [ 2 ] );

@@ -51,7 +51,7 @@ describe( 'downcast-selection-converters', () => {
 		mapper = new Mapper();
 		mapper.bindElements( modelRoot, viewRoot );
 
-		highlightDescriptor = { class: 'marker', priority: 1 };
+		highlightDescriptor = { classes: 'marker', priority: 1 };
 
 		dispatcher = new DowncastDispatcher( { mapper, viewSelection } );
 
@@ -243,7 +243,7 @@ describe( 'downcast-selection-converters', () => {
 
 			it( 'in marker - using highlight descriptor creator', () => {
 				dispatcher.on( 'addMarker:marker2', highlightText(
-					data => ( { 'class': data.markerName } )
+					data => ( { classes: data.markerName } )
 				) );
 
 				setModelData( model, 'foobar' );
@@ -298,7 +298,7 @@ describe( 'downcast-selection-converters', () => {
 				setModelData( model, '' );
 
 				// Add two ui elements to view.
-				viewRoot._appendChildren( [
+				viewRoot._appendChild( [
 					new ViewUIElement( 'span' ),
 					new ViewUIElement( 'span' )
 				] );
@@ -333,7 +333,7 @@ describe( 'downcast-selection-converters', () => {
 
 					// Add ui element to view.
 					const uiElement = new ViewUIElement( 'span' );
-					viewRoot._insertChildren( 1, uiElement );
+					viewRoot._insertChild( 1, uiElement );
 
 					dispatcher.convertSelection( docSelection, model.markers, writer );
 				} );
@@ -358,7 +358,7 @@ describe( 'downcast-selection-converters', () => {
 
 					// Add ui element to view.
 					const uiElement = new ViewUIElement( 'span' );
-					viewRoot._insertChildren( 1, uiElement, writer );
+					viewRoot._insertChild( 1, uiElement, writer );
 					dispatcher.convertSelection( docSelection, model.markers, writer );
 				} );
 

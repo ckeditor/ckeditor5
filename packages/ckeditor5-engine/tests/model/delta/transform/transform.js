@@ -44,7 +44,7 @@ describe( 'transform', () => {
 		doc = model.document;
 		root = doc.createRoot();
 
-		root._appendChildren( new Element( 'p', null, new Text( 'foobar' ) ) );
+		root._appendChild( new Element( 'p', null, new Text( 'foobar' ) ) );
 
 		baseVersion = doc.version;
 	} );

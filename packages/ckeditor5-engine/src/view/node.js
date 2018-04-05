@@ -26,7 +26,7 @@ export default class Node {
 	 */
 	constructor() {
 		/**
-		 * Parent element. Null by default. Set by {@link module:engine/view/element~Element#_insertChildren}.
+		 * Parent element. Null by default. Set by {@link module:engine/view/element~Element#_insertChild}.
 		 *
 		 * @readonly
 		 * @member {module:engine/view/element~Element|module:engine/view/documentfragment~DocumentFragment|null}

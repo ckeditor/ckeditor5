@@ -30,7 +30,7 @@ describe( 'Node', () => {
 
 		doc = model.document;
 		root = doc.createRoot();
-		root._appendChildren( [ one, two, three ] );
+		root._appendChild( [ one, two, three ] );
 	} );
 
 	describe( 'should have a correct property', () => {
@@ -91,7 +91,7 @@ describe( 'Node', () => {
 
 			// DocumentFragment does not have document property, so node's document property should be null.
 			const docFrag = new DocumentFragment();
-			docFrag._appendChildren( node );
+			docFrag._appendChild( node );
 			expect( node ).to.have.property( 'document' ).that.is.null;
 		} );
 	} );
@@ -149,7 +149,7 @@ describe( 'Node', () => {
 	describe( '_remove()', () => {
 		it( 'should remove node from it\'s parent', () => {
 			const element = new Element( 'p' );
-			element._appendChildren( node );
+			element._appendChild( node );
 
 			node._remove();
 
@@ -357,7 +357,7 @@ describe( 'Node', () => {
 			const otherRoot = new Element( 'root' );
 			const otherElement = new Element( 'element' );
 
-			otherRoot._appendChildren( otherElement );
+			otherRoot._appendChild( otherElement );
 
 			expect( otherElement.isBefore( three ) ).to.be.false;
 		} );
@@ -395,7 +395,7 @@ describe( 'Node', () => {
 			const otherRoot = new Element( 'root' );
 			const otherElement = new Element( 'element' );
 
-			otherRoot._appendChildren( otherElement );
+			otherRoot._appendChild( otherElement );
 
 			expect( three.isAfter( otherElement ) ).to.be.false;
 		} );

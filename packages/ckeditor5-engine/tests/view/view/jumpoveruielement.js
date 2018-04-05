@@ -89,7 +89,7 @@ describe( 'View', () => {
 			it( 'do nothing when another key is pressed', () => {
 				// <container:p>foo<ui:span>xxx</ui:span>{}bar</container:p>
 				const p = new ViewContainerElement( 'p', null, [ foo, ui, bar ] );
-				viewRoot._appendChildren( p );
+				viewRoot._appendChild( p );
 
 				view.change( writer => {
 					writer.setSelection( [ ViewRange.createFromParentsAndOffsets( bar, 0, bar, 0 ) ] );
@@ -107,7 +107,7 @@ describe( 'View', () => {
 			it( 'jump over ui element when right arrow is pressed before ui element - directly before ui element', () => {
 				// <container:p>foo[]<ui:span>xxx</ui:span>bar</container:p>
 				const p = new ViewContainerElement( 'p', null, [ foo, ui, bar ] );
-				viewRoot._appendChildren( p );
+				viewRoot._appendChild( p );
 
 				view.change( writer => {
 					writer.setSelection( [ ViewRange.createFromParentsAndOffsets( p, 1, p, 1 ) ] );
@@ -127,7 +127,7 @@ describe( 'View', () => {
 			it( 'jump over ui element when right arrow is pressed before ui element - not directly before ui element', () => {
 				// <container:p>foo{}<ui:span>xxx</ui:span>bar</container:p>
 				const p = new ViewContainerElement( 'p', null, [ foo, ui, bar ] );
-				viewRoot._appendChildren( p );
+				viewRoot._appendChild( p );
 
 				view.change( writer => {
 					writer.setSelection( [ ViewRange.createFromParentsAndOffsets( foo, 3, foo, 3 ) ] );
@@ -147,7 +147,7 @@ describe( 'View', () => {
 			it( 'jump over multiple ui elements when right arrow is pressed before ui element', () => {
 				// <container:p>foo{}<ui:span>xxx</ui:span><ui:span>yyy</ui:span>bar</container:p>'
 				const p = new ViewContainerElement( 'p', null, [ foo, ui, ui2, bar ] );
-				viewRoot._appendChildren( p );
+				viewRoot._appendChild( p );
 
 				view.change( writer => {
 					writer.setSelection( [ ViewRange.createFromParentsAndOffsets( foo, 3, foo, 3 ) ] );
@@ -170,8 +170,8 @@ describe( 'View', () => {
 				const div = new ViewContainerElement( 'div' );
 
 				view.change( writer => {
-					viewRoot._appendChildren( p );
-					viewRoot._appendChildren( div );
+					viewRoot._appendChild( p );
+					viewRoot._appendChild( div );
 					writer.setSelection( [ ViewRange.createFromParentsAndOffsets( foo, 3, foo, 3 ) ] );
 				} );
 
@@ -190,7 +190,7 @@ describe( 'View', () => {
 				// <container:p><attribute:b>foo{}</attribute:b><ui:span>xxx</ui:span>bar</container:p>
 				const b = new ViewAttribtueElement( 'b', null, foo );
 				const p = new ViewContainerElement( 'p', null, [ b, ui, bar ] );
-				viewRoot._appendChildren( p );
+				viewRoot._appendChild( p );
 
 				view.change( writer => {
 					writer.setSelection( ViewRange.createFromParentsAndOffsets( foo, 3, foo, 3 ) );
@@ -211,7 +211,7 @@ describe( 'View', () => {
 				// <container:p><attribute:b>foo[]</attribute:b><ui:span>xxx</ui:span>bar</container:p>
 				const b = new ViewAttribtueElement( 'b', null, foo );
 				const p = new ViewContainerElement( 'p', null, [ b, ui, bar ] );
-				viewRoot._appendChildren( p );
+				viewRoot._appendChild( p );
 
 				view.change( writer => {
 					writer.setSelection( ViewRange.createFromParentsAndOffsets( b, 1, b, 1 ) );
@@ -242,7 +242,7 @@ describe( 'View', () => {
 				const i = new ViewAttribtueElement( 'i', null, b );
 				const p = new ViewContainerElement( 'p', null, [ i, ui, bar ] );
 
-				viewRoot._appendChildren( p );
+				viewRoot._appendChild( p );
 
 				view.change( writer => {
 					writer.setSelection( ViewRange.createFromParentsAndOffsets( foo, 3, foo, 3 ) );
@@ -272,7 +272,7 @@ describe( 'View', () => {
 				const b2 = new ViewAttribtueElement( 'b' );
 				const p = new ViewContainerElement( 'p', null, [ foo, b1, ui, ui2, b2, bar ] );
 
-				viewRoot._appendChildren( p );
+				viewRoot._appendChild( p );
 
 				view.change( writer => {
 					writer.setSelection( ViewRange.createFromParentsAndOffsets( foo, 3, foo, 3 ) );
@@ -303,7 +303,7 @@ describe( 'View', () => {
 				const b2 = new ViewAttribtueElement( 'b' );
 				const p = new ViewContainerElement( 'p', null, [ foo, b1, ui, ui2, b2, bar ] );
 
-				viewRoot._appendChildren( p );
+				viewRoot._appendChild( p );
 
 				view.change( writer => {
 					writer.setSelection( ViewRange.createFromParentsAndOffsets( foo, 3, foo, 3 ) );
@@ -382,7 +382,7 @@ describe( 'View', () => {
 				// <container:p>fo{o}<ui:span>xxx</ui:span>bar</container:p>
 				const p = new ViewContainerElement( 'p', null, [ foo, ui, bar ] );
 
-				viewRoot._appendChildren( p );
+				viewRoot._appendChild( p );
 
 				view.change( writer => {
 					writer.setSelection( ViewRange.createFromParentsAndOffsets( foo, 2, foo, 3 ) );
@@ -410,7 +410,7 @@ describe( 'View', () => {
 				const b = new ViewAttribtueElement( 'b', null, foo );
 				const i = new ViewAttribtueElement( 'i', null, b );
 				const p = new ViewContainerElement( 'p', null, [ i, ui, bar ] );
-				viewRoot._appendChildren( p );
+				viewRoot._appendChild( p );
 
 				view.change( writer => {
 					writer.setSelection( ViewRange.createFromParentsAndOffsets( foo, 2, foo, 3 ) );
@@ -439,7 +439,7 @@ describe( 'View', () => {
 				const b1 = new ViewAttribtueElement( 'b' );
 				const b2 = new ViewAttribtueElement( 'b' );
 				const p = new ViewContainerElement( 'p', null, [ foo, b1, ui, ui2, b2, bar ] );
-				viewRoot._appendChildren( p );
+				viewRoot._appendChild( p );
 
 				view.change( writer => {
 					writer.setSelection( ViewRange.createFromParentsAndOffsets( foo, 2, foo, 3 ) );

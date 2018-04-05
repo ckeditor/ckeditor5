@@ -337,7 +337,7 @@ export function parse( data, options = {} ) {
 		const nodes = view._removeChildren( 0, view.childCount );
 
 		root._removeChildren( 0, root.childCount );
-		root._appendChildren( nodes );
+		root._appendChild( nodes );
 
 		view = root;
 	}
@@ -924,7 +924,7 @@ function _convertViewElements( rootNode ) {
 				throw new Error( 'Parse error - cannot parse inside UIElement.' );
 			}
 
-			convertedElement._appendChildren( _convertViewElements( child ) );
+			convertedElement._appendChild( _convertViewElements( child ) );
 		}
 
 		return convertedElement;

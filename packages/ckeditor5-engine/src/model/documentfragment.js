@@ -52,7 +52,7 @@ export default class DocumentFragment {
 		this._children = new NodeList();
 
 		if ( children ) {
-			this._insertChildren( 0, children );
+			this._insertChild( 0, children );
 		}
 	}
 
@@ -261,13 +261,13 @@ export default class DocumentFragment {
 	}
 
 	/**
-	 * {@link #_insertChildren Inserts} one or more nodes at the end of this document fragment.
+	 * {@link #_insertChild Inserts} one or more nodes at the end of this document fragment.
 	 *
 	 * @protected
 	 * @param {module:engine/model/item~Item|Iterable.<module:engine/model/item~Item>} items Items to be inserted.
 	 */
-	_appendChildren( items ) {
-		this._insertChildren( this.childCount, items );
+	_appendChild( items ) {
+		this._insertChild( this.childCount, items );
 	}
 
 	/**
@@ -278,7 +278,7 @@ export default class DocumentFragment {
 	 * @param {Number} index Index at which nodes should be inserted.
 	 * @param {module:engine/model/item~Item|Iterable.<module:engine/model/item~Item>} items Items to be inserted.
 	 */
-	_insertChildren( index, items ) {
+	_insertChild( index, items ) {
 		const nodes = normalize( items );
 
 		for ( const node of nodes ) {

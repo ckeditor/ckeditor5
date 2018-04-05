@@ -1077,7 +1077,7 @@ describe( 'DocumentSelection', () => {
 			documentSelection._setTo( viewDocument.selection );
 			const root = createViewRoot( viewDocument, 'div', 'main' );
 			const element = new Element( 'p' );
-			root._appendChildren( element );
+			root._appendChild( element );
 
 			documentSelection._setTo( Range.createFromParentsAndOffsets( element, 0, element, 0 ) );
 

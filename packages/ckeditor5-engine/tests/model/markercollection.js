@@ -241,7 +241,7 @@ describe( 'Marker', () => {
 	} );
 
 	it( 'should provide API that returns up-to-date marker range parameters', () => {
-		root._appendChildren( new Text( 'foo' ) );
+		root._appendChild( new Text( 'foo' ) );
 
 		const range = Range.createFromParentsAndOffsets( root, 1, root, 2 );
 		const marker = model.markers._set( 'name', range );
