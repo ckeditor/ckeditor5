@@ -133,7 +133,7 @@ export default class Conversion {
 	 *			model: 'fancyParagraph',
 	 *			view: {
 	 *				name: 'p',
-	 *				class: 'fancy'
+	 *				classes: 'fancy'
 	 *			}
 	 *		} );
 	 *
@@ -145,7 +145,7 @@ export default class Conversion {
 	 *				'div',
 	 *				{
 	 *					// Any element with `display: block` style.
-	 *					style: {
+	 *					styles: {
 	 *						display: 'block'
 	 *					}
 	 *				}
@@ -177,7 +177,7 @@ export default class Conversion {
 	 *					// Those properties will be "consumed" during conversion.
 	 *					// See `engine.view.Matcher~MatcherPattern` and `engine.view.Matcher#match` for more.
 	 *
-	 *					return { name: true, style: [ 'font-size' ] };
+	 *					return { name: true, styles: [ 'font-size' ] };
 	 *				}
 	 *
 	 *				return null;
@@ -220,7 +220,7 @@ export default class Conversion {
 	 *			model: 'bold',
 	 *			view: {
 	 *				name: 'span',
-	 *				class: 'bold'
+	 *				classes: 'bold'
 	 *			}
 	 *		} );
 	 *
@@ -235,13 +235,13 @@ export default class Conversion {
 	 *			view: {
 	 *				underline: {
 	 *					name: 'span',
-	 *					style: {
+	 *					styles: {
 	 *						'text-decoration': 'underline'
 	 *					}
 	 *				},
 	 *				lineThrough: {
 	 *					name: 'span',
-	 *					style: {
+	 *					styles: {
 	 *						'text-decoration': 'line-through'
 	 *					}
 	 *				}
@@ -256,11 +256,11 @@ export default class Conversion {
 	 *				'b',
 	 *				{
 	 *					name: 'span',
-	 *					class: 'bold'
+	 *					classes: 'bold'
 	 *				},
 	 *				{
 	 *					name: 'span',
-	 *					style: {
+	 *					styles: {
 	 *						'font-weight': 'bold'
 	 *					}
 	 *				},
@@ -274,7 +274,7 @@ export default class Conversion {
 	 *
 	 *						return {
 	 *							name: true,
-	 *							style: [ 'font-weight' ]
+	 *							styles: [ 'font-weight' ]
 	 *						};
 	 *					}
 	 *				}
@@ -291,13 +291,13 @@ export default class Conversion {
 	 *			view: {
 	 *				big: {
 	 *					name: 'span',
-	 *					style: {
+	 *					styles: {
 	 *						'font-size': '1.2em'
 	 *					}
 	 *				},
 	 *				small: {
 	 *					name: 'span',
-	 *					style: {
+	 *					styles: {
 	 *						'font-size': '0.8em'
 	 *					}
 	 *				}
@@ -323,7 +323,7 @@ export default class Conversion {
 	 *						// Those properties will be "consumed" during conversion.
 	 *						// See `engine.view.Matcher~MatcherPattern` and `engine.view.Matcher#match` for more.
 	 *
-	 *						return { name: true, style: [ 'font-size' ] };
+	 *						return { name: true, styles: [ 'font-size' ] };
 	 *					}
 	 *
 	 *					return null;
@@ -348,7 +348,7 @@ export default class Conversion {
 	 *						// Those properties will be "consumed" during conversion.
 	 *						// See `engine.view.Matcher~MatcherPattern` and `engine.view.Matcher#match` for more.
 	 *
-	 *						return { name: true, style: [ 'font-size' ] };
+	 *						return { name: true, styles: [ 'font-size' ] };
 	 *					}
 	 *
 	 *					return null;
@@ -440,12 +440,12 @@ export default class Conversion {
 	 *			},
 	 *			upcastAlso: {
 	 *				right: {
-	 *					style: {
+	 *					styles: {
 	 *						'text-align': 'right'
 	 *					}
 	 *				},
 	 *				center: {
-	 *					style: {
+	 *					styles: {
 	 *						'text-align': 'center'
 	 *					}
 	 *				}

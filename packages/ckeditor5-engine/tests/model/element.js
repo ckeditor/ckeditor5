@@ -98,10 +98,10 @@ describe( 'Element', () => {
 		} );
 	} );
 
-	describe( '_insertChildren', () => {
+	describe( '_insertChild', () => {
 		it( 'should add a child to the element', () => {
 			const element = new Element( 'elem', [], new Text( 'xy' ) );
-			element._insertChildren( 1, new Text( 'foo' ) );
+			element._insertChild( 1, new Text( 'foo' ) );
 
 			expect( element.childCount ).to.equal( 2 );
 			expect( element.maxOffset ).to.equal( 5 );
@@ -111,7 +111,7 @@ describe( 'Element', () => {
 
 		it( 'should accept arrays and strings', () => {
 			const element = new Element( 'elem' );
-			element._insertChildren( 0, [ new Element( 'image' ), 'xy', new Element( 'list' ) ] );
+			element._insertChild( 0, [ new Element( 'image' ), 'xy', new Element( 'list' ) ] );
 
 			expect( element.childCount ).to.equal( 3 );
 			expect( element.maxOffset ).to.equal( 4 );
@@ -122,7 +122,7 @@ describe( 'Element', () => {
 
 		it( 'should accept strings', () => {
 			const element = new Element( 'div' );
-			element._insertChildren( 0, 'abc' );
+			element._insertChild( 0, 'abc' );
 
 			expect( element.childCount ).to.equal( 1 );
 			expect( element.maxOffset ).to.equal( 3 );
@@ -134,7 +134,7 @@ describe( 'Element', () => {
 			const text = new Text( 'abcxyz', { bold: true } );
 			const textProxy = new TextProxy( text, 2, 3 );
 
-			element._insertChildren( 0, textProxy );
+			element._insertChild( 0, textProxy );
 
 			expect( element.childCount ).to.equal( 1 );
 			expect( element.maxOffset ).to.equal( 3 );
@@ -144,16 +144,16 @@ describe( 'Element', () => {
 		} );
 	} );
 
-	describe( '_appendChildren', () => {
-		it( 'should use _insertChildren to add children at the end of the element', () => {
+	describe( '_appendChild', () => {
+		it( 'should use _insertChild to add children at the end of the element', () => {
 			const element = new Element( 'elem', [], new Text( 'xy' ) );
 
-			sinon.spy( element, '_insertChildren' );
+			sinon.spy( element, '_insertChild' );
 
 			const text = new Text( 'foo' );
-			element._appendChildren( text );
+			element._appendChild( text );
 
-			expect( element._insertChildren.calledWithExactly( 0, text ) );
+			expect( element._insertChild.calledWithExactly( 0, text ) );
 		} );
 	} );
 

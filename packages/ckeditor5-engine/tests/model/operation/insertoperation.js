@@ -78,7 +78,7 @@ describe( 'InsertOperation', () => {
 	} );
 
 	it( 'should insert between existing nodes', () => {
-		root._insertChildren( 0, new Text( 'xy' ) );
+		root._insertChild( 0, new Text( 'xy' ) );
 
 		model.applyOperation( wrapInDelta(
 			new InsertOperation(

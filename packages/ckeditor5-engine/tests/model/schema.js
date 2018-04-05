@@ -1501,7 +1501,7 @@ describe( 'Schema', () => {
 			const text = new Text( 'foo', { a: 1, b: 1 } );
 			const image = new Element( 'image', { a: 1, b: 1 } );
 
-			root._appendChildren( [ text, image ] );
+			root._appendChild( [ text, image ] );
 
 			model.change( writer => {
 				schema.removeDisallowedAttributes( root.getChildren(), writer );
@@ -1548,7 +1548,7 @@ describe( 'Schema', () => {
 			const paragraph = new Element( 'paragraph', [], [ foo, imageInParagraph ] );
 			const div = new Element( 'div', [], [ paragraph, bar, imageInDiv ] );
 
-			root._appendChildren( [ div ] );
+			root._appendChild( [ div ] );
 
 			model.change( writer => {
 				schema.removeDisallowedAttributes( root.getChildren(), writer );
@@ -1612,7 +1612,7 @@ describe( 'Schema', () => {
 				} );
 
 				const div = new Element( 'div' );
-				root1._appendChildren( div );
+				root1._appendChild( div );
 
 				const div2 = new Element( 'div' );
 
@@ -1626,7 +1626,7 @@ describe( 'Schema', () => {
 				} );
 
 				const div = new Element( 'div' );
-				root1._appendChildren( div );
+				root1._appendChild( div );
 
 				expect( schema.checkChild( div, div ) ).to.be.true;
 			} );
@@ -2063,7 +2063,7 @@ describe( 'Schema', () => {
 			it( 'does not break when trying to check registered child in a context which contains non-registered elements', () => {
 				const foo404 = new Element( 'foo404' );
 
-				root1._appendChildren( foo404 );
+				root1._appendChild( foo404 );
 
 				schema.register( '$root' );
 				schema.register( '$text', {
@@ -2452,7 +2452,7 @@ describe( 'Schema', () => {
 			// Edge case because p>p should not exist in the first place.
 			// But it's good to know that it blocks also this.
 			const p = new Element( 'p' );
-			r1p1._appendChildren( p );
+			r1p1._appendChild( p );
 
 			expect( schema.checkChild( p, '$text' ) ).to.be.false;
 		} );
@@ -2746,7 +2746,7 @@ describe( 'SchemaContext', () => {
 		it( 'filters out DocumentFragment when it is a first item of context - element', () => {
 			const p = new Element( 'paragraph' );
 			const docFrag = new DocumentFragment();
-			docFrag._appendChildren( p );
+			docFrag._appendChild( p );
 
 			const ctx = new SchemaContext( p );
 
@@ -2757,7 +2757,7 @@ describe( 'SchemaContext', () => {
 		it( 'filters out DocumentFragment when it is a first item of context - position', () => {
 			const p = new Element( 'paragraph' );
 			const docFrag = new DocumentFragment();
-			docFrag._appendChildren( p );
+			docFrag._appendChild( p );
 
 			const ctx = new SchemaContext( new Position( docFrag, [ 0, 0 ] ) );
 

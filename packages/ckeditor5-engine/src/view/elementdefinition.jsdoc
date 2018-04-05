@@ -12,7 +12,7 @@
  *
  *		const viewDefinition = {
  *			name: 'h1',
- *			class: [ 'foo', 'bar' ]
+ *			classes: [ 'foo', 'bar' ]
  *		};
  *
  * Above describes a view element:
@@ -23,11 +23,11 @@
  *
  *      const viewDefinition = {
  *          name: 'span',
- *          style: {
+ *          styles: {
  *              'font-size': '12px',
  *              'font-weight': 'bold'
  *          },
- *          attribute: {
+ *          attributes: {
  *              'data-id': '123'
  *          }
  *      };
@@ -49,10 +49,10 @@
  * @typedef {String|Object} module:engine/view/elementdefinition~ElementDefinition
  *
  * @property {String} name View element name.
- * @property {String|Array.<String>} [class] Class name or array of class names to match. Each name can be
+ * @property {String|Array.<String>} [classes] Class name or array of class names to match. Each name can be
  * provided in a form of string.
- * @property {Object} [style] Object with key-value pairs representing styles. Each object key represents style name.
+ * @property {Object} [styles] Object with key-value pairs representing styles. Each object key represents style name.
  * Value under that key must be a string.
- * @property {Object} [attribute] Object with key-value pairs representing attributes. Each object key represents
+ * @property {Object} [attributes] Object with key-value pairs representing attributes. Each object key represents
  * attribute name. Value under that key must be a string.
  */

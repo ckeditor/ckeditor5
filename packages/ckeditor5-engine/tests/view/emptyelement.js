@@ -54,18 +54,18 @@ describe( 'EmptyElement', () => {
 		} ).to.throw( CKEditorError, 'view-emptyelement-cannot-add: Cannot add child nodes to EmptyElement instance.' );
 	} );
 
-	describe( '_appendChildren', () => {
+	describe( '_appendChild', () => {
 		it( 'should throw when try to append new child element', () => {
 			expect( () => {
-				emptyElement._appendChildren( element );
+				emptyElement._appendChild( element );
 			} ).to.throw( CKEditorError, 'view-emptyelement-cannot-add: Cannot add child nodes to EmptyElement instance.' );
 		} );
 	} );
 
-	describe( '_insertChildren', () => {
+	describe( '_insertChild', () => {
 		it( 'should throw when try to insert new child element', () => {
 			expect( () => {
-				emptyElement._insertChildren( 0, element );
+				emptyElement._insertChild( 0, element );
 			} ).to.throw( CKEditorError, 'view-emptyelement-cannot-add: Cannot add child nodes to EmptyElement instance.' );
 		} );
 	} );

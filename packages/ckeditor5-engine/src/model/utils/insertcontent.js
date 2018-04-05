@@ -382,7 +382,7 @@ class Insertion {
 		// cause that would lead to an infinite loop. The paragraph would be rejected in
 		// the next _handleNode() call and we'd be here again.
 		if ( this._getAllowedIn( paragraph, this.position.parent ) && this.schema.checkChild( paragraph, node ) ) {
-			paragraph._appendChildren( node );
+			paragraph._appendChild( node );
 			this._handleNode( paragraph, context );
 		}
 	}

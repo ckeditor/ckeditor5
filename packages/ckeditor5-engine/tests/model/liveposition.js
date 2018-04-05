@@ -26,7 +26,7 @@ describe( 'LivePosition', () => {
 		ul = new Element( 'ul', [], [ li1, li2 ] );
 		p = new Element( 'p', [], new Text( 'qwerty' ) );
 
-		root._insertChildren( 0, [ p, ul ] );
+		root._insertChild( 0, [ p, ul ] );
 	} );
 
 	afterEach( () => {

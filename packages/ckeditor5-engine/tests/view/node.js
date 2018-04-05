@@ -313,7 +313,7 @@ describe( 'Node', () => {
 			const otherRoot = new Element( 'root' );
 			const otherElement = new Element( 'element' );
 
-			otherRoot._appendChildren( otherElement );
+			otherRoot._appendChild( otherElement );
 
 			expect( otherElement.isBefore( three ) ).to.be.false;
 		} );
@@ -351,7 +351,7 @@ describe( 'Node', () => {
 			const otherRoot = new Element( 'root' );
 			const otherElement = new Element( 'element' );
 
-			otherRoot._appendChildren( otherElement );
+			otherRoot._appendChild( otherElement );
 
 			expect( three.isAfter( otherElement ) ).to.be.false;
 		} );
@@ -382,7 +382,7 @@ describe( 'Node', () => {
 		it( 'should prevent circular reference when stringifying a node', () => {
 			const char = new Text( 'a' );
 			const parent = new Element( 'p', null );
-			parent._appendChildren( char );
+			parent._appendChild( char );
 
 			const json = JSON.stringify( char );
 			const parsed = JSON.parse( json );
@@ -405,7 +405,7 @@ describe( 'Node', () => {
 			img = new Element( 'img', { 'src': 'img.png' } );
 
 			root = new Element( 'p', { renderer: { markToSync: rootChangeSpy } } );
-			root._appendChildren( [ text, img ] );
+			root._appendChild( [ text, img ] );
 
 			root.on( 'change:children', ( evt, node ) => rootChangeSpy( 'children', node ) );
 			root.on( 'change:attributes', ( evt, node ) => rootChangeSpy( 'attributes', node ) );
@@ -452,18 +452,18 @@ describe( 'Node', () => {
 			} );
 		} );
 
-		describe( '_insertChildren()', () => {
+		describe( '_insertChild()', () => {
 			it( 'should fire change event', () => {
-				root._insertChildren( 1, new Element( 'img' ) );
+				root._insertChild( 1, new Element( 'img' ) );
 
 				sinon.assert.calledOnce( rootChangeSpy );
 				sinon.assert.calledWith( rootChangeSpy, 'children', root );
 			} );
 		} );
 
-		describe( '_appendChildren()', () => {
+		describe( '_appendChild()', () => {
 			it( 'should fire change event', () => {
-				root._appendChildren( new Element( 'img' ) );
+				root._appendChild( new Element( 'img' ) );
 
 				sinon.assert.calledOnce( rootChangeSpy );
 				sinon.assert.calledWith( rootChangeSpy, 'children', root );

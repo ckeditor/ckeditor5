@@ -232,7 +232,7 @@ describe( 'upcast-helpers', () => {
 			const helper = upcastElementToAttribute( {
 				view: {
 					name: 'span',
-					style: {
+					styles: {
 						'font-size': /[\s\S]+/
 					}
 				},
@@ -304,12 +304,12 @@ describe( 'upcast-helpers', () => {
 		it( 'should allow two converters to convert attributes on the same element', () => {
 			const helperA = upcastElementToAttribute( {
 				model: 'attribA',
-				view: { name: 'span', class: 'attrib-a' }
+				view: { name: 'span', classes: 'attrib-a' }
 			} );
 
 			const helperB = upcastElementToAttribute( {
 				model: 'attribB',
-				view: { name: 'span', style: { color: 'attrib-b' } }
+				view: { name: 'span', styles: { color: 'attrib-b' } }
 			} );
 
 			conversion.for( 'upcast' ).add( helperA ).add( helperB );
@@ -333,7 +333,7 @@ describe( 'upcast-helpers', () => {
 
 			const helperB = upcastElementToAttribute( {
 				model: 'attribB',
-				view: { name: 'strong', class: 'foo' }
+				view: { name: 'strong', classes: 'foo' }
 			} );
 
 			conversion.for( 'upcast' ).add( helperBold ).add( helperA ).add( helperB );

@@ -20,7 +20,7 @@ describe( 'Bug ckeditor5-engine@1323', () => {
 			model = new Model();
 			editing = new EditingController( model );
 			root = model.document.createRoot();
-			root._appendChildren( new ModelText( 'foo' ) );
+			root._appendChild( new ModelText( 'foo' ) );
 			range = ModelRange.createFromParentsAndOffsets( root, 0, root, 0 );
 		} );
 

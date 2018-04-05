@@ -225,7 +225,7 @@ export function getFilledDocument() {
 	const doc = model.document;
 	const root = doc.createRoot();
 
-	root._insertChildren( 0, [
+	root._insertChild( 0, [
 		new Element( 'x' ),
 		new Element( 'x' ),
 		new Element( 'x', [], new Text( 'a' ) ),

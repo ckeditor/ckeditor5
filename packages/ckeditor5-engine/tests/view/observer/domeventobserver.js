@@ -182,7 +182,7 @@ describe( 'DomEventObserver', () => {
 			const viewRoot = createViewRoot( viewDocument );
 			view.attachDomRoot( domRoot );
 			uiElement = createUIElement( 'p' );
-			viewRoot._appendChildren( uiElement );
+			viewRoot._appendChild( uiElement );
 			view.render();
 
 			domEvent = new MouseEvent( 'click', { bubbles: true } );

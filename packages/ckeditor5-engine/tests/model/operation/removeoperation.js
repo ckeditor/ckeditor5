@@ -58,7 +58,7 @@ describe( 'RemoveOperation', () => {
 	} );
 
 	it( 'should be able to remove set of nodes and append them to graveyard root', () => {
-		root._insertChildren( 0, new Text( 'fozbar' ) );
+		root._insertChild( 0, new Text( 'fozbar' ) );
 
 		model.applyOperation( wrapInDelta(
 			new RemoveOperation(
@@ -115,7 +115,7 @@ describe( 'RemoveOperation', () => {
 		const operation = new RemoveOperation( position, 3, new Position( doc.graveyard, [ 0 ] ), 0 );
 		const reverse = operation.getReversed();
 
-		root._insertChildren( 0, new Text( 'bar' ) );
+		root._insertChild( 0, new Text( 'bar' ) );
 
 		model.applyOperation( wrapInDelta( operation ) );
 
@@ -130,7 +130,7 @@ describe( 'RemoveOperation', () => {
 	} );
 
 	it( 'should properly remove a node that is already in a graveyard', () => {
-		doc.graveyard._appendChildren( [ new Element( 'x' ), new Element( 'y' ), new Element( 'z' ) ] );
+		doc.graveyard._appendChild( [ new Element( 'x' ), new Element( 'y' ), new Element( 'z' ) ] );
 
 		const position = new Position( doc.graveyard, [ 2 ] );
 		const operation = new RemoveOperation( position, 1, new Position( doc.graveyard, [ 0 ] ), 0 );
@@ -148,7 +148,7 @@ describe( 'RemoveOperation', () => {
 			const docFrag = new DocumentFragment();
 			const item = new Element( 'foo' );
 
-			docFrag._appendChildren( [ item ] );
+			docFrag._appendChild( [ item ] );
 
 			const op = new RemoveOperation(
 				new Position( docFrag, [ 0 ] ),

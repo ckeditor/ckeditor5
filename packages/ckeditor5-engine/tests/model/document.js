@@ -342,7 +342,7 @@ describe( 'Document', () => {
 			const spy = sinon.spy();
 
 			const root = doc.getRoot();
-			root._appendChildren( new Text( 'foo' ) );
+			root._appendChild( new Text( 'foo' ) );
 
 			doc.on( 'change', spy );
 

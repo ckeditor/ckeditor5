@@ -52,11 +52,11 @@ export default class UIElement extends Element {
 	}
 
 	/**
-	 * Overrides {@link module:engine/view/element~Element#_insertChildren} method.
+	 * Overrides {@link module:engine/view/element~Element#_insertChild} method.
 	 * Throws {@link module:utils/ckeditorerror~CKEditorError CKEditorError} `view-uielement-cannot-add` to prevent adding any child nodes
 	 * to UIElement.
 	 */
-	_insertChildren( index, nodes ) {
+	_insertChild( index, nodes ) {
 		if ( nodes && ( nodes instanceof Node || Array.from( nodes ).length > 0 ) ) {
 			/**
 			 * Cannot add children to {@link module:engine/view/uielement~UIElement}.
