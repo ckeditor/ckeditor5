@@ -47,7 +47,7 @@ export default class LinkEditing extends Plugin {
 			.add( upcastElementToAttribute( {
 				view: {
 					name: 'a',
-					attribute: {
+					attributes: {
 						href: true
 					}
 				},
@@ -80,7 +80,7 @@ export default class LinkEditing extends Plugin {
 		const doc = model.document;
 		const highlightDescriptor = {
 			id: 'linkBoundaries',
-			class: [
+			classes: [
 				'ck',
 				'ck-link_selected'
 			],
