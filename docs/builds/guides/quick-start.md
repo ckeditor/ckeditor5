@@ -181,7 +181,7 @@ Load the document editor build (here [CDN](https://cdn.ckeditor.com/) location i
 <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/decoupled-document/ckeditor.js"></script>
 ```
 
-Call the {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledDocumentEditor.create()`} method. The decoupled editor requires you to inject the toolbar into DOM and the best place to do that is somewhere in the promise chain (e.g. one of the `then( () => { ... } )` blocks).
+Call the {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`} method. The decoupled editor requires you to inject the toolbar into DOM and the best place to do that is somewhere in the promise chain (e.g. one of the `then( () => { ... } )` blocks).
 
 <info-box>
 	The following snippet will run the document editor but to make the most of it check out the {@link framework/guides/document-editor comprehensive tutorial} which explains step—by—step how to configure and style the the application for the best editing experience.
@@ -189,7 +189,7 @@ Call the {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `
 
 ```html
 <script>
-	DecoupledDocumentEditor
+	DecoupledEditor
 		.create( document.querySelector( '#editor' ) )
 		.then( editor => {
 			const toolbarContainer = document.querySelector( '#toolbar-container' );
@@ -224,7 +224,7 @@ Call the {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `
 	</div>
 
 	<script>
-		DecoupledDocumentEditor
+		DecoupledEditor
 			.create( document.querySelector( '#editor' ) )
 			.then( editor => {
 				const toolbarContainer = document.querySelector( '#toolbar-container' );
