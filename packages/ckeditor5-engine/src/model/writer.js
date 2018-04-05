@@ -884,7 +884,6 @@ export default class Writer {
 	 * @param {module:engine/model/range~Range} [options.range] Marker range to update.
 	 * @param {Boolean} [options.usingOperation] Flag indicated whether the marker should be added by MarkerOperation.
 	 * See {@link module:engine/model/markercollection~Marker#managedUsingOperations}.
-	 * @returns {module:engine/model/markercollection~Marker} Marker that was set.
 	 */
 	updateMarker( markerOrName, options ) {
 		this._assertWriterUsedCorrectly();
@@ -902,30 +901,43 @@ export default class Writer {
 			throw new CKEditorError( 'writer-updateMarker-marker-not-exists: Marker with provided name does not exists.' );
 		}
 
-		const range = options && options.range;
-
+		const newRange = options && options.range;
 		const hasUsingOperationDefined = !!options && typeof options.usingOperation == 'boolean';
-		const usingOperation = !!options && !!options.usingOperation; // : currentMarker.managedUsingOperations;
 
-		if ( !usingOperation ) {
-			// If marker changes to a marker that do not use operations then we need to create additional operation
-			// that removes that marker first.
-			if ( hasUsingOperationDefined && currentMarker.managedUsingOperations ) {
-				applyMarkerOperation( this, markerName, currentMarker.getRange(), null );
+		if ( !hasUsingOperationDefined && !newRange ) {
+			/**
+			 * One of options is required - provide range or usingOperations.
+			 *
+			 * @error writer-updateMarker-wrong-options
+			 */
+			throw new CKEditorError( 'writer-updateMarker-wrong-options: One of options is required - provide range or usingOperations.' );
+		}
+
+		if ( hasUsingOperationDefined && options.usingOperation !== currentMarker.managedUsingOperations ) {
+			// The marker type is changed so it's necessary to create proper operations.
+			if ( options.usingOperation ) {
+				// If marker changes to a managed one treat this as synchronizing existing marker.
+				// If marker changes to a managed one treat this as synchronizing existing marker.
+				// Create `MarkerOperation` with `oldRange` set to `null`, so reverse operation will remove the marker.
+				applyMarkerOperation( this, markerName, null, newRange ? newRange : currentMarker.getRange() );
+			} else {
+				// If marker changes to a marker that do not use operations then we need to create additional operation
+				// that removes that marker first.
+				const currentRange = currentMarker.getRange();
+				applyMarkerOperation( this, markerName, currentRange, null );
+
+				// Although not managed the marker itself should stay in model and its range should be preserver or changed to passed range.
+				this.model.markers._set( markerName, newRange ? newRange : currentRange );
 			}
-
-			this.model.markers._set( markerName, range, hasUsingOperationDefined ? usingOperation : currentMarker.managedUsingOperations );
 
 			return;
 		}
 
-		if ( !range ) {
-			// If `range` is not given, treat this as synchronizing existing marker.
-			// Create `MarkerOperation` with `oldRange` set to `null`, so reverse operation will remove the marker.
-			applyMarkerOperation( this, markerName, null, currentMarker.getRange() );
+		// Marker's type doesn't change so update it accordingly.
+		if ( currentMarker.managedUsingOperations ) {
+			applyMarkerOperation( this, markerName, currentMarker.getRange(), newRange );
 		} else {
-			// Just change marker range.
-			applyMarkerOperation( this, markerName, currentMarker.getRange(), range );
+			this.model.markers._set( markerName, newRange );
 		}
 	}
 
