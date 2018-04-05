@@ -13,7 +13,7 @@
 	--ck-color-widget-editable-focused-background: var(--ck-color-base-background),
 }
 
-.ck.ck-widget {
+.ck .ck-widget {
 	margin: var(--ck-spacing-standard) 0;
 	padding: 0;
 
