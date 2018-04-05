@@ -215,7 +215,7 @@ describe( 'Image converters', () => {
 			} );
 
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="ck ck-widget image" contenteditable="false"><img alt="foo bar" src=""></img></figure>'
+				'<figure class="ck-widget image" contenteditable="false"><img alt="foo bar" src=""></img></figure>'
 			);
 		} );
 
@@ -228,7 +228,7 @@ describe( 'Image converters', () => {
 			} );
 
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="ck ck-widget image" contenteditable="false"><img src=""></img></figure>'
+				'<figure class="ck-widget image" contenteditable="false"><img src=""></img></figure>'
 			);
 		} );
 
@@ -241,7 +241,7 @@ describe( 'Image converters', () => {
 			} );
 
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="ck ck-widget image" contenteditable="false"><img alt="baz quix" src=""></img></figure>'
+				'<figure class="ck-widget image" contenteditable="false"><img alt="baz quix" src=""></img></figure>'
 			);
 		} );
 
@@ -253,7 +253,7 @@ describe( 'Image converters', () => {
 			setModelData( model, '<image src="" alt="foo bar"></image>' );
 
 			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<figure class="ck ck-widget image" contenteditable="false"><img src=""></img></figure>'
+				'<figure class="ck-widget image" contenteditable="false"><img src=""></img></figure>'
 			);
 		} );
 	} );
