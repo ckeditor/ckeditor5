@@ -157,7 +157,7 @@ describe( 'LinkEditing', () => {
 
 			expect( model.document.selection.hasAttribute( 'linkHref' ) ).to.be.true;
 			expect( getViewData( view ) ).to.equal(
-				'<p>foo <a class="ck ck-link_selected" href="url">b{}ar</a> baz</p>'
+				'<p>foo <a class="ck-link_selected" href="url">b{}ar</a> baz</p>'
 			);
 		} );
 
@@ -174,7 +174,7 @@ describe( 'LinkEditing', () => {
 
 			expect( model.document.selection.hasAttribute( 'linkHref' ) ).to.be.true;
 			expect( getViewData( view ) ).to.equal(
-				'<p>foo <a class="ck ck-link_selected" href="url">{}bar</a> baz</p>'
+				'<p>foo <a class="ck-link_selected" href="url">{}bar</a> baz</p>'
 			);
 		} );
 
@@ -185,7 +185,7 @@ describe( 'LinkEditing', () => {
 
 			expect( model.document.selection.hasAttribute( 'linkHref' ) ).to.be.true;
 			expect( getViewData( view ) ).to.equal(
-				'<p>foo <a class="ck ck-link_selected" href="url">bar{}</a> baz</p>'
+				'<p>foo <a class="ck-link_selected" href="url">bar{}</a> baz</p>'
 			);
 		} );
 
@@ -210,7 +210,7 @@ describe( 'LinkEditing', () => {
 			);
 
 			expect( getViewData( view ) ).to.equal(
-				'<p>foo <a class="ck ck-link_selected" href="url">li{}nk</a> baz</p>'
+				'<p>foo <a class="ck-link_selected" href="url">li{}nk</a> baz</p>'
 			);
 
 			model.change( writer => writer.setSelection( model.document.getRoot().getChild( 0 ), 0 ) );
@@ -226,13 +226,13 @@ describe( 'LinkEditing', () => {
 			);
 
 			expect( getViewData( view ) ).to.equal(
-				'<p>foo <a class="ck ck-link_selected" href="url">li{}nk</a> baz</p>'
+				'<p>foo <a class="ck-link_selected" href="url">li{}nk</a> baz</p>'
 			);
 
 			model.change( writer => writer.setSelection( model.document.getRoot().getChild( 0 ), 5 ) );
 
 			expect( getViewData( view ) ).to.equal(
-				'<p>foo <a class="ck ck-link_selected" href="url">l{}ink</a> baz</p>'
+				'<p>foo <a class="ck-link_selected" href="url">l{}ink</a> baz</p>'
 			);
 		} );
 
@@ -247,7 +247,7 @@ describe( 'LinkEditing', () => {
 				} );
 
 				expect( getViewData( view ) ).to.equal(
-					'<p>foo <a class="ck ck-link_selected" href="url">liFOO{}nk</a> baz</p>'
+					'<p>foo <a class="ck-link_selected" href="url">liFOO{}nk</a> baz</p>'
 				);
 			} );
 
@@ -264,7 +264,7 @@ describe( 'LinkEditing', () => {
 				} );
 
 				expect( getViewData( view ) ).to.equal(
-					'<p><a class="ck ck-link_selected" href="url">i{}nk</a> baz</p>'
+					'<p><a class="ck-link_selected" href="url">i{}nk</a> baz</p>'
 				);
 			} );
 
@@ -281,7 +281,7 @@ describe( 'LinkEditing', () => {
 				} );
 
 				expect( getViewData( view ) ).to.equal(
-					'<p>foo <a href="url">l</a><a class="ck ck-link_selected" href="new-url">i{}n</a><a href="url">k</a> baz</p>'
+					'<p>foo <a href="url">l</a><a class="ck-link_selected" href="new-url">i{}n</a><a href="url">k</a> baz</p>'
 				);
 			} );
 
@@ -298,7 +298,7 @@ describe( 'LinkEditing', () => {
 				} );
 
 				expect( getViewData( view ) ).to.equal(
-					'<p>foo <a class="ck ck-link_selected" href="url">l{in}k</a> baz</p>'
+					'<p>foo <a class="ck-link_selected" href="url">l{in}k</a> baz</p>'
 				);
 			} );
 
@@ -317,13 +317,13 @@ describe( 'LinkEditing', () => {
 				} );
 
 				expect( getViewData( view ) ).to.equal(
-					'<p><span>foo </span><a class="ck ck-link_selected" href="url"><span>l</span>i{}nk</a> baz</p>'
+					'<p><span>foo </span><a class="ck-link_selected" href="url"><span>l</span>i{}nk</a> baz</p>'
 				);
 
 				model.change( writer => writer.removeMarker( 'fooMarker' ) );
 
 				expect( getViewData( view ) ).to.equal(
-					'<p>foo <a class="ck ck-link_selected" href="url">li{}nk</a> baz</p>'
+					'<p>foo <a class="ck-link_selected" href="url">li{}nk</a> baz</p>'
 				);
 			} );
 		} );
