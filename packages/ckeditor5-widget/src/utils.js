@@ -53,7 +53,7 @@ export function isWidget( element ) {
  */
 export function toWidget( element, writer, options = {} ) {
 	writer.setAttribute( 'contenteditable', 'false', element );
-	writer.addClass( [ 'ck', WIDGET_CLASS_NAME ], element );
+	writer.addClass( WIDGET_CLASS_NAME, element );
 	writer.setCustomProperty( widgetSymbol, true, element );
 	element.getFillerOffset = getFillerOffset;
 
@@ -143,7 +143,7 @@ export function getLabel( element ) {
  * @returns {module:engine/view/editableelement~EditableElement} Returns same element that was provided in `editable` param.
  */
 export function toWidgetEditable( editable, writer ) {
-	writer.addClass( [ 'ck', 'ck-editor__editable', 'ck-editor__nested-editable' ], editable );
+	writer.addClass( [ 'ck-editor__editable', 'ck-editor__nested-editable' ], editable );
 
 	// Set initial contenteditable value.
 	writer.setAttribute( 'contenteditable', editable.isReadOnly ? 'false' : 'true', editable );

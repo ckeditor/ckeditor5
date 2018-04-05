@@ -139,7 +139,7 @@ describe( 'widget utils', () => {
 		} );
 
 		it( 'should add proper class', () => {
-			expect( element.hasClass( 'ck', 'ck-editor__editable', 'ck-editor__nested-editable' ) ).to.be.true;
+			expect( element.hasClass( 'ck-editor__editable', 'ck-editor__nested-editable' ) ).to.be.true;
 		} );
 
 		it( 'should add proper contenteditable value when element is read-only - initialization', () => {
