@@ -60,7 +60,7 @@ export default class DecoupledEditorUIView extends EditorUIView {
 			}
 		} );
 
-		this.registerChildren( [ this.toolbar, this.editable ] );
+		this.registerChild( [ this.toolbar, this.editable ] );
 	}
 
 	/**
