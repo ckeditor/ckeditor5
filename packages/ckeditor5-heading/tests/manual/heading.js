@@ -9,13 +9,14 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor'
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import Heading from '../../src/heading';
+import HeadingButtonsUI from '../../src/headingbuttonsui';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Enter, Typing, Undo, Heading, Paragraph ],
-		toolbar: [ 'heading', '|', 'undo', 'redo' ]
+		plugins: [ Enter, Typing, Undo, Heading, Paragraph, HeadingButtonsUI ],
+		toolbar: [ 'heading', '|', 'undo', 'redo', '|', 'heading1', 'heading2', 'heading3' ]
 	} )
 	.then( editor => {
 		window.editor = editor;
