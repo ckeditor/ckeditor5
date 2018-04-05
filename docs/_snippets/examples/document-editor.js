@@ -5,10 +5,10 @@
 
 /* globals console, window, document */
 
-import DecoupledDocumentEditor from '@ckeditor/ckeditor5-build-decoupled-document/src/ckeditor';
+import DecoupledEditor from '@ckeditor/ckeditor5-build-decoupled-document/src/ckeditor';
 import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config';
 
-DecoupledDocumentEditor
+DecoupledEditor
 	.create( document.querySelector( '.document-editor__editable' ), {
 		cloudServices: CS_CONFIG
 	} )
