@@ -38,7 +38,7 @@ export function attachPlaceholder( view, element, placeholderText, checkFunction
 		placeholderText,
 		checkFunction,
 
-		// Store information if 'ck' class is already present and don't remove it when detaching placeholder.
+		// Whether to remove the ck class when detaching the placeholder.
 		// https://github.com/ckeditor/ckeditor5-image/issues/198#issuecomment-377542222
 		removeCkClass: !element.hasClass( 'ck' )
 	} );
@@ -55,22 +55,18 @@ export function attachPlaceholder( view, element, placeholderText, checkFunction
  */
 export function detachPlaceholder( view, element ) {
 	const document = element.document;
-	let removeCkClass = false;
 
 	if ( documentPlaceholders.has( document ) ) {
 		const info = documentPlaceholders.get( document ).get( element );
-		removeCkClass = info.removeCkClass;
+		if ( info.removeCkClass ) {
+			view.change( writer => writer.removeClass( 'ck', element ) );
+		}
 
 		documentPlaceholders.get( document ).delete( element );
 	}
 
 	view.change( writer => {
 		writer.removeClass( 'ck-placeholder', element );
-
-		if ( removeCkClass ) {
-			writer.removeClass( 'ck', element );
-		}
-
 		writer.removeAttribute( 'data-placeholder', element );
 	} );
 }
