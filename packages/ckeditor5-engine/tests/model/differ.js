@@ -1324,7 +1324,7 @@ describe( 'Differ', () => {
 
 		// #1392.
 		it( 'remove is correctly transformed by multiple affecting changes', () => {
-			root._appendChildren( new Element( 'paragraph', null, new Text( 'xyz' ) ) );
+			root._appendChild( new Element( 'paragraph', null, new Text( 'xyz' ) ) );
 
 			model.change( () => {
 				rename( root.getChild( 1 ), 'heading' );
