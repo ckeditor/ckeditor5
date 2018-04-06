@@ -40,7 +40,6 @@ import DocumentSelection from './documentselection';
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import uid from '@ckeditor/ckeditor5-utils/src/uid';
 
 /**
  * The model can only be modified by using the writer. It should be used whenever you want to create a node, modify
@@ -206,7 +205,7 @@ export default class Writer {
 					markerRange.end._getCombined( rangeRootPosition, position )
 				);
 
-				this.setMarker( markerName, range, { usingOperation: true } );
+				this.addMarker( markerName, { range, usingOperation: true } );
 			}
 		}
 	}
@@ -772,6 +771,78 @@ export default class Writer {
 	}
 
 	/**
+	 * Adds a {@link module:engine/model/markercollection~Marker marker}. Marker is a named range, which tracks
+	 * changes in the document and updates its range automatically, when model tree changes.
+	 *
+	 * As the first parameter you can set marker name.
+	 *
+	 * The required `options.usingOperation` parameter lets you decide if the marker should be managed by operations or not. See
+	 * {@link module:engine/model/markercollection~Marker marker class description} to learn about the difference between
+	 * markers managed by operations and not-managed by operations.
+	 *
+	 * Create marker directly base on marker's name:
+	 *
+	 * 		addMarker( markerName, { range, usingOperation: false } );
+	 *
+	 * Create marker using operation:
+	 *
+	 * 		addMarker( markerName, { range, usingOperation: true } );
+	 *
+	 * Note: For efficiency reasons, it's best to create and keep as little markers as possible.
+	 *
+	 * @see module:engine/model/markercollection~Marker
+	 * @param {String} name Name of a marker to create - must be unique.
+	 * @param {Object} options
+	 * @param {Boolean} options.usingOperation Flag indicated whether the marker should be added by MarkerOperation.
+	 * See {@link module:engine/model/markercollection~Marker#managedUsingOperations}.
+	 * @param {module:engine/model/range~Range} options.range Marker range.
+	 * @returns {module:engine/model/markercollection~Marker} Marker that was set.
+	 */
+	addMarker( name, options ) {
+		this._assertWriterUsedCorrectly();
+
+		if ( !options || typeof options.usingOperation != 'boolean' ) {
+			/**
+			 * The options.usingOperations parameter is required when adding a new marker.
+			 *
+			 * @error writer-addMarker-no-usingOperations
+			 */
+			throw new CKEditorError(
+				'writer-addMarker-no-usingOperations: The options.usingOperations parameter is required when adding a new marker.'
+			);
+		}
+
+		const usingOperation = options.usingOperation;
+		const range = options.range;
+
+		if ( this.model.markers.has( name ) ) {
+			/**
+			 * Marker with provided name already exists.
+			 *
+			 * @error writer-addMarker-marker-exists
+			 */
+			throw new CKEditorError( 'writer-addMarker-marker-exists: Marker with provided name already exists.' );
+		}
+
+		if ( !range ) {
+			/**
+			 * Range parameter is required when adding a new marker.
+			 *
+			 * @error writer-addMarker-no-range
+			 */
+			throw new CKEditorError( 'writer-addMarker-no-range: Range parameter is required when adding a new marker.' );
+		}
+
+		if ( !usingOperation ) {
+			return this.model.markers._set( name, range, usingOperation );
+		}
+
+		applyMarkerOperation( this, name, null, range );
+
+		return this.model.markers.get( name );
+	}
+
+	/**
 	 * Adds or updates a {@link module:engine/model/markercollection~Marker marker}. Marker is a named range, which tracks
 	 * changes in the document and updates its range automatically, when model tree changes. Still, it is possible to change the
 	 * marker's range directly using this method.
@@ -779,101 +850,85 @@ export default class Writer {
 	 * As the first parameter you can set marker name or instance. If none of them is provided, new marker, with a unique
 	 * name is created and returned.
 	 *
-	 * The `options.usingOperation` parameter lets you decide if the marker should be managed by operations or not. See
+	 * The `options.usingOperation` parameter lets you change if the marker should be managed by operations or not. See
 	 * {@link module:engine/model/markercollection~Marker marker class description} to learn about the difference between
 	 * markers managed by operations and not-managed by operations. It is possible to change this option for an existing marker.
 	 * This is useful when a marker have been created earlier and then later, it needs to be added to the document history.
 	 *
-	 * Create/update marker directly base on marker's name:
+	 * Update marker directly base on marker's name:
 	 *
-	 * 		setMarker( markerName, range );
+	 * 		updateMarker( markerName, { range } );
 	 *
 	 * Update marker using operation:
 	 *
-	 * 		setMarker( marker, range, { usingOperation: true } );
-	 * 		setMarker( markerName, range, { usingOperation: true } );
-	 *
-	 * Create marker with a unique id using operation:
-	 *
-	 * 		setMarker( range, { usingOperation: true } );
-	 *
-	 * Create marker directly without using operations:
-	 *
-	 * 		setMarker( range )
+	 * 		updateMarker( marker, { range, usingOperation: true } );
+	 * 		updateMarker( markerName, { range, usingOperation: true } );
 	 *
 	 * Change marker's option (start using operations to manage it):
 	 *
-	 * 		setMarker( marker, { usingOperation: true } );
-	 *
-	 * Note: For efficiency reasons, it's best to create and keep as little markers as possible.
+	 * 		updateMarker( marker, { usingOperation: true } );
 	 *
 	 * @see module:engine/model/markercollection~Marker
-	 * @param {module:engine/model/markercollection~Marker|String} [markerOrName]
-	 * Name of a marker to create or update, or `Marker` instance to update, or range for the marker with a unique name.
-	 * @param {module:engine/model/range~Range} [range] Marker range.
-	 * @param {Object} [options]
-	 * @param {Boolean} [options.usingOperation=false] Flag indicated whether the marker should be added by MarkerOperation.
+	 * @param {String} markerOrName Name of a marker to update, or a marker instance.
+	 * @param {Object} options
+	 * @param {module:engine/model/range~Range} [options.range] Marker range to update.
+	 * @param {Boolean} [options.usingOperation] Flag indicated whether the marker should be added by MarkerOperation.
 	 * See {@link module:engine/model/markercollection~Marker#managedUsingOperations}.
-	 * @returns {module:engine/model/markercollection~Marker} Marker that was set.
 	 */
-	setMarker( markerOrNameOrRange, rangeOrOptions, options ) {
+	updateMarker( markerOrName, options ) {
 		this._assertWriterUsedCorrectly();
 
-		let markerName, newRange, usingOperation;
-
-		if ( markerOrNameOrRange instanceof Range ) {
-			markerName = uid();
-			newRange = markerOrNameOrRange;
-			usingOperation = !!rangeOrOptions && !!rangeOrOptions.usingOperation;
-		} else {
-			markerName = typeof markerOrNameOrRange === 'string' ? markerOrNameOrRange : markerOrNameOrRange.name;
-
-			if ( rangeOrOptions instanceof Range ) {
-				newRange = rangeOrOptions;
-				usingOperation = !!options && !!options.usingOperation;
-			} else {
-				newRange = null;
-				usingOperation = !!rangeOrOptions && !!rangeOrOptions.usingOperation;
-			}
-		}
+		const markerName = typeof markerOrName == 'string' ? markerOrName : markerOrName.name;
 
 		const currentMarker = this.model.markers.get( markerName );
 
-		if ( !usingOperation ) {
-			if ( !newRange ) {
-				/**
-			 	 * Range parameter is required when adding a new marker.
-				 *
-				 * @error writer-setMarker-no-range
-				 */
-				throw new CKEditorError( 'writer-setMarker-no-range: Range parameter is required when adding a new marker.' );
-			}
-
-			// If marker changes to marker that do not use operations then we need to create additional operation
-			// that removes that marker first.
-			if ( currentMarker && currentMarker.managedUsingOperations && !usingOperation ) {
-				applyMarkerOperation( this, markerName, currentMarker.getRange(), null );
-			}
-
-			return this.model.markers._set( markerName, newRange, usingOperation );
+		if ( !currentMarker ) {
+			/**
+			 * Marker with provided name does not exists.
+			 *
+			 * @error writer-updateMarker-marker-not-exists
+			 */
+			throw new CKEditorError( 'writer-updateMarker-marker-not-exists: Marker with provided name does not exists.' );
 		}
 
-		if ( !newRange && !currentMarker ) {
-			throw new CKEditorError( 'writer-setMarker-no-range: Range parameter is required when adding a new marker.' );
+		const newRange = options && options.range;
+		const hasUsingOperationDefined = !!options && typeof options.usingOperation == 'boolean';
+
+		if ( !hasUsingOperationDefined && !newRange ) {
+			/**
+			 * One of options is required - provide range or usingOperations.
+			 *
+			 * @error writer-updateMarker-wrong-options
+			 */
+			throw new CKEditorError( 'writer-updateMarker-wrong-options: One of options is required - provide range or usingOperations.' );
 		}
 
-		const currentRange = currentMarker ? currentMarker.getRange() : null;
+		if ( hasUsingOperationDefined && options.usingOperation !== currentMarker.managedUsingOperations ) {
+			// The marker type is changed so it's necessary to create proper operations.
+			if ( options.usingOperation ) {
+				// If marker changes to a managed one treat this as synchronizing existing marker.
+				// If marker changes to a managed one treat this as synchronizing existing marker.
+				// Create `MarkerOperation` with `oldRange` set to `null`, so reverse operation will remove the marker.
+				applyMarkerOperation( this, markerName, null, newRange ? newRange : currentMarker.getRange() );
+			} else {
+				// If marker changes to a marker that do not use operations then we need to create additional operation
+				// that removes that marker first.
+				const currentRange = currentMarker.getRange();
+				applyMarkerOperation( this, markerName, currentRange, null );
 
-		if ( !newRange ) {
-			// If `newRange` is not given, treat this as synchronizing existing marker.
-			// Create `MarkerOperation` with `oldRange` set to `null`, so reverse operation will remove the marker.
-			applyMarkerOperation( this, markerName, null, currentRange );
+				// Although not managed the marker itself should stay in model and its range should be preserver or changed to passed range.
+				this.model.markers._set( markerName, newRange ? newRange : currentRange );
+			}
+
+			return;
+		}
+
+		// Marker's type doesn't change so update it accordingly.
+		if ( currentMarker.managedUsingOperations ) {
+			applyMarkerOperation( this, markerName, currentMarker.getRange(), newRange );
 		} else {
-			// Just change marker range.
-			applyMarkerOperation( this, markerName, currentRange, newRange );
+			this.model.markers._set( markerName, newRange );
 		}
-
-		return this.model.markers.get( markerName );
 	}
 
 	/**

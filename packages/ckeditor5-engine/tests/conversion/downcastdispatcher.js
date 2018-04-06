@@ -347,7 +347,8 @@ describe( 'DowncastDispatcher', () => {
 				writer.setSelection(
 					new ModelRange( new ModelPosition( root, [ 1 ] ), new ModelPosition( root, [ 1 ] ) )
 				);
-				writer.setMarker( 'name', ModelRange.createFromParentsAndOffsets( root, 0, root, 2 ) );
+				const range = ModelRange.createFromParentsAndOffsets( root, 0, root, 2 );
+				writer.addMarker( 'name', { range, usingOperation: false } );
 			} );
 
 			sinon.spy( dispatcher, 'fire' );
@@ -360,7 +361,8 @@ describe( 'DowncastDispatcher', () => {
 
 		it( 'should not fire events for markers for non-collapsed selection', () => {
 			model.change( writer => {
-				writer.setMarker( 'name', ModelRange.createFromParentsAndOffsets( root, 0, root, 2 ) );
+				const range = ModelRange.createFromParentsAndOffsets( root, 0, root, 2 );
+				writer.addMarker( 'name', { range, usingOperation: false } );
 			} );
 
 			sinon.spy( dispatcher, 'fire' );
@@ -400,7 +402,8 @@ describe( 'DowncastDispatcher', () => {
 			};
 
 			model.change( writer => {
-				writer.setMarker( 'name', ModelRange.createFromParentsAndOffsets( root, 0, root, 1 ) );
+				const range = ModelRange.createFromParentsAndOffsets( root, 0, root, 1 );
+				writer.addMarker( 'name', { range, usingOperation: false } );
 				writer.setSelection( ModelRange.createFromParentsAndOffsets( caption, 1, caption, 1 ) );
 			} );
 			sinon.spy( dispatcher, 'fire' );
@@ -417,8 +420,10 @@ describe( 'DowncastDispatcher', () => {
 				writer.setSelection(
 					new ModelRange( new ModelPosition( root, [ 1 ] ), new ModelPosition( root, [ 1 ] ) )
 				);
-				writer.setMarker( 'foo', ModelRange.createFromParentsAndOffsets( root, 0, root, 2 ) );
-				writer.setMarker( 'bar', ModelRange.createFromParentsAndOffsets( root, 0, root, 2 ) );
+
+				const range = ModelRange.createFromParentsAndOffsets( root, 0, root, 2 );
+				writer.addMarker( 'foo', { range, usingOperation: false } );
+				writer.addMarker( 'bar', { range, usingOperation: false } );
 			} );
 
 			sinon.spy( dispatcher, 'fire' );

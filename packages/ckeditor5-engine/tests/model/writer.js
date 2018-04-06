@@ -1933,7 +1933,7 @@ describe( 'Writer', () => {
 		} );
 	} );
 
-	describe( 'setMarker()', () => {
+	describe( 'addMarker()', () => {
 		let root, range;
 
 		beforeEach( () => {
@@ -1942,50 +1942,108 @@ describe( 'Writer', () => {
 			range = Range.createIn( root );
 		} );
 
+		it( 'should throw if options.usingOperations is not defined', () => {
+			expect( () => {
+				addMarker( 'name' );
+			} ).to.throw( CKEditorError, /^writer-addMarker-no-usingOperations/ );
+		} );
+
+		it( 'should throw if name and range is defined but options.usingOperations is not defined', () => {
+			expect( () => {
+				addMarker( 'name', { range } );
+			} ).to.throw( CKEditorError, /^writer-addMarker-no-usingOperations/ );
+		} );
+
 		it( 'should add marker to the document marker collection', () => {
-			setMarker( 'name', range );
+			addMarker( 'name', { range, usingOperation: false } );
 
 			expect( model.markers.get( 'name' ).getRange().isEqual( range ) ).to.be.true;
 		} );
 
 		it( 'should return marker if that was set directly', () => {
-			const marker = setMarker( 'name', range );
+			const marker = addMarker( 'name', { range, usingOperation: false } );
 
 			expect( model.markers.get( 'name' ) ).to.equal( marker );
 		} );
 
 		it( 'should return marker if that was set using operation API', () => {
-			const marker = setMarker( 'name', range, { usingOperation: true } );
+			const marker = addMarker( 'name', { range, usingOperation: true } );
 
 			expect( model.markers.get( 'name' ) ).to.equal( marker );
 		} );
 
 		it( 'should return marker with properly set managedUsingOperations (to true)', () => {
-			const marker = setMarker( 'name', range, { usingOperation: true } );
+			const marker = addMarker( 'name', { range, usingOperation: true } );
 
 			expect( marker.managedUsingOperations ).to.equal( true );
 		} );
 
 		it( 'should return marker with properly set managedUsingOperations (to false)', () => {
-			const marker = setMarker( 'name', range );
+			const marker = addMarker( 'name', { range, usingOperation: false } );
 
 			expect( marker.managedUsingOperations ).to.equal( false );
 		} );
 
-		it( 'should update marker in the document marker collection', () => {
-			const marker = setMarker( 'name', range );
+		it( 'should throw when trying to update existing marker in the document marker collection', () => {
+			addMarker( 'name', { range, usingOperation: false } );
 
 			const range2 = Range.createFromParentsAndOffsets( root, 0, root, 0 );
-			setMarker( 'name', range2 );
 
-			expect( marker.getRange().isEqual( range2 ) ).to.be.true;
+			expect( () => {
+				addMarker( 'name', { range: range2, usingOperation: false } );
+			} ).to.throw( CKEditorError, /^writer-addMarker-marker-exists/ );
 		} );
 
-		it( 'should accept marker instance', () => {
-			const marker = setMarker( 'name', range, { usingOperation: true } );
+		it( 'should use operations when having set usingOperation to true', () => {
+			const spy = sinon.spy();
+
+			model.on( 'applyOperation', spy );
+
+			addMarker( 'name', { range, usingOperation: true } );
+			const op = batch.deltas[ 0 ].operations[ 0 ];
+
+			sinon.assert.calledOnce( spy );
+			expect( spy.firstCall.args[ 1 ][ 0 ].type ).to.equal( 'marker' );
+			expect( op.oldRange ).to.be.null;
+			expect( op.newRange.isEqual( range ) ).to.be.true;
+		} );
+
+		it( 'should throw if marker with given name does not exist and range is not passed', () => {
+			expect( () => {
+				addMarker( 'name', { usingOperation: true } );
+			} ).to.throw( CKEditorError, /^writer-addMarker-no-range/ );
+		} );
+
+		it( 'should throw if marker is set directly and range is not passed', () => {
+			expect( () => {
+				addMarker( 'name', { usingOperation: false } );
+			} ).to.throw( CKEditorError, /^writer-addMarker-no-range/ );
+		} );
+
+		it( 'should throw when trying to use detached writer', () => {
+			const marker = addMarker( 'name', { range, usingOperation: false } );
+			const writer = new Writer( model, batch );
+
+			expect( () => {
+				writer.addMarker( marker, null, { usingOperation: true } );
+			} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
+		} );
+	} );
+
+	describe( 'updateMarker()', () => {
+		let root, range;
+
+		beforeEach( () => {
+			root = doc.createRoot();
+			root._appendChildren( new Text( 'foo' ) );
+			range = Range.createIn( root );
+		} );
+
+		it( 'should update managed marker\'s range by marker instance using operations', () => {
+			const marker = addMarker( 'name', { range, usingOperation: true } );
 			const range2 = Range.createFromParentsAndOffsets( root, 0, root, 0 );
 
-			setMarker( marker, range2, { usingOperation: true } );
+			updateMarker( marker, { range: range2 } );
 
 			expect( batch.deltas.length ).to.equal( 2 );
 
@@ -1996,74 +2054,76 @@ describe( 'Writer', () => {
 			expect( op.newRange.isEqual( range2 ) ).to.be.true;
 		} );
 
-		it( 'should accept empty range parameter if marker instance is passed and usingOperation is set to true', () => {
-			const marker = setMarker( 'name', range, { usingOperation: true } );
-			const spy = sinon.spy();
+		it( 'should update managed marker\'s range by marker name using operations', () => {
+			const marker = addMarker( 'name', { range, usingOperation: true } );
+			const range2 = Range.createFromParentsAndOffsets( root, 0, root, 0 );
 
+			updateMarker( 'name', { range: range2 } );
+
+			expect( batch.deltas.length ).to.equal( 2 );
+
+			const op = batch.deltas[ 1 ].operations[ 0 ];
+
+			expect( marker.getRange().isEqual( range2 ) ).to.be.true;
+			expect( op.oldRange.isEqual( range ) ).to.be.true;
+			expect( op.newRange.isEqual( range2 ) ).to.be.true;
+		} );
+
+		it( 'should update managed marker\'s range by marker instance using operations and usingOperation explicitly passed', () => {
+			const marker = addMarker( 'name', { range, usingOperation: true } );
+			const range2 = Range.createFromParentsAndOffsets( root, 0, root, 0 );
+
+			updateMarker( marker, { range: range2, usingOperation: true } );
+
+			expect( batch.deltas.length ).to.equal( 2 );
+
+			const op = batch.deltas[ 1 ].operations[ 0 ];
+
+			expect( marker.getRange().isEqual( range2 ) ).to.be.true;
+			expect( op.oldRange.isEqual( range ) ).to.be.true;
+			expect( op.newRange.isEqual( range2 ) ).to.be.true;
+		} );
+
+		it( 'should update managed marker\'s range by marker name using operations and usingOperation explicitly passed', () => {
+			const marker = addMarker( 'name', { range, usingOperation: true } );
+			const range2 = Range.createFromParentsAndOffsets( root, 0, root, 0 );
+
+			updateMarker( 'name', { range: range2, usingOperation: true } );
+
+			expect( batch.deltas.length ).to.equal( 2 );
+
+			const op = batch.deltas[ 1 ].operations[ 0 ];
+
+			expect( marker.getRange().isEqual( range2 ) ).to.be.true;
+			expect( op.oldRange.isEqual( range ) ).to.be.true;
+			expect( op.newRange.isEqual( range2 ) ).to.be.true;
+		} );
+
+		it( 'should not use operations when updating marker which does not use operations', () => {
+			const spy = sinon.spy();
 			model.on( 'applyOperation', spy );
 
-			setMarker( marker, { usingOperation: true } );
+			const marker = addMarker( 'name', { range, usingOperation: false } );
+			const range2 = Range.createFromParentsAndOffsets( root, 0, root, 0 );
 
-			const op = batch.deltas[ 0 ].operations[ 0 ];
+			updateMarker( marker, { range: range2 } );
 
-			expect( spy.calledOnce ).to.be.true;
-			expect( spy.firstCall.args[ 1 ][ 0 ].type ).to.equal( 'marker' );
-			expect( op.oldRange ).to.be.null;
-			expect( op.newRange.isEqual( range ) ).to.be.true;
-		} );
-
-		it( 'should create a unique id if the first param is type of range', () => {
-			const marker = setMarker( range );
-
-			expect( marker.name ).to.be.a( 'string' );
-		} );
-
-		it( 'should create a unique id if the first param is type of range when usingOperation is set to true', () => {
-			const spy = sinon.spy();
-			model.on( 'applyOperation', spy );
-
-			const marker = setMarker( range, { usingOperation: true } );
-
-			expect( marker.name ).to.be.a( 'string' );
-			expect( spy.calledOnce ).to.be.true;
-		} );
-
-		it( 'should use operations when having set usingOperation to true', () => {
-			const spy = sinon.spy();
-
-			model.on( 'applyOperation', spy );
-
-			setMarker( 'name', range, { usingOperation: true } );
-			const op = batch.deltas[ 0 ].operations[ 0 ];
-
-			expect( spy.calledOnce ).to.be.true;
-			expect( spy.firstCall.args[ 1 ][ 0 ].type ).to.equal( 'marker' );
-			expect( op.oldRange ).to.be.null;
-			expect( op.newRange.isEqual( range ) ).to.be.true;
-		} );
-
-		it( 'should throw if marker with given name does not exist and range is not passed', () => {
-			expect( () => {
-				setMarker( 'name', { usingOperation: true } );
-			} ).to.throw( CKEditorError, /^writer-setMarker-no-range/ );
-		} );
-
-		it( 'should throw if marker is set directly and range is not passed', () => {
-			expect( () => {
-				setMarker( 'name' );
-			} ).to.throw( CKEditorError, /^writer-setMarker-no-range/ );
+			sinon.assert.notCalled( spy );
 		} );
 
 		it( 'should create additional operation when marker type changes to not managed using operation', () => {
 			const spy = sinon.spy();
 			model.on( 'applyOperation', spy );
 
-			setMarker( 'name', range, { usingOperation: true } );
-			const marker = setMarker( 'name', range );
+			addMarker( 'name', { range, usingOperation: true } );
+			updateMarker( 'name', { usingOperation: false } );
+
+			const marker = model.markers.get( 'name' );
+
 			const op1 = batch.deltas[ 0 ].operations[ 0 ];
 			const op2 = batch.deltas[ 1 ].operations[ 0 ];
 
-			expect( spy.calledTwice ).to.be.true;
+			sinon.assert.calledTwice( spy );
 			expect( spy.firstCall.args[ 1 ][ 0 ].type ).to.equal( 'marker' );
 			expect( spy.secondCall.args[ 1 ][ 0 ].type ).to.equal( 'marker' );
 
@@ -2076,25 +2136,85 @@ describe( 'Writer', () => {
 			expect( marker.managedUsingOperations ).to.be.false;
 		} );
 
-		it( 'should enable changing marker to be not managed using operation', () => {
+		it( 'should create additional operation when marker type changes to not managed using operation and changing its range', () => {
+			const spy = sinon.spy();
+			model.on( 'applyOperation', spy );
+			const range2 = Range.createFromParentsAndOffsets( root, 0, root, 0 );
+
+			addMarker( 'name', { range, usingOperation: true } );
+			updateMarker( 'name', { range: range2, usingOperation: false } );
+
+			const marker = model.markers.get( 'name' );
+
+			const op1 = batch.deltas[ 0 ].operations[ 0 ];
+			const op2 = batch.deltas[ 1 ].operations[ 0 ];
+
+			sinon.assert.calledTwice( spy );
+			expect( spy.firstCall.args[ 1 ][ 0 ].type ).to.equal( 'marker' );
+			expect( spy.secondCall.args[ 1 ][ 0 ].type ).to.equal( 'marker' );
+
+			expect( op1.oldRange ).to.be.null;
+			expect( op1.newRange.isEqual( range ) ).to.be.true;
+
+			expect( op2.oldRange.isEqual( range ) ).to.be.true;
+			expect( op2.newRange ).to.be.null;
+
+			expect( marker.getRange().isEqual( range2 ) );
+
+			expect( marker.managedUsingOperations ).to.be.false;
+		} );
+
+		it( 'should enable changing marker to be managed using operation', () => {
 			const spy = sinon.spy();
 			model.on( 'applyOperation', spy );
 
-			setMarker( 'name', range );
-			const marker = setMarker( 'name', range, { usingOperation: true } );
+			addMarker( 'name', { range, usingOperation: false } );
+			updateMarker( 'name', { usingOperation: true } );
 
-			expect( spy.calledOnce ).to.be.true;
+			const marker = model.markers.get( 'name' );
+
+			sinon.assert.calledOnce( spy );
 			expect( spy.firstCall.args[ 1 ][ 0 ].type ).to.equal( 'marker' );
 
 			expect( marker.managedUsingOperations ).to.be.true;
 		} );
 
+		it( 'should enable changing marker to be managed using operation while changing range', () => {
+			const spy = sinon.spy();
+			model.on( 'applyOperation', spy );
+			const range2 = Range.createFromParentsAndOffsets( root, 0, root, 0 );
+
+			addMarker( 'name', { range, usingOperation: false } );
+			updateMarker( 'name', { range: range2, usingOperation: true } );
+
+			const marker = model.markers.get( 'name' );
+
+			sinon.assert.calledOnce( spy );
+			expect( spy.firstCall.args[ 1 ][ 0 ].type ).to.equal( 'marker' );
+			expect( marker.getRange().isEqual( range2 ) ).to.be.true;
+
+			expect( marker.managedUsingOperations ).to.be.true;
+		} );
+
+		it( 'should throw when range and usingOperations were not provided', () => {
+			expect( () => {
+				addMarker( 'name', { range, usingOperation: false } );
+				updateMarker( 'name' );
+			} ).to.throw( CKEditorError, /^writer-updateMarker-wrong-options/ );
+		} );
+
+		it( 'should throw when marker provided by name does not exists', () => {
+			expect( () => {
+				updateMarker( 'name', { usingOperation: false } );
+			} ).to.throw( CKEditorError, /^writer-updateMarker-marker-not-exists/ );
+		} );
+
 		it( 'should throw when trying to use detached writer', () => {
-			const marker = setMarker( 'name', range );
+			const marker = addMarker( 'name', { range, usingOperation: false } );
 			const writer = new Writer( model, batch );
 
 			expect( () => {
-				writer.setMarker( marker, null, { usingOperation: true } );
+				writer.updateMarker( marker, { usingOperation: true } );
 			} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 		} );
 	} );
@@ -2109,7 +2229,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should remove marker from the document marker collection', () => {
-			setMarker( 'name', range );
+			addMarker( 'name', { range, usingOperation: false } );
 			removeMarker( 'name' );
 
 			expect( model.markers.get( 'name' ) ).to.be.null;
@@ -2130,7 +2250,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should accept marker instance', () => {
-			setMarker( 'name', range );
+			addMarker( 'name', { range, usingOperation: false } );
 			const marker = model.markers.get( 'name' );
 
 			removeMarker( marker );
@@ -2139,7 +2259,7 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should use MarkerOperation when marker was created using operation', () => {
-			setMarker( 'name', range, { usingOperation: true } );
+			addMarker( 'name', { range, usingOperation: true } );
 
 			const marker = model.markers.get( 'name' );
 			const spy = sinon.spy();
@@ -2148,7 +2268,7 @@ describe( 'Writer', () => {
 
 			removeMarker( marker );
 
-			expect( spy.calledOnce ).to.be.true;
+			sinon.assert.calledOnce( spy );
 			expect( spy.firstCall.args[ 1 ][ 0 ].type ).to.equal( 'marker' );
 			expect( model.markers.get( 'name' ) ).to.be.null;
 		} );
@@ -2528,14 +2648,20 @@ describe( 'Writer', () => {
 		} );
 	}
 
-	function setMarker( markerOrNameOrRange, rangeOrManagedUsingOperations, options ) {
+	function addMarker( name, options ) {
 		let marker;
 
 		model.enqueueChange( batch, writer => {
-			marker = writer.setMarker( markerOrNameOrRange, rangeOrManagedUsingOperations, options );
+			marker = writer.addMarker( name, options );
 		} );
 
 		return marker;
+	}
+
+	function updateMarker( markerOrName, options ) {
+		model.enqueueChange( batch, writer => {
+			writer.updateMarker( markerOrName, options );
+		} );
 	}
 
 	function removeMarker( markerOrName, options ) {

@@ -11,8 +11,8 @@ import Delta from './delta';
 import DeltaFactory from './deltafactory';
 
 /**
- * To provide specific OT behavior and better collisions solving, the {@link module:engine/model/writer~Writer#setMarker Batch#setMarker}
- * and {@link module:engine/model/writer~Writer#removeMarker Batch#removeMarker} methods use the `MarkerDelta` class which inherits
+ * To provide specific OT behavior and better collisions solving, the {@link module:engine/model/writer~Writer#addMarker Writer#addMarker}
+ * and {@link module:engine/model/writer~Writer#removeMarker Writer#removeMarker} methods use the `MarkerDelta` class which inherits
  * from the `Delta` class and may overwrite some methods.
  *
  * @extends module:engine/model/delta/delta~Delta

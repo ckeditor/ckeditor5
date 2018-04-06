@@ -449,7 +449,9 @@ describe( 'downcast-helpers', () => {
 
 			model.change( writer => {
 				writer.insertText( 'foo', modelRoot, 0 );
-				writer.setMarker( 'search', ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 2 ) );
+
+				const range = ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 2 );
+				writer.addMarker( 'search', { range, usingOperation: false } );
 			} );
 
 			expectResult( 'f<marker-search></marker-search>o<marker-search></marker-search>o' );
@@ -463,7 +465,8 @@ describe( 'downcast-helpers', () => {
 
 			model.change( writer => {
 				writer.insertText( 'foo', modelRoot, 0 );
-				writer.setMarker( 'search', ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 2 ) );
+				const range = ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 2 );
+				writer.addMarker( 'search', { range, usingOperation: false } );
 			} );
 
 			expectResult( 'f<search></search>o<search></search>o' );
@@ -484,7 +487,8 @@ describe( 'downcast-helpers', () => {
 
 			model.change( writer => {
 				writer.insertText( 'foo', modelRoot, 0 );
-				writer.setMarker( 'search', ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 2 ) );
+				const range = ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 2 );
+				writer.addMarker( 'search', { range, usingOperation: false } );
 			} );
 
 			expectResult( 'f<span data-marker="search"></span>o<span data-marker="search"></span>o' );
@@ -502,7 +506,8 @@ describe( 'downcast-helpers', () => {
 
 			model.change( writer => {
 				writer.insertText( 'foo', modelRoot, 0 );
-				writer.setMarker( 'search', ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 2 ) );
+				const range = ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 2 );
+				writer.addMarker( 'search', { range, usingOperation: false } );
 			} );
 
 			expectResult( 'f<span data-marker="search" data-start="true"></span>o<span data-marker="search" data-start="false"></span>o' );
@@ -517,7 +522,8 @@ describe( 'downcast-helpers', () => {
 
 			model.change( writer => {
 				writer.insertText( 'foo', modelRoot, 0 );
-				writer.setMarker( 'comment', ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 3 ) );
+				const range = ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 3 );
+				writer.addMarker( 'comment', { range, usingOperation: false } );
 			} );
 
 			expectResult( '<span class="comment">foo</span>' );
@@ -531,7 +537,8 @@ describe( 'downcast-helpers', () => {
 
 			model.change( writer => {
 				writer.insertText( 'foo', modelRoot, 0 );
-				writer.setMarker( 'comment', ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 3 ) );
+				const range = ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 3 );
+				writer.addMarker( 'comment', { range, usingOperation: false } );
 			} );
 
 			expectResult( '<span class="new-comment">foo</span>' );
@@ -553,7 +560,8 @@ describe( 'downcast-helpers', () => {
 
 			model.change( writer => {
 				writer.insertText( 'foo', modelRoot, 0 );
-				writer.setMarker( 'comment:abc', ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 3 ) );
+				const range = ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 3 );
+				writer.addMarker( 'comment:abc', { range, usingOperation: false } );
 			} );
 
 			expectResult( '<span class="comment comment-abc">foo</span>' );
@@ -924,7 +932,7 @@ describe( 'downcast-converters', () => {
 				dispatcher.on( 'removeMarker:marker', removeUIElement( creator ) );
 
 				model.change( writer => {
-					writer.setMarker( 'marker', range );
+					writer.addMarker( 'marker', { range, usingOperation: false } );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo<span class="marker"></span>bar</p></div>' );
@@ -948,7 +956,7 @@ describe( 'downcast-converters', () => {
 				}, { priority: 'high' } );
 
 				model.change( writer => {
-					writer.setMarker( 'marker', range );
+					writer.addMarker( 'marker', { range, usingOperation: false } );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
@@ -960,7 +968,7 @@ describe( 'downcast-converters', () => {
 				dispatcher.on( 'removeMarker:marker', removeUIElement( () => null ) );
 
 				model.change( writer => {
-					writer.setMarker( 'marker', range );
+					writer.addMarker( 'marker', { range, usingOperation: false } );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
@@ -985,7 +993,7 @@ describe( 'downcast-converters', () => {
 				dispatcher.on( 'removeMarker:marker', removeUIElement( creator ) );
 
 				model.change( writer => {
-					writer.setMarker( 'marker', range );
+					writer.addMarker( 'marker', { range, usingOperation: false } );
 				} );
 
 				expect( viewToString( viewRoot ) )
@@ -1005,7 +1013,7 @@ describe( 'downcast-converters', () => {
 				dispatcher.on( 'removeMarker:marker', removeUIElement( creator ) );
 
 				model.change( writer => {
-					writer.setMarker( 'marker', range );
+					writer.addMarker( 'marker', { range, usingOperation: false } );
 				} );
 
 				expect( viewToString( viewRoot ) )
@@ -1031,7 +1039,7 @@ describe( 'downcast-converters', () => {
 				dispatcher.on( 'removeMarker:marker', removeUIElement( creator ) );
 
 				model.change( writer => {
-					writer.setMarker( 'marker', range );
+					writer.addMarker( 'marker', { range, usingOperation: false } );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal(
@@ -1056,7 +1064,7 @@ describe( 'downcast-converters', () => {
 				}, { priority: 'high' } );
 
 				model.change( writer => {
-					writer.setMarker( 'marker', range );
+					writer.addMarker( 'marker', { range, usingOperation: false } );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foobar</p></div>' );
@@ -1268,7 +1276,7 @@ describe( 'downcast-converters', () => {
 				dispatcher.on( 'removeMarker:marker', removeHighlight( highlightDescriptor ) );
 
 				model.change( writer => {
-					writer.setMarker( 'marker', markerRange );
+					writer.addMarker( 'marker', { range: markerRange, usingOperation: false } );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal(
@@ -1301,7 +1309,7 @@ describe( 'downcast-converters', () => {
 				dispatcher.on( 'removeMarker:marker', removeHighlight( newDescriptor ), { priority: 'high' } );
 
 				model.change( writer => {
-					writer.setMarker( 'marker', markerRange );
+					writer.addMarker( 'marker', { range: markerRange, usingOperation: false } );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal(
@@ -1328,7 +1336,7 @@ describe( 'downcast-converters', () => {
 				dispatcher.on( 'removeMarker:marker', removeHighlight( () => null ), { priority: 'high' } );
 
 				model.change( writer => {
-					writer.setMarker( 'marker', markerRange );
+					writer.addMarker( 'marker', { range: markerRange, usingOperation: false } );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
@@ -1349,8 +1357,8 @@ describe( 'downcast-converters', () => {
 
 				markerRange = ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 0 );
 
-				model.change( () => {
-					model.markers._set( 'marker', markerRange );
+				model.change( writer => {
+					writer.addMarker( 'marker', { range: markerRange, usingOperation: false } );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
@@ -1379,7 +1387,8 @@ describe( 'downcast-converters', () => {
 				const p2 = modelRoot.getChild( 1 );
 
 				model.change( writer => {
-					writer.setMarker( 'markerFoo', ModelRange.createFromParentsAndOffsets( p1, 0, p1, 3 ) );
+					const range = ModelRange.createFromParentsAndOffsets( p1, 0, p1, 3 );
+					writer.addMarker( 'markerFoo', { range, usingOperation: false } );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal(
@@ -1392,7 +1401,8 @@ describe( 'downcast-converters', () => {
 				);
 
 				model.change( writer => {
-					writer.setMarker( 'markerBar', ModelRange.createFromParentsAndOffsets( p1, 1, p2, 2 ) );
+					const range = ModelRange.createFromParentsAndOffsets( p1, 1, p2, 2 );
+					writer.addMarker( 'markerBar', { range, usingOperation: false } );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal(
@@ -1411,7 +1421,8 @@ describe( 'downcast-converters', () => {
 				);
 
 				model.change( writer => {
-					writer.setMarker( 'markerXyz', ModelRange.createFromParentsAndOffsets( p1, 2, p2, 3 ) );
+					const range = ModelRange.createFromParentsAndOffsets( p1, 2, p2, 3 );
+					writer.addMarker( 'markerXyz', { range, usingOperation: false } );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal(
@@ -1485,13 +1496,13 @@ describe( 'downcast-converters', () => {
 				const markerRange = ModelRange.createFromParentsAndOffsets( p1, 3, p2, 0 );
 
 				model.change( writer => {
-					writer.setMarker( 'marker', markerRange );
+					writer.addMarker( 'marker', { range: markerRange, usingOperation: false } );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
 
 				model.change( writer => {
-					writer.removeMarker( 'marker', markerRange );
+					writer.removeMarker( 'marker', { range: markerRange, usingOperation: false } );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><p>foo</p><p>bar</p></div>' );
@@ -1539,7 +1550,7 @@ describe( 'downcast-converters', () => {
 
 			it( 'should use addHighlight and removeHighlight on elements and not convert children nodes', () => {
 				model.change( writer => {
-					writer.setMarker( 'marker', markerRange );
+					writer.addMarker( 'marker', { range: markerRange, usingOperation: false } );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal(
@@ -1565,7 +1576,7 @@ describe( 'downcast-converters', () => {
 				dispatcher.on( 'removeMarker:marker', removeHighlight( newDescriptor ), { priority: 'high' } );
 
 				model.change( writer => {
-					writer.setMarker( 'marker', markerRange );
+					writer.addMarker( 'marker', { range: markerRange, usingOperation: false } );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal(
@@ -1600,7 +1611,7 @@ describe( 'downcast-converters', () => {
 				} );
 
 				model.change( writer => {
-					writer.setMarker( 'marker2', markerRange );
+					writer.addMarker( 'marker2', { range: markerRange, usingOperation: false } );
 				} );
 			} );
 
@@ -1610,7 +1621,7 @@ describe( 'downcast-converters', () => {
 				dispatcher.on( 'removeMarker:marker2', removeHighlight( () => null ) );
 
 				model.change( writer => {
-					writer.setMarker( 'marker2', markerRange );
+					writer.addMarker( 'marker2', { range: markerRange, usingOperation: false } );
 				} );
 
 				expect( viewToString( viewRoot ) ).to.equal( '<div><div>foo</div></div>' );

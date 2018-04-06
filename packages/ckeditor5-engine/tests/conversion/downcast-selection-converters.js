@@ -197,7 +197,8 @@ describe( 'downcast-selection-converters', () => {
 				setModelData( model, 'fo<$text bold="true">ob</$text>ar' );
 
 				model.change( writer => {
-					marker = writer.setMarker( 'marker', ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 ) );
+					const range = ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 );
+					marker = writer.addMarker( 'marker', { range, usingOperation: false } );
 					writer.setSelection( new ModelRange( ModelPosition.createAt( modelRoot, 3 ) ) );
 				} );
 
@@ -221,7 +222,8 @@ describe( 'downcast-selection-converters', () => {
 				setModelData( model, 'fo<$text bold="true">ob</$text>ar' );
 
 				model.change( writer => {
-					marker = writer.setMarker( 'marker', ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 ) );
+					const range = ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 );
+					marker = writer.addMarker( 'marker', { range, usingOperation: false } );
 					writer.setSelection( new ModelRange( ModelPosition.createAt( modelRoot, 3 ) ) );
 					writer.removeSelectionAttribute( 'bold' );
 				} );
@@ -249,7 +251,8 @@ describe( 'downcast-selection-converters', () => {
 				setModelData( model, 'foobar' );
 
 				model.change( writer => {
-					marker = writer.setMarker( 'marker2', ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 ) );
+					const range = ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 );
+					marker = writer.addMarker( 'marker2', { range, usingOperation: false } );
 					writer.setSelection( new ModelRange( ModelPosition.createAt( modelRoot, 3 ) ) );
 				} );
 
@@ -274,7 +277,8 @@ describe( 'downcast-selection-converters', () => {
 				setModelData( model, 'foobar' );
 
 				model.change( writer => {
-					marker = writer.setMarker( 'marker3', ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 ) );
+					const range = ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 5 );
+					marker = writer.addMarker( 'marker3', { range, usingOperation: false } );
 					writer.setSelection( new ModelRange( ModelPosition.createAt( modelRoot, 3 ) ) );
 				} );
 

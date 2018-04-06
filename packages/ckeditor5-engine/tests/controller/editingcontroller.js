@@ -235,7 +235,7 @@ describe( 'EditingController', () => {
 			const range = new ModelRange( new ModelPosition( modelRoot, [ 0, 1 ] ), new ModelPosition( modelRoot, [ 2, 2 ] ) );
 
 			model.change( writer => {
-				writer.setMarker( 'marker', range );
+				writer.addMarker( 'marker', { range, usingOperation: false } );
 			} );
 
 			expect( getViewData( editing.view, { withoutSelection: true } ) )
@@ -246,7 +246,7 @@ describe( 'EditingController', () => {
 			const range = new ModelRange( new ModelPosition( modelRoot, [ 0, 1 ] ), new ModelPosition( modelRoot, [ 2, 2 ] ) );
 
 			model.change( writer => {
-				writer.setMarker( 'marker', range );
+				writer.addMarker( 'marker', { range, usingOperation: false } );
 			} );
 
 			model.change( writer => {
@@ -261,13 +261,13 @@ describe( 'EditingController', () => {
 			const range = new ModelRange( new ModelPosition( modelRoot, [ 0, 1 ] ), new ModelPosition( modelRoot, [ 2, 2 ] ) );
 
 			model.change( writer => {
-				writer.setMarker( 'marker', range );
+				writer.addMarker( 'marker', { range, usingOperation: false } );
 			} );
 
 			const range2 = new ModelRange( new ModelPosition( modelRoot, [ 0, 0 ] ), new ModelPosition( modelRoot, [ 0, 2 ] ) );
 
 			model.change( writer => {
-				writer.setMarker( 'marker', range2 );
+				writer.updateMarker( 'marker', { range: range2 } );
 			} );
 
 			expect( getViewData( editing.view, { withoutSelection: true } ) )
@@ -278,7 +278,7 @@ describe( 'EditingController', () => {
 			const range = new ModelRange( new ModelPosition( modelRoot, [ 0, 1 ] ), new ModelPosition( modelRoot, [ 2, 2 ] ) );
 
 			model.change( writer => {
-				writer.setMarker( 'marker', range );
+				writer.addMarker( 'marker', { range, usingOperation: false } );
 				writer.insertText( 'xyz', new ModelPosition( modelRoot, [ 1, 0 ] ) );
 			} );
 
@@ -290,7 +290,7 @@ describe( 'EditingController', () => {
 			const range = new ModelRange( new ModelPosition( modelRoot, [ 0, 1 ] ), new ModelPosition( modelRoot, [ 2, 2 ] ) );
 
 			model.change( writer => {
-				writer.setMarker( 'marker', range );
+				writer.addMarker( 'marker', { range, usingOperation: false } );
 			} );
 
 			model.change( writer => {
@@ -308,7 +308,7 @@ describe( 'EditingController', () => {
 			const range = new ModelRange( new ModelPosition( modelRoot, [ 0, 1 ] ), new ModelPosition( modelRoot, [ 2, 2 ] ) );
 
 			model.change( writer => {
-				writer.setMarker( 'marker', range );
+				writer.addMarker( 'marker', { range, usingOperation: false } );
 			} );
 
 			model.change( writer => {
@@ -326,7 +326,7 @@ describe( 'EditingController', () => {
 			const range = new ModelRange( new ModelPosition( modelRoot, [ 0, 1 ] ), new ModelPosition( modelRoot, [ 0, 3 ] ) );
 
 			model.change( writer => {
-				writer.setMarker( 'marker', range );
+				writer.addMarker( 'marker', { range, usingOperation: false } );
 			} );
 
 			model.change( writer => {
