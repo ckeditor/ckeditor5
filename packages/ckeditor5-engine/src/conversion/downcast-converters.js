@@ -1029,7 +1029,7 @@ export function createViewElementFromHighlightDescriptor( descriptor ) {
  *
  * @typedef {Object} module:engine/conversion/downcast-converters~HighlightDescriptor
  *
- * @property {String|Array.<String>} class CSS class or array of classes to set. If descriptor is used to
+ * @property {String|Array.<String>} classes CSS class or array of classes to set. If descriptor is used to
  * create {@link module:engine/view/attributeelement~AttributeElement} over text nodes, those classes will be set
  * on that {@link module:engine/view/attributeelement~AttributeElement}. If descriptor is applied to an element,
  * usually those class will be set on that element, however this depends on how the element converts the descriptor.
