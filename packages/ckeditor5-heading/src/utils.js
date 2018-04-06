@@ -6,7 +6,7 @@
  * Note: The reason behind this method is that there's no way to use {@link module:utils/locale~Locale#t}
  * when the user config is defined because the editor does not exist yet.
  *
- * @private
+ * @param {module:core/editor/editor~Editor} editor
  * @returns {Array.<module:heading/heading~HeadingOption>}.
  */
 export function getLocalizedOptions( editor ) {
