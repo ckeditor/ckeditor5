@@ -24,6 +24,24 @@ const defaultIcons = {
  * It is not enabled by default when using {@link module:heading/heading~Heading heading plugin}, and needs to be
  * added manually to the editor configuration.
  *
+ * Plugin introduces button UI elements, which names are same as `model` property from {@link module:heading/heading~HeadingOption}.
+ *
+ *		ClassicEditor
+ *			.create( {
+ *				plugins: [ ..., Heading, Paragraph, HeadingButtonsUI, ParagraphButtonUI ]
+ *				heading: {
+ *					options: [
+ *						{ model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+ *						{ model: 'heading1', view: 'h2', title: 'Heading 1', class: 'ck-heading_heading1' },
+ *						{ model: 'heading2', view: 'h3', title: 'Heading 2', class: 'ck-heading_heading2' },
+ *						{ model: 'heading3', view: 'h4', title: 'Heading 3', class: 'ck-heading_heading3' }
+ *					]
+ * 				},
+ * 				toolbar: []
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
  * It is possible to use custom icons by providing `icon` config option provided in {@link module:heading/heading~HeadingOption}.
  * For the default configuration standard icons are used.
  *
