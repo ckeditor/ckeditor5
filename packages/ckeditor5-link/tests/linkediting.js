@@ -302,7 +302,7 @@ describe( 'LinkEditing', () => {
 				);
 			} );
 
-			it( 'works for the #addMarker and #removeMarker events', () => {
+			it( 'works for the addMarker and removeMarker events', () => {
 				downcastMarkerToHighlight( { model: 'fooMarker', view: {} } )( editor.editing.downcastDispatcher );
 
 				setModelData( model,
@@ -310,10 +310,12 @@ describe( 'LinkEditing', () => {
 				);
 
 				model.change( writer => {
-					writer.setMarker( 'fooMarker', ModelRange.createFromParentsAndOffsets(
+					const range = ModelRange.createFromParentsAndOffsets(
 						model.document.getRoot().getChild( 0 ), 0,
-						model.document.getRoot().getChild( 0 ), 5 )
+						model.document.getRoot().getChild( 0 ), 5
 					);
+
+					writer.addMarker( 'fooMarker', { range, usingOperation: true } );
 				} );
 
 				expect( getViewData( view ) ).to.equal(
