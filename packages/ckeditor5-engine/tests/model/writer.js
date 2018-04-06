@@ -2035,7 +2035,7 @@ describe( 'Writer', () => {
 
 		beforeEach( () => {
 			root = doc.createRoot();
-			root._appendChildren( new Text( 'foo' ) );
+			root._appendChild( new Text( 'foo' ) );
 			range = Range.createIn( root );
 		} );
 
