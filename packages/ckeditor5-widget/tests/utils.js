@@ -63,7 +63,7 @@ describe( 'widget utils', () => {
 			expect( typeof set ).to.equal( 'function' );
 			expect( typeof remove ).to.equal( 'function' );
 
-			set( element, { priority: 1, class: 'highlight', id: 'highlight' }, writer );
+			set( element, { priority: 1, classes: 'highlight', id: 'highlight' }, writer );
 			expect( element.hasClass( 'highlight' ) ).to.be.true;
 
 			remove( element, 'highlight', writer );
@@ -79,7 +79,7 @@ describe( 'widget utils', () => {
 			expect( typeof set ).to.equal( 'function' );
 			expect( typeof remove ).to.equal( 'function' );
 
-			set( element, { priority: 1, class: [ 'highlight', 'foo' ], id: 'highlight' }, writer );
+			set( element, { priority: 1, classes: [ 'highlight', 'foo' ], id: 'highlight' }, writer );
 			expect( element.hasClass( 'highlight' ) ).to.be.true;
 			expect( element.hasClass( 'foo' ) ).to.be.true;
 
@@ -187,7 +187,7 @@ describe( 'widget utils', () => {
 		} );
 
 		it( 'should call highlight methods when descriptor is added and removed', () => {
-			const descriptor = { priority: 10, class: 'highlight', id: 'highlight' };
+			const descriptor = { priority: 10, classes: 'highlight', id: 'highlight' };
 
 			set( element, descriptor, writer );
 			remove( element, descriptor.id, writer );
@@ -200,8 +200,8 @@ describe( 'widget utils', () => {
 		} );
 
 		it( 'should call highlight methods when next descriptor is added', () => {
-			const descriptor = { priority: 10, class: 'highlight', id: 'highlight-1' };
-			const secondDescriptor = { priority: 11, class: 'highlight', id: 'highlight-2' };
+			const descriptor = { priority: 10, classes: 'highlight', id: 'highlight-1' };
+			const secondDescriptor = { priority: 11, classes: 'highlight', id: 'highlight-2' };
 
 			set( element, descriptor );
 			set( element, secondDescriptor );
@@ -212,8 +212,8 @@ describe( 'widget utils', () => {
 		} );
 
 		it( 'should not call highlight methods when descriptor with lower priority is added', () => {
-			const descriptor = { priority: 10, class: 'highlight', id: 'highlight-1' };
-			const secondDescriptor = { priority: 9, class: 'highlight', id: 'highlight-2' };
+			const descriptor = { priority: 10, classes: 'highlight', id: 'highlight-1' };
+			const secondDescriptor = { priority: 9, classes: 'highlight', id: 'highlight-2' };
 
 			set( element, descriptor );
 			set( element, secondDescriptor );
@@ -223,8 +223,8 @@ describe( 'widget utils', () => {
 		} );
 
 		it( 'should call highlight methods when descriptor is removed changing active descriptor', () => {
-			const descriptor = { priority: 10, class: 'highlight', id: 'highlight-1' };
-			const secondDescriptor = { priority: 11, class: 'highlight', id: 'highlight-2' };
+			const descriptor = { priority: 10, classes: 'highlight', id: 'highlight-1' };
+			const secondDescriptor = { priority: 11, classes: 'highlight', id: 'highlight-2' };
 
 			set( element, descriptor );
 			set( element, secondDescriptor );
@@ -241,8 +241,8 @@ describe( 'widget utils', () => {
 		} );
 
 		it( 'should call highlight methods when descriptor is removed not changing active descriptor', () => {
-			const descriptor = { priority: 10, class: 'highlight', id: 'highlight-1' };
-			const secondDescriptor = { priority: 9, class: 'highlight', id: 'highlight-2' };
+			const descriptor = { priority: 10, classes: 'highlight', id: 'highlight-1' };
+			const secondDescriptor = { priority: 9, classes: 'highlight', id: 'highlight-2' };
 
 			set( element, descriptor );
 			set( element, secondDescriptor );
@@ -255,8 +255,8 @@ describe( 'widget utils', () => {
 		} );
 
 		it( 'should call highlight methods - CSS class array', () => {
-			const descriptor = { priority: 10, class: [ 'highlight', 'a' ], id: 'highlight-1' };
-			const secondDescriptor = { priority: 10, class: [ 'highlight', 'b' ], id: 'highlight-2' };
+			const descriptor = { priority: 10, classes: [ 'highlight', 'a' ], id: 'highlight-1' };
+			const secondDescriptor = { priority: 10, classes: [ 'highlight', 'b' ], id: 'highlight-2' };
 
 			set( element, descriptor );
 			set( element, secondDescriptor );
