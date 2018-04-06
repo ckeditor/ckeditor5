@@ -30,11 +30,13 @@ import icon from '../theme/icons/paragraph.svg';
 export default class ParagraphButtonUI extends Plugin {
 	init() {
 		const editor = this.editor;
+		const t = editor.t;
+
 		editor.ui.componentFactory.add( 'paragraph', locale => {
 			const view = new ButtonView( locale );
 			const command = editor.commands.get( 'paragraph' );
 
-			view.label = 'Paragraph';
+			view.label = t( 'Paragraph' );
 			view.icon = icon;
 			view.tooltip = true;
 			view.bind( 'isEnabled' ).to( command );
