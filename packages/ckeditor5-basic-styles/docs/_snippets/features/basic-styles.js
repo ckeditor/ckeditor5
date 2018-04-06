@@ -5,6 +5,8 @@
 
 /* globals ClassicEditor, console, window, document */
 
+import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud-services-config.js';
+
 ClassicEditor
 	.create( document.querySelector( '#snippet-basic-styles' ), {
 		toolbar: {
@@ -12,7 +14,8 @@ ClassicEditor
 				'bold', 'italic', 'underline', 'strikethrough', 'code', '|', 'undo', 'redo'
 			],
 			viewportTopOffset: 60
-		}
+		},
+		cloudServices: CS_CONFIG
 	} )
 	.then( editor => {
 		window.editor = editor;
