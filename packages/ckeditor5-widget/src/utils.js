@@ -64,8 +64,8 @@ export function toWidget( element, writer, options = {} ) {
 	setHighlightHandling(
 		element,
 		writer,
-		( element, descriptor, writer ) => writer.addClass( normalizeToArray( descriptor.class ), element ),
-		( element, descriptor, writer ) => writer.removeClass( normalizeToArray( descriptor.class ), element )
+		( element, descriptor, writer ) => writer.addClass( normalizeToArray( descriptor.classes ), element ),
+		( element, descriptor, writer ) => writer.removeClass( normalizeToArray( descriptor.classes ), element )
 	);
 
 	return element;

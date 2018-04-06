@@ -135,7 +135,7 @@ mix( HighlightStack, EmitterMixin );
 // @param {module:engine/conversion/downcast-converters~HighlightDescriptor} b
 // @returns {Boolean} Returns true if both descriptors are defined and have same priority and classes.
 function compareDescriptors( a, b ) {
-	return a && b && a.priority == b.priority && classesToString( a.class ) == classesToString( b.class );
+	return a && b && a.priority == b.priority && classesToString( a.classes ) == classesToString( b.classes );
 }
 
 // Checks whenever first descriptor should be placed in the stack before second one.
@@ -151,7 +151,7 @@ function shouldABeBeforeB( a, b ) {
 	}
 
 	// When priorities are equal and names are different - use classes to compare.
-	return classesToString( a.class ) > classesToString( b.class );
+	return classesToString( a.classes ) > classesToString( b.classes );
 }
 
 // Converts CSS classes passed with {@link module:engine/conversion/downcast-converters~HighlightDescriptor} to
