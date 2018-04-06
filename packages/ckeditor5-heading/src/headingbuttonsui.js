@@ -21,7 +21,7 @@ const defaultIcons = {
 };
 
 /**
- * HeadingButtonsUI class creates set of UI buttons that can be used instead of drop down component.
+ * HeadingButtonsUI class creates a set of UI buttons that can be used instead of drop down component.
  * It is not enabled by default when using {@link module:heading/heading~Heading heading plugin}, and needs to be
  * added manually to the editor configuration.
  *
@@ -38,10 +38,13 @@ const defaultIcons = {
  *						{ model: 'heading3', view: 'h4', title: 'Heading 3', class: 'ck-heading_heading3' }
  *					]
  * 				},
- * 				toolbar: []
+ * 				toolbar: [ 'paragraph', 'heading1', 'heading2', 'heading3' ]
  *			} )
  *			.then( ... )
  *			.catch( ... );
+ *
+ * NOTE: Paragraph button is defined in {@link module:paragraph/paragraphbuttonui~ParagraphButtonUI} plugin that needs
+ * to be loaded manually as well.
  *
  * It is possible to use custom icons by providing `icon` config option provided in {@link module:heading/heading~HeadingOption}.
  * For the default configuration standard icons are used.
@@ -49,6 +52,9 @@ const defaultIcons = {
  * @extends module:core/plugin~Plugin
  */
 export default class HeadingButtonsUI extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const options = getLocalizedOptions( this.editor );
 
@@ -57,6 +63,12 @@ export default class HeadingButtonsUI extends Plugin {
 			.map( item => this._createButton( item ) );
 	}
 
+	/**
+	 * Creates single button view from provided configuration option.
+	 *
+	 * @private
+	 * @param {Object} option
+	 */
 	_createButton( option ) {
 		const editor = this.editor;
 
