@@ -21,11 +21,11 @@ const defaultIcons = {
 
 /**
  * HeadingButtonsUI class creates set of UI buttons that can be used instead of drop down component.
- * It is not enabled by default when using {@link module:heading/heading~Heading heading plugin}, and need to be
+ * It is not enabled by default when using {@link module:heading/heading~Heading heading plugin}, and needs to be
  * added manually to the editor configuration.
  *
- * It uses `icon` config option provided in {@link module:heading/heading~HeadingOption}. For the default configuration
- * standard icons are used.
+ * It is possible to use custom icons by providing `icon` config option provided in {@link module:heading/heading~HeadingOption}.
+ * For the default configuration standard icons are used.
  *
  * @extends module:core/plugin~Plugin
  */

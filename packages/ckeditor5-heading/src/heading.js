@@ -111,6 +111,6 @@ export default class Heading extends Plugin {
  * @property {module:engine/view/elementdefinition~ElementDefinition} view Definition of a view element to convert from/to.
  * @property {String} title The user-readable title of the option.
  * @property {String} class The class which will be added to the dropdown item representing this option.
- * @property {Sting} [icon] Icon used by {@link module:heading/headingbuttonsui~HeadingsButtonUI}. It is optional when using
+ * @property {String} [icon] Icon used by {@link module:heading/headingbuttonsui~HeadingButtonUI}. It is optional when using
  * standard configuration and can be omitted.
  */
