@@ -16,7 +16,8 @@ import iconHeading2 from '../theme/icons/heading2.svg';
 
 const defaultIcons = {
 	heading1: iconHeading1,
-	heading2: iconHeading2
+	heading2: iconHeading2,
+	heading3: iconHeading2
 };
 
 /**
