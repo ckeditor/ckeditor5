@@ -75,7 +75,7 @@ ClassicEditor.create( global.document.querySelector( '#editor' ), {
 		editor.conversion.for( 'editingDowncast' ).add( downcastMarkerToHighlight( {
 			model: 'marker',
 			view: data => ( {
-				class: 'highlight-' + data.markerName.split( ':' )[ 1 ]
+				classes: 'highlight-' + data.markerName.split( ':' )[ 1 ]
 			} )
 		} ) );
 

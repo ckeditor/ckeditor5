@@ -82,7 +82,7 @@ describe( 'upcast-helpers', () => {
 			const helperFancy = upcastElementToElement( {
 				view: {
 					name: 'p',
-					class: 'fancy'
+					classes: 'fancy'
 				},
 				model: 'fancyParagraph',
 			} );
@@ -90,6 +90,7 @@ describe( 'upcast-helpers', () => {
 			conversion.for( 'upcast' ).add( helperFancy );
 
 			expectResult( new ViewContainerElement( 'p', { class: 'fancy' } ), '<fancyParagraph></fancyParagraph>' );
+			expectResult( new ViewContainerElement( 'p' ), '' );
 		} );
 
 		it( 'config.model is a function', () => {
@@ -101,7 +102,7 @@ describe( 'upcast-helpers', () => {
 			const helper = upcastElementToElement( {
 				view: {
 					name: 'p',
-					class: 'heading'
+					classes: 'heading'
 				},
 				model: ( viewElement, modelWriter ) => {
 					return modelWriter.createElement( 'heading', { level: viewElement.getAttribute( 'data-level' ) } );
@@ -111,6 +112,7 @@ describe( 'upcast-helpers', () => {
 			conversion.for( 'upcast' ).add( helper );
 
 			expectResult( new ViewContainerElement( 'p', { class: 'heading', 'data-level': 2 } ), '<heading level="2"></heading>' );
+			expectResult( new ViewContainerElement( 'p', { 'data-level': 2 } ), '' );
 		} );
 
 		it( 'should fire conversion of the element children', () => {
@@ -187,7 +189,7 @@ describe( 'upcast-helpers', () => {
 			const helper = upcastElementToAttribute( {
 				view: {
 					name: 'span',
-					class: 'bold'
+					classes: 'bold'
 				},
 				model: 'bold'
 			} );
@@ -198,6 +200,8 @@ describe( 'upcast-helpers', () => {
 				new ViewAttributeElement( 'span', { class: 'bold' }, new ViewText( 'foo' ) ),
 				'<$text bold="true">foo</$text>'
 			);
+
+			expectResult( new ViewAttributeElement( 'span', {}, new ViewText( 'foo' ) ), 'foo' );
 		} );
 
 		it( 'model attribute value is given', () => {
@@ -208,7 +212,7 @@ describe( 'upcast-helpers', () => {
 			const helper = upcastElementToAttribute( {
 				view: {
 					name: 'span',
-					class: [ 'styled', 'styled-dark' ]
+					classes: [ 'styled', 'styled-dark' ]
 				},
 				model: {
 					key: 'styled',
@@ -222,6 +226,8 @@ describe( 'upcast-helpers', () => {
 				new ViewAttributeElement( 'span', { class: 'styled styled-dark' }, new ViewText( 'foo' ) ),
 				'<$text styled="dark">foo</$text>'
 			);
+
+			expectResult( new ViewAttributeElement( 'span', {}, new ViewText( 'foo' ) ), 'foo' );
 		} );
 
 		it( 'model attribute value is a function', () => {

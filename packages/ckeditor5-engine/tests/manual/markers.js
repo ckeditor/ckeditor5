@@ -41,7 +41,7 @@ ClassicEditor
 				const color = data.markerName.split( ':' )[ 1 ];
 
 				return {
-					class: 'h-' + color,
+					classes: 'h-' + color,
 					priority: 1
 				};
 			}
