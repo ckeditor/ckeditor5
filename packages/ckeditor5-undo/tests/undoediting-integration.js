@@ -1055,7 +1055,7 @@ describe( 'UndoEditing integration', () => {
 		// 1. Step - add text and marker to the paragraph.
 		model.change( writer => {
 			writer.appendText( 'foo', paragraph );
-			writer.setMarker( 'marker', Range.createIn( paragraph ), { usingOperation: true } );
+			writer.addMarker( 'marker', { range: Range.createIn( paragraph ), usingOperation: true } );
 		} );
 
 		// 2. Step - remove text from paragraph.
