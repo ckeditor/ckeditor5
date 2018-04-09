@@ -22,7 +22,45 @@ import {
 } from './upcast-converters';
 
 /**
- * An utility class that helps organizing dispatchers and adding converters to them.
+ * An utility class that helps adding converters to upcast and downcast dispatchers.
+ *
+ * We recommend reading first the {@glink framework/guides/architecture/editing-engine} guide to understand the
+ * core concepts of the conversion mechanisms.
+ *
+ * The instance of the conversion manager is available in the
+ * {@link module:core/editor/editor~Editor#conversion `editor.conversion`} property
+ * and by default has the following groups of dispatchers (i.e. directions of conversion):
+ *
+ * * `downcast` (editing and data downcasts)
+ * * `editingDowncast`
+ * * `dataDowncast`
+ * * `upcast`
+ *
+ * To add a converter to a specific group use the {@link module:engine/conversion/conversion~Conversion#for `for()`}
+ * method:
+ *
+ *		// Add a converter to editing downcast and data downcast.
+ *		editor.conversion.for( 'downcast' ).add( downcastElementToElement( config ) );
+ *
+ *		// Add a converter to the data pipepline only:
+ *		editor.conversion.for( 'dataDowncast' ).add( downcastElementToElement( config ) );
+ *		// And a slightly different one for the editing pipeline:
+ *		editor.conversion.for( 'editingDowncast' ).add( downcastElementToWidget( config ) );
+ *
+ * The functions used in `add()` calls are one-way converters (i.e. you need to remember yourself to add
+ * a converter in the other direction, if you feature requires that). They are also called "conversion helpers".
+ * You can find a set of them in the {@link module:engine/conversion/downcast-converters} and
+ * {@link module:engine/conversion/upcast-converters} modules
+ *
+ * Besides allowing to register converters to specific dispatchers, you can also use methods available in this
+ * class to add two-way converters (upcast and downcast):
+ *
+ * * {@link module:engine/conversion/conversion~Conversion#elementToElement `elementToElement()`} –
+ * model element to view element and vice versa
+ * * {@link module:engine/conversion/conversion~Conversion#attributeToElement `attributeToElement()`} –
+ * model attribute to view element and vice versa
+ * * {@link module:engine/conversion/conversion~Conversion#attributeToElement `attributeToElement()`} –
+ * model attribute to view element and vice versa
  */
 export default class Conversion {
 	/**

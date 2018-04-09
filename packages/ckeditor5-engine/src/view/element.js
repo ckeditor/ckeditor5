@@ -18,11 +18,22 @@ import Matcher from './matcher';
 /**
  * View element.
  *
- * Editing engine does not define fixed HTML DTD. This is why the type of the {@link module:engine/view/element~Element} need to
- * be defined by the feature developer. Creating an element you should use {@link module:engine/view/containerelement~ContainerElement}
- * class, {@link module:engine/view/attributeelement~AttributeElement} class or {@link module:engine/view/emptyelement~EmptyElement} class.
+ * The editing engine does not define a fixed semantics of its elements (it is "DTD-free").
+ * This is why the type of the {@link module:engine/view/element~Element} need to
+ * be defined by the feature developer. When creating an element you should use one of the following methods:
  *
- * Note that for view elements which are not created from model, like elements from mutations, paste or
+ * * {@link module:engine/view/writer~Writer#createContainerElement `writer.createContainerElement()`} in order to create
+ * a {@link module:engine/view/containerelement~ContainerElement},
+ * * {@link module:engine/view/writer~Writer#createAttributeElement `writer.createAttributeElement()`} in order to create
+ * a {@link module:engine/view/attributeelement~AttributeElement},
+ * * {@link module:engine/view/writer~Writer#createEmptyElement `writer.createEmptyElement()`} in order to create
+ * a {@link module:engine/view/emptyelement~EmptyElement}.
+ * * {@link module:engine/view/writer~Writer#createUIElement `writer.createUIElement()`} in order to create
+ * a {@link module:engine/view/uielement~UIElement}.
+ * * {@link module:engine/view/writer~Writer#createEditableElement `writer.createEditableElement()`} in order to create
+ * a {@link module:engine/view/editableelement~EditableElement}.
+ *
+ * Note that for view elements which are not created from the model, like elements from mutations, paste or
  * {@link module:engine/controller/datacontroller~DataController#set data.set} it is not possible to define the type of the element, so
  * these will be instances of the {@link module:engine/view/element~Element}.
  *
