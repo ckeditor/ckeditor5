@@ -4,7 +4,7 @@
  */
 
 /**
- * @module table/converters/downcasttable
+ * @module table/converters/downcast
  */
 
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
@@ -18,7 +18,7 @@ import TableWalker from './../tablewalker';
  *
  * @returns {Function} Conversion helper.
  */
-export default function downcastTable() {
+export function downcastInsertTable() {
 	return dispatcher => dispatcher.on( 'insert:table', ( evt, data, conversionApi ) => {
 		const table = data.item;
 
@@ -30,7 +30,7 @@ export default function downcastTable() {
 		conversionApi.consumable.consume( table, 'attribute:headingRows:table' );
 		conversionApi.consumable.consume( table, 'attribute:headingColumns:table' );
 
-		// The <thead> and <tbody> elements are created on the fly when needed & cached by `getTableSection()` function.
+		// The <thead> and <tbody> elements are created on the fly when needed & cached by `getOrCreateTableSection()` function.
 		const tableSections = {};
 
 		const tableElement = conversionApi.writer.createContainerElement( 'table' );
@@ -45,6 +45,7 @@ export default function downcastTable() {
 
 			// Check if row was converted
 			const trElement = getOrCreateTr( tableRow, row, tableSection, conversionApi );
+
 			createViewTableCellElement( tableWalkerValue, ViewPosition.createAt( trElement, 'end' ), conversionApi );
 		}
 
@@ -53,13 +54,6 @@ export default function downcastTable() {
 		conversionApi.mapper.bindElements( table, tableElement );
 		conversionApi.writer.insert( viewPosition, tableElement );
 	}, { priority: 'normal' } );
-}
-
-function getSectionName( treeWalkerValue ) {
-	const { row, table: { headingRows } } = treeWalkerValue;
-	const isHead = row < headingRows;
-
-	return isHead ? 'thead' : 'tbody';
 }
 
 /**
@@ -181,14 +175,14 @@ export function downcastAttributeChange( attribute ) {
 			}
 
 			// Check whether current columnIndex is overlapped by table cells from previous rows.
-			const cellElementName = getCellElementName( tableWalkerValue );
+			const desiredCellElementName = getCellElementName( tableWalkerValue );
 
 			const viewCell = conversionApi.mapper.toViewElement( cell );
 
 			// If in single change we're converting attribute changes and inserting cell the table cell might not be inserted into view
 			// because of child conversion is done after parent.
-			if ( viewCell && viewCell.name !== cellElementName ) {
-				conversionApi.writer.rename( viewCell, cellElementName );
+			if ( viewCell && viewCell.name !== desiredCellElementName ) {
+				conversionApi.writer.rename( viewCell, desiredCellElementName );
 			}
 		}
 
@@ -237,31 +231,35 @@ function getOrCreateTr( tableRow, rowIndex, tableSection, conversionApi ) {
 	return trElement;
 }
 
-// Returns `th` for heading cells and `td` for other cells.
-// It is based on tableCell location (rowIndex x columnIndex) and the sizes of column & row headings sizes.
+// Returns `th` for heading cells and `td` for other cells for current table walker value.
 //
-// @param {Number} rowIndex
-// @param {Number} columnIndex
-// @param {Number} headingRows
-// @param {Number} headingColumns
+// @param {module:table/tablewalker~TableWalkerValue} tableWalkerValue
 // @returns {String}
 function getCellElementName( tableWalkerValue ) {
-	const headingRows = tableWalkerValue.table.headingRows;
+	const { row, column, table: { headingRows, headingColumns } } = tableWalkerValue;
 
 	// Column heading are all tableCells in the first `columnHeading` rows.
-	const isHeadingForAColumn = headingRows && headingRows > tableWalkerValue.row;
+	const isColumnHeading = headingRows && headingRows > row;
 
 	// So a whole row gets <th> element.
-	if ( isHeadingForAColumn ) {
+	if ( isColumnHeading ) {
 		return 'th';
 	}
 
-	const headingColumns = tableWalkerValue.table.headingColumns;
-
 	// Row heading are tableCells which columnIndex is lower then headingColumns.
-	const isHeadingForARow = headingColumns && headingColumns > tableWalkerValue.column;
+	const isRowHeading = headingColumns && headingColumns > column;
 
-	return isHeadingForARow ? 'th' : 'td';
+	return isRowHeading ? 'th' : 'td';
+}
+
+// Returns table section name for current table walker value.
+//
+// @param {module:table/tablewalker~TableWalkerValue} tableWalkerValue
+// @returns {String}
+function getSectionName( tableWalkerValue ) {
+	const { row, table: { headingRows } } = tableWalkerValue;
+
+	return row < headingRows ? 'thead' : 'tbody';
 }
 
 // Creates or returns an existing <tbody> or <thead> element witch caching.

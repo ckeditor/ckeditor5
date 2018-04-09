@@ -8,7 +8,7 @@ import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model
 import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 
 import InsertColumnCommand from '../src/insertcolumncommand';
-import downcastTable from '../src/converters/downcasttable';
+import { downcastInsertTable } from '../src/converters/downcast';
 import upcastTable from '../src/converters/upcasttable';
 import { formatModelTable, formattedModelTable, modelTable } from './_utils/utils';
 
@@ -51,7 +51,7 @@ describe( 'InsertColumnCommand', () => {
 
 				// Table conversion.
 				conversion.for( 'upcast' ).add( upcastTable() );
-				conversion.for( 'downcast' ).add( downcastTable() );
+				conversion.for( 'downcast' ).add( downcastInsertTable() );
 
 				// Table row upcast only since downcast conversion is done in `downcastTable()`.
 				conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableRow', view: 'tr' } ) );
