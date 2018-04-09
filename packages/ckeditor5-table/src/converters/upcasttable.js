@@ -42,6 +42,14 @@ export default function upcastTable() {
 			conversionApi.writer.insert( table, splitResult.position );
 			conversionApi.consumable.consume( viewTable, { name: true } );
 
+			if ( !rows.length ) {
+				// Create one row and one table cell for empty table.
+				const row = conversionApi.writer.createElement( 'tableRow' );
+
+				conversionApi.writer.insert( row, ModelPosition.createAt( table, 'end' ) );
+				conversionApi.writer.insertElement( 'tableCell', ModelPosition.createAt( row, 'end' ) );
+			}
+
 			// Upcast table rows as we need to insert them to table in proper order (heading rows first).
 			upcastTableRows( rows, table, conversionApi );
 
@@ -126,26 +134,18 @@ function scanTable( viewTable ) {
 
 // Converts table rows and extracts table metadata.
 //
-// @param {module:engine/view/element~Element} viewTable
+// @param {Array.<module:engine/view/element~Element>} viewRows
 // @param {module:engine/model/element~Element} modelTable
 // @param {module:engine/conversion/upcastdispatcher~ViewConversionApi} conversionApi
-// @returns {{headingRows, headingColumns}}
 function upcastTableRows( viewRows, modelTable, conversionApi ) {
 	for ( const viewRow of viewRows ) {
 		const modelRow = conversionApi.writer.createElement( 'tableRow' );
+
 		conversionApi.writer.insert( modelRow, ModelPosition.createAt( modelTable, 'end' ) );
 		conversionApi.consumable.consume( viewRow, { name: true } );
 
 		const childrenCursor = ModelPosition.createAt( modelRow );
 		conversionApi.convertChildren( viewRow, childrenCursor );
-	}
-
-	if ( !viewRows.length ) {
-		// Create empty table with one row and one table cell.
-		const row = conversionApi.writer.createElement( 'tableRow' );
-
-		conversionApi.writer.insert( row, ModelPosition.createAt( modelTable, 'end' ) );
-		conversionApi.writer.insertElement( 'tableCell', ModelPosition.createAt( row, 'end' ) );
 	}
 }
 
@@ -155,11 +155,11 @@ function upcastTableRows( viewRows, modelTable, conversionApi ) {
 //     - updates number of heading rows.
 // - For body rows:
 //     - calculates number of column headings.
+//
 // @param {module:engine/view/element~Element} tr
-// @param {Object} tableMeta
-// @param {module:engine/view/element~Element|undefined} firstThead
+// @returns {Number}
 function scanRowForHeadingColumns( tr ) {
-	let headingCols = 0;
+	let headingColumns = 0;
 	let index = 0;
 
 	// Filter out empty text nodes from tr children.
@@ -168,14 +168,14 @@ function scanRowForHeadingColumns( tr ) {
 
 	// Count starting adjacent <th> elements of a <tr>.
 	while ( index < children.length && children[ index ].name === 'th' ) {
-		const td = children[ index ];
+		const th = children[ index ];
 
 		// Adjust columns calculation by the number of spanned columns.
-		const colspan = td.hasAttribute( 'colspan' ) ? parseInt( td.getAttribute( 'colspan' ) ) : 1;
+		const colspan = parseInt( th.getAttribute( 'colspan' ) || 1 );
 
-		headingCols = headingCols + colspan;
+		headingColumns = headingColumns + colspan;
 		index++;
 	}
 
-	return headingCols;
+	return headingColumns;
 }
