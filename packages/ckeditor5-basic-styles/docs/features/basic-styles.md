@@ -63,7 +63,9 @@ ClassicEditor
 	.catch( ... );
 ```
 
-If you are using an editor build, see how to {@link builds/guides/development/custom-builds customize builds}.
+<info-box info>
+	Read more about {@link builds/guides/development/installing-plugins installing plugins}.
+</info-box>
 
 ## Common API
 
