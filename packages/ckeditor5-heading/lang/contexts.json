@@ -1,7 +1,8 @@
 {
+	"Paragraph": "Dropdown option label for the paragraph format.",
 	"Heading": "Tooltip for the heading dropdown.",
 	"Choose heading": "Default label for the heading dropdown.",
-	"Heading 1": "Dropdown option label for the heading level 1 format, also used as heading 1 button tooltip.",
-	"Heading 2": "Dropdown option label for the heading level 2 format, also used as heading 1 button tooltip.",
-	"Heading 3": "Dropdown option label for the heading level 3 format, also used as heading 1 button tooltip."
+	"Heading 1": "Dropdown option label for the heading level 1 format.",
+	"Heading 2": "Dropdown option label for the heading level 2 format.",
+	"Heading 3": "Dropdown option label for the heading level 3 format."
 }
