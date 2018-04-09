@@ -1,0 +1,34 @@
+# Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+"Language: zh_CN\n"
+"Language-Team: Chinese (China) (https://www.transifex.com/ckeditor/teams/11143/zh_CN/)\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "Tooltip for the font size dropdown."
+msgid "Font Size"
+msgstr "字体大小"
+
+msgctxt "Dropdown option label for the 'tiny' font size preset."
+msgid "Tiny"
+msgstr "极小"
+
+msgctxt "Dropdown option label for the 'small' font size preset."
+msgid "Small"
+msgstr "小"
+
+msgctxt "Dropdown option label for the 'big' font size preset."
+msgid "Big"
+msgstr "大"
+
+msgctxt "Dropdown option label for the 'huge' font size preset."
+msgid "Huge"
+msgstr "极大"
+
+msgctxt "Tooltip for the font family dropdown."
+msgid "Font Family"
+msgstr "字体"
+
+msgctxt "Dropdown option label for the default font family."
+msgid "Default"
+msgstr "默认"
