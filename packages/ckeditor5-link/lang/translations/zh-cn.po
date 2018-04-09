@@ -15,16 +15,16 @@ msgstr "超链接"
 
 msgctxt "Label for the URL input in the Link URL editing balloon."
 msgid "Link URL"
-msgstr ""
+msgstr "链接网址"
 
 msgctxt "Button opening the Link URL editing balloon."
 msgid "Edit link"
-msgstr ""
+msgstr "修改链接"
 
 msgctxt "Button opening the link in new browser tab."
 msgid "Open link in new tab"
-msgstr ""
+msgstr "在新标签页中打开链接"
 
 msgctxt "Label explaining that a link has no URL set (the URL is empty)."
 msgid "This link has no URL"
-msgstr ""
+msgstr "此链接没有设置网址"
