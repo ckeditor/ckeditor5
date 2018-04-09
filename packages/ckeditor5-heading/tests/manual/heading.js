@@ -15,7 +15,7 @@ import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Enter, Typing, Undo, Heading, Paragraph ],
-		toolbar: [ 'heading', '|', 'undo', 'redo', ]
+		toolbar: [ 'heading', '|', 'undo', 'redo' ]
 	} )
 	.then( editor => {
 		window.editor = editor;
