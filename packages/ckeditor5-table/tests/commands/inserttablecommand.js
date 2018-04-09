@@ -7,9 +7,9 @@ import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltestedit
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 
-import InsertTableCommand from '../src/inserttablecommand';
-import { downcastInsertTable } from '../src/converters/downcast';
-import upcastTable from '../src/converters/upcasttable';
+import InsertTableCommand from '../../src/commands/inserttablecommand';
+import { downcastInsertTable } from '../../src/converters/downcast';
+import upcastTable from '../../src/converters/upcasttable';
 
 describe( 'InsertTableCommand', () => {
 	let editor, model, command;

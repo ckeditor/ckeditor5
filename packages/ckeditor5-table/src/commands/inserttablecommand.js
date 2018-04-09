@@ -4,7 +4,7 @@
  */
 
 /**
- * @module table/inserttablecommand
+ * @module table/commands/inserttablecommand
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
@@ -23,7 +23,7 @@ export default class InsertTableCommand extends Command {
 		const model = this.editor.model;
 		const doc = model.document;
 
-		const validParent = _getValidParent( doc.selection.getFirstPosition() );
+		const validParent = getValidParent( doc.selection.getFirstPosition() );
 
 		this.isEnabled = model.schema.checkChild( validParent, 'table' );
 	}
@@ -47,7 +47,6 @@ export default class InsertTableCommand extends Command {
 
 		const firstPosition = selection.getFirstPosition();
 
-		// TODO does API has it?
 		const isRoot = firstPosition.parent === firstPosition.root;
 		const insertTablePosition = isRoot ? Position.createAt( firstPosition ) : Position.createAfter( firstPosition.parent );
 
@@ -72,7 +71,10 @@ export default class InsertTableCommand extends Command {
 	}
 }
 
-function _getValidParent( firstPosition ) {
-	const parent = firstPosition.parent;
+// Returns valid parent to insert table
+//
+// @param {module:engine/model/position} position
+function getValidParent( position ) {
+	const parent = position.parent;
 	return parent === parent.root ? parent : parent.parent;
 }

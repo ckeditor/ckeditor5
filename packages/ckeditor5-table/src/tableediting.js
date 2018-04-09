@@ -11,9 +11,9 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 import upcastTable from './converters/upcasttable';
 import { downcastInsertCell, downcastInsertRow, downcastInsertTable } from './converters/downcast';
-import InsertTableCommand from './inserttablecommand';
-import InsertRowCommand from './insertrowcommand';
-import InsertColumnCommand from './insertcolumncommand';
+import InsertTableCommand from './commands/inserttablecommand';
+import InsertRowCommand from './commands/insertrowcommand';
+import InsertColumnCommand from './commands/insertcolumncommand';
 
 /**
  * The table editing feature.

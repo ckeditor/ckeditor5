@@ -4,20 +4,13 @@
  */
 
 /**
- * @module table/insertcolumncommand
+ * @module table/commands/insertcolumncommand
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import TableWalker from './tablewalker';
+import TableWalker from '../tablewalker';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
-
-function createCells( columns, writer, insertPosition ) {
-	for ( let i = 0; i < columns; i++ ) {
-		const cell = writer.createElement( 'tableCell' );
-
-		writer.insert( cell, insertPosition );
-	}
-}
+import { getColumns, getParentTable } from './utils';
 
 /**
  * The insert column command.
@@ -32,7 +25,7 @@ export default class InsertColumnCommand extends Command {
 		const model = this.editor.model;
 		const doc = model.document;
 
-		const tableParent = getValidParent( doc.selection.getFirstPosition() );
+		const tableParent = getParentTable( doc.selection.getFirstPosition() );
 
 		this.isEnabled = !!tableParent;
 	}
@@ -54,7 +47,7 @@ export default class InsertColumnCommand extends Command {
 		const columns = parseInt( options.columns ) || 1;
 		const insertAt = parseInt( options.at ) || 0;
 
-		const table = getValidParent( selection.getFirstPosition() );
+		const table = getParentTable( selection.getFirstPosition() );
 
 		model.change( writer => {
 			const tableColumns = getColumns( table );
@@ -109,25 +102,15 @@ export default class InsertColumnCommand extends Command {
 	}
 }
 
-function getValidParent( firstPosition ) {
-	let parent = firstPosition.parent;
+// Creates cells at given position.
+//
+// @param {Number} columns Number of columns to create
+// @param {module:engine/model/writer} writer
+// @param {module:engine/model/position} insertPosition
+function createCells( columns, writer, insertPosition ) {
+	for ( let i = 0; i < columns; i++ ) {
+		const cell = writer.createElement( 'tableCell' );
 
-	while ( parent ) {
-		if ( parent.name === 'table' ) {
-			return parent;
-		}
-
-		parent = parent.parent;
+		writer.insert( cell, insertPosition );
 	}
-}
-
-// TODO: dup
-function getColumns( table ) {
-	const row = table.getChild( 0 );
-
-	return [ ...row.getChildren() ].reduce( ( columns, row ) => {
-		const columnWidth = parseInt( row.getAttribute( 'colspan' ) ) || 1;
-
-		return columns + ( columnWidth );
-	}, 0 );
 }

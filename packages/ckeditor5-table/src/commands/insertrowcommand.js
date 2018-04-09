@@ -4,11 +4,12 @@
  */
 
 /**
- * @module table/insertrowcommand
+ * @module table/commands/insertrowcommand
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import TableWalker from './tablewalker';
+import TableWalker from '../tablewalker';
+import { getColumns, getParentTable } from './utils';
 
 /**
  * The insert row command.
@@ -23,7 +24,7 @@ export default class InsertRowCommand extends Command {
 		const model = this.editor.model;
 		const doc = model.document;
 
-		const tableParent = getValidParent( doc.selection.getFirstPosition() );
+		const tableParent = getParentTable( doc.selection.getFirstPosition() );
 
 		this.isEnabled = !!tableParent;
 	}
@@ -45,7 +46,7 @@ export default class InsertRowCommand extends Command {
 		const rows = parseInt( options.rows ) || 1;
 		const insertAt = parseInt( options.at ) || 0;
 
-		const table = getValidParent( selection.getFirstPosition() );
+		const table = getParentTable( selection.getFirstPosition() );
 
 		const headingRows = table.getAttribute( 'headingRows' ) || 0;
 
@@ -92,26 +93,4 @@ export default class InsertRowCommand extends Command {
 			}
 		} );
 	}
-}
-
-function getValidParent( firstPosition ) {
-	let parent = firstPosition.parent;
-
-	while ( parent ) {
-		if ( parent.name === 'table' ) {
-			return parent;
-		}
-
-		parent = parent.parent;
-	}
-}
-
-function getColumns( table ) {
-	const row = table.getChild( 0 );
-
-	return [ ...row.getChildren() ].reduce( ( columns, row ) => {
-		const columnWidth = parseInt( row.getAttribute( 'colspan' ) ) || 1;
-
-		return columns + ( columnWidth );
-	}, 0 );
 }

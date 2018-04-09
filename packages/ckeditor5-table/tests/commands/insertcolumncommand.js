@@ -7,10 +7,10 @@ import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltestedit
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 
-import InsertColumnCommand from '../src/insertcolumncommand';
-import { downcastInsertTable } from '../src/converters/downcast';
-import upcastTable from '../src/converters/upcasttable';
-import { formatModelTable, formattedModelTable, modelTable } from './_utils/utils';
+import InsertColumnCommand from '../../src/commands/insertcolumncommand';
+import { downcastInsertTable } from '../../src/converters/downcast';
+import upcastTable from '../../src/converters/upcasttable';
+import { formatModelTable, formattedModelTable, modelTable } from '../_utils/utils';
 
 describe( 'InsertColumnCommand', () => {
 	let editor, model, command;
