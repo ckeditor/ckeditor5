@@ -13,11 +13,12 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import { getLocalizedOptions } from './utils';
 import iconHeading1 from '../theme/icons/heading1.svg';
 import iconHeading2 from '../theme/icons/heading2.svg';
+import iconHeading3 from '../theme/icons/heading3.svg';
 
 const defaultIcons = {
 	heading1: iconHeading1,
 	heading2: iconHeading2,
-	heading3: iconHeading2
+	heading3: iconHeading3
 };
 
 /**
