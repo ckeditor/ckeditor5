@@ -13,11 +13,11 @@ import UploadGateway from '@ckeditor/ckeditor-cloud-services-core/src/uploadgate
 import CloudServices from '@ckeditor/ckeditor5-cloud-services/src/cloudservices';
 
 /**
- * A plugin which enables upload to Cloud Services.
+ * A plugin that enables upload to [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/).
  *
  * It is mainly used by the {@link module:easy-image/easyimage~EasyImage} feature.
  *
- * After enabling this adapter you need to configure the Cloud Services integration through
+ * After enabling this adapter you need to configure the CKEditor Cloud Services integration through
  * {@link module:cloud-services/cloudservices~CloudServicesConfig `config.cloudServices`}.
  *
  * @extends module:core/plugin~Plugin
