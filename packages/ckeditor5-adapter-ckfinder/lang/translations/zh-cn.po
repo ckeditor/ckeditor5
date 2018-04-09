@@ -7,4 +7,4 @@ msgstr ""
 
 msgctxt "A generic error message displayed on upload failure. The file name is concatenated to this text."
 msgid "Cannot upload file:"
-msgstr "无法上传文件:"
+msgstr "无法上传的文件："
