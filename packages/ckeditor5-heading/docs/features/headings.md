@@ -128,6 +128,10 @@ ClassicEditor
 	.catch( ... );
 ```
 
+<info-box info>
+	Read more about {@link builds/guides/development/installing-plugins installing plugins}.
+</info-box>
+
 ## Common API
 
 The {@link module:heading/heading~Heading} plugin registers:
