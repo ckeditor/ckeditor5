@@ -132,10 +132,9 @@ export default class Editor {
 		this.editing.view.document.bind( 'isReadOnly' ).to( this );
 
 		/**
-		 * Conversion manager to which conversion dispatchers are registered. Used to add converters to the editor.
+		 * Conversion manager through which you can register model to view and view to model converters.
 		 *
-		 * See {@link module:engine/conversion/conversion~Conversion#for} to learn how to use conversion helpers in order to
-		 * add converters to the editor.
+		 * See {@link module:engine/conversion/conversion~Conversion}'s documentation to learn how to add converters.
 		 *
 		 * @readonly
 		 * @member {module:engine/conversion/conversion~Conversion}
