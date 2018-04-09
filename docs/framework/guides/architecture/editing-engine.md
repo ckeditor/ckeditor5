@@ -199,6 +199,7 @@ What this means is that:
 * The view is yet another custom structure.
 * It resembles the DOM. While the model's tree structure only slightly resembled the DOM (e.g. by introducing text attributes), the view is much closer to the DOM. In other words, it is a **virtual DOM**.
 * There are two "pipelines" – the **editing pipeline** (also called the "editing view") and the **data pipeline** ("the data view"). Treat them as two separate views of one model. The editing pipeline renders and handles the DOM which the user sees and can edit. The data pipeline is used when you call `editor.getData()`, `editor.setData()` or paste content into the editor.
+* The views are rendered to the DOM by the {@link module:engine/view/renderer~Renderer} which handles itself all the quirks required to tame the `contentEditable` used in the editing pipeline.
 
 The fact that there are two views is visible in the API:
 
@@ -231,7 +232,23 @@ editor.data.view.change( writer => {
 } );
 ```
 
-### Element types
+### Element types and custom data
+
+The structure of the view resemles the structure in the DOM very closely. The semantincs of HTML is defined in its specification. The view structure comes "DTD-free", so in order to provide additional information and better express the semantics of the content, the view structure implements 5 element types ({@link module:engine/view/containerelement~ContainerElement}, {@link module:engine/view/attributeelement~AttributeElement} and {@link module:engine/view/emptyelement~EmptyElement}, {@link module:engine/view/uielement~UIElement}, {@link module:engine/view/editableelement~EditableElement}) and so called {@link module:engine/view/element~Element#getCustomProperty "custom properties"} (i.e. custom element propperties which are not rendered). This additional information provided by editor features is then used by the {@link module:engine/view/renderer~Renderer} and [converters](#Conversion).
+
+The element types can be defined as follows:
+
+* **Container element** – elements which build the structure of the content. Used for block elements such as `<p>`, `<h1>`, `<blockQuote>`, `<li>`, etc.
+* **Attribute element** – elements which cannot contain container elements inside them. Most model text attributes are converted to view attribute elements. They are used mostly for inline styling elements such as `<strong>`, `<i>`, `<a>`, `<code>`. Similar attribute elements are flattened by the view writer, so e.g. `<a href="..."><a class="bar">x</a></a>` would automatically be optimised to `<a href="..." class="bar">x</a>`.
+* **Empty element** – elements which must not have any child nodes – e.g. `<img>`.
+* **UI elements** – elements which are not part of the "data" but needs to be "inlined" in the content. They are ignored by the selection (it jumps over them) and the view writer in general. Content of these elements and events comming from them are filtered out too.
+* **Editable element** – elements used as "nested editables" of non-editable fragments of the content – e.g. caption in the image widget, where the `<figure>` wrapping the image is not editable (it is a widget) and the `<figcaption>` inside it is an editable element.
+
+The custom properties are used to store information like:
+
+* Whether element is a widget (added by {@link module:widget/utils~toWidget `toWidget()`}),
+* How an element should be marked when a [marker](#markers) highlights it,
+* Whether element belongs to a certain feature - it's a link, progress bar, caption, etc.
 
 ### Positions
 
