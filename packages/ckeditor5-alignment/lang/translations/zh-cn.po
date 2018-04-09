@@ -1,0 +1,26 @@
+# Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+"Language: zh_CN\n"
+"Language-Team: Chinese (China) (https://www.transifex.com/ckeditor/teams/11143/zh_CN/)\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgctxt "Toolbar button tooltip for aligning text to the left."
+msgid "Align left"
+msgstr "左对齐"
+
+msgctxt "Toolbar button tooltip for aligning text to the right."
+msgid "Align right"
+msgstr "右对齐"
+
+msgctxt "Toolbar button tooltip for aligning text to center."
+msgid "Align center"
+msgstr "居中"
+
+msgctxt "Toolbar button tooltip for making text justified."
+msgid "Justify"
+msgstr "两端对齐"
+
+msgctxt "Dropdown button tooltip for the text alignment feature."
+msgid "Text alignment"
+msgstr "对齐"
