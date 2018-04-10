@@ -1,6 +1,19 @@
 Changelog
 =========
 
+## [1.0.0-beta.2](https://github.com/ckeditor/ckeditor5-heading/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2018-04-10)
+
+### Other changes
+
+* Aligned `ElementDefinition` usage to the changes in the engine. See [ckeditor/ckeditor5#742](https://github.com/ckeditor/ckeditor5/issues/742). ([96d24f4](https://github.com/ckeditor/ckeditor5-heading/commit/96d24f4))
+* Increased the specificity of CSS rules. Introduced the .ck class for editor UI components (see: [ckeditor/ckeditor5#494](https://github.com/ckeditor/ckeditor5/issues/494)). ([915ec69](https://github.com/ckeditor/ckeditor5-heading/commit/915ec69))
+* Updated translations. ([7393dff](https://github.com/ckeditor/ckeditor5-heading/commit/7393dff))
+
+### BREAKING CHANGES
+
+* In the custom format of the heading feature configuration the `view.style`, `view.class` and `view.attribute` properties are now called `view.styles`, `view.classes` and `view.attributes`.
+
+
 ## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-heading/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
 
 ### Other changes
