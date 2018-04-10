@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## [1.0.0-beta.2](https://github.com/ckeditor/ckeditor5-core/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2018-04-10)
+
+### Other changes
+
+* Made the check and cancel icons thicker and fill-friendly (see [ckeditor/ckeditor5#810](https://github.com/ckeditor/ckeditor5/issues/810)). ([6584541](https://github.com/ckeditor/ckeditor5-core/commit/6584541))
+* Updated translations. ([74c29e8](https://github.com/ckeditor/ckeditor5-core/commit/74c29e8))
+
+
 ## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-core/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
 
 ### Other changes
