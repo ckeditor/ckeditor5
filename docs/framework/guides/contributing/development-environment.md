@@ -210,7 +210,7 @@ git pull
 git co master-revisions~30
 
 # Check out subpackages to correct hashes.
-mgit update
+mgit co
 ```
 
 Once you found the point in history which interests you, you can go straight to a commit in a subpackage and PR. For example:
