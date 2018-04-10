@@ -1,6 +1,18 @@
 Changelog
 =========
 
+## [1.0.0-beta.2](https://github.com/ckeditor/ckeditor5-undo/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2018-04-10)
+
+### Bug fixes
+
+* `UndoCommand` and `RedoCommand` should pass batch in `model.Model#enqueueChange` call. Closes [#84](https://github.com/ckeditor/ckeditor5-undo/issues/84). ([497af30](https://github.com/ckeditor/ckeditor5-undo/commit/497af30))
+
+### Other changes
+
+* Rename `setMarker` to `addMarker` (see https://github.com/ckeditor/ckeditor5-engine/pull/1388). ([45ff636](https://github.com/ckeditor/ckeditor5-undo/commit/45ff636))
+* Updated translations. ([5ff3ab9](https://github.com/ckeditor/ckeditor5-undo/commit/5ff3ab9))
+
+
 ## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-undo/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
 
 ### Features
