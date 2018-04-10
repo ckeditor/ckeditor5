@@ -5,7 +5,7 @@ Changelog
 
 ### Bug fixes
 
-* Translations should work when CKEditor was loaded using RequireJS. See [ckeditor/ckeditor5-dev#914](https://github.com/ckeditor/ckeditor5-dev/issues/914). ([9246836](https://github.com/ckeditor/ckeditor5-build-inline/commit/9246836))
+* Translations should work when CKEditor was loaded using RequireJS. See [ckeditor/ckeditor5#914](https://github.com/ckeditor/ckeditor5/issues/914). ([9246836](https://github.com/ckeditor/ckeditor5-build-inline/commit/9246836))
 
 
 ## [1.0.0-beta.2](https://github.com/ckeditor/ckeditor5-build-inline/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2018-04-10)
