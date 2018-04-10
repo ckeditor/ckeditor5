@@ -941,12 +941,13 @@ export default class Writer {
 			if ( isText || isEmpty || isUI || ( isAttribute && shouldABeOutsideB( attribute, child ) ) ) {
 				// Clone attribute.
 				const newAttribute = attribute._clone();
-				this._addToClonedElementsGroup( newAttribute );
 
 				// Wrap current node with new attribute.
 				child._remove();
 				newAttribute._appendChild( child );
+
 				parent._insertChild( i, newAttribute );
+				this._addToClonedElementsGroup( newAttribute );
 
 				wrapPositions.push(	new Position( parent, i ) );
 			}
@@ -1006,9 +1007,9 @@ export default class Writer {
 
 				// Replace wrapper element with its children
 				child._remove();
-				this._removeFromClonedElementsGroup( child );
-
 				parent._insertChild( i, unwrapped );
+
+				this._removeFromClonedElementsGroup( child );
 
 				// Save start and end position of moved items.
 				unwrapPositions.push(
@@ -1415,10 +1416,10 @@ export default class Writer {
 
 			// Break element.
 			const clonedNode = positionParent._clone();
-			this._addToClonedElementsGroup( clonedNode );
 
 			// Insert cloned node to position's parent node.
 			positionParent.parent._insertChild( offsetAfter, clonedNode );
+			this._addToClonedElementsGroup( clonedNode );
 
 			// Get nodes to move.
 			const count = positionParent.childCount - positionOffset;
@@ -1447,6 +1448,19 @@ export default class Writer {
 	 * @param {module:engine/view/attributeelement~AttributeElement} element Attribute element to save.
 	 */
 	_addToClonedElementsGroup( element ) {
+		// Add only if the element is in document tree.
+		if ( !element.root.is( 'rootElement' ) ) {
+			return;
+		}
+
+		// Traverse the element's children recursively to find other attribute elements that also might got inserted.
+		// The loop is at the beginning so we can make fast returns later in the code.
+		if ( element.is( 'element' ) ) {
+			for ( const child of element.getChildren() ) {
+				this._addToClonedElementsGroup( child );
+			}
+		}
+
 		const id = element.id;
 
 		if ( !id ) {
@@ -1477,6 +1491,14 @@ export default class Writer {
 	 * @param {module:engine/view/attributeelement~AttributeElement} element Attribute element to remove.
 	 */
 	_removeFromClonedElementsGroup( element ) {
+		// Traverse the element's children recursively to find other attribute elements that also got removed.
+		// The loop is at the beginning so we can make fast returns later in the code.
+		if ( element.is( 'element' ) ) {
+			for ( const child of element.getChildren() ) {
+				this._removeFromClonedElementsGroup( child );
+			}
+		}
+
 		const id = element.id;
 
 		if ( !id ) {
@@ -1484,6 +1506,10 @@ export default class Writer {
 		}
 
 		const group = this._cloneGroups.get( id );
+
+		if ( !group ) {
+			return;
+		}
 
 		group.delete( element );
 		// Not removing group from element on purpose!

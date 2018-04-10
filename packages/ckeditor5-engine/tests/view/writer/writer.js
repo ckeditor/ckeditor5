@@ -13,7 +13,7 @@ import createViewRoot from '../_utils/createroot';
 describe( 'Writer', () => {
 	let writer, attributes, root, doc;
 
-	before( () => {
+	beforeEach( () => {
 		attributes = { foo: 'bar', baz: 'quz' };
 		doc = new Document();
 		root = createViewRoot( doc );
@@ -43,6 +43,9 @@ describe( 'Writer', () => {
 
 	describe( 'setSelectionFocus()', () => {
 		it( 'should use selection._setFocus method internally', () => {
+			const position = ViewPosition.createAt( root );
+			writer.setSelection( position );
+
 			const spy = sinon.spy( writer.document.selection, '_setFocus' );
 			writer.setSelectionFocus( root, 0 );
 
@@ -255,10 +258,9 @@ describe( 'Writer', () => {
 
 	describe( 'manages AttributeElement#_clonesGroup', () => {
 		it( 'should return all clones of a broken attribute element with id', () => {
-			const container = writer.createContainerElement( 'div' );
 			const text = writer.createText( 'abccccde' );
 
-			writer.insert( ViewPosition.createAt( container, 0 ), text );
+			writer.insert( ViewPosition.createAt( root, 0 ), text );
 
 			const span = writer.createAttributeElement( 'span', null, { id: 'foo' } );
 			span._priority = 20;
@@ -271,8 +273,8 @@ describe( 'Writer', () => {
 			// <div>a<i>b<span>c</span></i><span>cc</span>de</div>
 			writer.wrap(
 				ViewRange.createFromParentsAndOffsets(
-					container.getChild( 0 ), 1,
-					container.getChild( 1 ).getChild( 0 ), 1
+					root.getChild( 0 ), 1,
+					root.getChild( 1 ).getChild( 0 ), 1
 				),
 				i
 			);
@@ -280,14 +282,14 @@ describe( 'Writer', () => {
 			// <div>a<i>b<span>c</span></i><span>c</span><i><span>cc</span>d</i>e</div>
 			writer.wrap(
 				ViewRange.createFromParentsAndOffsets(
-					container.getChild( 2 ).getChild( 0 ), 1,
-					container.getChild( 3 ), 1
+					root.getChild( 2 ).getChild( 0 ), 1,
+					root.getChild( 3 ), 1
 				),
 				i
 			);
 
 			// Find all spans.
-			const allSpans = Array.from( ViewRange.createIn( container ).getItems() ).filter( element => element.is( 'span' ) );
+			const allSpans = Array.from( ViewRange.createIn( root ).getItems() ).filter( element => element.is( 'span' ) );
 
 			// For each of the spans created above...
 			for ( const oneOfAllSpans of allSpans ) {
@@ -301,6 +303,72 @@ describe( 'Writer', () => {
 
 				expect( brokenArray.length ).to.equal( allSpans.length );
 			}
+		} );
+
+		it( 'should not create groups for attribute elements that are not created in document root', () => {
+			const p = writer.createContainerElement( 'p' );
+			const foo = writer.createText( 'foo' );
+			writer.insert( ViewPosition.createAt( p, 0 ), foo );
+			// <p>foo</p>
+
+			const span = writer.createAttributeElement( 'span', null, { id: 'span' } );
+
+			// <p><span>foo</span></p>
+			writer.wrap( ViewRange.createFromParentsAndOffsets( foo, 0, foo, 3 ), span );
+
+			// Find the span.
+			const createdSpan = p.getChild( 0 );
+
+			expect( createdSpan.getElementsWithSameId().size ).to.equal( 0 );
+		} );
+
+		it( 'should add attribute elements to clone groups deeply', () => {
+			const p = writer.createContainerElement( 'p' );
+			const foo = writer.createText( 'foo' );
+			writer.insert( ViewPosition.createAt( p, 0 ), foo );
+			// <p>foo</p>
+
+			const span = writer.createAttributeElement( 'span', null, { id: 'span' } );
+
+			// <p><span>foo</span></p>
+			writer.wrap( ViewRange.createFromParentsAndOffsets( foo, 0, foo, 3 ), span );
+
+			// <div><p><span>foo</span></p>
+			writer.insert( ViewPosition.createAt( root, 0 ), p );
+
+			// Find the span.
+			const createdSpan = p.getChild( 0 );
+
+			expect( Array.from( createdSpan.getElementsWithSameId() ) ).to.deep.equal( [ createdSpan ] );
+		} );
+
+		it( 'should remove attribute elements from clone groups deeply', () => {
+			const p1 = writer.createContainerElement( 'p' );
+			const p2 = writer.createContainerElement( 'p' );
+			const foo = writer.createText( 'foo' );
+			const bar = writer.createText( 'bar' );
+
+			writer.insert( ViewPosition.createAt( root, 0 ), p1 );
+			writer.insert( ViewPosition.createAt( root, 1 ), p2 );
+			writer.insert( ViewPosition.createAt( p1, 0 ), foo );
+			writer.insert( ViewPosition.createAt( p2, 0 ), bar );
+			// <div><p>foo</p><p>bar</p></div>
+
+			const span = writer.createAttributeElement( 'span', null, { id: 'span' } );
+
+			// <div><p>fo<span>o</span></p><p>bar</p></div>
+			writer.wrap( ViewRange.createFromParentsAndOffsets( foo, 2, foo, 3 ), span );
+
+			// <div><p>fo<span>o</span></p><p><span>b</span>ar</p></div>
+			writer.wrap( ViewRange.createFromParentsAndOffsets( bar, 0, bar, 1 ), span );
+
+			// <div><p><span>b</span>ar</p></div>
+			writer.remove( ViewRange.createOn( p1 ) );
+
+			// Find the span.
+			const spanInTree = p2.getChild( 0 );
+
+			expect( Array.from( spanInTree.getElementsWithSameId() ) ).to.deep.equal( [ spanInTree ] );
 		} );
 	} );
 
