@@ -3,6 +3,10 @@ Changelog
 
 ## [1.0.0-beta.3](https://github.com/ckeditor/ckeditor5-build-inline/compare/v1.0.0-beta.2...v1.0.0-beta.3) (2018-04-10)
 
+### NOTE
+
+This release followed `v1.0.0-beta.2` immediately to fix the issue mentioned below. Therefore, when upgrading from `v1.0.0-beta.1` make sure to also check [`v1.0.0-beta.2` release notes](https://github.com/ckeditor/ckeditor5-build-inline/releases/tag/v1.0.0-beta.2).
+
 ### Bug fixes
 
 * Translations should work when CKEditor was loaded using RequireJS. See [ckeditor/ckeditor5#914](https://github.com/ckeditor/ckeditor5/issues/914). ([9246836](https://github.com/ckeditor/ckeditor5-build-inline/commit/9246836))
