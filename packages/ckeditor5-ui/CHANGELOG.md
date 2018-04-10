@@ -1,6 +1,18 @@
 Changelog
 =========
 
+## [1.0.0-beta.2](https://github.com/ckeditor/ckeditor5-ui/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2018-04-10)
+
+### Other changes
+
+* Renamed plural method names to singular. See [ckeditor/ckeditor5#742](https://github.com/ckeditor/ckeditor5/issues/742). ([48cd53d](https://github.com/ckeditor/ckeditor5-ui/commit/48cd53d))
+* Updated translations. ([80d3bd2](https://github.com/ckeditor/ckeditor5-ui/commit/80d3bd2))
+
+### BREAKING CHANGES
+
+* `View#registerChildren()` and `View#deregisterChildren()` have been renamed to `View#registerChild()` and `View#deregisterChild()`.
+
+
 ## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-ui/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
 
 ### Features
