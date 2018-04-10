@@ -5,7 +5,7 @@ Changelog
 
 ### Other changes
 
-* ckeditor5-cloudservices was renamed to ckeditor5-cloud-services and ckeditor-cloudservices-core to ckeditor-cloud-services-core. ([8182343](https://github.com/ckeditor/ckeditor5-cloud-services/commit/8182343))
+* `@ckeditor/ckeditor5-cloudservices` was renamed to `@ckeditor/ckeditor5-cloud-services` and `@ckeditor/ckeditor-cloudservices-core` to `@ckeditor/ckeditor-cloud-services-core`. ([8182343](https://github.com/ckeditor/ckeditor5-cloud-services/commit/8182343))
 
 
 ## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-cloud-services/compare/v1.0.0-alpha.1...v1.0.0-beta.1) (2018-03-15)
