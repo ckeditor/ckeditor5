@@ -7,12 +7,11 @@ Changelog
 
 * Fixed image upload progress updates. Now each upload status is treated separately. Closes [#191](https://github.com/ckeditor/ckeditor5-image/issues/191). ([66d67c0](https://github.com/ckeditor/ckeditor5-image/commit/66d67c0))
 * Image element will be cleared from upload progress classes if `uploadId` attribute changed to `null`. Closes [#200](https://github.com/ckeditor/ckeditor5-image/issues/200). ([5fadcf0](https://github.com/ckeditor/ckeditor5-image/commit/5fadcf0))
-* ImageUploadEditing throws unhandled async errors. Closes [#186](https://github.com/ckeditor/ckeditor5-image/issues/186). ([4357336](https://github.com/ckeditor/ckeditor5-image/commit/4357336))
+* `ImageUploadEditing` should not throw unhandled async errors. Closes [#186](https://github.com/ckeditor/ckeditor5-image/issues/186). ([4357336](https://github.com/ckeditor/ckeditor5-image/commit/4357336))
 
 ### Other changes
 
 * Made the image text alternative form buttons thicker with a fill color and no background. Closes [#187](https://github.com/ckeditor/ckeditor5-image/issues/187). ([25c17ad](https://github.com/ckeditor/ckeditor5-image/commit/25c17ad))
-* Updated translations. ([060c406](https://github.com/ckeditor/ckeditor5-image/commit/060c406))
 
 
 ## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-image/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
