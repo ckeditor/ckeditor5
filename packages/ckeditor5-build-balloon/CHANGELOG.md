@@ -5,7 +5,7 @@ Changelog
 
 ### Bug fixes
 
-* Translations should work when CKEditor was loaded using RequireJS. See [ckeditor/ckeditor5-dev#914](https://github.com/ckeditor/ckeditor5-dev/issues/914). ([63ce23d](https://github.com/ckeditor/ckeditor5-build-balloon/commit/63ce23d))
+* Translations should work when CKEditor was loaded using RequireJS. See [ckeditor/ckeditor5#914](https://github.com/ckeditor/ckeditor5/issues/914). ([63ce23d](https://github.com/ckeditor/ckeditor5-build-balloon/commit/63ce23d))
 
 
 ## [1.0.0-beta.2](https://github.com/ckeditor/ckeditor5-build-balloon/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2018-04-10)
