@@ -3,14 +3,7 @@ Changelog
 
 ## [1.0.0-beta.2](https://github.com/ckeditor/ckeditor5-utils/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2018-04-10)
 
-### Other changes
-
-* Brought back `translation-service~add()`. TODO remove this and the previous changelog entry. Closes [#233](https://github.com/ckeditor/ckeditor5-utils/issues/233). ([e840b0c](https://github.com/ckeditor/ckeditor5-utils/commit/e840b0c))
-* Removed `translation-service~add()` function in favor of using safer, always available, manual approach to extending `CKEDITOR_TRANSLATIONS` global. See [ckeditor/ckeditor5#914](https://github.com/ckeditor/ckeditor5/issues/914). ([5ac8ef0](https://github.com/ckeditor/ckeditor5-utils/commit/5ac8ef0))
-
-### BREAKING CHANGES
-
-* The `translation-service~add()` function was removed. See `translation-service` module docs to learn how to add translations.
+Internal changes only (updated dependencies, documentation, etc.).
 
 
 ## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-utils/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
