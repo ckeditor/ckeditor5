@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [1.0.0-beta.2](https://github.com/ckeditor/ckeditor5-editor-classic/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2018-04-10)
+
+### Other changes
+
+* Increased the specificity of CSS rules. Introduced the .ck class for editor UI components (see: [ckeditor/ckeditor5#494](https://github.com/ckeditor/ckeditor5/issues/494)). ([e548bd0](https://github.com/ckeditor/ckeditor5-editor-classic/commit/e548bd0))
+
+
 ## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-editor-classic/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
 
 ### Other changes
