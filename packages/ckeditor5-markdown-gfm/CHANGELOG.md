@@ -3,9 +3,7 @@ Changelog
 
 ## [1.0.0-beta.2](https://github.com/ckeditor/ckeditor5-markdown-gfm/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2018-04-10)
 
-### Other changes
-
-* ckeditor5-cloudservices was renamed to ckeditor5-cloud-services and ckeditor-cloudservices-core to ckeditor-cloud-services-core. ([64aa001](https://github.com/ckeditor/ckeditor5-markdown-gfm/commit/64aa001))
+Internal changes only (updated dependencies, documentation, etc.).
 
 
 ## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-markdown-gfm/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
@@ -16,6 +14,7 @@ Internal changes only (updated dependencies, documentation, etc.).
 ## [1.0.0-alpha.2](https://github.com/ckeditor/ckeditor5-markdown-gfm/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2017-11-14)
 
 Internal changes only (updated dependencies, documentation, etc.).
+
 
 ## [1.0.0-alpha.1](https://github.com/ckeditor/ckeditor5-markdown-gfm/compare/v0.4.4...v1.0.0-alpha.1) (2017-10-03)
 
