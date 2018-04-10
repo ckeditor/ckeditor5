@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## [1.0.0-beta.2](https://github.com/ckeditor/ckeditor5-basic-styles/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2018-04-10)
+
+### Other changes
+
+* Updated translations. ([6a8451d](https://github.com/ckeditor/ckeditor5-basic-styles/commit/6a8451d))
+* Updated translations. ([45f0f87](https://github.com/ckeditor/ckeditor5-basic-styles/commit/45f0f87))
+
+
 ## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-basic-styles/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
 
 ### Features
