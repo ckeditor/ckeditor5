@@ -7,10 +7,6 @@ Changelog
 
 * The outline of a quoted image should not be cropped. Closes [#15](https://github.com/ckeditor/ckeditor5-block-quote/issues/15). ([1512135](https://github.com/ckeditor/ckeditor5-block-quote/commit/1512135))
 
-### Other changes
-
-* Updated translations. ([1778091](https://github.com/ckeditor/ckeditor5-block-quote/commit/1778091))
-
 
 ## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-block-quote/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
 
