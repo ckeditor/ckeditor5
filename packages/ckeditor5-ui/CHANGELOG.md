@@ -6,7 +6,6 @@ Changelog
 ### Other changes
 
 * Renamed plural method names to singular. See [ckeditor/ckeditor5#742](https://github.com/ckeditor/ckeditor5/issues/742). ([48cd53d](https://github.com/ckeditor/ckeditor5-ui/commit/48cd53d))
-* Updated translations. ([80d3bd2](https://github.com/ckeditor/ckeditor5-ui/commit/80d3bd2))
 
 ### BREAKING CHANGES
 
