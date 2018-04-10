@@ -5,7 +5,7 @@ Changelog
 
 ### Features
 
-* Implemented .ck-button_save and _cancel classes with distinctive colors (see [ckeditor/ckeditor5-image#187](https://github.com/ckeditor/ckeditor5-image/issues/187)). ([531aec2](https://github.com/ckeditor/ckeditor5-theme-lark/commit/531aec2))
+* Implemented `.ck-button_save` and `_cancel` classes with distinctive colors (see [ckeditor/ckeditor5-image#187](https://github.com/ckeditor/ckeditor5-image/issues/187)). ([531aec2](https://github.com/ckeditor/ckeditor5-theme-lark/commit/531aec2))
 * Made the link form buttons thicker with a fill color and no background (see [ckeditor/ckeditor5#810](https://github.com/ckeditor/ckeditor5/issues/810)). ([dcf8599](https://github.com/ckeditor/ckeditor5-theme-lark/commit/dcf8599))
 
 ### Bug fixes
@@ -15,7 +15,7 @@ Changelog
 
 ### Other changes
 
-* Increased the specificity of CSS rules. Introduced the .ck class for editor UI components (see: [ckeditor/ckeditor5#494](https://github.com/ckeditor/ckeditor5/issues/494)). ([0cd9f6d](https://github.com/ckeditor/ckeditor5-theme-lark/commit/0cd9f6d))
+* Increased the specificity of CSS rules. Introduced the `.ck` class for editor UI components (see: [ckeditor/ckeditor5#494](https://github.com/ckeditor/ckeditor5/issues/494)). ([0cd9f6d](https://github.com/ckeditor/ckeditor5-theme-lark/commit/0cd9f6d))
 * Updated the classic editor and the editorui styles to the latest nested editable CSS class naming convention (see [ckeditor/ckeditor5#578](https://github.com/ckeditor/ckeditor5/issues/578)). ([508db7c](https://github.com/ckeditor/ckeditor5-theme-lark/commit/508db7c))
 
 
