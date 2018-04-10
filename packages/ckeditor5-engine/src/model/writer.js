@@ -1112,29 +1112,21 @@ export default class Writer {
 	 * * Default gravity: selection will have the `bold` and `linkHref` attributes.
 	 * * Overridden gravity: selection will have `bold` attribute.
 	 *
-	 * By default the selection's gravity is automatically restored just after a direct selection change (when user
-	 * moved the caret) but you can pass `customRestore = true` in which case you will have to call
-	 * {@link ~Writer#restoreSelectionGravity} manually.
-	 *
-	 * When the selection's gravity is overridden more than once without being restored in the meantime then it needs
-	 * to be restored the same number of times. This is to prevent conflicts when
-	 * more than one feature want to independently override and restore the selection's gravity.
-	 *
-	 * @param {Boolean} [customRestore=false] When `true` then gravity won't be restored until
-	 * {@link ~Writer#restoreSelectionGravity} will be called directly. When `false` then gravity is restored
-	 * after selection is moved by user.
+	 * @returns {String} The unique id which allows restoring the gravity.
 	 */
-	overrideSelectionGravity( customRestore ) {
-		this.model.document.selection._overrideGravity( customRestore );
+	overrideSelectionGravity() {
+		return this.model.document.selection._overrideGravity();
 	}
 
 	/**
 	 * Restores {@link ~Writer#overrideSelectionGravity} gravity to default.
 	 *
 	 * Note that the gravity remains overridden as long as will not be restored the same number of times as it was overridden.
+	 *
+	 * @param {String} uid The unique id returned by {@link #overrideSelectionGravity}.
 	 */
-	restoreSelectionGravity() {
-		this.model.document.selection._restoreGravity();
+	restoreSelectionGravity( uid ) {
+		this.model.document.selection._restoreGravity( uid );
 	}
 
 	/**

@@ -10,7 +10,6 @@ import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 import bindTwoStepCaretToAttribute from '../../src/utils/bindtwostepcarettoattribute';
 import { upcastElementToAttribute } from '../../src/conversion/upcast-converters';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-
 import { setData } from '../../src/dev-utils/model';
 
 describe( 'bindTwoStepCaretToAttribute()', () => {
@@ -44,6 +43,26 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 	} );
 
 	describe( 'moving right', () => {
+		it( 'should do nothing for unrelated attribute (at the beginning)', () => {
+			setData( model, '[]<$text c="true">foo</$text>' );
+
+			testTwoStepCaretMovement( [
+				{ selectionAttributes: [ 'c' ], isGravityOverridden: false, preventDefault: 0 },
+				'→',
+				{ selectionAttributes: [ 'c' ], isGravityOverridden: false, preventDefault: 0 },
+			] );
+		} );
+
+		it( 'should do nothing for unrelated attribute (at the end)', () => {
+			setData( model, '<$text c="true">foo[]</$text>' );
+
+			testTwoStepCaretMovement( [
+				{ selectionAttributes: [ 'c' ], isGravityOverridden: false, preventDefault: 0 },
+				'→',
+				{ selectionAttributes: [ 'c' ], isGravityOverridden: false, preventDefault: 0 },
+			] );
+		} );
+
 		it( 'should "enter" the text with attribute in two steps', () => {
 			setData( model, '<$text c="true">foo[]</$text><$text a="true" b="true">bar</$text>' );
 
@@ -73,35 +92,94 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 			] );
 		} );
 
-		it( 'should do nothing for not bound attribute (at the beginning)', () => {
-			setData( model, '[]<$text c="true">foo</$text>' );
-
-			testTwoStepCaretMovement( [
-				{ selectionAttributes: [ 'c' ], isGravityOverridden: false, preventDefault: 0 },
-				'→',
-				{ selectionAttributes: [ 'c' ], isGravityOverridden: false, preventDefault: 0 },
-			] );
-		} );
-
-		it( 'should do nothing for not bound attribute (at the end)', () => {
-			setData( model, '<$text c="true">foo[]</$text>' );
-
-			testTwoStepCaretMovement( [
-				{ selectionAttributes: [ 'c' ], isGravityOverridden: false, preventDefault: 0 },
-				'→',
-				{ selectionAttributes: [ 'c' ], isGravityOverridden: false, preventDefault: 0 },
-			] );
-		} );
-
-		it( 'should require two-steps movement when caret goes between text node with the same attribute but different value', () => {
+		it( 'should use two-steps movement when between nodes with the same attribute but different value', () => {
 			setData( model, '<$text a="1">bar[]</$text><$text a="2">foo</$text>' );
 
 			testTwoStepCaretMovement( [
 				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0 },
 				'→',
+				// <$text a="1">bar</$text>[]<$text a="2">foo</$text>
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1 },
+				'→',
+				// <$text a="1">bar</$text><$text a="2">[]foo</$text>
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: true, preventDefault: 2 },
+				'→',
+				// <$text a="1">bar</$text><$text a="2">f[]oo</$text>
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 2 }
+			] );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/937
+		it( 'should not require two-steps between unrelated attributes inside the initial attribute', () => {
+			setData( model, '<$text a="1">fo[]o</$text><$text a="1" b="2">bar</$text><$text a="1">baz</$text>' );
+
+			testTwoStepCaretMovement( [
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0 },
+				'→',
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0 },
+				'→',
+				{ selectionAttributes: [ 'a', 'b' ], isGravityOverridden: false, preventDefault: 0 },
+				'→',
+				{ selectionAttributes: [ 'a', 'b' ], isGravityOverridden: false, preventDefault: 0 },
+				'→',
+				{ selectionAttributes: [ 'a', 'b' ], isGravityOverridden: false, preventDefault: 0 },
+				'→',
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0 }
+			] );
+		} );
+
+		it( 'should handle passing through the only character in the block', () => {
+			setData( model, '[]<$text a="1">x</$text>' );
+
+			testTwoStepCaretMovement( [
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0 },
+				'→',
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0 },
+				'→',
+				{ selectionAttributes: [], isGravityOverridden: true, preventDefault: 1 },
+				'→',
+				{ selectionAttributes: [], isGravityOverridden: true, preventDefault: 1 }
+			] );
+		} );
+
+		it( 'should handle passing through the only character in the block (no attribute in the initial selection)', () => {
+			setData( model, '[]<$text a="1">x</$text>' );
+
+			model.change( writer => writer.removeSelectionAttribute( 'a' ) );
+
+			testTwoStepCaretMovement( [
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0 },
+				'→',
 				{ selectionAttributes: [ 'a' ], isGravityOverridden: true, preventDefault: 1 },
 				'→',
 				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 1 },
+				'→',
+				{ selectionAttributes: [], isGravityOverridden: true, preventDefault: 2 },
+				'→',
+				{ selectionAttributes: [], isGravityOverridden: true, preventDefault: 2 }
+			] );
+		} );
+
+		it( 'should handle passing through the only-child with an attribute (multiple characters)', () => {
+			setData( model, '[]<$text a="1">xyz</$text>' );
+
+			testTwoStepCaretMovement( [
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0 },
+				'→',
+				// <$text a="1">x{}yz</$text>
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0 },
+				'→',
+				// <$text a="1">xy{}z</$text>
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0 },
+				'→',
+				// <$text a="1">xyz{}</$text>
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0 },
+				'→',
+				// <$text a="1">xyz</$text>{}
+				{ selectionAttributes: [], isGravityOverridden: true, preventDefault: 1 },
+				'→',
+				// <$text a="1">xyz</$text>{}
+				{ selectionAttributes: [], isGravityOverridden: true, preventDefault: 1 }
 			] );
 		} );
 	} );
@@ -139,7 +217,7 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 			] );
 		} );
 
-		it( 'should do nothing for not bound attribute (at the beginning)', () => {
+		it( 'should do nothing for unrelated attribute (at the beginning)', () => {
 			setData( model, '<$text c="true">[]foo</$text>' );
 
 			testTwoStepCaretMovement( [
@@ -151,7 +229,7 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 			] );
 		} );
 
-		it( 'should do nothing for not bound attribute (at the end)', () => {
+		it( 'should do nothing for unrelated attribute (at the end)', () => {
 			setData( model, '<$text c="true">foo</$text>[]' );
 
 			testTwoStepCaretMovement( [
@@ -179,11 +257,143 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 			testTwoStepCaretMovement( [
 				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0 },
 				'←',
+				// <$text a="2">foo</$text><$text a="1">[]bar</$text>
 				{ selectionAttributes: [ 'a' ], isGravityOverridden: true, preventDefault: 0 },
+				'←',
+				// <$text a="2">foo</$text>[]<$text a="1">bar</$text>
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1 },
+				'←',
+				// <$text a="2">foo[]</$text><$text a="1">bar</$text>
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 2 },
+				'←',
+				// <$text a="2">fo[]o</$text><$text a="1">bar</$text>
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 2 }
+			] );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/937
+		it( 'should not require two-steps between unrelated attributes inside the initial attribute', () => {
+			setData( model, '<$text a="1">foo</$text><$text a="1" b="2">bar</$text><$text a="1">b[]az</$text>' );
+
+			testTwoStepCaretMovement( [
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0 },
+				'←',
+				{ selectionAttributes: [ 'a', 'b' ], isGravityOverridden: false, preventDefault: 0 },
+				'←',
+				{ selectionAttributes: [ 'a', 'b' ], isGravityOverridden: false, preventDefault: 0 },
+				'←',
+				{ selectionAttributes: [ 'a', 'b' ], isGravityOverridden: false, preventDefault: 0 },
+				'←',
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0 }
+			] );
+		} );
+
+		it( 'should handle passing through the only-child with an attribute (single character)', () => {
+			setData( model, '<$text a="1">x</$text>[]' );
+
+			testTwoStepCaretMovement( [
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0 },
+				'←',
+				// <$text a="1">{}x</$text>
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0 },
+				'←',
+				// {}<$text a="1">x</$text> (because it's a first-child)
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0 },
+				'←',
+				// {}<$text a="1">x</$text>
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0 }
+			] );
+		} );
+
+		it( 'should handle passing through the only character in the block (no attribute in the initial selection)', () => {
+			setData( model, '<$text a="1">x</$text>[]' );
+
+			model.change( writer => writer.removeSelectionAttribute( 'a' ) );
+
+			testTwoStepCaretMovement( [
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0 },
 				'←',
 				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 1 },
 				'←',
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 1 }
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 1 },
+				'←',
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1 },
+				'←',
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1 }
+			] );
+		} );
+
+		it( 'should handle passing through the only-child with an attribute (multiple characters)', () => {
+			setData( model, '<$text a="1">xyz</$text>[]' );
+
+			testTwoStepCaretMovement( [
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0 },
+				'←',
+				// <$text a="1">xy{}z</$text>
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0 },
+				'←',
+				// <$text a="1">x{}yz</$text>
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0 },
+				'←',
+				// <$text a="1">{}xyz</$text>
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: true, preventDefault: 0 },
+				'←',
+				// {}<$text a="1">xyz</$text>
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1 },
+				'←',
+				// {}<$text a="1">xyz</$text>
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1 }
+			] );
+		} );
+	} );
+
+	describe( 'moving and typing around the attribute', () => {
+		it( 'should handle typing after the attribute', () => {
+			setData( model, '<$text a="1">x[]</$text>' );
+
+			testTwoStepCaretMovement( [
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0 },
+				'y',
+				// <$text a="1">xy[]</$text>
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0 },
+				'→',
+				// <$text a="1">xy</$text>[]
+				{ selectionAttributes: [], isGravityOverridden: true, preventDefault: 1 },
+				'z',
+				// <$text a="1">xy</$text>z[]
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1 },
+				'←',
+				// <$text a="1">xy</$text>[]z
+				{ selectionAttributes: [], isGravityOverridden: true, preventDefault: 1 },
+				'←',
+				// <$text a="1">xy[]</$text>z
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 2 },
+				'w',
+				// <$text a="1">xyw[]</$text>
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 2 },
+			] );
+		} );
+
+		it( 'should handle typing before the attribute', () => {
+			setData( model, '<$text a="1">[]x</$text>' );
+
+			testTwoStepCaretMovement( [
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0 },
+				'←',
+				// []<$text a="1">x</$text>
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0 },
+				'z',
+				// z[]<$text a="1">x</$text>
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0 },
+				'x',
+				// zx[]<$text a="1">x</$text>
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0 },
+				'→',
+				// zx<$text a="1">[]x</$text>
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: true, preventDefault: 1 },
+				'a',
+				// zx<$text a="1">a[]x</$text>
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 1 },
 			] );
 		} );
 	} );
@@ -269,42 +479,50 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 	function testTwoStepCaretMovement( scenario ) {
 		for ( const step of scenario ) {
 			if ( typeof step == 'string' ) {
-				let preventDefaultCalled;
+				// An arrow key pressed. Fire the view event and update the model selection.
+				if ( keyMap[ step ] ) {
+					let preventDefaultCalled;
 
-				fireKeyDownEvent( {
-					keyCode: keyCodes[ keyMap[ step ] ],
-					preventDefault: () => {
-						preventDefaultSpy();
+					fireKeyDownEvent( {
+						keyCode: keyCodes[ keyMap[ step ] ],
+						preventDefault: () => {
+							preventDefaultSpy();
 
-						preventDefaultCalled = true;
-					}
-				} );
+							preventDefaultCalled = true;
+						}
+					} );
 
-				if ( !preventDefaultCalled ) {
 					const position = selection.getFirstPosition();
-					let shift;
 
-					if ( step == '→' ) {
-						if ( position.isAtEnd ) {
-							return;
+					if ( !preventDefaultCalled ) {
+						if ( step == '→' ) {
+							if ( !position.isAtEnd ) {
+								model.change( writer => {
+									writer.setSelection( selection.getFirstPosition().getShiftedBy( 1 ) );
+								} );
+							}
+						} else if ( step == '←' ) {
+							if ( !position.isAtStart ) {
+								model.change( writer => {
+									writer.setSelection( selection.getFirstPosition().getShiftedBy( -1 ) );
+								} );
+							}
 						}
-
-						shift = 1;
-					} else if ( step == '←' ) {
-						if ( position.isAtStart ) {
-							return;
-						}
-
-						shift = -1;
 					}
+				}
 
+				// A regular key pressed. Type some text in the model.
+				else {
 					model.change( writer => {
-						writer.setSelection( selection.getFirstPosition().getShiftedBy( shift ) );
+						writer.insertText( step, selection.getAttributes(), selection.getFirstPosition() );
 					} );
 				}
-			} else {
+			}
+
+			// If not a key, then it's an assertion.
+			else {
 				const stepIndex = scenario.indexOf( step );
-				const stepString = `in step #${ stepIndex } (${ JSON.stringify( step ) })`;
+				const stepString = `in step #${ stepIndex } ${ JSON.stringify( step ) }`;
 
 				expect( getSelectionAttributesArray( selection ) ).to.have.members( step.selectionAttributes, '#attributes ' + stepString );
 				expect( selection.isGravityOverridden ).to.equal( step.isGravityOverridden, '#isGravityOverridden ' + stepString );
