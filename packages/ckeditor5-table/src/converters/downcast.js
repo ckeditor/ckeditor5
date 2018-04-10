@@ -10,15 +10,18 @@
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import ViewRange from '@ckeditor/ckeditor5-engine/src/view/range';
 import TableWalker from './../tablewalker';
+import { toWidget, toWidgetEditable } from '@ckeditor/ckeditor5-widget/src/utils';
 
 /**
  * Model table element to view table element conversion helper.
  *
  * This conversion helper creates whole table element with child elements.
  *
+ * @param {Object} options
+ * @param {Boolean} options.asWidget If set to true the downcast conversion will produce widget.
  * @returns {Function} Conversion helper.
  */
-export function downcastInsertTable() {
+export function downcastInsertTable( options = {} ) {
 	return dispatcher => dispatcher.on( 'insert:table', ( evt, data, conversionApi ) => {
 		const table = data.item;
 
@@ -33,7 +36,17 @@ export function downcastInsertTable() {
 		// The <thead> and <tbody> elements are created on the fly when needed & cached by `getOrCreateTableSection()` function.
 		const tableSections = {};
 
-		const tableElement = conversionApi.writer.createContainerElement( 'table' );
+		const asWidget = options && options.asWidget;
+
+		const tableElement = asWidget ?
+			conversionApi.writer.createEditableElement( 'table' ) :
+			conversionApi.writer.createContainerElement( 'table' );
+
+		let tableWidget;
+
+		if ( asWidget ) {
+			tableWidget = toWidgetEditable( toWidget( tableElement, conversionApi.writer ), conversionApi.writer );
+		}
 
 		const tableWalker = new TableWalker( table );
 
@@ -54,8 +67,8 @@ export function downcastInsertTable() {
 
 		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
 
-		conversionApi.mapper.bindElements( table, tableElement );
-		conversionApi.writer.insert( viewPosition, tableElement );
+		conversionApi.mapper.bindElements( table, asWidget ? tableWidget : tableElement );
+		conversionApi.writer.insert( viewPosition, asWidget ? tableWidget : tableElement );
 	}, { priority: 'normal' } );
 }
 

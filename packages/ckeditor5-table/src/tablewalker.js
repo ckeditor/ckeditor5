@@ -125,8 +125,8 @@ export default class TableWalker {
 		 * @private
 		 */
 		this._tableData = {
-			headingRows: this.table.getAttribute( 'headingRows' ) || 0,
-			headingColumns: this.table.getAttribute( 'headingColumns' ) || 0
+			headingRows: parseInt( this.table.getAttribute( 'headingRows' ) || 0 ),
+			headingColumns: parseInt( this.table.getAttribute( 'headingColumns' ) || 0 )
 		};
 	}
 
@@ -192,8 +192,9 @@ export default class TableWalker {
 				cell,
 				row: this.row,
 				column: this.column,
-				rowspan: cell.getAttribute( 'rowspan' ) || 1,
-				colspan: cell.getAttribute( 'colspan' ) || 1,
+				// TODO: parseInt tests in editable?
+				rowspan: parseInt( cell.getAttribute( 'rowspan' ) || 1 ),
+				colspan: parseInt( cell.getAttribute( 'colspan' ) || 1 ),
 				table: this._tableData
 			}
 		};
@@ -206,8 +207,8 @@ export default class TableWalker {
 	 * @private
 	 */
 	_updateSpans() {
-		const colspan = this._previousCell.getAttribute( 'colspan' ) || 1;
-		const rowspan = this._previousCell.getAttribute( 'rowspan' ) || 1;
+		const colspan = parseInt( this._previousCell.getAttribute( 'colspan' ) || 1 );
+		const rowspan = parseInt( this._previousCell.getAttribute( 'rowspan' ) || 1 );
 
 		this._cellSpans.recordSpans( this.row, this.column, rowspan, colspan );
 

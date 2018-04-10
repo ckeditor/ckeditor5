@@ -53,7 +53,8 @@ export default class TablesEditing extends Plugin {
 
 		// Table conversion.
 		conversion.for( 'upcast' ).add( upcastTable() );
-		conversion.for( 'downcast' ).add( downcastInsertTable() );
+		conversion.for( 'editingDowncast' ).add( downcastInsertTable( { asWidget: true } ) );
+		conversion.for( 'dataDowncast' ).add( downcastInsertTable() );
 
 		// Insert conversion
 		conversion.for( 'downcast' ).add( downcastInsertRow() );
