@@ -3,13 +3,10 @@ Changelog
 
 ## [1.0.0-beta.3](https://github.com/ckeditor/ckeditor5-build-classic/compare/v1.0.0-beta.2...v1.0.0-beta.3) (2018-04-10)
 
-### Dependencies
-
 ### Bug fixes
 
-Besides changes in the dependencies, this version also contains the following bug fixes:
-
 * Translations should work when CKEditor was loaded using RequireJS. See [ckeditor/ckeditor5-dev#914](https://github.com/ckeditor/ckeditor5-dev/issues/914). ([16cba07](https://github.com/ckeditor/ckeditor5-build-classic/commit/16cba07))
+
 
 ## [1.0.0-beta.2](https://github.com/ckeditor/ckeditor5-build-classic/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2018-04-10)
 
