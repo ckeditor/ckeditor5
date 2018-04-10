@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [1.0.0-beta.2](https://github.com/ckeditor/ckeditor5-easy-image/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2018-04-10)
+
+### Other changes
+
+* ckeditor5-cloudservices was renamed to ckeditor5-cloud-services and ckeditor-cloudservices-core to ckeditor-cloud-services-core. ([ce3abaf](https://github.com/ckeditor/ckeditor5-easy-image/commit/ce3abaf))
+
+
 ## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-easy-image/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
 
 Internal changes only (updated dependencies, documentation, etc.).
