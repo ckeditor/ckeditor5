@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-build-decoupled-document",
-  "version": "1.0.0-beta.2",
+  "version": "1.0.0-beta.3",
   "description": "CKEditor 5 document editor build.",
   "keywords": [
     "ckeditor5",
