@@ -1,6 +1,21 @@
 Changelog
 =========
 
+## [1.0.0-beta.2](https://github.com/ckeditor/ckeditor5-widget/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2018-04-10)
+
+### Bug fixes
+
+* Replaced nested editable's `.ck-editable` class with `.ck-editor__editable` + `.ck-editor__nested-editable` to stop Grammarly throwing errors. Closes [ckeditor/ckeditor5#578](https://github.com/ckeditor/ckeditor5/issues/578). ([051b326](https://github.com/ckeditor/ckeditor5-widget/commit/051b326))
+
+### Other changes
+
+* Increased the specificity of CSS rules. Introduced the .ck class for editor UI components (see: [ckeditor/ckeditor5#494](https://github.com/ckeditor/ckeditor5/issues/494)). ([abc7def](https://github.com/ckeditor/ckeditor5-widget/commit/abc7def))
+
+### BREAKING CHANGES
+
+* The `.ck-editable` class is no longer available. Use the `.ck-editor__nested-editable` class instead.
+
+
 ## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-widget/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
 
 ### Other changes
