@@ -7,10 +7,6 @@ Changelog
 
 * Autoformat should ignore transparent batches. Closes [#56](https://github.com/ckeditor/ckeditor5-autoformat/issues/56). ([e42f987](https://github.com/ckeditor/ckeditor5-autoformat/commit/e42f987))
 
-### Other changes
-
-* ckeditor5-cloudservices was renamed to ckeditor5-cloud-services and ckeditor-cloudservices-core to ckeditor-cloud-services-core. ([8e4414c](https://github.com/ckeditor/ckeditor5-autoformat/commit/8e4414c))
-
 
 ## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-autoformat/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
 
