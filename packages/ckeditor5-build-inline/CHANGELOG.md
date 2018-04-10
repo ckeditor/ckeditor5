@@ -38,6 +38,7 @@ Besides changes in the dependencies, this version also contains the following bu
 
 * Removed duplicated `ImageUpload` plugin. See [ckeditor/ckeditor5#909](https://github.com/ckeditor/ckeditor5/issues/909). ([7d8acab](https://github.com/ckeditor/ckeditor5-build-inline/commit/7d8acab))
 
+
 ## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-build-inline/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
 
 ### Dependencies
