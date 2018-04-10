@@ -3,6 +3,8 @@ Changelog
 
 ## [1.0.0-beta.2](https://github.com/ckeditor/ckeditor5-build-decoupled-document/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2018-04-10)
 
+**Note:** Make sure to see the BREAKING CHANGES section below.
+
 ### Dependencies
 
 Major releases (contain breaking changes):
@@ -44,6 +46,7 @@ Major releases (contain breaking changes):
 
 * The global variable exported by the build is now called `DecoupledEditor` instead of `DecoupledDocumentEditor`. See [#6](https://github.com/ckeditor/ckeditor5-build-decoupled-document/issues/6).
 * The config options `config.toolbarContainer` and `config.editableContainer` have been removed. Please refer to the `DecoupledEditor` class API documentation to learn about possible methods of bootstrapping the UI.
+
 
 ## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-build-decoupled-document/compare/v0.0.1...v1.0.0-beta.1) (2018-03-15)
 
