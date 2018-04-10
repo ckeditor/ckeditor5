@@ -6,7 +6,7 @@ Changelog
 ### Features
 
 * Made the link form buttons thicker with a fill color and no background (see [ckeditor/ckeditor5#810](https://github.com/ckeditor/ckeditor5/issues/810)). ([45292f1](https://github.com/ckeditor/ckeditor5-link/commit/45292f1))
-* The Ctrl+K keystroke should open link URL editing dialog. Closes [#181](https://github.com/ckeditor/ckeditor5-link/issues/181). ([56047b5](https://github.com/ckeditor/ckeditor5-link/commit/56047b5))
+* The <kbd>Ctrl</kbd>+<kbd>K</kbd> keystroke should open link URL editing dialog. Closes [#181](https://github.com/ckeditor/ckeditor5-link/issues/181). ([56047b5](https://github.com/ckeditor/ckeditor5-link/commit/56047b5))
 
 ### Bug fixes
 
@@ -14,11 +14,8 @@ Changelog
 
 ### Other changes
 
-* Aligned to changes in ckeditor5-engine. ([bbc1cc0](https://github.com/ckeditor/ckeditor5-link/commit/bbc1cc0))
-* Increased the specificity of CSS rules. Introduced the .ck class for editor UI components (see: [ckeditor/ckeditor5#494](https://github.com/ckeditor/ckeditor5/issues/494)). ([e66f921](https://github.com/ckeditor/ckeditor5-link/commit/e66f921))
-* Updated translations. ([ec61993](https://github.com/ckeditor/ckeditor5-link/commit/ec61993))
-* Updated translations. ([1d46653](https://github.com/ckeditor/ckeditor5-link/commit/1d46653))
-* Used .ck-button_save and _cancel CSS classes to make the link form view buttons colorful (see [ckeditor/ckeditor5-image#187](https://github.com/ckeditor/ckeditor5-image/issues/187)). ([a5eebdb](https://github.com/ckeditor/ckeditor5-link/commit/a5eebdb))
+* Increased the specificity of CSS rules. Introduced the `.ck` class for editor UI components (see: [ckeditor/ckeditor5#494](https://github.com/ckeditor/ckeditor5/issues/494)). ([e66f921](https://github.com/ckeditor/ckeditor5-link/commit/e66f921))
+* Used `.ck-button_sav`e and `_cancel` CSS classes to make the link form view buttons colorful (see [ckeditor/ckeditor5-image#187](https://github.com/ckeditor/ckeditor5-image/issues/187)). ([a5eebdb](https://github.com/ckeditor/ckeditor5-link/commit/a5eebdb))
 
 
 ## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-link/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
