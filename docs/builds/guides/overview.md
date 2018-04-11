@@ -20,12 +20,13 @@ The following CKEditor 5 Builds are currently available:
  * [Classic editor](#classic-editor)
  * [Inline editor](#inline-editor)
  * [Balloon editor](#balloon-editor)
+ * [Document editor](#document-editor)
 
 ### Classic editor
 
-Classic editor is what most users traditionally learnt to associate with a rich text editor — a toolbar with an editing area placed in a specific position on the page, usually as a part of a form that you use to submit some content to the server.
+Classic editor is what most users traditionally learnt to associate with a rich text editor &mdash; a toolbar with an editing area placed in a specific position on the page, usually as a part of a form that you use to submit some content to the server.
 
-During its initialisation the editor hides the used editable element on the page and renders "instead" of it. This is why it is usually used to replace `<textarea>` elements.
+During its initialization the editor hides the used editable element on the page and renders "instead" of it. This is why it is usually used to replace `<textarea>` elements.
 
 In CKEditor 5 the concept of the "boxed" editor was reinvented:
 
@@ -35,7 +36,7 @@ In CKEditor 5 the concept of the "boxed" editor was reinvented:
 
 {@img assets/img/editor-classic.png 778 Screenshot of a classic editor.}
 
-To try it out online, check the {@link examples/builds/classic-editor classic editor example}. Jump to {@link builds/guides/quick-start#classic-editor quick start} to start using it.
+To try it out online, check the {@link examples/builds/classic-editor classic editor example}. Jump to {@link builds/guides/quick-start#classic-editor Quick start} to start using it.
 
 ### Inline editor
 
@@ -45,7 +46,7 @@ A common scenario for using inline editor is offering users the possibility to e
 
 {@img assets/img/editor-inline.png 776 Screenshot of an inline editor.}
 
-To try it out online, check the {@link examples/builds/inline-editor inline editor example}. Jump to {@link builds/guides/quick-start#inline-editor quick start} to start using it.
+To try it out online, check the {@link examples/builds/inline-editor inline editor example}. Jump to {@link builds/guides/quick-start#inline-editor Quick start} to start using it.
 
 ### Balloon editor
 
@@ -53,7 +54,7 @@ Balloon editor is very similar to inline editor. The difference between them is 
 
 {@img assets/img/editor-balloon.png 789 Screenshot of a balloon toolbar editor.}
 
-To try it out online, check the {@link examples/builds/balloon-editor balloon editor example}. Jump to {@link builds/guides/quick-start#balloon-editor quick start} to start using it.
+To try it out online, check the {@link examples/builds/balloon-editor balloon editor example}. Jump to {@link builds/guides/quick-start#balloon-editor Quick start} to start using it.
 
 ### Document editor
 
@@ -61,7 +62,7 @@ The document editor is focused on rich text editing experience similar to the na
 
 {@img assets/img/editor-document.png 786 Screenshot of the user interface of the document editor.}
 
-To try it out online, check the {@link examples/builds/document-editor document editor example}. Jump to {@link builds/guides/quick-start#document-editor quick start} to start using it.
+To try it out online, check the {@link examples/builds/document-editor document editor example}. Jump to {@link builds/guides/quick-start#document-editor Quick start} to start using it.
 
 ## Build customization
 
@@ -85,13 +86,9 @@ Each build was designed to satisfy as many use cases as possible. They differ in
 * Include features that contribute to creating quality content.
 * Provide setups as generic as possible, based on research and community feedback.
 
-<info-box>
-	Features like fonts, colors and alignment will be introduced in the future, when new types of builds will be introduced with the purpose of satisfying document editing scenarios.
-</info-box>
-
 ### Use cases
 
-Each of the builds fits several different use cases. Just think about any possible use for writing rich-text in applications.
+Each of the builds fits several different use cases. Just think about any possible use for writing rich text in applications.
 
 The following are **some** common use cases:
 
@@ -114,7 +111,7 @@ The following are **some** common use cases:
 
 ### When NOT to use builds?
 
-The {@link framework/index CKEditor 5 Framework} should be used, instead of builds, in the following cases:
+{@link framework/index CKEditor 5 Framework} should be used, instead of builds, in the following cases:
 
 * When you want to create your own text editor and have full control over its every aspect, from UI to features.
 * When the solution proposed by the builds does not fit your specific use case.
