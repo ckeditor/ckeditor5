@@ -690,6 +690,7 @@ export default class Differ {
 			}
 
 			if ( inc.type == 'attribute' ) {
+				// In case of attribute change, `howMany` should be kept same as `nodesToHandle`. It's not an error.
 				if ( old.type == 'insert' ) {
 					if ( inc.offset < old.offset && incEnd > old.offset ) {
 						if ( incEnd > oldEnd ) {
@@ -712,6 +713,7 @@ export default class Differ {
 						}
 
 						inc.nodesToHandle = old.offset - inc.offset;
+						inc.howMany = inc.nodesToHandle;
 					} else if ( inc.offset >= old.offset && inc.offset < oldEnd ) {
 						if ( incEnd > oldEnd ) {
 							inc.nodesToHandle = incEnd - oldEnd;
@@ -723,8 +725,15 @@ export default class Differ {
 				}
 
 				if ( old.type == 'attribute' ) {
+					// There are only two conflicting scenarios possible here:
 					if ( inc.offset >= old.offset && incEnd <= oldEnd ) {
+						// `old` change includes `inc` change, or they are the same.
 						inc.nodesToHandle = 0;
+						inc.howMany = 0;
+						inc.offset = 0;
+					} else if ( inc.offset <= old.offset && incEnd >= oldEnd ) {
+						// `inc` change includes `old` change.
+						old.howMany = 0;
 					}
 				}
 			}

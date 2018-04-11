@@ -1,6 +1,37 @@
 Changelog
 =========
 
+## [1.0.0-beta.2](https://github.com/ckeditor/ckeditor5-engine/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2018-04-10)
+
+### Features
+
+* Introduced `writer#updateMarker()` method. Closes [#1299](https://github.com/ckeditor/ckeditor5-engine/issues/1299). ([bed647f](https://github.com/ckeditor/ckeditor5-engine/commit/bed647f))
+* Introduced `#isBefore` and `#isAfter` in `model.Node` and `view.Node`. Additionally, `model.Node#is()` and `view.Node#is()` and `view.Node#getPath()` were added. Closes [#1365](https://github.com/ckeditor/ckeditor5-engine/issues/1365). ([4c38683](https://github.com/ckeditor/ckeditor5-engine/commit/4c38683))
+
+### Bug fixes
+
+* `model.Differ` should not throw when multiple, intersecting remove changes were buffered. Closes [#1392](https://github.com/ckeditor/ckeditor5-engine/issues/1392). ([3a348fd](https://github.com/ckeditor/ckeditor5-engine/commit/3a348fd))
+* `model.Range#getTransformedByDelta` should not crash for `MoveDelta` which moves no nodes. Closes [#1358](https://github.com/ckeditor/ckeditor5-engine/issues/1358). ([ff8ba9e](https://github.com/ckeditor/ckeditor5-engine/commit/ff8ba9e))
+* `conversion.downcast-converters.changeAttribute` should not consume if element creators returned null. Closes [#1369](https://github.com/ckeditor/ckeditor5-engine/issues/1369). ([6866256](https://github.com/ckeditor/ckeditor5-engine/commit/6866256))
+* `conversion.downcast-converters.downcastAttributeToElement` should let specify from what element the model attribute will be converted. Closes [#1370](https://github.com/ckeditor/ckeditor5-engine/issues/1370). ([f8dec1e](https://github.com/ckeditor/ckeditor5-engine/commit/f8dec1e))
+
+### Other changes
+
+* Increased the specificity of CSS rules. Introduced the `.ck` class for editor UI components (see: [ckeditor/ckeditor5#494](https://github.com/ckeditor/ckeditor5/issues/494)). ([6bf32c0](https://github.com/ckeditor/ckeditor5-engine/commit/6bf32c0))
+* Refactored how markers removal is converted from the model to the view. Closes [#1226](https://github.com/ckeditor/ckeditor5-engine/issues/1226). ([f6de5f5](https://github.com/ckeditor/ckeditor5-engine/commit/f6de5f5))
+* Removed the unnecesary `model.Writer#setTextData()` method. Closes [#1363](https://github.com/ckeditor/ckeditor5-engine/issues/1363). ([b484822](https://github.com/ckeditor/ckeditor5-engine/commit/b484822))
+* Renamed plural method names to singular and singular attribute names to plural. See [ckeditor/ckeditor5#742](https://github.com/ckeditor/ckeditor5/issues/742). ([9465c82](https://github.com/ckeditor/ckeditor5-engine/commit/9465c82))
+* View selection is now split onto Selection and DocumentSelection. Closes [#1304](https://github.com/ckeditor/ckeditor5-engine/issues/1304) . ([b466e3f](https://github.com/ckeditor/ckeditor5-engine/commit/b466e3f))
+
+### BREAKING CHANGES
+
+* The `writer#setMarker()` method is used only to create a new marker and it does not accept a `marker` instance as a parameter. To update existing marker use `writer#updateMarker()` method.
+* The `options.usingOperation` option in `writer#setMarker()` is now a required one.
+* The `range` parameter was removed. Use `options.range` instead.
+* Properties in `MatcherPattern`, view `ElementDefinition` and options for conversion utils have been renamed: `class` to `classes`, `style` to `styles`, `attribute` to `attributes`.
+* Introduced `view.DocumentSelection`. It has protected API and can be modified only by the view writer. Observers creating instance of selection (like `SelectionObserver`, `MutationObserver`) use the `view.Selection` class now.
+
+
 ## [1.0.0-beta.1](https://github.com/ckeditor/ckeditor5-engine/compare/v1.0.0-alpha.2...v1.0.0-beta.1) (2018-03-15)
 
 ### Major refactoring
