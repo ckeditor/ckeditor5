@@ -782,6 +782,140 @@ describe( 'Differ', () => {
 			} );
 		} );
 
+		it( 'attribute changes intersecting #1', () => {
+			const parent = root.getChild( 1 );
+
+			// Be aware that you cannot make an intersecting changes with the same attribute key,
+			// cause the value would be incorrect for the common part of the ranges.
+			const ranges = [
+				[ 0, 2, null, true, 'foo' ],
+				[ 1, 3, null, true, 'bar' ]
+			];
+
+			model.change( () => {
+				for ( const item of ranges ) {
+					const range = Range.createFromParentsAndOffsets( parent, item[ 0 ], parent, item[ 1 ] );
+
+					attribute( range, item[ 4 ], item[ 2 ], item[ 3 ] );
+				}
+
+				expectChanges( [
+					{
+						type: 'attribute',
+						range: Range.createFromParentsAndOffsets( parent, 0, parent, 2 ),
+						attributeKey: 'foo',
+						attributeOldValue: null,
+						attributeNewValue: true
+					},
+					{
+						type: 'attribute',
+						range: Range.createFromParentsAndOffsets( parent, 1, parent, 3 ),
+						attributeKey: 'bar',
+						attributeOldValue: null,
+						attributeNewValue: true
+					}
+				] );
+			} );
+		} );
+
+		it( 'attribute changes intersecting #2', () => {
+			const parent = root.getChild( 1 );
+
+			// Be aware that you cannot make an intersecting changes with the same attribute key,
+			// cause the value would be incorrect for the common part of the ranges.
+			const ranges = [
+				[ 1, 3, null, true, 'foo' ],
+				[ 0, 2, null, true, 'bar' ]
+			];
+
+			model.change( () => {
+				for ( const item of ranges ) {
+					const range = Range.createFromParentsAndOffsets( parent, item[ 0 ], parent, item[ 1 ] );
+
+					attribute( range, item[ 4 ], item[ 2 ], item[ 3 ] );
+				}
+
+				expectChanges( [
+					{
+						type: 'attribute',
+						range: Range.createFromParentsAndOffsets( parent, 0, parent, 1 ),
+						attributeKey: 'bar',
+						attributeOldValue: null,
+						attributeNewValue: true
+					},
+					{
+						type: 'attribute',
+						range: Range.createFromParentsAndOffsets( parent, 1, parent, 2 ),
+						attributeKey: 'foo',
+						attributeOldValue: null,
+						attributeNewValue: true
+					},
+					{
+						type: 'attribute',
+						range: Range.createFromParentsAndOffsets( parent, 1, parent, 2 ),
+						attributeKey: 'bar',
+						attributeOldValue: null,
+						attributeNewValue: true
+					},
+					{
+						type: 'attribute',
+						range: Range.createFromParentsAndOffsets( parent, 2, parent, 3 ),
+						attributeKey: 'foo',
+						attributeOldValue: null,
+						attributeNewValue: true
+					}
+				] );
+			} );
+		} );
+
+		it( 'attribute changes included in an attribute change #1 - changes are reversed at the end', () => {
+			const parent = root.getChild( 1 );
+
+			const ranges = [
+				[ 0, 1, null, true ],
+				[ 1, 2, null, true ],
+				[ 0, 2, true, null ]
+			];
+
+			model.change( () => {
+				for ( const item of ranges ) {
+					const range = Range.createFromParentsAndOffsets( parent, item[ 0 ], parent, item[ 1 ] );
+
+					attribute( range, attributeKey, item[ 2 ], item[ 3 ] );
+				}
+
+				expectChanges( [] );
+			} );
+		} );
+
+		it( 'attribute changes included in an attribute change #2 - changes are re-applied at the end', () => {
+			const parent = root.getChild( 1 );
+
+			const ranges = [
+				[ 0, 1, null, true ],
+				[ 1, 2, null, true ],
+				[ 0, 2, true, null ],
+				[ 0, 1, null, true ],
+				[ 1, 2, null, true ]
+			];
+
+			model.change( () => {
+				for ( const item of ranges ) {
+					const range = Range.createFromParentsAndOffsets( parent, item[ 0 ], parent, item[ 1 ] );
+
+					attribute( range, attributeKey, item[ 2 ], item[ 3 ] );
+				}
+
+				expectChanges( [ {
+					type: 'attribute',
+					range: Range.createFromParentsAndOffsets( parent, 0, parent, 2 ),
+					attributeKey,
+					attributeOldValue: null,
+					attributeNewValue: true
+				} ] );
+			} );
+		} );
+
 		it( 'on multiple non-consecutive characters in multiple operations', () => {
 			const parent = root.getChild( 0 );
 
