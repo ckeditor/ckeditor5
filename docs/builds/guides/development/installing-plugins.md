@@ -13,6 +13,13 @@ In this guide you can learn how to add plugins to your editor in the two most co
 * When you use an {@link builds/guides/overview editor build},
 * When you {@link framework/guides/quick-start build your editor from source}.
 
+## Requirements
+
+In order to start developing CKEditor 5 you will require:
+
+* [Node.js](https://nodejs.org/en/) >= 6.0.0
+* npm 4.x (**note:** using npm 5 [causes](https://github.com/lerna/lerna/issues/938) some [problems](https://github.com/npm/npm/issues/16991))
+
 ## Adding a plugin to a build
 
 Adding plugins to existing builds is done through their customization. Editor builds are maintained in their respective GitHub repositories. Therefore, assuming that you want to customize the [classic editor build](https://npmjs.com/package/@ckeditor/ckeditor5-build-classic) you need to:
