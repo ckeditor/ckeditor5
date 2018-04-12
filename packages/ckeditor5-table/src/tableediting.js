@@ -10,7 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
+import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 
 import upcastTable from './converters/upcasttable';
 import { downcastInsertCell, downcastInsertRow, downcastInsertTable, downcastRemoveRow } from './converters/downcast';
@@ -135,7 +135,7 @@ export default class TablesEditing extends Plugin {
 			}
 
 			editor.model.change( writer => {
-				writer.setSelection( Position.createAt( moveToCell ) );
+				writer.setSelection( Range.createIn( moveToCell ) );
 			} );
 		} );
 	}
