@@ -181,10 +181,10 @@ Load the document editor build (here [CDN](https://cdn.ckeditor.com/) location i
 <script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/decoupled-document/ckeditor.js"></script>
 ```
 
-Call the {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`} method. The decoupled editor requires you to inject the toolbar into DOM and the best place to do that is somewhere in the promise chain (e.g. one of the `then( () => { ... } )` blocks).
+Call the {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`} method. The decoupled editor requires you to inject the toolbar into the DOM and the best place to do that is somewhere in the promise chain (e.g. one of the `then( () => { ... } )` blocks).
 
 <info-box>
-	The following snippet will run the document editor but to make the most of it check out the {@link framework/guides/document-editor comprehensive tutorial} which explains step—by—step how to configure and style the the application for the best editing experience.
+	The following snippet will run the document editor but to make the most of it check out the {@link framework/guides/document-editor comprehensive tutorial} which explains step—by—step how to configure and style the application for the best editing experience.
 </info-box>
 
 ```html
@@ -209,16 +209,16 @@ Call the {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>CKEditor 5 – document editor</title>
+	<title>CKEditor 5 – Document editor</title>
 	<script src="https://cdn.ckeditor.com/ckeditor5/{@var ckeditor5-version}/decoupled-document/ckeditor.js"></script>
 </head>
 <body>
 	<h1>Document editor</h1>
 
-	<!-- The toolbar will be rendered in this container -->
+	<!-- The toolbar will be rendered in this container. -->
 	<div id="toolbar-container"></div>
 
-	<!-- This container will become the editable -->
+	<!-- This container will become the editable. -->
 	<div id="editor">
 		<p>This is the initial editor content.</p>
 	</div>
@@ -241,4 +241,4 @@ Call the {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `
 
 ## Next steps
 
-Check the {@link builds/guides/integration/configuration Configuration guide} to learn how to configure the editor – e.g. change the default toolbar.
+Check the {@link builds/guides/integration/configuration Configuration guide} to learn how to configure the editor &mdash; for example, change the default toolbar.
