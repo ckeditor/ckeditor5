@@ -11,6 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
 import TablesEditing from './tableediting';
 import TablesUI from './tableui';
+import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 
 /**
  * The table plugin.
@@ -22,7 +23,7 @@ export default class Table extends Plugin {
 	 * @inheritDoc
 	 */
 	static get requires() {
-		return [ TablesEditing, TablesUI ];
+		return [ TablesEditing, TablesUI, Widget ];
 	}
 
 	/**
