@@ -54,6 +54,9 @@ export default class Editor {
 		/**
 		 * Holds all configurations specific to this editor instance.
 		 *
+		 *		editor.config.get( 'image.toolbar' );
+		 *		// -> [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ]
+		 *
 		 * @readonly
 		 * @member {module:utils/config~Config}
 		 */
@@ -64,6 +67,8 @@ export default class Editor {
 		/**
 		 * The plugins loaded and in use by this editor instance.
 		 *
+		 *		editor.plugins.get( 'Clipboard' ); // -> instance of the Clipboard plugin.
+		 *
 		 * @readonly
 		 * @member {module:core/plugincollection~PluginCollection}
 		 */
@@ -71,6 +76,14 @@ export default class Editor {
 
 		/**
 		 * Commands registered to the editor.
+		 *
+		 * Use the shorthand {@link #execute `editor.execute()`} method to execute commands:
+		 *
+		 *		// Execute the bold command:
+		 *		editor.execute( 'bold' );
+		 *
+		 *		// Check the state of the bold command:
+		 *		editor.commands.get( 'bold' ).value;
 		 *
 		 * @readonly
 		 * @member {module:core/commandcollection~CommandCollection}
@@ -95,7 +108,7 @@ export default class Editor {
 		 * Defines whether this editor is in read-only mode.
 		 *
 		 * In read-only mode the editor {@link #commands commands} are disabled so it is not possible
-		 * to modify document using them.
+		 * to modify document by using them.
 		 *
 		 * @observable
 		 * @member {Boolean} #isReadOnly
@@ -105,7 +118,7 @@ export default class Editor {
 		/**
 		 * The editor's model.
 		 *
-		 * The center of the editor's abstract data model.
+		 * The central point of the editor's abstract data model.
 		 *
 		 * @readonly
 		 * @member {module:engine/model/model~Model}
@@ -114,7 +127,7 @@ export default class Editor {
 
 		/**
 		 * The {@link module:engine/controller/datacontroller~DataController data controller}.
-		 * Used e.g. for setting or retrieving editor data.
+		 * Used e.g. for setting and retrieving editor data.
 		 *
 		 * @readonly
 		 * @member {module:engine/controller/datacontroller~DataController}
@@ -149,6 +162,20 @@ export default class Editor {
 
 		/**
 		 * Instance of the {@link module:core/editingkeystrokehandler~EditingKeystrokeHandler}.
+		 *
+		 * It allows setting simple keystrokes:
+		 *
+		 *		// Execute the bold command on Ctrl+E:
+		 *		editor.keystrokes.set( 'Ctrl+E', 'bold' );
+		 *
+		 *		// Execute your own callback:
+		 *		editor.keystrokes.set( 'Ctrl+E', ( data, cancel ) => {
+		 *			console.log( data.keyCode );
+		 *
+		 *			// Prevent default (native) action and stop the underlying keydown event
+		 *			// so no other editor feature will interfere.
+		 *			cancel();
+		 *		} );
 		 *
 		 * @readonly
 		 * @member {module:core/editingkeystrokehandler~EditingKeystrokeHandler}
