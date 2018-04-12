@@ -9,8 +9,16 @@
 
 /**
  * The data processor interface. It should be implemented by actual data processors.
- * Each data processor implements a certain format of the data. For example, Markdown data processor will convert the data
- * (a Markdown string) to a {@link module:engine/view/documentfragment~DocumentFragment document fragment} and back.
+ *
+ * Each data processor implements a certain format of the data. For example, {@glink features/markdown Markdown data processor}
+ * will convert the data (a Markdown string) to a {@link module:engine/view/documentfragment~DocumentFragment document fragment} and back.
+ *
+ * **Note:** While the CKEditor 5 architecture supports changing the data format, in most scenarios we do recommend sticking to
+ * the default format which is HTML (supported by the {@link module:engine/dataprocessor/htmldataprocessor~HtmlDataProcessor}).
+ * HTML remains [the best standard for rich-text data](https://medium.com/content-uneditable/a-standard-for-rich-text-data-4b3a507af552).
+ *
+ * And please do remember – using Markdown [does not automatically make your
+ * application/website secure](https://github.com/ckeditor/ckeditor5-markdown-gfm/issues/16#issuecomment-375752994).
  *
  * @interface DataProcessor
  */
