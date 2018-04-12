@@ -37,20 +37,11 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
  * @param {String} attribute Attribute for which this behavior will be added.
  */
 export default function bindTwoStepCaretToAttribute( view, model, emitter, attribute ) {
+	const twoStepCaretHandler = new TwoStepCaretHandler( model, emitter, attribute );
 	const modelSelection = model.document.selection;
-	let overrideUid;
-	let skipNextChangeRange = false;
 
 	// Listen to keyboard events and handle cursor before the move.
 	emitter.listenTo( view.document, 'keydown', ( evt, data ) => {
-		const arrowRightPressed = data.keyCode == keyCodes.arrowright;
-		const arrowLeftPressed = data.keyCode == keyCodes.arrowleft;
-
-		// When neither left or right arrow has been pressed then do noting.
-		if ( !arrowRightPressed && !arrowLeftPressed ) {
-			return;
-		}
-
 		// This implementation works only for collapsed selection.
 		if ( !modelSelection.isCollapsed ) {
 			return;
@@ -62,39 +53,60 @@ export default function bindTwoStepCaretToAttribute( view, model, emitter, attri
 			return;
 		}
 
+		const arrowRightPressed = data.keyCode == keyCodes.arrowright;
+		const arrowLeftPressed = data.keyCode == keyCodes.arrowleft;
+
+		// When neither left or right arrow has been pressed then do noting.
+		if ( !arrowRightPressed && !arrowLeftPressed ) {
+			return;
+		}
+
 		const position = modelSelection.getFirstPosition();
 
 		if ( arrowRightPressed ) {
-			handleArrowRightPress( position, data );
+			twoStepCaretHandler.handleForwardMovement( position, data );
 		} else {
-			handleArrowLeftPress( position, data );
+			twoStepCaretHandler.handleBackwardMovement( position, data );
 		}
 	} );
+}
 
-	emitter.listenTo( modelSelection, 'change:range', ( evt, data ) => {
-		if ( skipNextChangeRange ) {
-			skipNextChangeRange = false;
+class TwoStepCaretHandler {
+	constructor( model, emitter, attribute ) {
+		this.model = model;
+		this.attribute = attribute;
 
-			return;
-		}
+		this._modelSelection = model.document.selection;
+		this._overrideUid = null;
+		this._skipNextChangeRange = false;
 
-		// Skip automatic restore when the gravity is not overridden — simply, there's nothing to restore
-		// at this moment.
-		if ( !overrideUid ) {
-			return;
-		}
+		emitter.listenTo( this._modelSelection, 'change:range', ( evt, data ) => {
+			if ( this._skipNextChangeRange ) {
+				this._skipNextChangeRange = false;
 
-		// Skip automatic restore when the change is indirect AND the selection is at the attribute boundary.
-		// It means that e.g. if the change was external (collaboration) and the user had their
-		// selection around the link, its gravity should remain intact in this change:range event.
-		if ( !data.directChange && isAtBoundary( modelSelection.getFirstPosition(), attribute ) ) {
-			return;
-		}
+				return;
+			}
 
-		restoreGravity( model );
-	} );
+			// Skip automatic restore when the gravity is not overridden — simply, there's nothing to restore
+			// at this moment.
+			if ( !this._isGravityOverridden ) {
+				return;
+			}
 
-	function handleArrowRightPress( position, data ) {
+			// Skip automatic restore when the change is indirect AND the selection is at the attribute boundary.
+			// It means that e.g. if the change was external (collaboration) and the user had their
+			// selection around the link, its gravity should remain intact in this change:range event.
+			if ( !data.directChange && isAtBoundary( this._modelSelection.getFirstPosition(), attribute ) ) {
+				return;
+			}
+
+			this._restoreGravity();
+		} );
+	}
+
+	handleForwardMovement( position, data ) {
+		const attribute = this.attribute;
+
 		// DON'T ENGAGE 2-SCM if gravity is already overridden. It means that we just entered
 		//
 		// 		<paragraph>foo{}<$text attribute>bar</$text>baz</paragraph>
@@ -104,7 +116,7 @@ export default function bindTwoStepCaretToAttribute( view, model, emitter, attri
 		// 		<paragraph>foo<$text attribute>bar</$text>{}baz</paragraph>
 		//
 		// and the gravity will be restored automatically.
-		if ( overrideUid ) {
+		if ( this._isGravityOverridden ) {
 			return;
 		}
 
@@ -114,7 +126,7 @@ export default function bindTwoStepCaretToAttribute( view, model, emitter, attri
 		//
 		//		<paragraph><$text attribute>{}bar</$text>baz</paragraph>
 		//
-		if ( position.isAtStart && modelSelection.hasAttribute( attribute ) ) {
+		if ( position.isAtStart && this._hasAttribute ) {
 			return;
 		}
 
@@ -126,17 +138,17 @@ export default function bindTwoStepCaretToAttribute( view, model, emitter, attri
 		//
 		// 		<paragraph><$text attribute="1">foo</$text>{}<$text attribute="2">bar</$text></paragraph>
 		//
-		if ( isBetweenDifferentValues( position, attribute ) && modelSelection.hasAttribute( attribute ) ) {
-			preventCaretMovement( data );
-			removeSelectionAttribute( model );
+		if ( isBetweenDifferentValues( position, attribute ) && this._hasAttribute ) {
+			this._preventCaretMovement( data );
+			this._removeSelectionAttribute();
 		} else {
 			// ENGAGE 2-SCM when entering an attribute:
 			//
 			// 		<paragraph>foo{}<$text attribute>bar</$text>baz</paragraph>
 			//
 			if ( isAtStartBoundary( position, attribute ) ) {
-				preventCaretMovement( data );
-				overrideGravity( model );
+				this._preventCaretMovement( data );
+				this._overrideGravity();
 
 				return;
 			}
@@ -145,16 +157,18 @@ export default function bindTwoStepCaretToAttribute( view, model, emitter, attri
 			//
 			//		<paragraph>foo<$text attribute>bar{}</$text>baz</paragraph>
 			//
-			if ( isAtEndBoundary( position, attribute ) && modelSelection.hasAttribute( attribute ) ) {
-				preventCaretMovement( data );
-				overrideGravity( model );
+			if ( isAtEndBoundary( position, attribute ) && this._hasAttribute ) {
+				this._preventCaretMovement( data );
+				this._overrideGravity();
 			}
 		}
 	}
 
-	function handleArrowLeftPress( position, data ) {
+	handleBackwardMovement( position, data ) {
+		const attribute = this.attribute;
+
 		// When the gravity is already overridden...
-		if ( overrideUid ) {
+		if ( this._isGravityOverridden ) {
 			// ENGAGE 2-SCM & REMOVE SELECTION ATTRIBUTE
 			// when about to leave one attribute value and enter another:
 			//
@@ -164,10 +178,10 @@ export default function bindTwoStepCaretToAttribute( view, model, emitter, attri
 			//
 			// 		<paragraph><$text attribute="1">foo</$text>{}<$text attribute="2">bar</$text></paragraph>
 			//
-			if ( isBetweenDifferentValues( position, attribute ) && modelSelection.hasAttribute( attribute ) ) {
-				preventCaretMovement( data );
-				restoreGravity( model );
-				removeSelectionAttribute( model );
+			if ( isBetweenDifferentValues( position, attribute ) && this._hasAttribute ) {
+				this._preventCaretMovement( data );
+				this._restoreGravity();
+				this._removeSelectionAttribute();
 			}
 
 			// ENGAGE 2-SCM when at any boundary of the attribute:
@@ -176,8 +190,8 @@ export default function bindTwoStepCaretToAttribute( view, model, emitter, attri
 			// 		<paragraph>foo<$text attribute>{}bar</$text>baz</paragraph>
 			//
 			else {
-				preventCaretMovement( data );
-				restoreGravity( model );
+				this._preventCaretMovement( data );
+				this._restoreGravity();
 
 				// REMOVE SELECTION ATRIBUTE at the beginning of the block.
 				// It's like restoring gravity but towards a non-existent content when
@@ -190,7 +204,7 @@ export default function bindTwoStepCaretToAttribute( view, model, emitter, attri
 				// 		<paragraph>{}<$text attribute>bar</$text></paragraph>
 				//
 				if ( position.isAtStart ) {
-					removeSelectionAttribute( model );
+					this._removeSelectionAttribute();
 				}
 			}
 		} else {
@@ -198,9 +212,9 @@ export default function bindTwoStepCaretToAttribute( view, model, emitter, attri
 			//
 			// 		<paragraph><$text attribute="1">foo</$text>{}<$text attribute="2">bar</$text></paragraph>
 			//
-			if ( isBetweenDifferentValues( position, attribute ) && !modelSelection.hasAttribute( attribute ) ) {
-				preventCaretMovement( data );
-				setSelectionAttributeFromTheNodeBefore( model, position );
+			if ( isBetweenDifferentValues( position, attribute ) && !this._hasAttribute ) {
+				this._preventCaretMovement( data );
+				this._setSelectionAttributeFromTheNodeBefore( position );
 
 				return;
 			}
@@ -210,11 +224,11 @@ export default function bindTwoStepCaretToAttribute( view, model, emitter, attri
 			// 		<paragraph><$text attribute>bar{}</$text></paragraph>
 			//
 			if ( position.isAtEnd && isAtBoundary( position, attribute ) ) {
-				if ( modelSelection.hasAttribute( attribute ) ) {
+				if ( this._hasAttribute ) {
 					return;
 				} else {
-					preventCaretMovement( data );
-					setSelectionAttributeFromTheNodeBefore( model, position );
+					this._preventCaretMovement( data );
+					this._setSelectionAttributeFromTheNodeBefore( position );
 
 					return;
 				}
@@ -226,8 +240,8 @@ export default function bindTwoStepCaretToAttribute( view, model, emitter, attri
 			// 		<paragraph>{}<$text attribute>bar</$text></paragraph>
 			//
 			if ( position.isAtStart && isAtBoundary( position, attribute ) ) {
-				if ( modelSelection.hasAttribute( attribute ) ) {
-					removeSelectionAttribute( model );
+				if ( this._hasAttribute ) {
+					this._removeSelectionAttribute();
 
 					return;
 				}
@@ -245,41 +259,51 @@ export default function bindTwoStepCaretToAttribute( view, model, emitter, attri
 				// Skip the automatic gravity restore upon the next selection#change:range event.
 				// If not skipped, it would automatically restore the gravity, which should remain
 				// overridden.
-				skipNextRangeChange();
-				overrideGravity( model );
+				this._skipNextRangeChange();
+				this._overrideGravity();
 			}
 		}
 	}
 
-	function overrideGravity( model ) {
-		overrideUid = model.change( writer => writer.overrideSelectionGravity() );
+	get _isGravityOverridden() {
+		return !!this._overrideUid;
 	}
 
-	function restoreGravity( model ) {
-		model.change( writer => {
-			writer.restoreSelectionGravity( overrideUid );
-			overrideUid = null;
+	get _hasAttribute() {
+		return this._modelSelection.hasAttribute( this.attribute );
+	}
+
+	_overrideGravity() {
+		this._overrideUid = this.model.change( writer => writer.overrideSelectionGravity() );
+	}
+
+	_restoreGravity() {
+		this.model.change( writer => {
+			writer.restoreSelectionGravity( this._overrideUid );
+			this._overrideUid = null;
 		} );
 	}
 
-	function preventCaretMovement( data ) {
+	_preventCaretMovement( data ) {
 		data.preventDefault();
 	}
 
-	function removeSelectionAttribute( model ) {
-		model.change( writer => {
-			writer.removeSelectionAttribute( attribute );
+	_removeSelectionAttribute() {
+		this.model.change( writer => {
+			writer.removeSelectionAttribute( this.attribute );
 		} );
 	}
 
-	function setSelectionAttributeFromTheNodeBefore( model, position ) {
-		model.change( writer => {
-			writer.setSelectionAttribute( attribute, position.nodeBefore.getAttribute( attribute ) );
+	_setSelectionAttributeFromTheNodeBefore( position ) {
+		const attribute = this.attribute;
+
+		this.model.change( writer => {
+			writer.setSelectionAttribute( this.attribute, position.nodeBefore.getAttribute( attribute ) );
 		} );
 	}
 
-	function skipNextRangeChange() {
-		skipNextChangeRange = true;
+	_skipNextRangeChange() {
+		this._skipNextChangeRange = true;
 	}
 }
 
