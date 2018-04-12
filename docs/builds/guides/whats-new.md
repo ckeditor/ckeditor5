@@ -32,10 +32,9 @@ When integrated with {@link features/image-upload#easy-image Easy Image}, upload
 
 ### Simple linking
 
-No more complex dialogs for links.
+No more complex dialogs for links. When you click a link, first you will see a balloon with an option to either edit the link or open it in a new tab.
 
-{@img assets/img/feature-link-preview.png 738 Simplified link preview popup.}
-{@img assets/img/feature-link-editing.png 738 Simplified link editing popup.}
+{@img assets/img/feature-link-balloon.gif Simplified link balloon.}
 
 ### Autoformatting
 
@@ -55,7 +54,7 @@ The toolbar is now always visible when the user scrolls the page down.
 
 ### Inlined content
 
-The editor content is now placed inline in the page &mdash; it is now much easier to style it. Additionally, the editor grows with the content (or not, it is up to you!).
+The editor content is now placed inline in the page &mdash; it is thus much easier to style it. Additionally, the editor grows with the content (or not, it is up to you!).
 
 <iframe width="600" height="337" src="https://www.youtube.com/embed/igoI02wBykA?rel=0" frameborder="0" allowfullscreen></iframe>
 
@@ -73,7 +72,7 @@ The editor is much more lightweight and fast. It brings a fantastic user experie
 
 ## Highly customizable
 
-CKEditor 5 Builds are based on the {@link framework/index CKEditor 5 Framework}, which gives powerful customizability and extensibility.
+CKEditor 5 Builds are based on {@link framework/index CKEditor 5 Framework}, which gives powerful customizability and extensibility.
 
 ## Custom data model
 
