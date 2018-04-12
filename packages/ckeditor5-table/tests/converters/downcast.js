@@ -255,6 +255,66 @@ describe( 'downcast converters', () => {
 				);
 			} );
 		} );
+
+		describe( 'asWidget', () => {
+			beforeEach( () => {
+				return VirtualTestEditor.create()
+					.then( newEditor => {
+						editor = newEditor;
+						model = editor.model;
+						doc = model.document;
+						root = doc.getRoot( 'main' );
+						viewDocument = editor.editing.view;
+
+						const conversion = editor.conversion;
+						const schema = model.schema;
+
+						schema.register( 'table', {
+							allowWhere: '$block',
+							allowAttributes: [ 'headingRows', 'headingColumns' ],
+							isBlock: true,
+							isObject: true
+						} );
+
+						schema.register( 'tableRow', {
+							allowIn: 'table',
+							allowAttributes: [],
+							isBlock: true,
+							isLimit: true
+						} );
+
+						schema.register( 'tableCell', {
+							allowIn: 'tableRow',
+							allowContentOf: '$block',
+							allowAttributes: [ 'colspan', 'rowspan' ],
+							isBlock: true,
+							isLimit: true
+						} );
+
+						conversion.for( 'editingDowncast' ).add( downcastInsertTable( { asWidget: true } ) );
+						conversion.for( 'dataDowncast' ).add( downcastInsertTable() );
+
+						conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
+						conversion.attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
+					} );
+			} );
+
+			it( 'should create table as a widget', () => {
+				setModelData( model,
+					'<table>' +
+					'<tableRow><tableCell></tableCell></tableRow>' +
+					'</table>'
+				);
+
+				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+					'<table class="ck-editor__editable ck-editor__nested-editable ck-widget" contenteditable="true">' +
+					'<tbody>' +
+					'<tr><td></td></tr>' +
+					'</tbody>' +
+					'</table>'
+				);
+			} );
+		} );
 	} );
 
 	describe( 'downcastInsertRow()', () => {
