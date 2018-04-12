@@ -185,7 +185,7 @@ export default class Document {
 	}
 
 	/**
-	 * Creates a new top-level root.
+	 * Creates a new root.
 	 *
 	 * @param {String} [elementName='$root'] The element name. Defaults to `'$root'` which also has some basic schema defined
 	 * (`$block`s are allowed inside the `$root`). Make sure to define a proper schema if you use a different name.
@@ -222,10 +222,10 @@ export default class Document {
 	}
 
 	/**
-	 * Returns the top-level root by its name.
+	 * Returns a root by its name.
 	 *
 	 * @param {String} [name='main'] A unique root name.
-	 * @returns {module:engine/model/rootelement~RootElement|null} The root registered under a given name or null when
+	 * @returns {module:engine/model/rootelement~RootElement|null} The root registered under a given name or `null` when
 	 * there is no root with the given name.
 	 */
 	getRoot( name = 'main' ) {
