@@ -112,13 +112,27 @@ describe( 'TableEditing', () => {
 			] ) );
 		} );
 
+		it( 'should do nothing if Ctrl+Tab is pressed', () => {
+			setModelData( model, modelTable( [
+				[ '11', '12[]' ]
+			] ) );
+
+			domEvtDataStub.ctrlKey = true;
+
+			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+			sinon.assert.notCalled( domEvtDataStub.preventDefault );
+			sinon.assert.notCalled( domEvtDataStub.stopPropagation );
+			expect( formatModelTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+				[ '11', '12[]' ]
+			] ) );
+		} );
+
 		describe( 'on TAB', () => {
 			it( 'should do nothing if selection is not in a table', () => {
 				setModelData( model, '[]' + modelTable( [
 					[ '11', '12' ]
 				] ) );
-
-				domEvtDataStub.keyCode = getCode( 'Tab' );
 
 				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
@@ -167,6 +181,69 @@ describe( 'TableEditing', () => {
 				expect( formatModelTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
 					[ '11', '12' ],
 					[ '[]21', '22' ]
+				] ) );
+			} );
+		} );
+
+		describe( 'on SHIFT+TAB', () => {
+			beforeEach( () => {
+				domEvtDataStub.shiftKey = true;
+			} );
+
+			it( 'should do nothing if selection is not in a table', () => {
+				setModelData( model, '[]' + modelTable( [
+					[ '11', '12' ]
+				] ) );
+
+				domEvtDataStub.keyCode = getCode( 'Tab' );
+				domEvtDataStub.shiftKey = true;
+
+				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+				sinon.assert.notCalled( domEvtDataStub.preventDefault );
+				sinon.assert.notCalled( domEvtDataStub.stopPropagation );
+				expect( formatModelTable( getModelData( model ) ) ).to.equal( '[]' + formattedModelTable( [
+					[ '11', '12' ]
+				] ) );
+			} );
+
+			it( 'should move to previous cell', () => {
+				setModelData( model, modelTable( [
+					[ '11', '12[]' ]
+				] ) );
+
+				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+				expect( formatModelTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+					[ '[]11', '12' ]
+				] ) );
+			} );
+
+			it( 'should not move if caret is in first table cell', () => {
+				setModelData( model, '<paragraph>foo</paragraph>' + modelTable( [
+					[ '[]11', '12' ]
+				] ) );
+
+				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+				expect( formatModelTable( getModelData( model ) ) ).to.equal(
+					'<paragraph>foo</paragraph>' + formattedModelTable( [ [ '[]11', '12' ] ] )
+				);
+			} );
+
+			it( 'should move to the last cell of previous row if on beginning of a row', () => {
+				setModelData( model, modelTable( [
+					[ '11', '12' ],
+					[ '[]21', '22' ]
+				] ) );
+
+				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+				expect( formatModelTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+					[ '11', '[]12' ],
+					[ '21', '22' ]
 				] ) );
 			} );
 		} );
