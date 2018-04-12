@@ -9,14 +9,15 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import Position from '@ckeditor/ckeditor5-engine/src/model/position';
+
 import upcastTable from './converters/upcasttable';
 import { downcastInsertCell, downcastInsertRow, downcastInsertTable, downcastRemoveRow } from './converters/downcast';
 import InsertTableCommand from './commands/inserttablecommand';
 import InsertRowCommand from './commands/insertrowcommand';
 import InsertColumnCommand from './commands/insertcolumncommand';
-import { keyCodes } from '../../ckeditor5-utils/src/keyboard';
 import { getParentTable } from './commands/utils';
-import Position from '../../ckeditor5-engine/src/model/position';
 
 /**
  * The table editing feature.

@@ -6,11 +6,10 @@
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 import TableEditing from '../src/tableediting';
 import { formatModelTable, formattedModelTable, modelTable } from './_utils/utils';
-import { getCode } from '../../ckeditor5-utils/src/keyboard';
-import { getData } from '../../ckeditor5-engine/src/dev-utils/model';
 
 describe( 'TableEditing', () => {
 	let editor, model;
@@ -108,7 +107,7 @@ describe( 'TableEditing', () => {
 
 			sinon.assert.notCalled( domEvtDataStub.preventDefault );
 			sinon.assert.notCalled( domEvtDataStub.stopPropagation );
-			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			expect( formatModelTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
 				[ '11', '12[]' ]
 			] ) );
 		} );
@@ -125,7 +124,7 @@ describe( 'TableEditing', () => {
 
 				sinon.assert.notCalled( domEvtDataStub.preventDefault );
 				sinon.assert.notCalled( domEvtDataStub.stopPropagation );
-				expect( formatModelTable( getData( model ) ) ).to.equal( '[]' + formattedModelTable( [
+				expect( formatModelTable( getModelData( model ) ) ).to.equal( '[]' + formattedModelTable( [
 					[ '11', '12' ]
 				] ) );
 			} );
@@ -139,7 +138,7 @@ describe( 'TableEditing', () => {
 
 				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
 				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
-				expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				expect( formatModelTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
 					[ '11', '[]12' ]
 				] ) );
 			} );
@@ -151,7 +150,7 @@ describe( 'TableEditing', () => {
 
 				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
-				expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				expect( formatModelTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
 					[ '11', '12' ],
 					[ '[]', '' ]
 				] ) );
@@ -165,7 +164,7 @@ describe( 'TableEditing', () => {
 
 				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
-				expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				expect( formatModelTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
 					[ '11', '12' ],
 					[ '[]21', '22' ]
 				] ) );
