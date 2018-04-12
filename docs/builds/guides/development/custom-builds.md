@@ -21,6 +21,14 @@ Some of the reasons for creating custom builds are:
 * Changing the {@link features/ui-language localization language} of the editor.
 * Enabling bug fixes which are still not a part of any public release.
 
+## Requirements
+
+In order to start developing CKEditor 5 you will require:
+
+* [Node.js](https://nodejs.org/en/) >= 6.0.0
+* npm 4.x (**note:** using npm 5 [causes](https://github.com/lerna/lerna/issues/938) some [problems](https://github.com/npm/npm/issues/16991))
+* [Git](https://git-scm.com/)
+
 ## Forking an existing build
 
 Start with [forking](https://help.github.com/articles/fork-a-repo/) one of the official builds (it will serve as the starting point for your custom one) and then clone your fork:
@@ -64,7 +72,13 @@ In order to customize a build you need to:
 
 ### Installing dependencies
 
-The easiest way to install missing dependencies is by typing:
+First, you need to install dependencies which are already specified in build's `package.json`:
+
+```bash
+npm install
+```
+
+Then, you can add missing depencies (i.e. packages you want to add to your build). The easiest way to do so is by typing:
 
 ```bash
 npm install --save-dev <package-name>

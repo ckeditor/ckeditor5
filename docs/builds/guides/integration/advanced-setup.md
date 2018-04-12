@@ -9,11 +9,23 @@ The {@link builds/guides/integration/installation Installation} guide describes 
 
 In this guide, we would like to show you ways to closer integrate CKEditor with your application. Thanks to that, you will be able to optimize the bundling process of your project and customize the builds in a more convenient way.
 
+## Requirements
+
+In order to start developing CKEditor 5 you will require:
+
+* [Node.js](https://nodejs.org/en/) >= 6.0.0
+* npm 4.x (**note:** using npm 5 [causes](https://github.com/lerna/lerna/issues/938) some [problems](https://github.com/npm/npm/issues/16991))
+* [Git](https://git-scm.com/)
+
 ## Bundler
 
 CKEditor 5 is currently built using [webpack](https://webpack.js.org) (>=3.x.x). All builds, examples and demos are generated using this bundler. It should also be possible to build CKEditor using other bundlers (if they are configured properly), such as [Rollup](https://github.com/rollup/rollup) or [Browserify](http://browserify.org/) but these setups are not officially supported yet. Also, the [`@ckeditor/ckeditor5-dev-webpack-plugin`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-webpack-plugin) that allows to localize the editor is only available for webpack. More work on this subject will be done after v1.0.0.
 
 Therefore, **a prerequisite to this guide is that you are using webpack as your build tool**.
+
+<info-box warning>
+	Unfortunately, at the moment of writing this note, [webpack@4.x causes issues](https://github.com/ckeditor/ckeditor5-dev/issues/371) so the recommended version is webpack@3.x.
+</info-box>
 
 ## Scenario 1: Integrating existing builds
 
