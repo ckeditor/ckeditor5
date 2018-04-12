@@ -145,7 +145,7 @@ The engine also defines three levels of classes which operate on offsets:
 
 * A {@link module:engine/model/position~Position} instance contains an {@link module:engine/model/position~Position#path array of offsets} (which is called a "path"). See the examples in {@link module:engine/model/position~Position#path `Position#path` API documentation} to better understand how paths work.
 * {@link module:engine/model/range~Range} contains two positions: {@link module:engine/model/range~Range#start start} and {@link module:engine/model/range~Range#end end} ones.
-* Finally, there is a {@link module:engine/model/selection~Selection} which contains one or more ranges and attributes. You can make as many instances of it as you needed and you can freely modify it whenever you want.  Additionally, there is a single {@link module:engine/model/documentselection~DocumentSelection}. It represents the document's selection and can only be changed through the {@link module:engine/model/writer~Writer model writer}. It is automatically updated when the document's structure is changed.
+* Finally, there is a {@link module:engine/model/selection~Selection} which contains one or more ranges, attributes, and has a direction (whether it was done from left to right or right to left). You can make as many instances of it as you needed and you can freely modify it whenever you want.  Additionally, there is a single {@link module:engine/model/documentselection~DocumentSelection}. It represents the document's selection and can only be changed through the {@link module:engine/model/writer~Writer model writer}. It is automatically updated when the document's structure is changed.
 
 ### Markers
 
@@ -234,14 +234,14 @@ editor.data.view.change( writer => {
 
 ### Element types and custom data
 
-The structure of the view resemles the structure in the DOM very closely. The semantincs of HTML is defined in its specification. The view structure comes "DTD-free", so in order to provide additional information and better express the semantics of the content, the view structure implements 5 element types ({@link module:engine/view/containerelement~ContainerElement}, {@link module:engine/view/attributeelement~AttributeElement} and {@link module:engine/view/emptyelement~EmptyElement}, {@link module:engine/view/uielement~UIElement}, {@link module:engine/view/editableelement~EditableElement}) and so called {@link module:engine/view/element~Element#getCustomProperty "custom properties"} (i.e. custom element propperties which are not rendered). This additional information provided by editor features is then used by the {@link module:engine/view/renderer~Renderer} and [converters](#Conversion).
+The structure of the view resembles the structure in the DOM very closely. The semantics of HTML is defined in its specification. The view structure comes "DTD-free", so in order to provide additional information and better express the semantics of the content, the view structure implements 5 element types ({@link module:engine/view/containerelement~ContainerElement}, {@link module:engine/view/attributeelement~AttributeElement}, {@link module:engine/view/emptyelement~EmptyElement}, {@link module:engine/view/uielement~UIElement}, and {@link module:engine/view/editableelement~EditableElement}) and so called {@link module:engine/view/element~Element#getCustomProperty "custom properties"} (i.e. custom element properties which are not rendered). This additional information provided by editor features is then used by the {@link module:engine/view/renderer~Renderer} and [converters](#Conversion).
 
 The element types can be defined as follows:
 
 * **Container element** – elements which build the structure of the content. Used for block elements such as `<p>`, `<h1>`, `<blockQuote>`, `<li>`, etc.
-* **Attribute element** – elements which cannot contain container elements inside them. Most model text attributes are converted to view attribute elements. They are used mostly for inline styling elements such as `<strong>`, `<i>`, `<a>`, `<code>`. Similar attribute elements are flattened by the view writer, so e.g. `<a href="..."><a class="bar">x</a></a>` would automatically be optimised to `<a href="..." class="bar">x</a>`.
+* **Attribute element** – elements which cannot contain container elements inside them. Most model text attributes are converted to view attribute elements. They are used mostly for inline styling elements such as `<strong>`, `<i>`, `<a>`, `<code>`. Similar attribute elements are flattened by the view writer, so e.g. `<a href="..."><a class="bar">x</a></a>` would automatically be optimized to `<a href="..." class="bar">x</a>`.
 * **Empty element** – elements which must not have any child nodes – e.g. `<img>`.
-* **UI elements** – elements which are not part of the "data" but needs to be "inlined" in the content. They are ignored by the selection (it jumps over them) and the view writer in general. Content of these elements and events comming from them are filtered out too.
+* **UI elements** – elements which are not part of the "data" but needs to be "inlined" in the content. They are ignored by the selection (it jumps over them) and the view writer in general. Content of these elements and events coming from them are filtered out too.
 * **Editable element** – elements used as "nested editables" of non-editable fragments of the content – e.g. caption in the image widget, where the `<figure>` wrapping the image is not editable (it is a widget) and the `<figcaption>` inside it is an editable element.
 
 The custom properties are used to store information like:
@@ -252,11 +252,101 @@ The custom properties are used to store information like:
 
 ### Positions
 
+Just like [in the model](#positions-ranges-and-selections), in the view there are 3 levels of classes which describe points in the view structure: **positions**, **ranges** and **selections**. A position is a single point in a document. A range consists of two positions (start and end). And selection consists of one or more ranges and has a direction (whether it was done from the left to right or right to left).
+
+A view range is very similar to its [DOM counterpart](https://www.w3.org/TR/DOM-Level-2-Traversal-Range/ranges.html) as view positions are represented by a parent and an offset in that parent. This means that, unlike model offsets, view offsets describe:
+
+* points between child nodes of the position's parent if it is an element,
+* or points between character of a text node if position's parent is a text node.
+
+Therefore, we can say that view offsets work more like model indexes than model offsets.
+
+| parent    | offset | position                    |
+|-----------|--------|-----------------------------|
+| `<p>`     | `0`    | `<p>^Foo<img></img>bar</p>` |
+| `<p>`     | `1`    | `<p>Foo^<img></img>bar</p>` |
+| `<p>`     | `2`    | `<p>Foo<img></img>^bar</p>` |
+| `<img>`   | `0`    | `<p>Foo<img>^</img>bar</p>` |
+| `Foo`     | `1`    | `<p>F^oo<img></img>bar</p>` |
+| `Foo`     | `3`    | `<p>Foo^<img></img>bar</p>` |
+
+As you can see, two of these positions represent what you can consider the same point in the document:
+
+* `{ parent: paragraphElement, offset: 1 }`
+* `{ parent: fooTextNode, offset: 3 }`
+
+Some browsers (Safari, Chrome and Opera) consider them identical too (when used in a selection) and often normalize the first position (anchored in an element) to a position anchored in a text node (the second position). Do not be surprised that the view selection is not directly when you would like it to be. The good news is that the CKEditor 5's renderer can tell that two positions are identical and avoids re-rendering the DOM selection unnecessarily.
+
+<info-box>
+	You may sometimes find in the documentation that positions are marked in HTML with the `{}` and `[]` characters. The difference between them is that the former indicate positions anchored in text nodes and the latter in elements. So, for example, the following example:
+
+	```html
+	<p>{Foo]<b>Bar</b></p>
+	```
+
+	describes a range which starts in the text node `Foo` at offset `0` and ends in the `<p>` element at offset `1`.
+</info-box>
+
+The far-from-convenient representation of DOM positions is yet one more reason to think about and work with model positions.
+
 ### Observers
+
+In order to create a safer and more useful abstraction over native DOM events, the view implements the concept of {@link module:engine/view/observer/observer~Observer observers}. It improves the testability of the editor as well as simplifies the listeners added by editor features by transforming the native events into a more useful form.
+
+An observer listens to one or more DOM events, do preliminary processing of this event and then fires a custom event on the {@link module:engine/view/document~Document view document}. An observer not only creates an abstraction on the event itself but also on its data. Ideally, an event's consumer should not have any access to the native DOM.
+
+By default, the view adds the following observers:
+
+* {@link module:engine/view/observer/mutationobserver~MutationObserver}
+* {@link module:engine/view/observer/selectionobserver~SelectionObserver}
+* {@link module:engine/view/observer/focusobserver~FocusObserver}
+* {@link module:engine/view/observer/keyobserver~KeyObserver}
+* {@link module:engine/view/observer/fakeselectionobserver~FakeSelectionObserver}
+* {@link module:engine/view/observer/compositionobserver~CompositionObserver}
+
+Additionally, some features add their own observers. For instance, the {@link module:clipboard/clipboard~Clipboard clipboard feature} adds {@link module:clipboard/clipboardobserver~ClipboardObserver}.
+
+<info-box>
+	For the complete list of events fired by observes check the {@link module:engine/view/document~Document}'s list of events.
+</info-box>
+
+You can add your own observer (which should be a subclass of {@link module:engine/view/observer/observer~Observer}) by using the {@link module:engine/view/view~View#addObserver `view.addObserver()`} method. Check the code of existing observers to learn how to write them: https://github.com/ckeditor/ckeditor5-engine/tree/master/src/view/observer.
+
+<info-box>
+	Since all events are by default fired on {@link module:engine/view/document~Document} it is recommended that 3rd party packages prefix their events with an identifier of the project to avoid name collisions. For example, MyApp's features should fire `myApp:keydown` instead of `keydown`.
+</info-box>
 
 ## Conversion
 
-TODO: upcasting, downcasting, why and how.
+So far, we talked about the model and the view as about two completely independent subsystems. It is time to connect them. The three main situations in which these two layers meet are:
+
+| conversion&nbsp;name | description |
+|-----------------|-------------|
+| data&nbsp;upcasting  | **Loading data to the editor.**<br> First, the data (e.g. an HTML string) is processed by a {@link module:engine/dataprocessor/dataprocessor~DataProcessor} to a view {@link module:engine/view/documentfragment~DocumentFragment}. Then, this view document fragment is converted to a model {@link module:engine/model/documentfragment~DocumentFragment document fragment}. Finally, the model document's {@link module:engine/model/document~Document#roots root} is filled with this content. |
+| data&nbsp;downcasting | **Retrieving data from the editor.**<br> First, the content of model's root is converted to a view document fragment. Then, this view document fragment is processed by a data processor to a target data format. |
+| editing&nbsp;downcasting | **Rendering editor's content to the user for editing.**<br> This process takes place for the entire time when the editor is initialized. First, the model's root is converted to a view's root once *data upcasting* finishes. Then, this view root is rendered to the user in the editor's `contentEditable` DOM element (also called "the editable element"). Then, every time the model changes, those changes are converted to changes in the view. Finally, the view can be re-rendered to the DOM if needed (if the DOM differs from the view). |
+
+Let's take a look at the diagram of the engine's MVC architecture and see where each of the conversion processes happen in it:
+
+[{@img assets/img/framework-architecture-engine-diagram.png Diagram of the engine's MVC architecture.}](%BASE_PATH%/assets/img/framework-architecture-engine-diagram.png)
+
+### Data pipeline
+
+*Data upcasting* is a process which starts in the bottom right corner of the diagram (in the view layer), passes from the data view, through a converter (green box) in the controller layer to a model document in the right top corner. As you can see, it goes from the bottom to the top, hence "upcasting". Also, it is handled by the *data pipeline* (right branch of the diagram), hence "data upcasting". Note: data upcasting is also used to process pasted content (which is similar to loading a data).
+
+*Data downcasting* is an opposite process to *data upcasting*. It starts in the right top corner and goes down to the right bottom corner. Again, the name of the conversion process matches the direction and the pipeline.
+
+### Editing pipeline
+
+*Editing downcasting* is a bit different process than the other two.
+
+* It takes place in the "editing pipeline" (left branch of the diagram).
+* It does not have its counterpart – there is no *editing upcasting* because all user actions are handled by editor features by listening to [view events](#observers), analyzing what happened and applying necessary changes to the model. Hence, this process does not involve conversion.
+* Unlike {@link module:engine/controller/datacontroller~DataController} (which handles the *data pipeline*), the {@link module:engine/controller/editingcontroller~EditingController} maintains a single instance of the {@link module:engine/view/document~Document} view document's for its entire life. Every change in the model is converted to changes in that view so changes in that view can then be rendered to the DOM (if needed – i.e. if the DOM actually differs from the view at this stage).
+
+TODO: upcasting, downcasting, mapping nodes and positions, API.
+
+## Architecture of a typical feature
 
 ## Read next
 
