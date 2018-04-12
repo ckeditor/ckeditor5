@@ -123,11 +123,11 @@ Read more in the [Support](https://docs.ckeditor.com/ckeditor5/latest/framework/
 
 The latest five releases:
 
+* [Beta release of CKEditor 5 v1.0.0](https://ckeditor.com/blog/CKEditor-5-v1.0.0-beta-released/) (<time datetime="2018-04-10T10:12:43Z"><i>Apr 10, 2017</i></time>)
 * [Second alpha release of CKEditor 5 v1.0.0](https://ckeditor.com/blog/Second-alpha-release-of-CKEditor-5-v1.0.0/) (<time datetime="2017-11-14T12:52:18Z"><i>Nov 14, 2017</i></time>)
 * [First alpha release of CKEditor 5 v1.0.0](https://ckeditor.com/blog/First-alpha-release-of-CKEditor-5-v1.0.0/) (<time datetime="2017-10-03T13:09:29Z"><i>Oct 3, 2017</i></time>)
 * [11th developer preview of CKEditor 5](https://ckeditor.com/blog/11th-developer-preview-of-CKEditor-5-available/) (<time datetime="2017-09-03T19:35:48Z"><i>Sep 3, 2017</i></time>)
 * [10th developer preview of CKEditor 5 available](https://ckeditor.com/blog/10th-developer-preview-of-CKEditor-5-available/) (<time datetime="2017-05-07T21:57:04Z"><i>May 7, 2017</i></time>)
-* [9th developer preview of CKEditor 5 available](https://ckeditor.com/blog/9th-developer-preview-of-CKEditor-5-available/) (<time datetime="2017-04-05T17:58:27Z"><i>Apr 5, 2017</i></time>)
 
 For more CKEditor 5 release blog posts [browse the CKEditor blog](https://ckeditor.com/blog/?category=releases&tags=CKEditor-5).
 
