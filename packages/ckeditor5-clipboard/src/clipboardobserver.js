@@ -11,7 +11,16 @@ import DomEventObserver from '@ckeditor/ckeditor5-engine/src/view/observer/domev
 import DataTransfer from './datatransfer';
 
 /**
- * {@link module:engine/view/document~Document#event:paste Paste} event observer.
+ * Clipboard events observer.
+ *
+ * Fires the following events:
+ *
+ * * {@link module:engine/view/document~Document#event:clipboardInput}
+ * * {@link module:engine/view/document~Document#event:dragover}
+ * * {@link module:engine/view/document~Document#event:drop}
+ * * {@link module:engine/view/document~Document#event:paste}
+ * * {@link module:engine/view/document~Document#event:copy}
+ * * {@link module:engine/view/document~Document#event:cut}
  *
  * Note that this observer is not available by default. To make it available it needs to be added to
  * {@link module:engine/view/document~Document} by the {@link module:engine/view/view~View#addObserver} method.
