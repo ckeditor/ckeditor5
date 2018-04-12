@@ -32,21 +32,43 @@ const DataApiMixin = {
 export default DataApiMixin;
 
 /**
- * Interface for setting and getting data to/from the editor's main root element
+ * Interface defining an editor methods for setting and getting data to/from the editor's main root element
  * using the {@link module:core/editor/editor~Editor#data data pipeline}.
+ *
+ * This interface is not part of the {@link module:core/editor/editor~Editor} class because one may want to implement
+ * an editor with multiple root elements, in which case the methods for setting/getting data will need to be implemented
+ * differently.
  *
  * @interface DataApi
  */
 
 /**
- * Sets the data in the editor's main root.
+ * Sets the data in the editor.
+ *
+ *		editor.setData( '<p>This is editor!</p>' );
+ *
+ * By default the editor accepts HTML. This can be controlled by injecting a different data processor.
+ * See {@glink features/markdown Markdown output} guide for more details.
+ *
+ * Note: Not only is the format of the data configurable, but the type of the `setData()`'s parameter does not
+ * have to be a string either. You can e.g. accept an object or a DOM `DocumentFragment` if you consider this
+ * the right format for you.
  *
  * @method #setData
  * @param {String} data Input data.
  */
 
 /**
- * Gets the data from the editor's main root.
+ * Gets the data from the editor.
+ *
+ *		editor.getData(); // -> '<p>This is editor!</p>'
+ *
+ * By default the editor outputs HTML. This can be controlled by injecting a different data processor.
+ * See {@glink features/markdown Markdown output} guide for more details.
+ *
+ * Note: Not only is the format of the data configurable, but the type of the `getData()`'s return value does not
+ * have to be a string either. You can e.g. return an object or a DOM `DocumentFragment`  if you consider this
+ * the right format for you.
  *
  * @method #getData
  * @returns {String} Output data.

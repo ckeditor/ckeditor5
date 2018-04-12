@@ -8,8 +8,15 @@
  */
 
 /**
- * Interface defining UI part of the editor. Most editor (like {@link module:editor-classic/classiceditor~ClassicEditor} or
- * {@link module:editor-inline/inlineeditor~InlineEditor}) implements this interface, however it is not required to do so. Editors with external UI (i.e. Bootstrap based) or headless editor may not implement this interface. Keep it in mind when developing features.
+ * Interface defining a type of {@link module:core/editor/editor~Editor editor} which has a UI.
+ *
+ * Most editors (like {@link module:editor-classic/classiceditor~ClassicEditor} or
+ * {@link module:editor-inline/inlineeditor~InlineEditor}) implement this interface, however it is not required to do so.
+ *
+ * Editors with external UI (i.e. Bootstrap based) or headless editor may not implement this interface.
+ * When developing editor features you can consider this by splitting them into two parts – the "editing" part,
+ * which bases on {@link module:core/editor/editor~Editor} itself and the UI part which bases on the this interface.
+ * This will make your features compatible with more types of editors.
  *
  * @interface EditorWithUI
  */
@@ -24,7 +31,7 @@
 /**
  * Fired when the editor UI is ready.
  *
- * Fired after {@link module:core/editor/editor~Editor#event:pluginsReady}, before
+ * Fired after {@link module:core/editor/editor~Editor#event:pluginsReady} and before
  * {@link module:core/editor/editor~Editor#event:dataReady}.
  *
  * @event uiReady
