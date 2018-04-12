@@ -8,6 +8,9 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import TableEditing from '../src/tableediting';
+import { formatModelTable, formattedModelTable, modelTable } from './_utils/utils';
+import { getCode } from '../../ckeditor5-utils/src/keyboard';
+import { getData } from '../../ckeditor5-engine/src/dev-utils/model';
 
 describe( 'TableEditing', () => {
 	let editor, model;
@@ -79,6 +82,93 @@ describe( 'TableEditing', () => {
 
 				expect( getModelData( model, { withoutSelection: true } ) )
 					.to.equal( '<table><tableRow><tableCell>foo</tableCell></tableRow></table>' );
+			} );
+		} );
+	} );
+
+	describe( 'caret movement', () => {
+		let domEvtDataStub;
+
+		beforeEach( () => {
+			domEvtDataStub = {
+				keyCode: getCode( 'Tab' ),
+				preventDefault: sinon.spy(),
+				stopPropagation: sinon.spy()
+			};
+		} );
+
+		it( 'should do nothing if not tab pressed', () => {
+			setModelData( model, modelTable( [
+				[ '11', '12[]' ]
+			] ) );
+
+			domEvtDataStub.keyCode = getCode( 'a' );
+
+			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+			sinon.assert.notCalled( domEvtDataStub.preventDefault );
+			sinon.assert.notCalled( domEvtDataStub.stopPropagation );
+			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '11', '12[]' ]
+			] ) );
+		} );
+
+		describe( 'on TAB', () => {
+			it( 'should do nothing if selection is not in a table', () => {
+				setModelData( model, '[]' + modelTable( [
+					[ '11', '12' ]
+				] ) );
+
+				domEvtDataStub.keyCode = getCode( 'Tab' );
+
+				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+				sinon.assert.notCalled( domEvtDataStub.preventDefault );
+				sinon.assert.notCalled( domEvtDataStub.stopPropagation );
+				expect( formatModelTable( getData( model ) ) ).to.equal( '[]' + formattedModelTable( [
+					[ '11', '12' ]
+				] ) );
+			} );
+
+			it( 'should move to next cell', () => {
+				setModelData( model, modelTable( [
+					[ '11[]', '12' ]
+				] ) );
+
+				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+				expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+					[ '11', '[]12' ]
+				] ) );
+			} );
+
+			it( 'should create another row and move to first cell in new row', () => {
+				setModelData( model, modelTable( [
+					[ '11', '12[]' ]
+				] ) );
+
+				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+				expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+					[ '11', '12' ],
+					[ '[]', '' ]
+				] ) );
+			} );
+
+			it( 'should move to the first cell of next row if on end of a row', () => {
+				setModelData( model, modelTable( [
+					[ '11', '12[]' ],
+					[ '21', '22' ]
+				] ) );
+
+				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+				expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+					[ '11', '12' ],
+					[ '[]21', '22' ]
+				] ) );
 			} );
 		} );
 	} );

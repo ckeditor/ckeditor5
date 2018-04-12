@@ -14,6 +14,9 @@ import { downcastInsertCell, downcastInsertRow, downcastInsertTable, downcastRem
 import InsertTableCommand from './commands/inserttablecommand';
 import InsertRowCommand from './commands/insertrowcommand';
 import InsertColumnCommand from './commands/insertcolumncommand';
+import { keyCodes } from '../../ckeditor5-utils/src/keyboard';
+import { getParentTable } from './commands/utils';
+import Position from '../../ckeditor5-engine/src/model/position';
 
 /**
  * The table editing feature.
@@ -73,5 +76,55 @@ export default class TablesEditing extends Plugin {
 		editor.commands.add( 'insertTable', new InsertTableCommand( editor ) );
 		editor.commands.add( 'insertRow', new InsertRowCommand( editor ) );
 		editor.commands.add( 'insertColumn', new InsertColumnCommand( editor ) );
+
+		this.listenTo( editor.editing.view.document, 'keydown', ( evt, data ) => {
+			const tabPressed = data.keyCode == keyCodes.tab;
+
+			if ( !tabPressed ) {
+				return;
+			}
+
+			const doc = editor.model.document;
+			const selection = doc.selection;
+
+			const table = getParentTable( selection.getFirstPosition() );
+
+			if ( !table ) {
+				return;
+			}
+
+			const tableCell = selection.focus.parent;
+			const tableRow = tableCell.parent;
+			const rowIndex = table.getChildIndex( tableRow );
+
+			data.preventDefault();
+			data.stopPropagation();
+
+			const rowChildrenCount = tableRow.childCount;
+
+			const isLastTableCell = tableCell === tableRow.getChild( rowChildrenCount - 1 );
+
+			if ( rowIndex === table.childCount - 1 && isLastTableCell ) {
+				// It's a last table cell in a table - create row
+				editor.execute( 'insertRow', { at: rowChildrenCount - 1 } );
+			}
+
+			// go to next cell
+			const cellIndex = tableRow.getChildIndex( tableCell );
+
+			let moveTo;
+
+			if ( cellIndex === rowChildrenCount - 1 ) {
+				const nextRow = table.getChild( rowIndex + 1 );
+
+				moveTo = Position.createAt( nextRow.getChild( 0 ) );
+			} else {
+				moveTo = Position.createAt( tableRow.getChild( cellIndex + 1 ) );
+			}
+
+			editor.model.change( writer => {
+				writer.setSelection( moveTo );
+			} );
+		} );
 	}
 }
