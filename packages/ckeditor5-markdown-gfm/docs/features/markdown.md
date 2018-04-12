@@ -15,6 +15,12 @@ editor.setData( 'This is **bold**.' );
 	"GFM" stands for "GitHub Flavored Markdown" &mdash; a Markdown dialect used by [GitHub](https://github.com). Markdown lacks any formal specification and has many dialects, often incompatible with each other. When converting the output produced by this data processor make sure to use a compatible Markdown to HTML converter (e.g. the [marked](https://www.npmjs.com/package/marked) library).
 </info-box>
 
+<info-box info>
+	While the CKEditor 5 architecture supports changing the data format, in most scenarios we do recommend sticking to the default format which is HTML (supported by the {@link module:engine/dataprocessor/htmldataprocessor~HtmlDataProcessor}). HTML remains [the best standard for rich-text data](https://medium.com/content-uneditable/a-standard-for-rich-text-data-4b3a507af552).
+
+	And please do remember – using Markdown [does not automatically make your application/website secure](https://github.com/ckeditor/ckeditor5-markdown-gfm/issues/16#issuecomment-375752994).
+</info-box>
+
 ## Installation
 
 To enable this data processor in your editor install the [`@ckeditor/ckeditor5-markdown-gfm`](https://www.npmjs.com/package/@ckeditor/ckeditor5-markdown-gfm) package:
