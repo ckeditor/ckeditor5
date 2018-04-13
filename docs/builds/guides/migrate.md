@@ -33,10 +33,6 @@ Therefore, it is worth spending some time analyzing required features.
 
 CKEditor 5 was designed with focus on creating quality content. There are thus good reasons for it to not support some old features. You should take this chance to rethink the features available in your application and perhaps switch the approach towards a more modern reasoning.
 
-<info-box>
-	Features like text alignment, font size, family and colors are under development and will be added in the nearest future.
-</info-box>
-
 ## Image upload
 
 Image upload is handled differently with CKEditor 5, bringing a much better user experience. Solutions used with CKEditor 4 may not be compatible anymore and therefore a new approach is needed.
@@ -49,7 +45,7 @@ The trickiest migration challenge to be faced may be related to custom plugins y
 
 The same may apply for third-party plugins which may not have been ported to CKEditor 5 yet.
 
-Check the {@link builds/guides/development/plugins#creating-plugins Creating plugins guide} for more information on the development of plugins.
+Check the {@link builds/guides/development/plugins#creating-plugins Creating plugins} section for more information on the development of plugins.
 
 ## Themes (skins)
 
@@ -91,12 +87,12 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-autoEmbed_widget">autoEmbed_widget</a></td>
-			<td>Media embedding is not yet supported, but is planned.</td>
+			<td>Media embedding is not supported yet, but it is planned.</td>
 		</tr>
 		<tr>
 			<td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-autoGrow_bottomSpace">autoGrow_bottomSpace</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-autoGrow_maxHeight">autoGrow_maxHeight</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-autoGrow_minHeight">autoGrow_minHeight</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-autoGrow_onStartup">autoGrow_onStartup</a></td>
 			<td>
-				<p>Classic editor (CKEditor 5) no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>, which means that the height (and similar options) of the editing area can be easily controlled with CSS. For example the minHeight and maxHeight settings can be achieved with <code>.ck-content { min-height:200px; max-height:400px; }</code>.</p>
+				<p>Classic editor (CKEditor 5) no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>, which means that the height (and similar options) of the editing area can be easily controlled with CSS. For example the <code>minHeight</code> and <code>maxHeight</code> settings can be achieved with <code>.ck-content { min-height:200px; max-height:400px; }</code>.</p>
 				<p> See also <a href="https://stackoverflow.com/questions/46559354/how-to-set-the-height-of-ckeditor-5-classic-editor" target="_blank" rel="noopener">How to set the height of CKEditor 5 (Classic editor)</a>.</p>
 			</td>
 		</tr>
@@ -139,15 +135,15 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		<tr>
 			<td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-codeSnippetGeshi_url">codeSnippetGeshi_url</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-codeSnippet_codeClass">codeSnippet_codeClass</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-codeSnippet_languages">codeSnippet_languages</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-codeSnippet_theme">codeSnippet_theme</a></td>
 			<td>
-				<p>Code blocks are not yet supported. Plugin adding a support for the inline <code>&lt;code&gt;</code> element is already included in the {@link features/basic-styles Basic styles} package.</p>
-				<p>Note: the {@link module:basic-styles/code~Code Code feature} is not available by default in any build, but can be enabled in a {@link builds/guides/development/custom-builds custom build}.</p>
+				<p>Code blocks are not supported yet. A plugin adding support for the inline <code>&lt;code&gt;</code> element is already included in the {@link features/basic-styles Basic styles} package.</p>
+				<p>Note: The {@link module:basic-styles/code~Code Code feature} is not available by default in any build, but can be enabled in a {@link builds/guides/development/custom-builds custom build}.</p>
 			</td>
 		</tr>
 		<tr>
 			<td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-colorButton_backStyle">colorButton_backStyle</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-colorButton_colors">colorButton_colors</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-colorButton_colorsPerRow">colorButton_colorsPerRow</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-colorButton_enableAutomatic">colorButton_enableAutomatic</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-colorButton_enableMore">colorButton_enableMore</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-colorButton_foreStyle">colorButton_foreStyle</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-colorButton_normalizeBackground">colorButton_normalizeBackground</a></td>
 			<td>
 				<p>The &#x201C;classic&#x201D; font/background color feature will be provided in the future.</p>
-				<p>At the same time, we are already provide a new Highlight plugin, which allow for highlighting parts of the text with the <code>&lt;mark&gt;</code> element with different CSS classes, that can be easily styled. For more information see {@link features/highlight Highlight feature example}.</p>
+				<p>At the same time, we already provide a new Highlight plugin which allows for highlighting parts of the text with the <code>&lt;mark&gt;</code> element with different CSS classes that can be easily styled. See the {@link features/highlight Highlight feature guide} for more information .</p>
 			</td>
 		</tr>
 		<tr>
@@ -186,7 +182,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 			<td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-coreStyles_underline">coreStyles_underline</a></td>
 			<td>
 				<p>CKEditor 5 uses the <code>&lt;u&gt;</code> element, see <a href="https://github.com/ckeditor/editor-recommendations/issues/4" target="_blank" rel="noopener">Editor Recommendations - Underline</a>.</p>
-				<p>Note: the {@link module:basic-styles/underline~Underline Underline feature} is not available by default in any build, but can be enabled in a {@link builds/guides/development/custom-builds custom build} (see the {@link features/basic-styles Basic styles} feature guide).</p>
+				<p>Note: The {@link module:basic-styles/underline~Underline Underline feature} is not available by default in any build, but can be enabled in a {@link builds/guides/development/custom-builds custom build} (see the {@link features/basic-styles Basic styles} feature guide).</p>
 			</td>
 		</tr>
 		<tr>
@@ -199,7 +195,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><span id="defaultLanguage"><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-defaultLanguage">defaultLanguage</a></span></td>
-			<td>The support for multiple translations is supported by a translations service. See {@link features/ui-language}</td>
+			<td>The support for multiple translations is handled by the translations service. See {@link features/ui-language}</td>
 		</tr>
 		<tr>
 			<td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-devtools_styles">devtools_styles</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-devtools_textCallback">devtools_textCallback</a></td>
@@ -207,7 +203,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-dialog_backgroundCoverColor">dialog_backgroundCoverColor</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-dialog_backgroundCoverOpacity">dialog_backgroundCoverOpacity</a></td>
-			<td>The use of configuration options to style selected parts of the editor has been dropped in favour of much more powerful {@link framework/guides/theme-customization theme customization}.</td>
+			<td>The use of configuration options to style selected parts of the editor was dropped in favor of much more powerful {@link framework/guides/theme-customization theme customization}.</td>
 		</tr>
 		<tr>
 			<td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-dialog_buttonsOrder">dialog_buttonsOrder</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-dialog_magnetDistance">dialog_magnetDistance</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-dialog_noConfirmCancel">dialog_noConfirmCancel</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-dialog_startupFocusTab">dialog_startupFocusTab</a></td>
@@ -216,7 +212,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		<tr>
 			<td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-disableNativeSpellChecker">disableNativeSpellChecker</a></td>
 			<td>
-				<p>Unavailable, however in case of Inline/Balloon editors can be done by setting the <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/spellcheck" target="_blank" rel="noopener"><code>spellcheck</code></a> attribute directly on the element where CKEditor should be enabled.</p>
+				<p>Unavailable, however, in case of Inline and Balloon editors can be done by setting the <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/spellcheck" target="_blank" rel="noopener"><code>spellcheck</code></a> attribute directly on the element where CKEditor should be enabled.</p>
 				<p>For Classic editor, call <code>editor.ui.view.editable.editableElement.setAttribute(&apos;spellcheck&apos;, &apos;false&apos;);</code> after creating the editor.</p>
 			</td>
 		</tr>
@@ -242,7 +238,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-docType">docType</a></td>
-			<td>N/A. CKEditor 5 no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>, so the editor is using same doctype as the page where it operates.</td>
+			<td>N/A. CKEditor 5 no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>, so the editor is using the same doctype as the page where it operates.</td>
 		</tr>
 		<tr>
 			<td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-emailProtection">emailProtection</a></td>
@@ -310,7 +306,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-forcePasteAsPlainText">forcePasteAsPlainText</a></td>
-			<td>N/A. No longer needed as CKEditor 5 removes all the unwanted markup that cannot be edited with the editor.</td>
+			<td>N/A. No longer needed as CKEditor 5 removes all unwanted markup that cannot be edited with the editor.</td>
 		</tr>
 		<tr>
 			<td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-forceSimpleAmpersand">forceSimpleAmpersand</a></td>
@@ -322,7 +318,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-format_h1">format_h1</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-format_h2">format_h2</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-format_h3">format_h3</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-format_h4">format_h4</a> <br>  <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-format_h5">format_h5</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-format_h6">format_h6</a></td>
-			<td>All headings are configurable via {@link module:heading/heading~HeadingConfig#options <code>heading.options</code>}. See also {@link features/headings Headings feature example}.</td>
+			<td>All headings are configurable via {@link module:heading/heading~HeadingConfig#options <code>heading.options</code>}. See also the {@link features/headings Headings feature guide}.</td>
 		</tr>
 		<tr>
 			<td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-format_tags">format_tags</a></td>
@@ -334,7 +330,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-grayt_autoStartup">grayt_autoStartup</a></td>
-			<td>N/A. There is no grammar checking plugin in CKEditor 5 at this moment. However the native browser spell checker can be used in CKEditor 5.</td>
+			<td>N/A. There is no grammar checking plugin in CKEditor 5 at this moment. However, the native browser spell checker can be used in CKEditor 5.</td>
 		</tr>
 		<tr>
 			<td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-height">height</a></td>
@@ -353,7 +349,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-image2_alignClasses">image2_alignClasses</a></td>
-			<td>Available via more powerful {@link module:image/image~ImageConfig#styles <code>image.styles</code>}, which allows for using also custom style definitions, not only left/right/center alignment. See <a href="https://docs.ckeditor.com/ckeditor5/latest/features/image.html#image-styles" target="_blank" rel="noopener">Image styles feature overview</a>.</td>
+			<td>Available via more powerful {@link module:image/image~ImageConfig#styles <code>image.styles</code>}. This also allows for using custom style definitions, not only left, right and center alignment. See the <a href="https://docs.ckeditor.com/ckeditor5/latest/features/image.html#image-styles" target="_blank" rel="noopener">Image styles feature overview</a>.</td>
 		</tr>
 		<tr>
 			<td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-image2_altRequired">image2_altRequired</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-image2_captionedClass">image2_captionedClass</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-image2_disableResizer">image2_disableResizer</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-image2_prefillDimensions">image2_prefillDimensions</a>.</td>
@@ -361,7 +357,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-imageUploadUrl">imageUploadUrl</a></td>
-			<td>See <a href="#uploadUrl"><code>config.uploadUrl</code></a></td>
+			<td>See <a href="#uploadUrl"><code>config.uploadUrl</code></a>.</td>
 		</tr>
 		<tr>
 			<td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-image_prefillDimensions">image_prefillDimensions</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-image_previewText">image_previewText</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-image_removeLinkByEmptyURL">image_removeLinkByEmptyURL</a></td>
@@ -377,7 +373,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-justifyClasses">justifyClasses</a></td>
-			<td>See {@link features/text-alignment text alignment feature example}.</td>
+			<td>See {@link features/text-alignment text alignment feature guide}.</td>
 		</tr>
 		<tr>
 			<td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-keystrokes">keystrokes</a></td>
@@ -421,9 +417,9 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		<tr>
 			<td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-on">on</a></td>
 			<td>
-				<p>Using configuration file/setting to define event listeners was a bad practice so the support for it has been dropped.</p>
+				<p>Using the configuration file or setting to define event listeners was a bad practice so support for it was dropped.</p>
 				<p>When creating an editor, a <code>Promise</code> is returned. Use <code>then/catch()</code> to define a callback when the editor is initialized or fails to start. The promise returns the created editor instance, e.g. {@link module:editor-classic/classiceditor~ClassicEditor <code>ClassicEditor</code>}, on which you can listen to its events.</p>
-				<p>Note: the editor instance is not the only object on which events are fired. You can also listen to e.g. {@link module:engine/model/document~Document `Document`} events.</p>
+				<p>Note: The editor instance is not the only object on which events are fired. You can also listen to e.g. {@link module:engine/model/document~Document `Document`} events.</p>
 			</td>
 		</tr>
 		<tr>
@@ -444,11 +440,11 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-readOnly">readOnly</a></td>
-			<td>See {@link module:core/editor/editor~Editor#isReadOnly <code>editor.isReadOnly</code>} and {@link features/read-only Read-only feature example}.</td>
+			<td>See {@link module:core/editor/editor~Editor#isReadOnly <code>editor.isReadOnly</code>} and {@link features/read-only Read-only feature guide}.</td>
 		</tr>
 		<tr>
 			<td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-removeButtons">removeButtons</a></td>
-			<td>N/A. Similar effect can be achieved by setting the {@link module:core/editor/editorconfig~EditorConfig#toolbar <code>toolbar</code>} option with less buttons.</td>
+			<td>N/A. A similar effect can be achieved by setting the {@link module:core/editor/editorconfig~EditorConfig#toolbar <code>toolbar</code>} option with fewer buttons.</td>
 		</tr>
 		<tr>
 			<td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-removeDialogTabs">removeDialogTabs</a></td>
@@ -468,11 +464,11 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-scayt_autoStartup">scayt_autoStartup</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-scayt_contextCommands">scayt_contextCommands</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-scayt_contextMenuItemsOrder">scayt_contextMenuItemsOrder</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-scayt_customDictionaryIds">scayt_customDictionaryIds</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-scayt_customPunctuation">scayt_customPunctuation</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-scayt_customerId">scayt_customerId</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-scayt_disableOptionsStorage">scayt_disableOptionsStorage</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-scayt_elementsToIgnore">scayt_elementsToIgnore</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-scayt_handleCheckDirty">scayt_handleCheckDirty</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-scayt_handleUndoRedo">scayt_handleUndoRedo</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-scayt_ignoreAllCapsWords">scayt_ignoreAllCapsWords</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-scayt_ignoreDomainNames">scayt_ignoreDomainNames</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-scayt_ignoreWordsWithMixedCases">scayt_ignoreWordsWithMixedCases</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-scayt_ignoreWordsWithNumbers">scayt_ignoreWordsWithNumbers</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-scayt_inlineModeImmediateMarkup">scayt_inlineModeImmediateMarkup</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-scayt_maxSuggestions">scayt_maxSuggestions</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-scayt_minWordLength">scayt_minWordLength</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-scayt_moreSuggestions">scayt_moreSuggestions</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-scayt_multiLanguageMode">scayt_multiLanguageMode</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-scayt_multiLanguageStyles">scayt_multiLanguageStyles</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-scayt_sLang">scayt_sLang</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-scayt_serviceHost">scayt_serviceHost</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-scayt_servicePath">scayt_servicePath</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-scayt_servicePort">scayt_servicePort</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-scayt_serviceProtocol">scayt_serviceProtocol</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-scayt_srcUrl">scayt_srcUrl</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-scayt_uiTabs">scayt_uiTabs</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-scayt_userDictionaryName">scayt_userDictionaryName</a></td>
-			<td>N/A. There is no spell checking plugin in CKEditor 5 at this moment. However the native browser spell checker can be used in CKEditor 5.</td>
+			<td>N/A. There is no spell checking plugin in CKEditor 5 at this moment. However, the native browser spell checker can be used in CKEditor 5.</td>
 		</tr>
 		<tr>
 			<td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-sharedSpaces">sharedSpaces</a></td>
-			<td>N/A. CKEditor 5 Framework architecture allows for writing a custom editor that contains multiple editable elements (document roots). See {@link framework/guides/document-editor document editor tutorial}.</td>
+			<td>N/A. CKEditor 5 Framework architecture allows for writing a custom editor that contains multiple editable elements (document roots). See the {@link framework/guides/document-editor Document editor tutorial}.</td>
 		</tr>
 		<tr>
 			<td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-shiftEnterMode">shiftEnterMode</a></td>
@@ -481,8 +477,8 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		<tr>
 			<td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-skin">skin</a></td>
 			<td>
-				<p>In CKEditor 5 lots of changes to the interface can be easily made by changing the default CKEditor theme (see {@link examples/theme-customization Theme customization example}).</p>
-				<p>For heavy UI modifications, like integrating CKEditor with custom UI framework, building a custom editor is needed (see {@link examples/theme-customization Third-party UI example}).</p>
+				<p>In CKEditor 5 lots of changes to the interface can be easily made by changing the default CKEditor theme (see the {@link examples/theme-customization Theme customization guide}).</p>
+				<p>For heavy UI modifications, like integrating CKEditor with a custom UI framework, building a custom editor is needed (see the {@link examples/theme-customization Third-party UI guide}).</p>
 			</td>
 		</tr>
 		<tr>
@@ -562,7 +558,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-uiColor">uiColor</a></td>
-			<td>CKEditor 5 comes with a concept of much powerful themes, where almost every aspect of the UI can be styled easily. See {@link framework/guides/theme-customization Theme customization guide} and {@link examples/theme-customization Theme customization example}. Soon, thanks to CSS variables, rebuilding the editor will not be needed to change its styles.</td>
+			<td>CKEditor 5 comes with a concept of much more powerful themes, where almost every aspect of the UI can be styled easily. See the {@link framework/guides/theme-customization Theme customization guide} and {@link examples/theme-customization Theme customization guide}. Thanks to {@link framework/guides/theme-customization#customization-with-css-variables CSS variables} rebuilding the editor is not needed to change its styles.</td>
 		</tr>
 		<tr>
 			<td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-undoStackSize">undoStackSize</a></td>
@@ -571,8 +567,8 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		<tr>
 			<td><span id="uploadUrl"><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-uploadUrl">uploadUrl</a></span></td>
 			<td>
-				<p>Uploading images in CKEditor 5 is possible thanks to {@link features/image-upload#easy-image Easy Image} powered by <a href="https://ckeditor.com/ckeditor-cloud-services/" target="_blank" rel="noopener">CKEditor Cloud Services</a> which comes with a support for responsive images. To configure it, provide the {@link module:cloud-services/cloudservices~CloudServicesConfig cloud services configuration}. Uploading via CKFinder is available too, see {@link module:adapter-ckfinder/uploadadapter~CKFinderAdapterConfig#uploadUrl <code>ckfinder.uploadUrl</code>}. </p>
-				<p>Writing own image upload adapters is also possible, see <a href="https://stackoverflow.com/questions/46765197/how-to-enable-image-upload-support-in-ckeditor-5" target="_blank" rel="noopener">https://stackoverflow.com/questions/46765197/how-to-enable-image-upload-support-in-ckeditor-5</a>.</p>
+				<p>Uploading images in CKEditor 5 is possible thanks to {@link features/image-upload#easy-image Easy Image} powered by <a href="https://ckeditor.com/ckeditor-cloud-services/" target="_blank" rel="noopener">CKEditor Cloud Services</a> which comes with support for responsive images. To configure it, provide the {@link module:cloud-services/cloudservices~CloudServicesConfig cloud services configuration}. Uploading via CKFinder is available, too, see {@link module:adapter-ckfinder/uploadadapter~CKFinderAdapterConfig#uploadUrl <code>ckfinder.uploadUrl</code>}. </p>
+				<p>Writing your own image upload adapters is also possible, see <a href="https://stackoverflow.com/questions/46765197/how-to-enable-image-upload-support-in-ckeditor-5" target="_blank" rel="noopener">https://stackoverflow.com/questions/46765197/how-to-enable-image-upload-support-in-ckeditor-5</a>.</p>
 			</td>
 		</tr>
 		<tr>
@@ -582,15 +578,15 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		<tr>
 			<td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-width">width</a></td>
 			<td>
-				<p>Classic editor (CKEditor 5) no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>, which means that the height (and similar options) of the editing area can be easily controlled with CSS. For example the width setting can be achieved with <code>.ck-content { width:400px; }</code>.</p>
+				<p>Classic editor (CKEditor 5) no longer encapsulates the editing area in an <code>&lt;iframe&gt;</code>, which means that the height (and similar options) of the editing area can be easily controlled with CSS. For example, the width setting can be achieved with <code>.ck-content { width:400px; }</code>.</p>
 				<p>See also <a href="https://stackoverflow.com/questions/46559354/how-to-set-the-height-of-ckeditor-5-classic-editor" target="_blank" rel="noopener">How to set the height of CKEditor 5 (Classic editor)</a>.</p>
 			</td>
 		</tr>
 		<tr>
 			<td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-wsc_cmd">wsc_cmd</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-wsc_customDictionaryIds">wsc_customDictionaryIds</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-wsc_customLoaderScript">wsc_customLoaderScript</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-wsc_customerId">wsc_customerId</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-wsc_height">wsc_height</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-wsc_lang">wsc_lang</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-wsc_left">wsc_left</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-wsc_top">wsc_top</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-wsc_userDictionaryName">wsc_userDictionaryName</a> <br> <a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-wsc_width">wsc_width</a></td>
-			<td>There is no spell checking plugin in CKEditor 5 at this moment. However the native browser spell checker can be used in CKEditor 5.</td>
+			<td>There is no spell checking plugin in CKEditor 5 at this moment. However, the native browser spell checker can be used in CKEditor 5.</td>
 		</tr>
 	</tbody>
 </table>
 
-If you are missing any particular features or settings, feel free to {@link builds/guides/support/reporting-issues#reporting-issues-2 report an issue}. Please be as precise as possible, explaining the exact use case, context where editor is used, and the expected behavior.
+If you are missing any particular features or settings, feel free to {@link builds/guides/support/reporting-issues#reporting-issues-2 report an issue}. Please be as precise as possible, explaining the exact use case, the context where the editor is used, and the expected behavior.
