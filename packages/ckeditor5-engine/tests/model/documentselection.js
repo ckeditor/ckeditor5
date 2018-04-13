@@ -772,6 +772,15 @@ describe( 'DocumentSelection', () => {
 			} );
 		} );
 
+		it( 'should return the UID', () => {
+			const overrideUidA = selection._overrideGravity();
+			const overrideUidB = selection._overrideGravity();
+
+			expect( overrideUidA ).to.be.a( 'string' );
+			expect( overrideUidB ).to.be.a( 'string' );
+			expect( overrideUidA ).to.not.equal( overrideUidB );
+		} );
+
 		it( 'should mark gravity as overridden', () => {
 			expect( selection.isGravityOverridden ).to.false;
 
@@ -800,7 +809,7 @@ describe( 'DocumentSelection', () => {
 			expect( Array.from( selection.getAttributeKeys() ) ).to.have.members( [ 'bold', 'italic' ] );
 		} );
 
-		it( 'should retain attributes that are set explicit', () => {
+		it( 'should not retain attributes that are set explicitly', () => {
 			setData( model, '<$text italic="true">foo[]</$text>' );
 
 			selection._setAttribute( 'bold', true );
@@ -809,7 +818,7 @@ describe( 'DocumentSelection', () => {
 
 			selection._overrideGravity();
 
-			expect( Array.from( selection.getAttributeKeys() ) ).to.have.members( [ 'bold' ] );
+			expect( Array.from( selection.getAttributeKeys() ) ).to.have.members( [] );
 		} );
 
 		it( 'should retain overridden until selection will not change range by a direct change', () => {
@@ -836,43 +845,53 @@ describe( 'DocumentSelection', () => {
 			} );
 		} );
 
+		it( 'should throw when a wrong, already restored, or no UID provided', () => {
+			const overrideUid = selection._overrideGravity();
+			selection._restoreGravity( overrideUid );
+
+			// Wrong UID
+			expect( () => {
+				selection._restoreGravity( 'foo' );
+			} ).to.throw( CKEditorError, /^document-selection-gravity-wrong-restore/ );
+
+			// Already restored
+			expect( () => {
+				selection._restoreGravity( overrideUid );
+			} ).to.throw( CKEditorError, /^document-selection-gravity-wrong-restore/ );
+
+			// No UID
+			expect( () => {
+				selection._restoreGravity();
+			} ).to.throw( CKEditorError, /^document-selection-gravity-wrong-restore/ );
+		} );
+
 		it( 'should revert default gravity when is overridden', () => {
 			setData( model, '<$text bold="true" italic="true">foo[]</$text>' );
 
-			selection._overrideGravity();
+			const overrideUid = selection._overrideGravity();
 
 			expect( Array.from( selection.getAttributeKeys() ) ).to.length( 0 );
 			expect( selection.isGravityOverridden ).to.true;
 
-			selection._restoreGravity();
+			selection._restoreGravity( overrideUid );
 
 			expect( Array.from( selection.getAttributeKeys() ) ).to.have.members( [ 'bold', 'italic' ] );
-			expect( selection.isGravityOverridden ).to.false;
-		} );
-
-		it( 'should do nothing when gravity is not overridden', () => {
-			setData( model, '<$text bold="true" italic="true">foo[]</$text>' );
-
-			expect( () => {
-				selection._restoreGravity();
-			} ).to.not.throw();
-
 			expect( selection.isGravityOverridden ).to.false;
 		} );
 
 		it( 'should be called the same number of times as gravity is overridden to restore it', () => {
 			setData( model, '<$text bold="true" italic="true">foo[]</$text>' );
 
-			selection._overrideGravity();
-			selection._overrideGravity();
+			const overrideUidA = selection._overrideGravity();
+			const overrideUidB = selection._overrideGravity();
 
 			expect( selection.isGravityOverridden ).to.true;
 
-			selection._restoreGravity();
+			selection._restoreGravity( overrideUidA );
 
 			expect( selection.isGravityOverridden ).to.true;
 
-			selection._restoreGravity();
+			selection._restoreGravity( overrideUidB );
 
 			expect( selection.isGravityOverridden ).to.false;
 		} );

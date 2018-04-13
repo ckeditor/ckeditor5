@@ -400,10 +400,14 @@ export default class DocumentSelection {
 	}
 
 	/**
-	 * Temporarily changes the gravity of the selection from left to right. The gravity defines from which direction
-	 * the selection inherits its attributes. If it's the default left gravity, the selection (after being moved by
-	 * the user) inherits attributes from its left hand side. This method allows to temporarily override this behavior
-	 * by forcing the gravity to the right.
+	 * Temporarily changes the gravity of the selection from the left to the right.
+	 *
+	 * The gravity defines from which direction the selection inherits its attributes. If it's the default left
+	 * gravity, the selection (after being moved by the the user) inherits attributes from its left hand side.
+	 * This method allows to temporarily override this behavior by forcing the gravity to the right.
+	 *
+	 * It returns an unique identifier which is required to restore the gravity. It guarantees the symmetry
+	 * of the process.
 	 *
 	 * @see module:engine/model/writer~Writer#overrideSelectionGravity
 	 * @protected
@@ -414,9 +418,11 @@ export default class DocumentSelection {
 	}
 
 	/**
-	 * Restores {@link ~DocumentSelection#_overrideGravity overridden gravity}.
+	 * Restores the {@link ~DocumentSelection#_overrideGravity overridden gravity}.
 	 *
-	 * Note that gravity remains overridden as long as won't be restored the same number of times as was overridden.
+	 * Restoring the gravity is only possible using the unique identifier returned by
+	 * {@link ~DocumentSelection#_overrideGravity}. Note that the gravity remains overridden as long as won't be restored
+	 * the same number of times it was overridden.
 	 *
 	 * @see module:engine/model/writer~Writer#restoreSelectionGravity
 	 * @protected
@@ -683,7 +689,17 @@ class LiveSelection extends Selection {
 
 	restoreGravity( uid ) {
 		if ( !this._overriddenGravityRegister.has( uid ) ) {
-			throw 'Restoring gravity for unknown id ' + uid;
+			/**
+			 * Restoring gravity for an unknown UID is not possible. Make sure you are using a correct
+			 * UID obtained from the {@link module:engine/model/writer~Writer#overrideSelectionGravity} to restore.
+			 *
+			 * @error document-selection-gravity-wrong-restore
+			 * @param {String} uid The unique identifier returned by {@link #overrideGravity}.
+			 */
+			throw new CKEditorError(
+				'document-selection-gravity-wrong-restore: Attempting to restore the selection gravity for an unknown UID.',
+				{ uid }
+			);
 		}
 
 		this._overriddenGravityRegister.delete( uid );

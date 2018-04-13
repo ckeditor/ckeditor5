@@ -1112,6 +1112,9 @@ export default class Writer {
 	 * * Default gravity: selection will have the `bold` and `linkHref` attributes.
 	 * * Overridden gravity: selection will have `bold` attribute.
 	 *
+	 * **Note**: It returns an unique identifier which is required to restore the gravity. It guarantees the symmetry
+	 * of the process.
+	 *
 	 * @returns {String} The unique id which allows restoring the gravity.
 	 */
 	overrideSelectionGravity() {
@@ -1121,9 +1124,11 @@ export default class Writer {
 	/**
 	 * Restores {@link ~Writer#overrideSelectionGravity} gravity to default.
 	 *
-	 * Note that the gravity remains overridden as long as will not be restored the same number of times as it was overridden.
+	 * Restoring the gravity is only possible using the unique identifier returned by
+	 * {@link ~Writer#overrideSelectionGravity}. Note that the gravity remains overridden as long as won't be restored
+	 * the same number of times it was overridden.
 	 *
-	 * @param {String} uid The unique id returned by {@link #overrideSelectionGravity}.
+	 * @param {String} uid The unique id returned by {@link ~Writer#overrideSelectionGravity}.
 	 */
 	restoreSelectionGravity( uid ) {
 		this.model.document.selection._restoreGravity( uid );
