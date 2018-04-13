@@ -38,13 +38,16 @@ export function downcastInsertTable() {
 		const tableWalker = new TableWalker( table );
 
 		for ( const tableWalkerValue of tableWalker ) {
-			const { row } = tableWalkerValue;
+			const { row, cell } = tableWalkerValue;
 
 			const tableSection = getOrCreateTableSection( getSectionName( tableWalkerValue ), tableElement, conversionApi, tableSections );
 			const tableRow = table.getChild( row );
 
 			// Check if row was converted
 			const trElement = getOrCreateTr( tableRow, row, tableSection, conversionApi );
+
+			// Consume table cell - it will be always consumed as we convert whole table at once.
+			conversionApi.consumable.consume( cell, 'insert' );
 
 			createViewTableCellElement( tableWalkerValue, ViewPosition.createAt( trElement, 'end' ), conversionApi );
 		}
@@ -82,6 +85,9 @@ export function downcastInsertRow() {
 		for ( const tableWalkerValue of tableWalker ) {
 			const tableSection = getOrCreateTableSection( getSectionName( tableWalkerValue ), tableElement, conversionApi );
 			const trElement = getOrCreateTr( tableRow, row, tableSection, conversionApi );
+
+			// Consume table cell - it will be always consumed as we convert whole row at once.
+			conversionApi.consumable.consume( tableWalkerValue.cell, 'insert' );
 
 			createViewTableCellElement( tableWalkerValue, ViewPosition.createAt( trElement, 'end' ), conversionApi );
 		}
@@ -237,9 +243,6 @@ function createViewTableCellElement( tableWalkerValue, insertPosition, conversio
 	const tableCell = tableWalkerValue.cell;
 
 	const cellElementName = getCellElementName( tableWalkerValue );
-
-	// Will always consume since we're converting <tableRow> element from a parent <table>.
-	conversionApi.consumable.consume( tableCell, 'insert' );
 
 	const cellElement = conversionApi.writer.createContainerElement( cellElementName );
 

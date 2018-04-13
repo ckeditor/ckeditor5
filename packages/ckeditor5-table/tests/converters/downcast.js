@@ -280,6 +280,43 @@ describe( 'downcast converters', () => {
 			] ) );
 		} );
 
+		it( 'should properly consume already added rows', () => {
+			setModelData( model, modelTable( [
+				[ '11', '12' ]
+			] ) );
+
+			const table = root.getChild( 0 );
+
+			model.change( writer => {
+				const row = writer.createElement( 'tableRow' );
+
+				writer.insert( row, table, 1 );
+
+				writer.insertElement( 'tableCell', row, 'end' );
+				writer.insertElement( 'tableCell', row, 'end' );
+			} );
+
+			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( viewTable( [
+				[ '11', '12' ],
+				[ '', '' ]
+			] ) );
+
+			model.change( writer => {
+				const row = writer.createElement( 'tableRow' );
+
+				writer.insert( row, table, 2 );
+
+				writer.insertElement( 'tableCell', row, 'end' );
+				writer.insertElement( 'tableCell', row, 'end' );
+			} );
+
+			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( viewTable( [
+				[ '11', '12' ],
+				[ '', '' ],
+				[ '', '' ]
+			] ) );
+		} );
+
 		it( 'should insert row on proper index', () => {
 			setModelData( model, modelTable( [
 				[ '11', '12' ],
