@@ -183,6 +183,48 @@ describe( 'TableEditing', () => {
 					[ '[21]', '22' ]
 				] ) );
 			} );
+
+			describe( 'on table widget selected', () => {
+				it( 'should move caret to the first table cell on TAB', () => {
+					const spy = sinon.spy();
+
+					editor.editing.view.document.on( 'keydown', spy );
+
+					setModelData( model, '[' + modelTable( [
+						[ '11', '12' ]
+					] ) + ']' );
+
+					editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+					sinon.assert.calledOnce( domEvtDataStub.preventDefault );
+					sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
+
+					expect( formatModelTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+						[ '[11]', '12' ]
+					] ) );
+
+					// Should cancel event - so no other tab handler is called.
+					sinon.assert.notCalled( spy );
+				} );
+
+				it( 'shouldn\' do anything on other blocks', () => {
+					const spy = sinon.spy();
+
+					editor.editing.view.document.on( 'keydown', spy );
+
+					setModelData( model, '[<paragraph>foo</paragraph>]' );
+
+					editor.editing.view.document.fire( 'keydown', domEvtDataStub );
+
+					sinon.assert.notCalled( domEvtDataStub.preventDefault );
+					sinon.assert.notCalled( domEvtDataStub.stopPropagation );
+
+					expect( formatModelTable( getModelData( model ) ) ).to.equal( '[<paragraph>foo</paragraph>]' );
+
+					// Should not cancel event.
+					sinon.assert.calledOnce( spy );
+				} );
+			} );
 		} );
 
 		describe( 'on SHIFT+TAB', () => {

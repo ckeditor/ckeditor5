@@ -78,65 +78,99 @@ export default class TablesEditing extends Plugin {
 		editor.commands.add( 'insertRow', new InsertRowCommand( editor ) );
 		editor.commands.add( 'insertColumn', new InsertColumnCommand( editor ) );
 
-		this.listenTo( editor.editing.view.document, 'keydown', ( evt, data ) => {
-			const tabPressed = data.keyCode == keyCodes.tab;
+		this.listenTo( editor.editing.view.document, 'keydown', ( ...args ) => this._handleTabOnSelectedTable( ...args ) );
+		this.listenTo( editor.editing.view.document, 'keydown', ( ...args ) => this._handleTabInsideTable( ...args ) );
+	}
 
-			// Act only on TAB & SHIFT-TAB - Do not override native CTRL+TAB handler.
-			if ( !tabPressed || data.ctrlKey ) {
+	_handleTabOnSelectedTable( evt, data ) {
+		const tabPressed = data.keyCode == keyCodes.tab;
+
+		// Act only on TAB & SHIFT-TAB - Do not override native CTRL+TAB handler.
+		if ( !tabPressed || data.ctrlKey ) {
+			return;
+		}
+
+		const editor = this.editor;
+		const selection = editor.model.document.selection;
+
+		if ( !selection.isCollapsed && selection.rangeCount === 1 && selection.getFirstRange().isFlat ) {
+			const selectedElement = selection.getSelectedElement();
+
+			if ( !selectedElement ) {
 				return;
 			}
 
-			const selection = editor.model.document.selection;
+			if ( selectedElement.name === 'table' ) {
+				evt.stop();
+				data.preventDefault();
+				data.stopPropagation();
 
-			const table = getParentTable( selection.getFirstPosition() );
-
-			if ( !table ) {
-				return;
+				editor.model.change( writer => {
+					writer.setSelection( Range.createIn( selectedElement.getChild( 0 ).getChild( 0 ) ) );
+				} );
 			}
+		}
+	}
 
-			data.preventDefault();
-			data.stopPropagation();
+	_handleTabInsideTable( evt, data ) {
+		const tabPressed = data.keyCode == keyCodes.tab;
 
-			const tableCell = selection.focus.parent;
-			const tableRow = tableCell.parent;
+		// Act only on TAB & SHIFT-TAB - Do not override native CTRL+TAB handler.
+		if ( !tabPressed || data.ctrlKey ) {
+			return;
+		}
 
-			const rowIndex = table.getChildIndex( tableRow );
-			const cellIndex = tableRow.getChildIndex( tableCell );
+		const editor = this.editor;
+		const selection = editor.model.document.selection;
 
-			const isForward = !data.shiftKey;
+		const table = getParentTable( selection.getFirstPosition() );
 
-			if ( !isForward && cellIndex === 0 && rowIndex === 0 ) {
-				// It's the first cell of a table - don't do anything (stay in current position).
-				return;
-			}
+		if ( !table ) {
+			return;
+		}
 
-			const indexOfLastCellInRow = tableRow.childCount - 1;
+		data.preventDefault();
+		data.stopPropagation();
 
-			if ( isForward && rowIndex === table.childCount - 1 && cellIndex === indexOfLastCellInRow ) {
-				// It's a last table cell in a table - so create a new row at table's end.
-				editor.execute( 'insertRow', { at: table.childCount } );
-			}
+		const tableCell = selection.focus.parent;
+		const tableRow = tableCell.parent;
 
-			let moveToCell;
+		const rowIndex = table.getChildIndex( tableRow );
+		const cellIndex = tableRow.getChildIndex( tableCell );
 
-			if ( isForward && cellIndex === indexOfLastCellInRow ) {
-				// Move to first cell in next row.
-				const nextRow = table.getChild( rowIndex + 1 );
+		const isForward = !data.shiftKey;
 
-				moveToCell = nextRow.getChild( 0 );
-			} else if ( !isForward && cellIndex === 0 ) {
-				// Move to last cell in a previous row.
-				const prevRow = table.getChild( rowIndex - 1 );
+		if ( !isForward && cellIndex === 0 && rowIndex === 0 ) {
+			// It's the first cell of a table - don't do anything (stay in current position).
+			return;
+		}
 
-				moveToCell = prevRow.getChild( prevRow.childCount - 1 );
-			} else {
-				// Move to next/previous cell otherwise.
-				moveToCell = tableRow.getChild( cellIndex + ( isForward ? 1 : -1 ) );
-			}
+		const indexOfLastCellInRow = tableRow.childCount - 1;
 
-			editor.model.change( writer => {
-				writer.setSelection( Range.createIn( moveToCell ) );
-			} );
+		if ( isForward && rowIndex === table.childCount - 1 && cellIndex === indexOfLastCellInRow ) {
+			// It's a last table cell in a table - so create a new row at table's end.
+			editor.execute( 'insertRow', { at: table.childCount } );
+		}
+
+		let moveToCell;
+
+		if ( isForward && cellIndex === indexOfLastCellInRow ) {
+			// Move to first cell in next row.
+			const nextRow = table.getChild( rowIndex + 1 );
+
+			moveToCell = nextRow.getChild( 0 );
+		} else if ( !isForward && cellIndex === 0 ) {
+			// Move to last cell in a previous row.
+			const prevRow = table.getChild( rowIndex - 1 );
+
+			moveToCell = prevRow.getChild( prevRow.childCount - 1 );
+		} else {
+			// Move to next/previous cell otherwise.
+			moveToCell = tableRow.getChild( cellIndex + ( isForward ? 1 : -1 ) );
+		}
+
+		editor.model.change( writer => {
+			writer.setSelection( Range.createIn( moveToCell ) );
 		} );
 	}
 }
