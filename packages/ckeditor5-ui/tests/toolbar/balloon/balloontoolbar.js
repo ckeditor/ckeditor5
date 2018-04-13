@@ -14,7 +14,8 @@ import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
-import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model.js';
+import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { stringify as viewStringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 /* global document, setTimeout, window */
 
@@ -199,6 +200,22 @@ describe( 'BalloonToolbar', () => {
 			expect( balloonAddSpy.firstCall.args[ 0 ].position.target() ).to.deep.equal( forwardSelectionRect );
 		} );
 
+		// https://github.com/ckeditor/ckeditor5-ui/issues/385
+		it( 'should attach the #_balloon to the last range in a case of multi-range forward selection', () => {
+			setData( model, '<paragraph>b[ar]</paragraph><paragraph>[bi]z</paragraph>' );
+
+			balloonToolbar.show();
+
+			// Because attaching and pinning BalloonPanelView is stubbed for test
+			// we need to manually call function that counting rect.
+			const targetRect = balloonAddSpy.firstCall.args[ 0 ].position.target();
+
+			const targetViewRange = editingView.domConverter.viewRangeToDom.lastCall.args[ 0 ];
+
+			expect( viewStringify( targetViewRange.root, targetViewRange ) ).to.equal( '<div><p>bar</p><p>{bi}z</p></div>' );
+			expect( targetRect ).to.deep.equal( forwardSelectionRect );
+		} );
+
 		// https://github.com/ckeditor/ckeditor5-ui/issues/308
 		it( 'should ignore the zero-width orphan rect if there another one preceding it for the forward selection', () => {
 			// Restore previous stubSelectionRects() call.
@@ -240,6 +257,22 @@ describe( 'BalloonToolbar', () => {
 			} );
 
 			expect( balloonAddSpy.firstCall.args[ 0 ].position.target() ).to.deep.equal( backwardSelectionRect );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5-ui/issues/308
+		it( 'should attach the #_balloon to the first range in a case of multi-range backward selection', () => {
+			setData( model, '<paragraph>b[ar]</paragraph><paragraph>[bi]z</paragraph>', { lastRangeBackward: true } );
+
+			balloonToolbar.show();
+
+			// Because attaching and pinning BalloonPanelView is stubbed for test
+			// we need to manually call function that counting rect.
+			const targetRect = balloonAddSpy.firstCall.args[ 0 ].position.target();
+
+			const targetViewRange = editingView.domConverter.viewRangeToDom.lastCall.args[ 0 ];
+
+			expect( viewStringify( targetViewRange.root, targetViewRange ) ).to.equal( '<div><p>b{ar}</p><p>biz</p></div>' );
+			expect( targetRect ).to.deep.equal( backwardSelectionRect );
 		} );
 
 		it( 'should update balloon position on view#change event while balloon is added to the #_balloon', () => {
