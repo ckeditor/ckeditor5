@@ -398,6 +398,96 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 		} );
 	} );
 
+	describe( 'multiple attributes', () => {
+		beforeEach( () => {
+			bindTwoStepCaretToAttribute( editor.editing.view, editor.model, emitter, 'c' );
+		} );
+
+		it( 'should work with the two-step caret movement (moving right)', () => {
+			setData( model, 'fo[]o<$text a="true">foo</$text><$text a="true" c="true">bar</$text><$text c="true">baz</$text>qux' );
+
+			testTwoStepCaretMovement( [
+				// fo[]o<$text a="true">foo</$text><$text a="true" c="true">bar</$text><$text c="true">baz</$text>qux
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0 },
+				'→',
+				// foo[]<$text a="true">foo</$text><$text a="true" c="true">bar</$text><$text c="true">baz</$text>qux
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0 },
+				'→',
+				// foo<$text a="true">[]foo</$text><$text a="true" c="true">bar</$text><$text c="true">baz</$text>qux
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: true, preventDefault: 1 },
+				'→',
+				'→',
+				'→',
+				// foo<$text a="true">foo[]</$text><$text a="true" c="true">bar</$text><$text c="true">baz</$text>qux
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 1 },
+				'→',
+				// foo<$text a="true">foo</$text><$text a="true" c="true">[]bar</$text><$text c="true">baz</$text>qux
+				{ selectionAttributes: [ 'a', 'c' ], isGravityOverridden: true, preventDefault: 2 },
+				'→',
+				'→',
+				'→',
+				// foo<$text a="true">foo</$text><$text a="true" c="true">bar[]</$text><$text c="true">baz</$text>qux
+				{ selectionAttributes: [ 'a', 'c' ], isGravityOverridden: false, preventDefault: 2 },
+				'→',
+				// foo<$text a="true">foo</$text><$text a="true" c="true">bar</$text><$text c="true">[]baz</$text>qux
+				{ selectionAttributes: [ 'c' ], isGravityOverridden: true, preventDefault: 3 },
+				'→',
+				'→',
+				'→',
+				// foo<$text a="true">foo</$text><$text a="true" c="true">bar</$text><$text c="true">baz[]</$text>qux
+				{ selectionAttributes: [ 'c' ], isGravityOverridden: false, preventDefault: 3 },
+				'→',
+				// foo<$text a="true">foo</$text><$text a="true" c="true">bar</$text><$text c="true">baz</$text>[]qux
+				{ selectionAttributes: [], isGravityOverridden: true, preventDefault: 4 },
+				'→',
+				// foo<$text a="true">foo</$text><$text a="true" c="true">bar</$text><$text c="true">baz</$text>q[]ux
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 4 },
+			] );
+		} );
+
+		it( 'should work with the two-step caret movement (moving left)', () => {
+			setData( model, 'foo<$text a="true">foo</$text><$text a="true" c="true">bar</$text><$text c="true">baz</$text>q[]ux' );
+
+			testTwoStepCaretMovement( [
+				// foo<$text a="true">foo</$text><$text a="true" c="true">bar</$text><$text c="true">baz</$text>q[]ux
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0 },
+				'←',
+				// foo<$text a="true">foo</$text><$text a="true" c="true">bar</$text><$text c="true">baz</$text>[]qux
+				{ selectionAttributes: [], isGravityOverridden: true, preventDefault: 0 },
+				'←',
+				// foo<$text a="true">foo</$text><$text a="true" c="true">bar</$text><$text c="true">baz[]</$text>qux
+				{ selectionAttributes: [ 'c' ], isGravityOverridden: false, preventDefault: 1 },
+				'←',
+				'←',
+				'←',
+				// foo<$text a="true">foo</$text><$text a="true" c="true">bar</$text><$text c="true">[]baz</$text>qux
+				{ selectionAttributes: [ 'c' ], isGravityOverridden: true, preventDefault: 1 },
+				'←',
+				// foo<$text a="true">foo</$text><$text a="true" c="true">bar[]</$text><$text c="true">baz</$text>qux
+				{ selectionAttributes: [ 'a', 'c' ], isGravityOverridden: false, preventDefault: 2 },
+				'←',
+				'←',
+				'←',
+				// foo<$text a="true">foo</$text><$text a="true" c="true">[]bar</$text><$text c="true">baz</$text>qux
+				{ selectionAttributes: [ 'a', 'c' ], isGravityOverridden: true, preventDefault: 2 },
+				'←',
+				// foo<$text a="true">foo[]</$text><$text a="true" c="true">bar</$text><$text c="true">baz</$text>qux
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 3 },
+				'←',
+				'←',
+				'←',
+				// foo<$text a="true">[]foo</$text><$text a="true" c="true">bar</$text><$text c="true">baz</$text>qux
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: true, preventDefault: 3 },
+				'←',
+				// foo[]<$text a="true">foo</$text><$text a="true" c="true">bar</$text><$text c="true">baz</$text>qux
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 4 },
+				'←',
+				// fo[]o<$text a="true">foo</$text><$text a="true" c="true">bar</$text><$text c="true">baz</$text>qux
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 4 },
+			] );
+		} );
+	} );
+
 	describe( 'mouse', () => {
 		it( 'should not override gravity when selection is placed at the beginning of text', () => {
 			setData( model, '<$text a="true">[]foo</$text>' );
