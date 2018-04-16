@@ -128,6 +128,7 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 			] );
 		} );
 
+		// https://github.com/ckeditor/ckeditor5-engine/issues/1301
 		it( 'should handle passing through the only character in the block', () => {
 			setData( model, '[]<$text a="1">x</$text>' );
 
@@ -142,6 +143,7 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 			] );
 		} );
 
+		// https://github.com/ckeditor/ckeditor5-engine/issues/1301
 		it( 'should handle passing through the only character in the block (no attribute in the initial selection)', () => {
 			setData( model, '[]<$text a="1">x</$text>' );
 
@@ -160,6 +162,7 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 			] );
 		} );
 
+		// https://github.com/ckeditor/ckeditor5-engine/issues/1301
 		it( 'should handle passing through the only-child with an attribute (multiple characters)', () => {
 			setData( model, '[]<$text a="1">xyz</$text>' );
 
@@ -288,6 +291,7 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 			] );
 		} );
 
+		// https://github.com/ckeditor/ckeditor5-engine/issues/1301
 		it( 'should handle passing through the only-child with an attribute (single character)', () => {
 			setData( model, '<$text a="1">x</$text>[]' );
 
@@ -305,6 +309,7 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 			] );
 		} );
 
+		// https://github.com/ckeditor/ckeditor5-engine/issues/1301
 		it( 'should handle passing through the only character in the block (no attribute in the initial selection)', () => {
 			setData( model, '<$text a="1">x</$text>[]' );
 
@@ -323,6 +328,7 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 			] );
 		} );
 
+		// https://github.com/ckeditor/ckeditor5-engine/issues/1301
 		it( 'should handle passing through the only-child with an attribute (multiple characters)', () => {
 			setData( model, '<$text a="1">xyz</$text>[]' );
 
@@ -397,8 +403,42 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 			] );
 		} );
 
+		// https://github.com/ckeditor/ckeditor5-engine/issues/1346
+		// https://github.com/ckeditor/ckeditor5/issues/946
+		it( 'should correctly re-renter the attribute', () => {
+			setData( model, 'fo[]o <$text a="1">bar</$text>' );
+
+			testTwoStepCaretMovement( [
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0 },
+				'→',
+				// foo[] <$text a="1">bar</$text>
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0 },
+				'→',
+				// foo []<$text a="1">bar</$text>
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0 },
+				'→',
+				// foo <$text a="1">[]bar</$text>
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: true, preventDefault: 1 },
+				'→',
+				// foo <$text a="1">b[]ar</$text>
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 1 },
+				'←',
+				// foo <$text a="1">[]bar</$text>
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: true, preventDefault: 1 },
+				'←',
+				// foo []<$text a="1">bar</$text>
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 2 },
+				'←',
+				// foo[] <$text a="1">bar</$text>
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 2 },
+				'←',
+				// fo[]o <$text a="1">bar</$text>
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 2 },
+			] );
+		} );
+
 		// https://github.com/ckeditor/ckeditor5/issues/922
-		it( 'should not lose the new attribute (after)', () => {
+		it( 'should not lose the new attribute when typing (after)', () => {
 			setData( model, '<$text a="1">x[]</$text>' );
 
 			testTwoStepCaretMovement( [
@@ -426,7 +466,7 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 		} );
 
 		// https://github.com/ckeditor/ckeditor5/issues/922
-		it( 'should not lose the new attribute (before)', () => {
+		it( 'should not lose the new attribute when typing (before)', () => {
 			setData( model, '<$text a="1">[]x</$text>' );
 
 			testTwoStepCaretMovement( [
