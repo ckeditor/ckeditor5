@@ -2418,7 +2418,7 @@ describe( 'Renderer', () => {
 		} );
 	} );
 
-	describe( '_updateChildren', () => {
+	describe( '_updateText', () => {
 		let viewRoot, domRoot;
 
 		beforeEach( () => {

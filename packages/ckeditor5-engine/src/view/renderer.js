@@ -18,7 +18,7 @@ import remove from '@ckeditor/ckeditor5-utils/src/dom/remove';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
-import diffToChanges from '@ckeditor/ckeditor5-utils/src/difftochanges';
+import fastDiff from '@ckeditor/ckeditor5-utils/src/fastdiff';
 
 /**
  * Renderer updates DOM structure and selection, to make them a reflection of the view structure and selection.
@@ -427,7 +427,7 @@ export default class Renderer {
 		}
 
 		if ( actualText != expectedText ) {
-			const actions = diffToChanges( diff( actualText, expectedText ), expectedText );
+			const actions = fastDiff( actualText, expectedText );
 
 			for ( const action of actions ) {
 				if ( action.type === 'insert' ) {
