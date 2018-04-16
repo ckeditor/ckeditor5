@@ -70,7 +70,7 @@ InlineEditor
 
 ### Example – Balloon editor
 
-The procedure is the same as for Inline editor &mdash; the only difference is that you need to use the {@link module:editor-balloon/ballooneditor~BalloonEditor#create `BalloonEditor.create()`} method.
+The procedure is the same as for Inline editor. The only difference is that you need to use the {@link module:editor-balloon/ballooneditor~BalloonEditor#create `BalloonEditor.create()`} method.
 
 Add an element where CKEditor should initialize to your page:
 
@@ -94,7 +94,7 @@ BalloonEditor
 ```
 
 <info-box tip>
-	Every editor class may accept different parameters in the `create()` method and may handle the initialization differently. For instance, the classic editor will replace a given element with an editor, while the inline editor will use the given element to initialize the editor on it. See each editor's documentation to learn the details.
+	Every editor class may accept different parameters in the `create()` method and may handle the initialization differently. For instance, classic editor will replace the given element with an editor, while inline editor will use the given element to initialize an editor on it. See each editor's documentation to learn the details.
 
 	The interface of the editor class is not enforced either. Since different implementations of editors may vary heavily in terms of functionality, the editor class implementers have full freedom regarding the API. Therefore, the examples in this guide may not work with some editor classes.
 </info-box>
@@ -143,7 +143,7 @@ Because builds are distributed as [UMD modules](https://github.com/umdjs/umd), e
 For example:
 
 ```js
-// In CommonJS environment.
+// In the CommonJS environment.
 const ClassicEditor = require( '@ckeditor/ckeditor5-build-classic' );
 ClassicEditor.create( ... ); // [Function]
 
