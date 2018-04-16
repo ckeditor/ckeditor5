@@ -461,6 +461,24 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 		expect( selection.isGravityOverridden ).to.false;
 	} );
 
+	it( 'should do nothing when the not a direct selection change but at the attribute boundary', () => {
+		setData( model, '<$text a="true">foo[]</$text>bar' );
+
+		testTwoStepCaretMovement( [
+			{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0 },
+			'→',
+			{ selectionAttributes: [], isGravityOverridden: true, preventDefault: 1 },
+		] );
+
+		// Simulate an external text insertion BEFORE the user selection to trigger #change:range.
+		model.enqueueChange( 'transparent', writer => {
+			writer.insertText( 'x', selection.getFirstPosition().getShiftedBy( -2 ) );
+		} );
+
+		expect( selection.isGravityOverridden ).to.true;
+		expect( getSelectionAttributesArray( selection ) ).to.have.members( [] );
+	} );
+
 	const keyMap = {
 		'→': 'arrowright',
 		'←': 'arrowleft'
