@@ -219,7 +219,7 @@ describe( 'Renderer', () => {
 
 		it( 'should not update same text', () => {
 			const viewText = new ViewText( 'foo' );
-			viewRoot._appendChildren( viewText );
+			viewRoot._appendChild( viewText );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -2441,7 +2441,7 @@ describe( 'Renderer', () => {
 
 		it( 'should update text - change on end', () => {
 			const viewText = new ViewText( 'foo' );
-			viewRoot._appendChildren( viewText );
+			viewRoot._appendChild( viewText );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -2459,7 +2459,7 @@ describe( 'Renderer', () => {
 
 		it( 'should update text - change on start', () => {
 			const viewText = new ViewText( 'foo' );
-			viewRoot._appendChildren( viewText );
+			viewRoot._appendChild( viewText );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -2477,7 +2477,7 @@ describe( 'Renderer', () => {
 
 		it( 'should update text - change in the middle', () => {
 			const viewText = new ViewText( 'foobar' );
-			viewRoot._appendChildren( viewText );
+			viewRoot._appendChild( viewText );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -2495,7 +2495,7 @@ describe( 'Renderer', () => {
 
 		it( 'should update text - empty expected', () => {
 			const viewText = new ViewText( 'foo' );
-			viewRoot._appendChildren( viewText );
+			viewRoot._appendChild( viewText );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -2513,7 +2513,7 @@ describe( 'Renderer', () => {
 
 		it( 'should update text - empty actual', () => {
 			const viewText = new ViewText( '' );
-			viewRoot._appendChildren( viewText );
+			viewRoot._appendChild( viewText );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -2531,7 +2531,7 @@ describe( 'Renderer', () => {
 
 		it( 'should handle filler during text modifications', () => {
 			const viewText = new ViewText( 'foo' );
-			viewRoot._appendChildren( viewText );
+			viewRoot._appendChild( viewText );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -2572,7 +2572,7 @@ describe( 'Renderer', () => {
 
 		it( 'should handle filler during text modifications - empty text', () => {
 			const viewText = new ViewText( '' );
-			viewRoot._appendChildren( viewText );
+			viewRoot._appendChild( viewText );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
@@ -2617,8 +2617,8 @@ describe( 'Renderer', () => {
 			const viewB = new ViewElement( 'b' );
 			const viewText = new ViewText( 'foo' );
 
-			viewB._appendChildren( viewText );
-			viewRoot._appendChildren( viewB );
+			viewB._appendChild( viewText );
+			viewRoot._appendChild( viewB );
 
 			renderer.markToSync( 'children', viewRoot );
 			renderer.render();
