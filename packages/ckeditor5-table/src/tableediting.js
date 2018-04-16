@@ -9,8 +9,8 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
-import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
+import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 import upcastTable from './converters/upcasttable';
 import { downcastInsertCell, downcastInsertRow, downcastInsertTable, downcastRemoveRow } from './converters/downcast';
@@ -82,11 +82,19 @@ export default class TablesEditing extends Plugin {
 		this.listenTo( editor.editing.view.document, 'keydown', ( ...args ) => this._handleTabInsideTable( ...args ) );
 	}
 
-	_handleTabOnSelectedTable( evt, data ) {
-		const tabPressed = data.keyCode == keyCodes.tab;
+	/**
+	 * Handles {@link module:engine/view/document~Document#event:keydown keydown} events for 'Tab' key executed
+	 * when table widget is selected.
+	 *
+	 * @private
+	 * @param {module:utils/eventinfo~EventInfo} eventInfo
+	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
+	 */
+	_handleTabOnSelectedTable( eventInfo, domEventData ) {
+		const tabPressed = domEventData.keyCode == keyCodes.tab;
 
 		// Act only on TAB & SHIFT-TAB - Do not override native CTRL+TAB handler.
-		if ( !tabPressed || data.ctrlKey ) {
+		if ( !tabPressed || domEventData.ctrlKey ) {
 			return;
 		}
 
@@ -96,27 +104,32 @@ export default class TablesEditing extends Plugin {
 		if ( !selection.isCollapsed && selection.rangeCount === 1 && selection.getFirstRange().isFlat ) {
 			const selectedElement = selection.getSelectedElement();
 
-			if ( !selectedElement ) {
+			if ( !selectedElement || selectedElement.name != 'table' ) {
 				return;
 			}
 
-			if ( selectedElement.name === 'table' ) {
-				evt.stop();
-				data.preventDefault();
-				data.stopPropagation();
+			eventInfo.stop();
+			domEventData.preventDefault();
+			domEventData.stopPropagation();
 
-				editor.model.change( writer => {
-					writer.setSelection( Range.createIn( selectedElement.getChild( 0 ).getChild( 0 ) ) );
-				} );
-			}
+			editor.model.change( writer => {
+				writer.setSelection( Range.createIn( selectedElement.getChild( 0 ).getChild( 0 ) ) );
+			} );
 		}
 	}
 
-	_handleTabInsideTable( evt, data ) {
-		const tabPressed = data.keyCode == keyCodes.tab;
+	/**
+	 * Handles {@link module:engine/view/document~Document#event:keydown keydown} events for 'Tab' key executed inside table cell.
+	 *
+	 * @private
+	 * @param {module:utils/eventinfo~EventInfo} eventInfo
+	 * @param {module:engine/view/observer/domeventdata~DomEventData} domEventData
+	 */
+	_handleTabInsideTable( eventInfo, domEventData ) {
+		const tabPressed = domEventData.keyCode == keyCodes.tab;
 
 		// Act only on TAB & SHIFT-TAB - Do not override native CTRL+TAB handler.
-		if ( !tabPressed || data.ctrlKey ) {
+		if ( !tabPressed || domEventData.ctrlKey ) {
 			return;
 		}
 
@@ -129,44 +142,47 @@ export default class TablesEditing extends Plugin {
 			return;
 		}
 
-		data.preventDefault();
-		data.stopPropagation();
+		domEventData.preventDefault();
+		domEventData.stopPropagation();
 
 		const tableCell = selection.focus.parent;
 		const tableRow = tableCell.parent;
 
-		const rowIndex = table.getChildIndex( tableRow );
-		const cellIndex = tableRow.getChildIndex( tableCell );
+		const currentRow = table.getChildIndex( tableRow );
+		const currentCellIndex = tableRow.getChildIndex( tableCell );
 
-		const isForward = !data.shiftKey;
+		const isForward = !domEventData.shiftKey;
+		const isFirstCellInRow = currentCellIndex === 0;
 
-		if ( !isForward && cellIndex === 0 && rowIndex === 0 ) {
+		if ( !isForward && isFirstCellInRow && currentRow === 0 ) {
 			// It's the first cell of a table - don't do anything (stay in current position).
 			return;
 		}
 
-		const indexOfLastCellInRow = tableRow.childCount - 1;
+		const isLastCellInRow = currentCellIndex === tableRow.childCount - 1;
+		const isLastRow = currentRow === table.childCount - 1;
 
-		if ( isForward && rowIndex === table.childCount - 1 && cellIndex === indexOfLastCellInRow ) {
-			// It's a last table cell in a table - so create a new row at table's end.
+		if ( isForward && isLastRow && isLastCellInRow ) {
 			editor.execute( 'insertRow', { at: table.childCount } );
 		}
 
 		let moveToCell;
 
-		if ( isForward && cellIndex === indexOfLastCellInRow ) {
-			// Move to first cell in next row.
-			const nextRow = table.getChild( rowIndex + 1 );
+		// Move to first cell in next row.
+		if ( isForward && isLastCellInRow ) {
+			const nextRow = table.getChild( currentRow + 1 );
 
 			moveToCell = nextRow.getChild( 0 );
-		} else if ( !isForward && cellIndex === 0 ) {
-			// Move to last cell in a previous row.
-			const prevRow = table.getChild( rowIndex - 1 );
+		}
+		// Move to last cell in a previous row.
+		else if ( !isForward && isFirstCellInRow ) {
+			const previousRow = table.getChild( currentRow - 1 );
 
-			moveToCell = prevRow.getChild( prevRow.childCount - 1 );
-		} else {
-			// Move to next/previous cell otherwise.
-			moveToCell = tableRow.getChild( cellIndex + ( isForward ? 1 : -1 ) );
+			moveToCell = previousRow.getChild( previousRow.childCount - 1 );
+		}
+		// Move to next/previous cell.
+		else {
+			moveToCell = tableRow.getChild( currentCellIndex + ( isForward ? 1 : -1 ) );
 		}
 
 		editor.model.change( writer => {
