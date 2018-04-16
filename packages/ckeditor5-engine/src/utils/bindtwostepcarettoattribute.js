@@ -10,25 +10,72 @@
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 /**
- * This helper adds two-step caret movement behavior for the given attribute.
+ * This helper enabled the two-step caret (phantom) movement behavior for the given {@link module:engine/model/model~Model}
+ * attribute on arrow right (<kbd>→</kbd>) and left (<kbd>←</kbd>) key press.
  *
- * For example, when this behavior is enabled for the `linkHref` attribute (which converts to `<a>` element in the view)
- * and the caret is just before an `<a>` element (at a link boundary), then pressing
- * the right arrow key will move caret into that `<a>`element instead of moving it after the next character:
+ * Thanks to this (phantom) caret movement the user is able to type before/after as well as at the
+ * beginning/end of an attribute.
  *
- * * With two-step caret movement: `<p>foo{}<a>bar</a>biz<p>` + <kbd>→</kbd> => `<p>foo<a>{}bar</a>biz<p>`
- * * Without two-step caret movement: `<p>foo{}<a>bar</a>biz<p>` + <kbd>→</kbd> => `<p>foo<a>b{}ar</a>biz<p>`
+ * # Forward movement
  *
- * The same behavior will be changed fo "leaving" an attribute element:
+ * ## "Entering" an attribute:
  *
- * * With two-step caret movement: `<p>foo<a>bar{}</a>biz<p>` + <kbd>→</kbd> => `<p>foo<a>bar</a>{}biz<p>`
- * * Without two-step caret movement: `<p>foo<a>bar{}</a>biz<p>` + <kbd>→</kbd> => `<p>foo<a>bar</a>b{}iz<p>`
+ * When this behavior is enabled for the `a` attribute and the selection is right before it
+ * (at the attribute boundary), pressing the right arrow key will not move the selection but update its
+ * attributes accordingly:
  *
- * And when moving left:
+ * * When enabled:
  *
- * * With two-step caret movement: `<p>foo<a>bar</a>b{}iz<p>` + <kbd>←</kbd> => `<p>foo<a>bar</a>{}biz<p>` +
- * <kbd>←</kbd> => `<p>foo<a>bar{}</a>biz<p>`
- * * Without two-step caret movement: `<p>foo<a>bar</a>b{}iz<p>` + <kbd>←</kbd> => `<p>foo<a>bar{}</a>biz<p>`
+ *   		foo{}<$text a="true">bar</$text>
+ *
+ *    <kbd>→</kbd>
+ *
+ *   		foo<$text a="true">{}bar</$text>
+ *
+ * * When disabled:
+ *
+ *   		foo{}<$text a="true">bar</$text>
+ *
+ *   <kbd>→</kbd>
+ *
+ *   		foo<$text a="true">b{}ar</$text>
+ *
+ *
+ * ## "Leaving" an attribute:
+ *
+ * * When enabled:
+ *
+ *   		<$text a="true">bar{}</$text>baz
+ *
+ *    <kbd>→</kbd>
+ *
+ *   		<$text a="true">bar</$text>{}baz
+ *
+ * * When disabled:
+ *
+ *   		<$text a="true">bar{}</$text>baz
+ *
+ *   <kbd>→</kbd>
+ *
+ *   		<$text a="true">bar</$text>b{}az
+ *
+ * # Backward movement
+ *
+ * * When enabled:
+ *
+ *   		<$text a="true">bar</$text>{}baz
+ *
+ *    <kbd>←</kbd>
+ *
+ *   		<$text a="true">bar{}</$text>baz
+ *
+ * * When disabled:
+ *
+ *   		<$text a="true">bar</$text>{}baz
+ *
+ *   <kbd>←</kbd>
+ *
+ *   		<$text a="true">ba{}r</$text>b{}az
  *
  * @param {module:engine/view/view~View} view View controller instance.
  * @param {module:engine/model/model~Model} model Data model instance.
@@ -71,18 +118,73 @@ export default function bindTwoStepCaretToAttribute( view, model, emitter, attri
 	} );
 }
 
+/**
+ * This is a private helper–class for {@link module:engine/utils/bindtwostepcarettoattribute}.
+ * It handles the state of the 2-step caret movement for a single {@link module:engine/model/model~Model}
+ * attribute upon the `keypress` in the {@link module:engine/view/view~View}.
+ *
+ * @private
+ */
 class TwoStepCaretHandler {
+	/*
+	 * Creates two step handler instance.
+	 *
+	 * @param {module:engine/model/model~Model} model Data model instance.
+	 * @param {module:utils/dom/emittermixin~Emitter} emitter The emitter to which this behavior should be added
+	 * (e.g. a plugin instance).
+	 * @param {String} attribute Attribute for which the behavior will be added.
+	 */
 	constructor( model, emitter, attribute ) {
+		/**
+		 * The model instance this class instance operates on.
+		 *
+		 * @readonly
+		 * @member {module:engine/model/model~Model#schema}
+		 */
 		this.model = model;
+
+		/**
+		 * The Attribute this class instance operates on.
+		 *
+		 * @readonly
+		 * @member {String}
+		 */
 		this.attribute = attribute;
 
+		/**
+		 * A reference to the document selection.
+		 *
+		 * @private
+		 * @member {module:engine/model/selection~Selection}
+		 */
 		this._modelSelection = model.document.selection;
-		this._overrideUid = null;
-		this._skipNextChangeRange = false;
 
+		/**
+		 * The current UID of the overridden gravity, as returned by
+		 * {@link module:engine/model/writer~Writer#overrideSelectionGravity}.
+		 *
+		 * @private
+		 * @member {String}
+		 */
+		this._overrideUid = null;
+
+		/**
+		 * A flag indicating that the automatic gravity restoration for this attribute
+		 * should not happen upon the next
+		 * {@link module:engine/model/selection~Selection#event:change:range} event.
+		 *
+		 * @private
+		 * @member {String}
+		 */
+		this._isNextGravityRestorationSkipped = false;
+
+		// The automatic gravity restoration logic.
 		emitter.listenTo( this._modelSelection, 'change:range', ( evt, data ) => {
-			if ( this._skipNextChangeRange ) {
-				this._skipNextChangeRange = false;
+			// Skipping the automatic restoration is needed if the selection should change
+			// but the gravity must remain overridden afterwards. See the #handleBackwardMovement
+			// to learn more.
+			if ( this._isNextGravityRestorationSkipped ) {
+				this._isNextGravityRestorationSkipped = false;
 
 				return;
 			}
@@ -104,6 +206,13 @@ class TwoStepCaretHandler {
 		} );
 	}
 
+	/**
+	 * Updates the document selection and the view according to the two–step caret movement state
+	 * when moving **forwards**. Executed upon `keypress` in the {@link module:engine/view/view~View}.
+	 *
+	 * @param {module:engine/model/position~Position} position The model position at the moment of the key press.
+	 * @param {module:engine/view/observer/domeventdata~DomEventData} data Data of the key press.
+	 */
 	handleForwardMovement( position, data ) {
 		const attribute = this.attribute;
 
@@ -164,6 +273,13 @@ class TwoStepCaretHandler {
 		}
 	}
 
+	/**
+	 * Updates the document selection and the view according to the two–step caret movement state
+	 * when moving **backwards**. Executed upon `keypress` in the {@link module:engine/view/view~View}.
+	 *
+	 * @param {module:engine/model/position~Position} position The model position at the moment of the key press.
+	 * @param {module:engine/view/observer/domeventdata~DomEventData} data Data of the key press.
+	 */
 	handleBackwardMovement( position, data ) {
 		const attribute = this.attribute;
 
@@ -259,24 +375,53 @@ class TwoStepCaretHandler {
 				// Skip the automatic gravity restore upon the next selection#change:range event.
 				// If not skipped, it would automatically restore the gravity, which should remain
 				// overridden.
-				this._skipNextRangeChange();
+				this._skipNextAutomaticGravityRestoration();
 				this._overrideGravity();
 			}
 		}
 	}
 
+	/**
+	 * `true` when the gravity is overridden for the {@link #attribute}.
+	 *
+	 * @readonly
+	 * @private
+	 * @type {Boolean}
+	 */
 	get _isGravityOverridden() {
 		return !!this._overrideUid;
 	}
 
+	/**
+	 * `true` when the {@link module:engine/model/selection~Selection} has the {@link #attribute}.
+	 *
+	 * @readonly
+	 * @private
+	 * @type {Boolean}
+	 */
 	get _hasAttribute() {
 		return this._modelSelection.hasAttribute( this.attribute );
 	}
 
+	/**
+	 * Overrides the gravity using the {@link module:engine/model/writer~Writer model writer}
+	 * and stores the information about this fact in the {@link #_overrideUid}.
+	 *
+	 * A shorthand for {@link module:engine/model/writer~Writer#overrideSelectionGravity}.
+	 *
+	 * @private
+	 */
 	_overrideGravity() {
 		this._overrideUid = this.model.change( writer => writer.overrideSelectionGravity() );
 	}
 
+	/**
+	 * Restores the gravity using the {@link module:engine/model/writer~Writer model writer}.
+	 *
+	 * A shorthand for {@link module:engine/model/writer~Writer#restoreSelectionGravity}.
+	 *
+	 * @private
+	 */
 	_restoreGravity() {
 		this.model.change( writer => {
 			writer.restoreSelectionGravity( this._overrideUid );
@@ -284,16 +429,35 @@ class TwoStepCaretHandler {
 		} );
 	}
 
+	/**
+	 * Prevents the caret movement in the view by calling `preventDefault` on the event data.
+	 *
+	 * @private
+	 */
 	_preventCaretMovement( data ) {
 		data.preventDefault();
 	}
 
+	/**
+	 * Removes the {@link #attribute} from the selection using using the
+	 * {@link module:engine/model/writer~Writer model writer}.
+	 *
+	 * @private
+	 */
 	_removeSelectionAttribute() {
 		this.model.change( writer => {
 			writer.removeSelectionAttribute( this.attribute );
 		} );
 	}
 
+	/**
+	 * Applies the {@link #attribute} to the current selection using using the
+	 * value from the node before the current position. Uses
+	 * the {@link module:engine/model/writer~Writer model writer}.
+	 *
+	 * @private
+	 * @param {module:engine/model/position~Position} position
+	 */
 	_setSelectionAttributeFromTheNodeBefore( position ) {
 		const attribute = this.attribute;
 
@@ -302,13 +466,28 @@ class TwoStepCaretHandler {
 		} );
 	}
 
-	_skipNextRangeChange() {
-		this._skipNextChangeRange = true;
+	/**
+	 * Skips the next automatic selection gravity restoration upon the
+	 * {@link module:engine/model/selection~Selection#event:change:range} event.
+	 *
+	 * See {@link #_isNextGravityRestorationSkipped}.
+	 *
+	 * @private
+	 */
+	_skipNextAutomaticGravityRestoration() {
+		this._isNextGravityRestorationSkipped = true;
 	}
 }
 
 // @param {module:engine/model/position~Position} position
-// @param {String} attribute Attribute name.
+// @param {String} attribute
+// @returns {Boolean} `true` when position between the nodes sticks to the bound of text with given attribute.
+function isAtBoundary( position, attribute ) {
+	return isAtStartBoundary( position, attribute ) || isAtEndBoundary( position, attribute );
+}
+
+// @param {module:engine/model/position~Position} position
+// @param {String} attribute
 function isAtStartBoundary( position, attribute ) {
 	const prevNode = position.nodeBefore;
 	const nextNode = position.nodeAfter;
@@ -323,7 +502,7 @@ function isAtStartBoundary( position, attribute ) {
 }
 
 // @param {module:engine/model/position~Position} position
-// @param {String} attribute Attribute name.
+// @param {String} attribute
 function isAtEndBoundary( position, attribute ) {
 	const prevNode = position.nodeBefore;
 	const nextNode = position.nodeAfter;
@@ -338,7 +517,7 @@ function isAtEndBoundary( position, attribute ) {
 }
 
 // @param {module:engine/model/position~Position} position
-// @param {String} attribute Attribute name.
+// @param {String} attribute
 function isBetweenDifferentValues( position, attribute ) {
 	const prevNode = position.nodeBefore;
 	const nextNode = position.nodeAfter;
@@ -350,11 +529,4 @@ function isBetweenDifferentValues( position, attribute ) {
 	}
 
 	return nextNode.getAttribute( attribute ) !== prevNode.getAttribute( attribute );
-}
-
-// @param {module:engine/model/position~Position} position
-// @param {String} attribute Attribute name.
-// @returns {Boolean} `true` when position between the nodes sticks to the bound of text with given attribute.
-function isAtBoundary( position, attribute ) {
-	return isAtStartBoundary( position, attribute ) || isAtEndBoundary( position, attribute );
 }
