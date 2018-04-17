@@ -113,6 +113,12 @@ Based on these packages you can create a simple application.
 	This guide is using the ES6 modules syntax. If you are not familiar with it, check out this [article](http://exploringjs.com/es6/ch_modules.html).
 </info-box>
 
+<info-box warning>
+	Note that in this guide we use the editor class directly (i.e. we use `@ckeditor/ckeditor5-editor-classic` instead of `@ckeditor/ckeditor5-build-classic`).
+
+	We do not use any of the {@link builds/guides/overview builds} because adding new plugins to them requires rebuilding them anyway. This can be done by {@link builds/guides/development/installing-plugins customizing a build} or by including CKEditor 5 source into your application (like in this guide).
+</info-box>
+
 ```js
 // app.js
 
