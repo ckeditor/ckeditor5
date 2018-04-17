@@ -8,7 +8,7 @@ order: 20
 
 # Basic API
 
-Each CKEditor 5 build provides a different class that handles the creation of editor instances:
+Each CKEditor 5 **build** provides a different **editor class** that handles the creation of editor instances:
 
 * Classic editor &ndash; {@link module:editor-classic/classiceditor~ClassicEditor}
 * Inline editor &ndash; {@link module:editor-inline/inlineeditor~InlineEditor}
@@ -16,6 +16,10 @@ Each CKEditor 5 build provides a different class that handles the creation of ed
 * Document editor &ndash; {@link module:editor-decoupled/decouplededitor~DecoupledEditor}
 
 Most of the examples in the documentation use the `ClassicEditor` class, but things should work in a similar way with other builds.
+
+<info-box>
+	A CKEditor 5 build compiles a specific editor class and a set of plugins. Using builds is the simplest way to include editor in your application, but you can also {@link builds/guides/integration/advanced-setup#scenario-2-building-from-source use the editor classes and plugins directly} for grater flexibility.
+</info-box>
 
 ## Creating an editor
 
@@ -94,7 +98,7 @@ BalloonEditor
 	} );
 ```
 
-### Example – Document editor
+### Example – Decoupled editor
 
 Add the elements where CKEditor should initialize the toolbar and the editable to your page:
 
