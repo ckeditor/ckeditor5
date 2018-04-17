@@ -30,7 +30,7 @@ export default class TableWalker {
 	 *		+----+----+----+----+----+----+
 	 *		| 00      | 02 | 03      | 05 |
 	 *		|         +--- +----+----+----+
-	 *		|         | 12      | 24 | 25 |
+	 *		|         | 12      | 14 | 15 |
 	 *		|         +----+----+----+----+
 	 *		|         | 22                |
 	 *		|----+----+                   +
@@ -44,11 +44,29 @@ export default class TableWalker {
 	 *		'A cell at row 1 and column 5'
 	 *		'A cell at row 2 and column 2'
 	 *
+	 *	To iterate over spanned cells also:
+	 *
+	 *		const tableWalker = new TableWalker( table, { startRow: 1, endRow: 1 } );
+	 *
+	 *		for( const cellInfo of tableWalker ) {
+	 *			console.log( 'Cell at ' + cellInfo.row + ' x ' + cellInfo.column + ' : ' + ( cellInfo.cell ? 'has data' : 'is spanned' )  );
+	 *		}
+	 *
+	 *	will log in the console for the table from previous example:
+	 *
+	 *		'Cell at 1 x 0 : is spanned'
+	 *		'Cell at 1 x 1 : is spanned'
+	 *		'Cell at 1 x 2 : has data'
+	 *		'Cell at 1 x 3 : is spanned'
+	 *		'Cell at 1 x 4 : has data'
+	 *		'Cell at 1 x 5 : has data'
+	 *
 	 * @constructor
 	 * @param {module:engine/model/element~Element} table A table over which iterate.
 	 * @param {Object} [options={}] Object with configuration.
 	 * @param {Number} [options.startRow=0] A row index for which this iterator should start.
 	 * @param {Number} [options.endRow] A row index for which this iterator should end.
+	 * @param {Number} [options.includeSpanned] Also return values for spanned cells.
 	 */
 	constructor( table, options = {} ) {
 		/**
@@ -74,6 +92,13 @@ export default class TableWalker {
 		 * @member {Number}
 		 */
 		this.endRow = typeof options.endRow == 'number' ? options.endRow : undefined;
+
+		/**
+		 * Enables output of spanned cells that are normally not yielded.
+		 *
+		 * @type {Boolean}
+		 */
+		this.includeSpanned = !!options.includeSpanned;
 
 		/**
 		 * A current row index.
@@ -118,6 +143,14 @@ export default class TableWalker {
 		this._cellSpans = new CellSpans();
 
 		/**
+		 * Holds spanned cells info to be outputed when {@link #includeSpanned} is set to true.
+		 *
+		 * @type {Array.<module:table/tablewalker~TableWalkerValue>}
+		 * @private
+		 */
+		this._spannedCells = [];
+
+		/**
 		 * Cached table properties - returned for every yielded value.
 		 *
 		 * @readonly
@@ -147,8 +180,12 @@ export default class TableWalker {
 	next() {
 		const row = this.table.getChild( this.row );
 
-		if ( !row ) {
+		if ( !row || ( this.endRow !== undefined && this.row > this.endRow ) ) {
 			return { done: true };
+		}
+
+		if ( this.includeSpanned && this._spannedCells.length ) {
+			return { done: false, value: this._spannedCells.shift() };
 		}
 
 		// The previous cell is defined after the first cell in a row.
@@ -164,7 +201,13 @@ export default class TableWalker {
 		// If there is no cell then it's end of a row so update spans and reset indexes.
 		if ( !cell ) {
 			// Record spans of the previous cell.
-			this._updateSpans();
+			const colspan = this._updateSpans();
+
+			if ( this.includeSpanned && colspan > 1 ) {
+				for ( let i = this.column + 1; i < this.column + colspan; i++ ) {
+					this._spannedCells.push( { row: this.row, column: this.column, table: this._tableData, colspan: 1, rowspan: 1 } );
+				}
+			}
 
 			// Reset indexes and move to next row.
 			this.cell = 0;
@@ -176,14 +219,33 @@ export default class TableWalker {
 		}
 
 		// Update the column index if the current column is overlapped by cells from previous rows that have rowspan attribute set.
-		this.column = this._cellSpans.getAdjustedColumnIndex( this.row, this.column );
+		const beforeColumn = this.column;
+		this.column = this._cellSpans.getAdjustedColumnIndex( this.row, beforeColumn );
+
+		// return this.next()
+		if ( this.includeSpanned && beforeColumn !== this.column ) {
+			for ( let i = beforeColumn; i < this.column; i++ ) {
+				this._spannedCells.push( { row: this.row, column: i, table: this._tableData, colspan: 1, rowspan: 1 } );
+			}
+
+			return this.next();
+		}
 
 		// Update the cell indexes before returning value.
 		this._previousCell = cell;
 		this.cell++;
 
-		if ( this.startRow > this.row || ( this.endRow !== undefined && this.row > this.endRow ) ) {
+		// Skip rows that are before startRow.
+		if ( this.startRow > this.row ) {
 			return this.next();
+		}
+
+		const colspan = parseInt( cell.getAttribute( 'colspan' ) || 1 );
+
+		if ( this.includeSpanned && colspan > 1 ) {
+			for ( let i = this.column + 1; i < this.column + colspan; i++ ) {
+				this._spannedCells.push( { row: this.row, column: i, table: this._tableData, colspan: 1, rowspan: 1 } );
+			}
 		}
 
 		return {
@@ -192,9 +254,8 @@ export default class TableWalker {
 				cell,
 				row: this.row,
 				column: this.column,
-				// TODO: parseInt tests in editable?
 				rowspan: parseInt( cell.getAttribute( 'rowspan' ) || 1 ),
-				colspan: parseInt( cell.getAttribute( 'colspan' ) || 1 ),
+				colspan,
 				table: this._tableData
 			}
 		};
@@ -311,11 +372,14 @@ class CellSpans {
  * Object returned by {@link module:table/tablewalker~TableWalker} when traversing table cells.
  *
  * @typedef {Object} module:table/tablewalker~TableWalkerValue
- * @property {module:engine/model/element~Element} cell Current table cell.
+ * @property {module:engine/model/element~Element} [cell] Current table cell. Might be empty if
+ * {@link module:table/tablewalker~TableWalker#includeSpanned} is set to true.
  * @property {Number} row The row index of a cell.
  * @property {Number} column The column index of a cell. Column index is adjusted to widths & heights of previous cells.
- * @property {Number} colspan The colspan attribute of a cell - always defined even if model attribute is not present.
- * @property {Number} rowspan The rowspan attribute of a cell - always defined even if model attribute is not present.
+ * @property {Number} [colspan] The colspan attribute of a cell - always defined even if model attribute is not present. Not set if
+ * {@link module:table/tablewalker~TableWalker#includeSpanned} is set to true.
+ * @property {Number} [rowspan] The rowspan attribute of a cell - always defined even if model attribute is not present. Not set if
+ * {@link module:table/tablewalker~TableWalker#includeSpanned} is set to true.
  * @property {Object} table Table attributes
  * @property {Object} table.headingRows The heading rows attribute of a table - always defined even if model attribute is not present.
  * @property {Object} table.headingColumns The heading columns attribute of a table - always defined even if model attribute is not present.

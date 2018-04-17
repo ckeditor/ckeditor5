@@ -46,7 +46,7 @@ describe( 'TableWalker', () => {
 			} );
 	} );
 
-	function testWalker( tableData, expected, options = {} ) {
+	function testWalker( tableData, expected, options ) {
 		setData( model, modelTable( tableData ) );
 
 		const iterator = new TableWalker( root.getChild( 0 ), options );
@@ -57,7 +57,8 @@ describe( 'TableWalker', () => {
 			result.push( tableInfo );
 		}
 
-		const formattedResult = result.map( ( { row, column, cell } ) => ( { row, column, data: cell.getChild( 0 ).data } ) );
+		const formattedResult = result.map( ( { row, column, cell } ) => ( { row, column, data: cell && cell.getChild( 0 ).data } ) );
+
 		expect( formattedResult ).to.deep.equal( expected );
 	}
 
@@ -94,6 +95,97 @@ describe( 'TableWalker', () => {
 			{ row: 3, column: 1, data: '42' },
 			{ row: 3, column: 2, data: '43' }
 		] );
+	} );
+
+	it( 'should properly output column indexes of a table that has multiple rowspans', () => {
+		testWalker( [
+			[ { rowspan: 3, contents: '11' }, '12', '13' ],
+			[ { rowspan: 2, contents: '22' }, '23' ],
+			[ '33' ],
+			[ '41', '42', '43' ]
+		], [
+			{ row: 0, column: 0, data: '11' },
+			{ row: 0, column: 1, data: '12' },
+			{ row: 0, column: 2, data: '13' },
+			{ row: 1, column: 1, data: '22' },
+			{ row: 1, column: 2, data: '23' },
+			{ row: 2, column: 2, data: '33' },
+			{ row: 3, column: 0, data: '41' },
+			{ row: 3, column: 1, data: '42' },
+			{ row: 3, column: 2, data: '43' }
+		] );
+	} );
+
+	describe( 'option.startRow', () => {
+		it( 'should start iterating from given row but with cell spans properly calculated', () => {
+			testWalker( [
+				[ { colspan: 2, rowspan: 3, contents: '11' }, '13' ],
+				[ '23' ],
+				[ '33' ],
+				[ '41', '42', '43' ]
+			], [
+				{ row: 2, column: 2, data: '33' },
+				{ row: 3, column: 0, data: '41' },
+				{ row: 3, column: 1, data: '42' },
+				{ row: 3, column: 2, data: '43' }
+			], { startRow: 2 } );
+		} );
+	} );
+
+	describe( 'option.endRow', () => {
+		it( 'should stopp iterating after given row but with cell spans properly calculated', () => {
+			testWalker( [
+				[ { colspan: 2, rowspan: 3, contents: '11' }, '13' ],
+				[ '23' ],
+				[ '33' ],
+				[ '41', '42', '43' ]
+			], [
+				{ row: 0, column: 0, data: '11' },
+				{ row: 0, column: 2, data: '13' },
+				{ row: 1, column: 2, data: '23' },
+				{ row: 2, column: 2, data: '33' }
+			], { endRow: 2 } );
+		} );
+	} );
+
+	describe( 'option.includeSpanned', () => {
+		it( 'should output spanned cells as empty cell', () => {
+			testWalker( [
+				[ { colspan: 2, rowspan: 3, contents: '11' }, '13' ],
+				[ '23' ],
+				[ '33' ],
+				[ '41', { colspan: 2, contents: '42' } ]
+			], [
+				{ row: 0, column: 0, data: '11' },
+				{ row: 0, column: 1, data: undefined },
+				{ row: 0, column: 2, data: '13' },
+				{ row: 1, column: 0, data: undefined },
+				{ row: 1, column: 1, data: undefined },
+				{ row: 1, column: 2, data: '23' },
+				{ row: 2, column: 0, data: undefined },
+				{ row: 2, column: 1, data: undefined },
+				{ row: 2, column: 2, data: '33' },
+				{ row: 3, column: 0, data: '41' },
+				{ row: 3, column: 1, data: '42' },
+				{ row: 3, column: 2, data: undefined }
+			], { includeSpanned: true } );
+		} );
+
+		it( 'should work with startRow & endRow options', () => {
+			testWalker( [
+				[ { colspan: 2, rowspan: 3, contents: '11' }, '13' ],
+				[ '23' ],
+				[ '33' ],
+				[ '41', '42', '43' ]
+			], [
+				{ row: 1, column: 0, data: undefined },
+				{ row: 1, column: 1, data: undefined },
+				{ row: 1, column: 2, data: '23' },
+				{ row: 2, column: 0, data: undefined },
+				{ row: 2, column: 1, data: undefined },
+				{ row: 2, column: 2, data: '33' }
+			], { includeSpanned: true, startRow: 1, endRow: 2 } );
+		} );
 	} );
 
 	describe( 'option.endRow', () => {
