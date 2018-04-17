@@ -225,7 +225,7 @@ class TwoStepCaretHandler {
 
 		// DON'T ENGAGE 2-SCM if gravity is already overridden. It means that we just entered
 		//
-		// 		<paragraph>foo{}<$text attribute>bar</$text>baz</paragraph>
+		// 		<paragraph>foo<$text attribute>{}bar</$text>baz</paragraph>
 		//
 		// or left the attribute
 		//
@@ -236,7 +236,8 @@ class TwoStepCaretHandler {
 			return;
 		}
 
-		// DON'T ENGAGE 2-SCM when the selection is at the beginning of an attribute AND already has it:
+		// DON'T ENGAGE 2-SCM when the selection is at the beginning of the block AND already has the
+		// attribute:
 		// * when the selection was initially set there using the mouse,
 		// * when the editor has just started
 		//
@@ -257,26 +258,28 @@ class TwoStepCaretHandler {
 		if ( isBetweenDifferentValues( position, attribute ) && this._hasAttribute ) {
 			this._preventCaretMovement( data );
 			this._removeSelectionAttribute();
-		} else {
-			// ENGAGE 2-SCM when entering an attribute:
-			//
-			// 		<paragraph>foo{}<$text attribute>bar</$text>baz</paragraph>
-			//
-			if ( isAtStartBoundary( position, attribute ) ) {
-				this._preventCaretMovement( data );
-				this._overrideGravity();
 
-				return;
-			}
+			return;
+		}
 
-			// ENGAGE 2-SCM when leaving an attribute:
-			//
-			//		<paragraph>foo<$text attribute>bar{}</$text>baz</paragraph>
-			//
-			if ( isAtEndBoundary( position, attribute ) && this._hasAttribute ) {
-				this._preventCaretMovement( data );
-				this._overrideGravity();
-			}
+		// ENGAGE 2-SCM when entering an attribute:
+		//
+		// 		<paragraph>foo{}<$text attribute>bar</$text>baz</paragraph>
+		//
+		if ( isAtStartBoundary( position, attribute ) ) {
+			this._preventCaretMovement( data );
+			this._overrideGravity();
+
+			return;
+		}
+
+		// ENGAGE 2-SCM when leaving an attribute:
+		//
+		//		<paragraph>foo<$text attribute>bar{}</$text>baz</paragraph>
+		//
+		if ( isAtEndBoundary( position, attribute ) && this._hasAttribute ) {
+			this._preventCaretMovement( data );
+			this._overrideGravity();
 		}
 	}
 
