@@ -37,13 +37,14 @@ A set of ready to use rich text editors created with a powerful framework. Made 
 
 ### CKEditor 5 Builds
 
-CKEditor 5 Builds are a set of ready to use rich text editors. Every "build" provides a single type of editor with a set of features and a default configuration.
+CKEditor 5 Builds are a set of ready-to-use rich text editors. Every "build" provides a single type of editor with a set of features and a default configuration.
 
 The following CKEditor 5 Builds are currently available:
 
 * [Classic editor](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/overview.html#classic-editor)
 * [Inline editor](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/overview.html#inline-editor)
 * [Balloon editor](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/overview.html#balloon-editor)
+* [Document editor](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/overview.html#document-editor)
 
 #### Example
 
@@ -78,7 +79,7 @@ Call the [`ClassicEditor.create()`](https://docs.ckeditor.com/ckeditor5/latest/a
 
 You’re ready to go!
 
-To find out how to start with other builds please go to the [quick start section of CKEditor 5 documentation](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/quick-start.html).
+To find out how to start with other builds check the [Quick start guide in the CKEditor 5 documentation](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/quick-start.html).
 
 ### CKEditor 5 Framework
 
@@ -109,20 +110,21 @@ The main development repository of CKEditor 5 is located at [https://github.com/
 
 ### Development
 
-CKEditor 5 is a modular, multi-package, multi-repository project. It consists of a several packages which create the editing framework, based on which the feature packages are implemented.
+CKEditor 5 is a modular, multi-package, multi-repository project. It consists of several packages that create the editing framework, based on which the feature packages are implemented.
 
 The [ckeditor5](https://github.com/ckeditor/ckeditor5) repository is the place that centralizes the development of CKEditor 5. It bundles different packages into a single place, adding the necessary helper tools for the development workflow, like the builder and the test runner. [Basic information on how to set up the development environment](https://docs.ckeditor.com/ckeditor5/latest/framework/guides/contributing/development-environment.html) can be found in the documentation.
 
 ### Reporting issues and feature requests
 
-Each repository independently handles its issues. However, it's recommended to report issues in [this repository](https://github.com/ckeditor/ckeditor5/issues) unless you know to which specific repository the issue belongs.
+Each repository handles its issues independently. However, it is recommended to report issues in [this repository](https://github.com/ckeditor/ckeditor5/issues) unless you know to which specific repository the issue belongs.
 
-Read more in the [Support](https://docs.ckeditor.com/ckeditor5/latest/framework/guides/support/getting-support.html) page.
+Read more on the [Support](https://docs.ckeditor.com/ckeditor5/latest/framework/guides/support/getting-support.html) page.
 
 ## Releases
 
-The latest five releases:
+The five latest releases:
 
+* [Beta release of CKEditor 5 v1.0.0](https://ckeditor.com/blog/CKEditor-5-v1.0.0-beta-released/) (<time datetime="2018-04-10T12:12:00Z"><i>Apr 10, 2018</i></time>)
 * [Second alpha release of CKEditor 5 v1.0.0](https://ckeditor.com/blog/Second-alpha-release-of-CKEditor-5-v1.0.0/) (<time datetime="2017-11-14T12:52:18Z"><i>Nov 14, 2017</i></time>)
 * [First alpha release of CKEditor 5 v1.0.0](https://ckeditor.com/blog/First-alpha-release-of-CKEditor-5-v1.0.0/) (<time datetime="2017-10-03T13:09:29Z"><i>Oct 3, 2017</i></time>)
 * [11th developer preview of CKEditor 5](https://ckeditor.com/blog/11th-developer-preview-of-CKEditor-5-available/) (<time datetime="2017-09-03T19:35:48Z"><i>Sep 3, 2017</i></time>)
@@ -201,7 +203,7 @@ For more CKEditor 5 release blog posts [browse the CKEditor blog](https://ckedit
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-upload"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-upload.svg" alt="@ckeditor/ckeditor5-upload npm package badge"></a>
 	</td>
 	<td>
-		Introduces the file upload utilities.
+		The file upload utilities.
 	</td>
 </tr>
 
@@ -213,7 +215,7 @@ For more CKEditor 5 release blog posts [browse the CKEditor blog](https://ckedit
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-widget"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-widget.svg" alt="@ckeditor/ckeditor5-widget npm package badge"></a>
 	</td>
 	<td>
-		Introduces the widget API.
+		The widget API.
 	</td>
 </tr>
 
@@ -315,7 +317,7 @@ For more CKEditor 5 release blog posts [browse the CKEditor blog](https://ckedit
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-adapter-ckfinder"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-adapter-ckfinder.svg" alt="@ckeditor/ckeditor5-adapter-ckfinder npm package badge"></a>
 	</td>
 	<td>
-		Introduces the <a href="https://ckeditor.com/ckeditor-4/ckfinder/">CKFinder</a> adapter for features which require upload capabilities.
+		The <a href="https://ckeditor.com/ckeditor-4/ckfinder/">CKFinder</a> adapter for features which require upload capabilities.
 	</td>
 </tr>
 
@@ -327,7 +329,7 @@ For more CKEditor 5 release blog posts [browse the CKEditor blog](https://ckedit
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-alignment"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-alignment.svg" alt="@ckeditor/ckeditor5-alignment npm package badge"></a>
 	</td>
 	<td>
-		Introduces the text alignment feature.
+		The text alignment feature.
 	</td>
 </tr>
 
@@ -339,7 +341,7 @@ For more CKEditor 5 release blog posts [browse the CKEditor blog](https://ckedit
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-autoformat"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-autoformat.svg" alt="@ckeditor/ckeditor5-autoformat npm package badge"></a>
 	</td>
 	<td>
-		Introduces the autoformatting feature. Replaces predefined characters with a corresponding format (e.g. <code>**foo**</code> becomes bolded <code>&lt;strong&gt;foo&lt;/strong&gt;</code>).
+		The autoformatting feature. Replaces predefined characters with a corresponding format (e.g. <code>**foo**</code> becomes bold <code>&lt;strong&gt;foo&lt;/strong&gt;</code>).
 	</td>
 </tr>
 
@@ -351,7 +353,7 @@ For more CKEditor 5 release blog posts [browse the CKEditor blog](https://ckedit
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-basic-styles"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-basic-styles.svg" alt="@ckeditor/ckeditor5-basic-styles npm package badge"></a>
 	</td>
 	<td>
-		Introduces the bold, italic, underline and code features.
+		The bold, italic, underline and code features.
 	</td>
 </tr>
 
@@ -363,7 +365,7 @@ For more CKEditor 5 release blog posts [browse the CKEditor blog](https://ckedit
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-block-quote"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-block-quote.svg" alt="@ckeditor/ckeditor5-block-quote npm package badge"></a>
 	</td>
 	<td>
-		Introduces the block quote feature.
+		The block quote feature.
 	</td>
 </tr>
 
@@ -375,7 +377,7 @@ For more CKEditor 5 release blog posts [browse the CKEditor blog](https://ckedit
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-clipboard"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-clipboard.svg" alt="@ckeditor/ckeditor5-clipboard npm package badge"></a>
 	</td>
 	<td>
-		Introduces the clipboard integration.
+		The clipboard integration.
 	</td>
 </tr>
 
@@ -387,7 +389,7 @@ For more CKEditor 5 release blog posts [browse the CKEditor blog](https://ckedit
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-enter"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-enter.svg" alt="@ckeditor/ckeditor5-enter npm package badge"></a>
 	</td>
 	<td>
-		Introduces the Enter key feature.
+		The <kbd>Enter</kbd> key feature.
 	</td>
 </tr>
 
@@ -399,7 +401,7 @@ For more CKEditor 5 release blog posts [browse the CKEditor blog](https://ckedit
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-easy-image"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-easy-image.svg" alt="@ckeditor/ckeditor5-easy-image npm package badge"></a>
 	</td>
 	<td>
-		Introduces Easy Image with Cloud Services feature.
+		Easy Image with CKEditor Cloud Services feature.
 	</td>
 </tr>
 
@@ -411,7 +413,7 @@ For more CKEditor 5 release blog posts [browse the CKEditor blog](https://ckedit
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-font"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-font.svg" alt="@ckeditor/ckeditor5-font npm package badge"></a>
 	</td>
 	<td>
-		Introduces the font size and font family features.
+		The font size and font family features.
 	</td>
 </tr>
 
@@ -423,7 +425,7 @@ For more CKEditor 5 release blog posts [browse the CKEditor blog](https://ckedit
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-heading"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-heading.svg" alt="@ckeditor/ckeditor5-heading npm package badge"></a>
 	</td>
 	<td>
-		Introduces the heading feature.
+		The heading feature.
 	</td>
 </tr>
 
@@ -435,7 +437,7 @@ For more CKEditor 5 release blog posts [browse the CKEditor blog](https://ckedit
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-highlight"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-highlight.svg" alt="@ckeditor/ckeditor5-highlight npm package badge"></a>
 	</td>
 	<td>
-		Introduces the highlight feature (markers and pens).
+		The highlight feature (markers and pens).
 	</td>
 </tr>
 
@@ -447,7 +449,7 @@ For more CKEditor 5 release blog posts [browse the CKEditor blog](https://ckedit
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-image"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-image.svg" alt="@ckeditor/ckeditor5-image npm package badge"></a>
 	</td>
 	<td>
-		Introduces the image feature. Supports image styles and captioning.
+		The image feature. Supports image styles and captioning.
 	</td>
 </tr>
 
@@ -459,7 +461,7 @@ For more CKEditor 5 release blog posts [browse the CKEditor blog](https://ckedit
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-link"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-link.svg" alt="@ckeditor/ckeditor5-link npm package badge"></a>
 	</td>
 	<td>
-		Introduces the link feature.
+		The link feature.
 	</td>
 </tr>
 
@@ -471,7 +473,7 @@ For more CKEditor 5 release blog posts [browse the CKEditor blog](https://ckedit
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-list"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-list.svg" alt="@ckeditor/ckeditor5-list npm package badge"></a>
 	</td>
 	<td>
-		Introduces numbered and bulleted lists feature.
+		The numbered and bulleted lists feature.
 	</td>
 </tr>
 
@@ -483,7 +485,7 @@ For more CKEditor 5 release blog posts [browse the CKEditor blog](https://ckedit
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-markdown-gfm"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-markdown-gfm.svg" alt="@ckeditor/ckeditor5-markdown-gfm npm package badge"></a>
 	</td>
 	<td>
-		Introduces GitHub-flavored Markdown data processor.
+		The GitHub-flavored Markdown data processor.
 	</td>
 </tr>
 
@@ -495,7 +497,7 @@ For more CKEditor 5 release blog posts [browse the CKEditor blog](https://ckedit
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-paragraph"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-paragraph.svg" alt="@ckeditor/ckeditor5-paragraph npm package badge"></a>
 	</td>
 	<td>
-		Introduces the paragraph feature.
+		The paragraph feature.
 	</td>
 </tr>
 
@@ -507,7 +509,7 @@ For more CKEditor 5 release blog posts [browse the CKEditor blog](https://ckedit
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-typing"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-typing.svg" alt="@ckeditor/ckeditor5-typing npm package badge"></a>
 	</td>
 	<td>
-		Introduces typing and deleting features.
+		The typing and deleting features.
 	</td>
 </tr>
 
@@ -519,7 +521,7 @@ For more CKEditor 5 release blog posts [browse the CKEditor blog](https://ckedit
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-undo"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-undo.svg" alt="@ckeditor/ckeditor5-undo npm package badge"></a>
 	</td>
 	<td>
-		Introduces the undo feature.
+		The undo feature.
 	</td>
 </tr>
 
