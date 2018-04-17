@@ -13,6 +13,7 @@ Each CKEditor 5 build provides a different class that handles the creation of ed
 * Classic editor &ndash; {@link module:editor-classic/classiceditor~ClassicEditor}
 * Inline editor &ndash; {@link module:editor-inline/inlineeditor~InlineEditor}
 * Balloon editor &ndash; {@link module:editor-balloon/ballooneditor~BalloonEditor}
+* Document editor &ndash; {@link module:editor-decoupled/decouplededitor~DecoupledEditor}
 
 Most of the examples in the documentation use the `ClassicEditor` class, but things should work in a similar way with other builds.
 
@@ -87,6 +88,35 @@ BalloonEditor
 	.create( document.querySelector( '#editor' ) )
 	.then( editor => {
 		console.log( editor );
+	} )
+	.catch( error => {
+		console.error( error );
+	} );
+```
+
+### Example – Document editor
+
+Add the elements where CKEditor should initialize the toolbar and the editable to your page:
+
+```html
+<!-- The toolbar will be rendered in this container. -->
+<div id="toolbar-container"></div>
+
+<!-- This container will become the editable. -->
+<div id="editor">
+	<p>This is the initial editor content.</p>
+</div>
+```
+
+Then call {@link module:editor-decoupled/decouplededitor~DecoupledEditor#create `DecoupledEditor.create()`} method to create a decoupled editor instance with the toolbar and the editable in two separate containers:
+
+```js
+DecoupledEditor
+	.create( document.querySelector( '#editor' ) )
+	.then( editor => {
+		const toolbarContainer = document.querySelector( '#toolbar-container' );
+
+		toolbarContainer.appendChild( editor.ui.view.toolbar.element );
 	} )
 	.catch( error => {
 		console.error( error );
