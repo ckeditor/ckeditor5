@@ -50,9 +50,9 @@ Extract the `.zip` file into a dedicated directory inside your project. It is re
 
 #### Included files
 
-* `ckeditor.js` – the ready-to-use editor bundle, containing the editor and all plugins.
-* `ckeditor.js.map` – the source map for the editor bundle.
-* `translations/` – editor UI translations (see {@link features/ui-language Setting UI language}).
+* `ckeditor.js` &ndash; The ready-to-use editor bundle, containing the editor and all plugins.
+* `ckeditor.js.map` &ndash; The source map for the editor bundle.
+* `translations/` &ndash; The editor UI translations (see {@link features/ui-language Setting UI language}).
 * `README.md` and `LICENSE.md`
 
 ## Loading the API
