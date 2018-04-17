@@ -3,6 +3,7 @@
   "version": "1.0.0-beta.2",
   "description": "Classic editor implementation for CKEditor 5.",
   "keywords": [
+    "ckeditor",
     "ckeditor5",
     "ckeditor5-editor"
   ],
