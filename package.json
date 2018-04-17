@@ -5,12 +5,24 @@
   "keywords": [
     "CKEditor",
     "ckeditor5",
-    "editor",
+    "ckeditor 5",
     "WYSIWYG",
-    "text editor",
-    "rich-text editor",
+    "WYSIWYW",
+    "text",
+    "rich-text",
+    "richtext",
+    "editor",
+    "editing",
+    "html",
     "contentEditable",
-    "editing framework"
+    "editing",
+    "operational transformation",
+    "ot",
+    "collaboration",
+    "collaborative",
+    "real-time",
+    "virtual dom",
+    "framework"
   ],
   "dependencies": {
     "@ckeditor/ckeditor5-adapter-ckfinder": "^1.0.0-beta.2",
