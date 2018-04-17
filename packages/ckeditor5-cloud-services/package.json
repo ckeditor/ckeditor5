@@ -3,6 +3,7 @@
   "version": "1.0.0-beta.2",
   "description": "CKEditor 5's Cloud Services integration layer.",
   "keywords": [
+    "ckeditor",
     "ckeditor5",
     "ckeditor5-lib"
   ],
