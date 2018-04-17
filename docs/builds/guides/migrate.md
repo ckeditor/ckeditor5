@@ -550,7 +550,7 @@ Note: The number of options was reduced on purpose. We understood that configuri
 		</tr>
 		<tr>
 			<td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-toolbarLocation">toolbarLocation</a></td>
-			<td>N/A. Can be achieved by writing an editor with a customized UI view.</td>
+			<td>N/A. Can be achieved by writing an editor with a customized UI view. See also the {@link module:editor-decoupled/decouplededitor~DecoupledEditor <code>DecoupledEditor</code>} implementation.</td>
 		</tr>
 		<tr>
 			<td><a href="/ckeditor4/docs/#!/api/CKEDITOR.config-cfg-toolbarStartupExpanded">toolbarStartupExpanded</a></td>

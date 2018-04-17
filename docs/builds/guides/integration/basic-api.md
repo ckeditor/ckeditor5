@@ -8,13 +8,18 @@ order: 20
 
 # Basic API
 
-Each CKEditor 5 build provides a different class that handles the creation of editor instances:
+Each CKEditor 5 **build** provides a different **editor class** that handles the creation of editor instances:
 
 * Classic editor &ndash; {@link module:editor-classic/classiceditor~ClassicEditor}
 * Inline editor &ndash; {@link module:editor-inline/inlineeditor~InlineEditor}
 * Balloon editor &ndash; {@link module:editor-balloon/ballooneditor~BalloonEditor}
+* Document editor &ndash; {@link module:editor-decoupled/decouplededitor~DecoupledEditor}
 
 Most of the examples in the documentation use the `ClassicEditor` class, but things should work in a similar way with other builds.
+
+<info-box>
+	A CKEditor 5 build compiles a specific editor class and a set of plugins. Using builds is the simplest way to include editor in your application, but you can also {@link builds/guides/integration/advanced-setup#scenario-2-building-from-source use the editor classes and plugins directly} for grater flexibility.
+</info-box>
 
 ## Creating an editor
 
@@ -70,7 +75,7 @@ InlineEditor
 
 ### Example – Balloon editor
 
-The procedure is the same as for Inline editor &mdash; the only difference is that you need to use the {@link module:editor-balloon/ballooneditor~BalloonEditor#create `BalloonEditor.create()`} method.
+The procedure is the same as for Inline editor. The only difference is that you need to use the {@link module:editor-balloon/ballooneditor~BalloonEditor#create `BalloonEditor.create()`} method.
 
 Add an element where CKEditor should initialize to your page:
 
@@ -93,8 +98,37 @@ BalloonEditor
 	} );
 ```
 
+### Example – Decoupled editor
+
+Add the elements where CKEditor should initialize the toolbar and the editable to your page:
+
+```html
+<!-- The toolbar will be rendered in this container. -->
+<div id="toolbar-container"></div>
+
+<!-- This container will become the editable. -->
+<div id="editor">
+	<p>This is the initial editor content.</p>
+</div>
+```
+
+Then call {@link module:editor-decoupled/decouplededitor~DecoupledEditor#create `DecoupledEditor.create()`} method to create a decoupled editor instance with the toolbar and the editable in two separate containers:
+
+```js
+DecoupledEditor
+	.create( document.querySelector( '#editor' ) )
+	.then( editor => {
+		const toolbarContainer = document.querySelector( '#toolbar-container' );
+
+		toolbarContainer.appendChild( editor.ui.view.toolbar.element );
+	} )
+	.catch( error => {
+		console.error( error );
+	} );
+```
+
 <info-box tip>
-	Every editor class may accept different parameters in the `create()` method and may handle the initialization differently. For instance, the classic editor will replace a given element with an editor, while the inline editor will use the given element to initialize the editor on it. See each editor's documentation to learn the details.
+	Every editor class may accept different parameters in the `create()` method and may handle the initialization differently. For instance, classic editor will replace the given element with an editor, while inline editor will use the given element to initialize an editor on it. See each editor's documentation to learn the details.
 
 	The interface of the editor class is not enforced either. Since different implementations of editors may vary heavily in terms of functionality, the editor class implementers have full freedom regarding the API. Therefore, the examples in this guide may not work with some editor classes.
 </info-box>
@@ -143,7 +177,7 @@ Because builds are distributed as [UMD modules](https://github.com/umdjs/umd), e
 For example:
 
 ```js
-// In CommonJS environment.
+// In the CommonJS environment.
 const ClassicEditor = require( '@ckeditor/ckeditor5-build-classic' );
 ClassicEditor.create( ... ); // [Function]
 
