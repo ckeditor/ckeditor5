@@ -1,4 +1,4 @@
-## Two-steps caret movment [#1286](https://github.com/ckeditor/ckeditor5-engine/issues/1289)
+## Two-steps caret movement [#1286](https://github.com/ckeditor/ckeditor5-engine/issues/1289)
 
 ### Moving right
 1. Put selection one character before the underline

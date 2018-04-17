@@ -87,7 +87,14 @@ export default function bindTwoStepCaretToAttribute( view, model, emitter, attri
 	const twoStepCaretHandler = new TwoStepCaretHandler( model, emitter, attribute );
 	const modelSelection = model.document.selection;
 
-	// Listen to keyboard events and handle cursor before the move.
+	// Listen to keyboard events and handle the caret movement according to the 2-step caret logic.
+	//
+	// Note: This listener has the "high" priority. This because of the filler logic
+	// implemented in the renderer which also engages on #keydown. When the gravity is overridden
+	// the attributes of the (model) selection attributes are reset. It may end up with the
+	// filler kicking in and breaking the selection.
+	//
+	// Find out more in https://github.com/ckeditor/ckeditor5-engine/issues/1301.
 	emitter.listenTo( view.document, 'keydown', ( evt, data ) => {
 		// This implementation works only for collapsed selection.
 		if ( !modelSelection.isCollapsed ) {
@@ -115,7 +122,7 @@ export default function bindTwoStepCaretToAttribute( view, model, emitter, attri
 		} else {
 			twoStepCaretHandler.handleBackwardMovement( position, data );
 		}
-	} );
+	}, { priority: 'high' } );
 }
 
 /**

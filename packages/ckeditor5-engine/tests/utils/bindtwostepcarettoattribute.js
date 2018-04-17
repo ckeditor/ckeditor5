@@ -598,6 +598,29 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 		} );
 	} );
 
+	it( 'should listen with the high priority on view.document#keydown', () => {
+		const highestPrioritySpy = sinon.spy();
+		const highPrioritySpy = sinon.spy();
+		const normalPrioritySpy = sinon.spy();
+
+		setData( model, '<$text c="true">foo[]</$text><$text a="true" b="true">bar</$text>' );
+
+		emitter.listenTo( viewDoc, 'keydown', highestPrioritySpy, { priority: 'highest' } );
+		emitter.listenTo( viewDoc, 'keydown', highPrioritySpy, { priority: 'high' } );
+		emitter.listenTo( viewDoc, 'keydown', normalPrioritySpy, { priority: 'normal' } );
+
+		fireKeyDownEvent( {
+			keyCode: keyCodes.arrowright,
+			preventDefault: preventDefaultSpy
+		} );
+
+		sinon.assert.callOrder(
+			highestPrioritySpy,
+			preventDefaultSpy,
+			highPrioritySpy,
+			normalPrioritySpy );
+	} );
+
 	it( 'should do nothing when key other then arrow left and right is pressed', () => {
 		setData( model, '<$text a="true">foo[]</$text>' );
 
