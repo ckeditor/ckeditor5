@@ -3,8 +3,27 @@
   "version": "1.0.0-beta.2",
   "description": "CKEditor 5 core editor architecture.",
   "keywords": [
+    "ckeditor5-lib",
+    "CKEditor",
     "ckeditor5",
-    "ckeditor5-lib"
+    "ckeditor 5",
+    "WYSIWYG",
+    "WYSIWYM",
+    "text",
+    "rich-text",
+    "richtext",
+    "editor",
+    "editing",
+    "html",
+    "contentEditable",
+    "editing",
+    "operational transformation",
+    "ot",
+    "collaboration",
+    "collaborative",
+    "real-time",
+    "virtual dom",
+    "framework"
   ],
   "dependencies": {
     "@ckeditor/ckeditor5-engine": "^1.0.0-beta.2",
