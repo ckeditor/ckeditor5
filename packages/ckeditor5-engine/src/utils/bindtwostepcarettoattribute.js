@@ -243,7 +243,7 @@ class TwoStepCaretHandler {
 		//
 		//		<paragraph><$text attribute>{}bar</$text>baz</paragraph>
 		//
-		if ( position.isAtStart && this._hasAttribute ) {
+		if ( position.isAtStart && this._hasSelectionAttribute ) {
 			return;
 		}
 
@@ -255,7 +255,7 @@ class TwoStepCaretHandler {
 		//
 		// 		<paragraph><$text attribute="1">foo</$text>{}<$text attribute="2">bar</$text></paragraph>
 		//
-		if ( isBetweenDifferentValues( position, attribute ) && this._hasAttribute ) {
+		if ( isBetweenDifferentValues( position, attribute ) && this._hasSelectionAttribute ) {
 			this._preventCaretMovement( data );
 			this._removeSelectionAttribute();
 
@@ -277,7 +277,7 @@ class TwoStepCaretHandler {
 		//
 		//		<paragraph>foo<$text attribute>bar{}</$text>baz</paragraph>
 		//
-		if ( isAtEndBoundary( position, attribute ) && this._hasAttribute ) {
+		if ( isAtEndBoundary( position, attribute ) && this._hasSelectionAttribute ) {
 			this._preventCaretMovement( data );
 			this._overrideGravity();
 		}
@@ -304,7 +304,7 @@ class TwoStepCaretHandler {
 			//
 			// 		<paragraph><$text attribute="1">foo</$text>{}<$text attribute="2">bar</$text></paragraph>
 			//
-			if ( isBetweenDifferentValues( position, attribute ) && this._hasAttribute ) {
+			if ( isBetweenDifferentValues( position, attribute ) && this._hasSelectionAttribute ) {
 				this._preventCaretMovement( data );
 				this._restoreGravity();
 				this._removeSelectionAttribute();
@@ -338,7 +338,7 @@ class TwoStepCaretHandler {
 			//
 			// 		<paragraph><$text attribute="1">foo</$text>{}<$text attribute="2">bar</$text></paragraph>
 			//
-			if ( isBetweenDifferentValues( position, attribute ) && !this._hasAttribute ) {
+			if ( isBetweenDifferentValues( position, attribute ) && !this._hasSelectionAttribute ) {
 				this._preventCaretMovement( data );
 				this._setSelectionAttributeFromTheNodeBefore( position );
 
@@ -350,7 +350,7 @@ class TwoStepCaretHandler {
 			// 		<paragraph><$text attribute>bar{}</$text></paragraph>
 			//
 			if ( position.isAtEnd && isAtBoundary( position, attribute ) ) {
-				if ( this._hasAttribute ) {
+				if ( this._hasSelectionAttribute ) {
 					return;
 				} else {
 					this._preventCaretMovement( data );
@@ -366,7 +366,7 @@ class TwoStepCaretHandler {
 			// 		<paragraph>{}<$text attribute>bar</$text></paragraph>
 			//
 			if ( position.isAtStart && isAtBoundary( position, attribute ) ) {
-				if ( this._hasAttribute ) {
+				if ( this._hasSelectionAttribute ) {
 					this._removeSelectionAttribute();
 
 					return;
@@ -409,7 +409,7 @@ class TwoStepCaretHandler {
 	 * @private
 	 * @type {Boolean}
 	 */
-	get _hasAttribute() {
+	get _hasSelectionAttribute() {
 		return this._modelSelection.hasAttribute( this.attribute );
 	}
 
