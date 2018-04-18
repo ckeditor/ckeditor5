@@ -12,11 +12,11 @@ order: 20
 
 Features in CKEditor are introduced by plugins. In fact, without plugins CKEditor is an empty API with no use. The builds provided with CKEditor 5 are actually predefined collections of plugins, put together to satisfy specific needs.
 
-Plugins provided by the CKEditor core team are available in [npm](https://www.npmjs.com/search?q=ckeditor5) (and [GitHub](https://github.com/ckeditor?utf8=%E2%9C%93&q=ckeditor5&type=&language=), too) in form of npm packages. A package may contain one or more plugins (e.g. the [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckeditor5-image) packages contains {@link features/image several granular plugins}).
+Plugins provided by the CKEditor core team are available in [npm](https://www.npmjs.com/search?q=ckeditor5) (and [GitHub](https://github.com/ckeditor?utf8=%E2%9C%93&q=ckeditor5&type=&language=), too) in form of npm packages. A package may contain one or more plugins (e.g. the [`@ckeditor/ckeditor5-image`](https://www.npmjs.com/package/@ckeditor/ckeditor5-image) package contains {@link features/image several granular plugins}).
 
 ## Common use cases
 
-Plugins can be pretty much anything. They are simply pieces of code, initialized by the editor if they are configured to be loaded. They can use the richness of the {@link api/index CKEditor 5 Framework API} to enhance the editor or to better integrate it with your application.
+Plugins can be pretty much anything. They are simply pieces of code initialized by the editor if they are configured to be loaded. They can use the richness of the {@link api/index CKEditor 5 Framework API} to enhance the editor or to better integrate it with your application.
 
 Common use cases for plugins are:
 
@@ -25,7 +25,7 @@ Common use cases for plugins are:
 * **Third-party services integration**, for injecting external resources into the content, like videos or social network posts.
 * **Handling image upload** and image manipulation features.
 * **Providing widgets** for easy integration with application structured data.
-* **Injecting analysis tools** that help enhancing the quality of the content.
+* **Injecting analysis tools** that help enhance the quality of the content.
 * And other infinite possibilities...
 
 ## Creating plugins

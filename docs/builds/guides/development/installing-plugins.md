@@ -127,7 +127,7 @@ For example, if you wish to install the text alignment feature:
 npm install --save-dev @ckeditor/ckeditor5-alignment
 ```
 
-Edit the code which initializes the editor:
+Edit the code that initializes the editor:
 
 ```js
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
