@@ -18,7 +18,7 @@ Each CKEditor 5 **build** provides a different **editor class** that handles the
 Most of the examples in the documentation use the `ClassicEditor` class, but things should work in a similar way with other builds.
 
 <info-box>
-	A CKEditor 5 build compiles a specific editor class and a set of plugins. Using builds is the simplest way to include editor in your application, but you can also {@link builds/guides/integration/advanced-setup#scenario-2-building-from-source use the editor classes and plugins directly} for grater flexibility.
+	A CKEditor 5 build compiles a specific editor class and a set of plugins. Using builds is the simplest way to include the editor in your application, but you can also {@link builds/guides/integration/advanced-setup#scenario-2-building-from-source use the editor classes and plugins directly} for greater flexibility.
 </info-box>
 
 ## Creating an editor
