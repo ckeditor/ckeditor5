@@ -10,6 +10,7 @@ import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 import DomEventData from '../../src/view/observer/domeventdata';
 import EventInfo from '@ckeditor/ckeditor5-utils/src/eventinfo';
 import bindTwoStepCaretToAttribute from '../../src/utils/bindtwostepcarettoattribute';
+import Position from '../../src/model/position';
 import { upcastElementToAttribute } from '../../src/conversion/upcast-converters';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import { setData } from '../../src/dev-utils/model';
@@ -35,9 +36,11 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 				allowIn: '$root'
 			} );
 
+			model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 			editor.conversion.for( 'upcast' ).add( upcastElementToAttribute( { view: 'a', model: 'a' } ) );
 			editor.conversion.for( 'upcast' ).add( upcastElementToAttribute( { view: 'b', model: 'b' } ) );
 			editor.conversion.for( 'upcast' ).add( upcastElementToAttribute( { view: 'c', model: 'c' } ) );
+			editor.conversion.elementToElement( { model: 'paragraph', view: 'p' } );
 
 			bindTwoStepCaretToAttribute( editor.editing.view, editor.model, emitter, 'a' );
 		} );
@@ -190,6 +193,23 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 				{ selectionAttributes: [], isGravityOverridden: true, preventDefault: 1, evtStopCalled: 1 }
 			] );
 		} );
+
+		it( 'should handle leaving an attribute followed by another block', () => {
+			setData( model, '<paragraph><$text a="1">foo[]</$text></paragraph><paragraph><$text b="1">bar</$text></paragraph>' );
+
+			testTwoStepCaretMovement( [
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				'→',
+				// <paragraph><$text a="1">bar</$text>[]</paragraph><paragraph>foo</paragraph>
+				{ selectionAttributes: [], isGravityOverridden: true, preventDefault: 1, evtStopCalled: 1 },
+				'→',
+				// <paragraph><$text a="1">bar</$text></paragraph><paragraph>f[]oo</paragraph>
+				{ selectionAttributes: [ 'b' ], isGravityOverridden: false, preventDefault: 1, evtStopCalled: 1 },
+				'→',
+				// <paragraph><$text a="1">bar</$text></paragraph><paragraph>fo[]o</paragraph>
+				{ selectionAttributes: [ 'b' ], isGravityOverridden: false, preventDefault: 1, evtStopCalled: 1 },
+			] );
+		} );
 	} );
 
 	describe( 'moving left', () => {
@@ -307,10 +327,10 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
 				'←',
 				// {}<$text a="1">x</$text> (because it's a first-child)
-				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 1 },
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStopCalled: 1 },
 				'←',
 				// {}<$text a="1">x</$text>
-				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 1 }
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStopCalled: 1 }
 			] );
 		} );
 
@@ -327,9 +347,9 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 				'←',
 				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 1, evtStopCalled: 1 },
 				'←',
-				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStopCalled: 2 },
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 2, evtStopCalled: 2 },
 				'←',
-				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStopCalled: 2 }
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 2, evtStopCalled: 2 }
 			] );
 		} );
 
@@ -354,6 +374,18 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 				'←',
 				// {}<$text a="1">xyz</$text>
 				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStopCalled: 2 }
+			] );
+		} );
+
+		it( 'should handle leaving an attribute preceded by another block', () => {
+			setData( model, '<paragraph><$text b="1">foo</$text></paragraph><paragraph><$text a="1">[]bar</$text></paragraph>' );
+
+			testTwoStepCaretMovement( [
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				'←',
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStopCalled: 1 },
+				'←',
+				{ selectionAttributes: [ 'b' ], isGravityOverridden: false, preventDefault: 1, evtStopCalled: 1 },
 			] );
 		} );
 	} );
@@ -392,19 +424,19 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
 				'←',
 				// []<$text a="1">x</$text>
-				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 1 },
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStopCalled: 1 },
 				'z',
 				// z[]<$text a="1">x</$text>
-				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 1 },
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStopCalled: 1 },
 				'x',
 				// zx[]<$text a="1">x</$text>
-				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 1 },
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStopCalled: 1 },
 				'→',
 				// zx<$text a="1">[]x</$text>
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: true, preventDefault: 1, evtStopCalled: 2 },
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: true, preventDefault: 2, evtStopCalled: 2 },
 				'a',
 				// zx<$text a="1">a[]x</$text>
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 1, evtStopCalled: 2 },
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 2, evtStopCalled: 2 },
 			] );
 		} );
 
@@ -478,7 +510,7 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
 				'←',
 				// []<$text a="1">x</$text>
-				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 1 }
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStopCalled: 1 }
 			] );
 
 			model.change( writer => {
@@ -734,17 +766,29 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 
 					if ( !preventDefaultCalled ) {
 						if ( step == '→' ) {
-							if ( !position.isAtEnd ) {
-								model.change( writer => {
+							model.change( writer => {
+								if ( position.isAtEnd ) {
+									const nextBlock = position.parent.nextSibling;
+
+									if ( nextBlock ) {
+										writer.setSelection( Position.createAt( nextBlock, 0 ) );
+									}
+								} else {
 									writer.setSelection( selection.getFirstPosition().getShiftedBy( 1 ) );
-								} );
-							}
+								}
+							} );
 						} else if ( step == '←' ) {
-							if ( !position.isAtStart ) {
-								model.change( writer => {
+							model.change( writer => {
+								if ( position.isAtStart ) {
+									const previousBlock = position.parent.previousSibling;
+
+									if ( previousBlock ) {
+										writer.setSelection( Position.createAt( previousBlock, 'end' ) );
+									}
+								} else {
 									writer.setSelection( selection.getFirstPosition().getShiftedBy( -1 ) );
-								} );
-							}
+								}
+							} );
 						}
 					}
 				}

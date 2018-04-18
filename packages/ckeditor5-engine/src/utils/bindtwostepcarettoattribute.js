@@ -397,6 +397,7 @@ class TwoStepCaretHandler {
 			if ( position.isAtStart ) {
 				if ( this._hasSelectionAttribute ) {
 					this._removeSelectionAttribute();
+					this._preventCaretMovement( data );
 
 					return true;
 				}
