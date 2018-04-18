@@ -370,12 +370,29 @@ class TwoStepCaretHandler {
 			// 		<paragraph><$text attribute>bar</$text>{}</paragraph>
 			//
 			if ( position.isAtEnd && isAtEndBoundary( position, attribute ) ) {
-				// DON'T ENGAGE 2-SCM if gravity is already overridden. The selection has the attribute already.
+				// DON'T ENGAGE 2-SCM if the selection has the attribute already.
 				// This is a common selection if set using the mouse.
 				//
 				// 		<paragraph><$text attribute>bar{}</$text></paragraph>
 				//
 				if ( this._hasSelectionAttribute ) {
+					// DON'T ENGAGE 2-SCM if the attribute at the end of the block which has length == 1.
+					// Make sure the selection will not the attribute after it moves backwards.
+					//
+					// 		<paragraph>foo<$text attribute>b{}</$text></paragraph>
+					//
+					if ( isStepAfterTheAttributeBoundary( position, attribute ) ) {
+						// Skip the automatic gravity restore upon the next selection#change:range event.
+						// If not skipped, it would automatically restore the gravity, which should remain
+						// overridden.
+						this._skipNextAutomaticGravityRestoration();
+						this._overrideGravity();
+
+						// Don't return "true" here because we didn't call _preventCaretMovement.
+						// Returning here will destabilize the filler logic, which also listens to
+						// keydown (and the event would be stopped).
+					}
+
 					return;
 				}
 				// ENGAGE 2-SCM if the selection has no attribute. This may happen when the user
@@ -413,16 +430,16 @@ class TwoStepCaretHandler {
 			// 		<paragraph>foo<$text attribute>b{}ar</$text>baz</paragraph>
 			// 		<paragraph>foo<$text attribute>bar</$text>b{}az</paragraph>
 			//
-			if ( isAtBoundary( position.getShiftedBy( -1 ), attribute ) ) {
+			if ( isStepAfterTheAttributeBoundary( position, attribute ) ) {
 				// Skip the automatic gravity restore upon the next selection#change:range event.
 				// If not skipped, it would automatically restore the gravity, which should remain
 				// overridden.
 				this._skipNextAutomaticGravityRestoration();
 				this._overrideGravity();
 
-				// Don't return "true" here because we didn't call preventDefault.
+				// Don't return "true" here because we didn't call _preventCaretMovement.
 				// Returning here will destabilize the filler logic, which also listens to
-				// keydown (and it will be stopped).
+				// keydown (and the event would be stopped).
 			}
 		}
 	}
@@ -564,4 +581,10 @@ function isBetweenDifferentValues( position, attribute ) {
 	}
 
 	return nodeAfter.getAttribute( attribute ) !== nodeBefore.getAttribute( attribute );
+}
+
+// @param {module:engine/model/position~Position} position
+// @param {String} attribute
+function isStepAfterTheAttributeBoundary( position, attribute ) {
+	return isAtBoundary( position.getShiftedBy( -1 ), attribute );
 }

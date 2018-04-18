@@ -324,7 +324,7 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
 				'←',
 				// <$text a="1">{}x</$text>
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: true, preventDefault: 0, evtStopCalled: 0 },
 				'←',
 				// {}<$text a="1">x</$text> (because it's a first-child)
 				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStopCalled: 1 },
@@ -345,11 +345,29 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 				'←',
 				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 1, evtStopCalled: 1 },
 				'←',
-				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 1, evtStopCalled: 1 },
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: true, preventDefault: 1, evtStopCalled: 1 },
 				'←',
 				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 2, evtStopCalled: 2 },
 				'←',
 				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 2, evtStopCalled: 2 }
+			] );
+		} );
+
+		// https://github.com/ckeditor/ckeditor5-engine/issues/1301
+		it( 'should handle passing through the only-child with an attribute (single character, text before)', () => {
+			setData( model, 'abc<$text a="1">x</$text>[]' );
+
+			testTwoStepCaretMovement( [
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: false, preventDefault: 0, evtStopCalled: 0 },
+				'←',
+				// abc<$text a="1">{}x</$text>
+				{ selectionAttributes: [ 'a' ], isGravityOverridden: true, preventDefault: 0, evtStopCalled: 0 },
+				'←',
+				// abc{}<$text a="1">x</$text> (because it's a first-child)
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStopCalled: 1 },
+				'←',
+				// abc{}<$text a="1">x</$text>
+				{ selectionAttributes: [], isGravityOverridden: false, preventDefault: 1, evtStopCalled: 1 }
 			] );
 		} );
 
