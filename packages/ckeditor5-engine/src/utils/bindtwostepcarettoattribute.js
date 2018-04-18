@@ -8,6 +8,7 @@
  */
 
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import priorities from '@ckeditor/ckeditor5-utils/src/priorities';
 
 /**
  * This helper enabled the two-step caret (phantom) movement behavior for the given {@link module:engine/model/model~Model}
@@ -89,10 +90,13 @@ export default function bindTwoStepCaretToAttribute( view, model, emitter, attri
 
 	// Listen to keyboard events and handle the caret movement according to the 2-step caret logic.
 	//
-	// Note: This listener has the "high" priority. This because of the filler logic
-	// implemented in the renderer which also engages on #keydown. When the gravity is overridden
-	// the attributes of the (model) selection attributes are reset. It may end up with the
-	// filler kicking in and breaking the selection.
+	// Note: This listener has the "high+1" priority:
+	// * "high" because of the filler logic implemented in the renderer which also engages on #keydown.
+	// When the gravity is overridden the attributes of the (model) selection attributes are reset.
+	// It may end up with the filler kicking in and breaking the selection.
+	// * "+1" because we would like to avoid collisions with other features (like Widgets), which
+	// take over the keydown events with the "high" priority. Two-step caret movement takes precedence
+	// over Widgets in that matter.
 	//
 	// Find out more in https://github.com/ckeditor/ckeditor5-engine/issues/1301.
 	emitter.listenTo( view.document, 'keydown', ( evt, data ) => {
@@ -116,13 +120,20 @@ export default function bindTwoStepCaretToAttribute( view, model, emitter, attri
 		}
 
 		const position = modelSelection.getFirstPosition();
+		let isMovementHandled;
 
 		if ( arrowRightPressed ) {
-			twoStepCaretHandler.handleForwardMovement( position, data );
+			isMovementHandled = twoStepCaretHandler.handleForwardMovement( position, data );
 		} else {
-			twoStepCaretHandler.handleBackwardMovement( position, data );
+			isMovementHandled = twoStepCaretHandler.handleBackwardMovement( position, data );
 		}
-	}, { priority: 'highest' } );
+
+		// Stop the keydown event if the two-step arent movement handled it. Avoid collisions
+		// with other features which may also take over the caret movement (e.g. Widget).
+		if ( isMovementHandled ) {
+			evt.stop();
+		}
+	}, { priority: priorities.get( 'high' ) + 1 } );
 }
 
 /**
@@ -259,7 +270,7 @@ class TwoStepCaretHandler {
 			this._preventCaretMovement( data );
 			this._removeSelectionAttribute();
 
-			return;
+			return true;
 		}
 
 		// ENGAGE 2-SCM when entering an attribute:
@@ -270,7 +281,7 @@ class TwoStepCaretHandler {
 			this._preventCaretMovement( data );
 			this._overrideGravity();
 
-			return;
+			return true;
 		}
 
 		// ENGAGE 2-SCM when leaving an attribute:
@@ -280,6 +291,8 @@ class TwoStepCaretHandler {
 		if ( isAtEndBoundary( position, attribute ) && this._hasSelectionAttribute ) {
 			this._preventCaretMovement( data );
 			this._overrideGravity();
+
+			return true;
 		}
 	}
 
@@ -308,6 +321,8 @@ class TwoStepCaretHandler {
 				this._preventCaretMovement( data );
 				this._restoreGravity();
 				this._removeSelectionAttribute();
+
+				return true;
 			}
 
 			// ENGAGE 2-SCM when at any boundary of the attribute:
@@ -332,6 +347,8 @@ class TwoStepCaretHandler {
 				if ( position.isAtStart ) {
 					this._removeSelectionAttribute();
 				}
+
+				return true;
 			}
 		} else {
 			// ENGAGE 2-SCM when between two different attribute values but selection has no attribute:
@@ -342,7 +359,7 @@ class TwoStepCaretHandler {
 				this._preventCaretMovement( data );
 				this._setSelectionAttributeFromTheNodeBefore( position );
 
-				return;
+				return true;
 			}
 
 			// End of block boundary cases:
@@ -368,7 +385,7 @@ class TwoStepCaretHandler {
 					this._preventCaretMovement( data );
 					this._setSelectionAttributeFromTheNodeBefore( position );
 
-					return;
+					return true;
 				}
 			}
 
@@ -380,6 +397,8 @@ class TwoStepCaretHandler {
 			if ( position.isAtStart ) {
 				if ( this._hasSelectionAttribute ) {
 					this._removeSelectionAttribute();
+
+					return true;
 				}
 
 				return;
@@ -397,6 +416,8 @@ class TwoStepCaretHandler {
 				// overridden.
 				this._skipNextAutomaticGravityRestoration();
 				this._overrideGravity();
+
+				return true;
 			}
 		}
 	}
