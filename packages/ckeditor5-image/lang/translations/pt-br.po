@@ -19,15 +19,15 @@ msgstr "Imagem completa"
 
 msgctxt "Label for the Left aligned image option"
 msgid "Left aligned image"
-msgstr ""
+msgstr "Imagem alinhada à esquerda"
 
 msgctxt "Label for the Centered image option"
 msgid "Centered image"
-msgstr ""
+msgstr "Imagem centralizada"
 
 msgctxt "Label for the Right aligned image option"
 msgid "Right aligned image"
-msgstr ""
+msgstr "Imagem alinhada à direita"
 
 msgctxt "Label for the Change image text alternative button."
 msgid "Change image text alternative"
