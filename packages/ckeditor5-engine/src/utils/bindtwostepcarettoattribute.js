@@ -350,7 +350,7 @@ class TwoStepCaretHandler {
 			// 		<paragraph><$text attribute>bar{}</$text></paragraph>
 			// 		<paragraph><$text attribute>bar</$text>{}</paragraph>
 			//
-			if ( position.isAtEnd && isAtBoundary( position, attribute ) ) {
+			if ( position.isAtEnd && isAtEndBoundary( position, attribute ) ) {
 				// DON'T ENGAGE 2-SCM if gravity is already overridden. The selection has the attribute already.
 				// This is a common selection if set using the mouse.
 				//
@@ -377,7 +377,7 @@ class TwoStepCaretHandler {
 			//
 			// 		<paragraph>{}<$text attribute>bar</$text></paragraph>
 			//
-			if ( position.isAtStart && isAtBoundary( position, attribute ) ) {
+			if ( position.isAtStart ) {
 				if ( this._hasSelectionAttribute ) {
 					this._removeSelectionAttribute();
 				}
