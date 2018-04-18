@@ -531,28 +531,28 @@ function isAtBoundary( position, attribute ) {
 // @param {String} attribute
 function isAtStartBoundary( position, attribute ) {
 	const { nodeBefore, nodeAfter } = position;
-	const isAttrBefore = nodeAfter ? nodeAfter.hasAttribute( attribute ) : false;
-	const isAttrAfter = nodeBefore ? nodeBefore.hasAttribute( attribute ) : false;
-
-	return isAttrBefore && ( !isAttrAfter || nodeBefore.getAttribute( attribute ) !== nodeAfter.getAttribute( attribute ) );
-}
-
-// @param {module:engine/model/position~Position} position
-// @param {String} attribute
-function isAtEndBoundary( position, attribute ) {
-	const { nodeBefore, nodeAfter } = position;
-	const isAttrBefore = nodeAfter ? nodeAfter.hasAttribute( attribute ) : false;
-	const isAttrAfter = nodeBefore ? nodeBefore.hasAttribute( attribute ) : false;
+	const isAttrBefore = nodeBefore ? nodeBefore.hasAttribute( attribute ) : false;
+	const isAttrAfter = nodeAfter ? nodeAfter.hasAttribute( attribute ) : false;
 
 	return isAttrAfter && ( !isAttrBefore || nodeBefore.getAttribute( attribute ) !== nodeAfter.getAttribute( attribute ) );
 }
 
 // @param {module:engine/model/position~Position} position
 // @param {String} attribute
+function isAtEndBoundary( position, attribute ) {
+	const { nodeBefore, nodeAfter } = position;
+	const isAttrBefore = nodeBefore ? nodeBefore.hasAttribute( attribute ) : false;
+	const isAttrAfter = nodeAfter ? nodeAfter.hasAttribute( attribute ) : false;
+
+	return isAttrBefore && ( !isAttrAfter || nodeBefore.getAttribute( attribute ) !== nodeAfter.getAttribute( attribute ) );
+}
+
+// @param {module:engine/model/position~Position} position
+// @param {String} attribute
 function isBetweenDifferentValues( position, attribute ) {
 	const { nodeBefore, nodeAfter } = position;
-	const isAttrBefore = nodeAfter ? nodeAfter.hasAttribute( attribute ) : false;
-	const isAttrAfter = nodeBefore ? nodeBefore.hasAttribute( attribute ) : false;
+	const isAttrBefore = nodeBefore ? nodeBefore.hasAttribute( attribute ) : false;
+	const isAttrAfter = nodeAfter ? nodeAfter.hasAttribute( attribute ) : false;
 
 	if ( !isAttrAfter || !isAttrBefore ) {
 		return;
