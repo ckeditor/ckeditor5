@@ -19,7 +19,7 @@ In order to start developing CKEditor 5 you will require:
 
 ## Bundler
 
-CKEditor 5 is currently built using [webpack](https://webpack.js.org) (>=3.x.x). All builds, examples and demos are generated using this bundler. It should also be possible to build CKEditor using other bundlers (if they are configured properly), such as [Rollup](https://github.com/rollup/rollup) or [Browserify](http://browserify.org/) but these setups are not officially supported yet. Also, the [`@ckeditor/ckeditor5-dev-webpack-plugin`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-webpack-plugin) that allows to localize the editor is only available for webpack. More work on this subject will be done after v1.0.0.
+CKEditor 5 is currently built using [webpack](https://webpack.js.org) (>=3.x.x). All builds, examples and demos are generated using this bundler. It should also be possible to build CKEditor using other bundlers (if they are configured properly), such as [Rollup](https://github.com/rollup/rollup) or [Browserify](http://browserify.org/), but these setups are not officially supported yet. Also, the [`@ckeditor/ckeditor5-dev-webpack-plugin`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-webpack-plugin) that allows to localize the editor is only available for webpack. More work on this subject will be done after v1.0.0.
 
 Therefore, **a prerequisite to this guide is that you are using webpack as your build tool**.
 
@@ -70,7 +70,7 @@ This scenario allows you to fully control the building process of CKEditor. This
 	Similar results to what this method allows can be achieved by {@link builds/guides/development/custom-builds customizing an existing build} and integrating your custom build like in scenario 1. This will give faster build times (since CKEditor will be built once and committed), however, it requires maintaining a separate repository and installing the code from that repository into your project (e.g. by publishing a new npm package or using tools like [Lerna](https://github.com/lerna/lerna)). This makes it less convenient than the method described in this scenario.
 </info-box>
 
-First of all, you need to install source packages that you will use. If you base your integration on one of the existing builds, you can take them from that build's `package.json` file (see e.g. [classic build's `package.json`](https://github.com/ckeditor/ckeditor5-build-classic/tree/master/package.json)). At this moment you can choose the editor creator and features you want.
+First of all, you need to install source packages that you will use. If you base your integration on one of the existing builds, you can take them from that build's `package.json` file (see e.g. [classic build's `package.json`](https://github.com/ckeditor/ckeditor5-build-classic/tree/master/package.json)). At this moment you can choose the editor creator and the features you want.
 
 Copy these dependencies to your `package.json` and call `npm install` to install them. The `dependencies` (or `devDependencies`) section of `package.json` should look more or less like this:
 
@@ -115,9 +115,9 @@ You may also want to install [`babel-minify-webpack-plugin`](https://github.com/
 
 ### Webpack configuration
 
-Now, you can configure webpack. There are a couple of things which you need to take care of when building CKEditor:
+You can now configure webpack. There are a couple of things that you need to take care of when building CKEditor:
 
-* Handling CSS files of CKEditor's theme. They are included in the CKEditor sources using `import 'path/to/styles.css'` statements, so you need [proper loaders](https://webpack.js.org/loaders/).
+* Handling CSS files of the CKEditor theme. They are included in the CKEditor sources using `import 'path/to/styles.css'` statements, so you need [proper loaders](https://webpack.js.org/loaders/).
 * Similarly, you need to handle bundling SVG icons, which are also imported directly into the source. For that you need the [`raw-loader`](https://webpack.js.org/loaders/raw-loader/).
 * Finally, to localize the editor you need to use the [`@ckeditor/ckeditor5-dev-webpack-plugin`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-webpack-plugin) webpack plugin.
 
@@ -141,14 +141,14 @@ module.exports = {
 		rules: [
 			{
 				// Or /ckeditor5-[^/]+\/theme\/icons\/[^/]+\.svg$/ if you want to limit this loader
-				// to CKEditor 5's icons only.
+				// to CKEditor 5 icons only.
 				test: /\.svg$/,
 
 				use: [ 'raw-loader' ]
 			},
 			{
 				// Or /ckeditor5-[^/]+\/theme\/[\w-/]+\.css$/ if you want to limit this loader
-				// to CKEditor 5's theme only.
+				// to CKEditor 5 theme only.
 				test: /\.css$/,
 				use: [
 					{
@@ -241,7 +241,7 @@ This module will export an editor creator class which has all the plugins and co
 import ClassicEditor from './ckeditor';
 
 ClassicEditor
-	// Note that you don't have to specify the plugin and toolbar configuraiton — using defaults from the build.
+	// Note that you do not have to specify the plugin and toolbar configuraiton — using defaults from the build.
 	.create( document.querySelector( '#editor' ) )
 	.then( editor => {
 		console.log( 'Editor was initialized', editor );
@@ -387,7 +387,7 @@ In order to create an ES5 build of CKEditor 5 you can use [Babel](https://babelj
 npm install --save babel-loader babel-core babel-preset-env regenerator-runtime
 ```
 
-Then, add this item to webpack's [`module.rules`](https://webpack.js.org/configuration/module/#module-rules) section:
+Then, add this item to webpack [`module.rules`](https://webpack.js.org/configuration/module/#module-rules) section:
 
 ```js
 module: {
@@ -414,14 +414,14 @@ And load [`regenerator-runtime`](https://www.npmjs.com/package/regenerator-runti
 entry: [
 	require.resolve( 'regenerator-runtime/runtime.js' ),
 
-	// your entries...
+	// Your entries...
 ]
 ```
 
 <info-box>
-	This setup ensures that the source code is transpiled to ES5. However, it does not ensure that all ES6 polyfills are loaded. Therefore, if you would like to, for example, give [bringing IE11 compatibility](https://github.com/ckeditor/ckeditor5/issues/330) a try make sure to also load [`babel-polyfill`](https://babeljs.io/docs/usage/polyfill/).
+	This setup ensures that the source code is transpiled to ES5. However, it does not ensure that all ES6 polyfills are loaded. Therefore, if you would like to, for example, give [bringing IE11 compatibility](https://github.com/ckeditor/ckeditor5/issues/330) a try, make sure to also load [`babel-polyfill`](https://babeljs.io/docs/usage/polyfill/).
 </info-box>
 
 <info-box>
-	The [`babel-preset-env`](https://github.com/babel/babel-preset-env) package lets you choose the environment which you want to support and transpiles ES6+ features to match that environment's capabilities. Without configuration it will produce ES5 builds.
+	The [`babel-preset-env`](https://github.com/babel/babel-preset-env) package lets you choose the environment that you want to support and transpiles ES6+ features to match that environment's capabilities. Without configuration it will produce ES5 builds.
 </info-box>
