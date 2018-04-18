@@ -9,6 +9,7 @@
  * @module utils/translation-service
  */
 
+/* istanbul ignore else */
 if ( !window.CKEDITOR_TRANSLATIONS ) {
 	window.CKEDITOR_TRANSLATIONS = {};
 }
