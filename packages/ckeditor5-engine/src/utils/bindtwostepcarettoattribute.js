@@ -345,14 +345,26 @@ class TwoStepCaretHandler {
 				return;
 			}
 
-			// DON'T ENGAGE 2-SCM if gravity is already overridden. It means that we have already entered
+			// End of block boundary cases:
 			//
 			// 		<paragraph><$text attribute>bar{}</$text></paragraph>
+			// 		<paragraph><$text attribute>bar</$text>{}</paragraph>
 			//
 			if ( position.isAtEnd && isAtBoundary( position, attribute ) ) {
+				// DON'T ENGAGE 2-SCM if gravity is already overridden. The selection has the attribute already.
+				// This is a common selection if set using the mouse.
+				//
+				// 		<paragraph><$text attribute>bar{}</$text></paragraph>
+				//
 				if ( this._hasSelectionAttribute ) {
 					return;
-				} else {
+				}
+				// ENGAGE 2-SCM if the selection has no attribute. This may happen when the user
+				// left the attribute using a FORWARD 2-SCM.
+				//
+				// 		<paragraph><$text attribute>bar</$text>{}</paragraph>
+				//
+				else {
 					this._preventCaretMovement( data );
 					this._setSelectionAttributeFromTheNodeBefore( position );
 
