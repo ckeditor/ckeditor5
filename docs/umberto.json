@@ -140,7 +140,14 @@
 		{
 			"name": "Features",
 			"id": "features",
-			"slug": "features"
+			"slug": "features",
+			"categories": [
+				{
+					"name": "Collaboration",
+					"id": "features-collaboration",
+					"slug": "collaboration"
+				}
+			]
 		},
 		{
 			"name": "API",
