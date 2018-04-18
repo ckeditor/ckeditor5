@@ -82,9 +82,15 @@ DecoupledEditor.build = {
 			]
 		},
 		image: {
+			styles: [
+				'full',
+				'alignLeft',
+				'alignRight'
+			],
 			toolbar: [
+				'imageStyle:alignLeft',
 				'imageStyle:full',
-				'imageStyle:side',
+				'imageStyle:alignRight',
 				'|',
 				'imageTextAlternative'
 			]
