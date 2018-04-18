@@ -50,7 +50,7 @@ git remote add upstream https://github.com/ckeditor/ckeditor5-build-classic.git
 </info-box>
 
 <info-box warning>
-	It is important that you use the `stable` branch of a build, not the `master` branch. The `master` branch might contain changes which are not yet compatible with the versions of CKEditor 5 source packages which were published on npm.
+	It is important that you use the `stable` branch of a build, not the `master` branch. The `master` branch might contain changes which are not yet compatible with the versions of CKEditor 5 source packages that were published on npm.
 </info-box>
 
 ## Build anatomy
@@ -72,13 +72,13 @@ In order to customize a build you need to:
 
 ### Installing dependencies
 
-First, you need to install dependencies which are already specified in build's `package.json`:
+First, you need to install dependencies which are already specified in the build's `package.json`:
 
 ```bash
 npm install
 ```
 
-Then, you can add missing depencies (i.e. packages you want to add to your build). The easiest way to do so is by typing:
+Then, you can add missing dependencies (i.e. packages you want to add to your build). The easiest way to do so is by typing:
 
 ```bash
 npm install --save-dev <package-name>
@@ -87,7 +87,7 @@ npm install --save-dev <package-name>
 This will install the package and add it to `package.json`. You can also edit `package.json` manually.
 
 <info-box hint>
-	Due to a non-deterministic way how npm installs packages, it is recommended to run `rm -rf node_modules && npm install` when in doubt. This will prevent some packages from getting installed more than once in `node_modules/` (which might lead to broken builds).
+	Due to the non-deterministic way how npm installs packages, it is recommended to run `rm -rf node_modules && npm install` when in doubt. This will prevent some packages from getting installed more than once in `node_modules/` (which might lead to broken builds).
 
 	You can also give [Yarn](https://yarnpkg.com/lang/en/) a try.
 </info-box>
