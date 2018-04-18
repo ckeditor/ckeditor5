@@ -420,7 +420,7 @@ class TwoStepCaretHandler {
 				this._skipNextAutomaticGravityRestoration();
 				this._overrideGravity();
 
-				// Don't return "true" here because we didn't call preventPrevent.
+				// Don't return "true" here because we didn't call preventDefault.
 				// Returning here will destabilize the filler logic, which also listens to
 				// keydown (and it will be stopped).
 			}
