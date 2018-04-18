@@ -380,8 +380,6 @@ class TwoStepCaretHandler {
 			if ( position.isAtStart && isAtBoundary( position, attribute ) ) {
 				if ( this._hasSelectionAttribute ) {
 					this._removeSelectionAttribute();
-
-					return;
 				}
 
 				return;
