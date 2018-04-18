@@ -230,6 +230,7 @@ class TwoStepCaretHandler {
 	 *
 	 * @param {module:engine/model/position~Position} position The model position at the moment of the key press.
 	 * @param {module:engine/view/observer/domeventdata~DomEventData} data Data of the key press.
+	 * @returns {Boolean} `true` when the handler prevented caret movement
 	 */
 	handleForwardMovement( position, data ) {
 		const attribute = this.attribute;
@@ -302,6 +303,7 @@ class TwoStepCaretHandler {
 	 *
 	 * @param {module:engine/model/position~Position} position The model position at the moment of the key press.
 	 * @param {module:engine/view/observer/domeventdata~DomEventData} data Data of the key press.
+	 * @returns {Boolean} `true` when the handler prevented caret movement
 	 */
 	handleBackwardMovement( position, data ) {
 		const attribute = this.attribute;
@@ -418,7 +420,9 @@ class TwoStepCaretHandler {
 				this._skipNextAutomaticGravityRestoration();
 				this._overrideGravity();
 
-				return true;
+				// Don't return "true" here because we didn't call preventPrevent.
+				// Returning here will destabilize the filler logic, which also listens to
+				// keydown (and it will be stopped).
 			}
 		}
 	}
