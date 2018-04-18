@@ -499,44 +499,33 @@ function isAtBoundary( position, attribute ) {
 // @param {module:engine/model/position~Position} position
 // @param {String} attribute
 function isAtStartBoundary( position, attribute ) {
-	const prevNode = position.nodeBefore;
-	const nextNode = position.nodeAfter;
-	const isAttrInNext = nextNode ? nextNode.hasAttribute( attribute ) : false;
-	const isAttrInPrev = prevNode ? prevNode.hasAttribute( attribute ) : false;
+	const { nodeBefore, nodeAfter } = position;
+	const isAttrBefore = nodeAfter ? nodeAfter.hasAttribute( attribute ) : false;
+	const isAttrAfter = nodeBefore ? nodeBefore.hasAttribute( attribute ) : false;
 
-	if ( ( !isAttrInPrev && isAttrInNext ) || isBetweenDifferentValues( position, attribute ) ) {
-		return true;
-	}
-
-	return false;
+	return isAttrBefore && ( !isAttrAfter || nodeBefore.getAttribute( attribute ) !== nodeAfter.getAttribute( attribute ) );
 }
 
 // @param {module:engine/model/position~Position} position
 // @param {String} attribute
 function isAtEndBoundary( position, attribute ) {
-	const prevNode = position.nodeBefore;
-	const nextNode = position.nodeAfter;
-	const isAttrInNext = nextNode ? nextNode.hasAttribute( attribute ) : false;
-	const isAttrInPrev = prevNode ? prevNode.hasAttribute( attribute ) : false;
+	const { nodeBefore, nodeAfter } = position;
+	const isAttrBefore = nodeAfter ? nodeAfter.hasAttribute( attribute ) : false;
+	const isAttrAfter = nodeBefore ? nodeBefore.hasAttribute( attribute ) : false;
 
-	if ( ( isAttrInPrev && !isAttrInNext ) || isBetweenDifferentValues( position, attribute ) ) {
-		return true;
-	}
-
-	return false;
+	return isAttrAfter && ( !isAttrBefore || nodeBefore.getAttribute( attribute ) !== nodeAfter.getAttribute( attribute ) );
 }
 
 // @param {module:engine/model/position~Position} position
 // @param {String} attribute
 function isBetweenDifferentValues( position, attribute ) {
-	const prevNode = position.nodeBefore;
-	const nextNode = position.nodeAfter;
-	const isAttrInNext = nextNode ? nextNode.hasAttribute( attribute ) : false;
-	const isAttrInPrev = prevNode ? prevNode.hasAttribute( attribute ) : false;
+	const { nodeBefore, nodeAfter } = position;
+	const isAttrBefore = nodeAfter ? nodeAfter.hasAttribute( attribute ) : false;
+	const isAttrAfter = nodeBefore ? nodeBefore.hasAttribute( attribute ) : false;
 
-	if ( !isAttrInPrev || !isAttrInNext ) {
+	if ( !isAttrAfter || !isAttrBefore ) {
 		return;
 	}
 
-	return nextNode.getAttribute( attribute ) !== prevNode.getAttribute( attribute );
+	return nodeAfter.getAttribute( attribute ) !== nodeBefore.getAttribute( attribute );
 }
