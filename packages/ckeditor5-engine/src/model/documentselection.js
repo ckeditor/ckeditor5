@@ -18,6 +18,7 @@ import TextProxy from './textproxy';
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import log from '@ckeditor/ckeditor5-utils/src/log';
+import uid from '@ckeditor/ckeditor5-utils/src/uid';
 
 const storePrefix = 'selection:';
 
@@ -399,31 +400,36 @@ export default class DocumentSelection {
 	}
 
 	/**
-	 * Temporarily changes the gravity of the selection from left to right. The gravity defines from which direction
-	 * the selection inherits its attributes. If it's the default left gravity, the selection (after being moved by
-	 * the user) inherits attributes from its left hand side. This method allows to temporarily override this behavior
-	 * by forcing the gravity to the right.
+	 * Temporarily changes the gravity of the selection from the left to the right.
+	 *
+	 * The gravity defines from which direction the selection inherits its attributes. If it's the default left
+	 * gravity, the selection (after being moved by the the user) inherits attributes from its left hand side.
+	 * This method allows to temporarily override this behavior by forcing the gravity to the right.
+	 *
+	 * It returns an unique identifier which is required to restore the gravity. It guarantees the symmetry
+	 * of the process.
 	 *
 	 * @see module:engine/model/writer~Writer#overrideSelectionGravity
 	 * @protected
-	 * @param {Boolean} [customRestore=false] When `true` then gravity won't be restored until
-	 * {@link ~DocumentSelection#_restoreGravity} will be called directly. When `false` then gravity is restored
-	 * after selection is moved by user.
+	 * @returns {String} The unique id which allows restoring the gravity.
 	 */
-	_overrideGravity( customRestore ) {
-		this._selection.overrideGravity( customRestore );
+	_overrideGravity() {
+		return this._selection.overrideGravity();
 	}
 
 	/**
-	 * Restores {@link ~DocumentSelection#_overrideGravity overridden gravity}.
+	 * Restores the {@link ~DocumentSelection#_overrideGravity overridden gravity}.
 	 *
-	 * Note that gravity remains overridden as long as won't be restored the same number of times as was overridden.
+	 * Restoring the gravity is only possible using the unique identifier returned by
+	 * {@link ~DocumentSelection#_overrideGravity}. Note that the gravity remains overridden as long as won't be restored
+	 * the same number of times it was overridden.
 	 *
 	 * @see module:engine/model/writer~Writer#restoreSelectionGravity
 	 * @protected
+	 * @param {String} uid The unique id returned by {@link #_overrideGravity}.
 	 */
-	_restoreGravity() {
-		this._selection.restoreGravity();
+	_restoreGravity( uid ) {
+		this._selection.restoreGravity( uid );
 	}
 
 	/**
@@ -530,12 +536,13 @@ class LiveSelection extends Selection {
 		// @member {Array} module:engine/model/liveselection~LiveSelection#_hasChangedRange
 		this._hasChangedRange = false;
 
-		// Each overriding gravity increase the counter and each restoring decrease it.
-		// Gravity is overridden when counter is greater than 0. This is to prevent conflicts when
-		// gravity is overridden by more than one feature at the same time.
+		// Each overriding gravity adds an UID to the set and each removal removes it.
+		// Gravity is overridden when there's at least one UID in the set.
+		// Gravity is restored when the set is empty.
+		// This is to prevent conflicts when gravity is overridden by more than one feature at the same time.
 		// @private
-		// @type {Number}
-		this._overriddenGravityCounter = 0;
+		// @type {Set}
+		this._overriddenGravityRegister = new Set();
 
 		// Add events that will ensure selection correctness.
 		this.on( 'change:range', () => {
@@ -612,7 +619,7 @@ class LiveSelection extends Selection {
 	// @protected
 	// @type {Boolean}
 	get isGravityOverridden() {
-		return this._overriddenGravityCounter > 0;
+		return !!this._overriddenGravityRegister.size;
 	}
 
 	// Unbinds all events previously bound by live selection.
@@ -666,28 +673,40 @@ class LiveSelection extends Selection {
 		}
 	}
 
-	overrideGravity( customRestore ) {
-		this._overriddenGravityCounter++;
+	overrideGravity() {
+		const overrideUid = uid();
 
-		if ( this._overriddenGravityCounter == 1 ) {
-			if ( !customRestore ) {
-				this.on( 'change:range', ( evt, data ) => {
-					if ( data.directChange ) {
-						this.restoreGravity();
-						evt.off();
-					}
-				} );
-			}
+		// Remember that another overriding has been requested. It will need to be removed
+		// before the gravity is to be restored.
+		this._overriddenGravityRegister.add( overrideUid );
 
-			this._updateAttributes();
+		if ( this._overriddenGravityRegister.size === 1 ) {
+			this._refreshAttributes();
 		}
+
+		return overrideUid;
 	}
 
-	restoreGravity() {
-		this._overriddenGravityCounter--;
+	restoreGravity( uid ) {
+		if ( !this._overriddenGravityRegister.has( uid ) ) {
+			/**
+			 * Restoring gravity for an unknown UID is not possible. Make sure you are using a correct
+			 * UID obtained from the {@link module:engine/model/writer~Writer#overrideSelectionGravity} to restore.
+			 *
+			 * @error document-selection-gravity-wrong-restore
+			 * @param {String} uid The unique identifier returned by {@link #overrideGravity}.
+			 */
+			throw new CKEditorError(
+				'document-selection-gravity-wrong-restore: Attempting to restore the selection gravity for an unknown UID.',
+				{ uid }
+			);
+		}
 
+		this._overriddenGravityRegister.delete( uid );
+
+		// Restore gravity only when all overriding have been restored.
 		if ( !this.isGravityOverridden ) {
-			this._updateAttributes();
+			this._refreshAttributes();
 		}
 	}
 

@@ -2455,6 +2455,10 @@ describe( 'Writer', () => {
 			overrideGravitySpy.restore();
 		} );
 
+		it( 'should return the unique id', () => {
+			expect( overrideSelectionGravity() ).to.be.a( 'string' );
+		} );
+
 		it( 'should not get attributes from the node before the caret when gravity is overridden', () => {
 			const root = doc.createRoot();
 			root._appendChild( [
@@ -2472,37 +2476,20 @@ describe( 'Writer', () => {
 			expect( Array.from( model.document.selection.getAttributeKeys() ) ).to.deep.equal( [ 'foo' ] );
 			expect( model.document.selection.isGravityOverridden ).to.true;
 
-			// Disable override by moving selection.
+			// Moving selection should not restore the gravity.
 			setSelection( new Position( root, [ 5 ] ) );
 
 			expect( Array.from( model.document.selection.getAttributeKeys() ) ).to.deep.equal( [ 'foo', 'bar' ] );
-			expect( model.document.selection.isGravityOverridden ).to.false;
-		} );
-
-		it( 'should allow to restorer gravity in a custom way', () => {
-			const root = doc.createRoot();
-			root._appendChild( [ new Text( 'foobar', { foo: true } ) ] );
-
-			setSelection( new Position( root, [ 1 ] ) );
-
-			overrideSelectionGravity( true );
-
-			// Moving selection does not restore gravity.
-			setSelection( new Position( root, [ 2 ] ) );
 			expect( model.document.selection.isGravityOverridden ).to.true;
-
-			// We need to do it manually.
-			restoreSelectionGravity();
-
-			expect( model.document.selection.isGravityOverridden ).to.false;
 		} );
 	} );
 
 	describe( 'restoreSelectionGravity()', () => {
 		it( 'should use DocumentSelection#_restoreGravity', () => {
+			const overrideUid = overrideSelectionGravity();
 			const restoreGravitySpy = sinon.spy( DocumentSelection.prototype, '_restoreGravity' );
 
-			restoreSelectionGravity();
+			restoreSelectionGravity( overrideUid );
 
 			sinon.assert.calledOnce( restoreGravitySpy );
 			restoreGravitySpy.restore();
@@ -2518,11 +2505,11 @@ describe( 'Writer', () => {
 
 			setSelection( new Position( root, [ 6 ] ) );
 
-			overrideSelectionGravity();
+			const overrideUid = overrideSelectionGravity();
 
 			expect( Array.from( model.document.selection.getAttributeKeys() ) ).to.deep.equal( [ 'foo' ] );
 
-			restoreSelectionGravity();
+			restoreSelectionGravity( overrideUid );
 
 			expect( Array.from( model.document.selection.getAttributeKeys() ) ).to.deep.equal( [ 'foo', 'bar' ] );
 		} );
@@ -2694,15 +2681,15 @@ describe( 'Writer', () => {
 		} );
 	}
 
-	function overrideSelectionGravity( customRestore ) {
-		model.change( writer => {
-			writer.overrideSelectionGravity( customRestore );
+	function overrideSelectionGravity() {
+		return model.change( writer => {
+			return writer.overrideSelectionGravity();
 		} );
 	}
 
-	function restoreSelectionGravity() {
+	function restoreSelectionGravity( overrideUid ) {
 		model.change( writer => {
-			writer.restoreSelectionGravity();
+			writer.restoreSelectionGravity( overrideUid );
 		} );
 	}
 } );
