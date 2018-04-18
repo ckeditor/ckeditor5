@@ -121,7 +121,7 @@ If you {@link framework/guides/quick-start build the editor from source}, then t
 2. Adding it to your editor's configuration.
 3. Building your project.
 
-For example, if you wish to install the text aligment feature:
+For example, if you wish to install the text alignment feature:
 
 ```
 npm install --save-dev @ckeditor/ckeditor5-alignment
@@ -136,12 +136,12 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 
-import Alignment from '@ckeditor/ckeditor5-aligment/src/alignment'; //   <--- ADDED
+import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment'; //   <--- ADDED
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Essentials, Paragraph, Bold, Italic, Aligment ], //   <--- MODIFIED
-		toolbar: [ 'bold', 'italic', 'aligmentDropdown' ] //             <--- MODIFIED
+		plugins: [ Essentials, Paragraph, Bold, Italic, Alignment ], //   <--- MODIFIED
+		toolbar: [ 'bold', 'italic', 'alignment' ] //             <--- MODIFIED
 	} )
 	.then( editor => {
 		console.log( 'Editor was initialized', editor );
