@@ -122,7 +122,7 @@ export default function bindTwoStepCaretToAttribute( view, model, emitter, attri
 		} else {
 			twoStepCaretHandler.handleBackwardMovement( position, data );
 		}
-	}, { priority: 'high' } );
+	}, { priority: 'highest' } );
 }
 
 /**

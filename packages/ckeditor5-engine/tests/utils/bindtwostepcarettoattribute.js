@@ -598,7 +598,7 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 		} );
 	} );
 
-	it( 'should listen with the high priority on view.document#keydown', () => {
+	it( 'should listen with the highest priority on view.document#keydown', () => {
 		const highestPrioritySpy = sinon.spy();
 		const highPrioritySpy = sinon.spy();
 		const normalPrioritySpy = sinon.spy();
@@ -615,8 +615,8 @@ describe( 'bindTwoStepCaretToAttribute()', () => {
 		} );
 
 		sinon.assert.callOrder(
-			highestPrioritySpy,
 			preventDefaultSpy,
+			highestPrioritySpy,
 			highPrioritySpy,
 			normalPrioritySpy );
 	} );
