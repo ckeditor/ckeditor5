@@ -38,14 +38,12 @@ export function downcastInsertTable( options = {} ) {
 
 		const asWidget = options && options.asWidget;
 
-		const tableElement = asWidget ?
-			conversionApi.writer.createEditableElement( 'table' ) :
-			conversionApi.writer.createContainerElement( 'table' );
+		const tableElement = conversionApi.writer.createContainerElement( 'table' );
 
 		let tableWidget;
 
 		if ( asWidget ) {
-			tableWidget = toWidgetEditable( toWidget( tableElement, conversionApi.writer ), conversionApi.writer );
+			tableWidget = toWidget( tableElement, conversionApi.writer );
 		}
 
 		const tableWalker = new TableWalker( table );
@@ -62,7 +60,7 @@ export function downcastInsertTable( options = {} ) {
 			// Consume table cell - it will be always consumed as we convert whole table at once.
 			conversionApi.consumable.consume( cell, 'insert' );
 
-			createViewTableCellElement( tableWalkerValue, ViewPosition.createAt( trElement, 'end' ), conversionApi );
+			createViewTableCellElement( tableWalkerValue, ViewPosition.createAt( trElement, 'end' ), conversionApi, options );
 		}
 
 		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
@@ -79,7 +77,7 @@ export function downcastInsertTable( options = {} ) {
  *
  * @returns {Function} Conversion helper.
  */
-export function downcastInsertRow() {
+export function downcastInsertRow( options = {} ) {
 	return dispatcher => dispatcher.on( 'insert:tableRow', ( evt, data, conversionApi ) => {
 		const tableRow = data.item;
 
@@ -102,7 +100,7 @@ export function downcastInsertRow() {
 			// Consume table cell - it will be always consumed as we convert whole row at once.
 			conversionApi.consumable.consume( tableWalkerValue.cell, 'insert' );
 
-			createViewTableCellElement( tableWalkerValue, ViewPosition.createAt( trElement, 'end' ), conversionApi );
+			createViewTableCellElement( tableWalkerValue, ViewPosition.createAt( trElement, 'end' ), conversionApi, options );
 		}
 	}, { priority: 'normal' } );
 }
@@ -114,7 +112,7 @@ export function downcastInsertRow() {
  *
  * @returns {Function} Conversion helper.
  */
-export function downcastInsertCell() {
+export function downcastInsertCell( options = {} ) {
 	return dispatcher => dispatcher.on( 'insert:tableCell', ( evt, data, conversionApi ) => {
 		const tableCell = data.item;
 
@@ -133,7 +131,7 @@ export function downcastInsertCell() {
 				const trElement = conversionApi.mapper.toViewElement( tableRow );
 				const insertPosition = ViewPosition.createAt( trElement, tableRow.getChildIndex( tableCell ) );
 
-				createViewTableCellElement( tableWalkerValue, insertPosition, conversionApi );
+				createViewTableCellElement( tableWalkerValue, insertPosition, conversionApi, options );
 
 				// No need to iterate further.
 				return;
@@ -252,12 +250,16 @@ export function downcastRemoveRow() {
 // @param {module:table/tablewalker~TableWalkerValue} tableWalkerValue
 // @param {module:engine/view/position~Position} insertPosition
 // @param conversionApi
-function createViewTableCellElement( tableWalkerValue, insertPosition, conversionApi ) {
+function createViewTableCellElement( tableWalkerValue, insertPosition, conversionApi, options ) {
 	const tableCell = tableWalkerValue.cell;
+
+	const asWidget = options && options.asWidget;
 
 	const cellElementName = getCellElementName( tableWalkerValue );
 
-	const cellElement = conversionApi.writer.createContainerElement( cellElementName );
+	const cellElement = asWidget ?
+		toWidgetEditable( conversionApi.writer.createEditableElement( cellElementName ), conversionApi.writer ) :
+		conversionApi.writer.createContainerElement( cellElementName );
 
 	conversionApi.mapper.bindElements( tableCell, cellElement );
 	conversionApi.writer.insert( insertPosition, cellElement );

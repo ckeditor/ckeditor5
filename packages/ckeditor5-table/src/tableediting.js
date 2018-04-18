@@ -19,6 +19,8 @@ import InsertRowCommand from './commands/insertrowcommand';
 import InsertColumnCommand from './commands/insertcolumncommand';
 import { getParentTable } from './commands/utils';
 
+import './../theme/table.css';
+
 /**
  * The table editing feature.
  *
@@ -60,14 +62,17 @@ export default class TablesEditing extends Plugin {
 		conversion.for( 'editingDowncast' ).add( downcastInsertTable( { asWidget: true } ) );
 		conversion.for( 'dataDowncast' ).add( downcastInsertTable() );
 
-		// Insert conversion
-		conversion.for( 'downcast' ).add( downcastInsertRow() );
-		conversion.for( 'downcast' ).add( downcastInsertCell() );
+		// Insert row conversion.
+		conversion.for( 'editingDowncast' ).add( downcastInsertRow( { asWidget: true } ) );
+		conversion.for( 'dataDowncast' ).add( downcastInsertRow() );
 
 		// Remove row conversion.
 		conversion.for( 'downcast' ).add( downcastRemoveRow() );
 
 		// Table cell conversion.
+		conversion.for( 'editingDowncast' ).add( downcastInsertCell( { asWidget: true } ) );
+		conversion.for( 'dataDowncast' ).add( downcastInsertCell() );
+
 		conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'td' } ) );
 		conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'th' } ) );
 

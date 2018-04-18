@@ -291,8 +291,9 @@ describe( 'downcast converters', () => {
 							isLimit: true
 						} );
 
-						conversion.for( 'editingDowncast' ).add( downcastInsertTable( { asWidget: true } ) );
-						conversion.for( 'dataDowncast' ).add( downcastInsertTable() );
+						conversion.for( 'downcast' ).add( downcastInsertTable( { asWidget: true } ) );
+						conversion.for( 'downcast' ).add( downcastInsertRow( { asWidget: true } ) );
+						conversion.for( 'downcast' ).add( downcastInsertCell( { asWidget: true } ) );
 
 						conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
 						conversion.attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
@@ -307,9 +308,9 @@ describe( 'downcast converters', () => {
 				);
 
 				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-					'<table class="ck-editor__editable ck-editor__nested-editable ck-widget" contenteditable="true">' +
+					'<table class="ck-widget" contenteditable="false">' +
 					'<tbody>' +
-					'<tr><td></td></tr>' +
+					'<tr><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true"></td></tr>' +
 					'</tbody>' +
 					'</table>'
 				);
@@ -505,6 +506,77 @@ describe( 'downcast converters', () => {
 				[ { contents: '', isHeading: true }, '' ]
 			] ) );
 		} );
+
+		describe( 'asWidget', () => {
+			beforeEach( () => {
+				return VirtualTestEditor.create()
+					.then( newEditor => {
+						editor = newEditor;
+						model = editor.model;
+						doc = model.document;
+						root = doc.getRoot( 'main' );
+						viewDocument = editor.editing.view;
+
+						const conversion = editor.conversion;
+						const schema = model.schema;
+
+						schema.register( 'table', {
+							allowWhere: '$block',
+							allowAttributes: [ 'headingRows', 'headingColumns' ],
+							isBlock: true,
+							isObject: true
+						} );
+
+						schema.register( 'tableRow', {
+							allowIn: 'table',
+							allowAttributes: [],
+							isBlock: true,
+							isLimit: true
+						} );
+
+						schema.register( 'tableCell', {
+							allowIn: 'tableRow',
+							allowContentOf: '$block',
+							allowAttributes: [ 'colspan', 'rowspan' ],
+							isBlock: true,
+							isLimit: true
+						} );
+
+						conversion.for( 'downcast' ).add( downcastInsertTable( { asWidget: true } ) );
+						conversion.for( 'downcast' ).add( downcastInsertRow( { asWidget: true } ) );
+						conversion.for( 'downcast' ).add( downcastInsertCell( { asWidget: true } ) );
+
+						conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
+						conversion.attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
+					} );
+			} );
+
+			it( 'should create table cell inside inserted row as a widget', () => {
+				setModelData( model,
+					'<table>' +
+					'<tableRow><tableCell>foo</tableCell></tableRow>' +
+					'</table>'
+				);
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					const firstRow = writer.createElement( 'tableRow' );
+
+					writer.insert( firstRow, table, 1 );
+					writer.insert( writer.createElement( 'tableCell' ), firstRow, 'end' );
+				} );
+
+				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+					'<table class="ck-widget" contenteditable="false">' +
+					'<tbody>' +
+					'<tr><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">foo</td></tr>' +
+					'<tr><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true"></td></tr>' +
+					'</tbody>' +
+					'</table>'
+				);
+			} );
+		} );
 	} );
 
 	describe( 'downcastInsertCell()', () => {
@@ -604,6 +676,78 @@ describe( 'downcast converters', () => {
 				[ { colspan: 2, contents: '11' } ],
 				[ '21', '22' ]
 			] ) );
+		} );
+
+		describe( 'asWidget', () => {
+			beforeEach( () => {
+				return VirtualTestEditor.create()
+					.then( newEditor => {
+						editor = newEditor;
+						model = editor.model;
+						doc = model.document;
+						root = doc.getRoot( 'main' );
+						viewDocument = editor.editing.view;
+
+						const conversion = editor.conversion;
+						const schema = model.schema;
+
+						schema.register( 'table', {
+							allowWhere: '$block',
+							allowAttributes: [ 'headingRows', 'headingColumns' ],
+							isBlock: true,
+							isObject: true
+						} );
+
+						schema.register( 'tableRow', {
+							allowIn: 'table',
+							allowAttributes: [],
+							isBlock: true,
+							isLimit: true
+						} );
+
+						schema.register( 'tableCell', {
+							allowIn: 'tableRow',
+							allowContentOf: '$block',
+							allowAttributes: [ 'colspan', 'rowspan' ],
+							isBlock: true,
+							isLimit: true
+						} );
+
+						conversion.for( 'downcast' ).add( downcastInsertTable( { asWidget: true } ) );
+						conversion.for( 'downcast' ).add( downcastInsertRow( { asWidget: true } ) );
+						conversion.for( 'downcast' ).add( downcastInsertCell( { asWidget: true } ) );
+
+						conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
+						conversion.attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
+					} );
+			} );
+
+			it( 'should create inserted table cell as a widget', () => {
+				setModelData( model,
+					'<table>' +
+					'<tableRow><tableCell>foo</tableCell></tableRow>' +
+					'</table>'
+				);
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					const row = table.getChild( 0 );
+
+					writer.insert( writer.createElement( 'tableCell' ), row, 'end' );
+				} );
+
+				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+					'<table class="ck-widget" contenteditable="false">' +
+					'<tbody>' +
+					'<tr>' +
+					'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">foo</td>' +
+					'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true"></td>' +
+					'</tr>' +
+					'</tbody>' +
+					'</table>'
+				);
+			} );
 		} );
 	} );
 

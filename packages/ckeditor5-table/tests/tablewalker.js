@@ -95,4 +95,18 @@ describe( 'TableWalker', () => {
 			{ row: 3, column: 2, data: '43' }
 		] );
 	} );
+
+	describe( 'option.endRow', () => {
+		it( 'should iterate over given row 0 only', () => {
+			testWalker( [
+				[ { colspan: 2, rowspan: 3, contents: '11' }, '13' ],
+				[ '23' ],
+				[ '33' ],
+				[ '41', '42', '43' ]
+			], [
+				{ row: 0, column: 0, data: '11' },
+				{ row: 0, column: 2, data: '13' }
+			], { endRow: 0 } );
+		} );
+	} );
 } );

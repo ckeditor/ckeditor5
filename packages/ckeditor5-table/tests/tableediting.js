@@ -38,40 +38,25 @@ describe( 'TableEditing', () => {
 			it( 'should create tbody section', () => {
 				setModelData( model, '<table><tableRow><tableCell>foo[]</tableCell></tableRow></table>' );
 
-				expect( editor.getData() ).to.equal( '<table><tbody><tr><td>foo</td></tr></tbody></table>' );
+				expect( editor.getData() ).to.equal(
+					'<table>' +
+					'<tbody>' +
+					'<tr><td>foo</td></tr>' +
+					'</tbody>' +
+					'</table>'
+				);
 			} );
 
 			it( 'should create thead section', () => {
 				setModelData( model, '<table headingRows="1"><tableRow><tableCell>foo[]</tableCell></tableRow></table>' );
 
-				expect( editor.getData() ).to.equal( '<table><thead><tr><th>foo</th></tr></thead></table>' );
-			} );
-
-			it( 'should create thead and tbody sections in proper order', () => {
-				setModelData( model, '<table headingRows="1">' +
-					'<tableRow><tableCell>foo</tableCell></tableRow>' +
-					'<tableRow><tableCell>bar</tableCell></tableRow>' +
-					'<tableRow><tableCell>baz[]</tableCell></tableRow>' +
+				expect( editor.getData() ).to.equal(
+					'<table>' +
+					'<thead>' +
+					'<tr><th>foo</th></tr>' +
+					'</thead>' +
 					'</table>'
 				);
-
-				expect( editor.getData() ).to.equal( '<table>' +
-					'<thead><tr><th>foo</th></tr></thead>' +
-					'<tbody><tr><td>bar</td></tr><tr><td>baz</td></tr></tbody>' +
-					'</table>'
-				);
-			} );
-
-			it( 'should convert rowspan on tableCell', () => {
-				setModelData( model, '<table><tableRow><tableCell rowspan="2">foo[]</tableCell></tableRow></table>' );
-
-				expect( editor.getData() ).to.equal( '<table><tbody><tr><td rowspan="2">foo</td></tr></tbody></table>' );
-			} );
-
-			it( 'should convert colspan on tableCell', () => {
-				setModelData( model, '<table><tableRow><tableCell colspan="2">foo[]</tableCell></tableRow></table>' );
-
-				expect( editor.getData() ).to.equal( '<table><tbody><tr><td colspan="2">foo</td></tr></tbody></table>' );
 			} );
 		} );
 

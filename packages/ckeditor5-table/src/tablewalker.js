@@ -73,7 +73,7 @@ export default class TableWalker {
 		 * @readonly
 		 * @member {Number}
 		 */
-		this.endRow = options.endRow;
+		this.endRow = typeof options.endRow == 'number' ? options.endRow : undefined;
 
 		/**
 		 * A current row index.
@@ -182,7 +182,7 @@ export default class TableWalker {
 		this._previousCell = cell;
 		this.cell++;
 
-		if ( this.startRow > this.row || ( this.endRow && this.row > this.endRow ) ) {
+		if ( this.startRow > this.row || ( this.endRow !== undefined && this.row > this.endRow ) ) {
 			return this.next();
 		}
 
