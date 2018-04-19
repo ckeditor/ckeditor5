@@ -17,6 +17,10 @@ Sources of Intellectual Property Included in CKEditor
 
 Where not otherwise indicated, all CKEditor content is authored by CKSource engineers and consists of CKSource-owned intellectual property. In some specific instances, CKEditor will incorporate work done by developers outside of CKSource with their express permission.
 
+The following libraries are included in CKEditor under the [MIT license](https://opensource.org/licenses/MIT):
+
+* Lo-Dash - Copyright (c) JS Foundation and other contributors https://js.foundation/. Based on Underscore.js, copyright Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors http://underscorejs.org/.
+
 Trademarks
 ----------
 
