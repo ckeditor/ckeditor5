@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## [1.0.0-beta.4](https://github.com/ckeditor/ckeditor5-basic-styles/compare/v1.0.0-beta.2...v1.0.0-beta.4) (2018-04-19)
+
+### Other changes
+
+* Improved the  "strikethrough" icon. Closes [ckeditor/ckeditor5#910](https://github.com/ckeditor/ckeditor5/issues/910). ([d559d8f](https://github.com/ckeditor/ckeditor5-basic-styles/commit/d559d8f))
+* Updated translations. ([b4c8419](https://github.com/ckeditor/ckeditor5-basic-styles/commit/b4c8419))
+
+
 ## [1.0.0-beta.2](https://github.com/ckeditor/ckeditor5-basic-styles/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2018-04-10)
 
 Internal changes only (updated dependencies, documentation, etc.).
