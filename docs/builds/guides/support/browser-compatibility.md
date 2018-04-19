@@ -23,7 +23,6 @@ CKEditor 5 is currently supported in the following desktop browsers:
 	* Edge (latest stable release). Known issues:
 		* Minor issues with selection: [1](https://github.com/ckeditor/ckeditor5-engine/issues/974), [2](https://github.com/ckeditor/ckeditor5-engine/issues/928).
 		* The editor becomes unstable when F12 developer tools are enabled.
-		* Clipboard integration is broken due to [Edge bugs](https://github.com/ckeditor/ckeditor5-clipboard/issues/20).
 
 Not supported yet:
 
@@ -44,7 +43,7 @@ When working on mobile support we need to consider two complex aspects:
 
 * **Special UI, designed for mobile.**
 
-	During the design phase we understood that creating a responsive and touch-friendly UI will not guarantee a desired UX level by itself. Also, that the "mobile first" approach has no application in this case due to constraints of the mobile environment and specific editing method. Therefore, we plan to introduce a completely customized, mobile-oriented UI.
+	During the design phase we understood that creating a responsive and touch-friendly UI will not guarantee a desired UX level by itself. Also, that the "mobile first" approach has no application in this case due to constraints of the mobile environment and the specific editing method. Therefore, we plan to introduce a completely customized, mobile-oriented UI.
 
 	We began research on how to display necessary UI controls on the screen and, sadly, it turned out that mobile Safari's viewport mechanics makes it extremely complicated to display the UI in a reliable way. You can read more in the [UX: Mobile editing](https://github.com/ckeditor/ckeditor5-design/issues/149) ticket.
 
@@ -56,6 +55,6 @@ When working on mobile support we need to consider two complex aspects:
 
 ## Quality assurance
 
-To ensure the highest quality, we maintain a complete test suite with a stable 100% of code coverage for each of the packages. As of December 2017, this means over 7000 tests and the number is growing.
+To ensure the highest quality, we maintain a complete test suite with a stable 100% of code coverage for each of the packages. As of April 2018, this means over 8200 tests and the number is growing.
 
 Such an extensive test suite requires a proper continuous integration service. We use [Travis CI](https://travis-ci.com/) as a build platform and [BrowserStack](https://www.browserstack.com/) to be able to run tests on all browsers. These services ensure seamless and fast developer experience and allow us to focus on the job.
