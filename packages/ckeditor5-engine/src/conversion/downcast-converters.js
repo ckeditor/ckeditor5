@@ -370,14 +370,19 @@ function _createViewElementFromDefinition( viewElementDefinition, viewWriter, vi
 	}
 
 	let element;
+	const attributes = Object.assign( {}, viewElementDefinition.attributes );
 
 	if ( viewElementType == 'container' ) {
-		element = viewWriter.createContainerElement( viewElementDefinition.name, Object.assign( {}, viewElementDefinition.attributes ) );
+		element = viewWriter.createContainerElement( viewElementDefinition.name, attributes );
 	} else if ( viewElementType == 'attribute' ) {
-		element = viewWriter.createAttributeElement( viewElementDefinition.name, Object.assign( {}, viewElementDefinition.attributes ) );
+		const options = {
+			priority: viewElementDefinition.priority || ViewAttributeElement.DEFAULT_PRIORITY
+		};
+
+		element = viewWriter.createAttributeElement( viewElementDefinition.name, attributes, options );
 	} else {
 		// 'ui'.
-		element = viewWriter.createUIElement( viewElementDefinition.name, Object.assign( {}, viewElementDefinition.attributes ) );
+		element = viewWriter.createUIElement( viewElementDefinition.name, attributes );
 	}
 
 	if ( viewElementDefinition.styles ) {

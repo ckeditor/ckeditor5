@@ -14,6 +14,7 @@ import ModelRange from '../../src/model/range';
 import ModelPosition from '../../src/model/position';
 
 import ViewElement from '../../src/view/element';
+import ViewAttributeElement from '../../src/view/attributeelement';
 import ViewContainerElement from '../../src/view/containerelement';
 import ViewUIElement from '../../src/view/uielement';
 import ViewText from '../../src/view/text';
@@ -148,6 +149,25 @@ describe( 'downcast-helpers', () => {
 			} );
 
 			expectResult( '<span class="bg-dark font-light">foo</span>' );
+			expect( viewRoot.getChild( 0 ).priority ).to.equal( ViewAttributeElement.DEFAULT_PRIORITY );
+		} );
+
+		it( 'config.view allows specifying the element\'s priority', () => {
+			const helper = downcastAttributeToElement( {
+				model: 'invert',
+				view: {
+					name: 'span',
+					priority: 5
+				}
+			} );
+
+			conversion.for( 'downcast' ).add( helper );
+
+			model.change( writer => {
+				writer.insertText( 'foo', { invert: true }, modelRoot, 0 );
+			} );
+
+			expect( viewRoot.getChild( 0 ).priority ).to.equal( 5 );
 		} );
 
 		it( 'model attribute value is enum', () => {
@@ -167,7 +187,8 @@ describe( 'downcast-helpers', () => {
 						name: 'span',
 						styles: {
 							'font-size': '0.8em'
-						}
+						},
+						priority: 5
 					}
 				}
 			} );
@@ -178,6 +199,7 @@ describe( 'downcast-helpers', () => {
 				writer.insertText( 'foo', { fontSize: 'big' }, modelRoot, 0 );
 			} );
 
+			expect( viewRoot.getChild( 0 ).priority ).to.equal( ViewAttributeElement.DEFAULT_PRIORITY );
 			expectResult( '<span style="font-size:1.2em">foo</span>' );
 
 			model.change( writer => {
@@ -185,6 +207,7 @@ describe( 'downcast-helpers', () => {
 			} );
 
 			expectResult( '<span style="font-size:0.8em">foo</span>' );
+			expect( viewRoot.getChild( 0 ).priority ).to.equal( 5 );
 
 			model.change( writer => {
 				writer.removeAttribute( 'fontSize', modelRoot.getChild( 0 ) );
@@ -1602,7 +1625,7 @@ describe( 'downcast-converters', () => {
 				dispatcher.on( 'removeMarker:marker2', removeHighlight( () => null ) );
 
 				viewDiv._setCustomProperty( 'addHighlight', ( element, descriptor ) => {
-					expect( descriptor.priority ).to.equal( 10 );
+					expect( descriptor.priority ).to.equal( ViewAttributeElement.DEFAULT_PRIORITY );
 					expect( descriptor.id ).to.equal( 'marker:foo-bar-baz' );
 				} );
 
@@ -1698,7 +1721,7 @@ describe( 'downcast-converters', () => {
 
 			expect( element.is( 'attributeElement' ) ).to.be.true;
 			expect( element.name ).to.equal( 'span' );
-			expect( element.priority ).to.equal( 10 );
+			expect( element.priority ).to.equal( ViewAttributeElement.DEFAULT_PRIORITY );
 			expect( element.hasClass( 'foo-class' ) ).to.be.true;
 
 			for ( const key of Object.keys( descriptor.attributes ) ) {
