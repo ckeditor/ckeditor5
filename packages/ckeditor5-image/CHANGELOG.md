@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [1.0.0-beta.4](https://github.com/ckeditor/ckeditor5-image/compare/v1.0.0-beta.2...v1.0.0-beta.4) (2018-04-19)
+
+### Other changes
+
+* Updated translations. ([de6b58e](https://github.com/ckeditor/ckeditor5-image/commit/de6b58e))
+
+
 ## [1.0.0-beta.2](https://github.com/ckeditor/ckeditor5-image/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2018-04-10)
 
 ### Bug fixes
