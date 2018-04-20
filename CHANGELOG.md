@@ -3,6 +3,16 @@ Changelog
 
 ## [1.0.0-beta.4](https://github.com/ckeditor/ckeditor5/compare/v1.0.0-beta.2...v1.0.0-beta.4) (2018-04-19)
 
+### Release notes
+
+This is a minor release, which mainly focuses on stabilizing the [two-step caret movement around links](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/whats-new.html#twostep-caret-movement-around-links).
+
+A breaking change was introduced in the [document editor build](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/overview.html#document-editor) – refer to its [changelog](https://github.com/ckeditor/ckeditor5-build-decoupled-document/releases/tag/v1.0.0-beta.4) for more information.
+
+Finally, two new plugins were introduced – [`ParagraphButtonUI`](https://docs.ckeditor.com/ckeditor5/latest/api/module_paragraph_paragraphbuttonui-ParagraphButtonUI.html) and [`HeadinButtonsUI`](https://docs.ckeditor.com/ckeditor5/latest/api/module_heading_headingbuttonsui-HeadingButtonsUI.html) which make it possible to replace the `headings` dropdown with a separate buttons for each heading level.
+
+PS. The `1.0.0-beta.3` version number was skipped in order to align the project version number which diverged from builds version numbers.
+
 ### Dependencies
 
 Major releases (contain breaking changes):
