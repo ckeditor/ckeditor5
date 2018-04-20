@@ -18,6 +18,7 @@ import InsertTableCommand from './commands/inserttablecommand';
 import InsertRowCommand from './commands/insertrowcommand';
 import InsertColumnCommand from './commands/insertcolumncommand';
 import SplitCellCommand from './commands/splitcellcommand';
+import RemoveRowCommand from './commands/removerowcommand';
 import { getParentTable } from './commands/utils';
 
 import './../theme/table.css';
@@ -84,6 +85,7 @@ export default class TablesEditing extends Plugin {
 		editor.commands.add( 'insertRow', new InsertRowCommand( editor ) );
 		editor.commands.add( 'insertColumn', new InsertColumnCommand( editor ) );
 		editor.commands.add( 'splitCell', new SplitCellCommand( editor ) );
+		editor.commands.add( 'removeRow', new RemoveRowCommand( editor ) );
 
 		this.listenTo( editor.editing.view.document, 'keydown', ( ...args ) => this._handleTabOnSelectedTable( ...args ) );
 		this.listenTo( editor.editing.view.document, 'keydown', ( ...args ) => this._handleTabInsideTable( ...args ) );
