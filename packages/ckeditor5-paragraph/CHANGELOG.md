@@ -5,7 +5,7 @@ Changelog
 
 ### Features
 
-* Introduced ParagraphButtonUI plugin. Closes [#33](https://github.com/ckeditor/ckeditor5-paragraph/issues/33). ([12dadba](https://github.com/ckeditor/ckeditor5-paragraph/commit/12dadba))
+* Introduced `ParagraphButtonUI` plugin. Closes [#33](https://github.com/ckeditor/ckeditor5-paragraph/issues/33). ([12dadba](https://github.com/ckeditor/ckeditor5-paragraph/commit/12dadba))
 
 
 ## [1.0.0-beta.2](https://github.com/ckeditor/ckeditor5-paragraph/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2018-04-10)
