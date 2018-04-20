@@ -5,9 +5,9 @@ Changelog
 
 ### Bug fixes
 
-* `model.Differ` did not handle attribute change transformation correctly. Closes [#1404](https://github.com/ckeditor/ckeditor5-engine/issues/1404). ([3769a02](https://github.com/ckeditor/ckeditor5-engine/commit/3769a02))
+* `model.Differ` should handle attribute change transformation correctly. Closes [#1404](https://github.com/ckeditor/ckeditor5-engine/issues/1404). ([3769a02](https://github.com/ckeditor/ckeditor5-engine/commit/3769a02))
 * `view.Writer` should deeply add and remove `view.AttributeElement`s to/from their clone groups. Closes [#1401](https://github.com/ckeditor/ckeditor5-engine/issues/1401). ([e6bb59b](https://github.com/ckeditor/ckeditor5-engine/commit/e6bb59b))
-* The `bindTwoStepCaretToAttribute` behavioral helper should not fail in more complex cases. Closes [#1301](https://github.com/ckeditor/ckeditor5-engine/issues/1301). Closes [#1346](https://github.com/ckeditor/ckeditor5-engine/issues/1346). Closes [ckeditor/ckeditor5#937](https://github.com/ckeditor/ckeditor5/issues/937).  Closes [ckeditor/ckeditor5#922](https://github.com/ckeditor/ckeditor5/issues/922).  Closes [ckeditor/ckeditor5#946](https://github.com/ckeditor/ckeditor5/issues/946). ([f0fd2d8](https://github.com/ckeditor/ckeditor5-engine/commit/f0fd2d8))
+* The `bindTwoStepCaretToAttribute()` behavioral helper should not fail in more complex cases. Closes [#1301](https://github.com/ckeditor/ckeditor5-engine/issues/1301). Closes [#1346](https://github.com/ckeditor/ckeditor5-engine/issues/1346). Closes [ckeditor/ckeditor5#937](https://github.com/ckeditor/ckeditor5/issues/937).  Closes [ckeditor/ckeditor5#922](https://github.com/ckeditor/ckeditor5/issues/922).  Closes [ckeditor/ckeditor5#946](https://github.com/ckeditor/ckeditor5/issues/946). ([f0fd2d8](https://github.com/ckeditor/ckeditor5-engine/commit/f0fd2d8))
 
 
 ## [1.0.0-beta.2](https://github.com/ckeditor/ckeditor5-engine/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2018-04-10)
