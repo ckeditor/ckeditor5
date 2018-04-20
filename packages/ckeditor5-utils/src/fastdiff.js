@@ -41,6 +41,7 @@ export default function fastDiff( oldText, newText ) {
 	}
 
 	const changeIndexes = findChangeBoundaryIndexes( oldText, newText );
+
 	return changeIndexesToChanges( newText, changeIndexes );
 }
 
@@ -67,8 +68,9 @@ function findChangeBoundaryIndexes( oldText, newText ) {
 	// Iterate over both strings starting from the beginning to find position of the first different character.
 	// If not found, it means first change is at the end of the string.
 	let firstIndex = oldTextLength;
+
 	for ( let i = 0; i < oldTextLength; i++ ) {
-		if ( i >= newTextLength || oldText[ i ] !== newText[ i ] ) {
+		if ( oldText[ i ] !== newText[ i ] ) {
 			firstIndex = i;
 			break;
 		}
@@ -86,18 +88,16 @@ function findChangeBoundaryIndexes( oldText, newText ) {
 	//		// { firstIndex: 3, lastIndexOld: 3, lastIndexNew: 6 }
 	const oldTextReversed = oldText.substring( firstIndex ).split( '' ).reverse().join( '' );
 	const newTextReversed = newText.substring( firstIndex ).split( '' ).reverse().join( '' );
-	const oldTextReversedLength = oldTextReversed.length;
-	const newTextReversedLength = newTextReversed.length;
-	const maxLength = Math.max( oldTextReversedLength, newTextReversedLength );
 
 	let lastIndexOld;
 	let lastIndexNew;
-	for ( let i = 0; i < maxLength; i++ ) {
+
+	for ( let i = 0; i < Math.max( oldTextReversed.length, newTextReversed.length ); i++ ) {
 		// Initial text -> after removing identical part -> reversed:
 		// oldText: '321ba' -> '21ba' -> 'ab12'
 		// newText: '31ba'  -> '1ba'  -> 'ab1'
 		// { firstIndex: 1, lastIndexOld: 2, lastIndexNew: 1 }
-		if ( i >= newTextReversedLength ) {
+		if ( i >= newTextReversed.length ) {
 			lastIndexOld = oldTextLength - i;
 			lastIndexNew = firstIndex;
 			break;
@@ -107,7 +107,7 @@ function findChangeBoundaryIndexes( oldText, newText ) {
 		// oldText: '31ba'  -> '1ba'  -> 'ab1'
 		// newText: '321ba' -> '21ba' -> 'ab12'
 		// { firstIndex: 1, lastIndexOld: 1, lastIndexNew: 2 }
-		if ( i >= oldTextReversedLength ) {
+		if ( i >= oldTextReversed.length ) {
 			lastIndexOld = firstIndex;
 			lastIndexNew = newTextLength - i;
 			break;
