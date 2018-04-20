@@ -5,7 +5,7 @@ Changelog
 
 ### Release notes
 
-This is a minor release that mainly focuses on stabilizing the [two-step caret movement around links](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/whats-new.html##caret-movement-around-links).
+This is a minor release that mainly focuses on stabilizing the [two-step caret movement around links](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/whats-new.html#caret-movement-around-links).
 
 A breaking change was introduced in the [document editor build](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/overview.html#document-editor) – refer to its [changelog](https://github.com/ckeditor/ckeditor5-build-decoupled-document/releases/tag/v1.0.0-beta.4) for more information.
 
