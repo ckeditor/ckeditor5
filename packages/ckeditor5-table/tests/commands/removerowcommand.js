@@ -10,7 +10,7 @@ import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversio
 import RemoveRowCommand from '../../src/commands/removerowcommand';
 import { downcastInsertTable } from '../../src/converters/downcast';
 import upcastTable from '../../src/converters/upcasttable';
-import { formatModelTable, formattedModelTable, modelTable } from '../_utils/utils';
+import { formatTable, formattedModelTable, modelTable } from '../_utils/utils';
 
 describe( 'RemoveRowCommand', () => {
 	let editor, model, command;
@@ -104,7 +104,7 @@ describe( 'RemoveRowCommand', () => {
 
 			command.execute();
 
-			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ '00', '01[]' ],
 				[ '20', '21' ]
 			] ) );
@@ -119,7 +119,7 @@ describe( 'RemoveRowCommand', () => {
 
 			command.execute();
 
-			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ '[]10', '11' ],
 				[ '20', '21' ]
 			] ) );
@@ -134,7 +134,7 @@ describe( 'RemoveRowCommand', () => {
 
 			command.execute();
 
-			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ '00', '01[]' ],
 				[ '20', '21' ]
 			], { headingRows: 1 } ) );
@@ -150,7 +150,7 @@ describe( 'RemoveRowCommand', () => {
 
 			command.execute();
 
-			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ { rowspan: 3, contents: '00' }, { rowspan: 2, contents: '01' }, { rowspan: 2, contents: '02' }, '03', '04' ],
 				[ '13', '14[]' ],
 				[ '30', '31', '32', '33', '34' ]
@@ -167,7 +167,7 @@ describe( 'RemoveRowCommand', () => {
 
 			command.execute();
 
-			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ { rowspan: 2, contents: '[]00' }, '01', '12' ],
 				[ '22' ],
 				[ '30', '31', '32' ]

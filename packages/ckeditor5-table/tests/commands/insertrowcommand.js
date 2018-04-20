@@ -10,7 +10,7 @@ import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversio
 import InsertRowCommand from '../../src/commands/insertrowcommand';
 import { downcastInsertTable } from '../../src/converters/downcast';
 import upcastTable from '../../src/converters/upcasttable';
-import { formatModelTable, formattedModelTable, modelTable } from '../_utils/utils';
+import { formatTable, formattedModelTable, modelTable } from '../_utils/utils';
 
 describe( 'InsertRowCommand', () => {
 	let editor, model, command;
@@ -92,7 +92,7 @@ describe( 'InsertRowCommand', () => {
 
 			command.execute( { at: 1 } );
 
-			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ '11[]', '12' ],
 				[ '', '' ],
 				[ '21', '22' ]
@@ -107,7 +107,7 @@ describe( 'InsertRowCommand', () => {
 
 			command.execute();
 
-			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ '', '' ],
 				[ '11[]', '12' ],
 				[ '21', '22' ]
@@ -123,7 +123,7 @@ describe( 'InsertRowCommand', () => {
 
 			command.execute( { at: 1 } );
 
-			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ '11[]', '12' ],
 				[ '', '' ],
 				[ '21', '22' ],
@@ -140,7 +140,7 @@ describe( 'InsertRowCommand', () => {
 
 			command.execute( { at: 2 } );
 
-			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ '11[]', '12' ],
 				[ '21', '22' ],
 				[ '', '' ],
@@ -157,7 +157,7 @@ describe( 'InsertRowCommand', () => {
 
 			command.execute( { at: 2, rows: 3 } );
 
-			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ { colspan: 2, contents: '11[]' }, '13', '14' ],
 				[ { colspan: 2, rowspan: 7, contents: '21' }, '23', '24' ],
 				[ '', '' ],
@@ -176,7 +176,7 @@ describe( 'InsertRowCommand', () => {
 
 			command.execute( { at: 2, rows: 3 } );
 
-			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ { rowspan: 2, contents: '11[]' }, '12', '13' ],
 				[ '22', '23' ],
 				[ '', '', '' ],
@@ -195,7 +195,7 @@ describe( 'InsertRowCommand', () => {
 
 			command.execute( { at: 2, rows: 3 } );
 
-			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ { rowspan: 2, contents: '11[]' }, '12', '13' ],
 				[ '22', '23' ],
 				[ '', '', '' ],
@@ -213,7 +213,7 @@ describe( 'InsertRowCommand', () => {
 
 			command.execute( { at: 2, rows: 3 } );
 
-			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ '11[]', '12' ],
 				[ '21', '22' ],
 				[ '', '' ],

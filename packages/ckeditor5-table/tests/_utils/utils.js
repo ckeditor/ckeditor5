@@ -77,7 +77,13 @@ export function viewTable( tableData, attributes = {} ) {
 	return `<table>${ thead }${ tbody }</table>`;
 }
 
-export function formatModelTable( tableString ) {
+/**
+ * Formats model or view table - useful for chai assertions debuging.
+ *
+ * @param {String} tableString
+ * @returns {String}
+ */
+export function formatTable( tableString ) {
 	return tableString
 		.replace( /<tableRow>/g, '\n<tableRow>\n    ' )
 		.replace( /<thead>/g, '\n<thead>\n    ' )
@@ -90,12 +96,26 @@ export function formatModelTable( tableString ) {
 		.replace( /<\/table>/g, '\n</table>' );
 }
 
+/**
+ * Returns formatted model table string.
+ *
+ * @param {Array.<String>} tableData
+ * @param {Object} [attributes]
+ * @returns {String}
+ */
 export function formattedModelTable( tableData, attributes ) {
 	const tableString = modelTable( tableData, attributes );
 
-	return formatModelTable( tableString );
+	return formatTable( tableString );
 }
 
+/**
+ * Returns formatted view table string.
+ *
+ * @param {Array.<String>} tableData
+ * @param {Object} [attributes]
+ * @returns {String}
+ */
 export function formattedViewTable( tableData, attributes ) {
-	return formatModelTable( viewTable( tableData, attributes ) );
+	return formatTable( viewTable( tableData, attributes ) );
 }

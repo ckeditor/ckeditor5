@@ -9,7 +9,7 @@ import { getData as getModelData, setData as setModelData } from '@ckeditor/cked
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 import TableEditing from '../src/tableediting';
-import { formatModelTable, formattedModelTable, modelTable } from './_utils/utils';
+import { formatTable, formattedModelTable, modelTable } from './_utils/utils';
 
 describe( 'TableEditing', () => {
 	let editor, model;
@@ -92,7 +92,7 @@ describe( 'TableEditing', () => {
 
 			sinon.assert.notCalled( domEvtDataStub.preventDefault );
 			sinon.assert.notCalled( domEvtDataStub.stopPropagation );
-			expect( formatModelTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+			expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
 				[ '11', '12[]' ]
 			] ) );
 		} );
@@ -108,7 +108,7 @@ describe( 'TableEditing', () => {
 
 			sinon.assert.notCalled( domEvtDataStub.preventDefault );
 			sinon.assert.notCalled( domEvtDataStub.stopPropagation );
-			expect( formatModelTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+			expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
 				[ '11', '12[]' ]
 			] ) );
 		} );
@@ -123,7 +123,7 @@ describe( 'TableEditing', () => {
 
 				sinon.assert.notCalled( domEvtDataStub.preventDefault );
 				sinon.assert.notCalled( domEvtDataStub.stopPropagation );
-				expect( formatModelTable( getModelData( model ) ) ).to.equal( '[]' + formattedModelTable( [
+				expect( formatTable( getModelData( model ) ) ).to.equal( '[]' + formattedModelTable( [
 					[ '11', '12' ]
 				] ) );
 			} );
@@ -137,7 +137,7 @@ describe( 'TableEditing', () => {
 
 				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
 				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
-				expect( formatModelTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
 					[ '11', '[12]' ]
 				] ) );
 			} );
@@ -149,7 +149,7 @@ describe( 'TableEditing', () => {
 
 				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
-				expect( formatModelTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
 					[ '11', '12' ],
 					[ '[]', '' ]
 				] ) );
@@ -163,7 +163,7 @@ describe( 'TableEditing', () => {
 
 				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
-				expect( formatModelTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
 					[ '11', '12' ],
 					[ '[21]', '22' ]
 				] ) );
@@ -184,7 +184,7 @@ describe( 'TableEditing', () => {
 					sinon.assert.calledOnce( domEvtDataStub.preventDefault );
 					sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
 
-					expect( formatModelTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+					expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
 						[ '[11]', '12' ]
 					] ) );
 
@@ -204,7 +204,7 @@ describe( 'TableEditing', () => {
 					sinon.assert.notCalled( domEvtDataStub.preventDefault );
 					sinon.assert.notCalled( domEvtDataStub.stopPropagation );
 
-					expect( formatModelTable( getModelData( model ) ) ).to.equal( '[<paragraph>foo</paragraph>]' );
+					expect( formatTable( getModelData( model ) ) ).to.equal( '[<paragraph>foo</paragraph>]' );
 
 					// Should not cancel event.
 					sinon.assert.calledOnce( spy );
@@ -229,7 +229,7 @@ describe( 'TableEditing', () => {
 
 				sinon.assert.notCalled( domEvtDataStub.preventDefault );
 				sinon.assert.notCalled( domEvtDataStub.stopPropagation );
-				expect( formatModelTable( getModelData( model ) ) ).to.equal( '[]' + formattedModelTable( [
+				expect( formatTable( getModelData( model ) ) ).to.equal( '[]' + formattedModelTable( [
 					[ '11', '12' ]
 				] ) );
 			} );
@@ -243,7 +243,7 @@ describe( 'TableEditing', () => {
 
 				sinon.assert.calledOnce( domEvtDataStub.preventDefault );
 				sinon.assert.calledOnce( domEvtDataStub.stopPropagation );
-				expect( formatModelTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
 					[ '[11]', '12' ]
 				] ) );
 			} );
@@ -255,7 +255,7 @@ describe( 'TableEditing', () => {
 
 				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
-				expect( formatModelTable( getModelData( model ) ) ).to.equal(
+				expect( formatTable( getModelData( model ) ) ).to.equal(
 					'<paragraph>foo</paragraph>' + formattedModelTable( [ [ '[]11', '12' ] ] )
 				);
 			} );
@@ -268,7 +268,7 @@ describe( 'TableEditing', () => {
 
 				editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
-				expect( formatModelTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
+				expect( formatTable( getModelData( model ) ) ).to.equal( formattedModelTable( [
 					[ '11', '[12]' ],
 					[ '21', '22' ]
 				] ) );

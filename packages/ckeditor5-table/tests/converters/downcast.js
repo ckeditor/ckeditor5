@@ -14,7 +14,7 @@ import {
 	downcastInsertTable,
 	downcastRemoveRow
 } from '../../src/converters/downcast';
-import { formatModelTable, formattedViewTable, modelTable, viewTable } from '../_utils/utils';
+import { formatTable, formattedViewTable, modelTable, viewTable } from '../_utils/utils';
 
 describe( 'downcast converters', () => {
 	let editor, model, doc, root, viewDocument;
@@ -499,7 +499,7 @@ describe( 'downcast converters', () => {
 				writer.insert( writer.createElement( 'tableCell' ), secondRow, 'end' );
 			} );
 
-			expect( formatModelTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
 				[ { rowspan: 3, contents: '11', isHeading: true }, '12' ],
 				[ '22' ],
 				[ '' ],
@@ -765,7 +765,7 @@ describe( 'downcast converters', () => {
 				writer.setAttribute( 'headingRows', 2, table );
 			} );
 
-			expect( formatModelTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
 				[ '11', '12' ],
 				[ '21', '22' ],
 				[ '31', '32' ]
@@ -785,7 +785,7 @@ describe( 'downcast converters', () => {
 				writer.setAttribute( 'headingRows', 2, table );
 			} );
 
-			expect( formatModelTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
 				[ '11', '12' ],
 				[ '21', '22' ],
 				[ '31', '32' ]
@@ -806,7 +806,7 @@ describe( 'downcast converters', () => {
 				writer.setAttribute( 'headingRows', 2, table );
 			} );
 
-			expect( formatModelTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
 				[ '11', '12' ],
 				[ '21', '22' ],
 				[ '31', '32' ],
@@ -936,7 +936,7 @@ describe( 'downcast converters', () => {
 				writer.insertElement( 'tableCell', table.getChild( 2 ), 1 );
 			} );
 
-			expect( formatModelTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
 				[
 					{ isHeading: true, rowspan: 2, contents: '11' },
 					{ isHeading: true, contents: '12' },
@@ -973,7 +973,7 @@ describe( 'downcast converters', () => {
 				writer.remove( table.getChild( 1 ) );
 			} );
 
-			expect( formatModelTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
 				[ '00', '01' ]
 			] ) );
 		} );
@@ -990,7 +990,7 @@ describe( 'downcast converters', () => {
 				writer.remove( table.getChild( 0 ) );
 			} );
 
-			expect( formatModelTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
 				[ '10', '11' ]
 			] ) );
 		} );
@@ -1007,7 +1007,7 @@ describe( 'downcast converters', () => {
 				writer.remove( table.getChild( 1 ) );
 			} );
 
-			expect( formatModelTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
 				[ '00', '01' ]
 			], { headingRows: 2 } ) );
 		} );
@@ -1024,7 +1024,7 @@ describe( 'downcast converters', () => {
 				writer.remove( table.getChild( 0 ) );
 			} );
 
-			expect( formatModelTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
 				[ '10', '11' ]
 			], { headingRows: 2 } ) );
 		} );
@@ -1042,7 +1042,7 @@ describe( 'downcast converters', () => {
 				writer.remove( table.getChild( 0 ) );
 			} );
 
-			expect( formatModelTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
 				[ '10', '11' ]
 			] ) );
 		} );
@@ -1059,7 +1059,7 @@ describe( 'downcast converters', () => {
 				writer.remove( table.getChild( 1 ) );
 			} );
 
-			expect( formatModelTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
 				[ '00', '01' ]
 			], { headingRows: 1 } ) );
 		} );

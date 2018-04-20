@@ -10,7 +10,7 @@ import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversio
 import InsertColumnCommand from '../../src/commands/insertcolumncommand';
 import { downcastInsertTable } from '../../src/converters/downcast';
 import upcastTable from '../../src/converters/upcasttable';
-import { formatModelTable, formattedModelTable, modelTable } from '../_utils/utils';
+import { formatTable, formattedModelTable, modelTable } from '../_utils/utils';
 
 describe( 'InsertColumnCommand', () => {
 	let editor, model, command;
@@ -92,7 +92,7 @@ describe( 'InsertColumnCommand', () => {
 
 			command.execute( { at: 1 } );
 
-			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ '11[]', '', '12' ],
 				[ '21', '', '22' ]
 			] ) );
@@ -106,7 +106,7 @@ describe( 'InsertColumnCommand', () => {
 
 			command.execute();
 
-			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ '', '11[]', '12' ],
 				[ '', '21', '22' ]
 			] ) );
@@ -120,7 +120,7 @@ describe( 'InsertColumnCommand', () => {
 
 			command.execute( { at: 2, columns: 2 } );
 
-			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ '11[]', '12', '', '' ],
 				[ '21', '22', '', '' ]
 			] ) );
@@ -135,7 +135,7 @@ describe( 'InsertColumnCommand', () => {
 
 			command.execute( { at: 1 } );
 
-			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ '11[]', '', '12' ],
 				[ '21', '', '22' ],
 				[ '31', '', '32' ]
@@ -151,7 +151,7 @@ describe( 'InsertColumnCommand', () => {
 
 			command.execute( { at: 2 } );
 
-			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ '11[]', '12', '', '13' ],
 				[ '21', '22', '', '23' ],
 				[ '31', '32', '', '33' ]
@@ -167,7 +167,7 @@ describe( 'InsertColumnCommand', () => {
 
 			command.execute( { at: 1 } );
 
-			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ '11[]', '', '12' ],
 				[ { colspan: 3, contents: '21' } ],
 				[ '31', '', '32' ]
@@ -183,7 +183,7 @@ describe( 'InsertColumnCommand', () => {
 
 			command.execute( { at: 2, columns: 2 } );
 
-			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ '11[]', '12', '', '', '13', '14', '15' ],
 				[ '21', '22', '', '', { colspan: 2, contents: '23' }, '25' ],
 				[ { colspan: 6, contents: '31' }, { colspan: 2, contents: '34' } ]
@@ -198,7 +198,7 @@ describe( 'InsertColumnCommand', () => {
 
 			command.execute( { at: 1, columns: 2 } );
 
-			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ { colspan: 4, rowspan: 2, contents: '11[]' }, '13' ],
 				[ '23' ]
 			], { headingColumns: 4 } ) );

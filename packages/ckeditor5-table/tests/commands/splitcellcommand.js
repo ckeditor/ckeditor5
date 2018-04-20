@@ -10,7 +10,7 @@ import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversio
 import SplitCellCommand from '../../src/commands/splitcellcommand';
 import { downcastInsertTable } from '../../src/converters/downcast';
 import upcastTable from '../../src/converters/upcasttable';
-import { formatModelTable, formattedModelTable, modelTable } from '../_utils/utils';
+import { formatTable, formattedModelTable, modelTable } from '../_utils/utils';
 
 describe( 'SplitCellCommand', () => {
 	let editor, model, command;
@@ -107,7 +107,7 @@ describe( 'SplitCellCommand', () => {
 
 			command.execute();
 
-			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ '[]11', '' ]
 			] ) );
 		} );
@@ -120,7 +120,7 @@ describe( 'SplitCellCommand', () => {
 
 			command.execute();
 
-			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ '[]11', '12' ],
 				[ '', '22' ]
 			] ) );
@@ -135,7 +135,7 @@ describe( 'SplitCellCommand', () => {
 
 			command.execute();
 
-			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ '11', '[]12', '13' ],
 				[ { rowspan: 2, contents: '[]21' }, '', '23' ],
 				[ '', '33' ]
@@ -151,7 +151,7 @@ describe( 'SplitCellCommand', () => {
 
 			command.execute();
 
-			expect( formatModelTable( getData( model ) ) ).to.equal( formattedModelTable( [
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ '11', '[]12', '', '14' ],
 				[ { rowspan: 2, contents: '[]21' }, '', '', '24' ],
 				[ '', '', '34' ]
