@@ -8,7 +8,7 @@ order: 20
 
 # License and legal
 
-The following legal notices apply to CKEditor 5 Framework and all software from the CKEditor 5 Ecosystem included with it.
+The following legal notices apply to CKEditor 5 Framework and all software from CKEditor 5 Ecosystem included with it.
 
 Copyright (c) 2003-2018, CKSource Frederico Knabben. All rights reserved.
 

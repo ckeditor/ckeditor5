@@ -36,6 +36,12 @@ No more complex dialogs for links. When you click a link, first you will see a b
 
 {@img assets/img/feature-link-balloon.gif Simplified link balloon.}
 
+### Caret movement around links
+
+Typing text around links was never easier. Move the caret using your keyboard to switch between typing a link and a plain text.
+
+{@img assets/img/feature-link-two-step.gif Two–step caret movement around links.}
+
 ### Autoformatting
 
 Start lists, headings and even bold text by typing, without the need to use toolbar buttons. See {@link features/autoformat Autoformatting feature} for more details.

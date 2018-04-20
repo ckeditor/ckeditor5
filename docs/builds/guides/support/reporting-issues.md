@@ -10,7 +10,7 @@ order: 40
 
 # Reporting issues
 
-If you feel you found an issue in CKEditor 5, we will be grateful for letting us know. Before you create a bug report, however, please read our guidelines on how to do it properly and most efficiently.
+If you feel you found an issue in CKEditor 5, we will be grateful for letting us know. Before you create a bug report, please read the guidelines on how to do it properly and most efficiently.
 
 ## Reproduce on official examples
 
