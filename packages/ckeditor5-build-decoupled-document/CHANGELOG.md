@@ -37,7 +37,15 @@ Major releases (contain breaking changes):
 
 ### Other changes
 
-* Image styles should be configured to left-aligned, right-aligned image and full-size image (instead of the typical side-image and full-size image). Closes [#10](https://github.com/ckeditor/ckeditor5-build-decoupled-document/issues/10). ([75855d9](https://github.com/ckeditor/ckeditor5-build-decoupled-document/commit/75855d9))
+* Image styles's default configuration has been changed to: left-aligned, right-aligned image and full-size image (instead of the typical: side-image and full-size image). This change makes content previously created with this build incompatible with the new setup.
+
+   You can [configure image styles](https://docs.ckeditor.com/ckeditor5/latest/features/image.html#image-styles) in order to bring back the old setting (`[ 'full', 'side' ]`).
+
+   Closes [#10](https://github.com/ckeditor/ckeditor5-build-decoupled-document/issues/10). ([75855d9](https://github.com/ckeditor/ckeditor5-build-decoupled-document/commit/75855d9))
+
+### BREAKING CHANGES
+
+* The default image styles configuration has been changed (see the section above for more information).
 
 
 ## [1.0.0-beta.3](https://github.com/ckeditor/ckeditor5-build-decoupled-document/compare/v1.0.0-beta.2...v1.0.0-beta.3) (2018-04-10)
