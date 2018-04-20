@@ -191,6 +191,43 @@ export function downcastAttributeChange( attribute ) {
 	}, { priority: 'normal' } );
 }
 
+/**
+ * Conversion helper that acts on removed row.
+ *
+ * @returns {Function} Conversion helper.
+ */
+export function downcastRemoveRow() {
+	return dispatcher => dispatcher.on( 'remove:tableRow', ( evt, data, conversionApi ) => {
+		// Prevent default remove converter.
+		evt.stop();
+
+		let viewStart = conversionApi.mapper.toViewPosition( data.position );
+
+		const modelEnd = data.position.getShiftedBy( data.length );
+		let viewEnd = conversionApi.mapper.toViewPosition( modelEnd, { isPhantom: true } );
+
+		// Make sure that start and end positions are inside the same parent as default remove converter doesn't work well with
+		// wrapped elements: https://github.com/ckeditor/ckeditor5-engine/issues/1414
+		if ( viewStart.parent !== viewEnd.parent ) {
+			if ( viewStart.parent.name == 'table' ) {
+				viewStart = ViewPosition.createAt( viewEnd.parent );
+			}
+
+			if ( viewEnd.parent.name == 'table' ) {
+				viewEnd = ViewPosition.createAt( viewStart.parent, 'end' );
+			}
+		}
+
+		const viewRange = new ViewRange( viewStart, viewEnd );
+
+		const removed = conversionApi.writer.remove( viewRange.getTrimmed() );
+
+		for ( const child of ViewRange.createIn( removed ).getItems() ) {
+			conversionApi.mapper.unbindViewElement( child );
+		}
+	}, { priority: 'higher' } );
+}
+
 // Creates a table cell element in a view.
 //
 // @param {module:table/tablewalker~TableWalkerValue} tableWalkerValue

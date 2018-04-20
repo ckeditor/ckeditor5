@@ -11,7 +11,8 @@ import {
 	downcastAttributeChange,
 	downcastInsertCell,
 	downcastInsertRow,
-	downcastInsertTable
+	downcastInsertTable,
+	downcastRemoveRow
 } from '../../src/converters/downcast';
 import { formatModelTable, formattedViewTable, modelTable, viewTable } from '../_utils/utils';
 
@@ -59,6 +60,8 @@ describe( 'downcast converters', () => {
 				// Insert conversion
 				conversion.for( 'downcast' ).add( downcastInsertRow() );
 				conversion.for( 'downcast' ).add( downcastInsertCell() );
+
+				conversion.for( 'downcast' ).add( downcastRemoveRow() );
 
 				conversion.for( 'downcast' ).add( downcastAttributeChange( 'headingRows' ) );
 				conversion.for( 'downcast' ).add( downcastAttributeChange( 'headingColumns' ) );
@@ -713,6 +716,111 @@ describe( 'downcast converters', () => {
 					'34'
 				]
 			] ) );
+		} );
+	} );
+
+	describe( 'downcastRemoveRow()', () => {
+		it( 'should react to removed row from the beginning of a tbody', () => {
+			setModelData( model, modelTable( [
+				[ '00[]', '01' ],
+				[ '10', '11' ]
+			] ) );
+
+			const table = root.getChild( 0 );
+
+			model.change( writer => {
+				writer.remove( table.getChild( 1 ) );
+			} );
+
+			expect( formatModelTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+				[ '00', '01' ]
+			] ) );
+		} );
+
+		it( 'should react to removed row form the end of a tbody', () => {
+			setModelData( model, modelTable( [
+				[ '00[]', '01' ],
+				[ '10', '11' ]
+			] ) );
+
+			const table = root.getChild( 0 );
+
+			model.change( writer => {
+				writer.remove( table.getChild( 0 ) );
+			} );
+
+			expect( formatModelTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+				[ '10', '11' ]
+			] ) );
+		} );
+
+		it( 'should react to removed row from the beginning of a thead', () => {
+			setModelData( model, modelTable( [
+				[ '00[]', '01' ],
+				[ '10', '11' ]
+			], { headingRows: 2 } ) );
+
+			const table = root.getChild( 0 );
+
+			model.change( writer => {
+				writer.remove( table.getChild( 1 ) );
+			} );
+
+			expect( formatModelTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+				[ '00', '01' ]
+			], { headingRows: 2 } ) );
+		} );
+
+		it( 'should react to removed row form the end of a thead', () => {
+			setModelData( model, modelTable( [
+				[ '00[]', '01' ],
+				[ '10', '11' ]
+			], { headingRows: 2 } ) );
+
+			const table = root.getChild( 0 );
+
+			model.change( writer => {
+				writer.remove( table.getChild( 0 ) );
+			} );
+
+			expect( formatModelTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+				[ '10', '11' ]
+			], { headingRows: 2 } ) );
+		} );
+
+		it( 'should remove empty thead section if a last row was removed from thead', () => {
+			setModelData( model, modelTable( [
+				[ '00[]', '01' ],
+				[ '10', '11' ]
+			], { headingRows: 1 } ) );
+
+			const table = root.getChild( 0 );
+
+			model.change( writer => {
+				writer.setAttribute( 'headingRows', 0, table );
+				writer.remove( table.getChild( 0 ) );
+			} );
+
+			expect( formatModelTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+				[ '10', '11' ]
+			] ) );
+		} );
+
+		it( 'should remove empty tbody section if a last row was removed from tbody', () => {
+			setModelData( model, modelTable( [
+				[ '00[]', '01' ],
+				[ '10', '11' ]
+			], { headingRows: 1 } ) );
+
+			const table = root.getChild( 0 );
+
+			model.change( writer => {
+				writer.remove( table.getChild( 1 ) );
+			} );
+
+			expect( formatModelTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+				[ '00', '01' ]
+			], { headingRows: 1 } ) );
 		} );
 	} );
 } );

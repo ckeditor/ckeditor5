@@ -10,7 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 import upcastTable from './converters/upcasttable';
-import { downcastInsertCell, downcastInsertRow, downcastInsertTable } from './converters/downcast';
+import { downcastInsertCell, downcastInsertRow, downcastInsertTable, downcastRemoveRow } from './converters/downcast';
 import InsertTableCommand from './commands/inserttablecommand';
 import InsertRowCommand from './commands/insertrowcommand';
 import InsertColumnCommand from './commands/insertcolumncommand';
@@ -58,6 +58,9 @@ export default class TablesEditing extends Plugin {
 		// Insert conversion
 		conversion.for( 'downcast' ).add( downcastInsertRow() );
 		conversion.for( 'downcast' ).add( downcastInsertCell() );
+
+		// Remove row conversion.
+		conversion.for( 'downcast' ).add( downcastRemoveRow() );
 
 		// Table cell conversion.
 		conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'td' } ) );
