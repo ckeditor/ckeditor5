@@ -4,7 +4,7 @@
  */
 
 /**
- * @module table/commands/splitcell
+ * @module table/commands/splitcellcommand
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
@@ -16,7 +16,7 @@ import TableWalker from '../tablewalker';
  *
  * @extends module:core/command~Command
  */
-export default class InsertTableCommand extends Command {
+export default class SplitCellCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */

@@ -4,20 +4,20 @@
  */
 
 /**
- * @module table/commands/splitcell
+ * @module table/commands/removerow
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import TableWalker from '../tablewalker';
-import Position from '../../../ckeditor5-engine/src/model/position';
-import Range from '../../../ckeditor5-engine/src/model/range';
+import Position from '@ckeditor/ckeditor5-engine/src/model/position';
+import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 
 /**
- * The split cell command.
+ * The remove row command.
  *
  * @extends module:core/command~Command
  */
-export default class InsertTableCommand extends Command {
+export default class RemoveRowCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
