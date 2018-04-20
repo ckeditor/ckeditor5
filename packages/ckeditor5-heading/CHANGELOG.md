@@ -5,7 +5,7 @@ Changelog
 
 ### Features
 
-* Introduced HeadingButtonsUI plugin. Closes [#104](https://github.com/ckeditor/ckeditor5-heading/issues/104). ([a39bac2](https://github.com/ckeditor/ckeditor5-heading/commit/a39bac2))
+* Introduced `HeadingButtonsUI` plugin. Closes [#104](https://github.com/ckeditor/ckeditor5-heading/issues/104). ([a39bac2](https://github.com/ckeditor/ckeditor5-heading/commit/a39bac2))
 
 
 ## [1.0.0-beta.2](https://github.com/ckeditor/ckeditor5-heading/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2018-04-10)
