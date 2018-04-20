@@ -1,7 +1,6 @@
 ---
 category: builds-support
 order: 30
-menu-title: Getting support
 ---
 
 # Getting support

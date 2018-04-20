@@ -6,6 +6,7 @@
 
 category: framework-support
 order: 10
+title: Browser compatibility
 ---
 
 {@importguide builds/guides/support/browser-compatibility}

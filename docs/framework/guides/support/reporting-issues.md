@@ -6,6 +6,7 @@
 
 category: framework-support
 order: 40
+title: Reporting issues
 ---
 
 {@importguide builds/guides/support/reporting-issues}
