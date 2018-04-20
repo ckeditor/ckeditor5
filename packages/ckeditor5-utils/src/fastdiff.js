@@ -57,70 +57,51 @@ export default function fastDiff( oldText, newText ) {
 // @param {String} oldText
 // @param {String} newText
 // @returns {Object}
-// @returns {Number} return.firstIndex Position of the first change in both strings (always the same for both).
-// @returns {Number} result.lastIndexOld Position of the last change in `oldText` string.
-// @returns {Number} result.lastIndexNew Position of the last change in `newText` string.
+// @returns {Number} return.firstIndex Index of the first change in both strings (always the same for both).
+// @returns {Number} result.lastIndexOld Index of the last common character in `oldText` string looking from back.
+// @returns {Number} result.lastIndexNew Index of the last common character in `newText` string looking from back.
 function findChangeBoundaryIndexes( oldText, newText ) {
-	const oldTextLength = oldText.length;
-	const newTextLength = newText.length;
+	// Find the first difference between texts.
+	const firstIndex = findFirstDifferenceIndex( oldText, newText );
 
-	// Find first change.
-	// Iterate over both strings starting from the beginning to find position of the first different character.
-	// If not found, it means first change is at the end of the string.
-	let firstIndex = oldTextLength;
+	// Remove the common part of texts and reverse them to make it simpler to find the last difference between texts.
+	const oldTextReversed = cutAndReverse( oldText, firstIndex );
+	const newTextReversed = cutAndReverse( newText, firstIndex );
 
-	for ( let i = 0; i < oldTextLength; i++ ) {
-		if ( oldText[ i ] !== newText[ i ] ) {
-			firstIndex = i;
-			break;
-		}
-	}
+	// Find the first difference between reversed texts.
+	// It should be treated as "how many characters from the end the last difference occurred".
+	//
+	// For example:
+	//
+	// 			initial	->	after cut	-> reversed:
+	// oldText:	'321ba'	->	'21ba'		-> 'ab12'
+	// newText:	'31xba'	->	'1xba'		-> 'abx1'
+	// lastIndex:						->    2
+	//
+	// So the last change occurred two characters from the end of the texts.
+	const lastIndex = findFirstDifferenceIndex( oldTextReversed, newTextReversed );
 
-	// Find last change.
-	// Iterate over both strings starting from the end to find position of the first different character.
-	// We remove identical part from both strings and reverse them so it is easier to iterate. The identical part
-	// needs to be removed to properly handle cases like:
-	//		oldText = '123';
-	//		newText = '123123;
-	// After removing identical part we have:
-	//		oldText = '';
-	//		newText = '123';
-	//		// { firstIndex: 3, lastIndexOld: 3, lastIndexNew: 6 }
-	const oldTextReversed = oldText.substring( firstIndex ).split( '' ).reverse().join( '' );
-	const newTextReversed = newText.substring( firstIndex ).split( '' ).reverse().join( '' );
-
-	let lastIndexOld;
-	let lastIndexNew;
-
-	for ( let i = 0; i < Math.max( oldTextReversed.length, newTextReversed.length ); i++ ) {
-		// Initial text -> after removing identical part -> reversed:
-		// oldText: '321ba' -> '21ba' -> 'ab12'
-		// newText: '31ba'  -> '1ba'  -> 'ab1'
-		// { firstIndex: 1, lastIndexOld: 2, lastIndexNew: 1 }
-		if ( i >= newTextReversed.length ) {
-			lastIndexOld = oldTextLength - i;
-			lastIndexNew = firstIndex;
-			break;
-		}
-
-		// Initial text -> after removing identical part -> reversed:
-		// oldText: '31ba'  -> '1ba'  -> 'ab1'
-		// newText: '321ba' -> '21ba' -> 'ab12'
-		// { firstIndex: 1, lastIndexOld: 1, lastIndexNew: 2 }
-		if ( i >= oldTextReversed.length ) {
-			lastIndexOld = firstIndex;
-			lastIndexNew = newTextLength - i;
-			break;
-		}
-
-		if ( oldTextReversed[ i ] !== newTextReversed[ i ] ) {
-			lastIndexOld = oldTextLength - i;
-			lastIndexNew = newTextLength - i;
-			break;
-		}
-	}
+	// Use `lastIndex` to calculate proper offset, starting from the beginning (`lastIndex` kind of starts from the end).
+	const lastIndexOld = oldText.length - lastIndex;
+	const lastIndexNew = newText.length - lastIndex;
 
 	return { firstIndex, lastIndexOld, lastIndexNew };
+}
+
+// Returns a first index on which `oldText` and `newText` differ.
+function findFirstDifferenceIndex( oldText, newText ) {
+	for ( let i = 0; i < Math.max( oldText.length, newText.length ); i++ ) {
+		if ( oldText[ i ] !== newText[ i ] ) {
+			return i;
+		}
+	}
+	// No "backup" return cause we assume that `oldText` and `newText` differ. This means that they either have a
+	// difference or they have a different lengths. This means that the `if` condition will always be met eventually.
+}
+
+// Removes `cutHowMany` first characters from the given `text` string and then reverses it and returns it.
+function cutAndReverse( text, cutHowMany ) {
+	return text.substring( cutHowMany ).split( '' ).reverse().join( '' );
 }
 
 // Generates changes array based on change indexes from `findChangeBoundaryIndexes` function. This function will

@@ -161,6 +161,20 @@ describe( 'fastDiff', () => {
 			], false );
 		} );
 
+		it( 'should diff insertion of duplicated content', () => {
+			expectDiff( '1234', '123123', [
+				{ index: 3, type: 'insert', values: [ '1', '2', '3' ] },
+				{ index: 6, type: 'delete', howMany: 1 }
+			], false );
+		} );
+
+		it( 'should diff insertion of duplicated content', () => {
+			expectDiff( '1234', '13424', [
+				{ index: 1, type: 'insert', values: [ '3', '4', '2' ] },
+				{ index: 4, type: 'delete', howMany: 2 }
+			], false );
+		} );
+
 		it( 'should diff replacement in the middle', () => {
 			expectDiff( '12345', '12ab5', [
 				{ index: 2, type: 'insert', values: [ 'a', 'b' ] },
