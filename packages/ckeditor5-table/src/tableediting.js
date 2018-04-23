@@ -18,6 +18,7 @@ import InsertTableCommand from './commands/inserttablecommand';
 import InsertRowCommand from './commands/insertrowcommand';
 import InsertColumnCommand from './commands/insertcolumncommand';
 import SplitCellCommand from './commands/splitcellcommand';
+import MergeCellCommand from './commands/mergecellcommand';
 import RemoveRowCommand from './commands/removerowcommand';
 import RemoveColumnCommand from './commands/removecolumncommand';
 import { getParentTable } from './commands/utils';
@@ -88,6 +89,8 @@ export default class TablesEditing extends Plugin {
 		editor.commands.add( 'splitCell', new SplitCellCommand( editor ) );
 		editor.commands.add( 'removeRow', new RemoveRowCommand( editor ) );
 		editor.commands.add( 'removeColumn', new RemoveColumnCommand( editor ) );
+		editor.commands.add( 'mergeRight', new MergeCellCommand( editor, { direction: 'right' } ) );
+		editor.commands.add( 'mergeLeft', new MergeCellCommand( editor, { direction: 'left' } ) );
 
 		this.listenTo( editor.editing.view.document, 'keydown', ( ...args ) => this._handleTabOnSelectedTable( ...args ) );
 		this.listenTo( editor.editing.view.document, 'keydown', ( ...args ) => this._handleTabInsideTable( ...args ) );

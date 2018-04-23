@@ -82,6 +82,8 @@ describe( 'SplitCellCommand', () => {
 			setData( model, modelTable( [
 				[ { rowspan: 2, contents: '11[]' } ]
 			] ) );
+
+			expect( command.isEnabled ).to.be.true;
 		} );
 
 		it( 'should be false in cell without rowspan or colspan attribute', () => {
