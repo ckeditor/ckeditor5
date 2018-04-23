@@ -78,18 +78,20 @@ Copy these dependencies to your `package.json` and call `npm install` to install
 "dependencies": {
 	// ...
 
-    "@ckeditor/ckeditor5-editor-classic": "^0.8.0",
-    "@ckeditor/ckeditor5-essentials": "^0.3.0",
-    "@ckeditor/ckeditor5-autoformat": "^0.6.0",
-    "@ckeditor/ckeditor5-basic-styles": "^0.9.0",
-    "@ckeditor/ckeditor5-block-quote": "^0.2.0",
-    "@ckeditor/ckeditor5-heading": "^0.10.0",
-    "@ckeditor/ckeditor5-image": "^0.7.0",
-    "@ckeditor/ckeditor5-link": "^0.8.0",
-    "@ckeditor/ckeditor5-list": "^0.7.0",
-    "@ckeditor/ckeditor5-paragraph": "^0.9.0",
-    "@ckeditor/ckeditor5-theme-lark": "^1.0.0-alpha.2",
-    "@ckeditor/ckeditor5-dev-utils": "^7.0.0"
+    "@ckeditor/ckeditor5-adapter-ckfinder": "^x.y.z",
+    "@ckeditor/ckeditor5-autoformat": "^x.y.z",
+    "@ckeditor/ckeditor5-basic-styles": "^x.y.z",
+    "@ckeditor/ckeditor5-block-quote": "^x.y.z",
+    "@ckeditor/ckeditor5-easy-image": "^x.y.z",
+    "@ckeditor/ckeditor5-editor-classic": "^x.y.z",
+    "@ckeditor/ckeditor5-essentials": "^x.y.z",
+    "@ckeditor/ckeditor5-heading": "^x.y.z",
+    "@ckeditor/ckeditor5-image": "^x.y.z",
+    "@ckeditor/ckeditor5-link": "^x.y.z",
+    "@ckeditor/ckeditor5-list": "^x.y.z",
+    "@ckeditor/ckeditor5-paragraph": "^x.y.z",
+    "@ckeditor/ckeditor5-theme-lark": "^x.y.z",
+    "@ckeditor/ckeditor5-upload": "^x.y.z"
 
     // ...
 }
@@ -104,13 +106,14 @@ npm install --save \
 	postcss-loader \
 	raw-loader \
 	style-loader \
-	webpack@^3.11.0
+	webpack@^3.11.0 \
+    webpack-sources@1.0.1
 ```
 
 You may also want to install [`babel-minify-webpack-plugin`](https://github.com/webpack-contrib/babel-minify-webpack-plugin) if you plan to minify ES6+ code.
 
 <info-box warning>
-	Unfortunately, at the moment of writing this note, [webpack@4.x causes issues](https://github.com/ckeditor/ckeditor5-dev/issues/371).
+	Unfortunately, at the moment of writing this note, [webpack@4.x causes issues](https://github.com/ckeditor/ckeditor5-dev/issues/371). Hence, webpack@3.x is used in the scenario above. Additionally, webpack-sources@1.0.1 [is needed due to another issue](https://github.com/ckeditor/ckeditor5/issues/658).
 </info-box>
 
 ### Webpack configuration
@@ -180,15 +183,18 @@ You can now import all the needed plugins and the creator directly into your cod
 ```js
 import ClassicEditorBase from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import EssentialsPlugin from '@ckeditor/ckeditor5-essentials/src/essentials';
+import UploadadapterPlugin from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
 import AutoformatPlugin from '@ckeditor/ckeditor5-autoformat/src/autoformat';
 import BoldPlugin from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import ItalicPlugin from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import BlockquotePlugin from '@ckeditor/ckeditor5-block-quote/src/blockquote';
+import EasyimagePlugin from '@ckeditor/ckeditor5-easy-image/src/easyimage';
 import HeadingPlugin from '@ckeditor/ckeditor5-heading/src/heading';
 import ImagePlugin from '@ckeditor/ckeditor5-image/src/image';
 import ImagecaptionPlugin from '@ckeditor/ckeditor5-image/src/imagecaption';
 import ImagestylePlugin from '@ckeditor/ckeditor5-image/src/imagestyle';
 import ImagetoolbarPlugin from '@ckeditor/ckeditor5-image/src/imagetoolbar';
+import ImageuploadPlugin from '@ckeditor/ckeditor5-image/src/imageupload';
 import LinkPlugin from '@ckeditor/ckeditor5-link/src/link';
 import ListPlugin from '@ckeditor/ckeditor5-list/src/list';
 import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -198,31 +204,38 @@ export default class ClassicEditor extends ClassicEditorBase {}
 ClassicEditor.build = {
 	plugins: [
 		EssentialsPlugin,
+		UploadadapterPlugin,
 		AutoformatPlugin,
 		BoldPlugin,
 		ItalicPlugin,
 		BlockquotePlugin,
+		EasyimagePlugin,
 		HeadingPlugin,
 		ImagePlugin,
 		ImagecaptionPlugin,
 		ImagestylePlugin,
 		ImagetoolbarPlugin,
+		ImageuploadPlugin,
 		LinkPlugin,
 		ListPlugin,
 		ParagraphPlugin
 	],
 	config: {
-		toolbar: [
-			'heading',
-			'bold',
-			'italic',
-			'link',
-			'bulletedList',
-			'numberedList',
-			'blockQuote',
-			'undo',
-			'redo'
-		],
+		toolbar: {
+			items: [
+				'heading',
+				'|',
+				'bold',
+				'italic',
+				'link',
+				'bulletedList',
+				'numberedList',
+				'imageUpload',
+				'blockQuote',
+				'undo',
+				'redo'
+			]
+		},
 		image: {
 			toolbar: [
 				'imageStyle:full',
@@ -230,9 +243,11 @@ ClassicEditor.build = {
 				'|',
 				'imageTextAlternative'
 			]
-		}
+		},
+		language: 'en'
 	}
 };
+
 ```
 
 This module will export an editor creator class which has all the plugins and configuration that you need already built-in. To use such editor, simply import that class and call the static `.create()` method like in all {@link builds/guides/integration/basic-api#creating-an-editor examples}.
@@ -258,15 +273,18 @@ The second variant how to run the editor is to use the creator class directly, w
 ```js
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import EssentialsPlugin from '@ckeditor/ckeditor5-essentials/src/essentials';
+import UploadadapterPlugin from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
 import AutoformatPlugin from '@ckeditor/ckeditor5-autoformat/src/autoformat';
 import BoldPlugin from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import ItalicPlugin from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import BlockquotePlugin from '@ckeditor/ckeditor5-block-quote/src/blockquote';
+import EasyimagePlugin from '@ckeditor/ckeditor5-easy-image/src/easyimage';
 import HeadingPlugin from '@ckeditor/ckeditor5-heading/src/heading';
 import ImagePlugin from '@ckeditor/ckeditor5-image/src/image';
 import ImagecaptionPlugin from '@ckeditor/ckeditor5-image/src/imagecaption';
 import ImagestylePlugin from '@ckeditor/ckeditor5-image/src/imagestyle';
 import ImagetoolbarPlugin from '@ckeditor/ckeditor5-image/src/imagetoolbar';
+import ImageuploadPlugin from '@ckeditor/ckeditor5-image/src/imageupload';
 import LinkPlugin from '@ckeditor/ckeditor5-link/src/link';
 import ListPlugin from '@ckeditor/ckeditor5-list/src/list';
 import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -298,6 +316,7 @@ ClassicEditor
 			'link',
 			'bulletedList',
 			'numberedList',
+			'imageUpload',
 			'blockQuote',
 			'undo',
 			'redo'
