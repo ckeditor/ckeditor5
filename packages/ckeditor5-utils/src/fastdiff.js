@@ -11,12 +11,26 @@
  * Finds position of the first and last change in the given strings and generates set of changes. Set of changes
  * can be applied to the input text in order to transform it into the output text, for example:
  *
- *		let input = '12abc3';
- *		const output = '2ab';
- *		const changes = fastDiff( input, output );
+ *		fastDiff( '12a', '12xyza' );
+ *		// [ { index: 2, type: 'insert', values: [ 'x', 'y', 'z' ] } ]
  *
- *		console.log( changes );
+ *		fastDiff( '12a', '12aa' );
+ *		// [ { index: 3, type: 'insert', values: [ 'a' ] } ]
+ *
+ *		fastDiff( '12xyza', '12a' );
+ *		// [ { index: 2, type: 'delete', howMany: 3 } ]
+ *
+ *		fastDiff( '12aa', '12a' );
+ *		// [ { index: 3, type: 'delete', howMany: 1 } ]
+ *
+ *		fastDiff( '12abc3', '2ab' );
  *		// [ { index: 0, type: 'insert', values: [ '2', 'a', 'b' ] }, { index: 3, type: 'delete', howMany: 6 } ]
+ *
+ * Using returned results you can modify `oldText` to make it the as the `newText`:
+ *
+ * 		let input = '12abc3';
+ * 		const output = '2ab';
+ * 		const changes = fastDiff( input, output );
  *
  *		changes.forEach( change => {
  *			if ( change.type == 'insert' ) {
@@ -53,6 +67,8 @@ export default function fastDiff( oldText, newText ) {
 // The above indexes means that in `oldText` modified part is `1[23]4` and in the `newText` it is `1[342]4`.
 // Based on such indexes, array with `insert`/`delete` operations which allows transforming
 // old text to the new one could be generated.
+//
+// It is expected that `oldText` and `newText` are different.
 //
 // @param {String} oldText
 // @param {String} newText
