@@ -7,12 +7,12 @@ import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltestedit
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 
-import RemoveRowCommand from '../../src/commands/removerowcommand';
+import RemoveColumnCommand from '../../src/commands/removecolumncommand';
 import { downcastInsertTable } from '../../src/converters/downcast';
 import upcastTable from '../../src/converters/upcasttable';
 import { formatTable, formattedModelTable, modelTable } from '../_utils/utils';
 
-describe( 'RemoveRowCommand', () => {
+describe( 'RemoveColumnCommand', () => {
 	let editor, model, command;
 
 	beforeEach( () => {
@@ -20,14 +20,14 @@ describe( 'RemoveRowCommand', () => {
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
-				command = new RemoveRowCommand( editor );
+				command = new RemoveColumnCommand( editor );
 
 				const conversion = editor.conversion;
 				const schema = model.schema;
 
 				schema.register( 'table', {
 					allowWhere: '$block',
-					allowAttributes: [ 'headingRows' ],
+					allowAttributes: [ 'headingRows', 'headingColumns' ],
 					isBlock: true,
 					isObject: true
 				} );
@@ -79,9 +79,11 @@ describe( 'RemoveRowCommand', () => {
 			expect( command.isEnabled ).to.be.true;
 		} );
 
-		it( 'should be false if selection is inside table with one row only', () => {
+		it( 'should be false if selection is inside table with one column only', () => {
 			setData( model, modelTable( [
-				[ '00[]', '01' ]
+				[ '00' ],
+				[ '10[]' ],
+				[ '20[]' ]
 			] ) );
 
 			expect( command.isEnabled ).to.be.false;
@@ -95,22 +97,23 @@ describe( 'RemoveRowCommand', () => {
 	} );
 
 	describe( 'execute()', () => {
-		it( 'should remove a given row', () => {
+		it( 'should remove a given column', () => {
 			setData( model, modelTable( [
-				[ '00', '01' ],
-				[ '[]10', '11' ],
-				[ '20', '21' ]
+				[ '00', '01', '02' ],
+				[ '10', '[]11', '12' ],
+				[ '20', '21', '22' ]
 			] ) );
 
 			command.execute();
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
-				[ '00', '01[]' ],
-				[ '20', '21' ]
+				[ '00', '02' ],
+				[ '10[]', '12' ],
+				[ '20', '22' ]
 			] ) );
 		} );
 
-		it( 'should remove a given row from a table start', () => {
+		it( 'should remove a given column from a table start', () => {
 			setData( model, modelTable( [
 				[ '[]00', '01' ],
 				[ '10', '11' ],
@@ -120,57 +123,62 @@ describe( 'RemoveRowCommand', () => {
 			command.execute();
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
-				[ '[]10', '11' ],
-				[ '20', '21' ]
+				[ '[]01' ],
+				[ '11' ],
+				[ '21' ]
 			] ) );
 		} );
 
-		it( 'should change heading rows if removing a heading row', () => {
+		it( 'should change heading columns if removing a heading column', () => {
 			setData( model, modelTable( [
 				[ '00', '01' ],
 				[ '[]10', '11' ],
 				[ '20', '21' ]
-			], { headingRows: 2 } ) );
+			], { headingColumns: 2 } ) );
 
 			command.execute();
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
-				[ '00', '01[]' ],
-				[ '20', '21' ]
-			], { headingRows: 1 } ) );
+				[ '01' ],
+				[ '[]11' ],
+				[ '21' ]
+			], { headingColumns: 1 } ) );
 		} );
 
-		it( 'should decrease rowspan of table cells from previous rows', () => {
+		it( 'should decrease colspan of table cells from previous column', () => {
 			setData( model, modelTable( [
-				[ { rowspan: 4, contents: '00' }, { rowspan: 3, contents: '01' }, { rowspan: 2, contents: '02' }, '03', '04' ],
-				[ { rowspan: 2, contents: '13' }, '14' ],
-				[ '22[]', '23', '24' ],
-				[ '30', '31', '32', '33', '34' ]
+				[ { colspan: 4, contents: '00' }, '03' ],
+				[ { colspan: 3, contents: '10' }, '13' ],
+				[ { colspan: 2, contents: '20' }, '22[]', '23' ],
+				[ '30', { colspan: 2, contents: '31' }, '33' ],
+				[ '40', '41', '42', '43' ]
 			] ) );
 
 			command.execute();
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
-				[ { rowspan: 3, contents: '00' }, { rowspan: 2, contents: '01' }, { rowspan: 2, contents: '02' }, '03', '04' ],
-				[ '13', '14[]' ],
-				[ '30', '31', '32', '33', '34' ]
+				[ { colspan: 3, contents: '00' }, '03' ],
+				[ { colspan: 2, contents: '10' }, '13' ],
+				[ { colspan: 2, contents: '20[]' }, '23' ],
+				[ '30', '31', '33' ],
+				[ '40', '41', '43' ]
+
 			] ) );
 		} );
 
-		it( 'should move rowspaned cells to row below removing it\'s row', () => {
+		it( 'should move colspaned cells to row below removing it\'s column', () => {
 			setData( model, modelTable( [
-				[ { rowspan: 3, contents: '[]00' }, { rowspan: 2, contents: '01' }, '02' ],
-				[ '12' ],
-				[ '22' ],
-				[ '30', '31', '32' ]
+				[ { colspan: 3, contents: '[]00' }, '03' ],
+				[ { colspan: 2, contents: '10' }, '13' ],
+				[ '20', '21', '22', '23' ]
 			] ) );
 
 			command.execute();
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
-				[ { rowspan: 2, contents: '[]00' }, '01', '12' ],
-				[ '22' ],
-				[ '30', '31', '32' ]
+				[ { colspan: 2, contents: '[]00' }, '03' ],
+				[ '10', '13' ],
+				[ '21', '22', '23' ]
 			] ) );
 		} );
 	} );
