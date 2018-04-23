@@ -7,15 +7,15 @@
     "ckeditor5-feature"
   ],
   "dependencies": {
-    "@ckeditor/ckeditor5-core": "^1.0.0-beta.1",
-    "@ckeditor/ckeditor5-engine": "^1.0.0-beta.1",
-    "@ckeditor/ckeditor5-ui": "^1.0.0-beta.1",
-    "@ckeditor/ckeditor5-wdiget": "^1.0.0-beta.2"
+    "@ckeditor/ckeditor5-core": "^1.0.0-beta.4",
+    "@ckeditor/ckeditor5-engine": "^1.0.0-beta.4",
+    "@ckeditor/ckeditor5-ui": "^1.0.0-beta.4",
+    "@ckeditor/ckeditor5-widget": "^1.0.0-beta.4"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-editor-classic": "^1.0.0-beta.2",
-    "@ckeditor/ckeditor5-paragraph": "^1.0.0-beta.2",
-    "@ckeditor/ckeditor5-utils": "^1.0.0-beta.2",
+    "@ckeditor/ckeditor5-editor-classic": "^1.0.0-beta.4",
+    "@ckeditor/ckeditor5-paragraph": "^1.0.0-beta.4",
+    "@ckeditor/ckeditor5-utils": "^1.0.0-beta.4",
     "eslint": "^4.15.0",
     "eslint-config-ckeditor5": "^1.0.7",
     "husky": "^0.14.3",
