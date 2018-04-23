@@ -9,7 +9,7 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
-import Range from '../../../ckeditor5-engine/src/model/range';
+import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 
 /**
  * The merge cell command.
@@ -31,25 +31,10 @@ export default class MergeCellCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		this.isEnabled = this._checkEnabled();
-	}
+		const cellToMerge = this._getCellToMerge();
 
-	_checkEnabled() {
-		const model = this.editor.model;
-		const doc = model.document;
-		const element = doc.selection.getFirstPosition().parent;
-
-		const siblingToMerge = this.direction == 'right' ? element.nextSibling : element.previousSibling;
-
-		if ( !element.is( 'tableCell' ) || !siblingToMerge ) {
-			return false;
-		}
-
-		const rowspan = parseInt( element.getAttribute( 'rowspan' ) || 1 );
-
-		const nextCellRowspan = parseInt( siblingToMerge.getAttribute( 'rowspan' ) || 1 );
-
-		return nextCellRowspan === rowspan;
+		this.isEnabled = !!cellToMerge;
+		this.value = cellToMerge;
 	}
 
 	/**
@@ -62,7 +47,7 @@ export default class MergeCellCommand extends Command {
 		const doc = model.document;
 		const tableCell = doc.selection.getFirstPosition().parent;
 
-		const siblingToMerge = this.direction == 'right' ? tableCell.nextSibling : tableCell.previousSibling;
+		const siblingToMerge = this.value;
 
 		model.change( writer => {
 			writer.move( Range.createIn( siblingToMerge ), Position.createAt( tableCell, this.direction == 'right' ? 'end' : undefined ) );
@@ -73,5 +58,31 @@ export default class MergeCellCommand extends Command {
 
 			writer.setAttribute( 'colspan', colspan + nextTableCellColspan, tableCell );
 		} );
+	}
+
+	/**
+	 * Returns a cell that it mergable with current cell depending on command's direction.
+	 *
+	 * @returns {*}
+	 * @private
+	 */
+	_getCellToMerge() {
+		const model = this.editor.model;
+		const doc = model.document;
+		const element = doc.selection.getFirstPosition().parent;
+
+		const siblingToMerge = this.direction == 'right' ? element.nextSibling : element.previousSibling;
+
+		if ( !element.is( 'tableCell' ) || !siblingToMerge ) {
+			return;
+		}
+
+		const rowspan = parseInt( element.getAttribute( 'rowspan' ) || 1 );
+
+		const nextCellRowspan = parseInt( siblingToMerge.getAttribute( 'rowspan' ) || 1 );
+
+		if ( nextCellRowspan === rowspan ) {
+			return siblingToMerge;
+		}
 	}
 }

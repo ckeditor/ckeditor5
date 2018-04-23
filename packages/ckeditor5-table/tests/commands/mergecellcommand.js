@@ -13,13 +13,14 @@ import upcastTable from '../../src/converters/upcasttable';
 import { formatTable, formattedModelTable, modelTable } from '../_utils/utils';
 
 describe.only( 'MergeCellCommand', () => {
-	let editor, model, command;
+	let editor, model, command, root;
 
 	beforeEach( () => {
 		return ModelTestEditor.create()
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
+				root = model.document.getRoot( 'main' );
 
 				const conversion = editor.conversion;
 				const schema = model.schema;
@@ -113,6 +114,46 @@ describe.only( 'MergeCellCommand', () => {
 			} );
 		} );
 
+		describe( 'value', () => {
+			it( 'should be set to mergeable sibling if in cell that has sibling on the right', () => {
+				setData( model, modelTable( [
+					[ '00[]', '01' ]
+				] ) );
+
+				expect( command.value ).to.equal( root.getNodeByPath( [ 0, 0, 1 ] ) );
+			} );
+
+			it( 'should be undefined if last cell of a row', () => {
+				setData( model, modelTable( [
+					[ '00', '01[]' ]
+				] ) );
+
+				expect( command.value ).to.be.undefined;
+			} );
+
+			it( 'should be set to mergeable sibling if in a cell that has sibling on the right with the same rowspan', () => {
+				setData( model, modelTable( [
+					[ { rowspan: 2, contents: '00[]' }, { rowspan: 2, contents: '01' } ]
+				] ) );
+
+				expect( command.value ).to.equal( root.getNodeByPath( [ 0, 0, 1 ] ) );
+			} );
+
+			it( 'should be undefined if in a cell that has sibling but with different rowspan', () => {
+				setData( model, modelTable( [
+					[ { rowspan: 2, contents: '00[]' }, { rowspan: 3, contents: '01' } ]
+				] ) );
+
+				expect( command.value ).to.be.undefined;
+			} );
+
+			it( 'should be undefined if not in a cell', () => {
+				setData( model, '<p>11[]</p>' );
+
+				expect( command.value ).to.be.undefined;
+			} );
+		} );
+
 		describe( 'execute()', () => {
 			it( 'should merge table cells ', () => {
 				setData( model, modelTable( [
@@ -170,6 +211,46 @@ describe.only( 'MergeCellCommand', () => {
 				setData( model, '<p>11[]</p>' );
 
 				expect( command.isEnabled ).to.be.false;
+			} );
+		} );
+
+		describe( 'value', () => {
+			it( 'should be set to mergeable sibling if in cell that has sibling on the left', () => {
+				setData( model, modelTable( [
+					[ '00', '01[]' ]
+				] ) );
+
+				expect( command.value ).to.equal( root.getNodeByPath( [ 0, 0, 0 ] ) );
+			} );
+
+			it( 'should be undefined if first cell of a row', () => {
+				setData( model, modelTable( [
+					[ '00[]', '01' ]
+				] ) );
+
+				expect( command.value ).to.be.undefined;
+			} );
+
+			it( 'should be set to mergeable sibling if in a cell that has sibling on the left with the same rowspan', () => {
+				setData( model, modelTable( [
+					[ { rowspan: 2, contents: '00' }, { rowspan: 2, contents: '01[]' } ]
+				] ) );
+
+				expect( command.value ).to.equal( root.getNodeByPath( [ 0, 0, 0 ] ) );
+			} );
+
+			it( 'should be undefined if in a cell that has sibling but with different rowspan', () => {
+				setData( model, modelTable( [
+					[ { rowspan: 2, contents: '00' }, { rowspan: 3, contents: '01[]' } ]
+				] ) );
+
+				expect( command.value ).to.be.undefined;
+			} );
+
+			it( 'should be undefined if not in a cell', () => {
+				setData( model, '<p>11[]</p>' );
+
+				expect( command.value ).to.be.undefined;
 			} );
 		} );
 
