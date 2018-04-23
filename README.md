@@ -59,7 +59,7 @@ In your HTML page add an element that CKEditor should replace:
 <textarea name="content" id="editor"></textarea>
 ```
 
-Load the classic editor build (here [CDN](https://cdn.ckeditor.com/) location is used):
+Load the classic editor build (you can choose between [CDN](https://cdn.ckeditor.com/#ckeditor5), [npm](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/integration/installation.html#npm) and [Zip downloads](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/integration/installation.html#zip-download)):
 
 ```html
 <script src="https://cdn.ckeditor.com/ckeditor5/<version>/classic/ckeditor.js"></script>
