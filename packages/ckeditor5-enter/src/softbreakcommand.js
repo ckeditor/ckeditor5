@@ -4,8 +4,6 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
-import Range from '@ckeditor/ckeditor5-engine/src/model/range';
-
 /**
  * Soft break command.
  *
@@ -78,8 +76,8 @@ function softBreakAction( model, writer, selection, schema ) {
 }
 
 function insertBreak( writer, selection, position ) {
-	let newBreak = writer.createElement( 'br' );
-	
+	const newBreak = writer.createElement( 'br' );
+
 	if ( position.isAtEnd ) {
 		// If the position is at the end of the element then insert the break at the end
 		writer.insert( newBreak, position, 'after' );
@@ -92,5 +90,4 @@ function insertBreak( writer, selection, position ) {
 		writer.insert( newBreak, position, 'end' );
 		writer.setSelection( newBreak, 'after' );
 	}
-	
 }

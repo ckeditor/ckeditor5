@@ -10,7 +10,8 @@ CKEditor 5 Enter feature
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-enter/status.svg)](https://david-dm.org/ckeditor/ckeditor5-enter)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-enter/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-enter?type=dev)
 
-This package implements the <kbd>Enter</kbd> key support for CKEditor 5.
+This package implements the <kbd>Enter</kbd> key support -- and optionally <kbd>Shift+Enter</kbd> soft breaks -- for CKEditor 5.
+
 
 ## Documentation
 

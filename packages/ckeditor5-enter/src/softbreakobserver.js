@@ -4,7 +4,7 @@
  */
 
 /**
- * @module enter/enterobserver
+ * @module enter/softbreakobserver
  */
 
 import Observer from '@ckeditor/ckeditor5-engine/src/view/observer/observer';
@@ -12,7 +12,7 @@ import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventd
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 /**
- * Enter observer introduces the {@link module:engine/view/document~Document#event:enter} event.
+ * SoftBreak observer introduces the {@link module:engine/view/document~Document#event:softbreak} event.
  *
  * @extends module:engine/view/observer~Observer
  */
@@ -46,11 +46,11 @@ export default class SoftBreakObserver extends Observer {
 }
 
 /**
- * Event fired when the user presses the <kbd>Enter</kbd> key.
+ * Event fired when the user presses the <kbd>Shift+Enter</kbd> key.
  *
- * Note: This event is fired by the {@link module:enter/enterobserver~EnterObserver observer}
- * (usually registered by the {@link module:enter/enter~Enter Enter feature}).
+ * Note: This event is fired by the {@link module:enter/softbreakobserver~SoftBreakObserver observer}
+ * (usually registered by the {@link module:enter/softbreak~SoftBreak SoftBreak feature}).
  *
- * @event module:engine/view/document~Document#event:enter
+ * @event module:engine/view/document~Document#event:softbreak
  * @param {module:engine/view/observer/domeventdata~DomEventData} data
  */

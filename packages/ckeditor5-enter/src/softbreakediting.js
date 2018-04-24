@@ -4,18 +4,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-// import {
-// 	viewFigureToModel,
-// 	modelToViewAttributeConverter,
-// 	srcsetAttributeConverter
-// } from './converters';
-
 import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
-import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
-
-import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
-
-// import SoftBreakCommand from './softbreakcommand';
 
 /**
  * The soft-break enter plugin.
@@ -31,7 +20,6 @@ export default class SoftBreakEditing extends Plugin {
 	init() {
 		const editor = this.editor;
 		const schema = editor.model.schema;
-		const t = editor.t;
 		const conversion = editor.conversion;
 
 		// Configure schema.
@@ -41,13 +29,12 @@ export default class SoftBreakEditing extends Plugin {
 			allowWhere: '$text'
 		} );
 
-		conversion.elementToElement( { model: 'br', view: 'br' } )
+		conversion.elementToElement( { model: 'br', view: 'br' } );
 
 		conversion.for( 'downcast' )
 			.add( downcastElementToElement( {
 				model: 'br',
 				view: ( modelElement, viewWriter ) => viewWriter.createEmptyElement( 'br' )
 			} ) );
-
 	}
 }

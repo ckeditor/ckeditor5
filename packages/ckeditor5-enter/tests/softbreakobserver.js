@@ -53,7 +53,7 @@ describe( 'SoftBreakObserver', () => {
 
 			expect( spy.calledOnce ).to.be.false;
 		} );
-		
+
 		it( 'is not fired on keydown when keyCode does not match shift+enter', () => {
 			const spy = sinon.spy();
 

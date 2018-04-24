@@ -105,7 +105,7 @@ describe( 'SoftBreakCommand', () => {
 			test(
 				'inserts at the beginning of block',
 				'<p>x</p><p>[]foo</p><p>y</p>',
-				'<p>x</p><p><br></br>[]foo</p><p>y</p>',
+				'<p>x</p><p><br></br>[]foo</p><p>y</p>'
 			);
 
 			// test(
