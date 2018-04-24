@@ -10,6 +10,7 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
+import TableWalker from '../tablewalker';
 
 /**
  * The merge cell command.
@@ -50,13 +51,17 @@ export default class MergeCellCommand extends Command {
 		const siblingToMerge = this.value;
 
 		model.change( writer => {
-			writer.move( Range.createIn( siblingToMerge ), Position.createAt( tableCell, this.direction == 'right' ? 'end' : undefined ) );
+			const isMergeNext = this.direction == 'right' || this.direction == 'down';
+
+			writer.move( Range.createIn( siblingToMerge ), Position.createAt( tableCell, isMergeNext ? 'end' : undefined ) );
 			writer.remove( siblingToMerge );
 
-			const colspan = parseInt( tableCell.getAttribute( 'colspan' ) || 1 );
-			const nextTableCellColspan = parseInt( siblingToMerge.getAttribute( 'colspan' ) || 1 );
+			const spanAttribute = isHorizontal( this.direction ) ? 'colspan' : 'rowspan';
 
-			writer.setAttribute( 'colspan', colspan + nextTableCellColspan, tableCell );
+			const colspan = parseInt( tableCell.getAttribute( spanAttribute ) || 1 );
+			const nextTableCellColspan = parseInt( siblingToMerge.getAttribute( spanAttribute ) || 1 );
+
+			writer.setAttribute( spanAttribute, colspan + nextTableCellColspan, tableCell );
 		} );
 	}
 
@@ -71,18 +76,69 @@ export default class MergeCellCommand extends Command {
 		const doc = model.document;
 		const element = doc.selection.getFirstPosition().parent;
 
-		const siblingToMerge = this.direction == 'right' ? element.nextSibling : element.previousSibling;
-
-		if ( !element.is( 'tableCell' ) || !siblingToMerge ) {
+		if ( !element.is( 'tableCell' ) ) {
 			return;
 		}
 
-		const rowspan = parseInt( element.getAttribute( 'rowspan' ) || 1 );
+		const cellToMerge = isHorizontal( this.direction ) ?
+			getHorizontal( element, this.direction ) :
+			getVertical( element, this.direction );
 
-		const nextCellRowspan = parseInt( siblingToMerge.getAttribute( 'rowspan' ) || 1 );
+		if ( !cellToMerge ) {
+			return;
+		}
 
-		if ( nextCellRowspan === rowspan ) {
-			return siblingToMerge;
+		const spanAttribute = isHorizontal( this.direction ) ? 'rowspan' : 'colspan';
+
+		const span = parseInt( element.getAttribute( spanAttribute ) || 1 );
+
+		const cellToMergeSpan = parseInt( cellToMerge.getAttribute( spanAttribute ) || 1 );
+
+		if ( cellToMergeSpan === span ) {
+			return cellToMerge;
+		}
+
+		function getVertical( tableCell, direction ) {
+			const tableRow = tableCell.parent;
+			const table = tableRow.parent;
+
+			const rowIndex = table.getChildIndex( tableRow );
+
+			if ( direction === 'down' && rowIndex === table.childCount - 1 ) {
+				return;
+			}
+
+			const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) || 1 );
+
+			const targetMergeRow = rowIndex + rowspan;
+
+			const tableWalker = new TableWalker( table, { endRow: targetMergeRow } );
+
+			const tableWalkerValues = [ ...tableWalker ];
+
+			const cellData = tableWalkerValues.find( value => value.cell === tableCell );
+
+			const cellToMerge = tableWalkerValues.find( value => {
+				const row = value.row;
+				const column = value.column;
+
+				return column === cellData.column && ( targetMergeRow === row );
+			} );
+
+			const colspan = parseInt( tableCell.getAttribute( 'colspan' ) || 1 );
+
+			if ( cellToMerge && cellToMerge.colspan === colspan ) {
+				return cellToMerge.cell;
+			}
+		}
+
+		function getHorizontal( tableCell, direction ) {
+			return direction == 'right' ? tableCell.nextSibling : tableCell.previousSibling;
 		}
 	}
+}
+
+// @private
+function isHorizontal( direction ) {
+	return direction == 'right' || direction == 'left';
 }

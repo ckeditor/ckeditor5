@@ -91,6 +91,7 @@ export default class TablesEditing extends Plugin {
 		editor.commands.add( 'removeColumn', new RemoveColumnCommand( editor ) );
 		editor.commands.add( 'mergeRight', new MergeCellCommand( editor, { direction: 'right' } ) );
 		editor.commands.add( 'mergeLeft', new MergeCellCommand( editor, { direction: 'left' } ) );
+		editor.commands.add( 'mergeDown', new MergeCellCommand( editor, { direction: 'down' } ) );
 
 		this.listenTo( editor.editing.view.document, 'keydown', ( ...args ) => this._handleTabOnSelectedTable( ...args ) );
 		this.listenTo( editor.editing.view.document, 'keydown', ( ...args ) => this._handleTabInsideTable( ...args ) );
