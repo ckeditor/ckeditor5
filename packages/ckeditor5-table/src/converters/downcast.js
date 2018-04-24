@@ -150,7 +150,10 @@ export function downcastInsertCell( options = {} ) {
  *
  * @returns {Function} Conversion helper.
  */
-export function downcastAttributeChange( attribute ) {
+export function downcastAttributeChange( options ) {
+	const attribute = options.attribute;
+	const asWidget = !!options.asWidget;
+
 	return dispatcher => dispatcher.on( `attribute:${ attribute }:table`, ( evt, data, conversionApi ) => {
 		const table = data.item;
 
@@ -199,7 +202,20 @@ export function downcastAttributeChange( attribute ) {
 			// If in single change we're converting attribute changes and inserting cell the table cell might not be inserted into view
 			// because of child conversion is done after parent.
 			if ( viewCell && viewCell.name !== desiredCellElementName ) {
-				conversionApi.writer.rename( viewCell, desiredCellElementName );
+				let renamedCell;
+
+				if ( asWidget ) {
+					const editable = conversionApi.writer.createEditableElement( desiredCellElementName, viewCell.getAttributes() );
+					renamedCell = toWidgetEditable( editable, conversionApi.writer );
+
+					conversionApi.writer.insert( ViewPosition.createAfter( viewCell ), renamedCell );
+					conversionApi.writer.move( ViewRange.createIn( viewCell ), ViewPosition.createAt( renamedCell ) );
+					conversionApi.writer.remove( ViewRange.createOn( viewCell ) );
+				} else {
+					renamedCell = conversionApi.writer.rename( viewCell, desiredCellElementName );
+				}
+
+				conversionApi.mapper.bindElements( cell, renamedCell );
 			}
 		}
 

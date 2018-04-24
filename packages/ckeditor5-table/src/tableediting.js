@@ -13,7 +13,13 @@ import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 import upcastTable from './converters/upcasttable';
-import { downcastInsertCell, downcastInsertRow, downcastInsertTable, downcastRemoveRow } from './converters/downcast';
+import {
+	downcastAttributeChange,
+	downcastInsertCell,
+	downcastInsertRow,
+	downcastInsertTable,
+	downcastRemoveRow
+} from './converters/downcast';
 import InsertTableCommand from './commands/inserttablecommand';
 import InsertRowCommand from './commands/insertrowcommand';
 import InsertColumnCommand from './commands/insertcolumncommand';
@@ -82,6 +88,11 @@ export default class TablesEditing extends Plugin {
 
 		conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
 		conversion.attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
+
+		conversion.for( 'editingDowncast' ).add( downcastAttributeChange( { attribute: 'headingRows', asWidget: true } ) );
+		conversion.for( 'dataDowncast' ).add( downcastAttributeChange( { attribute: 'headingRows' } ) );
+		conversion.for( 'editingDowncast' ).add( downcastAttributeChange( { attribute: 'headingColumns', asWidget: true } ) );
+		conversion.for( 'dataDowncast' ).add( downcastAttributeChange( { attribute: 'headingColumns' } ) );
 
 		editor.commands.add( 'insertTable', new InsertTableCommand( editor ) );
 		editor.commands.add( 'insertRow', new InsertRowCommand( editor ) );

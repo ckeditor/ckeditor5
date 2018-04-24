@@ -56,7 +56,7 @@ function makeRows( tableData, cellElement, rowElement, headingElement = 'th' ) {
  * @returns {String}
  */
 export function modelTable( tableData, attributes ) {
-	const tableRows = makeRows( tableData, 'tableCell', 'tableRow' );
+	const tableRows = makeRows( tableData, 'tableCell', 'tableRow', 'tableCell' );
 
 	return `<table${ formatAttributes( attributes ) }>${ tableRows }</table>`;
 }

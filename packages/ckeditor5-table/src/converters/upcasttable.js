@@ -29,11 +29,16 @@ export default function upcastTable() {
 
 			const { rows, headingRows, headingColumns } = scanTable( viewTable );
 
-			// Nullify 0 values so they are not stored in model.
-			const attributes = {
-				headingColumns: headingColumns || null,
-				headingRows: headingRows || null
-			};
+			// Only set attributes if values is greater then 0.
+			const attributes = {};
+
+			if ( headingColumns ) {
+				attributes.headingColumns = headingColumns;
+			}
+
+			if ( headingRows ) {
+				attributes.headingRows = headingRows;
+			}
 
 			const table = conversionApi.writer.createElement( 'table', attributes );
 
