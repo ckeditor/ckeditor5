@@ -9,7 +9,7 @@ The [`@ckeditor/ckeditor5-core`](https://www.npmjs.com/package/@ckeditor/ckedito
 
 ## Editor classes
 
-The {@link module:core/editor/editor~Editor} class represents the base of the editor. It is an entry point of the application, gluing all other components. It provides a couple of properties that you need to know:
+The {@link module:core/editor/editor~Editor} class represents the base of the editor. It is the entry point of the application, gluing all other components. It provides a few properties that you need to know:
 
 * {@link module:core/editor/editor~Editor#config} &ndash; The configuration object.
 * {@link module:core/editor/editor~Editor#plugins} and {@link module:core/editor/editor~Editor#commands} &ndash; The collection of loaded plugins and commands.
@@ -23,17 +23,17 @@ Besides that, the editor exposes a few of methods:
 * {@link module:core/editor/editor~Editor.create `create()`} &ndash; The static `create()` method. Editor constructors are protected and you should create editors using this static method. It allows the initialization process to be asynchronous.
 * {@link module:core/editor/editor~Editor#destroy `destroy()`} &ndash; Destroys the editor.
 * {@link module:core/editor/editor~Editor#execute `execute()`} &ndash; Executes the given command.
-* {@link module:core/editor/utils/dataapimixin~DataApi#setData `setData()`} and {@link module:core/editor/utils/dataapimixin~DataApi#getData `getData()`} &ndash; A way to retrieve data from the editor and set data in the editor. The data format is controlled by the {@link module:engine/controller/datacontroller~DataController#processor data controller's data processor} and it does not need to be a string (it can be e.g. JSON if you implement such a {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor}). See, for example, how to {@link features/markdown produce Markdown output}.
+* {@link module:core/editor/utils/dataapimixin~DataApi#setData `setData()`} and {@link module:core/editor/utils/dataapimixin~DataApi#getData `getData()`} &ndash; A way to retrieve the data from the editor and set the data in the editor. The data format is controlled by the {@link module:engine/controller/datacontroller~DataController#processor data controller's data processor} and it does not need to be a string (it can be e.g. JSON if you implement such a {@link module:engine/dataprocessor/dataprocessor~DataProcessor data processor}). See, for example, how to {@link features/markdown produce Markdown output}.
 
-For the full list of methods check the {@link api/index API docs} of the specific editor class you use. Specific editor implementations may provide additional methods.
+For the full list of methods check the {@link api/index API docs} of the editor class you use. Specific editor implementations may provide additional methods.
 
-The {@link module:core/editor/editor~Editor `Editor`} class is a base to implement your own editors. CKEditor 5 Framework comes with a few editor types (for example, {@link module:editor-classic/classiceditor~ClassicEditor classic}, {@link module:editor-inline/inlineeditor~InlineEditor inline} and {@link module:editor-balloon/ballooneditor~BalloonEditor balloon}) but you can freely implement editors which work and look completely different. The only requirement is that you implement the {@link module:core/editor/editor~Editor} interface.
+The {@link module:core/editor/editor~Editor `Editor`} class is a base to implement your own editors. CKEditor 5 Framework comes with a few editor types (for example, {@link module:editor-classic/classiceditor~ClassicEditor classic}, {@link module:editor-inline/inlineeditor~InlineEditor inline}, {@link module:editor-balloon/ballooneditor~BalloonEditor balloon} and {@link module:editor-decoupled/decouplededitor~DecoupledEditor decoupled}) but you can freely implement editors which work and look completely different. The only requirement is that you implement the {@link module:core/editor/editor~Editor} interface.
 
 ## Plugins
 
-Plugins are a way to introduce editor features. In CKEditor 5 even {@link module:typing/typing~Typing typing} is a plugin. What is more, the {@link module:typing/typing~Typing} plugin requires {@link module:typing/input~Input} and {@link module:typing/delete~Delete} plugins which are responsible for handling, methods of inserting text and deleting content, respectively. At the same time, a couple of other plugins need to customize <kbd>Backspace</kbd> behavior in certain cases, which is handled by themselves. This leaves the base plugins free of any non-generic knowledge.
+Plugins are a way to introduce editor features. In CKEditor 5 even {@link module:typing/typing~Typing typing} is a plugin. What is more, the {@link module:typing/typing~Typing} plugin depends on the {@link module:typing/input~Input} and {@link module:typing/delete~Delete} plugins which are responsible for handling the methods of inserting text and deleting content, respectively. At the same time, some plugins need to customize <kbd>Backspace</kbd> behavior in certain cases and handle it by themselves. This leaves the base plugins free of any non-generic knowledge.
 
-Another important aspect of how existing CKEditor 5 plugins are implemented is the split into engine and UI parts. For example, the {@link module:basic-styles/bold/boldediting~BoldEditing} plugin introduces schema definition, mechanisms rendering `<strong>` tags, commands to apply and remove bold from text, while the {@link module:basic-styles/bold~Bold} plugin adds the UI of the feature (i.e. a button). This feature split is meant to allow for greater reuse (one can take the engine part and implement their own UI for a feature) as well as for running CKEditor 5 on the server side. At the same time, the feature split [is not perfect yet and will be improved](https://github.com/ckeditor/ckeditor5/issues/488).
+Another important aspect of how existing CKEditor 5 plugins are implemented is the split into engine and UI parts. For example, the {@link module:basic-styles/bold/boldediting~BoldEditing} plugin introduces the schema definition, mechanisms rendering `<strong>` tags, commands to apply and remove bold from text, while the {@link module:basic-styles/bold~Bold} plugin adds the UI of the feature (i.e. the button). This feature split is meant to allow for greater reuse (one can take the engine part and implement their own UI for a feature) as well as for running CKEditor 5 on the server side. At the same time, the feature split [is not perfect yet and will be improved](https://github.com/ckeditor/ckeditor5/issues/488).
 
 The tl;dr of this is that:
 
@@ -68,7 +68,7 @@ You can see how to implement a simple plugin in the {@link framework/guides/quic
 
 ## Commands
 
-A command is a combination of an action (a callback) and a state (a set of properties). For instance, the `bold` command applies or removes bold attribute from the selected text. If the text in which the selection is placed has bold applied already, the value of the command is `true`, `false` otherwise. If the `bold` command can be executed on the current selection, it is enabled. If not (because, for example, bold is not allowed in this place), it is disabled.
+A command is a combination of an action (a callback) and a state (a set of properties). For instance, the `bold` command applies or removes the bold attribute from the selected text. If the text in which the selection is placed has bold applied already, the value of the command is `true`, `false` otherwise. If the `bold` command can be executed on the current selection, it is enabled. If not (because, for example, bold is not allowed in this place), it is disabled.
 
 All commands need to inherit from the {@link module:core/command~Command} class. Commands need to be added to the editor's {@link module:core/editor/editor~Editor#commands command collection} so they can be executed by using the {@link module:core/editor/editor~Editor#execute `Editor#execute()`} method.
 
@@ -94,7 +94,7 @@ Calling `editor.execute( 'myCommand', 'Foo!' )` will log `Foo!` to the console.
 
 To see how state management of a typical command like `bold` is implemented, have a look at some pieces of the {@link module:basic-styles/attributecommand~AttributeCommand} class on which `bold` is based.
 
-First thing to notice is the {@link module:core/command~Command#refresh `refresh()`} method:
+The first thing to notice is the {@link module:core/command~Command#refresh `refresh()`} method:
 
 ```js
 refresh() {
@@ -107,11 +107,11 @@ refresh() {
 }
 ```
 
-This method is automatically called (by the command itself) when {@link module:engine/model/document~Document#event:change any changes are applied to the model}. This means that the command automatically refreshes its own state when anything changes in the editor.
+This method is called automatically (by the command itself) when {@link module:engine/model/document~Document#event:change any changes are applied to the model}. This means that the command automatically refreshes its own state when anything changes in the editor.
 
 The important thing about commands is that every change in their state as well as calling the `execute()` method fires an event (e.g. {@link module:core/command~Command#event-change:{property} `change:value`} or {@link module:core/command~Command#event:execute `execute`}).
 
-These events make it possible to control the command from the outside. For instance, if you want to disable specific commands when some condition is true (for example, according to your application's logic, they should be temporarily disabled) and there is no other, cleaner way to do that, you can block the command manually:
+These events make it possible to control the command from the outside. For instance, if you want to disable specific commands when some condition is true (for example, according to your application logic, they should be temporarily disabled) and there is no other, cleaner way to do that, you can block the command manually:
 
 ```js
 const command = editor.commands.get( 'someCommand' );
@@ -124,13 +124,13 @@ function forceDisabled() {
 }
 ```
 
-The command will now be disabled as long as you will not {@link module:utils/emittermixin~EmitterMixin#off off} this listener, regardless of how many times `someCommand.refresh()` is called.
+The command will now be disabled as long as you do not {@link module:utils/emittermixin~EmitterMixin#off off} this listener, regardless of how many times `someCommand.refresh()` is called.
 
 ## Event system and observables
 
 CKEditor 5 has an event-based architecture so you can find {@link module:utils/emittermixin~EmitterMixin} and {@link module:utils/observablemixin~ObservableMixin} mixed all over the place. Both mechanisms allow for decoupling the code and make it extensible.
 
-Most of the classes which were already mentioned are either emitters or observables (observable is an emitter too). Emitter can emit (fire events) as well as listen to them.
+Most of the classes that have already been mentioned are either emitters or observables (observable is an emitter, too). An emitter can emit (fire) events as well as listen to them.
 
 ```js
 class MyPlugin extends Plugin {
@@ -141,7 +141,7 @@ class MyPlugin extends Plugin {
 		} );
 
 		// Make MyPlugin listen to someOtherCommand#execute and block it.
-		// You listen with high priority to block the event before
+		// You listen with a high priority to block the event before
 		// someOtherCommand's execute() method is called.
 		this.listenTo( someOtherCommand, 'execute', ( evt ) => {
 			evt.stop();
