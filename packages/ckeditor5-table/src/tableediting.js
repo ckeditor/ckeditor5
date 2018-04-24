@@ -27,6 +27,7 @@ import SplitCellCommand from './commands/splitcellcommand';
 import MergeCellCommand from './commands/mergecellcommand';
 import RemoveRowCommand from './commands/removerowcommand';
 import RemoveColumnCommand from './commands/removecolumncommand';
+import SetTableHeadersCommand from './commands/settableheaderscommand';
 import { getParentTable } from './commands/utils';
 
 import './../theme/table.css';
@@ -104,6 +105,7 @@ export default class TablesEditing extends Plugin {
 		editor.commands.add( 'mergeLeft', new MergeCellCommand( editor, { direction: 'left' } ) );
 		editor.commands.add( 'mergeDown', new MergeCellCommand( editor, { direction: 'down' } ) );
 		editor.commands.add( 'mergeUp', new MergeCellCommand( editor, { direction: 'up' } ) );
+		editor.commands.add( 'setTableHeaders', new SetTableHeadersCommand( editor ) );
 
 		this.listenTo( editor.editing.view.document, 'keydown', ( ...args ) => this._handleTabOnSelectedTable( ...args ) );
 		this.listenTo( editor.editing.view.document, 'keydown', ( ...args ) => this._handleTabInsideTable( ...args ) );

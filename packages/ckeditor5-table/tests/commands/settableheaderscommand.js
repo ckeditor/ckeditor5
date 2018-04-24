@@ -1,0 +1,165 @@
+/**
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
+import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
+
+import SetTableHeadersCommand from '../../src/commands/settableheaderscommand';
+import { downcastInsertTable } from '../../src/converters/downcast';
+import upcastTable from '../../src/converters/upcasttable';
+import { formatTable, formattedModelTable, modelTable } from '../_utils/utils';
+
+describe( 'SetTableHeadersCommand', () => {
+	let editor, model, command;
+
+	beforeEach( () => {
+		return ModelTestEditor.create()
+			.then( newEditor => {
+				editor = newEditor;
+				model = editor.model;
+				command = new SetTableHeadersCommand( editor );
+
+				const conversion = editor.conversion;
+				const schema = model.schema;
+
+				schema.register( 'table', {
+					allowWhere: '$block',
+					allowAttributes: [ 'headingRows' ],
+					isBlock: true,
+					isObject: true
+				} );
+
+				schema.register( 'tableRow', {
+					allowIn: 'table',
+					allowAttributes: [],
+					isBlock: true,
+					isLimit: true
+				} );
+
+				schema.register( 'tableCell', {
+					allowIn: 'tableRow',
+					allowContentOf: '$block',
+					allowAttributes: [ 'colspan', 'rowspan' ],
+					isBlock: true,
+					isLimit: true
+				} );
+
+				model.schema.register( 'p', { inheritAllFrom: '$block' } );
+
+				// Table conversion.
+				conversion.for( 'upcast' ).add( upcastTable() );
+				conversion.for( 'downcast' ).add( downcastInsertTable() );
+
+				// Table row upcast only since downcast conversion is done in `downcastTable()`.
+				conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableRow', view: 'tr' } ) );
+
+				// Table cell conversion.
+				conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'td' } ) );
+				conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'th' } ) );
+
+				conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
+				conversion.attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
+			} );
+	} );
+
+	afterEach( () => {
+		return editor.destroy();
+	} );
+
+	describe( 'isEnabled', () => {
+		it( 'should be false if not in a table', () => {
+			setData( model, '<p>foo[]</p>' );
+			expect( command.isEnabled ).to.be.false;
+		} );
+
+		it( 'should be true if in table', () => {
+			setData( model, '<table><tableRow><tableCell>foo[]</tableCell></tableRow></table>' );
+			expect( command.isEnabled ).to.be.true;
+		} );
+	} );
+
+	describe( 'execute()', () => {
+		it( 'should set heading rows attribute', () => {
+			setData( model, modelTable( [
+				[ '00', '01' ],
+				[ '[]10', '11' ],
+				[ '20', '21' ]
+			] ) );
+
+			command.execute( { rows: 2 } );
+
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '00', '01' ],
+				[ '[]10', '11' ],
+				[ '20', '21' ]
+			], { headingRows: 2 } ) );
+		} );
+
+		it( 'should remove heading rows attribute', () => {
+			setData( model, modelTable( [
+				[ '00', '01' ],
+				[ '[]10', '11' ],
+				[ '20', '21' ]
+			], { headingRows: 2 } ) );
+
+			command.execute( { rows: 0 } );
+
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '00', '01' ],
+				[ '[]10', '11' ],
+				[ '20', '21' ]
+			] ) );
+		} );
+
+		it( 'should set heading columns attribute', () => {
+			setData( model, modelTable( [
+				[ '00', '01' ],
+				[ '[]10', '11' ],
+				[ '20', '21' ]
+			] ) );
+
+			command.execute( { columns: 2 } );
+
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '00', '01' ],
+				[ '[]10', '11' ],
+				[ '20', '21' ]
+			], { headingColumns: 2 } ) );
+		} );
+
+		it( 'should remove heading columns attribute', () => {
+			setData( model, modelTable( [
+				[ '00', '01' ],
+				[ '[]10', '11' ],
+				[ '20', '21' ]
+			], { headingColumns: 2 } ) );
+
+			command.execute( { columns: 0 } );
+
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '00', '01' ],
+				[ '[]10', '11' ],
+				[ '20', '21' ]
+			] ) );
+		} );
+
+		it( 'should remove heading columns & heading rows attributes', () => {
+			setData( model, modelTable( [
+				[ '00', '01' ],
+				[ '[]10', '11' ],
+				[ '20', '21' ]
+			], { headingColumns: 2, headingRows: 2 } ) );
+
+			command.execute();
+
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '00', '01' ],
+				[ '[]10', '11' ],
+				[ '20', '21' ]
+			] ) );
+		} );
+	} );
+} );
