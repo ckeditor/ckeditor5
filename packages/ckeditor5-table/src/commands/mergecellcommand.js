@@ -47,21 +47,24 @@ export default class MergeCellCommand extends Command {
 		const model = this.editor.model;
 		const doc = model.document;
 		const tableCell = doc.selection.getFirstPosition().parent;
-
-		const siblingToMerge = this.value;
+		const cellToMerge = this.value;
 
 		model.change( writer => {
 			const isMergeNext = this.direction == 'right' || this.direction == 'down';
 
-			writer.move( Range.createIn( siblingToMerge ), Position.createAt( tableCell, isMergeNext ? 'end' : undefined ) );
-			writer.remove( siblingToMerge );
+			const mergeInto = isMergeNext ? tableCell : cellToMerge;
+			const removeCell = isMergeNext ? cellToMerge : tableCell;
+
+			writer.move( Range.createIn( removeCell ), Position.createAt( mergeInto, 'end' ) );
+			writer.remove( removeCell );
 
 			const spanAttribute = isHorizontal( this.direction ) ? 'colspan' : 'rowspan';
+			const cellSpan = parseInt( tableCell.getAttribute( spanAttribute ) || 1 );
+			const cellToMergeSpan = parseInt( cellToMerge.getAttribute( spanAttribute ) || 1 );
 
-			const colspan = parseInt( tableCell.getAttribute( spanAttribute ) || 1 );
-			const nextTableCellColspan = parseInt( siblingToMerge.getAttribute( spanAttribute ) || 1 );
+			writer.setAttribute( spanAttribute, cellSpan + cellToMergeSpan, mergeInto );
 
-			writer.setAttribute( spanAttribute, colspan + nextTableCellColspan, tableCell );
+			writer.setSelection( Range.createIn( mergeInto ) );
 		} );
 	}
 
@@ -89,7 +92,6 @@ export default class MergeCellCommand extends Command {
 		}
 
 		const spanAttribute = isHorizontal( this.direction ) ? 'rowspan' : 'colspan';
-
 		const span = parseInt( element.getAttribute( spanAttribute ) || 1 );
 
 		const cellToMergeSpan = parseInt( cellToMerge.getAttribute( spanAttribute ) || 1 );
@@ -104,16 +106,14 @@ export default class MergeCellCommand extends Command {
 
 			const rowIndex = table.getChildIndex( tableRow );
 
-			if ( direction === 'down' && rowIndex === table.childCount - 1 ) {
+			if ( direction === 'down' && rowIndex === table.childCount - 1 || direction === 'up' && rowIndex === 0 ) {
 				return;
 			}
 
 			const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) || 1 );
-
-			const targetMergeRow = rowIndex + rowspan;
+			const targetMergeRow = direction === 'up' ? rowIndex : rowIndex + rowspan;
 
 			const tableWalker = new TableWalker( table, { endRow: targetMergeRow } );
-
 			const tableWalkerValues = [ ...tableWalker ];
 
 			const cellData = tableWalkerValues.find( value => value.cell === tableCell );
@@ -122,7 +122,7 @@ export default class MergeCellCommand extends Command {
 				const row = value.row;
 				const column = value.column;
 
-				return column === cellData.column && ( targetMergeRow === row );
+				return column === cellData.column && ( direction === 'down' ? targetMergeRow === row : rowspan + row === rowIndex );
 			} );
 
 			const colspan = parseInt( tableCell.getAttribute( 'colspan' ) || 1 );
