@@ -10,15 +10,15 @@
   ],
   "dependencies": {
     "@ckeditor/ckeditor-cloud-services-core": "^1.0.0",
-    "@ckeditor/ckeditor5-cloud-services": "^1.0.0-beta.4",
-    "@ckeditor/ckeditor5-core": "^1.0.0-beta.4",
-    "@ckeditor/ckeditor5-image": "^1.0.0-beta.4",
-    "@ckeditor/ckeditor5-upload": "^1.0.0-beta.4"
+    "@ckeditor/ckeditor5-cloud-services": "^10.0.0",
+    "@ckeditor/ckeditor5-core": "^10.0.0",
+    "@ckeditor/ckeditor5-image": "^10.0.0",
+    "@ckeditor/ckeditor5-upload": "^10.0.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-editor-classic": "^1.0.0-beta.4",
-    "@ckeditor/ckeditor5-paragraph": "^1.0.0-beta.4",
-    "@ckeditor/ckeditor5-utils": "^1.0.0-beta.4",
+    "@ckeditor/ckeditor5-editor-classic": "^10.0.0",
+    "@ckeditor/ckeditor5-paragraph": "^10.0.0",
+    "@ckeditor/ckeditor5-utils": "^10.0.0",
     "eslint": "^4.15.0",
     "eslint-config-ckeditor5": "^1.0.7",
     "husky": "^0.14.3",
