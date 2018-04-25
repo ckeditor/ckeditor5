@@ -9,7 +9,7 @@
   },
   "author": "CKSource (http://cksource.com/)",
   "homepage": "http://ckeditor.com",
-  "bugs": "https://github.com/ckeditor/ckeditor5/issues",
+  "bugs": "https://github.com/ckeditor/ckeditor-cloud-services-core/issues",
   "scripts": {
     "test": "karma start --single-run",
     "lint": "eslint src tests"
