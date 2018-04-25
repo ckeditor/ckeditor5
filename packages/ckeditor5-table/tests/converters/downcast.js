@@ -1024,7 +1024,7 @@ describe( 'downcast converters', () => {
 					} );
 			} );
 
-			it( 'should create renamed cell inside as a widget', () => {
+			it( 'should create renamed cell as a widget', () => {
 				setModelData( model,
 					'<table>' +
 					'<tableRow><tableCell>foo</tableCell></tableRow>' +

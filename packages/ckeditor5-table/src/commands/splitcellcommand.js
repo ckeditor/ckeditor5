@@ -9,7 +9,7 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
-import TableWalker from '../tablewalker';
+import { unsplitVertically } from './utils';
 
 /**
  * The split cell command.
@@ -47,44 +47,7 @@ export default class SplitCellCommand extends Command {
 
 		model.change( writer => {
 			if ( rowspan > 1 ) {
-				const tableRow = tableCell.parent;
-				const table = tableRow.parent;
-
-				const startRow = table.getChildIndex( tableRow );
-				const endRow = startRow + rowspan - 1;
-
-				const options = { startRow, endRow, includeSpanned: true };
-
-				const tableWalker = new TableWalker( table, options );
-
-				let columnIndex;
-				let previousCell;
-				let cellsToInsert;
-
-				for ( const tableWalkerInfo of tableWalker ) {
-					if ( tableWalkerInfo.cell ) {
-						previousCell = tableWalkerInfo.cell;
-					}
-
-					if ( tableWalkerInfo.cell === tableCell ) {
-						columnIndex = tableWalkerInfo.column;
-						cellsToInsert = tableWalkerInfo.colspan;
-					}
-
-					if ( columnIndex !== undefined && columnIndex === tableWalkerInfo.column && tableWalkerInfo.row > startRow ) {
-						const insertRow = table.getChild( tableWalkerInfo.row );
-
-						if ( previousCell.parent === insertRow ) {
-							for ( let i = 0; i < cellsToInsert; i++ ) {
-								writer.insertElement( 'tableCell', Position.createAfter( previousCell ) );
-							}
-						} else {
-							for ( let i = 0; i < cellsToInsert; i++ ) {
-								writer.insertElement( 'tableCell', Position.createAt( insertRow ) );
-							}
-						}
-					}
-				}
+				unsplitVertically( tableCell, writer, { breakHorizontally: true } );
 			}
 
 			if ( colspan > 1 ) {

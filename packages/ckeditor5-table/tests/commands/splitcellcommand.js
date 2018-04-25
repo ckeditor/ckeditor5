@@ -131,7 +131,7 @@ describe( 'SplitCellCommand', () => {
 		it( 'should split table cell with rowspan in the middle of a table', () => {
 			setData( model, modelTable( [
 				[ '11', { rowspan: 3, contents: '[]12' }, '13' ],
-				[ { rowspan: 2, contents: '[]21' }, '23' ],
+				[ { rowspan: 2, contents: '21' }, '23' ],
 				[ '33' ]
 			] ) );
 
@@ -139,7 +139,7 @@ describe( 'SplitCellCommand', () => {
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ '11', '[]12', '13' ],
-				[ { rowspan: 2, contents: '[]21' }, '', '23' ],
+				[ { rowspan: 2, contents: '21' }, '', '23' ],
 				[ '', '33' ]
 			] ) );
 		} );
@@ -147,7 +147,7 @@ describe( 'SplitCellCommand', () => {
 		it( 'should split table cell with rowspan and colspan in the middle of a table', () => {
 			setData( model, modelTable( [
 				[ '11', { rowspan: 3, colspan: 2, contents: '[]12' }, '14' ],
-				[ { rowspan: 2, contents: '[]21' }, '24' ],
+				[ { rowspan: 2, contents: '21' }, '24' ],
 				[ '34' ]
 			] ) );
 
@@ -155,7 +155,7 @@ describe( 'SplitCellCommand', () => {
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ '11', '[]12', '', '14' ],
-				[ { rowspan: 2, contents: '[]21' }, '', '', '24' ],
+				[ { rowspan: 2, contents: '21' }, '', '', '24' ],
 				[ '', '', '34' ]
 			] ) );
 		} );

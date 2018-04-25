@@ -161,5 +161,35 @@ describe( 'SetTableHeadersCommand', () => {
 				[ '20', '21' ]
 			] ) );
 		} );
+
+		it( 'should fix rowspaned cells on the edge of an table head section', () => {
+			setData( model, modelTable( [
+				[ '00', '01', '02' ],
+				[ { colspan: 2, rowspan: 2, contents: '10[]' }, '12' ],
+				[ '22' ]
+			], { headingColumns: 2, headingRows: 1 } ) );
+
+			command.execute( { rows: 2, columns: 2 } );
+
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '00', '01', '02' ],
+				[ { colspan: 2, contents: '10[]' }, '12' ],
+				[ { colspan: 2, contents: '' }, '22' ]
+			], { headingColumns: 2, headingRows: 2 } ) );
+		} );
+
+		it( 'should fix rowspaned cells on the edge of an table head section when creating section', () => {
+			setData( model, modelTable( [
+				[ { rowspan: 2, contents: '[]00' }, '01' ],
+				[ '11' ]
+			], { headingRows: 2 } ) );
+
+			command.execute( { rows: 1 } );
+
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '[]00', '01' ],
+				[ '', '11' ],
+			], { headingRows: 1 } ) );
+		} );
 	} );
 } );
