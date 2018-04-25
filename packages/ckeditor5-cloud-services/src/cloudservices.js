@@ -96,7 +96,7 @@ CloudServices.Token = Token;
 /**
  * The URL to the security token endpoint in your application. The role of this endpoint is to securely authorize the
  * end users of your application to use [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services), only
- * if they should have access e.g. to upload files with Easy Image.
+ * if they should have access e.g. to upload files with Easy Image or to access the Collaboraation service.
  *
  * You can find more information about token endpoints in the
  * {@glink @cs guides/quick-start#create-token-endpoint Cloud Services - Quick start}
@@ -113,11 +113,31 @@ CloudServices.Token = Token;
  *
  * The upload URL is unique for each customer and can be found in the [CKEditor Ecosystem dashboard](https://dashboard.ckeditor.com)
  * after subscribing to Easy Image service.
- * To learn how to start using Easy Image check {@glink @cs guides/quick-start Cloud Services - Quick start} documentation.
+ * To learn how to start using Easy Image check {@glink @cs guides/easy-image/quick-start Easy Image - Quick start} documentation.
  *
  * Note: Make sure to also set the {@link module:cloud-services/cloudservices~CloudServicesConfig#tokenUrl} configuration option.
  *
- * Read more in [Cloud Services Quick start](https://docs.ckeditor.com/cs/latest/guides/quick-start.html).
- *
  * @member {String} module:cloud-services/cloudservices~CloudServicesConfig#uploadUrl
+ */
+
+/**
+ * The URL for web socket communication, used by `CollaborativeEditing` plugin. Every customer (organization in the CKEditor
+ * Ecosystem dashboard) has its own, unique URLs to communicate with CKEditor Cloud Services. The URL can be found in the
+ * CKEditor Ecosystem dashboard.
+ *
+ * Note: unlike most plugins, `CollaborativeEditing` is not included in any CKEditor 5 build and has to be installed manually.
+ * Check [Collaboration overview](https://docs.ckeditor.com/ckeditor5/latest/features/collaboration/overview.html) for more details.
+ *
+ * @member {String} module:cloud-services/cloudservices~CloudServicesConfig#webSocketUrl
+ */
+
+/**
+ * Document ID, used by `CollaborativeEditing` plugin. All editor instances created with the same document ID will collaborate.
+ * It means that each document needs a different document ID if you do not want to start collaboration between these documents.
+ * The ID is usually a primary key of the document in the database, but you are free to provide whatever identifier fits your scenario.
+ *
+ * Note: unlike most plugins, `CollaborativeEditing` is not included in any CKEditor 5 build and has to be installed manually.
+ * Check [Collaboration overview](https://docs.ckeditor.com/ckeditor5/latest/features/collaboration/overview.html) for more details.
+ *
+ * @member {String} module:cloud-services/cloudservices~CloudServicesConfig#documentId
  */
