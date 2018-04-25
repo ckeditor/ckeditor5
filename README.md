@@ -18,7 +18,7 @@ A set of ready-to-use rich text editors created with a powerful framework. Made 
 
 CKEditor 5 is distributed as [four ready-to-use builds](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/overview.html#available-builds) which you can [install from npm](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/integration/installation.html#npm).
 
-You can also [customize the existing builds](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/development/custom-builds.html) or build your own editors and features by using the [CKEditor 5 framework](https://docs.ckeditor.com/ckeditor5/latest/framework/guides/overview.html).
+You can also [customize the existing builds](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/development/custom-builds.html) or build your own editors and features by using the [CKEditor 5 Framework](https://docs.ckeditor.com/ckeditor5/latest/framework/guides/overview.html).
 
 ## Table of contents
 
