@@ -22,4 +22,4 @@ See the [`@ckeditor/ckeditor5-editor-classic` package](https://docs.ckeditor.com
 
 ## License
 
-Licensed under the GPL, LGPL and MPL licenses, at your choice. For full details about the license, please check the `LICENSE.md` file.
+Licensed under the terms of [GNU General Public License Version 2 or later](http://www.gnu.org/licenses/gpl.html). For full details about the license, please check the `LICENSE.md` file.
