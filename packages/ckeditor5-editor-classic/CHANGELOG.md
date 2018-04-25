@@ -1,6 +1,17 @@
 Changelog
 =========
 
+## [10.0.0](https://github.com/ckeditor/ckeditor5-editor-classic/compare/v1.0.0-beta.4...v10.0.0) (2018-04-25)
+
+### Other changes
+
+* Changed the license to GPL2+ only. See [ckeditor/ckeditor5#991](https://github.com/ckeditor/ckeditor5/issues/991). ([95fe4c1](https://github.com/ckeditor/ckeditor5-editor-classic/commit/95fe4c1))
+
+### BREAKING CHANGES
+
+* The license under which CKEditor 5 is released has been changed from a triple GPL, LGPL and MPL license to a GPL2+ only. See [ckeditor/ckeditor5#991](https://github.com/ckeditor/ckeditor5/issues/991) for more information.
+
+
 ## [1.0.0-beta.4](https://github.com/ckeditor/ckeditor5-editor-classic/compare/v1.0.0-beta.2...v1.0.0-beta.4) (2018-04-19)
 
 Internal changes only (updated dependencies, documentation, etc.).
