@@ -130,7 +130,7 @@ Read more on the [Support](https://docs.ckeditor.com/ckeditor5/latest/framework/
 
 The five latest releases:
 
-* [First stable release – CKEditor 5 v10.0.0](TODO) (<time datetime="2018-04-25T14:12:00Z"><i>Apr 25, 2018</i></time>)
+* [First stable release – CKEditor 5 v10.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v10.0.0) (<time datetime="2018-04-25T14:12:00Z"><i>Apr 25, 2018</i></time>)
 * [Beta release of CKEditor 5 v1.0.0](https://ckeditor.com/blog/CKEditor-5-v1.0.0-beta-released/) (<time datetime="2018-04-10T12:12:00Z"><i>Apr 10, 2018</i></time>)
 * [Second alpha release of CKEditor 5 v1.0.0](https://ckeditor.com/blog/Second-alpha-release-of-CKEditor-5-v1.0.0/) (<time datetime="2017-11-14T12:52:18Z"><i>Nov 14, 2017</i></time>)
 * [First alpha release of CKEditor 5 v1.0.0](https://ckeditor.com/blog/First-alpha-release-of-CKEditor-5-v1.0.0/) (<time datetime="2017-10-03T13:09:29Z"><i>Oct 3, 2017</i></time>)
