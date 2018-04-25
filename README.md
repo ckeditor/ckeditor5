@@ -10,9 +10,15 @@ CKEditor 5 [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?styl
 [![Join newsletter](https://img.shields.io/badge/join-newsletter-00cc99.svg)](http://eepurl.com/c3zRPr)
 [![Follow twitter](https://img.shields.io/badge/follow-twitter-00cc99.svg)](https://twitter.com/ckeditor)
 
-A set of ready to use rich text editors created with a powerful framework. Made with real-time collaborative editing in mind.
+A set of ready-to-use rich text editors created with a powerful framework. Made with real-time collaborative editing in mind.
 
 ![CKEditor 5 Classic editor build screenshot](https://github.com/ckeditor/ckeditor5/blob/master/.github/ckeditor%205%20classic%20screeshot.png)
+
+## ⚠ This package does not contain any source code
+
+CKEditor 5 is distributed as [four ready-to-use builds](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/overview.html#available-builds) which you can [install from npm](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/integration/installation.html#npm).
+
+You can also [customize the existing builds](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/development/custom-builds.html) or build your own editors and features by using the [CKEditor 5 framework](https://docs.ckeditor.com/ckeditor5/latest/framework/guides/overview.html).
 
 ## Table of contents
 
@@ -27,10 +33,10 @@ A set of ready to use rich text editors created with a powerful framework. Made 
 * [Releases](#releases)
 * [Packages](#packages)
    * [Core libraries](#core-libraries)
-   * [Editors](#editors)
-   * [Features](#features)
-   * [Themes](#themes)
    * [Builds](#builds)
+   * [Features](#features)
+   * [Editors](#editors)
+   * [Themes](#themes)
 * [License](#license)
 
 ## Quick start
@@ -59,7 +65,7 @@ In your HTML page add an element that CKEditor should replace:
 <textarea name="content" id="editor"></textarea>
 ```
 
-Load the classic editor build (you can choose between [CDN](https://cdn.ckeditor.com/#ckeditor5), [npm](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/integration/installation.html#npm) and [Zip downloads](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/integration/installation.html#zip-download)):
+Load the classic editor build (you can choose between [CDN](https://cdn.ckeditor.com/#ckeditor5), [npm](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/integration/installation.html#npm) and [zip downloads](https://docs.ckeditor.com/ckeditor5/latest/builds/guides/integration/installation.html#zip-download)):
 
 ```html
 <script src="https://cdn.ckeditor.com/ckeditor5/<version>/classic/ckeditor.js"></script>
@@ -233,7 +239,7 @@ For more CKEditor 5 release blog posts [browse the CKEditor blog](https://ckedit
 </tbody>
 </table>
 
-### Editors
+### Builds
 
 <table>
 <thead>
@@ -247,49 +253,49 @@ For more CKEditor 5 release blog posts [browse the CKEditor blog](https://ckedit
 
 <tr>
 	<td>
-		<a href="https://github.com/ckeditor/ckeditor5-editor-classic"><code>@ckeditor/ckeditor5-editor-classic</code></a>
+		<a href="https://github.com/ckeditor/ckeditor5-build-classic"><code>@ckeditor/ckeditor5-build-classic</code></a>
 	</td>
 	<td>
-		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-classic"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-editor-classic.svg" alt="@ckeditor/ckeditor5-editor-classic npm package badge"></a>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-build-classic.svg" alt="@ckeditor/ckeditor5-build-classic npm package badge"></a>
 	</td>
 	<td>
-		The classic editor implementation.
-	</td>
-</tr>
-
-<tr>
-	<td>
-		<a href="https://github.com/ckeditor/ckeditor5-editor-inline"><code>@ckeditor/ckeditor5-editor-inline</code></a>
-	</td>
-	<td>
-		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-inline"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-editor-inline.svg" alt="@ckeditor/ckeditor5-editor-inline npm package badge"></a>
-	</td>
-	<td>
-		The inline editor implementation.
+		The classic editor build.
 	</td>
 </tr>
 
 <tr>
 	<td>
-		<a href="https://github.com/ckeditor/ckeditor5-editor-balloon"><code>@ckeditor/ckeditor5-editor-balloon</code></a>
+		<a href="https://github.com/ckeditor/ckeditor5-build-inline"><code>@ckeditor/ckeditor5-build-inline</code></a>
 	</td>
 	<td>
-		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-balloon"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-editor-balloon.svg" alt="@ckeditor/ckeditor5-editor-balloon npm package badge"></a>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-build-inline"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-build-inline.svg" alt="@ckeditor/ckeditor5-build-inline npm package badge"></a>
 	</td>
 	<td>
-		The balloon editor (Medium-like) implementation.
+		The inline editor build.
 	</td>
 </tr>
 
 <tr>
 	<td>
-		<a href="https://github.com/ckeditor/ckeditor5-editor-decoupled"><code>@ckeditor/ckeditor5-editor-decoupled</code></a>
+		<a href="https://github.com/ckeditor/ckeditor5-build-balloon"><code>@ckeditor/ckeditor5-build-balloon</code></a>
 	</td>
 	<td>
-		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-decoupled"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-editor-decoupled.svg" alt="@ckeditor/ckeditor5-editor-decoupled npm package badge"></a>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-build-balloon"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-build-balloon.svg" alt="@ckeditor/ckeditor5-build-balloon npm package badge"></a>
 	</td>
 	<td>
-		The editor implementation with a decoupled UI.
+		The balloon editor (Medium-like) build.
+	</td>
+</tr>
+
+<tr>
+	<td>
+		<a href="https://github.com/ckeditor/ckeditor5-build-decoupled-document"><code>@ckeditor/ckeditor5-build-decoupled-document</code></a>
+	</td>
+	<td>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-build-decoupled-document"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-build-decoupled-document.svg" alt="@ckeditor/ckeditor5-build-decoupled-document npm package badge"></a>
+	</td>
+	<td>
+		The document editor build, featuring the decoupled UI editor implementation.
 	</td>
 </tr>
 
@@ -527,6 +533,69 @@ For more CKEditor 5 release blog posts [browse the CKEditor blog](https://ckedit
 </tbody>
 </table>
 
+### Editors
+
+<table>
+<thead>
+	<tr>
+		<th width="30%">Name</th>
+		<th width="15%">Version</th>
+		<th width="55%">Description</th>
+	</tr>
+</thead>
+<tbody>
+
+<tr>
+	<td>
+		<a href="https://github.com/ckeditor/ckeditor5-editor-classic"><code>@ckeditor/ckeditor5-editor-classic</code></a>
+	</td>
+	<td>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-classic"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-editor-classic.svg" alt="@ckeditor/ckeditor5-editor-classic npm package badge"></a>
+	</td>
+	<td>
+		The classic editor implementation.
+	</td>
+</tr>
+
+<tr>
+	<td>
+		<a href="https://github.com/ckeditor/ckeditor5-editor-inline"><code>@ckeditor/ckeditor5-editor-inline</code></a>
+	</td>
+	<td>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-inline"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-editor-inline.svg" alt="@ckeditor/ckeditor5-editor-inline npm package badge"></a>
+	</td>
+	<td>
+		The inline editor implementation.
+	</td>
+</tr>
+
+<tr>
+	<td>
+		<a href="https://github.com/ckeditor/ckeditor5-editor-balloon"><code>@ckeditor/ckeditor5-editor-balloon</code></a>
+	</td>
+	<td>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-balloon"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-editor-balloon.svg" alt="@ckeditor/ckeditor5-editor-balloon npm package badge"></a>
+	</td>
+	<td>
+		The balloon editor (Medium-like) implementation.
+	</td>
+</tr>
+
+<tr>
+	<td>
+		<a href="https://github.com/ckeditor/ckeditor5-editor-decoupled"><code>@ckeditor/ckeditor5-editor-decoupled</code></a>
+	</td>
+	<td>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-editor-decoupled"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-editor-decoupled.svg" alt="@ckeditor/ckeditor5-editor-decoupled npm package badge"></a>
+	</td>
+	<td>
+		The editor implementation with a decoupled UI.
+	</td>
+</tr>
+
+</tbody>
+</table>
+
 ### Themes
 
 <table>
@@ -552,69 +621,6 @@ For more CKEditor 5 release blog posts [browse the CKEditor blog](https://ckedit
 	<td>
 		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-theme-lark.svg" alt="ckeditor5-theme-lark npm package badge"></a>
 		<a href="https://travis-ci.org/ckeditor/ckeditor5-theme-lark"><img src="https://img.shields.io/travis/ckeditor/ckeditor5-theme-lark/master.svg" alt="build status badge"></a>
-	</td>
-</tr>
-
-</tbody>
-</table>
-
-### Builds
-
-<table>
-<thead>
-	<tr>
-		<th width="30%">Name</th>
-		<th width="15%">Version</th>
-		<th width="55%">Description</th>
-	</tr>
-</thead>
-<tbody>
-
-<tr>
-	<td>
-		<a href="https://github.com/ckeditor/ckeditor5-build-classic"><code>@ckeditor/ckeditor5-build-classic</code></a>
-	</td>
-	<td>
-		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-build-classic.svg" alt="@ckeditor/ckeditor5-build-classic npm package badge"></a>
-	</td>
-	<td>
-		The classic editor build.
-	</td>
-</tr>
-
-<tr>
-	<td>
-		<a href="https://github.com/ckeditor/ckeditor5-build-inline"><code>@ckeditor/ckeditor5-build-inline</code></a>
-	</td>
-	<td>
-		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-build-inline"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-build-inline.svg" alt="@ckeditor/ckeditor5-build-inline npm package badge"></a>
-	</td>
-	<td>
-		The inline editor build.
-	</td>
-</tr>
-
-<tr>
-	<td>
-		<a href="https://github.com/ckeditor/ckeditor5-build-balloon"><code>@ckeditor/ckeditor5-build-balloon</code></a>
-	</td>
-	<td>
-		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-build-balloon"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-build-balloon.svg" alt="@ckeditor/ckeditor5-build-balloon npm package badge"></a>
-	</td>
-	<td>
-		The balloon editor (Medium-like) build.
-	</td>
-</tr>
-
-<tr>
-	<td>
-		<a href="https://github.com/ckeditor/ckeditor5-build-decoupled-document"><code>@ckeditor/ckeditor5-build-decoupled-document</code></a>
-	</td>
-	<td>
-		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-build-decoupled-document"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-build-decoupled-document.svg" alt="@ckeditor/ckeditor5-build-decoupled-document npm package badge"></a>
-	</td>
-	<td>
-		The document editor build, featuring the decoupled UI editor implementation.
 	</td>
 </tr>
 
