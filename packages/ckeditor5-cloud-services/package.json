@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-cloud-services",
-  "version": "1.0.0-beta.4",
+  "version": "10.0.0",
   "description": "CKEditor 5's Cloud Services integration layer.",
   "keywords": [
     "ckeditor",
