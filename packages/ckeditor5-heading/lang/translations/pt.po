@@ -11,7 +11,7 @@ msgstr "Parágrafo"
 
 msgctxt "Tooltip for the heading dropdown."
 msgid "Heading"
-msgstr "Título"
+msgstr "Cabeçalho"
 
 msgctxt "Default label for the heading dropdown."
 msgid "Choose heading"
@@ -19,12 +19,12 @@ msgstr ""
 
 msgctxt "Dropdown option label for the heading level 1 format."
 msgid "Heading 1"
-msgstr "Título 1"
+msgstr "Cabeçalho 1"
 
 msgctxt "Dropdown option label for the heading level 2 format."
 msgid "Heading 2"
-msgstr "Título 2"
+msgstr "Cabeçalho 2"
 
 msgctxt "Dropdown option label for the heading level 3 format."
 msgid "Heading 3"
-msgstr "Título 3"
+msgstr "Cabeçalho 3"
