@@ -97,19 +97,25 @@ If you build CKEditor from scratch or integrate it directly into your applicatio
 	// Define webpack plugins ...
 		plugins: [
 			new CKEditorWebpackPlugin( {
-				// Main language that will be built in to the main bundle.
+				// Main language that will be built into the main bundle.
 				language: 'en',
 
 				// Additional languages that will be emitted to the `outputDirectory`.
-				// This option can be set to array of language codes or `'all'` to build all found languages.
+				// This option can be set to an array of language codes or `'all'` to build all found languages.
 				// The bundle is optimized for one language when this option is omitted.
 				additionalLanguages: 'all',
 
-				// outputDirectory - optional directory for emitted translations, `'translations'` by default, relative to the webpack's output.
+				// Optional directory for emitted translations. Relative to the webpack's output.
+				// Defaults to `'translations'`.
+				// outputDirectory: 'ckeditor5-translations',
 
-				// strict - will cause the building process to fail if an error is found during the building process.
+				// Whether the build process should fail if an error occurs.
+				// Defaults to `false`.
+				// strict: true,
 
-				// verbose - will cause logging all warnings into the console
+				// Whether to log all warnings to the console.
+				// Defaults to `false`.
+				// verbose: true
 			} ),
 
 			// Other webpack plugins...
