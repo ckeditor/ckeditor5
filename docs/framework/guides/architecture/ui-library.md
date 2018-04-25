@@ -5,7 +5,7 @@ order: 40
 
 # UI library
 
-The standard UI library of CKEditor 5 is [`@ckeditor/ckeditor5-ui`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui). It provides base classes and helpers that allow building a modular UI that seamlessly integrates with other components of the ecosystem.
+The standard UI library of CKEditor 5 is [`@ckeditor/ckeditor5-ui`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui). It provides base classes and helpers that allow for building a modular UI that seamlessly integrates with other components of the ecosystem.
 
 ## Views
 
@@ -123,7 +123,7 @@ view.bind( 'placeholder', 'isEnabled' ).to( observable, 'placeholderText', 'isEn
 observable.placeholderText = 'Some placeholder';
 ```
 
-Also, since views propagate the DOM events, features can now react to the user actions:
+Also, since views propagate DOM events, features can now react to the user actions:
 
 ```js
 // Each "keydown" event in the input will execute a command.
@@ -140,9 +140,9 @@ A complete view should provide an interface for the features, encapsulating DOM 
 // Will change the value of the input.
 view.setValue( 'A new value of the input.' );
 
-// WRONG! This is **NOT** the right way to interact with DOM because it collides
-// with an observable binding to the #placeholderText. The value will be
-// permanently overridden when the state of the observable changes.
+// WRONG! This is **NOT** the right way to interact with the DOM because it
+// collides with an observable binding to the #placeholderText. The value will
+// be permanently overridden when the state of the observable changes.
 view.element.placeholder = 'A new placeholder';
 ```
 
@@ -177,15 +177,15 @@ new Template( {
 } ).render();
 ```
 
-and renders to an HTML element:
+It renders to an HTML element:
 
 ```html
 <p class="foo bar" style="background-color: yellow;">A paragraph.</p>
 ```
 
-where `observable#className` is `"bar"`. The `observable` in the example above can be a [view](#views) or any object which is {@link module:utils/observablemixin~Observable observable}. When the value of the `className` attribute changes, the template updates the `class` attribute in the DOM. From now on the element is permanently bound to the state of an application.
+where `observable#className` is `"bar"`. The `observable` in the example above can be a [view](#views) or any object which is {@link module:utils/observablemixin~Observable observable}. When the value of the `className` attribute changes, the template updates the `class` attribute in the DOM. From now on the element is permanently bound to the state of the application.
 
-Similarly, when rendered, the template also takes care of DOM events. A binding to the `click` event in the definition makes the `observable` always fire the `clicked` event upon an action in DOM. This way the `observable` provides an event interface of the DOM element and all the communication should pass through it.
+Similarly, when rendered, the template also takes care of DOM events. A binding to the `click` event in the definition makes the `observable` always fire the `clicked` event upon an action in the DOM. This way the `observable` provides an event interface of the DOM element and all the communication should pass through it.
 
 ## View collections and the UI tree
 
@@ -212,7 +212,7 @@ class MyPlugin extends Plugin {
 }
 ```
 
-`MyPluginView` can {@link module:ui/view~View#createCollection create own view collections} and populate them during the life cycle of the editor. There is no limit to the depth of the UI tree, which usually looks like this:
+`MyPluginView` can {@link module:ui/view~View#createCollection create its own view collections} and populate them during the life cycle of the editor. There is no limit to the depth of the UI tree, which usually looks like this:
 
 ```
 EditorUIView
@@ -297,12 +297,12 @@ toolbar.on( 'execute', evt => {
 The framework implements the {@link module:ui/dropdown/dropdownview~DropdownView dropdown} component which can host any sort of UI in its panel. It is composed of a {@link module:ui/dropdown/dropdownview~DropdownView#buttonView button} (to open the dropdown) and a {@link module:ui/dropdown/dropdownview~DropdownView#panelView panel} (the container).
 
 The button can be either:
-- a standard {@link module:ui/button/buttonview~ButtonView},
-- a {@link module:ui/dropdown/button/splitbuttonview~SplitButtonView}, for more complex use–cases.
+* a standard {@link module:ui/button/buttonview~ButtonView},
+* a {@link module:ui/dropdown/button/splitbuttonview~SplitButtonView}, for more complex use cases.
 
 The dropdown panel exposes its {@link module:ui/dropdown/dropdownpanelview~DropdownPanelView#children children} collection which aggregates the child {@link module:ui/view~View views}. The most common views displayed in the dropdown panel are:
-- {@link module:ui/list/listview~ListView}
-- {@link module:ui/toolbar/toolbarview~ToolbarView}
+* {@link module:ui/list/listview~ListView}
+* {@link module:ui/toolbar/toolbarview~ToolbarView}
 
 The framework provides a set of helpers to make the dropdown creation process easier, although it is still possible to compose a custom dropdown from scratch using the base classes.
 
@@ -316,9 +316,9 @@ const dropdownView = createDropdown( locale, SplitButtonView );
 ```
 
 This kind of (default) dropdown comes with a set of behaviors:
-- It closes the panel when it loses the focus e.g. user moved the focus elsewhere,
-- It closes the panel upon the {@link module:ui/dropdown/dropdownview~DropdownView#execute `execute`} event,
-- It focuses the view hosted in the panel e.g. when navigating the toolbar using the keyboard.
+* It closes the panel when it loses the focus, e.g. the user moved the focus elsewhere.
+* It closes the panel upon the {@link module:ui/dropdown/dropdownview~DropdownView#execute `execute`} event.
+* It focuses the view hosted in the panel, e.g. when navigating the toolbar using the keyboard.
 
 #### Adding a list to a dropdown
 
@@ -356,7 +356,7 @@ const buttons = [];
 // Add a simple button to the array of toolbar items.
 buttons.push( new ButtonView() );
 
-// Add another component the array of toolbar items.
+// Add another component to the array of toolbar items.
 buttons.push( componentFactory.create( 'componentName' ) );
 
 const dropdownView = createDropdown( locale, SplitButtonView );
