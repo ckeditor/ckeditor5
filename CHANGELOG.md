@@ -9,7 +9,7 @@ The first stable release of CKEditor 5 🎉🎉🎉
 
 Blog post comming soon...
 
-PS. We decided to skip versions numbers lower than v5.0.0 to avoid collisions with [CKEditor 4](http://github.com/ckeditor/ckeditor-dev).
+PS. We decided to skip version numbers lower than v5.0.0 to avoid collisions with [CKEditor 3-4](http://github.com/ckeditor/ckeditor-dev).
 
 ### BREAKING CHANGES
 
