@@ -12,13 +12,7 @@ The following legal notices apply to CKEditor 5 Framework and all software from 
 
 Copyright (c) 2003-2018, CKSource Frederico Knabben. All rights reserved.
 
-Licensed under the terms of any of the following licenses at your choice:
-
-* [GNU General Public License Version 2 or later (the "GPL")](http://www.gnu.org/licenses/old-licenses/gpl-2.0.html)
-* [GNU Lesser General Public License Version 2.1 or later (the "LGPL")](http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html)
-* [Mozilla Public License Version 1.1 or later (the "MPL")](http://www.mozilla.org/MPL/MPL-1.1.html)
-
-You are not required to, but if you want to explicitly declare the license you have chosen to be bound to when using, reproducing, modifying and distributing this software, just include a text file titled "legal.txt" in your version of this software, indicating your license choice. In any case, your choice will not restrict any recipient of your version of this software to use, reproduce, modify and distribute this software under any of the above licenses.
+Licensed under the terms of [GNU General Public License Version 2 or later](http://www.gnu.org/licenses/old-licenses/gpl-2.0.html).
 
 ## Sources of intellectual property included in CKEditor
 
