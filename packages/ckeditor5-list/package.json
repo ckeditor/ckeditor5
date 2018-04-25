@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-list",
-  "version": "1.0.0-beta.4",
+  "version": "10.0.0",
   "description": "Ordered and unordered lists feature to CKEditor 5.",
   "keywords": [
     "ckeditor",
