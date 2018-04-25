@@ -12,7 +12,7 @@ CKEditor 5 [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?styl
 
 A set of ready-to-use rich text editors created with a powerful framework. Made with real-time collaborative editing in mind.
 
-![CKEditor 5 Classic editor build screenshot](https://github.com/ckeditor/ckeditor5/blob/master/.github/ckeditor%205%20classic%20screeshot.png)
+![CKEditor 5 Classic editor build screenshot](https://c.cksource.com/a/1/img/npm/ckeditor%205%20classic%20screeshot.png)
 
 ## ⚠ This package does not contain any source code
 
@@ -617,10 +617,6 @@ For more CKEditor 5 release blog posts [browse the CKEditor blog](https://ckedit
 	</td>
 	<td>
 		The Lark theme.
-	</td>
-	<td>
-		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-theme-lark"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-theme-lark.svg" alt="ckeditor5-theme-lark npm package badge"></a>
-		<a href="https://travis-ci.org/ckeditor/ckeditor5-theme-lark"><img src="https://img.shields.io/travis/ckeditor/ckeditor5-theme-lark/master.svg" alt="build status badge"></a>
 	</td>
 </tr>
 
