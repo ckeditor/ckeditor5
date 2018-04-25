@@ -26,7 +26,7 @@ Builds can be loaded inside pages directly from [CKEditor CDN](https://cdn.ckedi
 
 ### npm
 
-All builds are released on npm. [Use this search link](https://www.npmjs.com/search?q=keywords:ckeditor5-build&page=1&ranking=optimal) to view all build packages available in npm.
+All builds are released on npm. [Use this search link](https://www.npmjs.com/search?q=keywords%3Ackeditor5-build%20maintainer%3Ackeditor) to view all official build packages available in npm.
 
 Installing a build with npm is as simple as calling one of the following commands in your project:
 
