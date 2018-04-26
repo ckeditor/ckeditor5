@@ -70,28 +70,12 @@ describe( 'SplitCellCommand', () => {
 	} );
 
 	describe( 'isEnabled', () => {
-		it( 'should be true if in cell with colspan attribute set', () => {
+		it( 'should be true if in a table cell', () => {
 			setData( model, modelTable( [
-				[ { colspan: 2, contents: '11[]' } ]
+				[ '00[]' ]
 			] ) );
 
 			expect( command.isEnabled ).to.be.true;
-		} );
-
-		it( 'should be true if in cell with rowspan attribute set', () => {
-			setData( model, modelTable( [
-				[ { rowspan: 2, contents: '11[]' } ]
-			] ) );
-
-			expect( command.isEnabled ).to.be.true;
-		} );
-
-		it( 'should be false in cell without rowspan or colspan attribute', () => {
-			setData( model, modelTable( [
-				[ '11[]' ]
-			] ) );
-
-			expect( command.isEnabled ).to.be.false;
 		} );
 
 		it( 'should be false if not in cell', () => {
@@ -102,62 +86,88 @@ describe( 'SplitCellCommand', () => {
 	} );
 
 	describe( 'execute()', () => {
-		it( 'should split table cell with colspan', () => {
-			setData( model, modelTable( [
-				[ { colspan: 2, contents: '[]11' } ]
-			] ) );
+		describe( 'options.horizontally', () => {
+			it( 'should split table cell for given table cells', () => {
+				setData( model, modelTable( [
+					[ '00', '01', '02' ],
+					[ '10', '[]11', '12' ],
+					[ '20', { colspan: 2, contents: '21' } ],
+					[ { colspan: 2, contents: '30' }, '32' ]
+				] ) );
 
-			command.execute();
+				command.execute( { horizontally: 3 } );
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
-				[ '[]11', '' ]
-			] ) );
+				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+					[ '00', { colspan: 3, contents: '01' }, '02' ],
+					[ '10', '[]11', '', '', '12' ],
+					[ '20', { colspan: 4, contents: '21' } ],
+					[ { colspan: 4, contents: '30' }, '32' ]
+				] ) );
+			} );
+
+			it( 'should unsplit table cell if split is equal to colspan', () => {
+				setData( model, modelTable( [
+					[ '00', '01', '02' ],
+					[ '10', '11', '12' ],
+					[ '20', { colspan: 2, contents: '21[]' } ],
+					[ { colspan: 2, contents: '30' }, '32' ]
+				] ) );
+
+				command.execute( { horizontally: 2 } );
+
+				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+					[ '00', '01', '02' ],
+					[ '10', '11', '12' ],
+					[ '20', '21[]', '' ],
+					[ { colspan: 2, contents: '30' }, '32' ]
+				] ) );
+			} );
+
+			it( 'should properly unsplit table cell if split is uneven', () => {
+				setData( model, modelTable( [
+					[ '00', '01', '02' ],
+					[ { colspan: 3, contents: '10[]' } ]
+				] ) );
+
+				command.execute( { horizontally: 2 } );
+
+				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+					[ '00', '01', '02' ],
+					[ { colspan: 2, contents: '10[]' }, '' ]
+				] ) );
+			} );
+
+			it( 'should properly set colspan of inserted cells', () => {
+				setData( model, modelTable( [
+					[ '00', '01', '02', '03' ],
+					[ { colspan: 4, contents: '10[]' } ]
+				] ) );
+
+				command.execute( { horizontally: 2 } );
+
+				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+					[ '00', '01', '02', '03' ],
+					[ { colspan: 2, contents: '10[]' }, { colspan: 2, contents: '' } ]
+				] ) );
+			} );
+
+			it( 'should keep rowspan attribute for newly inserted cells', () => {
+				setData( model, modelTable( [
+					[ '00', '01', '02', '03', '04', '05' ],
+					[ { colspan: 5, rowspan: 2, contents: '10[]' }, '15' ],
+					[ '25' ]
+				] ) );
+
+				command.execute( { horizontally: 2 } );
+
+				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+					[ '00', '01', '02', '03', '04', '05' ],
+					[ { colspan: 3, rowspan: 2, contents: '10[]' }, { colspan: 2, rowspan: 2, contents: '' }, '15' ],
+					[ '25' ]
+				] ) );
+			} );
 		} );
 
-		it( 'should split table cell with rowspan', () => {
-			setData( model, modelTable( [
-				[ { rowspan: 2, contents: '[]11' }, '12' ],
-				[ '22' ]
-			] ) );
-
-			command.execute();
-
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
-				[ '[]11', '12' ],
-				[ '', '22' ]
-			] ) );
-		} );
-
-		it( 'should split table cell with rowspan in the middle of a table', () => {
-			setData( model, modelTable( [
-				[ '11', { rowspan: 3, contents: '[]12' }, '13' ],
-				[ { rowspan: 2, contents: '21' }, '23' ],
-				[ '33' ]
-			] ) );
-
-			command.execute();
-
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
-				[ '11', '[]12', '13' ],
-				[ { rowspan: 2, contents: '21' }, '', '23' ],
-				[ '', '33' ]
-			] ) );
-		} );
-
-		it( 'should split table cell with rowspan and colspan in the middle of a table', () => {
-			setData( model, modelTable( [
-				[ '11', { rowspan: 3, colspan: 2, contents: '[]12' }, '14' ],
-				[ { rowspan: 2, contents: '21' }, '24' ],
-				[ '34' ]
-			] ) );
-
-			command.execute();
-
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
-				[ '11', '[]12', '', '14' ],
-				[ { rowspan: 2, contents: '21' }, '', '', '24' ],
-				[ '', '', '34' ]
-			] ) );
-		} );
+		describe( 'options.horizontally', () => {} );
 	} );
 } );
