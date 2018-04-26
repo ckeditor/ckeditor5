@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-enter",
-  "version": "1.0.0-beta.4",
+  "version": "10.0.0",
   "description": "Enter feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -9,16 +9,16 @@
     "ckeditor5-feature"
   ],
   "dependencies": {
-    "@ckeditor/ckeditor5-core": "^1.0.0-beta.4",
-    "@ckeditor/ckeditor5-engine": "^1.0.0-beta.4",
-    "@ckeditor/ckeditor5-utils": "^1.0.0-beta.4"
+    "@ckeditor/ckeditor5-core": "^10.0.0",
+    "@ckeditor/ckeditor5-engine": "^10.0.0",
+    "@ckeditor/ckeditor5-utils": "^10.0.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-basic-styles": "^1.0.0-beta.4",
-    "@ckeditor/ckeditor5-editor-classic": "^1.0.0-beta.4",
-    "@ckeditor/ckeditor5-heading": "^1.0.0-beta.4",
-    "@ckeditor/ckeditor5-typing": "^1.0.0-beta.4",
-    "@ckeditor/ckeditor5-undo": "^1.0.0-beta.4",
+    "@ckeditor/ckeditor5-basic-styles": "^10.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "^10.0.0",
+    "@ckeditor/ckeditor5-heading": "^10.0.0",
+    "@ckeditor/ckeditor5-typing": "^10.0.0",
+    "@ckeditor/ckeditor5-undo": "^10.0.0",
     "eslint": "^4.15.0",
     "eslint-config-ckeditor5": "^1.0.7",
     "husky": "^0.14.3",
@@ -29,7 +29,7 @@
     "npm": ">=3.0.0"
   },
   "author": "CKSource (http://cksource.com/)",
-  "license": "(GPL-2.0 OR LGPL-2.1 OR MPL-1.1)",
+  "license": "GPL-2.0-or-later",
   "homepage": "https://ckeditor.com",
   "bugs": "https://github.com/ckeditor/ckeditor5-enter/issues",
   "repository": {
