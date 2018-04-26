@@ -23,7 +23,7 @@ export default class EnterObserver extends Observer {
 		const document = this.document;
 
 		document.on( 'keydown', ( evt, data ) => {
-			if ( this.isEnabled && data.keyCode == keyCodes.enter ) {
+			if ( this.isEnabled && data.keyCode == keyCodes.enter && !data.shiftKey ) {
 				// Save the event object to check later if it was stopped or not.
 				let event;
 				document.once( 'enter', evt => ( event = evt ), { priority: 'highest' } );

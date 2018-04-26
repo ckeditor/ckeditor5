@@ -53,6 +53,19 @@ describe( 'EnterObserver', () => {
 			expect( spy.calledOnce ).to.be.false;
 		} );
 
+		it( 'is not fired on keydown when shiftKey is truthy', () => {
+			const spy = sinon.spy();
+
+			viewDocument.on( 'enter', spy );
+
+			viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
+				keyCode: getCode( 'enter' ),
+				shiftKey: true
+			} ) );
+
+			expect( spy.calledOnce ).to.be.false;
+		} );
+
 		it( 'should stop keydown event when enter event is stopped', () => {
 			const keydownSpy = sinon.spy();
 			viewDocument.on( 'keydown', keydownSpy );
