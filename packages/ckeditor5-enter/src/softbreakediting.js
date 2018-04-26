@@ -24,7 +24,7 @@ export default class SoftBreakEditing extends Plugin {
 
 		// Configure schema.
 		schema.register( 'br', {
-			isObject: false,
+			isObject: true,
 			isBlock: false,
 			allowWhere: '$text'
 		} );
