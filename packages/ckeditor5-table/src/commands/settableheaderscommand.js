@@ -8,8 +8,9 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import { getParentTable, unsplitVertically } from './utils';
+import { getParentTable } from './utils';
 import TableWalker from '../tablewalker';
+import Position from '../../../ckeditor5-engine/src/model/position';
 
 /**
  * The set table headers command.
@@ -62,13 +63,12 @@ export default class SetTableHeadersCommand extends Command {
 					const row = tableWalkerValue.row;
 
 					if ( rowspan > 1 && row + rowspan > rows ) {
-						cellsToSplit.push( tableWalkerValue.cell );
+						cellsToSplit.push( tableWalkerValue );
 					}
 				}
 
-				for ( const tableCell of cellsToSplit ) {
-					unsplitVertically( tableCell, writer );
-					writer.removeAttribute( 'rowspan', tableCell );
+				for ( const tableWalkerValue of cellsToSplit ) {
+					splitVertically( tableWalkerValue.cell, rows, writer );
 				}
 			}
 
@@ -87,6 +87,65 @@ function updateTableAttribute( table, attributeName, newValue, writer ) {
 			writer.setAttribute( attributeName, newValue, table );
 		} else {
 			writer.removeAttribute( attributeName, table );
+		}
+	}
+}
+
+/**
+ * Splits table cell vertically.
+ *
+ * @param {module:engine/model/element} tableCell
+ * @param writer
+ */
+function splitVertically( tableCell, headingRows, writer ) {
+	const tableRow = tableCell.parent;
+	const table = tableRow.parent;
+	const rowIndex = tableRow.index;
+
+	const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) );
+
+	const newRowspan = headingRows - rowIndex;
+	const spanToSet = rowspan - newRowspan;
+
+	if ( newRowspan > 1 ) {
+		writer.setAttribute( 'rowspan', newRowspan, tableCell );
+	} else {
+		writer.removeAttribute( 'rowspan', tableCell );
+	}
+
+	const startRow = table.getChildIndex( tableRow );
+	const endRow = startRow + newRowspan;
+
+	const tableWalker = new TableWalker( table, { startRow, endRow, includeSpanned: true } );
+
+	let columnIndex;
+	let previousCell;
+
+	const attributes = {};
+
+	if ( spanToSet > 1 ) {
+		attributes.rowspan = spanToSet;
+	}
+
+	for ( const tableWalkerInfo of [ ...tableWalker ] ) {
+		if ( tableWalkerInfo.cell ) {
+			previousCell = tableWalkerInfo.cell;
+		}
+
+		if ( tableWalkerInfo.cell === tableCell ) {
+			columnIndex = tableWalkerInfo.column;
+
+			if ( tableWalkerInfo.colspan > 1 ) {
+				attributes.colspan = tableWalkerInfo.colspan;
+			}
+		}
+
+		if ( columnIndex !== undefined && columnIndex === tableWalkerInfo.column && tableWalkerInfo.row === endRow ) {
+			const insertRow = table.getChild( tableWalkerInfo.row );
+
+			const position = previousCell.parent === insertRow ? Position.createAt( insertRow ) : Position.createAfter( previousCell );
+
+			writer.insertElement( 'tableCell', attributes, position );
 		}
 	}
 }
