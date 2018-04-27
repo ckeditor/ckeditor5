@@ -82,18 +82,18 @@ describe( 'TableWalker', () => {
 
 	it( 'should properly output column indexes of a table that has rowspans', () => {
 		testWalker( [
-			[ { colspan: 2, rowspan: 3, contents: '11' }, '13' ],
-			[ '23' ],
-			[ '33' ],
-			[ '41', '42', '43' ]
+			[ { colspan: 2, rowspan: 3, contents: '00' }, '02' ],
+			[ '12' ],
+			[ '22' ],
+			[ '30', '31', '32' ]
 		], [
-			{ row: 0, column: 0, data: '11' },
-			{ row: 0, column: 2, data: '13' },
-			{ row: 1, column: 2, data: '23' },
-			{ row: 2, column: 2, data: '33' },
-			{ row: 3, column: 0, data: '41' },
-			{ row: 3, column: 1, data: '42' },
-			{ row: 3, column: 2, data: '43' }
+			{ row: 0, column: 0, data: '00' },
+			{ row: 0, column: 2, data: '02' },
+			{ row: 1, column: 2, data: '12' },
+			{ row: 2, column: 2, data: '22' },
+			{ row: 3, column: 0, data: '30' },
+			{ row: 3, column: 1, data: '31' },
+			{ row: 3, column: 2, data: '32' }
 		] );
 	} );
 
@@ -114,6 +114,18 @@ describe( 'TableWalker', () => {
 			{ row: 3, column: 1, data: '42' },
 			{ row: 3, column: 2, data: '43' }
 		] );
+	} );
+
+	it( 'should output spanned cells at the end of a table', () => {
+		testWalker( [
+			[ '00', { rowspan: 2, contents: '01' } ],
+			[ '10' ]
+		], [
+			{ row: 0, column: 0, data: '00' },
+			{ row: 0, column: 1, data: '01' },
+			{ row: 1, column: 0, data: '10' },
+			{ row: 1, column: 1, data: undefined }
+		], { includeSpanned: true } );
 	} );
 
 	describe( 'option.startRow', () => {
@@ -151,39 +163,39 @@ describe( 'TableWalker', () => {
 	describe( 'option.includeSpanned', () => {
 		it( 'should output spanned cells as empty cell', () => {
 			testWalker( [
-				[ { colspan: 2, rowspan: 3, contents: '11' }, '13' ],
-				[ '23' ],
-				[ '33' ],
-				[ '41', { colspan: 2, contents: '42' } ]
+				[ { colspan: 2, rowspan: 3, contents: '00' }, '02' ],
+				[ '12' ],
+				[ '22' ],
+				[ '30', { colspan: 2, contents: '31' } ]
 			], [
-				{ row: 0, column: 0, data: '11' },
+				{ row: 0, column: 0, data: '00' },
 				{ row: 0, column: 1, data: undefined },
-				{ row: 0, column: 2, data: '13' },
+				{ row: 0, column: 2, data: '02' },
 				{ row: 1, column: 0, data: undefined },
 				{ row: 1, column: 1, data: undefined },
-				{ row: 1, column: 2, data: '23' },
+				{ row: 1, column: 2, data: '12' },
 				{ row: 2, column: 0, data: undefined },
 				{ row: 2, column: 1, data: undefined },
-				{ row: 2, column: 2, data: '33' },
-				{ row: 3, column: 0, data: '41' },
-				{ row: 3, column: 1, data: '42' },
+				{ row: 2, column: 2, data: '22' },
+				{ row: 3, column: 0, data: '30' },
+				{ row: 3, column: 1, data: '31' },
 				{ row: 3, column: 2, data: undefined }
 			], { includeSpanned: true } );
 		} );
 
 		it( 'should work with startRow & endRow options', () => {
 			testWalker( [
-				[ { colspan: 2, rowspan: 3, contents: '11' }, '13' ],
-				[ '23' ],
-				[ '33' ],
-				[ '41', '42', '43' ]
+				[ { colspan: 2, rowspan: 3, contents: '00' }, '02' ],
+				[ '12' ],
+				[ '22' ],
+				[ '30', '31', '32' ]
 			], [
 				{ row: 1, column: 0, data: undefined },
 				{ row: 1, column: 1, data: undefined },
-				{ row: 1, column: 2, data: '23' },
+				{ row: 1, column: 2, data: '12' },
 				{ row: 2, column: 0, data: undefined },
 				{ row: 2, column: 1, data: undefined },
-				{ row: 2, column: 2, data: '33' }
+				{ row: 2, column: 2, data: '22' }
 			], { includeSpanned: true, startRow: 1, endRow: 2 } );
 		} );
 	} );

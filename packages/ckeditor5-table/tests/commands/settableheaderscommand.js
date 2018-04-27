@@ -178,6 +178,28 @@ describe( 'SetTableHeadersCommand', () => {
 			], { headingColumns: 2, headingRows: 2 } ) );
 		} );
 
+		it( 'should split to at most 2 table cells when fixing rowspaned cells on the edge of an table head section', () => {
+			setData( model, modelTable( [
+				[ '00', '01', '02' ],
+				[ { colspan: 2, rowspan: 5, contents: '10[]' }, '12' ],
+				[ '22' ],
+				[ '32' ],
+				[ '42' ],
+				[ '52' ]
+			], { headingColumns: 2, headingRows: 1 } ) );
+
+			command.execute( { rows: 3, columns: 2 } );
+
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '00', '01', '02' ],
+				[ { colspan: 2, rowspan: 2, contents: '10[]' }, '12' ],
+				[ '22' ],
+				[ { colspan: 2, rowspan: 3, contents: '' }, '32' ],
+				[ '42' ],
+				[ '52' ]
+			], { headingColumns: 2, headingRows: 3 } ) );
+		} );
+
 		it( 'should fix rowspaned cells on the edge of an table head section when creating section', () => {
 			setData( model, modelTable( [
 				[ { rowspan: 2, contents: '[]00' }, '01' ],
@@ -189,6 +211,21 @@ describe( 'SetTableHeadersCommand', () => {
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ '[]00', '01' ],
 				[ '', '11' ],
+			], { headingRows: 1 } ) );
+		} );
+
+		// TODO: fix me
+		it.skip( 'should fix rowspaned cells inside a row', () => {
+			setData( model, modelTable( [
+				[ '00', { rowspan: 2, contents: '[]01' } ],
+				[ '10' ]
+			], { headingRows: 2 } ) );
+
+			command.execute( { rows: 1 } );
+
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '00', '[]01' ],
+				[ '10', '' ]
 			], { headingRows: 1 } ) );
 		} );
 	} );
