@@ -46,8 +46,8 @@ export default class TableUI extends Plugin {
 			return buttonView;
 		} );
 
-		editor.ui.componentFactory.add( 'insertRow', locale => {
-			const command = editor.commands.get( 'insertRow' );
+		editor.ui.componentFactory.add( 'insertRowBelow', locale => {
+			const command = editor.commands.get( 'insertRowBelow' );
 			const buttonView = new ButtonView( locale );
 
 			buttonView.bind( 'isEnabled' ).to( command );
@@ -59,12 +59,13 @@ export default class TableUI extends Plugin {
 			} );
 
 			buttonView.on( 'execute', () => {
-				editor.execute( 'insertRow' );
+				editor.execute( 'insertRowBelow' );
 				editor.editing.view.focus();
 			} );
 
 			return buttonView;
 		} );
+
 		editor.ui.componentFactory.add( 'insertColumn', locale => {
 			const command = editor.commands.get( 'insertColumn' );
 			const buttonView = new ButtonView( locale );

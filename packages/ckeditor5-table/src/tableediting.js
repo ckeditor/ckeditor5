@@ -31,6 +31,7 @@ import SetTableHeadersCommand from './commands/settableheaderscommand';
 import { getParentTable } from './commands/utils';
 
 import './../theme/table.css';
+import TableUtils from './tableutils';
 
 /**
  * The table editing feature.
@@ -96,7 +97,8 @@ export default class TablesEditing extends Plugin {
 		conversion.for( 'dataDowncast' ).add( downcastAttributeChange( { attribute: 'headingColumns' } ) );
 
 		editor.commands.add( 'insertTable', new InsertTableCommand( editor ) );
-		editor.commands.add( 'insertRow', new InsertRowCommand( editor ) );
+		editor.commands.add( 'insertRowAbove', new InsertRowCommand( editor, { location: 'above' } ) );
+		editor.commands.add( 'insertRowBelow', new InsertRowCommand( editor, { location: 'below' } ) );
 		editor.commands.add( 'insertColumn', new InsertColumnCommand( editor ) );
 		editor.commands.add( 'splitCell', new SplitCellCommand( editor ) );
 		editor.commands.add( 'removeRow', new RemoveRowCommand( editor ) );
@@ -109,6 +111,13 @@ export default class TablesEditing extends Plugin {
 
 		this.listenTo( editor.editing.view.document, 'keydown', ( ...args ) => this._handleTabOnSelectedTable( ...args ) );
 		this.listenTo( editor.editing.view.document, 'keydown', ( ...args ) => this._handleTabInsideTable( ...args ) );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	static get requires() {
+		return [ TableUtils ];
 	}
 
 	/**
@@ -192,7 +201,7 @@ export default class TablesEditing extends Plugin {
 		const isLastRow = currentRow === table.childCount - 1;
 
 		if ( isForward && isLastRow && isLastCellInRow ) {
-			editor.execute( 'insertRow', { at: table.childCount } );
+			editor.plugins.get( TableUtils ).insertRow( table, { at: table.childCount } );
 		}
 
 		let moveToCell;

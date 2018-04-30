@@ -13,7 +13,7 @@ ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ ArticlePluginSet, Table ],
 		toolbar: [
-			'heading', '|', 'insertTable', 'insertRow', 'insertColumn',
+			'heading', '|', 'insertTable', 'insertRowBelow', 'insertColumn',
 			'|', 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'
 		]
 	} )

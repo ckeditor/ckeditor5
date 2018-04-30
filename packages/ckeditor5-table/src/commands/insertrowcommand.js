@@ -8,8 +8,8 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import TableWalker from '../tablewalker';
-import { getColumns, getParentTable } from './utils';
+import { getParentTable } from './utils';
+import TableUtils from '../tableutils';
 
 /**
  * The insert row command.
@@ -17,6 +17,19 @@ import { getColumns, getParentTable } from './utils';
  * @extends module:core/command~Command
  */
 export default class InsertRowCommand extends Command {
+	/**
+	 * Creates a new `InsertRowCommand` instance.
+	 *
+	 * @param {module:core/editor/editor~Editor} editor Editor on which this command will be used.
+	 * @param {Object} options
+	 * @param {String} [options.location="below"] Where to insert new row - relative to current row. Possible values: "above", "below".
+	 */
+	constructor( editor, options = {} ) {
+		super( editor );
+
+		this.direction = options.location || 'below';
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -32,65 +45,24 @@ export default class InsertRowCommand extends Command {
 	/**
 	 * Executes the command.
 	 *
-	 * @param {Object} [options] Options for the executed command.
-	 * @param {Number} [options.rows=1] Number of rows to insert.
-	 * @param {Number} [options.at=0] Row index to insert at.
-	 *
 	 * @fires execute
 	 */
-	execute( options = {} ) {
-		const model = this.editor.model;
-		const document = model.document;
-		const selection = document.selection;
+	execute() {
+		const editor = this.editor;
+		const model = editor.model;
+		const doc = model.document;
+		const selection = doc.selection;
 
-		const rows = parseInt( options.rows ) || 1;
-		const insertAt = parseInt( options.at ) || 0;
+		const element = doc.selection.getFirstPosition().parent;
 
 		const table = getParentTable( selection.getFirstPosition() );
 
-		const headingRows = table.getAttribute( 'headingRows' ) || 0;
+		const tableUtils = editor.plugins.get( TableUtils );
 
-		const columns = getColumns( table );
+		const rowIndex = table.getChildIndex( element.parent );
 
-		model.change( writer => {
-			if ( headingRows > insertAt ) {
-				writer.setAttribute( 'headingRows', headingRows + rows, table );
-			}
+		const insertAt = this.direction === 'below' ? rowIndex + 1 : rowIndex;
 
-			const tableIterator = new TableWalker( table, { endRow: insertAt + 1 } );
-
-			let tableCellToInsert = 0;
-
-			for ( const tableCellInfo of tableIterator ) {
-				const { row, rowspan, colspan, cell } = tableCellInfo;
-
-				if ( row < insertAt ) {
-					if ( rowspan > 1 ) {
-						// check whether rowspan overlaps inserts:
-						if ( row < insertAt && row + rowspan > insertAt ) {
-							writer.setAttribute( 'rowspan', rowspan + rows, cell );
-						}
-					}
-				} else if ( row === insertAt ) {
-					tableCellToInsert += colspan;
-				}
-			}
-
-			if ( insertAt >= table.childCount ) {
-				tableCellToInsert = columns;
-			}
-
-			for ( let i = 0; i < rows; i++ ) {
-				const tableRow = writer.createElement( 'tableRow' );
-
-				writer.insert( tableRow, table, insertAt );
-
-				for ( let columnIndex = 0; columnIndex < tableCellToInsert; columnIndex++ ) {
-					const cell = writer.createElement( 'tableCell' );
-
-					writer.insert( cell, tableRow, 'end' );
-				}
-			}
-		} );
+		tableUtils.insertRow( table, { rows: 1, at: insertAt } );
 	}
 }
