@@ -18,7 +18,7 @@ import Position from '@ckeditor/ckeditor5-engine/src/model/position';
  * @extends module:core/command~Command
  */
 export default class TableUtils extends Plugin {
-	insertRow( table, options = {} ) {
+	insertRows( table, options = {} ) {
 		const model = this.editor.model;
 
 		const rows = parseInt( options.rows ) || 1;
@@ -56,17 +56,7 @@ export default class TableUtils extends Plugin {
 				tableCellToInsert = columns;
 			}
 
-			for ( let i = 0; i < rows; i++ ) {
-				const tableRow = writer.createElement( 'tableRow' );
-
-				writer.insert( tableRow, table, insertAt );
-
-				for ( let columnIndex = 0; columnIndex < tableCellToInsert; columnIndex++ ) {
-					const cell = writer.createElement( 'tableCell' );
-
-					writer.insert( cell, tableRow, 'end' );
-				}
-			}
+			createEmptyRows( writer, table, insertAt, rows, tableCellToInsert );
 		} );
 	}
 
@@ -141,23 +131,34 @@ export default class TableUtils extends Plugin {
 		const rowIndex = table.getChildIndex( tableCell.parent );
 
 		model.change( writer => {
-			for ( const tableWalkerValue of new TableWalker( table, { startRow: rowIndex, endRow: rowIndex } ) ) {
-				if ( tableWalkerValue.cell !== tableCell ) {
+			for ( const tableWalkerValue of new TableWalker( table, { startRow: 0, endRow: rowIndex } ) ) {
+				if ( tableWalkerValue.cell !== tableCell && tableWalkerValue.row + tableWalkerValue.rowspan > rowIndex ) {
 					const rowspan = parseInt( tableWalkerValue.cell.getAttribute( 'rowspan' ) || 1 );
 
 					writer.setAttribute( 'rowspan', rowspan + cellNumber - 1, tableWalkerValue.cell );
 				}
 			}
 
-			for ( let i = rowIndex + 1; i < rowIndex + cellNumber; i++ ) {
-				const tableRow = writer.createElement( 'tableRow' );
-
-				writer.insert( tableRow, table, i );
-
-				const cell = writer.createElement( 'tableCell' );
-
-				writer.insert( cell, tableRow, 'end' );
-			}
+			createEmptyRows( writer, table, rowIndex + 1, cellNumber - 1, 1 );
 		} );
+	}
+}
+
+// @param writer
+// @param table
+// @param {Number} insertAt Row index of row insertion.
+// @param {Number} rows Number of rows to create.
+// @param {Number} tableCellToInsert Number of cells to insert in each row.
+function createEmptyRows( writer, table, insertAt, rows, tableCellToInsert ) {
+	for ( let i = 0; i < rows; i++ ) {
+		const tableRow = writer.createElement( 'tableRow' );
+
+		writer.insert( tableRow, table, insertAt );
+
+		for ( let columnIndex = 0; columnIndex < tableCellToInsert; columnIndex++ ) {
+			const cell = writer.createElement( 'tableCell' );
+
+			writer.insert( cell, tableRow, 'end' );
+		}
 	}
 }

@@ -100,7 +100,8 @@ export default class TablesEditing extends Plugin {
 		editor.commands.add( 'insertRowAbove', new InsertRowCommand( editor, { location: 'above' } ) );
 		editor.commands.add( 'insertRowBelow', new InsertRowCommand( editor, { location: 'below' } ) );
 		editor.commands.add( 'insertColumn', new InsertColumnCommand( editor ) );
-		editor.commands.add( 'splitCell', new SplitCellCommand( editor ) );
+		editor.commands.add( 'splitCellVertically', new SplitCellCommand( editor, { direction: 'vertically' } ) );
+		editor.commands.add( 'splitCellHorizontally', new SplitCellCommand( editor, { direction: 'horizontally' } ) );
 		editor.commands.add( 'removeRow', new RemoveRowCommand( editor ) );
 		editor.commands.add( 'removeColumn', new RemoveColumnCommand( editor ) );
 		editor.commands.add( 'mergeRight', new MergeCellCommand( editor, { direction: 'right' } ) );
@@ -201,7 +202,7 @@ export default class TablesEditing extends Plugin {
 		const isLastRow = currentRow === table.childCount - 1;
 
 		if ( isForward && isLastRow && isLastCellInRow ) {
-			editor.plugins.get( TableUtils ).insertRow( table, { at: table.childCount } );
+			editor.plugins.get( TableUtils ).insertRows( table, { at: table.childCount } );
 		}
 
 		let moveToCell;

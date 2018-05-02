@@ -71,14 +71,14 @@ describe( 'TableUtils', () => {
 		return editor.destroy();
 	} );
 
-	describe( 'insertRow()', () => {
+	describe( 'insertRows()', () => {
 		it( 'should insert row in given table at given index', () => {
 			setData( model, modelTable( [
 				[ '11[]', '12' ],
 				[ '21', '22' ]
 			] ) );
 
-			tableUtils.insertRow( root.getNodeByPath( [ 0 ] ), { at: 1 } );
+			tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 1 } );
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ '11[]', '12' ],
@@ -93,7 +93,7 @@ describe( 'TableUtils', () => {
 				[ '21', '22' ]
 			] ) );
 
-			tableUtils.insertRow( root.getNodeByPath( [ 0 ] ) );
+			tableUtils.insertRows( root.getNodeByPath( [ 0 ] ) );
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ '', '' ],
@@ -109,7 +109,7 @@ describe( 'TableUtils', () => {
 				[ '31', '32' ]
 			], { headingRows: 2 } ) );
 
-			tableUtils.insertRow( root.getNodeByPath( [ 0 ] ), { at: 1 } );
+			tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 1 } );
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ '11[]', '12' ],
@@ -126,7 +126,7 @@ describe( 'TableUtils', () => {
 				[ '31', '32' ]
 			], { headingRows: 2 } ) );
 
-			tableUtils.insertRow( root.getNodeByPath( [ 0 ] ), { at: 2 } );
+			tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 2 } );
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ '11[]', '12' ],
@@ -143,7 +143,7 @@ describe( 'TableUtils', () => {
 				[ '33', '34' ]
 			], { headingColumns: 3, headingRows: 1 } ) );
 
-			tableUtils.insertRow( root.getNodeByPath( [ 0 ] ), { at: 2, rows: 3 } );
+			tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 2, rows: 3 } );
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ { colspan: 2, contents: '11[]' }, '13', '14' ],
@@ -162,7 +162,7 @@ describe( 'TableUtils', () => {
 				[ '31', '32', '33' ]
 			], { headingColumns: 3, headingRows: 1 } ) );
 
-			tableUtils.insertRow( root.getNodeByPath( [ 0 ] ), { at: 2, rows: 3 } );
+			tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 2, rows: 3 } );
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ { rowspan: 2, contents: '11[]' }, '12', '13' ],
@@ -181,7 +181,7 @@ describe( 'TableUtils', () => {
 				[ { colspan: 3, contents: '31' } ]
 			], { headingColumns: 3, headingRows: 1 } ) );
 
-			tableUtils.insertRow( root.getNodeByPath( [ 0 ] ), { at: 2, rows: 3 } );
+			tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 2, rows: 3 } );
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ { rowspan: 2, contents: '11[]' }, '12', '13' ],
@@ -199,7 +199,7 @@ describe( 'TableUtils', () => {
 				[ '21', '22' ]
 			] ) );
 
-			tableUtils.insertRow( root.getNodeByPath( [ 0 ] ), { at: 2, rows: 3 } );
+			tableUtils.insertRows( root.getNodeByPath( [ 0 ] ), { at: 2, rows: 3 } );
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ '11[]', '12' ],
@@ -345,6 +345,24 @@ describe( 'TableUtils', () => {
 				[ '' ],
 				[ '' ],
 				[ '20', '21', '22' ]
+			] ) );
+		} );
+
+		it( 'should properly update rowspanned cells overlapping selected cell', () => {
+			setData( model, modelTable( [
+				[ { rowspan: 2, contents: '00' }, '01', { rowspan: 3, contents: '02' } ],
+				[ '[]11' ],
+				[ '20', '21' ]
+			] ) );
+
+			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 1, 0 ] ), 3 );
+
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ { rowspan: 4, contents: '00' }, '01', { rowspan: 5, contents: '02' } ],
+				[ '[]11' ],
+				[ '' ],
+				[ '' ],
+				[ '20', '21' ]
 			] ) );
 		} );
 	} );

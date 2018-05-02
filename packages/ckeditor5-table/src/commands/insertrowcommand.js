@@ -63,6 +63,6 @@ export default class InsertRowCommand extends Command {
 
 		const insertAt = this.direction === 'below' ? rowIndex + 1 : rowIndex;
 
-		tableUtils.insertRow( table, { rows: 1, at: insertAt } );
+		tableUtils.insertRows( table, { rows: 1, at: insertAt } );
 	}
 }
