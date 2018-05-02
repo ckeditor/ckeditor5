@@ -95,6 +95,7 @@ function updateTableAttribute( table, attributeName, newValue, writer ) {
  * Splits table cell vertically.
  *
  * @param {module:engine/model/element} tableCell
+ * @param {Number} headingRows
  * @param writer
  */
 function splitVertically( tableCell, headingRows, writer ) {
@@ -103,15 +104,7 @@ function splitVertically( tableCell, headingRows, writer ) {
 	const rowIndex = tableRow.index;
 
 	const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) );
-
 	const newRowspan = headingRows - rowIndex;
-	const spanToSet = rowspan - newRowspan;
-
-	if ( newRowspan > 1 ) {
-		writer.setAttribute( 'rowspan', newRowspan, tableCell );
-	} else {
-		writer.removeAttribute( 'rowspan', tableCell );
-	}
 
 	const startRow = table.getChildIndex( tableRow );
 	const endRow = startRow + newRowspan;
@@ -123,11 +116,15 @@ function splitVertically( tableCell, headingRows, writer ) {
 
 	const attributes = {};
 
+	const spanToSet = rowspan - newRowspan;
+
 	if ( spanToSet > 1 ) {
 		attributes.rowspan = spanToSet;
 	}
 
-	for ( const tableWalkerInfo of [ ...tableWalker ] ) {
+	const values = [ ...tableWalker ];
+
+	for ( const tableWalkerInfo of values ) {
 		if ( tableWalkerInfo.cell ) {
 			previousCell = tableWalkerInfo.cell;
 		}
@@ -143,9 +140,16 @@ function splitVertically( tableCell, headingRows, writer ) {
 		if ( columnIndex !== undefined && columnIndex === tableWalkerInfo.column && tableWalkerInfo.row === endRow ) {
 			const insertRow = table.getChild( tableWalkerInfo.row );
 
-			const position = previousCell.parent === insertRow ? Position.createAt( insertRow ) : Position.createAfter( previousCell );
+			const position = previousCell.parent === insertRow ? Position.createAfter( previousCell ) : Position.createAt( insertRow );
 
 			writer.insertElement( 'tableCell', attributes, position );
 		}
+	}
+
+	// Update rowspan attribute after iterating over current table.
+	if ( newRowspan > 1 ) {
+		writer.setAttribute( 'rowspan', newRowspan, tableCell );
+	} else {
+		writer.removeAttribute( 'rowspan', tableCell );
 	}
 }

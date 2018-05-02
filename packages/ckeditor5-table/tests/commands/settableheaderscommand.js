@@ -214,8 +214,7 @@ describe( 'SetTableHeadersCommand', () => {
 			], { headingRows: 1 } ) );
 		} );
 
-		// TODO: fix me
-		it.skip( 'should fix rowspaned cells inside a row', () => {
+		it( 'should fix rowspaned cells inside a row', () => {
 			setData( model, modelTable( [
 				[ '00', { rowspan: 2, contents: '[]01' } ],
 				[ '10' ]

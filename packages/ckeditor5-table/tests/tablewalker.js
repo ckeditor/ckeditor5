@@ -183,6 +183,18 @@ describe( 'TableWalker', () => {
 			], { includeSpanned: true } );
 		} );
 
+		it( 'should output rowspanned cells at the end of a table row', () => {
+			testWalker( [
+				[ '00', { rowspan: 2, contents: '01' } ],
+				[ '10' ]
+			], [
+				{ row: 0, column: 0, data: '00' },
+				{ row: 0, column: 1, data: '01' },
+				{ row: 1, column: 0, data: '10' },
+				{ row: 1, column: 1, data: undefined }
+			], { includeSpanned: true } );
+		} );
+
 		it( 'should work with startRow & endRow options', () => {
 			testWalker( [
 				[ { colspan: 2, rowspan: 3, contents: '00' }, '02' ],
@@ -211,6 +223,19 @@ describe( 'TableWalker', () => {
 				{ row: 0, column: 0, data: '11' },
 				{ row: 0, column: 2, data: '13' }
 			], { endRow: 0 } );
+		} );
+
+		it( 'should output rowspanned cells at the end of a table row', () => {
+			testWalker( [
+				[ '00', { rowspan: 2, contents: '01' } ],
+				[ '10' ],
+				[ '20', '21' ]
+			], [
+				{ row: 0, column: 0, data: '00' },
+				{ row: 0, column: 1, data: '01' },
+				{ row: 1, column: 0, data: '10' },
+				{ row: 1, column: 1, data: undefined }
+			], { startRow: 0, endRow: 1, includeSpanned: true } );
 		} );
 	} );
 } );

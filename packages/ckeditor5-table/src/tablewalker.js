@@ -66,7 +66,7 @@ export default class TableWalker {
 	 * @param {Object} [options={}] Object with configuration.
 	 * @param {Number} [options.startRow=0] A row index for which this iterator should start.
 	 * @param {Number} [options.endRow] A row index for which this iterator should end.
-	 * @param {Number} [options.includeSpanned] Also return values for spanned cells.
+	 * @param {Boolean} [options.includeSpanned] Also return values for spanned cells.
 	 */
 	constructor( table, options = {} ) {
 		/**
