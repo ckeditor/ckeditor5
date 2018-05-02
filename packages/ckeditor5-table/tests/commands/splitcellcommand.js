@@ -208,7 +208,8 @@ describe( 'SplitCellCommand', () => {
 
 				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 					[ '00', '01', '02' ],
-					[ '10', '[]11', '12' ],
+					[ { rowspan: 2, contents: '10' }, '[]11', { rowspan: 2, contents: '12' } ],
+					[ '' ],
 					[ '20', '21', '22' ]
 				] ) );
 			} );

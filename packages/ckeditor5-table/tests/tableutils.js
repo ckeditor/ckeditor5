@@ -310,4 +310,42 @@ describe( 'TableUtils', () => {
 			] ) );
 		} );
 	} );
+
+	describe( 'splitCellVertically()', () => {
+		it( 'should split table cell to default table cells number', () => {
+			setData( model, modelTable( [
+				[ '00', '01', '02' ],
+				[ '10', '[]11', '12' ],
+				[ '20', '21', '22' ]
+			] ) );
+
+			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 1, 1 ] ) );
+
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '00', '01', '02' ],
+				[ { rowspan: 2, contents: '10' }, '[]11', { rowspan: 2, contents: '12' } ],
+				[ '' ],
+				[ '20', '21', '22' ]
+			] ) );
+		} );
+
+		it( 'should split table cell to given table cells number', () => {
+			setData( model, modelTable( [
+				[ '00', '01', '02' ],
+				[ '10', '[]11', '12' ],
+				[ '20', '21', '22' ]
+			] ) );
+
+			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 1, 1 ] ), 4 );
+
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '00', '01', '02' ],
+				[ { rowspan: 4, contents: '10' }, '[]11', { rowspan: 4, contents: '12' } ],
+				[ '' ],
+				[ '' ],
+				[ '' ],
+				[ '20', '21', '22' ]
+			] ) );
+		} );
+	} );
 } );

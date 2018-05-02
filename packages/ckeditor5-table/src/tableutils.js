@@ -134,6 +134,30 @@ export default class TableUtils extends Plugin {
 		} );
 	}
 
-	splitCellVertically() {
+	splitCellVertically( tableCell, cellNumber = 2 ) {
+		const model = this.editor.model;
+
+		const table = getParentTable( tableCell );
+		const rowIndex = table.getChildIndex( tableCell.parent );
+
+		model.change( writer => {
+			for ( const tableWalkerValue of new TableWalker( table, { startRow: rowIndex, endRow: rowIndex } ) ) {
+				if ( tableWalkerValue.cell !== tableCell ) {
+					const rowspan = parseInt( tableWalkerValue.cell.getAttribute( 'rowspan' ) || 1 );
+
+					writer.setAttribute( 'rowspan', rowspan + cellNumber - 1, tableWalkerValue.cell );
+				}
+			}
+
+			for ( let i = rowIndex + 1; i < rowIndex + cellNumber; i++ ) {
+				const tableRow = writer.createElement( 'tableRow' );
+
+				writer.insert( tableRow, table, i );
+
+				const cell = writer.createElement( 'tableCell' );
+
+				writer.insert( cell, tableRow, 'end' );
+			}
+		} );
 	}
 }
