@@ -81,14 +81,14 @@ describe( 'TableUI', () => {
 		} );
 	} );
 
-	describe( 'insertRow button', () => {
+	describe( 'insertRowBelow button', () => {
 		let insertRow;
 
 		beforeEach( () => {
-			insertRow = editor.ui.componentFactory.create( 'insertRow' );
+			insertRow = editor.ui.componentFactory.create( 'insertRowBelow' );
 		} );
 
-		it( 'should register insertRow buton', () => {
+		it( 'should register insertRowBelow button', () => {
 			expect( insertRow ).to.be.instanceOf( ButtonView );
 			expect( insertRow.isOn ).to.be.false;
 			expect( insertRow.label ).to.equal( 'Insert row' );
@@ -96,7 +96,7 @@ describe( 'TableUI', () => {
 		} );
 
 		it( 'should bind to insertRow command', () => {
-			const command = editor.commands.get( 'insertRow' );
+			const command = editor.commands.get( 'insertRowBelow' );
 
 			command.isEnabled = true;
 			expect( insertRow.isOn ).to.be.false;
@@ -112,7 +112,7 @@ describe( 'TableUI', () => {
 			insertRow.fire( 'execute' );
 
 			sinon.assert.calledOnce( executeSpy );
-			sinon.assert.calledWithExactly( executeSpy, 'insertRow' );
+			sinon.assert.calledWithExactly( executeSpy, 'insertRowBelow' );
 		} );
 	} );
 
