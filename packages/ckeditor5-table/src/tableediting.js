@@ -99,7 +99,8 @@ export default class TablesEditing extends Plugin {
 		editor.commands.add( 'insertTable', new InsertTableCommand( editor ) );
 		editor.commands.add( 'insertRowAbove', new InsertRowCommand( editor, { location: 'above' } ) );
 		editor.commands.add( 'insertRowBelow', new InsertRowCommand( editor, { location: 'below' } ) );
-		editor.commands.add( 'insertColumn', new InsertColumnCommand( editor ) );
+		editor.commands.add( 'insertColumnBefore', new InsertColumnCommand( editor, { location: 'before' } ) );
+		editor.commands.add( 'insertColumnAfter', new InsertColumnCommand( editor, { location: 'after' } ) );
 		editor.commands.add( 'splitCellVertically', new SplitCellCommand( editor, { direction: 'vertically' } ) );
 		editor.commands.add( 'splitCellHorizontally', new SplitCellCommand( editor, { direction: 'horizontally' } ) );
 		editor.commands.add( 'removeRow', new RemoveRowCommand( editor ) );

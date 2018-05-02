@@ -9,8 +9,8 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import TableWalker from '../tablewalker';
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
-import { getColumns, getParentTable } from './utils';
+import { getParentTable } from './utils';
+import TableUtils from '../tableutils';
 
 /**
  * The insert column command.
@@ -18,6 +18,19 @@ import { getColumns, getParentTable } from './utils';
  * @extends module:core/command~Command
  */
 export default class InsertColumnCommand extends Command {
+	/**
+	 * Creates a new `InsertRowCommand` instance.
+	 *
+	 * @param {module:core/editor/editor~Editor} editor Editor on which this command will be used.
+	 * @param {Object} options
+	 * @param {String} [options.location="after"] Where to insert new row - relative to current row. Possible values: "after", "before".
+	 */
+	constructor( editor, options = {} ) {
+		super( editor );
+
+		this.direction = options.location || 'after';
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -33,84 +46,31 @@ export default class InsertColumnCommand extends Command {
 	/**
 	 * Executes the command.
 	 *
-	 * @param {Object} [options] Options for the executed command.
-	 * @param {Number} [options.columns=1] Number of rows to insert.
-	 * @param {Number} [options.at=0] Row index to insert at.
-	 *
 	 * @fires execute
 	 */
-	execute( options = {} ) {
-		const model = this.editor.model;
-		const document = model.document;
-		const selection = document.selection;
-
-		const columns = parseInt( options.columns ) || 1;
-		const insertAt = parseInt( options.at ) || 0;
+	execute() {
+		const editor = this.editor;
+		const model = editor.model;
+		const doc = model.document;
+		const selection = doc.selection;
 
 		const table = getParentTable( selection.getFirstPosition() );
 
-		model.change( writer => {
-			const tableColumns = getColumns( table );
+		const element = doc.selection.getFirstPosition().parent;
+		const rowIndex = table.getChildIndex( element.parent );
 
-			// Inserting at the end of a table
-			if ( tableColumns <= insertAt ) {
-				for ( const tableRow of table.getChildren() ) {
-					createCells( columns, writer, Position.createAt( tableRow, 'end' ) );
-				}
+		let columnIndex;
 
-				return;
+		for ( const tableWalkerValue of new TableWalker( table, { startRow: rowIndex, endRow: rowIndex } ) ) {
+			if ( tableWalkerValue.cell === element ) {
+				columnIndex = tableWalkerValue.column;
 			}
+		}
 
-			const headingColumns = table.getAttribute( 'headingColumns' );
+		const insertAt = this.direction === 'after' ? columnIndex + 1 : columnIndex;
 
-			if ( insertAt < headingColumns ) {
-				writer.setAttribute( 'headingColumns', headingColumns + columns, table );
-			}
+		const tableUtils = editor.plugins.get( TableUtils );
 
-			const tableIterator = new TableWalker( table );
-
-			let currentRow = -1;
-			let currentRowInserted = false;
-
-			for ( const tableCellInfo of tableIterator ) {
-				const { row, column, cell: tableCell, colspan } = tableCellInfo;
-
-				if ( currentRow !== row ) {
-					currentRow = row;
-					currentRowInserted = false;
-				}
-
-				const shouldExpandSpan = colspan > 1 &&
-					( column !== insertAt ) &&
-					( column <= insertAt ) &&
-					( column <= insertAt + columns ) &&
-					( column + colspan > insertAt );
-
-				if ( shouldExpandSpan ) {
-					writer.setAttribute( 'colspan', colspan + columns, tableCell );
-				}
-
-				if ( column === insertAt || ( column < insertAt + columns && column > insertAt && !currentRowInserted ) ) {
-					const insertPosition = Position.createBefore( tableCell );
-
-					createCells( columns, writer, insertPosition );
-
-					currentRowInserted = true;
-				}
-			}
-		} );
-	}
-}
-
-// Creates cells at given position.
-//
-// @param {Number} columns Number of columns to create
-// @param {module:engine/model/writer} writer
-// @param {module:engine/model/position} insertPosition
-function createCells( columns, writer, insertPosition ) {
-	for ( let i = 0; i < columns; i++ ) {
-		const cell = writer.createElement( 'tableCell' );
-
-		writer.insert( cell, insertPosition );
+		tableUtils.insertColumns( table, { columns: 1, at: insertAt } );
 	}
 }

@@ -211,6 +211,142 @@ describe( 'TableUtils', () => {
 		} );
 	} );
 
+	describe( 'insertColumns()', () => {
+		it( 'should insert column in given table at given index', () => {
+			setData( model, modelTable( [
+				[ '11[]', '12' ],
+				[ '21', '22' ]
+			] ) );
+
+			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 1 } );
+
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '11[]', '', '12' ],
+				[ '21', '', '22' ]
+			] ) );
+		} );
+		it( 'should insert column in given table with default values', () => {
+			setData( model, modelTable( [
+				[ '11[]', '12' ],
+				[ '21', '22' ]
+			] ) );
+
+			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ) );
+
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '', '11[]', '12' ],
+				[ '', '21', '22' ]
+			] ) );
+		} );
+
+		it( 'should insert column in given table at default index', () => {
+			setData( model, modelTable( [
+				[ '11[]', '12' ],
+				[ '21', '22' ]
+			] ) );
+
+			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ) );
+
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '', '11[]', '12' ],
+				[ '', '21', '22' ]
+			] ) );
+		} );
+
+		it( 'should insert columns at table end', () => {
+			setData( model, modelTable( [
+				[ '11[]', '12' ],
+				[ '21', '22' ]
+			] ) );
+
+			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 2, columns: 2 } );
+
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '11[]', '12', '', '' ],
+				[ '21', '22', '', '' ]
+			] ) );
+		} );
+
+		it( 'should update table heading columns attribute when inserting column in headings section', () => {
+			setData( model, modelTable( [
+				[ '11[]', '12' ],
+				[ '21', '22' ],
+				[ '31', '32' ]
+			], { headingColumns: 2 } ) );
+
+			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 1 } );
+
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '11[]', '', '12' ],
+				[ '21', '', '22' ],
+				[ '31', '', '32' ]
+			], { headingColumns: 3 } ) );
+		} );
+
+		it( 'should not update table heading columns attribute when inserting column after headings section', () => {
+			setData( model, modelTable( [
+				[ '11[]', '12', '13' ],
+				[ '21', '22', '23' ],
+				[ '31', '32', '33' ]
+			], { headingColumns: 2 } ) );
+
+			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 2 } );
+
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '11[]', '12', '', '13' ],
+				[ '21', '22', '', '23' ],
+				[ '31', '32', '', '33' ]
+			], { headingColumns: 2 } ) );
+		} );
+
+		it( 'should skip spanned columns', () => {
+			setData( model, modelTable( [
+				[ '11[]', '12' ],
+				[ { colspan: 2, contents: '21' } ],
+				[ '31', '32' ]
+			], { headingColumns: 2 } ) );
+
+			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 1 } );
+
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '11[]', '', '12' ],
+				[ { colspan: 3, contents: '21' } ],
+				[ '31', '', '32' ]
+			], { headingColumns: 3 } ) );
+		} );
+
+		it( 'should skip wide spanned columns', () => {
+			setData( model, modelTable( [
+				[ '11[]', '12', '13', '14', '15' ],
+				[ '21', '22', { colspan: 2, contents: '23' }, '25' ],
+				[ { colspan: 4, contents: '31' }, { colspan: 2, contents: '34' } ]
+			], { headingColumns: 4 } ) );
+
+			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 2, columns: 2 } );
+
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '11[]', '12', '', '', '13', '14', '15' ],
+				[ '21', '22', '', '', { colspan: 2, contents: '23' }, '25' ],
+				[ { colspan: 6, contents: '31' }, { colspan: 2, contents: '34' } ]
+			], { headingColumns: 6 } ) );
+		} );
+
+		// TODO fix me
+		it.skip( 'should skip row spanned cells', () => {
+			setData( model, modelTable( [
+				[ { colspan: 2, rowspan: 2, contents: '11[]' }, '13' ],
+				[ '23' ]
+			], { headingColumns: 2 } ) );
+
+			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 1, columns: 2 } );
+
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ { colspan: 4, rowspan: 2, contents: '11[]' }, '13' ],
+				[ '23' ]
+			], { headingColumns: 4 } ) );
+		} );
+	} );
+
 	describe( 'splitCellHorizontally()', () => {
 		it( 'should split table cell to given table cells number', () => {
 			setData( model, modelTable( [

@@ -11,66 +11,71 @@ import InsertColumnCommand from '../../src/commands/insertcolumncommand';
 import { downcastInsertTable } from '../../src/converters/downcast';
 import upcastTable from '../../src/converters/upcasttable';
 import { formatTable, formattedModelTable, modelTable } from '../_utils/utils';
+import TableUtils from '../../src/tableutils';
 
 describe( 'InsertColumnCommand', () => {
 	let editor, model, command;
 
 	beforeEach( () => {
-		return ModelTestEditor.create()
-			.then( newEditor => {
-				editor = newEditor;
-				model = editor.model;
-				command = new InsertColumnCommand( editor );
+		return ModelTestEditor.create( {
+			plugins: [ TableUtils ]
+		} ).then( newEditor => {
+			editor = newEditor;
+			model = editor.model;
 
-				const conversion = editor.conversion;
-				const schema = model.schema;
+			const conversion = editor.conversion;
+			const schema = model.schema;
 
-				schema.register( 'table', {
-					allowWhere: '$block',
-					allowAttributes: [ 'headingRows' ],
-					isBlock: true,
-					isObject: true
-				} );
-
-				schema.register( 'tableRow', {
-					allowIn: 'table',
-					allowAttributes: [],
-					isBlock: true,
-					isLimit: true
-				} );
-
-				schema.register( 'tableCell', {
-					allowIn: 'tableRow',
-					allowContentOf: '$block',
-					allowAttributes: [ 'colspan', 'rowspan' ],
-					isBlock: true,
-					isLimit: true
-				} );
-
-				model.schema.register( 'p', { inheritAllFrom: '$block' } );
-
-				// Table conversion.
-				conversion.for( 'upcast' ).add( upcastTable() );
-				conversion.for( 'downcast' ).add( downcastInsertTable() );
-
-				// Table row upcast only since downcast conversion is done in `downcastTable()`.
-				conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableRow', view: 'tr' } ) );
-
-				// Table cell conversion.
-				conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'td' } ) );
-				conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'th' } ) );
-
-				conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
-				conversion.attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
+			schema.register( 'table', {
+				allowWhere: '$block',
+				allowAttributes: [ 'headingRows' ],
+				isBlock: true,
+				isObject: true
 			} );
+
+			schema.register( 'tableRow', {
+				allowIn: 'table',
+				allowAttributes: [],
+				isBlock: true,
+				isLimit: true
+			} );
+
+			schema.register( 'tableCell', {
+				allowIn: 'tableRow',
+				allowContentOf: '$block',
+				allowAttributes: [ 'colspan', 'rowspan' ],
+				isBlock: true,
+				isLimit: true
+			} );
+
+			model.schema.register( 'p', { inheritAllFrom: '$block' } );
+
+			// Table conversion.
+			conversion.for( 'upcast' ).add( upcastTable() );
+			conversion.for( 'downcast' ).add( downcastInsertTable() );
+
+			// Table row upcast only since downcast conversion is done in `downcastTable()`.
+			conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableRow', view: 'tr' } ) );
+
+			// Table cell conversion.
+			conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'td' } ) );
+			conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'th' } ) );
+
+			conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
+			conversion.attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
+		} );
 	} );
 
 	afterEach( () => {
 		return editor.destroy();
 	} );
 
-	describe( 'isEnabled', () => {
-		describe( 'when selection is collapsed', () => {
+	describe( 'location=after', () => {
+		beforeEach( () => {
+			command = new InsertColumnCommand( editor );
+		} );
+
+		describe( 'isEnabled', () => {
 			it( 'should be false if wrong node', () => {
 				setData( model, '<p>foo[]</p>' );
 				expect( command.isEnabled ).to.be.false;
@@ -81,128 +86,211 @@ describe( 'InsertColumnCommand', () => {
 				expect( command.isEnabled ).to.be.true;
 			} );
 		} );
+
+		describe( 'execute()', () => {
+			it( 'should insert column in given table at given index', () => {
+				setData( model, modelTable( [
+					[ '11[]', '12' ],
+					[ '21', '22' ]
+				] ) );
+
+				command.execute();
+
+				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+					[ '11[]', '', '12' ],
+					[ '21', '', '22' ]
+				] ) );
+			} );
+
+			it( 'should insert columns at table end', () => {
+				setData( model, modelTable( [
+					[ '11', '12' ],
+					[ '21', '22[]' ]
+				] ) );
+
+				command.execute();
+
+				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+					[ '11', '12', '' ],
+					[ '21', '22[]', '' ]
+				] ) );
+			} );
+
+			it( 'should update table heading columns attribute when inserting column in headings section', () => {
+				setData( model, modelTable( [
+					[ '11[]', '12' ],
+					[ '21', '22' ],
+					[ '31', '32' ]
+				], { headingColumns: 2 } ) );
+
+				command.execute();
+
+				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+					[ '11[]', '', '12' ],
+					[ '21', '', '22' ],
+					[ '31', '', '32' ]
+				], { headingColumns: 3 } ) );
+			} );
+
+			it( 'should not update table heading columns attribute when inserting column after headings section', () => {
+				setData( model, modelTable( [
+					[ '11', '12[]', '13' ],
+					[ '21', '22', '23' ],
+					[ '31', '32', '33' ]
+				], { headingColumns: 2 } ) );
+
+				command.execute();
+
+				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+					[ '11', '12[]', '', '13' ],
+					[ '21', '22', '', '23' ],
+					[ '31', '32', '', '33' ]
+				], { headingColumns: 2 } ) );
+			} );
+
+			it( 'should skip spanned columns', () => {
+				setData( model, modelTable( [
+					[ '11[]', '12' ],
+					[ { colspan: 2, contents: '21' } ],
+					[ '31', '32' ]
+				], { headingColumns: 2 } ) );
+
+				command.execute();
+
+				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+					[ '11[]', '', '12' ],
+					[ { colspan: 3, contents: '21' } ],
+					[ '31', '', '32' ]
+				], { headingColumns: 3 } ) );
+			} );
+
+			it( 'should skip wide spanned columns', () => {
+				setData( model, modelTable( [
+					[ '11', '12[]', '13', '14', '15' ],
+					[ '21', '22', { colspan: 2, contents: '23' }, '25' ],
+					[ { colspan: 4, contents: '31' }, { colspan: 2, contents: '34' } ]
+				], { headingColumns: 4 } ) );
+
+				command.execute();
+
+				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+					[ '11', '12[]', '', '13', '14', '15' ],
+					[ '21', '22', '', { colspan: 2, contents: '23' }, '25' ],
+					[ { colspan: 5, contents: '31' }, { colspan: 2, contents: '34' } ]
+				], { headingColumns: 5 } ) );
+			} );
+		} );
 	} );
 
-	describe( 'execute()', () => {
-		it( 'should insert column in given table at given index', () => {
-			setData( model, modelTable( [
-				[ '11[]', '12' ],
-				[ '21', '22' ]
-			] ) );
-
-			command.execute( { at: 1 } );
-
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
-				[ '11[]', '', '12' ],
-				[ '21', '', '22' ]
-			] ) );
+	describe( 'location=before', () => {
+		beforeEach( () => {
+			command = new InsertColumnCommand( editor, { location: 'before' } );
 		} );
 
-		it( 'should insert column in given table at default index', () => {
-			setData( model, modelTable( [
-				[ '11[]', '12' ],
-				[ '21', '22' ]
-			] ) );
+		describe( 'isEnabled', () => {
+			it( 'should be false if wrong node', () => {
+				setData( model, '<p>foo[]</p>' );
+				expect( command.isEnabled ).to.be.false;
+			} );
 
-			command.execute();
-
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
-				[ '', '11[]', '12' ],
-				[ '', '21', '22' ]
-			] ) );
+			it( 'should be true if in table', () => {
+				setData( model, modelTable( [ [ '[]' ] ] ) );
+				expect( command.isEnabled ).to.be.true;
+			} );
 		} );
 
-		it( 'should insert columns at table end', () => {
-			setData( model, modelTable( [
-				[ '11[]', '12' ],
-				[ '21', '22' ]
-			] ) );
+		describe( 'execute()', () => {
+			it( 'should insert column in given table at given index', () => {
+				setData( model, modelTable( [
+					[ '11', '12[]' ],
+					[ '21', '22' ]
+				] ) );
 
-			command.execute( { at: 2, columns: 2 } );
+				command.execute();
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
-				[ '11[]', '12', '', '' ],
-				[ '21', '22', '', '' ]
-			] ) );
-		} );
+				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+					[ '11', '', '12[]' ],
+					[ '21', '', '22' ]
+				] ) );
+			} );
 
-		it( 'should update table heading columns attribute when inserting column in headings section', () => {
-			setData( model, modelTable( [
-				[ '11[]', '12' ],
-				[ '21', '22' ],
-				[ '31', '32' ]
-			], { headingColumns: 2 } ) );
+			it( 'should insert columns at the table start', () => {
+				setData( model, modelTable( [
+					[ '11', '12' ],
+					[ '[]21', '22' ]
+				] ) );
 
-			command.execute( { at: 1 } );
+				command.execute();
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
-				[ '11[]', '', '12' ],
-				[ '21', '', '22' ],
-				[ '31', '', '32' ]
-			], { headingColumns: 3 } ) );
-		} );
+				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+					[ '', '11', '12' ],
+					[ '', '[]21', '22' ]
+				] ) );
+			} );
 
-		it( 'should not update table heading columns attribute when inserting column after headings section', () => {
-			setData( model, modelTable( [
-				[ '11[]', '12', '13' ],
-				[ '21', '22', '23' ],
-				[ '31', '32', '33' ]
-			], { headingColumns: 2 } ) );
+			it( 'should update table heading columns attribute when inserting column in headings section', () => {
+				setData( model, modelTable( [
+					[ '11', '12[]' ],
+					[ '21', '22' ],
+					[ '31', '32' ]
+				], { headingColumns: 2 } ) );
 
-			command.execute( { at: 2 } );
+				command.execute();
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
-				[ '11[]', '12', '', '13' ],
-				[ '21', '22', '', '23' ],
-				[ '31', '32', '', '33' ]
-			], { headingColumns: 2 } ) );
-		} );
+				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+					[ '11', '', '12[]' ],
+					[ '21', '', '22' ],
+					[ '31', '', '32' ]
+				], { headingColumns: 3 } ) );
+			} );
 
-		it( 'should skip spanned columns', () => {
-			setData( model, modelTable( [
-				[ '11[]', '12' ],
-				[ { colspan: 2, contents: '21' } ],
-				[ '31', '32' ]
-			], { headingColumns: 2 } ) );
+			it( 'should not update table heading columns attribute when inserting column after headings section', () => {
+				setData( model, modelTable( [
+					[ '11', '12', '13[]' ],
+					[ '21', '22', '23' ],
+					[ '31', '32', '33' ]
+				], { headingColumns: 2 } ) );
 
-			command.execute( { at: 1 } );
+				command.execute();
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
-				[ '11[]', '', '12' ],
-				[ { colspan: 3, contents: '21' } ],
-				[ '31', '', '32' ]
-			], { headingColumns: 3 } ) );
-		} );
+				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+					[ '11', '12', '', '13[]' ],
+					[ '21', '22', '', '23' ],
+					[ '31', '32', '', '33' ]
+				], { headingColumns: 2 } ) );
+			} );
 
-		it( 'should skip wide spanned columns', () => {
-			setData( model, modelTable( [
-				[ '11[]', '12', '13', '14', '15' ],
-				[ '21', '22', { colspan: 2, contents: '23' }, '25' ],
-				[ { colspan: 4, contents: '31' }, { colspan: 2, contents: '34' } ]
-			], { headingColumns: 4 } ) );
+			it( 'should skip spanned columns', () => {
+				setData( model, modelTable( [
+					[ '11', '12[]' ],
+					[ { colspan: 2, contents: '21' } ],
+					[ '31', '32' ]
+				], { headingColumns: 2 } ) );
 
-			command.execute( { at: 2, columns: 2 } );
+				command.execute();
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
-				[ '11[]', '12', '', '', '13', '14', '15' ],
-				[ '21', '22', '', '', { colspan: 2, contents: '23' }, '25' ],
-				[ { colspan: 6, contents: '31' }, { colspan: 2, contents: '34' } ]
-			], { headingColumns: 6 } ) );
-		} );
+				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+					[ '11', '', '12[]' ],
+					[ { colspan: 3, contents: '21' } ],
+					[ '31', '', '32' ]
+				], { headingColumns: 3 } ) );
+			} );
 
-		// TODO fix me
-		it.skip( 'should skip row spanned cells', () => {
-			setData( model, modelTable( [
-				[ { colspan: 2, rowspan: 2, contents: '11[]' }, '13' ],
-				[ '23' ]
-			], { headingColumns: 2 } ) );
+			it( 'should skip wide spanned columns', () => {
+				setData( model, modelTable( [
+					[ '11', '12', '13[]', '14', '15' ],
+					[ '21', '22', { colspan: 2, contents: '23' }, '25' ],
+					[ { colspan: 4, contents: '31' }, { colspan: 2, contents: '34' } ]
+				], { headingColumns: 4 } ) );
 
-			command.execute( { at: 1, columns: 2 } );
+				command.execute();
 
-			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
-				[ { colspan: 4, rowspan: 2, contents: '11[]' }, '13' ],
-				[ '23' ]
-			], { headingColumns: 4 } ) );
+				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+					[ '11', '12', '', '13[]', '14', '15' ],
+					[ '21', '22', '', { colspan: 2, contents: '23' }, '25' ],
+					[ { colspan: 5, contents: '31' }, { colspan: 2, contents: '34' } ]
+				], { headingColumns: 5 } ) );
+			} );
 		} );
 	} );
 } );

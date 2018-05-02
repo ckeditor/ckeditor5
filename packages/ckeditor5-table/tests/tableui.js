@@ -116,11 +116,11 @@ describe( 'TableUI', () => {
 		} );
 	} );
 
-	describe( 'insertColumn button', () => {
+	describe( 'insertColumnAfter button', () => {
 		let insertColumn;
 
 		beforeEach( () => {
-			insertColumn = editor.ui.componentFactory.create( 'insertColumn' );
+			insertColumn = editor.ui.componentFactory.create( 'insertColumnAfter' );
 		} );
 
 		it( 'should register insertColumn buton', () => {
@@ -131,7 +131,7 @@ describe( 'TableUI', () => {
 		} );
 
 		it( 'should bind to insertColumn command', () => {
-			const command = editor.commands.get( 'insertColumn' );
+			const command = editor.commands.get( 'insertColumnAfter' );
 
 			command.isEnabled = true;
 			expect( insertColumn.isOn ).to.be.false;
@@ -147,7 +147,7 @@ describe( 'TableUI', () => {
 			insertColumn.fire( 'execute' );
 
 			sinon.assert.calledOnce( executeSpy );
-			sinon.assert.calledWithExactly( executeSpy, 'insertColumn' );
+			sinon.assert.calledWithExactly( executeSpy, 'insertColumnAfter' );
 		} );
 	} );
 } );
