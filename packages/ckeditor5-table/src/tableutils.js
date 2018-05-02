@@ -9,7 +9,8 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import TableWalker from './tablewalker';
-import { getColumns } from './commands/utils';
+import { getColumns, getParentTable } from './commands/utils';
+import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 
 /**
  * The table utils plugin.
@@ -67,5 +68,72 @@ export default class TableUtils extends Plugin {
 				}
 			}
 		} );
+	}
+
+	splitCellHorizontally( tableCell, cellNumber = 2 ) {
+		const model = this.editor.model;
+
+		const table = getParentTable( tableCell );
+
+		model.change( writer => {
+			const tableMap = [ ...new TableWalker( table ) ];
+			const cellData = tableMap.find( value => value.cell === tableCell );
+
+			const cellColumn = cellData.column;
+			const cellColspan = cellData.colspan;
+			const cellRowspan = cellData.rowspan;
+
+			const splitOnly = cellColspan >= cellNumber;
+
+			const cellsToInsert = cellNumber - 1;
+
+			if ( !splitOnly ) {
+				const cellsToUpdate = tableMap.filter( value => {
+					const cell = value.cell;
+
+					if ( cell === tableCell ) {
+						return false;
+					}
+
+					const colspan = value.colspan;
+					const column = value.column;
+
+					return column === cellColumn || ( column < cellColumn && column + colspan - 1 >= cellColumn );
+				} );
+
+				for ( const tableWalkerValue of cellsToUpdate ) {
+					const colspan = tableWalkerValue.colspan;
+					const cell = tableWalkerValue.cell;
+
+					writer.setAttribute( 'colspan', colspan + cellNumber - 1, cell );
+				}
+
+				for ( let i = 0; i < cellsToInsert; i++ ) {
+					writer.insertElement( 'tableCell', Position.createAfter( tableCell ) );
+				}
+			} else {
+				const colspanOfInsertedCells = Math.floor( cellColspan / cellNumber );
+				const newColspan = ( cellColspan - colspanOfInsertedCells * cellNumber ) + colspanOfInsertedCells;
+
+				if ( newColspan > 1 ) {
+					writer.setAttribute( 'colspan', newColspan, tableCell );
+				} else {
+					writer.removeAttribute( 'colspan', tableCell );
+				}
+
+				const attributes = colspanOfInsertedCells > 1 ? { colspan: colspanOfInsertedCells } : {};
+
+				if ( cellRowspan > 1 ) {
+					attributes.rowspan = cellRowspan;
+				}
+
+				for ( let i = 0; i < cellsToInsert; i++ ) {
+					writer.insertElement( 'tableCell', attributes, Position.createAfter( tableCell ) );
+				}
+			}
+		} );
+	}
+
+	splitCellVertically() {
 	}
 }

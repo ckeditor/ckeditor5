@@ -8,9 +8,7 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
-
-import TableWalker from '../tablewalker';
+import TableUtils from '../tableutils';
 
 /**
  * The split cell command.
@@ -18,6 +16,16 @@ import TableWalker from '../tablewalker';
  * @extends module:core/command~Command
  */
 export default class SplitCellCommand extends Command {
+	/**
+	 * @param editor
+	 * @param options
+	 */
+	constructor( editor, options = {} ) {
+		super( editor );
+
+		this.direction = options.direction || 'horizontally';
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -35,7 +43,7 @@ export default class SplitCellCommand extends Command {
 	 *
 	 * @fires execute
 	 */
-	execute( options ) {
+	execute() {
 		const model = this.editor.model;
 		const document = model.document;
 		const selection = document.selection;
@@ -43,69 +51,14 @@ export default class SplitCellCommand extends Command {
 		const firstPosition = selection.getFirstPosition();
 		const tableCell = firstPosition.parent;
 
-		const horizontally = options && options.horizontally && parseInt( options.horizontally || 0 );
+		const isHorizontally = this.direction === 'horizontally';
 
-		const tableRow = tableCell.parent;
-		const table = tableRow.parent;
+		const tableUtils = this.editor.plugins.get( TableUtils );
 
-		model.change( writer => {
-			if ( horizontally && horizontally > 1 ) {
-				const tableMap = [ ...new TableWalker( table ) ];
-				const cellData = tableMap.find( value => value.cell === tableCell );
-
-				const cellColumn = cellData.column;
-				const cellColspan = cellData.colspan;
-				const cellRowspan = cellData.rowspan;
-
-				const splitOnly = cellColspan >= horizontally;
-
-				const cellsToInsert = horizontally - 1;
-
-				if ( !splitOnly ) {
-					const cellsToUpdate = tableMap.filter( value => {
-						const cell = value.cell;
-
-						if ( cell === tableCell ) {
-							return false;
-						}
-
-						const colspan = value.colspan;
-						const column = value.column;
-
-						return column === cellColumn || ( column < cellColumn && column + colspan - 1 >= cellColumn );
-					} );
-
-					for ( const tableWalkerValue of cellsToUpdate ) {
-						const colspan = tableWalkerValue.colspan;
-						const cell = tableWalkerValue.cell;
-
-						writer.setAttribute( 'colspan', colspan + horizontally - 1, cell );
-					}
-
-					for ( let i = 0; i < cellsToInsert; i++ ) {
-						writer.insertElement( 'tableCell', Position.createAfter( tableCell ) );
-					}
-				} else {
-					const colspanOfInsertedCells = Math.floor( cellColspan / horizontally );
-					const newColspan = ( cellColspan - colspanOfInsertedCells * horizontally ) + colspanOfInsertedCells;
-
-					if ( newColspan > 1 ) {
-						writer.setAttribute( 'colspan', newColspan, tableCell );
-					} else {
-						writer.removeAttribute( 'colspan', tableCell );
-					}
-
-					const attributes = colspanOfInsertedCells > 1 ? { colspan: colspanOfInsertedCells } : {};
-
-					if ( cellRowspan > 1 ) {
-						attributes.rowspan = cellRowspan;
-					}
-
-					for ( let i = 0; i < cellsToInsert; i++ ) {
-						writer.insertElement( 'tableCell', attributes, Position.createAfter( tableCell ) );
-					}
-				}
-			}
-		} );
+		if ( isHorizontally ) {
+			tableUtils.splitCellHorizontally( tableCell, 2 );
+		} else {
+			tableUtils.splitCellVertically( tableCell, 2 );
+		}
 	}
 }

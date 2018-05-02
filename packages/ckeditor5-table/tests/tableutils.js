@@ -210,4 +210,104 @@ describe( 'TableUtils', () => {
 			] ) );
 		} );
 	} );
+
+	describe( 'splitCellHorizontally()', () => {
+		it( 'should split table cell to given table cells number', () => {
+			setData( model, modelTable( [
+				[ '00', '01', '02' ],
+				[ '10', '[]11', '12' ],
+				[ '20', { colspan: 2, contents: '21' } ],
+				[ { colspan: 2, contents: '30' }, '32' ]
+			] ) );
+
+			tableUtils.splitCellHorizontally( root.getNodeByPath( [ 0, 1, 1 ] ), 3 );
+
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '00', { colspan: 3, contents: '01' }, '02' ],
+				[ '10', '[]11', '', '', '12' ],
+				[ '20', { colspan: 4, contents: '21' } ],
+				[ { colspan: 4, contents: '30' }, '32' ]
+			] ) );
+		} );
+
+		it( 'should split table cell for two table cells as a default', () => {
+			setData( model, modelTable( [
+				[ '00', '01', '02' ],
+				[ '10', '[]11', '12' ],
+				[ '20', { colspan: 2, contents: '21' } ],
+				[ { colspan: 2, contents: '30' }, '32' ]
+			] ) );
+
+			tableUtils.splitCellHorizontally( root.getNodeByPath( [ 0, 1, 1 ] ) );
+
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '00', { colspan: 2, contents: '01' }, '02' ],
+				[ '10', '[]11', '', '12' ],
+				[ '20', { colspan: 3, contents: '21' } ],
+				[ { colspan: 3, contents: '30' }, '32' ]
+			] ) );
+		} );
+
+		it( 'should unsplit table cell if split is equal to colspan', () => {
+			setData( model, modelTable( [
+				[ '00', '01', '02' ],
+				[ '10', '11', '12' ],
+				[ '20', { colspan: 2, contents: '21[]' } ],
+				[ { colspan: 2, contents: '30' }, '32' ]
+			] ) );
+
+			tableUtils.splitCellHorizontally( root.getNodeByPath( [ 0, 2, 1 ] ), 2 );
+
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '00', '01', '02' ],
+				[ '10', '11', '12' ],
+				[ '20', '21[]', '' ],
+				[ { colspan: 2, contents: '30' }, '32' ]
+			] ) );
+		} );
+
+		it( 'should properly unsplit table cell if split is uneven', () => {
+			setData( model, modelTable( [
+				[ '00', '01', '02' ],
+				[ { colspan: 3, contents: '10[]' } ]
+			] ) );
+
+			tableUtils.splitCellHorizontally( root.getNodeByPath( [ 0, 1, 0 ] ), 2 );
+
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '00', '01', '02' ],
+				[ { colspan: 2, contents: '10[]' }, '' ]
+			] ) );
+		} );
+
+		it( 'should properly set colspan of inserted cells', () => {
+			setData( model, modelTable( [
+				[ '00', '01', '02', '03' ],
+				[ { colspan: 4, contents: '10[]' } ]
+			] ) );
+
+			tableUtils.splitCellHorizontally( root.getNodeByPath( [ 0, 1, 0 ] ), 2 );
+
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '00', '01', '02', '03' ],
+				[ { colspan: 2, contents: '10[]' }, { colspan: 2, contents: '' } ]
+			] ) );
+		} );
+
+		it( 'should keep rowspan attribute for newly inserted cells', () => {
+			setData( model, modelTable( [
+				[ '00', '01', '02', '03', '04', '05' ],
+				[ { colspan: 5, rowspan: 2, contents: '10[]' }, '15' ],
+				[ '25' ]
+			] ) );
+
+			tableUtils.splitCellHorizontally( root.getNodeByPath( [ 0, 1, 0 ] ), 2 );
+
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '00', '01', '02', '03', '04', '05' ],
+				[ { colspan: 3, rowspan: 2, contents: '10[]' }, { colspan: 2, rowspan: 2, contents: '' }, '15' ],
+				[ '25' ]
+			] ) );
+		} );
+	} );
 } );

@@ -11,83 +11,89 @@ import SplitCellCommand from '../../src/commands/splitcellcommand';
 import { downcastInsertTable } from '../../src/converters/downcast';
 import upcastTable from '../../src/converters/upcasttable';
 import { formatTable, formattedModelTable, modelTable } from '../_utils/utils';
+import TableUtils from '../../src/tableutils';
 
 describe( 'SplitCellCommand', () => {
 	let editor, model, command;
 
 	beforeEach( () => {
-		return ModelTestEditor.create()
-			.then( newEditor => {
-				editor = newEditor;
-				model = editor.model;
-				command = new SplitCellCommand( editor );
+		return ModelTestEditor.create( {
+			plugins: [ TableUtils ]
+		} ).then( newEditor => {
+			editor = newEditor;
+			model = editor.model;
+			command = new SplitCellCommand( editor );
 
-				const conversion = editor.conversion;
-				const schema = model.schema;
+			const conversion = editor.conversion;
+			const schema = model.schema;
 
-				schema.register( 'table', {
-					allowWhere: '$block',
-					allowAttributes: [ 'headingRows' ],
-					isBlock: true,
-					isObject: true
-				} );
-
-				schema.register( 'tableRow', {
-					allowIn: 'table',
-					allowAttributes: [],
-					isBlock: true,
-					isLimit: true
-				} );
-
-				schema.register( 'tableCell', {
-					allowIn: 'tableRow',
-					allowContentOf: '$block',
-					allowAttributes: [ 'colspan', 'rowspan' ],
-					isBlock: true,
-					isLimit: true
-				} );
-
-				model.schema.register( 'p', { inheritAllFrom: '$block' } );
-
-				// Table conversion.
-				conversion.for( 'upcast' ).add( upcastTable() );
-				conversion.for( 'downcast' ).add( downcastInsertTable() );
-
-				// Table row upcast only since downcast conversion is done in `downcastTable()`.
-				conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableRow', view: 'tr' } ) );
-
-				// Table cell conversion.
-				conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'td' } ) );
-				conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'th' } ) );
-
-				conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
-				conversion.attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
+			schema.register( 'table', {
+				allowWhere: '$block',
+				allowAttributes: [ 'headingRows' ],
+				isBlock: true,
+				isObject: true
 			} );
+
+			schema.register( 'tableRow', {
+				allowIn: 'table',
+				allowAttributes: [],
+				isBlock: true,
+				isLimit: true
+			} );
+
+			schema.register( 'tableCell', {
+				allowIn: 'tableRow',
+				allowContentOf: '$block',
+				allowAttributes: [ 'colspan', 'rowspan' ],
+				isBlock: true,
+				isLimit: true
+			} );
+
+			model.schema.register( 'p', { inheritAllFrom: '$block' } );
+
+			// Table conversion.
+			conversion.for( 'upcast' ).add( upcastTable() );
+			conversion.for( 'downcast' ).add( downcastInsertTable() );
+
+			// Table row upcast only since downcast conversion is done in `downcastTable()`.
+			conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableRow', view: 'tr' } ) );
+
+			// Table cell conversion.
+			conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'td' } ) );
+			conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'th' } ) );
+
+			conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
+			conversion.attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
+		} );
 	} );
 
 	afterEach( () => {
 		return editor.destroy();
 	} );
 
-	describe( 'isEnabled', () => {
-		it( 'should be true if in a table cell', () => {
-			setData( model, modelTable( [
-				[ '00[]' ]
-			] ) );
-
-			expect( command.isEnabled ).to.be.true;
+	describe( 'direction=horizontally', () => {
+		beforeEach( () => {
+			command = new SplitCellCommand( editor, { direction: 'horizontally' } );
 		} );
 
-		it( 'should be false if not in cell', () => {
-			setData( model, '<p>11[]</p>' );
+		describe( 'isEnabled', () => {
+			it( 'should be true if in a table cell', () => {
+				setData( model, modelTable( [
+					[ '00[]' ]
+				] ) );
 
-			expect( command.isEnabled ).to.be.false;
+				expect( command.isEnabled ).to.be.true;
+			} );
+
+			it( 'should be false if not in cell', () => {
+				setData( model, '<p>11[]</p>' );
+
+				expect( command.isEnabled ).to.be.false;
+			} );
 		} );
-	} );
 
-	describe( 'execute()', () => {
-		describe( 'options.horizontally', () => {
-			it( 'should split table cell for given table cells', () => {
+		describe( 'execute()', () => {
+			it( 'should split table cell for two table cells', () => {
 				setData( model, modelTable( [
 					[ '00', '01', '02' ],
 					[ '10', '[]11', '12' ],
@@ -95,13 +101,13 @@ describe( 'SplitCellCommand', () => {
 					[ { colspan: 2, contents: '30' }, '32' ]
 				] ) );
 
-				command.execute( { horizontally: 3 } );
+				command.execute();
 
 				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
-					[ '00', { colspan: 3, contents: '01' }, '02' ],
-					[ '10', '[]11', '', '', '12' ],
-					[ '20', { colspan: 4, contents: '21' } ],
-					[ { colspan: 4, contents: '30' }, '32' ]
+					[ '00', { colspan: 2, contents: '01' }, '02' ],
+					[ '10', '[]11', '', '12' ],
+					[ '20', { colspan: 3, contents: '21' } ],
+					[ { colspan: 3, contents: '30' }, '32' ]
 				] ) );
 			} );
 
@@ -113,7 +119,7 @@ describe( 'SplitCellCommand', () => {
 					[ { colspan: 2, contents: '30' }, '32' ]
 				] ) );
 
-				command.execute( { horizontally: 2 } );
+				command.execute();
 
 				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 					[ '00', '01', '02' ],
@@ -129,7 +135,7 @@ describe( 'SplitCellCommand', () => {
 					[ { colspan: 3, contents: '10[]' } ]
 				] ) );
 
-				command.execute( { horizontally: 2 } );
+				command.execute();
 
 				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 					[ '00', '01', '02' ],
@@ -143,7 +149,7 @@ describe( 'SplitCellCommand', () => {
 					[ { colspan: 4, contents: '10[]' } ]
 				] ) );
 
-				command.execute( { horizontally: 2 } );
+				command.execute();
 
 				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 					[ '00', '01', '02', '03' ],
@@ -158,7 +164,7 @@ describe( 'SplitCellCommand', () => {
 					[ '25' ]
 				] ) );
 
-				command.execute( { horizontally: 2 } );
+				command.execute();
 
 				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 					[ '00', '01', '02', '03', '04', '05' ],
@@ -167,7 +173,45 @@ describe( 'SplitCellCommand', () => {
 				] ) );
 			} );
 		} );
+	} );
 
-		describe( 'options.horizontally', () => {} );
+	describe( 'direction=vertically', () => {
+		beforeEach( () => {
+			command = new SplitCellCommand( editor, { direction: 'vertically' } );
+		} );
+
+		describe( 'isEnabled', () => {
+			it( 'should be true if in a table cell', () => {
+				setData( model, modelTable( [
+					[ '00[]' ]
+				] ) );
+
+				expect( command.isEnabled ).to.be.true;
+			} );
+
+			it( 'should be false if not in cell', () => {
+				setData( model, '<p>11[]</p>' );
+
+				expect( command.isEnabled ).to.be.false;
+			} );
+		} );
+
+		describe( 'execute()', () => {
+			it( 'should split table cell for two table cells', () => {
+				setData( model, modelTable( [
+					[ '00', '01', '02' ],
+					[ '10', '[]11', '12' ],
+					[ '20', '21', '22' ]
+				] ) );
+
+				command.execute();
+
+				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+					[ '00', '01', '02' ],
+					[ '10', '[]11', '12' ],
+					[ '20', '21', '22' ]
+				] ) );
+			} );
+		} );
 	} );
 } );

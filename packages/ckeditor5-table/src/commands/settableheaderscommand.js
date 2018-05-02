@@ -8,9 +8,10 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
+import Position from '@ckeditor/ckeditor5-engine/src/model/position';
+
 import { getParentTable } from './utils';
 import TableWalker from '../tablewalker';
-import Position from '../../../ckeditor5-engine/src/model/position';
 
 /**
  * The set table headers command.
