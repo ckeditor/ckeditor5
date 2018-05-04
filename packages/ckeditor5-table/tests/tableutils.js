@@ -225,6 +225,7 @@ describe( 'TableUtils', () => {
 				[ '21', '', '22' ]
 			] ) );
 		} );
+
 		it( 'should insert column in given table with default values', () => {
 			setData( model, modelTable( [
 				[ '11[]', '12' ],
@@ -253,17 +254,41 @@ describe( 'TableUtils', () => {
 			] ) );
 		} );
 
-		it( 'should insert columns at table end', () => {
+		it( 'should insert columns at the end of a row', () => {
 			setData( model, modelTable( [
-				[ '11[]', '12' ],
-				[ '21', '22' ]
+				[ '00[]', '01' ],
+				[ { colspan: 2, contents: '10' } ],
+				[ '20', { rowspan: 2, contents: '21' } ],
+				[ '30' ]
 			] ) );
 
 			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 2, columns: 2 } );
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
-				[ '11[]', '12', '', '' ],
-				[ '21', '22', '', '' ]
+				[ '00[]', '01', '', '' ],
+				[ { colspan: 2, contents: '10' }, '', '' ],
+				[ '20', { rowspan: 2, contents: '21' }, '', '' ],
+				[ '30', '', '' ]
+			] ) );
+		} );
+
+		it( 'should insert columns at the beginning of a row', () => {
+			setData( model, modelTable( [
+				[ '00[]', '01' ],
+				[ { colspan: 2, contents: '10' } ],
+				[ '20', { rowspan: 2, contents: '21' } ],
+				[ { rowspan: 2, contents: '30' } ],
+				[ '41' ]
+			] ) );
+
+			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 0, columns: 2 } );
+
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '', '', '00[]', '01' ],
+				[ '', '', { colspan: 2, contents: '10' } ],
+				[ '', '', '20', { rowspan: 2, contents: '21' } ],
+				[ '', '', { rowspan: 2, contents: '30' } ],
+				[ '', '', '41' ]
 			] ) );
 		} );
 
@@ -299,7 +324,7 @@ describe( 'TableUtils', () => {
 			], { headingColumns: 2 } ) );
 		} );
 
-		it( 'should skip spanned columns', () => {
+		it( 'should expand spanned columns', () => {
 			setData( model, modelTable( [
 				[ '11[]', '12' ],
 				[ { colspan: 2, contents: '21' } ],
@@ -331,18 +356,19 @@ describe( 'TableUtils', () => {
 			], { headingColumns: 6 } ) );
 		} );
 
-		// TODO fix me
-		it.skip( 'should skip row spanned cells', () => {
+		it( 'should skip row spanned cells', () => {
 			setData( model, modelTable( [
-				[ { colspan: 2, rowspan: 2, contents: '11[]' }, '13' ],
-				[ '23' ]
+				[ { colspan: 2, rowspan: 2, contents: '00[]' }, '02' ],
+				[ '12' ],
+				[ '20', '21', '22' ]
 			], { headingColumns: 2 } ) );
 
 			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 1, columns: 2 } );
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
-				[ { colspan: 4, rowspan: 2, contents: '11[]' }, '13' ],
-				[ '23' ]
+				[ { colspan: 4, rowspan: 2, contents: '00[]' }, '02' ],
+				[ '12' ],
+				[ '20', '', '', '21', '22' ]
 			], { headingColumns: 4 } ) );
 		} );
 	} );

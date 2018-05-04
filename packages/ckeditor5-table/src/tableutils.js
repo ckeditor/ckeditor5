@@ -69,10 +69,10 @@ export default class TableUtils extends Plugin {
 		model.change( writer => {
 			const tableColumns = getColumns( table );
 
-			// Inserting at the end of a table
-			if ( tableColumns <= insertAt ) {
+			// Inserting at the end and at the begging of a table doesn't require to calculate anything special.
+			if ( insertAt === 0 || tableColumns <= insertAt ) {
 				for ( const tableRow of table.getChildren() ) {
-					createCells( columns, writer, Position.createAt( tableRow, 'end' ) );
+					createCells( columns, writer, Position.createAt( tableRow, insertAt ? 'end' : 0 ) );
 				}
 
 				return;
@@ -84,35 +84,20 @@ export default class TableUtils extends Plugin {
 				writer.setAttribute( 'headingColumns', headingColumns + columns, table );
 			}
 
-			const tableIterator = new TableWalker( table );
+			for ( const { column, cell: tableCell, colspan } of [ ...new TableWalker( table ) ] ) {
+				// Check if currently analyzed cell overlaps insert position.
+				const isBeforeInsertAt = column < insertAt;
+				const expandsOverInsertAt = column + colspan > insertAt;
 
-			let currentRow = -1;
-			let currentRowInserted = false;
-
-			for ( const tableCellInfo of tableIterator ) {
-				const { row, column, cell: tableCell, colspan } = tableCellInfo;
-
-				if ( currentRow !== row ) {
-					currentRow = row;
-					currentRowInserted = false;
-				}
-
-				const shouldExpandSpan = colspan > 1 &&
-					( column !== insertAt ) &&
-					( column <= insertAt ) &&
-					( column <= insertAt + columns ) &&
-					( column + colspan > insertAt );
-
-				if ( shouldExpandSpan ) {
+				if ( isBeforeInsertAt && expandsOverInsertAt ) {
+					// And if so expand that table cell.
 					writer.setAttribute( 'colspan', colspan + columns, tableCell );
 				}
 
-				if ( column === insertAt || ( column < insertAt + columns && column > insertAt && !currentRowInserted ) ) {
+				if ( column === insertAt ) {
 					const insertPosition = Position.createBefore( tableCell );
 
 					createCells( columns, writer, insertPosition );
-
-					currentRowInserted = true;
 				}
 			}
 		} );
@@ -120,7 +105,6 @@ export default class TableUtils extends Plugin {
 
 	splitCellHorizontally( tableCell, cellNumber = 2 ) {
 		const model = this.editor.model;
-
 		const table = getParentTable( tableCell );
 
 		model.change( writer => {
@@ -131,35 +115,11 @@ export default class TableUtils extends Plugin {
 			const cellColspan = cellData.colspan;
 			const cellRowspan = cellData.rowspan;
 
-			const splitOnly = cellColspan >= cellNumber;
+			const isOnlySplit = cellColspan >= cellNumber;
 
 			const cellsToInsert = cellNumber - 1;
 
-			if ( !splitOnly ) {
-				const cellsToUpdate = tableMap.filter( value => {
-					const cell = value.cell;
-
-					if ( cell === tableCell ) {
-						return false;
-					}
-
-					const colspan = value.colspan;
-					const column = value.column;
-
-					return column === cellColumn || ( column < cellColumn && column + colspan - 1 >= cellColumn );
-				} );
-
-				for ( const tableWalkerValue of cellsToUpdate ) {
-					const colspan = tableWalkerValue.colspan;
-					const cell = tableWalkerValue.cell;
-
-					writer.setAttribute( 'colspan', colspan + cellNumber - 1, cell );
-				}
-
-				for ( let i = 0; i < cellsToInsert; i++ ) {
-					writer.insertElement( 'tableCell', Position.createAfter( tableCell ) );
-				}
-			} else {
+			if ( isOnlySplit ) {
 				const colspanOfInsertedCells = Math.floor( cellColspan / cellNumber );
 				const newColspan = ( cellColspan - colspanOfInsertedCells * cellNumber ) + colspanOfInsertedCells;
 
@@ -178,6 +138,32 @@ export default class TableUtils extends Plugin {
 				for ( let i = 0; i < cellsToInsert; i++ ) {
 					writer.insertElement( 'tableCell', attributes, Position.createAfter( tableCell ) );
 				}
+
+				return;
+			}
+
+			const cellsToUpdate = tableMap.filter( value => {
+				const cell = value.cell;
+
+				if ( cell === tableCell ) {
+					return false;
+				}
+
+				const colspan = value.colspan;
+				const column = value.column;
+
+				return column === cellColumn || ( column < cellColumn && column + colspan - 1 >= cellColumn );
+			} );
+
+			for ( const tableWalkerValue of cellsToUpdate ) {
+				const colspan = tableWalkerValue.colspan;
+				const cell = tableWalkerValue.cell;
+
+				writer.setAttribute( 'colspan', colspan + cellNumber - 1, cell );
+			}
+
+			for ( let i = 0; i < cellsToInsert; i++ ) {
+				writer.insertElement( 'tableCell', Position.createAfter( tableCell ) );
 			}
 		} );
 	}
