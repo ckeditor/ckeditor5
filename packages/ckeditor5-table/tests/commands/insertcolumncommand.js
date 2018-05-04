@@ -70,7 +70,7 @@ describe( 'InsertColumnCommand', () => {
 		return editor.destroy();
 	} );
 
-	describe( 'location=after', () => {
+	describe( 'order=after', () => {
 		beforeEach( () => {
 			command = new InsertColumnCommand( editor );
 		} );
@@ -182,9 +182,9 @@ describe( 'InsertColumnCommand', () => {
 		} );
 	} );
 
-	describe( 'location=before', () => {
+	describe( 'order=before', () => {
 		beforeEach( () => {
-			command = new InsertColumnCommand( editor, { location: 'before' } );
+			command = new InsertColumnCommand( editor, { order: 'before' } );
 		} );
 
 		describe( 'isEnabled', () => {

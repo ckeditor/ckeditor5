@@ -18,6 +18,27 @@ import Position from '@ckeditor/ckeditor5-engine/src/model/position';
  * @extends module:core/command~Command
  */
 export default class TableUtils extends Plugin {
+	/**
+	 * Returns table cell location in table.
+	 *
+	 * @param tableCell
+	 * @returns {Object}
+	 */
+	getCellLocation( tableCell ) {
+		const tableRow = tableCell.parent;
+		const table = tableRow.parent;
+
+		const rowIndex = table.getChildIndex( tableRow );
+
+		const tableWalker = new TableWalker( table, { startRow: rowIndex, endRow: rowIndex } );
+
+		for ( const { cell, row, column } of tableWalker ) {
+			if ( cell === tableCell ) {
+				return { row, column };
+			}
+		}
+	}
+
 	insertRows( table, options = {} ) {
 		const model = this.editor.model;
 

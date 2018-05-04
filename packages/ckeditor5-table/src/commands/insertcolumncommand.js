@@ -8,7 +8,6 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import TableWalker from '../tablewalker';
 import { getParentTable } from './utils';
 import TableUtils from '../tableutils';
 
@@ -23,53 +22,45 @@ export default class InsertColumnCommand extends Command {
 	 *
 	 * @param {module:core/editor/editor~Editor} editor Editor on which this command will be used.
 	 * @param {Object} options
-	 * @param {String} [options.location="after"] Where to insert new row - relative to current row. Possible values: "after", "before".
+	 * @param {String} [options.order="after"] The order of insertion relative to a column in which caret is located.
+	 * Possible values: "after" and "before".
 	 */
 	constructor( editor, options = {} ) {
 		super( editor );
 
-		this.direction = options.location || 'after';
+		/**
+		 * The order of insertion relative to a column in which caret is located.
+		 *
+		 * @readonly
+		 * @member {String} module:table/commands/insertcolumncommand~InsertColumnCommand#order
+		 */
+		this.order = options.order || 'after';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	refresh() {
-		const model = this.editor.model;
-		const doc = model.document;
+		const selection = this.editor.model.document.selection;
 
-		const tableParent = getParentTable( doc.selection.getFirstPosition() );
+		const tableParent = getParentTable( selection.getFirstPosition() );
 
 		this.isEnabled = !!tableParent;
 	}
 
 	/**
-	 * Executes the command.
-	 *
-	 * @fires execute
+	 * @inheritDoc
 	 */
 	execute() {
 		const editor = this.editor;
-		const model = editor.model;
-		const doc = model.document;
-		const selection = doc.selection;
+		const selection = editor.model.document.selection;
+		const tableUtils = editor.plugins.get( TableUtils );
 
 		const table = getParentTable( selection.getFirstPosition() );
+		const tableCell = selection.getFirstPosition().parent;
 
-		const element = doc.selection.getFirstPosition().parent;
-		const rowIndex = table.getChildIndex( element.parent );
-
-		let columnIndex;
-
-		for ( const tableWalkerValue of new TableWalker( table, { startRow: rowIndex, endRow: rowIndex } ) ) {
-			if ( tableWalkerValue.cell === element ) {
-				columnIndex = tableWalkerValue.column;
-			}
-		}
-
-		const insertAt = this.direction === 'after' ? columnIndex + 1 : columnIndex;
-
-		const tableUtils = editor.plugins.get( TableUtils );
+		const { column } = tableUtils.getCellLocation( tableCell );
+		const insertAt = this.order === 'after' ? column + 1 : column;
 
 		tableUtils.insertColumns( table, { columns: 1, at: insertAt } );
 	}

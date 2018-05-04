@@ -71,6 +71,19 @@ describe( 'TableUtils', () => {
 		return editor.destroy();
 	} );
 
+	describe( 'getCellLocation()', () => {
+		it( 'should return proper table cell location', () => {
+			setData( model, modelTable( [
+				[ { rowspan: 2, colspan: 2, contents: '00[]' }, '02' ],
+				[ '12' ]
+			] ) );
+
+			expect( tableUtils.getCellLocation( root.getNodeByPath( [ 0, 0, 0 ] ) ) ).to.deep.equal( { row: 0, column: 0 } );
+			expect( tableUtils.getCellLocation( root.getNodeByPath( [ 0, 0, 1 ] ) ) ).to.deep.equal( { row: 0, column: 2 } );
+			expect( tableUtils.getCellLocation( root.getNodeByPath( [ 0, 1, 0 ] ) ) ).to.deep.equal( { row: 1, column: 2 } );
+		} );
+	} );
+
 	describe( 'insertRows()', () => {
 		it( 'should insert row in given table at given index', () => {
 			setData( model, modelTable( [
