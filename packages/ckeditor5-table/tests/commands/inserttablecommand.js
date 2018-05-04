@@ -10,58 +10,60 @@ import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversio
 import InsertTableCommand from '../../src/commands/inserttablecommand';
 import { downcastInsertTable } from '../../src/converters/downcast';
 import upcastTable from '../../src/converters/upcasttable';
+import TableUtils from '../../src/tableutils';
 
 describe( 'InsertTableCommand', () => {
 	let editor, model, command;
 
 	beforeEach( () => {
-		return ModelTestEditor.create()
-			.then( newEditor => {
-				editor = newEditor;
-				model = editor.model;
-				command = new InsertTableCommand( editor );
+		return ModelTestEditor.create( {
+			plugins: [ TableUtils ]
+		} ).then( newEditor => {
+			editor = newEditor;
+			model = editor.model;
+			command = new InsertTableCommand( editor );
 
-				const conversion = editor.conversion;
-				const schema = model.schema;
+			const conversion = editor.conversion;
+			const schema = model.schema;
 
-				schema.register( 'table', {
-					allowWhere: '$block',
-					allowAttributes: [ 'headingRows' ],
-					isBlock: true,
-					isObject: true
-				} );
-
-				schema.register( 'tableRow', {
-					allowIn: 'table',
-					allowAttributes: [],
-					isBlock: true,
-					isLimit: true
-				} );
-
-				schema.register( 'tableCell', {
-					allowIn: 'tableRow',
-					allowContentOf: '$block',
-					allowAttributes: [ 'colspan', 'rowspan' ],
-					isBlock: true,
-					isLimit: true
-				} );
-
-				model.schema.register( 'p', { inheritAllFrom: '$block' } );
-
-				// Table conversion.
-				conversion.for( 'upcast' ).add( upcastTable() );
-				conversion.for( 'downcast' ).add( downcastInsertTable() );
-
-				// Table row upcast only since downcast conversion is done in `downcastTable()`.
-				conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableRow', view: 'tr' } ) );
-
-				// Table cell conversion.
-				conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'td' } ) );
-				conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'th' } ) );
-
-				conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
-				conversion.attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
+			schema.register( 'table', {
+				allowWhere: '$block',
+				allowAttributes: [ 'headingRows' ],
+				isBlock: true,
+				isObject: true
 			} );
+
+			schema.register( 'tableRow', {
+				allowIn: 'table',
+				allowAttributes: [],
+				isBlock: true,
+				isLimit: true
+			} );
+
+			schema.register( 'tableCell', {
+				allowIn: 'tableRow',
+				allowContentOf: '$block',
+				allowAttributes: [ 'colspan', 'rowspan' ],
+				isBlock: true,
+				isLimit: true
+			} );
+
+			model.schema.register( 'p', { inheritAllFrom: '$block' } );
+
+			// Table conversion.
+			conversion.for( 'upcast' ).add( upcastTable() );
+			conversion.for( 'downcast' ).add( downcastInsertTable() );
+
+			// Table row upcast only since downcast conversion is done in `downcastTable()`.
+			conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableRow', view: 'tr' } ) );
+
+			// Table cell conversion.
+			conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'td' } ) );
+			conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'th' } ) );
+
+			conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
+			conversion.attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
+		} );
 	} );
 
 	afterEach( () => {

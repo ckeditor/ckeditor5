@@ -21,7 +21,7 @@ export default class TableUtils extends Plugin {
 	/**
 	 * Returns table cell location in table.
 	 *
-	 * @param tableCell
+	 * @param {module:engine/model/element~Element} tableCell
 	 * @returns {Object}
 	 */
 	getCellLocation( tableCell ) {
@@ -37,6 +37,25 @@ export default class TableUtils extends Plugin {
 				return { row, column };
 			}
 		}
+	}
+
+	/**
+	 * Creates an empty table at given position.
+	 *
+	 * @param {module:engine/model/position~Position} position Position at which insert a table.
+	 * @param {Number} rows Number of rows to create.
+	 * @param {Number} columns Number of columns to create.
+	 */
+	createTable( position, rows, columns ) {
+		const model = this.editor.model;
+
+		model.change( writer => {
+			const table = writer.createElement( 'table' );
+
+			writer.insert( table, position );
+
+			createEmptyRows( writer, table, 0, rows, columns );
+		} );
 	}
 
 	insertRows( table, options = {} ) {
@@ -209,8 +228,10 @@ export default class TableUtils extends Plugin {
 	}
 }
 
-// @param writer
-// @param table
+// Creates empty rows at given index in an existing table.
+//
+// @param {module:engine/model/writer~Writer} writer
+// @param {module:engine/model/element~Element} table
 // @param {Number} insertAt Row index of row insertion.
 // @param {Number} rows Number of rows to create.
 // @param {Number} tableCellToInsert Number of cells to insert in each row.
@@ -231,8 +252,8 @@ function createEmptyRows( writer, table, insertAt, rows, tableCellToInsert ) {
 // Creates cells at given position.
 //
 // @param {Number} columns Number of columns to create
-// @param {module:engine/model/writer} writer
-// @param {module:engine/model/position} insertPosition
+// @param {module:engine/model/writer~Writer} writer
+// @param {module:engine/model/position~Position} insertPosition
 function createCells( columns, writer, insertPosition ) {
 	for ( let i = 0; i < columns; i++ ) {
 		const cell = writer.createElement( 'tableCell' );

@@ -9,6 +9,7 @@
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
+import TableUtils from '../tableutils';
 
 /**
  * The insert table command.
@@ -21,11 +22,12 @@ export default class InsertTableCommand extends Command {
 	 */
 	refresh() {
 		const model = this.editor.model;
-		const doc = model.document;
+		const selection = model.document.selection;
+		const schema = model.schema;
 
-		const validParent = getValidParent( doc.selection.getFirstPosition() );
+		const validParent = getInsertTableParent( selection.getFirstPosition() );
 
-		this.isEnabled = model.schema.checkChild( validParent, 'table' );
+		this.isEnabled = schema.checkChild( validParent, 'table' );
 	}
 
 	/**
@@ -39,8 +41,8 @@ export default class InsertTableCommand extends Command {
 	 */
 	execute( options = {} ) {
 		const model = this.editor.model;
-		const document = model.document;
-		const selection = document.selection;
+		const selection = model.document.selection;
+		const tableUtils = this.editor.plugins.get( TableUtils );
 
 		const rows = parseInt( options.rows ) || 2;
 		const columns = parseInt( options.columns ) || 2;
@@ -48,33 +50,17 @@ export default class InsertTableCommand extends Command {
 		const firstPosition = selection.getFirstPosition();
 
 		const isRoot = firstPosition.parent === firstPosition.root;
-		const insertTablePosition = isRoot ? Position.createAt( firstPosition ) : Position.createAfter( firstPosition.parent );
+		const insertPosition = isRoot ? Position.createAt( firstPosition ) : Position.createAfter( firstPosition.parent );
 
-		model.change( writer => {
-			const table = writer.createElement( 'table' );
-
-			writer.insert( table, insertTablePosition );
-
-			// Create rows x columns table.
-			for ( let row = 0; row < rows; row++ ) {
-				const row = writer.createElement( 'tableRow' );
-
-				writer.insert( row, table, 'end' );
-
-				for ( let column = 0; column < columns; column++ ) {
-					const cell = writer.createElement( 'tableCell' );
-
-					writer.insert( cell, row, 'end' );
-				}
-			}
-		} );
+		tableUtils.createTable( insertPosition, rows, columns );
 	}
 }
 
 // Returns valid parent to insert table
 //
 // @param {module:engine/model/position} position
-function getValidParent( position ) {
+function getInsertTableParent( position ) {
 	const parent = position.parent;
+
 	return parent === parent.root ? parent : parent.parent;
 }
