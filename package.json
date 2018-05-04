@@ -75,7 +75,7 @@
     "husky": "^0.14.3",
     "lerna": "^2.2.0",
     "lint-staged": "^7.0.0",
-    "mgit2": "^0.7.2",
+    "mgit2": "^0.8.0",
     "minimatch": "^3.0.4",
     "postcss-loader": "^2.0.10",
     "raw-loader": "^0.5.1",
