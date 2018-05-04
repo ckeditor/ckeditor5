@@ -70,7 +70,7 @@ describe( 'InsertRowCommand', () => {
 		return editor.destroy();
 	} );
 
-	describe( 'below', () => {
+	describe( 'order=below', () => {
 		beforeEach( () => {
 			command = new InsertRowCommand( editor );
 		} );
@@ -205,9 +205,9 @@ describe( 'InsertRowCommand', () => {
 		} );
 	} );
 
-	describe( 'location=above', () => {
+	describe( 'order=above', () => {
 		beforeEach( () => {
-			command = new InsertRowCommand( editor, { location: 'above' } );
+			command = new InsertRowCommand( editor, { order: 'above' } );
 		} );
 
 		describe( 'isEnabled', () => {

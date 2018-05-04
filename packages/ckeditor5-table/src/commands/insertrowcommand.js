@@ -22,22 +22,28 @@ export default class InsertRowCommand extends Command {
 	 *
 	 * @param {module:core/editor/editor~Editor} editor Editor on which this command will be used.
 	 * @param {Object} options
-	 * @param {String} [options.location="below"] Where to insert new row - relative to current row. Possible values: "above", "below".
+	 * @param {String} [options.order="below"] The order of insertion relative to a row in which caret is located.
+	 * Possible values: "above" and "below".
 	 */
 	constructor( editor, options = {} ) {
 		super( editor );
 
-		this.direction = options.location || 'below';
+		/**
+		 * The order of insertion relative to a row in which caret is located.
+		 *
+		 * @readonly
+		 * @member {String} module:table/commands/insertrowcommand~InsertRowCommand#order
+		 */
+		this.order = options.order || 'below';
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	refresh() {
-		const model = this.editor.model;
-		const doc = model.document;
+		const selection = this.editor.model.document.selection;
 
-		const tableParent = getParentTable( doc.selection.getFirstPosition() );
+		const tableParent = getParentTable( selection.getFirstPosition() );
 
 		this.isEnabled = !!tableParent;
 	}
@@ -49,19 +55,14 @@ export default class InsertRowCommand extends Command {
 	 */
 	execute() {
 		const editor = this.editor;
-		const model = editor.model;
-		const doc = model.document;
-		const selection = doc.selection;
-
-		const element = doc.selection.getFirstPosition().parent;
-
-		const table = getParentTable( selection.getFirstPosition() );
-
+		const selection = editor.model.document.selection;
 		const tableUtils = editor.plugins.get( TableUtils );
 
-		const rowIndex = table.getChildIndex( element.parent );
+		const tableCell = selection.getFirstPosition().parent;
+		const table = getParentTable( selection.getFirstPosition() );
 
-		const insertAt = this.direction === 'below' ? rowIndex + 1 : rowIndex;
+		const row = table.getChildIndex( tableCell.parent );
+		const insertAt = this.order === 'below' ? row + 1 : row;
 
 		tableUtils.insertRows( table, { rows: 1, at: insertAt } );
 	}
