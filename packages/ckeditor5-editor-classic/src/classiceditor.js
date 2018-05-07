@@ -17,6 +17,7 @@ import ClassicEditorUIView from './classiceditoruiview';
 import ElementReplacer from '@ckeditor/ckeditor5-utils/src/elementreplacer';
 import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import isElement from '@ckeditor/ckeditor5-utils/src/lib/lodash/isElement';
 
 /**
  * The {@glink builds/guides/overview#classic-editor classic editor} implementation.
@@ -57,8 +58,12 @@ export default class ClassicEditor extends Editor {
 	 * The data will be loaded from it and loaded back to it once the editor is destroyed.
 	 * @param {module:core/editor/editorconfig~EditorConfig} config The editor configuration.
 	 */
-	constructor( element, config ) {
+	constructor( elementOrData, config ) {
 		super( config );
+
+		if ( isElement( elementOrData ) ) {
+			this.element = elementOrData;
+		}
 
 		/**
 		 * The element replacer instance used to hide the editor element.
@@ -67,8 +72,6 @@ export default class ClassicEditor extends Editor {
 		 * @member {module:utils/elementreplacer~ElementReplacer}
 		 */
 		this._elementReplacer = new ElementReplacer();
-
-		this.element = element;
 
 		this.data.processor = new HtmlDataProcessor();
 
@@ -134,19 +137,29 @@ export default class ClassicEditor extends Editor {
 	 * @returns {Promise} A promise resolved once the editor is ready.
 	 * The promise returns the created {@link module:editor-classic/classiceditor~ClassicEditor} instance.
 	 */
-	static create( element, config ) {
+	static create( elementOrData, config ) {
 		return new Promise( resolve => {
-			const editor = new this( element, config );
+			const editor = new this( elementOrData, config );
 
 			resolve(
 				editor.initPlugins()
 					.then( () => editor.ui.init() )
 					.then( () => {
-						editor._elementReplacer.replace( element, editor.ui.view.element );
+						if ( isElement( elementOrData ) ) {
+							editor._elementReplacer.replace( elementOrData, editor.ui.view.element );
+						}
+
 						editor.fire( 'uiReady' );
 					} )
 					.then( () => editor.editing.view.attachDomRoot( editor.ui.view.editableElement ) )
-					.then( () => editor.data.init( getDataFromElement( element ) ) )
+					.then( () => {
+						if ( editor.element ) {
+							editor.data.init( getDataFromElement( editor.element ) );
+						} else {
+							editor.data.init( elementOrData );
+							editor.element = editor.ui.view.element;
+						}
+					} )
 					.then( () => {
 						editor.fire( 'dataReady' );
 						editor.fire( 'ready' );
