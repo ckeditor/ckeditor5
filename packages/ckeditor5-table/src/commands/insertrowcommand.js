@@ -49,9 +49,7 @@ export default class InsertRowCommand extends Command {
 	}
 
 	/**
-	 * Executes the command.
-	 *
-	 * @fires execute
+	 * @inheritDoc
 	 */
 	execute() {
 		const editor = this.editor;

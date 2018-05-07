@@ -19,12 +19,22 @@ import TableWalker from '../tablewalker';
  */
 export default class MergeCellCommand extends Command {
 	/**
-	 * @param editor
-	 * @param options
+	 * Creates a new `MergeCellCommand` instance.
+	 *
+	 * @param {module:core/editor/editor~Editor} editor Editor on which this command will be used.
+	 * @param {Object} options
+	 * @param {String} options.direction Indicates which cell merge to currently selected one.
+	 * Possible values are: "left", "right", "up" and "down".
 	 */
 	constructor( editor, options ) {
 		super( editor );
 
+		/**
+		 * The direction indicates which cell will be merged to currently selected one.
+		 *
+		 * @readonly
+		 * @member {String} module:table/commands/insertrowcommand~InsertRowCommand#order
+		 */
 		this.direction = options.direction;
 	}
 
@@ -32,33 +42,35 @@ export default class MergeCellCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		const cellToMerge = this._getCellToMerge();
+		const cellToMerge = this._getMergeableCell();
 
 		this.isEnabled = !!cellToMerge;
+		// In order to check if currently selected cell can be merged with one defined by #direction some computation are done beforehand.
+		// As such we can cache it as a command's value.
 		this.value = cellToMerge;
 	}
 
 	/**
-	 * Executes the command.
-	 *
-	 * @fires execute
+	 * @inheritDoc
 	 */
 	execute() {
 		const model = this.editor.model;
 		const doc = model.document;
 		const tableCell = doc.selection.getFirstPosition().parent;
 		const cellToMerge = this.value;
+		const direction = this.direction;
 
 		model.change( writer => {
-			const isMergeNext = this.direction == 'right' || this.direction == 'down';
+			const isMergeNext = direction == 'right' || direction == 'down';
 
+			// The merge mechanism is always the same so sort cells to be merged.
 			const mergeInto = isMergeNext ? tableCell : cellToMerge;
 			const removeCell = isMergeNext ? cellToMerge : tableCell;
 
 			writer.move( Range.createIn( removeCell ), Position.createAt( mergeInto, 'end' ) );
 			writer.remove( removeCell );
 
-			const spanAttribute = isHorizontal( this.direction ) ? 'colspan' : 'rowspan';
+			const spanAttribute = isHorizontal( direction ) ? 'colspan' : 'rowspan';
 			const cellSpan = parseInt( tableCell.getAttribute( spanAttribute ) || 1 );
 			const cellToMergeSpan = parseInt( cellToMerge.getAttribute( spanAttribute ) || 1 );
 
@@ -69,12 +81,12 @@ export default class MergeCellCommand extends Command {
 	}
 
 	/**
-	 * Returns a cell that it mergable with current cell depending on command's direction.
+	 * Returns a cell that it mergeable with current cell depending on command's direction.
 	 *
-	 * @returns {*}
+	 * @returns {module:engine/model/element|undefined}
 	 * @private
 	 */
-	_getCellToMerge() {
+	_getMergeableCell() {
 		const model = this.editor.model;
 		const doc = model.document;
 		const element = doc.selection.getFirstPosition().parent;
@@ -83,14 +95,16 @@ export default class MergeCellCommand extends Command {
 			return;
 		}
 
+		// First get the cell on proper direction.
 		const cellToMerge = isHorizontal( this.direction ) ?
-			getHorizontal( element, this.direction ) :
-			getVertical( element, this.direction );
+			getHorizontalCell( element, this.direction ) :
+			getVerticalCell( element, this.direction );
 
 		if ( !cellToMerge ) {
 			return;
 		}
 
+		// If found check if the span perpendicular to merge direction is equal on both cells.
 		const spanAttribute = isHorizontal( this.direction ) ? 'rowspan' : 'colspan';
 		const span = parseInt( element.getAttribute( spanAttribute ) || 1 );
 
@@ -99,46 +113,52 @@ export default class MergeCellCommand extends Command {
 		if ( cellToMergeSpan === span ) {
 			return cellToMerge;
 		}
-
-		function getVertical( tableCell, direction ) {
-			const tableRow = tableCell.parent;
-			const table = tableRow.parent;
-
-			const rowIndex = table.getChildIndex( tableRow );
-
-			if ( direction === 'down' && rowIndex === table.childCount - 1 || direction === 'up' && rowIndex === 0 ) {
-				return;
-			}
-
-			const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) || 1 );
-			const targetMergeRow = direction === 'up' ? rowIndex : rowIndex + rowspan;
-
-			const tableWalker = new TableWalker( table, { endRow: targetMergeRow } );
-			const tableWalkerValues = [ ...tableWalker ];
-
-			const cellData = tableWalkerValues.find( value => value.cell === tableCell );
-
-			const cellToMerge = tableWalkerValues.find( value => {
-				const row = value.row;
-				const column = value.column;
-
-				return column === cellData.column && ( direction === 'down' ? targetMergeRow === row : rowspan + row === rowIndex );
-			} );
-
-			const colspan = parseInt( tableCell.getAttribute( 'colspan' ) || 1 );
-
-			if ( cellToMerge && cellToMerge.colspan === colspan ) {
-				return cellToMerge.cell;
-			}
-		}
-
-		function getHorizontal( tableCell, direction ) {
-			return direction == 'right' ? tableCell.nextSibling : tableCell.previousSibling;
-		}
 	}
 }
 
-// @private
+// Checks whether merge direction is horizontal.
+//
+// returns {Boolean}
 function isHorizontal( direction ) {
 	return direction == 'right' || direction == 'left';
+}
+
+// Returns horizontally mergeable cell.
+//
+// @param {module:engine/model/element~Element} tableCell
+// @param {String} direction
+// @returns {module:engine/model/node~Node|null}
+function getHorizontalCell( tableCell, direction ) {
+	return direction == 'right' ? tableCell.nextSibling : tableCell.previousSibling;
+}
+
+// Returns vertically mergeable cell.
+//
+// @param {module:engine/model/element~Element} tableCell
+// @param {String} direction
+// @returns {module:engine/model/node~Node|null}
+function getVerticalCell( tableCell, direction ) {
+	const tableRow = tableCell.parent;
+	const table = tableRow.parent;
+
+	const rowIndex = table.getChildIndex( tableRow );
+
+	// Don't search for mergeable cell if direction points out of the table.
+	if ( direction == 'down' && rowIndex === table.childCount - 1 || direction == 'up' && rowIndex === 0 ) {
+		return;
+	}
+
+	const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) || 1 );
+	const mergeRow = direction == 'down' ? rowIndex + rowspan : rowIndex;
+
+	const tableMap = [ ...new TableWalker( table, { endRow: mergeRow } ) ];
+
+	const currentCellData = tableMap.find( value => value.cell === tableCell );
+	const mergeColumn = currentCellData.column;
+
+	const cellToMergeData = tableMap.find( ( { row, column } ) => {
+		return column === mergeColumn && ( direction == 'down' ? mergeRow === row : mergeRow === rowspan + row );
+	} );
+
+	return cellToMergeData && cellToMergeData.cell;
 }

@@ -88,6 +88,7 @@ export default class TablesEditing extends Plugin {
 		conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'td' } ) );
 		conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'th' } ) );
 
+		// Table attributes conversion.
 		conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
 		conversion.attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
 
@@ -97,18 +98,22 @@ export default class TablesEditing extends Plugin {
 		conversion.for( 'dataDowncast' ).add( downcastAttributeChange( { attribute: 'headingColumns' } ) );
 
 		editor.commands.add( 'insertTable', new InsertTableCommand( editor ) );
-		editor.commands.add( 'insertRowAbove', new InsertRowCommand( editor, { location: 'above' } ) );
-		editor.commands.add( 'insertRowBelow', new InsertRowCommand( editor, { location: 'below' } ) );
-		editor.commands.add( 'insertColumnBefore', new InsertColumnCommand( editor, { location: 'before' } ) );
-		editor.commands.add( 'insertColumnAfter', new InsertColumnCommand( editor, { location: 'after' } ) );
-		editor.commands.add( 'splitCellVertically', new SplitCellCommand( editor, { direction: 'vertically' } ) );
-		editor.commands.add( 'splitCellHorizontally', new SplitCellCommand( editor, { direction: 'horizontally' } ) );
+		editor.commands.add( 'insertRowAbove', new InsertRowCommand( editor, { order: 'above' } ) );
+		editor.commands.add( 'insertRowBelow', new InsertRowCommand( editor, { order: 'below' } ) );
+		editor.commands.add( 'insertColumnBefore', new InsertColumnCommand( editor, { order: 'before' } ) );
+		editor.commands.add( 'insertColumnAfter', new InsertColumnCommand( editor, { order: 'after' } ) );
+
 		editor.commands.add( 'removeRow', new RemoveRowCommand( editor ) );
 		editor.commands.add( 'removeColumn', new RemoveColumnCommand( editor ) );
+
+		editor.commands.add( 'splitCellVertically', new SplitCellCommand( editor, { direction: 'vertically' } ) );
+		editor.commands.add( 'splitCellHorizontally', new SplitCellCommand( editor, { direction: 'horizontally' } ) );
+
 		editor.commands.add( 'mergeRight', new MergeCellCommand( editor, { direction: 'right' } ) );
 		editor.commands.add( 'mergeLeft', new MergeCellCommand( editor, { direction: 'left' } ) );
 		editor.commands.add( 'mergeDown', new MergeCellCommand( editor, { direction: 'down' } ) );
 		editor.commands.add( 'mergeUp', new MergeCellCommand( editor, { direction: 'up' } ) );
+
 		editor.commands.add( 'setTableHeaders', new SetTableHeadersCommand( editor ) );
 
 		this.listenTo( editor.editing.view.document, 'keydown', ( ...args ) => this._handleTabOnSelectedTable( ...args ) );

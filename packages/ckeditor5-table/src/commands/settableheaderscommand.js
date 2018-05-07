@@ -33,13 +33,7 @@ export default class SetTableHeadersCommand extends Command {
 	}
 
 	/**
-	 * Executes the command.
-	 *
-	 * @param {Object} [options] Options for the executed command.
-	 * @param {Number} [options.rows] Number of rows to set as headers.
-	 * @param {Number} [options.columns] Number of columns to set as headers.
-	 *
-	 * @fires execute
+	 * @inheritDoc
 	 */
 	execute( options = {} ) {
 		const model = this.editor.model;

@@ -30,9 +30,7 @@ export default class RemoveColumnCommand extends Command {
 	}
 
 	/**
-	 * Executes the command.
-	 *
-	 * @fires execute
+	 * @inheritDoc
 	 */
 	execute() {
 		const model = this.editor.model;

@@ -31,9 +31,7 @@ export default class RemoveRowCommand extends Command {
 	}
 
 	/**
-	 * Executes the command.
-	 *
-	 * @fires execute
+	 * @inheritDoc
 	 */
 	execute() {
 		const model = this.editor.model;
