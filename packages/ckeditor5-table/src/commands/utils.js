@@ -24,19 +24,3 @@ export function getParentTable( position ) {
 		parent = parent.parent;
 	}
 }
-
-/**
- * Returns number of columns for given table.
- *
- * @param {module:engine/model/element} table
- * @returns {Number}
- */
-export function getColumns( table ) {
-	const row = table.getChild( 0 );
-
-	return [ ...row.getChildren() ].reduce( ( columns, row ) => {
-		const columnWidth = parseInt( row.getAttribute( 'colspan' ) ) || 1;
-
-		return columns + ( columnWidth );
-	}, 0 );
-}

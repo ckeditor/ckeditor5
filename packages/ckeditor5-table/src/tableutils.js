@@ -4,18 +4,19 @@
  */
 
 /**
- * @module table/commands/insertrowcommand
+ * @module table/tableutils
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import TableWalker from './tablewalker';
-import { getColumns, getParentTable } from './commands/utils';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
+
+import TableWalker from './tablewalker';
+import { getParentTable } from './commands/utils';
 
 /**
  * The table utils plugin.
  *
- * @extends module:core/command~Command
+ * @extends module:core/plugin~Plugin
  */
 export default class TableUtils extends Plugin {
 	/**
@@ -66,7 +67,7 @@ export default class TableUtils extends Plugin {
 
 		const headingRows = table.getAttribute( 'headingRows' ) || 0;
 
-		const columns = getColumns( table );
+		const columns = this.getColumns( table );
 
 		model.change( writer => {
 			if ( headingRows > insertAt ) {
@@ -107,7 +108,7 @@ export default class TableUtils extends Plugin {
 		const insertAt = parseInt( options.at ) || 0;
 
 		model.change( writer => {
-			const tableColumns = getColumns( table );
+			const tableColumns = this.getColumns( table );
 
 			// Inserting at the end and at the begging of a table doesn't require to calculate anything special.
 			if ( insertAt === 0 || tableColumns <= insertAt ) {
@@ -225,6 +226,22 @@ export default class TableUtils extends Plugin {
 
 			createEmptyRows( writer, table, rowIndex + 1, cellNumber - 1, 1 );
 		} );
+	}
+
+	/**
+	 * Returns number of columns for given table.
+	 *
+	 * @param {module:engine/model/element} table
+	 * @returns {Number}
+	 */
+	getColumns( table ) {
+		const row = table.getChild( 0 );
+
+		return [ ...row.getChildren() ].reduce( ( columns, row ) => {
+			const columnWidth = parseInt( row.getAttribute( 'colspan' ) ) || 1;
+
+			return columns + ( columnWidth );
+		}, 0 );
 	}
 }
 

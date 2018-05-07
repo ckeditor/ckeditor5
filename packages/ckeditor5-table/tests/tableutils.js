@@ -541,4 +541,14 @@ describe( 'TableUtils', () => {
 			] ) );
 		} );
 	} );
+
+	describe( 'getColumns()', () => {
+		it( 'should return proper number of columns', () => {
+			setData( model, modelTable( [
+				[ '00', { colspan: 3, contents: '01' }, '04' ]
+			] ) );
+
+			expect( tableUtils.getColumns( root.getNodeByPath( [ 0 ] ) ) ).to.equal( 5 );
+		} );
+	} );
 } );

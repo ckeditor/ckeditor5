@@ -10,18 +10,16 @@ import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversio
 import { downcastInsertTable } from '../../src/converters/downcast';
 import upcastTable from '../../src/converters/upcasttable';
 import { modelTable } from '../_utils/utils';
-import { getColumns, getParentTable } from '../../src/commands/utils';
+import { getParentTable } from '../../src/commands/utils';
 
 describe( 'commands utils', () => {
-	let editor, model, root;
+	let editor, model;
 
 	beforeEach( () => {
 		return ModelTestEditor.create()
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
-
-				root = model.document.getRoot( 'main' );
 
 				const conversion = editor.conversion;
 				const schema = model.schema;
@@ -84,16 +82,6 @@ describe( 'commands utils', () => {
 
 			expect( parentTable ).to.not.be.undefined;
 			expect( parentTable.is( 'table' ) ).to.be.true;
-		} );
-	} );
-
-	describe( 'getColumns()', () => {
-		it( 'should return proper number of columns', () => {
-			setData( model, modelTable( [
-				[ '00', { colspan: 3, contents: '01' }, '04' ]
-			] ) );
-
-			expect( getColumns( root.getNodeByPath( [ 0 ] ) ) ).to.equal( 5 );
 		} );
 	} );
 } );

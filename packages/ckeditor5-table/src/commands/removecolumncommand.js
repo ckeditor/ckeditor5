@@ -4,12 +4,13 @@
  */
 
 /**
- * @module table/commands/splitcell
+ * @module table/commands/removecolumncommand
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
+
 import TableWalker from '../tablewalker';
-import { getColumns } from './utils';
+import TableUtils from '../tableutils';
 
 /**
  * The split cell command.
@@ -21,12 +22,13 @@ export default class RemoveColumnCommand extends Command {
 	 * @inheritDoc
 	 */
 	refresh() {
-		const model = this.editor.model;
-		const doc = model.document;
+		const editor = this.editor;
+		const selection = editor.model.document.selection;
+		const tableUtils = editor.plugins.get( TableUtils );
 
-		const element = doc.selection.getFirstPosition().parent;
+		const selectedElement = selection.getFirstPosition().parent;
 
-		this.isEnabled = element.is( 'tableCell' ) && getColumns( element.parent.parent ) > 1;
+		this.isEnabled = selectedElement.is( 'tableCell' ) && tableUtils.getColumns( selectedElement.parent.parent ) > 1;
 	}
 
 	/**
@@ -34,44 +36,42 @@ export default class RemoveColumnCommand extends Command {
 	 */
 	execute() {
 		const model = this.editor.model;
-		const document = model.document;
-		const selection = document.selection;
+		const selection = model.document.selection;
 
 		const firstPosition = selection.getFirstPosition();
+
 		const tableCell = firstPosition.parent;
 		const tableRow = tableCell.parent;
-
 		const table = tableRow.parent;
 
-		const rowIndex = tableRow.index;
-
 		model.change( writer => {
-			const headingColumns = ( table.getAttribute( 'headingColumns' ) || 0 );
+			const headingColumns = parseInt( table.getAttribute( 'headingColumns' ) || 0 );
+			const rowIndex = table.getChildIndex( tableRow );
 
 			if ( headingColumns && rowIndex <= headingColumns ) {
 				writer.setAttribute( 'headingColumns', headingColumns - 1, table );
 			}
 
 			// Cache the table before removing or updating colspans.
-			const currentTableState = [ ...new TableWalker( table ) ];
+			const tableMap = [ ...new TableWalker( table ) ];
 
 			// Get column index of removed column.
-			const removedColumn = currentTableState.filter( value => value.cell === tableCell ).pop().column;
+			const cellData = tableMap.find( value => value.cell === tableCell );
+			const removedColumn = cellData.column;
 
-			for ( const tableWalkerValue of currentTableState ) {
-				const column = tableWalkerValue.column;
-				const colspan = tableWalkerValue.colspan;
-
+			for ( const { cell, column, colspan } of tableMap ) {
+				// If colspaned cell overlaps removed column decrease it's span.
 				if ( column <= removedColumn && colspan > 1 && column + colspan > removedColumn ) {
-					const colspanToSet = tableWalkerValue.colspan - 1;
+					const colspanToSet = colspan - 1;
 
 					if ( colspanToSet > 1 ) {
-						writer.setAttribute( 'colspan', colspanToSet, tableWalkerValue.cell );
+						writer.setAttribute( 'colspan', colspanToSet, cell );
 					} else {
-						writer.removeAttribute( 'colspan', tableWalkerValue.cell );
+						writer.removeAttribute( 'colspan', cell );
 					}
-				} else if ( column == removedColumn ) {
-					writer.remove( tableWalkerValue.cell );
+				} else if ( column === removedColumn ) {
+					// The cell in removed column has colspan of 1.
+					writer.remove( cell );
 				}
 			}
 		} );
