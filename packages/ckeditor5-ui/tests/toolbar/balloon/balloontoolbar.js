@@ -259,7 +259,7 @@ describe( 'BalloonToolbar', () => {
 			expect( balloonAddSpy.firstCall.args[ 0 ].position.target() ).to.deep.equal( backwardSelectionRect );
 		} );
 
-		// https://github.com/ckeditor/ckeditor5-ui/issues/308
+		// https://github.com/ckeditor/ckeditor5-ui/issues/385
 		it( 'should attach the #_balloon to the first range in a case of multi-range backward selection', () => {
 			setData( model, '<paragraph>b[ar]</paragraph><paragraph>[bi]z</paragraph>', { lastRangeBackward: true } );
 
