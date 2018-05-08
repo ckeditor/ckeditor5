@@ -11,7 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 
 import TableWalker from './tablewalker';
-import { getParentTable } from './commands/utils';
+import { getParentTable, updateNumericAttribute } from './commands/utils';
 
 /**
  * The table utils plugin.
@@ -164,11 +164,7 @@ export default class TableUtils extends Plugin {
 				const colspanOfInsertedCells = Math.floor( cellColspan / cellNumber );
 				const newColspan = ( cellColspan - colspanOfInsertedCells * cellNumber ) + colspanOfInsertedCells;
 
-				if ( newColspan > 1 ) {
-					writer.setAttribute( 'colspan', newColspan, tableCell );
-				} else {
-					writer.removeAttribute( 'colspan', tableCell );
-				}
+				updateNumericAttribute( 'colspan', newColspan, tableCell, writer );
 
 				const attributes = colspanOfInsertedCells > 1 ? { colspan: colspanOfInsertedCells } : {};
 

@@ -10,7 +10,7 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 
-import { getParentTable } from './utils';
+import { getParentTable, updateNumericAttribute } from './utils';
 import TableWalker from '../tablewalker';
 
 /**
@@ -40,37 +40,50 @@ export default class SetTableHeadersCommand extends Command {
 		const doc = model.document;
 		const selection = doc.selection;
 
-		const rows = parseInt( options.rows ) || 0;
-		const columns = parseInt( options.columns ) || 0;
+		const rowsToSet = parseInt( options.rows ) || 0;
 
 		const table = getParentTable( selection.getFirstPosition() );
 
 		model.change( writer => {
-			const oldValue = parseInt( table.getAttribute( 'headingRows' ) || 0 );
+			const currentHeadingRows = parseInt( table.getAttribute( 'headingRows' ) || 0 );
 
-			if ( oldValue !== rows && rows > 0 ) {
-				const cellsToSplit = [];
+			if ( currentHeadingRows !== rowsToSet && rowsToSet > 0 ) {
+				// Changing heading rows requires to check if any of a heading cell is overlaping vertically the table head.
+				// Any table cell that has a rowspan attribute > 1 will not exceed the table head so we need to fix it in rows below.
+				const cellsToSplit = getOverlappingCells( table, rowsToSet, currentHeadingRows );
 
-				const startAnalysisRow = rows > oldValue ? oldValue : 0;
-
-				for ( const tableWalkerValue of new TableWalker( table, { startRow: startAnalysisRow, endRow: rows } ) ) {
-					const rowspan = tableWalkerValue.rowspan;
-					const row = tableWalkerValue.row;
-
-					if ( rowspan > 1 && row + rowspan > rows ) {
-						cellsToSplit.push( tableWalkerValue );
-					}
-				}
-
-				for ( const tableWalkerValue of cellsToSplit ) {
-					splitVertically( tableWalkerValue.cell, rows, writer );
+				for ( const cell of cellsToSplit ) {
+					splitVertically( cell, rowsToSet, writer );
 				}
 			}
 
-			updateTableAttribute( table, 'headingRows', rows, writer );
-			updateTableAttribute( table, 'headingColumns', columns, writer );
+			const columnsToSet = parseInt( options.columns ) || 0;
+			updateTableAttribute( table, 'headingColumns', columnsToSet, writer );
+			updateTableAttribute( table, 'headingRows', rowsToSet, writer );
 		} );
 	}
+}
+
+// Returns cells that span beyond new heading section.
+//
+// @param {module:engine/model/element~Element} table Table to check
+// @param {Number} headingRowsToSet New heading rows attribute.
+// @param {Number} currentHeadingRows Current heading rows attribute.
+// @returns {Array.<module:engine/model/element~Element>}
+function getOverlappingCells( table, headingRowsToSet, currentHeadingRows ) {
+	const cellsToSplit = [];
+
+	const startAnalysisRow = headingRowsToSet > currentHeadingRows ? currentHeadingRows : 0;
+
+	const tableWalker = new TableWalker( table, { startRow: startAnalysisRow, endRow: headingRowsToSet } );
+
+	for ( const { row, rowspan, cell } of tableWalker ) {
+		if ( rowspan > 1 && row + rowspan > headingRowsToSet ) {
+			cellsToSplit.push( cell );
+		}
+	}
+
+	return cellsToSplit;
 }
 
 // @private
@@ -78,21 +91,15 @@ function updateTableAttribute( table, attributeName, newValue, writer ) {
 	const currentValue = parseInt( table.getAttribute( attributeName ) || 0 );
 
 	if ( newValue !== currentValue ) {
-		if ( newValue > 0 ) {
-			writer.setAttribute( attributeName, newValue, table );
-		} else {
-			writer.removeAttribute( attributeName, table );
-		}
+		updateNumericAttribute( attributeName, newValue, table, writer, 0 );
 	}
 }
 
-/**
- * Splits table cell vertically.
- *
- * @param {module:engine/model/element} tableCell
- * @param {Number} headingRows
- * @param writer
- */
+// Splits table cell vertically.
+//
+// @param {module:engine/model/element~Element} tableCell
+// @param {Number} headingRows
+// @param {module:engine/model/writer~Writer} writer
 function splitVertically( tableCell, headingRows, writer ) {
 	const tableRow = tableCell.parent;
 	const table = tableRow.parent;
@@ -100,14 +107,6 @@ function splitVertically( tableCell, headingRows, writer ) {
 
 	const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) );
 	const newRowspan = headingRows - rowIndex;
-
-	const startRow = table.getChildIndex( tableRow );
-	const endRow = startRow + newRowspan;
-
-	const tableWalker = new TableWalker( table, { startRow, endRow, includeSpanned: true } );
-
-	let columnIndex;
-	let previousCell;
 
 	const attributes = {};
 
@@ -117,34 +116,28 @@ function splitVertically( tableCell, headingRows, writer ) {
 		attributes.rowspan = spanToSet;
 	}
 
-	const values = [ ...tableWalker ];
+	const startRow = table.getChildIndex( tableRow );
+	const endRow = startRow + newRowspan;
+	const tableMap = [ ...new TableWalker( table, { startRow, endRow, includeSpanned: true } ) ];
 
-	for ( const tableWalkerInfo of values ) {
-		if ( tableWalkerInfo.cell ) {
-			previousCell = tableWalkerInfo.cell;
-		}
+	let columnIndex;
 
-		if ( tableWalkerInfo.cell === tableCell ) {
-			columnIndex = tableWalkerInfo.column;
+	for ( const { row, column, cell, colspan, cellIndex } of tableMap ) {
+		if ( cell === tableCell ) {
+			columnIndex = column;
 
-			if ( tableWalkerInfo.colspan > 1 ) {
-				attributes.colspan = tableWalkerInfo.colspan;
+			if ( colspan > 1 ) {
+				attributes.colspan = colspan;
 			}
 		}
 
-		if ( columnIndex !== undefined && columnIndex === tableWalkerInfo.column && tableWalkerInfo.row === endRow ) {
-			const insertRow = table.getChild( tableWalkerInfo.row );
+		if ( columnIndex !== undefined && columnIndex === column && row === endRow ) {
+			const tableRow = table.getChild( row );
 
-			const position = previousCell.parent === insertRow ? Position.createAfter( previousCell ) : Position.createAt( insertRow );
-
-			writer.insertElement( 'tableCell', attributes, position );
+			writer.insertElement( 'tableCell', attributes, Position.createFromParentAndOffset( tableRow, cellIndex ) );
 		}
 	}
 
-	// Update rowspan attribute after iterating over current table.
-	if ( newRowspan > 1 ) {
-		writer.setAttribute( 'rowspan', newRowspan, tableCell );
-	} else {
-		writer.removeAttribute( 'rowspan', tableCell );
-	}
+	// Update the rowspan attribute after updating table.
+	updateNumericAttribute( 'rowspan', newRowspan, tableCell, writer );
 }

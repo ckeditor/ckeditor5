@@ -11,6 +11,7 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 
 import TableWalker from '../tablewalker';
 import TableUtils from '../tableutils';
+import { updateNumericAttribute } from './utils';
 
 /**
  * The split cell command.
@@ -44,31 +45,26 @@ export default class RemoveColumnCommand extends Command {
 		const tableRow = tableCell.parent;
 		const table = tableRow.parent;
 
-		model.change( writer => {
-			const headingColumns = parseInt( table.getAttribute( 'headingColumns' ) || 0 );
-			const rowIndex = table.getChildIndex( tableRow );
+		const headingColumns = parseInt( table.getAttribute( 'headingColumns' ) || 0 );
+		const row = table.getChildIndex( tableRow );
 
-			if ( headingColumns && rowIndex <= headingColumns ) {
+		// Cache the table before removing or updating colspans.
+		const tableMap = [ ...new TableWalker( table ) ];
+
+		// Get column index of removed column.
+		const cellData = tableMap.find( value => value.cell === tableCell );
+		const removedColumn = cellData.column;
+
+		model.change( writer => {
+			// Update heading columns attribute if removing a row from head section.
+			if ( headingColumns && row <= headingColumns ) {
 				writer.setAttribute( 'headingColumns', headingColumns - 1, table );
 			}
-
-			// Cache the table before removing or updating colspans.
-			const tableMap = [ ...new TableWalker( table ) ];
-
-			// Get column index of removed column.
-			const cellData = tableMap.find( value => value.cell === tableCell );
-			const removedColumn = cellData.column;
 
 			for ( const { cell, column, colspan } of tableMap ) {
 				// If colspaned cell overlaps removed column decrease it's span.
 				if ( column <= removedColumn && colspan > 1 && column + colspan > removedColumn ) {
-					const colspanToSet = colspan - 1;
-
-					if ( colspanToSet > 1 ) {
-						writer.setAttribute( 'colspan', colspanToSet, cell );
-					} else {
-						writer.removeAttribute( 'colspan', cell );
-					}
+					updateNumericAttribute( 'colspan', colspan - 1, cell, writer );
 				} else if ( column === removedColumn ) {
 					// The cell in removed column has colspan of 1.
 					writer.remove( cell );

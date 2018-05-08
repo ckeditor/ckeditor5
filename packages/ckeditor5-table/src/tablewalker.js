@@ -183,6 +183,7 @@ export default class TableWalker {
 				column: this.column,
 				rowspan: 1,
 				colspan: 1,
+				cellIndex: this.cell,
 				cell: undefined,
 				table: this._tableData
 			};
@@ -219,6 +220,7 @@ export default class TableWalker {
 			column: this.column,
 			rowspan,
 			colspan,
+			cellIndex: this.cell,
 			table: this._tableData
 		};
 
@@ -282,6 +284,8 @@ export default class TableWalker {
  * {@link module:table/tablewalker~TableWalker#includeSpanned} is set to true.
  * @property {Number} [rowspan] The rowspan attribute of a cell - always defined even if model attribute is not present. Not set if
  * {@link module:table/tablewalker~TableWalker#includeSpanned} is set to true.
+ * @property {Number} cellIndex The index of a current cell in parent row. When using `includeSpanned` option it will indicate next child
+ * index if #cell is empty (spanned cell).
  * @property {Object} table Table attributes
  * @property {Object} table.headingRows The heading rows attribute of a table - always defined even if model attribute is not present.
  * @property {Object} table.headingColumns The heading columns attribute of a table - always defined even if model attribute is not present.
