@@ -202,6 +202,7 @@ export default class BalloonToolbar extends Plugin {
 		const editor = this.editor;
 		const view = editor.editing.view;
 		const viewDocument = view.document;
+		const viewSelection = viewDocument.selection;
 
 		// Get direction of the selection.
 		const isBackward = viewDocument.selection.isBackward;
@@ -212,7 +213,7 @@ export default class BalloonToolbar extends Plugin {
 			// computed and hence, the target is defined as a function instead of a static value.
 			// https://github.com/ckeditor/ckeditor5-ui/issues/195
 			target: () => {
-				const range = viewDocument.selection.getFirstRange();
+				const range = isBackward ? viewSelection.getFirstRange() : viewSelection.getLastRange();
 				const rangeRects = Rect.getDomRangeRects( view.domConverter.viewRangeToDom( range ) );
 
 				// Select the proper range rect depending on the direction of the selection.
