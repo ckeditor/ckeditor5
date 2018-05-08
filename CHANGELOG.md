@@ -3,6 +3,18 @@ Changelog
 
 ## [10.0.0](https://github.com/ckeditor/ckeditor5/compare/v1.0.0-beta.4...v10.0.0) (2018-04-25)
 
+### Release notes
+
+The first stable release of CKEditor 5 🎉🎉🎉
+
+Blog post comming soon...
+
+PS. We decided to skip version numbers lower than v5.0.0 to avoid collisions with [CKEditor 3-4](http://github.com/ckeditor/ckeditor-dev).
+
+### BREAKING CHANGES
+
+* The license under which CKEditor 5 is released has been changed from a triple GPL, LGPL and MPL license to a GPL2+ only. See [ckeditor/ckeditor5#991](https://github.com/ckeditor/ckeditor5/issues/991) for more information.
+
 ### Dependencies
 
 Major releases (contain breaking changes):
