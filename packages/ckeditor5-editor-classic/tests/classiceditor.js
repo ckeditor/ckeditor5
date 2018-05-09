@@ -88,6 +88,22 @@ describe( 'ClassicEditor', () => {
 			} );
 		} );
 
+		it( 'allows to pass data to the constructor', () => {
+			return ClassicEditor.create( '<p>Hello world!</p>', {
+				plugins: [ Paragraph ]
+			} ).then( editor => {
+				expect( editor.getData() ).to.equal( '<p>Hello world!</p>' );
+			} );
+		} );
+
+		it( 'editor.element should be equal to editor.ui.view.element when data is passed', () => {
+			return ClassicEditor.create( '<p>Hello world!</p>', {
+				plugins: [ Paragraph ]
+			} ).then( editor => {
+				expect( editor.element ).to.equal( editor.ui.view.element );
+			} );
+		} );
+
 		describe( 'ui', () => {
 			it( 'creates the UI using BoxedEditorUI classes', () => {
 				expect( editor.ui ).to.be.instanceof( ClassicEditorUI );
