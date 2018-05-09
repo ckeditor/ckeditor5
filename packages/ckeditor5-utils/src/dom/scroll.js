@@ -45,24 +45,24 @@ export function scrollViewportToShowTarget( { target, viewportOffset = 0 } ) {
 			firstAncestorToScroll = getParentElement( currentFrame );
 		}
 
-		if (firstAncestorToScroll) {
+		if ( firstAncestorToScroll ) {
 			// Scroll the target's ancestors first. Once done, scrolling the viewport is easy.
-			scrollAncestorsToShowRect(firstAncestorToScroll, () => {
+			scrollAncestorsToShowRect( firstAncestorToScroll, () => {
 				// Note: If the target does not belong to the current window **directly**,
 				// i.e. it resides in an iframe belonging to the window, obtain the target's rect
 				// in the coordinates of the current window. By default, a Rect returns geometry
 				// relative to the current window's viewport. To make it work in a parent window,
 				// it must be shifted.
-				return getRectRelativeToWindow(target, currentWindow);
-			});
+				return getRectRelativeToWindow( target, currentWindow );
+			} );
 
 			// Obtain the rect of the target after it has been scrolled within its ancestors.
 			// It's time to scroll the viewport.
-			const targetRect = getRectRelativeToWindow(target, currentWindow);
+			const targetRect = getRectRelativeToWindow( target, currentWindow );
 
-			scrollWindowToShowRect(currentWindow, targetRect, viewportOffset);
+			scrollWindowToShowRect( currentWindow, targetRect, viewportOffset );
 
-			if (currentWindow.parent != currentWindow) {
+			if ( currentWindow.parent != currentWindow ) {
 				// Keep the reference to the <iframe> element the "previous current window" was
 				// rendered within. It will be useful to re–calculate the rect of the target
 				// in the parent window's relative geometry. The target's rect must be shifted
@@ -74,7 +74,7 @@ export function scrollViewportToShowTarget( { target, viewportOffset = 0 } ) {
 			}
 		} else {
 			currentWindow = null;
-		}	
+		}
 	}
 }
 
@@ -253,8 +253,8 @@ function getWindow( elementOrRange ) {
 // @private
 // @param {HTMLElement|Range} firstRect
 // @returns {HTMLelement}
-function getParentElement(elementOrRange) {
-	if (!elementOrRange) {
+function getParentElement( elementOrRange ) {
+	if ( !elementOrRange ) {
 		return null;
 	}
 
