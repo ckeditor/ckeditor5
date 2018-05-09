@@ -59,15 +59,21 @@ export default class TableUtils extends Plugin {
 		} );
 	}
 
+	/**
+	 * Insert rows into a table.
+	 *
+	 * @param {module:engine/model/element~Element} table
+	 * @param {Object} options
+	 * @param {Number} [options.at=0] Row index at which insert rows.
+	 * @param {Number} [options.rows=1] Number of rows to insert.
+	 */
 	insertRows( table, options = {} ) {
 		const model = this.editor.model;
 
-		const rows = parseInt( options.rows ) || 1;
-		const insertAt = parseInt( options.at ) || 0;
+		const insertAt = options.at || 0;
+		const rows = options.rows || 1;
 
 		const headingRows = table.getAttribute( 'headingRows' ) || 0;
-
-		const columns = this.getColumns( table );
 
 		model.change( writer => {
 			if ( headingRows > insertAt ) {
@@ -81,31 +87,42 @@ export default class TableUtils extends Plugin {
 			for ( const tableCellInfo of tableIterator ) {
 				const { row, rowspan, colspan, cell } = tableCellInfo;
 
-				if ( row < insertAt ) {
-					if ( rowspan > 1 ) {
-						// check whether rowspan overlaps inserts:
-						if ( row < insertAt && row + rowspan > insertAt ) {
-							writer.setAttribute( 'rowspan', rowspan + rows, cell );
-						}
-					}
-				} else if ( row === insertAt ) {
+				const isBeforeInsertedRow = row < insertAt;
+				const overlapsInsertedRow = row + rowspan > insertAt;
+
+				if ( isBeforeInsertedRow && overlapsInsertedRow ) {
+					writer.setAttribute( 'rowspan', rowspan + rows, cell );
+				}
+
+				// Calculate how many cells to insert based on the width of cells in a row at insert position.
+				// It might be lower then table width as some cells might overlaps inserted row.
+				if ( row === insertAt ) {
 					tableCellToInsert += colspan;
 				}
 			}
 
+			// If insertion occurs on the end of a table use table width.
 			if ( insertAt >= table.childCount ) {
-				tableCellToInsert = columns;
+				tableCellToInsert = this.getColumns( table );
 			}
 
 			createEmptyRows( writer, table, insertAt, rows, tableCellToInsert );
 		} );
 	}
 
+	/**
+	 * Inserts columns into a table.
+	 *
+	 * @param {module:engine/model/element~Element} table
+	 * @param {Object} options
+	 * @param {Number} [options.at=0] Column index at which insert columns.
+	 * @param {Number} [options.columns=1] Number of columns to insert.
+	 */
 	insertColumns( table, options = {} ) {
 		const model = this.editor.model;
 
-		const columns = parseInt( options.columns ) || 1;
-		const insertAt = parseInt( options.at ) || 0;
+		const insertAt = options.at || 0;
+		const columns = options.columns || 1;
 
 		model.change( writer => {
 			const tableColumns = this.getColumns( table );
@@ -144,7 +161,13 @@ export default class TableUtils extends Plugin {
 		} );
 	}
 
-	splitCellHorizontally( tableCell, cellNumber = 2 ) {
+	/**
+	 * Divides table cell horizontally into several ones.
+	 *
+	 * @param {module:engine/model/element~Element} tableCell
+	 * @param {Number} numberOfCells
+	 */
+	splitCellHorizontally( tableCell, numberOfCells = 2 ) {
 		const model = this.editor.model;
 		const table = getParentTable( tableCell );
 
@@ -152,91 +175,88 @@ export default class TableUtils extends Plugin {
 			const tableMap = [ ...new TableWalker( table ) ];
 			const cellData = tableMap.find( value => value.cell === tableCell );
 
-			const cellColumn = cellData.column;
 			const cellColspan = cellData.colspan;
-			const cellRowspan = cellData.rowspan;
 
-			const isOnlySplit = cellColspan >= cellNumber;
+			const cellsToInsert = numberOfCells - 1;
+			const attributes = {};
 
-			const cellsToInsert = cellNumber - 1;
+			if ( cellColspan >= numberOfCells ) {
+				// If the colspan is bigger then requied cells to create we don't need to update colspan on cells from the same column.
+				// The colspan will be equally devided for newly created cells and a current one.
+				const colspanOfInsertedCells = Math.floor( cellColspan / numberOfCells );
+				const newColspan = ( cellColspan - colspanOfInsertedCells * numberOfCells ) + colspanOfInsertedCells;
 
-			if ( isOnlySplit ) {
-				const colspanOfInsertedCells = Math.floor( cellColspan / cellNumber );
-				const newColspan = ( cellColspan - colspanOfInsertedCells * cellNumber ) + colspanOfInsertedCells;
+				if ( colspanOfInsertedCells > 1 ) {
+					attributes.colspan = colspanOfInsertedCells;
+				}
 
 				updateNumericAttribute( 'colspan', newColspan, tableCell, writer );
 
-				const attributes = colspanOfInsertedCells > 1 ? { colspan: colspanOfInsertedCells } : {};
+				const cellRowspan = cellData.rowspan;
 
 				if ( cellRowspan > 1 ) {
 					attributes.rowspan = cellRowspan;
 				}
+			} else {
+				const cellColumn = cellData.column;
 
-				for ( let i = 0; i < cellsToInsert; i++ ) {
-					writer.insertElement( 'tableCell', attributes, Position.createAfter( tableCell ) );
+				const cellsToUpdate = tableMap.filter( ( { cell, colspan, column } ) => {
+					const isOnSameColumn = cell !== tableCell && column === cellColumn;
+					const spansOverColumn = ( column < cellColumn && column + colspan - 1 >= cellColumn );
+
+					return isOnSameColumn || spansOverColumn;
+				} );
+
+				for ( const { cell, colspan } of cellsToUpdate ) {
+					writer.setAttribute( 'colspan', colspan + numberOfCells - 1, cell );
 				}
-
-				return;
 			}
 
-			const cellsToUpdate = tableMap.filter( value => {
-				const cell = value.cell;
-
-				if ( cell === tableCell ) {
-					return false;
-				}
-
-				const colspan = value.colspan;
-				const column = value.column;
-
-				return column === cellColumn || ( column < cellColumn && column + colspan - 1 >= cellColumn );
-			} );
-
-			for ( const tableWalkerValue of cellsToUpdate ) {
-				const colspan = tableWalkerValue.colspan;
-				const cell = tableWalkerValue.cell;
-
-				writer.setAttribute( 'colspan', colspan + cellNumber - 1, cell );
-			}
-
-			for ( let i = 0; i < cellsToInsert; i++ ) {
-				writer.insertElement( 'tableCell', Position.createAfter( tableCell ) );
-			}
+			createCells( cellsToInsert, writer, Position.createAfter( tableCell ), attributes );
 		} );
 	}
 
-	splitCellVertically( tableCell, cellNumber = 2 ) {
+	/**
+	 * Divides table cell horizontally into several ones.
+	 *
+	 * @param {module:engine/model/element~Element} tableCell
+	 * @param {Number} numberOfCells
+	 */
+	splitCellVertically( tableCell, numberOfCells = 2 ) {
 		const model = this.editor.model;
 
 		const table = getParentTable( tableCell );
 		const rowIndex = table.getChildIndex( tableCell.parent );
 
 		model.change( writer => {
-			for ( const tableWalkerValue of new TableWalker( table, { startRow: 0, endRow: rowIndex } ) ) {
-				if ( tableWalkerValue.cell !== tableCell && tableWalkerValue.row + tableWalkerValue.rowspan > rowIndex ) {
-					const rowspan = parseInt( tableWalkerValue.cell.getAttribute( 'rowspan' ) || 1 );
+			const tableMap = [ ...new TableWalker( table, { startRow: 0, endRow: rowIndex } ) ];
 
-					writer.setAttribute( 'rowspan', rowspan + cellNumber - 1, tableWalkerValue.cell );
+			for ( const { cell, rowspan, row } of tableMap ) {
+				if ( cell !== tableCell && row + rowspan > rowIndex ) {
+					const rowspan = parseInt( cell.getAttribute( 'rowspan' ) || 1 );
+
+					writer.setAttribute( 'rowspan', rowspan + numberOfCells - 1, cell );
 				}
 			}
 
-			createEmptyRows( writer, table, rowIndex + 1, cellNumber - 1, 1 );
+			createEmptyRows( writer, table, rowIndex + 1, numberOfCells - 1, 1 );
 		} );
 	}
 
 	/**
 	 * Returns number of columns for given table.
 	 *
-	 * @param {module:engine/model/element} table
+	 * @param {module:engine/model/element~Element} table Table to analyze.
 	 * @returns {Number}
 	 */
 	getColumns( table ) {
+		// Analyze first row only as all the rows should have the same width.
 		const row = table.getChild( 0 );
 
 		return [ ...row.getChildren() ].reduce( ( columns, row ) => {
-			const columnWidth = parseInt( row.getAttribute( 'colspan' ) ) || 1;
+			const columnWidth = parseInt( row.getAttribute( 'colspan' ) || 1 );
 
-			return columns + ( columnWidth );
+			return columns + columnWidth;
 		}, 0 );
 	}
 }
@@ -267,10 +287,8 @@ function createEmptyRows( writer, table, insertAt, rows, tableCellToInsert ) {
 // @param {Number} columns Number of columns to create
 // @param {module:engine/model/writer~Writer} writer
 // @param {module:engine/model/position~Position} insertPosition
-function createCells( columns, writer, insertPosition ) {
-	for ( let i = 0; i < columns; i++ ) {
-		const cell = writer.createElement( 'tableCell' );
-
-		writer.insert( cell, insertPosition );
+function createCells( cells, writer, insertPosition, attributes = {} ) {
+	for ( let i = 0; i < cells; i++ ) {
+		writer.insertElement( 'tableCell', attributes, insertPosition );
 	}
 }
