@@ -26,7 +26,7 @@
  *		fastDiff( '12abc3', '2ab' );
  *		// [ { index: 0, type: 'insert', values: [ '2', 'a', 'b' ] }, { index: 3, type: 'delete', howMany: 6 } ]
  *
- * Using returned results you can modify `oldText` to make it the as the `newText`:
+ * Using returned results you can modify `oldText` to transform it into `newText`:
  *
  * 		let input = '12abc3';
  * 		const output = '2ab';
@@ -40,7 +40,7 @@
  *			}
  *		} );
  *
- *		input == output; // -> true
+ *		input === output; // -> true
  *
  * The output format of this function is compatible with {@link module:utils/difftochanges~diffToChanges} output format.
  *
@@ -66,7 +66,7 @@ export default function fastDiff( oldText, newText ) {
 //
 // The above indexes means that in `oldText` modified part is `1[23]4` and in the `newText` it is `1[342]4`.
 // Based on such indexes, array with `insert`/`delete` operations which allows transforming
-// old text to the new one could be generated.
+// old text to the new one can be generated.
 //
 // It is expected that `oldText` and `newText` are different.
 //
@@ -74,8 +74,8 @@ export default function fastDiff( oldText, newText ) {
 // @param {String} newText
 // @returns {Object}
 // @returns {Number} return.firstIndex Index of the first change in both strings (always the same for both).
-// @returns {Number} result.lastIndexOld Index of the last common character in `oldText` string looking from back.
-// @returns {Number} result.lastIndexNew Index of the last common character in `newText` string looking from back.
+// @returns {Number} result.lastIndexOld Index of the last common character in `oldText` string.
+// @returns {Number} result.lastIndexNew Index of the last common character in `newText` string.
 function findChangeBoundaryIndexes( oldText, newText ) {
 	// Find the first difference between texts.
 	const firstIndex = findFirstDifferenceIndex( oldText, newText );
@@ -105,6 +105,10 @@ function findChangeBoundaryIndexes( oldText, newText ) {
 }
 
 // Returns a first index on which `oldText` and `newText` differ.
+//
+// @param {String} oldText
+// @param {String} newText
+// @returns {Number}
 function findFirstDifferenceIndex( oldText, newText ) {
 	for ( let i = 0; i < Math.max( oldText.length, newText.length ); i++ ) {
 		if ( oldText[ i ] !== newText[ i ] ) {
@@ -115,9 +119,13 @@ function findFirstDifferenceIndex( oldText, newText ) {
 	// difference or they have a different lengths. This means that the `if` condition will always be met eventually.
 }
 
-// Removes `cutHowMany` first characters from the given `text` string and then reverses it and returns it.
-function cutAndReverse( text, cutHowMany ) {
-	return text.substring( cutHowMany ).split( '' ).reverse().join( '' );
+// Removes `howMany` characters from the given `text` string starting from the beginning, then reverses and returns it.
+//
+// @param {String} text Text to be processed.
+// @param {Number} howMany How many characters from text beginning to cut.
+// @returns {String} Shortened and reversed text.
+function cutAndReverse( text, howMany ) {
+	return text.substring( howMany ).split( '' ).reverse().join( '' );
 }
 
 // Generates changes array based on change indexes from `findChangeBoundaryIndexes` function. This function will
