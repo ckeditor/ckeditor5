@@ -369,7 +369,7 @@ describe( 'TableUtils', () => {
 			], { headingColumns: 6 } ) );
 		} );
 
-		it( 'should skip row spanned cells', () => {
+		it( 'should skip row & column spanned cells', () => {
 			setData( model, modelTable( [
 				[ { colspan: 2, rowspan: 2, contents: '00[]' }, '02' ],
 				[ '12' ],
@@ -383,6 +383,24 @@ describe( 'TableUtils', () => {
 				[ '12' ],
 				[ '20', '', '', '21', '22' ]
 			], { headingColumns: 4 } ) );
+		} );
+
+		it( 'should properly insert column while table has rowspanned cells', () => {
+			setData( model, modelTable( [
+				[ { rowspan: 4, contents: '00[]' }, { rowspan: 2, contents: '01' }, '02' ],
+				[ '12' ],
+				[ { rowspan: 2, contents: '21' }, '22' ],
+				[ '32' ]
+			], { headingColumns: 2 } ) );
+
+			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 1, columns: 1 } );
+
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ { rowspan: 4, contents: '00[]' }, '', { rowspan: 2, contents: '01' }, '02' ],
+				[ '', '12' ],
+				[ '', { rowspan: 2, contents: '21' }, '22' ],
+				[ '', '32' ]
+			], { headingColumns: 3 } ) );
 		} );
 	} );
 

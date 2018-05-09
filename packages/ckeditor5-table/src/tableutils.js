@@ -142,20 +142,40 @@ export default class TableUtils extends Plugin {
 				writer.setAttribute( 'headingColumns', headingColumns + columns, table );
 			}
 
-			for ( const { column, cell: tableCell, colspan } of [ ...new TableWalker( table ) ] ) {
+			const tableMap = [ ...new TableWalker( table ) ];
+
+			// Holds row indexes of already analyzed row or rows that some rowspanned cell overlaps.
+			const skipRows = new Set();
+
+			for ( const { row, column, cell, colspan, rowspan } of tableMap ) {
+				if ( skipRows.has( row ) ) {
+					continue;
+				}
+
 				// Check if currently analyzed cell overlaps insert position.
 				const isBeforeInsertAt = column < insertAt;
 				const expandsOverInsertAt = column + colspan > insertAt;
 
 				if ( isBeforeInsertAt && expandsOverInsertAt ) {
 					// And if so expand that table cell.
-					writer.setAttribute( 'colspan', colspan + columns, tableCell );
+					writer.setAttribute( 'colspan', colspan + columns, cell );
+
+					// This cell will overlap cells in rows below so skip them.
+					if ( rowspan > 1 ) {
+						for ( let i = row; i < row + rowspan; i++ ) {
+							skipRows.add( i );
+						}
+					}
+
+					skipRows.add( row );
 				}
 
-				if ( column === insertAt ) {
-					const insertPosition = Position.createBefore( tableCell );
+				// The next cell might be not on the insertAt column - ie when there are many rowspanned cells before.
+				if ( column >= insertAt ) {
+					const insertPosition = Position.createBefore( cell );
 
 					createCells( columns, writer, insertPosition );
+					skipRows.add( row );
 				}
 			}
 		} );
