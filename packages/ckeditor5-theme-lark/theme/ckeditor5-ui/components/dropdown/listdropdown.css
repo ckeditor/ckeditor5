@@ -17,5 +17,9 @@
 	& > .ck-list__item {
 		line-height: calc(.8*var(--ck-line-height-base)*var(--ck-font-size-base));
 		padding: calc(.4*var(--ck-line-height-base)*var(--ck-font-size-base));
+
+		&.ck-disabled {
+			@mixin ck-disabled;
+		}
 	}
 }
