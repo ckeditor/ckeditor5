@@ -4,7 +4,6 @@
  */
 
 @import "../../../mixins/_rounded.css";
-@import "../../../mixins/_disabled.css";
 
 .ck.ck-dropdown .ck-dropdown__panel .ck-list {
 	/* Disabled radius of top-left border to be consistent with .dropdown__button
@@ -18,9 +17,5 @@
 	& > .ck-list__item {
 		line-height: calc(.8*var(--ck-line-height-base)*var(--ck-font-size-base));
 		padding: calc(.4*var(--ck-line-height-base)*var(--ck-font-size-base));
-
-		&.ck-disabled {
-			@mixin ck-disabled;
-		}
 	}
 }
