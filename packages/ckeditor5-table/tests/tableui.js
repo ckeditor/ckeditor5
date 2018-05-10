@@ -138,6 +138,23 @@ describe( 'TableUI', () => {
 			expect( items.get( 2 ).isEnabled ).to.be.false;
 			expect( dropdown.buttonView.isEnabled ).to.be.false;
 		} );
+
+		it( 'should focus view after command execution', () => {
+			const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
+
+			dropdown.listView.items.get( 0 ).fire( 'execute' );
+
+			sinon.assert.calledOnce( focusSpy );
+		} );
+
+		it( 'executes command when it\'s executed', () => {
+			const spy = sinon.stub( editor, 'execute' );
+
+			dropdown.listView.items.get( 0 ).fire( 'execute' );
+
+			expect( spy.calledOnce ).to.be.true;
+			expect( spy.args[ 0 ][ 0 ] ).to.equal( 'insertRowBelow' );
+		} );
 	} );
 
 	describe( 'tableColumn button', () => {
@@ -195,6 +212,23 @@ describe( 'TableUI', () => {
 			removeColumnCommand.isEnabled = false;
 			expect( items.get( 2 ).isEnabled ).to.be.false;
 			expect( dropdown.buttonView.isEnabled ).to.be.false;
+		} );
+
+		it( 'should focus view after command execution', () => {
+			const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
+
+			dropdown.listView.items.get( 0 ).fire( 'execute' );
+
+			sinon.assert.calledOnce( focusSpy );
+		} );
+
+		it( 'executes command when it\'s executed', () => {
+			const spy = sinon.stub( editor, 'execute' );
+
+			dropdown.listView.items.get( 0 ).fire( 'execute' );
+
+			expect( spy.calledOnce ).to.be.true;
+			expect( spy.args[ 0 ][ 0 ] ).to.equal( 'insertColumnBefore' );
 		} );
 	} );
 
@@ -260,6 +294,23 @@ describe( 'TableUI', () => {
 			expect( items.get( 3 ).isEnabled ).to.be.false;
 
 			expect( dropdown.buttonView.isEnabled ).to.be.false;
+		} );
+
+		it( 'should focus view after command execution', () => {
+			const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
+
+			dropdown.listView.items.get( 0 ).fire( 'execute' );
+
+			sinon.assert.calledOnce( focusSpy );
+		} );
+
+		it( 'executes command when it\'s executed', () => {
+			const spy = sinon.stub( editor, 'execute' );
+
+			dropdown.listView.items.get( 0 ).fire( 'execute' );
+
+			expect( spy.calledOnce ).to.be.true;
+			expect( spy.args[ 0 ][ 0 ] ).to.equal( 'mergeCellUp' );
 		} );
 	} );
 } );
