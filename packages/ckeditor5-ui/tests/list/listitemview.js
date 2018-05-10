@@ -93,8 +93,6 @@ describe( 'ListItemView', () => {
 			it( 'reacts on view#isEnabled', () => {
 				expect( view.element.classList ).to.have.length( 3 );
 
-				view.set( 'isEnabled', true );
-
 				expect( view.element.classList.contains( 'ck-enabled' ) ).to.be.true;
 				expect( view.element.classList.contains( 'ck-disabled' ) ).to.be.false;
 
@@ -102,6 +100,11 @@ describe( 'ListItemView', () => {
 
 				expect( view.element.classList.contains( 'ck-enabled' ) ).to.be.false;
 				expect( view.element.classList.contains( 'ck-disabled' ) ).to.be.true;
+
+				view.set( 'isEnabled', true );
+
+				expect( view.element.classList.contains( 'ck-enabled' ) ).to.be.true;
+				expect( view.element.classList.contains( 'ck-disabled' ) ).to.be.false;
 			} );
 		} );
 

@@ -68,6 +68,15 @@ export default class ListItemView extends View {
 		} );
 
 		/**
+		 * (Optional) Controls whether the list item is enabled, i.e. it can be clicked and execute an action.
+		 *
+		 * @observable
+		 * @default true
+		 * @member {Boolean} #isEnabled
+		 */
+		this.set( 'isEnabled', true );
+
+		/**
 		 * The label of the list item.
 		 *
 		 * @observable
