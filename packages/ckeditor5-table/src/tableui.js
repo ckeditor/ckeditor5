@@ -66,6 +66,17 @@ export default class TableUI extends Plugin {
 
 			return this._prepareDropdown( 'Row', icon, options, locale );
 		} );
+
+		editor.ui.componentFactory.add( 'mergeCell', locale => {
+			const options = [
+				{ command: 'mergeCellUp', label: 'Merge cell up' },
+				{ command: 'mergeCellRight', label: 'Merge cell right' },
+				{ command: 'mergeCellDown', label: 'Merge cell down' },
+				{ command: 'mergeCellLeft', label: 'Merge cell left' }
+			];
+
+			return this._prepareDropdown( 'Merge cell', icon, options, locale );
+		} );
 	}
 
 	/**
