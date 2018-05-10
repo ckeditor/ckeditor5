@@ -9,10 +9,11 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import { addListToDropdown, createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
+import Model from '@ckeditor/ckeditor5-ui/src/model';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 
 import icon from '@ckeditor/ckeditor5-core/theme/icons/object-center.svg';
-import insertRowIcon from '@ckeditor/ckeditor5-core/theme/icons/object-left.svg';
-import insertColumnIcon from '@ckeditor/ckeditor5-core/theme/icons/object-right.svg';
 
 /**
  * The table UI plugin.
@@ -46,44 +47,90 @@ export default class TableUI extends Plugin {
 			return buttonView;
 		} );
 
-		editor.ui.componentFactory.add( 'insertRowBelow', locale => {
-			const command = editor.commands.get( 'insertRowBelow' );
-			const buttonView = new ButtonView( locale );
+		editor.ui.componentFactory.add( 'tableColumn', locale => {
+			const options = [
+				{ command: 'insertColumnBefore', label: 'Insert column before' },
+				{ command: 'insertColumnAfter', label: 'Insert column after' },
+				{ command: 'removeColumn', label: 'Delete column' }
+			];
 
-			buttonView.bind( 'isEnabled' ).to( command );
-
-			buttonView.set( {
-				icon: insertRowIcon,
-				label: 'Insert row',
-				tooltip: true
-			} );
-
-			buttonView.on( 'execute', () => {
-				editor.execute( 'insertRowBelow' );
-				editor.editing.view.focus();
-			} );
-
-			return buttonView;
+			return this._prepareDropdown( 'Column', icon, options, locale );
 		} );
 
-		editor.ui.componentFactory.add( 'insertColumnAfter', locale => {
-			const command = editor.commands.get( 'insertColumnAfter' );
-			const buttonView = new ButtonView( locale );
+		editor.ui.componentFactory.add( 'tableRow', locale => {
+			const options = [
+				{ command: 'insertRowBelow', label: 'Insert row below' },
+				{ command: 'insertRowAbove', label: 'Insert row above' },
+				{ command: 'removeRow', label: 'Delete row' }
+			];
 
-			buttonView.bind( 'isEnabled' ).to( command );
-
-			buttonView.set( {
-				icon: insertColumnIcon,
-				label: 'Insert column',
-				tooltip: true
-			} );
-
-			buttonView.on( 'execute', () => {
-				editor.execute( 'insertColumnAfter' );
-				editor.editing.view.focus();
-			} );
-
-			return buttonView;
+			return this._prepareDropdown( 'Row', icon, options, locale );
 		} );
 	}
+
+	/**
+	 * Common method that prepares dropdown.
+	 *
+	 * @private
+	 * @param {String} buttonName
+	 * @param {String} icon
+	 * @param {Array.<Object>} options
+	 * @param locale
+	 * @returns {module:ui/dropdown/dropdownview~DropdownView}
+	 */
+	_prepareDropdown( buttonName, icon, options, locale ) {
+		const editor = this.editor;
+
+		const dropdownView = createDropdown( locale );
+		const commands = [];
+
+		const dropdownItems = new Collection();
+
+		for ( const { command, label } of options ) {
+			addListOption( command, label, editor, commands, dropdownItems );
+		}
+
+		addListToDropdown( dropdownView, dropdownItems );
+
+		dropdownView.buttonView.set( {
+			label: buttonName,
+			icon,
+			tooltip: true
+		} );
+
+		dropdownView.bind( 'isEnabled' ).toMany( commands, 'isEnabled', ( ...areEnabled ) => {
+			return areEnabled.some( isEnabled => isEnabled );
+		} );
+
+		this.listenTo( dropdownView, 'execute', evt => {
+			editor.execute( evt.source.commandName );
+			editor.editing.view.focus();
+		} );
+
+		return dropdownView;
+	}
+}
+
+/**
+ * Adds an option to a list view.
+ *
+ * @param {String} commandName
+ * @param {String} label
+ * @param {module:core/editor/editor~Editor} editor
+ * @param {Array.<module:core/command~Command>} commands
+ * @param {module:utils/collection~Collection} dropdownItems
+ */
+function addListOption( commandName, label, editor, commands, dropdownItems ) {
+	const command = editor.commands.get( commandName );
+
+	commands.push( command );
+
+	const itemModel = new Model( {
+		commandName,
+		label
+	} );
+
+	itemModel.bind( 'isEnabled' ).to( command );
+
+	dropdownItems.add( itemModel );
 }

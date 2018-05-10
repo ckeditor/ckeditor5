@@ -12,6 +12,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import TableEditing from '../src/tableediting';
 import TableUI from '../src/tableui';
+import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
 
 testUtils.createSinonSandbox();
 
@@ -81,73 +82,119 @@ describe( 'TableUI', () => {
 		} );
 	} );
 
-	describe( 'insertRowBelow button', () => {
-		let insertRow;
+	describe( 'tableRow dropdown', () => {
+		let dropdown;
 
 		beforeEach( () => {
-			insertRow = editor.ui.componentFactory.create( 'insertRowBelow' );
+			dropdown = editor.ui.componentFactory.create( 'tableRow' );
 		} );
 
-		it( 'should register insertRowBelow button', () => {
-			expect( insertRow ).to.be.instanceOf( ButtonView );
-			expect( insertRow.isOn ).to.be.false;
-			expect( insertRow.label ).to.equal( 'Insert row' );
-			expect( insertRow.icon ).to.match( /<svg / );
+		it( 'have button with proper properties set', () => {
+			expect( dropdown ).to.be.instanceOf( DropdownView );
+
+			const button = dropdown.buttonView;
+
+			expect( button.isOn ).to.be.false;
+			expect( button.tooltip ).to.be.true;
+			expect( button.label ).to.equal( 'Column' );
+			expect( button.icon ).to.match( /<svg / );
 		} );
 
-		it( 'should bind to insertRow command', () => {
-			const command = editor.commands.get( 'insertRowBelow' );
+		it( 'should have proper items in panel', () => {
+			const listView = dropdown.listView;
 
-			command.isEnabled = true;
-			expect( insertRow.isOn ).to.be.false;
-			expect( insertRow.isEnabled ).to.be.true;
+			const labels = listView.items.map( ( { label } ) => label );
 
-			command.isEnabled = false;
-			expect( insertRow.isEnabled ).to.be.false;
+			expect( labels ).to.deep.equal( [ 'Insert row below', 'Insert row above', 'Delete row' ] );
 		} );
 
-		it( 'should execute insertRow command on button execute event', () => {
-			const executeSpy = testUtils.sinon.spy( editor, 'execute' );
+		it( 'should bind items in panel to proper commands', () => {
+			const items = dropdown.listView.items;
 
-			insertRow.fire( 'execute' );
+			const insertRowBelowCommand = editor.commands.get( 'insertRowBelow' );
+			const insertRowAboveCommand = editor.commands.get( 'insertRowAbove' );
+			const removeRowCommand = editor.commands.get( 'removeRow' );
 
-			sinon.assert.calledOnce( executeSpy );
-			sinon.assert.calledWithExactly( executeSpy, 'insertRowBelow' );
+			insertRowBelowCommand.isEnabled = true;
+			insertRowAboveCommand.isEnabled = true;
+			removeRowCommand.isEnabled = true;
+
+			expect( items.get( 0 ).isEnabled ).to.be.true;
+			expect( items.get( 1 ).isEnabled ).to.be.true;
+			expect( items.get( 2 ).isEnabled ).to.be.true;
+			expect( dropdown.buttonView.isEnabled ).to.be.true;
+
+			insertRowBelowCommand.isEnabled = false;
+
+			expect( items.get( 0 ).isEnabled ).to.be.false;
+			expect( dropdown.buttonView.isEnabled ).to.be.true;
+
+			insertRowAboveCommand.isEnabled = false;
+
+			expect( items.get( 1 ).isEnabled ).to.be.false;
+			expect( dropdown.buttonView.isEnabled ).to.be.true;
+
+			removeRowCommand.isEnabled = false;
+			expect( items.get( 2 ).isEnabled ).to.be.false;
+			expect( dropdown.buttonView.isEnabled ).to.be.false;
 		} );
 	} );
 
-	describe( 'insertColumnAfter button', () => {
-		let insertColumn;
+	describe.only( 'tableColumn button', () => {
+		let dropdown;
 
 		beforeEach( () => {
-			insertColumn = editor.ui.componentFactory.create( 'insertColumnAfter' );
+			dropdown = editor.ui.componentFactory.create( 'tableColumn' );
 		} );
 
-		it( 'should register insertColumn buton', () => {
-			expect( insertColumn ).to.be.instanceOf( ButtonView );
-			expect( insertColumn.isOn ).to.be.false;
-			expect( insertColumn.label ).to.equal( 'Insert column' );
-			expect( insertColumn.icon ).to.match( /<svg / );
+		it( 'have button with proper properties set', () => {
+			expect( dropdown ).to.be.instanceOf( DropdownView );
+
+			const button = dropdown.buttonView;
+
+			expect( button.isOn ).to.be.false;
+			expect( button.tooltip ).to.be.true;
+			expect( button.label ).to.equal( 'Row' );
+			expect( button.icon ).to.match( /<svg / );
 		} );
 
-		it( 'should bind to insertColumn command', () => {
-			const command = editor.commands.get( 'insertColumnAfter' );
+		it( 'should have proper items in panel', () => {
+			const listView = dropdown.listView;
 
-			command.isEnabled = true;
-			expect( insertColumn.isOn ).to.be.false;
-			expect( insertColumn.isEnabled ).to.be.true;
+			const labels = listView.items.map( ( { label } ) => label );
 
-			command.isEnabled = false;
-			expect( insertColumn.isEnabled ).to.be.false;
+			expect( labels ).to.deep.equal( [ 'Insert column before', 'Insert column after', 'Delete column' ] );
 		} );
 
-		it( 'should execute insertColumn command on button execute event', () => {
-			const executeSpy = testUtils.sinon.spy( editor, 'execute' );
+		it( 'should bind items in panel to proper commands', () => {
+			const items = dropdown.listView.items;
 
-			insertColumn.fire( 'execute' );
+			const insertColumnBeforeCommand = editor.commands.get( 'insertColumnBefore' );
+			const insertColumnAfterCommand = editor.commands.get( 'insertColumnAfter' );
+			const removeColumnCommand = editor.commands.get( 'removeColumn' );
 
-			sinon.assert.calledOnce( executeSpy );
-			sinon.assert.calledWithExactly( executeSpy, 'insertColumnAfter' );
+			insertColumnBeforeCommand.isEnabled = true;
+			insertColumnAfterCommand.isEnabled = true;
+			removeColumnCommand.isEnabled = true;
+
+			expect( items.get( 0 ).isEnabled ).to.be.true;
+			expect( items.get( 1 ).isEnabled ).to.be.true;
+			expect( items.get( 2 ).isEnabled ).to.be.true;
+			expect( dropdown.buttonView.isEnabled ).to.be.true;
+
+			insertColumnBeforeCommand.isEnabled = false;
+
+			expect( items.get( 0 ).isEnabled ).to.be.false;
+			expect( dropdown.buttonView.isEnabled ).to.be.true;
+
+			insertColumnAfterCommand.isEnabled = false;
+
+			expect( items.get( 1 ).isEnabled ).to.be.false;
+			expect( dropdown.buttonView.isEnabled ).to.be.true;
+
+			removeColumnCommand.isEnabled = false;
+			expect( items.get( 2 ).isEnabled ).to.be.false;
+			expect( dropdown.buttonView.isEnabled ).to.be.false;
 		} );
 	} );
 } );
