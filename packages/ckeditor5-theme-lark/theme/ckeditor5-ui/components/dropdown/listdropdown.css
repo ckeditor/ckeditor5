@@ -4,6 +4,7 @@
  */
 
 @import "../../../mixins/_rounded.css";
+@import "../../../mixins/_disabled.css";
 
 .ck.ck-dropdown .ck-dropdown__panel .ck-list {
 	/* Disabled radius of top-left border to be consistent with .dropdown__button
