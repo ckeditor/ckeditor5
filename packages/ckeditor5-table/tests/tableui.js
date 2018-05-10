@@ -96,7 +96,7 @@ describe( 'TableUI', () => {
 
 			expect( button.isOn ).to.be.false;
 			expect( button.tooltip ).to.be.true;
-			expect( button.label ).to.equal( 'Column' );
+			expect( button.label ).to.equal( 'Row' );
 			expect( button.icon ).to.match( /<svg / );
 		} );
 
@@ -140,7 +140,7 @@ describe( 'TableUI', () => {
 		} );
 	} );
 
-	describe.only( 'tableColumn button', () => {
+	describe( 'tableColumn button', () => {
 		let dropdown;
 
 		beforeEach( () => {
@@ -154,7 +154,7 @@ describe( 'TableUI', () => {
 
 			expect( button.isOn ).to.be.false;
 			expect( button.tooltip ).to.be.true;
-			expect( button.label ).to.equal( 'Row' );
+			expect( button.label ).to.equal( 'Column' );
 			expect( button.icon ).to.match( /<svg / );
 		} );
 
@@ -194,6 +194,71 @@ describe( 'TableUI', () => {
 
 			removeColumnCommand.isEnabled = false;
 			expect( items.get( 2 ).isEnabled ).to.be.false;
+			expect( dropdown.buttonView.isEnabled ).to.be.false;
+		} );
+	} );
+
+	describe( 'mergeCell button', () => {
+		let dropdown;
+
+		beforeEach( () => {
+			dropdown = editor.ui.componentFactory.create( 'mergeCell' );
+		} );
+
+		it( 'have button with proper properties set', () => {
+			expect( dropdown ).to.be.instanceOf( DropdownView );
+
+			const button = dropdown.buttonView;
+
+			expect( button.isOn ).to.be.false;
+			expect( button.tooltip ).to.be.true;
+			expect( button.label ).to.equal( 'Merge cell' );
+			expect( button.icon ).to.match( /<svg / );
+		} );
+
+		it( 'should have proper items in panel', () => {
+			const listView = dropdown.listView;
+
+			const labels = listView.items.map( ( { label } ) => label );
+
+			expect( labels ).to.deep.equal( [ 'Merge cell up', 'Merge cell right', 'Merge cell down', 'Merge cell left' ] );
+		} );
+
+		it( 'should bind items in panel to proper commands', () => {
+			const items = dropdown.listView.items;
+
+			const mergeCellUpCommand = editor.commands.get( 'mergeCellUp' );
+			const mergeCellRightCommand = editor.commands.get( 'mergeCellRight' );
+			const mergeCellDownCommand = editor.commands.get( 'mergeCellDown' );
+			const mergeCellLeftCommand = editor.commands.get( 'mergeCellLeft' );
+
+			mergeCellUpCommand.isEnabled = true;
+			mergeCellRightCommand.isEnabled = true;
+			mergeCellDownCommand.isEnabled = true;
+			mergeCellLeftCommand.isEnabled = true;
+
+			expect( items.get( 0 ).isEnabled ).to.be.true;
+			expect( items.get( 1 ).isEnabled ).to.be.true;
+			expect( items.get( 2 ).isEnabled ).to.be.true;
+			expect( items.get( 3 ).isEnabled ).to.be.true;
+			expect( dropdown.buttonView.isEnabled ).to.be.true;
+
+			mergeCellUpCommand.isEnabled = false;
+
+			expect( items.get( 0 ).isEnabled ).to.be.false;
+			expect( dropdown.buttonView.isEnabled ).to.be.true;
+
+			mergeCellRightCommand.isEnabled = false;
+
+			expect( items.get( 1 ).isEnabled ).to.be.false;
+			expect( dropdown.buttonView.isEnabled ).to.be.true;
+
+			mergeCellDownCommand.isEnabled = false;
+			expect( items.get( 2 ).isEnabled ).to.be.false;
+
+			mergeCellLeftCommand.isEnabled = false;
+			expect( items.get( 3 ).isEnabled ).to.be.false;
+
 			expect( dropdown.buttonView.isEnabled ).to.be.false;
 		} );
 	} );
