@@ -60,14 +60,14 @@ module.exports = {
 		rules: [
 			{
 				// Or /ckeditor5-[^/]+\/theme\/icons\/[^/]+\.svg$/ if you want to limit this loader
-				// to CKEditor 5's icons only.
+				// to CKEditor 5 icons only.
 				test: /\.svg$/,
 
 				use: [ 'raw-loader' ]
 			},
 			{
 				// Or /ckeditor5-[^/]+\/theme\/[^/]+\.css$/ if you want to limit this loader
-				// to CKEditor 5's theme only.
+				// to CKEditor 5 theme only.
 				test: /\.css$/,
 				use: [
 					{
@@ -95,7 +95,7 @@ module.exports = {
 };
 ```
 
-Now, you can install some of the CKEditor 5 Framework packages which will allow you initialize a simple editor. You can start with the {@link examples/builds/classic-editor classic editor} with a small set of features.
+You can now install some of the CKEditor 5 Framework packages which will allow you to initialize a simple editor. You can start with the {@link examples/builds/classic-editor classic editor} with a small set of features.
 
 ```bash
 npm install --save \
@@ -114,7 +114,7 @@ Based on these packages you can create a simple application.
 </info-box>
 
 <info-box warning>
-	Note that in this guide we use the editor class directly (i.e. we use `@ckeditor/ckeditor5-editor-classic` instead of `@ckeditor/ckeditor5-build-classic`).
+	Note that in this guide the editor class is used directly (i.e. we use `@ckeditor/ckeditor5-editor-classic` instead of `@ckeditor/ckeditor5-build-classic`).
 
 	We do not use any of the {@link builds/guides/overview builds} because adding new plugins to them requires rebuilding them anyway. This can be done by {@link builds/guides/development/installing-plugins customizing a build} or by including CKEditor 5 source into your application (like in this guide).
 </info-box>
@@ -211,7 +211,7 @@ After you initilized the editor from source, you are ready to create your first 
 
 CKEditor plugins need to implement the {@link module:core/plugin~PluginInterface}. The easiest way to do that is to inherit from the {@link module:core/plugin~Plugin base `Plugin` class}, however, you can also write simple constructor functions. This guide uses the former method.
 
-The plugin that you will write will use a part of the {@link features/image image feature} and will add a simple UI to it &mdash; an "Insert image" button, which will open a prompt window asking for the image URL when clicked. Submitting the URL will result in inserting the image into the content and selecting it.
+The plugin that you will write will use a part of the {@link features/image image feature} and will add a simple UI to it &mdash; an "Insert image" button that will open a prompt window asking for the image URL when clicked. Submitting the URL will result in inserting the image into the content and selecting it.
 
 ### Step 1. Installing dependencies
 
@@ -250,7 +250,7 @@ ClassicEditor
 	// ...
 ```
 
-Save the file and run webpack. Refresh the page in your browser (**remember about the cache**) and... you should not see any changes. Right! The core of the image feature does not come with any UI, nor have you added any image to the initial HTML. Change this now:
+Save the file and run webpack. Refresh the page in your browser (**remember about the cache**) and... you should not see any changes. This is correct! The core of the image feature does not come with any UI, nor have you added any image to the initial HTML. Change this now:
 
 ```html
 <div id="editor">
@@ -285,7 +285,7 @@ class InsertImage extends Plugin {
 And add your new plugin to the `config.plugins` array. After rebuilding the application and refreshing the page you should see "InsertImage was initialized" logged to the console.
 
 <info-box hint>
-	It was said that your `InsertImage` plugin relies on the image feature represented here by the `Image` plugin. You could add the `Image` plugin as a {@link module:core/plugin~PluginInterface#requires dependency} of your `InsertImage` plugin. This would make the editor initialize `Image` automatically before initializing `InsertImage`, so you would be able to remove `Image` from `config.plugins`.
+	It was said that your `InsertImage` plugin relies on the image feature represented here by the `Image` plugin. You could add the `Image` plugin as a {@link module:core/plugin~PluginInterface#requires dependency} of the `InsertImage` plugin. This would make the editor initialize `Image` automatically before initializing `InsertImage`, so you would be able to remove `Image` from `config.plugins`.
 
 	However, this means that your plugin would be coupled with the `Image` plugin. This is unnecessary &mdash; they do not need to know about each other. And while it does not change anything in this simple example, it is a good practice to keep plugins as decoupled as possible.
 </info-box>
@@ -341,7 +341,7 @@ Rebuild the application and refresh the page. You should see a new button in the
 
 ### Step 4. Inserting a new image
 
-Now, let's expand the button's `#execute` event listener, so it will actually insert new image into the content:
+Now, expand the button's `#execute` event listener, so it will actually insert a new image into the content:
 
 ```js
 class InsertImage extends Plugin {
