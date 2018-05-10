@@ -7,8 +7,11 @@
  * @module core/pendingactions
  */
 
+/* global window */
+
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
+import DOMEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
@@ -21,6 +24,21 @@ export default class PendingActions extends Plugin {
 	 */
 	static get pluginName() {
 		return 'PendingActions';
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	constructor( editor ) {
+		super( editor );
+
+		/**
+		 * DOM Emitter.
+		 *
+		 * @private
+		 * @type {module:utils/dom/emittermixin~EmitterMixin}
+		 */
+		this._domEmitter = Object.create( DOMEmitterMixin );
 	}
 
 	/**
@@ -43,6 +61,15 @@ export default class PendingActions extends Plugin {
 		 * @type {module:utils/collection~Collection}
 		 */
 		this._actions = new Collection( { idProperty: '_id' } );
+
+		// It's not possible to easy test it because karma uses `beforeunload` event
+		// to warn before full page reload and this event cannot be dispatched manually.
+		/* istanbul ignore next */
+		this._domEmitter.listenTo( window, 'beforeunload', ( evtInfo, domEvt ) => {
+			if ( this.isPending ) {
+				domEvt.returnValue = this._actions.get( 0 ).message;
+			}
+		} );
 	}
 
 	/**
@@ -81,5 +108,10 @@ export default class PendingActions extends Plugin {
 	 */
 	[ Symbol.iterator ]() {
 		return this._actions[ Symbol.iterator ]();
+	}
+
+	destroy() {
+		super.destroy();
+		this._domEmitter.stopListening();
 	}
 }
