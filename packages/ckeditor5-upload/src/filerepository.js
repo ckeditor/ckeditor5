@@ -9,6 +9,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
+import PendingActions from '@ckeditor/ckeditor5-core/src/pendingactions';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
@@ -45,6 +46,13 @@ export default class FileRepository extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
+	static get requires() {
+		return [ PendingActions ];
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		/**
 		 * Collection of loaders associated with this repository.
@@ -52,6 +60,19 @@ export default class FileRepository extends Plugin {
 		 * @member {module:utils/collection~Collection} #loaders
 		 */
 		this.loaders = new Collection();
+
+		// Keeps upload in a sync with pending actions.
+		this.loaders.on( 'add', () => this._updatePendingAction() );
+		this.loaders.on( 'remove', () => this._updatePendingAction() );
+
+		/**
+		 * Reference to a pending action registered in a {@link module:core/pendingactions~PendingActions} plugin
+		 * while upload is in progress. When there is no upload then value is `null`.
+		 *
+		 * @private
+		 * @type {Object} #_pendingAction
+		 */
+		this._pendingAction = null;
 
 		/**
 		 * A factory function which should be defined before using `FileRepository`.
@@ -204,6 +225,25 @@ export default class FileRepository extends Plugin {
 		loader._destroy();
 
 		this.loaders.remove( loader );
+	}
+
+	/**
+	 * Registers or deregisters pending action bound with upload progress.
+	 *
+	 * @private
+	 */
+	_updatePendingAction() {
+		const pendingActions = this.editor.plugins.get( PendingActions );
+		const getMessage = value => `Upload in progress ${ value }%.`;
+
+		if ( this.loaders.length ) {
+			if ( !this._pendingAction ) {
+				this._pendingAction = pendingActions.add( getMessage( this.uploadedPercent ) );
+				this._pendingAction.bind( 'message' ).to( this, 'uploadedPercent', getMessage );
+			}
+		} else {
+			pendingActions.remove( this._pendingAction );
+		}
 	}
 }
 

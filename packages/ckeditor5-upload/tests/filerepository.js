@@ -8,6 +8,7 @@
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import PendingActions from '@ckeditor/ckeditor5-core/src/pendingactions';
 import FileRepository from '../src/filerepository';
 
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
@@ -88,6 +89,69 @@ describe( 'FileRepository', () => {
 
 			fileRepository.uploadTotal = 200;
 			fileRepository.uploaded = 40;
+		} );
+	} );
+
+	describe.only( 'pending actions', () => {
+		let pendingActions;
+
+		beforeEach( () => {
+			pendingActions = editor.plugins.get( PendingActions );
+		} );
+
+		it( 'should requires PendingActions plugin', () => {
+			expect( editor.plugins.get( PendingActions ) ).to.instanceof( PendingActions );
+		} );
+
+		it( 'should add pending action when upload is in progress', () => {
+			expect( pendingActions ).to.have.property( 'isPending', false );
+			expect( Array.from( pendingActions ) ).to.length( 0 );
+
+			fileRepository.createLoader( createNativeFileMock() );
+
+			expect( pendingActions ).to.have.property( 'isPending', true );
+			expect( Array.from( pendingActions, action => action.message ) ).to.have.members( [ 'Upload in progress 0%.' ] );
+		} );
+
+		it( 'should add only one pending action ai a case of multiple load', () => {
+			fileRepository.createLoader( createNativeFileMock() );
+			fileRepository.createLoader( createNativeFileMock() );
+			fileRepository.createLoader( createNativeFileMock() );
+
+			expect( Array.from( pendingActions ) ).to.length( 1 );
+		} );
+
+		it( 'should remove pending action when all uploads are finished', () => {
+			expect( pendingActions ).to.have.property( 'isPending', false );
+			expect( Array.from( pendingActions ) ).to.length( 0 );
+
+			const loader1 = fileRepository.createLoader( createNativeFileMock() );
+			const loader2 = fileRepository.createLoader( createNativeFileMock() );
+
+			expect( pendingActions ).to.have.property( 'isPending', true );
+			expect( Array.from( pendingActions, action => action.message ) ).to.have.members( [ 'Upload in progress 0%.' ] );
+
+			fileRepository.destroyLoader( loader1 );
+
+			expect( pendingActions ).to.have.property( 'isPending', true );
+			expect( Array.from( pendingActions, action => action.message ) ).to.have.members( [ 'Upload in progress 0%.' ] );
+
+			fileRepository.destroyLoader( loader2 );
+
+			expect( pendingActions ).to.have.property( 'isPending', false );
+			expect( Array.from( pendingActions ) ).to.length( 0 );
+		} );
+
+		it( 'should bind pending action message to upload percentage value', () => {
+			fileRepository.createLoader( createNativeFileMock() );
+
+			fileRepository.uploadedPercent = 10;
+
+			expect( Array.from( pendingActions )[ 0 ] ).to.have.property( 'message', 'Upload in progress 10%.' );
+
+			fileRepository.uploadedPercent = 30;
+
+			expect( Array.from( pendingActions )[ 0 ] ).to.have.property( 'message', 'Upload in progress 30%.' );
 		} );
 	} );
 
