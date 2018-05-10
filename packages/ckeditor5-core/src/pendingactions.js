@@ -16,6 +16,13 @@ import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
+ * List of editor pending actions.
+ *
+ * Any asynchronous action that should be finished before the editor destroy (like file upload) should be registered
+ * in this plugin and removed after finish.
+ *
+ * This plugin listens to `window#beforeunload` event and displays browser prompt when a pending action is in progress.
+ *
  * @extends module:core/plugin~Plugin
  */
 export default class PendingActions extends Plugin {
