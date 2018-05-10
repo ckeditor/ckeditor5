@@ -77,6 +77,15 @@ export default class TableUI extends Plugin {
 
 			return this._prepareDropdown( 'Merge cell', icon, options, locale );
 		} );
+
+		editor.ui.componentFactory.add( 'splitCell', locale => {
+			const options = [
+				{ command: 'splitCellVertically', label: 'Split cell vertically' },
+				{ command: 'splitCellHorizontally', label: 'Split cell horizontally' }
+			];
+
+			return this._prepareDropdown( 'Split cell', icon, options, locale );
+		} );
 	}
 
 	/**
