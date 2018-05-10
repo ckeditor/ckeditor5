@@ -76,7 +76,10 @@ export default class PendingActions extends Plugin {
 	/**
 	 * Adds action to the list of pending actions.
 	 *
+	 * Methods returns an object with observable message property. Message can be changed.
+	 *
 	 * @param {String} message
+	 * @returns {Object} Observable object that represents a pending action.
 	 */
 	add( message ) {
 		if ( typeof message !== 'string' ) {
