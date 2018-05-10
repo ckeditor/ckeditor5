@@ -92,7 +92,7 @@ describe( 'FileRepository', () => {
 		} );
 	} );
 
-	describe.only( 'pending actions', () => {
+	describe( 'pending actions', () => {
 		let pendingActions;
 
 		beforeEach( () => {
