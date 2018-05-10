@@ -9,7 +9,7 @@
 
 /* global window */
 
-import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import Plugin from './plugin';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import DOMEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';

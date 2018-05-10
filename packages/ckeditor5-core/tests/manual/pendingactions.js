@@ -8,7 +8,7 @@
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 
 import ArticlePluginSet from '../_utils/articlepluginset';
-import PendingActions from '@ckeditor/ckeditor5-core/src/pendingactions';
+import PendingActions from '../../src/pendingactions';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
