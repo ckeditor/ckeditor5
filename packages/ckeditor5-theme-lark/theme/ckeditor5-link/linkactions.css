@@ -33,7 +33,7 @@
 		}
 
 		& .ck-button__label {
-			padding: 0 var(--ck-spacing-standard);
+			padding: 0 var(--ck-spacing-medium);
 			color: var(--ck-color-link-default);
 			text-overflow: ellipsis;
 			cursor: pointer;
