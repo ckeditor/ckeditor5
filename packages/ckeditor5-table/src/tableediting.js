@@ -109,10 +109,10 @@ export default class TablesEditing extends Plugin {
 		editor.commands.add( 'splitCellVertically', new SplitCellCommand( editor, { direction: 'vertically' } ) );
 		editor.commands.add( 'splitCellHorizontally', new SplitCellCommand( editor, { direction: 'horizontally' } ) );
 
-		editor.commands.add( 'mergeRight', new MergeCellCommand( editor, { direction: 'right' } ) );
-		editor.commands.add( 'mergeLeft', new MergeCellCommand( editor, { direction: 'left' } ) );
-		editor.commands.add( 'mergeDown', new MergeCellCommand( editor, { direction: 'down' } ) );
-		editor.commands.add( 'mergeUp', new MergeCellCommand( editor, { direction: 'up' } ) );
+		editor.commands.add( 'mergeCellRight', new MergeCellCommand( editor, { direction: 'right' } ) );
+		editor.commands.add( 'mergeCellLeft', new MergeCellCommand( editor, { direction: 'left' } ) );
+		editor.commands.add( 'mergeCellDown', new MergeCellCommand( editor, { direction: 'down' } ) );
+		editor.commands.add( 'mergeCellUp', new MergeCellCommand( editor, { direction: 'up' } ) );
 
 		editor.commands.add( 'setTableHeaders', new SetTableHeadersCommand( editor ) );
 

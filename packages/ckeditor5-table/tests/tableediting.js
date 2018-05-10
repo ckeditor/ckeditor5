@@ -10,6 +10,14 @@ import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 import TableEditing from '../src/tableediting';
 import { formatTable, formattedModelTable, modelTable } from './_utils/utils';
+import InsertRowCommand from '../src/commands/insertrowcommand';
+import InsertTableCommand from '../src/commands/inserttablecommand';
+import InsertColumnCommand from '../src/commands/insertcolumncommand';
+import RemoveRowCommand from '../src/commands/removerowcommand';
+import RemoveColumnCommand from '../src/commands/removecolumncommand';
+import SplitCellCommand from '../src/commands/splitcellcommand';
+import MergeCellCommand from '../src/commands/mergecellcommand';
+import SetTableHeadersCommand from '../src/commands/settableheaderscommand';
 
 describe( 'TableEditing', () => {
 	let editor, model;
@@ -31,6 +39,62 @@ describe( 'TableEditing', () => {
 	} );
 
 	it( 'should set proper schema rules', () => {
+	} );
+
+	it( 'adds insertTable command', () => {
+		expect( editor.commands.get( 'insertTable' ) ).to.be.instanceOf( InsertTableCommand );
+	} );
+
+	it( 'adds insertRowAbove command', () => {
+		expect( editor.commands.get( 'insertRowAbove' ) ).to.be.instanceOf( InsertRowCommand );
+	} );
+
+	it( 'adds insertRowBelow command', () => {
+		expect( editor.commands.get( 'insertRowBelow' ) ).to.be.instanceOf( InsertRowCommand );
+	} );
+
+	it( 'adds insertColumnBefore command', () => {
+		expect( editor.commands.get( 'insertColumnBefore' ) ).to.be.instanceOf( InsertColumnCommand );
+	} );
+
+	it( 'adds insertColumnAfter command', () => {
+		expect( editor.commands.get( 'insertColumnAfter' ) ).to.be.instanceOf( InsertColumnCommand );
+	} );
+
+	it( 'adds removeRow command', () => {
+		expect( editor.commands.get( 'removeRow' ) ).to.be.instanceOf( RemoveRowCommand );
+	} );
+
+	it( 'adds removeColumn command', () => {
+		expect( editor.commands.get( 'removeColumn' ) ).to.be.instanceOf( RemoveColumnCommand );
+	} );
+
+	it( 'adds splitCellVertically command', () => {
+		expect( editor.commands.get( 'splitCellVertically' ) ).to.be.instanceOf( SplitCellCommand );
+	} );
+
+	it( 'adds splitCellHorizontally command', () => {
+		expect( editor.commands.get( 'splitCellHorizontally' ) ).to.be.instanceOf( SplitCellCommand );
+	} );
+
+	it( 'adds mergeCellRight command', () => {
+		expect( editor.commands.get( 'mergeCellRight' ) ).to.be.instanceOf( MergeCellCommand );
+	} );
+
+	it( 'adds mergeCellLeft command', () => {
+		expect( editor.commands.get( 'mergeCellLeft' ) ).to.be.instanceOf( MergeCellCommand );
+	} );
+
+	it( 'adds mergeCellDown command', () => {
+		expect( editor.commands.get( 'mergeCellDown' ) ).to.be.instanceOf( MergeCellCommand );
+	} );
+
+	it( 'adds mergeCellUp command', () => {
+		expect( editor.commands.get( 'mergeCellUp' ) ).to.be.instanceOf( MergeCellCommand );
+	} );
+
+	it( 'adds setTableHeaders command', () => {
+		expect( editor.commands.get( 'setTableHeaders' ) ).to.be.instanceOf( SetTableHeadersCommand );
 	} );
 
 	describe( 'conversion in data pipeline', () => {
