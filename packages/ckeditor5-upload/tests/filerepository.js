@@ -145,11 +145,11 @@ describe( 'FileRepository', () => {
 		it( 'should bind pending action message to upload percentage value', () => {
 			fileRepository.createLoader( createNativeFileMock() );
 
-			fileRepository.uploadedPercent = 10;
+			fileRepository.uploadedPercent = 10.345;
 
 			expect( Array.from( pendingActions )[ 0 ] ).to.have.property( 'message', 'Upload in progress 10%.' );
 
-			fileRepository.uploadedPercent = 30;
+			fileRepository.uploadedPercent = 30.235;
 
 			expect( Array.from( pendingActions )[ 0 ] ).to.have.property( 'message', 'Upload in progress 30%.' );
 		} );

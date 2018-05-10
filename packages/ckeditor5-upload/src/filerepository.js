@@ -234,7 +234,7 @@ export default class FileRepository extends Plugin {
 	 */
 	_updatePendingAction() {
 		const pendingActions = this.editor.plugins.get( PendingActions );
-		const getMessage = value => `Upload in progress ${ value }%.`;
+		const getMessage = value => `Upload in progress ${ parseInt( value ) }%.`;
 
 		if ( this.loaders.length ) {
 			if ( !this._pendingAction ) {
