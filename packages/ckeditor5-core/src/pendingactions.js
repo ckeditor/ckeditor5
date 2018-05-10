@@ -61,6 +61,7 @@ export default class PendingActions extends Plugin {
 		 * @type {module:utils/collection~Collection}
 		 */
 		this._actions = new Collection( { idProperty: '_id' } );
+		this._actions.delegate( 'add', 'remove' ).to( this );
 
 		// It's not possible to easy test it because karma uses `beforeunload` event
 		// to warn before full page reload and this event cannot be dispatched manually.
@@ -110,8 +111,25 @@ export default class PendingActions extends Plugin {
 		return this._actions[ Symbol.iterator ]();
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	destroy() {
 		super.destroy();
 		this._domEmitter.stopListening();
 	}
+
+	/**
+	 * Fired when an action is added to the list.
+	 *
+	 * @event add
+	 * @param {Object} action The added action.
+	 */
+
+	/**
+	 * Fired when an action is removed from the list.
+	 *
+	 * @event remove
+	 * @param {Object} action The removed action.
+	 */
 }

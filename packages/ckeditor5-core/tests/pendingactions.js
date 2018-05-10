@@ -73,6 +73,16 @@ describe( 'PendingActions', () => {
 				pendingActions.add( {} );
 			} ).to.throw( CKEditorError, /^pendingactions-add-invalid-message/ );
 		} );
+
+		it( 'should fire add event with added item', () => {
+			const spy = sinon.spy();
+
+			pendingActions.on( 'add', spy );
+
+			const action = pendingActions.add( 'Some action' );
+
+			sinon.assert.calledWith( spy, sinon.match.any, action );
+		} );
 	} );
 
 	describe( 'remove()', () => {
@@ -89,6 +99,18 @@ describe( 'PendingActions', () => {
 			pendingActions.remove( action2 );
 
 			expect( pendingActions ).to.have.property( 'isPending', false );
+		} );
+
+		it( 'should fire remove event with removed item', () => {
+			const spy = sinon.spy();
+
+			pendingActions.on( 'remove', spy );
+
+			const action = pendingActions.add( 'Some action' );
+
+			pendingActions.remove( action );
+
+			sinon.assert.calledWith( spy, sinon.match.any, action );
 		} );
 	} );
 
