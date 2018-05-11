@@ -25,26 +25,20 @@ ClassicEditor
 		const actionsEl = document.querySelector( '.pending-actions' );
 
 		document.querySelector( '#add-action' ).addEventListener( 'click', () => {
-			const action = pendingActions.add( 'Static pending action.' );
-
-			wait( 5000 ).then( () => pendingActions.remove( action ) );
-		} );
-
-		document.querySelector( '#add-action-progress' ).addEventListener( 'click', () => {
-			const action = pendingActions.add( 'Dynamic pending action 0%.' );
+			const action = pendingActions.add( 'Pending action 0%.' );
 
 			wait( 1000 )
-				.then( () => ( action.message = 'Dynamic pending action 0%.' ) )
+				.then( () => ( action.message = 'Pending action 0%.' ) )
 				.then( () => wait( 500 ) )
-				.then( () => ( action.message = 'Dynamic pending action 20%.' ) )
+				.then( () => ( action.message = 'Pending action 20%.' ) )
 				.then( () => wait( 500 ) )
-				.then( () => ( action.message = 'Dynamic pending action 40%.' ) )
+				.then( () => ( action.message = 'Pending action 40%.' ) )
 				.then( () => wait( 500 ) )
-				.then( () => ( action.message = 'Dynamic pending action 60%.' ) )
+				.then( () => ( action.message = 'Pending action 60%.' ) )
 				.then( () => wait( 500 ) )
-				.then( () => ( action.message = 'Dynamic pending action 80%.' ) )
+				.then( () => ( action.message = 'Pending action 80%.' ) )
 				.then( () => wait( 500 ) )
-				.then( () => ( action.message = 'Dynamic pending action 1000%.' ) )
+				.then( () => ( action.message = 'Pending action 100%.' ) )
 				.then( () => wait( 500 ) )
 				.then( () => pendingActions.remove( action ) );
 		} );
