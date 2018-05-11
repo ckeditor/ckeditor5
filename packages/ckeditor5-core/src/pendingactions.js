@@ -15,11 +15,16 @@ import DOMEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
+//  This plugin is not able to interrupt actions or manage that in any other way.
+
 /**
  * List of editor pending actions.
  *
- * Any asynchronous action that should be finished before the editor destroy (like file upload) should be registered
- * in this plugin and removed after finish.
+ * This plugin should be used to synchronise plugins that execute long-lasting actions
+ * (i.e. file upload) with the editor integration. It gives a developer, who integrates the editor,
+ * an easy way to check if there are any pending action whenever such information is needed.
+ * All plugins, which register pending action provides also a message what action is ongoing
+ * which can be displayed to a user and let him decide if he wants to interrupt the action or wait.
  *
  * This plugin listens to `window#beforeunload` event and displays browser prompt when a pending action is in progress.
  *
@@ -83,7 +88,13 @@ export default class PendingActions extends Plugin {
 	/**
 	 * Adds action to the list of pending actions.
 	 *
-	 * Methods returns an object with observable message property. Message can be changed.
+	 * This method returns an action object with observable message property.
+	 * The action object can be later used in the remove method. It also allows you to change the message.
+	 *
+	 *		const pendingActions = editor.plugins.get( 'PendingActions' );
+	 * 		const action = pendingActions.add( 'Upload in progress 0%' );
+	 *
+	 * 		action.message = 'Upload in progress 10%';
 	 *
 	 * @param {String} message
 	 * @returns {Object} Observable object that represents a pending action.
@@ -119,6 +130,14 @@ export default class PendingActions extends Plugin {
 
 	/**
 	 * Returns first action from the list.
+	 *
+	 * 		const pendingActions = editor.plugins.get( 'PendingActions' );
+	 *
+	 * 		pendingActions.add( 'Action 1' );
+	 * 		pendingActions.add( 'Action 2' );
+	 *
+	 *		pendingActions.first // Returns 'Action 1'
+	 *		Array.from( pendingActions ) // Returns [ 'Action 1', 'Action 2' ]
 	 *
 	 * returns {Object} Pending action object.
 	 */
