@@ -628,6 +628,25 @@ describe( 'TableUtils', () => {
 				[ '70', '71' ]
 			] ) );
 		} );
+
+		it( 'should unsplit rowspanned cell and updated other cells rowspan when splitting to bigger number of cells', () => {
+			setData( model, modelTable( [
+				[ '00', { rowspan: 2, contents: '01[]' } ],
+				[ '10' ],
+				[ '20', '21' ]
+			] ) );
+
+			const tableCell = root.getNodeByPath( [ 0, 0, 1 ] );
+
+			tableUtils.splitCellVertically( tableCell, 3 );
+
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ { rowspan: 2, contents: '00' }, '01[]' ],
+				[ '' ],
+				[ '10', '' ],
+				[ '20', '21' ]
+			] ) );
+		} );
 	} );
 
 	describe( 'getColumns()', () => {

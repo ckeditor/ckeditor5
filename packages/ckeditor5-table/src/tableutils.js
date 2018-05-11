@@ -258,15 +258,24 @@ export default class TableUtils extends Plugin {
 		const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) || 1 );
 		const colspan = parseInt( tableCell.getAttribute( 'colspan' ) || 1 );
 
-		const splitOnly = rowspan >= numberOfCells;
-
 		model.change( writer => {
-			if ( splitOnly ) {
-				const rowspanOfCellsToInsert = Math.floor( rowspan / numberOfCells );
+			// First check - the cell spans over multiple rows so before doing anything else just split this cell.
+			if ( rowspan > 1 ) {
+				let newRowspan;
+				let rowspanOfCellsToInsert;
 
-				const cellsToInsert = numberOfCells - 1;
-
-				const newRowspan = rowspan - cellsToInsert * rowspanOfCellsToInsert;
+				if ( rowspan < numberOfCells ) {
+					// Split cell completely (remove rowspan) - the reminder of cells will be added in the second check.
+					newRowspan = 1;
+					rowspanOfCellsToInsert = 1;
+				} else {
+					// Split cell's rowspan evenly. Example: having a cell with rowspan of 7 and splitting it to 3 cells:
+					// - distribute spans evenly for needed two cells (2 cells - each with rowspan of 2).
+					// - the remaining span goes to current cell (3).
+					rowspanOfCellsToInsert = Math.floor( rowspan / numberOfCells );
+					const cellsToInsert = numberOfCells - 1;
+					newRowspan = rowspan - cellsToInsert * rowspanOfCellsToInsert;
+				}
 
 				const tableMap = [ ...new TableWalker( table, {
 					startRow: rowIndex,
@@ -303,18 +312,25 @@ export default class TableUtils extends Plugin {
 						writer.insertElement( 'tableCell', attributes, position );
 					}
 				}
-			} else {
+			}
+
+			// Second check - the cell has rowspan of 1 or we need to create more cells the the currently one spans over.
+			if ( rowspan < numberOfCells ) {
+				// We already split the cell in check one so here we split to the remaining number of cells only.
+				const remaingingRowspan = numberOfCells - rowspan;
+
+				// This check is needed since we need to check if there are any cells from previous rows thatn spans over this cell's row.
 				const tableMap = [ ...new TableWalker( table, { startRow: 0, endRow: rowIndex } ) ];
 
 				for ( const { cell, rowspan, row } of tableMap ) {
 					if ( cell !== tableCell && row + rowspan > rowIndex ) {
-						const rowspanToSet = rowspan + numberOfCells - 1;
+						const rowspanToSet = rowspan + remaingingRowspan;
 
 						writer.setAttribute( 'rowspan', rowspanToSet, cell );
 					}
 				}
 
-				createEmptyRows( writer, table, rowIndex + 1, numberOfCells - 1, 1 );
+				createEmptyRows( writer, table, rowIndex + 1, remaingingRowspan, 1 );
 			}
 		} );
 	}
