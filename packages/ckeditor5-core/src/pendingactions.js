@@ -75,7 +75,7 @@ export default class PendingActions extends Plugin {
 		/* istanbul ignore next */
 		this._domEmitter.listenTo( window, 'beforeunload', ( evtInfo, domEvt ) => {
 			if ( this.isPending ) {
-				domEvt.returnValue = this._actions.get( 0 ).message;
+				domEvt.returnValue = this.first.message;
 			}
 		} );
 	}
@@ -115,6 +115,15 @@ export default class PendingActions extends Plugin {
 	remove( action ) {
 		this._actions.remove( action );
 		this.isPending = !!this._actions.length;
+	}
+
+	/**
+	 * Returns first action from the list.
+	 *
+	 * returns {Object} Pending action object.
+	 */
+	get first() {
+		return this._actions.get( 0 );
 	}
 
 	/**

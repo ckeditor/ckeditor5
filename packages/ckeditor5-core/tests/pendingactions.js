@@ -114,6 +114,16 @@ describe( 'PendingActions', () => {
 		} );
 	} );
 
+	describe( 'first', () => {
+		it( 'should return first pending action from the list', () => {
+			const action = pendingActions.add( 'Action 1' );
+
+			pendingActions.add( 'Action 2' );
+
+			expect( pendingActions.first ).to.equal( action );
+		} );
+	} );
+
 	describe( 'iterator', () => {
 		it( 'should return all panding actions', () => {
 			pendingActions.add( 'Action 1' );
