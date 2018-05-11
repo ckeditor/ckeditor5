@@ -98,13 +98,13 @@ export default class PendingActions extends Plugin {
 			throw new CKEditorError( 'pendingactions-add-invalid-message: Message has to be a string.' );
 		}
 
-		const observable = Object.create( ObservableMixin );
+		const action = Object.create( ObservableMixin );
 
-		observable.set( 'message', message );
-		this._actions.add( observable );
+		action.set( 'message', message );
+		this._actions.add( action );
 		this.isPending = true;
 
-		return observable;
+		return action;
 	}
 
 	/**
