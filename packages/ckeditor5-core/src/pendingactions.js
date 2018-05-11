@@ -90,6 +90,11 @@ export default class PendingActions extends Plugin {
 	 */
 	add( message ) {
 		if ( typeof message !== 'string' ) {
+			/**
+			 * Message has to be a string.
+			 *
+			 * @error pendingactions-add-invalid-message
+			 */
 			throw new CKEditorError( 'pendingactions-add-invalid-message: Message has to be a string.' );
 		}
 
