@@ -647,6 +647,24 @@ describe( 'TableUtils', () => {
 				[ '20', '21' ]
 			] ) );
 		} );
+
+		it( 'should unsplit rowspanned & colspaned cell', () => {
+			setData( model, modelTable( [
+				[ '00', { colspan: 2, contents: '01[]' } ],
+				[ '10', '11' ]
+			] ) );
+
+			const tableCell = root.getNodeByPath( [ 0, 0, 1 ] );
+
+			tableUtils.splitCellVertically( tableCell, 3 );
+
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ { rowspan: 3, contents: '00' }, { colspan: 2, contents: '01[]' } ],
+				[ { colspan: 2, contents: '' } ],
+				[ { colspan: 2, contents: '' } ],
+				[ '10', '11' ]
+			] ) );
+		} );
 	} );
 
 	describe( 'getColumns()', () => {

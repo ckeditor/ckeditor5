@@ -330,7 +330,13 @@ export default class TableUtils extends Plugin {
 					}
 				}
 
-				createEmptyRows( writer, table, rowIndex + 1, remaingingRowspan, 1 );
+				const attributes = {};
+
+				if ( colspan > 1 ) {
+					attributes.colspan = colspan;
+				}
+
+				createEmptyRows( writer, table, rowIndex + 1, remaingingRowspan, 1, attributes );
 			}
 		} );
 	}
@@ -360,14 +366,14 @@ export default class TableUtils extends Plugin {
 // @param {Number} insertAt Row index of row insertion.
 // @param {Number} rows Number of rows to create.
 // @param {Number} tableCellToInsert Number of cells to insert in each row.
-function createEmptyRows( writer, table, insertAt, rows, tableCellToInsert ) {
+function createEmptyRows( writer, table, insertAt, rows, tableCellToInsert, attributes = {} ) {
 	for ( let i = 0; i < rows; i++ ) {
 		const tableRow = writer.createElement( 'tableRow' );
 
 		writer.insert( tableRow, table, insertAt );
 
 		for ( let columnIndex = 0; columnIndex < tableCellToInsert; columnIndex++ ) {
-			const cell = writer.createElement( 'tableCell' );
+			const cell = writer.createElement( 'tableCell', attributes );
 
 			writer.insert( cell, tableRow, 'end' );
 		}
