@@ -20,6 +20,13 @@ import { getParentTable, updateNumericAttribute } from './commands/utils';
  */
 export default class TableUtils extends Plugin {
 	/**
+	 * @inheritDoc
+	 */
+	static get pluginName() {
+		return 'TableUtils';
+	}
+
+	/**
 	 * Returns table cell location in table.
 	 *
 	 * @param {module:engine/model/element~Element} tableCell
@@ -248,18 +255,67 @@ export default class TableUtils extends Plugin {
 		const table = getParentTable( tableCell );
 		const rowIndex = table.getChildIndex( tableCell.parent );
 
+		const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) || 1 );
+		const colspan = parseInt( tableCell.getAttribute( 'colspan' ) || 1 );
+
+		const splitOnly = rowspan >= numberOfCells;
+
 		model.change( writer => {
-			const tableMap = [ ...new TableWalker( table, { startRow: 0, endRow: rowIndex } ) ];
+			if ( splitOnly ) {
+				const rowspanOfCellsToInsert = Math.floor( rowspan / numberOfCells );
 
-			for ( const { cell, rowspan, row } of tableMap ) {
-				if ( cell !== tableCell && row + rowspan > rowIndex ) {
-					const rowspan = parseInt( cell.getAttribute( 'rowspan' ) || 1 );
+				const cellsToInsert = numberOfCells - 1;
 
-					writer.setAttribute( 'rowspan', rowspan + numberOfCells - 1, cell );
+				const newRowspan = rowspan - cellsToInsert * rowspanOfCellsToInsert;
+
+				const tableMap = [ ...new TableWalker( table, {
+					startRow: rowIndex,
+					endRow: rowIndex + rowspan - 1,
+					includeSpanned: true
+				} ) ];
+
+				updateNumericAttribute( 'rowspan', newRowspan, tableCell, writer );
+
+				let cellColumn = 0;
+
+				const attributes = {};
+
+				if ( rowspanOfCellsToInsert > 1 ) {
+					attributes.rowspan = rowspanOfCellsToInsert;
 				}
-			}
 
-			createEmptyRows( writer, table, rowIndex + 1, numberOfCells - 1, 1 );
+				if ( colspan > 1 ) {
+					attributes.colspan = colspan;
+				}
+
+				for ( const { cell, column, row, cellIndex } of tableMap ) {
+					if ( cell === tableCell ) {
+						cellColumn = column;
+					}
+
+					const isAfterSplitCell = row >= rowIndex + newRowspan;
+					const isOnSameColumn = column === cellColumn;
+					const isInEvenlySplitRow = ( row + rowIndex + newRowspan ) % rowspanOfCellsToInsert === 0;
+
+					if ( isAfterSplitCell && isOnSameColumn && isInEvenlySplitRow ) {
+						const position = Position.createFromParentAndOffset( table.getChild( row ), cellIndex );
+
+						writer.insertElement( 'tableCell', attributes, position );
+					}
+				}
+			} else {
+				const tableMap = [ ...new TableWalker( table, { startRow: 0, endRow: rowIndex } ) ];
+
+				for ( const { cell, rowspan, row } of tableMap ) {
+					if ( cell !== tableCell && row + rowspan > rowIndex ) {
+						const rowspanToSet = rowspan + numberOfCells - 1;
+
+						writer.setAttribute( 'rowspan', rowspanToSet, cell );
+					}
+				}
+
+				createEmptyRows( writer, table, rowIndex + 1, numberOfCells - 1, 1 );
+			}
 		} );
 	}
 

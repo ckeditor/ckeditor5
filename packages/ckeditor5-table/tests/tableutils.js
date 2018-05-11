@@ -71,6 +71,12 @@ describe( 'TableUtils', () => {
 		return editor.destroy();
 	} );
 
+	describe( '#pluginName', () => {
+		it( 'should provide plugin name', () => {
+			expect( TableUtils.pluginName ).to.equal( 'TableUtils' );
+		} );
+	} );
+
 	describe( 'getCellLocation()', () => {
 		it( 'should return proper table cell location', () => {
 			setData( model, modelTable( [
@@ -556,6 +562,70 @@ describe( 'TableUtils', () => {
 				[ '' ],
 				[ '' ],
 				[ '20', '21' ]
+			] ) );
+		} );
+
+		it( 'should unsplit rowspanned cell', () => {
+			setData( model, modelTable( [
+				[ '00', { rowspan: 2, contents: '01[]' } ],
+				[ '10' ],
+				[ '20', '21' ]
+			] ) );
+
+			const tableCell = root.getNodeByPath( [ 0, 0, 1 ] );
+
+			tableUtils.splitCellVertically( tableCell, 2 );
+
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '00', '01[]' ],
+				[ '10', '' ],
+				[ '20', '21' ]
+			] ) );
+		} );
+
+		it( 'should copy colspan while splitting rowspanned cell', () => {
+			setData( model, modelTable( [
+				[ '00', { rowspan: 2, colspan: 2, contents: '01[]' } ],
+				[ '10' ],
+				[ '20', '21', '22' ]
+			] ) );
+
+			const tableCell = root.getNodeByPath( [ 0, 0, 1 ] );
+
+			tableUtils.splitCellVertically( tableCell, 2 );
+
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '00', { colspan: 2, contents: '01[]' } ],
+				[ '10', { colspan: 2, contents: '' } ],
+				[ '20', '21', '22' ]
+			] ) );
+		} );
+
+		it( 'should evenly distribute rowspan attribute', () => {
+			setData( model, modelTable( [
+				[ '00', { rowspan: 7, contents: '01[]' } ],
+				[ '10' ],
+				[ '20' ],
+				[ '30' ],
+				[ '40' ],
+				[ '50' ],
+				[ '60' ],
+				[ '70', '71' ]
+			] ) );
+
+			const tableCell = root.getNodeByPath( [ 0, 0, 1 ] );
+
+			tableUtils.splitCellVertically( tableCell, 3 );
+
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '00', { rowspan: 3, contents: '01[]' } ],
+				[ '10' ],
+				[ '20' ],
+				[ '30', { rowspan: 2, contents: '' } ],
+				[ '40' ],
+				[ '50', { rowspan: 2, contents: '' } ],
+				[ '60' ],
+				[ '70', '71' ]
 			] ) );
 		} );
 	} );
