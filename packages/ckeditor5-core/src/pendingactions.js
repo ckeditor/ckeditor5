@@ -41,21 +41,6 @@ export default class PendingActions extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( editor ) {
-		super( editor );
-
-		/**
-		 * DOM Emitter.
-		 *
-		 * @private
-		 * @type {module:utils/dom/emittermixin~EmitterMixin}
-		 */
-		this._domEmitter = Object.create( DOMEmitterMixin );
-	}
-
-	/**
-	 * @inheritDoc
-	 */
 	init() {
 		/**
 		 * Defines whether there is any registered pending action or not.
@@ -74,15 +59,6 @@ export default class PendingActions extends Plugin {
 		 */
 		this._actions = new Collection( { idProperty: '_id' } );
 		this._actions.delegate( 'add', 'remove' ).to( this );
-
-		// It's not possible to easy test it because karma uses `beforeunload` event
-		// to warn before full page reload and this event cannot be dispatched manually.
-		/* istanbul ignore next */
-		this._domEmitter.listenTo( window, 'beforeunload', ( evtInfo, domEvt ) => {
-			if ( this.isPending ) {
-				domEvt.returnValue = this.first.message;
-			}
-		} );
 	}
 
 	/**
@@ -152,14 +128,6 @@ export default class PendingActions extends Plugin {
 	 */
 	[ Symbol.iterator ]() {
 		return this._actions[ Symbol.iterator ]();
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	destroy() {
-		super.destroy();
-		this._domEmitter.stopListening();
 	}
 
 	/**
