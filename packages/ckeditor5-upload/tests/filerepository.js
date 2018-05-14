@@ -113,7 +113,7 @@ describe( 'FileRepository', () => {
 			expect( Array.from( pendingActions, action => action.message ) ).to.have.members( [ 'Upload in progress 0%.' ] );
 		} );
 
-		it( 'should add only one pending action ai a case of multiple load', () => {
+		it( 'should add only one pending action in a case of multiple load', () => {
 			fileRepository.createLoader( createNativeFileMock() );
 			fileRepository.createLoader( createNativeFileMock() );
 			fileRepository.createLoader( createNativeFileMock() );
