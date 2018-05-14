@@ -190,7 +190,7 @@ describe( 'ImageUploadProgress', () => {
 				expect( getViewData( view ) ).to.equal(
 					'[<figure class="ck-widget image" contenteditable="false">' +
 						'<img src="image.png"></img>' +
-						'<div class="ck-image-upload-finish"></div>' +
+						'<div class="ck-image-upload-complete-icon"></div>' +
 					'</figure>]<p>foo</p>'
 				);
 

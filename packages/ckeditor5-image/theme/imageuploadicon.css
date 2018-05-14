@@ -4,23 +4,23 @@
  */
 
 :root {
-	--ck-upload-icon-size: 1.5em;
-	--ck-upload-icon-width: 2px;
+	--ck-image-upload-icon-size: 1.5em;
+	--ck-image-upload-icon-width: 2px;
 
-	--ck-color-upload-icon: hsl(0, 0%, 100%);
-	--ck-color-upload-icon-background: hsl(120, 100%, 27%);
+	--ck-color-image-upload-icon: hsl(0, 0%, 100%);
+	--ck-color-image-upload-icon-background: hsl(120, 100%, 27%);
 }
 
-.ck-image-upload-finish {
+.ck-image-upload-complete-icon {
 	display: block;
 	position: absolute;
 	opacity: 0;
 	top: 10px;
 	right: 10px;
-	width: var(--ck-upload-icon-size);
-	height: var(--ck-upload-icon-size);
+	width: var(--ck-image-upload-icon-size);
+	height: var(--ck-image-upload-icon-size);
 	border-radius: 50%;
-	background: var(--ck-color-upload-icon-background);
+	background: var(--ck-color-image-upload-icon-background);
 	animation-name: ck-fade-in, ck-fade-out;
 	animation-fill-mode: forwards, forwards;
 	animation-duration: 500ms, 500ms;
@@ -38,12 +38,12 @@
 		top: 50%;
 
 		/* Because of border transformation we need to "hard code" left position. */
-		left: calc( var(--ck-upload-icon-size) / 3.5 );
+		left: calc( var(--ck-image-upload-icon-size) / 3.5 );
 
 		transform: scaleX(-1) rotate(135deg);
 		transform-origin: left top;
-		border-top: var(--ck-upload-icon-width) solid var(--ck-color-upload-icon);
-		border-right: var(--ck-upload-icon-width) solid var(--ck-color-upload-icon);
+		border-top: var(--ck-image-upload-icon-width) solid var(--ck-color-image-upload-icon);
+		border-right: var(--ck-image-upload-icon-width) solid var(--ck-color-image-upload-icon);
 		animation-name: ck-check-icon;
 		animation-duration: 500ms;
 		animation-delay: 500ms;
@@ -60,14 +60,14 @@
 	}
 
 	33.3333% {
-		width: calc( var(--ck-upload-icon-size) / 5 );
+		width: calc( var(--ck-image-upload-icon-size) / 5 );
 		height: 0;
 	}
 
 	100% {
 		opacity: 1;
-		height: calc( var(--ck-upload-icon-size) / 3 );
-		width: calc( var(--ck-upload-icon-size) / 5 );
+		height: calc( var(--ck-image-upload-icon-size) / 3 );
+		width: calc( var(--ck-image-upload-icon-size) / 5 );
 	}
 }
 

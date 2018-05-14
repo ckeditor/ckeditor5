@@ -207,7 +207,7 @@ function _hideProgressBar( viewFigure, writer ) {
 // @param {module:engine/view/writer~Writer} writer
 // @param {module:engine/view/view~View} view
 function _showCompleteIcon( viewFigure, writer, view ) {
-	const completeIcon = new UIElement( 'div', { class: 'ck-image-upload-finish' } );
+	const completeIcon = new UIElement( 'div', { class: 'ck-image-upload-complete-icon' } );
 
 	writer.insert( ViewPosition.createAt( viewFigure, 'end' ), completeIcon );
 
