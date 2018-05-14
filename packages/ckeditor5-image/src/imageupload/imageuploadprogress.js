@@ -10,6 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
 import uploadingPlaceholder from '../../theme/icons/image_placeholder.svg';
+import UIElement from '@ckeditor/ckeditor5-engine/src/view/uielement';
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import ViewRange from '@ckeditor/ckeditor5-engine/src/view/range';
 
@@ -98,6 +99,10 @@ export default class ImageUploadProgress extends Plugin {
 			}
 
 			return;
+		}
+
+		if ( status == 'complete' ) {
+			_showCompleteIcon( viewFigure, viewWriter, editor.editing.view );
 		}
 
 		// Clean up.
@@ -191,6 +196,21 @@ function _hideProgressBar( viewFigure, writer ) {
 	if ( progressBar ) {
 		writer.remove( ViewRange.createOn( progressBar ) );
 	}
+}
+
+// Shows complete icon and hides after a certain amount of time.
+//
+// @param {module:engine/view/containerelement~ContainerElement} viewFigure
+// @param {module:engine/view/writer~Writer} writer
+// @param {module:engine/view/view~View} view
+function _showCompleteIcon( viewFigure, writer, view ) {
+	const completeIcon = new UIElement( 'div', { class: 'ck-image-upload-finish' } );
+
+	writer.insert( ViewPosition.createAt( viewFigure, 'end' ), completeIcon );
+
+	setTimeout( () => {
+		view.change( writer => writer.remove( ViewRange.createOn( completeIcon ) ) );
+	}, 3000 );
 }
 
 // Create progress bar element using {@link module:engine/view/uielement~UIElement}.
