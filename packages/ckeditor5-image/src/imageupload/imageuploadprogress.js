@@ -17,6 +17,7 @@ import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import ViewRange from '@ckeditor/ckeditor5-engine/src/view/range';
 
 import '../../theme/imageuploadprogress.css';
+import '../../theme/imageuploadicon.css';
 
 /**
  * The image upload progress plugin.
