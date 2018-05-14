@@ -101,7 +101,7 @@ export default class ImageUploadProgress extends Plugin {
 			return;
 		}
 
-		if ( status == 'complete' ) {
+		if ( status == 'complete' && fileRepository.loaders.get( uploadId ) ) {
 			_showCompleteIcon( viewFigure, viewWriter, editor.editing.view );
 		}
 

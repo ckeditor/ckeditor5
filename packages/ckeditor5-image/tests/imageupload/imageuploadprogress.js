@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals window */
+/* globals window, setTimeout */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 
@@ -179,12 +179,23 @@ describe( 'ImageUploadProgress', () => {
 		nativeReaderMock.mockSuccess( base64Sample );
 	} );
 
-	it( 'should convert image\'s "complete" uploadStatus attribute', done => {
+	it( 'should convert image\'s "complete" uploadStatus attribute and display temporary icon', done => {
+		const clock = testUtils.sinon.useFakeTimers();
+
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
 
 		model.document.once( 'change', () => {
 			model.document.once( 'change', () => {
+				expect( getViewData( view ) ).to.equal(
+					'[<figure class="ck-widget image" contenteditable="false">' +
+						'<img src="image.png"></img>' +
+						'<div class="ck-image-upload-finish"></div>' +
+					'</figure>]<p>foo</p>'
+				);
+
+				clock.tick( 3000 );
+
 				expect( getViewData( view ) ).to.equal(
 					'[<figure class="ck-widget image" contenteditable="false">' +
 						'<img src="image.png"></img>' +
@@ -227,7 +238,7 @@ describe( 'ImageUploadProgress', () => {
 		);
 	} );
 
-	it( 'should not show progress bar if there is no loader with given uploadId', () => {
+	it( 'should not show progress bar and complete icon if there is no loader with given uploadId', () => {
 		setModelData( model, '<image uploadId="123" uploadStatus="reading"></image>' );
 
 		const image = document.getRoot().getChild( 0 );
