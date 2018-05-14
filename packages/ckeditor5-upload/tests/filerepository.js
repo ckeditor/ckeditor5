@@ -153,6 +153,20 @@ describe( 'FileRepository', () => {
 
 			expect( Array.from( pendingActions )[ 0 ] ).to.have.property( 'message', 'Upload in progress 30%.' );
 		} );
+
+		it( 'should add pending action correctly when one upload is after another', () => {
+			const loader1 = fileRepository.createLoader( createNativeFileMock() );
+
+			expect( pendingActions.first ).to.have.property( 'message', 'Upload in progress 0%.' );
+
+			fileRepository.destroyLoader( loader1 );
+
+			expect( pendingActions.first ).to.null;
+
+			fileRepository.createLoader( createNativeFileMock() );
+
+			expect( pendingActions.first ).to.have.property( 'message', 'Upload in progress 0%.' );
+		} );
 	} );
 
 	describe( 'createLoader()', () => {

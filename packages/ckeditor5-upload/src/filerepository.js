@@ -245,6 +245,7 @@ export default class FileRepository extends Plugin {
 			}
 		} else {
 			pendingActions.remove( this._pendingAction );
+			this._pendingAction = null;
 		}
 	}
 }
