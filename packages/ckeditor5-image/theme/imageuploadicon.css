@@ -1,0 +1,87 @@
+/*
+ * Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+:root {
+	--ck-upload-icon-size: 1.5em;
+	--ck-upload-icon-width: 2px;
+
+	--ck-color-upload-icon: hsl(0, 0%, 100%);
+	--ck-color-upload-icon-background: hsl(120, 100%, 27%);
+}
+
+.ck-image-upload-finish {
+	display: block;
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	width: var(--ck-upload-icon-size);
+	height: var(--ck-upload-icon-size);
+	border-radius: 50%;
+	background: var(--ck-color-upload-icon-background);
+	animation-name: ck-fade-in, ck-fade-out;
+	animation-duration: 500ms, 500ms;
+
+	/* Hide completed upload icon after 3 seconds. */
+	animation-delay: 0, 3000ms;
+
+	/* This is check icon element made from border-width mixed with animations. */
+	&::after {
+		content: '';
+		position: absolute;
+		top: 50%;
+
+		/* Because of border transformation we need to "hard code" left position. */
+		left: calc( var(--ck-upload-icon-size) / 3.5 );
+
+		transform: scaleX(-1) rotate(135deg);
+		transform-origin: left top;
+		border-top: var(--ck-upload-icon-width) solid var(--ck-color-upload-icon);
+		border-right: var(--ck-upload-icon-width) solid var(--ck-color-upload-icon);
+		animation-name: ck-check-icon;
+		animation-duration: 500ms;
+		animation-delay: 500ms;
+		animation-fill-mode: forwards;
+
+	}
+}
+
+@keyframes ck-check-icon {
+	0% {
+		opacity: 1;
+		height: 0;
+		width: 0;
+	}
+
+	33.3333% {
+		width: calc( var(--ck-upload-icon-size) / 5 );
+		height: 0;
+	}
+
+	100% {
+		opacity: 1;
+		height: calc( var(--ck-upload-icon-size) / 3 );
+		width: calc( var(--ck-upload-icon-size) / 5 );
+	}
+}
+
+@keyframes ck-fade-in {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+
+@keyframes ck-fade-out {
+	from {
+		opacity: 1;
+	}
+
+	to {
+		opacity: 0;
+	}
+}
