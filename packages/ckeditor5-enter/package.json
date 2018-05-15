@@ -17,6 +17,7 @@
     "@ckeditor/ckeditor5-basic-styles": "^10.0.0",
     "@ckeditor/ckeditor5-editor-classic": "^10.0.0",
     "@ckeditor/ckeditor5-heading": "^10.0.0",
+    "@ckeditor/ckeditor5-paragraph": "^10.0.0",
     "@ckeditor/ckeditor5-typing": "^10.0.0",
     "@ckeditor/ckeditor5-undo": "^10.0.0",
     "eslint": "^4.15.0",
