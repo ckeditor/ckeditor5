@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals document, Event */
+/* globals document, Event, HTMLElement */
 
 import BalloonEditorUI from '../src/ballooneditorui';
 import BalloonEditorUIView from '../src/ballooneditoruiview';
@@ -100,6 +100,24 @@ describe( 'BalloonEditor', () => {
 				return editor.destroy().then( () => {
 					form.remove();
 				} );
+			} );
+		} );
+
+		it( 'allows to pass data to the constructor', () => {
+			return BalloonEditor.create( '<p>Hello world!</p>', {
+				plugins: [ Paragraph ]
+			} ).then( editor => {
+				expect( editor.getData() ).to.equal( '<p>Hello world!</p>' );
+			} );
+		} );
+
+		it( 'editor.element should contain created div element', () => {
+			return BalloonEditor.create( '<p>Hello world!</p>', {
+				plugins: [ Paragraph ]
+			} ).then( editor => {
+				expect( editor.element ).to.be.instanceOf( HTMLElement );
+				expect( editor.element.tagName ).to.equal( 'DIV' );
+				expect( editor.editing.view.getDomRoot() ).to.equal( editor.element );
 			} );
 		} );
 	} );
