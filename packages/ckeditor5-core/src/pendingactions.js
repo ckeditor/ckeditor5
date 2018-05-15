@@ -33,7 +33,6 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  * 		const pendingActions = editor.plugins.get( 'PendingActions' );
  * 		const action = pendingActions.add( 'Unsaved changes.' );
  *
- *
  * 		pendingActions.remove( action );
  *
  * Getting pending actions:
