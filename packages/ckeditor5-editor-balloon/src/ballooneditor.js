@@ -137,6 +137,27 @@ export default class BalloonEditor extends Editor {
 	 *
 	 * Creating instance when using initial data instead of DOM element:
 	 *
+	 *		import BalloonEditor from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor';
+	 *		import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
+	 *		import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+	 *		import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+	 *		import ...
+	 *
+	 *		BalloonEditor
+	 *			.create( '<p>Hello world!</p>', {
+	 *				plugins: [ Essentials, Bold, Italic, ... ],
+	 *				toolbar: [ 'bold', 'italic', ... ]
+	 *			} )
+	 *			.then( editor => {
+	 *				console.log( 'Editor was initialized', editor );
+	 *
+	 *				// Initial data was provided so `editor.element` needs to be added manually to the DOM.
+	 *				document.body.appendChild( editor.element );
+	 *			} )
+	 *			.catch( err => {
+	 *				console.error( err.stack );
+	 *			} );
+	 *
 	 * @param {HTMLElement|String} elementOrData The DOM element that will be the source for the created editor
 	 * (on which the editor will be initialized) or initial data for the editor. If data is provided, `editor.element`
 	 * will be created automatically and need to be added manually to the DOM.
