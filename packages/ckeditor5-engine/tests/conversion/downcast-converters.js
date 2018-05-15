@@ -60,9 +60,9 @@ describe( 'downcast-helpers', () => {
 			expectResult( '<p></p>' );
 		} );
 
-		it( 'can be overwritten using priority', () => {
+		it( 'can be overwritten using converterPriority', () => {
 			const helperA = downcastElementToElement( { model: 'paragraph', view: 'p' } );
-			const helperB = downcastElementToElement( { model: 'paragraph', view: 'foo', priority: 'high' } );
+			const helperB = downcastElementToElement( { model: 'paragraph', view: 'foo', converterPriority: 'high' } );
 
 			conversion.for( 'downcast' ).add( helperA ).add( helperB );
 
@@ -120,9 +120,9 @@ describe( 'downcast-helpers', () => {
 			expectResult( '<strong>foo</strong>' );
 		} );
 
-		it( 'can be overwritten using priority', () => {
+		it( 'can be overwritten using converterPriority', () => {
 			const helperA = downcastAttributeToElement( { model: 'bold', view: 'strong' } );
-			const helperB = downcastAttributeToElement( { model: 'bold', view: 'b', priority: 'high' } );
+			const helperB = downcastAttributeToElement( { model: 'bold', view: 'b', converterPriority: 'high' } );
 
 			conversion.for( 'downcast' ).add( helperA ).add( helperB );
 
@@ -288,9 +288,9 @@ describe( 'downcast-helpers', () => {
 			expectResult( '<img></img>' );
 		} );
 
-		it( 'can be overwritten using priority', () => {
+		it( 'can be overwritten using converterPriority', () => {
 			const helperA = downcastAttributeToAttribute( { model: 'source', view: 'href' } );
-			const helperB = downcastAttributeToAttribute( { model: 'source', view: 'src', priority: 'high' } );
+			const helperB = downcastAttributeToAttribute( { model: 'source', view: 'src', converterPriority: 'high' } );
 
 			conversion.for( 'downcast' ).add( helperA ).add( helperB );
 
@@ -480,9 +480,9 @@ describe( 'downcast-helpers', () => {
 			expectResult( 'f<marker-search></marker-search>o<marker-search></marker-search>o' );
 		} );
 
-		it( 'can be overwritten using priority', () => {
+		it( 'can be overwritten using converterPriority', () => {
 			const helperA = downcastMarkerToElement( { model: 'search', view: 'marker-search' } );
-			const helperB = downcastMarkerToElement( { model: 'search', view: 'search', priority: 'high' } );
+			const helperB = downcastMarkerToElement( { model: 'search', view: 'search', converterPriority: 'high' } );
 
 			conversion.for( 'downcast' ).add( helperA ).add( helperB );
 
@@ -552,9 +552,9 @@ describe( 'downcast-helpers', () => {
 			expectResult( '<span class="comment">foo</span>' );
 		} );
 
-		it( 'can be overwritten using priority', () => {
+		it( 'can be overwritten using converterPriority', () => {
 			const helperA = downcastMarkerToHighlight( { model: 'comment', view: { classes: 'comment' } } );
-			const helperB = downcastMarkerToHighlight( { model: 'comment', view: { classes: 'new-comment' }, priority: 'high' } );
+			const helperB = downcastMarkerToHighlight( { model: 'comment', view: { classes: 'new-comment' }, converterPriority: 'high' } );
 
 			conversion.for( 'downcast' ).add( helperA ).add( helperB );
 
@@ -678,7 +678,7 @@ describe( 'downcast-converters', () => {
 		it( 'should be possible to override it', () => {
 			dispatcher.on( 'insert:$text', ( evt, data, conversionApi ) => {
 				conversionApi.consumable.consume( data.item, 'insert' );
-			}, { priority: 'high' } );
+			}, { converterPriority: 'high' } );
 
 			model.change( writer => {
 				writer.insert( new ModelText( 'foobar' ), modelRootStart );
@@ -774,7 +774,7 @@ describe( 'downcast-converters', () => {
 
 			dispatcher.on( 'attribute:class', ( evt, data, conversionApi ) => {
 				conversionApi.consumable.consume( data.item, 'attribute:class' );
-			}, { priority: 'high' } );
+			}, { converterPriority: 'high' } );
 
 			model.change( writer => {
 				writer.insert( modelElement, modelRootStart );

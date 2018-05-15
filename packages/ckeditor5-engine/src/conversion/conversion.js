@@ -164,7 +164,7 @@ export default class Conversion {
 	 *		conversion.elementToElement( { model: 'paragraph', view: 'p' } );
 	 *
 	 *		// Override other converters by specifying converter definition with higher priority.
-	 *		conversion.elementToElement( { model: 'paragraph', view: 'div', priority: 'high' } );
+	 *		conversion.elementToElement( { model: 'paragraph', view: 'div', converterPriority: 'high' } );
 	 *
 	 *		// View specified as an object instead of a string.
 	 *		conversion.elementToElement( {
@@ -237,7 +237,7 @@ export default class Conversion {
 				upcastElementToElement( {
 					model,
 					view,
-					priority: definition.priority
+					converterPriority: definition.converterPriority
 				} )
 			);
 		}
@@ -251,7 +251,7 @@ export default class Conversion {
 	 *		conversion.attributeToElement( { model: 'bold', view: 'strong' } );
 	 *
 	 *		// Override other converters by specifying converter definition with higher priority.
-	 *		conversion.attributeToElement( { model: 'bold', view: 'b', priority: 'high' } );
+	 *		conversion.attributeToElement( { model: 'bold', view: 'b', converterPriority: 'high' } );
 	 *
 	 *		// View specified as an object instead of a string.
 	 *		conversion.attributeToElement( {
@@ -579,7 +579,7 @@ export default class Conversion {
  * Any view element matching `upcastAlso` will also be converted to model. If `model` describes multiple values, `upcastAlso`
  * is an object that assigns those values (`upcastAlso` object keys) to {@link module:engine/view/matcher~MatcherPattern}s
  * (`upcastAlso` object values).
- * @property {module:utils/priorities~PriorityString} [priority] Conversion priority.
+ * @property {module:utils/priorities~PriorityString} [converterPriority] Conversion priority.
  */
 
 // Helper function for `Conversion` `.add()` method.
