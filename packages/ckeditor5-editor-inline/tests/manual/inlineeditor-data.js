@@ -10,6 +10,8 @@ import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articleplugi
 
 window.editors = [];
 
+const container = document.querySelector( '.container' );
+
 function initEditor() {
 	InlineEditor
 		.create( '<h2>Editor 1</h2><p>This is an editor instance.</p>', {
@@ -18,7 +20,7 @@ function initEditor() {
 		} )
 		.then( editor => {
 			window.editors.push( editor );
-			document.body.appendChild( editor.element );
+			container.appendChild( editor.element );
 		} )
 		.catch( err => {
 			console.error( err.stack );
