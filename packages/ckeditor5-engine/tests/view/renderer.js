@@ -217,6 +217,28 @@ describe( 'Renderer', () => {
 			expect( renderer.markedTexts.size ).to.equal( 0 );
 		} );
 
+		it( 'should not update same text', () => {
+			const viewText = new ViewText( 'foo' );
+			viewRoot._appendChild( viewText );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			expect( domRoot.childNodes.length ).to.equal( 1 );
+			expect( domRoot.childNodes[ 0 ].data ).to.equal( 'foo' );
+
+			viewText._data = 'foo';
+
+			renderer.markToSync( 'text', viewText );
+
+			renderAndExpectNoChanges( renderer, domRoot );
+
+			expect( domRoot.childNodes.length ).to.equal( 1 );
+			expect( domRoot.childNodes[ 0 ].data ).to.equal( 'foo' );
+
+			expect( renderer.markedTexts.size ).to.equal( 0 );
+		} );
+
 		it( 'should not update text parent child list changed', () => {
 			const viewImg = new ViewElement( 'img' );
 			const viewText = new ViewText( 'foo' );
@@ -2393,6 +2415,256 @@ describe( 'Renderer', () => {
 			expect( renderer.markedChildren.size ).to.equal( 0 );
 			expect( renderer.markedAttributes.size ).to.equal( 0 );
 			expect( renderer.markedTexts.size ).to.equal( 0 );
+		} );
+	} );
+
+	describe( '_updateText', () => {
+		let viewRoot, domRoot;
+
+		beforeEach( () => {
+			viewRoot = new ViewElement( 'div' );
+			domRoot = document.createElement( 'div' );
+			document.body.appendChild( domRoot );
+
+			domConverter.bindElements( domRoot, viewRoot );
+
+			renderer.markedTexts.clear();
+			renderer.markedAttributes.clear();
+			renderer.markedChildren.clear();
+
+			renderer.isFocused = true;
+		} );
+
+		afterEach( () => {
+			domRoot.remove();
+		} );
+
+		it( 'should update text - change on end', () => {
+			const viewText = new ViewText( 'foo' );
+			viewRoot._appendChild( viewText );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			expect( domRoot.childNodes.length ).to.equal( 1 );
+			expect( domRoot.childNodes[ 0 ].data ).to.equal( 'foo' );
+
+			viewText._data = 'fobar';
+
+			renderer._updateText( viewText, {} );
+
+			expect( domRoot.childNodes.length ).to.equal( 1 );
+			expect( domRoot.childNodes[ 0 ].data ).to.equal( 'fobar' );
+		} );
+
+		it( 'should update text - change on start', () => {
+			const viewText = new ViewText( 'foo' );
+			viewRoot._appendChild( viewText );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			expect( domRoot.childNodes.length ).to.equal( 1 );
+			expect( domRoot.childNodes[ 0 ].data ).to.equal( 'foo' );
+
+			viewText._data = 'baro';
+
+			renderer._updateText( viewText, {} );
+
+			expect( domRoot.childNodes.length ).to.equal( 1 );
+			expect( domRoot.childNodes[ 0 ].data ).to.equal( 'baro' );
+		} );
+
+		it( 'should update text - change in the middle', () => {
+			const viewText = new ViewText( 'foobar' );
+			viewRoot._appendChild( viewText );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			expect( domRoot.childNodes.length ).to.equal( 1 );
+			expect( domRoot.childNodes[ 0 ].data ).to.equal( 'foobar' );
+
+			viewText._data = 'fobazr';
+
+			renderer._updateText( viewText, {} );
+
+			expect( domRoot.childNodes.length ).to.equal( 1 );
+			expect( domRoot.childNodes[ 0 ].data ).to.equal( 'fobazr' );
+		} );
+
+		it( 'should update text - empty expected', () => {
+			const viewText = new ViewText( 'foo' );
+			viewRoot._appendChild( viewText );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			expect( domRoot.childNodes.length ).to.equal( 1 );
+			expect( domRoot.childNodes[ 0 ].data ).to.equal( 'foo' );
+
+			viewText._data = '';
+
+			renderer._updateText( viewText, {} );
+
+			expect( domRoot.childNodes.length ).to.equal( 1 );
+			expect( domRoot.childNodes[ 0 ].data ).to.equal( '' );
+		} );
+
+		it( 'should update text - empty actual', () => {
+			const viewText = new ViewText( '' );
+			viewRoot._appendChild( viewText );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			expect( domRoot.childNodes.length ).to.equal( 1 );
+			expect( domRoot.childNodes[ 0 ].data ).to.equal( '' );
+
+			viewText._data = 'fobar';
+
+			renderer._updateText( viewText, {} );
+
+			expect( domRoot.childNodes.length ).to.equal( 1 );
+			expect( domRoot.childNodes[ 0 ].data ).to.equal( 'fobar' );
+		} );
+
+		it( 'should handle filler during text modifications', () => {
+			const viewText = new ViewText( 'foo' );
+			viewRoot._appendChild( viewText );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			expect( domRoot.childNodes.length ).to.equal( 1 );
+			expect( domRoot.childNodes[ 0 ].data ).to.equal( 'foo' );
+
+			// 1. Insert filler.
+			renderer._updateText( viewText, {
+				inlineFillerPosition: {
+					parent: viewText.parent,
+					offset: 0
+				}
+			} );
+
+			expect( domRoot.childNodes.length ).to.equal( 1 );
+			expect( domRoot.childNodes[ 0 ].data ).to.equal( INLINE_FILLER + 'foo' );
+
+			// 2. Edit text - filler should be preserved.
+			viewText._data = 'barfoo';
+
+			renderer._updateText( viewText, {
+				inlineFillerPosition: {
+					parent: viewText.parent,
+					offset: 0
+				}
+			} );
+
+			expect( domRoot.childNodes.length ).to.equal( 1 );
+			expect( domRoot.childNodes[ 0 ].data ).to.equal( INLINE_FILLER + 'barfoo' );
+
+			// 3. Remove filler.
+			renderer._updateText( viewText, {} );
+
+			expect( domRoot.childNodes.length ).to.equal( 1 );
+			expect( domRoot.childNodes[ 0 ].data ).to.equal( 'barfoo' );
+		} );
+
+		it( 'should handle filler during text modifications - empty text', () => {
+			const viewText = new ViewText( '' );
+			viewRoot._appendChild( viewText );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			expect( domRoot.childNodes.length ).to.equal( 1 );
+			expect( domRoot.childNodes[ 0 ].data ).to.equal( '' );
+
+			// 1. Insert filler.
+			renderer._updateText( viewText, {
+				inlineFillerPosition: {
+					parent: viewText.parent,
+					offset: 0
+				}
+			} );
+
+			expect( domRoot.childNodes.length ).to.equal( 1 );
+			expect( domRoot.childNodes[ 0 ].data ).to.equal( INLINE_FILLER );
+
+			// 2. Edit text - filler should be preserved.
+			viewText._data = 'foo';
+
+			renderer._updateText( viewText, {
+				inlineFillerPosition: {
+					parent: viewText.parent,
+					offset: 0
+				}
+			} );
+
+			expect( domRoot.childNodes.length ).to.equal( 1 );
+			expect( domRoot.childNodes[ 0 ].data ).to.equal( INLINE_FILLER + 'foo' );
+
+			// 3. Remove filler.
+			viewText._data = '';
+
+			renderer._updateText( viewText, {} );
+
+			expect( domRoot.childNodes.length ).to.equal( 1 );
+			expect( domRoot.childNodes[ 0 ].data ).to.equal( '' );
+		} );
+
+		it( 'should handle filler during text modifications inside inline element', () => {
+			const viewB = new ViewElement( 'b' );
+			const viewText = new ViewText( 'foo' );
+
+			viewB._appendChild( viewText );
+			viewRoot._appendChild( viewB );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			expect( domRoot.childNodes.length ).to.equal( 1 );
+			expect( domRoot.childNodes[ 0 ].tagName ).to.equal( 'B' );
+			expect( domRoot.childNodes[ 0 ].childNodes.length ).to.equal( 1 );
+			expect( domRoot.childNodes[ 0 ].childNodes[ 0 ].data ).to.equal( 'foo' );
+
+			// 1. Insert filler.
+			renderer._updateText( viewText, {
+				inlineFillerPosition: {
+					parent: viewText.parent,
+					offset: 0
+				}
+			} );
+
+			expect( domRoot.childNodes.length ).to.equal( 1 );
+			expect( domRoot.childNodes[ 0 ].tagName ).to.equal( 'B' );
+			expect( domRoot.childNodes[ 0 ].childNodes.length ).to.equal( 1 );
+			expect( domRoot.childNodes[ 0 ].childNodes[ 0 ].data ).to.equal( INLINE_FILLER + 'foo' );
+
+			// 2. Edit text - filler should be preserved.
+			viewText._data = 'bar';
+
+			renderer._updateText( viewText, {
+				inlineFillerPosition: {
+					parent: viewText.parent,
+					offset: 0
+				}
+			} );
+
+			expect( domRoot.childNodes.length ).to.equal( 1 );
+			expect( domRoot.childNodes[ 0 ].tagName ).to.equal( 'B' );
+			expect( domRoot.childNodes[ 0 ].childNodes.length ).to.equal( 1 );
+			expect( domRoot.childNodes[ 0 ].childNodes[ 0 ].data ).to.equal( INLINE_FILLER + 'bar' );
+
+			// 3. Remove filler.
+			viewText._data = 'bar';
+
+			renderer._updateText( viewText, {} );
+
+			expect( domRoot.childNodes.length ).to.equal( 1 );
+			expect( domRoot.childNodes[ 0 ].tagName ).to.equal( 'B' );
+			expect( domRoot.childNodes[ 0 ].childNodes.length ).to.equal( 1 );
+			expect( domRoot.childNodes[ 0 ].childNodes[ 0 ].data ).to.equal( 'bar' );
 		} );
 	} );
 } );
