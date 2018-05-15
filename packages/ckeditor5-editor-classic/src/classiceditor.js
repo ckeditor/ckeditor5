@@ -54,8 +54,10 @@ export default class ClassicEditor extends Editor {
 	 * {@link module:editor-classic/classiceditor~ClassicEditor.create `ClassicEditor.create()`} method instead.
 	 *
 	 * @protected
-	 * @param {HTMLElement} element The DOM element that will be the source for the created editor.
-	 * The data will be loaded from it and loaded back to it once the editor is destroyed.
+	 * @param {HTMLElement} elementOrData The DOM element that will be the source for the created editor.
+	 * The data will be loaded from it and loaded back to it once the editor is destroyed. If data is provided, `editor.element`
+	 * should be added manually to the DOM after the editor is initialized.  For more information see
+	 * {@link module:editor-classic/classiceditor~ClassicEditor.create `ClassicEditor.create()`}.
 	 * @param {module:core/editor/editorconfig~EditorConfig} config The editor configuration.
 	 */
 	constructor( elementOrData, config ) {
@@ -126,6 +128,29 @@ export default class ClassicEditor extends Editor {
 	 *			} )
 	 *			.then( editor => {
 	 *				console.log( 'Editor was initialized', editor );
+	 *			} )
+	 *			.catch( err => {
+	 *				console.error( err.stack );
+	 *			} );
+	 *
+	 * Creating instance when using initial data instead of DOM element:
+	 *
+	 *		import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+	 *		import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
+	 *		import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+	 *		import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+	 *		import ...
+	 *
+	 *		ClassicEditor
+	 *			.create( '<p>Hello world!</p>', {
+	 *				plugins: [ Essentials, Bold, Italic, ... ],
+	 *				toolbar: [ 'bold', 'italic', ... ]
+	 *			} )
+	 *			.then( editor => {
+	 *				console.log( 'Editor was initialized', editor );
+	 *
+	 *				// Initial data was provided so `editor.element` needs to be added manually to the DOM.
+	 *				document.body.appendChild( editor.element );
 	 *			} )
 	 *			.catch( err => {
 	 *				console.error( err.stack );
