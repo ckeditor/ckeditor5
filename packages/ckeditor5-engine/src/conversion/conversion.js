@@ -579,7 +579,7 @@ export default class Conversion {
  * Any view element matching `upcastAlso` will also be converted to model. If `model` describes multiple values, `upcastAlso`
  * is an object that assigns those values (`upcastAlso` object keys) to {@link module:engine/view/matcher~MatcherPattern}s
  * (`upcastAlso` object values).
- * @property {module:utils/priorities~PriorityString} [converterPriority] Conversion priority.
+ * @property {module:utils/priorities~PriorityString} [converterPriority] Converter priority.
  */
 
 // Helper function for `Conversion` `.add()` method.
