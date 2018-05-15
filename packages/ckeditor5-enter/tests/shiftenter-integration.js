@@ -38,7 +38,7 @@ describe( 'ShiftEnter integration', () => {
 	it( 'loads correct data', () => {
 		const options = { withoutSelection: true };
 
-		expect( getModelData( model, options) ).to.equal( '<paragraph>First line.<break></break>Second line.</paragraph>' );
+		expect( getModelData( model, options ) ).to.equal( '<paragraph>First line.<break></break>Second line.</paragraph>' );
 		expect( getViewData( editor.editing.view, options ) ).to.equal( '<p>First line.<br></br>Second line.</p>' );
 	} );
 } );
