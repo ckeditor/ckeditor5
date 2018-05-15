@@ -12,7 +12,7 @@ import EnterCommand from './entercommand';
 import EnterObserver from './enterobserver';
 
 /**
- * The Enter feature. Handles the <kbd>Enter</kbd> and <kbd>Shift + Enter</kbd> keys in the editor.
+ * The Enter feature. Handles the <kbd>Enter</kbd> key in the editor.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -35,6 +35,11 @@ export default class Enter extends Plugin {
 
 		// TODO We may use the keystroke handler for that.
 		this.listenTo( viewDocument, 'enter', ( evt, data ) => {
+			// The 'Enter + Shift' keys are handled by the ShiftEnter plugin.
+			if ( data.isSoft ) {
+				return;
+			}
+
 			editor.execute( 'enter' );
 			data.preventDefault();
 			view.scrollToTheSelection();

@@ -4,29 +4,23 @@
  */
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
-import SoftBreakCommand from '../src/softbreakcommand';
-import SoftBreakEditing from '../src/softbreakediting';
 import InsertDelta from '@ckeditor/ckeditor5-engine/src/model/delta/insertdelta';
 import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import ShiftEnter from '../src/shiftenter';
 
-describe( 'SoftBreakCommand', () => {
+describe( 'ShiftEnterCommand', () => {
 	let editor, model, doc, schema, command;
 
 	beforeEach( () => {
-		return ModelTestEditor.create( {
-			plugins: [ SoftBreakEditing ]
-		} )
+		return ModelTestEditor.create( { plugins: [ ShiftEnter ] } )
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
 				doc = model.document;
 
-				command = new SoftBreakCommand( editor );
-				editor.commands.add( 'softbreak', command );
+				command = editor.commands.get( 'shiftEnter' );
 
 				schema = model.schema;
-
-				// TODO softbreakediting include
 
 				// Note: We could use real names like 'paragraph', but that would make test patterns too long.
 				// Plus, this is actually a good test that the algorithm can be used for any model.
@@ -50,31 +44,31 @@ describe( 'SoftBreakCommand', () => {
 			} );
 	} );
 
-	describe( 'SoftBreakCommand', () => {
+	describe( 'ShiftEnterCommand', () => {
 		it( 'soft breaks a block using parent batch', () => {
 			setData( model, '<p>foo[]</p>' );
 
 			model.change( writer => {
 				expect( writer.batch.deltas ).to.length( 0 );
-				editor.execute( 'softbreak' );
+				editor.execute( 'shiftEnter' );
 				expect( writer.batch.deltas ).to.length.above( 0 );
 			} );
 		} );
 
-		it( 'creates InsertDelta if soft break is at the beginning of block', () => {
+		it( 'creates InsertDelta if soft enter is at the beginning of block', () => {
 			setData( model, '<p>[]foo</p>' );
 
-			editor.execute( 'softbreak' );
+			editor.execute( 'shiftEnter' );
 
 			const deltas = Array.from( doc.history.getDeltas() );
 
 			expect( deltas[ deltas.length - 1 ] ).to.be.instanceof( InsertDelta );
 		} );
 
-		it( 'creates InsertDelta if soft break is at the end of block', () => {
+		it( 'creates InsertDelta if soft enter is at the end of block', () => {
 			setData( model, '<p>foo[]</p>' );
 
-			editor.execute( 'softbreak' );
+			editor.execute( 'shiftEnter' );
 
 			const deltas = Array.from( doc.history.getDeltas() );
 
@@ -85,47 +79,41 @@ describe( 'SoftBreakCommand', () => {
 	describe( 'execute()', () => {
 		describe( 'collapsed selection', () => {
 			test(
-				'does nothing in the root',
+				'inserts in the root',
 				'foo[]bar',
-				'foo[]bar'
+				'foo<break></break>[]bar'
 			);
 
 			test(
 				'inserts inside block',
 				'<p>x</p><p>foo[]bar</p><p>y</p>',
-				'<p>x</p><p>foo<br></br>[]bar</p><p>y</p>'
+				'<p>x</p><p>foo<break></break>[]bar</p><p>y</p>'
 			);
 
 			test(
 				'inserts at the end of block',
 				'<p>x</p><p>foo[]</p><p>y</p>',
-				'<p>x</p><p>foo<br></br>[]</p><p>y</p>'
+				'<p>x</p><p>foo<break></break>[]</p><p>y</p>'
 			);
 
 			test(
 				'inserts at the beginning of block',
 				'<p>x</p><p>[]foo</p><p>y</p>',
-				'<p>x</p><p><br></br>[]foo</p><p>y</p>'
+				'<p>x</p><p><break></break>[]foo</p><p>y</p>'
 			);
-
-			// test(
-			// 	'inserts new block after empty one',
-			// 	'<p>x</p><p>[]</p><p>y</p>',
-			// 	'<p>x</p><p></p><p>[]</p><p>y</p>'
-			// );
 		} );
 
 		describe( 'non-collapsed selection', () => {
 			test(
-				'only deletes the content when directly in the root',
+				'deletes the content and inserts the break when directly in the root',
 				'fo[ob]ar',
-				'fo[]ar'
+				'fo<break></break>[]ar'
 			);
 
 			test(
 				'deletes text and adds break',
 				'<p>ab[cd]ef</p><p>ghi</p>',
-				'<p>ab<br></br>[]ef</p><p>ghi</p>'
+				'<p>ab<break></break>[]ef</p><p>ghi</p>'
 			);
 
 			test(
@@ -135,9 +123,15 @@ describe( 'SoftBreakCommand', () => {
 			);
 
 			test(
-				'leaves one empty element after one was fully selected',
+				'does nothing for selection that contains more than one range',
+				'<p>[abc]</p><p>[def]</p>',
+				'<p>[abc]</p><p>[def]</p>'
+			);
+
+			test(
+				'inserts break in empty element after it was fully selected',
 				'<p>x</p><p>[abcdef]</p><p>y</p>',
-				'<p>x</p><p>[]</p><p>y</p>'
+				'<p>x</p><p><break></break>[]</p><p>y</p>'
 			);
 
 			test(
@@ -147,15 +141,27 @@ describe( 'SoftBreakCommand', () => {
 			);
 
 			test(
-				'should not break inline limit elements - collapsed',
+				'should insert the break in inline limit element - collapsed',
 				'<p><inlineLimit>foo[]bar</inlineLimit></p>',
-				'<p><inlineLimit>foo[]bar</inlineLimit></p>'
+				'<p><inlineLimit>foo<break></break>[]bar</inlineLimit></p>'
 			);
 
 			test(
-				'should not break inline limit elements',
+				'should insert the break in inline limit elements',
 				'<p><inlineLimit>foo[bar]baz</inlineLimit></p>',
-				'<p><inlineLimit>foo[]baz</inlineLimit></p>'
+				'<p><inlineLimit>foo<break></break>[]baz</inlineLimit></p>'
+			);
+
+			test(
+				'should insert the break at beginning of the inline limit elements',
+				'<p><inlineLimit>foo[bar]baz</inlineLimit></p>',
+				'<p><inlineLimit>foo<break></break>[]baz</inlineLimit></p>'
+			);
+
+			test(
+				'should insert the break at ending of the inline limit elements',
+				'<p><inlineLimit>foobaz[]</inlineLimit></p>',
+				'<p><inlineLimit>foobaz<break></break>[]</inlineLimit></p>'
 			);
 
 			test(
@@ -167,7 +173,13 @@ describe( 'SoftBreakCommand', () => {
 			test(
 				'should break paragraph in blockLimit',
 				'<blockLimit><p>foo[]bar</p></blockLimit>',
-				'<blockLimit><p>foo<br></br>[]bar</p></blockLimit>'
+				'<blockLimit><p>foo<break></break>[]bar</p></blockLimit>'
+			);
+
+			test(
+				'does nothing when break element cannot be inserted in specified context',
+				'<img>[]</img>',
+				'<img>[]</img>'
 			);
 
 			it( 'leaves one empty element after two were fully selected (backward)', () => {

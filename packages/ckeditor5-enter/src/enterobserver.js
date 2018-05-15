@@ -51,7 +51,8 @@ export default class EnterObserver extends Observer {
  * Event fired when the user presses the <kbd>Enter</kbd> key.
  *
  * Note: This event is fired by the {@link module:enter/enterobserver~EnterObserver observer}
- * (usually registered by the {@link module:enter/enter~Enter Enter feature}).
+ * (usually registered by the {@link module:enter/enter~Enter Enter feature} and
+ * {@link module:enter/softenter~SoftEnter SoftEnter feature}).
  *
  * @event module:engine/view/document~Document#event:enter
  * @param {module:engine/view/observer/domeventdata~DomEventData} data

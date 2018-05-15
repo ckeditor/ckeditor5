@@ -30,7 +30,7 @@ describe( 'Enter feature', () => {
 		const spy = editor.execute = sinon.spy();
 		const domEvt = getDomEvent();
 
-		viewDocument.fire( 'enter', new DomEventData( viewDocument, domEvt ) );
+		viewDocument.fire( 'enter', new DomEventData( viewDocument, domEvt, { isSoft: false } ) );
 
 		expect( spy.calledOnce ).to.be.true;
 		expect( spy.calledWithExactly( 'enter' ) ).to.be.true;
@@ -47,6 +47,15 @@ describe( 'Enter feature', () => {
 
 		sinon.assert.calledOnce( scrollSpy );
 		sinon.assert.callOrder( executeSpy, scrollSpy );
+	} );
+
+	it( 'does not execute the command if soft enter should be used', () => {
+		const domEvt = getDomEvent();
+		const commandExecuteSpy = sinon.stub( editor.commands.get( 'enter' ), 'execute' );
+
+		viewDocument.fire( 'enter', new DomEventData( viewDocument, domEvt, { isSoft: true } ) );
+
+		sinon.assert.notCalled( commandExecuteSpy );
 	} );
 
 	function getDomEvent() {
