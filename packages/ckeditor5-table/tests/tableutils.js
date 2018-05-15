@@ -447,7 +447,7 @@ describe( 'TableUtils', () => {
 			] ) );
 		} );
 
-		it( 'should unsplit table cell if split is equal to colspan', () => {
+		it( 'should split table cell if split is equal to colspan', () => {
 			setData( model, modelTable( [
 				[ '00', '01', '02' ],
 				[ '10', '11', '12' ],
@@ -465,7 +465,7 @@ describe( 'TableUtils', () => {
 			] ) );
 		} );
 
-		it( 'should properly unsplit table cell if split is uneven', () => {
+		it( 'should properly split table cell if split is uneven', () => {
 			setData( model, modelTable( [
 				[ '00', '01', '02' ],
 				[ { colspan: 3, contents: '10[]' } ]
@@ -565,7 +565,7 @@ describe( 'TableUtils', () => {
 			] ) );
 		} );
 
-		it( 'should unsplit rowspanned cell', () => {
+		it( 'should split rowspanned cell', () => {
 			setData( model, modelTable( [
 				[ '00', { rowspan: 2, contents: '01[]' } ],
 				[ '10' ],
@@ -629,7 +629,7 @@ describe( 'TableUtils', () => {
 			] ) );
 		} );
 
-		it( 'should unsplit rowspanned cell and updated other cells rowspan when splitting to bigger number of cells', () => {
+		it( 'should split rowspanned cell and updated other cells rowspan when splitting to bigger number of cells', () => {
 			setData( model, modelTable( [
 				[ '00', { rowspan: 2, contents: '01[]' } ],
 				[ '10' ],
@@ -648,7 +648,7 @@ describe( 'TableUtils', () => {
 			] ) );
 		} );
 
-		it( 'should unsplit rowspanned & colspaned cell', () => {
+		it( 'should split rowspanned & colspaned cell', () => {
 			setData( model, modelTable( [
 				[ '00', { colspan: 2, contents: '01[]' } ],
 				[ '10', '11' ]
@@ -664,6 +664,23 @@ describe( 'TableUtils', () => {
 				[ { colspan: 2, contents: '' } ],
 				[ '10', '11' ]
 			] ) );
+		} );
+
+		it( 'should split table cell from a heading section', () => {
+			setData( model, modelTable( [
+				[ '00[]', '01', '02' ],
+				[ '10', '11', '12' ],
+				[ '20', '21', '22' ]
+			], { headingRows: 1 } ) );
+
+			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 0, 0 ] ) );
+
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '00[]', { rowspan: 2, contents: '01' }, { rowspan: 2, contents: '02' } ],
+				[ '' ],
+				[ '10', '11', '12' ],
+				[ '20', '21', '22' ]
+			], { headingRows: 2 } ) );
 		} );
 	} );
 

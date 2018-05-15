@@ -337,6 +337,12 @@ export default class TableUtils extends Plugin {
 				}
 
 				createEmptyRows( writer, table, rowIndex + 1, remaingingRowspan, 1, attributes );
+
+				const headingRows = parseInt( table.getAttribute( 'headingRows' ) || 0 );
+
+				if ( headingRows > rowIndex ) {
+					updateNumericAttribute( 'headingRows', headingRows + 1, table, writer );
+				}
 			}
 		} );
 	}
