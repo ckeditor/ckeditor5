@@ -71,7 +71,8 @@ function generateFontPreset( fontDefinition ) {
 			name: 'span',
 			styles: {
 				'font-family': cssFontNames
-			}
+			},
+			priority: 5
 		}
 	};
 }
