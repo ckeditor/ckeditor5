@@ -9,6 +9,7 @@ import BalloonEditor from '../../src/ballooneditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 
 window.editors = [];
+const container = document.querySelector( '.container' );
 
 function initEditor() {
 	BalloonEditor
@@ -18,7 +19,7 @@ function initEditor() {
 		} )
 		.then( editor => {
 			window.editors.push( editor );
-			document.body.appendChild( editor.element );
+			container.appendChild( editor.element );
 		} )
 		.catch( err => {
 			console.error( err.stack );
