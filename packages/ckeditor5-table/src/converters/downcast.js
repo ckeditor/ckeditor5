@@ -173,6 +173,12 @@ export function downcastAttributeChange( options ) {
 
 			const trElement = conversionApi.mapper.toViewElement( tableRow );
 
+			// The TR element might be not converted yet (ie when adding a row to a heading section).
+			// It will be converted by downcastInsertRow() conversion helper.
+			if ( !trElement ) {
+				continue;
+			}
+
 			const desiredParentName = getSectionName( tableWalkerValue );
 
 			if ( desiredParentName !== trElement.parent.name ) {

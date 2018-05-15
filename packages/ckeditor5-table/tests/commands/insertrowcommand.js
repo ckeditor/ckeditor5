@@ -237,6 +237,7 @@ describe( 'InsertRowCommand', () => {
 					[ '10', '11' ]
 				] ) );
 			} );
+
 			it( 'should insert row at the end of a table', () => {
 				setData( model, modelTable( [
 					[ '00', '01' ],

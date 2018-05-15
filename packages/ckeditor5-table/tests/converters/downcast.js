@@ -977,6 +977,31 @@ describe( 'downcast converters', () => {
 			] ) );
 		} );
 
+		it( 'should work with adding table rows at the beginning of a table', () => {
+			setModelData( model, modelTable( [
+				[ '00', '01' ],
+				[ '10', '11' ]
+			], { headingRows: 1 } ) );
+
+			const table = root.getChild( 0 );
+
+			model.change( writer => {
+				writer.setAttribute( 'headingRows', 2, table );
+
+				const tableRow = writer.createElement( 'tableRow' );
+
+				writer.insert( tableRow, table, 0 );
+				writer.insertElement( 'tableCell', tableRow, 'end' );
+				writer.insertElement( 'tableCell', tableRow, 'end' );
+			} );
+
+			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+				[ '', '' ],
+				[ '00', '01' ],
+				[ '10', '11' ]
+			], { headingRows: 2 } ) );
+		} );
+
 		describe( 'asWidget', () => {
 			beforeEach( () => {
 				return VirtualTestEditor.create()
