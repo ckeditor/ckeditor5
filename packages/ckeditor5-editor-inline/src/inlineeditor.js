@@ -7,8 +7,6 @@
  * @module editor-inline/inlineeditor
  */
 
-/* global document */
-
 import Editor from '@ckeditor/ckeditor5-core/src/editor/editor';
 import DataApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/dataapimixin';
 import ElementApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/elementapimixin';
@@ -20,6 +18,7 @@ import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement
 import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import isElement from '@ckeditor/ckeditor5-utils/src/lib/lodash/isElement';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 /**
  * The {@glink builds/guides/overview#inline-editor inline editor} implementation.
@@ -70,7 +69,7 @@ export default class InlineEditor extends Editor {
 		if ( isElement( elementOrData ) ) {
 			this.element = elementOrData;
 		} else {
-			this.element = document.createElement( 'div' );
+			this.element = global.document.createElement( 'div' );
 		}
 
 		this.ui = new InlineEditorUI( this, new InlineEditorUIView( this.locale, this.element ) );
