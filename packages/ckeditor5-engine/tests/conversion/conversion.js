@@ -125,9 +125,9 @@ describe( 'Conversion', () => {
 				test( '<p>Foo</p>', '<paragraph>Foo</paragraph>' );
 			} );
 
-			it( 'config.priority is defined', () => {
+			it( 'config.converterPriority is defined', () => {
 				conversion.elementToElement( { model: 'paragraph', view: 'p' } );
-				conversion.elementToElement( { model: 'paragraph', view: 'div', priority: 'high' } );
+				conversion.elementToElement( { model: 'paragraph', view: 'div', converterPriority: 'high' } );
 
 				test( '<div>Foo</div>', '<paragraph>Foo</paragraph>' );
 				test( '<p>Foo</p>', '<paragraph>Foo</paragraph>', '<div>Foo</div>' );
@@ -224,9 +224,9 @@ describe( 'Conversion', () => {
 				test( '<p><strong>Foo</strong> bar</p>', '<paragraph><$text bold="true">Foo</$text> bar</paragraph>' );
 			} );
 
-			it( 'config.priority is defined', () => {
+			it( 'config.converterPriority is defined', () => {
 				conversion.attributeToElement( { model: 'bold', view: 'strong' } );
-				conversion.attributeToElement( { model: 'bold', view: 'b', priority: 'high' } );
+				conversion.attributeToElement( { model: 'bold', view: 'b', converterPriority: 'high' } );
 
 				test( '<p><b>Foo</b></p>', '<paragraph><$text bold="true">Foo</$text></paragraph>' );
 				test( '<p><strong>Foo</strong></p>', '<paragraph><$text bold="true">Foo</$text></paragraph>', '<p><b>Foo</b></p>' );

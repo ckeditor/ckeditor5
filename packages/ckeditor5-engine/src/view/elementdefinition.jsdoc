@@ -55,4 +55,5 @@
  * Value under that key must be a string.
  * @property {Object} [attributes] Object with key-value pairs representing attributes. Each object key represents
  * attribute name. Value under that key must be a string.
+ * @property {Number} [priority] Element's {@link module:engine/view/attributeelement~AttributeElement#priority priority}.
  */

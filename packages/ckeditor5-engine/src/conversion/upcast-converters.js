@@ -26,7 +26,7 @@ import cloneDeep from '@ckeditor/ckeditor5-utils/src/lib/lodash/cloneDeep';
  *
  *		upcastElementToElement( { view: 'p', model: 'paragraph' } );
  *
- *		upcastElementToElement( { view: 'p', model: 'paragraph', priority: 'high' } );
+ *		upcastElementToElement( { view: 'p', model: 'paragraph', converterPriority: 'high' } );
  *
  *		upcastElementToElement( {
  *			view: {
@@ -52,7 +52,7 @@ import cloneDeep from '@ckeditor/ckeditor5-utils/src/lib/lodash/cloneDeep';
  * @param {module:engine/view/matcher~MatcherPattern} config.view Pattern matching all view elements which should be converted.
  * @param {String|module:engine/model/element~Element|Function} config.model Name of the model element, a model element
  * instance or a function that takes a view element and returns a model element. The model element will be inserted in the model.
- * @param {module:utils/priorities~PriorityString} [config.priority='normal'] Converter priority.
+ * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
  * @returns {Function} Conversion helper.
  */
 export function upcastElementToElement( config ) {
@@ -64,7 +64,7 @@ export function upcastElementToElement( config ) {
 	const eventName = elementName ? 'element:' + elementName : 'element';
 
 	return dispatcher => {
-		dispatcher.on( eventName, converter, { priority: config.priority || 'normal' } );
+		dispatcher.on( eventName, converter, { priority: config.converterPriority || 'normal' } );
 	};
 }
 
@@ -78,7 +78,7 @@ export function upcastElementToElement( config ) {
  *
  *		upcastElementToAttribute( { view: 'strong', model: 'bold' } );
  *
- *		upcastElementToAttribute( { view: 'strong', model: 'bold', priority: 'high' } );
+ *		upcastElementToAttribute( { view: 'strong', model: 'bold', converterPriority: 'high' } );
  *
  *		upcastElementToAttribute( {
  *			view: {
@@ -130,7 +130,7 @@ export function upcastElementToElement( config ) {
  * @param {String|Object} config.model Model attribute key or an object with `key` and `value` properties, describing
  * the model attribute. `value` property may be set as a function that takes a view element and returns the value.
  * If `String` is given, the model attribute value will be set to `true`.
- * @param {module:utils/priorities~PriorityString} [config.priority='normal'] Converter priority.
+ * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
  * @returns {Function} Conversion helper.
  */
 export function upcastElementToAttribute( config ) {
@@ -144,7 +144,7 @@ export function upcastElementToAttribute( config ) {
 	const eventName = elementName ? 'element:' + elementName : 'element';
 
 	return dispatcher => {
-		dispatcher.on( eventName, converter, { priority: config.priority || 'normal' } );
+		dispatcher.on( eventName, converter, { priority: config.converterPriority || 'normal' } );
 	};
 }
 
@@ -160,7 +160,7 @@ export function upcastElementToAttribute( config ) {
  *
  *		upcastAttributeToAttribute( { view: { key: 'src' }, model: 'source' } );
  *
- *		upcastAttributeToAttribute( { view: { key: 'src' }, model: 'source', priority: 'normal' } );
+ *		upcastAttributeToAttribute( { view: { key: 'src' }, model: 'source', converterPriority: 'normal' } );
  *
  *		upcastAttributeToAttribute( {
  *			view: {
@@ -209,7 +209,7 @@ export function upcastElementToAttribute( config ) {
  * @param {String|Object} config.model Model attribute key or an object with `key` and `value` properties, describing
  * the model attribute. `value` property may be set as a function that takes a view element and returns the value.
  * If `String` is given, the model attribute value will be same as view attribute value.
- * @param {module:utils/priorities~PriorityString} [config.priority='low'] Converter priority.
+ * @param {module:utils/priorities~PriorityString} [config.converterPriority='low'] Converter priority.
  * @returns {Function} Conversion helper.
  */
 export function upcastAttributeToAttribute( config ) {
@@ -226,7 +226,7 @@ export function upcastAttributeToAttribute( config ) {
 	const converter = _prepareToAttributeConverter( config );
 
 	return dispatcher => {
-		dispatcher.on( 'element', converter, { priority: config.priority || 'low' } );
+		dispatcher.on( 'element', converter, { priority: config.converterPriority || 'low' } );
 	};
 }
 
@@ -240,7 +240,7 @@ export function upcastAttributeToAttribute( config ) {
  *
  *		upcastElementToMarker( { view: 'marker-search', model: 'search' } );
  *
- *		upcastElementToMarker( { view: 'marker-search', model: 'search', priority: 'high' } );
+ *		upcastElementToMarker( { view: 'marker-search', model: 'search', converterPriority: 'high' } );
  *
  *		upcastElementToMarker( {
  *			view: 'marker-search',
@@ -263,7 +263,7 @@ export function upcastAttributeToAttribute( config ) {
  * @param {module:engine/view/matcher~MatcherPattern} config.view Pattern matching all view elements which should be converted.
  * @param {String|Function} config.model Name of the model marker, or a function that takes a view element and returns
  * a model marker name.
- * @param {module:utils/priorities~PriorityString} [config.priority='normal'] Converter priority.
+ * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
  * @returns {Function} Conversion helper.
  */
 export function upcastElementToMarker( config ) {

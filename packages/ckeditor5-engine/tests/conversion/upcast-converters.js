@@ -61,13 +61,13 @@ describe( 'upcast-helpers', () => {
 			expectResult( new ViewContainerElement( 'p' ), '<paragraph></paragraph>' );
 		} );
 
-		it( 'can be overwritten using priority', () => {
+		it( 'can be overwritten using converterPriority', () => {
 			schema.register( 'p', {
 				inheritAllFrom: '$block'
 			} );
 
 			const helperA = upcastElementToElement( { view: 'p', model: 'p' } );
-			const helperB = upcastElementToElement( { view: 'p', model: 'paragraph', priority: 'high' } );
+			const helperB = upcastElementToElement( { view: 'p', model: 'paragraph', converterPriority: 'high' } );
 
 			conversion.for( 'upcast' ).add( helperA ).add( helperB );
 
@@ -153,7 +153,7 @@ describe( 'upcast-helpers', () => {
 
 		it( 'should not do anything if returned model element is null', () => {
 			const helperA = upcastElementToElement( { view: 'p', model: 'paragraph' } );
-			const helperB = upcastElementToElement( { view: 'p', model: () => null, priority: 'high' } );
+			const helperB = upcastElementToElement( { view: 'p', model: () => null, converterPriority: 'high' } );
 
 			conversion.for( 'upcast' ).add( helperA ).add( helperB );
 
@@ -173,9 +173,9 @@ describe( 'upcast-helpers', () => {
 			);
 		} );
 
-		it( 'can be overwritten using priority', () => {
+		it( 'can be overwritten using converterPriority', () => {
 			const helperA = upcastElementToAttribute( { view: 'strong', model: 'strong' } );
-			const helperB = upcastElementToAttribute( { view: 'strong', model: 'bold', priority: 'high' } );
+			const helperB = upcastElementToAttribute( { view: 'strong', model: 'bold', converterPriority: 'high' } );
 
 			conversion.for( 'upcast' ).add( helperA ).add( helperB );
 
@@ -296,7 +296,7 @@ describe( 'upcast-helpers', () => {
 					key: 'bold',
 					value: () => null
 				},
-				priority: 'high'
+				converterPriority: 'high'
 			} );
 
 			conversion.for( 'upcast' ).add( helperA ).add( helperB );
@@ -405,13 +405,13 @@ describe( 'upcast-helpers', () => {
 			);
 		} );
 
-		it( 'can be overwritten using priority', () => {
+		it( 'can be overwritten using converterPriority', () => {
 			schema.extend( 'image', {
 				allowAttributes: [ 'src', 'source' ]
 			} );
 
 			const helperA = upcastAttributeToAttribute( { view: { key: 'src' }, model: 'src' } );
-			const helperB = upcastAttributeToAttribute( { view: { key: 'src' }, model: 'source', priority: 'normal' } );
+			const helperB = upcastAttributeToAttribute( { view: { key: 'src' }, model: 'source', converterPriority: 'normal' } );
 
 			conversion.for( 'upcast' ).add( helperA ).add( helperB );
 
@@ -574,9 +574,9 @@ describe( 'upcast-helpers', () => {
 			expectResult( frag, 'foobar', marker );
 		} );
 
-		it( 'can be overwritten using priority', () => {
+		it( 'can be overwritten using converterPriority', () => {
 			const helperA = upcastElementToMarker( { view: 'marker-search', model: 'search-result' } );
-			const helperB = upcastElementToMarker( { view: 'marker-search', model: 'search', priority: 'high' } );
+			const helperB = upcastElementToMarker( { view: 'marker-search', model: 'search', converterPriority: 'high' } );
 
 			conversion.for( 'upcast' ).add( helperA ).add( helperB );
 

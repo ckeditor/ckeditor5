@@ -26,7 +26,7 @@ import cloneDeep from '@ckeditor/ckeditor5-utils/src/lib/lodash/cloneDeep';
  *
  *		downcastElementToElement( { model: 'paragraph', view: 'p' } );
  *
- *		downcastElementToElement( { model: 'paragraph', view: 'div', priority: 'high' } );
+ *		downcastElementToElement( { model: 'paragraph', view: 'div', converterPriority: 'high' } );
  *
  *		downcastElementToElement( {
  *			model: 'fancyParagraph',
@@ -55,7 +55,7 @@ export function downcastElementToElement( config ) {
 	config.view = _normalizeToElementConfig( config.view, 'container' );
 
 	return dispatcher => {
-		dispatcher.on( 'insert:' + config.model, insertElement( config.view ), { priority: config.priority || 'normal' } );
+		dispatcher.on( 'insert:' + config.model, insertElement( config.view ), { priority: config.converterPriority || 'normal' } );
 	};
 }
 
@@ -67,7 +67,7 @@ export function downcastElementToElement( config ) {
  *
  *		downcastAttributeToElement( { model: 'bold', view: 'strong' } );
  *
- *		downcastAttributeToElement( { model: 'bold', view: 'b', priority: 'high' } );
+ *		downcastAttributeToElement( { model: 'bold', view: 'b', converterPriority: 'high' } );
  *
  *		downcastAttributeToElement( {
  *			model: 'invert',
@@ -123,7 +123,7 @@ export function downcastElementToElement( config ) {
  * @param {module:engine/view/elementdefinition~ElementDefinition|Function|Object} config.view View element definition or a function
  * that takes model attribute value and view writer as parameters and returns a view attribute element. If `config.model.values` is
  * given, `config.view` should be an object assigning values from `config.model.values` to view element definitions or functions.
- * @param {module:utils/priorities~PriorityString} [config.priority='normal'] Converter priority.
+ * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
  * @returns {Function} Conversion helper.
  */
 export function downcastAttributeToElement( config ) {
@@ -147,7 +147,7 @@ export function downcastAttributeToElement( config ) {
 	const elementCreator = _getFromAttributeCreator( config );
 
 	return dispatcher => {
-		dispatcher.on( eventName, wrap( elementCreator ), { priority: config.priority || 'normal' } );
+		dispatcher.on( eventName, wrap( elementCreator ), { priority: config.converterPriority || 'normal' } );
 	};
 }
 
@@ -159,7 +159,7 @@ export function downcastAttributeToElement( config ) {
  *
  *		downcastAttributeToAttribute( { model: 'source', view: 'src' } );
  *
- *		downcastAttributeToAttribute( { model: 'source', view: 'href', priority: 'high' } );
+ *		downcastAttributeToAttribute( { model: 'source', view: 'href', converterPriority: 'high' } );
  *
  *		downcastAttributeToAttribute( {
  *			model: {
@@ -201,7 +201,7 @@ export function downcastAttributeToElement( config ) {
  * array of `String`s. If `key` is `'style'`, `value` is an object with key-value pairs. In other cases, `value` is a `String`.
  * If `config.model.values` is set, `config.view` should be an object assigning values from `config.model.values` to
  * `{ key, value }` objects or a functions.
- * @param {module:utils/priorities~PriorityString} [config.priority='normal'] Converter priority.
+ * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
  * @returns {Function} Conversion helper.
  */
 export function downcastAttributeToAttribute( config ) {
@@ -225,7 +225,7 @@ export function downcastAttributeToAttribute( config ) {
 	const elementCreator = _getFromAttributeCreator( config );
 
 	return dispatcher => {
-		dispatcher.on( eventName, changeAttribute( elementCreator ), { priority: config.priority || 'normal' } );
+		dispatcher.on( eventName, changeAttribute( elementCreator ), { priority: config.converterPriority || 'normal' } );
 	};
 }
 
@@ -238,7 +238,7 @@ export function downcastAttributeToAttribute( config ) {
  *
  *		downcastMarkerToElement( { model: 'search', view: 'marker-search' } );
  *
- *		downcastMarkerToElement( { model: 'search', view: 'search-result', priority: 'high' } );
+ *		downcastMarkerToElement( { model: 'search', view: 'search-result', converterPriority: 'high' } );
  *
  *		downcastMarkerToElement( {
  *			model: 'search',
@@ -272,7 +272,7 @@ export function downcastAttributeToAttribute( config ) {
  * @param {String} config.model Name of the model marker (or model marker group) to convert.
  * @param {module:engine/view/elementdefinition~ElementDefinition|Function} config.view View element definition or a function
  * that takes model marker data as a parameter and returns view ui element.
- * @param {module:utils/priorities~PriorityString} [config.priority='normal'] Converter priority.
+ * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
  * @returns {Function} Conversion helper.
  */
 export function downcastMarkerToElement( config ) {
@@ -281,8 +281,8 @@ export function downcastMarkerToElement( config ) {
 	config.view = _normalizeToElementConfig( config.view, 'ui' );
 
 	return dispatcher => {
-		dispatcher.on( 'addMarker:' + config.model, insertUIElement( config.view ), { priority: config.priority || 'normal' } );
-		dispatcher.on( 'removeMarker:' + config.model, removeUIElement( config.view ), { priority: config.priority || 'normal' } );
+		dispatcher.on( 'addMarker:' + config.model, insertUIElement( config.view ), { priority: config.converterPriority || 'normal' } );
+		dispatcher.on( 'removeMarker:' + config.model, removeUIElement( config.view ), { priority: config.converterPriority || 'normal' } );
 	};
 }
 
@@ -307,7 +307,7 @@ export function downcastMarkerToElement( config ) {
  *
  *		downcastMarkerToHighlight( { model: 'comment', view: { classes: 'comment' } } );
  *
- *		downcastMarkerToHighlight( { model: 'comment', view: { classes: 'new-comment' }, priority: 'high' } );
+ *		downcastMarkerToHighlight( { model: 'comment', view: { classes: 'new-comment' }, converterPriority: 'high' } );
  *
  * 		downcastMarkerToHighlight( {
  * 			model: 'comment',
@@ -331,14 +331,14 @@ export function downcastMarkerToElement( config ) {
  * @param {String} config.model Name of the model marker (or model marker group) to convert.
  * @param {module:engine/conversion/downcast-converters~HighlightDescriptor|Function} config.view Highlight descriptor
  * which will be used for highlighting or a function that takes model marker data as a parameter and returns a highlight descriptor.
- * @param {module:utils/priorities~PriorityString} [config.priority='normal'] Converter priority.
+ * @param {module:utils/priorities~PriorityString} [config.converterPriority='normal'] Converter priority.
  * @returns {Function} Conversion helper.
  */
 export function downcastMarkerToHighlight( config ) {
 	return dispatcher => {
-		dispatcher.on( 'addMarker:' + config.model, highlightText( config.view ), { priority: config.priority || 'normal' } );
-		dispatcher.on( 'addMarker:' + config.model, highlightElement( config.view ), { priority: config.priority || 'normal' } );
-		dispatcher.on( 'removeMarker:' + config.model, removeHighlight( config.view ), { priority: config.priority || 'normal' } );
+		dispatcher.on( 'addMarker:' + config.model, highlightText( config.view ), { priority: config.converterPriority || 'normal' } );
+		dispatcher.on( 'addMarker:' + config.model, highlightElement( config.view ), { priority: config.converterPriority || 'normal' } );
+		dispatcher.on( 'removeMarker:' + config.model, removeHighlight( config.view ), { priority: config.converterPriority || 'normal' } );
 	};
 }
 
@@ -370,14 +370,19 @@ function _createViewElementFromDefinition( viewElementDefinition, viewWriter, vi
 	}
 
 	let element;
+	const attributes = Object.assign( {}, viewElementDefinition.attributes );
 
 	if ( viewElementType == 'container' ) {
-		element = viewWriter.createContainerElement( viewElementDefinition.name, Object.assign( {}, viewElementDefinition.attributes ) );
+		element = viewWriter.createContainerElement( viewElementDefinition.name, attributes );
 	} else if ( viewElementType == 'attribute' ) {
-		element = viewWriter.createAttributeElement( viewElementDefinition.name, Object.assign( {}, viewElementDefinition.attributes ) );
+		const options = {
+			priority: viewElementDefinition.priority || ViewAttributeElement.DEFAULT_PRIORITY
+		};
+
+		element = viewWriter.createAttributeElement( viewElementDefinition.name, attributes, options );
 	} else {
 		// 'ui'.
-		element = viewWriter.createUIElement( viewElementDefinition.name, Object.assign( {}, viewElementDefinition.attributes ) );
+		element = viewWriter.createUIElement( viewElementDefinition.name, attributes );
 	}
 
 	if ( viewElementDefinition.styles ) {
