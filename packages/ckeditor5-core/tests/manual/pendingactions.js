@@ -43,6 +43,12 @@ ClassicEditor
 				.then( () => pendingActions.remove( action ) );
 		} );
 
+		window.addEventListener( 'beforeunload', evt => {
+			if ( pendingActions.isPending ) {
+				evt.returnValue = pendingActions.first.message;
+			}
+		} );
+
 		pendingActions.on( 'add', () => displayActions() );
 		pendingActions.on( 'remove', () => displayActions() );
 
