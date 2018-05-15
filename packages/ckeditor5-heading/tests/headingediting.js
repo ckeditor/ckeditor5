@@ -88,7 +88,7 @@ describe( 'HeadingEditing', () => {
 									{ name: 'p', attributes: { 'data-heading': 'h1' } }
 								],
 								title: 'User H1',
-								priority: 'high'
+								converterPriority: 'high'
 							}
 						]
 					}

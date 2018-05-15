@@ -132,7 +132,7 @@ describe( 'Heading integration', () => {
 								},
 								title: 'Heading 2 (fancy)',
 								class: 'ck-heading_heading2_fancy',
-								priority: 'high'
+								converterPriority: 'high'
 							}
 						]
 					}
