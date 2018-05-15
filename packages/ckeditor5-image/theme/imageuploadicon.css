@@ -32,9 +32,9 @@
 	&::after {
 		content: '';
 		position: absolute;
-		opacity: 0;
-		width: 0;
-		height: 0;
+		opacity: 1;
+		height: calc( var(--ck-image-upload-icon-size) / 3 );
+		width: calc( var(--ck-image-upload-icon-size) / 5 );
 		top: 50%;
 
 		/* Because of border transformation we need to "hard code" left position. */
@@ -44,33 +44,9 @@
 		transform-origin: left top;
 		border-top: var(--ck-image-upload-icon-width) solid var(--ck-color-image-upload-icon);
 		border-right: var(--ck-image-upload-icon-width) solid var(--ck-color-image-upload-icon);
-		animation-name: ck-check-icon;
-		animation-duration: 500ms;
-		animation-delay: 500ms;
-		animation-fill-mode: forwards;
 
 	}
 }
-
-@keyframes ck-check-icon {
-	0% {
-		opacity: 1;
-		height: 0;
-		width: 0;
-	}
-
-	33.3333% {
-		width: calc( var(--ck-image-upload-icon-size) / 5 );
-		height: 0;
-	}
-
-	100% {
-		opacity: 1;
-		height: calc( var(--ck-image-upload-icon-size) / 3 );
-		width: calc( var(--ck-image-upload-icon-size) / 5 );
-	}
-}
-
 @keyframes ck-fade-in {
 	from {
 		opacity: 0;
