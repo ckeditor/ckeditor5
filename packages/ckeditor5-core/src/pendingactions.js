@@ -7,11 +7,8 @@
  * @module core/pendingactions
  */
 
-/* global window */
-
 import Plugin from './plugin';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
-import DOMEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
