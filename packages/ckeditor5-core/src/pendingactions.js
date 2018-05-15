@@ -15,8 +15,6 @@ import DOMEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
-//  This plugin is not able to interrupt actions or manage that in any other way.
-
 /**
  * List of editor pending actions.
  *
@@ -26,7 +24,29 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  * All plugins, which register pending action provides also a message what action is ongoing
  * which can be displayed to a user and let him decide if he wants to interrupt the action or wait.
  *
- * This plugin listens to `window#beforeunload` event and displays browser prompt when a pending action is in progress.
+ * Adding and updating pending action:
+ *
+ * 		const pendingActions = editor.plugins.get( 'PendingActions' );
+ * 		const action = pendingActions.add( 'Upload in progress 0%' );
+ *
+ * 		action.message = 'Upload in progress 10%';
+ *
+ * Removing pending action:
+ *
+ * 		const pendingActions = editor.plugins.get( 'PendingActions' );
+ * 		const action = pendingActions.add( 'Unsaved changes.' );
+ *
+ *		pendingActions.remove( action );
+ *
+ * Getting pending actions:
+ *
+ * 		const pendingActions = editor.plugins.get( 'PendingActions' );
+ *
+ * 		const action1 = pendingActions.add( 'Action 1' );
+ * 		const action2 = pendingActions.add( 'Action 2' );
+ *
+ *		pendingActions.first // Returns action1
+ *		Array.from( pendingActions ) // Returns [ action1, action2 ]
  *
  * @extends module:core/plugin~Plugin
  */
@@ -67,12 +87,7 @@ export default class PendingActions extends Plugin {
 	 * This method returns an action object with observable message property.
 	 * The action object can be later used in the remove method. It also allows you to change the message.
 	 *
-	 *		const pendingActions = editor.plugins.get( 'PendingActions' );
-	 * 		const action = pendingActions.add( 'Upload in progress 0%' );
-	 *
-	 * 		action.message = 'Upload in progress 10%';
-	 *
-	 * @param {String} message
+	 * @param {String} message Action message.
 	 * @returns {Object} Observable object that represents a pending action.
 	 */
 	add( message ) {
@@ -106,14 +121,6 @@ export default class PendingActions extends Plugin {
 
 	/**
 	 * Returns first action from the list.
-	 *
-	 * 		const pendingActions = editor.plugins.get( 'PendingActions' );
-	 *
-	 * 		pendingActions.add( 'Action 1' );
-	 * 		pendingActions.add( 'Action 2' );
-	 *
-	 *		pendingActions.first // Returns 'Action 1'
-	 *		Array.from( pendingActions ) // Returns [ 'Action 1', 'Action 2' ]
 	 *
 	 * returns {Object} Pending action object.
 	 */
