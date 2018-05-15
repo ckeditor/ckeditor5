@@ -33,7 +33,8 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  * 		const pendingActions = editor.plugins.get( 'PendingActions' );
  * 		const action = pendingActions.add( 'Unsaved changes.' );
  *
- *		pendingActions.remove( action );
+ *
+ * 		pendingActions.remove( action );
  *
  * Getting pending actions:
  *
@@ -42,8 +43,8 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  * 		const action1 = pendingActions.add( 'Action 1' );
  * 		const action2 = pendingActions.add( 'Action 2' );
  *
- *		pendingActions.first // Returns action1
- *		Array.from( pendingActions ) // Returns [ action1, action2 ]
+ * 		pendingActions.first // Returns action1
+ * 		Array.from( pendingActions ) // Returns [ action1, action2 ]
  *
  * @extends module:core/plugin~Plugin
  */
