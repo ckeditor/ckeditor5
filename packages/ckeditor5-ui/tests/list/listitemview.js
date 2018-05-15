@@ -75,7 +75,7 @@ describe( 'ListItemView', () => {
 	describe( 'DOM bindings', () => {
 		describe( '"class" attribute', () => {
 			it( 'reacts on view#class', () => {
-				expect( view.element.classList ).to.have.length( 3 );
+				expect( view.element.classList ).to.have.length( 2 );
 
 				view.set( 'class', 'foo' );
 
@@ -83,7 +83,7 @@ describe( 'ListItemView', () => {
 			} );
 
 			it( 'reacts on view#isActive', () => {
-				expect( view.element.classList ).to.have.length( 3 );
+				expect( view.element.classList ).to.have.length( 2 );
 
 				view.set( 'isActive', true );
 
@@ -91,19 +91,16 @@ describe( 'ListItemView', () => {
 			} );
 
 			it( 'reacts on view#isEnabled', () => {
-				expect( view.element.classList ).to.have.length( 3 );
+				expect( view.element.classList ).to.have.length( 2 );
 
-				expect( view.element.classList.contains( 'ck-enabled' ) ).to.be.true;
 				expect( view.element.classList.contains( 'ck-disabled' ) ).to.be.false;
 
 				view.set( 'isEnabled', false );
 
-				expect( view.element.classList.contains( 'ck-enabled' ) ).to.be.false;
 				expect( view.element.classList.contains( 'ck-disabled' ) ).to.be.true;
 
 				view.set( 'isEnabled', true );
 
-				expect( view.element.classList.contains( 'ck-enabled' ) ).to.be.true;
 				expect( view.element.classList.contains( 'ck-disabled' ) ).to.be.false;
 			} );
 		} );

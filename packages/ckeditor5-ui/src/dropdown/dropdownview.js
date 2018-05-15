@@ -147,7 +147,7 @@ export default class DropdownView extends View {
 				class: [
 					'ck',
 					'ck-dropdown',
-					bind.to( 'isEnabled', isEnabled => isEnabled ? '' : 'ck-disabled' )
+					bind.if( 'isEnabled', 'ck-disabled', value => !value )
 				]
 			},
 

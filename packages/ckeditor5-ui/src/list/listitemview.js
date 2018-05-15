@@ -50,7 +50,7 @@ export default class ListItemView extends View {
 					'ck-list__item',
 					bind.to( 'class' ),
 					bind.if( 'isActive', 'ck-list__item_active' ),
-					bind.to( 'isEnabled', value => value ? 'ck-enabled' : 'ck-disabled' )
+					bind.if( 'isEnabled', 'ck-disabled', value => !value )
 				],
 				style: bind.to( 'style' ),
 				tabindex: bind.to( 'tabindex' )
