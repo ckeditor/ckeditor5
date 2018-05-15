@@ -5,7 +5,8 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
 /**
- * Soft break command.
+ * ShiftEnter command. It is used by the {@link module:enter/shiftenter~ShiftEnter ShiftEnterfeature} to handle
+ * the <kbd>Shift+Enter</kbd> key.
  *
  * @extends module:core/command~Command
  */
@@ -31,7 +32,7 @@ export default class ShiftEnterCommand extends Command {
 	}
 }
 
-// Checks whether the soft enter command should be enabled in the specified selection.
+// Checks whether the shiftEnter command should be enabled in the specified selection.
 //
 // @param {module:engine/model/schema~Schema} schema
 // @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
