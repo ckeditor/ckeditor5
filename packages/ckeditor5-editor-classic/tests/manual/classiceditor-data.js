@@ -18,6 +18,8 @@ const data = '<h2>Hello world!</h2><p>This is an editor instance.</p>';
 
 window.editors = [];
 
+const container = document.querySelector( '.container' );
+
 function initEditor() {
 	ClassicEditor
 		.create( data, {
@@ -26,7 +28,7 @@ function initEditor() {
 		} )
 		.then( editor => {
 			window.editors.push( editor );
-			document.body.appendChild( editor.element );
+			container.appendChild( editor.element );
 		} )
 		.catch( err => {
 			console.error( err.stack );
