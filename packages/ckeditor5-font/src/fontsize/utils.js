@@ -29,7 +29,8 @@ const namedPresets = {
 		model: 'tiny',
 		view: {
 			name: 'span',
-			classes: 'text-tiny'
+			classes: 'text-tiny',
+			priority: 5
 		}
 	},
 	small: {
@@ -37,7 +38,8 @@ const namedPresets = {
 		model: 'small',
 		view: {
 			name: 'span',
-			classes: 'text-small'
+			classes: 'text-small',
+			priority: 5
 		}
 	},
 	big: {
@@ -45,7 +47,8 @@ const namedPresets = {
 		model: 'big',
 		view: {
 			name: 'span',
-			classes: 'text-big'
+			classes: 'text-big',
+			priority: 5
 		}
 	},
 	huge: {
@@ -53,7 +56,8 @@ const namedPresets = {
 		model: 'huge',
 		view: {
 			name: 'span',
-			classes: 'text-huge'
+			classes: 'text-huge',
+			priority: 5
 		}
 	}
 };
@@ -108,7 +112,8 @@ function generatePixelPreset( size ) {
 			name: 'span',
 			styles: {
 				'font-size': `${ size }px`
-			}
+			},
+			priority: 5
 		}
 	};
 }
