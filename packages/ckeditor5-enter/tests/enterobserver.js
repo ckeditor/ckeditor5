@@ -35,10 +35,26 @@ describe( 'EnterObserver', () => {
 			viewDocument.on( 'enter', spy );
 
 			viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
-				keyCode: getCode( 'enter' )
+				keyCode: getCode( 'enter' ),
+				shiftKey: false
 			} ) );
 
 			expect( spy.calledOnce ).to.be.true;
+			expect( spy.firstCall.args[ 1 ].isSoft ).to.be.false;
+		} );
+
+		it( 'detects whether shift was pressed along with the "enter" key', () => {
+			const spy = sinon.spy();
+
+			viewDocument.on( 'enter', spy );
+
+			viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
+				keyCode: getCode( 'enter' ),
+				shiftKey: true
+			} ) );
+
+			expect( spy.calledOnce ).to.be.true;
+			expect( spy.firstCall.args[ 1 ].isSoft ).to.be.true;
 		} );
 
 		it( 'is not fired on keydown when keyCode does not match enter', () => {
@@ -48,19 +64,6 @@ describe( 'EnterObserver', () => {
 
 			viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
 				keyCode: 1
-			} ) );
-
-			expect( spy.calledOnce ).to.be.false;
-		} );
-
-		it( 'is not fired on keydown when shiftKey is truthy', () => {
-			const spy = sinon.spy();
-
-			viewDocument.on( 'enter', spy );
-
-			viewDocument.fire( 'keydown', new DomEventData( viewDocument, getDomEvent(), {
-				keyCode: getCode( 'enter' ),
-				shiftKey: true
 			} ) );
 
 			expect( spy.calledOnce ).to.be.false;
