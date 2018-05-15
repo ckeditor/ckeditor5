@@ -229,7 +229,7 @@ describe( 'upcastTable()', () => {
 			isObject: true
 		} );
 
-		editor.conversion.elementToElement( { model: 'fooTable', view: 'table', priority: 'high' } );
+		editor.conversion.elementToElement( { model: 'fooTable', view: 'table', converterPriority: 'high' } );
 
 		editor.setData(
 			'<table>' +

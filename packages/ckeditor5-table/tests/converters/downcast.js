@@ -148,8 +148,8 @@ describe( 'downcast converters', () => {
 		} );
 
 		it( 'should be possible to overwrite', () => {
-			editor.conversion.elementToElement( { model: 'tableRow', view: 'tr', priority: 'high' } );
-			editor.conversion.elementToElement( { model: 'tableCell', view: 'td', priority: 'high' } );
+			editor.conversion.elementToElement( { model: 'tableRow', view: 'tr', converterPriority: 'high' } );
+			editor.conversion.elementToElement( { model: 'tableCell', view: 'td', converterPriority: 'high' } );
 			editor.conversion.for( 'downcast' ).add( dispatcher => {
 				dispatcher.on( 'insert:table', ( evt, data, conversionApi ) => {
 					conversionApi.consumable.consume( data.item, 'insert' );
@@ -922,7 +922,7 @@ describe( 'downcast converters', () => {
 		} );
 
 		it( 'should be possible to overwrite', () => {
-			editor.conversion.attributeToAttribute( { model: 'headingColumns', view: 'headingColumns', priority: 'high' } );
+			editor.conversion.attributeToAttribute( { model: 'headingColumns', view: 'headingColumns', converterPriority: 'high' } );
 			setModelData( model, modelTable( [ [ '11' ] ] ) );
 
 			const table = root.getChild( 0 );
