@@ -4,7 +4,7 @@
  */
 
 :root {
-	--ck-image-upload-icon-size: 1.5em;
+	--ck-image-upload-icon-size: 1.25em;
 	--ck-image-upload-icon-width: 2px;
 
 	--ck-color-image-upload-icon: hsl(0, 0%, 100%);
@@ -38,7 +38,7 @@
 		top: 50%;
 
 		/* Because of border transformation we need to "hard code" left position. */
-		left: calc( var(--ck-image-upload-icon-size) / 3.5 );
+		left: calc( var(--ck-image-upload-icon-size) / 4 );
 
 		transform: scaleX(-1) rotate(135deg);
 		transform-origin: left top;
