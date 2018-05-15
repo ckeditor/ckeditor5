@@ -16,13 +16,13 @@ In this tutorial you will learn how to create your own document editor with a cu
 The document editor build includes all the necessary features for the task. All you need to do is import it and create a new instance.
 
 <info-box>
-	See the {@link builds/guides/quick-start#document-editor quick start guide} to learn how to install the document editor build.
+	See the {@link builds/guides/quick-start#document-editor Quick start guide} to learn how to install the document editor build.
 </info-box>
 
-The document editor can be created using the existing data container in the DOM. It can also accept a raw data string and create the editable by itself. To get the output data, use the {@link module:core/editor/utils/dataapimixin~DataApi#getData `getData()`} method.
+Document editor can be created using the existing data container in the DOM. It can also accept a raw data string and create the editable by itself. To get the output data, use the {@link module:core/editor/utils/dataapimixin~DataApi#getData `getData()`} method.
 
 <info-box>
-	See the {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`} to learn about different approaches to the initialization of the editor.
+	See the {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`} method to learn about different approaches to the initialization of the editor.
 </info-box>
 
 ```js
@@ -49,16 +49,16 @@ DecoupledEditor
 You may have noticed that you have to make sure the editor UI is injected into your application after it fires the {@link module:core/editor/editorwithui~EditorWithUI#event:uiReady `Editor#uiReady`} event. The toolbar element can be found under `editor.ui.view.toolbar.element`.
 
 <info-box>
-	The document editor supports the Easy Image plugin provided by [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/) out of the box. Please refer to the {@link features/image-upload#easy-image documentation} to learn more.
+	Document editor supports the Easy Image plugin provided by [CKEditor Cloud Services](https://ckeditor.com/ckeditor-cloud-services/) out of the box. Please refer to the {@link features/image-upload#easy-image documentation} to learn more.
 </info-box>
 
 ## The user interface
 
-The code you have just created will run the editor but still, the user interface is missing. Start off with a basic HTML structure to host the editor components (toolbar and editable).
+The code you have just created will run the editor but the user interface is still missing. Start off with a basic HTML structure to host the editor components (the toolbar and the editable).
 
 ### HTML
 
-The following structure has two containers that correspond to the configuration you have just used. The editor will inject the toolbar and editable into respective containers as it starts.
+The following structure has two containers that correspond to the configuration you have just used. The editor will inject the toolbar and the editable into respective containers as it starts.
 
 ```html
 <div class="document-editor">
@@ -71,10 +71,10 @@ The following structure has two containers that correspond to the configuration 
 </div>
 ```
 
-The `<div class="document-editor">...</<div>` element is the outermost container of the document editor and, although not mandatory, it is recommended to keep things together.
+The `<div class="document-editor">...</<div>` element is the outermost container of the document editor and, although not mandatory, it is recommended to use it to keep things together.
 
 <info-box warning>
-	Make sure the HTML structure is available in the DOM when the editor is created. To do so, put the editor bootstrap code somewhere later in HTML or use the [`DOMContentLoaded`](https://developer.mozilla.org/en-US/docs/Web/Events/DOMContentLoaded) event to defer your JavaScript execution until the DOM is up and ready.
+	Make sure the HTML structure is available in the DOM when the editor is created. To do so, put the editor bootstrap code somewhere later in HTML or use the [`DOMContentLoaded`](https://developer.mozilla.org/en-US/docs/Web/Events/DOMContentLoaded) event to defer your JavaScript execution until the DOM is ready.
 </info-box>
 
 ### Styles
