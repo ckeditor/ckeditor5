@@ -10,7 +10,8 @@
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import ViewRange from '@ckeditor/ckeditor5-engine/src/view/range';
 import TableWalker from './../tablewalker';
-import { toWidget, toWidgetEditable } from '@ckeditor/ckeditor5-widget/src/utils';
+import { toWidgetEditable } from '@ckeditor/ckeditor5-widget/src/utils';
+import { toTableWidget } from '../utils';
 
 /**
  * Model table element to view table element conversion helper.
@@ -40,7 +41,7 @@ export function downcastInsertTable( options = {} ) {
 		let tableWidget;
 
 		if ( asWidget ) {
-			tableWidget = toWidget( tableElement, conversionApi.writer );
+			tableWidget = toTableWidget( tableElement, conversionApi.writer );
 		}
 
 		const tableWalker = new TableWalker( table );
