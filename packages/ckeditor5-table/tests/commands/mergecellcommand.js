@@ -316,6 +316,15 @@ describe( 'MergeCellCommand', () => {
 
 				expect( command.isEnabled ).to.be.false;
 			} );
+
+			it( 'should be false if mergeable cell is in other table section then current cell', () => {
+				setData( model, modelTable( [
+					[ '00[]', '01' ],
+					[ '10', '11' ]
+				], { headingRows: 1 } ) );
+
+				expect( command.isEnabled ).to.be.false;
+			} );
 		} );
 
 		describe( 'value', () => {
@@ -423,6 +432,15 @@ describe( 'MergeCellCommand', () => {
 
 			it( 'should be false if not in a cell', () => {
 				setData( model, '<p>11[]</p>' );
+
+				expect( command.isEnabled ).to.be.false;
+			} );
+
+			it( 'should be false if mergeable cell is in other table section then current cell', () => {
+				setData( model, modelTable( [
+					[ '00', '01' ],
+					[ '10[]', '11' ]
+				], { headingRows: 1 } ) );
 
 				expect( command.isEnabled ).to.be.false;
 			} );

@@ -144,7 +144,14 @@ function getVerticalCell( tableCell, direction ) {
 	const rowIndex = table.getChildIndex( tableRow );
 
 	// Don't search for mergeable cell if direction points out of the table.
-	if ( direction == 'down' && rowIndex === table.childCount - 1 || direction == 'up' && rowIndex === 0 ) {
+	if ( ( direction == 'down' && rowIndex === table.childCount - 1 ) || ( direction == 'up' && rowIndex === 0 ) ) {
+		return;
+	}
+
+	const headingRows = parseInt( table.getAttribute( 'headingRows' ) || 0 );
+
+	// Don't search for mergeable cell if direction points out of the current table section.
+	if ( headingRows && ( ( direction == 'down' && rowIndex === headingRows - 1 ) || ( direction == 'up' && rowIndex === headingRows ) ) ) {
 		return;
 	}
 
