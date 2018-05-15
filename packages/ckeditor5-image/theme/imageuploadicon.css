@@ -3,66 +3,15 @@
  * For licensing, see LICENSE.md.
  */
 
-:root {
-	--ck-image-upload-icon-size: 1.25em;
-	--ck-image-upload-icon-width: 2px;
-
-	--ck-color-image-upload-icon: hsl(0, 0%, 100%);
-	--ck-color-image-upload-icon-background: hsl(120, 100%, 27%);
-}
-
 .ck-image-upload-complete-icon {
 	display: block;
 	position: absolute;
-	opacity: 0;
 	top: 10px;
 	right: 10px;
-	width: var(--ck-image-upload-icon-size);
-	height: var(--ck-image-upload-icon-size);
 	border-radius: 50%;
-	background: var(--ck-color-image-upload-icon-background);
-	animation-name: ck-fade-in, ck-fade-out;
-	animation-fill-mode: forwards, forwards;
-	animation-duration: 500ms, 500ms;
 
-	/* Hide completed upload icon after 3 seconds. */
-	animation-delay: 0ms, 3000ms;
-
-	/* This is check icon element made from border-width mixed with animations. */
 	&::after {
-		content: '';
+		content: "";
 		position: absolute;
-		opacity: 1;
-		height: calc( var(--ck-image-upload-icon-size) / 3 );
-		width: calc( var(--ck-image-upload-icon-size) / 5 );
-		top: 50%;
-
-		/* Because of border transformation we need to "hard code" left position. */
-		left: calc( var(--ck-image-upload-icon-size) / 4 );
-
-		transform: scaleX(-1) rotate(135deg);
-		transform-origin: left top;
-		border-top: var(--ck-image-upload-icon-width) solid var(--ck-color-image-upload-icon);
-		border-right: var(--ck-image-upload-icon-width) solid var(--ck-color-image-upload-icon);
-
-	}
-}
-@keyframes ck-fade-in {
-	from {
-		opacity: 0;
-	}
-
-	to {
-		opacity: 1;
-	}
-}
-
-@keyframes ck-fade-out {
-	from {
-		opacity: 1;
-	}
-
-	to {
-		opacity: 0;
 	}
 }
