@@ -29,13 +29,19 @@
 		left: 25%;
 
 		top: 50%;
-		opacity: 1;
-		height: calc( var(--ck-image-upload-icon-size) / 3 );
-		width: calc( var(--ck-image-upload-icon-size) / 5 );
+		opacity: 0;
+		height: 0;
+		width: 0;
+
 		transform: scaleX(-1) rotate(135deg);
 		transform-origin: left top;
 		border-top: var(--ck-image-upload-icon-width) solid var(--ck-color-image-upload-icon);
 		border-right: var(--ck-image-upload-icon-width) solid var(--ck-color-image-upload-icon);
+
+		animation-name: ck-check-icon;
+		animation-duration: 500ms;
+		animation-delay: 500ms;
+		animation-fill-mode: forwards;
 	}
 }
 
@@ -56,5 +62,34 @@
 
 	to {
 		opacity: 0;
+	}
+}
+
+@keyframes ck-check-icon {
+	0% {
+		opacity: 1;
+		height: 0;
+		width: 0;
+	}
+	33% {
+		/*
+		 * We need to use here hardcoded values because Edge is not supporting calc() in @keyframes.
+		 * It should be: width: calc( var(--ck-image-upload-icon-size) / 5 );
+		 */
+		width: 0.25em;
+
+		height: 0;
+	}
+	100% {
+		/*
+		 * We need to use here hardcoded values because Edge is not supporting calc() in @keyframes.
+		 * It should be:
+		 * height: calc( var(--ck-image-upload-icon-size) / 3 );
+		 * width: calc( var(--ck-image-upload-icon-size) / 5 );
+		 */
+		width: 0.25em;
+		height: 0.416em;
+
+		opacity: 1;
 	}
 }
