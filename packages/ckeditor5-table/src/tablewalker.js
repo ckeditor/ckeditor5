@@ -21,7 +21,7 @@ export default class TableWalker {
 	 *
 	 *		const tableWalker = new TableWalker( table, { startRow: 1, endRow: 2 } );
 	 *
-	 *		for( const cellInfo of tableWalker ) {
+	 *		for ( const cellInfo of tableWalker ) {
 	 *			console.log( 'A cell at row ' + cellInfo.row + ' and column ' + cellInfo.column );
 	 *		}
 	 *
@@ -29,7 +29,7 @@ export default class TableWalker {
 	 *
 	 *		+----+----+----+----+----+----+
 	 *		| 00      | 02 | 03      | 05 |
-	 *		|         +--- +----+----+----+
+	 *		|         +----+----+----+----+
 	 *		|         | 12      | 14 | 15 |
 	 *		|         +----+----+----+----+
 	 *		|         | 22                |
@@ -46,10 +46,10 @@ export default class TableWalker {
 	 *
 	 *	To iterate over spanned cells also:
 	 *
-	 *		const tableWalker = new TableWalker( table, { startRow: 1, endRow: 1 } );
+	 *		const tableWalker = new TableWalker( table, { startRow: 1, endRow: 1, includeSpanned: true } );
 	 *
-	 *		for( const cellInfo of tableWalker ) {
-	 *			console.log( 'Cell at ' + cellInfo.row + ' x ' + cellInfo.column + ' : ' + ( cellInfo.cell ? 'has data' : 'is spanned' )  );
+	 *		for ( const cellInfo of tableWalker ) {
+	 *			console.log( 'Cell at ' + cellInfo.row + ' x ' + cellInfo.column + ' : ' + ( cellInfo.cell ? 'has data' : 'is spanned' ) );
 	 *		}
 	 *
 	 *	will log in the console for the table from previous example:

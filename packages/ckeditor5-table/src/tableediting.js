@@ -56,7 +56,6 @@ export default class TablesEditing extends Plugin {
 
 		schema.register( 'tableRow', {
 			allowIn: 'table',
-			allowAttributes: [],
 			isBlock: true,
 			isLimit: true
 		} );

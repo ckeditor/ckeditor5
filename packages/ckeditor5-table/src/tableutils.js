@@ -134,7 +134,7 @@ export default class TableUtils extends Plugin {
 		model.change( writer => {
 			const tableColumns = this.getColumns( table );
 
-			// Inserting at the end and at the begging of a table doesn't require to calculate anything special.
+			// Inserting at the end and at the beginning of a table doesn't require to calculate anything special.
 			if ( insertAt === 0 || tableColumns <= insertAt ) {
 				for ( const tableRow of table.getChildren() ) {
 					createCells( columns, writer, Position.createAt( tableRow, insertAt ? 'end' : 0 ) );
@@ -208,8 +208,8 @@ export default class TableUtils extends Plugin {
 			const attributes = {};
 
 			if ( cellColspan >= numberOfCells ) {
-				// If the colspan is bigger then requied cells to create we don't need to update colspan on cells from the same column.
-				// The colspan will be equally devided for newly created cells and a current one.
+				// If the colspan is bigger than or equal to required cells to create we don't need to update colspan on
+				// cells from the same column. The colspan will be equally divided for newly created cells and a current one.
 				const colspanOfInsertedCells = Math.floor( cellColspan / numberOfCells );
 				const newColspan = ( cellColspan - colspanOfInsertedCells * numberOfCells ) + colspanOfInsertedCells;
 
