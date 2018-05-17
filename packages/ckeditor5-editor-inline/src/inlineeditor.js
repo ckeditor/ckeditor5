@@ -140,7 +140,7 @@ export default class InlineEditor extends Editor {
 	 *		import ...
 	 *
 	 *		InlineEditor
-	 *			.create( '<p>Hello world!</p>, {
+	 *			.create( '<p>Hello world!</p>', {
 	 *				plugins: [ Essentials, Bold, Italic, ... ],
 	 *				toolbar: [ 'bold', 'italic', ... ]
 	 *			} )
