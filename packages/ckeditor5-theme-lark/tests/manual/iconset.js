@@ -43,6 +43,13 @@ import unlink from '@ckeditor/ckeditor5-link/theme/icons/unlink.svg';
 import bulletedList from '@ckeditor/ckeditor5-list/theme/icons/bulletedlist.svg';
 import numberedList from '@ckeditor/ckeditor5-list/theme/icons/numberedlist.svg';
 
+import table from '@ckeditor/ckeditor5-table/theme/icons/table.svg';
+import tableRow from '@ckeditor/ckeditor5-table/theme/icons/table-row.svg';
+import tableColumn from '@ckeditor/ckeditor5-table/theme/icons/table-column.svg';
+import tableMergeCell from '@ckeditor/ckeditor5-table/theme/icons/table-merge-cell.svg';
+import tableSplitCell from '@ckeditor/ckeditor5-table/theme/icons/table-split-cell.svg';
+import tableHeaders from '@ckeditor/ckeditor5-table/theme/icons/table-headers.svg';
+
 import undo from '@ckeditor/ckeditor5-undo/theme/icons/undo.svg';
 import redo from '@ckeditor/ckeditor5-undo/theme/icons/redo.svg';
 
@@ -69,6 +76,9 @@ const icons = {
 
 	// list
 	bulletedList, numberedList,
+
+	// table
+	table, tableRow, tableColumn, tableMergeCell, tableSplitCell, tableHeaders,
 
 	// undo
 	undo, redo
