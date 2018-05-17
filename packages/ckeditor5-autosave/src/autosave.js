@@ -28,13 +28,12 @@ export default class Autosave extends Plugin {
 		super( editor );
 
 		/**
-		 * @public
 		 * @member {Provider}
 		 */
 		this.provider = undefined;
 
 		/**
-		 * @private
+		 * @protected
 		 * @type {Function}
 		 */
 		this._throttledSave = throttle( this._save.bind( this ), 500 );
@@ -81,29 +80,35 @@ export default class Autosave extends Plugin {
 	}
 
 	/**
-	 * TODO: Docs.
+	 * @protected
 	 */
-	save() {
-		this._throttledSave.cancel();
+	_flush() {
+		this._throttledSave.flush();
+	}
+
+	/**
+	 * @protected
+	 */
+	_save() {
+		if ( !this.provider ) {
+			return;
+		}
 
 		const version = this.editor.model.document.version;
 
 		if ( version <= this._lastDocumentVersion ) {
-			return Promise.resolve();
+			return;
 		}
 
 		this._lastDocumentVersion = version;
 
-		if ( !this.provider ) {
-			return Promise.resolve();
-		}
+		const pendingActions = this.editor.plugins.get( PendingActions );
+		const action = pendingActions.add( 'Saving in progress.' );
 
-		// TODO: add pending action.
-
-		return Promise.resolve()
+		Promise.resolve()
 			.then( () => this.provider.save() )
 			.then( () => {
-				// TODO: remove pending action.
+				pendingActions.remove( action );
 			} );
 	}
 }
