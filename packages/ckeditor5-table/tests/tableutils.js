@@ -410,7 +410,7 @@ describe( 'TableUtils', () => {
 		} );
 	} );
 
-	describe( 'splitCellHorizontally()', () => {
+	describe( 'splitCellVertically()', () => {
 		it( 'should split table cell to given table cells number', () => {
 			setData( model, modelTable( [
 				[ '00', '01', '02' ],
@@ -419,7 +419,7 @@ describe( 'TableUtils', () => {
 				[ { colspan: 2, contents: '30' }, '32' ]
 			] ) );
 
-			tableUtils.splitCellHorizontally( root.getNodeByPath( [ 0, 1, 1 ] ), 3 );
+			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 1, 1 ] ), 3 );
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ '00', { colspan: 3, contents: '01' }, '02' ],
@@ -437,7 +437,7 @@ describe( 'TableUtils', () => {
 				[ { colspan: 2, contents: '30' }, '32' ]
 			] ) );
 
-			tableUtils.splitCellHorizontally( root.getNodeByPath( [ 0, 1, 1 ] ) );
+			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 1, 1 ] ) );
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ '00', { colspan: 2, contents: '01' }, '02' ],
@@ -455,7 +455,7 @@ describe( 'TableUtils', () => {
 				[ { colspan: 2, contents: '30' }, '32' ]
 			] ) );
 
-			tableUtils.splitCellHorizontally( root.getNodeByPath( [ 0, 2, 1 ] ), 2 );
+			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 2, 1 ] ), 2 );
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ '00', '01', '02' ],
@@ -471,7 +471,7 @@ describe( 'TableUtils', () => {
 				[ { colspan: 3, contents: '10[]' } ]
 			] ) );
 
-			tableUtils.splitCellHorizontally( root.getNodeByPath( [ 0, 1, 0 ] ), 2 );
+			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 1, 0 ] ), 2 );
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ '00', '01', '02' ],
@@ -485,7 +485,7 @@ describe( 'TableUtils', () => {
 				[ { colspan: 4, contents: '10[]' } ]
 			] ) );
 
-			tableUtils.splitCellHorizontally( root.getNodeByPath( [ 0, 1, 0 ] ), 2 );
+			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 1, 0 ] ), 2 );
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ '00', '01', '02', '03' ],
@@ -500,7 +500,7 @@ describe( 'TableUtils', () => {
 				[ '25' ]
 			] ) );
 
-			tableUtils.splitCellHorizontally( root.getNodeByPath( [ 0, 1, 0 ] ), 2 );
+			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 1, 0 ] ), 2 );
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ '00', '01', '02', '03', '04', '05' ],
@@ -510,7 +510,7 @@ describe( 'TableUtils', () => {
 		} );
 	} );
 
-	describe( 'splitCellVertically()', () => {
+	describe( 'splitCellHorizontally()', () => {
 		it( 'should split table cell to default table cells number', () => {
 			setData( model, modelTable( [
 				[ '00', '01', '02' ],
@@ -518,7 +518,7 @@ describe( 'TableUtils', () => {
 				[ '20', '21', '22' ]
 			] ) );
 
-			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 1, 1 ] ) );
+			tableUtils.splitCellHorizontally( root.getNodeByPath( [ 0, 1, 1 ] ) );
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ '00', '01', '02' ],
@@ -535,7 +535,7 @@ describe( 'TableUtils', () => {
 				[ '20', '21', '22' ]
 			] ) );
 
-			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 1, 1 ] ), 4 );
+			tableUtils.splitCellHorizontally( root.getNodeByPath( [ 0, 1, 1 ] ), 4 );
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ '00', '01', '02' ],
@@ -554,7 +554,7 @@ describe( 'TableUtils', () => {
 				[ '20', '21' ]
 			] ) );
 
-			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 1, 0 ] ), 3 );
+			tableUtils.splitCellHorizontally( root.getNodeByPath( [ 0, 1, 0 ] ), 3 );
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ { rowspan: 4, contents: '00' }, '01', { rowspan: 5, contents: '02' } ],
@@ -574,7 +574,7 @@ describe( 'TableUtils', () => {
 
 			const tableCell = root.getNodeByPath( [ 0, 0, 1 ] );
 
-			tableUtils.splitCellVertically( tableCell, 2 );
+			tableUtils.splitCellHorizontally( tableCell, 2 );
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ '00', '01[]' ],
@@ -592,7 +592,7 @@ describe( 'TableUtils', () => {
 
 			const tableCell = root.getNodeByPath( [ 0, 0, 1 ] );
 
-			tableUtils.splitCellVertically( tableCell, 2 );
+			tableUtils.splitCellHorizontally( tableCell, 2 );
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ '00', { colspan: 2, contents: '01[]' } ],
@@ -615,7 +615,7 @@ describe( 'TableUtils', () => {
 
 			const tableCell = root.getNodeByPath( [ 0, 0, 1 ] );
 
-			tableUtils.splitCellVertically( tableCell, 3 );
+			tableUtils.splitCellHorizontally( tableCell, 3 );
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ '00', { rowspan: 3, contents: '01[]' } ],
@@ -638,7 +638,7 @@ describe( 'TableUtils', () => {
 
 			const tableCell = root.getNodeByPath( [ 0, 0, 1 ] );
 
-			tableUtils.splitCellVertically( tableCell, 3 );
+			tableUtils.splitCellHorizontally( tableCell, 3 );
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ { rowspan: 2, contents: '00' }, '01[]' ],
@@ -656,7 +656,7 @@ describe( 'TableUtils', () => {
 
 			const tableCell = root.getNodeByPath( [ 0, 0, 1 ] );
 
-			tableUtils.splitCellVertically( tableCell, 3 );
+			tableUtils.splitCellHorizontally( tableCell, 3 );
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ { rowspan: 3, contents: '00' }, { colspan: 2, contents: '01[]' } ],
@@ -673,7 +673,7 @@ describe( 'TableUtils', () => {
 				[ '20', '21', '22' ]
 			], { headingRows: 1 } ) );
 
-			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 0, 0 ] ) );
+			tableUtils.splitCellHorizontally( root.getNodeByPath( [ 0, 0, 0 ] ) );
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 				[ '00[]', { rowspan: 2, contents: '01' }, { rowspan: 2, contents: '02' } ],

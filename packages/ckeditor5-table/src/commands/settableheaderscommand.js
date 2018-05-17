@@ -53,7 +53,7 @@ export default class SetTableHeadersCommand extends Command {
 				const cellsToSplit = getOverlappingCells( table, rowsToSet, currentHeadingRows );
 
 				for ( const cell of cellsToSplit ) {
-					splitVertically( cell, rowsToSet, writer );
+					splitHorizontally( cell, rowsToSet, writer );
 				}
 			}
 
@@ -95,12 +95,12 @@ function updateTableAttribute( table, attributeName, newValue, writer ) {
 	}
 }
 
-// Splits table cell vertically.
+// Splits table cell horizontally.
 //
 // @param {module:engine/model/element~Element} tableCell
 // @param {Number} headingRows
 // @param {module:engine/model/writer~Writer} writer
-function splitVertically( tableCell, headingRows, writer ) {
+function splitHorizontally( tableCell, headingRows, writer ) {
 	const tableRow = tableCell.parent;
 	const table = tableRow.parent;
 	const rowIndex = tableRow.index;

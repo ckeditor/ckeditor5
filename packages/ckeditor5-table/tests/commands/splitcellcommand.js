@@ -71,9 +71,9 @@ describe( 'SplitCellCommand', () => {
 		return editor.destroy();
 	} );
 
-	describe( 'direction=horizontally', () => {
+	describe( 'direction=vertically', () => {
 		beforeEach( () => {
-			command = new SplitCellCommand( editor, { direction: 'horizontally' } );
+			command = new SplitCellCommand( editor, { direction: 'vertically' } );
 		} );
 
 		describe( 'isEnabled', () => {
@@ -175,9 +175,9 @@ describe( 'SplitCellCommand', () => {
 		} );
 	} );
 
-	describe( 'direction=vertically', () => {
+	describe( 'direction=horizontally', () => {
 		beforeEach( () => {
-			command = new SplitCellCommand( editor, { direction: 'vertically' } );
+			command = new SplitCellCommand( editor, { direction: 'horizontally' } );
 		} );
 
 		describe( 'isEnabled', () => {

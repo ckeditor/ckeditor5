@@ -189,12 +189,12 @@ export default class TableUtils extends Plugin {
 	}
 
 	/**
-	 * Divides table cell horizontally into several ones.
+	 * Divides table cell vertically into several ones.
 	 *
 	 * @param {module:engine/model/element~Element} tableCell
 	 * @param {Number} numberOfCells
 	 */
-	splitCellHorizontally( tableCell, numberOfCells = 2 ) {
+	splitCellVertically( tableCell, numberOfCells = 2 ) {
 		const model = this.editor.model;
 		const table = getParentTable( tableCell );
 
@@ -249,7 +249,7 @@ export default class TableUtils extends Plugin {
 	 * @param {module:engine/model/element~Element} tableCell
 	 * @param {Number} numberOfCells
 	 */
-	splitCellVertically( tableCell, numberOfCells = 2 ) {
+	splitCellHorizontally( tableCell, numberOfCells = 2 ) {
 		const model = this.editor.model;
 
 		const table = getParentTable( tableCell );
