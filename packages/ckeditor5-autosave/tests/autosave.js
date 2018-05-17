@@ -140,7 +140,8 @@ describe( 'Autosave', () => {
 
 			autosave.provider = {
 				save() {
-					return wait5ms().then( wait5ms );
+					return wait5ms()
+						.then( wait5msSpy );
 				}
 			};
 
@@ -159,7 +160,8 @@ describe( 'Autosave', () => {
 				} )
 				.then( wait5ms )
 				.then( () => {
-
+					sinon.assert.calledOnce( wait5msSpy );
+					expect( pendingActions.isPending ).to.be.false;
 				} );
 		} );
 	} );
