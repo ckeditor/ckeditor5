@@ -13,7 +13,11 @@ import { addListToDropdown, createDropdown } from '@ckeditor/ckeditor5-ui/src/dr
 import Model from '@ckeditor/ckeditor5-ui/src/model';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 
-import icon from '@ckeditor/ckeditor5-core/theme/icons/object-center.svg';
+import tableIcon from './../theme/icons/table.svg';
+import tableColumnIcon from './../theme/icons/table-column.svg';
+import tableRowIcon from './../theme/icons/table-row.svg';
+import tableMergeCellIcon from './../theme/icons/table-merge-cell.svg';
+import tableSplitCellIcon from './../theme/icons/table-split-cell.svg';
 
 /**
  * The table UI plugin.
@@ -34,7 +38,7 @@ export default class TableUI extends Plugin {
 			buttonView.bind( 'isEnabled' ).to( command );
 
 			buttonView.set( {
-				icon,
+				icon: tableIcon,
 				label: 'Insert table',
 				tooltip: true
 			} );
@@ -54,7 +58,7 @@ export default class TableUI extends Plugin {
 				{ command: 'removeColumn', label: 'Delete column' }
 			];
 
-			return this._prepareDropdown( 'Column', icon, options, locale );
+			return this._prepareDropdown( 'Column', tableColumnIcon, options, locale );
 		} );
 
 		editor.ui.componentFactory.add( 'tableRow', locale => {
@@ -64,7 +68,7 @@ export default class TableUI extends Plugin {
 				{ command: 'removeRow', label: 'Delete row' }
 			];
 
-			return this._prepareDropdown( 'Row', icon, options, locale );
+			return this._prepareDropdown( 'Row', tableRowIcon, options, locale );
 		} );
 
 		editor.ui.componentFactory.add( 'mergeCell', locale => {
@@ -75,7 +79,7 @@ export default class TableUI extends Plugin {
 				{ command: 'mergeCellLeft', label: 'Merge cell left' }
 			];
 
-			return this._prepareDropdown( 'Merge cell', icon, options, locale );
+			return this._prepareDropdown( 'Merge cell', tableMergeCellIcon, options, locale );
 		} );
 
 		editor.ui.componentFactory.add( 'splitCell', locale => {
@@ -84,7 +88,7 @@ export default class TableUI extends Plugin {
 				{ command: 'splitCellHorizontally', label: 'Split cell horizontally' }
 			];
 
-			return this._prepareDropdown( 'Split cell', icon, options, locale );
+			return this._prepareDropdown( 'Split cell', tableSplitCellIcon, options, locale );
 		} );
 	}
 
