@@ -14,7 +14,7 @@ import DocumentSelection from '../model/documentselection';
 import cloneDeep from '@ckeditor/ckeditor5-utils/src/lib/lodash/cloneDeep';
 
 /**
- * Contains downcast (model to view) converters for {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}.
+ * Contains downcast (model-to-view) converters for {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}.
  *
  * @module engine/conversion/downcast-converters
  */
@@ -41,12 +41,12 @@ import cloneDeep from '@ckeditor/ckeditor5-utils/src/lib/lodash/cloneDeep';
  * 			view: ( modelElement, viewWriter ) => viewWriter.createContainerElement( 'h' + modelElement.getAttribute( 'level' ) )
  * 		} );
  *
- * See {@link module:engine/conversion/conversion~Conversion#for} to learn how to add converter to conversion process.
+ * See {@link module:engine/conversion/conversion~Conversion#for} to learn how to add a converter to the conversion process.
  *
  * @param {Object} config Conversion configuration.
- * @param {String} config.model Name of the model element to convert.
- * @param {module:engine/view/elementdefinition~ElementDefinition|Function} config.view View element definition or a function
- * that takes model element and view writer as a parameters and returns a view container element.
+ * @param {String} config.model The name of the model element to convert.
+ * @param {module:engine/view/elementdefinition~ElementDefinition|Function} config.view A view element definition or a function
+ * that takes the model element and view writer as parameters and returns a view container element.
  * @returns {Function} Conversion helper.
  */
 export function downcastElementToElement( config ) {
@@ -62,8 +62,8 @@ export function downcastElementToElement( config ) {
 /**
  * Model attribute to view element conversion helper.
  *
- * This conversion results in wrapping view nodes in a view attribute element. For example, model text node with data
- * `"Foo"` and `bold` attribute becomes `<strong>Foo</strong>` in the view.
+ * This conversion results in wrapping view nodes with a view attribute element. For example, a model text node with
+ * `"Foo"` as data and the `bold` attribute becomes `<strong>Foo</strong>` in the view.
  *
  *		downcastAttributeToElement( { model: 'bold', view: 'strong' } );
  *
@@ -115,13 +115,13 @@ export function downcastElementToElement( config ) {
  *			}
  *		} );
  *
- * See {@link module:engine/conversion/conversion~Conversion#for} to learn how to add converter to conversion process.
+ * See {@link module:engine/conversion/conversion~Conversion#for} to learn how to add a converter to the conversion process.
  *
  * @param {Object} config Conversion configuration.
- * @param {String|Object} config.model Key of the attribute to convert from or a `{ key, values }` object. `values` is an array
- * of `String`s with possible values if the model attribute is enumerable.
- * @param {module:engine/view/elementdefinition~ElementDefinition|Function|Object} config.view View element definition or a function
- * that takes model attribute value and view writer as parameters and returns a view attribute element. If `config.model.values` is
+ * @param {String|Object} config.model The key of the attribute to convert from or a `{ key, values }` object. `values` is an array
+ * of `String`s with possible values if the model attribute is an enumerable.
+ * @param {module:engine/view/elementdefinition~ElementDefinition|Function|Object} config.view A view element definition or a function
+ * that takes the model attribute value and view writer as parameters and returns a view attribute element. If `config.model.values` is
  * given, `config.view` should be an object assigning values from `config.model.values` to view element definitions or functions.
  * @param {module:utils/priorities~PriorityString} [config.priority='normal'] Converter priority.
  * @returns {Function} Conversion helper.
@@ -154,7 +154,7 @@ export function downcastAttributeToElement( config ) {
 /**
  * Model attribute to view attribute conversion helper.
  *
- * This conversion results in adding an attribute on a view node, basing on an attribute from a model node. For example,
+ * This conversion results in adding an attribute to a view node, basing on an attribute from a model node. For example,
  * `<image src='foo.jpg'></image>` is converted to `<img src='foo.jpg'></img>`.
  *
  *		downcastAttributeToAttribute( { model: 'source', view: 'src' } );
@@ -191,13 +191,13 @@ export function downcastAttributeToElement( config ) {
  *			view: modelAttributeValue => ( { key: 'class', value: 'styled-' + modelAttributeValue } )
  *		} );
  *
- * See {@link module:engine/conversion/conversion~Conversion#for} to learn how to add converter to conversion process.
+ * See {@link module:engine/conversion/conversion~Conversion#for} to learn how to add a converter to the conversion process.
  *
  * @param {Object} config Conversion configuration.
- * @param {String|Object} config.model Key of the attribute to convert from or a `{ key, values, [ name ] }` object describing
+ * @param {String|Object} config.model The key of the attribute to convert from or a `{ key, values, [ name ] }` object describing
  * the attribute key, possible values and, optionally, an element name to convert from.
- * @param {String|Object|Function} config.view View attribute key, or a `{ key, value }` object or a function that takes
- * model attribute value and returns a `{ key, value }` object. If `key` is `'class'`, `value` can be a `String` or an
+ * @param {String|Object|Function} config.view A view attribute key, or a `{ key, value }` object or a function that takes
+ * the model attribute value and returns a `{ key, value }` object. If `key` is `'class'`, `value` can be a `String` or an
  * array of `String`s. If `key` is `'style'`, `value` is an object with key-value pairs. In other cases, `value` is a `String`.
  * If `config.model.values` is set, `config.view` should be an object assigning values from `config.model.values` to
  * `{ key, value }` objects or a functions.
@@ -232,8 +232,8 @@ export function downcastAttributeToAttribute( config ) {
 /**
  * Model marker to view element conversion helper.
  *
- * This conversion results in creating a view element on the boundaries of the converted marker. If converted marker
- * is collapsed, only one element is created. For example, model marker set like this `<paragraph>F[oo b]ar</paragraph>`
+ * This conversion results in creating a view element on the boundaries of the converted marker. If the converted marker
+ * is collapsed, only one element is created. For example, model marker set like this: `<paragraph>F[oo b]ar</paragraph>`
  * becomes `<p>F<span data-marker="search"></span>oo b<span data-marker="search"></span>ar</p>` in the view.
  *
  *		downcastMarkerToElement( { model: 'search', view: 'marker-search' } );
@@ -257,21 +257,21 @@ export function downcastAttributeToAttribute( config ) {
  * 			}
  * 		} );
  *
- * If function is passed as `config.view` parameter, it will be used to generate both boundary elements. The function
- * receives `data` object as parameter and should return an instance of {@link module:engine/view/uielement~UIElement view.UIElement}.
- * The `data` and `conversionApi` objects are passed from
+ * If a function is passed as the `config.view` parameter, it will be used to generate both boundary elements. The function
+ * receives the `data` object as a parameter and should return an instance of the
+ * {@link module:engine/view/uielement~UIElement view UI element}. The `data` and `conversionApi` objects are passed from
  * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:addMarker}. Additionally,
- * `data.isOpening` parameter is passed, which is set to `true` for marker start boundary element, and `false` to
- * marker end boundary element.
+ * the `data.isOpening` parameter is passed, which is set to `true` for the marker start boundary element, and `false` to
+ * the marker end boundary element.
  *
- * This kind of conversion is useful for saving data into data base, so it should be used in data conversion pipeline.
+ * This kind of conversion is useful for saving data into the database, so it should be used in the data conversion pipeline.
  *
- * See {@link module:engine/conversion/conversion~Conversion#for} to learn how to add converter to conversion process.
+ * See {@link module:engine/conversion/conversion~Conversion#for} to learn how to add a converter to the conversion process.
  *
  * @param {Object} config Conversion configuration.
- * @param {String} config.model Name of the model marker (or model marker group) to convert.
- * @param {module:engine/view/elementdefinition~ElementDefinition|Function} config.view View element definition or a function
- * that takes model marker data as a parameter and returns view ui element.
+ * @param {String} config.model The name of the model marker (or model marker group) to convert.
+ * @param {module:engine/view/elementdefinition~ElementDefinition|Function} config.view A view element definition or a function
+ * that takes the model marker data as a parameter and returns a view UI element.
  * @param {module:utils/priorities~PriorityString} [config.priority='normal'] Converter priority.
  * @returns {Function} Conversion helper.
  */
@@ -292,18 +292,18 @@ export function downcastMarkerToElement( config ) {
  * This conversion results in creating a highlight on view nodes. For this kind of conversion,
  * {@link module:engine/conversion/downcast-converters~HighlightDescriptor} should be provided.
  *
- * For text nodes, a `span` {@link module:engine/view/attributeelement~AttributeElement} is created and it wraps all text nodes
- * in the converted marker range. For example, model marker set like this `<paragraph>F[oo b]ar</paragraph>` becomes
+ * For text nodes, a `<span>` {@link module:engine/view/attributeelement~AttributeElement} is created and it wraps all text nodes
+ * in the converted marker range. For example, a model marker set like this: `<paragraph>F[oo b]ar</paragraph>` becomes
  * `<p>F<span class="comment">oo b</span>ar</p>` in the view.
  *
- * {@link module:engine/view/containerelement~ContainerElement} may provide custom way of handling highlight. Most often,
- * the element itself is given classes and attributes described in the highlight descriptor (instead of being wrapped in `span`).
- * For example, model marker set like this `[<image src="foo.jpg"></image>]` becomes `<img src="foo.jpg" class="comment"></img>`
+ * {@link module:engine/view/containerelement~ContainerElement} may provide a custom way of handling highlight. Most often,
+ * the element itself is given classes and attributes described in the highlight descriptor (instead of being wrapped in `<span>`).
+ * For example, a model marker set like this: `[<image src="foo.jpg"></image>]` becomes `<img src="foo.jpg" class="comment"></img>`
  * in the view.
  *
- * For container elements, the conversion is two-step. While the converter processes highlight descriptor and passes it
- * to a container element, it is the container element instance itself which applies values from highlight descriptor.
- * So, in a sense, converter takes care of stating what should be applied on what, while element decides how to apply that.
+ * For container elements, the conversion is two-step. While the converter processes the highlight descriptor and passes it
+ * to a container element, it is the container element instance itself that applies values from the highlight descriptor.
+ * So, in a sense, the converter takes care of stating what should be applied on what, while the element decides how to apply that.
  *
  *		downcastMarkerToHighlight( { model: 'comment', view: { classes: 'comment' } } );
  *
@@ -312,7 +312,7 @@ export function downcastMarkerToElement( config ) {
  * 		downcastMarkerToHighlight( {
  * 			model: 'comment',
  * 			view: data => {
- * 				// Assuming that marker name is in a form of comment:commentType.
+ * 				// Assuming that the marker name is in a form of comment:commentType.
  *	 			const commentType = data.markerName.split( ':' )[ 1 ];
  *
  *	 			return {
@@ -321,16 +321,17 @@ export function downcastMarkerToElement( config ) {
  * 			}
  * 		} );
  *
- * If function is passed as `config.view` parameter, it will be used to generate highlight descriptor. The function
- * receives `data` object as parameter and should return a {@link module:engine/conversion/downcast-converters~HighlightDescriptor}.
+ * If a function is passed as the `config.view` parameter, it will be used to generate the highlight descriptor. The function
+ * receives the `data` object as a parameter and should return a
+ * {@link module:engine/conversion/downcast-converters~HighlightDescriptor highlight descriptor}.
  * The `data` object properties are passed from {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:addMarker}.
  *
- * See {@link module:engine/conversion/conversion~Conversion#for} to learn how to add converter to conversion process.
+ * See {@link module:engine/conversion/conversion~Conversion#for} to learn how to add a converter to the conversion process.
  *
  * @param {Object} config Conversion configuration.
- * @param {String} config.model Name of the model marker (or model marker group) to convert.
- * @param {module:engine/conversion/downcast-converters~HighlightDescriptor|Function} config.view Highlight descriptor
- * which will be used for highlighting or a function that takes model marker data as a parameter and returns a highlight descriptor.
+ * @param {String} config.model The name of the model marker (or model marker group) to convert.
+ * @param {module:engine/conversion/downcast-converters~HighlightDescriptor|Function} config.view A highlight descriptor
+ * that will be used for highlighting or a function that takes the model marker data as a parameter and returns a highlight descriptor.
  * @param {module:utils/priorities~PriorityString} [config.priority='normal'] Converter priority.
  * @returns {Function} Conversion helper.
  */
@@ -342,8 +343,8 @@ export function downcastMarkerToHighlight( config ) {
 	};
 }
 
-// Takes `config.view`, and if it is a {@link module:engine/view/elementdefinition~ElementDefinition}, converts it
-// to a function (because lower level converters accepts only element creator functions).
+// Takes `config.view`, and if it is an {@link module:engine/view/elementdefinition~ElementDefinition}, converts it
+// to a function (because lower level converters accept only element creator functions).
 //
 // @param {module:engine/view/elementdefinition~ElementDefinition|Function} view View configuration.
 // @param {'container'|'attribute'|'ui'} viewElementType View element type to create.
@@ -357,7 +358,7 @@ function _normalizeToElementConfig( view, viewElementType ) {
 	return ( modelData, viewWriter ) => _createViewElementFromDefinition( view, viewWriter, viewElementType );
 }
 
-// Creates view element instance from provided viewElementDefinition and class.
+// Creates a view element instance from the provided {@link module:engine/view/elementdefinition~ElementDefinition} and class.
 //
 // @param {module:engine/view/elementdefinition~ElementDefinition} viewElementDefinition
 // @param {module:engine/view/writer~Writer} viewWriter
@@ -419,8 +420,8 @@ function _getFromAttributeCreator( config ) {
 	}
 }
 
-// Takes config and adds default parameters if they don't exist and normalizes other parameters to be used in downcast converters
-// for generating view attribute.
+// Takes the configuration, adds default parameters if they do not exist and normalizes other parameters to be used in downcast converters
+// for generating a view attribute.
 //
 // @param {Object} view View configuration.
 function _normalizeToAttributeConfig( view ) {
@@ -442,14 +443,14 @@ function _normalizeToAttributeConfig( view ) {
 }
 
 /**
- * Function factory, creates a converter that converts node insertion changes from the model to the view.
- * Passed function will be provided with all the parameters of the dispatcher's
- * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert insert event}.
- * It's expected that the function returns a {@link module:engine/view/element~Element}.
- * The result of the function will be inserted to the view.
+ * Function factory that creates a converter which converts node insertion changes from the model to the view.
+ * The function passed will be provided with all the parameters of the dispatcher's
+ * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:insert `insert` event}.
+ * It is expected that the function returns an {@link module:engine/view/element~Element}.
+ * The result of the function will be inserted into the view.
  *
- * The converter automatically consumes corresponding value from consumables list, stops the event (see
- * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}) and bind model and view elements.
+ * The converter automatically consumes the corresponding value from the consumables list, stops the event (see
+ * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}) and binds the model and view elements.
  *
  *		downcastDispatcher.on(
  *			'insert:myElem',
@@ -457,7 +458,7 @@ function _normalizeToAttributeConfig( view ) {
  *				const text = viewWriter.createText( 'myText' );
  *				const myElem = viewWriter.createElement( 'myElem', { myAttr: 'my-' + modelItem.getAttribute( 'myAttr' ) }, text );
  *
- *				// Do something fancy with myElem using `modelItem` or other parameters.
+ *				// Do something fancy with `myElem` using `modelItem` or other parameters.
  *
  *				return myElem;
  *			}
@@ -486,9 +487,9 @@ export function insertElement( elementCreator ) {
 }
 
 /**
- * Function factory, creates a default downcast converter for text insertion changes.
+ * Function factory that creates a default downcast converter for text insertion changes.
  *
- * The converter automatically consumes corresponding value from consumables list and stops the event (see
+ * The converter automatically consumes the corresponding value from the consumables list and stops the event (see
  * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}).
  *
  *		modelDispatcher.on( 'insert:$text', insertText() );
@@ -510,7 +511,7 @@ export function insertText() {
 }
 
 /**
- * Function factory, creates a default downcast converter for node remove changes.
+ * Function factory that creates a default downcast converter for node remove changes.
  *
  *		modelDispatcher.on( 'remove', remove() );
  *
@@ -538,17 +539,17 @@ export function remove() {
 }
 
 /**
- * Function factory, creates a converter that converts marker adding change to the view ui element.
+ * Function factory that creates a converter which converts marker adding change to the
+ * {@link module:engine/view/uielement~UIElement view UI element}.
  *
- * The view ui element, that will be added to the view, depends on passed parameter. See {@link ~insertElement}.
- * In a case of a non-collapsed range, the ui element will not wrap nodes but separate elements will be placed at the beginning
+ * The view UI element that will be added to the view depends on the passed parameter. See {@link ~insertElement}.
+ * In case of a non-collapsed range, the UI element will not wrap nodes but separate elements will be placed at the beginning
  * and at the end of the range.
  *
- * This converter binds created {@link module:engine/view/uielement~UIElement}s with marker name using
- * the {@link module:engine/conversion/mapper~Mapper#bindElementToMarker}.
+ * This converter binds created UI elements with the marker name using {@link module:engine/conversion/mapper~Mapper#bindElementToMarker}.
  *
- * @param {module:engine/view/uielement~UIElement|Function} elementCreator View ui element or a function returning a view element
- * which will be inserted.
+ * @param {module:engine/view/uielement~UIElement|Function} elementCreator A view UI element or a function returning the view element
+ * that will be inserted.
  * @returns {Function} Insert element event converter.
  */
 export function insertUIElement( elementCreator ) {
@@ -599,12 +600,12 @@ export function insertUIElement( elementCreator ) {
 }
 
 /**
- * Function factory, returns a default downcast converter for removing {@link module:engine/view/uielement~UIElement ui element}
+ * Function factory that returns a default downcast converter for removing a {@link module:engine/view/uielement~UIElement UI element}
  * basing on marker remove change.
  *
- * This converter unbinds elements from marker name.
+ * This converter unbinds elements from the marker name.
  *
- * @returns {Function} Remove ui element converter.
+ * @returns {Function} Removed UI element converter.
  */
 export function removeUIElement() {
 	return ( evt, data, conversionApi ) => {
@@ -627,19 +628,19 @@ export function removeUIElement() {
 }
 
 /**
- * Function factory, creates a converter that converts set/change/remove attribute changes from the model to the view.
+ * Function factory that creates a converter which converts set/change/remove attribute changes from the model to the view.
  *
- * Attributes from model are converted to the view element attributes in the view. You may provide a custom function to generate
- * a key-value attribute pair to add/change/remove. If not provided, model attributes will be converted to view elements
- * attributes on 1-to-1 basis.
+ * Attributes from the model are converted to the view element attributes in the view. You may provide a custom function to generate
+ * a key-value attribute pair to add/change/remove. If not provided, model attributes will be converted to view element
+ * attributes on a one-to-one basis.
  *
- * **Note:** Provided attribute creator should always return the same `key` for given attribute from the model.
+ * **Note:** The provided attribute creator should always return the same `key` for a given attribute from the model.
  *
- * The converter automatically consumes corresponding value from consumables list and stops the event (see
+ * The converter automatically consumes the corresponding value from the consumables list and stops the event (see
  * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}).
  *
  *		modelDispatcher.on( 'attribute:customAttr:myElem', changeAttribute( ( value, data ) => {
- *			// Change attribute key from `customAttr` to `class` in view.
+ *			// Change attribute key from `customAttr` to `class` in the view.
  *			const key = 'class';
  *			let value = data.attributeNewValue;
  *
@@ -648,13 +649,13 @@ export function removeUIElement() {
  *				value = 'empty';
  *			}
  *
- *			// Return key-value pair.
+ *			// Return the key-value pair.
  *			return { key, value };
  *		} ) );
  *
  * @param {Function} [attributeCreator] Function returning an object with two properties: `key` and `value`, which
- * represents attribute key and attribute value to be set on a {@link module:engine/view/element~Element view element}.
- * The function is passed model attribute value as first parameter and additional data about the change as a second parameter.
+ * represent the attribute key and attribute value to be set on a {@link module:engine/view/element~Element view element}.
+ * The function is passed the model attribute value as the first parameter and additional data about the change as the second parameter.
  * @returns {Function} Set/change attribute converter.
  */
 export function changeAttribute( attributeCreator ) {
@@ -716,12 +717,12 @@ export function changeAttribute( attributeCreator ) {
 }
 
 /**
- * Function factory, creates a converter that converts set/change/remove attribute changes from the model to the view.
- * Also can be used to convert selection attributes. In that case, an empty attribute element will be created and the
+ * Function factory that creates a converter which converts set/change/remove attribute changes from the model to the view.
+ * It can also be used to convert selection attributes. In that case, an empty attribute element will be created and the
  * selection will be put inside it.
  *
- * Attributes from model are converted to a view element that will be wrapping those view nodes that are bound to
- * model elements having given attribute. This is useful for attributes like `bold`, which may be set on text nodes in model
+ * Attributes from the model are converted to a view element that will be wrapping these view nodes that are bound to
+ * model elements having the given attribute. This is useful for attributes like `bold` that may be set on text nodes in the model
  * but are represented as an element in the view:
  *
  *		[paragraph]              MODEL ====> VIEW        <p>
@@ -729,20 +730,20 @@ export function changeAttribute( attributeCreator ) {
  *			|- b {bold: true}                             |   |- ab
  *			|- c                                          |- c
  *
- * Passed `Function` will be provided with attribute value and then all the parameters of the
- * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute attribute event}.
- * It's expected that the function returns a {@link module:engine/view/element~Element}.
+ * Passed `Function` will be provided with the attribute value and then all the parameters of the
+ * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute `attribute` event}.
+ * It is expected that the function returns an {@link module:engine/view/element~Element}.
  * The result of the function will be the wrapping element.
- * When provided `Function` does not return element, then will be no conversion.
+ * When the provided `Function` does not return any element, no conversion will take place.
  *
- * The converter automatically consumes corresponding value from consumables list, stops the event (see
+ * The converter automatically consumes the corresponding value from the consumables list and stops the event (see
  * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}).
  *
  *		modelDispatcher.on( 'attribute:bold', wrapItem( ( modelAttributeValue, viewWriter ) => {
  *			return viewWriter.createAttributeElement( 'strong' );
  *		} );
  *
- * @param {Function} elementCreator Function returning a view element, which will be used for wrapping.
+ * @param {Function} elementCreator Function returning a view element that will be used for wrapping.
  * @returns {Function} Set/change attribute converter.
  */
 export function wrap( elementCreator ) {
@@ -785,19 +786,19 @@ export function wrap( elementCreator ) {
 }
 
 /**
- * Function factory, creates converter that converts text inside marker's range. Converter wraps the text with
- * {@link module:engine/view/attributeelement~AttributeElement} created from provided descriptor.
+ * Function factory that creates a converter which converts the text inside marker's range. The converter wraps the text with
+ * {@link module:engine/view/attributeelement~AttributeElement} created from the provided descriptor.
  * See {link module:engine/conversion/downcast-converters~createViewElementFromHighlightDescriptor}.
  *
- * Also can be used to convert selection that is inside a marker. In that case, an empty attribute element will be
+ * It can also be used to convert the selection that is inside a marker. In that case, an empty attribute element will be
  * created and the selection will be put inside it.
  *
- * If the highlight descriptor will not provide `priority` property, `10` will be used.
+ * If the highlight descriptor does not provide the `priority` property, `10` will be used.
  *
- * If the highlight descriptor will not provide `id` property, name of the marker will be used.
+ * If the highlight descriptor does not provide the `id` property, the name of the marker will be used.
  *
- * This converter binds created {@link module:engine/view/attributeelement~AttributeElement}s with marker name using
- * the {@link module:engine/conversion/mapper~Mapper#bindElementToMarker}.
+ * This converter binds the created {@link module:engine/view/attributeelement~AttributeElement attribute elemens} with the marker name
+ * using the {@link module:engine/conversion/mapper~Mapper#bindElementToMarker} method.
  *
  * @param {module:engine/conversion/downcast-converters~HighlightDescriptor|Function} highlightDescriptor
  * @return {Function}
@@ -846,21 +847,21 @@ export function highlightText( highlightDescriptor ) {
 }
 
 /**
- * Converter function factory. Creates a function which applies the marker's highlight to an element inside the marker's range.
+ * Converter function factory. It creates a function which applies the marker's highlight to an element inside the marker's range.
  *
- * The converter checks if an element has `addHighlight` function stored as
+ * The converter checks if an element has the `addHighlight` function stored as a
  * {@link module:engine/view/element~Element#_setCustomProperty custom property} and, if so, uses it to apply the highlight.
- * In such case converter will consume all element's children, assuming that they were handled by element itself.
+ * In such case the converter will consume all element's children, assuming that they were handled by the element itself.
  *
- * When `addHighlight` custom property is not present, element is not converted in any special way.
- * This means that converters will proceed to convert element's child nodes.
+ * When the `addHighlight` custom property is not present, the element is not converted in any special way.
+ * This means that converters will proceed to convert the element's child nodes.
  *
- * If the highlight descriptor will not provide `priority` property, `10` will be used.
+ * If the highlight descriptor does not provide the `priority` property, `10` will be used.
  *
- * If the highlight descriptor will not provide `id` property, name of the marker will be used.
+ * If the highlight descriptor does not provide the `id` property, the name of the marker will be used.
  *
- * This converter binds altered {@link module:engine/view/containerelement~ContainerElement}s with marker name using
- * the {@link module:engine/conversion/mapper~Mapper#bindElementToMarker}.
+ * This converter binds altered {@link module:engine/view/containerelement~ContainerElement container elements} with the marker name using
+ * the {@link module:engine/conversion/mapper~Mapper#bindElementToMarker} method.
  *
  * @param {module:engine/conversion/downcast-converters~HighlightDescriptor|Function} highlightDescriptor
  * @return {Function}
@@ -904,25 +905,25 @@ export function highlightElement( highlightDescriptor ) {
 }
 
 /**
- * Function factory, creates a converter that converts removing model marker to the view.
+ * Function factory that creates a converter which converts the removing model marker to the view.
  *
  * Both text nodes and elements are handled by this converter but they are handled a bit differently.
  *
- * Text nodes are unwrapped using {@link module:engine/view/attributeelement~AttributeElement} created from provided
- * highlight descriptor. See {link module:engine/conversion/downcast-converters~highlightDescriptorToAttributeElement}.
+ * Text nodes are unwrapped using the {@link module:engine/view/attributeelement~AttributeElement attribute element} created from the
+ * provided highlight descriptor. See {link module:engine/conversion/downcast-converters~HighlightDescriptor}.
  *
- * For elements, the converter checks if an element has `removeHighlight` function stored as
+ * For elements, the converter checks if an element has the `removeHighlight` function stored as a
  * {@link module:engine/view/element~Element#_setCustomProperty custom property}. If so, it uses it to remove the highlight.
- * In such case, children of that element will not be converted.
+ * In such case, the children of that element will not be converted.
  *
- * When `removeHighlight` is not present, element is not converted in any special way.
- * Instead converter will proceed to convert element's child nodes.
+ * When `removeHighlight` is not present, the element is not converted in any special way.
+ * The converter will proceed to convert the element's child nodes instead.
  *
- * If the highlight descriptor will not provide `priority` property, `10` will be used.
+ * If the highlight descriptor does not provide the `priority` property, `10` will be used.
  *
- * If the highlight descriptor will not provide `id` property, name of the marker will be used.
+ * If the highlight descriptor does not provide the `id` property, the name of the marker will be used.
  *
- * This converter unbinds elements from marker name.
+ * This converter unbinds elements from the marker name.
  *
  * @param {module:engine/conversion/downcast-converters~HighlightDescriptor|Function} highlightDescriptor
  * @return {Function}
@@ -990,9 +991,9 @@ function _prepareDescriptor( highlightDescriptor, data, conversionApi ) {
 }
 
 /**
- * Creates `span` {@link module:engine/view/attributeelement~AttributeElement view attribute element} from information
- * provided by {@link module:engine/conversion/downcast-converters~HighlightDescriptor} object. If priority
- * is not provided in descriptor - default priority will be used.
+ * Creates a `<span>` {@link module:engine/view/attributeelement~AttributeElement view attribute element} from the information
+ * provided by the {@link module:engine/conversion/downcast-converters~HighlightDescriptor highlight descriptor} object. If a priority
+ * is not provided in the descriptor, the default priority will be used.
  *
  * @param {module:engine/conversion/downcast-converters~HighlightDescriptor} descriptor
  * @returns {module:engine/view/attributeelement~AttributeElement}
@@ -1014,35 +1015,36 @@ export function createViewElementFromHighlightDescriptor( descriptor ) {
 }
 
 /**
- * Object describing how the marker highlight should be represented in the view.
+ * An object describing how the marker highlight should be represented in the view.
  *
- * Each text node contained in a highlighted range will be wrapped in a `span` {@link module:engine/view/attributeelement~AttributeElement}
- * with CSS class(es), attributes and priority described by this object.
+ * Each text node contained in a highlighted range will be wrapped in a `<span>`
+ * {@link module:engine/view/attributeelement~AttributeElement view attribute element} with CSS class(es), attributes and a priority
+ * described by this object.
  *
- * Additionally, each {@link module:engine/view/containerelement~ContainerElement} can handle displaying the highlight separately
- * by providing `addHighlight` and `removeHighlight` custom properties. In this case:
+ * Additionally, each {@link module:engine/view/containerelement~ContainerElement container element} can handle displaying the highlight
+ * separately by providing the `addHighlight` and `removeHighlight` custom properties. In this case:
  *
- *  * `HighlightDescriptor` object is passed to the `addHighlight` function upon conversion and should be used to apply the highlight to
- *  the element,
- *  * descriptor `id` is passed to the `removeHighlight` function upon conversion and should be used to remove the highlight of given
- *  id from the element.
+ *  * The `HighlightDescriptor` object is passed to the `addHighlight` function upon conversion and should be used to apply the highlight to
+ *  the element.
+ *  * The descriptor `id` is passed to the `removeHighlight` function upon conversion and should be used to remove the highlight with the
+ *  given ID from the element.
  *
  * @typedef {Object} module:engine/conversion/downcast-converters~HighlightDescriptor
  *
- * @property {String|Array.<String>} classes CSS class or array of classes to set. If descriptor is used to
- * create {@link module:engine/view/attributeelement~AttributeElement} over text nodes, those classes will be set
- * on that {@link module:engine/view/attributeelement~AttributeElement}. If descriptor is applied to an element,
- * usually those class will be set on that element, however this depends on how the element converts the descriptor.
+ * @property {String|Array.<String>} classes A CSS class or an array of classes to set. If the descriptor is used to
+ * create an {@link module:engine/view/attributeelement~AttributeElement attribute element} over text nodes, these classes will be set
+ * on that attribute element. If the descriptor is applied to an element, usually these classes will be set on that element, however,
+ * this depends on how the element converts the descriptor.
  *
- * @property {String} [id] Descriptor identifier. If not provided, defaults to converted marker's name.
+ * @property {String} [id] Descriptor identifier. If not provided, it defaults to the converted marker's name.
  *
- * @property {Number} [priority] Descriptor priority. If not provided, defaults to `10`. If descriptor is used to create
- * {@link module:engine/view/attributeelement~AttributeElement}, it will be that element's
- * {@link module:engine/view/attributeelement~AttributeElement#priority}. If descriptor is applied to an element,
+ * @property {Number} [priority] Descriptor priority. If not provided, it defaults to `10`. If the descriptor is used to create
+ * an {@link module:engine/view/attributeelement~AttributeElement attribute element}, it will be that element's
+ * {@link module:engine/view/attributeelement~AttributeElement#priority priority}. If the descriptor is applied to an element,
  * the priority will be used to determine which descriptor is more important.
  *
- * @property {Object} [attributes] Attributes to set. If descriptor is used to create
- * {@link module:engine/view/attributeelement~AttributeElement} over text nodes, those attributes will be set on that
- * {@link module:engine/view/attributeelement~AttributeElement}. If descriptor is applied to an element, usually those
- * attributes will be set on that element, however this depends on how the element converts the descriptor.
+ * @property {Object} [attributes] Attributes to set. If the descriptor is used to create
+ * an {@link module:engine/view/attributeelement~AttributeElement attribute element} over text nodes, these attributes will be set on that
+ * attribute element. If the descriptor is applied to an element, usually these attributes will be set on that element, however,
+ * this depends on how the element converts the descriptor.
  */
