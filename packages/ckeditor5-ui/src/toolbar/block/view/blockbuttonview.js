@@ -2,6 +2,10 @@
  * Copyright (c) 2016 - 2017, CKSource - Frederico Knabben. All rights reserved.
  */
 
+/**
+ * @module ui/toolbar/block/view/blockbuttonview
+ */
+
 import ButtonView from '../../../button/buttonview';
 import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
 import '../../../../theme/components/toolbar/blocktoolbar.css';

@@ -2,6 +2,10 @@
  * Copyright (c) 2016 - 2017, CKSource - Frederico Knabben. All rights reserved.
  */
 
+/**
+ * @module ui/toolbar/block/blocktoolbar
+ */
+
 /* global window */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
@@ -43,26 +47,26 @@ export default class BlockToolbar extends Plugin {
 		/**
 		 * Toolbar view.
 		 *
-		 * @type {ToolbarView}
+		 * @type {module:ui/toolbar/toolbarview~ToolbarView}
 		 */
 		this.toolbarView = new ToolbarView( editor.locale );
 
 		/**
 		 * Panel view.
 		 *
-		 * @type {BalloonPanelView}
+		 * @type {module:ui/panel/balloon/balloonpanelview~BalloonPanelView}
 		 */
 		this.panelView = this._createPanelView();
 
 		/**
 		 * Button view.
 		 *
-		 * @type {ButtonView}
+		 * @type {module:ui/toolbar/block/view/blockbuttonview~BlockButtonView}
 		 */
 		this.buttonView = this._createButtonView();
 
 		/**
-		 * List of block element names that allow do display toolbar next to it.
+		 * List of block element names that allow displaying toolbar next to it.
 		 * This list will be updated by #afterInit method.
 		 *
 		 * @type {Array<String>}
@@ -114,7 +118,7 @@ export default class BlockToolbar extends Plugin {
 	 * Creates panel view.
 	 *
 	 * @private
-	 * @returns {BalloonPanelView}
+	 * @returns {module:ui/panel/balloon/balloonpanelview~BalloonPanelView}
 	 */
 	_createPanelView() {
 		const editor = this.editor;
@@ -138,7 +142,7 @@ export default class BlockToolbar extends Plugin {
 	 * Creates button view.
 	 *
 	 * @private
-	 * @returns {BlockButtonView}
+	 * @returns {module:ui/toolbar/block/view/blockbuttonview~BlockButtonView}
 	 */
 	_createButtonView() {
 		const editor = this.editor;
@@ -168,14 +172,17 @@ export default class BlockToolbar extends Plugin {
 	}
 
 	/**
-	 * Returns list of element names that allow to display block button next to it.
+	 * Returns list of element names that allow displaying block button next to it.
 	 *
 	 * @private
+	 * @returns {Array<String>}
 	 */
 	_getAllowedElements() {
+		const config = this.editor.config;
+
 		const elements = [ 'p', 'li' ];
 
-		for ( const item of this.editor.config.get( 'heading.options' ) || [] ) {
+		for ( const item of config.get( 'heading.options' ) || [] ) {
 			if ( item.view ) {
 				elements.push( item.view );
 			}
@@ -230,11 +237,12 @@ export default class BlockToolbar extends Plugin {
 			}
 		}, { priority: 'low' } );
 
-		// Keep button and panel position on window#resize.
 		this.listenTo( this.buttonView, 'change:isVisible', ( evt, name, isVisible ) => {
 			if ( isVisible ) {
+				// Keep correct position of button and panel on window#resize.
 				this.buttonView.listenTo( window, 'resize', () => this._attachButtonToElement( targetDomElement ) );
 			} else {
+				// Stop repositioning button when is hidden.
 				this.buttonView.stopListening( window, 'resize' );
 
 				// Hide the panel when the button disappears.
@@ -249,11 +257,10 @@ export default class BlockToolbar extends Plugin {
 	 * @private
 	 */
 	_disable() {
+		this.buttonView.isVisible = false;
 		this.stopListening( this.editor.model.document.selection, 'change:range' );
 		this.stopListening( this.editor.editing.view, 'render' );
 		this.stopListening( this.buttonView, 'change:isVisible' );
-		this.buttonView.isVisible = false;
-		this._hidePanel();
 	}
 
 	/**
