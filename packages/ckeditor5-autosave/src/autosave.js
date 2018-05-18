@@ -10,10 +10,30 @@ import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 /* globals window */
 
 /**
- * TODO: ...
  * Autosave plugin provides an easy-to-use API for getting sync with the editor's content.
- * It watches `Document:change`, and `Window:beforeunload` events.
- * At these moments, editor.getBody() and editor.getTitle() should work.
+ * It watches `Document:change`, and `Window:beforeunload` events and keep the save provider
+ * in sync with the editor's data.
+ *
+ * 		ClassicEditor
+ *			.create( document.querySelector( '#editor' ), {
+ *				plugins: [ ArticlePluginSet, Autosave ],
+ *				toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
+ *				image: {
+ *					toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ],
+ *				}
+ *			} )
+ *			.then( editor => {
+ *				const autosave = editor.plugins.get( Autosave );
+ *				autosave.provider = {
+ *					save() {
+ *						const data = editor.getData();
+ *
+ *						// Note: saveEditorsContentToDatabase function should return a promise
+ *						// to pending action or be sync.
+ *						return saveEditorsContentToDatabase( data );
+ *					}
+ *				};
+ *			} );
  */
 export default class Autosave extends Plugin {
 	static get pluginName() {
@@ -58,9 +78,8 @@ export default class Autosave extends Plugin {
 
 		this.listenTo( doc, 'change', this._saveIfDocumentChanged.bind( this ) );
 
-		// TODO: Docs
 		// Flush on the editor's destroy listener with the highest priority to ensure that
-		// `editor.getBody` will be called before plugins are destroyed.
+		// `editor.getData()` will be called before plugins are destroyed.
 		this.listenTo( editor, 'destroy', () => this._save(), { priority: 'highest' } );
 
 		// It's not possible to easy test it because karma uses `beforeunload` event
@@ -87,8 +106,8 @@ export default class Autosave extends Plugin {
 	}
 
 	/**
-	 * Filter out changes in document, that don't impact on the data (e.g. selection changes).
-	 * Ends once it finds the operation that potentially changes document's data.
+	 * Filters out changes in document, that don't impact on the data (e.g. selection changes).
+	 * Quickly returns when finds an operation that potentially changes document's data.
 	 *
 	 * @private
 	 */
@@ -111,7 +130,7 @@ export default class Autosave extends Plugin {
 	 * `_save()` method creates a pending action and calls `provider.save()` method.
 	 * It waits for the result and then removes the created pending action.
 	 *
-	 * @protected
+	 * @private
 	 */
 	_save() {
 		if ( !this.provider ) {
