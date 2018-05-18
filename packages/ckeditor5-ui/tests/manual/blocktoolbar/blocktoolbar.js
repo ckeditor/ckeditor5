@@ -12,9 +12,23 @@ import ParagraphButtonUI from '@ckeditor/ckeditor5-paragraph/src/paragraphbutton
 import BalloonToolbar from '../../../src/toolbar/balloon/balloontoolbar';
 import BlockToolbar from '../../../src/toolbar/block/blocktoolbar';
 
+class CustomBlockToolbar extends BlockToolbar {
+	init() {
+		super.init();
+
+		this.on( 'checkAllowed', ( evt, args ) => {
+			const viewElement = args[ 0 ];
+
+			if ( viewElement.name === 'h2' ) {
+				evt.return = false;
+			}
+		} );
+	}
+}
+
 BalloonEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet, HeadingButtonsUI, ParagraphButtonUI, BalloonToolbar, BlockToolbar ],
+		plugins: [ ArticlePluginSet, HeadingButtonsUI, ParagraphButtonUI, BalloonToolbar, CustomBlockToolbar ],
 		balloonToolbar: [ 'bold', 'italic', 'link' ],
 		blockToolbar: [ 'paragraph', 'heading1', 'heading2', 'heading3', 'bulletedList', 'numberedList', 'blockQuote' ]
 	} )
