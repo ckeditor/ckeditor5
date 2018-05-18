@@ -4,6 +4,7 @@
 
 import ButtonView from '../../../button/buttonview';
 import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
+import '../../../../theme/components/toolbar/blocktoolbar.css';
 
 const toPx = toUnit( 'px' );
 
