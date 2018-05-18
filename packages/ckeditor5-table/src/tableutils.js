@@ -27,10 +27,31 @@ export default class TableUtils extends Plugin {
 	}
 
 	/**
-	 * Returns table cell location in table.
+	 * Returns table cell location as in table row and column indexes.
+	 *
+	 * For instance in a table below:
+	 *
+	 *		    0   1   2   3
+	 *		  +---+---+---+---+
+	 *		0 | a     | b | c |
+	 *		  +       +   +---+
+	 *		1 |       |   | d |
+	 *		  +---+---+   +---+
+	 *		2 | e     |   | f |
+	 *		  +---+---+---+---+
+	 *
+	 * the method will return:
+	 *
+	 *     const cellA = table.getNodeByPath( [ 0, 0 ] );
+	 *     editor.plugins.get( 'TableUtils' ).getCellLocation( cellA );
+	 *     // will return { row: 0, column: 0 }
+	 *
+	 *     const cellD = table.getNodeByPath( [ 1, 0 ] );
+	 *     editor.plugins.get( 'TableUtils' ).getCellLocation( cellD );
+	 *     // will return { row: 1, column: 3 }
 	 *
 	 * @param {module:engine/model/element~Element} tableCell
-	 * @returns {Object}
+	 * @returns {{row, column}}
 	 */
 	getCellLocation( tableCell ) {
 		const tableRow = tableCell.parent;
@@ -73,20 +94,20 @@ export default class TableUtils extends Plugin {
 	 *
 	 * For the table below this code
 	 *
-	 *     row index
-	 *            0 +--+--+--+                        +--+--+--+
-	 *              | a| b| c|                        | a| b| c|
-	 *            1 +  +--+--+ <--- insert here at=1  +  +--+--+
-	 *              |  | d| e|                        |  |  |  |
-	 *            2 +  +--+--+      should give:      +  +--+--+
-	 *              |  | f| g|                        |  |  |  |
-	 *            3 +--+--+--+                        +  +--+--+
-	 *                                                |  | d| e|
-	 *            4                                   +--+--+--+
-	 *                                                +  + f| g|
-	 *            5                                   +--+--+--+
+	 *		row index
+	 *		  0 +---+---+---+                            +---+---+---+ 0
+	 *		    | a | b | c |                            | a | b | c |
+	 *		  1 +   +---+---+   <-- insert here at=1     +   +---+---+ 1
+	 *		    |   | d | e |                            |   |   |   |
+	 *		  2 +   +---+---+            should give:    +   +---+---+ 2
+	 *		    |   | f | g |                            |   |   |   |
+	 *		  3 +---+---+---+                            +   +---+---+ 3
+	 *		                                             |   | d | e |
+	 *		                                             +---+---+---+ 4
+	 *		                                             +   + f | g |
+	 *		                                             +---+---+---+ 5
 	 *
-	 * @param {module:engine/model/element~Element} table
+	 * @param {module:engine/model/element~Element} table Table model element to which insert rows.
 	 * @param {Object} options
 	 * @param {Number} [options.at=0] Row index at which insert rows.
 	 * @param {Number} [options.rows=1] Number of rows to insert.
@@ -147,21 +168,21 @@ export default class TableUtils extends Plugin {
 	 *
 	 * For the table below this code
 	 *
-	 *      0  1  2  3                     0  1  2  3  4  5
-	 *      +--+--+--+                     +--+--+--+--+--+
-	 *      | a   | b|                     | a         | b|
-	 *      +     +--+                     +           +--+
-	 *      |     | c|                     |           | c|
-	 *      +--+--+--+      should give:   +--+--+--+--+--+
-	 *      | d| e| f|                     | d|  |  | e| f|
-	 *      +--+  +--+                     +--+--+--+  +--+
-	 *      | g|  | h|                     | g|  |  |  | h|
-	 *      +--+--+--+                     +--+--+--+--+--+
-	 *      | i      |                     | i            |
-	 *      +--+--+--+                     +--+--+--+--+--+
-	 *         ^________ insert here at=1
+	 *		0   1   2   3                     0   1   2   3   4   5
+	 *		+---+---+---+                     +---+---+---+---+---+
+	 *		| a     | b |                     | a             | b |
+	 *		+       +---+                     +               +---+
+	 *		|       | c |                     |               | c |
+	 *		+---+---+---+      should give:   +---+---+---+---+---+
+	 *		| d | e | f |                     | d |   |   | e | f |
+	 *		+---+   +---+                     +---+---+---+  +---+
+	 *		| g |   | h |                     | g |   |   |   | h |
+	 *		+---+---+---+                     +---+---+---+---+---+
+	 *		| i         |                     | i                 |
+	 *		+---+---+---+                     +---+---+---+---+---+
+	 *		    ^________ insert here at=1
 	 *
-	 * @param {module:engine/model/element~Element} table
+	 * @param {module:engine/model/element~Element} table Table model element to which insert columns.
 	 * @param {Object} options
 	 * @param {Number} [options.at=0] Column index at which insert columns.
 	 * @param {Number} [options.columns=1] Number of columns to insert.
@@ -385,6 +406,8 @@ export default class TableUtils extends Plugin {
 
 	/**
 	 * Returns number of columns for given table.
+	 *
+	 *     editor.plugins.get( 'TableUtils' ).getColumns( table );
 	 *
 	 * @param {module:engine/model/element~Element} table Table to analyze.
 	 * @returns {Number}
