@@ -145,6 +145,19 @@ describe( 'Autosave', () => {
 			} );
 		} );
 
+		it( 'should filter out batches that don\'t change content', () => {
+			autosave.provider = {
+				save: sandbox.spy()
+			};
+
+			editor.model.change( writer => {
+				writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) ) );
+			} );
+
+			autosave._flush();
+			sinon.assert.notCalled( autosave.provider.save );
+		} );
+
 		it( 'should flush remaining calls after editor\'s destroy', () => {
 			const spy = sandbox.spy();
 			const savedStates = [];

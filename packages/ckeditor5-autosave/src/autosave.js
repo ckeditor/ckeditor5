@@ -56,7 +56,7 @@ export default class Autosave extends Plugin {
 		const doc = editor.model.document;
 		const pendingActions = editor.plugins.get( PendingActions );
 
-		this.listenTo( doc, 'change', this._throttledSave );
+		this.listenTo( doc, 'change', this._saveIfDocumentChanged.bind( this ) );
 
 		// TODO: Docs
 		// Flush on the editor's destroy listener with the highest priority to ensure that
@@ -84,6 +84,26 @@ export default class Autosave extends Plugin {
 	 */
 	_flush() {
 		this._throttledSave.flush();
+	}
+
+	/**
+	 * Filter out changes in document, that don't impact on the data (e.g. selection changes).
+	 * Ends once it finds the operation that potentially changes document's data.
+	 *
+	 * @private
+	 */
+	_saveIfDocumentChanged( evt, batch ) {
+		for ( const delta of batch.deltas ) {
+			for ( const operation of delta.operations ) {
+				const name = operation.name;
+
+				if ( !name || !isUserSelectionOperation( operation ) ) {
+					this._throttledSave();
+
+					return;
+				}
+			}
+		}
 	}
 
 	/**
@@ -125,3 +145,13 @@ export default class Autosave extends Plugin {
  * @name Provider#save
  * @type {Function}
  */
+
+/**
+ * @private
+ */
+function isUserSelectionOperation( operation ) {
+	return (
+		operation.name.startsWith( 'user:position' ) ||
+		operation.name.startsWith( 'user:range' )
+	);
+}
