@@ -5,15 +5,17 @@
 
 /* globals window, document, console:false */
 
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import BalloonEditor from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import HeadingButtonsUI from '@ckeditor/ckeditor5-heading/src/headingbuttonsui';
 import ParagraphButtonUI from '@ckeditor/ckeditor5-paragraph/src/paragraphbuttonui';
+import BalloonToolbar from '../../../src/toolbar/balloon/balloontoolbar';
 import BlockToolbar from '../../../src/toolbar/block/blocktoolbar';
 
-ClassicEditor
+BalloonEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet, HeadingButtonsUI, ParagraphButtonUI, BlockToolbar ],
+		plugins: [ ArticlePluginSet, HeadingButtonsUI, ParagraphButtonUI, BalloonToolbar, BlockToolbar ],
+		balloonToolbar: [ 'link' ],
 		blockToolbar: [ 'paragraph', 'heading1', 'heading2', 'heading3', 'bulletedList', 'numberedList', 'blockQuote' ]
 	} )
 	.then( editor => {
