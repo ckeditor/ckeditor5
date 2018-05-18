@@ -255,12 +255,44 @@ describe( 'BlockToolbar', () => {
 	} );
 
 	describe( 'attaching button to the content', () => {
-		it( 'should attach button to the left side of selected content and center with the first line on view#render', () => {
+		it( 'should attach button to the left side of selected content and center with the first line on view#render #1', () => {
 			setData( editor.model, '<paragraph>foo[]bar</paragraph>' );
 
 			const target = editor.ui.view.editableElement.querySelector( 'p' );
 
 			target.style.lineHeight = '20px';
+			target.style.paddingTop = '10px';
+
+			const editableRectSpy = sinon.stub( editor.ui.view.editableElement, 'getBoundingClientRect' ).returns( {
+				left: 100
+			} );
+
+			const targetRectSpy = sinon.stub( target, 'getBoundingClientRect' ).returns( {
+				top: 500,
+				left: 300
+			} );
+
+			const buttonRectSpy = sinon.stub( blockToolbar.buttonView.element, 'getBoundingClientRect' ).returns( {
+				width: 100,
+				height: 100
+			} );
+
+			editor.editing.view.fire( 'render' );
+
+			expect( blockToolbar.buttonView.top ).to.equal( 470 );
+			expect( blockToolbar.buttonView.left ).to.equal( 100 );
+
+			editableRectSpy.restore();
+			targetRectSpy.restore();
+			buttonRectSpy.restore();
+		} );
+
+		it( 'should attach button to the left side of selected content and center with the first line on view#render #2', () => {
+			setData( editor.model, '<paragraph>foo[]bar</paragraph>' );
+
+			const target = editor.ui.view.editableElement.querySelector( 'p' );
+
+			target.style.fontSize = '20px';
 			target.style.paddingTop = '10px';
 
 			const editableRectSpy = sinon.stub( editor.ui.view.editableElement, 'getBoundingClientRect' ).returns( {
