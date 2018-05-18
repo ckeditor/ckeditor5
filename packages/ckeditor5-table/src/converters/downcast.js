@@ -33,9 +33,6 @@ export function downcastInsertTable( options = {} ) {
 		conversionApi.consumable.consume( table, 'attribute:headingRows:table' );
 		conversionApi.consumable.consume( table, 'attribute:headingColumns:table' );
 
-		// The <thead> and <tbody> elements are created on the fly when needed & cached by `getOrCreateTableSection()` function.
-		const tableSections = {};
-
 		const asWidget = options && options.asWidget;
 
 		const tableElement = conversionApi.writer.createContainerElement( 'table' );
@@ -51,7 +48,7 @@ export function downcastInsertTable( options = {} ) {
 		for ( const tableWalkerValue of tableWalker ) {
 			const { row, cell } = tableWalkerValue;
 
-			const tableSection = getOrCreateTableSection( getSectionName( tableWalkerValue ), tableElement, conversionApi, tableSections );
+			const tableSection = getOrCreateTableSection( getSectionName( tableWalkerValue ), tableElement, conversionApi );
 			const tableRow = table.getChild( row );
 
 			// Check if row was converted
@@ -141,92 +138,96 @@ export function downcastInsertCell( options = {} ) {
 }
 
 /**
- * Conversion helper that acts on attribute change for headingColumns and headingRows attributes.
+ * Conversion helper that acts on headingRows table attribute change.
  *
- * Depending on changed attributes this converter will:
- * - rename <td> to <th> elements or vice versa
- * - create <thead> or <tbody> elements
- * - remove empty <thead> or <tbody>
+ * This converter will:
+ * - Rename <td> to <th> elements or vice versa depending on headings.
+ * - Create <thead> or <tbody> elements if needed.
+ * - Remove empty <thead> or <tbody> if needed.
  *
  * @returns {Function} Conversion helper.
  */
-export function downcastAttributeChange( options ) {
-	const attribute = options.attribute;
+export function downcastTableHeadingRowsChange( options = {} ) {
 	const asWidget = !!options.asWidget;
 
-	return dispatcher => dispatcher.on( `attribute:${ attribute }:table`, ( evt, data, conversionApi ) => {
+	return dispatcher => dispatcher.on( 'attribute:headingRows:table', ( evt, data, conversionApi ) => {
 		const table = data.item;
 
 		if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
 			return;
 		}
 
-		const tableElement = conversionApi.mapper.toViewElement( table );
+		const viewTable = conversionApi.mapper.toViewElement( table );
 
-		const cachedTableSections = {};
+		const oldRows = data.attributeOldValue;
+		const newRows = data.attributeNewValue;
 
-		const tableWalker = new TableWalker( table );
+		// The head section has grown so move rows from <tbody> to <thead>.
+		if ( newRows > oldRows ) {
+			// Filter out only those rows that are in wrong section.
+			const rowsToMove = Array.from( table.getChildren() ).filter( ( { index } ) => isBetween( index, oldRows - 1, newRows ) );
 
-		for ( const tableWalkerValue of tableWalker ) {
-			const { row, cell } = tableWalkerValue;
-			const tableRow = table.getChild( row );
+			const viewTableHead = getOrCreateTableSection( 'thead', viewTable, conversionApi );
+			moveViewRowsToTableSection( rowsToMove, viewTableHead, conversionApi, 'end' );
 
-			const trElement = conversionApi.mapper.toViewElement( tableRow );
-
-			// The TR element might be not converted yet (ie when adding a row to a heading section).
-			// It will be converted by downcastInsertRow() conversion helper.
-			if ( !trElement ) {
-				continue;
-			}
-
-			const desiredParentName = getSectionName( tableWalkerValue );
-
-			if ( desiredParentName !== trElement.parent.name ) {
-				let targetPosition;
-
-				if (
-					( desiredParentName == 'tbody' && row === data.attributeNewValue && data.attributeNewValue < data.attributeOldValue ) ||
-					row === 0
-				) {
-					const tableSection = getOrCreateTableSection( desiredParentName, tableElement, conversionApi, cachedTableSections );
-
-					targetPosition = ViewPosition.createAt( tableSection, 'start' );
-				} else {
-					const previousTr = conversionApi.mapper.toViewElement( table.getChild( row - 1 ) );
-
-					targetPosition = ViewPosition.createAfter( previousTr );
+			// Rename all table cells from moved rows to 'th' as they lands in <thead>.
+			for ( const tableRow of rowsToMove ) {
+				for ( const tableCell of tableRow.getChildren() ) {
+					renameViewTableCell( tableCell, 'th', conversionApi, asWidget );
 				}
-
-				conversionApi.writer.move( ViewRange.createOn( trElement ), targetPosition );
 			}
 
-			// Check whether current columnIndex is overlapped by table cells from previous rows.
-			const desiredCellElementName = getCellElementName( tableWalkerValue );
+			// Cleanup: this will remove any empty section from the view which may happen when moving all rows from a table section.
+			removeTableSectionIfEmpty( 'tbody', viewTable, conversionApi );
+		}
+		// The head section has shrunk so move rows from <thead> to <tbody>.
+		else {
+			// Filter out only those rows that are in wrong section.
+			const rowsToMove = Array.from( table.getChildren() )
+				.filter( ( { index } ) => isBetween( index, newRows - 1, oldRows ) )
+				.reverse(); // The rows will be moved from <thead> to <tbody> in reverse order at the beginning of a <tbody>.
 
-			const viewCell = conversionApi.mapper.toViewElement( cell );
+			const viewTableBody = getOrCreateTableSection( 'tbody', viewTable, conversionApi );
+			moveViewRowsToTableSection( rowsToMove, viewTableBody, conversionApi );
 
-			// If in single change we're converting attribute changes and inserting cell the table cell might not be inserted into view
-			// because of child conversion is done after parent.
-			if ( viewCell && viewCell.name !== desiredCellElementName ) {
-				let renamedCell;
+			// Check if cells moved from <thead> to <tbody> requires renaming to <td> as this depends on current heading columns attribute.
+			const tableWalker = new TableWalker( table, { startRow: newRows ? newRows - 1 : newRows, endRow: oldRows - 1 } );
 
-				if ( asWidget ) {
-					const editable = conversionApi.writer.createEditableElement( desiredCellElementName, viewCell.getAttributes() );
-					renamedCell = toWidgetEditable( editable, conversionApi.writer );
-
-					conversionApi.writer.insert( ViewPosition.createAfter( viewCell ), renamedCell );
-					conversionApi.writer.move( ViewRange.createIn( viewCell ), ViewPosition.createAt( renamedCell ) );
-					conversionApi.writer.remove( ViewRange.createOn( viewCell ) );
-				} else {
-					renamedCell = conversionApi.writer.rename( viewCell, desiredCellElementName );
-				}
-
-				conversionApi.mapper.bindElements( cell, renamedCell );
+			for ( const tableWalkerValue of tableWalker ) {
+				renameViewTableCellIfRequired( tableWalkerValue, conversionApi, asWidget );
 			}
+
+			// Cleanup: this will remove any empty section from the view which may happen when moving all rows from a table section.
+			removeTableSectionIfEmpty( 'thead', viewTable, conversionApi );
 		}
 
-		removeTableSectionIfEmpty( 'thead', tableElement, conversionApi );
-		removeTableSectionIfEmpty( 'tbody', tableElement, conversionApi );
+		function isBetween( index, lower, upper ) {
+			return index > lower && index < upper;
+		}
+	}, { priority: 'normal' } );
+}
+
+/**
+ * Conversion helper that acts on headingColumns table attribute change.
+ *
+ * Depending on changed attributes this converter will rename <td> to <th> elements or vice versa depending of cell column index.
+ *
+ * @returns {Function} Conversion helper.
+ */
+export function downcastTableHeadingColumnsChange( options = {} ) {
+	const asWidget = !!options.asWidget;
+
+	return dispatcher => dispatcher.on( 'attribute:headingColumns:table', ( evt, data, conversionApi ) => {
+		const table = data.item;
+
+		if ( !conversionApi.consumable.consume( data.item, evt.name ) ) {
+			return;
+		}
+
+		// TODO: column walk only?
+		for ( const tableWalkerValue of new TableWalker( table ) ) {
+			renameViewTableCellIfRequired( tableWalkerValue, conversionApi, asWidget );
+		}
 	}, { priority: 'normal' } );
 }
 
@@ -267,11 +268,56 @@ export function downcastRemoveRow() {
 	}, { priority: 'higher' } );
 }
 
+// Renames table cell in the view to given element name.
+//
+// @param {module:engine/model/element~Element} tableCell
+// @param {String} desiredCellElementName
+// @param {Object} conversionApi
+// @param {Boolean} asWidget
+function renameViewTableCell( tableCell, desiredCellElementName, conversionApi, asWidget ) {
+	const viewCell = conversionApi.mapper.toViewElement( tableCell );
+
+	let renamedCell;
+
+	if ( asWidget ) {
+		const editable = conversionApi.writer.createEditableElement( desiredCellElementName, viewCell.getAttributes() );
+		renamedCell = toWidgetEditable( editable, conversionApi.writer );
+
+		conversionApi.writer.insert( ViewPosition.createAfter( viewCell ), renamedCell );
+		conversionApi.writer.move( ViewRange.createIn( viewCell ), ViewPosition.createAt( renamedCell ) );
+		conversionApi.writer.remove( ViewRange.createOn( viewCell ) );
+	} else {
+		renamedCell = conversionApi.writer.rename( viewCell, desiredCellElementName );
+	}
+
+	conversionApi.mapper.bindElements( tableCell, renamedCell );
+}
+
+// Renames a table cell element in a view according to it's location in table.
+//
+// @param {module:table/tablewalker~TableWalkerValue} tableWalkerValue
+// @param {Object} conversionApi
+// @param {Boolean} asWidget
+function renameViewTableCellIfRequired( tableWalkerValue, conversionApi, asWidget ) {
+	const { cell } = tableWalkerValue;
+
+	// Check whether current columnIndex is overlapped by table cells from previous rows.
+	const desiredCellElementName = getCellElementName( tableWalkerValue );
+
+	const viewCell = conversionApi.mapper.toViewElement( cell );
+
+	// If in single change we're converting attribute changes and inserting cell the table cell might not be inserted into view
+	// because of child conversion is done after parent.
+	if ( viewCell && viewCell.name !== desiredCellElementName ) {
+		renameViewTableCell( cell, desiredCellElementName, conversionApi, asWidget );
+	}
+}
+
 // Creates a table cell element in a view.
 //
 // @param {module:table/tablewalker~TableWalkerValue} tableWalkerValue
 // @param {module:engine/view/position~Position} insertPosition
-// @param conversionApi
+// @param {Object} conversionApi
 function createViewTableCellElement( tableWalkerValue, insertPosition, conversionApi, options ) {
 	const tableCell = tableWalkerValue.cell;
 
@@ -288,6 +334,12 @@ function createViewTableCellElement( tableWalkerValue, insertPosition, conversio
 }
 
 // Creates or returns an existing tr element from a view.
+//
+// @param {module:engine/view/element~Element} tableRow
+// @param {Number} rowIndex
+// @param {module:engine/view/element~Element} tableSection
+// @param {Object} conversionApi
+// @returns {module:engine/view/element~Element}
 function getOrCreateTr( tableRow, rowIndex, tableSection, conversionApi ) {
 	let trElement = conversionApi.mapper.toViewElement( tableRow );
 
@@ -342,29 +394,21 @@ function getSectionName( tableWalkerValue ) {
 // Creates or returns an existing <tbody> or <thead> element witch caching.
 //
 // @param {String} sectionName
-// @param {module:engine/view/element~Element} tableElement
-// @param conversionApi
+// @param {module:engine/view/element~Element} viewTable
+// @param {Object} conversionApi
 // @param {Object} cachedTableSection An object on which store cached elements.
 // @return {module:engine/view/containerelement~ContainerElement}
-function getOrCreateTableSection( sectionName, tableElement, conversionApi, cachedTableSections = {} ) {
-	if ( cachedTableSections[ sectionName ] ) {
-		return cachedTableSections[ sectionName ];
-	}
+function getOrCreateTableSection( sectionName, viewTable, conversionApi ) {
+	const viewTableSection = getExistingTableSectionElement( sectionName, viewTable );
 
-	cachedTableSections[ sectionName ] = getExistingTableSectionElement( sectionName, tableElement );
-
-	if ( !cachedTableSections[ sectionName ] ) {
-		cachedTableSections[ sectionName ] = createTableSection( sectionName, tableElement, conversionApi );
-	}
-
-	return cachedTableSections[ sectionName ];
+	return viewTableSection ? viewTableSection : createTableSection( sectionName, viewTable, conversionApi );
 }
 
 // Finds an existing <tbody> or <thead> element or returns undefined.
 //
 // @param {String} sectionName
 // @param {module:engine/view/element~Element} tableElement
-// @param conversionApi
+// @param {Object} conversionApi
 function getExistingTableSectionElement( sectionName, tableElement ) {
 	for ( const tableSection of tableElement.getChildren() ) {
 		if ( tableSection.name == sectionName ) {
@@ -377,7 +421,7 @@ function getExistingTableSectionElement( sectionName, tableElement ) {
 //
 // @param {String} sectionName
 // @param {module:engine/view/element~Element} tableElement
-// @param conversionApi
+// @param {Object} conversionApi
 // @return {module:engine/view/containerelement~ContainerElement}
 function createTableSection( sectionName, tableElement, conversionApi ) {
 	const tableChildElement = conversionApi.writer.createContainerElement( sectionName );
@@ -391,11 +435,25 @@ function createTableSection( sectionName, tableElement, conversionApi ) {
 //
 // @param {String} sectionName
 // @param {module:engine/view/element~Element} tableElement
-// @param conversionApi
+// @param {Object} conversionApi
 function removeTableSectionIfEmpty( sectionName, tableElement, conversionApi ) {
 	const tableSection = getExistingTableSectionElement( sectionName, tableElement );
 
 	if ( tableSection && tableSection.childCount === 0 ) {
 		conversionApi.writer.remove( ViewRange.createOn( tableSection ) );
+	}
+}
+
+// Moves view table rows associated with passed model rows to provided table section element.
+//
+// @param {Array.<module:engine/model/element~Element>} rowsToMove
+// @param {module:engine/view/element~Element} viewTableSection
+// @param {Object} conversionApi
+// @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags.
+function moveViewRowsToTableSection( rowsToMove, viewTableSection, conversionApi, offset ) {
+	for ( const tableRow of rowsToMove ) {
+		const viewTableRow = conversionApi.mapper.toViewElement( tableRow );
+
+		conversionApi.writer.move( ViewRange.createOn( viewTableRow ), ViewPosition.createAt( viewTableSection, offset ) );
 	}
 }

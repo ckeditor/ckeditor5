@@ -8,11 +8,12 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 import {
-	downcastAttributeChange,
 	downcastInsertCell,
 	downcastInsertRow,
 	downcastInsertTable,
-	downcastRemoveRow
+	downcastRemoveRow,
+	downcastTableHeadingColumnsChange,
+	downcastTableHeadingRowsChange
 } from '../../src/converters/downcast';
 import { formatTable, formattedViewTable, modelTable, viewTable } from '../_utils/utils';
 
@@ -63,8 +64,8 @@ describe( 'downcast converters', () => {
 
 				conversion.for( 'downcast' ).add( downcastRemoveRow() );
 
-				conversion.for( 'downcast' ).add( downcastAttributeChange( { attribute: 'headingRows' } ) );
-				conversion.for( 'downcast' ).add( downcastAttributeChange( { attribute: 'headingColumns' } ) );
+				conversion.for( 'downcast' ).add( downcastTableHeadingRowsChange() );
+				conversion.for( 'downcast' ).add( downcastTableHeadingColumnsChange() );
 			} );
 	} );
 
@@ -751,105 +752,7 @@ describe( 'downcast converters', () => {
 		} );
 	} );
 
-	describe( 'downcastAttributeChange()', () => {
-		it( 'should work for adding heading rows', () => {
-			setModelData( model, modelTable( [
-				[ '11', '12' ],
-				[ '21', '22' ],
-				[ '31', '32' ]
-			] ) );
-
-			const table = root.getChild( 0 );
-
-			model.change( writer => {
-				writer.setAttribute( 'headingRows', 2, table );
-			} );
-
-			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
-				[ '11', '12' ],
-				[ '21', '22' ],
-				[ '31', '32' ]
-			], { headingRows: 2 } ) );
-		} );
-
-		it( 'should work for changing number of heading rows to a bigger number', () => {
-			setModelData( model, modelTable( [
-				[ '11', '12' ],
-				[ '21', '22' ],
-				[ '31', '32' ]
-			], { headingRows: 1 } ) );
-
-			const table = root.getChild( 0 );
-
-			model.change( writer => {
-				writer.setAttribute( 'headingRows', 2, table );
-			} );
-
-			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
-				[ '11', '12' ],
-				[ '21', '22' ],
-				[ '31', '32' ]
-			], { headingRows: 2 } ) );
-		} );
-
-		it( 'should work for changing number of heading rows to a smaller number', () => {
-			setModelData( model, modelTable( [
-				[ '11', '12' ],
-				[ '21', '22' ],
-				[ '31', '32' ],
-				[ '41', '42' ]
-			], { headingRows: 3 } ) );
-
-			const table = root.getChild( 0 );
-
-			model.change( writer => {
-				writer.setAttribute( 'headingRows', 2, table );
-			} );
-
-			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
-				[ '11', '12' ],
-				[ '21', '22' ],
-				[ '31', '32' ],
-				[ '41', '42' ]
-			], { headingRows: 2 } ) );
-		} );
-
-		it( 'should work for removing heading rows', () => {
-			setModelData( model, modelTable( [
-				[ '11', '12' ],
-				[ '21', '22' ]
-			], { headingRows: 2 } ) );
-
-			const table = root.getChild( 0 );
-
-			model.change( writer => {
-				writer.removeAttribute( 'headingRows', table );
-			} );
-
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( viewTable( [
-				[ '11', '12' ],
-				[ '21', '22' ]
-			] ) );
-		} );
-
-		it( 'should work for making heading rows without tbody', () => {
-			setModelData( model, modelTable( [
-				[ '11', '12' ],
-				[ '21', '22' ]
-			] ) );
-
-			const table = root.getChild( 0 );
-
-			model.change( writer => {
-				writer.setAttribute( 'headingRows', 2, table );
-			} );
-
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( viewTable( [
-				[ '11', '12' ],
-				[ '21', '22' ]
-			], { headingRows: 2 } ) );
-		} );
-
+	describe( 'downcastTableHeadingColumnsChange()', () => {
 		it( 'should work for adding heading columns', () => {
 			setModelData( model, modelTable( [
 				[ '11', '12' ],
@@ -977,6 +880,191 @@ describe( 'downcast converters', () => {
 			] ) );
 		} );
 
+		describe( 'asWidget', () => {
+			beforeEach( () => {
+				return VirtualTestEditor.create()
+					.then( newEditor => {
+						editor = newEditor;
+						model = editor.model;
+						doc = model.document;
+						root = doc.getRoot( 'main' );
+						viewDocument = editor.editing.view;
+
+						const conversion = editor.conversion;
+						const schema = model.schema;
+
+						schema.register( 'table', {
+							allowWhere: '$block',
+							allowAttributes: [ 'headingRows', 'headingColumns' ],
+							isBlock: true,
+							isObject: true
+						} );
+
+						schema.register( 'tableRow', {
+							allowIn: 'table',
+							allowAttributes: [],
+							isBlock: true,
+							isLimit: true
+						} );
+
+						schema.register( 'tableCell', {
+							allowIn: 'tableRow',
+							allowContentOf: '$block',
+							allowAttributes: [ 'colspan', 'rowspan' ],
+							isBlock: true,
+							isLimit: true
+						} );
+
+						conversion.for( 'downcast' ).add( downcastInsertTable( { asWidget: true } ) );
+						conversion.for( 'downcast' ).add( downcastInsertRow( { asWidget: true } ) );
+						conversion.for( 'downcast' ).add( downcastInsertCell( { asWidget: true } ) );
+
+						conversion.for( 'downcast' ).add( downcastTableHeadingColumnsChange( { asWidget: true } ) );
+						conversion.for( 'downcast' ).add( downcastTableHeadingRowsChange( { asWidget: true } ) );
+
+						conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
+						conversion.attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
+					} );
+			} );
+
+			it( 'should create renamed cell as a widget', () => {
+				setModelData( model,
+					'<table>' +
+					'<tableRow><tableCell>foo</tableCell></tableRow>' +
+					'</table>'
+				);
+
+				const table = root.getChild( 0 );
+
+				model.change( writer => {
+					writer.setAttribute( 'headingRows', 1, table );
+				} );
+
+				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+					'<table class="ck-widget" contenteditable="false">' +
+					'<thead>' +
+					'<tr><th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">foo</th></tr>' +
+					'</thead>' +
+					'</table>'
+				);
+			} );
+		} );
+	} );
+
+	describe( 'downcastTableHeadingRowsChange()', () => {
+		it( 'should work for adding heading rows', () => {
+			setModelData( model, modelTable( [
+				[ '11', '12' ],
+				[ '21', '22' ],
+				[ '31', '32' ]
+			] ) );
+
+			const table = root.getChild( 0 );
+
+			model.change( writer => {
+				writer.setAttribute( 'headingRows', 2, table );
+			} );
+
+			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+				[ '11', '12' ],
+				[ '21', '22' ],
+				[ '31', '32' ]
+			], { headingRows: 2 } ) );
+		} );
+
+		it( 'should work for changing number of heading rows to a bigger number', () => {
+			setModelData( model, modelTable( [
+				[ '11', '12' ],
+				[ '21', '22' ],
+				[ '31', '32' ]
+			], { headingRows: 1 } ) );
+
+			const table = root.getChild( 0 );
+
+			model.change( writer => {
+				writer.setAttribute( 'headingRows', 2, table );
+			} );
+
+			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+				[ '11', '12' ],
+				[ '21', '22' ],
+				[ '31', '32' ]
+			], { headingRows: 2 } ) );
+		} );
+
+		it( 'should work for changing number of heading rows to a smaller number', () => {
+			setModelData( model, modelTable( [
+				[ '11', '12' ],
+				[ '21', '22' ],
+				[ '31', '32' ],
+				[ '41', '42' ]
+			], { headingRows: 3 } ) );
+
+			const table = root.getChild( 0 );
+
+			model.change( writer => {
+				writer.setAttribute( 'headingRows', 2, table );
+			} );
+
+			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+				[ '11', '12' ],
+				[ '21', '22' ],
+				[ '31', '32' ],
+				[ '41', '42' ]
+			], { headingRows: 2 } ) );
+		} );
+
+		it( 'should work for removing heading rows', () => {
+			setModelData( model, modelTable( [
+				[ '11', '12' ],
+				[ '21', '22' ]
+			], { headingRows: 2 } ) );
+
+			const table = root.getChild( 0 );
+
+			model.change( writer => {
+				writer.removeAttribute( 'headingRows', table );
+			} );
+
+			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( viewTable( [
+				[ '11', '12' ],
+				[ '21', '22' ]
+			] ) );
+		} );
+
+		it( 'should work for making heading rows without tbody', () => {
+			setModelData( model, modelTable( [
+				[ '11', '12' ],
+				[ '21', '22' ]
+			] ) );
+
+			const table = root.getChild( 0 );
+
+			model.change( writer => {
+				writer.setAttribute( 'headingRows', 2, table );
+			} );
+
+			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( viewTable( [
+				[ '11', '12' ],
+				[ '21', '22' ]
+			], { headingRows: 2 } ) );
+		} );
+
+		it( 'should be possible to overwrite', () => {
+			editor.conversion.attributeToAttribute( { model: 'headingRows', view: 'headingRows', converterPriority: 'high' } );
+			setModelData( model, modelTable( [ [ '11' ] ] ) );
+
+			const table = root.getChild( 0 );
+
+			model.change( writer => {
+				writer.setAttribute( 'headingRows', 1, table );
+			} );
+
+			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+				'<table headingRows="1"><tbody><tr><td>11</td></tr></tbody></table>'
+			);
+		} );
+
 		it( 'should work with adding table rows at the beginning of a table', () => {
 			setModelData( model, modelTable( [
 				[ '00', '01' ],
@@ -1041,8 +1129,8 @@ describe( 'downcast converters', () => {
 						conversion.for( 'downcast' ).add( downcastInsertRow( { asWidget: true } ) );
 						conversion.for( 'downcast' ).add( downcastInsertCell( { asWidget: true } ) );
 
-						conversion.for( 'downcast' ).add( downcastAttributeChange( { attribute: 'headingRows', asWidget: true } ) );
-						conversion.for( 'downcast' ).add( downcastAttributeChange( { attribute: 'headingColumns', asWidget: true } ) );
+						conversion.for( 'downcast' ).add( downcastTableHeadingColumnsChange( { asWidget: true } ) );
+						conversion.for( 'downcast' ).add( downcastTableHeadingRowsChange( { asWidget: true } ) );
 
 						conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
 						conversion.attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );

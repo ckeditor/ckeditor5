@@ -8,7 +8,14 @@ import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model
 import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 
 import MergeCellCommand from '../../src/commands/mergecellcommand';
-import { downcastInsertTable } from '../../src/converters/downcast';
+import {
+	downcastInsertCell,
+	downcastInsertRow,
+	downcastInsertTable,
+	downcastRemoveRow,
+	downcastTableHeadingColumnsChange,
+	downcastTableHeadingRowsChange
+} from '../../src/converters/downcast';
 import upcastTable from '../../src/converters/upcasttable';
 import { formatTable, formattedModelTable, modelTable } from '../_utils/utils';
 
@@ -53,15 +60,24 @@ describe( 'MergeCellCommand', () => {
 				conversion.for( 'upcast' ).add( upcastTable() );
 				conversion.for( 'downcast' ).add( downcastInsertTable() );
 
-				// Table row upcast only since downcast conversion is done in `downcastTable()`.
-				conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableRow', view: 'tr' } ) );
+				// Insert row conversion.
+				conversion.for( 'downcast' ).add( downcastInsertRow() );
+
+				// Remove row conversion.
+				conversion.for( 'downcast' ).add( downcastRemoveRow() );
 
 				// Table cell conversion.
+				conversion.for( 'downcast' ).add( downcastInsertCell() );
+
 				conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'td' } ) );
 				conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'th' } ) );
 
+				// Table attributes conversion.
 				conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
 				conversion.attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
+
+				conversion.for( 'downcast' ).add( downcastTableHeadingColumnsChange() );
+				conversion.for( 'downcast' ).add( downcastTableHeadingRowsChange() );
 			} );
 	} );
 
