@@ -105,8 +105,7 @@ export default class Autosave extends Plugin {
 		const pendingActions = this.editor.plugins.get( PendingActions );
 		const action = pendingActions.add( 'Saving in progress.' );
 
-		Promise.resolve()
-			.then( () => this.provider.save() )
+		Promise.resolve( this.provider.save() )
 			.then( () => {
 				pendingActions.remove( action );
 			} );

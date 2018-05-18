@@ -57,10 +57,7 @@ describe( 'Autosave', () => {
 				editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
 			} );
 
-			// Go to the next cycle to because synchronization of CS documentVersion is async.
-			return Promise.resolve().then( () => {
-				autosave._flush();
-			} );
+			autosave._flush();
 		} );
 	} );
 
@@ -76,11 +73,9 @@ describe( 'Autosave', () => {
 			} );
 
 			// Go to the next cycle to because synchronization of CS documentVersion is async.
-			return Promise.resolve()
-				.then( () => autosave._flush() )
-				.then( () => {
-					sinon.assert.calledOnce( autosave.provider.save );
-				} );
+			autosave._flush();
+
+			sinon.assert.calledOnce( autosave.provider.save );
 		} );
 
 		it( 'should throttle editor\'s change event', () => {
@@ -96,52 +91,40 @@ describe( 'Autosave', () => {
 			};
 
 			// Leading (will fire change).
-			const change1 = () => {
-				editor.model.change( writer => {
-					writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 1 ) ) );
-					editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
-				} );
-			};
+			editor.model.change( writer => {
+				writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 1 ) ) );
+				editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
+			} );
 
-			const change2 = () => {
-				// Throttled (won't fire change).
-				editor.model.change( writer => {
-					writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 1 ) ) );
-					editor.model.insertContent( new ModelText( 'bar' ), editor.model.document.selection );
-				} );
-			};
+			// Throttled (won't fire change).
+			editor.model.change( writer => {
+				writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 1 ) ) );
+				editor.model.insertContent( new ModelText( 'bar' ), editor.model.document.selection );
+			} );
 
-			const change3 = () => {
-				// Flushed (will fire change).
-				editor.model.change( writer => {
-					writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 1 ) ) );
-					editor.model.insertContent( new ModelText( 'biz' ), editor.model.document.selection );
-				} );
-			};
+			// Flushed (will fire change).
+			editor.model.change( writer => {
+				writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 1 ) ) );
+				editor.model.insertContent( new ModelText( 'biz' ), editor.model.document.selection );
+			} );
 
-			// Provider.save is done asynchronously, so all changes are run in different cycles.
-			return Promise.resolve()
-				.then( () => change1() )
-				.then( () => change2() )
-				.then( () => change3() )
-				.then( () => autosave._flush() )
-				.then( () => {
-					expect( spy.callCount ).to.equal( 2 );
-					expect( savedStates ).to.deep.equal( [
-						'<p>paragraph1</p><p>foo</p>',
-						'<p>paragraph1</p><p>biz</p>'
-					] );
-				} );
+			autosave._flush();
+
+			expect( spy.callCount ).to.equal( 2 );
+			expect( savedStates ).to.deep.equal( [
+				'<p>paragraph1</p><p>foo</p>',
+				'<p>paragraph1</p><p>biz</p>'
+			] );
 		} );
 
 		it( 'should add a pending action during the saving.', () => {
-			const wait5msSpy = sinon.spy();
+			const serverActionSpy = sinon.spy();
 			const pendingActions = editor.plugins.get( PendingActions );
 
 			autosave.provider = {
 				save() {
 					return wait5ms()
-						.then( wait5msSpy );
+						.then( serverActionSpy );
 				}
 			};
 
@@ -150,19 +133,16 @@ describe( 'Autosave', () => {
 				editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
 			} );
 
-			// Go to the next cycle to because synchronization of CS documentVersion is async.
-			return Promise.resolve()
-				.then( () => autosave._flush() )
-				.then( () => {
-					sinon.assert.notCalled( wait5msSpy );
-					expect( pendingActions.isPending ).to.be.true;
-					expect( pendingActions.first.message ).to.equal( 'Saving in progress.' );
-				} )
-				.then( wait5ms )
-				.then( () => {
-					sinon.assert.calledOnce( wait5msSpy );
-					expect( pendingActions.isPending ).to.be.false;
-				} );
+			autosave._flush();
+
+			sinon.assert.notCalled( serverActionSpy );
+			expect( pendingActions.isPending ).to.be.true;
+			expect( pendingActions.first.message ).to.equal( 'Saving in progress.' );
+
+			return wait5ms().then( () => {
+				sinon.assert.calledOnce( serverActionSpy );
+				expect( pendingActions.isPending ).to.be.false;
+			} );
 		} );
 	} );
 
