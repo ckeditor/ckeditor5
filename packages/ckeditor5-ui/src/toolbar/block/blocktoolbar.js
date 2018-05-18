@@ -26,6 +26,35 @@ import iconPilcrow from '../../../theme/icons/pilcrow.svg';
 /**
  * The block toolbar plugin.
  *
+ * This plugin provides button attached to the block of content where the selection is currently placed.
+ * After clicking on the button, dropdown with editor features defined through editor configuration appears.
+ *
+ * By default button is allowed to be displayed next to {@link module:paragraph/paragraph~Paragraph paragraph element},
+ * {@link module:list/list~List list items} and all items defined in {@link module:heading/heading~Heading} plugin.
+ * This behavior can be customise through decorable {@link #checkAllowed} method.
+ *
+ * By default button will be attached to the left bound of the
+ * {@link module:ui/editorui/editoruiview~EditorUIView#editableElement} so editor integration should
+ * ensure that there is enough space between the editor content and left bound of the editable element
+ *
+ * 		| __
+ * 		||  |     This is a block of content that
+ * 		| ¯¯      button is attached to. This is a
+ * 		|  space  block of content that button is
+ * 		| <-----> attached to.
+ *
+ * The position of the button can be adjusted using css transform:
+ *
+ * 		.ck-block-toolbar-button {
+ * 			transform: translate( 10px, 10px );
+ * 		}
+ *
+ * 		|
+ * 		|   __    This is a block of content that
+ * 		|  |  |   button is attached to. This is a
+ * 		|   ¯¯    block of content that button is
+ * 		|         attached to.
+ *
  * @extends module:core/plugin~Plugin
  */
 export default class BlockToolbar extends Plugin {
@@ -89,6 +118,10 @@ export default class BlockToolbar extends Plugin {
 				this._enable();
 			}
 		} );
+
+		// Checking if button is allowed for displaying next to given element is event–driven.
+		// It is possible to override #checkAllowed method and apply custom validation.
+		this.decorate( 'checkAllowed' );
 
 		// Enable as default.
 		this._enable();
@@ -192,6 +225,31 @@ export default class BlockToolbar extends Plugin {
 	}
 
 	/**
+	 * Checks if block button is allowed for displaying next to given element.
+	 *
+	 * Fires {@link #event:checkAllowed} event which can be handled and overridden to apply custom validation.
+	 *
+	 * Example how to disallow button for `h1` element:
+	 *
+	 * 		const blockToolbar = editor.plugins.get( 'BlockToolbar' );
+	 *
+	 * 		blockToolbar.on( 'checkAllowed', ( evt, args ) => {
+	 *			const viewElement = args[ 0 ];
+	 *
+	 *			if ( viewElement.name === 'h1' ) {
+	 *				evt.return = false;
+	 *			}
+	 * 		}, { priority: 'high' } );
+	 *
+	 * @fires checkAllowed
+	 * @param {module:engine/view/containerelement~ContainerElement} viewElement Container element where selection is.
+	 * @returns {Boolean} `true` when block button is allowed to display `false` otherwise.
+	 */
+	checkAllowed( viewElement ) {
+		return this._allowedElements.includes( viewElement.name );
+	}
+
+	/**
 	 * Starts displaying button next to allowed elements.
 	 *
 	 * @private
@@ -213,10 +271,8 @@ export default class BlockToolbar extends Plugin {
 			// Get selection parent container, block button will be attached to this element.
 			targetElement = getParentContainer( viewDocument.selection.getFirstPosition() );
 
-			const targetName = targetElement.name;
-
-			// Do not attach block button when target element is not on the white list.
-			if ( !this._allowedElements.includes( targetName ) ) {
+			// Do not attach block button when is not allowed for given target element.
+			if ( !this.checkAllowed( targetElement ) ) {
 				this.buttonView.isVisible = false;
 
 				return;
