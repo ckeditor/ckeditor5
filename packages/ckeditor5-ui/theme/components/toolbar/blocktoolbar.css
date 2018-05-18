@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-.ck.ck-toolbar-block-button {
+.ck.ck-block-toolbar-button {
 	position: absolute;
 	z-index: var(--ck-z-default);
 }
