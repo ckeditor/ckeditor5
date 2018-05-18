@@ -295,7 +295,7 @@ export default class BlockToolbar extends Plugin {
 	_showPanel() {
 		this.panelView.pin( {
 			target: this.buttonView.element,
-			limiter: this.editor.ui.view.element
+			limiter: this.editor.ui.view.editableElement
 		} );
 	}
 

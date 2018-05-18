@@ -171,7 +171,7 @@ describe( 'BlockToolbar', () => {
 				expect( blockToolbar.panelView.isVisible ).to.true;
 				sinon.assert.calledWith( spy, {
 					target: blockToolbar.buttonView.element,
-					limiter: editor.ui.view.element
+					limiter: editor.ui.view.editableElement
 				} );
 			} );
 
@@ -334,7 +334,7 @@ describe( 'BlockToolbar', () => {
 
 			sinon.assert.calledWith( spy, {
 				target: blockToolbar.buttonView.element,
-				limiter: editor.ui.view.element
+				limiter: editor.ui.view.editableElement
 			} );
 		} );
 
