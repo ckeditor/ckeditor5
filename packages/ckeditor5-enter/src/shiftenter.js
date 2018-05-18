@@ -23,7 +23,7 @@ export default class ShiftEnter extends Plugin {
 	 * @inheritDoc
 	 */
 	static get pluginName() {
-		return 'SoftEnter';
+		return 'ShiftEnter';
 	}
 
 	init() {
