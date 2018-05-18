@@ -34,7 +34,7 @@ import iconPilcrow from '../../../theme/icons/pilcrow.svg';
  * This behavior can be customise through decorable {@link #checkAllowed} method.
  *
  * By default button will be attached to the left bound of the
- * {@link module:ui/editorui/editoruiview~EditorUIView#editableElement} so editor integration should
+ * {@link module:engine/view/editableelement~EditableElement} so editor integration should
  * ensure that there is enough space between the editor content and left bound of the editable element
  *
  * 		| __
@@ -375,6 +375,13 @@ export default class BlockToolbar extends Plugin {
 			this.editor.editing.view.focus();
 		}
 	}
+
+	/**
+	 * This event is fired just before #checkAllowed method is executed. It makes it possible to override
+	 * default method behavior and provides a custom validation.
+	 *
+	 * @event checkAllowed
+	 */
 }
 
 // Because the engine.view.writer.getParentContainer is not exported here is a copy.
