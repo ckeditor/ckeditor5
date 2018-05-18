@@ -257,14 +257,14 @@ describe( 'BlockToolbar', () => {
 			blockToolbar.on( 'checkAllowed', ( evt, args ) => {
 				const viewElement = args[ 0 ];
 
-				if ( viewElement.name === 'h1' ) {
+				if ( viewElement.name === 'h2' ) {
 					evt.return = false;
 				}
 			} );
 
 			setData( editor.model, '<heading1>foo[]bar</heading1>' );
 
-			expect( blockToolbar.buttonView.isVisible ).to.true;
+			expect( blockToolbar.buttonView.isVisible ).to.false;
 		} );
 	} );
 
