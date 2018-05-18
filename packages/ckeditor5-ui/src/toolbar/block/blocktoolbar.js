@@ -31,7 +31,7 @@ import iconPilcrow from '../../../theme/icons/pilcrow.svg';
  *
  * By default button is allowed to be displayed next to {@link module:paragraph/paragraph~Paragraph paragraph element},
  * {@link module:list/list~List list items} and all items defined in {@link module:heading/heading~Heading} plugin.
- * This behavior can be customise through decorable {@link #checkAllowed} method.
+ * This behavior can be customise through decorable {@link ~BlockToolbar#checkAllowed} method.
  *
  * By default button will be attached to the left bound of the
  * {@link module:engine/view/editableelement~EditableElement} so editor integration should
@@ -377,7 +377,7 @@ export default class BlockToolbar extends Plugin {
 	}
 
 	/**
-	 * This event is fired just before #checkAllowed method is executed. It makes it possible to override
+	 * This event is fired just before {@link #checkAllowed} method is executed. It makes it possible to override
 	 * default method behavior and provides a custom validation.
 	 *
 	 * @event checkAllowed
