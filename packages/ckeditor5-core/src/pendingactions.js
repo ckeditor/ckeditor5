@@ -64,7 +64,7 @@ export default class PendingActions extends Plugin {
 		 *
 		 * @readonly
 		 * @observable
-		 * @type {Boolean} #isPending
+		 * @member {Boolean} #isPending
 		 */
 		this.set( 'isPending', false );
 
