@@ -15,7 +15,7 @@ import BlockToolbar from '../../../src/toolbar/block/blocktoolbar';
 BalloonEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ ArticlePluginSet, HeadingButtonsUI, ParagraphButtonUI, BalloonToolbar, BlockToolbar ],
-		balloonToolbar: [ 'link' ],
+		balloonToolbar: [ 'bold', 'italic', 'link' ],
 		blockToolbar: [ 'paragraph', 'heading1', 'heading2', 'heading3', 'bulletedList', 'numberedList', 'blockQuote' ]
 	} )
 	.then( editor => {
