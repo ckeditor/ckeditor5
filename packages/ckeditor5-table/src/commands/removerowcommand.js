@@ -59,12 +59,12 @@ export default class RemoveRowCommand extends Command {
 			// Get cells from removed row that are spanned over multiple rows.
 			tableMap
 				.filter( ( { row, rowspan } ) => row === currentRow && rowspan > 1 )
-				.map( ( { column, cell, rowspan } ) => cellsToMove.set( column, { cell, rowspanToSet: rowspan - 1 } ) );
+				.forEach( ( { column, cell, rowspan } ) => cellsToMove.set( column, { cell, rowspanToSet: rowspan - 1 } ) );
 
 			// Reduce rowspan on cells that are above removed row and overlaps removed row.
 			tableMap
 				.filter( ( { row, rowspan } ) => row <= currentRow - 1 && row + rowspan > currentRow )
-				.map( ( { cell, rowspan } ) => updateNumericAttribute( 'rowspan', rowspan - 1, cell, writer ) );
+				.forEach( ( { cell, rowspan } ) => updateNumericAttribute( 'rowspan', rowspan - 1, cell, writer ) );
 
 			// Move cells to another row
 			const targetRow = currentRow + 1;

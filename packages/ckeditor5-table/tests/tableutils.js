@@ -361,17 +361,17 @@ describe( 'TableUtils', () => {
 
 		it( 'should expand spanned columns', () => {
 			setData( model, modelTable( [
-				[ '11[]', '12' ],
-				[ { colspan: 2, contents: '21' } ],
-				[ '31', '32' ]
+				[ '00[]', '01' ],
+				[ { colspan: 2, contents: '10' } ],
+				[ '20', '21' ]
 			], { headingColumns: 2 } ) );
 
 			tableUtils.insertColumns( root.getNodeByPath( [ 0 ] ), { at: 1 } );
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
-				[ '11[]', '', '12' ],
-				[ { colspan: 3, contents: '21' } ],
-				[ '31', '', '32' ]
+				[ '00[]', '', '01' ],
+				[ { colspan: 3, contents: '10' } ],
+				[ '20', '', '21' ]
 			], { headingColumns: 3 } ) );
 		} );
 

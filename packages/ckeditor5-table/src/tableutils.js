@@ -69,6 +69,23 @@ export default class TableUtils extends Plugin {
 	/**
 	 * Insert rows into a table.
 	 *
+	 *     editor.plugins.get( 'TableUtils' ).insertRows( table, { at: 1, rows: 2 } );
+	 *
+	 * For the table below this code
+	 *
+	 *     row index
+	 *            0 +--+--+--+                        +--+--+--+
+	 *              | a| b| c|                        | a| b| c|
+	 *            1 +  +--+--+ <--- insert here at=1  +  +--+--+
+	 *              |  | d| e|                        |  |  |  |
+	 *            2 +  +--+--+      should give:      +  +--+--+
+	 *              |  | f| g|                        |  |  |  |
+	 *            3 +--+--+--+                        +  +--+--+
+	 *                                                |  | d| e|
+	 *            4                                   +--+--+--+
+	 *                                                +  + f| g|
+	 *            5                                   +--+--+--+
+	 *
 	 * @param {module:engine/model/element~Element} table
 	 * @param {Object} options
 	 * @param {Number} [options.at=0] Row index at which insert rows.
@@ -78,47 +95,71 @@ export default class TableUtils extends Plugin {
 		const model = this.editor.model;
 
 		const insertAt = options.at || 0;
-		const rows = options.rows || 1;
-
-		const headingRows = table.getAttribute( 'headingRows' ) || 0;
+		const rowsToInsert = options.rows || 1;
 
 		model.change( writer => {
+			const headingRows = table.getAttribute( 'headingRows' ) || 0;
+
+			// Inserting rows inside heading section requires to update table's headingRows attribute as the heading section will grow.
 			if ( headingRows > insertAt ) {
-				writer.setAttribute( 'headingRows', headingRows + rows, table );
+				writer.setAttribute( 'headingRows', headingRows + rowsToInsert, table );
 			}
 
-			const tableIterator = new TableWalker( table, { endRow: insertAt + 1 } );
+			// Inserting at the end and at the beginning of a table doesn't require to calculate anything special.
+			if ( insertAt === 0 || insertAt === table.childCount ) {
+				createEmptyRows( writer, table, insertAt, rowsToInsert, this.getColumns( table ) );
 
-			let tableCellToInsert = 0;
+				return;
+			}
 
-			for ( const tableCellInfo of tableIterator ) {
-				const { row, rowspan, colspan, cell } = tableCellInfo;
+			// Iterate over all rows below inserted rows in order to check for rowspanned cells.
+			const tableIterator = new TableWalker( table, { endRow: insertAt } );
 
+			// Will hold number of cells needed to insert in created rows.
+			// The number might be different then table cell width when there are rowspanned cells.
+			let cellsToInsert = 0;
+
+			for ( const { row, rowspan, colspan, cell } of tableIterator ) {
 				const isBeforeInsertedRow = row < insertAt;
 				const overlapsInsertedRow = row + rowspan > insertAt;
 
 				if ( isBeforeInsertedRow && overlapsInsertedRow ) {
-					writer.setAttribute( 'rowspan', rowspan + rows, cell );
+					// This cell overlaps inserted rows so we need to expand it further.
+					writer.setAttribute( 'rowspan', rowspan + rowsToInsert, cell );
 				}
 
 				// Calculate how many cells to insert based on the width of cells in a row at insert position.
 				// It might be lower then table width as some cells might overlaps inserted row.
+				// In the table above the cell 'a' overlaps inserted row so only two empty cells are need to be created.
 				if ( row === insertAt ) {
-					tableCellToInsert += colspan;
+					cellsToInsert += colspan;
 				}
 			}
 
-			// If insertion occurs on the end of a table use table width.
-			if ( insertAt >= table.childCount ) {
-				tableCellToInsert = this.getColumns( table );
-			}
-
-			createEmptyRows( writer, table, insertAt, rows, tableCellToInsert );
+			createEmptyRows( writer, table, insertAt, rowsToInsert, cellsToInsert );
 		} );
 	}
 
 	/**
 	 * Inserts columns into a table.
+	 *
+	 *     editor.plugins.get( 'TableUtils' ).insertColumns( table, { at: 1, columns: 2 } );
+	 *
+	 * For the table below this code
+	 *
+	 *      0  1  2  3                     0  1  2  3  4  5
+	 *      +--+--+--+                     +--+--+--+--+--+
+	 *      | a   | b|                     | a         | b|
+	 *      +     +--+                     +           +--+
+	 *      |     | c|                     |           | c|
+	 *      +--+--+--+      should give:   +--+--+--+--+--+
+	 *      | d| e| f|                     | d|  |  | e| f|
+	 *      +--+  +--+                     +--+--+--+  +--+
+	 *      | g|  | h|                     | g|  |  |  | h|
+	 *      +--+--+--+                     +--+--+--+--+--+
+	 *      | i      |                     | i            |
+	 *      +--+--+--+                     +--+--+--+--+--+
+	 *         ^________ insert here at=1
 	 *
 	 * @param {module:engine/model/element~Element} table
 	 * @param {Object} options
@@ -129,60 +170,55 @@ export default class TableUtils extends Plugin {
 		const model = this.editor.model;
 
 		const insertAt = options.at || 0;
-		const columns = options.columns || 1;
+		const columnsToInsert = options.columns || 1;
 
 		model.change( writer => {
+			const headingColumns = table.getAttribute( 'headingColumns' );
+
+			// Inserting rows inside heading section requires to update table's headingRows attribute as the heading section will grow.
+			if ( insertAt < headingColumns ) {
+				writer.setAttribute( 'headingColumns', headingColumns + columnsToInsert, table );
+			}
+
 			const tableColumns = this.getColumns( table );
 
 			// Inserting at the end and at the beginning of a table doesn't require to calculate anything special.
-			if ( insertAt === 0 || tableColumns <= insertAt ) {
+			if ( insertAt === 0 || tableColumns === insertAt ) {
 				for ( const tableRow of table.getChildren() ) {
-					createCells( columns, writer, Position.createAt( tableRow, insertAt ? 'end' : 0 ) );
+					createCells( columnsToInsert, writer, Position.createAt( tableRow, insertAt ? 'end' : 0 ) );
 				}
 
 				return;
 			}
 
-			const headingColumns = table.getAttribute( 'headingColumns' );
+			const tableWalker = new TableWalker( table, { column: insertAt, includeSpanned: true } );
 
-			if ( insertAt < headingColumns ) {
-				writer.setAttribute( 'headingColumns', headingColumns + columns, table );
-			}
+			for ( const { row, column, cell, colspan, rowspan, cellIndex } of tableWalker ) {
+				// When iterating over column the table walker outputs either:
+				// - cells at given column index (cell "e" from method docs),
+				// - spanned columns (includeSpanned option) (spanned cell from row between cells "g" and "h" - spanned by "e"),
+				// - or a cell from the same row which spans over this column (cell "a").
 
-			const tableMap = [ ...new TableWalker( table ) ];
+				if ( column !== insertAt ) {
+					// If column is different then insertAt it is a cell that spans over an inserted column (cell "a" & "i").
+					// For such cells expand them of number of columns inserted.
+					writer.setAttribute( 'colspan', colspan + columnsToInsert, cell );
 
-			// Holds row indexes of already analyzed row or rows that some rowspanned cell overlaps.
-			const skipRows = new Set();
+					// The includeSpanned option will output the "empty"/spanned column so skip this row already.
+					tableWalker.skipRow( row );
 
-			for ( const { row, column, cell, colspan, rowspan } of tableMap ) {
-				if ( skipRows.has( row ) ) {
-					continue;
-				}
-
-				// Check if currently analyzed cell overlaps insert position.
-				const isBeforeInsertAt = column < insertAt;
-				const expandsOverInsertAt = column + colspan > insertAt;
-
-				if ( isBeforeInsertAt && expandsOverInsertAt ) {
-					// And if so expand that table cell.
-					writer.setAttribute( 'colspan', colspan + columns, cell );
-
-					// This cell will overlap cells in rows below so skip them.
+					// This cell will overlap cells in rows below so skip them also (because of includeSpanned option) - (cell "a")
 					if ( rowspan > 1 ) {
-						for ( let i = row; i < row + rowspan; i++ ) {
-							skipRows.add( i );
+						for ( let i = row + 1; i < row + rowspan; i++ ) {
+							tableWalker.skipRow( i );
 						}
 					}
+				} else {
+					// It's either cell at this column index or spanned cell by a rowspanned cell from row above.
+					// In table above it's cell "e" and a spanned position from row below (empty cell between cells "g" and "h")
+					const insertPosition = Position.createFromParentAndOffset( table.getChild( row ), cellIndex );
 
-					skipRows.add( row );
-				}
-
-				// The next cell might be not on the insertAt column - ie when there are many rowspanned cells before.
-				if ( column >= insertAt ) {
-					const insertPosition = Position.createBefore( cell );
-
-					createCells( columns, writer, insertPosition );
-					skipRows.add( row );
+					createCells( columnsToInsert, writer, insertPosition );
 				}
 			}
 		} );

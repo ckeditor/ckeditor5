@@ -64,6 +64,7 @@ export default class TableWalker {
 	 * @constructor
 	 * @param {module:engine/model/element~Element} table A table over which iterate.
 	 * @param {Object} [options={}] Object with configuration.
+	 * @param {Number} [options.column] A column index for which this iterator will output cells.
 	 * @param {Number} [options.startRow=0] A row index for which this iterator should start.
 	 * @param {Number} [options.endRow] A row index for which this iterator should end.
 	 * @param {Boolean} [options.includeSpanned] Also return values for spanned cells.
@@ -99,6 +100,10 @@ export default class TableWalker {
 		 * @type {Boolean}
 		 */
 		this.includeSpanned = !!options.includeSpanned;
+
+		this._ccc = typeof options.column == 'number' ? options.column : undefined;
+
+		this._skipRows = new Set();
 
 		/**
 		 * A current row index.
@@ -178,9 +183,11 @@ export default class TableWalker {
 		}
 
 		if ( this._isSpanned( this.row, this.column ) ) {
+			const column = this.column;
+
 			const outValue = {
 				row: this.row,
-				column: this.column,
+				column,
 				rowspan: 1,
 				colspan: 1,
 				cellIndex: this.cell,
@@ -190,7 +197,7 @@ export default class TableWalker {
 
 			this.column++;
 
-			if ( !this.includeSpanned || this.startRow > this.row ) {
+			if ( !this.includeSpanned || this.startRow > this.row || this._checkCCC( column, 1 ) || this._skipRows.has( this.row ) ) {
 				return this.next();
 			}
 
@@ -214,10 +221,12 @@ export default class TableWalker {
 			this._recordSpans( this.row, this.column, rowspan, colspan );
 		}
 
+		const column = this.column;
+
 		const outValue = {
 			cell,
 			row: this.row,
-			column: this.column,
+			column,
 			rowspan,
 			colspan,
 			cellIndex: this.cell,
@@ -227,7 +236,7 @@ export default class TableWalker {
 		this.column++;
 		this.cell++;
 
-		if ( this.startRow > this.row ) {
+		if ( this.startRow > this.row || this._skipRows.has( this.row ) || this._checkCCC( column, colspan ) ) {
 			return this.next();
 		}
 
@@ -235,6 +244,18 @@ export default class TableWalker {
 			done: false,
 			value: outValue
 		};
+	}
+
+	skipRow( row ) {
+		this._skipRows.add( row );
+	}
+
+	_checkCCC( column, colspan ) {
+		if ( this._ccc === undefined ) {
+			return;
+		}
+
+		return !( column === this._ccc || ( column < this._ccc && column + colspan > this._ccc ) );
 	}
 
 	_isSpanned( row, column ) {

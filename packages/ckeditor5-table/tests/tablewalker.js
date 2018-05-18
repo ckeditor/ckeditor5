@@ -154,6 +154,18 @@ describe( 'TableWalker', () => {
 				{ row: 2, column: 2, index: 0, data: '33' }
 			], { endRow: 2 } );
 		} );
+
+		it( 'should iterate over given row 0 only', () => {
+			testWalker( [
+				[ { colspan: 2, rowspan: 3, contents: '11' }, '13' ],
+				[ '23' ],
+				[ '33' ],
+				[ '41', '42', '43' ]
+			], [
+				{ row: 0, column: 0, index: 0, data: '11' },
+				{ row: 0, column: 2, index: 1, data: '13' }
+			], { endRow: 0 } );
+		} );
 	} );
 
 	describe( 'option.includeSpanned', () => {
@@ -218,20 +230,6 @@ describe( 'TableWalker', () => {
 				{ row: 2, column: 2, index: 0, data: '22' }
 			], { includeSpanned: true, startRow: 1, endRow: 2 } );
 		} );
-	} );
-
-	describe( 'option.endRow', () => {
-		it( 'should iterate over given row 0 only', () => {
-			testWalker( [
-				[ { colspan: 2, rowspan: 3, contents: '11' }, '13' ],
-				[ '23' ],
-				[ '33' ],
-				[ '41', '42', '43' ]
-			], [
-				{ row: 0, column: 0, index: 0, data: '11' },
-				{ row: 0, column: 2, index: 1, data: '13' }
-			], { endRow: 0 } );
-		} );
 
 		it( 'should output rowspanned cells at the end of a table row', () => {
 			testWalker( [
@@ -244,6 +242,20 @@ describe( 'TableWalker', () => {
 				{ row: 1, column: 0, index: 0, data: '10' },
 				{ row: 1, column: 1, index: 1, data: undefined }
 			], { startRow: 0, endRow: 1, includeSpanned: true } );
+		} );
+	} );
+
+	describe( 'options.startColumn', () => {
+		it( 'should output only cells on given column', () => {
+			testWalker( [
+				[ { colspan: 2, rowspan: 3, contents: '00' }, '02' ],
+				[ '12' ],
+				[ '22' ],
+				[ '30', '31', '32' ]
+			], [
+				{ row: 0, column: 0, index: 0, data: '00' },
+				{ row: 3, column: 1, index: 1, data: '31' }
+			], { column: 1 } );
 		} );
 	} );
 } );
