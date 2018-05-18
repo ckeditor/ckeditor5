@@ -70,7 +70,7 @@ export default class FileRepository extends Plugin {
 		 * while upload is in progress. When there is no upload then value is `null`.
 		 *
 		 * @private
-		 * @type {Object} #_pendingAction
+		 * @member {Object} #_pendingAction
 		 */
 		this._pendingAction = null;
 
