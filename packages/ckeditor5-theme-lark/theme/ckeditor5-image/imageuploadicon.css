@@ -16,7 +16,7 @@
 	height: var(--ck-image-upload-icon-size);
 	opacity: 0;
 	background: var(--ck-color-image-upload-icon-background);
-	animation-name: ck-fade-in, ck-fade-out;
+	animation-name: ck-upload-complete-icon-show, ck-upload-complete-icon-hide;
 	animation-fill-mode: forwards, forwards;
 	animation-duration: 500ms, 500ms;
 
@@ -38,14 +38,14 @@
 		border-top: var(--ck-image-upload-icon-width) solid var(--ck-color-image-upload-icon);
 		border-right: var(--ck-image-upload-icon-width) solid var(--ck-color-image-upload-icon);
 
-		animation-name: ck-check-icon;
+		animation-name: ck-upload-complete-icon-check;
 		animation-duration: 500ms;
 		animation-delay: 500ms;
 		animation-fill-mode: forwards;
 	}
 }
 
-@keyframes ck-fade-in {
+@keyframes ck-upload-complete-icon-show {
 	from {
 		opacity: 0;
 	}
@@ -55,7 +55,7 @@
 	}
 }
 
-@keyframes ck-fade-out {
+@keyframes ck-upload-complete-icon-hide {
 	from {
 		opacity: 1;
 	}
@@ -65,7 +65,7 @@
 	}
 }
 
-@keyframes ck-check-icon {
+@keyframes ck-upload-complete-icon-check {
 	0% {
 		opacity: 1;
 		height: 0;
