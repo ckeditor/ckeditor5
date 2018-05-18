@@ -70,6 +70,10 @@ describe( 'BlockToolbar', () => {
 				expect( blockToolbar.panelView ).to.instanceof( BalloonPanelView );
 			} );
 
+			it( 'should have additional class name', () => {
+				expect( blockToolbar.panelView.className ).to.equal( 'ck-balloon-panel-block-toolbar' );
+			} );
+
 			it( 'should be added to ui.view.body collection', () => {
 				expect( Array.from( editor.ui.view.body ) ).to.include( blockToolbar.panelView );
 			} );
