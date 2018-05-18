@@ -64,6 +64,16 @@ export default class InlineEditor extends Editor {
 	constructor( elementOrData, config ) {
 		super( config );
 
+		/**
+		 * The element on which the editor has been initialized.
+		 * If editor was initialized with data instead of HTMLElement this property will keep a reference to newly
+		 * created element that need to be added manually to the DOM. For more information see
+		 * {@link module:editor-inline/inlineeditor~InlineEditor.create `InlineEditor.create()`}.
+		 *
+		 * @readonly
+		 * @member {HTMLElement} #element
+		 */
+
 		this.data.processor = new HtmlDataProcessor();
 
 		this.model.document.createRoot();
@@ -156,7 +166,8 @@ export default class InlineEditor extends Editor {
 	 *
 	 * @param {HTMLElement|String} elementOrData The DOM element that will be the source for the created editor
 	 * (on which the editor will be initialized) or initial data for the editor. If data is provided, `editor.element`
-	 * will be created automatically and need to be added manually to the DOM.
+	 * will be created automatically and need to be added manually to the DOM. The element is initialized as a `div`
+	 * element crated in current document's context.
 	 * @param {module:core/editor/editorconfig~EditorConfig} config The editor configuration.
 	 * @returns {Promise} A promise resolved once the editor is ready.
 	 * The promise returns the created {@link module:editor-inline/inlineeditor~InlineEditor} instance.
