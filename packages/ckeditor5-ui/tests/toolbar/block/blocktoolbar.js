@@ -252,6 +252,20 @@ describe( 'BlockToolbar', () => {
 
 			expect( blockToolbar.buttonView.isVisible ).to.false;
 		} );
+
+		it( 'should make it possible to provide custom validation', () => {
+			blockToolbar.on( 'checkAllowed', ( evt, args ) => {
+				const viewElement = args[ 0 ];
+
+				if ( viewElement.name === 'h1' ) {
+					evt.return = false;
+				}
+			} );
+
+			setData( editor.model, '<heading1>foo[]bar</heading1>' );
+
+			expect( blockToolbar.buttonView.isVisible ).to.true;
+		} );
 	} );
 
 	describe( 'attaching button to the content', () => {
