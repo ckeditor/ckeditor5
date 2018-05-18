@@ -14,7 +14,7 @@ describe( 'BlockButtonView', () => {
 	} );
 
 	it( 'should create element from template', () => {
-		expect( view.element.classList.contains( 'ltrs-toolbar-block-button' ) ).to.true;
+		expect( view.element.classList.contains( 'ck-toolbar-block-button' ) ).to.true;
 	} );
 
 	describe( 'DOM binding', () => {
