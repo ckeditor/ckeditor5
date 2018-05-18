@@ -393,7 +393,7 @@ describe( 'BlockToolbar', () => {
 
 			setData( editor.model, '<table>foo</table><paragraph>ba[]r</paragraph>' );
 
-			spy.reset();
+			spy.resetHistory();
 
 			window.dispatchEvent( new Event( 'resize' ) );
 
@@ -401,7 +401,7 @@ describe( 'BlockToolbar', () => {
 
 			setData( editor.model, '<table>fo[]o</table><paragraph>bar</paragraph>' );
 
-			spy.reset();
+			spy.resetHistory();
 
 			window.dispatchEvent( new Event( 'resize' ) );
 
