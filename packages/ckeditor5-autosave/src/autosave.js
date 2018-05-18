@@ -87,6 +87,10 @@ export default class Autosave extends Plugin {
 	}
 
 	/**
+	 * If the provider is set and new document version exists,
+	 * `_save()` method creates a pending action and calls `provider.save()` method.
+	 * It waits for the result and then removes the created pending action.
+	 *
 	 * @protected
 	 */
 	_save() {

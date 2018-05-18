@@ -144,6 +144,63 @@ describe( 'Autosave', () => {
 				expect( pendingActions.isPending ).to.be.false;
 			} );
 		} );
+
+		it( 'should flush remaining calls after editor\'s destroy', () => {
+			const spy = sandbox.spy();
+			const savedStates = [];
+
+			autosave.provider = {
+				save() {
+					spy();
+
+					savedStates.push( editor.getData() );
+				}
+			};
+
+			editor.model.change( writer => {
+				writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) ) );
+				editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
+			} );
+
+			editor.model.change( writer => {
+				writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 1 ) ) );
+				editor.model.insertContent( new ModelText( 'bar' ), editor.model.document.selection );
+			} );
+
+			return editor.destroy().then( () => {
+				expect( spy.callCount ).to.equal( 2 );
+				expect( savedStates ).to.deep.equal( [
+					'<p>foo</p><p>paragraph2</p>',
+					'<p>foo</p><p>bar</p>',
+				] );
+			} );
+		} );
+
+		it( 'should work after editor\'s destroy with long server action time', () => {
+			const serverActionSpy = sinon.spy();
+			const pendingActions = editor.plugins.get( PendingActions );
+
+			autosave.provider = {
+				save() {
+					return wait5ms()
+						.then( serverActionSpy );
+				}
+			};
+
+			editor.model.change( writer => {
+				writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) ) );
+				editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
+			} );
+
+			return editor.destroy()
+				.then( () => {
+					expect( pendingActions.isPending ).to.be.true;
+				} )
+				.then( wait5ms )
+				.then( () => {
+					expect( pendingActions.isPending ).to.be.false;
+				} );
+		} );
 	} );
 
 	function wait5ms() {
