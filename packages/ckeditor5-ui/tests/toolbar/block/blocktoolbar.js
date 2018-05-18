@@ -21,6 +21,9 @@ import List from '@ckeditor/ckeditor5-list/src/list';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+
+testUtils.createSinonSandbox();
 
 describe( 'BlockToolbar', () => {
 	let editor, element, blockToolbar;
@@ -87,7 +90,7 @@ describe( 'BlockToolbar', () => {
 			} );
 
 			it( 'should close panelView after `Esc` press and focus view document', () => {
-				const spy = sinon.spy( editor.editing.view, 'focus' );
+				const spy = testUtils.sinon.spy( editor.editing.view, 'focus' );
 
 				blockToolbar.panelView.isVisible = true;
 
@@ -102,7 +105,7 @@ describe( 'BlockToolbar', () => {
 			} );
 
 			it( 'should close panelView on click outside the panel and not focus view document', () => {
-				const spy = sinon.spy();
+				const spy = testUtils.sinon.spy();
 
 				editor.editing.view.on( 'focus', spy );
 				blockToolbar.panelView.isVisible = true;
@@ -164,7 +167,7 @@ describe( 'BlockToolbar', () => {
 			it( 'should pin panelView to the button on #execute event', () => {
 				expect( blockToolbar.panelView.isVisible ).to.false;
 
-				const spy = sinon.spy( blockToolbar.panelView, 'pin' );
+				const spy = testUtils.sinon.spy( blockToolbar.panelView, 'pin' );
 
 				blockToolbar.buttonView.fire( 'execute' );
 
@@ -177,7 +180,7 @@ describe( 'BlockToolbar', () => {
 
 			it( 'should hide panelView and focus editable on #execute event when panel was visible', () => {
 				blockToolbar.panelView.isVisible = true;
-				const spy = sinon.spy( editor.editing.view, 'focus' );
+				const spy = testUtils.sinon.spy( editor.editing.view, 'focus' );
 
 				blockToolbar.buttonView.fire( 'execute' );
 
@@ -270,6 +273,12 @@ describe( 'BlockToolbar', () => {
 
 	describe( 'attaching button to the content', () => {
 		it( 'should attach button to the left side of selected content and center with the first line on view#render #1', () => {
+			// Mock window dimensions.
+			testUtils.sinon.stub( window, 'innerWidth' ).value( 500 );
+			testUtils.sinon.stub( window, 'innerHeight' ).value( 500 );
+			testUtils.sinon.stub( window, 'scrollX' ).value( 0 );
+			testUtils.sinon.stub( window, 'scrollY' ).value( 0 );
+
 			setData( editor.model, '<paragraph>foo[]bar</paragraph>' );
 
 			const target = editor.ui.view.editableElement.querySelector( 'p' );
@@ -277,16 +286,16 @@ describe( 'BlockToolbar', () => {
 			target.style.lineHeight = '20px';
 			target.style.paddingTop = '10px';
 
-			const editableRectSpy = sinon.stub( editor.ui.view.editableElement, 'getBoundingClientRect' ).returns( {
+			testUtils.sinon.stub( editor.ui.view.editableElement, 'getBoundingClientRect' ).returns( {
 				left: 100
 			} );
 
-			const targetRectSpy = sinon.stub( target, 'getBoundingClientRect' ).returns( {
+			testUtils.sinon.stub( target, 'getBoundingClientRect' ).returns( {
 				top: 500,
 				left: 300
 			} );
 
-			const buttonRectSpy = sinon.stub( blockToolbar.buttonView.element, 'getBoundingClientRect' ).returns( {
+			testUtils.sinon.stub( blockToolbar.buttonView.element, 'getBoundingClientRect' ).returns( {
 				width: 100,
 				height: 100
 			} );
@@ -295,13 +304,14 @@ describe( 'BlockToolbar', () => {
 
 			expect( blockToolbar.buttonView.top ).to.equal( 470 );
 			expect( blockToolbar.buttonView.left ).to.equal( 100 );
-
-			editableRectSpy.restore();
-			targetRectSpy.restore();
-			buttonRectSpy.restore();
 		} );
 
 		it( 'should attach button to the left side of selected content and center with the first line on view#render #2', () => {
+			testUtils.sinon.stub( window, 'innerWidth' ).value( 500 );
+			testUtils.sinon.stub( window, 'innerHeight' ).value( 500 );
+			testUtils.sinon.stub( window, 'scrollX' ).value( 0 );
+			testUtils.sinon.stub( window, 'scrollY' ).value( 0 );
+
 			setData( editor.model, '<paragraph>foo[]bar</paragraph>' );
 
 			const target = editor.ui.view.editableElement.querySelector( 'p' );
@@ -309,16 +319,16 @@ describe( 'BlockToolbar', () => {
 			target.style.fontSize = '20px';
 			target.style.paddingTop = '10px';
 
-			const editableRectSpy = sinon.stub( editor.ui.view.editableElement, 'getBoundingClientRect' ).returns( {
+			testUtils.sinon.stub( editor.ui.view.editableElement, 'getBoundingClientRect' ).returns( {
 				left: 100
 			} );
 
-			const targetRectSpy = sinon.stub( target, 'getBoundingClientRect' ).returns( {
+			testUtils.sinon.stub( target, 'getBoundingClientRect' ).returns( {
 				top: 500,
 				left: 300
 			} );
 
-			const buttonRectSpy = sinon.stub( blockToolbar.buttonView.element, 'getBoundingClientRect' ).returns( {
+			testUtils.sinon.stub( blockToolbar.buttonView.element, 'getBoundingClientRect' ).returns( {
 				width: 100,
 				height: 100
 			} );
@@ -327,16 +337,12 @@ describe( 'BlockToolbar', () => {
 
 			expect( blockToolbar.buttonView.top ).to.equal( 470 );
 			expect( blockToolbar.buttonView.left ).to.equal( 100 );
-
-			editableRectSpy.restore();
-			targetRectSpy.restore();
-			buttonRectSpy.restore();
 		} );
 
 		it( 'should reposition panelView when is opened on view#render', () => {
 			blockToolbar.panelView.isVisible = false;
 
-			const spy = sinon.spy( blockToolbar.panelView, 'pin' );
+			const spy = testUtils.sinon.spy( blockToolbar.panelView, 'pin' );
 
 			editor.editing.view.fire( 'render' );
 
@@ -397,7 +403,7 @@ describe( 'BlockToolbar', () => {
 			editor.model.schema.register( 'table', { inheritAllFrom: '$block' } );
 			editor.conversion.elementToElement( { model: 'table', view: 'table' } );
 
-			const spy = sinon.spy( blockToolbar, '_attachButtonToElement' );
+			const spy = testUtils.sinon.spy( blockToolbar, '_attachButtonToElement' );
 
 			setData( editor.model, '<table>fo[]o</table><paragraph>bar</paragraph>' );
 
