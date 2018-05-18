@@ -145,13 +145,41 @@ describe( 'Autosave', () => {
 			} );
 		} );
 
-		it( 'should filter out batches that don\'t change content', () => {
+		it( 'should filter out change batches that don\'t change content', () => {
 			autosave.provider = {
 				save: sandbox.spy()
 			};
 
 			editor.model.change( writer => {
 				writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) ) );
+			} );
+
+			autosave._flush();
+			sinon.assert.notCalled( autosave.provider.save );
+		} );
+
+		it( 'should filter out change batches that don\'t change content #2', () => {
+			autosave.provider = {
+				save: sandbox.spy()
+			};
+
+			const operation = { name: 'user:position' };
+			editor.model.document.fire( 'change', {
+				deltas: [ { operations: [ operation ] } ]
+			} );
+
+			autosave._flush();
+			sinon.assert.notCalled( autosave.provider.save );
+		} );
+
+		it( 'should filter out change batches that don\'t change content #3', () => {
+			autosave.provider = {
+				save: sandbox.spy()
+			};
+
+			const operation = { name: 'user:range' };
+			editor.model.document.fire( 'change', {
+				deltas: [ { operations: [ operation ] } ]
 			} );
 
 			autosave._flush();
