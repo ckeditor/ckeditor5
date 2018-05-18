@@ -5,8 +5,5 @@
 
 .ck.ck-toolbar-block-button {
 	position: absolute;
-	/* font-size: var(--ltrs-font-medium); */
-	/* background-color: var(--ltrs-color-gray-blue-light); */
-	/* color: var(--ck-color-blocktoolbar-icon); */
 	z-index: var(--ck-z-default);
 }
