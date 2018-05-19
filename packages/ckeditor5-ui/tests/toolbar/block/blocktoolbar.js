@@ -273,18 +273,17 @@ describe( 'BlockToolbar', () => {
 
 	describe( 'attaching button to the content', () => {
 		it( 'should attach button to the left side of selected content and center with the first line on view#render #1', () => {
-			// Mock window dimensions.
-			testUtils.sinon.stub( window, 'innerWidth' ).value( 500 );
-			testUtils.sinon.stub( window, 'innerHeight' ).value( 500 );
-			testUtils.sinon.stub( window, 'scrollX' ).value( 0 );
-			testUtils.sinon.stub( window, 'scrollY' ).value( 0 );
-
 			setData( editor.model, '<paragraph>foo[]bar</paragraph>' );
 
 			const target = editor.ui.view.editableElement.querySelector( 'p' );
+			const styleMock = testUtils.sinon.stub( window, 'getComputedStyle' );
 
-			target.style.lineHeight = '20px';
-			target.style.paddingTop = '10px';
+			styleMock.withArgs( target ).returns( {
+				lineHeight: '20px',
+				paddingTop: '10px'
+			} );
+
+			styleMock.callThrough();
 
 			testUtils.sinon.stub( editor.ui.view.editableElement, 'getBoundingClientRect' ).returns( {
 				left: 100
@@ -307,17 +306,17 @@ describe( 'BlockToolbar', () => {
 		} );
 
 		it( 'should attach button to the left side of selected content and center with the first line on view#render #2', () => {
-			testUtils.sinon.stub( window, 'innerWidth' ).value( 500 );
-			testUtils.sinon.stub( window, 'innerHeight' ).value( 500 );
-			testUtils.sinon.stub( window, 'scrollX' ).value( 0 );
-			testUtils.sinon.stub( window, 'scrollY' ).value( 0 );
-
 			setData( editor.model, '<paragraph>foo[]bar</paragraph>' );
 
 			const target = editor.ui.view.editableElement.querySelector( 'p' );
+			const styleMock = testUtils.sinon.stub( window, 'getComputedStyle' );
 
-			target.style.fontSize = '20px';
-			target.style.paddingTop = '10px';
+			styleMock.withArgs( target ).returns( {
+				fontSize: '20px',
+				paddingTop: '10px'
+			} );
+
+			styleMock.callThrough();
 
 			testUtils.sinon.stub( editor.ui.view.editableElement, 'getBoundingClientRect' ).returns( {
 				left: 100

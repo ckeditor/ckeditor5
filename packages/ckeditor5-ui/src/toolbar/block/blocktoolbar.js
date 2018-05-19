@@ -329,8 +329,8 @@ export default class BlockToolbar extends Plugin {
 		const contentComputedStyles = window.getComputedStyle( targetElement );
 
 		const editableRect = new Rect( this.editor.ui.view.editableElement );
-		const contentPaddingTop = parseInt( contentComputedStyles.paddingTop );
-		const contentLineHeight = parseInt( contentComputedStyles.lineHeight ) || parseInt( contentComputedStyles.fontSize );
+		const contentPaddingTop = parseInt( contentComputedStyles.paddingTop, 10 );
+		const contentLineHeight = parseInt( contentComputedStyles.lineHeight, 10 ) || parseInt( contentComputedStyles.fontSize, 10 );
 
 		const position = getOptimalPosition( {
 			element: this.buttonView.element,
