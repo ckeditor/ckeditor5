@@ -27,7 +27,8 @@ import iconPilcrow from '../../../theme/icons/pilcrow.svg';
  * The block toolbar plugin.
  *
  * This plugin provides button attached to the block of content where the selection is currently placed.
- * After clicking on the button, dropdown with editor features defined through editor configuration appears.
+ * After clicking on the button, dropdown with editor features defined through
+ * {@link module:core/editor/editorconfig~EditorConfig#blockToolbar} appears.
  *
  * By default button is allowed to be displayed next to {@link module:paragraph/paragraph~Paragraph paragraph element},
  * {@link module:list/list~List list items} and all items defined in {@link module:heading/heading~Heading} plugin.
@@ -35,7 +36,7 @@ import iconPilcrow from '../../../theme/icons/pilcrow.svg';
  *
  * By default button will be attached to the left bound of the
  * {@link module:engine/view/editableelement~EditableElement} so editor integration should
- * ensure that there is enough space between the editor content and left bound of the editable element
+ * ensure that there is enough space between the editor content and left bound of the editable element:
  *
  * 		| __
  * 		||  |     This is a block of content that
@@ -96,7 +97,7 @@ export default class BlockToolbar extends Plugin {
 
 		/**
 		 * List of block element names that allow displaying toolbar next to it.
-		 * This list will be updated by #afterInit method.
+		 * This list will be updated by {@link ~BlockToolbar#afterInit} method.
 		 *
 		 * @type {Array<String>}
 		 */
@@ -377,8 +378,8 @@ export default class BlockToolbar extends Plugin {
 	}
 
 	/**
-	 * This event is fired just before {@link #checkAllowed} method is executed. It makes it possible to override
-	 * default method behavior and provides a custom validation.
+	 * This event is fired when {@link #checkAllowed} method is executed. It makes it possible to override
+	 * default method behavior and provides a custom rules.
 	 *
 	 * @event checkAllowed
 	 */
@@ -395,3 +396,22 @@ function getParentContainer( position ) {
 
 	return parent;
 }
+
+/**
+ * Block toolbar configuration. Used by the {@link module:ui/toolbar/block/blocktoolbar~BlockToolbar}
+ * feature.
+ *
+ *		const config = {
+ *			blockToolbar: [ 'paragraph', 'heading1', 'heading2', 'bulletedList', 'numberedList' ]
+ *		};
+ *
+ * You can also use `'|'` to create a separator between groups of items:
+ *
+ *		const config = {
+ *			blockToolbar: [ 'paragraph', 'heading1', 'heading2', '|', 'bulletedList', 'numberedList' ]
+ *		};
+ *
+ * Read also about configuring the main editor toolbar in {@link module:core/editor/editorconfig~EditorConfig#toolbar}.
+ *
+ * @member {Array.<String>|Object} module:core/editor/editorconfig~EditorConfig#blockToolbar
+ */
