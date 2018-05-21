@@ -14,7 +14,7 @@ import {
 import { upcastElementToAttribute } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 import LinkCommand from './linkcommand';
 import UnlinkCommand from './unlinkcommand';
-import { createLinkElement } from './utils';
+import { createLinkElement, ensureSafeUrl } from './utils';
 import bindTwoStepCaretToAttribute from '@ckeditor/ckeditor5-engine/src/utils/bindtwostepcarettoattribute';
 import findLinkRange from './findlinkrange';
 import '../theme/link.css';
@@ -38,8 +38,13 @@ export default class LinkEditing extends Plugin {
 		// Allow link attribute on all inline nodes.
 		editor.model.schema.extend( '$text', { allowAttributes: 'linkHref' } );
 
-		editor.conversion.for( 'downcast' )
+		editor.conversion.for( 'dataDowncast' )
 			.add( downcastAttributeToElement( { model: 'linkHref', view: createLinkElement } ) );
+
+		editor.conversion.for( 'editingDowncast' )
+			.add( downcastAttributeToElement( { model: 'linkHref', view: ( href, writer ) => {
+				return createLinkElement( ensureSafeUrl( href ), writer );
+			} } ) );
 
 		editor.conversion.for( 'upcast' )
 			.add( upcastElementToAttribute( {
