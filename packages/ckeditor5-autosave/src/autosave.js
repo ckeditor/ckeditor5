@@ -10,9 +10,8 @@ import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 /* globals window */
 
 /**
- * Autosave plugin provides an easy-to-use API for getting sync with the editor's content.
- * It watches `Document:change`, and `Window:beforeunload` events and keep the save provider
- * in sync with the editor's data.
+ * Autosave plugin provides an easy-to-use API to save the editor's content.
+ * It watches `Document:change`, and `Window:beforeunload` events and calls the provider's save method.
  *
  * 		ClassicEditor
  *			.create( document.querySelector( '#editor' ), {
