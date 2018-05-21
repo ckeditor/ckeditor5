@@ -42,13 +42,13 @@ export default class TableUtils extends Plugin {
 	 *
 	 * the method will return:
 	 *
-	 *     const cellA = table.getNodeByPath( [ 0, 0 ] );
-	 *     editor.plugins.get( 'TableUtils' ).getCellLocation( cellA );
-	 *     // will return { row: 0, column: 0 }
+	 *		const cellA = table.getNodeByPath( [ 0, 0 ] );
+	 *		editor.plugins.get( 'TableUtils' ).getCellLocation( cellA );
+	 *		// will return { row: 0, column: 0 }
 	 *
-	 *     const cellD = table.getNodeByPath( [ 1, 0 ] );
-	 *     editor.plugins.get( 'TableUtils' ).getCellLocation( cellD );
-	 *     // will return { row: 1, column: 3 }
+	 *		const cellD = table.getNodeByPath( [ 1, 0 ] );
+	 *		editor.plugins.get( 'TableUtils' ).getCellLocation( cellD );
+	 *		// will return { row: 1, column: 3 }
 	 *
 	 * @param {module:engine/model/element~Element} tableCell
 	 * @returns {{row, column}}
@@ -164,7 +164,7 @@ export default class TableUtils extends Plugin {
 	/**
 	 * Inserts columns into a table.
 	 *
-	 *     editor.plugins.get( 'TableUtils' ).insertColumns( table, { at: 1, columns: 2 } );
+	 *		editor.plugins.get( 'TableUtils' ).insertColumns( table, { at: 1, columns: 2 } );
 	 *
 	 * For the table below this code
 	 *
@@ -407,7 +407,7 @@ export default class TableUtils extends Plugin {
 	/**
 	 * Returns number of columns for given table.
 	 *
-	 *     editor.plugins.get( 'TableUtils' ).getColumns( table );
+	 *		editor.plugins.get( 'TableUtils' ).getColumns( table );
 	 *
 	 * @param {module:engine/model/element~Element} table Table to analyze.
 	 * @returns {Number}

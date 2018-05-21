@@ -13,9 +13,15 @@
  */
 export default class TableWalker {
 	/**
-	 * Creates a range iterator. All parameters are optional, but you have to specify either `boundaries` or `startPosition`.
+	 * Creates an instance of table walker.
 	 *
-	 * The most important values of iterator values are column & row of a cell.
+	 *
+	 * The TableWalker iterates internally by traversing table from row index = 0 and column index = 0.
+	 * It walks row by row and column by column in order to output values defined in constructor.
+	 * By default it will output only those locations that are occupied by a cell to include also a spanned rows & columns
+	 * pass `includeSpanned` option to a constructor.
+	 *
+	 * The most important values of iterator values are column & row indexes of a cell.
 	 *
 	 * To iterate over given row:
 	 *
@@ -37,14 +43,14 @@ export default class TableWalker {
 	 *		| 31 | 32 |                   |
 	 *		+----+----+----+----+----+----+
 	 *
-	 *	will log in the console:
+	 * will log in the console:
 	 *
 	 *		'A cell at row 1 and column 2'
 	 *		'A cell at row 1 and column 4'
 	 *		'A cell at row 1 and column 5'
 	 *		'A cell at row 2 and column 2'
 	 *
-	 *	To iterate over spanned cells also:
+	 * To iterate over spanned cells also:
 	 *
 	 *		const tableWalker = new TableWalker( table, { startRow: 1, endRow: 1, includeSpanned: true } );
 	 *
@@ -52,7 +58,7 @@ export default class TableWalker {
 	 *			console.log( 'Cell at ' + cellInfo.row + ' x ' + cellInfo.column + ' : ' + ( cellInfo.cell ? 'has data' : 'is spanned' ) );
 	 *		}
 	 *
-	 *	will log in the console for the table from previous example:
+	 * will log in the console for the table from previous example:
 	 *
 	 *		'Cell at 1 x 0 : is spanned'
 	 *		'Cell at 1 x 1 : is spanned'
@@ -97,12 +103,26 @@ export default class TableWalker {
 		/**
 		 * Enables output of spanned cells that are normally not yielded.
 		 *
-		 * @type {Boolean}
+		 * @readonly
+		 * @member {Boolean}
 		 */
 		this.includeSpanned = !!options.includeSpanned;
 
-		this._ccc = typeof options.column == 'number' ? options.column : undefined;
+		/**
+		 * If set table walker will only output cells of given column or cells that overlaps it.
+		 *
+		 * @readonly
+		 * @member {Number}
+		 */
+		this.column = typeof options.column == 'number' ? options.column : undefined;
 
+		/**
+		 * Row indexes to skip from iteration.
+		 *
+		 * @readonly
+		 * @member {Set<Number>}
+		 * @private
+		 */
 		this._skipRows = new Set();
 
 		/**
@@ -110,55 +130,37 @@ export default class TableWalker {
 		 *
 		 * @readonly
 		 * @member {Number}
+		 * @private
 		 */
-		this.row = 0;
-
-		/**
-		 * A current cell index in a row.
-		 *
-		 * @readonly
-		 * @member {Number}
-		 */
-		this.cell = 0;
+		this._row = 0;
 
 		/**
 		 * A current column index.
 		 *
 		 * @readonly
 		 * @member {Number}
+		 * @private
 		 */
-		this.column = 0;
+		this._column = 0;
 
 		/**
-		 * The previous cell in a row.
+		 * A cell index in a parent row. For spanned cells when {@link #includeSpanned} is set to true
+		 * this represents the index of next table cell.
 		 *
 		 * @readonly
-		 * @member {module:engine/model/element~Element}
+		 * @member {Number}
 		 * @private
 		 */
-		this._previousCell = undefined;
+		this._cell = 0;
 
 		/**
-		 * Holds spanned cells info to be outputed when {@link #includeSpanned} is set to true.
-		 *
-		 * @type {Array.<module:table/tablewalker~TableWalkerValue>}
-		 * @private
-		 */
-		this._spannedCells = [];
-
-		/**
-		 * Cached table properties - returned for every yielded value.
+		 * Holds map of spanned cells in a table.
 		 *
 		 * @readonly
-		 * @member {{headingRows: Number, headingColumns: Number}}
+		 * @member {Map<Number, Map.<Number, Number>>}
 		 * @private
 		 */
-		this._tableData = {
-			headingRows: parseInt( this.table.getAttribute( 'headingRows' ) || 0 ),
-			headingColumns: parseInt( this.table.getAttribute( 'headingColumns' ) || 0 )
-		};
-
-		this._spans = new Map();
+		this._spannedCells = new Map();
 	}
 
 	/**
@@ -176,120 +178,205 @@ export default class TableWalker {
 	 * @returns {module:table/tablewalker~TableWalkerValue} Next table walker's value.
 	 */
 	next() {
-		const row = this.table.getChild( this.row );
+		const row = this.table.getChild( this._row );
 
-		if ( !row || ( this.endRow !== undefined && this.row > this.endRow ) ) {
+		// Iterator is done when no row (table end) or the row is after #endRow.
+		if ( !row || this._isOverEndRow() ) {
 			return { done: true };
 		}
 
-		if ( this._isSpanned( this.row, this.column ) ) {
-			const column = this.column;
+		// Spanned cell location handling.
+		if ( this._isSpanned( this._row, this._column ) ) {
+			// Current column must be kept as it will be updated before returning current value.
+			const currentColumn = this._column;
+			const outValue = this._formatOutValue( undefined, currentColumn );
 
-			const outValue = {
-				row: this.row,
-				column,
-				rowspan: 1,
-				colspan: 1,
-				cellIndex: this.cell,
-				cell: undefined,
-				table: this._tableData
-			};
+			// Advance to next column - always.
+			this._column++;
 
-			this.column++;
+			const skipCurrentValue = !this.includeSpanned || this._shouldSkipRow() || this._shouldSkipColumn( currentColumn, 1 );
 
-			if ( !this.includeSpanned || this.startRow > this.row || this._checkCCC( column, 1 ) || this._skipRows.has( this.row ) ) {
-				return this.next();
-			}
-
-			return { done: false, value: outValue };
+			// The current value will be returned only if #includedSpanned=true and also current row and column are not skipped.
+			return skipCurrentValue ? this.next() : outValue;
 		}
 
-		const cell = row.getChild( this.cell );
+		// The cell location is not spanned by other cells.
+		const cell = row.getChild( this._cell );
 
 		if ( !cell ) {
-			this.row++;
-			this.column = 0;
-			this.cell = 0;
+			// If there are no more cells left in row advance to next row.
+			this._row++;
+			// And reset column & cell indexes.
+			this._column = 0;
+			this._cell = 0;
 
+			// Return next value.
 			return this.next();
 		}
 
+		// Read table cell attributes.
 		const colspan = parseInt( cell.getAttribute( 'colspan' ) || 1 );
 		const rowspan = parseInt( cell.getAttribute( 'rowspan' ) || 1 );
 
+		// Record this cell spans if it's not 1x1 cell.
 		if ( colspan > 1 || rowspan > 1 ) {
-			this._recordSpans( this.row, this.column, rowspan, colspan );
+			this._recordSpans( this._row, this._column, rowspan, colspan );
 		}
 
-		const column = this.column;
+		// Current column must be kept as it will be updated before returning current value.
+		const currentColumn = this._column;
+		const outValue = this._formatOutValue( cell, currentColumn, rowspan, colspan );
 
-		const outValue = {
-			cell,
-			row: this.row,
-			column,
-			rowspan,
-			colspan,
-			cellIndex: this.cell,
-			table: this._tableData
-		};
+		// Advance to next column before returning value.
+		this._column++;
 
-		this.column++;
-		this.cell++;
+		// Advance to next cell in a parent row before returning value.
+		this._cell++;
 
-		if ( this.startRow > this.row || this._skipRows.has( this.row ) || this._checkCCC( column, colspan ) ) {
-			return this.next();
-		}
+		const skipCurrentValue = this._shouldSkipRow() || this._shouldSkipColumn( currentColumn, colspan );
 
-		return {
-			done: false,
-			value: outValue
-		};
+		// The current value will be returned only if current row & column are not skipped.
+		return skipCurrentValue ? this.next() : outValue;
 	}
 
+	/**
+	 * Mark a row to skip on next iteration - will skip also cells from current row if any.
+	 *
+	 * @param {Number} row Row index to skip.
+	 */
 	skipRow( row ) {
 		this._skipRows.add( row );
 	}
 
-	_checkCCC( column, colspan ) {
-		if ( this._ccc === undefined ) {
-			return;
-		}
-
-		return !( column === this._ccc || ( column < this._ccc && column + colspan > this._ccc ) );
+	/**
+	 * Check if current row is over {@link #endRow}.
+	 *
+	 * @returns {Boolean}
+	 * @private
+	 */
+	_isOverEndRow() {
+		// If {@link #endRow) is defined skipp all rows above it.
+		return this.endRow !== undefined && this._row > this.endRow;
 	}
 
-	_isSpanned( row, column ) {
-		if ( !this._spans.has( row ) ) {
+	/**
+	 * Common method for formatting iterator's out value.
+	 *
+	 * @param {module:engine/model/element~Element|undefined} cell Table cell to output. Might be undefined for spanned cell locations.
+	 * @param {Number} column Column index (use cached value)
+	 * @param {Number} rowspan Rowspan of current cell.
+	 * @param {Number} colspan Colspan of current cell.
+	 * @returns {{done: boolean, value: {cell: *, row: Number, column: *, rowspan: *, colspan: *, cellIndex: Number}}}
+	 * @private
+	 */
+	_formatOutValue( cell, column, rowspan = 1, colspan = 1 ) {
+		return {
+			done: false,
+			value: {
+				cell,
+				row: this._row,
+				column,
+				rowspan,
+				colspan,
+				cellIndex: this._cell
+			}
+		};
+	}
+
+	/**
+	 * Checks if current row should be skipped.
+	 *
+	 * @returns {Boolean}
+	 * @private
+	 */
+	_shouldSkipRow() {
+		const rowIsBelowStartRow = this._row < this.startRow;
+		const rowIsMarkedAsSkipped = this._skipRows.has( this._row );
+
+		return rowIsBelowStartRow || rowIsMarkedAsSkipped;
+	}
+
+	/**
+	 * Checks if current column should be skipped.
+	 *
+	 * @param {Number} column
+	 * @param {Number} colspan
+	 * @returns {Boolean}
+	 * @private
+	 */
+	_shouldSkipColumn( column, colspan ) {
+		if ( this.column === undefined ) {
+			// The {@link #column} is not defined so output all columns.
 			return false;
 		}
 
-		const rowSpans = this._spans.get( row );
+		// When outputting cells from given column we skip:
+		// - Cells that are not on that column.
+		const isCurrentColumn = column === this.column;
+		// - CSells that are before given column and they overlaps given column.
+		const isPreviousThatOverlapsColumn = column < this.column && column + colspan > this.column;
 
-		return rowSpans.has( column ) ? rowSpans.get( column ) : false;
+		return !isCurrentColumn && !isPreviousThatOverlapsColumn;
 	}
 
-	_recordSpans( row, column, rowspan, colspan ) {
-		// This will update all rows after columns
-		for ( let columnToUpdate = column + 1; columnToUpdate <= column + colspan - 1; columnToUpdate++ ) {
-			this._recordSpan( row, columnToUpdate );
+	/**
+	 * Checks if current cell location - row x column - is spanned by other cell.
+	 *
+	 * @param {Number} row Row index of a cell location to check.
+	 * @param {Number} column Column index of a cell location to check.
+	 * @returns {Boolean}
+	 * @private
+	 */
+	_isSpanned( row, column ) {
+		if ( !this._spannedCells.has( row ) ) {
+			// No spans for given row.
+			return false;
 		}
 
-		// This will update all rows below up to row height with value of span width.
+		const rowSpans = this._spannedCells.get( row );
+
+		// If spans for given rows has entry for column it means that this location if spanned by other cell.
+		return rowSpans.has( column );
+	}
+
+	/**
+	 * Updates spanned cells map relative to current cell location and it's span dimensions.
+	 *
+	 * @param {Number} row Row index of a cell.
+	 * @param {Number} column Column index of a cell.
+	 * @param {Number} rowspan Cell's height.
+	 * @param {Number} colspan Cell's width.
+	 * @private
+	 */
+	_recordSpans( row, column, rowspan, colspan ) {
+		// This will update all cell locations after current column - ie a cell has colspan set.
+		for ( let columnToUpdate = column + 1; columnToUpdate <= column + colspan - 1; columnToUpdate++ ) {
+			this._markSpannedCell( row, columnToUpdate );
+		}
+
+		// This will update all rows below current up to row's height.
 		for ( let rowToUpdate = row + 1; rowToUpdate < row + rowspan; rowToUpdate++ ) {
 			for ( let columnToUpdate = column; columnToUpdate <= column + colspan - 1; columnToUpdate++ ) {
-				this._recordSpan( rowToUpdate, columnToUpdate );
+				this._markSpannedCell( rowToUpdate, columnToUpdate );
 			}
 		}
 	}
 
-	_recordSpan( row, column ) {
-		if ( !this._spans.has( row ) ) {
-			this._spans.set( row, new Map() );
+	/**
+	 * Marks cell location as spanned by other cell.
+	 *
+	 * @param {Number} row Row index of cell location.
+	 * @param {Number} column Column index of cell location.
+	 * @private
+	 */
+	_markSpannedCell( row, column ) {
+		if ( !this._spannedCells.has( row ) ) {
+			this._spannedCells.set( row, new Map() );
 		}
 
-		const rowSpans = this._spans.get( row );
+		const rowSpans = this._spannedCells.get( row );
 
-		rowSpans.set( column, 1 );
+		rowSpans.set( column, true );
 	}
 }
 
@@ -305,9 +392,6 @@ export default class TableWalker {
  * {@link module:table/tablewalker~TableWalker#includeSpanned} is set to true.
  * @property {Number} [rowspan] The rowspan attribute of a cell - always defined even if model attribute is not present. Not set if
  * {@link module:table/tablewalker~TableWalker#includeSpanned} is set to true.
- * @property {Number} cellIndex The index of a current cell in parent row. When using `includeSpanned` option it will indicate next child
- * index if #cell is empty (spanned cell).
- * @property {Object} table Table attributes
- * @property {Object} table.headingRows The heading rows attribute of a table - always defined even if model attribute is not present.
- * @property {Object} table.headingColumns The heading columns attribute of a table - always defined even if model attribute is not present.
+ * @property {Number} cellIndex The index of a current cell in a parent row. When using `includeSpanned` option it will indicate next child
+ * index if #cell is empty (which indicates that cell is spanned by other cell).
  */
