@@ -17,6 +17,8 @@ import HeadingButtonsUI from '@ckeditor/ckeditor5-heading/src/headingbuttonsui';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import ParagraphButtonUI from '@ckeditor/ckeditor5-paragraph/src/paragraphbuttonui';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
+import Image from '@ckeditor/ckeditor5-image/src/image';
+import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
 import List from '@ckeditor/ckeditor5-list/src/list';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -33,7 +35,7 @@ describe( 'BlockToolbar', () => {
 		document.body.appendChild( element );
 
 		return ClassicTestEditor.create( element, {
-			plugins: [ BlockToolbar, Heading, HeadingButtonsUI, Paragraph, ParagraphButtonUI, BlockQuote, List ],
+			plugins: [ BlockToolbar, Heading, HeadingButtonsUI, Paragraph, ParagraphButtonUI, BlockQuote, Image, ImageCaption ],
 			blockToolbar: [ 'paragraph', 'heading1', 'heading2', 'blockQuote' ]
 		} ).then( newEditor => {
 			editor = newEditor;
@@ -213,56 +215,32 @@ describe( 'BlockToolbar', () => {
 	} );
 
 	describe( 'allowed elements', () => {
-		it( 'should display button when selection is placed in a paragraph', () => {
-			setData( editor.model, '<paragraph>foo[]bar</paragraph>' );
+		it( 'should display button when selection is placed in a block element', () => {
+			editor.model.schema.register( 'foo', { inheritAllFrom: '$block' } );
+			editor.conversion.elementToElement( { model: 'foo', view: 'foo' } );
+
+			setData( editor.model, '<foo>foo[]bar</foo>' );
 
 			expect( blockToolbar.buttonView.isVisible ).to.true;
 		} );
 
-		it( 'should display button when selection is placed in a heading1', () => {
-			setData( editor.model, '<heading1>foo[]bar</heading1>' );
+		it( 'should not display button when selection is placed in an object', () => {
+			setData( editor.model, '<image src="foo.jpg"><caption>fo[]o</caption></image>' );
 
-			expect( blockToolbar.buttonView.isVisible ).to.true;
+			expect( blockToolbar.buttonView.isVisible ).to.false;
 		} );
 
-		it( 'should display button when selection is placed in a heading2', () => {
-			setData( editor.model, '<heading2>foo[]bar</heading2>' );
-
-			expect( blockToolbar.buttonView.isVisible ).to.true;
-		} );
-
-		it( 'should display button when selection is placed in a heading3', () => {
-			setData( editor.model, '<heading3>foo[]bar</heading3>' );
-
-			expect( blockToolbar.buttonView.isVisible ).to.true;
-		} );
-
-		it( 'should display button when selection is placed in a list item', () => {
-			setData( editor.model, '<listItem type="numbered" indent="0">foo[]bar</listItem>' );
-
-			expect( blockToolbar.buttonView.isVisible ).to.true;
-		} );
-
-		it( 'should display button when selection is placed in a allowed element in a blockQuote', () => {
-			setData( editor.model, '<blockQuote><paragraph>foo[]bar</paragraph></blockQuote>' );
-
-			expect( blockToolbar.buttonView.isVisible ).to.true;
-		} );
-
-		it( 'should not display button when selection is placed in not allowed element', () => {
-			editor.model.schema.register( 'table', { inheritAllFrom: '$block' } );
-			editor.conversion.elementToElement( { model: 'table', view: 'table' } );
-
-			setData( editor.model, '<table>foo[]bar</table>' );
+		it( 'should not display button when selection is placed in a root element', () => {
+			setData( editor.model, '[<image src="foo.jpg"></image>]' );
 
 			expect( blockToolbar.buttonView.isVisible ).to.false;
 		} );
 
 		it( 'should make it possible to provide custom validation', () => {
 			blockToolbar.on( 'checkAllowed', ( evt, args ) => {
-				const viewElement = args[ 0 ];
+				const modelElement = args[ 0 ];
 
-				if ( viewElement.name === 'h2' ) {
+				if ( modelElement.name === 'heading1' ) {
 					evt.return = false;
 				}
 			} );
@@ -411,18 +389,15 @@ describe( 'BlockToolbar', () => {
 		} );
 
 		it( 'should update button position on browser resize only when button is visible', () => {
-			editor.model.schema.register( 'table', { inheritAllFrom: '$block' } );
-			editor.conversion.elementToElement( { model: 'table', view: 'table' } );
-
 			const spy = testUtils.sinon.spy( blockToolbar, '_attachButtonToElement' );
 
-			setData( editor.model, '<table>fo[]o</table><paragraph>bar</paragraph>' );
+			setData( editor.model, '[<image src="foo.jpg"></image>]<paragraph>bar</paragraph>' );
 
 			window.dispatchEvent( new Event( 'resize' ) );
 
 			sinon.assert.notCalled( spy );
 
-			setData( editor.model, '<table>foo</table><paragraph>ba[]r</paragraph>' );
+			setData( editor.model, '<image src="foo.jpg"></image><paragraph>ba[]r</paragraph>' );
 
 			spy.resetHistory();
 
@@ -430,7 +405,7 @@ describe( 'BlockToolbar', () => {
 
 			sinon.assert.called( spy );
 
-			setData( editor.model, '<table>fo[]o</table><paragraph>bar</paragraph>' );
+			setData( editor.model, '[<image src="foo.jpg"></image>]<paragraph>bar</paragraph>' );
 
 			spy.resetHistory();
 

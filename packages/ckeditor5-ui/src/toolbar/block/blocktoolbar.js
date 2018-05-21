@@ -15,7 +15,6 @@ import BalloonPanelView from '../../panel/balloon/balloonpanelview';
 import ToolbarView from '../toolbarview';
 
 import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobserver';
-import ContainerElement from '@ckeditor/ckeditor5-engine/src/view/containerelement';
 import clickOutsideHandler from '../../bindings/clickoutsidehandler';
 
 import { getOptimalPosition } from '@ckeditor/ckeditor5-utils/src/dom/position';
@@ -95,14 +94,6 @@ export default class BlockToolbar extends Plugin {
 		 */
 		this.buttonView = this._createButtonView();
 
-		/**
-		 * List of block element names that allow displaying toolbar next to it.
-		 * This list will be updated by {@link ~BlockToolbar#afterInit} method.
-		 *
-		 * @type {Array<String>}
-		 */
-		this._allowedElements = [];
-
 		// Close #panelView on click out of the plugin UI.
 		clickOutsideHandler( {
 			emitter: this.panelView,
@@ -144,8 +135,6 @@ export default class BlockToolbar extends Plugin {
 		for ( const item of this.toolbarView.items ) {
 			item.on( 'execute', () => this._hidePanel( true ), { priority: 'high' } );
 		}
-
-		this._allowedElements = this._getAllowedElements();
 	}
 
 	/**
@@ -206,48 +195,31 @@ export default class BlockToolbar extends Plugin {
 	}
 
 	/**
-	 * Returns list of element names that allow displaying block button next to it.
-	 *
-	 * @private
-	 * @returns {Array<String>}
-	 */
-	_getAllowedElements() {
-		const config = this.editor.config;
-
-		const elements = [ 'p', 'li' ];
-
-		for ( const item of config.get( 'heading.options' ) || [] ) {
-			if ( item.view ) {
-				elements.push( item.view );
-			}
-		}
-
-		return elements;
-	}
-
-	/**
-	 * Checks if block button is allowed for displaying next to given element.
+	 * Checks if block button is allowed for displaying next to given element
+	 * (when element is a $block and is not an object).
 	 *
 	 * Fires {@link #event:checkAllowed} event which can be handled and overridden to apply custom validation.
 	 *
-	 * Example how to disallow button for `h1` element:
+	 * Example how to disallow button for `h2` element:
 	 *
 	 * 		const blockToolbar = editor.plugins.get( 'BlockToolbar' );
 	 *
 	 * 		blockToolbar.on( 'checkAllowed', ( evt, args ) => {
-	 *			const viewElement = args[ 0 ];
+	 *			const modelElement = args[ 0 ];
 	 *
-	 *			if ( viewElement.name === 'h1' ) {
+	 *			if ( modelElement && modelElement.name === 'heading1' ) {
 	 *				evt.return = false;
 	 *			}
 	 * 		}, { priority: 'high' } );
 	 *
 	 * @fires checkAllowed
-	 * @param {module:engine/view/containerelement~ContainerElement} viewElement Container element where selection is.
-	 * @returns {Boolean} `true` when block button is allowed to display `false` otherwise.
+	 * @param {module:engine/model/element~Element} modelElement Element where the selection is.
+	 * @returns {Boolean} `true` when block button is allowed to be displayed `false` otherwise.
 	 */
-	checkAllowed( viewElement ) {
-		return this._allowedElements.includes( viewElement.name );
+	checkAllowed( modelElement ) {
+		const schema = this.editor.model.schema;
+
+		return modelElement && schema.isBlock( modelElement ) && !schema.isObject( modelElement );
 	}
 
 	/**
@@ -257,9 +229,9 @@ export default class BlockToolbar extends Plugin {
 	 */
 	_enable() {
 		const editor = this.editor;
+		const model = editor.model;
 		const view = editor.editing.view;
-		const viewDocument = view.document;
-		let targetElement, targetDomElement;
+		let modelTarget, domTarget;
 
 		// Hides panel on a direct selection change.
 		this.listenTo( editor.model.document.selection, 'change:range', ( evt, data ) => {
@@ -269,24 +241,24 @@ export default class BlockToolbar extends Plugin {
 		} );
 
 		this.listenTo( view, 'render', () => {
-			// Get selection parent container, block button will be attached to this element.
-			targetElement = getParentContainer( viewDocument.selection.getFirstPosition() );
+			// Get selection closest parent block element, button will be attached to this element.
+			modelTarget = getParentBlock( model.document.selection.getFirstPosition(), model.schema );
 
 			// Do not attach block button when is not allowed for given target element.
-			if ( !this.checkAllowed( targetElement ) ) {
+			if ( !this.checkAllowed( modelTarget ) ) {
 				this.buttonView.isVisible = false;
 
 				return;
 			}
 
-			// Get target DOM node.
-			targetDomElement = view.domConverter.mapViewToDom( targetElement );
+			// Get DOM target element.
+			domTarget = view.domConverter.mapViewToDom( editor.editing.mapper.toViewElement( modelTarget ) );
 
 			// Show block button.
 			this.buttonView.isVisible = true;
 
 			// Attach block button to target DOM element.
-			this._attachButtonToElement( targetDomElement );
+			this._attachButtonToElement( domTarget );
 
 			// When panel is opened then refresh it position to be properly aligned with block button.
 			if ( this.panelView.isVisible ) {
@@ -297,7 +269,7 @@ export default class BlockToolbar extends Plugin {
 		this.listenTo( this.buttonView, 'change:isVisible', ( evt, name, isVisible ) => {
 			if ( isVisible ) {
 				// Keep correct position of button and panel on window#resize.
-				this.buttonView.listenTo( window, 'resize', () => this._attachButtonToElement( targetDomElement ) );
+				this.buttonView.listenTo( window, 'resize', () => this._attachButtonToElement( domTarget ) );
 			} else {
 				// Stop repositioning button when is hidden.
 				this.buttonView.stopListening( window, 'resize' );
@@ -391,12 +363,14 @@ export default class BlockToolbar extends Plugin {
 	 */
 }
 
-// Because the engine.view.writer.getParentContainer is not exported here is a copy.
-// See: https://github.com/ckeditor/ckeditor5-engine/issues/628
-function getParentContainer( position ) {
+function getParentBlock( position, schema ) {
 	let parent = position.parent;
 
-	while ( !( parent instanceof ContainerElement ) ) {
+	if ( parent.is( 'rootElement' ) ) {
+		return null;
+	}
+
+	while ( !( schema.isBlock( parent ) ) ) {
 		parent = parent.parent;
 	}
 
