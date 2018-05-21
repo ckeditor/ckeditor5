@@ -164,18 +164,20 @@ describe( 'BlockToolbar', () => {
 				expect( editor.ui.focusTracker.isFocused ).to.true;
 			} );
 
-			it( 'should pin panelView to the button on #execute event', () => {
+			it( 'should pin panelView to the button and focus first item in toolbar on #execute event', () => {
 				expect( blockToolbar.panelView.isVisible ).to.false;
 
-				const spy = testUtils.sinon.spy( blockToolbar.panelView, 'pin' );
+				const pinSpy = testUtils.sinon.spy( blockToolbar.panelView, 'pin' );
+				const focusSpy = testUtils.sinon.spy( blockToolbar.toolbarView.items.get( 0 ), 'focus' );
 
 				blockToolbar.buttonView.fire( 'execute' );
 
 				expect( blockToolbar.panelView.isVisible ).to.true;
-				sinon.assert.calledWith( spy, {
+				sinon.assert.calledWith( pinSpy, {
 					target: blockToolbar.buttonView.element,
 					limiter: editor.ui.view.editableElement
 				} );
+				sinon.assert.calledOnce( focusSpy );
 			} );
 
 			it( 'should hide panelView and focus editable on #execute event when panel was visible', () => {
@@ -355,6 +357,16 @@ describe( 'BlockToolbar', () => {
 				target: blockToolbar.buttonView.element,
 				limiter: editor.ui.view.editableElement
 			} );
+		} );
+
+		it( 'should not reset toolbar focus on view#render', () => {
+			blockToolbar.panelView.isVisible = true;
+
+			const spy = testUtils.sinon.spy( blockToolbar.toolbarView, 'focus' );
+
+			editor.editing.view.fire( 'render' );
+
+			sinon.assert.notCalled( spy );
 		} );
 
 		it( 'should hide opened panel on a selection direct change', () => {

@@ -357,10 +357,16 @@ export default class BlockToolbar extends Plugin {
 	 * @private
 	 */
 	_showPanel() {
+		const wasVisible = this.panelView.isVisible;
+
 		this.panelView.pin( {
 			target: this.buttonView.element,
 			limiter: this.editor.ui.view.editableElement
 		} );
+
+		if ( !wasVisible ) {
+			this.toolbarView.items.get( 0 ).focus();
+		}
 	}
 
 	/**
