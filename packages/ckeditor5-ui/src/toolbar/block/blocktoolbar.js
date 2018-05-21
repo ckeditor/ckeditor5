@@ -299,11 +299,14 @@ export default class BlockToolbar extends Plugin {
 	 * @param {HTMLElement} targetElement Target element.
 	 */
 	_attachButtonToElement( targetElement ) {
-		const contentComputedStyles = window.getComputedStyle( targetElement );
+		const contentStyles = window.getComputedStyle( targetElement );
 
 		const editableRect = new Rect( this.editor.ui.view.editableElement );
-		const contentPaddingTop = parseInt( contentComputedStyles.paddingTop, 10 );
-		const contentLineHeight = parseInt( contentComputedStyles.lineHeight, 10 ) || parseInt( contentComputedStyles.fontSize, 10 );
+		const contentPaddingTop = parseInt( contentStyles.paddingTop, 10 );
+
+		// When line height is not an integer then thread it as "normal".
+		// MDN says that 'normal' == ~1.2 on desktop browsers.
+		const contentLineHeight = parseInt( contentStyles.lineHeight, 10 ) || parseInt( contentStyles.fontSize, 10 ) * 1.2;
 
 		const position = getOptimalPosition( {
 			element: this.buttonView.element,

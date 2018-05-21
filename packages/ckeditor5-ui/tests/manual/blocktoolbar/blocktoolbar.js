@@ -20,9 +20,9 @@ class CustomBlockToolbar extends BlockToolbar {
 		super.init();
 
 		this.on( 'checkAllowed', ( evt, args ) => {
-			const viewElement = args[ 0 ];
+			const modelElement = args[ 0 ];
 
-			if ( viewElement.name === 'h2' ) {
+			if ( modelElement && modelElement.name === 'heading1' ) {
 				evt.return = false;
 			}
 		} );

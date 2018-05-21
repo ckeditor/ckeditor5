@@ -292,6 +292,7 @@ describe( 'BlockToolbar', () => {
 			const styleMock = testUtils.sinon.stub( window, 'getComputedStyle' );
 
 			styleMock.withArgs( target ).returns( {
+				lineHeight: 'normal',
 				fontSize: '20px',
 				paddingTop: '10px'
 			} );
@@ -314,7 +315,7 @@ describe( 'BlockToolbar', () => {
 
 			editor.editing.view.fire( 'render' );
 
-			expect( blockToolbar.buttonView.top ).to.equal( 470 );
+			expect( blockToolbar.buttonView.top ).to.equal( 472 );
 			expect( blockToolbar.buttonView.left ).to.equal( 100 );
 		} );
 
