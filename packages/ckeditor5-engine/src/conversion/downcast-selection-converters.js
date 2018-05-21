@@ -6,15 +6,15 @@
 /**
  * Contains {@link module:engine/model/selection~Selection model selection} to
  * {@link module:engine/view/documentselection~DocumentSelection view selection} converters for
- * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher}.
+ * {@link module:engine/conversion/downcastdispatcher~DowncastDispatcher downcast dispatcher}.
  *
  * @module engine/conversion/downcast-selection-converters
  */
 
 /**
- * Function factory, creates a converter that converts non-collapsed {@link module:engine/model/selection~Selection model selection} to
- * {@link module:engine/view/documentselection~DocumentSelection view selection}. The converter consumes appropriate
- * value from `consumable` object and maps model positions from selection to view positions.
+ * Function factory that creates a converter which converts a non-collapsed {@link module:engine/model/selection~Selection model selection}
+ * to a {@link module:engine/view/documentselection~DocumentSelection view selection}. The converter consumes appropriate
+ * value from the `consumable` object and maps model positions from the selection to view positions.
  *
  *		modelDispatcher.on( 'selection', convertRangeSelection() );
  *
@@ -44,21 +44,21 @@ export function convertRangeSelection() {
 }
 
 /**
- * Function factory, creates a converter that converts collapsed {@link module:engine/model/selection~Selection model selection} to
- * {@link module:engine/view/documentselection~DocumentSelection view selection}. The converter consumes appropriate
- * value from `consumable` object, maps model selection position to view position and breaks
+ * Function factory that creates a converter which converts a collapsed {@link module:engine/model/selection~Selection model selection} to
+ * a {@link module:engine/view/documentselection~DocumentSelection view selection}. The converter consumes appropriate
+ * value from the `consumable` object, maps the model selection position to the view position and breaks
  * {@link module:engine/view/attributeelement~AttributeElement attribute elements} at the selection position.
  *
  *		modelDispatcher.on( 'selection', convertCollapsedSelection() );
  *
- * Example of view state before and after converting collapsed selection:
+ * An example of the view state before and after converting the collapsed selection:
  *
  *		   <p><strong>f^oo<strong>bar</p>
  *		-> <p><strong>f</strong>^<strong>oo</strong>bar</p>
  *
- * By breaking attribute elements like `<strong>`, selection is in correct element. Then, when selection attribute is
- * converted, the broken attributes might be merged again, or the position where the selection is may be wrapped
- * in different, appropriate attribute elements.
+ * By breaking attribute elements like `<strong>`, the selection is in a correct element. Then, when the selection attribute is
+ * converted, broken attributes might be merged again, or the position where the selection is may be wrapped
+ * with different, appropriate attribute elements.
  *
  * See also {@link module:engine/conversion/downcast-selection-converters~clearAttributes} which does a clean-up
  * by merging attributes.
@@ -87,9 +87,9 @@ export function convertCollapsedSelection() {
 }
 
 /**
- * Function factory, creates a converter that clears artifacts after the previous
+ * Function factory that creates a converter which clears artifacts after the previous
  * {@link module:engine/model/selection~Selection model selection} conversion. It removes all empty
- * {@link module:engine/view/attributeelement~AttributeElement view attribute elements} and merge sibling attributes at all start and end
+ * {@link module:engine/view/attributeelement~AttributeElement view attribute elements} and merges sibling attributes at all start and end
  * positions of all ranges.
  *
  *		   <p><strong>^</strong></p>
@@ -106,7 +106,7 @@ export function convertCollapsedSelection() {
  *		modelDispatcher.on( 'selection', clearAttributes() );
  *
  * See {@link module:engine/conversion/downcast-selection-converters~convertCollapsedSelection}
- * which do the opposite by breaking attributes in the selection position.
+ * which does the opposite by breaking attributes in the selection position.
  *
  * @returns {Function} Selection converter.
  */
