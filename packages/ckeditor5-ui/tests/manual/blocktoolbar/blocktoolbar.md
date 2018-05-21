@@ -5,3 +5,16 @@
 3. Put selection in the one of the last blocks, click on button to display panel then start resize browser window
 and observe if button and panel are properly repositioned.
 
+### External changes
+
+## Typing
+
+1. Click `Start external typing`
+2. Put selection to the first paragraph (`Like all the great things...`) and click the button to open panel (be quick).
+3. Check if button and panel are repositioned correctly.
+
+## Removing
+
+1. Click `Start external deleting`
+2. Put selection to the first paragraph (`Like all the great things...`) and click the button to open panel (be quick).
+3. Check if button and panel are removed.
