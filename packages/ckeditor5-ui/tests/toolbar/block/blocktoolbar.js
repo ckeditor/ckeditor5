@@ -266,7 +266,7 @@ describe( 'BlockToolbar', () => {
 			styleMock.callThrough();
 
 			testUtils.sinon.stub( editor.ui.view.editableElement, 'getBoundingClientRect' ).returns( {
-				left: 100
+				left: 200
 			} );
 
 			testUtils.sinon.stub( target, 'getBoundingClientRect' ).returns( {
@@ -300,7 +300,7 @@ describe( 'BlockToolbar', () => {
 			styleMock.callThrough();
 
 			testUtils.sinon.stub( editor.ui.view.editableElement, 'getBoundingClientRect' ).returns( {
-				left: 100
+				left: 200
 			} );
 
 			testUtils.sinon.stub( target, 'getBoundingClientRect' ).returns( {

@@ -315,7 +315,7 @@ export default class BlockToolbar extends Plugin {
 				( contentRect, buttonRect ) => {
 					return {
 						top: contentRect.top + contentPaddingTop + ( ( contentLineHeight - buttonRect.height ) / 2 ),
-						left: editableRect.left
+						left: editableRect.left - buttonRect.width
 					};
 				}
 			]
