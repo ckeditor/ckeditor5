@@ -1,6 +1,8 @@
 CKEditor 5 [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Check%20out%20CKEditor%205%20on%20GitHub%20&url=https://github.com/ckeditor/ckeditor5)
 ===================================
 
+[![npm version](https://badge.fury.io/js/ckeditor5.svg)](https://www.npmjs.com/package/ckeditor5)
+
 [![Build Status](https://travis-ci.org/ckeditor/ckeditor5.svg?branch=master)](https://travis-ci.org/ckeditor/ckeditor5)
 [![BrowserStack Status](https://www.browserstack.com/automate/badge.svg?badge_key=d3hvenZqQVZERFQ5d09FWXdyT0ozVXhLaVltRFRjTTUyZGpvQWNmWVhUUT0tLUZqNlJ1YWRUd0RvdEVOaEptM1B2Q0E9PQ==--c9d3dee40b9b4471ff3fb516d9ecf8d09292c7e0)](https://www.browserstack.com/automate/public-build/d3hvenZqQVZERFQ5d09FWXdyT0ozVXhLaVltRFRjTTUyZGpvQWNmWVhUUT0tLUZqNlJ1YWRUd0RvdEVOaEptM1B2Q0E9PQ==--c9d3dee40b9b4471ff3fb516d9ecf8d09292c7e0)
 [![Dependency Status](https://img.shields.io/david/ckeditor/ckeditor5.svg)](https://david-dm.org/ckeditor/ckeditor5)
@@ -130,11 +132,11 @@ Read more on the [Support](https://docs.ckeditor.com/ckeditor5/latest/framework/
 
 The five latest releases:
 
+* [Security release – CKEditor 5 v10.0.1](https://github.com/ckeditor/ckeditor5/releases/tag/v10.0.1) (<time datetime="2018-05-22T12:04:45Z"><i>May 22, 2018</i></time>)
 * [First stable release – CKEditor 5 v10.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v10.0.0) (<time datetime="2018-04-25T14:12:00Z"><i>Apr 25, 2018</i></time>)
 * [Beta release of CKEditor 5 v1.0.0](https://ckeditor.com/blog/CKEditor-5-v1.0.0-beta-released/) (<time datetime="2018-04-10T12:12:00Z"><i>Apr 10, 2018</i></time>)
 * [Second alpha release of CKEditor 5 v1.0.0](https://ckeditor.com/blog/Second-alpha-release-of-CKEditor-5-v1.0.0/) (<time datetime="2017-11-14T12:52:18Z"><i>Nov 14, 2017</i></time>)
 * [First alpha release of CKEditor 5 v1.0.0](https://ckeditor.com/blog/First-alpha-release-of-CKEditor-5-v1.0.0/) (<time datetime="2017-10-03T13:09:29Z"><i>Oct 3, 2017</i></time>)
-* [11th developer preview of CKEditor 5](https://ckeditor.com/blog/11th-developer-preview-of-CKEditor-5-available/) (<time datetime="2017-09-03T19:35:48Z"><i>Sep 3, 2017</i></time>)
 
 For more CKEditor 5 release blog posts [browse the CKEditor blog](https://ckeditor.com/blog/?category=releases&tags=CKEditor-5).
 
