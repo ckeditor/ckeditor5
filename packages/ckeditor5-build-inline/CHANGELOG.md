@@ -1,6 +1,15 @@
 Changelog
 =========
 
+## [10.0.1](https://github.com/ckeditor/ckeditor5-build-inline/compare/v10.0.0...v10.0.1) (2018-05-22)
+
+### Dependencies
+
+Patch releases (bug fixes, internal changes):
+
+* [@ckeditor/ckeditor5-link](https://www.npmjs.com/package/@ckeditor/ckeditor5-link): v10.0.0 => [v10.0.1](https://github.com/ckeditor/ckeditor5-link/releases/tag/v10.0.1)
+
+
 ## [10.0.0](https://github.com/ckeditor/ckeditor5-build-inline/compare/v1.0.0-beta.4...v10.0.0) (2018-04-25)
 
 ### Dependencies
