@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [10.0.1](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v10.0.0...v10.0.1) (2018-05-22)
+
+### Bug fixes
+
+* Added missing return to the data initialization step. Closes [#13](https://github.com/ckeditor/ckeditor5-editor-decoupled/issues/13). ([f4e496d](https://github.com/ckeditor/ckeditor5-editor-decoupled/commit/f4e496d))
+
+
 ## [10.0.0](https://github.com/ckeditor/ckeditor5-editor-decoupled/compare/v1.0.0-beta.4...v10.0.0) (2018-04-25)
 
 ### Other changes
