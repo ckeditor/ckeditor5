@@ -40,7 +40,7 @@
     "@ckeditor/ckeditor5-essentials": "^10.0.0",
     "@ckeditor/ckeditor5-heading": "^10.0.0",
     "@ckeditor/ckeditor5-image": "^10.0.0",
-    "@ckeditor/ckeditor5-link": "^10.0.0",
+    "@ckeditor/ckeditor5-link": "^10.0.1",
     "@ckeditor/ckeditor5-list": "^10.0.0",
     "@ckeditor/ckeditor5-paragraph": "^10.0.0",
     "@ckeditor/ckeditor5-theme-lark": "^10.0.0",
