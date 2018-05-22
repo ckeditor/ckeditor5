@@ -22,6 +22,7 @@
     "@ckeditor/ckeditor5-engine": "^10.0.0",
     "@ckeditor/ckeditor5-enter": "^10.0.0",
     "@ckeditor/ckeditor5-easy-image": "^10.0.0",
+    "@ckeditor/ckeditor5-essentials": "^10.0.0",
     "@ckeditor/ckeditor5-heading": "^10.0.0",
     "@ckeditor/ckeditor5-image": "^10.0.0",
     "@ckeditor/ckeditor5-link": "^10.0.0",
