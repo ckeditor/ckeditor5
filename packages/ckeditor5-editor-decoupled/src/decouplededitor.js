@@ -196,7 +196,7 @@ export default class DecoupledEditor extends Editor {
 						editor.fire( 'uiReady' );
 					} )
 					.then( () => {
-						editor.data.init( editor.element ? getDataFromElement( editor.element ) : elementOrData );
+						return editor.data.init( editor.element ? getDataFromElement( editor.element ) : elementOrData );
 					} )
 					.then( () => {
 						editor.fire( 'dataReady' );

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals document */
+/* globals document, setTimeout */
 
 import DecoupledEditorUI from '../src/decouplededitorui';
 import DecoupledEditorUIView from '../src/decouplededitoruiview';
@@ -57,6 +57,39 @@ describe( 'DecoupledEditor', () => {
 	} );
 
 	describe( 'create()', () => {
+		it( 'should properly handled async data initialization', done => {
+			const spy = sinon.spy();
+			let resolver;
+
+			class AsyncDataInit extends Plugin {
+				init() {
+					this.editor.on( 'dataReady', () => spy( 'dataReady' ) );
+
+					this.editor.data.on( 'init', evt => {
+						evt.stop();
+						evt.return = new Promise( resolve => {
+							resolver = () => {
+								spy( 'asyncInit' );
+								resolve();
+							};
+						} );
+					}, { priority: 'high' } );
+				}
+			}
+
+			DecoupledEditor.create( '<p>foo bar</p>', {
+				plugins: [ Paragraph, Bold, AsyncDataInit ]
+			} ).then( editor => {
+				sinon.assert.calledWith( spy.firstCall, 'asyncInit' );
+				sinon.assert.calledWith( spy.secondCall, 'dataReady' );
+
+				editor.destroy().then( done );
+			} );
+
+			// Resolve init promise in next cycle to hold data initialization.
+			setTimeout( () => resolver() );
+		} );
+
 		describe( 'editor with data', () => {
 			test( () => editorData );
 		} );
