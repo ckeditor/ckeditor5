@@ -215,7 +215,7 @@ describe( 'BlockToolbar', () => {
 	} );
 
 	describe( 'allowed elements', () => {
-		it( 'should display button when selection is placed in a block element', () => {
+		it( 'should display button when the first selected block is a block element', () => {
 			editor.model.schema.register( 'foo', { inheritAllFrom: '$block' } );
 			editor.conversion.elementToElement( { model: 'foo', view: 'foo' } );
 
@@ -224,16 +224,43 @@ describe( 'BlockToolbar', () => {
 			expect( blockToolbar.buttonView.isVisible ).to.true;
 		} );
 
-		it( 'should not display button when selection is placed in an object', () => {
-			setData( editor.model, '<image src="foo.jpg"><caption>fo[]o</caption></image>' );
+		it( 'should display button when the first selected block is an object', () => {
+			setData( editor.model, '[<image src="foo.jpg"><caption>foo</caption></image>]' );
+
+			expect( blockToolbar.buttonView.isVisible ).to.true;
+		} );
+
+		it( 'should display button when the selection is inside the object', () => {
+			setData( editor.model, '<image src="foo.jpg"><caption>f[]oo</caption></image>' );
+
+			expect( blockToolbar.buttonView.isVisible ).to.true;
+		} );
+
+		it( 'should not display button when the selection is placed in a root element', () => {
+			setData( editor.model, '<paragraph>foo</paragraph>[]<paragraph>bar</paragraph>' );
 
 			expect( blockToolbar.buttonView.isVisible ).to.false;
 		} );
 
-		it( 'should not display button when selection is placed in a root element', () => {
-			setData( editor.model, '[<image src="foo.jpg"></image>]' );
+		it( 'should not display button when all toolbar items are disabled for the selected element', () => {
+			const element = document.createElement( 'div' );
 
-			expect( blockToolbar.buttonView.isVisible ).to.false;
+			document.body.appendChild( element );
+
+			return ClassicTestEditor.create( element, {
+				plugins: [ BlockToolbar, Heading, HeadingButtonsUI, Paragraph, ParagraphButtonUI, Image ],
+				blockToolbar: [ 'paragraph', 'heading1', 'heading2' ]
+			} ).then( editor => {
+				const blockToolbar = editor.plugins.get( BlockToolbar );
+
+				setData( editor.model, '[<image src="foo.jpg"></image>]' );
+
+				expect( blockToolbar.buttonView.isVisible ).to.false;
+
+				element.remove();
+
+				return editor.destroy();
+			} );
 		} );
 
 		it( 'should make it possible to provide custom validation', () => {
@@ -392,13 +419,13 @@ describe( 'BlockToolbar', () => {
 		it( 'should update button position on browser resize only when button is visible', () => {
 			const spy = testUtils.sinon.spy( blockToolbar, '_attachButtonToElement' );
 
-			setData( editor.model, '[<image src="foo.jpg"></image>]<paragraph>bar</paragraph>' );
+			setData( editor.model, '[]<paragraph>bar</paragraph>' );
 
 			window.dispatchEvent( new Event( 'resize' ) );
 
 			sinon.assert.notCalled( spy );
 
-			setData( editor.model, '<image src="foo.jpg"></image><paragraph>ba[]r</paragraph>' );
+			setData( editor.model, '<paragraph>ba[]r</paragraph>' );
 
 			spy.resetHistory();
 
@@ -406,7 +433,7 @@ describe( 'BlockToolbar', () => {
 
 			sinon.assert.called( spy );
 
-			setData( editor.model, '[<image src="foo.jpg"></image>]<paragraph>bar</paragraph>' );
+			setData( editor.model, '[]<paragraph>bar</paragraph>' );
 
 			spy.resetHistory();
 

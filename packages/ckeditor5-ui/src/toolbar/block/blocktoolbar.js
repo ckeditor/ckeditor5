@@ -217,9 +217,7 @@ export default class BlockToolbar extends Plugin {
 	 * @returns {Boolean} `true` when block button is allowed to be displayed `false` otherwise.
 	 */
 	checkAllowed( modelElement ) {
-		const schema = this.editor.model.schema;
-
-		return modelElement && schema.isBlock( modelElement ) && !schema.isObject( modelElement );
+		return modelElement && Array.from( this.toolbarView.items ).some( item => item.isEnabled );
 	}
 
 	/**
@@ -241,10 +239,10 @@ export default class BlockToolbar extends Plugin {
 		} );
 
 		this.listenTo( view, 'render', () => {
-			// Get selection closest parent block element, button will be attached to this element.
-			modelTarget = getParentBlock( model.document.selection.getFirstPosition(), model.schema );
+			// Get first selected block, button will be attached to this element.
+			modelTarget = Array.from( model.document.selection.getSelectedBlocks() )[ 0 ];
 
-			// Do not attach block button when is not allowed for given target element.
+			// Do not attach block button when is not allowed for the given target element.
 			if ( !this.checkAllowed( modelTarget ) ) {
 				this.buttonView.isVisible = false;
 
@@ -303,7 +301,6 @@ export default class BlockToolbar extends Plugin {
 
 		const editableRect = new Rect( this.editor.ui.view.editableElement );
 		const contentPaddingTop = parseInt( contentStyles.paddingTop, 10 );
-
 		// When line height is not an integer then thread it as "normal".
 		// MDN says that 'normal' == ~1.2 on desktop browsers.
 		const contentLineHeight = parseInt( contentStyles.lineHeight, 10 ) || parseInt( contentStyles.fontSize, 10 ) * 1.2;
@@ -364,20 +361,6 @@ export default class BlockToolbar extends Plugin {
 	 *
 	 * @event checkAllowed
 	 */
-}
-
-function getParentBlock( position, schema ) {
-	let parent = position.parent;
-
-	if ( parent.is( 'rootElement' ) ) {
-		return null;
-	}
-
-	while ( !( schema.isBlock( parent ) ) ) {
-		parent = parent.parent;
-	}
-
-	return parent;
 }
 
 /**
