@@ -116,6 +116,10 @@ describe( 'BlockToolbar', () => {
 				expect( blockToolbar.toolbarView ).to.instanceof( ToolbarView );
 			} );
 
+			it( 'should add additional class to toolbar element', () => {
+				expect( blockToolbar.toolbarView.element.classList.contains( 'ck-toolbar_floating' ) ).to.true;
+			} );
+
 			it( 'should be added to panelView#content collection', () => {
 				expect( Array.from( blockToolbar.panelView.content ) ).to.include( blockToolbar.toolbarView );
 			} );

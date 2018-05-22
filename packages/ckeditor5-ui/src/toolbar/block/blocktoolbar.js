@@ -79,7 +79,7 @@ export default class BlockToolbar extends Plugin {
 		 *
 		 * @type {module:ui/toolbar/toolbarview~ToolbarView}
 		 */
-		this.toolbarView = new ToolbarView( editor.locale );
+		this.toolbarView = this._createToolbarView();
 
 		/**
 		 * Panel view.
@@ -132,6 +132,27 @@ export default class BlockToolbar extends Plugin {
 		for ( const item of this.toolbarView.items ) {
 			item.on( 'execute', () => this._hidePanel( true ), { priority: 'high' } );
 		}
+	}
+
+	/**
+	 * Creates toolbar view.
+	 *
+	 * @private
+	 * @returns {module:ui/toolbar/toolbarview~ToolbarView}
+	 */
+	_createToolbarView() {
+		const toolbarView = new ToolbarView( this.editor.locale );
+
+		toolbarView.extendTemplate( {
+			attributes: {
+				class: [
+					// https://github.com/ckeditor/ckeditor5-editor-inline/issues/11
+					'ck-toolbar_floating'
+				]
+			}
+		} );
+
+		return toolbarView;
 	}
 
 	/**
