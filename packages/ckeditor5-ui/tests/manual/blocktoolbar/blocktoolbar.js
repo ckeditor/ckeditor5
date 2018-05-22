@@ -6,6 +6,7 @@
 /* globals window, document, console:false, setTimeout */
 
 import BalloonEditor from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor';
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import List from '@ckeditor/ckeditor5-list/src/list';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
@@ -20,7 +21,7 @@ import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 
 BalloonEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ List, Paragraph, Heading, Image, ImageCaption, HeadingButtonsUI, ParagraphButtonUI, BlockToolbar ],
+		plugins: [ Essentials, List, Paragraph, Heading, Image, ImageCaption, HeadingButtonsUI, ParagraphButtonUI, BlockToolbar ],
 		blockToolbar: [ 'paragraph', 'heading1', 'heading2', 'heading3', 'bulletedList', 'numberedList' ]
 	} )
 	.then( editor => {
@@ -41,10 +42,6 @@ BalloonEditor
 		document.querySelector( '.external-delete' ).addEventListener( 'click', () => {
 			externalChanges.wait( 4000 )
 				.then( () => externalChanges.removeElement( [ 1 ] ) );
-		} );
-
-		document.querySelector( '.read-only' ).addEventListener( 'click', () => {
-			editor.isReadOnly = !editor.isReadOnly;
 		} );
 	} )
 	.catch( err => {
