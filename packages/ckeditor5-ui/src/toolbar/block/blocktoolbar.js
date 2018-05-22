@@ -29,31 +29,30 @@ import iconPilcrow from '../../../theme/icons/pilcrow.svg';
  * After clicking on the button, dropdown with editor features defined through
  * {@link module:core/editor/editorconfig~EditorConfig#blockToolbar} appears.
  *
- * By default button is allowed to be displayed next to {@link module:paragraph/paragraph~Paragraph paragraph element},
- * {@link module:list/list~List list items} and all items defined in {@link module:heading/heading~Heading} plugin.
+ * By default button is allowed to be displayed next to all elements marked in
+ * {@link module:engine/model/schema~Schema} as `$block` elements that are not `objects`.
  * This behavior can be customise through decorable {@link ~BlockToolbar#checkAllowed} method.
  *
- * By default button will be attached to the left bound of the
- * {@link module:engine/view/editableelement~EditableElement} so editor integration should
- * ensure that there is enough space between the editor content and left bound of the editable element:
+ * By default button right bound will be attached to the left bound of the
+ * {@link module:engine/view/editableelement~EditableElement}:
  *
- * 		| __
- * 		||  |     This is a block of content that
- * 		| ¯¯      button is attached to. This is a
- * 		|  space  block of content that button is
- * 		| <-----> attached to.
+ * 		 __ |
+ * 		|  ||  This is a block of content that
+ * 		 ¯¯ |  button is attached to. This is a
+ * 		    |  block of content that button is
+ * 		    |  attached to.
  *
  * The position of the button can be adjusted using css transform:
  *
  * 		.ck-block-toolbar-button {
- * 			transform: translate( 10px, 10px );
+ * 			transform: translateX( -10px );
  * 		}
  *
- * 		|
- * 		|   __    This is a block of content that
- * 		|  |  |   button is attached to. This is a
- * 		|   ¯¯    block of content that button is
- * 		|         attached to.
+ * 		 __   |
+ * 		|  |  |  This is a block of content that
+ * 		 ¯¯   |  button is attached to. This is a
+ * 		      |  block of content that button is
+ * 		      |  attached to.
  *
  * @extends module:core/plugin~Plugin
  */
