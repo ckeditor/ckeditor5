@@ -1,6 +1,15 @@
 Changelog
 =========
 
+## [10.0.1](https://github.com/ckeditor/ckeditor5-link/compare/v10.0.0...v10.0.1) (2018-05-22)
+
+### Bug fixes
+
+* Fixed a cross-site scripting (XSS) vulnerability which allowed remote attackers to inject arbitrary web script through a crafted href attribute of a link (A) element. [CVE-2018-11093](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-11093). ([8cb782e](https://github.com/ckeditor/ckeditor5-link/commit/8cb782e))
+
+  This issue was reported indepdentently by Toan Chi Nguyen from [Techlab Corporation](https://www.techlabcorp.com/) and [Michal Bazyli](https://www.linkedin.com/in/michal-bazyli-6a3111144/). Thank you!
+
+
 ## [10.0.0](https://github.com/ckeditor/ckeditor5-link/compare/v1.0.0-beta.4...v10.0.0) (2018-04-25)
 
 ### Other changes
