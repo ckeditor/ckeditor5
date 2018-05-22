@@ -43,6 +43,7 @@ export function createLinkElement( href, writer ) {
  *
  * If URL is considered unsafe, a simple `"#"` is returned.
  *
+ * @protected
  * @param {*} url
  * @returns {String} Safe URL.
  */
