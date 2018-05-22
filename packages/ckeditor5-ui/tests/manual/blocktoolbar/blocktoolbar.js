@@ -42,6 +42,10 @@ BalloonEditor
 			externalChanges.wait( 4000 )
 				.then( () => externalChanges.removeElement( [ 1 ] ) );
 		} );
+
+		document.querySelector( '.read-only' ).addEventListener( 'click', () => {
+			editor.isReadOnly = !editor.isReadOnly;
+		} );
 	} )
 	.catch( err => {
 		console.error( err.stack );

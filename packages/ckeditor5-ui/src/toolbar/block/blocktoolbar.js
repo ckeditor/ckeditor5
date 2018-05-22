@@ -103,17 +103,17 @@ export default class BlockToolbar extends Plugin {
 			callback: () => this._hidePanel()
 		} );
 
-		// Hide plugin UI when editor switch to read-only.
-		this.listenTo( editor, 'change:isReadOnly', ( evt, name, isReadOnly ) => {
-			if ( isReadOnly ) {
-				this._disable();
-			} else {
-				this._enable();
+		// Try to hide button when editor switch to read-only.
+		// Do not hide when panel was visible to avoid confusing situation when
+		// UI unexpectedly disappears.
+		this.listenTo( editor, 'change:isReadOnly', () => {
+			if ( !this.panelView.isVisible ) {
+				this.buttonView.isVisible = false;
 			}
 		} );
 
 		// Enable as default.
-		this._enable();
+		this._initListeners();
 	}
 
 	/**
@@ -196,7 +196,7 @@ export default class BlockToolbar extends Plugin {
 	 *
 	 * @private
 	 */
-	_enable() {
+	_initListeners() {
 		const editor = this.editor;
 		const model = editor.model;
 		const view = editor.editing.view;
@@ -247,18 +247,6 @@ export default class BlockToolbar extends Plugin {
 				this._hidePanel();
 			}
 		} );
-	}
-
-	/**
-	 * Stops displaying block button.
-	 *
-	 * @private
-	 */
-	_disable() {
-		this.buttonView.isVisible = false;
-		this.stopListening( this.editor.model.document.selection, 'change:range' );
-		this.stopListening( this.editor.editing.view, 'render' );
-		this.stopListening( this.buttonView, 'change:isVisible' );
 	}
 
 	/**

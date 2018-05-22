@@ -365,29 +365,28 @@ describe( 'BlockToolbar', () => {
 			expect( blockToolbar.panelView.isVisible ).to.true;
 		} );
 
-		it( 'should hide button and stop attaching it when editor switch to readonly', () => {
+		it( 'should hide UI when editor switch to readonly when panel is not visible', () => {
 			setData( editor.model, '<paragraph>foo[]bar</paragraph>' );
 
-			blockToolbar.panelView.isVisible = true;
-
-			expect( blockToolbar.buttonView.isVisible ).to.true;
-			expect( blockToolbar.panelView.isVisible ).to.true;
+			blockToolbar.buttonView.isVisible = true;
+			blockToolbar.panelView.isVisible = false;
 
 			editor.isReadOnly = true;
 
 			expect( blockToolbar.buttonView.isVisible ).to.false;
 			expect( blockToolbar.panelView.isVisible ).to.false;
+		} );
 
-			editor.editing.view.fire( 'render' );
+		it( 'should not hide button when editor switch to readonly when panel is visible', () => {
+			setData( editor.model, '<paragraph>foo[]bar</paragraph>' );
 
-			expect( blockToolbar.buttonView.isVisible ).to.false;
-			expect( blockToolbar.panelView.isVisible ).to.false;
+			blockToolbar.buttonView.isVisible = true;
+			blockToolbar.panelView.isVisible = true;
 
-			editor.isReadOnly = false;
-			editor.editing.view.fire( 'render' );
+			editor.isReadOnly = true;
 
 			expect( blockToolbar.buttonView.isVisible ).to.true;
-			expect( blockToolbar.panelView.isVisible ).to.false;
+			expect( blockToolbar.panelView.isVisible ).to.true;
 		} );
 
 		it( 'should update button position on browser resize only when button is visible', () => {
