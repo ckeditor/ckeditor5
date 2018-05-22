@@ -17,7 +17,7 @@
     "@ckeditor/ckeditor5-easy-image": "ckeditor/ckeditor5-easy-image#9b7f29b",
     "@ckeditor/ckeditor5-editor-balloon": "ckeditor/ckeditor5-editor-balloon#dbc0cd4",
     "@ckeditor/ckeditor5-editor-classic": "ckeditor/ckeditor5-editor-classic#e5b0868",
-    "@ckeditor/ckeditor5-editor-decoupled": "ckeditor/ckeditor5-editor-decoupled#5bdc338",
+    "@ckeditor/ckeditor5-editor-decoupled": "ckeditor/ckeditor5-editor-decoupled#f4e496d",
     "@ckeditor/ckeditor5-editor-inline": "ckeditor/ckeditor5-editor-inline#f5f4d29",
     "@ckeditor/ckeditor5-engine": "ckeditor/ckeditor5-engine#797cd97",
     "@ckeditor/ckeditor5-enter": "ckeditor/ckeditor5-enter#20fd331",
