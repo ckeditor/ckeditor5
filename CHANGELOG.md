@@ -3,6 +3,10 @@ Changelog
 
 ## [10.0.1](https://github.com/ckeditor/ckeditor5/compare/v10.0.0...v10.0.1) (2018-05-22)
 
+## Release notes
+
+We would like to announce the release of CKEditor 5 v10.0.1 that contains a security fix for the [Link package](http://npmjs.com/package/@ckeditor/ckeditor5-link), so an upgrade is highly recommended for all CKEditor 5 installations that include it. Additionally, this release fixes an issue with the decoupled editor that blocked enabling real-time collaboration in this editor.
+
 ### Dependencies
 
 Patch releases (bug fixes, internal changes):
@@ -21,7 +25,7 @@ Patch releases (bug fixes, internal changes):
 
 The first stable release of CKEditor 5 🎉🎉🎉
 
-Blog post comming soon...
+You can read a summary blog post here: https://ckeditor.com/blog/CKEditor-5-v10.0.0-the-future-of-rich-text-editing-looks-stable/.
 
 PS. We decided to skip version numbers lower than v5.0.0 to avoid collisions with [CKEditor 3-4](http://github.com/ckeditor/ckeditor-dev).
 
