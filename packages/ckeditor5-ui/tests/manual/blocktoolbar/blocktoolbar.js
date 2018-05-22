@@ -6,34 +6,22 @@
 /* globals window, document, console:false, setTimeout */
 
 import BalloonEditor from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor';
-import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
+import List from '@ckeditor/ckeditor5-list/src/list';
+import Image from '@ckeditor/ckeditor5-image/src/image';
+import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import HeadingButtonsUI from '@ckeditor/ckeditor5-heading/src/headingbuttonsui';
 import ParagraphButtonUI from '@ckeditor/ckeditor5-paragraph/src/paragraphbuttonui';
-import BalloonToolbar from '../../../src/toolbar/balloon/balloontoolbar';
 import BlockToolbar from '../../../src/toolbar/block/blocktoolbar';
 
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 
-class CustomBlockToolbar extends BlockToolbar {
-	init() {
-		super.init();
-
-		this.on( 'checkAllowed', ( evt, args ) => {
-			const modelElement = args[ 0 ];
-
-			if ( modelElement && modelElement.name === 'heading1' ) {
-				evt.return = false;
-			}
-		} );
-	}
-}
-
 BalloonEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet, HeadingButtonsUI, ParagraphButtonUI, BalloonToolbar, CustomBlockToolbar ],
-		balloonToolbar: [ 'bold', 'italic', 'link' ],
-		blockToolbar: [ 'paragraph', 'heading1', 'heading2', 'heading3', 'bulletedList', 'numberedList', 'blockQuote' ]
+		plugins: [ List, Paragraph, Heading, Image, ImageCaption, HeadingButtonsUI, ParagraphButtonUI, BlockToolbar ],
+		blockToolbar: [ 'paragraph', 'heading1', 'heading2', 'heading3', 'bulletedList', 'numberedList' ]
 	} )
 	.then( editor => {
 		window.editor = editor;
