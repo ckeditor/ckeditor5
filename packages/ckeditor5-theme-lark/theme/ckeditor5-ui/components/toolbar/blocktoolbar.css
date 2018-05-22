@@ -12,10 +12,3 @@
 	color: var(--ck-color-block-toolbar-button);
 	font-size: var(--ck-block-toolbar-size);
 }
-
-.ck.ck-balloon-panel-block-toolbar {
-	& .ck-toolbar {
-		border: 0;
-		box-shadow: 0;
-	}
-}
