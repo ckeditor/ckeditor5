@@ -7,6 +7,8 @@ Changelog
 
 We would like to announce the release of CKEditor 5 v10.0.1 that contains a security fix for the [Link package](http://npmjs.com/package/@ckeditor/ckeditor5-link), so an upgrade is highly recommended for all CKEditor 5 installations that include it. Additionally, this release fixes an issue with the decoupled editor that blocked enabling real-time collaboration in this editor.
 
+You can read more in the [blog post](https://ckeditor.com/blog/CKEditor-5-v10.0.1-released/).
+
 ### Dependencies
 
 Patch releases (bug fixes, internal changes):
