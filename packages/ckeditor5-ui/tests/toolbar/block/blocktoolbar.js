@@ -62,7 +62,7 @@ describe( 'BlockToolbar', () => {
 			} );
 
 			it( 'should have additional class name', () => {
-				expect( blockToolbar.panelView.className ).to.equal( 'ck-balloon-panel-block-toolbar' );
+				expect( blockToolbar.panelView.className ).to.equal( 'ck-toolbar-container' );
 			} );
 
 			it( 'should be added to ui.view.body collection', () => {
