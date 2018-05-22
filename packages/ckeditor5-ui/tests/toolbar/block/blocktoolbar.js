@@ -279,7 +279,8 @@ describe( 'BlockToolbar', () => {
 	} );
 
 	describe( 'attaching button to the content', () => {
-		it( 'should attach button to the left side of selected content and center with the first line on view#render #1', () => {
+		it( 'should attach right side of the button to the left side of the editable and center with the first line ' +
+			'of selected block #1', () => {
 			setData( editor.model, '<paragraph>foo[]bar</paragraph>' );
 
 			const target = editor.ui.view.editableElement.querySelector( 'p' );
@@ -312,7 +313,8 @@ describe( 'BlockToolbar', () => {
 			expect( blockToolbar.buttonView.left ).to.equal( 100 );
 		} );
 
-		it( 'should attach button to the left side of selected content and center with the first line on view#render #2', () => {
+		it( 'should attach right side of the button to the left side of the editable and center with the first line ' +
+			'of selected block #2', () => {
 			setData( editor.model, '<paragraph>foo[]bar</paragraph>' );
 
 			const target = editor.ui.view.editableElement.querySelector( 'p' );
