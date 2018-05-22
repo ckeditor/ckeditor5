@@ -19,7 +19,6 @@ import ParagraphButtonUI from '@ckeditor/ckeditor5-paragraph/src/paragraphbutton
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
-import List from '@ckeditor/ckeditor5-list/src/list';
 
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
@@ -54,19 +53,6 @@ describe( 'BlockToolbar', () => {
 
 	it( 'should register click observer', () => {
 		expect( editor.editing.view.getObserver( ClickObserver ) ).to.be.instanceOf( ClickObserver );
-	} );
-
-	it( 'should initialize properly without Heading plugin', () => {
-		const element = document.createElement( 'div' );
-		document.body.appendChild( element );
-
-		return ClassicTestEditor.create( element, {
-			plugins: [ BlockToolbar, Paragraph, ParagraphButtonUI, BlockQuote, List ],
-			blockToolbar: [ 'paragraph', 'blockQuote' ]
-		} ).then( editor => {
-			element.remove();
-			return editor.destroy();
-		} );
 	} );
 
 	describe( 'child views', () => {
@@ -261,20 +247,6 @@ describe( 'BlockToolbar', () => {
 
 				return editor.destroy();
 			} );
-		} );
-
-		it( 'should make it possible to provide custom validation', () => {
-			blockToolbar.on( 'checkAllowed', ( evt, args ) => {
-				const modelElement = args[ 0 ];
-
-				if ( modelElement.name === 'heading1' ) {
-					evt.return = false;
-				}
-			} );
-
-			setData( editor.model, '<heading1>foo[]bar</heading1>' );
-
-			expect( blockToolbar.buttonView.isVisible ).to.false;
 		} );
 	} );
 

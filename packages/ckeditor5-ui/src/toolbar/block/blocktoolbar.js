@@ -30,8 +30,10 @@ import iconPilcrow from '../../../theme/icons/pilcrow.svg';
  * {@link module:core/editor/editorconfig~EditorConfig#blockToolbar} appears.
  *
  * By default button is allowed to be displayed next to all elements marked in
- * {@link module:engine/model/schema~Schema} as `$block` elements that are not `objects`.
- * This behavior can be customise through decorable {@link ~BlockToolbar#checkAllowed} method.
+ * {@link module:engine/model/schema~Schema} as `$block` elements for which there is at least
+ * one available option in toolbar. E.g. Toolbar with {@link module:paragraph/paragraph~Paragraph} and
+ * {@link module:heading/heading~Heading} won't be displayed next to {@link module:image/image~Image} because
+ * {@link module:engine/model/schema~Schema} disallows to change format of {@link module:image/image~Image}.
  *
  * By default button right bound will be attached to the left bound of the
  * {@link module:engine/view/editableelement~EditableElement}:
@@ -109,10 +111,6 @@ export default class BlockToolbar extends Plugin {
 				this._enable();
 			}
 		} );
-
-		// Checking if button is allowed for displaying next to given element is event–driven.
-		// It is possible to override #checkAllowed method and apply custom validation.
-		this.decorate( 'checkAllowed' );
 
 		// Enable as default.
 		this._enable();
@@ -194,32 +192,6 @@ export default class BlockToolbar extends Plugin {
 	}
 
 	/**
-	 * Checks if block button is allowed for displaying next to given element
-	 * (when element is a $block and is not an object).
-	 *
-	 * Fires {@link #event:checkAllowed} event which can be handled and overridden to apply custom validation.
-	 *
-	 * Example how to disallow button for `h2` element:
-	 *
-	 * 		const blockToolbar = editor.plugins.get( 'BlockToolbar' );
-	 *
-	 * 		blockToolbar.on( 'checkAllowed', ( evt, args ) => {
-	 *			const modelElement = args[ 0 ];
-	 *
-	 *			if ( modelElement && modelElement.name === 'heading1' ) {
-	 *				evt.return = false;
-	 *			}
-	 * 		}, { priority: 'high' } );
-	 *
-	 * @fires checkAllowed
-	 * @param {module:engine/model/element~Element} modelElement Element where the selection is.
-	 * @returns {Boolean} `true` when block button is allowed to be displayed `false` otherwise.
-	 */
-	checkAllowed( modelElement ) {
-		return modelElement && Array.from( this.toolbarView.items ).some( item => item.isEnabled );
-	}
-
-	/**
 	 * Starts displaying button next to allowed elements.
 	 *
 	 * @private
@@ -241,8 +213,8 @@ export default class BlockToolbar extends Plugin {
 			// Get first selected block, button will be attached to this element.
 			modelTarget = Array.from( model.document.selection.getSelectedBlocks() )[ 0 ];
 
-			// Do not attach block button when is not allowed for the given target element.
-			if ( !this.checkAllowed( modelTarget ) ) {
+			// Do not attach block button when there is no enabled item in toolbar for current block element.
+			if ( !modelTarget || Array.from( this.toolbarView.items ).every( item => !item.isEnabled ) ) {
 				this.buttonView.isVisible = false;
 
 				return;
