@@ -248,6 +248,43 @@ export default class TableUtils extends Plugin {
 	/**
 	 * Divides table cell vertically into several ones.
 	 *
+	 * The cell will visually split to more cells by updating colspans of other cells in a row and inserting rows with single cell below.
+	 *
+	 * If in a table below cell b will be split to a 3 cells:
+	 *
+	 *		+---+---+---+
+	 *		| a | b | c |
+	 *		+---+---+---+
+	 *		| d | e | f |
+	 *		+---+---+---+
+	 *
+	 * will result in a table below:
+	 *
+	 *		+---+---+---+---+---+
+	 *		| a |   |   | b | c |
+	 *		+---+---+---+---+---+
+	 *		| d         | e | f |
+	 *		+---+---+---+---+---+
+	 *
+	 * So cells a & b will get updated `colspan` to 3 and 2 rows with single cell will be added.
+	 *
+	 * Splitting cell that has already a colspan attribute set will distribute cell's colspan evenly and a reminder
+	 * will be left to original cell:
+	 *
+	 *		+---+---+---+
+	 *		| a         |
+	 *		+---+---+---+
+	 *		| b | c | d |
+	 *		+---+---+---+
+	 *
+	 * Splitting cell a with colspan=3 to a 2 cells will create 1 cell with colspan=1 and cell a will have colspan=2:
+	 *
+	 *		+---+---+---+
+	 *		| a     |   |
+	 *		+---+---+---+
+	 *		| b | c | d |
+	 *		+---+---+---+
+	 *
 	 * @param {module:engine/model/element~Element} tableCell
 	 * @param {Number} numberOfCells
 	 */
@@ -255,34 +292,32 @@ export default class TableUtils extends Plugin {
 		const model = this.editor.model;
 		const table = getParentTable( tableCell );
 
+		const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) || 1 );
+		const colspan = parseInt( tableCell.getAttribute( 'colspan' ) || 1 );
+
 		model.change( writer => {
-			const tableMap = [ ...new TableWalker( table ) ];
-			const cellData = tableMap.find( value => value.cell === tableCell );
+			const newCellsAttributes = {};
 
-			const cellColspan = cellData.colspan;
+			// Copy rowspan of split cell.
+			if ( rowspan > 1 ) {
+				newCellsAttributes.rowspan = rowspan;
+			}
 
-			const cellsToInsert = numberOfCells - 1;
-			const attributes = {};
-
-			if ( cellColspan >= numberOfCells ) {
+			if ( colspan >= numberOfCells ) {
 				// If the colspan is bigger than or equal to required cells to create we don't need to update colspan on
-				// cells from the same column. The colspan will be equally divided for newly created cells and a current one.
-				const colspanOfInsertedCells = Math.floor( cellColspan / numberOfCells );
-				const newColspan = ( cellColspan - colspanOfInsertedCells * numberOfCells ) + colspanOfInsertedCells;
+				// cells from the same column. The colspan will be equally divided for newly created cells and a one being split.
+				const { newCellsSpan, updatedSpan } = breakSpanEvenly( colspan, numberOfCells );
 
-				if ( colspanOfInsertedCells > 1 ) {
-					attributes.colspan = colspanOfInsertedCells;
-				}
+				// Update split cell colspan attribute.
+				updateNumericAttribute( 'colspan', updatedSpan, tableCell, writer );
 
-				updateNumericAttribute( 'colspan', newColspan, tableCell, writer );
-
-				const cellRowspan = cellData.rowspan;
-
-				if ( cellRowspan > 1 ) {
-					attributes.rowspan = cellRowspan;
+				if ( newCellsSpan > 1 ) {
+					newCellsAttributes.colspan = newCellsSpan;
 				}
 			} else {
-				const cellColumn = cellData.column;
+				const tableMap = [ ...new TableWalker( table ) ];
+
+				const { column: cellColumn } = tableMap.find( ( { cell } ) => cell === tableCell );
 
 				const cellsToUpdate = tableMap.filter( ( { cell, colspan, column } ) => {
 					const isOnSameColumn = cell !== tableCell && column === cellColumn;
@@ -296,12 +331,63 @@ export default class TableUtils extends Plugin {
 				}
 			}
 
-			createCells( cellsToInsert, writer, Position.createAfter( tableCell ), attributes );
+			const cellsToInsert = numberOfCells - 1;
+
+			createCells( cellsToInsert, writer, Position.createAfter( tableCell ), newCellsAttributes );
 		} );
 	}
 
 	/**
 	 * Divides table cell horizontally into several ones.
+	 *
+	 * The cell will visually split to more cells by updating rowspans of other cells in a row and inserting rows with single cell below.
+	 *
+	 * If in a table below cell b will be split to a 3 cells:
+	 *
+	 *		+---+---+---+
+	 *		| a | b | c |
+	 *		+---+---+---+
+	 *		| d | e | f |
+	 *		+---+---+---+
+	 *
+	 * will result in a table below:
+	 *
+	 *		+---+---+---+
+	 *		| a | b | c |
+	 *		+   +---+   +
+	 *		|   |   |   |
+	 *		+   +---+   +
+	 *		|   |   |   |
+	 *		+---+---+---+
+	 *		| d | e | f |
+	 *		+---+---+---+
+	 *
+	 * So cells a & b will get updated `rowspan` to 3 and 2 rows with single cell will be added.
+	 *
+	 * Splitting cell that has already a rowspan attribute set will distribute cell's rowspan evenly and a reminder
+	 * will be left to original cell:
+	 *
+	 *		+---+---+---+
+	 *		| a | b | c |
+	 *		+   +---+---+
+	 *		|   | d | e |
+	 *		+   +---+---+
+	 *		|   | f | g |
+	 *		+   +---+---+
+	 *		|   | h | i |
+	 *		+---+---+---+
+	 *
+	 * Splitting cell a with rowspan=4 to a 3 cells will create 2 cells with rowspan=1 and cell a will have rowspan=2:
+	 *
+	 *		+---+---+---+
+	 *		| a | b | c |
+	 *		+   +---+---+
+	 *		|   | d | e |
+	 *		+---+---+---+
+	 *		|   | f | g |
+	 *		+---+---+---+
+	 *		|   | h | i |
+	 *		+---+---+---+
 	 *
 	 * @param {module:engine/model/element~Element} tableCell
 	 * @param {Number} numberOfCells
@@ -318,21 +404,7 @@ export default class TableUtils extends Plugin {
 		model.change( writer => {
 			// First check - the cell spans over multiple rows so before doing anything else just split this cell.
 			if ( rowspan > 1 ) {
-				let newRowspan;
-				let rowspanOfCellsToInsert;
-
-				if ( rowspan < numberOfCells ) {
-					// Split cell completely (remove rowspan) - the reminder of cells will be added in the second check.
-					newRowspan = 1;
-					rowspanOfCellsToInsert = 1;
-				} else {
-					// Split cell's rowspan evenly. Example: having a cell with rowspan of 7 and splitting it to 3 cells:
-					// - distribute spans evenly for needed two cells (2 cells - each with rowspan of 2).
-					// - the remaining span goes to current cell (3).
-					rowspanOfCellsToInsert = Math.floor( rowspan / numberOfCells );
-					const cellsToInsert = numberOfCells - 1;
-					newRowspan = rowspan - cellsToInsert * rowspanOfCellsToInsert;
-				}
+				const { newCellsSpan, updatedSpan } = breakSpanEvenly( rowspan, numberOfCells );
 
 				const tableMap = [ ...new TableWalker( table, {
 					startRow: rowIndex,
@@ -340,33 +412,30 @@ export default class TableUtils extends Plugin {
 					includeSpanned: true
 				} ) ];
 
-				updateNumericAttribute( 'rowspan', newRowspan, tableCell, writer );
+				const { column: cellColumn } = tableMap.find( ( { cell } ) => cell === tableCell );
 
-				let cellColumn = 0;
+				updateNumericAttribute( 'rowspan', updatedSpan, tableCell, writer );
 
-				const attributes = {};
+				const newCellsAttributes = {};
 
-				if ( rowspanOfCellsToInsert > 1 ) {
-					attributes.rowspan = rowspanOfCellsToInsert;
+				if ( newCellsSpan > 1 ) {
+					newCellsAttributes.rowspan = newCellsSpan;
 				}
 
+				// Copy colspan of split cell.
 				if ( colspan > 1 ) {
-					attributes.colspan = colspan;
+					newCellsAttributes.colspan = colspan;
 				}
 
-				for ( const { cell, column, row, cellIndex } of tableMap ) {
-					if ( cell === tableCell ) {
-						cellColumn = column;
-					}
-
-					const isAfterSplitCell = row >= rowIndex + newRowspan;
+				for ( const { column, row, cellIndex } of tableMap ) {
+					const isAfterSplitCell = row >= rowIndex + updatedSpan;
 					const isOnSameColumn = column === cellColumn;
-					const isInEvenlySplitRow = ( row + rowIndex + newRowspan ) % rowspanOfCellsToInsert === 0;
+					const isInEvenlySplitRow = ( row + rowIndex + updatedSpan ) % newCellsSpan === 0;
 
 					if ( isAfterSplitCell && isOnSameColumn && isInEvenlySplitRow ) {
 						const position = Position.createFromParentAndOffset( table.getChild( row ), cellIndex );
 
-						writer.insertElement( 'tableCell', attributes, position );
+						writer.insertElement( 'tableCell', newCellsAttributes, position );
 					}
 				}
 			}
@@ -374,14 +443,14 @@ export default class TableUtils extends Plugin {
 			// Second check - the cell has rowspan of 1 or we need to create more cells the the currently one spans over.
 			if ( rowspan < numberOfCells ) {
 				// We already split the cell in check one so here we split to the remaining number of cells only.
-				const remaingingRowspan = numberOfCells - rowspan;
+				const remainingRowspan = numberOfCells - rowspan;
 
-				// This check is needed since we need to check if there are any cells from previous rows thatn spans over this cell's row.
+				// This check is needed since we need to check if there are any cells from previous rows than spans over this cell's row.
 				const tableMap = [ ...new TableWalker( table, { startRow: 0, endRow: rowIndex } ) ];
 
 				for ( const { cell, rowspan, row } of tableMap ) {
 					if ( cell !== tableCell && row + rowspan > rowIndex ) {
-						const rowspanToSet = rowspan + remaingingRowspan;
+						const rowspanToSet = rowspan + remainingRowspan;
 
 						writer.setAttribute( 'rowspan', rowspanToSet, cell );
 					}
@@ -393,7 +462,7 @@ export default class TableUtils extends Plugin {
 					attributes.colspan = colspan;
 				}
 
-				createEmptyRows( writer, table, rowIndex + 1, remaingingRowspan, 1, attributes );
+				createEmptyRows( writer, table, rowIndex + 1, remainingRowspan, 1, attributes );
 
 				const headingRows = parseInt( table.getAttribute( 'headingRows' ) || 0 );
 
@@ -454,4 +523,27 @@ function createCells( cells, writer, insertPosition, attributes = {} ) {
 	for ( let i = 0; i < cells; i++ ) {
 		writer.insertElement( 'tableCell', attributes, insertPosition );
 	}
+}
+
+// Evenly distributes span of a cell to a number of provided cells.
+// The resulting spans will always be integer values.
+//
+// For instance breaking a span of 7 into 3 cells will return:
+//
+//		{ newCellsSpan: 2, updatedSpan: 3 }
+//
+// as two cells will have span of 2 and the reminder will go the first cell so it's span will change to 3.
+//
+// @param {Number} span Span value do break.
+// @param {Number} numberOfCells Number of resulting spans.
+// @returns {{newCellsSpan: Number, updatedSpan: Number}}
+function breakSpanEvenly( span, numberOfCells ) {
+	if ( span < numberOfCells ) {
+		return { newCellsSpan: 1, updatedSpan: 1 };
+	}
+
+	const newCellsSpan = Math.floor( span / numberOfCells );
+	const updatedSpan = ( span - newCellsSpan * numberOfCells ) + newCellsSpan;
+
+	return { newCellsSpan, updatedSpan };
 }
