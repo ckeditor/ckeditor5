@@ -118,6 +118,25 @@ describe( 'LinkEditing', () => {
 
 			expect( editor.getData() ).to.equal( '<p><a href="">foo</a>bar</p>' );
 		} );
+
+		// The editor's role is not to filter out potentially malicious data.
+		// Its job is to not let this code be executed inside the editor (see the test in "editing pipeline conversion").
+		it( 'should output a link with a potential XSS code', () => {
+			setModelData( model, '<paragraph>[]</paragraph>' );
+
+			model.change( writer => {
+				writer.insertText( 'foo', { linkHref: 'javascript:alert(1)' }, model.document.selection.getFirstPosition() );
+			} );
+
+			expect( editor.getData() ).to.equal( '<p><a href="javascript:alert(1)">foo</a></p>' );
+		} );
+
+		it( 'should load a link with a potential XSS code', () => {
+			editor.setData( '<p><a href="javascript:alert(1)">foo</a></p>' );
+
+			expect( getModelData( model, { withoutSelection: true } ) )
+				.to.equal( '<paragraph><$text linkHref="javascript:alert(1)">foo</$text></paragraph>' );
+		} );
 	} );
 
 	describe( 'editing pipeline conversion', () => {
@@ -146,6 +165,13 @@ describe( 'LinkEditing', () => {
 				'</paragraph>' );
 
 			expect( editor.getData() ).to.equal( '<p><a href="url">a<f>b</f>c</a></p>' );
+		} );
+
+		it( 'must not render a link with a potential XSS code', () => {
+			setModelData( model, '<paragraph><$text linkHref="javascript:alert(1)">[]foo</$text>bar[]</paragraph>' );
+
+			expect( getViewData( editor.editing.view, { withoutSelection: true } ) )
+				.to.equal( '<p><a href="#">foo</a>bar</p>' );
 		} );
 	} );
 

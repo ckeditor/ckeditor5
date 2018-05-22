@@ -88,13 +88,19 @@ describe( 'LinkActionsView', () => {
 				expect( view.previewButtonView.element.getAttribute( 'target' ) ).to.equal( '_blank' );
 			} );
 
-			describe( '<button> bindings', () => {
+			describe( '<a> bindings', () => {
 				it( 'binds href DOM attribute to view#href', () => {
 					expect( view.previewButtonView.element.getAttribute( 'href' ) ).to.be.null;
 
 					view.href = 'foo';
 
 					expect( view.previewButtonView.element.getAttribute( 'href' ) ).to.equal( 'foo' );
+				} );
+
+				it( 'does not render unsafe view#href', () => {
+					view.href = 'javascript:alert(1)';
+
+					expect( view.previewButtonView.element.getAttribute( 'href' ) ).to.equal( '#' );
 				} );
 
 				it( 'binds #isEnabled to view#href', () => {
