@@ -33,9 +33,17 @@ export default class MergeCellCommand extends Command {
 		 * The direction indicates which cell will be merged to currently selected one.
 		 *
 		 * @readonly
-		 * @member {String} module:table/commands/insertrowcommand~InsertRowCommand#order
+		 * @member {String} module:table/commands/mergecellcommand~MergeCellCommand#direction
 		 */
 		this.direction = options.direction;
+
+		/**
+		 * Whether the merge is horizontal (left/right) or vertical (up/down).
+		 *
+		 * @readonly
+		 * @member {Boolean} module:table/commands/mergecellcommand~MergeCellCommand#isHorizontal
+		 */
+		this.isHorizontal = this.direction == 'right' || this.direction == 'left';
 	}
 
 	/**
@@ -70,7 +78,7 @@ export default class MergeCellCommand extends Command {
 			writer.move( Range.createIn( removeCell ), Position.createAt( mergeInto, 'end' ) );
 			writer.remove( removeCell );
 
-			const spanAttribute = isHorizontal( direction ) ? 'colspan' : 'rowspan';
+			const spanAttribute = this.isHorizontal ? 'colspan' : 'rowspan';
 			const cellSpan = parseInt( tableCell.getAttribute( spanAttribute ) || 1 );
 			const cellToMergeSpan = parseInt( cellToMerge.getAttribute( spanAttribute ) || 1 );
 
@@ -96,16 +104,14 @@ export default class MergeCellCommand extends Command {
 		}
 
 		// First get the cell on proper direction.
-		const cellToMerge = isHorizontal( this.direction ) ?
-			getHorizontalCell( element, this.direction ) :
-			getVerticalCell( element, this.direction );
+		const cellToMerge = this.isHorizontal ? getHorizontalCell( element, this.direction ) : getVerticalCell( element, this.direction );
 
 		if ( !cellToMerge ) {
 			return;
 		}
 
 		// If found check if the span perpendicular to merge direction is equal on both cells.
-		const spanAttribute = isHorizontal( this.direction ) ? 'rowspan' : 'colspan';
+		const spanAttribute = this.isHorizontal ? 'rowspan' : 'colspan';
 		const span = parseInt( element.getAttribute( spanAttribute ) || 1 );
 
 		const cellToMergeSpan = parseInt( cellToMerge.getAttribute( spanAttribute ) || 1 );
@@ -114,13 +120,6 @@ export default class MergeCellCommand extends Command {
 			return cellToMerge;
 		}
 	}
-}
-
-// Checks whether merge direction is horizontal.
-//
-// returns {Boolean}
-function isHorizontal( direction ) {
-	return direction == 'right' || direction == 'left';
 }
 
 // Returns horizontally mergeable cell.
