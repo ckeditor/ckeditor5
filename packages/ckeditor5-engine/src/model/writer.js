@@ -52,7 +52,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  *			writer.insertText( 'foo', paragraph, 'end' );
  *		} );
  *
- * Note that the should never be stored and used outside of the `change()` or
+ * Note that the writer should never be stored and used outside of the `change()` and
  * `enqueueChange()` blocks.
  *
  * @see module:engine/model/model~Model#change
@@ -62,8 +62,8 @@ export default class Writer {
 	/**
 	 * Creates a writer instance.
 	 *
-	 * **Note:** It is not recommended to use it directly. Use {@link module:engine/model/model~Model#change} or
-	 * {@link module:engine/model/model~Model#enqueueChange} instead.
+	 * **Note:** It is not recommended to use it directly. Use {@link module:engine/model/model~Model#change `Model#change()`} or
+	 * {@link module:engine/model/model~Model#enqueueChange `Model#enqueueChange()`} instead.
 	 *
 	 * @protected
 	 * @param {module:engine/model/model~Model} model
@@ -71,12 +71,16 @@ export default class Writer {
 	 */
 	constructor( model, batch ) {
 		/**
+		 * Instance of the model on which this writer operates.
+		 *
 		 * @readonly
 		 * @type {module:engine/model/model~Model}
 		 */
 		this.model = model;
 
 		/**
+		 * The batch to which this writer will add changes.
+		 *
 		 * @readonly
 		 * @type {module:engine/model/batch~Batch}
 		 */
@@ -87,7 +91,7 @@ export default class Writer {
 	 * Creates a new {@link module:engine/model/text~Text text node}.
 	 *
 	 *		writer.createText( 'foo' );
-	 *		writer.createText( 'foo', { 'bold': true } );
+	 *		writer.createText( 'foo', { bold: true } );
 	 *
 	 * @param {String} data Text data.
 	 * @param {Object} [attributes] Text attributes.
@@ -101,7 +105,7 @@ export default class Writer {
 	 * Creates a new {@link module:engine/model/element~Element element}.
 	 *
 	 *		writer.createElement( 'paragraph' );
-	 *		writer.createElement( 'paragraph', { 'alignment': 'center' } );
+	 *		writer.createElement( 'paragraph', { alignment: 'center' } );
 	 *
 	 * @param {String} name Name of the element.
 	 * @param {Object} [attributes] Elements attributes.
@@ -128,28 +132,28 @@ export default class Writer {
 	 *
 	 * Instead of using position you can use parent and offset:
 	 *
-	 * 		const text = writer.createText( 'foo' );
+	 *		const text = writer.createText( 'foo' );
 	 *		writer.insert( text, paragraph, 5 );
 	 *
 	 * You can also use `end` instead of the offset to insert at the end:
 	 *
-	 * 		const text = writer.createText( 'foo' );
+	 *		const text = writer.createText( 'foo' );
 	 *		writer.insert( text, paragraph, 'end' );
 	 *
 	 * Or insert before or after another element:
 	 *
-	 * 		const paragraph = writer.createElement( 'paragraph' );
+	 *		const paragraph = writer.createElement( 'paragraph' );
 	 *		writer.insert( paragraph, anotherParagraph, 'after' );
 	 *
-	 * These parameters works the same way as {@link module:engine/model/position~Position.createAt}.
+	 * These parameters works the same way as {@link module:engine/model/position~Position.createAt `Position.createAt()`}.
 	 *
 	 * Note that if the item already has parent it will be removed from the previous parent.
 	 *
-	 * Note that you cannot re-insert a node from a document to a different document or document fragment. In this case,
+	 * Note that you cannot re-insert a node from a document to a different document or a document fragment. In this case,
 	 * `model-writer-insert-forbidden-move` is thrown.
 	 *
 	 * If you want to move {@link module:engine/model/range~Range range} instead of an
-	 * {@link module:engine/model/item~Item item} use {@link module:engine/model/writer~Writer#move move}.
+	 * {@link module:engine/model/item~Item item} use {@link module:engine/model/writer~Writer#move `Writer#move()`}.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/documentfragment~DocumentFragment} item Item or document
 	 * fragment to insert.
@@ -214,16 +218,19 @@ export default class Writer {
 	 * Creates and inserts text on given position. You can optionally set text attributes:
 	 *
 	 *		writer.insertText( 'foo', position );
-	 *		writer.insertText( 'foo', { 'bold': true }, position );
+	 *		writer.insertText( 'foo', { bold: true }, position );
 	 *
 	 * Instead of using position you can use parent and offset or define that text should be inserted at the end
 	 * or before or after other node:
 	 *
-	 * 		writer.insertText( 'foo', paragraph, 5 ); // inserts in paragraph, at offset 5
-	 *		writer.insertText( 'foo', paragraph, 'end' ); // inserts at the end of the paragraph
-	 *		writer.insertText( 'foo', image, 'after' ); // inserts after image
+	 *		// Inserts 'foo' in paragraph, at offset 5:
+	 *		writer.insertText( 'foo', paragraph, 5 );
+	 *		// Inserts 'foo' at the end of a paragraph:
+	 *		writer.insertText( 'foo', paragraph, 'end' );
+	 *		// Inserts 'foo' after an image:
+	 *		writer.insertText( 'foo', image, 'after' );
 	 *
-	 * These parameters works the same way as {@link module:engine/model/position~Position.createAt}.
+	 * These parameters work in the same way as {@link module:engine/model/position~Position.createAt `Position.createAt()`}.
 	 *
 	 * @param {String} data Text data.
 	 * @param {Object} [attributes] Text attributes.
@@ -243,16 +250,19 @@ export default class Writer {
 	 * Creates and inserts element on given position. You can optionally set attributes:
 	 *
 	 *		writer.insertElement( 'paragraph', position );
-	 *		writer.insertElement( 'paragraph', { 'alignment': 'center' }, position );
+	 *		writer.insertElement( 'paragraph', { alignment: 'center' }, position );
 	 *
 	 * Instead of using position you can use parent and offset or define that text should be inserted at the end
 	 * or before or after other node:
 	 *
-	 * 		writer.insertElement( 'paragraph', paragraph, 5 ); // inserts in paragraph, at offset 5
-	 *		writer.insertElement( 'paragraph', blockquote, 'end' ); // insets at the end of the blockquote
-	 *		writer.insertElement( 'paragraph', image, 'after' ); // inserts after image
+	 *		// Inserts paragraph in the root at offset 5:
+	 *		writer.insertElement( 'paragraph', root, 5 );
+	 *		// Inserts paragraph at the end of a blockquote:
+	 *		writer.insertElement( 'paragraph', blockquote, 'end' );
+	 *		// Inserts after an image:
+	 *		writer.insertElement( 'paragraph', image, 'after' );
 	 *
-	 * These parameters works the same way as {@link module:engine/model/position~Position.createAt}.
+	 * These parameters works the same way as {@link module:engine/model/position~Position.createAt `Position.createAt()`}.
 	 *
 	 * @param {String} name Name of the element.
 	 * @param {Object} [attributes] Elements attributes.
@@ -277,7 +287,7 @@ export default class Writer {
 	 * Note that if the item already has parent it will be removed from the previous parent.
 	 *
 	 * If you want to move {@link module:engine/model/range~Range range} instead of an
-	 * {@link module:engine/model/item~Item item} use {@link module:engine/model/writer~Writer#move move}.
+	 * {@link module:engine/model/item~Item item} use {@link module:engine/model/writer~Writer#move `Writer#move()`}.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/documentfragment~DocumentFragment}
 	 * item Item or document fragment to insert.
@@ -291,7 +301,7 @@ export default class Writer {
 	 * Creates text node and inserts it at the end of the parent. You can optionally set text attributes:
 	 *
 	 *		writer.appendText( 'foo', paragraph );
-	 *		writer.appendText( 'foo', { 'bold': true }, paragraph );
+	 *		writer.appendText( 'foo', { bold: true }, paragraph );
 	 *
 	 * @param {String} text Text data.
 	 * @param {Object} [attributes] Text attributes.
@@ -309,7 +319,7 @@ export default class Writer {
 	 * Creates element and inserts it at the end of the parent. You can optionally set attributes:
 	 *
 	 *		writer.appendElement( 'paragraph', root );
-	 *		writer.appendElement( 'paragraph', { 'alignment': 'center' }, root );
+	 *		writer.appendElement( 'paragraph', { alignment: 'center' }, root );
 	 *
 	 * @param {String} name Name of the element.
 	 * @param {Object} [attributes] Elements attributes.
@@ -347,8 +357,8 @@ export default class Writer {
 	 * or on a {@link module:engine/model/range~Range range}.
 	 *
 	 *		writer.setAttributes( {
-	 *			'bold': true,
-	 *			'italic': true
+	 *			bold: true,
+	 *			italic: true
 	 *		}, range );
 	 *
 	 * @param {Object} attributes Attributes keys and values.
@@ -411,11 +421,14 @@ export default class Writer {
 	 * Instead of the target position you can use parent and offset or define that range should be moved to the end
 	 * or before or after chosen item:
 	 *
-	 * 		writer.move( sourceRange, paragraph, 5 ); // moves all items in the range to the paragraph at offset 5
-	 *		writer.move( sourceRange, blockquote, 'end' ); // moves all items in the range at the end of the blockquote
-	 *		writer.move( sourceRange, image, 'after' ); // moves all items in the range after the image
+	 *		// Moves all items in the range to the paragraph at offset 5:
+	 *		writer.move( sourceRange, paragraph, 5 );
+	 *		// Moves all items in the range to the end of a blockquote:
+	 *		writer.move( sourceRange, blockquote, 'end' );
+	 *		// Moves all items in the range to a position after an image:
+	 *		writer.move( sourceRange, image, 'after' );
 	 *
-	 * These parameters works the same way as {@link module:engine/model/position~Position.createAt}.
+	 * These parameters works the same way as {@link module:engine/model/position~Position.createAt `Position.createAt()`}.
 	 *
 	 * Note that items can be moved only within the same tree. It means that you can move items within the same root
 	 * (element or document fragment) or between {@link module:engine/model/document~Document#roots documents roots},
@@ -554,7 +567,7 @@ export default class Writer {
 	}
 
 	/**
-	 * Renames given element.
+	 * Renames the given element.
 	 *
 	 * @param {module:engine/model/element~Element} element The element to rename.
 	 * @param {String} newName New element name.
@@ -584,10 +597,10 @@ export default class Writer {
 	}
 
 	/**
-	 * Splits elements start from the given position and goes to the top of the model tree as long as given
-	 * `limitElement` won't be reached. When limitElement is not defined then only a parent of given position will be split.
+	 * Splits elements starting from the given position and going to the top of the model tree as long as given
+	 * `limitElement` is reached. When `limitElement` is not defined then only the parent of the given position will be split.
 	 *
-	 * The element needs to have a parent. It cannot be a root element nor document fragment.
+	 * The element needs to have a parent. It cannot be a root element nor a document fragment.
 	 * The `writer-split-element-no-parent` error will be thrown if you try to split an element with no parent.
 	 *
 	 * @param {module:engine/model/position~Position} position Position of split.
@@ -671,9 +684,10 @@ export default class Writer {
 	}
 
 	/**
-	 * Wraps given range with given element or with a new element with specified name, if string has been passed.
+	 * Wraps the given range with the given element or with a new element (if a string was passed).
 	 *
-	 * **Note:** range to wrap should be a "flat range" (see {@link module:engine/model/range~Range#isFlat}). If not, error will be thrown.
+	 * **Note:** range to wrap should be a "flat range" (see {@link module:engine/model/range~Range#isFlat `Range#isFlat`}).
+	 * If not, an error will be thrown.
 	 *
 	 * @param {module:engine/model/range~Range} range Range to wrap.
 	 * @param {module:engine/model/element~Element|String} elementOrString Element or name of element to wrap the range with.
@@ -782,11 +796,11 @@ export default class Writer {
 	 *
 	 * Create marker directly base on marker's name:
 	 *
-	 * 		addMarker( markerName, { range, usingOperation: false } );
+	 *		addMarker( markerName, { range, usingOperation: false } );
 	 *
 	 * Create marker using operation:
 	 *
-	 * 		addMarker( markerName, { range, usingOperation: true } );
+	 *		addMarker( markerName, { range, usingOperation: true } );
 	 *
 	 * Note: For efficiency reasons, it's best to create and keep as little markers as possible.
 	 *
@@ -803,7 +817,7 @@ export default class Writer {
 
 		if ( !options || typeof options.usingOperation != 'boolean' ) {
 			/**
-			 * The options.usingOperations parameter is required when adding a new marker.
+			 * The `options.usingOperations` parameter is required when adding a new marker.
 			 *
 			 * @error writer-addMarker-no-usingOperations
 			 */
@@ -857,16 +871,16 @@ export default class Writer {
 	 *
 	 * Update marker directly base on marker's name:
 	 *
-	 * 		updateMarker( markerName, { range } );
+	 *		updateMarker( markerName, { range } );
 	 *
 	 * Update marker using operation:
 	 *
-	 * 		updateMarker( marker, { range, usingOperation: true } );
-	 * 		updateMarker( markerName, { range, usingOperation: true } );
+	 *		updateMarker( marker, { range, usingOperation: true } );
+	 *		updateMarker( markerName, { range, usingOperation: true } );
 	 *
 	 * Change marker's option (start using operations to manage it):
 	 *
-	 * 		updateMarker( marker, { usingOperation: true } );
+	 *		updateMarker( marker, { usingOperation: true } );
 	 *
 	 * @see module:engine/model/markercollection~Marker
 	 * @param {String} markerOrName Name of a marker to update, or a marker instance.
@@ -976,22 +990,22 @@ export default class Writer {
 	 *		writer.setSelection( range );
 	 *
 	 *		// Sets selection to given ranges.
-	 * 		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
+	 *		const ranges = [ new Range( start1, end2 ), new Range( star2, end2 ) ];
 	 *		writer.setSelection( range );
 	 *
 	 *		// Sets selection to other selection.
 	 *		const otherSelection = new Selection();
 	 *		writer.setSelection( otherSelection );
 	 *
-	 * 		// Sets selection to the given document selection.
+	 *		// Sets selection to the given document selection.
 	 *		const documentSelection = new DocumentSelection( doc );
 	 *		writer.setSelection( documentSelection );
 	 *
-	 * 		// Sets collapsed selection at the given position.
+	 *		// Sets collapsed selection at the given position.
 	 *		const position = new Position( root, path );
 	 *		writer.setSelection( position );
 	 *
-	 * 		// Sets collapsed selection at the position of the given node and an offset.
+	 *		// Sets collapsed selection at the position of the given node and an offset.
 	 *		writer.setSelection( paragraph, offset );
 	 *
 	 * Creates a range inside an {@link module:engine/model/element~Element element} which starts before the first child of
@@ -1003,12 +1017,12 @@ export default class Writer {
 	 *
 	 *		writer.setSelection( paragraph, 'on' );
 	 *
-	 * 		// Removes all selection's ranges.
+	 *		// Removes all selection's ranges.
 	 *		writer.setSelection( null );
 	 *
 	 * `Writer#setSelection()` allow passing additional options (`backward`) as the last argument.
 	 *
-	 * 		// Sets selection as backward.
+	 *		// Sets selection as backward.
 	 *		writer.setSelection( range, { backward: true } );
 	 *
 	 * Throws `writer-incorrect-use` error when the writer is used outside the `change()` block.
@@ -1029,7 +1043,8 @@ export default class Writer {
 	/**
 	 * Moves {@link module:engine/model/documentselection~DocumentSelection#focus} to the specified location.
 	 *
-	 * The location can be specified in the same form as {@link module:engine/model/position~Position.createAt} parameters.
+	 * The location can be specified in the same form as
+	 * {@link module:engine/model/position~Position.createAt `Position.createAt()`} parameters.
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/position~Position} itemOrPosition
 	 * @param {Number|'end'|'before'|'after'} [offset=0] Offset or one of the flags. Used only when
@@ -1057,7 +1072,7 @@ export default class Writer {
 	 * 	writer.setSelectionAttribute( new Map( [ [ 'italic', true ] ] ) );
 	 *
 	 * @param {String|Object|Iterable.<*>} keyOrObjectOrIterable Key of the attribute to set
-	 * or object / iterable of key - value attribute pairs.
+	 * or object / iterable of key => value attribute pairs.
 	 * @param {*} [value] Attribute value.
 	 */
 	setSelectionAttribute( keyOrObjectOrIterable, value ) {
@@ -1075,13 +1090,13 @@ export default class Writer {
 	/**
 	 * Removes attribute(s) with given key(s) from the selection.
 	 *
-	 * Using key
+	 * Remove one attribute:
 	 *
-	 * 	writer.removeSelectionAttribute( 'italic' );
+	 *		writer.removeSelectionAttribute( 'italic' );
 	 *
-	 * Using iterable of keys
+	 * Remove multiple attributes:
 	 *
-	 * 	writer.removeSelectionAttribute( [ 'italic', 'bold' ] );
+	 *		writer.removeSelectionAttribute( [ 'italic', 'bold' ] );
 	 *
 	 * @param {String|Iterable.<String>} keyOrIterableOfKeys Key of the attribute to remove or an iterable of attribute keys to remove.
 	 */

@@ -22,10 +22,10 @@ import {
 } from './upcast-converters';
 
 /**
- * An utility class that helps adding converters to upcast and downcast dispatchers.
+ * A utility class that helps add converters to upcast and downcast dispatchers.
  *
- * We recommend reading first the {@glink framework/guides/architecture/editing-engine} guide to understand the
- * core concepts of the conversion mechanisms.
+ * We recommend reading the {@glink framework/guides/architecture/editing-engine Editing engine architecture} guide first to
+ * understand the core concepts of the conversion mechanisms.
  *
  * The instance of the conversion manager is available in the
  * {@link module:core/editor/editor~Editor#conversion `editor.conversion`} property
@@ -36,7 +36,7 @@ import {
  * * `dataDowncast`
  * * `upcast`
  *
- * To add a converter to a specific group use the {@link module:engine/conversion/conversion~Conversion#for `for()`}
+ * To add a converter to a specific group, use the {@link module:engine/conversion/conversion~Conversion#for `for()`}
  * method:
  *
  *		// Add a converter to editing downcast and data downcast.
@@ -48,23 +48,23 @@ import {
  *		editor.conversion.for( 'editingDowncast' ).add( downcastElementToWidget( config ) );
  *
  * The functions used in `add()` calls are one-way converters (i.e. you need to remember yourself to add
- * a converter in the other direction, if you feature requires that). They are also called "conversion helpers".
+ * a converter in the other direction, if your feature requires that). They are also called "conversion helpers".
  * You can find a set of them in the {@link module:engine/conversion/downcast-converters} and
- * {@link module:engine/conversion/upcast-converters} modules
+ * {@link module:engine/conversion/upcast-converters} modules.
  *
  * Besides allowing to register converters to specific dispatchers, you can also use methods available in this
  * class to add two-way converters (upcast and downcast):
  *
- * * {@link module:engine/conversion/conversion~Conversion#elementToElement `elementToElement()`} –
- * model element to view element and vice versa
- * * {@link module:engine/conversion/conversion~Conversion#attributeToElement `attributeToElement()`} –
- * model attribute to view element and vice versa
- * * {@link module:engine/conversion/conversion~Conversion#attributeToElement `attributeToElement()`} –
- * model attribute to view element and vice versa
+ * * {@link module:engine/conversion/conversion~Conversion#elementToElement `elementToElement()`} &ndash;
+ * Model element to view element and vice versa.
+ * * {@link module:engine/conversion/conversion~Conversion#attributeToElement `attributeToElement()`} &ndash;
+ * Model attribute to view element and vice versa.
+ * * {@link module:engine/conversion/conversion~Conversion#attributeToElement `attributeToElement()`} &ndash;
+ * Model attribute to view element and vice versa.
  */
 export default class Conversion {
 	/**
-	 * Creates new Conversion instance.
+	 * Creates a new conversion instance.
 	 */
 	constructor() {
 		/**
@@ -75,16 +75,16 @@ export default class Conversion {
 	}
 
 	/**
-	 * Registers one or more converters under given group name. Then, group name can be used to assign a converter
+	 * Registers one or more converters under a given group name. The group name can then be used to assign a converter
 	 * to multiple dispatchers at once.
 	 *
-	 * If given group name is used for a second time,
-	 * {@link module:utils/ckeditorerror~CKEditorError conversion-register-group-exists} error is thrown.
+	 * If a given group name is used for the second time, the
+	 * {@link module:utils/ckeditorerror~CKEditorError `conversion-register-group-exists` error} is thrown.
 	 *
-	 * @param {String} groupName A name for dispatchers group.
+	 * @param {String} groupName The name for dispatchers group.
 	 * @param {Array.<module:engine/conversion/downcastdispatcher~DowncastDispatcher|
 	 * module:engine/conversion/upcastdispatcher~UpcastDispatcher>} dispatchers Dispatchers to register
-	 * under given name.
+	 * under the given name.
 	 */
 	register( groupName, dispatchers ) {
 		if ( this._dispatchersGroups.has( groupName ) ) {
@@ -100,34 +100,34 @@ export default class Conversion {
 	}
 
 	/**
-	 * Provides chainable API to assign converters to dispatchers registered under given group name. Converters are added
-	 * by calling `.add()` method of an object returned by this function.
+	 * Provides chainable API to assign converters to dispatchers registered under a given group name. Converters are added
+	 * by calling the `.add()` method of an object returned by this function.
 	 *
 	 *		conversion.for( 'downcast' )
 	 *			.add( conversionHelperA )
 	 *			.add( conversionHelperB );
 	 *
-	 * In above example, `conversionHelperA` and `conversionHelperB` will be called for all dispatchers from `'model'` group.
+	 * In this example `conversionHelperA` and `conversionHelperB` will be called for all dispatchers from the `'model'` group.
 	 *
-	 * `.add()` takes exactly one parameter, which is a function. That function should accept one parameter, which
-	 * is a dispatcher instance. The function should add an actual converter to passed dispatcher instance.
+	 * The `.add()` method takes exactly one parameter, which is a function. This function should accept one parameter that
+	 * is a dispatcher instance. The function should add an actual converter to the passed dispatcher instance.
 	 *
 	 * Conversion helpers for most common cases are already provided. They are flexible enough to cover most use cases.
-	 * See documentation to learn how they can be configured.
+	 * See the documentation to learn how they can be configured.
 	 *
-	 * For downcast (model to view conversion), these are:
+	 * For downcast (model-to-view conversion), these are:
 	 *
-	 * * {@link module:engine/conversion/downcast-converters~downcastElementToElement downcast element to element converter},
-	 * * {@link module:engine/conversion/downcast-converters~downcastAttributeToElement downcast attribute to element converter},
-	 * * {@link module:engine/conversion/downcast-converters~downcastAttributeToAttribute downcast attribute to attribute converter}.
+	 * * {@link module:engine/conversion/downcast-converters~downcastElementToElement Downcast element-to-element converter},
+	 * * {@link module:engine/conversion/downcast-converters~downcastAttributeToElement Downcast attribute-to-element converter},
+	 * * {@link module:engine/conversion/downcast-converters~downcastAttributeToAttribute Downcast attribute-to-attribute converter}.
 	 *
-	 * For upcast (view to model conversion), these are:
+	 * For upcast (view-to-model conversion), these are:
 	 *
-	 * * {@link module:engine/conversion/upcast-converters~upcastElementToElement upcast element to element converter},
-	 * * {@link module:engine/conversion/upcast-converters~upcastElementToAttribute upcast attribute to element converter},
-	 * * {@link module:engine/conversion/upcast-converters~upcastAttributeToAttribute upcast attribute to attribute converter}.
+	 * * {@link module:engine/conversion/upcast-converters~upcastElementToElement Upcast element-to-element converter},
+	 * * {@link module:engine/conversion/upcast-converters~upcastElementToAttribute Upcast attribute-to-element converter},
+	 * * {@link module:engine/conversion/upcast-converters~upcastAttributeToAttribute Upcast attribute-to-attribute converter}.
 	 *
-	 * An example of using conversion helpers to convert `paragraph` model element to `p` view element (and back):
+	 * An example of using conversion helpers to convert the `paragraph` model element to the `p` view element (and back):
 	 *
 	 *		// Define conversion configuration - model element 'paragraph' should be converted to view element 'p'.
 	 *		const config = { model: 'paragraph', view: 'p' };
@@ -136,13 +136,13 @@ export default class Conversion {
 	 *		conversion.for( 'downcast' ).add( downcastElementToElement( config ) );
 	 *		conversion.for( 'upcast' ).add( upcastElementToElement( config ) );
 	 *
-	 * An example of providing custom conversion helper that uses custom converter function:
+	 * An example of providing a custom conversion helper that uses a custom converter function:
 	 *
-	 *		// Adding custom `myConverter` converter for 'paragraph' element insertion, with default priority ('normal').
+	 *		// Adding a custom `myConverter` converter for 'paragraph' element insertion, with the default priority ('normal').
 	 *		conversion.for( 'downcast' ).add( conversion.customConverter( 'insert:paragraph', myConverter ) );
 	 *
-	 * @param {String} groupName Name of dispatchers group to add converters to.
-	 * @returns {Object} Object with `.add()` method, providing a way to add converters.
+	 * @param {String} groupName The name of dispatchers group to add the converters to.
+	 * @returns {Object} An object with the `.add()` method, providing a way to add converters.
 	 */
 	for( groupName ) {
 		const dispatchers = this._getDispatchers( groupName );
@@ -157,13 +157,13 @@ export default class Conversion {
 	}
 
 	/**
-	 * Sets up converters between the model and the view which convert a model element to a view element (and vice versa).
-	 * For example, model `<paragraph>Foo</paragraph>` is `<p>Foo</p>` in the view.
+	 * Sets up converters between the model and the view that convert a model element to a view element (and vice versa).
+	 * For example, the model `<paragraph>Foo</paragraph>` is `<p>Foo</p>` in the view.
 	 *
-	 *		// Simple conversion from `paragraph` model element to `<p>` view element (and vice versa).
+	 *		// A simple conversion from the `paragraph` model element to the `<p>` view element (and vice versa).
 	 *		conversion.elementToElement( { model: 'paragraph', view: 'p' } );
 	 *
-	 *		// Override other converters by specifying converter definition with higher priority.
+	 *		// Override other converters by specifying a converter definition with a higher priority.
 	 *		conversion.elementToElement( { model: 'paragraph', view: 'div', converterPriority: 'high' } );
 	 *
 	 *		// View specified as an object instead of a string.
@@ -175,14 +175,14 @@ export default class Conversion {
 	 *			}
 	 *		} );
 	 *
-	 *		// Use `upcastAlso` to define other view elements that should be also converted to `paragraph` element.
+	 *		// Use `upcastAlso` to define other view elements that should also be converted to a `paragraph` element.
 	 *		conversion.elementToElement( {
 	 *			model: 'paragraph',
 	 *			view: 'p',
 	 *			upcastAlso: [
 	 *				'div',
 	 *				{
-	 *					// Any element with `display: block` style.
+	 *					// Any element with the `display: block` style.
 	 *					styles: {
 	 *						display: 'block'
 	 *					}
@@ -211,9 +211,9 @@ export default class Conversion {
 	 *				const size = Number( match[ 1 ] );
 	 *
 	 *				if ( size > 26 ) {
-	 *					// Returned value be an object with the matched properties.
-	 *					// Those properties will be "consumed" during conversion.
-	 *					// See `engine.view.Matcher~MatcherPattern` and `engine.view.Matcher#match` for more.
+	 *					// Returned value can be an object with the matched properties.
+	 *					// These properties will be "consumed" during the conversion.
+	 *					// See `engine.view.Matcher~MatcherPattern` and `engine.view.Matcher#match` for more details.
 	 *
 	 *					return { name: true, styles: [ 'font-size' ] };
 	 *				}
@@ -222,10 +222,10 @@ export default class Conversion {
 	 *			}
 	 *		} );
 	 *
-	 * `definition.model` is a `String` with a model element name to converter from/to.
+	 * `definition.model` is a `String` with a model element name to convert from or to.
 	 * See {@link module:engine/conversion/conversion~ConverterDefinition} to learn about other parameters.
 	 *
-	 * @param {module:engine/conversion/conversion~ConverterDefinition} definition Converter definition.
+	 * @param {module:engine/conversion/conversion~ConverterDefinition} definition The converter definition.
 	 */
 	elementToElement( definition ) {
 		// Set up downcast converter.
@@ -244,13 +244,13 @@ export default class Conversion {
 	}
 
 	/**
-	 * Sets up converters between the model and the view which convert a model attribute to a view element (and vice versa).
-	 * For example, model text node with data `"Foo"` and `bold` attribute is `<strong>Foo</strong>` in the view.
+	 * Sets up converters between the model and the view that convert a model attribute to a view element (and vice versa).
+	 * For example, a model text node with `"Foo"` as data and the `bold` attribute is `<strong>Foo</strong>` in the view.
 	 *
-	 *		// Simple conversion from `bold=true` attribute to `<strong>` view element (and vice versa).
+	 *		// A simple conversion from the `bold=true` attribute to the `<strong>` view element (and vice versa).
 	 *		conversion.attributeToElement( { model: 'bold', view: 'strong' } );
 	 *
-	 *		// Override other converters by specifying converter definition with higher priority.
+	 *		// Override other converters by specifying a converter definition with a higher priority.
 	 *		conversion.attributeToElement( { model: 'bold', view: 'b', converterPriority: 'high' } );
 	 *
 	 *		// View specified as an object instead of a string.
@@ -262,8 +262,8 @@ export default class Conversion {
 	 *			}
 	 *		} );
 	 *
-	 *		// Use `config.model.name` to define conversion only from given node type, `$text` in this case.
-	 *		// The same attribute on different elements may be then handled by a different converter.
+	 *		// Use `config.model.name` to define the conversion only from a given node type, `$text` in this case.
+	 *		// The same attribute on different elements may then be handled by a different converter.
 	 *		conversion.attributeToElement( {
 	 *			model: {
 	 *				key: 'textDecoration',
@@ -286,7 +286,7 @@ export default class Conversion {
 	 *			}
 	 *		} );
 	 *
-	 *		// Use `upcastAlso` to define other view elements that should be also converted to `bold` attribute.
+	 *		// Use `upcastAlso` to define other view elements that should also be converted to the `bold` attribute.
 	 *		conversion.attributeToElement( {
 	 *			model: 'bold',
 	 *			view: 'strong',
@@ -306,9 +306,9 @@ export default class Conversion {
 	 *					const fontWeight = viewElement.getStyle( 'font-weight' );
 	 *
 	 *					if ( viewElement.is( 'span' ) && fontWeight && /\d+/.test() && Number( fontWeight ) > 500 ) {
-	 *						// Returned value be an object with the matched properties.
-	 *						// Those properties will be "consumed" during conversion.
-	 *						// See `engine.view.Matcher~MatcherPattern` and `engine.view.Matcher#match` for more.
+	 *						// Returned value can be an object with the matched properties.
+	 *						// These properties will be "consumed" during the conversion.
+	 *						// See `engine.view.Matcher~MatcherPattern` and `engine.view.Matcher#match` for more details.
 	 *
 	 *						return {
 	 *							name: true,
@@ -319,7 +319,7 @@ export default class Conversion {
 	 *			]
 	 *		} );
 	 *
-	 *		// Conversion from/to a model attribute key which value is an enum (`fontSize=big|small`).
+	 *		// Conversion from and to a model attribute key whose value is an enum (`fontSize=big|small`).
 	 *		// `upcastAlso` set as callback enables a conversion of a wide range of different view elements.
 	 *		conversion.attributeToElement( {
 	 *			model: {
@@ -357,9 +357,9 @@ export default class Conversion {
 	 *					const size = Number( match[ 1 ] );
 	 *
 	 *					if ( viewElement.is( 'span' ) && size > 10 ) {
-	 *						// Returned value be an object with the matched properties.
-	 *						// Those properties will be "consumed" during conversion.
-	 *						// See `engine.view.Matcher~MatcherPattern` and `engine.view.Matcher#match` for more.
+	 *						// Returned value can be an object with the matched properties.
+	 *						// These properties will be "consumed" during the conversion.
+	 *						// See `engine.view.Matcher~MatcherPattern` and `engine.view.Matcher#match` for more details.
 	 *
 	 *						return { name: true, styles: [ 'font-size' ] };
 	 *					}
@@ -382,9 +382,9 @@ export default class Conversion {
 	 *					const size = Number( match[ 1 ] );
 	 *
 	 *					if ( viewElement.is( 'span' ) && size < 10 ) {
-	 *						// Returned value be an object with the matched properties.
-	 *						// Those properties will be "consumed" during conversion.
-	 *						// See `engine.view.Matcher~MatcherPattern` and `engine.view.Matcher#match` for more.
+	 *						// Returned value can be an object with the matched properties.
+	 *						// These properties will be "consumed" during the conversion.
+	 *						// See `engine.view.Matcher~MatcherPattern` and `engine.view.Matcher#match` for more details.
 	 *
 	 *						return { name: true, styles: [ 'font-size' ] };
 	 *					}
@@ -394,11 +394,11 @@ export default class Conversion {
 	 *			}
 	 *		} );
 	 *
-	 * `definition.model` parameter specifies what model attribute should be converted from/to. It can be a `{ key, value }` object
-	 * describing attribute key and value to convert or a `String` specifying just attribute key (then `value` is set to `true`).
+	 * The `definition.model` parameter specifies which model attribute should be converted from or to. It can be a `{ key, value }` object
+	 * describing the attribute key and value to convert or a `String` specifying just the attribute key (then `value` is set to `true`).
 	 * See {@link module:engine/conversion/conversion~ConverterDefinition} to learn about other parameters.
 	 *
-	 * @param {module:engine/conversion/conversion~ConverterDefinition} definition Converter definition.
+	 * @param {module:engine/conversion/conversion~ConverterDefinition} definition The converter definition.
 	 */
 	attributeToElement( definition ) {
 		// Set up downcast converter.
@@ -417,13 +417,13 @@ export default class Conversion {
 	}
 
 	/**
-	 * Sets up converters between the model and the view which convert a model attribute to a view attribute (and vice versa).
-	 * For example, `<image src='foo.jpg'></image>` is converted to `<img src='foo.jpg'></img>` (same attribute key and value).
+	 * Sets up converters between the model and the view that convert a model attribute to a view attribute (and vice versa).
+	 * For example, `<image src='foo.jpg'></image>` is converted to `<img src='foo.jpg'></img>` (the same attribute key and value).
 	 *
-	 *		// Simple conversion from `source` model attribute to `src` view attribute (and vice versa).
+	 *		// A simple conversion from the `source` model attribute to the `src` view attribute (and vice versa).
 	 *		conversion.attributeToAttribute( { model: 'source', view: 'src' } );
 	 *
-	 *		// Attributes values are strictly specified.
+	 *		// Attribute values are strictly specified.
 	 *		conversion.attributeToAttribute( {
 	 *			model: {
 	 *				name: 'image',
@@ -439,7 +439,7 @@ export default class Conversion {
 	 *			}
 	 *		} );
 	 *
-	 *		// Set style attribute.
+	 *		// Set the style attribute.
 	 *		conversion.attributeToAttribute( {
 	 *			model: {
 	 *				name: 'image',
@@ -459,8 +459,8 @@ export default class Conversion {
 	 *			}
 	 *		} );
 	 *
-	 *		// Conversion from/to a model attribute key which value is an enum (`align=right|center`).
-	 *		// Use `upcastAlso` to define other view elements that should be also converted to `align=right` attribute.
+	 *		// Conversion from and to a model attribute key whose value is an enum (`align=right|center`).
+	 *		// Use `upcastAlso` to define other view elements that should also be converted to the `align=right` attribute.
 	 *		conversion.attributeToAttribute( {
 	 *			model: {
 	 *				key: 'align',
@@ -490,35 +490,35 @@ export default class Conversion {
 	 *			}
 	 *		} );
 	 *
-	 * `definition.model` parameter specifies what model attribute should be converted from/to.
+	 * The `definition.model` parameter specifies which model attribute should be converted from and to.
 	 * It can be a `{ key, [ values ], [ name ] }` object or a `String`, which will be treated like `{ key: definition.model }`.
-	 * `key` property is the model attribute key to convert from/to.
-	 * `values` are the possible model attribute values. If `values` is not set, model attribute value will be the same as the
+	 * The `key` property is the model attribute key to convert from and to.
+	 * The `values` are the possible model attribute values. If `values` is not set, the model attribute value will be the same as the
 	 * view attribute value.
-	 * If `name` is set, conversion will be set up only for model elements with the given name.
+	 * If `name` is set, the conversion will be set up only for model elements with the given name.
 	 *
-	 * `definition.view` parameter specifies what view attribute should be converted from/to.
+	 * The `definition.view` parameter specifies which view attribute should be converted from and to.
 	 * It can be a `{ key, value, [ name ] }` object or a `String`, which will be treated like `{ key: definition.view }`.
-	 * `key` property is the view attribute key to convert from/to.
-	 * `value` is the view attribute value to convert from/to. If `definition.value` is not set, view attribute value will be
+	 * The `key` property is the view attribute key to convert from and to.
+	 * The `value` is the view attribute value to convert from and to. If `definition.value` is not set, the view attribute value will be
 	 * the same as the model attribute value.
 	 * If `key` is `'class'`, `value` can be a `String` or an array of `String`s.
 	 * If `key` is `'style'`, `value` is an object with key-value pairs.
 	 * In other cases, `value` is a `String`.
-	 * If `name` is set, conversion will be set up only for model elements with the given name.
-	 * If `definition.model.values` is set, `definition.view` is an object which assigns values from `definition.model.values`
+	 * If `name` is set, the conversion will be set up only for model elements with the given name.
+	 * If `definition.model.values` is set, `definition.view` is an object that assigns values from `definition.model.values`
 	 * to `{ key, value, [ name ] }` objects.
 	 *
-	 * `definition.upcastAlso` specifies which other matching view elements should be also upcast to given model configuration.
+	 * `definition.upcastAlso` specifies which other matching view elements should also be upcast to the given model configuration.
 	 * If `definition.model.values` is set, `definition.upcastAlso` should be an object assigning values from `definition.model.values`
 	 * to {@link module:engine/view/matcher~MatcherPattern}s or arrays of {@link module:engine/view/matcher~MatcherPattern}s.
 	 *
-	 * **Note:** `definition.model` and `definition.view` form should be mirrored, that is the same type of parameters should
+	 * **Note:** `definition.model` and `definition.view` form should be mirrored, so the same types of parameters should
 	 * be given in both parameters.
 	 *
-	 * @param {Object} definition Converter definition.
-	 * @param {String|Object} definition.model Model attribute to convert from/to.
-	 * @param {String|Object} definition.view View attribute to convert from/to.
+	 * @param {Object} definition The converter definition.
+	 * @param {String|Object} definition.model The model attribute to convert from and to.
+	 * @param {String|Object} definition.view The view attribute to convert from and to.
 	 * @param {module:engine/view/matcher~MatcherPattern|Array.<module:engine/view/matcher~MatcherPattern>} [definition.upcastAlso]
 	 * Any view element matching `definition.upcastAlso` will also be converted to the given model attribute. `definition.upcastAlso`
 	 * is used only if `config.model.values` is specified.
@@ -539,10 +539,10 @@ export default class Conversion {
 	}
 
 	/**
-	 * Returns dispatchers registered under given group name.
+	 * Returns dispatchers registered under a given group name.
 	 *
-	 * If given group name has not been registered,
-	 * {@link module:utils/ckeditorerror~CKEditorError conversion-for-unknown-group} error is thrown.
+	 * If the given group name has not been registered, the
+	 * {@link module:utils/ckeditorerror~CKEditorError `conversion-for-unknown-group` error} is thrown.
 	 *
 	 * @private
 	 * @param {String} groupName
@@ -566,25 +566,25 @@ export default class Conversion {
 }
 
 /**
- * Defines how the model should be converted from/to the view.
+ * Defines how the model should be converted from and to the view.
  *
  * @typedef {Object} module:engine/conversion/conversion~ConverterDefinition
  *
- * @property {*} [model] Model conversion definition. Describes model element or model attribute to convert. This parameter differs
- * for different functions that accepts `ConverterDefinition`. See the description of a function to learn how to set it.
- * @property {module:engine/view/elementdefinition~ElementDefinition|Object} view Definition of a view element to convert from/to.
- * If `model` describes multiple values, `view` is an object that assigns those values (`view` object keys) to view element definitions
+ * @property {*} [model] The model conversion definition. Describes the model element or model attribute to convert. This parameter differs
+ * for different functions that accept `ConverterDefinition`. See the description of the function to learn how to set it.
+ * @property {module:engine/view/elementdefinition~ElementDefinition|Object} view The definition of the view element to convert from and
+ * to. If `model` describes multiple values, `view` is an object that assigns these values (`view` object keys) to view element definitions
  * (`view` object values).
  * @property {module:engine/view/matcher~MatcherPattern|Array.<module:engine/view/matcher~MatcherPattern>} [upcastAlso]
- * Any view element matching `upcastAlso` will also be converted to model. If `model` describes multiple values, `upcastAlso`
- * is an object that assigns those values (`upcastAlso` object keys) to {@link module:engine/view/matcher~MatcherPattern}s
+ * Any view element matching `upcastAlso` will also be converted to the model. If `model` describes multiple values, `upcastAlso`
+ * is an object that assigns these values (`upcastAlso` object keys) to {@link module:engine/view/matcher~MatcherPattern}s
  * (`upcastAlso` object values).
- * @property {module:utils/priorities~PriorityString} [converterPriority] Converter priority.
+ * @property {module:utils/priorities~PriorityString} [converterPriority] The converter priority.
  */
 
-// Helper function for `Conversion` `.add()` method.
+// Helper function for the `Conversion` `.add()` method.
 //
-// Calls `conversionHelper` on each dispatcher from the group specified earlier in `.for()` call, effectively
+// Calls `conversionHelper` on each dispatcher from the group specified earlier in the `.for()` call, effectively
 // adding converters to all specified dispatchers.
 //
 // @private
