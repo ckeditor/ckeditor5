@@ -78,7 +78,8 @@ export default class TablesEditing extends Plugin {
 		conversion.for( 'editingDowncast' ).add( downcastInsertRow( { asWidget: true } ) );
 		conversion.for( 'dataDowncast' ).add( downcastInsertRow() );
 
-		// Remove row conversion.
+		// Table row conversion.
+		conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableRow', view: 'tr' } ) );
 		conversion.for( 'downcast' ).add( downcastRemoveRow() );
 
 		// Table cell conversion.

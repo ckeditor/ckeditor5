@@ -55,8 +55,8 @@ export default function upcastTable() {
 				conversionApi.writer.insertElement( 'tableCell', ModelPosition.createAt( row, 'end' ) );
 			}
 
-			// Upcast table rows as we need to insert them to table in proper order (heading rows first).
-			upcastTableRows( rows, table, conversionApi );
+			// Upcast table rows in proper order (heading rows first).
+			rows.forEach( row => conversionApi.convertItem( row, ModelPosition.createAt( table, 'end' ) ) );
 
 			// Set conversion result range.
 			data.modelRange = new ModelRange(
@@ -99,9 +99,22 @@ function scanTable( viewTable ) {
 		headingColumns: 0
 	};
 
+	// The <tbody> and <thead> sections in the DOM doesn't have to be in order <thead> -> <tbody> and there might be more then one of them.
+	// As the model doesn't have those sections rows from different sections must be sorted.
+	// Ie below is a valid HTML table:
+	//
+	//		<table>
+	//			<tbody><tr><td>2</td></tr></tbody>
+	//			<thead><tr><td>1</td></tr></thead>
+	//			<tbody><tr><td>3</td></tr></tbody>
+	//		</table>
+	//
+	// But browsers will render rows in order as : 1 as heading and 2 & 3 as (body).
 	const headRows = [];
 	const bodyRows = [];
 
+	// Currently the editor does not support more then one <thead> section.
+	// Only the first <thead> from the view will be used as heading rows and others will be converted to body rows.
 	let firstTheadElement;
 
 	for ( const tableChild of Array.from( viewTable.getChildren() ) ) {
@@ -135,23 +148,6 @@ function scanTable( viewTable ) {
 	tableMeta.rows = [ ...headRows, ...bodyRows ];
 
 	return tableMeta;
-}
-
-// Converts table rows and extracts table metadata.
-//
-// @param {Array.<module:engine/view/element~Element>} viewRows
-// @param {module:engine/model/element~Element} modelTable
-// @param {module:engine/conversion/upcastdispatcher~ViewConversionApi} conversionApi
-function upcastTableRows( viewRows, modelTable, conversionApi ) {
-	for ( const viewRow of viewRows ) {
-		const modelRow = conversionApi.writer.createElement( 'tableRow' );
-
-		conversionApi.writer.insert( modelRow, ModelPosition.createAt( modelTable, 'end' ) );
-		conversionApi.consumable.consume( viewRow, { name: true } );
-
-		const childrenCursor = ModelPosition.createAt( modelRow );
-		conversionApi.convertChildren( viewRow, childrenCursor );
-	}
 }
 
 // Scans <tr> and it's children for metadata:
