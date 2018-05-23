@@ -90,7 +90,7 @@ export default class TableUtils extends Plugin {
 	/**
 	 * Insert rows into a table.
 	 *
-	 *     editor.plugins.get( 'TableUtils' ).insertRows( table, { at: 1, rows: 2 } );
+	 *		editor.plugins.get( 'TableUtils' ).insertRows( table, { at: 1, rows: 2 } );
 	 *
 	 * For the table below this code
 	 *
@@ -296,44 +296,74 @@ export default class TableUtils extends Plugin {
 		const colspan = parseInt( tableCell.getAttribute( 'colspan' ) || 1 );
 
 		model.change( writer => {
-			const newCellsAttributes = {};
-
-			// Copy rowspan of split cell.
-			if ( rowspan > 1 ) {
-				newCellsAttributes.rowspan = rowspan;
-			}
-
-			if ( colspan >= numberOfCells ) {
-				// If the colspan is bigger than or equal to required cells to create we don't need to update colspan on
-				// cells from the same column. The colspan will be equally divided for newly created cells and a one being split.
+			// First check - the cell spans over multiple rows so before doing anything else just split this cell.
+			if ( colspan > 1 ) {
+				// Get spans of new (inserted) cells and span to update of split cell.
 				const { newCellsSpan, updatedSpan } = breakSpanEvenly( colspan, numberOfCells );
 
-				// Update split cell colspan attribute.
 				updateNumericAttribute( 'colspan', updatedSpan, tableCell, writer );
 
+				// Each inserted cell will have the same attributes:
+				const newCellsAttributes = {};
+
+				// Do not store default value in the model.
 				if ( newCellsSpan > 1 ) {
 					newCellsAttributes.colspan = newCellsSpan;
 				}
-			} else {
+
+				// Copy rowspan of split cell.
+				if ( rowspan > 1 ) {
+					newCellsAttributes.rowspan = rowspan;
+				}
+
+				const cellsToInsert = colspan > numberOfCells ? numberOfCells - 1 : colspan - 1;
+				createCells( cellsToInsert, writer, Position.createAfter( tableCell ), newCellsAttributes );
+			}
+
+			// Second check - the cell has colspan of 1 or we need to create more cells then the currently one spans over.
+			if ( colspan < numberOfCells ) {
+				const cellsToInsert = numberOfCells - colspan;
+
+				// First step: expand cells on the same column as split cell.
 				const tableMap = [ ...new TableWalker( table ) ];
 
-				const { column: cellColumn } = tableMap.find( ( { cell } ) => cell === tableCell );
+				// Get the column index of split cell.
+				const { column: splitCellColumn } = tableMap.find( ( { cell } ) => cell === tableCell );
 
+				// Find cells which needs to be expanded vertically - those on the same column or those that spans over split cell's column.
 				const cellsToUpdate = tableMap.filter( ( { cell, colspan, column } ) => {
-					const isOnSameColumn = cell !== tableCell && column === cellColumn;
-					const spansOverColumn = ( column < cellColumn && column + colspan - 1 >= cellColumn );
+					const isOnSameColumn = cell !== tableCell && column === splitCellColumn;
+					const spansOverColumn = ( column < splitCellColumn && column + colspan > splitCellColumn );
 
 					return isOnSameColumn || spansOverColumn;
 				} );
 
+				// Expand cells vertically.
 				for ( const { cell, colspan } of cellsToUpdate ) {
-					writer.setAttribute( 'colspan', colspan + numberOfCells - 1, cell );
+					writer.setAttribute( 'colspan', colspan + cellsToInsert, cell );
+				}
+
+				// Second step: create columns after split cell.
+
+				// Each inserted cell will have the same attributes:
+				const newCellsAttributes = {};
+
+				// Do not store default value in the model.
+
+				// Copy rowspan of split cell.
+				if ( rowspan > 1 ) {
+					newCellsAttributes.rowspan = rowspan;
+				}
+
+				createCells( cellsToInsert, writer, Position.createAfter( tableCell ), newCellsAttributes );
+
+				const headingColumns = parseInt( table.getAttribute( 'headingColumns' ) || 0 );
+
+				// Update heading section if split cell is in heading section.
+				if ( headingColumns > splitCellColumn ) {
+					updateNumericAttribute( 'headingColumns', headingColumns + cellsToInsert, table, writer );
 				}
 			}
-
-			const cellsToInsert = numberOfCells - 1;
-
-			createCells( cellsToInsert, writer, Position.createAfter( tableCell ), newCellsAttributes );
 		} );
 	}
 
@@ -396,7 +426,7 @@ export default class TableUtils extends Plugin {
 		const model = this.editor.model;
 
 		const table = getParentTable( tableCell );
-		const rowIndex = table.getChildIndex( tableCell.parent );
+		const splitCellRow = table.getChildIndex( tableCell.parent );
 
 		const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) || 1 );
 		const colspan = parseInt( tableCell.getAttribute( 'colspan' ) || 1 );
@@ -404,20 +434,24 @@ export default class TableUtils extends Plugin {
 		model.change( writer => {
 			// First check - the cell spans over multiple rows so before doing anything else just split this cell.
 			if ( rowspan > 1 ) {
-				const { newCellsSpan, updatedSpan } = breakSpanEvenly( rowspan, numberOfCells );
-
+				// Cache table map before updating table.
 				const tableMap = [ ...new TableWalker( table, {
-					startRow: rowIndex,
-					endRow: rowIndex + rowspan - 1,
+					startRow: splitCellRow,
+					endRow: splitCellRow + rowspan - 1,
 					includeSpanned: true
 				} ) ];
 
-				const { column: cellColumn } = tableMap.find( ( { cell } ) => cell === tableCell );
+				// Get spans of new (inserted) cells and span to update of split cell.
+				const { newCellsSpan, updatedSpan } = breakSpanEvenly( rowspan, numberOfCells );
 
 				updateNumericAttribute( 'rowspan', updatedSpan, tableCell, writer );
 
+				const { column: cellColumn } = tableMap.find( ( { cell } ) => cell === tableCell );
+
+				// Each inserted cell will have the same attributes:
 				const newCellsAttributes = {};
 
+				// Do not store default value in the model.
 				if ( newCellsSpan > 1 ) {
 					newCellsAttributes.rowspan = newCellsSpan;
 				}
@@ -428,9 +462,13 @@ export default class TableUtils extends Plugin {
 				}
 
 				for ( const { column, row, cellIndex } of tableMap ) {
-					const isAfterSplitCell = row >= rowIndex + updatedSpan;
+					// As newly created cells and split cell might have rowspan the insertion of new cells must go to appropriate rows:
+					// 1. It's a row after split cell + it's height.
+					const isAfterSplitCell = row >= splitCellRow + updatedSpan;
+					// 2. Is on the same column.
 					const isOnSameColumn = column === cellColumn;
-					const isInEvenlySplitRow = ( row + rowIndex + updatedSpan ) % newCellsSpan === 0;
+					// 3. And it's row index is after previous cell height.
+					const isInEvenlySplitRow = ( row + splitCellRow + updatedSpan ) % newCellsSpan === 0;
 
 					if ( isAfterSplitCell && isOnSameColumn && isInEvenlySplitRow ) {
 						const position = Position.createFromParentAndOffset( table.getChild( row ), cellIndex );
@@ -440,34 +478,41 @@ export default class TableUtils extends Plugin {
 				}
 			}
 
-			// Second check - the cell has rowspan of 1 or we need to create more cells the the currently one spans over.
+			// Second check - the cell has rowspan of 1 or we need to create more cells then the currently one spans over.
 			if ( rowspan < numberOfCells ) {
 				// We already split the cell in check one so here we split to the remaining number of cells only.
-				const remainingRowspan = numberOfCells - rowspan;
+				const cellsToInsert = numberOfCells - rowspan;
 
 				// This check is needed since we need to check if there are any cells from previous rows than spans over this cell's row.
-				const tableMap = [ ...new TableWalker( table, { startRow: 0, endRow: rowIndex } ) ];
+				const tableMap = [ ...new TableWalker( table, { startRow: 0, endRow: splitCellRow } ) ];
 
+				// First step: expand cells.
 				for ( const { cell, rowspan, row } of tableMap ) {
-					if ( cell !== tableCell && row + rowspan > rowIndex ) {
-						const rowspanToSet = rowspan + remainingRowspan;
+					// Expand rowspan of cells that are either:
+					// - on the same row as current cell,
+					// - or are below split cell row and overlaps that row.
+					if ( cell !== tableCell && row + rowspan > splitCellRow ) {
+						const rowspanToSet = rowspan + cellsToInsert;
 
 						writer.setAttribute( 'rowspan', rowspanToSet, cell );
 					}
 				}
 
-				const attributes = {};
+				// Second step: create rows with single cell below split cell.
+				const newCellsAttributes = {};
 
+				// Copy colspan of split cell.
 				if ( colspan > 1 ) {
-					attributes.colspan = colspan;
+					newCellsAttributes.colspan = colspan;
 				}
 
-				createEmptyRows( writer, table, rowIndex + 1, remainingRowspan, 1, attributes );
+				createEmptyRows( writer, table, splitCellRow + 1, cellsToInsert, 1, newCellsAttributes );
 
+				// Update heading section if split cell is in heading section.
 				const headingRows = parseInt( table.getAttribute( 'headingRows' ) || 0 );
 
-				if ( headingRows > rowIndex ) {
-					updateNumericAttribute( 'headingRows', headingRows + 1, table, writer );
+				if ( headingRows > splitCellRow ) {
+					updateNumericAttribute( 'headingRows', headingRows + cellsToInsert, table, writer );
 				}
 			}
 		} );

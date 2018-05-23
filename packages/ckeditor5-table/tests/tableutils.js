@@ -524,6 +524,50 @@ describe( 'TableUtils', () => {
 				[ '25' ]
 			] ) );
 		} );
+
+		it( 'should keep rowspan attribute of for newly inserted cells if number of cells is bigger then curren colspan', () => {
+			setData( model, modelTable( [
+				[ '00', '01', '02' ],
+				[ { colspan: 2, rowspan: 2, contents: '10[]' }, '12' ],
+				[ '22' ]
+			] ) );
+
+			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 1, 0 ] ), 3 );
+
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ { colspan: 2, contents: '00' }, '01', '02' ],
+				[ { rowspan: 2, contents: '10[]' }, { rowspan: 2, contents: '' }, { rowspan: 2, contents: '' }, '12' ],
+				[ '22' ]
+			] ) );
+		} );
+
+		it( 'should properly break a cell if it has colspan and number of created cells is bigger then colspan', () => {
+			setData( model, modelTable( [
+				[ '00', '01', '02', '03' ],
+				[ { colspan: 4, contents: '10[]' } ]
+			] ) );
+
+			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 1, 0 ] ), 6 );
+
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ { colspan: 3, contents: '00' }, '01', '02', '03' ],
+				[ '10[]', '', '', '', '', '' ]
+			] ) );
+		} );
+
+		it( 'should update heading columns is split cell is in heading section', () => {
+			setData( model, modelTable( [
+				[ '00', '01' ],
+				[ '10[]', '11' ]
+			], { headingColumns: 1 } ) );
+
+			tableUtils.splitCellVertically( root.getNodeByPath( [ 0, 1, 0 ] ), 3 );
+
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ { colspan: 3, contents: '00' }, '01' ],
+				[ '10[]', '', '', '11' ]
+			], { headingColumns: 3 } ) );
+		} );
 	} );
 
 	describe( 'splitCellHorizontally()', () => {
@@ -689,14 +733,15 @@ describe( 'TableUtils', () => {
 				[ '20', '21', '22' ]
 			], { headingRows: 1 } ) );
 
-			tableUtils.splitCellHorizontally( root.getNodeByPath( [ 0, 0, 0 ] ) );
+			tableUtils.splitCellHorizontally( root.getNodeByPath( [ 0, 0, 0 ] ), 3 );
 
 			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
-				[ '00[]', { rowspan: 2, contents: '01' }, { rowspan: 2, contents: '02' } ],
+				[ '00[]', { rowspan: 3, contents: '01' }, { rowspan: 3, contents: '02' } ],
+				[ '' ],
 				[ '' ],
 				[ '10', '11', '12' ],
 				[ '20', '21', '22' ]
-			], { headingRows: 2 } ) );
+			], { headingRows: 3 } ) );
 		} );
 	} );
 
