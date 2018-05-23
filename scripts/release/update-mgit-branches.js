@@ -31,5 +31,5 @@ module.exports = function updateMgitBranches( branchName ) {
 		return mgitJson;
 	} );
 
-	logger().info( `Done. Mgit.json uses the "${branchName}" branch now.` );
+	logger().info( `Done. Mgit.json uses the "${ branchName }" branch now.` );
 };
