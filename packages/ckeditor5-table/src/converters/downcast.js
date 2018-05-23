@@ -117,9 +117,10 @@ export function downcastInsertRow( options = {} ) {
 }
 
 /**
- * Model row element to view <tr> element conversion helper.
+ * Model tableCEll element to view <td> or <th> element conversion helper.
  *
- * This conversion helper creates whole <tr> element with child elements.
+ * This conversion helper will create proper <th> elements for tableCells that are in heading section (heading row or column)
+ * and <td> otherwise.
  *
  * @returns {Function} Conversion helper.
  */
@@ -279,29 +280,22 @@ export function downcastRemoveRow() {
 		// Prevent default remove converter.
 		evt.stop();
 
-		let viewStart = conversionApi.mapper.toViewPosition( data.position );
+		const viewStart = conversionApi.mapper.toViewPosition( data.position ).getLastMatchingPosition( value => !value.item.is( 'tr' ) );
+		const viewItem = viewStart.nodeAfter;
+		const tableSection = viewItem.parent;
 
-		const modelEnd = data.position.getShiftedBy( data.length );
-		let viewEnd = conversionApi.mapper.toViewPosition( modelEnd, { isPhantom: true } );
-
-		// Make sure that start and end positions are inside the same parent as default remove converter doesn't work well with
-		// wrapped elements: https://github.com/ckeditor/ckeditor5-engine/issues/1414
-		if ( viewStart.parent !== viewEnd.parent ) {
-			if ( viewStart.parent.name == 'table' ) {
-				viewStart = ViewPosition.createAt( viewEnd.parent );
-			}
-
-			if ( viewEnd.parent.name == 'table' ) {
-				viewEnd = ViewPosition.createAt( viewStart.parent, 'end' );
-			}
-		}
-
-		const viewRange = new ViewRange( viewStart, viewEnd );
-
-		const removed = conversionApi.writer.remove( viewRange.getTrimmed() );
+		// Remove associated <tr> from the view.
+		const removeRange = ViewRange.createOn( viewItem );
+		const removed = conversionApi.writer.remove( removeRange );
 
 		for ( const child of ViewRange.createIn( removed ).getItems() ) {
 			conversionApi.mapper.unbindViewElement( child );
+		}
+
+		// Check if table section has any children left - if not remove it from the view.
+		if ( !tableSection.childCount ) {
+			// No need to unbind anything as table section is not represented in the model.
+			conversionApi.writer.remove( ViewRange.createOn( tableSection ) );
 		}
 	}, { priority: 'higher' } );
 }

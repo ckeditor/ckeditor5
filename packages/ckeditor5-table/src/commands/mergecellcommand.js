@@ -72,19 +72,19 @@ export default class MergeCellCommand extends Command {
 			const isMergeNext = direction == 'right' || direction == 'down';
 
 			// The merge mechanism is always the same so sort cells to be merged.
-			const mergeInto = isMergeNext ? tableCell : cellToMerge;
-			const removeCell = isMergeNext ? cellToMerge : tableCell;
+			const cellToExpand = isMergeNext ? tableCell : cellToMerge;
+			const cellToRemove = isMergeNext ? cellToMerge : tableCell;
 
-			writer.move( Range.createIn( removeCell ), Position.createAt( mergeInto, 'end' ) );
-			writer.remove( removeCell );
+			writer.move( Range.createIn( cellToRemove ), Position.createAt( cellToExpand, 'end' ) );
+			writer.remove( cellToRemove );
 
 			const spanAttribute = this.isHorizontal ? 'colspan' : 'rowspan';
 			const cellSpan = parseInt( tableCell.getAttribute( spanAttribute ) || 1 );
 			const cellToMergeSpan = parseInt( cellToMerge.getAttribute( spanAttribute ) || 1 );
 
-			writer.setAttribute( spanAttribute, cellSpan + cellToMergeSpan, mergeInto );
+			writer.setAttribute( spanAttribute, cellSpan + cellToMergeSpan, cellToExpand );
 
-			writer.setSelection( Range.createIn( mergeInto ) );
+			writer.setSelection( Range.createIn( cellToExpand ) );
 		} );
 	}
 

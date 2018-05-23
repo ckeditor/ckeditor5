@@ -551,11 +551,7 @@ function createEmptyRows( writer, table, insertAt, rows, tableCellToInsert, attr
 
 		writer.insert( tableRow, table, insertAt );
 
-		for ( let columnIndex = 0; columnIndex < tableCellToInsert; columnIndex++ ) {
-			const cell = writer.createElement( 'tableCell', attributes );
-
-			writer.insert( cell, tableRow, 'end' );
-		}
+		createCells( tableCellToInsert, writer, Position.createAt( tableRow, 'end' ), attributes );
 	}
 }
 
