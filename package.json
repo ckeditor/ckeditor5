@@ -109,6 +109,7 @@
     "translations:download": "ckeditor5-dev-env-translations download",
     "translations:upload": "ckeditor5-dev-env-translations upload",
     "changelog": "node ./scripts/release/changelog.js",
+    "release": "bash ./scripts/release-ckeditor5.sh",
     "release:dependencies": "node ./scripts/release/release-dependencies.js",
     "switch-to-dev-dev": "sh ./scripts/switch-to-dev-dev.sh"
   },
