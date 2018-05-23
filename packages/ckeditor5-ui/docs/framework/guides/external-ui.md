@@ -5,7 +5,7 @@ order: 20
 
 # Third–party UI
 
-CKEditor 5 is a modular editing framework that allows various flexible configurations. That includes the usage of a third–party user interface on top of the base editor classes.
+CKEditor 5 is a modular editing framework that allows various flexible configurations. This includes the usage of a third–party user interface on top of the base editor classes.
 
 In this guide, a [classic–like](https://www.npmjs.com/package/@ckeditor/ckeditor5-build-classic) editor will be bound to a completely separate, existing UI created in [Bootstrap](http://getbootstrap.com/), providing the basic structure and toolbar items necessary to start editing.
 
@@ -26,17 +26,17 @@ import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/i
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import ElementReplacer from '@ckeditor/ckeditor5-utils/src/elementreplacer';
 
-// Interfaces to extend basic Editor API.
+// Interfaces to extend the basic Editor API.
 import DataApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/dataapimixin';
 import ElementApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/elementapimixin';
 
 // Helper function for adding interfaces to the Editor class.
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
-// Helper function that gets data from HTML element that the Editor is attached to.
+// Helper function that gets the data from an HTML element that the Editor is attached to.
 import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
 
-// Helper function that binds editor with HTMLForm element.
+// Helper function that binds the editor with an HTMLForm element.
 import attachToForm from '@ckeditor/ckeditor5-core/src/editor/utils/attachtoform';
 
 // Basic features that every editor should enable.
@@ -46,7 +46,7 @@ import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoengine';
 
-// Basic features to associated with the edited content.
+// Basic features associated with the edited content.
 import BoldEditing from '@ckeditor/ckeditor5-basic-styles/src/bold/boldediting';
 import ItalicEditing from '@ckeditor/ckeditor5-basic-styles/src/italic/italicediting';
 import UnderlineEditing from '@ckeditor/ckeditor5-basic-styles/src/underline/underlineediting';
@@ -54,7 +54,7 @@ import HeadingEditing from '@ckeditor/ckeditor5-heading/src/heading/headingediti
 ```
 
 <info-box info>
-	Note that instead of {@link module:basic-styles/bold~Bold}, which loads default Bold UI and Bold editing feature, just the {@link module:basic-styles/bold/boldediting~BoldEditing} is imported. It provides the [engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine) features associated with editing any bold text but does not come with the actual UI.
+	Note that instead of {@link module:basic-styles/bold~Bold}, which loads the default bold UI and bold editing feature, just the {@link module:basic-styles/bold/boldediting~BoldEditing} is imported. It provides the [engine](https://www.npmjs.com/package/@ckeditor/ckeditor5-engine) features associated with editing any bold text but does not come with the actual UI.
 
 	Respectively, `ItalicEditing`, `UnderlineEditing`, `HeadingEditing` and `UndoEditing` are also imported.
 </info-box>
@@ -62,7 +62,7 @@ import HeadingEditing from '@ckeditor/ckeditor5-heading/src/heading/headingediti
 Having imported the very basic editor components, you can define the custom `BootstrapEditor` class that extends the {@link module:core/editor/editor~Editor `Editor`}:
 
 ```js
-// Extending the Editor class, which brings base editor API.
+// Extending the Editor class, which brings the base editor API.
 export default class BootstrapEditor extends Editor {
 	constructor( element, config ) {
 		super( config );
@@ -79,8 +79,8 @@ export default class BootstrapEditor extends Editor {
 		// The UI layer of the editor.
 		this.ui = new BootstrapEditorUI( this );
 
-		// When editor#element is a textarea inside a form element
-		// then content of this textarea will be updated on form submit.
+		// When editor#element is a textarea inside a form element,
+		// the content of this textarea will be updated on form submit.
 		attachToForm( this );
 
 		// A helper to easily replace the editor#element with editor.editable#element.
@@ -88,7 +88,7 @@ export default class BootstrapEditor extends Editor {
 	}
 
 	destroy() {
-		// When destroyed, editor sets the output of editor#getData() into editor#element...
+		// When destroyed, the editor sets the output of editor#getData() into editor#element...
 		this.updateElement();
 
 		// ...and restores the original editor#element...
@@ -117,7 +117,7 @@ export default class BootstrapEditor extends Editor {
 						// Tell the world that the UI of the editor is ready to use.
 						editor.fire( 'uiReady' );
 					} )
-					// Bind the editor editing layer to the editable in DOM.
+					// Bind the editor editing layer to the editable in the DOM.
 					.then( () => editor.editing.view.attachDomRoot( editable.element ) )
 					// Fill the editable with the intial data.
 					.then( () => editor.data.init( getDataFromElement( element ) ) )
@@ -132,7 +132,7 @@ export default class BootstrapEditor extends Editor {
 	}
 }
 
-// Mixing interfaces, which extends basic editor API.
+// Mixing interfaces, which extends the basic editor API.
 mix( BootstrapEditor, DataApiMixin );
 mix( BootstrapEditor, ElementApiMixin );
 ```
@@ -142,7 +142,7 @@ mix( BootstrapEditor, ElementApiMixin );
 Although the editor is ready to use, it is just a bare editable area &mdash; which is not much use to the users. You need to give it an actual interface with the toolbar and buttons.
 
 <info-box hint>
-	Refer to the Bootstrap [quick start guide](https://getbootstrap.com/docs/4.0/getting-started/introduction/) to learn how to include Bootstrap in your web page.
+	Refer to the Bootstrap [Getting started](https://getbootstrap.com/docs/4.0/getting-started/introduction/) guide to learn how to include Bootstrap in your web page.
 </info-box>
 
 With the Bootstrap framework loaded in the web page, you can define the actual UI of the editor in HTML:
@@ -243,16 +243,16 @@ as different headings are selected. */
 
 ## Binding the UI with the editor
 
-At this stage, we should bind the editor created at the very beginning of this guide with the Bootstrap UI defined in HTML. All the UI logic will be wrapped into a separate class matching the `EditorUI` {@link module:core/editor/editorui~EditorUI interface}. You may have noticed this line in the constructor of the `BootstrapEditor`:
+At this stage, you should bind the editor created at the very beginning of this guide with the Bootstrap UI defined in HTML. All the UI logic will be wrapped into a separate class matching the `EditorUI` {@link module:core/editor/editorui~EditorUI interface}. You may have noticed this line in the constructor of the `BootstrapEditor`:
 
 ```js
 this.ui = new BootstrapEditorUI( this );
 ```
 
-Let's define the `BootstrapEditorUI` then a have a closer look at the content of the class:
+Define the `BootstrapEditorUI` and then have a closer look at the content of the class:
 
 ```js
-// The class organizing the UI of the editor, binding it with existing Bootstrap elements in DOM.
+// The class organizing the UI of the editor, binding it with existing Bootstrap elements in the DOM.
 class BootstrapEditorUI {
 	constructor( editor ) {
 		this.editor = editor;
@@ -260,10 +260,10 @@ class BootstrapEditorUI {
 		// The global UI view of the editor. It aggregates various Bootstrap DOM elements.
 		const view = this.view = new EditorUIView( editor.locale );
 
-		// This is the main editor element in DOM.
+		// This is the main editor element in the DOM.
 		view.element = $( '.ck-editor' );
 
-		// This is the editable view in DOM. It will replace the data container in DOM.
+		// This is the editable view in the DOM. It will replace the data container in the DOM.
 		view.editable = new InlineEditableUIView( editor.locale );
 
 		// References to the dropdown elements for further usage. See #_setupBootstrapHeadingDropdown.
@@ -274,7 +274,7 @@ class BootstrapEditorUI {
 		view.toolbarButtons = {};
 
 		[ 'bold', 'italic', 'underline', 'undo', 'redo' ].forEach( name => {
-			// Retrieve the jQuery object corresponding with the button in DOM.
+			// Retrieve the jQuery object corresponding with the button in the DOM.
 			view.toolbarButtons[ name ] = view.element.find( `#${ name }` );
 		} );
 
@@ -287,14 +287,14 @@ class BootstrapEditorUI {
 		const editor = this.editor;
 		const view = this.view;
 
-		// Render the editable component in DOM first.
+		// Render the editable component in the DOM first.
 		view.editable.render();
 
 		// Create an editing root in the editing layer. It will correspond with the
 		// document root created in the constructor().
 		const editingRoot = editor.editing.view.document.getRoot();
 
-		// Bind the basic attributes of the editable in DOM with the editing layer.
+		// Bind the basic attributes of the editable in the DOM with the editing layer.
 		view.editable.bind( 'isReadOnly' ).to( editingRoot );
 		view.editable.bind( 'isFocused' ).to( editor.editing.view.document );
 		view.editable.name = editingRoot.rootName;
@@ -344,7 +344,7 @@ command.on( 'change:isEnabled', ( evt, name, isEnabled ) => {
 	To learn more about editor commands, check out the {@link module:core/command~Command} API. You can also `console.log` the {@link module:core/editor/editor~Editor#commands `editor.commands`} collection of a live editor to learn which commands it offers.
 </info-box>
 
-Knowing that, let's fill out the missing methods of the `BootstrapEditorUI`.
+Knowing that, fill out the missing methods of the `BootstrapEditorUI`.
 
 ### Binding the buttons to editor commands
 
@@ -356,11 +356,11 @@ _setupBootstrapToolbarButtons() {
 	const editor = this.editor;
 
 	for ( const name in this.view.toolbarButtons ) {
-		// Retrieve the editor command corresponding with the id of the button in DOM.
+		// Retrieve the editor command corresponding with the ID of the button in the DOM.
 		const command = editor.commands.get( name );
 		const button = this.view.toolbarButtons[ name ];
 
-		// Clicking on the buttons should execute the editor command...
+		// Clicking the buttons should execute the editor command...
 		button.click( () => editor.execute( name ) );
 
 		// ...but it should not steal the focus so the editing is uninterrupted.
@@ -381,7 +381,7 @@ _setupBootstrapToolbarButtons() {
 
 		// Bold, Italic and Underline commands have a value that changes
 		// when the selection starts in an element the command creates.
-		// The button should indicate that e.g. editing text which is already bold.
+		// The button should indicate that e.g. you are editing text which is already bold.
 		if ( !new Set( [ 'undo', 'redo' ] ).has( name ) ) {
 			command.on( 'change:value', onValueChange );
 			onValueChange();
@@ -409,7 +409,7 @@ _setupBootstrapHeadingDropdown() {
 
 	// Create a dropdown menu entry for each heading configuration option.
 	editor.config.get( 'heading.options' ).map( option => {
-		// Check is options is paragraph or heading as their commands slightly differ.
+		// Check if options is a paragraph or a heading as their commands differ slightly.
 		const isParagraph = option.model === 'paragraph';
 
 		// Create the menu item DOM element.
@@ -490,4 +490,4 @@ BootstrapEditor
 	} );
 ```
 
-Once everything is working as expected, you may want to create a custom build of your editor to ship it across the applications. To learn more check out the {@link builds/guides/development/custom-builds Creating custom builds} guide.
+Once everything works as expected, you may want to create a custom build of your editor to ship it across the applications. To learn more check out the {@link builds/guides/development/custom-builds Creating custom builds} guide.
