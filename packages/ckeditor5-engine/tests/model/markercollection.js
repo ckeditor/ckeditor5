@@ -51,6 +51,7 @@ describe( 'MarkerCollection', () => {
 			expect( result ).to.equal( marker );
 			expect( marker.name ).to.equal( 'name' );
 			expect( marker.managedUsingOperations ).to.false;
+			expect( marker.affectsData ).to.true;
 			expect( marker.getRange().isEqual( range ) ).to.be.true;
 			sinon.assert.calledWithExactly( markers.fire, 'update:name', result, null, range );
 		} );
@@ -59,6 +60,12 @@ describe( 'MarkerCollection', () => {
 			const marker = markers._set( 'name', range, true );
 
 			expect( marker.managedUsingOperations ).to.true;
+		} );
+
+		it( 'should create a marker marked as not affecting the data', () => {
+			const marker = markers._set( 'name', range, false, false );
+
+			expect( marker.affectsData ).to.false;
 		} );
 
 		it( 'should update marker range and fire update:<markerName> event if marker with given name was in the collection', () => {
@@ -282,6 +289,10 @@ describe( 'Marker', () => {
 		expect( () => {
 			marker.managedUsingOperations;
 		} ).to.throw( CKEditorError, /^marker-destroyed/ );
+
+		expect( () => {
+			marker.affectsData;
+		} ).to.throw( CKEditorError, /^marker-destroyed/ );
 	} );
 
 	it( 'should attach live range to marker', () => {
@@ -365,5 +376,20 @@ describe( 'Marker', () => {
 		marker._managedUsingOperations = false;
 
 		expect( marker.managedUsingOperations ).to.false;
+	} );
+
+	it( 'should change affectsData flag', () => {
+		const range = Range.createFromParentsAndOffsets( root, 1, root, 2 );
+		const marker = model.markers._set( 'name', range, false, false );
+
+		expect( marker.affectsData ).to.false;
+
+		marker._affectsData = true;
+
+		expect( marker.affectsData ).to.true;
+
+		marker._affectsData = false;
+
+		expect( marker.affectsData ).to.false;
 	} );
 } );

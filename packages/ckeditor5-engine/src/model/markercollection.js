@@ -88,9 +88,10 @@ export default class MarkerCollection {
 	 * @param {String|module:engine/model/markercollection~Marker} markerOrName Name of marker to set or marker instance to update.
 	 * @param {module:engine/model/range~Range} range Marker range.
 	 * @param {Boolean} [managedUsingOperations=false] Specifies whether the marker is managed using operations.
+	 * @param {Boolean} [affectsData=true] Specifies whether the marker changes the data model.
 	 * @returns {module:engine/model/markercollection~Marker} `Marker` instance which was added or updated.
 	 */
-	_set( markerOrName, range, managedUsingOperations = false ) {
+	_set( markerOrName, range, managedUsingOperations = false, affectsData = true ) {
 		const markerName = markerOrName instanceof Marker ? markerOrName.name : markerOrName;
 		const oldMarker = this._markers.get( markerName );
 
@@ -108,6 +109,11 @@ export default class MarkerCollection {
 				hasChanged = true;
 			}
 
+			if ( affectsData != oldMarker.affectsData ) {
+				oldMarker._affectsData = affectsData;
+				hasChanged = true;
+			}
+
 			if ( hasChanged ) {
 				this.fire( 'update:' + markerName, oldMarker, oldRange, range );
 			}
@@ -116,7 +122,7 @@ export default class MarkerCollection {
 		}
 
 		const liveRange = LiveRange.createFromRange( range );
-		const marker = new Marker( markerName, liveRange, managedUsingOperations );
+		const marker = new Marker( markerName, liveRange, managedUsingOperations, affectsData );
 
 		this._markers.set( markerName, marker );
 		this.fire( 'update:' + markerName, marker, null, range );
@@ -313,8 +319,9 @@ class Marker {
 	 * @param {String} name Marker name.
 	 * @param {module:engine/model/liverange~LiveRange} liveRange Range marked by the marker.
 	 * @param {Boolean} managedUsingOperations Specifies whether the marker is managed using operations.
+	 * @param {Boolean} affectsData Specifies whether the marker changes the data model.
 	 */
-	constructor( name, liveRange, managedUsingOperations ) {
+	constructor( name, liveRange, managedUsingOperations, affectsData ) {
 		/**
 		 * Marker's name.
 		 *
@@ -332,16 +339,24 @@ class Marker {
 		this._managedUsingOperations = managedUsingOperations;
 
 		/**
+		 * Flag indicates if the marker changes the data model.
+		 *
+		 * @protected
+		 * @member {Boolean}
+		 */
+		this._affectsData = affectsData;
+
+		/**
 		 * Range marked by the marker.
 		 *
 		 * @private
-		 * @member {module:engine/model/liverange~LiveRange} #_liveRange
+		 * @member {module:engine/model/liverange~LiveRange}
 		 */
 		this._liveRange = this._attachLiveRange( liveRange );
 	}
 
 	/**
-	 * Returns value of flag indicates if the marker is managed using operations or not.
+	 * A value indicating if the marker is managed using operations.
 	 * See {@link ~Marker marker class description} to learn more about marker types.
 	 * See {@link module:engine/model/writer~Writer#addMarker}.
 	 *
@@ -356,7 +371,20 @@ class Marker {
 	}
 
 	/**
-	 * Returns current marker start position.
+	 * A value indicating if the marker changes the data model.
+	 *
+	 * @returns {Boolean}
+	 */
+	get affectsData() {
+		if ( !this._liveRange ) {
+			throw new CKEditorError( 'marker-destroyed: Cannot use a destroyed marker instance.' );
+		}
+
+		return this._affectsData;
+	}
+
+	/**
+	 * Current marker start position.
 	 *
 	 * @returns {module:engine/model/position~Position}
 	 */
@@ -369,7 +397,7 @@ class Marker {
 	}
 
 	/**
-	 * Returns current marker end position.
+	 * Current marker end position.
 	 *
 	 * @returns {module:engine/model/position~Position}
 	 */
@@ -382,7 +410,7 @@ class Marker {
 	}
 
 	/**
-	 * Returns a range that represents current state of marker.
+	 * Range that represents current state of marker.
 	 *
 	 * Keep in mind that returned value is a {@link module:engine/model/range~Range Range}, not a
 	 * {@link module:engine/model/liverange~LiveRange LiveRange}. This means that it is up-to-date and relevant only
