@@ -30,6 +30,9 @@ export default class BlockButtonView extends ButtonView {
 
 		const bind = this.bindTemplate;
 
+		// Hide button on init.
+		this.isVisible = false;
+
 		/**
 		 * Top offset.
 		 *
