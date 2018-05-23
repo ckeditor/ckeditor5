@@ -30,6 +30,7 @@ describe( 'DropdownButtonView', () => {
 
 		it( 'creates element from template', () => {
 			expect( view.element.tagName ).to.equal( 'BUTTON' );
+			expect( view.element.attributes[ 'aria-haspopup' ].value ).to.equal( 'true' );
 		} );
 	} );
 
