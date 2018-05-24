@@ -31,9 +31,7 @@ import iconPilcrow from '../../../theme/icons/pilcrow.svg';
  *
  * By default button is allowed to be displayed next to all elements marked in
  * {@link module:engine/model/schema~Schema} as `$block` elements for which there is at least
- * one available option in toolbar. E.g. Toolbar with {@link module:paragraph/paragraph~Paragraph} and
- * {@link module:heading/heading~Heading} won't be displayed next to {@link module:image/image~Image} because
- * {@link module:engine/model/schema~Schema} disallows to change format of {@link module:image/image~Image}.
+ * one available (enable) option in the toolbar.
  *
  * By default button right bound will be attached to the left bound of the
  * {@link module:engine/view/editableelement~EditableElement}:
