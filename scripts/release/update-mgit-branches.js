@@ -15,7 +15,7 @@ const mgitJsonPath = path.resolve( __dirname, '..', '..', 'mgit.json' );
 module.exports = function updateMgitBranches( branchName ) {
 	const log = logger();
 
-	log.info( 'Updating the mgit.json file...' );
+	log.info( 'Updating the "mgit.json"...' );
 
 	tools.updateJSONFile( mgitJsonPath, mgitJson => {
 		const dependencies = mgitJson.dependencies;
@@ -31,5 +31,5 @@ module.exports = function updateMgitBranches( branchName ) {
 		return mgitJson;
 	} );
 
-	logger().info( `Done. Mgit.json uses the "${ branchName }" branch now.` );
+	logger().info( `Done. "mgit.json" uses the "${ branchName }" branch now.` );
 };

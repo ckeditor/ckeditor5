@@ -35,7 +35,7 @@ then
 	git push origin stable master && \
 	mgit exec 'git push origin stable'
 
-	# Add stable branches in all repos which don't have them yet.
+	# Add `stable` branches in all repos which don't have them yet.
 	mgit exec 'git checkout -b stable && git push origin stable && git checkout master'
 else
 	echo "Update the \"Releases\" section in README.md before starting the release process."
