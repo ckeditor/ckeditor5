@@ -459,7 +459,7 @@ function hasOnlyTextNodes( children ) {
 //
 // @private
 // @param diffResult
-// @return {{insertions: number, deletions: number, firstChangeAt: *}}
+// @returns {{insertions: number, deletions: number, firstChangeAt: *}}
 function calculateChanges( diffResult ) {
 	// Index where the first change happens. Used to set the position from which nodes will be removed and where will be inserted.
 	let firstChangeAt = null;
