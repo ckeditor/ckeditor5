@@ -406,7 +406,7 @@ class Marker {
 	 *
 	 * @protected
 	 * @param {module:engine/model/liverange~LiveRange} liveRange Live range to attach
-	 * @return {module:engine/model/liverange~LiveRange} Attached live range.
+	 * @returns {module:engine/model/liverange~LiveRange} Attached live range.
 	 */
 	_attachLiveRange( liveRange ) {
 		if ( this._liveRange ) {

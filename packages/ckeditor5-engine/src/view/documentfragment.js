@@ -206,7 +206,7 @@ mix( DocumentFragment, EmitterMixin );
 // Converts strings to Text and non-iterables to arrays.
 //
 // @param {String|module:engine/view/item~Item|Iterable.<String|module:engine/view/item~Item>}
-// @return {Iterable.<module:engine/view/node~Node>}
+// @returns {Iterable.<module:engine/view/node~Node>}
 function normalize( nodes ) {
 	// Separate condition because string is iterable.
 	if ( typeof nodes == 'string' ) {

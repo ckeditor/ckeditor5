@@ -319,7 +319,7 @@ export default class Element extends Node {
 // Converts strings to Text and non-iterables to arrays.
 //
 // @param {String|module:engine/model/item~Item|Iterable.<String|module:engine/model/item~Item>}
-// @return {Iterable.<module:engine/model/node~Node>}
+// @returns {Iterable.<module:engine/model/node~Node>}
 function normalize( nodes ) {
 	// Separate condition because string is iterable.
 	if ( typeof nodes == 'string' ) {

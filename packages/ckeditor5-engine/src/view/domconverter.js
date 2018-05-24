@@ -812,7 +812,7 @@ export default class DomConverter {
 	 * parent UIElement.
 	 *
 	 * @param {Node} domNode
-	 * @return {module:engine/view/uielement~UIElement|null}
+	 * @returns {module:engine/view/uielement~UIElement|null}
 	 */
 	getParentUIElement( domNode ) {
 		const ancestors = getAncestors( domNode );

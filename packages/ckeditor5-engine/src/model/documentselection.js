@@ -142,7 +142,7 @@ export default class DocumentSelection {
 	 * Note that the gravity remains overridden as long as will not be restored the same number of times as it was overridden.
 	 *
 	 * @readonly
-	 * @return {Boolean}
+	 * @returns {Boolean}
 	 */
 	get isGravityOverridden() {
 		return this._selection.isGravityOverridden;

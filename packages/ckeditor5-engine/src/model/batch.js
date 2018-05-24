@@ -72,7 +72,7 @@ export default class Batch {
 	 * to add created deltas.
 	 *
 	 * @param {module:engine/model/delta/delta~Delta} delta A delta to add.
-	 * @return {module:engine/model/delta/delta~Delta} An added delta.
+	 * @returns {module:engine/model/delta/delta~Delta} An added delta.
 	 */
 	addDelta( delta ) {
 		delta.batch = this;

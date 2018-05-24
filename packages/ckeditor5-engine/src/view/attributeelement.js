@@ -220,7 +220,7 @@ function getFillerOffset() {
 // Returns total count of children that are not {@link module:engine/view/uielement~UIElement UIElements}.
 //
 // @param {module:engine/view/element~Element} element
-// @return {Number}
+// @returns {Number}
 function nonUiChildrenCount( element ) {
 	return Array.from( element.getChildren() ).filter( element => !element.is( 'uiElement' ) ).length;
 }

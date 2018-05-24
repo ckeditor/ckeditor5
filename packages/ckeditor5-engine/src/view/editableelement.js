@@ -67,7 +67,7 @@ export default class EditableElement extends ContainerElement {
 	 * Returns document associated with the editable.
 	 *
 	 * @readonly
-	 * @return {module:engine/view/document~Document}
+	 * @returns {module:engine/view/document~Document}
 	 */
 	get document() {
 		return this.getCustomProperty( documentSymbol );

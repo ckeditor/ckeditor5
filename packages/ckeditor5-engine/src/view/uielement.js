@@ -81,7 +81,7 @@ export default class UIElement extends Element {
 	 *		};
 	 *
 	 * @param {Document} domDocument
-	 * @return {HTMLElement}
+	 * @returns {HTMLElement}
 	 */
 	render( domDocument ) {
 		return this.toDomElement( domDocument );

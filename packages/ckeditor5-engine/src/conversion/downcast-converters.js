@@ -809,7 +809,7 @@ export function wrap( elementCreator ) {
  * using the {@link module:engine/conversion/mapper~Mapper#bindElementToMarker} method.
  *
  * @param {module:engine/conversion/downcast-converters~HighlightDescriptor|Function} highlightDescriptor
- * @return {Function}
+ * @returns {Function}
  */
 export function highlightText( highlightDescriptor ) {
 	return ( evt, data, conversionApi ) => {
@@ -872,7 +872,7 @@ export function highlightText( highlightDescriptor ) {
  * the {@link module:engine/conversion/mapper~Mapper#bindElementToMarker} method.
  *
  * @param {module:engine/conversion/downcast-converters~HighlightDescriptor|Function} highlightDescriptor
- * @return {Function}
+ * @returns {Function}
  */
 export function highlightElement( highlightDescriptor ) {
 	return ( evt, data, conversionApi ) => {
@@ -934,7 +934,7 @@ export function highlightElement( highlightDescriptor ) {
  * This converter unbinds elements from the marker name.
  *
  * @param {module:engine/conversion/downcast-converters~HighlightDescriptor|Function} highlightDescriptor
- * @return {Function}
+ * @returns {Function}
  */
 export function removeHighlight( highlightDescriptor ) {
 	return ( evt, data, conversionApi ) => {
