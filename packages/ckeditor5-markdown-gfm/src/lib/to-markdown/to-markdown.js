@@ -635,7 +635,7 @@
 	 * isBlockElem(node) determines if the given node is a block element.
 	 *
 	 * @param {Node} node
-	 * @return {Boolean}
+	 * @returns {Boolean}
 	 */
 	function isBlockElem(node) {
 		return !!(node && blockElements[node.nodeName]);
@@ -645,7 +645,7 @@
 	 * isVoid(node) determines if the given node is a void element.
 	 *
 	 * @param {Node} node
-	 * @return {Boolean}
+	 * @returns {Boolean}
 	 */
 	function isVoid(node) {
 		return !!(node && voidElements[node.nodeName]);
@@ -728,7 +728,7 @@
 	 * next node in the sequence.
 	 *
 	 * @param {Node} node
-	 * @return {Node} node
+	 * @returns {Node} node
 	 */
 	function remove(node) {
 		var next = node.nextSibling || node.parentNode;
@@ -744,7 +744,7 @@
 	 *
 	 * @param {Node} prev
 	 * @param {Node} current
-	 * @return {Node}
+	 * @returns {Node}
 	 */
 	function next(prev, current) {
 		if (prev && prev.parentNode === current || current.nodeName === 'PRE') {
