@@ -251,7 +251,7 @@ extend( ProxyEmitter.prototype, EmitterMixin, {
 //
 // @private
 // @param {Node} node
-// @return {String} UID for given DOM Node.
+// @returns {String} UID for given DOM Node.
 function getNodeUID( node ) {
 	return node[ 'data-ck-expando' ] || ( node[ 'data-ck-expando' ] = uid() );
 }
