@@ -119,7 +119,7 @@ export function setLabel( element, labelOrCreator, writer ) {
  * Returns label for provided element.
  *
  * @param {module:engine/view/element~Element} element
- * @return {String}
+ * @returns {String}
  */
 export function getLabel( element ) {
 	const labelCreator = element.getCustomProperty( labelSymbol );
