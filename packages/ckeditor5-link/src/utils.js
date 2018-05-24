@@ -16,7 +16,7 @@ const SAFE_URL = /^(?:(?:https?|ftps?|mailto):|[^a-z]|[a-z+.-]+(?:[^a-z+.:-]|$))
  * Returns `true` if a given view node is the link element.
  *
  * @param {module:engine/view/node~Node} node
- * @return {Boolean}
+ * @returns {Boolean}
  */
 export function isLinkElement( node ) {
 	return node.is( 'attributeElement' ) && !!node.getCustomProperty( linkElementSymbol );
@@ -26,7 +26,7 @@ export function isLinkElement( node ) {
  * Creates link {@link module:engine/view/attributeelement~AttributeElement} with provided `href` attribute.
  *
  * @param {String} href
- * @return {module:engine/view/attributeelement~AttributeElement}
+ * @returns {module:engine/view/attributeelement~AttributeElement}
  */
 export function createLinkElement( href, writer ) {
 	// Priority 5 - https://github.com/ckeditor/ckeditor5-link/issues/121.
