@@ -18,7 +18,7 @@ const captionSymbol = Symbol( 'imageCaption' );
  *
  * @param {module:engine/view/view~View} view
  * @param {String} placeholderText The text to be displayed when the caption is empty.
- * @return {Function}
+ * @returns {Function}
  */
 export function captionElementCreator( view, placeholderText ) {
 	return writer => {
@@ -34,7 +34,7 @@ export function captionElementCreator( view, placeholderText ) {
  * Returns `true` if a given view element is the image caption editable.
  *
  * @param {module:engine/view/element~Element} viewElement
- * @return {Boolean}
+ * @returns {Boolean}
  */
 export function isCaption( viewElement ) {
 	return !!viewElement.getCustomProperty( captionSymbol );
@@ -44,7 +44,7 @@ export function isCaption( viewElement ) {
  * Returns the caption model element from a given image element. Returns `null` if no caption is found.
  *
  * @param {module:engine/model/element~Element} imageModelElement
- * @return {module:engine/model/element~Element|null}
+ * @returns {module:engine/model/element~Element|null}
  */
 export function getCaptionFromImage( imageModelElement ) {
 	for ( const node of imageModelElement.getChildren() ) {

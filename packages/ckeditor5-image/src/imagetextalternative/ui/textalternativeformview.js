@@ -181,7 +181,7 @@ export default class TextAlternativeFormView extends View {
 	 * Creates an input with a label.
 	 *
 	 * @private
-	 * @return {module:ui/labeledinput/labeledinputview~LabeledInputView}
+	 * @returns {module:ui/labeledinput/labeledinputview~LabeledInputView}
 	 */
 	_createLabeledInputView() {
 		const t = this.locale.t;

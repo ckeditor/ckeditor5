@@ -203,7 +203,7 @@ export default class ImageCaptionEditing extends Plugin {
 // @private
 // @param {Function} elementCreator
 // @param {Boolean} [hide=true] When set to `false` view element will not be inserted when it's empty.
-// @return {Function}
+// @returns {Function}
 function captionModelToView( elementCreator, hide = true ) {
 	return ( evt, data, conversionApi ) => {
 		const captionElement = data.item;

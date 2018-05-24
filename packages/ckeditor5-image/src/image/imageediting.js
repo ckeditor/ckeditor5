@@ -111,7 +111,7 @@ export default class ImageEditing extends Plugin {
 //
 // @private
 // @param {module:engine/view/writer~Writer} writer
-// @return {module:engine/view/containerelement~ContainerElement}
+// @returns {module:engine/view/containerelement~ContainerElement}
 export function createImageViewElement( writer ) {
 	const emptyElement = writer.createEmptyElement( 'img' );
 	const figure = writer.createContainerElement( 'figure', { class: 'image' } );

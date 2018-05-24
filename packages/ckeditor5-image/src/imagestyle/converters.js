@@ -77,7 +77,7 @@ export function viewToModelStyleAttribute( styles ) {
 //
 // @param {String} name
 // @param {Array.<module:image/imagestyle/imagestyleediting~ImageStyleFormat> } styles
-// @return {module:image/imagestyle/imagestyleediting~ImageStyleFormat|undefined}
+// @returns {module:image/imagestyle/imagestyleediting~ImageStyleFormat|undefined}
 function getStyleByName( name, styles ) {
 	for ( const style of styles ) {
 		if ( style.name === name ) {
