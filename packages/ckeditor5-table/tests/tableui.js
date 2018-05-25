@@ -105,16 +105,18 @@ describe( 'TableUI', () => {
 
 			const labels = listView.items.map( ( { label } ) => label );
 
-			expect( labels ).to.deep.equal( [ 'Insert row below', 'Insert row above', 'Delete row' ] );
+			expect( labels ).to.deep.equal( [ 'Header row', 'Insert row below', 'Insert row above', 'Delete row' ] );
 		} );
 
 		it( 'should bind items in panel to proper commands', () => {
 			const items = dropdown.listView.items;
 
+			const setRowHeaderCommand = editor.commands.get( 'setRowHeader' );
 			const insertRowBelowCommand = editor.commands.get( 'insertRowBelow' );
 			const insertRowAboveCommand = editor.commands.get( 'insertRowAbove' );
 			const removeRowCommand = editor.commands.get( 'removeRow' );
 
+			setRowHeaderCommand.isEnabled = true;
 			insertRowBelowCommand.isEnabled = true;
 			insertRowAboveCommand.isEnabled = true;
 			removeRowCommand.isEnabled = true;
@@ -122,20 +124,26 @@ describe( 'TableUI', () => {
 			expect( items.get( 0 ).isEnabled ).to.be.true;
 			expect( items.get( 1 ).isEnabled ).to.be.true;
 			expect( items.get( 2 ).isEnabled ).to.be.true;
+			expect( items.get( 3 ).isEnabled ).to.be.true;
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
-			insertRowBelowCommand.isEnabled = false;
+			setRowHeaderCommand.isEnabled = false;
 
 			expect( items.get( 0 ).isEnabled ).to.be.false;
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
-			insertRowAboveCommand.isEnabled = false;
+			insertRowBelowCommand.isEnabled = false;
 
 			expect( items.get( 1 ).isEnabled ).to.be.false;
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
-			removeRowCommand.isEnabled = false;
+			insertRowAboveCommand.isEnabled = false;
 			expect( items.get( 2 ).isEnabled ).to.be.false;
+			expect( dropdown.buttonView.isEnabled ).to.be.true;
+
+			removeRowCommand.isEnabled = false;
+
+			expect( items.get( 3 ).isEnabled ).to.be.false;
 			expect( dropdown.buttonView.isEnabled ).to.be.false;
 		} );
 
@@ -153,7 +161,7 @@ describe( 'TableUI', () => {
 			dropdown.listView.items.get( 0 ).fire( 'execute' );
 
 			expect( spy.calledOnce ).to.be.true;
-			expect( spy.args[ 0 ][ 0 ] ).to.equal( 'insertRowBelow' );
+			expect( spy.args[ 0 ][ 0 ] ).to.equal( 'setRowHeader' );
 		} );
 	} );
 
@@ -180,16 +188,18 @@ describe( 'TableUI', () => {
 
 			const labels = listView.items.map( ( { label } ) => label );
 
-			expect( labels ).to.deep.equal( [ 'Insert column before', 'Insert column after', 'Delete column' ] );
+			expect( labels ).to.deep.equal( [ 'Header column', 'Insert column before', 'Insert column after', 'Delete column' ] );
 		} );
 
 		it( 'should bind items in panel to proper commands', () => {
 			const items = dropdown.listView.items;
 
+			const setColumnHeaderCommand = editor.commands.get( 'setColumnHeader' );
 			const insertColumnBeforeCommand = editor.commands.get( 'insertColumnBefore' );
 			const insertColumnAfterCommand = editor.commands.get( 'insertColumnAfter' );
 			const removeColumnCommand = editor.commands.get( 'removeColumn' );
 
+			setColumnHeaderCommand.isEnabled = true;
 			insertColumnBeforeCommand.isEnabled = true;
 			insertColumnAfterCommand.isEnabled = true;
 			removeColumnCommand.isEnabled = true;
@@ -197,24 +207,28 @@ describe( 'TableUI', () => {
 			expect( items.get( 0 ).isEnabled ).to.be.true;
 			expect( items.get( 1 ).isEnabled ).to.be.true;
 			expect( items.get( 2 ).isEnabled ).to.be.true;
+			expect( items.get( 3 ).isEnabled ).to.be.true;
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
-			insertColumnBeforeCommand.isEnabled = false;
+			setColumnHeaderCommand.isEnabled = false;
 
 			expect( items.get( 0 ).isEnabled ).to.be.false;
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
-			insertColumnAfterCommand.isEnabled = false;
+			insertColumnBeforeCommand.isEnabled = false;
 
 			expect( items.get( 1 ).isEnabled ).to.be.false;
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
-			removeColumnCommand.isEnabled = false;
+			insertColumnAfterCommand.isEnabled = false;
 			expect( items.get( 2 ).isEnabled ).to.be.false;
+
+			removeColumnCommand.isEnabled = false;
+			expect( items.get( 3 ).isEnabled ).to.be.false;
 			expect( dropdown.buttonView.isEnabled ).to.be.false;
 		} );
 
-		it( 'should focus view after command execution', () => {
+		it( 'should focus view a+fter command execution', () => {
 			const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
 
 			dropdown.listView.items.get( 0 ).fire( 'execute' );
@@ -228,7 +242,7 @@ describe( 'TableUI', () => {
 			dropdown.listView.items.get( 0 ).fire( 'execute' );
 
 			expect( spy.calledOnce ).to.be.true;
-			expect( spy.args[ 0 ][ 0 ] ).to.equal( 'insertColumnBefore' );
+			expect( spy.args[ 0 ][ 0 ] ).to.equal( 'setColumnHeader' );
 		} );
 	} );
 

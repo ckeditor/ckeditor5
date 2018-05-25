@@ -53,6 +53,7 @@ export default class TableUI extends Plugin {
 
 		editor.ui.componentFactory.add( 'tableColumn', locale => {
 			const options = [
+				{ command: 'setColumnHeader', label: 'Header column' },
 				{ command: 'insertColumnBefore', label: 'Insert column before' },
 				{ command: 'insertColumnAfter', label: 'Insert column after' },
 				{ command: 'removeColumn', label: 'Delete column' }
@@ -63,6 +64,7 @@ export default class TableUI extends Plugin {
 
 		editor.ui.componentFactory.add( 'tableRow', locale => {
 			const options = [
+				{ command: 'setRowHeader', label: 'Header row' },
 				{ command: 'insertRowBelow', label: 'Insert row below' },
 				{ command: 'insertRowAbove', label: 'Insert row above' },
 				{ command: 'removeRow', label: 'Delete row' }
