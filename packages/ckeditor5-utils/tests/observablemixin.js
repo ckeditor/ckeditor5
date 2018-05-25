@@ -144,6 +144,79 @@ describe( 'Observable', () => {
 			sinon.assert.notCalled( spyColor );
 		} );
 
+		it( 'should fire the "beforeChange" event', () => {
+			const spy = sinon.spy();
+			const spyColor = sinon.spy();
+			const spyYear = sinon.spy();
+			const spyWheels = sinon.spy();
+
+			car.on( 'beforeChange', spy );
+			car.on( 'beforeChange:color', spyColor );
+			car.on( 'beforeChange:year', spyYear );
+			car.on( 'beforeChange:wheels', spyWheels );
+
+			// Set property in all possible ways.
+			car.color = 'blue';
+			car.set( { year: 2003 } );
+			car.set( 'wheels', 4 );
+
+			// Check number of calls.
+			sinon.assert.calledThrice( spy );
+			sinon.assert.calledOnce( spyColor );
+			sinon.assert.calledOnce( spyYear );
+			sinon.assert.calledOnce( spyWheels );
+
+			// Check context.
+			sinon.assert.alwaysCalledOn( spy, car );
+			sinon.assert.calledOn( spyColor, car );
+			sinon.assert.calledOn( spyYear, car );
+			sinon.assert.calledOn( spyWheels, car );
+
+			// Check params.
+			sinon.assert.calledWithExactly( spy, sinon.match.instanceOf( EventInfo ), 'color', 'blue', 'red' );
+			sinon.assert.calledWithExactly( spy, sinon.match.instanceOf( EventInfo ), 'year', 2003, 2015 );
+			sinon.assert.calledWithExactly( spy, sinon.match.instanceOf( EventInfo ), 'wheels', 4, sinon.match.typeOf( 'undefined' ) );
+			sinon.assert.calledWithExactly( spyColor, sinon.match.instanceOf( EventInfo ), 'color', 'blue', 'red' );
+			sinon.assert.calledWithExactly( spyYear, sinon.match.instanceOf( EventInfo ), 'year', 2003, 2015 );
+			sinon.assert.calledWithExactly(
+				spyWheels, sinon.match.instanceOf( EventInfo ),
+				'wheels', 4, sinon.match.typeOf( 'undefined' )
+			);
+		} );
+
+		it( 'should use "beforeChange" return value as an observable new value', () => {
+			car.color = 'blue';
+
+			const spy = sinon.spy();
+
+			car.on( 'beforeChange:color', evt => {
+				evt.stop();
+				evt.return = 'red';
+			}, { priority: 'high' } );
+
+			car.on( 'change:color', spy );
+
+			car.color = 'pink';
+
+			sinon.assert.calledWithExactly( spy, sinon.match.instanceOf( EventInfo ), 'color', 'red', 'blue' );
+		} );
+
+		it( 'should not fire the "beforeChange" event for the same property value', () => {
+			const spy = sinon.spy();
+			const spyColor = sinon.spy();
+
+			car.on( 'beforeChange', spy );
+			car.on( 'beforeChange:color', spyColor );
+
+			// Set the "color" property in all possible ways.
+			car.color = 'red';
+			car.set( 'color', 'red' );
+			car.set( { color: 'red' } );
+
+			sinon.assert.notCalled( spy );
+			sinon.assert.notCalled( spyColor );
+		} );
+
 		it( 'should throw when overriding already existing property', () => {
 			car.normalProperty = 1;
 
