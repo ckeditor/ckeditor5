@@ -53,10 +53,10 @@ export default class TableUI extends Plugin {
 
 		editor.ui.componentFactory.add( 'tableColumn', locale => {
 			const options = [
-				{ command: 'setColumnHeader', label: 'Header column' },
-				{ command: 'insertColumnBefore', label: 'Insert column before' },
-				{ command: 'insertColumnAfter', label: 'Insert column after' },
-				{ command: 'removeColumn', label: 'Delete column' }
+				{ commandName: 'setColumnHeader', label: 'Header column', bindIsActive: true },
+				{ commandName: 'insertColumnBefore', label: 'Insert column before' },
+				{ commandName: 'insertColumnAfter', label: 'Insert column after' },
+				{ commandName: 'removeColumn', label: 'Delete column' }
 			];
 
 			return this._prepareDropdown( 'Column', tableColumnIcon, options, locale );
@@ -64,10 +64,10 @@ export default class TableUI extends Plugin {
 
 		editor.ui.componentFactory.add( 'tableRow', locale => {
 			const options = [
-				{ command: 'setRowHeader', label: 'Header row' },
-				{ command: 'insertRowBelow', label: 'Insert row below' },
-				{ command: 'insertRowAbove', label: 'Insert row above' },
-				{ command: 'removeRow', label: 'Delete row' }
+				{ commandName: 'setRowHeader', label: 'Header row', bindIsActive: true },
+				{ commandName: 'insertRowBelow', label: 'Insert row below' },
+				{ commandName: 'insertRowAbove', label: 'Insert row above' },
+				{ commandName: 'removeRow', label: 'Delete row' }
 			];
 
 			return this._prepareDropdown( 'Row', tableRowIcon, options, locale );
@@ -75,10 +75,10 @@ export default class TableUI extends Plugin {
 
 		editor.ui.componentFactory.add( 'mergeCell', locale => {
 			const options = [
-				{ command: 'mergeCellUp', label: 'Merge cell up' },
-				{ command: 'mergeCellRight', label: 'Merge cell right' },
-				{ command: 'mergeCellDown', label: 'Merge cell down' },
-				{ command: 'mergeCellLeft', label: 'Merge cell left' }
+				{ commandName: 'mergeCellUp', label: 'Merge cell up' },
+				{ commandName: 'mergeCellRight', label: 'Merge cell right' },
+				{ commandName: 'mergeCellDown', label: 'Merge cell down' },
+				{ commandName: 'mergeCellLeft', label: 'Merge cell left' }
 			];
 
 			return this._prepareDropdown( 'Merge cell', tableMergeCellIcon, options, locale );
@@ -86,8 +86,8 @@ export default class TableUI extends Plugin {
 
 		editor.ui.componentFactory.add( 'splitCell', locale => {
 			const options = [
-				{ command: 'splitCellVertically', label: 'Split cell vertically' },
-				{ command: 'splitCellHorizontally', label: 'Split cell horizontally' }
+				{ commandName: 'splitCellVertically', label: 'Split cell vertically' },
+				{ commandName: 'splitCellHorizontally', label: 'Split cell horizontally' }
 			];
 
 			return this._prepareDropdown( 'Split cell', tableSplitCellIcon, options, locale );
@@ -112,8 +112,8 @@ export default class TableUI extends Plugin {
 
 		const dropdownItems = new Collection();
 
-		for ( const { command, label } of options ) {
-			addListOption( command, label, editor, commands, dropdownItems );
+		for ( const option of options ) {
+			addListOption( option, editor, commands, dropdownItems );
 		}
 
 		addListToDropdown( dropdownView, dropdownItems );
@@ -137,16 +137,15 @@ export default class TableUI extends Plugin {
 	}
 }
 
-/**
- * Adds an option to a list view.
- *
- * @param {String} commandName
- * @param {String} label
- * @param {module:core/editor/editor~Editor} editor
- * @param {Array.<module:core/command~Command>} commands
- * @param {module:utils/collection~Collection} dropdownItems
- */
-function addListOption( commandName, label, editor, commands, dropdownItems ) {
+// Adds an option to a list view.
+//
+// @param {Object} commandName
+// @param {String} label
+// @param {module:core/editor/editor~Editor} editor
+// @param {Array.<module:core/command~Command>} commands
+// @param {module:utils/collection~Collection} dropdownItems
+function addListOption( option, editor, commands, dropdownItems ) {
+	const { commandName, label, bindIsActive } = option;
 	const command = editor.commands.get( commandName );
 
 	commands.push( command );
@@ -157,6 +156,10 @@ function addListOption( commandName, label, editor, commands, dropdownItems ) {
 	} );
 
 	itemModel.bind( 'isEnabled' ).to( command );
+
+	if ( bindIsActive ) {
+		itemModel.bind( 'isActive' ).to( command, 'value' );
+	}
 
 	dropdownItems.add( itemModel );
 }

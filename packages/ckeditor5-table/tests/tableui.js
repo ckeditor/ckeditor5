@@ -163,6 +163,18 @@ describe( 'TableUI', () => {
 			expect( spy.calledOnce ).to.be.true;
 			expect( spy.args[ 0 ][ 0 ] ).to.equal( 'setRowHeader' );
 		} );
+
+		it( 'should bind set header row command value to dropdown item', () => {
+			const items = dropdown.listView.items;
+
+			const setRowHeaderCommand = editor.commands.get( 'setRowHeader' );
+
+			setRowHeaderCommand.value = false;
+			expect( items.get( 0 ).isActive ).to.be.false;
+
+			setRowHeaderCommand.value = true;
+			expect( items.get( 0 ).isActive ).to.be.true;
+		} );
 	} );
 
 	describe( 'tableColumn dropdown', () => {
@@ -228,7 +240,7 @@ describe( 'TableUI', () => {
 			expect( dropdown.buttonView.isEnabled ).to.be.false;
 		} );
 
-		it( 'should focus view a+fter command execution', () => {
+		it( 'should focus view after command execution', () => {
 			const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
 
 			dropdown.listView.items.get( 0 ).fire( 'execute' );
@@ -243,6 +255,18 @@ describe( 'TableUI', () => {
 
 			expect( spy.calledOnce ).to.be.true;
 			expect( spy.args[ 0 ][ 0 ] ).to.equal( 'setColumnHeader' );
+		} );
+
+		it( 'should bind set header column command value to dropdown item', () => {
+			const items = dropdown.listView.items;
+
+			const setColumnHeaderCommand = editor.commands.get( 'setColumnHeader' );
+
+			setColumnHeaderCommand.value = false;
+			expect( items.get( 0 ).isActive ).to.be.false;
+
+			setColumnHeaderCommand.value = true;
+			expect( items.get( 0 ).isActive ).to.be.true;
 		} );
 	} );
 
