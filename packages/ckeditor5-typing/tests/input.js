@@ -52,25 +52,21 @@ describe( 'Input feature', () => {
 				view = editor.editing.view;
 				viewDocument = view.document;
 				viewRoot = viewDocument.getRoot();
+
+				editor.setData( '<p>foobar</p>' );
+
+				model.change( writer => {
+					writer.setSelection(
+						ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 3, modelRoot.getChild( 0 ), 3 )
+					);
+				} );
 			} );
-	} );
-
-	after( () => {
-		return editor.destroy();
-	} );
-
-	beforeEach( () => {
-		editor.setData( '<p>foobar</p>' );
-
-		model.change( writer => {
-			writer.setSelection(
-				ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 3, modelRoot.getChild( 0 ), 3 )
-			);
-		} );
 	} );
 
 	afterEach( () => {
 		listenter.stopListening();
+
+		return editor.destroy();
 	} );
 
 	describe( 'mutations handling', () => {
