@@ -147,7 +147,7 @@ function getVerticalCell( tableCell, direction ) {
 		return;
 	}
 
-	const headingRows = parseInt( table.getAttribute( 'headingRows' ) || 0 );
+	const headingRows = table.getAttribute( 'headingRows' ) || 0;
 
 	// Don't search for mergeable cell if direction points out of the current table section.
 	if ( headingRows && ( ( direction == 'down' && rowIndex === headingRows - 1 ) || ( direction == 'up' && rowIndex === headingRows ) ) ) {

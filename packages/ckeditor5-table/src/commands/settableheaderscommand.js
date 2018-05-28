@@ -45,7 +45,7 @@ export default class SetTableHeadersCommand extends Command {
 		const table = getParentTable( selection.getFirstPosition() );
 
 		model.change( writer => {
-			const currentHeadingRows = parseInt( table.getAttribute( 'headingRows' ) || 0 );
+			const currentHeadingRows = table.getAttribute( 'headingRows' ) || 0;
 
 			if ( currentHeadingRows !== rowsToSet && rowsToSet > 0 ) {
 				// Changing heading rows requires to check if any of a heading cell is overlaping vertically the table head.
@@ -88,7 +88,7 @@ function getOverlappingCells( table, headingRowsToSet, currentHeadingRows ) {
 
 // @private
 function updateTableAttribute( table, attributeName, newValue, writer ) {
-	const currentValue = parseInt( table.getAttribute( attributeName ) || 0 );
+	const currentValue = table.getAttribute( attributeName ) || 0;
 
 	if ( newValue !== currentValue ) {
 		updateNumericAttribute( attributeName, newValue, table, writer, 0 );

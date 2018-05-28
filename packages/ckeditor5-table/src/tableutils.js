@@ -358,7 +358,7 @@ export default class TableUtils extends Plugin {
 
 				createCells( cellsToInsert, writer, Position.createAfter( tableCell ), newCellsAttributes );
 
-				const headingColumns = parseInt( table.getAttribute( 'headingColumns' ) || 0 );
+				const headingColumns = table.getAttribute( 'headingColumns' ) || 0;
 
 				// Update heading section if split cell is in heading section.
 				if ( headingColumns > splitCellColumn ) {
@@ -510,7 +510,7 @@ export default class TableUtils extends Plugin {
 				createEmptyRows( writer, table, splitCellRow + 1, cellsToInsert, 1, newCellsAttributes );
 
 				// Update heading section if split cell is in heading section.
-				const headingRows = parseInt( table.getAttribute( 'headingRows' ) || 0 );
+				const headingRows = table.getAttribute( 'headingRows' ) || 0;
 
 				if ( headingRows > splitCellRow ) {
 					updateNumericAttribute( 'headingRows', headingRows + cellsToInsert, table, writer );

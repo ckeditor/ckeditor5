@@ -46,8 +46,8 @@ export function downcastInsertTable( options = {} ) {
 		const tableWalker = new TableWalker( table );
 
 		const tableAttributes = {
-			headingRows: parseInt( table.getAttribute( 'headingRows' ) || 0 ),
-			headingColumns: parseInt( table.getAttribute( 'headingColumns' ) || 0 )
+			headingRows: table.getAttribute( 'headingRows' ) || 0,
+			headingColumns: table.getAttribute( 'headingColumns' ) || 0
 		};
 
 		for ( const tableWalkerValue of tableWalker ) {
@@ -98,8 +98,8 @@ export function downcastInsertRow( options = {} ) {
 		const tableWalker = new TableWalker( table, { startRow: row, endRow: row } );
 
 		const tableAttributes = {
-			headingRows: parseInt( table.getAttribute( 'headingRows' ) || 0 ),
-			headingColumns: parseInt( table.getAttribute( 'headingColumns' ) || 0 )
+			headingRows: table.getAttribute( 'headingRows' ) || 0,
+			headingColumns: table.getAttribute( 'headingColumns' ) || 0
 		};
 
 		for ( const tableWalkerValue of tableWalker ) {
@@ -139,8 +139,8 @@ export function downcastInsertCell( options = {} ) {
 		const tableWalker = new TableWalker( table, { startRow: rowIndex, endRow: rowIndex } );
 
 		const tableAttributes = {
-			headingRows: parseInt( table.getAttribute( 'headingRows' ) || 0 ),
-			headingColumns: parseInt( table.getAttribute( 'headingColumns' ) || 0 )
+			headingRows: table.getAttribute( 'headingRows' ) || 0,
+			headingColumns: table.getAttribute( 'headingColumns' ) || 0
 		};
 
 		// We need to iterate over a table in order to get proper row & column values from a walker
@@ -215,8 +215,8 @@ export function downcastTableHeadingRowsChange( options = {} ) {
 			const tableWalker = new TableWalker( table, { startRow: newRows ? newRows - 1 : newRows, endRow: oldRows - 1 } );
 
 			const tableAttributes = {
-				headingRows: parseInt( table.getAttribute( 'headingRows' ) || 0 ),
-				headingColumns: parseInt( table.getAttribute( 'headingColumns' ) || 0 )
+				headingRows: table.getAttribute( 'headingRows' ) || 0,
+				headingColumns: table.getAttribute( 'headingColumns' ) || 0
 			};
 
 			for ( const tableWalkerValue of tableWalker ) {
@@ -251,8 +251,8 @@ export function downcastTableHeadingColumnsChange( options = {} ) {
 		}
 
 		const tableAttributes = {
-			headingRows: parseInt( table.getAttribute( 'headingRows' ) || 0 ),
-			headingColumns: parseInt( table.getAttribute( 'headingColumns' ) || 0 )
+			headingRows: table.getAttribute( 'headingRows' ) || 0,
+			headingColumns: table.getAttribute( 'headingColumns' ) || 0
 		};
 
 		const oldColumns = data.attributeOldValue;

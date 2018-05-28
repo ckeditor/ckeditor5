@@ -45,7 +45,7 @@ export default class RemoveRowCommand extends Command {
 		const table = tableRow.parent;
 
 		const currentRow = table.getChildIndex( tableRow );
-		const headingRows = parseInt( table.getAttribute( 'headingRows' ) || 0 );
+		const headingRows = table.getAttribute( 'headingRows' ) || 0;
 
 		model.change( writer => {
 			if ( headingRows && currentRow <= headingRows ) {

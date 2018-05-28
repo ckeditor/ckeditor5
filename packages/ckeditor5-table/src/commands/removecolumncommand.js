@@ -45,7 +45,7 @@ export default class RemoveColumnCommand extends Command {
 		const tableRow = tableCell.parent;
 		const table = tableRow.parent;
 
-		const headingColumns = parseInt( table.getAttribute( 'headingColumns' ) || 0 );
+		const headingColumns = table.getAttribute( 'headingColumns' ) || 0;
 		const row = table.getChildIndex( tableRow );
 
 		// Cache the table before removing or updating colspans.
