@@ -25,22 +25,15 @@ describe( 'TableWalker', () => {
 				schema.register( 'table', {
 					allowWhere: '$block',
 					allowAttributes: [ 'headingRows', 'headingColumns' ],
-					isBlock: true,
 					isObject: true
 				} );
 
-				schema.register( 'tableRow', {
-					allowIn: 'table',
-					allowAttributes: [],
-					isBlock: true,
-					isLimit: true
-				} );
+				schema.register( 'tableRow', { allowIn: 'table' } );
 
 				schema.register( 'tableCell', {
 					allowIn: 'tableRow',
 					allowContentOf: '$block',
 					allowAttributes: [ 'colspan', 'rowspan' ],
-					isBlock: true,
 					isLimit: true
 				} );
 			} );
