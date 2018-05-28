@@ -47,16 +47,16 @@ export default function upcastTable() {
 			conversionApi.writer.insert( table, splitResult.position );
 			conversionApi.consumable.consume( viewTable, { name: true } );
 
-			if ( !rows.length ) {
+			if ( rows.length ) {
+				// Upcast table rows in proper order (heading rows first).
+				rows.forEach( row => conversionApi.convertItem( row, ModelPosition.createAt( table, 'end' ) ) );
+			} else {
 				// Create one row and one table cell for empty table.
 				const row = conversionApi.writer.createElement( 'tableRow' );
 
 				conversionApi.writer.insert( row, ModelPosition.createAt( table, 'end' ) );
 				conversionApi.writer.insertElement( 'tableCell', ModelPosition.createAt( row, 'end' ) );
 			}
-
-			// Upcast table rows in proper order (heading rows first).
-			rows.forEach( row => conversionApi.convertItem( row, ModelPosition.createAt( table, 'end' ) ) );
 
 			// Set conversion result range.
 			data.modelRange = new ModelRange(
