@@ -19,6 +19,7 @@ import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
 import fastDiff from '@ckeditor/ckeditor5-utils/src/fastdiff';
+import isNode from '@ckeditor/ckeditor5-utils/src/dom/isnode';
 
 /**
  * Renderer updates DOM structure and selection, to make them a reflection of the view structure and selection.
@@ -180,6 +181,16 @@ export default class Renderer {
 	render() {
 		let inlineFillerPosition;
 
+		if ( this.markedChildren.size > 1 ) {
+			// Sort `this.markedChildren` by the nesting level.
+			this.markedChildren = this._sortElementsByNestingLevel( this.markedChildren );
+		}
+
+		// Refresh mappings.
+		for ( const element of this.markedChildren ) {
+			this._updateChildrenMappings( element );
+		}
+
 		// There was inline filler rendered in the DOM but it's not
 		// at the selection position any more, so we can remove it
 		// (cause even if it's needed, it must be placed in another location).
@@ -241,6 +252,85 @@ export default class Renderer {
 		this.markedTexts.clear();
 		this.markedAttributes.clear();
 		this.markedChildren.clear();
+	}
+
+	/**
+	 * Sorts elements set based on their nesting. The outermost elements are placed first.
+	 * It check only for 3 element types: `containerElement`, `attributeElement` and `text`. Those elements
+	 * are sorted in such order (from `containerElement` to `text`). Any other type (e.g. `rootElement` or
+	 * `documentFragment`) have higher priority and is placed higher in the sorted set.
+	 * Additionally if elements are of the same type, they are both checked if one is another parent so proper
+	 * order can be established (parent first).
+	 *
+	 * @private
+	 * @param {Set.<module:engine/view/node~Node>} elements Elements to be sorted.
+	 * @returns {Set.<module:engine/view/node~Node>} Sorted elements.
+	 */
+	_sortElementsByNestingLevel( elements ) {
+		function getPriority( node ) {
+			let priority = 3;
+			if ( node.is( 'containerElement' ) ) {
+				priority = 2;
+			} else if ( 'attributeElement' ) {
+				priority = 1;
+			} else if ( 'text' ) {
+				priority = 0;
+			}
+			return priority;
+		}
+
+		const elementsArray = Array.from( elements );
+		elementsArray.sort( ( node1, node2 ) => {
+			let priority = getPriority( node2 ) - getPriority( node1 );
+			if ( priority === 0 && !node1.is( 'text' ) ) {
+				if ( node1.parent === node2 ) {
+					priority = 1;
+				} else if ( node2.parent === node1 ) {
+					priority = -1;
+				}
+			}
+			return priority;
+		} );
+
+		return new Set( elementsArray );
+	}
+
+	/**
+	 * Updates element children mappings. Children which were replaced in the view structure by the similar
+	 * element (same tag name) are treated as 'replaced'. Their mappings are rebind to the corresponding,
+	 * existing DOM element so they will not be replaced by new DOM element during rerendering.
+	 *
+	 * @private
+	 * @param {module:engine/view/node~Node} viewElement View element which children mappings will be updated.
+	 */
+	_updateChildrenMappings( viewElement ) {
+		const diff = this._diffElementChildren( viewElement );
+
+		if ( diff ) {
+			const actions = this._findReplaceActions( diff.actions, diff.actualDomChildren, diff.expectedDomChildren );
+
+			if ( actions.indexOf( 'replace' ) !== -1 ) {
+				const counter = { equal: 0, insert: 0, delete: 0 };
+				for ( const action of actions ) {
+					if ( action === 'replace' ) {
+						const insertIndex = counter.equal + counter.insert;
+						const deleteIndex = counter.equal + counter.delete;
+						const viewChild = viewElement.getChild( insertIndex );
+						if ( viewChild ) {
+							this.domConverter.unbindDomElement( diff.actualDomChildren[ deleteIndex ] );
+							this.domConverter.bindElements( diff.actualDomChildren[ deleteIndex ], viewChild );
+
+							// View element may have children which needs to be updated but are not marked, mark them to update.
+							this.markedChildren.add( viewChild );
+						}
+						remove( diff.expectedDomChildren[ insertIndex ] );
+						counter.equal++;
+					} else {
+						counter[ action ]++;
+					}
+				}
+			}
+		}
 	}
 
 	/**
@@ -473,53 +563,66 @@ export default class Renderer {
 	 * filler should be rendered.
 	 */
 	_updateChildren( viewElement, options ) {
+		const diff = this._diffElementChildren( viewElement, { inlineFillerPosition: options.inlineFillerPosition, bind: true } );
+
+		if ( diff ) {
+			const actions = diff.actions;
+			const domElement = diff.domElement;
+			const actualDomChildren = diff.actualDomChildren;
+			const expectedDomChildren = diff.expectedDomChildren;
+
+			let i = 0;
+			const nodesToUnbind = new Set();
+			for ( const action of actions ) {
+				if ( action === 'insert' ) {
+					insertAt( domElement, i, expectedDomChildren[ i ] );
+					i++;
+				} else if ( action === 'delete' ) {
+					nodesToUnbind.add( actualDomChildren[ i ] );
+					remove( actualDomChildren[ i ] );
+				} else { // 'equal'
+					// Force updating text nodes inside elements which did not change and do not need to be re-rendered (#1125).
+					this._markDescendantTextToSync( this.domConverter.domToView( expectedDomChildren[ i ] ) );
+					i++;
+				}
+			}
+
+			// Unbind removed nodes. When node does not have a parent it means that it was removed from DOM tree during
+			// comparision with the expected DOM. We don't need to check child nodes, because if child node was reinserted,
+			// it was moved to DOM tree out of the removed node.
+			for ( const node of nodesToUnbind ) {
+				if ( !node.parentNode ) {
+					this.domConverter.unbindDomElement( node );
+				}
+			}
+		}
+	}
+
+	/**
+	 * Compares element actual and expected children and finds list of actions which can be used to transform
+	 * actual children to expected ones.
+	 *
+	 * @private
+	 * @param viewElement
+	 * @param {Object} options
+	 * @param {module:engine/view/position~Position} options.inlineFillerPosition The position on which the inline
+	 * filler should be rendered.
+	 * @param {Boolean} options.bind If new view elements should be bind to their corresponding DOM elements.
+	 * @returns {Object|null} result
+	 * @returns {Array} result.actions List of actions based on {@link module:utils/diff~diff} function.
+	 * @returns {Node} result.domElement ViewElement corresponding DOM element.
+	 * @returns {Array} result.actualDomChildren Current viewElement DOM children.
+	 * @returns {Array} result.expectedDomChildren Expected viewElement DOM children.
+	 *
+	 */
+	_diffElementChildren( viewElement, options = {} ) {
 		const domConverter = this.domConverter;
 		const domElement = domConverter.mapViewToDom( viewElement );
 
 		if ( !domElement ) {
 			// If there is no `domElement` it means that it was already removed from DOM.
 			// There is no need to update it. It will be updated when re-inserted.
-			return;
-		}
-
-		const domDocument = domElement.ownerDocument;
-		const filler = options.inlineFillerPosition;
-		const actualDomChildren = domElement.childNodes;
-		const expectedDomChildren = Array.from( domConverter.viewChildrenToDom( viewElement, domDocument, { bind: true } ) );
-
-		// Inline filler element has to be created during children update because we need it to diff actual dom
-		// elements with expected dom elements. We need inline filler in expected dom elements so we won't re-render
-		// text node if it is not necessary.
-		if ( filler && filler.parent == viewElement ) {
-			this._addInlineFiller( domDocument, expectedDomChildren, filler.offset );
-		}
-
-		const actions = diff( actualDomChildren, expectedDomChildren, sameNodes );
-
-		let i = 0;
-		const nodesToUnbind = new Set();
-
-		for ( const action of actions ) {
-			if ( action === 'insert' ) {
-				insertAt( domElement, i, expectedDomChildren[ i ] );
-				i++;
-			} else if ( action === 'delete' ) {
-				nodesToUnbind.add( actualDomChildren[ i ] );
-				remove( actualDomChildren[ i ] );
-			} else { // 'equal'
-				// Force updating text nodes inside elements which did not change and do not need to be re-rendered (#1125).
-				this._markDescendantTextToSync( domConverter.domToView( expectedDomChildren[ i ] ) );
-				i++;
-			}
-		}
-
-		// Unbind removed nodes. When node does not have a parent it means that it was removed from DOM tree during
-		// comparision with the expected DOM. We don't need to check child nodes, because if child node was reinserted,
-		// it was moved to DOM tree out of the removed node.
-		for ( const node of nodesToUnbind ) {
-			if ( !node.parentNode ) {
-				this.domConverter.unbindDomElement( node );
-			}
+			return null;
 		}
 
 		function sameNodes( actualDomChild, expectedDomChild ) {
@@ -540,6 +643,85 @@ export default class Renderer {
 			// Not matching types.
 			return false;
 		}
+
+		const domDocument = domElement.ownerDocument;
+		const filler = options.inlineFillerPosition;
+		const actualDomChildren = domElement.childNodes;
+		const expectedDomChildren = Array.from( domConverter.viewChildrenToDom( viewElement, domDocument, { bind: options.bind } ) );
+
+		// Inline filler element has to be created during children update because we need it to diff actual dom
+		// elements with expected dom elements. We need inline filler in expected dom elements so we won't re-render
+		// text node if it is not necessary.
+		if ( filler && filler.parent == viewElement ) {
+			this._addInlineFiller( domDocument, expectedDomChildren, filler.offset );
+		}
+
+		return {
+			actions: diff( actualDomChildren, expectedDomChildren, sameNodes ),
+			domElement,
+			actualDomChildren,
+			expectedDomChildren
+		};
+	}
+
+	/**
+	 * Finds DOM nodes which were replaced with the similar nodes (same tag name) in the `insert`/`delete`
+	 * action groups (based on actual and expected DOM). For example:
+	 *
+	 * 		Actual DOM:		<p><b>Foo</b>Bar<i>Baz</i><b>Bax</b></p>
+	 * 		Expected DOM:	<p>Bar<b>123</b><i>Baz</i><b>456</b></p>
+	 * 		Input actions:	[ insert, insert, delete, delete, equal, insert, delete ]
+	 * 		Output actions:	[ insert, replace, delete, equal, replace ]
+	 *
+	 * @private
+	 * @param {Array} actions Actions array which is result of {@link module:utils/diff~diff} function.
+	 * @param {Array} actualDom Actual DOM children
+	 * @param {Array} expectedDom Expected DOM children.
+	 * @returns {Array} Actions array modified with `replace` actions.
+	 */
+	_findReplaceActions( actions, actualDom, expectedDom ) {
+		// If there is no both 'insert' and 'delete' actions, no need to check for replaced elements.
+		if ( actions.indexOf( 'insert' ) === -1 || actions.indexOf( 'delete' ) === -1 ) {
+			return actions;
+		}
+
+		function areSimilar( domNode1, domNode2 ) {
+			return isNode( domNode1 ) && isNode( domNode2 ) &&
+				!isText( domNode1 ) && !isText( domNode2 ) &&
+				domNode1.tagName.toLowerCase() === domNode2.tagName.toLowerCase();
+		}
+
+		function calculateReplaceActions( actual, expected ) {
+			return diff( actual, expected, areSimilar ).map( x => x === 'equal' ? 'replace' : x );
+		}
+
+		let newActions = [];
+		let actualSlice = [];
+		let expectedSlice = [];
+
+		const counter = { equal: 0, insert: 0, delete: 0 };
+		for ( const action of actions ) {
+			if ( action === 'insert' ) {
+				expectedSlice.push( expectedDom[ counter.equal + counter.insert ] );
+			} else if ( action === 'delete' ) {
+				actualSlice.push( actualDom[ counter.equal + counter.delete ] );
+			} else { // equal
+				if ( expectedSlice.length && actualSlice.length ) {
+					newActions = newActions.concat( calculateReplaceActions( actualSlice, expectedSlice ) );
+				}
+				newActions.push( 'equal' );
+				// Reset stored elements on 'equal'.
+				actualSlice = [];
+				expectedSlice = [];
+			}
+			counter[ action ]++;
+		}
+
+		if ( expectedSlice.length && actualSlice.length ) {
+			newActions = newActions.concat( calculateReplaceActions( actualSlice, expectedSlice ) );
+		}
+
+		return newActions;
 	}
 
 	/**
