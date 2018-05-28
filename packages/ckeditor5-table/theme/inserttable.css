@@ -1,0 +1,42 @@
+/*
+ * Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+:root {
+	/* TODO: does it need to be a variable? */
+	--ck-insert-table-box-height: 11px;
+	--ck-insert-table-box-width: 12px;
+	--ck-insert-table-box-margin: 1px;
+	--ck-insert-table-box-border: 1px;
+	--ck-insert-table-box-border-color: #aaa;
+	--ck-insert-table-box-border-color__active: #5fa6ff;
+	--ck-insert-table-box-background__active: #c9e9ff;
+	--ck-insert-table-padding: 10px;
+}
+
+.ck .ck-table-size-choose-box-container {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	/* The width of a container should match 10 items in a row so there will be a 10x10 grid. */
+	width: calc(var(--ck-insert-table-box-width) * 10 + var(--ck-insert-table-box-margin) * 20 + var(--ck-insert-table-padding) * 2);
+	padding: var(--ck-insert-table-padding) var(--ck-insert-table-padding) 0;
+}
+
+.ck .ck-table-size-choose-box {
+	width: var(--ck-insert-table-box-width);
+	height: var(--ck-insert-table-box-height);
+	margin: var(--ck-insert-table-box-margin);
+	border: var(--ck-insert-table-box-border) solid var(--ck-insert-table-box-border-color);
+	border-radius: 1px;
+
+	&.ck-on {
+		border-color: var(--ck-insert-table-box-border-color__active);
+		background: var(--ck-insert-table-box-background__active);
+	}
+}
+
+.ck .ck-table-size-label {
+	text-align: center;
+}

@@ -1,0 +1,131 @@
+/**
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+/* globals document, Event */
+
+import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
+import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
+
+import InsertTableView from '../../src/ui/inserttableview';
+
+describe( 'InsertTableView', () => {
+	let view, locale;
+
+	beforeEach( () => {
+		locale = { t() {} };
+
+		view = new InsertTableView( locale );
+		view.render();
+
+		document.body.appendChild( view.element );
+	} );
+
+	afterEach( () => {
+		view.element.remove();
+	} );
+
+	describe( 'constructor()', () => {
+		it( 'sets view#locale', () => {
+			expect( view.locale ).to.equal( locale );
+		} );
+
+		it( 'sets view#rows to 0', () => {
+			expect( view.rows ).to.equal( 0 );
+		} );
+
+		it( 'sets view#columns to 0', () => {
+			expect( view.columns ).to.equal( 0 );
+		} );
+
+		it( 'sets #label to default rows & columns', () => {
+			expect( view.label ).to.equal( '0 x 0' );
+		} );
+
+		it( 'creates #focusTracker instance', () => {
+			expect( view.focusTracker ).to.be.instanceOf( FocusTracker );
+		} );
+
+		it( 'creates #element from template', () => {
+			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
+			expect( view.element.children ).to.have.length( 2 );
+			expect( view.element.children[ 0 ].classList.contains( 'ck-table-size-choose-box-container' ) ).to.be.true;
+			expect( view.element.children[ 1 ].classList.contains( 'ck-table-size-label' ) ).to.be.true;
+		} );
+
+		it( 'creates view#items collection', () => {
+			expect( view.items ).to.be.instanceOf( ViewCollection );
+			expect( view.items ).to.have.length( 100 );
+		} );
+
+		describe( 'view#items bindings', () => {
+			it( 'updates view#height & view#width on "over" event', () => {
+				const boxView = view.items.get( 0 );
+
+				expect( boxView.isOn ).to.be.false;
+
+				boxView.fire( 'over' );
+
+				expect( boxView.isOn ).to.be.true;
+
+				expect( view.rows ).to.equal( 1 );
+				expect( view.columns ).to.equal( 1 );
+
+				const boxViewB = view.items.get( 22 );
+
+				boxViewB.fire( 'over' );
+
+				expect( view.rows ).to.equal( 3 );
+				expect( view.columns ).to.equal( 3 );
+			} );
+		} );
+
+		describe( 'bindings', () => {
+			it( 'binds #label to rows & columns', () => {
+				view.rows = 3;
+
+				expect( view.label ).to.equal( '3 x 0' );
+
+				view.columns = 7;
+
+				expect( view.label ).to.equal( '3 x 7' );
+			} );
+
+			describe( 'DOM', () => {
+				it( 'fires execute on "click" event', () => {
+					const spy = sinon.spy();
+
+					view.on( 'execute', spy );
+
+					dispatchEvent( view.element, 'click' );
+
+					sinon.assert.calledOnce( spy );
+				} );
+
+				describe( 'view#items mousemove event', () => {
+					it( 'fires "over" event', () => {
+						const boxView = view.items.get( 0 );
+						const spy = sinon.spy();
+
+						boxView.on( 'over', spy );
+
+						dispatchEvent( boxView.element, 'mouseover' );
+
+						sinon.assert.calledOnce( spy );
+					} );
+				} );
+			} );
+		} );
+	} );
+} );
+
+function dispatchEvent( el, domEvtName ) {
+	if ( !el.parentNode ) {
+		throw new Error( 'To dispatch an event, element must be in DOM. Otherwise #target is null.' );
+	}
+
+	el.dispatchEvent( new Event( domEvtName, {
+		bubbles: true
+	} ) );
+}

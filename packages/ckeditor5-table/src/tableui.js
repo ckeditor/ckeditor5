@@ -8,10 +8,11 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import { addListToDropdown, createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 import Model from '@ckeditor/ckeditor5-ui/src/model';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
+
+import InsertTableView from './ui/inserttableview';
 
 import tableIcon from './../theme/icons/table.svg';
 import tableColumnIcon from './../theme/icons/table-column.svg';
@@ -33,22 +34,35 @@ export default class TableUI extends Plugin {
 
 		editor.ui.componentFactory.add( 'insertTable', locale => {
 			const command = editor.commands.get( 'insertTable' );
-			const buttonView = new ButtonView( locale );
+			const dropdownView = createDropdown( locale );
 
-			buttonView.bind( 'isEnabled' ).to( command );
+			dropdownView.bind( 'isEnabled' ).to( command );
 
-			buttonView.set( {
+			dropdownView.buttonView.set( {
 				icon: tableIcon,
 				label: 'Insert table',
 				tooltip: true
 			} );
 
-			buttonView.on( 'execute', () => {
-				editor.execute( 'insertTable' );
+			const insertTableView = new InsertTableView( locale );
+
+			insertTableView.delegate( 'execute' ).to( dropdownView );
+
+			dropdownView.buttonView.on( 'open', () => {
+				// Reset the chooser before showing it to the user.
+				insertTableView.rows = 0;
+				insertTableView.columns = 0;
+			} );
+
+			dropdownView.on( 'execute', () => {
+				editor.execute( 'insertTable', { rows: insertTableView.rows, columns: insertTableView.columns } );
+
 				editor.editing.view.focus();
 			} );
 
-			return buttonView;
+			dropdownView.panelView.children.add( insertTableView );
+
+			return dropdownView;
 		} );
 
 		editor.ui.componentFactory.add( 'tableColumn', locale => {

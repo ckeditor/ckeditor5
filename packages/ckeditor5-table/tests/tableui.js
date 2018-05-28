@@ -7,7 +7,6 @@
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import { _clear as clearTranslations, add as addTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import TableEditing from '../src/tableediting';
@@ -54,31 +53,50 @@ describe( 'TableUI', () => {
 			insertTable = editor.ui.componentFactory.create( 'insertTable' );
 		} );
 
-		it( 'should register insertTable buton', () => {
-			expect( insertTable ).to.be.instanceOf( ButtonView );
-			expect( insertTable.isOn ).to.be.false;
-			expect( insertTable.label ).to.equal( 'Insert table' );
-			expect( insertTable.icon ).to.match( /<svg / );
+		it( 'should register insertTable button', () => {
+			expect( insertTable ).to.be.instanceOf( DropdownView );
+			expect( insertTable.buttonView.label ).to.equal( 'Insert table' );
+			expect( insertTable.buttonView.icon ).to.match( /<svg / );
 		} );
 
 		it( 'should bind to insertTable command', () => {
 			const command = editor.commands.get( 'insertTable' );
 
 			command.isEnabled = true;
-			expect( insertTable.isOn ).to.be.false;
-			expect( insertTable.isEnabled ).to.be.true;
+			expect( insertTable.buttonView.isOn ).to.be.false;
+			expect( insertTable.buttonView.isEnabled ).to.be.true;
 
 			command.isEnabled = false;
-			expect( insertTable.isEnabled ).to.be.false;
+			expect( insertTable.buttonView.isEnabled ).to.be.false;
 		} );
 
 		it( 'should execute insertTable command on button execute event', () => {
 			const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 
+			const tableSizeView = insertTable.panelView.children.get( 0 );
+
+			tableSizeView.rows = 2;
+			tableSizeView.columns = 7;
+
 			insertTable.fire( 'execute' );
 
 			sinon.assert.calledOnce( executeSpy );
-			sinon.assert.calledWithExactly( executeSpy, 'insertTable' );
+			sinon.assert.calledWithExactly( executeSpy, 'insertTable', { rows: 2, columns: 7 } );
+		} );
+
+		it( 'should reset rows & columns on dropdown open', () => {
+			const tableSizeView = insertTable.panelView.children.get( 0 );
+
+			expect( tableSizeView.rows ).to.equal( 0 );
+			expect( tableSizeView.columns ).to.equal( 0 );
+
+			tableSizeView.rows = 2;
+			tableSizeView.columns = 2;
+
+			insertTable.buttonView.fire( 'open' );
+
+			expect( tableSizeView.rows ).to.equal( 0 );
+			expect( tableSizeView.columns ).to.equal( 0 );
 		} );
 	} );
 
