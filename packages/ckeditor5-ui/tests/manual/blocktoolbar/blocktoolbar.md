@@ -1,20 +1,19 @@
 ## Block toolbar demo
 
-1. Check if button appears next to all block elements except image (no toolbar item available).
-2. Change format of one of the block elements, panel attached to button should hide after that.
-3. Put selection in the one of the last blocks, click on button to display panel then start resize browser window
-and observe if button and panel are properly repositioned.
+1. Check if the button appears next to all block elements except the image (no toolbar item available).
+2. Change the format of one of the block elements, panel attached to button should hide after that.
+3. Put the selection in the one of the last blocks, click the button to display the panel then start resizing the browser window and observe if the button and panel are properly repositioned.
 
 ### External changes
 
 ## Typing
 
 1. Click `Start external typing`
-2. Put selection to the first paragraph (`Like all the great things...`) and click the button to open panel (be quick).
-3. Check if button and panel are repositioned correctly.
+2. Put the selection in the first paragraph (`Like all the great things...`) and click the button to open the panel (be quick).
+3. Check if the button and the panel are repositioned correctly.
 
 ## Removing
 
 1. Click `Start external deleting`
-2. Put selection to the first paragraph (`Like all the great things...`) and click the button to open panel (be quick).
-3. Check if button and panel are reattached.
+2. Put the selection in the first paragraph (`Like all the great things...`) and click the button to open the panel (be quick).
+3. Check if the button and the panel are reattached.

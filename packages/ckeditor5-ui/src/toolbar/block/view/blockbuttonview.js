@@ -15,7 +15,7 @@ const toPx = toUnit( 'px' );
 /**
  * The block button view class.
  *
- * This view represents button that will be attached next to block element where the selection is placed.
+ * This view represents a button attached next to block element where the selection is anchored.
  *
  * See {@link module:ui/toolbar/block/blocktoolbar~BlockToolbar}.
  *
