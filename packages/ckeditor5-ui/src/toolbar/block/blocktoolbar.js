@@ -25,15 +25,14 @@ import iconPilcrow from '../../../theme/icons/pilcrow.svg';
 /**
  * The block toolbar plugin.
  *
- * This plugin provides button attached to the block of content where the selection is currently placed.
- * After clicking on the button, dropdown with editor features defined through
- * {@link module:core/editor/editorconfig~EditorConfig#blockToolbar} appears.
+ * This plugin provides the button positioned next to the block of content where the selection is anchored.
+ * Upon clicking the button, a drop–down providing editor features shows up, as configured in
+ * {@link module:core/editor/editorconfig~EditorConfig#blockToolbar}.
  *
- * By default button is allowed to be displayed next to all elements marked in
- * {@link module:engine/model/schema~Schema} as `$block` elements for which there is at least
- * one available (enable) option in the toolbar.
+ * By default, the button is displayed next to all elements marked in {@link module:engine/model/schema~Schema}
+ * as `$block` for which the toolbar provides at least one option.
  *
- * By default button right bound will be attached to the left bound of the
+ * By default, the button is attached so its right boundary is touching the
  * {@link module:engine/view/editableelement~EditableElement}:
  *
  * 		 __ |
@@ -42,7 +41,7 @@ import iconPilcrow from '../../../theme/icons/pilcrow.svg';
  * 		    |  block of content that button is
  * 		    |  attached to.
  *
- * The position of the button can be adjusted using css transform:
+ * The position of the button can be adjusted using the CSS `transform`:
  *
  * 		.ck-block-toolbar-button {
  * 			transform: translateX( -10px );
@@ -73,27 +72,27 @@ export default class BlockToolbar extends Plugin {
 		editor.editing.view.addObserver( ClickObserver );
 
 		/**
-		 * Toolbar view.
+		 * The toolbar view.
 		 *
 		 * @type {module:ui/toolbar/toolbarview~ToolbarView}
 		 */
 		this.toolbarView = this._createToolbarView();
 
 		/**
-		 * Panel view.
+		 * The balloon panel view, containing the {@link #toolbarView}.
 		 *
 		 * @type {module:ui/panel/balloon/balloonpanelview~BalloonPanelView}
 		 */
 		this.panelView = this._createPanelView();
 
 		/**
-		 * Button view.
+		 * The button view, that opens the {@link #toolbarView}.
 		 *
 		 * @type {module:ui/toolbar/block/view/blockbuttonview~BlockButtonView}
 		 */
 		this.buttonView = this._createButtonView();
 
-		// Close #panelView on click out of the plugin UI.
+		// Close the #panelView upon clicking outside of the plugin UI.
 		clickOutsideHandler( {
 			emitter: this.panelView,
 			contextElements: [ this.panelView.element, this.buttonView.element ],
@@ -101,9 +100,9 @@ export default class BlockToolbar extends Plugin {
 			callback: () => this._hidePanel()
 		} );
 
-		// Try to hide button when editor switch to read-only.
-		// Do not hide when panel was visible to avoid confusing situation when
-		// UI unexpectedly disappears.
+		// Try to hide button when the editor switches to the read-only mode.
+		// Do not hide when panel if already visible to avoid a confusing UX when the panel
+		// unexpectedly disappears.
 		this.listenTo( editor, 'change:isReadOnly', () => {
 			if ( !this.panelView.isVisible ) {
 				this.buttonView.isVisible = false;
@@ -115,8 +114,9 @@ export default class BlockToolbar extends Plugin {
 	}
 
 	/**
-	 * Creates toolbar components based on given configuration.
-	 * This needs to be done when all plugins are ready.
+	 * Fill the toolbar with its items based on the configuration.
+	 *
+	 * **Note:** This needs to be done after all plugins are ready.
 	 *
 	 * @inheritDoc
 	 */
@@ -133,7 +133,7 @@ export default class BlockToolbar extends Plugin {
 	}
 
 	/**
-	 * Creates toolbar view.
+	 * Creates the {@link #toolbarView}.
 	 *
 	 * @private
 	 * @returns {module:ui/toolbar/toolbarview~ToolbarView}
@@ -154,7 +154,7 @@ export default class BlockToolbar extends Plugin {
 	}
 
 	/**
-	 * Creates panel view.
+	 * Creates the {@link #panelView}.
 	 *
 	 * @private
 	 * @returns {module:ui/panel/balloon/balloonpanelview~BalloonPanelView}
@@ -178,7 +178,7 @@ export default class BlockToolbar extends Plugin {
 	}
 
 	/**
-	 * Creates button view.
+	 * Creates the {@link #buttonView}.
 	 *
 	 * @private
 	 * @returns {module:ui/toolbar/block/view/blockbuttonview~BlockButtonView}
@@ -187,15 +187,17 @@ export default class BlockToolbar extends Plugin {
 		const editor = this.editor;
 		const buttonView = new BlockButtonView( editor.locale );
 
-		buttonView.label = editor.t( 'Edit block' );
-		buttonView.icon = iconPilcrow;
-		buttonView.withText = false;
+		buttonView.set( {
+			label: editor.t( 'Edit block' ),
+			icon: iconPilcrow,
+			withText: false
+		} );
 
-		// Bind panelView to buttonView.
+		// Bind the panelView observable properties to the buttonView.
 		buttonView.bind( 'isOn' ).to( this.panelView, 'isVisible' );
 		buttonView.bind( 'tooltip' ).to( this.panelView, 'isVisible', isVisible => !isVisible );
 
-		// Toggle panelView on buttonView#execute.
+		// Toggle the panelView upon buttonView#execute.
 		this.listenTo( buttonView, 'execute', () => {
 			if ( !this.panelView.isVisible ) {
 				this._showPanel();
@@ -211,7 +213,7 @@ export default class BlockToolbar extends Plugin {
 	}
 
 	/**
-	 * Starts displaying button next to allowed elements.
+	 * Starts displaying the button next to allowed elements.
 	 *
 	 * @private
 	 */
@@ -269,7 +271,7 @@ export default class BlockToolbar extends Plugin {
 	}
 
 	/**
-	 * Attaches #buttonView to the target block of content.
+	 * Attaches the {@link #buttonView} to the target block of content.
 	 *
 	 * @protected
 	 * @param {HTMLElement} targetElement Target element.
@@ -301,8 +303,8 @@ export default class BlockToolbar extends Plugin {
 	}
 
 	/**
-	 * Shows toolbar attached to the block button.
-	 * When toolbar is already opened then just repositions it.
+	 * Shows the {@link #toolbarView} attached to the {@link #buttonView}.
+	 * If the toolbar is already visible, then it simply repositions it.
 	 *
 	 * @private
 	 */
@@ -320,7 +322,7 @@ export default class BlockToolbar extends Plugin {
 	}
 
 	/**
-	 * Hides toolbar.
+	 * Hides the {@link #toolbarView}.
 	 *
 	 * @private
 	 * @param {Boolean} [focusEditable=false] When `true` then editable will be focused after hiding panel.
@@ -335,7 +337,7 @@ export default class BlockToolbar extends Plugin {
 }
 
 /**
- * Block toolbar configuration. Used by the {@link module:ui/toolbar/block/blocktoolbar~BlockToolbar}
+ * The block toolbar configuration. Used by the {@link module:ui/toolbar/block/blocktoolbar~BlockToolbar}
  * feature.
  *
  *		const config = {
@@ -348,7 +350,7 @@ export default class BlockToolbar extends Plugin {
  *			blockToolbar: [ 'paragraph', 'heading1', 'heading2', '|', 'bulletedList', 'numberedList' ]
  *		};
  *
- * Read also about configuring the main editor toolbar in {@link module:core/editor/editorconfig~EditorConfig#toolbar}.
+ * Read more about configuring the main editor toolbar in {@link module:core/editor/editorconfig~EditorConfig#toolbar}.
  *
  * @member {Array.<String>|Object} module:core/editor/editorconfig~EditorConfig#blockToolbar
  */
