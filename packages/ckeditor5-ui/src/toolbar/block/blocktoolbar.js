@@ -332,13 +332,6 @@ export default class BlockToolbar extends Plugin {
 			this.editor.editing.view.focus();
 		}
 	}
-
-	/**
-	 * This event is fired when {@link #checkAllowed} method is executed. It makes it possible to override
-	 * default method behavior and provides a custom rules.
-	 *
-	 * @event checkAllowed
-	 */
 }
 
 /**
