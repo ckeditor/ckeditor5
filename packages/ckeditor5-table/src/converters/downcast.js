@@ -134,8 +134,9 @@ export function downcastInsertCell( options = {} ) {
 
 		const tableRow = tableCell.parent;
 		const table = tableRow.parent;
+		const rowIndex = table.getChildIndex( tableRow );
 
-		const tableWalker = new TableWalker( table );
+		const tableWalker = new TableWalker( table, { startRow: rowIndex, endRow: rowIndex } );
 
 		const tableAttributes = {
 			headingRows: parseInt( table.getAttribute( 'headingRows' ) || 0 ),
