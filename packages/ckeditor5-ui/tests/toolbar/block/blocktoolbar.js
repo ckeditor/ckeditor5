@@ -70,11 +70,11 @@ describe( 'BlockToolbar', () => {
 			} );
 
 			it( 'should add panelView to ui.focusTracker', () => {
-				expect( editor.ui.focusTracker.isFocused ).to.false;
+				expect( editor.ui.focusTracker.isFocused ).to.be.false;
 
 				blockToolbar.panelView.element.dispatchEvent( new Event( 'focus' ) );
 
-				expect( editor.ui.focusTracker.isFocused ).to.true;
+				expect( editor.ui.focusTracker.isFocused ).to.be.true;
 			} );
 
 			it( 'should close panelView after `Esc` press and focus view document', () => {
@@ -88,7 +88,7 @@ describe( 'BlockToolbar', () => {
 					stopPropagation: () => {}
 				} );
 
-				expect( blockToolbar.panelView.isVisible ).to.false;
+				expect( blockToolbar.panelView.isVisible ).to.be.false;
 				sinon.assert.calledOnce( spy );
 			} );
 
@@ -99,7 +99,7 @@ describe( 'BlockToolbar', () => {
 				blockToolbar.panelView.isVisible = true;
 				document.body.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
 
-				expect( blockToolbar.panelView.isVisible ).to.false;
+				expect( blockToolbar.panelView.isVisible ).to.be.false;
 				sinon.assert.notCalled( spy );
 			} );
 
@@ -107,7 +107,7 @@ describe( 'BlockToolbar', () => {
 				blockToolbar.panelView.isVisible = true;
 				blockToolbar.panelView.element.dispatchEvent( new Event( 'mousedown', { bubbles: true } ) );
 
-				expect( blockToolbar.panelView.isVisible ).to.true;
+				expect( blockToolbar.panelView.isVisible ).to.be.true;
 			} );
 		} );
 
@@ -117,7 +117,7 @@ describe( 'BlockToolbar', () => {
 			} );
 
 			it( 'should add additional class to toolbar element', () => {
-				expect( blockToolbar.toolbarView.element.classList.contains( 'ck-toolbar_floating' ) ).to.true;
+				expect( blockToolbar.toolbarView.element.classList.contains( 'ck-toolbar_floating' ) ).to.be.true;
 			} );
 
 			it( 'should be added to panelView#content collection', () => {
@@ -131,11 +131,11 @@ describe( 'BlockToolbar', () => {
 			it( 'should hide panel after clicking on the button from toolbar', () => {
 				blockToolbar.buttonView.fire( 'execute' );
 
-				expect( blockToolbar.panelView.isVisible ).to.true;
+				expect( blockToolbar.panelView.isVisible ).to.be.true;
 
 				blockToolbar.toolbarView.items.get( 0 ).fire( 'execute' );
 
-				expect( blockToolbar.panelView.isVisible ).to.false;
+				expect( blockToolbar.panelView.isVisible ).to.be.false;
 			} );
 		} );
 
@@ -149,22 +149,22 @@ describe( 'BlockToolbar', () => {
 			} );
 
 			it( 'should add buttonView to ui.focusTracker', () => {
-				expect( editor.ui.focusTracker.isFocused ).to.false;
+				expect( editor.ui.focusTracker.isFocused ).to.be.false;
 
 				blockToolbar.buttonView.element.dispatchEvent( new Event( 'focus' ) );
 
-				expect( editor.ui.focusTracker.isFocused ).to.true;
+				expect( editor.ui.focusTracker.isFocused ).to.be.true;
 			} );
 
 			it( 'should pin panelView to the button and focus first item in toolbar on #execute event', () => {
-				expect( blockToolbar.panelView.isVisible ).to.false;
+				expect( blockToolbar.panelView.isVisible ).to.be.false;
 
 				const pinSpy = testUtils.sinon.spy( blockToolbar.panelView, 'pin' );
 				const focusSpy = testUtils.sinon.spy( blockToolbar.toolbarView.items.get( 0 ), 'focus' );
 
 				blockToolbar.buttonView.fire( 'execute' );
 
-				expect( blockToolbar.panelView.isVisible ).to.true;
+				expect( blockToolbar.panelView.isVisible ).to.be.true;
 				sinon.assert.calledWith( pinSpy, {
 					target: blockToolbar.buttonView.element,
 					limiter: editor.ui.view.editableElement
@@ -178,28 +178,28 @@ describe( 'BlockToolbar', () => {
 
 				blockToolbar.buttonView.fire( 'execute' );
 
-				expect( blockToolbar.panelView.isVisible ).to.false;
+				expect( blockToolbar.panelView.isVisible ).to.be.false;
 				sinon.assert.calledOnce( spy );
 			} );
 
 			it( 'should bind #isOn to panelView#isVisible', () => {
 				blockToolbar.panelView.isVisible = false;
 
-				expect( blockToolbar.buttonView.isOn ).to.false;
+				expect( blockToolbar.buttonView.isOn ).to.be.false;
 
 				blockToolbar.panelView.isVisible = true;
 
-				expect( blockToolbar.buttonView.isOn ).to.true;
+				expect( blockToolbar.buttonView.isOn ).to.be.true;
 			} );
 
 			it( 'should hide button tooltip when panelView is opened', () => {
 				blockToolbar.panelView.isVisible = false;
 
-				expect( blockToolbar.buttonView.tooltip ).to.true;
+				expect( blockToolbar.buttonView.tooltip ).to.be.true;
 
 				blockToolbar.panelView.isVisible = true;
 
-				expect( blockToolbar.buttonView.tooltip ).to.false;
+				expect( blockToolbar.buttonView.tooltip ).to.be.false;
 			} );
 		} );
 	} );
@@ -211,25 +211,25 @@ describe( 'BlockToolbar', () => {
 
 			setData( editor.model, '<foo>foo[]bar</foo>' );
 
-			expect( blockToolbar.buttonView.isVisible ).to.true;
+			expect( blockToolbar.buttonView.isVisible ).to.be.true;
 		} );
 
 		it( 'should display button when the first selected block is an object', () => {
 			setData( editor.model, '[<image src="foo.jpg"><caption>foo</caption></image>]' );
 
-			expect( blockToolbar.buttonView.isVisible ).to.true;
+			expect( blockToolbar.buttonView.isVisible ).to.be.true;
 		} );
 
 		it( 'should display button when the selection is inside the object', () => {
 			setData( editor.model, '<image src="foo.jpg"><caption>f[]oo</caption></image>' );
 
-			expect( blockToolbar.buttonView.isVisible ).to.true;
+			expect( blockToolbar.buttonView.isVisible ).to.be.true;
 		} );
 
 		it( 'should not display button when the selection is placed in a root element', () => {
 			setData( editor.model, '<paragraph>foo</paragraph>[]<paragraph>bar</paragraph>' );
 
-			expect( blockToolbar.buttonView.isVisible ).to.false;
+			expect( blockToolbar.buttonView.isVisible ).to.be.false;
 		} );
 
 		it( 'should not display button when all toolbar items are disabled for the selected element', () => {
@@ -245,7 +245,7 @@ describe( 'BlockToolbar', () => {
 
 				setData( editor.model, '[<image src="foo.jpg"></image>]' );
 
-				expect( blockToolbar.buttonView.isVisible ).to.false;
+				expect( blockToolbar.buttonView.isVisible ).to.be.false;
 
 				element.remove();
 
@@ -358,7 +358,7 @@ describe( 'BlockToolbar', () => {
 
 			editor.model.document.selection.fire( 'change:range', { directChange: true } );
 
-			expect( blockToolbar.panelView.isVisible ).to.false;
+			expect( blockToolbar.panelView.isVisible ).to.be.false;
 		} );
 
 		it( 'should not hide opened panel on a selection not direct change', () => {
@@ -366,7 +366,7 @@ describe( 'BlockToolbar', () => {
 
 			editor.model.document.selection.fire( 'change:range', { directChange: false } );
 
-			expect( blockToolbar.panelView.isVisible ).to.true;
+			expect( blockToolbar.panelView.isVisible ).to.be.true;
 		} );
 
 		it( 'should hide UI when editor switch to readonly when panel is not visible', () => {
@@ -377,8 +377,8 @@ describe( 'BlockToolbar', () => {
 
 			editor.isReadOnly = true;
 
-			expect( blockToolbar.buttonView.isVisible ).to.false;
-			expect( blockToolbar.panelView.isVisible ).to.false;
+			expect( blockToolbar.buttonView.isVisible ).to.be.false;
+			expect( blockToolbar.panelView.isVisible ).to.be.false;
 		} );
 
 		it( 'should not hide button when editor switch to readonly when panel is visible', () => {
@@ -389,8 +389,8 @@ describe( 'BlockToolbar', () => {
 
 			editor.isReadOnly = true;
 
-			expect( blockToolbar.buttonView.isVisible ).to.true;
-			expect( blockToolbar.panelView.isVisible ).to.true;
+			expect( blockToolbar.buttonView.isVisible ).to.be.true;
+			expect( blockToolbar.panelView.isVisible ).to.be.true;
 		} );
 
 		it( 'should update button position on browser resize only when button is visible', () => {

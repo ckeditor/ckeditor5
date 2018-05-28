@@ -14,11 +14,11 @@ describe( 'BlockButtonView', () => {
 	} );
 
 	it( 'should be not visible on init', () => {
-		expect( view.isVisible ).to.false;
+		expect( view.isVisible ).to.be.false;
 	} );
 
 	it( 'should create element from template', () => {
-		expect( view.element.classList.contains( 'ck-block-toolbar-button' ) ).to.true;
+		expect( view.element.classList.contains( 'ck-block-toolbar-button' ) ).to.be.true;
 	} );
 
 	describe( 'DOM binding', () => {
