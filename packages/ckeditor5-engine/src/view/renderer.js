@@ -256,8 +256,8 @@ export default class Renderer {
 
 	/**
 	 * Sorts elements set based on their nesting. The outermost elements are placed first.
-	 * It check only for 3 element types: `containerElement`, `attributeElement` and `text`. Those elements
-	 * are sorted in such order (from `containerElement` to `text`). Any other type (e.g. `rootElement` or
+	 * It check only for 2 element types: `containerElement` and `attributeElement`. Those elements
+	 * are sorted in such order (from `containerElement` to `attributeElement`). Any other type (e.g. `rootElement` or
 	 * `documentFragment`) have higher priority and is placed higher in the sorted set.
 	 * Additionally if elements are of the same type, they are both checked if one is another parent so proper
 	 * order can be established (parent first).
@@ -268,12 +268,10 @@ export default class Renderer {
 	 */
 	_sortElementsByNestingLevel( elements ) {
 		function getPriority( node ) {
-			let priority = 3;
+			let priority = 2;
 			if ( node.is( 'containerElement' ) ) {
-				priority = 2;
-			} else if ( 'attributeElement' ) {
 				priority = 1;
-			} else if ( 'text' ) {
+			} else if ( node.is( 'attributeElement' ) ) {
 				priority = 0;
 			}
 			return priority;
@@ -282,7 +280,7 @@ export default class Renderer {
 		const elementsArray = Array.from( elements );
 		elementsArray.sort( ( node1, node2 ) => {
 			let priority = getPriority( node2 ) - getPriority( node1 );
-			if ( priority === 0 && !node1.is( 'text' ) ) {
+			if ( priority === 0 ) {
 				if ( node1.parent === node2 ) {
 					priority = 1;
 				} else if ( node2.parent === node1 ) {
@@ -304,7 +302,8 @@ export default class Renderer {
 	 * @param {module:engine/view/node~Node} viewElement View element which children mappings will be updated.
 	 */
 	_updateChildrenMappings( viewElement ) {
-		const diff = this._diffElementChildren( viewElement );
+		// We do not perform any operations on DOM here so there is no need to bind view element or convert its' children.
+		const diff = this._diffElementChildren( viewElement, { bind: false, withChildren: false } );
 
 		if ( diff ) {
 			const actions = this._findReplaceActions( diff.actions, diff.actualDomChildren, diff.expectedDomChildren );
@@ -316,13 +315,12 @@ export default class Renderer {
 						const insertIndex = counter.equal + counter.insert;
 						const deleteIndex = counter.equal + counter.delete;
 						const viewChild = viewElement.getChild( insertIndex );
-						if ( viewChild ) {
-							this.domConverter.unbindDomElement( diff.actualDomChildren[ deleteIndex ] );
-							this.domConverter.bindElements( diff.actualDomChildren[ deleteIndex ], viewChild );
 
-							// View element may have children which needs to be updated but are not marked, mark them to update.
-							this.markedChildren.add( viewChild );
-						}
+						this.domConverter.unbindDomElement( diff.actualDomChildren[ deleteIndex ] );
+						this.domConverter.bindElements( diff.actualDomChildren[ deleteIndex ], viewChild );
+						// View element may have children which needs to be updated but are not marked, mark them to update.
+						this.markedChildren.add( viewChild );
+
 						remove( diff.expectedDomChildren[ insertIndex ] );
 						counter.equal++;
 					} else {
@@ -563,7 +561,8 @@ export default class Renderer {
 	 * filler should be rendered.
 	 */
 	_updateChildren( viewElement, options ) {
-		const diff = this._diffElementChildren( viewElement, { inlineFillerPosition: options.inlineFillerPosition, bind: true } );
+		const diff = this._diffElementChildren( viewElement,
+			{ inlineFillerPosition: options.inlineFillerPosition, bind: true, withChildren: true } );
 
 		if ( diff ) {
 			const actions = diff.actions;
@@ -608,6 +607,7 @@ export default class Renderer {
 	 * @param {module:engine/view/position~Position} options.inlineFillerPosition The position on which the inline
 	 * filler should be rendered.
 	 * @param {Boolean} options.bind If new view elements should be bind to their corresponding DOM elements.
+	 * @param {Boolean} options.withChildren If children of newly bound view elements should also be converted.
 	 * @returns {Object|null} result
 	 * @returns {Array} result.actions List of actions based on {@link module:utils/diff~diff} function.
 	 * @returns {Node} result.domElement ViewElement corresponding DOM element.
@@ -615,7 +615,7 @@ export default class Renderer {
 	 * @returns {Array} result.expectedDomChildren Expected viewElement DOM children.
 	 *
 	 */
-	_diffElementChildren( viewElement, options = {} ) {
+	_diffElementChildren( viewElement, options ) {
 		const domConverter = this.domConverter;
 		const domElement = domConverter.mapViewToDom( viewElement );
 
@@ -647,7 +647,7 @@ export default class Renderer {
 		const domDocument = domElement.ownerDocument;
 		const filler = options.inlineFillerPosition;
 		const actualDomChildren = domElement.childNodes;
-		const expectedDomChildren = Array.from( domConverter.viewChildrenToDom( viewElement, domDocument, { bind: options.bind } ) );
+		const expectedDomChildren = Array.from( domConverter.viewChildrenToDom( viewElement, domDocument, options ) );
 
 		// Inline filler element has to be created during children update because we need it to diff actual dom
 		// elements with expected dom elements. We need inline filler in expected dom elements so we won't re-render
