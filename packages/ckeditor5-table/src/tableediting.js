@@ -203,7 +203,7 @@ export default class TableEditing extends Plugin {
 		}
 
 		const isLastCellInRow = currentCellIndex === tableRow.childCount - 1;
-		const isLastRow = currentRow === table.childCount - 1;
+		const isLastRow = currentRowIndex === table.childCount - 1;
 
 		if ( isForward && isLastRow && isLastCellInRow ) {
 			editor.plugins.get( TableUtils ).insertRows( table, { at: table.childCount } );
@@ -213,13 +213,13 @@ export default class TableEditing extends Plugin {
 
 		// Move to first cell in next row.
 		if ( isForward && isLastCellInRow ) {
-			const nextRow = table.getChild( currentRow + 1 );
+			const nextRow = table.getChild( currentRowIndex + 1 );
 
 			cellToFocus = nextRow.getChild( 0 );
 		}
 		// Move to last cell in a previous row.
 		else if ( !isForward && isFirstCellInRow ) {
-			const previousRow = table.getChild( currentRow - 1 );
+			const previousRow = table.getChild( currentRowIndex - 1 );
 
 			cellToFocus = previousRow.getChild( previousRow.childCount - 1 );
 		}
