@@ -248,9 +248,10 @@ export default class TableUtils extends Plugin {
 	/**
 	 * Divides table cell vertically into several ones.
 	 *
-	 * The cell will visually split to more cells by updating colspans of other cells in a row and inserting rows with single cell below.
+	 * The cell will visually split to more cells by updating colspans of other cells in a column
+	 * and inserting cells (columns) after that cell.
 	 *
-	 * If in a table below cell b will be split to a 3 cells:
+	 * If in a table below cell a will be split to a 3 cells:
 	 *
 	 *		+---+---+---+
 	 *		| a | b | c |
@@ -266,7 +267,7 @@ export default class TableUtils extends Plugin {
 	 *		| d         | e | f |
 	 *		+---+---+---+---+---+
 	 *
-	 * So cells a & b will get updated `colspan` to 3 and 2 rows with single cell will be added.
+	 * So cell d will get updated `colspan` to 3 and 2 cells will be added (2 columns created).
 	 *
 	 * Splitting cell that has already a colspan attribute set will distribute cell's colspan evenly and a reminder
 	 * will be left to original cell:
@@ -277,7 +278,7 @@ export default class TableUtils extends Plugin {
 	 *		| b | c | d |
 	 *		+---+---+---+
 	 *
-	 * Splitting cell a with colspan=3 to a 2 cells will create 1 cell with colspan=1 and cell a will have colspan=2:
+	 * Splitting cell a with colspan=3 to a 2 cells will create 1 cell with colspan=2 and cell a will have colspan=1:
 	 *
 	 *		+---+---+---+
 	 *		| a     |   |
