@@ -118,8 +118,8 @@ describe( 'DomConverter', () => {
 				}
 			} );
 
-			global.window.scrollX = 10;
-			global.window.scrollY = 100;
+			testUtils.sinon.stub( global.window, 'scrollX' ).get( () => 10 );
+			testUtils.sinon.stub( global.window, 'scrollY' ).get( () => 100 );
 
 			converter.focus( viewEditable );
 			sinon.assert.calledWithExactly( scrollToSpy, 10, 100 );
