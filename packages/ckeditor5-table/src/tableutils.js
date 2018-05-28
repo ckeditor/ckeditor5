@@ -51,7 +51,7 @@ export default class TableUtils extends Plugin {
 	 *		// will return { row: 1, column: 3 }
 	 *
 	 * @param {module:engine/model/element~Element} tableCell
-	 * @returns {{row, column}}
+	 * @returns {Object} Returns a `{row, column}` object.
 	 */
 	getCellLocation( tableCell ) {
 		const tableRow = tableCell.parent;

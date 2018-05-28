@@ -17,12 +17,21 @@ import TableUtils from '../tableutils';
  */
 export default class SplitCellCommand extends Command {
 	/**
-	 * @param editor
-	 * @param options
+	 * Creates a new `SplitCellCommand` instance.
+	 *
+	 * @param {module:core/editor/editor~Editor} editor Editor on which this command will be used.
+	 * @param {Object} options
+	 * @param {String} options.direction Indicates whether the command should split cells `'horizontally'` or `'vertically'`.
 	 */
 	constructor( editor, options = {} ) {
 		super( editor );
 
+		/**
+		 * The direction indicates which cell will be split.
+		 *
+		 * @readonly
+		 * @member {String} #direction
+		 */
 		this.direction = options.direction || 'horizontally';
 	}
 

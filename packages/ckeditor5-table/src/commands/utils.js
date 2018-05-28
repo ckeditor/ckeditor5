@@ -10,8 +10,8 @@
 /**
  * Returns parent table.
  *
- * @param {module:engine/model/position} position
- * @returns {*}
+ * @param {module:engine/model/position~Position} position
+ * @returns {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment}
  */
 export function getParentTable( position ) {
 	let parent = position.parent;

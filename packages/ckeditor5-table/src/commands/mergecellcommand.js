@@ -33,7 +33,7 @@ export default class MergeCellCommand extends Command {
 		 * The direction indicates which cell will be merged to currently selected one.
 		 *
 		 * @readonly
-		 * @member {String} module:table/commands/mergecellcommand~MergeCellCommand#direction
+		 * @member {String} #direction
 		 */
 		this.direction = options.direction;
 
@@ -41,7 +41,7 @@ export default class MergeCellCommand extends Command {
 		 * Whether the merge is horizontal (left/right) or vertical (up/down).
 		 *
 		 * @readonly
-		 * @member {Boolean} module:table/commands/mergecellcommand~MergeCellCommand#isHorizontal
+		 * @member {Boolean} #isHorizontal
 		 */
 		this.isHorizontal = this.direction == 'right' || this.direction == 'left';
 	}
