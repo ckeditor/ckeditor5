@@ -66,7 +66,7 @@ export default class RemoveRowCommand extends Command {
 				.filter( ( { row, rowspan } ) => row <= currentRow - 1 && row + rowspan > currentRow )
 				.forEach( ( { cell, rowspan } ) => updateNumericAttribute( 'rowspan', rowspan - 1, cell, writer ) );
 
-			// Move cells to another row
+			// Move cells to another row.
 			const targetRow = currentRow + 1;
 			const tableWalker = new TableWalker( table, { includeSpanned: true, startRow: targetRow, endRow: targetRow } );
 

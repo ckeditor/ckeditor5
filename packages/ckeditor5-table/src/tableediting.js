@@ -65,33 +65,35 @@ export default class TableEditing extends Plugin {
 
 		// Table conversion.
 		conversion.for( 'upcast' ).add( upcastTable() );
+
 		conversion.for( 'editingDowncast' ).add( downcastInsertTable( { asWidget: true } ) );
 		conversion.for( 'dataDowncast' ).add( downcastInsertTable() );
 
-		// Insert row conversion.
-		conversion.for( 'editingDowncast' ).add( downcastInsertRow( { asWidget: true } ) );
-		conversion.for( 'dataDowncast' ).add( downcastInsertRow() );
-
 		// Table row conversion.
 		conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableRow', view: 'tr' } ) );
+
+		conversion.for( 'editingDowncast' ).add( downcastInsertRow( { asWidget: true } ) );
+		conversion.for( 'dataDowncast' ).add( downcastInsertRow() );
 		conversion.for( 'downcast' ).add( downcastRemoveRow() );
 
 		// Table cell conversion.
-		conversion.for( 'editingDowncast' ).add( downcastInsertCell( { asWidget: true } ) );
-		conversion.for( 'dataDowncast' ).add( downcastInsertCell() );
-
 		conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'td' } ) );
 		conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'th' } ) );
+
+		conversion.for( 'editingDowncast' ).add( downcastInsertCell( { asWidget: true } ) );
+		conversion.for( 'dataDowncast' ).add( downcastInsertCell() );
 
 		// Table attributes conversion.
 		conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
 		conversion.attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
 
+		// Table heading rows and cols conversion.
 		conversion.for( 'editingDowncast' ).add( downcastTableHeadingColumnsChange( { asWidget: true } ) );
 		conversion.for( 'dataDowncast' ).add( downcastTableHeadingColumnsChange() );
 		conversion.for( 'editingDowncast' ).add( downcastTableHeadingRowsChange( { asWidget: true } ) );
 		conversion.for( 'dataDowncast' ).add( downcastTableHeadingRowsChange() );
 
+		// Define all the commands.
 		editor.commands.add( 'insertTable', new InsertTableCommand( editor ) );
 		editor.commands.add( 'insertRowAbove', new InsertRowCommand( editor, { order: 'above' } ) );
 		editor.commands.add( 'insertRowBelow', new InsertRowCommand( editor, { order: 'below' } ) );
@@ -111,6 +113,7 @@ export default class TableEditing extends Plugin {
 
 		editor.commands.add( 'setTableHeaders', new SetTableHeadersCommand( editor ) );
 
+		// Handle tab key navigation.
 		this.listenTo( editor.editing.view.document, 'keydown', ( ...args ) => this._handleTabOnSelectedTable( ...args ) );
 		this.listenTo( editor.editing.view.document, 'keydown', ( ...args ) => this._handleTabInsideTable( ...args ) );
 	}
@@ -188,13 +191,13 @@ export default class TableEditing extends Plugin {
 		const tableCell = selection.focus.parent;
 		const tableRow = tableCell.parent;
 
-		const currentRow = table.getChildIndex( tableRow );
+		const currentRowIndex = table.getChildIndex( tableRow );
 		const currentCellIndex = tableRow.getChildIndex( tableCell );
 
 		const isForward = !domEventData.shiftKey;
 		const isFirstCellInRow = currentCellIndex === 0;
 
-		if ( !isForward && isFirstCellInRow && currentRow === 0 ) {
+		if ( !isForward && isFirstCellInRow && currentRowIndex === 0 ) {
 			// It's the first cell of a table - don't do anything (stay in current position).
 			return;
 		}
@@ -206,27 +209,27 @@ export default class TableEditing extends Plugin {
 			editor.plugins.get( TableUtils ).insertRows( table, { at: table.childCount } );
 		}
 
-		let moveToCell;
+		let cellToFocus;
 
 		// Move to first cell in next row.
 		if ( isForward && isLastCellInRow ) {
 			const nextRow = table.getChild( currentRow + 1 );
 
-			moveToCell = nextRow.getChild( 0 );
+			cellToFocus = nextRow.getChild( 0 );
 		}
 		// Move to last cell in a previous row.
 		else if ( !isForward && isFirstCellInRow ) {
 			const previousRow = table.getChild( currentRow - 1 );
 
-			moveToCell = previousRow.getChild( previousRow.childCount - 1 );
+			cellToFocus = previousRow.getChild( previousRow.childCount - 1 );
 		}
 		// Move to next/previous cell.
 		else {
-			moveToCell = tableRow.getChild( currentCellIndex + ( isForward ? 1 : -1 ) );
+			cellToFocus = tableRow.getChild( currentCellIndex + ( isForward ? 1 : -1 ) );
 		}
 
 		editor.model.change( writer => {
-			writer.setSelection( Range.createIn( moveToCell ) );
+			writer.setSelection( Range.createIn( cellToFocus ) );
 		} );
 	}
 }

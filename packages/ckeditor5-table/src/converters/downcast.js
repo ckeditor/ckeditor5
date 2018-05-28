@@ -162,9 +162,10 @@ export function downcastInsertCell( options = {} ) {
  * Conversion helper that acts on headingRows table attribute change.
  *
  * This converter will:
- * - Rename <td> to <th> elements or vice versa depending on headings.
- * - Create <thead> or <tbody> elements if needed.
- * - Remove empty <thead> or <tbody> if needed.
+ *
+ * * rename <td> to <th> elements or vice versa depending on headings,
+ * * create <thead> or <tbody> elements if needed,
+ * * remove empty <thead> or <tbody> if needed.
  *
  * @returns {Function} Conversion helper.
  */

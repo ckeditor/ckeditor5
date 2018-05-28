@@ -27,7 +27,7 @@ export default class TableUtils extends Plugin {
 	}
 
 	/**
-	 * Returns table cell location as in table row and column indexes.
+	 * Returns table cell location as an object with table row and table column indexes.
 	 *
 	 * For instance in a table below:
 	 *
@@ -92,20 +92,20 @@ export default class TableUtils extends Plugin {
 	 *
 	 *		editor.plugins.get( 'TableUtils' ).insertRows( table, { at: 1, rows: 2 } );
 	 *
-	 * For the table below this code
+	 * Assuming the table on the left, the above code will transform it to the table on the right:
 	 *
 	 *		row index
-	 *		  0 +---+---+---+                            +---+---+---+ 0
-	 *		    | a | b | c |                            | a | b | c |
-	 *		  1 +   +---+---+   <-- insert here at=1     +   +---+---+ 1
-	 *		    |   | d | e |                            |   |   |   |
-	 *		  2 +   +---+---+            should give:    +   +---+---+ 2
-	 *		    |   | f | g |                            |   |   |   |
-	 *		  3 +---+---+---+                            +   +---+---+ 3
-	 *		                                             |   | d | e |
-	 *		                                             +---+---+---+ 4
-	 *		                                             +   + f | g |
-	 *		                                             +---+---+---+ 5
+	 *		  0 +---+---+---+       `at` = 1,      +---+---+---+ 0
+	 *		    | a | b | c |       `rows` = 2,    | a | b | c |
+	 *		  1 +   +---+---+   <-- insert here    +   +---+---+ 1
+	 *		    |   | d | e |                      |   |   |   |
+	 *		  2 +   +---+---+       will give:     +   +---+---+ 2
+	 *		    |   | f | g |                      |   |   |   |
+	 *		  3 +---+---+---+                      +   +---+---+ 3
+	 *		                                       |   | d | e |
+	 *		                                       +---+---+---+ 4
+	 *		                                       +   + f | g |
+	 *		                                       +---+---+---+ 5
 	 *
 	 * @param {module:engine/model/element~Element} table Table model element to which insert rows.
 	 * @param {Object} options
@@ -121,7 +121,7 @@ export default class TableUtils extends Plugin {
 		model.change( writer => {
 			const headingRows = table.getAttribute( 'headingRows' ) || 0;
 
-			// Inserting rows inside heading section requires to update table's headingRows attribute as the heading section will grow.
+			// Inserting rows inside heading section requires to update `headingRows` attribute as the heading section will grow.
 			if ( headingRows > insertAt ) {
 				writer.setAttribute( 'headingRows', headingRows + rowsToInsert, table );
 			}
@@ -133,7 +133,7 @@ export default class TableUtils extends Plugin {
 				return;
 			}
 
-			// Iterate over all rows below inserted rows in order to check for rowspanned cells.
+			// Iterate over all rows above inserted rows in order to check for rowspanned cells.
 			const tableIterator = new TableWalker( table, { endRow: insertAt } );
 
 			// Will hold number of cells needed to insert in created rows.
@@ -166,21 +166,21 @@ export default class TableUtils extends Plugin {
 	 *
 	 *		editor.plugins.get( 'TableUtils' ).insertColumns( table, { at: 1, columns: 2 } );
 	 *
-	 * For the table below this code
+	 * Assuming the table on the left, the above code will transform it to the table on the right:
 	 *
-	 *		0   1   2   3                     0   1   2   3   4   5
-	 *		+---+---+---+                     +---+---+---+---+---+
-	 *		| a     | b |                     | a             | b |
-	 *		+       +---+                     +               +---+
-	 *		|       | c |                     |               | c |
-	 *		+---+---+---+      should give:   +---+---+---+---+---+
-	 *		| d | e | f |                     | d |   |   | e | f |
-	 *		+---+   +---+                     +---+---+---+  +---+
-	 *		| g |   | h |                     | g |   |   |   | h |
-	 *		+---+---+---+                     +---+---+---+---+---+
-	 *		| i         |                     | i                 |
-	 *		+---+---+---+                     +---+---+---+---+---+
-	 *		    ^________ insert here at=1
+	 *		0   1   2   3                   0   1   2   3   4   5
+	 *		+---+---+---+                   +---+---+---+---+---+
+	 *		| a     | b |                   | a             | b |
+	 *		+       +---+                   +               +---+
+	 *		|       | c |                   |               | c |
+	 *		+---+---+---+     will give:    +---+---+---+---+---+
+	 *		| d | e | f |                   | d |   |   | e | f |
+	 *		+---+   +---+                   +---+---+---+  +---+
+	 *		| g |   | h |                   | g |   |   |   | h |
+	 *		+---+---+---+                   +---+---+---+---+---+
+	 *		| i         |                   | i                 |
+	 *		+---+---+---+                   +---+---+---+---+---+
+	 *		    ^---- insert here, `at` = 1, `columns` = 2
 	 *
 	 * @param {module:engine/model/element~Element} table Table model element to which insert columns.
 	 * @param {Object} options
@@ -196,7 +196,7 @@ export default class TableUtils extends Plugin {
 		model.change( writer => {
 			const headingColumns = table.getAttribute( 'headingColumns' );
 
-			// Inserting rows inside heading section requires to update table's headingRows attribute as the heading section will grow.
+			// Inserting columns inside heading section requires to update `headingColumns` attribute as the heading section will grow.
 			if ( insertAt < headingColumns ) {
 				writer.setAttribute( 'headingColumns', headingColumns + columnsToInsert, table );
 			}
@@ -217,18 +217,18 @@ export default class TableUtils extends Plugin {
 			for ( const { row, column, cell, colspan, rowspan, cellIndex } of tableWalker ) {
 				// When iterating over column the table walker outputs either:
 				// - cells at given column index (cell "e" from method docs),
-				// - spanned columns (includeSpanned option) (spanned cell from row between cells "g" and "h" - spanned by "e"),
+				// - spanned columns (spanned cell from row between cells "g" and "h" - spanned by "e", only if `includeSpanned: true`),
 				// - or a cell from the same row which spans over this column (cell "a").
 
 				if ( column !== insertAt ) {
-					// If column is different then insertAt it is a cell that spans over an inserted column (cell "a" & "i").
-					// For such cells expand them of number of columns inserted.
+					// If column is different than `insertAt`, it is a cell that spans over an inserted column (cell "a" & "i").
+					// For such cells expand them by a number of columns inserted.
 					writer.setAttribute( 'colspan', colspan + columnsToInsert, cell );
 
-					// The includeSpanned option will output the "empty"/spanned column so skip this row already.
+					// The `includeSpanned` option will output the "empty"/spanned column so skip this row already.
 					tableWalker.skipRow( row );
 
-					// This cell will overlap cells in rows below so skip them also (because of includeSpanned option) - (cell "a")
+					// This cell will overlap cells in rows below so skip them also (because of `includeSpanned` option) - (cell "a")
 					if ( rowspan > 1 ) {
 						for ( let i = row + 1; i < row + rowspan; i++ ) {
 							tableWalker.skipRow( i );
@@ -251,7 +251,7 @@ export default class TableUtils extends Plugin {
 	 * The cell will visually split to more cells by updating colspans of other cells in a column
 	 * and inserting cells (columns) after that cell.
 	 *
-	 * If in a table below cell a will be split to a 3 cells:
+	 * In the table below, if cell "a" is split to 3 cells:
 	 *
 	 *		+---+---+---+
 	 *		| a | b | c |
@@ -259,7 +259,7 @@ export default class TableUtils extends Plugin {
 	 *		| d | e | f |
 	 *		+---+---+---+
 	 *
-	 * will result in a table below:
+	 * it will result in the table below:
 	 *
 	 *		+---+---+---+---+---+
 	 *		| a |   |   | b | c |
@@ -269,7 +269,7 @@ export default class TableUtils extends Plugin {
 	 *
 	 * So cell d will get updated `colspan` to 3 and 2 cells will be added (2 columns created).
 	 *
-	 * Splitting cell that has already a colspan attribute set will distribute cell's colspan evenly and a reminder
+	 * Splitting cell that already has a colspan attribute set will distribute cell's colspan evenly and a reminder
 	 * will be left to original cell:
 	 *
 	 *		+---+---+---+
@@ -463,7 +463,9 @@ export default class TableUtils extends Plugin {
 				}
 
 				for ( const { column, row, cellIndex } of tableMap ) {
-					// As newly created cells and split cell might have rowspan the insertion of new cells must go to appropriate rows:
+					// As both newly created cells and the split cell might have rowspan,
+					// the insertion of new cells must go to appropriate rows:
+					//
 					// 1. It's a row after split cell + it's height.
 					const isAfterSplitCell = row >= splitCellRow + updatedSpan;
 					// 2. Is on the same column.
@@ -479,7 +481,7 @@ export default class TableUtils extends Plugin {
 				}
 			}
 
-			// Second check - the cell has rowspan of 1 or we need to create more cells then the currently one spans over.
+			// Second check - the cell has rowspan of 1 or we need to create more cells than the current cell spans over.
 			if ( rowspan < numberOfCells ) {
 				// We already split the cell in check one so here we split to the remaining number of cells only.
 				const cellsToInsert = numberOfCells - rowspan;
