@@ -684,8 +684,7 @@ function attachBindToListeners( observable, toBindings ) {
  */
 
 /**
- * Fired when a property value is going to be changed but is not changed yet
- * (before the {@link module:utils/observablemixin~ObservableMixin#change} event is fired).
+ * Fired when a property value is going to be changed but is not changed yet (before the `change` event is fired).
  *
  * When some value will be set as {@link module:utils/eventinfo~EventInfo#return event return value} then
  * this value become an observalbe new value.
