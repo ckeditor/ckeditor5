@@ -17,4 +17,4 @@ and observe if button and panel are properly repositioned.
 
 1. Click `Start external deleting`
 2. Put selection to the first paragraph (`Like all the great things...`) and click the button to open panel (be quick).
-3. Check if button and panel are removed.
+3. Check if button and panel are reattached.
