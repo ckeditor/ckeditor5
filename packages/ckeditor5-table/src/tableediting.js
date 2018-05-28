@@ -39,7 +39,7 @@ import TableUtils from './tableutils';
  *
  * @extends module:core/plugin~Plugin
  */
-export default class TablesEditing extends Plugin {
+export default class TableEditing extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
