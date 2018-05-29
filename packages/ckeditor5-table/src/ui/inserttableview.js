@@ -94,57 +94,75 @@ export default class InsertTableView extends View {
 			}
 		} );
 
-		for ( let i = 0; i < 100; i++ ) {
-			const view = new TableSizeChooser();
+		// Add grid boxes to table selection view.
+		for ( let index = 0; index < 100; index++ ) {
+			const boxView = new TableSizeGridBoxView();
 
-			view.on( 'over', () => {
-				const row = parseInt( i / 10 );
-				const column = i % 10;
+			// Listen to box view 'over' event which indicates that mouse is over this box.
+			boxView.on( 'over', () => {
+				// Translate box index to the row & column index.
+				const row = parseInt( index / 10 );
+				const column = index % 10;
 
+				// As row & column indexes are zero-based transform it to number of selected rows & columns.
 				this.set( 'rows', row + 1 );
 				this.set( 'columns', column + 1 );
 			} );
 
-			this.items.add( view );
+			this.items.add( boxView );
 		}
 
 		this.on( 'change:columns', () => {
-			this._updateItems();
+			this._highlightGridBoxes();
 		} );
 
 		this.on( 'change:rows', () => {
-			this._updateItems();
+			this._highlightGridBoxes();
 		} );
 	}
 
 	/**
-	 * Enables current table size selection depending on rows & columns set.
+	 * Highlights grid boxes depending on rows & columns selected.
 	 *
 	 * @private
 	 */
-	_updateItems() {
-		const row = this.rows - 1;
-		const column = this.columns - 1;
+	_highlightGridBoxes() {
+		const rows = this.rows;
+		const columns = this.columns;
 
-		this.items.map( ( item, index ) => {
+		this.items.map( ( boxView, index ) => {
+			// Translate box index to the row & column index.
 			const itemRow = parseInt( index / 10 );
 			const itemColumn = index % 10;
 
-			if ( itemRow <= row && itemColumn <= column ) {
-				item.set( 'isOn', true );
-			} else {
-				item.set( 'isOn', false );
-			}
+			// Grid box is highlighted when its row & column index belongs to selected number of rows & columns.
+			const isOn = itemRow < rows && itemColumn < columns;
+
+			boxView.set( 'isOn', isOn );
 		} );
 	}
 }
 
-class TableSizeChooser extends View {
+/**
+ * Single grid box view element.
+ *
+ * @private
+ */
+class TableSizeGridBoxView extends View {
+	/**
+	 * @inheritDoc
+	 */
 	constructor( locale ) {
 		super( locale );
 
 		const bind = this.bindTemplate;
 
+		/**
+		 * Controls whether the grid box view is "on".
+		 *
+		 * @observable
+		 * @member {Boolean} #isOn
+		 */
 		this.set( 'isOn', false );
 
 		this.setTemplate( {
