@@ -52,6 +52,7 @@
     "@ckeditor/ckeditor5-list": "^10.0.0",
     "@ckeditor/ckeditor5-markdown-gfm": "^10.0.0",
     "@ckeditor/ckeditor5-paragraph": "^10.0.0",
+    "@ckeditor/ckeditor5-table": "^0.0.1",
     "@ckeditor/ckeditor5-theme-lark": "^10.0.0",
     "@ckeditor/ckeditor5-typing": "^10.0.0",
     "@ckeditor/ckeditor5-ui": "^10.0.0",
