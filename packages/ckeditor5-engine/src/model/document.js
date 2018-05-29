@@ -147,11 +147,11 @@ export default class Document {
 		// Wait for `_change` event from model, which signalizes that outermost change block has finished.
 		// When this happens, check if there were any changes done on document, and if so, call post fixers,
 		// fire `change` event for features and conversion and then reset the differ.
+		// Fire `change:data` event when at least one operation changes the data model.
 		this.listenTo( model, '_change', ( evt, writer ) => {
 			if ( !this.differ.isEmpty || hasSelectionChanged ) {
 				this._callPostFixers( writer );
 
-				// Fire `change:data` event when at least one operation changes the data model.
 				if ( !this.differ.isEmpty && isBatchAffectingData( writer.batch ) ) {
 					this.fire( 'change:data', writer.batch );
 				} else {

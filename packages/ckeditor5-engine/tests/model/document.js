@@ -405,7 +405,7 @@ describe( 'Document', () => {
 			sinon.assert.notCalled( spy );
 		} );
 
-		it( 'should fire if default marker operation is applied', () => {
+		it( 'should be fired if default marker operation is applied', () => {
 			const root = doc.createRoot();
 			const spy = sinon.spy();
 
@@ -421,7 +421,7 @@ describe( 'Document', () => {
 			sinon.assert.calledOnce( spy );
 		} );
 
-		it( 'should not fire if the marker operation is applied and marker does not affect data', () => {
+		it( 'should not be fired if the marker operation is applied and marker does not affect data', () => {
 			const root = doc.createRoot();
 			const spy = sinon.spy();
 
@@ -435,6 +435,22 @@ describe( 'Document', () => {
 			} );
 
 			sinon.assert.notCalled( spy );
+		} );
+
+		it( 'should not be fired if writer was used on non-document tree', () => {
+			const spy = sinon.spy();
+
+			doc.on( 'change:data', ( evt, batch ) => {
+				spy();
+				expect( batch ).to.be.instanceof( Batch );
+			} );
+
+			model.change( writer => {
+				const docFrag = writer.createDocumentFragment();
+				writer.insertText( 'foo', docFrag, 0 );
+			} );
+
+			expect( spy.calledOnce ).to.be.false;
 		} );
 	} );
 
