@@ -1,0 +1,75 @@
+/**
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+/**
+ * @module table/commands/removecolumncommand
+ */
+
+import Command from '@ckeditor/ckeditor5-core/src/command';
+
+import TableWalker from '../tablewalker';
+import TableUtils from '../tableutils';
+import { updateNumericAttribute } from './utils';
+
+/**
+ * The split cell command.
+ *
+ * @extends module:core/command~Command
+ */
+export default class RemoveColumnCommand extends Command {
+	/**
+	 * @inheritDoc
+	 */
+	refresh() {
+		const editor = this.editor;
+		const selection = editor.model.document.selection;
+		const tableUtils = editor.plugins.get( TableUtils );
+
+		const selectedElement = selection.getFirstPosition().parent;
+
+		this.isEnabled = selectedElement.is( 'tableCell' ) && tableUtils.getColumns( selectedElement.parent.parent ) > 1;
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	execute() {
+		const model = this.editor.model;
+		const selection = model.document.selection;
+
+		const firstPosition = selection.getFirstPosition();
+
+		const tableCell = firstPosition.parent;
+		const tableRow = tableCell.parent;
+		const table = tableRow.parent;
+
+		const headingColumns = table.getAttribute( 'headingColumns' ) || 0;
+		const row = table.getChildIndex( tableRow );
+
+		// Cache the table before removing or updating colspans.
+		const tableMap = [ ...new TableWalker( table ) ];
+
+		// Get column index of removed column.
+		const cellData = tableMap.find( value => value.cell === tableCell );
+		const removedColumn = cellData.column;
+
+		model.change( writer => {
+			// Update heading columns attribute if removing a row from head section.
+			if ( headingColumns && row <= headingColumns ) {
+				writer.setAttribute( 'headingColumns', headingColumns - 1, table );
+			}
+
+			for ( const { cell, column, colspan } of tableMap ) {
+				// If colspaned cell overlaps removed column decrease it's span.
+				if ( column <= removedColumn && colspan > 1 && column + colspan > removedColumn ) {
+					updateNumericAttribute( 'colspan', colspan - 1, cell, writer );
+				} else if ( column === removedColumn ) {
+					// The cell in removed column has colspan of 1.
+					writer.remove( cell );
+				}
+			}
+		} );
+	}
+}
