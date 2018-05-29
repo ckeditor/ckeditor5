@@ -2,7 +2,7 @@
  * Copyright (c) 2016 - 2017, CKSource - Frederico Knabben. All rights reserved.
  */
 
-import BlockButtonView from '../../../../src/toolbar/block/view/blockbuttonview';
+import BlockButtonView from '../../../src/toolbar/block/blockbuttonview';
 
 describe( 'BlockButtonView', () => {
 	let view;

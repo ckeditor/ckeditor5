@@ -3,12 +3,12 @@
  */
 
 /**
- * @module ui/toolbar/block/view/blockbuttonview
+ * @module ui/toolbar/block/blockbuttonview
  */
 
-import ButtonView from '../../../button/buttonview';
+import ButtonView from '../../button/buttonview';
 import toUnit from '@ckeditor/ckeditor5-utils/src/dom/tounit';
-import '../../../../theme/components/toolbar/blocktoolbar.css';
+import '../../../theme/components/toolbar/blocktoolbar.css';
 
 const toPx = toUnit( 'px' );
 

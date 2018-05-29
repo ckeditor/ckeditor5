@@ -10,7 +10,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 
-import BlockButtonView from './view/blockbuttonview';
+import BlockButtonView from './blockbuttonview';
 import BalloonPanelView from '../../panel/balloon/balloonpanelview';
 import ToolbarView from '../toolbarview';
 
@@ -88,7 +88,7 @@ export default class BlockToolbar extends Plugin {
 		/**
 		 * The button view, that opens the {@link #toolbarView}.
 		 *
-		 * @type {module:ui/toolbar/block/view/blockbuttonview~BlockButtonView}
+		 * @type {module:ui/toolbar/block/blockbuttonview~BlockButtonView}
 		 */
 		this.buttonView = this._createButtonView();
 
@@ -181,7 +181,7 @@ export default class BlockToolbar extends Plugin {
 	 * Creates the {@link #buttonView}.
 	 *
 	 * @private
-	 * @returns {module:ui/toolbar/block/view/blockbuttonview~BlockButtonView}
+	 * @returns {module:ui/toolbar/block/blockbuttonview~BlockButtonView}
 	 */
 	_createButtonView() {
 		const editor = this.editor;

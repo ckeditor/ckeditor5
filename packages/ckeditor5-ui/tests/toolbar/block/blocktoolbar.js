@@ -10,7 +10,7 @@ import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobs
 import BlockToolbar from '../../../src/toolbar/block/blocktoolbar';
 import ToolbarView from '../../../src/toolbar/toolbarview';
 import BalloonPanelView from '../../../src/panel/balloon/balloonpanelview';
-import BlockButtonView from './../../../src/toolbar/block/view/blockbuttonview';
+import BlockButtonView from '../../../src/toolbar/block/blockbuttonview';
 
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import HeadingButtonsUI from '@ckeditor/ckeditor5-heading/src/headingbuttonsui';
