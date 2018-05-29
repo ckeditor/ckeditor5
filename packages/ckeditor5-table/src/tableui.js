@@ -37,6 +37,7 @@ export default class TableUI extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
+		const t = this.editor.t;
 
 		editor.ui.componentFactory.add( 'insertTable', locale => {
 			const command = editor.commands.get( 'insertTable' );
@@ -47,7 +48,7 @@ export default class TableUI extends Plugin {
 			// Decorate dropdown's button.
 			dropdownView.buttonView.set( {
 				icon: tableIcon,
-				label: 'Insert table',
+				label: t( 'Insert table' ),
 				tooltip: true
 			} );
 
@@ -73,10 +74,10 @@ export default class TableUI extends Plugin {
 
 		editor.ui.componentFactory.add( 'tableColumn', locale => {
 			const options = [
-				{ commandName: 'setColumnHeader', label: 'Header column', bindIsActive: true },
-				{ commandName: 'insertColumnBefore', label: 'Insert column before' },
-				{ commandName: 'insertColumnAfter', label: 'Insert column after' },
-				{ commandName: 'removeColumn', label: 'Delete column' }
+				{ commandName: 'setColumnHeader', label: t( 'Header column' ), bindIsActive: true },
+				{ commandName: 'insertColumnBefore', label: t( 'Insert column before' ) },
+				{ commandName: 'insertColumnAfter', label: t( 'Insert column after' ) },
+				{ commandName: 'removeColumn', label: t( 'Delete column' ) }
 			];
 
 			return this._prepareDropdown( 'Column', tableColumnIcon, options, locale );
@@ -84,10 +85,10 @@ export default class TableUI extends Plugin {
 
 		editor.ui.componentFactory.add( 'tableRow', locale => {
 			const options = [
-				{ commandName: 'setRowHeader', label: 'Header row', bindIsActive: true },
-				{ commandName: 'insertRowBelow', label: 'Insert row below' },
-				{ commandName: 'insertRowAbove', label: 'Insert row above' },
-				{ commandName: 'removeRow', label: 'Delete row' }
+				{ commandName: 'setRowHeader', label: t( 'Header row' ), bindIsActive: true },
+				{ commandName: 'insertRowBelow', label: t( 'Insert row below' ) },
+				{ commandName: 'insertRowAbove', label: t( 'Insert row above' ) },
+				{ commandName: 'removeRow', label: t( 'Delete row' ) }
 			];
 
 			return this._prepareDropdown( 'Row', tableRowIcon, options, locale );
@@ -95,12 +96,12 @@ export default class TableUI extends Plugin {
 
 		editor.ui.componentFactory.add( 'mergeCell', locale => {
 			const options = [
-				{ commandName: 'mergeCellUp', label: 'Merge cell up' },
-				{ commandName: 'mergeCellRight', label: 'Merge cell right' },
-				{ commandName: 'mergeCellDown', label: 'Merge cell down' },
-				{ commandName: 'mergeCellLeft', label: 'Merge cell left' },
-				{ commandName: 'splitCellVertically', label: 'Split cell vertically' },
-				{ commandName: 'splitCellHorizontally', label: 'Split cell horizontally' }
+				{ commandName: 'mergeCellUp', label: t( 'Merge cell up' ) },
+				{ commandName: 'mergeCellRight', label: t( 'Merge cell right' ) },
+				{ commandName: 'mergeCellDown', label: t( 'Merge cell down' ) },
+				{ commandName: 'mergeCellLeft', label: t( 'Merge cell left' ) },
+				{ commandName: 'splitCellVertically', label: t( 'Split cell vertically' ) },
+				{ commandName: 'splitCellHorizontally', label: t( 'Split cell horizontally' ) }
 			];
 
 			return this._prepareDropdown( 'Merge cell', tableMergeCellIcon, options, locale );
