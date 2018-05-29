@@ -79,7 +79,7 @@ export default class SetHeaderRowCommand extends Command {
 	_isInHeading( tableCell, table ) {
 		const headingRows = parseInt( table.getAttribute( 'headingRows' ) || 0 );
 
-		return headingRows && tableCell.parent.index < headingRows;
+		return !!headingRows && tableCell.parent.index < headingRows;
 	}
 }
 

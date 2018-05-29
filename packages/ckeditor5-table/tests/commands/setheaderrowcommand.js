@@ -93,6 +93,15 @@ describe( 'HeaderRowCommand', () => {
 	} );
 
 	describe( 'value', () => {
+		it( 'should be false if selection is not in a table without heading row', () => {
+			setData( model, modelTable( [
+				[ '01[]', '02' ],
+				[ '11', '12' ]
+			] ) );
+
+			expect( command.value ).to.be.false;
+		} );
+
 		it( 'should be false if selection is not in a heading row', () => {
 			setData( model, modelTable( [
 				[ '01', '02' ],
