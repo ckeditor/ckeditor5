@@ -113,7 +113,7 @@ will result in:
 <input class="foo ck-enabled" type="text" placeholder="Type some text" />
 ```
 
-Alternatively, they can [bind](#event-system-and-observables) them directly to their own observable properties:
+Alternatively, they can {@link framework/guides/architecture/core-editor-architecture#event-system-and-observables bind} them directly to their own observable properties:
 
 ```js
 view.bind( 'placeholder', 'isEnabled' ).to( observable, 'placeholderText', 'isEnabled' );
@@ -154,7 +154,7 @@ view.element.placeholder = 'A new placeholder';
 	Check out the {@link module:ui/template~TemplateDefinition} to learn more about the template syntax and other advanced concepts.
 </info-box>
 
-Templates support [observable properties](#event-system-and-observables) bindings and handle native DOM events. A very simple template can look like this:
+Templates support {@link framework/guides/architecture/core-editor-architecture#event-system-and-observables observable properties} bindings and handle native DOM events. A very simple template can look like this:
 
 ```js
 new Template( {
