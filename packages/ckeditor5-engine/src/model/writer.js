@@ -895,7 +895,7 @@ export default class Writer {
 	 *
 	 *		updateMarker( marker, { usingOperation: true } );
 	 *
-	 * Change marker's option (inform engine, that marker don't affect's the data model):
+	 * Change marker's option (inform engine, that the marker doesn't affect the data model):
 	 *
 	 *		updateMarker( markerName, { affectData: false } );
 	 *
@@ -907,7 +907,7 @@ export default class Writer {
 	 * See {@link module:engine/model/markercollection~Marker#managedUsingOperations}.
 	 * @param {Boolean} [options.affectsData] Flag indicating that the marker changes the data model.
 	 */
-	updateMarker( markerOrName, options ) {
+	updateMarker( markerOrName, options = {} ) {
 		this._assertWriterUsedCorrectly();
 
 		const markerName = typeof markerOrName == 'string' ? markerOrName : markerOrName.name;
@@ -922,17 +922,11 @@ export default class Writer {
 			throw new CKEditorError( 'writer-updateMarker-marker-not-exists: Marker with provided name does not exists.' );
 		}
 
-		options = options || {};
-
 		const hasUsingOperationDefined = typeof options.usingOperation == 'boolean';
 		const affectsDataDefined = typeof options.affectsData == 'boolean';
 
-		// Use marker's affectsData property if this option is not provided.
+		// Use previously defined marker's affectsData if the property is not provided.
 		const affectsData = affectsDataDefined ? options.affectsData : currentMarker.affectsData;
-
-		// if ( affectsData === undefined ) {
-		// 	affectsData = true;
-		// }
 
 		if ( !hasUsingOperationDefined && !options.range && !affectsDataDefined ) {
 			/**
@@ -957,7 +951,6 @@ export default class Writer {
 			} else {
 				// If marker changes to a marker that do not use operations then we need to create additional operation
 				// that removes that marker first.
-				const currentRange = currentMarker.getRange();
 				applyMarkerOperation( this, markerName, currentRange, null, affectsData );
 
 				// Although not managed the marker itself should stay in model and its range should be preserver or changed to passed range.
