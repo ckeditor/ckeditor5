@@ -8,8 +8,6 @@
  */
 
 import View from '@ckeditor/ckeditor5-ui/src/view';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
-import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
 
 import './../../theme/inserttable.css';
 
@@ -36,34 +34,6 @@ export default class InsertTableView extends View {
 		 * @member {module:ui/viewcollection~ViewCollection}
 		 */
 		this.items = this.createCollection();
-
-		/**
-		 * Tracks information about DOM focus in the list.
-		 *
-		 * @readonly
-		 * @member {module:utils/focustracker~FocusTracker}
-		 */
-		this.focusTracker = new FocusTracker();
-
-		/**
-		 * Helps cycling over focusable {@link #items} in the toolbar.
-		 *
-		 * @readonly
-		 * @protected
-		 * @member {module:ui/focuscycler~FocusCycler}
-		 */
-		this._focusCycler = new FocusCycler( {
-			focusables: this.items,
-			focusTracker: this.focusTracker,
-			keystrokeHandler: this.keystrokes,
-			actions: {
-				// Navigate toolbar items backwards using the arrow[left,up] keys.
-				focusPrevious: [ 'arrowleft', 'arrowup' ],
-
-				// Navigate toolbar items forwards using the arrow[right,down] keys.
-				focusNext: [ 'arrowright', 'arrowdown' ]
-			}
-		} );
 
 		/**
 		 * Currently selected number of rows of a new table.

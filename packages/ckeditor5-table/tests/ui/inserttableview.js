@@ -5,7 +5,6 @@
 
 /* globals document, Event */
 
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
 
 import InsertTableView from '../../src/ui/inserttableview';
@@ -41,10 +40,6 @@ describe( 'InsertTableView', () => {
 
 		it( 'sets #label to default rows & columns', () => {
 			expect( view.label ).to.equal( '0 x 0' );
-		} );
-
-		it( 'creates #focusTracker instance', () => {
-			expect( view.focusTracker ).to.be.instanceOf( FocusTracker );
 		} );
 
 		it( 'creates #element from template', () => {
