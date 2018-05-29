@@ -70,14 +70,14 @@ export default class InsertTableView extends View {
 				{
 					tag: 'div',
 					attributes: {
-						class: [ 'ck-table-size-choose-box-container' ]
+						class: [ 'ck-insert-table-dropdown__grid' ]
 					},
 					children: this.items
 				},
 				{
 					tag: 'div',
 					attributes: {
-						class: [ 'ck-table-size-label' ]
+						class: [ 'ck-insert-table-dropdown__label' ]
 					},
 					children: [
 						{
@@ -151,7 +151,7 @@ class TableSizeChooser extends View {
 			tag: 'div',
 			attributes: {
 				class: [
-					'ck-table-size-choose-box',
+					'ck-insert-table-dropdown-grid-box',
 					bind.if( 'isOn', 'ck-on' )
 				]
 			},

@@ -45,8 +45,8 @@ describe( 'InsertTableView', () => {
 		it( 'creates #element from template', () => {
 			expect( view.element.classList.contains( 'ck' ) ).to.be.true;
 			expect( view.element.children ).to.have.length( 2 );
-			expect( view.element.children[ 0 ].classList.contains( 'ck-table-size-choose-box-container' ) ).to.be.true;
-			expect( view.element.children[ 1 ].classList.contains( 'ck-table-size-label' ) ).to.be.true;
+			expect( view.element.children[ 0 ].classList.contains( 'ck-insert-table-dropdown__grid' ) ).to.be.true;
+			expect( view.element.children[ 1 ].classList.contains( 'ck-insert-table-dropdown__label' ) ).to.be.true;
 		} );
 
 		it( 'creates view#items collection', () => {
