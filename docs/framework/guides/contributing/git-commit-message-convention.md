@@ -5,7 +5,7 @@ order: 30
 
 # Git commit message convention
 
-Every commit made *directly* to the `master` branch must follow the below convention. Based on commits in the `master` branch CKEditor 5's release tools will generate changelog entries for the current release.
+Every commit made *directly* to the `master` branch must follow the below convention. Based on commits in the `master` branch CKEditor 5 release tools will generate changelog entries for the current release.
 
 <info-box>
 	Commits in the ticket branches are not analyzed for the changelog and do not have to follow any specific convention (other than finishing sentences with periods). In case of ticket branches, **only merge commits are analyzed**.
@@ -42,7 +42,7 @@ BREAKING CHANGE: Another breaking change if needed. Closes #YYY.
 | Revert | `patch` | Revert of some commit. | Hidden |
 | Release | `patch` | A special type of commit used by the release tools. | Hidden |
 
-Each commit can contain additional notes which will be inserted to the changelog:
+Each commit can contain additional notes which will be inserted into the changelog:
 
 | Type | Is backward compatible? |
 | --- | --- |
@@ -124,7 +124,7 @@ Changelog
 
 When making a pull request its author may (it is recommended in the pull request template) propose a merge commit message.
 
-The reviewer's duty is to validate the proposed message and apply necessary changes (the PR's description can be edited).
+The reviewer's duty is to validate the proposed message and apply necessary changes (the PR description can be edited).
 
 Things like:
 

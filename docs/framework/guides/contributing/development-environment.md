@@ -5,7 +5,7 @@ order: 10
 
 # Development environment
 
-The CKEditor 5 codebase is divided into multiple [npm](http://npmjs.com/) packages, each developed in a separate Git repository. The main package is [ckeditor5](https://github.com/ckeditor/ckeditor5) which installs all project dependencies and various development-related resources such as:
+The CKEditor 5 codebase is divided into multiple [npm](http://npmjs.com/) packages, each developed in a separate Git repository. The main package is [`ckeditor5`](https://github.com/ckeditor/ckeditor5) which installs all project dependencies and various development-related resources such as:
 
 * the testing environment setup,
 * configuration for [mgit](https://www.npmjs.com/package/mgit2) (a multi-repo management tool) and [Lerna.js](https://github.com/lerna/lerna) (a multi-package management tool),
@@ -57,7 +57,7 @@ This may take a [while](https://github.com/npm/npm/issues/10380)...
 
 ### Switching to development version of packages
 
-The above steps should install all the packages from npm, which means that you will have the latest releases of all of them. They are available in `node_modules/@ckeditor/` (we are using [scoped packages](https://docs.npmjs.com/misc/scope), hence the unusual directory).
+The steps above should install all the packages from npm, which means that you will have the latest releases of all of them. They are available in `node_modules/@ckeditor/` (we are using [scoped packages](https://docs.npmjs.com/misc/scope), hence the unusual directory).
 
 In order to work with development versions of all the official packages, it is recommended to use mgit and Lerna. The former will clone all package repositories and the latter will be able to symlink them, so they create a correct directory structure, understandable by Node.js-compliant tools (like webpack or Browserify).
 
@@ -87,7 +87,7 @@ lerna bootstrap
 
 Running Lerna may take a while because it installs all package dependencies. It will also warn you about circular dependencies between packages which you can ignore.
 
-Now, all CKEditor packages (except the [dev tools](https://github.com/ckeditor/ckeditor5-dev)) should be cross-symlinked:
+Now, all CKEditor packages (except the [development tools](https://github.com/ckeditor/ckeditor5-dev)) should be cross-symlinked:
 
 ```bash
 (master 340feac) p@m /workspace/ckeditor5> ls -la node_modules/\@ckeditor/ckeditor5-utils/node_modules/\@ckeditor/
@@ -135,7 +135,7 @@ If you are developing custom packages or forked any of the official packages and
 
 ### Troubleshooting problems with Lerna
 
-Lerna does pretty complicated things on already complicated npm ecosystem. If you happen to run into some issues when calling `lerna bootstrap`, here are some tips:
+Lerna does pretty complicated things on an already complicated npm ecosystem. If you happen to run into some issues when calling `lerna bootstrap`, here are some tips:
 
 * Look for `npm-debug.log` files in the main package and subpackages. They may point to an obvious issue like a typo in some `package.json`.
 * Sometimes repeating `lerna bootstrap` may help.
@@ -143,7 +143,7 @@ Lerna does pretty complicated things on already complicated npm ecosystem. If yo
 
 ### Final word about mgit and Lerna
 
-Besides the already mentioned features, mgit allows you to [execute shell commands](https://github.com/cksource/mgit2#exec) on all packages (e.g. check their status). It has been developed by the [CKSource team](https://cksource.com) and we are relying on it heavily, hence you can expect more features and improvements to come. However, it is not a CKEditor-specific tool and should be suitable for any multi-repo project (though it best fits JavaScript projects).
+Besides the already mentioned features, mgit allows you to [execute shell commands](https://github.com/cksource/mgit2#exec) on all packages (e.g. check their status). It has been developed by the [CKSource team](https://cksource.com/) and we are relying on it heavily, hence you can expect more features and improvements to come. However, it is not a CKEditor-specific tool and should be suitable for any multi-repository project (though it best fits JavaScript projects).
 
 Lerna is a tool used by many well-known projects such as [Babel.js](https://github.com/babel/babel). It has an amazing community and, relying on it ourselves, we hope that it will become a standard for managing multi-package projects.
 
@@ -171,7 +171,7 @@ To create a server for manual tests use the `test:manual` task:
 npm run test:manual
 ```
 
-It accepts the `--source-map` (`-s`) option. Note that it watches for changes only in the JavaScript files (see the [bug](https://github.com/ckeditor/ckeditor5-dev/issues/52)).
+It accepts the `--source-map` (`-s`) option. Note that it watches for changes in the JavaScript files only (see the [bug](https://github.com/ckeditor/ckeditor5-dev/issues/52)).
 
 You can read more about the {@link framework/guides/contributing/testing-environment Testing environment}.
 
@@ -187,9 +187,9 @@ The documentation will be available in `build/docs/`.
 
 This task accepts two arguments which can speed up the process:
 
-* `--skip-api` &ndash; Skips building API docs (which takes the majority of the total time).
+* `--skip-api` &ndash; Skips building the API documentation (which takes the majority of the total time).
 * `--skip-snippets` &ndash; Skips building live snippets.
-* `--skip-validation` &ndash; Skips the final links validation.
+* `--skip-validation` &ndash; Skips the final link validation.
 
 Note: These arguments must be passed after additional `--`: `npm run docs -- --skip-api`.
 
@@ -197,7 +197,7 @@ Note: These arguments must be passed after additional `--`: `npm run docs -- --s
 
 CKEditor 5 is a multi-repository project. It means that [`git bisect`](https://git-scm.com/docs/git-bisect) (which is super handy when tracking which commit introduced a bug) will not work out of the box.
 
-Fortunately, every commit made to any of `master` branches of all CKEditor 5 subpackages will update this subpackage's hash in `mgit.json` in the [`master-revisions`](https://github.com/ckeditor/ckeditor5/commits/master-revisions) branch.
+Fortunately, every commit made to any of the `master` branches of all CKEditor 5 subpackages will update this subpackage's hash in `mgit.json` in the [`master-revisions`](https://github.com/ckeditor/ckeditor5/commits/master-revisions) branch.
 
 Thanks to that, `master-revisions` contains an ordered history of all changes which makes it possible to go back to any point in history:
 
