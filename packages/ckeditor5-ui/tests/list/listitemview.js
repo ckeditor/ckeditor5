@@ -146,6 +146,17 @@ describe( 'ListItemView', () => {
 				view.element.dispatchEvent( new Event( 'click' ) );
 				expect( spy.calledOnce ).to.be.true;
 			} );
+
+			it( 'does not triggers view#execute event when "click" is fired in DOM and isEnables=false', () => {
+				const spy = sinon.spy();
+
+				view.on( 'execute', spy );
+
+				view.isEnabled = false;
+
+				view.element.dispatchEvent( new Event( 'click' ) );
+				sinon.assert.notCalled( spy );
+			} );
 		} );
 	} );
 

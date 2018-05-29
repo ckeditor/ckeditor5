@@ -63,7 +63,17 @@ export default class ListItemView extends View {
 			],
 
 			on: {
-				click: bind.to( 'execute' )
+				click: bind.to( evt => {
+					// We can't make the button disabled using the disabled attribute, because it won't be focusable.
+					// Though, shouldn't this condition be moved to the button controller?
+					if ( this.isEnabled ) {
+						this.fire( 'execute' );
+					} else {
+						// Prevent the default when button is disabled, to block e.g.
+						// automatic form submitting. See ckeditor/ckeditor5-link#74.
+						evt.preventDefault();
+					}
+				} )
 			}
 		} );
 
