@@ -151,7 +151,12 @@ export default class Document {
 			if ( !this.differ.isEmpty || hasSelectionChanged ) {
 				this._callPostFixers( writer );
 
-				this.fire( 'change', writer.batch );
+				// Fire `change:data` event when at least one operation changes the data model.
+				if ( !this.differ.isEmpty && isBatchAffectingData( writer.batch ) ) {
+					this.fire( 'change:data', writer.batch );
+				} else {
+					this.fire( 'change', writer.batch );
+				}
 
 				this.differ.reset();
 				hasSelectionChanged = false;
@@ -162,7 +167,7 @@ export default class Document {
 		// This is not covered in buffering operations because markers may change outside of them (when they
 		// are modified using `model.markers` collection, not through `MarkerOperation`).
 		this.listenTo( model.markers, 'update', ( evt, marker, oldRange, newRange ) => {
-			// Whenever marker is updated, buffer that change.
+			// Whenever marker is updated, buffer that chang7e33e.
 			this.differ.bufferMarkerChange( marker.name, oldRange, newRange );
 
 			if ( oldRange === null ) {
@@ -408,4 +413,17 @@ function validateTextNodePosition( rangeBoundary ) {
 	}
 
 	return true;
+}
+
+// Checks whether given batch affects data. Batch affects data if any of its operations affects data.
+function isBatchAffectingData( batch ) {
+	for ( const operation of batch.getOperations() ) {
+		if ( operation.affectsData === false ) {
+			continue;
+		}
+
+		return true;
+	}
+
+	return false;
 }

@@ -47,7 +47,7 @@ describe( 'Document', () => {
 				baseVersion: 0,
 				isDocumentOperation: true,
 				_execute: sinon.stub().returns( data ),
-				_validate: () => {}
+				_validate: () => { }
 			};
 
 			delta = new Delta();
@@ -89,7 +89,7 @@ describe( 'Document', () => {
 			const operation = {
 				baseVersion: 1,
 				isDocumentOperation: true,
-				_execute: () => {}
+				_execute: () => { }
 			};
 
 			expect(
@@ -321,27 +321,10 @@ describe( 'Document', () => {
 			expect( spy.calledOnce ).to.be.true;
 		} );
 
-		it( 'should be fired if there was a change in a document tree in a change block and have a batch as param', () => {
-			doc.createRoot();
-			const spy = sinon.spy();
-
-			doc.on( 'change', ( evt, batch ) => {
-				spy();
-				expect( batch ).to.be.instanceof( Batch );
-			} );
-
-			model.enqueueChange( writer => {
-				writer.insertText( 'foo', doc.getRoot(), 0 );
-			} );
-
-			expect( spy.calledOnce ).to.be.true;
-		} );
-
 		it( 'should be fired if there was a selection change in an (enqueue)change block', () => {
-			doc.createRoot();
+			const root = doc.createRoot();
 			const spy = sinon.spy();
 
-			const root = doc.getRoot();
 			root._appendChild( new Text( 'foo' ) );
 
 			doc.on( 'change', spy );
@@ -367,6 +350,91 @@ describe( 'Document', () => {
 			} );
 
 			expect( spy.calledOnce ).to.be.false;
+		} );
+	} );
+
+	describe( 'event change:data', () => {
+		it( 'should be fired if there was a change in a document tree in a change block and have a batch as a param', () => {
+			doc.createRoot();
+			const spy = sinon.spy();
+
+			doc.on( 'change:data', ( evt, batch ) => {
+				spy();
+				expect( batch ).to.be.instanceof( Batch );
+			} );
+
+			model.change( writer => {
+				writer.insertText( 'foo', doc.getRoot(), 0 );
+			} );
+
+			expect( spy.calledOnce ).to.be.true;
+		} );
+
+		it( 'should be fired before the change event', () => {
+			doc.createRoot();
+
+			const callOrder = [];
+
+			doc.on( 'change:data', () => {
+				callOrder.push( 1 );
+			} );
+
+			doc.on( 'change', () => {
+				callOrder.push( 2 );
+			} );
+
+			model.change( writer => {
+				writer.insertText( 'foo', doc.getRoot(), 0 );
+			} );
+
+			expect( callOrder ).to.deep.equal( [ 1, 2 ] );
+		} );
+
+		it( 'should not be fired if only selection changes', () => {
+			const root = doc.createRoot();
+			const spy = sinon.spy();
+
+			root._appendChild( new Text( 'foo' ) );
+
+			doc.on( 'change:data', spy );
+
+			model.change( writer => {
+				writer.setSelection( Range.createFromParentsAndOffsets( root, 2, root, 2 ) );
+			} );
+
+			sinon.assert.notCalled( spy );
+		} );
+
+		it( 'should fire if default marker operation is applied', () => {
+			const root = doc.createRoot();
+			const spy = sinon.spy();
+
+			root._appendChild( new Text( 'foo' ) );
+
+			doc.on( 'change:data', spy );
+
+			model.change( writer => {
+				const range = Range.createFromParentsAndOffsets( root, 2, root, 4 );
+				writer.addMarker( 'name', { range, usingOperation: true } );
+			} );
+
+			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'should not fire if the marker operation is applied and marker does not affect data', () => {
+			const root = doc.createRoot();
+			const spy = sinon.spy();
+
+			root._appendChild( new Text( 'foo' ) );
+
+			doc.on( 'change:data', spy );
+
+			model.change( writer => {
+				const range = Range.createFromParentsAndOffsets( root, 2, root, 4 );
+				writer.addMarker( 'name', { range, usingOperation: true, affectsData: false } );
+			} );
+
+			sinon.assert.notCalled( spy );
 		} );
 	} );
 
