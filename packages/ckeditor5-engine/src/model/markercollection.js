@@ -384,7 +384,7 @@ class Marker {
 	}
 
 	/**
-	 * Current marker start position.
+	 * Returns current marker start position.
 	 *
 	 * @returns {module:engine/model/position~Position}
 	 */
@@ -397,7 +397,7 @@ class Marker {
 	}
 
 	/**
-	 * Current marker end position.
+	 * Returns current marker end position.
 	 *
 	 * @returns {module:engine/model/position~Position}
 	 */
@@ -410,7 +410,7 @@ class Marker {
 	}
 
 	/**
-	 * Range that represents current state of marker.
+	 * Returns range that represents current state of marker.
 	 *
 	 * Keep in mind that returned value is a {@link module:engine/model/range~Range Range}, not a
 	 * {@link module:engine/model/liverange~LiveRange LiveRange}. This means that it is up-to-date and relevant only

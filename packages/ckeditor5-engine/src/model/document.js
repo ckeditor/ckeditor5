@@ -167,7 +167,7 @@ export default class Document {
 		// This is not covered in buffering operations because markers may change outside of them (when they
 		// are modified using `model.markers` collection, not through `MarkerOperation`).
 		this.listenTo( model.markers, 'update', ( evt, marker, oldRange, newRange ) => {
-			// Whenever marker is updated, buffer that chang7e33e.
+			// Whenever marker is updated, buffer that change.
 			this.differ.bufferMarkerChange( marker.name, oldRange, newRange );
 
 			if ( oldRange === null ) {
