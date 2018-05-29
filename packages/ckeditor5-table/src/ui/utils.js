@@ -4,7 +4,7 @@
  */
 
 /**
- * @module image/image/ui/utils
+ * @module table/ui/utils
  */
 
 import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
@@ -13,7 +13,7 @@ import { getParentTable } from '../commands/utils';
 /**
  * A helper utility that positions the
  * {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon contextual balloon} instance
- * with respect to the image in the editor content, if one is selected.
+ * with respect to the table in the editor content, if one is selected.
  *
  * @param {module:core/editor/editor~Editor} editor The editor instance.
  */
