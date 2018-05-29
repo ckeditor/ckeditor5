@@ -311,7 +311,14 @@ describe( 'TableUI', () => {
 
 			const labels = listView.items.map( ( { label } ) => label );
 
-			expect( labels ).to.deep.equal( [ 'Merge cell up', 'Merge cell right', 'Merge cell down', 'Merge cell left' ] );
+			expect( labels ).to.deep.equal( [
+				'Merge cell up',
+				'Merge cell right',
+				'Merge cell down',
+				'Merge cell left',
+				'Split cell vertically',
+				'Split cell horizontally'
+			] );
 		} );
 
 		it( 'should bind items in panel to proper commands', () => {
@@ -321,16 +328,22 @@ describe( 'TableUI', () => {
 			const mergeCellRightCommand = editor.commands.get( 'mergeCellRight' );
 			const mergeCellDownCommand = editor.commands.get( 'mergeCellDown' );
 			const mergeCellLeftCommand = editor.commands.get( 'mergeCellLeft' );
+			const splitCellVerticallyCommand = editor.commands.get( 'splitCellVertically' );
+			const splitCellHorizontallyCommand = editor.commands.get( 'splitCellHorizontally' );
 
 			mergeCellUpCommand.isEnabled = true;
 			mergeCellRightCommand.isEnabled = true;
 			mergeCellDownCommand.isEnabled = true;
 			mergeCellLeftCommand.isEnabled = true;
+			splitCellVerticallyCommand.isEnabled = true;
+			splitCellHorizontallyCommand.isEnabled = true;
 
 			expect( items.get( 0 ).isEnabled ).to.be.true;
 			expect( items.get( 1 ).isEnabled ).to.be.true;
 			expect( items.get( 2 ).isEnabled ).to.be.true;
 			expect( items.get( 3 ).isEnabled ).to.be.true;
+			expect( items.get( 4 ).isEnabled ).to.be.true;
+			expect( items.get( 5 ).isEnabled ).to.be.true;
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
 			mergeCellUpCommand.isEnabled = false;
@@ -348,6 +361,12 @@ describe( 'TableUI', () => {
 
 			mergeCellLeftCommand.isEnabled = false;
 			expect( items.get( 3 ).isEnabled ).to.be.false;
+
+			splitCellVerticallyCommand.isEnabled = false;
+			expect( items.get( 4 ).isEnabled ).to.be.false;
+
+			splitCellHorizontallyCommand.isEnabled = false;
+			expect( items.get( 5 ).isEnabled ).to.be.false;
 
 			expect( dropdown.buttonView.isEnabled ).to.be.false;
 		} );
@@ -367,74 +386,6 @@ describe( 'TableUI', () => {
 
 			expect( spy.calledOnce ).to.be.true;
 			expect( spy.args[ 0 ][ 0 ] ).to.equal( 'mergeCellUp' );
-		} );
-	} );
-
-	describe( 'splitCell dropdown', () => {
-		let dropdown;
-
-		beforeEach( () => {
-			dropdown = editor.ui.componentFactory.create( 'splitCell' );
-		} );
-
-		it( 'have button with proper properties set', () => {
-			expect( dropdown ).to.be.instanceOf( DropdownView );
-
-			const button = dropdown.buttonView;
-
-			expect( button.isOn ).to.be.false;
-			expect( button.tooltip ).to.be.true;
-			expect( button.label ).to.equal( 'Split cell' );
-			expect( button.icon ).to.match( /<svg / );
-		} );
-
-		it( 'should have proper items in panel', () => {
-			const listView = dropdown.listView;
-
-			const labels = listView.items.map( ( { label } ) => label );
-
-			expect( labels ).to.deep.equal( [ 'Split cell vertically', 'Split cell horizontally' ] );
-		} );
-
-		it( 'should bind items in panel to proper commands', () => {
-			const items = dropdown.listView.items;
-
-			const splitCellVerticallyCommand = editor.commands.get( 'splitCellVertically' );
-			const splitCellHorizontallyCommand = editor.commands.get( 'splitCellHorizontally' );
-
-			splitCellVerticallyCommand.isEnabled = true;
-			splitCellHorizontallyCommand.isEnabled = true;
-
-			expect( items.get( 0 ).isEnabled ).to.be.true;
-			expect( items.get( 1 ).isEnabled ).to.be.true;
-			expect( dropdown.buttonView.isEnabled ).to.be.true;
-
-			splitCellVerticallyCommand.isEnabled = false;
-
-			expect( items.get( 0 ).isEnabled ).to.be.false;
-			expect( dropdown.buttonView.isEnabled ).to.be.true;
-
-			splitCellHorizontallyCommand.isEnabled = false;
-
-			expect( items.get( 1 ).isEnabled ).to.be.false;
-			expect( dropdown.buttonView.isEnabled ).to.be.false;
-		} );
-
-		it( 'should focus view after command execution', () => {
-			const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
-
-			dropdown.listView.items.get( 0 ).fire( 'execute' );
-
-			sinon.assert.calledOnce( focusSpy );
-		} );
-
-		it( 'executes command when it\'s executed', () => {
-			const spy = sinon.stub( editor, 'execute' );
-
-			dropdown.listView.items.get( 0 ).fire( 'execute' );
-
-			expect( spy.calledOnce ).to.be.true;
-			expect( spy.args[ 0 ][ 0 ] ).to.equal( 'splitCellVertically' );
 		} );
 	} );
 } );

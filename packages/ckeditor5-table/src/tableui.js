@@ -18,7 +18,6 @@ import tableIcon from './../theme/icons/table.svg';
 import tableColumnIcon from './../theme/icons/table-column.svg';
 import tableRowIcon from './../theme/icons/table-row.svg';
 import tableMergeCellIcon from './../theme/icons/table-merge-cell.svg';
-import tableSplitCellIcon from './../theme/icons/table-split-cell.svg';
 
 /**
  * The table UI plugin.
@@ -92,19 +91,12 @@ export default class TableUI extends Plugin {
 				{ commandName: 'mergeCellUp', label: 'Merge cell up' },
 				{ commandName: 'mergeCellRight', label: 'Merge cell right' },
 				{ commandName: 'mergeCellDown', label: 'Merge cell down' },
-				{ commandName: 'mergeCellLeft', label: 'Merge cell left' }
-			];
-
-			return this._prepareDropdown( 'Merge cell', tableMergeCellIcon, options, locale );
-		} );
-
-		editor.ui.componentFactory.add( 'splitCell', locale => {
-			const options = [
+				{ commandName: 'mergeCellLeft', label: 'Merge cell left' },
 				{ commandName: 'splitCellVertically', label: 'Split cell vertically' },
 				{ commandName: 'splitCellHorizontally', label: 'Split cell horizontally' }
 			];
 
-			return this._prepareDropdown( 'Split cell', tableSplitCellIcon, options, locale );
+			return this._prepareDropdown( 'Merge cell', tableMergeCellIcon, options, locale );
 		} );
 	}
 
