@@ -686,8 +686,8 @@ function attachBindToListeners( observable, toBindings ) {
 /**
  * Fired when a property value is going to be changed but is not changed yet (before the `change` event is fired).
  *
- * When some value will be set as {@link module:utils/eventinfo~EventInfo#return event return value} then
- * this value become an observalbe new value.
+ * You can control the final value of the property by using
+ * the {@link module:utils/eventinfo~EventInfo#return event's `return` property}.
  *
  *		observable.set( 'prop', 1 );
  *
