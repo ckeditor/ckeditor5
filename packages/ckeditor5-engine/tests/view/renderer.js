@@ -2603,6 +2603,160 @@ describe( 'Renderer', () => {
 				expect( mappings.get( domP ) ).to.equal( viewP );
 				expect( mappings.get( domB ) ).to.equal( viewP.getChild( 1 ) );
 			} );
+
+			it( 'should handle complex view duplication', () => {
+				const content = '' +
+					'<container:blockquote>' +
+						'<container:ul>' +
+							'<container:li>Quoted <attribute:strong>item 1</attribute:strong></container:li>' +
+							'<container:li>Item 2</container:li>' +
+							'<container:li>' +
+								'<attribute:a href="https://cksource.com">Li<attribute:strong>nk</attribute:strong></attribute:a>' +
+							'</container:li>' +
+						'</container:ul>' +
+					'</container:blockquote>';
+
+				const expected = '' +
+					'<blockquote>' +
+						'<ul>' +
+							'<li>Quoted <strong>item 1</strong></li>' +
+							'<li>Item 2</li>' +
+							'<li><a href="https://cksource.com">Li<strong>nk</strong></a></li>' +
+						'</ul>' +
+					'</blockquote>';
+
+				viewRoot._appendChild( parse( content ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal( expected );
+
+				viewRoot._removeChildren( 0, viewRoot.childCount );
+				viewRoot._appendChild( parse( content + content ) );
+
+				const domBQ = domRoot.childNodes[ 0 ];
+				const domUL = domBQ.childNodes[ 0 ];
+				const domLI1 = domUL.childNodes[ 0 ];
+				const domLI2 = domUL.childNodes[ 1 ];
+				const domLI3 = domUL.childNodes[ 2 ];
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				// Assert content.
+				expect( domRoot.innerHTML ).to.equal( expected + expected );
+
+				// Assert if DOM elements did not change.
+				expect( domRoot.childNodes[ 0 ] ).to.equal( domBQ );
+				expect( domBQ.childNodes[ 0 ] ).to.equal( domUL );
+				expect( domUL.childNodes[ 0 ] ).to.equal( domLI1 );
+				expect( domUL.childNodes[ 1 ] ).to.equal( domLI2 );
+				expect( domUL.childNodes[ 2 ] ).to.equal( domLI3 );
+
+				// Assert mappings.
+				const domMappings = renderer.domConverter._domToViewMapping;
+				expect( domMappings.get( domBQ ) ).to.equal( viewRoot.getChild( 0 ) );
+				expect( domMappings.get( domUL ) ).to.equal( viewRoot.getChild( 0 ).getChild( 0 ) );
+				expect( domMappings.get( domLI1 ) ).to.equal( viewRoot.getChild( 0 ).getChild( 0 ).getChild( 0 ) );
+				expect( domMappings.get( domLI2 ) ).to.equal( viewRoot.getChild( 0 ).getChild( 0 ).getChild( 1 ) );
+				expect( domMappings.get( domLI3 ) ).to.equal( viewRoot.getChild( 0 ).getChild( 0 ).getChild( 2 ) );
+
+				// Assert if new view elements are bind to new DOM elements.
+				const viewMappings = renderer.domConverter._domToViewMapping;
+				expect( viewMappings.get( viewRoot.getChild( 1 ) ) ).not.equal( domBQ );
+				expect( viewMappings.get( viewRoot.getChild( 1 ).getChild( 0 ) ) ).not.equal( domUL );
+				expect( viewMappings.get( viewRoot.getChild( 1 ).getChild( 0 ).getChild( 0 ) ) ).not.equal( domLI1 );
+				expect( viewMappings.get( viewRoot.getChild( 1 ).getChild( 0 ).getChild( 1 ) ) ).not.equal( domLI2 );
+				expect( viewMappings.get( viewRoot.getChild( 1 ).getChild( 0 ).getChild( 2 ) ) ).not.equal( domLI3 );
+			} );
+
+			it( 'should handle complex view replace', () => {
+				const content = '' +
+					'<container:h2>He' +
+						'<attribute:i>ading 1</attribute:i>' +
+					'</container:h2>' +
+					'<container:p>Ph ' +
+						'<attribute:strong>Bold</attribute:strong>' +
+						'<attribute:a href="https://ckeditor.com">' +
+							'<attribute:strong>Lin<attribute:i>k</attribute:i></attribute:strong>' +
+						'</attribute:a>' +
+					'</container:p>' +
+					'<container:blockquote>' +
+						'<container:ul>' +
+							'<container:li>Quoted <attribute:strong>item 1</attribute:strong></container:li>' +
+							'<container:li>Item 2</container:li>' +
+							'<container:li>' +
+								'<attribute:a href="https://cksource.com">Li<attribute:strong>nk</attribute:strong></attribute:a>' +
+							'</container:li>' +
+						'</container:ul>' +
+					'</container:blockquote>';
+
+				const replacement = '' +
+					'<container:p>' +
+						'1' +
+						'<attribute:i>A</attribute:i>' +
+					'</container:p>' +
+					'<container:p>' +
+						'<attribute:a href="https://cksource.com">' +
+							'Li' +
+							'<attribute:strong>nk</attribute:strong>' +
+						'</attribute:a>' +
+					'</container:p>' +
+					'<container:h1>' +
+						'Heading ' +
+						'<attribute:strong>1</attribute:strong>' +
+					'</container:h1>' +
+					'<container:h2>' +
+						'<attribute:a href="https://ckeditor.com">Heading 2</attribute:a>' +
+					'</container:h2>' +
+					'<container:h3>' +
+						'Heading' +
+						'<attribute:i> 3</attribute:i>' +
+					'</container:h3>' +
+					'<container:blockquote>' +
+						'Foo Bar Baz' +
+					'</container:blockquote>' +
+					'<container:ul>' +
+						'<container:li>' +
+							'Item ' +
+							'<attribute:strong>1</attribute:strong>' +
+						'</container:li>' +
+						'<container:li>' +
+							'<attribute:a href="https://ckeditor.com">Item</attribute:a>' +
+							' 2' +
+						'</container:li>' +
+					'</container:ul>';
+
+				viewRoot._appendChild( parse( content ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal( '' +
+					'<h2>He<i>ading 1</i></h2>' +
+					'<p>Ph <strong>Bold</strong><a href="https://ckeditor.com"><strong>Lin<i>k</i></strong></a></p>' +
+					'<blockquote><ul>' +
+						'<li>Quoted <strong>item 1</strong></li>' +
+						'<li>Item 2</li><li><a href="https://cksource.com">Li<strong>nk</strong></a></li>' +
+					'</ul></blockquote>' );
+
+				viewRoot._removeChildren( 0, viewRoot.childCount );
+				viewRoot._appendChild( parse( replacement ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				// Here we just check if new DOM structure was properly rendered.
+				expect( domRoot.innerHTML ).to.equal( '' +
+					'<p>1<i>A</i></p>' +
+					'<p><a href="https://cksource.com">Li<strong>nk</strong></a></p>' +
+					'<h1>Heading <strong>1</strong></h1>' +
+					'<h2><a href="https://ckeditor.com">Heading 2</a></h2>' +
+					'<h3>Heading<i> 3</i></h3>' +
+					'<blockquote>Foo Bar Baz</blockquote>' +
+					'<ul><li>Item <strong>1</strong></li><li><a href="https://ckeditor.com">Item</a> 2</li></ul>' );
+			} );
 		} );
 	} );
 
