@@ -109,7 +109,7 @@ export default class MarkerCollection {
 				hasChanged = true;
 			}
 
-			if ( affectsData != oldMarker.affectsData ) {
+			if ( typeof affectsData === 'boolean' && affectsData != oldMarker.affectsData ) {
 				oldMarker._affectsData = affectsData;
 				hasChanged = true;
 			}
