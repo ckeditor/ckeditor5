@@ -8,6 +8,7 @@
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import ImageEditing from '../../src/image/imageediting';
 import ImageUploadEditing from '../../src/imageupload/imageuploadediting';
 import ImageUploadCommand from '../../src/imageupload/imageuploadcommand';
@@ -23,6 +24,7 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 
+import log from '@ckeditor/ckeditor5-utils/src/log';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
 
@@ -65,6 +67,10 @@ describe( 'ImageUploadEditing', () => {
 			} );
 	} );
 
+	afterEach( () => {
+		return editor.destroy();
+	} );
+
 	it( 'should register proper schema rules', () => {
 		expect( model.schema.checkAttribute( [ '$root', 'image' ], 'uploadId' ) ).to.be.true;
 	} );
@@ -73,8 +79,7 @@ describe( 'ImageUploadEditing', () => {
 		expect( editor.commands.get( 'imageUpload' ) ).to.be.instanceOf( ImageUploadCommand );
 	} );
 
-	it( 'should execute imageUpload command when image is pasted', () => {
-		const spy = sinon.spy( editor, 'execute' );
+	it( 'should insert image when is pasted', () => {
 		const fileMock = createNativeFileMock();
 		const dataTransfer = new DataTransfer( { files: [ fileMock ], types: [ 'Files' ] } );
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
@@ -84,17 +89,13 @@ describe( 'ImageUploadEditing', () => {
 
 		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
 
-		sinon.assert.calledOnce( spy );
-		sinon.assert.calledWith( spy, 'imageUpload' );
-
 		const id = fileRepository.getLoader( fileMock ).id;
 		expect( getModelData( model ) ).to.equal(
 			`<paragraph>foo</paragraph>[<image uploadId="${ id }" uploadStatus="reading"></image>]`
 		);
 	} );
 
-	it( 'should execute imageUpload command with an optimized position when image is pasted', () => {
-		const spy = sinon.spy( editor, 'execute' );
+	it( 'should insert image at optimized position when is pasted', () => {
 		const fileMock = createNativeFileMock();
 		const dataTransfer = new DataTransfer( { files: [ fileMock ], types: [ 'Files' ] } );
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
@@ -105,17 +106,13 @@ describe( 'ImageUploadEditing', () => {
 
 		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
 
-		sinon.assert.calledOnce( spy );
-		sinon.assert.calledWith( spy, 'imageUpload' );
-
 		const id = fileRepository.getLoader( fileMock ).id;
 		expect( getModelData( model ) ).to.equal(
 			`[<image uploadId="${ id }" uploadStatus="reading"></image>]<paragraph>foo</paragraph>`
 		);
 	} );
 
-	it( 'should execute imageUpload command when multiple files image are pasted', () => {
-		const spy = sinon.spy( editor, 'execute' );
+	it( 'should insert multiple image files when are pasted', () => {
 		const files = [ createNativeFileMock(), createNativeFileMock() ];
 		const dataTransfer = new DataTransfer( { files, types: [ 'Files' ] } );
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
@@ -124,9 +121,6 @@ describe( 'ImageUploadEditing', () => {
 		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
 
 		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
-
-		sinon.assert.calledTwice( spy );
-		sinon.assert.calledWith( spy, 'imageUpload' );
 
 		const id1 = fileRepository.getLoader( files[ 0 ] ).id;
 		const id2 = fileRepository.getLoader( files[ 1 ] ).id;
@@ -138,8 +132,56 @@ describe( 'ImageUploadEditing', () => {
 		);
 	} );
 
-	it( 'should not execute imageUpload command when file is not an image', () => {
-		const spy = sinon.spy( editor, 'execute' );
+	it( 'should insert image when is pasted on allowed position when ImageUploadCommand is disabled', () => {
+		const fileMock = createNativeFileMock();
+		const dataTransfer = new DataTransfer( { files: [ fileMock ], types: [ 'Files' ] } );
+		setModelData( model, '<paragraph>[]foo</paragraph>' );
+
+		const command = editor.commands.get( 'imageUpload' );
+
+		command.on( 'beforeChange:isEnabled', evt => {
+			evt.return = false;
+			evt.stop();
+		}, { priority: 'highest' } );
+
+		command.isEnabled = false;
+
+		const targetRange = Range.createFromParentsAndOffsets( doc.getRoot(), 1, doc.getRoot(), 1 );
+		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
+
+		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+
+		const id = fileRepository.getLoader( fileMock ).id;
+		expect( getModelData( model ) ).to.equal(
+			`<paragraph>foo</paragraph>[<image uploadId="${ id }" uploadStatus="reading"></image>]`
+		);
+	} );
+
+	it( 'should not insert image when editor is in read-only mode', () => {
+		// Clipboard plugin is required for this test.
+		return VirtualTestEditor
+			.create( {
+				plugins: [ ImageEditing, ImageUploadEditing, Paragraph, UploadAdapterPluginMock, Clipboard ]
+			} )
+			.then( editor => {
+				const fileMock = createNativeFileMock();
+				const dataTransfer = new DataTransfer( { files: [ fileMock ], types: [ 'Files' ] } );
+				setModelData( editor.model, '<paragraph>[]foo</paragraph>' );
+
+				const targetRange = editor.model.document.selection.getFirstRange();
+				const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
+
+				editor.isReadOnly = true;
+
+				editor.editing.view.document.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+
+				expect( getModelData( editor.model ) ).to.equal( '<paragraph>[]foo</paragraph>' );
+
+				return editor.destroy();
+			} );
+	} );
+
+	it( 'should not insert image when file is not an image', () => {
 		const viewDocument = editor.editing.view.document;
 		const fileMock = {
 			type: 'media/mp3',
@@ -149,16 +191,15 @@ describe( 'ImageUploadEditing', () => {
 
 		setModelData( model, '<paragraph>foo[]</paragraph>' );
 
-		const targetRange = Range.createFromParentsAndOffsets( doc.getRoot(), 1, doc.getRoot(), 1 );
+		const targetRange = doc.selection.getFirstRange();
 		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
 
 		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
 
-		sinon.assert.notCalled( spy );
+		expect( getModelData( model ) ).to.equal( '<paragraph>foo[]</paragraph>' );
 	} );
 
-	it( 'should not execute imageUpload command when there is non-empty HTML content pasted', () => {
-		const spy = sinon.spy( editor, 'execute' );
+	it( 'should not insert image when there is non-empty HTML content pasted', () => {
 		const fileMock = createNativeFileMock();
 		const dataTransfer = new DataTransfer( {
 			files: [ fileMock ],
@@ -172,7 +213,49 @@ describe( 'ImageUploadEditing', () => {
 
 		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
 
-		sinon.assert.notCalled( spy );
+		expect( getModelData( model ) ).to.equal( '<paragraph>[]foo</paragraph>' );
+	} );
+
+	it( 'should not insert image nor crash when pasted image could not be inserted', () => {
+		model.schema.register( 'other', {
+			allowIn: '$root',
+			isLimit: true
+		} );
+		model.schema.extend( '$text', { allowIn: 'other' } );
+
+		editor.conversion.elementToElement( { model: 'other', view: 'p' } );
+
+		setModelData( model, '<other>[]</other>' );
+
+		const fileMock = createNativeFileMock();
+		const dataTransfer = new DataTransfer( { files: [ fileMock ], types: [ 'Files' ] } );
+
+		const targetRange = doc.selection.getFirstRange();
+		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
+
+		viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+
+		expect( getModelData( model ) ).to.equal( '<other>[]</other>' );
+	} );
+
+	it( 'should not throw when upload adapter is not set (FileRepository will log an error anyway) when image is pasted', () => {
+		const fileMock = createNativeFileMock();
+		const dataTransfer = new DataTransfer( { files: [ fileMock ], types: [ 'Files' ] } );
+		const logStub = testUtils.sinon.stub( log, 'error' );
+
+		setModelData( model, '<paragraph>[]foo</paragraph>' );
+
+		fileRepository.createUploadAdapter = undefined;
+
+		const targetRange = Range.createFromParentsAndOffsets( doc.getRoot(), 1, doc.getRoot(), 1 );
+		const targetViewRange = editor.editing.mapper.toViewRange( targetRange );
+
+		expect( () => {
+			viewDocument.fire( 'clipboardInput', { dataTransfer, targetRanges: [ targetViewRange ] } );
+		} ).to.not.throw();
+
+		expect( getModelData( model ) ).to.equal( '<paragraph>[]foo</paragraph>' );
+		sinon.assert.calledOnce( logStub );
 	} );
 
 	// https://github.com/ckeditor/ckeditor5-upload/issues/70

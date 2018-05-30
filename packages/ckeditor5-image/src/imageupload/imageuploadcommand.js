@@ -3,7 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
 import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 import ModelSelection from '@ckeditor/ckeditor5-engine/src/model/selection';
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
@@ -44,7 +43,7 @@ export default class ImageUploadCommand extends Command {
 				return;
 			}
 
-			const imageElement = new ModelElement( 'image', {
+			const imageElement = writer.createElement( 'image', {
 				uploadId: loader.id
 			} );
 
@@ -60,7 +59,7 @@ export default class ImageUploadCommand extends Command {
 
 			// Inserting an image might've failed due to schema regulations.
 			if ( imageElement.parent ) {
-				writer.setSelection( ModelRange.createOn( imageElement ) );
+				writer.setSelection( imageElement, 'on' );
 			}
 		} );
 	}
