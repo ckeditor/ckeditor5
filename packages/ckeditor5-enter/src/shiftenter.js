@@ -34,20 +34,20 @@ export default class ShiftEnter extends Plugin {
 		const viewDocument = view.document;
 
 		// Configure the schema.
-		schema.register( 'break', {
+		schema.register( 'softBreak', {
 			allowWhere: '$text'
 		} );
 
 		// Configure converters.
 		conversion.for( 'upcast' )
 			.add( upcastElementToElement( {
-				model: 'break',
+				model: 'softBreak',
 				view: 'br'
 			} ) );
 
 		conversion.for( 'downcast' )
 			.add( downcastElementToElement( {
-				model: 'break',
+				model: 'softBreak',
 				view: ( modelElement, viewWriter ) => viewWriter.createEmptyElement( 'br' )
 			} ) );
 

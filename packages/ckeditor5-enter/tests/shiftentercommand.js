@@ -81,25 +81,25 @@ describe( 'ShiftEnterCommand', () => {
 			test(
 				'inserts in the root',
 				'foo[]bar',
-				'foo<break></break>[]bar'
+				'foo<softBreak></softBreak>[]bar'
 			);
 
 			test(
 				'inserts inside block',
 				'<p>x</p><p>foo[]bar</p><p>y</p>',
-				'<p>x</p><p>foo<break></break>[]bar</p><p>y</p>'
+				'<p>x</p><p>foo<softBreak></softBreak>[]bar</p><p>y</p>'
 			);
 
 			test(
 				'inserts at the end of block',
 				'<p>x</p><p>foo[]</p><p>y</p>',
-				'<p>x</p><p>foo<break></break>[]</p><p>y</p>'
+				'<p>x</p><p>foo<softBreak></softBreak>[]</p><p>y</p>'
 			);
 
 			test(
 				'inserts at the beginning of block',
 				'<p>x</p><p>[]foo</p><p>y</p>',
-				'<p>x</p><p><break></break>[]foo</p><p>y</p>'
+				'<p>x</p><p><softBreak></softBreak>[]foo</p><p>y</p>'
 			);
 		} );
 
@@ -107,13 +107,13 @@ describe( 'ShiftEnterCommand', () => {
 			test(
 				'deletes the content and inserts the break when directly in the root',
 				'fo[ob]ar',
-				'fo<break></break>[]ar'
+				'fo<softBreak></softBreak>[]ar'
 			);
 
 			test(
 				'deletes text and adds break',
 				'<p>ab[cd]ef</p><p>ghi</p>',
-				'<p>ab<break></break>[]ef</p><p>ghi</p>'
+				'<p>ab<softBreak></softBreak>[]ef</p><p>ghi</p>'
 			);
 
 			test(
@@ -131,7 +131,7 @@ describe( 'ShiftEnterCommand', () => {
 			test(
 				'inserts break in empty element after it was fully selected',
 				'<p>x</p><p>[abcdef]</p><p>y</p>',
-				'<p>x</p><p><break></break>[]</p><p>y</p>'
+				'<p>x</p><p><softBreak></softBreak>[]</p><p>y</p>'
 			);
 
 			test(
@@ -143,25 +143,25 @@ describe( 'ShiftEnterCommand', () => {
 			test(
 				'should insert the break in inline limit element - collapsed',
 				'<p><inlineLimit>foo[]bar</inlineLimit></p>',
-				'<p><inlineLimit>foo<break></break>[]bar</inlineLimit></p>'
+				'<p><inlineLimit>foo<softBreak></softBreak>[]bar</inlineLimit></p>'
 			);
 
 			test(
 				'should insert the break in inline limit elements',
 				'<p><inlineLimit>foo[bar]baz</inlineLimit></p>',
-				'<p><inlineLimit>foo<break></break>[]baz</inlineLimit></p>'
+				'<p><inlineLimit>foo<softBreak></softBreak>[]baz</inlineLimit></p>'
 			);
 
 			test(
 				'should insert the break at beginning of the inline limit elements',
 				'<p><inlineLimit>foo[bar]baz</inlineLimit></p>',
-				'<p><inlineLimit>foo<break></break>[]baz</inlineLimit></p>'
+				'<p><inlineLimit>foo<softBreak></softBreak>[]baz</inlineLimit></p>'
 			);
 
 			test(
 				'should insert the break at ending of the inline limit elements',
 				'<p><inlineLimit>foobaz[]</inlineLimit></p>',
-				'<p><inlineLimit>foobaz<break></break>[]</inlineLimit></p>'
+				'<p><inlineLimit>foobaz<softBreak></softBreak>[]</inlineLimit></p>'
 			);
 
 			test(
@@ -173,7 +173,7 @@ describe( 'ShiftEnterCommand', () => {
 			test(
 				'should break paragraph in blockLimit',
 				'<blockLimit><p>foo[]bar</p></blockLimit>',
-				'<blockLimit><p>foo<break></break>[]bar</p></blockLimit>'
+				'<blockLimit><p>foo<softBreak></softBreak>[]bar</p></blockLimit>'
 			);
 
 			test(

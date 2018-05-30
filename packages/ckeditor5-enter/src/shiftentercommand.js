@@ -5,8 +5,8 @@
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
 /**
- * ShiftEnter command. It is used by the {@link module:enter/shiftenter~ShiftEnter ShiftEnterfeature} to handle
- * the <kbd>Shift+Enter</kbd> key.
+ * ShiftEnter command. It is used by the {@link module:enter/shiftenter~ShiftEnter ShiftEnter feature} to handle
+ * the <kbd>Shift</kbd>+<kbd>Enter</kbd> keystroke.
  *
  * @extends module:core/command~Command
  */
@@ -44,7 +44,7 @@ function isEnabled( schema, selection ) {
 	const anchorPos = selection.anchor;
 
 	// Check whether the break element can be inserted in the current selection anchor.
-	if ( !anchorPos || !schema.checkChild( anchorPos, 'break' ) ) {
+	if ( !anchorPos || !schema.checkChild( anchorPos, 'softBreak' ) ) {
 		return false;
 	}
 
@@ -93,7 +93,7 @@ function softBreakAction( model, writer, selection ) {
 }
 
 function insertBreak( writer, position ) {
-	const breakLineElement = writer.createElement( 'break' );
+	const breakLineElement = writer.createElement( 'softBreak' );
 
 	writer.insert( breakLineElement, position );
 	writer.setSelection( breakLineElement, 'after' );
