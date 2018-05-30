@@ -33,6 +33,10 @@ import quote from '@ckeditor/ckeditor5-core/theme/icons/quote.svg';
 import fontFamily from '@ckeditor/ckeditor5-font/theme/icons/font-family.svg';
 import fontSize from '@ckeditor/ckeditor5-font/theme/icons/font-size.svg';
 
+import heading1 from '@ckeditor/ckeditor5-heading/theme/icons/heading1.svg';
+import heading2 from '@ckeditor/ckeditor5-heading/theme/icons/heading2.svg';
+import heading3 from '@ckeditor/ckeditor5-heading/theme/icons/heading3.svg';
+
 import marker from '@ckeditor/ckeditor5-highlight/theme/icons/marker.svg';
 import pen from '@ckeditor/ckeditor5-highlight/theme/icons/pen.svg';
 import eraser from '@ckeditor/ckeditor5-highlight/theme/icons/eraser.svg';
@@ -42,6 +46,8 @@ import unlink from '@ckeditor/ckeditor5-link/theme/icons/unlink.svg';
 
 import bulletedList from '@ckeditor/ckeditor5-list/theme/icons/bulletedlist.svg';
 import numberedList from '@ckeditor/ckeditor5-list/theme/icons/numberedlist.svg';
+
+import paragraph from '@ckeditor/ckeditor5-paragraph/theme/icons/paragraph.svg';
 
 import undo from '@ckeditor/ckeditor5-undo/theme/icons/undo.svg';
 import redo from '@ckeditor/ckeditor5-undo/theme/icons/redo.svg';
@@ -61,6 +67,9 @@ const icons = {
 	// font
 	fontFamily, fontSize,
 
+	// heading
+	heading1, heading2, heading3,
+
 	// highlight
 	marker, pen, eraser,
 
@@ -69,6 +78,9 @@ const icons = {
 
 	// list
 	bulletedList, numberedList,
+
+	// paragraph
+	paragraph,
 
 	// undo
 	undo, redo
