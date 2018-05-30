@@ -134,13 +134,15 @@ export default class Clipboard extends Plugin {
 
 		// The clipboard paste pipeline.
 
-		this.listenTo( viewDocument, 'clipboardInput', ( evt, data ) => {
-			// Pasting and dropping is disabled when editor is read-only.
-			// See: https://github.com/ckeditor/ckeditor5-clipboard/issues/26.
+		// Pasting and dropping is disabled when editor is read-only.
+		// See: https://github.com/ckeditor/ckeditor5-clipboard/issues/26.
+		this.listenTo( viewDocument, 'clipboardInput', evt => {
 			if ( editor.isReadOnly ) {
-				return;
+				evt.stop();
 			}
+		}, { priority: 'highest' } );
 
+		this.listenTo( viewDocument, 'clipboardInput', ( evt, data ) => {
 			const dataTransfer = data.dataTransfer;
 			let content = '';
 
