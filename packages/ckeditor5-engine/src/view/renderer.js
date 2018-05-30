@@ -316,10 +316,12 @@ export default class Renderer {
 						const deleteIndex = counter.equal + counter.delete;
 						const viewChild = viewElement.getChild( insertIndex );
 
-						this.domConverter.unbindDomElement( diff.actualDomChildren[ deleteIndex ] );
-						this.domConverter.bindElements( diff.actualDomChildren[ deleteIndex ], viewChild );
-						// View element may have children which needs to be updated but are not marked, mark them to update.
-						this.markedChildren.add( viewChild );
+						if ( viewChild ) {
+							this.domConverter.unbindDomElement( diff.actualDomChildren[ deleteIndex ] );
+							this.domConverter.bindElements( diff.actualDomChildren[ deleteIndex ], viewChild );
+							// View element may have children which needs to be updated but are not marked, mark them to update.
+							this.markedChildren.add( viewChild );
+						}
 
 						remove( diff.expectedDomChildren[ insertIndex ] );
 						counter.equal++;

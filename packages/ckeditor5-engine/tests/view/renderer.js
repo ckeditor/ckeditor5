@@ -2757,6 +2757,30 @@ describe( 'Renderer', () => {
 					'<blockquote>Foo Bar Baz</blockquote>' +
 					'<ul><li>Item <strong>1</strong></li><li><a href="https://ckeditor.com">Item</a> 2</li></ul>' );
 			} );
+
+			it( 'should properly handle br elements while refreshing bindings', () => {
+				const expected = `<p>Foo Bar</p><p>${ BR_FILLER( document ).outerHTML }</p>`; // eslint-disable-line new-cap
+
+				viewRoot._appendChild( parse( '<container:p>Foo Bar</container:p><container:p></container:p>' ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal( expected );
+
+				// There is a case in Safari that during accent panel navigation on macOS our 'BR_FILLER' is replaced with
+				// just '<br>' element which breaks accent composition in an empty paragraph. It also throws an error while
+				// refreshing mappings in a renderer. Simulate such behaviour (#1354).
+				domRoot.childNodes[ 1 ].innerHTML = '<br>';
+
+				viewRoot._removeChildren( 1 );
+				viewRoot._insertChild( 1, parse( '<container:p></container:p>' ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal( expected );
+			} );
 		} );
 	} );
 
