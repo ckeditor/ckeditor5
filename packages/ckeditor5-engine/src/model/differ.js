@@ -171,7 +171,7 @@ export default class Differ {
 				for ( const marker of this._markerCollection.getMarkersIntersectingRange( range ) ) {
 					const markerRange = marker.getRange();
 
-					this.bufferMarkerChange( marker.name, markerRange, markerRange );
+					this.bufferMarkerChange( marker.name, markerRange, markerRange, marker.affectsData );
 				}
 
 				break;
@@ -201,6 +201,7 @@ export default class Differ {
 			} );
 		} else {
 			buffered.newRange = newRange;
+			buffered.affectsData = affectsData;
 
 			if ( buffered.oldRange == null && buffered.newRange == null ) {
 				// The marker is going to be removed (`newRange == null`) but it did not exist before the first buffered change
@@ -249,7 +250,7 @@ export default class Differ {
 	 *
 	 * @returns {Boolean} `true` if buffered markers can change the data model.
 	 */
-	containsMarkersAffectingData() {
+	containsMarkerAffectingData() {
 		for ( const [ , change ] of this._changedMarkers ) {
 			if ( change.affectsData ) {
 				return true;

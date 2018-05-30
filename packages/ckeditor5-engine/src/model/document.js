@@ -152,7 +152,7 @@ export default class Document {
 			if ( !this.differ.isEmpty || hasSelectionChanged ) {
 				this._callPostFixers( writer );
 
-				if ( isBatchAffectingData( writer.batch ) || this.differ.containsMarkersAffectingData() ) {
+				if ( isBatchAffectingData( writer.batch ) || this.differ.containsMarkerAffectingData() ) {
 					this.fire( 'change:data', writer.batch );
 				} else {
 					this.fire( 'change', writer.batch );
