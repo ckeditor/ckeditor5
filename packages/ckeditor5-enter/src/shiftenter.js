@@ -14,7 +14,7 @@ import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversio
 import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
 
 /**
- * The ShiftEnter feature. Handles the <kbd>Shift + Enter</kbd> keys in the editor.
+ * The Shift+Enter plugin. Handles the <kbd>Shift</kbd>+<kbd>Enter</kbd> keys (soft line break) in the editor.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -33,7 +33,7 @@ export default class ShiftEnter extends Plugin {
 		const view = editor.editing.view;
 		const viewDocument = view.document;
 
-		// Configure schema.
+		// Configure the schema.
 		schema.register( 'break', {
 			allowWhere: '$text'
 		} );
@@ -55,9 +55,8 @@ export default class ShiftEnter extends Plugin {
 
 		editor.commands.add( 'shiftEnter', new ShiftEnterCommand( editor ) );
 
-		// TODO We may use the keystroke handler for that.
 		this.listenTo( viewDocument, 'enter', ( evt, data ) => {
-			// The 'Enter' key is handled by the Enter plugin.
+			// The hard enter key is handled by the Enter plugin.
 			if ( !data.isSoft ) {
 				return;
 			}

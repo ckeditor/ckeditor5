@@ -12,7 +12,7 @@ import EnterCommand from './entercommand';
 import EnterObserver from './enterobserver';
 
 /**
- * The Enter feature. Handles the <kbd>Enter</kbd> key in the editor.
+ * The enter plugin. Handles the <kbd>Enter</kbd> key (hard line break) in the editor.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -33,9 +33,8 @@ export default class Enter extends Plugin {
 
 		editor.commands.add( 'enter', new EnterCommand( editor ) );
 
-		// TODO We may use the keystroke handler for that.
 		this.listenTo( viewDocument, 'enter', ( evt, data ) => {
-			// The 'Enter + Shift' keys are handled by the ShiftEnter plugin.
+			// The soft enter key is handled by the ShiftEnter plugin.
 			if ( data.isSoft ) {
 				return;
 			}

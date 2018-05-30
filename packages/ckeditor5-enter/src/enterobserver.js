@@ -20,15 +20,15 @@ export default class EnterObserver extends Observer {
 	constructor( view ) {
 		super( view );
 
-		const document = this.document;
+		const doc = this.document;
 
-		document.on( 'keydown', ( evt, data ) => {
+		doc.on( 'keydown', ( evt, data ) => {
 			if ( this.isEnabled && data.keyCode == keyCodes.enter ) {
 				// Save the event object to check later if it was stopped or not.
 				let event;
-				document.once( 'enter', evt => ( event = evt ), { priority: 'highest' } );
+				doc.once( 'enter', evt => ( event = evt ), { priority: 'highest' } );
 
-				document.fire( 'enter', new DomEventData( document, data.domEvent, {
+				doc.fire( 'enter', new DomEventData( doc, data.domEvent, {
 					isSoft: data.shiftKey
 				} ) );
 
@@ -56,4 +56,5 @@ export default class EnterObserver extends Observer {
  *
  * @event module:engine/view/document~Document#event:enter
  * @param {module:engine/view/observer/domeventdata~DomEventData} data
+ * @param {Boolean} data.isSoft Whether it's a soft enter (<kbd>Shift</kbd>+<kbd>Enter</kbd>) or hard enter (<kbd>Enter</kbd>).
  */

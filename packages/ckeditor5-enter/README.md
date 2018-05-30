@@ -1,4 +1,4 @@
-CKEditor 5 Enter feature
+CKEditor 5 enter feature
 ========================================
 
 [![Join the chat at https://gitter.im/ckeditor/ckeditor5](https://badges.gitter.im/ckeditor/ckeditor5.svg)](https://gitter.im/ckeditor/ckeditor5?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
@@ -10,8 +10,7 @@ CKEditor 5 Enter feature
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-enter/status.svg)](https://david-dm.org/ckeditor/ckeditor5-enter)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-enter/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-enter?type=dev)
 
-This package implements the <kbd>Enter</kbd> key support -- and optionally <kbd>Shift+Enter</kbd> soft breaks -- for CKEditor 5.
-
+This package implements the <kbd>Enter</kbd> and <kbd>Shift</kbd>+<kbd>Enter</kbd> (soft break) support for CKEditor 5.
 
 ## Documentation
 
