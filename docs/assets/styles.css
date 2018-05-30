@@ -19,3 +19,14 @@
 		max-width: 800px;
 	}
 }
+
+/* https://github.com/ckeditor/ckeditor5/issues/1007 */
+@media only screen and (min-width: 1600px) {
+	.main .main__content.main__content-wide {
+		/*
+		 * `.main__content` by default has 760px width and 340px right padding.
+		 * `.main__content-wide` is 40px wider (800px), that's why we are reducing this right padding.
+		 */
+		padding-right: 300px;
+	}
+}
