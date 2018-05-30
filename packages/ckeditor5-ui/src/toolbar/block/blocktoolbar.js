@@ -20,7 +20,7 @@ import clickOutsideHandler from '../../bindings/clickoutsidehandler';
 import { getOptimalPosition } from '@ckeditor/ckeditor5-utils/src/dom/position';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 
-import iconPilcrow from '../../../theme/icons/pilcrow.svg';
+import iconPilcrow from '@ckeditor/ckeditor5-core/theme/icons/pilcrow.svg';
 
 /**
  * The block toolbar plugin.
