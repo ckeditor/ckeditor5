@@ -189,6 +189,7 @@ export default class Differ {
 	 * @param {module:engine/model/range~Range|null} oldRange Marker range before the change or `null` if the marker has just
 	 * been created.
 	 * @param {module:engine/model/range~Range|null} newRange Marker range after the change or `null` if the marker was removed.
+	 * @param {Boolean} affectsData Flag indicating whether marker affects the data model.
 	 */
 	bufferMarkerChange( markerName, oldRange, newRange, affectsData ) {
 		const buffered = this._changedMarkers.get( markerName );
