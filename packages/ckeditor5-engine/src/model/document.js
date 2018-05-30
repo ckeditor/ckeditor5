@@ -396,6 +396,28 @@ export default class Document {
 	 * @event change
 	 * @param {module:engine/model/batch~Batch} batch The batch that was used in the executed changes block.
 	 */
+
+	/**
+	 * Fired after each {@link module:engine/model/model~Model#enqueueChange `enqueueChange()` block},
+	 * which changes the data model or the outermost {@link module:engine/model/model~Model#change `change()` block}
+	 * was executed and the document has been changed during that block's execution.
+	 *
+	 * This event fires before the {@link module:engine/model/model~Model#change} event.
+	 *
+	 * The changes which this event will cover include:
+	 *
+	 * * document structure changes,
+	 * * marker changes, which affects the data model.
+	 *
+	 * If you want to be notified about the document's model changes, then simply listen to this event like this:
+	 *
+	 *		model.document.on( 'change:data', () => {
+	 *			console.log( 'The document's data has changed!' );
+	 *		} );
+	 *
+	 * @event change:data
+	 * @param {module:engine/model/batch~Batch} batch The batch that was used in the executed changes block.
+	 */
 }
 
 mix( Document, EmitterMixin );
