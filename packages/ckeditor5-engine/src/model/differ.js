@@ -190,13 +190,14 @@ export default class Differ {
 	 * been created.
 	 * @param {module:engine/model/range~Range|null} newRange Marker range after the change or `null` if the marker was removed.
 	 */
-	bufferMarkerChange( markerName, oldRange, newRange ) {
+	bufferMarkerChange( markerName, oldRange, newRange, affectsData ) {
 		const buffered = this._changedMarkers.get( markerName );
 
 		if ( !buffered ) {
 			this._changedMarkers.set( markerName, {
 				oldRange,
-				newRange
+				newRange,
+				affectsData
 			} );
 		} else {
 			buffered.newRange = newRange;
@@ -241,6 +242,21 @@ export default class Differ {
 		}
 
 		return result;
+	}
+
+	/**
+	 * Checks whether some of buffered marker can affect the data model.
+	 *
+	 * @returns {Boolean} `true` if buffered markers can change the data model.
+	 */
+	containsMarkersAffectingData() {
+		for ( const [ , change ] of this._changedMarkers ) {
+			if ( change.affectsData ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**

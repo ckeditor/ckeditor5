@@ -437,6 +437,38 @@ describe( 'Document', () => {
 			sinon.assert.notCalled( spy );
 		} );
 
+		it( 'should be fired if the writer adds marker not managed by using operations', () => {
+			const root = doc.createRoot();
+			const spy = sinon.spy();
+
+			root._appendChild( new Text( 'foo' ) );
+
+			doc.on( 'change:data', spy );
+
+			model.change( writer => {
+				const range = Range.createFromParentsAndOffsets( root, 2, root, 4 );
+				writer.addMarker( 'name', { range, usingOperation: false } );
+			} );
+
+			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'should not be fired if the writer adds marker not managed by using operations with affectsData set to false', () => {
+			const root = doc.createRoot();
+			const spy = sinon.spy();
+
+			root._appendChild( new Text( 'foo' ) );
+
+			doc.on( 'change:data', spy );
+
+			model.change( writer => {
+				const range = Range.createFromParentsAndOffsets( root, 2, root, 4 );
+				writer.addMarker( 'name', { range, usingOperation: false, affectsData: false } );
+			} );
+
+			sinon.assert.notCalled( spy );
+		} );
+
 		it( 'should not be fired if writer was used on non-document tree', () => {
 			const spy = sinon.spy();
 

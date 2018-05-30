@@ -152,7 +152,7 @@ export default class Document {
 			if ( !this.differ.isEmpty || hasSelectionChanged ) {
 				this._callPostFixers( writer );
 
-				if ( !this.differ.isEmpty && isBatchAffectingData( writer.batch ) ) {
+				if ( isBatchAffectingData( writer.batch ) || this.differ.containsMarkersAffectingData() ) {
 					this.fire( 'change:data', writer.batch );
 				} else {
 					this.fire( 'change', writer.batch );
@@ -166,14 +166,14 @@ export default class Document {
 		// Buffer marker changes.
 		// This is not covered in buffering operations because markers may change outside of them (when they
 		// are modified using `model.markers` collection, not through `MarkerOperation`).
-		this.listenTo( model.markers, 'update', ( evt, marker, oldRange, newRange ) => {
+		this.listenTo( model.markers, 'update', ( evt, marker, oldRange, newRange, affectsData ) => {
 			// Whenever marker is updated, buffer that change.
-			this.differ.bufferMarkerChange( marker.name, oldRange, newRange );
+			this.differ.bufferMarkerChange( marker.name, oldRange, newRange, affectsData );
 
 			if ( oldRange === null ) {
 				// If this is a new marker, add a listener that will buffer change whenever marker changes.
 				marker.on( 'change', ( evt, oldRange ) => {
-					this.differ.bufferMarkerChange( marker.name, oldRange, marker.getRange() );
+					this.differ.bufferMarkerChange( marker.name, oldRange, marker.getRange(), affectsData );
 				} );
 			}
 		} );

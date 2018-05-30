@@ -115,7 +115,7 @@ export default class MarkerCollection {
 			}
 
 			if ( hasChanged ) {
-				this.fire( 'update:' + markerName, oldMarker, oldRange, range );
+				this.fire( 'update:' + markerName, oldMarker, oldRange, range, affectsData );
 			}
 
 			return oldMarker;
@@ -125,7 +125,7 @@ export default class MarkerCollection {
 		const marker = new Marker( markerName, liveRange, managedUsingOperations, affectsData );
 
 		this._markers.set( markerName, marker );
-		this.fire( 'update:' + markerName, marker, null, range );
+		this.fire( 'update:' + markerName, marker, null, range, affectsData );
 
 		return marker;
 	}
