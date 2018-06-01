@@ -31,7 +31,7 @@ describe( 'Autosave', () => {
 				autosave = editor.plugins.get( Autosave );
 
 				// Clean autosave's state after setting data.
-				autosave._throttledSave.cancel();
+				autosave._flush();
 			} );
 	} );
 
@@ -145,6 +145,33 @@ describe( 'Autosave', () => {
 			} );
 		} );
 
+		it( 'should add a pending action during the saving #2.', () => {
+			const serverActionSpy = sinon.spy();
+			const pendingActions = editor.plugins.get( PendingActions );
+
+			autosave.provider = {
+				save() {
+					serverActionSpy();
+				}
+			};
+
+			expect( pendingActions.isPending ).to.be.false;
+
+			editor.model.change( writer => {
+				writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) ) );
+				editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
+			} );
+
+			expect( pendingActions.isPending ).to.be.true;
+
+			autosave._flush();
+
+			// Server action needs to wait at least a cycle.
+			return Promise.resolve().then( () => {
+				expect( pendingActions.isPending ).to.be.false;
+			} );
+		} );
+
 		it( 'should filter out change batches that don\'t change content', () => {
 			autosave.provider = {
 				save: sandbox.spy()
@@ -158,26 +185,12 @@ describe( 'Autosave', () => {
 			sinon.assert.notCalled( autosave.provider.save );
 		} );
 
-		it( 'should filter out change batches that don\'t change content #2', () => {
+		it.skip( 'should filter out change batches that don\'t change content #2', () => {
 			autosave.provider = {
 				save: sandbox.spy()
 			};
 
 			const operation = { name: 'user:position' };
-			editor.model.document.fire( 'change', {
-				deltas: [ { operations: [ operation ] } ]
-			} );
-
-			autosave._flush();
-			sinon.assert.notCalled( autosave.provider.save );
-		} );
-
-		it( 'should filter out change batches that don\'t change content #3', () => {
-			autosave.provider = {
-				save: sandbox.spy()
-			};
-
-			const operation = { name: 'user:range' };
 			editor.model.document.fire( 'change', {
 				deltas: [ { operations: [ operation ] } ]
 			} );
@@ -217,7 +230,7 @@ describe( 'Autosave', () => {
 			} );
 		} );
 
-		it( 'should work after editor\'s destroy with long server action time', () => {
+		it( 'should work after editor\'s destroy with long server\'s action time', () => {
 			const serverActionSpy = sinon.spy();
 			const pendingActions = editor.plugins.get( PendingActions );
 

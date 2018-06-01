@@ -4,7 +4,6 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import PendingActions from '@ckeditor/ckeditor5-core/src/pendingactions';
-import throttle from '@ckeditor/ckeditor5-utils/src/lib/lodash/throttle';
 import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 
 /* globals window */
@@ -47,7 +46,7 @@ export default class Autosave extends Plugin {
 		super( editor );
 
 		/**
-		 * @member {Provider}
+		 * @member {module:autosave/autosave~SaveProvider}
 		 */
 		this.provider = undefined;
 
@@ -58,16 +57,28 @@ export default class Autosave extends Plugin {
 		this._throttledSave = throttle( this._save.bind( this ), 500 );
 
 		/**
+		 * @protected
+		 * @type {Number}
+		 */
+		this._lastDocumentVersion = editor.model.document.version;
+
+		/**
 		 * @private
 		 * @type {DomEmitterMixin}
 		 */
 		this._domEmitter = Object.create( DomEmitterMixin );
 
 		/**
-		 * @protected
+		 * @private
 		 * @type {Number}
 		 */
-		this._lastDocumentVersion = editor.model.document.version;
+		this._saveActionCounter = 0;
+
+		/**
+		 * @private
+		 * @type {Object|null}
+		 */
+		this._action = null;
 	}
 
 	init() {
@@ -75,11 +86,19 @@ export default class Autosave extends Plugin {
 		const doc = editor.model.document;
 		const pendingActions = editor.plugins.get( PendingActions );
 
-		this.listenTo( doc, 'change', this._saveIfDocumentChanged.bind( this ) );
+		this.listenTo( doc, 'change:data', () => {
+			this._addAction();
+
+			const isCancelled = this._throttledSave();
+
+			if ( isCancelled ) {
+				this._removeAction();
+			}
+		} );
 
 		// Flush on the editor's destroy listener with the highest priority to ensure that
 		// `editor.getData()` will be called before plugins are destroyed.
-		this.listenTo( editor, 'destroy', () => this._save(), { priority: 'highest' } );
+		this.listenTo( editor, 'destroy', () => this._flush(), { priority: 'highest' } );
 
 		// It's not possible to easy test it because karma uses `beforeunload` event
 		// to warn before full page reload and this event cannot be dispatched manually.
@@ -92,7 +111,11 @@ export default class Autosave extends Plugin {
 	}
 
 	destroy() {
-		this._throttledSave.cancel();
+		const isCanceled = this._throttledSave.cancel();
+		if ( isCanceled ) {
+			this._removeAction();
+		}
+
 		this._domEmitter.stopListening();
 		super.destroy();
 	}
@@ -105,26 +128,6 @@ export default class Autosave extends Plugin {
 	}
 
 	/**
-	 * Filters out changes in document, that don't impact on the data (e.g. selection changes).
-	 * Quickly returns when finds an operation that potentially changes document's data.
-	 *
-	 * @private
-	 */
-	_saveIfDocumentChanged( evt, batch ) {
-		for ( const delta of batch.deltas ) {
-			for ( const operation of delta.operations ) {
-				const name = operation.name;
-
-				if ( !name || !isUserSelectionOperation( operation ) ) {
-					this._throttledSave();
-
-					return;
-				}
-			}
-		}
-	}
-
-	/**
 	 * If the provider is set and new document version exists,
 	 * `_save()` method creates a pending action and calls `provider.save()` method.
 	 * It waits for the result and then removes the created pending action.
@@ -132,44 +135,122 @@ export default class Autosave extends Plugin {
 	 * @private
 	 */
 	_save() {
-		if ( !this.provider ) {
-			return;
-		}
-
 		const version = this.editor.model.document.version;
 
-		if ( version <= this._lastDocumentVersion ) {
+		if ( !this.provider || version <= this._lastDocumentVersion ) {
+			this._removeAction();
+
 			return;
 		}
 
 		this._lastDocumentVersion = version;
 
-		const pendingActions = this.editor.plugins.get( PendingActions );
-		const action = pendingActions.add( 'Saving in progress.' );
-
 		Promise.resolve( this.provider.save() )
 			.then( () => {
-				pendingActions.remove( action );
+				this._removeAction();
 			} );
+	}
+
+	/**
+	 * @private
+	 */
+	_addAction() {
+		this._saveActionCounter++;
+
+		if ( !this.action ) {
+			const pendingActions = this.editor.plugins.get( PendingActions );
+			this.action = pendingActions.add( 'Saving in progress.' );
+		}
+	}
+
+	/**
+	 * @private
+	 */
+	_removeAction() {
+		this._saveActionCounter--;
+
+		if ( this._saveActionCounter === 0 ) {
+			const pendingActions = this.editor.plugins.get( PendingActions );
+			pendingActions.remove( this.action );
+			this.action = null;
+		}
 	}
 }
 
 /**
- * @typedef Provider
+ * @interface module:autosave/autosave~SaveProvider
  */
 
 /**
- * @function
- * @name Provider#save
- * @type {Function}
+ * Method that will be called when the data model changes.
+ *
+ * @method #save
+ * @returns {Promise.<*>|undefined}
  */
 
 /**
- * @private
+ * @param {Number} time
  */
-function isUserSelectionOperation( operation ) {
-	return (
-		operation.name.startsWith( 'user:position' ) ||
-		operation.name.startsWith( 'user:range' )
-	);
+function throttle( fn, time ) {
+	let lastCall = 0;
+	let scheduledCall = false;
+	let callId = 0;
+
+	// @returns {Boolean} `true` if the call is canceled.
+	function throttledFn() {
+		const now = Date.now();
+
+		// Call instantly, as the fn wasn't called within the `time` period.
+		if ( now > lastCall + time ) {
+			call( callId );
+			return false;
+		}
+
+		// Cancel call, as the next call is scheduled.
+		if ( scheduledCall ) {
+			return true;
+		}
+
+		// Set timeout, so the fn will be called `time` ms after the last call.
+		scheduledCall = true;
+		window.setTimeout( call, lastCall + time - now, callId );
+
+		return false;
+	}
+
+	throttledFn.cancel = cancel;
+	throttledFn.flush = flush;
+
+	// @returns {Boolean} `true` if the call is canceled.
+	function cancel() {
+		const wasScheduledCall = scheduledCall;
+		scheduledCall = false;
+		lastCall = 0;
+		callId++;
+
+		return wasScheduledCall;
+	}
+
+	function flush() {
+		if ( scheduledCall ) {
+			call( callId );
+		}
+
+		scheduledCall = false;
+		lastCall = 0;
+		callId++;
+	}
+
+	function call( id ) {
+		if ( id !== callId ) {
+			return;
+		}
+
+		lastCall = Date.now();
+		scheduledCall = false;
+
+		fn();
+	}
+
+	return throttledFn;
 }
