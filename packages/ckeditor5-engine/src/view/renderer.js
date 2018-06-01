@@ -182,7 +182,7 @@ export default class Renderer {
 		let inlineFillerPosition;
 
 		if ( this.markedChildren.size > 1 ) {
-			// Sort `this.markedChildren` by the nesting level.
+			// Sort `this.markedChildren` by nesting level.
 			this.markedChildren = this._sortElementsByNestingLevel( this.markedChildren );
 		}
 
@@ -255,12 +255,12 @@ export default class Renderer {
 	}
 
 	/**
-	 * Sorts elements set based on their nesting. The outermost elements are placed first.
-	 * It check only for 2 element types: `containerElement` and `attributeElement`. Those elements
-	 * are sorted in such order (from `containerElement` to `attributeElement`). Any other type (e.g. `rootElement` or
-	 * `documentFragment`) have higher priority and is placed higher in the sorted set.
+	 * Sorts elements set based on their nesting level. The outermost elements are placed first.
+	 * It check only for 2 element types: `containerElement` and `attributeElement`. Elements of these types
+	 * are sorted (from `containerElement` to `attributeElement`) and any other type (e.g. `rootElement` or
+	 * `documentFragment`) have higher priority so is placed higher in the sorted set.
 	 * Additionally if elements are of the same type, they are both checked if one is another parent so proper
-	 * order can be established (parent first).
+	 * order can be established between them (parent first).
 	 *
 	 * @private
 	 * @param {Set.<module:engine/view/node~Node>} elements Elements to be sorted.
@@ -294,12 +294,12 @@ export default class Renderer {
 	}
 
 	/**
-	 * Updates element children mappings. Children which were replaced in the view structure by the similar
+	 * Updates viewElement children mappings. Children which were replaced in the view structure by the similar
 	 * element (same tag name) are treated as 'replaced'. Their mappings are rebind to the corresponding,
-	 * existing DOM element so they will not be replaced by new DOM element during rerendering.
+	 * existing DOM element so they will not be replaced by a new DOM element during rendering.
 	 *
 	 * @private
-	 * @param {module:engine/view/node~Node} viewElement View element which children mappings will be updated.
+	 * @param {module:engine/view/node~Node} viewElement The view element which children mappings will be updated.
 	 */
 	_updateChildrenMappings( viewElement ) {
 		// We do not perform any operations on DOM here so there is no need to bind view element or convert its' children.
@@ -319,7 +319,7 @@ export default class Renderer {
 						if ( viewChild ) {
 							this.domConverter.unbindDomElement( diff.actualDomChildren[ deleteIndex ] );
 							this.domConverter.bindElements( diff.actualDomChildren[ deleteIndex ], viewChild );
-							// View element may have children which needs to be updated but are not marked, mark them to update.
+							// View element may have children which needs to be updated, but are not marked, mark them to update.
 							this.markedChildren.add( viewChild );
 						}
 
@@ -600,8 +600,8 @@ export default class Renderer {
 	}
 
 	/**
-	 * Compares element actual and expected children and finds list of actions which can be used to transform
-	 * actual children to expected ones.
+	 * Compares viewElement actual and expected children and actions sequence which can be used to transform
+	 * actual children into expected ones.
 	 *
 	 * @private
 	 * @param viewElement
@@ -615,7 +615,6 @@ export default class Renderer {
 	 * @returns {Node} result.domElement ViewElement corresponding DOM element.
 	 * @returns {Array} result.actualDomChildren Current viewElement DOM children.
 	 * @returns {Array} result.expectedDomChildren Expected viewElement DOM children.
-	 *
 	 */
 	_diffElementChildren( viewElement, options ) {
 		const domConverter = this.domConverter;
@@ -623,7 +622,7 @@ export default class Renderer {
 
 		if ( !domElement ) {
 			// If there is no `domElement` it means that it was already removed from DOM.
-			// There is no need to update it. It will be updated when re-inserted.
+			// There is no need to process it. It will be processed when re-inserted.
 			return null;
 		}
 
@@ -667,8 +666,8 @@ export default class Renderer {
 	}
 
 	/**
-	 * Finds DOM nodes which were replaced with the similar nodes (same tag name) in the `insert`/`delete`
-	 * action groups (based on actual and expected DOM). For example:
+	 * Finds DOM nodes which were replaced with the similar nodes (same tag name) in the view. All nodes are compared
+	 * within one `insert`/`delete` action group, for example:
 	 *
 	 * 		Actual DOM:		<p><b>Foo</b>Bar<i>Baz</i><b>Bax</b></p>
 	 * 		Expected DOM:	<p>Bar<b>123</b><i>Baz</i><b>456</b></p>
