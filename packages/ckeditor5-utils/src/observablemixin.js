@@ -75,8 +75,17 @@ const ObservableMixin = {
 				// Allow undefined as an initial value like A.define( 'x', undefined ) (#132).
 				// Note: When properties map has no such own property, then its value is undefined.
 				if ( oldValue !== value || !properties.has( name ) ) {
-					properties.set( name, value );
-					this.fire( 'change:' + name, name, value, oldValue );
+					// Fire `beforeChange` event before the new value will be changed to make it possible
+					// to override observable property without affecting `change` event.
+					// See https://github.com/ckeditor/ckeditor5-utils/issues/171.
+					let newValue = this.fire( 'beforeChange:' + name, name, value, oldValue );
+
+					if ( newValue === undefined ) {
+						newValue = value;
+					}
+
+					properties.set( name, newValue );
+					this.fire( 'change:' + name, name, newValue, oldValue );
 				}
 			}
 		} );
@@ -664,11 +673,41 @@ function attachBindToListeners( observable, toBindings ) {
  *
  *		observable.on( 'change:prop', ( evt, propertyName, newValue, oldValue ) => {
  *			console.log( `${ propertyName } has changed from ${ oldValue } to ${ newValue }` );
- *		} )
+ *		} );
  *
  *		observable.prop = 2; // -> 'prop has changed from 1 to 2'
  *
  * @event change:{property}
+ * @param {String} name The property name.
+ * @param {*} value The new property value.
+ * @param {*} oldValue The previous property value.
+ */
+
+/**
+ * Fired when a property value is going to be changed but is not changed yet (before the `change` event is fired).
+ *
+ * You can control the final value of the property by using
+ * the {@link module:utils/eventinfo~EventInfo#return event's `return` property}.
+ *
+ *		observable.set( 'prop', 1 );
+ *
+ *		observable.on( 'beforeChange:prop', ( evt, propertyName, newValue, oldValue ) => {
+ *			console.log( `Value is going to be changed from ${ oldValue } to ${ newValue }` );
+ *			console.log( `Current property value is ${ observable[ propertyName ] }` );
+ *
+ *			// Let's override the value.
+ *			evt.return = 3;
+ *		} );
+ *
+ *		observable.on( 'change:prop', ( evt, propertyName, newValue, oldValue ) => {
+ *			console.log( `Value has changed from ${ oldValue } to ${ newValue }` );
+ *		} );
+ *
+ *		observable.prop = 2; // -> 'Value is going to be changed from 1 to 2'
+ *		                     // -> 'Current property value is 1'
+ *		                     // -> 'Value has changed from 1 to 3'
+ *
+ * @event beforeChange:{property}
  * @param {String} name The property name.
  * @param {*} value The new property value.
  * @param {*} oldValue The previous property value.
