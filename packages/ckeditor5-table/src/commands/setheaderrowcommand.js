@@ -30,9 +30,19 @@ export default class SetHeaderRowCommand extends Command {
 		const position = selection.getFirstPosition();
 		const tableParent = getParentTable( position );
 
-		this.isEnabled = !!tableParent;
+		const isInTable = !!tableParent;
 
-		this.value = this.isEnabled && this._isInHeading( position.parent, tableParent );
+		this.isEnabled = isInTable;
+
+		/**
+		 * Flag indicating whether the command is active. The command is active when the
+		 * {@link module:engine/model/selection~Selection} is in a header row.
+		 *
+		 * @observable
+		 * @readonly
+		 * @member {Boolean} #value
+		 */
+		this.value = isInTable && this._isInHeading( position.parent, tableParent );
 	}
 
 	/**
@@ -49,22 +59,24 @@ export default class SetHeaderRowCommand extends Command {
 		const table = tableRow.parent;
 
 		const currentHeadingRows = table.getAttribute( 'headingRows' ) || 0;
-		const rowIndex = tableRow.index;
+		let rowIndex = tableRow.index;
 
-		const rowsToSet = rowIndex + 1 !== currentHeadingRows ? rowIndex + 1 : rowIndex;
+		if ( rowIndex + 1 !== currentHeadingRows ) {
+			rowIndex++;
+		}
 
 		model.change( writer => {
-			if ( rowsToSet ) {
-				// Changing heading rows requires to check if any of a heading cell is overlaping vertically the table head.
+			if ( rowIndex ) {
+				// Changing heading rows requires to check if any of a heading cell is overlapping vertically the table head.
 				// Any table cell that has a rowspan attribute > 1 will not exceed the table head so we need to fix it in rows below.
-				const cellsToSplit = getOverlappingCells( table, rowsToSet, currentHeadingRows );
+				const cellsToSplit = getOverlappingCells( table, rowIndex, currentHeadingRows );
 
 				for ( const cell of cellsToSplit ) {
-					splitHorizontally( cell, rowsToSet, writer );
+					splitHorizontally( cell, rowIndex, writer );
 				}
 			}
 
-			updateNumericAttribute( 'headingRows', rowsToSet, table, writer, 0 );
+			updateNumericAttribute( 'headingRows', rowIndex, table, writer, 0 );
 		} );
 	}
 

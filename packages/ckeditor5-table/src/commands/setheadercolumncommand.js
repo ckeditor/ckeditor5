@@ -28,9 +28,19 @@ export default class SetHeaderColumnCommand extends Command {
 		const position = selection.getFirstPosition();
 		const tableParent = getParentTable( position );
 
-		this.isEnabled = !!tableParent;
+		const isInTable = !!tableParent;
 
-		this.value = this.isEnabled && this._isInHeading( position.parent, tableParent );
+		this.isEnabled = isInTable;
+
+		/**
+		 * Flag indicating whether the command is active. The command is active when the
+		 * {@link module:engine/model/selection~Selection} is in a header column.
+		 *
+		 * @observable
+		 * @readonly
+		 * @member {Boolean} #value
+		 */
+		this.value = isInTable && this._isInHeading( position.parent, tableParent );
 	}
 
 	/**
@@ -49,12 +59,14 @@ export default class SetHeaderColumnCommand extends Command {
 
 		const currentHeadingColumns = parseInt( table.getAttribute( 'headingColumns' ) || 0 );
 
-		const { column } = tableUtils.getCellLocation( tableCell );
+		let { column } = tableUtils.getCellLocation( tableCell );
 
-		const columnsToSet = column + 1 !== currentHeadingColumns ? column + 1 : column;
+		if ( column + 1 !== currentHeadingColumns ) {
+			column++;
+		}
 
 		model.change( writer => {
-			updateNumericAttribute( 'headingColumns', columnsToSet, table, writer, 0 );
+			updateNumericAttribute( 'headingColumns', column, table, writer, 0 );
 		} );
 	}
 

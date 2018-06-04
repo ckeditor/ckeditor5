@@ -101,7 +101,7 @@ export default class InsertTableView extends View {
 			// Listen to box view 'over' event which indicates that mouse is over this box.
 			boxView.on( 'over', () => {
 				// Translate box index to the row & column index.
-				const row = parseInt( index / 10 );
+				const row = Math.floor( index / 10 );
 				const column = index % 10;
 
 				// As row & column indexes are zero-based transform it to number of selected rows & columns.
@@ -132,7 +132,7 @@ export default class InsertTableView extends View {
 
 		this.items.map( ( boxView, index ) => {
 			// Translate box index to the row & column index.
-			const itemRow = parseInt( index / 10 );
+			const itemRow = Math.floor( index / 10 );
 			const itemColumn = index % 10;
 
 			// Grid box is highlighted when its row & column index belongs to selected number of rows & columns.
