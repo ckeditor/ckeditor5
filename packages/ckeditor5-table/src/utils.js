@@ -13,7 +13,7 @@ import { getParentTable } from './commands/utils';
 const tableSymbol = Symbol( 'isImage' );
 
 /**
- * Converts a given {@link module:engine/view/element~Element} to an table widget:
+ * Converts a given {@link module:engine/view/element~Element} to a table widget:
  * * Adds a {@link module:engine/view/element~Element#_setCustomProperty custom property} allowing to recognize the table widget element.
  * * Calls the {@link module:widget/utils~toWidget} function with the proper element's label creator.
  *
