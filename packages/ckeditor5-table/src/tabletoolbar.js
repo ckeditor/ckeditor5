@@ -23,8 +23,6 @@ const balloonClassName = 'ck-toolbar-container';
  *
  * The toolbar uses the {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon}.
  *
- * For a detailed overview, check the {@glink features/table#table-contextual-toolbar table contextual toolbar} documentation.
- *
  * @extends module:core/plugin~Plugin
  */
 export default class TableToolbar extends Plugin {
