@@ -291,6 +291,15 @@ describe( 'scrollViewportToShowTarget()', () => {
 			sinon.assert.calledWithExactly( iframeWindow.scrollTo, 100, -100 );
 			sinon.assert.calledWithExactly( window.scrollTo, 1820, 1520 );
 		} );
+
+		// https://github.com/ckeditor/ckeditor5/issues/930
+		it( 'should not throw if the child frame has no access to the #frameElement of the parent', () => {
+			sinon.stub( iframeWindow, 'frameElement' ).get( () => null );
+
+			expect( () => {
+				scrollViewportToShowTarget( { target } );
+			} ).to.not.throw();
+		} );
 	} );
 
 	// Note: Because everything is a mock, scrolling the firstAncestor doesn't really change

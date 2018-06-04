@@ -68,6 +68,14 @@ export function scrollViewportToShowTarget( { target, viewportOffset = 0 } ) {
 			// by it's iframe's position.
 			currentFrame = currentWindow.frameElement;
 			currentWindow = currentWindow.parent;
+
+			// If the current window has some parent but frameElement is inaccessible, then they have
+			// different domains/ports and, due to security reasons, accessing and scrolling
+			// the parent window won't be possible.
+			// See https://github.com/ckeditor/ckeditor5/issues/930.
+			if ( !currentFrame ) {
+				return;
+			}
 		} else {
 			currentWindow = null;
 		}
