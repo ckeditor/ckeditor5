@@ -24,7 +24,7 @@ export function repositionContextualBalloon( editor ) {
 }
 
 /**
- * Returns the positioning options that control the geometry of the
+ * Returns the positioning options that controls the geometry of the
  * {@link module:ui/panel/balloon/contextualballoon~ContextualBalloon contextual balloon} with respect
  * to the selected element in the editor content.
  *

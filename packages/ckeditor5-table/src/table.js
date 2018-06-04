@@ -33,3 +33,18 @@ export default class Table extends Plugin {
 		return 'Table';
 	}
 }
+
+/**
+ * The configuration of the table features. Used by the table features in the `@ckeditor/ckeditor5-table` package.
+ *
+ *		ClassicEditor
+ *			.create( editorElement, {
+ * 				table: ... // Table feature options.
+ *			} )
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * See {@link module:core/editor/editorconfig~EditorConfig all editor options}.
+ *
+ * @interface TableConfig
+ */

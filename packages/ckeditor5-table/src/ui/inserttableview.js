@@ -144,7 +144,9 @@ export default class InsertTableView extends View {
 }
 
 /**
- * Single grid box view element.
+ * A single grid box view element.
+ *
+ * This class is used to render table size selection grid in {@link module:table/ui/inserttableview~InsertTableView}
  *
  * @private
  */

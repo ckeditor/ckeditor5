@@ -49,7 +49,11 @@ export default class InsertRowCommand extends Command {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Executes the command.
+	 *
+	 * Depending on command's {@link #order} value it inserts a row `'below'` or `'above'` the row in which selection is set.
+	 *
+	 * @fires execute
 	 */
 	execute() {
 		const editor = this.editor;

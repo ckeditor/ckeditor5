@@ -29,7 +29,7 @@ export function toTableWidget( viewElement, writer ) {
 }
 
 /**
- * Checks if a given view element is an table widget.
+ * Checks if a given view element is a table widget.
  *
  * @param {module:engine/view/element~Element} viewElement
  * @returns {Boolean}
@@ -39,7 +39,7 @@ export function isTableWidget( viewElement ) {
 }
 
 /**
- * Checks if an table widget is the only selected element.
+ * Checks if a table widget is the only selected element.
  *
  * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection} selection
  * @returns {Boolean}

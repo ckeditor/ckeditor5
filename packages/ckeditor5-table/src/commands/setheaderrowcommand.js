@@ -46,7 +46,13 @@ export default class SetHeaderRowCommand extends Command {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Executes the command.
+	 *
+	 * When the selection is non-header row, the command will set `headingRows` table's attribute to cover that row.
+	 *
+	 * When selection is already in a header row then it will set `headingRows` so the heading section will end before that row.
+	 *
+	 * @fires execute
 	 */
 	execute() {
 		const model = this.editor.model;

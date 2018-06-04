@@ -31,7 +31,14 @@ export default class InsertTableCommand extends Command {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Executes the command.
+	 *
+	 * Inserts table of given rows and columns into the editor.
+	 *
+	 * @param {Object} options
+	 * @param {Number} [options.rows=2] Number of rows to create in inserted table.
+	 * @param {Number} [options.columns=2] Number of columns to create in inserted table.
+	 * @fires execute
 	 */
 	execute( options = {} ) {
 		const model = this.editor.model;

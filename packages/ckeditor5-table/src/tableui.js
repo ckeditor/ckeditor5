@@ -27,7 +27,7 @@ import tableMergeCellIcon from './../theme/icons/table-merge-cell.svg';
  * * The `'tableRow'` dropdown,
  * * The `'mergeCell'` dropdown.
  *
- * The `'tableColumn'`, `'tableRow'`, `'mergeCell'` are best to be used in conjunction with {@link module:table/tabletoolbar~TableToolbar}.
+ * The `'tableColumn'`, `'tableRow'`, `'mergeCell'` work best with {@link module:table/tabletoolbar~TableToolbar}.
  *
  * @extends module:core/plugin~Plugin
  */

@@ -44,7 +44,13 @@ export default class SetHeaderColumnCommand extends Command {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Executes the command.
+	 *
+	 * When the selection is non-header column, the command will set `headingColumns` table's attribute to cover that column.
+	 *
+	 * When selection is already in a header column then it will set `headingColumns` so the heading section will end before that column.
+	 *
+	 * @fires execute
 	 */
 	execute() {
 		const model = this.editor.model;
@@ -71,7 +77,7 @@ export default class SetHeaderColumnCommand extends Command {
 	}
 
 	/**
-	 * Checks if table cell is in heading section.
+	 * Checks if a table cell is in the heading section.
 	 *
 	 * @param {module:engine/model/element~Element} tableCell
 	 * @param {module:engine/model/element~Element} table
