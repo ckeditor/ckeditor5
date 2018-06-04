@@ -12,6 +12,7 @@ import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
 import ImageUploadCommand from '../../src/imageupload/imageuploadcommand';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
 import ModelSelection from '@ckeditor/ckeditor5-engine/src/model/selection';
+import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 import { isImageType, findOptimalInsertionPosition } from '../../src/imageupload/utils';
 
 /**
@@ -45,7 +46,7 @@ export default class ImageUploadEditing extends Plugin {
 		editor.commands.add( 'imageUpload', new ImageUploadCommand( editor ) );
 
 		// Execute imageUpload command when image is dropped or pasted.
-		editor.editing.view.document.on( 'clipboardInput', ( evt, data ) => {
+		this.listenTo( editor.editing.view.document, 'clipboardInput', ( evt, data ) => {
 			// Skip if non empty HTML data is included.
 			// https://github.com/ckeditor/ckeditor5-upload/issues/68
 			if ( isHtmlIncluded( data.dataTransfer ) ) {
@@ -57,10 +58,28 @@ export default class ImageUploadEditing extends Plugin {
 			);
 
 			for ( const file of data.dataTransfer.files ) {
-				const insertAt = findOptimalInsertionPosition( targetModelSelection );
-
 				if ( isImageType( file ) ) {
-					editor.execute( 'imageUpload', { file, insertAt } );
+					const insertAt = findOptimalInsertionPosition( targetModelSelection );
+
+					editor.model.change( writer => {
+						const loader = fileRepository.createLoader( file );
+
+						// Do not throw when upload adapter is not set. FileRepository will log an error anyway.
+						if ( !loader ) {
+							return;
+						}
+
+						const imageElement = writer.createElement( 'image', { uploadId: loader.id } );
+						const targetSelection = new ModelSelection( [ new ModelRange( insertAt ) ] );
+
+						editor.model.insertContent( imageElement, targetSelection );
+
+						// Inserting an image might've failed due to schema regulations.
+						if ( imageElement.parent ) {
+							writer.setSelection( imageElement, 'on' );
+						}
+					} );
+
 					evt.stop();
 				}
 
