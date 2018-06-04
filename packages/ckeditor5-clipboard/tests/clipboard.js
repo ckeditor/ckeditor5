@@ -194,6 +194,29 @@ describe( 'Clipboard feature', () => {
 			sinon.assert.notCalled( spy );
 		} );
 
+		it( 'stops `clipboardInput` event on highest priority when editor is read-only', () => {
+			const dataTransferMock = createDataTransfer( { 'text/html': '<p>x</p>', 'text/plain': 'y' } );
+			const spy = sinon.spy();
+
+			viewDocument.on( 'clipboardInput', spy, { priority: 'high' } );
+
+			editor.isReadOnly = true;
+
+			viewDocument.fire( 'clipboardInput', {
+				dataTransfer: dataTransferMock
+			} );
+
+			sinon.assert.notCalled( spy );
+
+			editor.isReadOnly = false;
+
+			viewDocument.fire( 'clipboardInput', {
+				dataTransfer: dataTransferMock
+			} );
+
+			sinon.assert.calledOnce( spy );
+		} );
+
 		it( 'does not insert content if the whole content was invalid', () => {
 			// Whole content is invalid. Even though there is "view" content, the "model" content would be empty.
 			// Do not insert content in this case.
