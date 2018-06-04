@@ -1020,7 +1020,7 @@ function hasTemplateBinding( schema ) {
 //
 // @param {module:ui/template~TemplateValueSchema} schema
 // @param {Node} node DOM Node updated when {@link module:utils/observablemixin~ObservableMixin} changes.
-// @return {Array}
+// @returns {Array}
 function getValueSchemaValue( schema, node ) {
 	return schema.map( schemaItem => {
 		// Process {@link module:ui/template~TemplateBinding} bindings.
@@ -1708,7 +1708,7 @@ function shouldExtend( attrName ) {
  * @param {String|Function} eventNameOrFunctionOrAttribute An attribute name of
  * {@link module:utils/observablemixin~Observable} or a DOM event name or an event callback.
  * @param {Function} [callback] Allows for processing of the value. Accepts `Node` and `value` as arguments.
- * @return {module:ui/template~TemplateBinding}
+ * @returns {module:ui/template~TemplateBinding}
  */
 
 /**
@@ -1743,7 +1743,7 @@ function shouldExtend( attrName ) {
  * @param {String} [valueIfTrue] Value set when the {@link module:utils/observablemixin~Observable} attribute is not
  * undefined/null/false/'' (empty string).
  * @param {Function} [callback] Allows for processing of the value. Accepts `Node` and `value` as arguments.
- * @return {module:ui/template~TemplateBinding}
+ * @returns {module:ui/template~TemplateBinding}
  */
 
 /**
