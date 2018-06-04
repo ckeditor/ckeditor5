@@ -12,7 +12,9 @@ import EnterCommand from './entercommand';
 import EnterObserver from './enterobserver';
 
 /**
- * The enter plugin. Handles the <kbd>Enter</kbd> key (hard line break) in the editor.
+ * This plugin handles the <kbd>Enter</kbd> key (hard line break) in the editor.
+ *
+ * See also the {@link module:enter/shiftenter~ShiftEnter} plugin.
  *
  * @extends module:core/plugin~Plugin
  */

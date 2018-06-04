@@ -14,7 +14,9 @@ import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversio
 import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
 
 /**
- * The Shift+Enter plugin. Handles the <kbd>Shift</kbd>+<kbd>Enter</kbd> keys (soft line break) in the editor.
+ * This plugin handles the <kbd>Shift</kbd>+<kbd>Enter</kbd> keystroke (soft line break) in the editor.
+ *
+ * See also the {@link module:enter/enter~Enter} plugin.
  *
  * @extends module:core/plugin~Plugin
  */
