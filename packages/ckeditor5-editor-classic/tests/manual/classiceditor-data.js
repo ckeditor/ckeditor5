@@ -14,19 +14,19 @@ import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 
-const data = '<h2>Hello world!</h2><p>This is an editor instance.</p>';
-
 window.editors = [];
+let counter = 1;
 
 const container = document.querySelector( '.container' );
 
 function initEditor() {
 	ClassicEditor
-		.create( data, {
+		.create( `<h2>Hello world! #${ counter }</h2><p>This is an editor instance.</p>`, {
 			plugins: [ Enter, Typing, Paragraph, Undo, Heading, Bold, Italic ],
 			toolbar: [ 'heading', '|', 'bold', 'italic', 'undo', 'redo' ]
 		} )
 		.then( editor => {
+			counter += 1;
 			window.editors.push( editor );
 			container.appendChild( editor.element );
 		} )
@@ -35,14 +35,16 @@ function initEditor() {
 		} );
 }
 
-function destroyEditor() {
+function destroyEditors() {
 	window.editors.forEach( editor => {
 		editor.destroy()
 			.then( () => {
 				editor.element.remove();
 			} );
 	} );
+	window.editors = [];
+	counter = 1;
 }
 
 document.getElementById( 'initEditor' ).addEventListener( 'click', initEditor );
-document.getElementById( 'destroyEditor' ).addEventListener( 'click', destroyEditor );
+document.getElementById( 'destroyEditors' ).addEventListener( 'click', destroyEditors );
