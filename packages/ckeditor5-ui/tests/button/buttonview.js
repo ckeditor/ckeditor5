@@ -47,10 +47,10 @@ describe( 'ButtonView', () => {
 	describe( '<button> bindings', () => {
 		describe( 'class', () => {
 			it( 'is set initially', () => {
-				expect( view.element.classList ).to.have.length( 4 );
+				expect( view.element.classList ).to.have.length( 3 );
 				expect( view.element.classList.contains( 'ck' ) ).to.true;
 				expect( view.element.classList.contains( 'ck-button' ) ).to.true;
-				expect( view.element.classList.contains( 'ck-enabled' ) ).to.true;
+				expect( view.element.classList.contains( 'ck-disabled' ) ).to.false;
 				expect( view.element.classList.contains( 'ck-off' ) ).to.true;
 			} );
 

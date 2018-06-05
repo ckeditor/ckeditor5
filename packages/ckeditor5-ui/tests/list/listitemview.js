@@ -89,6 +89,20 @@ describe( 'ListItemView', () => {
 
 				expect( view.element.classList.contains( 'ck-list__item_active' ) ).to.be.true;
 			} );
+
+			it( 'reacts on view#isEnabled', () => {
+				expect( view.element.classList ).to.have.length( 2 );
+
+				expect( view.element.classList.contains( 'ck-disabled' ) ).to.be.false;
+
+				view.set( 'isEnabled', false );
+
+				expect( view.element.classList.contains( 'ck-disabled' ) ).to.be.true;
+
+				view.set( 'isEnabled', true );
+
+				expect( view.element.classList.contains( 'ck-disabled' ) ).to.be.false;
+			} );
 		} );
 
 		describe( '"style" attribute', () => {
@@ -131,6 +145,17 @@ describe( 'ListItemView', () => {
 
 				view.element.dispatchEvent( new Event( 'click' ) );
 				expect( spy.calledOnce ).to.be.true;
+			} );
+
+			it( 'does not triggers view#execute event when "click" is fired in DOM and isEnables=false', () => {
+				const spy = sinon.spy();
+
+				view.on( 'execute', spy );
+
+				view.isEnabled = false;
+
+				view.element.dispatchEvent( new Event( 'click' ) );
+				sinon.assert.notCalled( spy );
 			} );
 		} );
 	} );
