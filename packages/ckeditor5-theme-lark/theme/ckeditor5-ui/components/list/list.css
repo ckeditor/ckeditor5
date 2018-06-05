@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
+@import "../../../mixins/_disabled.css";
 @import "../../../mixins/_rounded.css";
 @import "../../../mixins/_shadow.css";
 
@@ -27,6 +28,10 @@
 		@mixin ck-box-shadow var(--ck-focus-outer-shadow);
 
 		outline: none;
+	}
+
+	&.ck-disabled {
+		@mixin ck-disabled;
 	}
 }
 
