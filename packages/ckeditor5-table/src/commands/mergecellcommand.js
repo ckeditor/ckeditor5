@@ -59,7 +59,11 @@ export default class MergeCellCommand extends Command {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Executes the command.
+	 *
+	 * Depending on command's {@link #direction} value it will merge a cell that is to the `'left'`, `'right'`, `'up'` or `'down'`.
+	 *
+	 * @fires execute
 	 */
 	execute() {
 		const model = this.editor.model;

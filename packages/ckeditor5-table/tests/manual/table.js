@@ -8,14 +8,17 @@
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articlepluginset';
 import Table from '../../src/table';
+import TableToolbar from '../../src/tabletoolbar';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ ArticlePluginSet, Table ],
+		plugins: [ ArticlePluginSet, Table, TableToolbar ],
 		toolbar: [
-			'heading', '|', 'insertTable', 'insertRowBelow', 'insertColumnAfter',
-			'|', 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'
-		]
+			'heading', '|', 'insertTable', '|', 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'
+		],
+		table: {
+			toolbar: [ 'tableColumn', 'tableRow', 'mergeCell' ]
+		}
 	} )
 	.then( editor => {
 		window.editor = editor;

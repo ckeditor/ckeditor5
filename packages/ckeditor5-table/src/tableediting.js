@@ -28,11 +28,12 @@ import SplitCellCommand from './commands/splitcellcommand';
 import MergeCellCommand from './commands/mergecellcommand';
 import RemoveRowCommand from './commands/removerowcommand';
 import RemoveColumnCommand from './commands/removecolumncommand';
-import SetTableHeadersCommand from './commands/settableheaderscommand';
+import SetHeaderRowCommand from './commands/setheaderrowcommand';
+import SetHeaderColumnCommand from './commands/setheadercolumncommand';
 import { getParentTable } from './commands/utils';
+import TableUtils from './tableutils';
 
 import './../theme/table.css';
-import TableUtils from './tableutils';
 
 /**
  * The table editing feature.
@@ -111,7 +112,8 @@ export default class TableEditing extends Plugin {
 		editor.commands.add( 'mergeCellDown', new MergeCellCommand( editor, { direction: 'down' } ) );
 		editor.commands.add( 'mergeCellUp', new MergeCellCommand( editor, { direction: 'up' } ) );
 
-		editor.commands.add( 'setTableHeaders', new SetTableHeadersCommand( editor ) );
+		editor.commands.add( 'setColumnHeader', new SetHeaderColumnCommand( editor ) );
+		editor.commands.add( 'setRowHeader', new SetHeaderRowCommand( editor ) );
 
 		// Handle tab key navigation.
 		this.listenTo( editor.editing.view.document, 'keydown', ( ...args ) => this._handleTabOnSelectedTable( ...args ) );

@@ -14,7 +14,7 @@ import TableUtils from '../tableutils';
 import { updateNumericAttribute } from './utils';
 
 /**
- * The split cell command.
+ * The remove column command.
  *
  * @extends module:core/command~Command
  */

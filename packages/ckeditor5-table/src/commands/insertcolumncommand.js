@@ -49,7 +49,11 @@ export default class InsertColumnCommand extends Command {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Executes the command.
+	 *
+	 * Depending on command's {@link #order} value it inserts a column `'before'` or `'after'` the column in which selection is set.
+	 *
+	 * @fires execute
 	 */
 	execute() {
 		const editor = this.editor;

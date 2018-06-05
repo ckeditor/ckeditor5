@@ -8,14 +8,26 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import { addListToDropdown, createDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
+import Model from '@ckeditor/ckeditor5-ui/src/model';
+import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 
-import icon from '@ckeditor/ckeditor5-core/theme/icons/object-center.svg';
-import insertRowIcon from '@ckeditor/ckeditor5-core/theme/icons/object-left.svg';
-import insertColumnIcon from '@ckeditor/ckeditor5-core/theme/icons/object-right.svg';
+import InsertTableView from './ui/inserttableview';
+
+import tableIcon from './../theme/icons/table.svg';
+import tableColumnIcon from './../theme/icons/table-column.svg';
+import tableRowIcon from './../theme/icons/table-row.svg';
+import tableMergeCellIcon from './../theme/icons/table-merge-cell.svg';
 
 /**
- * The table UI plugin.
+ * The table UI plugin. It introduces:
+ *
+ * * The `'insertTable'` dropdown,
+ * * The `'tableColumn'` dropdown,
+ * * The `'tableRow'` dropdown,
+ * * The `'mergeCell'` dropdown.
+ *
+ * The `'tableColumn'`, `'tableRow'`, `'mergeCell'` work best with {@link module:table/tabletoolbar~TableToolbar}.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -25,65 +37,155 @@ export default class TableUI extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
+		const t = this.editor.t;
 
 		editor.ui.componentFactory.add( 'insertTable', locale => {
 			const command = editor.commands.get( 'insertTable' );
-			const buttonView = new ButtonView( locale );
+			const dropdownView = createDropdown( locale );
 
-			buttonView.bind( 'isEnabled' ).to( command );
+			dropdownView.bind( 'isEnabled' ).to( command );
 
-			buttonView.set( {
-				icon,
-				label: 'Insert table',
+			// Decorate dropdown's button.
+			dropdownView.buttonView.set( {
+				icon: tableIcon,
+				label: t( 'Insert table' ),
 				tooltip: true
 			} );
 
-			buttonView.on( 'execute', () => {
-				editor.execute( 'insertTable' );
+			// Prepare custom view for dropdown's panel.
+			const insertTableView = new InsertTableView( locale );
+			dropdownView.panelView.children.add( insertTableView );
+
+			insertTableView.delegate( 'execute' ).to( dropdownView );
+
+			dropdownView.buttonView.on( 'open', () => {
+				// Reset the chooser before showing it to the user.
+				insertTableView.rows = 0;
+				insertTableView.columns = 0;
+			} );
+
+			dropdownView.on( 'execute', () => {
+				editor.execute( 'insertTable', { rows: insertTableView.rows, columns: insertTableView.columns } );
 				editor.editing.view.focus();
 			} );
 
-			return buttonView;
+			return dropdownView;
 		} );
 
-		editor.ui.componentFactory.add( 'insertRowBelow', locale => {
-			const command = editor.commands.get( 'insertRowBelow' );
-			const buttonView = new ButtonView( locale );
+		editor.ui.componentFactory.add( 'tableColumn', locale => {
+			const options = [
+				{ commandName: 'setColumnHeader', label: t( 'Header column' ), bindIsActive: true },
+				{ commandName: 'insertColumnBefore', label: t( 'Insert column before' ) },
+				{ commandName: 'insertColumnAfter', label: t( 'Insert column after' ) },
+				{ commandName: 'removeColumn', label: t( 'Delete column' ) }
+			];
 
-			buttonView.bind( 'isEnabled' ).to( command );
-
-			buttonView.set( {
-				icon: insertRowIcon,
-				label: 'Insert row',
-				tooltip: true
-			} );
-
-			buttonView.on( 'execute', () => {
-				editor.execute( 'insertRowBelow' );
-				editor.editing.view.focus();
-			} );
-
-			return buttonView;
+			return this._prepareDropdown( 'Column', tableColumnIcon, options, locale );
 		} );
 
-		editor.ui.componentFactory.add( 'insertColumnAfter', locale => {
-			const command = editor.commands.get( 'insertColumnAfter' );
-			const buttonView = new ButtonView( locale );
+		editor.ui.componentFactory.add( 'tableRow', locale => {
+			const options = [
+				{ commandName: 'setRowHeader', label: t( 'Header row' ), bindIsActive: true },
+				{ commandName: 'insertRowBelow', label: t( 'Insert row below' ) },
+				{ commandName: 'insertRowAbove', label: t( 'Insert row above' ) },
+				{ commandName: 'removeRow', label: t( 'Delete row' ) }
+			];
 
-			buttonView.bind( 'isEnabled' ).to( command );
+			return this._prepareDropdown( 'Row', tableRowIcon, options, locale );
+		} );
 
-			buttonView.set( {
-				icon: insertColumnIcon,
-				label: 'Insert column',
-				tooltip: true
-			} );
+		editor.ui.componentFactory.add( 'mergeCell', locale => {
+			const options = [
+				{ commandName: 'mergeCellUp', label: t( 'Merge cell up' ) },
+				{ commandName: 'mergeCellRight', label: t( 'Merge cell right' ) },
+				{ commandName: 'mergeCellDown', label: t( 'Merge cell down' ) },
+				{ commandName: 'mergeCellLeft', label: t( 'Merge cell left' ) },
+				{ commandName: 'splitCellVertically', label: t( 'Split cell vertically' ) },
+				{ commandName: 'splitCellHorizontally', label: t( 'Split cell horizontally' ) }
+			];
 
-			buttonView.on( 'execute', () => {
-				editor.execute( 'insertColumnAfter' );
-				editor.editing.view.focus();
-			} );
-
-			return buttonView;
+			return this._prepareDropdown( 'Merge cell', tableMergeCellIcon, options, locale );
 		} );
 	}
+
+	/**
+	 * Creates dropdown view from set of options.
+	 *
+	 * @private
+	 * @param {String} buttonName Dropdown button name.
+	 * @param {String} icon Icon for dropdown button.
+	 * @param {Array.<module:table/tableui~DropdownOption>} options List of options for dropdown.
+	 * @param {module:utils/locale~Locale} locale
+	 * @returns {module:ui/dropdown/dropdownview~DropdownView}
+	 */
+	_prepareDropdown( buttonName, icon, options, locale ) {
+		const editor = this.editor;
+
+		const dropdownView = createDropdown( locale );
+		const commands = [];
+
+		// Prepare dropdown list items for list dropdown.
+		const dropdownItems = new Collection();
+
+		for ( const option of options ) {
+			addListOption( option, editor, commands, dropdownItems );
+		}
+
+		addListToDropdown( dropdownView, dropdownItems );
+
+		// Decorate dropdown's button.
+		dropdownView.buttonView.set( {
+			label: buttonName,
+			icon,
+			tooltip: true
+		} );
+
+		// Make dropdown button disabled when all options are disabled.
+		dropdownView.bind( 'isEnabled' ).toMany( commands, 'isEnabled', ( ...areEnabled ) => {
+			return areEnabled.some( isEnabled => isEnabled );
+		} );
+
+		this.listenTo( dropdownView, 'execute', evt => {
+			editor.execute( evt.source.commandName );
+			editor.editing.view.focus();
+		} );
+
+		return dropdownView;
+	}
 }
+
+// Adds an option to a list view.
+//
+// @param {module:table/tableui~DropdownOption} option Configuration option.
+// @param {module:core/editor/editor~Editor} editor
+// @param {Array.<module:core/command~Command>} commands List of commands to update.
+// @param {module:utils/collection~Collection} dropdownItems Collection of dropdown items to update with given option.
+function addListOption( option, editor, commands, dropdownItems ) {
+	const { commandName, label, bindIsActive } = option;
+	const command = editor.commands.get( commandName );
+
+	commands.push( command );
+
+	const itemModel = new Model( {
+		commandName,
+		label
+	} );
+
+	itemModel.bind( 'isEnabled' ).to( command );
+
+	if ( bindIsActive ) {
+		itemModel.bind( 'isActive' ).to( command, 'value' );
+	}
+
+	dropdownItems.add( itemModel );
+}
+
+/**
+ * Object describing table dropdowns' items.
+ *
+ * @typedef {Object} module:table/tableui~DropdownOption
+ * @private
+ * @property {String} commandName A command name to execute for that option.
+ * @property {String} label A dropdown item label.
+ * @property {Boolean} bindIsActive If `true` will bind command's value to `isActive` dropdown item property.
+ */

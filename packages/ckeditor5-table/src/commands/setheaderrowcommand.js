@@ -4,7 +4,7 @@
  */
 
 /**
- * @module table/commands/settableheaderscommand
+ * @module table/commands/setheaderrowcommand
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
@@ -14,11 +14,11 @@ import { getParentTable, updateNumericAttribute } from './utils';
 import TableWalker from '../tablewalker';
 
 /**
- * The set table headers command.
+ * The header row command.
  *
  * @extends module:core/command~Command
  */
-export default class SetTableHeadersCommand extends Command {
+export default class SetHeaderRowCommand extends Command {
 	/**
 	 * @inheritDoc
 	 */
@@ -27,40 +27,77 @@ export default class SetTableHeadersCommand extends Command {
 		const doc = model.document;
 		const selection = doc.selection;
 
-		const tableParent = getParentTable( selection.getFirstPosition() );
+		const position = selection.getFirstPosition();
+		const tableParent = getParentTable( position );
 
-		this.isEnabled = !!tableParent;
+		const isInTable = !!tableParent;
+
+		this.isEnabled = isInTable;
+
+		/**
+		 * Flag indicating whether the command is active. The command is active when the
+		 * {@link module:engine/model/selection~Selection} is in a header row.
+		 *
+		 * @observable
+		 * @readonly
+		 * @member {Boolean} #value
+		 */
+		this.value = isInTable && this._isInHeading( position.parent, tableParent );
 	}
 
 	/**
-	 * @inheritDoc
+	 * Executes the command.
+	 *
+	 * When the selection is non-header row, the command will set `headingRows` table's attribute to cover that row.
+	 *
+	 * When selection is already in a header row then it will set `headingRows` so the heading section will end before that row.
+	 *
+	 * @fires execute
 	 */
-	execute( options = {} ) {
+	execute() {
 		const model = this.editor.model;
 		const doc = model.document;
 		const selection = doc.selection;
 
-		const rowsToSet = parseInt( options.rows ) || 0;
+		const position = selection.getFirstPosition();
+		const tableCell = position.parent;
+		const tableRow = tableCell.parent;
+		const table = tableRow.parent;
 
-		const table = getParentTable( selection.getFirstPosition() );
+		const currentHeadingRows = table.getAttribute( 'headingRows' ) || 0;
+		let rowIndex = tableRow.index;
+
+		if ( rowIndex + 1 !== currentHeadingRows ) {
+			rowIndex++;
+		}
 
 		model.change( writer => {
-			const currentHeadingRows = table.getAttribute( 'headingRows' ) || 0;
-
-			if ( currentHeadingRows !== rowsToSet && rowsToSet > 0 ) {
-				// Changing heading rows requires to check if any of a heading cell is overlaping vertically the table head.
+			if ( rowIndex ) {
+				// Changing heading rows requires to check if any of a heading cell is overlapping vertically the table head.
 				// Any table cell that has a rowspan attribute > 1 will not exceed the table head so we need to fix it in rows below.
-				const cellsToSplit = getOverlappingCells( table, rowsToSet, currentHeadingRows );
+				const cellsToSplit = getOverlappingCells( table, rowIndex, currentHeadingRows );
 
 				for ( const cell of cellsToSplit ) {
-					splitHorizontally( cell, rowsToSet, writer );
+					splitHorizontally( cell, rowIndex, writer );
 				}
 			}
 
-			const columnsToSet = parseInt( options.columns ) || 0;
-			updateTableAttribute( table, 'headingColumns', columnsToSet, writer );
-			updateTableAttribute( table, 'headingRows', rowsToSet, writer );
+			updateNumericAttribute( 'headingRows', rowIndex, table, writer, 0 );
 		} );
+	}
+
+	/**
+	 * Checks if table cell is in heading section.
+	 *
+	 * @param {module:engine/model/element~Element} tableCell
+	 * @param {module:engine/model/element~Element} table
+	 * @returns {Boolean}
+	 * @private
+	 */
+	_isInHeading( tableCell, table ) {
+		const headingRows = parseInt( table.getAttribute( 'headingRows' ) || 0 );
+
+		return !!headingRows && tableCell.parent.index < headingRows;
 	}
 }
 
@@ -84,15 +121,6 @@ function getOverlappingCells( table, headingRowsToSet, currentHeadingRows ) {
 	}
 
 	return cellsToSplit;
-}
-
-// @private
-function updateTableAttribute( table, attributeName, newValue, writer ) {
-	const currentValue = table.getAttribute( attributeName ) || 0;
-
-	if ( newValue !== currentValue ) {
-		updateNumericAttribute( attributeName, newValue, table, writer, 0 );
-	}
 }
 
 // Splits table cell horizontally.

@@ -17,7 +17,8 @@ import RemoveRowCommand from '../src/commands/removerowcommand';
 import RemoveColumnCommand from '../src/commands/removecolumncommand';
 import SplitCellCommand from '../src/commands/splitcellcommand';
 import MergeCellCommand from '../src/commands/mergecellcommand';
-import SetTableHeadersCommand from '../src/commands/settableheaderscommand';
+import SetHeaderRowCommand from '../src/commands/setheaderrowcommand';
+import SetHeaderColumnCommand from '../src/commands/setheadercolumncommand';
 
 describe( 'TableEditing', () => {
 	let editor, model;
@@ -93,8 +94,12 @@ describe( 'TableEditing', () => {
 		expect( editor.commands.get( 'mergeCellUp' ) ).to.be.instanceOf( MergeCellCommand );
 	} );
 
-	it( 'adds setTableHeaders command', () => {
-		expect( editor.commands.get( 'setTableHeaders' ) ).to.be.instanceOf( SetTableHeadersCommand );
+	it( 'adds setColumnHeader command', () => {
+		expect( editor.commands.get( 'setColumnHeader' ) ).to.be.instanceOf( SetHeaderColumnCommand );
+	} );
+
+	it( 'adds setRowHeader command', () => {
+		expect( editor.commands.get( 'setRowHeader' ) ).to.be.instanceOf( SetHeaderRowCommand );
 	} );
 
 	describe( 'conversion in data pipeline', () => {
