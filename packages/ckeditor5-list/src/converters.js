@@ -130,7 +130,7 @@ export function modelViewChangeType( evt, data, conversionApi ) {
 }
 
 /**
- * A model-to-view converter for `indent` attribute change on `listItem` model element.
+ * A model-to-view converter for `listIndent` attribute change on `listItem` model element.
  *
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute
  * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
@@ -331,7 +331,7 @@ export function modelViewMergeAfter( evt, data, conversionApi ) {
 /**
  * A view-to-model converter that converts `<li>` view elements into `listItem` model elements.
  *
- * To set correct values of the `listType` and `indent` attributes the converter:
+ * To set correct values of the `listType` and `listIndent` attributes the converter:
  * * checks `<li>`'s parent,
  * * stores and increases the `conversionApi.store.indent` value when `<li>`'s sub-items are converted.
  *
