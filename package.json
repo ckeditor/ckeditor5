@@ -83,7 +83,7 @@
     "raw-loader": "^0.5.1",
     "style-loader": "^0.20.3",
     "umberto": "^0.6.0",
-	"webpack": "^4.1.0"
+	"webpack": "^4.2.0"
   },
   "engines": {
     "node": ">=6.0.0",
