@@ -49,6 +49,11 @@ import numberedList from '@ckeditor/ckeditor5-list/theme/icons/numberedlist.svg'
 
 import paragraph from '@ckeditor/ckeditor5-paragraph/theme/icons/paragraph.svg';
 
+import table from '@ckeditor/ckeditor5-table/theme/icons/table.svg';
+import tableRow from '@ckeditor/ckeditor5-table/theme/icons/table-row.svg';
+import tableColumn from '@ckeditor/ckeditor5-table/theme/icons/table-column.svg';
+import tableMergeCell from '@ckeditor/ckeditor5-table/theme/icons/table-merge-cell.svg';
+
 import undo from '@ckeditor/ckeditor5-undo/theme/icons/undo.svg';
 import redo from '@ckeditor/ckeditor5-undo/theme/icons/redo.svg';
 
@@ -81,6 +86,9 @@ const icons = {
 
 	// paragraph
 	paragraph,
+
+	// table
+	table, tableRow, tableColumn, tableMergeCell,
 
 	// undo
 	undo, redo
