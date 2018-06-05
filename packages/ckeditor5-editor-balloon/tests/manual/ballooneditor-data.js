@@ -10,14 +10,16 @@ import ArticlePluginSet from '@ckeditor/ckeditor5-core/tests/_utils/articleplugi
 
 window.editors = [];
 const container = document.querySelector( '.container' );
+let counter = 1;
 
 function initEditor() {
 	BalloonEditor
-		.create( '<h2>Editor 1</h2><p>This is an editor instance.</p>', {
+		.create( `<h2>Editor ${ counter }</h2><p>This is an editor instance.</p>`, {
 			plugins: [ ArticlePluginSet ],
 			toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ]
 		} )
 		.then( editor => {
+			counter += 1;
 			window.editors.push( editor );
 			container.appendChild( editor.element );
 		} )
@@ -26,14 +28,16 @@ function initEditor() {
 		} );
 }
 
-function destroyEditor() {
+function destroyEditors() {
 	window.editors.forEach( editor => {
 		editor.destroy()
 			.then( () => {
 				editor.element.remove();
 			} );
 	} );
+	window.editors = [];
+	counter = 1;
 }
 
 document.getElementById( 'initEditor' ).addEventListener( 'click', initEditor );
-document.getElementById( 'destroyEditor' ).addEventListener( 'click', destroyEditor );
+document.getElementById( 'destroyEditors' ).addEventListener( 'click', destroyEditors );
