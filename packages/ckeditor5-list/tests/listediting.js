@@ -45,6 +45,13 @@ describe( 'ListEditing', () => {
 				view = editor.editing.view;
 				viewDoc = view.document;
 				viewRoot = viewDoc.getRoot();
+
+				model.schema.register( 'foo', {
+					allowWhere: '$block',
+					allowAttributes: [ 'indent', 'type' ],
+					isBlock: true,
+					isObject: true
+				} );
 			} );
 	} );
 
@@ -61,8 +68,8 @@ describe( 'ListEditing', () => {
 		expect( model.schema.checkChild( [ '$root', 'listItem' ], 'listItem' ) ).to.be.false;
 		expect( model.schema.checkChild( [ '$root', 'listItem' ], '$block' ) ).to.be.false;
 
-		expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'indent' ) ).to.be.true;
-		expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'type' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listIndent' ) ).to.be.true;
+		expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listType' ) ).to.be.true;
 	} );
 
 	describe( 'commands', () => {
@@ -87,7 +94,7 @@ describe( 'ListEditing', () => {
 
 			sinon.spy( editor, 'execute' );
 
-			setModelData( model, '<listItem type="bulleted" indent="0">[]</listItem>' );
+			setModelData( model, '<listItem listType="bulleted" listIndent="0">[]</listItem>' );
 
 			editor.editing.view.document.fire( 'enter', domEvtDataStub );
 
@@ -100,7 +107,7 @@ describe( 'ListEditing', () => {
 
 			sinon.spy( editor, 'execute' );
 
-			setModelData( model, '<listItem type="bulleted" indent="0">foo[]</listItem>' );
+			setModelData( model, '<listItem listType="bulleted" listIndent="0">foo[]</listItem>' );
 
 			editor.editing.view.document.fire( 'enter', domEvtDataStub );
 
@@ -114,7 +121,7 @@ describe( 'ListEditing', () => {
 
 			sinon.spy( editor, 'execute' );
 
-			setModelData( model, '<listItem type="bulleted" indent="0">[]foo</listItem>' );
+			setModelData( model, '<listItem listType="bulleted" listIndent="0">[]foo</listItem>' );
 
 			editor.editing.view.document.fire( 'delete', domEvtDataStub );
 
@@ -126,7 +133,7 @@ describe( 'ListEditing', () => {
 
 			sinon.spy( editor, 'execute' );
 
-			setModelData( model, '<paragraph>foo</paragraph><listItem type="bulleted" indent="0">[]foo</listItem>' );
+			setModelData( model, '<paragraph>foo</paragraph><listItem listType="bulleted" listIndent="0">[]foo</listItem>' );
 
 			editor.editing.view.document.fire( 'delete', domEvtDataStub );
 
@@ -138,7 +145,7 @@ describe( 'ListEditing', () => {
 
 			sinon.spy( editor, 'execute' );
 
-			setModelData( model, '<listItem type="bulleted" indent="0">[]foo</listItem>' );
+			setModelData( model, '<listItem listType="bulleted" listIndent="0">[]foo</listItem>' );
 
 			editor.editing.view.document.fire( 'delete', domEvtDataStub );
 
@@ -150,7 +157,7 @@ describe( 'ListEditing', () => {
 
 			sinon.spy( editor, 'execute' );
 
-			setModelData( model, '<listItem type="bulleted" indent="0">[fo]o</listItem>' );
+			setModelData( model, '<listItem listType="bulleted" listIndent="0">[fo]o</listItem>' );
 
 			editor.editing.view.document.fire( 'delete', domEvtDataStub );
 
@@ -176,7 +183,7 @@ describe( 'ListEditing', () => {
 
 			setModelData(
 				model,
-				'<listItem type="bulleted" indent="0">foo</listItem><listItem type="bulleted" indent="0">[]foo</listItem>'
+				'<listItem listType="bulleted" listIndent="0">foo</listItem><listItem listType="bulleted" listIndent="0">[]foo</listItem>'
 			);
 
 			editor.editing.view.document.fire( 'delete', domEvtDataStub );
@@ -189,7 +196,7 @@ describe( 'ListEditing', () => {
 
 			sinon.spy( editor, 'execute' );
 
-			setModelData( model, '<listItem type="bulleted" indent="0">fo[]o</listItem>' );
+			setModelData( model, '<listItem listType="bulleted" listIndent="0">fo[]o</listItem>' );
 
 			editor.editing.view.document.fire( 'delete', domEvtDataStub );
 
@@ -201,7 +208,7 @@ describe( 'ListEditing', () => {
 
 			sinon.spy( editor, 'execute' );
 
-			setModelData( model, '<listItem type="bulleted" indent="0">fo[]o</listItem>' );
+			setModelData( model, '<listItem listType="bulleted" listIndent="0">fo[]o</listItem>' );
 
 			editor.editing.view.document.fire( 'delete', domEvtDataStub );
 
@@ -215,7 +222,7 @@ describe( 'ListEditing', () => {
 
 			setModelData(
 				model,
-				'<blockQuote><paragraph>x</paragraph></blockQuote><listItem type="bulleted" indent="0">[]foo</listItem>'
+				'<blockQuote><paragraph>x</paragraph></blockQuote><listItem listType="bulleted" listIndent="0">[]foo</listItem>'
 			);
 
 			editor.editing.view.document.fire( 'delete', domEvtDataStub );
@@ -230,7 +237,7 @@ describe( 'ListEditing', () => {
 
 			setModelData(
 				model,
-				'<paragraph>x</paragraph><blockQuote><listItem type="bulleted" indent="0">[]foo</listItem></blockQuote>'
+				'<paragraph>x</paragraph><blockQuote><listItem listType="bulleted" listIndent="0">[]foo</listItem></blockQuote>'
 			);
 
 			editor.editing.view.document.fire( 'delete', domEvtDataStub );
@@ -259,8 +266,8 @@ describe( 'ListEditing', () => {
 		it( 'should execute indentList command on tab key', () => {
 			setModelData(
 				model,
-				'<listItem type="bulleted" indent="0">foo</listItem>' +
-				'<listItem type="bulleted" indent="0">[]bar</listItem>'
+				'<listItem listType="bulleted" listIndent="0">foo</listItem>' +
+				'<listItem listType="bulleted" listIndent="0">[]bar</listItem>'
 			);
 
 			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
@@ -276,8 +283,8 @@ describe( 'ListEditing', () => {
 
 			setModelData(
 				model,
-				'<listItem type="bulleted" indent="0">foo</listItem>' +
-				'<listItem type="bulleted" indent="1">[]bar</listItem>'
+				'<listItem listType="bulleted" listIndent="0">foo</listItem>' +
+				'<listItem listType="bulleted" listIndent="1">[]bar</listItem>'
 			);
 
 			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
@@ -289,7 +296,7 @@ describe( 'ListEditing', () => {
 		} );
 
 		it( 'should not indent if command is disabled', () => {
-			setModelData( model, '<listItem type="bulleted" indent="0">[]foo</listItem>' );
+			setModelData( model, '<listItem listType="bulleted" listIndent="0">[]foo</listItem>' );
 
 			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
@@ -303,8 +310,8 @@ describe( 'ListEditing', () => {
 
 			setModelData(
 				model,
-				'<listItem type="bulleted" indent="0">foo</listItem>' +
-				'<listItem type="bulleted" indent="0">[]bar</listItem>'
+				'<listItem listType="bulleted" listIndent="0">foo</listItem>' +
+				'<listItem listType="bulleted" listIndent="0">[]bar</listItem>'
 			);
 
 			editor.editing.view.document.fire( 'keydown', domEvtDataStub );
@@ -348,12 +355,12 @@ describe( 'ListEditing', () => {
 				editor.setData( '<ol><li>a</li></ol><p>xxx</p><ul><li>b</li><li>c</li></ul><p>yyy</p><ul><li>d</li></ul>' );
 
 				const expectedModelData =
-					'<listItem indent="0" type="numbered">a</listItem>' +
+					'<listItem listIndent="0" listType="numbered">a</listItem>' +
 					'<paragraph>xxx</paragraph>' +
-					'<listItem indent="0" type="bulleted">b</listItem>' +
-					'<listItem indent="0" type="bulleted">c</listItem>' +
+					'<listItem listIndent="0" listType="bulleted">b</listItem>' +
+					'<listItem listIndent="0" listType="bulleted">c</listItem>' +
 					'<paragraph>yyy</paragraph>' +
-					'<listItem indent="0" type="bulleted">d</listItem>';
+					'<listItem listIndent="0" listType="bulleted">d</listItem>';
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( expectedModelData );
 			} );
@@ -382,11 +389,11 @@ describe( 'ListEditing', () => {
 
 			/*
 				<paragraph>a</paragraph>
-				<listItem indent=0 type="bulleted">b</listItem>
-				<listItem indent=0 type="bulleted">c</listItem>
-				<listItem indent=0 type="bulleted">d</listItem>
+				<listItem listIndent=0 listType="bulleted">b</listItem>
+				<listItem listIndent=0 listType="bulleted">c</listItem>
+				<listItem listIndent=0 listType="bulleted">d</listItem>
 				<paragraph>e</paragraph>
-				<listItem indent=0 type="numbered">f</listItem>
+				<listItem listIndent=0 listType="numbered">f</listItem>
 				<paragraph>g</paragraph>
 			 */
 
@@ -443,8 +450,8 @@ describe( 'ListEditing', () => {
 					'list item at the beginning of same list type',
 
 					'<paragraph>p</paragraph>' +
-					'[<listItem indent="0" type="bulleted">x</listItem>]' +
-					'<listItem indent="0" type="bulleted">a</listItem>',
+					'[<listItem listIndent="0" listType="bulleted">x</listItem>]' +
+					'<listItem listIndent="0" listType="bulleted">a</listItem>',
 
 					'<p>p</p>' +
 					'<ul>' +
@@ -457,9 +464,9 @@ describe( 'ListEditing', () => {
 					'list item in the middle of same list type',
 
 					'<paragraph>p</paragraph>' +
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'[<listItem indent="0" type="bulleted">x</listItem>]' +
-					'<listItem indent="0" type="bulleted">b</listItem>',
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+					'[<listItem listIndent="0" listType="bulleted">x</listItem>]' +
+					'<listItem listIndent="0" listType="bulleted">b</listItem>',
 
 					'<p>p</p>' +
 					'<ul>' +
@@ -473,8 +480,8 @@ describe( 'ListEditing', () => {
 					'list item at the end of same list type',
 
 					'<paragraph>p</paragraph>' +
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'[<listItem indent="0" type="bulleted">x</listItem>]',
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+					'[<listItem listIndent="0" listType="bulleted">x</listItem>]',
 
 					'<p>p</p>' +
 					'<ul>' +
@@ -487,8 +494,8 @@ describe( 'ListEditing', () => {
 					'list item at the beginning of different list type',
 
 					'<paragraph>p</paragraph>' +
-					'[<listItem indent="0" type="numbered">x</listItem>]' +
-					'<listItem indent="0" type="bulleted">a</listItem>',
+					'[<listItem listIndent="0" listType="numbered">x</listItem>]' +
+					'<listItem listIndent="0" listType="bulleted">a</listItem>',
 
 					'<p>p</p>' +
 					'<ol>' +
@@ -503,9 +510,9 @@ describe( 'ListEditing', () => {
 					'list item in the middle of different list type',
 
 					'<paragraph>p</paragraph>' +
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'[<listItem indent="0" type="numbered">x</listItem>]' +
-					'<listItem indent="0" type="bulleted">b</listItem>',
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+					'[<listItem listIndent="0" listType="numbered">x</listItem>]' +
+					'<listItem listIndent="0" listType="bulleted">b</listItem>',
 
 					'<p>p</p>' +
 					'<ul>' +
@@ -523,8 +530,8 @@ describe( 'ListEditing', () => {
 					'list item at the end of different list type',
 
 					'<paragraph>p</paragraph>' +
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'[<listItem indent="0" type="numbered">x</listItem>]',
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+					'[<listItem listIndent="0" listType="numbered">x</listItem>]',
 
 					'<p>p</p>' +
 					'<ul>' +
@@ -538,9 +545,9 @@ describe( 'ListEditing', () => {
 				testInsert(
 					'element between list items',
 
-					'<listItem indent="0" type="bulleted">a</listItem>' +
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
 					'[<paragraph>x</paragraph>]' +
-					'<listItem indent="0" type="bulleted">a</listItem>',
+					'<listItem listIndent="0" listType="bulleted">a</listItem>',
 
 					'<ul>' +
 						'<li>a</li>' +
@@ -557,9 +564,9 @@ describe( 'ListEditing', () => {
 					'remove the first list item',
 
 					'<paragraph>p</paragraph>' +
-					'[<listItem indent="0" type="bulleted">a</listItem>]' +
-					'<listItem indent="0" type="bulleted">b</listItem>' +
-					'<listItem indent="0" type="bulleted">c</listItem>',
+					'[<listItem listIndent="0" listType="bulleted">a</listItem>]' +
+					'<listItem listIndent="0" listType="bulleted">b</listItem>' +
+					'<listItem listIndent="0" listType="bulleted">c</listItem>',
 
 					'<p>p</p>' +
 					'<ul>' +
@@ -572,9 +579,9 @@ describe( 'ListEditing', () => {
 					'remove list item from the middle',
 
 					'<paragraph>p</paragraph>' +
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'[<listItem indent="0" type="bulleted">b</listItem>]' +
-					'<listItem indent="0" type="bulleted">c</listItem>',
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+					'[<listItem listIndent="0" listType="bulleted">b</listItem>]' +
+					'<listItem listIndent="0" listType="bulleted">c</listItem>',
 
 					'<p>p</p>' +
 					'<ul>' +
@@ -587,9 +594,9 @@ describe( 'ListEditing', () => {
 					'remove the last list item',
 
 					'<paragraph>p</paragraph>' +
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'<listItem indent="0" type="bulleted">b</listItem>' +
-					'[<listItem indent="0" type="bulleted">c</listItem>]',
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+					'<listItem listIndent="0" listType="bulleted">b</listItem>' +
+					'[<listItem listIndent="0" listType="bulleted">c</listItem>]',
 
 					'<p>p</p>' +
 					'<ul>' +
@@ -602,7 +609,7 @@ describe( 'ListEditing', () => {
 					'remove the only list item',
 
 					'<paragraph>p</paragraph>' +
-					'[<listItem indent="0" type="bulleted">x</listItem>]' +
+					'[<listItem listIndent="0" listType="bulleted">x</listItem>]' +
 					'<paragraph>p</paragraph>',
 
 					'<p>p</p>' +
@@ -613,9 +620,9 @@ describe( 'ListEditing', () => {
 					'remove element from between lists of same type',
 
 					'<paragraph>p</paragraph>' +
-					'<listItem indent="0" type="bulleted">a</listItem>' +
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
 					'[<paragraph>x</paragraph>]' +
-					'<listItem indent="0" type="bulleted">b</listItem>' +
+					'<listItem listIndent="0" listType="bulleted">b</listItem>' +
 					'<paragraph>p</paragraph>',
 
 					'<p>p</p>' +
@@ -630,9 +637,9 @@ describe( 'ListEditing', () => {
 					'remove element from between lists of different type',
 
 					'<paragraph>p</paragraph>' +
-					'<listItem indent="0" type="bulleted">a</listItem>' +
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
 					'[<paragraph>x</paragraph>]' +
-					'<listItem indent="0" type="numbered">b</listItem>' +
+					'<listItem listIndent="0" listType="numbered">b</listItem>' +
 					'<paragraph>p</paragraph>',
 
 					'<p>p</p>' +
@@ -651,9 +658,9 @@ describe( 'ListEditing', () => {
 					'change first list item',
 
 					'<paragraph>p</paragraph>' +
-					'[<listItem indent="0" type="bulleted">a</listItem>]' +
-					'<listItem indent="0" type="bulleted">b</listItem>' +
-					'<listItem indent="0" type="bulleted">c</listItem>',
+					'[<listItem listIndent="0" listType="bulleted">a</listItem>]' +
+					'<listItem listIndent="0" listType="bulleted">b</listItem>' +
+					'<listItem listIndent="0" listType="bulleted">c</listItem>',
 
 					'<p>p</p>' +
 					'<ol>' +
@@ -669,9 +676,9 @@ describe( 'ListEditing', () => {
 					'change middle list item',
 
 					'<paragraph>p</paragraph>' +
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'[<listItem indent="0" type="bulleted">b</listItem>]' +
-					'<listItem indent="0" type="bulleted">c</listItem>',
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+					'[<listItem listIndent="0" listType="bulleted">b</listItem>]' +
+					'<listItem listIndent="0" listType="bulleted">c</listItem>',
 
 					'<p>p</p>' +
 					'<ul>' +
@@ -689,9 +696,9 @@ describe( 'ListEditing', () => {
 					'change last list item',
 
 					'<paragraph>p</paragraph>' +
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'<listItem indent="0" type="bulleted">b</listItem>' +
-					'[<listItem indent="0" type="bulleted">c</listItem>]',
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+					'<listItem listIndent="0" listType="bulleted">b</listItem>' +
+					'[<listItem listIndent="0" listType="bulleted">c</listItem>]',
 
 					'<p>p</p>' +
 					'<ul>' +
@@ -707,7 +714,7 @@ describe( 'ListEditing', () => {
 					'change only list item',
 
 					'<paragraph>p</paragraph>' +
-					'[<listItem indent="0" type="bulleted">a</listItem>]' +
+					'[<listItem listIndent="0" listType="bulleted">a</listItem>]' +
 					'<paragraph>p</paragraph>',
 
 					'<p>p</p>' +
@@ -720,10 +727,10 @@ describe( 'ListEditing', () => {
 				testChangeType(
 					'change element at the edge of two different lists #1',
 
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'<listItem indent="0" type="bulleted">b</listItem>' +
-					'[<listItem indent="0" type="bulleted">c</listItem>]' +
-					'<listItem indent="0" type="numbered">d</listItem>',
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+					'<listItem listIndent="0" listType="bulleted">b</listItem>' +
+					'[<listItem listIndent="0" listType="bulleted">c</listItem>]' +
+					'<listItem listIndent="0" listType="numbered">d</listItem>',
 
 					'<ul>' +
 						'<li>a</li>' +
@@ -738,10 +745,10 @@ describe( 'ListEditing', () => {
 				testChangeType(
 					'change element at the edge of two different lists #1',
 
-					'<listItem indent="0" type="numbered">a</listItem>' +
-					'[<listItem indent="0" type="bulleted">b</listItem>]' +
-					'<listItem indent="0" type="bulleted">c</listItem>' +
-					'<listItem indent="0" type="bulleted">d</listItem>',
+					'<listItem listIndent="0" listType="numbered">a</listItem>' +
+					'[<listItem listIndent="0" listType="bulleted">b</listItem>]' +
+					'<listItem listIndent="0" listType="bulleted">c</listItem>' +
+					'<listItem listIndent="0" listType="bulleted">d</listItem>',
 
 					'<ol>' +
 						'<li>a</li>' +
@@ -756,10 +763,10 @@ describe( 'ListEditing', () => {
 				testChangeType(
 					'change multiple elements #1',
 
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'[<listItem indent="0" type="bulleted">b</listItem>' +
-					'<listItem indent="0" type="bulleted">c</listItem>]' +
-					'<listItem indent="0" type="bulleted">d</listItem>',
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+					'[<listItem listIndent="0" listType="bulleted">b</listItem>' +
+					'<listItem listIndent="0" listType="bulleted">c</listItem>]' +
+					'<listItem listIndent="0" listType="bulleted">d</listItem>',
 
 					'<ul>' +
 						'<li>a</li>' +
@@ -776,10 +783,10 @@ describe( 'ListEditing', () => {
 				testChangeType(
 					'change multiple elements #2',
 
-					'<listItem indent="0" type="numbered">a</listItem>' +
-					'[<listItem indent="0" type="bulleted">b</listItem>' +
-					'<listItem indent="0" type="bulleted">c</listItem>]' +
-					'<listItem indent="0" type="numbered">d</listItem>',
+					'<listItem listIndent="0" listType="numbered">a</listItem>' +
+					'[<listItem listIndent="0" listType="bulleted">b</listItem>' +
+					'<listItem listIndent="0" listType="bulleted">c</listItem>]' +
+					'<listItem listIndent="0" listType="numbered">d</listItem>',
 
 					'<ol>' +
 						'<li>a</li>' +
@@ -794,8 +801,8 @@ describe( 'ListEditing', () => {
 				testRenameFromListItem(
 					'rename first list item',
 
-					'[<listItem indent="0" type="bulleted">a</listItem>]' +
-					'<listItem indent="0" type="bulleted">b</listItem>',
+					'[<listItem listIndent="0" listType="bulleted">a</listItem>]' +
+					'<listItem listIndent="0" listType="bulleted">b</listItem>',
 
 					'<p>a</p>' +
 					'<ul>' +
@@ -806,9 +813,9 @@ describe( 'ListEditing', () => {
 				testRenameFromListItem(
 					'rename middle list item',
 
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'[<listItem indent="0" type="bulleted">b</listItem>]' +
-					'<listItem indent="0" type="bulleted">c</listItem>',
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+					'[<listItem listIndent="0" listType="bulleted">b</listItem>]' +
+					'<listItem listIndent="0" listType="bulleted">c</listItem>',
 
 					'<ul>' +
 						'<li>a</li>' +
@@ -822,8 +829,8 @@ describe( 'ListEditing', () => {
 				testRenameFromListItem(
 					'rename last list item',
 
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'[<listItem indent="0" type="bulleted">b</listItem>]',
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+					'[<listItem listIndent="0" listType="bulleted">b</listItem>]',
 
 					'<ul>' +
 						'<li>a</li>' +
@@ -835,7 +842,7 @@ describe( 'ListEditing', () => {
 					'rename only list item',
 
 					'<paragraph>p</paragraph>' +
-					'[<listItem indent="0" type="bulleted">x</listItem>]' +
+					'[<listItem listIndent="0" listType="bulleted">x</listItem>]' +
 					'<paragraph>p</paragraph>',
 
 					'<p>p</p>' +
@@ -873,7 +880,7 @@ describe( 'ListEditing', () => {
 					'element before list of same type', 0,
 
 					'[<paragraph>x</paragraph>]' +
-					'<listItem indent="0" type="bulleted">a</listItem>',
+					'<listItem listIndent="0" listType="bulleted">a</listItem>',
 
 					'<ul>' +
 						'<li>x</li>' +
@@ -884,7 +891,7 @@ describe( 'ListEditing', () => {
 				testRenameToListItem(
 					'element after list of same type', 0,
 
-					'<listItem indent="0" type="bulleted">a</listItem>' +
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
 					'[<paragraph>x</paragraph>]',
 
 					'<ul>' +
@@ -897,7 +904,7 @@ describe( 'ListEditing', () => {
 					'element before list of different type', 0,
 
 					'[<paragraph>x</paragraph>]' +
-					'<listItem indent="0" type="numbered">a</listItem>',
+					'<listItem listIndent="0" listType="numbered">a</listItem>',
 
 					'<ul>' +
 						'<li>x</li>' +
@@ -910,7 +917,7 @@ describe( 'ListEditing', () => {
 				testRenameToListItem(
 					'element after list of different type', 0,
 
-					'<listItem indent="0" type="numbered">a</listItem>' +
+					'<listItem listIndent="0" listType="numbered">a</listItem>' +
 					'[<paragraph>x</paragraph>]',
 
 					'<ol>' +
@@ -924,9 +931,9 @@ describe( 'ListEditing', () => {
 				testRenameToListItem(
 					'element between lists of same type', 0,
 
-					'<listItem indent="0" type="bulleted">a</listItem>' +
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
 					'[<paragraph>x</paragraph>]' +
-					'<listItem indent="0" type="bulleted">b</listItem>',
+					'<listItem listIndent="0" listType="bulleted">b</listItem>',
 
 					'<ul>' +
 						'<li>a</li>' +
@@ -941,9 +948,9 @@ describe( 'ListEditing', () => {
 					'list item inside same list',
 
 					'<paragraph>p</paragraph>' +
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'[<listItem indent="0" type="bulleted">b</listItem>]' +
-					'<listItem indent="0" type="bulleted">c</listItem>',
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+					'[<listItem listIndent="0" listType="bulleted">b</listItem>]' +
+					'<listItem listIndent="0" listType="bulleted">c</listItem>',
 
 					4, // Move after last item.
 
@@ -959,8 +966,8 @@ describe( 'ListEditing', () => {
 					'out list item from list',
 
 					'<paragraph>p</paragraph>' +
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'[<listItem indent="0" type="bulleted">b</listItem>]' +
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+					'[<listItem listIndent="0" listType="bulleted">b</listItem>]' +
 					'<paragraph>p</paragraph>',
 
 					4, // Move after second paragraph.
@@ -979,7 +986,7 @@ describe( 'ListEditing', () => {
 					'the only list item',
 
 					'<paragraph>p</paragraph>' +
-					'[<listItem indent="0" type="bulleted">a</listItem>]' +
+					'[<listItem listIndent="0" listType="bulleted">a</listItem>]' +
 					'<paragraph>p</paragraph>',
 
 					3, // Move after second paragraph.
@@ -994,11 +1001,11 @@ describe( 'ListEditing', () => {
 				testMove(
 					'list item between two lists of same type',
 
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'[<listItem indent="0" type="bulleted">b</listItem>]' +
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+					'[<listItem listIndent="0" listType="bulleted">b</listItem>]' +
 					'<paragraph>p</paragraph>' +
-					'<listItem indent="0" type="bulleted">c</listItem>' +
-					'<listItem indent="0" type="bulleted">d</listItem>',
+					'<listItem listIndent="0" listType="bulleted">c</listItem>' +
+					'<listItem listIndent="0" listType="bulleted">d</listItem>',
 
 					4, // Move between list item "c" and list item "d'.
 
@@ -1016,11 +1023,11 @@ describe( 'ListEditing', () => {
 				testMove(
 					'list item between two lists of different type',
 
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'[<listItem indent="0" type="bulleted">b</listItem>]' +
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+					'[<listItem listIndent="0" listType="bulleted">b</listItem>]' +
 					'<paragraph>p</paragraph>' +
-					'<listItem indent="0" type="numbered">c</listItem>' +
-					'<listItem indent="0" type="numbered">d</listItem>',
+					'<listItem listIndent="0" listType="numbered">c</listItem>' +
+					'<listItem listIndent="0" listType="numbered">d</listItem>',
 
 					4, // Move between list item "c" and list item "d'.
 
@@ -1042,8 +1049,8 @@ describe( 'ListEditing', () => {
 				testMove(
 					'element between list items',
 
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'<listItem indent="0" type="bulleted">b</listItem>' +
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+					'<listItem listIndent="0" listType="bulleted">b</listItem>' +
 					'[<paragraph>p</paragraph>]',
 
 					1, // Move between list item "a" and list item "b'.
@@ -1312,12 +1319,12 @@ describe( 'ListEditing', () => {
 
 				const expectedModelData =
 					'<paragraph>foo</paragraph>' +
-					'<listItem indent="0" type="bulleted">1</listItem>' +
-					'<listItem indent="1" type="bulleted">1.1</listItem>' +
-					'<listItem indent="1" type="bulleted">1.2</listItem>' +
-					'<listItem indent="2" type="numbered">1.2.1</listItem>' +
-					'<listItem indent="1" type="bulleted">1.3</listItem>' +
-					'<listItem indent="0" type="bulleted">2</listItem>' +
+					'<listItem listIndent="0" listType="bulleted">1</listItem>' +
+					'<listItem listIndent="1" listType="bulleted">1.1</listItem>' +
+					'<listItem listIndent="1" listType="bulleted">1.2</listItem>' +
+					'<listItem listIndent="2" listType="numbered">1.2.1</listItem>' +
+					'<listItem listIndent="1" listType="bulleted">1.3</listItem>' +
+					'<listItem listIndent="0" listType="bulleted">2</listItem>' +
 					'<paragraph>bar</paragraph>';
 
 				expect( getModelData( model, { withoutSelection: true } ) ).to.equal( expectedModelData );
@@ -1355,17 +1362,17 @@ describe( 'ListEditing', () => {
 			} );
 
 			/*
-				<listItem indent=0 type="bulleted">a</listItem>
-				<listItem indent=0 type="bulleted">bbb</listItem>
-				<listItem indent=1 type="numbered">c</listItem>
-				<listItem indent=1 type="numbered">d</listItem>
-				<listItem indent=1 type="numbered">e</listItem>
-				<listItem indent=1 type="numbered"></listItem>
-				<listItem indent=2 type="bulleted">g</listItem>
-				<listItem indent=2 type="bulleted">h</listItem>
-				<listItem indent=2 type="bullered">i</listItem>
-				<listItem indent=1 type="numbered">j</listItem>
-				<listItem indent=0 type="bulleted">k</listItem>
+				<listItem listIndent=0 listType="bulleted">a</listItem>
+				<listItem listIndent=0 listType="bulleted">bbb</listItem>
+				<listItem listIndent=1 listType="numbered">c</listItem>
+				<listItem listIndent=1 listType="numbered">d</listItem>
+				<listItem listIndent=1 listType="numbered">e</listItem>
+				<listItem listIndent=1 listType="numbered"></listItem>
+				<listItem listIndent=2 listType="bulleted">g</listItem>
+				<listItem listIndent=2 listType="bulleted">h</listItem>
+				<listItem listIndent=2 listType="bullered">i</listItem>
+				<listItem listIndent=1 listType="numbered">j</listItem>
+				<listItem listIndent=0 listType="bulleted">k</listItem>
 			 */
 
 			describe( 'view to model', () => {
@@ -1446,8 +1453,8 @@ describe( 'ListEditing', () => {
 						'after smaller indent',
 
 						'<paragraph>p</paragraph>' +
-						'<listItem indent="0" type="bulleted">1</listItem>' +
-						'[<listItem indent="1" type="bulleted">x</listItem>]',
+						'<listItem listIndent="0" listType="bulleted">1</listItem>' +
+						'[<listItem listIndent="1" listType="bulleted">x</listItem>]',
 
 						'<p>p</p>' +
 						'<ul>' +
@@ -1464,9 +1471,9 @@ describe( 'ListEditing', () => {
 						'after smaller indent, before same indent',
 
 						'<paragraph>p</paragraph>' +
-						'<listItem indent="0" type="bulleted">1</listItem>' +
-						'[<listItem indent="1" type="bulleted">x</listItem>]' +
-						'<listItem indent="1" type="bulleted">1.1</listItem>',
+						'<listItem listIndent="0" listType="bulleted">1</listItem>' +
+						'[<listItem listIndent="1" listType="bulleted">x</listItem>]' +
+						'<listItem listIndent="1" listType="bulleted">1.1</listItem>',
 
 						'<p>p</p>' +
 						'<ul>' +
@@ -1484,9 +1491,9 @@ describe( 'ListEditing', () => {
 						'after smaller indent, before smaller indent',
 
 						'<paragraph>p</paragraph>' +
-						'<listItem indent="0" type="bulleted">1</listItem>' +
-						'[<listItem indent="1" type="bulleted">x</listItem>]' +
-						'<listItem indent="0" type="bulleted">2</listItem>',
+						'<listItem listIndent="0" listType="bulleted">1</listItem>' +
+						'[<listItem listIndent="1" listType="bulleted">x</listItem>]' +
+						'<listItem listIndent="0" listType="bulleted">2</listItem>',
 
 						'<p>p</p>' +
 						'<ul>' +
@@ -1504,9 +1511,9 @@ describe( 'ListEditing', () => {
 						'after same indent',
 
 						'<paragraph>p</paragraph>' +
-						'<listItem indent="0" type="bulleted">1</listItem>' +
-						'<listItem indent="1" type="bulleted">1.1</listItem>' +
-						'[<listItem indent="1" type="bulleted">x</listItem>]',
+						'<listItem listIndent="0" listType="bulleted">1</listItem>' +
+						'<listItem listIndent="1" listType="bulleted">1.1</listItem>' +
+						'[<listItem listIndent="1" listType="bulleted">x</listItem>]',
 
 						'<p>p</p>' +
 						'<ul>' +
@@ -1524,9 +1531,9 @@ describe( 'ListEditing', () => {
 						'after same indent, before bigger indent',
 
 						'<paragraph>p</paragraph>' +
-						'<listItem indent="0" type="bulleted">1</listItem>' +
-						'[<listItem indent="0" type="bulleted">x</listItem>]' +
-						'<listItem indent="1" type="bulleted">1.1</listItem>',
+						'<listItem listIndent="0" listType="bulleted">1</listItem>' +
+						'[<listItem listIndent="0" listType="bulleted">x</listItem>]' +
+						'<listItem listIndent="1" listType="bulleted">1.1</listItem>',
 
 						'<p>p</p>' +
 						'<ul>' +
@@ -1544,10 +1551,10 @@ describe( 'ListEditing', () => {
 						'after bigger indent, before bigger indent',
 
 						'<paragraph>p</paragraph>' +
-						'<listItem indent="0" type="bulleted">1</listItem>' +
-						'<listItem indent="1" type="bulleted">1.1</listItem>' +
-						'[<listItem indent="0" type="bulleted">x</listItem>]' +
-						'<listItem indent="1" type="bulleted">1.2</listItem>',
+						'<listItem listIndent="0" listType="bulleted">1</listItem>' +
+						'<listItem listIndent="1" listType="bulleted">1.1</listItem>' +
+						'[<listItem listIndent="0" listType="bulleted">x</listItem>]' +
+						'<listItem listIndent="1" listType="bulleted">1.2</listItem>',
 
 						'<p>p</p>' +
 						'<ul>' +
@@ -1569,12 +1576,12 @@ describe( 'ListEditing', () => {
 					testInsert(
 						'list items with too big indent',
 
-						'<listItem indent="0" type="bulleted">a</listItem>' +
-						'<listItem indent="1" type="bulleted">b</listItem>' +
-						'[<listItem indent="4" type="bulleted">x</listItem>' + // This indent should be fixed by post fixer.
-						'<listItem indent="5" type="bulleted">x</listItem>' + // This indent should be fixed by post fixer.
-						'<listItem indent="4" type="bulleted">x</listItem>]' + // This indent should be fixed by post fixer.
-						'<listItem indent="1" type="bulleted">c</listItem>',
+						'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+						'<listItem listIndent="1" listType="bulleted">b</listItem>' +
+						'[<listItem listIndent="4" listType="bulleted">x</listItem>' + // This indent should be fixed by post fixer.
+						'<listItem listIndent="5" listType="bulleted">x</listItem>' + // This indent should be fixed by post fixer.
+						'<listItem listIndent="4" listType="bulleted">x</listItem>]' + // This indent should be fixed by post fixer.
+						'<listItem listIndent="1" listType="bulleted">c</listItem>',
 
 						'<ul>' +
 							'<li>' +
@@ -1604,9 +1611,9 @@ describe( 'ListEditing', () => {
 						'after smaller indent, before same indent',
 
 						'<paragraph>p</paragraph>' +
-						'<listItem indent="0" type="bulleted">1</listItem>' +
-						'[<listItem indent="1" type="numbered">x</listItem>]' + // This type should be fixed by post fixer.
-						'<listItem indent="1" type="bulleted">1.1</listItem>',
+						'<listItem listIndent="0" listType="bulleted">1</listItem>' +
+						'[<listItem listIndent="1" listType="numbered">x</listItem>]' + // This type should be fixed by post fixer.
+						'<listItem listIndent="1" listType="bulleted">1.1</listItem>',
 
 						'<p>p</p>' +
 						'<ul>' +
@@ -1624,9 +1631,9 @@ describe( 'ListEditing', () => {
 						'after same indent',
 
 						'<paragraph>p</paragraph>' +
-						'<listItem indent="0" type="bulleted">1</listItem>' +
-						'<listItem indent="1" type="bulleted">1.1</listItem>' +
-						'[<listItem indent="1" type="numbered">x</listItem>]', // This type should be fixed by post fixer.
+						'<listItem listIndent="0" listType="bulleted">1</listItem>' +
+						'<listItem listIndent="1" listType="bulleted">1.1</listItem>' +
+						'[<listItem listIndent="1" listType="numbered">x</listItem>]', // This type should be fixed by post fixer.
 
 						'<p>p</p>' +
 						'<ul>' +
@@ -1644,9 +1651,9 @@ describe( 'ListEditing', () => {
 						'after same indent, before bigger indent',
 
 						'<paragraph>p</paragraph>' +
-						'<listItem indent="0" type="bulleted">1</listItem>' +
-						'[<listItem indent="0" type="numbered">x</listItem>]' +
-						'<listItem indent="1" type="bulleted">1.1</listItem>',
+						'<listItem listIndent="0" listType="bulleted">1</listItem>' +
+						'[<listItem listIndent="0" listType="numbered">x</listItem>]' +
+						'<listItem listIndent="1" listType="bulleted">1.1</listItem>',
 
 						'<p>p</p>' +
 						'<ul>' +
@@ -1666,10 +1673,10 @@ describe( 'ListEditing', () => {
 						'after bigger indent, before bigger indent',
 
 						'<paragraph>p</paragraph>' +
-						'<listItem indent="0" type="bulleted">1</listItem>' +
-						'<listItem indent="1" type="bulleted">1.1</listItem>' +
-						'[<listItem indent="0" type="numbered">x</listItem>]' +
-						'<listItem indent="1" type="bulleted">1.2</listItem>',
+						'<listItem listIndent="0" listType="bulleted">1</listItem>' +
+						'<listItem listIndent="1" listType="bulleted">1.1</listItem>' +
+						'[<listItem listIndent="0" listType="numbered">x</listItem>]' +
+						'<listItem listIndent="1" listType="bulleted">1.2</listItem>',
 
 						'<p>p</p>' +
 						'<ul>' +
@@ -1693,10 +1700,10 @@ describe( 'ListEditing', () => {
 					testInsert(
 						'after bigger indent, in nested list, different type',
 
-						'<listItem indent="0" type="bulleted">a</listItem>' +
-						'<listItem indent="1" type="bulleted">b</listItem>' +
-						'<listItem indent="2" type="bulleted">c</listItem>' +
-						'[<listItem indent="1" type="numbered">x</listItem>]', // This type should be fixed by post fixer.
+						'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+						'<listItem listIndent="1" listType="bulleted">b</listItem>' +
+						'<listItem listIndent="2" listType="bulleted">c</listItem>' +
+						'[<listItem listIndent="1" listType="numbered">x</listItem>]', // This type should be fixed by post fixer.
 
 						'<ul>' +
 							'<li>' +
@@ -1719,17 +1726,17 @@ describe( 'ListEditing', () => {
 				testInsert(
 					'element between nested list items - complex',
 
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'<listItem indent="1" type="bulleted">b</listItem>' +
-					'<listItem indent="2" type="bulleted">c</listItem>' +
-					'<listItem indent="3" type="numbered">d</listItem>' +
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+					'<listItem listIndent="1" listType="bulleted">b</listItem>' +
+					'<listItem listIndent="2" listType="bulleted">c</listItem>' +
+					'<listItem listIndent="3" listType="numbered">d</listItem>' +
 					'[<paragraph>x</paragraph>]' +
-					'<listItem indent="3" type="numbered">e</listItem>' + // This indent should be fixed by post fixer.
-					'<listItem indent="2" type="bulleted">f</listItem>' + // This indent should be fixed by post fixer.
-					'<listItem indent="3" type="bulleted">g</listItem>' + // This indent should be fixed by post fixer.
-					'<listItem indent="1" type="bulleted">h</listItem>' + // This indent should be fixed by post fixer.
-					'<listItem indent="2" type="numbered">i</listItem>' + // This indent should be fixed by post fixer.
-					'<listItem indent="0" type="numbered">j</listItem>' + // This indent should be fixed by post fixer.
+					'<listItem listIndent="3" listType="numbered">e</listItem>' + // This indent should be fixed by post fixer.
+					'<listItem listIndent="2" listType="bulleted">f</listItem>' + // This indent should be fixed by post fixer.
+					'<listItem listIndent="3" listType="bulleted">g</listItem>' + // This indent should be fixed by post fixer.
+					'<listItem listIndent="1" listType="bulleted">h</listItem>' + // This indent should be fixed by post fixer.
+					'<listItem listIndent="2" listType="numbered">i</listItem>' + // This indent should be fixed by post fixer.
+					'<listItem listIndent="0" listType="numbered">j</listItem>' + // This indent should be fixed by post fixer.
 					'<paragraph>p</paragraph>',
 
 					'<ul>' +
@@ -1779,11 +1786,11 @@ describe( 'ListEditing', () => {
 				testInsert(
 					'element before indent "hole"',
 
-					'<listItem indent="0" type="bulleted">1</listItem>' +
-					'<listItem indent="1" type="bulleted">1.1</listItem>' +
+					'<listItem listIndent="0" listType="bulleted">1</listItem>' +
+					'<listItem listIndent="1" listType="bulleted">1.1</listItem>' +
 					'[<paragraph>x</paragraph>]' +
-					'<listItem indent="2" type="bulleted">1.1.1</listItem>' + // This indent should be fixed by post fixer.
-					'<listItem indent="0" type="bulleted">2</listItem>',
+					'<listItem listIndent="2" listType="bulleted">1.1.1</listItem>' + // This indent should be fixed by post fixer.
+					'<listItem listIndent="0" listType="bulleted">2</listItem>',
 
 					'<ul>' +
 						'<li>' +
@@ -1805,8 +1812,8 @@ describe( 'ListEditing', () => {
 				_test(
 					'two list items with mismatched types inserted in one batch',
 
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'<listItem indent="1" type="bulleted">b</listItem>[]',
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+					'<listItem listIndent="1" listType="bulleted">b</listItem>[]',
 
 					'<ul>' +
 						'<li>' +
@@ -1820,8 +1827,8 @@ describe( 'ListEditing', () => {
 					'</ul>',
 
 					() => {
-						const item1 = '<listItem indent="1" type="numbered">c</listItem>';
-						const item2 = '<listItem indent="1" type="bulleted">d</listItem>';
+						const item1 = '<listItem listIndent="1" listType="numbered">c</listItem>';
+						const item2 = '<listItem listIndent="1" listType="bulleted">d</listItem>';
 
 						model.change( writer => {
 							writer.append( parseModel( item1, model.schema ), modelRoot );
@@ -1835,9 +1842,9 @@ describe( 'ListEditing', () => {
 				testRemove(
 					'the first nested item',
 
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'[<listItem indent="1" type="bulleted">b</listItem>]' +
-					'<listItem indent="1" type="bulleted">c</listItem>',
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+					'[<listItem listIndent="1" listType="bulleted">b</listItem>]' +
+					'<listItem listIndent="1" listType="bulleted">c</listItem>',
 
 					'<ul>' +
 						'<li>' +
@@ -1852,10 +1859,10 @@ describe( 'ListEditing', () => {
 				testRemove(
 					'nested item from the middle',
 
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'<listItem indent="1" type="bulleted">b</listItem>' +
-					'[<listItem indent="1" type="bulleted">c</listItem>]' +
-					'<listItem indent="1" type="bulleted">d</listItem>',
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+					'<listItem listIndent="1" listType="bulleted">b</listItem>' +
+					'[<listItem listIndent="1" listType="bulleted">c</listItem>]' +
+					'<listItem listIndent="1" listType="bulleted">d</listItem>',
 
 					'<ul>' +
 						'<li>' +
@@ -1871,9 +1878,9 @@ describe( 'ListEditing', () => {
 				testRemove(
 					'the last nested item',
 
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'<listItem indent="1" type="bulleted">b</listItem>' +
-					'[<listItem indent="1" type="bulleted">c</listItem>]',
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+					'<listItem listIndent="1" listType="bulleted">b</listItem>' +
+					'[<listItem listIndent="1" listType="bulleted">c</listItem>]',
 
 					'<ul>' +
 						'<li>' +
@@ -1888,8 +1895,8 @@ describe( 'ListEditing', () => {
 				testRemove(
 					'the only nested item',
 
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'[<listItem indent="1" type="bulleted">c</listItem>]',
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+					'[<listItem listIndent="1" listType="bulleted">c</listItem>]',
 
 					'<ul>' +
 						'<li>a</li>' +
@@ -1899,10 +1906,10 @@ describe( 'ListEditing', () => {
 				testRemove(
 					'list item that separates two nested lists of same type',
 
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'<listItem indent="1" type="numbered">b</listItem>' +
-					'[<listItem indent="0" type="bulleted">c</listItem>]' +
-					'<listItem indent="1" type="numbered">d</listItem>',
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+					'<listItem listIndent="1" listType="numbered">b</listItem>' +
+					'[<listItem listIndent="0" listType="bulleted">c</listItem>]' +
+					'<listItem listIndent="1" listType="numbered">d</listItem>',
 
 					'<ul>' +
 						'<li>' +
@@ -1918,10 +1925,10 @@ describe( 'ListEditing', () => {
 				testRemove(
 					'list item that separates two nested lists of different type',
 
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'<listItem indent="1" type="numbered">b</listItem>' +
-					'[<listItem indent="0" type="bulleted">c</listItem>]' +
-					'<listItem indent="1" type="bulleted">d</listItem>', // This type should be fixed by post fixer.
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+					'<listItem listIndent="1" listType="numbered">b</listItem>' +
+					'[<listItem listIndent="0" listType="bulleted">c</listItem>]' +
+					'<listItem listIndent="1" listType="bulleted">d</listItem>', // This type should be fixed by post fixer.
 
 					'<ul>' +
 						'<li>' +
@@ -1937,10 +1944,10 @@ describe( 'ListEditing', () => {
 				testRemove(
 					'item that has nested lists, previous item has same indent',
 
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'[<listItem indent="0" type="bulleted">b</listItem>]' +
-					'<listItem indent="1" type="bulleted">c</listItem>' +
-					'<listItem indent="1" type="bulleted">d</listItem>',
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+					'[<listItem listIndent="0" listType="bulleted">b</listItem>]' +
+					'<listItem listIndent="1" listType="bulleted">c</listItem>' +
+					'<listItem listIndent="1" listType="bulleted">d</listItem>',
 
 					'<ul>' +
 						'<li>' +
@@ -1956,10 +1963,10 @@ describe( 'ListEditing', () => {
 				testRemove(
 					'item that has nested lists, previous item has smaller indent',
 
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'[<listItem indent="1" type="bulleted">b</listItem>]' +
-					'<listItem indent="2" type="bulleted">c</listItem>' + // This indent should be fixed by post fixer.
-					'<listItem indent="2" type="bulleted">d</listItem>', // This indent should be fixed by post fixer.
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+					'[<listItem listIndent="1" listType="bulleted">b</listItem>]' +
+					'<listItem listIndent="2" listType="bulleted">c</listItem>' + // This indent should be fixed by post fixer.
+					'<listItem listIndent="2" listType="bulleted">d</listItem>', // This indent should be fixed by post fixer.
 
 					'<ul>' +
 						'<li>' +
@@ -1975,11 +1982,11 @@ describe( 'ListEditing', () => {
 				testRemove(
 					'item that has nested lists, previous item has bigger indent by 1',
 
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'<listItem indent="1" type="bulleted">b</listItem>' +
-					'[<listItem indent="0" type="bulleted">c</listItem>]' +
-					'<listItem indent="1" type="bulleted">d</listItem>' +
-					'<listItem indent="2" type="numbered">e</listItem>',
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+					'<listItem listIndent="1" listType="bulleted">b</listItem>' +
+					'[<listItem listIndent="0" listType="bulleted">c</listItem>]' +
+					'<listItem listIndent="1" listType="bulleted">d</listItem>' +
+					'<listItem listIndent="2" listType="numbered">e</listItem>',
 
 					'<ul>' +
 						'<li>' +
@@ -2000,11 +2007,11 @@ describe( 'ListEditing', () => {
 				testRemove(
 					'item that has nested lists, previous item has bigger indent by 2',
 
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'<listItem indent="1" type="bulleted">b</listItem>' +
-					'<listItem indent="2" type="bulleted">c</listItem>' +
-					'[<listItem indent="0" type="bulleted">d</listItem>]' +
-					'<listItem indent="1" type="bulleted">e</listItem>',
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+					'<listItem listIndent="1" listType="bulleted">b</listItem>' +
+					'<listItem listIndent="2" listType="bulleted">c</listItem>' +
+					'[<listItem listIndent="0" listType="bulleted">d</listItem>]' +
+					'<listItem listIndent="1" listType="bulleted">e</listItem>',
 
 					'<ul>' +
 						'<li>' +
@@ -2025,9 +2032,9 @@ describe( 'ListEditing', () => {
 				testRemove(
 					'first list item that has nested list',
 
-					'[<listItem indent="0" type="bulleted">a</listItem>]' +
-					'<listItem indent="1" type="bulleted">b</listItem>' + // This indent should be fixed by post fixer.
-					'<listItem indent="2" type="bulleted">c</listItem>', // This indent should be fixed by post fixer.
+					'[<listItem listIndent="0" listType="bulleted">a</listItem>]' +
+					'<listItem listIndent="1" listType="bulleted">b</listItem>' + // This indent should be fixed by post fixer.
+					'<listItem listIndent="2" listType="bulleted">c</listItem>', // This indent should be fixed by post fixer.
 
 					'<ul>' +
 						'<li>' +
@@ -2044,9 +2051,9 @@ describe( 'ListEditing', () => {
 				testChangeType(
 					'list item that has nested items',
 
-					'[<listItem indent="0" type="numbered">a</listItem>]' +
-					'<listItem indent="1" type="bulleted">b</listItem>' +
-					'<listItem indent="1" type="bulleted">c</listItem>',
+					'[<listItem listIndent="0" listType="numbered">a</listItem>]' +
+					'<listItem listIndent="1" listType="bulleted">b</listItem>' +
+					'<listItem listIndent="1" listType="bulleted">c</listItem>',
 
 					'<ul>' +
 						'<li>' +
@@ -2063,10 +2070,10 @@ describe( 'ListEditing', () => {
 				testChangeType(
 					'list item that is a nested item',
 
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'<listItem indent="1" type="numbered">b</listItem>' +
-					'[<listItem indent="1" type="numbered">c</listItem>]' +
-					'<listItem indent="1" type="numbered">d</listItem>',
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+					'<listItem listIndent="1" listType="numbered">b</listItem>' +
+					'[<listItem listIndent="1" listType="numbered">c</listItem>]' +
+					'<listItem listIndent="1" listType="numbered">d</listItem>',
 
 					'<ul>' +
 						'<li>' +
@@ -2086,8 +2093,8 @@ describe( 'ListEditing', () => {
 					testChangeIndent(
 						'indent last item of flat list', 1,
 
-						'<listItem indent="0" type="bulleted">a</listItem>' +
-						'[<listItem indent="0" type="bulleted">b</listItem>]',
+						'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+						'[<listItem listIndent="0" listType="bulleted">b</listItem>]',
 
 						'<ul>' +
 							'<li>' +
@@ -2102,9 +2109,9 @@ describe( 'ListEditing', () => {
 					testChangeIndent(
 						'indent middle item of flat list', 1,
 
-						'<listItem indent="0" type="bulleted">a</listItem>' +
-						'[<listItem indent="0" type="bulleted">b</listItem>]' +
-						'<listItem indent="0" type="bulleted">c</listItem>',
+						'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+						'[<listItem listIndent="0" listType="bulleted">b</listItem>]' +
+						'<listItem listIndent="0" listType="bulleted">c</listItem>',
 
 						'<ul>' +
 							'<li>' +
@@ -2120,9 +2127,9 @@ describe( 'ListEditing', () => {
 					testChangeIndent(
 						'indent last item in nested list', 2,
 
-						'<listItem indent="0" type="bulleted">a</listItem>' +
-						'<listItem indent="1" type="bulleted">b</listItem>' +
-						'[<listItem indent="1" type="bulleted">c</listItem>]',
+						'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+						'<listItem listIndent="1" listType="bulleted">b</listItem>' +
+						'[<listItem listIndent="1" listType="bulleted">c</listItem>]',
 
 						'<ul>' +
 							'<li>' +
@@ -2142,10 +2149,10 @@ describe( 'ListEditing', () => {
 					testChangeIndent(
 						'indent middle item in nested list', 2,
 
-						'<listItem indent="0" type="bulleted">a</listItem>' +
-						'<listItem indent="1" type="bulleted">b</listItem>' +
-						'[<listItem indent="1" type="bulleted">c</listItem>]' +
-						'<listItem indent="1" type="bulleted">d</listItem>',
+						'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+						'<listItem listIndent="1" listType="bulleted">b</listItem>' +
+						'[<listItem listIndent="1" listType="bulleted">c</listItem>]' +
+						'<listItem listIndent="1" listType="bulleted">d</listItem>',
 
 						'<ul>' +
 							'<li>' +
@@ -2170,9 +2177,9 @@ describe( 'ListEditing', () => {
 					testChangeIndent(
 						'indent item that has nested list', 1,
 
-						'<listItem indent="0" type="bulleted">a</listItem>' +
-						'[<listItem indent="0" type="bulleted">b</listItem>]' +
-						'<listItem indent="1" type="bulleted">c</listItem>',
+						'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+						'[<listItem listIndent="0" listType="bulleted">b</listItem>]' +
+						'<listItem listIndent="1" listType="bulleted">c</listItem>',
 
 						'<ul>' +
 							'<li>' +
@@ -2188,10 +2195,10 @@ describe( 'ListEditing', () => {
 					testChangeIndent(
 						'indent item that in view is a next sibling of item that has nested list', 1,
 
-						'<listItem indent="0" type="bulleted">a</listItem>' +
-						'<listItem indent="1" type="bulleted">b</listItem>' +
-						'[<listItem indent="0" type="bulleted">c</listItem>]' +
-						'<listItem indent="1" type="bulleted">d</listItem>',
+						'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+						'<listItem listIndent="1" listType="bulleted">b</listItem>' +
+						'[<listItem listIndent="0" listType="bulleted">c</listItem>]' +
+						'<listItem listIndent="1" listType="bulleted">d</listItem>',
 
 						'<ul>' +
 							'<li>' +
@@ -2208,10 +2215,10 @@ describe( 'ListEditing', () => {
 					testChangeIndent(
 						'outdent the first item of nested list', 0,
 
-						'<listItem indent="0" type="bulleted">a</listItem>' +
-						'[<listItem indent="1" type="bulleted">b</listItem>]' +
-						'<listItem indent="1" type="bulleted">c</listItem>' +
-						'<listItem indent="1" type="bulleted">d</listItem>',
+						'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+						'[<listItem listIndent="1" listType="bulleted">b</listItem>]' +
+						'<listItem listIndent="1" listType="bulleted">c</listItem>' +
+						'<listItem listIndent="1" listType="bulleted">d</listItem>',
 
 						'<ul>' +
 							'<li>a</li>' +
@@ -2228,10 +2235,10 @@ describe( 'ListEditing', () => {
 					testChangeIndent(
 						'outdent item from the middle of nested list', 0,
 
-						'<listItem indent="0" type="bulleted">a</listItem>' +
-						'<listItem indent="1" type="bulleted">b</listItem>' +
-						'[<listItem indent="1" type="bulleted">c</listItem>]' +
-						'<listItem indent="1" type="bulleted">d</listItem>',
+						'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+						'<listItem listIndent="1" listType="bulleted">b</listItem>' +
+						'[<listItem listIndent="1" listType="bulleted">c</listItem>]' +
+						'<listItem listIndent="1" listType="bulleted">d</listItem>',
 
 						'<ul>' +
 							'<li>' +
@@ -2252,9 +2259,9 @@ describe( 'ListEditing', () => {
 					testChangeIndent(
 						'outdent the last item of nested list', 0,
 
-						'<listItem indent="0" type="bulleted">a</listItem>' +
-						'<listItem indent="1" type="bulleted">b</listItem>' +
-						'[<listItem indent="1" type="bulleted">c</listItem>]',
+						'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+						'<listItem listIndent="1" listType="bulleted">b</listItem>' +
+						'[<listItem listIndent="1" listType="bulleted">c</listItem>]',
 
 						'<ul>' +
 							'<li>' +
@@ -2270,10 +2277,10 @@ describe( 'ListEditing', () => {
 					testChangeIndent(
 						'outdent the only item of nested list', 1,
 
-						'<listItem indent="0" type="bulleted">a</listItem>' +
-						'<listItem indent="1" type="bulleted">b</listItem>' +
-						'[<listItem indent="2" type="bulleted">c</listItem>]' +
-						'<listItem indent="1" type="bulleted">d</listItem>',
+						'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+						'<listItem listIndent="1" listType="bulleted">b</listItem>' +
+						'[<listItem listIndent="2" listType="bulleted">c</listItem>]' +
+						'<listItem listIndent="1" listType="bulleted">d</listItem>',
 
 						'<ul>' +
 							'<li>' +
@@ -2290,10 +2297,10 @@ describe( 'ListEditing', () => {
 					testChangeIndent(
 						'outdent item by two', 0,
 
-						'<listItem indent="0" type="bulleted">a</listItem>' +
-						'<listItem indent="1" type="bulleted">b</listItem>' +
-						'[<listItem indent="2" type="bulleted">c</listItem>]' +
-						'<listItem indent="0" type="bulleted">d</listItem>',
+						'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+						'<listItem listIndent="1" listType="bulleted">b</listItem>' +
+						'[<listItem listIndent="2" listType="bulleted">c</listItem>]' +
+						'<listItem listIndent="0" listType="bulleted">d</listItem>',
 
 						'<ul>' +
 							'<li>' +
@@ -2312,9 +2319,9 @@ describe( 'ListEditing', () => {
 					testChangeIndent(
 						'indent middle item of flat list', 1,
 
-						'<listItem indent="0" type="bulleted">a</listItem>' +
-						'[<listItem indent="0" type="numbered">b</listItem>]' +
-						'<listItem indent="0" type="bulleted">c</listItem>',
+						'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+						'[<listItem listIndent="0" listType="numbered">b</listItem>]' +
+						'<listItem listIndent="0" listType="bulleted">c</listItem>',
 
 						'<ul>' +
 							'<li>' +
@@ -2330,9 +2337,9 @@ describe( 'ListEditing', () => {
 					testChangeIndent(
 						'indent item that has nested list', 1,
 
-						'<listItem indent="0" type="bulleted">a</listItem>' +
-						'[<listItem indent="0" type="numbered">b</listItem>]' +
-						'<listItem indent="1" type="bulleted">c</listItem>',
+						'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+						'[<listItem listIndent="0" listType="numbered">b</listItem>]' +
+						'<listItem listIndent="1" listType="bulleted">c</listItem>',
 
 						'<ul>' +
 							'<li>' +
@@ -2348,10 +2355,10 @@ describe( 'ListEditing', () => {
 					testChangeIndent(
 						'indent item that in view is a next sibling of item that has nested list #1', 1,
 
-						'<listItem indent="0" type="bulleted">a</listItem>' +
-						'<listItem indent="1" type="bulleted">b</listItem>' +
-						'[<listItem indent="0" type="numbered">c</listItem>]' +
-						'<listItem indent="1" type="bulleted">d</listItem>',
+						'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+						'<listItem listIndent="1" listType="bulleted">b</listItem>' +
+						'[<listItem listIndent="0" listType="numbered">c</listItem>]' +
+						'<listItem listIndent="1" listType="bulleted">d</listItem>',
 
 						'<ul>' +
 							'<li>' +
@@ -2368,10 +2375,10 @@ describe( 'ListEditing', () => {
 					testChangeIndent(
 						'outdent the first item of nested list', 0,
 
-						'<listItem indent="0" type="bulleted">a</listItem>' +
-						'[<listItem indent="1" type="bulleted">b</listItem>]' +
-						'<listItem indent="1" type="bulleted">c</listItem>' +
-						'<listItem indent="1" type="bulleted">d</listItem>',
+						'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+						'[<listItem listIndent="1" listType="bulleted">b</listItem>]' +
+						'<listItem listIndent="1" listType="bulleted">c</listItem>' +
+						'<listItem listIndent="1" listType="bulleted">d</listItem>',
 
 						'<ul>' +
 							'<li>a</li>' +
@@ -2388,10 +2395,10 @@ describe( 'ListEditing', () => {
 					testChangeIndent(
 						'outdent the only item of nested list', 1,
 
-						'<listItem indent="0" type="bulleted">a</listItem>' +
-						'<listItem indent="1" type="bulleted">b</listItem>' +
-						'[<listItem indent="2" type="bulleted">c</listItem>]' +
-						'<listItem indent="1" type="bulleted">d</listItem>',
+						'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+						'<listItem listIndent="1" listType="bulleted">b</listItem>' +
+						'[<listItem listIndent="2" listType="bulleted">c</listItem>]' +
+						'<listItem listIndent="1" listType="bulleted">d</listItem>',
 
 						'<ul>' +
 							'<li>' +
@@ -2408,10 +2415,10 @@ describe( 'ListEditing', () => {
 					testChangeIndent(
 						'outdent item by two', 0,
 
-						'<listItem indent="0" type="bulleted">a</listItem>' +
-						'<listItem indent="1" type="bulleted">b</listItem>' +
-						'[<listItem indent="2" type="numbered">c</listItem>]' +
-						'<listItem indent="0" type="bulleted">d</listItem>',
+						'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+						'<listItem listIndent="1" listType="bulleted">b</listItem>' +
+						'[<listItem listIndent="2" listType="numbered">c</listItem>]' +
+						'<listItem listIndent="0" listType="bulleted">d</listItem>',
 
 						'<ul>' +
 							'<li>' +
@@ -2435,10 +2442,10 @@ describe( 'ListEditing', () => {
 				testRenameFromListItem(
 					'rename nested item from the middle #1',
 
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'<listItem indent="1" type="bulleted">b</listItem>' +
-					'[<listItem indent="1" type="bulleted">c</listItem>]' +
-					'<listItem indent="1" type="bulleted">d</listItem>', // This indent should be fixed by post fixer.
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+					'<listItem listIndent="1" listType="bulleted">b</listItem>' +
+					'[<listItem listIndent="1" listType="bulleted">c</listItem>]' +
+					'<listItem listIndent="1" listType="bulleted">d</listItem>', // This indent should be fixed by post fixer.
 
 					'<ul>' +
 						'<li>' +
@@ -2461,19 +2468,19 @@ describe( 'ListEditing', () => {
 
 					// Indents in this example should be fixed by post fixer.
 					// This nightmare example checks if structure of the list is kept as intact as possible.
-					'<listItem indent="0" type="bulleted">a</listItem>' +	// a --------			-->  a --------
-					'<listItem indent="1" type="bulleted">b</listItem>' +	//   b --------			-->    b --------
-					'[<listItem indent="2" type="bulleted">c</listItem>]' +	//     c --------		--> --------
-					'<listItem indent="3" type="bulleted">d</listItem>' +	//       d --------		-->  d --------
-					'<listItem indent="3" type="bulleted">e</listItem>' +	//       e --------		-->  e --------
-					'<listItem indent="4" type="bulleted">f</listItem>' +	//         f --------	-->    f --------
-					'<listItem indent="2" type="bulleted">g</listItem>' +	//     g --------		-->  g --------
-					'<listItem indent="3" type="bulleted">h</listItem>' +	//       h --------		-->    h --------
-					'<listItem indent="4" type="bulleted">i</listItem>' +	//         i --------	-->      i --------
-					'<listItem indent="1" type="bulleted">j</listItem>' +	//   j --------			-->  j --------
-					'<listItem indent="2" type="bulleted">k</listItem>' +	//     k --------		-->    k --------
-					'<listItem indent="0" type="bulleted">l</listItem>' +	// l --------			-->  l --------
-					'<listItem indent="1" type="bulleted">m</listItem>',	//   m --------			-->    m --------
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +	// a --------			-->  a --------
+					'<listItem listIndent="1" listType="bulleted">b</listItem>' +	//   b --------			-->    b --------
+					'[<listItem listIndent="2" listType="bulleted">c</listItem>]' +	//     c --------		--> --------
+					'<listItem listIndent="3" listType="bulleted">d</listItem>' +	//       d --------		-->  d --------
+					'<listItem listIndent="3" listType="bulleted">e</listItem>' +	//       e --------		-->  e --------
+					'<listItem listIndent="4" listType="bulleted">f</listItem>' +	//         f --------	-->    f --------
+					'<listItem listIndent="2" listType="bulleted">g</listItem>' +	//     g --------		-->  g --------
+					'<listItem listIndent="3" listType="bulleted">h</listItem>' +	//       h --------		-->    h --------
+					'<listItem listIndent="4" listType="bulleted">i</listItem>' +	//         i --------	-->      i --------
+					'<listItem listIndent="1" listType="bulleted">j</listItem>' +	//   j --------			-->  j --------
+					'<listItem listIndent="2" listType="bulleted">k</listItem>' +	//     k --------		-->    k --------
+					'<listItem listIndent="0" listType="bulleted">l</listItem>' +	// l --------			-->  l --------
+					'<listItem listIndent="1" listType="bulleted">m</listItem>',	//   m --------			-->    m --------
 
 					'<ul>' +
 						'<li>' +
@@ -2525,18 +2532,18 @@ describe( 'ListEditing', () => {
 
 					// Indents in this example should be fixed by post fixer.
 					// This example checks a bug found by testing manual test.
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'<listItem indent="1" type="bulleted">b</listItem>' +
-					'[<listItem indent="2" type="bulleted">c</listItem>]' +
-					'<listItem indent="1" type="bulleted">d</listItem>' +
-					'<listItem indent="2" type="bulleted">e</listItem>' +
-					'<listItem indent="2" type="bulleted">f</listItem>' +
-					'<listItem indent="2" type="bulleted">g</listItem>' +
-					'<listItem indent="2" type="bulleted">h</listItem>' +
-					'<listItem indent="0" type="bulleted"></listItem>' +
-					'<listItem indent="1" type="bulleted"></listItem>' +
-					'<listItem indent="2" type="numbered">k</listItem>' +
-					'<listItem indent="2" type="numbered">l</listItem>',
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+					'<listItem listIndent="1" listType="bulleted">b</listItem>' +
+					'[<listItem listIndent="2" listType="bulleted">c</listItem>]' +
+					'<listItem listIndent="1" listType="bulleted">d</listItem>' +
+					'<listItem listIndent="2" listType="bulleted">e</listItem>' +
+					'<listItem listIndent="2" listType="bulleted">f</listItem>' +
+					'<listItem listIndent="2" listType="bulleted">g</listItem>' +
+					'<listItem listIndent="2" listType="bulleted">h</listItem>' +
+					'<listItem listIndent="0" listType="bulleted"></listItem>' +
+					'<listItem listIndent="1" listType="bulleted"></listItem>' +
+					'<listItem listIndent="2" listType="numbered">k</listItem>' +
+					'<listItem listIndent="2" listType="numbered">l</listItem>',
 
 					'<ul>' +
 						'<li>' +
@@ -2575,8 +2582,8 @@ describe( 'ListEditing', () => {
 				testRenameFromListItem(
 					'rename the only nested item',
 
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'[<listItem indent="1" type="bulleted">b</listItem>]',
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+					'[<listItem listIndent="1" listType="bulleted">b</listItem>]',
 
 					'<ul>' +
 						'<li>a</li>' +
@@ -2589,7 +2596,7 @@ describe( 'ListEditing', () => {
 				testRenameToListItem(
 					'element into first item in nested list', 1,
 
-					'<listItem indent="0" type="bulleted">a</listItem>' +
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
 					'[<paragraph>b</paragraph>]',
 
 					'<ul>' +
@@ -2605,8 +2612,8 @@ describe( 'ListEditing', () => {
 				testRenameToListItem(
 					'element into last item in nested list', 1,
 
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'<listItem indent="1" type="bulleted">b</listItem>' +
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+					'<listItem listIndent="1" listType="bulleted">b</listItem>' +
 					'[<paragraph>c</paragraph>]',
 
 					'<ul>' +
@@ -2623,10 +2630,10 @@ describe( 'ListEditing', () => {
 				testRenameToListItem(
 					'element into a first item in deeply nested list', 2,
 
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'<listItem indent="1" type="bulleted">b</listItem>' +
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+					'<listItem listIndent="1" listType="bulleted">b</listItem>' +
 					'[<paragraph>c</paragraph>]' +
-					'<listItem indent="0" type="bulleted">d</listItem>',
+					'<listItem listIndent="0" listType="bulleted">d</listItem>',
 
 					'<ul>' +
 						'<li>' +
@@ -2650,11 +2657,11 @@ describe( 'ListEditing', () => {
 				testMove(
 					'out nested list items',
 
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'[<listItem indent="1" type="bulleted">b</listItem>' +
-					'<listItem indent="2" type="bulleted">c</listItem>]' +
-					'<listItem indent="3" type="bulleted">d</listItem>' + // This indent should be fixed by post fixer.
-					'<listItem indent="4" type="bulleted">e</listItem>' + // This indent should be fixed by post fixer.
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+					'[<listItem listIndent="1" listType="bulleted">b</listItem>' +
+					'<listItem listIndent="2" listType="bulleted">c</listItem>]' +
+					'<listItem listIndent="3" listType="bulleted">d</listItem>' + // This indent should be fixed by post fixer.
+					'<listItem listIndent="4" listType="bulleted">e</listItem>' + // This indent should be fixed by post fixer.
 					'<paragraph>x</paragraph>',
 
 					6,
@@ -2686,14 +2693,14 @@ describe( 'ListEditing', () => {
 				testMove(
 					'nested list items between lists of same type',
 
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'<listItem indent="1" type="bulleted">b</listItem>' +
-					'[<listItem indent="2" type="bulleted">c</listItem>' +
-					'<listItem indent="3" type="bulleted">d</listItem>]' +
-					'<listItem indent="4" type="bulleted">e</listItem>' +
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+					'<listItem listIndent="1" listType="bulleted">b</listItem>' +
+					'[<listItem listIndent="2" listType="bulleted">c</listItem>' +
+					'<listItem listIndent="3" listType="bulleted">d</listItem>]' +
+					'<listItem listIndent="4" listType="bulleted">e</listItem>' +
 					'<paragraph>x</paragraph>' +
-					'<listItem indent="0" type="bulleted">f</listItem>' +
-					'<listItem indent="0" type="bulleted">g</listItem>',
+					'<listItem listIndent="0" listType="bulleted">f</listItem>' +
+					'<listItem listIndent="0" listType="bulleted">g</listItem>',
 
 					7,
 
@@ -2730,14 +2737,14 @@ describe( 'ListEditing', () => {
 				testMove(
 					'nested list items between lists of different type',
 
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'<listItem indent="1" type="bulleted">b</listItem>' +
-					'[<listItem indent="2" type="bulleted">c</listItem>' +
-					'<listItem indent="3" type="bulleted">d</listItem>]' +
-					'<listItem indent="4" type="bulleted">e</listItem>' +
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+					'<listItem listIndent="1" listType="bulleted">b</listItem>' +
+					'[<listItem listIndent="2" listType="bulleted">c</listItem>' +
+					'<listItem listIndent="3" listType="bulleted">d</listItem>]' +
+					'<listItem listIndent="4" listType="bulleted">e</listItem>' +
 					'<paragraph>x</paragraph>' +
-					'<listItem indent="0" type="numbered">f</listItem>' +
-					'<listItem indent="1" type="numbered">g</listItem>',
+					'<listItem listIndent="0" listType="numbered">f</listItem>' +
+					'<listItem listIndent="1" listType="numbered">g</listItem>',
 
 					7,
 
@@ -2774,10 +2781,10 @@ describe( 'ListEditing', () => {
 				testMove(
 					'element between nested list',
 
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'<listItem indent="1" type="bulleted">b</listItem>' +
-					'<listItem indent="2" type="bulleted">c</listItem>' +
-					'<listItem indent="3" type="bulleted">d</listItem>' +
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+					'<listItem listIndent="1" listType="bulleted">b</listItem>' +
+					'<listItem listIndent="2" listType="bulleted">c</listItem>' +
+					'<listItem listIndent="3" listType="bulleted">d</listItem>' +
 					'[<paragraph>x</paragraph>]',
 
 					2,
@@ -2806,15 +2813,15 @@ describe( 'ListEditing', () => {
 				testMove(
 					'multiple nested list items of different types #1 - fix at start',
 
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'<listItem indent="1" type="bulleted">b</listItem>' +
-					'[<listItem indent="1" type="bulleted">c</listItem>' +
-					'<listItem indent="0" type="bulleted">d</listItem>' +
-					'<listItem indent="1" type="numbered">e</listItem>]' +
-					'<listItem indent="1" type="numbered">f</listItem>' +
-					'<listItem indent="0" type="bulleted">g</listItem>' +
-					'<listItem indent="1" type="numbered">h</listItem>' +
-					'<listItem indent="1" type="numbered">i</listItem>',
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+					'<listItem listIndent="1" listType="bulleted">b</listItem>' +
+					'[<listItem listIndent="1" listType="bulleted">c</listItem>' +
+					'<listItem listIndent="0" listType="bulleted">d</listItem>' +
+					'<listItem listIndent="1" listType="numbered">e</listItem>]' +
+					'<listItem listIndent="1" listType="numbered">f</listItem>' +
+					'<listItem listIndent="0" listType="bulleted">g</listItem>' +
+					'<listItem listIndent="1" listType="numbered">h</listItem>' +
+					'<listItem listIndent="1" listType="numbered">i</listItem>',
 
 					8,
 
@@ -2846,15 +2853,15 @@ describe( 'ListEditing', () => {
 				testMove(
 					'multiple nested list items of different types #2 - fix at end',
 
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'<listItem indent="1" type="bulleted">b</listItem>' +
-					'[<listItem indent="1" type="bulleted">c</listItem>' +
-					'<listItem indent="0" type="bulleted">d</listItem>' +
-					'<listItem indent="1" type="numbered">e</listItem>]' +
-					'<listItem indent="1" type="numbered">f</listItem>' +
-					'<listItem indent="0" type="bulleted">g</listItem>' +
-					'<listItem indent="1" type="bulleted">h</listItem>' +
-					'<listItem indent="1" type="bulleted">i</listItem>',
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+					'<listItem listIndent="1" listType="bulleted">b</listItem>' +
+					'[<listItem listIndent="1" listType="bulleted">c</listItem>' +
+					'<listItem listIndent="0" listType="bulleted">d</listItem>' +
+					'<listItem listIndent="1" listType="numbered">e</listItem>]' +
+					'<listItem listIndent="1" listType="numbered">f</listItem>' +
+					'<listItem listIndent="0" listType="bulleted">g</listItem>' +
+					'<listItem listIndent="1" listType="bulleted">h</listItem>' +
+					'<listItem listIndent="1" listType="bulleted">i</listItem>',
 
 					8,
 
@@ -2903,128 +2910,128 @@ describe( 'ListEditing', () => {
 			test(
 				'element before nested list',
 
-				'<listItem indent="0" type="bulleted">a</listItem>' +
-				'<listItem indent="1" type="bulleted">b</listItem>' +
+				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
 				'[]' +
-				'<listItem indent="2" type="bulleted">d</listItem>' +
-				'<listItem indent="2" type="bulleted">e</listItem>' +
-				'<listItem indent="3" type="bulleted">f</listItem>',
+				'<listItem listIndent="2" listType="bulleted">d</listItem>' +
+				'<listItem listIndent="2" listType="bulleted">e</listItem>' +
+				'<listItem listIndent="3" listType="bulleted">f</listItem>',
 
 				'<paragraph>x</paragraph>',
 
-				'<listItem indent="0" type="bulleted">a</listItem>' +
-				'<listItem indent="1" type="bulleted">b</listItem>' +
+				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
 				'<paragraph>x</paragraph>' +
-				'<listItem indent="0" type="bulleted">d</listItem>' +
-				'<listItem indent="0" type="bulleted">e</listItem>' +
-				'<listItem indent="1" type="bulleted">f</listItem>'
+				'<listItem listIndent="0" listType="bulleted">d</listItem>' +
+				'<listItem listIndent="0" listType="bulleted">e</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">f</listItem>'
 			);
 
 			test(
 				'list item before nested list',
 
-				'<listItem indent="0" type="bulleted">a</listItem>' +
-				'<listItem indent="1" type="bulleted">b</listItem>' +
+				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
 				'[]' +
-				'<listItem indent="2" type="bulleted">d</listItem>' +
-				'<listItem indent="2" type="bulleted">e</listItem>' +
-				'<listItem indent="3" type="bulleted">f</listItem>',
+				'<listItem listIndent="2" listType="bulleted">d</listItem>' +
+				'<listItem listIndent="2" listType="bulleted">e</listItem>' +
+				'<listItem listIndent="3" listType="bulleted">f</listItem>',
 
-				'<listItem indent="0" type="bulleted">x</listItem>',
+				'<listItem listIndent="0" listType="bulleted">x</listItem>',
 
-				'<listItem indent="0" type="bulleted">a</listItem>' +
-				'<listItem indent="1" type="bulleted">b</listItem>' +
-				'<listItem indent="0" type="bulleted">x</listItem>' +
-				'<listItem indent="1" type="bulleted">d</listItem>' +
-				'<listItem indent="1" type="bulleted">e</listItem>' +
-				'<listItem indent="2" type="bulleted">f</listItem>'
+				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
+				'<listItem listIndent="0" listType="bulleted">x</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">d</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">e</listItem>' +
+				'<listItem listIndent="2" listType="bulleted">f</listItem>'
 			);
 
 			test(
 				'multiple list items with too big indent',
 
-				'<listItem indent="0" type="bulleted">a</listItem>' +
-				'<listItem indent="1" type="bulleted">b</listItem>' +
+				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
 				'[]' +
-				'<listItem indent="1" type="bulleted">c</listItem>',
+				'<listItem listIndent="1" listType="bulleted">c</listItem>',
 
-				'<listItem indent="4" type="bulleted">x</listItem>' +
-				'<listItem indent="5" type="bulleted">x</listItem>' +
-				'<listItem indent="4" type="bulleted">x</listItem>',
+				'<listItem listIndent="4" listType="bulleted">x</listItem>' +
+				'<listItem listIndent="5" listType="bulleted">x</listItem>' +
+				'<listItem listIndent="4" listType="bulleted">x</listItem>',
 
-				'<listItem indent="0" type="bulleted">a</listItem>' +
-				'<listItem indent="1" type="bulleted">b</listItem>' +
-				'<listItem indent="2" type="bulleted">x</listItem>' +
-				'<listItem indent="3" type="bulleted">x</listItem>' +
-				'<listItem indent="2" type="bulleted">x</listItem>' +
-				'<listItem indent="1" type="bulleted">c</listItem>'
+				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
+				'<listItem listIndent="2" listType="bulleted">x</listItem>' +
+				'<listItem listIndent="3" listType="bulleted">x</listItem>' +
+				'<listItem listIndent="2" listType="bulleted">x</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">c</listItem>'
 			);
 
 			test(
 				'item with different type - top level list',
 
-				'<listItem indent="0" type="bulleted">a</listItem>' +
-				'<listItem indent="0" type="bulleted">b</listItem>' +
+				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+				'<listItem listIndent="0" listType="bulleted">b</listItem>' +
 				'[]' +
-				'<listItem indent="0" type="bulleted">c</listItem>',
+				'<listItem listIndent="0" listType="bulleted">c</listItem>',
 
-				'<listItem indent="0" type="numbered">x</listItem>',
+				'<listItem listIndent="0" listType="numbered">x</listItem>',
 
-				'<listItem indent="0" type="bulleted">a</listItem>' +
-				'<listItem indent="0" type="bulleted">b</listItem>' +
-				'<listItem indent="0" type="numbered">x</listItem>' +
-				'<listItem indent="0" type="bulleted">c</listItem>'
+				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+				'<listItem listIndent="0" listType="bulleted">b</listItem>' +
+				'<listItem listIndent="0" listType="numbered">x</listItem>' +
+				'<listItem listIndent="0" listType="bulleted">c</listItem>'
 			);
 
 			test(
 				'multiple items with different type - nested list',
 
-				'<listItem indent="0" type="bulleted">a</listItem>' +
-				'<listItem indent="1" type="bulleted">b</listItem>' +
+				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
 				'[]' +
-				'<listItem indent="2" type="bulleted">c</listItem>',
+				'<listItem listIndent="2" listType="bulleted">c</listItem>',
 
-				'<listItem indent="1" type="numbered">x</listItem>' +
-				'<listItem indent="2" type="numbered">x</listItem>',
+				'<listItem listIndent="1" listType="numbered">x</listItem>' +
+				'<listItem listIndent="2" listType="numbered">x</listItem>',
 
-				'<listItem indent="0" type="bulleted">a</listItem>' +
-				'<listItem indent="1" type="bulleted">b</listItem>' +
-				'<listItem indent="1" type="bulleted">x</listItem>' +
-				'<listItem indent="2" type="numbered">x</listItem>' +
-				'<listItem indent="2" type="numbered">c</listItem>'
+				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">x</listItem>' +
+				'<listItem listIndent="2" listType="numbered">x</listItem>' +
+				'<listItem listIndent="2" listType="numbered">c</listItem>'
 			);
 
 			test(
 				'item with different type, in nested list, after nested list',
 
-				'<listItem indent="0" type="bulleted">a</listItem>' +
-				'<listItem indent="1" type="bulleted">b</listItem>' +
-				'<listItem indent="2" type="bulleted">c</listItem>' +
+				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
+				'<listItem listIndent="2" listType="bulleted">c</listItem>' +
 				'[]',
 
-				'<listItem indent="1" type="numbered">x</listItem>',
+				'<listItem listIndent="1" listType="numbered">x</listItem>',
 
-				'<listItem indent="0" type="bulleted">a</listItem>' +
-				'<listItem indent="1" type="bulleted">b</listItem>' +
-				'<listItem indent="2" type="bulleted">c</listItem>' +
-				'<listItem indent="1" type="bulleted">x</listItem>'
+				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
+				'<listItem listIndent="2" listType="bulleted">c</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">x</listItem>'
 			);
 
 			it( 'two list items with mismatched types inserted in one batch', () => {
 				const input =
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'<listItem indent="1" type="bulleted">b</listItem>';
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+					'<listItem listIndent="1" listType="bulleted">b</listItem>';
 
 				const output =
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'<listItem indent="1" type="bulleted">b</listItem>' +
-					'<listItem indent="1" type="bulleted">c</listItem>' +
-					'<listItem indent="1" type="bulleted">d</listItem>';
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+					'<listItem listIndent="1" listType="bulleted">b</listItem>' +
+					'<listItem listIndent="1" listType="bulleted">c</listItem>' +
+					'<listItem listIndent="1" listType="bulleted">d</listItem>';
 
 				setModelData( model, input );
 
-				const item1 = '<listItem indent="1" type="numbered">c</listItem>';
-				const item2 = '<listItem indent="1" type="bulleted">d</listItem>';
+				const item1 = '<listItem listIndent="1" listType="numbered">c</listItem>';
+				const item2 = '<listItem listIndent="1" listType="bulleted">d</listItem>';
 
 				model.change( writer => {
 					writer.append( parseModel( item1, model.schema ), modelRoot );
@@ -3051,44 +3058,44 @@ describe( 'ListEditing', () => {
 			test(
 				'first list item',
 
-				'[<listItem indent="0" type="bulleted">a</listItem>]' +
-				'<listItem indent="1" type="bulleted">b</listItem>' +
-				'<listItem indent="2" type="bulleted">c</listItem>',
+				'[<listItem listIndent="0" listType="bulleted">a</listItem>]' +
+				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
+				'<listItem listIndent="2" listType="bulleted">c</listItem>',
 
-				'<listItem indent="0" type="bulleted">b</listItem>' +
-				'<listItem indent="1" type="bulleted">c</listItem>'
+				'<listItem listIndent="0" listType="bulleted">b</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">c</listItem>'
 			);
 
 			test(
 				'first list item of nested list',
 
-				'<listItem indent="0" type="bulleted">a</listItem>' +
-				'[<listItem indent="1" type="bulleted">b</listItem>]' +
-				'<listItem indent="2" type="bulleted">c</listItem>' +
-				'<listItem indent="3" type="bulleted">d</listItem>' +
-				'<listItem indent="1" type="bulleted">e</listItem>' +
-				'<listItem indent="2" type="bulleted">f</listItem>',
+				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+				'[<listItem listIndent="1" listType="bulleted">b</listItem>]' +
+				'<listItem listIndent="2" listType="bulleted">c</listItem>' +
+				'<listItem listIndent="3" listType="bulleted">d</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">e</listItem>' +
+				'<listItem listIndent="2" listType="bulleted">f</listItem>',
 
-				'<listItem indent="0" type="bulleted">a</listItem>' +
-				'<listItem indent="1" type="bulleted">c</listItem>' +
-				'<listItem indent="2" type="bulleted">d</listItem>' +
-				'<listItem indent="1" type="bulleted">e</listItem>' +
-				'<listItem indent="2" type="bulleted">f</listItem>'
+				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">c</listItem>' +
+				'<listItem listIndent="2" listType="bulleted">d</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">e</listItem>' +
+				'<listItem listIndent="2" listType="bulleted">f</listItem>'
 			);
 
 			test(
 				'selection over two different nested lists of same indent',
 
-				'<listItem indent="0" type="bulleted">a</listItem>' +
-				'<listItem indent="1" type="bulleted">b</listItem>' +
-				'[<listItem indent="1" type="bulleted">c</listItem>' +
-				'<listItem indent="0" type="bulleted">d</listItem>' +
-				'<listItem indent="1" type="numbered">e</listItem>]' +
-				'<listItem indent="1" type="numbered">f</listItem>',
+				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
+				'[<listItem listIndent="1" listType="bulleted">c</listItem>' +
+				'<listItem listIndent="0" listType="bulleted">d</listItem>' +
+				'<listItem listIndent="1" listType="numbered">e</listItem>]' +
+				'<listItem listIndent="1" listType="numbered">f</listItem>',
 
-				'<listItem indent="0" type="bulleted">a</listItem>' +
-				'<listItem indent="1" type="bulleted">b</listItem>' +
-				'<listItem indent="1" type="bulleted">f</listItem>'
+				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">f</listItem>'
 			);
 		} );
 
@@ -3110,115 +3117,115 @@ describe( 'ListEditing', () => {
 			test(
 				'nested list item out of list structure',
 
-				'<listItem indent="0" type="bulleted">a</listItem>' +
-				'[<listItem indent="1" type="bulleted">b</listItem>' +
-				'<listItem indent="2" type="bulleted">c</listItem>]' +
-				'<listItem indent="3" type="bulleted">d</listItem>' +
-				'<listItem indent="4" type="bulleted">e</listItem>' +
+				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+				'[<listItem listIndent="1" listType="bulleted">b</listItem>' +
+				'<listItem listIndent="2" listType="bulleted">c</listItem>]' +
+				'<listItem listIndent="3" listType="bulleted">d</listItem>' +
+				'<listItem listIndent="4" listType="bulleted">e</listItem>' +
 				'<paragraph>x</paragraph>',
 
 				6,
 
-				'<listItem indent="0" type="bulleted">a</listItem>' +
-				'<listItem indent="1" type="bulleted">d</listItem>' +
-				'<listItem indent="2" type="bulleted">e</listItem>' +
+				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">d</listItem>' +
+				'<listItem listIndent="2" listType="bulleted">e</listItem>' +
 				'<paragraph>x</paragraph>' +
-				'<listItem indent="0" type="bulleted">b</listItem>' +
-				'<listItem indent="1" type="bulleted">c</listItem>'
+				'<listItem listIndent="0" listType="bulleted">b</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">c</listItem>'
 			);
 
 			test(
 				'list items between lists',
 
-				'<listItem indent="0" type="bulleted">a</listItem>' +
-				'<listItem indent="1" type="bulleted">b</listItem>' +
-				'[<listItem indent="2" type="bulleted">c</listItem>' +
-				'<listItem indent="3" type="bulleted">d</listItem>]' +
-				'<listItem indent="4" type="bulleted">e</listItem>' +
+				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
+				'[<listItem listIndent="2" listType="bulleted">c</listItem>' +
+				'<listItem listIndent="3" listType="bulleted">d</listItem>]' +
+				'<listItem listIndent="4" listType="bulleted">e</listItem>' +
 				'<paragraph>x</paragraph>' +
-				'<listItem indent="0" type="bulleted">f</listItem>' +
-				'<listItem indent="0" type="bulleted">g</listItem>',
+				'<listItem listIndent="0" listType="bulleted">f</listItem>' +
+				'<listItem listIndent="0" listType="bulleted">g</listItem>',
 
 				7,
 
-				'<listItem indent="0" type="bulleted">a</listItem>' +
-				'<listItem indent="1" type="bulleted">b</listItem>' +
-				'<listItem indent="2" type="bulleted">e</listItem>' +
+				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
+				'<listItem listIndent="2" listType="bulleted">e</listItem>' +
 				'<paragraph>x</paragraph>' +
-				'<listItem indent="0" type="bulleted">f</listItem>' +
-				'<listItem indent="1" type="bulleted">c</listItem>' +
-				'<listItem indent="2" type="bulleted">d</listItem>' +
-				'<listItem indent="0" type="bulleted">g</listItem>'
+				'<listItem listIndent="0" listType="bulleted">f</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">c</listItem>' +
+				'<listItem listIndent="2" listType="bulleted">d</listItem>' +
+				'<listItem listIndent="0" listType="bulleted">g</listItem>'
 			);
 
 			test(
 				'element in between nested list items',
 
-				'<listItem indent="0" type="bulleted">a</listItem>' +
-				'<listItem indent="1" type="bulleted">b</listItem>' +
-				'<listItem indent="2" type="bulleted">c</listItem>' +
-				'<listItem indent="3" type="bulleted">d</listItem>' +
+				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
+				'<listItem listIndent="2" listType="bulleted">c</listItem>' +
+				'<listItem listIndent="3" listType="bulleted">d</listItem>' +
 				'[<paragraph>x</paragraph>]',
 
 				2,
 
-				'<listItem indent="0" type="bulleted">a</listItem>' +
-				'<listItem indent="1" type="bulleted">b</listItem>' +
+				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
 				'<paragraph>x</paragraph>' +
-				'<listItem indent="0" type="bulleted">c</listItem>' +
-				'<listItem indent="1" type="bulleted">d</listItem>'
+				'<listItem listIndent="0" listType="bulleted">c</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">d</listItem>'
 			);
 
 			test(
 				'multiple nested list items of different types #1 - fix at start',
 
-				'<listItem indent="0" type="bulleted">a</listItem>' +
-				'<listItem indent="1" type="bulleted">b</listItem>' +
-				'[<listItem indent="1" type="bulleted">c</listItem>' +
-				'<listItem indent="0" type="bulleted">d</listItem>' +
-				'<listItem indent="1" type="numbered">e</listItem>]' +
-				'<listItem indent="1" type="numbered">f</listItem>' +
-				'<listItem indent="0" type="bulleted">g</listItem>' +
-				'<listItem indent="1" type="numbered">h</listItem>' +
-				'<listItem indent="1" type="numbered">i</listItem>',
+				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
+				'[<listItem listIndent="1" listType="bulleted">c</listItem>' +
+				'<listItem listIndent="0" listType="bulleted">d</listItem>' +
+				'<listItem listIndent="1" listType="numbered">e</listItem>]' +
+				'<listItem listIndent="1" listType="numbered">f</listItem>' +
+				'<listItem listIndent="0" listType="bulleted">g</listItem>' +
+				'<listItem listIndent="1" listType="numbered">h</listItem>' +
+				'<listItem listIndent="1" listType="numbered">i</listItem>',
 
 				8,
 
-				'<listItem indent="0" type="bulleted">a</listItem>' +
-				'<listItem indent="1" type="bulleted">b</listItem>' +
-				'<listItem indent="1" type="bulleted">f</listItem>' +
-				'<listItem indent="0" type="bulleted">g</listItem>' +
-				'<listItem indent="1" type="numbered">h</listItem>' +
-				'<listItem indent="1" type="numbered">c</listItem>' +
-				'<listItem indent="0" type="bulleted">d</listItem>' +
-				'<listItem indent="1" type="numbered">e</listItem>' +
-				'<listItem indent="1" type="numbered">i</listItem>'
+				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">f</listItem>' +
+				'<listItem listIndent="0" listType="bulleted">g</listItem>' +
+				'<listItem listIndent="1" listType="numbered">h</listItem>' +
+				'<listItem listIndent="1" listType="numbered">c</listItem>' +
+				'<listItem listIndent="0" listType="bulleted">d</listItem>' +
+				'<listItem listIndent="1" listType="numbered">e</listItem>' +
+				'<listItem listIndent="1" listType="numbered">i</listItem>'
 			);
 
 			test(
 				'multiple nested list items of different types #2 - fix at end',
 
-				'<listItem indent="0" type="bulleted">a</listItem>' +
-				'<listItem indent="1" type="bulleted">b</listItem>' +
-				'[<listItem indent="1" type="bulleted">c</listItem>' +
-				'<listItem indent="0" type="bulleted">d</listItem>' +
-				'<listItem indent="1" type="numbered">e</listItem>]' +
-				'<listItem indent="1" type="numbered">f</listItem>' +
-				'<listItem indent="0" type="bulleted">g</listItem>' +
-				'<listItem indent="1" type="bulleted">h</listItem>' +
-				'<listItem indent="1" type="bulleted">i</listItem>',
+				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
+				'[<listItem listIndent="1" listType="bulleted">c</listItem>' +
+				'<listItem listIndent="0" listType="bulleted">d</listItem>' +
+				'<listItem listIndent="1" listType="numbered">e</listItem>]' +
+				'<listItem listIndent="1" listType="numbered">f</listItem>' +
+				'<listItem listIndent="0" listType="bulleted">g</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">h</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">i</listItem>',
 
 				8,
 
-				'<listItem indent="0" type="bulleted">a</listItem>' +
-				'<listItem indent="1" type="bulleted">b</listItem>' +
-				'<listItem indent="1" type="bulleted">f</listItem>' +
-				'<listItem indent="0" type="bulleted">g</listItem>' +
-				'<listItem indent="1" type="bulleted">h</listItem>' +
-				'<listItem indent="1" type="bulleted">c</listItem>' +
-				'<listItem indent="0" type="bulleted">d</listItem>' +
-				'<listItem indent="1" type="numbered">e</listItem>' +
-				'<listItem indent="1" type="numbered">i</listItem>'
+				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">f</listItem>' +
+				'<listItem listIndent="0" listType="bulleted">g</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">h</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">c</listItem>' +
+				'<listItem listIndent="0" listType="bulleted">d</listItem>' +
+				'<listItem listIndent="1" listType="numbered">e</listItem>' +
+				'<listItem listIndent="1" listType="numbered">i</listItem>'
 			);
 
 			// #78.
@@ -3226,21 +3233,21 @@ describe( 'ListEditing', () => {
 				'move out of container',
 
 				'<blockQuote>' +
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'<listItem indent="1" type="bulleted">b</listItem>' +
-					'<listItem indent="1" type="bulleted">c</listItem>' +
-					'<listItem indent="1" type="bulleted">d</listItem>' +
-					'[<listItem indent="2" type="bulleted">e</listItem>]' +
+				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">c</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">d</listItem>' +
+				'[<listItem listIndent="2" listType="bulleted">e</listItem>]' +
 				'</blockQuote>',
 
 				0,
 
-				'<listItem indent="0" type="bulleted">e</listItem>' +
+				'<listItem listIndent="0" listType="bulleted">e</listItem>' +
 				'<blockQuote>' +
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'<listItem indent="1" type="bulleted">b</listItem>' +
-					'<listItem indent="1" type="bulleted">c</listItem>' +
-					'<listItem indent="1" type="bulleted">d</listItem>' +
+				'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">b</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">c</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">d</listItem>' +
 				'</blockQuote>'
 			);
 		} );
@@ -3248,26 +3255,26 @@ describe( 'ListEditing', () => {
 		describe( 'rename', () => {
 			it( 'rename nested item', () => {
 				const modelBefore =
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'<listItem indent="1" type="bulleted">b</listItem>' +
-					'[<listItem indent="2" type="bulleted">c</listItem>]' +
-					'<listItem indent="2" type="bulleted">d</listItem>' +
-					'<listItem indent="3" type="bulleted">e</listItem>' +
-					'<listItem indent="1" type="bulleted">f</listItem>' +
-					'<listItem indent="2" type="bulleted">g</listItem>' +
-					'<listItem indent="1" type="bulleted">h</listItem>' +
-					'<listItem indent="2" type="bulleted">i</listItem>';
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+					'<listItem listIndent="1" listType="bulleted">b</listItem>' +
+					'[<listItem listIndent="2" listType="bulleted">c</listItem>]' +
+					'<listItem listIndent="2" listType="bulleted">d</listItem>' +
+					'<listItem listIndent="3" listType="bulleted">e</listItem>' +
+					'<listItem listIndent="1" listType="bulleted">f</listItem>' +
+					'<listItem listIndent="2" listType="bulleted">g</listItem>' +
+					'<listItem listIndent="1" listType="bulleted">h</listItem>' +
+					'<listItem listIndent="2" listType="bulleted">i</listItem>';
 
 				const expectedModel =
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'<listItem indent="1" type="bulleted">b</listItem>' +
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+					'<listItem listIndent="1" listType="bulleted">b</listItem>' +
 					'<paragraph>c</paragraph>' +
-					'<listItem indent="0" type="bulleted">d</listItem>' +
-					'<listItem indent="1" type="bulleted">e</listItem>' +
-					'<listItem indent="0" type="bulleted">f</listItem>' +
-					'<listItem indent="1" type="bulleted">g</listItem>' +
-					'<listItem indent="0" type="bulleted">h</listItem>' +
-					'<listItem indent="1" type="bulleted">i</listItem>';
+					'<listItem listIndent="0" listType="bulleted">d</listItem>' +
+					'<listItem listIndent="1" listType="bulleted">e</listItem>' +
+					'<listItem listIndent="0" listType="bulleted">f</listItem>' +
+					'<listItem listIndent="1" listType="bulleted">g</listItem>' +
+					'<listItem listIndent="0" listType="bulleted">h</listItem>' +
+					'<listItem listIndent="1" listType="bulleted">i</listItem>';
 
 				setModelData( model, modelBefore );
 
@@ -3285,54 +3292,54 @@ describe( 'ListEditing', () => {
 	describe( 'paste and insertContent integration', () => {
 		it( 'should be triggered on DataController#insertContent()', () => {
 			setModelData( model,
-				'<listItem type="bulleted" indent="0">A</listItem>' +
-				'<listItem type="bulleted" indent="1">B[]</listItem>' +
-				'<listItem type="bulleted" indent="2">C</listItem>'
+				'<listItem listType="bulleted" listIndent="0">A</listItem>' +
+				'<listItem listType="bulleted" listIndent="1">B[]</listItem>' +
+				'<listItem listType="bulleted" listIndent="2">C</listItem>'
 			);
 
 			editor.model.insertContent(
 				parseModel(
-					'<listItem type="bulleted" indent="0">X</listItem>' +
-					'<listItem type="bulleted" indent="1">Y</listItem>',
+					'<listItem listType="bulleted" listIndent="0">X</listItem>' +
+					'<listItem listType="bulleted" listIndent="1">Y</listItem>',
 					model.schema
 				),
 				modelDoc.selection
 			);
 
 			expect( getModelData( model ) ).to.equal(
-				'<listItem indent="0" type="bulleted">A</listItem>' +
-				'<listItem indent="1" type="bulleted">BX</listItem>' +
-				'<listItem indent="2" type="bulleted">Y[]</listItem>' +
-				'<listItem indent="2" type="bulleted">C</listItem>'
+				'<listItem listIndent="0" listType="bulleted">A</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">BX</listItem>' +
+				'<listItem listIndent="2" listType="bulleted">Y[]</listItem>' +
+				'<listItem listIndent="2" listType="bulleted">C</listItem>'
 			);
 		} );
 
 		// Just checking that it doesn't crash. #69
 		it( 'should work if an element is passed to DataController#insertContent()', () => {
 			setModelData( model,
-				'<listItem type="bulleted" indent="0">A</listItem>' +
-				'<listItem type="bulleted" indent="1">B[]</listItem>' +
-				'<listItem type="bulleted" indent="2">C</listItem>'
+				'<listItem listType="bulleted" listIndent="0">A</listItem>' +
+				'<listItem listType="bulleted" listIndent="1">B[]</listItem>' +
+				'<listItem listType="bulleted" listIndent="2">C</listItem>'
 			);
 
 			editor.model.insertContent(
-				new ModelElement( 'listItem', { type: 'bulleted', indent: '0' }, 'X' ),
+				new ModelElement( 'listItem', { listType: 'bulleted', listIndent: '0' }, 'X' ),
 				modelDoc.selection
 			);
 
 			expect( getModelData( model ) ).to.equal(
-				'<listItem indent="0" type="bulleted">A</listItem>' +
-				'<listItem indent="1" type="bulleted">BX[]</listItem>' +
-				'<listItem indent="2" type="bulleted">C</listItem>'
+				'<listItem listIndent="0" listType="bulleted">A</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">BX[]</listItem>' +
+				'<listItem listIndent="2" listType="bulleted">C</listItem>'
 			);
 		} );
 
 		// Just checking that it doesn't crash. #69
 		it( 'should work if an element is passed to DataController#insertContent()', () => {
 			setModelData( model,
-				'<listItem type="bulleted" indent="0">A</listItem>' +
-				'<listItem type="bulleted" indent="1">B[]</listItem>' +
-				'<listItem type="bulleted" indent="2">C</listItem>'
+				'<listItem listType="bulleted" listIndent="0">A</listItem>' +
+				'<listItem listType="bulleted" listIndent="1">B[]</listItem>' +
+				'<listItem listType="bulleted" listIndent="2">C</listItem>'
 			);
 
 			editor.model.insertContent(
@@ -3341,17 +3348,17 @@ describe( 'ListEditing', () => {
 			);
 
 			expect( getModelData( model ) ).to.equal(
-				'<listItem indent="0" type="bulleted">A</listItem>' +
-				'<listItem indent="1" type="bulleted">BX[]</listItem>' +
-				'<listItem indent="2" type="bulleted">C</listItem>'
+				'<listItem listIndent="0" listType="bulleted">A</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">BX[]</listItem>' +
+				'<listItem listIndent="2" listType="bulleted">C</listItem>'
 			);
 		} );
 
 		it( 'should fix indents of pasted list items', () => {
 			setModelData( model,
-				'<listItem type="bulleted" indent="0">A</listItem>' +
-				'<listItem type="bulleted" indent="1">B[]</listItem>' +
-				'<listItem type="bulleted" indent="2">C</listItem>'
+				'<listItem listType="bulleted" listIndent="0">A</listItem>' +
+				'<listItem listType="bulleted" listIndent="1">B[]</listItem>' +
+				'<listItem listType="bulleted" listIndent="2">C</listItem>'
 			);
 
 			const clipboard = editor.plugins.get( 'Clipboard' );
@@ -3361,18 +3368,18 @@ describe( 'ListEditing', () => {
 			} );
 
 			expect( getModelData( model ) ).to.equal(
-				'<listItem indent="0" type="bulleted">A</listItem>' +
-				'<listItem indent="1" type="bulleted">BX</listItem>' +
-				'<listItem indent="2" type="bulleted">Y[]</listItem>' +
-				'<listItem indent="2" type="bulleted">C</listItem>'
+				'<listItem listIndent="0" listType="bulleted">A</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">BX</listItem>' +
+				'<listItem listIndent="2" listType="bulleted">Y[]</listItem>' +
+				'<listItem listIndent="2" listType="bulleted">C</listItem>'
 			);
 		} );
 
 		it( 'should not fix indents of list items that are separated by non-list element', () => {
 			setModelData( model,
-				'<listItem type="bulleted" indent="0">A</listItem>' +
-				'<listItem type="bulleted" indent="1">B[]</listItem>' +
-				'<listItem type="bulleted" indent="2">C</listItem>'
+				'<listItem listType="bulleted" listIndent="0">A</listItem>' +
+				'<listItem listType="bulleted" listIndent="1">B[]</listItem>' +
+				'<listItem listType="bulleted" listIndent="2">C</listItem>'
 			);
 
 			const clipboard = editor.plugins.get( 'Clipboard' );
@@ -3382,20 +3389,20 @@ describe( 'ListEditing', () => {
 			} );
 
 			expect( getModelData( model ) ).to.equal(
-				'<listItem indent="0" type="bulleted">A</listItem>' +
-				'<listItem indent="1" type="bulleted">BW</listItem>' +
-				'<listItem indent="2" type="bulleted">X</listItem>' +
+				'<listItem listIndent="0" listType="bulleted">A</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">BW</listItem>' +
+				'<listItem listIndent="2" listType="bulleted">X</listItem>' +
 				'<paragraph>Y</paragraph>' +
-				'<listItem indent="0" type="bulleted">Z[]</listItem>' +
-				'<listItem indent="1" type="bulleted">C</listItem>'
+				'<listItem listIndent="0" listType="bulleted">Z[]</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">C</listItem>'
 			);
 		} );
 
 		it( 'should co-work correctly with post fixer', () => {
 			setModelData( model,
-				'<listItem type="bulleted" indent="0">A</listItem>' +
-				'<listItem type="bulleted" indent="1">B[]</listItem>' +
-				'<listItem type="bulleted" indent="2">C</listItem>'
+				'<listItem listType="bulleted" listIndent="0">A</listItem>' +
+				'<listItem listType="bulleted" listIndent="1">B[]</listItem>' +
+				'<listItem listType="bulleted" listIndent="2">C</listItem>'
 			);
 
 			const clipboard = editor.plugins.get( 'Clipboard' );
@@ -3405,18 +3412,18 @@ describe( 'ListEditing', () => {
 			} );
 
 			expect( getModelData( model ) ).to.equal(
-				'<listItem indent="0" type="bulleted">A</listItem>' +
-				'<listItem indent="1" type="bulleted">BX</listItem>' +
-				'<listItem indent="0" type="bulleted">Y[]</listItem>' +
-				'<listItem indent="1" type="bulleted">C</listItem>'
+				'<listItem listIndent="0" listType="bulleted">A</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">BX</listItem>' +
+				'<listItem listIndent="0" listType="bulleted">Y[]</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">C</listItem>'
 			);
 		} );
 
 		it( 'should work if items are pasted between listItem elements', () => {
 			setModelData( model,
-				'<listItem type="bulleted" indent="0">A</listItem>' +
-				'<listItem type="bulleted" indent="1">B</listItem>[]' +
-				'<listItem type="bulleted" indent="2">C</listItem>'
+				'<listItem listType="bulleted" listIndent="0">A</listItem>' +
+				'<listItem listType="bulleted" listIndent="1">B</listItem>[]' +
+				'<listItem listType="bulleted" listIndent="2">C</listItem>'
 			);
 
 			const clipboard = editor.plugins.get( 'Clipboard' );
@@ -3426,18 +3433,18 @@ describe( 'ListEditing', () => {
 			} );
 
 			expect( getModelData( model ) ).to.equal(
-				'<listItem indent="0" type="bulleted">A</listItem>' +
-				'<listItem indent="1" type="bulleted">B</listItem>' +
-				'<listItem indent="1" type="bulleted">X</listItem>' +
-				'<listItem indent="2" type="bulleted">Y[]</listItem>' +
-				'<listItem indent="2" type="bulleted">C</listItem>'
+				'<listItem listIndent="0" listType="bulleted">A</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">B</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">X</listItem>' +
+				'<listItem listIndent="2" listType="bulleted">Y[]</listItem>' +
+				'<listItem listIndent="2" listType="bulleted">C</listItem>'
 			);
 		} );
 
 		it( 'should create correct model when list items are pasted in top-level list', () => {
 			setModelData( model,
-				'<listItem type="bulleted" indent="0">A[]</listItem>' +
-				'<listItem type="bulleted" indent="1">B</listItem>'
+				'<listItem listType="bulleted" listIndent="0">A[]</listItem>' +
+				'<listItem listType="bulleted" listIndent="1">B</listItem>'
 			);
 
 			const clipboard = editor.plugins.get( 'Clipboard' );
@@ -3447,9 +3454,9 @@ describe( 'ListEditing', () => {
 			} );
 
 			expect( getModelData( model ) ).to.equal(
-				'<listItem indent="0" type="bulleted">AX</listItem>' +
-				'<listItem indent="1" type="bulleted">Y[]</listItem>' +
-				'<listItem indent="1" type="bulleted">B</listItem>'
+				'<listItem listIndent="0" listType="bulleted">AX</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">Y[]</listItem>' +
+				'<listItem listIndent="1" listType="bulleted">B</listItem>'
 			);
 		} );
 
@@ -3467,7 +3474,7 @@ describe( 'ListEditing', () => {
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>AX</paragraph>' +
-				'<listItem indent="0" type="bulleted">Y[]</listItem>' +
+				'<listItem listIndent="0" listType="bulleted">Y[]</listItem>' +
 				'<paragraph>B</paragraph>'
 			);
 		} );
@@ -3483,8 +3490,8 @@ describe( 'ListEditing', () => {
 		it( 'should correctly handle item that is pasted without its parent', () => {
 			setModelData( model,
 				'<paragraph>Foo</paragraph>' +
-				'<listItem type="numbered" indent="0">A</listItem>' +
-				'<listItem type="numbered" indent="1">B</listItem>' +
+				'<listItem listType="numbered" listIndent="0">A</listItem>' +
+				'<listItem listType="numbered" listIndent="1">B</listItem>' +
 				'[]' +
 				'<paragraph>Bar</paragraph>'
 			);
@@ -3497,9 +3504,9 @@ describe( 'ListEditing', () => {
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>Foo</paragraph>' +
-				'<listItem indent="0" type="numbered">A</listItem>' +
-				'<listItem indent="1" type="numbered">B</listItem>' +
-				'<listItem indent="1" type="numbered">X[]</listItem>' +
+				'<listItem listIndent="0" listType="numbered">A</listItem>' +
+				'<listItem listIndent="1" listType="numbered">B</listItem>' +
+				'<listItem listIndent="1" listType="numbered">X[]</listItem>' +
 				'<paragraph>Bar</paragraph>'
 			);
 		} );
@@ -3507,8 +3514,8 @@ describe( 'ListEditing', () => {
 		it( 'should correctly handle item that is pasted without its parent #2', () => {
 			setModelData( model,
 				'<paragraph>Foo</paragraph>' +
-				'<listItem type="numbered" indent="0">A</listItem>' +
-				'<listItem type="numbered" indent="1">B</listItem>' +
+				'<listItem listType="numbered" listIndent="0">A</listItem>' +
+				'<listItem listType="numbered" listIndent="1">B</listItem>' +
 				'[]' +
 				'<paragraph>Bar</paragraph>'
 			);
@@ -3521,10 +3528,10 @@ describe( 'ListEditing', () => {
 
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>Foo</paragraph>' +
-				'<listItem indent="0" type="numbered">A</listItem>' +
-				'<listItem indent="1" type="numbered">B</listItem>' +
-				'<listItem indent="1" type="numbered">X</listItem>' +
-				'<listItem indent="2" type="bulleted">Y[]</listItem>' +
+				'<listItem listIndent="0" listType="numbered">A</listItem>' +
+				'<listItem listIndent="1" listType="numbered">B</listItem>' +
+				'<listItem listIndent="1" listType="numbered">X</listItem>' +
+				'<listItem listIndent="2" listType="bulleted">Y[]</listItem>' +
 				'<paragraph>Bar</paragraph>'
 			);
 		} );
@@ -3533,8 +3540,8 @@ describe( 'ListEditing', () => {
 	describe( 'other', () => {
 		it( 'model insert converter should not fire if change was already consumed', () => {
 			editor.editing.downcastDispatcher.on( 'insert:listItem', ( evt, data, conversionApi ) => {
-				conversionApi.consumable.consume( data.item, 'attribute:type' );
-				conversionApi.consumable.consume( data.item, 'attribute:indent' );
+				conversionApi.consumable.consume( data.item, 'attribute:listType' );
+				conversionApi.consumable.consume( data.item, 'attribute:listIndent' );
 
 				const converter = insertElement( ( modelElement, viewWriter ) => viewWriter.createContainerElement( 'p' ) );
 
@@ -3542,7 +3549,7 @@ describe( 'ListEditing', () => {
 			}, { priority: 'highest' } );
 
 			// Paragraph is needed, otherwise selection throws.
-			setModelData( model, '<paragraph>x</paragraph><listItem indent="0" type="bulleted">y</listItem>' );
+			setModelData( model, '<paragraph>x</paragraph><listItem listIndent="0" listType="bulleted">y</listItem>' );
 
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<p>x</p><p>y</p>' );
 		} );
@@ -3553,7 +3560,7 @@ describe( 'ListEditing', () => {
 			}, { priority: 'highest' } );
 
 			// Paragraph is needed to prevent autoparagraphing of empty editor.
-			setModelData( model, '<paragraph>x</paragraph><listItem indent="0" type="bulleted"></listItem>' );
+			setModelData( model, '<paragraph>x</paragraph><listItem listIndent="0" listType="bulleted"></listItem>' );
 
 			model.change( writer => {
 				writer.remove( modelRoot.getChild( 1 ) );
@@ -3563,28 +3570,31 @@ describe( 'ListEditing', () => {
 		} );
 
 		it( 'model change type converter should not fire if change was already consumed', () => {
-			editor.editing.downcastDispatcher.on( 'attribute:type', ( evt, data, conversionApi ) => {
-				conversionApi.consumable.consume( data.item, 'attribute:type' );
+			editor.editing.downcastDispatcher.on( 'attribute:listType', ( evt, data, conversionApi ) => {
+				conversionApi.consumable.consume( data.item, 'attribute:listType' );
 			}, { priority: 'highest' } );
 
-			setModelData( model, '<listItem indent="0" type="bulleted"></listItem>' );
+			setModelData( model, '<listItem listIndent="0" listType="bulleted"></listItem>' );
 
 			model.change( writer => {
-				writer.setAttribute( 'type', 'numbered', modelRoot.getChild( 0 ) );
+				writer.setAttribute( 'listType', 'numbered', modelRoot.getChild( 0 ) );
 			} );
 
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<ul><li></li></ul>' );
 		} );
 
 		it( 'model change indent converter should not fire if change was already consumed', () => {
-			editor.editing.downcastDispatcher.on( 'attribute:indent', ( evt, data, conversionApi ) => {
-				conversionApi.consumable.consume( data.item, 'attribute:indent' );
+			editor.editing.downcastDispatcher.on( 'attribute:listIndent', ( evt, data, conversionApi ) => {
+				conversionApi.consumable.consume( data.item, 'attribute:listIndent' );
 			}, { priority: 'highest' } );
 
-			setModelData( model, '<listItem indent="0" type="bulleted">a</listItem><listItem indent="0" type="bulleted">b</listItem>' );
+			setModelData(
+				model,
+				'<listItem listIndent="0" listType="bulleted">a</listItem><listItem listIndent="0" listType="bulleted">b</listItem>'
+			);
 
 			model.change( writer => {
-				writer.setAttribute( 'indent', 1, modelRoot.getChild( 1 ) );
+				writer.setAttribute( 'listIndent', 1, modelRoot.getChild( 1 ) );
 			} );
 
 			expect( getViewData( editor.editing.view, { withoutSelection: true } ) ).to.equal( '<ul><li>a</li><li>b</li></ul>' );
@@ -3636,7 +3646,7 @@ describe( 'ListEditing', () => {
 
 			model.change( writer => {
 				// Change indent of the second list item.
-				writer.setAttribute( 'indent', 1, modelRoot.getChild( 1 ) );
+				writer.setAttribute( 'listIndent', 1, modelRoot.getChild( 1 ) );
 			} );
 
 			// Check if the new <ul> was added at correct position.
@@ -3760,7 +3770,7 @@ describe( 'ListEditing', () => {
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<div>abc</div>' +
-				'<listItem indent="0" type="bulleted">foo</listItem>' +
+				'<listItem listIndent="0" listType="bulleted">foo</listItem>' +
 				'<div>def</div>'
 			);
 		} );
@@ -3780,7 +3790,7 @@ describe( 'ListEditing', () => {
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
 				'<div>abc</div>' +
-				'<listItem indent="0" type="bulleted">foo</listItem>'
+				'<listItem listIndent="0" listType="bulleted">foo</listItem>'
 			);
 		} );
 
@@ -3798,7 +3808,7 @@ describe( 'ListEditing', () => {
 			);
 
 			expect( getModelData( model, { withoutSelection: true } ) ).to.equal(
-				'<listItem indent="0" type="bulleted">foo</listItem>' +
+				'<listItem listIndent="0" listType="bulleted">foo</listItem>' +
 				'<div>def</div>'
 			);
 		} );
@@ -3856,13 +3866,13 @@ describe( 'ListEditing', () => {
 	function testChangeType( testName, input, output ) {
 		const actionCallback = () => {
 			const element = modelDoc.selection.getFirstPosition().nodeAfter;
-			const newType = element.getAttribute( 'type' ) == 'numbered' ? 'bulleted' : 'numbered';
+			const newType = element.getAttribute( 'listType' ) == 'numbered' ? 'bulleted' : 'numbered';
 
 			model.change( writer => {
 				const itemsToChange = Array.from( modelDoc.selection.getSelectedBlocks() );
 
 				for ( const item of itemsToChange ) {
-					writer.setAttribute( 'type', newType, item );
+					writer.setAttribute( 'listType', newType, item );
 				}
 			} );
 		};
@@ -3876,8 +3886,8 @@ describe( 'ListEditing', () => {
 
 			model.change( writer => {
 				writer.rename( element, 'paragraph' );
-				writer.removeAttribute( 'type', element );
-				writer.removeAttribute( 'indent', element );
+				writer.removeAttribute( 'listType', element );
+				writer.removeAttribute( 'listIndent', element );
 			} );
 		};
 
@@ -3889,7 +3899,7 @@ describe( 'ListEditing', () => {
 			const element = modelDoc.selection.getFirstPosition().nodeAfter;
 
 			model.change( writer => {
-				writer.setAttributes( { type: 'bulleted', indent: newIndent }, element );
+				writer.setAttributes( { listType: 'bulleted', listIndent: newIndent }, element );
 				writer.rename( element, 'listItem' );
 			} );
 		};
@@ -3900,7 +3910,7 @@ describe( 'ListEditing', () => {
 	function testChangeIndent( testName, newIndent, input, output ) {
 		const actionCallback = () => {
 			model.change( writer => {
-				writer.setAttribute( 'indent', newIndent, modelDoc.selection.getFirstRange() );
+				writer.setAttribute( 'listIndent', newIndent, modelDoc.selection.getFirstRange() );
 			} );
 		};
 

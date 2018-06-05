@@ -25,7 +25,7 @@ describe( 'ListCommand', () => {
 
 		model.schema.register( 'listItem', {
 			inheritAllFrom: '$block',
-			allowAttributes: [ 'type', 'indent' ]
+			allowAttributes: [ 'listType', 'listIndent' ]
 		} );
 		model.schema.register( 'paragraph', {
 			inheritAllFrom: '$block',
@@ -42,8 +42,8 @@ describe( 'ListCommand', () => {
 		setData(
 			model,
 			'<paragraph>foo</paragraph>' +
-			'<listItem type="bulleted" indent="0">bulleted</listItem>' +
-			'<listItem type="numbered" indent="0">numbered</listItem>' +
+			'<listItem listType="bulleted" listIndent="0">bulleted</listItem>' +
+			'<listItem listType="numbered" listIndent="0">numbered</listItem>' +
 			'<paragraph>bar</paragraph>' +
 			'<widget>' +
 				'<paragraph>xyz</paragraph>' +
@@ -98,7 +98,7 @@ describe( 'ListCommand', () => {
 
 		describe( 'isEnabled', () => {
 			it( 'should be true if entire selection is in a list', () => {
-				setData( model, '<listItem type="bulleted" indent="0">[a]</listItem>' );
+				setData( model, '<listItem listType="bulleted" listIndent="0">[a]</listItem>' );
 				expect( command.isEnabled ).to.be.true;
 			} );
 
@@ -141,24 +141,24 @@ describe( 'ListCommand', () => {
 
 					command.execute();
 
-					expect( getData( model ) ).to.equal( '<listItem indent="0" type="bulleted">fo[]o</listItem>' );
+					expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">fo[]o</listItem>' );
 				} );
 
 				it( 'should rename closest listItem to paragraph', () => {
-					setData( model, '<listItem indent="0" type="bulleted">fo[]o</listItem>' );
+					setData( model, '<listItem listIndent="0" listType="bulleted">fo[]o</listItem>' );
 
 					command.execute();
 
 					// Attributes will be removed by post fixer.
-					expect( getData( model ) ).to.equal( '<paragraph indent="0" type="bulleted">fo[]o</paragraph>' );
+					expect( getData( model ) ).to.equal( '<paragraph listIndent="0" listType="bulleted">fo[]o</paragraph>' );
 				} );
 
 				it( 'should change closest listItem\' type', () => {
-					setData( model, '<listItem indent="0" type="numbered">fo[]o</listItem>' );
+					setData( model, '<listItem listIndent="0" listType="numbered">fo[]o</listItem>' );
 
 					command.execute();
 
-					expect( getData( model ) ).to.equal( '<listItem indent="0" type="bulleted">fo[]o</listItem>' );
+					expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">fo[]o</listItem>' );
 				} );
 
 				it( 'should handle outdenting sub-items when list item is turned off', () => {
@@ -202,39 +202,39 @@ describe( 'ListCommand', () => {
 
 					setData(
 						model,
-						'<listItem indent="0" type="bulleted">---</listItem>' +
-						'<listItem indent="1" type="bulleted">---</listItem>' +
-						'<listItem indent="2" type="bulleted">[]---</listItem>' +
-						'<listItem indent="3" type="bulleted">---</listItem>' +
-						'<listItem indent="4" type="bulleted">---</listItem>' +
-						'<listItem indent="2" type="bulleted">---</listItem>' +
-						'<listItem indent="3" type="bulleted">---</listItem>' +
-						'<listItem indent="1" type="bulleted">---</listItem>' +
-						'<listItem indent="2" type="bulleted">---</listItem>' +
-						'<listItem indent="3" type="bulleted">---</listItem>' +
-						'<listItem indent="3" type="bulleted">---</listItem>' +
-						'<listItem indent="0" type="bulleted">---</listItem>' +
-						'<listItem indent="1" type="bulleted">---</listItem>' +
-						'<listItem indent="2" type="bulleted">---</listItem>'
+						'<listItem listIndent="0" listType="bulleted">---</listItem>' +
+						'<listItem listIndent="1" listType="bulleted">---</listItem>' +
+						'<listItem listIndent="2" listType="bulleted">[]---</listItem>' +
+						'<listItem listIndent="3" listType="bulleted">---</listItem>' +
+						'<listItem listIndent="4" listType="bulleted">---</listItem>' +
+						'<listItem listIndent="2" listType="bulleted">---</listItem>' +
+						'<listItem listIndent="3" listType="bulleted">---</listItem>' +
+						'<listItem listIndent="1" listType="bulleted">---</listItem>' +
+						'<listItem listIndent="2" listType="bulleted">---</listItem>' +
+						'<listItem listIndent="3" listType="bulleted">---</listItem>' +
+						'<listItem listIndent="3" listType="bulleted">---</listItem>' +
+						'<listItem listIndent="0" listType="bulleted">---</listItem>' +
+						'<listItem listIndent="1" listType="bulleted">---</listItem>' +
+						'<listItem listIndent="2" listType="bulleted">---</listItem>'
 					);
 
 					command.execute();
 
 					const expectedData =
-						'<listItem indent="0" type="bulleted">---</listItem>' +
-						'<listItem indent="1" type="bulleted">---</listItem>' +
-						'<paragraph indent="2" type="bulleted">[]---</paragraph>' + // Attributes will be removed by post fixer.
-						'<listItem indent="0" type="bulleted">---</listItem>' +
-						'<listItem indent="1" type="bulleted">---</listItem>' +
-						'<listItem indent="0" type="bulleted">---</listItem>' +
-						'<listItem indent="1" type="bulleted">---</listItem>' +
-						'<listItem indent="0" type="bulleted">---</listItem>' +
-						'<listItem indent="1" type="bulleted">---</listItem>' +
-						'<listItem indent="2" type="bulleted">---</listItem>' +
-						'<listItem indent="2" type="bulleted">---</listItem>' +
-						'<listItem indent="0" type="bulleted">---</listItem>' +
-						'<listItem indent="1" type="bulleted">---</listItem>' +
-						'<listItem indent="2" type="bulleted">---</listItem>';
+						'<listItem listIndent="0" listType="bulleted">---</listItem>' +
+						'<listItem listIndent="1" listType="bulleted">---</listItem>' +
+						'<paragraph listIndent="2" listType="bulleted">[]---</paragraph>' + // Attributes will be removed by post fixer.
+						'<listItem listIndent="0" listType="bulleted">---</listItem>' +
+						'<listItem listIndent="1" listType="bulleted">---</listItem>' +
+						'<listItem listIndent="0" listType="bulleted">---</listItem>' +
+						'<listItem listIndent="1" listType="bulleted">---</listItem>' +
+						'<listItem listIndent="0" listType="bulleted">---</listItem>' +
+						'<listItem listIndent="1" listType="bulleted">---</listItem>' +
+						'<listItem listIndent="2" listType="bulleted">---</listItem>' +
+						'<listItem listIndent="2" listType="bulleted">---</listItem>' +
+						'<listItem listIndent="0" listType="bulleted">---</listItem>' +
+						'<listItem listIndent="1" listType="bulleted">---</listItem>' +
+						'<listItem listIndent="2" listType="bulleted">---</listItem>';
 
 					expect( getData( model ) ).to.equal( expectedData );
 				} );
@@ -244,14 +244,14 @@ describe( 'ListCommand', () => {
 				beforeEach( () => {
 					setData(
 						model,
-						'<listItem indent="0" type="bulleted">---</listItem>' +
-						'<listItem indent="0" type="bulleted">---</listItem>' +
+						'<listItem listIndent="0" listType="bulleted">---</listItem>' +
+						'<listItem listIndent="0" listType="bulleted">---</listItem>' +
 						'<paragraph>---</paragraph>' +
 						'<paragraph>---</paragraph>' +
-						'<listItem indent="0" type="numbered">---</listItem>' +
-						'<listItem indent="0" type="numbered">---</listItem>' +
-						'<listItem indent="1" type="bulleted">---</listItem>' +
-						'<listItem indent="2" type="bulleted">---</listItem>'
+						'<listItem listIndent="0" listType="numbered">---</listItem>' +
+						'<listItem listIndent="0" listType="numbered">---</listItem>' +
+						'<listItem listIndent="1" listType="bulleted">---</listItem>' +
+						'<listItem listIndent="2" listType="bulleted">---</listItem>'
 					);
 				} );
 
@@ -273,9 +273,9 @@ describe( 'ListCommand', () => {
 					command.execute();
 
 					expect( getData( model ) ).to.equal(
-						'<listItem indent="0" type="bulleted">a[bc</listItem>' +
+						'<listItem listIndent="0" listType="bulleted">a[bc</listItem>' +
 						'<restricted><fooBlock></fooBlock></restricted>' +
-						'<listItem indent="0" type="bulleted">de]f</listItem>'
+						'<listItem listIndent="0" listType="bulleted">de]f</listItem>'
 					);
 				} );
 
@@ -296,9 +296,9 @@ describe( 'ListCommand', () => {
 					command.execute();
 
 					expect( getData( model ) ).to.equal(
-						'<listItem indent="0" type="bulleted">a[bc</listItem>' +
+						'<listItem listIndent="0" listType="bulleted">a[bc</listItem>' +
 						'<image></image>' +
-						'<listItem indent="0" type="bulleted">de]f</listItem>'
+						'<listItem listIndent="0" listType="bulleted">de]f</listItem>'
 					);
 				} );
 
@@ -315,14 +315,14 @@ describe( 'ListCommand', () => {
 					command.execute();
 
 					const expectedData =
-						'<listItem indent="0" type="bulleted">---</listItem>' +
-						'<listItem indent="0" type="bulleted">---</listItem>' +
-						'<listItem indent="0" type="bulleted">[---</listItem>' +
-						'<listItem indent="0" type="bulleted">---]</listItem>' +
-						'<listItem indent="0" type="numbered">---</listItem>' +
-						'<listItem indent="0" type="numbered">---</listItem>' +
-						'<listItem indent="1" type="bulleted">---</listItem>' +
-						'<listItem indent="2" type="bulleted">---</listItem>';
+						'<listItem listIndent="0" listType="bulleted">---</listItem>' +
+						'<listItem listIndent="0" listType="bulleted">---</listItem>' +
+						'<listItem listIndent="0" listType="bulleted">[---</listItem>' +
+						'<listItem listIndent="0" listType="bulleted">---]</listItem>' +
+						'<listItem listIndent="0" listType="numbered">---</listItem>' +
+						'<listItem listIndent="0" listType="numbered">---</listItem>' +
+						'<listItem listIndent="1" listType="bulleted">---</listItem>' +
+						'<listItem listIndent="2" listType="bulleted">---</listItem>';
 
 					expect( getData( model ) ).to.equal( expectedData );
 				} );
@@ -341,14 +341,14 @@ describe( 'ListCommand', () => {
 					command.execute();
 
 					const expectedData =
-						'<listItem indent="0" type="bulleted">---</listItem>' +
-						'<paragraph indent="0" type="bulleted">[---</paragraph>' + // Attributes will be removed by post fixer.
+						'<listItem listIndent="0" listType="bulleted">---</listItem>' +
+						'<paragraph listIndent="0" listType="bulleted">[---</paragraph>' + // Attributes will be removed by post fixer.
 						'<paragraph>---</paragraph>' +
 						'<paragraph>---</paragraph>' +
-						'<paragraph indent="0" type="numbered">---]</paragraph>' + // Attributes will be removed by post fixer.
-						'<listItem indent="0" type="numbered">---</listItem>' +
-						'<listItem indent="1" type="bulleted">---</listItem>' +
-						'<listItem indent="2" type="bulleted">---</listItem>';
+						'<paragraph listIndent="0" listType="numbered">---]</paragraph>' + // Attributes will be removed by post fixer.
+						'<listItem listIndent="0" listType="numbered">---</listItem>' +
+						'<listItem listIndent="1" listType="bulleted">---</listItem>' +
+						'<listItem listIndent="2" listType="bulleted">---</listItem>';
 
 					expect( getData( model ) ).to.equal( expectedData );
 				} );
@@ -366,14 +366,14 @@ describe( 'ListCommand', () => {
 					command.execute();
 
 					const expectedData =
-						'<listItem indent="0" type="bulleted">---</listItem>' +
-						'<listItem indent="0" type="bulleted">---</listItem>' +
+						'<listItem listIndent="0" listType="bulleted">---</listItem>' +
+						'<listItem listIndent="0" listType="bulleted">---</listItem>' +
 						'<paragraph>---</paragraph>' +
 						'<paragraph>---</paragraph>' +
-						'<listItem indent="0" type="bulleted">[---</listItem>' +
-						'<listItem indent="0" type="bulleted">---</listItem>' +
-						'<listItem indent="1" type="bulleted">]---</listItem>' +
-						'<listItem indent="2" type="bulleted">---</listItem>';
+						'<listItem listIndent="0" listType="bulleted">[---</listItem>' +
+						'<listItem listIndent="0" listType="bulleted">---</listItem>' +
+						'<listItem listIndent="1" listType="bulleted">]---</listItem>' +
+						'<listItem listIndent="2" listType="bulleted">---</listItem>';
 
 					expect( getData( model ) ).to.equal( expectedData );
 				} );
@@ -391,14 +391,14 @@ describe( 'ListCommand', () => {
 					command.execute();
 
 					const expectedData =
-						'<listItem indent="0" type="bulleted">---</listItem>' +
-						'<paragraph indent="0" type="bulleted">[---</paragraph>' + // Attributes will be removed by post fixer.
+						'<listItem listIndent="0" listType="bulleted">---</listItem>' +
+						'<paragraph listIndent="0" listType="bulleted">[---</paragraph>' + // Attributes will be removed by post fixer.
 						'<paragraph>---</paragraph>' +
 						'<paragraph>---</paragraph>' +
-						'<paragraph indent="0" type="numbered">---</paragraph>' + // Attributes will be removed by post fixer.
-						'<paragraph indent="0" type="numbered">---]</paragraph>' + // Attributes will be removed by post fixer.
-						'<listItem indent="0" type="bulleted">---</listItem>' +
-						'<listItem indent="1" type="bulleted">---</listItem>';
+						'<paragraph listIndent="0" listType="numbered">---</paragraph>' + // Attributes will be removed by post fixer.
+						'<paragraph listIndent="0" listType="numbered">---]</paragraph>' + // Attributes will be removed by post fixer.
+						'<listItem listIndent="0" listType="bulleted">---</listItem>' +
+						'<listItem listIndent="1" listType="bulleted">---</listItem>';
 
 					expect( getData( model ) ).to.equal( expectedData );
 				} );
@@ -407,19 +407,19 @@ describe( 'ListCommand', () => {
 				it( 'should change type of all items in nested list if one of items changed', () => {
 					setData(
 						model,
-						'<listItem indent="0" type="numbered">---</listItem>' +
-						'<listItem indent="1" type="numbered">---</listItem>' +
-						'<listItem indent="2" type="numbered">---</listItem>' +
-						'<listItem indent="1" type="numbered">---</listItem>' +
-						'<listItem indent="2" type="numbered">---</listItem>' +
-						'<listItem indent="2" type="numbered">-[-</listItem>' +
-						'<listItem indent="1" type="numbered">---</listItem>' +
-						'<listItem indent="1" type="numbered">---</listItem>' +
-						'<listItem indent="0" type="numbered">---</listItem>' +
-						'<listItem indent="1" type="numbered">-]-</listItem>' +
-						'<listItem indent="1" type="numbered">---</listItem>' +
-						'<listItem indent="2" type="numbered">---</listItem>' +
-						'<listItem indent="0" type="numbered">---</listItem>'
+						'<listItem listIndent="0" listType="numbered">---</listItem>' +
+						'<listItem listIndent="1" listType="numbered">---</listItem>' +
+						'<listItem listIndent="2" listType="numbered">---</listItem>' +
+						'<listItem listIndent="1" listType="numbered">---</listItem>' +
+						'<listItem listIndent="2" listType="numbered">---</listItem>' +
+						'<listItem listIndent="2" listType="numbered">-[-</listItem>' +
+						'<listItem listIndent="1" listType="numbered">---</listItem>' +
+						'<listItem listIndent="1" listType="numbered">---</listItem>' +
+						'<listItem listIndent="0" listType="numbered">---</listItem>' +
+						'<listItem listIndent="1" listType="numbered">-]-</listItem>' +
+						'<listItem listIndent="1" listType="numbered">---</listItem>' +
+						'<listItem listIndent="2" listType="numbered">---</listItem>' +
+						'<listItem listIndent="0" listType="numbered">---</listItem>'
 					);
 
 					// * ------				<-- do not fix, top level item
@@ -439,19 +439,19 @@ describe( 'ListCommand', () => {
 					command.execute();
 
 					const expectedData =
-						'<listItem indent="0" type="numbered">---</listItem>' +
-						'<listItem indent="1" type="bulleted">---</listItem>' +
-						'<listItem indent="2" type="numbered">---</listItem>' +
-						'<listItem indent="1" type="bulleted">---</listItem>' +
-						'<listItem indent="2" type="bulleted">---</listItem>' +
-						'<listItem indent="2" type="bulleted">-[-</listItem>' +
-						'<listItem indent="1" type="bulleted">---</listItem>' +
-						'<listItem indent="1" type="bulleted">---</listItem>' +
-						'<listItem indent="0" type="bulleted">---</listItem>' +
-						'<listItem indent="1" type="bulleted">-]-</listItem>' +
-						'<listItem indent="1" type="bulleted">---</listItem>' +
-						'<listItem indent="2" type="numbered">---</listItem>' +
-						'<listItem indent="0" type="numbered">---</listItem>';
+						'<listItem listIndent="0" listType="numbered">---</listItem>' +
+						'<listItem listIndent="1" listType="bulleted">---</listItem>' +
+						'<listItem listIndent="2" listType="numbered">---</listItem>' +
+						'<listItem listIndent="1" listType="bulleted">---</listItem>' +
+						'<listItem listIndent="2" listType="bulleted">---</listItem>' +
+						'<listItem listIndent="2" listType="bulleted">-[-</listItem>' +
+						'<listItem listIndent="1" listType="bulleted">---</listItem>' +
+						'<listItem listIndent="1" listType="bulleted">---</listItem>' +
+						'<listItem listIndent="0" listType="bulleted">---</listItem>' +
+						'<listItem listIndent="1" listType="bulleted">-]-</listItem>' +
+						'<listItem listIndent="1" listType="bulleted">---</listItem>' +
+						'<listItem listIndent="2" listType="numbered">---</listItem>' +
+						'<listItem listIndent="0" listType="numbered">---</listItem>';
 
 					expect( getData( model ) ).to.equal( expectedData );
 				} );

@@ -55,7 +55,7 @@ describe( 'ListUI', () => {
 	} );
 
 	it( 'should bind bulleted list button model to bulledList command', () => {
-		setData( model, '<listItem type="bulleted" indent="0">[]foo</listItem>' );
+		setData( model, '<listItem listType="bulleted" listIndent="0">[]foo</listItem>' );
 
 		const command = editor.commands.get( 'bulletedList' );
 
@@ -70,7 +70,7 @@ describe( 'ListUI', () => {
 	} );
 
 	it( 'should bind numbered list button model to numberedList command', () => {
-		setData( model, '<listItem type="bulleted" indent="0">[]foo</listItem>' );
+		setData( model, '<listItem listType="bulleted" listIndent="0">[]foo</listItem>' );
 
 		const command = editor.commands.get( 'numberedList' );
 
