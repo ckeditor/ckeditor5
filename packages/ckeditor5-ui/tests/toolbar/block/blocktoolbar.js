@@ -255,6 +255,12 @@ describe( 'BlockToolbar', () => {
 	} );
 
 	describe( 'attaching the button to the content', () => {
+		beforeEach( () => {
+			// Be sure that window is not scrolled.
+			testUtils.sinon.stub( window, 'scrollX' ).get( () => 0 );
+			testUtils.sinon.stub( window, 'scrollY' ).get( () => 0 );
+		} );
+
 		it( 'should attach the right side of the button to the left side of the editable and center with the first line ' +
 			'of the selected block #1', () => {
 			setData( editor.model, '<paragraph>foo[]bar</paragraph>' );
