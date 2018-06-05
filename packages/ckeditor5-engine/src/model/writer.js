@@ -794,8 +794,8 @@ export default class Writer {
 	 * {@link module:engine/model/markercollection~Marker marker class description} to learn about the difference between
 	 * markers managed by operations and not-managed by operations.
 	 *
-	 * The `options.affectData` parameter, which defaults to true, allows you to create marker, that doesn't affects the data model.
-	 * It impacts on performance, because changes in markers with set `options.affectData:false` don't cause firing the
+	 * The `options.affectData` parameter, which defaults to `true`, allows you to create marker, that does not affects the data model.
+	 * It impacts the performance, because changes in markers with set `options.affectData:false` do not cause firing the
 	 * {@link module:engine/model/document#change:data `change:data`} event.
 	 *
 	 * Create marker directly base on marker's name:
@@ -806,7 +806,7 @@ export default class Writer {
 	 *
 	 *		addMarker( markerName, { range, usingOperation: true } );
 	 *
-	 * Create marker that doesn't affects the data model:
+	 * Create marker that does not affects the data model:
 	 *
 	 *		addMarker( markerName, { range, usingOperation: false, affectData: false } );
 	 *
@@ -878,8 +878,8 @@ export default class Writer {
 	 * {@link module:engine/model/markercollection~Marker marker class description} to learn about the difference between
 	 * markers managed by operations and not-managed by operations. It is possible to change this option for an existing marker.
 	 *
-	 * The `options.affectData` parameter allows you to inform the engine, that this marker doesn't affects the data model.
-	 * It impacts on performance, because changes in markers with set `options.affectData:false` don't cause firing the
+	 * The `options.affectData` parameter allows you to inform the engine, that this marker does not affects the data model.
+	 * It impacts the performance, because changes in markers with set `options.affectData:false` do not cause firing the
 	 * {@link module:engine/model/document#change:data `change:data`} event.
 	 *
 	 * Update marker directly base on marker's name:
@@ -895,7 +895,7 @@ export default class Writer {
 	 *
 	 *		updateMarker( marker, { usingOperation: true } );
 	 *
-	 * Change marker's option (inform engine, that the marker doesn't affect the data model):
+	 * Change marker's option (inform engine, that the marker does not affect the data model):
 	 *
 	 *		updateMarker( markerName, { affectData: false } );
 	 *

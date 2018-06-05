@@ -20,7 +20,8 @@ export default class MarkerOperation extends Operation {
 	 * @param {module:engine/model/range~Range} newRange Marker range after the change.
 	 * @param {module:engine/model/markercollection~MarkerCollection} markers Marker collection on which change should be executed.
 	 * @param {Number|null} baseVersion Document {@link module:engine/model/document~Document#version} on which operation
-	 * @param {Boolean} affectsData Specifies whether the marker operation changes the data model.
+	 * @param {Boolean} affectsData Specifies whether the marker operation affects the data produced by the data pipeline
+	 * (is persisted in the editor's data).
 	 * can be applied or `null` if the operation operates on detached (non-document) tree.
 	 */
 	constructor( name, oldRange, newRange, markers, baseVersion, affectsData ) {
@@ -51,7 +52,8 @@ export default class MarkerOperation extends Operation {
 		this.newRange = newRange ? Range.createFromRange( newRange ) : null;
 
 		/**
-		 * Specifies whether the marker operation changes the data model.
+		 * Specifies whether the marker operation affects the data produced by the data pipeline
+		 * (is persisted in the editor's data).
 		 *
 		 * @readonly
 		 * @member {Boolean}
