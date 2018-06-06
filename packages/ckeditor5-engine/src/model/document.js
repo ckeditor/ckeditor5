@@ -152,7 +152,7 @@ export default class Document {
 			if ( !this.differ.isEmpty || hasSelectionChanged ) {
 				this._callPostFixers( writer );
 
-				if ( isBatchAffectingData( writer.batch ) || this.differ.containsMarkerAffectingData() ) {
+				if ( this.differ.willDataChange() ) {
 					this.fire( 'change:data', writer.batch );
 				} else {
 					this.fire( 'change', writer.batch );
@@ -435,17 +435,4 @@ function validateTextNodePosition( rangeBoundary ) {
 	}
 
 	return true;
-}
-
-// Checks whether given batch affects data. Batch affects data if any of its operations affects data.
-function isBatchAffectingData( batch ) {
-	for ( const operation of batch.getOperations() ) {
-		if ( operation.affectsData === false ) {
-			continue;
-		}
-
-		return true;
-	}
-
-	return false;
 }
