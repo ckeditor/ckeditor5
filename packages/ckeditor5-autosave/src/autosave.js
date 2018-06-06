@@ -52,6 +52,9 @@ export default class Autosave extends Plugin {
 		return [ PendingActions ];
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	constructor( editor ) {
 		super( editor );
 
@@ -91,6 +94,9 @@ export default class Autosave extends Plugin {
 		this._action = null;
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	init() {
 		const editor = this.editor;
 		const doc = editor.model.document;
@@ -120,6 +126,9 @@ export default class Autosave extends Plugin {
 		} );
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	destroy() {
 		const wasPendingCallCanceled = this._throttledSave.cancel();
 		if ( wasPendingCallCanceled ) {
@@ -131,6 +140,8 @@ export default class Autosave extends Plugin {
 	}
 
 	/**
+	 * Invokes remaining call (if exists) in the throttled save function.
+	 *
 	 * @protected
 	 */
 	_flush() {
@@ -199,9 +210,9 @@ export default class Autosave extends Plugin {
  */
 
 /**
- * Throttle function helper that provides ability to specify minimum time gap between calling original function.
- * Comparing to the lodash implementation, it supports getting an information if calling the throttled function will result in
- * calling the original function and whether canceling throttling will cancel some pending call.
+ * Throttle function - a helper that provides ability to specify minimum time gap between calling an original function.
+ * Comparing to the lodash implementation, this provides an information if calling the throttled function will result in
+ * calling the original function and whether canceling throttling will actually cancel some pending call.
  *
  * @private
  * @param {Function} fn Original function that will be called.
@@ -219,19 +230,19 @@ function throttle( fn, time ) {
 		// Call instantly, as the fn wasn't called within the `time` period.
 		if ( now > lastCallTime + time ) {
 			call();
-			return false;
+			return true;
 		}
 
 		// Cancel call, as the next call is scheduled.
 		if ( scheduledCall ) {
-			return true;
+			return false;
 		}
 
 		// Set timeout, so the fn will be called `time` ms after the last call.
 		scheduledCall = true;
 		window.setTimeout( call, lastCallTime + time - now, callId );
 
-		return false;
+		return true;
 	}
 
 	throttledFn.cancel = cancel;
