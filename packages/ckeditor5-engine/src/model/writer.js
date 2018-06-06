@@ -796,7 +796,7 @@ export default class Writer {
 	 *
 	 * The `options.affectData` parameter, which defaults to `true`, allows you to create marker, that does not affects the data model.
 	 * It impacts the performance, because changes in markers with set `options.affectData:false` do not cause firing the
-	 * {@link module:engine/model/document#change:data `change:data`} event.
+	 * {@link module:engine/model/document~Document#event:change:data `change:data`} event.
 	 *
 	 * Create marker directly base on marker's name:
 	 *
@@ -880,7 +880,7 @@ export default class Writer {
 	 *
 	 * The `options.affectData` parameter allows you to inform the engine, that this marker does not affects the data model.
 	 * It impacts the performance, because changes in markers with set `options.affectData:false` do not cause firing the
-	 * {@link module:engine/model/document#change:data `change:data`} event.
+	 * {@link module:engine/model/document~Document#event:change:data `change:data`} event.
 	 *
 	 * Update marker directly base on marker's name:
 	 *
