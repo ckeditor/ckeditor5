@@ -21,7 +21,7 @@ import ModelPosition from '../../src/model/position';
 import ModelRange from '../../src/model/range';
 import ModelDocumentFragment from '../../src/model/documentfragment';
 
-import { parse, getData as getModelData } from '../../src/dev-utils/model';
+import { getData as getModelData, setData as modelSetData, parse } from '../../src/dev-utils/model';
 import { getData as getViewData } from '../../src/dev-utils/view';
 
 describe( 'EditingController', () => {
@@ -338,6 +338,191 @@ describe( 'EditingController', () => {
 
 			expect( getViewData( editing.view, { withoutSelection: true } ) )
 				.to.equal( '<p></p><p>f<span>oo</span></p><p>bar</p>' );
+		} );
+	} );
+
+	describe( 'post fixers', () => {
+		describe( 'selection post fixer', () => {
+			let model, modelRoot, viewRoot, domRoot, editing;
+
+			beforeEach( () => {
+				model = new Model();
+				modelRoot = model.document.createRoot();
+
+				editing = new EditingController( model );
+
+				domRoot = document.createElement( 'div' );
+				domRoot.contentEditable = true;
+
+				document.body.appendChild( domRoot );
+
+				viewRoot = editing.view.document.getRoot();
+				editing.view.attachDomRoot( domRoot );
+
+				model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
+				model.schema.register( 'table', {
+					allowWhere: '$block',
+					isObject: true,
+					isLimit: true
+				} );
+
+				model.schema.register( 'tableRow', {
+					allowIn: 'table',
+					isLimit: true
+				} );
+
+				model.schema.register( 'tableCell', {
+					allowIn: 'tableRow',
+					allowContentOf: '$block',
+					isLimit: true
+				} );
+
+				downcastElementToElement( { model: 'paragraph', view: 'p' } )( editing.downcastDispatcher );
+				downcastElementToElement( { model: 'table', view: 'table' } )( editing.downcastDispatcher );
+				downcastElementToElement( { model: 'tableRow', view: 'tr' } )( editing.downcastDispatcher );
+				downcastElementToElement( { model: 'tableCell', view: 'td' } )( editing.downcastDispatcher );
+
+				// Note: The below code is highly overcomplicated due to #455.
+				model.change( writer => {
+					writer.setSelection( null );
+				} );
+
+				modelRoot._removeChildren( 0, modelRoot.childCount );
+
+				viewRoot._removeChildren( 0, viewRoot.childCount );
+
+				const modelData = new ModelDocumentFragment( parse(
+					'<paragraph>foo</paragraph>' +
+					'<table><tableRow><tableCell>aaa</tableCell><tableCell>bbb</tableCell></tableRow></table>' +
+					'<paragraph>bar</paragraph>',
+					model.schema
+				)._children );
+
+				model.change( writer => {
+					writer.insert( modelData, model.document.getRoot() );
+
+					writer.setSelection( ModelRange.createFromParentsAndOffsets(
+						modelRoot.getChild( 0 ), 1, modelRoot.getChild( 0 ), 1 )
+					);
+				} );
+			} );
+
+			it( 'should not crash if there is no correct position for model selection', () => {
+				modelSetData( model, '' );
+				// viewSetData( view, '' );
+
+				// const viewSelection = new ViewSelection();
+
+				// viewSelection.addRange( ViewRange.createFromParentsAndOffsets( viewRoot, 0, viewRoot, 0 ) );
+				//
+				// convertSelection( null, { newSelection: viewSelection } );
+
+				expect( getModelData( model ) ).to.equal( '[]' );
+			} );
+
+			describe( 'not collapsed selection', () => {
+				it( 'should fix #1', () => {
+					model.change( writer => {
+						writer.setSelection( ModelRange.createFromParentsAndOffsets(
+							modelRoot.getChild( 0 ), 1,
+							modelRoot.getChild( 1 ).getChild( 0 ), 1
+						) );
+					} );
+
+					expect( getViewData( editing.view ) ).to.equal(
+						'<p>f{oo</p>' +
+						'<table><tr><td>aaa</td><td>bbb</td></tr></table>]' +
+						'<p>bar</p>'
+					);
+				} );
+
+				it( 'should fix #2', () => {
+					model.change( writer => {
+						writer.setSelection( ModelRange.createFromParentsAndOffsets(
+							modelRoot.getChild( 1 ).getChild( 0 ), 1,
+							modelRoot.getChild( 2 ), 1
+						) );
+					} );
+
+					expect( getViewData( editing.view ) ).to.equal(
+						'<p>foo</p>' +
+						'[<table><tr><td>aaa</td><td>bbb</td></tr></table>' +
+						'<p>b}ar</p>'
+					);
+				} );
+
+				it( 'should fix #3', () => {
+					model.change( writer => {
+						writer.setSelection( ModelRange.createFromParentsAndOffsets(
+							modelRoot.getChild( 0 ), 1,
+							modelRoot.getChild( 1 ), 0
+						) );
+					} );
+
+					expect( getViewData( editing.view ) ).to.equal(
+						'<p>f{oo</p>' +
+						'<table><tr><td>aaa</td><td>bbb</td></tr></table>]' +
+						'<p>bar</p>'
+					);
+				} );
+
+				it( 'should fix #4', () => {
+					model.change( writer => {
+						writer.setSelection( ModelRange.createFromParentsAndOffsets(
+							modelRoot.getChild( 1 ).getChild( 0 ).getChild( 0 ), 1,
+							modelRoot.getChild( 1 ).getChild( 0 ).getChild( 1 ), 2
+						) );
+					} );
+
+					expect( getViewData( editing.view ) ).to.equal(
+						'<p>foo</p>' +
+						'[<table><tr><td>aaa</td><td>bbb</td></tr></table>]' +
+						'<p>bar</p>'
+					);
+				} );
+
+				it( 'should not fix #1', () => {
+					modelSetData( model, '' );
+
+					const modelData = new ModelDocumentFragment( parse(
+						'<paragraph>foo</paragraph>' +
+						'<table><tableRow><tableCell>aaa</tableCell><tableCell>bbb</tableCell></tableRow></table>' +
+						'<paragraph>bar</paragraph>' +
+						'<paragraph>baz</paragraph>',
+						model.schema
+					)._children );
+
+					model.change( writer => {
+						writer.insert( modelData, model.document.getRoot() );
+
+						writer.setSelection( ModelRange.createFromParentsAndOffsets(
+							modelRoot.getChild( 2 ), 1,
+							modelRoot.getChild( 3 ), 2
+						) );
+					} );
+
+					expect( getViewData( editing.view ) ).to.equal(
+						'<p>foo</p>' +
+						'<table><tr><td>aaa</td><td>bbb</td></tr></table>' +
+						'<p>b{ar</p>' +
+						'<p>ba}z</p>'
+					);
+				} );
+			} );
+
+			describe( 'collapsed selection', () => {
+				it( 'should fix #1', () => {
+					model.change( writer => {
+						writer.setSelection(
+							ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 1 ), 0, modelRoot.getChild( 1 ), 0 )
+						);
+					} );
+
+					expect( getViewData( editing.view ) ).to.equal(
+						'<p>foo{}</p><table><tr><td>aaa</td><td>bbb</td></tr></table><p>bar</p>'
+					);
+				} );
+			} );
 		} );
 	} );
 

@@ -22,6 +22,9 @@ import {
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
+import Range from '../model/range';
+import Position from '../model/position';
+
 /**
  * Controller for the editing pipeline. The editing pipeline controls {@link ~EditingController#model model} rendering,
  * including selection handling. It also creates the {@link ~EditingController#view view} which builds a
@@ -96,6 +99,28 @@ export default class EditingController {
 		this.downcastDispatcher.on( 'selection', convertRangeSelection(), { priority: 'low' } );
 		this.downcastDispatcher.on( 'selection', convertCollapsedSelection(), { priority: 'low' } );
 
+		// Add selection postfixer.
+		doc.registerPostFixer( writer => {
+			const updatedRanges = [];
+
+			let needsUpdate = false;
+
+			for ( const modelRange of selection.getRanges() ) {
+				const correctedRange = correctRange( modelRange, model.schema );
+
+				if ( correctedRange ) {
+					updatedRanges.push( correctedRange );
+					needsUpdate = true;
+				} else {
+					updatedRanges.push( modelRange );
+				}
+			}
+
+			if ( needsUpdate ) {
+				writer.setSelection( updatedRanges, { backward: selection.isBackward } );
+			}
+		} );
+
 		// Binds {@link module:engine/view/document~Document#roots view roots collection} to
 		// {@link module:engine/model/document~Document#roots model roots collection} so creating
 		// model root automatically creates corresponding view root.
@@ -126,3 +151,57 @@ export default class EditingController {
 }
 
 mix( EditingController, ObservableMixin );
+
+function correctRange( range, schema ) {
+	if ( range.isCollapsed ) {
+		// check only if position is allowed:
+		const originalPosition = range.start;
+
+		const nearestSelectionRange = schema.getNearestSelectionRange( originalPosition );
+
+		// This get empty if editor data is empty (some tests)
+		if ( !nearestSelectionRange ) {
+			return null;
+		}
+
+		const fixedPosition = nearestSelectionRange.start;
+
+		if ( !originalPosition.isEqual( fixedPosition ) ) {
+			return new Range( fixedPosition );
+		}
+
+		return null;
+	}
+
+	if ( range.isFlat || range.isCollapsed ) {
+		return null;
+	}
+
+	const start = range.start;
+	const end = range.end;
+
+	const updatedStart = ensurePositionInIsLimitBlock( start, schema, 'start' );
+	const updatedEnd = ensurePositionInIsLimitBlock( end, schema, 'end' );
+
+	if ( !start.isEqual( updatedStart ) || !end.isEqual( updatedEnd ) ) {
+		return new Range( updatedStart, updatedEnd );
+	}
+
+	return null;
+}
+
+function ensurePositionInIsLimitBlock( position, schema, where ) {
+	let parent = position.parent;
+	let node = parent;
+
+	while ( schema.isLimit( parent ) && parent.parent ) {
+		node = parent;
+		parent = parent.parent;
+	}
+
+	if ( node === parent ) {
+		return position;
+	}
+
+	return where === 'start' ? Position.createBefore( node ) : Position.createAfter( node );
+}
