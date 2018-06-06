@@ -14,7 +14,8 @@ import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 
 /**
  * Autosave plugin provides an easy-to-use API to save the editor's content.
- * It watches `Document:change`, and `Window:beforeunload` events and calls the provider's save method.
+ * It watches {module:engine/model/document~Document#event:change:data change:data}
+ * and `Window:beforeunload` events and calls the provider's save method.
  *
  * 		ClassicEditor
  *			.create( document.querySelector( '#editor' ), {
@@ -30,8 +31,7 @@ import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
  *					save() {
  *						const data = editor.getData();
  *
- *						// Note: saveEditorsContentToDatabase function should return a promise
- *						// to pending action or be sync.
+ *						// Note: saveEditorsContentToDatabase function might be async and return a promise to the saving action.
  *						return saveEditorsContentToDatabase( data );
  *					}
  *				};
