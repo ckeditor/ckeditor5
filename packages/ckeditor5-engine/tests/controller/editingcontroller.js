@@ -409,13 +409,6 @@ describe( 'EditingController', () => {
 
 			it( 'should not crash if there is no correct position for model selection', () => {
 				modelSetData( model, '' );
-				// viewSetData( view, '' );
-
-				// const viewSelection = new ViewSelection();
-
-				// viewSelection.addRange( ViewRange.createFromParentsAndOffsets( viewRoot, 0, viewRoot, 0 ) );
-				//
-				// convertSelection( null, { newSelection: viewSelection } );
 
 				expect( getModelData( model ) ).to.equal( '[]' );
 			} );
@@ -478,6 +471,34 @@ describe( 'EditingController', () => {
 						'<p>foo</p>' +
 						'[<table><tr><td>aaa</td><td>bbb</td></tr></table>]' +
 						'<p>bar</p>'
+					);
+				} );
+
+				it( 'should fix #5', () => {
+					modelSetData( model, '' );
+
+					const modelData = new ModelDocumentFragment( parse(
+						'<paragraph>foo</paragraph>' +
+						'<table><tableRow><tableCell>aaa</tableCell><tableCell>bbb</tableCell></tableRow></table>' +
+						'<table><tableRow><tableCell>xxx</tableCell><tableCell>yyy</tableCell></tableRow></table>' +
+						'<paragraph>baz</paragraph>',
+						model.schema
+					)._children );
+
+					model.change( writer => {
+						writer.insert( modelData, model.document.getRoot() );
+
+						writer.setSelection( ModelRange.createFromParentsAndOffsets(
+							modelRoot.getChild( 2 ), 0,
+							modelRoot.getChild( 2 ), 0
+						) );
+					} );
+
+					expect( getViewData( editing.view ) ).to.equal(
+						'<p>foo</p>' +
+						'[<table><tr><td>aaa</td><td>bbb</td></tr></table>]' +
+						'<table><tr><td>xxx</td><td>yyy</td></tr></table>' +
+						'<p>baz</p>'
 					);
 				} );
 

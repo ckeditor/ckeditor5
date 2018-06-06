@@ -99,9 +99,9 @@ export default class EditingController {
 		this.downcastDispatcher.on( 'selection', convertRangeSelection(), { priority: 'low' } );
 		this.downcastDispatcher.on( 'selection', convertCollapsedSelection(), { priority: 'low' } );
 
-		// Add selection postfixer.
+		// Add selection post fixer.
 		doc.registerPostFixer( writer => {
-			const updatedRanges = [];
+			const ranges = [];
 
 			let needsUpdate = false;
 
@@ -109,15 +109,15 @@ export default class EditingController {
 				const correctedRange = correctRange( modelRange, model.schema );
 
 				if ( correctedRange ) {
-					updatedRanges.push( correctedRange );
+					ranges.push( correctedRange );
 					needsUpdate = true;
 				} else {
-					updatedRanges.push( modelRange );
+					ranges.push( modelRange );
 				}
 			}
 
 			if ( needsUpdate ) {
-				writer.setSelection( updatedRanges, { backward: selection.isBackward } );
+				writer.setSelection( ranges, { backward: selection.isBackward } );
 			}
 		} );
 
@@ -167,7 +167,7 @@ function correctRange( range, schema ) {
 		const fixedPosition = nearestSelectionRange.start;
 
 		if ( !originalPosition.isEqual( fixedPosition ) ) {
-			return new Range( fixedPosition );
+			return fixSelectionOnLimitBlock( schema, fixedPosition );
 		}
 
 		return null;
@@ -204,4 +204,13 @@ function ensurePositionInIsLimitBlock( position, schema, where ) {
 	}
 
 	return where === 'start' ? Position.createBefore( node ) : Position.createAfter( node );
+}
+
+function fixSelectionOnLimitBlock( schema, fixedPosition ) {
+	// Check single node selection (happens in tables).
+	if ( fixedPosition.nodeAfter && schema.isLimit( fixedPosition.nodeAfter ) ) {
+		return new Range( fixedPosition, Position.createAfter( fixedPosition.nodeAfter ) );
+	}
+
+	return new Range( fixedPosition );
 }
