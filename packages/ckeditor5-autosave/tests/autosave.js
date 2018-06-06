@@ -172,7 +172,7 @@ describe( 'Autosave', () => {
 			} );
 		} );
 
-		it( 'should filter out change batches that don\'t change content', () => {
+		it( 'should filter out changes in the selection', () => {
 			autosave.provider = {
 				save: sandbox.spy()
 			};
@@ -185,18 +185,113 @@ describe( 'Autosave', () => {
 			sinon.assert.notCalled( autosave.provider.save );
 		} );
 
-		it.skip( 'should filter out change batches that don\'t change content #2', () => {
+		it( 'should filter out markers that does not affect the data model', () => {
 			autosave.provider = {
 				save: sandbox.spy()
 			};
 
-			const operation = { name: 'user:position' };
-			editor.model.document.fire( 'change', {
-				deltas: [ { operations: [ operation ] } ]
+			const range = ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) );
+			const range2 = ModelRange.createIn( editor.model.document.getRoot().getChild( 1 ) );
+
+			editor.model.change( writer => {
+				writer.addMarker( 'name', { usingOperation: true, affectsData: false, range } );
 			} );
 
 			autosave._flush();
+
+			editor.model.change( writer => {
+				writer.updateMarker( 'name', { range: range2 } );
+			} );
+
+			autosave._flush();
+
 			sinon.assert.notCalled( autosave.provider.save );
+		} );
+
+		it( 'should filter out markers that does not affect the data model #2', () => {
+			autosave.provider = {
+				save: sandbox.spy()
+			};
+
+			const range = ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) );
+			const range2 = ModelRange.createIn( editor.model.document.getRoot().getChild( 1 ) );
+
+			editor.model.change( writer => {
+				writer.addMarker( 'name', { usingOperation: false, affectsData: false, range } );
+			} );
+
+			autosave._flush();
+
+			editor.model.change( writer => {
+				writer.updateMarker( 'name', { range: range2 } );
+			} );
+
+			autosave._flush();
+
+			sinon.assert.notCalled( autosave.provider.save );
+		} );
+
+		it( 'should call the save method when some marker affects the data model', () => {
+			autosave.provider = {
+				save: sandbox.spy()
+			};
+
+			const range = ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) );
+			const range2 = ModelRange.createIn( editor.model.document.getRoot().getChild( 1 ) );
+
+			editor.model.change( writer => {
+				writer.addMarker( 'name', { usingOperation: true, affectsData: true, range } );
+			} );
+
+			autosave._flush();
+
+			editor.model.change( writer => {
+				writer.updateMarker( 'name', { range: range2 } );
+			} );
+
+			autosave._flush();
+
+			sinon.assert.calledTwice( autosave.provider.save );
+		} );
+
+		it( 'should call the save method when some marker affects the data model #2', () => {
+			autosave.provider = {
+				save: sandbox.spy()
+			};
+
+			const range = ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) );
+			const range2 = ModelRange.createIn( editor.model.document.getRoot().getChild( 1 ) );
+
+			editor.model.change( writer => {
+				writer.addMarker( 'name', { usingOperation: false, affectsData: true, range } );
+			} );
+
+			autosave._flush();
+			sinon.assert.calledOnce( autosave.provider.save );
+
+			editor.model.change( writer => {
+				writer.updateMarker( 'name', { range: range2 } );
+			} );
+
+			autosave._flush();
+
+			sinon.assert.calledTwice( autosave.provider.save );
+		} );
+
+		it( 'should call the save method when some marker affects the data model #3', () => {
+			autosave.provider = {
+				save: sandbox.spy()
+			};
+
+			const range = ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) );
+
+			editor.model.change( writer => {
+				writer.addMarker( 'marker-not-affecting-data', { usingOperation: false, affectsData: true, range } );
+				writer.addMarker( 'marker-affecting-data', { usingOperation: false, affectsData: false, range } );
+			} );
+
+			autosave._flush();
+			sinon.assert.calledOnce( autosave.provider.save );
 		} );
 
 		it( 'should flush remaining calls after editor\'s destroy', () => {

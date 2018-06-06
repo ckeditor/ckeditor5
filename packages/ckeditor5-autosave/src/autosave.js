@@ -158,7 +158,9 @@ export default class Autosave extends Plugin {
 	_save() {
 		const version = this.editor.model.document.version;
 
-		if ( !this.provider || version <= this._lastDocumentVersion ) {
+		// Marker's change may not produce an operation, so the document's version
+		// can be the same after that change.
+		if ( !this.provider || version < this._lastDocumentVersion ) {
 			this._removeAction();
 
 			return;
