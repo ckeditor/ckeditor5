@@ -369,11 +369,11 @@ describe( 'Marker', () => {
 
 		expect( marker.managedUsingOperations ).to.false;
 
-		marker._managedUsingOperations = true;
+		model.markers._set( 'name', range, true );
 
 		expect( marker.managedUsingOperations ).to.true;
 
-		marker._managedUsingOperations = false;
+		model.markers._set( 'name', range, false );
 
 		expect( marker.managedUsingOperations ).to.false;
 	} );
@@ -384,11 +384,11 @@ describe( 'Marker', () => {
 
 		expect( marker.affectsData ).to.false;
 
-		marker._affectsData = true;
+		model.markers._set( 'name', range, false, true );
 
 		expect( marker.affectsData ).to.true;
 
-		marker._affectsData = false;
+		model.markers._set( 'name', range, false, false );
 
 		expect( marker.affectsData ).to.false;
 	} );

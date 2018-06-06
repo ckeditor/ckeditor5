@@ -333,9 +333,17 @@ class Marker {
 		this.name = name;
 
 		/**
-		 * Flag indicates if the marker is managed using operations or not.
+		 * Range marked by the marker.
 		 *
 		 * @protected
+		 * @member {module:engine/model/liverange~LiveRange}
+		 */
+		this._liveRange = this._attachLiveRange( liveRange );
+
+		/**
+		 * Flag indicates if the marker is managed using operations or not.
+		 *
+		 * @private
 		 * @member {Boolean}
 		 */
 		this._managedUsingOperations = managedUsingOperations;
@@ -348,14 +356,6 @@ class Marker {
 		 * @member {Boolean}
 		 */
 		this._affectsData = affectsData;
-
-		/**
-		 * Range marked by the marker.
-		 *
-		 * @private
-		 * @member {module:engine/model/liverange~LiveRange}
-		 */
-		this._liveRange = this._attachLiveRange( liveRange );
 	}
 
 	/**
