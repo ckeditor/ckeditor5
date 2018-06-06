@@ -130,17 +130,14 @@ export default class Autosave extends Plugin {
 	 * @inheritDoc
 	 */
 	destroy() {
-		const wasPendingCallCanceled = this._throttledSave.cancel();
-		if ( wasPendingCallCanceled ) {
-			this._removeAction();
-		}
+		// There's no need for canceling or flushing the throttled save, as it's done on editor's destroy event with the highest priority.
 
 		this._domEmitter.stopListening();
 		super.destroy();
 	}
 
 	/**
-	 * Invokes remaining call (if exists) in the throttled save function.
+	 * Invokes remaining `_save` method call.
 	 *
 	 * @protected
 	 */
@@ -212,25 +209,27 @@ export default class Autosave extends Plugin {
  */
 
 /**
- * Throttle function - a helper that provides ability to specify minimum time gap between calling an original function.
+ * Throttle function - a helper that provides ability to specify minimum time gap between calling the original function.
  * Comparing to the lodash implementation, this provides an information if calling the throttled function will result in
- * calling the original function and whether canceling throttling will actually cancel some pending call.
+ * calling the original function.
  *
  * @private
  * @param {Function} fn Original function that will be called.
- * @param {Number} time Amount of time between calling the original function.
+ * @param {Number} wait Minimum amount of time between original function calls.
  */
-function throttle( fn, time ) {
+function throttle( fn, wait ) {
+	// Time in ms of the last call.
 	let lastCallTime = 0;
+
+	// Specifies whether there is a pending call.
 	let scheduledCall = false;
-	let callId = 0;
 
 	// @returns {Boolean} `true` if the original function was or will be called.
 	function throttledFn() {
 		const now = Date.now();
 
 		// Call instantly, as the fn wasn't called within the `time` period.
-		if ( now > lastCallTime + time ) {
+		if ( now > lastCallTime + wait ) {
 			call();
 			return true;
 		}
@@ -242,23 +241,12 @@ function throttle( fn, time ) {
 
 		// Set timeout, so the fn will be called `time` ms after the last call.
 		scheduledCall = true;
-		window.setTimeout( call, lastCallTime + time - now, callId );
+		window.setTimeout( call, lastCallTime + wait - now );
 
 		return true;
 	}
 
-	throttledFn.cancel = cancel;
 	throttledFn.flush = flush;
-
-	// @returns {Boolean} `true` if some pending call was canceled.
-	function cancel() {
-		const wasScheduledCall = scheduledCall;
-		scheduledCall = false;
-		lastCallTime = 0;
-		callId++;
-
-		return wasScheduledCall;
-	}
 
 	function flush() {
 		if ( scheduledCall ) {
@@ -267,17 +255,10 @@ function throttle( fn, time ) {
 
 		scheduledCall = false;
 		lastCallTime = 0;
-		callId++;
 	}
 
-	// Call the function if the callId variables wasn't increased in meantime.
-	// Increasing the `callId` means canceling the original call.
-	// @param {Number} [id]
-	function call( id = callId ) {
-		if ( id !== callId ) {
-			return;
-		}
-
+	// Calls the original function and updates internals.
+	function call() {
 		lastCallTime = Date.now();
 		scheduledCall = false;
 
