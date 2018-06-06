@@ -2,6 +2,10 @@
  * Copyright (c) 2016 - 2017, CKSource - Frederico Knabben. All rights reserved.
  */
 
+/**
+ * @module autosave/autosave
+ */
+
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import PendingActions from '@ckeditor/ckeditor5-core/src/pendingactions';
 import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
@@ -34,10 +38,16 @@ import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
  *			} );
  */
 export default class Autosave extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
 	static get pluginName() {
 		return 'Autosave';
 	}
 
+	/**
+	 * @inheritDoc
+	 */
 	static get requires() {
 		return [ PendingActions ];
 	}
@@ -46,7 +56,7 @@ export default class Autosave extends Plugin {
 		super( editor );
 
 		/**
-		 * @member {module:autosave/autosave~SaveProvider}
+		 * @type {module:autosave/autosave~SaveProvider}
 		 */
 		this.provider = undefined;
 
@@ -89,9 +99,9 @@ export default class Autosave extends Plugin {
 		this.listenTo( doc, 'change:data', () => {
 			this._addAction();
 
-			const isCancelled = this._throttledSave();
+			const willOriginalFunctionBeCalled = this._throttledSave();
 
-			if ( isCancelled ) {
+			if ( !willOriginalFunctionBeCalled ) {
 				this._removeAction();
 			}
 		} );
@@ -111,8 +121,8 @@ export default class Autosave extends Plugin {
 	}
 
 	destroy() {
-		const isCanceled = this._throttledSave.cancel();
-		if ( isCanceled ) {
+		const wasPendingCallCanceled = this._throttledSave.cancel();
+		if ( wasPendingCallCanceled ) {
 			this._removeAction();
 		}
 
@@ -189,20 +199,26 @@ export default class Autosave extends Plugin {
  */
 
 /**
- * @param {Number} time
+ * Throttle function helper that provides ability to specify minimum time gap between calling original function.
+ * Comparing to the lodash implementation, it supports getting an information if calling the throttled function will result in
+ * calling the original function and whether canceling throttling will cancel some pending call.
+ *
+ * @private
+ * @param {Function} fn Original function that will be called.
+ * @param {Number} time Amount of time between calling the original function.
  */
 function throttle( fn, time ) {
-	let lastCall = 0;
+	let lastCallTime = 0;
 	let scheduledCall = false;
 	let callId = 0;
 
-	// @returns {Boolean} `true` if the call is canceled.
+	// @returns {Boolean} `true` if the original function was or will be called.
 	function throttledFn() {
 		const now = Date.now();
 
 		// Call instantly, as the fn wasn't called within the `time` period.
-		if ( now > lastCall + time ) {
-			call( callId );
+		if ( now > lastCallTime + time ) {
+			call();
 			return false;
 		}
 
@@ -213,7 +229,7 @@ function throttle( fn, time ) {
 
 		// Set timeout, so the fn will be called `time` ms after the last call.
 		scheduledCall = true;
-		window.setTimeout( call, lastCall + time - now, callId );
+		window.setTimeout( call, lastCallTime + time - now, callId );
 
 		return false;
 	}
@@ -221,11 +237,11 @@ function throttle( fn, time ) {
 	throttledFn.cancel = cancel;
 	throttledFn.flush = flush;
 
-	// @returns {Boolean} `true` if the call is canceled.
+	// @returns {Boolean} `true` if some pending call was canceled.
 	function cancel() {
 		const wasScheduledCall = scheduledCall;
 		scheduledCall = false;
-		lastCall = 0;
+		lastCallTime = 0;
 		callId++;
 
 		return wasScheduledCall;
@@ -233,20 +249,23 @@ function throttle( fn, time ) {
 
 	function flush() {
 		if ( scheduledCall ) {
-			call( callId );
+			call();
 		}
 
 		scheduledCall = false;
-		lastCall = 0;
+		lastCallTime = 0;
 		callId++;
 	}
 
-	function call( id ) {
+	// Call the function if the callId variables wasn't increased in meantime.
+	// Increasing the `callId` means canceling the original call.
+	// @param {Number} [id]
+	function call( id = callId ) {
 		if ( id !== callId ) {
 			return;
 		}
 
-		lastCall = Date.now();
+		lastCallTime = Date.now();
 		scheduledCall = false;
 
 		fn();
