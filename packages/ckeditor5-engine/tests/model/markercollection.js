@@ -50,22 +50,22 @@ describe( 'MarkerCollection', () => {
 
 			expect( result ).to.equal( marker );
 			expect( marker.name ).to.equal( 'name' );
-			expect( marker.managedUsingOperations ).to.false;
-			expect( marker.affectsData ).to.true;
+			expect( marker.managedUsingOperations ).to.be.false;
+			expect( marker.affectsData ).to.be.false;
 			expect( marker.getRange().isEqual( range ) ).to.be.true;
-			sinon.assert.calledWithExactly( markers.fire, 'update:name', result, null, range, true );
+			sinon.assert.calledWithExactly( markers.fire, 'update:name', result, null, range, false );
 		} );
 
 		it( 'should create a marker marked as managed by operations', () => {
 			const marker = markers._set( 'name', range, true );
 
-			expect( marker.managedUsingOperations ).to.true;
+			expect( marker.managedUsingOperations ).to.be.true;
 		} );
 
-		it( 'should create a marker marked as not affecting the data', () => {
-			const marker = markers._set( 'name', range, false, false );
+		it( 'should create a marker marked as affecting the data', () => {
+			const marker = markers._set( 'name', range, false, true );
 
-			expect( marker.affectsData ).to.false;
+			expect( marker.affectsData ).to.be.true;
 		} );
 
 		it( 'should update marker range and fire update:<markerName> event if marker with given name was in the collection', () => {
@@ -80,7 +80,7 @@ describe( 'MarkerCollection', () => {
 			expect( result ).to.equal( marker );
 			expect( marker.getRange().isEqual( range2 ) ).to.be.true;
 
-			sinon.assert.calledWithExactly( markers.fire, 'update:name', marker, range, range2, true );
+			sinon.assert.calledWithExactly( markers.fire, 'update:name', marker, range, range2, false );
 			sinon.assert.calledOnce( marker._detachLiveRange );
 			sinon.assert.calledOnce( marker._detachLiveRange );
 		} );
@@ -97,10 +97,10 @@ describe( 'MarkerCollection', () => {
 			const result = markers._set( 'name', range, true );
 
 			expect( result ).to.equal( marker );
-			expect( marker.managedUsingOperations ).to.true;
+			expect( marker.managedUsingOperations ).to.be.true;
 			expect( marker.getRange().isEqual( range ) ).to.be.true;
 
-			sinon.assert.calledWithExactly( markers.fire, 'update:name', marker, range, range, true );
+			sinon.assert.calledWithExactly( markers.fire, 'update:name', marker, range, range, false );
 			sinon.assert.notCalled( marker._detachLiveRange );
 			sinon.assert.notCalled( marker._attachLiveRange );
 		} );
@@ -121,7 +121,7 @@ describe( 'MarkerCollection', () => {
 
 			markers._set( marker, range2 );
 
-			expect( marker.getRange().isEqual( range2 ) ).to.true;
+			expect( marker.getRange().isEqual( range2 ) ).to.be.true;
 		} );
 	} );
 
@@ -331,7 +331,7 @@ describe( 'Marker', () => {
 
 		expect( eventRange.notCalled ).to.be.true;
 		expect( eventContent.notCalled ).to.be.true;
-		expect( liveRange.detach.calledOnce ).to.true;
+		expect( liveRange.detach.calledOnce ).to.be.true;
 	} );
 
 	it( 'should reattach live range to marker', () => {
@@ -354,7 +354,7 @@ describe( 'Marker', () => {
 
 		expect( eventRange.notCalled ).to.be.true;
 		expect( eventContent.notCalled ).to.be.true;
-		expect( oldLiveRange.detach.calledOnce ).to.true;
+		expect( oldLiveRange.detach.calledOnce ).to.be.true;
 
 		newLiveRange.fire( 'change:range', null, {} );
 		newLiveRange.fire( 'change:content', null, {} );
@@ -367,29 +367,29 @@ describe( 'Marker', () => {
 		const range = Range.createFromParentsAndOffsets( root, 1, root, 2 );
 		const marker = model.markers._set( 'name', range, false );
 
-		expect( marker.managedUsingOperations ).to.false;
+		expect( marker.managedUsingOperations ).to.be.false;
 
 		model.markers._set( 'name', range, true );
 
-		expect( marker.managedUsingOperations ).to.true;
+		expect( marker.managedUsingOperations ).to.be.true;
 
 		model.markers._set( 'name', range, false );
 
-		expect( marker.managedUsingOperations ).to.false;
+		expect( marker.managedUsingOperations ).to.be.false;
 	} );
 
 	it( 'should change affectsData flag', () => {
 		const range = Range.createFromParentsAndOffsets( root, 1, root, 2 );
 		const marker = model.markers._set( 'name', range, false, false );
 
-		expect( marker.affectsData ).to.false;
+		expect( marker.affectsData ).to.be.false;
 
 		model.markers._set( 'name', range, false, true );
 
-		expect( marker.affectsData ).to.true;
+		expect( marker.affectsData ).to.be.true;
 
 		model.markers._set( 'name', range, false, false );
 
-		expect( marker.affectsData ).to.false;
+		expect( marker.affectsData ).to.be.false;
 	} );
 } );

@@ -93,7 +93,7 @@ describe( 'MarkerOperation', () => {
 		sinon.spy( model.markers, 'fire' );
 
 		model.applyOperation( wrapInDelta(
-			new MarkerOperation( 'name', range, range, model.markers, doc.version, true )
+			new MarkerOperation( 'name', range, range, model.markers, doc.version, false )
 		) );
 
 		expect( model.markers.fire.notCalled ).to.be.true;

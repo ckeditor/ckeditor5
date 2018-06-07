@@ -173,7 +173,7 @@ export default class Document {
 			if ( oldRange === null ) {
 				// If this is a new marker, add a listener that will buffer change whenever marker changes.
 				marker.on( 'change', ( evt, oldRange ) => {
-					this.differ.bufferMarkerChange( marker.name, oldRange, marker.getRange(), affectsData );
+					this.differ.bufferMarkerChange( marker.name, oldRange, marker.getRange(), marker.affectsData );
 				} );
 			}
 		} );

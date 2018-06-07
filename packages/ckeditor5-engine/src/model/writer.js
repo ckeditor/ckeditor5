@@ -818,7 +818,7 @@ export default class Writer {
 	 * @param {Boolean} options.usingOperation Flag indicating that the marker should be added by MarkerOperation.
 	 * See {@link module:engine/model/markercollection~Marker#managedUsingOperations}.
 	 * @param {module:engine/model/range~Range} options.range Marker range.
-	 * @param {Boolean} [options.affectsData=true] Flag indicating that the marker changes the data model.
+	 * @param {Boolean} [options.affectsData=false] Flag indicating that the marker changes the data model.
 	 * @returns {module:engine/model/markercollection~Marker} Marker that was set.
 	 */
 	addMarker( name, options ) {
@@ -837,7 +837,7 @@ export default class Writer {
 
 		const usingOperation = options.usingOperation;
 		const range = options.range;
-		const affectsData = options.affectsData === undefined ? true : options.affectsData;
+		const affectsData = options.affectsData === undefined ? false : options.affectsData;
 
 		if ( this.model.markers.has( name ) ) {
 			/**

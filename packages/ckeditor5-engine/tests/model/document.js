@@ -415,7 +415,7 @@ describe( 'Document', () => {
 
 			model.change( writer => {
 				const range = Range.createFromParentsAndOffsets( root, 2, root, 4 );
-				writer.addMarker( 'name', { range, usingOperation: true } );
+				writer.addMarker( 'name', { range, usingOperation: true, affectsData: true } );
 			} );
 
 			sinon.assert.calledOnce( spy );
@@ -431,7 +431,7 @@ describe( 'Document', () => {
 
 			model.change( writer => {
 				const range = Range.createFromParentsAndOffsets( root, 2, root, 4 );
-				writer.addMarker( 'name', { range, usingOperation: true, affectsData: false } );
+				writer.addMarker( 'name', { range, usingOperation: true } );
 			} );
 
 			sinon.assert.notCalled( spy );
@@ -447,7 +447,7 @@ describe( 'Document', () => {
 
 			model.change( writer => {
 				const range = Range.createFromParentsAndOffsets( root, 2, root, 4 );
-				writer.addMarker( 'name', { range, usingOperation: false } );
+				writer.addMarker( 'name', { range, usingOperation: false, affectsData: true } );
 			} );
 
 			sinon.assert.calledOnce( spy );
@@ -463,7 +463,7 @@ describe( 'Document', () => {
 
 			model.change( writer => {
 				const range = Range.createFromParentsAndOffsets( root, 2, root, 4 );
-				writer.addMarker( 'name', { range, usingOperation: false, affectsData: false } );
+				writer.addMarker( 'name', { range, usingOperation: false } );
 			} );
 
 			sinon.assert.notCalled( spy );

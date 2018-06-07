@@ -1984,16 +1984,16 @@ describe( 'Writer', () => {
 			expect( marker.managedUsingOperations ).to.be.false;
 		} );
 
-		it( 'should return marker with properly set affectsData (default to true)', () => {
+		it( 'should return marker with properly set affectsData (default to false)', () => {
 			const marker = addMarker( 'name', { range, usingOperation: false } );
 
-			expect( marker.affectsData ).to.be.true;
+			expect( marker.affectsData ).to.be.false;
 		} );
 
 		it( 'should return marker with properly set affectsData (to false)', () => {
-			const marker = addMarker( 'name', { range, usingOperation: false, affectsData: false } );
+			const marker = addMarker( 'name', { range, usingOperation: false, affectsData: true } );
 
-			expect( marker.affectsData ).to.be.false;
+			expect( marker.affectsData ).to.be.true;
 		} );
 
 		it( 'should throw when trying to update existing marker in the document marker collection', () => {
@@ -2219,16 +2219,16 @@ describe( 'Writer', () => {
 
 		it( 'should allow changing affectsData property using operations', () => {
 			addMarker( 'name', { range, usingOperation: true } );
-			updateMarker( 'name', { affectsData: false } );
+			updateMarker( 'name', { affectsData: true } );
 
 			const op1 = batch.deltas[ 0 ].operations[ 0 ];
 			const op2 = batch.deltas[ 1 ].operations[ 0 ];
 			const marker = model.markers.get( 'name' );
 
-			expect( op1.affectsData ).to.be.true;
-			expect( op2.affectsData ).to.be.false;
+			expect( op1.affectsData ).to.be.false;
+			expect( op2.affectsData ).to.be.true;
 
-			expect( marker.affectsData ).to.be.false;
+			expect( marker.affectsData ).to.be.true;
 		} );
 
 		it( 'should not change affectsData property if not provided', () => {
@@ -2244,31 +2244,31 @@ describe( 'Writer', () => {
 
 		it( 'should allow changing affectsData and usingOperation', () => {
 			addMarker( 'name', { range, usingOperation: true } );
-			updateMarker( 'name', { affectsData: false, usingOperation: false } );
+			updateMarker( 'name', { affectsData: true, usingOperation: false } );
 
 			const op1 = batch.deltas[ 0 ].operations[ 0 ];
 			const op2 = batch.deltas[ 1 ].operations[ 0 ];
 			const marker = model.markers.get( 'name' );
 
-			expect( op1.affectsData ).to.be.true;
-			expect( op2.affectsData ).to.be.false;
+			expect( op1.affectsData ).to.be.false;
+			expect( op2.affectsData ).to.be.true;
 
-			expect( marker.affectsData ).to.be.false;
+			expect( marker.affectsData ).to.be.true;
 		} );
 
 		it( 'should allow changing affectsData and usingOperation #2', () => {
 			const spy = sinon.spy();
 			model.on( 'applyOperation', spy );
 
-			addMarker( 'name', { range, usingOperation: false, affectsData: false } );
-			updateMarker( 'name', { usingOperation: true, affectsData: true } );
+			addMarker( 'name', { range, usingOperation: false, affectsData: true } );
+			updateMarker( 'name', { usingOperation: true, affectsData: false } );
 
 			const marker = model.markers.get( 'name' );
 
 			sinon.assert.calledOnce( spy );
 			expect( spy.firstCall.args[ 1 ][ 0 ].type ).to.equal( 'marker' );
 
-			expect( marker.affectsData ).to.be.true;
+			expect( marker.affectsData ).to.be.false;
 		} );
 
 		it( 'should throw when range and usingOperations were not provided', () => {
