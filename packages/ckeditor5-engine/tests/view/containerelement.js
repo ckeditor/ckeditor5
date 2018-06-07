@@ -59,5 +59,40 @@ describe( 'ContainerElement', () => {
 		it( 'should return null if element is not empty', () => {
 			expect( parse( '<container:p>foo</container:p>' ).getFillerOffset() ).to.be.null;
 		} );
+
+		// Block filler is required after the `<br>` element if the element is the last child in the container. See #1422.
+		describe( 'for <br> elements in container', () => {
+			it( 'returns null because container does not need the block filler', () => {
+				expect( parse( '<container:p>Foo.</container:p>' ).getFillerOffset() ).to.equals( null );
+			} );
+
+			it( 'returns offset of the last child which is the <br> element (1)', () => {
+				expect( parse( '<container:p><empty:br></empty:br></container:p>' ).getFillerOffset() ).to.equals( 1 );
+			} );
+
+			it( 'returns offset of the last child which is the <br> element (2)', () => {
+				expect( parse( '<container:p>Foo.<empty:br></empty:br></container:p>' ).getFillerOffset() ).to.equals( 2 );
+			} );
+
+			it( 'always returns the last <br> element in the container', () => {
+				expect( parse( '<container:p>Foo.<empty:br></empty:br><empty:br></empty:br></container:p>' ).getFillerOffset() )
+					.to.equals( 3 );
+			} );
+
+			it( 'works fine with non-empty container with multi <br> elements', () => {
+				expect( parse( '<container:p>Foo.<empty:br></empty:br>Bar.<empty:br></empty:br></container:p>' ).getFillerOffset() )
+					.to.equals( 4 );
+			} );
+
+			it( 'ignores the ui elements', () => {
+				expect( parse( '<container:p><ui:span></ui:span><empty:br></empty:br></container:p>' ).getFillerOffset() )
+					.to.equals( 2 );
+			} );
+
+			it( 'empty element must be the <br> element', () => {
+				expect( parse( '<container:p>Foo<empty:img></empty:img></container:p>' ).getFillerOffset() )
+					.to.equals( null );
+			} );
+		} );
 	} );
 } );

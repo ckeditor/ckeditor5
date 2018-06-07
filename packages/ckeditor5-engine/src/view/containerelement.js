@@ -80,7 +80,15 @@ export default class ContainerElement extends Element {
 //
 // @returns {Number|null} Block filler offset or `null` if block filler is not needed.
 function getFillerOffset() {
-	for ( const child of this.getChildren() ) {
+	const children = [ ...this.getChildren() ];
+	const lastChild = children[ this.childCount - 1 ];
+
+	// Block filler is required after a `<br>` if it's the last element in its container. See #1422.
+	if ( lastChild && lastChild.is( 'element', 'br' ) ) {
+		return this.childCount;
+	}
+
+	for ( const child of children ) {
 		// If there's any non-UI element – don't render the bogus.
 		if ( !child.is( 'uiElement' ) ) {
 			return null;
