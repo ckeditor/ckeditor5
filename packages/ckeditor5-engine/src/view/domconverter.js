@@ -948,10 +948,11 @@ export default class DomConverter {
 	 * Takes text data from native `Text` node and processes it to a correct {@link module:engine/view/text~Text view text node} data.
 	 *
 	 * Following changes are done:
+	 *
 	 * * multiple whitespaces are replaced to a single space,
-	 * * space at the beginning of the text node is removed, if it is a first text node in it's container
-	 * element or if previous text node ends by space character,
-	 * * space at the end of the text node is removed, if it is a last text node in it's container.
+	 * * space at the beginning of a text node is removed if it is the first text node in its container
+	 * element or if the previous text node ends with a space character,
+	 * * space at the end of the text node is removed, if it is the last text node in its container.
 	 *
 	 * @param {Node} node DOM text node to process.
 	 * @returns {String} Processed data.
