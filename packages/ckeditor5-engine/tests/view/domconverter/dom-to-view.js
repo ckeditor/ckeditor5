@@ -316,6 +316,77 @@ describe( 'DomConverter', () => {
 				expect( viewDiv.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foo' );
 			} );
 
+			it( 'after a <br>', () => {
+				const domP = createElement( document, 'p', {}, [
+					document.createTextNode( 'foo' ),
+					createElement( document, 'br' ),
+					document.createTextNode( ' bar' )
+				] );
+
+				const viewP = converter.domToView( domP );
+
+				expect( viewP.childCount ).to.equal( 3 );
+				expect( viewP.getChild( 2 ).data ).to.equal( 'bar' );
+			} );
+
+			it( 'after a <br> – two spaces', () => {
+				const domP = createElement( document, 'p', {}, [
+					document.createTextNode( 'foo' ),
+					createElement( document, 'br' ),
+					document.createTextNode( ' \u00a0bar' )
+				] );
+
+				const viewP = converter.domToView( domP );
+
+				expect( viewP.childCount ).to.equal( 3 );
+				expect( viewP.getChild( 2 ).data ).to.equal( ' bar' );
+			} );
+
+			// This TC ensures that the algorithm stops on <br>.
+			// If not, situations like https://github.com/ckeditor/ckeditor5/issues/1024#issuecomment-393109558 might occur.
+			it( 'after a <br> – when <br> is preceeded with a nbsp', () => {
+				const domP = createElement( document, 'p', {}, [
+					document.createTextNode( 'foo\u00a0' ),
+					createElement( document, 'br' ),
+					document.createTextNode( ' bar' )
+				] );
+
+				const viewP = converter.domToView( domP );
+
+				expect( viewP.childCount ).to.equal( 3 );
+				expect( viewP.getChild( 2 ).data ).to.equal( 'bar' );
+			} );
+
+			it( 'after a <br> – when text after that <br> is nested', () => {
+				const domP = createElement( document, 'p', {}, [
+					document.createTextNode( 'foo' ),
+					createElement( document, 'br' ),
+					createElement( document, 'b', {}, [
+						document.createTextNode( ' bar' )
+					] )
+				] );
+
+				const viewP = converter.domToView( domP );
+
+				expect( viewP.childCount ).to.equal( 3 );
+				expect( viewP.getChild( 2 ).getChild( 0 ).data ).to.equal( 'bar' );
+			} );
+
+			it( 'between <br>s - trim only the left boundary', () => {
+				const domP = createElement( document, 'p', {}, [
+					document.createTextNode( 'x' ),
+					createElement( document, 'br' ),
+					document.createTextNode( ' foo ' ),
+					createElement( document, 'br' ),
+					document.createTextNode( 'x' )
+				] );
+
+				const viewP = converter.domToView( domP );
+
+				expect( viewP.childCount ).to.equal( 5 );
+				expect( viewP.getChild( 2 ).data ).to.equal( 'foo ' );
+			} );
+
 			it( 'multiple consecutive whitespaces changed to one', () => {
 				const domDiv = createElement( document, 'div', {}, [
 					createElement( document, 'p', {}, [
@@ -519,6 +590,57 @@ describe( 'DomConverter', () => {
 				expect( viewDiv.getChild( 0 ).getChild( 1 ).childCount ).to.equal( 1 );
 
 				expect( viewDiv.getChild( 0 ).getChild( 1 ).getChild( 0 ).data ).to.equal( '\u00a0' );
+			} );
+
+			// While we render `X&nbsp;<br>X`, `X <br>X` is ok too – the space needs to be preserved.
+			it( 'not before a <br>', () => {
+				const domP = createElement( document, 'p', {}, [
+					document.createTextNode( 'foo ' ),
+					createElement( document, 'br' )
+				] );
+
+				const viewP = converter.domToView( domP );
+
+				expect( viewP.childCount ).to.equal( 2 );
+				expect( viewP.getChild( 0 ).data ).to.equal( 'foo ' );
+			} );
+
+			it( 'not before a <br> (nbsp+space)', () => {
+				const domP = createElement( document, 'p', {}, [
+					document.createTextNode( 'foo\u00a0 ' ),
+					createElement( document, 'br' )
+				] );
+
+				const viewP = converter.domToView( domP );
+
+				expect( viewP.childCount ).to.equal( 2 );
+				expect( viewP.getChild( 0 ).data ).to.equal( 'foo  ' );
+			} );
+
+			it( 'before a <br> (space+space=>space)', () => {
+				const domP = createElement( document, 'p', {}, [
+					document.createTextNode( 'foo  ' ),
+					createElement( document, 'br' )
+				] );
+
+				const viewP = converter.domToView( domP );
+
+				expect( viewP.childCount ).to.equal( 2 );
+				expect( viewP.getChild( 0 ).data ).to.equal( 'foo ' );
+			} );
+
+			it( 'not before a <br> – when text before that <br> is nested', () => {
+				const domP = createElement( document, 'p', {}, [
+					createElement( document, 'b', {}, [
+						document.createTextNode( 'foo ' )
+					] ),
+					createElement( document, 'br' )
+				] );
+
+				const viewP = converter.domToView( domP );
+
+				expect( viewP.childCount ).to.equal( 2 );
+				expect( viewP.getChild( 0 ).getChild( 0 ).data ).to.equal( 'foo ' );
 			} );
 
 			//

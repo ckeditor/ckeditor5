@@ -23,6 +23,7 @@ import indexOf from '@ckeditor/ckeditor5-utils/src/dom/indexof';
 import getAncestors from '@ckeditor/ckeditor5-utils/src/dom/getancestors';
 import getCommonAncestor from '@ckeditor/ckeditor5-utils/src/dom/getcommonancestor';
 import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
+import isElement from '@ckeditor/ckeditor5-utils/src/lib/lodash/isElement';
 
 /**
  * DomConverter is a set of tools to do transformations between DOM nodes and view nodes. It also handles
@@ -971,17 +972,20 @@ export default class DomConverter {
 		// We're replacing 1+ (and not 2+) to also normalize singular \n\t\r characters (#822).
 		data = data.replace( /[ \n\t\r]{1,}/g, ' ' );
 
-		const prevNode = this._getTouchingDomTextNode( node, false );
-		const nextNode = this._getTouchingDomTextNode( node, true );
+		const prevNode = this._getTouchingInlineDomNode( node, false );
+		const nextNode = this._getTouchingInlineDomNode( node, true );
 
-		// If previous dom text node does not exist or it ends by whitespace character, remove space character from the beginning
+		const shouldLeftTrim = this._checkShouldLeftTrimDomText( prevNode );
+		const shouldRightTrim = this._checkShouldRightTrimDomText( node, nextNode );
+
+		// If the previous dom text node does not exist or it ends by whitespace character, remove space character from the beginning
 		// of this text node. Such space character is treated as a whitespace.
-		if ( !prevNode || /[^\S\u00A0]/.test( prevNode.data.charAt( prevNode.data.length - 1 ) ) ) {
+		if ( shouldLeftTrim ) {
 			data = data.replace( /^ /, '' );
 		}
 
-		// If next text node does not exist remove space character from the end of this text node.
-		if ( !nextNode && !startsWithFiller( node ) ) {
+		// If the next text node does not exist remove space character from the end of this text node.
+		if ( shouldRightTrim ) {
 			data = data.replace( / $/, '' );
 		}
 
@@ -1002,21 +1006,54 @@ export default class DomConverter {
 		// Then, change &nbsp; character that is at the beginning of the text node to space character.
 		// As above, that &nbsp; was created for rendering reasons but it's real meaning is just a space character.
 		// We do that replacement only if this is the first node or the previous node ends on whitespace character.
-		if ( !prevNode || /[^\S\u00A0]/.test( prevNode.data.charAt( prevNode.data.length - 1 ) ) ) {
+		if ( shouldLeftTrim ) {
 			data = data.replace( /^\u00A0/, ' ' );
 		}
 
 		// Since input text data could be: `x_ _`, we would not replace the first &nbsp; after `x` character.
 		// We have to fix it. Since we already change all ` &nbsp;`, we will have something like this at the end of text data:
 		// `x_ _ _` -> `x_    `. Find &nbsp; at the end of string (can be followed only by spaces).
-		// We do that replacement only if this is the last node or the next node starts by &nbsp;.
-		if ( !nextNode || nextNode.data.charAt( 0 ) == '\u00A0' ) {
+		// We do that replacement only if this is the last node or the next node starts with &nbsp; or is a <br>.
+		if ( isText( nextNode ) ? nextNode.data.charAt( 0 ) == '\u00A0' : true ) {
 			data = data.replace( /\u00A0( *)$/, ' $1' );
 		}
 
 		// At this point, all whitespaces should be removed and all &nbsp; created for rendering reasons should be
 		// changed to normal space. All left &nbsp; are &nbsp; inserted intentionally.
 		return data;
+	}
+
+	/**
+	 * Helper function which checks if a DOM text node, preceded by the given `prevNode` should
+	 * be trimmed from the left side.
+	 *
+	 * @param {Node} prevNode
+	 */
+	_checkShouldLeftTrimDomText( prevNode ) {
+		if ( !prevNode ) {
+			return true;
+		}
+
+		if ( isElement( prevNode ) ) {
+			return true;
+		}
+
+		return /[^\S\u00A0]/.test( prevNode.data.charAt( prevNode.data.length - 1 ) );
+	}
+
+	/**
+	 * Helper function which checks if a DOM text node, succeeded by the given `nextNode` should
+	 * be trimmed from the right side.
+	 *
+	 * @param {Node} node
+	 * @param {Node} prevNode
+	 */
+	_checkShouldRightTrimDomText( node, nextNode ) {
+		if ( nextNode ) {
+			return false;
+		}
+
+		return !startsWithFiller( node );
 	}
 
 	/**
@@ -1053,15 +1090,27 @@ export default class DomConverter {
 	}
 
 	/**
-	 * Helper function. For given `Text` node, it finds previous or next sibling that is contained in the same block element.
-	 * If there is no such sibling, `null` is returned.
+	 * Helper function. For the given text node, it finds the closest touching node which is either
+	 * a text node or a `<br>`. The search is terminated at block element boundaries and if a matching node
+	 * wasn't found so far, `null` is returned.
+	 *
+	 * In the following DOM structure:
+	 *
+	 *		<p>foo<b>bar</b><br>bom</p>
+	 *
+	 * * `foo` doesn't have its previous touching inline node (`null` is returned),
+	 * * `foo`'s next touching inline node is `bar`
+	 * * `bar`'s next touching inline node is `<br>`
+	 *
+	 * This method returns text nodes and `<br>` elements because these types of nodes affect how
+	 * spaces in the given text node need to be converted.
 	 *
 	 * @private
 	 * @param {Text} node
 	 * @param {Boolean} getNext
-	 * @returns {Text|null}
+	 * @returns {Text|Element|null}
 	 */
-	_getTouchingDomTextNode( node, getNext ) {
+	_getTouchingInlineDomNode( node, getNext ) {
 		if ( !node.parentNode ) {
 			return null;
 		}
@@ -1070,7 +1119,19 @@ export default class DomConverter {
 		const document = node.ownerDocument;
 		const topmostParent = getAncestors( node )[ 0 ];
 
-		const treeWalker = document.createTreeWalker( topmostParent, NodeFilter.SHOW_TEXT );
+		const treeWalker = document.createTreeWalker( topmostParent, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT, {
+			acceptNode( node ) {
+				if ( isText( node ) ) {
+					return NodeFilter.FILTER_ACCEPT;
+				}
+
+				if ( node.tagName == 'BR' ) {
+					return NodeFilter.FILTER_ACCEPT;
+				}
+
+				return NodeFilter.FILTER_SKIP;
+			}
+		} );
 
 		treeWalker.currentNode = node;
 
