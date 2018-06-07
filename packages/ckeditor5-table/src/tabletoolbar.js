@@ -10,7 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ToolbarView from '@ckeditor/ckeditor5-ui/src/toolbar/toolbarview';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
-import { isTableWidgetSelected } from './utils';
+import { isTableWidgetSelected, isTableContentSelected } from './utils';
 import { repositionContextualBalloon, getBalloonPositionData } from './ui/utils';
 
 const balloonClassName = 'ck-toolbar-container';
@@ -112,7 +112,9 @@ export default class TableToolbar extends Plugin {
 		if ( !editor.ui.focusTracker.isFocused ) {
 			this._hideToolbar();
 		} else {
-			if ( isTableWidgetSelected( editor.editing.view.document.selection ) ) {
+			const viewSeleciton = editor.editing.view.document.selection;
+
+			if ( isTableWidgetSelected( viewSeleciton ) || isTableContentSelected( viewSeleciton ) ) {
 				this._showToolbar();
 			} else {
 				this._hideToolbar();
