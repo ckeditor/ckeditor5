@@ -83,7 +83,7 @@ function getFillerOffset() {
 	const children = [ ...this.getChildren() ];
 	const lastChild = children[ this.childCount - 1 ];
 
-	// Block filler is required after the `<br>` element if the element is the last child in the container. See #1422.
+	// Block filler is required after a `<br>` if it's the last element in its container. See #1422.
 	if ( lastChild && lastChild.is( 'element', 'br' ) ) {
 		return this.childCount;
 	}
