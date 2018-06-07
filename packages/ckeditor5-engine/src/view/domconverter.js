@@ -1034,12 +1034,17 @@ export default class DomConverter {
 		} );
 
 		for ( const value of treeWalker ) {
+			// ViewContainerElement is found on a way to next ViewText node, so given `node` was first/last
+			// text node in its container element.
 			if ( value.item.is( 'containerElement' ) ) {
-				// ViewContainerElement is found on a way to next ViewText node, so given `node` was first/last
-				// text node in its container element.
 				return null;
-			} else if ( value.item.is( 'textProxy' ) ) {
-				// Found a text node in the same container element.
+			}
+			// <br> found – it works like a block boundary, so do not scan further.
+			else if ( value.item.is( 'br' ) ) {
+				return null;
+			}
+			// Found a text node in the same container element.
+			else if ( value.item.is( 'textProxy' ) ) {
 				return value.item;
 			}
 		}
