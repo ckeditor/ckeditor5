@@ -100,7 +100,9 @@ export default class EditingController {
 		this.downcastDispatcher.on( 'selection', convertCollapsedSelection(), { priority: 'low' } );
 
 		// Add selection post fixer.
-		doc.registerPostFixer( writer => {
+		doc.registerPostFixer( selectionPostFixer );
+
+		function selectionPostFixer( writer ) {
 			const ranges = [];
 
 			let needsUpdate = false;
@@ -116,10 +118,15 @@ export default class EditingController {
 				}
 			}
 
+			// If any of ranges were corrected update the selection.
 			if ( needsUpdate ) {
-				writer.setSelection( ranges, { backward: selection.isBackward } );
+				// The above algorithm might create ranges that intersects each other when selection contains more then one range.
+				// This is case happens mostly on Firefox which creates multiple ranges for selected table.
+				const safeRange = combineRanges( ranges );
+
+				writer.setSelection( safeRange, { backward: selection.isBackward } );
 			}
-		} );
+		}
 
 		// Binds {@link module:engine/view/document~Document#roots view roots collection} to
 		// {@link module:engine/model/document~Document#roots model roots collection} so creating
@@ -213,4 +220,42 @@ function fixSelectionOnLimitBlock( schema, fixedPosition ) {
 	}
 
 	return new Range( fixedPosition );
+}
+
+function combineRanges( ranges ) {
+	const combined = [];
+
+	let previousRange;
+
+	for ( let i = 0; i < ranges.length; i++ ) {
+		const range = ranges[ i ];
+
+		if ( !previousRange ) {
+			previousRange = range;
+			combined.push( previousRange );
+			continue;
+		}
+
+		// Do not push same ranges (ie might be created in a table)
+		if ( range.isEqual( previousRange ) ) {
+			continue;
+		}
+
+		if ( range.isIntersecting( previousRange ) ) {
+			const newStart = previousRange.start.isBefore( range.start ) ? previousRange.start : range.start;
+			const newEnd = range.end.isAfter( previousRange.end ) ? range.end : previousRange.end;
+			const newRange = new Range( newStart, newEnd );
+
+			combined.splice( combined.indexOf( previousRange ), 1, newRange );
+
+			previousRange = newRange;
+
+			continue;
+		}
+
+		previousRange = range;
+		combined.push( range );
+	}
+
+	return combined;
 }

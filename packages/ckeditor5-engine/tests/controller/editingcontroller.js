@@ -529,6 +529,97 @@ describe( 'EditingController', () => {
 						'<p>ba}z</p>'
 					);
 				} );
+
+				it( 'should fix multiple ranges #1', () => {
+					model.change( writer => {
+						const ranges = [
+							new ModelRange( new ModelPosition( modelRoot, [ 0, 1 ] ), new ModelPosition( modelRoot, [ 1, 0 ] ) ),
+							new ModelRange( new ModelPosition( modelRoot, [ 1, 0, 0, 0 ] ), new ModelPosition( modelRoot, [ 1, 1 ] ) )
+						];
+						writer.setSelection( ranges );
+					} );
+
+					expect( getViewData( editing.view ) ).to.equal(
+						'<p>f{oo</p>' +
+						'<table><tr><td>aaa</td><td>bbb</td></tr></table>]' +
+						'<p>bar</p>'
+					);
+				} );
+
+				it( 'should fix multiple ranges #2', () => {
+					model.change( writer => {
+						const ranges = [
+							new ModelRange( new ModelPosition( modelRoot, [ 0, 1 ] ), new ModelPosition( modelRoot, [ 1, 0 ] ) ),
+							new ModelRange( new ModelPosition( modelRoot, [ 1, 0, 0, 0 ] ), new ModelPosition( modelRoot, [ 2, 2 ] ) )
+						];
+
+						writer.setSelection( ranges );
+					} );
+
+					expect( getViewData( editing.view ) ).to.equal(
+						'<p>f{oo</p>' +
+						'<table><tr><td>aaa</td><td>bbb</td></tr></table>' +
+						'<p>ba}r</p>'
+					);
+				} );
+
+				it( 'should fix multiple ranges #3', () => {
+					modelSetData( model, '' );
+
+					const modelData = new ModelDocumentFragment( parse(
+						'<paragraph>foo</paragraph>' +
+						'<table>' +
+						'<tableRow><tableCell>aaa</tableCell><tableCell>bbb</tableCell></tableRow>' +
+						'<tableRow><tableCell>aaa</tableCell><tableCell>bbb</tableCell></tableRow>' +
+						'<tableRow><tableCell>aaa</tableCell><tableCell>bbb</tableCell></tableRow>' +
+						'<tableRow><tableCell>aaa</tableCell><tableCell>bbb</tableCell></tableRow>' +
+						'</table>' +
+						'<paragraph>baz</paragraph>',
+						model.schema
+					)._children );
+
+					model.change( writer => {
+						writer.insert( modelData, model.document.getRoot() );
+
+						const ranges = [
+							new ModelRange( new ModelPosition( modelRoot, [ 1, 0, 0, 0 ] ), new ModelPosition( modelRoot, [ 1, 1 ] ) ),
+							new ModelRange( new ModelPosition( modelRoot, [ 1, 1, 0, 0 ] ), new ModelPosition( modelRoot, [ 1, 2 ] ) ),
+							new ModelRange( new ModelPosition( modelRoot, [ 1, 2, 0, 0 ] ), new ModelPosition( modelRoot, [ 1, 3 ] ) ),
+							new ModelRange( new ModelPosition( modelRoot, [ 1, 3, 0, 0 ] ), new ModelPosition( modelRoot, [ 2, 1 ] ) )
+						];
+
+						writer.setSelection( ranges );
+					} );
+
+					expect( getViewData( editing.view ) ).to.equal(
+						'<p>foo</p>' +
+						'[<table>' +
+						'<tr><td>aaa</td><td>bbb</td></tr>' +
+						'<tr><td>aaa</td><td>bbb</td></tr>' +
+						'<tr><td>aaa</td><td>bbb</td></tr>' +
+						'<tr><td>aaa</td><td>bbb</td></tr>' +
+						'</table>' +
+						'<p>b}az</p>'
+					);
+				} );
+
+				it( 'should fix multiple ranges #4', () => {
+					model.change( writer => {
+						const ranges = [
+							new ModelRange( new ModelPosition( modelRoot, [ 0, 1 ] ), new ModelPosition( modelRoot, [ 1, 0 ] ) ),
+							new ModelRange( new ModelPosition( modelRoot, [ 1, 0, 0, 0 ] ), new ModelPosition( modelRoot, [ 2, 1 ] ) ),
+							new ModelRange( new ModelPosition( modelRoot, [ 2, 2 ] ), new ModelPosition( modelRoot, [ 2, 3 ] ) )
+						];
+
+						writer.setSelection( ranges );
+					} );
+
+					expect( getViewData( editing.view ) ).to.equal(
+						'<p>f{oo</p>' +
+						'<table><tr><td>aaa</td><td>bbb</td></tr></table>' +
+						'<p>b}a{r}</p>'
+					);
+				} );
 			} );
 
 			describe( 'collapsed selection', () => {
@@ -543,6 +634,10 @@ describe( 'EditingController', () => {
 						'<p>foo{}</p><table><tr><td>aaa</td><td>bbb</td></tr></table><p>bar</p>'
 					);
 				} );
+			} );
+
+			afterEach( () => {
+				editing.destroy();
 			} );
 		} );
 	} );
