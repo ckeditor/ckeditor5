@@ -194,7 +194,7 @@ describe( 'Autosave', () => {
 			const range2 = ModelRange.createIn( editor.model.document.getRoot().getChild( 1 ) );
 
 			editor.model.change( writer => {
-				writer.addMarker( 'name', { usingOperation: true, affectsData: false, range } );
+				writer.addMarker( 'name', { usingOperation: true, range } );
 			} );
 
 			autosave._flush();
@@ -217,7 +217,7 @@ describe( 'Autosave', () => {
 			const range2 = ModelRange.createIn( editor.model.document.getRoot().getChild( 1 ) );
 
 			editor.model.change( writer => {
-				writer.addMarker( 'name', { usingOperation: false, affectsData: false, range } );
+				writer.addMarker( 'name', { usingOperation: false, range } );
 			} );
 
 			autosave._flush();
