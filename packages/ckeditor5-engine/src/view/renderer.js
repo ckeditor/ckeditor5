@@ -697,21 +697,27 @@ export default class Renderer {
 		}
 
 		let newActions = [];
+		let skipActions = [];
 		let actualSlice = [];
 		let expectedSlice = [];
 
 		const counter = { equal: 0, insert: 0, delete: 0 };
 		for ( const action of actions ) {
 			if ( action === 'insert' ) {
+				skipActions.push( 'insert' );
 				expectedSlice.push( expectedDom[ counter.equal + counter.insert ] );
 			} else if ( action === 'delete' ) {
+				skipActions.push( 'delete' );
 				actualSlice.push( actualDom[ counter.equal + counter.delete ] );
 			} else { // equal
 				if ( expectedSlice.length && actualSlice.length ) {
 					newActions = newActions.concat( calculateReplaceActions( actualSlice, expectedSlice ) );
+				} else if ( expectedSlice.length || actualSlice.length ) {
+					newActions = newActions.concat( skipActions );
 				}
 				newActions.push( 'equal' );
 				// Reset stored elements on 'equal'.
+				skipActions = [];
 				actualSlice = [];
 				expectedSlice = [];
 			}
