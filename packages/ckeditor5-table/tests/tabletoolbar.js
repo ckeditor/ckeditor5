@@ -118,6 +118,12 @@ describe( 'TableToolbar', () => {
 		} );
 
 		it( 'should show the toolbar on render when the table is selected', () => {
+			setData( model, '<paragraph>foo</paragraph>[<table><tableRow><tableCell></tableCell></tableRow></table>]' );
+
+			expect( balloon.visibleView ).to.equal( toolbar );
+		} );
+
+		it( 'should show the toolbar on render when the table content is selected', () => {
 			setData( model, '<paragraph>[foo]</paragraph><table><tableRow><tableCell></tableCell></tableRow></table>' );
 
 			expect( balloon.visibleView ).to.be.null;
@@ -126,7 +132,7 @@ describe( 'TableToolbar', () => {
 			expect( balloon.visibleView ).to.be.null;
 
 			model.change( writer => {
-				// Select the [<table></table>]
+				// Select the [<tableCell></tableCell>]
 				writer.setSelection(
 					Range.createOn( doc.getRoot().getChild( 1 ).getChild( 0 ).getChild( 0 ) )
 				);
@@ -141,13 +147,20 @@ describe( 'TableToolbar', () => {
 		} );
 
 		it( 'should not engage when the toolbar is in the balloon yet invisible', () => {
-			setData( model, '<table><tableRow><tableCell>[]</tableCell></tableRow></table>' );
+			setData( model, '<table><tableRow><tableCell>x[y]z</tableCell></tableRow></table>' );
 			expect( balloon.visibleView ).to.equal( toolbar );
 
+			// Put anything on top of the ContextualBalloon stack above the table toolbar.
 			const lastView = new View();
 			lastView.element = document.createElement( 'div' );
 
-			balloon.add( { view: lastView } );
+			balloon.add( {
+				view: lastView,
+				position: {
+					target: document.body
+				}
+			} );
+
 			expect( balloon.visibleView ).to.equal( lastView );
 
 			editingView.change( () => {} );

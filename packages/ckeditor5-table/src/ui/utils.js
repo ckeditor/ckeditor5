@@ -9,6 +9,7 @@
 
 import BalloonPanelView from '@ckeditor/ckeditor5-ui/src/panel/balloon/balloonpanelview';
 import { getParentTable } from '../commands/utils';
+import { isTableWidgetSelected } from '../utils';
 
 /**
  * A helper utility that positions the
@@ -34,8 +35,14 @@ export function repositionContextualBalloon( editor ) {
 export function getBalloonPositionData( editor ) {
 	const editingView = editor.editing.view;
 	const defaultPositions = BalloonPanelView.defaultPositions;
+	const viewSelection = editingView.document.selection;
+	let parentTable;
 
-	const parentTable = getParentTable( editingView.document.selection.getFirstPosition() );
+	if ( isTableWidgetSelected( viewSelection ) ) {
+		parentTable = viewSelection.getSelectedElement();
+	} else {
+		parentTable = getParentTable( viewSelection.getFirstPosition() );
+	}
 
 	return {
 		target: editingView.domConverter.viewToDom( parentTable ),

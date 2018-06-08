@@ -10,7 +10,7 @@
 import { toWidget, isWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 import { getParentTable } from './commands/utils';
 
-const tableSymbol = Symbol( 'isImage' );
+const tableSymbol = Symbol( 'isTable' );
 
 /**
  * Converts a given {@link module:engine/view/element~Element} to a table widget:
@@ -45,6 +45,18 @@ export function isTableWidget( viewElement ) {
  * @returns {Boolean}
  */
 export function isTableWidgetSelected( selection ) {
+	const viewElement = selection.getSelectedElement();
+
+	return !!( viewElement && isTableWidget( viewElement ) );
+}
+
+/**
+ * Checks if a table widget content is selected.
+ *
+ * @param {module:engine/view/selection~Selection|module:engine/view/documentselection~DocumentSelection} selection
+ * @returns {Boolean}
+ */
+export function isTableContentSelected( selection ) {
 	const parentTable = getParentTable( selection.getFirstPosition() );
 
 	return !!( parentTable && isTableWidget( parentTable ) );

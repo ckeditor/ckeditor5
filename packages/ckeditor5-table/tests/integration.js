@@ -46,21 +46,27 @@ describe( 'TableToolbar integration', () => {
 			return newEditor.destroy();
 		} );
 
-		it( 'should prevent the BalloonToolbar from being displayed when an table is selected', () => {
-			// When table is selected along with text.
+		it( 'should allow the BalloonToolbar to be displayed when a table is selected with surrounding text', () => {
 			setModelData( newEditor.model, '<paragraph>fo[o</paragraph><table><tableRow><tableCell></tableCell></tableRow></table>]' );
 
 			balloonToolbar.show();
 
-			// BalloonToolbar should be visible.
 			expect( balloon.visibleView ).to.equal( balloonToolbar.toolbarView );
+		} );
 
-			// When only table is selected.
-			setModelData( newEditor.model, '<paragraph>foo</paragraph><table><tableRow><tableCell>[]</tableCell></tableRow></table>' );
+		it( 'should allow the BalloonToolbar to be displayed when a table content is selected', () => {
+			setModelData( newEditor.model, '<paragraph>foo</paragraph><table><tableRow><tableCell>x[y]z</tableCell></tableRow></table>' );
 
 			balloonToolbar.show();
 
-			// BalloonToolbar should not be visible.
+			expect( balloon.visibleView ).to.equal( balloonToolbar.toolbarView );
+		} );
+
+		it( 'should prevent the BalloonToolbar from being displayed when a table is selected as whole', () => {
+			setModelData( newEditor.model, '<paragraph>foo</paragraph>[<table><tableRow><tableCell>foo</tableCell></tableRow></table>]' );
+
+			balloonToolbar.show();
+
 			expect( balloon.visibleView ).to.be.null;
 		} );
 
@@ -70,7 +76,7 @@ describe( 'TableToolbar integration', () => {
 			const normalPrioritySpy = sinon.spy();
 
 			// Select an table
-			setModelData( newEditor.model, '<paragraph>foo</paragraph><table><tableRow><tableCell>[]</tableCell></tableRow></table>' );
+			setModelData( newEditor.model, '<paragraph>foo</paragraph>[<table><tableRow><tableCell>x</tableCell></tableRow></table>]' );
 
 			newEditor.listenTo( balloonToolbar, 'show', highestPrioritySpy, { priority: 'highest' } );
 			newEditor.listenTo( balloonToolbar, 'show', highPrioritySpy, { priority: 'high' } );
