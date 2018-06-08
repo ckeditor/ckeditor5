@@ -59,17 +59,25 @@ export default class Autosave extends Plugin {
 		super( editor );
 
 		/**
+		 * Provider is an object with the `save()` method. That method will be called whenever
+		 * the model's data changes. It might be called some time after the change,
+		 * since the event is throttled for performance reasons.
+		 *
 		 * @type {module:autosave/autosave~SaveProvider}
 		 */
 		this.provider = undefined;
 
 		/**
+		 * Throttled save method.
+		 *
 		 * @protected
 		 * @type {Function}
 		 */
 		this._throttledSave = throttle( this._save.bind( this ), 500 );
 
 		/**
+		 * Last document version.
+		 *
 		 * @protected
 		 * @type {Number}
 		 */
@@ -82,12 +90,16 @@ export default class Autosave extends Plugin {
 		this._domEmitter = Object.create( DomEmitterMixin );
 
 		/**
+		 * Save action counter monitors number of actions.
+		 *
 		 * @private
 		 * @type {Number}
 		 */
 		this._saveActionCounter = 0;
 
 		/**
+		 * An action that will be added to pending action manager for actions happening in that plugin.
+		 *
 		 * @private
 		 * @type {Object|null}
 		 */
@@ -130,7 +142,8 @@ export default class Autosave extends Plugin {
 	 * @inheritDoc
 	 */
 	destroy() {
-		// There's no need for canceling or flushing the throttled save, as it's done on editor's destroy event with the highest priority.
+		// There's no need for canceling or flushing the throttled save, as
+		// it's done on the editor's destroy event with the highest priority.
 
 		this._domEmitter.stopListening();
 		super.destroy();
@@ -177,9 +190,9 @@ export default class Autosave extends Plugin {
 	_addAction() {
 		this._saveActionCounter++;
 
-		if ( !this.action ) {
+		if ( !this._action ) {
 			const pendingActions = this.editor.plugins.get( PendingActions );
-			this.action = pendingActions.add( 'Saving in progress.' );
+			this._action = pendingActions.add( 'Saving in progress.' );
 		}
 	}
 
@@ -191,8 +204,8 @@ export default class Autosave extends Plugin {
 
 		if ( this._saveActionCounter === 0 ) {
 			const pendingActions = this.editor.plugins.get( PendingActions );
-			pendingActions.remove( this.action );
-			this.action = null;
+			pendingActions.remove( this._action );
+			this._action = null;
 		}
 	}
 }
@@ -202,7 +215,8 @@ export default class Autosave extends Plugin {
  */
 
 /**
- * Method that will be called when the data model changes.
+ * Method that will be called when the data model changes. It might return a promise (e.g. in case of saving content to the database),
+ * so the `Autosave` plugin will wait for that action before removing it from the pending actions.
  *
  * @method #save
  * @returns {Promise.<*>|undefined}
