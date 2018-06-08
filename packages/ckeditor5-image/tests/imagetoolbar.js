@@ -147,7 +147,13 @@ describe( 'ImageToolbar', () => {
 			const lastView = new View();
 			lastView.element = document.createElement( 'div' );
 
-			balloon.add( { view: lastView } );
+			balloon.add( {
+				view: lastView,
+				position: {
+					target: document.body
+				}
+			} );
+
 			expect( balloon.visibleView ).to.equal( lastView );
 
 			editingView.change( () => {} );
