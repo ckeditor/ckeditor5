@@ -6,6 +6,7 @@
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import ShiftEnter from '../src/shiftenter';
 import ShiftEnterCommand from '../src/shiftentercommand';
+import EnterObserver from '../src/enterobserver';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 
 describe( 'ShiftEnter feature', () => {
@@ -24,6 +25,12 @@ describe( 'ShiftEnter feature', () => {
 
 	it( 'creates the commands', () => {
 		expect( editor.commands.get( 'shiftEnter' ) ).to.be.instanceof( ShiftEnterCommand );
+	} );
+
+	it( 'registers the EnterObserver', () => {
+		const observer = editor.editing.view.getObserver( EnterObserver );
+
+		expect( observer ).to.be.an.instanceOf( EnterObserver );
 	} );
 
 	it( 'listens to the editing view enter event', () => {

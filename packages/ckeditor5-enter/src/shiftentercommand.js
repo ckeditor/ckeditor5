@@ -37,6 +37,7 @@ export default class ShiftEnterCommand extends Command {
 // @param {module:engine/model/schema~Schema} schema
 // @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
 function isEnabled( schema, selection ) {
+	// At this moment is okay with support single range selection but in the future we will need to change that.
 	if ( selection.rangeCount > 1 ) {
 		return false;
 	}
@@ -52,8 +53,8 @@ function isEnabled( schema, selection ) {
 	const startElement = range.start.parent;
 	const endElement = range.end.parent;
 
-	// If the selection contains at least two elements and one of them is the limit element, the soft enter shouldn't be enabled.
-	if ( ( schema.isLimit( startElement ) || schema.isLimit( endElement ) ) && startElement !== endElement ) {
+	// Do not modify the content if selection is cross-limit elements.
+	if ( ( isInsideLimitElement( startElement, schema ) || isInsideLimitElement( endElement, schema ) ) && startElement !== endElement ) {
 		return false;
 	}
 
@@ -97,4 +98,22 @@ function insertBreak( writer, position ) {
 
 	writer.insert( breakLineElement, position );
 	writer.setSelection( breakLineElement, 'after' );
+}
+
+// Checks whether specified `element` is a children of limit element.
+//
+// Checking whether the `<p>` element is inside a limit element:
+//   - <$root><p>Text.</p></$root> => false
+//   - <$root><limitElement><p>Text</p></limitElement></$root> => true
+//
+// @param {module:engine/model/element~Element} element
+// @param {module:engine/schema~Schema} schema
+// @returns {Boolean}
+function isInsideLimitElement( element, schema ) {
+	// `$root` is a limit element but in this case is an invalid element.
+	if ( element.is( 'rootElement') ) {
+		return false;
+	}
+
+	return schema.isLimit( element ) || isInsideLimitElement( element.parent, schema );
 }

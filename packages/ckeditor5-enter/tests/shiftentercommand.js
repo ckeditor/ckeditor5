@@ -215,4 +215,94 @@ describe( 'ShiftEnterCommand', () => {
 			} );
 		}
 	} );
+
+	describe( '#isEnabled', () => {
+		test( 'should be disabled if $text cannot be inserted into element',
+			'<img>[]</img>',
+			false
+		);
+
+		test( 'should be enabled for collapsed selection in $root',
+			'Foo.',
+			true
+		);
+
+		test( 'should be enabled for collapsed selection in paragraph',
+			'<p>Foo.[]</p>',
+			true
+		);
+
+		test( 'should be enabled for collapsed selection in heading',
+			'<h>Foo.[]</h>',
+			true
+		);
+
+		test( 'should be enabled for collapsed selection in inline limit element',
+			'<p><inlineLimit>Foo.[]</inlineLimit></p>',
+			true
+		);
+
+		test( 'should be enabled for non-collapsed selection in inline limit element',
+			'<p><inlineLimit>[Foo.]</inlineLimit></p>',
+			true
+		);
+
+		test( 'should be enabled for collapsed selection in paragraph which is wrapped in the block limit element',
+			'<blockLimit><p>Foo.[]</p></blockLimit>',
+			true
+		);
+
+		test( 'should be enabled for non-collapsed selection in paragraph which is wrapped in the block limit element',
+			'<blockLimit><p>F[oo.]</p></blockLimit>',
+			true
+		);
+
+		test( 'should be enabled for non-collapsed selection in paragraphs',
+			'<p>[Foo.</p><p>Bar.]</p>',
+			true
+		);
+
+		test( 'should be enabled for non-collapsed selection in headings',
+			'<h>[Foo.</h><h>Bar.]</h>',
+			true
+		);
+
+		test( 'should be disabled for non-collapsed selection which starts in the inline limit element',
+			'<p><inlineLimit>F[oo.</inlineLimit>B]ar.</p>',
+			false
+		);
+
+		test( 'should be disabled for non-collapsed selection which end in the inline limit element',
+			'<p>F[oo<inlineLimit>Bar].</inlineLimit></p>',
+			false
+		);
+
+		test( 'should be disabled for non-collapsed selection which starts in element inside the block limit element',
+			'<blockLimit><p>F[oo.</p></blockLimit><p>B]ar.</p>',
+			false
+		);
+
+		test( 'should be disabled for non-collapsed selection which ends in element inside the block limit element',
+			'<p>Fo[o.</p><blockLimit><p>Bar].</p></blockLimit>',
+			false
+		);
+
+		test( 'should be disabled for multi-ranges selection (1)',
+			'<p>[x]</p><p>[foo]</p>',
+			false
+		);
+
+		test( 'should be disabled for multi-ranges selection (2)',
+			'<p>[]x</p><p>[]foo</p>',
+			false
+		);
+
+		function test( title, input, output ) {
+			it( title, () => {
+				setData( model, input );
+
+				expect( command.isEnabled ).to.equal( output );
+			} );
+		}
+	} );
 } );

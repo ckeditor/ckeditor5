@@ -6,6 +6,7 @@
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import Enter from '../src/enter';
 import EnterCommand from '../src/entercommand';
+import EnterObserver from '../src/enterobserver';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 
 describe( 'Enter feature', () => {
@@ -24,6 +25,12 @@ describe( 'Enter feature', () => {
 
 	it( 'creates the commands', () => {
 		expect( editor.commands.get( 'enter' ) ).to.be.instanceof( EnterCommand );
+	} );
+
+	it( 'registers the EnterObserver', () => {
+		const observer = editor.editing.view.getObserver( EnterObserver );
+
+		expect( observer ).to.be.an.instanceOf( EnterObserver );
 	} );
 
 	it( 'listens to the editing view enter event', () => {
