@@ -13,11 +13,7 @@ import Mapper from '../conversion/mapper';
 import DowncastDispatcher from '../conversion/downcastdispatcher';
 import { insertText, remove } from '../conversion/downcast-converters';
 import { convertSelectionChange } from '../conversion/upcast-selection-converters';
-import {
-	convertRangeSelection,
-	convertCollapsedSelection,
-	clearAttributes
-} from '../conversion/downcast-selection-converters';
+import { clearAttributes, convertCollapsedSelection, convertRangeSelection } from '../conversion/downcast-selection-converters';
 
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
@@ -100,33 +96,7 @@ export default class EditingController {
 		this.downcastDispatcher.on( 'selection', convertCollapsedSelection(), { priority: 'low' } );
 
 		// Add selection post fixer.
-		doc.registerPostFixer( selectionPostFixer );
-
-		function selectionPostFixer( writer ) {
-			const ranges = [];
-
-			let needsUpdate = false;
-
-			for ( const modelRange of selection.getRanges() ) {
-				const correctedRange = correctRange( modelRange, model.schema );
-
-				if ( correctedRange ) {
-					ranges.push( correctedRange );
-					needsUpdate = true;
-				} else {
-					ranges.push( modelRange );
-				}
-			}
-
-			// If any of ranges were corrected update the selection.
-			if ( needsUpdate ) {
-				// The above algorithm might create ranges that intersects each other when selection contains more then one range.
-				// This is case happens mostly on Firefox which creates multiple ranges for selected table.
-				const safeRange = combineRanges( ranges );
-
-				writer.setSelection( safeRange, { backward: selection.isBackward } );
-			}
-		}
+		doc.registerPostFixer( writer => selectionPostFixer( writer, model ) );
 
 		// Binds {@link module:engine/view/document~Document#roots view roots collection} to
 		// {@link module:engine/model/document~Document#roots model roots collection} so creating
@@ -159,61 +129,79 @@ export default class EditingController {
 
 mix( EditingController, ObservableMixin );
 
-function correctRange( range, schema ) {
+/**
+ * The selection post fixer which check if nodes with `isLimit` property in schema are properly selected.
+ *
+ * @param {module:engine/model/writer~Writer} writer
+ * @param {module:engine/model/model~Model} model
+ */
+function selectionPostFixer( writer, model ) {
+	const selection = model.document.selection;
+	const schema = model.schema;
+
+	const ranges = [];
+
+	let wasFixed = false;
+
+	for ( const modelRange of selection.getRanges() ) {
+		// Go through all ranges in selection and try fixing each of them.
+		// Those ranges might overlap but will be corrected later.
+		const correctedRange = tryFixRangeWithIsLimitBlocks( modelRange, schema );
+
+		if ( correctedRange ) {
+			ranges.push( correctedRange );
+			wasFixed = true;
+		} else {
+			ranges.push( modelRange );
+		}
+	}
+
+	// If any of ranges were corrected update the selection.
+	if ( wasFixed ) {
+		// The above algorithm might create ranges that intersects each other when selection contains more then one range.
+		// This is case happens mostly on Firefox which creates multiple ranges for selected table.
+		const safeRange = combineRangesOnLimitNodes( ranges );
+
+		writer.setSelection( safeRange, { backward: selection.isBackward } );
+	}
+}
+
+// Tries to correct a range if it contains blocks defined as `isLimit` in schema.
+//
+// @param {module:engine/model/range~Range} range
+// @param {module:engine/model/schema~Schema} schema
+// @returns {module:engine/model/range~Range|null} Returns fixed range or null if range is valid.
+function tryFixRangeWithIsLimitBlocks( range, schema ) {
 	if ( range.isCollapsed ) {
-		// check only if position is allowed:
-		const originalPosition = range.start;
+		return tryFixCollapsedRange( range, schema );
+	}
 
-		const nearestSelectionRange = schema.getNearestSelectionRange( originalPosition );
+	return tryFixExpandedRange( range, schema );
+}
 
-		// This get empty if editor data is empty (some tests)
-		if ( !nearestSelectionRange ) {
-			return null;
-		}
+// Tries to fix collapsed ranges - ie. when collapsed selection is in limit node that contains other limit nodes.
+//
+// @param {module:engine/model/range~Range} range Collapsed range to fix.
+// @param {module:engine/model/schema~Schema} schema
+// @returns {module:engine/model/range~Range|null} Returns fixed range or null if range is valid.
+function tryFixCollapsedRange( range, schema ) {
+	const originalPosition = range.start;
 
-		const fixedPosition = nearestSelectionRange.start;
+	const nearestSelectionRange = schema.getNearestSelectionRange( originalPosition );
 
-		if ( !originalPosition.isEqual( fixedPosition ) ) {
-			return fixSelectionOnLimitBlock( schema, fixedPosition );
-		}
-
+	// This might be null ie when editor data is empty.
+	// In such cases there is no need to fix the selection range.
+	if ( !nearestSelectionRange ) {
 		return null;
 	}
 
-	if ( range.isFlat || range.isCollapsed ) {
+	const fixedPosition = nearestSelectionRange.start;
+
+	// Fixed position is the same as original - no need to return corrected range.
+	if ( originalPosition.isEqual( fixedPosition ) ) {
 		return null;
 	}
 
-	const start = range.start;
-	const end = range.end;
-
-	const updatedStart = ensurePositionInIsLimitBlock( start, schema, 'start' );
-	const updatedEnd = ensurePositionInIsLimitBlock( end, schema, 'end' );
-
-	if ( !start.isEqual( updatedStart ) || !end.isEqual( updatedEnd ) ) {
-		return new Range( updatedStart, updatedEnd );
-	}
-
-	return null;
-}
-
-function ensurePositionInIsLimitBlock( position, schema, where ) {
-	let parent = position.parent;
-	let node = parent;
-
-	while ( schema.isLimit( parent ) && parent.parent ) {
-		node = parent;
-		parent = parent.parent;
-	}
-
-	if ( node === parent ) {
-		return position;
-	}
-
-	return where === 'start' ? Position.createBefore( node ) : Position.createAfter( node );
-}
-
-function fixSelectionOnLimitBlock( schema, fixedPosition ) {
 	// Check single node selection (happens in tables).
 	if ( fixedPosition.nodeAfter && schema.isLimit( fixedPosition.nodeAfter ) ) {
 		return new Range( fixedPosition, Position.createAfter( fixedPosition.nodeAfter ) );
@@ -222,8 +210,61 @@ function fixSelectionOnLimitBlock( schema, fixedPosition ) {
 	return new Range( fixedPosition );
 }
 
-function combineRanges( ranges ) {
-	const combined = [];
+// Tries to fix a expanded range that overlaps limit nodes.
+//
+// @param {module:engine/model/range~Range} range Expanded range to fix.
+// @param {module:engine/model/schema~Schema} schema
+// @returns {module:engine/model/range~Range|null} Returns fixed range or null if range is valid.
+function tryFixExpandedRange( range, schema ) {
+	// No need to check flat ranges as they will not cross node boundary.
+	if ( range.isFlat ) {
+		return null;
+	}
+
+	const start = range.start;
+	const end = range.end;
+
+	const updatedStart = expandSelectionOnIsLimitNode( start, schema, 'start' );
+	const updatedEnd = expandSelectionOnIsLimitNode( end, schema, 'end' );
+
+	if ( !start.isEqual( updatedStart ) || !end.isEqual( updatedEnd ) ) {
+		return new Range( updatedStart, updatedEnd );
+	}
+
+	return null;
+}
+
+// Expands selection so it contains whole limit node.
+//
+// @param {module:engine/model/position~Position} position
+// @param {module:engine/model/schema~Schema} schema
+// @param {String} expandToDirection Direction of expansion - either 'start' or 'end' of the range.
+// @returns {module:engine/model/position~Position}
+function expandSelectionOnIsLimitNode( position, schema, expandToDirection ) {
+	let node = position.parent;
+	let parent = node;
+
+	// Find outer most isLimit block as such blocks might be nested (ie. in tables).
+	while ( schema.isLimit( parent ) && parent.parent ) {
+		node = parent;
+		parent = parent.parent;
+	}
+
+	if ( node === parent ) {
+		// If there is not is limit block the return original position.
+		return position;
+	}
+
+	// Depending on direction of expanding selection return position before or after found node.
+	return expandToDirection === 'start' ? Position.createBefore( node ) : Position.createAfter( node );
+}
+
+// Returns minimal set of continuous ranges.
+//
+// @param {Array.<module:engine/model/range~Range>} ranges
+// @returns {Array.<module:engine/model/range~Range>}
+function combineRangesOnLimitNodes( ranges ) {
+	const combinedRanges = [];
 
 	let previousRange;
 
@@ -232,7 +273,7 @@ function combineRanges( ranges ) {
 
 		if ( !previousRange ) {
 			previousRange = range;
-			combined.push( previousRange );
+			combinedRanges.push( previousRange );
 			continue;
 		}
 
@@ -246,7 +287,7 @@ function combineRanges( ranges ) {
 			const newEnd = range.end.isAfter( previousRange.end ) ? range.end : previousRange.end;
 			const newRange = new Range( newStart, newEnd );
 
-			combined.splice( combined.indexOf( previousRange ), 1, newRange );
+			combinedRanges.splice( combinedRanges.indexOf( previousRange ), 1, newRange );
 
 			previousRange = newRange;
 
@@ -254,8 +295,8 @@ function combineRanges( ranges ) {
 		}
 
 		previousRange = range;
-		combined.push( range );
+		combinedRanges.push( range );
 	}
 
-	return combined;
+	return combinedRanges;
 }
