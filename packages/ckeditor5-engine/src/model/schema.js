@@ -969,7 +969,7 @@ mix( Schema, ObservableMixin );
  * * `allowAttributesOf` – a string or an array of strings. Inherit attributes from other items.
  * * `inheritTypesFrom` – a string or an array of strings. Inherit `is*` properties of other items.
  * * `inheritAllFrom` – a string. A shorthand for `allowContentOf`, `allowWhere`, `allowAttributesOf`, `inheritTypesFrom`.
- * * additionall, you can define the following `is*` properties: `isBlock`, `isLimit`, `isObject`. Read about them below.
+ * * additionally, you can define the following `is*` properties: `isBlock`, `isLimit`, `isObject`. Read about them below.
  *
  * # The is* properties
  *
@@ -982,7 +982,7 @@ mix( Schema, ObservableMixin );
  * Most block type items will inherit from `$block` (through `inheritAllFrom`).
  * * `isLimit` – can be understood as whether this element should not be split by <kbd>Enter</kbd>.
  * Examples of limit elements – `$root`, table cell, image caption, etc. In other words, all actions which happen inside
- * a limit element are limitted to its content.
+ * a limit element are limited to its content.
  * * `isObject` – whether item is "self-contained" and should be treated as a whole. Examples of object elements –
  * `image`, `table`, `video`, etc.
  *

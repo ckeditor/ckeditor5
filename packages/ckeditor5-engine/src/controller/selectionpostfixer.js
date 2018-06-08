@@ -13,6 +13,37 @@ import Position from '../model/position';
 /**
  * The selection post fixer which check if nodes with `isLimit` property in schema are properly selected.
  *
+ * See as an example selection that starts in P1 element and ends inside text of TD element
+ * (`[` and `]` are range boundaries and `(l)` denotes element defines as `isLimit=true`):
+ *
+ *		root
+ *		 |- element P1
+ *		 |   |- "foo"                                      root
+ *		 |- element TABLE (l)                   P1         TABLE             P2
+ *		 |   |- element TR (l)                 f o[o     TR      TR         b a r
+ *		 |   |   |- element TD (l)                       TD      TD
+ *		 |   |       |- "aaa"                          a]a a    b b b
+ *		 |   |- element TR (l)
+ *		 |   |   |- element TD (l)                           ||
+ *		 |   |       |- "bbb"                                ||
+ *		 |- element P2                                       VV
+ *		 |   |- "bar"
+ *		                                                   root
+ *		                                        P1         TABLE]            P2
+ *		                                       f o[o     TR      TR         b a r
+ *		                                                 TD      TD
+ *		                                               a a a    b b b
+ *
+ * In above example, the TABLE, TR and TD are defined as `isLimit=true` in the schema. The range that is not contained withing
+ * single limit element must be expanded to select outer most parent limit element. The range end is inside text node of TD element.
+ * As TD element is a child of TR element and TABLE elements which both are defined as `isLimit=true` in schema the range must be expanded
+ * to select whole TABLE element.
+ *
+ * **Note** If selection contains multiple ranges the method returns minimal set of ranges that are not intersecting after expanding them
+ * to select `isLimit=true` elements.
+ *
+ * See {@link module:engine/model/schema~Schema#isLimit}.
+ *
  * @param {module:engine/model/writer~Writer} writer
  * @param {module:engine/model/model~Model} model
  */
@@ -147,30 +178,27 @@ function expandSelectionOnIsLimitNode( position, schema, expandToDirection ) {
 function combineRangesOnLimitNodes( ranges ) {
 	const combinedRanges = [];
 
-	let previousRange;
+	// Seed the state.
+	let previousRange = ranges[ 0 ];
+	combinedRanges.push( previousRange );
 
-	for ( let i = 0; i < ranges.length; i++ ) {
-		const range = ranges[ i ];
-
-		if ( !previousRange ) {
-			previousRange = range;
-			combinedRanges.push( previousRange );
-			continue;
-		}
-
-		// Do not push same ranges (ie might be created in a table)
+	// Go through each ranges and check if it can be merged with previous one.
+	for ( const range of ranges ) {
+		// Do not push same ranges (ie might be created in a table).
 		if ( range.isEqual( previousRange ) ) {
 			continue;
 		}
 
+		// Merge intersecting range into previous one.
 		if ( range.isIntersecting( previousRange ) ) {
 			const newStart = previousRange.start.isBefore( range.start ) ? previousRange.start : range.start;
 			const newEnd = range.end.isAfter( previousRange.end ) ? range.end : previousRange.end;
-			const newRange = new Range( newStart, newEnd );
+			const combinedRange = new Range( newStart, newEnd );
 
-			combinedRanges.splice( combinedRanges.indexOf( previousRange ), 1, newRange );
+			// Replace previous range with the combined one.
+			combinedRanges.splice( combinedRanges.indexOf( previousRange ), 1, combinedRange );
 
-			previousRange = newRange;
+			previousRange = combinedRange;
 
 			continue;
 		}
