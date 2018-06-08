@@ -25,7 +25,7 @@
     "@ckeditor/ckeditor5-font": "ckeditor/ckeditor5-font#845b2fb",
     "@ckeditor/ckeditor5-heading": "ckeditor/ckeditor5-heading#f1d4fe0",
     "@ckeditor/ckeditor5-highlight": "ckeditor/ckeditor5-highlight#7ebe264",
-    "@ckeditor/ckeditor5-image": "ckeditor/ckeditor5-image#6908ec6",
+    "@ckeditor/ckeditor5-image": "ckeditor/ckeditor5-image#f4bc84f",
     "@ckeditor/ckeditor5-link": "ckeditor/ckeditor5-link#adfabc0",
     "@ckeditor/ckeditor5-list": "ckeditor/ckeditor5-list#9da2f34",
     "@ckeditor/ckeditor5-markdown-gfm": "ckeditor/ckeditor5-markdown-gfm#7979f5d",
