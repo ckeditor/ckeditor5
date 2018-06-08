@@ -258,7 +258,7 @@ describe( 'ContextualBalloon', () => {
 			expect( balloon.view.content.get( 0 ) ).to.deep.equal( viewB );
 		} );
 
-		it( 'should keep balloon at the same position after adding next view', () => {
+		it( 'should use the position of the last view in the stack', () => {
 			balloon.add( {
 				view: viewB,
 				position: { target: 'other' }
@@ -272,7 +272,7 @@ describe( 'ContextualBalloon', () => {
 			} );
 
 			sinon.assert.calledWithMatch( balloon.view.pin.secondCall, {
-				target: 'fake',
+				target: 'other',
 				limiter: balloon.positionLimiter
 			} );
 		} );
@@ -399,7 +399,7 @@ describe( 'ContextualBalloon', () => {
 	} );
 
 	describe( 'updatePosition()', () => {
-		it( 'should attach balloon to the target using position option from the first view in the stack', () => {
+		it( 'should attach balloon to the target using position option from the last view in the stack', () => {
 			balloon.add( {
 				view: viewB,
 				position: {
@@ -413,7 +413,7 @@ describe( 'ContextualBalloon', () => {
 
 			expect( balloon.view.pin.calledOnce );
 			sinon.assert.calledWithMatch( balloon.view.pin.firstCall, {
-				target: 'fake',
+				target: 'other',
 				limiter: balloon.positionLimiter
 			} );
 		} );
@@ -444,7 +444,7 @@ describe( 'ContextualBalloon', () => {
 
 			expect( balloon.view.pin.calledOnce );
 			sinon.assert.calledWithMatch( balloon.view.pin.firstCall, {
-				target: 'fake',
+				target: 'new',
 				limiter: balloon.positionLimiter
 			} );
 

@@ -10,7 +10,6 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import BalloonPanelView from './balloonpanelview';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import first from '@ckeditor/ckeditor5-utils/src/first';
 
 /**
  * Provides the common contextual balloon panel for the editor.
@@ -213,14 +212,14 @@ export default class ContextualBalloon extends Plugin {
 	}
 
 	/**
-	 * Returns position options of the first view in the stack.
+	 * Returns position options of the last view in the stack.
 	 * This keeps the balloon in the same position when view is changed.
 	 *
 	 * @private
 	 * @returns {module:utils/dom/position~Options}
 	 */
 	_getBalloonPosition() {
-		let position = first( this._stack.values() ).position;
+		let position = Array.from( this._stack.values() ).pop().position;
 
 		// Use the default limiter if none has been specified.
 		if ( position && !position.limiter ) {
