@@ -2758,7 +2758,7 @@ describe( 'Renderer', () => {
 					'<ul><li>Item <strong>1</strong></li><li><a href="https://ckeditor.com">Item</a> 2</li></ul>' );
 			} );
 
-			it( 'should properly handle br elements while refreshing bindings', () => {
+			it( 'should handle br elements while refreshing bindings', () => {
 				const expected = `<p>Foo Bar</p><p>${ BR_FILLER( document ).outerHTML }</p>`; // eslint-disable-line new-cap
 
 				viewRoot._appendChild( parse( '<container:p>Foo Bar</container:p><container:p></container:p>' ) );
@@ -2780,6 +2780,55 @@ describe( 'Renderer', () => {
 				renderer.render();
 
 				expect( domRoot.innerHTML ).to.equal( expected );
+			} );
+
+			it( 'should handle list to paragraph conversion', () => {
+				const view = '' +
+					'<container:ol>' +
+						'<container:li>Item 1' +
+							'<container:ol>' +
+								'<container:li>Item 2</container:li>' +
+							'</container:ol>' +
+						'</container:li>' +
+					'</container:ol>' +
+					'<container:p>Paragraph</container:p>' +
+					'<container:ol>' +
+						'<container:li>Item 3' +
+							'<container:ol>' +
+								'<container:li>Item 4</container:li>' +
+							'</container:ol>' +
+						'</container:li>' +
+					'</container:ol>';
+
+				viewRoot._appendChild( parse( view ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal(
+					'<ol><li>Item 1<ol><li>Item 2</li></ol></li></ol><p>Paragraph</p><ol><li>Item 3<ol><li>Item 4</li></ol></li></ol>' );
+
+				const viewOL1 = viewRoot.getChild( 0 );
+				viewOL1.getChild( 0 )._removeChildren( 1 );
+				viewRoot._removeChildren( 2 );
+				viewRoot._insertChild( 1, parse( '<container:p>Item 2</container:p>' ) );
+				viewRoot._insertChild( 3, parse( '<container:p>Item 3</container:p>' ) );
+				viewRoot._insertChild( 4, parse( '<container:ol><container:li>Item 4</container:li></container:ol>' ) );
+
+				const domOL1 = domRoot.childNodes[ 0 ];
+				const domOL2 = domRoot.childNodes[ 2 ];
+				const domP = domRoot.childNodes[ 1 ];
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.markToSync( 'children', viewOL1.getChild( 0 ) );
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal(
+					'<ol><li>Item 1</li></ol><p>Item 2</p><p>Paragraph</p><p>Item 3</p><ol><li>Item 4</li></ol>' );
+
+				expect( domRoot.childNodes[ 0 ] ).to.equal( domOL1 );
+				expect( domRoot.childNodes[ 2 ] ).to.equal( domP );
+				expect( domRoot.childNodes[ 4 ] ).to.equal( domOL2 );
 			} );
 		} );
 	} );
