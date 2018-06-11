@@ -12,6 +12,7 @@ import ViewAttributeElement from '../../src/view/attributeelement';
 import ViewText from '../../src/view/text';
 import ViewRange from '../../src/view/range';
 import ViewPosition from '../../src/view/position';
+import UIElement from '../../src/view/uielement';
 import DocumentSelection from '../../src/view/documentselection';
 import DomConverter from '../../src/view/domconverter';
 import Renderer from '../../src/view/renderer';
@@ -2947,6 +2948,40 @@ describe( 'Renderer', () => {
 					'<ol><li style="color:#FFF;">Foo</li>' +
 					'<li style="font-weight:bold;">Ba1 <i style="color:#000;border-width:1px;">Ba3 ' +
 					'<b style="font-size:15px;">Ba2</b></i></li></ol>' ) );
+			} );
+
+			it( 'should handle uiElement rendering', () => {
+				function createUIElement( id, text ) {
+					const element = new UIElement( 'span' );
+					element.render = function( domDocument ) {
+						const domElement = this.toDomElement( domDocument );
+						domElement.innerText = `<span id="${ id }"><b>${ text }</b></span>`;
+						return domElement;
+					};
+
+					return element;
+				}
+
+				const ui1 = createUIElement( 'id1', 'UI1' );
+				const ui2 = createUIElement( 'id2', 'UI2' );
+				const viewP = new ViewContainerElement( 'p', null, [ new ViewText( 'Foo ' ), ui1, new ViewText( 'Bar' ) ] );
+				viewRoot._appendChild( viewP );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( normalizeHtml(
+					'<p>Foo <span><span id="id1"><b>UI1</b></span></span>Bar</p>' ) );
+
+				viewP._removeChildren( 0, viewP.childCount );
+				viewP._insertChild( 0, [ new ViewText( 'Foo' ), ui2, new ViewText( ' Bar' ) ] );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.markToSync( 'children', viewP );
+				renderer.render();
+
+				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( normalizeHtml(
+					'<p>Foo<span><span id="id2"><b>UI2</b></span></span> Bar</p>' ) );
 			} );
 		} );
 	} );
