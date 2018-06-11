@@ -217,92 +217,100 @@ describe( 'ShiftEnterCommand', () => {
 	} );
 
 	describe( '#isEnabled', () => {
-		test( 'should be disabled if $text cannot be inserted into element',
-			'<img>[]</img>',
-			false
-		);
+		it( 'should be disabled if $text cannot be inserted into element', () => {
+			setData( model, '<img>[]</img>' );
 
-		test( 'should be enabled for collapsed selection in $root',
-			'Foo.',
-			true
-		);
+			expect( command.isEnabled ).to.equal( false );
+		} );
 
-		test( 'should be enabled for collapsed selection in paragraph',
-			'<p>Foo.[]</p>',
-			true
-		);
+		it( 'should be enabled for collapsed selection in $root', () => {
+			setData( model, 'Foo.' );
 
-		test( 'should be enabled for collapsed selection in heading',
-			'<h>Foo.[]</h>',
-			true
-		);
+			expect( command.isEnabled ).to.equal( true );
+		} );
 
-		test( 'should be enabled for collapsed selection in inline limit element',
-			'<p><inlineLimit>Foo.[]</inlineLimit></p>',
-			true
-		);
+		it( 'should be enabled for collapsed selection in paragraph', () => {
+			setData( model, '<p>Foo.[]</p>' );
 
-		test( 'should be enabled for non-collapsed selection in inline limit element',
-			'<p><inlineLimit>[Foo.]</inlineLimit></p>',
-			true
-		);
+			expect( command.isEnabled ).to.equal( true );
+		} );
 
-		test( 'should be enabled for collapsed selection in paragraph which is wrapped in the block limit element',
-			'<blockLimit><p>Foo.[]</p></blockLimit>',
-			true
-		);
+		it( 'should be enabled for collapsed selection in heading', () => {
+			setData( model, '<h>Foo.[]</h>' );
 
-		test( 'should be enabled for non-collapsed selection in paragraph which is wrapped in the block limit element',
-			'<blockLimit><p>F[oo.]</p></blockLimit>',
-			true
-		);
+			expect( command.isEnabled ).to.equal( true );
+		} );
 
-		test( 'should be enabled for non-collapsed selection in paragraphs',
-			'<p>[Foo.</p><p>Bar.]</p>',
-			true
-		);
+		it( 'should be enabled for collapsed selection in inline limit element', () => {
+			setData( model, '<p><inlineLimit>Foo.[]</inlineLimit></p>' );
 
-		test( 'should be enabled for non-collapsed selection in headings',
-			'<h>[Foo.</h><h>Bar.]</h>',
-			true
-		);
+			expect( command.isEnabled ).to.equal( true );
+		} );
 
-		test( 'should be disabled for non-collapsed selection which starts in the inline limit element',
-			'<p><inlineLimit>F[oo.</inlineLimit>B]ar.</p>',
-			false
-		);
+		it( 'should be enabled for non-collapsed selection in inline limit element', () => {
+			setData( model, '<p><inlineLimit>[Foo.]</inlineLimit></p>' );
 
-		test( 'should be disabled for non-collapsed selection which end in the inline limit element',
-			'<p>F[oo<inlineLimit>Bar].</inlineLimit></p>',
-			false
-		);
+			expect( command.isEnabled ).to.equal( true );
+		} );
 
-		test( 'should be disabled for non-collapsed selection which starts in element inside the block limit element',
-			'<blockLimit><p>F[oo.</p></blockLimit><p>B]ar.</p>',
-			false
-		);
+		it( 'should be enabled for collapsed selection in paragraph which is wrapped in the block limit element', () => {
+			setData( model, '<blockLimit><p>Foo.[]</p></blockLimit>' );
 
-		test( 'should be disabled for non-collapsed selection which ends in element inside the block limit element',
-			'<p>Fo[o.</p><blockLimit><p>Bar].</p></blockLimit>',
-			false
-		);
+			expect( command.isEnabled ).to.equal( true );
+		} );
 
-		test( 'should be disabled for multi-ranges selection (1)',
-			'<p>[x]</p><p>[foo]</p>',
-			false
-		);
+		it( 'should be enabled for non-collapsed selection in paragraph which is wrapped in the block limit element', () => {
+			setData( model, '<blockLimit><p>F[oo.]</p></blockLimit>' );
 
-		test( 'should be disabled for multi-ranges selection (2)',
-			'<p>[]x</p><p>[]foo</p>',
-			false
-		);
+			expect( command.isEnabled ).to.equal( true );
+		} );
 
-		function test( title, input, output ) {
-			it( title, () => {
-				setData( model, input );
+		it( 'should be enabled for non-collapsed selection in paragraphs', () => {
+			setData( model, '<p>[Foo.</p><p>Bar.]</p>' );
 
-				expect( command.isEnabled ).to.equal( output );
-			} );
-		}
+			expect( command.isEnabled ).to.equal( true );
+		} );
+
+		it( 'should be enabled for non-collapsed selection in headings', () => {
+			setData( model, '<h>[Foo.</h><h>Bar.]</h>' );
+
+			expect( command.isEnabled ).to.equal( true );
+		} );
+
+		it( 'should be disabled for non-collapsed selection which starts in the inline limit element', () => {
+			setData( model, '<p><inlineLimit>F[oo.</inlineLimit>B]ar.</p>' );
+
+			expect( command.isEnabled ).to.equal( false );
+		} );
+
+		it( 'should be disabled for non-collapsed selection which end in the inline limit element', () => {
+			setData( model, '<p>F[oo<inlineLimit>Bar].</inlineLimit></p>' );
+
+			expect( command.isEnabled ).to.equal( false );
+		} );
+
+		it( 'should be disabled for non-collapsed selection which starts in element inside the block limit element', () => {
+			setData( model, '<blockLimit><p>F[oo.</p></blockLimit><p>B]ar.</p>' );
+
+			expect( command.isEnabled ).to.equal( false );
+		} );
+
+		it( 'should be disabled for non-collapsed selection which ends in element inside the block limit element', () => {
+			setData( model, '<p>Fo[o.</p><blockLimit><p>Bar].</p></blockLimit>' );
+
+			expect( command.isEnabled ).to.equal( false );
+		} );
+
+		it( 'should be disabled for multi-ranges selection (1)', () => {
+			setData( model, '<p>[x]</p><p>[foo]</p>' );
+
+			expect( command.isEnabled ).to.equal( false );
+		} );
+
+		it( 'should be disabled for multi-ranges selection (2)', () => {
+			setData( model, '<p>[]x</p><p>[]foo</p>' );
+
+			expect( command.isEnabled ).to.equal( false );
+		} );
 	} );
 } );
