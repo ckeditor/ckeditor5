@@ -2830,6 +2830,124 @@ describe( 'Renderer', () => {
 				expect( domRoot.childNodes[ 2 ] ).to.equal( domP );
 				expect( domRoot.childNodes[ 4 ] ).to.equal( domOL2 );
 			} );
+
+			it( 'should handle attributes change in replaced elements', () => {
+				const view = '' +
+					'<container:ol>' +
+						'<container:li data-index="1" align="left">Item 1</container:li>' +
+					'</container:ol>' +
+					'<container:p>Paragraph ' +
+						'<attribute:a href="123">Link</attribute:a>' +
+					'</container:p>' +
+					'<container:p id="p1"><attribute:i>Bar</attribute:i>Baz</container:p>';
+
+				viewRoot._appendChild( parse( view ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( normalizeHtml(
+					'<ol><li data-index="1" align="left">Item 1</li></ol>' +
+					'<p>Paragraph <a href="123">Link</a></p><p id="p1"><i>Bar</i>Baz</p>' ) );
+
+				const viewOL = viewRoot.getChild( 0 );
+				viewOL._removeChildren( 0 );
+				viewOL._insertChild( 0, parse( '<container:li data-index="2" data-attr="foo">Item 1</container:li>' ) );
+
+				const viewP1 = viewRoot.getChild( 1 );
+				viewP1._removeChildren( 1 );
+				viewP1._insertChild( 1, parse( '<attribute:a href="456" class="cke">Foo</attribute:a>' ) );
+
+				viewRoot._removeChildren( 2 );
+				viewRoot._insertChild( 2, parse( '<container:p>Bar</container:p>' ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.markToSync( 'children', viewOL );
+				renderer.markToSync( 'children', viewP1 );
+				renderer.render();
+
+				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( normalizeHtml(
+					'<ol><li data-index="2" data-attr="foo">Item 1</li></ol>' +
+					'<p>Paragraph <a href="456" class="cke">Foo</a></p><p>Bar</p>' ) );
+			} );
+
+			it( 'should handle classes change in replaced elements', () => {
+				const view = '' +
+					'<container:ol>' +
+						'<container:li class="foo1 bar2 baz3">Item 1</container:li>' +
+					'</container:ol>' +
+					'<container:p><attribute:i class="i1 i2">Bar</attribute:i>Baz</container:p>';
+
+				viewRoot._appendChild( parse( view ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( normalizeHtml(
+					'<ol><li class="foo1 bar2 baz3">Item 1</li></ol><p><i class="i1 i2">Bar</i>Baz</p>' ) );
+
+				const viewOL = viewRoot.getChild( 0 );
+				const oldViewLI = viewOL.getChild( 0 );
+				viewOL._removeChildren( 0 );
+				viewOL._insertChild( 0, parse( '<container:li class="bar2 baz4 bax5">Item 1</container:li>' ) );
+
+				const oldViewP = viewRoot.getChild( 1 );
+				viewRoot._removeChildren( 1 );
+				viewRoot._insertChild( 1, parse( '<container:p class="p1 p2"><attribute:i>Foo</attribute:i></container:p>' ) );
+
+				renderer.markToSync( 'attributes', oldViewLI );
+				renderer.markToSync( 'attributes', oldViewP );
+				renderer.markToSync( 'children', viewRoot );
+				renderer.markToSync( 'children', viewOL );
+				renderer.render();
+
+				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( normalizeHtml(
+					'<ol><li class="bar2 baz4 bax5">Item 1</li></ol><p class="p1 p2"><i>Foo</i></p>' ) );
+			} );
+
+			it( 'should handle styles change in replaced elements', () => {
+				const view = '' +
+					'<container:ol>' +
+						'<container:li style="color:#000;font-weight:bold;">Foo</container:li>' +
+						'<container:li>Bar ' +
+							'<attribute:i>' +
+								'<attribute:b style="color:#00F;background-color:#000;font-size:12px;">Baz</attribute:b>' +
+							' Bax</attribute:i>' +
+						'</container:li>' +
+					'</container:ol>';
+
+				viewRoot._appendChild( parse( view ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( normalizeHtml(
+					'<ol><li style="color:#000;font-weight:bold;">Foo</li>' +
+					'<li>Bar <i><b style="color:#00F;background-color:#000;font-size:12px;">Baz</b> Bax</i></li></ol>' ) );
+
+				const viewOL = viewRoot.getChild( 0 );
+				const viewLI1 = viewOL.getChild( 0 );
+				const viewLI2 = viewOL.getChild( 1 );
+
+				viewLI1._removeStyle( 'font-weight' );
+				viewLI1._setStyle( { color: '#FFF' } );
+				viewLI2._setStyle( { 'font-weight': 'bold' } );
+
+				viewLI2._removeChildren( 0, viewLI2.childCount );
+				viewLI2._insertChild( 0, parse( 'Ba1 <attribute:i style="color:#000;border-width:1px;">Ba3 ' +
+					'<attribute:b style="font-size:15px;">Ba2</attribute:b></attribute:i>' ) );
+
+				renderer.markToSync( 'attributes', viewLI1 );
+				renderer.markToSync( 'attributes', viewLI2 );
+				renderer.markToSync( 'children', viewRoot );
+				renderer.markToSync( 'children', viewLI2 );
+				renderer.render();
+
+				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( normalizeHtml(
+					'<ol><li style="color:#FFF;">Foo</li>' +
+					'<li style="font-weight:bold;">Ba1 <i style="color:#000;border-width:1px;">Ba3 ' +
+					'<b style="font-size:15px;">Ba2</b></i></li></ol>' ) );
+			} );
 		} );
 	} );
 
