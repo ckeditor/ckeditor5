@@ -111,7 +111,7 @@ function insertBreak( writer, position ) {
 // @returns {Boolean}
 function isInsideLimitElement( element, schema ) {
 	// `$root` is a limit element but in this case is an invalid element.
-	if ( element.is( 'rootElement') ) {
+	if ( element.is( 'rootElement' ) ) {
 		return false;
 	}
 
