@@ -134,6 +134,7 @@ describe( 'ShiftEnterCommand', () => {
 				'<p>x</p><p><softBreak></softBreak>[]</p><p>y</p>'
 			);
 
+			// See: comment in softBreakAction().
 			test(
 				'leaves one empty element after two were fully selected',
 				'<p>[abc</p><p>def]</p>',

@@ -81,15 +81,27 @@ function softBreakAction( model, writer, selection ) {
 		const leaveUnmerged = !( range.start.isAtStart && range.end.isAtEnd );
 		model.deleteContent( selection, { leaveUnmerged } );
 
-		// Partially selected elements.
+		// Selection within one element:
 		//
 		// <h>x[xx]x</h>		-> <h>x^x</h>			-> <h>x<br>^x</h>
 		if ( isContainedWithinOneElement ) {
 			insertBreak( writer, selection.focus );
 		}
-
-		if ( leaveUnmerged && !isContainedWithinOneElement ) {
-			writer.setSelection( endElement, 0 );
+		// Selection over multiple elements.
+		//
+		// <h>x[x</h><p>y]y<p>	-> <h>x^</h><p>y</p>	-> <h>x</h><p>^y</p>
+		//
+		// We chose not to insert a line break in this case because:
+		//
+		// * it's not a very common scenario,
+		// * it actually surprised me when I saw "expected behaviour" in real life.
+		//
+		// It's ok if the user will need to be more specific where they want the <br> to be inserted.
+		else {
+			// Move the selection to the 2nd element (last step of the example above).
+			if ( leaveUnmerged ) {
+				writer.setSelection( endElement, 0 );
+			}
 		}
 	}
 }
