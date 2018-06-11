@@ -52,10 +52,14 @@ export default class TableEditing extends Plugin {
 		schema.register( 'table', {
 			allowWhere: '$block',
 			allowAttributes: [ 'headingRows', 'headingColumns' ],
+			isLimit: true,
 			isObject: true
 		} );
 
-		schema.register( 'tableRow', { allowIn: 'table' } );
+		schema.register( 'tableRow', {
+			allowIn: 'table',
+			isLimit: true
+		} );
 
 		schema.register( 'tableCell', {
 			allowIn: 'tableRow',
