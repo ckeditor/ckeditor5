@@ -54,6 +54,11 @@ describe( 'InsertTableView', () => {
 			expect( view.items ).to.have.length( 100 );
 		} );
 
+		it( 'should not throw error for DropdownPanelFocusable interface methods', () => {
+			expect( () => view.focus() ).to.not.throw();
+			expect( () => view.focusLast() ).to.not.throw();
+		} );
+
 		describe( 'view#items bindings', () => {
 			it( 'updates view#height & view#width on "over" event', () => {
 				const boxView = view.items.get( 0 );
