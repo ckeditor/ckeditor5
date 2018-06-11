@@ -272,17 +272,23 @@ export default class Renderer {
 						const deleteIndex = counter.equal + counter.delete;
 						const viewChild = viewElement.getChild( insertIndex );
 
-						if ( viewChild ) {
-							// Because we replace previous view element mapping with the new one, the corresponding DOM element
-							// will not be rerendered. The new view element may have different attributes than the old one.
-							// Its corresponding DOM element will not be rerendered so new attributes will not be present in a DOM.
-							// Such situation may take place if only previous view element was added to `this.markedAttributes`
-							// or none of elements were added (relying on 'this._updateChildren()' which by rerendering the element
+						// The 'uiElement' is a special one and its children are not stored in a view (#799),
+						// so we cannot use it with replacing flow (since it uses view children during rendering
+						// which will always result in rendering empty element).
+						if ( viewChild && !viewChild.is( 'uiElement' ) ) {
+							// Because we replace new view element mapping with the existing one, the corresponding DOM element
+							// will not be rerendered. The new view element may have different attributes than the previous one.
+							// Since its corresponding DOM element will not be rerendered, new attributes will not be added
+							// to the DOM, so we need to mark it here to make sure its attributes gets updated.
+							// Such situations may happen if only new view element was added to `this.markedAttributes`
+							// or none of the elements were added (relying on 'this._updateChildren()' which by rerendering the element
 							// also rerenders its attributes). See #1427 for more detailed case study.
-							// It may also happen that 'oldViewElement' mapping is not present since its parent mapping
-							// was removed ('domConverter.unbindDomElement' also unbinds children mappings).
-							const oldViewChild = this.domConverter.mapDomToView( diff.actualDomChildren[ deleteIndex ] );
-							if ( !oldViewChild || oldViewChild && !oldViewChild.isSimilar( viewChild ) ) {
+							const newViewChild = this.domConverter.mapDomToView( diff.actualDomChildren[ deleteIndex ] );
+
+							// It may also happen that 'newViewChild' mapping is not present since its parent mapping
+							// was already removed (the 'domConverter.unbindDomElement()' method also unbinds children
+							// mappings) so we also check for '!newViewChild'.
+							if ( !newViewChild || newViewChild && !newViewChild.isSimilar( viewChild ) ) {
 								this.markedAttributes.add( viewChild );
 							}
 
