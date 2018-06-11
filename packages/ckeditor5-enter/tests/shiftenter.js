@@ -4,18 +4,18 @@
  */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import Enter from '../src/enter';
-import EnterCommand from '../src/entercommand';
+import ShiftEnter from '../src/shiftenter';
+import ShiftEnterCommand from '../src/shiftentercommand';
 import EnterObserver from '../src/enterobserver';
 import DomEventData from '@ckeditor/ckeditor5-engine/src/view/observer/domeventdata';
 
-describe( 'Enter feature', () => {
+describe( 'ShiftEnter feature', () => {
 	let editor, viewDocument;
 
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ Enter ]
+				plugins: [ ShiftEnter ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -24,7 +24,7 @@ describe( 'Enter feature', () => {
 	} );
 
 	it( 'creates the commands', () => {
-		expect( editor.commands.get( 'enter' ) ).to.be.instanceof( EnterCommand );
+		expect( editor.commands.get( 'shiftEnter' ) ).to.be.instanceof( ShiftEnterCommand );
 	} );
 
 	it( 'registers the EnterObserver', () => {
@@ -37,10 +37,10 @@ describe( 'Enter feature', () => {
 		const spy = editor.execute = sinon.spy();
 		const domEvt = getDomEvent();
 
-		viewDocument.fire( 'enter', new DomEventData( viewDocument, domEvt, { isSoft: false } ) );
+		viewDocument.fire( 'enter', new DomEventData( viewDocument, domEvt, { isSoft: true } ) );
 
 		expect( spy.calledOnce ).to.be.true;
-		expect( spy.calledWithExactly( 'enter' ) ).to.be.true;
+		expect( spy.calledWithExactly( 'shiftEnter' ) ).to.be.true;
 
 		expect( domEvt.preventDefault.calledOnce ).to.be.true;
 	} );
@@ -50,17 +50,17 @@ describe( 'Enter feature', () => {
 		const executeSpy = editor.execute = sinon.spy();
 		const scrollSpy = sinon.stub( editor.editing.view, 'scrollToTheSelection' );
 
-		viewDocument.fire( 'enter', new DomEventData( viewDocument, domEvt ) );
+		viewDocument.fire( 'enter', new DomEventData( viewDocument, domEvt, { isSoft: true } ) );
 
 		sinon.assert.calledOnce( scrollSpy );
 		sinon.assert.callOrder( executeSpy, scrollSpy );
 	} );
 
-	it( 'does not execute the command if soft enter should be used', () => {
+	it( 'does not execute the command if hard enter should be used', () => {
 		const domEvt = getDomEvent();
-		const commandExecuteSpy = sinon.stub( editor.commands.get( 'enter' ), 'execute' );
+		const commandExecuteSpy = sinon.stub( editor.commands.get( 'shiftEnter' ), 'execute' );
 
-		viewDocument.fire( 'enter', new DomEventData( viewDocument, domEvt, { isSoft: true } ) );
+		viewDocument.fire( 'enter', new DomEventData( viewDocument, domEvt, { isSoft: false } ) );
 
 		sinon.assert.notCalled( commandExecuteSpy );
 	} );

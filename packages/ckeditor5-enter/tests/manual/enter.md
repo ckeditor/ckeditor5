@@ -7,7 +7,7 @@ Test the <kbd>Enter</kbd> key support.
 * Expected behavior:
 	* At the end of a heading should create a new paragraph.
 	* In the middle of a heading should split it.
-	* <kbd>Shift+Enter</kbd> should have <kbd>Enter</kbd> behavior.
+	* <kbd>Shift+Enter</kbd> should move the text to new line.
 	* The selection should always be moved to the newly created block.
 	* Select all + <kbd>Enter</kbd> should leave an empty paragraph.
 * Check:
