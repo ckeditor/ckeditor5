@@ -302,7 +302,7 @@ export default class Renderer {
 	 * @param {module:engine/view/node~Node} viewElement The view element which children mappings will be updated.
 	 */
 	_updateChildrenMappings( viewElement ) {
-		// We do not perform any operations on DOM here so there is no need to bind view element or convert its' children.
+		// We do not perform any operations on DOM here so there is no need to bind view element or convert its children.
 		const diff = this._diffElementChildren( viewElement, { bind: false, withChildren: false } );
 
 		if ( diff ) {
@@ -317,8 +317,23 @@ export default class Renderer {
 						const viewChild = viewElement.getChild( insertIndex );
 
 						if ( viewChild ) {
+							// Because we replace previous view element mapping with the new one, the corresponding DOM element
+							// will not be rerendered. The new view element may have different attributes than the old one.
+							// Its corresponding DOM element will not be rerendered so new attributes will not be present in a DOM.
+							// Such situation may take place if only previous view element was added to `this.markedAttributes`
+							// or none of elements were added (relying on 'this._updateChildren()' which by rerendering the element
+							// also rerenders its attributes). See #1427 for more detailed case study.
+							// It may also happen that 'oldViewElement' mapping is not present since its parent mapping
+							// was removed ('domConverter.unbindDomElement' also unbinds children mappings).
+							const oldViewChild = this.domConverter.mapDomToView( diff.actualDomChildren[ deleteIndex ] );
+							if ( !oldViewChild || oldViewChild && !oldViewChild.isSimilar( viewChild ) ) {
+								this.markedAttributes.add( viewChild );
+							}
+
+							// Remap 'DomConverter' bindings.
 							this.domConverter.unbindDomElement( diff.actualDomChildren[ deleteIndex ] );
 							this.domConverter.bindElements( diff.actualDomChildren[ deleteIndex ], viewChild );
+
 							// View element may have children which needs to be updated, but are not marked, mark them to update.
 							this.markedChildren.add( viewChild );
 						}
@@ -537,6 +552,15 @@ export default class Renderer {
 	 */
 	_updateAttrs( viewElement ) {
 		const domElement = this.domConverter.mapViewToDom( viewElement );
+
+		if ( !domElement ) {
+			// If there is no `domElement` it means that 'viewElement' is outdated as its mapping was updated
+			// in 'this._updateChildrenMappings()'. There is no need to process it as new view element which
+			// replaced old 'viewElement' mapping was also added to 'this.markedAttributes'
+			// in 'this._updateChildrenMappings()' so it will be processed separately.
+			return;
+		}
+
 		const domAttrKeys = Array.from( domElement.attributes ).map( attr => attr.name );
 		const viewAttrKeys = viewElement.getAttributeKeys();
 
