@@ -181,11 +181,6 @@ export default class Renderer {
 	render() {
 		let inlineFillerPosition;
 
-		if ( this.markedChildren.size > 1 ) {
-			// Sort `this.markedChildren` by nesting level.
-			this.markedChildren = this._sortElementsByNestingLevel( this.markedChildren );
-		}
-
 		// Refresh mappings.
 		for ( const element of this.markedChildren ) {
 			this._updateChildrenMappings( element );
@@ -252,45 +247,6 @@ export default class Renderer {
 		this.markedTexts.clear();
 		this.markedAttributes.clear();
 		this.markedChildren.clear();
-	}
-
-	/**
-	 * Sorts elements set based on their nesting level. The outermost elements are placed first.
-	 * It check only for 2 element types: `containerElement` and `attributeElement`. Elements of these types
-	 * are sorted (from `containerElement` to `attributeElement`) and any other type (e.g. `rootElement` or
-	 * `documentFragment`) have higher priority so is placed higher in the sorted set.
-	 * Additionally if elements are of the same type, they are both checked if one is another parent so proper
-	 * order can be established between them (parent first).
-	 *
-	 * @private
-	 * @param {Set.<module:engine/view/node~Node>} elements Elements to be sorted.
-	 * @returns {Set.<module:engine/view/node~Node>} Sorted elements.
-	 */
-	_sortElementsByNestingLevel( elements ) {
-		function getPriority( node ) {
-			let priority = 2;
-			if ( node.is( 'containerElement' ) ) {
-				priority = 1;
-			} else if ( node.is( 'attributeElement' ) ) {
-				priority = 0;
-			}
-			return priority;
-		}
-
-		const elementsArray = Array.from( elements );
-		elementsArray.sort( ( node1, node2 ) => {
-			let priority = getPriority( node2 ) - getPriority( node1 );
-			if ( priority === 0 ) {
-				if ( node1.parent === node2 ) {
-					priority = 1;
-				} else if ( node2.parent === node1 ) {
-					priority = -1;
-				}
-			}
-			return priority;
-		} );
-
-		return new Set( elementsArray );
 	}
 
 	/**
