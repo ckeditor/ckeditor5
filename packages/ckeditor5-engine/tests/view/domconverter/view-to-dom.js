@@ -10,6 +10,7 @@ import ViewElement from '../../../src/view/element';
 import ViewPosition from '../../../src/view/position';
 import ViewContainerElement from '../../../src/view/containerelement';
 import ViewAttributeElement from '../../../src/view/attributeelement';
+import ViewEmptyElement from '../../../src/view/emptyelement';
 import DomConverter from '../../../src/view/domconverter';
 import ViewDocumentFragment from '../../../src/view/documentfragment';
 import { INLINE_FILLER, INLINE_FILLER_LENGTH, isBlockFiller } from '../../../src/view/filler';
@@ -248,10 +249,14 @@ describe( 'DomConverter', () => {
 					}
 
 					const domElement = converter.viewToDom( viewElement, document );
-					const data = domElement.innerHTML.replace( /&nbsp;/g, '_' );
+					const data = showNbsp( domElement.innerHTML );
 
 					expect( data ).to.equal( output );
 				} );
+			}
+
+			function showNbsp( html ) {
+				return html.replace( /&nbsp;/g, '_' );
 			}
 
 			// At the beginning.
@@ -400,18 +405,212 @@ describe( 'DomConverter', () => {
 			test( [ '   ', '   ' ], '_ _ __' );
 
 			it( 'not in preformatted blocks', () => {
-				const viewDiv = new ViewContainerElement( 'pre', null, [ new ViewText( '   foo   ' ), new ViewText( ' bar ' ) ] );
-				const domDiv = converter.viewToDom( viewDiv, document );
+				const viewPre = new ViewContainerElement( 'pre', null, [ new ViewText( '   foo   ' ), new ViewText( ' bar ' ) ] );
+				const domPre = converter.viewToDom( viewPre, document );
 
-				expect( domDiv.innerHTML ).to.equal( '   foo    bar ' );
+				expect( domPre.innerHTML ).to.equal( '   foo    bar ' );
 			} );
 
-			it( 'text node before in a preformatted node', () => {
-				const viewCode = new ViewAttributeElement( 'pre', null, new ViewText( 'foo   ' ) );
-				const viewDiv = new ViewContainerElement( 'div', null, [ viewCode, new ViewText( ' bar' ) ] );
+			it( 'not in a preformatted block followed by a text', () => {
+				const viewPre = new ViewAttributeElement( 'pre', null, new ViewText( 'foo   ' ) );
+				const viewDiv = new ViewContainerElement( 'div', null, [ viewPre, new ViewText( ' bar' ) ] );
 				const domDiv = converter.viewToDom( viewDiv, document );
 
 				expect( domDiv.innerHTML ).to.equal( '<pre>foo   </pre> bar' );
+			} );
+
+			describe( 'around <br>s', () => {
+				it( 'before <br> – a single space', () => {
+					const viewDiv = new ViewContainerElement( 'div', null, [
+						new ViewText( 'foo ' ),
+						new ViewEmptyElement( 'br' ),
+						new ViewText( 'bar' )
+					] );
+					const domDiv = converter.viewToDom( viewDiv, document );
+
+					expect( showNbsp( domDiv.innerHTML ) ).to.equal( 'foo_<br>bar' );
+				} );
+
+				it( 'before <br> – two spaces', () => {
+					const viewDiv = new ViewContainerElement( 'div', null, [
+						new ViewText( 'foo  ' ),
+						new ViewEmptyElement( 'br' ),
+						new ViewText( 'bar' )
+					] );
+					const domDiv = converter.viewToDom( viewDiv, document );
+
+					expect( showNbsp( domDiv.innerHTML ) ).to.equal( 'foo _<br>bar' );
+				} );
+
+				it( 'before <br> – three spaces', () => {
+					const viewDiv = new ViewContainerElement( 'div', null, [
+						new ViewText( 'foo   ' ),
+						new ViewEmptyElement( 'br' ),
+						new ViewText( 'bar' )
+					] );
+					const domDiv = converter.viewToDom( viewDiv, document );
+
+					expect( showNbsp( domDiv.innerHTML ) ).to.equal( 'foo __<br>bar' );
+				} );
+
+				it( 'before <br> – only a space', () => {
+					const viewDiv = new ViewContainerElement( 'div', null, [
+						new ViewText( ' ' ),
+						new ViewEmptyElement( 'br' ),
+						new ViewText( 'bar' )
+					] );
+					const domDiv = converter.viewToDom( viewDiv, document );
+
+					expect( showNbsp( domDiv.innerHTML ) ).to.equal( '_<br>bar' );
+				} );
+
+				it( 'before <br> – only two spaces', () => {
+					const viewDiv = new ViewContainerElement( 'div', null, [
+						new ViewText( '  ' ),
+						new ViewEmptyElement( 'br' ),
+						new ViewText( 'bar' )
+					] );
+					const domDiv = converter.viewToDom( viewDiv, document );
+
+					expect( showNbsp( domDiv.innerHTML ) ).to.equal( '__<br>bar' );
+				} );
+
+				it( 'before <br> – only three spaces', () => {
+					const viewDiv = new ViewContainerElement( 'div', null, [
+						new ViewText( '   ' ),
+						new ViewEmptyElement( 'br' ),
+						new ViewText( 'bar' )
+					] );
+					const domDiv = converter.viewToDom( viewDiv, document );
+
+					expect( showNbsp( domDiv.innerHTML ) ).to.equal( '_ _<br>bar' );
+				} );
+
+				it( 'after <br> – a single space', () => {
+					const viewDiv = new ViewContainerElement( 'div', null, [
+						new ViewText( 'foo' ),
+						new ViewEmptyElement( 'br' ),
+						new ViewText( ' bar' )
+					] );
+					const domDiv = converter.viewToDom( viewDiv, document );
+
+					expect( showNbsp( domDiv.innerHTML ) ).to.equal( 'foo<br>_bar' );
+				} );
+
+				it( 'after <br> – two spaces', () => {
+					const viewDiv = new ViewContainerElement( 'div', null, [
+						new ViewText( 'foo' ),
+						new ViewEmptyElement( 'br' ),
+						new ViewText( '  bar' )
+					] );
+					const domDiv = converter.viewToDom( viewDiv, document );
+
+					expect( showNbsp( domDiv.innerHTML ) ).to.equal( 'foo<br>_ bar' );
+				} );
+
+				it( 'after <br> – three spaces', () => {
+					const viewDiv = new ViewContainerElement( 'div', null, [
+						new ViewText( 'foo' ),
+						new ViewEmptyElement( 'br' ),
+						new ViewText( '   bar' )
+					] );
+					const domDiv = converter.viewToDom( viewDiv, document );
+
+					expect( showNbsp( domDiv.innerHTML ) ).to.equal( 'foo<br>_ _bar' );
+				} );
+
+				it( 'after <br> – only a space', () => {
+					const viewDiv = new ViewContainerElement( 'div', null, [
+						new ViewText( 'foo' ),
+						new ViewEmptyElement( 'br' ),
+						new ViewText( ' ' )
+					] );
+					const domDiv = converter.viewToDom( viewDiv, document );
+
+					expect( showNbsp( domDiv.innerHTML ) ).to.equal( 'foo<br>_' );
+				} );
+
+				it( 'after <br> – only two spaces', () => {
+					const viewDiv = new ViewContainerElement( 'div', null, [
+						new ViewText( 'foo' ),
+						new ViewEmptyElement( 'br' ),
+						new ViewText( '  ' )
+					] );
+					const domDiv = converter.viewToDom( viewDiv, document );
+
+					expect( showNbsp( domDiv.innerHTML ) ).to.equal( 'foo<br>__' );
+				} );
+
+				it( 'after <br> – only three spaces', () => {
+					const viewDiv = new ViewContainerElement( 'div', null, [
+						new ViewText( 'foo' ),
+						new ViewEmptyElement( 'br' ),
+						new ViewText( '   ' )
+					] );
+					const domDiv = converter.viewToDom( viewDiv, document );
+
+					expect( showNbsp( domDiv.innerHTML ) ).to.equal( 'foo<br>_ _' );
+				} );
+
+				it( 'between <br>s – a single space', () => {
+					const viewDiv = new ViewContainerElement( 'div', null, [
+						new ViewEmptyElement( 'br' ),
+						new ViewText( ' ' ),
+						new ViewEmptyElement( 'br' ),
+						new ViewText( 'foo' )
+					] );
+					const domDiv = converter.viewToDom( viewDiv, document );
+
+					expect( showNbsp( domDiv.innerHTML ) ).to.equal( '<br>_<br>foo' );
+				} );
+
+				it( 'between <br>s – only two spaces', () => {
+					const viewDiv = new ViewContainerElement( 'div', null, [
+						new ViewEmptyElement( 'br' ),
+						new ViewText( '  ' ),
+						new ViewEmptyElement( 'br' ),
+						new ViewText( 'foo' )
+					] );
+					const domDiv = converter.viewToDom( viewDiv, document );
+
+					expect( showNbsp( domDiv.innerHTML ) ).to.equal( '<br>__<br>foo' );
+				} );
+
+				it( 'between <br>s – only three spaces', () => {
+					const viewDiv = new ViewContainerElement( 'div', null, [
+						new ViewEmptyElement( 'br' ),
+						new ViewText( '   ' ),
+						new ViewEmptyElement( 'br' ),
+						new ViewText( 'foo' )
+					] );
+					const domDiv = converter.viewToDom( viewDiv, document );
+
+					expect( showNbsp( domDiv.innerHTML ) ).to.equal( '<br>_ _<br>foo' );
+				} );
+
+				it( 'between <br>s – space and text', () => {
+					const viewDiv = new ViewContainerElement( 'div', null, [
+						new ViewEmptyElement( 'br' ),
+						new ViewText( ' foo' ),
+						new ViewEmptyElement( 'br' ),
+						new ViewText( 'foo' )
+					] );
+					const domDiv = converter.viewToDom( viewDiv, document );
+
+					expect( showNbsp( domDiv.innerHTML ) ).to.equal( '<br>_foo<br>foo' );
+				} );
+
+				it( 'between <br>s – text and space', () => {
+					const viewDiv = new ViewContainerElement( 'div', null, [
+						new ViewEmptyElement( 'br' ),
+						new ViewText( 'foo ' ),
+						new ViewEmptyElement( 'br' ),
+						new ViewText( 'foo' )
+					] );
+					const domDiv = converter.viewToDom( viewDiv, document );
+
+					expect( showNbsp( domDiv.innerHTML ) ).to.equal( '<br>foo_<br>foo' );
+				} );
 			} );
 		} );
 	} );
