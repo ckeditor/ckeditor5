@@ -18,10 +18,9 @@ export default function plainTextToHtml( text ) {
 		// Encode <>.
 		.replace( /</g, '&lt;' )
 		.replace( />/g, '&gt;' )
-		// Creates paragraphs for double line breaks and change single line breaks to spaces.
-		// In the future single line breaks may be converted into <br>s.
+		// Creates paragraphs for double line breaks and change single line breaks to <br>s.
 		.replace( /\n\n/g, '</p><p>' )
-		.replace( /\n/g, ' ' )
+		.replace( /\n/g, '<br>' )
 		// Preserve trailing spaces (only the first and last one – the rest is handled below).
 		.replace( /^\s/, '&nbsp;' )
 		.replace( /\s$/, '&nbsp;' )
