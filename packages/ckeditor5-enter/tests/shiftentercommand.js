@@ -217,14 +217,14 @@ describe( 'ShiftEnterCommand', () => {
 	} );
 
 	describe( '#isEnabled', () => {
-		it( 'should be disabled if $text cannot be inserted into element', () => {
+		it( 'should be disabled if <softBreak> cannot be inserted into element', () => {
 			setData( model, '<img>[]</img>' );
 
 			expect( command.isEnabled ).to.equal( false );
 		} );
 
 		it( 'should be enabled for collapsed selection in $root', () => {
-			setData( model, 'Foo.' );
+			setData( model, 'Foo.[]' );
 
 			expect( command.isEnabled ).to.equal( true );
 		} );
@@ -253,13 +253,13 @@ describe( 'ShiftEnterCommand', () => {
 			expect( command.isEnabled ).to.equal( true );
 		} );
 
-		it( 'should be enabled for collapsed selection in paragraph which is wrapped in the block limit element', () => {
+		it( 'should be enabled for collapsed selection in paragraph which is wrapped in a block limit element', () => {
 			setData( model, '<blockLimit><p>Foo.[]</p></blockLimit>' );
 
 			expect( command.isEnabled ).to.equal( true );
 		} );
 
-		it( 'should be enabled for non-collapsed selection in paragraph which is wrapped in the block limit element', () => {
+		it( 'should be enabled for non-collapsed selection in paragraph which is wrapped in a block limit element', () => {
 			setData( model, '<blockLimit><p>F[oo.]</p></blockLimit>' );
 
 			expect( command.isEnabled ).to.equal( true );
@@ -277,25 +277,25 @@ describe( 'ShiftEnterCommand', () => {
 			expect( command.isEnabled ).to.equal( true );
 		} );
 
-		it( 'should be disabled for non-collapsed selection which starts in the inline limit element', () => {
+		it( 'should be disabled for non-collapsed selection which starts in an inline limit element', () => {
 			setData( model, '<p><inlineLimit>F[oo.</inlineLimit>B]ar.</p>' );
 
 			expect( command.isEnabled ).to.equal( false );
 		} );
 
-		it( 'should be disabled for non-collapsed selection which end in the inline limit element', () => {
+		it( 'should be disabled for non-collapsed selection which end in an inline limit element', () => {
 			setData( model, '<p>F[oo<inlineLimit>Bar].</inlineLimit></p>' );
 
 			expect( command.isEnabled ).to.equal( false );
 		} );
 
-		it( 'should be disabled for non-collapsed selection which starts in element inside the block limit element', () => {
+		it( 'should be disabled for non-collapsed selection which starts in element inside a block limit element', () => {
 			setData( model, '<blockLimit><p>F[oo.</p></blockLimit><p>B]ar.</p>' );
 
 			expect( command.isEnabled ).to.equal( false );
 		} );
 
-		it( 'should be disabled for non-collapsed selection which ends in element inside the block limit element', () => {
+		it( 'should be disabled for non-collapsed selection which ends in element inside a block limit element', () => {
 			setData( model, '<p>Fo[o.</p><blockLimit><p>Bar].</p></blockLimit>' );
 
 			expect( command.isEnabled ).to.equal( false );

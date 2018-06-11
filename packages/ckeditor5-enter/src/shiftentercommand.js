@@ -37,7 +37,8 @@ export default class ShiftEnterCommand extends Command {
 // @param {module:engine/model/schema~Schema} schema
 // @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
 function isEnabled( schema, selection ) {
-	// At this moment is okay with support single range selection but in the future we will need to change that.
+	// At this moment it is okay to support single range selections only.
+	// But in the future we may need to change that.
 	if ( selection.rangeCount > 1 ) {
 		return false;
 	}
