@@ -52,7 +52,7 @@ export default class EnterObserver extends Observer {
  *
  * Note: This event is fired by the {@link module:enter/enterobserver~EnterObserver observer}
  * (usually registered by the {@link module:enter/enter~Enter Enter feature} and
- * {@link module:enter/softenter~SoftEnter SoftEnter feature}).
+ * {@link module:enter/shiftenter~ShiftEnter ShiftEnter feature}).
  *
  * @event module:engine/view/document~Document#event:enter
  * @param {module:engine/view/observer/domeventdata~DomEventData} data
