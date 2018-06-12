@@ -878,7 +878,7 @@ export default class Writer {
 	 * {@link module:engine/model/markercollection~Marker marker class description} to learn about the difference between
 	 * markers managed by operations and not-managed by operations. It is possible to change this option for an existing marker.
 	 *
-	 * The `options.affectData` parameter allows you to inform the engine, that this marker does not affects the data model.
+	 * The `options.affectData` parameter allows you to inform the engine, that this marker affects the data model.
 	 * It impacts the performance, because changes in markers with set `options.affectData:false` do not cause firing the
 	 * {@link module:engine/model/document~Document#event:change:data `change:data`} event.
 	 *
@@ -895,7 +895,7 @@ export default class Writer {
 	 *
 	 *		updateMarker( marker, { usingOperation: true } );
 	 *
-	 * Change marker's option (inform engine, that the marker does not affect the data model):
+	 * Change marker's option (inform the engine, that the marker does not affect the data model anymore):
 	 *
 	 *		updateMarker( markerName, { affectData: false } );
 	 *
