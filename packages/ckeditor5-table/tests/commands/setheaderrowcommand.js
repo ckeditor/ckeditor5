@@ -252,5 +252,21 @@ describe( 'HeaderRowCommand', () => {
 				[ '10', '' ]
 			], { headingRows: 1 } ) );
 		} );
+
+		it( 'should work properly in the first row of a table', () => {
+			setData( model, modelTable( [
+				[ '00', '[]01', '02' ],
+				[ { colspan: 2, rowspan: 2, contents: '10' }, '12' ],
+				[ '22' ]
+			] ) );
+
+			command.execute();
+
+			expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+				[ '00', '[]01', '02' ],
+				[ { colspan: 2, rowspan: 2, contents: '10' }, '12' ],
+				[ '22' ]
+			], { headingRows: 1 } ) );
+		} );
 	} );
 } );
