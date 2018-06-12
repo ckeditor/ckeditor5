@@ -12,6 +12,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import TableEditing from '../src/tableediting';
 import TableUI from '../src/tableui';
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
+import ListSeparatorView from '@ckeditor/ckeditor5-ui/src/list/listseparatorview';
 
 testUtils.createSinonSandbox();
 
@@ -121,9 +122,9 @@ describe( 'TableUI', () => {
 		it( 'should have proper items in panel', () => {
 			const listView = dropdown.listView;
 
-			const labels = listView.items.map( ( { label } ) => label );
+			const labels = listView.items.map( item => item instanceof ListSeparatorView ? '|' : item.label );
 
-			expect( labels ).to.deep.equal( [ 'Header row', 'Insert row below', 'Insert row above', 'Delete row' ] );
+			expect( labels ).to.deep.equal( [ 'Header row', '|', 'Insert row below', 'Insert row above', 'Delete row' ] );
 		} );
 
 		it( 'should bind items in panel to proper commands', () => {
@@ -140,9 +141,9 @@ describe( 'TableUI', () => {
 			removeRowCommand.isEnabled = true;
 
 			expect( items.get( 0 ).isEnabled ).to.be.true;
-			expect( items.get( 1 ).isEnabled ).to.be.true;
 			expect( items.get( 2 ).isEnabled ).to.be.true;
 			expect( items.get( 3 ).isEnabled ).to.be.true;
+			expect( items.get( 4 ).isEnabled ).to.be.true;
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
 			setRowHeaderCommand.isEnabled = false;
@@ -152,16 +153,16 @@ describe( 'TableUI', () => {
 
 			insertRowBelowCommand.isEnabled = false;
 
-			expect( items.get( 1 ).isEnabled ).to.be.false;
+			expect( items.get( 2 ).isEnabled ).to.be.false;
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
 			insertRowAboveCommand.isEnabled = false;
-			expect( items.get( 2 ).isEnabled ).to.be.false;
+			expect( items.get( 3 ).isEnabled ).to.be.false;
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
 			removeRowCommand.isEnabled = false;
 
-			expect( items.get( 3 ).isEnabled ).to.be.false;
+			expect( items.get( 4 ).isEnabled ).to.be.false;
 			expect( dropdown.buttonView.isEnabled ).to.be.false;
 		} );
 
@@ -216,9 +217,9 @@ describe( 'TableUI', () => {
 		it( 'should have proper items in panel', () => {
 			const listView = dropdown.listView;
 
-			const labels = listView.items.map( ( { label } ) => label );
+			const labels = listView.items.map( item => item instanceof ListSeparatorView ? '|' : item.label );
 
-			expect( labels ).to.deep.equal( [ 'Header column', 'Insert column before', 'Insert column after', 'Delete column' ] );
+			expect( labels ).to.deep.equal( [ 'Header column', '|', 'Insert column before', 'Insert column after', 'Delete column' ] );
 		} );
 
 		it( 'should bind items in panel to proper commands', () => {
@@ -235,9 +236,9 @@ describe( 'TableUI', () => {
 			removeColumnCommand.isEnabled = true;
 
 			expect( items.get( 0 ).isEnabled ).to.be.true;
-			expect( items.get( 1 ).isEnabled ).to.be.true;
 			expect( items.get( 2 ).isEnabled ).to.be.true;
 			expect( items.get( 3 ).isEnabled ).to.be.true;
+			expect( items.get( 4 ).isEnabled ).to.be.true;
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
 			setColumnHeaderCommand.isEnabled = false;
@@ -247,14 +248,14 @@ describe( 'TableUI', () => {
 
 			insertColumnBeforeCommand.isEnabled = false;
 
-			expect( items.get( 1 ).isEnabled ).to.be.false;
+			expect( items.get( 2 ).isEnabled ).to.be.false;
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
 			insertColumnAfterCommand.isEnabled = false;
-			expect( items.get( 2 ).isEnabled ).to.be.false;
+			expect( items.get( 3 ).isEnabled ).to.be.false;
 
 			removeColumnCommand.isEnabled = false;
-			expect( items.get( 3 ).isEnabled ).to.be.false;
+			expect( items.get( 4 ).isEnabled ).to.be.false;
 			expect( dropdown.buttonView.isEnabled ).to.be.false;
 		} );
 
@@ -309,13 +310,14 @@ describe( 'TableUI', () => {
 		it( 'should have proper items in panel', () => {
 			const listView = dropdown.listView;
 
-			const labels = listView.items.map( ( { label } ) => label );
+			const labels = listView.items.map( item => item instanceof ListSeparatorView ? '|' : item.label );
 
 			expect( labels ).to.deep.equal( [
 				'Merge cell up',
 				'Merge cell right',
 				'Merge cell down',
 				'Merge cell left',
+				'|',
 				'Split cell vertically',
 				'Split cell horizontally'
 			] );
@@ -342,8 +344,8 @@ describe( 'TableUI', () => {
 			expect( items.get( 1 ).isEnabled ).to.be.true;
 			expect( items.get( 2 ).isEnabled ).to.be.true;
 			expect( items.get( 3 ).isEnabled ).to.be.true;
-			expect( items.get( 4 ).isEnabled ).to.be.true;
 			expect( items.get( 5 ).isEnabled ).to.be.true;
+			expect( items.get( 6 ).isEnabled ).to.be.true;
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
 			mergeCellUpCommand.isEnabled = false;
@@ -363,10 +365,10 @@ describe( 'TableUI', () => {
 			expect( items.get( 3 ).isEnabled ).to.be.false;
 
 			splitCellVerticallyCommand.isEnabled = false;
-			expect( items.get( 4 ).isEnabled ).to.be.false;
+			expect( items.get( 5 ).isEnabled ).to.be.false;
 
 			splitCellHorizontallyCommand.isEnabled = false;
-			expect( items.get( 5 ).isEnabled ).to.be.false;
+			expect( items.get( 6 ).isEnabled ).to.be.false;
 
 			expect( dropdown.buttonView.isEnabled ).to.be.false;
 		} );
