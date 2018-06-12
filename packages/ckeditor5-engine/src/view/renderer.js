@@ -237,15 +237,17 @@ export default class Renderer {
 	}
 
 	/**
-	 * Updates viewElement children mappings. Children which were replaced in the view structure by the similar
-	 * element (same tag name) are treated as 'replaced'. Their mappings are rebind to the corresponding,
-	 * existing DOM element so they will not be replaced by a new DOM element during rendering.
+	 * Updates mapping of `viewElement`'s children.
+	 *
+	 * Children which were replaced in the view structure by similar elements (same tag name) are treated as 'replaced'.
+	 * This means that we can update their mappings so the new view elements are mapped to the existing DOM elements.
+	 * Thanks to that we won't need to re-render these elements completely.
 	 *
 	 * @private
 	 * @param {module:engine/view/node~Node} viewElement The view element which children mappings will be updated.
 	 */
 	_updateChildrenMappings( viewElement ) {
-		// We do not perform any operations on DOM here so there is no need to bind view element or convert its children.
+		// We're diffing only so we don't have to bind anything.
 		const diff = this._diffElementChildren( viewElement, { bind: false, withChildren: false } );
 
 		if ( diff ) {
