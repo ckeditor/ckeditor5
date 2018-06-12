@@ -384,13 +384,12 @@ export default class Document {
 	 *			console.log( 'The Document has changed!' );
 	 *		} );
 	 *
-	 * If, however, you only want to be notified about structure changes, then check whether the
-	 * {@link module:engine/model/differ~Differ differ} contains any changes:
+	 * If, however, you only want to be notified about the data changes, then use the
+	 * {@link module:engine/model/document~Document#event:change:data change:data event},
+	 * which fires for document structure changes and marker changes (which affects the data).
 	 *
-	 *		model.document.on( 'change', () => {
-	 *			if ( model.document.differ.getChanges().length > 0 ) {
-	 *				console.log( 'The Document has changed!' );
-	 *			}
+	 *		model.document.on( 'change:data', () => {
+	 *			console.log( 'The data has changed!' );
 	 *		} );
 	 *
 	 * @event change
@@ -398,22 +397,18 @@ export default class Document {
 	 */
 
 	/**
-	 * Fired after each {@link module:engine/model/model~Model#enqueueChange `enqueueChange()` block},
-	 * which changes the data model or the outermost {@link module:engine/model/model~Model#change `change()` block}
-	 * was executed and the document has been changed during that block's execution.
-	 *
-	 * This event fires before the {@link module:engine/model/model~Model#change} event.
-	 *
-	 * The changes which this event will cover include:
-	 *
+	 * Fired for the data changes:
 	 * * document structure changes,
 	 * * marker changes (which affects the data).
 	 *
-	 * If you want to be notified about the data changes, then simply listen to this event like this:
+	 * If you want to be notified about the data changes, then simply listen to this event:
 	 *
 	 *		model.document.on( 'change:data', () => {
-	 *			console.log( 'The document's data has changed!' );
+	 *			console.log( 'The data has changed!' );
 	 *		} );
+	 *
+	 * If you would like to listen to all changes, then check the
+	 * {@link module:engine/model/document~Document#event:change change event}.
 	 *
 	 * @event change:data
 	 * @param {module:engine/model/batch~Batch} batch The batch that was used in the executed changes block.
