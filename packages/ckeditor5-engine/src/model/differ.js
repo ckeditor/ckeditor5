@@ -247,11 +247,11 @@ export default class Differ {
 	}
 
 	/**
-	 * Checks whether some of buffered marker affects the data model or whether some element will change.
+	 * Checks whether some of buffered marker affects the data model or whether some element changed.
 	 *
-	 * @returns {Boolean} `true` if buffered markers or changes in elements will affect the data model.
+	 * @returns {Boolean} `true` if buffered markers or changes in elements affects the data model.
 	 */
-	willDataChange() {
+	hasDataChanges() {
 		for ( const [ , change ] of this._changedMarkers ) {
 			if ( change.affectsData ) {
 				return true;
