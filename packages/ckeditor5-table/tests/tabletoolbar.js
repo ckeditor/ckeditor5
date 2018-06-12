@@ -117,10 +117,10 @@ describe( 'TableToolbar', () => {
 			editor.ui.focusTracker.isFocused = true;
 		} );
 
-		it( 'should show the toolbar on render when the table is selected', () => {
+		it( 'should not show the toolbar on render when the table is selected', () => {
 			setData( model, '<paragraph>foo</paragraph>[<table><tableRow><tableCell></tableCell></tableRow></table>]' );
 
-			expect( balloon.visibleView ).to.equal( toolbar );
+			expect( balloon.visibleView ).to.be.null;
 		} );
 
 		it( 'should show the toolbar on render when the table content is selected', () => {
