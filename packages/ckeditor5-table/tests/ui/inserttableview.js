@@ -87,6 +87,12 @@ describe( 'InsertTableView', () => {
 				expect( view.label ).to.equal( '3 x 7' );
 			} );
 
+			it( 'mousedown event should be prevented', () => {
+				const ret = view.element.dispatchEvent( new Event( 'mousedown', { cancelable: true } ) );
+
+				expect( ret ).to.false;
+			} );
+
 			describe( 'DOM', () => {
 				it( 'fires execute on "click" event', () => {
 					const spy = sinon.spy();
