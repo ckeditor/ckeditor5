@@ -116,7 +116,7 @@ export default class Renderer {
 	}
 
 	/**
-	 * Marks node to be synchronized with the DOM.
+	 * Marks node to be updated in the DOM by {@link #render `render()`}.
 	 *
 	 * Note that only view nodes which parents have corresponding DOM elements need to be marked to be synchronized.
 	 *
