@@ -112,9 +112,9 @@ export default class TableToolbar extends Plugin {
 		if ( !editor.ui.focusTracker.isFocused ) {
 			this._hideToolbar();
 		} else {
-			const viewSeleciton = editor.editing.view.document.selection;
+			const viewSelection = editor.editing.view.document.selection;
 
-			if ( isTableWidgetSelected( viewSeleciton ) || isTableContentSelected( viewSeleciton ) ) {
+			if ( isTableContentSelected( viewSelection ) ) {
 				this._showToolbar();
 			} else {
 				this._hideToolbar();
