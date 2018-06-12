@@ -19,4 +19,8 @@
 			z-index: var(--ck-z-default);
 		}
 	}
+
+	& .ck-list__separator {
+		display: block;
+	}
 }

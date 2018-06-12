@@ -19,6 +19,7 @@ import View from '../../src/view';
 import ToolbarView from '../../src/toolbar/toolbarview';
 import { createDropdown, addToolbarToDropdown, addListToDropdown } from '../../src/dropdown/utils';
 import ListItemView from '../../src/list/listitemview';
+import ListSeparatorView from '../../src/list/listseparatorview';
 import ListView from '../../src/list/listview';
 
 const assertBinding = utilsTestUtils.assertBinding;
@@ -348,6 +349,14 @@ describe( 'utils', () => {
 				} );
 
 				dropdownView.listView.items.get( 0 ).fire( 'execute' );
+			} );
+
+			it( 'is filled with separators', () => {
+				const itemModel = new Model( { separator: true } );
+
+				items.add( itemModel );
+
+				expect( dropdownView.listView.items.get( 0 ) ).to.be.instanceOf( ListSeparatorView );
 			} );
 		} );
 	} );
