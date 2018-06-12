@@ -397,7 +397,7 @@ export default class Document {
 	 */
 
 	/**
-	 * Fired for the data changes:
+	 * Fired when the data changes:
 	 * * document structure changes,
 	 * * marker changes (which affects the data).
 	 *
