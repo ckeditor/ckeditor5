@@ -482,7 +482,45 @@ describe( 'Document', () => {
 				writer.insertText( 'foo', docFrag, 0 );
 			} );
 
-			expect( spy.calledOnce ).to.be.false;
+			sinon.assert.notCalled( spy );
+		} );
+
+		it( 'should be fired when updated marker affects data', () => {
+			const root = doc.createRoot();
+			root._appendChild( new Text( 'foo' ) );
+
+			const sandbox = sinon.createSandbox();
+			const changeDataSpy = sandbox.spy();
+			const changeSpy = sandbox.spy();
+
+			doc.on( 'change:data', changeDataSpy );
+			doc.on( 'change', changeSpy );
+
+			model.change( writer => {
+				const range = Range.createFromParentsAndOffsets( root, 2, root, 4 );
+				writer.addMarker( 'name', { range, usingOperation: false } );
+			} );
+
+			sinon.assert.calledOnce( changeSpy );
+			sinon.assert.notCalled( changeDataSpy );
+
+			sandbox.resetHistory();
+
+			model.change( writer => {
+				writer.updateMarker( 'name', { affectsData: true } );
+			} );
+
+			sinon.assert.calledOnce( changeSpy );
+			sinon.assert.calledOnce( changeDataSpy );
+
+			sandbox.resetHistory();
+
+			model.change( writer => {
+				writer.updateMarker( 'name', { affectsData: false } );
+			} );
+
+			sinon.assert.calledOnce( changeSpy );
+			sinon.assert.notCalled( changeDataSpy );
 		} );
 	} );
 
