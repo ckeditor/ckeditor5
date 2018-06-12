@@ -930,12 +930,12 @@ export default class Writer {
 
 		if ( !hasUsingOperationDefined && !options.range && !affectsDataDefined ) {
 			/**
-			 * One of options is required - provide range, usingOperations or affectsData.
+			 * One of the options is required - provide range, usingOperations or affectsData.
 			 *
 			 * @error writer-updateMarker-wrong-options
 			 */
 			throw new CKEditorError(
-				'writer-updateMarker-wrong-options: One of options is required - provide range, usingOperations or affectsData.'
+				'writer-updateMarker-wrong-options: One of the options is required - provide range, usingOperations or affectsData.'
 			);
 		}
 

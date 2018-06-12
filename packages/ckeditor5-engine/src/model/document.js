@@ -407,9 +407,9 @@ export default class Document {
 	 * The changes which this event will cover include:
 	 *
 	 * * document structure changes,
-	 * * marker changes, which affects the data model.
+	 * * marker changes (which affects the data).
 	 *
-	 * If you want to be notified about the document's model changes, then simply listen to this event like this:
+	 * If you want to be notified about the data changes, then simply listen to this event like this:
 	 *
 	 *		model.document.on( 'change:data', () => {
 	 *			console.log( 'The document's data has changed!' );
