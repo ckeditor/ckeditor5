@@ -385,7 +385,7 @@ export default class Document {
 	 *		} );
 	 *
 	 * If, however, you only want to be notified about the data changes, then use the
-	 * {@link module:engine/model/document~Document#event:change:data change:data event},
+	 * {@link module:engine/model/document~Document#event:change:data change:data} event,
 	 * which fires for document structure changes and marker changes (which affects the data).
 	 *
 	 *		model.document.on( 'change:data', () => {
@@ -397,18 +397,18 @@ export default class Document {
 	 */
 
 	/**
-	 * Fired when the data changes:
+	 * Fired when the data changes, which includes:
 	 * * document structure changes,
 	 * * marker changes (which affects the data).
 	 *
-	 * If you want to be notified about the data changes, then simply listen to this event:
+	 * If you want to be notified about the data changes, then listen to this event:
 	 *
 	 *		model.document.on( 'change:data', () => {
 	 *			console.log( 'The data has changed!' );
 	 *		} );
 	 *
 	 * If you would like to listen to all changes, then check the
-	 * {@link module:engine/model/document~Document#event:change change event}.
+	 * {@link module:engine/model/document~Document#event:change change} event.
 	 *
 	 * @event change:data
 	 * @param {module:engine/model/batch~Batch} batch The batch that was used in the executed changes block.
