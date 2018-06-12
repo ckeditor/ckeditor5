@@ -18,21 +18,21 @@ import remove from '@ckeditor/ckeditor5-utils/src/dom/remove';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
-import fastDiff from '@ckeditor/ckeditor5-utils/src/fastdiff';
 import isNode from '@ckeditor/ckeditor5-utils/src/dom/isnode';
+import fastDiff from '@ckeditor/ckeditor5-utils/src/fastdiff';
 
 /**
- * Renderer updates DOM structure and selection, to make them a reflection of the view structure and selection.
+ * Renderer is responsible for updating the DOM structure and the DOM selection based on
+ * the {@link module:engine/view/renderer~Renderer#markToSync information about updated view nodes}.
+ * In other words, it renders the view to the DOM.
  *
- * View nodes which may need to be rendered needs to be {@link module:engine/view/renderer~Renderer#markToSync marked}.
- * Then, on {@link module:engine/view/renderer~Renderer#render render}, renderer compares view nodes with DOM nodes
- * in order to check which ones really need to be refreshed. Finally, it creates DOM nodes from these view nodes,
- * {@link module:engine/view/domconverter~DomConverter#bindElements binds} them and inserts into the DOM tree.
+ * Its main responsibility is to make only the necessary, minimal changes to the DOM. However, unlike in many
+ * virtual DOM implementations, the primary reason for doing minimal changes is not the performance but ensuring
+ * that native editing features such as text composition, autocompletion, spell checking, selection's x-index are
+ * affected as little as possible.
  *
- * Every time {@link module:engine/view/renderer~Renderer#render render} is called, renderer additionally checks if
- * {@link module:engine/view/renderer~Renderer#selection selection} needs update and updates it if so.
- *
- * Renderer uses {@link module:engine/view/domconverter~DomConverter} to transform and bind nodes.
+ * Renderer uses {@link module:engine/view/domconverter~DomConverter} to transform view nodes and positions
+ * to and from the DOM.
  */
 export default class Renderer {
 	/**
@@ -91,20 +91,20 @@ export default class Renderer {
 		this.selection = selection;
 
 		/**
-		 * The text node in which the inline filler was rendered.
-		 *
-		 * @private
-		 * @member {Text}
-		 */
-		this._inlineFiller = null;
-
-		/**
 		 * Indicates if the view document is focused and selection can be rendered. Selection will not be rendered if
 		 * this is set to `false`.
 		 *
 		 * @member {Boolean}
 		 */
 		this.isFocused = false;
+
+		/**
+		 * The text node in which the inline filler was rendered.
+		 *
+		 * @private
+		 * @member {Text}
+		 */
+		this._inlineFiller = null;
 
 		/**
 		 * DOM element containing fake selection.
@@ -116,7 +116,7 @@ export default class Renderer {
 	}
 
 	/**
-	 * Mark node to be synchronized.
+	 * Marks node to be synchronized with the DOM.
 	 *
 	 * Note that only view nodes which parents have corresponding DOM elements need to be marked to be synchronized.
 	 *
@@ -155,27 +155,14 @@ export default class Renderer {
 	}
 
 	/**
-	 * Render method checks {@link #markedAttributes},
-	 * {@link #markedChildren} and {@link #markedTexts} and updates all
-	 * nodes which need to be updated. Then it clears all three sets. Also, every time render is called it compares and
-	 * if needed updates the selection.
+	 * Renders all buffered changes ({@link #markedAttributes}, {@link #markedChildren} and {@link #markedTexts}) and
+	 * the current view selection (if needed) to the DOM by applying a minimal set of changes to it.
 	 *
-	 * Renderer tries not to break text composition (e.g. IME) and x-index of the selection,
+	 * Renderer tries not to break the text composition (e.g. IME) and x-index of the selection,
 	 * so it does as little as it is needed to update the DOM.
 	 *
-	 * For attributes it adds new attributes to DOM elements, updates values and removes
-	 * attributes which do not exist in the view element.
-	 *
-	 * For text nodes it updates the text string if it is different. Note that if parent element is marked as an element
-	 * which changed child list, text node update will not be done, because it may not be possible to
-	 * {@link module:engine/view/domconverter~DomConverter#findCorrespondingDomText find a corresponding DOM text}.
-	 * The change will be handled in the parent element.
-	 *
-	 * For elements, which child lists have changed, it calculates a {@link module:utils/diff~diff} and adds or removes children which have
-	 * changed.
-	 *
-	 * Rendering also handles {@link module:engine/view/filler fillers}. Especially, it checks if the inline filler is needed
-	 * at selection position and adds or removes it. To prevent breaking text composition inline filler will not be
+	 * Renderer also handles {@link module:engine/view/filler fillers}. Especially, it checks if the inline filler is needed
+	 * at the selection position and adds or removes it. To prevent breaking text composition inline filler will not be
 	 * removed as long selection is in the text node which needed it at first.
 	 */
 	render() {
