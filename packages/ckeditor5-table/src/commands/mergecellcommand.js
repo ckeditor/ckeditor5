@@ -11,6 +11,7 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import TableWalker from '../tablewalker';
+import { updateNumericAttribute } from './utils';
 
 /**
  * The merge cell command.
@@ -80,6 +81,13 @@ export default class MergeCellCommand extends Command {
 			const cellToRemove = isMergeNext ? cellToMerge : tableCell;
 
 			writer.move( Range.createIn( cellToRemove ), Position.createAt( cellToExpand, 'end' ) );
+
+			let rowToCheck;
+
+			if ( !this.isHorizontal ) {
+				rowToCheck = checkEmptyRows( cellToRemove );
+			}
+
 			writer.remove( cellToRemove );
 
 			const spanAttribute = this.isHorizontal ? 'colspan' : 'rowspan';
@@ -89,6 +97,22 @@ export default class MergeCellCommand extends Command {
 			writer.setAttribute( spanAttribute, cellSpan + cellToMergeSpan, cellToExpand );
 
 			writer.setSelection( Range.createIn( cellToExpand ) );
+
+			if ( rowToCheck ) {
+				const table = rowToCheck.parent;
+
+				const removedRowIndex = table.getChildIndex( rowToCheck );
+
+				for ( const { cell, row, rowspan } of new TableWalker( table, { endRow: removedRowIndex } ) ) {
+					const overlapsRemovedRow = row + rowspan - 1 >= removedRowIndex;
+
+					if ( overlapsRemovedRow ) {
+						updateNumericAttribute( 'rowspan', rowspan - 1, cell, writer );
+					}
+				}
+
+				writer.remove( rowToCheck );
+			}
 		} );
 	}
 
@@ -181,4 +205,12 @@ function getVerticalCell( tableCell, direction ) {
 	} );
 
 	return cellToMergeData && cellToMergeData.cell;
+}
+
+function checkEmptyRows( tableCell ) {
+	const tableRow = tableCell.parent;
+
+	if ( tableRow.childCount == 1 ) {
+		return tableRow;
+	}
 }

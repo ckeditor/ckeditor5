@@ -380,7 +380,7 @@ describe( 'MergeCellCommand', () => {
 			} );
 		} );
 
-		describe( 'execute()', () => {
+		describe.only( 'execute()', () => {
 			it( 'should merge table cells ', () => {
 				setData( model, modelTable( [
 					[ '00', '01[]' ],
@@ -392,6 +392,21 @@ describe( 'MergeCellCommand', () => {
 				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 					[ '00', { rowspan: 2, contents: '[0111]' } ],
 					[ '10' ]
+				] ) );
+			} );
+
+			it( 'should remove empty row if merging table cells ', () => {
+				setData( model, modelTable( [
+					[ { rowspan: 2, contents: '00' }, '01[]', { rowspan: 3, contents: '02' } ],
+					[ '11' ],
+					[ '20', '21' ]
+				] ) );
+
+				command.execute();
+
+				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+					[ '00', '[0111]', { rowspan: 2, contents: '02' } ],
+					[ '20', '21' ]
 				] ) );
 			} );
 		} );
