@@ -53,7 +53,7 @@ describe( 'MarkerCollection', () => {
 			expect( marker.managedUsingOperations ).to.be.false;
 			expect( marker.affectsData ).to.be.false;
 			expect( marker.getRange().isEqual( range ) ).to.be.true;
-			sinon.assert.calledWithExactly( markers.fire, 'update:name', result, null, range, false );
+			sinon.assert.calledWithExactly( markers.fire, 'update:name', result, null, range );
 		} );
 
 		it( 'should create a marker marked as managed by operations', () => {
@@ -80,7 +80,7 @@ describe( 'MarkerCollection', () => {
 			expect( result ).to.equal( marker );
 			expect( marker.getRange().isEqual( range2 ) ).to.be.true;
 
-			sinon.assert.calledWithExactly( markers.fire, 'update:name', marker, range, range2, false );
+			sinon.assert.calledWithExactly( markers.fire, 'update:name', marker, range, range2 );
 			sinon.assert.calledOnce( marker._detachLiveRange );
 			sinon.assert.calledOnce( marker._detachLiveRange );
 		} );
@@ -100,7 +100,7 @@ describe( 'MarkerCollection', () => {
 			expect( marker.managedUsingOperations ).to.be.true;
 			expect( marker.getRange().isEqual( range ) ).to.be.true;
 
-			sinon.assert.calledWithExactly( markers.fire, 'update:name', marker, range, range, false );
+			sinon.assert.calledWithExactly( markers.fire, 'update:name', marker, range, range );
 			sinon.assert.notCalled( marker._detachLiveRange );
 			sinon.assert.notCalled( marker._attachLiveRange );
 		} );
