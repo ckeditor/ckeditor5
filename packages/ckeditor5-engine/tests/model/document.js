@@ -318,7 +318,7 @@ describe( 'Document', () => {
 				writer.insertText( 'foo', doc.getRoot(), 0 );
 			} );
 
-			expect( spy.calledOnce ).to.be.true;
+			sinon.assert.calledOnce( spy );
 		} );
 
 		it( 'should be fired if there was a selection change in an (enqueue)change block', () => {
@@ -333,7 +333,7 @@ describe( 'Document', () => {
 				writer.setSelection( Range.createFromParentsAndOffsets( root, 2, root, 2 ) );
 			} );
 
-			expect( spy.calledOnce ).to.be.true;
+			sinon.assert.calledOnce( spy );
 		} );
 
 		it( 'should not be fired if writer was used on non-document tree', () => {
@@ -349,7 +349,7 @@ describe( 'Document', () => {
 				writer.insertText( 'foo', docFrag, 0 );
 			} );
 
-			expect( spy.calledOnce ).to.be.false;
+			sinon.assert.notCalled( spy );
 		} );
 	} );
 
@@ -367,27 +367,7 @@ describe( 'Document', () => {
 				writer.insertText( 'foo', doc.getRoot(), 0 );
 			} );
 
-			expect( spy.calledOnce ).to.be.true;
-		} );
-
-		it( 'should be fired before the change event', () => {
-			doc.createRoot();
-
-			const callOrder = [];
-
-			doc.on( 'change:data', () => {
-				callOrder.push( 1 );
-			} );
-
-			doc.on( 'change', () => {
-				callOrder.push( 2 );
-			} );
-
-			model.change( writer => {
-				writer.insertText( 'foo', doc.getRoot(), 0 );
-			} );
-
-			expect( callOrder ).to.deep.equal( [ 1, 2 ] );
+			sinon.assert.calledOnce( spy );
 		} );
 
 		it( 'should not be fired if only selection changes', () => {
