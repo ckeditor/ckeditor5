@@ -237,7 +237,7 @@ function renderDropdown() {
 	} );
 
 	collection.add( new Model( {
-		separator: true
+		isSeparator: true
 	} ), 2 );
 
 	ui.listDropdown.add( toolbar( [
