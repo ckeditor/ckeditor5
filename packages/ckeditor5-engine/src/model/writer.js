@@ -794,10 +794,10 @@ export default class Writer {
 	 * {@link module:engine/model/markercollection~Marker marker class description} to learn about the difference between
 	 * markers managed by operations and not-managed by operations.
 	 *
-	 * The `options.affectData` parameter, which defaults to `false`, allows you to create a marker, that affects the data.
-	 * When set to true it fires the {@link module:engine/model/document~Document#event:change:data `change:data`} event.
-	 * When set to false it fires the {@link module:engine/model/document~Document#event:change `change`} event. the `affectsData` property
-	 * should be true when the marker change changes the data returned by {@link module:core/editor/editor~Editor#getData} method.
+	 * The `options.affectsData` parameter, which defaults to `false`, allows you to define if a marker affects the data. It should be
+	 * `true` when the marker change changes the data returned by {@link module:core/editor/editor~Editor#getData} method.
+	 * When set to `true` it fires the {@link module:engine/model/document~Document#event:change:data `change:data`} event.
+	 * When set to `false` it fires the {@link module:engine/model/document~Document#event:change `change`} event.
 	 *
 	 * Create marker directly base on marker's name:
 	 *
@@ -879,9 +879,10 @@ export default class Writer {
 	 * {@link module:engine/model/markercollection~Marker marker class description} to learn about the difference between
 	 * markers managed by operations and not-managed by operations. It is possible to change this option for an existing marker.
 	 *
-	 * The `options.affectData` parameter allows you to inform the engine, that this marker affects the editor data.
-	 * It impacts the performance, because changes in markers with set `options.affectData:false` do not cause firing the
-	 * {@link module:engine/model/document~Document#event:change:data `change:data`} event.
+	 * The `options.affectsData` parameter, which defaults to `false`, allows you to define if a marker affects the data. It should be
+	 * `true` when the marker change changes the data returned by {@link module:core/editor/editor~Editor#getData} method.
+	 * When set to `true` it fires the {@link module:engine/model/document~Document#event:change:data `change:data`} event.
+	 * When set to `false` it fires the {@link module:engine/model/document~Document#event:change `change`} event.
 	 *
 	 * Update marker directly base on marker's name:
 	 *
