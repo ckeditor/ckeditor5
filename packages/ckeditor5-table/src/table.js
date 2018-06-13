@@ -13,6 +13,8 @@ import TableEditing from './tableediting';
 import TableUI from './tableui';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 
+import '../theme/table.css';
+
 /**
  * The table plugin.
  *
