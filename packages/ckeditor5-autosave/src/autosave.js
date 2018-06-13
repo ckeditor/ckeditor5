@@ -115,12 +115,12 @@ export default class Autosave extends Plugin {
 		const pendingActions = editor.plugins.get( PendingActions );
 
 		this.listenTo( doc, 'change:data', () => {
-			this._addAction();
+			this._incrementCounter();
 
 			const willOriginalFunctionBeCalled = this._throttledSave();
 
 			if ( !willOriginalFunctionBeCalled ) {
-				this._removeAction();
+				this._decrementCounter();
 			}
 		} );
 
@@ -171,7 +171,7 @@ export default class Autosave extends Plugin {
 		// Marker's change may not produce an operation, so the document's version
 		// can be the same after that change.
 		if ( !this.provider || version < this._lastDocumentVersion ) {
-			this._removeAction();
+			this._decrementCounter();
 
 			return;
 		}
@@ -180,14 +180,14 @@ export default class Autosave extends Plugin {
 
 		Promise.resolve( this.provider.save() )
 			.then( () => {
-				this._removeAction();
+				this._decrementCounter();
 			} );
 	}
 
 	/**
 	 * @private
 	 */
-	_addAction() {
+	_incrementCounter() {
 		this._saveActionCounter++;
 
 		if ( !this._action ) {
@@ -199,7 +199,7 @@ export default class Autosave extends Plugin {
 	/**
 	 * @private
 	 */
-	_removeAction() {
+	_decrementCounter() {
 		this._saveActionCounter--;
 
 		if ( this._saveActionCounter === 0 ) {
