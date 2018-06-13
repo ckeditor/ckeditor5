@@ -8,6 +8,7 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import Selection from '@ckeditor/ckeditor5-engine/src/model/selection';
 import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import ViewText from '@ckeditor/ckeditor5-engine/src/view/text';
@@ -40,10 +41,20 @@ export default class Input extends Plugin {
 
 		// TODO The above default configuration value should be defined using editor.config.define() once it's fixed.
 
+		this._latestCompositionSelection = null;
+
 		editor.commands.add( 'input', inputCommand );
 
 		this.listenTo( editingView.document, 'keydown', ( evt, data ) => {
 			this._handleKeydown( data, inputCommand );
+		}, { priority: 'lowest' } );
+
+		this.listenTo( editingView.document, 'compositionstart', () => {
+			this._handleCompositionstart( inputCommand );
+		}, { priority: 'lowest' } );
+
+		this.listenTo( editingView.document, 'compositionend', () => {
+			this._handleCompositionend();
 		}, { priority: 'lowest' } );
 
 		this.listenTo( editingView.document, 'mutations', ( evt, mutations, viewSelection ) => {
@@ -71,6 +82,11 @@ export default class Input extends Plugin {
 		const model = this.editor.model;
 		const doc = model.document;
 		const buffer = inputCommand.buffer;
+		const isComposing = this.editor.editing.view.document.isComposing;
+		const isSelectionUnchanged = this._latestCompositionSelection && this._latestCompositionSelection.isEqual( doc.selection );
+
+		// Reset stored composition selection.
+		this._latestCompositionSelection = null;
 
 		// By relying on the state of the input command we allow disabling the entire input easily
 		// by just disabling the input command. We could’ve used here the delete command but that
@@ -85,6 +101,19 @@ export default class Input extends Plugin {
 			return;
 		}
 
+		// If not during composition we should also delete content on '229' key code (composition start).
+		// While composing, deletion should be prevented as it may remove composed sequence (#83).
+		if ( isComposing && evtData.keyCode === 229 ) {
+			return;
+		}
+
+		// If there is a `keydown` event fired with '229' keycode it might be related to recent composition.
+		// Check if selection is the same as upon ending recent composition, if so do not remove selected content
+		// as it will remove composed sequence (#83).
+		if ( !isComposing && evtData.keyCode === 229 && isSelectionUnchanged ) {
+			return;
+		}
+
 		buffer.lock();
 
 		model.enqueueChange( buffer.batch, () => {
@@ -92,6 +121,51 @@ export default class Input extends Plugin {
 		} );
 
 		buffer.unlock();
+	}
+
+	/**
+	 * Handles the `compositionstart` event. It is used only in special cases to remove the contents
+	 * of a non-collapsed selection so composition itself does not result in complex mutations.
+	 *
+	 * The special case mentioned above is a situation in which the `keydown` event is fired after
+	 * `compositionstart` event. In such cases {@link #_handleKeydown} cannot clear current selection
+	 * contents (because it is too late and will break the composition) so the composition handler takes care of it.
+	 *
+	 * @private
+	 * @param {module:typing/inputcommand~InputCommand} inputCommand
+	 */
+	_handleCompositionstart( inputCommand ) {
+		const model = this.editor.model;
+		const doc = model.document;
+		const buffer = inputCommand.buffer;
+		const isFlatSelection = doc.selection.rangeCount === 1 ? doc.selection.getFirstRange().isFlat : true;
+
+		// If on `compositionstart` there is a non-collapsed selection containing more than one element
+		// it means `_handleKeydown()` method didn't removed its content. It happens usually because of
+		// events different order (`compositionstart` before `keydown`) - observed only in Safari (#83).
+		if ( doc.selection.isCollapsed || isFlatSelection ) {
+			return;
+		}
+
+		buffer.lock();
+
+		model.enqueueChange( buffer.batch, () => {
+			this.editor.model.deleteContent( doc.selection );
+		} );
+
+		buffer.unlock();
+	}
+
+	/**
+	 * Handles `compositionend` event. It is used to store latest composition selection.
+	 *
+	 * @private
+	 */
+	_handleCompositionend() {
+		// Store current selection on `compositionend`. It is then used in `_handleKeydown()` method
+		// for browsers (Safari) which fire `keydown` event after (and not before) `compositionend`
+		// to detect if selection content should be removed (#83).
+		this._latestCompositionSelection = new Selection( this.editor.model.document.selection );
 	}
 
 	/**
@@ -346,8 +420,7 @@ const safeKeycodes = [
 	33, // PageUp
 	34, // PageDown
 	35, // Home
-	36, // End
-	229 // Composition start key
+	36 // End
 ];
 
 // Function keys.
