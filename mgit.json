@@ -31,7 +31,7 @@
     "@ckeditor/ckeditor5-markdown-gfm": "ckeditor/ckeditor5-markdown-gfm#7979f5d",
     "@ckeditor/ckeditor5-paragraph": "ckeditor/ckeditor5-paragraph#4ad596d",
     "@ckeditor/ckeditor5-table": "ckeditor/ckeditor5-table#d4dc54d",
-    "@ckeditor/ckeditor5-theme-lark": "ckeditor/ckeditor5-theme-lark#1cfd2a6",
+    "@ckeditor/ckeditor5-theme-lark": "ckeditor/ckeditor5-theme-lark#e0d1897",
     "@ckeditor/ckeditor5-typing": "ckeditor/ckeditor5-typing#274fb70",
     "@ckeditor/ckeditor5-ui": "ckeditor/ckeditor5-ui#0808a8c",
     "@ckeditor/ckeditor5-undo": "ckeditor/ckeditor5-undo#5e185b7",
