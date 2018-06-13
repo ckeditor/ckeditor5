@@ -48,7 +48,7 @@ describe( 'ListEditing', () => {
 
 				model.schema.register( 'foo', {
 					allowWhere: '$block',
-					allowAttributes: [ 'indent', 'type' ],
+					allowAttributes: [ 'listIndent', 'listType' ],
 					isBlock: true,
 					isObject: true
 				} );
