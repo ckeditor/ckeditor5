@@ -11,6 +11,7 @@ import View from '../view';
 import IconView from '../icon/iconview';
 import TooltipView from '../tooltip/tooltipview';
 
+import uid from '@ckeditor/ckeditor5-utils/src/uid';
 import { getEnvKeystrokeText } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 import '../../theme/components/button/button.css';
@@ -42,6 +43,7 @@ export default class ButtonView extends View {
 		super( locale );
 
 		const bind = this.bindTemplate;
+		const ariaLabelUid = uid();
 
 		// Implement the Button interface.
 		this.set( 'icon' );
@@ -78,7 +80,7 @@ export default class ButtonView extends View {
 		 * @readonly
 		 * @member {module:ui/view~View} #labelView
 		 */
-		this.labelView = this._createLabelView();
+		this.labelView = this._createLabelView( ariaLabelUid );
 
 		/**
 		 * The icon view of the button. Will be added to {@link #children} when the
@@ -124,7 +126,10 @@ export default class ButtonView extends View {
 					bind.if( 'withText', 'ck-button_with-text' )
 				],
 				type: bind.to( 'type', value => value ? value : 'button' ),
-				tabindex: bind.to( 'tabindex' )
+				tabindex: bind.to( 'tabindex' ),
+				'aria-labelledby': `ck-editor__aria-label_${ ariaLabelUid }`,
+				'aria-disabled': bind.if( 'isEnabled', true, value => !value ),
+				'aria-pressed': bind.if( 'isOn', true )
 			},
 
 			children: this.children,
@@ -191,9 +196,10 @@ export default class ButtonView extends View {
 	 * Creates a label view instance and binds it with button attributes.
 	 *
 	 * @private
+	 * @param {String} ariaLabelUid The aria label UID.
 	 * @returns {module:ui/view~View}
 	 */
-	_createLabelView() {
+	_createLabelView( ariaLabelUid ) {
 		const labelView = new View();
 
 		labelView.setTemplate( {
@@ -203,7 +209,8 @@ export default class ButtonView extends View {
 				class: [
 					'ck',
 					'ck-button__label'
-				]
+				],
+				id: `ck-editor__aria-label_${ ariaLabelUid }`,
 			},
 
 			children: [

@@ -207,7 +207,8 @@ export default class SplitButtonView extends View {
 
 		arrowView.extendTemplate( {
 			attributes: {
-				class: 'ck-splitbutton__arrow'
+				class: 'ck-splitbutton__arrow',
+				'aria-haspopup': true
 			}
 		} );
 
