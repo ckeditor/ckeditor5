@@ -168,7 +168,7 @@ function addListOption( option, editor, commands, dropdownItems ) {
 
 	if ( option === '|' ) {
 		itemModel.set( {
-			separator: true
+			isSeparator: true
 		} );
 	} else {
 		const { commandName, label, bindIsActive } = option;
