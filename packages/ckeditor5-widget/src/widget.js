@@ -154,6 +154,8 @@ export default class Widget extends Plugin {
 			wasHandled = this._handleArrowKeys( isForward );
 		} else if ( isSelectAllKeyCode( domEventData ) ) {
 			wasHandled = this._selectAllNestedEditableContent() || this._selectAllContent();
+		} else if ( keyCode === keyCodes.enter ) {
+			wasHandled = this._handleEnterKey( domEventData.shiftKey );
 		}
 
 		if ( wasHandled ) {
@@ -207,6 +209,7 @@ export default class Widget extends Plugin {
 	/**
 	 * Handles arrow keys.
 	 *
+	 * @private
 	 * @param {Boolean} isForward Set to true if arrow key should be handled in forward direction.
 	 * @returns {Boolean|undefined} Returns `true` if keys were handled correctly.
 	 */
@@ -241,6 +244,34 @@ export default class Widget extends Plugin {
 
 		if ( objectElement2 instanceof ModelElement && schema.isObject( objectElement2 ) ) {
 			this._setSelectionOverElement( objectElement2 );
+
+			return true;
+		}
+	}
+
+	/**
+	 * Handles the enter key, giving users and access to positions in the editable directly before
+	 * (<kbd>Shift</kbd>+<kbd>Enter</kbd>) or after (<kbd>Enter</kbd>) the selected widget.
+	 * It improves the UX, mainly when the widget is the first or last child of the root editable
+	 * and there's no other way to type after or before it.
+	 *
+	 * @private
+	 * @param {Boolean} isBackwards Set to true if the new paragraph is to be inserted before
+	 * the selected widget (<kbd>Shift</kbd>+<kbd>Enter</kbd>).
+	 * @returns {Boolean|undefined} Returns `true` if keys were handled correctly.
+	 */
+	_handleEnterKey( isBackwards ) {
+		const model = this.editor.model;
+		const modelSelection = model.document.selection;
+		const objectElement = modelSelection.getSelectedElement();
+
+		if ( objectElement && model.schema.isObject( objectElement ) ) {
+			model.change( writer => {
+				const paragraph = writer.createElement( 'paragraph' );
+
+				writer.insert( paragraph, objectElement, isBackwards ? 'before' : 'after' );
+				writer.setSelection( paragraph, 'in' );
+			} );
 
 			return true;
 		}

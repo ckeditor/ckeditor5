@@ -681,6 +681,50 @@ describe( 'Widget', () => {
 			);
 		} );
 
+		describe( 'enter', () => {
+			test(
+				'should insert a paragraph after the selected widget upon Enter',
+				'[<widget></widget>]',
+				keyCodes.enter,
+				'<widget></widget><paragraph>[]</paragraph>'
+			);
+
+			test(
+				'should insert a paragraph before the selected widget upon Shift+Enter',
+				'[<widget></widget>]',
+				{ keyCode: keyCodes.enter, shiftKey: true },
+				'<paragraph>[]</paragraph><widget></widget>'
+			);
+
+			test(
+				'should insert a paragraph when not a first-child of the root',
+				'[<widget></widget>]<paragraph>foo</paragraph>',
+				keyCodes.enter,
+				'<widget></widget><paragraph>[]</paragraph><paragraph>foo</paragraph>'
+			);
+
+			test(
+				'should insert a paragraph when not a last-child of the root',
+				'<paragraph>foo</paragraph>[<widget></widget>]',
+				{ keyCode: keyCodes.enter, shiftKey: true },
+				'<paragraph>foo</paragraph><paragraph>[]</paragraph><widget></widget>'
+			);
+
+			test(
+				'should insert a paragraph only when an entire widget is selected (#1)',
+				'<widget><nested>[foo] bar</nested></widget>',
+				keyCodes.enter,
+				'<widget><nested>[] bar</nested></widget>'
+			);
+
+			test(
+				'should insert a paragraph only when an entire widget is selected (#2)',
+				'<paragraph>f[oo</paragraph><widget></widget><paragraph>b]ar</paragraph>',
+				keyCodes.enter,
+				'<paragraph>f[]ar</paragraph>'
+			);
+		} );
+
 		function test( name, data, keyCodeOrMock, expected, expectedView ) {
 			it( name, () => {
 				const domEventDataMock = ( typeof keyCodeOrMock == 'object' ) ? keyCodeOrMock : {
