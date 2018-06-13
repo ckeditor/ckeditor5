@@ -31,15 +31,15 @@ export function modelViewInsertion( evt, data, conversionApi ) {
 	const consumable = conversionApi.consumable;
 
 	if ( !consumable.test( data.item, 'insert' ) ||
-		!consumable.test( data.item, 'attribute:type' ) ||
-		!consumable.test( data.item, 'attribute:indent' )
+		!consumable.test( data.item, 'attribute:listType' ) ||
+		!consumable.test( data.item, 'attribute:listIndent' )
 	) {
 		return;
 	}
 
 	consumable.consume( data.item, 'insert' );
-	consumable.consume( data.item, 'attribute:type' );
-	consumable.consume( data.item, 'attribute:indent' );
+	consumable.consume( data.item, 'attribute:listType' );
+	consumable.consume( data.item, 'attribute:listIndent' );
 
 	const modelItem = data.item;
 	const viewItem = generateLiInUl( modelItem, conversionApi );
@@ -79,7 +79,7 @@ export function modelViewRemove( evt, data, conversionApi ) {
 	// 4. Bring back nested list that was in the removed <li>.
 	const modelItem = conversionApi.mapper.toModelElement( viewItem );
 
-	hoistNestedLists( modelItem.getAttribute( 'indent' ) + 1, data.position, removeRange.start, viewItem, conversionApi );
+	hoistNestedLists( modelItem.getAttribute( 'listIndent' ) + 1, data.position, removeRange.start, viewItem, conversionApi );
 
 	// 5. Unbind removed view item and all children.
 	for ( const child of ViewRange.createIn( removed ).getItems() ) {
@@ -101,7 +101,7 @@ export function modelViewRemove( evt, data, conversionApi ) {
  * @param {Object} conversionApi Conversion interface.
  */
 export function modelViewChangeType( evt, data, conversionApi ) {
-	if ( !conversionApi.consumable.consume( data.item, 'attribute:type' ) ) {
+	if ( !conversionApi.consumable.consume( data.item, 'attribute:listType' ) ) {
 		return;
 	}
 
@@ -130,7 +130,7 @@ export function modelViewChangeType( evt, data, conversionApi ) {
 }
 
 /**
- * A model-to-view converter for `indent` attribute change on `listItem` model element.
+ * A model-to-view converter for `listIndent` attribute change on `listItem` model element.
  *
  * @see module:engine/conversion/downcastdispatcher~DowncastDispatcher#event:attribute
  * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
@@ -138,7 +138,7 @@ export function modelViewChangeType( evt, data, conversionApi ) {
  * @param {Object} conversionApi Conversion interface.
  */
 export function modelViewChangeIndent( evt, data, conversionApi ) {
-	if ( !conversionApi.consumable.consume( data.item, 'attribute:indent' ) ) {
+	if ( !conversionApi.consumable.consume( data.item, 'attribute:listIndent' ) ) {
 		return;
 	}
 
@@ -331,7 +331,7 @@ export function modelViewMergeAfter( evt, data, conversionApi ) {
 /**
  * A view-to-model converter that converts `<li>` view elements into `listItem` model elements.
  *
- * To set correct values of the `type` and `indent` attributes the converter:
+ * To set correct values of the `listType` and `listIndent` attributes the converter:
  * * checks `<li>`'s parent,
  * * stores and increases the `conversionApi.store.indent` value when `<li>`'s sub-items are converted.
  *
@@ -350,11 +350,11 @@ export function viewModelConverter( evt, data, conversionApi ) {
 
 		// 2. Handle `listItem` model element attributes.
 		conversionStore.indent = conversionStore.indent || 0;
-		writer.setAttribute( 'indent', conversionStore.indent, listItem );
+		writer.setAttribute( 'listIndent', conversionStore.indent, listItem );
 
 		// Set 'bulleted' as default. If this item is pasted into a context,
 		const type = data.viewItem.parent && data.viewItem.parent.name == 'ol' ? 'numbered' : 'bulleted';
-		writer.setAttribute( 'type', type, listItem );
+		writer.setAttribute( 'listType', type, listItem );
 
 		// `listItem`s created recursively should have bigger indent.
 		conversionStore.indent++;
@@ -570,19 +570,19 @@ export function viewToModelPosition( evt, data ) {
  * In an example below, there is a correct list structure.
  * Then the middle element will be removed so the list structure will become incorrect:
  *
- *		<listItem type="bulleted" indent=0>Item 1</listItem>
- *		<listItem type="bulleted" indent=1>Item 2</listItem>   <--- this is removed.
- *		<listItem type="bulleted" indent=2>Item 3</listItem>
+ *		<listItem listType="bulleted" listIndent=0>Item 1</listItem>
+ *		<listItem listType="bulleted" listIndent=1>Item 2</listItem>   <--- this is removed.
+ *		<listItem listType="bulleted" listIndent=2>Item 3</listItem>
  *
  * List structure after the middle element removed:
  *
- * 		<listItem type="bulleted" indent=0>Item 1</listItem>
- *		<listItem type="bulleted" indent=2>Item 3</listItem>
+ * 		<listItem listType="bulleted" listIndent=0>Item 1</listItem>
+ *		<listItem listType="bulleted" listIndent=2>Item 3</listItem>
  *
  * Should become:
  *
- *		<listItem type="bulleted" indent=0>Item 1</listItem>
- *		<listItem type="bulleted" indent=1>Item 3</listItem>   <--- note that indent got post-fixed.
+ *		<listItem listType="bulleted" listIndent=0>Item 1</listItem>
+ *		<listItem listType="bulleted" listIndent=1>Item 3</listItem>   <--- note that indent got post-fixed.
  *
  * @param {module:engine/model/model~Model} model The data model.
  * @param {module:engine/model/writer~Writer} writer The writer to do changes with.
@@ -602,14 +602,14 @@ export function modelChangePostFixer( model, writer ) {
 				// In case of renamed element.
 				const item = entry.position.nodeAfter;
 
-				if ( item.hasAttribute( 'indent' ) ) {
-					writer.removeAttribute( 'indent', item );
+				if ( item.hasAttribute( 'listIndent' ) ) {
+					writer.removeAttribute( 'listIndent', item );
 
 					applied = true;
 				}
 
-				if ( item.hasAttribute( 'type' ) ) {
-					writer.removeAttribute( 'type', item );
+				if ( item.hasAttribute( 'listType' ) ) {
+					writer.removeAttribute( 'listType', item );
 
 					applied = true;
 				}
@@ -620,9 +620,9 @@ export function modelChangePostFixer( model, writer ) {
 			_addListToFix( posAfter );
 		} else if ( entry.type == 'remove' && entry.name == 'listItem' ) {
 			_addListToFix( entry.position );
-		} else if ( entry.type == 'attribute' && entry.attributeKey == 'indent' ) {
+		} else if ( entry.type == 'attribute' && entry.attributeKey == 'listIndent' ) {
 			_addListToFix( entry.range.start );
-		} else if ( entry.type == 'attribute' && entry.attributeKey == 'type' ) {
+		} else if ( entry.type == 'attribute' && entry.attributeKey == 'listType' ) {
 			_addListToFix( entry.range.start );
 		}
 	}
@@ -667,7 +667,7 @@ export function modelChangePostFixer( model, writer ) {
 		let fixBy = null;
 
 		while ( item && item.is( 'listItem' ) ) {
-			const itemIndent = item.getAttribute( 'indent' );
+			const itemIndent = item.getAttribute( 'listIndent' );
 
 			if ( itemIndent > maxIndent ) {
 				let newIndent;
@@ -683,12 +683,12 @@ export function modelChangePostFixer( model, writer ) {
 					newIndent = itemIndent - fixBy;
 				}
 
-				writer.setAttribute( 'indent', newIndent, item );
+				writer.setAttribute( 'listIndent', newIndent, item );
 
 				applied = true;
 			} else {
 				fixBy = null;
-				maxIndent = item.getAttribute( 'indent' ) + 1;
+				maxIndent = item.getAttribute( 'listIndent' ) + 1;
 			}
 
 			item = item.nextSibling;
@@ -700,9 +700,9 @@ export function modelChangePostFixer( model, writer ) {
 		let prev = null;
 
 		while ( item && item.is( 'listItem' ) ) {
-			const itemIndent = item.getAttribute( 'indent' );
+			const itemIndent = item.getAttribute( 'listIndent' );
 
-			if ( prev && prev.getAttribute( 'indent' ) > itemIndent ) {
+			if ( prev && prev.getAttribute( 'listIndent' ) > itemIndent ) {
 				typesStack = typesStack.slice( 0, itemIndent + 1 );
 			}
 
@@ -710,13 +710,13 @@ export function modelChangePostFixer( model, writer ) {
 				if ( typesStack[ itemIndent ] ) {
 					const type = typesStack[ itemIndent ];
 
-					if ( item.getAttribute( 'type' ) != type ) {
-						writer.setAttribute( 'type', type, item );
+					if ( item.getAttribute( 'listType' ) != type ) {
+						writer.setAttribute( 'listType', type, item );
 
 						applied = true;
 					}
 				} else {
-					typesStack[ itemIndent ] = item.getAttribute( 'type' );
+					typesStack[ itemIndent ] = item.getAttribute( 'listType' );
 				}
 			}
 
@@ -733,18 +733,18 @@ export function modelChangePostFixer( model, writer ) {
  *
  * Example:
  *
- *		<listItem type="bulleted" indent=0>A</listItem>
- *		<listItem type="bulleted" indent=1>B^</listItem>
- *		// At ^ paste:  <listItem type="bulleted" indent=4>X</listItem>
- *		//              <listItem type="bulleted" indent=5>Y</listItem>
- *		<listItem type="bulleted" indent=2>C</listItem>
+ *		<listItem listType="bulleted" listIndent=0>A</listItem>
+ *		<listItem listType="bulleted" listIndent=1>B^</listItem>
+ *		// At ^ paste:  <listItem listType="bulleted" listIndent=4>X</listItem>
+ *		//              <listItem listType="bulleted" listIndent=5>Y</listItem>
+ *		<listItem listType="bulleted" listIndent=2>C</listItem>
  *
  * Should become:
  *
- *		<listItem type="bulleted" indent=0>A</listItem>
- *		<listItem type="bulleted" indent=1>BX</listItem>
- *		<listItem type="bulleted" indent=2>Y/listItem>
- *		<listItem type="bulleted" indent=2>C</listItem>
+ *		<listItem listType="bulleted" listIndent=0>A</listItem>
+ *		<listItem listType="bulleted" listIndent=1>BX</listItem>
+ *		<listItem listType="bulleted" listIndent=2>Y/listItem>
+ *		<listItem listType="bulleted" listIndent=2>C</listItem>
  *
  * @param {module:utils/eventinfo~EventInfo} evt An object containing information about the fired event.
  * @param {Array} args Arguments of {@link module:engine/model/model~Model#insertContent}.
@@ -773,13 +773,13 @@ export function modelIndentPasteFixer( evt, [ content, selection ] ) {
 			// First list item in `data` has indent equal to 0 (it is a first list item). It should have indent equal
 			// to the indent of reference item. We have to fix the first item and all of it's children and following siblings.
 			// Indent of all those items has to be adjusted to reference item.
-			const indentChange = refItem.getAttribute( 'indent' );
+			const indentChange = refItem.getAttribute( 'listIndent' );
 
 			// Fix only if there is anything to fix.
 			if ( indentChange > 0 ) {
 				// Adjust indent of all "first" list items in inserted data.
 				while ( item && item.is( 'listItem' ) ) {
-					item._setAttribute( 'indent', item.getAttribute( 'indent' ) + indentChange );
+					item._setAttribute( 'listIndent', item.getAttribute( 'listIndent' ) + indentChange );
 
 					item = item.nextSibling;
 				}
@@ -794,7 +794,7 @@ export function modelIndentPasteFixer( evt, [ content, selection ] ) {
 function generateLiInUl( modelItem, conversionApi ) {
 	const mapper = conversionApi.mapper;
 	const viewWriter = conversionApi.writer;
-	const listType = modelItem.getAttribute( 'type' ) == 'numbered' ? 'ol' : 'ul';
+	const listType = modelItem.getAttribute( 'listType' ) == 'numbered' ? 'ol' : 'ul';
 	const viewItem = createViewListItemElement( viewWriter );
 
 	const viewList = viewWriter.createContainerElement( listType, null );
@@ -815,11 +815,11 @@ function getSiblingListItem( modelItemOrPosition, options ) {
 	const sameIndent = !!options.sameIndent;
 	const smallerIndent = !!options.smallerIndent;
 
-	const indent = modelItemOrPosition instanceof ModelElement ? modelItemOrPosition.getAttribute( 'indent' ) : options.indent;
+	const indent = modelItemOrPosition instanceof ModelElement ? modelItemOrPosition.getAttribute( 'listIndent' ) : options.listIndent;
 	let item = modelItemOrPosition instanceof ModelElement ? modelItemOrPosition.previousSibling : modelItemOrPosition.nodeBefore;
 
 	while ( item && item.name == 'listItem' ) {
-		const itemIndent = item.getAttribute( 'indent' );
+		const itemIndent = item.getAttribute( 'listIndent' );
 
 		if ( ( sameIndent && indent == itemIndent ) || ( smallerIndent && indent > itemIndent ) ) {
 			return item;
@@ -859,7 +859,7 @@ function injectViewList( modelItem, injectedItem, conversionApi ) {
 	const refItem = getSiblingListItem( modelItem, { sameIndent: true, smallerIndent: true } );
 	const prevItem = modelItem.previousSibling;
 
-	if ( refItem && refItem.getAttribute( 'indent' ) == modelItem.getAttribute( 'indent' ) ) {
+	if ( refItem && refItem.getAttribute( 'listIndent' ) == modelItem.getAttribute( 'listIndent' ) ) {
 		// There is a list item with same indent - we found same-level sibling.
 		// Break the list after it. Inserted view item will be inserted in the broken space.
 		const viewItem = mapper.toViewElement( refItem );
@@ -915,7 +915,7 @@ function injectViewList( modelItem, injectedItem, conversionApi ) {
 			for ( const child of nextViewList.getChildren() ) {
 				const modelChild = mapper.toModelElement( child );
 
-				if ( modelChild && modelChild.getAttribute( 'indent' ) > modelItem.getAttribute( 'indent' ) ) {
+				if ( modelChild && modelChild.getAttribute( 'listIndent' ) > modelItem.getAttribute( 'listIndent' ) ) {
 					lastSubChild = child;
 				} else {
 					break;
@@ -944,14 +944,14 @@ function hoistNestedLists( nextIndent, modelRemoveStartPosition, viewRemoveStart
 	const prevModelItem = getSiblingListItem( modelRemoveStartPosition, {
 		sameIndent: true,
 		smallerIndent: true,
-		indent: nextIndent
+		listIndent: nextIndent
 	} );
 
 	const mapper = conversionApi.mapper;
 	const viewWriter = conversionApi.writer;
 
 	// Indent of found element or `null` if the element has not been found.
-	const prevIndent = prevModelItem ? prevModelItem.getAttribute( 'indent' ) : null;
+	const prevIndent = prevModelItem ? prevModelItem.getAttribute( 'listIndent' ) : null;
 
 	let insertPosition;
 

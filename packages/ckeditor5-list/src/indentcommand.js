@@ -60,7 +60,7 @@ export default class IndentCommand extends Command {
 			let next = lastItem.nextSibling;
 
 			// Check all items after last indented item, as long as their indent is bigger than indent of that item.
-			while ( next && next.name == 'listItem' && next.getAttribute( 'indent' ) > lastItem.getAttribute( 'indent' ) ) {
+			while ( next && next.name == 'listItem' && next.getAttribute( 'listIndent' ) > lastItem.getAttribute( 'listIndent' ) ) {
 				itemsToChange.push( next );
 
 				next = next.nextSibling;
@@ -75,7 +75,7 @@ export default class IndentCommand extends Command {
 			}
 
 			for ( const item of itemsToChange ) {
-				const indent = item.getAttribute( 'indent' ) + this._indentBy;
+				const indent = item.getAttribute( 'listIndent' ) + this._indentBy;
 
 				// If indent is lower than 0, it means that the item got outdented when it was not indented.
 				// This means that we need to convert that list item to paragraph.
@@ -87,7 +87,7 @@ export default class IndentCommand extends Command {
 				}
 				// If indent is >= 0, change the attribute value.
 				else {
-					writer.setAttribute( 'indent', indent, item );
+					writer.setAttribute( 'listIndent', indent, item );
 				}
 			}
 		} );
@@ -111,18 +111,18 @@ export default class IndentCommand extends Command {
 		if ( this._indentBy > 0 ) {
 			// Cannot indent first item in it's list. Check if before `listItem` is a list item that is in same list.
 			// To be in the same list, the item has to have same attributes and cannot be "split" by an item with lower indent.
-			const indent = listItem.getAttribute( 'indent' );
-			const type = listItem.getAttribute( 'type' );
+			const indent = listItem.getAttribute( 'listIndent' );
+			const type = listItem.getAttribute( 'listType' );
 
 			let prev = listItem.previousSibling;
 
-			while ( prev && prev.is( 'listItem' ) && prev.getAttribute( 'indent' ) >= indent ) {
-				if ( prev.getAttribute( 'indent' ) == indent ) {
+			while ( prev && prev.is( 'listItem' ) && prev.getAttribute( 'listIndent' ) >= indent ) {
+				if ( prev.getAttribute( 'listIndent' ) == indent ) {
 					// The item is on the same level.
 					// If it has same type, it means that we found a preceding sibling from the same list.
 					// If it does not have same type, it means that `listItem` is on different list (this can happen only
 					// on top level lists, though).
-					return prev.getAttribute( 'type' ) == type;
+					return prev.getAttribute( 'listType' ) == type;
 				}
 
 				prev = prev.previousSibling;

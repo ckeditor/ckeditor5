@@ -55,7 +55,7 @@ export default class ListEditing extends Plugin {
 		// If there are blocks allowed inside list item, algorithms using `getSelectedBlocks()` will have to be modified.
 		editor.model.schema.register( 'listItem', {
 			inheritAllFrom: '$block',
-			allowAttributes: [ 'type', 'indent' ]
+			allowAttributes: [ 'listType', 'listIndent' ]
 		} );
 
 		// Converters.
@@ -76,10 +76,10 @@ export default class ListEditing extends Plugin {
 		data.downcastDispatcher.on( 'insert', modelViewSplitOnInsert, { priority: 'high' } );
 		data.downcastDispatcher.on( 'insert:listItem', modelViewInsertion );
 
-		editing.downcastDispatcher.on( 'attribute:type:listItem', modelViewChangeType );
-		data.downcastDispatcher.on( 'attribute:type:listItem', modelViewChangeType );
-		editing.downcastDispatcher.on( 'attribute:indent:listItem', modelViewChangeIndent );
-		data.downcastDispatcher.on( 'attribute:indent:listItem', modelViewChangeIndent );
+		editing.downcastDispatcher.on( 'attribute:listType:listItem', modelViewChangeType );
+		data.downcastDispatcher.on( 'attribute:listType:listItem', modelViewChangeType );
+		editing.downcastDispatcher.on( 'attribute:listIndent:listItem', modelViewChangeIndent );
+		data.downcastDispatcher.on( 'attribute:listIndent:listItem', modelViewChangeIndent );
 
 		editing.downcastDispatcher.on( 'remove:listItem', modelViewRemove );
 		editing.downcastDispatcher.on( 'remove', modelViewMergeAfter, { priority: 'low' } );
