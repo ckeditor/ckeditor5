@@ -185,6 +185,8 @@ export default class Autosave extends Plugin {
 	}
 
 	/**
+	 * Increments counter and adds pending action if it not exists.
+	 *
 	 * @private
 	 */
 	_incrementCounter() {
@@ -197,6 +199,9 @@ export default class Autosave extends Plugin {
 	}
 
 	/**
+	 * Decrements counter and removes pending action if counter is empty,
+	 * which means, that no new save action occurred.
+	 *
 	 * @private
 	 */
 	_decrementCounter() {
