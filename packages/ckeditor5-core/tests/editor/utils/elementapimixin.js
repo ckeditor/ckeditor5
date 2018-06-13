@@ -29,7 +29,7 @@ describe( 'ElementApiMixin', () => {
 
 	describe( 'updateEditorElement()', () => {
 		it( 'should be added to editor interface', () => {
-			expect( editor ).have.property( 'updateElement' ).to.be.a( 'function' );
+			expect( editor ).have.property( 'updateSourceElement' ).to.be.a( 'function' );
 		} );
 
 		it( 'sets data to editor element', () => {
@@ -37,9 +37,9 @@ describe( 'ElementApiMixin', () => {
 
 			editor.data.set( 'foo bar' );
 
-			editor.element = editorElement;
+			editor.sourceElement = editorElement;
 
-			editor.updateElement();
+			editor.updateSourceElement();
 
 			expect( editorElement.innerHTML ).to.equal( 'foo bar' );
 		} );

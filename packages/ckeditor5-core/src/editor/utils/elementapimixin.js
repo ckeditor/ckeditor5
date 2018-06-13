@@ -19,8 +19,8 @@ const ElementApiMixin = {
 	/**
 	 * @inheritDoc
 	 */
-	updateElement() {
-		setDataInElement( this.element, this.data.get() );
+	updateSourceElement() {
+		setDataInElement( this.sourceElement, this.data.get() );
 	}
 };
 
@@ -30,7 +30,7 @@ export default ElementApiMixin;
  * Interface describing an editor which replaced a DOM element (was "initialized on an element").
  *
  * Such an editor should provide a method to
- * {@link module:core/editor/utils/elementapimixin~ElementApi#updateElement update the replaced element with the current data}.
+ * {@link module:core/editor/utils/elementapimixin~ElementApi#updateSourceElement update the replaced element with the current data}.
  *
  * @interface ElementApi
  */
@@ -39,11 +39,11 @@ export default ElementApiMixin;
  * The element on which the editor has been initialized.
  *
  * @readonly
- * @member {HTMLElement} #element
+ * @member {HTMLElement} #sourceElement
  */
 
 /**
- * Updates the {@link #element editor element}'s content with the data.
+ * Updates the {@link #sourceElement editor source element}'s content with the data.
  *
- * @method #updateElement
+ * @method #updateSourceElement
  */

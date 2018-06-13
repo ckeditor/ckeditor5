@@ -28,6 +28,13 @@
  * @member {module:core/editor/editorui~EditorUI} #ui
  */
 
+ /**
+  * An HTML element that represents the editor with the UI.
+  *
+  * @readonly
+  * @member {HTMLElement} #element
+  */
+
 /**
  * Fired when the editor UI is ready.
  *
