@@ -189,13 +189,13 @@ describe( 'DeleteCommand integration', () => {
 
 		it( 'should not throw an error if content with the image is being removed', () => {
 			setData( model,
-				'<listItem indent="0" type="numbered">OL List i[tem 1</listItem>' +
-				'<listItem indent="0" type="numbered">OL List item 2</listItem>]' +
+				'<listItem listIndent="0" listType="numbered">OL List i[tem 1</listItem>' +
+				'<listItem listIndent="0" listType="numbered">OL List item 2</listItem>]' +
 				'<image alt="bar" imageStyle="side" src="sample.jpg"><caption>[Caption</caption></image>' +
 				'<blockQuote>' +
 					'<paragraph>Quote</paragraph>' +
-					'<listItem indent="0" type="bulleted">Quoted UL List item 1</listItem>' +
-					'<listItem indent="0" type="bulleted">Quote]d UL List item 2</listItem>' +
+					'<listItem listIndent="0" listType="bulleted">Quoted UL List item 1</listItem>' +
+					'<listItem listIndent="0" listType="bulleted">Quote]d UL List item 2</listItem>' +
 					'<paragraph>Quote</paragraph>' +
 				'</blockQuote>'
 			);
