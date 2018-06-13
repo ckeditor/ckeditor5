@@ -59,7 +59,7 @@ describe( 'Autoformat', () => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( model ) ).to.equal( '<listItem indent="0" type="bulleted">[]</listItem>' );
+			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">[]</listItem>' );
 		} );
 
 		it( 'should replace minus character with bulleted list item', () => {
@@ -68,16 +68,16 @@ describe( 'Autoformat', () => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( model ) ).to.equal( '<listItem indent="0" type="bulleted">[]</listItem>' );
+			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">[]</listItem>' );
 		} );
 
 		it( 'should not replace minus character when inside bulleted list item', () => {
-			setData( model, '<listItem indent="0" type="bulleted">-[]</listItem>' );
+			setData( model, '<listItem listIndent="0" listType="bulleted">-[]</listItem>' );
 			model.change( writer => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( model ) ).to.equal( '<listItem indent="0" type="bulleted">- []</listItem>' );
+			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">- []</listItem>' );
 		} );
 	} );
 
@@ -88,7 +88,7 @@ describe( 'Autoformat', () => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( model ) ).to.equal( '<listItem indent="0" type="numbered">[]</listItem>' );
+			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="numbered">[]</listItem>' );
 		} );
 
 		it( 'should replace digit with numbered list item using the parenthesis format', () => {
@@ -97,7 +97,7 @@ describe( 'Autoformat', () => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( model ) ).to.equal( '<listItem indent="0" type="numbered">[]</listItem>' );
+			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="numbered">[]</listItem>' );
 		} );
 
 		it( 'should not replace digit character when there is no . or ) in the format', () => {
@@ -110,12 +110,12 @@ describe( 'Autoformat', () => {
 		} );
 
 		it( 'should not replace digit character when inside numbered list item', () => {
-			setData( model, '<listItem indent="0" type="numbered">1.[]</listItem>' );
+			setData( model, '<listItem listIndent="0" listType="numbered">1.[]</listItem>' );
 			model.change( writer => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( model ) ).to.equal( '<listItem indent="0" type="numbered">1. []</listItem>' );
+			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="numbered">1. []</listItem>' );
 		} );
 	} );
 
@@ -209,21 +209,21 @@ describe( 'Autoformat', () => {
 		} );
 
 		it( 'should not replace greater-than character when inside numbered list', () => {
-			setData( model, '<listItem indent="0" type="numbered">1. >[]</listItem>' );
+			setData( model, '<listItem listIndent="0" listType="numbered">1. >[]</listItem>' );
 			model.change( writer => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( model ) ).to.equal( '<listItem indent="0" type="numbered">1. > []</listItem>' );
+			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="numbered">1. > []</listItem>' );
 		} );
 
 		it( 'should not replace greater-than character when inside buletted list', () => {
-			setData( model, '<listItem indent="0" type="bulleted">1. >[]</listItem>' );
+			setData( model, '<listItem listIndent="0" listType="bulleted">1. >[]</listItem>' );
 			model.change( writer => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( model ) ).to.equal( '<listItem indent="0" type="bulleted">1. > []</listItem>' );
+			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">1. > []</listItem>' );
 		} );
 	} );
 
