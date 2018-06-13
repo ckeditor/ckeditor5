@@ -56,8 +56,8 @@ describe( 'AlignmentEditing', () => {
 		} );
 
 		it( 'is allowed on listItem', () => {
-			expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'type' ) ).to.be.true;
-			expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'indent' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listType' ) ).to.be.true;
+			expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'listIndent' ) ).to.be.true;
 			expect( model.schema.checkAttribute( [ '$root', 'listItem' ], 'alignment' ) ).to.be.true;
 		} );
 
