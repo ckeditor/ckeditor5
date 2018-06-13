@@ -13,6 +13,7 @@ import DropdownButtonView from './button/dropdownbuttonview';
 import ToolbarView from '../toolbar/toolbarview';
 import ListView from '../list/listview';
 import ListItemView from '../list/listitemview';
+import ListSeparatorView from '../list/listseparatorview';
 
 import clickOutsideHandler from '../bindings/clickoutsidehandler';
 
@@ -173,10 +174,16 @@ export function addListToDropdown( dropdownView, items ) {
 	const listView = dropdownView.listView = new ListView( locale );
 
 	listView.items.bindTo( items ).using( itemModel => {
-		const item = new ListItemView( locale );
+		let item;
 
-		// Bind all attributes of the model to the item view.
-		item.bind( ...Object.keys( itemModel ) ).to( itemModel );
+		if ( itemModel.isSeparator ) {
+			item = new ListSeparatorView( locale );
+		} else {
+			item = new ListItemView( locale );
+
+			// Bind all attributes of the model to the item view.
+			item.bind( ...Object.keys( itemModel ) ).to( itemModel );
+		}
 
 		return item;
 	} );
