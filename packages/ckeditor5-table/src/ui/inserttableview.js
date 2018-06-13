@@ -17,6 +17,7 @@ import './../../theme/inserttable.css';
  * It renders a 10x10 grid to choose inserted table size.
  *
  * @extends module:ui/view~View
+ * @implements module:ui/dropdown/dropdownpanelfocusable~DropdownPanelFocusable
  */
 export default class InsertTableView extends View {
 	/**
@@ -123,6 +124,22 @@ export default class InsertTableView extends View {
 		this.on( 'change:rows', () => {
 			this._highlightGridBoxes();
 		} );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	focus() {
+		// The dropdown panel expects DropdownPanelFocusable interface on views passed to dropdown panel. See #30.
+		// The method should be implemented while working on keyboard support for this view. See #22.
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	focusLast() {
+		// The dropdown panel expects DropdownPanelFocusable interface on views passed to dropdown panel. See #30.
+		// The method should be implemented while working on keyboard support for this view. See #22.
 	}
 
 	/**
