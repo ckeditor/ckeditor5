@@ -2270,7 +2270,7 @@ describe( 'Schema', () => {
 			() => {
 				schema.register( 'listItem', {
 					inheritAllFrom: '$block',
-					allowAttributes: [ 'indent', 'type' ]
+					allowAttributes: [ 'listIndent', 'listType' ]
 				} );
 			},
 			() => {
@@ -2351,11 +2351,11 @@ describe( 'Schema', () => {
 			root1 = new Element( '$root', null, [
 				new Element( 'paragraph', null, 'foo' ),
 				new Element( 'paragraph', { alignment: 'right' }, 'bar' ),
-				new Element( 'listItem', { type: 'x', indent: 0 }, 'foo' ),
+				new Element( 'listItem', { listType: 'x', listIndent: 0 }, 'foo' ),
 				new Element( 'heading1', null, 'foo' ),
 				new Element( 'blockQuote', null, [
 					new Element( 'paragraph', null, 'foo' ),
-					new Element( 'listItem', { type: 'x', indent: 0 }, 'foo' ),
+					new Element( 'listItem', { listType: 'x', listIndent: 0 }, 'foo' ),
 					new Element( 'image', null, [
 						new Element( 'caption', null, 'foo' )
 					] )
@@ -2522,11 +2522,11 @@ describe( 'Schema', () => {
 		} );
 
 		it( 'accepts attribute $root>listItem[indent]', () => {
-			expect( schema.checkAttribute( r1lI, 'indent' ) ).to.be.true;
+			expect( schema.checkAttribute( r1lI, 'listIndent' ) ).to.be.true;
 		} );
 
 		it( 'accepts attribute $root>listItem[type]', () => {
-			expect( schema.checkAttribute( r1lI, 'type' ) ).to.be.true;
+			expect( schema.checkAttribute( r1lI, 'listType' ) ).to.be.true;
 		} );
 
 		it( 'accepts attribute $root>image[src]', () => {
@@ -2542,11 +2542,11 @@ describe( 'Schema', () => {
 		} );
 
 		it( 'rejects attribute $root[indent]', () => {
-			expect( schema.checkAttribute( root1, 'indent' ) ).to.be.false;
+			expect( schema.checkAttribute( root1, 'listIndent' ) ).to.be.false;
 		} );
 
 		it( 'rejects attribute $root>paragraph[indent]', () => {
-			expect( schema.checkAttribute( r1p1, 'indent' ) ).to.be.false;
+			expect( schema.checkAttribute( r1p1, 'listIndent' ) ).to.be.false;
 		} );
 
 		it( 'accepts attribute $root>heading1>$text[bold]', () => {
@@ -2558,7 +2558,7 @@ describe( 'Schema', () => {
 		} );
 
 		it( 'rejects attribute $root>blockQuote[indent]', () => {
-			expect( schema.checkAttribute( r1bQ, 'indent' ) ).to.be.false;
+			expect( schema.checkAttribute( r1bQ, 'listIndent' ) ).to.be.false;
 		} );
 
 		it( 'rejects attribute $root>blockQuote[alignment]', () => {
@@ -2566,7 +2566,7 @@ describe( 'Schema', () => {
 		} );
 
 		it( 'rejects attribute $root>image[indent]', () => {
-			expect( schema.checkAttribute( r1i, 'indent' ) ).to.be.false;
+			expect( schema.checkAttribute( r1i, 'listIndent' ) ).to.be.false;
 		} );
 
 		it( 'rejects attribute $root>image[alignment]', () => {

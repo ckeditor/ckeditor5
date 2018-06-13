@@ -247,7 +247,7 @@ describe( 'DataController utils', () => {
 				} );
 				schema.register( 'listItem', {
 					inheritAllFrom: '$block',
-					allowAttributes: [ 'type', 'indent' ]
+					allowAttributes: [ 'listType', 'listIndent' ]
 				} );
 			} );
 
@@ -370,40 +370,40 @@ describe( 'DataController utils', () => {
 
 				it( 'inserts one list item', () => {
 					setData( model, '<paragraph>f[]oo</paragraph>' );
-					insertHelper( '<listItem indent="0" type="bulleted">xyz</listItem>' );
+					insertHelper( '<listItem listIndent="0" listType="bulleted">xyz</listItem>' );
 					expect( getData( model ) ).to.equal( '<paragraph>fxyz[]oo</paragraph>' );
 				} );
 
 				it( 'inserts list item to empty element', () => {
 					setData( model, '<paragraph>[]</paragraph>' );
-					insertHelper( '<listItem indent="0" type="bulleted">xyz</listItem>' );
-					expect( getData( model ) ).to.equal( '<listItem indent="0" type="bulleted">xyz[]</listItem>' );
+					insertHelper( '<listItem listIndent="0" listType="bulleted">xyz</listItem>' );
+					expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">xyz[]</listItem>' );
 				} );
 
 				it( 'inserts three list items at the end of paragraph', () => {
 					setData( model, '<paragraph>foo[]</paragraph>' );
 					insertHelper(
-						'<listItem indent="0" type="bulleted">xxx</listItem>' +
-						'<listItem indent="0" type="bulleted">yyy</listItem>' +
-						'<listItem indent="0" type="bulleted">zzz</listItem>'
+						'<listItem listIndent="0" listType="bulleted">xxx</listItem>' +
+						'<listItem listIndent="0" listType="bulleted">yyy</listItem>' +
+						'<listItem listIndent="0" listType="bulleted">zzz</listItem>'
 					);
 					expect( getData( model ) ).to.equal(
 						'<paragraph>fooxxx</paragraph>' +
-						'<listItem indent="0" type="bulleted">yyy</listItem>' +
-						'<listItem indent="0" type="bulleted">zzz[]</listItem>'
+						'<listItem listIndent="0" listType="bulleted">yyy</listItem>' +
+						'<listItem listIndent="0" listType="bulleted">zzz[]</listItem>'
 					);
 				} );
 
 				it( 'inserts two list items to an empty paragraph', () => {
 					setData( model, '<paragraph>a</paragraph><paragraph>[]</paragraph><paragraph>b</paragraph>' );
 					insertHelper(
-						'<listItem indent="0" type="bulleted">xxx</listItem>' +
-						'<listItem indent="0" type="bulleted">yyy</listItem>'
+						'<listItem listIndent="0" listType="bulleted">xxx</listItem>' +
+						'<listItem listIndent="0" listType="bulleted">yyy</listItem>'
 					);
 					expect( getData( model ) ).to.equal(
 						'<paragraph>a</paragraph>' +
-						'<listItem indent="0" type="bulleted">xxx</listItem>' +
-						'<listItem indent="0" type="bulleted">yyy[]</listItem>' +
+						'<listItem listIndent="0" listType="bulleted">xxx</listItem>' +
+						'<listItem listIndent="0" listType="bulleted">yyy[]</listItem>' +
 						'<paragraph>b</paragraph>'
 					);
 				} );

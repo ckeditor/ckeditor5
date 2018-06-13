@@ -634,7 +634,7 @@ describe( 'debug tools', () => {
 				new ModelElement( 'paragraph', { foo: 'bar' }, [
 					new ModelText( 'This is ' ), new ModelText( 'bold', { bold: true } ), new ModelText( '.' )
 				] ),
-				new ModelElement( 'listItem', { type: 'numbered', indent: 0 }, new ModelText( 'One.' ) ),
+				new ModelElement( 'listItem', { listType: 'numbered', listIndent: 0 }, new ModelText( 'One.' ) ),
 			] );
 
 			const modelRootTree = modelRoot.printTree();
@@ -646,7 +646,7 @@ describe( 'debug tools', () => {
 				'\n\t\t<$text bold=true>bold</$text>' +
 				'\n\t\t.' +
 				'\n\t</paragraph>' +
-				'\n\t<listItem type="numbered" indent=0>' +
+				'\n\t<listItem listType="numbered" listIndent=0>' +
 				'\n\t\tOne.' +
 				'\n\t</listItem>' +
 				'\n</main>'

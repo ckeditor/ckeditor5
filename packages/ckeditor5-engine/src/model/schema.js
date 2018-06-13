@@ -1047,7 +1047,7 @@ mix( Schema, ObservableMixin );
  *
  *		schema.register( 'listItem', {
  *			inheritAllFrom: '$block',
- *			allowAttributes: [ 'type', 'indent' ]
+ *			allowAttributes: [ 'listType', 'listIndent' ]
  *		} );
  *
  * Which translates to:
@@ -1057,7 +1057,7 @@ mix( Schema, ObservableMixin );
  *			allowContentOf: '$block',
  *			allowAttributesOf: '$block',
  *			inheritTypesFrom: '$block',
- *			allowAttributes: [ 'type', 'indent' ]
+ *			allowAttributes: [ 'listType', 'listIndent' ]
  *		} );
  *
  * # Tips
