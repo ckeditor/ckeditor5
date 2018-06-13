@@ -247,8 +247,7 @@ export default class Renderer {
 	 * @param {module:engine/view/node~Node} viewElement The view element which children mappings will be updated.
 	 */
 	_updateChildrenMappings( viewElement ) {
-		// We're diffing only so we don't have to bind anything.
-		const diff = this._diffChildren( viewElement, { bind: false, withChildren: false } );
+		const diff = this._diffChildren( viewElement );
 
 		if ( !diff ) {
 			return;
@@ -282,11 +281,11 @@ export default class Renderer {
 	}
 
 	/**
-	 * Updates mappings of a given view element.
+	 * Updates mappings of a given `viewElement`.
 	 *
 	 * @private
 	 * @param {module:engine/view/node~Node} viewElement The view element which mappings will be updated.
-	 * @param {Node} domElement DOM representation of a given view element.
+	 * @param {Node} domElement The DOM element representing given view element.
 	 */
 	_updateElementMappings( viewElement, domElement ) {
 		// Because we replace new view element mapping with the existing one, the corresponding DOM element
@@ -513,7 +512,7 @@ export default class Renderer {
 	 * Checks if attributes list needs to be updated and possibly updates it.
 	 *
 	 * @private
-	 * @param {module:engine/view/element~Element} viewElement View element to update.
+	 * @param {module:engine/view/element~Element} viewElement The view element to update.
 	 */
 	_updateAttrs( viewElement ) {
 		const domElement = this.domConverter.mapViewToDom( viewElement );
@@ -552,8 +551,8 @@ export default class Renderer {
 	 * filler should be rendered.
 	 */
 	_updateChildren( viewElement, options ) {
-		const diff = this._diffChildren( viewElement,
-			{ inlineFillerPosition: options.inlineFillerPosition, bind: true, withChildren: true } );
+		const inlineFillerPosition = options.inlineFillerPosition;
+		const diff = this._diffChildren( viewElement, inlineFillerPosition );
 
 		if ( !diff ) {
 			return;
@@ -562,7 +561,7 @@ export default class Renderer {
 		const actions = diff.actions;
 		const domElement = diff.domElement;
 		const actualDomChildren = diff.actualDomChildren;
-		const expectedDomChildren = diff.expectedDomChildren;
+		const expectedDomChildren = this._getElementExpectedChildren( viewElement, domElement, { bind: true, inlineFillerPosition } );
 
 		let i = 0;
 		const nodesToUnbind = new Set();
@@ -592,23 +591,20 @@ export default class Renderer {
 	}
 
 	/**
-	 * Compares viewElement actual and expected children and actions sequence which can be used to transform
+	 * Compares `viewElement`'s actual and expected children and returns actions sequence which can be used to transform
 	 * actual children into expected ones.
 	 *
 	 * @private
-	 * @param viewElement
-	 * @param {Object} options
-	 * @param {module:engine/view/position~Position} options.inlineFillerPosition The position on which the inline
+	 * @param {module:engine/view/node~Node} viewElement The view element which children will be compared.
+	 * @param {module:engine/view/position~Position} [inlineFillerPosition=null] The position on which the inline
 	 * filler should be rendered.
-	 * @param {Boolean} options.bind If new view elements should be bind to their corresponding DOM elements.
-	 * @param {Boolean} options.withChildren If children of newly bound view elements should also be converted.
 	 * @returns {Object|null} result
-	 * @returns {Array} result.actions List of actions based on {@link module:utils/diff~diff} function.
-	 * @returns {Node} result.domElement ViewElement corresponding DOM element.
-	 * @returns {Array} result.actualDomChildren Current viewElement DOM children.
-	 * @returns {Array} result.expectedDomChildren Expected viewElement DOM children.
+	 * @returns {Array.<String>} result.actions List of actions based on {@link module:utils/diff~diff} function.
+	 * @returns {Node} result.domElement The DOM element representing given view element.
+	 * @returns {Array.<Node>} result.actualDomChildren Current `viewElement`'s DOM children.
+	 * @returns {Array.<Node>} result.expectedDomChildren Expected `viewElement`'s DOM children.
 	 */
-	_diffChildren( viewElement, options ) {
+	_diffChildren( viewElement, inlineFillerPosition = null ) {
 		const domConverter = this.domConverter;
 		const domElement = domConverter.mapViewToDom( viewElement );
 
@@ -618,17 +614,9 @@ export default class Renderer {
 			return null;
 		}
 
-		const domDocument = domElement.ownerDocument;
-		const filler = options.inlineFillerPosition;
 		const actualDomChildren = domElement.childNodes;
-		const expectedDomChildren = Array.from( domConverter.viewChildrenToDom( viewElement, domDocument, options ) );
-
-		// Inline filler element has to be created during children update because we need it to diff actual dom
-		// elements with expected dom elements. We need inline filler in expected dom elements so we won't re-render
-		// text node if it is not necessary.
-		if ( filler && filler.parent == viewElement ) {
-			this._addInlineFiller( domDocument, expectedDomChildren, filler.offset );
-		}
+		const expectedDomChildren = this._getElementExpectedChildren( viewElement, domElement,
+			{ withChildren: false, inlineFillerPosition } );
 
 		return {
 			actions: diff( actualDomChildren, expectedDomChildren, sameNodes.bind( null, domConverter.blockFiller ) ),
@@ -636,6 +624,31 @@ export default class Renderer {
 			actualDomChildren,
 			expectedDomChildren
 		};
+	}
+
+	/**
+	 * Returns expected DOM children for a given `viewElement`.
+	 *
+	 * @private
+	 * @param {module:engine/view/node~Node} viewElement View element which children will be returned.
+	 * @param {Node} domElement DOM representation of a given view element.
+	 * @param {Object} options See {@link module:engine/view/domconverter~DomConverter#viewToDom} options parameter.
+	 * @param {module:engine/view/position~Position} [options.inlineFillerPosition=null] The position on which
+	 * the inline filler should be rendered.
+	 * @returns {Array.<Node>} The `viewElement`'s expected children.
+	 */
+	_getElementExpectedChildren( viewElement, domElement, options ) {
+		const expectedDomChildren = Array.from( this.domConverter.viewChildrenToDom( viewElement, domElement.ownerDocument, options ) );
+		const filler = options.inlineFillerPosition;
+
+		// Inline filler element has to be created as it is present in a DOM, but not in a view. It is required
+		// during diffing so text nodes could be compared correctly and also during rendering to maintain
+		// proper order and indexes while updating the DOM.
+		if ( filler && filler.parent === viewElement ) {
+			this._addInlineFiller( domElement.ownerDocument, expectedDomChildren, filler.offset );
+		}
+
+		return expectedDomChildren;
 	}
 
 	/**
@@ -648,10 +661,10 @@ export default class Renderer {
 	 * 		Output actions:	[ insert, replace, delete, equal, replace ]
 	 *
 	 * @private
-	 * @param {Array} actions Actions array which is result of {@link module:utils/diff~diff} function.
-	 * @param {Array} actualDom Actual DOM children
-	 * @param {Array} expectedDom Expected DOM children.
-	 * @returns {Array} Actions array modified with `replace` actions.
+	 * @param {Array.<String>} actions Actions array which is result of {@link module:utils/diff~diff} function.
+	 * @param {Array.<Node>} actualDom Actual DOM children
+	 * @param {Array.<Node>} expectedDom Expected DOM children.
+	 * @returns {Array.<String>} Actions array modified with `replace` actions.
 	 */
 	_findReplaceActions( actions, actualDom, expectedDom ) {
 		// If there is no both 'insert' and 'delete' actions, no need to check for replaced elements.
