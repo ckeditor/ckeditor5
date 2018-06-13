@@ -41,7 +41,11 @@ describe( 'DecoupledEditor', () => {
 		} );
 
 		it( 'has a Data Interface', () => {
-			testUtils.isMixed( DecoupledEditor, DataApiMixin );
+			expect( testUtils.isMixed( DecoupledEditor, DataApiMixin ) ).to.be.true;
+		} );
+
+		it( 'implements the EditorWithUI interface', () => {
+			expect( editor.element ).to.be.null;
 		} );
 
 		it( 'creates main root element', () => {

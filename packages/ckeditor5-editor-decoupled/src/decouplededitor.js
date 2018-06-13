@@ -57,15 +57,15 @@ export default class DecoupledEditor extends Editor {
 	 * {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`} method instead.
 	 *
 	 * @protected
-	 * @param {HTMLElement|String} elementOrData The DOM element that serves as an editable.
+	 * @param {HTMLElement|String} sourceElementOrData The DOM element that serves as an editable.
 	 * The data will be loaded from it and loaded back to it once the editor is destroyed.
 	 * Alternatively, a data string to be loaded into the editor.
 	 * @param {module:core/editor/editorconfig~EditorConfig} config The editor configuration.
 	 */
-	constructor( elementOrData, config ) {
+	constructor( sourceElementOrData, config ) {
 		super( config );
 
-		if ( isElement( elementOrData ) ) {
+		if ( isElement( sourceElementOrData ) ) {
 			/**
 			 * The element used as an editable. The data will be loaded from it and loaded back to
 			 * it once the editor is destroyed.
@@ -76,14 +76,26 @@ export default class DecoupledEditor extends Editor {
 			 * @readonly
 			 * @member {HTMLElement}
 			 */
-			this.element = elementOrData;
+			this.sourceElement = sourceElementOrData;
 		}
 
 		this.data.processor = new HtmlDataProcessor();
 
 		this.model.document.createRoot();
 
-		this.ui = new DecoupledEditorUI( this, new DecoupledEditorUIView( this.locale, this.element ) );
+		this.ui = new DecoupledEditorUI( this, new DecoupledEditorUIView( this.locale, this.sourceElement ) );
+	}
+
+	/**
+	 * {@link editor-decoupled/decouplededitor~DecoupledEditor} has split UI and the editable elements.
+	 *
+	 * In order to get the UI (toolbar) you should use `editor.ui.view.toolbar.element` and `editor.ui.view.editable.element` for
+	 * the editable area.
+	 *
+	 * @returns {null}
+	 */
+	get element() {
+		return null;
 	}
 
 	/**
@@ -114,8 +126,8 @@ export default class DecoupledEditor extends Editor {
 
 		return super.destroy()
 			.then( () => {
-				if ( this.element ) {
-					setDataInElement( this.element, data );
+				if ( this.sourceElement ) {
+					setDataInElement( this.sourceElement, data );
 				}
 			} );
 	}
@@ -178,16 +190,16 @@ export default class DecoupledEditor extends Editor {
 	 *				console.error( err.stack );
 	 *			} );
 	 *
-	 * @param {HTMLElement|String} elementOrData The DOM element that serves as an editable.
+	 * @param {HTMLElement|String} sourceElementOrData The DOM element that serves as an editable.
 	 * The data will be loaded from it and loaded back to it once the editor is destroyed.
 	 * Alternatively, a data string to be loaded into the editor.
 	 * @param {module:core/editor/editorconfig~EditorConfig} config The editor configuration.
 	 * @returns {Promise} A promise resolved once the editor is ready.
 	 * The promise returns the created {@link module:editor-decoupled/decouplededitor~DecoupledEditor} instance.
 	 */
-	static create( elementOrData, config ) {
+	static create( sourceElementOrData, config ) {
 		return new Promise( resolve => {
-			const editor = new this( elementOrData, config );
+			const editor = new this( sourceElementOrData, config );
 
 			resolve(
 				editor.initPlugins()
@@ -196,7 +208,7 @@ export default class DecoupledEditor extends Editor {
 						editor.fire( 'uiReady' );
 					} )
 					.then( () => {
-						return editor.data.init( editor.element ? getDataFromElement( editor.element ) : elementOrData );
+						return editor.data.init( editor.sourceElement ? getDataFromElement( editor.sourceElement ) : sourceElementOrData );
 					} )
 					.then( () => {
 						editor.fire( 'dataReady' );
