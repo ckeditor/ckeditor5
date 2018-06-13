@@ -68,7 +68,7 @@ export default class BootstrapEditor extends Editor {
 		super( config );
 
 		// Remember the element the editor is created with.
-		this.element = element;
+		this.sourceElement = element;
 
 		// Use the HTML data processor in this editor.
 		this.data.processor = new HtmlDataProcessor();
@@ -87,9 +87,13 @@ export default class BootstrapEditor extends Editor {
 		this._elementReplacer = new ElementReplacer();
 	}
 
+	get element() {
+		return this.ui.view.element;
+	}
+
 	destroy() {
 		// When destroyed, the editor sets the output of editor#getData() into editor#element...
-		this.updateElement();
+		this.updateSourceElement();
 
 		// ...and restores the original editor#element...
 		this._elementReplacer.restore();
