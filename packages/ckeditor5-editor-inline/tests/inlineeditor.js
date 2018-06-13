@@ -54,11 +54,11 @@ describe( 'InlineEditor', () => {
 		} );
 
 		it( 'has a Data Interface', () => {
-			testUtils.isMixed( InlineEditor, DataApiMixin );
+			expect( testUtils.isMixed( InlineEditor, DataApiMixin ) ).to.be.true;
 		} );
 
 		it( 'has a Element Interface', () => {
-			testUtils.isMixed( InlineEditor, ElementApiMixin );
+			expect( testUtils.isMixed( InlineEditor, ElementApiMixin ) ).to.be.true;
 		} );
 
 		it( 'creates main root element', () => {
@@ -104,12 +104,19 @@ describe( 'InlineEditor', () => {
 			} );
 		} );
 
+		it( 'editor.sourceElement should contain created div element', () => {
+			return InlineEditor.create( '<p>Hello world!</p>', {
+				plugins: [ Paragraph ]
+			} ).then( editor => {
+				expect( editor.sourceElement ).to.be.instanceOf( HTMLElement );
+				expect( editor.sourceElement.tagName ).to.equal( 'DIV' );
+			} );
+		} );
+
 		it( 'editor.element should contain created div element', () => {
 			return InlineEditor.create( '<p>Hello world!</p>', {
 				plugins: [ Paragraph ]
 			} ).then( editor => {
-				expect( editor.element ).to.be.instanceOf( HTMLElement );
-				expect( editor.element.tagName ).to.equal( 'DIV' );
 				expect( editor.editing.view.getDomRoot() ).to.equal( editor.element );
 			} );
 		} );
