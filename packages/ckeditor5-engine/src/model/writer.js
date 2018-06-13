@@ -807,9 +807,9 @@ export default class Writer {
 	 *
 	 *		addMarker( markerName, { range, usingOperation: true } );
 	 *
-	 * Create marker that does not affects the data model:
+	 * Create marker that affects the editor data:
 	 *
-	 *		addMarker( markerName, { range, usingOperation: false, affectData: false } );
+	 *		addMarker( markerName, { range, usingOperation: false, affectData: true } );
 	 *
 	 * Note: For efficiency reasons, it's best to create and keep as little markers as possible.
 	 *
@@ -819,7 +819,7 @@ export default class Writer {
 	 * @param {Boolean} options.usingOperation Flag indicating that the marker should be added by MarkerOperation.
 	 * See {@link module:engine/model/markercollection~Marker#managedUsingOperations}.
 	 * @param {module:engine/model/range~Range} options.range Marker range.
-	 * @param {Boolean} [options.affectsData=false] Flag indicating that the marker changes the data model.
+	 * @param {Boolean} [options.affectsData=false] Flag indicating that the marker changes the editor data.
 	 * @returns {module:engine/model/markercollection~Marker} Marker that was set.
 	 */
 	addMarker( name, options ) {
@@ -879,7 +879,7 @@ export default class Writer {
 	 * {@link module:engine/model/markercollection~Marker marker class description} to learn about the difference between
 	 * markers managed by operations and not-managed by operations. It is possible to change this option for an existing marker.
 	 *
-	 * The `options.affectData` parameter allows you to inform the engine, that this marker affects the data model.
+	 * The `options.affectData` parameter allows you to inform the engine, that this marker affects the editor data.
 	 * It impacts the performance, because changes in markers with set `options.affectData:false` do not cause firing the
 	 * {@link module:engine/model/document~Document#event:change:data `change:data`} event.
 	 *
@@ -896,7 +896,7 @@ export default class Writer {
 	 *
 	 *		updateMarker( marker, { usingOperation: true } );
 	 *
-	 * Change marker's option (inform the engine, that the marker does not affect the data model anymore):
+	 * Change marker's option (inform the engine, that the marker does not affect the data anymore):
 	 *
 	 *		updateMarker( markerName, { affectData: false } );
 	 *
@@ -906,7 +906,7 @@ export default class Writer {
 	 * @param {module:engine/model/range~Range} [options.range] Marker range to update.
 	 * @param {Boolean} [options.usingOperation] Flag indicated whether the marker should be added by MarkerOperation.
 	 * See {@link module:engine/model/markercollection~Marker#managedUsingOperations}.
-	 * @param {Boolean} [options.affectsData] Flag indicating that the marker changes the data model.
+	 * @param {Boolean} [options.affectsData] Flag indicating that the marker changes the editor data.
 	 */
 	updateMarker( markerOrName, options = {} ) {
 		this._assertWriterUsedCorrectly();

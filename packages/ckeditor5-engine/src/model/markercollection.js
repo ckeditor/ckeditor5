@@ -374,7 +374,7 @@ class Marker {
 	}
 
 	/**
-	 * A value indicating if the marker changes the data model.
+	 * A value indicating if the marker changes the data.
 	 *
 	 * @returns {Boolean}
 	 */

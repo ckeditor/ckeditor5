@@ -189,7 +189,7 @@ export default class Differ {
 	 * @param {module:engine/model/range~Range|null} oldRange Marker range before the change or `null` if the marker has just
 	 * been created.
 	 * @param {module:engine/model/range~Range|null} newRange Marker range after the change or `null` if the marker was removed.
-	 * @param {Boolean} affectsData Flag indicating whether marker affects the data model.
+	 * @param {Boolean} affectsData Flag indicating whether marker affects the editor data.
 	 */
 	bufferMarkerChange( markerName, oldRange, newRange, affectsData ) {
 		const buffered = this._changedMarkers.get( markerName );
@@ -247,9 +247,9 @@ export default class Differ {
 	}
 
 	/**
-	 * Checks whether some of buffered marker affects the data model or whether some element changed.
+	 * Checks whether some of buffered marker affects the editor data or whether some element changed.
 	 *
-	 * @returns {Boolean} `true` if buffered markers or changes in elements affects the data model.
+	 * @returns {Boolean} `true` if buffered markers or changes in elements affects the editor data.
 	 */
 	hasDataChanges() {
 		for ( const [ , change ] of this._changedMarkers ) {
@@ -258,7 +258,7 @@ export default class Differ {
 			}
 		}
 
-		// If markers do not affect the data model, check whether there are some changes in elements.
+		// If markers do not affect the data, check whether there are some changes in elements.
 		return this._changesInElement.size > 0;
 	}
 
