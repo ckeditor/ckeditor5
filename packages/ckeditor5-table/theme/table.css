@@ -11,11 +11,9 @@
 	border-collapse: collapse;
 	border-spacing: 0;
 
-	/* The outer border of the table should be slightly darker than the inner lines. */
-	&:not(:hover) {
-		outline: 1px solid hsl(0, 0%, 70%);
-		outline-offset: -1px;
-	}
+	/* The outer border of the table should be slightly darker than the inner lines.
+	Also see https://github.com/ckeditor/ckeditor5-table/issues/50. */
+	border: 1px double hsl(0, 0%, 70%);
 
 	& td,
 	& th {
