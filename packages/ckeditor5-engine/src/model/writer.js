@@ -794,6 +794,11 @@ export default class Writer {
 	 * {@link module:engine/model/markercollection~Marker marker class description} to learn about the difference between
 	 * markers managed by operations and not-managed by operations.
 	 *
+	 * The `options.affectsData` parameter, which defaults to `false`, allows you to define if a marker affects the data. It should be
+	 * `true` when the marker change changes the data returned by {@link module:core/editor/editor~Editor#getData} method.
+	 * When set to `true` it fires the {@link module:engine/model/document~Document#event:change:data `change:data`} event.
+	 * When set to `false` it fires the {@link module:engine/model/document~Document#event:change `change`} event.
+	 *
 	 * Create marker directly base on marker's name:
 	 *
 	 *		addMarker( markerName, { range, usingOperation: false } );
@@ -802,14 +807,19 @@ export default class Writer {
 	 *
 	 *		addMarker( markerName, { range, usingOperation: true } );
 	 *
+	 * Create marker that affects the editor data:
+	 *
+	 *		addMarker( markerName, { range, usingOperation: false, affectsData: true } );
+	 *
 	 * Note: For efficiency reasons, it's best to create and keep as little markers as possible.
 	 *
 	 * @see module:engine/model/markercollection~Marker
 	 * @param {String} name Name of a marker to create - must be unique.
 	 * @param {Object} options
-	 * @param {Boolean} options.usingOperation Flag indicated whether the marker should be added by MarkerOperation.
+	 * @param {Boolean} options.usingOperation Flag indicating that the marker should be added by MarkerOperation.
 	 * See {@link module:engine/model/markercollection~Marker#managedUsingOperations}.
 	 * @param {module:engine/model/range~Range} options.range Marker range.
+	 * @param {Boolean} [options.affectsData=false] Flag indicating that the marker changes the editor data.
 	 * @returns {module:engine/model/markercollection~Marker} Marker that was set.
 	 */
 	addMarker( name, options ) {
@@ -828,6 +838,7 @@ export default class Writer {
 
 		const usingOperation = options.usingOperation;
 		const range = options.range;
+		const affectsData = options.affectsData === undefined ? false : options.affectsData;
 
 		if ( this.model.markers.has( name ) ) {
 			/**
@@ -848,10 +859,10 @@ export default class Writer {
 		}
 
 		if ( !usingOperation ) {
-			return this.model.markers._set( name, range, usingOperation );
+			return this.model.markers._set( name, range, usingOperation, affectsData );
 		}
 
-		applyMarkerOperation( this, name, null, range );
+		applyMarkerOperation( this, name, null, range, affectsData );
 
 		return this.model.markers.get( name );
 	}
@@ -867,7 +878,11 @@ export default class Writer {
 	 * The `options.usingOperation` parameter lets you change if the marker should be managed by operations or not. See
 	 * {@link module:engine/model/markercollection~Marker marker class description} to learn about the difference between
 	 * markers managed by operations and not-managed by operations. It is possible to change this option for an existing marker.
-	 * This is useful when a marker have been created earlier and then later, it needs to be added to the document history.
+	 *
+	 * The `options.affectsData` parameter, which defaults to `false`, allows you to define if a marker affects the data. It should be
+	 * `true` when the marker change changes the data returned by {@link module:core/editor/editor~Editor#getData} method.
+	 * When set to `true` it fires the {@link module:engine/model/document~Document#event:change:data `change:data`} event.
+	 * When set to `false` it fires the {@link module:engine/model/document~Document#event:change `change`} event.
 	 *
 	 * Update marker directly base on marker's name:
 	 *
@@ -882,18 +897,22 @@ export default class Writer {
 	 *
 	 *		updateMarker( marker, { usingOperation: true } );
 	 *
+	 * Change marker's option (inform the engine, that the marker does not affect the data anymore):
+	 *
+	 *		updateMarker( markerName, { affectsData: false } );
+	 *
 	 * @see module:engine/model/markercollection~Marker
 	 * @param {String} markerOrName Name of a marker to update, or a marker instance.
 	 * @param {Object} options
 	 * @param {module:engine/model/range~Range} [options.range] Marker range to update.
 	 * @param {Boolean} [options.usingOperation] Flag indicated whether the marker should be added by MarkerOperation.
 	 * See {@link module:engine/model/markercollection~Marker#managedUsingOperations}.
+	 * @param {Boolean} [options.affectsData] Flag indicating that the marker changes the editor data.
 	 */
-	updateMarker( markerOrName, options ) {
+	updateMarker( markerOrName, options = {} ) {
 		this._assertWriterUsedCorrectly();
 
 		const markerName = typeof markerOrName == 'string' ? markerOrName : markerOrName.name;
-
 		const currentMarker = this.model.markers.get( markerName );
 
 		if ( !currentMarker ) {
@@ -905,33 +924,39 @@ export default class Writer {
 			throw new CKEditorError( 'writer-updateMarker-marker-not-exists: Marker with provided name does not exists.' );
 		}
 
-		const newRange = options && options.range;
-		const hasUsingOperationDefined = !!options && typeof options.usingOperation == 'boolean';
+		const hasUsingOperationDefined = typeof options.usingOperation == 'boolean';
+		const affectsDataDefined = typeof options.affectsData == 'boolean';
 
-		if ( !hasUsingOperationDefined && !newRange ) {
+		// Use previously defined marker's affectsData if the property is not provided.
+		const affectsData = affectsDataDefined ? options.affectsData : currentMarker.affectsData;
+
+		if ( !hasUsingOperationDefined && !options.range && !affectsDataDefined ) {
 			/**
-			 * One of options is required - provide range or usingOperations.
+			 * One of the options is required - provide range, usingOperations or affectsData.
 			 *
 			 * @error writer-updateMarker-wrong-options
 			 */
-			throw new CKEditorError( 'writer-updateMarker-wrong-options: One of options is required - provide range or usingOperations.' );
+			throw new CKEditorError(
+				'writer-updateMarker-wrong-options: One of the options is required - provide range, usingOperations or affectsData.'
+			);
 		}
+
+		const currentRange = currentMarker.getRange();
+		const updatedRange = options.range ? options.range : currentRange;
 
 		if ( hasUsingOperationDefined && options.usingOperation !== currentMarker.managedUsingOperations ) {
 			// The marker type is changed so it's necessary to create proper operations.
 			if ( options.usingOperation ) {
 				// If marker changes to a managed one treat this as synchronizing existing marker.
-				// If marker changes to a managed one treat this as synchronizing existing marker.
 				// Create `MarkerOperation` with `oldRange` set to `null`, so reverse operation will remove the marker.
-				applyMarkerOperation( this, markerName, null, newRange ? newRange : currentMarker.getRange() );
+				applyMarkerOperation( this, markerName, null, updatedRange, affectsData );
 			} else {
 				// If marker changes to a marker that do not use operations then we need to create additional operation
 				// that removes that marker first.
-				const currentRange = currentMarker.getRange();
-				applyMarkerOperation( this, markerName, currentRange, null );
+				applyMarkerOperation( this, markerName, currentRange, null, affectsData );
 
 				// Although not managed the marker itself should stay in model and its range should be preserver or changed to passed range.
-				this.model.markers._set( markerName, newRange ? newRange : currentRange );
+				this.model.markers._set( markerName, updatedRange, undefined, affectsData );
 			}
 
 			return;
@@ -939,9 +964,9 @@ export default class Writer {
 
 		// Marker's type doesn't change so update it accordingly.
 		if ( currentMarker.managedUsingOperations ) {
-			applyMarkerOperation( this, markerName, currentMarker.getRange(), newRange );
+			applyMarkerOperation( this, markerName, currentRange, updatedRange, affectsData );
 		} else {
-			this.model.markers._set( markerName, newRange );
+			this.model.markers._set( markerName, updatedRange, undefined, affectsData );
 		}
 	}
 
@@ -976,7 +1001,7 @@ export default class Writer {
 
 		const oldRange = marker.getRange();
 
-		applyMarkerOperation( this, name, oldRange, null );
+		applyMarkerOperation( this, name, oldRange, null, marker.affectsData );
 	}
 
 	/**
@@ -1325,12 +1350,13 @@ function setAttributeOnItem( writer, key, value, item ) {
 // @param {String} name Marker name.
 // @param {module:engine/model/range~Range} oldRange Marker range before the change.
 // @param {module:engine/model/range~Range} newRange Marker range after the change.
-function applyMarkerOperation( writer, name, oldRange, newRange ) {
+// @param {Boolean} affectsData
+function applyMarkerOperation( writer, name, oldRange, newRange, affectsData ) {
 	const model = writer.model;
 	const doc = model.document;
 	const delta = new MarkerDelta();
 
-	const operation = new MarkerOperation( name, oldRange, newRange, model.markers, doc.version );
+	const operation = new MarkerOperation( name, oldRange, newRange, model.markers, doc.version, affectsData );
 
 	writer.batch.addDelta( delta );
 	delta.addOperation( operation );

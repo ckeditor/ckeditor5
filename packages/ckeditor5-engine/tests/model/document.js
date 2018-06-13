@@ -318,30 +318,13 @@ describe( 'Document', () => {
 				writer.insertText( 'foo', doc.getRoot(), 0 );
 			} );
 
-			expect( spy.calledOnce ).to.be.true;
-		} );
-
-		it( 'should be fired if there was a change in a document tree in a change block and have a batch as param', () => {
-			doc.createRoot();
-			const spy = sinon.spy();
-
-			doc.on( 'change', ( evt, batch ) => {
-				spy();
-				expect( batch ).to.be.instanceof( Batch );
-			} );
-
-			model.enqueueChange( writer => {
-				writer.insertText( 'foo', doc.getRoot(), 0 );
-			} );
-
-			expect( spy.calledOnce ).to.be.true;
+			sinon.assert.calledOnce( spy );
 		} );
 
 		it( 'should be fired if there was a selection change in an (enqueue)change block', () => {
-			doc.createRoot();
+			const root = doc.createRoot();
 			const spy = sinon.spy();
 
-			const root = doc.getRoot();
 			root._appendChild( new Text( 'foo' ) );
 
 			doc.on( 'change', spy );
@@ -350,7 +333,7 @@ describe( 'Document', () => {
 				writer.setSelection( Range.createFromParentsAndOffsets( root, 2, root, 2 ) );
 			} );
 
-			expect( spy.calledOnce ).to.be.true;
+			sinon.assert.calledOnce( spy );
 		} );
 
 		it( 'should not be fired if writer was used on non-document tree', () => {
@@ -366,7 +349,158 @@ describe( 'Document', () => {
 				writer.insertText( 'foo', docFrag, 0 );
 			} );
 
-			expect( spy.calledOnce ).to.be.false;
+			sinon.assert.notCalled( spy );
+		} );
+	} );
+
+	describe( 'event change:data', () => {
+		it( 'should be fired if there was a change in a document tree in a change block and have a batch as a param', () => {
+			doc.createRoot();
+			const spy = sinon.spy();
+
+			doc.on( 'change:data', ( evt, batch ) => {
+				spy();
+				expect( batch ).to.be.instanceof( Batch );
+			} );
+
+			model.change( writer => {
+				writer.insertText( 'foo', doc.getRoot(), 0 );
+			} );
+
+			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'should not be fired if only selection changes', () => {
+			const root = doc.createRoot();
+			const spy = sinon.spy();
+
+			root._appendChild( new Text( 'foo' ) );
+
+			doc.on( 'change:data', spy );
+
+			model.change( writer => {
+				writer.setSelection( Range.createFromParentsAndOffsets( root, 2, root, 2 ) );
+			} );
+
+			sinon.assert.notCalled( spy );
+		} );
+
+		it( 'should be fired if default marker operation is applied', () => {
+			const root = doc.createRoot();
+			const spy = sinon.spy();
+
+			root._appendChild( new Text( 'foo' ) );
+
+			doc.on( 'change:data', spy );
+
+			model.change( writer => {
+				const range = Range.createFromParentsAndOffsets( root, 2, root, 4 );
+				writer.addMarker( 'name', { range, usingOperation: true, affectsData: true } );
+			} );
+
+			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'should not be fired if the marker operation is applied and marker does not affect data', () => {
+			const root = doc.createRoot();
+			const spy = sinon.spy();
+
+			root._appendChild( new Text( 'foo' ) );
+
+			doc.on( 'change:data', spy );
+
+			model.change( writer => {
+				const range = Range.createFromParentsAndOffsets( root, 2, root, 4 );
+				writer.addMarker( 'name', { range, usingOperation: true } );
+			} );
+
+			sinon.assert.notCalled( spy );
+		} );
+
+		it( 'should be fired if the writer adds marker not managed by using operations', () => {
+			const root = doc.createRoot();
+			const spy = sinon.spy();
+
+			root._appendChild( new Text( 'foo' ) );
+
+			doc.on( 'change:data', spy );
+
+			model.change( writer => {
+				const range = Range.createFromParentsAndOffsets( root, 2, root, 4 );
+				writer.addMarker( 'name', { range, usingOperation: false, affectsData: true } );
+			} );
+
+			sinon.assert.calledOnce( spy );
+		} );
+
+		it( 'should not be fired if the writer adds marker not managed by using operations with affectsData set to false', () => {
+			const root = doc.createRoot();
+			const spy = sinon.spy();
+
+			root._appendChild( new Text( 'foo' ) );
+
+			doc.on( 'change:data', spy );
+
+			model.change( writer => {
+				const range = Range.createFromParentsAndOffsets( root, 2, root, 4 );
+				writer.addMarker( 'name', { range, usingOperation: false } );
+			} );
+
+			sinon.assert.notCalled( spy );
+		} );
+
+		it( 'should not be fired if writer was used on non-document tree', () => {
+			const spy = sinon.spy();
+
+			doc.on( 'change:data', ( evt, batch ) => {
+				spy();
+				expect( batch ).to.be.instanceof( Batch );
+			} );
+
+			model.change( writer => {
+				const docFrag = writer.createDocumentFragment();
+				writer.insertText( 'foo', docFrag, 0 );
+			} );
+
+			sinon.assert.notCalled( spy );
+		} );
+
+		it( 'should be fired when updated marker affects data', () => {
+			const root = doc.createRoot();
+			root._appendChild( new Text( 'foo' ) );
+
+			const sandbox = sinon.createSandbox();
+			const changeDataSpy = sandbox.spy();
+			const changeSpy = sandbox.spy();
+
+			doc.on( 'change:data', changeDataSpy );
+			doc.on( 'change', changeSpy );
+
+			model.change( writer => {
+				const range = Range.createFromParentsAndOffsets( root, 2, root, 4 );
+				writer.addMarker( 'name', { range, usingOperation: false } );
+			} );
+
+			sinon.assert.calledOnce( changeSpy );
+			sinon.assert.notCalled( changeDataSpy );
+
+			sandbox.resetHistory();
+
+			model.change( writer => {
+				writer.updateMarker( 'name', { affectsData: true } );
+			} );
+
+			sinon.assert.calledOnce( changeSpy );
+			sinon.assert.calledOnce( changeDataSpy );
+
+			sandbox.resetHistory();
+
+			model.change( writer => {
+				writer.updateMarker( 'name', { affectsData: false } );
+			} );
+
+			sinon.assert.calledOnce( changeSpy );
+			sinon.assert.notCalled( changeDataSpy );
 		} );
 	} );
 

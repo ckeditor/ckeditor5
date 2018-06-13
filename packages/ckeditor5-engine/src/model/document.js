@@ -147,11 +147,16 @@ export default class Document {
 		// Wait for `_change` event from model, which signalizes that outermost change block has finished.
 		// When this happens, check if there were any changes done on document, and if so, call post fixers,
 		// fire `change` event for features and conversion and then reset the differ.
+		// Fire `change:data` event when at least one operation or buffered marker changes the data.
 		this.listenTo( model, '_change', ( evt, writer ) => {
 			if ( !this.differ.isEmpty || hasSelectionChanged ) {
 				this._callPostFixers( writer );
 
-				this.fire( 'change', writer.batch );
+				if ( this.differ.hasDataChanges() ) {
+					this.fire( 'change:data', writer.batch );
+				} else {
+					this.fire( 'change', writer.batch );
+				}
 
 				this.differ.reset();
 				hasSelectionChanged = false;
@@ -163,12 +168,12 @@ export default class Document {
 		// are modified using `model.markers` collection, not through `MarkerOperation`).
 		this.listenTo( model.markers, 'update', ( evt, marker, oldRange, newRange ) => {
 			// Whenever marker is updated, buffer that change.
-			this.differ.bufferMarkerChange( marker.name, oldRange, newRange );
+			this.differ.bufferMarkerChange( marker.name, oldRange, newRange, marker.affectsData );
 
 			if ( oldRange === null ) {
 				// If this is a new marker, add a listener that will buffer change whenever marker changes.
 				marker.on( 'change', ( evt, oldRange ) => {
-					this.differ.bufferMarkerChange( marker.name, oldRange, marker.getRange() );
+					this.differ.bufferMarkerChange( marker.name, oldRange, marker.getRange(), marker.affectsData );
 				} );
 			}
 		} );
@@ -379,16 +384,33 @@ export default class Document {
 	 *			console.log( 'The Document has changed!' );
 	 *		} );
 	 *
-	 * If, however, you only want to be notified about structure changes, then check whether the
-	 * {@link module:engine/model/differ~Differ differ} contains any changes:
+	 * If, however, you only want to be notified about the data changes, then use the
+	 * {@link module:engine/model/document~Document#event:change:data change:data} event,
+	 * which fires for document structure changes and marker changes (which affects the data).
 	 *
-	 *		model.document.on( 'change', () => {
-	 *			if ( model.document.differ.getChanges().length > 0 ) {
-	 *				console.log( 'The Document has changed!' );
-	 *			}
+	 *		model.document.on( 'change:data', () => {
+	 *			console.log( 'The data has changed!' );
 	 *		} );
 	 *
 	 * @event change
+	 * @param {module:engine/model/batch~Batch} batch The batch that was used in the executed changes block.
+	 */
+
+	/**
+	 * Fired when the data changes, which includes:
+	 * * document structure changes,
+	 * * marker changes (which affects the data).
+	 *
+	 * If you want to be notified about the data changes, then listen to this event:
+	 *
+	 *		model.document.on( 'change:data', () => {
+	 *			console.log( 'The data has changed!' );
+	 *		} );
+	 *
+	 * If you would like to listen to all document's changes, then look at the
+	 * {@link module:engine/model/document~Document#event:change change} event.
+	 *
+	 * @event change:data
 	 * @param {module:engine/model/batch~Batch} batch The batch that was used in the executed changes block.
 	 */
 }
