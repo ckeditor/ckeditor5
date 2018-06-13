@@ -86,12 +86,12 @@ describe( 'Alignment integration', () => {
 		} );
 
 		it( 'does work inside blockQuote on listItem', () => {
-			setModelData( model, '<blockQuote><listItem indent="0" type="numbered">Foo[]</listItem></blockQuote>' );
+			setModelData( model, '<blockQuote><listItem listIndent="0" listType="numbered">Foo[]</listItem></blockQuote>' );
 
 			editor.execute( 'alignment', { value: 'center' } );
 
 			expect( getModelData( model ) ).to.equal(
-				'<blockQuote><listItem alignment="center" indent="0" type="numbered">Foo[]</listItem></blockQuote>'
+				'<blockQuote><listItem alignment="center" listIndent="0" listType="numbered">Foo[]</listItem></blockQuote>'
 			);
 		} );
 	} );
