@@ -16,7 +16,7 @@ describe( 'ListSeparatorView', () => {
 
 	describe( 'template', () => {
 		it( 'should create element from template', () => {
-			expect( view.element.tagName ).to.equal( 'SPAN' );
+			expect( view.element.tagName ).to.equal( 'LI' );
 			expect( view.element.classList.contains( 'ck' ) ).to.true;
 			expect( view.element.classList.contains( 'ck-list__separator' ) ).to.true;
 		} );

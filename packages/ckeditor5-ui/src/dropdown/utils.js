@@ -176,7 +176,7 @@ export function addListToDropdown( dropdownView, items ) {
 	listView.items.bindTo( items ).using( itemModel => {
 		let item;
 
-		if ( itemModel.separator ) {
+		if ( itemModel.isSeparator ) {
 			item = new ListSeparatorView( locale );
 		} else {
 			item = new ListItemView( locale );

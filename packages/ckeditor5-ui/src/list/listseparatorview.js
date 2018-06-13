@@ -22,7 +22,7 @@ export default class ListSeparatorView extends View {
 		super( locale );
 
 		this.setTemplate( {
-			tag: 'span',
+			tag: 'li',
 			attributes: {
 				class: [
 					'ck',

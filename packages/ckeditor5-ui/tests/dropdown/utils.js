@@ -352,7 +352,7 @@ describe( 'utils', () => {
 			} );
 
 			it( 'is filled with separators', () => {
-				const itemModel = new Model( { separator: true } );
+				const itemModel = new Model( { isSeparator: true } );
 
 				items.add( itemModel );
 

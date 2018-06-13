@@ -11,16 +11,13 @@
 	/* Crop the the items when the list has huge border-radius. */
 	overflow: hidden;
 
-	& .ck-list__item {
-		display: block;
-
-		&:focus {
-			position: relative;
-			z-index: var(--ck-z-default);
-		}
-	}
-
+	& .ck-list__item,
 	& .ck-list__separator {
 		display: block;
+	}
+
+	& .ck-list__item:focus {
+		position: relative;
+		z-index: var(--ck-z-default);
 	}
 }
