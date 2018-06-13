@@ -205,12 +205,11 @@ describe( 'Autosave', () => {
 				expect( pendingActions.isPending ).to.be.true;
 				sinon.assert.calledOnce( serverActionSpy );
 
-				// Wait another 500ms for the second server action.
+				// Wait another 500ms and a promise cycle for the second server action.
 				sandbox.clock.tick( 500 );
-				return Promise.resolve().then( () => {
-					expect( pendingActions.isPending ).to.be.false;
-					sinon.assert.calledTwice( serverActionSpy );
-				} );
+			} ).then( () => {
+				expect( pendingActions.isPending ).to.be.false;
+				sinon.assert.calledTwice( serverActionSpy );
 			} );
 		} );
 
