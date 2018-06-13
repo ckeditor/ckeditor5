@@ -13,7 +13,6 @@
 
 import RootElement from '../model/rootelement';
 import Model from '../model/model';
-import Batch from '../model/batch';
 import ModelRange from '../model/range';
 import ModelPosition from '../model/position';
 import ModelSelection from '../model/selection';
@@ -94,7 +93,6 @@ export function setData( model, data, options = {} ) {
 
 	let modelDocumentFragment, selection;
 	const modelRoot = model.document.getRoot( options.rootName || 'main' );
-	const batch = new Batch( options.batchType || 'transparent' );
 
 	// Parse data string to model.
 	const parsedResult = setData._parse( data, model.schema, {
@@ -111,7 +109,7 @@ export function setData( model, data, options = {} ) {
 		modelDocumentFragment = parsedResult;
 	}
 
-	model.enqueueChange( batch, writer => {
+	model.change( writer => {
 		// Replace existing model in document by new one.
 		writer.remove( ModelRange.createIn( modelRoot ) );
 		writer.insert( modelDocumentFragment, modelRoot );
