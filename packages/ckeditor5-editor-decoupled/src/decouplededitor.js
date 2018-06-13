@@ -87,7 +87,7 @@ export default class DecoupledEditor extends Editor {
 	}
 
 	/**
-	 * {@link editor-decoupled/decouplededitor~DecoupledEditor} has split UI and the editable elements.
+	 * {@link module:editor-decoupled/decouplededitor~DecoupledEditor} has split UI and the editable elements.
 	 *
 	 * In order to get the UI (toolbar) you should use `editor.ui.view.toolbar.element` and `editor.ui.view.editable.element` for
 	 * the editable area.
