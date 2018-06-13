@@ -44,3 +44,9 @@
 		background: var(--ck-color-list-item-background-active-focus);
 	}
 }
+
+.ck.ck-list__separator {
+	height: 1px;
+	width: 100%;
+	background: var(--ck-color-base-border);
+}

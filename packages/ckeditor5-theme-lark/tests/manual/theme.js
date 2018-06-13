@@ -236,6 +236,10 @@ function renderDropdown() {
 		} ) );
 	} );
 
+	collection.add( new Model( {
+		isSeparator: true
+	} ), 2 );
+
 	ui.listDropdown.add( toolbar( [
 		listDropdown( {
 			label: 'Normal state',
