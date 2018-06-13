@@ -116,7 +116,7 @@ describe( 'Autoformat', () => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( model ) ).to.equal( '<listItem indent="0" type="bulleted">[]</listItem>' );
+			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">[]</listItem>' );
 
 			editor.execute( 'undo' );
 			expect( getData( model ) ).to.equal( '<paragraph>* []</paragraph>' );
@@ -128,7 +128,7 @@ describe( 'Autoformat', () => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( model ) ).to.equal( '<listItem indent="0" type="bulleted">[]</listItem>' );
+			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="bulleted">[]</listItem>' );
 
 			editor.execute( 'undo' );
 			expect( getData( model ) ).to.equal( '<paragraph>- []</paragraph>' );
@@ -140,7 +140,7 @@ describe( 'Autoformat', () => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( model ) ).to.equal( '<listItem indent="0" type="numbered">[]</listItem>' );
+			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="numbered">[]</listItem>' );
 
 			editor.execute( 'undo' );
 			expect( getData( model ) ).to.equal( '<paragraph>1. []</paragraph>' );
@@ -152,7 +152,7 @@ describe( 'Autoformat', () => {
 				writer.insertText( ' ', doc.selection.getFirstPosition() );
 			} );
 
-			expect( getData( model ) ).to.equal( '<listItem indent="0" type="numbered">[]</listItem>' );
+			expect( getData( model ) ).to.equal( '<listItem listIndent="0" listType="numbered">[]</listItem>' );
 			editor.execute( 'undo' );
 			expect( getData( model ) ).to.equal( '<paragraph>1) []</paragraph>' );
 		} );
