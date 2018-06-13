@@ -73,11 +73,11 @@ describe( 'ClassicEditor build', () => {
 		} );
 
 		it( 'restores the editor element', () => {
-			expect( editor.element.style.display ).to.equal( 'none' );
+			expect( editor.sourceElement.style.display ).to.equal( 'none' );
 
 			return editor.destroy()
 				.then( () => {
-					expect( editor.element.style.display ).to.equal( '' );
+					expect( editor.sourceElement.style.display ).to.equal( '' );
 				} );
 		} );
 	} );
