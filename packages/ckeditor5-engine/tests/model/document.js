@@ -47,7 +47,7 @@ describe( 'Document', () => {
 				baseVersion: 0,
 				isDocumentOperation: true,
 				_execute: sinon.stub().returns( data ),
-				_validate: () => { }
+				_validate: () => {}
 			};
 
 			delta = new Delta();
@@ -89,7 +89,7 @@ describe( 'Document', () => {
 			const operation = {
 				baseVersion: 1,
 				isDocumentOperation: true,
-				_execute: () => { }
+				_execute: () => {}
 			};
 
 			expect(

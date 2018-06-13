@@ -407,7 +407,7 @@ export default class Document {
 	 *			console.log( 'The data has changed!' );
 	 *		} );
 	 *
-	 * If you would like to listen to all changes, then check the
+	 * If you would like to listen to all document's changes, then look at the
 	 * {@link module:engine/model/document~Document#event:change change} event.
 	 *
 	 * @event change:data
