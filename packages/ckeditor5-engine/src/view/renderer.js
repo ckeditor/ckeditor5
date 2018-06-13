@@ -237,7 +237,7 @@ export default class Renderer {
 	}
 
 	/**
-	 * Updates mapping of `viewElement`'s children.
+	 * Updates mappings of `viewElement`'s children.
 	 *
 	 * Children which were replaced in the view structure by similar elements (same tag name) are treated as 'replaced'.
 	 * This means that we can update their mappings so the new view elements are mapped to the existing DOM elements.
@@ -248,55 +248,69 @@ export default class Renderer {
 	 */
 	_updateChildrenMappings( viewElement ) {
 		// We're diffing only so we don't have to bind anything.
-		const diff = this._diffElementChildren( viewElement, { bind: false, withChildren: false } );
+		const diff = this._diffChildren( viewElement, { bind: false, withChildren: false } );
 
-		if ( diff ) {
-			const actions = this._findReplaceActions( diff.actions, diff.actualDomChildren, diff.expectedDomChildren );
+		if ( !diff ) {
+			return;
+		}
 
-			if ( actions.indexOf( 'replace' ) !== -1 ) {
-				const counter = { equal: 0, insert: 0, delete: 0 };
-				for ( const action of actions ) {
-					if ( action === 'replace' ) {
-						const insertIndex = counter.equal + counter.insert;
-						const deleteIndex = counter.equal + counter.delete;
-						const viewChild = viewElement.getChild( insertIndex );
+		const actions = this._findReplaceActions( diff.actions, diff.actualDomChildren, diff.expectedDomChildren );
 
-						// The 'uiElement' is a special one and its children are not stored in a view (#799),
-						// so we cannot use it with replacing flow (since it uses view children during rendering
-						// which will always result in rendering empty element).
-						if ( viewChild && !viewChild.is( 'uiElement' ) ) {
-							// Because we replace new view element mapping with the existing one, the corresponding DOM element
-							// will not be rerendered. The new view element may have different attributes than the previous one.
-							// Since its corresponding DOM element will not be rerendered, new attributes will not be added
-							// to the DOM, so we need to mark it here to make sure its attributes gets updated.
-							// Such situations may happen if only new view element was added to `this.markedAttributes`
-							// or none of the elements were added (relying on 'this._updateChildren()' which by rerendering the element
-							// also rerenders its attributes). See #1427 for more detailed case study.
-							const newViewChild = this.domConverter.mapDomToView( diff.actualDomChildren[ deleteIndex ] );
+		if ( actions.indexOf( 'replace' ) !== -1 ) {
+			const counter = { equal: 0, insert: 0, delete: 0 };
 
-							// It may also happen that 'newViewChild' mapping is not present since its parent mapping
-							// was already removed (the 'domConverter.unbindDomElement()' method also unbinds children
-							// mappings) so we also check for '!newViewChild'.
-							if ( !newViewChild || newViewChild && !newViewChild.isSimilar( viewChild ) ) {
-								this.markedAttributes.add( viewChild );
-							}
+			for ( const action of actions ) {
+				if ( action === 'replace' ) {
+					const insertIndex = counter.equal + counter.insert;
+					const deleteIndex = counter.equal + counter.delete;
+					const viewChild = viewElement.getChild( insertIndex );
 
-							// Remap 'DomConverter' bindings.
-							this.domConverter.unbindDomElement( diff.actualDomChildren[ deleteIndex ] );
-							this.domConverter.bindElements( diff.actualDomChildren[ deleteIndex ], viewChild );
-
-							// View element may have children which needs to be updated, but are not marked, mark them to update.
-							this.markedChildren.add( viewChild );
-						}
-
-						remove( diff.expectedDomChildren[ insertIndex ] );
-						counter.equal++;
-					} else {
-						counter[ action ]++;
+					// The 'uiElement' is a special one and its children are not stored in a view (#799),
+					// so we cannot use it with replacing flow (since it uses view children during rendering
+					// which will always result in rendering empty element).
+					if ( viewChild && !viewChild.is( 'uiElement' ) ) {
+						this._updateElementMappings( viewChild, diff.actualDomChildren[ deleteIndex ] );
 					}
+
+					remove( diff.expectedDomChildren[ insertIndex ] );
+					counter.equal++;
+				} else {
+					counter[ action ]++;
 				}
 			}
 		}
+	}
+
+	/**
+	 * Updates mappings of a given view element.
+	 *
+	 * @private
+	 * @param {module:engine/view/node~Node} viewElement The view element which mappings will be updated.
+	 * @param {Node} domElement DOM representation of a given view element.
+	 */
+	_updateElementMappings( viewElement, domElement ) {
+		// Because we replace new view element mapping with the existing one, the corresponding DOM element
+		// will not be rerendered. The new view element may have different attributes than the previous one.
+		// Since its corresponding DOM element will not be rerendered, new attributes will not be added
+		// to the DOM, so we need to mark it here to make sure its attributes gets updated.
+		// Such situations may happen if only new view element was added to `this.markedAttributes`
+		// or none of the elements were added (relying on 'this._updateChildren()' which by rerendering the element
+		// also rerenders its attributes). See #1427 for more detailed case study.
+		const newViewChild = this.domConverter.mapDomToView( domElement );
+
+		// It may also happen that 'newViewChild' mapping is not present since its parent mapping
+		// was already removed (the 'domConverter.unbindDomElement()' method also unbinds children
+		// mappings) so we also check for '!newViewChild'.
+		if ( !newViewChild || newViewChild && !newViewChild.isSimilar( viewElement ) ) {
+			this.markedAttributes.add( viewElement );
+		}
+
+		// Remap 'DomConverter' bindings.
+		this.domConverter.unbindDomElement( domElement );
+		this.domConverter.bindElements( domElement, viewElement );
+
+		// View element may have children which needs to be updated, but are not marked, mark them to update.
+		this.markedChildren.add( viewElement );
 	}
 
 	/**
@@ -538,38 +552,41 @@ export default class Renderer {
 	 * filler should be rendered.
 	 */
 	_updateChildren( viewElement, options ) {
-		const diff = this._diffElementChildren( viewElement,
+		const diff = this._diffChildren( viewElement,
 			{ inlineFillerPosition: options.inlineFillerPosition, bind: true, withChildren: true } );
 
-		if ( diff ) {
-			const actions = diff.actions;
-			const domElement = diff.domElement;
-			const actualDomChildren = diff.actualDomChildren;
-			const expectedDomChildren = diff.expectedDomChildren;
+		if ( !diff ) {
+			return;
+		}
 
-			let i = 0;
-			const nodesToUnbind = new Set();
-			for ( const action of actions ) {
-				if ( action === 'insert' ) {
-					insertAt( domElement, i, expectedDomChildren[ i ] );
-					i++;
-				} else if ( action === 'delete' ) {
-					nodesToUnbind.add( actualDomChildren[ i ] );
-					remove( actualDomChildren[ i ] );
-				} else { // 'equal'
-					// Force updating text nodes inside elements which did not change and do not need to be re-rendered (#1125).
-					this._markDescendantTextToSync( this.domConverter.domToView( expectedDomChildren[ i ] ) );
-					i++;
-				}
+		const actions = diff.actions;
+		const domElement = diff.domElement;
+		const actualDomChildren = diff.actualDomChildren;
+		const expectedDomChildren = diff.expectedDomChildren;
+
+		let i = 0;
+		const nodesToUnbind = new Set();
+
+		for ( const action of actions ) {
+			if ( action === 'insert' ) {
+				insertAt( domElement, i, expectedDomChildren[ i ] );
+				i++;
+			} else if ( action === 'delete' ) {
+				nodesToUnbind.add( actualDomChildren[ i ] );
+				remove( actualDomChildren[ i ] );
+			} else { // 'equal'
+				// Force updating text nodes inside elements which did not change and do not need to be re-rendered (#1125).
+				this._markDescendantTextToSync( this.domConverter.domToView( expectedDomChildren[ i ] ) );
+				i++;
 			}
+		}
 
-			// Unbind removed nodes. When node does not have a parent it means that it was removed from DOM tree during
-			// comparision with the expected DOM. We don't need to check child nodes, because if child node was reinserted,
-			// it was moved to DOM tree out of the removed node.
-			for ( const node of nodesToUnbind ) {
-				if ( !node.parentNode ) {
-					this.domConverter.unbindDomElement( node );
-				}
+		// Unbind removed nodes. When node does not have a parent it means that it was removed from DOM tree during
+		// comparision with the expected DOM. We don't need to check child nodes, because if child node was reinserted,
+		// it was moved to DOM tree out of the removed node.
+		for ( const node of nodesToUnbind ) {
+			if ( !node.parentNode ) {
+				this.domConverter.unbindDomElement( node );
 			}
 		}
 	}
@@ -591,7 +608,7 @@ export default class Renderer {
 	 * @returns {Array} result.actualDomChildren Current viewElement DOM children.
 	 * @returns {Array} result.expectedDomChildren Expected viewElement DOM children.
 	 */
-	_diffElementChildren( viewElement, options ) {
+	_diffChildren( viewElement, options ) {
 		const domConverter = this.domConverter;
 		const domElement = domConverter.mapViewToDom( viewElement );
 
@@ -599,25 +616,6 @@ export default class Renderer {
 			// If there is no `domElement` it means that it was already removed from DOM.
 			// There is no need to process it. It will be processed when re-inserted.
 			return null;
-		}
-
-		function sameNodes( actualDomChild, expectedDomChild ) {
-			// Elements.
-			if ( actualDomChild === expectedDomChild ) {
-				return true;
-			}
-			// Texts.
-			else if ( isText( actualDomChild ) && isText( expectedDomChild ) ) {
-				return actualDomChild.data === expectedDomChild.data;
-			}
-			// Block fillers.
-			else if ( isBlockFiller( actualDomChild, domConverter.blockFiller ) &&
-				isBlockFiller( expectedDomChild, domConverter.blockFiller ) ) {
-				return true;
-			}
-
-			// Not matching types.
-			return false;
 		}
 
 		const domDocument = domElement.ownerDocument;
@@ -633,7 +631,7 @@ export default class Renderer {
 		}
 
 		return {
-			actions: diff( actualDomChildren, expectedDomChildren, sameNodes ),
+			actions: diff( actualDomChildren, expectedDomChildren, sameNodes.bind( null, domConverter.blockFiller ) ),
 			domElement,
 			actualDomChildren,
 			expectedDomChildren
@@ -661,49 +659,28 @@ export default class Renderer {
 			return actions;
 		}
 
-		function areSimilar( domNode1, domNode2 ) {
-			return isNode( domNode1 ) && isNode( domNode2 ) &&
-				!isText( domNode1 ) && !isText( domNode2 ) &&
-				domNode1.tagName.toLowerCase() === domNode2.tagName.toLowerCase();
-		}
-
-		function calculateReplaceActions( actual, expected ) {
-			return diff( actual, expected, areSimilar ).map( x => x === 'equal' ? 'replace' : x );
-		}
-
 		let newActions = [];
-		let skipActions = [];
 		let actualSlice = [];
 		let expectedSlice = [];
 
 		const counter = { equal: 0, insert: 0, delete: 0 };
+
 		for ( const action of actions ) {
 			if ( action === 'insert' ) {
-				skipActions.push( 'insert' );
 				expectedSlice.push( expectedDom[ counter.equal + counter.insert ] );
 			} else if ( action === 'delete' ) {
-				skipActions.push( 'delete' );
 				actualSlice.push( actualDom[ counter.equal + counter.delete ] );
 			} else { // equal
-				if ( expectedSlice.length && actualSlice.length ) {
-					newActions = newActions.concat( calculateReplaceActions( actualSlice, expectedSlice ) );
-				} else if ( expectedSlice.length || actualSlice.length ) {
-					newActions = newActions.concat( skipActions );
-				}
+				newActions = newActions.concat( diff( actualSlice, expectedSlice, areSimilar ).map( x => x === 'equal' ? 'replace' : x ) );
 				newActions.push( 'equal' );
 				// Reset stored elements on 'equal'.
-				skipActions = [];
 				actualSlice = [];
 				expectedSlice = [];
 			}
 			counter[ action ]++;
 		}
 
-		if ( expectedSlice.length && actualSlice.length ) {
-			newActions = newActions.concat( calculateReplaceActions( actualSlice, expectedSlice ) );
-		}
-
-		return newActions;
+		return newActions.concat( diff( actualSlice, expectedSlice, areSimilar ).map( x => x === 'equal' ? 'replace' : x ) );
 	}
 
 	/**
@@ -927,4 +904,48 @@ function _isEditable( element ) {
 	const parent = element.findAncestor( element => element.hasAttribute( 'contenteditable' ) );
 
 	return !parent || parent.getAttribute( 'contenteditable' ) == 'true';
+}
+
+// Whether two DOM nodes should be considered as similar.
+// Nodes are considered similar if they have the same tag name.
+//
+// @private
+// @param {Node} node1
+// @param {Node} node2
+// @returns {Boolean}
+function areSimilar( node1, node2 ) {
+	return isNode( node1 ) && isNode( node2 ) &&
+		!isText( node1 ) && !isText( node2 ) &&
+		node1.tagName.toLowerCase() === node2.tagName.toLowerCase();
+}
+
+// Whether two dom nodes should be considered as the same.
+// Two nodes which are considered the same are:
+//
+//		* Text nodes with the same text.
+//		* Element nodes represented by the same object.
+//		* Two block filler elements.
+//
+// @private
+// @param {Function} blockFiller Block filler creator function, see {@link module:engine/view/domconverter~DomConverter#blockFiller}.
+// @param {Node} node1
+// @param {Node} node2
+// @returns {Boolean}
+function sameNodes( blockFiller, actualDomChild, expectedDomChild ) {
+	// Elements.
+	if ( actualDomChild === expectedDomChild ) {
+		return true;
+	}
+	// Texts.
+	else if ( isText( actualDomChild ) && isText( expectedDomChild ) ) {
+		return actualDomChild.data === expectedDomChild.data;
+	}
+	// Block fillers.
+	else if ( isBlockFiller( actualDomChild, blockFiller ) &&
+		isBlockFiller( expectedDomChild, blockFiller ) ) {
+		return true;
+	}
+
+	// Not matching types.
+	return false;
 }
