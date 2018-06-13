@@ -4,7 +4,7 @@
  */
 
 import ModelTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/modeltesteditor';
-import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 
 import MergeCellCommand from '../../src/commands/mergecellcommand';
@@ -483,6 +483,17 @@ describe( 'MergeCellCommand', () => {
 				expect( command.value ).to.equal( root.getNodeByPath( [ 0, 0, 0 ] ) );
 			} );
 
+			it( 'should be set to mergeable cell in rows with spanned cells', () => {
+				setData( model, modelTable( [
+					[ { rowspan: 3, contents: '00' }, '11', '12', '13' ],
+					[ { rowspan: 2, contents: '21' }, '22', '23' ],
+					[ '32', { rowspan: 2, contents: '33[]' } ],
+					[ { colspan: 2, contents: '40' }, '42' ]
+				] ) );
+
+				expect( command.value ).to.equal( root.getNodeByPath( [ 0, 1, 2 ] ) );
+			} );
+
 			it( 'should be undefined if in a cell that potential mergeable cell has different rowspan', () => {
 				setData( model, modelTable( [
 					[ { colspan: 2, contents: '00' }, '02' ],
@@ -500,10 +511,10 @@ describe( 'MergeCellCommand', () => {
 		} );
 
 		describe( 'execute()', () => {
-			it( 'should merge table cells ', () => {
+			it( 'should merge table cells', () => {
 				setData( model, modelTable( [
 					[ '00', '01' ],
-					[ '10', '11[]' ]
+					[ '10', '[]11' ]
 				] ) );
 
 				command.execute();
@@ -511,6 +522,24 @@ describe( 'MergeCellCommand', () => {
 				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
 					[ '00', { rowspan: 2, contents: '[0111]' } ],
 					[ '10' ]
+				] ) );
+			} );
+
+			it( 'should properly merge cells in rows with spaned cells', () => {
+				setData( model, modelTable( [
+					[ { rowspan: 3, contents: '00' }, '11', '12', '13' ],
+					[ { rowspan: 2, contents: '21' }, '22', '23' ],
+					[ '32', { rowspan: 2, contents: '33[]' } ],
+					[ { colspan: 2, contents: '40' }, '42' ]
+				] ) );
+
+				command.execute();
+
+				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+					[ { rowspan: 3, contents: '00' }, '11', '12', '13' ],
+					[ { rowspan: 2, contents: '21' }, '22', { rowspan: 3, contents: '[2333]' } ],
+					[ '32' ],
+					[ { colspan: 2, contents: '40' }, '42' ]
 				] ) );
 			} );
 		} );

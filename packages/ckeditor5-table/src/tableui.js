@@ -75,6 +75,7 @@ export default class TableUI extends Plugin {
 		editor.ui.componentFactory.add( 'tableColumn', locale => {
 			const options = [
 				{ commandName: 'setColumnHeader', label: t( 'Header column' ), bindIsActive: true },
+				'|',
 				{ commandName: 'insertColumnBefore', label: t( 'Insert column before' ) },
 				{ commandName: 'insertColumnAfter', label: t( 'Insert column after' ) },
 				{ commandName: 'removeColumn', label: t( 'Delete column' ) }
@@ -86,6 +87,7 @@ export default class TableUI extends Plugin {
 		editor.ui.componentFactory.add( 'tableRow', locale => {
 			const options = [
 				{ commandName: 'setRowHeader', label: t( 'Header row' ), bindIsActive: true },
+				'|',
 				{ commandName: 'insertRowBelow', label: t( 'Insert row below' ) },
 				{ commandName: 'insertRowAbove', label: t( 'Insert row above' ) },
 				{ commandName: 'removeRow', label: t( 'Delete row' ) }
@@ -100,6 +102,7 @@ export default class TableUI extends Plugin {
 				{ commandName: 'mergeCellRight', label: t( 'Merge cell right' ) },
 				{ commandName: 'mergeCellDown', label: t( 'Merge cell down' ) },
 				{ commandName: 'mergeCellLeft', label: t( 'Merge cell left' ) },
+				'|',
 				{ commandName: 'splitCellVertically', label: t( 'Split cell vertically' ) },
 				{ commandName: 'splitCellHorizontally', label: t( 'Split cell horizontally' ) }
 			];
@@ -161,20 +164,28 @@ export default class TableUI extends Plugin {
 // @param {Array.<module:core/command~Command>} commands List of commands to update.
 // @param {module:utils/collection~Collection} dropdownItems Collection of dropdown items to update with given option.
 function addListOption( option, editor, commands, dropdownItems ) {
-	const { commandName, label, bindIsActive } = option;
-	const command = editor.commands.get( commandName );
+	const itemModel = new Model();
 
-	commands.push( command );
+	if ( option === '|' ) {
+		itemModel.set( {
+			isSeparator: true
+		} );
+	} else {
+		const { commandName, label, bindIsActive } = option;
+		const command = editor.commands.get( commandName );
 
-	const itemModel = new Model( {
-		commandName,
-		label
-	} );
+		commands.push( command );
 
-	itemModel.bind( 'isEnabled' ).to( command );
+		itemModel.set( {
+			commandName,
+			label
+		} );
 
-	if ( bindIsActive ) {
-		itemModel.bind( 'isActive' ).to( command, 'value' );
+		itemModel.bind( 'isEnabled' ).to( command );
+
+		if ( bindIsActive ) {
+			itemModel.bind( 'isActive' ).to( command, 'value' );
+		}
 	}
 
 	dropdownItems.add( itemModel );

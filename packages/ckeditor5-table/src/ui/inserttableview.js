@@ -89,6 +89,10 @@ export default class InsertTableView extends View {
 			],
 
 			on: {
+				mousedown: bind.to( evt => {
+					evt.preventDefault();
+				} ),
+
 				click: bind.to( () => {
 					this.fire( 'execute' );
 				} )
