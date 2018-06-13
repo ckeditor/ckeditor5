@@ -35,13 +35,13 @@
 }
 
 /* https://github.com/ckeditor/ckeditor5-theme-lark/issues/111 */
-.ck.ck-toolbar-container[class*="arrow_n"] {
+.ck.ck-balloon-panel.ck-toolbar-container[class*="arrow_n"] {
 	&::after {
 		border-bottom-color: var(--ck-color-base-foreground);
 	}
 }
 
-.ck.ck-toolbar-container[class*="arrow_s"] {
+.ck.ck-balloon-panel.ck-toolbar-container[class*="arrow_s"] {
 	&::after {
 		border-top-color: var(--ck-color-base-foreground);
 	}
