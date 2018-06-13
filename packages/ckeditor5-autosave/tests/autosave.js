@@ -12,7 +12,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import PendingActions from '@ckeditor/ckeditor5-core/src/pendingactions';
 
 describe( 'Autosave', () => {
-	const sandbox = sinon.sandbox.create();
+	const sandbox = sinon.sandbox.create( { useFakeTimers: true } );
 	let editor, element, autosave;
 
 	beforeEach( () => {
@@ -118,14 +118,14 @@ describe( 'Autosave', () => {
 		} );
 
 		it( 'should add a pending action during the saving.', () => {
-			const serverActionSpy = sinon.spy();
+			sandbox.useFakeTimers();
 			const pendingActions = editor.plugins.get( PendingActions );
+			const serverActionSpy = sinon.spy();
+			const serverActionStub = sinon.stub();
+			serverActionStub.onCall( 0 ).resolves( wait( 500 ).then( serverActionSpy ) );
 
 			autosave.provider = {
-				save() {
-					return wait5ms()
-						.then( serverActionSpy );
-				}
+				save: serverActionStub
 			};
 
 			editor.model.change( writer => {
@@ -133,13 +133,12 @@ describe( 'Autosave', () => {
 				editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
 			} );
 
-			autosave._flush();
-
 			sinon.assert.notCalled( serverActionSpy );
 			expect( pendingActions.isPending ).to.be.true;
 			expect( pendingActions.first.message ).to.equal( 'Saving in progress.' );
 
-			return wait5ms().then( () => {
+			sandbox.clock.tick( 500 );
+			return Promise.resolve().then( () => Promise.resolve() ).then( () => {
 				sinon.assert.calledOnce( serverActionSpy );
 				expect( pendingActions.isPending ).to.be.false;
 			} );
@@ -150,9 +149,7 @@ describe( 'Autosave', () => {
 			const pendingActions = editor.plugins.get( PendingActions );
 
 			autosave.provider = {
-				save() {
-					serverActionSpy();
-				}
+				save: serverActionSpy
 			};
 
 			expect( pendingActions.isPending ).to.be.false;
@@ -164,11 +161,95 @@ describe( 'Autosave', () => {
 
 			expect( pendingActions.isPending ).to.be.true;
 
+			// Server action needs to wait at least a cycle.
+			return Promise.resolve().then( () => {
+				sinon.assert.calledOnce( serverActionSpy );
+				expect( pendingActions.isPending ).to.be.false;
+			} );
+		} );
+
+		it( 'should handle correctly throttled save action and preserve pending action until both save actions finish', () => {
+			sandbox.useFakeTimers();
+			const serverActionSpy = sinon.spy();
+			const pendingActions = editor.plugins.get( PendingActions );
+
+			// Create a fake server that responses after 500ms for the first call and after 1000ms for the second call.
+			const serverActionStub = sinon.stub();
+			serverActionStub.onCall( 0 ).resolves( wait( 500 ).then( serverActionSpy ) );
+			serverActionStub.onCall( 1 ).resolves( wait( 1000 ).then( serverActionSpy ) );
+
+			autosave.provider = {
+				save: serverActionStub
+			};
+
+			expect( pendingActions.isPending ).to.be.false;
+
+			editor.model.change( writer => {
+				writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) ) );
+				editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
+			} );
+
+			expect( pendingActions.isPending ).to.be.true;
+
+			editor.model.change( writer => {
+				writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) ) );
+				editor.model.insertContent( new ModelText( 'bar' ), editor.model.document.selection );
+			} );
+
 			autosave._flush();
+
+			expect( pendingActions.isPending ).to.be.true;
+
+			sandbox.clock.tick( 500 );
+			return Promise.resolve().then( () => {
+				expect( pendingActions.isPending ).to.be.true;
+				sinon.assert.calledOnce( serverActionSpy );
+
+				// Wait another 500ms for the second server action.
+				sandbox.clock.tick( 500 );
+				return Promise.resolve().then( () => {
+					expect( pendingActions.isPending ).to.be.false;
+					sinon.assert.calledTwice( serverActionSpy );
+				} );
+			} );
+		} );
+
+		it( 'should handle correctly throttled save action and preserve pending action until both save actions finish #2', () => {
+			const serverActionSpy = sinon.spy();
+			const pendingActions = editor.plugins.get( PendingActions );
+
+			autosave.provider = {
+				save: serverActionSpy
+			};
+
+			expect( pendingActions.isPending ).to.be.false;
+
+			editor.model.change( writer => {
+				writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) ) );
+				editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
+			} );
+
+			expect( pendingActions.isPending ).to.be.true;
+
+			editor.model.change( writer => {
+				writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) ) );
+				editor.model.insertContent( new ModelText( 'bar' ), editor.model.document.selection );
+			} );
+
+			expect( pendingActions.isPending ).to.be.true;
 
 			// Server action needs to wait at least a cycle.
 			return Promise.resolve().then( () => {
-				expect( pendingActions.isPending ).to.be.false;
+				sinon.assert.calledOnce( serverActionSpy );
+				expect( pendingActions.isPending ).to.be.true;
+
+				autosave._flush();
+
+				// Wait another promise cycle.
+				return Promise.resolve().then( () => {
+					sinon.assert.calledTwice( serverActionSpy );
+					expect( pendingActions.isPending ).to.be.false;
+				} );
 			} );
 		} );
 
@@ -326,14 +407,14 @@ describe( 'Autosave', () => {
 		} );
 
 		it( 'should work after editor\'s destroy with long server\'s action time', () => {
-			const serverActionSpy = sinon.spy();
+			sandbox.useFakeTimers();
 			const pendingActions = editor.plugins.get( PendingActions );
+			const serverActionSpy = sinon.spy();
+			const serverActionStub = sinon.stub();
+			serverActionStub.onCall( 0 ).resolves( wait( 500 ).then( serverActionSpy ) );
 
 			autosave.provider = {
-				save() {
-					return wait5ms()
-						.then( serverActionSpy );
-				}
+				save: serverActionStub
 			};
 
 			editor.model.change( writer => {
@@ -344,17 +425,18 @@ describe( 'Autosave', () => {
 			return editor.destroy()
 				.then( () => {
 					expect( pendingActions.isPending ).to.be.true;
+					sandbox.clock.tick( 500 );
 				} )
-				.then( wait5ms )
 				.then( () => {
 					expect( pendingActions.isPending ).to.be.false;
+					sinon.assert.calledOnce( serverActionSpy );
 				} );
 		} );
 	} );
 
-	function wait5ms() {
+	function wait( time ) {
 		return new Promise( res => {
-			window.setTimeout( res, 5 );
+			window.setTimeout( res, time );
 		} );
 	}
 } );
