@@ -54,20 +54,20 @@ export default class ClassicEditor extends Editor {
 	 * {@link module:editor-classic/classiceditor~ClassicEditor.create `ClassicEditor.create()`} method instead.
 	 *
 	 * @protected
-	 * @param {HTMLElement|String} elementOrData The DOM element that will be the source for the created editor
+	 * @param {HTMLElement|String} sourceElementOrData The DOM element that will be the source for the created editor
 	 * or editor's initial data. For more information see
 	 * {@link module:editor-classic/classiceditor~ClassicEditor.create `ClassicEditor.create()`}.
 	 * @param {module:core/editor/editorconfig~EditorConfig} config The editor configuration.
 	 */
-	constructor( elementOrData, config ) {
+	constructor( sourceElementOrData, config ) {
 		super( config );
 
-		if ( isElement( elementOrData ) ) {
-			this.element = elementOrData;
+		if ( isElement( sourceElementOrData ) ) {
+			this.sourceElement = sourceElementOrData;
 		}
 
 		/**
-		 * The element replacer instance used to hide the editor element.
+		 * The element replacer instance used to hide the editor source element.
 		 *
 		 * @protected
 		 * @member {module:utils/elementreplacer~ElementReplacer}
@@ -84,14 +84,23 @@ export default class ClassicEditor extends Editor {
 	}
 
 	/**
+	 * An HTML element that represents the whole editor (with UI). See the {@link module:core/editor/editorwithui~EditorWithUI} interface.
+	 *
+	 * @returns {HTMLElement|null}
+	 */
+	get element() {
+		return this.ui.view.element;
+	}
+
+	/**
 	 * Destroys the editor instance, releasing all resources used by it.
 	 *
-	 * Updates the original editor element with the data.
+	 * Updates the source editor element with the data.
 	 *
 	 * @returns {Promise}
 	 */
 	destroy() {
-		this.updateElement();
+		this.updateSourceElement();
 		this._elementReplacer.restore();
 		this.ui.destroy();
 
@@ -155,15 +164,15 @@ export default class ClassicEditor extends Editor {
 	 *				console.error( err.stack );
 	 *			} );
 	 *
-	 * @param {HTMLElement|String} elementOrData The DOM element that will be the source for the created editor
+	 * @param {HTMLElement|String} sourceElementOrData The DOM element that will be the source for the created editor
 	 * or editor's initial data.
 	 *
-	 * If an element is passed, then it contents will be automatically
+	 * If an element is passed, then its contents will be automatically
 	 * {@link module:editor-classic/classiceditor~ClassicEditor#setData loaded} to the editor on startup
-	 * and  the editor element will replace the passed element in the DOM (the original one will be hidden and editor
-	 * will be injected next to it).
+	 * and the {@link module:core/editor/editorwithui~EditorWithUI#element editor element} will replace the passed element in the DOM
+	 * (the original one will be hidden and editor will be injected next to it).
 	 *
-	 * Moreover, the data will be set back to the original element once the editor is destroyed and
+	 * Moreover, the data will be set back to the source element once the editor is destroyed and
 	 * (if the element is a `<textarea>`) when a form in which this element is contained is submitted (which ensures
 	 * automatic integration with native web forms).
 	 *
@@ -175,27 +184,27 @@ export default class ClassicEditor extends Editor {
 	 * @returns {Promise} A promise resolved once the editor is ready.
 	 * The promise returns the created {@link module:editor-classic/classiceditor~ClassicEditor} instance.
 	 */
-	static create( elementOrData, config ) {
+	static create( sourceElementOrData, config ) {
 		return new Promise( resolve => {
-			const editor = new this( elementOrData, config );
+			const editor = new this( sourceElementOrData, config );
 
 			resolve(
 				editor.initPlugins()
 					.then( () => editor.ui.init() )
 					.then( () => {
-						if ( isElement( elementOrData ) ) {
-							editor._elementReplacer.replace( elementOrData, editor.ui.view.element );
+						if ( isElement( sourceElementOrData ) ) {
+							editor._elementReplacer.replace( sourceElementOrData, editor.ui.view.element );
 						}
 
 						editor.fire( 'uiReady' );
 					} )
 					.then( () => editor.editing.view.attachDomRoot( editor.ui.view.editableElement ) )
 					.then( () => {
-						if ( editor.element ) {
-							editor.data.init( getDataFromElement( editor.element ) );
+						if ( editor.sourceElement ) {
+							editor.data.init( getDataFromElement( editor.sourceElement ) );
 						} else {
-							editor.data.init( elementOrData );
-							editor.element = editor.ui.view.element;
+							editor.data.init( sourceElementOrData );
+							editor.sourceElement = editor.ui.view.element;
 						}
 					} )
 					.then( () => {

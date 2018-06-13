@@ -46,15 +46,19 @@ describe( 'ClassicEditor', () => {
 		} );
 
 		it( 'has a Data Interface', () => {
-			testUtils.isMixed( ClassicEditor, DataApiMixin );
+			expect( testUtils.isMixed( ClassicEditor, DataApiMixin ) ).to.true;
 		} );
 
 		it( 'has a Element Interface', () => {
-			testUtils.isMixed( ClassicEditor, ElementApiMixin );
+			expect( testUtils.isMixed( ClassicEditor, ElementApiMixin ) ).to.true;
 		} );
 
 		it( 'creates main root element', () => {
 			expect( editor.model.document.getRoot( 'main' ) ).to.instanceof( RootElement );
+		} );
+
+		it( 'contains the source element as #sourceElement property', () => {
+			expect( editor.sourceElement ).to.equal( editorElement );
 		} );
 
 		it( 'handles form element', () => {
@@ -260,11 +264,11 @@ describe( 'ClassicEditor', () => {
 		} );
 
 		it( 'restores the editor element', () => {
-			expect( editor.element.style.display ).to.equal( 'none' );
+			expect( editor.sourceElement.style.display ).to.equal( 'none' );
 
 			return editor.destroy()
 				.then( () => {
-					expect( editor.element.style.display ).to.equal( '' );
+					expect( editor.sourceElement.style.display ).to.equal( '' );
 				} );
 		} );
 	} );
