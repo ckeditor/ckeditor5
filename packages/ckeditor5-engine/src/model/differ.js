@@ -171,7 +171,7 @@ export default class Differ {
 				for ( const marker of this._markerCollection.getMarkersIntersectingRange( range ) ) {
 					const markerRange = marker.getRange();
 
-					this.bufferMarkerChange( marker.name, markerRange, markerRange );
+					this.bufferMarkerChange( marker.name, markerRange, markerRange, marker.affectsData );
 				}
 
 				break;
@@ -189,17 +189,20 @@ export default class Differ {
 	 * @param {module:engine/model/range~Range|null} oldRange Marker range before the change or `null` if the marker has just
 	 * been created.
 	 * @param {module:engine/model/range~Range|null} newRange Marker range after the change or `null` if the marker was removed.
+	 * @param {Boolean} affectsData Flag indicating whether marker affects the editor data.
 	 */
-	bufferMarkerChange( markerName, oldRange, newRange ) {
+	bufferMarkerChange( markerName, oldRange, newRange, affectsData ) {
 		const buffered = this._changedMarkers.get( markerName );
 
 		if ( !buffered ) {
 			this._changedMarkers.set( markerName, {
 				oldRange,
-				newRange
+				newRange,
+				affectsData
 			} );
 		} else {
 			buffered.newRange = newRange;
+			buffered.affectsData = affectsData;
 
 			if ( buffered.oldRange == null && buffered.newRange == null ) {
 				// The marker is going to be removed (`newRange == null`) but it did not exist before the first buffered change
@@ -241,6 +244,22 @@ export default class Differ {
 		}
 
 		return result;
+	}
+
+	/**
+	 * Checks whether some of buffered marker affects the editor data or whether some element changed.
+	 *
+	 * @returns {Boolean} `true` if buffered markers or changes in elements affects the editor data.
+	 */
+	hasDataChanges() {
+		for ( const [ , change ] of this._changedMarkers ) {
+			if ( change.affectsData ) {
+				return true;
+			}
+		}
+
+		// If markers do not affect the data, check whether there are some changes in elements.
+		return this._changesInElement.size > 0;
 	}
 
 	/**
