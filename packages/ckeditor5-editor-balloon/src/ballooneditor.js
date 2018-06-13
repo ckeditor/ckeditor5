@@ -56,13 +56,13 @@ export default class BalloonEditor extends Editor {
 	 * {@link module:editor-balloon/ballooneditor~BalloonEditor.create `BalloonEditor.create()`} method instead.
 	 *
 	 * @protected
-	 * @param {HTMLElement|String} elementOrData The DOM element that will be the source for the created editor
+	 * @param {HTMLElement|String} sourceElementOrData The DOM element that will be the source for the created editor
 	 * (on which the editor will be initialized) or initial data for the editor. If data is provided, `editor.element`
 	 * will be created automatically and need to be added manually to the DOM. For more information see
 	 * {@link module:editor-balloon/ballooneditor~BalloonEditor.create `BalloonEditor.create()`}.
 	 * @param {module:core/editor/editorconfig~EditorConfig} config The editor configuration.
 	 */
-	constructor( elementOrData, config ) {
+	constructor( sourceElementOrData, config ) {
 		super( config );
 
 		/**
@@ -75,10 +75,10 @@ export default class BalloonEditor extends Editor {
 		 * @member {HTMLElement} #element
 		 */
 
-		if ( isElement( elementOrData ) ) {
-			this.element = elementOrData;
+		if ( isElement( sourceElementOrData ) ) {
+			this.sourceElement = sourceElementOrData;
 		} else {
-			this.element = global.document.createElement( 'div' );
+			this.sourceElement = global.document.createElement( 'div' );
 		}
 
 		this.config.get( 'plugins' ).push( BalloonToolbar );
@@ -88,9 +88,18 @@ export default class BalloonEditor extends Editor {
 
 		this.model.document.createRoot();
 
-		this.ui = new BalloonEditorUI( this, new BalloonEditorUIView( this.locale, this.element ) );
+		this.ui = new BalloonEditorUI( this, new BalloonEditorUIView( this.locale, this.sourceElement ) );
 
 		attachToForm( this );
+	}
+
+	/**
+	 * An HTML element that represents the whole editor. See the {@link module:core/editor/editorwithui~EditorWithUI} interface.
+	 *
+	 * @returns {HTMLElement|null}
+	 */
+	get element() {
+		return this.ui.view.editable.element;
 	}
 
 	/**
@@ -108,7 +117,7 @@ export default class BalloonEditor extends Editor {
 		this.ui.destroy();
 
 		return super.destroy()
-			.then( () => setDataInElement( this.element, data ) );
+			.then( () => setDataInElement( this.sourceElement, data ) );
 	}
 
 	/**
@@ -168,7 +177,7 @@ export default class BalloonEditor extends Editor {
 	 *				console.error( err.stack );
 	 *			} );
 	 *
-	 * @param {HTMLElement|String} elementOrData The DOM element that will be the source for the created editor
+	 * @param {HTMLElement|String} sourceElementOrData The DOM element that will be the source for the created editor
 	 * (on which the editor will be initialized) or initial data for the editor. If data is provided, `editor.element`
 	 * will be created automatically and need to be added manually to the DOM. The element is initialized as a `div`
 	 * element crated in current document's context.
@@ -176,9 +185,9 @@ export default class BalloonEditor extends Editor {
 	 * @returns {Promise} A promise resolved once the editor is ready.
 	 * The promise returns the created {@link module:editor-balloon/ballooneditor~BalloonEditor} instance.
 	 */
-	static create( elementOrData, config ) {
+	static create( sourceElementOrData, config ) {
 		return new Promise( resolve => {
-			const editor = new this( elementOrData, config );
+			const editor = new this( sourceElementOrData, config );
 
 			resolve(
 				editor.initPlugins()
@@ -186,7 +195,7 @@ export default class BalloonEditor extends Editor {
 						editor.ui.init();
 						editor.fire( 'uiReady' );
 					} )
-					.then( () => editor.data.init( isElement( elementOrData ) ? getDataFromElement( elementOrData ) : elementOrData ) )
+					.then( () => editor.data.init( isElement( sourceElementOrData ) ? getDataFromElement( sourceElementOrData ) : sourceElementOrData ) )
 					.then( () => {
 						editor.fire( 'dataReady' );
 						editor.fire( 'ready' );

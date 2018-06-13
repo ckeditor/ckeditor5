@@ -111,12 +111,19 @@ describe( 'BalloonEditor', () => {
 			} );
 		} );
 
-		it( 'editor.element should contain created div element', () => {
+		it( 'editor.sourceElement should contain created div element', () => {
 			return BalloonEditor.create( '<p>Hello world!</p>', {
 				plugins: [ Paragraph ]
 			} ).then( editor => {
-				expect( editor.element ).to.be.instanceOf( HTMLElement );
-				expect( editor.element.tagName ).to.equal( 'DIV' );
+				expect( editor.sourceElement ).to.be.instanceOf( HTMLElement );
+				expect( editor.sourceElement.tagName ).to.equal( 'DIV' );
+			} );
+		} );
+
+		it( 'editor.element should contain created div element (the whole editor with UI)', () => {
+			return BalloonEditor.create( '<p>Hello world!</p>', {
+				plugins: [ Paragraph ]
+			} ).then( editor => {
 				expect( editor.editing.view.getDomRoot() ).to.equal( editor.element );
 			} );
 		} );
@@ -146,7 +153,10 @@ describe( 'BalloonEditor', () => {
 		} );
 
 		it( 'attaches editable UI as view\'s DOM root', () => {
-			expect( editor.editing.view.getDomRoot() ).to.equal( editor.ui.view.editable.element );
+			const domRoot = editor.editing.view.getDomRoot();
+
+			expect( domRoot ).to.equal( editor.element );
+			expect( domRoot ).to.equal( editor.ui.view.editable.element );
 		} );
 
 		it( 'creates the UI using BalloonEditorUI classes', () => {
