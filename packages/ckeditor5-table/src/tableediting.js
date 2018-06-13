@@ -33,7 +33,7 @@ import SetHeaderColumnCommand from './commands/setheadercolumncommand';
 import { getParentTable } from './commands/utils';
 import TableUtils from './tableutils';
 
-import './../theme/table.css';
+import '../theme/tableediting.css';
 
 /**
  * The table editing feature.

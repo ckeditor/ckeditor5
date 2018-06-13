@@ -3,24 +3,30 @@
  * For licensing, see LICENSE.md.
  */
 
-.ck table.ck-widget th.ck-editor__nested-editable {
-	border-color: inherit;
-	border-style: inset;
-}
+.ck.ck-content table {
+	/* Give the table some air and center it horizontally */
+	margin: 1em auto;
 
-.ck table.ck-widget td.ck-editor__nested-editable {
-	border-color: inherit;
-	border-style: inset;
-}
+	/* The table cells should have slight borders */
+	border-collapse: collapse;
+	border-spacing: 0;
 
-.ck table.ck-widget td.ck-editor__nested-editable.ck-editor__nested-editable_focused,
-.ck table.ck-widget td.ck-editor__nested-editable:focus {
-	background-color: inherit;
-	color: inherit;
-}
+	/* The outer border of the table should be slightly darker than the inner lines. */
+	&:not(:hover) {
+		outline: 1px solid hsl(0, 0%, 70%);
+		outline-offset: -1px;
+	}
 
-.ck table.ck-widget th.ck-editor__nested-editable.ck-editor__nested-editable_focused,
-.ck table.ck-widget th.ck-editor__nested-editable:focus {
-	background-color: inherit;
-	color: inherit;
+	& td,
+	& th {
+		min-width: 2em;
+		padding: .4em;
+		text-align: center;
+		border-color: hsl(0, 0%, 85%);
+	}
+
+	& th {
+		font-weight: bold;
+		background: hsl(0, 0%, 98%);
+	}
 }
