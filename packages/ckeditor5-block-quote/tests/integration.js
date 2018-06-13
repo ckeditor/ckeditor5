@@ -114,8 +114,8 @@ describe( 'BlockQuote integration', () => {
 			setModelData( model,
 				'<paragraph>x</paragraph>' +
 				'<blockQuote>' +
-					'<listItem indent="0" type="bulleted">a</listItem>' +
-					'<listItem indent="0" type="bulleted">[]</listItem>' +
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
+					'<listItem listIndent="0" listType="bulleted">[]</listItem>' +
 				'</blockQuote>' +
 				'<paragraph>x</paragraph>'
 			);
@@ -127,7 +127,7 @@ describe( 'BlockQuote integration', () => {
 			expect( getModelData( model ) ).to.equal(
 				'<paragraph>x</paragraph>' +
 				'<blockQuote>' +
-					'<listItem indent="0" type="bulleted">a</listItem>' +
+					'<listItem listIndent="0" listType="bulleted">a</listItem>' +
 					'<paragraph>[]</paragraph>' +
 				'</blockQuote>' +
 				'<paragraph>x</paragraph>'
@@ -399,7 +399,7 @@ describe( 'BlockQuote integration', () => {
 	// There is a test which checks whether blockQuote will split the list items instead of merging with.
 	describe( 'compatibility with lists', () => {
 		it( 'does not merge the paragraph with list item', () => {
-			setModelData( model, '<listItem indent="0" type="bulleted">fo[]o</listItem>' );
+			setModelData( model, '<listItem listIndent="0" listType="bulleted">fo[]o</listItem>' );
 
 			const df = parseModel(
 				'<blockQuote><paragraph>xxx</paragraph></blockQuote><heading1>yyy</heading1>',
@@ -409,7 +409,7 @@ describe( 'BlockQuote integration', () => {
 			model.insertContent( df, model.document.selection );
 
 			expect( getModelData( model ) ).to.equal(
-				'<listItem indent="0" type="bulleted">fo</listItem>' +
+				'<listItem listIndent="0" listType="bulleted">fo</listItem>' +
 				'<blockQuote>' +
 				'<paragraph>xxx</paragraph>' +
 				'</blockQuote>' +
