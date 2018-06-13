@@ -809,7 +809,7 @@ export default class Writer {
 	 *
 	 * Create marker that affects the editor data:
 	 *
-	 *		addMarker( markerName, { range, usingOperation: false, affectData: true } );
+	 *		addMarker( markerName, { range, usingOperation: false, affectsData: true } );
 	 *
 	 * Note: For efficiency reasons, it's best to create and keep as little markers as possible.
 	 *
@@ -899,7 +899,7 @@ export default class Writer {
 	 *
 	 * Change marker's option (inform the engine, that the marker does not affect the data anymore):
 	 *
-	 *		updateMarker( markerName, { affectData: false } );
+	 *		updateMarker( markerName, { affectsData: false } );
 	 *
 	 * @see module:engine/model/markercollection~Marker
 	 * @param {String} markerOrName Name of a marker to update, or a marker instance.
