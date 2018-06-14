@@ -795,7 +795,8 @@ export default class Writer {
 	 * markers managed by operations and not-managed by operations.
 	 *
 	 * The `options.affectsData` parameter, which defaults to `false`, allows you to define if a marker affects the data. It should be
-	 * `true` when the marker change changes the data returned by {@link module:core/editor/editor~Editor#getData} method.
+	 * `true` when the marker change changes the data returned by the
+	 * {@link module:core/editor/utils/dataapimixin~DataApi#getData `editor.getData()`} method.
 	 * When set to `true` it fires the {@link module:engine/model/document~Document#event:change:data `change:data`} event.
 	 * When set to `false` it fires the {@link module:engine/model/document~Document#event:change `change`} event.
 	 *
@@ -880,7 +881,8 @@ export default class Writer {
 	 * markers managed by operations and not-managed by operations. It is possible to change this option for an existing marker.
 	 *
 	 * The `options.affectsData` parameter, which defaults to `false`, allows you to define if a marker affects the data. It should be
-	 * `true` when the marker change changes the data returned by {@link module:core/editor/editor~Editor#getData} method.
+	 * `true` when the marker change changes the data returned by
+	 * the {@link module:core/editor/utils/dataapimixin~DataApi#getData `editor.getData()`} method.
 	 * When set to `true` it fires the {@link module:engine/model/document~Document#event:change:data `change:data`} event.
 	 * When set to `false` it fires the {@link module:engine/model/document~Document#event:change `change`} event.
 	 *

@@ -111,7 +111,7 @@ export default class Differ {
 	}
 
 	/**
-	 * Buffers a given operation. An operation has to be buffered before it is executed.
+	 * Buffers the given operation. An operation has to be buffered before it is executed.
 	 *
 	 * Operation type is checked and it is checked which nodes it will affect. These nodes are then stored in `Differ`
 	 * in the state before the operation is executed.
@@ -183,7 +183,7 @@ export default class Differ {
 	}
 
 	/**
-	 * Buffers marker change.
+	 * Buffers a marker change.
 	 *
 	 * @param {String} markerName The name of the marker that changed.
 	 * @param {module:engine/model/range~Range|null} oldRange Marker range before the change or `null` if the marker has just
@@ -247,9 +247,15 @@ export default class Differ {
 	}
 
 	/**
-	 * Checks whether some of buffered marker affects the editor data or whether some element changed.
+	 * Checks whether some of the buffered changes affect the editor data.
 	 *
-	 * @returns {Boolean} `true` if buffered markers or changes in elements affects the editor data.
+	 * Types of changes which affect the editor data:
+	 *
+	 * * model structure changes,
+	 * * attribute changes,
+	 * * changes of markers which were defined as `affectingData`.
+	 *
+	 * @returns {Boolean}
 	 */
 	hasDataChanges() {
 		for ( const [ , change ] of this._changedMarkers ) {
