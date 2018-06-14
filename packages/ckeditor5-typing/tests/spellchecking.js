@@ -20,9 +20,9 @@ import { getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-util
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 describe( 'Typing – spellchecking integration', () => {
-	let editor, onChangesDone, container;
+	let editor, container;
 
-	before( () => {
+	beforeEach( () => {
 		container = document.createElement( 'div' );
 		document.body.appendChild( container );
 
@@ -32,24 +32,17 @@ describe( 'Typing – spellchecking integration', () => {
 			} )
 			.then( newEditor => {
 				editor = newEditor;
+
+				editor.setData(
+					'<p>The Foo hous a is a Foo hous e. A Foo athat and Foo xhat. This is an istane</p>' +
+					'<p>Banana, orenge, appfle and the new comppputer</p>' );
 			} );
 	} );
 
-	after( () => {
+	afterEach( () => {
 		container.remove();
 
 		return editor.destroy();
-	} );
-
-	beforeEach( () => {
-		if ( onChangesDone ) {
-			editor.model.document.off( 'change', onChangesDone );
-			onChangesDone = null;
-		}
-
-		editor.setData(
-			'<p>The Foo hous a is a Foo hous e. A Foo athat and Foo xhat. This is an istane</p>' +
-			'<p>Banana, orenge, appfle and the new comppputer</p>' );
 	} );
 
 	describe( 'Plain text spellchecking (mutations)', () => {
@@ -125,22 +118,23 @@ describe( 'Typing – spellchecking integration', () => {
 		// This tests emulates spellchecker correction on non-styled text by inserting correction text via native 'insertText' command.
 
 		it( 'should replace with longer word (collapsed)', done => {
-			onChangesDone = () => {
+			emulateSpellcheckerInsertText( editor, 0, 12, 12, 'e' );
+
+			setTimeout( () => {
 				expectContent( editor,
 					'<paragraph>The Foo house[] a is a Foo hous e. A Foo athat and Foo xhat. This is an istane</paragraph>' +
 					'<paragraph>Banana, orenge, appfle and the new comppputer</paragraph>',
 
 					'<p>The Foo house{} a is a Foo hous e. A Foo athat and Foo xhat. This is an istane</p>' +
 					'<p>Banana, orenge, appfle and the new comppputer</p>' );
-
 				done();
-			};
-
-			emulateSpellcheckerInsertText( editor, 0, 12, 12, 'e', onChangesDone );
+			} );
 		} );
 
 		it( 'should replace with longer word (non-collapsed)', done => {
-			onChangesDone = () => {
+			emulateSpellcheckerInsertText( editor, 0, 8, 12, 'house' );
+
+			setTimeout( () => {
 				expectContent( editor,
 					'<paragraph>The Foo house[] a is a Foo hous e. A Foo athat and Foo xhat. This is an istane</paragraph>' +
 					'<paragraph>Banana, orenge, appfle and the new comppputer</paragraph>',
@@ -149,13 +143,13 @@ describe( 'Typing – spellchecking integration', () => {
 					'<p>Banana, orenge, appfle and the new comppputer</p>' );
 
 				done();
-			};
-
-			emulateSpellcheckerInsertText( editor, 0, 8, 12, 'house', onChangesDone );
+			} );
 		} );
 
 		it( 'should replace with shorter word (merging letter after - collapsed)', done => {
-			onChangesDone = () => {
+			emulateSpellcheckerInsertText( editor, 0, 28, 30, 'e' );
+
+			setTimeout( () => {
 				expectContent( editor,
 					'<paragraph>The Foo hous a is a Foo house[]. A Foo athat and Foo xhat. This is an istane</paragraph>' +
 					'<paragraph>Banana, orenge, appfle and the new comppputer</paragraph>',
@@ -164,13 +158,13 @@ describe( 'Typing – spellchecking integration', () => {
 					'<p>Banana, orenge, appfle and the new comppputer</p>' );
 
 				done();
-			};
-
-			emulateSpellcheckerInsertText( editor, 0, 28, 30, 'e', onChangesDone );
+			} );
 		} );
 
 		it( 'should replace with shorter word (merging letter after - non-collapsed)', done => {
-			onChangesDone = () => {
+			emulateSpellcheckerInsertText( editor, 0, 24, 30, 'house' );
+
+			setTimeout( () => {
 				expectContent( editor,
 					'<paragraph>The Foo hous a is a Foo house[]. A Foo athat and Foo xhat. This is an istane</paragraph>' +
 					'<paragraph>Banana, orenge, appfle and the new comppputer</paragraph>',
@@ -179,13 +173,13 @@ describe( 'Typing – spellchecking integration', () => {
 					'<p>Banana, orenge, appfle and the new comppputer</p>' );
 
 				done();
-			};
-
-			emulateSpellcheckerInsertText( editor, 0, 24, 30, 'house', onChangesDone );
+			} );
 		} );
 
 		it( 'should replace with same length text', done => {
-			onChangesDone = () => {
+			emulateSpellcheckerInsertText( editor, 0, 37, 43, 'd that' );
+
+			setTimeout( () => {
 				expectContent( editor,
 					'<paragraph>The Foo hous a is a Foo hous e. A Food that[] and Foo xhat. This is an istane</paragraph>' +
 					'<paragraph>Banana, orenge, appfle and the new comppputer</paragraph>',
@@ -194,13 +188,13 @@ describe( 'Typing – spellchecking integration', () => {
 					'<p>Banana, orenge, appfle and the new comppputer</p>' );
 
 				done();
-			};
-
-			emulateSpellcheckerInsertText( editor, 0, 37, 43, 'd that', onChangesDone );
+			} );
 		} );
 
 		it( 'should replace with longer word on the paragraph end', done => {
-			onChangesDone = () => {
+			emulateSpellcheckerInsertText( editor, 0, 69, 75, 'instance' );
+
+			setTimeout( () => {
 				expectContent( editor,
 					'<paragraph>The Foo hous a is a Foo hous e. A Foo athat and Foo xhat. This is an instance[]</paragraph>' +
 					'<paragraph>Banana, orenge, appfle and the new comppputer</paragraph>',
@@ -209,13 +203,13 @@ describe( 'Typing – spellchecking integration', () => {
 					'<p>Banana, orenge, appfle and the new comppputer</p>' );
 
 				done();
-			};
-
-			emulateSpellcheckerInsertText( editor, 0, 69, 75, 'instance', onChangesDone );
+			} );
 		} );
 
 		it( 'should replace with shorter word on the paragraph end', done => {
-			onChangesDone = () => {
+			emulateSpellcheckerInsertText( editor, 1, 35, 45, 'computer' );
+
+			setTimeout( () => {
 				expectContent( editor,
 					'<paragraph>The Foo hous a is a Foo hous e. A Foo athat and Foo xhat. This is an istane</paragraph>' +
 					'<paragraph>Banana, orenge, appfle and the new computer[]</paragraph>',
@@ -224,9 +218,7 @@ describe( 'Typing – spellchecking integration', () => {
 					'<p>Banana, orenge, appfle and the new computer{}</p>' );
 
 				done();
-			};
-
-			emulateSpellcheckerInsertText( editor, 1, 35, 45, 'computer', onChangesDone );
+			} );
 		} );
 	} );
 } );
@@ -249,7 +241,7 @@ function emulateSpellcheckerMutation( editor, nodeIndex, resultPositionIndex, ol
 	);
 }
 
-function emulateSpellcheckerInsertText( editor, nodeIndex, rangeStart, rangeEnd, text, onChangesDoneCallback ) {
+function emulateSpellcheckerInsertText( editor, nodeIndex, rangeStart, rangeEnd, text ) {
 	const model = editor.model;
 	const modelRoot = model.document.getRoot();
 
@@ -261,10 +253,6 @@ function emulateSpellcheckerInsertText( editor, nodeIndex, rangeStart, rangeEnd,
 			ModelRange.createFromParentsAndOffsets( modelRoot.getChild( nodeIndex ), rangeStart, modelRoot.getChild( nodeIndex ), rangeEnd )
 		);
 	} );
-
-	model.document.once( 'change', () => {
-		setTimeout( onChangesDoneCallback, 100 );
-	}, { priority: 'low' } );
 
 	window.document.execCommand( 'insertText', false, text );
 }
