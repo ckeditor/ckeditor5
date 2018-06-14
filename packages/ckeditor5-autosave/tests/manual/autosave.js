@@ -25,7 +25,7 @@ ClassicEditor
 		destroyButton.addEventListener( 'click', () => editor.destroy() );
 
 		const autosave = editor.plugins.get( Autosave );
-		autosave.provider = {
+		autosave.adapter = {
 			save() {
 				const data = editor.getData();
 

@@ -17,7 +17,7 @@ import throttle from './throttle';
 /**
  * Autosave plugin provides an easy-to-use API to save the editor's content.
  * It watches {@link module:engine/model/document~Document#event:change:data change:data}
- * and `Window:beforeunload` events and calls the {@link module:autosave/autosave~SaveProvider#save} method.
+ * and `Window:beforeunload` events and calls the {@link module:autosave/autosave~Adapter#save} method.
  *
  * 		ClassicEditor
  *			.create( document.querySelector( '#editor' ), {
@@ -29,7 +29,7 @@ import throttle from './throttle';
  *			} )
  *			.then( editor => {
  *				const autosave = editor.plugins.get( Autosave );
- *				autosave.provider = {
+ *				autosave.adapter = {
  *					save() {
  *						const data = editor.getData();
  *
@@ -61,13 +61,13 @@ export default class Autosave extends Plugin {
 		super( editor );
 
 		/**
-		 * Provider is an object with the `save()` method. That method will be called whenever
+		 * The adapter is an object with the `save()` method. That method will be called whenever
 		 * the model's data changes. It might be called some time after the change,
 		 * since the event is throttled for performance reasons.
 		 *
-		 * @type {module:autosave/autosave~SaveProvider}
+		 * @type {module:autosave/autosave~Adapter}
 		 */
-		this.provider = undefined;
+		this.adapter = undefined;
 
 		/**
 		 * Throttled save method.
@@ -86,6 +86,8 @@ export default class Autosave extends Plugin {
 		this._lastDocumentVersion = editor.model.document.version;
 
 		/**
+		 * DOM emitter.
+		 *
 		 * @private
 		 * @type {DomEmitterMixin}
 		 */
@@ -169,8 +171,8 @@ export default class Autosave extends Plugin {
 	}
 
 	/**
-	 * If the provider is set and new document version exists,
-	 * `_save()` method creates a pending action and calls `provider.save()` method.
+	 * If the adapter is set and new document version exists,
+	 * `_save()` method creates a pending action and calls `adapter.save()` method.
 	 * It waits for the result and then removes the created pending action.
 	 *
 	 * @private
@@ -180,7 +182,7 @@ export default class Autosave extends Plugin {
 
 		// Marker's change may not produce an operation, so the document's version
 		// can be the same after that change.
-		if ( !this.provider || version < this._lastDocumentVersion ) {
+		if ( !this.adapter || version < this._lastDocumentVersion ) {
 			this._decrementCounter();
 
 			return;
@@ -188,7 +190,7 @@ export default class Autosave extends Plugin {
 
 		this._lastDocumentVersion = version;
 
-		Promise.resolve( this.provider.save() )
+		Promise.resolve( this.adapter.save() )
 			.then( () => {
 				this._decrementCounter();
 			} );
@@ -224,12 +226,16 @@ export default class Autosave extends Plugin {
 }
 
 /**
- * @interface module:autosave/autosave~SaveProvider
+ * An interface that requires the `save()` method.
+ *
+ * Used by {module:autosave/autosave~Autosave#adapter}
+ *
+ * @interface module:autosave/autosave~Adapter
  */
 
 /**
  * Method that will be called when the data model changes. It should return a promise (e.g. in case of saving content to the database),
- * so the `Autosave` plugin will wait for that action before removing it from the pending actions.
+ * so the `Autosave` plugin will wait for that action before removing it from pending actions.
  *
  * @method #save
  * @returns {Promise.<*>|undefined}

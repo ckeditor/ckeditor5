@@ -48,11 +48,11 @@ describe( 'Autosave', () => {
 	} );
 
 	describe( 'initialization', () => {
-		it( 'should initialize provider with an undefined value', () => {
-			expect( autosave.provider ).to.be.undefined;
+		it( 'should initialize adapter with an undefined value', () => {
+			expect( autosave.adapter ).to.be.undefined;
 		} );
 
-		it( 'should allow plugin to work without any defined provider', () => {
+		it( 'should allow plugin to work without any defined adapter', () => {
 			editor.model.change( writer => {
 				writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) ) );
 				editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
@@ -63,8 +63,8 @@ describe( 'Autosave', () => {
 	} );
 
 	describe( 'autosaving', () => {
-		it( 'should run provider\'s save method when the editor\'s change event is fired', () => {
-			autosave.provider = {
+		it( 'should run adapter\'s save method when the editor\'s change event is fired', () => {
+			autosave.adapter = {
 				save: sinon.spy()
 			};
 
@@ -76,14 +76,14 @@ describe( 'Autosave', () => {
 			// Go to the next cycle to because synchronization of CS documentVersion is async.
 			autosave._flush();
 
-			sinon.assert.calledOnce( autosave.provider.save );
+			sinon.assert.calledOnce( autosave.adapter.save );
 		} );
 
 		it( 'should throttle editor\'s change event', () => {
 			const spy = sinon.spy();
 			const savedStates = [];
 
-			autosave.provider = {
+			autosave.adapter = {
 				save() {
 					spy();
 
@@ -125,7 +125,7 @@ describe( 'Autosave', () => {
 			const serverActionStub = sinon.stub();
 			serverActionStub.onCall( 0 ).resolves( wait( 500 ).then( serverActionSpy ) );
 
-			autosave.provider = {
+			autosave.adapter = {
 				save: serverActionStub
 			};
 
@@ -149,7 +149,7 @@ describe( 'Autosave', () => {
 			const serverActionSpy = sinon.spy();
 			const pendingActions = editor.plugins.get( PendingActions );
 
-			autosave.provider = {
+			autosave.adapter = {
 				save: serverActionSpy
 			};
 
@@ -179,7 +179,7 @@ describe( 'Autosave', () => {
 			serverActionStub.onCall( 0 ).resolves( wait( 500 ).then( serverActionSpy ) );
 			serverActionStub.onCall( 1 ).resolves( wait( 1000 ).then( serverActionSpy ) );
 
-			autosave.provider = {
+			autosave.adapter = {
 				save: serverActionStub
 			};
 
@@ -218,7 +218,7 @@ describe( 'Autosave', () => {
 			const serverActionSpy = sinon.spy();
 			const pendingActions = editor.plugins.get( PendingActions );
 
-			autosave.provider = {
+			autosave.adapter = {
 				save: serverActionSpy
 			};
 
@@ -254,7 +254,7 @@ describe( 'Autosave', () => {
 		} );
 
 		it( 'should filter out changes in the selection', () => {
-			autosave.provider = {
+			autosave.adapter = {
 				save: sandbox.spy()
 			};
 
@@ -263,11 +263,11 @@ describe( 'Autosave', () => {
 			} );
 
 			autosave._flush();
-			sinon.assert.notCalled( autosave.provider.save );
+			sinon.assert.notCalled( autosave.adapter.save );
 		} );
 
 		it( 'should filter out markers that does not affect the data model', () => {
-			autosave.provider = {
+			autosave.adapter = {
 				save: sandbox.spy()
 			};
 
@@ -286,11 +286,11 @@ describe( 'Autosave', () => {
 
 			autosave._flush();
 
-			sinon.assert.notCalled( autosave.provider.save );
+			sinon.assert.notCalled( autosave.adapter.save );
 		} );
 
 		it( 'should filter out markers that does not affect the data model #2', () => {
-			autosave.provider = {
+			autosave.adapter = {
 				save: sandbox.spy()
 			};
 
@@ -309,11 +309,11 @@ describe( 'Autosave', () => {
 
 			autosave._flush();
 
-			sinon.assert.notCalled( autosave.provider.save );
+			sinon.assert.notCalled( autosave.adapter.save );
 		} );
 
 		it( 'should call the save method when some marker affects the data model', () => {
-			autosave.provider = {
+			autosave.adapter = {
 				save: sandbox.spy()
 			};
 
@@ -332,11 +332,11 @@ describe( 'Autosave', () => {
 
 			autosave._flush();
 
-			sinon.assert.calledTwice( autosave.provider.save );
+			sinon.assert.calledTwice( autosave.adapter.save );
 		} );
 
 		it( 'should call the save method when some marker affects the data model #2', () => {
-			autosave.provider = {
+			autosave.adapter = {
 				save: sandbox.spy()
 			};
 
@@ -348,7 +348,7 @@ describe( 'Autosave', () => {
 			} );
 
 			autosave._flush();
-			sinon.assert.calledOnce( autosave.provider.save );
+			sinon.assert.calledOnce( autosave.adapter.save );
 
 			editor.model.change( writer => {
 				writer.updateMarker( 'name', { range: range2 } );
@@ -356,11 +356,11 @@ describe( 'Autosave', () => {
 
 			autosave._flush();
 
-			sinon.assert.calledTwice( autosave.provider.save );
+			sinon.assert.calledTwice( autosave.adapter.save );
 		} );
 
 		it( 'should call the save method when some marker affects the data model #3', () => {
-			autosave.provider = {
+			autosave.adapter = {
 				save: sandbox.spy()
 			};
 
@@ -372,14 +372,14 @@ describe( 'Autosave', () => {
 			} );
 
 			autosave._flush();
-			sinon.assert.calledOnce( autosave.provider.save );
+			sinon.assert.calledOnce( autosave.adapter.save );
 		} );
 
 		it( 'should flush remaining calls after editor\'s destroy', () => {
 			const spy = sandbox.spy();
 			const savedStates = [];
 
-			autosave.provider = {
+			autosave.adapter = {
 				save() {
 					spy();
 
@@ -413,7 +413,7 @@ describe( 'Autosave', () => {
 			const serverActionStub = sinon.stub();
 			serverActionStub.onCall( 0 ).resolves( wait( 500 ).then( serverActionSpy ) );
 
-			autosave.provider = {
+			autosave.adapter = {
 				save: serverActionStub
 			};
 
