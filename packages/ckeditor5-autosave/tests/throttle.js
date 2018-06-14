@@ -30,7 +30,7 @@ describe( 'throttle', () => {
 		sinon.assert.calledOnce( spy );
 	} );
 
-	it( 'should run next calls at the specified maximum rate', () => {
+	it( 'should run next calls after specified amount of time', () => {
 		const spy = sinon.spy();
 		const throttledFn = throttle( spy, 100 );
 
@@ -45,28 +45,6 @@ describe( 'throttle', () => {
 
 		sandbox.clock.tick( 1 );
 
-		sinon.assert.calledTwice( spy );
-		sandbox.clock.runAll();
-	} );
-
-	it( 'should run next calls at the specified maximum rate', () => {
-		const spy = sinon.spy();
-		const throttledFn = throttle( spy, 100 );
-
-		throttledFn();
-		throttledFn();
-
-		sinon.assert.calledOnce( spy );
-
-		sandbox.clock.tick( 99 );
-
-		sinon.assert.calledOnce( spy );
-
-		sandbox.clock.tick( 1 );
-
-		sinon.assert.calledTwice( spy );
-
-		sandbox.clock.runAll();
 		sinon.assert.calledTwice( spy );
 	} );
 
