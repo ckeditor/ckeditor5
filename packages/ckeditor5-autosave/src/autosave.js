@@ -1,5 +1,6 @@
 /**
- * Copyright (c) 2016 - 2017, CKSource - Frederico Knabben. All rights reserved.
+ * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
  */
 
 /**
@@ -104,6 +105,13 @@ export default class Autosave extends Plugin {
 		 * @type {Object|null}
 		 */
 		this._action = null;
+
+		/**
+		 * Editor's pending actions manager.
+		 *
+		 * @private
+		 * @member {@module:core/pendingactions~PendingActions} #_pendingActions
+		 */
 	}
 
 	/**
@@ -112,7 +120,8 @@ export default class Autosave extends Plugin {
 	init() {
 		const editor = this.editor;
 		const doc = editor.model.document;
-		const pendingActions = editor.plugins.get( PendingActions );
+
+		this._pendingActions = editor.plugins.get( PendingActions );
 
 		this.listenTo( doc, 'change:data', () => {
 			this._incrementCounter();
@@ -132,8 +141,8 @@ export default class Autosave extends Plugin {
 		// to warn before full page reload and this event cannot be dispatched manually.
 		/* istanbul ignore next */
 		this._domEmitter.listenTo( window, 'beforeunload', ( evtInfo, domEvt ) => {
-			if ( pendingActions.isPending ) {
-				domEvt.returnValue = pendingActions.first.message;
+			if ( this._pendingActions.isPending ) {
+				domEvt.returnValue = this._pendingActions.first.message;
 			}
 		} );
 	}
@@ -193,8 +202,7 @@ export default class Autosave extends Plugin {
 		this._saveActionCounter++;
 
 		if ( !this._action ) {
-			const pendingActions = this.editor.plugins.get( PendingActions );
-			this._action = pendingActions.add( 'Saving in progress.' );
+			this._action = this._pendingActions.add( 'Saving in progress.' );
 		}
 	}
 
@@ -208,8 +216,7 @@ export default class Autosave extends Plugin {
 		this._saveActionCounter--;
 
 		if ( this._saveActionCounter === 0 ) {
-			const pendingActions = this.editor.plugins.get( PendingActions );
-			pendingActions.remove( this._action );
+			this._pendingActions.remove( this._action );
 			this._action = null;
 		}
 	}
