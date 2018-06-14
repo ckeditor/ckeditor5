@@ -227,7 +227,10 @@ describe( 'BlockToolbar', () => {
 		} );
 
 		it( 'should not display the button when the selection is placed in a root element', () => {
-			setData( editor.model, '<paragraph>foo</paragraph>[]<paragraph>bar</paragraph>' );
+			editor.model.schema.register( 'foo', { allowIn: '$root', allowContentOf: [ 'paragraph' ], isObject: true } );
+			editor.conversion.elementToElement( { model: 'foo', view: 'foo' } );
+
+			setData( editor.model, '<paragraph>foo</paragraph><foo>[]</foo><paragraph>bar</paragraph>' );
 
 			expect( blockToolbar.buttonView.isVisible ).to.be.false;
 		} );
@@ -400,9 +403,12 @@ describe( 'BlockToolbar', () => {
 		} );
 
 		it( 'should update the button position on browser resize only when the button is visible', () => {
+			editor.model.schema.register( 'foo', { allowIn: '$root', allowContentOf: [ 'paragraph' ], isObject: true } );
+			editor.conversion.elementToElement( { model: 'foo', view: 'foo' } );
+
 			const spy = testUtils.sinon.spy( blockToolbar, '_attachButtonToElement' );
 
-			setData( editor.model, '[]<paragraph>bar</paragraph>' );
+			setData( editor.model, '<foo>[]</foo><paragraph>bar</paragraph>' );
 
 			window.dispatchEvent( new Event( 'resize' ) );
 
@@ -416,7 +422,7 @@ describe( 'BlockToolbar', () => {
 
 			sinon.assert.called( spy );
 
-			setData( editor.model, '[]<paragraph>bar</paragraph>' );
+			setData( editor.model, '<foo>[]</foo><paragraph>bar</paragraph>' );
 
 			spy.resetHistory();
 
