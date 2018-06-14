@@ -5,7 +5,7 @@
 
 set -e
 
-read -p "Did you update the README.md? " -n 1 -r
+read -p "Did you update the \"Releases\" section in README.md? " -n 1 -r
 echo ""
 
 if [[ $REPLY =~ ^[Yy]$ ]]
