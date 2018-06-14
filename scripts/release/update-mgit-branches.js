@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 /**
  * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
  * For licensing, see LICENSE.md.
@@ -7,29 +9,31 @@
 
 'use strict';
 
+const branchName = process.argv[ 2 ];
+
+if ( !branchName ) {
+	throw new Error( 'Missing branch name.' );
+}
+
 const path = require( 'path' );
 const { tools, logger } = require( '@ckeditor/ckeditor5-dev-utils' );
-
+const log = logger();
 const mgitJsonPath = path.resolve( __dirname, '..', '..', 'mgit.json' );
 
-module.exports = function updateMgitBranches( branchName ) {
-	const log = logger();
+log.info( 'Updating the "mgit.json"...' );
 
-	log.info( 'Updating the "mgit.json"...' );
+tools.updateJSONFile( mgitJsonPath, mgitJson => {
+	const dependencies = mgitJson.dependencies;
 
-	tools.updateJSONFile( mgitJsonPath, mgitJson => {
-		const dependencies = mgitJson.dependencies;
+	for ( const packageName of Object.keys( dependencies ) ) {
+		dependencies[ packageName ] = dependencies[ packageName ].split( '#' )[ 0 ];
 
-		for ( const packageName of Object.keys( dependencies ) ) {
-			dependencies[ packageName ] = dependencies[ packageName ].split( '#' )[ 0 ];
-
-			if ( branchName !== 'master' ) {
-				dependencies[ packageName ] += '#' + branchName;
-			}
+		if ( branchName !== 'master' ) {
+			dependencies[ packageName ] += '#' + branchName;
 		}
+	}
 
-		return mgitJson;
-	} );
+	return mgitJson;
+} );
 
-	logger().info( `Done. "mgit.json" uses the "${ branchName }" branch now.` );
-};
+log.info( `Done. "mgit.json" uses the "${ branchName }" branch now.` );

@@ -22,13 +22,13 @@ then
 	# Make sure that `mgit.json` for `stable` and `master` branches is correct.
 	# `stable` branch.
 	git checkout stable && \
-	node -e "require( './scripts/release/update-mgit-branches' )( 'stable' );" && \
+	node ./scripts/release/update-mgit-branches stable && \
 	git commit -a -m "Internal: Use stable branches. [skip ci]".
 
 	# `master` branch.
 	git checkout master && \
 	git merge stable && \
-	node -e "require( './scripts/release/update-mgit-branches' )( 'master' );" && \
+	node ./scripts/release/update-mgit-branches master && \
 	git commit -a -m "Internal: Use master branches. [skip ci]"
 
 	# Push the `stable` branches.
