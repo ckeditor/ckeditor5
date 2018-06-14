@@ -33,7 +33,7 @@ import throttle from './throttle';
  *					save() {
  *						const data = editor.getData();
  *
- *						// Note: saveEditorsContentToDatabase function might be async and return a promise to the saving action.
+ *						// Note: saveEditorsContentToDatabase function should return a promise to the saving action.
  *						return saveEditorsContentToDatabase( data );
  *					}
  *				};
@@ -228,7 +228,7 @@ export default class Autosave extends Plugin {
  */
 
 /**
- * Method that will be called when the data model changes. It might return a promise (e.g. in case of saving content to the database),
+ * Method that will be called when the data model changes. It should return a promise (e.g. in case of saving content to the database),
  * so the `Autosave` plugin will wait for that action before removing it from the pending actions.
  *
  * @method #save
