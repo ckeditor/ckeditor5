@@ -435,10 +435,10 @@ describe( 'Autosave', () => {
 				} );
 		} );
 	} );
-
-	function wait( time ) {
-		return new Promise( res => {
-			window.setTimeout( res, time );
-		} );
-	}
 } );
+
+function wait( time ) {
+	return new Promise( res => {
+		window.setTimeout( res, time );
+	} );
+}

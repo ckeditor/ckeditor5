@@ -10,6 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import PendingActions from '@ckeditor/ckeditor5-core/src/pendingactions';
 import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
+import throttle from './throttle';
 
 /* globals window */
 
@@ -233,63 +234,3 @@ export default class Autosave extends Plugin {
  * @method #save
  * @returns {Promise.<*>|undefined}
  */
-
-/**
- * Throttle function - a helper that provides ability to specify minimum time gap between calling the original function.
- * Comparing to the lodash implementation, this provides an information if calling the throttled function will result in
- * calling the original function.
- *
- * @private
- * @param {Function} fn Original function that will be called.
- * @param {Number} wait Minimum amount of time between original function calls.
- */
-function throttle( fn, wait ) {
-	// Time in ms of the last call.
-	let lastCallTime = 0;
-
-	// Timeout id that enables stopping scheduled call.
-	let timeoutId = null;
-
-	// @returns {Boolean} `true` if the original function was or will be called.
-	function throttledFn() {
-		const now = Date.now();
-
-		// Call instantly, as the fn wasn't called within the `time` period.
-		if ( now > lastCallTime + wait ) {
-			call();
-			return true;
-		}
-
-		// Cancel call, as the next call is scheduled.
-		if ( timeoutId ) {
-			return false;
-		}
-
-		// Set timeout, so the fn will be called `time` ms after the last call.
-		timeoutId = window.setTimeout( call, lastCallTime + wait - now );
-
-		return true;
-	}
-
-	throttledFn.flush = flush;
-
-	function flush() {
-		if ( timeoutId ) {
-			window.clearTimeout( timeoutId );
-			timeoutId = null;
-
-			call();
-		}
-
-		lastCallTime = 0;
-	}
-
-	// Calls the original function and updates internals.
-	function call() {
-		lastCallTime = Date.now();
-
-		fn();
-	}
-
-	return throttledFn;
-}
