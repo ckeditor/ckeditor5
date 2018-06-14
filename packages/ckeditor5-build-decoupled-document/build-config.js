@@ -37,6 +37,8 @@ module.exports = {
 		'@ckeditor/ckeditor5-link/src/link',
 		'@ckeditor/ckeditor5-list/src/list',
 		'@ckeditor/ckeditor5-paragraph/src/paragraph',
+		'@ckeditor/ckeditor5-table/src/table',
+		'@ckeditor/ckeditor5-table/src/tabletoolbar'
 	],
 
 	// Editor config.
@@ -62,6 +64,7 @@ module.exports = {
 				'link',
 				'blockquote',
 				'imageUpload',
+				'insertTable',
 				'|',
 				'undo',
 				'redo'
@@ -75,6 +78,10 @@ module.exports = {
 				'alignRight'
 			],
 			toolbar: [ 'imageStyle:alignLeft', 'imageStyle:full', 'imageStyle:alignRight', '|', 'imageTextAlternative' ]
+		},
+
+		table: {
+			toolbar: [ 'tableColumn', 'tableRow', 'mergeCell' ]
 		},
 
 		// UI language. Language codes follow the https://en.wikipedia.org/wiki/ISO_639-1 format.
