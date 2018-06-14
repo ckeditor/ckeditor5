@@ -165,11 +165,15 @@ describe( 'ShiftEnterCommand', () => {
 				'<p><inlineLimit>foobaz<softBreak></softBreak>[]</inlineLimit></p>'
 			);
 
-			test(
-				'should not break inline limit elements - selection partially inside',
-				'<p><inlineLimit>ba[r</inlineLimit></p><p>f]oo</p>',
-				'<p><inlineLimit>ba[r</inlineLimit></p><p>f]oo</p>'
-			);
+			it( 'should not break inline limit elements - selection partially inside', () => {
+				model.enqueueChange( 'transparent', () => {
+					setData( model, '<p><inlineLimit>ba[r</inlineLimit></p><p>f]oo</p>' );
+
+					command.execute();
+
+					expect( getData( model ) ).to.equal( '<p><inlineLimit>ba[r</inlineLimit></p><p>f]oo</p>' );
+				} );
+			} );
 
 			test(
 				'should break paragraph in blockLimit',
@@ -177,11 +181,15 @@ describe( 'ShiftEnterCommand', () => {
 				'<blockLimit><p>foo<softBreak></softBreak>[]bar</p></blockLimit>'
 			);
 
-			test(
-				'does nothing when break element cannot be inserted in specified context',
-				'<img>[]</img>',
-				'<img>[]</img>'
-			);
+			it( 'does nothing when break element cannot be inserted in specified context', () => {
+				model.enqueueChange( 'transparent', () => {
+					setData( model, '<img>[]</img>' );
+
+					command.execute();
+
+					expect( getData( model ) ).to.equal( '<img>[]</img>' );
+				} );
+			} );
 
 			it( 'leaves one empty element after two were fully selected (backward)', () => {
 				setData( model, '<p>[abc</p><p>def]</p>' );
@@ -219,9 +227,11 @@ describe( 'ShiftEnterCommand', () => {
 
 	describe( '#isEnabled', () => {
 		it( 'should be disabled if <softBreak> cannot be inserted into element', () => {
-			setData( model, '<img>[]</img>' );
+			model.enqueueChange( 'transparent', () => {
+				setData( model, '<img>[]</img>' );
 
-			expect( command.isEnabled ).to.equal( false );
+				expect( command.isEnabled ).to.equal( false );
+			} );
 		} );
 
 		it( 'should be enabled for collapsed selection in $root', () => {
@@ -279,15 +289,36 @@ describe( 'ShiftEnterCommand', () => {
 		} );
 
 		it( 'should be disabled for non-collapsed selection which starts in an inline limit element', () => {
-			setData( model, '<p><inlineLimit>F[oo.</inlineLimit>B]ar.</p>' );
+			model.enqueueChange( 'transparent', () => {
+				setData( model, '<p><inlineLimit>F[oo.</inlineLimit>B]ar.</p>' );
 
-			expect( command.isEnabled ).to.equal( false );
+				// Enforce command refresh because of 'transparent' batch.
+				command.refresh();
+
+				expect( command.isEnabled ).to.equal( false );
+			} );
 		} );
 
 		it( 'should be disabled for non-collapsed selection which end in an inline limit element', () => {
-			setData( model, '<p>F[oo<inlineLimit>Bar].</inlineLimit></p>' );
+			model.enqueueChange( 'transparent', () => {
+				setData( model, '<p>F[oo<inlineLimit>Bar].</inlineLimit></p>' );
 
-			expect( command.isEnabled ).to.equal( false );
+				// Enforce command refresh because of 'transparent' batch.
+				command.refresh();
+
+				expect( command.isEnabled ).to.equal( false );
+			} );
+		} );
+
+		it( 'should be disabled when break element cannot be inserted in specified context', () => {
+			model.enqueueChange( 'transparent', () => {
+				setData( model, '<img>[]</img>' );
+
+				// Enforce command refresh because of 'transparent' batch.
+				command.refresh();
+
+				expect( command.isEnabled ).to.equal( false );
+			} );
 		} );
 
 		it( 'should be disabled for non-collapsed selection which starts in element inside a block limit element', () => {
