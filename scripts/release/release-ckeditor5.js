@@ -19,6 +19,10 @@ const { getChangesForVersion } = require( '@ckeditor/ckeditor5-dev-env/lib/relea
 
 const log = logger();
 const packageJsonPath = path.resolve( __dirname, '..', '..', 'package.json' );
+const packageJsonTemplatePath = path.resolve( __dirname, 'template', 'package.json' );
+
+// The first one is the template, the later is the original package file.
+const packageJsonTemplateCopy = require( packageJsonTemplatePath );
 let packageJsonCopy;
 
 cli.provideToken()
@@ -65,27 +69,29 @@ cli.provideToken()
 			// Save the original file. It will be restored after publishing the package.
 			packageJsonCopy = Object.assign( {}, packageJson );
 
-			// Remove unnecessary things.
-			delete packageJson.dependencies;
-			delete packageJson.devDependencies;
-			delete packageJson.scripts;
-			delete packageJson[ 'lint-staged' ];
-			delete packageJson.eslintIgnore;
+			const newPackageJson = Object.assign( {}, packageJsonTemplateCopy );
 
-			// Update the package's description.
-			// eslint-disable-next-line max-len
-			packageJson.description = 'A set of ready-to-use rich text editors created with a powerful framework. Made with real-time collaborative editing in mind.';
+			for ( const property of Object.keys( newPackageJson ) ) {
+				// If the `property` is set in the template, leave it.
+				if ( newPackageJson[ property ] ) {
+					continue;
+				}
+
+				// In other case – copy value from original package.json file.
+				newPackageJson[ property ] = packageJson[ property ];
+			}
 
 			// The files listed below will be published even if they won't be specified under the `files` key in package.json.
 			// However, instead of creating the `.npmignore` file and specifying everything here, we can list files that we want to publish.
-			packageJson.files = [
+			// It means that everything except that files will be ignored (what is our goal).
+			newPackageJson.files = [
 				'CHANGELOG.md',
 				'LICENSE.md',
 				'README.md',
 				'package.json'
 			];
 
-			return packageJson;
+			return newPackageJson;
 		} );
 
 		log.info( 'Publishing on npm...' );
@@ -108,6 +114,8 @@ cli.provideToken()
 
 		// Restore the `package.json` to state before the publishing process.
 		tools.updateJSONFile( packageJsonPath, () => packageJsonCopy );
+		// And the template `package.json`.
+		tools.updateJSONFile( packageJsonTemplatePath, () => packageJsonTemplateCopy );
 
 		const url = `https://github.com/ckeditor/ckeditor5/releases/tag/v${ packageJsonCopy.version }`;
 		log.info( `Created the release: ${ url }` );
