@@ -69,7 +69,6 @@ cli.provideToken()
 
 		const packageJson = require( packageJsonPath );
 
-		console.log( packageJson );
 		log.info( 'Copying the package.json...' );
 
 		// Update the template of `package.json`. We will use values from source `package.json`
