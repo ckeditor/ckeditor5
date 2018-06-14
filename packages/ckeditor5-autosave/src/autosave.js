@@ -247,8 +247,8 @@ function throttle( fn, wait ) {
 	// Time in ms of the last call.
 	let lastCallTime = 0;
 
-	// Specifies whether there is a pending call.
-	let scheduledCall = false;
+	// Timeout id that enables stopping scheduled call.
+	let timeoutId = null;
 
 	// @returns {Boolean} `true` if the original function was or will be called.
 	function throttledFn() {
@@ -261,13 +261,12 @@ function throttle( fn, wait ) {
 		}
 
 		// Cancel call, as the next call is scheduled.
-		if ( scheduledCall ) {
+		if ( timeoutId ) {
 			return false;
 		}
 
 		// Set timeout, so the fn will be called `time` ms after the last call.
-		scheduledCall = true;
-		window.setTimeout( call, lastCallTime + wait - now );
+		timeoutId = window.setTimeout( call, lastCallTime + wait - now );
 
 		return true;
 	}
@@ -275,18 +274,19 @@ function throttle( fn, wait ) {
 	throttledFn.flush = flush;
 
 	function flush() {
-		if ( scheduledCall ) {
+		if ( timeoutId ) {
+			window.clearTimeout( timeoutId );
+			timeoutId = null;
+
 			call();
 		}
 
-		scheduledCall = false;
 		lastCallTime = 0;
 	}
 
 	// Calls the original function and updates internals.
 	function call() {
 		lastCallTime = Date.now();
-		scheduledCall = false;
 
 		fn();
 	}

@@ -406,7 +406,7 @@ describe( 'Autosave', () => {
 			} );
 		} );
 
-		it( 'should work after editor\'s destroy with long server\'s action time', () => {
+		it( 'should work after editor\'s destroy with long server\'s response time', () => {
 			sandbox.useFakeTimers();
 			const pendingActions = editor.plugins.get( PendingActions );
 			const serverActionSpy = sinon.spy();
@@ -427,9 +427,11 @@ describe( 'Autosave', () => {
 					expect( pendingActions.isPending ).to.be.true;
 					sandbox.clock.tick( 500 );
 				} )
+				.then( () => Promise.resolve() )
 				.then( () => {
 					expect( pendingActions.isPending ).to.be.false;
 					sinon.assert.calledOnce( serverActionSpy );
+					sinon.assert.calledOnce( serverActionStub );
 				} );
 		} );
 	} );
