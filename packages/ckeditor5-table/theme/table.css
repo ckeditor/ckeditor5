@@ -3,28 +3,31 @@
  * For licensing, see LICENSE.md.
  */
 
-.ck.ck-content table {
-	/* Give the table some air and center it horizontally */
+.ck.ck-content figure.table {
+	/* Give the table widget some air and center it horizontally */
 	margin: 1em auto;
+	display: table;
 
-	/* The table cells should have slight borders */
-	border-collapse: collapse;
-	border-spacing: 0;
+	& table {
+		/* The table cells should have slight borders */
+		border-collapse: collapse;
+		border-spacing: 0;
 
-	/* The outer border of the table should be slightly darker than the inner lines.
-	Also see https://github.com/ckeditor/ckeditor5-table/issues/50. */
-	border: 1px double hsl(0, 0%, 70%);
+		/* The outer border of the table should be slightly darker than the inner lines.
+		Also see https://github.com/ckeditor/ckeditor5-table/issues/50. */
+		border: 1px double hsl(0, 0%, 70%);
 
-	& td,
-	& th {
-		min-width: 2em;
-		padding: .4em;
-		text-align: center;
-		border-color: hsl(0, 0%, 85%);
-	}
+		& td,
+		& th {
+			min-width: 2em;
+			padding: .4em;
+			text-align: center;
+			border-color: hsl(0, 0%, 85%);
+		}
 
-	& th {
-		font-weight: bold;
-		background: hsl(0, 0%, 98%);
+		& th {
+			font-weight: bold;
+			background: hsl(0, 0%, 98%);
+		}
 	}
 }
