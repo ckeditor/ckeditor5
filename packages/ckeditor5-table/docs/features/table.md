@@ -38,7 +38,7 @@ ClassicEditor
 ```
 
 <info-box info>
-	Read more about {@link builds/guides/development/installing-plugins installing plugins}.
+	At this moment the feature is available only in the {@link builds/guides/overview#document-editor document editor build}. Read more about {@link builds/guides/development/installing-plugins installing plugins} if you want to add it to other editor builds.
 </info-box>
 
 ## Common API
