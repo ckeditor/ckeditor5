@@ -166,7 +166,8 @@ describe( 'ShiftEnterCommand', () => {
 			);
 
 			it( 'should not break inline limit elements - selection partially inside', () => {
-				model.enqueueChange( 'transparent', () => {
+				// Wrap all changes in one block to avoid post-fixing the selection (which is incorret) in the meantime.
+				model.change( () => {
 					setData( model, '<p><inlineLimit>ba[r</inlineLimit></p><p>f]oo</p>' );
 
 					command.execute();
@@ -182,7 +183,8 @@ describe( 'ShiftEnterCommand', () => {
 			);
 
 			it( 'does nothing when break element cannot be inserted in specified context', () => {
-				model.enqueueChange( 'transparent', () => {
+				// Wrap all changes in one block to avoid post-fixing the selection (which is incorret) in the meantime.
+				model.change( () => {
 					setData( model, '<img>[]</img>' );
 
 					command.execute();
@@ -227,7 +229,7 @@ describe( 'ShiftEnterCommand', () => {
 
 	describe( '#isEnabled', () => {
 		it( 'should be disabled if <softBreak> cannot be inserted into element', () => {
-			model.enqueueChange( 'transparent', () => {
+			model.change( () => {
 				setData( model, '<img>[]</img>' );
 
 				expect( command.isEnabled ).to.equal( false );
@@ -289,7 +291,8 @@ describe( 'ShiftEnterCommand', () => {
 		} );
 
 		it( 'should be disabled for non-collapsed selection which starts in an inline limit element', () => {
-			model.enqueueChange( 'transparent', () => {
+			// Wrap all changes in one block to avoid post-fixing the selection (which is incorret) in the meantime.
+			model.change( () => {
 				setData( model, '<p><inlineLimit>F[oo.</inlineLimit>B]ar.</p>' );
 
 				// Enforce command refresh because of 'transparent' batch.
@@ -300,7 +303,8 @@ describe( 'ShiftEnterCommand', () => {
 		} );
 
 		it( 'should be disabled for non-collapsed selection which end in an inline limit element', () => {
-			model.enqueueChange( 'transparent', () => {
+			// Wrap all changes in one block to avoid post-fixing the selection (which is incorret) in the meantime.
+			model.change( () => {
 				setData( model, '<p>F[oo<inlineLimit>Bar].</inlineLimit></p>' );
 
 				// Enforce command refresh because of 'transparent' batch.
@@ -311,7 +315,8 @@ describe( 'ShiftEnterCommand', () => {
 		} );
 
 		it( 'should be disabled when break element cannot be inserted in specified context', () => {
-			model.enqueueChange( 'transparent', () => {
+			// Wrap all changes in one block to avoid post-fixing the selection (which is incorret) in the meantime.
+			model.change( () => {
 				setData( model, '<img>[]</img>' );
 
 				// Enforce command refresh because of 'transparent' batch.

@@ -154,7 +154,8 @@ describe( 'EnterCommand', () => {
 			);
 
 			it( 'should not break inline limit elements - selection partially inside', () => {
-				model.enqueueChange( 'transparent', () => {
+				// Wrap all changes in one block to avoid post-fixing the selection (which is incorret) in the meantime.
+				model.change( () => {
 					setData( model, '<p><inlineLimit>ba[r</inlineLimit></p><p>f]oo</p>' );
 
 					command.execute();
