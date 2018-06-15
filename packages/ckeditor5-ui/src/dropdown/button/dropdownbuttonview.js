@@ -47,6 +47,12 @@ export default class DropdownButtonView extends ButtonView {
 		 */
 		this.arrowView = this._createArrowView();
 
+		this.extendTemplate( {
+			attributes: {
+				'aria-haspopup': true
+			}
+		} );
+
 		// The DropdownButton interface expects the open event upon which will open the dropdown.
 		this.delegate( 'execute' ).to( this, 'open' );
 	}

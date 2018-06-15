@@ -213,6 +213,30 @@ describe( 'ButtonView', () => {
 			} );
 		} );
 
+		describe( 'aria', () => {
+			it( '-labelledby is set', () => {
+				expect( view.element.attributes[ 'aria-labelledby' ].value )
+					.to.equal( view.element.lastChild.id )
+					.to.match( /^ck-editor__aria-label_\w+$/ );
+			} );
+
+			it( '-disabled reacts to #isEnabled', () => {
+				view.isEnabled = true;
+				expect( view.element.attributes[ 'aria-disabled' ] ).to.be.undefined;
+
+				view.isEnabled = false;
+				expect( view.element.attributes[ 'aria-disabled' ].value ).to.equal( 'true' );
+			} );
+
+			it( '-pressed reacts to #isOn', () => {
+				view.isOn = true;
+				expect( view.element.attributes[ 'aria-pressed' ].value ).to.equal( 'true' );
+
+				view.isOn = false;
+				expect( view.element.attributes[ 'aria-pressed' ] ).to.be.undefined;
+			} );
+		} );
+
 		describe( 'mousedown event', () => {
 			it( 'should be prevented', () => {
 				const ret = view.element.dispatchEvent( new Event( 'mousedown', { cancelable: true } ) );
