@@ -375,6 +375,11 @@ export default class Schema {
 	 *		} );
 	 *		schema.checkChild( model.document.getRoot(), paragraph ); // -> true
 	 *
+	 * Note: When verifying whether the given node can be a child of the given context,
+	 * schema also verifies the entire context – from its root to its last element. Therefore, it is possible
+	 * for `checkChild()` to return `false` even though context's last element can contain the checked child.
+	 * It happens if one of the context's elements does not allow its child.
+	 *
 	 * @fires checkChild
 	 * @param {module:engine/model/schema~SchemaContextDefinition} context Context in which the child will be checked.
 	 * @param {module:engine/model/node~Node|String} def The child to check.
