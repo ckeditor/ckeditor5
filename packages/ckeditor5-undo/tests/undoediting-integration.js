@@ -38,17 +38,13 @@ describe( 'UndoEditing integration', () => {
 				model = editor.model;
 				doc = model.document;
 
-				// Add "div feature".
-				model.schema.register( 'div', { inheritAllFrom: '$block' } );
-
-				editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'div', view: 'div' } ) );
-				editor.conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'div', view: 'div' } ) );
-
 				root = doc.getRoot();
 			} );
 	} );
 
 	afterEach( () => {
+		div.remove();
+
 		return editor.destroy();
 	} );
 
@@ -851,8 +847,16 @@ describe( 'UndoEditing integration', () => {
 		} );
 
 		// ckeditor5-engine#t/1053
-		// TODO this test broke after adding selection post-fixer
-		it.skip( 'wrap, split, undo, undo is correct', () => {
+		it( 'wrap, split, undo, undo is correct', () => {
+			// Add a "div feature".
+			model.schema.register( 'div', {
+				allowWhere: '$block',
+				allowContentOf: '$root'
+			} );
+
+			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'div', view: 'div' } ) );
+			editor.conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'div', view: 'div' } ) );
+
 			input( '<paragraph>[]Foo</paragraph><paragraph>Bar</paragraph>' );
 
 			model.change( writer => {
