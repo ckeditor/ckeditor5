@@ -7,7 +7,7 @@
 	--ck-color-table-focused-cell-background: hsl(208, 90%, 98%);
 }
 
-.ck table.ck-widget {
+.ck figure.ck-widget table {
 	& td,
 	& th {
 		&.ck-editor__nested-editable.ck-editor__nested-editable_focused {
