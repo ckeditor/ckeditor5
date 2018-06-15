@@ -36,12 +36,14 @@ export function downcastInsertTable( options = {} ) {
 
 		const asWidget = options && options.asWidget;
 
+		const figureElement = conversionApi.writer.createContainerElement( 'figure', { class: 'table' } );
 		const tableElement = conversionApi.writer.createContainerElement( 'table' );
+		conversionApi.writer.insert( ViewPosition.createAt( figureElement ), tableElement );
 
 		let tableWidget;
 
 		if ( asWidget ) {
-			tableWidget = toTableWidget( tableElement, conversionApi.writer );
+			tableWidget = toTableWidget( figureElement, conversionApi.writer );
 		}
 
 		const tableWalker = new TableWalker( table );
@@ -70,8 +72,8 @@ export function downcastInsertTable( options = {} ) {
 
 		const viewPosition = conversionApi.mapper.toViewPosition( data.range.start );
 
-		conversionApi.mapper.bindElements( table, asWidget ? tableWidget : tableElement );
-		conversionApi.writer.insert( viewPosition, asWidget ? tableWidget : tableElement );
+		conversionApi.mapper.bindElements( table, asWidget ? tableWidget : figureElement );
+		conversionApi.writer.insert( viewPosition, asWidget ? tableWidget : figureElement );
 	}, { priority: 'normal' } );
 }
 
@@ -92,7 +94,8 @@ export function downcastInsertRow( options = {} ) {
 
 		const table = tableRow.parent;
 
-		const tableElement = conversionApi.mapper.toViewElement( table );
+		const figureElement = conversionApi.mapper.toViewElement( table );
+		const tableElement = figureElement.getChild( 0 );
 
 		const row = table.getChildIndex( tableRow );
 
@@ -180,7 +183,8 @@ export function downcastTableHeadingRowsChange( options = {} ) {
 			return;
 		}
 
-		const viewTable = conversionApi.mapper.toViewElement( table );
+		const figureElement = conversionApi.mapper.toViewElement( table );
+		const viewTable = figureElement.getChild( 0 );
 
 		const oldRows = data.attributeOldValue;
 		const newRows = data.attributeNewValue;
