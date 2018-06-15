@@ -154,9 +154,14 @@ export default class NodeList {
 			/**
 			 * Given offset cannot be found in the node list.
 			 *
-			 * @error nodelist-offset-out-of-bounds
+			 * @error model-nodelist-offset-out-of-bounds
+			 * @param {Number} offset
+			 * @param {module:engine/model/nodelist~NodeList} nodeList Stringified node list.
 			 */
-			throw new CKEditorError( 'model-nodelist-offset-out-of-bounds: Given offset cannot be found in the node list.' );
+			throw new CKEditorError( 'model-nodelist-offset-out-of-bounds: Given offset cannot be found in the node list.', {
+				offset,
+				nodeList: this
+			} );
 		}
 
 		return this.length;
