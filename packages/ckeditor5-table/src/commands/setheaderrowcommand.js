@@ -111,8 +111,10 @@ function getOverlappingCells( table, headingRowsToSet, currentHeadingRows ) {
 	const cellsToSplit = [];
 
 	const startAnalysisRow = headingRowsToSet > currentHeadingRows ? currentHeadingRows : 0;
+	// We're analyzing only when headingRowsToSet > 0.
+	const endAnalysisRow = headingRowsToSet - 1;
 
-	const tableWalker = new TableWalker( table, { startRow: startAnalysisRow, endRow: headingRowsToSet } );
+	const tableWalker = new TableWalker( table, { startRow: startAnalysisRow, endRow: endAnalysisRow } );
 
 	for ( const { row, rowspan, cell } of tableWalker ) {
 		if ( rowspan > 1 && row + rowspan > headingRowsToSet ) {

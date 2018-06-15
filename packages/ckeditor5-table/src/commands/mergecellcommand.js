@@ -158,16 +158,26 @@ function getVerticalCell( tableCell, direction ) {
 		return;
 	}
 
-	const rowspan = parseInt( tableCell.getAttribute( 'rowspan' ) || 1 );
-	const mergeRow = direction == 'down' ? rowIndex + rowspan : rowIndex;
+	const currentCellRowSpan = parseInt( tableCell.getAttribute( 'rowspan' ) || 1 );
+	const rowOfCellToMerge = direction == 'down' ? rowIndex + currentCellRowSpan : rowIndex;
 
-	const tableMap = [ ...new TableWalker( table, { endRow: mergeRow } ) ];
+	const tableMap = [ ...new TableWalker( table, { endRow: rowOfCellToMerge } ) ];
 
 	const currentCellData = tableMap.find( value => value.cell === tableCell );
 	const mergeColumn = currentCellData.column;
 
-	const cellToMergeData = tableMap.find( ( { row, column } ) => {
-		return column === mergeColumn && ( direction == 'down' ? mergeRow === row : mergeRow === rowspan + row );
+	const cellToMergeData = tableMap.find( ( { row, rowspan, column } ) => {
+		if ( column !== mergeColumn ) {
+			return false;
+		}
+
+		if ( direction == 'down' ) {
+			// If merging a cell below the mergeRow is already calculated.
+			return row === rowOfCellToMerge;
+		} else {
+			// If merging a cell above calculate if it spans to mergeRow.
+			return rowOfCellToMerge === row + rowspan;
+		}
 	} );
 
 	return cellToMergeData && cellToMergeData.cell;

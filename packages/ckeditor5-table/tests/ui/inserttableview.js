@@ -54,6 +54,11 @@ describe( 'InsertTableView', () => {
 			expect( view.items ).to.have.length( 100 );
 		} );
 
+		it( 'should not throw error for DropdownPanelFocusable interface methods', () => {
+			expect( () => view.focus() ).to.not.throw();
+			expect( () => view.focusLast() ).to.not.throw();
+		} );
+
 		describe( 'view#items bindings', () => {
 			it( 'updates view#height & view#width on "over" event', () => {
 				const boxView = view.items.get( 0 );
@@ -85,6 +90,12 @@ describe( 'InsertTableView', () => {
 				view.columns = 7;
 
 				expect( view.label ).to.equal( '3 x 7' );
+			} );
+
+			it( 'mousedown event should be prevented', () => {
+				const ret = view.element.dispatchEvent( new Event( 'mousedown', { cancelable: true } ) );
+
+				expect( ret ).to.false;
 			} );
 
 			describe( 'DOM', () => {
