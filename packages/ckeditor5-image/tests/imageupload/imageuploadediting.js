@@ -139,7 +139,7 @@ describe( 'ImageUploadEditing', () => {
 
 		const command = editor.commands.get( 'imageUpload' );
 
-		command.on( 'beforeChange:isEnabled', evt => {
+		command.on( 'set:isEnabled', evt => {
 			evt.return = false;
 			evt.stop();
 		}, { priority: 'highest' } );
