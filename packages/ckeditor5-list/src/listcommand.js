@@ -122,10 +122,10 @@ export default class ListCommand extends Command {
 				// that this is the same effect that we would be get by multiple use of outdent command. However doing
 				// it like this is much more efficient because it's less operation (less memory usage, easier OT) and
 				// less conversion (faster).
-				while ( next && next.name == 'listItem' && next.getAttribute( 'indent' ) !== 0 ) {
+				while ( next && next.name == 'listItem' && next.getAttribute( 'listIndent' ) !== 0 ) {
 					// Check each next list item, as long as its indent is bigger than 0.
 					// If the indent is 0 we are not going to change anything anyway.
-					const indent = next.getAttribute( 'indent' );
+					const indent = next.getAttribute( 'listIndent' );
 
 					// We check if that's item indent is lower as current relative indent.
 					if ( indent < currentIndent ) {
@@ -140,7 +140,7 @@ export default class ListCommand extends Command {
 					// Save the entry in changes array. We do not apply it at the moment, because we will need to
 					// reverse the changes so the last item is changed first.
 					// This is to keep model in correct state all the time.
-					changes.push( { element: next, indent: newIndent } );
+					changes.push( { element: next, listIndent: newIndent } );
 
 					// Find next item.
 					next = next.nextSibling;
@@ -149,7 +149,7 @@ export default class ListCommand extends Command {
 				changes = changes.reverse();
 
 				for ( const item of changes ) {
-					writer.setAttribute( 'indent', item.indent, item.element );
+					writer.setAttribute( 'listIndent', item.listIndent, item.element );
 				}
 			}
 
@@ -176,8 +176,8 @@ export default class ListCommand extends Command {
 				let lowestIndent = Number.POSITIVE_INFINITY;
 
 				for ( const item of blocks ) {
-					if ( item.is( 'listItem' ) && item.getAttribute( 'indent' ) < lowestIndent ) {
-						lowestIndent = item.getAttribute( 'indent' );
+					if ( item.is( 'listItem' ) && item.getAttribute( 'listIndent' ) < lowestIndent ) {
+						lowestIndent = item.getAttribute( 'listIndent' );
 					}
 				}
 
@@ -203,12 +203,12 @@ export default class ListCommand extends Command {
 				} else if ( !turnOff && element.name != 'listItem' ) {
 					// We are turning on and the element is not a `listItem` - it should be converted to `listItem`.
 					// The order of operations is important to keep model in correct state.
-					writer.setAttributes( { type: this.type, indent: 0 }, element );
+					writer.setAttributes( { listType: this.type, listIndent: 0 }, element );
 					writer.rename( element, 'listItem' );
-				} else if ( !turnOff && element.name == 'listItem' && element.getAttribute( 'type' ) != this.type ) {
+				} else if ( !turnOff && element.name == 'listItem' && element.getAttribute( 'listType' ) != this.type ) {
 					// We are turning on and the element is a `listItem` but has different type - change it's type and
 					// type of it's all siblings that have same indent.
-					writer.setAttribute( 'type', this.type, element );
+					writer.setAttribute( 'listType', this.type, element );
 				}
 			}
 		} );
@@ -224,7 +224,7 @@ export default class ListCommand extends Command {
 		// Check whether closest `listItem` ancestor of the position has a correct type.
 		const listItem = first( this.editor.model.document.selection.getSelectedBlocks() );
 
-		return !!listItem && listItem.is( 'listItem' ) && listItem.getAttribute( 'type' ) == this.type;
+		return !!listItem && listItem.is( 'listItem' ) && listItem.getAttribute( 'listType' ) == this.type;
 	}
 
 	/**
@@ -280,17 +280,17 @@ function _fixType( blocks, isBackward, lowestIndent ) {
 		//     * ------		<-- should not be fixed, item is in different list, `indent` = 2, `indent` != `currentIndent`
 		//   * ------		<-- should be fixed, `indent` == 1 == `currentIndent`
 		// * ------			<-- break loop (`indent` < `lowestIndent`)
-		let currentIndent = startingItem.getAttribute( 'indent' );
+		let currentIndent = startingItem.getAttribute( 'listIndent' );
 
 		// Look back until a list item with indent lower than reference `lowestIndent`.
 		// That would be the parent of nested sublist which contains item having `lowestIndent`.
-		while ( item && item.is( 'listItem' ) && item.getAttribute( 'indent' ) >= lowestIndent ) {
-			if ( currentIndent > item.getAttribute( 'indent' ) ) {
-				currentIndent = item.getAttribute( 'indent' );
+		while ( item && item.is( 'listItem' ) && item.getAttribute( 'listIndent' ) >= lowestIndent ) {
+			if ( currentIndent > item.getAttribute( 'listIndent' ) ) {
+				currentIndent = item.getAttribute( 'listIndent' );
 			}
 
 			// Found an item that is in the same nested sublist.
-			if ( item.getAttribute( 'indent' ) == currentIndent ) {
+			if ( item.getAttribute( 'listIndent' ) == currentIndent ) {
 				// Just add the item to selected blocks like it was selected by the user.
 				blocks[ isBackward ? 'unshift' : 'push' ]( item );
 			}
