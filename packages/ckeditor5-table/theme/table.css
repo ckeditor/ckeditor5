@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-.ck.ck-content figure.table {
+.ck-content .table {
 	/* Give the table widget some air and center it horizontally */
 	margin: 1em auto;
 	display: table;
