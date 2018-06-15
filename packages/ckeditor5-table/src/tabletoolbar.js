@@ -190,5 +190,5 @@ export default class TableToolbar extends Plugin {
  *
  * Read more about configuring toolbar in {@link module:core/editor/editorconfig~EditorConfig#toolbar}.
  *
- * @member {Array.<String>} module:table~TableConfig#toolbar
+ * @member {Array.<String>} module:table/table~TableConfig#toolbar
  */
