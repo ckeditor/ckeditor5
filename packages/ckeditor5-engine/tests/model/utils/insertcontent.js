@@ -813,9 +813,11 @@ describe( 'DataController utils', () => {
 			expect( getData( model ) ).to.equal( '<limit>foo bar[]</limit>' );
 		} );
 
-		it( 'should insert text into limit element', () => {
-			setData( model, '<limit>foo[</limit><limit>]bar</limit>' );
-			insertHelper( 'baz' );
+		it( 'should insert text into limit element when selection spans over many limit elements', () => {
+			model.enqueueChange( 'transparent', () => {
+				setData( model, '<limit>foo[</limit><limit>]bar</limit>' );
+				insertHelper( 'baz' );
+			} );
 
 			expect( getData( model ) ).to.equal( '<limit>foobaz[]</limit><limit>bar</limit>' );
 		} );

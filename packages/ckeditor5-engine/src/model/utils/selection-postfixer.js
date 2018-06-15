@@ -4,14 +4,16 @@
  */
 
 /**
- * @module engine/controller/selectionpostfixer
+ * @module engine/mode/utils/selection-postfixer
  */
 
-import Range from '../model/range';
-import Position from '../model/position';
+import Range from '../range';
+import Position from '../position';
 
 /**
- * The selection post fixer which check if nodes with `isLimit` property in schema are properly selected.
+ * Injects selection post fixer to the model.
+ *
+ * The selection post fixer checks if nodes with `isLimit` property in schema are properly selected.
  *
  * See as an example selection that starts in P1 element and ends inside text of TD element
  * (`[` and `]` are range boundaries and `(l)` denotes element defines as `isLimit=true`):
@@ -44,10 +46,17 @@ import Position from '../model/position';
  *
  * See {@link module:engine/model/schema~Schema#isLimit}.
  *
- * @param {module:engine/model/writer~Writer} writer
  * @param {module:engine/model/model~Model} model
  */
-export default function selectionPostFixer( writer, model ) {
+export function injectSelectionPostFixer( model ) {
+	model.document.registerPostFixer( writer => selectionPostFixer( writer, model ) );
+}
+
+// The selection post fixer.
+//
+// @param {module:engine/model/writer~Writer} writer
+// @param {module:engine/model/model~Model} model
+function selectionPostFixer( writer, model ) {
 	const selection = model.document.selection;
 	const schema = model.schema;
 

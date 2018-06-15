@@ -886,11 +886,13 @@ describe( 'Schema', () => {
 			schema.extend( 'article', { isLimit: true } );
 			schema.extend( 'section', { isLimit: true } );
 
-			setData( model, '<div><section><article>[foo</article><article>bar]</article></section></div>' );
+			model.enqueueChange( 'transparent', () => {
+				setData( model, '<div><section><article>[foo</article><article>bar]</article></section></div>' );
 
-			const section = root.getNodeByPath( [ 0, 0 ] );
+				const section = root.getNodeByPath( [ 0, 0 ] );
 
-			expect( schema.getLimitElement( doc.selection ) ).to.equal( section );
+				expect( schema.getLimitElement( doc.selection ) ).to.equal( section );
+			} );
 		} );
 
 		it( 'works fine with multi-range selections', () => {
@@ -1389,8 +1391,12 @@ describe( 'Schema', () => {
 
 		function test( testName, data, direction, expected ) {
 			it( testName, () => {
-				setData( model, data );
-				const range = schema.getNearestSelectionRange( selection.anchor, direction );
+				let range;
+
+				model.enqueueChange( 'transparent', () => {
+					setData( model, data );
+					range = schema.getNearestSelectionRange( selection.anchor, direction );
+				} );
 
 				if ( expected === null ) {
 					expect( range ).to.be.null;

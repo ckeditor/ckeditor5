@@ -14,7 +14,6 @@ import DowncastDispatcher from '../conversion/downcastdispatcher';
 import { insertText, remove } from '../conversion/downcast-converters';
 import { convertSelectionChange } from '../conversion/upcast-selection-converters';
 import { clearAttributes, convertCollapsedSelection, convertRangeSelection } from '../conversion/downcast-selection-converters';
-import selectionPostFixer from './selectionpostfixer';
 
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
@@ -92,9 +91,6 @@ export default class EditingController {
 		this.downcastDispatcher.on( 'selection', clearAttributes(), { priority: 'low' } );
 		this.downcastDispatcher.on( 'selection', convertRangeSelection(), { priority: 'low' } );
 		this.downcastDispatcher.on( 'selection', convertCollapsedSelection(), { priority: 'low' } );
-
-		// Add selection post fixer.
-		doc.registerPostFixer( writer => selectionPostFixer( writer, model ) );
 
 		// Binds {@link module:engine/view/document~Document#roots view roots collection} to
 		// {@link module:engine/model/document~Document#roots model roots collection} so creating
