@@ -2897,7 +2897,9 @@ describe( 'ListEditing', () => {
 		describe( 'insert', () => {
 			function test( testName, input, inserted, output ) {
 				it( testName, () => {
-					model.enqueueChange( 'transparent', () => {
+					// Wrap all changes in one block to avoid post-fixing the selection
+					// (which may be incorret) in the meantime.
+					model.change( () => {
 						setModelData( model, input );
 
 						model.change( writer => {
@@ -3422,7 +3424,9 @@ describe( 'ListEditing', () => {
 		} );
 
 		it( 'should work if items are pasted between listItem elements', () => {
-			model.enqueueChange( 'transparent', () => {
+			// Wrap all changes in one block to avoid post-fixing the selection
+			// (which may be incorret) in the meantime.
+			model.change( () => {
 				setModelData( model,
 					'<listItem listType="bulleted" listIndent="0">A</listItem>' +
 					'<listItem listType="bulleted" listIndent="1">B</listItem>[]' +
@@ -3492,7 +3496,9 @@ describe( 'ListEditing', () => {
 		} );
 
 		it( 'should correctly handle item that is pasted without its parent', () => {
-			model.enqueueChange( 'transparent', () => {
+			// Wrap all changes in one block to avoid post-fixing the selection
+			// (which may be incorret) in the meantime.
+			model.change( () => {
 				setModelData( model,
 					'<paragraph>Foo</paragraph>' +
 					'<listItem listType="numbered" listIndent="0">A</listItem>' +
@@ -3518,7 +3524,9 @@ describe( 'ListEditing', () => {
 		} );
 
 		it( 'should correctly handle item that is pasted without its parent #2', () => {
-			model.enqueueChange( 'transparent', () => {
+			// Wrap all changes in one block to avoid post-fixing the selection
+			// (which may be incorret) in the meantime.
+			model.change( () => {
 				setModelData( model,
 					'<paragraph>Foo</paragraph>' +
 					'<listItem listType="numbered" listIndent="0">A</listItem>' +
@@ -3939,7 +3947,9 @@ describe( 'ListEditing', () => {
 
 	function _test( testName, input, output, actionCallback ) {
 		it( testName, () => {
-			model.enqueueChange( 'transparet', () => {
+			// Wrap all changes in one block to avoid post-fixing the selection
+			// (which may be incorret) in the meantime.
+			model.change( () => {
 				setModelData( model, input );
 
 				actionCallback();
@@ -3949,6 +3959,7 @@ describe( 'ListEditing', () => {
 		} );
 
 		it( testName + ' (undo integration)', () => {
+			// Ensure no undo step is generated.
 			model.enqueueChange( 'transparent', () => {
 				setModelData( model, input );
 			} );
