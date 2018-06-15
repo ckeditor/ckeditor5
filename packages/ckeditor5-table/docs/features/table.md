@@ -1,11 +1,11 @@
 ---
-title: Table
+title: Tables
 category: features
 ---
 
 {@snippet features/build-table-source}
 
-The {@link module:table/table~Table} feature offers table creation an editing tools that help content authors representing tabular data.
+The {@link module:table/table~Table} feature offers table creation an editing tools that help content authors bring tabular data into their documents.
 
 ## Demo
 
@@ -13,13 +13,13 @@ The {@link module:table/table~Table} feature offers table creation an editing to
 
 ## Installation
 
-To add this feature to your editor install the [`@ckeditor/ckeditor5-table`](https://www.npmjs.com/package/@ckeditor/ckeditor5-table) package:
+To add this feature to your editor install the [`@ckeditor/ckeditor5-table`](https://www.npmjs.com/package/@ckeditor/ckeditor5-table) package
 
 ```bash
 npm install --save @ckeditor/ckeditor5-table
 ```
 
-And add `'Table'` and `'TableToolbar'` to your plugin list and the table toolbar configuration:
+then add `'Table'` and `'TableToolbar'` to your plugin list and the table toolbar configuration:
 
 ```js
 import Table from '@ckeditor/ckeditor5-table/src/table';
@@ -43,18 +43,18 @@ ClassicEditor
 
 ## Common API
 
-The {@link module:table/table~Table} plugin registers UI components:
+The {@link module:table/table~Table} plugin registers the following UI components:
 
 * The `'insertTable'` dropdown,
 * The `'tableColumn'` dropdown,
 * The `'tableRow'` dropdown,
 * The `'mergeCell'` dropdown,
 
-and following commands:
+and the following commands:
 
 * The {@link module:table/commands/inserttablecommand~InsertTableCommand `'inserttable'`} command.
 
-	To insert a table in current selection execute command with desired table dimensions:
+	To insert a table at the current selection, execute the command and specify the dimensions:
 
 	```js
 	editor.execute( 'insertTable', { rows: 20, columns: 5 } );
@@ -62,7 +62,7 @@ and following commands:
 
 * The {@link module:table/commands/insertcolumncommand~InsertColumnCommand} as `'insertColumnBefore'` and `'insertColumnAfter'` commands.
 
-	To insert a column before or after selected table cell's column execute command:
+	To insert a column before or after the selected cell, execute one of the commands:
 
 	```js
 	editor.execute( 'insertColumnBefore' );
@@ -76,7 +76,7 @@ and following commands:
 
 * The {@link module:table/commands/insertrowcommand~InsertRowCommand} as `'insertRowAbove'`and `'insertRowBelow'` commands.
 
-	To insert a row below or above selected table cell's row execute command:
+	To insert a row below or above the selected cell, execute one of the commands:
 
 	```js
 	editor.execute( 'insertRowBelow' );
@@ -90,7 +90,7 @@ and following commands:
 
 * The {@link module:table/commands/removecolumncommand~RemoveColumnCommand `'removeColumn'`} command.
 
-	To remove column of currently selected table cell execute command:
+	To remove the column containing the selected cell, execute the command:
 
 	```js
 	editor.execute( 'removeColumn' );
@@ -98,7 +98,7 @@ and following commands:
 
 * The {@link module:table/commands/removerowcommand~RemoveRowCommand `'removeRow'`} command.
 
-	To remove row of currently selected table cell execute command:
+	To remove the row containing the selected cell, execute the command:
 
 	```js
 	editor.execute( 'removeRow' );
@@ -106,44 +106,43 @@ and following commands:
 
 * The {@link module:table/commands/setheadercolumncommand~SetHeaderColumnCommand `'setColumnHeader'`} command.
 
-	You can set a column of currently selected table cell to be a header by executing:
+	You can make the column containing the selected cell a [header](https://www.w3.org/TR/html50/tabular-data.html#the-th-element) by executing:
 
 	```js
 	editor.execute( 'setColumnHeader' );
 	```
 
-	All previous columns will also be set as a headers. If current column is already header executing this command will unset this column and any columns after as a header.   
+	**Note:** All preceding columns will also become headers. If the current column is already a header, executing this command will make it a regular column back again (including following columns).
 
 * The {@link module:table/commands/setheaderrowcommand~SetHeaderRowCommand `'setRowHeader'`} command.
 
-	You can set a row of currently selected table cell to be a header by executing:
+	You can make the row containing the selected cell a [header](https://www.w3.org/TR/html50/tabular-data.html#the-th-element) by executing:
 
 	```js
 	editor.execute( 'setRowHeader' );
 	```
 
-	All previous rows will also be set as a headers. If current row is already header executing this command will unset this row and any rows after as a header.   
+	**Note:** All preceding rows will also become headers. If the current row is already a header, executing this command will make it a regular row back again (including following rows).
 
 * The {@link module:table/commands/mergecellcommand~MergeCellCommand} as `'mergeCellRight'`, `'mergeCellLeft'`, `'mergeCellUp'` and `'mergeCellDown'` commands.
 
-	To merge a table cell in which is current selection with other table cell execute command of desired direction. To merge currently selected table cell with a cell on the right execute:
+	To merge a table cell at the current selection with another cell, execute the command corresponding with the preferred direction. E.g. to merge with a cell to the right:
 
 	```js
 	editor.execute( 'mergeCellRight' );
 	```
 
-	**Note**: if a table cell has different rowspan (for `'mergeCellRight'` and `'mergeCellLeft'`) or colspan (for `'mergeCellUp'` and `'mergeCellDown'`) the command will be disabled.
+	**Note**: If a table cell has a different [`rowspan`](https://www.w3.org/TR/html50/tabular-data.html#attr-tdth-rowspan) (for `'mergeCellRight'` and `'mergeCellLeft'`) or [`colspan`](https://www.w3.org/TR/html50/tabular-data.html#attr-tdth-colspan) (for `'mergeCellUp'` and `'mergeCellDown'`), the command will be disabled.
 
 * The {@link module:table/commands/splitcellcommand~SplitCellCommand} as `'splitCellVertically'` and `'splitCellHorizontally'` commands.
 
-	You can split any cell vertically and horizontally to two cells by executing command. For instance, to split a currently selected table cell vertically by executing a command:
-	
+	You can split any cell vertically or horizontally by executing this command. E.g. to split the selected table cell vertically:
 
 	```js
 	editor.execute( 'splitCellVertically' );
 	```
 
-The {@link module:table/tabletoolbar~TableToolbar} plugin introduces a contextual toolbar for tables. The toolbar appears when an table is selected and can be configured to contain any buttons you want. Usually, these will be table-related options such as `'tableColumn'`, `'tableRow'` and `'mergeCell'` dropdowns.
+The {@link module:table/tabletoolbar~TableToolbar} plugin introduces the balloon toolbar for the tables. The toolbar shows up when a table cell is selected, anchored to the table. It is possible to {@link module:table/table~TableConfig#toolbar configure} its content. Normally, it contains the table-related tools such as `'tableColumn'`, `'tableRow'`, and `'mergeCell'` dropdowns.
 
 ## Contribute
 
