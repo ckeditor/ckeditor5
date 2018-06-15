@@ -110,6 +110,14 @@ export default class Autosave extends Plugin {
 		this._action = null;
 
 		/**
+		 * Plugins' config.
+		 *
+		 * @private
+		 * @type {Object}
+		 */
+		this._config = editor.config.get( 'autosave' ) || {};
+
+		/**
 		 * Editor's pending actions manager.
 		 *
 		 * @private
@@ -180,9 +188,13 @@ export default class Autosave extends Plugin {
 	_save() {
 		const version = this.editor.model.document.version;
 
+		// Get defined callbacks.
+		const saveCallbacks = [ this.adapter && this.adapter.save, this._config.save ]
+			.filter( cb => !!cb );
+
 		// Marker's change may not produce an operation, so the document's version
 		// can be the same after that change.
-		if ( !this.adapter || version < this._lastDocumentVersion ) {
+		if ( version < this._lastDocumentVersion || !saveCallbacks.length ) {
 			this._decrementCounter();
 
 			return;
@@ -190,7 +202,7 @@ export default class Autosave extends Plugin {
 
 		this._lastDocumentVersion = version;
 
-		Promise.resolve( this.adapter.save() )
+		Promise.all( saveCallbacks.map( cb => cb() ) )
 			.then( () => {
 				this._decrementCounter();
 			} );
