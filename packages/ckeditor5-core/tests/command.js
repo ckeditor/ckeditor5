@@ -99,19 +99,19 @@ describe( 'Command', () => {
 			expect( editor.something ).to.false;
 		} );
 
-		it( 'stops beforeChange event to force disabled and not affect change event', () => {
-			const beforeChangeSpy = sinon.spy();
+		it( 'stops `set` event to force disabled and not affect `change` event', () => {
+			const setSpy = sinon.spy();
 			const changeSpy = sinon.spy();
 
 			command.isEnabled = true;
 			editor.isReadOnly = false;
 
-			command.on( 'beforeChange', beforeChangeSpy );
+			command.on( 'set', setSpy );
 			command.on( 'change', changeSpy );
 
 			editor.isReadOnly = true;
 
-			sinon.assert.notCalled( beforeChangeSpy );
+			sinon.assert.notCalled( setSpy );
 			sinon.assert.calledOnce( changeSpy );
 		} );
 	} );
