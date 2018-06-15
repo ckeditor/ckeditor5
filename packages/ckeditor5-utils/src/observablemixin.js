@@ -72,18 +72,18 @@ const ObservableMixin = {
 			set( value ) {
 				const oldValue = properties.get( name );
 
+				// Fire `set` event before the new value will be set to make it possible
+				// to override observable property without affecting `change` event.
+				// See https://github.com/ckeditor/ckeditor5-utils/issues/171.
+				let newValue = this.fire( 'set:' + name, name, value, oldValue );
+
+				if ( newValue === undefined ) {
+					newValue = value;
+				}
+
 				// Allow undefined as an initial value like A.define( 'x', undefined ) (#132).
 				// Note: When properties map has no such own property, then its value is undefined.
-				if ( oldValue !== value || !properties.has( name ) ) {
-					// Fire `beforeChange` event before the new value will be changed to make it possible
-					// to override observable property without affecting `change` event.
-					// See https://github.com/ckeditor/ckeditor5-utils/issues/171.
-					let newValue = this.fire( 'beforeChange:' + name, name, value, oldValue );
-
-					if ( newValue === undefined ) {
-						newValue = value;
-					}
-
+				if ( oldValue !== newValue || !properties.has( name ) ) {
 					properties.set( name, newValue );
 					this.fire( 'change:' + name, name, newValue, oldValue );
 				}
@@ -684,14 +684,14 @@ function attachBindToListeners( observable, toBindings ) {
  */
 
 /**
- * Fired when a property value is going to be changed but is not changed yet (before the `change` event is fired).
+ * Fired when a property value is going to be set but is not set yet (before the `change` event is fired).
  *
  * You can control the final value of the property by using
  * the {@link module:utils/eventinfo~EventInfo#return event's `return` property}.
  *
  *		observable.set( 'prop', 1 );
  *
- *		observable.on( 'beforeChange:prop', ( evt, propertyName, newValue, oldValue ) => {
+ *		observable.on( 'set:prop', ( evt, propertyName, newValue, oldValue ) => {
  *			console.log( `Value is going to be changed from ${ oldValue } to ${ newValue }` );
  *			console.log( `Current property value is ${ observable[ propertyName ] }` );
  *
@@ -707,7 +707,9 @@ function attachBindToListeners( observable, toBindings ) {
  *		                     // -> 'Current property value is 1'
  *		                     // -> 'Value has changed from 1 to 3'
  *
- * @event beforeChange:{property}
+ * **Note:** Event is fired even when the new value is the same as the old value.
+ *
+ * @event set:{property}
  * @param {String} name The property name.
  * @param {*} value The new property value.
  * @param {*} oldValue The previous property value.

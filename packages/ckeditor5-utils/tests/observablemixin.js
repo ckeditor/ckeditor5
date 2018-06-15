@@ -144,16 +144,16 @@ describe( 'Observable', () => {
 			sinon.assert.notCalled( spyColor );
 		} );
 
-		it( 'should fire the "beforeChange" event', () => {
+		it( 'should fire the "set" event', () => {
 			const spy = sinon.spy();
 			const spyColor = sinon.spy();
 			const spyYear = sinon.spy();
 			const spyWheels = sinon.spy();
 
-			car.on( 'beforeChange', spy );
-			car.on( 'beforeChange:color', spyColor );
-			car.on( 'beforeChange:year', spyYear );
-			car.on( 'beforeChange:wheels', spyWheels );
+			car.on( 'set', spy );
+			car.on( 'set:color', spyColor );
+			car.on( 'set:year', spyYear );
+			car.on( 'set:wheels', spyWheels );
 
 			// Set property in all possible ways.
 			car.color = 'blue';
@@ -184,12 +184,12 @@ describe( 'Observable', () => {
 			);
 		} );
 
-		it( 'should use "beforeChange" return value as an observable new value', () => {
+		it( 'should use "set" return value as an observable new value', () => {
 			car.color = 'blue';
 
 			const spy = sinon.spy();
 
-			car.on( 'beforeChange:color', evt => {
+			car.on( 'set:color', evt => {
 				evt.stop();
 				evt.return = 'red';
 			}, { priority: 'high' } );
@@ -201,20 +201,20 @@ describe( 'Observable', () => {
 			sinon.assert.calledWithExactly( spy, sinon.match.instanceOf( EventInfo ), 'color', 'red', 'blue' );
 		} );
 
-		it( 'should not fire the "beforeChange" event for the same property value', () => {
+		it( 'should fire the "set" event for the same property value', () => {
 			const spy = sinon.spy();
 			const spyColor = sinon.spy();
 
-			car.on( 'beforeChange', spy );
-			car.on( 'beforeChange:color', spyColor );
+			car.on( 'set', spy );
+			car.on( 'set:color', spyColor );
 
 			// Set the "color" property in all possible ways.
 			car.color = 'red';
 			car.set( 'color', 'red' );
 			car.set( { color: 'red' } );
 
-			sinon.assert.notCalled( spy );
-			sinon.assert.notCalled( spyColor );
+			sinon.assert.calledThrice( spy );
+			sinon.assert.calledThrice( spyColor );
 		} );
 
 		it( 'should throw when overriding already existing property', () => {
