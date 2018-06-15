@@ -194,7 +194,7 @@ export default class Autosave extends Plugin {
 			saveCallbacks.push( this._config.save );
 		}
 
-		// Marker's change may not produce an operation, so the document's version
+		// Change may not produce an operation, so the document's version
 		// can be the same after that change.
 		if ( version < this._lastDocumentVersion || !saveCallbacks.length ) {
 			this._decrementCounter();
@@ -252,5 +252,5 @@ export default class Autosave extends Plugin {
  * so the `Autosave` plugin will wait for that action before removing it from pending actions.
  *
  * @method #save
- * @returns {Promise.<*>|undefined}
+ * @returns {Promise.<*>}
  */
