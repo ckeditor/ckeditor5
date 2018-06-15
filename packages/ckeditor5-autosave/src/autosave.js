@@ -17,7 +17,7 @@ import throttle from './throttle';
 /**
  * Autosave plugin provides an easy-to-use API to save the editor's content.
  * It watches {@link module:engine/model/document~Document#event:change:data change:data}
- * and `Window:beforeunload` events and calls the {@link module:autosave/autosave~Adapter#save} method.
+ * and `window#beforeunload` events and calls the {@link module:autosave/autosave~Adapter#save} method.
  *
  * 		ClassicEditor
  *			.create( document.querySelector( '#editor' ), {
@@ -25,18 +25,14 @@ import throttle from './throttle';
  *				toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
  *				image: {
  *					toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ],
- *				}
- *			} )
- *			.then( editor => {
- *				const autosave = editor.plugins.get( Autosave );
- *				autosave.adapter = {
+ *				},
+ *				autosave: {
  *					save() {
- *						const data = editor.getData();
- *
- *						// Note: saveEditorsContentToDatabase function should return a promise to the saving action.
+ *						// Note: saveEditorsContentToDatabase function should return a promise
+ *						// which should be resolved when the saving action is complete.
  *						return saveEditorsContentToDatabase( data );
  *					}
- *				};
+ *				}
  *			} );
  */
 export default class Autosave extends Plugin {
@@ -188,9 +184,15 @@ export default class Autosave extends Plugin {
 	_save() {
 		const version = this.editor.model.document.version;
 
-		// Get defined callbacks.
-		const saveCallbacks = [ this.adapter && this.adapter.save, this._config.save ]
-			.filter( cb => !!cb );
+		const saveCallbacks = [];
+
+		if ( this.adapter && this.adapter.save ) {
+			saveCallbacks.push( this.adapter.save );
+		}
+
+		if ( this._config.save ) {
+			saveCallbacks.push( this._config.save );
+		}
 
 		// Marker's change may not produce an operation, so the document's version
 		// can be the same after that change.
