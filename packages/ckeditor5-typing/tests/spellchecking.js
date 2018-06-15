@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals window, document, setTimeout */
+/* globals document */
 
 import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Enter from '@ckeditor/ckeditor5-enter/src/enter';
@@ -12,7 +12,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Undo from '@ckeditor/ckeditor5-undo/src/undo';
 
-import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
+import ViewRange from '@ckeditor/ckeditor5-engine/src/view/range';
 
 import ViewSelection from '@ckeditor/ckeditor5-engine/src/view/selection';
 
@@ -48,8 +48,8 @@ describe( 'Typing – spellchecking integration', () => {
 	describe( 'Plain text spellchecking (mutations)', () => {
 		// This tests emulates spellchecker correction on non-styled text by firing proper mutations.
 
-		it( 'should replace with longer word', () => {
-			emulateSpellcheckerMutation( editor, 0, 13,
+		it( 'should replace with longer word (collapsed)', () => {
+			emulateSpellcheckerMutation( editor, 0, 13, 13,
 				'The Foo hous a is a Foo hous e. A Foo athat and Foo xhat. This is an istane',
 				'The Foo house a is a Foo hous e. A Foo athat and Foo xhat. This is an istane' );
 
@@ -61,8 +61,21 @@ describe( 'Typing – spellchecking integration', () => {
 				'<p>Banana, orenge, appfle and the new comppputer</p>' );
 		} );
 
-		it( 'should replace with shorter word (merging letter after)', () => {
-			emulateSpellcheckerMutation( editor, 0, 29,
+		it( 'should replace with longer word (non-collapsed)', () => {
+			emulateSpellcheckerMutation( editor, 0, 8, 13,
+				'The Foo hous a is a Foo hous e. A Foo athat and Foo xhat. This is an istane',
+				'The Foo house a is a Foo hous e. A Foo athat and Foo xhat. This is an istane' );
+
+			expectContent( editor,
+				'<paragraph>The Foo [house] a is a Foo hous e. A Foo athat and Foo xhat. This is an istane</paragraph>' +
+				'<paragraph>Banana, orenge, appfle and the new comppputer</paragraph>',
+
+				'<p>The Foo {house} a is a Foo hous e. A Foo athat and Foo xhat. This is an istane</p>' +
+				'<p>Banana, orenge, appfle and the new comppputer</p>' );
+		} );
+
+		it( 'should replace with shorter word (merging letter after - collapsed)', () => {
+			emulateSpellcheckerMutation( editor, 0, 29, 29,
 				'The Foo hous a is a Foo hous e. A Foo athat and Foo xhat. This is an istane',
 				'The Foo hous a is a Foo house. A Foo athat and Foo xhat. This is an istane' );
 
@@ -74,8 +87,21 @@ describe( 'Typing – spellchecking integration', () => {
 				'<p>Banana, orenge, appfle and the new comppputer</p>' );
 		} );
 
-		it( 'should replace with same length text', () => {
-			emulateSpellcheckerMutation( editor, 0, 43,
+		it( 'should replace with shorter word (merging letter after - non-collapsed)', () => {
+			emulateSpellcheckerMutation( editor, 0, 24, 29,
+				'The Foo hous a is a Foo hous e. A Foo athat and Foo xhat. This is an istane',
+				'The Foo hous a is a Foo house. A Foo athat and Foo xhat. This is an istane' );
+
+			expectContent( editor,
+				'<paragraph>The Foo hous a is a Foo [house]. A Foo athat and Foo xhat. This is an istane</paragraph>' +
+				'<paragraph>Banana, orenge, appfle and the new comppputer</paragraph>',
+
+				'<p>The Foo hous a is a Foo {house}. A Foo athat and Foo xhat. This is an istane</p>' +
+				'<p>Banana, orenge, appfle and the new comppputer</p>' );
+		} );
+
+		it( 'should replace with same length text (collapsed)', () => {
+			emulateSpellcheckerMutation( editor, 0, 43, 43,
 				'The Foo hous a is a Foo hous e. A Foo athat and Foo xhat. This is an istane',
 				'The Foo hous a is a Foo hous e. A Food that and Foo xhat. This is an istane' );
 
@@ -87,8 +113,21 @@ describe( 'Typing – spellchecking integration', () => {
 				'<p>Banana, orenge, appfle and the new comppputer</p>' );
 		} );
 
-		it( 'should replace with longer word on the paragraph end', () => {
-			emulateSpellcheckerMutation( editor, 0, 77,
+		it( 'should replace with same length text (non-collapsed)', () => {
+			emulateSpellcheckerMutation( editor, 0, 37, 43,
+				'The Foo hous a is a Foo hous e. A Foo athat and Foo xhat. This is an istane',
+				'The Foo hous a is a Foo hous e. A Food that and Foo xhat. This is an istane' );
+
+			expectContent( editor,
+				'<paragraph>The Foo hous a is a Foo hous e. A Foo[d that] and Foo xhat. This is an istane</paragraph>' +
+				'<paragraph>Banana, orenge, appfle and the new comppputer</paragraph>',
+
+				'<p>The Foo hous a is a Foo hous e. A Foo{d that} and Foo xhat. This is an istane</p>' +
+				'<p>Banana, orenge, appfle and the new comppputer</p>' );
+		} );
+
+		it( 'should replace with longer word on the paragraph end (non-collapsed)', () => {
+			emulateSpellcheckerMutation( editor, 0, 77, 77,
 				'The Foo hous a is a Foo hous e. A Foo athat and Foo xhat. This is an istane',
 				'The Foo hous a is a Foo hous e. A Foo athat and Foo xhat. This is an instance' );
 
@@ -100,8 +139,21 @@ describe( 'Typing – spellchecking integration', () => {
 				'<p>Banana, orenge, appfle and the new comppputer</p>' );
 		} );
 
-		it( 'should replace with shorter word on the paragraph end', () => {
-			emulateSpellcheckerMutation( editor, 1, 43,
+		it( 'should replace with longer word on the paragraph end (collapsed)', () => {
+			emulateSpellcheckerMutation( editor, 0, 69, 77,
+				'The Foo hous a is a Foo hous e. A Foo athat and Foo xhat. This is an istane',
+				'The Foo hous a is a Foo hous e. A Foo athat and Foo xhat. This is an instance' );
+
+			expectContent( editor,
+				'<paragraph>The Foo hous a is a Foo hous e. A Foo athat and Foo xhat. This is an [instance]</paragraph>' +
+				'<paragraph>Banana, orenge, appfle and the new comppputer</paragraph>',
+
+				'<p>The Foo hous a is a Foo hous e. A Foo athat and Foo xhat. This is an {instance}</p>' +
+				'<p>Banana, orenge, appfle and the new comppputer</p>' );
+		} );
+
+		it( 'should replace with shorter word on the paragraph end (non-collapsed)', () => {
+			emulateSpellcheckerMutation( editor, 1, 43, 43,
 				'Banana, orenge, appfle and the new comppputer',
 				'Banana, orenge, appfle and the new computer' );
 
@@ -112,149 +164,41 @@ describe( 'Typing – spellchecking integration', () => {
 				'<p>The Foo hous a is a Foo hous e. A Foo athat and Foo xhat. This is an istane</p>' +
 				'<p>Banana, orenge, appfle and the new computer{}</p>' );
 		} );
-	} );
 
-	describe( 'Plain text spellchecking (insertText)', () => {
-		// This tests emulates spellchecker correction on non-styled text by inserting correction text via native 'insertText' command.
+		it( 'should replace with shorter word on the paragraph end (collapsed)', () => {
+			emulateSpellcheckerMutation( editor, 1, 35, 43,
+				'Banana, orenge, appfle and the new comppputer',
+				'Banana, orenge, appfle and the new computer' );
 
-		it( 'should replace with longer word (collapsed)', done => {
-			emulateSpellcheckerInsertText( editor, 0, 12, 12, 'e' );
+			expectContent( editor,
+				'<paragraph>The Foo hous a is a Foo hous e. A Foo athat and Foo xhat. This is an istane</paragraph>' +
+				'<paragraph>Banana, orenge, appfle and the new [computer]</paragraph>',
 
-			setTimeout( () => {
-				expectContent( editor,
-					'<paragraph>The Foo house[] a is a Foo hous e. A Foo athat and Foo xhat. This is an istane</paragraph>' +
-					'<paragraph>Banana, orenge, appfle and the new comppputer</paragraph>',
-
-					'<p>The Foo house{} a is a Foo hous e. A Foo athat and Foo xhat. This is an istane</p>' +
-					'<p>Banana, orenge, appfle and the new comppputer</p>' );
-				done();
-			} );
-		} );
-
-		it( 'should replace with longer word (non-collapsed)', done => {
-			emulateSpellcheckerInsertText( editor, 0, 8, 12, 'house' );
-
-			setTimeout( () => {
-				expectContent( editor,
-					'<paragraph>The Foo house[] a is a Foo hous e. A Foo athat and Foo xhat. This is an istane</paragraph>' +
-					'<paragraph>Banana, orenge, appfle and the new comppputer</paragraph>',
-
-					'<p>The Foo house{} a is a Foo hous e. A Foo athat and Foo xhat. This is an istane</p>' +
-					'<p>Banana, orenge, appfle and the new comppputer</p>' );
-
-				done();
-			} );
-		} );
-
-		it( 'should replace with shorter word (merging letter after - collapsed)', done => {
-			emulateSpellcheckerInsertText( editor, 0, 28, 30, 'e' );
-
-			setTimeout( () => {
-				expectContent( editor,
-					'<paragraph>The Foo hous a is a Foo house[]. A Foo athat and Foo xhat. This is an istane</paragraph>' +
-					'<paragraph>Banana, orenge, appfle and the new comppputer</paragraph>',
-
-					'<p>The Foo hous a is a Foo house{}. A Foo athat and Foo xhat. This is an istane</p>' +
-					'<p>Banana, orenge, appfle and the new comppputer</p>' );
-
-				done();
-			} );
-		} );
-
-		it( 'should replace with shorter word (merging letter after - non-collapsed)', done => {
-			emulateSpellcheckerInsertText( editor, 0, 24, 30, 'house' );
-
-			setTimeout( () => {
-				expectContent( editor,
-					'<paragraph>The Foo hous a is a Foo house[]. A Foo athat and Foo xhat. This is an istane</paragraph>' +
-					'<paragraph>Banana, orenge, appfle and the new comppputer</paragraph>',
-
-					'<p>The Foo hous a is a Foo house{}. A Foo athat and Foo xhat. This is an istane</p>' +
-					'<p>Banana, orenge, appfle and the new comppputer</p>' );
-
-				done();
-			} );
-		} );
-
-		it( 'should replace with same length text', done => {
-			emulateSpellcheckerInsertText( editor, 0, 37, 43, 'd that' );
-
-			setTimeout( () => {
-				expectContent( editor,
-					'<paragraph>The Foo hous a is a Foo hous e. A Food that[] and Foo xhat. This is an istane</paragraph>' +
-					'<paragraph>Banana, orenge, appfle and the new comppputer</paragraph>',
-
-					'<p>The Foo hous a is a Foo hous e. A Food that{} and Foo xhat. This is an istane</p>' +
-					'<p>Banana, orenge, appfle and the new comppputer</p>' );
-
-				done();
-			} );
-		} );
-
-		it( 'should replace with longer word on the paragraph end', done => {
-			emulateSpellcheckerInsertText( editor, 0, 69, 75, 'instance' );
-
-			setTimeout( () => {
-				expectContent( editor,
-					'<paragraph>The Foo hous a is a Foo hous e. A Foo athat and Foo xhat. This is an instance[]</paragraph>' +
-					'<paragraph>Banana, orenge, appfle and the new comppputer</paragraph>',
-
-					'<p>The Foo hous a is a Foo hous e. A Foo athat and Foo xhat. This is an instance{}</p>' +
-					'<p>Banana, orenge, appfle and the new comppputer</p>' );
-
-				done();
-			} );
-		} );
-
-		it( 'should replace with shorter word on the paragraph end', done => {
-			emulateSpellcheckerInsertText( editor, 1, 35, 45, 'computer' );
-
-			setTimeout( () => {
-				expectContent( editor,
-					'<paragraph>The Foo hous a is a Foo hous e. A Foo athat and Foo xhat. This is an istane</paragraph>' +
-					'<paragraph>Banana, orenge, appfle and the new computer[]</paragraph>',
-
-					'<p>The Foo hous a is a Foo hous e. A Foo athat and Foo xhat. This is an istane</p>' +
-					'<p>Banana, orenge, appfle and the new computer{}</p>' );
-
-				done();
-			} );
+				'<p>The Foo hous a is a Foo hous e. A Foo athat and Foo xhat. This is an istane</p>' +
+				'<p>Banana, orenge, appfle and the new {computer}</p>' );
 		} );
 	} );
 } );
 
-function emulateSpellcheckerMutation( editor, nodeIndex, resultPositionIndex, oldText, newText ) {
+function emulateSpellcheckerMutation( editor, nodeIndex, rangeStart, rangeEnd, oldText, newText ) {
 	const view = editor.editing.view;
 	const viewRoot = view.document.getRoot();
 	const viewSelection = new ViewSelection();
+	const node = viewRoot.getChild( nodeIndex ).getChild( 0 );
 
-	viewSelection.setTo( viewRoot.getChild( nodeIndex ).getChild( 0 ), resultPositionIndex );
+	viewSelection.setTo( ViewRange.createFromParentsAndOffsets( node, rangeStart, node, rangeEnd ) );
 
 	view.document.fire( 'mutations',
-		[ {
-			type: 'text',
-			oldText,
-			newText,
-			node: viewRoot.getChild( nodeIndex ).getChild( 0 )
-		} ],
+		[
+			{
+				type: 'text',
+				oldText,
+				newText,
+				node
+			}
+		],
 		viewSelection
 	);
-}
-
-function emulateSpellcheckerInsertText( editor, nodeIndex, rangeStart, rangeEnd, text ) {
-	const model = editor.model;
-	const modelRoot = model.document.getRoot();
-
-	window.focus();
-	editor.editing.view.focus();
-
-	model.change( writer => {
-		writer.setSelection(
-			ModelRange.createFromParentsAndOffsets( modelRoot.getChild( nodeIndex ), rangeStart, modelRoot.getChild( nodeIndex ), rangeEnd )
-		);
-	} );
-
-	window.document.execCommand( 'insertText', false, text );
 }
 
 function expectContent( editor, expectedModel, expectedView ) {
