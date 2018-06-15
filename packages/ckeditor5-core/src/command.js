@@ -79,10 +79,10 @@ export default class Command {
 		// By default commands are disabled when the editor is in read-only mode.
 		this.listenTo( editor, 'change:isReadOnly', ( evt, name, value ) => {
 			if ( value ) {
-				this.on( 'beforeChange:isEnabled', forceDisable, { priority: 'highest' } );
+				this.on( 'set:isEnabled', forceDisable, { priority: 'highest' } );
 				this.isEnabled = false;
 			} else {
-				this.off( 'beforeChange:isEnabled', forceDisable );
+				this.off( 'set:isEnabled', forceDisable );
 				this.refresh();
 			}
 		} );
