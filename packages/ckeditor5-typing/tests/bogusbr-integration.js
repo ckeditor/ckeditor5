@@ -39,13 +39,13 @@ describe( 'Typing – bogus BR integration', () => {
 		return editor.destroy();
 	} );
 
-	describe( 'insertText', () => {
-		// Tests using 'insertText' generates same mutations as typing. This means they will behave
-		// a little different in every browser (as native mutations may be different in different browsers).
+	// Part of tests used the native insertText command to generate mutations which would be generated
+	// by real typing. Unfortunately, the command is not reliable (due to focus) and we needed
+	// to stop using it. Instead we use a direct DOM modifications and completely fake mutations.
 
+	describe( 'direct DOM modifications', () => {
 		it( 'space is inserted on the end of the line (paragraph)', done => {
 			editor.model.change( () => {
-				editor.editing.view.getDomRoot().focus();
 				setData( editor.model, '<paragraph>Foo[]</paragraph>' );
 			} );
 
@@ -54,12 +54,12 @@ describe( 'Typing – bogus BR integration', () => {
 				done();
 			}, { priority: 'low' } );
 
-			document.execCommand( 'insertText', false, ' ' );
+			const p = editor.editing.view.getDomRoot().firstChild;
+			p.firstChild.data = 'Foo\u00a0';
 		} );
 
-		it( 'space is inserted on the end of the line (empty paragraph)', done => {
+		it( 'space is inserted at the end of the line (empty paragraph)', done => {
 			editor.model.change( () => {
-				editor.editing.view.getDomRoot().focus();
 				setData( editor.model, '<paragraph>[]</paragraph>' );
 			} );
 
@@ -68,12 +68,34 @@ describe( 'Typing – bogus BR integration', () => {
 				done();
 			}, { priority: 'low' } );
 
-			document.execCommand( 'insertText', false, ' ' );
+			const p = editor.editing.view.getDomRoot().firstChild;
+			const bogusBr = p.firstChild;
+			const text = document.createTextNode( '\u00a0' );
+
+			p.insertBefore( text, bogusBr );
+		} );
+
+		// We sometimes observed that browsers remove the bogus br automatically.
+		it( 'space is inserted at the end of the line (empty paragraph; remove <br> when inserting space)', done => {
+			editor.model.change( () => {
+				setData( editor.model, '<paragraph>[]</paragraph>' );
+			} );
+
+			editor.model.document.once( 'change', () => {
+				expect( editor.getData() ).to.equal( '<p>&nbsp;</p>' );
+				done();
+			}, { priority: 'low' } );
+
+			const p = editor.editing.view.getDomRoot().firstChild;
+			const bogusBr = p.firstChild;
+			const text = document.createTextNode( '\u00a0' );
+
+			p.insertBefore( text, bogusBr );
+			bogusBr.remove();
 		} );
 
 		it( 'space is inserted on the end of the line (bold)', done => {
 			editor.model.change( () => {
-				editor.editing.view.getDomRoot().focus();
 				setData( editor.model, '<paragraph><$text bold="true">Foo[]</$text></paragraph>' );
 			} );
 
@@ -82,7 +104,8 @@ describe( 'Typing – bogus BR integration', () => {
 				done();
 			}, { priority: 'low' } );
 
-			document.execCommand( 'insertText', false, ' ' );
+			const p = editor.editing.view.getDomRoot().firstChild;
+			p.firstChild.firstChild.data = 'Foo\u00a0';
 		} );
 	} );
 
@@ -91,7 +114,6 @@ describe( 'Typing – bogus BR integration', () => {
 
 		it( 'space is inserted on the end of the paragraph', done => {
 			editor.model.change( () => {
-				editor.editing.view.getDomRoot().focus();
 				setData( editor.model, '<paragraph>Foo[]</paragraph>' );
 			} );
 
