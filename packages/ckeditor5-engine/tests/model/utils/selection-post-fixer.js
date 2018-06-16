@@ -319,6 +319,26 @@ describe( 'Selection post-fixer', () => {
 					'<paragraph>bar</paragraph>'
 				);
 			} );
+
+			it( 'should fix multiple ranges #1', () => {
+				// []<paragraph></paragraph>[]<table>...
+				model.change( writer => {
+					writer.setSelection(
+						[
+							ModelRange.createFromParentsAndOffsets( modelRoot, 0, modelRoot, 0 ),
+							ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 1 )
+						]
+					);
+				} );
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>[]foo[]</paragraph>' +
+					'<table>' +
+						'<tableRow><tableCell>aaa</tableCell><tableCell>bbb</tableCell></tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>'
+				);
+			} );
 		} );
 	} );
 } );

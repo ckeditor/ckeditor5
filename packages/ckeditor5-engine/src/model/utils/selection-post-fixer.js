@@ -13,9 +13,21 @@ import Position from '../position';
 /**
  * Injects selection post-fixer to the model.
  *
- * The selection post-fixer checks if nodes with `isLimit` property in schema are properly selected.
+ * The role of the selection post-fixer is to ensure that the selection is in a correct place
+ * after a {@link module:engine/model/model~Model#change `change()`} block was executed.
  *
- * See as an example selection that starts in P1 element and ends inside text of TD element
+ * The correct position means that:
+ *
+ * * all collapsed selection ranges are in a place where the {@link module:engine/model/schema~Schema}
+ * allows a `$text`,
+ * * none of selection's non-collapsed ranges crosses a {@link module:engine/model/schema~Schema#isLimit limit element}
+ * boundary (a range must be rooted within one limit element).
+ *
+ * If the position is not correct, the post-fixer will automatically correct it.
+ *
+ * ## Fixing a non-collapsed selection
+ *
+ * See as an example a selection that starts in a P1 element and ends inside a text of a TD element
  * (`[` and `]` are range boundaries and `(l)` denotes element defines as `isLimit=true`):
  *
  *		root
@@ -36,15 +48,13 @@ import Position from '../position';
  *		                                                 TD      TD
  *		                                               a a a    b b b
  *
- * In above example, the TABLE, TR and TD are defined as `isLimit=true` in the schema. The range that is not contained withing
- * single limit element must be expanded to select outer most parent limit element. The range end is inside text node of TD element.
+ * In the above example, the TABLE, TR and TD are defined as `isLimit=true` in the schema. The range which is not contained within
+ * a single limit element must be expanded to select the outer most limit element. The range end is inside text node of TD element.
  * As TD element is a child of TR element and TABLE elements which both are defined as `isLimit=true` in schema the range must be expanded
  * to select whole TABLE element.
  *
  * **Note** If selection contains multiple ranges the method returns minimal set of ranges that are not intersecting after expanding them
  * to select `isLimit=true` elements.
- *
- * See {@link module:engine/model/schema~Schema#isLimit}.
  *
  * @param {module:engine/model/model~Model} model
  */
@@ -81,9 +91,9 @@ function selectionPostFixer( writer, model ) {
 	if ( wasFixed ) {
 		// The above algorithm might create ranges that intersects each other when selection contains more then one range.
 		// This is case happens mostly on Firefox which creates multiple ranges for selected table.
-		const safeRange = combineRangesOnLimitNodes( ranges );
+		const safeRanges = combineRangesOnLimitNodes( ranges );
 
-		writer.setSelection( safeRange, { backward: selection.isBackward } );
+		writer.setSelection( safeRanges, { backward: selection.isBackward } );
 	}
 }
 
