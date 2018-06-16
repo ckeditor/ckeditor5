@@ -58,6 +58,36 @@ describe( 'Selection post-fixer', () => {
 			expect( getModelData( model ) ).to.equal( '[]' );
 		} );
 
+		it( 'should react to structure changes', () => {
+			model.change( writer => {
+				writer.remove( modelRoot.getChild( 0 ) );
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'[<table>' +
+					'<tableRow><tableCell>aaa</tableCell><tableCell>bbb</tableCell></tableRow>' +
+				'</table>]' +
+				'<paragraph>bar</paragraph>'
+			);
+		} );
+
+		it( 'should react to selection changes', () => {
+			// <paragraph>foo</paragraph>[]<table>...
+			model.change( writer => {
+				writer.setSelection(
+					ModelRange.createFromParentsAndOffsets( modelRoot, 1, modelRoot, 1 )
+				);
+			} );
+
+			expect( getModelData( model ) ).to.equal(
+				'<paragraph>foo[]</paragraph>' +
+				'<table>' +
+					'<tableRow><tableCell>aaa</tableCell><tableCell>bbb</tableCell></tableRow>' +
+				'</table>' +
+				'<paragraph>bar</paragraph>'
+			);
+		} );
+
 		describe( 'not collapsed selection', () => {
 			it( 'should fix #1', () => {
 				model.change( writer => {
@@ -255,6 +285,7 @@ describe( 'Selection post-fixer', () => {
 
 		describe( 'collapsed selection', () => {
 			it( 'should fix #1', () => {
+				// <table>[]<tableRow>...
 				model.change( writer => {
 					writer.setSelection(
 						ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 1 ), 0, modelRoot.getChild( 1 ), 0 )
@@ -265,6 +296,25 @@ describe( 'Selection post-fixer', () => {
 					'<paragraph>foo[]</paragraph>' +
 					'<table>' +
 						'<tableRow><tableCell>aaa</tableCell><tableCell>bbb</tableCell></tableRow>' +
+					'</table>' +
+					'<paragraph>bar</paragraph>'
+				);
+			} );
+
+			it( 'should fix #2', () => {
+				// <table><tableRow>[]<tableCell>...
+				model.change( writer => {
+					const row = modelRoot.getChild( 1 ).getChild( 0 );
+
+					writer.setSelection(
+						ModelRange.createFromParentsAndOffsets( row, 0, row, 0 )
+					);
+				} );
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>foo</paragraph>' +
+					'<table>' +
+						'<tableRow><tableCell>[]aaa</tableCell><tableCell>bbb</tableCell></tableRow>' +
 					'</table>' +
 					'<paragraph>bar</paragraph>'
 				);
