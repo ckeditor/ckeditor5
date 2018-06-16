@@ -26,7 +26,7 @@ import insertContent from './utils/insertcontent';
 import deleteContent from './utils/deletecontent';
 import modifySelection from './utils/modifyselection';
 import getSelectedContent from './utils/getselectedcontent';
-import { injectSelectionPostFixer } from './utils/selection-postfixer';
+import { injectSelectionPostFixer } from './utils/selection-post-fixer';
 
 /**
  * Editor's data model. Read about the model in the

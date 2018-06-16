@@ -59,7 +59,7 @@ describe( 'Document', () => {
 		} );
 	} );
 
-	describe( 'post fixers', () => {
+	describe( 'post-fixers', () => {
 		it( 'should add a callback that is called on _callPostFixers', () => {
 			const spy1 = sinon.spy();
 			const spy2 = sinon.spy();
@@ -77,7 +77,7 @@ describe( 'Document', () => {
 			sinon.assert.calledWithExactly( spy2, writerMock );
 		} );
 
-		it( 'should call post fixer until all returns false', () => {
+		it( 'should call post-fixer until all returns false', () => {
 			let calls = 0;
 
 			const spy1 = sinon.spy( () => calls++ < 2 );

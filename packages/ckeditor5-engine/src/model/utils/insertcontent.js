@@ -145,7 +145,7 @@ class Insertion {
 			} );
 		}
 
-		// TMP this will become a postfixer.
+		// TMP this will become a post-fixer.
 		this.schema.removeDisallowedAttributes( this._filterAttributesOf, this.writer );
 		this._filterAttributesOf = [];
 	}

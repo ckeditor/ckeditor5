@@ -7,10 +7,18 @@ import Model from '../../../src/model/model';
 import ModelPosition from '../../../src/model/position';
 import ModelRange from '../../../src/model/range';
 
+import { injectSelectionPostFixer } from '../../../src/model/utils/selection-post-fixer';
+
 import { getData as getModelData, setData as setModelData } from '../../../src/dev-utils/model';
 
-describe( 'Selection post fixer', () => {
-	describe( 'selectionPostFixer()', () => {
+describe( 'Selection post-fixer', () => {
+	describe( 'injectSelectionPostFixer()', () => {
+		it( 'is a function', () => {
+			expect( injectSelectionPostFixer ).to.be.a( 'function' );
+		} );
+	} );
+
+	describe( 'injected behavior', () => {
 		let model, modelRoot;
 
 		beforeEach( () => {
