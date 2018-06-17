@@ -101,10 +101,10 @@ describe( 'InsertTableCommand', () => {
 				command.execute();
 
 				expect( getData( model ) ).to.equal(
-					'[]<table>' +
+					'[<table>' +
 					'<tableRow><tableCell></tableCell><tableCell></tableCell></tableRow>' +
 					'<tableRow><tableCell></tableCell><tableCell></tableCell></tableRow>' +
-					'</table>'
+					'</table>]'
 				);
 			} );
 
