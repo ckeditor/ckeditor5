@@ -316,6 +316,14 @@ describe( 'Schema', () => {
 			expect( schema.isLimit( 'foo' ) ).to.be.true;
 		} );
 
+		it( 'returns true if an item was registered as an object element (because all objects are limits too)', () => {
+			schema.register( 'foo', {
+				isObject: true
+			} );
+
+			expect( schema.isLimit( 'foo' ) ).to.be.true;
+		} );
+
 		it( 'returns false if an item was not registered as a limit element', () => {
 			schema.register( 'foo' );
 
@@ -341,6 +349,14 @@ describe( 'Schema', () => {
 			} );
 
 			expect( schema.isObject( 'foo' ) ).to.be.true;
+		} );
+
+		it( 'returns false if an item was registered as a limit (because not all limits are objects)', () => {
+			schema.register( 'foo', {
+				isLimit: true
+			} );
+
+			expect( schema.isObject( 'foo' ) ).to.be.false;
 		} );
 
 		it( 'returns false if an item was not registered as an object', () => {
@@ -2604,7 +2620,7 @@ describe( 'Schema', () => {
 		} );
 
 		it( 'image is block object', () => {
-			expect( schema.isLimit( 'image' ) ).to.be.false;
+			expect( schema.isLimit( 'image' ) ).to.be.true;
 			expect( schema.isBlock( 'image' ) ).to.be.true;
 			expect( schema.isObject( 'image' ) ).to.be.true;
 		} );

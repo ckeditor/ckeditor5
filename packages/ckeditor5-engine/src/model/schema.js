@@ -333,18 +333,24 @@ export default class Schema {
 
 	/**
 	 * Returns `true` if the given item is defined to be
-	 * a limit element by {@link module:engine/model/schema~SchemaItemDefinition}'s `isLimit` property.
+	 * a limit element by {@link module:engine/model/schema~SchemaItemDefinition}'s `isLimit` or `isObject` property
+	 * (all objects are also limits).
 	 *
 	 *		schema.isLimit( 'paragraph' ); // -> false
 	 *		schema.isLimit( '$root' ); // -> true
 	 *		schema.isLimit( editor.model.document.getRoot() ); // -> true
+	 *		schema.isLimit( 'image' ); // -> true
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
 	 */
 	isLimit( item ) {
 		const def = this.getDefinition( item );
 
-		return !!( def && def.isLimit );
+		if ( !def ) {
+			return false;
+		}
+
+		return !!( def.isLimit || def.isObject );
 	}
 
 	/**
@@ -747,8 +753,8 @@ export default class Schema {
 				return parent;
 			}
 
-			// Do not split limit elements and objects.
-			if ( this.isLimit( parent ) || this.isObject( parent ) ) {
+			// Do not split limit elements.
+			if ( this.isLimit( parent ) ) {
 				return null;
 			}
 
@@ -987,9 +993,11 @@ mix( Schema, ObservableMixin );
  * Most block type items will inherit from `$block` (through `inheritAllFrom`).
  * * `isLimit` – can be understood as whether this element should not be split by <kbd>Enter</kbd>.
  * Examples of limit elements – `$root`, table cell, image caption, etc. In other words, all actions which happen inside
- * a limit element are limited to its content.
+ * a limit element are limited to its content. **Note:** all objects (`isObject`) are treated as limit elements too.
  * * `isObject` – whether item is "self-contained" and should be treated as a whole. Examples of object elements –
- * `image`, `table`, `video`, etc.
+ * `image`, `table`, `video`, etc. **Note:** an object is also a limit so
+ * {@link module:engine/model/schema~Schema#isLimit `isLimit()`}
+ * returns `true` for object elements automatically.
  *
  * # Generic items
  *
