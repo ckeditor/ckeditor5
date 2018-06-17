@@ -18,10 +18,13 @@ import Position from '../position';
  *
  * The correct position means that:
  *
- * * all collapsed selection ranges are in a place where the {@link module:engine/model/schema~Schema}
- * allows a `$text`,
- * * none of selection's non-collapsed ranges crosses a {@link module:engine/model/schema~Schema#isLimit limit element}
+ * * All collapsed selection ranges are in a place where the {@link module:engine/model/schema~Schema}
+ * allows a `$text`.
+ * * None of selection's non-collapsed ranges crosses a {@link module:engine/model/schema~Schema#isLimit limit element}
  * boundary (a range must be rooted within one limit element).
+ * * Only {@link module:engine/model/schema~Schema#isObject object elements} can be selected from outside
+ * (e.g. `[<paragraph>foo</paragraph>]` is invalid). This rule applies independently to both selection ends, so this
+ * selection is correct – `<paragraph>f[oo</paragraph><image></image>]`.
  *
  * If the position is not correct, the post-fixer will automatically correct it.
  *
@@ -77,7 +80,7 @@ function selectionPostFixer( writer, model ) {
 	for ( const modelRange of selection.getRanges() ) {
 		// Go through all ranges in selection and try fixing each of them.
 		// Those ranges might overlap but will be corrected later.
-		const correctedRange = tryFixRangeWithIsLimitBlocks( modelRange, schema );
+		const correctedRange = tryFixingRange( modelRange, schema );
 
 		if ( correctedRange ) {
 			ranges.push( correctedRange );
@@ -91,31 +94,33 @@ function selectionPostFixer( writer, model ) {
 	if ( wasFixed ) {
 		// The above algorithm might create ranges that intersects each other when selection contains more then one range.
 		// This is case happens mostly on Firefox which creates multiple ranges for selected table.
-		const safeRanges = combineRangesOnLimitNodes( ranges );
+		const combinedRanges = combineOverlapingRanges( ranges );
 
-		writer.setSelection( safeRanges, { backward: selection.isBackward } );
+		writer.setSelection( combinedRanges, { backward: selection.isBackward } );
 	}
 }
 
-// Tries to correct a range if it contains blocks defined as `isLimit` in schema.
+// Tries fixing a range if it's incorrect.
 //
 // @param {module:engine/model/range~Range} range
 // @param {module:engine/model/schema~Schema} schema
 // @returns {module:engine/model/range~Range|null} Returns fixed range or null if range is valid.
-function tryFixRangeWithIsLimitBlocks( range, schema ) {
+function tryFixingRange( range, schema ) {
 	if ( range.isCollapsed ) {
-		return tryFixCollapsedRange( range, schema );
+		return tryFixingCollapsedRange( range, schema );
 	}
 
-	return tryFixExpandedRange( range, schema );
+	return tryFixingNonCollpasedRage( range, schema );
 }
 
-// Tries to fix collapsed ranges - ie. when collapsed selection is in limit node that contains other limit nodes.
+// Tries to fix collapsed ranges.
+//
+// * Fixes situation when a range is in a place where $text is not allowed
 //
 // @param {module:engine/model/range~Range} range Collapsed range to fix.
 // @param {module:engine/model/schema~Schema} schema
 // @returns {module:engine/model/range~Range|null} Returns fixed range or null if range is valid.
-function tryFixCollapsedRange( range, schema ) {
+function tryFixingCollapsedRange( range, schema ) {
 	const originalPosition = range.start;
 
 	const nearestSelectionRange = schema.getNearestSelectionRange( originalPosition );
@@ -146,7 +151,7 @@ function tryFixCollapsedRange( range, schema ) {
 // @param {module:engine/model/range~Range} range Expanded range to fix.
 // @param {module:engine/model/schema~Schema} schema
 // @returns {module:engine/model/range~Range|null} Returns fixed range or null if range is valid.
-function tryFixExpandedRange( range, schema ) {
+function tryFixingNonCollpasedRage( range, schema ) {
 	// No need to check flat ranges as they will not cross node boundary.
 	if ( range.isFlat ) {
 		return null;
@@ -194,7 +199,7 @@ function expandSelectionOnIsLimitNode( position, schema, expandToDirection ) {
 //
 // @param {Array.<module:engine/model/range~Range>} ranges
 // @returns {Array.<module:engine/model/range~Range>}
-function combineRangesOnLimitNodes( ranges ) {
+function combineOverlapingRanges( ranges ) {
 	const combinedRanges = [];
 
 	// Seed the state.
