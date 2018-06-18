@@ -59,5 +59,5 @@ export function isTableWidgetSelected( selection ) {
 export function isTableContentSelected( selection ) {
 	const parentTable = getParentTable( selection.getFirstPosition() );
 
-	return !!( parentTable && isTableWidget( parentTable ) );
+	return !!( parentTable && isTableWidget( parentTable.parent ) );
 }

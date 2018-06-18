@@ -58,11 +58,49 @@ describe( 'upcastTable()', () => {
 		expect( getModelData( model, { withoutSelection: true } ) ).to.equal( data );
 	}
 
+	it( 'should convert table figure', () => {
+		editor.setData(
+			'<figure class="table">' +
+			'<table>' +
+			'<tr><td>1</td></tr>' +
+			'</table>' +
+			'</figure>'
+		);
+
+		expectModel(
+			'<table>' +
+			'<tableRow><tableCell>1</tableCell></tableRow>' +
+			'</table>'
+		);
+	} );
+
 	it( 'should create table model from table without thead', () => {
 		editor.setData(
 			'<table>' +
 			'<tr><td>1</td></tr>' +
 			'</table>'
+		);
+
+		expectModel(
+			'<table>' +
+			'<tableRow><tableCell>1</tableCell></tableRow>' +
+			'</table>'
+		);
+	} );
+
+	it( 'should not convert empty figure', () => {
+		'<figure class="table"></figure>';
+
+		expectModel( '' );
+	} );
+
+	it( 'should convert if figure do not have class="table" attribute', () => {
+		editor.setData(
+			'<figure>' +
+			'<table>' +
+			'<tr><td>1</td></tr>' +
+			'</table>' +
+			'</figure>'
 		);
 
 		expectModel(

@@ -13,7 +13,7 @@ import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 /**
  * View table element to model table element conversion helper.
  *
- * This conversion helper convert table element as well as tableRows.
+ * This conversion helper converts the table element as well as table rows.
  *
  * @returns {Function} Conversion helper.
  */
@@ -85,11 +85,11 @@ export default function upcastTable() {
 	};
 }
 
-// Scans table rows & extracts required metadata from table:
+// Scans table rows and extracts required metadata from the table:
 //
-// headingRows    - number of rows that goes as table header.
+// headingRows    - the number of rows that goes as table header.
 // headingColumns - max number of row headings.
-// rows           - sorted trs as they should go into the model - ie if <thead> is inserted after <tbody> in the view.
+// rows           - sorted `<tr>`s as they should go into the model - ie. if `<thead>` is inserted after `<tbody>` in the view.
 //
 // @param {module:engine/view/element~Element} viewTable
 // @returns {{headingRows, headingColumns, rows}}
@@ -99,9 +99,10 @@ function scanTable( viewTable ) {
 		headingColumns: 0
 	};
 
-	// The <tbody> and <thead> sections in the DOM doesn't have to be in order <thead> -> <tbody> and there might be more then one of them.
-	// As the model doesn't have those sections rows from different sections must be sorted.
-	// Ie below is a valid HTML table:
+	// The `<tbody>` and <thead> sections in the DOM do not have to be in order `<thead>` -> `<tbody>` and there might be more then one of
+	// them.
+	// As the model does not have those sections, rows from different sections must be sorted.
+	// For example, below is a valid HTML table:
 	//
 	//		<table>
 	//			<tbody><tr><td>2</td></tr></tbody>
@@ -109,7 +110,7 @@ function scanTable( viewTable ) {
 	//			<tbody><tr><td>3</td></tr></tbody>
 	//		</table>
 	//
-	// But browsers will render rows in order as : 1 as heading and 2 & 3 as (body).
+	// But browsers will render rows in order as: 1 as heading and 2 and 3 as (body).
 	const headRows = [];
 	const bodyRows = [];
 
@@ -150,12 +151,12 @@ function scanTable( viewTable ) {
 	return tableMeta;
 }
 
-// Scans <tr> and it's children for metadata:
+// Scans `<tr>` and its children for metadata:
 // - For heading row:
-//     - either add this row to heading or body rows.
+//     - either adds this row to heading or body rows.
 //     - updates number of heading rows.
 // - For body rows:
-//     - calculates number of column headings.
+//     - calculates the number of column headings.
 //
 // @param {module:engine/view/element~Element} tr
 // @returns {Number}
