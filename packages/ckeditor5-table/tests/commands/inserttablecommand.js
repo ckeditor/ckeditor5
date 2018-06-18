@@ -19,6 +19,8 @@ import {
 import upcastTable from '../../src/converters/upcasttable';
 import TableUtils from '../../src/tableutils';
 
+import { formatTable, formattedModelTable } from '../_utils/utils';
+
 describe( 'InsertTableCommand', () => {
 	let editor, model, command;
 
@@ -100,12 +102,10 @@ describe( 'InsertTableCommand', () => {
 
 				command.execute();
 
-				expect( getData( model ) ).to.equal(
-					'<table>' +
-					'<tableRow><tableCell></tableCell><tableCell></tableCell></tableRow>' +
-					'<tableRow><tableCell></tableCell><tableCell></tableCell></tableRow>' +
-					'</table>[]'
-				);
+				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+					[ '[]', '' ],
+					[ '', '' ]
+				] ) );
 			} );
 
 			it( 'should insert table with two rows and two columns after non-empty paragraph', () => {
@@ -113,11 +113,12 @@ describe( 'InsertTableCommand', () => {
 
 				command.execute();
 
-				expect( getData( model ) ).to.equal( '<p>foo[]</p>' +
-					'<table>' +
-					'<tableRow><tableCell></tableCell><tableCell></tableCell></tableRow>' +
-					'<tableRow><tableCell></tableCell><tableCell></tableCell></tableRow>' +
-					'</table>'
+				expect( formatTable( getData( model ) ) ).to.equal(
+					'<p>foo</p>' +
+					formattedModelTable( [
+						[ '[]', '' ],
+						[ '', '' ]
+					] )
 				);
 			} );
 
@@ -126,12 +127,13 @@ describe( 'InsertTableCommand', () => {
 
 				command.execute( { rows: 3, columns: 4 } );
 
-				expect( getData( model ) ).to.equal( '<p>foo[]</p>' +
-					'<table>' +
-					'<tableRow><tableCell></tableCell><tableCell></tableCell><tableCell></tableCell><tableCell></tableCell></tableRow>' +
-					'<tableRow><tableCell></tableCell><tableCell></tableCell><tableCell></tableCell><tableCell></tableCell></tableRow>' +
-					'<tableRow><tableCell></tableCell><tableCell></tableCell><tableCell></tableCell><tableCell></tableCell></tableRow>' +
-					'</table>'
+				expect( formatTable( getData( model ) ) ).to.equal(
+					'<p>foo</p>' +
+					formattedModelTable( [
+						[ '[]', '', '', '' ],
+						[ '', '', '', '' ],
+						[ '', '', '', '' ]
+					] )
 				);
 			} );
 		} );
