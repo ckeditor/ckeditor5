@@ -26,6 +26,8 @@ import ImageuploadPlugin from '@ckeditor/ckeditor5-image/src/imageupload';
 import LinkPlugin from '@ckeditor/ckeditor5-link/src/link';
 import ListPlugin from '@ckeditor/ckeditor5-list/src/list';
 import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+import TablePlugin from '@ckeditor/ckeditor5-table/src/table';
+import TabletoolbarPlugin from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 
 export default class DecoupledEditor extends DecoupledEditorBase {}
 
@@ -52,7 +54,9 @@ DecoupledEditor.build = {
 		ImageuploadPlugin,
 		LinkPlugin,
 		ListPlugin,
-		ParagraphPlugin
+		ParagraphPlugin,
+		TablePlugin,
+		TabletoolbarPlugin
 	],
 	config: {
 		toolbar: {
@@ -76,6 +80,7 @@ DecoupledEditor.build = {
 				'link',
 				'blockquote',
 				'imageUpload',
+				'insertTable',
 				'|',
 				'undo',
 				'redo'
@@ -93,6 +98,13 @@ DecoupledEditor.build = {
 				'imageStyle:alignRight',
 				'|',
 				'imageTextAlternative'
+			]
+		},
+		table: {
+			toolbar: [
+				'tableColumn',
+				'tableRow',
+				'mergeCell'
 			]
 		},
 		language: 'en'
