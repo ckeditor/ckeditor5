@@ -143,16 +143,11 @@ module.exports = {
 	module: {
 		rules: [
 			{
-				// Or /ckeditor5-[^/]+\/theme\/icons\/[^/]+\.svg$/ if you want to limit this loader
-				// to CKEditor 5 icons only.
-				test: /\.svg$/,
-
+				test: /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
 				use: [ 'raw-loader' ]
 			},
 			{
-				// Or /ckeditor5-[^/]+\/theme\/[\w-/]+\.css$/ if you want to limit this loader
-				// to CKEditor 5 theme only.
-				test: /\.css$/,
+				test: /ckeditor5-[^/\\]+[/\\]theme[/\\][\w-/]+\.css$/,
 				use: [
 					{
 						loader: 'style-loader',
@@ -175,6 +170,83 @@ module.exports = {
 	}
 };
 ```
+
+#### Adding CKEditor 5 to existing project
+
+If you are not build the Webpack's configuration from scratch, you need to adjust your configuration to handle the CKEditor 5's assets.
+
+Add CKEditor5 loaders to the configuration (as new entries into `module.rules` array):
+
+```js
+// Import an object that creates a configuration for PostCSS:
+const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
+
+module.exports = {
+	// Webpack configuration...
+	
+	module: {
+		rules: [
+			// Loader for CKEditor5's icons.
+			{
+            	test: /ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
+            	use: [ 'raw-loader' ]
+            },
+            
+            // Loader for CKEditor5's theme.
+            {
+            	test: /ckeditor5-[^/\\]+[/\\]theme[/\\][\w-/]+\.css$/,
+            	use: [
+            		{
+            			loader: 'style-loader',
+            			options: {
+            				singleton: true
+            			}
+            		},
+            		{
+            			loader: 'postcss-loader',
+            			options: styles.getPostCssConfig( {
+            				themeImporter: {
+            					themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
+            				},
+            				minify: true
+            			} )
+            		},
+            	]
+            }
+		]
+	}
+
+	// Webpack configuration...
+}
+```
+
+Then exclude CKEditor 5 theme from your CSS loader (it can be SASS, LESS or something other):
+
+```js
+{
+	// ...
+	exclude: /ckeditor5-[^/\\]+[/\\]theme[/\\][\w-/]+\.css$/
+	// ...
+}
+```
+
+If you are using the `file-loader`, exclude CKEditor 5 SVG and CSS files from it because these files
+will be handled by the loaders added previously:
+
+
+```js
+{
+	loader: 'file-loader',
+	exclude: [
+		// ... 
+		/ckeditor5-[^/\\]+[/\\]theme[/\\]icons[/\\][^/\\]+\.svg$/,
+		/ckeditor5-[^/\\]+[/\\]theme[/\\].+\.css/
+		// ...
+	]
+}
+```
+
+Then try to build the project. 
 
 ### Running the editor – method 1
 
@@ -302,10 +374,13 @@ ClassicEditor
 			ImagePlugin,
 			ImagecaptionPlugin,
 			ImagestylePlugin,
+			ImageuploadPlugin,
 			ImagetoolbarPlugin,
+			EasyimagePlugin,
 			LinkPlugin,
 			ListPlugin,
-			ParagraphPlugin
+			ParagraphPlugin,
+			UploadadapterPlugin
 		],
 
 		// So is the rest of the default configuration.
