@@ -111,7 +111,7 @@ export default class Differ {
 	}
 
 	/**
-	 * Buffers a given operation. An operation has to be buffered before it is executed.
+	 * Buffers the given operation. An operation has to be buffered before it is executed.
 	 *
 	 * Operation type is checked and it is checked which nodes it will affect. These nodes are then stored in `Differ`
 	 * in the state before the operation is executed.
@@ -171,7 +171,7 @@ export default class Differ {
 				for ( const marker of this._markerCollection.getMarkersIntersectingRange( range ) ) {
 					const markerRange = marker.getRange();
 
-					this.bufferMarkerChange( marker.name, markerRange, markerRange );
+					this.bufferMarkerChange( marker.name, markerRange, markerRange, marker.affectsData );
 				}
 
 				break;
@@ -183,23 +183,26 @@ export default class Differ {
 	}
 
 	/**
-	 * Buffers marker change.
+	 * Buffers a marker change.
 	 *
 	 * @param {String} markerName The name of the marker that changed.
 	 * @param {module:engine/model/range~Range|null} oldRange Marker range before the change or `null` if the marker has just
 	 * been created.
 	 * @param {module:engine/model/range~Range|null} newRange Marker range after the change or `null` if the marker was removed.
+	 * @param {Boolean} affectsData Flag indicating whether marker affects the editor data.
 	 */
-	bufferMarkerChange( markerName, oldRange, newRange ) {
+	bufferMarkerChange( markerName, oldRange, newRange, affectsData ) {
 		const buffered = this._changedMarkers.get( markerName );
 
 		if ( !buffered ) {
 			this._changedMarkers.set( markerName, {
 				oldRange,
-				newRange
+				newRange,
+				affectsData
 			} );
 		} else {
 			buffered.newRange = newRange;
+			buffered.affectsData = affectsData;
 
 			if ( buffered.oldRange == null && buffered.newRange == null ) {
 				// The marker is going to be removed (`newRange == null`) but it did not exist before the first buffered change
@@ -241,6 +244,28 @@ export default class Differ {
 		}
 
 		return result;
+	}
+
+	/**
+	 * Checks whether some of the buffered changes affect the editor data.
+	 *
+	 * Types of changes which affect the editor data:
+	 *
+	 * * model structure changes,
+	 * * attribute changes,
+	 * * changes of markers which were defined as `affectingData`.
+	 *
+	 * @returns {Boolean}
+	 */
+	hasDataChanges() {
+		for ( const [ , change ] of this._changedMarkers ) {
+			if ( change.affectsData ) {
+				return true;
+			}
+		}
+
+		// If markers do not affect the data, check whether there are some changes in elements.
+		return this._changesInElement.size > 0;
 	}
 
 	/**

@@ -88,9 +88,11 @@ export default class MarkerCollection {
 	 * @param {String|module:engine/model/markercollection~Marker} markerOrName Name of marker to set or marker instance to update.
 	 * @param {module:engine/model/range~Range} range Marker range.
 	 * @param {Boolean} [managedUsingOperations=false] Specifies whether the marker is managed using operations.
+	 * @param {Boolean} [affectsData=false] Specifies whether the marker affects the data produced by the data pipeline
+	 * (is persisted in the editor's data).
 	 * @returns {module:engine/model/markercollection~Marker} `Marker` instance which was added or updated.
 	 */
-	_set( markerOrName, range, managedUsingOperations = false ) {
+	_set( markerOrName, range, managedUsingOperations = false, affectsData = false ) {
 		const markerName = markerOrName instanceof Marker ? markerOrName.name : markerOrName;
 		const oldMarker = this._markers.get( markerName );
 
@@ -108,6 +110,11 @@ export default class MarkerCollection {
 				hasChanged = true;
 			}
 
+			if ( typeof affectsData === 'boolean' && affectsData != oldMarker.affectsData ) {
+				oldMarker._affectsData = affectsData;
+				hasChanged = true;
+			}
+
 			if ( hasChanged ) {
 				this.fire( 'update:' + markerName, oldMarker, oldRange, range );
 			}
@@ -116,7 +123,7 @@ export default class MarkerCollection {
 		}
 
 		const liveRange = LiveRange.createFromRange( range );
-		const marker = new Marker( markerName, liveRange, managedUsingOperations );
+		const marker = new Marker( markerName, liveRange, managedUsingOperations, affectsData );
 
 		this._markers.set( markerName, marker );
 		this.fire( 'update:' + markerName, marker, null, range );
@@ -313,8 +320,10 @@ class Marker {
 	 * @param {String} name Marker name.
 	 * @param {module:engine/model/liverange~LiveRange} liveRange Range marked by the marker.
 	 * @param {Boolean} managedUsingOperations Specifies whether the marker is managed using operations.
+	 * @param {Boolean} affectsData Specifies whether the marker affects the data produced by the data pipeline
+	 * (is persisted in the editor's data).
 	 */
-	constructor( name, liveRange, managedUsingOperations ) {
+	constructor( name, liveRange, managedUsingOperations, affectsData ) {
 		/**
 		 * Marker's name.
 		 *
@@ -324,24 +333,33 @@ class Marker {
 		this.name = name;
 
 		/**
-		 * Flag indicates if the marker is managed using operations or not.
+		 * Range marked by the marker.
 		 *
 		 * @protected
+		 * @member {module:engine/model/liverange~LiveRange}
+		 */
+		this._liveRange = this._attachLiveRange( liveRange );
+
+		/**
+		 * Flag indicates if the marker is managed using operations or not.
+		 *
+		 * @private
 		 * @member {Boolean}
 		 */
 		this._managedUsingOperations = managedUsingOperations;
 
 		/**
-		 * Range marked by the marker.
+		 * Specifies whether the marker affects the data produced by the data pipeline
+		 * (is persisted in the editor's data).
 		 *
 		 * @private
-		 * @member {module:engine/model/liverange~LiveRange} #_liveRange
+		 * @member {Boolean}
 		 */
-		this._liveRange = this._attachLiveRange( liveRange );
+		this._affectsData = affectsData;
 	}
 
 	/**
-	 * Returns value of flag indicates if the marker is managed using operations or not.
+	 * A value indicating if the marker is managed using operations.
 	 * See {@link ~Marker marker class description} to learn more about marker types.
 	 * See {@link module:engine/model/writer~Writer#addMarker}.
 	 *
@@ -353,6 +371,19 @@ class Marker {
 		}
 
 		return this._managedUsingOperations;
+	}
+
+	/**
+	 * A value indicating if the marker changes the data.
+	 *
+	 * @returns {Boolean}
+	 */
+	get affectsData() {
+		if ( !this._liveRange ) {
+			throw new CKEditorError( 'marker-destroyed: Cannot use a destroyed marker instance.' );
+		}
+
+		return this._affectsData;
 	}
 
 	/**
@@ -382,7 +413,7 @@ class Marker {
 	}
 
 	/**
-	 * Returns a range that represents current state of marker.
+	 * Returns a range that represents the current state of the marker.
 	 *
 	 * Keep in mind that returned value is a {@link module:engine/model/range~Range Range}, not a
 	 * {@link module:engine/model/liverange~LiveRange LiveRange}. This means that it is up-to-date and relevant only
@@ -402,7 +433,7 @@ class Marker {
 	}
 
 	/**
-	 * Binds new live range to marker and detach the old one if is attached.
+	 * Binds new live range to the marker and detach the old one if is attached.
 	 *
 	 * @protected
 	 * @param {module:engine/model/liverange~LiveRange} liveRange Live range to attach

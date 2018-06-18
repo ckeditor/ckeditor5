@@ -47,6 +47,18 @@ ClassicEditor
 			}
 		} ) );
 
+		editor.conversion.for( 'dataDowncast' ).add( downcastMarkerToHighlight( {
+			model: 'highlight',
+			view: data => {
+				const color = data.markerName.split( ':' )[ 1 ];
+
+				return {
+					classes: 'h-' + color,
+					priority: 1
+				};
+			}
+		} ) );
+
 		window.document.getElementById( 'add-yellow' ).addEventListener( 'mousedown', e => {
 			e.preventDefault();
 			addHighlight( 'yellow' );
@@ -83,7 +95,7 @@ ClassicEditor
 			const name = 'highlight:yellow:' + uid();
 
 			markerNames.push( name );
-			writer.addMarker( name, { range, usingOperation: false } );
+			writer.addMarker( name, { range, usingOperation: false, affectsData: true } );
 		} );
 	} )
 	.catch( err => {

@@ -23,9 +23,18 @@ import { isInsideSurrogatePair, isInsideCombinedSymbol } from '@ckeditor/ckedito
 const graveyardName = '$graveyard';
 
 /**
- * Document tree model describes all editable data in the editor. It may contain multiple
- * {@link module:engine/model/document~Document#roots root elements}. For example, if the editor has multiple editable areas,
- * each area will be represented by a separate root.
+ * Data model's document. It contains the model's structure, its selection and the history of changes.
+ *
+ * Read more about working with the model in
+ * {@glink framework/guides/architecture/editing-engine#model introduction to the the editing engine's architecture}.
+ *
+ * Usually, the document contains just one {@link module:engine/model/document~Document#roots root element}, so
+ * you can retrieve it by just calling {@link module:engine/model/document~Document#getRoot} without specifying its name:
+ *
+ *		model.document.getRoot(); // -> returns the main root
+ *
+ * However, the document may contain multiple roots – e.g. when the editor has multiple editable areas
+ * (e.g. a title and a body of a message).
  *
  * @mixes module:utils/emittermixin~EmitterMixin
  */
@@ -46,6 +55,7 @@ export default class Document {
 		/**
 		 * The document version. It starts from `0` and every operation increases the version number. It is used to ensure that
 		 * operations are applied on a proper document version.
+		 *
 		 * If the {@link module:engine/model/operation/operation~Operation#baseVersion base version} does not match the document version,
 		 * a {@link module:utils/ckeditorerror~CKEditorError model-document-applyOperation-wrong-version} error is thrown.
 		 *
@@ -65,7 +75,7 @@ export default class Document {
 		this.history = new History( this );
 
 		/**
-		 * The selection done on this document.
+		 * The selection in this document.
 		 *
 		 * @readonly
 		 * @member {module:engine/model/documentselection~DocumentSelection}
@@ -147,11 +157,16 @@ export default class Document {
 		// Wait for `_change` event from model, which signalizes that outermost change block has finished.
 		// When this happens, check if there were any changes done on document, and if so, call post fixers,
 		// fire `change` event for features and conversion and then reset the differ.
+		// Fire `change:data` event when at least one operation or buffered marker changes the data.
 		this.listenTo( model, '_change', ( evt, writer ) => {
 			if ( !this.differ.isEmpty || hasSelectionChanged ) {
 				this._callPostFixers( writer );
 
-				this.fire( 'change', writer.batch );
+				if ( this.differ.hasDataChanges() ) {
+					this.fire( 'change:data', writer.batch );
+				} else {
+					this.fire( 'change', writer.batch );
+				}
 
 				this.differ.reset();
 				hasSelectionChanged = false;
@@ -163,12 +178,12 @@ export default class Document {
 		// are modified using `model.markers` collection, not through `MarkerOperation`).
 		this.listenTo( model.markers, 'update', ( evt, marker, oldRange, newRange ) => {
 			// Whenever marker is updated, buffer that change.
-			this.differ.bufferMarkerChange( marker.name, oldRange, newRange );
+			this.differ.bufferMarkerChange( marker.name, oldRange, newRange, marker.affectsData );
 
 			if ( oldRange === null ) {
 				// If this is a new marker, add a listener that will buffer change whenever marker changes.
 				marker.on( 'change', ( evt, oldRange ) => {
-					this.differ.bufferMarkerChange( marker.name, oldRange, marker.getRange() );
+					this.differ.bufferMarkerChange( marker.name, oldRange, marker.getRange(), marker.affectsData );
 				} );
 			}
 		} );
@@ -376,19 +391,38 @@ export default class Document {
 	 * If you want to be notified about all these changes, then simply listen to this event like this:
 	 *
 	 *		model.document.on( 'change', () => {
-	 *			console.log( 'The Document has changed!' );
+	 *			console.log( 'The document has changed!' );
 	 *		} );
 	 *
-	 * If, however, you only want to be notified about structure changes, then check whether the
-	 * {@link module:engine/model/differ~Differ differ} contains any changes:
+	 * If, however, you only want to be notified about the data changes, then use the
+	 * {@link module:engine/model/document~Document#event:change:data change:data} event,
+	 * which is fired for document structure changes and marker changes (which affects the data).
 	 *
-	 *		model.document.on( 'change', () => {
-	 *			if ( model.document.differ.getChanges().length > 0 ) {
-	 *				console.log( 'The Document has changed!' );
-	 *			}
+	 *		model.document.on( 'change:data', () => {
+	 *			console.log( 'The data has changed!' );
 	 *		} );
 	 *
 	 * @event change
+	 * @param {module:engine/model/batch~Batch} batch The batch that was used in the executed changes block.
+	 */
+
+	/**
+	 * It is a narrower version of the {@link #event:change} event. It is fired for changes which
+	 * affect the editor data. This is:
+	 *
+	 * * document structure changes,
+	 * * marker changes (which affects the data).
+	 *
+	 * If you want to be notified about the data changes, then listen to this event:
+	 *
+	 *		model.document.on( 'change:data', () => {
+	 *			console.log( 'The data has changed!' );
+	 *		} );
+	 *
+	 * If you would like to listen to all document changes, then check out the
+	 * {@link module:engine/model/document~Document#event:change change} event.
+	 *
+	 * @event change:data
 	 * @param {module:engine/model/batch~Batch} batch The batch that was used in the executed changes block.
 	 */
 }
