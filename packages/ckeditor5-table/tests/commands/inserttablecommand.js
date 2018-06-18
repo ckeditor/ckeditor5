@@ -96,6 +96,18 @@ describe( 'InsertTableCommand', () => {
 	} );
 
 	describe( 'execute()', () => {
+		it( 'should create a single batch', () => {
+			setData( model, '<p>foo[]</p>' );
+
+			const spy = sinon.spy();
+
+			model.document.on( 'change', spy );
+
+			command.execute( { rows: 3, columns: 4 } );
+
+			sinon.assert.calledOnce( spy );
+		} );
+
 		describe( 'collapsed selection', () => {
 			it( 'should insert table in empty root', () => {
 				setData( model, '[]' );
