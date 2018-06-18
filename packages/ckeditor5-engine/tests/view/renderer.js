@@ -12,6 +12,7 @@ import ViewAttributeElement from '../../src/view/attributeelement';
 import ViewText from '../../src/view/text';
 import ViewRange from '../../src/view/range';
 import ViewPosition from '../../src/view/position';
+import UIElement from '../../src/view/uielement';
 import DocumentSelection from '../../src/view/documentselection';
 import DomConverter from '../../src/view/domconverter';
 import Renderer from '../../src/view/renderer';
@@ -2180,6 +2181,831 @@ describe( 'Renderer', () => {
 
 				expect( selectionCollapseSpy.notCalled ).to.true;
 				expect( selectionExtendSpy.notCalled ).to.true;
+			} );
+		} );
+
+		// #1417
+		describe( 'optimal rendering', () => {
+			it( 'should render inline element replacement (before text)', () => {
+				viewRoot._appendChild( parse( '<container:p><attribute:i>A</attribute:i>1</container:p>' ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal( '<p><i>A</i>1</p>' );
+
+				const viewP = viewRoot.getChild( 0 );
+				viewP._removeChildren( 0, 2 );
+				viewP._insertChild( 0, parse( '<attribute:i>B</attribute:i>2' ) );
+
+				const domI = domRoot.childNodes[ 0 ].childNodes[ 0 ];
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.markToSync( 'children', viewP );
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal( '<p><i>B</i>2</p>' );
+				expect( domI ).to.equal( domRoot.childNodes[ 0 ].childNodes[ 0 ] );
+			} );
+
+			it( 'should render inline element replacement (after text)', () => {
+				viewRoot._appendChild( parse( '<container:p>1<attribute:i>A</attribute:i></container:p>' ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal( '<p>1<i>A</i></p>' );
+
+				const viewP = viewRoot.getChild( 0 );
+				viewP._removeChildren( 0, 2 );
+				viewP._insertChild( 0, parse( '2<attribute:i>B</attribute:i>' ) );
+
+				const domI = domRoot.childNodes[ 0 ].childNodes[ 1 ];
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.markToSync( 'children', viewP );
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal( '<p>2<i>B</i></p>' );
+				expect( domI ).to.equal( domRoot.childNodes[ 0 ].childNodes[ 1 ] );
+			} );
+
+			it( 'should render inline element replacement (before text swapped order)', () => {
+				viewRoot._appendChild( parse( '<container:p><attribute:i>A</attribute:i>1</container:p>' ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal( '<p><i>A</i>1</p>' );
+
+				const viewP = viewRoot.getChild( 0 );
+				viewP._removeChildren( 0, 2 );
+				viewP._insertChild( 0, parse( '2<attribute:i>B</attribute:i>' ) );
+
+				const domI = domRoot.childNodes[ 0 ].childNodes[ 0 ];
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.markToSync( 'children', viewP );
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal( '<p>2<i>B</i></p>' );
+				expect( domI ).to.equal( domRoot.childNodes[ 0 ].childNodes[ 1 ] );
+			} );
+
+			it( 'should render inline element replacement (after text swapped order)', () => {
+				viewRoot._appendChild( parse( '<container:p>1<attribute:i>A</attribute:i></container:p>' ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal( '<p>1<i>A</i></p>' );
+
+				const viewP = viewRoot.getChild( 0 );
+				viewP._removeChildren( 0, 2 );
+				viewP._insertChild( 0, parse( '<attribute:i>B</attribute:i>2' ) );
+
+				const domI = domRoot.childNodes[ 0 ].childNodes[ 1 ];
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.markToSync( 'children', viewP );
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal( '<p><i>B</i>2</p>' );
+				expect( domI ).to.equal( domRoot.childNodes[ 0 ].childNodes[ 0 ] );
+			} );
+
+			it( 'should render single replacement in p group', () => {
+				const content = '' +
+					'<container:p>1</container:p>' +
+					'<container:p>2</container:p>' +
+					'<container:p>3</container:p>';
+
+				viewRoot._appendChild( parse( content ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal( '<p>1</p><p>2</p><p>3</p>' );
+
+				viewRoot._removeChildren( 1 );
+				viewRoot._insertChild( 1, parse( '<container:p>4</container:p>' ) );
+
+				const domP = domRoot.childNodes[ 1 ];
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal( '<p>1</p><p>4</p><p>3</p>' );
+				expect( domP ).to.equal( domRoot.childNodes[ 1 ] );
+			} );
+
+			it( 'should render replacement and insertion in p group', () => {
+				const content = '' +
+					'<container:p>1<attribute:i>A</attribute:i></container:p>' +
+					'<container:p>2<attribute:i>B</attribute:i></container:p>' +
+					'<container:p>3<attribute:i>C</attribute:i></container:p>';
+
+				const replacement = '' +
+					'<container:p><attribute:i>D</attribute:i></container:p>' +
+					'<container:p>5<attribute:i>E</attribute:i></container:p>';
+
+				viewRoot._appendChild( parse( content ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal( '<p>1<i>A</i></p><p>2<i>B</i></p><p>3<i>C</i></p>' );
+
+				viewRoot._removeChildren( 1 );
+				viewRoot._insertChild( 1, parse( replacement ) );
+
+				const domP2 = domRoot.childNodes[ 1 ];
+				const domP3 = domRoot.childNodes[ 2 ];
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal( '<p>1<i>A</i></p><p><i>D</i></p><p>5<i>E</i></p><p>3<i>C</i></p>' );
+				expect( domP2 ).to.equal( domRoot.childNodes[ 1 ] );
+				expect( domP3 ).to.equal( domRoot.childNodes[ 3 ] );
+			} );
+
+			it( 'should render replacement and deletion in p group', () => {
+				const content = '' +
+					'<container:p><attribute:i>A</attribute:i>1</container:p>' +
+					'<container:p><attribute:i>B</attribute:i>2</container:p>' +
+					'<container:p><attribute:i>C</attribute:i>3</container:p>';
+
+				viewRoot._appendChild( parse( content ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal( '<p><i>A</i>1</p><p><i>B</i>2</p><p><i>C</i>3</p>' );
+
+				viewRoot._removeChildren( 0, 2 );
+				viewRoot._insertChild( 0, parse( '<container:p>4</container:p>' ) );
+
+				const domP0 = domRoot.childNodes[ 0 ];
+				const domP2 = domRoot.childNodes[ 2 ];
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal( '<p>4</p><p><i>C</i>3</p>' );
+				expect( domP0 ).to.equal( domRoot.childNodes[ 0 ] );
+				expect( domP2 ).to.equal( domRoot.childNodes[ 1 ] );
+			} );
+
+			it( 'should render multiple continuous replacement in p group', () => {
+				const content = '' +
+					'<container:p>1</container:p>' +
+					'<container:p>2</container:p>' +
+					'<container:p>3</container:p>' +
+					'<container:p>4</container:p>' +
+					'<container:p>5</container:p>';
+
+				viewRoot._appendChild( parse( content ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal( '<p>1</p><p>2</p><p>3</p><p>4</p><p>5</p>' );
+
+				viewRoot._removeChildren( 0, 3 );
+				viewRoot._insertChild( 0, parse( '<container:p>6<attribute:i>A</attribute:i></container:p><container:p>7</container:p>' ) );
+
+				const domP1 = domRoot.childNodes[ 0 ];
+				const domP2 = domRoot.childNodes[ 1 ];
+				const domP4 = domRoot.childNodes[ 3 ];
+				const domP5 = domRoot.childNodes[ 4 ];
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal( '<p>6<i>A</i></p><p>7</p><p>4</p><p>5</p>' );
+				expect( domP1 ).to.equal( domRoot.childNodes[ 0 ] );
+				expect( domP2 ).to.equal( domRoot.childNodes[ 1 ] );
+				expect( domP4 ).to.equal( domRoot.childNodes[ 2 ] );
+				expect( domP5 ).to.equal( domRoot.childNodes[ 3 ] );
+			} );
+
+			it( 'should render multiple replacement in p group', () => {
+				const content = '' +
+					'<container:p>1</container:p>' +
+					'<container:p>2</container:p>' +
+					'<container:p>3</container:p>' +
+					'<container:p>4</container:p>' +
+					'<container:p>5</container:p>';
+
+				viewRoot._appendChild( parse( content ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal( '<p>1</p><p>2</p><p>3</p><p>4</p><p>5</p>' );
+
+				viewRoot._removeChildren( 4 );
+				viewRoot._removeChildren( 1, 2 );
+				viewRoot._insertChild( 2, parse( '<container:p>6</container:p>' ) );
+				viewRoot._insertChild( 1, parse( '<container:p><attribute:i>A</attribute:i>7</container:p>' ) );
+
+				const domP1 = domRoot.childNodes[ 0 ];
+				const domP2 = domRoot.childNodes[ 1 ];
+				const domP4 = domRoot.childNodes[ 3 ];
+				const domP5 = domRoot.childNodes[ 4 ];
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal( '<p>1</p><p><i>A</i>7</p><p>4</p><p>6</p>' );
+				expect( domP1 ).to.equal( domRoot.childNodes[ 0 ] );
+				expect( domP2 ).to.equal( domRoot.childNodes[ 1 ] );
+				expect( domP4 ).to.equal( domRoot.childNodes[ 2 ] );
+				expect( domP5 ).to.equal( domRoot.childNodes[ 3 ] );
+			} );
+
+			it( 'should not rerender DOM when view replaced with the same structure', () => {
+				const content = '' +
+					'<container:h2>He' +
+						'<attribute:i>ading 1</attribute:i>' +
+					'</container:h2>' +
+					'<container:p>Ph ' +
+						'<attribute:strong>Bold</attribute:strong>' +
+						'<attribute:a href="https://ckeditor.com">' +
+							'<attribute:strong>Lin<attribute:i>k</attribute:i></attribute:strong>' +
+						'</attribute:a>' +
+					'</container:p>' +
+					'<container:blockquote>' +
+						'<container:ul>' +
+							'<container:li>Quoted <attribute:strong>item 1</attribute:strong></container:li>' +
+						'</container:ul>' +
+					'</container:blockquote>';
+
+				viewRoot._appendChild( parse( content ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal( '<h2>He<i>ading 1</i></h2><p>Ph <strong>Bold</strong>' +
+					'<a href="https://ckeditor.com"><strong>Lin<i>k</i></strong></a></p><blockquote><ul><li>' +
+					'Quoted <strong>item 1</strong></li></ul></blockquote>' );
+
+				viewRoot._removeChildren( 0, viewRoot.childCount );
+				viewRoot._appendChild( parse( content ) );
+
+				const viewH = viewRoot.getChild( 0 );
+				const viewP = viewRoot.getChild( 1 );
+				const viewQ = viewRoot.getChild( 2 );
+
+				const domH = domRoot.childNodes[ 0 ];
+				const domHI = domH.childNodes[ 1 ];
+				const domP = domRoot.childNodes[ 1 ];
+				const domPT = domP.childNodes[ 0 ];
+				const domPABI = domP.childNodes[ 2 ].childNodes[ 0 ].childNodes[ 1 ];
+				const domQ = domRoot.childNodes[ 2 ];
+				const domQULB = domQ.childNodes[ 0 ].childNodes[ 0 ].childNodes[ 1 ];
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				// Assert content.
+				expect( domRoot.innerHTML ).to.equal( '<h2>He<i>ading 1</i></h2><p>Ph <strong>Bold</strong>' +
+					'<a href="https://ckeditor.com"><strong>Lin<i>k</i></strong></a></p><blockquote><ul><li>' +
+					'Quoted <strong>item 1</strong></li></ul></blockquote>' );
+
+				// Assert if DOM elements did not change.
+				expect( domRoot.childNodes[ 0 ] ).to.equal( domH );
+				expect( domH.childNodes[ 1 ] ).to.equal( domHI );
+				expect( domRoot.childNodes[ 1 ] ).to.equal( domP );
+				expect( domP.childNodes[ 0 ] ).to.equal( domPT );
+				expect( domP.childNodes[ 2 ].childNodes[ 0 ].childNodes[ 1 ] ).to.equal( domPABI );
+				expect( domRoot.childNodes[ 2 ] ).to.equal( domQ );
+				expect( domQ.childNodes[ 0 ].childNodes[ 0 ].childNodes[ 1 ] ).to.equal( domQULB );
+
+				// Assert mappings.
+				const mappings = renderer.domConverter._domToViewMapping;
+				expect( mappings.get( domH ) ).to.equal( viewH );
+				expect( mappings.get( domHI ) ).to.equal( viewH.getChild( 1 ) );
+				expect( mappings.get( domP ) ).to.equal( viewP );
+				expect( mappings.get( domPABI ) ).to.equal( viewP.getChild( 2 ).getChild( 0 ).getChild( 1 ) );
+				expect( mappings.get( domQ ) ).to.equal( viewQ );
+				expect( mappings.get( domQULB ) ).to.equal( viewQ.getChild( 0 ).getChild( 0 ).getChild( 1 ) );
+			} );
+
+			it( 'should not rerender DOM when view replaced with the same structure without first node', () => {
+				const content = '' +
+					'<container:h2>He' +
+						'<attribute:i>ading 1</attribute:i>' +
+					'</container:h2>' +
+					'<container:p>Ph ' +
+						'<attribute:strong>Bold</attribute:strong>' +
+						'<attribute:a href="https://ckeditor.com">' +
+							'<attribute:strong>Lin<attribute:i>k</attribute:i></attribute:strong>' +
+						'</attribute:a>' +
+					'</container:p>' +
+					'<container:blockquote>' +
+						'<container:ul>' +
+							'<container:li>Quoted <attribute:strong>item 1</attribute:strong></container:li>' +
+						'</container:ul>' +
+					'</container:blockquote>';
+
+				const content2 = '' +
+					'<container:p>Ph ' +
+						'<attribute:strong>Bold</attribute:strong>' +
+						'<attribute:a href="https://ckeditor.com">' +
+							'<attribute:strong>Lin<attribute:i>k</attribute:i></attribute:strong>' +
+						'</attribute:a>' +
+					'</container:p>' +
+					'<container:blockquote>' +
+						'<container:ul>' +
+							'<container:li>Quoted <attribute:strong>item 1</attribute:strong></container:li>' +
+						'</container:ul>' +
+					'</container:blockquote>';
+
+				viewRoot._appendChild( parse( content ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal( '<h2>He<i>ading 1</i></h2><p>Ph <strong>Bold</strong>' +
+					'<a href="https://ckeditor.com"><strong>Lin<i>k</i></strong></a></p><blockquote><ul><li>' +
+					'Quoted <strong>item 1</strong></li></ul></blockquote>' );
+
+				viewRoot._removeChildren( 0, viewRoot.childCount );
+				viewRoot._appendChild( parse( content2 ) );
+
+				const viewP = viewRoot.getChild( 0 );
+				const viewQ = viewRoot.getChild( 1 );
+
+				const domP = domRoot.childNodes[ 1 ];
+				const domPT = domP.childNodes[ 0 ];
+				const domPABI = domP.childNodes[ 2 ].childNodes[ 0 ].childNodes[ 1 ];
+				const domQ = domRoot.childNodes[ 2 ];
+				const domQULB = domQ.childNodes[ 0 ].childNodes[ 0 ].childNodes[ 1 ];
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				// Assert content.
+				expect( domRoot.innerHTML ).to.equal( '<p>Ph <strong>Bold</strong>' +
+					'<a href="https://ckeditor.com"><strong>Lin<i>k</i></strong></a></p><blockquote><ul><li>' +
+					'Quoted <strong>item 1</strong></li></ul></blockquote>' );
+
+				// Assert if DOM elements did not change.
+				expect( domRoot.childNodes[ 0 ] ).to.equal( domP );
+				expect( domP.childNodes[ 0 ] ).to.equal( domPT );
+				expect( domP.childNodes[ 2 ].childNodes[ 0 ].childNodes[ 1 ] ).to.equal( domPABI );
+				expect( domRoot.childNodes[ 1 ] ).to.equal( domQ );
+				expect( domQ.childNodes[ 0 ].childNodes[ 0 ].childNodes[ 1 ] ).to.equal( domQULB );
+
+				// Assert mappings.
+				const mappings = renderer.domConverter._domToViewMapping;
+				expect( mappings.get( domP ) ).to.equal( viewP );
+				expect( mappings.get( domPABI ) ).to.equal( viewP.getChild( 2 ).getChild( 0 ).getChild( 1 ) );
+				expect( mappings.get( domQ ) ).to.equal( viewQ );
+				expect( mappings.get( domQULB ) ).to.equal( viewQ.getChild( 0 ).getChild( 0 ).getChild( 1 ) );
+			} );
+
+			it( 'should not rerender DOM when typing inside empty inline element', () => {
+				const view = parse( '<container:p>Foo Bar<attribute:strong></attribute:strong></container:p>' );
+
+				viewRoot._appendChild( view );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal( '<p>Foo Bar<strong></strong></p>' );
+
+				const viewP = viewRoot.getChild( 0 );
+				viewP._removeChildren( 1 );
+				viewP._insertChild( 1, parse( '<attribute:strong>a</attribute:strong>' ) );
+
+				const domP = domRoot.childNodes[ 0 ];
+				const domText = domP.childNodes[ 0 ];
+				const domB = domP.childNodes[ 1 ];
+
+				domB.innerHTML = 'a';
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.markToSync( 'children', viewRoot.getChild( 0 ) );
+				renderer.render();
+
+				// Assert content.
+				expect( domRoot.innerHTML ).to.equal( '<p>Foo Bar<strong>a</strong></p>' );
+
+				// Assert if DOM elements did not change.
+				expect( domRoot.childNodes[ 0 ] ).to.equal( domP );
+				expect( domRoot.childNodes[ 0 ].childNodes[ 0 ] ).to.equal( domText );
+				expect( domRoot.childNodes[ 0 ].childNodes[ 1 ] ).to.equal( domB );
+
+				// Assert mappings.
+				const mappings = renderer.domConverter._domToViewMapping;
+				expect( mappings.get( domP ) ).to.equal( viewP );
+				expect( mappings.get( domB ) ).to.equal( viewP.getChild( 1 ) );
+			} );
+
+			it( 'should handle complex view duplication', () => {
+				const content = '' +
+					'<container:blockquote>' +
+						'<container:ul>' +
+							'<container:li>Quoted <attribute:strong>item 1</attribute:strong></container:li>' +
+							'<container:li>Item 2</container:li>' +
+							'<container:li>' +
+								'<attribute:a href="https://cksource.com">Li<attribute:strong>nk</attribute:strong></attribute:a>' +
+							'</container:li>' +
+						'</container:ul>' +
+					'</container:blockquote>';
+
+				const expected = '' +
+					'<blockquote>' +
+						'<ul>' +
+							'<li>Quoted <strong>item 1</strong></li>' +
+							'<li>Item 2</li>' +
+							'<li><a href="https://cksource.com">Li<strong>nk</strong></a></li>' +
+						'</ul>' +
+					'</blockquote>';
+
+				viewRoot._appendChild( parse( content ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal( expected );
+
+				viewRoot._removeChildren( 0, viewRoot.childCount );
+				viewRoot._appendChild( parse( content + content ) );
+
+				const domBQ = domRoot.childNodes[ 0 ];
+				const domUL = domBQ.childNodes[ 0 ];
+				const domLI1 = domUL.childNodes[ 0 ];
+				const domLI2 = domUL.childNodes[ 1 ];
+				const domLI3 = domUL.childNodes[ 2 ];
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				// Assert content.
+				expect( domRoot.innerHTML ).to.equal( expected + expected );
+
+				// Assert if DOM elements did not change.
+				expect( domRoot.childNodes[ 0 ] ).to.equal( domBQ );
+				expect( domBQ.childNodes[ 0 ] ).to.equal( domUL );
+				expect( domUL.childNodes[ 0 ] ).to.equal( domLI1 );
+				expect( domUL.childNodes[ 1 ] ).to.equal( domLI2 );
+				expect( domUL.childNodes[ 2 ] ).to.equal( domLI3 );
+
+				// Assert mappings.
+				const domMappings = renderer.domConverter._domToViewMapping;
+				expect( domMappings.get( domBQ ) ).to.equal( viewRoot.getChild( 0 ) );
+				expect( domMappings.get( domUL ) ).to.equal( viewRoot.getChild( 0 ).getChild( 0 ) );
+				expect( domMappings.get( domLI1 ) ).to.equal( viewRoot.getChild( 0 ).getChild( 0 ).getChild( 0 ) );
+				expect( domMappings.get( domLI2 ) ).to.equal( viewRoot.getChild( 0 ).getChild( 0 ).getChild( 1 ) );
+				expect( domMappings.get( domLI3 ) ).to.equal( viewRoot.getChild( 0 ).getChild( 0 ).getChild( 2 ) );
+
+				// Assert if new view elements are bind to new DOM elements.
+				const viewMappings = renderer.domConverter._domToViewMapping;
+				expect( viewMappings.get( viewRoot.getChild( 1 ) ) ).not.equal( domBQ );
+				expect( viewMappings.get( viewRoot.getChild( 1 ).getChild( 0 ) ) ).not.equal( domUL );
+				expect( viewMappings.get( viewRoot.getChild( 1 ).getChild( 0 ).getChild( 0 ) ) ).not.equal( domLI1 );
+				expect( viewMappings.get( viewRoot.getChild( 1 ).getChild( 0 ).getChild( 1 ) ) ).not.equal( domLI2 );
+				expect( viewMappings.get( viewRoot.getChild( 1 ).getChild( 0 ).getChild( 2 ) ) ).not.equal( domLI3 );
+			} );
+
+			it( 'should handle complex view replace', () => {
+				const content = '' +
+					'<container:h2>He' +
+						'<attribute:i>ading 1</attribute:i>' +
+					'</container:h2>' +
+					'<container:p>Ph ' +
+						'<attribute:strong>Bold</attribute:strong>' +
+						'<attribute:a href="https://ckeditor.com">' +
+							'<attribute:strong>Lin<attribute:i>k</attribute:i></attribute:strong>' +
+						'</attribute:a>' +
+					'</container:p>' +
+					'<container:blockquote>' +
+						'<container:ul>' +
+							'<container:li>Quoted <attribute:strong>item 1</attribute:strong></container:li>' +
+							'<container:li>Item 2</container:li>' +
+							'<container:li>' +
+								'<attribute:a href="https://cksource.com">Li<attribute:strong>nk</attribute:strong></attribute:a>' +
+							'</container:li>' +
+						'</container:ul>' +
+					'</container:blockquote>';
+
+				const replacement = '' +
+					'<container:p>' +
+						'1' +
+						'<attribute:i>A</attribute:i>' +
+					'</container:p>' +
+					'<container:p>' +
+						'<attribute:a href="https://cksource.com">' +
+							'Li' +
+							'<attribute:strong>nk</attribute:strong>' +
+						'</attribute:a>' +
+					'</container:p>' +
+					'<container:h1>' +
+						'Heading ' +
+						'<attribute:strong>1</attribute:strong>' +
+					'</container:h1>' +
+					'<container:h2>' +
+						'<attribute:a href="https://ckeditor.com">Heading 2</attribute:a>' +
+					'</container:h2>' +
+					'<container:h3>' +
+						'Heading' +
+						'<attribute:i> 3</attribute:i>' +
+					'</container:h3>' +
+					'<container:blockquote>' +
+						'Foo Bar Baz' +
+					'</container:blockquote>' +
+					'<container:ul>' +
+						'<container:li>' +
+							'Item ' +
+							'<attribute:strong>1</attribute:strong>' +
+						'</container:li>' +
+						'<container:li>' +
+							'<attribute:a href="https://ckeditor.com">Item</attribute:a>' +
+							' 2' +
+						'</container:li>' +
+					'</container:ul>';
+
+				viewRoot._appendChild( parse( content ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal( '' +
+					'<h2>He<i>ading 1</i></h2>' +
+					'<p>Ph <strong>Bold</strong><a href="https://ckeditor.com"><strong>Lin<i>k</i></strong></a></p>' +
+					'<blockquote><ul>' +
+						'<li>Quoted <strong>item 1</strong></li>' +
+						'<li>Item 2</li><li><a href="https://cksource.com">Li<strong>nk</strong></a></li>' +
+					'</ul></blockquote>' );
+
+				viewRoot._removeChildren( 0, viewRoot.childCount );
+				viewRoot._appendChild( parse( replacement ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				// Here we just check if new DOM structure was properly rendered.
+				expect( domRoot.innerHTML ).to.equal( '' +
+					'<p>1<i>A</i></p>' +
+					'<p><a href="https://cksource.com">Li<strong>nk</strong></a></p>' +
+					'<h1>Heading <strong>1</strong></h1>' +
+					'<h2><a href="https://ckeditor.com">Heading 2</a></h2>' +
+					'<h3>Heading<i> 3</i></h3>' +
+					'<blockquote>Foo Bar Baz</blockquote>' +
+					'<ul><li>Item <strong>1</strong></li><li><a href="https://ckeditor.com">Item</a> 2</li></ul>' );
+			} );
+
+			it( 'should handle br elements while refreshing bindings', () => {
+				const expected = `<p>Foo Bar</p><p>${ BR_FILLER( document ).outerHTML }</p>`; // eslint-disable-line new-cap
+
+				viewRoot._appendChild( parse( '<container:p>Foo Bar</container:p><container:p></container:p>' ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal( expected );
+
+				// There is a case in Safari that during accent panel navigation on macOS our 'BR_FILLER' is replaced with
+				// just '<br>' element which breaks accent composition in an empty paragraph. It also throws an error while
+				// refreshing mappings in a renderer. Simulate such behaviour (#1354).
+				domRoot.childNodes[ 1 ].innerHTML = '<br>';
+
+				viewRoot._removeChildren( 1 );
+				viewRoot._insertChild( 1, parse( '<container:p></container:p>' ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal( expected );
+			} );
+
+			it( 'should handle list to paragraph conversion', () => {
+				const view = '' +
+					'<container:ol>' +
+						'<container:li>Item 1' +
+							'<container:ol>' +
+								'<container:li>Item 2</container:li>' +
+							'</container:ol>' +
+						'</container:li>' +
+					'</container:ol>' +
+					'<container:p>Paragraph</container:p>' +
+					'<container:ol>' +
+						'<container:li>Item 3' +
+							'<container:ol>' +
+								'<container:li>Item 4</container:li>' +
+							'</container:ol>' +
+						'</container:li>' +
+					'</container:ol>';
+
+				viewRoot._appendChild( parse( view ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal(
+					'<ol><li>Item 1<ol><li>Item 2</li></ol></li></ol><p>Paragraph</p><ol><li>Item 3<ol><li>Item 4</li></ol></li></ol>' );
+
+				const viewOL1 = viewRoot.getChild( 0 );
+				viewOL1.getChild( 0 )._removeChildren( 1 );
+				viewRoot._removeChildren( 2 );
+				viewRoot._insertChild( 1, parse( '<container:p>Item 2</container:p>' ) );
+				viewRoot._insertChild( 3, parse( '<container:p>Item 3</container:p>' ) );
+				viewRoot._insertChild( 4, parse( '<container:ol><container:li>Item 4</container:li></container:ol>' ) );
+
+				const domOL1 = domRoot.childNodes[ 0 ];
+				const domOL2 = domRoot.childNodes[ 2 ];
+				const domP = domRoot.childNodes[ 1 ];
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.markToSync( 'children', viewOL1.getChild( 0 ) );
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal(
+					'<ol><li>Item 1</li></ol><p>Item 2</p><p>Paragraph</p><p>Item 3</p><ol><li>Item 4</li></ol>' );
+
+				expect( domRoot.childNodes[ 0 ] ).to.equal( domOL1 );
+				expect( domRoot.childNodes[ 2 ] ).to.equal( domP );
+				expect( domRoot.childNodes[ 4 ] ).to.equal( domOL2 );
+			} );
+
+			it( 'should handle attributes change in replaced elements', () => {
+				const view = '' +
+					'<container:ol>' +
+						'<container:li data-index="1" align="left">Item 1</container:li>' +
+					'</container:ol>' +
+					'<container:p>Paragraph ' +
+						'<attribute:a href="123">Link</attribute:a>' +
+					'</container:p>' +
+					'<container:p id="p1"><attribute:i>Bar</attribute:i>Baz</container:p>';
+
+				viewRoot._appendChild( parse( view ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( normalizeHtml(
+					'<ol><li data-index="1" align="left">Item 1</li></ol>' +
+					'<p>Paragraph <a href="123">Link</a></p><p id="p1"><i>Bar</i>Baz</p>' ) );
+
+				const viewOL = viewRoot.getChild( 0 );
+				viewOL._removeChildren( 0 );
+				viewOL._insertChild( 0, parse( '<container:li data-index="2" data-attr="foo">Item 1</container:li>' ) );
+
+				const viewP1 = viewRoot.getChild( 1 );
+				viewP1._removeChildren( 1 );
+				viewP1._insertChild( 1, parse( '<attribute:a href="456" class="cke">Foo</attribute:a>' ) );
+
+				viewRoot._removeChildren( 2 );
+				viewRoot._insertChild( 2, parse( '<container:p>Bar</container:p>' ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.markToSync( 'children', viewOL );
+				renderer.markToSync( 'children', viewP1 );
+				renderer.render();
+
+				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( normalizeHtml(
+					'<ol><li data-index="2" data-attr="foo">Item 1</li></ol>' +
+					'<p>Paragraph <a href="456" class="cke">Foo</a></p><p>Bar</p>' ) );
+			} );
+
+			it( 'should handle classes change in replaced elements', () => {
+				const view = '' +
+					'<container:ol>' +
+						'<container:li class="foo1 bar2 baz3">Item 1</container:li>' +
+					'</container:ol>' +
+					'<container:p><attribute:i class="i1 i2">Bar</attribute:i>Baz</container:p>';
+
+				viewRoot._appendChild( parse( view ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( normalizeHtml(
+					'<ol><li class="foo1 bar2 baz3">Item 1</li></ol><p><i class="i1 i2">Bar</i>Baz</p>' ) );
+
+				const viewOL = viewRoot.getChild( 0 );
+				const oldViewLI = viewOL.getChild( 0 );
+				viewOL._removeChildren( 0 );
+				viewOL._insertChild( 0, parse( '<container:li class="bar2 baz4 bax5">Item 1</container:li>' ) );
+
+				const oldViewP = viewRoot.getChild( 1 );
+				viewRoot._removeChildren( 1 );
+				viewRoot._insertChild( 1, parse( '<container:p class="p1 p2"><attribute:i>Foo</attribute:i></container:p>' ) );
+
+				renderer.markToSync( 'attributes', oldViewLI );
+				renderer.markToSync( 'attributes', oldViewP );
+				renderer.markToSync( 'children', viewRoot );
+				renderer.markToSync( 'children', viewOL );
+				renderer.render();
+
+				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( normalizeHtml(
+					'<ol><li class="bar2 baz4 bax5">Item 1</li></ol><p class="p1 p2"><i>Foo</i></p>' ) );
+			} );
+
+			it( 'should handle styles change in replaced elements', () => {
+				const view = '' +
+					'<container:ol>' +
+						'<container:li style="color:#000;font-weight:bold;">Foo</container:li>' +
+						'<container:li>Bar ' +
+							'<attribute:i>' +
+								'<attribute:b style="color:#00F;background-color:#000;font-size:12px;">Baz</attribute:b>' +
+							' Bax</attribute:i>' +
+						'</container:li>' +
+					'</container:ol>';
+
+				viewRoot._appendChild( parse( view ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( normalizeHtml(
+					'<ol><li style="color:#000;font-weight:bold;">Foo</li>' +
+					'<li>Bar <i><b style="color:#00F;background-color:#000;font-size:12px;">Baz</b> Bax</i></li></ol>' ) );
+
+				const viewOL = viewRoot.getChild( 0 );
+				const viewLI1 = viewOL.getChild( 0 );
+				const viewLI2 = viewOL.getChild( 1 );
+
+				viewLI1._removeStyle( 'font-weight' );
+				viewLI1._setStyle( { color: '#FFF' } );
+				viewLI2._setStyle( { 'font-weight': 'bold' } );
+
+				viewLI2._removeChildren( 0, viewLI2.childCount );
+				viewLI2._insertChild( 0, parse( 'Ba1 <attribute:i style="color:#000;border-width:1px;">Ba3 ' +
+					'<attribute:b style="font-size:15px;">Ba2</attribute:b></attribute:i>' ) );
+
+				renderer.markToSync( 'attributes', viewLI1 );
+				renderer.markToSync( 'attributes', viewLI2 );
+				renderer.markToSync( 'children', viewRoot );
+				renderer.markToSync( 'children', viewLI2 );
+				renderer.render();
+
+				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( normalizeHtml(
+					'<ol><li style="color:#FFF;">Foo</li>' +
+					'<li style="font-weight:bold;">Ba1 <i style="color:#000;border-width:1px;">Ba3 ' +
+					'<b style="font-size:15px;">Ba2</b></i></li></ol>' ) );
+			} );
+
+			it( 'should handle uiElement rendering', () => {
+				function createUIElement( id, text ) {
+					const element = new UIElement( 'span' );
+					element.render = function( domDocument ) {
+						const domElement = this.toDomElement( domDocument );
+						domElement.innerText = `<span id="${ id }"><b>${ text }</b></span>`;
+						return domElement;
+					};
+
+					return element;
+				}
+
+				const ui1 = createUIElement( 'id1', 'UI1' );
+				const ui2 = createUIElement( 'id2', 'UI2' );
+				const viewP = new ViewContainerElement( 'p', null, [ new ViewText( 'Foo ' ), ui1, new ViewText( 'Bar' ) ] );
+				viewRoot._appendChild( viewP );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( normalizeHtml(
+					'<p>Foo <span><span id="id1"><b>UI1</b></span></span>Bar</p>' ) );
+
+				viewP._removeChildren( 0, viewP.childCount );
+				viewP._insertChild( 0, [ new ViewText( 'Foo' ), ui2, new ViewText( ' Bar' ) ] );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.markToSync( 'children', viewP );
+				renderer.render();
+
+				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( normalizeHtml(
+					'<p>Foo<span><span id="id2"><b>UI2</b></span></span> Bar</p>' ) );
+			} );
+
+			it( 'should handle linking entire content', () => {
+				viewRoot._appendChild( parse( '<container:p>Foo<attribute:i>Bar</attribute:i></container:p>' ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal( '<p>Foo<i>Bar</i></p>' );
+
+				const viewP = viewRoot.getChild( 0 );
+				// While linking, the existing DOM children are moved to a new `a` element during binding
+				// inside the `domConverter.viewToDom()` method. It happens because of a modified view structure
+				// where view elements were moved to a newly created link view element.
+				const viewA = new ViewAttributeElement( 'a', { href: '#href' }, [ new ViewText( 'Foo' ), viewP.getChild( 1 ) ] );
+
+				viewP._removeChildren( 0, viewP.childCount );
+				viewP._insertChild( 0, viewA );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.markToSync( 'children', viewP );
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal( '<p><a href="#href">Foo<i>Bar</i></a></p>' );
 			} );
 		} );
 	} );
