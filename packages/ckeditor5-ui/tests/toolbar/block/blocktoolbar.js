@@ -227,6 +227,8 @@ describe( 'BlockToolbar', () => {
 		} );
 
 		it( 'should not display the button when the selection is placed in a root element', () => {
+			editor.model.schema.extend( '$text', { allowIn: '$root' } );
+
 			setData( editor.model, '<paragraph>foo</paragraph>[]<paragraph>bar</paragraph>' );
 
 			expect( blockToolbar.buttonView.isVisible ).to.be.false;
@@ -400,8 +402,11 @@ describe( 'BlockToolbar', () => {
 		} );
 
 		it( 'should update the button position on browser resize only when the button is visible', () => {
+			editor.model.schema.extend( '$text', { allowIn: '$root' } );
+
 			const spy = testUtils.sinon.spy( blockToolbar, '_attachButtonToElement' );
 
+			// Place the selection outside of any block because the toolbar will not be shown in this case.
 			setData( editor.model, '[]<paragraph>bar</paragraph>' );
 
 			window.dispatchEvent( new Event( 'resize' ) );
