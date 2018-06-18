@@ -74,6 +74,12 @@ It breaks CKEditor 5 (see how <p><code>[]</code></p> looks). */
 	padding: 0;
 }
 
+/* https://github.com/ckeditor/ckeditor5/pull/1060 */
+.live-snippet .ck.ck-content .table table {
+	margin: 0;
+	display: table;
+}
+
 #snippet-inline-editor .ck-content {
 	margin-bottom: 1rem;
 	padding: 2rem;
