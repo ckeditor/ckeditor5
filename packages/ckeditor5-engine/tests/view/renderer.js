@@ -2983,6 +2983,30 @@ describe( 'Renderer', () => {
 				expect( normalizeHtml( domRoot.innerHTML ) ).to.equal( normalizeHtml(
 					'<p>Foo<span><span id="id2"><b>UI2</b></span></span> Bar</p>' ) );
 			} );
+
+			it( 'should handle linking entire content', () => {
+				viewRoot._appendChild( parse( '<container:p>Foo<attribute:i>Bar</attribute:i></container:p>' ) );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal( '<p>Foo<i>Bar</i></p>' );
+
+				const viewP = viewRoot.getChild( 0 );
+				// While linking, the existing DOM children are moved to a new `a` element during binding
+				// inside the `domConverter.viewToDom()` method. It happens because of a modified view structure
+				// where view elements were moved to a newly created link view element.
+				const viewA = new ViewAttributeElement( 'a', { href: '#href' }, [ new ViewText( 'Foo' ), viewP.getChild( 1 ) ] );
+
+				viewP._removeChildren( 0, viewP.childCount );
+				viewP._insertChild( 0, viewA );
+
+				renderer.markToSync( 'children', viewRoot );
+				renderer.markToSync( 'children', viewP );
+				renderer.render();
+
+				expect( domRoot.innerHTML ).to.equal( '<p><a href="#href">Foo<i>Bar</i></a></p>' );
+			} );
 		} );
 	} );
 
