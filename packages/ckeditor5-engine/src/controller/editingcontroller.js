@@ -13,11 +13,7 @@ import Mapper from '../conversion/mapper';
 import DowncastDispatcher from '../conversion/downcastdispatcher';
 import { insertText, remove } from '../conversion/downcast-converters';
 import { convertSelectionChange } from '../conversion/upcast-selection-converters';
-import {
-	convertRangeSelection,
-	convertCollapsedSelection,
-	clearAttributes
-} from '../conversion/downcast-selection-converters';
+import { clearAttributes, convertCollapsedSelection, convertRangeSelection } from '../conversion/downcast-selection-converters';
 
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';

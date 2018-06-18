@@ -29,7 +29,7 @@ export function attachPlaceholder( view, element, placeholderText, checkFunction
 	if ( !documentPlaceholders.has( document ) ) {
 		documentPlaceholders.set( document, new Map() );
 
-		// Create view post fixer that will add placeholder where needed.
+		// Create view post-fixer that will add placeholder where needed.
 		document.registerPostFixer( writer => updateAllPlaceholders( document, writer ) );
 	}
 

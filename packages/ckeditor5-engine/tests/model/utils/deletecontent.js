@@ -900,9 +900,11 @@ describe( 'DataController utils', () => {
 
 		function test( title, input, output, options ) {
 			it( title, () => {
-				setData( model, input );
+				model.enqueueChange( 'transparent', () => {
+					setData( model, input );
 
-				deleteContent( model, doc.selection, options );
+					deleteContent( model, doc.selection, options );
+				} );
 
 				expect( getData( model ) ).to.equal( output );
 			} );

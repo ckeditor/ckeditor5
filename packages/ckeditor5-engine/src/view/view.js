@@ -325,13 +325,14 @@ export default class View {
 			 * Thrown when there is an attempt to make changes to the view tree when it is in incorrect state. This may
 			 * cause some unexpected behaviour and inconsistency between the DOM and the view.
 			 * This may be caused by:
-			 *   * calling {@link #change} or {@link #render} during rendering process,
-			 *   * calling {@link #change} or {@link #render} inside of
-			 *   {@link module:engine/view/document~Document#registerPostFixer post fixer function}.
+			 *
+			 * * calling {@link #change} or {@link #render} during rendering process,
+			 * * calling {@link #change} or {@link #render} inside of
+			 *   {@link module:engine/view/document~Document#registerPostFixer post-fixer function}.
 			 */
 			throw new CKEditorError(
 				'cannot-change-view-tree: ' +
-				'Attempting to make changes to the view when it is in incorrect state: rendering or post fixers are in progress. ' +
+				'Attempting to make changes to the view when it is in incorrect state: rendering or post-fixers are in progress. ' +
 				'This may cause some unexpected behaviour and inconsistency between the DOM and the view.'
 			);
 		}
@@ -349,7 +350,7 @@ export default class View {
 		callback( this._writer );
 		this._ongoingChange = false;
 
-		// Execute all document post fixers after the change.
+		// Execute all document post-fixers after the change.
 		this._postFixersInProgress = true;
 		this.document._callPostFixers( this._writer );
 		this._postFixersInProgress = false;
@@ -395,7 +396,7 @@ export default class View {
 
 	/**
 	 * Fired after a topmost {@link module:engine/view/view~View#change change block} and all
-	 * {@link module:engine/view/document~Document#registerPostFixer post fixers} are executed.
+	 * {@link module:engine/view/document~Document#registerPostFixer post-fixers} are executed.
 	 *
 	 * Actual rendering is performed as a first listener on 'normal' priority.
 	 *
@@ -405,7 +406,7 @@ export default class View {
 	 *
 	 * This event is useful when you want to update interface elements after the rendering, e.g. position of the
 	 * balloon panel. If you wants to change view structure use
-	 * {@link module:engine/view/document~Document#registerPostFixer post fixers}.
+	 * {@link module:engine/view/document~Document#registerPostFixer post-fixers}.
 	 *
 	 * @event module:engine/view/view~View#event:render
 	 */

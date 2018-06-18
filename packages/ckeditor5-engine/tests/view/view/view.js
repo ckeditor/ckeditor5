@@ -471,7 +471,7 @@ describe( 'view', () => {
 			domDiv.remove();
 		} );
 
-		it( 'should throw when someone tries to use change() method in post fixer', () => {
+		it( 'should throw when someone tries to use change() method in post-fixer', () => {
 			const domDiv = document.createElement( 'div' );
 			createViewRoot( viewDocument, 'div', 'main' );
 			view.attachDomRoot( domDiv );
@@ -536,7 +536,7 @@ describe( 'view', () => {
 			sinon.assert.callOrder( renderSpy, eventSpy );
 		} );
 
-		it( 'should call post fixers after change but before rendering', () => {
+		it( 'should call post-fixers after change but before rendering', () => {
 			const postFixer1 = sinon.spy( () => false );
 			const postFixer2 = sinon.spy( () => false );
 			const changeSpy = sinon.spy();
@@ -556,7 +556,7 @@ describe( 'view', () => {
 			sinon.assert.callOrder( changeSpy, postFixer1, postFixer2, eventSpy );
 		} );
 
-		it( 'should call post fixers until all are done', () => {
+		it( 'should call post-fixers until all are done', () => {
 			let called = false;
 			const postFixer1 = sinon.spy();
 			const postFixer2 = sinon.spy();

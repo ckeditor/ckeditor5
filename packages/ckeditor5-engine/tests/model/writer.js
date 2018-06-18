@@ -2412,11 +2412,11 @@ describe( 'Writer', () => {
 		} );
 
 		it( 'should change document selection ranges', () => {
-			setSelection( new Position( root, [ 1 ] ) );
+			setSelection( new Position( root, [ 0, 0 ] ) );
 			setSelectionFocus( new Position( root, [ 2, 2 ] ) );
 
 			expect( model.document.selection._ranges.length ).to.equal( 1 );
-			expect( model.document.selection._ranges[ 0 ].start.path ).to.deep.equal( [ 1 ] );
+			expect( model.document.selection._ranges[ 0 ].start.path ).to.deep.equal( [ 0, 0 ] );
 			expect( model.document.selection._ranges[ 0 ].end.path ).to.deep.equal( [ 2, 2 ] );
 		} );
 	} );

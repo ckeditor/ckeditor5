@@ -21,7 +21,7 @@ import ModelPosition from '../../src/model/position';
 import ModelRange from '../../src/model/range';
 import ModelDocumentFragment from '../../src/model/documentfragment';
 
-import { parse, getData as getModelData } from '../../src/dev-utils/model';
+import { getData as getModelData, parse } from '../../src/dev-utils/model';
 import { getData as getViewData } from '../../src/dev-utils/view';
 
 describe( 'EditingController', () => {

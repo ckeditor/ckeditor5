@@ -316,6 +316,14 @@ describe( 'Schema', () => {
 			expect( schema.isLimit( 'foo' ) ).to.be.true;
 		} );
 
+		it( 'returns true if an item was registered as an object element (because all objects are limits too)', () => {
+			schema.register( 'foo', {
+				isObject: true
+			} );
+
+			expect( schema.isLimit( 'foo' ) ).to.be.true;
+		} );
+
 		it( 'returns false if an item was not registered as a limit element', () => {
 			schema.register( 'foo' );
 
@@ -341,6 +349,14 @@ describe( 'Schema', () => {
 			} );
 
 			expect( schema.isObject( 'foo' ) ).to.be.true;
+		} );
+
+		it( 'returns false if an item was registered as a limit (because not all limits are objects)', () => {
+			schema.register( 'foo', {
+				isLimit: true
+			} );
+
+			expect( schema.isObject( 'foo' ) ).to.be.false;
 		} );
 
 		it( 'returns false if an item was not registered as an object', () => {
@@ -886,11 +902,13 @@ describe( 'Schema', () => {
 			schema.extend( 'article', { isLimit: true } );
 			schema.extend( 'section', { isLimit: true } );
 
-			setData( model, '<div><section><article>[foo</article><article>bar]</article></section></div>' );
+			model.enqueueChange( 'transparent', () => {
+				setData( model, '<div><section><article>[foo</article><article>bar]</article></section></div>' );
 
-			const section = root.getNodeByPath( [ 0, 0 ] );
+				const section = root.getNodeByPath( [ 0, 0 ] );
 
-			expect( schema.getLimitElement( doc.selection ) ).to.equal( section );
+				expect( schema.getLimitElement( doc.selection ) ).to.equal( section );
+			} );
 		} );
 
 		it( 'works fine with multi-range selections', () => {
@@ -1389,8 +1407,12 @@ describe( 'Schema', () => {
 
 		function test( testName, data, direction, expected ) {
 			it( testName, () => {
-				setData( model, data );
-				const range = schema.getNearestSelectionRange( selection.anchor, direction );
+				let range;
+
+				model.enqueueChange( 'transparent', () => {
+					setData( model, data );
+					range = schema.getNearestSelectionRange( selection.anchor, direction );
+				} );
 
 				if ( expected === null ) {
 					expect( range ).to.be.null;
@@ -2598,7 +2620,7 @@ describe( 'Schema', () => {
 		} );
 
 		it( 'image is block object', () => {
-			expect( schema.isLimit( 'image' ) ).to.be.false;
+			expect( schema.isLimit( 'image' ) ).to.be.true;
 			expect( schema.isBlock( 'image' ) ).to.be.true;
 			expect( schema.isObject( 'image' ) ).to.be.true;
 		} );

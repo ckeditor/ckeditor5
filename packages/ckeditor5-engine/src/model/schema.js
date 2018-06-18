@@ -333,18 +333,24 @@ export default class Schema {
 
 	/**
 	 * Returns `true` if the given item is defined to be
-	 * a limit element by {@link module:engine/model/schema~SchemaItemDefinition}'s `isLimit` property.
+	 * a limit element by {@link module:engine/model/schema~SchemaItemDefinition}'s `isLimit` or `isObject` property
+	 * (all objects are also limits).
 	 *
 	 *		schema.isLimit( 'paragraph' ); // -> false
 	 *		schema.isLimit( '$root' ); // -> true
 	 *		schema.isLimit( editor.model.document.getRoot() ); // -> true
+	 *		schema.isLimit( 'image' ); // -> true
 	 *
 	 * @param {module:engine/model/item~Item|module:engine/model/schema~SchemaContextItem|String} item
 	 */
 	isLimit( item ) {
 		const def = this.getDefinition( item );
 
-		return !!( def && def.isLimit );
+		if ( !def ) {
+			return false;
+		}
+
+		return !!( def.isLimit || def.isObject );
 	}
 
 	/**
@@ -374,6 +380,11 @@ export default class Schema {
 	 *			allowIn: '$root'
 	 *		} );
 	 *		schema.checkChild( model.document.getRoot(), paragraph ); // -> true
+	 *
+	 * Note: When verifying whether the given node can be a child of the given context,
+	 * schema also verifies the entire context – from its root to its last element. Therefore, it is possible
+	 * for `checkChild()` to return `false` even though context's last element can contain the checked child.
+	 * It happens if one of the context's elements does not allow its child.
 	 *
 	 * @fires checkChild
 	 * @param {module:engine/model/schema~SchemaContextDefinition} context Context in which the child will be checked.
@@ -742,8 +753,8 @@ export default class Schema {
 				return parent;
 			}
 
-			// Do not split limit elements and objects.
-			if ( this.isLimit( parent ) || this.isObject( parent ) ) {
+			// Do not split limit elements.
+			if ( this.isLimit( parent ) ) {
 				return null;
 			}
 
@@ -969,7 +980,7 @@ mix( Schema, ObservableMixin );
  * * `allowAttributesOf` – a string or an array of strings. Inherit attributes from other items.
  * * `inheritTypesFrom` – a string or an array of strings. Inherit `is*` properties of other items.
  * * `inheritAllFrom` – a string. A shorthand for `allowContentOf`, `allowWhere`, `allowAttributesOf`, `inheritTypesFrom`.
- * * additionall, you can define the following `is*` properties: `isBlock`, `isLimit`, `isObject`. Read about them below.
+ * * additionally, you can define the following `is*` properties: `isBlock`, `isLimit`, `isObject`. Read about them below.
  *
  * # The is* properties
  *
@@ -982,9 +993,11 @@ mix( Schema, ObservableMixin );
  * Most block type items will inherit from `$block` (through `inheritAllFrom`).
  * * `isLimit` – can be understood as whether this element should not be split by <kbd>Enter</kbd>.
  * Examples of limit elements – `$root`, table cell, image caption, etc. In other words, all actions which happen inside
- * a limit element are limitted to its content.
+ * a limit element are limited to its content. **Note:** all objects (`isObject`) are treated as limit elements too.
  * * `isObject` – whether item is "self-contained" and should be treated as a whole. Examples of object elements –
- * `image`, `table`, `video`, etc.
+ * `image`, `table`, `video`, etc. **Note:** an object is also a limit so
+ * {@link module:engine/model/schema~Schema#isLimit `isLimit()`}
+ * returns `true` for object elements automatically.
  *
  * # Generic items
  *
