@@ -9,6 +9,13 @@
 	}
 }
 
+/* https://github.com/ckeditor/ckeditor5-build-decoupled-document/issues/12 */
+@media only screen and (max-width: 1360px) {
+	.main .main__content-wide .main__content-inner {
+		max-width: 900px;
+	}
+}
+
 /* https://github.com/ckeditor/ckeditor5/issues/913 */
 @media only screen and (min-width: 1360px) {
 	.main .main__content.main__content-wide {
