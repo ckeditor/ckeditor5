@@ -74,16 +74,19 @@ export default class TableUtils extends Plugin {
 	 * @param {module:engine/model/position~Position} position The position where the table will be inserted.
 	 * @param {Number} rows The number of rows to create.
 	 * @param {Number} columns The number of columns to create.
+	 * @returns {module:engine/model/element~Element} The created table element.
 	 */
 	createTable( position, rows, columns ) {
 		const model = this.editor.model;
 
-		model.change( writer => {
+		return model.change( writer => {
 			const table = writer.createElement( 'table' );
 
 			writer.insert( table, position );
 
 			createEmptyRows( writer, table, 0, rows, columns );
+
+			return table;
 		} );
 	}
 

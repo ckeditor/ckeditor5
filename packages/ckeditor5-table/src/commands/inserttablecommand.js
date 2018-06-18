@@ -53,7 +53,11 @@ export default class InsertTableCommand extends Command {
 		const isRoot = firstPosition.parent === firstPosition.root;
 		const insertPosition = isRoot ? Position.createAt( firstPosition ) : Position.createAfter( firstPosition.parent );
 
-		tableUtils.createTable( insertPosition, rows, columns );
+		model.change( writer => {
+			const table = tableUtils.createTable( insertPosition, rows, columns );
+
+			writer.setSelection( Position.createAt( table.getChild( 0 ).getChild( 0 ) ) );
+		} );
 	}
 }
 
