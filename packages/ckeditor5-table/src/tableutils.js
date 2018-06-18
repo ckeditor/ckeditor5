@@ -79,17 +79,15 @@ export default class TableUtils extends Plugin {
 	createTable( position, rows, columns ) {
 		const model = this.editor.model;
 
-		let table;
-
-		model.change( writer => {
-			table = writer.createElement( 'table' );
+		return model.change( writer => {
+			const table = writer.createElement( 'table' );
 
 			writer.insert( table, position );
 
 			createEmptyRows( writer, table, 0, rows, columns );
-		} );
 
-		return table;
+			return table;
+		} );
 	}
 
 	/**
