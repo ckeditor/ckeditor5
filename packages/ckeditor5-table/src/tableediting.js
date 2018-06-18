@@ -132,8 +132,8 @@ export default class TableEditing extends Plugin {
 	}
 
 	/**
-	 * Handles {@link module:engine/view/document~Document#event:keydown keydown} events for 'Tab' key executed
-	 * when table widget is selected.
+	 * Handles {@link module:engine/view/document~Document#event:keydown keydown} events for the <kbd>Tab</kbd> key executed
+	 * when the table widget is selected.
 	 *
 	 * @private
 	 * @param {module:utils/eventinfo~EventInfo} eventInfo
@@ -168,7 +168,8 @@ export default class TableEditing extends Plugin {
 	}
 
 	/**
-	 * Handles {@link module:engine/view/document~Document#event:keydown keydown} events for 'Tab' key executed inside table cell.
+	 * Handles {@link module:engine/view/document~Document#event:keydown keydown} events for the <kbd>Tab</kbd> key executed inside table
+	 * cell.
 	 *
 	 * @private
 	 * @param {module:utils/eventinfo~EventInfo} eventInfo

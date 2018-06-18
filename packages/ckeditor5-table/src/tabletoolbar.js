@@ -16,7 +16,7 @@ import { repositionContextualBalloon, getBalloonPositionData } from './ui/utils'
 const balloonClassName = 'ck-toolbar-container';
 
 /**
- * The table toolbar class. Creates a table toolbar that shows up when the table widget is selected.
+ * The table toolbar class. It creates a table toolbar that shows up when the table widget is selected.
  *
  * Toolbar components are created using the editor {@link module:ui/componentfactory~ComponentFactory ComponentFactory}
  * based on the {@link module:core/editor/editor~Editor#config configuration} stored under `table.toolbar`.
@@ -80,7 +80,7 @@ export default class TableToolbar extends Plugin {
 		this._balloon = this.editor.plugins.get( 'ContextualBalloon' );
 
 		/**
-		 * A `ToolbarView` instance used to display the buttons specific for table editing.
+		 * A toolbar view instance used to display the buttons specific for table editing.
 		 *
 		 * @protected
 		 * @type {module:ui/toolbar/toolbarview~ToolbarView}
@@ -171,7 +171,7 @@ export default class TableToolbar extends Plugin {
  * Items to be placed in the table toolbar.
  * This option is used by the {@link module:table/tabletoolbar~TableToolbar} feature.
  *
- * Assuming that you use the {@link module:table/tableui~TableUI} feature the following toolbar items will be available
+ * Assuming that you use the {@link module:table/tableui~TableUI} feature, the following toolbar items will be available
  * in {@link module:ui/componentfactory~ComponentFactory}:
  *
  * * `'tableRow'`,
@@ -179,7 +179,7 @@ export default class TableToolbar extends Plugin {
  * * `'mergeCell'`,
  * * `'splitCell'`,
  *
- * so you can configure the toolbar like this:
+ * You can thus configure the toolbar like this:
  *
  *		const tableConfig = {
  *			toolbar: [ 'tableRow', 'tableColumn', 'mergeCell', 'splitCell' ]

@@ -27,7 +27,7 @@ import tableMergeCellIcon from './../theme/icons/table-merge-cell.svg';
  * * The `'tableRow'` dropdown,
  * * The `'mergeCell'` dropdown.
  *
- * The `'tableColumn'`, `'tableRow'`, `'mergeCell'` work best with {@link module:table/tabletoolbar~TableToolbar}.
+ * The `'tableColumn'`, `'tableRow'`, `'mergeCell'` dropdowns work best with {@link module:table/tabletoolbar~TableToolbar}.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -112,12 +112,12 @@ export default class TableUI extends Plugin {
 	}
 
 	/**
-	 * Creates dropdown view from set of options.
+	 * Creates a dropdown view from the set of options.
 	 *
 	 * @private
-	 * @param {String} buttonName Dropdown button name.
-	 * @param {String} icon Icon for dropdown button.
-	 * @param {Array.<module:table/tableui~DropdownOption>} options List of options for dropdown.
+	 * @param {String} buttonName The dropdown button name.
+	 * @param {String} icon An icon for the dropdown button.
+	 * @param {Array.<module:table/tableui~DropdownOption>} options The list of options for the dropdown.
 	 * @param {module:utils/locale~Locale} locale
 	 * @returns {module:ui/dropdown/dropdownview~DropdownView}
 	 */
@@ -192,11 +192,11 @@ function addListOption( option, editor, commands, dropdownItems ) {
 }
 
 /**
- * Object describing table dropdowns' items.
+ * An object describing the table dropdown items.
  *
  * @typedef {Object} module:table/tableui~DropdownOption
  * @private
  * @property {String} commandName A command name to execute for that option.
  * @property {String} label A dropdown item label.
- * @property {Boolean} bindIsActive If `true` will bind command's value to `isActive` dropdown item property.
+ * @property {Boolean} bindIsActive If `true`, it will bind the command's value to the `isActive` dropdown item property.
  */
