@@ -153,11 +153,16 @@ describe( 'EnterCommand', () => {
 				'<p><inlineLimit>foo[]baz</inlineLimit></p>'
 			);
 
-			test(
-				'should not break inline limit elements - selection partially inside',
-				'<p><inlineLimit>ba[r</inlineLimit></p><p>f]oo</p>',
-				'<p><inlineLimit>ba[r</inlineLimit></p><p>f]oo</p>'
-			);
+			it( 'should not break inline limit elements - selection partially inside', () => {
+				// Wrap all changes in one block to avoid post-fixing the selection (which is incorret) in the meantime.
+				model.change( () => {
+					setData( model, '<p><inlineLimit>ba[r</inlineLimit></p><p>f]oo</p>' );
+
+					command.execute();
+
+					expect( getData( model ) ).to.equal( '<p><inlineLimit>ba[r</inlineLimit></p><p>f]oo</p>' );
+				} );
+			} );
 
 			test(
 				'should break paragraph in blockLimit',
