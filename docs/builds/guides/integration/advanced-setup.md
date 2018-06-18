@@ -147,7 +147,7 @@ module.exports = {
 				use: [ 'raw-loader' ]
 			},
 			{
-				test: /ckeditor5-[^/\\]+[/\\]theme[/\\][\w-/]+\.css$/,
+				test: /ckeditor5-[^/\\]+[/\\]theme[/\\][\w-/\\]+\.css$/,
 				use: [
 					{
 						loader: 'style-loader',
@@ -194,7 +194,7 @@ module.exports = {
             
             // Loader for CKEditor5's theme.
             {
-            	test: /ckeditor5-[^/\\]+[/\\]theme[/\\][\w-/]+\.css$/,
+            	test: /ckeditor5-[^/\\]+[/\\]theme[/\\][\w-/\\]+\.css$/,
             	use: [
             		{
             			loader: 'style-loader',
@@ -225,7 +225,7 @@ Then exclude CKEditor 5 theme from your CSS loader (it can be SASS, LESS or some
 ```js
 {
 	// ...
-	exclude: /ckeditor5-[^/\\]+[/\\]theme[/\\][\w-/]+\.css$/
+	exclude: /ckeditor5-[^/\\]+[/\\]theme[/\\][\w-/\\]+\.css$/
 	// ...
 }
 ```
