@@ -20,16 +20,16 @@ export default class InsertRowCommand extends Command {
 	/**
 	 * Creates a new `InsertRowCommand` instance.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor Editor on which this command will be used.
+	 * @param {module:core/editor/editor~Editor} editor The editor on which this command will be used.
 	 * @param {Object} options
-	 * @param {String} [options.order="below"] The order of insertion relative to a row in which caret is located.
-	 * Possible values: "above" and "below".
+	 * @param {String} [options.order="below"] The order of insertion relative to the row in which the caret is located.
+	 * Possible values: `"above"` and `"below"`.
 	 */
 	constructor( editor, options = {} ) {
 		super( editor );
 
 		/**
-		 * The order of insertion relative to a row in which caret is located.
+		 * The order of insertion relative to the row in which the caret is located.
 		 *
 		 * @readonly
 		 * @member {String} module:table/commands/insertrowcommand~InsertRowCommand#order
@@ -51,7 +51,7 @@ export default class InsertRowCommand extends Command {
 	/**
 	 * Executes the command.
 	 *
-	 * Depending on command's {@link #order} value it inserts a row `'below'` or `'above'` the row in which selection is set.
+	 * Depending on the command's {@link #order} value, it inserts a row `'below'` or `'above'` the row in which selection is set.
 	 *
 	 * @fires execute
 	 */

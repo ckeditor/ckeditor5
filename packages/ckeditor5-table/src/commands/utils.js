@@ -8,7 +8,7 @@
  */
 
 /**
- * Returns parent table.
+ * Returns the parent table.
  *
  * @param {module:engine/model/position~Position} position
  * @returns {module:engine/model/element~Element|module:engine/model/documentfragment~DocumentFragment}
@@ -26,13 +26,13 @@ export function getParentTable( position ) {
 }
 
 /**
- * Common method to update numeric value. If value is default one it will be unset.
+ * A common method to update the numeric value. If a value is the default one, it will be unset.
  *
  * @param {String} key Attribute key.
- * @param {*} value Attribute new value.
+ * @param {*} value The new attribute value.
  * @param {module:engine/model/item~Item} item Model item on which the attribute will be set.
  * @param {module:engine/model/writer~Writer} writer
- * @param {*} defaultValue Default attribute value if value is lower or equal then it will be unset.
+ * @param {*} defaultValue Default attribute value. If a value is lower or equal, it will be unset.
  */
 export function updateNumericAttribute( key, value, item, writer, defaultValue = 1 ) {
 	if ( value > defaultValue ) {

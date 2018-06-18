@@ -33,11 +33,11 @@ export default class InsertTableCommand extends Command {
 	/**
 	 * Executes the command.
 	 *
-	 * Inserts table of given rows and columns into the editor.
+	 * Inserts a table with the given number of rows and columns into the editor.
 	 *
 	 * @param {Object} options
-	 * @param {Number} [options.rows=2] Number of rows to create in inserted table.
-	 * @param {Number} [options.columns=2] Number of columns to create in inserted table.
+	 * @param {Number} [options.rows=2] The number of rows to create in the inserted table.
+	 * @param {Number} [options.columns=2] The number of columns to create in the inserted table.
 	 * @fires execute
 	 */
 	execute( options = {} ) {

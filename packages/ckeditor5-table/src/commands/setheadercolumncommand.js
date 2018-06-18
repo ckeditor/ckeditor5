@@ -46,9 +46,9 @@ export default class SetHeaderColumnCommand extends Command {
 	/**
 	 * Executes the command.
 	 *
-	 * When the selection is non-header column, the command will set `headingColumns` table's attribute to cover that column.
+	 * When the selection is in a non-header column, the command will set the `headingColumns` table attribute to cover that column.
 	 *
-	 * When selection is already in a header column then it will set `headingColumns` so the heading section will end before that column.
+	 * When the selection is already in a header column, it will set `headingColumns` so the heading section will end before that column.
 	 *
 	 * @fires execute
 	 */

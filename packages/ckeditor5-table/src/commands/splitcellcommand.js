@@ -19,7 +19,7 @@ export default class SplitCellCommand extends Command {
 	/**
 	 * Creates a new `SplitCellCommand` instance.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor Editor on which this command will be used.
+	 * @param {module:core/editor/editor~Editor} editor The editor on which this command will be used.
 	 * @param {Object} options
 	 * @param {String} options.direction Indicates whether the command should split cells `'horizontally'` or `'vertically'`.
 	 */
@@ -27,7 +27,7 @@ export default class SplitCellCommand extends Command {
 		super( editor );
 
 		/**
-		 * The direction indicates which cell will be split.
+		 * The direction that indicates which cell will be split.
 		 *
 		 * @readonly
 		 * @member {String} #direction

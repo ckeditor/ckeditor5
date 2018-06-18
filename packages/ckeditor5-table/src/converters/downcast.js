@@ -16,10 +16,10 @@ import { toTableWidget } from '../utils';
 /**
  * Model table element to view table element conversion helper.
  *
- * This conversion helper creates whole table element with child elements.
+ * This conversion helper creates the whole table element with child elements.
  *
  * @param {Object} options
- * @param {Boolean} options.asWidget If set to true the downcast conversion will produce widget.
+ * @param {Boolean} options.asWidget If set to `true`, the downcast conversion will produce a widget.
  * @returns {Function} Conversion helper.
  */
 export function downcastInsertTable( options = {} ) {
@@ -78,9 +78,9 @@ export function downcastInsertTable( options = {} ) {
 }
 
 /**
- * Model row element to view <tr> element conversion helper.
+ * Model row element to view `<tr>` element conversion helper.
  *
- * This conversion helper creates whole <tr> element with child elements.
+ * This conversion helper creates the whole `<tr>` element with child elements.
  *
  * @returns {Function} Conversion helper.
  */
@@ -121,10 +121,10 @@ export function downcastInsertRow( options = {} ) {
 }
 
 /**
- * Model tableCEll element to view <td> or <th> element conversion helper.
+ * Model table cell element to view `<td>` or `<th>` element conversion helper.
  *
- * This conversion helper will create proper <th> elements for tableCells that are in heading section (heading row or column)
- * and <td> otherwise.
+ * This conversion helper will create proper `<th>` elements for table cells that are in the heading section (heading row or column)
+ * and `<td>` otherwise.
  *
  * @returns {Function} Conversion helper.
  */
@@ -163,13 +163,13 @@ export function downcastInsertCell( options = {} ) {
 }
 
 /**
- * Conversion helper that acts on headingRows table attribute change.
+ * Conversion helper that acts on heading rows table attribute change.
  *
  * This converter will:
  *
- * * rename <td> to <th> elements or vice versa depending on headings,
- * * create <thead> or <tbody> elements if needed,
- * * remove empty <thead> or <tbody> if needed.
+ * * Rename `<td>` to `<th>` elements or vice versa depending on headings.
+ * * Create `<thead>` or `<tbody>` elements if needed.
+ * * Remove empty `<thead>` or `<tbody>` if needed.
  *
  * @returns {Function} Conversion helper.
  */
@@ -240,9 +240,9 @@ export function downcastTableHeadingRowsChange( options = {} ) {
 }
 
 /**
- * Conversion helper that acts on headingColumns table attribute change.
+ * Conversion helper that acts on heading columns table attribute change.
  *
- * Depending on changed attributes this converter will rename <td> to <th> elements or vice versa depending of cell column index.
+ * Depending on changed attributes this converter will rename `<td` to `<th>` elements or vice versa depending of the cell column index.
  *
  * @returns {Function} Conversion helper.
  */
@@ -278,7 +278,7 @@ export function downcastTableHeadingColumnsChange( options = {} ) {
 }
 
 /**
- * Conversion helper that acts on removed row.
+ * Conversion helper that acts on a removed row.
  *
  * @returns {Function} Conversion helper.
  */
@@ -307,7 +307,7 @@ export function downcastRemoveRow() {
 	}, { priority: 'higher' } );
 }
 
-// Renames table cell in the view to given element name.
+// Renames a table cell in the view to a given element name.
 //
 // @param {module:engine/model/element~Element} tableCell
 // @param {String} desiredCellElementName
@@ -332,7 +332,7 @@ function renameViewTableCell( tableCell, desiredCellElementName, conversionApi, 
 	conversionApi.mapper.bindElements( tableCell, renamedCell );
 }
 
-// Renames a table cell element in a view according to it's location in table.
+// Renames a table cell element in the view according to its location in the table.
 //
 // @param {module:table/tablewalker~TableWalkerValue} tableWalkerValue
 // @param {{headingColumns, headingRows}} tableAttributes
@@ -353,7 +353,7 @@ function renameViewTableCellIfRequired( tableWalkerValue, tableAttributes, conve
 	}
 }
 
-// Creates a table cell element in a view.
+// Creates a table cell element in the view.
 //
 // @param {module:table/tablewalker~TableWalkerValue} tableWalkerValue
 // @param {module:engine/view/position~Position} insertPosition
@@ -372,7 +372,7 @@ function createViewTableCellElement( tableWalkerValue, tableAttributes, insertPo
 	conversionApi.writer.insert( insertPosition, cellElement );
 }
 
-// Creates or returns an existing tr element from a view.
+// Creates or returns an existing `<tr>` element from the view.
 //
 // @param {module:engine/view/element~Element} tableRow
 // @param {Number} rowIndex
@@ -399,7 +399,7 @@ function getOrCreateTr( tableRow, rowIndex, tableSection, conversionApi ) {
 	return trElement;
 }
 
-// Returns `th` for heading cells and `td` for other cells for current table walker value.
+// Returns `th` for heading cells and `td` for other cells for the current table walker value.
 //
 // @param {module:table/tablewalker~TableWalkerValue} tableWalkerValue
 // @param {{headingColumns, headingRows}} tableAttributes
@@ -422,7 +422,7 @@ function getCellElementName( tableWalkerValue, tableAttributes ) {
 	return isRowHeading ? 'th' : 'td';
 }
 
-// Returns table section name for current table walker value.
+// Returns the table section name for the current table walker value.
 //
 // @param {Number} row
 // @param {{headingColumns, headingRows}} tableAttributes
@@ -431,12 +431,12 @@ function getSectionName( row, tableAttributes ) {
 	return row < tableAttributes.headingRows ? 'thead' : 'tbody';
 }
 
-// Creates or returns an existing <tbody> or <thead> element witch caching.
+// Creates or returns an existing `<tbody>` or `<thead>` element witch caching.
 //
 // @param {String} sectionName
 // @param {module:engine/view/element~Element} viewTable
 // @param {Object} conversionApi
-// @param {Object} cachedTableSection An object on which store cached elements.
+// @param {Object} cachedTableSection An object that stores cached elements.
 // @returns {module:engine/view/containerelement~ContainerElement}
 function getOrCreateTableSection( sectionName, viewTable, conversionApi ) {
 	const viewTableSection = getExistingTableSectionElement( sectionName, viewTable );
@@ -444,7 +444,7 @@ function getOrCreateTableSection( sectionName, viewTable, conversionApi ) {
 	return viewTableSection ? viewTableSection : createTableSection( sectionName, viewTable, conversionApi );
 }
 
-// Finds an existing <tbody> or <thead> element or returns undefined.
+// Finds an existing `<tbody>` or `<thead>` element or returns undefined.
 //
 // @param {String} sectionName
 // @param {module:engine/view/element~Element} tableElement
@@ -457,7 +457,7 @@ function getExistingTableSectionElement( sectionName, tableElement ) {
 	}
 }
 
-// Creates table section at the end of a table.
+// Creates a table section at the end of the table.
 //
 // @param {String} sectionName
 // @param {module:engine/view/element~Element} tableElement
@@ -471,7 +471,7 @@ function createTableSection( sectionName, tableElement, conversionApi ) {
 	return tableChildElement;
 }
 
-// Removes an existing <tbody> or <thead> element if it is empty.
+// Removes an existing `<tbody>` or `<thead>` element if it is empty.
 //
 // @param {String} sectionName
 // @param {module:engine/view/element~Element} tableElement
@@ -484,7 +484,7 @@ function removeTableSectionIfEmpty( sectionName, tableElement, conversionApi ) {
 	}
 }
 
-// Moves view table rows associated with passed model rows to provided table section element.
+// Moves view table rows associated with passed model rows to the provided table section element.
 //
 // @param {Array.<module:engine/model/element~Element>} rowsToMove
 // @param {module:engine/view/element~Element} viewTableSection

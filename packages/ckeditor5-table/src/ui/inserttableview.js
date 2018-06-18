@@ -14,7 +14,7 @@ import './../../theme/inserttable.css';
 /**
  * The table size view.
  *
- * It renders a 10x10 grid to choose inserted table size.
+ * It renders a 10x10 grid to choose the inserted table size.
  *
  * @extends module:ui/view~View
  * @implements module:ui/dropdown/dropdownpanelfocusable~DropdownPanelFocusable
@@ -29,7 +29,7 @@ export default class InsertTableView extends View {
 		const bind = this.bindTemplate;
 
 		/**
-		 * Collection of the table size box items.
+		 * A collection of table size box items.
 		 *
 		 * @readonly
 		 * @member {module:ui/viewcollection~ViewCollection}
@@ -37,7 +37,7 @@ export default class InsertTableView extends View {
 		this.items = this.createCollection();
 
 		/**
-		 * Currently selected number of rows of a new table.
+		 * The currently selected number of rows of the new table.
 		 *
 		 * @observable
 		 * @member {Number} #rows
@@ -45,7 +45,7 @@ export default class InsertTableView extends View {
 		this.set( 'rows', 0 );
 
 		/**
-		 * Currently selected number of columns of a new table.
+		 * The currently selected number of columns of the new table.
 		 *
 		 * @observable
 		 * @member {Number} #columns
@@ -143,7 +143,7 @@ export default class InsertTableView extends View {
 	}
 
 	/**
-	 * Highlights grid boxes depending on rows & columns selected.
+	 * Highlights grid boxes depending on rows and columns selected.
 	 *
 	 * @private
 	 */
@@ -167,7 +167,7 @@ export default class InsertTableView extends View {
 /**
  * A single grid box view element.
  *
- * This class is used to render table size selection grid in {@link module:table/ui/inserttableview~InsertTableView}
+ * This class is used to render the table size selection grid in {@link module:table/ui/inserttableview~InsertTableView}.
  *
  * @private
  */
