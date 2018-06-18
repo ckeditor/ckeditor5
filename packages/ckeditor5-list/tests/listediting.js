@@ -2897,10 +2897,14 @@ describe( 'ListEditing', () => {
 		describe( 'insert', () => {
 			function test( testName, input, inserted, output ) {
 				it( testName, () => {
-					setModelData( model, input );
+					// Wrap all changes in one block to avoid post-fixing the selection
+					// (which may be incorret) in the meantime.
+					model.change( () => {
+						setModelData( model, input );
 
-					model.change( writer => {
-						writer.insert( parseModel( inserted, model.schema ), modelDoc.selection.getFirstPosition() );
+						model.change( writer => {
+							writer.insert( parseModel( inserted, model.schema ), modelDoc.selection.getFirstPosition() );
+						} );
 					} );
 
 					expect( getModelData( model, { withoutSelection: true } ) ).to.equal( output );
@@ -3420,16 +3424,20 @@ describe( 'ListEditing', () => {
 		} );
 
 		it( 'should work if items are pasted between listItem elements', () => {
-			setModelData( model,
-				'<listItem listType="bulleted" listIndent="0">A</listItem>' +
-				'<listItem listType="bulleted" listIndent="1">B</listItem>[]' +
-				'<listItem listType="bulleted" listIndent="2">C</listItem>'
-			);
+			// Wrap all changes in one block to avoid post-fixing the selection
+			// (which may be incorret) in the meantime.
+			model.change( () => {
+				setModelData( model,
+					'<listItem listType="bulleted" listIndent="0">A</listItem>' +
+					'<listItem listType="bulleted" listIndent="1">B</listItem>[]' +
+					'<listItem listType="bulleted" listIndent="2">C</listItem>'
+				);
 
-			const clipboard = editor.plugins.get( 'Clipboard' );
+				const clipboard = editor.plugins.get( 'Clipboard' );
 
-			clipboard.fire( 'inputTransformation', {
-				content: parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
+				clipboard.fire( 'inputTransformation', {
+					content: parseView( '<ul><li>X<ul><li>Y</li></ul></li></ul>' )
+				} );
 			} );
 
 			expect( getModelData( model ) ).to.equal(
@@ -3488,18 +3496,22 @@ describe( 'ListEditing', () => {
 		} );
 
 		it( 'should correctly handle item that is pasted without its parent', () => {
-			setModelData( model,
-				'<paragraph>Foo</paragraph>' +
-				'<listItem listType="numbered" listIndent="0">A</listItem>' +
-				'<listItem listType="numbered" listIndent="1">B</listItem>' +
-				'[]' +
-				'<paragraph>Bar</paragraph>'
-			);
+			// Wrap all changes in one block to avoid post-fixing the selection
+			// (which may be incorret) in the meantime.
+			model.change( () => {
+				setModelData( model,
+					'<paragraph>Foo</paragraph>' +
+					'<listItem listType="numbered" listIndent="0">A</listItem>' +
+					'<listItem listType="numbered" listIndent="1">B</listItem>' +
+					'[]' +
+					'<paragraph>Bar</paragraph>'
+				);
 
-			const clipboard = editor.plugins.get( 'Clipboard' );
+				const clipboard = editor.plugins.get( 'Clipboard' );
 
-			clipboard.fire( 'inputTransformation', {
-				content: parseView( '<li>X</li>' )
+				clipboard.fire( 'inputTransformation', {
+					content: parseView( '<li>X</li>' )
+				} );
 			} );
 
 			expect( getModelData( model ) ).to.equal(
@@ -3512,18 +3524,22 @@ describe( 'ListEditing', () => {
 		} );
 
 		it( 'should correctly handle item that is pasted without its parent #2', () => {
-			setModelData( model,
-				'<paragraph>Foo</paragraph>' +
-				'<listItem listType="numbered" listIndent="0">A</listItem>' +
-				'<listItem listType="numbered" listIndent="1">B</listItem>' +
-				'[]' +
-				'<paragraph>Bar</paragraph>'
-			);
+			// Wrap all changes in one block to avoid post-fixing the selection
+			// (which may be incorret) in the meantime.
+			model.change( () => {
+				setModelData( model,
+					'<paragraph>Foo</paragraph>' +
+					'<listItem listType="numbered" listIndent="0">A</listItem>' +
+					'<listItem listType="numbered" listIndent="1">B</listItem>' +
+					'[]' +
+					'<paragraph>Bar</paragraph>'
+				);
 
-			const clipboard = editor.plugins.get( 'Clipboard' );
+				const clipboard = editor.plugins.get( 'Clipboard' );
 
-			clipboard.fire( 'inputTransformation', {
-				content: parseView( '<li>X<ul><li>Y</li></ul></li>' )
+				clipboard.fire( 'inputTransformation', {
+					content: parseView( '<li>X<ul><li>Y</li></ul></li>' )
+				} );
 			} );
 
 			expect( getModelData( model ) ).to.equal(
@@ -3931,17 +3947,24 @@ describe( 'ListEditing', () => {
 
 	function _test( testName, input, output, actionCallback ) {
 		it( testName, () => {
-			setModelData( model, input );
+			// Wrap all changes in one block to avoid post-fixing the selection
+			// (which may be incorret) in the meantime.
+			model.change( () => {
+				setModelData( model, input );
 
-			actionCallback();
+				actionCallback();
+			} );
 
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal( output );
 		} );
 
 		it( testName + ' (undo integration)', () => {
-			setModelData( model, input );
+			// Ensure no undo step is generated.
+			model.enqueueChange( 'transparent', () => {
+				setModelData( model, input );
+			} );
 
-			const modelBefore = input;
+			const modelBefore = getModelData( model );
 			const viewBefore = getViewData( view, { withoutSelection: true } );
 
 			actionCallback();
