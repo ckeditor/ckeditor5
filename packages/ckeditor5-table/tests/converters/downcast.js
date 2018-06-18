@@ -15,7 +15,7 @@ import {
 	downcastTableHeadingColumnsChange,
 	downcastTableHeadingRowsChange
 } from '../../src/converters/downcast';
-import { formatTable, formattedViewTable, modelTable, viewTable } from '../_utils/utils';
+import { formatTable, formattedViewTable, modelTable } from '../_utils/utils';
 
 describe( 'downcast converters', () => {
 	let editor, model, doc, root, viewDocument;
@@ -64,81 +64,75 @@ describe( 'downcast converters', () => {
 
 	describe( 'downcastInsertTable()', () => {
 		it( 'should create table with tbody', () => {
-			setModelData( model,
-				'<table>' +
-				'<tableRow><tableCell></tableCell></tableRow>' +
-				'</table>'
-			);
+			setModelData( model, modelTable( [ [ '' ] ] ) );
 
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<table>' +
-				'<tbody>' +
-				'<tr><td></td></tr>' +
-				'</tbody>' +
-				'</table>'
-			);
+			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formatTable(
+				'<figure class="table">' +
+					'<table>' +
+						'<tbody>' +
+							'<tr><td></td></tr>' +
+						'</tbody>' +
+					'</table>' +
+				'</figure>'
+			) );
 		} );
 
 		it( 'should create table with tbody and thead', () => {
-			setModelData( model,
-				'<table headingRows="1">' +
-				'<tableRow><tableCell>1</tableCell></tableRow>' +
-				'<tableRow><tableCell>2</tableCell></tableRow>' +
-				'</table>'
-			);
+			setModelData( model, modelTable( [
+				[ '00' ],
+				[ '10' ]
+			], { headingRows: 1 } ) );
 
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<table>' +
-				'<thead>' +
-				'<tr><th>1</th></tr>' +
-				'</thead>' +
-				'<tbody>' +
-				'<tr><td>2</td></tr>' +
-				'</tbody>' +
-				'</table>'
-			);
+			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formatTable(
+				'<figure class="table">' +
+					'<table>' +
+						'<thead>' +
+							'<tr><th>00</th></tr>' +
+						'</thead>' +
+						'<tbody>' +
+							'<tr><td>10</td></tr>' +
+						'</tbody>' +
+					'</table>' +
+				'</figure>'
+			) );
 		} );
 
 		it( 'should create table with thead', () => {
-			setModelData( model,
-				'<table headingRows="2">' +
-				'<tableRow><tableCell>1</tableCell></tableRow>' +
-				'<tableRow><tableCell>2</tableCell></tableRow>' +
-				'</table>'
-			);
+			setModelData( model, modelTable( [
+				[ '00' ],
+				[ '10' ]
+			], { headingRows: 2 } ) );
 
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<table>' +
-				'<thead>' +
-				'<tr><th>1</th></tr>' +
-				'<tr><th>2</th></tr>' +
-				'</thead>' +
-				'</table>'
-			);
+			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formatTable(
+				'<figure class="table">' +
+					'<table>' +
+						'<thead>' +
+							'<tr><th>00</th></tr>' +
+							'<tr><th>10</th></tr>' +
+						'</thead>' +
+					'</table>' +
+				'</figure>'
+			) );
 		} );
 
 		it( 'should create table with heading columns and rows', () => {
-			setModelData( model,
-				'<table headingColumns="3" headingRows="1">' +
-				'<tableRow>' +
-				'<tableCell>11</tableCell><tableCell>12</tableCell><tableCell>13</tableCell><tableCell>14</tableCell>' +
-				'</tableRow>' +
-				'<tableRow>' +
-				'<tableCell>21</tableCell><tableCell>22</tableCell><tableCell>23</tableCell><tableCell>24</tableCell>' +
-				'</tableRow>' +
-				'</table>'
-			);
+			setModelData( model, modelTable( [
+				[ '00', '01', '02', '03' ],
+				[ '10', '11', '12', '13' ]
+			], { headingColumns: 3, headingRows: 1 } ) );
 
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<table>' +
-				'<thead>' +
-				'<tr><th>11</th><th>12</th><th>13</th><th>14</th></tr>' +
-				'</thead>' +
-				'<tbody>' +
-				'<tr><th>21</th><th>22</th><th>23</th><td>24</td></tr>' +
-				'</tbody>' +
-				'</table>'
-			);
+			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formatTable(
+				'<figure class="table">' +
+					'<table>' +
+						'<thead>' +
+							'<tr><th>00</th><th>01</th><th>02</th><th>03</th></tr>' +
+						'</thead>' +
+						'<tbody>' +
+							'<tr><th>10</th><th>11</th><th>12</th><td>13</td></tr>' +
+						'</tbody>' +
+					'</table>' +
+				'</figure>'
+			) );
 		} );
 
 		it( 'should be possible to overwrite', () => {
@@ -156,56 +150,50 @@ describe( 'downcast converters', () => {
 				}, { priority: 'high' } );
 			} );
 
-			setModelData( model,
-				'<table>' +
-				'<tableRow><tableCell></tableCell></tableRow>' +
-				'</table>'
-			);
+			setModelData( model, modelTable( [ [ '' ] ] ) );
 
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
+			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formatTable(
 				'<table foo="bar">' +
-				'<tr><td></td></tr>' +
+					'<tr><td></td></tr>' +
 				'</table>'
-			);
+			) );
 		} );
 
 		describe( 'headingColumns attribute', () => {
 			it( 'should mark heading columns table cells', () => {
-				setModelData( model,
-					'<table headingColumns="2">' +
-					'<tableRow><tableCell>11</tableCell><tableCell>12</tableCell><tableCell>13</tableCell></tableRow>' +
-					'<tableRow><tableCell>21</tableCell><tableCell>22</tableCell><tableCell>23</tableCell></tableRow>' +
-					'</table>'
-				);
+				setModelData( model, modelTable( [
+					[ '00', '01', '02' ],
+					[ '10', '11', '12' ]
+				], { headingColumns: 2 } ) );
 
-				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-					'<table>' +
-					'<tbody>' +
-					'<tr><th>11</th><th>12</th><td>13</td></tr>' +
-					'<tr><th>21</th><th>22</th><td>23</td></tr>' +
-					'</tbody>' +
-					'</table>'
-				);
+				expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formatTable(
+					'<figure class="table">' +
+						'<table>' +
+							'<tbody>' +
+								'<tr><th>00</th><th>01</th><td>02</td></tr>' +
+								'<tr><th>10</th><th>11</th><td>12</td></tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				) );
 			} );
 
 			it( 'should mark heading columns table cells when one has colspan attribute', () => {
-				setModelData( model,
-					'<table headingColumns="3">' +
-					'<tableRow>' +
-					'<tableCell>11</tableCell><tableCell>12</tableCell><tableCell>13</tableCell><tableCell>14</tableCell>' +
-					'</tableRow>' +
-					'<tableRow><tableCell colspan="2">21</tableCell><tableCell>23</tableCell><tableCell>24</tableCell></tableRow>' +
-					'</table>'
-				);
+				setModelData( model, modelTable( [
+					[ '00', '01', '02', '03' ],
+					[ { colspan: 2, contents: '10' }, '12', '13' ]
+				], { headingColumns: 3 } ) );
 
-				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-					'<table>' +
-					'<tbody>' +
-					'<tr><th>11</th><th>12</th><th>13</th><td>14</td></tr>' +
-					'<tr><th colspan="2">21</th><th>23</th><td>24</td></tr>' +
-					'</tbody>' +
-					'</table>'
-				);
+				expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formatTable(
+					'<figure class="table">' +
+						'<table>' +
+							'<tbody>' +
+								'<tr><th>00</th><th>01</th><th>02</th><td>03</td></tr>' +
+								'<tr><th colspan="2">10</th><th>12</th><td>13</td></tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				) );
 			} );
 
 			it( 'should work with colspan and rowspan attributes on table cells', () => {
@@ -214,39 +202,34 @@ describe( 'downcast converters', () => {
 				//   Row headings | Normal cells
 				//                |
 				// +----+----+----+----+
-				// | 11 | 12 | 13 | 14 |
+				// | 00 | 01 | 02 | 03 |
 				// |    +----+    +----+
-				// |    | 22 |    | 24 |
+				// |    | 11 |    | 13 |
 				// |----+----+    +----+
-				// | 31      |    | 34 |
+				// | 20      |    | 23 |
 				// |         +----+----+
-				// |         | 43 | 44 |
+				// |         | 32 | 33 |
 				// +----+----+----+----+
 
-				setModelData( model,
-					'<table headingColumns="3">' +
-					'<tableRow>' +
-					'<tableCell rowspan="2">11</tableCell>' +
-					'<tableCell>12</tableCell>' +
-					'<tableCell rowspan="3">13</tableCell>' +
-					'<tableCell>14</tableCell>' +
-					'</tableRow>' +
-					'<tableRow><tableCell>22</tableCell><tableCell>24</tableCell></tableRow>' +
-					'<tableRow><tableCell colspan="2" rowspan="2">31</tableCell><tableCell>34</tableCell></tableRow>' +
-					'<tableRow><tableCell>43</tableCell><tableCell>44</tableCell></tableRow>' +
-					'</table>'
-				);
+				setModelData( model, modelTable( [
+					[ { rowspan: 2, contents: '00' }, '01', { rowspan: 3, contents: '02' }, '03' ],
+					[ '11', '13' ],
+					[ { colspan: 2, rowspan: 2, contents: '20' }, '23' ],
+					[ '32', '33' ]
+				], { headingColumns: 3 } ) );
 
-				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-					'<table>' +
-					'<tbody>' +
-					'<tr><th rowspan="2">11</th><th>12</th><th rowspan="3">13</th><td>14</td></tr>' +
-					'<tr><th>22</th><td>24</td></tr>' +
-					'<tr><th colspan="2" rowspan="2">31</th><td>34</td></tr>' +
-					'<tr><th>43</th><td>44</td></tr>' +
-					'</tbody>' +
-					'</table>'
-				);
+				expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formatTable(
+					'<figure class="table">' +
+						'<table>' +
+							'<tbody>' +
+								'<tr><th rowspan="2">00</th><th>01</th><th rowspan="3">02</th><td>03</td></tr>' +
+								'<tr><th>11</th><td>13</td></tr>' +
+								'<tr><th colspan="2" rowspan="2">20</th><td>23</td></tr>' +
+								'<tr><th>32</th><td>33</td></tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				) );
 			} );
 		} );
 
@@ -288,19 +271,17 @@ describe( 'downcast converters', () => {
 			} );
 
 			it( 'should create table as a widget', () => {
-				setModelData( model,
-					'<table>' +
-					'<tableRow><tableCell></tableCell></tableRow>' +
-					'</table>'
-				);
+				setModelData( model, modelTable( [ [ '' ] ] ) );
 
-				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-					'<table class="ck-widget" contenteditable="false">' +
-					'<tbody>' +
-					'<tr><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true"></td></tr>' +
-					'</tbody>' +
-					'</table>'
-				);
+				expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formatTable(
+					'<figure class="ck-widget table" contenteditable="false">' +
+						'<table>' +
+							'<tbody>' +
+								'<tr><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true"></td></tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				) );
 			} );
 		} );
 	} );
@@ -308,7 +289,7 @@ describe( 'downcast converters', () => {
 	describe( 'downcastInsertRow()', () => {
 		it( 'should react to changed rows', () => {
 			setModelData( model, modelTable( [
-				[ '11', '12' ]
+				[ '00', '01' ]
 			] ) );
 
 			const table = root.getChild( 0 );
@@ -322,15 +303,15 @@ describe( 'downcast converters', () => {
 				writer.insertElement( 'tableCell', row, 'end' );
 			} );
 
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( viewTable( [
-				[ '11', '12' ],
+			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+				[ '00', '01' ],
 				[ '', '' ]
 			] ) );
 		} );
 
 		it( 'should properly consume already added rows', () => {
 			setModelData( model, modelTable( [
-				[ '11', '12' ]
+				[ '00', '01' ]
 			] ) );
 
 			const table = root.getChild( 0 );
@@ -344,8 +325,8 @@ describe( 'downcast converters', () => {
 				writer.insertElement( 'tableCell', row, 'end' );
 			} );
 
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( viewTable( [
-				[ '11', '12' ],
+			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+				[ '00', '01' ],
 				[ '', '' ]
 			] ) );
 
@@ -358,8 +339,8 @@ describe( 'downcast converters', () => {
 				writer.insertElement( 'tableCell', row, 'end' );
 			} );
 
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( viewTable( [
-				[ '11', '12' ],
+			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+				[ '00', '01' ],
 				[ '', '' ],
 				[ '', '' ]
 			] ) );
@@ -367,7 +348,7 @@ describe( 'downcast converters', () => {
 
 		it( 'should insert row on proper index', () => {
 			setModelData( model, modelTable( [
-				[ '11', '12' ],
+				[ '00', '01' ],
 				[ '21', '22' ],
 				[ '31', '32' ]
 			] ) );
@@ -383,8 +364,8 @@ describe( 'downcast converters', () => {
 				writer.insertElement( 'tableCell', row, 'end' );
 			} );
 
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( viewTable( [
-				[ '11', '12' ],
+			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+				[ '00', '01' ],
 				[ '', '' ],
 				[ '21', '22' ],
 				[ '31', '32' ]
@@ -393,7 +374,7 @@ describe( 'downcast converters', () => {
 
 		it( 'should insert row on proper index when table has heading rows defined - insert in body', () => {
 			setModelData( model, modelTable( [
-				[ '11', '12' ],
+				[ '00', '01' ],
 				[ '21', '22' ],
 				[ '31', '32' ]
 			], { headingRows: 1 } ) );
@@ -409,8 +390,8 @@ describe( 'downcast converters', () => {
 				writer.insertElement( 'tableCell', row, 'end' );
 			} );
 
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( viewTable( [
-				[ '11', '12' ],
+			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+				[ '00', '01' ],
 				[ '', '' ],
 				[ '21', '22' ],
 				[ '31', '32' ]
@@ -419,7 +400,7 @@ describe( 'downcast converters', () => {
 
 		it( 'should insert row on proper index when table has heading rows defined - insert in heading', () => {
 			setModelData( model, modelTable( [
-				[ '11', '12' ],
+				[ '00', '01' ],
 				[ '21', '22' ],
 				[ '31', '32' ]
 			], { headingRows: 2 } ) );
@@ -435,8 +416,8 @@ describe( 'downcast converters', () => {
 				writer.insertElement( 'tableCell', row, 'end' );
 			} );
 
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( viewTable( [
-				[ '11', '12' ],
+			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+				[ '00', '01' ],
 				[ '', '' ],
 				[ '21', '22' ],
 				[ '31', '32' ]
@@ -445,7 +426,7 @@ describe( 'downcast converters', () => {
 
 		it( 'should react to changed rows when previous rows\' cells has rowspans', () => {
 			setModelData( model, modelTable( [
-				[ { rowspan: 3, contents: '11' }, '12' ],
+				[ { rowspan: 3, contents: '00' }, '01' ],
 				[ '22' ]
 			] ) );
 
@@ -458,8 +439,8 @@ describe( 'downcast converters', () => {
 				writer.insertElement( 'tableCell', row, 'end' );
 			} );
 
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( viewTable( [
-				[ { rowspan: 3, contents: '11' }, '12' ],
+			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+				[ { rowspan: 3, contents: '00' }, '01' ],
 				[ '22' ],
 				[ '' ]
 			] ) );
@@ -467,7 +448,7 @@ describe( 'downcast converters', () => {
 
 		it( 'should properly create row headings', () => {
 			setModelData( model, modelTable( [
-				[ { rowspan: 3, contents: '11' }, '12' ],
+				[ { rowspan: 3, contents: '00' }, '01' ],
 				[ '22' ]
 			], { headingColumns: 1 } ) );
 
@@ -487,7 +468,7 @@ describe( 'downcast converters', () => {
 			} );
 
 			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
-				[ { rowspan: 3, contents: '11', isHeading: true }, '12' ],
+				[ { rowspan: 3, contents: '00', isHeading: true }, '01' ],
 				[ '22' ],
 				[ '' ],
 				[ { contents: '', isHeading: true }, '' ]
@@ -532,11 +513,7 @@ describe( 'downcast converters', () => {
 			} );
 
 			it( 'should create table cell inside inserted row as a widget', () => {
-				setModelData( model,
-					'<table>' +
-					'<tableRow><tableCell>foo</tableCell></tableRow>' +
-					'</table>'
-				);
+				setModelData( model, modelTable( [ [ '00' ] ] ) );
 
 				const table = root.getChild( 0 );
 
@@ -547,14 +524,16 @@ describe( 'downcast converters', () => {
 					writer.insert( writer.createElement( 'tableCell' ), firstRow, 'end' );
 				} );
 
-				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-					'<table class="ck-widget" contenteditable="false">' +
-					'<tbody>' +
-					'<tr><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">foo</td></tr>' +
-					'<tr><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true"></td></tr>' +
-					'</tbody>' +
-					'</table>'
-				);
+				expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formatTable(
+					'<figure class="ck-widget table" contenteditable="false">' +
+						'<table>' +
+							'<tbody>' +
+								'<tr><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">00</td></tr>' +
+								'<tr><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true"></td></tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				) );
 			} );
 		} );
 	} );
@@ -562,7 +541,7 @@ describe( 'downcast converters', () => {
 	describe( 'downcastInsertCell()', () => {
 		it( 'should add tableCell on proper index in tr', () => {
 			setModelData( model, modelTable( [
-				[ '11', '12' ]
+				[ '00', '01' ]
 			] ) );
 
 			const table = root.getChild( 0 );
@@ -573,14 +552,14 @@ describe( 'downcast converters', () => {
 				writer.insertElement( 'tableCell', row, 1 );
 			} );
 
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( viewTable( [
-				[ '11', '', '12' ]
+			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+				[ '00', '', '01' ]
 			] ) );
 		} );
 
 		it( 'should add tableCell on proper index in tr when previous have colspans', () => {
 			setModelData( model, modelTable( [
-				[ { colspan: 2, contents: '11' }, '13' ]
+				[ { colspan: 2, contents: '00' }, '13' ]
 			] ) );
 
 			const table = root.getChild( 0 );
@@ -591,15 +570,15 @@ describe( 'downcast converters', () => {
 				writer.insertElement( 'tableCell', row, 1 );
 			} );
 
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( viewTable( [
-				[ { colspan: 2, contents: '11' }, '', '13' ]
+			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+				[ { colspan: 2, contents: '00' }, '', '13' ]
 			] ) );
 		} );
 
 		it( 'should add tableCell on proper index in tr when previous row have rowspans', () => {
 			setModelData( model, modelTable( [
-				[ { rowspan: 2, contents: '11' }, '13' ],
-				[ '22', '23' ]
+				[ { rowspan: 2, contents: '00' }, '13' ],
+				[ '11', '12' ]
 			] ) );
 
 			const table = root.getChild( 0 );
@@ -609,16 +588,16 @@ describe( 'downcast converters', () => {
 				writer.insertElement( 'tableCell', table.getChild( 1 ), 0 );
 			} );
 
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( viewTable( [
-				[ { rowspan: 2, contents: '11' }, '', '13' ],
-				[ '', '22', '23' ]
+			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+				[ { rowspan: 2, contents: '00' }, '', '13' ],
+				[ '', '11', '12' ]
 			] ) );
 		} );
 
 		it( 'split cell simulation - simple', () => {
 			setModelData( model, modelTable( [
-				[ '11', '12' ],
-				[ '21', '22' ]
+				[ '00', '01' ],
+				[ '10', '11' ]
 			] ) );
 
 			const table = root.getChild( 0 );
@@ -631,16 +610,16 @@ describe( 'downcast converters', () => {
 				writer.setAttribute( 'colspan', 2, secondRow.getChild( 0 ) );
 			} );
 
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( viewTable( [
-				[ '11', '', '12' ],
-				[ { colspan: 2, contents: '21' }, '22' ]
+			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+				[ '00', '', '01' ],
+				[ { colspan: 2, contents: '10' }, '11' ]
 			] ) );
 		} );
 
 		it( 'merge simulation - simple', () => {
 			setModelData( model, modelTable( [
-				[ '11', '12' ],
-				[ '21', '22' ]
+				[ '00', '01' ],
+				[ '10', '11' ]
 			] ) );
 
 			const table = root.getChild( 0 );
@@ -652,9 +631,9 @@ describe( 'downcast converters', () => {
 				writer.remove( firstRow.getChild( 1 ) );
 			} );
 
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( viewTable( [
-				[ { colspan: 2, contents: '11' } ],
-				[ '21', '22' ]
+			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+				[ { colspan: 2, contents: '00' } ],
+				[ '10', '11' ]
 			] ) );
 		} );
 
@@ -696,11 +675,7 @@ describe( 'downcast converters', () => {
 			} );
 
 			it( 'should create inserted table cell as a widget', () => {
-				setModelData( model,
-					'<table>' +
-					'<tableRow><tableCell>foo</tableCell></tableRow>' +
-					'</table>'
-				);
+				setModelData( model, modelTable( [ [ '00' ] ] ) );
 
 				const table = root.getChild( 0 );
 
@@ -710,16 +685,18 @@ describe( 'downcast converters', () => {
 					writer.insert( writer.createElement( 'tableCell' ), row, 'end' );
 				} );
 
-				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-					'<table class="ck-widget" contenteditable="false">' +
-					'<tbody>' +
-					'<tr>' +
-					'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">foo</td>' +
-					'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true"></td>' +
-					'</tr>' +
-					'</tbody>' +
-					'</table>'
-				);
+				expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formatTable(
+					'<figure class="ck-widget table" contenteditable="false">' +
+						'<table>' +
+							'<tbody>' +
+								'<tr>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">00</td>' +
+									'<td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true"></td>' +
+								'</tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				) );
 			} );
 		} );
 	} );
@@ -727,8 +704,8 @@ describe( 'downcast converters', () => {
 	describe( 'downcastTableHeadingColumnsChange()', () => {
 		it( 'should work for adding heading columns', () => {
 			setModelData( model, modelTable( [
-				[ '11', '12' ],
-				[ '21', '22' ]
+				[ '00', '01' ],
+				[ '10', '11' ]
 			] ) );
 
 			const table = root.getChild( 0 );
@@ -737,16 +714,16 @@ describe( 'downcast converters', () => {
 				writer.setAttribute( 'headingColumns', 1, table );
 			} );
 
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( viewTable( [
-				[ { isHeading: true, contents: '11' }, '12' ],
-				[ { isHeading: true, contents: '21' }, '22' ]
-			] ) );
+			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+				[ { isHeading: true, contents: '00' }, '01' ],
+				[ { isHeading: true, contents: '10' }, '11' ]
+			], { headingColumns: 1 } ) );
 		} );
 
 		it( 'should work for changing heading columns to a bigger number', () => {
 			setModelData( model, modelTable( [
-				[ '11', '12', '13', '14' ],
-				[ '21', '22', '23', '24' ]
+				[ '00', '01', '02', '03' ],
+				[ '10', '11', '12', '13' ]
 			], { headingColumns: 1 } ) );
 
 			const table = root.getChild( 0 );
@@ -755,16 +732,16 @@ describe( 'downcast converters', () => {
 				writer.setAttribute( 'headingColumns', 3, table );
 			} );
 
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( viewTable( [
-				[ { isHeading: true, contents: '11' }, { isHeading: true, contents: '12' }, { isHeading: true, contents: '13' }, '14' ],
-				[ { isHeading: true, contents: '21' }, { isHeading: true, contents: '22' }, { isHeading: true, contents: '23' }, '24' ]
+			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+				[ { isHeading: true, contents: '00' }, { isHeading: true, contents: '01' }, { isHeading: true, contents: '02' }, '03' ],
+				[ { isHeading: true, contents: '10' }, { isHeading: true, contents: '11' }, { isHeading: true, contents: '12' }, '13' ]
 			] ) );
 		} );
 
 		it( 'should work for changing heading columns to a smaller number', () => {
 			setModelData( model, modelTable( [
-				[ { isHeading: true, contents: '11' }, { isHeading: true, contents: '12' }, { isHeading: true, contents: '13' }, '14' ],
-				[ { isHeading: true, contents: '21' }, { isHeading: true, contents: '22' }, { isHeading: true, contents: '23' }, '24' ]
+				[ { isHeading: true, contents: '00' }, { isHeading: true, contents: '01' }, { isHeading: true, contents: '02' }, '03' ],
+				[ { isHeading: true, contents: '10' }, { isHeading: true, contents: '11' }, { isHeading: true, contents: '12' }, '13' ]
 			], { headingColumns: 3 } ) );
 
 			const table = root.getChild( 0 );
@@ -773,16 +750,16 @@ describe( 'downcast converters', () => {
 				writer.setAttribute( 'headingColumns', 1, table );
 			} );
 
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( viewTable( [
-				[ { isHeading: true, contents: '11' }, '12', '13', '14' ],
-				[ { isHeading: true, contents: '21' }, '22', '23', '24' ]
+			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+				[ { isHeading: true, contents: '00' }, '01', '02', '03' ],
+				[ { isHeading: true, contents: '10' }, '11', '12', '13' ]
 			], { headingColumns: 3 } ) );
 		} );
 
 		it( 'should work for removing heading columns', () => {
 			setModelData( model, modelTable( [
-				[ '11', '12' ],
-				[ '21', '22' ]
+				[ '00', '01' ],
+				[ '10', '11' ]
 			], { headingColumns: 1 } ) );
 			const table = root.getChild( 0 );
 
@@ -790,15 +767,15 @@ describe( 'downcast converters', () => {
 				writer.removeAttribute( 'headingColumns', table );
 			} );
 
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( viewTable( [
-				[ '11', '12' ],
-				[ '21', '22' ]
+			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+				[ '00', '01' ],
+				[ '10', '11' ]
 			] ) );
 		} );
 
 		it( 'should be possible to overwrite', () => {
 			editor.conversion.attributeToAttribute( { model: 'headingColumns', view: 'headingColumns', converterPriority: 'high' } );
-			setModelData( model, modelTable( [ [ '11' ] ] ) );
+			setModelData( model, modelTable( [ [ '00' ] ] ) );
 
 			const table = root.getChild( 0 );
 
@@ -806,16 +783,22 @@ describe( 'downcast converters', () => {
 				writer.setAttribute( 'headingColumns', 1, table );
 			} );
 
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<table headingColumns="1"><tbody><tr><td>11</td></tr></tbody></table>'
-			);
+			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formatTable(
+				'<figure class="table" headingColumns="1">' +
+					'<table>' +
+						'<tbody>' +
+							'<tr><td>00</td></tr>' +
+						'</tbody>' +
+					'</table>' +
+				'</figure>'
+			) );
 		} );
 
 		it( 'should work with adding table cells', () => {
 			setModelData( model, modelTable( [
-				[ { rowspan: 2, contents: '11' }, '12', '13', '14' ],
-				[ '22', '23', '24' ],
-				[ { colspan: 2, contents: '31' }, '33', '34' ]
+				[ { rowspan: 2, contents: '00' }, '01', '13', '14' ],
+				[ '11', '12', '13' ],
+				[ { colspan: 2, contents: '20' }, '22', '23' ]
 			], { headingColumns: 2 } ) );
 
 			const table = root.getChild( 0 );
@@ -831,23 +814,23 @@ describe( 'downcast converters', () => {
 
 			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
 				[
-					{ isHeading: true, rowspan: 2, contents: '11' },
-					{ isHeading: true, contents: '12' },
+					{ isHeading: true, rowspan: 2, contents: '00' },
+					{ isHeading: true, contents: '01' },
 					{ isHeading: true, contents: '' },
 					'13',
 					'14'
 				],
 				[
-					{ isHeading: true, contents: '22' },
+					{ isHeading: true, contents: '11' },
 					{ isHeading: true, contents: '' },
-					'23',
-					'24'
+					'12',
+					'13'
 				],
 				[
-					{ isHeading: true, colspan: 2, contents: '31' },
+					{ isHeading: true, colspan: 2, contents: '20' },
 					{ isHeading: true, contents: '' },
-					'33',
-					'34'
+					'22',
+					'23'
 				]
 			] ) );
 		} );
@@ -893,11 +876,7 @@ describe( 'downcast converters', () => {
 			} );
 
 			it( 'should create renamed cell as a widget', () => {
-				setModelData( model,
-					'<table>' +
-					'<tableRow><tableCell>foo</tableCell></tableRow>' +
-					'</table>'
-				);
+				setModelData( model, modelTable( [ [ '00' ] ] ) );
 
 				const table = root.getChild( 0 );
 
@@ -905,13 +884,15 @@ describe( 'downcast converters', () => {
 					writer.setAttribute( 'headingRows', 1, table );
 				} );
 
-				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-					'<table class="ck-widget" contenteditable="false">' +
-					'<thead>' +
-					'<tr><th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">foo</th></tr>' +
-					'</thead>' +
-					'</table>'
-				);
+				expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formatTable(
+					'<figure class="ck-widget table" contenteditable="false">' +
+						'<table>' +
+							'<thead>' +
+								'<tr><th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">00</th></tr>' +
+							'</thead>' +
+						'</table>' +
+					'</figure>'
+				) );
 			} );
 		} );
 	} );
@@ -919,9 +900,9 @@ describe( 'downcast converters', () => {
 	describe( 'downcastTableHeadingRowsChange()', () => {
 		it( 'should work for adding heading rows', () => {
 			setModelData( model, modelTable( [
-				[ '11', '12' ],
-				[ '21', '22' ],
-				[ '31', '32' ]
+				[ '00', '01' ],
+				[ '10', '11' ],
+				[ '20', '21' ]
 			] ) );
 
 			const table = root.getChild( 0 );
@@ -931,17 +912,17 @@ describe( 'downcast converters', () => {
 			} );
 
 			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
-				[ '11', '12' ],
-				[ '21', '22' ],
-				[ '31', '32' ]
+				[ '00', '01' ],
+				[ '10', '11' ],
+				[ '20', '21' ]
 			], { headingRows: 2 } ) );
 		} );
 
 		it( 'should work for changing number of heading rows to a bigger number', () => {
 			setModelData( model, modelTable( [
-				[ '11', '12' ],
-				[ '21', '22' ],
-				[ '31', '32' ]
+				[ '00', '01' ],
+				[ '10', '11' ],
+				[ '20', '21' ]
 			], { headingRows: 1 } ) );
 
 			const table = root.getChild( 0 );
@@ -951,18 +932,18 @@ describe( 'downcast converters', () => {
 			} );
 
 			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
-				[ '11', '12' ],
-				[ '21', '22' ],
-				[ '31', '32' ]
+				[ '00', '01' ],
+				[ '10', '11' ],
+				[ '20', '21' ]
 			], { headingRows: 2 } ) );
 		} );
 
 		it( 'should work for changing number of heading rows to a smaller number', () => {
 			setModelData( model, modelTable( [
-				[ '11', '12' ],
-				[ '21', '22' ],
-				[ '31', '32' ],
-				[ '41', '42' ]
+				[ '00', '01' ],
+				[ '10', '11' ],
+				[ '20', '21' ],
+				[ '30', '31' ]
 			], { headingRows: 3 } ) );
 
 			const table = root.getChild( 0 );
@@ -972,17 +953,17 @@ describe( 'downcast converters', () => {
 			} );
 
 			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
-				[ '11', '12' ],
-				[ '21', '22' ],
-				[ '31', '32' ],
-				[ '41', '42' ]
+				[ '00', '01' ],
+				[ '10', '11' ],
+				[ '20', '21' ],
+				[ '30', '31' ]
 			], { headingRows: 2 } ) );
 		} );
 
 		it( 'should work for removing heading rows', () => {
 			setModelData( model, modelTable( [
-				[ '11', '12' ],
-				[ '21', '22' ]
+				[ '00', '01' ],
+				[ '10', '11' ]
 			], { headingRows: 2 } ) );
 
 			const table = root.getChild( 0 );
@@ -991,16 +972,16 @@ describe( 'downcast converters', () => {
 				writer.removeAttribute( 'headingRows', table );
 			} );
 
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( viewTable( [
-				[ '11', '12' ],
-				[ '21', '22' ]
+			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+				[ '00', '01' ],
+				[ '10', '11' ]
 			] ) );
 		} );
 
 		it( 'should work for making heading rows without tbody', () => {
 			setModelData( model, modelTable( [
-				[ '11', '12' ],
-				[ '21', '22' ]
+				[ '00', '01' ],
+				[ '10', '11' ]
 			] ) );
 
 			const table = root.getChild( 0 );
@@ -1009,15 +990,15 @@ describe( 'downcast converters', () => {
 				writer.setAttribute( 'headingRows', 2, table );
 			} );
 
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal( viewTable( [
-				[ '11', '12' ],
-				[ '21', '22' ]
+			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formattedViewTable( [
+				[ '00', '01' ],
+				[ '10', '11' ]
 			], { headingRows: 2 } ) );
 		} );
 
 		it( 'should be possible to overwrite', () => {
 			editor.conversion.attributeToAttribute( { model: 'headingRows', view: 'headingRows', converterPriority: 'high' } );
-			setModelData( model, modelTable( [ [ '11' ] ] ) );
+			setModelData( model, modelTable( [ [ '00' ] ] ) );
 
 			const table = root.getChild( 0 );
 
@@ -1025,9 +1006,15 @@ describe( 'downcast converters', () => {
 				writer.setAttribute( 'headingRows', 1, table );
 			} );
 
-			expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-				'<table headingRows="1"><tbody><tr><td>11</td></tr></tbody></table>'
-			);
+			expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formatTable(
+				'<figure class="table" headingRows="1">' +
+					'<table>' +
+						'<tbody>' +
+							'<tr><td>00</td></tr>' +
+						'</tbody>' +
+					'</table>' +
+				'</figure>'
+			) );
 		} );
 
 		it( 'should work with adding table rows at the beginning of a table', () => {
@@ -1096,11 +1083,7 @@ describe( 'downcast converters', () => {
 			} );
 
 			it( 'should create renamed cell as a widget', () => {
-				setModelData( model,
-					'<table>' +
-					'<tableRow><tableCell>foo</tableCell></tableRow>' +
-					'</table>'
-				);
+				setModelData( model, modelTable( [ [ '00' ] ] ) );
 
 				const table = root.getChild( 0 );
 
@@ -1108,13 +1091,15 @@ describe( 'downcast converters', () => {
 					writer.setAttribute( 'headingColumns', 1, table );
 				} );
 
-				expect( getViewData( viewDocument, { withoutSelection: true } ) ).to.equal(
-					'<table class="ck-widget" contenteditable="false">' +
-					'<tbody>' +
-					'<tr><th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">foo</th></tr>' +
-					'</tbody>' +
-					'</table>'
-				);
+				expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formatTable(
+					'<figure class="ck-widget table" contenteditable="false">' +
+						'<table>' +
+							'<tbody>' +
+								'<tr><th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">00</th></tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
+				) );
 			} );
 		} );
 	} );

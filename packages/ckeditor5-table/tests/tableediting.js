@@ -108,11 +108,13 @@ describe( 'TableEditing', () => {
 				setModelData( model, '<table><tableRow><tableCell>foo[]</tableCell></tableRow></table>' );
 
 				expect( editor.getData() ).to.equal(
-					'<table>' +
-					'<tbody>' +
-					'<tr><td>foo</td></tr>' +
-					'</tbody>' +
-					'</table>'
+					'<figure class="table">' +
+						'<table>' +
+							'<tbody>' +
+								'<tr><td>foo</td></tr>' +
+							'</tbody>' +
+						'</table>' +
+					'</figure>'
 				);
 			} );
 
@@ -120,11 +122,13 @@ describe( 'TableEditing', () => {
 				setModelData( model, '<table headingRows="1"><tableRow><tableCell>foo[]</tableCell></tableRow></table>' );
 
 				expect( editor.getData() ).to.equal(
-					'<table>' +
-					'<thead>' +
-					'<tr><th>foo</th></tr>' +
-					'</thead>' +
-					'</table>'
+					'<figure class="table">' +
+						'<table>' +
+							'<thead>' +
+								'<tr><th>foo</th></tr>' +
+							'</thead>' +
+						'</table>' +
+					'</figure>'
 				);
 			} );
 		} );
