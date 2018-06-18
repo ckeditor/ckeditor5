@@ -247,12 +247,14 @@ export default class Renderer {
 	 * @param {module:engine/view/node~Node} viewElement The view element which children mappings will be updated.
 	 */
 	_updateChildrenMappings( viewElement ) {
-		const diff = this._diffChildren( viewElement );
+		const domElement = this.domConverter.mapViewToDom( viewElement );
 
-		if ( !diff ) {
+		if ( !domElement ) {
+			// If there is no `domElement` it means that it was already removed from DOM and there is no need to process it.
 			return;
 		}
 
+		const diff = this._diffChildren( viewElement );
 		const actions = this._findReplaceActions( diff.actions, diff.actualDomChildren, diff.expectedDomChildren );
 
 		if ( actions.indexOf( 'replace' ) !== -1 ) {
@@ -551,22 +553,24 @@ export default class Renderer {
 	 * filler should be rendered.
 	 */
 	_updateChildren( viewElement, options ) {
-		const inlineFillerPosition = options.inlineFillerPosition;
-		const diff = this._diffChildren( viewElement, inlineFillerPosition );
+		const domElement = this.domConverter.mapViewToDom( viewElement );
 
-		if ( !diff ) {
+		if ( !domElement ) {
+			// If there is no `domElement` it means that it was already removed from DOM.
+			// There is no need to process it. It will be processed when re-inserted.
 			return;
 		}
 
-		const actions = diff.actions;
-		const domElement = diff.domElement;
-		const actualDomChildren = diff.actualDomChildren;
+		const inlineFillerPosition = options.inlineFillerPosition;
+		// As binding may change actual DOM children we need to do this before diffing.
 		const expectedDomChildren = this._getElementExpectedChildren( viewElement, domElement, { bind: true, inlineFillerPosition } );
+		const diff = this._diffChildren( viewElement, inlineFillerPosition );
+		const actualDomChildren = diff.actualDomChildren;
 
 		let i = 0;
 		const nodesToUnbind = new Set();
 
-		for ( const action of actions ) {
+		for ( const action of diff.actions ) {
 			if ( action === 'insert' ) {
 				insertAt( domElement, i, expectedDomChildren[ i ] );
 				i++;
@@ -600,27 +604,17 @@ export default class Renderer {
 	 * filler should be rendered.
 	 * @returns {Object|null} result
 	 * @returns {Array.<String>} result.actions List of actions based on {@link module:utils/diff~diff} function.
-	 * @returns {Node} result.domElement The DOM element representing given view element.
 	 * @returns {Array.<Node>} result.actualDomChildren Current `viewElement`'s DOM children.
 	 * @returns {Array.<Node>} result.expectedDomChildren Expected `viewElement`'s DOM children.
 	 */
 	_diffChildren( viewElement, inlineFillerPosition = null ) {
-		const domConverter = this.domConverter;
-		const domElement = domConverter.mapViewToDom( viewElement );
-
-		if ( !domElement ) {
-			// If there is no `domElement` it means that it was already removed from DOM.
-			// There is no need to process it. It will be processed when re-inserted.
-			return null;
-		}
-
+		const domElement = this.domConverter.mapViewToDom( viewElement );
 		const actualDomChildren = domElement.childNodes;
 		const expectedDomChildren = this._getElementExpectedChildren( viewElement, domElement,
 			{ withChildren: false, inlineFillerPosition } );
 
 		return {
-			actions: diff( actualDomChildren, expectedDomChildren, sameNodes.bind( null, domConverter.blockFiller ) ),
-			domElement,
+			actions: diff( actualDomChildren, expectedDomChildren, sameNodes.bind( null, this.domConverter.blockFiller ) ),
 			actualDomChildren,
 			expectedDomChildren
 		};
