@@ -38,17 +38,13 @@ describe( 'UndoEditing integration', () => {
 				model = editor.model;
 				doc = model.document;
 
-				// Add "div feature".
-				model.schema.register( 'div', { inheritAllFrom: '$block' } );
-
-				editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'div', view: 'div' } ) );
-				editor.conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'div', view: 'div' } ) );
-
 				root = doc.getRoot();
 			} );
 	} );
 
 	afterEach( () => {
+		div.remove();
+
 		return editor.destroy();
 	} );
 
@@ -59,7 +55,9 @@ describe( 'UndoEditing integration', () => {
 	}
 
 	function input( input ) {
-		setData( model, input );
+		model.enqueueChange( 'transparent', () => {
+			setData( model, input );
+		} );
 	}
 
 	function output( output ) {
@@ -850,6 +848,15 @@ describe( 'UndoEditing integration', () => {
 
 		// ckeditor5-engine#t/1053
 		it( 'wrap, split, undo, undo is correct', () => {
+			// Add a "div feature".
+			model.schema.register( 'div', {
+				allowWhere: '$block',
+				allowContentOf: '$root'
+			} );
+
+			editor.conversion.for( 'downcast' ).add( downcastElementToElement( { model: 'div', view: 'div' } ) );
+			editor.conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'div', view: 'div' } ) );
+
 			input( '<paragraph>[]Foo</paragraph><paragraph>Bar</paragraph>' );
 
 			model.change( writer => {
