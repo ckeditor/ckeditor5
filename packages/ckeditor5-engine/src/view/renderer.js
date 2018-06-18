@@ -18,20 +18,21 @@ import remove from '@ckeditor/ckeditor5-utils/src/dom/remove';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import isText from '@ckeditor/ckeditor5-utils/src/dom/istext';
+import isNode from '@ckeditor/ckeditor5-utils/src/dom/isnode';
 import fastDiff from '@ckeditor/ckeditor5-utils/src/fastdiff';
 
 /**
- * Renderer updates DOM structure and selection, to make them a reflection of the view structure and selection.
+ * Renderer is responsible for updating the DOM structure and the DOM selection based on
+ * the {@link module:engine/view/renderer~Renderer#markToSync information about updated view nodes}.
+ * In other words, it renders the view to the DOM.
  *
- * View nodes which may need to be rendered needs to be {@link module:engine/view/renderer~Renderer#markToSync marked}.
- * Then, on {@link module:engine/view/renderer~Renderer#render render}, renderer compares view nodes with DOM nodes
- * in order to check which ones really need to be refreshed. Finally, it creates DOM nodes from these view nodes,
- * {@link module:engine/view/domconverter~DomConverter#bindElements binds} them and inserts into the DOM tree.
+ * Its main responsibility is to make only the necessary, minimal changes to the DOM. However, unlike in many
+ * virtual DOM implementations, the primary reason for doing minimal changes is not the performance but ensuring
+ * that native editing features such as text composition, autocompletion, spell checking, selection's x-index are
+ * affected as little as possible.
  *
- * Every time {@link module:engine/view/renderer~Renderer#render render} is called, renderer additionally checks if
- * {@link module:engine/view/renderer~Renderer#selection selection} needs update and updates it if so.
- *
- * Renderer uses {@link module:engine/view/domconverter~DomConverter} to transform and bind nodes.
+ * Renderer uses {@link module:engine/view/domconverter~DomConverter} to transform view nodes and positions
+ * to and from the DOM.
  */
 export default class Renderer {
 	/**
@@ -90,20 +91,20 @@ export default class Renderer {
 		this.selection = selection;
 
 		/**
-		 * The text node in which the inline filler was rendered.
-		 *
-		 * @private
-		 * @member {Text}
-		 */
-		this._inlineFiller = null;
-
-		/**
 		 * Indicates if the view document is focused and selection can be rendered. Selection will not be rendered if
 		 * this is set to `false`.
 		 *
 		 * @member {Boolean}
 		 */
 		this.isFocused = false;
+
+		/**
+		 * The text node in which the inline filler was rendered.
+		 *
+		 * @private
+		 * @member {Text}
+		 */
+		this._inlineFiller = null;
 
 		/**
 		 * DOM element containing fake selection.
@@ -115,7 +116,7 @@ export default class Renderer {
 	}
 
 	/**
-	 * Mark node to be synchronized.
+	 * Marks a view node to be updated in the DOM by {@link #render `render()`}.
 	 *
 	 * Note that only view nodes which parents have corresponding DOM elements need to be marked to be synchronized.
 	 *
@@ -154,31 +155,23 @@ export default class Renderer {
 	}
 
 	/**
-	 * Render method checks {@link #markedAttributes},
-	 * {@link #markedChildren} and {@link #markedTexts} and updates all
-	 * nodes which need to be updated. Then it clears all three sets. Also, every time render is called it compares and
-	 * if needed updates the selection.
+	 * Renders all buffered changes ({@link #markedAttributes}, {@link #markedChildren} and {@link #markedTexts}) and
+	 * the current view selection (if needed) to the DOM by applying a minimal set of changes to it.
 	 *
-	 * Renderer tries not to break text composition (e.g. IME) and x-index of the selection,
+	 * Renderer tries not to break the text composition (e.g. IME) and x-index of the selection,
 	 * so it does as little as it is needed to update the DOM.
 	 *
-	 * For attributes it adds new attributes to DOM elements, updates values and removes
-	 * attributes which do not exist in the view element.
-	 *
-	 * For text nodes it updates the text string if it is different. Note that if parent element is marked as an element
-	 * which changed child list, text node update will not be done, because it may not be possible to
-	 * {@link module:engine/view/domconverter~DomConverter#findCorrespondingDomText find a corresponding DOM text}.
-	 * The change will be handled in the parent element.
-	 *
-	 * For elements, which child lists have changed, it calculates a {@link module:utils/diff~diff} and adds or removes children which have
-	 * changed.
-	 *
-	 * Rendering also handles {@link module:engine/view/filler fillers}. Especially, it checks if the inline filler is needed
-	 * at selection position and adds or removes it. To prevent breaking text composition inline filler will not be
+	 * Renderer also handles {@link module:engine/view/filler fillers}. Especially, it checks if the inline filler is needed
+	 * at the selection position and adds or removes it. To prevent breaking text composition inline filler will not be
 	 * removed as long selection is in the text node which needed it at first.
 	 */
 	render() {
 		let inlineFillerPosition;
+
+		// Refresh mappings.
+		for ( const element of this.markedChildren ) {
+			this._updateChildrenMappings( element );
+		}
 
 		// There was inline filler rendered in the DOM but it's not
 		// at the selection position any more, so we can remove it
@@ -241,6 +234,84 @@ export default class Renderer {
 		this.markedTexts.clear();
 		this.markedAttributes.clear();
 		this.markedChildren.clear();
+	}
+
+	/**
+	 * Updates mappings of `viewElement`'s children.
+	 *
+	 * Children which were replaced in the view structure by similar elements (same tag name) are treated as 'replaced'.
+	 * This means that we can update their mappings so the new view elements are mapped to the existing DOM elements.
+	 * Thanks to that we won't need to re-render these elements completely.
+	 *
+	 * @private
+	 * @param {module:engine/view/node~Node} viewElement The view element which children mappings will be updated.
+	 */
+	_updateChildrenMappings( viewElement ) {
+		const domElement = this.domConverter.mapViewToDom( viewElement );
+
+		if ( !domElement ) {
+			// If there is no `domElement` it means that it was already removed from DOM and there is no need to process it.
+			return;
+		}
+
+		const diff = this._diffChildren( viewElement );
+		const actions = this._findReplaceActions( diff.actions, diff.actualDomChildren, diff.expectedDomChildren );
+
+		if ( actions.indexOf( 'replace' ) !== -1 ) {
+			const counter = { equal: 0, insert: 0, delete: 0 };
+
+			for ( const action of actions ) {
+				if ( action === 'replace' ) {
+					const insertIndex = counter.equal + counter.insert;
+					const deleteIndex = counter.equal + counter.delete;
+					const viewChild = viewElement.getChild( insertIndex );
+
+					// The 'uiElement' is a special one and its children are not stored in a view (#799),
+					// so we cannot use it with replacing flow (since it uses view children during rendering
+					// which will always result in rendering empty element).
+					if ( viewChild && !viewChild.is( 'uiElement' ) ) {
+						this._updateElementMappings( viewChild, diff.actualDomChildren[ deleteIndex ] );
+					}
+
+					remove( diff.expectedDomChildren[ insertIndex ] );
+					counter.equal++;
+				} else {
+					counter[ action ]++;
+				}
+			}
+		}
+	}
+
+	/**
+	 * Updates mappings of a given `viewElement`.
+	 *
+	 * @private
+	 * @param {module:engine/view/node~Node} viewElement The view element which mappings will be updated.
+	 * @param {Node} domElement The DOM element representing given view element.
+	 */
+	_updateElementMappings( viewElement, domElement ) {
+		// Because we replace new view element mapping with the existing one, the corresponding DOM element
+		// will not be rerendered. The new view element may have different attributes than the previous one.
+		// Since its corresponding DOM element will not be rerendered, new attributes will not be added
+		// to the DOM, so we need to mark it here to make sure its attributes gets updated.
+		// Such situations may happen if only new view element was added to `this.markedAttributes`
+		// or none of the elements were added (relying on 'this._updateChildren()' which by rerendering the element
+		// also rerenders its attributes). See #1427 for more detailed case study.
+		const newViewChild = this.domConverter.mapDomToView( domElement );
+
+		// It may also happen that 'newViewChild' mapping is not present since its parent mapping
+		// was already removed (the 'domConverter.unbindDomElement()' method also unbinds children
+		// mappings) so we also check for '!newViewChild'.
+		if ( !newViewChild || newViewChild && !newViewChild.isSimilar( viewElement ) ) {
+			this.markedAttributes.add( viewElement );
+		}
+
+		// Remap 'DomConverter' bindings.
+		this.domConverter.unbindDomElement( domElement );
+		this.domConverter.bindElements( domElement, viewElement );
+
+		// View element may have children which needs to be updated, but are not marked, mark them to update.
+		this.markedChildren.add( viewElement );
 	}
 
 	/**
@@ -443,10 +514,19 @@ export default class Renderer {
 	 * Checks if attributes list needs to be updated and possibly updates it.
 	 *
 	 * @private
-	 * @param {module:engine/view/element~Element} viewElement View element to update.
+	 * @param {module:engine/view/element~Element} viewElement The view element to update.
 	 */
 	_updateAttrs( viewElement ) {
 		const domElement = this.domConverter.mapViewToDom( viewElement );
+
+		if ( !domElement ) {
+			// If there is no `domElement` it means that 'viewElement' is outdated as its mapping was updated
+			// in 'this._updateChildrenMappings()'. There is no need to process it as new view element which
+			// replaced old 'viewElement' mapping was also added to 'this.markedAttributes'
+			// in 'this._updateChildrenMappings()' so it will be processed separately.
+			return;
+		}
+
 		const domAttrKeys = Array.from( domElement.attributes ).map( attr => attr.name );
 		const viewAttrKeys = viewElement.getAttributeKeys();
 
@@ -473,33 +553,24 @@ export default class Renderer {
 	 * filler should be rendered.
 	 */
 	_updateChildren( viewElement, options ) {
-		const domConverter = this.domConverter;
-		const domElement = domConverter.mapViewToDom( viewElement );
+		const domElement = this.domConverter.mapViewToDom( viewElement );
 
 		if ( !domElement ) {
 			// If there is no `domElement` it means that it was already removed from DOM.
-			// There is no need to update it. It will be updated when re-inserted.
+			// There is no need to process it. It will be processed when re-inserted.
 			return;
 		}
 
-		const domDocument = domElement.ownerDocument;
-		const filler = options.inlineFillerPosition;
-		const actualDomChildren = domElement.childNodes;
-		const expectedDomChildren = Array.from( domConverter.viewChildrenToDom( viewElement, domDocument, { bind: true } ) );
-
-		// Inline filler element has to be created during children update because we need it to diff actual dom
-		// elements with expected dom elements. We need inline filler in expected dom elements so we won't re-render
-		// text node if it is not necessary.
-		if ( filler && filler.parent == viewElement ) {
-			this._addInlineFiller( domDocument, expectedDomChildren, filler.offset );
-		}
-
-		const actions = diff( actualDomChildren, expectedDomChildren, sameNodes );
+		const inlineFillerPosition = options.inlineFillerPosition;
+		// As binding may change actual DOM children we need to do this before diffing.
+		const expectedDomChildren = this._getElementExpectedChildren( viewElement, domElement, { bind: true, inlineFillerPosition } );
+		const diff = this._diffChildren( viewElement, inlineFillerPosition );
+		const actualDomChildren = diff.actualDomChildren;
 
 		let i = 0;
 		const nodesToUnbind = new Set();
 
-		for ( const action of actions ) {
+		for ( const action of diff.actions ) {
 			if ( action === 'insert' ) {
 				insertAt( domElement, i, expectedDomChildren[ i ] );
 				i++;
@@ -508,7 +579,7 @@ export default class Renderer {
 				remove( actualDomChildren[ i ] );
 			} else { // 'equal'
 				// Force updating text nodes inside elements which did not change and do not need to be re-rendered (#1125).
-				this._markDescendantTextToSync( domConverter.domToView( expectedDomChildren[ i ] ) );
+				this._markDescendantTextToSync( this.domConverter.domToView( expectedDomChildren[ i ] ) );
 				i++;
 			}
 		}
@@ -521,25 +592,102 @@ export default class Renderer {
 				this.domConverter.unbindDomElement( node );
 			}
 		}
+	}
 
-		function sameNodes( actualDomChild, expectedDomChild ) {
-			// Elements.
-			if ( actualDomChild === expectedDomChild ) {
-				return true;
-			}
-			// Texts.
-			else if ( isText( actualDomChild ) && isText( expectedDomChild ) ) {
-				return actualDomChild.data === expectedDomChild.data;
-			}
-			// Block fillers.
-			else if ( isBlockFiller( actualDomChild, domConverter.blockFiller ) &&
-				isBlockFiller( expectedDomChild, domConverter.blockFiller ) ) {
-				return true;
-			}
+	/**
+	 * Compares `viewElement`'s actual and expected children and returns actions sequence which can be used to transform
+	 * actual children into expected ones.
+	 *
+	 * @private
+	 * @param {module:engine/view/node~Node} viewElement The view element which children will be compared.
+	 * @param {module:engine/view/position~Position} [inlineFillerPosition=null] The position on which the inline
+	 * filler should be rendered.
+	 * @returns {Object|null} result
+	 * @returns {Array.<String>} result.actions List of actions based on {@link module:utils/diff~diff} function.
+	 * @returns {Array.<Node>} result.actualDomChildren Current `viewElement`'s DOM children.
+	 * @returns {Array.<Node>} result.expectedDomChildren Expected `viewElement`'s DOM children.
+	 */
+	_diffChildren( viewElement, inlineFillerPosition = null ) {
+		const domElement = this.domConverter.mapViewToDom( viewElement );
+		const actualDomChildren = domElement.childNodes;
+		const expectedDomChildren = this._getElementExpectedChildren( viewElement, domElement,
+			{ withChildren: false, inlineFillerPosition } );
 
-			// Not matching types.
-			return false;
+		return {
+			actions: diff( actualDomChildren, expectedDomChildren, sameNodes.bind( null, this.domConverter.blockFiller ) ),
+			actualDomChildren,
+			expectedDomChildren
+		};
+	}
+
+	/**
+	 * Returns expected DOM children for a given `viewElement`.
+	 *
+	 * @private
+	 * @param {module:engine/view/node~Node} viewElement View element which children will be returned.
+	 * @param {Node} domElement DOM representation of a given view element.
+	 * @param {Object} options See {@link module:engine/view/domconverter~DomConverter#viewToDom} options parameter.
+	 * @param {module:engine/view/position~Position} [options.inlineFillerPosition=null] The position on which
+	 * the inline filler should be rendered.
+	 * @returns {Array.<Node>} The `viewElement`'s expected children.
+	 */
+	_getElementExpectedChildren( viewElement, domElement, options ) {
+		const expectedDomChildren = Array.from( this.domConverter.viewChildrenToDom( viewElement, domElement.ownerDocument, options ) );
+		const filler = options.inlineFillerPosition;
+
+		// Inline filler element has to be created as it is present in a DOM, but not in a view. It is required
+		// during diffing so text nodes could be compared correctly and also during rendering to maintain
+		// proper order and indexes while updating the DOM.
+		if ( filler && filler.parent === viewElement ) {
+			this._addInlineFiller( domElement.ownerDocument, expectedDomChildren, filler.offset );
 		}
+
+		return expectedDomChildren;
+	}
+
+	/**
+	 * Finds DOM nodes which were replaced with the similar nodes (same tag name) in the view. All nodes are compared
+	 * within one `insert`/`delete` action group, for example:
+	 *
+	 * 		Actual DOM:		<p><b>Foo</b>Bar<i>Baz</i><b>Bax</b></p>
+	 * 		Expected DOM:	<p>Bar<b>123</b><i>Baz</i><b>456</b></p>
+	 * 		Input actions:	[ insert, insert, delete, delete, equal, insert, delete ]
+	 * 		Output actions:	[ insert, replace, delete, equal, replace ]
+	 *
+	 * @private
+	 * @param {Array.<String>} actions Actions array which is result of {@link module:utils/diff~diff} function.
+	 * @param {Array.<Node>} actualDom Actual DOM children
+	 * @param {Array.<Node>} expectedDom Expected DOM children.
+	 * @returns {Array.<String>} Actions array modified with `replace` actions.
+	 */
+	_findReplaceActions( actions, actualDom, expectedDom ) {
+		// If there is no both 'insert' and 'delete' actions, no need to check for replaced elements.
+		if ( actions.indexOf( 'insert' ) === -1 || actions.indexOf( 'delete' ) === -1 ) {
+			return actions;
+		}
+
+		let newActions = [];
+		let actualSlice = [];
+		let expectedSlice = [];
+
+		const counter = { equal: 0, insert: 0, delete: 0 };
+
+		for ( const action of actions ) {
+			if ( action === 'insert' ) {
+				expectedSlice.push( expectedDom[ counter.equal + counter.insert ] );
+			} else if ( action === 'delete' ) {
+				actualSlice.push( actualDom[ counter.equal + counter.delete ] );
+			} else { // equal
+				newActions = newActions.concat( diff( actualSlice, expectedSlice, areSimilar ).map( x => x === 'equal' ? 'replace' : x ) );
+				newActions.push( 'equal' );
+				// Reset stored elements on 'equal'.
+				actualSlice = [];
+				expectedSlice = [];
+			}
+			counter[ action ]++;
+		}
+
+		return newActions.concat( diff( actualSlice, expectedSlice, areSimilar ).map( x => x === 'equal' ? 'replace' : x ) );
 	}
 
 	/**
@@ -763,4 +911,48 @@ function _isEditable( element ) {
 	const parent = element.findAncestor( element => element.hasAttribute( 'contenteditable' ) );
 
 	return !parent || parent.getAttribute( 'contenteditable' ) == 'true';
+}
+
+// Whether two DOM nodes should be considered as similar.
+// Nodes are considered similar if they have the same tag name.
+//
+// @private
+// @param {Node} node1
+// @param {Node} node2
+// @returns {Boolean}
+function areSimilar( node1, node2 ) {
+	return isNode( node1 ) && isNode( node2 ) &&
+		!isText( node1 ) && !isText( node2 ) &&
+		node1.tagName.toLowerCase() === node2.tagName.toLowerCase();
+}
+
+// Whether two dom nodes should be considered as the same.
+// Two nodes which are considered the same are:
+//
+//		* Text nodes with the same text.
+//		* Element nodes represented by the same object.
+//		* Two block filler elements.
+//
+// @private
+// @param {Function} blockFiller Block filler creator function, see {@link module:engine/view/domconverter~DomConverter#blockFiller}.
+// @param {Node} node1
+// @param {Node} node2
+// @returns {Boolean}
+function sameNodes( blockFiller, actualDomChild, expectedDomChild ) {
+	// Elements.
+	if ( actualDomChild === expectedDomChild ) {
+		return true;
+	}
+	// Texts.
+	else if ( isText( actualDomChild ) && isText( expectedDomChild ) ) {
+		return actualDomChild.data === expectedDomChild.data;
+	}
+	// Block fillers.
+	else if ( isBlockFiller( actualDomChild, blockFiller ) &&
+		isBlockFiller( expectedDomChild, blockFiller ) ) {
+		return true;
+	}
+
+	// Not matching types.
+	return false;
 }
