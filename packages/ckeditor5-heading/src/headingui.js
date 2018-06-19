@@ -46,15 +46,16 @@ export default class HeadingUI extends Plugin {
 			for ( const option of options ) {
 				const itemModel = new Model( {
 					label: option.title,
-					class: option.class
+					class: option.class,
+					withText: true
 				} );
 
 				if ( option.model === 'paragraph' ) {
-					itemModel.bind( 'isActive' ).to( paragraphCommand, 'value' );
+					itemModel.bind( 'isOn' ).to( paragraphCommand, 'value' );
 					itemModel.set( 'commandName', 'paragraph' );
 					commands.push( paragraphCommand );
 				} else {
-					itemModel.bind( 'isActive' ).to( headingCommand, 'value', value => value === option.model );
+					itemModel.bind( 'isOn' ).to( headingCommand, 'value', value => value === option.model );
 					itemModel.set( {
 						commandName: 'heading',
 						commandValue: option.model
