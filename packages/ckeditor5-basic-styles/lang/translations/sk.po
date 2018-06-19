@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Language: sk\n"
 "Language-Team: Slovak (https://www.transifex.com/ckeditor/teams/11143/sk/)\n"
-"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n == 1 ? 0 : n % 1 == 0 && n >= 2 && n <= 4 ? 1 : n % 1 != 0 ? 2: 3);\n"
 
 msgctxt "Toolbar button tooltip for the Bold feature."
 msgid "Bold"
