@@ -7,7 +7,7 @@ msgstr ""
 
 msgctxt "Title of the CKEditor5 editor."
 msgid "Rich Text Editor, %0"
-msgstr "Zengin İÇerik Editörü, %0"
+msgstr "Zengin İçerik Editörü, %0"
 
 msgctxt "Title of the CKEditor5 editor."
 msgid "Rich Text Editor"
