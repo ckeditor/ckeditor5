@@ -15,7 +15,7 @@ msgstr "Högerjustera"
 
 msgctxt "Toolbar button tooltip for aligning text to center."
 msgid "Align center"
-msgstr ""
+msgstr "Centrera"
 
 msgctxt "Toolbar button tooltip for making text justified."
 msgid "Justify"
@@ -23,4 +23,4 @@ msgstr "Justera till marginaler"
 
 msgctxt "Dropdown button tooltip for the text alignment feature."
 msgid "Text alignment"
-msgstr ""
+msgstr "Textjustering"
