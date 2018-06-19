@@ -31,7 +31,7 @@ msgstr "Yeşik kalem"
 
 msgctxt "Toolbar button tooltip for removing text highlight."
 msgid "Remove highlight"
-msgstr "Vurguyu temizle"
+msgstr "Vurgulamayı temizle"
 
 msgctxt "Toolbar button tooltip for the text highlight feature."
 msgid "Highlight"
