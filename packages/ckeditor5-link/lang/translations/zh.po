@@ -15,7 +15,7 @@ msgstr "連結"
 
 msgctxt "Label for the URL input in the Link URL editing balloon."
 msgid "Link URL"
-msgstr ""
+msgstr "連結˙ URL"
 
 msgctxt "Button opening the Link URL editing balloon."
 msgid "Edit link"

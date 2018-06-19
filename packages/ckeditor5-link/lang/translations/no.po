@@ -1,21 +1,21 @@
 # Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
 msgid ""
 msgstr ""
-"Language: nl\n"
-"Language-Team: Dutch (https://www.transifex.com/ckeditor/teams/11143/nl/)\n"
+"Language: no\n"
+"Language-Team: Norwegian (https://www.transifex.com/ckeditor/teams/11143/no/)\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "Toolbar button tooltip for the Unlink feature."
 msgid "Unlink"
-msgstr "Verwijder link"
+msgstr "Fjern lenke"
 
 msgctxt "Toolbar button tooltip for the Link feature."
 msgid "Link"
-msgstr "Link"
+msgstr ""
 
 msgctxt "Label for the URL input in the Link URL editing balloon."
 msgid "Link URL"
-msgstr "Link URL"
+msgstr ""
 
 msgctxt "Button opening the Link URL editing balloon."
 msgid "Edit link"

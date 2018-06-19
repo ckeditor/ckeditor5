@@ -15,7 +15,7 @@ msgstr "Esteka"
 
 msgctxt "Label for the URL input in the Link URL editing balloon."
 msgid "Link URL"
-msgstr ""
+msgstr "Estekaren URLa"
 
 msgctxt "Button opening the Link URL editing balloon."
 msgid "Edit link"

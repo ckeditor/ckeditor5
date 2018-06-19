@@ -15,7 +15,7 @@ msgstr "Ligilo"
 
 msgctxt "Label for the URL input in the Link URL editing balloon."
 msgid "Link URL"
-msgstr ""
+msgstr "URL de la ligilo"
 
 msgctxt "Button opening the Link URL editing balloon."
 msgid "Edit link"

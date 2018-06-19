@@ -15,7 +15,7 @@ msgstr "Enllazar"
 
 msgctxt "Label for the URL input in the Link URL editing balloon."
 msgid "Link URL"
-msgstr ""
+msgstr "URL del enllaz"
 
 msgctxt "Button opening the Link URL editing balloon."
 msgid "Edit link"

@@ -15,7 +15,7 @@ msgstr "ئۇلاش"
 
 msgctxt "Label for the URL input in the Link URL editing balloon."
 msgid "Link URL"
-msgstr ""
+msgstr "ئۇلاش ئادىرسى"
 
 msgctxt "Button opening the Link URL editing balloon."
 msgid "Edit link"

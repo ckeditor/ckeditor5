@@ -15,7 +15,7 @@ msgstr "Shto Nyjën"
 
 msgctxt "Label for the URL input in the Link URL editing balloon."
 msgid "Link URL"
-msgstr ""
+msgstr "Nyja e URL-së"
 
 msgctxt "Button opening the Link URL editing balloon."
 msgid "Edit link"
