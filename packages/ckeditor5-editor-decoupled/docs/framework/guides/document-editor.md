@@ -92,7 +92,6 @@ Styles are what the document editor really needs to materialize. Begin with the 
 	/* This element is a flex container for easier rendering. */
 	display: flex;
 	flex-flow: column nowrap;
-	overflow: hidden;
 }
 ```
 
