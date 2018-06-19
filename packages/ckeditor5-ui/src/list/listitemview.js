@@ -8,7 +8,6 @@
  */
 
 import View from '../view';
-import KeystrokeHandler from '@ckeditor/ckeditor5-utils/src/keystrokehandler';
 
 /**
  * The list item view class.
@@ -19,27 +18,15 @@ export default class ListItemView extends View {
 	/**
 	 * @inheritDoc
 	 */
-	constructor() {
+	constructor( locale, childView ) {
 		super();
 
 		/**
-		 * Controls the `tabindex` attribute of the item.
+		 * The child view of the list item.
 		 *
-		 * @observable
-		 * @default -1
-		 * @member {String} #tabindex
+		 * @member {module:ui/view~View} #childView
 		 */
-		this.set( 'tabindex', -1 );
-
-		/**
-		 * Instance of the {@link module:utils/keystrokehandler~KeystrokeHandler}.
-		 *
-		 * @readonly
-		 * @member {module:utils/keystrokehandler~KeystrokeHandler}
-		 */
-		this.keystrokes = new KeystrokeHandler();
-
-		const bind = this.bindTemplate;
+		this.childView = childView;
 
 		this.setTemplate( {
 			tag: 'li',
@@ -47,102 +34,20 @@ export default class ListItemView extends View {
 			attributes: {
 				class: [
 					'ck',
-					'ck-list__item',
-					bind.to( 'class' ),
-					bind.if( 'isActive', 'ck-list__item_active' ),
-					bind.if( 'isEnabled', 'ck-disabled', value => !value )
-				],
-				style: bind.to( 'style' ),
-				tabindex: bind.to( 'tabindex' )
+					'ck-list__item'
+				]
 			},
 
 			children: [
-				{
-					text: bind.to( 'label' )
-				}
-			],
-
-			on: {
-				click: bind.to( evt => {
-					// We can't make the button disabled using the disabled attribute, because it won't be focusable.
-					// Though, shouldn't this condition be moved to the button controller?
-					if ( this.isEnabled ) {
-						this.fire( 'execute' );
-					} else {
-						// Prevent the default when button is disabled, to block e.g.
-						// automatic form submitting. See ckeditor/ckeditor5-link#74.
-						evt.preventDefault();
-					}
-				} )
-			}
+				childView
+			]
 		} );
-
-		/**
-		 * (Optional) Controls whether the list item is enabled, i.e. it can be clicked and execute an action.
-		 *
-		 * @observable
-		 * @default true
-		 * @member {Boolean} #isEnabled
-		 */
-		this.set( 'isEnabled', true );
-
-		/**
-		 * The label of the list item.
-		 *
-		 * @observable
-		 * @member {String} #label
-		 */
-
-		/**
-		 * (Optional) The DOM style attribute of the list item.
-		 *
-		 * @observable
-		 * @member {String} #style
-		 */
-
-		/**
-		 * (Optional) The additional class set on the {@link #element}.
-		 *
-		 * @observable
-		 * @member {String} #class
-		 */
-
-		/**
-		 * (Optional) When set, it marks the item as active among the others.
-		 *
-		 * @observable
-		 * @member {Boolean} #isActive
-		 */
-
-		/**
-		 * Fired when the list item has been clicked.
-		 *
-		 * @event execute
-		 */
-	}
-
-	/**
-	 * @inheritDoc
-	 */
-	render() {
-		super.render();
-
-		const onKeystrokePress = ( data, cancel ) => {
-			this.fire( 'execute' );
-			cancel();
-		};
-
-		this.keystrokes.listenTo( this.element );
-
-		// Execute on Enter and Space key press.
-		this.keystrokes.set( 'Enter', onKeystrokePress );
-		this.keystrokes.set( 'Space', onKeystrokePress );
 	}
 
 	/**
 	 * Focuses the list item.
 	 */
 	focus() {
-		this.element.focus();
+		this.childView.focus();
 	}
 }
