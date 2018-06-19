@@ -231,14 +231,35 @@ function renderDropdown() {
 
 	[ 'Arial', 'Tahoma', 'Georgia' ].forEach( font => {
 		collection.add( new Model( {
-			label: font,
-			style: `font-family: ${ font }`
+			label: `${ font } (style attr)`,
+			style: `font-family: ${ font }`,
+			withText: true
 		} ) );
 	} );
 
 	collection.add( new Model( {
 		isSeparator: true
-	} ), 2 );
+	} ) );
+
+	collection.add( new Model( {
+		label: 'Bold',
+		withText: true,
+		icon: boldIcon
+	} ) );
+
+	collection.add( new Model( {
+		label: 'This item is on',
+		withText: true,
+		icon: boldIcon,
+		isOn: true
+	} ) );
+
+	collection.add( new Model( {
+		label: 'Disabled',
+		withText: true,
+		icon: boldIcon,
+		isEnabled: false
+	} ) );
 
 	ui.listDropdown.add( toolbar( [
 		listDropdown( {
