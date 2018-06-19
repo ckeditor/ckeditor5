@@ -3,6 +3,8 @@
  * For licensing, see LICENSE.md.
  */
 
+/* global document */
+
 import Writer from '@ckeditor/ckeditor5-engine/src/view/writer';
 import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
 import ViewEditableElement from '@ckeditor/ckeditor5-engine/src/view/editableelement';
@@ -16,6 +18,7 @@ import {
 	setHighlightHandling,
 	WIDGET_CLASS_NAME
 } from '../src/utils';
+import UIElement from '@ckeditor/ckeditor5-engine/src/view/uielement';
 
 describe( 'widget utils', () => {
 	let element, writer, viewDocument;
@@ -86,6 +89,26 @@ describe( 'widget utils', () => {
 			remove( element, 'highlight', writer );
 			expect( element.hasClass( 'highlight' ) ).to.be.false;
 			expect( element.hasClass( 'foo' ) ).to.be.false;
+		} );
+
+		it( 'should add element a selection handler to widget if addSelectionHandler=true is passed', () => {
+			toWidget( element, writer, { addSelectionHandler: true } );
+
+			expect( element.hasClass( 'ck-widget__selectable' ) ).to.be.true;
+
+			const selectionHandler = element.getChild( 0 );
+			expect( selectionHandler ).to.be.instanceof( UIElement );
+
+			const domSelectionHandler = selectionHandler.render( document );
+
+			expect( domSelectionHandler.classList.contains( 'ck' ) ).to.be.true;
+			expect( domSelectionHandler.classList.contains( 'ck-selection-handler' ) ).to.be.true;
+
+			const icon = domSelectionHandler.firstChild;
+
+			expect( icon.nodeName ).to.equal( 'svg' );
+			expect( icon.classList.contains( 'ck' ) ).to.be.true;
+			expect( icon.classList.contains( 'ck-icon' ) ).to.be.true;
 		} );
 	} );
 
