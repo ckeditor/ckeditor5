@@ -171,20 +171,21 @@ function addListOption( option, editor, commands, dropdownItems ) {
 			isSeparator: true
 		} );
 	} else {
-		const { commandName, label, bindIsActive } = option;
+		const { commandName, label, bindIsOn } = option;
 		const command = editor.commands.get( commandName );
 
 		commands.push( command );
 
 		itemModel.set( {
 			commandName,
-			label
+			label,
+			withText: true
 		} );
 
 		itemModel.bind( 'isEnabled' ).to( command );
 
-		if ( bindIsActive ) {
-			itemModel.bind( 'isActive' ).to( command, 'value' );
+		if ( bindIsOn ) {
+			itemModel.bind( 'isOn' ).to( command, 'value' );
 		}
 	}
 
@@ -198,5 +199,5 @@ function addListOption( option, editor, commands, dropdownItems ) {
  * @private
  * @property {String} commandName A command name to execute for that option.
  * @property {String} label A dropdown item label.
- * @property {Boolean} bindIsActive If `true`, it will bind the command's value to the `isActive` dropdown item property.
+ * @property {Boolean} bindIsOn If `true`, it will bind the command's value to the `isOn` dropdown item property.
  */
