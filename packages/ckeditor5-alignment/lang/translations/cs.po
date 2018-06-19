@@ -5,19 +5,19 @@ msgstr ""
 "Language-Team: Czech (https://www.transifex.com/ckeditor/teams/11143/cs/)\n"
 "Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
 
-msgctxt "Toolbar button tooltip for aligning text to the left."
+msgctxt "Toolbar button tooltip for aligning the text to the left."
 msgid "Align left"
 msgstr "Zarovnat vlevo"
 
-msgctxt "Toolbar button tooltip for aligning text to the right."
+msgctxt "Toolbar button tooltip for aligning the text to the right."
 msgid "Align right"
 msgstr "Zarovnat vpravo"
 
-msgctxt "Toolbar button tooltip for aligning text to center."
+msgctxt "Toolbar button tooltip for aligning the text to center."
 msgid "Align center"
 msgstr "Zarovnat na střed"
 
-msgctxt "Toolbar button tooltip for making text justified."
+msgctxt "Toolbar button tooltip for making the text justified."
 msgid "Justify"
 msgstr "Zarovnat do bloku"
 
