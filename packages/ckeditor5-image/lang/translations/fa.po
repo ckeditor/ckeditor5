@@ -1,50 +1,50 @@
 # Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
 msgid ""
 msgstr ""
-"Language: hu\n"
-"Language-Team: Hungarian (https://www.transifex.com/ckeditor/teams/11143/hu/)\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: fa\n"
+"Language-Team: Persian (https://www.transifex.com/ckeditor/teams/11143/fa/)\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 msgctxt "Label for the image widget."
 msgid "image widget"
-msgstr "képmodul"
+msgstr "ابزاره تصویر"
 
 msgctxt "Label for the Side image option."
 msgid "Side image"
-msgstr "Oldalsó kép"
+msgstr "تصویر جانبی"
 
 msgctxt "Label for the Full size image option."
 msgid "Full size image"
-msgstr "Teljes méretű kép"
+msgstr "تصویر در اندازه کامل"
 
 msgctxt "Label for the Left aligned image option"
 msgid "Left aligned image"
-msgstr "Balra igazított kép"
+msgstr "تصویر تراز شده چپ"
 
 msgctxt "Label for the Centered image option"
 msgid "Centered image"
-msgstr "Középre igazított kép"
+msgstr "تصویر در وسط"
 
 msgctxt "Label for the Right aligned image option"
 msgid "Right aligned image"
-msgstr "Jobbra igazított kép"
+msgstr "تصویر تراز شده راست"
 
 msgctxt "Label for the Change image text alternative button."
 msgid "Change image text alternative"
-msgstr "Helyettesítő szöveg módosítása"
+msgstr "تغییر متن جایگزین تصویر"
 
 msgctxt "Label for the image text alternative input."
 msgid "Text alternative"
-msgstr "Helyettesítő szöveg"
+msgstr "متن جایگزین"
 
 msgctxt "Placeholder text for image caption displayed when caption is empty."
 msgid "Enter image caption"
-msgstr "Képaláírás megadása"
+msgstr "عنوان تصویر را وارد کنید"
 
 msgctxt "Label for the insert image toolbar button."
 msgid "Insert image"
-msgstr "Kép beszúrása"
+msgstr "قرار دادن تصویر"
 
 msgctxt "Title of the notification displayed when upload fails."
 msgid "Upload failed"
-msgstr "A feltöltés nem sikerült"
+msgstr "آپلود ناموفق بود"
