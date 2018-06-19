@@ -303,7 +303,7 @@ describe( 'TableUI', () => {
 
 			expect( button.isOn ).to.be.false;
 			expect( button.tooltip ).to.be.true;
-			expect( button.label ).to.equal( 'Merge cell' );
+			expect( button.label ).to.equal( 'Merge cells' );
 			expect( button.icon ).to.match( /<svg / );
 		} );
 

@@ -81,7 +81,7 @@ export default class TableUI extends Plugin {
 				{ commandName: 'removeTableColumn', label: t( 'Delete column' ) }
 			];
 
-			return this._prepareDropdown( 'Column', tableColumnIcon, options, locale );
+			return this._prepareDropdown( t( 'Column' ), tableColumnIcon, options, locale );
 		} );
 
 		editor.ui.componentFactory.add( 'tableRow', locale => {
@@ -93,7 +93,7 @@ export default class TableUI extends Plugin {
 				{ commandName: 'removeTableRow', label: t( 'Delete row' ) }
 			];
 
-			return this._prepareDropdown( 'Row', tableRowIcon, options, locale );
+			return this._prepareDropdown( t( 'Row' ), tableRowIcon, options, locale );
 		} );
 
 		editor.ui.componentFactory.add( 'mergeTableCells', locale => {
@@ -107,7 +107,7 @@ export default class TableUI extends Plugin {
 				{ commandName: 'splitTableCellHorizontally', label: t( 'Split cell horizontally' ) }
 			];
 
-			return this._prepareDropdown( 'Merge cell', tableMergeCellIcon, options, locale );
+			return this._prepareDropdown( t( 'Merge cells' ), tableMergeCellIcon, options, locale );
 		} );
 	}
 
@@ -115,13 +115,13 @@ export default class TableUI extends Plugin {
 	 * Creates a dropdown view from the set of options.
 	 *
 	 * @private
-	 * @param {String} buttonName The dropdown button name.
+	 * @param {String} label The dropdown button label.
 	 * @param {String} icon An icon for the dropdown button.
 	 * @param {Array.<module:table/tableui~DropdownOption>} options The list of options for the dropdown.
 	 * @param {module:utils/locale~Locale} locale
 	 * @returns {module:ui/dropdown/dropdownview~DropdownView}
 	 */
-	_prepareDropdown( buttonName, icon, options, locale ) {
+	_prepareDropdown( label, icon, options, locale ) {
 		const editor = this.editor;
 
 		const dropdownView = createDropdown( locale );
@@ -138,7 +138,7 @@ export default class TableUI extends Plugin {
 
 		// Decorate dropdown's button.
 		dropdownView.buttonView.set( {
-			label: buttonName,
+			label,
 			icon,
 			tooltip: true
 		} );
