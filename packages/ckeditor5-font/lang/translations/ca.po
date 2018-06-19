@@ -1,34 +1,34 @@
 # Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
 msgid ""
 msgstr ""
-"Language: sv\n"
-"Language-Team: Swedish (https://www.transifex.com/ckeditor/teams/11143/sv/)\n"
+"Language: ca\n"
+"Language-Team: Catalan (https://www.transifex.com/ckeditor/teams/11143/ca/)\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "Tooltip for the font size dropdown."
 msgid "Font Size"
-msgstr "Teckenstorlek"
+msgstr "Mida de la font"
 
 msgctxt "Dropdown option label for the 'tiny' font size preset."
 msgid "Tiny"
-msgstr "Mycket liten"
+msgstr "Molt petita"
 
 msgctxt "Dropdown option label for the 'small' font size preset."
 msgid "Small"
-msgstr "Liten"
+msgstr "Peita"
 
 msgctxt "Dropdown option label for the 'big' font size preset."
 msgid "Big"
-msgstr "Stor"
+msgstr "Gran"
 
 msgctxt "Dropdown option label for the 'huge' font size preset."
 msgid "Huge"
-msgstr "Enorm"
+msgstr "Molt gran"
 
 msgctxt "Tooltip for the font family dropdown."
 msgid "Font Family"
-msgstr "Typsnitt"
+msgstr "Font"
 
 msgctxt "Dropdown option label for the default font family."
 msgid "Default"
-msgstr "Standard"
+msgstr "Predeterminada"
