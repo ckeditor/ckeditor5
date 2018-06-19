@@ -11,4 +11,4 @@ msgstr "Geri al"
 
 msgctxt "Toolbar button tooltip for the Redo feature."
 msgid "Redo"
-msgstr "İleri al"
+msgstr "Tekrar yap"
