@@ -10,7 +10,8 @@
 	--ck-widget-outline-thickness: 3px;
 	--ck-color-widget-border-blurred: hsl(0, 0%, 87%);
 	--ck-color-widget-border-hover: hsl(43, 100%, 68%);
-	--ck-color-widget-editable-focused-background: var(--ck-color-base-background),
+	--ck-color-widget-editable-focused-background: var(--ck-color-base-background);
+	--ck-color-widget-drag-handler-icon: hsl(0, 0%, 100%);
 }
 
 .ck .ck-widget {
@@ -42,5 +43,49 @@
 		@mixin ck-box-shadow var(--ck-inner-shadow);
 
 		background-color: var(--ck-color-widget-editable-focused-background);
+	}
+}
+
+:root {
+	--ck-widget-drag-handler-width: 22px;
+}
+
+.ck .ck-widget.ck-widget__selectable {
+	/* Make the widget wrapper a relative positioning container for the drag handler. */
+	position: relative;
+
+	& .ck-selection-handler {
+		display: none;
+
+		border-radius: var(--ck-border-radius) var(--ck-border-radius) 0 var(--ck-border-radius);
+
+		width: var(--ck-widget-drag-handler-width);
+		height: calc(var(--ck-widget-outline-thickness) + var(--ck-widget-drag-handler-width));
+
+		/* Place the drag handler outside the widget wrapper. */
+		position: absolute;
+		top: calc(0px - var(--ck-widget-outline-thickness) - var(--ck-widget-drag-handler-width));
+		left: calc(0px - var(--ck-widget-outline-thickness));
+
+		& .ck-icon {
+			color: var(--ck-color-widget-drag-handler-icon);
+		}
+	}
+
+	/* Show the selection handler when the widget is selected. */
+	&.ck-widget_selected,
+	&.ck-widget_selected:hover {
+		& .ck-selection-handler {
+			display: block;
+			background-color: var(--ck-color-focus-border);
+		}
+	}
+
+	/* Show the selection handler on mouse hover over the widget. */
+	&:hover {
+		& .ck-selection-handler {
+			display: block;
+			background-color: var(--ck-color-widget-border-hover);
+		}
 	}
 }
