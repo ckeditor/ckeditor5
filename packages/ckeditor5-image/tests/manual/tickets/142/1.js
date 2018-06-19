@@ -13,9 +13,6 @@ import Link from '@ckeditor/ckeditor5-link/src/link';
 import Image from '../../../../src/image';
 import ImageCaption from '../../../../src/imagecaption';
 
-import Element from '@ckeditor/ckeditor5-engine/src/model/element';
-import Position from '@ckeditor/ckeditor5-engine/src/model/position';
-
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ Enter, Typing, Paragraph, Link, Image, ImageCaption ],
@@ -24,24 +21,21 @@ ClassicEditor
 	.then( editor => {
 		window.editor = editor;
 
-		const doc = editor.document;
+		const doc = editor.model.document;
 
 		document.querySelector( '.start' ).addEventListener( 'click', () => {
-			wait( 3000 ).then( () => {
-				doc.enqueueChanges( () => {
-					const image = new Element( 'image', { src: 'https://www.w3schools.com/w3images/fjords.jpg' } );
+			let image;
 
-					doc.batch( 'transparent' ).insert( new Position( doc.getRoot(), [ 0 ] ), image );
-				} );
+			editor.model.change( writer => {
+				image = writer.createElement( 'image', { src: 'sample-small.jpg' } );
+				writer.insert( image, doc.getRoot().getChild( 0 ), 'after' );
 			} );
+
+			setTimeout( () => {
+				editor.ui.view.element.querySelector( 'img' ).src = '../../sample.jpg';
+			}, 3000 );
 		} );
 	} )
 	.catch( err => {
 		console.error( err.stack );
 	} );
-
-function wait( delay ) {
-	return new Promise( resolve => {
-		setTimeout( () => resolve(), delay );
-	} );
-}
