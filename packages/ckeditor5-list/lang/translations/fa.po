@@ -1,14 +1,14 @@
 # Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
 msgid ""
 msgstr ""
-"Language: kn\n"
-"Language-Team: Kannada (https://www.transifex.com/ckeditor/teams/11143/kn/)\n"
+"Language: fa\n"
+"Language-Team: Persian (https://www.transifex.com/ckeditor/teams/11143/fa/)\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 msgctxt "Toolbar button tooltip for the Numbered List feature."
 msgid "Numbered List"
-msgstr "‍ಸಂಖ್ಯೆಯ ಪಟ್ಟಿ‍"
+msgstr "لیست عددی"
 
 msgctxt "Toolbar button tooltip for the Bulleted List feature."
 msgid "Bulleted List"
-msgstr "‍‍ಬುಲೆಟ್ ಪಟ್ಟಿ"
+msgstr "لیست نشانه‌دار"
