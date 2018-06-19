@@ -1,0 +1,30 @@
+# Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+"Language: no\n"
+"Language-Team: Norwegian (https://www.transifex.com/ckeditor/teams/11143/no/)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "Dropdown option label for the paragraph format."
+msgid "Paragraph"
+msgstr "Avsnitt"
+
+msgctxt "Tooltip for the heading dropdown."
+msgid "Heading"
+msgstr ""
+
+msgctxt "Default label for the heading dropdown."
+msgid "Choose heading"
+msgstr ""
+
+msgctxt "Dropdown option label for the heading level 1 format."
+msgid "Heading 1"
+msgstr "Overskrift 1"
+
+msgctxt "Dropdown option label for the heading level 2 format."
+msgid "Heading 2"
+msgstr "Overskrift 2"
+
+msgctxt "Dropdown option label for the heading level 3 format."
+msgid "Heading 3"
+msgstr "Overskrift 3"
