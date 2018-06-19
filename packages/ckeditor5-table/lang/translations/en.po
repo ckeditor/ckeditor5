@@ -1,0 +1,78 @@
+# Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+"Language: \n"
+"Language-Team: \n"
+"Plural-Forms: \n"
+
+msgctxt "Label for the insert table toolbar button."
+msgid "Insert table"
+msgstr "Insert table"
+
+msgctxt "Label for the set/unset table header column button."
+msgid "Header column"
+msgstr "Header column"
+
+msgctxt "Label for the insert table column before the current one button."
+msgid "Insert column before"
+msgstr "Insert column before"
+
+msgctxt "Label for the insert table column after the current one button."
+msgid "Insert column after"
+msgstr "Insert column after"
+
+msgctxt "Label for the delete table column button."
+msgid "Delete column"
+msgstr "Delete column"
+
+msgctxt "Label for the table column dropdown button."
+msgid "Column"
+msgstr "Column"
+
+msgctxt "Label for the set/unset table header row button."
+msgid "Header row"
+msgstr "Header row"
+
+msgctxt "Label for the insert row below button."
+msgid "Insert row below"
+msgstr "Insert row below"
+
+msgctxt "Label for the insert row above button."
+msgid "Insert row above"
+msgstr "Insert row above"
+
+msgctxt "Label for the delete table row button."
+msgid "Delete row"
+msgstr "Delete row"
+
+msgctxt "Label for the table row dropdown button."
+msgid "Row"
+msgstr "Row"
+
+msgctxt "Label for the merge table cell up button."
+msgid "Merge cell up"
+msgstr "Merge cell up"
+
+msgctxt "Label for the merge table cell right button."
+msgid "Merge cell right"
+msgstr "Merge cell right"
+
+msgctxt "Label for the merge table cell down button."
+msgid "Merge cell down"
+msgstr "Merge cell down"
+
+msgctxt "Label for the merge table cell left button."
+msgid "Merge cell left"
+msgstr "Merge cell left"
+
+msgctxt "Label for the split table cell vertically button."
+msgid "Split cell vertically"
+msgstr "Split cell vertically"
+
+msgctxt "Label for the split table cell horizontally button."
+msgid "Split cell horizontally"
+msgstr "Split cell horizontally"
+
+msgctxt "Label for the merge table cells button."
+msgid "Merge cells"
+msgstr "Merge cells"
