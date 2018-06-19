@@ -25,7 +25,7 @@ const tableSymbol = Symbol( 'isTable' );
 export function toTableWidget( viewElement, writer ) {
 	writer.setCustomProperty( tableSymbol, true, viewElement );
 
-	return toWidget( viewElement, writer );
+	return toWidget( viewElement, writer, { addSelectionHandler: true } );
 }
 
 /**
