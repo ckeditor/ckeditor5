@@ -25,9 +25,9 @@ import tableMergeCellIcon from './../theme/icons/table-merge-cell.svg';
  * * The `'insertTable'` dropdown,
  * * The `'tableColumn'` dropdown,
  * * The `'tableRow'` dropdown,
- * * The `'mergeCell'` dropdown.
+ * * The `'mergeTableCells'` dropdown.
  *
- * The `'tableColumn'`, `'tableRow'`, `'mergeCell'` dropdowns work best with {@link module:table/tabletoolbar~TableToolbar}.
+ * The `'tableColumn'`, `'tableRow'`, `'mergeTableCells'` dropdowns work best with {@link module:table/tabletoolbar~TableToolbar}.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -74,11 +74,11 @@ export default class TableUI extends Plugin {
 
 		editor.ui.componentFactory.add( 'tableColumn', locale => {
 			const options = [
-				{ commandName: 'setColumnHeader', label: t( 'Header column' ), bindIsActive: true },
+				{ commandName: 'setTableColumnHeader', label: t( 'Header column' ), bindIsActive: true },
 				'|',
-				{ commandName: 'insertColumnBefore', label: t( 'Insert column before' ) },
-				{ commandName: 'insertColumnAfter', label: t( 'Insert column after' ) },
-				{ commandName: 'removeColumn', label: t( 'Delete column' ) }
+				{ commandName: 'insertTableColumnBefore', label: t( 'Insert column before' ) },
+				{ commandName: 'insertTableColumnAfter', label: t( 'Insert column after' ) },
+				{ commandName: 'removeTableColumn', label: t( 'Delete column' ) }
 			];
 
 			return this._prepareDropdown( 'Column', tableColumnIcon, options, locale );
@@ -86,25 +86,25 @@ export default class TableUI extends Plugin {
 
 		editor.ui.componentFactory.add( 'tableRow', locale => {
 			const options = [
-				{ commandName: 'setRowHeader', label: t( 'Header row' ), bindIsActive: true },
+				{ commandName: 'setTableRowHeader', label: t( 'Header row' ), bindIsActive: true },
 				'|',
-				{ commandName: 'insertRowBelow', label: t( 'Insert row below' ) },
-				{ commandName: 'insertRowAbove', label: t( 'Insert row above' ) },
-				{ commandName: 'removeRow', label: t( 'Delete row' ) }
+				{ commandName: 'insertTableRowBelow', label: t( 'Insert row below' ) },
+				{ commandName: 'insertTableRowAbove', label: t( 'Insert row above' ) },
+				{ commandName: 'removeTableRow', label: t( 'Delete row' ) }
 			];
 
 			return this._prepareDropdown( 'Row', tableRowIcon, options, locale );
 		} );
 
-		editor.ui.componentFactory.add( 'mergeCell', locale => {
+		editor.ui.componentFactory.add( 'mergeTableCells', locale => {
 			const options = [
-				{ commandName: 'mergeCellUp', label: t( 'Merge cell up' ) },
-				{ commandName: 'mergeCellRight', label: t( 'Merge cell right' ) },
-				{ commandName: 'mergeCellDown', label: t( 'Merge cell down' ) },
-				{ commandName: 'mergeCellLeft', label: t( 'Merge cell left' ) },
+				{ commandName: 'mergeTableCellUp', label: t( 'Merge cell up' ) },
+				{ commandName: 'mergeTableCellRight', label: t( 'Merge cell right' ) },
+				{ commandName: 'mergeTableCellDown', label: t( 'Merge cell down' ) },
+				{ commandName: 'mergeTableCellLeft', label: t( 'Merge cell left' ) },
 				'|',
-				{ commandName: 'splitCellVertically', label: t( 'Split cell vertically' ) },
-				{ commandName: 'splitCellHorizontally', label: t( 'Split cell horizontally' ) }
+				{ commandName: 'splitTableCellVertically', label: t( 'Split cell vertically' ) },
+				{ commandName: 'splitTableCellHorizontally', label: t( 'Split cell horizontally' ) }
 			];
 
 			return this._prepareDropdown( 'Merge cell', tableMergeCellIcon, options, locale );

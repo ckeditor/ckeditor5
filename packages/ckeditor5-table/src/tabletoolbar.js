@@ -176,13 +176,12 @@ export default class TableToolbar extends Plugin {
  *
  * * `'tableRow'`,
  * * `'tableColumn'`,
- * * `'mergeCell'`,
- * * `'splitCell'`,
+ * * `'mergeTableCells'`.
  *
  * You can thus configure the toolbar like this:
  *
  *		const tableConfig = {
- *			toolbar: [ 'tableRow', 'tableColumn', 'mergeCell', 'splitCell' ]
+ *			toolbar: [ 'tableRow', 'tableColumn', 'mergeTableCells' ]
  *		};
  *
  * Of course, the same buttons can also be used in the

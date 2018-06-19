@@ -17,7 +17,7 @@ ClassicEditor
 			viewportTopOffset: 60
 		},
 		table: {
-			toolbar: [ 'tableColumn', 'tableRow', 'mergeCell' ]
+			toolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
 		}
 	} )
 	.then( editor => {

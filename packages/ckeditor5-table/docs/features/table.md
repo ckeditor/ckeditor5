@@ -30,7 +30,7 @@ ClassicEditor
 		plugins: [ Table, TableToolbar, ... ],
 		toolbar: [ 'insertTable', ... ]
 		table: {
-			toolbar: [ 'tableColumn', 'tableRow', 'mergeCell' ]
+			toolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
 		}
 	} )
 	.then( ... )
@@ -48,7 +48,7 @@ The {@link module:table/table~Table} plugin registers the following UI component
 * The `'insertTable'` dropdown.
 * The `'tableColumn'` dropdown.
 * The `'tableRow'` dropdown.
-* The `'mergeCell'` dropdown.
+* The `'mergeTableCells'` dropdown.
 
 And the following commands:
 
@@ -60,89 +60,89 @@ And the following commands:
 	editor.execute( 'insertTable', { rows: 20, columns: 5 } );
 	```
 
-* The {@link module:table/commands/insertcolumncommand~InsertColumnCommand} in a form of `'insertColumnBefore'` and `'insertColumnAfter'` commands.
+* The {@link module:table/commands/insertcolumncommand~InsertColumnCommand} in a form of `'insertTableColumnBefore'` and `'insertTableColumnAfter'` commands.
 
 	To insert a column before the selected cell, execute the following command:
 
 	```js
-	editor.execute( 'insertColumnBefore' );
+	editor.execute( 'insertTableColumnBefore' );
 	```
 
 	To insert a column after the selected cell, execute the following command:
 
 	```js
-	editor.execute( 'insertColumnAfter' );
+	editor.execute( 'insertTableColumnAfter' );
 	```
 
-* The {@link module:table/commands/insertrowcommand~InsertRowCommand} in a form of `'insertRowAbove'` and `'insertRowBelow'` commands.
+* The {@link module:table/commands/insertrowcommand~InsertRowCommand} in a form of `'insertTableRowAbove'` and `'insertTableRowBelow'` commands.
 
 	To insert a row below the selected cell, execute the following command:
 
 	```js
-	editor.execute( 'insertRowBelow' );
+	editor.execute( 'insertTableRowBelow' );
 	```
 
 	To insert a row above the selected cell, execute the following command:
 
 	```js
-	editor.execute( 'insertRowAbove' );
+	editor.execute( 'insertTableRowAbove' );
 	```
 
-* The {@link module:table/commands/removecolumncommand~RemoveColumnCommand `'removeColumn'`} command.
+* The {@link module:table/commands/removecolumncommand~RemoveColumnCommand `'removeTableColumn'`} command.
 
 	To remove the column containing the selected cell, execute the command:
 
 	```js
-	editor.execute( 'removeColumn' );
+	editor.execute( 'removeTableColumn' );
 	```
 
-* The {@link module:table/commands/removerowcommand~RemoveRowCommand `'removeRow'`} command.
+* The {@link module:table/commands/removerowcommand~RemoveRowCommand `'removeTableRow'`} command.
 
 	To remove the row containing the selected cell, execute the command:
 
 	```js
-	editor.execute( 'removeRow' );
+	editor.execute( 'removeTableRow' );
 	```
 
-* The {@link module:table/commands/setheadercolumncommand~SetHeaderColumnCommand `'setColumnHeader'`} command.
+* The {@link module:table/commands/setheadercolumncommand~SetHeaderColumnCommand `'setTableColumnHeader'`} command.
 
 	You can make the column containing the selected cell a [header](https://www.w3.org/TR/html50/tabular-data.html#the-th-element) by executing:
 
 	```js
-	editor.execute( 'setColumnHeader' );
+	editor.execute( 'setTableColumnHeader' );
 	```
 
 	**Note:** All preceding columns will also become headers. If the current column is already a header, executing this command will make it a regular column back again (including the following columns).
 
-* The {@link module:table/commands/setheaderrowcommand~SetHeaderRowCommand `'setRowHeader'`} command.
+* The {@link module:table/commands/setheaderrowcommand~SetHeaderRowCommand `'setTableRowHeader'`} command.
 
 	You can make the row containing the selected cell a [header](https://www.w3.org/TR/html50/tabular-data.html#the-th-element) by executing:
 
 	```js
-	editor.execute( 'setRowHeader' );
+	editor.execute( 'setTableRowHeader' );
 	```
 
 	**Note:** All preceding rows will also become headers. If the current row is already a header, executing this command will make it a regular row back again (including the following rows).
 
-* The {@link module:table/commands/mergecellcommand~MergeCellCommand} in a form of `'mergeCellRight'`, `'mergeCellLeft'`, `'mergeCellUp'` and `'mergeCellDown'` commands.
+* The {@link module:table/commands/mergecellcommand~MergeCellCommand} in a form of `'mergeTableCellRight'`, `'mergeTableCellLeft'`, `'mergeTableCellUp'` and `'mergeTableCellDown'` commands.
 
 	To merge a table cell at the current selection with another cell, execute the command corresponding with the preferred direction. For example, to merge with a cell to the right:
 
 	```js
-	editor.execute( 'mergeCellRight' );
+	editor.execute( 'mergeTableCellRight' );
 	```
 
-	**Note**: If a table cell has a different [`rowspan`](https://www.w3.org/TR/html50/tabular-data.html#attr-tdth-rowspan) (for `'mergeCellRight'` and `'mergeCellLeft'`) or [`colspan`](https://www.w3.org/TR/html50/tabular-data.html#attr-tdth-colspan) (for `'mergeCellUp'` and `'mergeCellDown'`), the command will be disabled.
+	**Note**: If a table cell has a different [`rowspan`](https://www.w3.org/TR/html50/tabular-data.html#attr-tdth-rowspan) (for `'mergeTableCellRight'` and `'mergeTableCellLeft'`) or [`colspan`](https://www.w3.org/TR/html50/tabular-data.html#attr-tdth-colspan) (for `'mergeTableCellUp'` and `'mergeTableCellDown'`), the command will be disabled.
 
-* The {@link module:table/commands/splitcellcommand~SplitCellCommand} as `'splitCellVertically'` and `'splitCellHorizontally'` commands.
+* The {@link module:table/commands/splitcellcommand~SplitCellCommand} as `'splitTableCellVertically'` and `'splitTableCellHorizontally'` commands.
 
 	You can split any cell vertically or horizontally by executing this command. For example, to split the selected table cell vertically:
 
 	```js
-	editor.execute( 'splitCellVertically' );
+	editor.execute( 'splitTableCellVertically' );
 	```
 
-The {@link module:table/tabletoolbar~TableToolbar} plugin introduces the balloon toolbar for tables. The toolbar shows up when a table cell is selected and is anchored to the table. It is possible to {@link module:table/table~TableConfig#toolbar configure} its content. Normally, it contains the table-related tools such as `'tableColumn'`, `'tableRow'`, and `'mergeCell'` dropdowns.
+The {@link module:table/tabletoolbar~TableToolbar} plugin introduces the balloon toolbar for tables. The toolbar shows up when a table cell is selected and is anchored to the table. It is possible to {@link module:table/table~TableConfig#toolbar configure} its content. Normally, it contains the table-related tools such as `'tableColumn'`, `'tableRow'`, and `'mergeTableCells'` dropdowns.
 
 ## Contribute
 

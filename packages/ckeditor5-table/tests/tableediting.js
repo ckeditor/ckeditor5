@@ -47,59 +47,59 @@ describe( 'TableEditing', () => {
 	} );
 
 	it( 'adds insertRowAbove command', () => {
-		expect( editor.commands.get( 'insertRowAbove' ) ).to.be.instanceOf( InsertRowCommand );
+		expect( editor.commands.get( 'insertTableRowAbove' ) ).to.be.instanceOf( InsertRowCommand );
 	} );
 
 	it( 'adds insertRowBelow command', () => {
-		expect( editor.commands.get( 'insertRowBelow' ) ).to.be.instanceOf( InsertRowCommand );
+		expect( editor.commands.get( 'insertTableRowBelow' ) ).to.be.instanceOf( InsertRowCommand );
 	} );
 
 	it( 'adds insertColumnBefore command', () => {
-		expect( editor.commands.get( 'insertColumnBefore' ) ).to.be.instanceOf( InsertColumnCommand );
+		expect( editor.commands.get( 'insertTableColumnBefore' ) ).to.be.instanceOf( InsertColumnCommand );
 	} );
 
 	it( 'adds insertColumnAfter command', () => {
-		expect( editor.commands.get( 'insertColumnAfter' ) ).to.be.instanceOf( InsertColumnCommand );
+		expect( editor.commands.get( 'insertTableColumnAfter' ) ).to.be.instanceOf( InsertColumnCommand );
 	} );
 
 	it( 'adds removeRow command', () => {
-		expect( editor.commands.get( 'removeRow' ) ).to.be.instanceOf( RemoveRowCommand );
+		expect( editor.commands.get( 'removeTableRow' ) ).to.be.instanceOf( RemoveRowCommand );
 	} );
 
 	it( 'adds removeColumn command', () => {
-		expect( editor.commands.get( 'removeColumn' ) ).to.be.instanceOf( RemoveColumnCommand );
+		expect( editor.commands.get( 'removeTableColumn' ) ).to.be.instanceOf( RemoveColumnCommand );
 	} );
 
 	it( 'adds splitCellVertically command', () => {
-		expect( editor.commands.get( 'splitCellVertically' ) ).to.be.instanceOf( SplitCellCommand );
+		expect( editor.commands.get( 'splitTableCellVertically' ) ).to.be.instanceOf( SplitCellCommand );
 	} );
 
 	it( 'adds splitCellHorizontally command', () => {
-		expect( editor.commands.get( 'splitCellHorizontally' ) ).to.be.instanceOf( SplitCellCommand );
+		expect( editor.commands.get( 'splitTableCellHorizontally' ) ).to.be.instanceOf( SplitCellCommand );
 	} );
 
 	it( 'adds mergeCellRight command', () => {
-		expect( editor.commands.get( 'mergeCellRight' ) ).to.be.instanceOf( MergeCellCommand );
+		expect( editor.commands.get( 'mergeTableCellRight' ) ).to.be.instanceOf( MergeCellCommand );
 	} );
 
 	it( 'adds mergeCellLeft command', () => {
-		expect( editor.commands.get( 'mergeCellLeft' ) ).to.be.instanceOf( MergeCellCommand );
+		expect( editor.commands.get( 'mergeTableCellLeft' ) ).to.be.instanceOf( MergeCellCommand );
 	} );
 
 	it( 'adds mergeCellDown command', () => {
-		expect( editor.commands.get( 'mergeCellDown' ) ).to.be.instanceOf( MergeCellCommand );
+		expect( editor.commands.get( 'mergeTableCellDown' ) ).to.be.instanceOf( MergeCellCommand );
 	} );
 
 	it( 'adds mergeCellUp command', () => {
-		expect( editor.commands.get( 'mergeCellUp' ) ).to.be.instanceOf( MergeCellCommand );
+		expect( editor.commands.get( 'mergeTableCellUp' ) ).to.be.instanceOf( MergeCellCommand );
 	} );
 
 	it( 'adds setColumnHeader command', () => {
-		expect( editor.commands.get( 'setColumnHeader' ) ).to.be.instanceOf( SetHeaderColumnCommand );
+		expect( editor.commands.get( 'setTableColumnHeader' ) ).to.be.instanceOf( SetHeaderColumnCommand );
 	} );
 
 	it( 'adds setRowHeader command', () => {
-		expect( editor.commands.get( 'setRowHeader' ) ).to.be.instanceOf( SetHeaderRowCommand );
+		expect( editor.commands.get( 'setTableRowHeader' ) ).to.be.instanceOf( SetHeaderRowCommand );
 	} );
 
 	describe( 'conversion in data pipeline', () => {

@@ -100,24 +100,24 @@ export default class TableEditing extends Plugin {
 
 		// Define all the commands.
 		editor.commands.add( 'insertTable', new InsertTableCommand( editor ) );
-		editor.commands.add( 'insertRowAbove', new InsertRowCommand( editor, { order: 'above' } ) );
-		editor.commands.add( 'insertRowBelow', new InsertRowCommand( editor, { order: 'below' } ) );
-		editor.commands.add( 'insertColumnBefore', new InsertColumnCommand( editor, { order: 'before' } ) );
-		editor.commands.add( 'insertColumnAfter', new InsertColumnCommand( editor, { order: 'after' } ) );
+		editor.commands.add( 'insertTableRowAbove', new InsertRowCommand( editor, { order: 'above' } ) );
+		editor.commands.add( 'insertTableRowBelow', new InsertRowCommand( editor, { order: 'below' } ) );
+		editor.commands.add( 'insertTableColumnBefore', new InsertColumnCommand( editor, { order: 'before' } ) );
+		editor.commands.add( 'insertTableColumnAfter', new InsertColumnCommand( editor, { order: 'after' } ) );
 
-		editor.commands.add( 'removeRow', new RemoveRowCommand( editor ) );
-		editor.commands.add( 'removeColumn', new RemoveColumnCommand( editor ) );
+		editor.commands.add( 'removeTableRow', new RemoveRowCommand( editor ) );
+		editor.commands.add( 'removeTableColumn', new RemoveColumnCommand( editor ) );
 
-		editor.commands.add( 'splitCellVertically', new SplitCellCommand( editor, { direction: 'vertically' } ) );
-		editor.commands.add( 'splitCellHorizontally', new SplitCellCommand( editor, { direction: 'horizontally' } ) );
+		editor.commands.add( 'splitTableCellVertically', new SplitCellCommand( editor, { direction: 'vertically' } ) );
+		editor.commands.add( 'splitTableCellHorizontally', new SplitCellCommand( editor, { direction: 'horizontally' } ) );
 
-		editor.commands.add( 'mergeCellRight', new MergeCellCommand( editor, { direction: 'right' } ) );
-		editor.commands.add( 'mergeCellLeft', new MergeCellCommand( editor, { direction: 'left' } ) );
-		editor.commands.add( 'mergeCellDown', new MergeCellCommand( editor, { direction: 'down' } ) );
-		editor.commands.add( 'mergeCellUp', new MergeCellCommand( editor, { direction: 'up' } ) );
+		editor.commands.add( 'mergeTableCellRight', new MergeCellCommand( editor, { direction: 'right' } ) );
+		editor.commands.add( 'mergeTableCellLeft', new MergeCellCommand( editor, { direction: 'left' } ) );
+		editor.commands.add( 'mergeTableCellDown', new MergeCellCommand( editor, { direction: 'down' } ) );
+		editor.commands.add( 'mergeTableCellUp', new MergeCellCommand( editor, { direction: 'up' } ) );
 
-		editor.commands.add( 'setColumnHeader', new SetHeaderColumnCommand( editor ) );
-		editor.commands.add( 'setRowHeader', new SetHeaderRowCommand( editor ) );
+		editor.commands.add( 'setTableColumnHeader', new SetHeaderColumnCommand( editor ) );
+		editor.commands.add( 'setTableRowHeader', new SetHeaderRowCommand( editor ) );
 
 		// Handle tab key navigation.
 		this.listenTo( editor.editing.view.document, 'keydown', ( ...args ) => this._handleTabOnSelectedTable( ...args ) );
