@@ -8,6 +8,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import List from '@ckeditor/ckeditor5-list/src/list';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 import Input from '../src/input';
 
 import Writer from '@ckeditor/ckeditor5-engine/src/model/writer';
@@ -36,7 +37,7 @@ describe( 'Input feature', () => {
 		const domElement = document.createElement( 'div' );
 		document.body.appendChild( domElement );
 
-		return ClassicTestEditor.create( domElement, { plugins: [ Input, Paragraph, Bold, List ] } )
+		return ClassicTestEditor.create( domElement, { plugins: [ Input, Paragraph, Bold, List, ShiftEnter ] } )
 			.then( newEditor => {
 				// Mock image feature.
 				newEditor.model.schema.register( 'image', { allowWhere: '$text' } );
@@ -464,6 +465,70 @@ describe( 'Input feature', () => {
 			] );
 
 			expect( getViewData( view ) ).to.equal( '<p>{}Foo</p><ul><li>Bar</li><li>Baz</li></ul>' );
+		} );
+
+		it( 'should handle bogus br correctly', () => {
+			editor.setData( '<p><strong>Foo</strong></p>' );
+
+			editor.model.change( writer => {
+				writer.setSelection( editor.model.document.getRoot().getChild( 0 ), 'end' );
+				writer.removeSelectionAttribute( 'bold' );
+			} );
+
+			// We need to change the DOM content manually because typing algorithm actually does not check
+			// `newChildren` and `oldChildren` list but takes them from DOM and model.
+			const p = viewRoot.getChild( 0 );
+			const domP = editor.editing.view.domConverter.mapViewToDom( p );
+			domP.appendChild( document.createTextNode( ' ' ) );
+			domP.appendChild( document.createElement( 'br' ) );
+
+			viewDocument.fire( 'mutations', [
+				{
+					type: 'children',
+					oldChildren: [ viewRoot.getChild( 0 ).getChild( 0 ) ],
+					newChildren: [
+						new ViewElement( 'strong', null, new ViewText( 'Foo' ) ),
+						new ViewText( ' ' ),
+						new ViewElement( 'br' )
+					],
+					node: viewRoot.getChild( 0 )
+				}
+			] );
+
+			expect( getViewData( view ) ).to.equal( '<p><strong>Foo</strong> {}</p>' );
+		} );
+
+		it( 'should handle children mutation correctly if there are soft breaks in the mutated container', () => {
+			editor.setData( '<p><strong>Foo</strong><br /><strong>Bar</strong></p>' );
+
+			editor.model.change( writer => {
+				writer.setSelection( editor.model.document.getRoot().getChild( 0 ), 'end' );
+				writer.removeSelectionAttribute( 'bold' );
+			} );
+
+			// We need to change the DOM content manually because typing algorithm actually does not check
+			// `newChildren` and `oldChildren` list but takes them from DOM and model.
+			const p = viewRoot.getChild( 0 );
+			const domP = editor.editing.view.domConverter.mapViewToDom( p );
+			domP.appendChild( document.createTextNode( ' ' ) );
+			domP.appendChild( document.createElement( 'br' ) );
+
+			viewDocument.fire( 'mutations', [
+				{
+					type: 'children',
+					oldChildren: [ ...viewRoot.getChild( 0 ).getChildren() ],
+					newChildren: [
+						new ViewElement( 'strong', null, new ViewText( 'Foo' ) ),
+						new ViewElement( 'br' ),
+						new ViewElement( 'strong', null, new ViewText( 'Bar' ) ),
+						new ViewText( ' ' ),
+						new ViewElement( 'br' )
+					],
+					node: viewRoot.getChild( 0 )
+				}
+			] );
+
+			expect( getViewData( view ) ).to.equal( '<p><strong>Foo</strong><br></br><strong>Bar</strong> {}</p>' );
 		} );
 	} );
 

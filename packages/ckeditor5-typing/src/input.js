@@ -211,15 +211,26 @@ class MutationHandler {
 		const modelFromDomChildren = Array.from( modelFromCurrentDom.getChildren() );
 		const currentModelChildren = Array.from( currentModel.getChildren() );
 
-		// Skip situations when common ancestor has any elements (cause they are too hard).
-		if ( !hasOnlyTextNodes( modelFromDomChildren ) || !hasOnlyTextNodes( currentModelChildren ) ) {
+		// Remove the last `<softBreak>` from the end of the `modelFromDomChildren` if there is no `<softBreak>` current model.
+		// If that happened, it means that this is a bogus br added by a browser.
+		const lastDomChild = modelFromDomChildren[ modelFromDomChildren.length - 1 ];
+		const lastCurrentChild = currentModelChildren[ currentModelChildren.length - 1 ];
+
+		if ( lastDomChild && lastDomChild.is( 'softBreak' ) && lastCurrentChild && !lastCurrentChild.is( 'softBreak' ) ) {
+			modelFromDomChildren.pop();
+		}
+
+		// Skip situations when common ancestor has any container elements.
+		if ( !isSafeForTextMutation( modelFromDomChildren ) || !isSafeForTextMutation( currentModelChildren ) ) {
 			return;
 		}
 
-		// Replace &nbsp; inserted by the browser with normal space.
-		// See comment in `_handleTextMutation`.
-		const newText = modelFromDomChildren.map( item => item.data ).join( '' ).replace( /\u00A0/g, ' ' );
-		const oldText = currentModelChildren.map( item => item.data ).join( '' );
+		// Replace &nbsp; inserted by the browser with normal space. See comment in `_handleTextMutation`.
+		// Replace non-texts with any character. This is potentially dangerous but passes in manual tests. The thing is
+		// that we need to take care of proper indexes so we cannot simply remove non-text elements from the content.
+		// By inserting a character we keep all the real texts on their indexes.
+		const newText = modelFromDomChildren.map( item => item.is( 'text' ) ? item.data : '@' ).join( '' ).replace( /\u00A0/g, ' ' );
+		const oldText = currentModelChildren.map( item => item.is( 'text' ) ? item.data : '@' ).join( '' );
 
 		// Do nothing if mutations created same text.
 		if ( oldText === newText ) {
@@ -447,12 +458,12 @@ function containerChildrenMutated( mutations ) {
 	return false;
 }
 
-// Returns true if provided array contains only {@link module:engine/model/text~Text model text nodes}.
+// Returns true if provided array contains content that won't be problematic during diffing and text mutation handling.
 //
 // @param {Array.<module:engine/model/node~Node>} children
 // @returns {Boolean}
-function hasOnlyTextNodes( children ) {
-	return children.every( child => child.is( 'text' ) );
+function isSafeForTextMutation( children ) {
+	return children.every( child => child.is( 'text' ) || child.is( 'softBreak' ) );
 }
 
 // Calculates first change index and number of characters that should be inserted and deleted starting from that index.
