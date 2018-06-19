@@ -81,7 +81,7 @@ module.exports = {
 		},
 
 		table: {
-			toolbar: [ 'tableColumn', 'tableRow', 'mergeCell' ]
+			toolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
 		},
 
 		// UI language. Language codes follow the https://en.wikipedia.org/wiki/ISO_639-1 format.

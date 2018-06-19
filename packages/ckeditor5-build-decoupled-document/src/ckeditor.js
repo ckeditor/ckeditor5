@@ -104,7 +104,7 @@ DecoupledEditor.build = {
 			toolbar: [
 				'tableColumn',
 				'tableRow',
-				'mergeCell'
+				'mergeTableCells'
 			]
 		},
 		language: 'en'
