@@ -3,7 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+/* global document, Event */
+
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import ImageEditing from '../../src/image/imageediting';
 import ImageLoadObserver from '../../src/image/imageloadobserver';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
@@ -12,7 +15,7 @@ import { isImageWidget } from '../../src/image/utils';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 
 describe( 'ImageEditing', () => {
-	let editor, model, document, view, viewDocument;
+	let editor, model, doc, view, viewDocument;
 
 	beforeEach( () => {
 		return VirtualTestEditor
@@ -22,7 +25,7 @@ describe( 'ImageEditing', () => {
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
-				document = model.document;
+				doc = model.document;
 				view = editor.editing.view;
 				viewDocument = view.document;
 			} );
@@ -46,6 +49,28 @@ describe( 'ImageEditing', () => {
 
 	it( 'should register ImageLoadObserver', () => {
 		expect( view.getObserver( ImageLoadObserver ) ).to.be.instanceOf( ImageLoadObserver );
+	} );
+
+	// See https://github.com/ckeditor/ckeditor5-image/issues/142.
+	it( 'should update the ui after image has been loaded in the DOM', () => {
+		const element = document.createElement( 'div' );
+		document.body.appendChild( element );
+
+		ClassicTestEditor.create( element, {
+			plugins: [ ImageEditing ]
+		} ).then( editor => {
+			editor.data.set( '<figure class="image"><img src="foo.png" alt="bar" /></figure>' );
+
+			const spy = sinon.spy();
+
+			editor.ui.on( 'update', spy );
+
+			element.querySelector( 'img' ).dispatchEvent( new Event( 'load' ) );
+
+			sinon.assert.calledOnce( spy );
+
+			return editor.destroy().then( () => element.remove() );
+		} );
 	} );
 
 	describe( 'conversion in data pipeline', () => {
@@ -120,7 +145,7 @@ describe( 'ImageEditing', () => {
 						'srcset=\'{ "foo":"bar" }\'>' +
 					'</image>' );
 
-				const image = document.getRoot().getChild( 0 );
+				const image = doc.getRoot().getChild( 0 );
 				model.change( writer => {
 					writer.removeAttribute( 'srcset', image );
 				} );
@@ -400,7 +425,7 @@ describe( 'ImageEditing', () => {
 
 			it( 'should convert attribute change', () => {
 				setModelData( model, '<image src="foo.png" alt="alt text"></image>' );
-				const image = document.getRoot().getChild( 0 );
+				const image = doc.getRoot().getChild( 0 );
 
 				model.change( writer => {
 					writer.setAttribute( 'alt', 'new text', image );
@@ -413,7 +438,7 @@ describe( 'ImageEditing', () => {
 
 			it( 'should convert attribute removal', () => {
 				setModelData( model, '<image src="foo.png" alt="alt text"></image>' );
-				const image = document.getRoot().getChild( 0 );
+				const image = doc.getRoot().getChild( 0 );
 
 				model.change( writer => {
 					writer.removeAttribute( 'alt', image );
@@ -425,7 +450,7 @@ describe( 'ImageEditing', () => {
 
 			it( 'should not convert change if is already consumed', () => {
 				setModelData( model, '<image src="foo.png" alt="alt text"></image>' );
-				const image = document.getRoot().getChild( 0 );
+				const image = doc.getRoot().getChild( 0 );
 
 				editor.editing.downcastDispatcher.on( 'attribute:alt:image', ( evt, data, conversionApi ) => {
 					conversionApi.consumable.consume( data.item, 'attribute:alt' );
@@ -463,7 +488,7 @@ describe( 'ImageEditing', () => {
 						'srcset=\'{ "foo":"bar" }\'>' +
 					'</image>' );
 
-				const image = document.getRoot().getChild( 0 );
+				const image = doc.getRoot().getChild( 0 );
 				model.change( writer => {
 					writer.removeAttribute( 'srcset', image );
 				} );
@@ -492,7 +517,7 @@ describe( 'ImageEditing', () => {
 
 			it( 'should remove sizes and srcsset attribute when srcset attribute is removed from model', () => {
 				setModelData( model, '<image src="foo.png" srcset=\'{ "data": "small.png 148w, big.png 1024w" }\'></image>' );
-				const image = document.getRoot().getChild( 0 );
+				const image = doc.getRoot().getChild( 0 );
 
 				model.change( writer => {
 					writer.removeAttribute( 'srcset', image );
@@ -512,7 +537,7 @@ describe( 'ImageEditing', () => {
 						'srcset=\'{ "data": "small.png 148w, big.png 1024w", "width": "1024" }\'>' +
 					'</image>'
 				);
-				const image = document.getRoot().getChild( 0 );
+				const image = doc.getRoot().getChild( 0 );
 
 				model.change( writer => {
 					writer.removeAttribute( 'srcset', image );
