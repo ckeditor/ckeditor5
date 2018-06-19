@@ -54,6 +54,7 @@ describe( 'RedoCommand', () => {
 				model.change( writer => {
 					writer.setSelection( r( 0, 0 ) );
 				} );
+
 				batch0 = new Batch();
 				undo.addBatch( batch0 );
 				model.enqueueChange( batch0, writer => {
@@ -130,7 +131,7 @@ describe( 'RedoCommand', () => {
 				expect( editor.model.document.selection.isBackward ).to.be.false;
 			} );
 
-			it( 'should redo series of batches undone by undo command', () => {
+			it.skip( 'should redo series of batches undone by undo command', () => {
 				undo.execute();
 				undo.execute();
 				undo.execute();
@@ -189,7 +190,7 @@ describe( 'RedoCommand', () => {
 				expect( editor.model.document.selection.isBackward ).to.be.false;
 			} );
 
-			it( 'should redo batch selectively undone by undo command', () => {
+			it.skip( 'should redo batch selectively undone by undo command', () => {
 				undo.execute( batch0 );
 				redo.execute();
 

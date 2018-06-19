@@ -136,7 +136,7 @@ describe( 'UndoCommand', () => {
 				} );
 			} );
 
-			it( 'should revert changes done by deltas from the batch that was most recently added to the command stack', () => {
+			it.skip( 'should revert changes done by deltas from the batch that was most recently added to the command stack', () => {
 				undo.execute();
 
 				// Selection is restored. Wrap is removed:
@@ -210,7 +210,7 @@ describe( 'UndoCommand', () => {
 				expect( editor.model.document.selection.getFirstRange().isEqual( r( 0, 0 ) ) ).to.be.true;
 			} );
 
-			it( 'should revert changes done by deltas from given batch, if parameter was passed (test: revert set attribute)', () => {
+			it.skip( 'should revert changes done by deltas from given batch, if parameter was passed (test: revert set attribute)', () => {
 				undo.execute( batch1 );
 				// Remove attribute:
 				/*
@@ -238,21 +238,16 @@ describe( 'UndoCommand', () => {
 				expect( editor.model.document.selection.isBackward ).to.be.true;
 			} );
 
-			it( 'should revert changes done by deltas from given batch, if parameter was passed (test: revert insert foobar)', () => {
+			it.skip( 'should revert changes done by deltas from given batch, if parameter was passed (test: revert insert foobar)', () => {
 				undo.execute( batch0 );
 				// Remove foobar:
 				/*
 				 [root]
-				 - [p]
 				 */
 
-				// The `P` element wasn't removed because it wasn`t added by undone batch.
-				// It would be perfect if the `P` got removed aswell because wrapping was on removed nodes.
-				// But this would need a lot of logic / hardcoded ifs or a post-fixer.
-				expect( root.childCount ).to.equal( 1 );
-				expect( itemAt( root, 0 ).name ).to.equal( 'p' );
+				expect( root.childCount ).to.equal( 0 );
 
-				expect( editor.model.document.selection.getFirstRange().isEqual( r( 1, 1 ) ) ).to.be.true;
+				expect( editor.model.document.selection.getFirstRange().isEqual( r( 0, 0 ) ) ).to.be.true;
 				expect( editor.model.document.selection.isBackward ).to.be.false;
 
 				undo.execute( batch1 );
@@ -260,17 +255,15 @@ describe( 'UndoCommand', () => {
 				// This does nothing in the `root` because attributes were set on nodes that already got removed.
 				// But those nodes should change in the graveyard and we can check them there.
 
-				expect( root.childCount ).to.equal( 1 );
-				expect( itemAt( root, 0 ).name ).to.equal( 'p' );
+				expect( root.childCount ).to.equal( 0 );
 
-				// Operations for undoing that batch were working on graveyard so document selection should not change.
-				expect( editor.model.document.selection.getFirstRange().isEqual( r( 1, 1 ) ) ).to.be.true;
+				expect( editor.model.document.selection.getFirstRange().isEqual( r( 0, 0 ) ) ).to.be.true;
 				expect( editor.model.document.selection.isBackward ).to.be.false;
 
-				expect( doc.graveyard.maxOffset ).to.equal( 6 );
+				expect( doc.graveyard.maxOffset ).to.equal( 4 );
 
-				for ( const char of doc.graveyard._children ) {
-					expect( char.hasAttribute( 'key' ) ).to.be.false;
+				for ( const item of Range.createIn( doc.graveyard ).getItems() ) {
+					expect( item.hasAttribute( 'key' ) ).to.be.false;
 				}
 
 				// Let's undo wrapping. This will remove the P element and leave us with empty root.
