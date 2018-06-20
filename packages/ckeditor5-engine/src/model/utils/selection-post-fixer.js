@@ -20,18 +20,18 @@ import Position from '../position';
  *
  * * All collapsed selection ranges are in a place where the {@link module:engine/model/schema~Schema}
  * allows a `$text`.
- * * None of selection's non-collapsed ranges crosses a {@link module:engine/model/schema~Schema#isLimit limit element}
+ * * None of the selection's non-collapsed ranges crosses a {@link module:engine/model/schema~Schema#isLimit limit element}
  * boundary (a range must be rooted within one limit element).
- * * Only {@link module:engine/model/schema~Schema#isObject object elements} can be selected from outside
+ * * Only {@link module:engine/model/schema~Schema#isObject object elements} can be selected from the outside
  * (e.g. `[<paragraph>foo</paragraph>]` is invalid). This rule applies independently to both selection ends, so this
- * selection is correct – `<paragraph>f[oo</paragraph><image></image>]`.
+ * selection is correct: `<paragraph>f[oo</paragraph><image></image>]`.
  *
  * If the position is not correct, the post-fixer will automatically correct it.
  *
  * ## Fixing a non-collapsed selection
  *
- * See as an example a selection that starts in a P1 element and ends inside a text of a TD element
- * (`[` and `]` are range boundaries and `(l)` denotes element defines as `isLimit=true`):
+ * See as an example a selection that starts in a P1 element and ends inside the text of a TD element
+ * (`[` and `]` are range boundaries and `(l)` denotes an element defined as `isLimit=true`):
  *
  *		root
  *		 |- element P1
@@ -51,13 +51,13 @@ import Position from '../position';
  *		                                                 TD      TD
  *		                                               a a a    b b b
  *
- * In the above example, the TABLE, TR and TD are defined as `isLimit=true` in the schema. The range which is not contained within
- * a single limit element must be expanded to select the outer most limit element. The range end is inside text node of TD element.
- * As TD element is a child of TR element and TABLE elements which both are defined as `isLimit=true` in schema the range must be expanded
- * to select whole TABLE element.
+ * In the example above, the TABLE, TR and TD are defined as `isLimit=true` in the schema. The range which is not contained within
+ * a single limit element must be expanded to select the outermost limit element. The range end is inside the text node of the TD element.
+ * As the TD element is a child of the TR and TABLE elements, where both are defined as `isLimit=true` in the schema, the range must be
+ * expanded to select the whole TABLE element.
  *
- * **Note** If selection contains multiple ranges the method returns minimal set of ranges that are not intersecting after expanding them
- * to select `isLimit=true` elements.
+ * **Note** If the selection contains multiple ranges, the method returns a minimal set of ranges that are not intersecting after expanding
+ * them to select `isLimit=true` elements.
  *
  * @param {module:engine/model/model~Model} model
  */

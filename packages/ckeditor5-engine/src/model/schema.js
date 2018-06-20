@@ -381,13 +381,13 @@ export default class Schema {
 	 *		} );
 	 *		schema.checkChild( model.document.getRoot(), paragraph ); // -> true
 	 *
-	 * Note: When verifying whether the given node can be a child of the given context,
-	 * schema also verifies the entire context – from its root to its last element. Therefore, it is possible
-	 * for `checkChild()` to return `false` even though context's last element can contain the checked child.
+	 * Note: When verifying whether the given node can be a child of the given context, the
+	 * schema also verifies the entire context &mdash; from its root to its last element. Therefore, it is possible
+	 * for `checkChild()` to return `false` even though the context's last element can contain the checked child.
 	 * It happens if one of the context's elements does not allow its child.
 	 *
 	 * @fires checkChild
-	 * @param {module:engine/model/schema~SchemaContextDefinition} context Context in which the child will be checked.
+	 * @param {module:engine/model/schema~SchemaContextDefinition} context The context in which the child will be checked.
 	 * @param {module:engine/model/node~Node|String} def The child to check.
 	 */
 	checkChild( context, def ) {
@@ -411,7 +411,7 @@ export default class Schema {
 	 *		schema.checkAttribute( textNode, 'bold' ); // -> true
 	 *
 	 * @fires checkAttribute
-	 * @param {module:engine/model/schema~SchemaContextDefinition} context Context in which the attribute will be checked.
+	 * @param {module:engine/model/schema~SchemaContextDefinition} context The context in which the attribute will be checked.
 	 * @param {String} attributeName
 	 */
 	checkAttribute( context, attributeName ) {
@@ -427,17 +427,17 @@ export default class Schema {
 	/**
 	 * Checks whether the given element (`elementToMerge`) can be merged with the specified base element (`positionOrBaseElement`).
 	 *
-	 * In other words – whether `elementToMerge`'s children {@link #checkChild are allowed} in the `positionOrBaseElement`.
+	 * In other words &mdash; whether `elementToMerge`'s children {@link #checkChild are allowed} in the `positionOrBaseElement`.
 	 *
 	 * This check ensures that elements merged with {@link module:engine/model/writer~Writer#merge `Writer#merge()`}
 	 * will be valid.
 	 *
-	 * Instead of elements, you can pass the instance of {@link module:engine/model/position~Position} class as the `positionOrBaseElement`.
-	 * It means that the elements before and after the position will be checked whether they can be merged.
+	 * Instead of elements, you can pass the instance of the {@link module:engine/model/position~Position} class as the
+	 * `positionOrBaseElement`. It means that the elements before and after the position will be checked whether they can be merged.
 	 *
 	 * @param {module:engine/model/position~Position|module:engine/model/element~Element} positionOrBaseElement The position or base
 	 * element to which the `elementToMerge` will be merged.
-	 * @param {module:engine/model/element~Element} elementToMerge The element to merge. Required if `positionOrBaseElement` is a element.
+	 * @param {module:engine/model/element~Element} elementToMerge The element to merge. Required if `positionOrBaseElement` is an element.
 	 * @returns {Boolean}
 	 */
 	checkMerge( positionOrBaseElement, elementToMerge = null ) {
@@ -973,29 +973,29 @@ mix( Schema, ObservableMixin );
  *
  * You can define the following rules:
  *
- * * `allowIn` – a string or an array of strings. Defines in which other items this item will be allowed.
- * * `allowAttributes` – a string or an array of strings. Defines allowed attributes of the given item.
- * * `allowContentOf` – a string or an array of strings. Inherit "allowed children" from other items.
- * * `allowWhere` – a string or an array of strings. Inherit "allowed in" from other items.
- * * `allowAttributesOf` – a string or an array of strings. Inherit attributes from other items.
- * * `inheritTypesFrom` – a string or an array of strings. Inherit `is*` properties of other items.
- * * `inheritAllFrom` – a string. A shorthand for `allowContentOf`, `allowWhere`, `allowAttributesOf`, `inheritTypesFrom`.
- * * additionally, you can define the following `is*` properties: `isBlock`, `isLimit`, `isObject`. Read about them below.
+ * * `allowIn` &ndash; A string or an array of strings. Defines in which other items this item will be allowed.
+ * * `allowAttributes` &ndash; A string or an array of strings. Defines allowed attributes of the given item.
+ * * `allowContentOf` &ndash; A string or an array of strings. Inherits "allowed children" from other items.
+ * * `allowWhere` &ndash; A string or an array of strings. Inherits "allowed in" from other items.
+ * * `allowAttributesOf` &ndash; A string or an array of strings. Inherits attributes from other items.
+ * * `inheritTypesFrom` &ndash; A string or an array of strings. Inherits `is*` properties of other items.
+ * * `inheritAllFrom` &ndash; A string. A shorthand for `allowContentOf`, `allowWhere`, `allowAttributesOf`, `inheritTypesFrom`.
+ * * Additionally, you can define the following `is*` properties: `isBlock`, `isLimit`, `isObject`. Read about them below.
  *
  * # The is* properties
  *
  * There are 3 commonly used `is*` properties. Their role is to assign additional semantics to schema items.
  * You can define more properties but you will also need to implement support for them in the existing editor features.
  *
- * * `isBlock` – whether this item is paragraph-like. Generally speaking, a content is usually made out of blocks
+ * * `isBlock` &ndash; Whether this item is paragraph-like. Generally speaking, content is usually made out of blocks
  * like paragraphs, list items, images, headings, etc. All these elements are marked as blocks. A block
- * should not allow another block inside. Note: there's also the `$block` generic item which has `isBlock` set to `true`.
+ * should not allow another block inside. Note: There is also the `$block` generic item which has `isBlock` set to `true`.
  * Most block type items will inherit from `$block` (through `inheritAllFrom`).
- * * `isLimit` – can be understood as whether this element should not be split by <kbd>Enter</kbd>.
- * Examples of limit elements – `$root`, table cell, image caption, etc. In other words, all actions which happen inside
- * a limit element are limited to its content. **Note:** all objects (`isObject`) are treated as limit elements too.
- * * `isObject` – whether item is "self-contained" and should be treated as a whole. Examples of object elements –
- * `image`, `table`, `video`, etc. **Note:** an object is also a limit so
+ * * `isLimit` &ndash; It can be understood as whether this element should not be split by <kbd>Enter</kbd>.
+ * Examples of limit elements: `$root`, table cell, image caption, etc. In other words, all actions that happen inside
+ * a limit element are limited to its content. **Note:** All objects (`isObject`) are treated as limit elements, too.
+ * * `isObject` &ndash; Whether an item is "self-contained" and should be treated as a whole. Examples of object elements:
+ * `image`, `table`, `video`, etc. **Note:** An object is also a limit, so
  * {@link module:engine/model/schema~Schema#isLimit `isLimit()`}
  * returns `true` for object elements automatically.
  *
@@ -1015,7 +1015,7 @@ mix( Schema, ObservableMixin );
  *			allowIn: '$block'
  *		} );
  *
- * They reflect a typical editor content which is contained within one root, consists of several blocks
+ * They reflect typical editor content that is contained within one root, consists of several blocks
  * (paragraphs, lists items, headings, images) which, in turn, may contain text inside.
  *
  * By inheriting from the generic items you can define new items which will get extended by other editor features.
@@ -1038,7 +1038,7 @@ mix( Schema, ObservableMixin );
  *		} );
  *
  * Make `image` a block object, which is allowed everywhere where `$block` is.
- * Also, allow `src` and `alt` attributes on it:
+ * Also, allow `src` and `alt` attributes in it:
  *
  *		schema.register( 'image', {
  *			allowWhere: '$block',
@@ -1048,7 +1048,7 @@ mix( Schema, ObservableMixin );
  *		} );
  *
  * Make `caption` allowed in `image` and make it allow all the content of `$block`s (usually, `$text`).
- * Also, mark it as a limit element so it can't be split:
+ * Also, mark it as a limit element so it cannot be split:
  *
  *		schema.register( 'caption', {
  *			allowIn: 'image',
@@ -1078,9 +1078,9 @@ mix( Schema, ObservableMixin );
  * * Check schema definitions of existing features to see how they are defined.
  * * If you want to publish your feature so other developers can use it, try to use
  * generic items as much as possible.
- * * Keep your model clean – limit it to the actual data and store information in an normalized way.
- * * Remember about definining the `is*` properties. They don't affect the allowed structures, but they can
- * affect how editor features treat your elements.
+ * * Keep your model clean. Limit it to the actual data and store information in a normalized way.
+ * * Remember about definining the `is*` properties. They do not affect the allowed structures, but they can
+ * affect how the editor features treat your elements.
  *
  * @typedef {Object} module:engine/model/schema~SchemaItemDefinition
  */
@@ -1088,26 +1088,26 @@ mix( Schema, ObservableMixin );
 /**
  * A simplified version of {@link module:engine/model/schema~SchemaItemDefinition} after
  * compilation by the {@link module:engine/model/schema~Schema schema}.
- * Rules feed to the schema by {@link module:engine/model/schema~Schema#register}
- * and {@link module:engine/model/schema~Schema#extend} are defined in the
+ * Rules fed to the schema by {@link module:engine/model/schema~Schema#register}
+ * and {@link module:engine/model/schema~Schema#extend} methods are defined in the
  * {@link module:engine/model/schema~SchemaItemDefinition} format.
  * Later on, they are compiled to `SchemaCompiledItemDefition` so when you use e.g.
  * the {@link module:engine/model/schema~Schema#getDefinition} method you get the compiled version.
  *
  * The compiled version contains only the following properties:
  *
- * * `name` property,
- * * `is*` properties,
- * * `allowIn` array,
- * * `allowAttributes` array.
+ * * The `name` property,
+ * * The `is*` properties,
+ * * The `allowIn` array,
+ * * The `allowAttributes` array.
  *
  * @typedef {Object} module:engine/model/schema~SchemaCompiledItemDefinition
  */
 
 /**
- * A schema context – a list of ancestors of a given position in the document.
+ * A schema context &mdash; a list of ancestors of a given position in the document.
  *
- * Considering such a position:
+ * Considering such position:
  *
  *		<$root>
  *			<blockQuote>
@@ -1155,7 +1155,7 @@ export class SchemaContext {
 	}
 
 	/**
-	 * Number of items.
+	 * The number of items.
 	 *
 	 * @type {Number}
 	 */
@@ -1184,7 +1184,7 @@ export class SchemaContext {
 	}
 
 	/**
-	 * Returns new SchemaContext instance with additional item
+	 * Returns a new schema context instance with an additional item.
 	 *
 	 * Item can be added as:
 	 *
@@ -1203,9 +1203,9 @@ export class SchemaContext {
 	 *
 	 * **Note** {module:engine/model/node~Node} that is already in the model tree will be added as the only item (without ancestors).
 	 *
-	 * @param {String|module:engine/model/node~Node|Array<String|module:engine/model/node~Node>} item Item that will be added
-	 * to current context.
-	 * @returns {module:engine/model/schema~SchemaContext} New SchemaContext instance with additional item.
+	 * @param {String|module:engine/model/node~Node|Array<String|module:engine/model/node~Node>} item An item that will be added
+	 * to the current context.
+	 * @returns {module:engine/model/schema~SchemaContext} A new schema context instance with an additional item.
 	 */
 	push( item ) {
 		const ctx = new SchemaContext( [ item ] );
