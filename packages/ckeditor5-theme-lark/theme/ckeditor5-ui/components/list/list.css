@@ -42,18 +42,18 @@
 		}
 
 		&.ck-on {
-			background: var(--ck-color-list-button-background-active);
-			color: var(--ck-color-list-button-text-active);
+			background: var(--ck-color-list-button-on-background);
+			color: var(--ck-color-list-button-on-text);
 
 			&:hover:not(ck-disabled),
 			&:focus {
-				background: var(--ck-color-list-button-background-active-focus);
+				background: var(--ck-color-list-button-on-background-focus);
 			}
 		}
 
 		&:hover:not(.ck-disabled),
 		&:focus {
-			background: var(--ck-color-list-button-background-hover);
+			background: var(--ck-color-list-button-hover-background);
 		}
 	}
 }

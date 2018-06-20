@@ -131,10 +131,10 @@ The file containing custom variables will be named `custom.css` and it will look
 	/* -- Overrides the default .ck-list class colors. ------------------------------------------ */
 
 	--ck-color-list-background: var(--ck-custom-background);
-	--ck-color-list-button-background-hover: var(--ck-color-base-foreground);
-	--ck-color-list-button-background-active: var(--ck-color-base-active);
-	--ck-color-list-button-background-active-focus: var(--ck-color-base-active-focus);
-	--ck-color-list-button-text-active: var(--ck-color-base-background);
+	--ck-color-list-button-hover-background: var(--ck-color-base-foreground);
+	--ck-color-list-button-on-background: var(--ck-color-base-active);
+	--ck-color-list-button-on-background-focus: var(--ck-color-base-active-focus);
+	--ck-color-list-button-on-text: var(--ck-color-base-background);
 
 	/* -- Overrides the default .ck-balloon-panel class colors. --------------------------------- */
 
