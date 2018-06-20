@@ -109,29 +109,33 @@ export default class FontSizeUI extends Plugin {
 // @param {Array.<module:font/fontsize~FontSizeOption>} options
 // @param {module:font/fontsize/fontsizecommand~FontSizeCommand} command
 function _prepareListOptions( options, command ) {
-	const dropdownItems = new Collection();
+	const itemDefinitions = new Collection();
 
 	for ( const option of options ) {
-		const itemModel = new Model( {
-			commandName: 'fontSize',
-			commandParam: option.model,
-			label: option.title,
-			class: 'ck-fontsize-option'
-		} );
+		const def = {
+			type: 'button',
+			model: new Model( {
+				commandName: 'fontSize',
+				commandParam: option.model,
+				label: option.title,
+				class: 'ck-fontsize-option',
+				withText: true
+			} )
+		};
 
 		if ( option.view && option.view.styles ) {
-			itemModel.set( 'style', `font-size:${ option.view.styles[ 'font-size' ] }` );
+			def.model.set( 'style', `font-size:${ option.view.styles[ 'font-size' ] }` );
 		}
 
 		if ( option.view && option.view.classes ) {
-			itemModel.set( 'class', `${ itemModel.class } ${ option.view.classes }` );
+			def.model.set( 'class', `${ def.model.class } ${ option.view.classes }` );
 		}
 
-		itemModel.bind( 'isActive' ).to( command, 'value', value => value === option.model );
+		def.model.bind( 'isOn' ).to( command, 'value', value => value === option.model );
 
 		// Add the option to the collection.
-		dropdownItems.add( itemModel );
+		itemDefinitions.add( def );
 	}
 
-	return dropdownItems;
+	return itemDefinitions;
 }
