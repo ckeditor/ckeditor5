@@ -15,6 +15,19 @@ import TableWalker from '../tablewalker';
 /**
  * The merge cell command.
  *
+ * The command is registered by {@link module:table/tableediting~TableEditing} as `'mergeTableCellRight'`, `'mergeTableCellLeft'`,
+ * `'mergeTableCellUp'` and `'mergeTableCellDown'` editor commands.
+ *
+ * To merge a table cell at the current selection with another cell, execute the command corresponding with the preferred direction.
+ *
+ * For example, to merge with a cell to the right:
+ *
+ *		editor.execute( 'mergeTableCellRight' );
+ *
+ * **Note**: If a table cell has a different [`rowspan`](https://www.w3.org/TR/html50/tabular-data.html#attr-tdth-rowspan)
+ * (for `'mergeTableCellRight'` and `'mergeTableCellLeft'`) or [`colspan`](https://www.w3.org/TR/html50/tabular-data.html#attr-tdth-colspan)
+ * (for `'mergeTableCellUp'` and `'mergeTableCellDown'`), the command will be disabled.
+ *
  * @extends module:core/command~Command
  */
 export default class MergeCellCommand extends Command {

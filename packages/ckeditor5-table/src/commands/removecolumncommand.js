@@ -16,6 +16,12 @@ import { updateNumericAttribute } from './utils';
 /**
  * The remove column command.
  *
+ * The command is registered by {@link module:table/tableediting~TableEditing} as `'removeTableColumn'` editor command.
+ *
+ * To remove the column containing the selected cell, execute the command:
+ *
+ *		editor.execute( 'removeTableColumn' );
+ *
  * @extends module:core/command~Command
  */
 export default class RemoveColumnCommand extends Command {
