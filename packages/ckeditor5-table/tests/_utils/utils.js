@@ -49,7 +49,7 @@ export function formatTable( tableString ) {
 		.replace( /<\/tbody>/g, '\n</tbody>' )
 		.replace( /<\/tr>/g, '\n</tr>' )
 		.replace( /<\/table>/g, '\n</table>' )
-		.replace( /<\/figure>/g, '\n</table>' );
+		.replace( /<\/figure>/g, '\n</figure>' );
 }
 
 /**
