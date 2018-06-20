@@ -121,14 +121,14 @@
  */
 
 /**
- * (Optional) The additional class set on the button.
+ * (Optional) The additional CSS class set on the button.
  *
  * @observable
  * @member {String} #class
  */
 
 /**
- * (Optional) The value of the style attribute.
+ * (Optional) The value of the `style` attribute of the label.
  *
  * @observable
  * @member {String} #style

@@ -128,7 +128,6 @@ export default class ButtonView extends View {
 					bind.to( 'isOn', value => value ? 'ck-on' : 'ck-off' ),
 					bind.if( 'withText', 'ck-button_with-text' )
 				],
-				style: bind.to( 'style' ),
 				type: bind.to( 'type', value => value ? value : 'button' ),
 				tabindex: bind.to( 'tabindex' ),
 				'aria-labelledby': `ck-editor__aria-label_${ ariaLabelUid }`,
@@ -205,6 +204,7 @@ export default class ButtonView extends View {
 	 */
 	_createLabelView( ariaLabelUid ) {
 		const labelView = new View();
+		const bind = this.bindTemplate;
 
 		labelView.setTemplate( {
 			tag: 'span',
@@ -214,6 +214,7 @@ export default class ButtonView extends View {
 					'ck',
 					'ck-button__label'
 				],
+				style: bind.to( 'style' ),
 				id: `ck-editor__aria-label_${ ariaLabelUid }`,
 			},
 

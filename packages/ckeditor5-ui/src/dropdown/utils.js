@@ -165,31 +165,28 @@ export function addToolbarToDropdown( dropdownView, buttons ) {
  * See {@link module:ui/dropdown/utils~createDropdown} and {@link module:list/list~List}.
  *
  * @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView A dropdown instance to which `ListVIew` will be added.
- * @param {module:utils/collection~Collection} items
- * that the inner dropdown {@link module:ui/list/listview~ListView} children are created from.
- *
- * Usually, it is a collection of {@link module:ui/model~Model models}.
+ * @param {Iterable.<module:ui/dropdown/utils~ListDropdownItemDefinition>} items
+ * A collection of the list item definitions to populate the list.
  */
 export function addListToDropdown( dropdownView, items ) {
 	const locale = dropdownView.locale;
 	const listView = dropdownView.listView = new ListView( locale );
 
-	listView.items.bindTo( items ).using( itemModel => {
-		let item;
-
-		if ( itemModel.isSeparator ) {
-			item = new ListSeparatorView( locale );
-		} else {
+	listView.items.bindTo( items ).using( ( { type, model } ) => {
+		if ( type === 'separator' ) {
+			return new ListSeparatorView( locale );
+		} else if ( type === 'button' ) {
+			const listItemView = new ListItemView( locale );
 			const buttonView = new ButtonView( locale );
 
-			item = new ListItemView( locale, buttonView );
+			// Bind all model properties to the button view.
+			buttonView.bind( ...Object.keys( model ) ).to( model );
+			buttonView.delegate( 'execute' ).to( listItemView );
 
-			// Bind all attributes of the model to the item view.
-			buttonView.bind( ...Object.keys( itemModel ) ).to( itemModel );
-			buttonView.delegate( 'execute' ).to( item );
+			listItemView.children.add( buttonView );
+
+			return listItemView;
 		}
-
-		return item;
 	} );
 
 	dropdownView.panelView.children.add( listView );
@@ -252,3 +249,14 @@ function focusDropdownContentsOnArrows( dropdownView ) {
 		}
 	} );
 }
+
+/**
+ * A definition of the list item used by the {@link module:ui/dropdown/utils#addListToDropdown}
+ * utility.
+ *
+ * @typedef {Object} module:ui/dropdown/utils~ListDropdownItemDefinition
+ *
+ * @property {String} type Either `'separator'` or `'button'`.
+ * @property {module:ui/model~Model} [model] Model of the item (when **not** `'separator'`).
+ * Its properties fuel the newly created list item (or its children, depending on the `type`).
+ */

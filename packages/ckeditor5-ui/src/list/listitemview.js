@@ -18,15 +18,16 @@ export default class ListItemView extends View {
 	/**
 	 * @inheritDoc
 	 */
-	constructor( locale, childView ) {
-		super();
+	constructor( locale ) {
+		super( locale );
 
 		/**
-		 * The child view of the list item.
+		 * Collection of the child views inside of the list item {@link #element}.
 		 *
-		 * @member {module:ui/view~View} #childView
+		 * @readonly
+		 * @member {module:ui/viewcollection~ViewCollection}
 		 */
-		this.childView = childView;
+		this.children = this.createCollection();
 
 		this.setTemplate( {
 			tag: 'li',
@@ -38,9 +39,7 @@ export default class ListItemView extends View {
 				]
 			},
 
-			children: [
-				childView
-			]
+			children: this.children
 		} );
 	}
 
@@ -48,6 +47,6 @@ export default class ListItemView extends View {
 	 * Focuses the list item.
 	 */
 	focus() {
-		this.childView.focus();
+		this.children.get( 0 ).focus();
 	}
 }

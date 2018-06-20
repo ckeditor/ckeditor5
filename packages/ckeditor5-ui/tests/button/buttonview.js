@@ -97,6 +97,22 @@ describe( 'ButtonView', () => {
 				view.type = null;
 				expect( view.element.getAttribute( 'type' ) ).to.equal( 'button' );
 			} );
+
+			it( 'reacts on view#class', () => {
+				view.set( 'class', 'foo' );
+
+				expect( view.element.classList.contains( 'foo' ) ).to.be.true;
+			} );
+		} );
+
+		describe( 'label', () => {
+			it( 'reacts on view#style', () => {
+				expect( view.labelView.element.attributes.getNamedItem( 'style' ) ).to.be.null;
+
+				view.style = 'color: red';
+
+				expect( view.labelView.element.attributes.getNamedItem( 'style' ).value ).to.equal( 'color: red' );
+			} );
 		} );
 
 		describe( 'tooltip', () => {

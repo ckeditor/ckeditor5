@@ -278,10 +278,10 @@ describe( 'utils', () => {
 	} );
 
 	describe( 'addListToDropdown()', () => {
-		let items;
+		let definitions, listItems;
 
 		beforeEach( () => {
-			items = new Collection();
+			definitions = new Collection();
 
 			dropdownView = createDropdown( locale );
 			dropdownView.buttonView.set( {
@@ -290,8 +290,9 @@ describe( 'utils', () => {
 				label: 'foo'
 			} );
 
-			addListToDropdown( dropdownView, items );
+			addListToDropdown( dropdownView, definitions );
 
+			listItems = dropdownView.listView.items;
 			dropdownView.render();
 			document.body.appendChild( dropdownView.element );
 		} );
@@ -309,54 +310,80 @@ describe( 'utils', () => {
 				expect( dropdownView.listView ).to.be.instanceof( ListView );
 			} );
 
-			it( 'is bound to model#items', () => {
-				items.add( new Model( { label: 'a', style: 'b' } ) );
-				items.add( new Model( { label: 'c', style: 'd' } ) );
+			it( 'ignores unknown definition types', () => {
+				definitions.add( { type: 'foo' } );
 
-				expect( dropdownView.listView.items ).to.have.length( 2 );
-				expect( dropdownView.listView.items.get( 0 ) ).to.be.instanceOf( ListItemView );
-				expect( dropdownView.listView.items.get( 1 ).label ).to.equal( 'c' );
-				expect( dropdownView.listView.items.get( 1 ).style ).to.equal( 'd' );
-
-				items.remove( 1 );
-				expect( dropdownView.listView.items ).to.have.length( 1 );
-				expect( dropdownView.listView.items.get( 0 ).label ).to.equal( 'a' );
-				expect( dropdownView.listView.items.get( 0 ).style ).to.equal( 'b' );
+				expect( listItems.length ).to.equal( 0 );
 			} );
 
-			it( 'binds all attributes in model#items', () => {
-				const itemModel = new Model( { label: 'a', style: 'b', foo: 'bar', baz: 'qux' } );
+			describe( 'with ButtonView', () => {
+				it( 'is populated using item definitions', () => {
+					definitions.add( {
+						type: 'button',
+						model: new Model( { label: 'a', style: 'b' } )
+					} );
 
-				items.add( itemModel );
+					definitions.add( {
+						type: 'button',
+						model: new Model( { label: 'c', style: 'd' } )
+					} );
 
-				const item = dropdownView.listView.items.get( 0 );
+					expect( listItems ).to.have.length( 2 );
+					expect( listItems.get( 0 ) ).to.be.instanceOf( ListItemView );
+					expect( listItems.get( 0 ).children.get( 0 ) ).to.be.instanceOf( ButtonView );
 
-				expect( item.foo ).to.equal( 'bar' );
-				expect( item.baz ).to.equal( 'qux' );
+					expect( listItems.get( 1 ).children.get( 0 ).label ).to.equal( 'c' );
+					expect( listItems.get( 1 ).children.get( 0 ).style ).to.equal( 'd' );
 
-				itemModel.baz = 'foo?';
-				expect( item.baz ).to.equal( 'foo?' );
-			} );
-
-			it( 'delegates view.listView#execute to the view', done => {
-				items.add( new Model( { label: 'a', style: 'b' } ) );
-
-				dropdownView.on( 'execute', evt => {
-					expect( evt.source ).to.equal( dropdownView.listView.items.get( 0 ) );
-					expect( evt.path ).to.deep.equal( [ dropdownView.listView.items.get( 0 ), dropdownView ] );
-
-					done();
+					definitions.remove( 1 );
+					expect( listItems ).to.have.length( 1 );
+					expect( listItems.get( 0 ).children.get( 0 ).label ).to.equal( 'a' );
+					expect( listItems.get( 0 ).children.get( 0 ).style ).to.equal( 'b' );
 				} );
 
-				dropdownView.listView.items.get( 0 ).fire( 'execute' );
+				it( 'binds all button properties', () => {
+					const def = {
+						type: 'button',
+						model: new Model( { label: 'a', style: 'b', foo: 'bar', baz: 'qux' } )
+					};
+
+					definitions.add( def );
+
+					const button = listItems.get( 0 ).children.get( 0 );
+
+					expect( button.foo ).to.equal( 'bar' );
+					expect( button.baz ).to.equal( 'qux' );
+
+					def.model.baz = 'foo?';
+					expect( button.baz ).to.equal( 'foo?' );
+				} );
+
+				it( 'delegates ButtonView#execute to the ListItemView', done => {
+					definitions.add( {
+						type: 'button',
+						model: new Model( { label: 'a', style: 'b' } )
+					} );
+
+					const listItem = listItems.get( 0 );
+					const button = listItem.children.get( 0 );
+
+					dropdownView.on( 'execute', evt => {
+						expect( evt.source ).to.equal( button );
+						expect( evt.path ).to.deep.equal( [ button, listItem, dropdownView ] );
+
+						done();
+					} );
+
+					button.fire( 'execute' );
+				} );
 			} );
 
-			it( 'is filled with separators', () => {
-				const itemModel = new Model( { isSeparator: true } );
+			describe( 'with ListSeparatorView', () => {
+				it( 'creates a separator from the definition', () => {
+					definitions.add( { type: 'separator' } );
 
-				items.add( itemModel );
-
-				expect( dropdownView.listView.items.get( 0 ) ).to.be.instanceOf( ListSeparatorView );
+					expect( listItems.get( 0 ) ).to.be.instanceOf( ListSeparatorView );
+				} );
 			} );
 		} );
 	} );
