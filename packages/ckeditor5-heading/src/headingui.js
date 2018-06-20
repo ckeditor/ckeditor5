@@ -36,7 +36,7 @@ export default class HeadingUI extends Plugin {
 		// Register UI component.
 		editor.ui.componentFactory.add( 'heading', locale => {
 			const titles = {};
-			const dropdownItems = new Collection();
+			const itemDefinitions = new Collection();
 
 			const headingCommand = editor.commands.get( 'heading' );
 			const paragraphCommand = editor.commands.get( 'paragraph' );
@@ -44,32 +44,35 @@ export default class HeadingUI extends Plugin {
 			const commands = [ headingCommand ];
 
 			for ( const option of options ) {
-				const itemModel = new Model( {
-					label: option.title,
-					class: option.class,
-					withText: true
-				} );
+				const def = {
+					type: 'button',
+					model: new Model( {
+						label: option.title,
+						class: option.class,
+						withText: true
+					} )
+				};
 
 				if ( option.model === 'paragraph' ) {
-					itemModel.bind( 'isOn' ).to( paragraphCommand, 'value' );
-					itemModel.set( 'commandName', 'paragraph' );
+					def.model.bind( 'isOn' ).to( paragraphCommand, 'value' );
+					def.model.set( 'commandName', 'paragraph' );
 					commands.push( paragraphCommand );
 				} else {
-					itemModel.bind( 'isOn' ).to( headingCommand, 'value', value => value === option.model );
-					itemModel.set( {
+					def.model.bind( 'isOn' ).to( headingCommand, 'value', value => value === option.model );
+					def.model.set( {
 						commandName: 'heading',
 						commandValue: option.model
 					} );
 				}
 
 				// Add the option to the collection.
-				dropdownItems.add( itemModel );
+				itemDefinitions.add( def );
 
 				titles[ option.model ] = option.title;
 			}
 
 			const dropdownView = createDropdown( locale );
-			addListToDropdown( dropdownView, dropdownItems );
+			addListToDropdown( dropdownView, itemDefinitions );
 
 			dropdownView.buttonView.set( {
 				isOn: false,

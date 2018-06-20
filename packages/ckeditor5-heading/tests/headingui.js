@@ -195,7 +195,7 @@ describe( 'HeadingUI', () => {
 			it( 'works for the listView#items in the panel', () => {
 				const listView = dropdown.listView;
 
-				expect( listView.items.map( item => item.label ) ).to.deep.equal( [
+				expect( listView.items.map( item => item.children.first.label ) ).to.deep.equal( [
 					'Akapit',
 					'Nagłówek 1',
 					'Nagłówek 2'
@@ -209,7 +209,7 @@ describe( 'HeadingUI', () => {
 				] ).then( () => {
 					const listView = dropdown.listView;
 
-					expect( listView.items.map( item => item.label ) ).to.deep.equal( [
+					expect( listView.items.map( item => item.children.first.label ) ).to.deep.equal( [
 						'Custom paragraph title',
 						'Custom heading1 title',
 					] );
@@ -222,7 +222,7 @@ describe( 'HeadingUI', () => {
 				] ).then( () => {
 					const listView = dropdown.listView;
 
-					expect( listView.items.map( item => item.label ) ).to.deep.equal( [
+					expect( listView.items.map( item => item.children.first.label ) ).to.deep.equal( [
 						'Akapit'
 					] );
 				} );
@@ -258,7 +258,7 @@ describe( 'HeadingUI', () => {
 			it( 'is set for the listView#items in the panel', () => {
 				const listView = dropdown.listView;
 
-				expect( listView.items.map( item => item.class ) ).to.deep.equal( [
+				expect( listView.items.map( item => item.children.first.class ) ).to.deep.equal( [
 					'ck-heading_paragraph',
 					'ck-heading_heading1',
 					'ck-heading_heading2',
@@ -271,7 +271,7 @@ describe( 'HeadingUI', () => {
 
 				setData( editor.model, '<heading2>f{}oo</heading2>' );
 
-				expect( listView.items.map( item => item.isActive ) ).to.deep.equal( [
+				expect( listView.items.map( item => item.children.first.isOn ) ).to.deep.equal( [
 					false,
 					false,
 					true,
