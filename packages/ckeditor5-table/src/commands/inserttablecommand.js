@@ -14,6 +14,12 @@ import TableUtils from '../tableutils';
 /**
  * The insert table command.
  *
+ * The command is registered by {@link module:table/tableediting~TableEditing} as `'insertTable'` editor command.
+ *
+ * To insert a table at the current selection, execute the command and specify the dimensions:
+ *
+ *		editor.execute( 'insertTable', { rows: 20, columns: 5 } );
+ *
  * @extends module:core/command~Command
  */
 export default class InsertTableCommand extends Command {

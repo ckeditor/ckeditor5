@@ -14,6 +14,17 @@ import TableUtils from '../tableutils';
 /**
  * The insert row command.
  *
+ * The command is registered by {@link module:table/tableediting~TableEditing} as `'insertTableRowBelow'` and
+ * `'insertTableRowAbove'` editor commands.
+ *
+ * To insert a row below the selected cell, execute the following command:
+ *
+ *		editor.execute( 'insertTableRowBelow' );
+ *
+ * To insert a row above the selected cell, execute the following command:
+ *
+ *		editor.execute( 'insertTableRowAbove' );
+ *
  * @extends module:core/command~Command
  */
 export default class InsertRowCommand extends Command {
