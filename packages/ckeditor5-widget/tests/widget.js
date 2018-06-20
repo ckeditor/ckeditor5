@@ -1159,4 +1159,50 @@ describe( 'Widget', () => {
 			scrollStub.restore();
 		} );
 	} );
+
+	describe( 'selection handler', () => {
+		beforeEach( () => {
+			return VirtualTestEditor.create( { plugins: [ Widget, Typing ] } )
+				.then( newEditor => {
+					editor = newEditor;
+					model = editor.model;
+					view = editor.editing.view;
+					viewDocument = view.document;
+
+					model.schema.register( 'widget', {
+						inheritAllFrom: '$block',
+						isObject: true
+					} );
+					model.schema.register( 'paragraph', {
+						inheritAllFrom: '$block'
+					} );
+
+					editor.conversion.for( 'downcast' )
+						.add( downcastElementToElement( { model: 'paragraph', view: 'p' } ) )
+						.add( downcastElementToElement( {
+							model: 'widget',
+							view: ( modelItem, viewWriter ) => {
+								const widget = viewWriter.createContainerElement( 'div' );
+
+								return toWidget( widget, viewWriter, { addSelectionHandler: true } );
+							}
+						} ) );
+				} );
+		} );
+
+		it( 'should select a widget on mouse click', () => {
+			setModelData( model, '<paragraph>bar</paragraph><widget></widget><paragraph>foo[]</paragraph>' );
+
+			const viewWidgetSelectionHandler = viewDocument.getRoot().getChild( 1 ).getChild( 0 );
+
+			const domEventDataMock = {
+				target: viewWidgetSelectionHandler,
+				preventDefault: sinon.spy()
+			};
+
+			viewDocument.fire( 'mousedown', domEventDataMock );
+
+			expect( getModelData( model ) ).to.equal( '<paragraph>bar</paragraph>[<widget></widget>]<paragraph>foo</paragraph>' );
+		} );
+	} );
 } );
