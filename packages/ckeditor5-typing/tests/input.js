@@ -8,11 +8,13 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import List from '@ckeditor/ckeditor5-list/src/list';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import ShiftEnter from '@ckeditor/ckeditor5-enter/src/shiftenter';
 import Input from '../src/input';
 
 import Writer from '@ckeditor/ckeditor5-engine/src/model/writer';
 import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
+import ModelSelection from '@ckeditor/ckeditor5-engine/src/model/selection';
 
 import ViewText from '@ckeditor/ckeditor5-engine/src/view/text';
 import ViewElement from '@ckeditor/ckeditor5-engine/src/view/element';
@@ -37,7 +39,7 @@ describe( 'Input feature', () => {
 		const domElement = document.createElement( 'div' );
 		document.body.appendChild( domElement );
 
-		return ClassicTestEditor.create( domElement, { plugins: [ Input, Paragraph, Bold, List, ShiftEnter ] } )
+		return ClassicTestEditor.create( domElement, { plugins: [ Input, Paragraph, Bold, Italic, List, ShiftEnter ] } )
 			.then( newEditor => {
 				// Mock image feature.
 				newEditor.model.schema.register( 'image', { allowWhere: '$text' } );
@@ -614,18 +616,6 @@ describe( 'Input feature', () => {
 			expect( getModelData( model ) ).to.equal( '<paragraph>fo[ob]ar</paragraph>' );
 		} );
 
-		// #82
-		it( 'should do nothing on composition start key', () => {
-			model.change( writer => {
-				writer.setSelection(
-					ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) );
-			} );
-
-			viewDocument.fire( 'keydown', { keyCode: 229 } );
-
-			expect( getModelData( model ) ).to.equal( '<paragraph>fo[ob]ar</paragraph>' );
-		} );
-
 		it( 'should do nothing if selection is collapsed', () => {
 			viewDocument.fire( 'keydown', { ctrlKey: true, keyCode: getCode( 'c' ) } );
 
@@ -692,6 +682,112 @@ describe( 'Input feature', () => {
 			viewDocument.fire( 'keydown', { keyCode: getCode( 'b' ) } );
 
 			expect( getModelData( model ) ).to.equal( '<paragraph>fo[ob]ar</paragraph>' );
+		} );
+
+		describe( '#83', () => {
+			it( 'should remove contents on composition start key if not during composition', () => {
+				model.change( writer => {
+					writer.setSelection(
+						ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) );
+				} );
+
+				viewDocument.fire( 'keydown', { keyCode: 229 } );
+
+				expect( getModelData( model ) ).to.equal( '<paragraph>fo[]ar</paragraph>' );
+			} );
+
+			it( 'should not remove contents on composition start key if during composition', () => {
+				model.change( writer => {
+					writer.setSelection(
+						ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) );
+				} );
+
+				viewDocument.fire( 'compositionstart' );
+				viewDocument.fire( 'keydown', { keyCode: 229 } );
+
+				expect( getModelData( model ) ).to.equal( '<paragraph>fo[ob]ar</paragraph>' );
+			} );
+
+			it( 'should not remove contents on compositionstart event if selection is flat', () => {
+				editor.setData( '<p><strong>foo</strong> <i>bar</i></p>' );
+
+				model.change( writer => {
+					writer.setSelection(
+						ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 5 ) );
+				} );
+
+				viewDocument.fire( 'compositionstart' );
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph><$text bold="true">fo[o</$text> <$text italic="true">b]ar</$text></paragraph>' );
+			} );
+
+			it( 'should not remove contents on compositionstart event if selection is flat (no selection)', () => {
+				editor.setData( '<p><strong>foo</strong> <i>bar</i></p>' );
+
+				const documentSelection = model.document.selection;
+
+				// Create empty selection.
+				model.document.selection = new ModelSelection();
+
+				viewDocument.fire( 'compositionstart' );
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph><$text bold="true">foo</$text> <$text italic="true">bar</$text></paragraph>' );
+
+				// Restore document selection.
+				model.document.selection = documentSelection;
+			} );
+
+			it( 'should remove contents on compositionstart event if selection is not flat', () => {
+				editor.setData( '<p><strong>foo</strong></p><p><i>bar</i></p>' );
+
+				model.change( writer => {
+					writer.setSelection(
+						ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 1 ), 2 ) );
+				} );
+
+				viewDocument.fire( 'compositionstart' );
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph><$text bold="true">fo[]</$text><$text italic="true">r</$text></paragraph>' );
+			} );
+
+			it( 'should not remove contents on keydown event after compositionend event if selection did not change', () => {
+				editor.setData( '<p><strong>foo</strong></p><p><i>bar</i></p>' );
+
+				model.change( writer => {
+					writer.setSelection(
+						ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 1 ), 2 ) );
+				} );
+
+				viewDocument.fire( 'compositionend' );
+				viewDocument.fire( 'keydown', { keyCode: 229 } );
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph><$text bold="true">fo[o</$text></paragraph><paragraph><$text italic="true">ba]r</$text></paragraph>' );
+			} );
+
+			it( 'should remove contents on keydown event after compositionend event if selection have changed', () => {
+				editor.setData( '<p><strong>foo</strong></p><p><i>bar</i></p>' );
+
+				model.change( writer => {
+					writer.setSelection(
+						ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 1 ), 2 ) );
+				} );
+
+				viewDocument.fire( 'compositionend' );
+
+				model.change( writer => {
+					writer.setSelection(
+						ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 1 ), 1 ) );
+				} );
+
+				viewDocument.fire( 'keydown', { keyCode: 229 } );
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph><$text bold="true">fo[]</$text><$text italic="true">ar</$text></paragraph>' );
+			} );
 		} );
 	} );
 } );
