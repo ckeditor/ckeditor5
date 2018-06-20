@@ -74,7 +74,7 @@ describe( 'TableUI', () => {
 		it( 'should execute insertTable command on button execute event', () => {
 			const executeSpy = testUtils.sinon.spy( editor, 'execute' );
 
-			const tableSizeView = insertTable.panelView.children.get( 0 );
+			const tableSizeView = insertTable.panelView.children.first;
 
 			tableSizeView.rows = 2;
 			tableSizeView.columns = 7;
@@ -86,7 +86,7 @@ describe( 'TableUI', () => {
 		} );
 
 		it( 'should reset rows & columns on dropdown open', () => {
-			const tableSizeView = insertTable.panelView.children.get( 0 );
+			const tableSizeView = insertTable.panelView.children.first;
 
 			expect( tableSizeView.rows ).to.equal( 0 );
 			expect( tableSizeView.columns ).to.equal( 0 );
@@ -122,7 +122,7 @@ describe( 'TableUI', () => {
 		it( 'should have proper items in panel', () => {
 			const listView = dropdown.listView;
 
-			const labels = listView.items.map( item => item instanceof ListSeparatorView ? '|' : item.label );
+			const labels = listView.items.map( item => item instanceof ListSeparatorView ? '|' : item.children.first.label );
 
 			expect( labels ).to.deep.equal( [ 'Header row', '|', 'Insert row below', 'Insert row above', 'Delete row' ] );
 		} );
@@ -140,36 +140,36 @@ describe( 'TableUI', () => {
 			insertRowAboveCommand.isEnabled = true;
 			removeRowCommand.isEnabled = true;
 
-			expect( items.get( 0 ).isEnabled ).to.be.true;
-			expect( items.get( 2 ).isEnabled ).to.be.true;
-			expect( items.get( 3 ).isEnabled ).to.be.true;
-			expect( items.get( 4 ).isEnabled ).to.be.true;
+			expect( items.first.children.first.isEnabled ).to.be.true;
+			expect( items.get( 2 ).children.first.isEnabled ).to.be.true;
+			expect( items.get( 3 ).children.first.isEnabled ).to.be.true;
+			expect( items.get( 4 ).children.first.isEnabled ).to.be.true;
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
 			setRowHeaderCommand.isEnabled = false;
 
-			expect( items.get( 0 ).isEnabled ).to.be.false;
+			expect( items.first.children.first.isEnabled ).to.be.false;
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
 			insertRowBelowCommand.isEnabled = false;
 
-			expect( items.get( 2 ).isEnabled ).to.be.false;
+			expect( items.get( 2 ).children.first.isEnabled ).to.be.false;
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
 			insertRowAboveCommand.isEnabled = false;
-			expect( items.get( 3 ).isEnabled ).to.be.false;
+			expect( items.get( 3 ).children.first.isEnabled ).to.be.false;
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
 			removeRowCommand.isEnabled = false;
 
-			expect( items.get( 4 ).isEnabled ).to.be.false;
+			expect( items.get( 4 ).children.first.isEnabled ).to.be.false;
 			expect( dropdown.buttonView.isEnabled ).to.be.false;
 		} );
 
 		it( 'should focus view after command execution', () => {
 			const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
 
-			dropdown.listView.items.get( 0 ).fire( 'execute' );
+			dropdown.listView.items.first.children.first.fire( 'execute' );
 
 			sinon.assert.calledOnce( focusSpy );
 		} );
@@ -177,7 +177,7 @@ describe( 'TableUI', () => {
 		it( 'executes command when it\'s executed', () => {
 			const spy = sinon.stub( editor, 'execute' );
 
-			dropdown.listView.items.get( 0 ).fire( 'execute' );
+			dropdown.listView.items.first.children.first.fire( 'execute' );
 
 			expect( spy.calledOnce ).to.be.true;
 			expect( spy.args[ 0 ][ 0 ] ).to.equal( 'setTableRowHeader' );
@@ -189,10 +189,10 @@ describe( 'TableUI', () => {
 			const setRowHeaderCommand = editor.commands.get( 'setTableRowHeader' );
 
 			setRowHeaderCommand.value = false;
-			expect( items.get( 0 ).isActive ).to.be.false;
+			expect( items.first.children.first.isOn ).to.be.false;
 
 			setRowHeaderCommand.value = true;
-			expect( items.get( 0 ).isActive ).to.be.true;
+			expect( items.first.children.first.isOn ).to.be.true;
 		} );
 	} );
 
@@ -217,7 +217,7 @@ describe( 'TableUI', () => {
 		it( 'should have proper items in panel', () => {
 			const listView = dropdown.listView;
 
-			const labels = listView.items.map( item => item instanceof ListSeparatorView ? '|' : item.label );
+			const labels = listView.items.map( item => item instanceof ListSeparatorView ? '|' : item.children.first.label );
 
 			expect( labels ).to.deep.equal( [ 'Header column', '|', 'Insert column before', 'Insert column after', 'Delete column' ] );
 		} );
@@ -235,34 +235,34 @@ describe( 'TableUI', () => {
 			insertColumnAfterCommand.isEnabled = true;
 			removeColumnCommand.isEnabled = true;
 
-			expect( items.get( 0 ).isEnabled ).to.be.true;
-			expect( items.get( 2 ).isEnabled ).to.be.true;
-			expect( items.get( 3 ).isEnabled ).to.be.true;
-			expect( items.get( 4 ).isEnabled ).to.be.true;
+			expect( items.first.children.first.isEnabled ).to.be.true;
+			expect( items.get( 2 ).children.first.isEnabled ).to.be.true;
+			expect( items.get( 3 ).children.first.isEnabled ).to.be.true;
+			expect( items.get( 4 ).children.first.isEnabled ).to.be.true;
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
 			setColumnHeaderCommand.isEnabled = false;
 
-			expect( items.get( 0 ).isEnabled ).to.be.false;
+			expect( items.first.children.first.isEnabled ).to.be.false;
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
 			insertColumnBeforeCommand.isEnabled = false;
 
-			expect( items.get( 2 ).isEnabled ).to.be.false;
+			expect( items.get( 2 ).children.first.isEnabled ).to.be.false;
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
 			insertColumnAfterCommand.isEnabled = false;
-			expect( items.get( 3 ).isEnabled ).to.be.false;
+			expect( items.get( 3 ).children.first.isEnabled ).to.be.false;
 
 			removeColumnCommand.isEnabled = false;
-			expect( items.get( 4 ).isEnabled ).to.be.false;
+			expect( items.get( 4 ).children.first.isEnabled ).to.be.false;
 			expect( dropdown.buttonView.isEnabled ).to.be.false;
 		} );
 
 		it( 'should focus view after command execution', () => {
 			const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
 
-			dropdown.listView.items.get( 0 ).fire( 'execute' );
+			dropdown.listView.items.first.children.first.fire( 'execute' );
 
 			sinon.assert.calledOnce( focusSpy );
 		} );
@@ -270,7 +270,7 @@ describe( 'TableUI', () => {
 		it( 'executes command when it\'s executed', () => {
 			const spy = sinon.stub( editor, 'execute' );
 
-			dropdown.listView.items.get( 0 ).fire( 'execute' );
+			dropdown.listView.items.first.children.first.fire( 'execute' );
 
 			expect( spy.calledOnce ).to.be.true;
 			expect( spy.args[ 0 ][ 0 ] ).to.equal( 'setTableColumnHeader' );
@@ -282,10 +282,10 @@ describe( 'TableUI', () => {
 			const setColumnHeaderCommand = editor.commands.get( 'setTableColumnHeader' );
 
 			setColumnHeaderCommand.value = false;
-			expect( items.get( 0 ).isActive ).to.be.false;
+			expect( items.first.children.first.isOn ).to.be.false;
 
 			setColumnHeaderCommand.value = true;
-			expect( items.get( 0 ).isActive ).to.be.true;
+			expect( items.first.children.first.isOn ).to.be.true;
 		} );
 	} );
 
@@ -310,7 +310,7 @@ describe( 'TableUI', () => {
 		it( 'should have proper items in panel', () => {
 			const listView = dropdown.listView;
 
-			const labels = listView.items.map( item => item instanceof ListSeparatorView ? '|' : item.label );
+			const labels = listView.items.map( item => item instanceof ListSeparatorView ? '|' : item.children.first.label );
 
 			expect( labels ).to.deep.equal( [
 				'Merge cell up',
@@ -340,35 +340,35 @@ describe( 'TableUI', () => {
 			splitCellVerticallyCommand.isEnabled = true;
 			splitCellHorizontallyCommand.isEnabled = true;
 
-			expect( items.get( 0 ).isEnabled ).to.be.true;
-			expect( items.get( 1 ).isEnabled ).to.be.true;
-			expect( items.get( 2 ).isEnabled ).to.be.true;
-			expect( items.get( 3 ).isEnabled ).to.be.true;
-			expect( items.get( 5 ).isEnabled ).to.be.true;
-			expect( items.get( 6 ).isEnabled ).to.be.true;
+			expect( items.first.children.first.isEnabled ).to.be.true;
+			expect( items.get( 1 ).children.first.isEnabled ).to.be.true;
+			expect( items.get( 2 ).children.first.isEnabled ).to.be.true;
+			expect( items.get( 3 ).children.first.isEnabled ).to.be.true;
+			expect( items.get( 5 ).children.first.isEnabled ).to.be.true;
+			expect( items.get( 6 ).children.first.isEnabled ).to.be.true;
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
 			mergeCellUpCommand.isEnabled = false;
 
-			expect( items.get( 0 ).isEnabled ).to.be.false;
+			expect( items.first.children.first.isEnabled ).to.be.false;
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
 			mergeCellRightCommand.isEnabled = false;
 
-			expect( items.get( 1 ).isEnabled ).to.be.false;
+			expect( items.get( 1 ).children.first.isEnabled ).to.be.false;
 			expect( dropdown.buttonView.isEnabled ).to.be.true;
 
 			mergeCellDownCommand.isEnabled = false;
-			expect( items.get( 2 ).isEnabled ).to.be.false;
+			expect( items.get( 2 ).children.first.isEnabled ).to.be.false;
 
 			mergeCellLeftCommand.isEnabled = false;
-			expect( items.get( 3 ).isEnabled ).to.be.false;
+			expect( items.get( 3 ).children.first.isEnabled ).to.be.false;
 
 			splitCellVerticallyCommand.isEnabled = false;
-			expect( items.get( 5 ).isEnabled ).to.be.false;
+			expect( items.get( 5 ).children.first.isEnabled ).to.be.false;
 
 			splitCellHorizontallyCommand.isEnabled = false;
-			expect( items.get( 6 ).isEnabled ).to.be.false;
+			expect( items.get( 6 ).children.first.isEnabled ).to.be.false;
 
 			expect( dropdown.buttonView.isEnabled ).to.be.false;
 		} );
@@ -376,7 +376,7 @@ describe( 'TableUI', () => {
 		it( 'should focus view after command execution', () => {
 			const focusSpy = testUtils.sinon.spy( editor.editing.view, 'focus' );
 
-			dropdown.listView.items.get( 0 ).fire( 'execute' );
+			dropdown.listView.items.first.children.first.fire( 'execute' );
 
 			sinon.assert.calledOnce( focusSpy );
 		} );
@@ -384,7 +384,7 @@ describe( 'TableUI', () => {
 		it( 'executes command when it\'s executed', () => {
 			const spy = sinon.stub( editor, 'execute' );
 
-			dropdown.listView.items.get( 0 ).fire( 'execute' );
+			dropdown.listView.items.first.children.first.fire( 'execute' );
 
 			expect( spy.calledOnce ).to.be.true;
 			expect( spy.args[ 0 ][ 0 ] ).to.equal( 'mergeTableCellUp' );

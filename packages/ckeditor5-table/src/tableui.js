@@ -74,7 +74,7 @@ export default class TableUI extends Plugin {
 
 		editor.ui.componentFactory.add( 'tableColumn', locale => {
 			const options = [
-				{ commandName: 'setTableColumnHeader', label: t( 'Header column' ), bindIsActive: true },
+				{ commandName: 'setTableColumnHeader', label: t( 'Header column' ), bindIsOn: true },
 				'|',
 				{ commandName: 'insertTableColumnBefore', label: t( 'Insert column before' ) },
 				{ commandName: 'insertTableColumnAfter', label: t( 'Insert column after' ) },
@@ -86,7 +86,7 @@ export default class TableUI extends Plugin {
 
 		editor.ui.componentFactory.add( 'tableRow', locale => {
 			const options = [
-				{ commandName: 'setTableRowHeader', label: t( 'Header row' ), bindIsActive: true },
+				{ commandName: 'setTableRowHeader', label: t( 'Header row' ), bindIsOn: true },
 				'|',
 				{ commandName: 'insertTableRowBelow', label: t( 'Insert row below' ) },
 				{ commandName: 'insertTableRowAbove', label: t( 'Insert row above' ) },
@@ -128,13 +128,13 @@ export default class TableUI extends Plugin {
 		const commands = [];
 
 		// Prepare dropdown list items for list dropdown.
-		const dropdownItems = new Collection();
+		const itemDefinitions = new Collection();
 
 		for ( const option of options ) {
-			addListOption( option, editor, commands, dropdownItems );
+			addListOption( option, editor, commands, itemDefinitions );
 		}
 
-		addListToDropdown( dropdownView, dropdownItems );
+		addListToDropdown( dropdownView, itemDefinitions );
 
 		// Decorate dropdown's button.
 		dropdownView.buttonView.set( {
@@ -162,34 +162,35 @@ export default class TableUI extends Plugin {
 // @param {module:table/tableui~DropdownOption} option Configuration option.
 // @param {module:core/editor/editor~Editor} editor
 // @param {Array.<module:core/command~Command>} commands List of commands to update.
-// @param {module:utils/collection~Collection} dropdownItems Collection of dropdown items to update with given option.
-function addListOption( option, editor, commands, dropdownItems ) {
-	const itemModel = new Model();
+// @param {Iterable.<module:ui/dropdown/utils~ListDropdownItemDefinition>} itemDefinitions
+// Collection of dropdown items to update with given option.
+function addListOption( option, editor, commands, itemDefinitions ) {
+	const isSeparator = option === '|';
+	const def = {
+		type: isSeparator ? 'separator' : 'button',
+	};
 
-	if ( option === '|' ) {
-		itemModel.set( {
-			isSeparator: true
-		} );
-	} else {
+	if ( !isSeparator ) {
+		const model = def.model = new Model();
 		const { commandName, label, bindIsOn } = option;
 		const command = editor.commands.get( commandName );
 
 		commands.push( command );
 
-		itemModel.set( {
+		model.set( {
 			commandName,
 			label,
 			withText: true
 		} );
 
-		itemModel.bind( 'isEnabled' ).to( command );
+		model.bind( 'isEnabled' ).to( command );
 
 		if ( bindIsOn ) {
-			itemModel.bind( 'isOn' ).to( command, 'value' );
+			model.bind( 'isOn' ).to( command, 'value' );
 		}
 	}
 
-	dropdownItems.add( itemModel );
+	itemDefinitions.add( def );
 }
 
 /**
