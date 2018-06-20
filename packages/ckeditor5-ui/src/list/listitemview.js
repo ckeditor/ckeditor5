@@ -47,6 +47,6 @@ export default class ListItemView extends View {
 	 * Focuses the list item.
 	 */
 	focus() {
-		this.children.get( 0 ).focus();
+		this.children.first.focus();
 	}
 }

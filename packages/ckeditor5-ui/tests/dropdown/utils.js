@@ -260,19 +260,19 @@ describe( 'utils', () => {
 				const panelChildren = dropdownView.panelView.children;
 
 				expect( panelChildren ).to.have.length( 1 );
-				expect( panelChildren.get( 0 ) ).to.equal( dropdownView.toolbarView );
+				expect( panelChildren.first ).to.equal( dropdownView.toolbarView );
 				expect( dropdownView.toolbarView ).to.be.instanceof( ToolbarView );
 			} );
 
 			it( 'delegates view.toolbarView.items#execute to the view', done => {
 				dropdownView.on( 'execute', evt => {
-					expect( evt.source ).to.equal( dropdownView.toolbarView.items.get( 0 ) );
-					expect( evt.path ).to.deep.equal( [ dropdownView.toolbarView.items.get( 0 ), dropdownView ] );
+					expect( evt.source ).to.equal( dropdownView.toolbarView.items.first );
+					expect( evt.path ).to.deep.equal( [ dropdownView.toolbarView.items.first, dropdownView ] );
 
 					done();
 				} );
 
-				dropdownView.toolbarView.items.get( 0 ).fire( 'execute' );
+				dropdownView.toolbarView.items.first.fire( 'execute' );
 			} );
 		} );
 	} );
@@ -306,7 +306,7 @@ describe( 'utils', () => {
 				const panelChildren = dropdownView.panelView.children;
 
 				expect( panelChildren ).to.have.length( 1 );
-				expect( panelChildren.get( 0 ) ).to.equal( dropdownView.listView );
+				expect( panelChildren.first ).to.equal( dropdownView.listView );
 				expect( dropdownView.listView ).to.be.instanceof( ListView );
 			} );
 
@@ -329,16 +329,16 @@ describe( 'utils', () => {
 					} );
 
 					expect( listItems ).to.have.length( 2 );
-					expect( listItems.get( 0 ) ).to.be.instanceOf( ListItemView );
-					expect( listItems.get( 0 ).children.get( 0 ) ).to.be.instanceOf( ButtonView );
+					expect( listItems.first ).to.be.instanceOf( ListItemView );
+					expect( listItems.first.children.first ).to.be.instanceOf( ButtonView );
 
-					expect( listItems.get( 1 ).children.get( 0 ).label ).to.equal( 'c' );
-					expect( listItems.get( 1 ).children.get( 0 ).style ).to.equal( 'd' );
+					expect( listItems.get( 1 ).children.first.label ).to.equal( 'c' );
+					expect( listItems.get( 1 ).children.first.style ).to.equal( 'd' );
 
 					definitions.remove( 1 );
 					expect( listItems ).to.have.length( 1 );
-					expect( listItems.get( 0 ).children.get( 0 ).label ).to.equal( 'a' );
-					expect( listItems.get( 0 ).children.get( 0 ).style ).to.equal( 'b' );
+					expect( listItems.first.children.first.label ).to.equal( 'a' );
+					expect( listItems.first.children.first.style ).to.equal( 'b' );
 				} );
 
 				it( 'binds all button properties', () => {
@@ -349,7 +349,7 @@ describe( 'utils', () => {
 
 					definitions.add( def );
 
-					const button = listItems.get( 0 ).children.get( 0 );
+					const button = listItems.first.children.first;
 
 					expect( button.foo ).to.equal( 'bar' );
 					expect( button.baz ).to.equal( 'qux' );
@@ -364,8 +364,8 @@ describe( 'utils', () => {
 						model: new Model( { label: 'a', style: 'b' } )
 					} );
 
-					const listItem = listItems.get( 0 );
-					const button = listItem.children.get( 0 );
+					const listItem = listItems.first;
+					const button = listItem.children.first;
 
 					dropdownView.on( 'execute', evt => {
 						expect( evt.source ).to.equal( button );
@@ -382,7 +382,7 @@ describe( 'utils', () => {
 				it( 'creates a separator from the definition', () => {
 					definitions.add( { type: 'separator' } );
 
-					expect( listItems.get( 0 ) ).to.be.instanceOf( ListSeparatorView );
+					expect( listItems.first ).to.be.instanceOf( ListSeparatorView );
 				} );
 			} );
 		} );
