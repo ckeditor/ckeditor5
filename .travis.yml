@@ -22,8 +22,8 @@ script:
   - npm t -- --reporter=dots
   - npm run docs:api -- --validate-only
   - 'if [ $TRAVIS_TEST_RESULT -eq 0 ]; then
-  		travis_wait npm run docs:build-and-publish-nightly;
-	fi'
+  	  travis_wait npm run docs:build-and-publish-nightly;
+    fi'
 notifications:
   slack:
     rooms:
