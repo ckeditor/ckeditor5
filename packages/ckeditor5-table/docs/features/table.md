@@ -52,7 +52,7 @@ The {@link module:table/table~Table} plugin registers the following UI component
 
 And the following commands:
 
-* The {@link module:table/commands/inserttablecommand~InsertTableCommand `'inserttable'`} command.
+* The {@link module:table/commands/inserttablecommand~InsertTableCommand `'insertTable'`} command.
 
 	To insert a table at the current selection, execute the command and specify the dimensions:
 
