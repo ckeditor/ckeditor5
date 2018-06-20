@@ -4,9 +4,29 @@
  */
 
 /**
- * @param {Number} columns
+ * Returns a model representation of a table shorthand notation:
+ *
+ *		modelTable( [
+ *			[ '00' ] // first row
+ *			[ '10' ] // second row
+ *		] );
+ *
+ *	will output:
+ *
+ *		'<table><tableRow><tableCell>00</tableCell></tableRow><tableRow><tableCell>10</tableCell></tableRow></table>'
+ *
+ * Each table row passed in `tableData` array is represented as an array of strings or objects. A string defines text contents of a cell.
+ *
+ * Passing an object allows to pass additional table cell attributes:
+ *
+ *		const tableCellData = {
+ *			colspan: 2,
+ *			rowspan: 4,
+ *			contents: 'foo' // text contents of a cell
+ *		};
+ *
  * @param {Array.<String>} tableData
- * @param {Object} [attributes]
+ * @param {Object} [attributes] Optional table attributes: `headingRows` and `headingColumns`.
  *
  * @returns {String}
  */
@@ -17,9 +37,31 @@ export function modelTable( tableData, attributes ) {
 }
 
 /**
- * @param {Number} columns
- * @param {Array.<String>} tableData
- * @param {Object} [attributes]
+ * Returns a view representation of a table shorthand notation:
+ *
+ *		viewTable( [
+ *			[ '00', '01' ] // first row
+ *			[ '10', '11' ] // second row
+ *		] );
+ *
+ *	will output:
+ *
+ *		'<table><tbody><tr><td>00</td><td>01<td></tr><tr><td>10</td><td>11<td></tr></tbody></table>'
+ *
+ * Each table row passed in `tableData` array is represented as an array of strings or objects. A string defines text contents of a cell.
+ *
+ * Passing an object allows to pass additional table cell attributes:
+ *
+ *		const tableCellData = {
+ *			colspan: 2,
+ *			rowspan: 4,
+ *			isHeading: true, // will render table cell as `<th>` element
+ *			contents: 'foo' // text contents of a cell
+ *		};
+ *
+ * @param {Array.<Array.<String|Object>>} tableData The table data array.
+ * @param {Object} [attributes] Optional table attributes: `headingRows` and `headingColumns` - passing them will properly render rows
+ * in `<tbody>` or `<thead>` sections.
  *
  * @returns {String}
  */
@@ -76,6 +118,9 @@ export function formattedViewTable( tableData, attributes ) {
 	return formatTable( viewTable( tableData, attributes ) );
 }
 
+// Formats table cell attributes
+//
+// @param {Object} attributes Attributes of a cell.
 function formatAttributes( attributes ) {
 	let attributesString = '';
 
@@ -89,8 +134,9 @@ function formatAttributes( attributes ) {
 	return attributesString;
 }
 
+// Formats passed table data to a set of table rows.
 function makeRows( tableData, cellElement, rowElement, headingElement = 'th' ) {
-	const tableRows = tableData
+	return tableData
 		.reduce( ( previousRowsString, tableRow ) => {
 			const tableRowString = tableRow.reduce( ( tableRowString, tableCellData ) => {
 				let tableCell = tableCellData;
@@ -118,5 +164,4 @@ function makeRows( tableData, cellElement, rowElement, headingElement = 'th' ) {
 
 			return `${ previousRowsString }<${ rowElement }>${ tableRowString }</${ rowElement }>`;
 		}, '' );
-	return tableRows;
 }
