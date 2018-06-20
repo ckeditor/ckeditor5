@@ -118,7 +118,7 @@ export default class Renderer {
 	/**
 	 * Marks a view node to be updated in the DOM by {@link #render `render()`}.
 	 *
-	 * Note that only view nodes which parents have corresponding DOM elements need to be marked to be synchronized.
+	 * Note that only view nodes whose parents have corresponding DOM elements need to be marked to be synchronized.
 	 *
 	 * @see #markedAttributes
 	 * @see #markedChildren
@@ -163,7 +163,7 @@ export default class Renderer {
 	 *
 	 * Renderer also handles {@link module:engine/view/filler fillers}. Especially, it checks if the inline filler is needed
 	 * at the selection position and adds or removes it. To prevent breaking text composition inline filler will not be
-	 * removed as long selection is in the text node which needed it at first.
+	 * removed as long as the selection is in the text node which needed it at first.
 	 */
 	render() {
 		let inlineFillerPosition;
@@ -237,14 +237,14 @@ export default class Renderer {
 	}
 
 	/**
-	 * Updates mappings of `viewElement`'s children.
+	 * Updates mappings of view element's children.
 	 *
-	 * Children which were replaced in the view structure by similar elements (same tag name) are treated as 'replaced'.
-	 * This means that we can update their mappings so the new view elements are mapped to the existing DOM elements.
-	 * Thanks to that we won't need to re-render these elements completely.
+	 * Children that were replaced in the view structure by similar elements (same tag name) are treated as 'replaced'.
+	 * This means that their mappings can be updated so the new view elements are mapped to the existing DOM elements.
+	 * Thanks to that these elements do not need to be re-rendered completely.
 	 *
 	 * @private
-	 * @param {module:engine/view/node~Node} viewElement The view element which children mappings will be updated.
+	 * @param {module:engine/view/node~Node} viewElement The view element whose children mappings will be updated.
 	 */
 	_updateChildrenMappings( viewElement ) {
 		const domElement = this.domConverter.mapViewToDom( viewElement );
@@ -283,11 +283,11 @@ export default class Renderer {
 	}
 
 	/**
-	 * Updates mappings of a given `viewElement`.
+	 * Updates mappings of a given view element.
 	 *
 	 * @private
-	 * @param {module:engine/view/node~Node} viewElement The view element which mappings will be updated.
-	 * @param {Node} domElement The DOM element representing given view element.
+	 * @param {module:engine/view/node~Node} viewElement The view element whose mappings will be updated.
+	 * @param {Node} domElement The DOM element representing the given view element.
 	 */
 	_updateElementMappings( viewElement, domElement ) {
 		// Because we replace new view element mapping with the existing one, the corresponding DOM element
@@ -315,16 +315,16 @@ export default class Renderer {
 	}
 
 	/**
-	 * Adds inline filler at given position.
+	 * Adds inline filler at a given position.
 	 *
 	 * The position can be given as an array of DOM nodes and an offset in that array,
-	 * or a DOM parent element and offset in that element.
+	 * or a DOM parent element and an offset in that element.
 	 *
 	 * @private
 	 * @param {Document} domDocument
 	 * @param {Element|Array.<Node>} domParentOrArray
 	 * @param {Number} offset
-	 * @returns {Text} The DOM text node that contains inline filler.
+	 * @returns {Text} The DOM text node that contains an inline filler.
 	 */
 	_addInlineFiller( domDocument, domParentOrArray, offset ) {
 		const childNodes = domParentOrArray instanceof Array ? domParentOrArray : domParentOrArray.childNodes;
@@ -350,11 +350,11 @@ export default class Renderer {
 	/**
 	 * Gets the position of the inline filler based on the current selection.
 	 * Here, we assume that we know that the filler is needed and
-	 * {@link #_isSelectionInInlineFiller is at the selection position}, and, since it's needed,
-	 * it's somewhere at the selection postion.
+	 * {@link #_isSelectionInInlineFiller is at the selection position}, and, since it is needed,
+	 * it is somewhere at the selection position.
 	 *
-	 * Note: we cannot restore the filler position based on the filler's DOM text node, because
-	 * when this method is called (before rendering) the bindings will often be broken. View to DOM
+	 * Note: The filler position cannot be restored based on the filler's DOM text node, because
+	 * when this method is called (before rendering), the bindings will often be broken. View-to-DOM
 	 * bindings are only dependable after rendering.
 	 *
 	 * @private
@@ -371,12 +371,12 @@ export default class Renderer {
 	}
 
 	/**
-	 * Returns `true` if the selection hasn't left the inline filler's text node.
-	 * If it is `true` it means that the filler had been added for a reason and the selection does not
-	 * left the filler's text node. E.g. the user can be in the middle of a composition so it should not be touched.
+	 * Returns `true` if the selection has not left the inline filler's text node.
+	 * If it is `true`, it means that the filler had been added for a reason and the selection did not
+	 * leave the filler's text node. For example, the user can be in the middle of a composition so it should not be touched.
 	 *
 	 * @private
-	 * @returns {Boolean} True if the inline filler and selection are in the same place.
+	 * @returns {Boolean} `true` if the inline filler and selection are in the same place.
 	 */
 	_isSelectionInInlineFiller() {
 		if ( this.selection.rangeCount != 1 || !this.selection.isCollapsed ) {
@@ -434,7 +434,7 @@ export default class Renderer {
 	 * Checks if the inline {@link module:engine/view/filler filler} should be added.
 	 *
 	 * @private
-	 * @returns {Boolean} True if the inline fillers should be added.
+	 * @returns {Boolean} `true` if the inline filler should be added.
 	 */
 	_needsInlineFillerAtSelection() {
 		if ( this.selection.rangeCount != 1 || !this.selection.isCollapsed ) {
@@ -481,7 +481,7 @@ export default class Renderer {
 	 * @private
 	 * @param {module:engine/view/text~Text} viewText View text to update.
 	 * @param {Object} options
-	 * @param {module:engine/view/position~Position} options.inlineFillerPosition The position on which the inline
+	 * @param {module:engine/view/position~Position} options.inlineFillerPosition The position where the inline
 	 * filler should be rendered.
 	 */
 	_updateText( viewText, options ) {
@@ -511,7 +511,7 @@ export default class Renderer {
 	}
 
 	/**
-	 * Checks if attributes list needs to be updated and possibly updates it.
+	 * Checks if attribute list needs to be updated and possibly updates it.
 	 *
 	 * @private
 	 * @param {module:engine/view/element~Element} viewElement The view element to update.
@@ -549,7 +549,7 @@ export default class Renderer {
 	 * @private
 	 * @param {module:engine/view/element~Element} viewElement View element to update.
 	 * @param {Object} options
-	 * @param {module:engine/view/position~Position} options.inlineFillerPosition The position on which the inline
+	 * @param {module:engine/view/position~Position} options.inlineFillerPosition The position where the inline
 	 * filler should be rendered.
 	 */
 	_updateChildren( viewElement, options ) {
@@ -595,17 +595,17 @@ export default class Renderer {
 	}
 
 	/**
-	 * Compares `viewElement`'s actual and expected children and returns actions sequence which can be used to transform
+	 * Compares view element's actual and expected children and returns an action sequence which can be used to transform
 	 * actual children into expected ones.
 	 *
 	 * @private
-	 * @param {module:engine/view/node~Node} viewElement The view element which children will be compared.
-	 * @param {module:engine/view/position~Position} [inlineFillerPosition=null] The position on which the inline
+	 * @param {module:engine/view/node~Node} viewElement The view element whose children will be compared.
+	 * @param {module:engine/view/position~Position} [inlineFillerPosition=null] The position where the inline
 	 * filler should be rendered.
 	 * @returns {Object|null} result
 	 * @returns {Array.<String>} result.actions List of actions based on {@link module:utils/diff~diff} function.
-	 * @returns {Array.<Node>} result.actualDomChildren Current `viewElement`'s DOM children.
-	 * @returns {Array.<Node>} result.expectedDomChildren Expected `viewElement`'s DOM children.
+	 * @returns {Array.<Node>} result.actualDomChildren Current view element's DOM children.
+	 * @returns {Array.<Node>} result.expectedDomChildren Expected view element's DOM children.
 	 */
 	_diffChildren( viewElement, inlineFillerPosition = null ) {
 		const domElement = this.domConverter.mapViewToDom( viewElement );
@@ -621,15 +621,15 @@ export default class Renderer {
 	}
 
 	/**
-	 * Returns expected DOM children for a given `viewElement`.
+	 * Returns expected DOM children for a given view element.
 	 *
 	 * @private
-	 * @param {module:engine/view/node~Node} viewElement View element which children will be returned.
-	 * @param {Node} domElement DOM representation of a given view element.
-	 * @param {Object} options See {@link module:engine/view/domconverter~DomConverter#viewToDom} options parameter.
-	 * @param {module:engine/view/position~Position} [options.inlineFillerPosition=null] The position on which
+	 * @param {module:engine/view/node~Node} viewElement View element whose children will be returned.
+	 * @param {Node} domElement The DOM representation of a given view element.
+	 * @param {Object} options See the {@link module:engine/view/domconverter~DomConverter#viewToDom} options parameter.
+	 * @param {module:engine/view/position~Position} [options.inlineFillerPosition=null] The position where
 	 * the inline filler should be rendered.
-	 * @returns {Array.<Node>} The `viewElement`'s expected children.
+	 * @returns {Array.<Node>} The view element's expected children.
 	 */
 	_getElementExpectedChildren( viewElement, domElement, options ) {
 		const expectedDomChildren = Array.from( this.domConverter.viewChildrenToDom( viewElement, domElement.ownerDocument, options ) );
@@ -646,7 +646,7 @@ export default class Renderer {
 	}
 
 	/**
-	 * Finds DOM nodes which were replaced with the similar nodes (same tag name) in the view. All nodes are compared
+	 * Finds DOM nodes that were replaced with the similar nodes (same tag name) in the view. All nodes are compared
 	 * within one `insert`/`delete` action group, for example:
 	 *
 	 * 		Actual DOM:		<p><b>Foo</b>Bar<i>Baz</i><b>Bax</b></p>
@@ -655,10 +655,10 @@ export default class Renderer {
 	 * 		Output actions:	[ insert, replace, delete, equal, replace ]
 	 *
 	 * @private
-	 * @param {Array.<String>} actions Actions array which is result of {@link module:utils/diff~diff} function.
+	 * @param {Array.<String>} actions Actions array which is a result of the {@link module:utils/diff~diff} function.
 	 * @param {Array.<Node>} actualDom Actual DOM children
 	 * @param {Array.<Node>} expectedDom Expected DOM children.
-	 * @returns {Array.<String>} Actions array modified with `replace` actions.
+	 * @returns {Array.<String>} Actions array modified with the `replace` actions.
 	 */
 	_findReplaceActions( actions, actualDom, expectedDom ) {
 		// If there is no both 'insert' and 'delete' actions, no need to check for replaced elements.
@@ -691,7 +691,7 @@ export default class Renderer {
 	}
 
 	/**
-	 * Marks text nodes to be synced.
+	 * Marks text nodes to be synchronized.
 	 *
 	 * If a text node is passed, it will be marked. If an element is passed, all descendant text nodes inside it will be marked.
 	 *
@@ -713,7 +713,7 @@ export default class Renderer {
 	}
 
 	/**
-	 * Checks if selection needs to be updated and possibly updates it.
+	 * Checks if the selection needs to be updated and possibly updates it.
 	 *
 	 * @private
 	 */
@@ -743,10 +743,10 @@ export default class Renderer {
 	}
 
 	/**
-	 * Updates fake selection.
+	 * Updates the fake selection.
 	 *
 	 * @private
-	 * @param {HTMLElement} domRoot Valid DOM root where fake selection container should be added.
+	 * @param {HTMLElement} domRoot A valid DOM root where the fake selection container should be added.
 	 */
 	_updateFakeSelection( domRoot ) {
 		const domDocument = domRoot.ownerDocument;
@@ -789,10 +789,10 @@ export default class Renderer {
 	}
 
 	/**
-	 * Updates DOM selection.
+	 * Updates the DOM selection.
 	 *
 	 * @private
-	 * @param {HTMLElement} domRoot Valid DOM root where DOM selection should be rendered.
+	 * @param {HTMLElement} domRoot A valid DOM root where the DOM selection should be rendered.
 	 */
 	_updateDomSelection( domRoot ) {
 		const domSelection = domRoot.ownerDocument.defaultView.getSelection();
@@ -819,10 +819,10 @@ export default class Renderer {
 	}
 
 	/**
-	 * Checks whether given DOM selection needs to be updated.
+	 * Checks whether a given DOM selection needs to be updated.
 	 *
 	 * @private
-	 * @param {Selection} domSelection DOM selection to check.
+	 * @param {Selection} domSelection The DOM selection to check.
 	 * @returns {Boolean}
 	 */
 	_domSelectionNeedsUpdate( domSelection ) {
@@ -848,7 +848,7 @@ export default class Renderer {
 	}
 
 	/**
-	 * Removes DOM selection.
+	 * Removes the DOM selection.
 	 *
 	 * @private
 	 */
@@ -868,7 +868,7 @@ export default class Renderer {
 	}
 
 	/**
-	 * Removes fake selection.
+	 * Removes the fake selection.
 	 *
 	 * @private
 	 */
