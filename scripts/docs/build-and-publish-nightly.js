@@ -15,11 +15,6 @@ This script is to be used on CI to automatically update https://ckeditor5.github
 
 */
 
-const { tools } = require( '@ckeditor/ckeditor5-dev-utils' );
-
-console.log( 'This build should fail.' );
-console.log( exec( 'this-command-should-fail-because-it-should-not-exist' ) );
-
 // Build the documentation only when master branch is updated.
 if ( process.env.TRAVIS_BRANCH !== 'master' ) {
 	process.exit();
@@ -31,7 +26,7 @@ if ( process.env.TRAVIS_EVENT_TYPE !== 'cron' ) {
 }
 
 const path = require( 'path' );
-// const { tools } = require( '@ckeditor/ckeditor5-dev-utils' );
+const { tools } = require( '@ckeditor/ckeditor5-dev-utils' );
 
 const mainRepoUrl = 'https://github.com/CKEditor5/ckeditor5.github.io';
 
