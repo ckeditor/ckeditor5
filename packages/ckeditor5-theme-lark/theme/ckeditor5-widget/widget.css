@@ -12,6 +12,7 @@
 	--ck-color-widget-border-hover: hsl(43, 100%, 68%);
 	--ck-color-widget-editable-focused-background: var(--ck-color-base-background);
 	--ck-color-widget-drag-handler-icon: hsl(0, 0%, 100%);
+	--ck-widget-drag-handler-width: 22px;
 }
 
 .ck .ck-widget {
@@ -46,10 +47,6 @@
 	}
 }
 
-:root {
-	--ck-widget-drag-handler-width: 22px;
-}
-
 .ck .ck-widget.ck-widget__selectable {
 	/* Make the widget wrapper a relative positioning container for the drag handler. */
 	position: relative;
@@ -57,7 +54,8 @@
 	& .ck-selection-handler {
 		display: none;
 
-		border-radius: var(--ck-border-radius) var(--ck-border-radius) 0 var(--ck-border-radius);
+		/* Make only top corners round. */
+		border-radius: var(--ck-border-radius) var(--ck-border-radius) 0 0;
 
 		width: var(--ck-widget-drag-handler-width);
 		height: calc(var(--ck-widget-outline-thickness) + var(--ck-widget-drag-handler-width));
