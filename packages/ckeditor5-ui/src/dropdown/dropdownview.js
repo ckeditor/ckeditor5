@@ -188,8 +188,8 @@ export default class DropdownView extends View {
 		/**
 		 * Fired when the toolbar button or list item is executed.
 		 *
-		 * For {@link #listView} It fires when one of the list items has been
-		 * {@link module:ui/list/listitemview~ListItemView#event:execute executed}.
+		 * For {@link #listView} It fires when a child of some {@link module:ui/list/listitemview~ListItemView}
+		 * fired `execute`.
 		 *
 		 * For {@link #toolbarView} It fires when one of the buttons has been
 		 * {@link module:ui/button/buttonview~ButtonView#event:execute executed}.

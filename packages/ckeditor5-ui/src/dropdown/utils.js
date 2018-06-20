@@ -251,7 +251,7 @@ function focusDropdownContentsOnArrows( dropdownView ) {
 }
 
 /**
- * A definition of the list item used by the {@link module:ui/dropdown/utils#addListToDropdown}
+ * A definition of the list item used by the {@link module:ui/dropdown/utils~addListToDropdown}
  * utility.
  *
  * @typedef {Object} module:ui/dropdown/utils~ListDropdownItemDefinition
