@@ -211,8 +211,8 @@ class MutationHandler {
 		const modelFromDomChildren = Array.from( modelFromCurrentDom.getChildren() );
 		const currentModelChildren = Array.from( currentModel.getChildren() );
 
-		// Remove the last `<softBreak>` from the end of the `modelFromDomChildren` if there is no `<softBreak>` current model.
-		// If that happened, it means that this is a bogus br added by a browser.
+		// Remove the last `<softBreak>` from the end of `modelFromDomChildren` if there is no `<softBreak>` in current model.
+		// If the described scenario happened, it means that this is a bogus `<br />` added by a browser.
 		const lastDomChild = modelFromDomChildren[ modelFromDomChildren.length - 1 ];
 		const lastCurrentChild = currentModelChildren[ currentModelChildren.length - 1 ];
 
