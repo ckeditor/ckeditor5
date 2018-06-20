@@ -32,7 +32,7 @@ export default class ShiftEnterCommand extends Command {
 	}
 }
 
-// Checks whether the shiftEnter command should be enabled in the specified selection.
+// Checks whether the ShiftEnter command should be enabled in the specified selection.
 //
 // @param {module:engine/model/schema~Schema} schema
 // @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
@@ -62,7 +62,7 @@ function isEnabled( schema, selection ) {
 	return true;
 }
 
-// Creates a break in the way that the <kbd>Shift+Enter</kbd> key is expected to work.
+// Creates a break in the way that the <kbd>Shift</kbd>+<kbd>Enter</kbd> keystroke is expected to work.
 //
 // @param {module:engine/model~Model} model
 // @param {module:engine/model/writer~Writer} writer
@@ -94,7 +94,7 @@ function softBreakAction( model, writer, selection ) {
 		// We chose not to insert a line break in this case because:
 		//
 		// * it's not a very common scenario,
-		// * it actually surprised me when I saw "expected behaviour" in real life.
+		// * it actually surprised me when I saw the "expected behavior" in real life.
 		//
 		// It's ok if the user will need to be more specific where they want the <br> to be inserted.
 		else {
@@ -113,7 +113,7 @@ function insertBreak( writer, position ) {
 	writer.setSelection( breakLineElement, 'after' );
 }
 
-// Checks whether specified `element` is a children of limit element.
+// Checks whether the specified `element` is a child of the limit element.
 //
 // Checking whether the `<p>` element is inside a limit element:
 //   - <$root><p>Text.</p></$root> => false
