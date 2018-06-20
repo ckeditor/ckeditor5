@@ -230,36 +230,48 @@ function renderDropdown() {
 	const collection = new Collection( { idProperty: 'label' } );
 
 	[ 'Arial', 'Tahoma', 'Georgia' ].forEach( font => {
-		collection.add( new Model( {
-			label: `${ font } (style attr)`,
-			style: `font-family: ${ font }`,
-			withText: true
-		} ) );
+		collection.add( {
+			type: 'button',
+			model: new Model( {
+				label: `${ font } (style attr)`,
+				style: `font-family: ${ font }`,
+				withText: true
+			} )
+		} );
 	} );
 
-	collection.add( new Model( {
-		isSeparator: true
-	} ) );
+	collection.add( {
+		type: 'separator'
+	} );
 
-	collection.add( new Model( {
-		label: 'Bold',
-		withText: true,
-		icon: boldIcon
-	} ) );
+	collection.add( {
+		type: 'button',
+		model: new Model( {
+			label: 'Bold',
+			withText: true,
+			icon: boldIcon
+		} )
+	} );
 
-	collection.add( new Model( {
-		label: 'This item is on',
-		withText: true,
-		icon: boldIcon,
-		isOn: true
-	} ) );
+	collection.add( {
+		type: 'button',
+		model: new Model( {
+			label: 'This item is on',
+			withText: true,
+			icon: boldIcon,
+			isOn: true
+		} )
+	} );
 
-	collection.add( new Model( {
-		label: 'Disabled',
-		withText: true,
-		icon: boldIcon,
-		isEnabled: false
-	} ) );
+	collection.add( {
+		type: 'button',
+		model: new Model( {
+			label: 'Disabled',
+			withText: true,
+			icon: boldIcon,
+			isEnabled: false
+		} )
+	} );
 
 	ui.listDropdown.add( toolbar( [
 		listDropdown( {
