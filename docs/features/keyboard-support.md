@@ -23,6 +23,8 @@ Below is a list of the most important keystrokes supported by CKEditor 5 and its
 | Move focus to the toolbar | <kbd>Alt</kbd> + <kbd>F10</kbd> | <kbd>Alt</kbd> + <kbd>F10</kbd> <br> (may require <kbd>Fn</kbd>) |
 | Navigate through the toolbar | <kbd>↑</kbd> / <kbd>→</kbd> / <kbd>↓</kbd> / <kbd>←</kbd> | <kbd>↑</kbd> / <kbd>→</kbd> / <kbd>↓</kbd> / <kbd>←</kbd> |
 | Execute the currently focused button | <kbd>Enter</kbd> | <kbd>Enter</kbd> |
+| Insert a hard break (e.g. a new paragraph) | <kbd>Enter</kbd> | <kbd>Enter</kbd> |
+| Insert a soft break (i.e. a `<br>`) | <kbd>Shift</kbd>+<kbd>Enter</kbd> | <kbd>Shift</kbd>+<kbd>Enter</kbd> |
 
 <style>
 .keyboard-shortcuts th {
