@@ -40,9 +40,12 @@ exec( 'rm -rf ../ckeditor5.github.io/docs/nightly/ckeditor5/latest' );
 // Copy built documentation to the new destination.
 exec( 'cp -R build/docs/* ../ckeditor5.github.io/docs/nightly/' );
 
+// Umberto makes a symlink between the latest version (`projectVersion`) and "latest/" directory.
+// The symlink must be deleted in order to copy a documentation for `projectVersion` as `latest`.
+exec( 'rm -rf ../ckeditor5.github.io/docs/nightly/ckeditor5/latest' );
+
 // Copy the versioned documentation to latest/.
-exec( 'mkdir ../ckeditor5.github.io/docs/nightly/ckeditor5/latest' );
-exec( `cp -R ../ckeditor5.github.io/docs/nightly/ckeditor5/${ projectVersion }/* ../ckeditor5.github.io/docs/nightly/ckeditor5/latest` );
+exec( `cp -R ../ckeditor5.github.io/docs/nightly/ckeditor5/${ projectVersion } ../ckeditor5.github.io/docs/nightly/ckeditor5/latest` );
 
 process.chdir( path.join( process.cwd(), '..', 'ckeditor5.github.io' ) );
 
@@ -61,5 +64,12 @@ if ( exec( 'git diff --name-only docs/' ).trim().length ) {
 process.chdir( path.join( process.cwd(), '..', 'ckeditor5' ) );
 
 function exec( command ) {
-	return tools.shExec( command, { verbosity: 'error' } );
+	try {
+		return tools.shExec( command, { verbosity: 'error' } );
+	}
+	catch ( error ) {
+		console.error( error );
+
+		process.exit( 1 );
+	}
 }
