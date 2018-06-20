@@ -140,9 +140,10 @@ export default class Input extends Plugin {
 		const buffer = inputCommand.buffer;
 		const isFlatSelection = doc.selection.rangeCount === 1 ? doc.selection.getFirstRange().isFlat : true;
 
-		// If on `compositionstart` there is a non-collapsed selection containing more than one element
-		// it means `_handleKeydown()` method didn't removed its content. It happens usually because of
-		// events different order (`compositionstart` before `keydown`) - observed only in Safari (#83).
+		// If on `compositionstart` there is a non-collapsed selection which start and end have different block
+		// parents it means `_handleKeydown()` method did not remove its contents. It happens usually because
+		// of different order of events (`compositionstart` before `keydown` - in Safari). In such cases
+		// we need to remove selection contents on composition start (#83).
 		if ( doc.selection.isCollapsed || isFlatSelection ) {
 			return;
 		}
