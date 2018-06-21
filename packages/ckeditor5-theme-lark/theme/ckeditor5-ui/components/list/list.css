@@ -56,6 +56,21 @@
 			background: var(--ck-color-list-button-hover-background);
 		}
 	}
+
+	/* It's unnecessary to change the background/text of a switch toggle; it has different ways
+	of conveying its state (like the switcher) */
+	& .ck-switchbutton {
+		&.ck-on {
+			background: var(--ck-color-list-background);
+			color: inherit;
+
+			&:hover:not(ck-disabled),
+			&:focus {
+				background: var(--ck-color-list-button-hover-background);
+				color: inherit;
+			}
+		}
+	}
 }
 
 .ck.ck-list__separator {
