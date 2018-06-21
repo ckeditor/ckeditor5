@@ -67,6 +67,8 @@ cli.provideToken()
 		// Bump the version.
 		tools.shExec( `npm version ${ changelogVersion } --message "Release: v${ changelogVersion }."`, { verbosity: 'error' } );
 
+		tools.shExec( 'git push origin master' );
+
 		const packageJson = require( packageJsonPath );
 
 		log.info( 'Copying the package.json...' );
@@ -95,8 +97,7 @@ cli.provideToken()
 		log.info( 'Publishing on npm...' );
 
 		// Publish the package on npm.
-		// tools.shExec( `cd ${ templatePath } && npm publish && cd ${ cke5Path }` );
-		tools.shExec( `cd ${ templatePath } && npm pack && cd ${ cke5Path }` );
+		tools.shExec( `cd ${ templatePath } && npm publish && cd ${ cke5Path }` );
 
 		// Remove files that were copy.
 		for ( const file of additionalFiles ) {
