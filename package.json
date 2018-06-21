@@ -1,6 +1,6 @@
 {
   "name": "ckeditor5",
-  "version": "10.0.1",
+  "version": "10.1.0",
   "description": "The development environment of CKEditor 5.",
   "keywords": [
     "CKEditor",
@@ -52,7 +52,7 @@
     "@ckeditor/ckeditor5-list": "v11.0.0",
     "@ckeditor/ckeditor5-markdown-gfm": "v10.0.1",
     "@ckeditor/ckeditor5-paragraph": "v10.0.1",
-    "@ckeditor/ckeditor5-table":"v10.0.0",
+    "@ckeditor/ckeditor5-table": "v10.0.0",
     "@ckeditor/ckeditor5-theme-lark": "v10.1.0",
     "@ckeditor/ckeditor5-typing": "v10.0.1",
     "@ckeditor/ckeditor5-ui": "v10.1.0",
@@ -111,6 +111,7 @@
     "translations:download": "ckeditor5-dev-env-translations download",
     "translations:upload": "ckeditor5-dev-env-translations upload",
     "changelog": "node ./scripts/release/changelog.js",
+    "release": "bash ./scripts/release-ckeditor5.sh",
     "release:dependencies": "node ./scripts/release/release-dependencies.js",
     "switch-to-dev-dev": "sh ./scripts/switch-to-dev-dev.sh"
   },
