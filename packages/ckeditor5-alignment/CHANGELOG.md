@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## [10.0.1](https://github.com/ckeditor/ckeditor5-alignment/compare/v10.0.0...v10.0.1) (2018-06-21)
+
+### Other changes
+
+* Updated translations. ([a0a6997](https://github.com/ckeditor/ckeditor5-alignment/commit/a0a6997))
+* Updated translations. ([571d0cc](https://github.com/ckeditor/ckeditor5-alignment/commit/571d0cc))
+
+
 ## [10.0.0](https://github.com/ckeditor/ckeditor5-alignment/compare/v1.0.0-beta.4...v10.0.0) (2018-04-25)
 
 ### Other changes
