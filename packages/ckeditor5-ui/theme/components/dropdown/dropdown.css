@@ -12,10 +12,6 @@
 	& .ck-dropdown__arrow {
 		pointer-events: none;
 		z-index: var(--ck-z-default);
-
-		position: absolute;
-		top: 50%;
-		transform: translate3d( 0, -50%, 0 );
 	}
 
 	/* Dropdown button should span horizontally, e.g. in vertical toolbars */
