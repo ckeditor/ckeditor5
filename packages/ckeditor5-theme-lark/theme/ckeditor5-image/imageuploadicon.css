@@ -74,8 +74,8 @@
 @keyframes ck-upload-complete-icon-check {
 	0% {
 		opacity: 1;
-		height: 0;
 		width: 0;
+		height: 0;
 	}
 	33% {
 		width: 0.3em;
