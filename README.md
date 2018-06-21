@@ -132,11 +132,11 @@ Read more on the [Support](https://docs.ckeditor.com/ckeditor5/latest/framework/
 
 The five latest releases:
 
+* [Introduced the table feature and soft line-breaks – CKEditor 5 v10.1.0](https://github.com/ckeditor/ckeditor5/releases/tag/v10.1.0) (<time datetime="2018-06-21T12:00:00Z"><i>June 21, 2018</i></time>)
 * [Security release – CKEditor 5 v10.0.1](https://github.com/ckeditor/ckeditor5/releases/tag/v10.0.1) (<time datetime="2018-05-22T12:04:45Z"><i>May 22, 2018</i></time>)
 * [First stable release – CKEditor 5 v10.0.0](https://github.com/ckeditor/ckeditor5/releases/tag/v10.0.0) (<time datetime="2018-04-25T14:12:00Z"><i>Apr 25, 2018</i></time>)
 * [Beta release of CKEditor 5 v1.0.0](https://ckeditor.com/blog/CKEditor-5-v1.0.0-beta-released/) (<time datetime="2018-04-10T12:12:00Z"><i>Apr 10, 2018</i></time>)
 * [Second alpha release of CKEditor 5 v1.0.0](https://ckeditor.com/blog/Second-alpha-release-of-CKEditor-5-v1.0.0/) (<time datetime="2017-11-14T12:52:18Z"><i>Nov 14, 2017</i></time>)
-* [First alpha release of CKEditor 5 v1.0.0](https://ckeditor.com/blog/First-alpha-release-of-CKEditor-5-v1.0.0/) (<time datetime="2017-10-03T13:09:29Z"><i>Oct 3, 2017</i></time>)
 
 For more CKEditor 5 release blog posts [browse the CKEditor blog](https://ckeditor.com/blog/?category=releases&tags=CKEditor-5).
 
