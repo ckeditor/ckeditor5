@@ -5,16 +5,12 @@ Changelog
 
 ### Features
 
-* Introduced `beforeChange:{property}` event in `ObservableMixin`. Closes [#171](https://github.com/ckeditor/ckeditor5-utils/issues/171). ([6ef1246](https://github.com/ckeditor/ckeditor5-utils/commit/6ef1246))
+* Introduced `set:{property}` event in `ObservableMixin`. Closes [#171](https://github.com/ckeditor/ckeditor5-utils/issues/171). ([6ef1246](https://github.com/ckeditor/ckeditor5-utils/commit/6ef1246))
+* Introduced `fastDiff()` function. Closes [#235](https://github.com/ckeditor/ckeditor5-utils/issues/235). ([81fefc9](https://github.com/ckeditor/ckeditor5-utils/commit/81fefc9))
 
 ### Bug fixes
 
 * Error should not be thrown when scrolling the viewport from within an iframe in a different domain. Closes [ckeditor/ckeditor5#930](https://github.com/ckeditor/ckeditor5/issues/930). ([ad4656e](https://github.com/ckeditor/ckeditor5-utils/commit/ad4656e))
-* Renamed `beforeChange` event to `set` in the ObservableMixin. Closes [#243](https://github.com/ckeditor/ckeditor5-utils/issues/243). ([26c248d](https://github.com/ckeditor/ckeditor5-utils/commit/26c248d))
-
-### Other changes
-
-* Introduced `fastDiff` diffing function. Closes [#235](https://github.com/ckeditor/ckeditor5-utils/issues/235). ([81fefc9](https://github.com/ckeditor/ckeditor5-utils/commit/81fefc9))
 
 
 ## [10.0.0](https://github.com/ckeditor/ckeditor5-utils/compare/v1.0.0-beta.4...v10.0.0) (2018-04-25)
