@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [10.1.0](https://github.com/ckeditor/ckeditor5-essentials/compare/v10.0.0...v10.1.0) (2018-06-21)
+
+### Features
+
+* Introduced soft breaks support in the `Essential` plugin. Closes [#6](https://github.com/ckeditor/ckeditor5-essentials/issues/6). ([47c9c8c](https://github.com/ckeditor/ckeditor5-essentials/commit/47c9c8c))
+
+
 ## [10.0.0](https://github.com/ckeditor/ckeditor5-essentials/compare/v1.0.0-beta.4...v10.0.0) (2018-04-25)
 
 ### Other changes
