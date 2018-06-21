@@ -37,6 +37,8 @@ then
 	# Push the `stable` branches.
 	git push origin stable master && \
 	mgit exec 'git push origin stable'
+
+	echo "Success! 🎂"
 else
 	echo "Update the \"Releases\" section in README.md before starting the release process."
 fi
