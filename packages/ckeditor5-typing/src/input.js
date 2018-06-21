@@ -101,16 +101,17 @@ export default class Input extends Plugin {
 			return;
 		}
 
-		// If not during composition we should also delete content on '229' key code (composition start).
-		// While composing, deletion should be prevented as it may remove composed sequence (#83).
+		// If during composition, deletion should be prevented as it may remove composed sequence (#83).
 		if ( isComposing && evtData.keyCode === 229 ) {
 			return;
 		}
 
+		const isSelectionFlat = doc.selection.rangeCount === 1 ? doc.selection.getFirstRange().isFlat : true;
 		// If there is a `keydown` event fired with '229' keycode it might be related to recent composition.
 		// Check if selection is the same as upon ending recent composition, if so do not remove selected content
-		// as it will remove composed sequence (#83).
-		if ( !isComposing && evtData.keyCode === 229 && isSelectionUnchanged ) {
+		// as it will remove composed sequence. Also do not remove selection contents if selection is flat as it might
+		// cause some issues when starting composition. Flat selection is correctly handled by mutation handler itself (#83).
+		if ( !isComposing && evtData.keyCode === 229 && ( isSelectionUnchanged || isSelectionFlat ) ) {
 			return;
 		}
 
@@ -141,7 +142,7 @@ export default class Input extends Plugin {
 		const isFlatSelection = doc.selection.rangeCount === 1 ? doc.selection.getFirstRange().isFlat : true;
 
 		// If on `compositionstart` there is a non-collapsed selection which start and end have different block
-		// parents it means `_handleKeydown()` method did not remove its contents. It happens usually because
+		// parents it means the `_handleKeydown()` method did not remove its contents. It happens usually because
 		// of different order of events (`compositionstart` before `keydown` - in Safari). In such cases
 		// we need to remove selection contents on composition start (#83).
 		if ( doc.selection.isCollapsed || isFlatSelection ) {
