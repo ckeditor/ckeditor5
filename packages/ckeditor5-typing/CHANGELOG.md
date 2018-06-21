@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [10.0.1](https://github.com/ckeditor/ckeditor5-typing/compare/v10.0.0...v10.0.1) (2018-06-21)
+
+### Bug fixes
+
+* Bogus `<br />` element inserted by a browser at the end of an element is now correctly handled. Closes [ckeditor/ckeditor5#1083](https://github.com/ckeditor/ckeditor5/issues/1083). ([22abdff](https://github.com/ckeditor/ckeditor5-typing/commit/22abdff))
+
+
 ## [10.0.0](https://github.com/ckeditor/ckeditor5-typing/compare/v1.0.0-beta.4...v10.0.0) (2018-04-25)
 
 ### Other changes
