@@ -165,6 +165,24 @@ describe( 'utils', () => {
 					dropdownView.fire( 'execute' );
 					expect( dropdownView.isOpen ).to.be.false;
 				} );
+
+				it( 'does not change #isOpen if #execute triggered by a SwitchButtonView', () => {
+					const items = new Collection();
+
+					items.add( {
+						type: 'switchbutton',
+						model: new Model( {
+							label: 'foo'
+						} )
+					} );
+
+					addListToDropdown( dropdownView, items );
+
+					dropdownView.isOpen = true;
+
+					dropdownView.listView.items.first.children.first.fire( 'execute' );
+					expect( dropdownView.isOpen ).to.be.true;
+				} );
 			} );
 
 			describe( 'focusDropdownContentsOnArrows()', () => {
