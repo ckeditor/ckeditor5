@@ -1,6 +1,14 @@
 Changelog
 =========
 
+## [10.0.1](https://github.com/ckeditor/ckeditor5-clipboard/compare/v10.0.0...v10.0.1) (2018-06-21)
+
+### Bug fixes
+
+* Disabled the entire clipboard input pipeline when the editor is read-only. Closes [#48](https://github.com/ckeditor/ckeditor5-clipboard/issues/48). ([b40ec4b](https://github.com/ckeditor/ckeditor5-clipboard/commit/b40ec4b))
+* When pasting a plain text, single new line characters should be converted to `<br>`s. Closes [ckeditor/ckeditor5#766](https://github.com/ckeditor/ckeditor5/issues/766). ([be21676](https://github.com/ckeditor/ckeditor5-clipboard/commit/be21676))
+
+
 ## [10.0.0](https://github.com/ckeditor/ckeditor5-clipboard/compare/v1.0.0-beta.4...v10.0.0) (2018-04-25)
 
 ### Other changes
