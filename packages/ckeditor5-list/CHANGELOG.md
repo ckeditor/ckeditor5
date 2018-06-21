@@ -1,6 +1,19 @@
 Changelog
 =========
 
+## [11.0.0](https://github.com/ckeditor/ckeditor5-list/compare/v10.0.0...v11.0.0) (2018-06-21)
+
+### Other changes
+
+* Rename dlist attributes `indent` and `type` to `listIndent` and `listType` to avoid collisions with possible generic `type` attribute which could be used on other elements. Closes [#103](https://github.com/ckeditor/ckeditor5-list/issues/103). ([7a1ece6](https://github.com/ckeditor/ckeditor5-list/commit/7a1ece6))
+* Updated translations. ([340ee3d](https://github.com/ckeditor/ckeditor5-list/commit/340ee3d))
+
+### BREAKING CHANGES
+
+* The `indent` attribute is now called `listIndent`. See [#103](https://github.com/ckeditor/ckeditor5-list/issues/103) for more information.
+* The `type` attribute is now called `listType`. See [#103](https://github.com/ckeditor/ckeditor5-list/issues/103) for more information.
+
+
 ## [10.0.0](https://github.com/ckeditor/ckeditor5-list/compare/v1.0.0-beta.4...v10.0.0) (2018-04-25)
 
 ### Other changes
