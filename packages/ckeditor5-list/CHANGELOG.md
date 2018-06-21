@@ -5,7 +5,7 @@ Changelog
 
 ### Other changes
 
-* Rename dlist attributes `indent` and `type` to `listIndent` and `listType` to avoid collisions with possible generic `type` attribute which could be used on other elements. Closes [#103](https://github.com/ckeditor/ckeditor5-list/issues/103). ([7a1ece6](https://github.com/ckeditor/ckeditor5-list/commit/7a1ece6))
+* Rename list attributes `indent` and `type` to `listIndent` and `listType` to avoid collisions with possible generic `type` attribute which could be used on other elements. Closes [#103](https://github.com/ckeditor/ckeditor5-list/issues/103). ([7a1ece6](https://github.com/ckeditor/ckeditor5-list/commit/7a1ece6))
 * Updated translations. ([340ee3d](https://github.com/ckeditor/ckeditor5-list/commit/340ee3d))
 
 ### BREAKING CHANGES
