@@ -1,6 +1,25 @@
 Changelog
 =========
 
+## [10.1.0](https://github.com/ckeditor/ckeditor5-engine/compare/v10.0.0...v10.1.0) (2018-06-21)
+
+### Features
+
+* Introduce `ElementDefinition#priority` property which allows specifying the priority of created element during the downcast conversion. Closes [#1408](https://github.com/ckeditor/ckeditor5-engine/issues/1408). ([e20e133](https://github.com/ckeditor/ckeditor5-engine/commit/e20e133))
+* Introduced `ModelDocument#change:data` event. Closes [#1418](https://github.com/ckeditor/ckeditor5-engine/issues/1418). ([872f4ff](https://github.com/ckeditor/ckeditor5-engine/commit/872f4ff))
+* Introduced a selection post-fixer. Its role is to ensure that after all changes are applied the selection is placed in a correct position. Closes [#1156](https://github.com/ckeditor/ckeditor5-engine/issues/1156). Closes [#1176](https://github.com/ckeditor/ckeditor5-engine/issues/1176). Closes [#1182](https://github.com/ckeditor/ckeditor5-engine/issues/1182). Closes [ckeditor/ckeditor5-table#11](https://github.com/ckeditor/ckeditor5-table/issues/11). Closes [ckeditor/ckeditor5-table#12](https://github.com/ckeditor/ckeditor5-table/issues/12). Closes [ckeditor/ckeditor5-table#15](https://github.com/ckeditor/ckeditor5-table/issues/15). Closes [ckeditor/ckeditor5#562](https://github.com/ckeditor/ckeditor5/issues/562). Closes [ckeditor/ckeditor5#611](https://github.com/ckeditor/ckeditor5/issues/611). ([6cf91a1](https://github.com/ckeditor/ckeditor5-engine/commit/6cf91a1))
+
+### Bug fixes
+
+* Block filler will be inserted into the container if its last child is a `<br>` element. Closes [#1422](https://github.com/ckeditor/ckeditor5-engine/issues/1422). ([ba3d641](https://github.com/ckeditor/ckeditor5-engine/commit/ba3d641))
+* Fixed view <-> DOM conversion of whitespaces around `<br>` elements. Closes [ckeditor/ckeditor5#1024](https://github.com/ckeditor/ckeditor5/issues/1024). ([3e74554](https://github.com/ckeditor/ckeditor5-engine/commit/3e74554))
+* Renderer should avoid doing unnecessary DOM structure changes. Ensuring that the DOM gets updated less frequently fixes many issues with text composition. Closes [#1417](https://github.com/ckeditor/ckeditor5-engine/issues/1417). Closes [#1409](https://github.com/ckeditor/ckeditor5-engine/issues/1409). Closes [#1349](https://github.com/ckeditor/ckeditor5-engine/issues/1349). Closes [#1334](https://github.com/ckeditor/ckeditor5-engine/issues/1334). Closes [#898](https://github.com/ckeditor/ckeditor5-engine/issues/898). Closes [ckeditor/ckeditor5-typing#129](https://github.com/ckeditor/ckeditor5-typing/issues/129). Closes [ckeditor/ckeditor5-typing#89](https://github.com/ckeditor/ckeditor5-typing/issues/89). Closes [#1427](https://github.com/ckeditor/ckeditor5-engine/issues/1427). ([457afde](https://github.com/ckeditor/ckeditor5-engine/commit/457afde))
+
+### Other changes
+
+* Renderer now uses partial text replacing when updating text nodes instead of replacing entire nodes. Closes [#403](https://github.com/ckeditor/ckeditor5-engine/issues/403). ([797cd97](https://github.com/ckeditor/ckeditor5-engine/commit/797cd97))
+
+
 ## [10.0.0](https://github.com/ckeditor/ckeditor5-engine/compare/v1.0.0-beta.4...v10.0.0) (2018-04-25)
 
 ### Other changes
