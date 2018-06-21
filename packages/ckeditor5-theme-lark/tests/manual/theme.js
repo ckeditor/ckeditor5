@@ -13,6 +13,7 @@ import View from '@ckeditor/ckeditor5-ui/src/view';
 
 import IconView from '@ckeditor/ckeditor5-ui/src/icon/iconview';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+import SwitchButtonView from '@ckeditor/ckeditor5-ui/src/button/switchbuttonview';
 
 import { createDropdown, addListToDropdown, addToolbarToDropdown } from '@ckeditor/ckeditor5-ui/src/dropdown/utils';
 
@@ -229,6 +230,35 @@ function renderDropdown() {
 
 	const collection = new Collection( { idProperty: 'label' } );
 
+	collection.add( {
+		type: 'switchbutton',
+		model: new Model( {
+			label: 'A switchable list item',
+			withText: true
+		} )
+	} );
+
+	collection.add( {
+		type: 'switchbutton',
+		model: new Model( {
+			label: 'On with an icon',
+			withText: true,
+			isOn: true,
+			icon: boldIcon
+		} )
+	} );
+
+	collection.add( {
+		type: 'switchbutton',
+		model: new Model( {
+			label: 'Disabled',
+			withText: true,
+			isEnabled: false
+		} )
+	} );
+
+	collection.add( { type: 'separator' } );
+
 	[ 'Arial', 'Tahoma', 'Georgia' ].forEach( font => {
 		collection.add( {
 			type: 'button',
@@ -240,9 +270,7 @@ function renderDropdown() {
 		} );
 	} );
 
-	collection.add( {
-		type: 'separator'
-	} );
+	collection.add( { type: 'separator' } );
 
 	collection.add( {
 		type: 'button',
@@ -347,7 +375,11 @@ function renderToolbar() {
 			withText: false,
 			icon: boldIcon
 		} ),
-		button()
+		button(),
+		switchbutton( {
+			label: 'Switchable',
+			withText: true
+		} )
 	] ) );
 
 	// --- Rounded ------------------------------------------------------------
@@ -443,6 +475,23 @@ function button( {
 	icon
 } = {} ) {
 	const button = new ButtonView();
+
+	button.set( { label, isEnabled, isOn, withText, icon, keystroke, tooltip, tooltipPosition } );
+
+	return button;
+}
+
+function switchbutton( {
+	label = 'Switch button',
+	isEnabled = true,
+	isOn = false,
+	withText = true,
+	keystroke = null,
+	tooltip,
+	tooltipPosition = 's',
+	icon
+} = {} ) {
+	const button = new SwitchButtonView();
 
 	button.set( { label, isEnabled, isOn, withText, icon, keystroke, tooltip, tooltipPosition } );
 
