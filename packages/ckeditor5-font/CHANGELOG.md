@@ -9,8 +9,7 @@ Changelog
 
 ### Other changes
 
-* Updated translations. ([7c9ae29](https://github.com/ckeditor/ckeditor5-font/commit/7c9ae29))
-* Updated translations. ([fd11fcb](https://github.com/ckeditor/ckeditor5-font/commit/fd11fcb))
+* Updated translations.
 
 
 ## [10.0.0](https://github.com/ckeditor/ckeditor5-font/compare/v1.0.0-beta.4...v10.0.0) (2018-04-25)
