@@ -95,7 +95,8 @@ cli.provideToken()
 		log.info( 'Publishing on npm...' );
 
 		// Publish the package on npm.
-		tools.shExec( `cd ${ templatePath } && npm publish && cd ${ cke5Path }` );
+		// tools.shExec( `cd ${ templatePath } && npm publish && cd ${ cke5Path }` );
+		tools.shExec( `cd ${ templatePath } && npm pack && cd ${ cke5Path }` );
 
 		// Remove files that were copy.
 		for ( const file of additionalFiles ) {
@@ -113,7 +114,7 @@ cli.provideToken()
 		} ).then( () => changelogVersion );
 	} )
 	.then( version => {
-		log.info( 'Restoring the package.json...' );
+		log.info( 'Restoring the package.json template...' );
 
 		// Restore the template `package.json` to state before the publishing process.
 		tools.updateJSONFile( packageJsonTemplatePath, () => packageJsonTemplateCopy );

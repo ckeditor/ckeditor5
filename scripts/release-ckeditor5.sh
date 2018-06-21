@@ -13,8 +13,11 @@ then
 	# Release the CKEditor5 repository.
 	node ./scripts/release/release-ckeditor5.js
 
-    # Update the `stable` branch in the ckeditor5 repository.
+	# Update the `stable` branch in the ckeditor5 repository.
 	git checkout stable && git merge master && git checkout master
+
+	# Add `stable` branches in all repos which don't have them yet.
+	mgit exec 'git checkout -b stable && git push origin stable && git checkout master'
 
 	# Update all `stable` branches in all packages.
 	mgit exec 'git checkout stable && git merge master && git checkout master'
@@ -34,9 +37,6 @@ then
 	# Push the `stable` branches.
 	git push origin stable master && \
 	mgit exec 'git push origin stable'
-
-	# Add `stable` branches in all repos which don't have them yet.
-	mgit exec 'git checkout -b stable && git push origin stable && git checkout master'
 else
 	echo "Update the \"Releases\" section in README.md before starting the release process."
 fi
