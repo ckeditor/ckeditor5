@@ -1,6 +1,18 @@
 Changelog
 =========
 
+## [10.0.1](https://github.com/ckeditor/ckeditor5-font/compare/v10.0.0...v10.0.1) (2018-06-21)
+
+### Bug fixes
+
+* Ensured that font size's and font family's markup is always "outside" markup of other typical inline features, especially those changing background color. Thanks to that, the entire area of styled text will be correctly colored. Closes [ckeditor/ckeditor5-highlight#17](https://github.com/ckeditor/ckeditor5-highlight/issues/17). ([3b8b6dc](https://github.com/ckeditor/ckeditor5-font/commit/3b8b6dc))
+
+### Other changes
+
+* Updated translations. ([7c9ae29](https://github.com/ckeditor/ckeditor5-font/commit/7c9ae29))
+* Updated translations. ([fd11fcb](https://github.com/ckeditor/ckeditor5-font/commit/fd11fcb))
+
+
 ## [10.0.0](https://github.com/ckeditor/ckeditor5-font/compare/v1.0.0-beta.4...v10.0.0) (2018-04-25)
 
 ### Other changes
