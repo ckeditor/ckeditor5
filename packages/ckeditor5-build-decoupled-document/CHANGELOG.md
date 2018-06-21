@@ -3,6 +3,10 @@ Changelog
 
 ## [10.1.0](https://github.com/ckeditor/ckeditor5-build-decoupled-document/compare/v10.0.1...v10.1.0) (2018-06-21)
 
+This is a minor release that introduces many bug fixes and new features. Most notable ones are the table plugin and support for inserting soft breaks with <kbd>Shift</kbd>+<kbd>Enter</kbd>
+
+You can read more in the [blog post](https://ckeditor.com/blog/CKEditor-5-v10.1.0-released/).
+
 ### Dependencies
 
 New packages:
