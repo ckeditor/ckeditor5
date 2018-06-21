@@ -7,7 +7,7 @@
 	--ck-color-image-upload-icon: hsl(0, 0%, 100%);
 	--ck-color-image-upload-icon-background: hsl(120, 100%, 27%);
 
-	--ck-image-upload-icon-size: 1.25em;
+	--ck-image-upload-icon-size: 20px;
 	--ck-image-upload-icon-width: 2px;
 }
 
@@ -19,6 +19,9 @@
 	animation-name: ck-upload-complete-icon-show, ck-upload-complete-icon-hide;
 	animation-fill-mode: forwards, forwards;
 	animation-duration: 500ms, 500ms;
+
+	/* To make animation scalable. */
+	font-size: var(--ck-image-upload-icon-size);
 
 	/* Hide completed upload icon after 3 seconds. */
 	animation-delay: 0ms, 3000ms;
@@ -42,6 +45,9 @@
 		animation-duration: 500ms;
 		animation-delay: 500ms;
 		animation-fill-mode: forwards;
+
+		/* #1095. While reset is not providing proper box-sizing for pseudoelements, we need to handle it. */
+		box-sizing: border-box;
 	}
 }
 
@@ -74,21 +80,17 @@
 	33% {
 		/*
 		 * We need to use here hardcoded values because Edge is not supporting calc() in @keyframes.
-		 * It should be: width: calc( var(--ck-image-upload-icon-size) / 5 );
 		 */
-		width: 0.25em;
+		width: 0.3em;
 
 		height: 0;
 	}
 	100% {
 		/*
 		 * We need to use here hardcoded values because Edge is not supporting calc() in @keyframes.
-		 * It should be:
-		 * height: calc( var(--ck-image-upload-icon-size) / 3 );
-		 * width: calc( var(--ck-image-upload-icon-size) / 5 );
 		 */
-		width: 0.25em;
-		height: 0.416em;
+		width: 0.3em;
+		height: 0.45em;
 
 		opacity: 1;
 	}
