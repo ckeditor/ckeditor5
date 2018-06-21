@@ -5,7 +5,7 @@ Changelog
 
 ### Features
 
-* Added styles for upload complete icon (see https://github.com/ckeditor/ckeditor5-image/issues/204). ([dda5282](https://github.com/ckeditor/ckeditor5-theme-lark/commit/dda5282))
+* Added styles for the "upload completed" icon (see https://github.com/ckeditor/ckeditor5-image/issues/204). ([dda5282](https://github.com/ckeditor/ckeditor5-theme-lark/commit/dda5282))
 * Added the `BlockToolbar` plugin styles (see [ckeditor/ckeditor5-ui#391](https://github.com/ckeditor/ckeditor5-ui/issues/391)). ([6ac7511](https://github.com/ckeditor/ckeditor5-theme-lark/commit/6ac7511))
 * Implemented list separator styles (see [ckeditor/ckeditor5-table#24](https://github.com/ckeditor/ckeditor5-table/issues/24)). ([e0d1897](https://github.com/ckeditor/ckeditor5-theme-lark/commit/e0d1897))
 
