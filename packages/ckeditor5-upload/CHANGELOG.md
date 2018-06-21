@@ -1,16 +1,11 @@
 Changelog
 =========
 
-## [10.1.0](https://github.com/ckeditor/ckeditor5-upload/compare/v10.0.0...v10.1.0) (2018-06-21)
-
-### Features
-
-* Added upload pending action. Closes [#84](https://github.com/ckeditor/ckeditor5-upload/issues/84). ([3e690c5](https://github.com/ckeditor/ckeditor5-upload/commit/3e690c5))
+## [10.0.1](https://github.com/ckeditor/ckeditor5-upload/compare/v10.0.0...v10.0.1) (2018-06-21)
 
 ### Other changes
 
-* Updated translations. ([8933c91](https://github.com/ckeditor/ckeditor5-upload/commit/8933c91))
-* Updated translations. ([d59fcb5](https://github.com/ckeditor/ckeditor5-upload/commit/d59fcb5))
+* Updated translations.
 
 
 ## [10.0.0](https://github.com/ckeditor/ckeditor5-upload/compare/v1.0.0-beta.4...v10.0.0) (2018-04-25)
