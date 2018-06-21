@@ -1,0 +1,50 @@
+/*
+ * Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+@import "../../../mixins/_rounded.css";
+@import "../../../mixins/_disabled.css";
+
+:root {
+	--ck-switch-button-toggle-width: 2.6em;
+	--ck-switch-button-toggle-height: 1.1em;
+}
+
+.ck.ck-button.ck-switchbutton {
+	& .ck-button__label {
+		/* Separate the label from the switch */
+		margin-right: calc(2*var(--ck-spacing-large));
+	}
+
+	&.ck-disabled .ck-button__toggle {
+		@mixin ck-disabled;
+	}
+
+	& .ck-button__toggle {
+		@mixin ck-rounded-corners;
+
+		/* Make sure the toggle is always to the right as far as possible. */
+		margin-left: auto;
+
+		/* Leave some tiny bit of space around the inner part of the switch */
+		padding: 1px;
+
+		width: var(--ck-switch-button-toggle-width);
+		background: var(--ck-color-switch-button-off-background);
+
+		& .ck-button__toggle__inner {
+			@mixin ck-rounded-corners {
+				border-radius: calc(.5*var(--ck-border-radius));
+			}
+
+			width: var(--ck-switch-button-toggle-height);
+			height: var(--ck-switch-button-toggle-height);
+			background: var(--ck-color-switch-button-inner-background);
+		}
+	}
+
+	&.ck-on .ck-button__toggle {
+		background: var(--ck-color-switch-button-on-background);
+	}
+}
