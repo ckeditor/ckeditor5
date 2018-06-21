@@ -110,7 +110,7 @@ cli.provideToken()
 		return createGithubRelease( token, {
 			repositoryOwner: 'ckeditor',
 			repositoryName: 'ckeditor5',
-			version: changelogVersion,
+			version: `v${ changelogVersion }`,
 			description: releaseDescription
 		} ).then( () => changelogVersion );
 	} )
