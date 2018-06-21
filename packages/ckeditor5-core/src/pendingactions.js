@@ -13,22 +13,22 @@ import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 /**
- * List of editor pending actions.
+ * The list of pending editor actions.
  *
  * This plugin should be used to synchronise plugins that execute long-lasting actions
- * (i.e. file upload) with the editor integration. It gives a developer, who integrates the editor,
- * an easy way to check if there are any pending action whenever such information is needed.
- * All plugins, which register pending action provides also a message what action is ongoing
- * which can be displayed to a user and let him decide if he wants to interrupt the action or wait.
+ * (i.e. file upload) with the editor integration. It gives the developer who integrates the editor
+ * an easy way to check if there are any pending actions whenever such information is needed.
+ * All plugins that register a pending action also provide a message about the action that is ongoing
+ * which can be displayed to the user. This lets them decide if they want to interrupt the action or wait.
  *
- * Adding and updating pending action:
+ * Adding and updating a pending action:
  *
  * 		const pendingActions = editor.plugins.get( 'PendingActions' );
  * 		const action = pendingActions.add( 'Upload in progress 0%' );
  *
  * 		action.message = 'Upload in progress 10%';
  *
- * Removing pending action:
+ * Removing a pending action:
  *
  * 		const pendingActions = editor.plugins.get( 'PendingActions' );
  * 		const action = pendingActions.add( 'Unsaved changes.' );
@@ -60,7 +60,7 @@ export default class PendingActions extends Plugin {
 	 */
 	init() {
 		/**
-		 * Defines whether there is any registered pending action or not.
+		 * Defines whether there is any registered pending action.
 		 *
 		 * @readonly
 		 * @observable
@@ -69,7 +69,7 @@ export default class PendingActions extends Plugin {
 		this.set( 'isPending', false );
 
 		/**
-		 * List of pending actions.
+		 * A list of pending actions.
 		 *
 		 * @private
 		 * @type {module:utils/collection~Collection}
@@ -79,10 +79,10 @@ export default class PendingActions extends Plugin {
 	}
 
 	/**
-	 * Adds action to the list of pending actions.
+	 * Adds an action to the list of pending actions.
 	 *
-	 * This method returns an action object with observable message property.
-	 * The action object can be later used in the remove method. It also allows you to change the message.
+	 * This method returns an action object with an observable message property.
+	 * The action object can be later used in the {@link #remove} method. It also allows you to change the message.
 	 *
 	 * @param {String} message Action message.
 	 * @returns {Object} Observable object that represents a pending action.
@@ -90,11 +90,11 @@ export default class PendingActions extends Plugin {
 	add( message ) {
 		if ( typeof message !== 'string' ) {
 			/**
-			 * Message has to be a string.
+			 * The message must be a string.
 			 *
 			 * @error pendingactions-add-invalid-message
 			 */
-			throw new CKEditorError( 'pendingactions-add-invalid-message: Message has to be a string.' );
+			throw new CKEditorError( 'pendingactions-add-invalid-message: The message must be a string.' );
 		}
 
 		const action = Object.create( ObservableMixin );
@@ -107,9 +107,9 @@ export default class PendingActions extends Plugin {
 	}
 
 	/**
-	 * Removes action from the list of pending actions.
+	 * Removes an action from the list of pending actions.
 	 *
-	 * @param {Object} action Action object.
+	 * @param {Object} action An action object.
 	 */
 	remove( action ) {
 		this._actions.remove( action );
@@ -117,9 +117,9 @@ export default class PendingActions extends Plugin {
 	}
 
 	/**
-	 * Returns first action from the list.
+	 * Returns the first action from the list.
 	 *
-	 * returns {Object} Pending action object.
+	 * returns {Object} The pending action object.
 	 */
 	get first() {
 		return this._actions.get( 0 );
