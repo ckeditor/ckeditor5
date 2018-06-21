@@ -1,0 +1,78 @@
+# Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+"Language: hu\n"
+"Language-Team: Hungarian (https://www.transifex.com/ckeditor/teams/11143/hu/)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "Label for the insert table toolbar button."
+msgid "Insert table"
+msgstr "Táblázat beszúrása"
+
+msgctxt "Label for the set/unset table header column button."
+msgid "Header column"
+msgstr "Oszlop fejléc"
+
+msgctxt "Label for the insert table column before the current one button."
+msgid "Insert column before"
+msgstr "Oszlop beszúrása elé"
+
+msgctxt "Label for the insert table column after the current one button."
+msgid "Insert column after"
+msgstr "Oszlop beszúrása mögé"
+
+msgctxt "Label for the delete table column button."
+msgid "Delete column"
+msgstr "Oszlop törlése"
+
+msgctxt "Label for the table column dropdown button."
+msgid "Column"
+msgstr "Oszlop"
+
+msgctxt "Label for the set/unset table header row button."
+msgid "Header row"
+msgstr "Sor fejléc"
+
+msgctxt "Label for the insert row below button."
+msgid "Insert row below"
+msgstr "Sor beszúrása alá"
+
+msgctxt "Label for the insert row above button."
+msgid "Insert row above"
+msgstr "Sor beszúrása fölé"
+
+msgctxt "Label for the delete table row button."
+msgid "Delete row"
+msgstr "Sor törlése"
+
+msgctxt "Label for the table row dropdown button."
+msgid "Row"
+msgstr "Sor"
+
+msgctxt "Label for the merge table cell up button."
+msgid "Merge cell up"
+msgstr "Cellák egyesítése felfelé"
+
+msgctxt "Label for the merge table cell right button."
+msgid "Merge cell right"
+msgstr "Cellák egyesítése jobbra"
+
+msgctxt "Label for the merge table cell down button."
+msgid "Merge cell down"
+msgstr "Cellák egyesítése lefelé"
+
+msgctxt "Label for the merge table cell left button."
+msgid "Merge cell left"
+msgstr "Cellák egyesítése balra"
+
+msgctxt "Label for the split table cell vertically button."
+msgid "Split cell vertically"
+msgstr "Cella felosztása függőlegesen"
+
+msgctxt "Label for the split table cell horizontally button."
+msgid "Split cell horizontally"
+msgstr "Cella felosztása vízszintesen"
+
+msgctxt "Label for the merge table cells button."
+msgid "Merge cells"
+msgstr "Cellaegyesítés"
