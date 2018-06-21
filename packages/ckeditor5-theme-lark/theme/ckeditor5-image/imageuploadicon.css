@@ -78,20 +78,12 @@
 		width: 0;
 	}
 	33% {
-		/*
-		 * We need to use here hardcoded values because Edge is not supporting calc() in @keyframes.
-		 */
 		width: 0.3em;
-
 		height: 0;
 	}
 	100% {
-		/*
-		 * We need to use here hardcoded values because Edge is not supporting calc() in @keyframes.
-		 */
+		opacity: 1;
 		width: 0.3em;
 		height: 0.45em;
-
-		opacity: 1;
 	}
 }
