@@ -5,6 +5,11 @@
 	"extraStyles": "assets/styles.css",
 	"path": "docs",
 	"observablesdocs": "module:utils/observablemixin~ObservableMixin",
+	"redirects": {
+		"builds/guides/license-and-legal.html": "builds/guides/support/license-and-legal.html",
+		"builds/guides/browser-compatibility.html": "builds/guides/support/browser-compatibility.html",
+		"builds/guides/reporting-issues.html": "builds/guides/support/reporting-issues.html"
+	},
 	"scripts": {
 		"snippet-adapter": "../scripts/docs/snippetadapter",
 		"import-path": "../scripts/docs/getrealimportpath"
@@ -46,8 +51,8 @@
 			"cookieDomain": "ckeditor5.github.io"
 		}
 	},
-  	"og": {
-	   	"description": "Learn how to install, integrate and configure CKEditor 5 Builds and how to work with CKEditor 5 Framework, customize it, create your own plugins and custom editors, change the UI or even bring your own UI to the editor. API reference and examples included."
+	"og": {
+		"description": "Learn how to install, integrate and configure CKEditor 5 Builds and how to work with CKEditor 5 Framework, customize it, create your own plugins and custom editors, change the UI or even bring your own UI to the editor. API reference and examples included."
 	},
 	"groups": [
 		{

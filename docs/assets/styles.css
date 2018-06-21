@@ -4,8 +4,19 @@
 
 /* https://github.com/ckeditor/ckeditor5/issues/913 */
 @media only screen and (min-width: 1600px) {
+	/* https://github.com/ckeditor/ckeditor5/issues/1077 */
+	.main .main__content .main__content-inner,
 	.main .main__content-wide .main__content-inner {
 		width: 800px;
+	}
+}
+
+/* https://github.com/ckeditor/ckeditor5-build-decoupled-document/issues/12 */
+@media only screen and (max-width: 1360px) {
+	/* https://github.com/ckeditor/ckeditor5/issues/1077 */
+	.main .main__content .main__content-inner,
+	.main .main__content-wide .main__content-inner {
+		max-width: 900px;
 	}
 }
 
