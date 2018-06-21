@@ -15,6 +15,7 @@ import ListView from '../list/listview';
 import ListItemView from '../list/listitemview';
 import ListSeparatorView from '../list/listseparatorview';
 import ButtonView from '../button/buttonview';
+import SwitchButtonView from '../button/switchbuttonview';
 
 import clickOutsideHandler from '../bindings/clickoutsidehandler';
 
@@ -175,9 +176,15 @@ export function addListToDropdown( dropdownView, items ) {
 	listView.items.bindTo( items ).using( ( { type, model } ) => {
 		if ( type === 'separator' ) {
 			return new ListSeparatorView( locale );
-		} else if ( type === 'button' ) {
+		} else if ( type === 'button' || type === 'switchbutton' ) {
 			const listItemView = new ListItemView( locale );
-			const buttonView = new ButtonView( locale );
+			let buttonView;
+
+			if ( type === 'button' ) {
+				buttonView = new ButtonView( locale );
+			} else {
+				buttonView = new SwitchButtonView( locale );
+			}
 
 			// Bind all model properties to the button view.
 			buttonView.bind( ...Object.keys( model ) ).to( model );
@@ -224,7 +231,12 @@ function closeDropdownOnBlur( dropdownView ) {
 // @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView
 function closeDropdownOnExecute( dropdownView ) {
 	// Close the dropdown when one of the list items has been executed.
-	dropdownView.on( 'execute', () => {
+	dropdownView.on( 'execute', evt => {
+		// Toggling a switch button view should not close the dropdown.
+		if ( evt.source instanceof SwitchButtonView ) {
+			return;
+		}
+
 		dropdownView.isOpen = false;
 	} );
 }

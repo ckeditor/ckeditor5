@@ -12,6 +12,7 @@ import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import Model from '../../src/model';
 
 import ButtonView from '../../src/button/buttonview';
+import SwitchButtonView from '../../src/button/switchbuttonview';
 import DropdownView from '../../src/dropdown/dropdownview';
 import DropdownPanelView from '../../src/dropdown/dropdownpanelview';
 import SplitButtonView from '../../src/dropdown/button/splitbuttonview';
@@ -361,6 +362,59 @@ describe( 'utils', () => {
 				it( 'delegates ButtonView#execute to the ListItemView', done => {
 					definitions.add( {
 						type: 'button',
+						model: new Model( { label: 'a', style: 'b' } )
+					} );
+
+					const listItem = listItems.first;
+					const button = listItem.children.first;
+
+					dropdownView.on( 'execute', evt => {
+						expect( evt.source ).to.equal( button );
+						expect( evt.path ).to.deep.equal( [ button, listItem, dropdownView ] );
+
+						done();
+					} );
+
+					button.fire( 'execute' );
+				} );
+			} );
+
+			describe( 'with SwitchButtonView', () => {
+				it( 'is populated using item definitions', () => {
+					definitions.add( {
+						type: 'switchbutton',
+						model: new Model( { label: 'a', style: 'b' } )
+					} );
+
+					expect( listItems ).to.have.length( 1 );
+					expect( listItems.first ).to.be.instanceOf( ListItemView );
+					expect( listItems.first.children.first ).to.be.instanceOf( SwitchButtonView );
+
+					expect( listItems ).to.have.length( 1 );
+					expect( listItems.first.children.first.label ).to.equal( 'a' );
+					expect( listItems.first.children.first.style ).to.equal( 'b' );
+				} );
+
+				it( 'binds all button properties', () => {
+					const def = {
+						type: 'switchbutton',
+						model: new Model( { label: 'a', style: 'b', foo: 'bar', baz: 'qux' } )
+					};
+
+					definitions.add( def );
+
+					const button = listItems.first.children.first;
+
+					expect( button.foo ).to.equal( 'bar' );
+					expect( button.baz ).to.equal( 'qux' );
+
+					def.model.baz = 'foo?';
+					expect( button.baz ).to.equal( 'foo?' );
+				} );
+
+				it( 'delegates SwitchButtonView#execute to the ListItemView', done => {
+					definitions.add( {
+						type: 'switchbutton',
 						model: new Model( { label: 'a', style: 'b' } )
 					} );
 
