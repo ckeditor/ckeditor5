@@ -5,12 +5,11 @@ Changelog
 
 ### Features
 
-* Introduced PendingActions plugin. Closes [#126](https://github.com/ckeditor/ckeditor5-core/issues/126). ([e1af648](https://github.com/ckeditor/ckeditor5-core/commit/e1af648))
+* Introduced `PendingActions` plugin. Closes [#126](https://github.com/ckeditor/ckeditor5-core/issues/126). ([e1af648](https://github.com/ckeditor/ckeditor5-core/commit/e1af648))
 
 ### Other changes
 
-* Updated translations. ([d135c23](https://github.com/ckeditor/ckeditor5-core/commit/d135c23))
-* Updated translations. ([e77a1f8](https://github.com/ckeditor/ckeditor5-core/commit/e77a1f8))
+* Updated translations.
 
 
 ## [10.0.0](https://github.com/ckeditor/ckeditor5-core/compare/v1.0.0-beta.4...v10.0.0) (2018-04-25)
