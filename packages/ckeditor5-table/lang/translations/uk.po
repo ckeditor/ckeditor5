@@ -1,0 +1,78 @@
+# Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+"Language: uk\n"
+"Language-Team: Ukrainian (https://www.transifex.com/ckeditor/teams/11143/uk/)\n"
+"Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % 100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
+
+msgctxt "Label for the insert table toolbar button."
+msgid "Insert table"
+msgstr "Вставити таблицю"
+
+msgctxt "Label for the set/unset table header column button."
+msgid "Header column"
+msgstr "Заголовок стовпця"
+
+msgctxt "Label for the insert table column before the current one button."
+msgid "Insert column before"
+msgstr "Вставити стовпець перед"
+
+msgctxt "Label for the insert table column after the current one button."
+msgid "Insert column after"
+msgstr "Вставити стовпець після"
+
+msgctxt "Label for the delete table column button."
+msgid "Delete column"
+msgstr "Видалити стовпець"
+
+msgctxt "Label for the table column dropdown button."
+msgid "Column"
+msgstr "Стовпець"
+
+msgctxt "Label for the set/unset table header row button."
+msgid "Header row"
+msgstr "Заголовок рядка"
+
+msgctxt "Label for the insert row below button."
+msgid "Insert row below"
+msgstr "Вставити рядок зверху"
+
+msgctxt "Label for the insert row above button."
+msgid "Insert row above"
+msgstr "Вставити рядок знизу"
+
+msgctxt "Label for the delete table row button."
+msgid "Delete row"
+msgstr "Видалити рядок"
+
+msgctxt "Label for the table row dropdown button."
+msgid "Row"
+msgstr "Рядок"
+
+msgctxt "Label for the merge table cell up button."
+msgid "Merge cell up"
+msgstr "Поєднати комірки вгору"
+
+msgctxt "Label for the merge table cell right button."
+msgid "Merge cell right"
+msgstr "Поєднати комірки праворуч"
+
+msgctxt "Label for the merge table cell down button."
+msgid "Merge cell down"
+msgstr "Поєднати комірки внизу"
+
+msgctxt "Label for the merge table cell left button."
+msgid "Merge cell left"
+msgstr "Поєднати комірки ліворуч"
+
+msgctxt "Label for the split table cell vertically button."
+msgid "Split cell vertically"
+msgstr "Розділити комірки вертикально"
+
+msgctxt "Label for the split table cell horizontally button."
+msgid "Split cell horizontally"
+msgstr "Розділити комірки горизонтально"
+
+msgctxt "Label for the merge table cells button."
+msgid "Merge cells"
+msgstr "Поєднати комірки"

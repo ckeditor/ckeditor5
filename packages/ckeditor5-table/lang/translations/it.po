@@ -1,0 +1,78 @@
+# Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+"Language: it\n"
+"Language-Team: Italian (https://www.transifex.com/ckeditor/teams/11143/it/)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "Label for the insert table toolbar button."
+msgid "Insert table"
+msgstr "Inserisci tabella"
+
+msgctxt "Label for the set/unset table header column button."
+msgid "Header column"
+msgstr "Intestazione colonna"
+
+msgctxt "Label for the insert table column before the current one button."
+msgid "Insert column before"
+msgstr "Inserisci colonna prima"
+
+msgctxt "Label for the insert table column after the current one button."
+msgid "Insert column after"
+msgstr "Inserisci colonna dopo"
+
+msgctxt "Label for the delete table column button."
+msgid "Delete column"
+msgstr "Elimina colonna"
+
+msgctxt "Label for the table column dropdown button."
+msgid "Column"
+msgstr "Colonna"
+
+msgctxt "Label for the set/unset table header row button."
+msgid "Header row"
+msgstr "Riga d'intestazione"
+
+msgctxt "Label for the insert row below button."
+msgid "Insert row below"
+msgstr "Inserisci riga sotto"
+
+msgctxt "Label for the insert row above button."
+msgid "Insert row above"
+msgstr "Inserisci riga sopra"
+
+msgctxt "Label for the delete table row button."
+msgid "Delete row"
+msgstr "Elimina riga"
+
+msgctxt "Label for the table row dropdown button."
+msgid "Row"
+msgstr "Riga"
+
+msgctxt "Label for the merge table cell up button."
+msgid "Merge cell up"
+msgstr "Unisci cella sopra"
+
+msgctxt "Label for the merge table cell right button."
+msgid "Merge cell right"
+msgstr "Unisci cella a destra"
+
+msgctxt "Label for the merge table cell down button."
+msgid "Merge cell down"
+msgstr "Unisci cella sotto"
+
+msgctxt "Label for the merge table cell left button."
+msgid "Merge cell left"
+msgstr "Unisci cella a sinistra"
+
+msgctxt "Label for the split table cell vertically button."
+msgid "Split cell vertically"
+msgstr "Dividi cella verticalmente"
+
+msgctxt "Label for the split table cell horizontally button."
+msgid "Split cell horizontally"
+msgstr "Dividi cella orizzontalmente"
+
+msgctxt "Label for the merge table cells button."
+msgid "Merge cells"
+msgstr "Unisci celle"

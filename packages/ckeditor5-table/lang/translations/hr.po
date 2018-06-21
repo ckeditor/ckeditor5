@@ -1,0 +1,78 @@
+# Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+"Language: hr\n"
+"Language-Team: Croatian (https://www.transifex.com/ckeditor/teams/11143/hr/)\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+
+msgctxt "Label for the insert table toolbar button."
+msgid "Insert table"
+msgstr "Ubaci tablicu"
+
+msgctxt "Label for the set/unset table header column button."
+msgid "Header column"
+msgstr "Kolona zaglavlja"
+
+msgctxt "Label for the insert table column before the current one button."
+msgid "Insert column before"
+msgstr "Ubaci kolonu prije"
+
+msgctxt "Label for the insert table column after the current one button."
+msgid "Insert column after"
+msgstr "Ubaci kolonu nakon"
+
+msgctxt "Label for the delete table column button."
+msgid "Delete column"
+msgstr "Obriši kolonu"
+
+msgctxt "Label for the table column dropdown button."
+msgid "Column"
+msgstr "Kolona"
+
+msgctxt "Label for the set/unset table header row button."
+msgid "Header row"
+msgstr "Red zaglavlja"
+
+msgctxt "Label for the insert row below button."
+msgid "Insert row below"
+msgstr "Ubaci red ispod"
+
+msgctxt "Label for the insert row above button."
+msgid "Insert row above"
+msgstr "Ubaci red iznad"
+
+msgctxt "Label for the delete table row button."
+msgid "Delete row"
+msgstr "Obriši red"
+
+msgctxt "Label for the table row dropdown button."
+msgid "Row"
+msgstr "Red"
+
+msgctxt "Label for the merge table cell up button."
+msgid "Merge cell up"
+msgstr "Spoji ćelije prema gore"
+
+msgctxt "Label for the merge table cell right button."
+msgid "Merge cell right"
+msgstr "Spoji ćelije prema desno"
+
+msgctxt "Label for the merge table cell down button."
+msgid "Merge cell down"
+msgstr "Spoji ćelije prema dolje"
+
+msgctxt "Label for the merge table cell left button."
+msgid "Merge cell left"
+msgstr "Spoji ćelije prema lijevo"
+
+msgctxt "Label for the split table cell vertically button."
+msgid "Split cell vertically"
+msgstr "Razdvoji ćeliju okomito"
+
+msgctxt "Label for the split table cell horizontally button."
+msgid "Split cell horizontally"
+msgstr "Razdvoji ćeliju vodoravno"
+
+msgctxt "Label for the merge table cells button."
+msgid "Merge cells"
+msgstr "Spoji ćelije"

@@ -12,7 +12,17 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 import { getParentTable, updateNumericAttribute } from './utils';
 
 /**
- * The header coloumn command.
+ * The header column command.
+ *
+ * The command is registered by {@link module:table/tableediting~TableEditing} as `'setTableColumnHeader'` editor command.
+ *
+ * You can make the column containing the selected cell a [header](https://www.w3.org/TR/html50/tabular-data.html#the-th-element)
+ * by executing:
+ *
+ *		editor.execute( 'setTableColumnHeader' );
+ *
+ * **Note:** All preceding columns will also become headers. If the current column is already a header, executing this command
+ * will make it a regular column back again (including the following columns).
  *
  * @extends module:core/command~Command
  */

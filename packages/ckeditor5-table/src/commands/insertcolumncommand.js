@@ -14,6 +14,17 @@ import TableUtils from '../tableutils';
 /**
  * The insert column command.
  *
+ * The command is registered by {@link module:table/tableediting~TableEditing} as `'insertTableColumnBefore'` and
+ * `'insertTableColumnAfter'` editor commands.
+ *
+ * To insert a column before the selected cell, execute the following command:
+ *
+ *		editor.execute( 'insertTableColumnBefore' );
+ *
+ * To insert a column after the selected cell, execute the following command:
+ *
+ *		editor.execute( 'insertTableColumnAfter' );
+ *
  * @extends module:core/command~Command
  */
 export default class InsertColumnCommand extends Command {

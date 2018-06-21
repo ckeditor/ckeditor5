@@ -1,0 +1,78 @@
+# Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+"Language: tr\n"
+"Language-Team: Turkish (https://www.transifex.com/ckeditor/teams/11143/tr/)\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgctxt "Label for the insert table toolbar button."
+msgid "Insert table"
+msgstr "Tablo Ekle"
+
+msgctxt "Label for the set/unset table header column button."
+msgid "Header column"
+msgstr "Başlık kolonu"
+
+msgctxt "Label for the insert table column before the current one button."
+msgid "Insert column before"
+msgstr "Öncesine kolon ekle"
+
+msgctxt "Label for the insert table column after the current one button."
+msgid "Insert column after"
+msgstr "Sonrasına kolon ekle"
+
+msgctxt "Label for the delete table column button."
+msgid "Delete column"
+msgstr "Kolonu sil"
+
+msgctxt "Label for the table column dropdown button."
+msgid "Column"
+msgstr "Kolon"
+
+msgctxt "Label for the set/unset table header row button."
+msgid "Header row"
+msgstr "Başlık satırı"
+
+msgctxt "Label for the insert row below button."
+msgid "Insert row below"
+msgstr "Alta satır ekle"
+
+msgctxt "Label for the insert row above button."
+msgid "Insert row above"
+msgstr "Üste satır ekle"
+
+msgctxt "Label for the delete table row button."
+msgid "Delete row"
+msgstr "Satırı sil"
+
+msgctxt "Label for the table row dropdown button."
+msgid "Row"
+msgstr "Satır"
+
+msgctxt "Label for the merge table cell up button."
+msgid "Merge cell up"
+msgstr "Yukarı doğru birleştir"
+
+msgctxt "Label for the merge table cell right button."
+msgid "Merge cell right"
+msgstr "Sağa doğru birleştir"
+
+msgctxt "Label for the merge table cell down button."
+msgid "Merge cell down"
+msgstr "Aşağıya doğru birleştir"
+
+msgctxt "Label for the merge table cell left button."
+msgid "Merge cell left"
+msgstr "Sola doğru birleştir"
+
+msgctxt "Label for the split table cell vertically button."
+msgid "Split cell vertically"
+msgstr "Hücreyi dikey böl"
+
+msgctxt "Label for the split table cell horizontally button."
+msgid "Split cell horizontally"
+msgstr "Hücreyi yatay böl"
+
+msgctxt "Label for the merge table cells button."
+msgid "Merge cells"
+msgstr "Hücreleri birleştir"
