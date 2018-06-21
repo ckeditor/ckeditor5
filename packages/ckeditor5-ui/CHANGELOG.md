@@ -1,6 +1,26 @@
 Changelog
 =========
 
+## [10.1.0](https://github.com/ckeditor/ckeditor5-ui/compare/v10.0.0...v10.1.0) (2018-06-21)
+
+### Features
+
+* Implemented list component separators (see [ckeditor/ckeditor5-table#24](https://github.com/ckeditor/ckeditor5-table/issues/24)). ([0808a8c](https://github.com/ckeditor/ckeditor5-ui/commit/0808a8c))
+* Introduced the `BlockToolbar` plugin. Closes [#391](https://github.com/ckeditor/ckeditor5-ui/issues/391). ([5868516](https://github.com/ckeditor/ckeditor5-ui/commit/5868516))
+
+### Bug fixes
+
+* The action should be executed upon the first click on a tooltip-enabled UI in iOS. Closes [ckeditor/ckeditor5#920](https://github.com/ckeditor/ckeditor5/issues/920). ([6508ba2](https://github.com/ckeditor/ckeditor5-ui/commit/6508ba2))
+* The balloon toolbar should be attached correctly in case of a multi-range selection. Closes [#385](https://github.com/ckeditor/ckeditor5-ui/issues/385). ([714ef21](https://github.com/ckeditor/ckeditor5-ui/commit/714ef21))
+* The buttons in the editor should provide basic accessibility. Closes [ckeditor/ckeditor5#1013](https://github.com/ckeditor/ckeditor5/issues/1013). ([9e17d13](https://github.com/ckeditor/ckeditor5-ui/commit/9e17d13))
+
+### Other changes
+
+* Disabling a `ListItemView` should be possible using the `isEnabled` property. Closes [#389](https://github.com/ckeditor/ckeditor5-ui/issues/389). ([76a4d47](https://github.com/ckeditor/ckeditor5-ui/commit/76a4d47))
+* Made the `ContextualBalloon` always use the position of the topmost view in the stack (see: [ckeditor/ckeditor5-table#28](https://github.com/ckeditor/ckeditor5-table/issues/28)). Closes [ckeditor/ckeditor5#900](https://github.com/ckeditor/ckeditor5/issues/900). ([a2ef073](https://github.com/ckeditor/ckeditor5-ui/commit/a2ef073))
+* Updated translations. ([084e8c6](https://github.com/ckeditor/ckeditor5-ui/commit/084e8c6))
+
+
 ## [10.0.0](https://github.com/ckeditor/ckeditor5-ui/compare/v1.0.0-beta.4...v10.0.0) (2018-04-25)
 
 ### Other changes
