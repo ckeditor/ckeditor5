@@ -1,6 +1,21 @@
 Changelog
 =========
 
+## [10.1.0](https://github.com/ckeditor/ckeditor5-image/compare/v10.0.0...v10.1.0) (2018-06-21)
+
+### Features
+
+* Added upload complete icon. Closes [#204](https://github.com/ckeditor/ckeditor5-image/issues/204). ([004eda7](https://github.com/ckeditor/ckeditor5-image/commit/004eda7))
+
+### Bug fixes
+
+* Made image upload by drag&drop work when the `ImageUploadCommand` is disabled. Closes [#208](https://github.com/ckeditor/ckeditor5-image/issues/208). ([6908ec6](https://github.com/ckeditor/ckeditor5-image/commit/6908ec6))
+
+### Other changes
+
+* Updated translations. ([bfc9456](https://github.com/ckeditor/ckeditor5-image/commit/bfc9456))
+
+
 ## [10.0.0](https://github.com/ckeditor/ckeditor5-image/compare/v1.0.0-beta.4...v10.0.0) (2018-04-25)
 
 ### Other changes
