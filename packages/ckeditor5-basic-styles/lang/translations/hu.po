@@ -19,7 +19,7 @@ msgstr "Aláhúzott"
 
 msgctxt "Toolbar button tooltip for the Code feature."
 msgid "Code"
-msgstr ""
+msgstr "Forráskód"
 
 msgctxt "Toolbar button tooltip for the Strikethrough feature."
 msgid "Strikethrough"
