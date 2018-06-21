@@ -74,11 +74,36 @@ export default class TableUI extends Plugin {
 
 		editor.ui.componentFactory.add( 'tableColumn', locale => {
 			const options = [
-				{ commandName: 'setTableColumnHeader', label: t( 'Header column' ), bindIsOn: true },
-				'|',
-				{ commandName: 'insertTableColumnBefore', label: t( 'Insert column before' ) },
-				{ commandName: 'insertTableColumnAfter', label: t( 'Insert column after' ) },
-				{ commandName: 'removeTableColumn', label: t( 'Delete column' ) }
+				{
+					type: 'switchbutton',
+					model: {
+						commandName: 'setTableColumnHeader',
+						label: t( 'Header column' ),
+						bindIsOn: true
+					}
+				},
+				{ type: 'separator' },
+				{
+					type: 'button',
+					model: {
+						commandName: 'insertTableColumnBefore',
+						label: t( 'Insert column before' )
+					}
+				},
+				{
+					type: 'button',
+					model: {
+						commandName: 'insertTableColumnAfter',
+						label: t( 'Insert column after' )
+					}
+				},
+				{
+					type: 'button',
+					model: {
+						commandName: 'removeTableColumn',
+						label: t( 'Delete column' )
+					}
+				}
 			];
 
 			return this._prepareDropdown( t( 'Column' ), tableColumnIcon, options, locale );
@@ -86,11 +111,36 @@ export default class TableUI extends Plugin {
 
 		editor.ui.componentFactory.add( 'tableRow', locale => {
 			const options = [
-				{ commandName: 'setTableRowHeader', label: t( 'Header row' ), bindIsOn: true },
-				'|',
-				{ commandName: 'insertTableRowBelow', label: t( 'Insert row below' ) },
-				{ commandName: 'insertTableRowAbove', label: t( 'Insert row above' ) },
-				{ commandName: 'removeTableRow', label: t( 'Delete row' ) }
+				{
+					type: 'switchbutton',
+					model: {
+						commandName: 'setTableRowHeader',
+						label: t( 'Header row' ),
+						bindIsOn: true
+					}
+				},
+				{ type: 'separator' },
+				{
+					type: 'button',
+					model: {
+						commandName: 'insertTableRowBelow',
+						label: t( 'Insert row below' )
+					}
+				},
+				{
+					type: 'button',
+					model: {
+						commandName: 'insertTableRowAbove',
+						label: t( 'Insert row above' )
+					}
+				},
+				{
+					type: 'button',
+					model: {
+						commandName: 'removeTableRow',
+						label: t( 'Delete row' )
+					}
+				}
 			];
 
 			return this._prepareDropdown( t( 'Row' ), tableRowIcon, options, locale );
@@ -98,13 +148,49 @@ export default class TableUI extends Plugin {
 
 		editor.ui.componentFactory.add( 'mergeTableCells', locale => {
 			const options = [
-				{ commandName: 'mergeTableCellUp', label: t( 'Merge cell up' ) },
-				{ commandName: 'mergeTableCellRight', label: t( 'Merge cell right' ) },
-				{ commandName: 'mergeTableCellDown', label: t( 'Merge cell down' ) },
-				{ commandName: 'mergeTableCellLeft', label: t( 'Merge cell left' ) },
-				'|',
-				{ commandName: 'splitTableCellVertically', label: t( 'Split cell vertically' ) },
-				{ commandName: 'splitTableCellHorizontally', label: t( 'Split cell horizontally' ) }
+				{
+					type: 'button',
+					model: {
+						commandName: 'mergeTableCellUp',
+						label: t( 'Merge cell up' )
+					}
+				},
+				{
+					type: 'button',
+					model: {
+						commandName: 'mergeTableCellRight',
+						label: t( 'Merge cell right' )
+					}
+				},
+				{
+					type: 'button',
+					model: {
+						commandName: 'mergeTableCellDown',
+						label: t( 'Merge cell down' )
+					}
+				},
+				{
+					type: 'button',
+					model: {
+						commandName: 'mergeTableCellLeft',
+						label: t( 'Merge cell left' )
+					}
+				},
+				{ type: 'separator' },
+				{
+					type: 'button',
+					model: {
+						commandName: 'splitTableCellVertically',
+						label: t( 'Split cell vertically' )
+					}
+				},
+				{
+					type: 'button',
+					model: {
+						commandName: 'splitTableCellHorizontally',
+						label: t( 'Split cell horizontally' )
+					}
+				}
 			];
 
 			return this._prepareDropdown( t( 'Merge cells' ), tableMergeCellIcon, options, locale );
@@ -117,7 +203,7 @@ export default class TableUI extends Plugin {
 	 * @private
 	 * @param {String} label The dropdown button label.
 	 * @param {String} icon An icon for the dropdown button.
-	 * @param {Array.<module:table/tableui~DropdownOption>} options The list of options for the dropdown.
+	 * @param {Array.<module:ui/dropdown/utils~ListDropdownItemDefinition>} options The list of options for the dropdown.
 	 * @param {module:utils/locale~Locale} locale
 	 * @returns {module:ui/dropdown/dropdownview~DropdownView}
 	 */
@@ -165,23 +251,15 @@ export default class TableUI extends Plugin {
 // @param {Iterable.<module:ui/dropdown/utils~ListDropdownItemDefinition>} itemDefinitions
 // Collection of dropdown items to update with given option.
 function addListOption( option, editor, commands, itemDefinitions ) {
-	const isSeparator = option === '|';
-	const def = {
-		type: isSeparator ? 'separator' : 'button',
-	};
+	const model = option.model = new Model( option.model );
+	const { commandName, bindIsOn } = option.model;
 
-	if ( !isSeparator ) {
-		const model = def.model = new Model();
-		const { commandName, label, bindIsOn } = option;
+	if ( option.type !== 'separator' ) {
 		const command = editor.commands.get( commandName );
 
 		commands.push( command );
 
-		model.set( {
-			commandName,
-			label,
-			withText: true
-		} );
+		model.set( { commandName } );
 
 		model.bind( 'isEnabled' ).to( command );
 
@@ -190,15 +268,9 @@ function addListOption( option, editor, commands, itemDefinitions ) {
 		}
 	}
 
-	itemDefinitions.add( def );
-}
+	model.set( {
+		withText: true
+	} );
 
-/**
- * An object describing the table dropdown items.
- *
- * @typedef {Object} module:table/tableui~DropdownOption
- * @private
- * @property {String} commandName A command name to execute for that option.
- * @property {String} label A dropdown item label.
- * @property {Boolean} bindIsOn If `true`, it will bind the command's value to the `isOn` dropdown item property.
- */
+	itemDefinitions.add( option );
+}

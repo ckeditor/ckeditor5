@@ -11,6 +11,7 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import TableEditing from '../src/tableediting';
 import TableUI from '../src/tableui';
+import SwitchButtonView from '@ckeditor/ckeditor5-ui/src/button/switchbuttonview';
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
 import ListSeparatorView from '@ckeditor/ckeditor5-ui/src/list/listseparatorview';
 
@@ -183,6 +184,12 @@ describe( 'TableUI', () => {
 			expect( spy.args[ 0 ][ 0 ] ).to.equal( 'setTableRowHeader' );
 		} );
 
+		it( 'should use a toggle switch for the setTableRowHeader item', () => {
+			const items = dropdown.listView.items;
+
+			expect( items.first.children.first ).to.be.instanceOf( SwitchButtonView );
+		} );
+
 		it( 'should bind set header row command value to dropdown item', () => {
 			const items = dropdown.listView.items;
 
@@ -274,6 +281,12 @@ describe( 'TableUI', () => {
 
 			expect( spy.calledOnce ).to.be.true;
 			expect( spy.args[ 0 ][ 0 ] ).to.equal( 'setTableColumnHeader' );
+		} );
+
+		it( 'should use a toggle switch for the setTableColumnHeader item', () => {
+			const items = dropdown.listView.items;
+
+			expect( items.first.children.first ).to.be.instanceOf( SwitchButtonView );
 		} );
 
 		it( 'should bind set header column command value to dropdown item', () => {
