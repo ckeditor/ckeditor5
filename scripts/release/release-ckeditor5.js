@@ -36,7 +36,7 @@ cli.provideToken()
 		const gitVersion = versionUtils.getLastTagFromGit();
 		const changelogVersion = versionUtils.getLastFromChangelog();
 
-		log.info( 'Comparing versions - saved in changelog and as a tag...' );
+		log.info( 'Checking whether there is anything to release...' );
 
 		// If the last tag is equal to version saved in changelog, we don't have new version for release.
 		if ( gitVersion === changelogVersion ) {
@@ -67,7 +67,7 @@ cli.provideToken()
 		// Bump the version.
 		tools.shExec( `npm version ${ changelogVersion } --message "Release: v${ changelogVersion }."`, { verbosity: 'error' } );
 
-		tools.shExec( 'git push origin master' );
+		tools.shExec( `git push origin master v${ changelogVersion }` );
 
 		const packageJson = require( packageJsonPath );
 
