@@ -5,7 +5,7 @@
     "@ckeditor/ckeditor5-adapter-ckfinder": "ckeditor/ckeditor5-adapter-ckfinder#e4a3b93",
     "@ckeditor/ckeditor5-alignment": "ckeditor/ckeditor5-alignment#a0a6997",
     "@ckeditor/ckeditor5-autoformat": "ckeditor/ckeditor5-autoformat#a182242",
-    "@ckeditor/ckeditor5-basic-styles": "ckeditor/ckeditor5-basic-styles#a2714a5",
+    "@ckeditor/ckeditor5-basic-styles": "ckeditor/ckeditor5-basic-styles#331d2d4",
     "@ckeditor/ckeditor5-block-quote": "ckeditor/ckeditor5-block-quote#4a51fd8",
     "@ckeditor/ckeditor5-build-balloon": "ckeditor/ckeditor5-build-balloon#56b336c",
     "@ckeditor/ckeditor5-build-classic": "ckeditor/ckeditor5-build-classic#c7c8008",
@@ -30,12 +30,12 @@
     "@ckeditor/ckeditor5-list": "ckeditor/ckeditor5-list#340ee3d",
     "@ckeditor/ckeditor5-markdown-gfm": "ckeditor/ckeditor5-markdown-gfm#7979f5d",
     "@ckeditor/ckeditor5-paragraph": "ckeditor/ckeditor5-paragraph#4ad596d",
-    "@ckeditor/ckeditor5-table": "ckeditor/ckeditor5-table#4b95266",
+    "@ckeditor/ckeditor5-table": "ckeditor/ckeditor5-table#be80125",
     "@ckeditor/ckeditor5-theme-lark": "ckeditor/ckeditor5-theme-lark#65f4581",
     "@ckeditor/ckeditor5-typing": "ckeditor/ckeditor5-typing#22abdff",
     "@ckeditor/ckeditor5-ui": "ckeditor/ckeditor5-ui#084e8c6",
     "@ckeditor/ckeditor5-undo": "ckeditor/ckeditor5-undo#d5942d5",
-    "@ckeditor/ckeditor5-upload": "ckeditor/ckeditor5-upload#6aa9b35",
+    "@ckeditor/ckeditor5-upload": "ckeditor/ckeditor5-upload#8933c91",
     "@ckeditor/ckeditor5-utils": "ckeditor/ckeditor5-utils#26c248d",
     "@ckeditor/ckeditor5-widget": "ckeditor/ckeditor5-widget#c532b53"
   }
