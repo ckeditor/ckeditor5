@@ -1,6 +1,15 @@
 Changelog
 =========
 
+## [10.1.0](https://github.com/ckeditor/ckeditor5-enter/compare/v10.0.0...v10.1.0) (2018-06-21)
+
+### Features
+
+* Introduced the `ShiftEnter` plugin (support for inserting soft breaks by pressing <kbd>Shift</kbd>+<kbd>Enter</kbd>). This plugin will also be added to the `Essentials` plugin which is available in all official builds, so soft break support will automatically be present in all builds now. Closes [#2](https://github.com/ckeditor/ckeditor5-enter/issues/2). ([0181bbf](https://github.com/ckeditor/ckeditor5-enter/commit/0181bbf))
+
+  Huge thanks to [Alex Eckermann](https://github.com/alexeckermann) for this contribution!
+
+
 ## [10.0.0](https://github.com/ckeditor/ckeditor5-enter/compare/v1.0.0-beta.4...v10.0.0) (2018-04-25)
 
 ### Other changes
