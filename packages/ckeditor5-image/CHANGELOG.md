@@ -5,7 +5,7 @@ Changelog
 
 ### Features
 
-* Added upload complete icon. Closes [#204](https://github.com/ckeditor/ckeditor5-image/issues/204). ([004eda7](https://github.com/ckeditor/ckeditor5-image/commit/004eda7))
+* Added "upload completed" icon. Closes [#204](https://github.com/ckeditor/ckeditor5-image/issues/204). ([004eda7](https://github.com/ckeditor/ckeditor5-image/commit/004eda7))
 
 ### Bug fixes
 
