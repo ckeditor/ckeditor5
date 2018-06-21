@@ -11,7 +11,7 @@ const webpack = require( 'webpack' );
 const { bundler, styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' );
 const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
-const BabelMinifyPlugin = require( 'babel-minify-webpack-plugin' );
+const UglifyJsWebpackPlugin = require( 'uglifyjs-webpack-plugin' );
 
 const webpackProcesses = new Map();
 
@@ -90,20 +90,18 @@ function getWebpackConfig( config ) {
 		} )
 	];
 
+	const minimizer = [];
+
 	if ( config.production ) {
-		plugins.push(
-			new BabelMinifyPlugin( null, {
-				comments: false
+		minimizer.push(
+			new UglifyJsWebpackPlugin( {
+				sourceMap: true
 			} )
 		);
 	}
 
 	return {
 		mode: config.production ? 'production' : 'development',
-
-		optimization: {
-			minimize: false
-		},
 
 		devtool: 'source-map',
 
@@ -112,6 +110,10 @@ function getWebpackConfig( config ) {
 		output: {
 			path: config.outputPath,
 			filename: 'snippet.js'
+		},
+
+		optimization: {
+			minimizer
 		},
 
 		plugins,

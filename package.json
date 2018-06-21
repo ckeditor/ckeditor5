@@ -69,7 +69,6 @@
     "@ckeditor/ckeditor5-dev-tests": "^11.0.2",
     "@ckeditor/ckeditor5-dev-utils": "^9.0.1",
     "@ckeditor/ckeditor5-dev-webpack-plugin": "^5.0.1",
-    "babel-minify-webpack-plugin": "^0.3.0",
     "eslint": "^4.15.0",
     "eslint-config-ckeditor5": "^1.0.7",
     "glob": "^7.1.2",
@@ -77,13 +76,14 @@
     "lerna": "^2.2.0",
     "lint-staged": "^7.0.0",
     "mgit2": "^0.8.0",
-    "mini-css-extract-plugin": "^0.2.0",
+    "mini-css-extract-plugin": "^0.4.0",
     "minimatch": "^3.0.4",
     "postcss-loader": "^2.1.1",
     "raw-loader": "^0.5.1",
     "style-loader": "^0.20.3",
+    "uglifyjs-webpack-plugin": "^1.2.6",
     "umberto": "^0.6.0",
-	"webpack": "^4.2.0"
+    "webpack": "^4.12.0"
   },
   "engines": {
     "node": ">=6.0.0",
