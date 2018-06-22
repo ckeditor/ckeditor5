@@ -21,8 +21,9 @@ install:
 script:
   - npm t -- --reporter=dots
   - npm run docs:api -- --validate-only
-after_success:
-  - travis_wait npm run docs:build-and-publish-nightly
+  - 'if [ $TRAVIS_TEST_RESULT -eq 0 ]; then
+  	  travis_wait npm run docs:build-and-publish-nightly;
+    fi'
 notifications:
   slack:
     rooms:
