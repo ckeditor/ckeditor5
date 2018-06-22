@@ -171,14 +171,14 @@ Then focus on headings and paragraphs. Note that what the users see in the headi
 	min-width: 6em;
 }
 
-/* Scale down all heading previews because they're way too big to be presented in the UI.
+/* Scale down all heading previews because they are way too big to be presented in the UI.
 Preserve the relative scale, though. */
 .document-editor .ck-heading-dropdown .ck-list .ck-button:not(.ck-heading_paragraph) .ck-button__label {
 	transform: scale(0.8);
 	transform-origin: left;
 }
 
-/* Set the styles for the "Heading 1". */
+/* Set the styles for "Heading 1". */
 .document-editor .ck-content h2,
 .document-editor .ck-heading-dropdown .ck-heading_heading1 .ck-button__label {
 	font-size: 2.18em;
@@ -191,7 +191,7 @@ Preserve the relative scale, though. */
 	margin-bottom: .142em;
 }
 
-/* Set the styles for the "Heading 2". */
+/* Set the styles for "Heading 2". */
 .document-editor .ck-content h3,
 .document-editor .ck-heading-dropdown .ck-heading_heading2 .ck-button__label {
 	font-size: 1.75em;
@@ -203,14 +203,14 @@ Preserve the relative scale, though. */
 	color: var(--ck-color-list-button-on-text);
 }
 
-/* Set the styles for the "Heading 2". */
+/* Set the styles for "Heading 2". */
 .document-editor .ck-content h3 {
 	line-height: 1.86em;
 	padding-top: .171em;
 	margin-bottom: .357em;
 }
 
-/* Set the styles for the "Heading 3". */
+/* Set the styles for "Heading 3". */
 .document-editor .ck-content h4,
 .document-editor .ck-heading-dropdown .ck-heading_heading3 .ck-button__label {
 	font-size: 1.31em;
@@ -223,7 +223,7 @@ Preserve the relative scale, though. */
 	margin-bottom: .952em;
 }
 
-/* Set the styles for the "Paragraph". */
+/* Set the styles for "Paragraph". */
 .document-editor .ck-content p {
 	font-size: 1em;
 	line-height: 1.63em;
