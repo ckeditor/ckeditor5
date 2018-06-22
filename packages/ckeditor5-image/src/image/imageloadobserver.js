@@ -91,7 +91,7 @@ export default class ImageLoadObserver extends DomEventObserver {
 }
 
 /**
- * Fired when img element has been loaded in one of the editable.
+ * Fired when an <img/> DOM element has been loaded in the DOM root.
  *
  * Introduced by {@link module:image/image/imageloadobserver~ImageLoadObserver}.
  *
