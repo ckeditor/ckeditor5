@@ -56,7 +56,7 @@
 		background: var(--ck-color-switch-button-on-background);
 
 		& .ck-button__toggle__inner {
-			/* Move the toggle siwtch to the right. It will be animated. */
+			/* Move the toggle switch to the right. It will be animated. */
 			transform: translateX(calc(var(--ck-switch-button-toggle-width) - var(--ck-switch-button-toggle-inner-size) - 2*var(--ck-switch-button-toggle-spacing)));
 		}
 	}
