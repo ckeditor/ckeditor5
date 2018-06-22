@@ -77,7 +77,7 @@ export default class ImageLoadObserver extends DomEventObserver {
 	 * @inheritDoc
 	 */
 	onDomEvent( domEvent ) {
-		this.view.render();
+		this.document.fire( 'layoutChanged' );
 		this.fire( 'imageLoaded', domEvent );
 	}
 

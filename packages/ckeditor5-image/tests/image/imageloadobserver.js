@@ -81,16 +81,16 @@ describe( 'ClickObserver', () => {
 		sinon.assert.neverCalledWith( mapSpy, viewDiv );
 	} );
 
-	it( 'should call `view#render` along with `imageLoaded` event', () => {
-		const renderSpy = sinon.spy();
+	it( 'should call `layoutChanged` along with `imageLoaded` event', () => {
+		const layoutChangedSpy = sinon.spy();
 		const imageLoadedSpy = sinon.spy();
 
-		view.on( 'render', renderSpy );
+		view.document.on( 'layoutChanged', layoutChangedSpy );
 		view.document.on( 'imageLoaded', imageLoadedSpy );
 
 		observer.onDomEvent( {} );
 
-		sinon.assert.calledOnce( renderSpy );
+		sinon.assert.calledOnce( layoutChangedSpy );
 		sinon.assert.calledOnce( imageLoadedSpy );
 	} );
 } );
