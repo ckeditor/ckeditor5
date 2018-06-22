@@ -685,7 +685,7 @@ describe( 'Input feature', () => {
 		} );
 
 		describe( '#83', () => {
-			it( 'should not remove contents on composition start key if not during composition', () => {
+			it( 'should remove contents on composition start key if not during composition', () => {
 				model.change( writer => {
 					writer.setSelection(
 						ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 0 ), 4 ) );
@@ -693,38 +693,7 @@ describe( 'Input feature', () => {
 
 				viewDocument.fire( 'keydown', { keyCode: 229 } );
 
-				expect( getModelData( model ) ).to.equal( '<paragraph>fo[ob]ar</paragraph>' );
-			} );
-
-			it( 'should not remove contents on composition start key if not during composition and no selection', () => {
-				editor.setData( '<p><strong>foo</strong> <i>bar</i></p>' );
-
-				const documentSelection = model.document.selection;
-
-				// Create empty selection.
-				model.document.selection = new ModelSelection();
-
-				viewDocument.fire( 'keydown', { keyCode: 229 } );
-
-				expect( getModelData( model ) ).to.equal(
-					'<paragraph><$text bold="true">foo</$text> <$text italic="true">bar</$text></paragraph>' );
-
-				// Restore document selection.
-				model.document.selection = documentSelection;
-			} );
-
-			it( 'should remove contents on composition start key if not during composition and selection not flat', () => {
-				editor.setData( '<p><strong>foo</strong></p><p><i>bar</i></p>' );
-
-				model.change( writer => {
-					writer.setSelection(
-						ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 2, modelRoot.getChild( 1 ), 2 ) );
-				} );
-
-				viewDocument.fire( 'keydown', { keyCode: 229 } );
-
-				expect( getModelData( model ) ).to.equal(
-					'<paragraph><$text bold="true">fo[]</$text><$text italic="true">r</$text></paragraph>' );
+				expect( getModelData( model ) ).to.equal( '<paragraph>fo[]ar</paragraph>' );
 			} );
 
 			it( 'should not remove contents on composition start key if during composition', () => {

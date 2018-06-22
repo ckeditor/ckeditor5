@@ -106,12 +106,10 @@ export default class Input extends Plugin {
 			return;
 		}
 
-		const isSelectionFlat = doc.selection.rangeCount === 1 ? doc.selection.getFirstRange().isFlat : true;
-		// If there is a `keydown` event fired with '229' keycode it might be related to recent composition.
-		// Check if selection is the same as upon ending recent composition, if so do not remove selected content
-		// as it will remove composed sequence. Also do not remove selection contents if selection is flat as it might
-		// cause some issues when starting composition. Flat selection is correctly handled by mutation handler itself (#83).
-		if ( !isComposing && evtData.keyCode === 229 && ( isSelectionUnchanged || isSelectionFlat ) ) {
+		// If there is a `keydown` event fired with '229' keycode it might be related
+		// to recent composition. Check if selection is the same as upon ending recent composition,
+		// if so do not remove selected content as it will remove composed sequence (#83).
+		if ( !isComposing && evtData.keyCode === 229 && isSelectionUnchanged ) {
 			return;
 		}
 
