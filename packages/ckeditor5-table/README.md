@@ -10,11 +10,11 @@ CKEditor 5 table feature
 [![Dependency Status](https://david-dm.org/ckeditor/ckeditor5-table/status.svg)](https://david-dm.org/ckeditor/ckeditor5-table)
 [![devDependency Status](https://david-dm.org/ckeditor/ckeditor5-table/dev-status.svg)](https://david-dm.org/ckeditor/ckeditor5-table?type=dev)
 
-This package implements text table support for CKEditor 5.
+This package implements table support for CKEditor 5.
 
 ## Documentation
 
-See the [`@ckeditor/ckeditor5-table` package](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/api/table.html) page in [CKEditor 5 documentation](https://ckeditor5.github.io/docs/nightly/ckeditor5/latest/).
+See the [`@ckeditor/ckeditor5-table` package](https://docs.ckeditor.com/ckeditor5/latest/api/table.html) page in [CKEditor 5 documentation](https://docs.ckeditor.com/ckeditor5/latest/).
 
 ## License
 

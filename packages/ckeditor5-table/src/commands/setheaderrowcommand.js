@@ -16,6 +16,15 @@ import TableWalker from '../tablewalker';
 /**
  * The header row command.
  *
+ * The command is registered by {@link module:table/tableediting~TableEditing} as `'setTableColumnHeader'` editor command.
+ *
+ * You can make the row containing the selected cell a [header](https://www.w3.org/TR/html50/tabular-data.html#the-th-element) by executing:
+ *
+ *		editor.execute( 'setTableRowHeader' );
+ *
+ * **Note:** All preceding rows will also become headers. If the current row is already a header, executing this command
+ * will make it a regular row back again (including the following rows).
+ *
  * @extends module:core/command~Command
  */
 export default class SetHeaderRowCommand extends Command {
@@ -48,9 +57,9 @@ export default class SetHeaderRowCommand extends Command {
 	/**
 	 * Executes the command.
 	 *
-	 * When the selection is non-header row, the command will set `headingRows` table's attribute to cover that row.
+	 * When the selection is in a non-header row, the command will set the `headingRows` table attribute to cover that row.
 	 *
-	 * When selection is already in a header row then it will set `headingRows` so the heading section will end before that row.
+	 * When the selection is already in a header row, it will set `headingRows` so the heading section will end before that row.
 	 *
 	 * @fires execute
 	 */
@@ -87,7 +96,7 @@ export default class SetHeaderRowCommand extends Command {
 	}
 
 	/**
-	 * Checks if table cell is in heading section.
+	 * Checks if a table cell is in the heading section.
 	 *
 	 * @param {module:engine/model/element~Element} tableCell
 	 * @param {module:engine/model/element~Element} table
@@ -101,9 +110,9 @@ export default class SetHeaderRowCommand extends Command {
 	}
 }
 
-// Returns cells that span beyond new heading section.
+// Returns cells that span beyond the new heading section.
 //
-// @param {module:engine/model/element~Element} table Table to check
+// @param {module:engine/model/element~Element} table The table to check.
 // @param {Number} headingRowsToSet New heading rows attribute.
 // @param {Number} currentHeadingRows Current heading rows attribute.
 // @returns {Array.<module:engine/model/element~Element>}
@@ -125,7 +134,7 @@ function getOverlappingCells( table, headingRowsToSet, currentHeadingRows ) {
 	return cellsToSplit;
 }
 
-// Splits table cell horizontally.
+// Splits the table cell horizontally.
 //
 // @param {module:engine/model/element~Element} tableCell
 // @param {Number} headingRows

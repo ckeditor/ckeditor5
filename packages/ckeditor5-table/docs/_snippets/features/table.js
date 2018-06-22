@@ -12,12 +12,12 @@ ClassicEditor
 		cloudServices: CS_CONFIG,
 		toolbar: {
 			items: [
-				'insertTable', '|', 'heading', '|', 'bold', 'italic', 'underline', '|', 'undo', 'redo'
+				'insertTable', '|', 'heading', '|', 'bold', 'italic', '|', 'undo', 'redo'
 			],
 			viewportTopOffset: 60
 		},
 		table: {
-			toolbar: [ 'tableColumn', 'tableRow', 'mergeCell' ]
+			toolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
 		}
 	} )
 	.then( editor => {

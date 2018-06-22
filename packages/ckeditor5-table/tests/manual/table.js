@@ -17,7 +17,7 @@ ClassicEditor
 			'heading', '|', 'insertTable', '|', 'bold', 'italic', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo'
 		],
 		table: {
-			toolbar: [ 'tableColumn', 'tableRow', 'mergeCell' ]
+			toolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
 		}
 	} )
 	.then( editor => {

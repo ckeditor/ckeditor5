@@ -14,7 +14,7 @@ import TableWalker from './tablewalker';
 import { getParentTable, updateNumericAttribute } from './commands/utils';
 
 /**
- * The table utils plugin.
+ * The table utilities plugin.
  *
  * @extends module:core/plugin~Plugin
  */
@@ -27,9 +27,9 @@ export default class TableUtils extends Plugin {
 	}
 
 	/**
-	 * Returns table cell location as an object with table row and table column indexes.
+	 * Returns the table cell location as an object with table row and table column indexes.
 	 *
-	 * For instance in a table below:
+	 * For instance in the table below:
 	 *
 	 *		    0   1   2   3
 	 *		  +---+---+---+---+
@@ -69,26 +69,29 @@ export default class TableUtils extends Plugin {
 	}
 
 	/**
-	 * Creates an empty table at given position.
+	 * Creates an empty table at a given position.
 	 *
-	 * @param {module:engine/model/position~Position} position Position at which insert a table.
-	 * @param {Number} rows Number of rows to create.
-	 * @param {Number} columns Number of columns to create.
+	 * @param {module:engine/model/position~Position} position The position where the table will be inserted.
+	 * @param {Number} rows The number of rows to create.
+	 * @param {Number} columns The number of columns to create.
+	 * @returns {module:engine/model/element~Element} The created table element.
 	 */
 	createTable( position, rows, columns ) {
 		const model = this.editor.model;
 
-		model.change( writer => {
+		return model.change( writer => {
 			const table = writer.createElement( 'table' );
 
 			writer.insert( table, position );
 
 			createEmptyRows( writer, table, 0, rows, columns );
+
+			return table;
 		} );
 	}
 
 	/**
-	 * Insert rows into a table.
+	 * Inserts rows into a table.
 	 *
 	 *		editor.plugins.get( 'TableUtils' ).insertRows( table, { at: 1, rows: 2 } );
 	 *
@@ -107,10 +110,10 @@ export default class TableUtils extends Plugin {
 	 *		                                       +   + f | g |
 	 *		                                       +---+---+---+ 5
 	 *
-	 * @param {module:engine/model/element~Element} table Table model element to which insert rows.
+	 * @param {module:engine/model/element~Element} table The table model element where the rows will be inserted.
 	 * @param {Object} options
-	 * @param {Number} [options.at=0] Row index at which insert rows.
-	 * @param {Number} [options.rows=1] Number of rows to insert.
+	 * @param {Number} [options.at=0] Row index at which the rows will be inserted.
+	 * @param {Number} [options.rows=1] The number of rows to insert.
 	 */
 	insertRows( table, options = {} ) {
 		const model = this.editor.model;
@@ -182,10 +185,10 @@ export default class TableUtils extends Plugin {
 	 *		+---+---+---+                   +---+---+---+---+---+
 	 *		    ^---- insert here, `at` = 1, `columns` = 2
 	 *
-	 * @param {module:engine/model/element~Element} table Table model element to which insert columns.
+	 * @param {module:engine/model/element~Element} table The table model element where the columns will be inserted.
 	 * @param {Object} options
-	 * @param {Number} [options.at=0] Column index at which insert columns.
-	 * @param {Number} [options.columns=1] Number of columns to insert.
+	 * @param {Number} [options.at=0] Column index at which the columns will be inserted.
+	 * @param {Number} [options.columns=1] The number of columns to insert.
 	 */
 	insertColumns( table, options = {} ) {
 		const model = this.editor.model;
@@ -246,9 +249,9 @@ export default class TableUtils extends Plugin {
 	}
 
 	/**
-	 * Divides table cell vertically into several ones.
+	 * Divides a table cell vertically into several ones.
 	 *
-	 * The cell will visually split to more cells by updating colspans of other cells in a column
+	 * The cell will be visually split into more cells by updating colspans of other cells in a column
 	 * and inserting cells (columns) after that cell.
 	 *
 	 * In the table below, if cell "a" is split to 3 cells:
@@ -267,10 +270,10 @@ export default class TableUtils extends Plugin {
 	 *		| d         | e | f |
 	 *		+---+---+---+---+---+
 	 *
-	 * So cell d will get updated `colspan` to 3 and 2 cells will be added (2 columns created).
+	 * So cell "d" will get its `colspan` updated to `3` and 2 cells will be added (2 columns will be created).
 	 *
-	 * Splitting cell that already has a colspan attribute set will distribute cell's colspan evenly and a reminder
-	 * will be left to original cell:
+	 * Splitting a cell that already has a `colspan` attribute set will distribute the cell `colspan` evenly and the remainder
+	 * will be left to the original cell:
 	 *
 	 *		+---+---+---+
 	 *		| a         |
@@ -278,7 +281,7 @@ export default class TableUtils extends Plugin {
 	 *		| b | c | d |
 	 *		+---+---+---+
 	 *
-	 * Splitting cell a with colspan=3 to a 2 cells will create 1 cell with colspan=2 and cell a will have colspan=1:
+	 * Splitting cell "a" with `colspan=3` to 2 cells will create 1 cell with a `colspan=a` and cell "a" that will have `colspan=2`:
 	 *
 	 *		+---+---+---+
 	 *		| a     |   |
@@ -369,11 +372,12 @@ export default class TableUtils extends Plugin {
 	}
 
 	/**
-	 * Divides table cell horizontally into several ones.
+	 * Divides a table cell horizontally into several ones.
 	 *
-	 * The cell will visually split to more cells by updating rowspans of other cells in a row and inserting rows with single cell below.
+	 * The cell will be visually split into more cells by updating rowspans of other cells in the row and inserting rows with a single cell
+	 * below.
 	 *
-	 * If in a table below cell b will be split to a 3 cells:
+	 * If in the table below cell "b" is split to 3 cells:
 	 *
 	 *		+---+---+---+
 	 *		| a | b | c |
@@ -381,7 +385,7 @@ export default class TableUtils extends Plugin {
 	 *		| d | e | f |
 	 *		+---+---+---+
 	 *
-	 * will result in a table below:
+	 * It will result in the table below:
 	 *
 	 *		+---+---+---+
 	 *		| a | b | c |
@@ -393,10 +397,10 @@ export default class TableUtils extends Plugin {
 	 *		| d | e | f |
 	 *		+---+---+---+
 	 *
-	 * So cells a & b will get updated `rowspan` to 3 and 2 rows with single cell will be added.
+	 * So cells "a" and "b" will get their `rowspan` updated to `3` and 2 rows with a single cell will be added.
 	 *
-	 * Splitting cell that has already a rowspan attribute set will distribute cell's rowspan evenly and a reminder
-	 * will be left to original cell:
+	 * Splitting a cell that already has a `rowspan` attribute set will distribute the cell `rowspan` evenly and the remainder
+	 * will be left to the original cell:
 	 *
 	 *		+---+---+---+
 	 *		| a | b | c |
@@ -408,7 +412,7 @@ export default class TableUtils extends Plugin {
 	 *		|   | h | i |
 	 *		+---+---+---+
 	 *
-	 * Splitting cell a with rowspan=4 to a 3 cells will create 2 cells with rowspan=1 and cell a will have rowspan=2:
+	 * Splitting cell "a" with `rowspan=4` to 3 cells will create 2 cells with a `rowspan=1` and cell "a" will have `rowspan=2`:
 	 *
 	 *		+---+---+---+
 	 *		| a | b | c |
@@ -522,11 +526,11 @@ export default class TableUtils extends Plugin {
 	}
 
 	/**
-	 * Returns number of columns for given table.
+	 * Returns the number of columns for a given table.
 	 *
 	 *		editor.plugins.get( 'TableUtils' ).getColumns( table );
 	 *
-	 * @param {module:engine/model/element~Element} table Table to analyze.
+	 * @param {module:engine/model/element~Element} table The table to analyze.
 	 * @returns {Number}
 	 */
 	getColumns( table ) {
@@ -541,7 +545,7 @@ export default class TableUtils extends Plugin {
 	}
 }
 
-// Creates empty rows at given index in an existing table.
+// Creates empty rows at the given index in an existing table.
 //
 // @param {module:engine/model/writer~Writer} writer
 // @param {module:engine/model/element~Element} table
@@ -558,7 +562,7 @@ function createEmptyRows( writer, table, insertAt, rows, tableCellToInsert, attr
 	}
 }
 
-// Creates cells at given position.
+// Creates cells at a given position.
 //
 // @param {Number} columns Number of columns to create
 // @param {module:engine/model/writer~Writer} writer
@@ -569,14 +573,14 @@ function createCells( cells, writer, insertPosition, attributes = {} ) {
 	}
 }
 
-// Evenly distributes span of a cell to a number of provided cells.
+// Evenly distributes the span of a cell to a number of provided cells.
 // The resulting spans will always be integer values.
 //
 // For instance breaking a span of 7 into 3 cells will return:
 //
 //		{ newCellsSpan: 2, updatedSpan: 3 }
 //
-// as two cells will have span of 2 and the reminder will go the first cell so it's span will change to 3.
+// as two cells will have a span of 2 and the remainder will go the first cell so its span will change to 3.
 //
 // @param {Number} span Span value do break.
 // @param {Number} numberOfCells Number of resulting spans.

@@ -14,6 +14,12 @@ import TableUtils from '../tableutils';
 /**
  * The insert table command.
  *
+ * The command is registered by {@link module:table/tableediting~TableEditing} as `'insertTable'` editor command.
+ *
+ * To insert a table at the current selection, execute the command and specify the dimensions:
+ *
+ *		editor.execute( 'insertTable', { rows: 20, columns: 5 } );
+ *
  * @extends module:core/command~Command
  */
 export default class InsertTableCommand extends Command {
@@ -33,11 +39,11 @@ export default class InsertTableCommand extends Command {
 	/**
 	 * Executes the command.
 	 *
-	 * Inserts table of given rows and columns into the editor.
+	 * Inserts a table with the given number of rows and columns into the editor.
 	 *
 	 * @param {Object} options
-	 * @param {Number} [options.rows=2] Number of rows to create in inserted table.
-	 * @param {Number} [options.columns=2] Number of columns to create in inserted table.
+	 * @param {Number} [options.rows=2] The number of rows to create in the inserted table.
+	 * @param {Number} [options.columns=2] The number of columns to create in the inserted table.
 	 * @fires execute
 	 */
 	execute( options = {} ) {
@@ -53,7 +59,11 @@ export default class InsertTableCommand extends Command {
 		const isRoot = firstPosition.parent === firstPosition.root;
 		const insertPosition = isRoot ? Position.createAt( firstPosition ) : Position.createAfter( firstPosition.parent );
 
-		tableUtils.createTable( insertPosition, rows, columns );
+		model.change( writer => {
+			const table = tableUtils.createTable( insertPosition, rows, columns );
+
+			writer.setSelection( Position.createAt( table.getChild( 0 ).getChild( 0 ) ) );
+		} );
 	}
 }
 

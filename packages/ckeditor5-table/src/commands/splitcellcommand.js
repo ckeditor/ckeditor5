@@ -13,13 +13,20 @@ import TableUtils from '../tableutils';
 /**
  * The split cell command.
  *
+ * The command is registered by {@link module:table/tableediting~TableEditing} as `'splitTableCellVertically'`
+ * and `'splitTableCellHorizontally'`  editor commands.
+ *
+ * You can split any cell vertically or horizontally by executing this command. For example, to split the selected table cell vertically:
+ *
+ *		editor.execute( 'splitTableCellVertically' );
+ *
  * @extends module:core/command~Command
  */
 export default class SplitCellCommand extends Command {
 	/**
 	 * Creates a new `SplitCellCommand` instance.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor Editor on which this command will be used.
+	 * @param {module:core/editor/editor~Editor} editor The editor on which this command will be used.
 	 * @param {Object} options
 	 * @param {String} options.direction Indicates whether the command should split cells `'horizontally'` or `'vertically'`.
 	 */
@@ -27,7 +34,7 @@ export default class SplitCellCommand extends Command {
 		super( editor );
 
 		/**
-		 * The direction indicates which cell will be split.
+		 * The direction that indicates which cell will be split.
 		 *
 		 * @readonly
 		 * @member {String} #direction

@@ -14,22 +14,33 @@ import TableUtils from '../tableutils';
 /**
  * The insert column command.
  *
+ * The command is registered by {@link module:table/tableediting~TableEditing} as `'insertTableColumnBefore'` and
+ * `'insertTableColumnAfter'` editor commands.
+ *
+ * To insert a column before the selected cell, execute the following command:
+ *
+ *		editor.execute( 'insertTableColumnBefore' );
+ *
+ * To insert a column after the selected cell, execute the following command:
+ *
+ *		editor.execute( 'insertTableColumnAfter' );
+ *
  * @extends module:core/command~Command
  */
 export default class InsertColumnCommand extends Command {
 	/**
-	 * Creates a new `InsertRowCommand` instance.
+	 * Creates a new `InsertColumnCommand` instance.
 	 *
-	 * @param {module:core/editor/editor~Editor} editor Editor on which this command will be used.
+	 * @param {module:core/editor/editor~Editor} editor An editor on which this command will be used.
 	 * @param {Object} options
-	 * @param {String} [options.order="after"] The order of insertion relative to a column in which caret is located.
-	 * Possible values: "after" and "before".
+	 * @param {String} [options.order="after"] The order of insertion relative to the column in which the caret is located.
+	 * Possible values: `"after"` and `"before"`.
 	 */
 	constructor( editor, options = {} ) {
 		super( editor );
 
 		/**
-		 * The order of insertion relative to a column in which caret is located.
+		 * The order of insertion relative to the column in which the caret is located.
 		 *
 		 * @readonly
 		 * @member {String} module:table/commands/insertcolumncommand~InsertColumnCommand#order
@@ -51,7 +62,8 @@ export default class InsertColumnCommand extends Command {
 	/**
 	 * Executes the command.
 	 *
-	 * Depending on command's {@link #order} value it inserts a column `'before'` or `'after'` the column in which selection is set.
+	 * Depending on the command's {@link #order} value, it inserts a column `'before'` or `'after'` the column in which the selection is
+	 * set.
 	 *
 	 * @fires execute
 	 */

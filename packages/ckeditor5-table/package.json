@@ -1,6 +1,6 @@
 {
   "name": "@ckeditor/ckeditor5-table",
-  "version": "0.0.1",
+  "version": "10.0.0",
   "description": "Table feature for CKEditor 5.",
   "keywords": [
     "ckeditor",
@@ -9,15 +9,15 @@
     "ckeditor5-feature"
   ],
   "dependencies": {
-    "@ckeditor/ckeditor5-core": "^10.0.0",
-    "@ckeditor/ckeditor5-engine": "^10.0.0",
-    "@ckeditor/ckeditor5-ui": "^10.0.0",
-    "@ckeditor/ckeditor5-widget": "^10.0.0"
+    "@ckeditor/ckeditor5-core": "^10.1.0",
+    "@ckeditor/ckeditor5-engine": "^10.1.0",
+    "@ckeditor/ckeditor5-ui": "^10.1.0",
+    "@ckeditor/ckeditor5-widget": "^10.1.0"
   },
   "devDependencies": {
-    "@ckeditor/ckeditor5-editor-classic": "^10.0.0",
-    "@ckeditor/ckeditor5-paragraph": "^10.0.0",
-    "@ckeditor/ckeditor5-utils": "^10.0.0",
+    "@ckeditor/ckeditor5-editor-classic": "^10.0.1",
+    "@ckeditor/ckeditor5-paragraph": "^10.0.1",
+    "@ckeditor/ckeditor5-utils": "^10.1.0",
     "eslint": "^4.15.0",
     "eslint-config-ckeditor5": "^1.0.7",
     "husky": "^0.14.3",

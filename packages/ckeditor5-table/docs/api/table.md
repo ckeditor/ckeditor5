@@ -12,10 +12,9 @@ This package implements the table feature for CKEditor 5.
 
 See the {@link features/table Table feature} guide and the documentation for the following plugins:
 
-  * {@link module:table/table~Table}
-  * {@link module:table/tabletoolbar~TableToolbar}
-  * {@link module:table/tableutils~TableUtils}
-
+* {@link module:table/table~Table}
+* {@link module:table/tabletoolbar~TableToolbar}
+* {@link module:table/tableutils~TableUtils}
 
 ## Installation
 

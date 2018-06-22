@@ -130,10 +130,10 @@ describe( 'TableUI', () => {
 		it( 'should bind items in panel to proper commands', () => {
 			const items = dropdown.listView.items;
 
-			const setRowHeaderCommand = editor.commands.get( 'setRowHeader' );
-			const insertRowBelowCommand = editor.commands.get( 'insertRowBelow' );
-			const insertRowAboveCommand = editor.commands.get( 'insertRowAbove' );
-			const removeRowCommand = editor.commands.get( 'removeRow' );
+			const setRowHeaderCommand = editor.commands.get( 'setTableRowHeader' );
+			const insertRowBelowCommand = editor.commands.get( 'insertTableRowBelow' );
+			const insertRowAboveCommand = editor.commands.get( 'insertTableRowAbove' );
+			const removeRowCommand = editor.commands.get( 'removeTableRow' );
 
 			setRowHeaderCommand.isEnabled = true;
 			insertRowBelowCommand.isEnabled = true;
@@ -180,13 +180,13 @@ describe( 'TableUI', () => {
 			dropdown.listView.items.get( 0 ).fire( 'execute' );
 
 			expect( spy.calledOnce ).to.be.true;
-			expect( spy.args[ 0 ][ 0 ] ).to.equal( 'setRowHeader' );
+			expect( spy.args[ 0 ][ 0 ] ).to.equal( 'setTableRowHeader' );
 		} );
 
 		it( 'should bind set header row command value to dropdown item', () => {
 			const items = dropdown.listView.items;
 
-			const setRowHeaderCommand = editor.commands.get( 'setRowHeader' );
+			const setRowHeaderCommand = editor.commands.get( 'setTableRowHeader' );
 
 			setRowHeaderCommand.value = false;
 			expect( items.get( 0 ).isActive ).to.be.false;
@@ -225,10 +225,10 @@ describe( 'TableUI', () => {
 		it( 'should bind items in panel to proper commands', () => {
 			const items = dropdown.listView.items;
 
-			const setColumnHeaderCommand = editor.commands.get( 'setColumnHeader' );
-			const insertColumnBeforeCommand = editor.commands.get( 'insertColumnBefore' );
-			const insertColumnAfterCommand = editor.commands.get( 'insertColumnAfter' );
-			const removeColumnCommand = editor.commands.get( 'removeColumn' );
+			const setColumnHeaderCommand = editor.commands.get( 'setTableColumnHeader' );
+			const insertColumnBeforeCommand = editor.commands.get( 'insertTableColumnBefore' );
+			const insertColumnAfterCommand = editor.commands.get( 'insertTableColumnAfter' );
+			const removeColumnCommand = editor.commands.get( 'removeTableColumn' );
 
 			setColumnHeaderCommand.isEnabled = true;
 			insertColumnBeforeCommand.isEnabled = true;
@@ -273,13 +273,13 @@ describe( 'TableUI', () => {
 			dropdown.listView.items.get( 0 ).fire( 'execute' );
 
 			expect( spy.calledOnce ).to.be.true;
-			expect( spy.args[ 0 ][ 0 ] ).to.equal( 'setColumnHeader' );
+			expect( spy.args[ 0 ][ 0 ] ).to.equal( 'setTableColumnHeader' );
 		} );
 
 		it( 'should bind set header column command value to dropdown item', () => {
 			const items = dropdown.listView.items;
 
-			const setColumnHeaderCommand = editor.commands.get( 'setColumnHeader' );
+			const setColumnHeaderCommand = editor.commands.get( 'setTableColumnHeader' );
 
 			setColumnHeaderCommand.value = false;
 			expect( items.get( 0 ).isActive ).to.be.false;
@@ -289,11 +289,11 @@ describe( 'TableUI', () => {
 		} );
 	} );
 
-	describe( 'mergeCell dropdown', () => {
+	describe( 'mergeTableCell dropdown', () => {
 		let dropdown;
 
 		beforeEach( () => {
-			dropdown = editor.ui.componentFactory.create( 'mergeCell' );
+			dropdown = editor.ui.componentFactory.create( 'mergeTableCells' );
 		} );
 
 		it( 'have button with proper properties set', () => {
@@ -303,7 +303,7 @@ describe( 'TableUI', () => {
 
 			expect( button.isOn ).to.be.false;
 			expect( button.tooltip ).to.be.true;
-			expect( button.label ).to.equal( 'Merge cell' );
+			expect( button.label ).to.equal( 'Merge cells' );
 			expect( button.icon ).to.match( /<svg / );
 		} );
 
@@ -326,12 +326,12 @@ describe( 'TableUI', () => {
 		it( 'should bind items in panel to proper commands', () => {
 			const items = dropdown.listView.items;
 
-			const mergeCellUpCommand = editor.commands.get( 'mergeCellUp' );
-			const mergeCellRightCommand = editor.commands.get( 'mergeCellRight' );
-			const mergeCellDownCommand = editor.commands.get( 'mergeCellDown' );
-			const mergeCellLeftCommand = editor.commands.get( 'mergeCellLeft' );
-			const splitCellVerticallyCommand = editor.commands.get( 'splitCellVertically' );
-			const splitCellHorizontallyCommand = editor.commands.get( 'splitCellHorizontally' );
+			const mergeCellUpCommand = editor.commands.get( 'mergeTableCellUp' );
+			const mergeCellRightCommand = editor.commands.get( 'mergeTableCellRight' );
+			const mergeCellDownCommand = editor.commands.get( 'mergeTableCellDown' );
+			const mergeCellLeftCommand = editor.commands.get( 'mergeTableCellLeft' );
+			const splitCellVerticallyCommand = editor.commands.get( 'splitTableCellVertically' );
+			const splitCellHorizontallyCommand = editor.commands.get( 'splitTableCellHorizontally' );
 
 			mergeCellUpCommand.isEnabled = true;
 			mergeCellRightCommand.isEnabled = true;
@@ -387,7 +387,7 @@ describe( 'TableUI', () => {
 			dropdown.listView.items.get( 0 ).fire( 'execute' );
 
 			expect( spy.calledOnce ).to.be.true;
-			expect( spy.args[ 0 ][ 0 ] ).to.equal( 'mergeCellUp' );
+			expect( spy.args[ 0 ][ 0 ] ).to.equal( 'mergeTableCellUp' );
 		} );
 	} );
 } );
