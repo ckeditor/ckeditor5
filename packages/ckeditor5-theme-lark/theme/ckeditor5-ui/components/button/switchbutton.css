@@ -7,8 +7,11 @@
 @import "../../../mixins/_disabled.css";
 
 :root {
-	--ck-switch-button-toggle-width: 2.6em;
-	--ck-switch-button-toggle-height: 1.1em;
+	/* 34px at 13px font-size */
+	--ck-switch-button-toggle-width: 2.6153846154em;
+	/* 14px at 13px font-size */
+	--ck-switch-button-toggle-inner-size: 1.0769230769em;
+	--ck-switch-button-toggle-spacing: 1px;
 }
 
 .ck.ck-button.ck-switchbutton {
@@ -27,8 +30,8 @@
 		/* Make sure the toggle is always to the right as far as possible. */
 		margin-left: auto;
 
-		/* Leave some tiny bit of space around the inner part of the switch */
-		padding: 1px;
+		/* Gently animate the background color of the toggle switch */
+		transition: background 500ms ease;
 
 		width: var(--ck-switch-button-toggle-width);
 		background: var(--ck-color-switch-button-off-background);
@@ -38,13 +41,23 @@
 				border-radius: calc(.5*var(--ck-border-radius));
 			}
 
-			width: var(--ck-switch-button-toggle-height);
-			height: var(--ck-switch-button-toggle-height);
+			/* Leave some tiny bit of space around the inner part of the switch */
+			margin: var(--ck-switch-button-toggle-spacing);
+			width: var(--ck-switch-button-toggle-inner-size);
+			height: var(--ck-switch-button-toggle-inner-size);
 			background: var(--ck-color-switch-button-inner-background);
+
+			/* Gently animate the inner part of the toggle switch */
+			transition: transform 300ms ease;
 		}
 	}
 
 	&.ck-on .ck-button__toggle {
 		background: var(--ck-color-switch-button-on-background);
+
+		& .ck-button__toggle__inner {
+			/* Move the toggle siwtch to the right. It will be animated. */
+			transform: translateX(calc(var(--ck-switch-button-toggle-width) - var(--ck-switch-button-toggle-inner-size) - 2*var(--ck-switch-button-toggle-spacing)));
+		}
 	}
 }
