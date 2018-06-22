@@ -49,6 +49,10 @@
 			&:focus {
 				background: var(--ck-color-list-button-on-background-focus);
 			}
+
+			&:active {
+				box-shadow: none;
+			}
 		}
 
 		&:hover:not(.ck-disabled),
