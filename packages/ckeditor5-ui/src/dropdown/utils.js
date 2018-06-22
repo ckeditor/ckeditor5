@@ -268,7 +268,7 @@ function focusDropdownContentsOnArrows( dropdownView ) {
  *
  * @typedef {Object} module:ui/dropdown/utils~ListDropdownItemDefinition
  *
- * @property {String} type Either `'separator'` or `'button'`.
+ * @property {String} type Either `'separator'`, `'button'` or `'switchbutton'`.
  * @property {module:ui/model~Model} [model] Model of the item (when **not** `'separator'`).
  * Its properties fuel the newly created list item (or its children, depending on the `type`).
  */
