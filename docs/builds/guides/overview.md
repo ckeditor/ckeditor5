@@ -120,7 +120,7 @@ In the following cases [CKEditor 4](https://ckeditor.com/ckeditor-4/) should be 
 
 * When compatibility with old browsers is a requirement.
 * If CKEditor 4 contains features that are essential for you, which are not available in CKEditor 5 yet.
-* If CKEditor 4 is already in use in you application and you are still not ready to replace it with CKEditor 5.
+* If CKEditor 4 is already in use in your application and you are still not ready to replace it with CKEditor 5.
 
 In the following cases [Letters](https://ckeditor.com/letters/) may be used instead:
 
