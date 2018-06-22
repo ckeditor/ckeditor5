@@ -4,17 +4,11 @@
  */
 
 .ck.ck-button.ck-switchbutton {
-	position: relative;
-
 	& .ck-button__toggle {
 		display: block;
 
 		& .ck-button__toggle__inner {
 			display: block;
 		}
-	}
-
-	&.ck-on .ck-button__toggle .ck-button__toggle__inner {
-		float: right;
 	}
 }
