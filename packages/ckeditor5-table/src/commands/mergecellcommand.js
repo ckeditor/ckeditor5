@@ -93,38 +93,24 @@ export default class MergeCellCommand extends Command {
 			const cellToExpand = isMergeNext ? tableCell : cellToMerge;
 			const cellToRemove = isMergeNext ? cellToMerge : tableCell;
 
+			// Cache the parent of cell to remove for later check.
+			const removedTableCellRow = cellToRemove.parent;
+
+			// Remove table cell and merge it contents with merged cell.
 			writer.move( Range.createIn( cellToRemove ), Position.createAt( cellToExpand, 'end' ) );
-
-			let rowToCheck;
-
-			if ( !this.isHorizontal ) {
-				rowToCheck = checkEmptyRows( cellToRemove );
-			}
-
 			writer.remove( cellToRemove );
 
 			const spanAttribute = this.isHorizontal ? 'colspan' : 'rowspan';
 			const cellSpan = parseInt( tableCell.getAttribute( spanAttribute ) || 1 );
 			const cellToMergeSpan = parseInt( cellToMerge.getAttribute( spanAttribute ) || 1 );
 
+			// Update table cell span attribute and merge set selection on merged contents.
 			writer.setAttribute( spanAttribute, cellSpan + cellToMergeSpan, cellToExpand );
-
 			writer.setSelection( Range.createIn( cellToExpand ) );
 
-			if ( rowToCheck ) {
-				const table = rowToCheck.parent;
-
-				const removedRowIndex = table.getChildIndex( rowToCheck );
-
-				for ( const { cell, row, rowspan } of new TableWalker( table, { endRow: removedRowIndex } ) ) {
-					const overlapsRemovedRow = row + rowspan - 1 >= removedRowIndex;
-
-					if ( overlapsRemovedRow ) {
-						updateNumericAttribute( 'rowspan', rowspan - 1, cell, writer );
-					}
-				}
-
-				writer.remove( rowToCheck );
+			// Remove empty row after merging.
+			if ( !removedTableCellRow.childCount ) {
+				removeEmptyRow( removedTableCellRow, writer );
 			}
 		} );
 	}
@@ -220,10 +206,22 @@ function getVerticalCell( tableCell, direction ) {
 	return cellToMergeData && cellToMergeData.cell;
 }
 
-function checkEmptyRows( tableCell ) {
-	const tableRow = tableCell.parent;
+// Properly removes empty row from a table. Will update `rowspan` attribute of cells that overlaps removed row.
+//
+// @param {module:engine/model/element~Element} removedTableCellRow
+// @param {module:engine/model/writer~Writer} writer
+function removeEmptyRow( removedTableCellRow, writer ) {
+	const table = removedTableCellRow.parent;
 
-	if ( tableRow.childCount == 1 ) {
-		return tableRow;
+	const removedRowIndex = table.getChildIndex( removedTableCellRow );
+
+	for ( const { cell, row, rowspan } of new TableWalker( table, { endRow: removedRowIndex } ) ) {
+		const overlapsRemovedRow = row + rowspan - 1 >= removedRowIndex;
+
+		if ( overlapsRemovedRow ) {
+			updateNumericAttribute( 'rowspan', rowspan - 1, cell, writer );
+		}
 	}
+
+	writer.remove( removedTableCellRow );
 }
