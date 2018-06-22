@@ -47,7 +47,7 @@ export default class ButtonView extends View {
 
 		// Implement the Button interface.
 		this.set( 'class' );
-		this.set( 'style' );
+		this.set( 'labelStyle' );
 		this.set( 'icon' );
 		this.set( 'isEnabled', true );
 		this.set( 'isOn', false );
@@ -214,7 +214,7 @@ export default class ButtonView extends View {
 					'ck',
 					'ck-button__label'
 				],
-				style: bind.to( 'style' ),
+				style: bind.to( 'labelStyle' ),
 				id: `ck-editor__aria-label_${ ariaLabelUid }`,
 			},
 

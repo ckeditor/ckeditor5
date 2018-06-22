@@ -105,11 +105,11 @@ describe( 'ButtonView', () => {
 			} );
 		} );
 
-		describe( 'label', () => {
-			it( 'reacts on view#style', () => {
+		describe( 'labelView', () => {
+			it( 'reacts on view#labelStyle', () => {
 				expect( view.labelView.element.attributes.getNamedItem( 'style' ) ).to.be.null;
 
-				view.style = 'color: red';
+				view.labelStyle = 'color: red';
 
 				expect( view.labelView.element.attributes.getNamedItem( 'style' ).value ).to.equal( 'color: red' );
 			} );

@@ -339,12 +339,12 @@ describe( 'utils', () => {
 				it( 'is populated using item definitions', () => {
 					definitions.add( {
 						type: 'button',
-						model: new Model( { label: 'a', style: 'b' } )
+						model: new Model( { label: 'a', labelStyle: 'b' } )
 					} );
 
 					definitions.add( {
 						type: 'button',
-						model: new Model( { label: 'c', style: 'd' } )
+						model: new Model( { label: 'c', labelStyle: 'd' } )
 					} );
 
 					expect( listItems ).to.have.length( 2 );
@@ -352,18 +352,18 @@ describe( 'utils', () => {
 					expect( listItems.first.children.first ).to.be.instanceOf( ButtonView );
 
 					expect( listItems.get( 1 ).children.first.label ).to.equal( 'c' );
-					expect( listItems.get( 1 ).children.first.style ).to.equal( 'd' );
+					expect( listItems.get( 1 ).children.first.labelStyle ).to.equal( 'd' );
 
 					definitions.remove( 1 );
 					expect( listItems ).to.have.length( 1 );
 					expect( listItems.first.children.first.label ).to.equal( 'a' );
-					expect( listItems.first.children.first.style ).to.equal( 'b' );
+					expect( listItems.first.children.first.labelStyle ).to.equal( 'b' );
 				} );
 
 				it( 'binds all button properties', () => {
 					const def = {
 						type: 'button',
-						model: new Model( { label: 'a', style: 'b', foo: 'bar', baz: 'qux' } )
+						model: new Model( { label: 'a', labelStyle: 'b', foo: 'bar', baz: 'qux' } )
 					};
 
 					definitions.add( def );
@@ -380,7 +380,7 @@ describe( 'utils', () => {
 				it( 'delegates ButtonView#execute to the ListItemView', done => {
 					definitions.add( {
 						type: 'button',
-						model: new Model( { label: 'a', style: 'b' } )
+						model: new Model( { label: 'a', labelStyle: 'b' } )
 					} );
 
 					const listItem = listItems.first;
@@ -401,7 +401,7 @@ describe( 'utils', () => {
 				it( 'is populated using item definitions', () => {
 					definitions.add( {
 						type: 'switchbutton',
-						model: new Model( { label: 'a', style: 'b' } )
+						model: new Model( { label: 'a', labelStyle: 'b' } )
 					} );
 
 					expect( listItems ).to.have.length( 1 );
@@ -410,13 +410,13 @@ describe( 'utils', () => {
 
 					expect( listItems ).to.have.length( 1 );
 					expect( listItems.first.children.first.label ).to.equal( 'a' );
-					expect( listItems.first.children.first.style ).to.equal( 'b' );
+					expect( listItems.first.children.first.labelStyle ).to.equal( 'b' );
 				} );
 
 				it( 'binds all button properties', () => {
 					const def = {
 						type: 'switchbutton',
-						model: new Model( { label: 'a', style: 'b', foo: 'bar', baz: 'qux' } )
+						model: new Model( { label: 'a', labelStyle: 'b', foo: 'bar', baz: 'qux' } )
 					};
 
 					definitions.add( def );
@@ -433,7 +433,7 @@ describe( 'utils', () => {
 				it( 'delegates SwitchButtonView#execute to the ListItemView', done => {
 					definitions.add( {
 						type: 'switchbutton',
-						model: new Model( { label: 'a', style: 'b' } )
+						model: new Model( { label: 'a', labelStyle: 'b' } )
 					} );
 
 					const listItem = listItems.first;

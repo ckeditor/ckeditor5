@@ -131,7 +131,7 @@
  * (Optional) The value of the `style` attribute of the label.
  *
  * @observable
- * @member {String} #style
+ * @member {String} #labelStyle
  */
 
 /**
