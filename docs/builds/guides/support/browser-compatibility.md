@@ -37,7 +37,7 @@ Features known to not be fully supported yet:
 
 ## Mobile environment
 
-Although CKEditor 5 works in Safari for iOS and Chrome for Android, it has not been fully tested yet and there are known bugs and inconveniences. Full support for mobile browsers will be our goal after releasing 1.0.0.
+Although CKEditor 5 works in Safari for iOS and Chrome for Android, it has not been fully tested yet and there are known bugs and inconveniences. Full support for mobile browsers will be our goal after releasing v10.0.0.
 
 When working on mobile support we need to consider two complex aspects:
 
