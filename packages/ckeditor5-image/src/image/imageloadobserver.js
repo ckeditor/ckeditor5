@@ -12,7 +12,7 @@ import DOMEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 
 /**
  * Observes all images added to the {@link module:engine/view/document~Document},
- * fires {@link module:engine/view/document~Document#event:imageLoad}` event and
+ * fires {@link module:engine/view/document~Document#event:imageLoaded}` event and
  * {@link module:engine/view/view~View#render renders} the View every time when new image
  * has been loaded.
  *
@@ -78,7 +78,7 @@ export default class ImageLoadObserver extends DomEventObserver {
 	 */
 	onDomEvent( domEvent ) {
 		this.view.render();
-		this.fire( 'imageLoad', domEvent );
+		this.fire( 'imageLoaded', domEvent );
 	}
 
 	/**
@@ -96,6 +96,6 @@ export default class ImageLoadObserver extends DomEventObserver {
  * Introduced by {@link module:image/image/imageloadobserver~ImageLoadObserver}.
  *
  * @see image/image/imageloadobserver~ImageLoadObserver
- * @event module:engine/view/document~Document#event:imageLoad
+ * @event module:engine/view/document~Document#event:imageLoaded
  * @param {module:engine/view/observer/domeventdata~DomEventData} data Event data.
  */

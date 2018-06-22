@@ -32,7 +32,7 @@ describe( 'ClickObserver', () => {
 	it( 'should fire `loadImage` event for images in the document that are loaded with a delay', () => {
 		const spy = sinon.spy();
 
-		viewDocument.on( 'imageLoad', spy );
+		viewDocument.on( 'imageLoaded', spy );
 
 		setData( view, '<img src="foo.png" />' );
 
@@ -46,7 +46,7 @@ describe( 'ClickObserver', () => {
 	it( 'should not fire `loadImage` event for images removed from document', () => {
 		const spy = sinon.spy();
 
-		viewDocument.on( 'imageLoad', spy );
+		viewDocument.on( 'imageLoaded', spy );
 
 		setData( view, '<img src="foo.png" />' );
 
@@ -81,16 +81,16 @@ describe( 'ClickObserver', () => {
 		sinon.assert.neverCalledWith( mapSpy, viewDiv );
 	} );
 
-	it( 'should call `view#render` along with `imageLoad` event', () => {
+	it( 'should call `view#render` along with `imageLoaded` event', () => {
 		const renderSpy = sinon.spy();
-		const imageLoadSpy = sinon.spy();
+		const imageLoadedSpy = sinon.spy();
 
 		view.on( 'render', renderSpy );
-		view.document.on( 'imageLoad', imageLoadSpy );
+		view.document.on( 'imageLoaded', imageLoadedSpy );
 
 		observer.onDomEvent( {} );
 
 		sinon.assert.calledOnce( renderSpy );
-		sinon.assert.calledOnce( imageLoadSpy );
+		sinon.assert.calledOnce( imageLoadedSpy );
 	} );
 } );
