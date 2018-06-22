@@ -184,7 +184,7 @@ describe( 'FontSizeUI', () => {
 				it( 'adds font-size style to listView#items in the panel', () => {
 					const listView = dropdown.listView;
 
-					expect( listView.items.map( item => item.children.first.style ) ).to.deep.equal( [
+					expect( listView.items.map( item => item.children.first.labelStyle ) ).to.deep.equal( [
 						'font-size:10px',
 						'font-size:12px',
 						undefined,

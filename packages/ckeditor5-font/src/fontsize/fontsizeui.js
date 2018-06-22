@@ -124,7 +124,7 @@ function _prepareListOptions( options, command ) {
 		};
 
 		if ( option.view && option.view.styles ) {
-			def.model.set( 'style', `font-size:${ option.view.styles[ 'font-size' ] }` );
+			def.model.set( 'labelStyle', `font-size:${ option.view.styles[ 'font-size' ] }` );
 		}
 
 		if ( option.view && option.view.classes ) {

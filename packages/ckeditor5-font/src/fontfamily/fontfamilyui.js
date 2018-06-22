@@ -112,7 +112,7 @@ function _prepareListOptions( options, command ) {
 
 		// Try to set a dropdown list item style.
 		if ( option.view && option.view.styles ) {
-			def.model.set( 'style', `font-family: ${ option.view.styles[ 'font-family' ] }` );
+			def.model.set( 'labelStyle', `font-family: ${ option.view.styles[ 'font-family' ] }` );
 		}
 
 		itemDefinitions.add( def );
