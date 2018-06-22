@@ -380,7 +380,7 @@ describe( 'MergeCellCommand', () => {
 			} );
 		} );
 
-		describe.only( 'execute()', () => {
+		describe( 'execute()', () => {
 			it( 'should merge table cells ', () => {
 				setData( model, modelTable( [
 					[ '00', '01[]' ],
