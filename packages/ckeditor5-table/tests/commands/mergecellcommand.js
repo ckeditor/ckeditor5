@@ -409,6 +409,25 @@ describe( 'MergeCellCommand', () => {
 					[ '20', '21' ]
 				] ) );
 			} );
+
+			it( 'should not reduce rowspan on cells above removed empty row when merging table cells ', () => {
+				setData( model, modelTable( [
+					[ { rowspan: 2, contents: '00' }, '01', '02' ],
+					[ '11', '12' ],
+					[ { rowspan: 2, contents: '20' }, '21[]', { rowspan: 3, contents: '22' } ],
+					[ '31' ],
+					[ '40', '41' ]
+				] ) );
+
+				command.execute();
+
+				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+					[ { rowspan: 2, contents: '00' }, '01', '02' ],
+					[ '11', '12' ],
+					[ '20', '[2131]', { rowspan: 2, contents: '22' } ],
+					[ '40', '41' ]
+				] ) );
+			} );
 		} );
 	} );
 
@@ -555,6 +574,40 @@ describe( 'MergeCellCommand', () => {
 					[ { rowspan: 2, contents: '21' }, '22', { rowspan: 3, contents: '[2333]' } ],
 					[ '32' ],
 					[ { colspan: 2, contents: '40' }, '42' ]
+				] ) );
+			} );
+
+			it( 'should remove empty row if merging table cells ', () => {
+				setData( model, modelTable( [
+					[ { rowspan: 2, contents: '00' }, '01', { rowspan: 3, contents: '02' } ],
+					[ '11[]' ],
+					[ '20', '21' ]
+				] ) );
+
+				command.execute();
+
+				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+					[ '00', '[0111]', { rowspan: 2, contents: '02' } ],
+					[ '20', '21' ]
+				] ) );
+			} );
+
+			it( 'should not reduce rowspan on cells above removed empty row when merging table cells ', () => {
+				setData( model, modelTable( [
+					[ { rowspan: 2, contents: '00' }, '01', '02' ],
+					[ '11', '12' ],
+					[ { rowspan: 2, contents: '20' }, '21', { rowspan: 3, contents: '22' } ],
+					[ '31[]' ],
+					[ '40', '41' ]
+				] ) );
+
+				command.execute();
+
+				expect( formatTable( getData( model ) ) ).to.equal( formattedModelTable( [
+					[ { rowspan: 2, contents: '00' }, '01', '02' ],
+					[ '11', '12' ],
+					[ '20', '[2131]', { rowspan: 2, contents: '22' } ],
+					[ '40', '41' ]
 				] ) );
 			} );
 		} );
