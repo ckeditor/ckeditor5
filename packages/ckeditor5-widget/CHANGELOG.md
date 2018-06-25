@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## [10.1.0](https://github.com/ckeditor/ckeditor5-widget/compare/v10.0.0...v10.1.0) (2018-06-21)
+
+### Features
+
+* Creating a paragraph next to the selected widget is possible using the (<kbd>Shift</kbd>+)<kbd>Enter</kbd> key (see [ckeditor/ckeditor5#407](https://github.com/ckeditor/ckeditor5/issues/407)). ([d68b7d0](https://github.com/ckeditor/ckeditor5-widget/commit/d68b7d0))
+
+
 ## [10.0.0](https://github.com/ckeditor/ckeditor5-widget/compare/v1.0.0-beta.4...v10.0.0) (2018-04-25)
 
 ### Other changes
