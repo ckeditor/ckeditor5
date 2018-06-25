@@ -335,8 +335,15 @@ const dropdownView = createDropdown( locale );
 // The collection of the list items.
 const items = new Collection();
 
-items.add( new Model( { label: 'Foo' } ) );
-items.add( new Model( { label: 'Bar' } ) );
+items.add( {
+	type: 'button',
+	model: new Model( { label: 'Foo' } )
+} );
+
+items.add( {
+	type: 'button',
+	model: new Model( { label: 'Bar' } )
+} );
 
 // Create a dropdown with a list inside the panel.
 addListToDropdown( dropdownView, items );
