@@ -1,0 +1,78 @@
+# Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+msgid ""
+msgstr ""
+"Language: cs\n"
+"Language-Team: Czech (https://www.transifex.com/ckeditor/teams/11143/cs/)\n"
+"Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n <= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
+
+msgctxt "Label for the insert table toolbar button."
+msgid "Insert table"
+msgstr "Vložit tabulku"
+
+msgctxt "Label for the set/unset table header column button."
+msgid "Header column"
+msgstr "Sloupec záhlaví"
+
+msgctxt "Label for the insert table column before the current one button."
+msgid "Insert column before"
+msgstr "Vložit sloupec před"
+
+msgctxt "Label for the insert table column after the current one button."
+msgid "Insert column after"
+msgstr "Vložit sloupec za"
+
+msgctxt "Label for the delete table column button."
+msgid "Delete column"
+msgstr "Smazat sloupec"
+
+msgctxt "Label for the table column dropdown button."
+msgid "Column"
+msgstr "Sloupec"
+
+msgctxt "Label for the set/unset table header row button."
+msgid "Header row"
+msgstr "Řádek záhlaví"
+
+msgctxt "Label for the insert row below button."
+msgid "Insert row below"
+msgstr "Vložit řádek pod"
+
+msgctxt "Label for the insert row above button."
+msgid "Insert row above"
+msgstr "Vložit řádek před"
+
+msgctxt "Label for the delete table row button."
+msgid "Delete row"
+msgstr "Smazat řádek"
+
+msgctxt "Label for the table row dropdown button."
+msgid "Row"
+msgstr "Řádek"
+
+msgctxt "Label for the merge table cell up button."
+msgid "Merge cell up"
+msgstr "Sloučit s buňkou nad"
+
+msgctxt "Label for the merge table cell right button."
+msgid "Merge cell right"
+msgstr "Sloučit s buňkou vpravo"
+
+msgctxt "Label for the merge table cell down button."
+msgid "Merge cell down"
+msgstr "Sloučit s buňkou pod"
+
+msgctxt "Label for the merge table cell left button."
+msgid "Merge cell left"
+msgstr "Sloučit s buňkou vlevo"
+
+msgctxt "Label for the split table cell vertically button."
+msgid "Split cell vertically"
+msgstr "Rozdělit buňky vertikálně"
+
+msgctxt "Label for the split table cell horizontally button."
+msgid "Split cell horizontally"
+msgstr "Rozdělit buňky horizontálně"
+
+msgctxt "Label for the merge table cells button."
+msgid "Merge cells"
+msgstr "Sloučit buňky"
