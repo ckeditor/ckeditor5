@@ -55,6 +55,11 @@ export default class ImageLoadObserver extends DomEventObserver {
 
 				const domNode = this.view.domConverter.mapViewToDom( node );
 
+				// If there is no `domNode` it means that it was removed from the DOM in the meanwhile.
+				if ( !domNode ) {
+					return;
+				}
+
 				for ( const domElement of domNode.querySelectorAll( 'img' ) ) {
 					if ( !this._observedElements.has( domElement ) ) {
 						this._domEmitter.listenTo( domElement, 'load', ( evt, domEvt ) => this.onDomEvent( domEvt ) );

@@ -81,6 +81,22 @@ describe( 'ClickObserver', () => {
 		sinon.assert.neverCalledWith( mapSpy, viewDiv );
 	} );
 
+	it( 'should not throw when synced child was removed in the meanwhile', () => {
+		let viewDiv;
+
+		const mapSpy = sinon.spy( view.domConverter, 'mapViewToDom' );
+
+		view.change( writer => {
+			viewDiv = writer.createContainerElement( 'div' );
+			viewRoot.fire( 'change:children', viewDiv );
+		} );
+
+		expect( () => {
+			view._renderer.render();
+			sinon.assert.calledWith( mapSpy, viewDiv );
+		} ).to.not.throw();
+	} );
+
 	it( 'should call `layoutChanged` along with `imageLoaded` event', () => {
 		const layoutChangedSpy = sinon.spy();
 		const imageLoadedSpy = sinon.spy();
