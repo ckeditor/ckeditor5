@@ -604,6 +604,28 @@ describe( 'Conversion', () => {
 
 				test( '<img src="foo.jpg"></img>', '<image source="foo.jpg"></image>' );
 			} );
+
+			// #1443.
+			it( 'should not set attributes on the element\'s children', () => {
+				schema.register( 'div', {
+					inheritAllFrom: '$root',
+					allowWhere: '$block',
+					isLimit: true,
+					allowAttributes: [ 'border', 'shade' ]
+				} );
+
+				conversion.elementToElement(
+					{ model: 'div', view: 'div' }
+				);
+
+				conversion.attributeToAttribute( { model: 'border', view: { key: 'class', value: 'border' } } );
+				conversion.attributeToAttribute( { model: 'shade', view: { key: 'class', value: 'shade' } } );
+
+				test(
+					'<div class="border"><div class="shade"></div></div>',
+					'<div border="border"><div shade="shade"></div></div>'
+				);
+			} );
 		} );
 
 		function test( input, expectedModel, expectedView = null ) {

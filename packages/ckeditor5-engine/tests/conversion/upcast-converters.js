@@ -553,6 +553,33 @@ describe( 'upcast-helpers', () => {
 				'<image styled="true"></image>'
 			);
 		} );
+
+		// #1443.
+		it( 'should not set attributes on the element\'s children', () => {
+			schema.register( 'div', {
+				inheritAllFrom: '$root',
+				allowWhere: '$block',
+				isLimit: true,
+				allowAttributes: [ 'border', 'shade' ]
+			} );
+
+			conversion.for( 'upcast' ).add( upcastElementToElement( { view: 'div', model: 'div' } ) );
+
+			const shadeHelper = upcastAttributeToAttribute( { view: { key: 'class', value: 'shade' }, model: 'shade' } );
+			const borderHelper = upcastAttributeToAttribute( { view: { key: 'class', value: 'border' }, model: 'border' } );
+
+			conversion.for( 'upcast' ).add( shadeHelper );
+			conversion.for( 'upcast' ).add( borderHelper );
+
+			expectResult(
+				new ViewContainerElement(
+					'div',
+					{ class: 'border' },
+					new ViewContainerElement( 'div', { class: 'shade' } )
+				),
+				'<div border="border"><div shade="shade"></div></div>'
+			);
+		} );
 	} );
 
 	describe( 'upcastElementToMarker', () => {
