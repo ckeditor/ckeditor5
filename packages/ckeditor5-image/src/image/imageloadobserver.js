@@ -11,12 +11,12 @@ import DomEventObserver from '@ckeditor/ckeditor5-engine/src/view/observer/domev
 import DOMEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 
 /**
- * Observes all images added to the {@link module:engine/view/document~Document},
- * fires {@link module:engine/view/document~Document#event:imageLoaded}` event and
- * {@link module:engine/view/view~View#render renders} the View every time when new image
+ * Observes all new images added to the {@link module:engine/view/document~Document},
+ * fires {@link module:engine/view/document~Document#event:imageLoaded} and
+ * {@link module:engine/view/document~Document#layoutChanged} event every time when the new image
  * has been loaded.
  *
- * **Note:** This event is not fired for images that has been added to the document as `complete` (already loaded).
+ * **Note:** This event is not fired for images that has been added to the document and rendered as `complete` (already loaded).
  *
  * @extends module:engine/view/observer/domeventobserver~DomEventObserver
  */
