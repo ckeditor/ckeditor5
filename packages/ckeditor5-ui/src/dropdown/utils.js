@@ -14,6 +14,8 @@ import ToolbarView from '../toolbar/toolbarview';
 import ListView from '../list/listview';
 import ListItemView from '../list/listitemview';
 import ListSeparatorView from '../list/listseparatorview';
+import ButtonView from '../button/buttonview';
+import SwitchButtonView from '../button/switchbuttonview';
 
 import clickOutsideHandler from '../bindings/clickoutsidehandler';
 
@@ -146,8 +148,15 @@ export function addToolbarToDropdown( dropdownView, buttons ) {
  *
  *		const items = new Collection();
  *
- *		items.add( new Model( { label: 'First item', style: 'color: red' } ) );
- *		items.add( new Model( { label: 'Second item', style: 'color: green', class: 'foo' } ) );
+ *		items.add( {
+ *			type: 'button',
+ *			model: new Model( { label: 'First item', labelStyle: 'color: red' } )
+ *		} );
+ *
+ *		items.add( {
+ *			 type: 'button',
+ *			 model: new Model( { label: 'Second item', labelStyle: 'color: green', class: 'foo' } )
+ * 		} );
  *
  *		const dropdown = createDropdown( locale );
  *
@@ -164,28 +173,34 @@ export function addToolbarToDropdown( dropdownView, buttons ) {
  * See {@link module:ui/dropdown/utils~createDropdown} and {@link module:list/list~List}.
  *
  * @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView A dropdown instance to which `ListVIew` will be added.
- * @param {module:utils/collection~Collection} items
- * that the inner dropdown {@link module:ui/list/listview~ListView} children are created from.
- *
- * Usually, it is a collection of {@link module:ui/model~Model models}.
+ * @param {Iterable.<module:ui/dropdown/utils~ListDropdownItemDefinition>} items
+ * A collection of the list item definitions to populate the list.
  */
 export function addListToDropdown( dropdownView, items ) {
 	const locale = dropdownView.locale;
 	const listView = dropdownView.listView = new ListView( locale );
 
-	listView.items.bindTo( items ).using( itemModel => {
-		let item;
+	listView.items.bindTo( items ).using( ( { type, model } ) => {
+		if ( type === 'separator' ) {
+			return new ListSeparatorView( locale );
+		} else if ( type === 'button' || type === 'switchbutton' ) {
+			const listItemView = new ListItemView( locale );
+			let buttonView;
 
-		if ( itemModel.isSeparator ) {
-			item = new ListSeparatorView( locale );
-		} else {
-			item = new ListItemView( locale );
+			if ( type === 'button' ) {
+				buttonView = new ButtonView( locale );
+			} else {
+				buttonView = new SwitchButtonView( locale );
+			}
 
-			// Bind all attributes of the model to the item view.
-			item.bind( ...Object.keys( itemModel ) ).to( itemModel );
+			// Bind all model properties to the button view.
+			buttonView.bind( ...Object.keys( model ) ).to( model );
+			buttonView.delegate( 'execute' ).to( listItemView );
+
+			listItemView.children.add( buttonView );
+
+			return listItemView;
 		}
-
-		return item;
 	} );
 
 	dropdownView.panelView.children.add( listView );
@@ -223,7 +238,12 @@ function closeDropdownOnBlur( dropdownView ) {
 // @param {module:ui/dropdown/dropdownview~DropdownView} dropdownView
 function closeDropdownOnExecute( dropdownView ) {
 	// Close the dropdown when one of the list items has been executed.
-	dropdownView.on( 'execute', () => {
+	dropdownView.on( 'execute', evt => {
+		// Toggling a switch button view should not close the dropdown.
+		if ( evt.source instanceof SwitchButtonView ) {
+			return;
+		}
+
 		dropdownView.isOpen = false;
 	} );
 }
@@ -248,3 +268,14 @@ function focusDropdownContentsOnArrows( dropdownView ) {
 		}
 	} );
 }
+
+/**
+ * A definition of the list item used by the {@link module:ui/dropdown/utils~addListToDropdown}
+ * utility.
+ *
+ * @typedef {Object} module:ui/dropdown/utils~ListDropdownItemDefinition
+ *
+ * @property {String} type Either `'separator'`, `'button'` or `'switchbutton'`.
+ * @property {module:ui/model~Model} [model] Model of the item (when **not** `'separator'`).
+ * Its properties fuel the newly created list item (or its children, depending on the `type`).
+ */

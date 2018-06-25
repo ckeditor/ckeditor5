@@ -121,6 +121,20 @@
  */
 
 /**
+ * (Optional) The additional CSS class set on the button.
+ *
+ * @observable
+ * @member {String} #class
+ */
+
+/**
+ * (Optional) The value of the `style` attribute of the label.
+ *
+ * @observable
+ * @member {String} #labelStyle
+ */
+
+/**
  * Fired when the button view is clicked. It won't be fired when the button {@link #isEnabled}
  * is `false`.
  *

@@ -46,6 +46,8 @@ export default class ButtonView extends View {
 		const ariaLabelUid = uid();
 
 		// Implement the Button interface.
+		this.set( 'class' );
+		this.set( 'labelStyle' );
 		this.set( 'icon' );
 		this.set( 'isEnabled', true );
 		this.set( 'isOn', false );
@@ -120,6 +122,7 @@ export default class ButtonView extends View {
 				class: [
 					'ck',
 					'ck-button',
+					bind.to( 'class' ),
 					bind.if( 'isEnabled', 'ck-disabled', value => !value ),
 					bind.if( 'isVisible', 'ck-hidden', value => !value ),
 					bind.to( 'isOn', value => value ? 'ck-on' : 'ck-off' ),
@@ -201,6 +204,7 @@ export default class ButtonView extends View {
 	 */
 	_createLabelView( ariaLabelUid ) {
 		const labelView = new View();
+		const bind = this.bindTemplate;
 
 		labelView.setTemplate( {
 			tag: 'span',
@@ -210,6 +214,7 @@ export default class ButtonView extends View {
 					'ck',
 					'ck-button__label'
 				],
+				style: bind.to( 'labelStyle' ),
 				id: `ck-editor__aria-label_${ ariaLabelUid }`,
 			},
 

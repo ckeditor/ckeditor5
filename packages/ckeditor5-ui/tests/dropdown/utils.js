@@ -12,6 +12,7 @@ import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import Model from '../../src/model';
 
 import ButtonView from '../../src/button/buttonview';
+import SwitchButtonView from '../../src/button/switchbuttonview';
 import DropdownView from '../../src/dropdown/dropdownview';
 import DropdownPanelView from '../../src/dropdown/dropdownpanelview';
 import SplitButtonView from '../../src/dropdown/button/splitbuttonview';
@@ -164,6 +165,24 @@ describe( 'utils', () => {
 					dropdownView.fire( 'execute' );
 					expect( dropdownView.isOpen ).to.be.false;
 				} );
+
+				it( 'does not change #isOpen if #execute triggered by a SwitchButtonView', () => {
+					const items = new Collection();
+
+					items.add( {
+						type: 'switchbutton',
+						model: new Model( {
+							label: 'foo'
+						} )
+					} );
+
+					addListToDropdown( dropdownView, items );
+
+					dropdownView.isOpen = true;
+
+					dropdownView.listView.items.first.children.first.fire( 'execute' );
+					expect( dropdownView.isOpen ).to.be.true;
+				} );
 			} );
 
 			describe( 'focusDropdownContentsOnArrows()', () => {
@@ -260,28 +279,28 @@ describe( 'utils', () => {
 				const panelChildren = dropdownView.panelView.children;
 
 				expect( panelChildren ).to.have.length( 1 );
-				expect( panelChildren.get( 0 ) ).to.equal( dropdownView.toolbarView );
+				expect( panelChildren.first ).to.equal( dropdownView.toolbarView );
 				expect( dropdownView.toolbarView ).to.be.instanceof( ToolbarView );
 			} );
 
 			it( 'delegates view.toolbarView.items#execute to the view', done => {
 				dropdownView.on( 'execute', evt => {
-					expect( evt.source ).to.equal( dropdownView.toolbarView.items.get( 0 ) );
-					expect( evt.path ).to.deep.equal( [ dropdownView.toolbarView.items.get( 0 ), dropdownView ] );
+					expect( evt.source ).to.equal( dropdownView.toolbarView.items.first );
+					expect( evt.path ).to.deep.equal( [ dropdownView.toolbarView.items.first, dropdownView ] );
 
 					done();
 				} );
 
-				dropdownView.toolbarView.items.get( 0 ).fire( 'execute' );
+				dropdownView.toolbarView.items.first.fire( 'execute' );
 			} );
 		} );
 	} );
 
 	describe( 'addListToDropdown()', () => {
-		let items;
+		let definitions, listItems;
 
 		beforeEach( () => {
-			items = new Collection();
+			definitions = new Collection();
 
 			dropdownView = createDropdown( locale );
 			dropdownView.buttonView.set( {
@@ -290,8 +309,9 @@ describe( 'utils', () => {
 				label: 'foo'
 			} );
 
-			addListToDropdown( dropdownView, items );
+			addListToDropdown( dropdownView, definitions );
 
+			listItems = dropdownView.listView.items;
 			dropdownView.render();
 			document.body.appendChild( dropdownView.element );
 		} );
@@ -305,58 +325,137 @@ describe( 'utils', () => {
 				const panelChildren = dropdownView.panelView.children;
 
 				expect( panelChildren ).to.have.length( 1 );
-				expect( panelChildren.get( 0 ) ).to.equal( dropdownView.listView );
+				expect( panelChildren.first ).to.equal( dropdownView.listView );
 				expect( dropdownView.listView ).to.be.instanceof( ListView );
 			} );
 
-			it( 'is bound to model#items', () => {
-				items.add( new Model( { label: 'a', style: 'b' } ) );
-				items.add( new Model( { label: 'c', style: 'd' } ) );
+			it( 'ignores unknown definition types', () => {
+				definitions.add( { type: 'foo' } );
 
-				expect( dropdownView.listView.items ).to.have.length( 2 );
-				expect( dropdownView.listView.items.get( 0 ) ).to.be.instanceOf( ListItemView );
-				expect( dropdownView.listView.items.get( 1 ).label ).to.equal( 'c' );
-				expect( dropdownView.listView.items.get( 1 ).style ).to.equal( 'd' );
-
-				items.remove( 1 );
-				expect( dropdownView.listView.items ).to.have.length( 1 );
-				expect( dropdownView.listView.items.get( 0 ).label ).to.equal( 'a' );
-				expect( dropdownView.listView.items.get( 0 ).style ).to.equal( 'b' );
+				expect( listItems.length ).to.equal( 0 );
 			} );
 
-			it( 'binds all attributes in model#items', () => {
-				const itemModel = new Model( { label: 'a', style: 'b', foo: 'bar', baz: 'qux' } );
+			describe( 'with ButtonView', () => {
+				it( 'is populated using item definitions', () => {
+					definitions.add( {
+						type: 'button',
+						model: new Model( { label: 'a', labelStyle: 'b' } )
+					} );
 
-				items.add( itemModel );
+					definitions.add( {
+						type: 'button',
+						model: new Model( { label: 'c', labelStyle: 'd' } )
+					} );
 
-				const item = dropdownView.listView.items.get( 0 );
+					expect( listItems ).to.have.length( 2 );
+					expect( listItems.first ).to.be.instanceOf( ListItemView );
+					expect( listItems.first.children.first ).to.be.instanceOf( ButtonView );
 
-				expect( item.foo ).to.equal( 'bar' );
-				expect( item.baz ).to.equal( 'qux' );
+					expect( listItems.get( 1 ).children.first.label ).to.equal( 'c' );
+					expect( listItems.get( 1 ).children.first.labelStyle ).to.equal( 'd' );
 
-				itemModel.baz = 'foo?';
-				expect( item.baz ).to.equal( 'foo?' );
-			} );
-
-			it( 'delegates view.listView#execute to the view', done => {
-				items.add( new Model( { label: 'a', style: 'b' } ) );
-
-				dropdownView.on( 'execute', evt => {
-					expect( evt.source ).to.equal( dropdownView.listView.items.get( 0 ) );
-					expect( evt.path ).to.deep.equal( [ dropdownView.listView.items.get( 0 ), dropdownView ] );
-
-					done();
+					definitions.remove( 1 );
+					expect( listItems ).to.have.length( 1 );
+					expect( listItems.first.children.first.label ).to.equal( 'a' );
+					expect( listItems.first.children.first.labelStyle ).to.equal( 'b' );
 				} );
 
-				dropdownView.listView.items.get( 0 ).fire( 'execute' );
+				it( 'binds all button properties', () => {
+					const def = {
+						type: 'button',
+						model: new Model( { label: 'a', labelStyle: 'b', foo: 'bar', baz: 'qux' } )
+					};
+
+					definitions.add( def );
+
+					const button = listItems.first.children.first;
+
+					expect( button.foo ).to.equal( 'bar' );
+					expect( button.baz ).to.equal( 'qux' );
+
+					def.model.baz = 'foo?';
+					expect( button.baz ).to.equal( 'foo?' );
+				} );
+
+				it( 'delegates ButtonView#execute to the ListItemView', done => {
+					definitions.add( {
+						type: 'button',
+						model: new Model( { label: 'a', labelStyle: 'b' } )
+					} );
+
+					const listItem = listItems.first;
+					const button = listItem.children.first;
+
+					dropdownView.on( 'execute', evt => {
+						expect( evt.source ).to.equal( button );
+						expect( evt.path ).to.deep.equal( [ button, listItem, dropdownView ] );
+
+						done();
+					} );
+
+					button.fire( 'execute' );
+				} );
 			} );
 
-			it( 'is filled with separators', () => {
-				const itemModel = new Model( { isSeparator: true } );
+			describe( 'with SwitchButtonView', () => {
+				it( 'is populated using item definitions', () => {
+					definitions.add( {
+						type: 'switchbutton',
+						model: new Model( { label: 'a', labelStyle: 'b' } )
+					} );
 
-				items.add( itemModel );
+					expect( listItems ).to.have.length( 1 );
+					expect( listItems.first ).to.be.instanceOf( ListItemView );
+					expect( listItems.first.children.first ).to.be.instanceOf( SwitchButtonView );
 
-				expect( dropdownView.listView.items.get( 0 ) ).to.be.instanceOf( ListSeparatorView );
+					expect( listItems ).to.have.length( 1 );
+					expect( listItems.first.children.first.label ).to.equal( 'a' );
+					expect( listItems.first.children.first.labelStyle ).to.equal( 'b' );
+				} );
+
+				it( 'binds all button properties', () => {
+					const def = {
+						type: 'switchbutton',
+						model: new Model( { label: 'a', labelStyle: 'b', foo: 'bar', baz: 'qux' } )
+					};
+
+					definitions.add( def );
+
+					const button = listItems.first.children.first;
+
+					expect( button.foo ).to.equal( 'bar' );
+					expect( button.baz ).to.equal( 'qux' );
+
+					def.model.baz = 'foo?';
+					expect( button.baz ).to.equal( 'foo?' );
+				} );
+
+				it( 'delegates SwitchButtonView#execute to the ListItemView', done => {
+					definitions.add( {
+						type: 'switchbutton',
+						model: new Model( { label: 'a', labelStyle: 'b' } )
+					} );
+
+					const listItem = listItems.first;
+					const button = listItem.children.first;
+
+					dropdownView.on( 'execute', evt => {
+						expect( evt.source ).to.equal( button );
+						expect( evt.path ).to.deep.equal( [ button, listItem, dropdownView ] );
+
+						done();
+					} );
+
+					button.fire( 'execute' );
+				} );
+			} );
+
+			describe( 'with ListSeparatorView', () => {
+				it( 'creates a separator from the definition', () => {
+					definitions.add( { type: 'separator' } );
+
+					expect( listItems.first ).to.be.instanceOf( ListSeparatorView );
+				} );
 			} );
 		} );
 	} );
