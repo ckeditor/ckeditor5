@@ -115,20 +115,28 @@
 
 	/* Set the default font for the "page" of the content. */
 	.document-editor .ck-content,
-	.document-editor .ck-heading-dropdown .ck-list {
+	.document-editor .ck-heading-dropdown .ck-list .ck-button__label {
 		font: 16px/1.6 "Helvetica Neue", Helvetica, Arial, sans-serif;
 	}
 
 	/* Adjust the headings dropdown to host some larger heading styles. */
-	.document-editor .ck-heading-dropdown .ck-dropdown__panel .ck-list > .ck-list__item {
-		line-height: calc( 1.2 * var(--ck-line-height-base) * var(--ck-font-size-base) );
-		min-width: 8em;
+	.document-editor .ck-heading-dropdown .ck-list .ck-button__label {
+		line-height: calc( 1.7 * var(--ck-line-height-base) * var(--ck-font-size-base) );
+		min-width: 6em;
 	}
 
-	/* Set the styles for the "Heading 1". */
+	/* Scale down all heading previews because they are way too big to be presented in the UI.
+	Preserve the relative scale, though. */
+	.document-editor .ck-heading-dropdown .ck-list .ck-button:not(.ck-heading_paragraph) .ck-button__label {
+		transform: scale(0.8);
+		transform-origin: left;
+	}
+
+	/* Set the styles for "Heading 1". */
 	.document-editor .ck-content h2,
-	.document-editor .ck-heading-dropdown .ck-heading_heading1 {
+	.document-editor .ck-heading-dropdown .ck-heading_heading1 .ck-button__label {
 		font-size: 2.18em;
+		font-weight: normal;
 	}
 
 	.document-editor .ck-content h2 {
@@ -137,28 +145,30 @@
 		margin-bottom: .142em;
 	}
 
-	/* Set the styles for the "Heading 2". */
+	/* Set the styles for "Heading 2". */
 	.document-editor .ck-content h3,
-	.document-editor .ck-heading-dropdown .ck-heading_heading2 {
+	.document-editor .ck-heading-dropdown .ck-heading_heading2 .ck-button__label {
 		font-size: 1.75em;
+		font-weight: normal;
 		color: hsl( 203, 100%, 50% );
 	}
 
-	.document-editor .ck-heading-dropdown .ck-heading_heading2.ck-list__item_active {
-		color: var(--ck-color-list-item-text-active);
+	.document-editor .ck-heading-dropdown .ck-heading_heading2.ck-on .ck-button__label {
+		color: var(--ck-color-list-button-on-text);
 	}
 
-	/* Set the styles for the "Heading 2". */
+	/* Set the styles for "Heading 2". */
 	.document-editor .ck-content h3 {
 		line-height: 1.86em;
 		padding-top: .171em;
 		margin-bottom: .357em;
 	}
 
-	/* Set the styles for the "Heading 3". */
+	/* Set the styles for "Heading 3". */
 	.document-editor .ck-content h4,
-	.document-editor .ck-heading-dropdown .ck-heading_heading3 {
+	.document-editor .ck-heading-dropdown .ck-heading_heading3 .ck-button__label {
 		font-size: 1.31em;
+		font-weight: bold;
 	}
 
 	.document-editor .ck-content h4 {
@@ -167,13 +177,9 @@
 		margin-bottom: .952em;
 	}
 
-	/* Set the styles for the "Paragraph". */
-	.document-editor .ck-content p,
-	.document-editor .ck-heading-dropdown .ck-heading_paragraph {
-		font-size: 1em;
-	}
-
+	/* Set the styles for "Paragraph". */
 	.document-editor .ck-content p {
+		font-size: 1em;
 		line-height: 1.63em;
 		padding-top: .5em;
 		margin-bottom: 1.13em;
