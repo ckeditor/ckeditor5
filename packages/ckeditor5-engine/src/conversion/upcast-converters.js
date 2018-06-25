@@ -514,7 +514,7 @@ function _setAttributeOn( modelRange, modelAttribute, conversionApi ) {
 	let result = false;
 
 	// Set attribute on each item in range according to Schema.
-	for ( const node of Array.from( modelRange.getItems() ) ) {
+	for ( const node of Array.from( modelRange.getItems( { shallow: true } ) ) ) {
 		if ( conversionApi.schema.checkAttribute( node, modelAttribute.key ) ) {
 			conversionApi.writer.setAttribute( modelAttribute.key, modelAttribute.value, node );
 
