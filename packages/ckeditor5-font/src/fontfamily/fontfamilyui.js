@@ -94,24 +94,28 @@ export default class FontFamilyUI extends Plugin {
 // @param {Array.<module:font/fontsize~FontSizeOption>} options
 // @param {module:font/fontsize/fontsizecommand~FontSizeCommand} command
 function _prepareListOptions( options, command ) {
-	const dropdownItems = new Collection();
+	const itemDefinitions = new Collection();
 
 	// Create dropdown items.
 	for ( const option of options ) {
-		const itemModel = new Model( {
-			commandName: 'fontFamily',
-			commandParam: option.model,
-			label: option.title
-		} );
+		const def = {
+			type: 'button',
+			model: new Model( {
+				commandName: 'fontFamily',
+				commandParam: option.model,
+				label: option.title,
+				withText: true
+			} )
+		};
 
-		itemModel.bind( 'isActive' ).to( command, 'value', value => value === option.model );
+		def.model.bind( 'isOn' ).to( command, 'value', value => value === option.model );
 
 		// Try to set a dropdown list item style.
 		if ( option.view && option.view.styles ) {
-			itemModel.set( 'style', `font-family: ${ option.view.styles[ 'font-family' ] }` );
+			def.model.set( 'labelStyle', `font-family: ${ option.view.styles[ 'font-family' ] }` );
 		}
 
-		dropdownItems.add( itemModel );
+		itemDefinitions.add( def );
 	}
-	return dropdownItems;
+	return itemDefinitions;
 }

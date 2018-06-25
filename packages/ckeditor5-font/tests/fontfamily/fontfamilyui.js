@@ -94,13 +94,13 @@ describe( 'FontFamilyUI', () => {
 			command.value = undefined;
 
 			// The first item is 'default' font family.
-			expect( listView.items.map( item => item.isActive ) )
+			expect( listView.items.map( item => item.children.first.isOn ) )
 				.to.deep.equal( [ true, false, false, false, false, false, false, false, false ] );
 
 			command.value = 'Arial';
 
 			// The second item is 'Arial' font family.
-			expect( listView.items.map( item => item.isActive ) )
+			expect( listView.items.map( item => item.children.first.isOn ) )
 				.to.deep.equal( [ false, true, false, false, false, false, false, false, false ] );
 		} );
 
@@ -129,7 +129,7 @@ describe( 'FontFamilyUI', () => {
 			it( 'works for the listView#items in the panel', () => {
 				const listView = dropdown.listView;
 
-				expect( listView.items.map( item => item.label ) ).to.deep.equal( [
+				expect( listView.items.map( item => item.children.first.label ) ).to.deep.equal( [
 					'Domyślna',
 					'Arial'
 				] );

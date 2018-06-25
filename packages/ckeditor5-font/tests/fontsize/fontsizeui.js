@@ -100,12 +100,12 @@ describe( 'FontSizeUI', () => {
 			command.value = undefined;
 
 			// The third item is 'default' font size.
-			expect( listView.items.map( item => item.isActive ) ).to.deep.equal( [ false, false, true, false, false ] );
+			expect( listView.items.map( item => item.children.first.isOn ) ).to.deep.equal( [ false, false, true, false, false ] );
 
 			command.value = 'tiny';
 
 			// The first item is 'tiny' font size.
-			expect( listView.items.map( item => item.isActive ) ).to.deep.equal( [ true, false, false, false, false ] );
+			expect( listView.items.map( item => item.children.first.isOn ) ).to.deep.equal( [ true, false, false, false, false ] );
 		} );
 
 		describe( 'model to command binding', () => {
@@ -141,7 +141,7 @@ describe( 'FontSizeUI', () => {
 				it( 'adds css class to listView#items in the panel', () => {
 					const listView = dropdown.listView;
 
-					expect( listView.items.map( item => item.class ) ).to.deep.equal( [
+					expect( listView.items.map( item => item.children.first.class ) ).to.deep.equal( [
 						'ck-fontsize-option text-tiny',
 						'ck-fontsize-option text-small',
 						'ck-fontsize-option',
@@ -172,7 +172,7 @@ describe( 'FontSizeUI', () => {
 				it( 'adds css class to listView#items in the panel', () => {
 					const listView = dropdown.listView;
 
-					expect( listView.items.map( item => item.class ) ).to.deep.equal( [
+					expect( listView.items.map( item => item.children.first.class ) ).to.deep.equal( [
 						'ck-fontsize-option',
 						'ck-fontsize-option',
 						'ck-fontsize-option',
@@ -184,7 +184,7 @@ describe( 'FontSizeUI', () => {
 				it( 'adds font-size style to listView#items in the panel', () => {
 					const listView = dropdown.listView;
 
-					expect( listView.items.map( item => item.style ) ).to.deep.equal( [
+					expect( listView.items.map( item => item.children.first.labelStyle ) ).to.deep.equal( [
 						'font-size:10px',
 						'font-size:12px',
 						undefined,
@@ -220,7 +220,7 @@ describe( 'FontSizeUI', () => {
 			it( 'works for the listView#items in the panel', () => {
 				const listView = dropdown.listView;
 
-				expect( listView.items.map( item => item.label ) ).to.deep.equal( [
+				expect( listView.items.map( item => item.children.first.label ) ).to.deep.equal( [
 					'Tyci',
 					'Mały',
 					'Domyślny',
