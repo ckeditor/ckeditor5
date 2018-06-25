@@ -1,25 +1,25 @@
 /* globals document */
 
 import View from '../../../src/view/view';
+import Observer from '../../../src/view/observer/observer';
 import MutationObserver from '../../../src/view/observer/mutationobserver';
-import count from '@ckeditor/ckeditor5-utils/src/count';
 import KeyObserver from '../../../src/view/observer/keyobserver';
 import FakeSelectionObserver from '../../../src/view/observer/fakeselectionobserver';
 import SelectionObserver from '../../../src/view/observer/selectionobserver';
 import FocusObserver from '../../../src/view/observer/focusobserver';
 import CompositionObserver from '../../../src/view/observer/compositionobserver';
-import createViewRoot from '../_utils/createroot';
-import Observer from '../../../src/view/observer/observer';
-import log from '@ckeditor/ckeditor5-utils/src/log';
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import ViewRange from '../../../src/view/range';
-import RootEditableElement from '../../../src/view/rooteditableelement';
 import ViewElement from '../../../src/view/element';
 import ViewPosition from '../../../src/view/position';
 import { isBlockFiller, BR_FILLER } from '../../../src/view/filler';
-import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
+import log from '@ckeditor/ckeditor5-utils/src/log';
+
+import count from '@ckeditor/ckeditor5-utils/src/count';
+import global from '@ckeditor/ckeditor5-utils/src/dom/global';
+import createViewRoot from '../_utils/createroot';
+import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'view', () => {
 	const DEFAULT_OBSERVERS_COUNT = 6;
@@ -406,7 +406,7 @@ describe( 'view', () => {
 			const view = new View();
 			const viewDocument = view.document;
 
-			createRoot( 'div', 'main', viewDocument );
+			createViewRoot( viewDocument, 'div', 'main' );
 			view.attachDomRoot( domDiv );
 			view.render();
 
@@ -422,7 +422,7 @@ describe( 'view', () => {
 
 			const view = new View();
 			const viewDocument = view.document;
-			createRoot( 'div', 'main', viewDocument );
+			createViewRoot( viewDocument, 'div', 'main' );
 			view.attachDomRoot( domDiv );
 
 			viewDocument.getRoot()._appendChild( new ViewElement( 'p' ) );
@@ -439,7 +439,7 @@ describe( 'view', () => {
 
 			const view = new View();
 			const viewDocument = view.document;
-			const viewRoot = createRoot( 'div', 'main', viewDocument );
+			const viewRoot = createViewRoot( viewDocument, 'div', 'main' );
 
 			view.attachDomRoot( domRoot );
 
@@ -612,14 +612,4 @@ describe( 'view', () => {
 			sinon.assert.calledOnce( observerMock.destroy );
 		} );
 	} );
-
-	function createRoot( name, rootName, viewDoc ) {
-		const viewRoot = new RootEditableElement( name );
-
-		viewRoot.rootName = rootName;
-		viewRoot._document = viewDoc;
-		viewDoc.roots.add( viewRoot );
-
-		return viewRoot;
-	}
 } );
