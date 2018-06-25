@@ -91,6 +91,7 @@ export default class ImageLoadObserver extends DomEventObserver {
 	 */
 	destroy() {
 		this._domEmitter.stopListening();
+		this._observedElements.clear();
 		super.destroy();
 	}
 }

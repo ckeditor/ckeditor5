@@ -109,4 +109,18 @@ describe( 'ClickObserver', () => {
 		sinon.assert.calledOnce( layoutChangedSpy );
 		sinon.assert.calledOnce( imageLoadedSpy );
 	} );
+
+	it( 'should stop observing images on destroy', () => {
+		const spy = sinon.spy();
+
+		viewDocument.on( 'imageLoaded', spy );
+
+		setData( view, '<img src="foo.png" />' );
+
+		observer.destroy();
+
+		domRoot.querySelector( 'img' ).dispatchEvent( new Event( 'load' ) );
+
+		sinon.assert.notCalled( spy );
+	} );
 } );
