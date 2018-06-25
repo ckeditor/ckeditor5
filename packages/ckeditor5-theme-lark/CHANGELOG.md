@@ -1,6 +1,24 @@
 Changelog
 =========
 
+## [10.1.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v10.0.0...v10.1.0) (2018-06-21)
+
+### Features
+
+* Added styles for the "upload completed" icon (see https://github.com/ckeditor/ckeditor5-image/issues/204). ([dda5282](https://github.com/ckeditor/ckeditor5-theme-lark/commit/dda5282))
+* Added the `BlockToolbar` plugin styles (see [ckeditor/ckeditor5-ui#391](https://github.com/ckeditor/ckeditor5-ui/issues/391)). ([6ac7511](https://github.com/ckeditor/ckeditor5-theme-lark/commit/6ac7511))
+* Implemented list separator styles (see [ckeditor/ckeditor5-table#24](https://github.com/ckeditor/ckeditor5-table/issues/24)). ([e0d1897](https://github.com/ckeditor/ckeditor5-theme-lark/commit/e0d1897))
+
+### Bug fixes
+
+* The arrow of the balloon holding a toolbar should have the same background color as the toolbar. Closes [#178](https://github.com/ckeditor/ckeditor5-theme-lark/issues/178). ([d3c408c](https://github.com/ckeditor/ckeditor5-theme-lark/commit/d3c408c))
+* The link balloon should not resize when navigating between editing steps. Closes [#165](https://github.com/ckeditor/ckeditor5-theme-lark/issues/165). ([832d093](https://github.com/ckeditor/ckeditor5-theme-lark/commit/832d093))
+
+### Other changes
+
+* Introduced disabled styles of a list item (see [ckeditor/ckeditor5-ui#389](https://github.com/ckeditor/ckeditor5-ui/issues/389)). ([b4a069c](https://github.com/ckeditor/ckeditor5-theme-lark/commit/b4a069c))
+
+
 ## [10.0.0](https://github.com/ckeditor/ckeditor5-theme-lark/compare/v1.0.0-beta.4...v10.0.0) (2018-04-25)
 
 ### Other changes

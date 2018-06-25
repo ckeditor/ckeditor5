@@ -45,6 +45,10 @@
 	--ck-color-button-save: 									hsl(120, 100%, 27%);
 	--ck-color-button-cancel: 									hsl(15, 100%, 43%);
 
+	--ck-color-switch-button-off-background:					hsl(0, 0%, 69%);
+	--ck-color-switch-button-on-background:						var(--ck-color-button-action-background);
+	--ck-color-switch-button-inner-background:					var(--ck-color-base-background);
+
 	/* -- Dropdown ------------------------------------------------------------------------------ */
 
 	--ck-color-dropdown-panel-background: 						var(--ck-color-base-background);
@@ -62,10 +66,10 @@
 	/* -- List ---------------------------------------------------------------------------------- */
 
 	--ck-color-list-background: 								var(--ck-color-base-background);
-	--ck-color-list-item-background-hover: 						var(--ck-color-base-foreground);
-	--ck-color-list-item-background-active: 					var(--ck-color-base-active);
-	--ck-color-list-item-background-active-focus: 				var(--ck-color-base-active-focus);
-	--ck-color-list-item-text-active:							var(--ck-color-base-background);
+	--ck-color-list-button-hover-background: 					var(--ck-color-base-foreground);
+	--ck-color-list-button-on-background: 						var(--ck-color-base-active);
+	--ck-color-list-button-on-background-focus: 				var(--ck-color-base-active-focus);
+	--ck-color-list-button-on-text:								var(--ck-color-base-background);
 
 	/* -- Panel --------------------------------------------------------------------------------- */
 
