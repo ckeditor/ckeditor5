@@ -45,6 +45,7 @@ describe( 'view', () => {
 				this.enable = sinon.spy();
 				this.disable = sinon.spy();
 				this.observe = sinon.spy();
+				this.destroy = sinon.spy();
 			}
 		};
 
@@ -379,6 +380,26 @@ describe( 'view', () => {
 
 			sinon.assert.callOrder( observerMock.disable, renderStub, observerMock.enable );
 		} );
+
+		it( 'should fire throttled view.document.layoutChanged event after each render', () => {
+			const spy = sinon.spy();
+
+			view.document.on( 'layoutChanged', spy );
+
+			view.render();
+
+			sinon.assert.calledOnce( spy );
+
+			view.render();
+
+			// Still once because of throttle.
+			sinon.assert.calledOnce( spy );
+
+			view._throttledLayoutChange.flush();
+
+			// Twice after flushing throttled event.
+			sinon.assert.calledTwice( spy );
+		} );
 	} );
 
 	describe( 'view and DOM integration', () => {
@@ -585,6 +606,36 @@ describe( 'view', () => {
 			sinon.assert.calledOnce( eventSpy );
 
 			sinon.assert.callOrder( changeSpy, postFixer1, postFixer2, eventSpy );
+		} );
+	} );
+
+	describe( 'destroy()', () => {
+		it( 'should destroy all observers', () => {
+			const observerMock = view.addObserver( ObserverMock );
+
+			view.destroy();
+
+			sinon.assert.calledOnce( observerMock.destroy );
+		} );
+
+		it( 'should cancel throttled layoutChanged event', () => {
+			const view = new View();
+			const spy = sinon.spy();
+
+			view.document.on( 'layoutChanged', spy );
+
+			view.render();
+
+			sinon.assert.calledOnce( spy );
+
+			view.render();
+
+			view.destroy();
+
+			view._throttledLayoutChange.flush();
+
+			// Still once because second call was canceled.
+			sinon.assert.calledOnce( spy );
 		} );
 	} );
 

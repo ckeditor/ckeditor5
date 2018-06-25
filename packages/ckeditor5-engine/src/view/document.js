@@ -140,6 +140,12 @@ export default class Document {
 			}
 		} while ( wasFixed );
 	}
+
+	/**
+	 * @TODO.
+	 *
+	 * @event module:engine/view/document~Document#event:layoutChanged
+	 */
 }
 
 mix( Document, ObservableMixin );

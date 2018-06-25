@@ -22,6 +22,7 @@ import CompositionObserver from './observer/compositionobserver';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import throttle from '@ckeditor/ckeditor5-utils/src/lib/lodash/throttle';
 import { scrollViewportToShowTarget } from '@ckeditor/ckeditor5-utils/src/dom/scroll';
 import { injectUiElementHandling } from './uielement';
 import { injectQuirksHandling } from './filler';
@@ -134,6 +135,14 @@ export default class View {
 		 */
 		this._writer = new Writer( this.document );
 
+		/**
+		 * Fires throttled {@link module:engine/view/document~Document#event:layoutChanged} event.
+		 *
+		 * @protected
+		 * @type {Function}
+		 */
+		this._throttledLayoutChange = throttle( () => this.document.fire( 'layoutChanged' ), 200 );
+
 		// Add default observers.
 		this.addObserver( MutationObserver );
 		this.addObserver( SelectionObserver );
@@ -149,6 +158,9 @@ export default class View {
 		// Use 'normal' priority so that rendering is performed as first when using that priority.
 		this.on( 'render', () => {
 			this._render();
+
+			// Informs that layout has changed after render.
+			this._throttledLayoutChange();
 		} );
 	}
 
@@ -378,6 +390,7 @@ export default class View {
 		}
 
 		this.stopListening();
+		this._throttledLayoutChange.cancel();
 	}
 
 	/**
