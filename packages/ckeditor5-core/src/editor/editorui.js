@@ -95,7 +95,7 @@ export default class EditorUI {
 	 * It is fired after each {@link module:engine/view/document~Document#event:layoutChanged} event
 	 * besides it can be fired manually through {@link module:core/editor/editorui~EditorUI#update} method.
 	 *
-	 * @event core/editor/editorui~EditorUI#event:update
+	 * @event update
 	 */
 }
 
