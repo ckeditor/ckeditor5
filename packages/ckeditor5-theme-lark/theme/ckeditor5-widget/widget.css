@@ -8,13 +8,14 @@
 
 :root {
 	--ck-widget-outline-thickness: 3px;
-	--ck-color-widget-border-blurred: hsl(0, 0%, 87%);
-	--ck-color-widget-border-hover: hsl(43, 100%, 62%);
-	--ck-color-widget-editable-focused-background: var(--ck-color-base-background);
-	--ck-color-widget-drag-handler-icon-color: hsl(0, 0%, 100%);
-	--ck-color-widget-drag-icon-size: 16px;
-	--ck-color-widget-drag-animation-duration: 200ms;
-	--ck-color-widget-drag-animation-curve: ease;
+	--ck-widget-handler-icon-size: 16px;
+	--ck-widget-handler-animation-duration: 200ms;
+	--ck-widget-handler-animation-curve: ease;
+
+	--ck-color-widget-blurred-border: hsl(0, 0%, 87%);
+	--ck-color-widget-hover-border: hsl(43, 100%, 62%);
+	--ck-color-widget-editable-focus-background: var(--ck-color-base-background);
+	--ck-color-widget-drag-handler-icon-color: var(--ck-color-base-background);
 }
 
 .ck .ck-widget {
@@ -24,20 +25,15 @@
 	outline-width: var(--ck-widget-outline-thickness);
 	outline-style: solid;
 	outline-color: transparent;
-	transition: outline-color var(--ck-color-widget-drag-animation-duration) var(--ck-color-widget-drag-animation-curve);
+	transition: outline-color var(--ck-widget-handler-animation-duration) var(--ck-widget-handler-animation-curve);
 
 	&.ck-widget_selected,
 	&.ck-widget_selected:hover {
 		outline: var(--ck-widget-outline-thickness) solid var(--ck-color-focus-border);
 	}
 
-	@nest .ck-editor__editable.ck-blurred &.ck-widget_selected {
-		outline-width: var(--ck-widget-outline-thickness);
-		outline-color: var(--ck-color-widget-border-blurred);
-	}
-
 	&:hover {
-		outline-color: var(--ck-color-widget-border-hover);
+		outline-color: var(--ck-color-widget-hover-border);
 	}
 }
 
@@ -51,7 +47,7 @@
 		@mixin ck-focus-ring;
 		@mixin ck-box-shadow var(--ck-inner-shadow);
 
-		background-color: var(--ck-color-widget-editable-focused-background);
+		background-color: var(--ck-color-widget-editable-focus-background);
 	}
 }
 
@@ -69,9 +65,9 @@
 		   * visibility for hiding the handler,
 		   * opacity for the proper look of the icon when the handler disappears. */
 		transition:
-			background-color var(--ck-color-widget-drag-animation-duration) var(--ck-color-widget-drag-animation-curve),
-			visibility var(--ck-color-widget-drag-animation-duration) var(--ck-color-widget-drag-animation-curve),
-			opacity var(--ck-color-widget-drag-animation-duration) var(--ck-color-widget-drag-animation-curve);
+			background-color var(--ck-widget-handler-animation-duration) var(--ck-widget-handler-animation-curve),
+			visibility var(--ck-widget-handler-animation-duration) var(--ck-widget-handler-animation-curve),
+			opacity var(--ck-widget-handler-animation-duration) var(--ck-widget-handler-animation-curve);
 
 		/* Make only top corners round. */
 		border-radius: var(--ck-border-radius) var(--ck-border-radius) 0 0;
@@ -87,8 +83,8 @@
 
 		& .ck-icon {
 			/* Make sure the dimensions of the icon are independent of the fon-size of the content. */
-			width: var(--ck-color-widget-drag-icon-size);
-			height: var(--ck-color-widget-drag-icon-size);
+			width: var(--ck-widget-handler-icon-size);
+			height: var(--ck-widget-handler-icon-size);
 			color: var(--ck-color-widget-drag-handler-icon-color);
 
 			/* The "selected" part of the icon is invisible by default */
@@ -96,7 +92,7 @@
 				opacity: 0;
 
 				/* Note: The animation is longer on purpose. Simply feels better. */
-				transition: opacity 300ms var(--ck-color-widget-drag-animation-curve);
+				transition: opacity 300ms var(--ck-widget-handler-animation-curve);
 			}
 		}
 	}
@@ -118,6 +114,19 @@
 	/* Show the selection handler on mouse hover over the widget. */
 	&:hover .ck-widget__selection-handler {
 		opacity: 1;
-		background-color: var(--ck-color-widget-border-hover);
+		background-color: var(--ck-color-widget-hover-border);
+	}
+}
+
+/* Style the widget when it's selected but the editable it belongs to lost focus. */
+.ck-editor__editable.ck-blurred .ck-widget {
+	&.ck-widget_selected,
+	&.ck-widget_selected:hover {
+		outline-color: var(--ck-color-widget-blurred-border);
+
+		& .ck-widget__selection-handler,
+		& .ck-widget__selection-handler:hover {
+			background: var(--ck-color-widget-blurred-border);
+		}
 	}
 }
