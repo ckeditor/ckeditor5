@@ -275,7 +275,7 @@ describe( 'downcast converters', () => {
 
 				expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formatTable(
 					'<figure class="ck-widget ck-widget_selectable table" contenteditable="false">' +
-					'<div class="ck ck-selection-handler"></div>' +
+					'<div class="ck ck-widget__selection-handler"></div>' +
 						'<table>' +
 							'<tbody>' +
 								'<tr><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true"></td></tr>' +
@@ -527,7 +527,7 @@ describe( 'downcast converters', () => {
 
 				expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formatTable(
 					'<figure class="ck-widget ck-widget_selectable table" contenteditable="false">' +
-						'<div class="ck ck-selection-handler"></div>' +
+						'<div class="ck ck-widget__selection-handler"></div>' +
 						'<table>' +
 							'<tbody>' +
 								'<tr><td class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">00</td></tr>' +
@@ -689,7 +689,7 @@ describe( 'downcast converters', () => {
 
 				expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formatTable(
 					'<figure class="ck-widget ck-widget_selectable table" contenteditable="false">' +
-					'<div class="ck ck-selection-handler"></div>' +
+					'<div class="ck ck-widget__selection-handler"></div>' +
 						'<table>' +
 							'<tbody>' +
 								'<tr>' +
@@ -889,7 +889,7 @@ describe( 'downcast converters', () => {
 
 				expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formatTable(
 					'<figure class="ck-widget ck-widget_selectable table" contenteditable="false">' +
-					'<div class="ck ck-selection-handler"></div>' +
+					'<div class="ck ck-widget__selection-handler"></div>' +
 						'<table>' +
 							'<thead>' +
 								'<tr><th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">00</th></tr>' +
@@ -1097,7 +1097,7 @@ describe( 'downcast converters', () => {
 
 				expect( formatTable( getViewData( viewDocument, { withoutSelection: true } ) ) ).to.equal( formatTable(
 					'<figure class="ck-widget ck-widget_selectable table" contenteditable="false">' +
-					'<div class="ck ck-selection-handler"></div>' +
+					'<div class="ck ck-widget__selection-handler"></div>' +
 						'<table>' +
 							'<tbody>' +
 								'<tr><th class="ck-editor__editable ck-editor__nested-editable" contenteditable="true">00</th></tr>' +
