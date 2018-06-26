@@ -142,7 +142,7 @@ export default class Document {
 	}
 
 	/**
-	 * Event fired whenever document content layout change. It is fired whenever content is
+	 * Event fired whenever document content layout changes. It is fired whenever content is
 	 * {@link module:engine/view/view~View#event:render rendered}, but should be also fired by observers in case of
 	 * other actions which may change layout, for instance when image loads.
 	 *
