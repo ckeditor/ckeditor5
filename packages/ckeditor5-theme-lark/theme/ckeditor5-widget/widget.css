@@ -56,7 +56,7 @@
 }
 
 .ck .ck-widget.ck-widget_selectable {
-	& .ck-selection-handler {
+	& .ck-widget__selection-handler {
 		padding: 4px;
 		box-sizing: border-box;
 
@@ -104,7 +104,7 @@
 	/* Show the selection handler when the widget is selected. */
 	&.ck-widget_selected,
 	&.ck-widget_selected:hover {
-		& .ck-selection-handler {
+		& .ck-widget__selection-handler {
 			opacity: 1;
 			background-color: var(--ck-color-focus-border);
 
@@ -116,7 +116,7 @@
 	}
 
 	/* Show the selection handler on mouse hover over the widget. */
-	&:hover .ck-selection-handler {
+	&:hover .ck-widget__selection-handler {
 		opacity: 1;
 		background-color: var(--ck-color-widget-border-hover);
 	}
