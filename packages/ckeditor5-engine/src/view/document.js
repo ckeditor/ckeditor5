@@ -140,6 +140,14 @@ export default class Document {
 			}
 		} while ( wasFixed );
 	}
+
+	/**
+	 * Event fired whenever document content layout changes. It is fired whenever content is
+	 * {@link module:engine/view/view~View#event:render rendered}, but should be also fired by observers in case of
+	 * other actions which may change layout, for instance when image loads.
+	 *
+	 * @event module:engine/view/document~Document#event:layoutChanged
+	 */
 }
 
 mix( Document, ObservableMixin );

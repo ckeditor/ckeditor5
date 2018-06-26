@@ -149,6 +149,9 @@ export default class View {
 		// Use 'normal' priority so that rendering is performed as first when using that priority.
 		this.on( 'render', () => {
 			this._render();
+
+			// Informs that layout has changed after render.
+			this.document.fire( 'layoutChanged' );
 		} );
 	}
 
