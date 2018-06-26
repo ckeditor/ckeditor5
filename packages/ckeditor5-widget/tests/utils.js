@@ -102,7 +102,7 @@ describe( 'widget utils', () => {
 			const domSelectionHandler = selectionHandler.render( document );
 
 			expect( domSelectionHandler.classList.contains( 'ck' ) ).to.be.true;
-			expect( domSelectionHandler.classList.contains( 'ck-selection-handler' ) ).to.be.true;
+			expect( domSelectionHandler.classList.contains( 'ck-widget__selection-handler' ) ).to.be.true;
 
 			const icon = domSelectionHandler.firstChild;
 

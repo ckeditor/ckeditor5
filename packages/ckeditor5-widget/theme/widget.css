@@ -7,7 +7,7 @@
 	/* Make the widget wrapper a relative positioning container for the drag handler. */
 	position: relative;
 
-	& .ck-selection-handler {
+	& .ck-widget__selection-handler {
 		visibility: hidden;
 		position: absolute;
 
@@ -20,14 +20,14 @@
 
 	/* Show the selection handler on mouse hover over the widget. */
 	&:hover {
-		& .ck-selection-handler {
+		& .ck-widget__selection-handler {
 			visibility: visible;
 		}
 	}
 
 	/* Show the selection handler when the widget is selected. */
 	&.ck-widget_selected {
-		& .ck-selection-handler {
+		& .ck-widget__selection-handler {
 			visibility: visible;
 		}
 	}

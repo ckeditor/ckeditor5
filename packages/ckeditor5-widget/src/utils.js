@@ -185,7 +185,7 @@ function getFillerOffset() {
 // @param {module:engine/view/editableelement~EditableElement}
 // @param {module:engine/view/writer~Writer} writer
 function hasSelectionHandler( editable, writer ) {
-	const selectionHandler = writer.createUIElement( 'div', { class: 'ck ck-selection-handler' }, function( domDocument ) {
+	const selectionHandler = writer.createUIElement( 'div', { class: 'ck ck-widget__selection-handler' }, function( domDocument ) {
 		const domElement = this.toDomElement( domDocument );
 
 		// Use the IconView from the ui library.
