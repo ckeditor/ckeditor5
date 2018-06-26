@@ -10,7 +10,7 @@ import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
 import View from '@ckeditor/ckeditor5-ui/src/view';
 
-import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import testUtils from '../_utils/utils';
 
 testUtils.createSinonSandbox();
 
