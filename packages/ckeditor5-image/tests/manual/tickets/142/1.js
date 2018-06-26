@@ -10,13 +10,15 @@ import Enter from '@ckeditor/ckeditor5-enter/src/enter';
 import Typing from '@ckeditor/ckeditor5-typing/src/typing';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Link from '@ckeditor/ckeditor5-link/src/link';
+import BlockToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/block/blocktoolbar';
 import Image from '../../../../src/image';
 import ImageCaption from '../../../../src/imagecaption';
 
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
-		plugins: [ Enter, Typing, Paragraph, Link, Image, ImageCaption ],
+		plugins: [ Enter, Typing, Paragraph, Link, Image, ImageCaption, BlockToolbar ],
 		toolbar: [],
+		blockToolbar: [ 'Link' ]
 	} )
 	.then( editor => {
 		window.editor = editor;
