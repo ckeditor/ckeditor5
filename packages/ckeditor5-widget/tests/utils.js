@@ -91,8 +91,8 @@ describe( 'widget utils', () => {
 			expect( element.hasClass( 'foo' ) ).to.be.false;
 		} );
 
-		it( 'should add element a selection handler to widget if addSelectionHandler=true is passed', () => {
-			toWidget( element, writer, { addSelectionHandler: true } );
+		it( 'should add element a selection handler to widget if hasSelectionHandler=true is passed', () => {
+			toWidget( element, writer, { hasSelectionHandler: true } );
 
 			expect( element.hasClass( 'ck-widget_selectable' ) ).to.be.true;
 

@@ -53,7 +53,7 @@ export function isWidget( element ) {
  * @param {Object} [options={}]
  * @param {String|Function} [options.label] Element's label provided to {@link ~setLabel} function. It can be passed as
  * a plain string or a function returning a string.
- * @param {Boolean} [options.addSelectionHandler=false] If set to true the widget will have a selection handler added.
+ * @param {Boolean} [options.hasSelectionHandler=false] If `true`, the widget will have a selection handler added.
  * @returns {module:engine/view/element~Element} Returns same element.
  */
 export function toWidget( element, writer, options = {} ) {
@@ -66,8 +66,8 @@ export function toWidget( element, writer, options = {} ) {
 		setLabel( element, options.label, writer );
 	}
 
-	if ( options.addSelectionHandler ) {
-		addSelectionHandler( element, writer );
+	if ( options.hasSelectionHandler ) {
+		hasSelectionHandler( element, writer );
 	}
 
 	setHighlightHandling(
@@ -184,7 +184,7 @@ function getFillerOffset() {
 //
 // @param {module:engine/view/editableelement~EditableElement}
 // @param {module:engine/view/writer~Writer} writer
-function addSelectionHandler( editable, writer ) {
+function hasSelectionHandler( editable, writer ) {
 	const selectionHandler = writer.createUIElement( 'div', { class: 'ck ck-selection-handler' }, function( domDocument ) {
 		const domElement = this.toDomElement( domDocument );
 

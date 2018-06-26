@@ -1184,7 +1184,7 @@ describe( 'Widget', () => {
 							view: ( modelItem, viewWriter ) => {
 								const widget = viewWriter.createContainerElement( 'div' );
 
-								return toWidget( widget, viewWriter, { addSelectionHandler: true } );
+								return toWidget( widget, viewWriter, { hasSelectionHandler: true } );
 							}
 						} ) );
 				} );
