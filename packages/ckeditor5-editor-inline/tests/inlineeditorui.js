@@ -80,17 +80,17 @@ describe( 'InlineEditorUI', () => {
 			} );
 
 			// https://github.com/ckeditor/ckeditor5-editor-inline/issues/4
-			it( 'pin() is called on editor.editable.view#render', () => {
+			it( 'pin() is called on editor.ui#update', () => {
 				const spy = sinon.stub( view.panel, 'pin' );
 
 				view.panel.hide();
 
-				editor.editing.view.render();
+				editor.ui.fire( 'update' );
 				sinon.assert.notCalled( spy );
 
 				view.panel.show();
 
-				editor.editing.view.render();
+				editor.ui.fire( 'update' );
 				sinon.assert.calledOnce( spy );
 				sinon.assert.calledWithExactly( spy, {
 					target: view.editableElement,
