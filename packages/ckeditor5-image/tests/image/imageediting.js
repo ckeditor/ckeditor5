@@ -5,6 +5,7 @@
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import ImageEditing from '../../src/image/imageediting';
+import ImageLoadObserver from '../../src/image/imageloadobserver';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { isImageWidget } from '../../src/image/utils';
@@ -41,6 +42,10 @@ describe( 'ImageEditing', () => {
 		expect( model.schema.checkChild( [ '$root', 'image' ], 'image' ) ).to.be.false;
 		expect( model.schema.checkChild( [ '$root', 'image' ], '$text' ) ).to.be.false;
 		expect( model.schema.checkChild( [ '$root', '$block' ], 'image' ) ).to.be.false;
+	} );
+
+	it( 'should register ImageLoadObserver', () => {
+		expect( view.getObserver( ImageLoadObserver ) ).to.be.instanceOf( ImageLoadObserver );
 	} );
 
 	describe( 'conversion in data pipeline', () => {
