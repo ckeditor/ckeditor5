@@ -6,13 +6,14 @@
 /* globals document, Event */
 
 import ImageLoadObserver from '../../src/image/imageloadobserver';
+import Observer from '@ckeditor/ckeditor5-engine/src/view/observer/observer';
 import View from '@ckeditor/ckeditor5-engine/src/view/view';
 import Position from '@ckeditor/ckeditor5-engine/src/view/position';
 import Range from '@ckeditor/ckeditor5-engine/src/view/range';
 import createViewRoot from '@ckeditor/ckeditor5-engine/tests/view/_utils/createroot';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
-describe( 'ClickObserver', () => {
+describe( 'ImageLoadObserver', () => {
 	let view, viewDocument, observer, domRoot, viewRoot;
 
 	beforeEach( () => {
@@ -29,6 +30,10 @@ describe( 'ClickObserver', () => {
 		view.destroy();
 	} );
 
+	it( 'should extend Observer', () => {
+		expect( observer ).instanceof( Observer );
+	} );
+
 	it( 'should fire `loadImage` event for images in the document that are loaded with a delay', () => {
 		const spy = sinon.spy();
 
@@ -41,6 +46,34 @@ describe( 'ClickObserver', () => {
 		domRoot.querySelector( 'img' ).dispatchEvent( new Event( 'load' ) );
 
 		sinon.assert.calledOnce( spy );
+	} );
+
+	it( 'should fire `layoutChanged` along with `imageLoaded` event', () => {
+		const layoutChangedSpy = sinon.spy();
+		const imageLoadedSpy = sinon.spy();
+
+		view.document.on( 'layoutChanged', layoutChangedSpy );
+		view.document.on( 'imageLoaded', imageLoadedSpy );
+
+		observer._fireEvents( {} );
+
+		sinon.assert.calledOnce( layoutChangedSpy );
+		sinon.assert.calledOnce( imageLoadedSpy );
+	} );
+
+	it( 'should not fire events when observer is disabled', () => {
+		const layoutChangedSpy = sinon.spy();
+		const imageLoadedSpy = sinon.spy();
+
+		view.document.on( 'layoutChanged', layoutChangedSpy );
+		view.document.on( 'imageLoaded', imageLoadedSpy );
+
+		observer.isEnabled = false;
+
+		observer._fireEvents( {} );
+
+		sinon.assert.notCalled( layoutChangedSpy );
+		sinon.assert.notCalled( imageLoadedSpy );
 	} );
 
 	it( 'should not fire `loadImage` event for images removed from document', () => {
@@ -95,19 +128,6 @@ describe( 'ClickObserver', () => {
 			view._renderer.render();
 			sinon.assert.calledWith( mapSpy, viewDiv );
 		} ).to.not.throw();
-	} );
-
-	it( 'should call `layoutChanged` along with `imageLoaded` event', () => {
-		const layoutChangedSpy = sinon.spy();
-		const imageLoadedSpy = sinon.spy();
-
-		view.document.on( 'layoutChanged', layoutChangedSpy );
-		view.document.on( 'imageLoaded', imageLoadedSpy );
-
-		observer.onDomEvent( {} );
-
-		sinon.assert.calledOnce( layoutChangedSpy );
-		sinon.assert.calledOnce( imageLoadedSpy );
 	} );
 
 	it( 'should stop observing images on destroy', () => {

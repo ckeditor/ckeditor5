@@ -7,7 +7,7 @@
  * @module image/image/imageloadobserver
  */
 
-import DomEventObserver from '@ckeditor/ckeditor5-engine/src/view/observer/domeventobserver';
+import Observer from '@ckeditor/ckeditor5-engine/src/view/observer/observer';
 
 /**
  * Observes all new images added to the {@link module:engine/view/document~Document},
@@ -17,9 +17,9 @@ import DomEventObserver from '@ckeditor/ckeditor5-engine/src/view/observer/domev
  *
  * **Note:** This event is not fired for images that has been added to the document and rendered as `complete` (already loaded).
  *
- * @extends module:engine/view/observer/domeventobserver~DomEventObserver
+ * @extends module:engine/view/observer/observer~Observer
  */
-export default class ImageLoadObserver extends DomEventObserver {
+export default class ImageLoadObserver extends Observer {
 	constructor( view ) {
 		super( view );
 
@@ -67,7 +67,7 @@ export default class ImageLoadObserver extends DomEventObserver {
 
 		for ( const domElement of domNode.querySelectorAll( 'img' ) ) {
 			if ( !this._observedElements.has( domElement ) ) {
-				this.listenTo( domElement, 'load', ( evt, domEvt ) => this.onDomEvent( domEvt ) );
+				this.listenTo( domElement, 'load', ( evt, domEvt ) => this._fireEvents( domEvt ) );
 				this._observedElements.add( domElement );
 			}
 		}
@@ -82,11 +82,18 @@ export default class ImageLoadObserver extends DomEventObserver {
 	}
 
 	/**
-	 * @inheritDoc
+	 * Fires {@link module:engine/view/view/document~Document#event:layoutChanged} and
+	 * {@link module:engine/view/document~Document#event:imageLoaded}
+	 * if observer {@link #isEnabled is enabled}.
+	 *
+	 * @protected
+	 * @param {Event} domEvent The DOM event.
 	 */
-	onDomEvent( domEvent ) {
-		this.document.fire( 'layoutChanged' );
-		this.fire( 'imageLoaded', domEvent );
+	_fireEvents( domEvent ) {
+		if ( this.isEnabled ) {
+			this.document.fire( 'layoutChanged' );
+			this.document.fire( 'imageLoaded', domEvent );
+		}
 	}
 
 	/**
