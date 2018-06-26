@@ -202,5 +202,5 @@ function addSelectionHandler( editable, writer ) {
 
 	// Append the selection handler into the widget wrapper.
 	writer.insert( Position.createAt( editable ), selectionHandler );
-	writer.addClass( [ 'ck-widget__selectable' ], editable );
+	writer.addClass( [ 'ck-widget_selectable' ], editable );
 }

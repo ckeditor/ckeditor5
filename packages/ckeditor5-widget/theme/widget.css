@@ -3,8 +3,32 @@
  * For licensing, see LICENSE.md.
  */
 
-/*
- * Note: This file should contain the wireframe styles only. But since there are no such styles,
- * it acts as a message to the builder telling that it should look for the corresponding styles
- * **in the theme** when compiling the editor.
- */
+.ck .ck-widget.ck-widget_selectable {
+	/* Make the widget wrapper a relative positioning container for the drag handler. */
+	position: relative;
+
+	& .ck-selection-handler {
+		visibility: hidden;
+		position: absolute;
+
+		& .ck-icon {
+			/* Make sure the icon in not a subject to fon-size/line-height to avoid
+			unnecessary spacing around it. */
+			display: block;
+		}
+	}
+
+	/* Show the selection handler on mouse hover over the widget. */
+	&:hover {
+		& .ck-selection-handler {
+			visibility: visible;
+		}
+	}
+
+	/* Show the selection handler when the widget is selected. */
+	&.ck-widget_selected {
+		& .ck-selection-handler {
+			visibility: visible;
+		}
+	}
+}
