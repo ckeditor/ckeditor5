@@ -5,14 +5,12 @@
 
 /* globals document, Event */
 
-import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
 import View from '@ckeditor/ckeditor5-ui/src/view';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import ClassicEditorUI from '../src/classiceditorui';
+import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
 import ClassicEditorUIView from '../src/classiceditoruiview';
-
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
@@ -41,20 +39,8 @@ describe( 'ClassicEditorUI', () => {
 	} );
 
 	describe( 'constructor()', () => {
-		it( 'sets #editor', () => {
-			expect( ui.editor ).to.equal( editor );
-		} );
-
-		it( 'sets #view', () => {
-			expect( ui.view ).to.be.instanceOf( ClassicEditorUIView );
-		} );
-
-		it( 'creates #componentFactory factory', () => {
-			expect( ui.componentFactory ).to.be.instanceOf( ComponentFactory );
-		} );
-
-		it( 'creates #focusTracker', () => {
-			expect( ui.focusTracker ).to.be.instanceOf( FocusTracker );
+		it( 'extends EditorUI', () => {
+			expect( ui ).to.instanceof( EditorUI );
 		} );
 	} );
 
@@ -194,8 +180,8 @@ describe( 'ClassicEditorUI', () => {
 	} );
 
 	describe( 'destroy()', () => {
-		it( 'destroys the #view', () => {
-			const spy = sinon.spy( view, 'destroy' );
+		it( 'calls EditorUI#destroy', () => {
+			const spy = testUtils.sinon.spy( EditorUI.prototype, 'destroy' );
 
 			return editor.destroy()
 				.then( () => {
