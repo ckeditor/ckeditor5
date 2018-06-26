@@ -60,15 +60,18 @@
 		padding: 4px;
 		box-sizing: border-box;
 
-		/* Background color will be animated as the handler shows up or the widget gets selected. */
+		/* Background and opacity will be animated as the handler shows up or the widget gets selected. */
 		background-color: transparent;
+		opacity: 0;
 
 		/* Transition:
 		   * background-color for the .ck-widget_selected state change,
-		   * visibility for hiding the handler. */
+		   * visibility for hiding the handler,
+		   * opacity for the proper look of the icon when the handler disappears. */
 		transition:
 			background-color var(--ck-color-widget-drag-animation-duration) var(--ck-color-widget-drag-animation-curve),
-			visibility var(--ck-color-widget-drag-animation-duration) var(--ck-color-widget-drag-animation-curve);
+			visibility var(--ck-color-widget-drag-animation-duration) var(--ck-color-widget-drag-animation-curve),
+			opacity var(--ck-color-widget-drag-animation-duration) var(--ck-color-widget-drag-animation-curve);
 
 		/* Make only top corners round. */
 		border-radius: var(--ck-border-radius) var(--ck-border-radius) 0 0;
@@ -102,6 +105,7 @@
 	&.ck-widget_selected,
 	&.ck-widget_selected:hover {
 		& .ck-selection-handler {
+			opacity: 1;
 			background-color: var(--ck-color-focus-border);
 
 			/* When the widget is selected, notify the user using the proper look of the icon. */
@@ -113,6 +117,7 @@
 
 	/* Show the selection handler on mouse hover over the widget. */
 	&:hover .ck-selection-handler {
+		opacity: 1;
 		background-color: var(--ck-color-widget-border-hover);
 	}
 }
