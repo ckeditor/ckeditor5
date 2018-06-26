@@ -17,7 +17,7 @@ import View from '@ckeditor/ckeditor5-ui/src/view';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'ImageToolbar', () => {
-	let editor, model, doc, editingView, plugin, toolbar, balloon, editorElement;
+	let editor, model, doc, plugin, toolbar, balloon, editorElement;
 
 	beforeEach( () => {
 		editorElement = global.document.createElement( 'div' );
@@ -36,7 +36,6 @@ describe( 'ImageToolbar', () => {
 				doc = model.document;
 				plugin = editor.plugins.get( ImageToolbar );
 				toolbar = plugin._toolbar;
-				editingView = editor.editing.view;
 				balloon = editor.plugins.get( 'ContextualBalloon' );
 			} );
 	} );
@@ -79,6 +78,9 @@ describe( 'ImageToolbar', () => {
 
 			setData( model, '[<image src=""></image>]' );
 
+			// "Flush" throttled update event.
+			editor.ui.fire( 'update' );
+
 			sinon.assert.calledWithMatch( spy, {
 				view: toolbar,
 				balloonClassName: 'ck-toolbar-container'
@@ -112,17 +114,18 @@ describe( 'ImageToolbar', () => {
 		} );
 	} );
 
-	describe( 'integration with the editor selection (#change event)', () => {
+	describe( 'integration with the editor selection', () => {
 		beforeEach( () => {
 			editor.ui.focusTracker.isFocused = true;
 		} );
 
-		it( 'should show the toolbar on render when the image is selected', () => {
+		it( 'should show the toolbar on ui#update when the image is selected', () => {
 			setData( model, '<paragraph>[foo]</paragraph><image src=""></image>' );
 
 			expect( balloon.visibleView ).to.be.null;
 
-			editingView.change( () => {} );
+			editor.ui.fire( 'update' );
+
 			expect( balloon.visibleView ).to.be.null;
 
 			model.change( writer => {
@@ -132,16 +135,22 @@ describe( 'ImageToolbar', () => {
 				);
 			} );
 
+			// "Flush" throttled update event.
+			editor.ui.fire( 'update' );
 			expect( balloon.visibleView ).to.equal( toolbar );
 
 			// Make sure successive change does not throw, e.g. attempting
 			// to insert the toolbar twice.
-			editingView.change( () => {} );
+			editor.ui.fire( 'update' );
 			expect( balloon.visibleView ).to.equal( toolbar );
 		} );
 
 		it( 'should not engage when the toolbar is in the balloon yet invisible', () => {
 			setData( model, '[<image src=""></image>]' );
+
+			// "Flush" throttled update event.
+			editor.ui.fire( 'update' );
+
 			expect( balloon.visibleView ).to.equal( toolbar );
 
 			const lastView = new View();
@@ -156,12 +165,16 @@ describe( 'ImageToolbar', () => {
 
 			expect( balloon.visibleView ).to.equal( lastView );
 
-			editingView.change( () => {} );
+			editor.ui.fire( 'update' );
+
 			expect( balloon.visibleView ).to.equal( lastView );
 		} );
 
-		it( 'should hide the toolbar on render if the image is de–selected', () => {
+		it( 'should hide the toolbar on ui#update if the image is de–selected', () => {
 			setData( model, '<paragraph>foo</paragraph>[<image src=""></image>]' );
+
+			// "Flush" throttled update event.
+			editor.ui.fire( 'update' );
 
 			expect( balloon.visibleView ).to.equal( toolbar );
 
@@ -172,11 +185,13 @@ describe( 'ImageToolbar', () => {
 				);
 			} );
 
+			// "Flush" throttled update event.
+			editor.ui.fire( 'update' );
 			expect( balloon.visibleView ).to.be.null;
 
 			// Make sure successive change does not throw, e.g. attempting
 			// to remove the toolbar twice.
-			editingView.change( () => {} );
+			editor.ui.fire( 'update' );
 			expect( balloon.visibleView ).to.be.null;
 		} );
 	} );

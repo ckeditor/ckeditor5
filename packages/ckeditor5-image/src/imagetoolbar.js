@@ -93,11 +93,11 @@ export default class ImageToolbar extends Plugin {
 		this._toolbar.fillFromConfig( toolbarConfig, editor.ui.componentFactory );
 
 		// Show balloon panel each time image widget is selected.
-		this.listenTo( editor.editing.view, 'render', () => {
+		this.listenTo( editor.ui, 'update', () => {
 			this._checkIsVisible();
 		} );
 
-		// There is no render method after focus is back in editor, we need to check if balloon panel should be visible.
+		// UI#update is not fired after focus is back in editor, we need to check if balloon panel should be visible.
 		this.listenTo( editor.ui.focusTracker, 'change:isFocused', () => {
 			this._checkIsVisible();
 		}, { priority: 'low' } );
@@ -111,14 +111,10 @@ export default class ImageToolbar extends Plugin {
 	_checkIsVisible() {
 		const editor = this.editor;
 
-		if ( !editor.ui.focusTracker.isFocused ) {
+		if ( !editor.ui.focusTracker.isFocused || !isImageWidgetSelected( editor.editing.view.document.selection ) ) {
 			this._hideToolbar();
 		} else {
-			if ( isImageWidgetSelected( editor.editing.view.document.selection ) ) {
-				this._showToolbar();
-			} else {
-				this._hideToolbar();
-			}
+			this._showToolbar();
 		}
 	}
 
@@ -132,14 +128,12 @@ export default class ImageToolbar extends Plugin {
 
 		if ( this._isVisible ) {
 			repositionContextualBalloon( editor );
-		} else {
-			if ( !this._balloon.hasView( this._toolbar ) ) {
-				this._balloon.add( {
-					view: this._toolbar,
-					position: getBalloonPositionData( editor ),
-					balloonClassName
-				} );
-			}
+		} else if ( !this._balloon.hasView( this._toolbar ) ) {
+			this._balloon.add( {
+				view: this._toolbar,
+				position: getBalloonPositionData( editor ),
+				balloonClassName
+			} );
 		}
 	}
 

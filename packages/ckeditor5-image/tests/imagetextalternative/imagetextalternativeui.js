@@ -156,14 +156,14 @@ describe( 'ImageTextAlternative', () => {
 			expect( balloon.visibleView ).to.equal( lastView );
 		} );
 
-		describe( 'integration with the editor selection (#render event)', () => {
+		describe( 'integration with the editor selection (ui#update event)', () => {
 			it( 'should re-position the form', () => {
 				setData( model, '[<image src=""></image>]' );
 				button.fire( 'execute' );
 
 				const spy = sinon.spy( balloon, 'updatePosition' );
 
-				editor.editing.view.fire( 'render' );
+				editor.ui.fire( 'update' );
 				sinon.assert.calledOnce( spy );
 			} );
 
@@ -174,10 +174,12 @@ describe( 'ImageTextAlternative', () => {
 				const removeSpy = sinon.spy( balloon, 'remove' );
 				const focusSpy = sinon.spy( editor.editing.view, 'focus' );
 
-				// EnqueueChange automatically fires #render event.
 				model.enqueueChange( 'transparent', writer => {
 					writer.remove( doc.selection.getFirstRange() );
 				} );
+
+				// Because the update event is throttled we need to "flush" it.
+				editor.ui.fire( 'update' );
 
 				sinon.assert.calledWithExactly( removeSpy, form );
 				sinon.assert.calledOnce( focusSpy );
