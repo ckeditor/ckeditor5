@@ -275,17 +275,17 @@ describe( 'BalloonToolbar', () => {
 			expect( targetRect ).to.deep.equal( backwardSelectionRect );
 		} );
 
-		it( 'should update balloon position on view#change event while balloon is added to the #_balloon', () => {
+		it( 'should update balloon position on ui#update event while balloon is added to the #_balloon', () => {
 			setData( model, '<paragraph>b[a]r</paragraph>' );
 
 			const spy = sandbox.spy( balloon, 'updatePosition' );
 
-			editingView.fire( 'render' );
+			editor.ui.fire( 'update' );
 
 			balloonToolbar.show();
 			sinon.assert.notCalled( spy );
 
-			editingView.fire( 'render' );
+			editor.ui.fire( 'update' );
 			sinon.assert.calledOnce( spy );
 		} );
 
@@ -369,7 +369,7 @@ describe( 'BalloonToolbar', () => {
 			sinon.assert.calledWithExactly( removeBalloonSpy, balloonToolbar.toolbarView );
 		} );
 
-		it( 'should stop update balloon position on ViewDocument#change event', () => {
+		it( 'should stop update balloon position on ui#update event', () => {
 			setData( model, '<paragraph>b[a]r</paragraph>' );
 
 			const spy = sandbox.spy( balloon, 'updatePosition' );
@@ -377,7 +377,7 @@ describe( 'BalloonToolbar', () => {
 			balloonToolbar.show();
 			balloonToolbar.hide();
 
-			editingView.fire( 'render' );
+			editor.ui.fire( 'update' );
 			sinon.assert.notCalled( spy );
 		} );
 

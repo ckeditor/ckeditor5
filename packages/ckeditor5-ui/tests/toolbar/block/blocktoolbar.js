@@ -211,11 +211,17 @@ describe( 'BlockToolbar', () => {
 
 			setData( editor.model, '<foo>foo[]bar</foo>' );
 
+			// "Flush" throttled event.
+			editor.ui.fire( 'update' );
+
 			expect( blockToolbar.buttonView.isVisible ).to.be.true;
 		} );
 
 		it( 'should display the button when the first selected block is an object', () => {
 			setData( editor.model, '[<image src="foo.jpg"><caption>foo</caption></image>]' );
+
+			// "Flush" throttled event.
+			editor.ui.fire( 'update' );
 
 			expect( blockToolbar.buttonView.isVisible ).to.be.true;
 		} );
@@ -223,13 +229,19 @@ describe( 'BlockToolbar', () => {
 		it( 'should display the button when the selection is inside the object', () => {
 			setData( editor.model, '<image src="foo.jpg"><caption>f[]oo</caption></image>' );
 
+			// "Flush" throttled event.
+			editor.ui.fire( 'update' );
+
 			expect( blockToolbar.buttonView.isVisible ).to.be.true;
 		} );
 
-		it( 'should not display the button when the selection is placed in a root element', () => {
+		it( 'should not display the button when the selection is placed in the root element', () => {
 			editor.model.schema.extend( '$text', { allowIn: '$root' } );
 
 			setData( editor.model, '<paragraph>foo</paragraph>[]<paragraph>bar</paragraph>' );
+
+			// "Flush" throttled event.
+			editor.ui.fire( 'update' );
 
 			expect( blockToolbar.buttonView.isVisible ).to.be.false;
 		} );
@@ -246,6 +258,9 @@ describe( 'BlockToolbar', () => {
 				const blockToolbar = editor.plugins.get( BlockToolbar );
 
 				setData( editor.model, '[<image src="foo.jpg"></image>]' );
+
+				// "Flush" throttled event.
+				editor.ui.fire( 'update' );
 
 				expect( blockToolbar.buttonView.isVisible ).to.be.false;
 
@@ -266,6 +281,9 @@ describe( 'BlockToolbar', () => {
 		it( 'should attach the right side of the button to the left side of the editable and center with the first line ' +
 			'of the selected block #1', () => {
 			setData( editor.model, '<paragraph>foo[]bar</paragraph>' );
+
+			// "Flush" throttled event.
+			editor.ui.fire( 'update' );
 
 			const target = editor.ui.view.editableElement.querySelector( 'p' );
 			const styleMock = testUtils.sinon.stub( window, 'getComputedStyle' );
@@ -291,7 +309,7 @@ describe( 'BlockToolbar', () => {
 				height: 100
 			} );
 
-			editor.editing.view.fire( 'render' );
+			editor.ui.fire( 'update' );
 
 			expect( blockToolbar.buttonView.top ).to.equal( 470 );
 			expect( blockToolbar.buttonView.left ).to.equal( 100 );
@@ -300,6 +318,9 @@ describe( 'BlockToolbar', () => {
 		it( 'should attach the right side of the button to the left side of the editable and center with the first line ' +
 			'of the selected block #2', () => {
 			setData( editor.model, '<paragraph>foo[]bar</paragraph>' );
+
+			// "Flush" throttled event.
+			editor.ui.fire( 'update' );
 
 			const target = editor.ui.view.editableElement.querySelector( 'p' );
 			const styleMock = testUtils.sinon.stub( window, 'getComputedStyle' );
@@ -326,24 +347,24 @@ describe( 'BlockToolbar', () => {
 				height: 100
 			} );
 
-			editor.editing.view.fire( 'render' );
+			editor.ui.fire( 'update' );
 
 			expect( blockToolbar.buttonView.top ).to.equal( 472 );
 			expect( blockToolbar.buttonView.left ).to.equal( 100 );
 		} );
 
-		it( 'should reposition the #panelView when open on view#render', () => {
+		it( 'should reposition the #panelView when open on ui#update', () => {
 			blockToolbar.panelView.isVisible = false;
 
 			const spy = testUtils.sinon.spy( blockToolbar.panelView, 'pin' );
 
-			editor.editing.view.fire( 'render' );
+			editor.ui.fire( 'update' );
 
 			sinon.assert.notCalled( spy );
 
 			blockToolbar.panelView.isVisible = true;
 
-			editor.editing.view.fire( 'render' );
+			editor.ui.fire( 'update' );
 
 			sinon.assert.calledWith( spy, {
 				target: blockToolbar.buttonView.element,
@@ -351,12 +372,12 @@ describe( 'BlockToolbar', () => {
 			} );
 		} );
 
-		it( 'should not reset the toolbar focus on view#render', () => {
+		it( 'should not reset the toolbar focus on ui#update', () => {
 			blockToolbar.panelView.isVisible = true;
 
 			const spy = testUtils.sinon.spy( blockToolbar.toolbarView, 'focus' );
 
-			editor.editing.view.fire( 'render' );
+			editor.ui.fire( 'update' );
 
 			sinon.assert.notCalled( spy );
 		} );
@@ -380,6 +401,9 @@ describe( 'BlockToolbar', () => {
 		it( 'should hide the UI when editor switches to readonly when the panel is not visible', () => {
 			setData( editor.model, '<paragraph>foo[]bar</paragraph>' );
 
+			// "Flush" throttled event.
+			editor.ui.fire( 'update' );
+
 			blockToolbar.buttonView.isVisible = true;
 			blockToolbar.panelView.isVisible = false;
 
@@ -391,6 +415,9 @@ describe( 'BlockToolbar', () => {
 
 		it( 'should not hide button when the editor switches to readonly when the panel is visible', () => {
 			setData( editor.model, '<paragraph>foo[]bar</paragraph>' );
+
+			// "Flush" throttled event.
+			editor.ui.fire( 'update' );
 
 			blockToolbar.buttonView.isVisible = true;
 			blockToolbar.panelView.isVisible = true;
@@ -409,11 +436,17 @@ describe( 'BlockToolbar', () => {
 			// Place the selection outside of any block because the toolbar will not be shown in this case.
 			setData( editor.model, '[]<paragraph>bar</paragraph>' );
 
+			// "Flush" throttled event.
+			editor.ui.fire( 'update' );
+
 			window.dispatchEvent( new Event( 'resize' ) );
 
 			sinon.assert.notCalled( spy );
 
 			setData( editor.model, '<paragraph>ba[]r</paragraph>' );
+
+			// "Flush" throttled event.
+			editor.ui.fire( 'update' );
 
 			spy.resetHistory();
 
@@ -422,6 +455,9 @@ describe( 'BlockToolbar', () => {
 			sinon.assert.called( spy );
 
 			setData( editor.model, '[]<paragraph>bar</paragraph>' );
+
+			// "Flush" throttled event.
+			editor.ui.fire( 'update' );
 
 			spy.resetHistory();
 
