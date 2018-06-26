@@ -67,7 +67,7 @@ export function toWidget( element, writer, options = {} ) {
 	}
 
 	if ( options.hasSelectionHandler ) {
-		hasSelectionHandler( element, writer );
+		addSelectionHandler( element, writer );
 	}
 
 	setHighlightHandling(
@@ -184,7 +184,7 @@ function getFillerOffset() {
 //
 // @param {module:engine/view/editableelement~EditableElement}
 // @param {module:engine/view/writer~Writer} writer
-function hasSelectionHandler( editable, writer ) {
+function addSelectionHandler( editable, writer ) {
 	const selectionHandler = writer.createUIElement( 'div', { class: 'ck ck-widget__selection-handler' }, function( domDocument ) {
 		const domElement = this.toDomElement( domDocument );
 
