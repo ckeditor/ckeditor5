@@ -79,6 +79,9 @@ describe( 'TableToolbar', () => {
 
 			setData( model, '<table><tableRow><tableCell>[]</tableCell></tableRow></table>' );
 
+			// "Flush" throttled update event.
+			editor.ui.fire( 'update' );
+
 			sinon.assert.calledWithMatch( spy, {
 				view: toolbar,
 				balloonClassName: 'ck-toolbar-container'
@@ -112,23 +115,27 @@ describe( 'TableToolbar', () => {
 		} );
 	} );
 
-	describe( 'integration with the editor selection (#change event)', () => {
+	describe( 'integration with the editor selection (ui#update event)', () => {
 		beforeEach( () => {
 			editor.ui.focusTracker.isFocused = true;
 		} );
 
-		it( 'should not show the toolbar on render when the table is selected', () => {
+		it( 'should not show the toolbar on ui#update when the table is selected', () => {
 			setData( model, '<paragraph>foo</paragraph>[<table><tableRow><tableCell></tableCell></tableRow></table>]' );
+
+			// "Flush" throttled update event.
+			editor.ui.fire( 'update' );
 
 			expect( balloon.visibleView ).to.be.null;
 		} );
 
-		it( 'should show the toolbar on render when the table content is selected', () => {
+		it( 'should show the toolbar on ui#update when the table content is selected', () => {
 			setData( model, '<paragraph>[foo]</paragraph><table><tableRow><tableCell></tableCell></tableRow></table>' );
 
 			expect( balloon.visibleView ).to.be.null;
 
-			editingView.change( () => {} );
+			editor.ui.fire( 'update' );
+
 			expect( balloon.visibleView ).to.be.null;
 
 			model.change( writer => {
@@ -138,16 +145,22 @@ describe( 'TableToolbar', () => {
 				);
 			} );
 
+			// "Flush" throttled update event.
+			editor.ui.fire( 'update' );
 			expect( balloon.visibleView ).to.equal( toolbar );
 
 			// Make sure successive change does not throw, e.g. attempting
 			// to insert the toolbar twice.
-			editingView.change( () => {} );
+			editor.ui.fire( 'update' );
 			expect( balloon.visibleView ).to.equal( toolbar );
 		} );
 
 		it( 'should not engage when the toolbar is in the balloon yet invisible', () => {
 			setData( model, '<table><tableRow><tableCell>x[y]z</tableCell></tableRow></table>' );
+
+			// "Flush" throttled update event.
+			editor.ui.fire( 'update' );
+
 			expect( balloon.visibleView ).to.equal( toolbar );
 
 			// Put anything on top of the ContextualBalloon stack above the table toolbar.
@@ -163,12 +176,16 @@ describe( 'TableToolbar', () => {
 
 			expect( balloon.visibleView ).to.equal( lastView );
 
-			editingView.change( () => {} );
+			editor.ui.fire( 'update' );
+
 			expect( balloon.visibleView ).to.equal( lastView );
 		} );
 
 		it( 'should hide the toolbar on render if the table is de–selected', () => {
 			setData( model, '<paragraph>foo</paragraph><table><tableRow><tableCell>[]</tableCell></tableRow></table>' );
+
+			// "Flush" throttled update event.
+			editor.ui.fire( 'update' );
 
 			expect( balloon.visibleView ).to.equal( toolbar );
 
@@ -179,11 +196,14 @@ describe( 'TableToolbar', () => {
 				);
 			} );
 
+			// "Flush" throttled update event.
+			editor.ui.fire( 'update' );
+
 			expect( balloon.visibleView ).to.be.null;
 
 			// Make sure successive change does not throw, e.g. attempting
 			// to remove the toolbar twice.
-			editingView.change( () => {} );
+			editor.ui.fire( 'update' );
 			expect( balloon.visibleView ).to.be.null;
 		} );
 	} );
