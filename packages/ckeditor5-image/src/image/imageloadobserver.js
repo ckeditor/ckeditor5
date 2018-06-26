@@ -47,35 +47,47 @@ export default class ImageLoadObserver extends DomEventObserver {
 	observe( domRoot, name ) {
 		const viewRoot = this.document.getRoot( name );
 
+		// When there is a change in one of the view element
+		// we need to check if there are any new `<img/>` elements to observe.
 		viewRoot.on( 'change:children', ( evt, node ) => {
-			this.view.once( 'render', () => {
-				if ( !node.is( 'element' ) || node.is( 'attributeElement' ) ) {
-					return;
-				}
-
-				const domNode = this.view.domConverter.mapViewToDom( node );
-
-				// If there is no `domNode` it means that it was removed from the DOM in the meanwhile.
-				if ( !domNode ) {
-					return;
-				}
-
-				for ( const domElement of domNode.querySelectorAll( 'img' ) ) {
-					if ( !this._observedElements.has( domElement ) ) {
-						this._domObserver.listenTo( domElement, 'load', ( evt, domEvt ) => this.onDomEvent( domEvt ) );
-						this._observedElements.add( domElement );
-					}
-				}
-
-				// Clean up the list of observed elements from elements that has been removed from the root.
-				for ( const domElement of this._observedElements ) {
-					if ( !domRoot.contains( domElement ) ) {
-						this._domObserver.stopListening( domElement );
-						this._observedElements.delete( domElement );
-					}
-				}
-			} );
+			// Wait for the render to be sure that `<img/>` elements are rendered in the DOM root.
+			this.view.once( 'render', () => this._updateObservedElements( domRoot, node ) );
 		} );
+	}
+
+	/**
+	 * Updates the list of observed `<img/>` elements.
+	 *
+	 * @private
+	 * @param {HTMLElement} domRoot DOM root element.
+	 * @param {module:engine/view/element~Element} viewNode View element where children have changed.
+	 */
+	_updateObservedElements( domRoot, viewNode ) {
+		if ( !viewNode.is( 'element' ) || viewNode.is( 'attributeElement' ) ) {
+			return;
+		}
+
+		const domNode = this.view.domConverter.mapViewToDom( viewNode );
+
+		// If there is no `domNode` it means that it was removed from the DOM in the meanwhile.
+		if ( !domNode ) {
+			return;
+		}
+
+		for ( const domElement of domNode.querySelectorAll( 'img' ) ) {
+			if ( !this._observedElements.has( domElement ) ) {
+				this._domObserver.listenTo( domElement, 'load', ( evt, domEvt ) => this.onDomEvent( domEvt ) );
+				this._observedElements.add( domElement );
+			}
+		}
+
+		// Clean up the list of observed elements from elements that has been removed from the root.
+		for ( const domElement of this._observedElements ) {
+			if ( !domRoot.contains( domElement ) ) {
+				this._domObserver.stopListening( domElement );
+				this._observedElements.delete( domElement );
+			}
+		}
 	}
 
 	/**
