@@ -11,7 +11,7 @@ import ClassicTestEditor from '../../tests/_utils/classictesteditor';
 import Plugin from '../../src/plugin';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 
-import ClassicTestEditorUI from '../../tests/_utils/classictesteditorui';
+import EditorUI from '../../src/editor/editorui';
 import BoxedEditorUIView from '@ckeditor/ckeditor5-ui/src/editorui/boxed/boxededitoruiview';
 import InlineEditableUIView from '@ckeditor/ckeditor5-ui/src/editableui/inline/inlineeditableuiview';
 
@@ -39,7 +39,7 @@ describe( 'ClassicTestEditor', () => {
 			expect( editor ).to.be.instanceof( Editor );
 			expect( editor.config.get( 'foo' ) ).to.equal( 1 );
 			expect( editor.element ).to.equal( editorElement );
-			expect( editor.ui ).to.be.instanceOf( ClassicTestEditorUI );
+			expect( editor.ui ).to.be.instanceOf( EditorUI );
 			expect( editor.ui.view ).to.be.instanceOf( BoxedEditorUIView );
 			expect( editor.data.processor ).to.be.instanceof( HtmlDataProcessor );
 		} );
@@ -82,7 +82,7 @@ describe( 'ClassicTestEditor', () => {
 		it( 'creates and initializes the UI', () => {
 			return ClassicTestEditor.create( editorElement, { foo: 1 } )
 				.then( editor => {
-					expect( editor.ui ).to.be.instanceOf( ClassicTestEditorUI );
+					expect( editor.ui ).to.be.instanceOf( EditorUI );
 					expect( editor.ui.view ).to.be.instanceOf( BoxedEditorUIView );
 				} );
 		} );
