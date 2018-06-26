@@ -67,14 +67,14 @@ export default class EditorUI {
 		 * @protected
 		 * @type {Function}
 		 */
-		this._throttledUpdate = throttle( () => this.fire( 'update' ), 200 );
+		this._throttledUpdate = throttle( () => this.fire( 'update' ), 50 );
 
 		// Informs UI components that should be refreshed after layout change.
 		this.listenTo( editor.editing.view.document, 'layoutChanged', () => this.update() );
 	}
 
 	/**
-	 * Triggers the UI update.
+	 * Fires the UI update.
 	 */
 	update() {
 		this._throttledUpdate();
