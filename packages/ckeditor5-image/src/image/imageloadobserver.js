@@ -8,7 +8,6 @@
  */
 
 import DomEventObserver from '@ckeditor/ckeditor5-engine/src/view/observer/domeventobserver';
-import DOMEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 
 /**
  * Observes all new images added to the {@link module:engine/view/document~Document},
@@ -31,14 +30,6 @@ export default class ImageLoadObserver extends DomEventObserver {
 		 * @type {Set.<HTMLElement>}
 		 */
 		this._observedElements = new Set();
-
-		/**
-		 * DOM emitter used for listening images `load` event.
-		 *
-		 * @private
-		 * @type {module:utils/dom/emittermixin~DomEmitterMixin}
-		 */
-		this._domObserver = Object.create( DOMEmitterMixin );
 	}
 
 	/**
@@ -76,7 +67,7 @@ export default class ImageLoadObserver extends DomEventObserver {
 
 		for ( const domElement of domNode.querySelectorAll( 'img' ) ) {
 			if ( !this._observedElements.has( domElement ) ) {
-				this._domObserver.listenTo( domElement, 'load', ( evt, domEvt ) => this.onDomEvent( domEvt ) );
+				this.listenTo( domElement, 'load', ( evt, domEvt ) => this.onDomEvent( domEvt ) );
 				this._observedElements.add( domElement );
 			}
 		}
@@ -84,7 +75,7 @@ export default class ImageLoadObserver extends DomEventObserver {
 		// Clean up the list of observed elements from elements that has been removed from the root.
 		for ( const domElement of this._observedElements ) {
 			if ( !domRoot.contains( domElement ) ) {
-				this._domObserver.stopListening( domElement );
+				this.stopListening( domElement );
 				this._observedElements.delete( domElement );
 			}
 		}
@@ -102,7 +93,6 @@ export default class ImageLoadObserver extends DomEventObserver {
 	 * @inheritDoc
 	 */
 	destroy() {
-		this._domObserver.stopListening();
 		this._observedElements.clear();
 		super.destroy();
 	}
