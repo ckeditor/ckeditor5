@@ -31,19 +31,19 @@ describe( 'EditorUI', () => {
 	} );
 
 	describe( 'constructor()', () => {
-		it( 'sets #editor', () => {
+		it( 'should set #editor', () => {
 			expect( ui.editor ).to.equal( editor );
 		} );
 
-		it( 'sets #view', () => {
+		it( 'should set #view', () => {
 			expect( ui.view ).to.equal( view );
 		} );
 
-		it( 'creates #componentFactory factory', () => {
+		it( 'should create #componentFactory factory', () => {
 			expect( ui.componentFactory ).to.be.instanceOf( ComponentFactory );
 		} );
 
-		it( 'creates #focusTracker', () => {
+		it( 'should create #focusTracker', () => {
 			expect( ui.focusTracker ).to.be.instanceOf( FocusTracker );
 		} );
 
@@ -87,7 +87,7 @@ describe( 'EditorUI', () => {
 	} );
 
 	describe( 'destroy()', () => {
-		it( 'stops listening', () => {
+		it( 'should stop listening', () => {
 			const spy = sinon.spy( ui, 'stopListening' );
 
 			ui.destroy();
@@ -95,12 +95,29 @@ describe( 'EditorUI', () => {
 			sinon.assert.called( spy );
 		} );
 
-		it( 'destroys the #view', () => {
+		it( 'should destroy the #view', () => {
 			const spy = sinon.spy( view, 'destroy' );
 
 			ui.destroy();
 
 			sinon.assert.called( spy );
+		} );
+
+		it( 'should cancel throttled update event', () => {
+			const spy = sinon.spy();
+
+			ui.on( 'update', spy );
+
+			ui.update();
+
+			sinon.assert.calledOnce( spy );
+
+			ui.destroy();
+
+			ui.update();
+			ui._throttledUpdate.flush();
+
+			sinon.assert.calledOnce( spy );
 		} );
 	} );
 } );
