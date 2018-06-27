@@ -327,15 +327,19 @@ describe( 'ShiftEnterCommand', () => {
 		} );
 
 		it( 'should be disabled for non-collapsed selection which starts in element inside a block limit element', () => {
-			setData( model, '<blockLimit><p>F[oo.</p></blockLimit><p>B]ar.</p>' );
+			model.enqueueChange( 'transparent', () => {
+				setData( model, '<blockLimit><p>F[oo.</p></blockLimit><p>B]ar.</p>' );
 
-			expect( command.isEnabled ).to.equal( false );
+				expect( command.isEnabled ).to.equal( false );
+			} );
 		} );
 
 		it( 'should be disabled for non-collapsed selection which ends in element inside a block limit element', () => {
-			setData( model, '<p>Fo[o.</p><blockLimit><p>Bar].</p></blockLimit>' );
+			model.enqueueChange( 'transparent', () => {
+				setData( model, '<p>Fo[o.</p><blockLimit><p>Bar].</p></blockLimit>' );
 
-			expect( command.isEnabled ).to.equal( false );
+				expect( command.isEnabled ).to.equal( false );
+			} );
 		} );
 
 		it( 'should be disabled for multi-ranges selection (1)', () => {
