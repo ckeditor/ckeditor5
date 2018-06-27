@@ -8,6 +8,10 @@
  */
 
 import HighlightStack from './highlightstack';
+import Position from '@ckeditor/ckeditor5-engine/src/view/position';
+import IconView from '@ckeditor/ckeditor5-ui/src/icon/iconview';
+
+import dragHandlerIcon from '../theme/icons/drag-handler.svg';
 
 const widgetSymbol = Symbol( 'isWidget' );
 const labelSymbol = Symbol( 'label' );
@@ -49,6 +53,7 @@ export function isWidget( element ) {
  * @param {Object} [options={}]
  * @param {String|Function} [options.label] Element's label provided to {@link ~setLabel} function. It can be passed as
  * a plain string or a function returning a string.
+ * @param {Boolean} [options.hasSelectionHandler=false] If `true`, the widget will have a selection handler added.
  * @returns {module:engine/view/element~Element} Returns same element.
  */
 export function toWidget( element, writer, options = {} ) {
@@ -59,6 +64,10 @@ export function toWidget( element, writer, options = {} ) {
 
 	if ( options.label ) {
 		setLabel( element, options.label, writer );
+	}
+
+	if ( options.hasSelectionHandler ) {
+		addSelectionHandler( element, writer );
 	}
 
 	setHighlightHandling(
@@ -169,4 +178,29 @@ export function toWidgetEditable( editable, writer ) {
 // @returns {null}
 function getFillerOffset() {
 	return null;
+}
+
+// Adds a drag handler to the editable element.
+//
+// @param {module:engine/view/editableelement~EditableElement}
+// @param {module:engine/view/writer~Writer} writer
+function addSelectionHandler( editable, writer ) {
+	const selectionHandler = writer.createUIElement( 'div', { class: 'ck ck-widget__selection-handler' }, function( domDocument ) {
+		const domElement = this.toDomElement( domDocument );
+
+		// Use the IconView from the ui library.
+		const icon = new IconView();
+		icon.set( 'content', dragHandlerIcon );
+
+		// Render the icon view right away to append its #element to the selectionHandler DOM element.
+		icon.render();
+
+		domElement.appendChild( icon.element );
+
+		return domElement;
+	} );
+
+	// Append the selection handler into the widget wrapper.
+	writer.insert( Position.createAt( editable ), selectionHandler );
+	writer.addClass( [ 'ck-widget_selectable' ], editable );
 }
