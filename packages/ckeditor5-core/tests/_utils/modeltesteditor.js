@@ -29,28 +29,6 @@ export default class ModelTestEditor extends Editor {
 		// Create the ("main") root element of the model tree.
 		this.model.document.createRoot();
 	}
-
-	/**
-	 * Creates a virtual, element-less editor instance.
-	 *
-	 * @param {Object} config See {@link core.editor.Editor}'s param.
-	 * @returns {Promise} Promise resolved once editor is ready.
-	 * @returns {core.editor.VirtualTestEditor} return.editor The editor instance.
-	 */
-	static create( config ) {
-		return new Promise( resolve => {
-			const editor = new this( config );
-
-			resolve(
-				editor.initPlugins()
-					.then( () => {
-						editor.fire( 'dataReady' );
-						editor.fire( 'ready' );
-					} )
-					.then( () => editor )
-			);
-		} );
-	}
 }
 
 mix( ModelTestEditor, DataApiMixin );
