@@ -106,11 +106,10 @@ export default class Editor {
 
 		/**
 		 * Indicates editor initialization status.
-		 *
 		 * The following statuses are available:
-		 * * initializing -  during initialization chain
-		 * * ready - after initializing chain, the editor is ready to work
-		 * * destroyed - after destroy, editor and all plugins are destroyed
+		 * * initializing -  during the editor initialization
+		 * * ready - after the editor initialization (editor is ready to work)
+		 * * destroyed - after the {@link #destroy editor destroy} method was called
 		 *
 		 * @observable
 		 * @member {'initializing'|'ready'|'destroyed'} #state
