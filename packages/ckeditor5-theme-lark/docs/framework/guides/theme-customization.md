@@ -158,9 +158,9 @@ The file containing custom variables will be named `custom.css` and it will look
 
 	/* -- Overrides the default colors used by the ckeditor5-widget package. -------------------- */
 
-	--ck-color-widget-border-blurred: hsl(0, 0%, 87%);
-	--ck-color-widget-border-hover: hsl(43, 100%, 68%);
-	--ck-color-widget-editable-focused-background: var(--ck-custom-white);
+	--ck-color-widget-blurred-border: hsl(0, 0%, 87%);
+	--ck-color-widget-hover-border: hsl(43, 100%, 68%);
+	--ck-color-widget-editable-focus-background: var(--ck-custom-white);
 
 	/* -- Overrides the default colors used by the ckeditor5-link package. ---------------------- */
 
