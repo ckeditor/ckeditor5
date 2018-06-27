@@ -74,6 +74,14 @@ export function upcastElementToElement( config ) {
  * This conversion results in setting an attribute on a model node. For example, view `<strong>Foo</strong>` becomes
  * `Foo` {@link module:engine/model/text~Text model text node} with `bold` attribute set to `true`.
  *
+ * This helper is meant to set a model attribute on all the elements that are inside the converted element:
+ *
+ *		<strong>Foo</strong>   -->   <strong><p>Foo</p></strong>   -->   <paragraph><$text bold="true">Foo</$text></paragraph>
+ *
+ * Above is a sample of HTML code, that goes through autoparagraphing (first step) and then is converted (second step).
+ * Even though `<strong>` is over `<p>` element, `bold="true"` was added to the text. See
+ * {@link module:engine/model/upcast-converters~upcastAttributeToAttribute} for comparison.
+ *
  * Keep in mind that the attribute will be set only if it is allowed by {@link module:engine/model/schema~Schema schema} configuration.
  *
  *		upcastElementToAttribute( { view: 'strong', model: 'bold' } );
@@ -138,7 +146,7 @@ export function upcastElementToAttribute( config ) {
 
 	_normalizeModelAttributeConfig( config );
 
-	const converter = _prepareToAttributeConverter( config );
+	const converter = _prepareToAttributeConverter( config, false );
 
 	const elementName = _getViewElementNameFromConfig( config );
 	const eventName = elementName ? 'element:' + elementName : 'element';
@@ -153,6 +161,19 @@ export function upcastElementToAttribute( config ) {
  *
  * This conversion results in setting an attribute on a model node. For example, view `<img src="foo.jpg"></img>` becomes
  * `<image source="foo.jpg"></image>` in the model.
+ *
+ * This helper is meant to convert view attributes from view elements which got converted to the model, so the view attribute
+ * is set only on the corresponding model node:
+ *
+ *		<div class="dark"><div>foo</div></div>    -->    <div dark="true"><div>foo</div></div>
+ *
+ * Above, `class="dark"` attribute is added only to the `<div>` elements that has it. This is in contrary to
+ * {@link module:engine/conversion/upcast-converters~upcastElementToAttribute} which sets attributes for all the children in the model:
+ *
+ *		<strong>Foo</strong>   -->   <strong><p>Foo</p></strong>   -->   <paragraph><$text bold="true">Foo</$text></paragraph>
+ *
+ * Above is a sample of HTML code, that goes through autoparagraphing (first step) and then is converted (second step).
+ * Even though `<strong>` is over `<p>` element, `bold="true"` was added to the text.
  *
  * Keep in mind that the attribute will be set only if it is allowed by {@link module:engine/model/schema~Schema schema} configuration.
  *
@@ -223,7 +244,7 @@ export function upcastAttributeToAttribute( config ) {
 
 	_normalizeModelAttributeConfig( config, viewKey );
 
-	const converter = _prepareToAttributeConverter( config );
+	const converter = _prepareToAttributeConverter( config, true );
 
 	return dispatcher => {
 		dispatcher.on( 'element', converter, { priority: config.converterPriority || 'low' } );
@@ -442,9 +463,9 @@ function _normalizeModelAttributeConfig( config, viewAttributeKeyToCopy = null )
 //
 // @param {String} modelAttributeKey The key of the model attribute to set on a model node.
 // @param {Object|Array.<Object>} config Conversion configuration. It is possible to provide multiple configurations in an array.
-// @param {Boolean} consumeName If set to `true` converter will try to consume name. If set to `false` converter will not try to
-// consume name. This flag overwrites parameter returned by `Matcher#match`.
-function _prepareToAttributeConverter( config ) {
+// @param {Boolean} shallow If set to `true` the attribute will be set only on top-level nodes. Otherwise, it will be set
+// on all elements in the range.
+function _prepareToAttributeConverter( config, shallow ) {
 	const matcher = new Matcher( config.view );
 
 	return ( evt, data, conversionApi ) => {
@@ -483,7 +504,7 @@ function _prepareToAttributeConverter( config ) {
 		}
 
 		// Set attribute on current `output`. `Schema` is checked inside this helper function.
-		const attributeWasSet = _setAttributeOn( data.modelRange, { key: modelKey, value: modelValue }, conversionApi );
+		const attributeWasSet = _setAttributeOn( data.modelRange, { key: modelKey, value: modelValue }, shallow, conversionApi );
 
 		if ( attributeWasSet ) {
 			conversionApi.consumable.consume( data.viewItem, match.match );
@@ -509,12 +530,14 @@ function _onlyViewNameIsDefined( config ) {
 // @param {module:engine/model/range~Range} modelRange Model range on which attribute should be set.
 // @param {Object} modelAttribute Model attribute to set.
 // @param {Object} conversionApi Conversion API.
+// @param {Boolean} shallow If set to `true` the attribute will be set only on top-level nodes. Otherwise, it will be set
+// on all elements in the range.
 // @returns {Boolean} `true` if attribute was set on at least one node from given `modelRange`.
-function _setAttributeOn( modelRange, modelAttribute, conversionApi ) {
+function _setAttributeOn( modelRange, modelAttribute, shallow, conversionApi ) {
 	let result = false;
 
 	// Set attribute on each item in range according to Schema.
-	for ( const node of Array.from( modelRange.getItems( { shallow: true } ) ) ) {
+	for ( const node of Array.from( modelRange.getItems( { shallow } ) ) ) {
 		if ( conversionApi.schema.checkAttribute( node, modelAttribute.key ) ) {
 			conversionApi.writer.setAttribute( modelAttribute.key, modelAttribute.value, node );
 
