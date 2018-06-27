@@ -146,7 +146,7 @@ export default class Document {
 	 * {@link module:engine/view/view~View#event:render rendered}, but should be also fired by observers in case of
 	 * other actions which may change layout, for instance when image loads.
 	 *
-	 * @event module:engine/view/document~Document#event:layoutChanged
+	 * @event layoutChanged
 	 */
 }
 
