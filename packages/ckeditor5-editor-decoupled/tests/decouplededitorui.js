@@ -150,17 +150,6 @@ describe( 'DecoupledEditorUI', () => {
 				} );
 		} );
 	} );
-
-	describe( 'destroy()', () => {
-		it( 'calls EditorUI#destroy', () => {
-			const spy = testUtils.sinon.spy( EditorUI.prototype, 'destroy' );
-
-			return editor.destroy()
-				.then( () => {
-					sinon.assert.calledOnce( spy );
-				} );
-		} );
-	} );
 } );
 
 function viewCreator( name ) {
