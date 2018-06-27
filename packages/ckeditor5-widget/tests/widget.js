@@ -675,8 +675,8 @@ describe( 'Widget', () => {
 				'should selected whole content when widget is selected',
 				'<paragraph>foo</paragraph>[<widget></widget>]<paragraph>bar</paragraph>',
 				{ keyCode: keyCodes.a, ctrlKey: true },
-				'[<paragraph>foo</paragraph><widget></widget><paragraph>bar</paragraph>]',
-				'[<p>foo</p><div class="ck-widget ck-widget_selected" contenteditable="false"><b></b></div><p>bar</p>]'
+				'<paragraph>[foo</paragraph><widget></widget><paragraph>bar]</paragraph>',
+				'<p>{foo</p><div class="ck-widget ck-widget_selected" contenteditable="false"><b></b></div><p>bar}</p>'
 
 			);
 		} );
