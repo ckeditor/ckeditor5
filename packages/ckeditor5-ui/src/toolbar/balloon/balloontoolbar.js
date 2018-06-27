@@ -40,8 +40,8 @@ export default class BalloonToolbar extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	init() {
-		const editor = this.editor;
+	constructor( editor ) {
+		super( editor );
 
 		/**
 		 * The toolbar view displayed in the balloon.
@@ -69,13 +69,44 @@ export default class BalloonToolbar extends Plugin {
 		 */
 		this._fireSelectionChangeDebounced = debounce( () => this.fire( '_selectionChangeDebounced' ), 200 );
 
-		// Attach lifecycle actions.
-		this._handleSelectionChange();
-		this._handleFocusChange();
-
 		// The appearance of the BalloonToolbar method is event–driven.
 		// It is possible to stop the #show event and this prevent the toolbar from showing up.
 		this.decorate( 'show' );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	init() {
+		const editor = this.editor;
+		const selection = editor.model.document.selection;
+
+		// Show/hide the toolbar when on editable focus/blur.
+		this.listenTo( editor.editing.view.document, 'change:isFocused', ( evt, name, isFocused ) => {
+			if ( !isFocused && this._balloon.visibleView === this.toolbarView ) {
+				this.hide();
+			} else if ( isFocused ) {
+				this.show();
+			}
+		} );
+
+		// Hide the toolbar when the selection is changed by a direct change or has changed to collapsed.
+		this.listenTo( selection, 'change:range', ( evt, data ) => {
+			if ( data.directChange || selection.isCollapsed ) {
+				this.hide();
+			}
+
+			// Fire internal `_selectionChangeDebounced` event to use it for showing
+			// the toolbar after the selection stops changing.
+			this._fireSelectionChangeDebounced();
+		} );
+
+		// Show the toolbar when the selection stops changing.
+		this.listenTo( this, '_selectionChangeDebounced', () => {
+			if ( this.editor.editing.view.document.isFocused ) {
+				this.show();
+			}
+		} );
 	}
 
 	/**
@@ -109,49 +140,6 @@ export default class BalloonToolbar extends Plugin {
 		toolbarView.render();
 
 		return toolbarView;
-	}
-
-	/**
-	 * Handles the editor focus change and hides the toolbar if it's needed.
-	 *
-	 * @private
-	 */
-	_handleFocusChange() {
-		const editor = this.editor;
-
-		this.listenTo( editor.editing.view.document, 'change:isFocused', ( evt, name, isFocused ) => {
-			if ( !isFocused && this._balloon.visibleView === this.toolbarView ) {
-				this.hide();
-			} else if ( isFocused ) {
-				this.show();
-			}
-		} );
-	}
-
-	/**
-	 * Handles {@link module:engine/model/document~Document#selection} change and show or hide toolbar.
-	 *
-	 * @private
-	 */
-	_handleSelectionChange() {
-		const selection = this.editor.model.document.selection;
-
-		// Hide the toolbar when the selection is changed by a direct change or has changed to collapsed.
-		this.listenTo( selection, 'change:range', ( evt, data ) => {
-			if ( data.directChange || selection.isCollapsed ) {
-				this.hide();
-			}
-
-			// Fire internal `_selectionChangeDebounced` when the selection stops changing.
-			this._fireSelectionChangeDebounced();
-		} );
-
-		// Hide the toolbar when the selection stops changing.
-		this.listenTo( this, '_selectionChangeDebounced', () => {
-			if ( this.editor.editing.view.document.isFocused ) {
-				this.show();
-			}
-		} );
 	}
 
 	/**

@@ -275,7 +275,7 @@ describe( 'BalloonToolbar', () => {
 			expect( targetRect ).to.deep.equal( backwardSelectionRect );
 		} );
 
-		it( 'should update balloon position on view#change event while balloon is added to the #_balloon', () => {
+		it( 'should update balloon position on view#render event when #toolbarView is already added to the #_balloon', () => {
 			setData( model, '<paragraph>b[a]r</paragraph>' );
 
 			const spy = sandbox.spy( balloon, 'updatePosition' );
@@ -326,32 +326,6 @@ describe( 'BalloonToolbar', () => {
 			balloonToolbar.show();
 			sinon.assert.calledOnce( balloonAddSpy );
 		} );
-
-		describe( 'on #_selectionChangeDebounced event', () => {
-			let showSpy;
-
-			beforeEach( () => {
-				showSpy = sandbox.spy( balloonToolbar, 'show' );
-			} );
-
-			it( 'should not be called when the editable is not focused', () => {
-				setData( model, '<paragraph>b[a]r</paragraph>' );
-				editingView.document.isFocused = false;
-				balloonToolbar.toolbarView.focusTracker.isFocused = false;
-
-				balloonToolbar.fire( '_selectionChangeDebounced' );
-				sinon.assert.notCalled( showSpy );
-			} );
-
-			it( 'should be called when the editable is focused', () => {
-				setData( model, '<paragraph>b[a]r</paragraph>' );
-				editingView.document.isFocused = true;
-				balloonToolbar.toolbarView.focusTracker.isFocused = false;
-
-				balloonToolbar.fire( '_selectionChangeDebounced' );
-				sinon.assert.calledOnce( showSpy );
-			} );
-		} );
 	} );
 
 	describe( 'hide()', () => {
@@ -383,7 +357,7 @@ describe( 'BalloonToolbar', () => {
 			sinon.assert.notCalled( spy );
 		} );
 
-		it( 'should not remove #ttolbarView when is not added to the #_balloon', () => {
+		it( 'should not remove #toolbarView when is not added to the #_balloon', () => {
 			balloonToolbar.hide();
 
 			sinon.assert.notCalled( removeBalloonSpy );
@@ -414,7 +388,7 @@ describe( 'BalloonToolbar', () => {
 		} );
 	} );
 
-	describe( 'showing and hiding', () => {
+	describe( 'show and hide triggers', () => {
 		let showPanelSpy, hidePanelSpy;
 
 		beforeEach( () => {
@@ -424,7 +398,7 @@ describe( 'BalloonToolbar', () => {
 			hidePanelSpy = sandbox.spy( balloonToolbar, 'hide' );
 		} );
 
-		it( 'should open when selection stops changing', () => {
+		it( 'should show when selection stops changing', () => {
 			sinon.assert.notCalled( showPanelSpy );
 			sinon.assert.notCalled( hidePanelSpy );
 
@@ -434,7 +408,18 @@ describe( 'BalloonToolbar', () => {
 			sinon.assert.notCalled( hidePanelSpy );
 		} );
 
-		it( 'should close when selection starts changing by a directChange', () => {
+		it( 'should not show when selection stops changing when editable is blurred', () => {
+			sinon.assert.notCalled( showPanelSpy );
+			sinon.assert.notCalled( hidePanelSpy );
+
+			editingView.document.isFocused = false;
+			balloonToolbar.fire( '_selectionChangeDebounced' );
+
+			sinon.assert.notCalled( showPanelSpy );
+			sinon.assert.notCalled( hidePanelSpy );
+		} );
+
+		it( 'should hide when selection starts changing by a direct change', () => {
 			balloonToolbar.fire( '_selectionChangeDebounced' );
 
 			sinon.assert.calledOnce( showPanelSpy );
@@ -446,7 +431,7 @@ describe( 'BalloonToolbar', () => {
 			sinon.assert.calledOnce( hidePanelSpy );
 		} );
 
-		it( 'should not close when selection starts changing by not a directChange', () => {
+		it( 'should not hide when selection starts changing by an indirect change', () => {
 			balloonToolbar.fire( '_selectionChangeDebounced' );
 
 			sinon.assert.calledOnce( showPanelSpy );
@@ -458,7 +443,7 @@ describe( 'BalloonToolbar', () => {
 			sinon.assert.notCalled( hidePanelSpy );
 		} );
 
-		it( 'should close when selection starts changing by not a directChange but will become collapsed', () => {
+		it( 'should hide when selection starts changing by an indirect change but has changed to collapsed', () => {
 			balloonToolbar.fire( '_selectionChangeDebounced' );
 
 			sinon.assert.calledOnce( showPanelSpy );
@@ -474,8 +459,8 @@ describe( 'BalloonToolbar', () => {
 			sinon.assert.calledOnce( hidePanelSpy );
 		} );
 
-		it( 'should hide when the editable loses focus', () => {
-			editor.editing.view.document.isFocused = true;
+		it( 'should hide on editable blur', () => {
+			editingView.document.isFocused = true;
 
 			balloonToolbar.fire( '_selectionChangeDebounced' );
 
@@ -484,7 +469,7 @@ describe( 'BalloonToolbar', () => {
 			sinon.assert.calledOnce( showPanelSpy );
 			sinon.assert.notCalled( hidePanelSpy );
 
-			editor.editing.view.document.isFocused = false;
+			editingView.document.isFocused = false;
 
 			sinon.assert.calledOnce( showPanelSpy );
 			sinon.assert.calledOnce( hidePanelSpy );
@@ -492,8 +477,8 @@ describe( 'BalloonToolbar', () => {
 			stub.restore();
 		} );
 
-		it( 'should not hide if the editor loses focus and #toolbarView is not visible', () => {
-			editor.ui.focusTracker.isFocused = true;
+		it( 'should not hide on editable blur when #toolbarView is not visible', () => {
+			editingView.document.isFocused = true;
 
 			balloonToolbar.fire( '_selectionChangeDebounced' );
 
@@ -502,12 +487,24 @@ describe( 'BalloonToolbar', () => {
 			sinon.assert.calledOnce( showPanelSpy );
 			sinon.assert.notCalled( hidePanelSpy );
 
-			editor.ui.focusTracker.isFocused = false;
+			editingView.document.isFocused = false;
 
 			sinon.assert.calledOnce( showPanelSpy );
 			sinon.assert.notCalled( hidePanelSpy );
 
 			stub.restore();
+		} );
+
+		it( 'should show when editable gets focus', () => {
+			editingView.document.isFocused = false;
+
+			sinon.assert.notCalled( showPanelSpy );
+			sinon.assert.notCalled( hidePanelSpy );
+
+			editingView.document.isFocused = true;
+
+			sinon.assert.calledOnce( showPanelSpy );
+			sinon.assert.notCalled( hidePanelSpy );
 		} );
 	} );
 
