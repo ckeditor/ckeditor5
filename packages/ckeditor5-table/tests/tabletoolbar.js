@@ -124,7 +124,7 @@ describe( 'TableToolbar', () => {
 		} );
 
 		it( 'should show the toolbar on render when the table content is selected', () => {
-			setData( model, '<paragraph>[foo]</paragraph><table><tableRow><tableCell></tableCell></tableRow></table>' );
+			setData( model, '<paragraph>[foo]</paragraph><table><tableRow><tableCell>bar</tableCell></tableRow></table>' );
 
 			expect( balloon.visibleView ).to.be.null;
 
@@ -132,9 +132,9 @@ describe( 'TableToolbar', () => {
 			expect( balloon.visibleView ).to.be.null;
 
 			model.change( writer => {
-				// Select the [<tableCell></tableCell>]
+				// Select the <tableCell>[foo]</tableCell>
 				writer.setSelection(
-					Range.createOn( doc.getRoot().getChild( 1 ).getChild( 0 ).getChild( 0 ) )
+					Range.createOn( doc.getRoot().getChild( 1 ).getChild( 0 ).getChild( 0 ).getChild( 0 ) )
 				);
 			} );
 
