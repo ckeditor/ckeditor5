@@ -14,7 +14,6 @@ import BlockButtonView from './blockbuttonview';
 import BalloonPanelView from '../../panel/balloon/balloonpanelview';
 import ToolbarView from '../toolbarview';
 
-import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobserver';
 import clickOutsideHandler from '../../bindings/clickoutsidehandler';
 
 import { getOptimalPosition } from '@ckeditor/ckeditor5-utils/src/dom/position';
@@ -67,10 +66,6 @@ export default class BlockToolbar extends Plugin {
 	 * @inheritDoc
 	 */
 	init() {
-		const editor = this.editor;
-
-		editor.editing.view.addObserver( ClickObserver );
-
 		/**
 		 * The toolbar view.
 		 *
@@ -98,15 +93,6 @@ export default class BlockToolbar extends Plugin {
 			contextElements: [ this.panelView.element, this.buttonView.element ],
 			activator: () => this.panelView.isVisible,
 			callback: () => this._hidePanel()
-		} );
-
-		// Try to hide button when the editor switches to the read-only mode.
-		// Do not hide when panel if already visible to avoid a confusing UX when the panel
-		// unexpectedly disappears.
-		this.listenTo( editor, 'change:isReadOnly', () => {
-			if ( !this.panelView.isVisible ) {
-				this.buttonView.isVisible = false;
-			}
 		} );
 
 		// Enable as default.
@@ -219,9 +205,7 @@ export default class BlockToolbar extends Plugin {
 	 */
 	_initListeners() {
 		const editor = this.editor;
-		const model = editor.model;
 		const view = editor.editing.view;
-		let modelTarget, domTarget;
 
 		// Hides panel on a direct selection change.
 		this.listenTo( editor.model.document.selection, 'change:range', ( evt, data ) => {
@@ -230,36 +214,16 @@ export default class BlockToolbar extends Plugin {
 			}
 		} );
 
-		this.listenTo( view, 'render', () => {
-			// Get first selected block, button will be attached to this element.
-			modelTarget = Array.from( model.document.selection.getSelectedBlocks() )[ 0 ];
+		this.listenTo( view, 'render', () => this._updateButton() );
+		// `low` priority is used because of https://github.com/ckeditor/ckeditor5-core/issues/133.
+		this.listenTo( editor, 'change:isReadOnly', () => this._updateButton(), { priority: 'low' } );
+		this.listenTo( editor.ui.focusTracker, 'change:isFocused', () => this._updateButton() );
 
-			// Do not attach block button when there is no enabled item in toolbar for current block element.
-			if ( !modelTarget || Array.from( this.toolbarView.items ).every( item => !item.isEnabled ) ) {
-				this.buttonView.isVisible = false;
-
-				return;
-			}
-
-			// Get DOM target element.
-			domTarget = view.domConverter.mapViewToDom( editor.editing.mapper.toViewElement( modelTarget ) );
-
-			// Show block button.
-			this.buttonView.isVisible = true;
-
-			// Attach block button to target DOM element.
-			this._attachButtonToElement( domTarget );
-
-			// When panel is opened then refresh it position to be properly aligned with block button.
-			if ( this.panelView.isVisible ) {
-				this._showPanel();
-			}
-		}, { priority: 'low' } );
-
+		// Reposition button on resize.
 		this.listenTo( this.buttonView, 'change:isVisible', ( evt, name, isVisible ) => {
 			if ( isVisible ) {
 				// Keep correct position of button and panel on window#resize.
-				this.buttonView.listenTo( window, 'resize', () => this._attachButtonToElement( domTarget ) );
+				this.buttonView.listenTo( window, 'resize', () => this._updateButton() );
 			} else {
 				// Stop repositioning button when is hidden.
 				this.buttonView.stopListening( window, 'resize' );
@@ -271,35 +235,64 @@ export default class BlockToolbar extends Plugin {
 	}
 
 	/**
-	 * Attaches the {@link #buttonView} to the target block of content.
+	 * Shows or hides the button.
+	 * When the all conditions for displaying button are matched then shows the button. Hides otherwise.
 	 *
-	 * @protected
-	 * @param {HTMLElement} targetElement Target element.
+	 * @private
 	 */
-	_attachButtonToElement( targetElement ) {
-		const contentStyles = window.getComputedStyle( targetElement );
+	_updateButton() {
+		const editor = this.editor;
+		const model = editor.model;
+		const view = editor.editing.view;
 
-		const editableRect = new Rect( this.editor.ui.view.editableElement );
-		const contentPaddingTop = parseInt( contentStyles.paddingTop, 10 );
-		// When line height is not an integer then thread it as "normal".
-		// MDN says that 'normal' == ~1.2 on desktop browsers.
-		const contentLineHeight = parseInt( contentStyles.lineHeight, 10 ) || parseInt( contentStyles.fontSize, 10 ) * 1.2;
+		// Hides the button when editor is not focused.
+		if ( !editor.ui.focusTracker.isFocused ) {
+			this._hideButton();
 
-		const position = getOptimalPosition( {
-			element: this.buttonView.element,
-			target: targetElement,
-			positions: [
-				( contentRect, buttonRect ) => {
-					return {
-						top: contentRect.top + contentPaddingTop + ( ( contentLineHeight - buttonRect.height ) / 2 ),
-						left: editableRect.left - buttonRect.width
-					};
-				}
-			]
-		} );
+			return;
+		}
 
-		this.buttonView.top = position.top;
-		this.buttonView.left = position.left;
+		// Hides button when the editor switches to the read-only mode.
+		// Do not hide when panel is already visible to avoid a confusing UX when the panel
+		// unexpectedly disappears.
+		if ( editor.isReadOnly && !this.panelView.isVisible ) {
+			this._hideButton();
+
+			return;
+		}
+
+		// Get the first selected block, button will be attached to this element.
+		const modelTarget = Array.from( model.document.selection.getSelectedBlocks() )[ 0 ];
+
+		// Hides the button when there is no enabled item in toolbar for the current block element.
+		if ( !modelTarget || Array.from( this.toolbarView.items ).every( item => !item.isEnabled ) ) {
+			this._hideButton();
+
+			return;
+		}
+
+		// Get DOM target element.
+		const domTarget = view.domConverter.mapViewToDom( editor.editing.mapper.toViewElement( modelTarget ) );
+
+		// Show block button.
+		this.buttonView.isVisible = true;
+
+		// Attach block button to target DOM element.
+		this._attachButtonToElement( domTarget );
+
+		// When panel is opened then refresh it position to be properly aligned with block button.
+		if ( this.panelView.isVisible ) {
+			this._showPanel();
+		}
+	}
+
+	/**
+	 * Hides the button.
+	 *
+	 * @private
+	 */
+	_hideButton() {
+		this.buttonView.isVisible = false;
 	}
 
 	/**
@@ -333,6 +326,38 @@ export default class BlockToolbar extends Plugin {
 		if ( focusEditable ) {
 			this.editor.editing.view.focus();
 		}
+	}
+
+	/**
+	 * Attaches the {@link #buttonView} to the target block of content.
+	 *
+	 * @protected
+	 * @param {HTMLElement} targetElement Target element.
+	 */
+	_attachButtonToElement( targetElement ) {
+		const contentStyles = window.getComputedStyle( targetElement );
+
+		const editableRect = new Rect( this.editor.ui.view.editableElement );
+		const contentPaddingTop = parseInt( contentStyles.paddingTop, 10 );
+		// When line height is not an integer then thread it as "normal".
+		// MDN says that 'normal' == ~1.2 on desktop browsers.
+		const contentLineHeight = parseInt( contentStyles.lineHeight, 10 ) || parseInt( contentStyles.fontSize, 10 ) * 1.2;
+
+		const position = getOptimalPosition( {
+			element: this.buttonView.element,
+			target: targetElement,
+			positions: [
+				( contentRect, buttonRect ) => {
+					return {
+						top: contentRect.top + contentPaddingTop + ( ( contentLineHeight - buttonRect.height ) / 2 ),
+						left: editableRect.left - buttonRect.width
+					};
+				}
+			]
+		} );
+
+		this.buttonView.top = position.top;
+		this.buttonView.left = position.left;
 	}
 }
 
