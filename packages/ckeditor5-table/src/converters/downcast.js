@@ -95,7 +95,7 @@ export function downcastInsertRow( options = {} ) {
 		const table = tableRow.parent;
 
 		const figureElement = conversionApi.mapper.toViewElement( table );
-		const tableElement = figureElement.getChild( 0 );
+		const tableElement = getViewTable( figureElement );
 
 		const row = table.getChildIndex( tableRow );
 
@@ -184,7 +184,7 @@ export function downcastTableHeadingRowsChange( options = {} ) {
 		}
 
 		const figureElement = conversionApi.mapper.toViewElement( table );
-		const viewTable = figureElement.getChild( 0 );
+		const viewTable = getViewTable( figureElement );
 
 		const oldRows = data.attributeOldValue;
 		const newRows = data.attributeNewValue;
@@ -495,5 +495,16 @@ function moveViewRowsToTableSection( rowsToMove, viewTableSection, conversionApi
 		const viewTableRow = conversionApi.mapper.toViewElement( tableRow );
 
 		conversionApi.writer.move( ViewRange.createOn( viewTableRow ), ViewPosition.createAt( viewTableSection, offset ) );
+	}
+}
+
+// Properly finds '<table>' element inside `<figure>` widget.
+//
+// @param {module:engine/view/element~Element} viewFigure
+function getViewTable( viewFigure ) {
+	for ( const child of viewFigure.getChildren() ) {
+		if ( child.name === 'table' ) {
+			return child;
+		}
 	}
 }
