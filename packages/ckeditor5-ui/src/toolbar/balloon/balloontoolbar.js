@@ -46,7 +46,7 @@ export default class BalloonToolbar extends Plugin {
 		/**
 		 * The toolbar view displayed in the balloon.
 		 *
-		 * @member {module:ui/toolbar/toolbarview~ToolbarView}
+		 * @type {module:ui/toolbar/toolbarview~ToolbarView}
 		 */
 		this.toolbarView = this._createToolbarView();
 
@@ -54,7 +54,7 @@ export default class BalloonToolbar extends Plugin {
 		 * The contextual balloon plugin instance.
 		 *
 		 * @private
-		 * @member {module:ui/panel/balloon/contextualballoon~ContextualBalloon}
+		 * @type {module:ui/panel/balloon/contextualballoon~ContextualBalloon}
 		 */
 		this._balloon = editor.plugins.get( ContextualBalloon );
 
@@ -65,7 +65,7 @@ export default class BalloonToolbar extends Plugin {
 		 * trailing debounced invocation on destroy.
 		 *
 		 * @private
-		 * @member {Function}
+		 * @type {Function}
 		 */
 		this._fireSelectionChangeDebounced = debounce( () => this.fire( '_selectionChangeDebounced' ), 200 );
 
