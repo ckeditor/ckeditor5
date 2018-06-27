@@ -48,17 +48,7 @@ export default class BalloonToolbar extends Plugin {
 		 *
 		 * @member {module:ui/toolbar/toolbarview~ToolbarView}
 		 */
-		this.toolbarView = new ToolbarView( editor.locale );
-
-		this.toolbarView.extendTemplate( {
-			attributes: {
-				class: [
-					'ck-toolbar_floating'
-				]
-			}
-		} );
-
-		this.toolbarView.render();
+		this.toolbarView = this._createToolbarView();
 
 		/**
 		 * The contextual balloon plugin instance.
@@ -99,6 +89,26 @@ export default class BalloonToolbar extends Plugin {
 		const factory = this.editor.ui.componentFactory;
 
 		this.toolbarView.fillFromConfig( config.items, factory );
+	}
+
+	/**
+	 * Creates the toolbar view instance.
+	 *
+	 * @private
+	 * @returns {module:ui/toolbar/toolbarview~ToolbarView}
+	 */
+	_createToolbarView() {
+		const toolbarView = new ToolbarView( this.editor.locale );
+
+		toolbarView.extendTemplate( {
+			attributes: {
+				class: [ 'ck-toolbar_floating' ]
+			}
+		} );
+
+		toolbarView.render();
+
+		return toolbarView;
 	}
 
 	/**
