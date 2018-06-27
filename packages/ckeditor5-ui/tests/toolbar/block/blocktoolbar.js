@@ -133,6 +133,16 @@ describe( 'BlockToolbar', () => {
 
 				expect( blockToolbar.panelView.isVisible ).to.be.false;
 			} );
+
+			it( 'should hide the panel on toolbar blur', () => {
+				blockToolbar.buttonView.fire( 'execute' );
+
+				expect( blockToolbar.panelView.isVisible ).to.be.true;
+
+				blockToolbar.toolbarView.focusTracker.isFocused = false;
+
+				expect( blockToolbar.panelView.isVisible ).to.be.false;
+			} );
 		} );
 
 		describe( 'buttonView', () => {

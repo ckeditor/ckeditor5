@@ -162,10 +162,15 @@ export default class BlockToolbar extends Plugin {
 
 		toolbarView.extendTemplate( {
 			attributes: {
-				class: [
-					// https://github.com/ckeditor/ckeditor5-editor-inline/issues/11
-					'ck-toolbar_floating'
-				]
+				// https://github.com/ckeditor/ckeditor5-editor-inline/issues/11
+				class: [ 'ck-toolbar_floating' ]
+			}
+		} );
+
+		// When toolbar lost focus then panel should hide.
+		toolbarView.focusTracker.on( 'change:isFocused', ( evt, name, is ) => {
+			if ( !is ) {
+				this._hidePanel();
 			}
 		} );
 
