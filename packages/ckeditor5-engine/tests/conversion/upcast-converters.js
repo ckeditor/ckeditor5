@@ -349,6 +349,27 @@ describe( 'upcast-helpers', () => {
 				'<$text attribB="true" bold="true">foo</$text>'
 			);
 		} );
+
+		// #1443.
+		it( 'should set attributes on the element\'s children', () => {
+			const helperBold = upcastElementToAttribute( {
+				model: 'bold',
+				view: { name: 'strong' }
+			} );
+
+			const helperP = upcastElementToElement( { view: 'p', model: 'paragraph' } );
+
+			conversion.for( 'upcast' ).add( helperP ).add( helperBold );
+
+			expectResult(
+				new ViewAttributeElement(
+					'strong',
+					null,
+					new ViewContainerElement( 'p', null, new ViewText( 'Foo' ) )
+				),
+				'<paragraph><$text bold="true">Foo</$text></paragraph>'
+			);
+		} );
 	} );
 
 	describe( 'upcastAttributeToAttribute', () => {
