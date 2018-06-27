@@ -242,17 +242,15 @@ export default class BlockToolbar extends Plugin {
 		const model = editor.model;
 		const view = editor.editing.view;
 
-		// Hides the button when editor is not focused.
+		// Hides the button when the editor is not focused.
 		if ( !editor.ui.focusTracker.isFocused ) {
 			this._hideButton();
 
 			return;
 		}
 
-		// Hides button when the editor switches to the read-only mode.
-		// Do not hide when panel is already visible to avoid a confusing UX when the panel
-		// unexpectedly disappears.
-		if ( editor.isReadOnly && !this.panelView.isVisible ) {
+		// Hides the button when the editor switches to the read-only mode.
+		if ( editor.isReadOnly ) {
 			this._hideButton();
 
 			return;

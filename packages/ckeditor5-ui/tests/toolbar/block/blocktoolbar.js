@@ -365,7 +365,7 @@ describe( 'BlockToolbar', () => {
 			expect( blockToolbar.panelView.isVisible ).to.be.false;
 		} );
 
-		it( 'should not hide the open panel on a indirect selection change', () => {
+		it( 'should not hide the open panel on an indirect selection change', () => {
 			blockToolbar.panelView.isVisible = true;
 
 			editor.model.document.selection.fire( 'change:range', { directChange: false } );
@@ -373,11 +373,11 @@ describe( 'BlockToolbar', () => {
 			expect( blockToolbar.panelView.isVisible ).to.be.true;
 		} );
 
-		it( 'should hide the UI when editor switched to readonly when the panel is not visible', () => {
+		it( 'should hide the UI when editor switched to readonly', () => {
 			setData( editor.model, '<paragraph>foo[]bar</paragraph>' );
 
 			blockToolbar.buttonView.isVisible = true;
-			blockToolbar.panelView.isVisible = false;
+			blockToolbar.panelView.isVisible = true;
 
 			editor.isReadOnly = true;
 
@@ -385,7 +385,7 @@ describe( 'BlockToolbar', () => {
 			expect( blockToolbar.panelView.isVisible ).to.be.false;
 		} );
 
-		it( 'should show the button when the editor switched from readonly', () => {
+		it( 'should show the button when the editor switched back from readonly', () => {
 			setData( editor.model, '<paragraph>foo[]bar</paragraph>' );
 
 			expect( blockToolbar.buttonView.isVisible ).to.true;
@@ -399,7 +399,7 @@ describe( 'BlockToolbar', () => {
 			expect( blockToolbar.buttonView.isVisible ).to.be.true;
 		} );
 
-		it( 'should show/hide the button on editor focus/blur', () => {
+		it( 'should show/hide the button on the editor focus/blur', () => {
 			setData( editor.model, '<paragraph>foo[]bar</paragraph>' );
 
 			editor.ui.focusTracker.isFocused = true;
@@ -415,7 +415,7 @@ describe( 'BlockToolbar', () => {
 			expect( blockToolbar.buttonView.isVisible ).to.true;
 		} );
 
-		it( 'should hide the UI when editor switched to readonly when the panel is not visible', () => {
+		it( 'should hide the UI when the editor switched to the readonly when the panel is not visible', () => {
 			setData( editor.model, '<paragraph>foo[]bar</paragraph>' );
 
 			blockToolbar.buttonView.isVisible = true;
