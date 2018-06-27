@@ -107,8 +107,8 @@ export default class Editor {
 		/**
 		 * Indicates editor initialization status.
 		 * The following statuses are available:
-		 * * initializing -  during the editor initialization
-		 * * ready - after the editor initialization (editor is ready to work)
+		 * * initializing - during the editor initialization
+		 * * ready - after the promise returned by the {@link #create editor create} method is resolved
 		 * * destroyed - after the {@link #destroy editor destroy} method was called
 		 *
 		 * @observable
