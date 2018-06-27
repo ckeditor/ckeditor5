@@ -65,7 +65,9 @@ export default class BlockToolbar extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	init() {
+	constructor( editor ) {
+		super( editor );
+
 		/**
 		 * The toolbar view.
 		 *
@@ -94,9 +96,40 @@ export default class BlockToolbar extends Plugin {
 			activator: () => this.panelView.isVisible,
 			callback: () => this._hidePanel()
 		} );
+	}
 
-		// Enable as default.
-		this._initListeners();
+	/**
+	 * @inheritDoc
+	 */
+	init() {
+		const editor = this.editor;
+		const view = editor.editing.view;
+
+		// Hides panel on a direct selection change.
+		this.listenTo( editor.model.document.selection, 'change:range', ( evt, data ) => {
+			if ( data.directChange ) {
+				this._hidePanel();
+			}
+		} );
+
+		this.listenTo( view, 'render', () => this._updateButton() );
+		// `low` priority is used because of https://github.com/ckeditor/ckeditor5-core/issues/133.
+		this.listenTo( editor, 'change:isReadOnly', () => this._updateButton(), { priority: 'low' } );
+		this.listenTo( editor.ui.focusTracker, 'change:isFocused', () => this._updateButton() );
+
+		// Reposition button on resize.
+		this.listenTo( this.buttonView, 'change:isVisible', ( evt, name, isVisible ) => {
+			if ( isVisible ) {
+				// Keep correct position of button and panel on window#resize.
+				this.buttonView.listenTo( window, 'resize', () => this._updateButton() );
+			} else {
+				// Stop repositioning button when is hidden.
+				this.buttonView.stopListening( window, 'resize' );
+
+				// Hide the panel when the button disappears.
+				this._hidePanel();
+			}
+		} );
 	}
 
 	/**
@@ -196,42 +229,6 @@ export default class BlockToolbar extends Plugin {
 		editor.ui.focusTracker.add( buttonView.element );
 
 		return buttonView;
-	}
-
-	/**
-	 * Starts displaying the button next to allowed elements.
-	 *
-	 * @private
-	 */
-	_initListeners() {
-		const editor = this.editor;
-		const view = editor.editing.view;
-
-		// Hides panel on a direct selection change.
-		this.listenTo( editor.model.document.selection, 'change:range', ( evt, data ) => {
-			if ( data.directChange ) {
-				this._hidePanel();
-			}
-		} );
-
-		this.listenTo( view, 'render', () => this._updateButton() );
-		// `low` priority is used because of https://github.com/ckeditor/ckeditor5-core/issues/133.
-		this.listenTo( editor, 'change:isReadOnly', () => this._updateButton(), { priority: 'low' } );
-		this.listenTo( editor.ui.focusTracker, 'change:isFocused', () => this._updateButton() );
-
-		// Reposition button on resize.
-		this.listenTo( this.buttonView, 'change:isVisible', ( evt, name, isVisible ) => {
-			if ( isVisible ) {
-				// Keep correct position of button and panel on window#resize.
-				this.buttonView.listenTo( window, 'resize', () => this._updateButton() );
-			} else {
-				// Stop repositioning button when is hidden.
-				this.buttonView.stopListening( window, 'resize' );
-
-				// Hide the panel when the button disappears.
-				this._hidePanel();
-			}
-		} );
 	}
 
 	/**
