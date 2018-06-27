@@ -15,7 +15,7 @@ import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import throttle from '@ckeditor/ckeditor5-utils/src/lib/lodash/throttle';
 
 /**
- * Class providing the minimal interface that is required to successfully bootstrap any editor UI.
+ * A class providing the minimal interface that is required to successfully bootstrap any editor UI.
  *
  * @mixes module:utils/emittermixin~EmitterMixin
  */
@@ -28,7 +28,7 @@ export default class EditorUI {
 	 */
 	constructor( editor, view ) {
 		/**
-		 * Editor that the UI belongs to.
+		 * The editor that the UI belongs to.
 		 *
 		 * @readonly
 		 * @member {module:core/editor/editor~Editor} #editor
@@ -44,7 +44,7 @@ export default class EditorUI {
 		this.view = view;
 
 		/**
-		 * Instance of the {@link module:ui/componentfactory~ComponentFactory}, a registry used by plugins
+		 * An instance of the {@link module:ui/componentfactory~ComponentFactory}, a registry used by plugins
 		 * to register factories of specific UI components.
 		 *
 		 * @readonly
@@ -53,8 +53,8 @@ export default class EditorUI {
 		this.componentFactory = new ComponentFactory( editor );
 
 		/**
-		 * Keeps information about editor UI focus and propagates it among various plugins and components,
-		 * unifying them in a uniform focus group.
+		 * Stores the information about the editor UI focus and propagates it so various plugins and components
+		 * are unified as a focus group.
 		 *
 		 * @readonly
 		 * @member {module:utils/focustracker~FocusTracker} #focusTracker
@@ -74,7 +74,7 @@ export default class EditorUI {
 	}
 
 	/**
-	 * Fires the UI update.
+	 * Fires the (throttled) {@link module:core/editor/editorui~EditorUI#event:update} event.
 	 */
 	update() {
 		this._throttledUpdate();
@@ -90,10 +90,13 @@ export default class EditorUI {
 	}
 
 	/**
-	 * Fired whenever UI and all related components should be refreshed.
+	 * Fired whenever the UI (all related components) should be refreshed.
 	 *
-	 * It is fired after each {@link module:engine/view/document~Document#event:layoutChanged} event
-	 * besides it can be fired manually through {@link module:core/editor/editorui~EditorUI#update} method.
+	 * **Note:**: The event is fired after each {@link module:engine/view/document~Document#event:layoutChanged}.
+	 * It can also be fired manually via the {@link module:core/editor/editorui~EditorUI#update} method.
+	 *
+	 * **Note:**: This event is not fired immediately but throttled to improve the performance of the UI
+	 * and the overall responsiveness of the editor.
 	 *
 	 * @event update
 	 */
