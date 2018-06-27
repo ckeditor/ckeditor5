@@ -3,6 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement';
 
 /**
@@ -20,6 +21,15 @@ const ElementApiMixin = {
 	 * @inheritDoc
 	 */
 	updateSourceElement() {
+		if ( !this.sourceElement ) {
+			/**
+			 * The `sourceElement` is required by the `ElementApi` interface.
+			 *
+			 * @error elementapimixin-missing-sourceelement
+			 */
+			throw new CKEditorError( 'elementapi-missing-sourceelement: The "sourceElement" is required by the "ElementApi" interface.' );
+		}
+
 		setDataInElement( this.sourceElement, this.data.get() );
 	}
 };

@@ -9,6 +9,7 @@ import ElementApiMixin from '../../../src/editor/utils/elementapimixin';
 import Editor from '../../../src/editor/editor';
 import HtmlDataProcessor from '@ckeditor/ckeditor5-engine/src/dataprocessor/htmldataprocessor';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 
 describe( 'ElementApiMixin', () => {
 	let editor;
@@ -27,7 +28,7 @@ describe( 'ElementApiMixin', () => {
 		editor.destroy();
 	} );
 
-	describe( 'updateEditorElement()', () => {
+	describe( 'updateSourceElement()', () => {
 		it( 'should be added to editor interface', () => {
 			expect( editor ).have.property( 'updateSourceElement' ).to.be.a( 'function' );
 		} );
@@ -42,6 +43,10 @@ describe( 'ElementApiMixin', () => {
 			editor.updateSourceElement();
 
 			expect( editorElement.innerHTML ).to.equal( 'foo bar' );
+		} );
+
+		it( 'throws an error if "sourceElement" has not set', () => {
+			expect( () => editor.updateSourceElement() ).to.throw( CKEditorError, /elementapi-missing-sourceelement/ );
 		} );
 	} );
 } );
