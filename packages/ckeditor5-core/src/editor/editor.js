@@ -119,6 +119,8 @@ export default class Editor {
 		 * @member {'initializing'|'ready'|'destroyed'} #state
 		 */
 		this.set( 'state', 'initializing' );
+		this.once( 'ready', () => ( this.state = 'ready' ), { priority: 'high' } );
+		this.once( 'destroy', () => ( this.state = 'destroyed' ), { priority: 'high' } );
 
 		/**
 		 * Defines whether this editor is in read-only mode.
@@ -241,7 +243,6 @@ export default class Editor {
 	 * @returns {Promise} A promise that resolves once the editor instance is fully destroyed.
 	 */
 	destroy() {
-		this.state = 'destroyed';
 		this.fire( 'destroy' );
 
 		this.stopListening();
@@ -287,7 +288,6 @@ export default class Editor {
 				editor.initPlugins()
 					.then( () => {
 						editor.fire( 'dataReady' );
-						editor.state = 'ready';
 						editor.fire( 'ready' );
 					} )
 					.then( () => editor )

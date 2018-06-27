@@ -214,6 +214,32 @@ describe( 'Editor', () => {
 
 			sinon.assert.calledOnce( spy );
 		} );
+
+		it( 'reacts on #ready event', done => {
+			const editor = new Editor();
+
+			expect( editor.state ).to.equal( 'initializing' );
+
+			editor.on( 'ready', () => {
+				expect( editor.state ).to.equal( 'ready' );
+				done();
+			} );
+
+			editor.fire( 'ready' );
+		} );
+
+		it( 'reacts on #destroy event', done => {
+			const editor = new Editor();
+
+			expect( editor.state ).to.equal( 'initializing' );
+
+			editor.on( 'destroy', () => {
+				expect( editor.state ).to.equal( 'destroyed' );
+				done();
+			} );
+
+			editor.fire( 'destroy' );
+		} );
 	} );
 
 	describe( 'isReadOnly', () => {
