@@ -105,12 +105,15 @@ export default class Editor {
 		this.t = this.locale.t;
 
 		/**
-		 * Indicates editor initialization status.
-		 * The following statuses are available:
-		 * * initializing - during the editor initialization
-		 * * ready - after the promise returned by the {@link module:core/editor/editor~Editor.create editor create()}
-		 * method is resolved
-		 * * destroyed - after the {@link #destroy editor destroy()} method was called
+		 * Indicates the editor life-cycle state.
+		 *
+		 * The editor is in one of the following states:
+		 *
+		 * * `initializing` - during the editor initialization (before {@link module:core/editor/editor~Editor.create `Editor.create()`)
+		 * finished its job,
+		 * * `ready` - after the promise returned by the {@link module:core/editor/editor~Editor.create `Editor.create()`}
+		 * method is resolved,
+		 * * `destroyed` - once the {@link #destroy `editor.destroy()`} method was called.
 		 *
 		 * @observable
 		 * @member {'initializing'|'ready'|'destroyed'} #state
@@ -318,12 +321,17 @@ mix( Editor, ObservableMixin );
  * In fact, since the first moment when the editor instance is available to you is inside `then()`'s callback,
  * you cannot even add a listener to the `editor#ready` event.
  *
+ * See also the {@link #state `editor.state`} property.
+ *
  * @event ready
  */
 
 /**
  * Fired when this editor instance is destroyed. The editor at this point is not usable and this event should be used to
  * perform the clean-up in any plugin.
+ *
+ *
+ * See also the {@link #state `editor.state`} property.
  *
  * @event destroy
  */
