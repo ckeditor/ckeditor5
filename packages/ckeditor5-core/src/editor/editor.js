@@ -105,6 +105,19 @@ export default class Editor {
 		this.t = this.locale.t;
 
 		/**
+		 * Indicates editor initialization status.
+		 *
+		 * The following statuses are available:
+		 * * initializing -  during initialization chain
+		 * * ready - after initializing chain, the editor is ready to work
+		 * * destroyed - after destroy, editor and all plugins are destroyed
+		 *
+		 * @observable
+		 * @member {'initializing'|'ready'|'destroyed'} #state
+		 */
+		this.set( 'state', 'initializing' );
+
+		/**
 		 * Defines whether this editor is in read-only mode.
 		 *
 		 * In read-only mode the editor {@link #commands commands} are disabled so it is not possible
@@ -225,6 +238,7 @@ export default class Editor {
 	 * @returns {Promise} A promise that resolves once the editor instance is fully destroyed.
 	 */
 	destroy() {
+		this.state = 'destroyed';
 		this.fire( 'destroy' );
 
 		this.stopListening();
@@ -270,6 +284,7 @@ export default class Editor {
 				editor.initPlugins()
 					.then( () => {
 						editor.fire( 'dataReady' );
+						editor.state = 'ready';
 						editor.fire( 'ready' );
 					} )
 					.then( () => editor )

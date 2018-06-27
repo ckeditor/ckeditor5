@@ -181,6 +181,41 @@ describe( 'Editor', () => {
 		} );
 	} );
 
+	describe( 'state', () => {
+		it( 'is `initializing` initially', () => {
+			const editor = new Editor();
+
+			expect( editor.state ).to.equal( 'initializing' );
+		} );
+
+		it( 'is `ready` after initialization chain', () => {
+			return Editor.create().then( editor => {
+				expect( editor.state ).to.equal( 'ready' );
+
+				return editor.destroy();
+			} );
+		} );
+
+		it( 'is `destroyed` after editor destroy', () => {
+			const editor = new Editor();
+
+			return editor.destroy().then( () => {
+				expect( editor.state ).to.equal( 'destroyed' );
+			} );
+		} );
+
+		it( 'is observable', () => {
+			const editor = new Editor();
+			const spy = sinon.spy();
+
+			editor.on( 'change:state', spy );
+
+			editor.state = 'ready';
+
+			sinon.assert.calledOnce( spy );
+		} );
+	} );
+
 	describe( 'isReadOnly', () => {
 		it( 'is false initially', () => {
 			const editor = new Editor();
