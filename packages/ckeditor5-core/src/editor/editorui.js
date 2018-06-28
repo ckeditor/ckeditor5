@@ -67,7 +67,7 @@ export default class EditorUI {
 		 * @protected
 		 * @type {Function}
 		 */
-		this._throttledUpdate = throttle( () => this.fire( 'update' ), 50 );
+		this._throttledUpdate = throttle( () => this.fire( 'update' ), 10 );
 
 		// Informs UI components that should be refreshed after layout change.
 		this.listenTo( editor.editing.view.document, 'layoutChanged', () => this.update() );
@@ -95,7 +95,7 @@ export default class EditorUI {
 	 * **Note:**: The event is fired after each {@link module:engine/view/document~Document#event:layoutChanged}.
 	 * It can also be fired manually via the {@link module:core/editor/editorui~EditorUI#update} method.
 	 *
-	 * **Note:**: Successive `update` events will throttled (50ms) to improve the performance of the UI
+	 * **Note:**: Successive `update` events will throttled (10ms) to improve the performance of the UI
 	 * and the overall responsiveness of the editor.
 	 *
 	 * @event update
