@@ -4,7 +4,7 @@
  */
 
 /**
- * @module typing/changebuffer
+ * @module typing/utils/changebuffer
  */
 
 import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';

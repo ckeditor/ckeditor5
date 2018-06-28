@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import ChangeBuffer from '../src/changebuffer';
+import ChangeBuffer from '../../src/utils/changebuffer';
 import Model from '@ckeditor/ckeditor5-engine/src/model/model';
 import Batch from '@ckeditor/ckeditor5-engine/src/model/batch';
 

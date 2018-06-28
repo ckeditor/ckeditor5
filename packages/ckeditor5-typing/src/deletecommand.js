@@ -11,7 +11,7 @@ import Command from '@ckeditor/ckeditor5-core/src/command';
 import Selection from '@ckeditor/ckeditor5-engine/src/model/selection';
 import Element from '@ckeditor/ckeditor5-engine/src/model/element';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
-import ChangeBuffer from './changebuffer';
+import ChangeBuffer from './utils/changebuffer';
 import count from '@ckeditor/ckeditor5-utils/src/count';
 
 /**
