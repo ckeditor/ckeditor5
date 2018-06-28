@@ -45,8 +45,8 @@ describe( 'ElementApiMixin', () => {
 			expect( editorElement.innerHTML ).to.equal( 'foo bar' );
 		} );
 
-		it( 'throws an error if "sourceElement" has not set', () => {
-			expect( () => editor.updateSourceElement() ).to.throw( CKEditorError, /elementapi-missing-sourceelement/ );
+		it( 'throws an error if "sourceElement" has not been set', () => {
+			expect( () => editor.updateSourceElement() ).to.throw( CKEditorError, /editor-missing-sourceelement/ );
 		} );
 	} );
 } );

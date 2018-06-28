@@ -23,13 +23,14 @@ const ElementApiMixin = {
 	updateSourceElement() {
 		if ( !this.sourceElement ) {
 			/**
-			 * In case of the editor is creating using an initial data instead of the DOM element,
-			 * the {@link ElementApi~updateSourceElement `updateSourceElement()`} method cannot be called because there is no
-			 * {@link ElementApi~sourceElement `sourceElement`} that could be updated.
+			 * Cannot update the source element of a detached editor.
 			 *
-			 * @error elementapimixin-missing-sourceelement
+			 * The {@link ElementApi~updateSourceElement `updateSourceElement()`} method cannot be called if you did not
+			 * pass an element to `Editor.create()`.
+			 *
+			 * @error editor-missing-sourceelement
 			 */
-			throw new CKEditorError( 'elementapi-missing-sourceelement: The "sourceElement" is required by the "ElementApi" interface.' );
+			throw new CKEditorError( 'editor-missing-sourceelement: Cannot update the source element of a detached editor.' );
 		}
 
 		setDataInElement( this.sourceElement, this.data.get() );
