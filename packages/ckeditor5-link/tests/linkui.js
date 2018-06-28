@@ -288,9 +288,6 @@ describe( 'LinkUI', () => {
 					writer.setSelection( Range.createFromParentsAndOffsets( text, 3, text, 3 ), true );
 				} );
 
-				// "Flush" throttled event.
-				editor.ui.fire( 'update' );
-
 				sinon.assert.calledOnce( spy );
 				sinon.assert.calledWithExactly( spy, {
 					target: view.domConverter.mapViewToDom( linkElement )
@@ -310,9 +307,6 @@ describe( 'LinkUI', () => {
 				view.change( writer => {
 					writer.setSelection( Range.createFromParentsAndOffsets( text, 3, text, 3 ), true );
 				} );
-
-				// "Flush" throttled event.
-				editor.ui.fire( 'update' );
 
 				sinon.assert.calledOnce( spy );
 				sinon.assert.calledWithExactly( spy, {
@@ -337,9 +331,6 @@ describe( 'LinkUI', () => {
 					writer.setSelection( Range.createFromParentsAndOffsets( text, 1, text, 1 ), true );
 				} );
 
-				// "Flush" throttled event.
-				editor.ui.fire( 'update' );
-
 				sinon.assert.calledOnce( spyHide );
 				sinon.assert.notCalled( spyUpdate );
 			} );
@@ -363,9 +354,6 @@ describe( 'LinkUI', () => {
 					writer.setSelection( Range.createFromParentsAndOffsets( text, 1, text, 2 ), true );
 				} );
 
-				// "Flush" throttled event.
-				editor.ui.fire( 'update' );
-
 				sinon.assert.calledOnce( spyHide );
 				sinon.assert.notCalled( spyUpdate );
 			} );
@@ -386,9 +374,6 @@ describe( 'LinkUI', () => {
 				view.change( writer => {
 					writer.setSelection( Range.createFromParentsAndOffsets( text, 1, text, 2 ), true );
 				} );
-
-				// "Flush" throttled event.
-				editor.ui.fire( 'update' );
 
 				sinon.assert.calledOnce( spyHide );
 				sinon.assert.notCalled( spyUpdate );
