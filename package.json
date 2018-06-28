@@ -69,6 +69,7 @@
     "@ckeditor/ckeditor5-dev-tests": "^11.0.2",
     "@ckeditor/ckeditor5-dev-utils": "^9.0.1",
     "@ckeditor/ckeditor5-dev-webpack-plugin": "^5.0.1",
+    "css-loader": "^0.28.11",
     "eslint": "^4.15.0",
     "eslint-config-ckeditor5": "^1.0.7",
     "glob": "^7.1.2",
