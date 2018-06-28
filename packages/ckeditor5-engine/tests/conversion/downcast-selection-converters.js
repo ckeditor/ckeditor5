@@ -494,9 +494,9 @@ describe( 'downcast-selection-converters', () => {
 
 	describe( 'table cell selection converter', () => {
 		beforeEach( () => {
-			model.schema.register( 'table' );
-			model.schema.register( 'tr' );
-			model.schema.register( 'td' );
+			model.schema.register( 'table', { isLimit: true } );
+			model.schema.register( 'tr', { isLimit: true } );
+			model.schema.register( 'td', { isLimit: true } );
 
 			model.schema.extend( 'table', { allowIn: '$root' } );
 			model.schema.extend( 'tr', { allowIn: 'table' } );
@@ -519,16 +519,16 @@ describe( 'downcast-selection-converters', () => {
 				}
 
 				for ( const range of selection.getRanges() ) {
-					const node = range.start.nodeAfter;
+					const node = range.start.parent;
 
-					if ( node == range.end.nodeBefore && node instanceof ModelElement && node.name == 'td' ) {
+					if ( node instanceof ModelElement && node.name == 'td' ) {
 						conversionApi.consumable.consume( selection, 'selection' );
 
 						const viewNode = conversionApi.mapper.toViewElement( node );
 						conversionApi.writer.addClass( 'selected', viewNode );
 					}
 				}
-			} );
+			}, { priority: 'high' } );
 		} );
 
 		it( 'should not be used to convert selection that is not on table cell', () => {
@@ -542,7 +542,7 @@ describe( 'downcast-selection-converters', () => {
 		it( 'should add a class to the selected table cell', () => {
 			test(
 				// table tr#0 |td#0, table tr#0 td#0|
-				[ [ 0, 0, 0 ], [ 0, 0, 1 ] ],
+				[ [ 0, 0, 0, 0 ], [ 0, 0, 0, 3 ] ],
 				'<table><tr><td>foo</td></tr><tr><td>bar</td></tr></table>',
 				'<table><tr><td class="selected">foo</td></tr><tr><td>bar</td></tr></table>'
 			);
@@ -551,9 +551,9 @@ describe( 'downcast-selection-converters', () => {
 		it( 'should not be used if selection contains more than just a table cell', () => {
 			test(
 				// table tr td#1, table tr#2
-				[ [ 0, 0, 0, 1 ], [ 0, 0, 2 ] ],
+				[ [ 0, 0, 0, 1 ], [ 0, 0, 1, 3 ] ],
 				'<table><tr><td>foo</td><td>bar</td></tr></table>',
-				'<table><tr><td>f{oo</td><td>bar</td>]</tr></table>'
+				'[<table><tr><td>foo</td><td>bar</td></tr></table>]'
 			);
 		} );
 	} );

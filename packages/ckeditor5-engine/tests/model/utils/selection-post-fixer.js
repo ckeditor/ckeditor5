@@ -484,6 +484,46 @@ describe( 'Selection post-fixer', () => {
 					'<paragraph>bar</paragraph>'
 				);
 			} );
+
+			it( 'should not fix #3 (inside a limit - partial text selection)', () => {
+				model.change( writer => {
+					const caption = modelRoot.getChild( 1 ).getChild( 0 );
+
+					// <paragraph>foo</paragraph><image><caption>[xx]x</caption></image>...
+					writer.setSelection( ModelRange.createFromParentsAndOffsets(
+						caption, 0,
+						caption, 2
+					) );
+				} );
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>foo</paragraph>' +
+					'<image>' +
+						'<caption>[xx]x</caption>' +
+					'</image>' +
+					'<paragraph>bar</paragraph>'
+				);
+			} );
+
+			it( 'should not fix #4 (inside a limit - partial text selection)', () => {
+				model.change( writer => {
+					const caption = modelRoot.getChild( 1 ).getChild( 0 );
+
+					// <paragraph>foo</paragraph><image><caption>x[xx]</caption></image>...
+					writer.setSelection( ModelRange.createFromParentsAndOffsets(
+						caption, 1,
+						caption, 3
+					) );
+				} );
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>foo</paragraph>' +
+					'<image>' +
+						'<caption>x[xx]</caption>' +
+					'</image>' +
+					'<paragraph>bar</paragraph>'
+				);
+			} );
 		} );
 
 		describe( 'non-collapsed selection - other scenarios', () => {
@@ -515,7 +555,7 @@ describe( 'Selection post-fixer', () => {
 				);
 			} );
 
-			it( 'should fix #3 (selection must not cross a limit element; starts in a non-limit)', () => {
+			it( 'should fix #3 (selection must not cross a limit element; starts in a root)', () => {
 				model.schema.register( 'a', { isLimit: true, allowIn: '$root' } );
 				model.schema.register( 'b', { isLimit: true, allowIn: 'a' } );
 				model.schema.register( 'c', { allowIn: 'b' } );
@@ -526,6 +566,53 @@ describe( 'Selection post-fixer', () => {
 				);
 
 				expect( getModelData( model ) ).to.equal( '[<a><b><c></c></b></a>]' );
+			} );
+
+			it( 'should fix #5 (selection must not cross a limit element; ends in a root)', () => {
+				model.schema.register( 'a', { isLimit: true, allowIn: '$root' } );
+				model.schema.register( 'b', { isLimit: true, allowIn: 'a' } );
+				model.schema.register( 'c', { allowIn: 'b' } );
+				model.schema.extend( '$text', { allowIn: 'c' } );
+
+				setModelData( model,
+					'[<a><b><c>]</c></b></a>'
+				);
+
+				expect( getModelData( model ) ).to.equal( '[<a><b><c></c></b></a>]' );
+			} );
+
+			it( 'should fix #4 (selection must not cross a limit element; starts in a non-limit)', () => {
+				model.schema.register( 'div', { allowIn: '$root' } );
+				model.schema.register( 'a', { isLimit: true, allowIn: 'div' } );
+				model.schema.register( 'b', { isLimit: true, allowIn: 'a' } );
+				model.schema.register( 'c', { allowIn: 'b' } );
+				model.schema.extend( '$text', { allowIn: 'c' } );
+
+				setModelData( model,
+					'<div>[<a><b><c>]</c></b></a></div>'
+				);
+
+				expect( getModelData( model ) ).to.equal( '<div>[<a><b><c></c></b></a>]</div>' );
+			} );
+
+			it( 'should fix #6 (selection must not cross a limit element; ends in a non-limit)', () => {
+				model.schema.register( 'div', { allowIn: '$root' } );
+				model.schema.register( 'a', { isLimit: true, allowIn: 'div' } );
+				model.schema.register( 'b', { isLimit: true, allowIn: 'a' } );
+				model.schema.register( 'c', { allowIn: 'b' } );
+				model.schema.extend( '$text', { allowIn: 'c' } );
+
+				setModelData( model,
+					'<div><a><b><c>[</c></b></a>]</div>'
+				);
+
+				expect( getModelData( model ) ).to.equal( '<div>[<a><b><c></c></b></a>]</div>' );
+			} );
+
+			it( 'should not fix #7 (selection on text node)', () => {
+				setModelData( model, '<paragraph>foob[a]r</paragraph>', { lastRangeBackward: true } );
+
+				expect( getModelData( model ) ).to.equal( '<paragraph>foob[a]r</paragraph>' );
 			} );
 		} );
 

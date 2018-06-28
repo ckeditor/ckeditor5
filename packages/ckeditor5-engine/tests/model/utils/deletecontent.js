@@ -562,7 +562,7 @@ describe( 'DataController utils', () => {
 				schema.register( 'image', { allowWhere: '$text' } );
 				schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 				schema.register( 'heading1', { inheritAllFrom: '$block' } );
-				schema.register( 'blockWidget' );
+				schema.register( 'blockWidget', { isLimit: true } );
 				schema.register( 'restrictedRoot', {
 					isLimit: true
 				} );
@@ -621,7 +621,7 @@ describe( 'DataController utils', () => {
 				deleteContent( model, selection );
 
 				expect( getData( model, { rootName: 'bodyRoot' } ) )
-					.to.equal( '[<paragraph>x</paragraph>]<paragraph></paragraph><paragraph>z</paragraph>' );
+					.to.equal( '<paragraph>[x]</paragraph><paragraph></paragraph><paragraph>z</paragraph>' );
 			} );
 
 			it( 'creates a paragraph when text is not allowed (block widget selected)', () => {
@@ -644,7 +644,16 @@ describe( 'DataController utils', () => {
 					{ rootName: 'bodyRoot' }
 				);
 
-				deleteContent( model, doc.selection );
+				model.change( writer => {
+					// Set selection to[<heading1>yyy</heading1>] in change() block due to selection post-fixer.
+					const range = new Range(
+						new Position( doc.getRoot( 'bodyRoot' ), [ 1 ] ),
+						new Position( doc.getRoot( 'bodyRoot' ), [ 2 ] )
+					);
+					writer.setSelection( range );
+
+					deleteContent( model, doc.selection );
+				} );
 
 				expect( getData( model, { rootName: 'bodyRoot' } ) )
 					.to.equal( '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>z</paragraph>' );
@@ -657,7 +666,16 @@ describe( 'DataController utils', () => {
 					{ rootName: 'bodyRoot' }
 				);
 
-				deleteContent( model, doc.selection );
+				model.change( writer => {
+					// Set selection to[<heading1>yyy</heading1><paragraph>yyy</paragraph>] in change() block due to selection post-fixer.
+					const range = new Range(
+						new Position( doc.getRoot( 'bodyRoot' ), [ 1 ] ),
+						new Position( doc.getRoot( 'bodyRoot' ), [ 3 ] )
+					);
+					writer.setSelection( range );
+
+					deleteContent( model, doc.selection );
+				} );
 
 				expect( getData( model, { rootName: 'bodyRoot' } ) )
 					.to.equal( '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>z</paragraph>' );

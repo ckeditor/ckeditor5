@@ -129,7 +129,7 @@ describe( 'DataController utils', () => {
 
 				schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 				schema.register( 'heading1', { inheritAllFrom: '$block' } );
-				schema.register( 'blockImage' );
+				schema.register( 'blockImage', { isObject: true } );
 				schema.register( 'caption' );
 				schema.register( 'image', { allowWhere: '$text' } );
 

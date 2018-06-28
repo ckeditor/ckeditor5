@@ -1123,12 +1123,12 @@ describe( 'Schema', () => {
 			schema.extend( 'img', { allowAttributes: 'bold' } );
 			schema.extend( '$text', { allowIn: 'img' } );
 
-			setData( model, '[<p>foo<img>xxx</img>bar</p>]' );
+			setData( model, '<p>[foo<img>xxx</img>bar]</p>' );
 
 			const validRanges = schema.getValidRanges( doc.selection.getRanges(), attribute );
 			const sel = new Selection( validRanges );
 
-			expect( stringify( root, sel ) ).to.equal( '[<p>foo<img>]xxx[</img>bar</p>]' );
+			expect( stringify( root, sel ) ).to.equal( '<p>[foo<img>]xxx[</img>bar]</p>' );
 		} );
 
 		it( 'should return three ranges when attribute is not allowed on one element but is allowed on its child', () => {
@@ -1141,12 +1141,12 @@ describe( 'Schema', () => {
 				}
 			} );
 
-			setData( model, '[<p>foo<img>xxx</img>bar</p>]' );
+			setData( model, '<p>[foo<img>xxx</img>bar]</p>' );
 
 			const validRanges = schema.getValidRanges( doc.selection.getRanges(), attribute );
 			const sel = new Selection( validRanges );
 
-			expect( stringify( root, sel ) ).to.equal( '[<p>foo]<img>[xxx]</img>[bar</p>]' );
+			expect( stringify( root, sel ) ).to.equal( '<p>[foo]<img>[xxx]</img>[bar]</p>' );
 		} );
 
 		it( 'should not leak beyond the given ranges', () => {
