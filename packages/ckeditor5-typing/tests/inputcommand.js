@@ -10,7 +10,7 @@ import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import InputCommand from '../src/inputcommand';
-import ChangeBuffer from '../src/changebuffer';
+import ChangeBuffer from '../src/utils/changebuffer';
 import Input from '../src/input';
 
 describe( 'InputCommand', () => {

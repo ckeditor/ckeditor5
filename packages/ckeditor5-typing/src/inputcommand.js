@@ -8,7 +8,7 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import ChangeBuffer from './changebuffer';
+import ChangeBuffer from './utils/changebuffer';
 
 /**
  * The input command. Used by the {@link module:typing/input~Input input feature} to handle typing.
@@ -31,7 +31,7 @@ export default class InputCommand extends Command {
 		 *
 		 * @readonly
 		 * @private
-		 * @member {module:typing/changebuffer~ChangeBuffer} #_buffer
+		 * @member {module:typing/utils/changebuffer~ChangeBuffer} #_buffer
 		 */
 		this._buffer = new ChangeBuffer( editor.model, undoStepSize );
 	}
@@ -39,7 +39,7 @@ export default class InputCommand extends Command {
 	/**
 	 * The current change buffer.
 	 *
-	 * @type {module:typing/changebuffer~ChangeBuffer}
+	 * @type {module:typing/utils/changebuffer~ChangeBuffer}
 	 */
 	get buffer() {
 		return this._buffer;
