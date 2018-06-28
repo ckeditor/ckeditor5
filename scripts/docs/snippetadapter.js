@@ -95,7 +95,12 @@ function getWebpackConfig( config ) {
 	if ( config.production ) {
 		minimizer.push(
 			new UglifyJsWebpackPlugin( {
-				sourceMap: true
+				sourceMap: true,
+				uglifyOptions: {
+					output: {
+						comments: /^\**!/
+					}
+				}
 			} )
 		);
 	}
