@@ -23,7 +23,9 @@ const ElementApiMixin = {
 	updateSourceElement() {
 		if ( !this.sourceElement ) {
 			/**
-			 * The `sourceElement` is required by the `ElementApi` interface.
+			 * In case of the editor is creating using an initial data instead of the DOM element,
+			 * the {@link ElementApi~updateSourceElement `updateSourceElement()`} method cannot be called because there is no
+			 * {@link ElementApi~sourceElement `sourceElement`} that could be updated.
 			 *
 			 * @error elementapimixin-missing-sourceelement
 			 */
