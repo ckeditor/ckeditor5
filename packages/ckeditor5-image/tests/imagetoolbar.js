@@ -78,9 +78,6 @@ describe( 'ImageToolbar', () => {
 
 			setData( model, '[<image src=""></image>]' );
 
-			// "Flush" throttled update event.
-			editor.ui.fire( 'update' );
-
 			sinon.assert.calledWithMatch( spy, {
 				view: toolbar,
 				balloonClassName: 'ck-toolbar-container'
@@ -135,8 +132,6 @@ describe( 'ImageToolbar', () => {
 				);
 			} );
 
-			// "Flush" throttled update event.
-			editor.ui.fire( 'update' );
 			expect( balloon.visibleView ).to.equal( toolbar );
 
 			// Make sure successive change does not throw, e.g. attempting
@@ -147,9 +142,6 @@ describe( 'ImageToolbar', () => {
 
 		it( 'should not engage when the toolbar is in the balloon yet invisible', () => {
 			setData( model, '[<image src=""></image>]' );
-
-			// "Flush" throttled update event.
-			editor.ui.fire( 'update' );
 
 			expect( balloon.visibleView ).to.equal( toolbar );
 
@@ -173,9 +165,6 @@ describe( 'ImageToolbar', () => {
 		it( 'should hide the toolbar on ui#update if the image is de–selected', () => {
 			setData( model, '<paragraph>foo</paragraph>[<image src=""></image>]' );
 
-			// "Flush" throttled update event.
-			editor.ui.fire( 'update' );
-
 			expect( balloon.visibleView ).to.equal( toolbar );
 
 			model.change( writer => {
@@ -185,8 +174,6 @@ describe( 'ImageToolbar', () => {
 				);
 			} );
 
-			// "Flush" throttled update event.
-			editor.ui.fire( 'update' );
 			expect( balloon.visibleView ).to.be.null;
 
 			// Make sure successive change does not throw, e.g. attempting

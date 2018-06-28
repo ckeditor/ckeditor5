@@ -178,9 +178,6 @@ describe( 'ImageTextAlternative', () => {
 					writer.remove( doc.selection.getFirstRange() );
 				} );
 
-				// Because the update event is throttled we need to "flush" it.
-				editor.ui.fire( 'update' );
-
 				sinon.assert.calledWithExactly( removeSpy, form );
 				sinon.assert.calledOnce( focusSpy );
 			} );
