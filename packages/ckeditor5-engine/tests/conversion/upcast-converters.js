@@ -349,6 +349,27 @@ describe( 'upcast-helpers', () => {
 				'<$text attribB="true" bold="true">foo</$text>'
 			);
 		} );
+
+		// #1443.
+		it( 'should set attributes on the element\'s children', () => {
+			const helperBold = upcastElementToAttribute( {
+				model: 'bold',
+				view: { name: 'strong' }
+			} );
+
+			const helperP = upcastElementToElement( { view: 'p', model: 'paragraph' } );
+
+			conversion.for( 'upcast' ).add( helperP ).add( helperBold );
+
+			expectResult(
+				new ViewAttributeElement(
+					'strong',
+					null,
+					new ViewContainerElement( 'p', null, new ViewText( 'Foo' ) )
+				),
+				'<paragraph><$text bold="true">Foo</$text></paragraph>'
+			);
+		} );
 	} );
 
 	describe( 'upcastAttributeToAttribute', () => {
@@ -551,6 +572,33 @@ describe( 'upcast-helpers', () => {
 			expectResult(
 				new ViewAttributeElement( 'img', { class: 'styled' } ),
 				'<image styled="true"></image>'
+			);
+		} );
+
+		// #1443.
+		it( 'should not set attributes on the element\'s children', () => {
+			schema.register( 'div', {
+				inheritAllFrom: '$root',
+				allowWhere: '$block',
+				isLimit: true,
+				allowAttributes: [ 'border', 'shade' ]
+			} );
+
+			conversion.for( 'upcast' ).add( upcastElementToElement( { view: 'div', model: 'div' } ) );
+
+			const shadeHelper = upcastAttributeToAttribute( { view: { key: 'class', value: 'shade' }, model: 'shade' } );
+			const borderHelper = upcastAttributeToAttribute( { view: { key: 'class', value: 'border' }, model: 'border' } );
+
+			conversion.for( 'upcast' ).add( shadeHelper );
+			conversion.for( 'upcast' ).add( borderHelper );
+
+			expectResult(
+				new ViewContainerElement(
+					'div',
+					{ class: 'border' },
+					new ViewContainerElement( 'div', { class: 'shade' } )
+				),
+				'<div border="border"><div shade="shade"></div></div>'
 			);
 		} );
 	} );
