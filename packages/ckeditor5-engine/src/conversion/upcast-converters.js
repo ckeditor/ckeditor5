@@ -80,7 +80,7 @@ export function upcastElementToElement( config ) {
  *
  * Above is a sample of HTML code, that goes through autoparagraphing (first step) and then is converted (second step).
  * Even though `<strong>` is over `<p>` element, `bold="true"` was added to the text. See
- * {@link module:engine/model/upcast-converters~upcastAttributeToAttribute} for comparison.
+ * {@link module:engine/conversion/upcast-converters~upcastAttributeToAttribute} for comparison.
  *
  * Keep in mind that the attribute will be set only if it is allowed by {@link module:engine/model/schema~Schema schema} configuration.
  *
