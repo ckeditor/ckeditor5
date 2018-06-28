@@ -14,13 +14,14 @@ describe( 'UndoCommand', () => {
 	let editor, model, doc, root, undo;
 
 	beforeEach( () => {
-		editor = new ModelTestEditor();
-		undo = new UndoCommand( editor );
+		return ModelTestEditor.create().then( newEditor => {
+			editor = newEditor;
 
-		model = editor.model;
-		doc = model.document;
-
-		root = doc.getRoot();
+			undo = new UndoCommand( editor );
+			model = editor.model;
+			doc = model.document;
+			root = doc.getRoot();
+		} );
 	} );
 
 	afterEach( () => {
