@@ -45,12 +45,12 @@
     "@ckeditor/ckeditor5-paragraph": "^10.0.1",
     "@ckeditor/ckeditor5-theme-lark": "^10.1.0",
     "@ckeditor/ckeditor5-upload": "^10.0.1",
-    "babel-minify-webpack-plugin": "^0.3.0",
-    "postcss-loader": "^2.0.10",
+    "postcss-loader": "^2.1.5",
     "raw-loader": "^0.5.1",
-    "style-loader": "^0.20.3",
-    "webpack": "^3.11.0",
-    "webpack-sources": "1.0.1"
+    "style-loader": "^0.21.0",
+    "uglifyjs-webpack-plugin": "^1.2.7",
+    "webpack": "^4.12.2",
+    "webpack-cli": "^3.0.8"
   },
   "engines": {
     "node": ">=6.0.0",
