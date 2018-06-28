@@ -12,7 +12,6 @@ import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 
 import EmitterMixin from '@ckeditor/ckeditor5-utils/src/emittermixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import throttle from '@ckeditor/ckeditor5-utils/src/lib/lodash/throttle';
 
 /**
  * A class providing the minimal interface that is required to successfully bootstrap any editor UI.
@@ -61,23 +60,15 @@ export default class EditorUI {
 		 */
 		this.focusTracker = new FocusTracker();
 
-		/**
-		 * Fires throttled {@link module:core/editor/editorui~EditorUI#event:update} event.
-		 *
-		 * @protected
-		 * @type {Function}
-		 */
-		this._throttledUpdate = throttle( () => this.fire( 'update' ), 5 );
-
 		// Informs UI components that should be refreshed after layout change.
 		this.listenTo( editor.editing.view.document, 'layoutChanged', () => this.update() );
 	}
 
 	/**
-	 * Fires the (throttled) {@link module:core/editor/editorui~EditorUI#event:update} event.
+	 * Fires the {@link module:core/editor/editorui~EditorUI#event:update} event.
 	 */
 	update() {
-		this._throttledUpdate();
+		this.fire( 'update' );
 	}
 
 	/**
@@ -85,7 +76,6 @@ export default class EditorUI {
 	 */
 	destroy() {
 		this.stopListening();
-		this._throttledUpdate.cancel();
 		this.view.destroy();
 	}
 
@@ -94,9 +84,6 @@ export default class EditorUI {
 	 *
 	 * **Note:**: The event is fired after each {@link module:engine/view/document~Document#event:layoutChanged}.
 	 * It can also be fired manually via the {@link module:core/editor/editorui~EditorUI#update} method.
-	 *
-	 * **Note:**: Successive `update` events will throttled (5ms) to improve the performance of the UI
-	 * and the overall responsiveness of the editor.
 	 *
 	 * @event update
 	 */

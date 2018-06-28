@@ -47,7 +47,7 @@ describe( 'EditorUI', () => {
 			expect( ui.focusTracker ).to.be.instanceOf( FocusTracker );
 		} );
 
-		it( 'should fire throttled update event after viewDocument#layoutChanged', () => {
+		it( 'should fire update event after viewDocument#layoutChanged', () => {
 			const spy = sinon.spy();
 
 			ui.on( 'update', spy );
@@ -57,17 +57,13 @@ describe( 'EditorUI', () => {
 			sinon.assert.calledOnce( spy );
 
 			editor.editing.view.document.fire( 'layoutChanged' );
-
-			sinon.assert.calledOnce( spy );
-
-			ui._throttledUpdate.flush();
 
 			sinon.assert.calledTwice( spy );
 		} );
 	} );
 
 	describe( 'update()', () => {
-		it( 'should fire throttled update event', () => {
+		it( 'should fire update event', () => {
 			const spy = sinon.spy();
 
 			ui.on( 'update', spy );
@@ -77,10 +73,6 @@ describe( 'EditorUI', () => {
 			sinon.assert.calledOnce( spy );
 
 			ui.update();
-
-			sinon.assert.calledOnce( spy );
-
-			ui._throttledUpdate.flush();
 
 			sinon.assert.calledTwice( spy );
 		} );
@@ -101,23 +93,6 @@ describe( 'EditorUI', () => {
 			ui.destroy();
 
 			sinon.assert.called( spy );
-		} );
-
-		it( 'should cancel throttled update event', () => {
-			const spy = sinon.spy();
-
-			ui.on( 'update', spy );
-
-			ui.update();
-
-			sinon.assert.calledOnce( spy );
-
-			ui.destroy();
-
-			ui.update();
-			ui._throttledUpdate.flush();
-
-			sinon.assert.calledOnce( spy );
 		} );
 	} );
 } );
