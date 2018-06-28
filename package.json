@@ -79,12 +79,12 @@
     "mgit2": "^0.8.0",
     "mini-css-extract-plugin": "^0.4.0",
     "minimatch": "^3.0.4",
-    "postcss-loader": "^2.1.1",
+    "postcss-loader": "^2.1.5",
     "raw-loader": "^0.5.1",
-    "style-loader": "^0.20.3",
-    "uglifyjs-webpack-plugin": "^1.2.6",
+    "style-loader": "^0.21.0",
+    "uglifyjs-webpack-plugin": "^1.2.7",
     "umberto": "^0.6.0",
-    "webpack": "^4.12.0"
+    "webpack": "^4.12.2"
   },
   "engines": {
     "node": ">=6.0.0",
