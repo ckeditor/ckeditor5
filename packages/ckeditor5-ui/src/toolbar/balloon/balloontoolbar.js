@@ -167,9 +167,8 @@ export default class BalloonToolbar extends Plugin {
 			return;
 		}
 
-		// Update the toolbar position upon change (e.g. external document changes)
-		// while it's visible.
-		this.listenTo( this.editor.editing.view, 'render', () => {
+		// Update the toolbar position when the editor ui should be refreshed.
+		this.listenTo( this.editor.ui, 'update', () => {
 			this._balloon.updatePosition( this._getBalloonPositionData() );
 		} );
 
@@ -186,7 +185,7 @@ export default class BalloonToolbar extends Plugin {
 	 */
 	hide() {
 		if ( this._balloon.hasView( this.toolbarView ) ) {
-			this.stopListening( this.editor.editing.view, 'render' );
+			this.stopListening( this.editor.ui, 'update' );
 			this._balloon.remove( this.toolbarView );
 		}
 	}
