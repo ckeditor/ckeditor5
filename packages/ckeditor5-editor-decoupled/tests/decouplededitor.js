@@ -29,11 +29,6 @@ describe( 'DecoupledEditor', () => {
 	describe( 'constructor()', () => {
 		beforeEach( () => {
 			editor = new DecoupledEditor();
-			editor.ui.init();
-		} );
-
-		afterEach( () => {
-			return editor.destroy();
 		} );
 
 		it( 'uses HTMLDataProcessor', () => {
@@ -54,8 +49,12 @@ describe( 'DecoupledEditor', () => {
 
 		describe( 'ui', () => {
 			it( 'is created', () => {
+				editor.ui.init();
+
 				expect( editor.ui ).to.be.instanceof( DecoupledEditorUI );
 				expect( editor.ui.view ).to.be.instanceof( DecoupledEditorUIView );
+
+				editor.ui.destroy();
 			} );
 		} );
 	} );

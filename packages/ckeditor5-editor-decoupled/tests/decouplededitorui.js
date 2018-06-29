@@ -5,14 +5,12 @@
 
 /* globals document, Event */
 
-import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
 import View from '@ckeditor/ckeditor5-ui/src/view';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import DecoupledEditorUI from '../src/decouplededitorui';
+import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
 import DecoupledEditorUIView from '../src/decouplededitoruiview';
-
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
@@ -41,20 +39,8 @@ describe( 'DecoupledEditorUI', () => {
 	} );
 
 	describe( 'constructor()', () => {
-		it( 'sets #editor', () => {
-			expect( ui.editor ).to.equal( editor );
-		} );
-
-		it( 'sets #view', () => {
-			expect( ui.view ).to.be.instanceOf( DecoupledEditorUIView );
-		} );
-
-		it( 'creates #componentFactory factory', () => {
-			expect( ui.componentFactory ).to.be.instanceOf( ComponentFactory );
-		} );
-
-		it( 'creates #focusTracker', () => {
-			expect( ui.focusTracker ).to.be.instanceOf( FocusTracker );
+		it( 'extends EditorUI', () => {
+			expect( ui ).to.instanceof( EditorUI );
 		} );
 	} );
 
@@ -161,18 +147,6 @@ describe( 'DecoupledEditorUI', () => {
 					sinon.assert.calledOnce( spy );
 
 					return editor.destroy();
-				} );
-		} );
-	} );
-
-	describe( 'destroy()', () => {
-		it( 'destroys the #view', () => {
-			const spy = sinon.spy( view, 'destroy' );
-
-			return editor.destroy()
-				.then( () => {
-					sinon.assert.calledOnce( spy );
-					sinon.assert.calledWithExactly( spy );
 				} );
 		} );
 	} );
