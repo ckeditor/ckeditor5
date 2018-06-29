@@ -12,7 +12,7 @@ import Observer from '@ckeditor/ckeditor5-engine/src/view/observer/observer';
 /**
  * Observes all new images added to the {@link module:engine/view/document~Document},
  * fires {@link module:engine/view/document~Document#event:imageLoaded} and
- * {@link module:engine/view/document~Document#layoutChanged} event every time when the new image
+ * {@link module:engine/view/document~Document#event:layoutChanged} event every time when the new image
  * has been loaded.
  *
  * **Note:** This event is not fired for images that has been added to the document and rendered as `complete` (already loaded).
@@ -82,7 +82,7 @@ export default class ImageLoadObserver extends Observer {
 	}
 
 	/**
-	 * Fires {@link module:engine/view/view/document~Document#event:layoutChanged} and
+	 * Fires {@link module:engine/view/document~Document#event:layoutChanged} and
 	 * {@link module:engine/view/document~Document#event:imageLoaded}
 	 * if observer {@link #isEnabled is enabled}.
 	 *
@@ -110,7 +110,7 @@ export default class ImageLoadObserver extends Observer {
  *
  * Introduced by {@link module:image/image/imageloadobserver~ImageLoadObserver}.
  *
- * @see image/image/imageloadobserver~ImageLoadObserver
+ * @see module:image/image/imageloadobserver~ImageLoadObserver
  * @event module:engine/view/document~Document#event:imageLoaded
  * @param {module:engine/view/observer/domeventdata~DomEventData} data Event data.
  */

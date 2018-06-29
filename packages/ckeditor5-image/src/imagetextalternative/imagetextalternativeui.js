@@ -115,7 +115,7 @@ export default class ImageTextAlternativeUI extends Plugin {
 		} );
 
 		// Reposition the balloon or hide the form if an image widget is no longer selected.
-		this.listenTo( view, 'render', () => {
+		this.listenTo( editor.ui, 'update', () => {
 			if ( !isImageWidgetSelected( viewDocument.selection ) ) {
 				this._hideForm( true );
 			} else if ( this._isVisible ) {
