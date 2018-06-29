@@ -129,6 +129,20 @@ describe( 'ClassicTestEditor', () => {
 				} );
 		} );
 
+		it( 'sets proper states', () => {
+			const editor = new ClassicTestEditor();
+
+			expect( editor.state ).to.equal( 'initializing' );
+
+			return ClassicTestEditor.create( editorElement ).then( editor => {
+				expect( editor.state ).to.equal( 'ready' );
+
+				return editor.destroy().then( () => {
+					expect( editor.state ).to.equal( 'destroyed' );
+				} );
+			} );
+		} );
+
 		it( 'inserts editor UI next to editor element', () => {
 			return ClassicTestEditor.create( editorElement )
 				.then( editor => {
