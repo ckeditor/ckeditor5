@@ -12,11 +12,19 @@ a.ck.ck-button {
 	@mixin ck-tooltip_enabled;
 
 	position: relative;
+	display: inline-flex;
+	align-items: center;
+	justify-content: left;
 
 	&.ck-button_with-text {
 		& .ck-button__label {
 			display: inline-block;
 		}
+	}
+
+	/* Center the icon horizontally in a button without text. */
+	&:not(.ck-button_with-text)  {
+		justify-content: center;
 	}
 
 	&:hover {

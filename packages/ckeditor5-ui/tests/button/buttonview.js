@@ -97,6 +97,22 @@ describe( 'ButtonView', () => {
 				view.type = null;
 				expect( view.element.getAttribute( 'type' ) ).to.equal( 'button' );
 			} );
+
+			it( 'reacts on view#class', () => {
+				view.set( 'class', 'foo' );
+
+				expect( view.element.classList.contains( 'foo' ) ).to.be.true;
+			} );
+		} );
+
+		describe( 'labelView', () => {
+			it( 'reacts on view#labelStyle', () => {
+				expect( view.labelView.element.attributes.getNamedItem( 'style' ) ).to.be.null;
+
+				view.labelStyle = 'color: red';
+
+				expect( view.labelView.element.attributes.getNamedItem( 'style' ).value ).to.equal( 'color: red' );
+			} );
 		} );
 
 		describe( 'tooltip', () => {
@@ -210,6 +226,30 @@ describe( 'ButtonView', () => {
 				view.tabindex = 3;
 
 				expect( view.element.attributes.tabindex.value ).to.equal( '3' );
+			} );
+		} );
+
+		describe( 'aria', () => {
+			it( '-labelledby is set', () => {
+				expect( view.element.attributes[ 'aria-labelledby' ].value )
+					.to.equal( view.element.lastChild.id )
+					.to.match( /^ck-editor__aria-label_\w+$/ );
+			} );
+
+			it( '-disabled reacts to #isEnabled', () => {
+				view.isEnabled = true;
+				expect( view.element.attributes[ 'aria-disabled' ] ).to.be.undefined;
+
+				view.isEnabled = false;
+				expect( view.element.attributes[ 'aria-disabled' ].value ).to.equal( 'true' );
+			} );
+
+			it( '-pressed reacts to #isOn', () => {
+				view.isOn = true;
+				expect( view.element.attributes[ 'aria-pressed' ].value ).to.equal( 'true' );
+
+				view.isOn = false;
+				expect( view.element.attributes[ 'aria-pressed' ] ).to.be.undefined;
 			} );
 		} );
 

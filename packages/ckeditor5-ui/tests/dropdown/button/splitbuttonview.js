@@ -33,6 +33,7 @@ describe( 'SplitButtonView', () => {
 		it( 'creates view#arrowView', () => {
 			expect( view.arrowView ).to.be.instanceOf( ButtonView );
 			expect( view.arrowView.element.classList.contains( 'ck-splitbutton__arrow' ) ).to.be.true;
+			expect( view.arrowView.element.attributes[ 'aria-haspopup' ].value ).to.equal( 'true' );
 			expect( view.arrowView.icon ).to.be.not.undefined;
 		} );
 

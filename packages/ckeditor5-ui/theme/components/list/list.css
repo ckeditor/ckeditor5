@@ -10,6 +10,8 @@
 
 	/* Crop the the items when the list has huge border-radius. */
 	overflow: hidden;
+	display: flex;
+	flex-direction: column;
 
 	& .ck-list__item,
 	& .ck-list__separator {
