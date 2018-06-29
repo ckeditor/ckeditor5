@@ -7,43 +7,21 @@
  * @module editor-inline/inlineeditorui
  */
 
-import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
+import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
 import enableToolbarKeyboardFocus from '@ckeditor/ckeditor5-ui/src/toolbar/enabletoolbarkeyboardfocus';
 import normalizeToolbarConfig from '@ckeditor/ckeditor5-ui/src/toolbar/normalizetoolbarconfig';
 
 /**
  * The inline editor UI class.
  *
- * @implements module:core/editor/editorui~EditorUI
+ * @extends module:core/editor/editorui~EditorUI
  */
-export default class InlineEditorUI {
+export default class InlineEditorUI extends EditorUI {
 	/**
-	 * Creates an instance of the editor UI class.
-	 *
-	 * @param {module:core/editor/editor~Editor} editor The editor instance.
-	 * @param {module:ui/editorui/editoruiview~EditorUIView} view The view of the UI.
+	 * @inheritDoc
 	 */
 	constructor( editor, view ) {
-		/**
-		 * @inheritDoc
-		 */
-		this.editor = editor;
-
-		/**
-		 * @inheritDoc
-		 */
-		this.view = view;
-
-		/**
-		 * @inheritDoc
-		 */
-		this.componentFactory = new ComponentFactory( editor );
-
-		/**
-		 * @inheritDoc
-		 */
-		this.focusTracker = new FocusTracker();
+		super( editor, view );
 
 		/**
 		 * A normalized `config.toolbar` object.
@@ -71,7 +49,7 @@ export default class InlineEditorUI {
 		}
 
 		// https://github.com/ckeditor/ckeditor5-editor-inline/issues/4
-		view.listenTo( editor.editing.view, 'render', () => {
+		view.listenTo( editor.ui, 'update', () => {
 			// Don't pin if the panel is not already visible. It prevents the panel
 			// showing up when there's no focus in the UI.
 			if ( view.panel.isVisible ) {
@@ -102,12 +80,5 @@ export default class InlineEditorUI {
 			originKeystrokeHandler: editor.keystrokes,
 			toolbar: view.toolbar
 		} );
-	}
-
-	/**
-	 * Destroys the UI.
-	 */
-	destroy() {
-		this.view.destroy();
 	}
 }
