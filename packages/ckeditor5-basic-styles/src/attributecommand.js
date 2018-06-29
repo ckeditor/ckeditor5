@@ -127,14 +127,8 @@ export default class AttributeCommand extends Command {
 			return selection.hasAttribute( this.attributeKey );
 		}
 
-		const ranges = Array.from( selection.getRanges() );
-
-		if ( selection.isBackward ) {
-			ranges.reverse();
-		}
-
-		for ( const range of ranges ) {
-			for ( const item of range.getItems( { direction: selection.isBackward ? 'backward' : 'forward' } ) ) {
+		for ( const range of selection.getRanges() ) {
+			for ( const item of range.getItems() ) {
 				if ( schema.checkAttribute( item, this.attributeKey ) ) {
 					return item.hasAttribute( this.attributeKey );
 				}
