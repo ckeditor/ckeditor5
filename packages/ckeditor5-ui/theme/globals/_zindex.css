@@ -5,5 +5,5 @@
 
 :root {
 	--ck-z-default: 1;
-	--ck-z-modal: 999;
+	--ck-z-modal: calc( var(--ck-z-default) + 999 );
 }
