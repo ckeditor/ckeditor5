@@ -239,8 +239,8 @@ export default class Editor {
 	/**
 	 * Destroys the editor instance, releasing all resources used by it.
 	 *
-	 * **Note** The editor can not be destroyed during the initialization phase so
-	 * this methods waits for the editor initialization before destroying.
+	 * **Note** The editor cannot be destroyed during the initialization phase so if it is called
+	 * while the editor {@link #state is being initialized}, it will wait for the editor initialization before destroying it.
 	 *
 	 * @fires destroy
 	 * @returns {Promise} A promise that resolves once the editor instance is fully destroyed.
