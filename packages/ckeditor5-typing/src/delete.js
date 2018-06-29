@@ -11,6 +11,8 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import DeleteCommand from './deletecommand';
 import DeleteObserver from './deleteobserver';
 
+import injectAndroidBackspaceMutationsHandling from './utils/injectandroidbackspacemutationshandling';
+
 /**
  * The delete and backspace feature. Handles the <kbd>Delete</kbd> and <kbd>Backspace</kbd> keys in the editor.
  *
@@ -39,5 +41,7 @@ export default class Delete extends Plugin {
 			data.preventDefault();
 			view.scrollToTheSelection();
 		} );
+
+		injectAndroidBackspaceMutationsHandling( editor );
 	}
 }
