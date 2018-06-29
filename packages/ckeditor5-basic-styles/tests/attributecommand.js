@@ -81,13 +81,13 @@ describe( 'AttributeCommand', () => {
 			expect( command.value ).to.be.true;
 		} );
 
-		it( 'is false when the first item that allows attribute has not the attribute set #1', () => {
+		it( 'is false when the first item that allows attribute does not have the attribute set #1', () => {
 			setData( model, '<p>b[a<$text bold="true">r</$text></p><h1>fo]o</h1>' );
 
 			expect( command.value ).to.be.false;
 		} );
 
-		it( 'is false when the first item that allows attribute has not the attribute set #2', () => {
+		it( 'is false when the first item that allows attribute does not have the attribute set #2', () => {
 			setData( model, '<h1>fo[o</h1><p>b<$text bold="true">r</$text>r]</p>' );
 
 			expect( command.value ).to.be.false;
