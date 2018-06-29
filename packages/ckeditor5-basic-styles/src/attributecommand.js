@@ -113,8 +113,6 @@ export default class AttributeCommand extends Command {
 	 * Checks the attribute value of the first node in the selection that allows the attribute.
 	 * For the collapsed selection returns the selection attribute.
 	 *
-	 * **Note** Selection direction is taken into consideration.
-	 *
 	 * @private
 	 * @returns {Boolean} The attribute value.
 	 */
