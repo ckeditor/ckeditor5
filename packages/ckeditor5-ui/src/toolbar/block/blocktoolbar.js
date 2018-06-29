@@ -103,7 +103,6 @@ export default class BlockToolbar extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const view = editor.editing.view;
 
 		// Hides panel on a direct selection change.
 		this.listenTo( editor.model.document.selection, 'change:range', ( evt, data ) => {
@@ -112,7 +111,7 @@ export default class BlockToolbar extends Plugin {
 			}
 		} );
 
-		this.listenTo( view, 'render', () => this._updateButton() );
+		this.listenTo( editor.ui, 'update', () => this._updateButton() );
 		// `low` priority is used because of https://github.com/ckeditor/ckeditor5-core/issues/133.
 		this.listenTo( editor, 'change:isReadOnly', () => this._updateButton(), { priority: 'low' } );
 		this.listenTo( editor.ui.focusTracker, 'change:isFocused', () => this._updateButton() );
