@@ -230,7 +230,7 @@ export default class BlockToolbar extends Plugin {
 			}
 		} );
 
-		this.listenTo( view, 'render', () => {
+		this.listenTo( editor.ui, 'update', () => {
 			// Get first selected block, button will be attached to this element.
 			modelTarget = Array.from( model.document.selection.getSelectedBlocks() )[ 0 ];
 
