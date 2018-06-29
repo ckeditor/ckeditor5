@@ -84,9 +84,7 @@ export default class ClassicEditor extends Editor {
 	}
 
 	/**
-	 * An HTML element that represents the whole editor (with UI). See the {@link module:core/editor/editorwithui~EditorWithUI} interface.
-	 *
-	 * @returns {HTMLElement|null}
+	 * @inheritDoc
 	 */
 	get element() {
 		return this.ui.view.element;
@@ -100,7 +98,10 @@ export default class ClassicEditor extends Editor {
 	 * @returns {Promise}
 	 */
 	destroy() {
-		this.updateSourceElement();
+		if ( this.sourceElement ) {
+			this.updateSourceElement();
+		}
+
 		this._elementReplacer.restore();
 		this.ui.destroy();
 
@@ -193,19 +194,16 @@ export default class ClassicEditor extends Editor {
 					.then( () => editor.ui.init() )
 					.then( () => {
 						if ( isElement( sourceElementOrData ) ) {
-							editor._elementReplacer.replace( sourceElementOrData, editor.ui.view.element );
+							editor._elementReplacer.replace( sourceElementOrData, editor.element );
 						}
 
 						editor.fire( 'uiReady' );
 					} )
 					.then( () => editor.editing.view.attachDomRoot( editor.ui.view.editableElement ) )
 					.then( () => {
-						if ( editor.sourceElement ) {
-							editor.data.init( getDataFromElement( editor.sourceElement ) );
-						} else {
-							editor.data.init( sourceElementOrData );
-							editor.sourceElement = editor.ui.view.element;
-						}
+						editor.data.init(
+							isElement( sourceElementOrData ) ? getDataFromElement( sourceElementOrData ) : sourceElementOrData
+						);
 					} )
 					.then( () => {
 						editor.fire( 'dataReady' );

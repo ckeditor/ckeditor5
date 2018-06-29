@@ -100,14 +100,6 @@ describe( 'ClassicEditor', () => {
 			} );
 		} );
 
-		it( 'editor.element should be equal to editor.ui.view.element when data is passed', () => {
-			return ClassicEditor.create( '<p>Hello world!</p>', {
-				plugins: [ Paragraph ]
-			} ).then( editor => {
-				expect( editor.element ).to.equal( editor.ui.view.element );
-			} );
-		} );
-
 		describe( 'ui', () => {
 			it( 'creates the UI using BoxedEditorUI classes', () => {
 				expect( editor.ui ).to.be.instanceof( ClassicEditorUI );
@@ -157,6 +149,18 @@ describe( 'ClassicEditor', () => {
 				} );
 		} );
 
+		it( 'should have undefined the #sourceElement if editor was initialized with data', () => {
+			return ClassicEditor
+				.create( '<p>Foo.</p>', {
+					plugins: [ Paragraph, Bold ]
+				} )
+				.then( newEditor => {
+					expect( newEditor.sourceElement ).to.be.undefined;
+
+					return newEditor.destroy();
+				} );
+		} );
+
 		describe( 'ui', () => {
 			it( 'inserts editor UI next to editor element', () => {
 				expect( editor.ui.view.element.previousSibling ).to.equal( editorElement );
@@ -164,6 +168,20 @@ describe( 'ClassicEditor', () => {
 
 			it( 'attaches editable UI as view\'s DOM root', () => {
 				expect( editor.editing.view.getDomRoot() ).to.equal( editor.ui.view.editable.element );
+			} );
+
+			it( 'editor.element points to the editor\'s UI when editor was initialized on the DOM element', () => {
+				expect( editor.element ).to.equal( editor.ui.view.element );
+			} );
+
+			it( 'editor.element points to the editor\'s UI when editor was initialized with data', () => {
+				return ClassicEditor.create( '<p>Hello world!</p>', {
+					plugins: [ Paragraph ]
+				} ).then( editor => {
+					expect( editor.element ).to.equal( editor.ui.view.element );
+
+					return editor.destroy();
+				} );
 			} );
 		} );
 	} );
@@ -260,6 +278,23 @@ describe( 'ClassicEditor', () => {
 			return editor.destroy()
 				.then( () => {
 					expect( editorElement.innerHTML ).to.equal( '<p>foo</p>' );
+				} );
+		} );
+
+		it( 'does not update the source element if editor was initialized with data', () => {
+			return ClassicEditor
+				.create( '<p>Foo.</p>', {
+					plugins: [ Paragraph, Bold ]
+				} )
+				.then( newEditor => {
+					const spy = sinon.stub( newEditor, 'updateSourceElement' );
+
+					return newEditor.destroy()
+						.then( () => {
+							expect( spy.called ).to.be.false;
+
+							spy.restore();
+						} );
 				} );
 		} );
 
