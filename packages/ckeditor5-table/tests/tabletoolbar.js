@@ -17,7 +17,7 @@ import View from '@ckeditor/ckeditor5-ui/src/view';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
 describe( 'TableToolbar', () => {
-	let editor, model, doc, editingView, plugin, toolbar, balloon, editorElement;
+	let editor, model, doc, plugin, toolbar, balloon, editorElement;
 
 	beforeEach( () => {
 		editorElement = global.document.createElement( 'div' );
@@ -36,7 +36,6 @@ describe( 'TableToolbar', () => {
 				doc = model.document;
 				plugin = editor.plugins.get( TableToolbar );
 				toolbar = plugin._toolbar;
-				editingView = editor.editing.view;
 				balloon = editor.plugins.get( 'ContextualBalloon' );
 			} );
 	} );
@@ -112,23 +111,24 @@ describe( 'TableToolbar', () => {
 		} );
 	} );
 
-	describe( 'integration with the editor selection (#change event)', () => {
+	describe( 'integration with the editor selection (ui#update event)', () => {
 		beforeEach( () => {
 			editor.ui.focusTracker.isFocused = true;
 		} );
 
-		it( 'should not show the toolbar on render when the table is selected', () => {
+		it( 'should not show the toolbar on ui#update when the table is selected', () => {
 			setData( model, '<paragraph>foo</paragraph>[<table><tableRow><tableCell></tableCell></tableRow></table>]' );
 
 			expect( balloon.visibleView ).to.be.null;
 		} );
 
-		it( 'should show the toolbar on render when the table content is selected', () => {
+		it( 'should show the toolbar on ui#update when the table content is selected', () => {
 			setData( model, '<paragraph>[foo]</paragraph><table><tableRow><tableCell></tableCell></tableRow></table>' );
 
 			expect( balloon.visibleView ).to.be.null;
 
-			editingView.change( () => {} );
+			editor.ui.fire( 'update' );
+
 			expect( balloon.visibleView ).to.be.null;
 
 			model.change( writer => {
@@ -142,12 +142,13 @@ describe( 'TableToolbar', () => {
 
 			// Make sure successive change does not throw, e.g. attempting
 			// to insert the toolbar twice.
-			editingView.change( () => {} );
+			editor.ui.fire( 'update' );
 			expect( balloon.visibleView ).to.equal( toolbar );
 		} );
 
 		it( 'should not engage when the toolbar is in the balloon yet invisible', () => {
 			setData( model, '<table><tableRow><tableCell>x[y]z</tableCell></tableRow></table>' );
+
 			expect( balloon.visibleView ).to.equal( toolbar );
 
 			// Put anything on top of the ContextualBalloon stack above the table toolbar.
@@ -163,7 +164,8 @@ describe( 'TableToolbar', () => {
 
 			expect( balloon.visibleView ).to.equal( lastView );
 
-			editingView.change( () => {} );
+			editor.ui.fire( 'update' );
+
 			expect( balloon.visibleView ).to.equal( lastView );
 		} );
 
@@ -183,7 +185,7 @@ describe( 'TableToolbar', () => {
 
 			// Make sure successive change does not throw, e.g. attempting
 			// to remove the toolbar twice.
-			editingView.change( () => {} );
+			editor.ui.fire( 'update' );
 			expect( balloon.visibleView ).to.be.null;
 		} );
 	} );
