@@ -92,7 +92,6 @@ Styles are what the document editor really needs to materialize. Begin with the 
 	/* This element is a flex container for easier rendering. */
 	display: flex;
 	flex-flow: column nowrap;
-	overflow: hidden;
 }
 ```
 
@@ -154,7 +153,7 @@ All you need to do now is style the actual content of the editor. Start with def
 ```css
 /* Set the default font for the "page" of the content. */
 .document-editor .ck-content,
-.document-editor .ck-heading-dropdown .ck-list {
+.document-editor .ck-heading-dropdown .ck-list .ck-button__label {
 	font: 16px/1.6 "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 ```
@@ -167,15 +166,23 @@ Then focus on headings and paragraphs. Note that what the users see in the headi
 
 ```css
 /* Adjust the headings dropdown to host some larger heading styles. */
-.document-editor .ck-heading-dropdown .ck-dropdown__panel .ck-list > .ck-list__item {
-	line-height: calc( 1.2 * var(--ck-line-height-base) * var(--ck-font-size-base) );
-	min-width: 8em;
+.document-editor .ck-heading-dropdown .ck-list .ck-button__label {
+	line-height: calc( 1.7 * var(--ck-line-height-base) * var(--ck-font-size-base) );
+	min-width: 6em;
+}
+
+/* Scale down all heading previews because they are way too big to be presented in the UI.
+Preserve the relative scale, though. */
+.document-editor .ck-heading-dropdown .ck-list .ck-button:not(.ck-heading_paragraph) .ck-button__label {
+	transform: scale(0.8);
+	transform-origin: left;
 }
 
 /* Set the styles for "Heading 1". */
 .document-editor .ck-content h2,
-.document-editor .ck-heading-dropdown .ck-heading_heading1 {
+.document-editor .ck-heading-dropdown .ck-heading_heading1 .ck-button__label {
 	font-size: 2.18em;
+	font-weight: normal;
 }
 
 .document-editor .ck-content h2 {
@@ -186,13 +193,14 @@ Then focus on headings and paragraphs. Note that what the users see in the headi
 
 /* Set the styles for "Heading 2". */
 .document-editor .ck-content h3,
-.document-editor .ck-heading-dropdown .ck-heading_heading2 {
+.document-editor .ck-heading-dropdown .ck-heading_heading2 .ck-button__label {
 	font-size: 1.75em;
+	font-weight: normal;
 	color: hsl( 203, 100%, 50% );
 }
 
-.document-editor .ck-heading-dropdown .ck-heading_heading2.ck-list__item_active {
-	color: var(--ck-color-list-item-text-active);
+.document-editor .ck-heading-dropdown .ck-heading_heading2.ck-on .ck-button__label {
+	color: var(--ck-color-list-button-on-text);
 }
 
 /* Set the styles for "Heading 2". */
@@ -204,8 +212,9 @@ Then focus on headings and paragraphs. Note that what the users see in the headi
 
 /* Set the styles for "Heading 3". */
 .document-editor .ck-content h4,
-.document-editor .ck-heading-dropdown .ck-heading_heading3 {
+.document-editor .ck-heading-dropdown .ck-heading_heading3 .ck-button__label {
 	font-size: 1.31em;
+	font-weight: bold;
 }
 
 .document-editor .ck-content h4 {
@@ -215,12 +224,8 @@ Then focus on headings and paragraphs. Note that what the users see in the headi
 }
 
 /* Set the styles for "Paragraph". */
-.document-editor .ck-content p,
-.document-editor .ck-heading-dropdown .ck-heading_paragraph {
-	font-size: 1em;
-}
-
 .document-editor .ck-content p {
+	font-size: 1em;
 	line-height: 1.63em;
 	padding-top: .5em;
 	margin-bottom: 1.13em;
