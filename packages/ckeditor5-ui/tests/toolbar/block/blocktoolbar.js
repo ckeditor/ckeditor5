@@ -226,7 +226,7 @@ describe( 'BlockToolbar', () => {
 			expect( blockToolbar.buttonView.isVisible ).to.be.true;
 		} );
 
-		it( 'should not display the button when the selection is placed in a root element', () => {
+		it( 'should not display the button when the selection is placed in the root element', () => {
 			editor.model.schema.extend( '$text', { allowIn: '$root' } );
 
 			setData( editor.model, '<paragraph>foo</paragraph>[]<paragraph>bar</paragraph>' );
@@ -291,7 +291,7 @@ describe( 'BlockToolbar', () => {
 				height: 100
 			} );
 
-			editor.editing.view.fire( 'render' );
+			editor.ui.fire( 'update' );
 
 			expect( blockToolbar.buttonView.top ).to.equal( 470 );
 			expect( blockToolbar.buttonView.left ).to.equal( 100 );
@@ -326,24 +326,24 @@ describe( 'BlockToolbar', () => {
 				height: 100
 			} );
 
-			editor.editing.view.fire( 'render' );
+			editor.ui.fire( 'update' );
 
 			expect( blockToolbar.buttonView.top ).to.equal( 472 );
 			expect( blockToolbar.buttonView.left ).to.equal( 100 );
 		} );
 
-		it( 'should reposition the #panelView when open on view#render', () => {
+		it( 'should reposition the #panelView when open on ui#update', () => {
 			blockToolbar.panelView.isVisible = false;
 
 			const spy = testUtils.sinon.spy( blockToolbar.panelView, 'pin' );
 
-			editor.editing.view.fire( 'render' );
+			editor.ui.fire( 'update' );
 
 			sinon.assert.notCalled( spy );
 
 			blockToolbar.panelView.isVisible = true;
 
-			editor.editing.view.fire( 'render' );
+			editor.ui.fire( 'update' );
 
 			sinon.assert.calledWith( spy, {
 				target: blockToolbar.buttonView.element,
@@ -351,12 +351,12 @@ describe( 'BlockToolbar', () => {
 			} );
 		} );
 
-		it( 'should not reset the toolbar focus on view#render', () => {
+		it( 'should not reset the toolbar focus on ui#update', () => {
 			blockToolbar.panelView.isVisible = true;
 
 			const spy = testUtils.sinon.spy( blockToolbar.toolbarView, 'focus' );
 
-			editor.editing.view.fire( 'render' );
+			editor.ui.fire( 'update' );
 
 			sinon.assert.notCalled( spy );
 		} );
