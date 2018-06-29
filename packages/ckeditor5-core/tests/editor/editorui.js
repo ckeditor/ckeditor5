@@ -24,10 +24,7 @@ describe( 'EditorUI', () => {
 	} );
 
 	afterEach( () => {
-		return Promise.all( [
-			editor.destroy(),
-			ui.destroy()
-		] );
+		ui.destroy();
 	} );
 
 	describe( 'constructor()', () => {
