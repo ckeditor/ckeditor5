@@ -54,11 +54,9 @@ export default function injectAndroidBackspaceMutationsHandling( editor ) {
 	// and delete observer will not be triggered. In such cases we need to handle
 	// container removal mutations manually.
 	function handleContainerRemovalMutations() {
-		const selection = shouldUsePreviousSelection( currentSelection, previousSelection ) ? previousSelection : currentSelection;
-
 		if ( shouldUsePreviousSelection( currentSelection, previousSelection ) ) {
 			model.enqueueChange( writer => {
-				writer.setSelection( selection );
+				writer.setSelection( previousSelection );
 			} );
 		}
 
