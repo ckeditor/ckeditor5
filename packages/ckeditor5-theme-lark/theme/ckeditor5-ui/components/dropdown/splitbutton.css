@@ -20,7 +20,8 @@
 	}
 
 	& > .ck-splitbutton__arrow {
-		/* It's a text-less button but still, it should not be square. */
+		/* It's a text-less button and since the icon is positioned absolutely in such situation,
+		it must get some arbitrary min-width. */
 		min-width: unset;
 
 		/* Don't round the arrow button on the right side */

@@ -131,9 +131,10 @@ The file containing custom variables will be named `custom.css` and it will look
 	/* -- Overrides the default .ck-list class colors. ------------------------------------------ */
 
 	--ck-color-list-background: var(--ck-custom-background);
-	--ck-color-list-item-background-hover: var(--ck-custom-foreground);
-	--ck-color-list-item-background-active: hsl(208, 88%, 52%);
-	--ck-color-list-item-text-active: var(--ck-custom-white);
+	--ck-color-list-button-hover-background: var(--ck-color-base-foreground);
+	--ck-color-list-button-on-background: var(--ck-color-base-active);
+	--ck-color-list-button-on-background-focus: var(--ck-color-base-active-focus);
+	--ck-color-list-button-on-text: var(--ck-color-base-background);
 
 	/* -- Overrides the default .ck-balloon-panel class colors. --------------------------------- */
 
@@ -157,9 +158,9 @@ The file containing custom variables will be named `custom.css` and it will look
 
 	/* -- Overrides the default colors used by the ckeditor5-widget package. -------------------- */
 
-	--ck-color-widget-border-blurred: hsl(0, 0%, 87%);
-	--ck-color-widget-border-hover: hsl(43, 100%, 68%);
-	--ck-color-widget-editable-focused-background: var(--ck-custom-white);
+	--ck-color-widget-blurred-border: hsl(0, 0%, 87%);
+	--ck-color-widget-hover-border: hsl(43, 100%, 68%);
+	--ck-color-widget-editable-focus-background: var(--ck-custom-white);
 
 	/* -- Overrides the default colors used by the ckeditor5-link package. ---------------------- */
 
