@@ -5,14 +5,17 @@
 
 /* globals Event */
 
-import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
 import BalloonEditorUI from '../src/ballooneditorui';
+import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
 import BalloonEditorUIView from '../src/ballooneditoruiview';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
 import BalloonToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/balloon/balloontoolbar';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
+
 import utils from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+
+testUtils.createSinonSandbox();
 
 describe( 'BalloonEditorUI', () => {
 	let editor, view, ui;
@@ -34,20 +37,8 @@ describe( 'BalloonEditorUI', () => {
 	} );
 
 	describe( 'constructor()', () => {
-		it( 'sets #editor', () => {
-			expect( ui.editor ).to.equal( editor );
-		} );
-
-		it( 'sets #view', () => {
-			expect( ui.view ).to.be.instanceOf( BalloonEditorUIView );
-		} );
-
-		it( 'creates #componentFactory factory', () => {
-			expect( ui.componentFactory ).to.be.instanceOf( ComponentFactory );
-		} );
-
-		it( 'creates #focusTracker', () => {
-			expect( ui.focusTracker ).to.be.instanceOf( FocusTracker );
+		it( 'extends EditorUI', () => {
+			expect( ui ).to.instanceof( EditorUI );
 		} );
 	} );
 
@@ -58,10 +49,10 @@ describe( 'BalloonEditorUI', () => {
 
 		it( 'initializes keyboard navigation between view#toolbar and view#editable', () => {
 			const toolbar = editor.plugins.get( 'BalloonToolbar' );
-			const toolbarFocusSpy = sinon.stub( toolbar.toolbarView, 'focus' ).returns( {} );
-			const toolbarShowSpy = sinon.stub( toolbar, 'show' ).returns( {} );
-			const toolbarHideSpy = sinon.stub( toolbar, 'hide' ).returns( {} );
-			const editingFocusSpy = sinon.stub( editor.editing.view, 'focus' ).returns( {} );
+			const toolbarFocusSpy = testUtils.sinon.stub( toolbar.toolbarView, 'focus' ).returns( {} );
+			const toolbarShowSpy = testUtils.sinon.stub( toolbar, 'show' ).returns( {} );
+			const toolbarHideSpy = testUtils.sinon.stub( toolbar, 'hide' ).returns( {} );
+			const editingFocusSpy = testUtils.sinon.stub( editor.editing.view, 'focus' ).returns( {} );
 
 			ui.focusTracker.isFocused = true;
 
@@ -130,17 +121,6 @@ describe( 'BalloonEditorUI', () => {
 					{ isReadOnly: true }
 				);
 			} );
-		} );
-	} );
-
-	describe( 'destroy()', () => {
-		it( 'destroys the #view', () => {
-			const spy = sinon.spy( view, 'destroy' );
-
-			return editor.destroy()
-				.then( () => {
-					sinon.assert.calledOnce( spy );
-				} );
 		} );
 	} );
 } );
