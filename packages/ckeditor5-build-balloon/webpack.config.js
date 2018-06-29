@@ -33,10 +33,11 @@ module.exports = {
 				sourceMap: true,
 				uglifyOptions: {
 					output: {
-						comments: /^\**!/
+						// Preserve license comments starting with at least 30 `-` chars.
+						comments: /^-{30,}/
 					}
 				}
-			} ),
+			} )
 		]
 	},
 
