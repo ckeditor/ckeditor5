@@ -246,7 +246,7 @@ describe( 'LinkUI', () => {
 			expect( formView.urlInputView.inputView.element.value ).to.equal( '' );
 		} );
 
-		describe( 'response to view#change', () => {
+		describe( 'response to ui#update', () => {
 			let view, viewDocument;
 
 			beforeEach( () => {
@@ -254,17 +254,17 @@ describe( 'LinkUI', () => {
 				viewDocument = view.document;
 			} );
 
-			it( 'should not duplicate #change listeners', () => {
+			it( 'should not duplicate #update listeners', () => {
 				setModelData( editor.model, '<paragraph>f[]oo</paragraph>' );
 
 				const spy = testUtils.sinon.stub( balloon, 'updatePosition' ).returns( {} );
 
 				linkUIFeature._showUI();
-				view.render();
+				editor.ui.fire( 'update' );
 				linkUIFeature._hideUI();
 
 				linkUIFeature._showUI();
-				view.render();
+				editor.ui.fire( 'update' );
 				sinon.assert.calledTwice( spy );
 			} );
 
@@ -301,7 +301,6 @@ describe( 'LinkUI', () => {
 				linkUIFeature._showUI();
 				const spy = testUtils.sinon.stub( balloon, 'updatePosition' ).returns( {} );
 
-				// Fires #render.
 				const root = viewDocument.getRoot();
 				const text = root.getChild( 0 ).getChild( 0 );
 
@@ -414,12 +413,12 @@ describe( 'LinkUI', () => {
 			} ).to.not.throw();
 		} );
 
-		it( 'should clear #render listener from the ViewDocument', () => {
+		it( 'should clear ui#update listener from the ViewDocument', () => {
 			const spy = sinon.spy();
 
-			linkUIFeature.listenTo( editor.editing.view, 'render', spy );
+			linkUIFeature.listenTo( editor.ui, 'update', spy );
 			linkUIFeature._hideUI();
-			editor.editing.view.change( () => {} );
+			editor.ui.fire( 'update' );
 
 			sinon.assert.notCalled( spy );
 		} );

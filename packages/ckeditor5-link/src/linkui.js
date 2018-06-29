@@ -336,8 +336,8 @@ export default class LinkUI extends Plugin {
 			}
 		}
 
-		// Begin responding to view#render once the UI is added.
-		this._startUpdatingUIOnViewRender();
+		// Begin responding to ui#update once the UI is added.
+		this._startUpdatingUI();
 	}
 
 	/**
@@ -352,9 +352,9 @@ export default class LinkUI extends Plugin {
 			return;
 		}
 
-		const editingView = this.editor.editing.view;
+		const editor = this.editor;
 
-		this.stopListening( editingView, 'render' );
+		this.stopListening( editor.ui, 'update' );
 
 		// Remove form first because it's on top of the stack.
 		this._removeFormView();
@@ -363,26 +363,25 @@ export default class LinkUI extends Plugin {
 		this._balloon.remove( this.actionsView );
 
 		// Make sure the focus always gets back to the editable.
-		editingView.focus();
+		editor.editing.view.focus();
 	}
 
 	/**
-	 * Makes the UI react to the {@link module:engine/view/view~View#event:render} in the view to
-	 * reposition itself as the document changes.
+	 * Makes the UI react to the {@link module:core/editor/editorui~EditorUI#event:update} event to
+	 * reposition itself when the editor ui should be refreshed.
 	 *
-	 * See: {@link #_hideUI} to learn when the UI stops reacting to the `render` event.
+	 * See: {@link #_hideUI} to learn when the UI stops reacting to the `update` event.
 	 *
 	 * @protected
 	 */
-	_startUpdatingUIOnViewRender() {
+	_startUpdatingUI() {
 		const editor = this.editor;
-		const editing = editor.editing;
-		const editingView = editing.view;
+		const viewDocument = editor.editing.view.document;
 
 		let prevSelectedLink = this._getSelectedLinkElement();
 		let prevSelectionParent = getSelectionParent();
 
-		this.listenTo( editingView, 'render', () => {
+		this.listenTo( editor.ui, 'update', () => {
 			const selectedLink = this._getSelectedLinkElement();
 			const selectionParent = getSelectionParent();
 
@@ -415,7 +414,7 @@ export default class LinkUI extends Plugin {
 		} );
 
 		function getSelectionParent() {
-			return editingView.document.selection.focus.getAncestors()
+			return viewDocument.selection.focus.getAncestors()
 				.reverse()
 				.find( node => node.is( 'element' ) );
 		}
