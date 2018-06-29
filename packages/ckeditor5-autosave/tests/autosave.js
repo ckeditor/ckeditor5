@@ -24,54 +24,6 @@ describe( 'Autosave', () => {
 		expect( Autosave.pluginName ).to.equal( 'Autosave' );
 	} );
 
-	it( 'should wait on editor initialization', () => {
-		element = document.createElement( 'div' );
-		document.body.appendChild( element );
-		editor = null;
-
-		class AsyncPlugin {
-			constructor( editor ) {
-				this.editor = editor;
-			}
-
-			init() {
-				this.editor.once( 'ready', () => {
-					const editor = this.editor;
-
-					editor.model.change( writer => {
-						writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) ) );
-						editor.model.insertContent( new ModelText( 'bar' ), editor.model.document.selection );
-					} );
-				} );
-
-				return Promise.resolve().then( () => Promise.resolve() );
-			}
-		}
-
-		return ClassicTestEditor
-			.create( element, {
-				plugins: [ Autosave, Paragraph, AsyncPlugin ],
-				autosave: {
-					save: sinon.spy( () => {
-						expect( editor ).to.not.be.null;
-					} )
-				}
-			} )
-			.then( _editor => {
-				editor = _editor;
-				autosave = editor.plugins.get( Autosave );
-				const spy = editor.config.get( 'autosave' ).save;
-
-				expect( editor.getData() ).to.equal( '<p>bar</p>' );
-				sinon.assert.calledOnce( spy );
-			} )
-			.then( () => {
-				document.body.removeChild( element );
-
-				return editor.destroy();
-			} );
-	} );
-
 	describe( 'initialization', () => {
 		beforeEach( () => {
 			element = document.createElement( 'div' );
@@ -593,6 +545,54 @@ describe( 'Autosave', () => {
 					sinon.assert.calledOnce( serverActionStub );
 				} );
 		} );
+	} );
+
+	it( 'should wait on editor initialization', () => {
+		element = document.createElement( 'div' );
+		document.body.appendChild( element );
+		editor = null;
+
+		class AsyncPlugin {
+			constructor( editor ) {
+				this.editor = editor;
+			}
+
+			init() {
+				this.editor.once( 'ready', () => {
+					const editor = this.editor;
+
+					editor.model.change( writer => {
+						writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) ) );
+						editor.model.insertContent( new ModelText( 'bar' ), editor.model.document.selection );
+					} );
+				} );
+
+				return Promise.resolve().then( () => Promise.resolve() );
+			}
+		}
+
+		return ClassicTestEditor
+			.create( element, {
+				plugins: [ Autosave, Paragraph, AsyncPlugin ],
+				autosave: {
+					save: sinon.spy( () => {
+						expect( editor ).to.not.be.null;
+					} )
+				}
+			} )
+			.then( _editor => {
+				editor = _editor;
+				autosave = editor.plugins.get( Autosave );
+				const spy = editor.config.get( 'autosave' ).save;
+
+				expect( editor.getData() ).to.equal( '<p>bar</p>' );
+				sinon.assert.calledOnce( spy );
+			} )
+			.then( () => {
+				document.body.removeChild( element );
+
+				return editor.destroy();
+			} );
 	} );
 } );
 
