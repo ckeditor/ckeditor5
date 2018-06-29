@@ -7,44 +7,15 @@
  * @module editor-balloon/ballooneditorui
  */
 
-import ComponentFactory from '@ckeditor/ckeditor5-ui/src/componentfactory';
-import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
+import EditorUI from '@ckeditor/ckeditor5-core/src/editor/editorui';
 import enableToolbarKeyboardFocus from '@ckeditor/ckeditor5-ui/src/toolbar/enabletoolbarkeyboardfocus';
 
 /**
  * The balloon editor UI class.
  *
- * @implements module:core/editor/editorui~EditorUI
+ * @extends module:core/editor/editorui~EditorUI
  */
-export default class BalloonEditorUI {
-	/**
-	 * Creates an instance of the balloon editor UI class.
-	 *
-	 * @param {module:core/editor/editor~Editor} editor The editor instance.
-	 * @param {module:ui/editorui/editoruiview~EditorUIView} view The view of the UI.
-	 */
-	constructor( editor, view ) {
-		/**
-		 * @inheritDoc
-		 */
-		this.editor = editor;
-
-		/**
-		 * @inheritDoc
-		 */
-		this.view = view;
-
-		/**
-		 * @inheritDoc
-		 */
-		this.componentFactory = new ComponentFactory( editor );
-
-		/**
-		 * @inheritDoc
-		 */
-		this.focusTracker = new FocusTracker();
-	}
-
+export default class BalloonEditorUI extends EditorUI {
 	/**
 	 * Initializes the UI.
 	 */
@@ -79,12 +50,5 @@ export default class BalloonEditorUI {
 				balloonToolbar.hide();
 			}
 		} );
-	}
-
-	/**
-	 * Destroys the UI.
-	 */
-	destroy() {
-		this.view.destroy();
 	}
 }
