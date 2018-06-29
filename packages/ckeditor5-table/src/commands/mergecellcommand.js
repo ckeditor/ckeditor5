@@ -12,6 +12,7 @@ import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import TableWalker from '../tablewalker';
 import { updateNumericAttribute } from './utils';
+import TableUtils from '../tableutils';
 
 /**
  * The merge cell command.
@@ -130,8 +131,12 @@ export default class MergeCellCommand extends Command {
 			return;
 		}
 
+		const tableUtils = this.editor.plugins.get( TableUtils );
+
 		// First get the cell on proper direction.
-		const cellToMerge = this.isHorizontal ? getHorizontalCell( element, this.direction ) : getVerticalCell( element, this.direction );
+		const cellToMerge = this.isHorizontal ?
+			getHorizontalCell( element, this.direction, tableUtils ) :
+			getVerticalCell( element, this.direction );
 
 		if ( !cellToMerge ) {
 			return;
@@ -154,8 +159,28 @@ export default class MergeCellCommand extends Command {
 // @param {module:engine/model/element~Element} tableCell
 // @param {String} direction
 // @returns {module:engine/model/node~Node|null}
-function getHorizontalCell( tableCell, direction ) {
-	return direction == 'right' ? tableCell.nextSibling : tableCell.previousSibling;
+function getHorizontalCell( tableCell, direction, tableUtils ) {
+	const horizontalCell = direction == 'right' ? tableCell.nextSibling : tableCell.previousSibling;
+
+	if ( !horizontalCell ) {
+		return;
+	}
+
+	// Sort cells:
+	const cellOnLeft = direction == 'right' ? tableCell : horizontalCell;
+	const cellOnRight = direction == 'right' ? horizontalCell : tableCell;
+
+	// Get their column indexes:
+	const { column: leftCellColumn } = tableUtils.getCellLocation( cellOnLeft );
+	const { column: rightCellColumn } = tableUtils.getCellLocation( cellOnRight );
+
+	const leftCellSpan = parseInt( cellOnLeft.getAttribute( 'colspan' ) || 1 );
+
+	// The cell on the right must have index that is distant to the cell on the left by the left cell's width (colspan).
+	const cellsAreTouching = leftCellColumn + leftCellSpan === rightCellColumn;
+
+	// If the right cell's column index is different it means that there are rowspanned cells between them.
+	return cellsAreTouching ? horizontalCell : undefined;
 }
 
 // Returns the cell that can be merged vertically.

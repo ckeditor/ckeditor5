@@ -24,55 +24,57 @@ describe( 'InsertRowCommand', () => {
 	let editor, model, command;
 
 	beforeEach( () => {
-		return ModelTestEditor.create( {
-			plugins: [ TableUtils ]
-		} ).then( newEditor => {
-			editor = newEditor;
-			model = editor.model;
+		return ModelTestEditor
+			.create( {
+				plugins: [ TableUtils ]
+			} )
+			.then( newEditor => {
+				editor = newEditor;
+				model = editor.model;
 
-			const conversion = editor.conversion;
-			const schema = model.schema;
+				const conversion = editor.conversion;
+				const schema = model.schema;
 
-			schema.register( 'table', {
-				allowWhere: '$block',
-				allowAttributes: [ 'headingRows' ],
-				isObject: true
+				schema.register( 'table', {
+					allowWhere: '$block',
+					allowAttributes: [ 'headingRows' ],
+					isObject: true
+				} );
+
+				schema.register( 'tableRow', { allowIn: 'table' } );
+
+				schema.register( 'tableCell', {
+					allowIn: 'tableRow',
+					allowContentOf: '$block',
+					allowAttributes: [ 'colspan', 'rowspan' ],
+					isLimit: true
+				} );
+
+				model.schema.register( 'p', { inheritAllFrom: '$block' } );
+
+				// Table conversion.
+				conversion.for( 'upcast' ).add( upcastTable() );
+				conversion.for( 'downcast' ).add( downcastInsertTable() );
+
+				// Insert row conversion.
+				conversion.for( 'downcast' ).add( downcastInsertRow() );
+
+				// Remove row conversion.
+				conversion.for( 'downcast' ).add( downcastRemoveRow() );
+
+				// Table cell conversion.
+				conversion.for( 'downcast' ).add( downcastInsertCell() );
+
+				conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'td' } ) );
+				conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'th' } ) );
+
+				// Table attributes conversion.
+				conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
+				conversion.attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
+
+				conversion.for( 'downcast' ).add( downcastTableHeadingColumnsChange() );
+				conversion.for( 'downcast' ).add( downcastTableHeadingRowsChange() );
 			} );
-
-			schema.register( 'tableRow', { allowIn: 'table' } );
-
-			schema.register( 'tableCell', {
-				allowIn: 'tableRow',
-				allowContentOf: '$block',
-				allowAttributes: [ 'colspan', 'rowspan' ],
-				isLimit: true
-			} );
-
-			model.schema.register( 'p', { inheritAllFrom: '$block' } );
-
-			// Table conversion.
-			conversion.for( 'upcast' ).add( upcastTable() );
-			conversion.for( 'downcast' ).add( downcastInsertTable() );
-
-			// Insert row conversion.
-			conversion.for( 'downcast' ).add( downcastInsertRow() );
-
-			// Remove row conversion.
-			conversion.for( 'downcast' ).add( downcastRemoveRow() );
-
-			// Table cell conversion.
-			conversion.for( 'downcast' ).add( downcastInsertCell() );
-
-			conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'td' } ) );
-			conversion.for( 'upcast' ).add( upcastElementToElement( { model: 'tableCell', view: 'th' } ) );
-
-			// Table attributes conversion.
-			conversion.attributeToAttribute( { model: 'colspan', view: 'colspan' } );
-			conversion.attributeToAttribute( { model: 'rowspan', view: 'rowspan' } );
-
-			conversion.for( 'downcast' ).add( downcastTableHeadingColumnsChange() );
-			conversion.for( 'downcast' ).add( downcastTableHeadingRowsChange() );
-		} );
 	} );
 
 	afterEach( () => {
