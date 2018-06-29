@@ -239,17 +239,26 @@ export default class Editor {
 	/**
 	 * Destroys the editor instance, releasing all resources used by it.
 	 *
+	 * **Note** The editor can not be destroyed during the initialization phase so
+	 * this methods waits for the editor initialization before destroying.
+	 *
 	 * @fires destroy
 	 * @returns {Promise} A promise that resolves once the editor instance is fully destroyed.
 	 */
 	destroy() {
-		this.fire( 'destroy' );
+		let readyPromise = Promise.resolve();
 
-		this.stopListening();
+		if ( this.state == 'initializing' ) {
+			readyPromise = new Promise( resolve => this.once( 'ready', resolve ) );
+		}
 
-		this.commands.destroy();
-
-		return this.plugins.destroy()
+		return readyPromise
+			.then( () => {
+				this.fire( 'destroy' );
+				this.stopListening();
+				this.commands.destroy();
+			} )
+			.then( () => this.plugins.destroy() )
 			.then( () => {
 				this.model.destroy();
 				this.data.destroy();

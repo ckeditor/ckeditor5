@@ -197,10 +197,10 @@ describe( 'Editor', () => {
 		} );
 
 		it( 'is `destroyed` after editor destroy', () => {
-			const editor = new Editor();
-
-			return editor.destroy().then( () => {
-				expect( editor.state ).to.equal( 'destroyed' );
+			return Editor.create().then( editor => {
+				return editor.destroy().then( () => {
+					expect( editor.state ).to.equal( 'destroyed' );
+				} );
 			} );
 		} );
 
@@ -283,33 +283,49 @@ describe( 'Editor', () => {
 
 	describe( 'destroy()', () => {
 		it( 'should fire "destroy"', () => {
-			const editor = new Editor();
-			const spy = sinon.spy();
+			return Editor.create().then( editor => {
+				const spy = sinon.spy();
 
-			editor.on( 'destroy', spy );
+				editor.on( 'destroy', spy );
 
-			return editor.destroy().then( () => {
-				expect( spy.calledOnce ).to.be.true;
+				return editor.destroy().then( () => {
+					expect( spy.calledOnce ).to.be.true;
+				} );
 			} );
 		} );
 
 		it( 'should destroy all components it initialized', () => {
+			return Editor.create().then( editor => {
+				const dataDestroySpy = sinon.spy( editor.data, 'destroy' );
+				const modelDestroySpy = sinon.spy( editor.model, 'destroy' );
+				const editingDestroySpy = sinon.spy( editor.editing, 'destroy' );
+				const pluginsDestroySpy = sinon.spy( editor.plugins, 'destroy' );
+				const keystrokesDestroySpy = sinon.spy( editor.keystrokes, 'destroy' );
+
+				return editor.destroy()
+					.then( () => {
+						sinon.assert.calledOnce( dataDestroySpy );
+						sinon.assert.calledOnce( modelDestroySpy );
+						sinon.assert.calledOnce( editingDestroySpy );
+						sinon.assert.calledOnce( pluginsDestroySpy );
+						sinon.assert.calledOnce( keystrokesDestroySpy );
+					} );
+			} );
+		} );
+
+		it( 'should wait for the full init before destroying', done => {
+			const spy = sinon.spy();
 			const editor = new Editor();
 
-			const dataDestroySpy = sinon.spy( editor.data, 'destroy' );
-			const modelDestroySpy = sinon.spy( editor.model, 'destroy' );
-			const editingDestroySpy = sinon.spy( editor.editing, 'destroy' );
-			const pluginsDestroySpy = sinon.spy( editor.plugins, 'destroy' );
-			const keystrokesDestroySpy = sinon.spy( editor.keystrokes, 'destroy' );
+			editor.on( 'destroy', () => {
+				done();
+			} );
 
-			return editor.destroy()
-				.then( () => {
-					sinon.assert.calledOnce( dataDestroySpy );
-					sinon.assert.calledOnce( modelDestroySpy );
-					sinon.assert.calledOnce( editingDestroySpy );
-					sinon.assert.calledOnce( pluginsDestroySpy );
-					sinon.assert.calledOnce( keystrokesDestroySpy );
-				} );
+			editor.destroy();
+
+			sinon.assert.notCalled( spy );
+
+			editor.fire( 'ready' );
 		} );
 	} );
 

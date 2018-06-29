@@ -29,12 +29,14 @@ describe( 'ModelTestEditor', () => {
 
 		it( 'should disable editing pipeline', () => {
 			const spy = sinon.spy( EditingController.prototype, 'destroy' );
-			const editor = new ModelTestEditor( { foo: 1 } );
 
-			sinon.assert.calledOnce( spy );
+			return ModelTestEditor.create( { foo: 1 } ).then( editor => {
+				sinon.assert.calledOnce( spy );
 
-			spy.restore();
-			return editor.destroy();
+				spy.restore();
+
+				return editor.destroy();
+			} );
 		} );
 
 		it( 'creates main root element', () => {
