@@ -112,7 +112,7 @@ describe( 'InlineEditor', () => {
 			} );
 		} );
 
-		it( 'editor.element should contain the whole UI element', () => {
+		it( 'editor.element should contain the whole editor (with UI) element', () => {
 			return InlineEditor.create( '<p>Hello world!</p>', {
 				plugins: [ Paragraph ]
 			} ).then( editor => {
