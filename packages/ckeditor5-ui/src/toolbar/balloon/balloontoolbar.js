@@ -11,6 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ContextualBalloon from '../../panel/balloon/contextualballoon';
 import ToolbarView from '../toolbarview';
 import BalloonPanelView from '../../panel/balloon/balloonpanelview.js';
+import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import debounce from '@ckeditor/ckeditor5-utils/src/lib/lodash/debounce';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import normalizeToolbarConfig from '../normalizetoolbarconfig';
@@ -51,6 +52,17 @@ export default class BalloonToolbar extends Plugin {
 		this.toolbarView = this._createToolbarView();
 
 		/**
+		 * Tracks focus of editable element and {@link #toolbarView}.
+		 * When both are not focused then toolbar should hide.
+		 *
+		 * @readonly
+		 * @type {module:utils:focustracker~FocusTracker}
+		 */
+		this.focusTracker = new FocusTracker();
+		this.focusTracker.add( editor.ui.view.editableElement );
+		this.focusTracker.add( this.toolbarView.element );
+
+		/**
 		 * The contextual balloon plugin instance.
 		 *
 		 * @private
@@ -82,13 +94,12 @@ export default class BalloonToolbar extends Plugin {
 		const selection = editor.model.document.selection;
 
 		// Show/hide the toolbar on editable focus/blur.
-		this.listenTo( editor.editing.view.document, 'change:isFocused', ( evt, name, isEditableFocused ) => {
-			const isToolbarFocused = this.toolbarView.focusTracker.isFocused;
+		this.listenTo( this.focusTracker, 'change:isFocused', ( evt, name, isFocused ) => {
 			const isToolbarVisible = this._balloon.visibleView === this.toolbarView;
 
-			if ( !isEditableFocused && !isToolbarFocused && isToolbarVisible ) {
+			if ( !isFocused && isToolbarVisible ) {
 				this.hide();
-			} else if ( isEditableFocused ) {
+			} else if ( isFocused ) {
 				this.show();
 			}
 		} );

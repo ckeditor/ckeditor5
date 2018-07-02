@@ -8,6 +8,7 @@ import BalloonToolbar from '../../../src/toolbar/balloon/balloontoolbar';
 import ContextualBalloon from '../../../src/panel/balloon/contextualballoon';
 import BalloonPanelView from '../../../src/panel/balloon/balloonpanelview';
 import ToolbarView from '../../../src/toolbar/toolbarview';
+import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
@@ -140,6 +141,28 @@ describe( 'BalloonToolbar', () => {
 	describe( 'pluginName', () => {
 		it( 'should return plugin by its name', () => {
 			expect( editor.plugins.get( 'BalloonToolbar' ) ).to.equal( balloonToolbar );
+		} );
+	} );
+
+	describe( 'focusTracker', () => {
+		it( 'should be defined', () => {
+			expect( balloonToolbar.focusTracker ).to.instanceof( FocusTracker );
+		} );
+
+		it( 'it should track focus of #editableElement', () => {
+			expect( balloonToolbar.focusTracker.isFocused ).to.false;
+
+			editor.ui.view.editableElement.dispatchEvent( new Event( 'focus' ) );
+
+			expect( balloonToolbar.focusTracker.isFocused ).to.true;
+		} );
+
+		it( 'it should track focus of #toolbarView.element', () => {
+			expect( balloonToolbar.focusTracker.isFocused ).to.false;
+
+			balloonToolbar.toolbarView.element.dispatchEvent( new Event( 'focus' ) );
+
+			expect( balloonToolbar.focusTracker.isFocused ).to.true;
 		} );
 	} );
 
@@ -459,17 +482,27 @@ describe( 'BalloonToolbar', () => {
 			sinon.assert.calledOnce( hidePanelSpy );
 		} );
 
-		it( 'should hide on editable blur', () => {
-			editingView.document.isFocused = true;
+		it( 'should show on #focusTracker focus', () => {
+			balloonToolbar.focusTracker.isFocused = false;
 
-			balloonToolbar.fire( '_selectionChangeDebounced' );
+			sinon.assert.notCalled( showPanelSpy );
+			sinon.assert.notCalled( hidePanelSpy );
+
+			balloonToolbar.focusTracker.isFocused = true;
+
+			sinon.assert.calledOnce( showPanelSpy );
+			sinon.assert.notCalled( hidePanelSpy );
+		} );
+
+		it( 'should hide on #focusTracker blur', () => {
+			balloonToolbar.focusTracker.isFocused = true;
 
 			const stub = sandbox.stub( balloon, 'visibleView' ).get( () => balloonToolbar.toolbarView );
 
 			sinon.assert.calledOnce( showPanelSpy );
 			sinon.assert.notCalled( hidePanelSpy );
 
-			editingView.document.isFocused = false;
+			balloonToolbar.focusTracker.isFocused = false;
 
 			sinon.assert.calledOnce( showPanelSpy );
 			sinon.assert.calledOnce( hidePanelSpy );
@@ -477,53 +510,20 @@ describe( 'BalloonToolbar', () => {
 			stub.restore();
 		} );
 
-		it( 'should not hide on editable blur when #toolbarView gets focus', () => {
-			editingView.document.isFocused = true;
-
-			balloonToolbar.fire( '_selectionChangeDebounced' );
-
-			const stub = sandbox.stub( balloon, 'visibleView' ).get( () => balloonToolbar.toolbarView );
-
-			sinon.assert.calledOnce( showPanelSpy );
-			sinon.assert.notCalled( hidePanelSpy );
-
-			balloonToolbar.toolbarView.focusTracker.isFocused = true;
-			editingView.document.isFocused = false;
-
-			sinon.assert.calledOnce( showPanelSpy );
-			sinon.assert.notCalled( hidePanelSpy );
-
-			stub.restore();
-		} );
-
-		it( 'should not hide on editable blur when #toolbarView is not visible', () => {
-			editingView.document.isFocused = true;
-
-			balloonToolbar.fire( '_selectionChangeDebounced' );
+		it( 'should not hide on #focusTracker blur when toolbar is not in the balloon stack', () => {
+			balloonToolbar.focusTracker.isFocused = true;
 
 			const stub = sandbox.stub( balloon, 'visibleView' ).get( () => null );
 
 			sinon.assert.calledOnce( showPanelSpy );
 			sinon.assert.notCalled( hidePanelSpy );
 
-			editingView.document.isFocused = false;
+			balloonToolbar.focusTracker.isFocused = false;
 
 			sinon.assert.calledOnce( showPanelSpy );
 			sinon.assert.notCalled( hidePanelSpy );
 
 			stub.restore();
-		} );
-
-		it( 'should show when editable gets focus', () => {
-			editingView.document.isFocused = false;
-
-			sinon.assert.notCalled( showPanelSpy );
-			sinon.assert.notCalled( hidePanelSpy );
-
-			editingView.document.isFocused = true;
-
-			sinon.assert.calledOnce( showPanelSpy );
-			sinon.assert.notCalled( hidePanelSpy );
 		} );
 	} );
 
