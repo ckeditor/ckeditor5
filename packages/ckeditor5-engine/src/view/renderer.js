@@ -256,7 +256,7 @@ export default class Renderer {
 
 		const actualDomChildren = this.domConverter.mapViewToDom( viewElement ).childNodes;
 		const expectedDomChildren = Array.from(
-			this.domConverter.viewChildrenToDom( viewElement, domElement.ownerDocument )
+			this.domConverter.viewChildrenToDom( viewElement, domElement.ownerDocument, { withChildren: false } )
 		);
 		const diff = this._diffNodeLists( actualDomChildren, expectedDomChildren );
 		const actions = this._findReplaceActions( diff, actualDomChildren, expectedDomChildren );
