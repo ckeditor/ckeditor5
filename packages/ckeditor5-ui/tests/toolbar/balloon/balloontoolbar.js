@@ -18,7 +18,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { stringify as viewStringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
-/* global document, setTimeout, window */
+/* global document, setTimeout, window, Event */
 
 describe( 'BalloonToolbar', () => {
 	let sandbox, editor, model, selection, editingView, balloonToolbar, balloon, editorElement;
