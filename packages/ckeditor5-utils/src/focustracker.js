@@ -117,6 +117,7 @@ export default class FocusTracker {
 		// the registered elements; announcing this change is pointless.
 		//
 		// Note: In DOM, the native blur always precedes the following focus.
+		// https://github.com/ckeditor/ckeditor5-utils/issues/245
 		if ( isInnerBlur ) {
 			return;
 		}
