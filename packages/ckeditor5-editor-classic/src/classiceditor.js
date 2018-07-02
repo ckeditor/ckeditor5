@@ -201,9 +201,9 @@ export default class ClassicEditor extends Editor {
 					} )
 					.then( () => editor.editing.view.attachDomRoot( editor.ui.view.editableElement ) )
 					.then( () => {
-						editor.data.init(
-							isElement( sourceElementOrData ) ? getDataFromElement( sourceElementOrData ) : sourceElementOrData
-						);
+						const data = isElement( sourceElementOrData ) ? getDataFromElement( sourceElementOrData ) : sourceElementOrData;
+
+						return editor.data.init( data );
 					} )
 					.then( () => {
 						editor.fire( 'dataReady' );
