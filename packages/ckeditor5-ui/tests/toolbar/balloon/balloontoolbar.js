@@ -477,6 +477,25 @@ describe( 'BalloonToolbar', () => {
 			stub.restore();
 		} );
 
+		it( 'should not hide on editable blur when #toolbarView gets focus', () => {
+			editingView.document.isFocused = true;
+
+			balloonToolbar.fire( '_selectionChangeDebounced' );
+
+			const stub = sandbox.stub( balloon, 'visibleView' ).get( () => balloonToolbar.toolbarView );
+
+			sinon.assert.calledOnce( showPanelSpy );
+			sinon.assert.notCalled( hidePanelSpy );
+
+			balloonToolbar.toolbarView.focusTracker.isFocused = true;
+			editingView.document.isFocused = false;
+
+			sinon.assert.calledOnce( showPanelSpy );
+			sinon.assert.notCalled( hidePanelSpy );
+
+			stub.restore();
+		} );
+
 		it( 'should not hide on editable blur when #toolbarView is not visible', () => {
 			editingView.document.isFocused = true;
 

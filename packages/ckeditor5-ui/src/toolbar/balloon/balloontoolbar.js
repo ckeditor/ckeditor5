@@ -81,11 +81,14 @@ export default class BalloonToolbar extends Plugin {
 		const editor = this.editor;
 		const selection = editor.model.document.selection;
 
-		// Show/hide the toolbar when on editable focus/blur.
-		this.listenTo( editor.editing.view.document, 'change:isFocused', ( evt, name, isFocused ) => {
-			if ( !isFocused && this._balloon.visibleView === this.toolbarView ) {
+		// Show/hide the toolbar on editable focus/blur.
+		this.listenTo( editor.editing.view.document, 'change:isFocused', ( evt, name, isEditableFocused ) => {
+			const isToolbarFocused = this.toolbarView.focusTracker.isFocused;
+			const isToolbarVisible = this._balloon.visibleView === this.toolbarView;
+
+			if ( !isEditableFocused && !isToolbarFocused && isToolbarVisible ) {
 				this.hide();
-			} else if ( isFocused ) {
+			} else if ( isEditableFocused ) {
 				this.show();
 			}
 		} );
