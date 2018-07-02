@@ -86,7 +86,6 @@ describe( 'Autosave', () => {
 
 					// Clean autosave's state after setting data.
 					autosave._flush();
-					editor.config.get( 'autosave' ).save.resetHistory();
 				} );
 		} );
 
@@ -97,15 +96,21 @@ describe( 'Autosave', () => {
 		} );
 
 		it( 'should enable providing callback via the config', () => {
+			editor.config.get( 'autosave' ).save.resetHistory();
+
 			editor.model.change( writer => {
 				writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) ) );
 				editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
 			} );
 
-			sinon.assert.calledOnce( editor.config.get( 'autosave' ).save );
+			return wait().then( () => {
+				sinon.assert.calledOnce( editor.config.get( 'autosave' ).save );
+			} );
 		} );
 
 		it( 'its callback and adapter callback should be called if both are provided', () => {
+			editor.config.get( 'autosave' ).save.resetHistory();
+
 			autosave.adapter = {
 				save: sinon.spy()
 			};
@@ -115,8 +120,10 @@ describe( 'Autosave', () => {
 				editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
 			} );
 
-			sinon.assert.calledOnce( editor.config.get( 'autosave' ).save );
-			sinon.assert.calledOnce( autosave.adapter.save );
+			return wait().then( () => {
+				sinon.assert.calledOnce( autosave.adapter.save );
+				sinon.assert.calledOnce( editor.config.get( 'autosave' ).save );
+			} );
 		} );
 	} );
 
@@ -157,7 +164,9 @@ describe( 'Autosave', () => {
 				editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
 			} );
 
-			sinon.assert.calledOnce( autosave.adapter.save );
+			return wait().then( () => {
+				sinon.assert.calledOnce( autosave.adapter.save );
+			} );
 		} );
 
 		it( 'should throttle editor\'s change event', () => {
@@ -178,25 +187,31 @@ describe( 'Autosave', () => {
 				editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
 			} );
 
-			// Throttled (won't fire change).
-			editor.model.change( writer => {
-				writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 1 ) ) );
-				editor.model.insertContent( new ModelText( 'bar' ), editor.model.document.selection );
+			return wait().then( () => {
+				// Throttled (won't fire change).
+				editor.model.change( writer => {
+					writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 1 ) ) );
+					editor.model.insertContent( new ModelText( 'bar' ), editor.model.document.selection );
+				} );
+
+				return wait();
+			} ).then( () => {
+				// Flushed (will fire change).
+				editor.model.change( writer => {
+					writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 1 ) ) );
+					editor.model.insertContent( new ModelText( 'biz' ), editor.model.document.selection );
+				} );
+
+				autosave._flush();
+
+				return wait();
+			} ).then( () => {
+				expect( spy.callCount ).to.equal( 2 );
+				expect( savedStates ).to.deep.equal( [
+					'<p>paragraph1</p><p>foo</p>',
+					'<p>paragraph1</p><p>biz</p>'
+				] );
 			} );
-
-			// Flushed (will fire change).
-			editor.model.change( writer => {
-				writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 1 ) ) );
-				editor.model.insertContent( new ModelText( 'biz' ), editor.model.document.selection );
-			} );
-
-			autosave._flush();
-
-			expect( spy.callCount ).to.equal( 2 );
-			expect( savedStates ).to.deep.equal( [
-				'<p>paragraph1</p><p>foo</p>',
-				'<p>paragraph1</p><p>biz</p>'
-			] );
 		} );
 
 		it( 'should add a pending action during the saving.', () => {
@@ -410,13 +425,17 @@ describe( 'Autosave', () => {
 
 			autosave._flush();
 
-			editor.model.change( writer => {
-				writer.updateMarker( 'name', { range: range2 } );
+			return wait().then( () => {
+				editor.model.change( writer => {
+					writer.updateMarker( 'name', { range: range2 } );
+				} );
+
+				autosave._flush();
+
+				return wait().then( () => {
+					sinon.assert.calledTwice( autosave.adapter.save );
+				} );
 			} );
-
-			autosave._flush();
-
-			sinon.assert.calledTwice( autosave.adapter.save );
 		} );
 
 		it( 'should call the save method when some marker affects the data model #2', () => {
@@ -432,15 +451,20 @@ describe( 'Autosave', () => {
 			} );
 
 			autosave._flush();
-			sinon.assert.calledOnce( autosave.adapter.save );
 
-			editor.model.change( writer => {
-				writer.updateMarker( 'name', { range: range2 } );
+			return wait().then( () => {
+				sinon.assert.calledOnce( autosave.adapter.save );
+
+				editor.model.change( writer => {
+					writer.updateMarker( 'name', { range: range2 } );
+				} );
+
+				autosave._flush();
+
+				return wait().then( () => {
+					sinon.assert.calledTwice( autosave.adapter.save );
+				} );
 			} );
-
-			autosave._flush();
-
-			sinon.assert.calledTwice( autosave.adapter.save );
 		} );
 
 		it( 'should call the save method when some marker affects the data model #3', () => {
@@ -455,7 +479,9 @@ describe( 'Autosave', () => {
 				writer.addMarker( 'marker-affecting-data', { usingOperation: false, affectsData: false, range } );
 			} );
 
-			sinon.assert.calledOnce( autosave.adapter.save );
+			return wait().then( () => {
+				sinon.assert.calledOnce( autosave.adapter.save );
+			} );
 		} );
 
 		it( 'should flush remaining calls after editor\'s destroy', () => {
@@ -475,17 +501,19 @@ describe( 'Autosave', () => {
 				editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
 			} );
 
-			editor.model.change( writer => {
-				writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 1 ) ) );
-				editor.model.insertContent( new ModelText( 'bar' ), editor.model.document.selection );
-			} );
+			return wait().then( () => {
+				editor.model.change( writer => {
+					writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 1 ) ) );
+					editor.model.insertContent( new ModelText( 'bar' ), editor.model.document.selection );
+				} );
 
-			return editor.destroy().then( () => {
-				expect( spy.callCount ).to.equal( 2 );
-				expect( savedStates ).to.deep.equal( [
-					'<p>foo</p><p>paragraph2</p>',
-					'<p>foo</p><p>bar</p>',
-				] );
+				return editor.destroy().then( () => {
+					expect( spy.callCount ).to.equal( 2 );
+					expect( savedStates ).to.deep.equal( [
+						'<p>foo</p><p>paragraph2</p>',
+						'<p>foo</p><p>bar</p>',
+					] );
+				} );
 			} );
 		} );
 
@@ -517,6 +545,54 @@ describe( 'Autosave', () => {
 					sinon.assert.calledOnce( serverActionStub );
 				} );
 		} );
+	} );
+
+	it( 'should wait on editor initialization', () => {
+		element = document.createElement( 'div' );
+		document.body.appendChild( element );
+		editor = null;
+
+		class AsyncPlugin {
+			constructor( editor ) {
+				this.editor = editor;
+			}
+
+			init() {
+				this.editor.once( 'ready', () => {
+					const editor = this.editor;
+
+					editor.model.change( writer => {
+						writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) ) );
+						editor.model.insertContent( new ModelText( 'bar' ), editor.model.document.selection );
+					} );
+				} );
+
+				return Promise.resolve().then( () => Promise.resolve() );
+			}
+		}
+
+		return ClassicTestEditor
+			.create( element, {
+				plugins: [ Autosave, Paragraph, AsyncPlugin ],
+				autosave: {
+					save: sinon.spy( () => {
+						expect( editor ).to.not.be.null;
+					} )
+				}
+			} )
+			.then( _editor => {
+				editor = _editor;
+				autosave = editor.plugins.get( Autosave );
+				const spy = editor.config.get( 'autosave' ).save;
+
+				expect( editor.getData() ).to.equal( '<p>bar</p>' );
+				sinon.assert.calledOnce( spy );
+			} )
+			.then( () => {
+				document.body.removeChild( element );
+
+				return editor.destroy();
+			} );
 	} );
 } );
 

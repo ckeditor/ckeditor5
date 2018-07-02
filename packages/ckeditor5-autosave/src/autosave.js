@@ -196,7 +196,12 @@ export default class Autosave extends Plugin {
 
 		// Change may not produce an operation, so the document's version
 		// can be the same after that change.
-		if ( version < this._lastDocumentVersion || !saveCallbacks.length ) {
+		if (
+			version < this._lastDocumentVersion ||
+			!saveCallbacks.length ||
+			this.editor.state === 'initializing'
+		) {
+			this._throttledSave.flush();
 			this._decrementCounter();
 
 			return;
@@ -204,7 +209,13 @@ export default class Autosave extends Plugin {
 
 		this._lastDocumentVersion = version;
 
-		Promise.all( saveCallbacks.map( cb => cb() ) )
+		// Wait one promise cycle to be sure that:
+		// 1. The save method is always asynchronous.
+		// 2. Save callbacks are not called inside conversions or while editor's state changes.
+		Promise.resolve()
+			.then( () => Promise.all(
+				saveCallbacks.map( cb => cb() )
+			) )
 			.then( () => {
 				this._decrementCounter();
 			} );
