@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* global document, Event */
+/* global document, FocusEvent */
 
 import FocusTracker from '../src/focustracker';
 import CKEditorError from '../src/ckeditorerror';
@@ -60,7 +60,7 @@ describe( 'FocusTracker', () => {
 
 				expect( focusTracker.isFocused ).to.false;
 
-				containerFirstInput.dispatchEvent( new Event( 'focus' ) );
+				containerFirstInput.dispatchEvent( new FocusEvent( 'focus' ) );
 
 				expect( focusTracker.isFocused ).to.true;
 			} );
@@ -69,8 +69,7 @@ describe( 'FocusTracker', () => {
 				focusTracker.add( containerFirstInput );
 				focusTracker.isFocused = true;
 
-				containerFirstInput.dispatchEvent( new Event( 'blur' ) );
-				testUtils.sinon.clock.tick( 0 );
+				containerFirstInput.dispatchEvent( new FocusEvent( 'blur' ) );
 
 				expect( focusTracker.isFocused ).to.false;
 			} );
@@ -82,7 +81,7 @@ describe( 'FocusTracker', () => {
 
 				expect( focusTracker.isFocused ).to.false;
 
-				containerFirstInput.dispatchEvent( new Event( 'focus' ) );
+				containerFirstInput.dispatchEvent( new FocusEvent( 'focus' ) );
 
 				expect( focusTracker.isFocused ).to.true;
 			} );
@@ -91,8 +90,7 @@ describe( 'FocusTracker', () => {
 				focusTracker.add( container );
 				focusTracker.isFocused = true;
 
-				containerFirstInput.dispatchEvent( new Event( 'blur' ) );
-				testUtils.sinon.clock.tick( 0 );
+				containerFirstInput.dispatchEvent( new FocusEvent( 'blur' ) );
 
 				expect( focusTracker.isFocused ).to.false;
 			} );
@@ -102,15 +100,17 @@ describe( 'FocusTracker', () => {
 
 				focusTracker.add( container );
 
-				containerFirstInput.dispatchEvent( new Event( 'focus' ) );
+				containerFirstInput.dispatchEvent( new FocusEvent( 'focus' ) );
 
 				focusTracker.listenTo( focusTracker, 'change:isFocused', changeSpy );
 
 				expect( focusTracker.isFocused ).to.true;
 
-				containerFirstInput.dispatchEvent( new Event( 'blur' ) );
-				containerSecondInput.dispatchEvent( new Event( 'focus' ) );
-				testUtils.sinon.clock.tick( 0 );
+				containerFirstInput.dispatchEvent( new FocusEvent( 'blur', {
+					relatedTarget: containerSecondInput
+				} ) );
+
+				containerSecondInput.dispatchEvent( new FocusEvent( 'focus' ) );
 
 				expect( focusTracker.isFocused ).to.true;
 				expect( changeSpy.notCalled ).to.true;
@@ -121,10 +121,9 @@ describe( 'FocusTracker', () => {
 				focusTracker.add( container );
 				focusTracker.isFocused = true;
 
-				container.dispatchEvent( new Event( 'blur' ) );
-				containerFirstInput.dispatchEvent( new Event( 'blur' ) );
-				containerSecondInput.dispatchEvent( new Event( 'focus' ) );
-				testUtils.sinon.clock.tick( 0 );
+				container.dispatchEvent( new FocusEvent( 'blur' ) );
+				containerFirstInput.dispatchEvent( new FocusEvent( 'blur' ) );
+				containerSecondInput.dispatchEvent( new FocusEvent( 'focus' ) );
 
 				expect( focusTracker.isFocused ).to.be.true;
 			} );
@@ -142,7 +141,7 @@ describe( 'FocusTracker', () => {
 			focusTracker.add( containerFirstInput );
 			focusTracker.remove( containerFirstInput );
 
-			containerFirstInput.dispatchEvent( new Event( 'focus' ) );
+			containerFirstInput.dispatchEvent( new FocusEvent( 'focus' ) );
 
 			expect( focusTracker.isFocused ).to.false;
 		} );
@@ -152,20 +151,18 @@ describe( 'FocusTracker', () => {
 			focusTracker.remove( containerFirstInput );
 			focusTracker.isFocused = true;
 
-			containerFirstInput.dispatchEvent( new Event( 'blur' ) );
-			testUtils.sinon.clock.tick( 0 );
+			containerFirstInput.dispatchEvent( new FocusEvent( 'blur' ) );
 
 			expect( focusTracker.isFocused ).to.true;
 		} );
 
 		it( 'should blur element before removing when is focused', () => {
 			focusTracker.add( containerFirstInput );
-			containerFirstInput.dispatchEvent( new Event( 'focus' ) );
+			containerFirstInput.dispatchEvent( new FocusEvent( 'focus' ) );
 
 			expect( focusTracker.isFocused ).to.true;
 
 			focusTracker.remove( containerFirstInput );
-			testUtils.sinon.clock.tick( 0 );
 
 			expect( focusTracker.isFocused ).to.false;
 		} );

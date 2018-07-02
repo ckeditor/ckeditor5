@@ -3,8 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/* global setTimeout, clearTimeout */
-
 /**
  * @module utils/focustracker
  */
@@ -53,14 +51,6 @@ export default class FocusTracker {
 		 * @member {Set.<HTMLElement>}
 		 */
 		this._elements = new Set();
-
-		/**
-		 * Event loop timeout.
-		 *
-		 * @private
-		 * @member {Number}
-		 */
-		this._nextEventLoopTimeout = null;
 	}
 
 	/**
@@ -74,7 +64,7 @@ export default class FocusTracker {
 		}
 
 		this.listenTo( element, 'focus', () => this._focus( element ), { useCapture: true } );
-		this.listenTo( element, 'blur', () => this._blur(), { useCapture: true } );
+		this.listenTo( element, 'blur', ( evt, domEvt ) => this._blur( domEvt ), { useCapture: true } );
 		this._elements.add( element );
 	}
 
@@ -101,35 +91,39 @@ export default class FocusTracker {
 	 * @param {HTMLElement} element Element which has been focused.
 	 */
 	_focus( element ) {
-		clearTimeout( this._nextEventLoopTimeout );
-
 		this.focusedElement = element;
 		this.isFocused = true;
 	}
 
 	/**
 	 * Clears currently focused element and set {@link #isFocused} as `false`.
-	 * This method uses `setTimeout` to change order of fires `blur` and `focus` events.
 	 *
 	 * @private
-	 * @fires blur
+	 * @param {FocusEvent} domEvt The native DOM FocusEvent instance.
 	 */
-	_blur() {
-		clearTimeout( this._nextEventLoopTimeout );
+	_blur( domEvt ) {
+		const relatedTarget = domEvt.relatedTarget;
+		const isInnerBlur = Array.from( this._elements ).some( element => {
+			// element.contains( element ) -> true
+			return element.contains( relatedTarget );
+		} );
 
-		this._nextEventLoopTimeout = setTimeout( () => {
-			this.focusedElement = null;
-			this.isFocused = false;
-		}, 0 );
+		// If the blur was caused by focusing an element which is either:
+		//
+		// * registered in this focus tracker,
+		// * a child of an element registered in this focus tracker
+		//
+		// then don't fire the event to prevent rapid #isFocused changes. The focus remains within
+		// the registered elements; announcing this change is pointless.
+		//
+		// Note: In DOM, the native blur always precedes the following focus.
+		if ( isInnerBlur ) {
+			return;
+		}
+
+		this.focusedElement = null;
+		this.isFocused = false;
 	}
-
-	/**
-	 * @event focus
-	 */
-
-	/**
-	 * @event blur
-	 */
 }
 
 mix( FocusTracker, DomEmitterMixin );
