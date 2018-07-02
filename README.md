@@ -354,6 +354,18 @@ For more CKEditor 5 release blog posts [browse the CKEditor blog](https://ckedit
 
 <tr>
 	<td>
+		<a href="https://github.com/ckeditor/ckeditor5-autosave"><code>@ckeditor/ckeditor5-autosave</code></a>
+	</td>
+	<td>
+		<a href="https://www.npmjs.com/package/@ckeditor/ckeditor5-autosave"><img src="https://img.shields.io/npm/v/@ckeditor/ckeditor5-autosave.svg" alt="@ckeditor/ckeditor5-autosave npm package badge"></a>
+	</td>
+	<td>
+		The autosave feature. Makes it easy to automatically save the data to the backend.
+	</td>
+</tr>
+
+<tr>
+	<td>
 		<a href="https://github.com/ckeditor/ckeditor5-basic-styles"><code>@ckeditor/ckeditor5-basic-styles</code></a>
 	</td>
 	<td>
