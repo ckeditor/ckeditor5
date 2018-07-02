@@ -87,12 +87,7 @@ export default class DecoupledEditor extends Editor {
 	}
 
 	/**
-	 * {@link module:editor-decoupled/decouplededitor~DecoupledEditor} has split UI and the editable elements.
-	 *
-	 * In order to get the UI (toolbar) you should use `editor.ui.view.toolbar.element` and `editor.ui.view.editable.element` for
-	 * the editable area.
-	 *
-	 * @returns {null}
+	 * @inheritDoc
 	 */
 	get element() {
 		return null;
@@ -208,7 +203,9 @@ export default class DecoupledEditor extends Editor {
 						editor.fire( 'uiReady' );
 					} )
 					.then( () => {
-						return editor.data.init( editor.sourceElement ? getDataFromElement( editor.sourceElement ) : sourceElementOrData );
+						const data = editor.sourceElement ? getDataFromElement( editor.sourceElement ) : sourceElementOrData;
+
+						return editor.data.init( data );
 					} )
 					.then( () => {
 						editor.fire( 'dataReady' );
