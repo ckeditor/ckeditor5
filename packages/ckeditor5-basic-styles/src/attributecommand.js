@@ -41,7 +41,7 @@ export default class AttributeCommand extends Command {
 		 * Flag indicating whether the command is active. The command is active when the
 		 * {@link module:engine/model/selection~Selection#hasAttribute selection has the attribute} which means that:
 		 *
-		 * * If the selection is not empty &ndash; That it starts in a text (or another node) which has the attribute set.
+		 * * If the selection is not empty &ndash; That the attribute is set on the first node in the selection that allows this attribute.
 		 * * If the selection is empty &ndash; That the selection has the attribute itself (which means that newly typed
 		 * text will have this attribute, too).
 		 *
@@ -58,7 +58,7 @@ export default class AttributeCommand extends Command {
 		const model = this.editor.model;
 		const doc = model.document;
 
-		this.value = doc.selection.hasAttribute( this.attributeKey );
+		this.value = this._getValueFromFirstAllowedNode();
 		this.isEnabled = model.schema.checkAttributeInSelection( doc.selection, this.attributeKey );
 	}
 
@@ -107,5 +107,32 @@ export default class AttributeCommand extends Command {
 				}
 			}
 		} );
+	}
+
+	/**
+	 * Checks the attribute value of the first node in the selection that allows the attribute.
+	 * For the collapsed selection returns the selection attribute.
+	 *
+	 * @private
+	 * @returns {Boolean} The attribute value.
+	 */
+	_getValueFromFirstAllowedNode() {
+		const model = this.editor.model;
+		const schema = model.schema;
+		const selection = model.document.selection;
+
+		if ( selection.isCollapsed ) {
+			return selection.hasAttribute( this.attributeKey );
+		}
+
+		for ( const range of selection.getRanges() ) {
+			for ( const item of range.getItems() ) {
+				if ( schema.checkAttribute( item, this.attributeKey ) ) {
+					return item.hasAttribute( this.attributeKey );
+				}
+			}
+		}
+
+		return false;
 	}
 }

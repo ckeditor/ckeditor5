@@ -49,7 +49,7 @@ describe( 'AttributeCommand', () => {
 	} );
 
 	describe( 'value', () => {
-		it( 'is true when selection has the attribute', () => {
+		it( 'is true when collapsed selection has the attribute', () => {
 			model.change( writer => {
 				writer.setSelectionAttribute( attrKey, true );
 			} );
@@ -57,7 +57,7 @@ describe( 'AttributeCommand', () => {
 			expect( command.value ).to.be.true;
 		} );
 
-		it( 'is false when selection does not have the attribute', () => {
+		it( 'is false when collapsed selection does not have the attribute', () => {
 			model.change( writer => {
 				writer.setSelectionAttribute( attrKey, true );
 			} );
@@ -69,8 +69,31 @@ describe( 'AttributeCommand', () => {
 			expect( command.value ).to.be.false;
 		} );
 
-		// See https://github.com/ckeditor/ckeditor5-core/issues/73#issuecomment-311572827.
-		it( 'is false when selection contains object with nested editable', () => {
+		it( 'is true when the first item that allows attribute has the attribute set #1', () => {
+			setData( model, '<p><$text bold="true">fo[o</$text></p><h1>b]ar</h1>' );
+
+			expect( command.value ).to.be.true;
+		} );
+
+		it( 'is true when the first item that allows attribute has the attribute set #2', () => {
+			setData( model, '<h1>fo[o</h1><p><$text bold="true">f</$text>o]o</p>' );
+
+			expect( command.value ).to.be.true;
+		} );
+
+		it( 'is false when the first item that allows attribute does not have the attribute set #1', () => {
+			setData( model, '<p>b[a<$text bold="true">r</$text></p><h1>fo]o</h1>' );
+
+			expect( command.value ).to.be.false;
+		} );
+
+		it( 'is false when the first item that allows attribute does not have the attribute set #2', () => {
+			setData( model, '<h1>fo[o</h1><p>b<$text bold="true">r</$text>r]</p>' );
+
+			expect( command.value ).to.be.false;
+		} );
+
+		it( 'is true when the first item that allows attribute has the attribute set - object with nested editable', () => {
 			model.schema.register( 'caption', {
 				allowContentOf: '$block',
 				allowIn: 'img',
@@ -85,7 +108,7 @@ describe( 'AttributeCommand', () => {
 
 			expect( command.value ).to.be.false;
 			command.execute();
-			expect( command.value ).to.be.false;
+			expect( command.value ).to.be.true;
 
 			expect( getData( model ) ).to.equal(
 				'<p>[<img><caption><$text bold="true">Some caption inside the image.</$text></caption></img>]</p>'
