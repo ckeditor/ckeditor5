@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals document, Event, HTMLElement */
+/* globals document, Event */
 
 import InlineEditorUI from '../src/inlineeditorui';
 import InlineEditorUIView from '../src/inlineeditoruiview';
@@ -104,16 +104,15 @@ describe( 'InlineEditor', () => {
 			} );
 		} );
 
-		it( 'editor.sourceElement should contain created div element', () => {
+		it( 'should have undefined the #sourceElement if editor was initialized with data', () => {
 			return InlineEditor.create( '<p>Hello world!</p>', {
 				plugins: [ Paragraph ]
 			} ).then( editor => {
-				expect( editor.sourceElement ).to.be.instanceOf( HTMLElement );
-				expect( editor.sourceElement.tagName ).to.equal( 'DIV' );
+				expect( editor.sourceElement ).to.be.undefined;
 			} );
 		} );
 
-		it( 'editor.element should contain created div element', () => {
+		it( 'editor.element should contain the whole UI element', () => {
 			return InlineEditor.create( '<p>Hello world!</p>', {
 				plugins: [ Paragraph ]
 			} ).then( editor => {

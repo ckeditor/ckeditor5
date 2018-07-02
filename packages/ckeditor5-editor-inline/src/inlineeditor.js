@@ -18,7 +18,6 @@ import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement
 import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import isElement from '@ckeditor/ckeditor5-utils/src/lib/lodash/isElement';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 /**
  * The {@glink builds/guides/overview#inline-editor inline editor} implementation.
@@ -80,8 +79,6 @@ export default class InlineEditor extends Editor {
 
 		if ( isElement( sourceElementOrData ) ) {
 			this.sourceElement = sourceElementOrData;
-		} else {
-			this.sourceElement = global.document.createElement( 'div' );
 		}
 
 		this.ui = new InlineEditorUI( this, new InlineEditorUIView( this.locale, this.sourceElement ) );
@@ -90,9 +87,7 @@ export default class InlineEditor extends Editor {
 	}
 
 	/**
-	 * An HTML element that represents the whole editor. See the {@link module:core/editor/editorwithui~EditorWithUI} interface.
-	 *
-	 * @returns {HTMLElement|null}
+	 * @inheritDoc
 	 */
 	get element() {
 		return this.ui.view.editable.element;
