@@ -19,7 +19,6 @@ import ElementApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/elementap
 import attachToForm from '@ckeditor/ckeditor5-core/src/editor/utils/attachtoform';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 import isElement from '@ckeditor/ckeditor5-utils/src/lib/lodash/isElement';
-import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
 /**
  * The {@glink builds/guides/overview#balloon-editor balloon editor} implementation (Medium-like editor).
@@ -77,8 +76,6 @@ export default class BalloonEditor extends Editor {
 
 		if ( isElement( sourceElementOrData ) ) {
 			this.sourceElement = sourceElementOrData;
-		} else {
-			this.sourceElement = global.document.createElement( 'div' );
 		}
 
 		this.config.get( 'plugins' ).push( BalloonToolbar );
@@ -94,9 +91,7 @@ export default class BalloonEditor extends Editor {
 	}
 
 	/**
-	 * An HTML element that represents the whole editor. See the {@link module:core/editor/editorwithui~EditorWithUI} interface.
-	 *
-	 * @returns {HTMLElement|null}
+	 * @inheritDoc
 	 */
 	get element() {
 		return this.ui.view.editable.element;
@@ -117,7 +112,11 @@ export default class BalloonEditor extends Editor {
 		this.ui.destroy();
 
 		return super.destroy()
-			.then( () => setDataInElement( this.sourceElement, data ) );
+			.then( () => {
+				if ( this.sourceElement ) {
+					setDataInElement( this.sourceElement, data );
+				}
+			} );
 	}
 
 	/**
@@ -195,7 +194,11 @@ export default class BalloonEditor extends Editor {
 						editor.ui.init();
 						editor.fire( 'uiReady' );
 					} )
-					.then( () => editor.data.init( isElement( sourceElementOrData ) ? getDataFromElement( sourceElementOrData ) : sourceElementOrData ) )
+					.then( () => {
+						const data = isElement( sourceElementOrData ) ? getDataFromElement( sourceElementOrData ) : sourceElementOrData;
+
+						return editor.data.init( data );
+					} )
 					.then( () => {
 						editor.fire( 'dataReady' );
 						editor.fire( 'ready' );

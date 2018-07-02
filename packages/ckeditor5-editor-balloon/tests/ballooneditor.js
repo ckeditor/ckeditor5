@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals document, Event, HTMLElement */
+/* globals document, Event */
 
 import BalloonEditorUI from '../src/ballooneditorui';
 import BalloonEditorUIView from '../src/ballooneditoruiview';
@@ -111,16 +111,19 @@ describe( 'BalloonEditor', () => {
 			} );
 		} );
 
-		it( 'editor.sourceElement should contain created div element', () => {
-			return BalloonEditor.create( '<p>Hello world!</p>', {
-				plugins: [ Paragraph ]
-			} ).then( editor => {
-				expect( editor.sourceElement ).to.be.instanceOf( HTMLElement );
-				expect( editor.sourceElement.tagName ).to.equal( 'DIV' );
-			} );
+		it( 'should have undefined the #sourceElement if editor was initialized with data', () => {
+			return BalloonEditor
+				.create( '<p>Foo.</p>', {
+					plugins: [ Paragraph, Bold ]
+				} )
+				.then( newEditor => {
+					expect( newEditor.sourceElement ).to.be.undefined;
+
+					return newEditor.destroy();
+				} );
 		} );
 
-		it( 'editor.element should contain created div element (the whole editor with UI)', () => {
+		it( 'editor.element should contain the whole editor (with UI) element', () => {
 			return BalloonEditor.create( '<p>Hello world!</p>', {
 				plugins: [ Paragraph ]
 			} ).then( editor => {
@@ -303,6 +306,14 @@ describe( 'BalloonEditor', () => {
 					expect( editorElement.innerHTML )
 						.to.equal( '<p>a</p><heading>b</heading>' );
 				} );
+		} );
+
+		it( 'should not throw an error if editor was initialized with the data', () => {
+			return BalloonEditor
+				.create( '<p>Foo.</p>', {
+					plugins: [ Paragraph, Bold ]
+				} )
+				.then( newEditor => newEditor.destroy() );
 		} );
 	} );
 } );
