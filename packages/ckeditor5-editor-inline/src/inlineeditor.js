@@ -166,7 +166,7 @@ export default class InlineEditor extends Editor {
 	 * itself will be used as the editor's editable element.
 	 *
 	 * If a data is provided, then `editor.element` will be created automatically and needs to be added
-	 * manually to the DOM.
+	 * to the DOM manually.
 	 * @param {module:core/editor/editorconfig~EditorConfig} config The editor configuration.
 	 * @returns {Promise} A promise resolved once the editor is ready.
 	 * The promise returns the created {@link module:editor-inline/inlineeditor~InlineEditor} instance.
