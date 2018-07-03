@@ -187,9 +187,11 @@ export default class InlineEditor extends Editor {
 						editor.fire( 'uiReady' );
 					} )
 					.then( () => {
-						const data = isElement( sourceElementOrData ) ? getDataFromElement( sourceElementOrData ) : sourceElementOrData;
+						const initialData = isElement( sourceElementOrData ) ?
+							getDataFromElement( sourceElementOrData ) :
+							sourceElementOrData;
 
-						return editor.data.init( data );
+						return editor.data.init( initialData );
 					} )
 					.then( () => {
 						editor.fire( 'dataReady' );
