@@ -114,7 +114,7 @@ describe( 'debug tools', () => {
 	} );
 
 	afterEach( () => {
-		log.reset();
+		log.resetHistory();
 	} );
 
 	describe( 'should provide logging tools', () => {
@@ -665,7 +665,7 @@ describe( 'debug tools', () => {
 				'\n</paragraph>'
 			);
 
-			log.reset();
+			log.resetHistory();
 			modelParagraph.logTree();
 			expect( log.calledWithExactly( modelParagraphTree ) ).to.be.true;
 
@@ -690,7 +690,7 @@ describe( 'debug tools', () => {
 				'\n]'
 			);
 
-			log.reset();
+			log.resetHistory();
 			modelDocFrag.logTree();
 			expect( log.calledWithExactly( modelDocFragTree ) ).to.be.true;
 		} );
@@ -742,7 +742,7 @@ describe( 'debug tools', () => {
 				'\n</p>'
 			);
 
-			log.reset();
+			log.resetHistory();
 			viewParagraph.logTree();
 			expect( log.calledWithExactly( viewParagraphTree ) ).to.be.true;
 
@@ -767,7 +767,7 @@ describe( 'debug tools', () => {
 				'\n]'
 			);
 
-			log.reset();
+			log.resetHistory();
 			viewDocFrag.logTree();
 			expect( log.calledWithExactly( viewDocFragTree ) ).to.be.true;
 		} );
@@ -800,7 +800,7 @@ describe( 'debug tools', () => {
 				model.applyOperation( wrapInDelta( remove ) );
 			} );
 
-			log.reset();
+			log.resetHistory();
 
 			modelDoc.log( 0 );
 			expectLog(
@@ -857,21 +857,21 @@ describe( 'debug tools', () => {
 			editor.logView( 2 );
 			expect( viewDoc.log.calledWithExactly( 2 ), 2 ).to.be.true;
 
-			modelDoc.log.reset();
-			viewDoc.log.reset();
+			modelDoc.log.resetHistory();
+			viewDoc.log.resetHistory();
 
 			editor.logModel();
 			expect( modelDoc.log.calledWithExactly( 2 ), 3 ).to.be.true;
 
-			modelDoc.log.reset();
-			viewDoc.log.reset();
+			modelDoc.log.resetHistory();
+			viewDoc.log.resetHistory();
 
 			editor.logDocuments();
 			expect( modelDoc.log.calledWithExactly( 2 ), 4 ).to.be.true;
 			expect( viewDoc.log.calledWithExactly( 2 ), 5 ).to.be.true;
 
-			modelDoc.log.reset();
-			viewDoc.log.reset();
+			modelDoc.log.resetHistory();
+			viewDoc.log.resetHistory();
 
 			editor.logDocuments( 1 );
 			expect( modelDoc.log.calledWithExactly( 1 ), 6 ).to.be.true;
@@ -1160,7 +1160,7 @@ describe( 'debug tools', () => {
 
 	function expectLog( expectedLogMsg ) {
 		expect( log.calledWithExactly( expectedLogMsg ) ).to.be.true;
-		log.reset();
+		log.resetHistory();
 	}
 
 	function wrapInDelta( op ) {
