@@ -64,16 +64,6 @@ export default class BalloonEditor extends Editor {
 	constructor( sourceElementOrData, config ) {
 		super( config );
 
-		/**
-		 * The element on which the editor has been initialized.
-		 * If editor was initialized with data instead of HTMLElement this property will keep a reference to newly
-		 * created element that need to be added manually to the DOM. For more information see
-		 * {@link module:editor-balloon/ballooneditor~BalloonEditor.create `BalloonEditor.create()`}.
-		 *
-		 * @readonly
-		 * @member {HTMLElement} #element
-		 */
-
 		if ( isElement( sourceElementOrData ) ) {
 			this.sourceElement = sourceElementOrData;
 		}
