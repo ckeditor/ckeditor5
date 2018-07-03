@@ -17,7 +17,7 @@ import Position from '../../src/model/position';
 import Range from '../../src/model/range';
 import Selection from '../../src/model/selection';
 
-import { setData, getData, stringify } from '../../src/dev-utils/model';
+import { getData, setData, stringify } from '../../src/dev-utils/model';
 
 import AttributeDelta from '../../src/model/delta/attributedelta';
 
@@ -1123,7 +1123,13 @@ describe( 'Schema', () => {
 				}
 			} );
 
-			setData( model, '<p>foo<img />bar</p>' );
+			// Parse data string to model.
+			const parsedResult = setData._parse( '[<p>foo<img />bar</p>]', model.schema, { context: [ root.name ] } );
+
+			// Set parsed model data to prevent selection post-fixer from running.
+			model.change( writer => {
+				writer.insert( parsedResult.model, root );
+			} );
 
 			ranges = [ Range.createOn( root.getChild( 0 ) ) ];
 		} );
