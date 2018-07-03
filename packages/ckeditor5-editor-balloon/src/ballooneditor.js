@@ -56,8 +56,7 @@ export default class BalloonEditor extends Editor {
 	 *
 	 * @protected
 	 * @param {HTMLElement|String} sourceElementOrData The DOM element that will be the source for the created editor
-	 * (on which the editor will be initialized) or initial data for the editor. If data is provided, `editor.element`
-	 * will be created automatically and need to be added manually to the DOM. For more information see
+	 * (on which the editor will be initialized) or initial data for the editor. For more information see
 	 * {@link module:editor-balloon/ballooneditor~BalloonEditor.create `BalloonEditor.create()`}.
 	 * @param {module:core/editor/editorconfig~EditorConfig} config The editor configuration.
 	 */
@@ -143,7 +142,7 @@ export default class BalloonEditor extends Editor {
 	 *				console.error( err.stack );
 	 *			} );
 	 *
-	 * Creating instance when using initial data instead of DOM element:
+	 * Creating instance when using initial data instead of a DOM element:
 	 *
 	 *		import BalloonEditor from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor';
 	 *		import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
@@ -167,9 +166,14 @@ export default class BalloonEditor extends Editor {
 	 *			} );
 	 *
 	 * @param {HTMLElement|String} sourceElementOrData The DOM element that will be the source for the created editor
-	 * (on which the editor will be initialized) or initial data for the editor. If data is provided, `editor.element`
-	 * will be created automatically and need to be added manually to the DOM. The element is initialized as a `div`
-	 * element crated in current document's context.
+	 * (on which the editor will be initialized) or initial data for the editor.
+	 *
+	 * If a source element is passed, then its contents will be automatically
+	 * {@link module:editor-classic/ballooneditor~BalloonEditor#setData loaded} to the editor on startup and the element
+	 * itself will be used as the editor's editable element.
+	 *
+	 * If data is provided, then `editor.element` will be created automatically and needs to be added
+	 * to the DOM manually.
 	 * @param {module:core/editor/editorconfig~EditorConfig} config The editor configuration.
 	 * @returns {Promise} A promise resolved once the editor is ready.
 	 * The promise returns the created {@link module:editor-balloon/ballooneditor~BalloonEditor} instance.
