@@ -407,7 +407,7 @@ describe( 'ContextualBalloon', () => {
 				}
 			} );
 
-			balloon.view.pin.reset();
+			balloon.view.pin.resetHistory();
 
 			balloon.updatePosition();
 
@@ -419,7 +419,7 @@ describe( 'ContextualBalloon', () => {
 		} );
 
 		it( 'should set given position to the currently visible view and use position from the first view in the stack #1', () => {
-			balloon.view.pin.reset();
+			balloon.view.pin.resetHistory();
 
 			balloon.updatePosition( { target: 'new' } );
 
@@ -438,7 +438,7 @@ describe( 'ContextualBalloon', () => {
 				}
 			} );
 
-			balloon.view.pin.reset();
+			balloon.view.pin.resetHistory();
 
 			balloon.updatePosition( { target: 'new' } );
 
@@ -460,7 +460,7 @@ describe( 'ContextualBalloon', () => {
 		} );
 
 		it( 'should use a given position limiter instead of the default one', () => {
-			balloon.view.pin.reset();
+			balloon.view.pin.resetHistory();
 
 			balloon.updatePosition( {
 				target: 'new',
