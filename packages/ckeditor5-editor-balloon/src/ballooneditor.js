@@ -169,7 +169,7 @@ export default class BalloonEditor extends Editor {
 	 * (on which the editor will be initialized) or initial data for the editor.
 	 *
 	 * If a source element is passed, then its contents will be automatically
-	 * {@link module:editor-classic/ballooneditor~BalloonEditor#setData loaded} to the editor on startup and the element
+	 * {@link module:editor-balloon/ballooneditor~BalloonEditor#setData loaded} to the editor on startup and the element
 	 * itself will be used as the editor's editable element.
 	 *
 	 * If data is provided, then `editor.element` will be created automatically and needs to be added
