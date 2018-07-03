@@ -52,8 +52,8 @@ export default class BalloonToolbar extends Plugin {
 		this.toolbarView = this._createToolbarView();
 
 		/**
-		 * Tracks focus of editable element and {@link #toolbarView}.
-		 * When both are not focused then toolbar should hide.
+		 * Tracks the focus of the {@link module:ui/editableui/editableuiview~EditableUIView#editableElement}
+		 * and the {@link #toolbarView}. When both are blurred then the toolbar should hide.
 		 *
 		 * @readonly
 		 * @type {module:utils:focustracker~FocusTracker}

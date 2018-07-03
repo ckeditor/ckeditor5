@@ -149,7 +149,7 @@ describe( 'BalloonToolbar', () => {
 			expect( balloonToolbar.focusTracker ).to.instanceof( FocusTracker );
 		} );
 
-		it( 'it should track focus of #editableElement', () => {
+		it( 'it should track the focus of the #editableElement', () => {
 			expect( balloonToolbar.focusTracker.isFocused ).to.false;
 
 			editor.ui.view.editableElement.dispatchEvent( new Event( 'focus' ) );
@@ -157,7 +157,7 @@ describe( 'BalloonToolbar', () => {
 			expect( balloonToolbar.focusTracker.isFocused ).to.true;
 		} );
 
-		it( 'it should track focus of #toolbarView.element', () => {
+		it( 'it should track the focus of the toolbarView#element', () => {
 			expect( balloonToolbar.focusTracker.isFocused ).to.false;
 
 			balloonToolbar.toolbarView.element.dispatchEvent( new Event( 'focus' ) );
@@ -320,7 +320,7 @@ describe( 'BalloonToolbar', () => {
 			sinon.assert.calledOnce( balloonAddSpy );
 		} );
 
-		it( 'should not add #toolbarView to the #_balloon when the selection is collapsed', () => {
+		it( 'should not add the #toolbarView to the #_balloon when the selection is collapsed', () => {
 			setData( model, '<paragraph>b[]ar</paragraph>' );
 
 			balloonToolbar.show();
@@ -431,7 +431,7 @@ describe( 'BalloonToolbar', () => {
 			sinon.assert.notCalled( hidePanelSpy );
 		} );
 
-		it( 'should not show when selection stops changing when editable is blurred', () => {
+		it( 'should not show when the selection stops changing when the editable is blurred', () => {
 			sinon.assert.notCalled( showPanelSpy );
 			sinon.assert.notCalled( hidePanelSpy );
 
