@@ -57,25 +57,15 @@ export default class DecoupledEditor extends Editor {
 	 * {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`} method instead.
 	 *
 	 * @protected
-	 * @param {HTMLElement|String} sourceElementOrData The DOM element that serves as an editable.
-	 * The data will be loaded from it and loaded back to it once the editor is destroyed.
-	 * Alternatively, a data string to be loaded into the editor.
+	 * @param {HTMLElement|String} sourceElementOrData The DOM element that will be the source for the created editor
+	 * (on which the editor will be initialized) or initial data for the editor. For more information see
+	 * {@link module:editor-balloon/ballooneditor~BalloonEditor.create `BalloonEditor.create()`}.
 	 * @param {module:core/editor/editorconfig~EditorConfig} config The editor configuration.
 	 */
 	constructor( sourceElementOrData, config ) {
 		super( config );
 
 		if ( isElement( sourceElementOrData ) ) {
-			/**
-			 * The element used as an editable. The data will be loaded from it and loaded back to
-			 * it once the editor is destroyed.
-			 *
-			 * **Note:** The property is available only when such element has been passed
-			 * to the {@link #constructor}.
-			 *
-			 * @readonly
-			 * @member {HTMLElement}
-			 */
 			this.sourceElement = sourceElementOrData;
 		}
 
@@ -90,6 +80,8 @@ export default class DecoupledEditor extends Editor {
 	 * @inheritDoc
 	 */
 	get element() {
+		// This editor has no single "main UI element". Its editable and toolbar are exposed separately and need
+		// to be added to the DOM manually by the consumer.
 		return null;
 	}
 
@@ -185,9 +177,15 @@ export default class DecoupledEditor extends Editor {
 	 *				console.error( err.stack );
 	 *			} );
 	 *
-	 * @param {HTMLElement|String} sourceElementOrData The DOM element that serves as an editable.
-	 * The data will be loaded from it and loaded back to it once the editor is destroyed.
-	 * Alternatively, a data string to be loaded into the editor.
+	 * @param {HTMLElement|String} sourceElementOrData The DOM element that will be the source for the created editor
+	 * (on which the editor will be initialized) or initial data for the editor.
+	 *
+	 * If a source element is passed, then its contents will be automatically
+	 * {@link module:editor-decoupled/decouplededitor~DecoupledEditor#setData loaded} to the editor on startup and the element
+	 * itself will be used as the editor's editable element.
+	 *
+	 * If data is provided, then `editor.ui.view.editable.element` will be created automatically and needs to be added
+	 * to the DOM manually.
 	 * @param {module:core/editor/editorconfig~EditorConfig} config The editor configuration.
 	 * @returns {Promise} A promise resolved once the editor is ready.
 	 * The promise returns the created {@link module:editor-decoupled/decouplededitor~DecoupledEditor} instance.
