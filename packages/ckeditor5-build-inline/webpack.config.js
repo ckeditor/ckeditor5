@@ -29,12 +29,14 @@ module.exports = {
 
 	optimization: {
 		minimizer: [
+			// Use the newest version of UglifyJsWebpackPlugin plugin that fixes `inline` optimization bug.
+			// See https://github.com/webpack-contrib/uglifyjs-webpack-plugin/issues/264.
 			new UglifyJsWebpackPlugin( {
 				sourceMap: true,
 				uglifyOptions: {
 					output: {
-						// Preserve license comments starting with at least 30 `-` chars.
-						comments: /^-{30,}/
+						// Preserve license comments starting with the exclamation mark (!).
+						comments: /^!/
 					}
 				}
 			} )
