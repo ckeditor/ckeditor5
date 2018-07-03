@@ -46,15 +46,19 @@ describe( 'ClassicEditor', () => {
 		} );
 
 		it( 'has a Data Interface', () => {
-			testUtils.isMixed( ClassicEditor, DataApiMixin );
+			expect( testUtils.isMixed( ClassicEditor, DataApiMixin ) ).to.true;
 		} );
 
 		it( 'has a Element Interface', () => {
-			testUtils.isMixed( ClassicEditor, ElementApiMixin );
+			expect( testUtils.isMixed( ClassicEditor, ElementApiMixin ) ).to.true;
 		} );
 
 		it( 'creates main root element', () => {
 			expect( editor.model.document.getRoot( 'main' ) ).to.instanceof( RootElement );
+		} );
+
+		it( 'contains the source element as #sourceElement property', () => {
+			expect( editor.sourceElement ).to.equal( editorElement );
 		} );
 
 		it( 'handles form element', () => {
@@ -85,6 +89,14 @@ describe( 'ClassicEditor', () => {
 				return editor.destroy().then( () => {
 					form.remove();
 				} );
+			} );
+		} );
+
+		it( 'allows to pass data to the constructor', () => {
+			return ClassicEditor.create( '<p>Hello world!</p>', {
+				plugins: [ Paragraph ]
+			} ).then( editor => {
+				expect( editor.getData() ).to.equal( '<p>Hello world!</p>' );
 			} );
 		} );
 
@@ -137,6 +149,18 @@ describe( 'ClassicEditor', () => {
 				} );
 		} );
 
+		it( 'should have undefined the #sourceElement if editor was initialized with data', () => {
+			return ClassicEditor
+				.create( '<p>Foo.</p>', {
+					plugins: [ Paragraph, Bold ]
+				} )
+				.then( newEditor => {
+					expect( newEditor.sourceElement ).to.be.undefined;
+
+					return newEditor.destroy();
+				} );
+		} );
+
 		describe( 'ui', () => {
 			it( 'inserts editor UI next to editor element', () => {
 				expect( editor.ui.view.element.previousSibling ).to.equal( editorElement );
@@ -144,6 +168,20 @@ describe( 'ClassicEditor', () => {
 
 			it( 'attaches editable UI as view\'s DOM root', () => {
 				expect( editor.editing.view.getDomRoot() ).to.equal( editor.ui.view.editable.element );
+			} );
+
+			it( 'editor.element points to the editor\'s UI when editor was initialized on the DOM element', () => {
+				expect( editor.element ).to.equal( editor.ui.view.element );
+			} );
+
+			it( 'editor.element points to the editor\'s UI when editor was initialized with data', () => {
+				return ClassicEditor.create( '<p>Hello world!</p>', {
+					plugins: [ Paragraph ]
+				} ).then( editor => {
+					expect( editor.element ).to.equal( editor.ui.view.element );
+
+					return editor.destroy();
+				} );
 			} );
 		} );
 	} );
@@ -243,12 +281,29 @@ describe( 'ClassicEditor', () => {
 				} );
 		} );
 
+		it( 'does not update the source element if editor was initialized with data', () => {
+			return ClassicEditor
+				.create( '<p>Foo.</p>', {
+					plugins: [ Paragraph, Bold ]
+				} )
+				.then( newEditor => {
+					const spy = sinon.stub( newEditor, 'updateSourceElement' );
+
+					return newEditor.destroy()
+						.then( () => {
+							expect( spy.called ).to.be.false;
+
+							spy.restore();
+						} );
+				} );
+		} );
+
 		it( 'restores the editor element', () => {
-			expect( editor.element.style.display ).to.equal( 'none' );
+			expect( editor.sourceElement.style.display ).to.equal( 'none' );
 
 			return editor.destroy()
 				.then( () => {
-					expect( editor.element.style.display ).to.equal( '' );
+					expect( editor.sourceElement.style.display ).to.equal( '' );
 				} );
 		} );
 	} );

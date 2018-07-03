@@ -17,6 +17,7 @@ import ClassicEditorUIView from './classiceditoruiview';
 import ElementReplacer from '@ckeditor/ckeditor5-utils/src/elementreplacer';
 import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import isElement from '@ckeditor/ckeditor5-utils/src/lib/lodash/isElement';
 
 /**
  * The {@glink builds/guides/overview#classic-editor classic editor} implementation.
@@ -53,22 +54,25 @@ export default class ClassicEditor extends Editor {
 	 * {@link module:editor-classic/classiceditor~ClassicEditor.create `ClassicEditor.create()`} method instead.
 	 *
 	 * @protected
-	 * @param {HTMLElement} element The DOM element that will be the source for the created editor.
-	 * The data will be loaded from it and loaded back to it once the editor is destroyed.
+	 * @param {HTMLElement|String} sourceElementOrData The DOM element that will be the source for the created editor
+	 * or editor's initial data. For more information see
+	 * {@link module:editor-classic/classiceditor~ClassicEditor.create `ClassicEditor.create()`}.
 	 * @param {module:core/editor/editorconfig~EditorConfig} config The editor configuration.
 	 */
-	constructor( element, config ) {
+	constructor( sourceElementOrData, config ) {
 		super( config );
 
+		if ( isElement( sourceElementOrData ) ) {
+			this.sourceElement = sourceElementOrData;
+		}
+
 		/**
-		 * The element replacer instance used to hide the editor element.
+		 * The element replacer instance used to hide the editor's source element.
 		 *
 		 * @protected
 		 * @member {module:utils/elementreplacer~ElementReplacer}
 		 */
 		this._elementReplacer = new ElementReplacer();
-
-		this.element = element;
 
 		this.data.processor = new HtmlDataProcessor();
 
@@ -80,14 +84,24 @@ export default class ClassicEditor extends Editor {
 	}
 
 	/**
+	 * @inheritDoc
+	 */
+	get element() {
+		return this.ui.view.element;
+	}
+
+	/**
 	 * Destroys the editor instance, releasing all resources used by it.
 	 *
-	 * Updates the original editor element with the data.
+	 * Updates the editor's source element with the data.
 	 *
 	 * @returns {Promise}
 	 */
 	destroy() {
-		this.updateElement();
+		if ( this.sourceElement ) {
+			this.updateSourceElement();
+		}
+
 		this._elementReplacer.restore();
 		this.ui.destroy();
 
@@ -128,25 +142,72 @@ export default class ClassicEditor extends Editor {
 	 *				console.error( err.stack );
 	 *			} );
 	 *
-	 * @param {HTMLElement} element The DOM element that will be the source for the created editor.
-	 * The data will be loaded from it and loaded back to it once the editor is destroyed.
+	 * Creating instance when using initial data instead of a DOM element:
+	 *
+	 *		import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+	 *		import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
+	 *		import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+	 *		import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+	 *		import ...
+	 *
+	 *		ClassicEditor
+	 *			.create( '<p>Hello world!</p>', {
+	 *				plugins: [ Essentials, Bold, Italic, ... ],
+	 *				toolbar: [ 'bold', 'italic', ... ]
+	 *			} )
+	 *			.then( editor => {
+	 *				console.log( 'Editor was initialized', editor );
+	 *
+	 *				// Initial data was provided so `editor.element` needs to be added manually to the DOM.
+	 *				document.body.appendChild( editor.element );
+	 *			} )
+	 *			.catch( err => {
+	 *				console.error( err.stack );
+	 *			} );
+	 *
+	 * @param {HTMLElement|String} sourceElementOrData The DOM element that will be the source for the created editor
+	 * or editor's initial data.
+	 *
+	 * If a source element is passed, then its contents will be automatically
+	 * {@link module:editor-classic/classiceditor~ClassicEditor#setData loaded} to the editor on startup
+	 * and the {@link module:core/editor/editorwithui~EditorWithUI#element editor element} will replace the passed element in the DOM
+	 * (the original one will be hidden and editor will be injected next to it).
+	 *
+	 * Moreover, the data will be set back to the source element once the editor is destroyed and
+	 * (if the element is a `<textarea>`) when a form in which this element is contained is submitted (which ensures
+	 * automatic integration with native web forms).
+	 *
+	 * If a data is passed, a detached editor will be created. It means that you need to insert it into the DOM manually
+	 * (by accessing the {@link module:editor-classic/classiceditor~ClassicEditor#element `editor.element`} property).
+	 *
+	 * See the examples above to learn more.
+	 *
 	 * @param {module:core/editor/editorconfig~EditorConfig} config The editor configuration.
 	 * @returns {Promise} A promise resolved once the editor is ready.
 	 * The promise returns the created {@link module:editor-classic/classiceditor~ClassicEditor} instance.
 	 */
-	static create( element, config ) {
+	static create( sourceElementOrData, config ) {
 		return new Promise( resolve => {
-			const editor = new this( element, config );
+			const editor = new this( sourceElementOrData, config );
 
 			resolve(
 				editor.initPlugins()
 					.then( () => editor.ui.init() )
 					.then( () => {
-						editor._elementReplacer.replace( element, editor.ui.view.element );
+						if ( isElement( sourceElementOrData ) ) {
+							editor._elementReplacer.replace( sourceElementOrData, editor.element );
+						}
+
 						editor.fire( 'uiReady' );
 					} )
 					.then( () => editor.editing.view.attachDomRoot( editor.ui.view.editableElement ) )
-					.then( () => editor.data.init( getDataFromElement( element ) ) )
+					.then( () => {
+						const initialData = isElement( sourceElementOrData ) ?
+							getDataFromElement( sourceElementOrData ) :
+							sourceElementOrData;
+
+						return editor.data.init( initialData );
+					} )
 					.then( () => {
 						editor.fire( 'dataReady' );
 						editor.fire( 'ready' );
