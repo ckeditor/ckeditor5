@@ -53,7 +53,7 @@ describe( 'attachToForm()', () => {
 	} );
 
 	it( 'should update editor#element after the "submit" event', () => {
-		editor.element = textarea;
+		editor.sourceElement = textarea;
 		attachToForm( editor );
 
 		expect( textarea.value ).to.equal( '' );
@@ -67,7 +67,7 @@ describe( 'attachToForm()', () => {
 	} );
 
 	it( 'should update editor#element after calling the submit() method', () => {
-		editor.element = textarea;
+		editor.sourceElement = textarea;
 		attachToForm( editor );
 
 		expect( textarea.value ).to.equal( '' );
@@ -87,7 +87,7 @@ describe( 'attachToForm()', () => {
 		const element = document.createElement( 'div' );
 		form.appendChild( element );
 
-		editor.element = element;
+		editor.sourceElement = element;
 		attachToForm( editor );
 
 		expect( textarea.value ).to.equal( '' );
@@ -103,7 +103,7 @@ describe( 'attachToForm()', () => {
 		const standaloneTextarea = document.createElement( 'textarea' );
 		document.body.appendChild( standaloneTextarea );
 
-		editor.element = standaloneTextarea;
+		editor.sourceElement = standaloneTextarea;
 		attachToForm( editor );
 
 		expect( standaloneTextarea.value ).to.equal( '' );
@@ -118,7 +118,7 @@ describe( 'attachToForm()', () => {
 	} );
 
 	it( 'should not update editor#element after destruction of the editor - form.submit()', () => {
-		editor.element = textarea;
+		editor.sourceElement = textarea;
 		attachToForm( editor );
 
 		expect( textarea.value ).to.equal( '' );
@@ -133,7 +133,7 @@ describe( 'attachToForm()', () => {
 	} );
 
 	it( 'should not update the editor#element after destruction of the editor - "submit" event', () => {
-		editor.element = textarea;
+		editor.sourceElement = textarea;
 		attachToForm( editor );
 
 		expect( textarea.value ).to.equal( '' );
@@ -156,7 +156,7 @@ describe( 'attachToForm()', () => {
 		input.setAttribute( 'name', 'submit' );
 		form.appendChild( input );
 
-		editor.element = textarea;
+		editor.sourceElement = textarea;
 		attachToForm( editor );
 
 		expect( form.submit ).to.equal( input );

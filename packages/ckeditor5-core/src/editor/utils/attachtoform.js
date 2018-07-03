@@ -19,7 +19,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  * @param {module:core/editor/editor~Editor} editor Editor instance.
  */
 export default function attachToForm( editor ) {
-	if ( !isFunction( editor.updateElement ) ) {
+	if ( !isFunction( editor.updateSourceElement ) ) {
 		/**
 		 * {@link module:core/editor/utils/elementapimixin~ElementApi ElementApi interface} is required.
 		 *
@@ -28,13 +28,13 @@ export default function attachToForm( editor ) {
 		throw new CKEditorError( 'attachtoform-missing-elementapi-interface: ElementApi interface is required.' );
 	}
 
-	const element = editor.element;
+	const sourceElement = editor.sourceElement;
 
 	// Only when replacing a textarea which is inside of a form element.
-	if ( element && element.tagName.toLowerCase() === 'textarea' && element.form ) {
+	if ( sourceElement && sourceElement.tagName.toLowerCase() === 'textarea' && sourceElement.form ) {
 		let originalSubmit;
-		const form = element.form;
-		const onSubmit = () => editor.updateElement();
+		const form = sourceElement.form;
+		const onSubmit = () => editor.updateSourceElement();
 
 		// Replace the original form#submit() to call a custom submit function first.
 		// Check if #submit is a function because the form might have an input named "submit".
