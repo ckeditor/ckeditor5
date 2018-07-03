@@ -15,12 +15,13 @@ describe( 'RedoCommand', () => {
 	let editor, model, root, redo, undo;
 
 	beforeEach( () => {
-		editor = new ModelTestEditor();
-		redo = new RedoCommand( editor );
+		return ModelTestEditor.create().then( newEditor => {
+			editor = newEditor;
 
-		model = editor.model;
-
-		root = model.document.getRoot();
+			redo = new RedoCommand( editor );
+			model = editor.model;
+			root = model.document.getRoot();
+		} );
 	} );
 
 	afterEach( () => {
