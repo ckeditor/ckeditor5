@@ -79,32 +79,6 @@ module.exports = function snippetAdapter( data ) {
 };
 
 function getWebpackConfig( config ) {
-	const plugins = [
-		new MiniCssExtractPlugin( { filename: 'snippet.css' } ),
-		new CKEditorWebpackPlugin( {
-			language: config.language || 'en'
-		} ),
-		new webpack.BannerPlugin( {
-			banner: bundler.getLicenseBanner(),
-			raw: true
-		} )
-	];
-
-	const minimizer = [];
-
-	if ( config.production ) {
-		minimizer.push(
-			new UglifyJsWebpackPlugin( {
-				sourceMap: true,
-				uglifyOptions: {
-					output: {
-						comments: /^\**!/
-					}
-				}
-			} )
-		);
-	}
-
 	return {
 		mode: config.production ? 'production' : 'development',
 
@@ -118,10 +92,29 @@ function getWebpackConfig( config ) {
 		},
 
 		optimization: {
-			minimizer
+			minimizer: [
+				new UglifyJsWebpackPlugin( {
+					sourceMap: true,
+					uglifyOptions: {
+						output: {
+							// Preserve license comments starting with an exclamation mark.
+							comments: /^!/
+						}
+					}
+				} )
+			]
 		},
 
-		plugins,
+		plugins: [
+			new MiniCssExtractPlugin( { filename: 'snippet.css' } ),
+			new CKEditorWebpackPlugin( {
+				language: config.language || 'en'
+			} ),
+			new webpack.BannerPlugin( {
+				banner: bundler.getLicenseBanner(),
+				raw: true
+			} )
+		],
 
 		// Configure the paths so building CKEditor 5 snippets work even if the script
 		// is triggered from a directory outside ckeditor5 (e.g. multi-project case).
