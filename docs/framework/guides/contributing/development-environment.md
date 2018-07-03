@@ -149,7 +149,7 @@ Lerna is a tool used by many well-known projects such as [Babel.js](https://gith
 
 ## Running tests
 
-In order to run tests you need to use the `test` and `test:manual` tasks.
+In order to run tests you need to use the `test` and `manual` tasks.
 
 ```bash
 npm test -- --watch --coverage --source-map --files=engine
@@ -165,10 +165,10 @@ This command will run the [`ckeditor5-engine`](https://github.com/ckeditor/ckedi
 
 **Note:** It is not possible to run tests of all packages with code coverage at once because the size of the project (the number of test files and source modules) exceeds webpack's capabilities (it runs out of memory).
 
-To create a server for manual tests use the `test:manual` task:
+To create a server for manual tests use the `manual` task:
 
 ```bash
-npm run test:manual
+npm run manual
 ```
 
 It accepts the `--source-map` (`-s`) option. Note that it watches for changes in the JavaScript files only (see the [bug](https://github.com/ckeditor/ckeditor5-dev/issues/52)).
