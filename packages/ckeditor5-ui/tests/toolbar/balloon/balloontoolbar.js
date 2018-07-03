@@ -8,6 +8,7 @@ import BalloonToolbar from '../../../src/toolbar/balloon/balloontoolbar';
 import ContextualBalloon from '../../../src/panel/balloon/contextualballoon';
 import BalloonPanelView from '../../../src/panel/balloon/balloonpanelview';
 import ToolbarView from '../../../src/toolbar/toolbarview';
+import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
@@ -17,7 +18,7 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { stringify as viewStringify } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
-/* global document, setTimeout, window */
+/* global document, setTimeout, window, Event */
 
 describe( 'BalloonToolbar', () => {
 	let sandbox, editor, model, selection, editingView, balloonToolbar, balloon, editorElement;
@@ -140,6 +141,28 @@ describe( 'BalloonToolbar', () => {
 	describe( 'pluginName', () => {
 		it( 'should return plugin by its name', () => {
 			expect( editor.plugins.get( 'BalloonToolbar' ) ).to.equal( balloonToolbar );
+		} );
+	} );
+
+	describe( 'focusTracker', () => {
+		it( 'should be defined', () => {
+			expect( balloonToolbar.focusTracker ).to.instanceof( FocusTracker );
+		} );
+
+		it( 'it should track the focus of the #editableElement', () => {
+			expect( balloonToolbar.focusTracker.isFocused ).to.false;
+
+			editor.ui.view.editableElement.dispatchEvent( new Event( 'focus' ) );
+
+			expect( balloonToolbar.focusTracker.isFocused ).to.true;
+		} );
+
+		it( 'it should track the focus of the toolbarView#element', () => {
+			expect( balloonToolbar.focusTracker.isFocused ).to.false;
+
+			balloonToolbar.toolbarView.element.dispatchEvent( new Event( 'focus' ) );
+
+			expect( balloonToolbar.focusTracker.isFocused ).to.true;
 		} );
 	} );
 
@@ -275,7 +298,7 @@ describe( 'BalloonToolbar', () => {
 			expect( targetRect ).to.deep.equal( backwardSelectionRect );
 		} );
 
-		it( 'should update balloon position on ui#update event while balloon is added to the #_balloon', () => {
+		it( 'should update balloon position on ui#update event when #toolbarView is already added to the #_balloon', () => {
 			setData( model, '<paragraph>b[a]r</paragraph>' );
 
 			const spy = sandbox.spy( balloon, 'updatePosition' );
@@ -295,6 +318,13 @@ describe( 'BalloonToolbar', () => {
 			balloonToolbar.show();
 			balloonToolbar.show();
 			sinon.assert.calledOnce( balloonAddSpy );
+		} );
+
+		it( 'should not add the #toolbarView to the #_balloon when the selection is collapsed', () => {
+			setData( model, '<paragraph>b[]ar</paragraph>' );
+
+			balloonToolbar.show();
+			sinon.assert.notCalled( balloonAddSpy );
 		} );
 
 		it( 'should not add #toolbarView to the #_balloon when all components inside #toolbarView are disabled', () => {
@@ -318,37 +348,6 @@ describe( 'BalloonToolbar', () => {
 
 			balloonToolbar.show();
 			sinon.assert.calledOnce( balloonAddSpy );
-		} );
-
-		describe( 'on #_selectionChangeDebounced event', () => {
-			let showSpy;
-
-			beforeEach( () => {
-				showSpy = sandbox.spy( balloonToolbar, 'show' );
-			} );
-
-			it( 'should not be called when the editor is not focused', () => {
-				setData( model, '<paragraph>b[a]r</paragraph>' );
-				editingView.document.isFocused = false;
-
-				balloonToolbar.fire( '_selectionChangeDebounced' );
-				sinon.assert.notCalled( showSpy );
-			} );
-
-			it( 'should not be called when the selection is collapsed', () => {
-				setData( model, '<paragraph>b[]ar</paragraph>' );
-
-				balloonToolbar.fire( '_selectionChangeDebounced' );
-				sinon.assert.notCalled( showSpy );
-			} );
-
-			it( 'should be called when the selection is not collapsed and editor is focused', () => {
-				setData( model, '<paragraph>b[a]r</paragraph>' );
-				editingView.document.isFocused = true;
-
-				balloonToolbar.fire( '_selectionChangeDebounced' );
-				sinon.assert.calledOnce( showSpy );
-			} );
 		} );
 	} );
 
@@ -381,7 +380,7 @@ describe( 'BalloonToolbar', () => {
 			sinon.assert.notCalled( spy );
 		} );
 
-		it( 'should not remove #ttolbarView when is not added to the #_balloon', () => {
+		it( 'should not remove #toolbarView when is not added to the #_balloon', () => {
 			balloonToolbar.hide();
 
 			sinon.assert.notCalled( removeBalloonSpy );
@@ -412,7 +411,7 @@ describe( 'BalloonToolbar', () => {
 		} );
 	} );
 
-	describe( 'showing and hiding', () => {
+	describe( 'show and hide triggers', () => {
 		let showPanelSpy, hidePanelSpy;
 
 		beforeEach( () => {
@@ -422,7 +421,7 @@ describe( 'BalloonToolbar', () => {
 			hidePanelSpy = sandbox.spy( balloonToolbar, 'hide' );
 		} );
 
-		it( 'should open when selection stops changing', () => {
+		it( 'should show when selection stops changing', () => {
 			sinon.assert.notCalled( showPanelSpy );
 			sinon.assert.notCalled( hidePanelSpy );
 
@@ -432,7 +431,18 @@ describe( 'BalloonToolbar', () => {
 			sinon.assert.notCalled( hidePanelSpy );
 		} );
 
-		it( 'should close when selection starts changing by a directChange', () => {
+		it( 'should not show when the selection stops changing when the editable is blurred', () => {
+			sinon.assert.notCalled( showPanelSpy );
+			sinon.assert.notCalled( hidePanelSpy );
+
+			editingView.document.isFocused = false;
+			balloonToolbar.fire( '_selectionChangeDebounced' );
+
+			sinon.assert.notCalled( showPanelSpy );
+			sinon.assert.notCalled( hidePanelSpy );
+		} );
+
+		it( 'should hide when selection starts changing by a direct change', () => {
 			balloonToolbar.fire( '_selectionChangeDebounced' );
 
 			sinon.assert.calledOnce( showPanelSpy );
@@ -444,7 +454,7 @@ describe( 'BalloonToolbar', () => {
 			sinon.assert.calledOnce( hidePanelSpy );
 		} );
 
-		it( 'should not close when selection starts changing by not a directChange', () => {
+		it( 'should not hide when selection starts changing by an indirect change', () => {
 			balloonToolbar.fire( '_selectionChangeDebounced' );
 
 			sinon.assert.calledOnce( showPanelSpy );
@@ -456,7 +466,7 @@ describe( 'BalloonToolbar', () => {
 			sinon.assert.notCalled( hidePanelSpy );
 		} );
 
-		it( 'should close when selection starts changing by not a directChange but will become collapsed', () => {
+		it( 'should hide when selection starts changing by an indirect change but has changed to collapsed', () => {
 			balloonToolbar.fire( '_selectionChangeDebounced' );
 
 			sinon.assert.calledOnce( showPanelSpy );
@@ -472,17 +482,27 @@ describe( 'BalloonToolbar', () => {
 			sinon.assert.calledOnce( hidePanelSpy );
 		} );
 
-		it( 'should hide if the editor loses focus', () => {
-			editor.ui.focusTracker.isFocused = true;
+		it( 'should show on #focusTracker focus', () => {
+			balloonToolbar.focusTracker.isFocused = false;
 
-			balloonToolbar.fire( '_selectionChangeDebounced' );
+			sinon.assert.notCalled( showPanelSpy );
+			sinon.assert.notCalled( hidePanelSpy );
+
+			balloonToolbar.focusTracker.isFocused = true;
+
+			sinon.assert.calledOnce( showPanelSpy );
+			sinon.assert.notCalled( hidePanelSpy );
+		} );
+
+		it( 'should hide on #focusTracker blur', () => {
+			balloonToolbar.focusTracker.isFocused = true;
 
 			const stub = sandbox.stub( balloon, 'visibleView' ).get( () => balloonToolbar.toolbarView );
 
 			sinon.assert.calledOnce( showPanelSpy );
 			sinon.assert.notCalled( hidePanelSpy );
 
-			editor.ui.focusTracker.isFocused = false;
+			balloonToolbar.focusTracker.isFocused = false;
 
 			sinon.assert.calledOnce( showPanelSpy );
 			sinon.assert.calledOnce( hidePanelSpy );
@@ -490,17 +510,15 @@ describe( 'BalloonToolbar', () => {
 			stub.restore();
 		} );
 
-		it( 'should not hide if the editor loses focus and #toolbarView is not visible', () => {
-			editor.ui.focusTracker.isFocused = true;
-
-			balloonToolbar.fire( '_selectionChangeDebounced' );
+		it( 'should not hide on #focusTracker blur when toolbar is not in the balloon stack', () => {
+			balloonToolbar.focusTracker.isFocused = true;
 
 			const stub = sandbox.stub( balloon, 'visibleView' ).get( () => null );
 
 			sinon.assert.calledOnce( showPanelSpy );
 			sinon.assert.notCalled( hidePanelSpy );
 
-			editor.ui.focusTracker.isFocused = false;
+			balloonToolbar.focusTracker.isFocused = false;
 
 			sinon.assert.calledOnce( showPanelSpy );
 			sinon.assert.notCalled( hidePanelSpy );
