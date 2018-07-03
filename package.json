@@ -1,7 +1,8 @@
 {
   "name": "ckeditor5",
   "version": "10.1.0",
-  "description": "The development environment of CKEditor 5.",
+  "description": "The development environment of CKEditor 5 – the best browser-based rich text editor.",
+  "private": true,
   "keywords": [
     "CKEditor",
     "ckeditor5",
