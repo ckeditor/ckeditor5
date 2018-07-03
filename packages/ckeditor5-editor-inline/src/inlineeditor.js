@@ -55,23 +55,12 @@ export default class InlineEditor extends Editor {
 	 *
 	 * @protected
 	 * @param {HTMLElement|String} sourceElementOrData The DOM element that will be the source for the created editor
-	 * (on which the editor will be initialized) or initial data for the editor. If data is provided, `editor.element`
-	 * will be created automatically and need to be added manually to the DOM. For more information see
+	 * (on which the editor will be initialized) or initial data for the editor. For more information see
 	 * {@link module:editor-inline/inlineeditor~InlineEditor.create `InlineEditor.create()`}.
 	 * @param {module:core/editor/editorconfig~EditorConfig} config The editor configuration.
 	 */
 	constructor( sourceElementOrData, config ) {
 		super( config );
-
-		/**
-		 * The element on which the editor has been initialized.
-		 * If editor was initialized with data instead of HTMLElement this property will keep a reference to newly
-		 * created element that need to be added manually to the DOM. For more information see
-		 * {@link module:editor-inline/inlineeditor~InlineEditor.create `InlineEditor.create()`}.
-		 *
-		 * @readonly
-		 * @member {HTMLElement} #element
-		 */
 
 		this.data.processor = new HtmlDataProcessor();
 
@@ -145,7 +134,7 @@ export default class InlineEditor extends Editor {
 	 *				console.error( err.stack );
 	 *			} );
 	 *
-	 * Creating instance when using initial data instead of DOM element:
+	 * Creating instance when using initial data instead of a DOM element:
 	 *
 	 *		import InlineEditor from '@ckeditor/ckeditor5-editor-inline/src/inlineeditor';
 	 *		import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
@@ -154,10 +143,7 @@ export default class InlineEditor extends Editor {
 	 *		import ...
 	 *
 	 *		InlineEditor
-	 *			.create( '<p>Hello world!</p>', {
-	 *				plugins: [ Essentials, Bold, Italic, ... ],
-	 *				toolbar: [ 'bold', 'italic', ... ]
-	 *			} )
+	 *			.create( '<p>Hello world!</p>' )
 	 *			.then( editor => {
 	 *				console.log( 'Editor was initialized', editor );
 	 *
@@ -169,9 +155,14 @@ export default class InlineEditor extends Editor {
 	 *			} );
 	 *
 	 * @param {HTMLElement|String} sourceElementOrData The DOM element that will be the source for the created editor
-	 * (on which the editor will be initialized) or initial data for the editor. If data is provided, `editor.element`
-	 * will be created automatically and need to be added manually to the DOM. The element is initialized as a `div`
-	 * element crated in current document's context.
+	 * (on which the editor will be initialized) or initial data for the editor.
+	 *
+	 * If a source element is passed, then its contents will be automatically
+	 * {@link module:editor-classic/inlineeditor~InlineEditor#setData loaded} to the editor on startup and the element
+	 * itself will be used as the editor's editable element.
+	 *
+	 * If a data is provided, then `editor.element` will be created automatically and needs to be added
+	 * manually to the DOM.
 	 * @param {module:core/editor/editorconfig~EditorConfig} config The editor configuration.
 	 * @returns {Promise} A promise resolved once the editor is ready.
 	 * The promise returns the created {@link module:editor-inline/inlineeditor~InlineEditor} instance.
