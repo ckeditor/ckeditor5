@@ -151,10 +151,7 @@ export default class ClassicEditor extends Editor {
 	 *		import ...
 	 *
 	 *		ClassicEditor
-	 *			.create( '<p>Hello world!</p>', {
-	 *				plugins: [ Essentials, Bold, Italic, ... ],
-	 *				toolbar: [ 'bold', 'italic', ... ]
-	 *			} )
+	 *			.create( '<p>Hello world!</p>' )
 	 *			.then( editor => {
 	 *				console.log( 'Editor was initialized', editor );
 	 *
