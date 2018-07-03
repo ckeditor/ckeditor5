@@ -288,5 +288,13 @@ describe( 'InlineEditor', () => {
 						.to.equal( '<p>a</p><heading>b</heading>' );
 				} );
 		} );
+
+		it( 'should not throw an error if editor was initialized with the data', () => {
+			return InlineEditor
+				.create( '<p>Foo.</p>', {
+					plugins: [ Paragraph, Bold ]
+				} )
+				.then( newEditor => newEditor.destroy() );
+		} );
 	} );
 } );
