@@ -411,7 +411,7 @@ describe( 'Node', () => {
 			root.on( 'change:attributes', ( evt, node ) => rootChangeSpy( 'attributes', node ) );
 			root.on( 'change:text', ( evt, node ) => rootChangeSpy( 'text', node ) );
 
-			rootChangeSpy.reset();
+			rootChangeSpy.resetHistory();
 		} );
 
 		it( 'should be fired on the node', () => {
