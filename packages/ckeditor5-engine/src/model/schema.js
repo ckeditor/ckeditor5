@@ -586,22 +586,32 @@ export default class Schema {
 	 * Returns the lowest {@link module:engine/model/schema~Schema#isLimit limit element} containing the entire
 	 * selection or the root otherwise.
 	 *
-	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
+	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selectionOrRangeOrPosition
 	 * Selection which returns the common ancestor.
 	 * @returns {module:engine/model/element~Element}
 	 */
-	getLimitElement( selection ) {
-		// Find the common ancestor for all selection's ranges.
-		let element = Array.from( selection.getRanges() )
-			.reduce( ( element, range ) => {
-				const rangeCommonAncestor = range.getCommonAncestor();
+	getLimitElement( selectionOrRangeOrPosition ) {
+		let element;
 
-				if ( !element ) {
-					return rangeCommonAncestor;
-				}
+		if ( selectionOrRangeOrPosition instanceof Position ) {
+			element = selectionOrRangeOrPosition.parent;
+		} else {
+			const ranges = selectionOrRangeOrPosition instanceof Range ?
+				[ selectionOrRangeOrPosition ] :
+				Array.from( selectionOrRangeOrPosition.getRanges() );
 
-				return element.getCommonAncestor( rangeCommonAncestor, { includeSelf: true } );
-			}, null );
+			// Find the common ancestor for all selection's ranges.
+			element = ranges
+				.reduce( ( element, range ) => {
+					const rangeCommonAncestor = range.getCommonAncestor();
+
+					if ( !element ) {
+						return rangeCommonAncestor;
+					}
+
+					return element.getCommonAncestor( rangeCommonAncestor, { includeSelf: true } );
+				}, null );
+		}
 
 		while ( !this.isLimit( element ) ) {
 			if ( element.parent ) {

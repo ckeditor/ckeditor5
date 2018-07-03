@@ -983,6 +983,28 @@ describe( 'Schema', () => {
 
 			expect( schema.getLimitElement( doc.selection ) ).to.equal( root );
 		} );
+
+		it( 'accepts range as an argument', () => {
+			schema.extend( 'article', { isLimit: true } );
+			schema.extend( 'section', { isLimit: true } );
+
+			setData( model, '<div><section><article><paragraph>foo[]bar</paragraph></article></section></div>' );
+
+			const article = root.getNodeByPath( [ 0, 0, 0 ] );
+
+			expect( schema.getLimitElement( new Range( new Position( root, [ 0, 0, 0, 0, 2 ] ) ) ) ).to.equal( article );
+		} );
+
+		it( 'accepts position as an argument', () => {
+			schema.extend( 'article', { isLimit: true } );
+			schema.extend( 'section', { isLimit: true } );
+
+			setData( model, '<div><section><article><paragraph>foo[]bar</paragraph></article></section></div>' );
+
+			const article = root.getNodeByPath( [ 0, 0, 0 ] );
+
+			expect( schema.getLimitElement( new Position( root, [ 0, 0, 0, 0, 2 ] ) ) ).to.equal( article );
+		} );
 	} );
 
 	describe( 'checkAttributeInSelection()', () => {

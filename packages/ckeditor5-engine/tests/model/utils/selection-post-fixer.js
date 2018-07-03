@@ -54,6 +54,16 @@ describe( 'Selection post-fixer', () => {
 				allowContentOf: '$block',
 				isLimit: true
 			} );
+
+			model.schema.register( 'inlineWidget', {
+				isObject: true,
+				allowIn: [ '$block', '$clipboardHolder' ]
+			} );
+
+			model.schema.register( 'figure', {
+				allowIn: '$root',
+				allowAttributes: [ 'name', 'title' ]
+			} );
 		} );
 
 		it( 'should not crash if there is no correct position for model selection', () => {
@@ -524,6 +534,16 @@ describe( 'Selection post-fixer', () => {
 					'<paragraph>bar</paragraph>'
 				);
 			} );
+
+			it( 'should not fix #5 (selection in root on non limit element that doesn\'t allow text)', () => {
+				setModelData( model,
+					'[<figure></figure>]'
+				);
+
+				expect( getModelData( model ) ).to.equal(
+					'[<figure></figure>]'
+				);
+			} );
 		} );
 
 		describe( 'non-collapsed selection - other scenarios', () => {
@@ -555,7 +575,49 @@ describe( 'Selection post-fixer', () => {
 				);
 			} );
 
-			it( 'should fix #3 (selection must not cross a limit element; starts in a root)', () => {
+			it( 'should fix #3 (partial selection of not an object)', () => {
+				setModelData( model,
+					'<paragraph>aaa</paragraph>' +
+					'[<paragraph>bbb</paragraph>' +
+					'<paragraph>ccc]</paragraph>'
+				);
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>aaa</paragraph>' +
+					'<paragraph>[bbb</paragraph>' +
+					'<paragraph>ccc]</paragraph>'
+				);
+			} );
+
+			it( 'should fix #4 (partial selection of not an object)', () => {
+				setModelData( model,
+					'<paragraph>aaa</paragraph>' +
+					'<paragraph>b[bb</paragraph>]' +
+					'<paragraph>ccc</paragraph>'
+				);
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>aaa</paragraph>' +
+					'<paragraph>b[bb]</paragraph>' +
+					'<paragraph>ccc</paragraph>'
+				);
+			} );
+
+			it( 'should fix #5 (partial selection of not an object)', () => {
+				setModelData( model,
+					'<paragraph>aaa</paragraph>' +
+					'[<paragraph>bb]b</paragraph>' +
+					'<paragraph>ccc</paragraph>'
+				);
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>aaa</paragraph>' +
+					'<paragraph>[bb]b</paragraph>' +
+					'<paragraph>ccc</paragraph>'
+				);
+			} );
+
+			it( 'should fix #6 (selection must not cross a limit element; starts in a root)', () => {
 				model.schema.register( 'a', { isLimit: true, allowIn: '$root' } );
 				model.schema.register( 'b', { isLimit: true, allowIn: 'a' } );
 				model.schema.register( 'c', { allowIn: 'b' } );
@@ -568,7 +630,7 @@ describe( 'Selection post-fixer', () => {
 				expect( getModelData( model ) ).to.equal( '[<a><b><c></c></b></a>]' );
 			} );
 
-			it( 'should fix #5 (selection must not cross a limit element; ends in a root)', () => {
+			it( 'should fix #7 (selection must not cross a limit element; ends in a root)', () => {
 				model.schema.register( 'a', { isLimit: true, allowIn: '$root' } );
 				model.schema.register( 'b', { isLimit: true, allowIn: 'a' } );
 				model.schema.register( 'c', { allowIn: 'b' } );
@@ -581,7 +643,7 @@ describe( 'Selection post-fixer', () => {
 				expect( getModelData( model ) ).to.equal( '[<a><b><c></c></b></a>]' );
 			} );
 
-			it( 'should fix #4 (selection must not cross a limit element; starts in a non-limit)', () => {
+			it( 'should fix #8 (selection must not cross a limit element; starts in a non-limit)', () => {
 				model.schema.register( 'div', { allowIn: '$root' } );
 				model.schema.register( 'a', { isLimit: true, allowIn: 'div' } );
 				model.schema.register( 'b', { isLimit: true, allowIn: 'a' } );
@@ -595,7 +657,7 @@ describe( 'Selection post-fixer', () => {
 				expect( getModelData( model ) ).to.equal( '<div>[<a><b><c></c></b></a>]</div>' );
 			} );
 
-			it( 'should fix #6 (selection must not cross a limit element; ends in a non-limit)', () => {
+			it( 'should fix #9 (selection must not cross a limit element; ends in a non-limit)', () => {
 				model.schema.register( 'div', { allowIn: '$root' } );
 				model.schema.register( 'a', { isLimit: true, allowIn: 'div' } );
 				model.schema.register( 'b', { isLimit: true, allowIn: 'a' } );
@@ -609,10 +671,30 @@ describe( 'Selection post-fixer', () => {
 				expect( getModelData( model ) ).to.equal( '<div>[<a><b><c></c></b></a>]</div>' );
 			} );
 
-			it( 'should not fix #7 (selection on text node)', () => {
+			it( 'should not fix #1 (selection on text node)', () => {
 				setModelData( model, '<paragraph>foob[a]r</paragraph>', { lastRangeBackward: true } );
 
 				expect( getModelData( model ) ).to.equal( '<paragraph>foob[a]r</paragraph>' );
+			} );
+
+			it( 'should not fix #2', () => {
+				setModelData( model,
+					'<paragraph>[<inlineWidget></inlineWidget>]</paragraph>'
+				);
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>[<inlineWidget></inlineWidget>]</paragraph>'
+				);
+			} );
+
+			it( 'should not fix #3', () => {
+				setModelData( model,
+					'<paragraph>fo[o<inlineWidget></inlineWidget>b]ar</paragraph>'
+				);
+
+				expect( getModelData( model ) ).to.equal(
+					'<paragraph>fo[o<inlineWidget></inlineWidget>b]ar</paragraph>'
+				);
 			} );
 		} );
 

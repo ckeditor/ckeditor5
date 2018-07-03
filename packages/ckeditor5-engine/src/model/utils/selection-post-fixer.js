@@ -155,78 +155,48 @@ function tryFixingNonCollapsedRage( range, schema ) {
 	const start = range.start;
 	const end = range.end;
 
-	// Flat range on the same text node is always valid - no need to fix:
-	// - <limit>f[o]o</limit>
-	// - <limit>f[oo]</limit>
-	// - <limit>[fo]o</limit>
-	if ( range.isFlat && ( start.textNode || end.textNode ) ) {
-		return null;
-	}
+	const isTextAllowedOnStart = schema.checkChild( start, '$text' );
+	const isTextAllowedOnEnd = schema.checkChild( end, '$text' );
 
-	// Try to fix selection that is not on limit nodes:
-	// - [<p>foo</p>]            ->  <p>[foo]</p>
-	// - [<p>foo</p><p>bar</p>]  ->  <p>[foo</p><p>bar]</p>
-	if ( ( start.nodeAfter && !schema.isLimit( start.nodeAfter ) ) && ( end.nodeBefore && !schema.isLimit( end.nodeBefore ) ) ) {
-		const fixedStart = schema.getNearestSelectionRange( start, 'forward' );
-		const fixedEnd = schema.getNearestSelectionRange( end, 'backward' );
+	const startLimitElement = schema.getLimitElement( start );
+	const endLimitElement = schema.getLimitElement( end );
 
-		// This might be null ie when editor data is empty or selection is already properly set.
-		// In such cases there is no need to fix the selection range.
-		if ( fixedStart && fixedStart.start.isEqual( start ) && fixedEnd && fixedEnd.start.isEqual( end ) ) {
+	// Ranges which both end are inside the same limit element (or root) might needs only minor fix.
+	if ( startLimitElement === endLimitElement ) {
+		// Range is valid when both position allows to place a text:
+		// - <block>f[oobarba]z</block>
+		// This would be "fixed" by a next check but as it will be the same it's better to return null so the selection stays the same.
+		if ( isTextAllowedOnStart && isTextAllowedOnEnd ) {
 			return null;
 		}
 
-		return new Range( fixedStart ? fixedStart.start : start, fixedEnd ? fixedEnd.start : end );
-	}
+		// Range that is on non-limit element (or is partially) must be fixed so it is placed inside the block around $text:
+		// - [<block>foo</block>]    ->    <block>[foo]</block>
+		// - [<block>foo]</block>    ->    <block>[foo]</block>
+		// - <block>f[oo</block>]    ->    <block>f[oo]</block>
+		if ( checkSelectionOnNonLimitElements( start, end, schema ) ) {
+			const fixedStart = schema.getNearestSelectionRange( start, 'forward' );
+			const fixedEnd = schema.getNearestSelectionRange( end, 'backward' );
 
-	// This will fix selection on limit elements:
-	// - <table>[<tableRow><tableCell></tableCell></tableRow>]<table>   ->   [<table><tableRow><tableCell></tableCell></tableRow><table>]
-	// - <image>[<caption>xxx</caption>]</image>                        ->   [<image><caption>xxx</caption></image>]
-	//
-	// And when selection crosses limit element:
-	// - <image>[<caption>xx]x</caption></image>                        ->   [<image><caption>xxx</caption></image>]
-	const updatedStart = expandSelectionOnIsLimitNode( start, schema, 'start' );
-	const updatedEnd = expandSelectionOnIsLimitNode( end, schema, 'end' );
-
-	if ( !start.isEqual( updatedStart ) || !end.isEqual( updatedEnd ) ) {
-		return new Range( updatedStart, updatedEnd );
-	}
-
-	// If the flat range was not fixed at this point the range is valid.
-	if ( range.isFlat ) {
-		return null;
-	}
-
-	// Check if selection crosses limit node boundaries.
-	// - <table>                                             [<table>
-	//       <tableRow>                                          <tableRow>
-	//           <tableCell><p>f[oo</p></tableCell>    ->            <tableCell><p>foo</p></tableCell>
-	//           <tableCell><p>b]ar</p></tableCell>                  <tableCell><p>bar</p></tableCell>
-	//       </tableRow>                                         </tableRow>
-	//   </table>                                            </table>]
-	// -[<table>                                             [<table>
-	//       <tableRow>                                          <tableRow>
-	//           <tableCell><p>fo]o</p></tableCell>    ->            <tableCell><p>foo</p></tableCell>
-	//       </tableRow>                                         </tableRow>
-	//   </table>                                            </table>]
-	const startParentLimitNode = findParentLimitNodePosition( start, schema );
-	const endParentLimitNode = findParentLimitNodePosition( end, schema );
-
-	if ( startParentLimitNode || endParentLimitNode ) {
-		let updatedStart = start;
-		let updatedEnd = end;
-
-		if ( startParentLimitNode ) {
-			updatedStart = expandSelectionOnIsLimitNode( startParentLimitNode, schema, 'start' );
+			return new Range( fixedStart ? fixedStart.start : start, fixedEnd ? fixedEnd.start : end );
 		}
-
-		if ( endParentLimitNode ) {
-			updatedEnd = expandSelectionOnIsLimitNode( endParentLimitNode, schema, 'end' );
-		}
-
-		return new Range( updatedStart, updatedEnd );
 	}
 
+	const isStartInLimit = startLimitElement && !startLimitElement.is( 'rootElement' );
+	const isEndInLimit = endLimitElement && !endLimitElement.is( 'rootElement' );
+
+	// At this point we eliminated valid positions on text nodes so if one of range positions is placed inside a limit element
+	// then the range crossed limit element boundaries and needs to be fixed.
+	if ( isStartInLimit || isEndInLimit ) {
+		// Although we've already found limit element on start/end positions we must find the outer-most limit element.
+		// as limit elements might be nested directly inside (ie table > tableRow > tableCell).
+		const fixedStart = isStartInLimit ? expandSelectionOnIsLimitNode( Position.createAt( startLimitElement ), schema, 'start' ) : start;
+		const fixedEnd = isEndInLimit ? expandSelectionOnIsLimitNode( Position.createAt( endLimitElement ), schema, 'end' ) : end;
+
+		return new Range( fixedStart, fixedEnd );
+	}
+
+	// Range was not fixed at this point so it is valid - ie it was placed around limit element already.
 	return null;
 }
 
@@ -244,11 +214,6 @@ function expandSelectionOnIsLimitNode( position, schema, expandToDirection ) {
 	while ( schema.isLimit( parent ) && parent.parent ) {
 		node = parent;
 		parent = parent.parent;
-	}
-
-	if ( node === parent ) {
-		// If there is not is limit block the return original position.
-		return position;
 	}
 
 	// Depending on direction of expanding selection return position before or after found node.
@@ -294,23 +259,14 @@ function combineOverlappingRanges( ranges ) {
 	return combinedRanges;
 }
 
-// Goes up to the root trying to find any `isLimit=true` parent elements. Returns null if not found.
+// Checks whether both range ends are placed around non-limit elements.
 //
-// @param {module:engine/model/position~Position} position
+// @param {module:engine/model/position~Position} start
+// @param {module:engine/model/position~Position} end
 // @param {module:engine/model/schema~Schema} schema
-// @returns {module:engine/model/position~Position|null}
-function findParentLimitNodePosition( position, schema ) {
-	let parent = position.parent;
+function checkSelectionOnNonLimitElements( start, end, schema ) {
+	const startIsOnBlock = ( start.nodeAfter && !schema.isLimit( start.nodeAfter ) ) || schema.checkChild( start, '$text' );
+	const endIsOnBlock = ( end.nodeBefore && !schema.isLimit( end.nodeBefore ) ) || schema.checkChild( end, '$text' );
 
-	while ( parent ) {
-		if ( parent === parent.root ) {
-			return null;
-		}
-
-		if ( schema.isLimit( parent ) ) {
-			return Position.createAt( parent );
-		}
-
-		parent = parent.parent;
-	}
+	return startIsOnBlock && endIsOnBlock;
 }
