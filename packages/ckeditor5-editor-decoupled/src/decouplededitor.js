@@ -57,33 +57,32 @@ export default class DecoupledEditor extends Editor {
 	 * {@link module:editor-decoupled/decouplededitor~DecoupledEditor.create `DecoupledEditor.create()`} method instead.
 	 *
 	 * @protected
-	 * @param {HTMLElement|String} elementOrData The DOM element that serves as an editable.
-	 * The data will be loaded from it and loaded back to it once the editor is destroyed.
-	 * Alternatively, a data string to be loaded into the editor.
+	 * @param {HTMLElement|String} sourceElementOrData The DOM element that will be the source for the created editor
+	 * (on which the editor will be initialized) or initial data for the editor. For more information see
+	 * {@link module:editor-balloon/ballooneditor~BalloonEditor.create `BalloonEditor.create()`}.
 	 * @param {module:core/editor/editorconfig~EditorConfig} config The editor configuration.
 	 */
-	constructor( elementOrData, config ) {
+	constructor( sourceElementOrData, config ) {
 		super( config );
 
-		if ( isElement( elementOrData ) ) {
-			/**
-			 * The element used as an editable. The data will be loaded from it and loaded back to
-			 * it once the editor is destroyed.
-			 *
-			 * **Note:** The property is available only when such element has been passed
-			 * to the {@link #constructor}.
-			 *
-			 * @readonly
-			 * @member {HTMLElement}
-			 */
-			this.element = elementOrData;
+		if ( isElement( sourceElementOrData ) ) {
+			this.sourceElement = sourceElementOrData;
 		}
 
 		this.data.processor = new HtmlDataProcessor();
 
 		this.model.document.createRoot();
 
-		this.ui = new DecoupledEditorUI( this, new DecoupledEditorUIView( this.locale, this.element ) );
+		this.ui = new DecoupledEditorUI( this, new DecoupledEditorUIView( this.locale, this.sourceElement ) );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	get element() {
+		// This editor has no single "main UI element". Its editable and toolbar are exposed separately and need
+		// to be added to the DOM manually by the consumer.
+		return null;
 	}
 
 	/**
@@ -114,8 +113,8 @@ export default class DecoupledEditor extends Editor {
 
 		return super.destroy()
 			.then( () => {
-				if ( this.element ) {
-					setDataInElement( this.element, data );
+				if ( this.sourceElement ) {
+					setDataInElement( this.sourceElement, data );
 				}
 			} );
 	}
@@ -178,16 +177,22 @@ export default class DecoupledEditor extends Editor {
 	 *				console.error( err.stack );
 	 *			} );
 	 *
-	 * @param {HTMLElement|String} elementOrData The DOM element that serves as an editable.
-	 * The data will be loaded from it and loaded back to it once the editor is destroyed.
-	 * Alternatively, a data string to be loaded into the editor.
+	 * @param {HTMLElement|String} sourceElementOrData The DOM element that will be the source for the created editor
+	 * (on which the editor will be initialized) or initial data for the editor.
+	 *
+	 * If a source element is passed, then its contents will be automatically
+	 * {@link module:editor-decoupled/decouplededitor~DecoupledEditor#setData loaded} to the editor on startup and the element
+	 * itself will be used as the editor's editable element.
+	 *
+	 * If data is provided, then `editor.ui.view.editable.element` will be created automatically and needs to be added
+	 * to the DOM manually.
 	 * @param {module:core/editor/editorconfig~EditorConfig} config The editor configuration.
 	 * @returns {Promise} A promise resolved once the editor is ready.
 	 * The promise returns the created {@link module:editor-decoupled/decouplededitor~DecoupledEditor} instance.
 	 */
-	static create( elementOrData, config ) {
+	static create( sourceElementOrData, config ) {
 		return new Promise( resolve => {
-			const editor = new this( elementOrData, config );
+			const editor = new this( sourceElementOrData, config );
 
 			resolve(
 				editor.initPlugins()
@@ -196,7 +201,11 @@ export default class DecoupledEditor extends Editor {
 						editor.fire( 'uiReady' );
 					} )
 					.then( () => {
-						return editor.data.init( editor.element ? getDataFromElement( editor.element ) : elementOrData );
+						const initialData = isElement( sourceElementOrData ) ?
+							getDataFromElement( sourceElementOrData ) :
+							sourceElementOrData;
+
+						return editor.data.init( initialData );
 					} )
 					.then( () => {
 						editor.fire( 'dataReady' );
