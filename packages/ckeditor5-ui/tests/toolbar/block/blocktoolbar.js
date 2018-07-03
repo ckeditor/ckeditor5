@@ -5,7 +5,6 @@
 /* global document, window, Event */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobserver';
 
 import BlockToolbar from '../../../src/toolbar/block/blocktoolbar';
 import ToolbarView from '../../../src/toolbar/toolbarview';
@@ -39,6 +38,7 @@ describe( 'BlockToolbar', () => {
 		} ).then( newEditor => {
 			editor = newEditor;
 			blockToolbar = editor.plugins.get( BlockToolbar );
+			editor.ui.focusTracker.isFocused = true;
 		} );
 	} );
 
@@ -49,10 +49,6 @@ describe( 'BlockToolbar', () => {
 
 	it( 'should have pluginName property', () => {
 		expect( BlockToolbar.pluginName ).to.equal( 'BlockToolbar' );
-	} );
-
-	it( 'should register a click observer', () => {
-		expect( editor.editing.view.getObserver( ClickObserver ) ).to.be.instanceOf( ClickObserver );
 	} );
 
 	describe( 'child views', () => {
@@ -70,7 +66,7 @@ describe( 'BlockToolbar', () => {
 			} );
 
 			it( 'should add the #panelView to ui.focusTracker', () => {
-				expect( editor.ui.focusTracker.isFocused ).to.be.false;
+				editor.ui.focusTracker.isFocused = false;
 
 				blockToolbar.panelView.element.dispatchEvent( new Event( 'focus' ) );
 
@@ -137,6 +133,16 @@ describe( 'BlockToolbar', () => {
 
 				expect( blockToolbar.panelView.isVisible ).to.be.false;
 			} );
+
+			it( 'should hide the panel on toolbar blur', () => {
+				blockToolbar.buttonView.fire( 'execute' );
+
+				expect( blockToolbar.panelView.isVisible ).to.be.true;
+
+				blockToolbar.toolbarView.focusTracker.isFocused = false;
+
+				expect( blockToolbar.panelView.isVisible ).to.be.false;
+			} );
 		} );
 
 		describe( 'buttonView', () => {
@@ -149,7 +155,7 @@ describe( 'BlockToolbar', () => {
 			} );
 
 			it( 'should add the #buttonView to the ui.focusTracker', () => {
-				expect( editor.ui.focusTracker.isFocused ).to.be.false;
+				editor.ui.focusTracker.isFocused = false;
 
 				blockToolbar.buttonView.element.dispatchEvent( new Event( 'focus' ) );
 
@@ -369,7 +375,7 @@ describe( 'BlockToolbar', () => {
 			expect( blockToolbar.panelView.isVisible ).to.be.false;
 		} );
 
-		it( 'should not hide the open panel on a indirect selection change', () => {
+		it( 'should not hide the open panel on an indirect selection change', () => {
 			blockToolbar.panelView.isVisible = true;
 
 			editor.model.document.selection.fire( 'change:range', { directChange: false } );
@@ -377,7 +383,49 @@ describe( 'BlockToolbar', () => {
 			expect( blockToolbar.panelView.isVisible ).to.be.true;
 		} );
 
-		it( 'should hide the UI when editor switches to readonly when the panel is not visible', () => {
+		it( 'should hide the UI when editor switched to readonly', () => {
+			setData( editor.model, '<paragraph>foo[]bar</paragraph>' );
+
+			blockToolbar.buttonView.isVisible = true;
+			blockToolbar.panelView.isVisible = true;
+
+			editor.isReadOnly = true;
+
+			expect( blockToolbar.buttonView.isVisible ).to.be.false;
+			expect( blockToolbar.panelView.isVisible ).to.be.false;
+		} );
+
+		it( 'should show the button when the editor switched back from readonly', () => {
+			setData( editor.model, '<paragraph>foo[]bar</paragraph>' );
+
+			expect( blockToolbar.buttonView.isVisible ).to.true;
+
+			editor.isReadOnly = true;
+
+			expect( blockToolbar.buttonView.isVisible ).to.false;
+
+			editor.isReadOnly = false;
+
+			expect( blockToolbar.buttonView.isVisible ).to.be.true;
+		} );
+
+		it( 'should show/hide the button on the editor focus/blur', () => {
+			setData( editor.model, '<paragraph>foo[]bar</paragraph>' );
+
+			editor.ui.focusTracker.isFocused = true;
+
+			expect( blockToolbar.buttonView.isVisible ).to.true;
+
+			editor.ui.focusTracker.isFocused = false;
+
+			expect( blockToolbar.buttonView.isVisible ).to.false;
+
+			editor.ui.focusTracker.isFocused = true;
+
+			expect( blockToolbar.buttonView.isVisible ).to.true;
+		} );
+
+		it( 'should hide the UI when the editor switched to the readonly when the panel is not visible', () => {
 			setData( editor.model, '<paragraph>foo[]bar</paragraph>' );
 
 			blockToolbar.buttonView.isVisible = true;
@@ -387,18 +435,6 @@ describe( 'BlockToolbar', () => {
 
 			expect( blockToolbar.buttonView.isVisible ).to.be.false;
 			expect( blockToolbar.panelView.isVisible ).to.be.false;
-		} );
-
-		it( 'should not hide button when the editor switches to readonly when the panel is visible', () => {
-			setData( editor.model, '<paragraph>foo[]bar</paragraph>' );
-
-			blockToolbar.buttonView.isVisible = true;
-			blockToolbar.panelView.isVisible = true;
-
-			editor.isReadOnly = true;
-
-			expect( blockToolbar.buttonView.isVisible ).to.be.true;
-			expect( blockToolbar.panelView.isVisible ).to.be.true;
 		} );
 
 		it( 'should update the button position on browser resize only when the button is visible', () => {
