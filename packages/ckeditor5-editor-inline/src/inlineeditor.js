@@ -17,6 +17,7 @@ import InlineEditorUIView from './inlineeditoruiview';
 import setDataInElement from '@ckeditor/ckeditor5-utils/src/dom/setdatainelement';
 import getDataFromElement from '@ckeditor/ckeditor5-utils/src/dom/getdatafromelement';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import isElement from '@ckeditor/ckeditor5-utils/src/lib/lodash/isElement';
 
 /**
  * The {@glink builds/guides/overview#inline-editor inline editor} implementation.
@@ -53,22 +54,32 @@ export default class InlineEditor extends Editor {
 	 * {@link module:editor-inline/inlineeditor~InlineEditor.create `InlineEditor.create()`} method instead.
 	 *
 	 * @protected
-	 * @param {HTMLElement} element The DOM element that will be the source for the created editor
-	 * (on which the editor will be initialized).
+	 * @param {HTMLElement|String} sourceElementOrData The DOM element that will be the source for the created editor
+	 * (on which the editor will be initialized) or initial data for the editor. For more information see
+	 * {@link module:editor-inline/inlineeditor~InlineEditor.create `InlineEditor.create()`}.
 	 * @param {module:core/editor/editorconfig~EditorConfig} config The editor configuration.
 	 */
-	constructor( element, config ) {
+	constructor( sourceElementOrData, config ) {
 		super( config );
-
-		this.element = element;
 
 		this.data.processor = new HtmlDataProcessor();
 
 		this.model.document.createRoot();
 
-		this.ui = new InlineEditorUI( this, new InlineEditorUIView( this.locale, element ) );
+		if ( isElement( sourceElementOrData ) ) {
+			this.sourceElement = sourceElementOrData;
+		}
+
+		this.ui = new InlineEditorUI( this, new InlineEditorUIView( this.locale, this.sourceElement ) );
 
 		attachToForm( this );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	get element() {
+		return this.ui.view.editable.element;
 	}
 
 	/**
@@ -86,11 +97,15 @@ export default class InlineEditor extends Editor {
 		this.ui.destroy();
 
 		return super.destroy()
-			.then( () => setDataInElement( this.element, data ) );
+			.then( () => {
+				if ( this.sourceElement ) {
+					setDataInElement( this.sourceElement, data );
+				}
+			} );
 	}
 
 	/**
-	 * Creates a inline editor instance.
+	 * Creates an inline editor instance.
 	 *
 	 * Creating instance when using {@glink builds/index CKEditor build}:
 	 *
@@ -123,15 +138,42 @@ export default class InlineEditor extends Editor {
 	 *				console.error( err.stack );
 	 *			} );
 	 *
-	 * @param {HTMLElement} element The DOM element that will be the source for the created editor
-	 * (on which the editor will be initialized).
+	 * Creating instance when using initial data instead of a DOM element:
+	 *
+	 *		import InlineEditor from '@ckeditor/ckeditor5-editor-inline/src/inlineeditor';
+	 *		import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
+	 *		import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+	 *		import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+	 *		import ...
+	 *
+	 *		InlineEditor
+	 *			.create( '<p>Hello world!</p>' )
+	 *			.then( editor => {
+	 *				console.log( 'Editor was initialized', editor );
+	 *
+	 *				// Initial data was provided so `editor.element` needs to be added manually to the DOM.
+	 *				document.body.appendChild( editor.element );
+	 *			} )
+	 *			.catch( err => {
+	 *				console.error( err.stack );
+	 *			} );
+	 *
+	 * @param {HTMLElement|String} sourceElementOrData The DOM element that will be the source for the created editor
+	 * (on which the editor will be initialized) or initial data for the editor.
+	 *
+	 * If a source element is passed, then its contents will be automatically
+	 * {@link module:editor-classic/inlineeditor~InlineEditor#setData loaded} to the editor on startup and the element
+	 * itself will be used as the editor's editable element.
+	 *
+	 * If a data is provided, then `editor.element` will be created automatically and needs to be added
+	 * manually to the DOM.
 	 * @param {module:core/editor/editorconfig~EditorConfig} config The editor configuration.
 	 * @returns {Promise} A promise resolved once the editor is ready.
 	 * The promise returns the created {@link module:editor-inline/inlineeditor~InlineEditor} instance.
 	 */
-	static create( element, config ) {
+	static create( sourceElementOrData, config ) {
 		return new Promise( resolve => {
-			const editor = new this( element, config );
+			const editor = new this( sourceElementOrData, config );
 
 			resolve(
 				editor.initPlugins()
@@ -139,7 +181,13 @@ export default class InlineEditor extends Editor {
 						editor.ui.init();
 						editor.fire( 'uiReady' );
 					} )
-					.then( () => editor.data.init( getDataFromElement( element ) ) )
+					.then( () => {
+						const initialData = isElement( sourceElementOrData ) ?
+							getDataFromElement( sourceElementOrData ) :
+							sourceElementOrData;
+
+						return editor.data.init( initialData );
+					} )
 					.then( () => {
 						editor.fire( 'dataReady' );
 						editor.fire( 'ready' );

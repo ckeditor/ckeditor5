@@ -54,11 +54,11 @@ describe( 'InlineEditor', () => {
 		} );
 
 		it( 'has a Data Interface', () => {
-			testUtils.isMixed( InlineEditor, DataApiMixin );
+			expect( testUtils.isMixed( InlineEditor, DataApiMixin ) ).to.be.true;
 		} );
 
 		it( 'has a Element Interface', () => {
-			testUtils.isMixed( InlineEditor, ElementApiMixin );
+			expect( testUtils.isMixed( InlineEditor, ElementApiMixin ) ).to.be.true;
 		} );
 
 		it( 'creates main root element', () => {
@@ -93,6 +93,30 @@ describe( 'InlineEditor', () => {
 				return editor.destroy().then( () => {
 					form.remove();
 				} );
+			} );
+		} );
+
+		it( 'allows to pass data to the constructor', () => {
+			return InlineEditor.create( '<p>Hello world!</p>', {
+				plugins: [ Paragraph ]
+			} ).then( editor => {
+				expect( editor.getData() ).to.equal( '<p>Hello world!</p>' );
+			} );
+		} );
+
+		it( 'should have undefined the #sourceElement if editor was initialized with data', () => {
+			return InlineEditor.create( '<p>Hello world!</p>', {
+				plugins: [ Paragraph ]
+			} ).then( editor => {
+				expect( editor.sourceElement ).to.be.undefined;
+			} );
+		} );
+
+		it( 'editor.element should contain the whole editor (with UI) element', () => {
+			return InlineEditor.create( '<p>Hello world!</p>', {
+				plugins: [ Paragraph ]
+			} ).then( editor => {
+				expect( editor.editing.view.getDomRoot() ).to.equal( editor.element );
 			} );
 		} );
 	} );
@@ -263,6 +287,14 @@ describe( 'InlineEditor', () => {
 					expect( editorElement.innerHTML )
 						.to.equal( '<p>a</p><heading>b</heading>' );
 				} );
+		} );
+
+		it( 'should not throw an error if editor was initialized with the data', () => {
+			return InlineEditor
+				.create( '<p>Foo.</p>', {
+					plugins: [ Paragraph, Bold ]
+				} )
+				.then( newEditor => newEditor.destroy() );
 		} );
 	} );
 } );
