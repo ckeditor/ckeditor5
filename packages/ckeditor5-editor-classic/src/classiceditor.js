@@ -67,7 +67,7 @@ export default class ClassicEditor extends Editor {
 		}
 
 		/**
-		 * The element replacer instance used to hide the editor source element.
+		 * The element replacer instance used to hide the editor's source element.
 		 *
 		 * @protected
 		 * @member {module:utils/elementreplacer~ElementReplacer}
@@ -93,7 +93,7 @@ export default class ClassicEditor extends Editor {
 	/**
 	 * Destroys the editor instance, releasing all resources used by it.
 	 *
-	 * Updates the source editor element with the data.
+	 * Updates the editor's source element with the data.
 	 *
 	 * @returns {Promise}
 	 */
@@ -168,7 +168,7 @@ export default class ClassicEditor extends Editor {
 	 * @param {HTMLElement|String} sourceElementOrData The DOM element that will be the source for the created editor
 	 * or editor's initial data.
 	 *
-	 * If an element is passed, then its contents will be automatically
+	 * If a source element is passed, then its contents will be automatically
 	 * {@link module:editor-classic/classiceditor~ClassicEditor#setData loaded} to the editor on startup
 	 * and the {@link module:core/editor/editorwithui~EditorWithUI#element editor element} will replace the passed element in the DOM
 	 * (the original one will be hidden and editor will be injected next to it).
@@ -181,6 +181,7 @@ export default class ClassicEditor extends Editor {
 	 * (by accessing the {@link module:editor-classic/classiceditor~ClassicEditor#element `editor.element`} property).
 	 *
 	 * See the examples above to learn more.
+	 *
 	 * @param {module:core/editor/editorconfig~EditorConfig} config The editor configuration.
 	 * @returns {Promise} A promise resolved once the editor is ready.
 	 * The promise returns the created {@link module:editor-classic/classiceditor~ClassicEditor} instance.
