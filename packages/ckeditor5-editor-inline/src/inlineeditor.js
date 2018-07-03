@@ -101,7 +101,7 @@ export default class InlineEditor extends Editor {
 	}
 
 	/**
-	 * Creates a inline editor instance.
+	 * Creates an inline editor instance.
 	 *
 	 * Creating instance when using {@glink builds/index CKEditor build}:
 	 *
