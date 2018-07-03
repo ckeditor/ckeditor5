@@ -18,6 +18,7 @@ import DataApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/dataapimixin
 import ElementApiMixin from '@ckeditor/ckeditor5-core/src/editor/utils/elementapimixin';
 import attachToForm from '@ckeditor/ckeditor5-core/src/editor/utils/attachtoform';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
+import isElement from '@ckeditor/ckeditor5-utils/src/lib/lodash/isElement';
 
 /**
  * The {@glink builds/guides/overview#balloon-editor balloon editor} implementation (Medium-like editor).
@@ -54,14 +55,17 @@ export default class BalloonEditor extends Editor {
 	 * {@link module:editor-balloon/ballooneditor~BalloonEditor.create `BalloonEditor.create()`} method instead.
 	 *
 	 * @protected
-	 * @param {HTMLElement} element The DOM element that will be the source for the created editor
-	 * (on which the editor will be initialized).
+	 * @param {HTMLElement|String} sourceElementOrData The DOM element that will be the source for the created editor
+	 * (on which the editor will be initialized) or initial data for the editor. For more information see
+	 * {@link module:editor-balloon/ballooneditor~BalloonEditor.create `BalloonEditor.create()`}.
 	 * @param {module:core/editor/editorconfig~EditorConfig} config The editor configuration.
 	 */
-	constructor( element, config ) {
+	constructor( sourceElementOrData, config ) {
 		super( config );
 
-		this.element = element;
+		if ( isElement( sourceElementOrData ) ) {
+			this.sourceElement = sourceElementOrData;
+		}
 
 		this.config.get( 'plugins' ).push( BalloonToolbar );
 		this.config.define( 'balloonToolbar', this.config.get( 'toolbar' ) );
@@ -70,9 +74,16 @@ export default class BalloonEditor extends Editor {
 
 		this.model.document.createRoot();
 
-		this.ui = new BalloonEditorUI( this, new BalloonEditorUIView( this.locale, element ) );
+		this.ui = new BalloonEditorUI( this, new BalloonEditorUIView( this.locale, this.sourceElement ) );
 
 		attachToForm( this );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	get element() {
+		return this.ui.view.editable.element;
 	}
 
 	/**
@@ -90,7 +101,11 @@ export default class BalloonEditor extends Editor {
 		this.ui.destroy();
 
 		return super.destroy()
-			.then( () => setDataInElement( this.element, data ) );
+			.then( () => {
+				if ( this.sourceElement ) {
+					setDataInElement( this.sourceElement, data );
+				}
+			} );
 	}
 
 	/**
@@ -127,15 +142,45 @@ export default class BalloonEditor extends Editor {
 	 *				console.error( err.stack );
 	 *			} );
 	 *
-	 * @param {HTMLElement} element The DOM element that will be the source for the created editor
-	 * (on which the editor will be initialized).
+	 * Creating instance when using initial data instead of a DOM element:
+	 *
+	 *		import BalloonEditor from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor';
+	 *		import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
+	 *		import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+	 *		import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+	 *		import ...
+	 *
+	 *		BalloonEditor
+	 *			.create( '<p>Hello world!</p>', {
+	 *				plugins: [ Essentials, Bold, Italic, ... ],
+	 *				toolbar: [ 'bold', 'italic', ... ]
+	 *			} )
+	 *			.then( editor => {
+	 *				console.log( 'Editor was initialized', editor );
+	 *
+	 *				// Initial data was provided so `editor.element` needs to be added manually to the DOM.
+	 *				document.body.appendChild( editor.element );
+	 *			} )
+	 *			.catch( err => {
+	 *				console.error( err.stack );
+	 *			} );
+	 *
+	 * @param {HTMLElement|String} sourceElementOrData The DOM element that will be the source for the created editor
+	 * (on which the editor will be initialized) or initial data for the editor.
+	 *
+	 * If a source element is passed, then its contents will be automatically
+	 * {@link module:editor-classic/ballooneditor~BalloonEditor#setData loaded} to the editor on startup and the element
+	 * itself will be used as the editor's editable element.
+	 *
+	 * If data is provided, then `editor.element` will be created automatically and needs to be added
+	 * to the DOM manually.
 	 * @param {module:core/editor/editorconfig~EditorConfig} config The editor configuration.
 	 * @returns {Promise} A promise resolved once the editor is ready.
 	 * The promise returns the created {@link module:editor-balloon/ballooneditor~BalloonEditor} instance.
 	 */
-	static create( element, config ) {
+	static create( sourceElementOrData, config ) {
 		return new Promise( resolve => {
-			const editor = new this( element, config );
+			const editor = new this( sourceElementOrData, config );
 
 			resolve(
 				editor.initPlugins()
@@ -143,7 +188,13 @@ export default class BalloonEditor extends Editor {
 						editor.ui.init();
 						editor.fire( 'uiReady' );
 					} )
-					.then( () => editor.data.init( getDataFromElement( element ) ) )
+					.then( () => {
+						const initialData = isElement( sourceElementOrData ) ?
+							getDataFromElement( sourceElementOrData ) :
+							sourceElementOrData;
+
+						return editor.data.init( initialData );
+					} )
 					.then( () => {
 						editor.fire( 'dataReady' );
 						editor.fire( 'ready' );

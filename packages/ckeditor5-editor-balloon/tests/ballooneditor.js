@@ -102,6 +102,34 @@ describe( 'BalloonEditor', () => {
 				} );
 			} );
 		} );
+
+		it( 'allows to pass data to the constructor', () => {
+			return BalloonEditor.create( '<p>Hello world!</p>', {
+				plugins: [ Paragraph ]
+			} ).then( editor => {
+				expect( editor.getData() ).to.equal( '<p>Hello world!</p>' );
+			} );
+		} );
+
+		it( 'should have undefined the #sourceElement if editor was initialized with data', () => {
+			return BalloonEditor
+				.create( '<p>Foo.</p>', {
+					plugins: [ Paragraph, Bold ]
+				} )
+				.then( newEditor => {
+					expect( newEditor.sourceElement ).to.be.undefined;
+
+					return newEditor.destroy();
+				} );
+		} );
+
+		it( 'editor.element should contain the whole editor (with UI) element', () => {
+			return BalloonEditor.create( '<p>Hello world!</p>', {
+				plugins: [ Paragraph ]
+			} ).then( editor => {
+				expect( editor.editing.view.getDomRoot() ).to.equal( editor.element );
+			} );
+		} );
 	} );
 
 	describe( 'create()', () => {
@@ -128,7 +156,10 @@ describe( 'BalloonEditor', () => {
 		} );
 
 		it( 'attaches editable UI as view\'s DOM root', () => {
-			expect( editor.editing.view.getDomRoot() ).to.equal( editor.ui.view.editable.element );
+			const domRoot = editor.editing.view.getDomRoot();
+
+			expect( domRoot ).to.equal( editor.element );
+			expect( domRoot ).to.equal( editor.ui.view.editable.element );
 		} );
 
 		it( 'creates the UI using BalloonEditorUI classes', () => {
@@ -275,6 +306,14 @@ describe( 'BalloonEditor', () => {
 					expect( editorElement.innerHTML )
 						.to.equal( '<p>a</p><heading>b</heading>' );
 				} );
+		} );
+
+		it( 'should not throw an error if editor was initialized with the data', () => {
+			return BalloonEditor
+				.create( '<p>Foo.</p>', {
+					plugins: [ Paragraph, Bold ]
+				} )
+				.then( newEditor => newEditor.destroy() );
 		} );
 	} );
 } );

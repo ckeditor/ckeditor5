@@ -20,6 +20,9 @@ export default class BalloonEditorUIView extends EditorUIView {
 	 * Creates an instance of the balloon editor UI view.
 	 *
 	 * @param {module:utils/locale~Locale} locale The {@link module:core/editor/editor~Editor#locale} instance.
+	 * @param {HTMLElement} [editableElement] The editable element. If not specified, the
+	 * {@link module:ui/editableui/editableuiview~EditableUIView}
+	 * will create it. Otherwise, the existing element will be used.
 	 */
 	constructor( locale, editableElement ) {
 		super( locale );
