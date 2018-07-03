@@ -60,7 +60,7 @@ describe( 'ImageStyleUI', () => {
 			buttonView.fire( 'execute' );
 			sinon.assert.calledWithExactly( editor.execute, 'imageStyle', { value: style.name } );
 
-			spy.reset();
+			spy.resetHistory();
 		}
 	} );
 
