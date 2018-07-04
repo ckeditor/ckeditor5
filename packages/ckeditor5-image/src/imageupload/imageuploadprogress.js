@@ -11,13 +11,14 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
-import uploadingPlaceholder from '../../theme/icons/image_placeholder.svg';
 import UIElement from '@ckeditor/ckeditor5-engine/src/view/uielement';
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import ViewRange from '@ckeditor/ckeditor5-engine/src/view/range';
 
 import '../../theme/imageuploadprogress.css';
 import '../../theme/imageuploadicon.css';
+
+const blankImage = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
 
 /**
  * The image upload progress plugin.
@@ -26,21 +27,6 @@ import '../../theme/imageuploadicon.css';
  * @extends module:core/plugin~Plugin
  */
 export default class ImageUploadProgress extends Plugin {
-	/**
-	 * @inheritDoc
-	 */
-	constructor( editor ) {
-		super( editor );
-
-		/**
-		 * The image placeholder that is displayed before real image data can be accessed.
-		 *
-		 * @protected
-		 * @member {String} #placeholder
-		 */
-		this.placeholder = 'data:image/svg+xml;utf8,' + encodeURIComponent( uploadingPlaceholder );
-	}
-
 	/**
 	 * @inheritDoc
 	 */
@@ -70,7 +56,6 @@ export default class ImageUploadProgress extends Plugin {
 
 		const fileRepository = editor.plugins.get( FileRepository );
 		const status = uploadId ? data.attributeNewValue : null;
-		const placeholder = this.placeholder;
 		const viewFigure = editor.editing.mapper.toViewElement( modelImage );
 		const viewWriter = conversionApi.writer;
 
@@ -78,7 +63,7 @@ export default class ImageUploadProgress extends Plugin {
 			// Start "appearing" effect and show placeholder with infinite progress bar on the top
 			// while image is read from disk.
 			_startAppearEffect( viewFigure, viewWriter );
-			_showPlaceholder( placeholder, viewFigure, viewWriter );
+			_showPlaceholder( viewFigure, viewWriter );
 
 			return;
 		}
@@ -94,7 +79,7 @@ export default class ImageUploadProgress extends Plugin {
 				// There is no loader associated with uploadId - this means that image came from external changes.
 				// In such cases we still want to show the placeholder until image is fully uploaded.
 				// Show placeholder if needed - see https://github.com/ckeditor/ckeditor5-image/issues/191.
-				_showPlaceholder( placeholder, viewFigure, viewWriter );
+				_showPlaceholder( viewFigure, viewWriter );
 			} else {
 				// Hide placeholder and initialize progress bar showing upload progress.
 				_hidePlaceholder( viewFigure, viewWriter );
@@ -118,6 +103,9 @@ export default class ImageUploadProgress extends Plugin {
 // Symbol added to progress bar UIElement to distinguish it from other elements.
 const progressBarSymbol = Symbol( 'progress-bar' );
 
+// Symbol added to placeholder UIElement to distinguish it from other elements.
+const placeholderSymbol = Symbol( 'placeholder' );
+
 // Adds ck-appear class to the image figure if one is not already applied.
 //
 // @param {module:engine/view/containerelement~ContainerElement} viewFigure
@@ -140,7 +128,7 @@ function _stopAppearEffect( viewFigure, writer ) {
 //
 // @param {module:engine/view/containerelement~ContainerElement} viewFigure
 // @param {module:engine/view/writer~Writer} writer
-function _showPlaceholder( placeholder, viewFigure, writer ) {
+function _showPlaceholder( viewFigure, writer ) {
 	if ( !viewFigure.hasClass( 'ck-image-upload-placeholder' ) ) {
 		writer.addClass( 'ck-image-upload-placeholder', viewFigure );
 	}
@@ -151,8 +139,12 @@ function _showPlaceholder( placeholder, viewFigure, writer ) {
 
 	const viewImg = viewFigure.getChild( 0 );
 
-	if ( viewImg.getAttribute( 'src' ) !== placeholder ) {
-		writer.setAttribute( 'src', placeholder, viewImg );
+	if ( viewImg.getAttribute( 'src' ) !== blankImage ) {
+		writer.setAttribute( 'src', blankImage, viewImg );
+	}
+
+	if ( !getUIElement( viewFigure, placeholderSymbol ) ) {
+		writer.insert( ViewPosition.createAfter( viewImg ), createPlaceholder( writer ) );
 	}
 }
 
@@ -168,6 +160,8 @@ function _hidePlaceholder( viewFigure, writer ) {
 	if ( viewFigure.hasClass( 'ck-infinite-progress' ) ) {
 		writer.removeClass( 'ck-infinite-progress', viewFigure );
 	}
+
+	removeUIElement( viewFigure, writer, placeholderSymbol );
 }
 
 // Shows progress bar displaying upload progress.
@@ -194,11 +188,7 @@ function _showProgressBar( viewFigure, writer, loader, view ) {
 // @param {module:engine/view/containerelement~ContainerElement} viewFigure
 // @param {module:engine/view/writer~Writer} writer
 function _hideProgressBar( viewFigure, writer ) {
-	const progressBar = getProgressBar( viewFigure );
-
-	if ( progressBar ) {
-		writer.remove( ViewRange.createOn( progressBar ) );
-	}
+	removeUIElement( viewFigure, writer, progressBarSymbol );
 }
 
 // Shows complete icon and hides after a certain amount of time.
@@ -223,21 +213,55 @@ function _showCompleteIcon( viewFigure, writer, view ) {
 // @returns {module:engine/view/uielement~UIElement}
 function createProgressBar( writer ) {
 	const progressBar = writer.createUIElement( 'div', { class: 'ck-progress-bar' } );
+
 	writer.setCustomProperty( progressBarSymbol, true, progressBar );
 
 	return progressBar;
 }
 
-// Returns progress bar {@link module:engine/view/uielement~UIElement} from image figure element. Returns `undefined` if
-// progress bar element is not found.
+// Create placeholder element using {@link module:engine/view/uielement~UIElement}.
+//
+// @private
+// @param {module:engine/view/writer~Writer} writer
+// @returns {module:engine/view/uielement~UIElement}
+function createPlaceholder( writer ) {
+	const placeholder = writer.createUIElement( 'div', { class: 'ck-placeholder' } );
+
+	writer.setCustomProperty( placeholderSymbol, true, placeholder );
+
+	placeholder.render = function ( domDocument ) {
+		const domElement = this.toDomElement( domDocument );
+		domElement.innerHTML = '<div class="ck-upload-placeholder_loader"></div>';
+	};
+
+	return placeholder;
+}
+
+// Returns {@link module:engine/view/uielement~UIElement} of given unique property from image figure element.
+// Returns `undefined` if element is not found.
 //
 // @private
 // @param {module:engine/view/element~Element} imageFigure
+// @param {Symbol} uniqueProperty
 // @returns {module:engine/view/uielement~UIElement|undefined}
-function getProgressBar( imageFigure ) {
+function getUIElement( imageFigure, uniqueProperty ) {
 	for ( const child of imageFigure.getChildren() ) {
-		if ( child.getCustomProperty( progressBarSymbol ) ) {
+		if ( child.getCustomProperty( uniqueProperty ) ) {
 			return child;
 		}
+	}
+}
+
+// Removes {@link module:engine/view/uielement~UIElement} of given unique property from image figure element.
+//
+// @private
+// @param {module:engine/view/element~Element} imageFigure
+// @param {module:engine/view/writer~Writer} writer
+// @param {Symbol} uniqueProperty
+function removeUIElement( viewFigure, writer, uniqueProperty ) {
+	const element = getUIElement( viewFigure, uniqueProperty );
+
+	if ( element ) {
+		writer.remove( ViewRange.createOn( element ) );
 	}
 }
