@@ -18,6 +18,7 @@ import ViewRange from '@ckeditor/ckeditor5-engine/src/view/range';
 import '../../theme/imageuploadprogress.css';
 import '../../theme/imageuploadicon.css';
 
+// Data-uri with blank image that will be set as a img#src while placeholder is displayed.
 const blankImage = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
 
 /**
@@ -143,8 +144,8 @@ function _showPlaceholder( viewFigure, writer ) {
 		writer.setAttribute( 'src', blankImage, viewImg );
 	}
 
-	if ( !getUIElement( viewFigure, placeholderSymbol ) ) {
-		writer.insert( ViewPosition.createAfter( viewImg ), createPlaceholder( writer ) );
+	if ( !_getUIElement( viewFigure, placeholderSymbol ) ) {
+		writer.insert( ViewPosition.createAfter( viewImg ), _createPlaceholder( writer ) );
 	}
 }
 
@@ -161,7 +162,7 @@ function _hidePlaceholder( viewFigure, writer ) {
 		writer.removeClass( 'ck-infinite-progress', viewFigure );
 	}
 
-	removeUIElement( viewFigure, writer, placeholderSymbol );
+	_removeUIElement( viewFigure, writer, placeholderSymbol );
 }
 
 // Shows progress bar displaying upload progress.
@@ -172,7 +173,7 @@ function _hidePlaceholder( viewFigure, writer ) {
 // @param {module:upload/filerepository~FileLoader} loader
 // @param {module:engine/view/view~View} view
 function _showProgressBar( viewFigure, writer, loader, view ) {
-	const progressBar = createProgressBar( writer );
+	const progressBar = _createProgressBar( writer );
 	writer.insert( ViewPosition.createAt( viewFigure, 'end' ), progressBar );
 
 	// Update progress bar width when uploadedPercent is changed.
@@ -188,7 +189,7 @@ function _showProgressBar( viewFigure, writer, loader, view ) {
 // @param {module:engine/view/containerelement~ContainerElement} viewFigure
 // @param {module:engine/view/writer~Writer} writer
 function _hideProgressBar( viewFigure, writer ) {
-	removeUIElement( viewFigure, writer, progressBarSymbol );
+	_removeUIElement( viewFigure, writer, progressBarSymbol );
 }
 
 // Shows complete icon and hides after a certain amount of time.
@@ -211,7 +212,7 @@ function _showCompleteIcon( viewFigure, writer, view ) {
 // @private
 // @param {module:engine/view/writer~Writer} writer
 // @returns {module:engine/view/uielement~UIElement}
-function createProgressBar( writer ) {
+function _createProgressBar( writer ) {
 	const progressBar = writer.createUIElement( 'div', { class: 'ck-progress-bar' } );
 
 	writer.setCustomProperty( progressBarSymbol, true, progressBar );
@@ -224,7 +225,7 @@ function createProgressBar( writer ) {
 // @private
 // @param {module:engine/view/writer~Writer} writer
 // @returns {module:engine/view/uielement~UIElement}
-function createPlaceholder( writer ) {
+function _createPlaceholder( writer ) {
 	const placeholder = writer.createUIElement( 'div', { class: 'ck-placeholder' } );
 
 	writer.setCustomProperty( placeholderSymbol, true, placeholder );
@@ -244,7 +245,7 @@ function createPlaceholder( writer ) {
 // @param {module:engine/view/element~Element} imageFigure
 // @param {Symbol} uniqueProperty
 // @returns {module:engine/view/uielement~UIElement|undefined}
-function getUIElement( imageFigure, uniqueProperty ) {
+function _getUIElement( imageFigure, uniqueProperty ) {
 	for ( const child of imageFigure.getChildren() ) {
 		if ( child.getCustomProperty( uniqueProperty ) ) {
 			return child;
@@ -258,8 +259,8 @@ function getUIElement( imageFigure, uniqueProperty ) {
 // @param {module:engine/view/element~Element} imageFigure
 // @param {module:engine/view/writer~Writer} writer
 // @param {Symbol} uniqueProperty
-function removeUIElement( viewFigure, writer, uniqueProperty ) {
-	const element = getUIElement( viewFigure, uniqueProperty );
+function _removeUIElement( viewFigure, writer, uniqueProperty ) {
+	const element = _getUIElement( viewFigure, uniqueProperty );
 
 	if ( element ) {
 		writer.remove( ViewRange.createOn( element ) );
