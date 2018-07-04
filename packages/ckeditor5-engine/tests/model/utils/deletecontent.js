@@ -669,7 +669,7 @@ describe( 'DataController utils', () => {
 					new Position( doc.getRoot( 'bodyRoot' ), [ 3 ] )
 				);
 
-				deleteContent( model, range );
+				deleteContent( model, new Selection( range ) );
 
 				expect( getData( model, { rootName: 'bodyRoot', withoutSelection: true } ) )
 					.to.equal( '<paragraph>x</paragraph><paragraph></paragraph><paragraph>z</paragraph>' );
