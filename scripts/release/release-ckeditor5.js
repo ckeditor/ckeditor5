@@ -82,6 +82,10 @@ cli.provideToken()
 					continue;
 				}
 
+				if ( property == 'private' ) {
+					continue;
+				}
+
 				// Copy value from original package.json file.
 				jsonFile[ property ] = packageJson[ property ];
 			}
