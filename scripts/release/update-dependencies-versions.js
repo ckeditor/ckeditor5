@@ -13,30 +13,30 @@ const path = require( 'path' );
 const { tools, logger } = require( '@ckeditor/ckeditor5-dev-utils' );
 
 const log = logger();
-const rootPath = path.join( __dirname, '..', '..' );
-const packageJsonPath = path.join( rootPath, 'package.json' );
-
-const mgitJson = require( path.join( rootPath, 'mgit.json' ) );
+const packageJsonPath = path.join( __dirname, '..', 'package.json' );
 
 log.info( 'Updating version of dependencies in "package.json"...' );
+let counter = 0;
 
 tools.updateJSONFile( packageJsonPath, packageJson => {
 	const dependencies = packageJson.dependencies;
 
 	for ( const packageName of Object.keys( dependencies ) ) {
-		if ( !mgitJson.dependencies[ packageName ] ) {
-			log.warning( `Package "${ packageName }" is not defined in "mgit.json" and its version cannot be updated.` );
+		try {
+			const dependencyPackageJson = require( packageName + '/package.json' );
+			const newVersion = '^' + dependencyPackageJson.version;
 
-			continue;
+			if ( packageJson.dependencies[ dependencyPackageJson.name ] !== newVersion ) {
+				counter += 1;
+			}
+
+			packageJson.dependencies[ dependencyPackageJson.name ] = newVersion;
+		} catch ( error ) {
+			log.warning( `Package "${ packageName }" is not installed and its version cannot be updated.` );
 		}
-
-		const dependencyPath = path.join( rootPath, mgitJson.packages, packageName.split( '/' )[ 1 ] );
-		const dependencyPackageJson = require( path.join( dependencyPath, 'package.json' ) );
-
-		packageJson.dependencies[ dependencyPackageJson.name ] = '^' + dependencyPackageJson.version;
 	}
 
 	return packageJson;
 } );
 
-log.info( 'Done.' );
+log.info( `Done. Updated versions of ${ counter } packages.` );
