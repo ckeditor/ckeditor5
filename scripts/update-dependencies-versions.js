@@ -47,6 +47,8 @@ if ( counter ) {
 	const response = tools.shExec( 'git add package.json && git commit -m "Internal: Updated dependencies."', { verbosity: 'error' } );
 
 	log.info( response.trim() );
+} else {
+	log.info( 'Nothing to update? It smells like troubles!' );
 }
 
-log.info( 'Updating dependencies has been finished.' );
+log.info( 'Done.' );
