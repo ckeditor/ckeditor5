@@ -3968,7 +3968,7 @@ describe( 'ListEditing', () => {
 			const modelRoot = model.document.getRoot( 'main' );
 
 			// Parse data string to model.
-			const parsedResult = setModelData._parse( input, model.schema, { context: [ modelRoot.name ] } );
+			const parsedResult = parseModel( input, model.schema, { context: [ modelRoot.name ] } );
 
 			// Retrieve DocumentFragment and Selection from parsed model.
 			const modelDocumentFragment = parsedResult.model;
