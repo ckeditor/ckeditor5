@@ -541,7 +541,7 @@ describe( 'downcast-selection-converters', () => {
 
 		it( 'should add a class to the selected table cell', () => {
 			test(
-				// table tr#0 |td#0, table tr#0 td#0|
+				// table tr#0 td#0 [foo, table tr#0 td#0 bar]
 				[ [ 0, 0, 0, 0 ], [ 0, 0, 0, 3 ] ],
 				'<table><tr><td>foo</td></tr><tr><td>bar</td></tr></table>',
 				'<table><tr><td class="selected">foo</td></tr><tr><td>bar</td></tr></table>'
@@ -550,7 +550,7 @@ describe( 'downcast-selection-converters', () => {
 
 		it( 'should not be used if selection contains more than just a table cell', () => {
 			test(
-				// table tr td#1, table tr#2
+				// table tr td#1 f{oo bar, table tr#2 bar]
 				[ [ 0, 0, 0, 1 ], [ 0, 0, 1, 3 ] ],
 				'<table><tr><td>foo</td><td>bar</td></tr></table>',
 				'[<table><tr><td>foo</td><td>bar</td></tr></table>]'

@@ -608,7 +608,7 @@ describe( 'DataController utils', () => {
 			it( 'creates a paragraph when text is not allowed (custom selection)', () => {
 				setData(
 					model,
-					'[<paragraph>x</paragraph>]<paragraph>yyy</paragraph><paragraph>z</paragraph>',
+					'<paragraph>[x]</paragraph><paragraph>yyy</paragraph><paragraph>z</paragraph>',
 					{ rootName: 'bodyRoot' }
 				);
 
@@ -640,45 +640,39 @@ describe( 'DataController utils', () => {
 			it( 'creates paragraph when text is not allowed (heading selected)', () => {
 				setData(
 					model,
-					'<paragraph>x</paragraph>[<heading1>yyy</heading1>]<paragraph>z</paragraph>',
+					'<paragraph>x</paragraph><heading1>yyy</heading1><paragraph>z</paragraph>',
 					{ rootName: 'bodyRoot' }
 				);
 
-				model.change( writer => {
-					// Set selection to[<heading1>yyy</heading1>] in change() block due to selection post-fixer.
-					const range = new Range(
-						new Position( doc.getRoot( 'bodyRoot' ), [ 1 ] ),
-						new Position( doc.getRoot( 'bodyRoot' ), [ 2 ] )
-					);
-					writer.setSelection( range );
+				// [<heading1>yyy</heading1>]
+				const range = new Range(
+					new Position( doc.getRoot( 'bodyRoot' ), [ 1 ] ),
+					new Position( doc.getRoot( 'bodyRoot' ), [ 2 ] )
+				);
 
-					deleteContent( model, doc.selection );
-				} );
+				deleteContent( model, new Selection( range ) );
 
-				expect( getData( model, { rootName: 'bodyRoot' } ) )
-					.to.equal( '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>z</paragraph>' );
+				expect( getData( model, { rootName: 'bodyRoot', withoutSelection: true } ) )
+					.to.equal( '<paragraph>x</paragraph><paragraph></paragraph><paragraph>z</paragraph>' );
 			} );
 
 			it( 'creates paragraph when text is not allowed (two blocks selected)', () => {
 				setData(
 					model,
-					'<paragraph>x</paragraph>[<heading1>yyy</heading1><paragraph>yyy</paragraph>]<paragraph>z</paragraph>',
+					'<paragraph>x</paragraph><heading1>yyy</heading1><paragraph>yyy</paragraph><paragraph>z</paragraph>',
 					{ rootName: 'bodyRoot' }
 				);
 
-				model.change( writer => {
-					// Set selection to[<heading1>yyy</heading1><paragraph>yyy</paragraph>] in change() block due to selection post-fixer.
-					const range = new Range(
-						new Position( doc.getRoot( 'bodyRoot' ), [ 1 ] ),
-						new Position( doc.getRoot( 'bodyRoot' ), [ 3 ] )
-					);
-					writer.setSelection( range );
+				// [<heading1>yyy</heading1><paragraph>yyy</paragraph>]
+				const range = new Range(
+					new Position( doc.getRoot( 'bodyRoot' ), [ 1 ] ),
+					new Position( doc.getRoot( 'bodyRoot' ), [ 3 ] )
+				);
 
-					deleteContent( model, doc.selection );
-				} );
+				deleteContent( model, range );
 
-				expect( getData( model, { rootName: 'bodyRoot' } ) )
-					.to.equal( '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>z</paragraph>' );
+				expect( getData( model, { rootName: 'bodyRoot', withoutSelection: true } ) )
+					.to.equal( '<paragraph>x</paragraph><paragraph></paragraph><paragraph>z</paragraph>' );
 			} );
 
 			it( 'creates paragraph when text is not allowed (all content selected)', () => {

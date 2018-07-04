@@ -988,7 +988,12 @@ describe( 'Schema', () => {
 			schema.extend( 'article', { isLimit: true } );
 			schema.extend( 'section', { isLimit: true } );
 
-			setData( model, '<div><section><article><paragraph>foo[]bar</paragraph></article></section></div>' );
+			const data = '<div><section><article><paragraph>foobar</paragraph></article></section></div>';
+			const parsedModel = parse( data, model.schema, { context: [ root.name ] } );
+
+			model.change( writer => {
+				writer.insert( parsedModel, root );
+			} );
 
 			const article = root.getNodeByPath( [ 0, 0, 0 ] );
 
@@ -999,7 +1004,12 @@ describe( 'Schema', () => {
 			schema.extend( 'article', { isLimit: true } );
 			schema.extend( 'section', { isLimit: true } );
 
-			setData( model, '<div><section><article><paragraph>foo[]bar</paragraph></article></section></div>' );
+			const data = '<div><section><article><paragraph>foobar</paragraph></article></section></div>';
+			const parsedModel = parse( data, model.schema, { context: [ root.name ] } );
+
+			model.change( writer => {
+				writer.insert( parsedModel, root );
+			} );
 
 			const article = root.getNodeByPath( [ 0, 0, 0 ] );
 
@@ -1124,11 +1134,11 @@ describe( 'Schema', () => {
 			} );
 
 			// Parse data string to model.
-			const parsedResult = parse( '[<p>foo<img />bar</p>]', model.schema, { context: [ root.name ] } );
+			const parsedModel = parse( '<p>foo<img />bar</p>', model.schema, { context: [ root.name ] } );
 
 			// Set parsed model data to prevent selection post-fixer from running.
 			model.change( writer => {
-				writer.insert( parsedResult.model, root );
+				writer.insert( parsedModel, root );
 			} );
 
 			ranges = [ Range.createOn( root.getChild( 0 ) ) ];
