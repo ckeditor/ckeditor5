@@ -115,6 +115,7 @@
     "changelog": "node ./scripts/release/changelog.js",
     "release": "bash ./scripts/release-ckeditor5.sh",
     "release:dependencies": "node ./scripts/release/release-dependencies.js",
+    "update-dependencies-versions": "node ./scripts/update-dependencies-versions.js",
     "switch-to-dev-dev": "sh ./scripts/switch-to-dev-dev.sh"
   },
   "lint-staged": {
