@@ -226,7 +226,7 @@ function _createProgressBar( writer ) {
 // @param {module:engine/view/writer~Writer} writer
 // @returns {module:engine/view/uielement~UIElement}
 function _createPlaceholder( writer ) {
-	const placeholder = writer.createUIElement( 'div', { class: 'ck-placeholder' } );
+	const placeholder = writer.createUIElement( 'div', { class: 'ck-upload-placeholder' } );
 
 	writer.setCustomProperty( placeholderSymbol, true, placeholder );
 
