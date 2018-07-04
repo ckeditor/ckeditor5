@@ -93,19 +93,19 @@ The file containing custom variables will be named `custom.css` and it will look
 	/* -- Overrides the default .ck-button class colors. ---------------------------------------- */
 
 	--ck-color-button-default-background: var(--ck-custom-background);
-	--ck-color-button-default-focus-background: hsl(270, 1%, 22%);
+	--ck-color-button-default-hover-background: hsl(270, 1%, 22%);
 	--ck-color-button-default-active-background: hsl(270, 2%, 20%);
 	--ck-color-button-default-active-shadow: hsl(270, 2%, 23%);
 	--ck-color-button-default-disabled-background: var(--ck-custom-background);
 
 	--ck-color-button-on-background: var(--ck-custom-foreground);
-	--ck-color-button-on-focus-background: hsl(255, 4%, 16%);
+	--ck-color-button-on-hover-background: hsl(255, 4%, 16%);
 	--ck-color-button-on-active-background: hsl(255, 4%, 14%);
 	--ck-color-button-on-active-shadow: hsl(240, 3%, 19%);
 	--ck-color-button-on-disabled-background: var(--ck-custom-foreground);
 
 	--ck-color-button-action-background: hsl(168, 76%, 42%);
-	--ck-color-button-action-focus-background: hsl(168, 76%, 38%);
+	--ck-color-button-action-hover-background: hsl(168, 76%, 38%);
 	--ck-color-button-action-active-background: hsl(168, 76%, 36%);
 	--ck-color-button-action-active-shadow: hsl(168, 75%, 34%);
 	--ck-color-button-action-disabled-background: hsl(168, 76%, 42%);

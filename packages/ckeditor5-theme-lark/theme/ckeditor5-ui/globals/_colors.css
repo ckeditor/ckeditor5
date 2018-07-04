@@ -16,7 +16,7 @@
 	/* -- Generic colors ------------------------------------------------------------------------ */
 
 	--ck-color-focus-border: 									hsl(208, 90%, 62%);
-	--ck-color-focus-shadow:									hsl(209, 90%, 72%);
+	--ck-color-focus-shadow:									hsla(209, 90%, 72%,.5);
 	--ck-color-text: 											var(--ck-color-base-text);
 	--ck-color-shadow-drop: 									hsla(0, 0%, 0%, 0.15);
 	--ck-color-shadow-inner: 									hsla(0, 0%, 0%, 0.1);
@@ -24,19 +24,19 @@
 	/* -- Buttons ------------------------------------------------------------------------------- */
 
 	--ck-color-button-default-background: 						transparent;
-	--ck-color-button-default-focus-background: 				hsl(0, 0%, 90%);
+	--ck-color-button-default-hover-background: 				hsl(0, 0%, 90%);
 	--ck-color-button-default-active-background: 				hsl(0, 0%, 85%);
 	--ck-color-button-default-active-shadow: 					hsl(0, 0%, 75%);
 	--ck-color-button-default-disabled-background: 				transparent;
 
 	--ck-color-button-on-background: 							hsl(0, 0%, 87%);
-	--ck-color-button-on-focus-background: 						hsl(0, 0%, 77%);
+	--ck-color-button-on-hover-background: 						hsl(0, 0%, 77%);
 	--ck-color-button-on-active-background: 					hsl(0, 0%, 73%);
 	--ck-color-button-on-active-shadow: 						hsl(0, 0%, 63%);
 	--ck-color-button-on-disabled-background: 					hsl(0, 0%, 87%);
 
 	--ck-color-button-action-background: 						var(--ck-color-base-action);
-	--ck-color-button-action-focus-background: 					hsl(104, 44%, 43%);
+	--ck-color-button-action-hover-background: 					hsl(104, 44%, 43%);
 	--ck-color-button-action-active-background: 				hsl(104, 44%, 41%);
 	--ck-color-button-action-active-shadow: 					hsl(104, 44%, 36%);
 	--ck-color-button-action-disabled-background: 				hsl(104, 44%, 58%);
