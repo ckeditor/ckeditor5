@@ -18,12 +18,16 @@ import {
 } from '../../src/converters/downcast';
 import upcastTable from '../../src/converters/upcasttable';
 import { formatTable, formattedModelTable, modelTable } from '../_utils/utils';
+import TableUtils from '../../src/tableutils';
 
 describe( 'MergeCellCommand', () => {
 	let editor, model, command, root;
 
 	beforeEach( () => {
-		return ModelTestEditor.create()
+		return ModelTestEditor
+			.create( {
+				plugins: [ TableUtils ]
+			} )
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
@@ -114,6 +118,24 @@ describe( 'MergeCellCommand', () => {
 				] ) );
 
 				expect( command.isEnabled ).to.be.false;
+			} );
+
+			it( 'should be false when next cell is rowspanned', () => {
+				setData( model, modelTable( [
+					[ '00', { rowspan: 3, contents: '01' }, '02' ],
+					[ '10[]', '12' ],
+					[ '20', '22' ]
+				] ) );
+
+				expect( command.isEnabled ).to.be.false;
+			} );
+
+			it( 'should be true when current cell is colspanned', () => {
+				setData( model, modelTable( [
+					[ { colspan: 2, contents: '00[]' }, '02' ]
+				] ) );
+
+				expect( command.isEnabled ).to.be.true;
 			} );
 
 			it( 'should be false if not in a cell', () => {
@@ -214,6 +236,24 @@ describe( 'MergeCellCommand', () => {
 				] ) );
 
 				expect( command.isEnabled ).to.be.false;
+			} );
+
+			it( 'should be false when next cell is rowspanned', () => {
+				setData( model, modelTable( [
+					[ '00', { rowspan: 3, contents: '01' }, '02' ],
+					[ '10', '12[]' ],
+					[ '20', '22' ]
+				] ) );
+
+				expect( command.isEnabled ).to.be.false;
+			} );
+
+			it( 'should be true when mergeable cell is colspanned', () => {
+				setData( model, modelTable( [
+					[ { colspan: 2, contents: '00' }, '02[]' ]
+				] ) );
+
+				expect( command.isEnabled ).to.be.true;
 			} );
 
 			it( 'should be false if not in a cell', () => {

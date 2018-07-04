@@ -91,7 +91,7 @@ export default class TableToolbar extends Plugin {
 		this._toolbar.fillFromConfig( toolbarConfig, editor.ui.componentFactory );
 
 		// Show balloon panel each time table widget is selected.
-		this.listenTo( editor.editing.view, 'render', () => {
+		this.listenTo( editor.ui, 'update', () => {
 			this._checkIsVisible();
 		} );
 
@@ -108,17 +108,12 @@ export default class TableToolbar extends Plugin {
 	 */
 	_checkIsVisible() {
 		const editor = this.editor;
+		const viewSelection = editor.editing.view.document.selection;
 
-		if ( !editor.ui.focusTracker.isFocused ) {
+		if ( !editor.ui.focusTracker.isFocused || !isTableContentSelected( viewSelection ) ) {
 			this._hideToolbar();
 		} else {
-			const viewSelection = editor.editing.view.document.selection;
-
-			if ( isTableContentSelected( viewSelection ) ) {
-				this._showToolbar();
-			} else {
-				this._hideToolbar();
-			}
+			this._showToolbar();
 		}
 	}
 
@@ -132,14 +127,12 @@ export default class TableToolbar extends Plugin {
 
 		if ( this._isVisible ) {
 			repositionContextualBalloon( editor );
-		} else {
-			if ( !this._balloon.hasView( this._toolbar ) ) {
-				this._balloon.add( {
-					view: this._toolbar,
-					position: getBalloonPositionData( editor ),
-					balloonClassName
-				} );
-			}
+		} else if ( !this._balloon.hasView( this._toolbar ) ) {
+			this._balloon.add( {
+				view: this._toolbar,
+				position: getBalloonPositionData( editor ),
+				balloonClassName
+			} );
 		}
 	}
 
