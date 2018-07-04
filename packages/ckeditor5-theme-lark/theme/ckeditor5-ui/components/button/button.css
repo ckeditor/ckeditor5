@@ -48,6 +48,12 @@ a.ck.ck-button {
 
 	/* https://github.com/ckeditor/ckeditor5-theme-lark/issues/70 */
 	&.ck-disabled {
+		&:active,
+		&:focus {
+			/* The disabled button should have a slightly less visible shadow when focused. */
+			@mixin ck-box-shadow var(--ck-focus-disabled-outer-shadow);
+		}
+
 		& .ck-button__icon {
 			@mixin ck-disabled;
 		}

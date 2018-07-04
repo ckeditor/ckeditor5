@@ -17,6 +17,7 @@
 
 	--ck-color-focus-border: 									hsl(208, 90%, 62%);
 	--ck-color-focus-shadow:									hsla(209, 90%, 72%,.5);
+	--ck-color-focus-disabled-shadow:							hsla(209, 90%, 72%,.3);
 	--ck-color-text: 											var(--ck-color-base-text);
 	--ck-color-shadow-drop: 									hsla(0, 0%, 0%, 0.15);
 	--ck-color-shadow-inner: 									hsla(0, 0%, 0%, 0.1);
