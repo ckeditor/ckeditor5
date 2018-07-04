@@ -3,11 +3,6 @@
  * For licensing, see LICENSE.md.
  */
 
-/**
- * @license Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
- * For licensing, see LICENSE.md.
- */
-
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -31,11 +26,13 @@ describe( 'injectAndroidBackspaceMutationsHandling', () => {
 
 	testUtils.createSinonSandbox();
 
+	before( () => {
+		mutationsSpy = sinon.spy();
+	} );
+
 	beforeEach( () => {
 		const domElement = document.createElement( 'div' );
 		document.body.appendChild( domElement );
-
-		mutationsSpy = sinon.spy();
 
 		return ClassicTestEditor.create( domElement, { plugins: [ Input, Delete, Paragraph, Heading, Italic, Undo ] } )
 			.then( newEditor => {
@@ -56,10 +53,13 @@ describe( 'injectAndroidBackspaceMutationsHandling', () => {
 			dateNowStub = null;
 		}
 
+		mutationsSpy.resetHistory();
+
 		return editor.destroy();
 	} );
 
 	it( 'should handle block merging', () => {
+		// 1. Set selection to '<h2>Heading 1</h2><p>{}Paragraph</p><h3>Heading 2</h3>'.
 		model.change( writer => {
 			writer.setSelection(
 				ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 1 ), 0, modelRoot.getChild( 1 ), 0 )
@@ -72,6 +72,7 @@ describe( 'injectAndroidBackspaceMutationsHandling', () => {
 		expect( getModelData( model ) ).to.equal( modelContent );
 		expect( getViewData( view ) ).to.equal( viewContent );
 
+		// 2. Create mutations which are result of changing HTML to '<h2>Heading 1{}Paragraph</h2><h3>Heading 2</h3>'.
 		const mutations = [ {
 			// `heading1` new text mutation
 			type: 'children',
@@ -92,6 +93,7 @@ describe( 'injectAndroidBackspaceMutationsHandling', () => {
 			node: viewRoot
 		} ];
 
+		// 3. Simulate 'Backspace' flow on Android.
 		simulateBackspace( mutations );
 
 		expect( mutationsSpy.callCount ).to.equal( 0 );
@@ -105,6 +107,7 @@ describe( 'injectAndroidBackspaceMutationsHandling', () => {
 	} );
 
 	it( 'should handle two entire blocks removal', () => {
+		// 1. Set selection to '<h2>{Heading 1</h2><p>Paragraph}</p><h3>Heading 2</h3>'.
 		model.change( writer => {
 			writer.setSelection(
 				ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 0, modelRoot.getChild( 1 ), 9 )
@@ -117,6 +120,7 @@ describe( 'injectAndroidBackspaceMutationsHandling', () => {
 		expect( getModelData( model ) ).to.equal( modelContent );
 		expect( getViewData( view ) ).to.equal( viewContent );
 
+		// 2. Create mutations which are result of changing HTML to '<h2>[]</h2><h3>Heading 2</h3>'.
 		const mutations = [ {
 			// `heading1` text removal mutation
 			type: 'children',
@@ -131,10 +135,11 @@ describe( 'injectAndroidBackspaceMutationsHandling', () => {
 			node: viewRoot
 		} ];
 
-		// Simulate change of selection on Android where upon pressing `Backspace`
-		// it is changed to `<h2>Heading 1</h2><p>Paragraph{}</p><h3>Heading 2</h3>`.
+		// 3. Create selection which simulate Android behaviour where upon pressing `Backspace`
+		// selection is changed to `<h2>Heading 1</h2><p>Paragraph{}</p><h3>Heading 2</h3>`.
 		const newSelection = ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 1 ), 9, modelRoot.getChild( 1 ), 9 );
 
+		// 4. Simulate 'Backspace' flow on Android.
 		simulateBackspace( mutations, newSelection );
 
 		expect( mutationsSpy.callCount ).to.equal( 0 );
@@ -147,6 +152,7 @@ describe( 'injectAndroidBackspaceMutationsHandling', () => {
 	} );
 
 	it( 'should handle two partially selected blocks removal', () => {
+		// 1. Set selection to '<h2>Hea{ding 1</h2><p>Paragraph}</p><h3>Heading 2</h3>'.
 		model.change( writer => {
 			writer.setSelection(
 				ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 3, modelRoot.getChild( 1 ), 9 )
@@ -159,6 +165,7 @@ describe( 'injectAndroidBackspaceMutationsHandling', () => {
 		expect( getModelData( model ) ).to.equal( modelContent );
 		expect( getViewData( view ) ).to.equal( viewContent );
 
+		// 2. Create mutations which are result of changing HTML to '<h2>Hea{}</h2><h3>Heading 2</h3>'.
 		const mutations = [ {
 			// `heading1` text partial removal mutation
 			type: 'text',
@@ -173,10 +180,11 @@ describe( 'injectAndroidBackspaceMutationsHandling', () => {
 			node: viewRoot
 		} ];
 
-		// Simulate change of selection on Android where upon pressing `Backspace`
-		// it is changed to `<h2>Heading 1</h2><p>Paragraph{}</p><h3>Heading 2</h3>`.
+		// 3. Create selection which simulate Android behaviour where upon pressing `Backspace`
+		// selection is changed to `<h2>Heading 1</h2><p>Paragraph{}</p><h3>Heading 2</h3>`.
 		const newSelection = ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 1 ), 9, modelRoot.getChild( 1 ), 9 );
 
+		// 4. Simulate 'Backspace' flow on Android.
 		simulateBackspace( mutations, newSelection );
 
 		expect( mutationsSpy.callCount ).to.equal( 0 );
@@ -189,6 +197,7 @@ describe( 'injectAndroidBackspaceMutationsHandling', () => {
 	it( 'should handle blocks removal if selection ends on the boundary of inline element', () => {
 		editor.setData( '<h2>Heading 1</h2><p>Paragraph</p><h3><em>Heading</em> 2</h3>' );
 
+		// 1. Set selection to '<h2>{Heading 1</h2><p>Paragraph</p><h3>]<i>Heading</i> 2</h3>'.
 		model.change( writer => {
 			writer.setSelection(
 				ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 0, modelRoot.getChild( 2 ), 0 )
@@ -202,6 +211,7 @@ describe( 'injectAndroidBackspaceMutationsHandling', () => {
 		expect( getModelData( model ) ).to.equal( modelContent );
 		expect( getViewData( view ) ).to.equal( viewContent );
 
+		// 2. Create mutations which are result of changing HTML to '<h2><i>{}Heading</i> 2</h2>'.
 		const mutations = [ {
 			// `heading1` text to children mutation
 			type: 'children',
@@ -221,10 +231,11 @@ describe( 'injectAndroidBackspaceMutationsHandling', () => {
 			node: viewRoot
 		} ];
 
-		// Simulate change of selection on Android where upon pressing `Backspace`
-		// it is changed to `<h2>Heading 1</h2><p>Paragraph</p><h3>{}<em>Heading</em> 2</h3>`.
+		// 3. Create selection which simulate Android behaviour where upon pressing `Backspace`
+		// selection is changed to `<h2>Heading 1</h2><p>Paragraph</p><h3><em>{}Heading</em> 2</h3>`.
 		const newSelection = ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 2 ), 0, modelRoot.getChild( 2 ), 0 );
 
+		// 4. Simulate 'Backspace' flow on Android.
 		simulateBackspace( mutations, newSelection );
 
 		expect( mutationsSpy.callCount ).to.equal( 0 );
@@ -235,7 +246,7 @@ describe( 'injectAndroidBackspaceMutationsHandling', () => {
 	} );
 
 	it( 'should handle selection changed by the user before `backspace` on block merging', () => {
-		// Stub `Date.now` so we can simulate user selection change timing.
+		// 1. Stub `Date.now` so we can simulate user selection change timing.
 		let dateNowValue = 0;
 		dateNowStub = sinon.stub( Date, 'now' ).callsFake( () => {
 			dateNowValue += 500;
@@ -244,6 +255,7 @@ describe( 'injectAndroidBackspaceMutationsHandling', () => {
 
 		editor.setData( '<h2>Heading 1</h2><p>Paragraph</p><h3><em>Heading</em> 2</h3>' );
 
+		// 2. Set selection to '<h2>{Heading 1</h2><p>Paragraph</p><h3>]<i>Heading</i> 2</h3>'.
 		model.change( writer => {
 			writer.setSelection(
 				ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 0 ), 0, modelRoot.getChild( 2 ), 0 )
@@ -257,6 +269,8 @@ describe( 'injectAndroidBackspaceMutationsHandling', () => {
 		expect( getModelData( model ) ).to.equal( modelContent );
 		expect( getViewData( view ) ).to.equal( viewContent );
 
+		// 3. Create mutations which are result of changing HTML to '<h2>Heading 1</h2><p>Paragraph{}<i>Heading</i> 2</p>'.
+		// This is still a block container removal so 'injectAndroidBackspaceMutationsHandling' will get triggered.
 		const mutations = [ {
 			// `paragraph` children added mutation
 			type: 'children',
@@ -276,11 +290,12 @@ describe( 'injectAndroidBackspaceMutationsHandling', () => {
 			node: viewRoot
 		} ];
 
-		// Simulate user selection change which is identical as Android native ones.
+		// 4. Simulate user selection change which is identical as Android native change on 'Backspace'.
 		model.change( writer => {
 			writer.setSelection( ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 2 ), 0, modelRoot.getChild( 2 ), 0 ) );
 		} );
 
+		// 5. Simulate 'Backspace' flow on Android.
 		simulateBackspace( mutations );
 
 		expect( mutationsSpy.callCount ).to.equal( 0 );
@@ -295,6 +310,7 @@ describe( 'injectAndroidBackspaceMutationsHandling', () => {
 	} );
 
 	it( 'should not be triggered for container insertion mutations', () => {
+		// 1. Set selection to '<h2>Heading 1</h2><p>Paragraph{}</p><h3>Heading 2</h3>'.
 		model.change( writer => {
 			writer.setSelection(
 				ModelRange.createFromParentsAndOffsets( modelRoot.getChild( 1 ), 9, modelRoot.getChild( 1 ), 9 )
@@ -310,6 +326,7 @@ describe( 'injectAndroidBackspaceMutationsHandling', () => {
 		const viewFoo = new ViewText( 'foo' );
 		const viewP = new ViewElement( 'p', null, viewFoo );
 
+		// 2. Create mutations which are result of changing HTML to '<h2>Heading 1</h2><p>Paragraph{}</p><p>Foo</p><h3>Heading 2</h3>'.
 		const mutations = [ {
 			// new paragraph insertion mutation
 			type: 'children',
@@ -318,10 +335,11 @@ describe( 'injectAndroidBackspaceMutationsHandling', () => {
 			node: viewRoot.getChild( 0 )
 		} ];
 
-		// Spy mutations listener calls. If Android handler was triggered it should prevent further calls.
+		// 3. Spy mutations listener calls. It should be called ones
+		// as it was not stopped by 'injectAndroidBackspaceMutationsHandling' handler.
 		viewDocument.on( 'mutations', mutationsSpy, { priority: 'lowest' } );
 
-		// Fire mutations event.
+		// 4. Fire mutations event.
 		viewDocument.fire( 'mutations', mutations );
 
 		expect( mutationsSpy.callCount ).to.equal( 1 );

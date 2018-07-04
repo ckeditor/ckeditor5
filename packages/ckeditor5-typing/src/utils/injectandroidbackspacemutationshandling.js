@@ -73,7 +73,7 @@ export default function injectAndroidBackspaceMutationsHandling( editor ) {
 		editor.execute( 'delete' );
 	}
 
-	// Whether previously saved selection should be used to remove content instead of the current one.
+	// Whether previously saved selection should be used instead of the current one to remove content.
 	//
 	// On Android devices when pressing backspace on non-collapsed selection, selection like:
 	//
@@ -92,8 +92,8 @@ export default function injectAndroidBackspaceMutationsHandling( editor ) {
 	//		* change of the selection happened not earlier than X milliseconds ago (see `selectionChangeToleranceMs`).
 	//
 	// The last check is needed, because user can manually collapse the selection on its current end and then press `Backspace`.
-	// In such situations timing determines if selection change was caused by the user or browser native behaviour.
-	// However, this happens only if selection is collapsed by the user on the beginning of the paragraph (so mutations
+	// In such situations timing determines if the selection change was caused by the user or browser native behaviour.
+	// However, this happens only if selection was collapsed by the user on the beginning of the paragraph (so mutations
 	// still will show container removal).
 	//
 	// @returns {Boolean}
@@ -118,7 +118,7 @@ export default function injectAndroidBackspaceMutationsHandling( editor ) {
 //			{ newChildren: [ 'Heading 1Paragraph' ], oldChildren: [ 'Heading 1' ], node: H1, type: 'children' }
 //		]
 //
-// The 1st and 3rd mutations show just changes in a text (1st - text in `p` element was removed, 3rd - text in `h2` was changed)
+// The 1st and 3rd mutations are just changes in a text (1st - text in `p` element was removed, 3rd - text in `h2` was changed)
 // and the 2nd one shows that one `ContainerElement` was removed. We have to recognize if mutations like 2nd one are present.
 // Based on that heuristic mutations are treated as the one removing container element.
 //
@@ -154,7 +154,7 @@ function containsContainersRemoval( mutations ) {
 	return false;
 }
 
-// Returns true if provided array contains only nodes of `containerElement` type.
+// Whether provided array contains only nodes of `containerElement` type.
 //
 // @private
 // @param {Array.<module:engine/model/node~Node>} children

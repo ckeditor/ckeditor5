@@ -14,9 +14,6 @@ import diffToChanges from '@ckeditor/ckeditor5-utils/src/difftochanges';
 /**
  * Returns true if container children have mutated or more than a single text node was changed.
  *
- * Single text node child insertion is handled in {@link module:typing/input~MutationHandler#_handleTextNodeInsertion}
- * while text mutation is handled in {@link module:typing/input~MutationHandler#_handleTextMutation}.
- *
  * @private
  * @param {Array.<module:engine/view/observer/mutationobserver~MutatedText|
  * module:engine/view/observer/mutationobserver~MutatedChildren>} mutations
@@ -43,7 +40,8 @@ export function containerChildrenMutated( mutations ) {
  * @private
  * @param {module:engine/view/observer/mutationobserver~MutatedText|
  * module:engine/view/observer/mutationobserver~MutatedChildren} mutation
- * @returns {Object|undefined} Change object or undefined if more than a single text node was changed.
+ * @returns {Object|undefined} Change object (see {@link module:utils/difftochanges~diffToChanges} output)
+ * or undefined if more than a single text node was changed.
  */
 export function getSingleTextNodeChange( mutation ) {
 	// One new node.
@@ -71,8 +69,8 @@ export function getSingleTextNodeChange( mutation ) {
 }
 
 /**
- * Helper function that compares whether two given view nodes are the same.
- * It is used in `diff` when it's passed an array with child nodes.
+ * Checks whether two view nodes are identical, which means they are the same object
+ * or contain exactly same data (in case of text nodes).
  *
  * @param {module:engine/view/node~Node} oldChild
  * @param {module:engine/view/node~Node} newChild
