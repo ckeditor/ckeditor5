@@ -10,9 +10,6 @@ echo ""
 
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
-	# Update version of CKEditor 5 dependencies in package.json
-	node ./scripts/release/update-dependencies-versions.js
-
 	# Release the CKEditor5 repository.
 	node ./scripts/release/release-ckeditor5.js
 
