@@ -132,7 +132,7 @@ describe( 'TableToolbar', () => {
 			expect( balloon.visibleView ).to.be.null;
 
 			model.change( writer => {
-				// Select the <tableCell>[foo]</tableCell>
+				// Select the <tableCell>[bar]</tableCell>
 				writer.setSelection(
 					Range.createOn( doc.getRoot().getChild( 1 ).getChild( 0 ).getChild( 0 ).getChild( 0 ) )
 				);
