@@ -233,6 +233,8 @@ function _createPlaceholder( writer ) {
 	placeholder.render = function ( domDocument ) {
 		const domElement = this.toDomElement( domDocument );
 		domElement.innerHTML = '<div class="ck-upload-placeholder_loader"></div>';
+
+		return domElement;
 	};
 
 	return placeholder;
