@@ -3,9 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals window */
+/* globals window, document */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ImageEditing from '../../src/image/imageediting';
@@ -18,14 +19,13 @@ import { UploadAdapterMock, createNativeFileMock, NativeFileReaderMock } from '@
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import svgPlaceholder from '../../theme/icons/image_placeholder.svg';
 
 describe( 'ImageUploadProgress', () => {
-	const imagePlaceholder = encodeURIComponent( svgPlaceholder );
+	const blankImage = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
 
 	// eslint-disable-next-line max-len
 	const base64Sample = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
-	let editor, model, document, fileRepository, view, nativeReaderMock, loader, adapterMock;
+	let editor, model, doc, fileRepository, view, nativeReaderMock, loader, adapterMock;
 
 	class UploadAdapterPluginMock extends Plugin {
 		init() {
@@ -55,7 +55,7 @@ describe( 'ImageUploadProgress', () => {
 			.then( newEditor => {
 				editor = newEditor;
 				model = editor.model;
-				document = model.document;
+				doc = model.document;
 				view = editor.editing.view;
 
 				fileRepository = editor.plugins.get( FileRepository );
@@ -74,7 +74,8 @@ describe( 'ImageUploadProgress', () => {
 
 		expect( getViewData( view ) ).to.equal(
 			'[<figure class="ck-appear ck-image-upload-placeholder ck-infinite-progress ck-widget image" contenteditable="false">' +
-				`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
+				`<img src="${ blankImage }"></img>` +
+				'<div class="ck-upload-placeholder"></div>' +
 			'</figure>]<p>foo</p>'
 		);
 	} );
@@ -103,7 +104,7 @@ describe( 'ImageUploadProgress', () => {
 		const loader = fileRepository.createLoader( file );
 
 		setModelData( model, '<image></image>' );
-		const image = document.getRoot().getChild( 0 );
+		const image = doc.getRoot().getChild( 0 );
 
 		// Set attributes directly on image to simulate instant "uploading" status.
 		model.change( writer => {
@@ -122,7 +123,7 @@ describe( 'ImageUploadProgress', () => {
 
 	it( 'should work correctly when there is no "reading" status and go straight to "uploading" - external changes', () => {
 		setModelData( model, '<image></image>' );
-		const image = document.getRoot().getChild( 0 );
+		const image = doc.getRoot().getChild( 0 );
 
 		// Set attributes directly on image to simulate instant "uploading" status.
 		model.change( writer => {
@@ -132,14 +133,15 @@ describe( 'ImageUploadProgress', () => {
 
 		expect( getViewData( view ) ).to.equal(
 			'[<figure class="ck-appear ck-image-upload-placeholder ck-infinite-progress ck-widget image" contenteditable="false">' +
-				`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
+				`<img src="${ blankImage }"></img>` +
+				'<div class="ck-upload-placeholder"></div>' +
 			'</figure>]'
 		);
 	} );
 
 	it( 'should "clear" image when uploadId changes to null', () => {
 		setModelData( model, '<image></image>' );
-		const image = document.getRoot().getChild( 0 );
+		const image = doc.getRoot().getChild( 0 );
 
 		// Set attributes directly on image to simulate instant "uploading" status.
 		model.change( writer => {
@@ -154,7 +156,7 @@ describe( 'ImageUploadProgress', () => {
 
 		expect( getViewData( view ) ).to.equal(
 			'[<figure class="ck-widget image" contenteditable="false">' +
-			`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
+				`<img src="${ blankImage }"></img>` +
 			'</figure>]'
 		);
 	} );
@@ -168,8 +170,8 @@ describe( 'ImageUploadProgress', () => {
 
 			expect( getViewData( view ) ).to.equal(
 				'[<figure class="ck-appear ck-widget image" contenteditable="false">' +
-				`<img src="${ base64Sample }"></img>` +
-				'<div class="ck-progress-bar" style="width:40%"></div>' +
+					`<img src="${ base64Sample }"></img>` +
+					'<div class="ck-progress-bar" style="width:40%"></div>' +
 				'</figure>]<p>foo</p>'
 			);
 
@@ -211,20 +213,6 @@ describe( 'ImageUploadProgress', () => {
 		nativeReaderMock.mockSuccess( base64Sample );
 	} );
 
-	it( 'should allow to customize placeholder image', () => {
-		const uploadProgress = editor.plugins.get( ImageUploadProgress );
-		uploadProgress.placeholder = base64Sample;
-
-		setModelData( model, '<paragraph>[]foo</paragraph>' );
-		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
-
-		expect( getViewData( view ) ).to.equal(
-			'[<figure class="ck-appear ck-image-upload-placeholder ck-infinite-progress ck-widget image" contenteditable="false">' +
-				`<img src="${ base64Sample }"></img>` +
-			'</figure>]<p>foo</p>'
-		);
-	} );
-
 	it( 'should not process attribute change if it is already consumed', () => {
 		editor.editing.downcastDispatcher.on( 'attribute:uploadStatus:image', ( evt, data, conversionApi ) => {
 			conversionApi.consumable.consume( data.item, evt.name );
@@ -241,7 +229,7 @@ describe( 'ImageUploadProgress', () => {
 	it( 'should not show progress bar and complete icon if there is no loader with given uploadId', () => {
 		setModelData( model, '<image uploadId="123" uploadStatus="reading"></image>' );
 
-		const image = document.getRoot().getChild( 0 );
+		const image = doc.getRoot().getChild( 0 );
 
 		model.change( writer => {
 			writer.setAttribute( 'uploadStatus', 'uploading', image );
@@ -249,7 +237,8 @@ describe( 'ImageUploadProgress', () => {
 
 		expect( getViewData( view ) ).to.equal(
 			'[<figure class="ck-appear ck-image-upload-placeholder ck-infinite-progress ck-widget image" contenteditable="false">' +
-				`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
+				`<img src="${ blankImage }"></img>` +
+				'<div class="ck-upload-placeholder"></div>' +
 			'</figure>]'
 		);
 
@@ -259,8 +248,34 @@ describe( 'ImageUploadProgress', () => {
 
 		expect( getViewData( view ) ).to.equal(
 			'[<figure class="ck-widget image" contenteditable="false">' +
-				`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
+				`<img src="${ blankImage }"></img>` +
 			'</figure>]'
 		);
+	} );
+
+	it( 'should render custom markup of upload progress element', () => {
+		const element = document.createElement( 'div' );
+		document.body.appendChild( element );
+
+		return ClassicTestEditor.create( element, {
+			plugins: [ ImageEditing, Paragraph, ImageUploadEditing, ImageUploadProgress, UploadAdapterPluginMock ]
+		} ).then( editor => {
+			fileRepository = editor.plugins.get( FileRepository );
+			fileRepository.createUploadAdapter = newLoader => {
+				loader = newLoader;
+				adapterMock = new UploadAdapterMock( loader );
+
+				return adapterMock;
+			};
+
+			setModelData( editor.model, '<paragraph>[]foo</paragraph>' );
+			editor.execute( 'imageUpload', { file: createNativeFileMock() } );
+
+			expect( editor.ui.view.editableElement.querySelector( '.ck-upload-placeholder' ).innerHTML )
+				.to.equal( '<div class="ck-upload-placeholder_loader"></div>' );
+
+			element.remove();
+			return editor.destroy();
+		} );
 	} );
 } );
