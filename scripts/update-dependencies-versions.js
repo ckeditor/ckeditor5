@@ -39,4 +39,14 @@ tools.updateJSONFile( packageJsonPath, packageJson => {
 	return packageJson;
 } );
 
-log.info( `Done. Updated versions of ${ counter } packages.` );
+log.info( `Updated versions of ${ counter } packages.` );
+
+if ( counter ) {
+	log.info( 'Committing updated "package.json" file...' );
+
+	const response = tools.shExec( 'git add package.json && git commit -m "Internal: Updated dependencies."', { verbosity: 'error' } );
+
+	log.info( response.trim() );
+}
+
+log.info( 'Updating dependencies has been finished.' );
