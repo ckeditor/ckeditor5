@@ -582,14 +582,16 @@ export default class Schema {
 		}, { priority: 'high' } );
 	}
 
+	/* eslint-disable max-len */
 	/**
 	 * Returns the lowest {@link module:engine/model/schema~Schema#isLimit limit element} containing the entire
 	 * selection or the root otherwise.
 	 *
-	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selectionOrRangeOrPosition
+	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection|module:engine/model/range~Range|module:engine/model/position~Position} selectionOrRangeOrPosition
 	 * Selection which returns the common ancestor.
 	 * @returns {module:engine/model/element~Element}
 	 */
+	/* eslint-enable max-len */
 	getLimitElement( selectionOrRangeOrPosition ) {
 		let element;
 
