@@ -1683,6 +1683,36 @@ describe( 'Renderer', () => {
 			);
 		} );
 
+		// #1451
+		it( 'should correctly render changed children even if direct parent is not marked to sync', () => {
+			const inputView =
+				'<container:ul>' +
+					'<container:li>Foo</container:li>' +
+					'<container:li><attribute:b>Bar</attribute:b></container:li>' +
+				'</container:ul>';
+
+			const view = parse( inputView );
+
+			viewRoot._appendChild( view );
+
+			renderer.markToSync( 'children', viewRoot );
+			renderer.render();
+
+			expect( domRoot.innerHTML ).to.equal( '<ul><li>Foo</li><li><b>Bar</b></li></ul>' );
+
+			const viewLi = view.getChild( 0 );
+			const viewLiIndented = view._removeChildren( 1, 1 ); // Array with one element.
+			viewLiIndented[ 0 ]._appendChild( parse( '<attribute:i>Baz</attribute:i>' ) );
+			const viewUl = new ViewContainerElement( 'ul', null, viewLiIndented );
+			viewLi._appendChild( viewUl );
+
+			renderer.markToSync( 'children', view );
+			renderer.markToSync( 'children', viewLi );
+			renderer.render();
+
+			expect( domRoot.innerHTML ).to.equal( '<ul><li>Foo<ul><li><b>Bar</b><i>Baz</i></li></ul></li></ul>' );
+		} );
+
 		describe( 'fake selection', () => {
 			beforeEach( () => {
 				const { view: viewP, selection: newSelection } = parse(

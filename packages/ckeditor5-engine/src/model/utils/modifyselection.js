@@ -172,7 +172,8 @@ function getCorrectWordBreakPosition( walker, isForward ) {
 			// should expand to : 'foofoo [bar<$text bold="true">bar</$text>] bazbaz'.
 			const nextNode = isForward ? walker.position.nodeAfter : walker.position.nodeBefore;
 
-			if ( nextNode ) {
+			// Scan only text nodes. Ignore inline elements (like `<softBreak>`).
+			if ( nextNode && nextNode.is( 'text' ) ) {
 				// Check boundary char of an adjacent text node.
 				const boundaryChar = nextNode.data.charAt( isForward ? 0 : nextNode.data.length - 1 );
 

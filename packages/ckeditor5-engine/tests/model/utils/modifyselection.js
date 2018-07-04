@@ -18,6 +18,7 @@ describe( 'DataController utils', () => {
 		model.schema.register( 'p', { inheritAllFrom: '$block' } );
 		model.schema.register( 'x', { inheritAllFrom: '$block' } );
 		model.schema.extend( 'x', { allowIn: 'p' } );
+		model.schema.register( 'br', { allowWhere: '$text' } );
 
 		doc.createRoot();
 	} );
@@ -552,6 +553,48 @@ describe( 'DataController utils', () => {
 
 					expect( stringify( doc.getRoot(), doc.selection ) ).to.equal( '<p>[foo\uD83D\uDCA9]</p>' );
 					expect( doc.selection.isBackward ).to.true;
+				} );
+
+				it( 'expands backward selection to the word begin in the paragraph with soft break', () => {
+					setData( model, '<p>Foo<br></br>Bar[]</p>' );
+
+					modifySelection( model, doc.selection, { unit: 'word', direction: 'backward' } );
+
+					expect( stringify( doc.getRoot(), doc.selection ) ).to.equal( '<p>Foo<br></br>[Bar]</p>' );
+				} );
+
+				it( 'expands backward selection to the whole paragraph in the paragraph with soft break', () => {
+					setData( model, '<p>Foo<br></br>Bar[]</p>' );
+
+					modifySelection( model, doc.selection, { unit: 'word', direction: 'backward' } );
+					modifySelection( model, doc.selection, { unit: 'word', direction: 'backward' } );
+
+					expect( stringify( doc.getRoot(), doc.selection ) ).to.equal( '<p>Foo[<br></br>Bar]</p>' );
+
+					modifySelection( model, doc.selection, { unit: 'word', direction: 'backward' } );
+
+					expect( stringify( doc.getRoot(), doc.selection ) ).to.equal( '<p>[Foo<br></br>Bar]</p>' );
+				} );
+
+				it( 'expands forward selection to the word end in the paragraph with soft break', () => {
+					setData( model, '<p>[]Foo<br></br>Bar</p>' );
+
+					modifySelection( model, doc.selection, { unit: 'word', direction: 'forward' } );
+
+					expect( stringify( doc.getRoot(), doc.selection ) ).to.equal( '<p>[Foo]<br></br>Bar</p>' );
+				} );
+
+				it( 'expands forward selection to the whole paragraph in the paragraph with soft break', () => {
+					setData( model, '<p>[]Foo<br></br>Bar</p>' );
+
+					modifySelection( model, doc.selection, { unit: 'word', direction: 'forward' } );
+					modifySelection( model, doc.selection, { unit: 'word', direction: 'forward' } );
+
+					expect( stringify( doc.getRoot(), doc.selection ) ).to.equal( '<p>[Foo<br></br>]Bar</p>' );
+
+					modifySelection( model, doc.selection, { unit: 'word', direction: 'forward' } );
+
+					expect( stringify( doc.getRoot(), doc.selection ) ).to.equal( '<p>[Foo<br></br>Bar]</p>' );
 				} );
 
 				function testStopCharacter( stopCharacter ) {
