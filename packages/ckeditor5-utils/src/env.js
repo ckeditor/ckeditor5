@@ -53,5 +53,5 @@ export function isMac( userAgent ) {
  * @returns {Boolean} Whether User Agent is Edge or not.
  */
 export function isEdge( userAgent ) {
-	return userAgent.indexOf( 'edge' ) > -1;
+	return !!userAgent.match( /edge\/(\d+.?\d*)/ );
 }

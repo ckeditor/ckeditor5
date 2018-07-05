@@ -40,14 +40,16 @@ describe( 'Env', () => {
 
 	describe( 'isEdge()', () => {
 		it( 'returns true for Edge UA strings', () => {
-			expect( isEdge( 'edge' ) ).to.be.true;
-			expect( isEdge( 'foo edge bar' ) ).to.be.true;
+			expect( isEdge( 'edge/12' ) ).to.be.true;
+			expect( isEdge( 'foo edge/12 bar' ) ).to.be.true;
 		} );
 
 		it( 'returns false for non–Edge UA strings', () => {
 			expect( isEdge( '' ) ).to.be.false;
 			expect( isEdge( 'mac' ) ).to.be.false;
 			expect( isEdge( 'foo' ) ).to.be.false;
+			expect( isEdge( 'ledge' ) ).to.be.false;
+			expect( isEdge( 'foo edge bar' ) ).to.be.false;
 		} );
 	} );
 } );
