@@ -234,7 +234,7 @@ export default class BalloonPanelView extends View {
 			fitInViewport: true
 		}, options );
 
-		const { top, left, name: position } = getOptimalPosition( positionOptions );
+		const { top, left, name: position } = BalloonPanelView._getOptimalPosition( positionOptions );
 
 		Object.assign( this, { top, left, position } );
 	}
@@ -414,6 +414,14 @@ BalloonPanelView.arrowHorizontalOffset = 25;
  * @member {Number} module:ui/panel/balloon/balloonpanelview~BalloonPanelView.arrowVerticalOffset
  */
 BalloonPanelView.arrowVerticalOffset = 10;
+
+/**
+ * Function used to calculate the optimal position for the balloon.
+ *
+ * @protected
+ * @member {Function} module:ui/panel/balloon/balloonpanelview~BalloonPanelView._getOptimalPosition
+ */
+BalloonPanelView._getOptimalPosition = getOptimalPosition;
 
 /**
  * A default set of positioning functions used by the balloon panel view
