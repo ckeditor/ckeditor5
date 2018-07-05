@@ -19,16 +19,26 @@ import {
 	WIDGET_CLASS_NAME
 } from '../src/utils';
 import UIElement from '@ckeditor/ckeditor5-engine/src/view/uielement';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'widget utils', () => {
+	const initialEnvEdge = env.isEdge;
+
 	let element, writer, viewDocument;
 
 	beforeEach( () => {
+		// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
+		env.isEdge = false;
+
 		viewDocument = new ViewDocument();
 		writer = new Writer( viewDocument );
 
 		element = writer.createContainerElement( 'div' );
 		toWidget( element, writer );
+	} );
+
+	afterEach( () => {
+		env.isEdge = initialEnvEdge;
 	} );
 
 	describe( 'toWidget()', () => {
@@ -110,6 +120,19 @@ describe( 'widget utils', () => {
 			expect( icon.classList.contains( 'ck' ) ).to.be.true;
 			expect( icon.classList.contains( 'ck-icon' ) ).to.be.true;
 		} );
+
+		describe( 'on Edge', () => {
+			beforeEach( () => {
+				env.isEdge = true;
+
+				element = writer.createContainerElement( 'div' );
+				toWidget( element, writer );
+			} );
+
+			it( 'should not set contenteditable onEdge', () => {
+				expect( element.getAttribute( 'contenteditable' ) ).to.be.undefined;
+			} );
+		} );
 	} );
 
 	describe( 'isWidget()', () => {
@@ -188,6 +211,34 @@ describe( 'widget utils', () => {
 
 			element.isFocused = false;
 			expect( element.hasClass( 'ck-editor__nested-editable_focused' ) ).to.be.false;
+		} );
+
+		describe( 'on Edge', () => {
+			beforeEach( () => {
+				env.isEdge = true;
+
+				viewDocument = new ViewDocument();
+				element = new ViewEditableElement( 'div' );
+				element._document = viewDocument;
+				toWidgetEditable( element, writer );
+			} );
+
+			it( 'should add contenteditable attribute when element is read-only - initialization', () => {
+				const element = new ViewEditableElement( 'div' );
+				element._document = viewDocument;
+				element.isReadOnly = true;
+				toWidgetEditable( element, writer );
+
+				expect( element.getAttribute( 'contenteditable' ) ).to.be.undefined;
+			} );
+
+			it( 'should add contenteditable attribute when element is read-only - when changing', () => {
+				element.isReadOnly = true;
+				expect( element.getAttribute( 'contenteditable' ) ).to.be.undefined;
+
+				element.isReadOnly = false;
+				expect( element.getAttribute( 'contenteditable' ) ).to.be.undefined;
+			} );
 		} );
 	} );
 
