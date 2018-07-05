@@ -1,0 +1,32 @@
+/*
+ * Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md.
+ */
+
+:root {
+	--ck-color-upload-placeholder: hsl(0, 0%, 98%);
+	--ck-color-upload-placeholder-loader: hsl(0, 0%, 70%);
+}
+
+.ck .ck-upload-placeholder {
+	background: var(--ck-color-upload-placeholder);
+	
+	& .ck-upload-placeholder_loader {
+		
+		/* Because of border transformation flex is not centering loader properly. */
+		left: calc( var(--ck-upload-placeholder-loader-size) / -2 );
+
+		&::before {
+			border-radius: 50%;
+			border-top: 2px solid var(--ck-color-upload-placeholder-loader);
+			border-right: 2px solid transparent;
+			animation: ck-upload-placeholder-loader 1s linear infinite;
+		}
+	}
+}
+
+@keyframes ck-upload-placeholder-loader {
+	to {
+		transform: rotate( 360deg );
+	}
+}

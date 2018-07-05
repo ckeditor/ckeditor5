@@ -25,10 +25,6 @@
 		transition-timing-function: linear;
 	}
 
-	&.ck-image-upload-placeholder > img {
-		width: 100%;
-	}
-
 	/* Upload progress bar. */
 	& .ck-progress-bar {
 		height: 2px;
