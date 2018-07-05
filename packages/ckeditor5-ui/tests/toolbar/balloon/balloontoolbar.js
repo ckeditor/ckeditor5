@@ -140,7 +140,6 @@ describe( 'BalloonToolbar', () => {
 	} );
 
 	// See https://github.com/ckeditor/ckeditor5-ui/issues/424.
-	// This test should be removed after fixing this https://github.com/ckeditor/ckeditor5-core/issues/137.
 	it( 'should work with the ClassicEditor', () => {
 		const editor = new ClassicEditor( editorElement, {
 			plugins: [ BalloonToolbar ]
