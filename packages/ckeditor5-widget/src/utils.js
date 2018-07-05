@@ -10,6 +10,7 @@
 import HighlightStack from './highlightstack';
 import Position from '@ckeditor/ckeditor5-engine/src/view/position';
 import IconView from '@ckeditor/ckeditor5-ui/src/icon/iconview';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import dragHandlerIcon from '../theme/icons/drag-handler.svg';
 
@@ -57,7 +58,11 @@ export function isWidget( element ) {
  * @returns {module:engine/view/element~Element} Returns same element.
  */
 export function toWidget( element, writer, options = {} ) {
-	writer.setAttribute( 'contenteditable', 'false', element );
+	// The selection on Edge behaves better when whole editor contents is in single contentedible element.
+	// https://github.com/ckeditor/ckeditor5/issues/1079
+	if ( !env.isEdge ) {
+		writer.setAttribute( 'contenteditable', 'false', element );
+	}
 	writer.addClass( WIDGET_CLASS_NAME, element );
 	writer.setCustomProperty( widgetSymbol, true, element );
 	element.getFillerOffset = getFillerOffset;
@@ -154,13 +159,17 @@ export function getLabel( element ) {
 export function toWidgetEditable( editable, writer ) {
 	writer.addClass( [ 'ck-editor__editable', 'ck-editor__nested-editable' ], editable );
 
-	// Set initial contenteditable value.
-	writer.setAttribute( 'contenteditable', editable.isReadOnly ? 'false' : 'true', editable );
+	// The selection on Edge behaves better when whole editor contents is in single contentedible element.
+	// https://github.com/ckeditor/ckeditor5/issues/1079
+	if ( !env.isEdge ) {
+		// Set initial contenteditable value.
+		writer.setAttribute( 'contenteditable', editable.isReadOnly ? 'false' : 'true', editable );
 
-	// Bind contenteditable property to element#isReadOnly.
-	editable.on( 'change:isReadOnly', ( evt, property, is ) => {
-		writer.setAttribute( 'contenteditable', is ? 'false' : 'true', editable );
-	} );
+		// Bind contenteditable property to element#isReadOnly.
+		editable.on( 'change:isReadOnly', ( evt, property, is ) => {
+			writer.setAttribute( 'contenteditable', is ? 'false' : 'true', editable );
+		} );
+	}
 
 	editable.on( 'change:isFocused', ( evt, property, is ) => {
 		if ( is ) {
