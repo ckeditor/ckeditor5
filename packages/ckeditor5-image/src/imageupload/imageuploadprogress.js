@@ -17,6 +17,7 @@ import ViewRange from '@ckeditor/ckeditor5-engine/src/view/range';
 
 import '../../theme/imageuploadprogress.css';
 import '../../theme/imageuploadicon.css';
+import '../../theme/imageuploadloader.css';
 
 // Data-uri with blank image that will be set as a img#src while placeholder is displayed.
 const blankImage = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
