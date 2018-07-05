@@ -369,7 +369,7 @@ describe( 'Selection post-fixer', () => {
 					'<table>' +
 						'<tableRow><tableCell>aaa</tableCell><tableCell>bbb</tableCell></tableRow>' +
 					'</table>' +
-					'<paragraph>b]a[r]</paragraph>'
+					'<paragraph>bar]</paragraph>'
 				);
 			} );
 		} );
@@ -746,7 +746,7 @@ describe( 'Selection post-fixer', () => {
 			} );
 
 			it( 'should fix multiple ranges #1', () => {
-				// []<paragraph></paragraph>[]<table>...
+				// []<paragraph>foo</paragraph>[]<table>...
 				model.change( writer => {
 					writer.setSelection(
 						[
@@ -757,7 +757,7 @@ describe( 'Selection post-fixer', () => {
 				} );
 
 				expect( getModelData( model ) ).to.equal(
-					'<paragraph>[]foo[]</paragraph>' +
+					'<paragraph>[foo]</paragraph>' +
 					'<table>' +
 						'<tableRow><tableCell>aaa</tableCell><tableCell>bbb</tableCell></tableRow>' +
 					'</table>' +

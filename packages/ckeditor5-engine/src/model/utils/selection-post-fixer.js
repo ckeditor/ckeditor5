@@ -94,9 +94,18 @@ function selectionPostFixer( writer, model ) {
 	if ( wasFixed ) {
 		// The above algorithm might create ranges that intersects each other when selection contains more then one range.
 		// This is case happens mostly on Firefox which creates multiple ranges for selected table.
-		const combinedRanges = combineOverlappingRanges( ranges );
+		let fixedRanges = ranges;
 
-		writer.setSelection( combinedRanges, { backward: selection.isBackward } );
+		// Fixing selection with many ranges usually breaks the selection in Firefox. As only Firefox supports multiple selection ranges
+		// we simply create one continuous range from fixed selection ranges (even if they are not adjacent).
+		if ( ranges.length > 1 ) {
+			const selectionStart = ranges[ 0 ].start;
+			const selectionEnd = ranges[ ranges.length - 1 ].end;
+
+			fixedRanges = [ new Range( selectionStart, selectionEnd ) ];
+		}
+
+		writer.setSelection( fixedRanges, { backward: selection.isBackward } );
 	}
 }
 
@@ -218,45 +227,6 @@ function expandSelectionOnIsLimitNode( position, schema, expandToDirection ) {
 
 	// Depending on direction of expanding selection return position before or after found node.
 	return expandToDirection === 'start' ? Position.createBefore( node ) : Position.createAfter( node );
-}
-
-// Returns minimal set of continuous ranges.
-//
-// @param {Array.<module:engine/model/range~Range>} ranges
-// @returns {Array.<module:engine/model/range~Range>}
-function combineOverlappingRanges( ranges ) {
-	const combinedRanges = [];
-
-	// Seed the state.
-	let previousRange = ranges[ 0 ];
-	combinedRanges.push( previousRange );
-
-	// Go through each ranges and check if it can be merged with previous one.
-	for ( const range of ranges ) {
-		// Do not push same ranges (ie might be created in a table).
-		if ( range.isEqual( previousRange ) ) {
-			continue;
-		}
-
-		// Merge intersecting range into previous one.
-		if ( range.isIntersecting( previousRange ) ) {
-			const newStart = previousRange.start.isBefore( range.start ) ? previousRange.start : range.start;
-			const newEnd = range.end.isAfter( previousRange.end ) ? range.end : previousRange.end;
-			const combinedRange = new Range( newStart, newEnd );
-
-			// Replace previous range with the combined one.
-			combinedRanges.splice( combinedRanges.indexOf( previousRange ), 1, combinedRange );
-
-			previousRange = combinedRange;
-
-			continue;
-		}
-
-		previousRange = range;
-		combinedRanges.push( range );
-	}
-
-	return combinedRanges;
 }
 
 // Checks whether both range ends are placed around non-limit elements.
