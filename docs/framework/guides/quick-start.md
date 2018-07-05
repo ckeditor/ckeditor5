@@ -29,7 +29,7 @@ npm install --save \
 	postcss-loader \
 	raw-loader \
 	style-loader \
-	webpack@^4.15.0
+	webpack@^4.15.0 \
 	webpack-cli@^3.0.8
 ```
 
@@ -141,7 +141,7 @@ ClassicEditor
 You can now run webpack to build the application. To do that, call the `webpack` executable:
 
 ```bash
-./node_modules/.bin/webpack
+./node_modules/.bin/webpack --mode development
 ```
 
 <info-box>
@@ -151,7 +151,7 @@ You can now run webpack to build the application. To do that, call the `webpack`
 
 	```js
 	"scripts": {
-		"build": "webpack"
+		"build": "webpack --mode development"
 	}
 	```
 
@@ -164,21 +164,25 @@ You can now run webpack to build the application. To do that, call the `webpack`
 	npm adds `./node_modules/.bin/` to the `PATH` automatically, so in this case you do not need to install `webpack-cli` globally.
 </info-box>
 
+<info-box>
+	Use `--mode production` if you want to build the minified and optimized application.
+</info-box>
+
 If everything worked correctly, you should see:
 
-// TODO below
 ```
-p@m /workspace/quick-start> ./node_modules/.bin/webpack
-Hash: 3973724171776d324f0c
-Version: webpack 3.6.0
-Time: 3322ms
-        Asset     Size  Chunks                    Chunk Names
-    bundle.js  1.93 MB       0  [emitted]  [big]  main
-bundle.js.map   2.2 MB       0  [emitted]         main
- [143] (webpack)/buildin/harmony-module.js 596 bytes {0} [built]
- [249] ./app.js 546 bytes {0} [built]
- [269] (webpack)/buildin/global.js 509 bytes {0} [built]
-    + 456 hidden modules
+p@m /workspace/quick-start> ./node_modules/.bin/webpack --mode development
+Hash: c96beab038124d61568f
+Version: webpack 4.15.1
+Time: 3023ms
+Built at: 2018-07-05 17:37:38
+        Asset      Size  Chunks             Chunk Names
+    bundle.js  2.45 MiB    main  [emitted]  main
+bundle.js.map  2.39 MiB    main  [emitted]  main
+[./app.js] 638 bytes {main} [built]
+[./node_modules/webpack/buildin/global.js] (webpack)/buildin/global.js 489 bytes {main} [built]
+[./node_modules/webpack/buildin/harmony-module.js] (webpack)/buildin/harmony-module.js 573 bytes {main} [built]
+    + 491 hidden modules
 ```
 
 Finally, it is time to create an HTML page:

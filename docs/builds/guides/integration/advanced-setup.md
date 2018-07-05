@@ -109,7 +109,7 @@ npm install --save \
 You may also want to install [`uglifyjs-webpack-plugin`](https://github.com/webpack-contrib/uglifyjs-webpack-plugin) if you plan to minify ES6+ code.
 
 <info-box>
-	TODO why do we need to install it? What does webpack provides by default? Example how to load it (or link to the documentation).
+	`uglifyjs-webpack-plugin` is the default webpack minimizer used in the production mode. However, at this moment the version used in webpack is a little bit buggy and we recommend to use at least the 1.2.7 version. See https://github.com/webpack-contrib/uglifyjs-webpack-plugin#usage if you want to integrate that plugin to your build system.
 </info-box>
 
 ### Webpack configuration
@@ -252,7 +252,7 @@ This module will export an editor creator class which has all the plugins and co
 import ClassicEditor from './ckeditor';
 
 ClassicEditor
-	// Note that you do not have to specify the plugin and toolbar configuraiton — using defaults from the build.
+	// Note that you do not have to specify the plugin and toolbar configuration — using defaults from the build.
 	.create( document.querySelector( '#editor' ) )
 	.then( editor => {
 		console.log( 'Editor was initialized', editor );
@@ -343,12 +343,12 @@ Finally, you can build your application. Run webpack on your project and the edi
 One of the most common requirements is to extract CKEditor's CSS to a separate file (by default it is included in the output JavaScript file). To do that, you can use the [`extract-text-webpack-plugin`](https://www.npmjs.com/package/extract-text-webpack-plugin) plugin:
 
 ```bash
-npm install --save extract-text-webpack-plugin // TODO
+npm install --save mini-css-extract-plugin
 
 And add it to your webpack configuration:
 
 ```js
-const ExtractTextPlugin = require( 'extract-text-webpack-plugin' );
+const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
 
 module.exports = {
 	// ...
@@ -356,7 +356,9 @@ module.exports = {
 	plugins: [
 		// ...
 
-		new ExtractTextPlugin( 'styles.css' ) // TODO
+		new MiniCssExtractPlugin( {
+			filename: 'styles.css'
+		} )
 	],
 
 	module: {
