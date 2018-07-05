@@ -23,7 +23,15 @@ const env = {
 	 * @static
 	 * @member {Boolean} module:utils/env~env#isMac
 	 */
-	isMac: isMac( userAgent )
+	isMac: isMac( userAgent ),
+
+	/**
+	 * Indicates that application is running on Edge browser.
+	 *
+	 * @static
+	 * @member {Boolean} module:utils/env~env#isEdge
+	 */
+	isEdge: isEdge( userAgent )
 };
 
 export default env;
@@ -36,4 +44,14 @@ export default env;
  */
 export function isMac( userAgent ) {
 	return userAgent.indexOf( 'macintosh' ) > -1;
+}
+
+/**
+ * Checks if User Agent represented by the string is Edge browser.
+ *
+ * @param {String} userAgent **Lowercase** `navigator.userAgent` string.
+ * @returns {Boolean} Whether User Agent is Edge or not.
+ */
+export function isEdge( userAgent ) {
+	return userAgent.indexOf( 'edge' ) > -1;
 }

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-import env, { isMac } from '../src/env';
+import env, { isEdge, isMac } from '../src/env';
 
 describe( 'Env', () => {
 	beforeEach( () => {
@@ -19,6 +19,12 @@ describe( 'Env', () => {
 		} );
 	} );
 
+	describe( 'isEdge', () => {
+		it( 'is a boolean', () => {
+			expect( env.isEdge ).to.be.a( 'boolean' );
+		} );
+	} );
+
 	describe( 'isMac()', () => {
 		it( 'returns true for macintosh UA strings', () => {
 			expect( isMac( 'macintosh' ) ).to.be.true;
@@ -29,6 +35,19 @@ describe( 'Env', () => {
 			expect( isMac( '' ) ).to.be.false;
 			expect( isMac( 'mac' ) ).to.be.false;
 			expect( isMac( 'foo' ) ).to.be.false;
+		} );
+	} );
+
+	describe( 'isEdge()', () => {
+		it( 'returns true for Edge UA strings', () => {
+			expect( isEdge( 'edge' ) ).to.be.true;
+			expect( isEdge( 'foo edge bar' ) ).to.be.true;
+		} );
+
+		it( 'returns false for non–Edge UA strings', () => {
+			expect( isEdge( '' ) ).to.be.false;
+			expect( isEdge( 'mac' ) ).to.be.false;
+			expect( isEdge( 'foo' ) ).to.be.false;
 		} );
 	} );
 } );
