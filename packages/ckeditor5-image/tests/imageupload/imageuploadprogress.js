@@ -21,7 +21,8 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'ImageUploadProgress', () => {
-	const blankImage = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
+	// eslint-disable-next-line max-len
+	const blankImage = 'data:image/svg+xml;utf8,' + encodeURIComponent( '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 250"><g fill="#FAFAFA" fill-rule="evenodd"><rect width="700" height="250" rx="4"/></g></svg>' );
 
 	// eslint-disable-next-line max-len
 	const base64Sample = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
@@ -75,7 +76,7 @@ describe( 'ImageUploadProgress', () => {
 		expect( getViewData( view ) ).to.equal(
 			'[<figure class="ck-appear ck-image-upload-placeholder ck-infinite-progress ck-widget image" contenteditable="false">' +
 				`<img src="${ blankImage }"></img>` +
-				'<div class="ck-upload-placeholder"></div>' +
+				'<div class="ck-upload-placeholder-loader"></div>' +
 			'</figure>]<p>foo</p>'
 		);
 	} );
@@ -134,7 +135,7 @@ describe( 'ImageUploadProgress', () => {
 		expect( getViewData( view ) ).to.equal(
 			'[<figure class="ck-appear ck-image-upload-placeholder ck-infinite-progress ck-widget image" contenteditable="false">' +
 				`<img src="${ blankImage }"></img>` +
-				'<div class="ck-upload-placeholder"></div>' +
+				'<div class="ck-upload-placeholder-loader"></div>' +
 			'</figure>]'
 		);
 	} );
@@ -238,7 +239,7 @@ describe( 'ImageUploadProgress', () => {
 		expect( getViewData( view ) ).to.equal(
 			'[<figure class="ck-appear ck-image-upload-placeholder ck-infinite-progress ck-widget image" contenteditable="false">' +
 				`<img src="${ blankImage }"></img>` +
-				'<div class="ck-upload-placeholder"></div>' +
+				'<div class="ck-upload-placeholder-loader"></div>' +
 			'</figure>]'
 		);
 
@@ -251,31 +252,5 @@ describe( 'ImageUploadProgress', () => {
 				`<img src="${ blankImage }"></img>` +
 			'</figure>]'
 		);
-	} );
-
-	it( 'should render custom markup of upload progress element', () => {
-		const element = document.createElement( 'div' );
-		document.body.appendChild( element );
-
-		return ClassicTestEditor.create( element, {
-			plugins: [ ImageEditing, Paragraph, ImageUploadEditing, ImageUploadProgress, UploadAdapterPluginMock ]
-		} ).then( editor => {
-			fileRepository = editor.plugins.get( FileRepository );
-			fileRepository.createUploadAdapter = newLoader => {
-				loader = newLoader;
-				adapterMock = new UploadAdapterMock( loader );
-
-				return adapterMock;
-			};
-
-			setModelData( editor.model, '<paragraph>[]foo</paragraph>' );
-			editor.execute( 'imageUpload', { file: createNativeFileMock() } );
-
-			expect( editor.ui.view.editableElement.querySelector( '.ck-upload-placeholder' ).innerHTML )
-				.to.equal( '<div class="ck-upload-placeholder_loader"></div>' );
-
-			element.remove();
-			return editor.destroy();
-		} );
 	} );
 } );
