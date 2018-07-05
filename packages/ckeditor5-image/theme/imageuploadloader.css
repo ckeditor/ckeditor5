@@ -7,29 +7,20 @@
 	--ck-upload-placeholder-loader-size: 24px;
 }
 
-/* Hide image when image upload is in progress. */
-.ck .ck-image-upload-placeholder img {
-	display: none;
-}
-
-.ck .ck-upload-placeholder {
+.ck .ck-upload-placeholder-loader {
+	position: absolute;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	height: 250px;
 	width: 100%;
-	
-	& .ck-upload-placeholder_loader {
-		display: block;
+	height: 100%;
+	top: 0;
+	left: 0;
+
+	&::before {
+		content: '';
 		position: relative;
 		width: var(--ck-upload-placeholder-loader-size);
 		height: var(--ck-upload-placeholder-loader-size);
-
-		&::before {
-			content: '';
-			position: absolute;
-			width: inherit;
-			height: inherit;
-		}
 	}
 }
