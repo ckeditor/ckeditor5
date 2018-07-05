@@ -11,6 +11,7 @@
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import FileRepository from '@ckeditor/ckeditor5-upload/src/filerepository';
+import uploadingPlaceholder from '../../theme/icons/image_placeholder.svg';
 import UIElement from '@ckeditor/ckeditor5-engine/src/view/uielement';
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import ViewRange from '@ckeditor/ckeditor5-engine/src/view/range';
@@ -19,8 +20,6 @@ import '../../theme/imageuploadprogress.css';
 import '../../theme/imageuploadicon.css';
 import '../../theme/imageuploadloader.css';
 
-// Data-uri with blank svg file that will be set as a img#src while placeholder is displayed with same width & height proportions.
-const blankImage = 'data:image/svg+xml;utf8,' + encodeURIComponent( '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 250"><g fill="#FAFAFA" fill-rule="evenodd"><rect width="700" height="250" rx="4"/></g></svg>' );
 /**
  * The image upload progress plugin.
  * It shows a placeholder when the image is read from the disk and a progress bar while the image is uploading.
@@ -28,6 +27,21 @@ const blankImage = 'data:image/svg+xml;utf8,' + encodeURIComponent( '<svg xmlns=
  * @extends module:core/plugin~Plugin
  */
 export default class ImageUploadProgress extends Plugin {
+	/**
+	 * @inheritDoc
+	 */
+	constructor( editor ) {
+		super( editor );
+
+		/**
+		 * The image placeholder that is displayed before real image data can be accessed.
+		 *
+		 * @protected
+		 * @member {String} #placeholder
+		 */
+		this.placeholder = 'data:image/svg+xml;utf8,' + encodeURIComponent( uploadingPlaceholder );
+	}
+
 	/**
 	 * @inheritDoc
 	 */
@@ -57,6 +71,7 @@ export default class ImageUploadProgress extends Plugin {
 
 		const fileRepository = editor.plugins.get( FileRepository );
 		const status = uploadId ? data.attributeNewValue : null;
+		const placeholder = this.placeholder;
 		const viewFigure = editor.editing.mapper.toViewElement( modelImage );
 		const viewWriter = conversionApi.writer;
 
@@ -64,7 +79,7 @@ export default class ImageUploadProgress extends Plugin {
 			// Start "appearing" effect and show placeholder with infinite progress bar on the top
 			// while image is read from disk.
 			_startAppearEffect( viewFigure, viewWriter );
-			_showPlaceholder( viewFigure, viewWriter );
+			_showPlaceholder( placeholder, viewFigure, viewWriter );
 
 			return;
 		}
@@ -80,7 +95,7 @@ export default class ImageUploadProgress extends Plugin {
 				// There is no loader associated with uploadId - this means that image came from external changes.
 				// In such cases we still want to show the placeholder until image is fully uploaded.
 				// Show placeholder if needed - see https://github.com/ckeditor/ckeditor5-image/issues/191.
-				_showPlaceholder( viewFigure, viewWriter );
+				_showPlaceholder( placeholder, viewFigure, viewWriter );
 			} else {
 				// Hide placeholder and initialize progress bar showing upload progress.
 				_hidePlaceholder( viewFigure, viewWriter );
@@ -127,9 +142,10 @@ function _stopAppearEffect( viewFigure, writer ) {
 
 // Shows placeholder together with infinite progress bar on given image figure.
 //
+// @param {String} Data-uri with a svg placeholder.
 // @param {module:engine/view/containerelement~ContainerElement} viewFigure
 // @param {module:engine/view/writer~Writer} writer
-function _showPlaceholder( viewFigure, writer ) {
+function _showPlaceholder( placeholder, viewFigure, writer ) {
 	if ( !viewFigure.hasClass( 'ck-image-upload-placeholder' ) ) {
 		writer.addClass( 'ck-image-upload-placeholder', viewFigure );
 	}
@@ -140,8 +156,8 @@ function _showPlaceholder( viewFigure, writer ) {
 
 	const viewImg = viewFigure.getChild( 0 );
 
-	if ( viewImg.getAttribute( 'src' ) !== blankImage ) {
-		writer.setAttribute( 'src', blankImage, viewImg );
+	if ( viewImg.getAttribute( 'src' ) !== placeholder ) {
+		writer.setAttribute( 'src', placeholder, viewImg );
 	}
 
 	if ( !_getUIElement( viewFigure, placeholderSymbol ) ) {

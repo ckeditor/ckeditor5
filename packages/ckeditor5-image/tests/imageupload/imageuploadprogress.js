@@ -19,10 +19,10 @@ import { UploadAdapterMock, createNativeFileMock, NativeFileReaderMock } from '@
 import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import svgPlaceholder from '../../theme/icons/image_placeholder.svg';
 
 describe( 'ImageUploadProgress', () => {
-	// eslint-disable-next-line max-len
-	const blankImage = 'data:image/svg+xml;utf8,' + encodeURIComponent( '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 250"><g fill="#FAFAFA" fill-rule="evenodd"><rect width="700" height="250" rx="4"/></g></svg>' );
+	const imagePlaceholder = encodeURIComponent( svgPlaceholder );
 
 	// eslint-disable-next-line max-len
 	const base64Sample = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
@@ -75,7 +75,7 @@ describe( 'ImageUploadProgress', () => {
 
 		expect( getViewData( view ) ).to.equal(
 			'[<figure class="ck-appear ck-image-upload-placeholder ck-infinite-progress ck-widget image" contenteditable="false">' +
-				`<img src="${ blankImage }"></img>` +
+				`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
 				'<div class="ck-upload-placeholder-loader"></div>' +
 			'</figure>]<p>foo</p>'
 		);
@@ -134,7 +134,7 @@ describe( 'ImageUploadProgress', () => {
 
 		expect( getViewData( view ) ).to.equal(
 			'[<figure class="ck-appear ck-image-upload-placeholder ck-infinite-progress ck-widget image" contenteditable="false">' +
-				`<img src="${ blankImage }"></img>` +
+				`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
 				'<div class="ck-upload-placeholder-loader"></div>' +
 			'</figure>]'
 		);
@@ -157,7 +157,7 @@ describe( 'ImageUploadProgress', () => {
 
 		expect( getViewData( view ) ).to.equal(
 			'[<figure class="ck-widget image" contenteditable="false">' +
-				`<img src="${ blankImage }"></img>` +
+				`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
 			'</figure>]'
 		);
 	} );
@@ -214,6 +214,21 @@ describe( 'ImageUploadProgress', () => {
 		nativeReaderMock.mockSuccess( base64Sample );
 	} );
 
+	it( 'should allow to customize placeholder image', () => {
+		const uploadProgress = editor.plugins.get( ImageUploadProgress );
+		uploadProgress.placeholder = base64Sample;
+
+		setModelData( model, '<paragraph>[]foo</paragraph>' );
+		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
+
+		expect( getViewData( view ) ).to.equal(
+			'[<figure class="ck-appear ck-image-upload-placeholder ck-infinite-progress ck-widget image" contenteditable="false">' +
+				`<img src="${ base64Sample }"></img>` +
+				'<div class="ck-upload-placeholder-loader"></div>' +
+			'</figure>]<p>foo</p>'
+		);
+	} );
+
 	it( 'should not process attribute change if it is already consumed', () => {
 		editor.editing.downcastDispatcher.on( 'attribute:uploadStatus:image', ( evt, data, conversionApi ) => {
 			conversionApi.consumable.consume( data.item, evt.name );
@@ -238,7 +253,7 @@ describe( 'ImageUploadProgress', () => {
 
 		expect( getViewData( view ) ).to.equal(
 			'[<figure class="ck-appear ck-image-upload-placeholder ck-infinite-progress ck-widget image" contenteditable="false">' +
-				`<img src="${ blankImage }"></img>` +
+				`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
 				'<div class="ck-upload-placeholder-loader"></div>' +
 			'</figure>]'
 		);
@@ -249,7 +264,7 @@ describe( 'ImageUploadProgress', () => {
 
 		expect( getViewData( view ) ).to.equal(
 			'[<figure class="ck-widget image" contenteditable="false">' +
-				`<img src="${ blankImage }"></img>` +
+				`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
 			'</figure>]'
 		);
 	} );
