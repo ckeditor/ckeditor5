@@ -58,13 +58,14 @@ export default class ShiftEnter extends Plugin {
 		editor.commands.add( 'shiftEnter', new ShiftEnterCommand( editor ) );
 
 		this.listenTo( viewDocument, 'enter', ( evt, data ) => {
+			data.preventDefault();
+
 			// The hard enter key is handled by the Enter plugin.
 			if ( !data.isSoft ) {
 				return;
 			}
 
 			editor.execute( 'shiftEnter' );
-			data.preventDefault();
 			view.scrollToTheSelection();
 		}, { priority: 'low' } );
 	}

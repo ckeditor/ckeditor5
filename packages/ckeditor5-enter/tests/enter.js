@@ -53,7 +53,7 @@ describe( 'Enter feature', () => {
 		viewDocument.fire( 'enter', new DomEventData( viewDocument, domEvt ) );
 
 		sinon.assert.calledOnce( scrollSpy );
-		sinon.assert.callOrder( executeSpy, scrollSpy );
+		sinon.assert.callOrder( domEvt.preventDefault, executeSpy, scrollSpy );
 	} );
 
 	it( 'does not execute the command if soft enter should be used', () => {
@@ -63,6 +63,14 @@ describe( 'Enter feature', () => {
 		viewDocument.fire( 'enter', new DomEventData( viewDocument, domEvt, { isSoft: true } ) );
 
 		sinon.assert.notCalled( commandExecuteSpy );
+	} );
+
+	it( 'prevents default event action even if the command should not be executed', () => {
+		const domEvt = getDomEvent();
+
+		viewDocument.fire( 'enter', new DomEventData( viewDocument, domEvt, { isSoft: true } ) );
+
+		sinon.assert.calledOnce( domEvt.preventDefault );
 	} );
 
 	function getDomEvent() {
