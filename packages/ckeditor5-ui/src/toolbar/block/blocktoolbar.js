@@ -14,7 +14,6 @@ import BlockButtonView from './blockbuttonview';
 import BalloonPanelView from '../../panel/balloon/balloonpanelview';
 import ToolbarView from '../toolbarview';
 
-import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobserver';
 import clickOutsideHandler from '../../bindings/clickoutsidehandler';
 
 import { getOptimalPosition } from '@ckeditor/ckeditor5-utils/src/dom/position';
@@ -66,10 +65,8 @@ export default class BlockToolbar extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	init() {
-		const editor = this.editor;
-
-		editor.editing.view.addObserver( ClickObserver );
+	constructor( editor ) {
+		super( editor );
 
 		/**
 		 * The toolbar view.
@@ -99,18 +96,39 @@ export default class BlockToolbar extends Plugin {
 			activator: () => this.panelView.isVisible,
 			callback: () => this._hidePanel()
 		} );
+	}
 
-		// Try to hide button when the editor switches to the read-only mode.
-		// Do not hide when panel if already visible to avoid a confusing UX when the panel
-		// unexpectedly disappears.
-		this.listenTo( editor, 'change:isReadOnly', () => {
-			if ( !this.panelView.isVisible ) {
-				this.buttonView.isVisible = false;
+	/**
+	 * @inheritDoc
+	 */
+	init() {
+		const editor = this.editor;
+
+		// Hides panel on a direct selection change.
+		this.listenTo( editor.model.document.selection, 'change:range', ( evt, data ) => {
+			if ( data.directChange ) {
+				this._hidePanel();
 			}
 		} );
 
-		// Enable as default.
-		this._initListeners();
+		this.listenTo( editor.ui, 'update', () => this._updateButton() );
+		// `low` priority is used because of https://github.com/ckeditor/ckeditor5-core/issues/133.
+		this.listenTo( editor, 'change:isReadOnly', () => this._updateButton(), { priority: 'low' } );
+		this.listenTo( editor.ui.focusTracker, 'change:isFocused', () => this._updateButton() );
+
+		// Reposition button on resize.
+		this.listenTo( this.buttonView, 'change:isVisible', ( evt, name, isVisible ) => {
+			if ( isVisible ) {
+				// Keep correct position of button and panel on window#resize.
+				this.buttonView.listenTo( window, 'resize', () => this._updateButton() );
+			} else {
+				// Stop repositioning button when is hidden.
+				this.buttonView.stopListening( window, 'resize' );
+
+				// Hide the panel when the button disappears.
+				this._hidePanel();
+			}
+		} );
 	}
 
 	/**
@@ -143,10 +161,15 @@ export default class BlockToolbar extends Plugin {
 
 		toolbarView.extendTemplate( {
 			attributes: {
-				class: [
-					// https://github.com/ckeditor/ckeditor5-editor-inline/issues/11
-					'ck-toolbar_floating'
-				]
+				// https://github.com/ckeditor/ckeditor5-editor-inline/issues/11
+				class: [ 'ck-toolbar_floating' ]
+			}
+		} );
+
+		// When toolbar lost focus then panel should hide.
+		toolbarView.focusTracker.on( 'change:isFocused', ( evt, name, is ) => {
+			if ( !is ) {
+				this._hidePanel();
 			}
 		} );
 
@@ -213,93 +236,62 @@ export default class BlockToolbar extends Plugin {
 	}
 
 	/**
-	 * Starts displaying the button next to allowed elements.
+	 * Shows or hides the button.
+	 * When the all conditions for displaying button are matched then shows the button. Hides otherwise.
 	 *
 	 * @private
 	 */
-	_initListeners() {
+	_updateButton() {
 		const editor = this.editor;
 		const model = editor.model;
 		const view = editor.editing.view;
-		let modelTarget, domTarget;
 
-		// Hides panel on a direct selection change.
-		this.listenTo( editor.model.document.selection, 'change:range', ( evt, data ) => {
-			if ( data.directChange ) {
-				this._hidePanel();
-			}
-		} );
+		// Hides the button when the editor is not focused.
+		if ( !editor.ui.focusTracker.isFocused ) {
+			this._hideButton();
 
-		this.listenTo( view, 'render', () => {
-			// Get first selected block, button will be attached to this element.
-			modelTarget = Array.from( model.document.selection.getSelectedBlocks() )[ 0 ];
+			return;
+		}
 
-			// Do not attach block button when there is no enabled item in toolbar for current block element.
-			if ( !modelTarget || Array.from( this.toolbarView.items ).every( item => !item.isEnabled ) ) {
-				this.buttonView.isVisible = false;
+		// Hides the button when the editor switches to the read-only mode.
+		if ( editor.isReadOnly ) {
+			this._hideButton();
 
-				return;
-			}
+			return;
+		}
 
-			// Get DOM target element.
-			domTarget = view.domConverter.mapViewToDom( editor.editing.mapper.toViewElement( modelTarget ) );
+		// Get the first selected block, button will be attached to this element.
+		const modelTarget = Array.from( model.document.selection.getSelectedBlocks() )[ 0 ];
 
-			// Show block button.
-			this.buttonView.isVisible = true;
+		// Hides the button when there is no enabled item in toolbar for the current block element.
+		if ( !modelTarget || Array.from( this.toolbarView.items ).every( item => !item.isEnabled ) ) {
+			this._hideButton();
 
-			// Attach block button to target DOM element.
-			this._attachButtonToElement( domTarget );
+			return;
+		}
 
-			// When panel is opened then refresh it position to be properly aligned with block button.
-			if ( this.panelView.isVisible ) {
-				this._showPanel();
-			}
-		}, { priority: 'low' } );
+		// Get DOM target element.
+		const domTarget = view.domConverter.mapViewToDom( editor.editing.mapper.toViewElement( modelTarget ) );
 
-		this.listenTo( this.buttonView, 'change:isVisible', ( evt, name, isVisible ) => {
-			if ( isVisible ) {
-				// Keep correct position of button and panel on window#resize.
-				this.buttonView.listenTo( window, 'resize', () => this._attachButtonToElement( domTarget ) );
-			} else {
-				// Stop repositioning button when is hidden.
-				this.buttonView.stopListening( window, 'resize' );
+		// Show block button.
+		this.buttonView.isVisible = true;
 
-				// Hide the panel when the button disappears.
-				this._hidePanel();
-			}
-		} );
+		// Attach block button to target DOM element.
+		this._attachButtonToElement( domTarget );
+
+		// When panel is opened then refresh it position to be properly aligned with block button.
+		if ( this.panelView.isVisible ) {
+			this._showPanel();
+		}
 	}
 
 	/**
-	 * Attaches the {@link #buttonView} to the target block of content.
+	 * Hides the button.
 	 *
-	 * @protected
-	 * @param {HTMLElement} targetElement Target element.
+	 * @private
 	 */
-	_attachButtonToElement( targetElement ) {
-		const contentStyles = window.getComputedStyle( targetElement );
-
-		const editableRect = new Rect( this.editor.ui.view.editableElement );
-		const contentPaddingTop = parseInt( contentStyles.paddingTop, 10 );
-		// When line height is not an integer then thread it as "normal".
-		// MDN says that 'normal' == ~1.2 on desktop browsers.
-		const contentLineHeight = parseInt( contentStyles.lineHeight, 10 ) || parseInt( contentStyles.fontSize, 10 ) * 1.2;
-
-		const position = getOptimalPosition( {
-			element: this.buttonView.element,
-			target: targetElement,
-			positions: [
-				( contentRect, buttonRect ) => {
-					return {
-						top: contentRect.top + contentPaddingTop + ( ( contentLineHeight - buttonRect.height ) / 2 ),
-						left: editableRect.left - buttonRect.width
-					};
-				}
-			]
-		} );
-
-		this.buttonView.top = position.top;
-		this.buttonView.left = position.left;
+	_hideButton() {
+		this.buttonView.isVisible = false;
 	}
 
 	/**
@@ -333,6 +325,38 @@ export default class BlockToolbar extends Plugin {
 		if ( focusEditable ) {
 			this.editor.editing.view.focus();
 		}
+	}
+
+	/**
+	 * Attaches the {@link #buttonView} to the target block of content.
+	 *
+	 * @protected
+	 * @param {HTMLElement} targetElement Target element.
+	 */
+	_attachButtonToElement( targetElement ) {
+		const contentStyles = window.getComputedStyle( targetElement );
+
+		const editableRect = new Rect( this.editor.ui.view.editableElement );
+		const contentPaddingTop = parseInt( contentStyles.paddingTop, 10 );
+		// When line height is not an integer then thread it as "normal".
+		// MDN says that 'normal' == ~1.2 on desktop browsers.
+		const contentLineHeight = parseInt( contentStyles.lineHeight, 10 ) || parseInt( contentStyles.fontSize, 10 ) * 1.2;
+
+		const position = getOptimalPosition( {
+			element: this.buttonView.element,
+			target: targetElement,
+			positions: [
+				( contentRect, buttonRect ) => {
+					return {
+						top: contentRect.top + contentPaddingTop + ( ( contentLineHeight - buttonRect.height ) / 2 ),
+						left: editableRect.left - buttonRect.width
+					};
+				}
+			]
+		} );
+
+		this.buttonView.top = position.top;
+		this.buttonView.left = position.left;
 	}
 }
 

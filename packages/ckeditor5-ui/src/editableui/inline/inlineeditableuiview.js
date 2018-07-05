@@ -21,7 +21,7 @@ export default class InlineEditableUIView extends EditableUIView {
 	 * @param {module:utils/locale~Locale} [locale] The locale instance.
 	 * @param {HTMLElement} [editableElement] The editable element. If not specified, the
 	 * {@link module:ui/editableui/editableuiview~EditableUIView}
-	 * should create it. Otherwise, the existing element should be used.
+	 * will create it. Otherwise, the existing element will be used.
 	 */
 	constructor( locale, editableElement ) {
 		super( locale, editableElement );

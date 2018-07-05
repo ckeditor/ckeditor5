@@ -11,6 +11,7 @@ import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ContextualBalloon from '../../panel/balloon/contextualballoon';
 import ToolbarView from '../toolbarview';
 import BalloonPanelView from '../../panel/balloon/balloonpanelview.js';
+import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import debounce from '@ckeditor/ckeditor5-utils/src/lib/lodash/debounce';
 import Rect from '@ckeditor/ckeditor5-utils/src/dom/rect';
 import normalizeToolbarConfig from '../normalizetoolbarconfig';
@@ -40,31 +41,32 @@ export default class BalloonToolbar extends Plugin {
 	/**
 	 * @inheritDoc
 	 */
-	init() {
-		const editor = this.editor;
+	constructor( editor ) {
+		super( editor );
 
 		/**
 		 * The toolbar view displayed in the balloon.
 		 *
-		 * @member {module:ui/toolbar/toolbarview~ToolbarView}
+		 * @type {module:ui/toolbar/toolbarview~ToolbarView}
 		 */
-		this.toolbarView = new ToolbarView( editor.locale );
+		this.toolbarView = this._createToolbarView();
 
-		this.toolbarView.extendTemplate( {
-			attributes: {
-				class: [
-					'ck-toolbar_floating'
-				]
-			}
-		} );
-
-		this.toolbarView.render();
+		/**
+		 * Tracks the focus of the {@link module:ui/editableui/editableuiview~EditableUIView#editableElement}
+		 * and the {@link #toolbarView}. When both are blurred then the toolbar should hide.
+		 *
+		 * @readonly
+		 * @type {module:utils:focustracker~FocusTracker}
+		 */
+		this.focusTracker = new FocusTracker();
+		this.focusTracker.add( editor.ui.view.editableElement );
+		this.focusTracker.add( this.toolbarView.element );
 
 		/**
 		 * The contextual balloon plugin instance.
 		 *
 		 * @private
-		 * @member {module:ui/panel/balloon/contextualballoon~ContextualBalloon}
+		 * @type {module:ui/panel/balloon/contextualballoon~ContextualBalloon}
 		 */
 		this._balloon = editor.plugins.get( ContextualBalloon );
 
@@ -75,17 +77,50 @@ export default class BalloonToolbar extends Plugin {
 		 * trailing debounced invocation on destroy.
 		 *
 		 * @private
-		 * @member {Function}
+		 * @type {Function}
 		 */
 		this._fireSelectionChangeDebounced = debounce( () => this.fire( '_selectionChangeDebounced' ), 200 );
-
-		// Attach lifecycle actions.
-		this._handleSelectionChange();
-		this._handleFocusChange();
 
 		// The appearance of the BalloonToolbar method is event–driven.
 		// It is possible to stop the #show event and this prevent the toolbar from showing up.
 		this.decorate( 'show' );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	init() {
+		const editor = this.editor;
+		const selection = editor.model.document.selection;
+
+		// Show/hide the toolbar on editable focus/blur.
+		this.listenTo( this.focusTracker, 'change:isFocused', ( evt, name, isFocused ) => {
+			const isToolbarVisible = this._balloon.visibleView === this.toolbarView;
+
+			if ( !isFocused && isToolbarVisible ) {
+				this.hide();
+			} else if ( isFocused ) {
+				this.show();
+			}
+		} );
+
+		// Hide the toolbar when the selection is changed by a direct change or has changed to collapsed.
+		this.listenTo( selection, 'change:range', ( evt, data ) => {
+			if ( data.directChange || selection.isCollapsed ) {
+				this.hide();
+			}
+
+			// Fire internal `_selectionChangeDebounced` event to use it for showing
+			// the toolbar after the selection stops changing.
+			this._fireSelectionChangeDebounced();
+		} );
+
+		// Show the toolbar when the selection stops changing.
+		this.listenTo( this, '_selectionChangeDebounced', () => {
+			if ( this.editor.editing.view.document.isFocused ) {
+				this.show();
+			}
+		} );
 	}
 
 	/**
@@ -102,52 +137,23 @@ export default class BalloonToolbar extends Plugin {
 	}
 
 	/**
-	 * Handles the editor focus change and hides the toolbar if it's needed.
+	 * Creates the toolbar view instance.
 	 *
 	 * @private
+	 * @returns {module:ui/toolbar/toolbarview~ToolbarView}
 	 */
-	_handleFocusChange() {
-		const editor = this.editor;
+	_createToolbarView() {
+		const toolbarView = new ToolbarView( this.editor.locale );
 
-		// Hide the panel View when editor loses focus but no the other way around.
-		this.listenTo( editor.ui.focusTracker, 'change:isFocused', ( evt, name, isFocused ) => {
-			if ( this._balloon.visibleView === this.toolbarView && !isFocused ) {
-				this.hide();
+		toolbarView.extendTemplate( {
+			attributes: {
+				class: [ 'ck-toolbar_floating' ]
 			}
 		} );
-	}
 
-	/**
-	 * Handles {@link module:engine/model/document~Document#selection} change and show or hide toolbar.
-	 *
-	 * Note that in this case it's better to listen to {@link module:engine/model/document~Document model document}
-	 * selection instead of {@link module:engine/view/document~Document view document} selection because the first one
-	 * doesn't fire `change` event after text style change (like bold or italic) and toolbar doesn't blink.
-	 *
-	 * @private
-	 */
-	_handleSelectionChange() {
-		const selection = this.editor.model.document.selection;
-		const viewDocument = this.editor.editing.view.document;
+		toolbarView.render();
 
-		this.listenTo( selection, 'change:range', ( evt, data ) => {
-			// When the selection is not changed by a collaboration and when is not collapsed.
-			if ( data.directChange || selection.isCollapsed ) {
-				// Hide the toolbar when the selection starts changing.
-				this.hide();
-			}
-
-			// Fire internal `_selectionChangeDebounced` when the selection stops changing.
-			this._fireSelectionChangeDebounced();
-		} );
-
-		// Hide the toolbar when the selection stops changing.
-		this.listenTo( this, '_selectionChangeDebounced', () => {
-			// This implementation assumes that only non–collapsed selections gets the contextual toolbar.
-			if ( viewDocument.isFocused && !viewDocument.selection.isCollapsed ) {
-				this.show();
-			}
-		} );
+		return toolbarView;
 	}
 
 	/**
@@ -156,8 +162,15 @@ export default class BalloonToolbar extends Plugin {
 	 * Fires {@link #event:show} event which can be stopped to prevent the toolbar from showing up.
 	 */
 	show() {
+		const editor = this.editor;
+
 		// Do not add the toolbar to the balloon stack twice.
 		if ( this._balloon.hasView( this.toolbarView ) ) {
+			return;
+		}
+
+		// Do not show the toolbar when the selection is collapsed.
+		if ( editor.model.document.selection.isCollapsed ) {
 			return;
 		}
 
@@ -167,9 +180,8 @@ export default class BalloonToolbar extends Plugin {
 			return;
 		}
 
-		// Update the toolbar position upon change (e.g. external document changes)
-		// while it's visible.
-		this.listenTo( this.editor.editing.view, 'render', () => {
+		// Update the toolbar position when the editor ui should be refreshed.
+		this.listenTo( this.editor.ui, 'update', () => {
 			this._balloon.updatePosition( this._getBalloonPositionData() );
 		} );
 
@@ -186,7 +198,7 @@ export default class BalloonToolbar extends Plugin {
 	 */
 	hide() {
 		if ( this._balloon.hasView( this.toolbarView ) ) {
-			this.stopListening( this.editor.editing.view, 'render' );
+			this.stopListening( this.editor.ui, 'update' );
 			this._balloon.remove( this.toolbarView );
 		}
 	}
