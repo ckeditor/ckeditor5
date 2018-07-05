@@ -16,6 +16,7 @@ const buildConfig = require( './build-config' );
 
 module.exports = {
 	devtool: 'source-map',
+	performance: { hints: false },
 
 	entry: path.resolve( __dirname, 'src', 'ckeditor.js' ),
 
@@ -29,13 +30,13 @@ module.exports = {
 
 	optimization: {
 		minimizer: [
-			// Use the newest version of UglifyJsWebpackPlugin plugin that fixes `inline` optimization bug.
+			// Use the newest version of UglifyJsWebpackPlugin that fixes the `inline` optimization bug.
 			// See https://github.com/webpack-contrib/uglifyjs-webpack-plugin/issues/264.
 			new UglifyJsWebpackPlugin( {
 				sourceMap: true,
 				uglifyOptions: {
 					output: {
-						// Preserve license comments starting with the exclamation mark (!).
+						// Preserve CKEditor 5 license comments.
 						comments: /^!/
 					}
 				}
