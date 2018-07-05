@@ -14,11 +14,7 @@ The framework is made of several [npm packages](https://npmjs.com). To install i
 * [Node.js](https://nodejs.org/en/) >= 6.0.0
 * npm 4.x (**note:** using npm 5 [is not recommended](https://github.com/npm/npm/issues/16991))
 
-Besides Node.js and npm you also need [webpack@3.x](https://webpack.js.org) with a few additional packages to use the framework. They are needed to bundle the source code. Read more about building CKEditor 5 in the {@link builds/guides/integration/advanced-setup CKEditor 5 Builds Advanced setup} guide.
-
-<info-box warning>
-	Unfortunately, at the moment of writing this note, [webpack@4.x causes issues](https://github.com/ckeditor/ckeditor5-dev/issues/371).
-</info-box>
+Besides Node.js and npm you also need [webpack@4.x](https://webpack.js.org) with a few additional packages to use the framework. They are needed to bundle the source code. Read more about building CKEditor 5 in the {@link builds/guides/integration/advanced-setup CKEditor 5 Builds Advanced setup} guide.
 
 <!-- TODO replace the link above when the Framework will get its own building guide. -->
 
@@ -33,7 +29,8 @@ npm install --save \
 	postcss-loader \
 	raw-loader \
 	style-loader \
-	webpack@^3.11.0
+	webpack@^4.12.2
+	webpack-cli@^3.0.8
 ```
 
 The minimal webpack configuration needed to enable building CKEditor 5 is:
@@ -148,7 +145,7 @@ You can now run webpack to build the application. To do that, call the `webpack`
 ```
 
 <info-box>
-	You can also install webpack globally (using `npm install -g`) and run it via a globally available `webpack`.
+	You can also install `webpack-cli` globally (using `npm install -g`) and run it via a globally available `webpack`.
 
 	Alternatively, you can add it as an [npm script](https://docs.npmjs.com/misc/scripts):
 
@@ -164,7 +161,7 @@ You can now run webpack to build the application. To do that, call the `webpack`
 	npm run build
 	```
 
-	npm adds `./node_modules/.bin/` to the `PATH` automatically, so in this case you do not need to install webpack globally.
+	npm adds `./node_modules/.bin/` to the `PATH` automatically, so in this case you do not need to install `webpack-cli` globally.
 </info-box>
 
 If everything worked correctly, you should see:

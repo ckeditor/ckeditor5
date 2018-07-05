@@ -10,8 +10,8 @@ const fs = require( 'fs' );
 const webpack = require( 'webpack' );
 const { bundler, styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 const CKEditorWebpackPlugin = require( '@ckeditor/ckeditor5-dev-webpack-plugin' );
-const ExtractTextPlugin = require( 'extract-text-webpack-plugin' );
-const BabelMinifyPlugin = require( 'babel-minify-webpack-plugin' );
+const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
+const UglifyJsWebpackPlugin = require( 'uglifyjs-webpack-plugin' );
 
 const webpackProcesses = new Map();
 
@@ -27,7 +27,7 @@ module.exports = function snippetAdapter( data ) {
 		entry: data.snippetSource.js,
 		outputPath,
 		language: snippetConfig.language,
-		minify: data.options.production
+		production: data.options.production
 	} );
 
 	let promise;
@@ -79,26 +79,9 @@ module.exports = function snippetAdapter( data ) {
 };
 
 function getWebpackConfig( config ) {
-	const plugins = [
-		new ExtractTextPlugin( 'snippet.css' ),
-		new CKEditorWebpackPlugin( {
-			language: config.language || 'en'
-		} ),
-		new webpack.BannerPlugin( {
-			banner: bundler.getLicenseBanner(),
-			raw: true
-		} )
-	];
-
-	if ( config.minify ) {
-		plugins.push(
-			new BabelMinifyPlugin( null, {
-				comments: false
-			} )
-		);
-	}
-
 	return {
+		mode: config.production ? 'production' : 'development',
+
 		devtool: 'source-map',
 
 		entry: config.entry,
@@ -108,7 +91,30 @@ function getWebpackConfig( config ) {
 			filename: 'snippet.js'
 		},
 
-		plugins,
+		optimization: {
+			minimizer: [
+				new UglifyJsWebpackPlugin( {
+					sourceMap: true,
+					uglifyOptions: {
+						output: {
+							// Preserve license comments starting with an exclamation mark.
+							comments: /^!/
+						}
+					}
+				} )
+			]
+		},
+
+		plugins: [
+			new MiniCssExtractPlugin( { filename: 'snippet.css' } ),
+			new CKEditorWebpackPlugin( {
+				language: config.language || 'en'
+			} ),
+			new webpack.BannerPlugin( {
+				banner: bundler.getLicenseBanner(),
+				raw: true
+			} )
+		],
 
 		// Configure the paths so building CKEditor 5 snippets work even if the script
 		// is triggered from a directory outside ckeditor5 (e.g. multi-project case).
@@ -128,20 +134,19 @@ function getWebpackConfig( config ) {
 				},
 				{
 					test: /\.css$/,
-					use: ExtractTextPlugin.extract( {
-						fallback: 'style-loader',
-						use: [
-							{
-								loader: 'postcss-loader',
-								options: styles.getPostCssConfig( {
-									themeImporter: {
-										themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
-									},
-									minify: config.minify
-								} )
-							}
-						]
-					} )
+					use: [
+						MiniCssExtractPlugin.loader,
+						'css-loader',
+						{
+							loader: 'postcss-loader',
+							options: styles.getPostCssConfig( {
+								themeImporter: {
+									themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
+								},
+								minify: config.production
+							} )
+						}
+					]
 				}
 			]
 		}
