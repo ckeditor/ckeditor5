@@ -5,7 +5,7 @@
 
 /* globals window, document, console:false */
 
-import BalloonEditor from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import List from '@ckeditor/ckeditor5-list/src/list';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
@@ -19,7 +19,7 @@ import Link from '@ckeditor/ckeditor5-link/src/link';
 import BlockToolbar from '../../../../src/toolbar/block/blocktoolbar';
 import BalloonToolbar from '../../../../src/toolbar/balloon/balloontoolbar';
 
-BalloonEditor
+ClassicEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [
 			Essentials,
