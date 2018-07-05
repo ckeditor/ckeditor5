@@ -3,10 +3,9 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals window, document */
+/* globals window */
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ImageEditing from '../../src/image/imageediting';
