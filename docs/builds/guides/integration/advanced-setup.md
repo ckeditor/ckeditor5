@@ -19,13 +19,9 @@ In order to start developing CKEditor 5 you will require:
 
 ## Bundler
 
-CKEditor 5 is currently built using [webpack](https://webpack.js.org) (>=3.x.x). All builds, examples and demos are generated using this bundler. It should also be possible to build CKEditor using other bundlers (if they are configured properly), such as [Rollup](https://github.com/rollup/rollup) or [Browserify](http://browserify.org/), but these setups are not officially supported yet. Also, the [`@ckeditor/ckeditor5-dev-webpack-plugin`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-webpack-plugin) that allows to localize the editor is only available for webpack. More work on this subject will be done after v1.0.0.
+CKEditor 5 is currently built using [webpack](https://webpack.js.org) (>=4.x.x). All builds, examples and demos are generated using this bundler. It should also be possible to build CKEditor using other bundlers (if they are configured properly), such as [Rollup](https://github.com/rollup/rollup) or [Browserify](http://browserify.org/), but these setups are not officially supported yet. Also, the [`@ckeditor/ckeditor5-dev-webpack-plugin`](https://www.npmjs.com/package/@ckeditor/ckeditor5-dev-webpack-plugin) that allows to localize the editor is only available for webpack. More work on this subject will be done after v1.0.0.
 
 Therefore, **a prerequisite to this guide is that you are using webpack as your build tool**.
-
-<info-box warning>
-	Unfortunately, at the moment of writing this note, [webpack@4.x causes issues](https://github.com/ckeditor/ckeditor5-dev/issues/371) so the recommended version is webpack@3.x.
-</info-box>
 
 ## Scenario 1: Integrating existing builds
 
@@ -106,15 +102,11 @@ npm install --save \
 	postcss-loader \
 	raw-loader \
 	style-loader \
-	webpack@^3.11.0 \
-    webpack-sources@1.0.1
+	webpack@^4.12.2 \
+	webpack-cli@^3.0.8 \
 ```
 
 You may also want to install [`babel-minify-webpack-plugin`](https://github.com/webpack-contrib/babel-minify-webpack-plugin) if you plan to minify ES6+ code.
-
-<info-box warning>
-	Unfortunately, at the moment of writing this note, [webpack@4.x causes issues](https://github.com/ckeditor/ckeditor5-dev/issues/371). Hence, webpack@3.x is used in the scenario above. Additionally, webpack-sources@1.0.1 [is needed due to another issue](https://github.com/ckeditor/ckeditor5/issues/658).
-</info-box>
 
 ### Webpack configuration
 
