@@ -391,11 +391,15 @@ module.exports = {
 
 Webpack will now create a separate file called `styles.css` which you will need to load manually into your HTML (using the `<link rel="stylesheet">` tag).
 
-### Option: Building to ES5 target // TODO does it still makes sense?
+### Option: Building to ES5 target
 
 CKEditor 5 is written in ECMAScript 2015 (also called ES6). All browsers in which CKEditor 5 is {@link builds/guides/support/browser-compatibility currently supported} have sufficient ES6 support to run CKEditor 5. Thanks to that, CKEditor 5 Builds are also published in the original ES6 format.
 
-However, it may happen that your environment requires ES5. For instance, if you use tools like [UglifyJS](https://github.com/mishoo/UglifyJS) which do not support ES6+ yet, you may need to transpile CKEditor 5 source to ES5. This will create ~80% bigger builds but will ensure that your environment can process CKEditor 5 code.
+<info-box>
+Webpack provides minification tool for ES6 code by default, so if you use [UglifyJS](https://github.com/mishoo/UglifyJS) or some other minification tool that works on the ES5 code, please use the default webpack's minimizer [UglifyJsWebpackPlugin](https://github.com/webpack-contrib/uglifyjs-webpack-plugin). It's used in the webpack's `production` mode.
+</info-box>
+
+However, it may happen that some other tool in your environment requires ES5 and you may need to transpile CKEditor 5 source to ES5. This will create ~80% bigger builds but will ensure that your environment can process CKEditor 5 code.
 
 In order to create an ES5 build of CKEditor 5 you can use [Babel](https://babeljs.io/):
 
