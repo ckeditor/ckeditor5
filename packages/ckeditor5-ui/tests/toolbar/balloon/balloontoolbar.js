@@ -4,7 +4,6 @@
  */
 
 import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictesteditor';
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import BalloonToolbar from '../../../src/toolbar/balloon/balloontoolbar';
 import ContextualBalloon from '../../../src/panel/balloon/contextualballoon';
 import BalloonPanelView from '../../../src/panel/balloon/balloonpanelview';
@@ -137,16 +136,6 @@ describe( 'BalloonToolbar', () => {
 				}, 110 );
 			}, 101 );
 		}, 100 );
-	} );
-
-	// See https://github.com/ckeditor/ckeditor5-ui/issues/424.
-	it( 'should work with the ClassicEditor', () => {
-		const editor = new ClassicEditor( editorElement, {
-			plugins: [ BalloonToolbar ]
-		} );
-
-		// Test will fail because of rejected promise.
-		return editor.initPlugins();
 	} );
 
 	describe( 'pluginName', () => {

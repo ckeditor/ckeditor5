@@ -59,6 +59,7 @@ export default class BalloonToolbar extends Plugin {
 		 * @type {module:utils:focustracker~FocusTracker}
 		 */
 		this.focusTracker = new FocusTracker();
+
 		// Wait for the EditorUI#init. EditableElement is not available before.
 		editor.once( 'uiReady', () => {
 			this.focusTracker.add( editor.ui.view.editableElement );
