@@ -37,8 +37,6 @@ export default class ClassicTestEditor extends Editor {
 
 		// Expose properties normally exposed by the ClassicEditorUI.
 		this.ui.view.editable = new InlineEditableUIView( this.ui.view.locale );
-		this.ui.view.main.add( this.ui.view.editable );
-		this.ui.view.editableElement = this.ui.view.editable.element;
 
 		// A helper to easily replace the editor#element with editor.editable#element.
 		this._elementReplacer = new ElementReplacer();
@@ -66,7 +64,15 @@ export default class ClassicTestEditor extends Editor {
 
 			resolve(
 				editor.initPlugins()
-					.then( () => editor.ui.view.render() )
+					// Simulate EditorUI.init() (e.g. like in ClassicEditorUI). The ui#view
+					// should be rendered after plugins are initialized.
+					.then( () => {
+						const view = editor.ui.view;
+
+						view.render();
+						view.main.add( view.editable );
+						view.editableElement = view.editable.element;
+					} )
 					.then( () => {
 						editor._elementReplacer.replace( element, editor.ui.view.element );
 						editor.fire( 'uiReady' );

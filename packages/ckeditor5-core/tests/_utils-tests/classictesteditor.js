@@ -44,13 +44,20 @@ describe( 'ClassicTestEditor', () => {
 			expect( editor.data.processor ).to.be.instanceof( HtmlDataProcessor );
 		} );
 
-		it( 'creates editable DOM', () => {
+		it( 'creates the instance of the editable (without rendering)', () => {
 			const editor = new ClassicTestEditor( editorElement );
 
 			expect( editor.ui.view.editable ).to.be.instanceOf( InlineEditableUIView );
+			expect( editor.ui.view.editable.isRendered ).to.be.false;
+		} );
 
-			expect( editor.ui.view.editableElement.tagName ).to.equal( 'DIV' );
-			expect( editor.ui.view.editableElement ).to.equal( editor.ui.view.editable.element );
+		it( 'creates the #ui and ui#view (without rendering)', () => {
+			const editor = new ClassicTestEditor( editorElement );
+
+			expect( editor.ui ).to.be.instanceOf( EditorUI );
+			expect( editor.ui.view ).to.be.instanceOf( BoxedEditorUIView );
+			expect( editor.ui.view.isRendered ).to.be.false;
+			expect( editor.ui.view.editableElement ).to.be.undefined;
 		} );
 
 		it( 'creates main root element', () => {
@@ -79,11 +86,14 @@ describe( 'ClassicTestEditor', () => {
 				} );
 		} );
 
-		it( 'creates and initializes the UI', () => {
+		it( 'renders the view including #editable and sets #editableElement', () => {
 			return ClassicTestEditor.create( editorElement, { foo: 1 } )
 				.then( editor => {
-					expect( editor.ui ).to.be.instanceOf( EditorUI );
-					expect( editor.ui.view ).to.be.instanceOf( BoxedEditorUIView );
+					const view = editor.ui.view;
+
+					expect( view.isRendered ).to.be.true;
+					expect( view.editableElement.tagName ).to.equal( 'DIV' );
+					expect( view.editableElement ).to.equal( view.editable.element );
 				} );
 		} );
 
