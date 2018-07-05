@@ -14,5 +14,13 @@
  * @returns {Boolean}
  */
 export default function isWindow( obj ) {
-	return Object.prototype.toString.apply( obj ) == '[object Window]';
+	const stringifiedObject = Object.prototype.toString.apply( obj );
+
+	return (
+		// Returns `true` for the `window` object in browser environments.
+		stringifiedObject == '[object Window]' ||
+
+		// Returns `true` for the `window` object in the Electron environment.
+		stringifiedObject == '[object global]'
+	);
 }
