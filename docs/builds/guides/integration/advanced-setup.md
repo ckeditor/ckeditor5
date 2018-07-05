@@ -14,7 +14,7 @@ In this guide, we would like to show you ways to closer integrate CKEditor with 
 In order to start developing CKEditor 5 you will require:
 
 * [Node.js](https://nodejs.org/en/) >= 6.0.0
-* npm 4.x (**note:** using npm 5 [causes](https://github.com/lerna/lerna/issues/938) some [problems](https://github.com/npm/npm/issues/16991))
+* npm 4.x (**note:** using npm 5+ [causes](https://github.com/lerna/lerna/issues/938) some [problems](https://github.com/npm/npm/issues/16991))
 * [Git](https://git-scm.com/)
 
 ## Bundler
@@ -102,11 +102,15 @@ npm install --save \
 	postcss-loader \
 	raw-loader \
 	style-loader \
-	webpack@^4.12.2 \
+	webpack@^4.15.0 \
 	webpack-cli@^3.0.8 \
 ```
 
-You may also want to install [`babel-minify-webpack-plugin`](https://github.com/webpack-contrib/babel-minify-webpack-plugin) if you plan to minify ES6+ code.
+You may also want to install [`uglifyjs-webpack-plugin`](https://github.com/webpack-contrib/uglifyjs-webpack-plugin) if you plan to minify ES6+ code.
+
+<info-box>
+	TODO why do we need to install it? What does webpack provides by default? Example how to load it (or link to the documentation).
+</info-box>
 
 ### Webpack configuration
 
@@ -339,8 +343,7 @@ Finally, you can build your application. Run webpack on your project and the edi
 One of the most common requirements is to extract CKEditor's CSS to a separate file (by default it is included in the output JavaScript file). To do that, you can use the [`extract-text-webpack-plugin`](https://www.npmjs.com/package/extract-text-webpack-plugin) plugin:
 
 ```bash
-npm install --save extract-text-webpack-plugin
-```
+npm install --save extract-text-webpack-plugin // TODO
 
 And add it to your webpack configuration:
 
@@ -353,7 +356,7 @@ module.exports = {
 	plugins: [
 		// ...
 
-		new ExtractTextPlugin( 'styles.css' )
+		new ExtractTextPlugin( 'styles.css' ) // TODO
 	],
 
 	module: {
@@ -386,7 +389,7 @@ module.exports = {
 
 Webpack will now create a separate file called `styles.css` which you will need to load manually into your HTML (using the `<link rel="stylesheet">` tag).
 
-### Option: Building to ES5 target
+### Option: Building to ES5 target // TODO does it still makes sense?
 
 CKEditor 5 is written in ECMAScript 2015 (also called ES6). All browsers in which CKEditor 5 is {@link builds/guides/support/browser-compatibility currently supported} have sufficient ES6 support to run CKEditor 5. Thanks to that, CKEditor 5 Builds are also published in the original ES6 format.
 

@@ -12,7 +12,7 @@ This guide will show you how to initialize the editor from source and how to cre
 The framework is made of several [npm packages](https://npmjs.com). To install it you need:
 
 * [Node.js](https://nodejs.org/en/) >= 6.0.0
-* npm 4.x (**note:** using npm 5 [is not recommended](https://github.com/npm/npm/issues/16991))
+* npm 4.x (**note:** using npm 5+ [is not recommended](https://github.com/npm/npm/issues/16991))
 
 Besides Node.js and npm you also need [webpack@4.x](https://webpack.js.org) with a few additional packages to use the framework. They are needed to bundle the source code. Read more about building CKEditor 5 in the {@link builds/guides/integration/advanced-setup CKEditor 5 Builds Advanced setup} guide.
 
@@ -29,7 +29,7 @@ npm install --save \
 	postcss-loader \
 	raw-loader \
 	style-loader \
-	webpack@^4.12.2
+	webpack@^4.15.0
 	webpack-cli@^3.0.8
 ```
 
@@ -166,6 +166,7 @@ You can now run webpack to build the application. To do that, call the `webpack`
 
 If everything worked correctly, you should see:
 
+// TODO below
 ```
 p@m /workspace/quick-start> ./node_modules/.bin/webpack
 Hash: 3973724171776d324f0c
