@@ -48,7 +48,7 @@ npm test -- -cw --files=basic-styles/bold*.js
 
 ## Running manual tests
 
-In order to start the manual tests server use the `npm run test:manual` task.
+In order to start the manual tests server use the `npm run manual` task.
 
 The task accepts the `--source-map` (alias `-s`) option.
 

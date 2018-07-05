@@ -1,7 +1,8 @@
 {
   "name": "ckeditor5",
   "version": "10.1.0",
-  "description": "The development environment of CKEditor 5.",
+  "description": "The development environment of CKEditor 5 – the best browser-based rich text editor.",
+  "private": true,
   "keywords": [
     "CKEditor",
     "ckeditor5",
@@ -102,7 +103,7 @@
     "lint": "eslint --quiet '**/*.js'",
     "precommit": "lint-staged",
     "test": "node --max_old_space_size=4096 node_modules/@ckeditor/ckeditor5-dev-tests/bin/test.js",
-    "test:manual": "node --max_old_space_size=4096 node_modules/@ckeditor/ckeditor5-dev-tests/bin/test-manual.js",
+    "manual": "node --max_old_space_size=4096 node_modules/@ckeditor/ckeditor5-dev-tests/bin/test-manual.js",
     "reinstall": "rm -rf ./packages ./node_modules && mgit bootstrap && lerna bootstrap",
     "docs": "node ./scripts/docs/build-docs.js",
     "docs:api": "node ./scripts/docs/build-api-docs.js",
@@ -114,6 +115,7 @@
     "changelog": "node ./scripts/release/changelog.js",
     "release": "bash ./scripts/release-ckeditor5.sh",
     "release:dependencies": "node ./scripts/release/release-dependencies.js",
+    "release:update-dependencies": "node ./scripts/update-dependencies-versions.js",
     "switch-to-dev-dev": "sh ./scripts/switch-to-dev-dev.sh"
   },
   "lint-staged": {

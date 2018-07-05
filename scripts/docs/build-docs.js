@@ -58,6 +58,7 @@ function runUmberto( options ) {
 	return umberto.buildSingleProject( {
 		configDir: 'docs',
 		clean: true,
+		dev: options.dev,
 		skipLiveSnippets: options.skipLiveSnippets,
 		skipValidation: options.skipValidation,
 		snippetOptions: {
