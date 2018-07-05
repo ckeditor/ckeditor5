@@ -20,7 +20,7 @@ import '../../theme/imageuploadicon.css';
 import '../../theme/imageuploadloader.css';
 
 // Data-uri with blank svg file that will be set as a img#src while placeholder is displayed with same width & height proportions.
-const blankImage = 'data:image/svg+xml;utf8,' + encodeURIComponent( '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 250"><g fill="none" fill-rule="evenodd"><rect width="700" height="250" rx="4"/></g></svg>' );
+const blankImage = 'data:image/svg+xml;utf8,' + encodeURIComponent( '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 250"><g fill="#FAFAFA" fill-rule="evenodd"><rect width="700" height="250" rx="4"/></g></svg>' );
 /**
  * The image upload progress plugin.
  * It shows a placeholder when the image is read from the disk and a progress bar while the image is uploading.
