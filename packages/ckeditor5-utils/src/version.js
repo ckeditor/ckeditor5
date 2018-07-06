@@ -10,7 +10,7 @@
 /* global window, global */
 
 import log from './log';
-import { version } from '../package.json';
+import { version } from 'ckeditor5/package.json';
 
 const windowOrGlobal = typeof window === 'object' ? window : global;
 
