@@ -1,7 +1,7 @@
 {
   "name": "@ckeditor/ckeditor5-build-inline",
   "version": "10.1.0",
-  "description": "CKEditor 5 inline editor build.",
+  "description": "The inline editor build of CKEditor 5 – the best browser-based rich text editor.",
   "keywords": [
     "ckeditor5-build",
     "CKEditor",
