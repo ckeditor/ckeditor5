@@ -243,6 +243,16 @@ describe( 'TableEditing', () => {
 			} );
 
 			describe( 'on table widget selected', () => {
+				beforeEach( () => {
+					editor.model.schema.register( 'block', {
+						allowWhere: '$block',
+						allowContentOf: '$block',
+						isObject: true
+					} );
+
+					editor.conversion.elementToElement( { model: 'block', view: 'block' } );
+				} );
+
 				it( 'should move caret to the first table cell on TAB', () => {
 					const spy = sinon.spy();
 
@@ -265,19 +275,19 @@ describe( 'TableEditing', () => {
 					sinon.assert.notCalled( spy );
 				} );
 
-				it( 'shouldn\' do anything on other blocks', () => {
+				it( 'shouldn\'t do anything on other blocks', () => {
 					const spy = sinon.spy();
 
 					editor.editing.view.document.on( 'keydown', spy );
 
-					setModelData( model, '[<paragraph>foo</paragraph>]' );
+					setModelData( model, '[<block>foo</block>]' );
 
 					editor.editing.view.document.fire( 'keydown', domEvtDataStub );
 
 					sinon.assert.notCalled( domEvtDataStub.preventDefault );
 					sinon.assert.notCalled( domEvtDataStub.stopPropagation );
 
-					expect( formatTable( getModelData( model ) ) ).to.equal( '[<paragraph>foo</paragraph>]' );
+					expect( formatTable( getModelData( model ) ) ).to.equal( '[<block>foo</block>]' );
 
 					// Should not cancel event.
 					sinon.assert.calledOnce( spy );
