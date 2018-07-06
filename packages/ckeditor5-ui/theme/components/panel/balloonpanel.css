@@ -3,6 +3,11 @@
  * For licensing, see LICENSE.md.
  */
 
+:root {
+	/* Make sure the balloon arrow does not float over its children. */
+	--ck-balloon-panel-arrow-z-index: calc(var(--ck-z-default) - 3);
+}
+
 .ck.ck-balloon-panel {
 	display: none;
 	position: absolute;
@@ -17,31 +22,31 @@
 		}
 
 		&::before {
-			z-index: var(--ck-z-default);
+			z-index: var(--ck-balloon-panel-arrow-z-index);
 		}
 
 		&::after {
-			z-index: calc(var(--ck-z-default) + 1 );
+			z-index: calc(var(--ck-balloon-panel-arrow-z-index) + 1);
 		}
 	}
 
 	&[class*="arrow_n"] {
 		&::before {
-			z-index: var(--ck-z-default);
+			z-index: var(--ck-balloon-panel-arrow-z-index);
 		}
 
 		&::after {
-			z-index: calc(var(--ck-z-default) + 1);
+			z-index: calc(var(--ck-balloon-panel-arrow-z-index) + 1);
 		}
 	}
 
 	&[class*="arrow_s"] {
 		&::before {
-			z-index: var(--ck-z-default);
+			z-index: var(--ck-balloon-panel-arrow-z-index);
 		}
 
 		&::after {
-			z-index: calc(var(--ck-z-default) + 1);
+			z-index: calc(var(--ck-balloon-panel-arrow-z-index) + 1);
 		}
 	}
 

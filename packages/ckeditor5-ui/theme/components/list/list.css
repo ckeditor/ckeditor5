@@ -8,8 +8,6 @@
 .ck.ck-list {
 	@mixin ck-unselectable;
 
-	/* Crop the the items when the list has huge border-radius. */
-	overflow: hidden;
 	display: flex;
 	flex-direction: column;
 
@@ -18,7 +16,10 @@
 		display: block;
 	}
 
-	& .ck-list__item:focus {
+	/* Make sure that whatever child of the list item gets focus, it remains on the
+	top. Thanks to that, styles like box-shadow, outline, etc. are not masked by
+	adjacent list items. */
+	& .ck-list__item > *:focus {
 		position: relative;
 		z-index: var(--ck-z-default);
 	}

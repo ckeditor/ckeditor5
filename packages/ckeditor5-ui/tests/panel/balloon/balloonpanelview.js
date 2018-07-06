@@ -9,7 +9,6 @@ import ViewCollection from '../../../src/viewcollection';
 import BalloonPanelView from '../../../src/panel/balloon/balloonpanelview';
 import ButtonView from '../../../src/button/buttonview';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import * as positionUtils from '@ckeditor/ckeditor5-utils/src/dom/position';
 
 testUtils.createSinonSandbox();
 
@@ -173,7 +172,7 @@ describe( 'BalloonPanelView', () => {
 		} );
 
 		it( 'should use default options', () => {
-			const spy = testUtils.sinon.spy( positionUtils, 'getOptimalPosition' );
+			const spy = testUtils.sinon.spy( BalloonPanelView, '_getOptimalPosition' );
 
 			view.attachTo( { target } );
 
