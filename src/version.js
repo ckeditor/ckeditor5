@@ -4,7 +4,7 @@
  */
 
 /**
- * @module ckeditor5/namespace
+ * @module ckeditor5/version
  */
 
 /* global window, global */
