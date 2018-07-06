@@ -305,10 +305,10 @@ describe( 'UndoEditing integration', () => {
 				setSelection( [ 1 ], [ 2 ] );
 				writer.move( doc.selection.getFirstRange(), new Position( root, [ 0 ] ) );
 			} );
-			output( '[<paragraph>obar</paragraph>]<paragraph>fz</paragraph>' );
+			output( '<paragraph>[obar]</paragraph><paragraph>fz</paragraph>' );
 
 			editor.execute( 'undo' );
-			output( '<paragraph>fz</paragraph>[<paragraph>obar</paragraph>]' );
+			output( '<paragraph>fz</paragraph><paragraph>[obar]</paragraph>' );
 
 			editor.execute( 'undo' );
 			output( '<paragraph>f[o]z</paragraph><paragraph>bar</paragraph>' );
