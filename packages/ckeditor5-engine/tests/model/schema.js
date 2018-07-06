@@ -17,7 +17,7 @@ import Position from '../../src/model/position';
 import Range from '../../src/model/range';
 import Selection from '../../src/model/selection';
 
-import { setData, getData, stringify } from '../../src/dev-utils/model';
+import { getData, setData, stringify, parse } from '../../src/dev-utils/model';
 
 import AttributeDelta from '../../src/model/delta/attributedelta';
 
@@ -983,6 +983,38 @@ describe( 'Schema', () => {
 
 			expect( schema.getLimitElement( doc.selection ) ).to.equal( root );
 		} );
+
+		it( 'accepts range as an argument', () => {
+			schema.extend( 'article', { isLimit: true } );
+			schema.extend( 'section', { isLimit: true } );
+
+			const data = '<div><section><article><paragraph>foobar</paragraph></article></section></div>';
+			const parsedModel = parse( data, model.schema, { context: [ root.name ] } );
+
+			model.change( writer => {
+				writer.insert( parsedModel, root );
+			} );
+
+			const article = root.getNodeByPath( [ 0, 0, 0 ] );
+
+			expect( schema.getLimitElement( new Range( new Position( root, [ 0, 0, 0, 0, 2 ] ) ) ) ).to.equal( article );
+		} );
+
+		it( 'accepts position as an argument', () => {
+			schema.extend( 'article', { isLimit: true } );
+			schema.extend( 'section', { isLimit: true } );
+
+			const data = '<div><section><article><paragraph>foobar</paragraph></article></section></div>';
+			const parsedModel = parse( data, model.schema, { context: [ root.name ] } );
+
+			model.change( writer => {
+				writer.insert( parsedModel, root );
+			} );
+
+			const article = root.getNodeByPath( [ 0, 0, 0 ] );
+
+			expect( schema.getLimitElement( new Position( root, [ 0, 0, 0, 0, 2 ] ) ) ).to.equal( article );
+		} );
 	} );
 
 	describe( 'checkAttributeInSelection()', () => {
@@ -1101,7 +1133,13 @@ describe( 'Schema', () => {
 				}
 			} );
 
-			setData( model, '<p>foo<img />bar</p>' );
+			// Parse data string to model.
+			const parsedModel = parse( '<p>foo<img />bar</p>', model.schema, { context: [ root.name ] } );
+
+			// Set parsed model data to prevent selection post-fixer from running.
+			model.change( writer => {
+				writer.insert( parsedModel, root );
+			} );
 
 			ranges = [ Range.createOn( root.getChild( 0 ) ) ];
 		} );
@@ -1123,12 +1161,12 @@ describe( 'Schema', () => {
 			schema.extend( 'img', { allowAttributes: 'bold' } );
 			schema.extend( '$text', { allowIn: 'img' } );
 
-			setData( model, '[<p>foo<img>xxx</img>bar</p>]' );
+			setData( model, '<p>[foo<img>xxx</img>bar]</p>' );
 
 			const validRanges = schema.getValidRanges( doc.selection.getRanges(), attribute );
 			const sel = new Selection( validRanges );
 
-			expect( stringify( root, sel ) ).to.equal( '[<p>foo<img>]xxx[</img>bar</p>]' );
+			expect( stringify( root, sel ) ).to.equal( '<p>[foo<img>]xxx[</img>bar]</p>' );
 		} );
 
 		it( 'should return three ranges when attribute is not allowed on one element but is allowed on its child', () => {
@@ -1141,12 +1179,12 @@ describe( 'Schema', () => {
 				}
 			} );
 
-			setData( model, '[<p>foo<img>xxx</img>bar</p>]' );
+			setData( model, '<p>[foo<img>xxx</img>bar]</p>' );
 
 			const validRanges = schema.getValidRanges( doc.selection.getRanges(), attribute );
 			const sel = new Selection( validRanges );
 
-			expect( stringify( root, sel ) ).to.equal( '[<p>foo]<img>[xxx]</img>[bar</p>]' );
+			expect( stringify( root, sel ) ).to.equal( '<p>[foo]<img>[xxx]</img>[bar]</p>' );
 		} );
 
 		it( 'should not leak beyond the given ranges', () => {

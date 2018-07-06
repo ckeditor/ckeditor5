@@ -94,9 +94,18 @@ function selectionPostFixer( writer, model ) {
 	if ( wasFixed ) {
 		// The above algorithm might create ranges that intersects each other when selection contains more then one range.
 		// This is case happens mostly on Firefox which creates multiple ranges for selected table.
-		const combinedRanges = combineOverlapingRanges( ranges );
+		let fixedRanges = ranges;
 
-		writer.setSelection( combinedRanges, { backward: selection.isBackward } );
+		// Fixing selection with many ranges usually breaks the selection in Firefox. As only Firefox supports multiple selection ranges
+		// we simply create one continuous range from fixed selection ranges (even if they are not adjacent).
+		if ( ranges.length > 1 ) {
+			const selectionStart = ranges[ 0 ].start;
+			const selectionEnd = ranges[ ranges.length - 1 ].end;
+
+			fixedRanges = [ new Range( selectionStart, selectionEnd ) ];
+		}
+
+		writer.setSelection( fixedRanges, { backward: selection.isBackward } );
 	}
 }
 
@@ -110,7 +119,7 @@ function tryFixingRange( range, schema ) {
 		return tryFixingCollapsedRange( range, schema );
 	}
 
-	return tryFixingNonCollpasedRage( range, schema );
+	return tryFixingNonCollapsedRage( range, schema );
 }
 
 // Tries to fix collapsed ranges.
@@ -146,27 +155,57 @@ function tryFixingCollapsedRange( range, schema ) {
 	return new Range( fixedPosition );
 }
 
-// Tries to fix a expanded range that overlaps limit nodes.
+// Tries to fix an expanded range.
 //
 // @param {module:engine/model/range~Range} range Expanded range to fix.
 // @param {module:engine/model/schema~Schema} schema
 // @returns {module:engine/model/range~Range|null} Returns fixed range or null if range is valid.
-function tryFixingNonCollpasedRage( range, schema ) {
-	// No need to check flat ranges as they will not cross node boundary.
-	if ( range.isFlat ) {
-		return null;
-	}
-
+function tryFixingNonCollapsedRage( range, schema ) {
 	const start = range.start;
 	const end = range.end;
 
-	const updatedStart = expandSelectionOnIsLimitNode( start, schema, 'start' );
-	const updatedEnd = expandSelectionOnIsLimitNode( end, schema, 'end' );
+	const isTextAllowedOnStart = schema.checkChild( start, '$text' );
+	const isTextAllowedOnEnd = schema.checkChild( end, '$text' );
 
-	if ( !start.isEqual( updatedStart ) || !end.isEqual( updatedEnd ) ) {
-		return new Range( updatedStart, updatedEnd );
+	const startLimitElement = schema.getLimitElement( start );
+	const endLimitElement = schema.getLimitElement( end );
+
+	// Ranges which both end are inside the same limit element (or root) might needs only minor fix.
+	if ( startLimitElement === endLimitElement ) {
+		// Range is valid when both position allows to place a text:
+		// - <block>f[oobarba]z</block>
+		// This would be "fixed" by a next check but as it will be the same it's better to return null so the selection stays the same.
+		if ( isTextAllowedOnStart && isTextAllowedOnEnd ) {
+			return null;
+		}
+
+		// Range that is on non-limit element (or is partially) must be fixed so it is placed inside the block around $text:
+		// - [<block>foo</block>]    ->    <block>[foo]</block>
+		// - [<block>foo]</block>    ->    <block>[foo]</block>
+		// - <block>f[oo</block>]    ->    <block>f[oo]</block>
+		if ( checkSelectionOnNonLimitElements( start, end, schema ) ) {
+			const fixedStart = schema.getNearestSelectionRange( start, 'forward' );
+			const fixedEnd = schema.getNearestSelectionRange( end, 'backward' );
+
+			return new Range( fixedStart ? fixedStart.start : start, fixedEnd ? fixedEnd.start : end );
+		}
 	}
 
+	const isStartInLimit = startLimitElement && !startLimitElement.is( 'rootElement' );
+	const isEndInLimit = endLimitElement && !endLimitElement.is( 'rootElement' );
+
+	// At this point we eliminated valid positions on text nodes so if one of range positions is placed inside a limit element
+	// then the range crossed limit element boundaries and needs to be fixed.
+	if ( isStartInLimit || isEndInLimit ) {
+		// Although we've already found limit element on start/end positions we must find the outer-most limit element.
+		// as limit elements might be nested directly inside (ie table > tableRow > tableCell).
+		const fixedStart = isStartInLimit ? expandSelectionOnIsLimitNode( Position.createAt( startLimitElement ), schema, 'start' ) : start;
+		const fixedEnd = isEndInLimit ? expandSelectionOnIsLimitNode( Position.createAt( endLimitElement ), schema, 'end' ) : end;
+
+		return new Range( fixedStart, fixedEnd );
+	}
+
+	// Range was not fixed at this point so it is valid - ie it was placed around limit element already.
 	return null;
 }
 
@@ -186,50 +225,18 @@ function expandSelectionOnIsLimitNode( position, schema, expandToDirection ) {
 		parent = parent.parent;
 	}
 
-	if ( node === parent ) {
-		// If there is not is limit block the return original position.
-		return position;
-	}
-
 	// Depending on direction of expanding selection return position before or after found node.
 	return expandToDirection === 'start' ? Position.createBefore( node ) : Position.createAfter( node );
 }
 
-// Returns minimal set of continuous ranges.
+// Checks whether both range ends are placed around non-limit elements.
 //
-// @param {Array.<module:engine/model/range~Range>} ranges
-// @returns {Array.<module:engine/model/range~Range>}
-function combineOverlapingRanges( ranges ) {
-	const combinedRanges = [];
+// @param {module:engine/model/position~Position} start
+// @param {module:engine/model/position~Position} end
+// @param {module:engine/model/schema~Schema} schema
+function checkSelectionOnNonLimitElements( start, end, schema ) {
+	const startIsOnBlock = ( start.nodeAfter && !schema.isLimit( start.nodeAfter ) ) || schema.checkChild( start, '$text' );
+	const endIsOnBlock = ( end.nodeBefore && !schema.isLimit( end.nodeBefore ) ) || schema.checkChild( end, '$text' );
 
-	// Seed the state.
-	let previousRange = ranges[ 0 ];
-	combinedRanges.push( previousRange );
-
-	// Go through each ranges and check if it can be merged with previous one.
-	for ( const range of ranges ) {
-		// Do not push same ranges (ie might be created in a table).
-		if ( range.isEqual( previousRange ) ) {
-			continue;
-		}
-
-		// Merge intersecting range into previous one.
-		if ( range.isIntersecting( previousRange ) ) {
-			const newStart = previousRange.start.isBefore( range.start ) ? previousRange.start : range.start;
-			const newEnd = range.end.isAfter( previousRange.end ) ? range.end : previousRange.end;
-			const combinedRange = new Range( newStart, newEnd );
-
-			// Replace previous range with the combined one.
-			combinedRanges.splice( combinedRanges.indexOf( previousRange ), 1, combinedRange );
-
-			previousRange = combinedRange;
-
-			continue;
-		}
-
-		previousRange = range;
-		combinedRanges.push( range );
-	}
-
-	return combinedRanges;
+	return startIsOnBlock && endIsOnBlock;
 }

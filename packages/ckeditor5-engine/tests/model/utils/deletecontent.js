@@ -562,7 +562,7 @@ describe( 'DataController utils', () => {
 				schema.register( 'image', { allowWhere: '$text' } );
 				schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 				schema.register( 'heading1', { inheritAllFrom: '$block' } );
-				schema.register( 'blockWidget' );
+				schema.register( 'blockWidget', { isLimit: true } );
 				schema.register( 'restrictedRoot', {
 					isLimit: true
 				} );
@@ -608,7 +608,7 @@ describe( 'DataController utils', () => {
 			it( 'creates a paragraph when text is not allowed (custom selection)', () => {
 				setData(
 					model,
-					'[<paragraph>x</paragraph>]<paragraph>yyy</paragraph><paragraph>z</paragraph>',
+					'<paragraph>[x]</paragraph><paragraph>yyy</paragraph><paragraph>z</paragraph>',
 					{ rootName: 'bodyRoot' }
 				);
 
@@ -621,7 +621,7 @@ describe( 'DataController utils', () => {
 				deleteContent( model, selection );
 
 				expect( getData( model, { rootName: 'bodyRoot' } ) )
-					.to.equal( '[<paragraph>x</paragraph>]<paragraph></paragraph><paragraph>z</paragraph>' );
+					.to.equal( '<paragraph>[x]</paragraph><paragraph></paragraph><paragraph>z</paragraph>' );
 			} );
 
 			it( 'creates a paragraph when text is not allowed (block widget selected)', () => {
@@ -640,27 +640,39 @@ describe( 'DataController utils', () => {
 			it( 'creates paragraph when text is not allowed (heading selected)', () => {
 				setData(
 					model,
-					'<paragraph>x</paragraph>[<heading1>yyy</heading1>]<paragraph>z</paragraph>',
+					'<paragraph>x</paragraph><heading1>yyy</heading1><paragraph>z</paragraph>',
 					{ rootName: 'bodyRoot' }
 				);
 
-				deleteContent( model, doc.selection );
+				// [<heading1>yyy</heading1>]
+				const range = new Range(
+					new Position( doc.getRoot( 'bodyRoot' ), [ 1 ] ),
+					new Position( doc.getRoot( 'bodyRoot' ), [ 2 ] )
+				);
 
-				expect( getData( model, { rootName: 'bodyRoot' } ) )
-					.to.equal( '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>z</paragraph>' );
+				deleteContent( model, new Selection( range ) );
+
+				expect( getData( model, { rootName: 'bodyRoot', withoutSelection: true } ) )
+					.to.equal( '<paragraph>x</paragraph><paragraph></paragraph><paragraph>z</paragraph>' );
 			} );
 
 			it( 'creates paragraph when text is not allowed (two blocks selected)', () => {
 				setData(
 					model,
-					'<paragraph>x</paragraph>[<heading1>yyy</heading1><paragraph>yyy</paragraph>]<paragraph>z</paragraph>',
+					'<paragraph>x</paragraph><heading1>yyy</heading1><paragraph>yyy</paragraph><paragraph>z</paragraph>',
 					{ rootName: 'bodyRoot' }
 				);
 
-				deleteContent( model, doc.selection );
+				// [<heading1>yyy</heading1><paragraph>yyy</paragraph>]
+				const range = new Range(
+					new Position( doc.getRoot( 'bodyRoot' ), [ 1 ] ),
+					new Position( doc.getRoot( 'bodyRoot' ), [ 3 ] )
+				);
 
-				expect( getData( model, { rootName: 'bodyRoot' } ) )
-					.to.equal( '<paragraph>x</paragraph><paragraph>[]</paragraph><paragraph>z</paragraph>' );
+				deleteContent( model, new Selection( range ) );
+
+				expect( getData( model, { rootName: 'bodyRoot', withoutSelection: true } ) )
+					.to.equal( '<paragraph>x</paragraph><paragraph></paragraph><paragraph>z</paragraph>' );
 			} );
 
 			it( 'creates paragraph when text is not allowed (all content selected)', () => {
