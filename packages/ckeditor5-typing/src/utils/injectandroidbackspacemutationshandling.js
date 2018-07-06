@@ -10,7 +10,7 @@
 import Selection from '@ckeditor/ckeditor5-engine/src/model/selection';
 import diff from '@ckeditor/ckeditor5-utils/src/diff';
 
-import { containerChildrenMutated } from '../utils';
+import { containerChildrenMutated } from './utils';
 
 /**
  * Handles mutations triggered by <kbd>Backspace</kbd> on Android.

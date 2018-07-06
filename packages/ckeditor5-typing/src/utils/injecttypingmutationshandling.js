@@ -12,7 +12,7 @@ import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import diff from '@ckeditor/ckeditor5-utils/src/diff';
 import DomConverter from '@ckeditor/ckeditor5-engine/src/view/domconverter';
 
-import { getSingleTextNodeChange, containerChildrenMutated } from '../utils';
+import { getSingleTextNodeChange, containerChildrenMutated } from './utils';
 
 /**
  * Handles mutations caused by normal typing.

@@ -4,7 +4,7 @@
  */
 
 /**
- * @module typing/utils
+ * @module typing/utils/utils
  */
 
 import ViewText from '@ckeditor/ckeditor5-engine/src/view/text';
