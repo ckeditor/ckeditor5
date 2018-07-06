@@ -19,7 +19,7 @@
     "lodash-cli": "^4"
   },
   "engines": {
-    "node": ">=6.0.0",
+    "node": ">=6.9.0",
     "npm": ">=3.0.0"
   },
   "author": "CKSource (http://cksource.com/)",
