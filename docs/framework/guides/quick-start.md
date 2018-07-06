@@ -165,7 +165,7 @@ You can now run webpack to build the application. To do that, call the `webpack`
 </info-box>
 
 <info-box>
-	Use `--mode production` if you want to build the minified and optimized application.
+	Use `--mode production` if you want to build a minified and optimized application. See more at https://webpack.js.org/concepts/mode/.
 </info-box>
 
 If everything worked correctly, you should see:
