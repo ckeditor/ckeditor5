@@ -12,7 +12,7 @@
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { version } from '../package.json';
 
-const windowOrGlobal = window || global;
+const windowOrGlobal = typeof window === 'object' ? window : global;
 
 if ( windowOrGlobal.CKEDITOR_VERSION ) {
 	/**
