@@ -295,7 +295,7 @@ describe( 'ShiftEnterCommand', () => {
 			model.change( () => {
 				setData( model, '<p><inlineLimit>F[oo.</inlineLimit>B]ar.</p>' );
 
-				// Enforce command refresh because of 'transparent' batch.
+				// Refresh it manually because we're in the middle of a change block.
 				command.refresh();
 
 				expect( command.isEnabled ).to.equal( false );
@@ -307,7 +307,7 @@ describe( 'ShiftEnterCommand', () => {
 			model.change( () => {
 				setData( model, '<p>F[oo<inlineLimit>Bar].</inlineLimit></p>' );
 
-				// Enforce command refresh because of 'transparent' batch.
+				// Refresh it manually because we're in the middle of a change block.
 				command.refresh();
 
 				expect( command.isEnabled ).to.equal( false );
@@ -319,7 +319,7 @@ describe( 'ShiftEnterCommand', () => {
 			model.change( () => {
 				setData( model, '<img>[]</img>' );
 
-				// Enforce command refresh because of 'transparent' batch.
+				// Refresh it manually because we're in the middle of a change block.
 				command.refresh();
 
 				expect( command.isEnabled ).to.equal( false );
@@ -327,15 +327,25 @@ describe( 'ShiftEnterCommand', () => {
 		} );
 
 		it( 'should be disabled for non-collapsed selection which starts in element inside a block limit element', () => {
-			setData( model, '<blockLimit><p>F[oo.</p></blockLimit><p>B]ar.</p>' );
+			model.change( () => {
+				setData( model, '<blockLimit><p>F[oo.</p></blockLimit><p>B]ar.</p>' );
 
-			expect( command.isEnabled ).to.equal( false );
+				// Refresh it manually because we're in the middle of a change block.
+				command.refresh();
+
+				expect( command.isEnabled ).to.equal( false );
+			} );
 		} );
 
 		it( 'should be disabled for non-collapsed selection which ends in element inside a block limit element', () => {
-			setData( model, '<p>Fo[o.</p><blockLimit><p>Bar].</p></blockLimit>' );
+			model.change( () => {
+				setData( model, '<p>Fo[o.</p><blockLimit><p>Bar].</p></blockLimit>' );
 
-			expect( command.isEnabled ).to.equal( false );
+				// Refresh it manually because we're in the middle of a change block.
+				command.refresh();
+
+				expect( command.isEnabled ).to.equal( false );
+			} );
 		} );
 
 		it( 'should be disabled for multi-ranges selection (1)', () => {
