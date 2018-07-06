@@ -15,6 +15,7 @@ import uploadingPlaceholder from '../../theme/icons/image_placeholder.svg';
 import UIElement from '@ckeditor/ckeditor5-engine/src/view/uielement';
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import ViewRange from '@ckeditor/ckeditor5-engine/src/view/range';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import '../../theme/imageuploadprogress.css';
 import '../../theme/imageuploadicon.css';
@@ -209,11 +210,14 @@ function _hideProgressBar( viewFigure, writer ) {
 function _showCompleteIcon( viewFigure, writer, view ) {
 	const completeIcon = new UIElement( 'div', { class: 'ck-image-upload-complete-icon' } );
 
-	writer.insert( ViewPosition.createAt( viewFigure, 'end' ), completeIcon );
+	// Because in Edge there is no way to show fancy animation of completeIcon we need to skip it.
+	if ( !env.isEdge ) {
+		writer.insert( ViewPosition.createAt( viewFigure, 'end' ), completeIcon );
 
-	setTimeout( () => {
-		view.change( writer => writer.remove( ViewRange.createOn( completeIcon ) ) );
-	}, 3000 );
+		setTimeout( () => {
+			view.change( writer => writer.remove( ViewRange.createOn( completeIcon ) ) );
+		}, 30000 );
+	}
 }
 
 // Create progress bar element using {@link module:engine/view/uielement~UIElement}.
