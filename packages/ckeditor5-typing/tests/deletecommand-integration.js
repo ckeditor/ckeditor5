@@ -39,6 +39,7 @@ describe( 'DeleteCommand integration', () => {
 				// Mock paragraph feature.
 				model.schema.register( 'paragraph', { inheritAllFrom: '$block' } );
 				model.schema.extend( 'paragraph', { allowIn: '$block' } );
+				model.schema.register( 'softBreak', { allowWhere: '$text' } );
 
 				model.schema.register( 'img', {
 					allowWhere: '$text',
@@ -204,5 +205,14 @@ describe( 'DeleteCommand integration', () => {
 				editor.execute( 'delete' );
 			} ).to.not.throw();
 		} );
+	} );
+
+	// See: https://github.com/ckeditor/ckeditor5/issues/1064
+	it( 'should remove entire word in a paragraph that contains the soft break', () => {
+		setData( model, '<paragraph>Foo.<softBreak></softBreak>Bar[]</paragraph>' );
+
+		editor.execute( 'delete', { unit: 'word' } );
+
+		assertOutput( '<paragraph>Foo.<softBreak></softBreak>[]</paragraph>' );
 	} );
 } );
