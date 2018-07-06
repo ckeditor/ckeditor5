@@ -10,6 +10,7 @@ import ModelDocumentFragment from '@ckeditor/ckeditor5-engine/src/model/document
 import ModelPosition from '@ckeditor/ckeditor5-engine/src/model/position';
 import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 import ModelElement from '@ckeditor/ckeditor5-engine/src/model/element';
+import Selection from '@ckeditor/ckeditor5-engine/src/model/selection';
 import ModelText from '@ckeditor/ckeditor5-engine/src/model/text';
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import ViewUIElement from '@ckeditor/ckeditor5-engine/src/view/uielement';
@@ -3049,9 +3050,9 @@ describe( 'ListEditing', () => {
 		describe( 'remove', () => {
 			function test( testName, input, output ) {
 				it( testName, () => {
-					setModelData( model, input );
-
 					model.change( writer => {
+						setModelData( model, input );
+
 						writer.remove( modelDoc.selection.getFirstRange() );
 					} );
 
@@ -3106,11 +3107,11 @@ describe( 'ListEditing', () => {
 		describe( 'move', () => {
 			function test( testName, input, offset, output ) {
 				it( testName, () => {
-					setModelData( model, input );
-
-					const targetPosition = ModelPosition.createAt( modelRoot, offset );
-
 					model.change( writer => {
+						setModelData( model, input );
+
+						const targetPosition = ModelPosition.createAt( modelRoot, offset );
+
 						writer.move( modelDoc.selection.getFirstRange(), targetPosition );
 					} );
 
@@ -3280,11 +3281,11 @@ describe( 'ListEditing', () => {
 					'<listItem listIndent="0" listType="bulleted">h</listItem>' +
 					'<listItem listIndent="1" listType="bulleted">i</listItem>';
 
-				setModelData( model, modelBefore );
-
-				const element = modelDoc.selection.getFirstPosition().nodeAfter;
-
 				model.change( writer => {
+					setModelData( model, modelBefore );
+
+					const element = modelDoc.selection.getFirstPosition().nodeAfter;
+
 					writer.rename( element, 'paragraph' );
 				} );
 
@@ -3897,8 +3898,9 @@ describe( 'ListEditing', () => {
 	}
 
 	function testRenameFromListItem( testName, input, output, testUndo = true ) {
-		const actionCallback = () => {
-			const element = modelDoc.selection.getFirstPosition().nodeAfter;
+		const actionCallback = undoSelection => {
+			const selection = undoSelection ? undoSelection : modelDoc.selection;
+			const element = selection.getFirstPosition().nodeAfter;
 
 			model.change( writer => {
 				writer.rename( element, 'paragraph' );
@@ -3911,8 +3913,10 @@ describe( 'ListEditing', () => {
 	}
 
 	function testRenameToListItem( testName, newIndent, input, output ) {
-		const actionCallback = () => {
-			const element = modelDoc.selection.getFirstPosition().nodeAfter;
+		const actionCallback = undoSelection => {
+			const selection = undoSelection ? undoSelection : modelDoc.selection;
+
+			const element = selection.getFirstPosition().nodeAfter;
 
 			model.change( writer => {
 				writer.setAttributes( { listType: 'bulleted', listIndent: newIndent }, element );
@@ -3934,11 +3938,13 @@ describe( 'ListEditing', () => {
 	}
 
 	function testMove( testName, input, rootOffset, output, testUndo = true ) {
-		const actionCallback = () => {
+		const actionCallback = undoSelection => {
 			const targetPosition = ModelPosition.createAt( modelRoot, rootOffset );
 
+			const selection = undoSelection ? undoSelection : modelDoc.selection;
+
 			model.change( writer => {
-				writer.move( modelDoc.selection.getFirstRange(), targetPosition );
+				writer.move( selection.getFirstRange(), targetPosition );
 			} );
 		};
 
@@ -3948,7 +3954,7 @@ describe( 'ListEditing', () => {
 	function _test( testName, input, output, actionCallback ) {
 		it( testName, () => {
 			// Wrap all changes in one block to avoid post-fixing the selection
-			// (which may be incorret) in the meantime.
+			// (which may be incorrect) in the meantime.
 			model.change( () => {
 				setModelData( model, input );
 
@@ -3959,15 +3965,41 @@ describe( 'ListEditing', () => {
 		} );
 
 		it( testName + ' (undo integration)', () => {
+			const modelRoot = model.document.getRoot( 'main' );
+
+			// Parse data string to model.
+			const parsedResult = parseModel( input, model.schema, { context: [ modelRoot.name ] } );
+
+			// Retrieve DocumentFragment and Selection from parsed model.
+			const modelDocumentFragment = parsedResult.model;
+			const selection = parsedResult.selection;
+
 			// Ensure no undo step is generated.
-			model.enqueueChange( 'transparent', () => {
-				setModelData( model, input );
+			model.enqueueChange( 'transparent', writer => {
+				// Replace existing model in document by new one.
+				writer.remove( ModelRange.createIn( modelRoot ) );
+				writer.insert( modelDocumentFragment, modelRoot );
+
+				// // Clean up previous document selection.
+				writer.setSelection( null );
+				writer.removeSelectionAttribute( model.document.selection.getAttributeKeys() );
 			} );
 
 			const modelBefore = getModelData( model );
 			const viewBefore = getViewData( view, { withoutSelection: true } );
 
-			actionCallback();
+			const ranges = [];
+
+			for ( const range of selection.getRanges() ) {
+				const start = new ModelPosition( modelRoot, range.start.path );
+				const end = new ModelPosition( modelRoot, range.end.path );
+
+				ranges.push( new ModelRange( start, end ) );
+			}
+
+			const callbackSelection = new Selection( ranges );
+
+			actionCallback( callbackSelection );
 
 			const modelAfter = getModelData( model );
 			const viewAfter = getViewData( view, { withoutSelection: true } );
