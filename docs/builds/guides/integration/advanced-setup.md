@@ -109,7 +109,7 @@ npm install --save \
 You may also want to install [`uglifyjs-webpack-plugin`](https://github.com/webpack-contrib/uglifyjs-webpack-plugin) if you plan to minify ES6+ code.
 
 <info-box>
-	`uglifyjs-webpack-plugin` is the default webpack minimizer used in the production mode. However, at this moment the version used in webpack is a little bit buggy and we recommend to use at least the 1.2.7 version. See https://github.com/webpack-contrib/uglifyjs-webpack-plugin#usage if you want to integrate that plugin to your build system.
+	`uglifyjs-webpack-plugin` is the default webpack minimizer used in the production mode. However, at this moment the version used in the webpack is a little bit buggy and we recommend to use at least the 1.2.7 version. See https://github.com/webpack-contrib/uglifyjs-webpack-plugin#usage if you want to integrate that plugin to your build system.
 </info-box>
 
 ### Webpack configuration
@@ -340,10 +340,12 @@ Finally, you can build your application. Run webpack on your project and the edi
 
 ### Option: Extracting CSS
 
-One of the most common requirements is to extract CKEditor's CSS to a separate file (by default it is included in the output JavaScript file). To do that, you can use the [`extract-text-webpack-plugin`](https://www.npmjs.com/package/extract-text-webpack-plugin) plugin:
+One of the most common requirements is to extract CKEditor's CSS to a separate file (by default it is included in the output JavaScript file). To do that, you can use the [`mini-css-extract-plugin`](https://www.npmjs.com/package/mini-css-extract-plugin) plugin:
 
 ```bash
-npm install --save mini-css-extract-plugin
+npm install --save \
+	mini-css-extract-plugin \
+	css-loader
 
 And add it to your webpack configuration:
 
@@ -369,20 +371,19 @@ module.exports = {
 			},
 			{
 				test: /\.css$/,
-				use: ExtractTextPlugin.extract( {
-					fallback: 'style-loader',
-					use: [
-						{
-							loader: 'postcss-loader',
-							options: styles.getPostCssConfig( {
-								themeImporter: {
-									themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
-								},
-								minify: true
-							} )
-						}
-					]
-				} )
+				use: [
+					MiniCssExtractPlugin.loader,
+					'css-loader',
+					{
+						loader: 'postcss-loader',
+						options: styles.getPostCssConfig( {
+							themeImporter: {
+								themePath: require.resolve( '@ckeditor/ckeditor5-theme-lark' )
+							},
+							minify: true
+						} )
+					}
+				]
 			}
 		]
 	}
