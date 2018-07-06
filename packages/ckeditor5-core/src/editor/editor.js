@@ -20,7 +20,7 @@ import EditingKeystrokeHandler from '../editingkeystrokehandler';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
-import 'ckeditor5/src/version';
+import '@ckeditor/ckeditor5-utils/src/version';
 
 /**
  * Class representing a basic, generic editor.
