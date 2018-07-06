@@ -397,7 +397,7 @@ Webpack will now create a separate file called `styles.css` which you will need 
 CKEditor 5 is written in ECMAScript 2015 (also called ES6). All browsers in which CKEditor 5 is {@link builds/guides/support/browser-compatibility currently supported} have sufficient ES6 support to run CKEditor 5. Thanks to that, CKEditor 5 Builds are also published in the original ES6 format.
 
 <info-box>
-Webpack provides minification tool for ES6 code by default, so if you use [UglifyJS](https://github.com/mishoo/UglifyJS) or some other minification tool that works on the ES5 code, please use the default webpack's minimizer [UglifyJsWebpackPlugin](https://github.com/webpack-contrib/uglifyjs-webpack-plugin). It's used in the webpack's `production` mode.
+	Webpack provides a minification tool for ES6 code by default, so if you use [UglifyJS](https://github.com/mishoo/UglifyJS) or some other minification tool that works on the ES5 code, please use the default webpack's minimizer instead ([UglifyJsWebpackPlugin](https://github.com/webpack-contrib/uglifyjs-webpack-plugin)). This plugin is being added to other webpack plugins in the production mode by default.
 </info-box>
 
 However, it may happen that some other tool in your environment requires ES5 and you may need to transpile CKEditor 5 source to ES5. This will create ~80% bigger builds but will ensure that your environment can process CKEditor 5 code.
