@@ -72,6 +72,7 @@ export function getSingleTextNodeChange( mutation ) {
  * Checks whether two view nodes are identical, which means they are the same object
  * or contain exactly same data (in case of text nodes).
  *
+ * @private
  * @param {module:engine/view/node~Node} oldChild
  * @param {module:engine/view/node~Node} newChild
  * @returns {Boolean}
