@@ -5,6 +5,10 @@
 
 import env, { isEdge, isMac } from '../src/env';
 
+function toLowerCase( str ) {
+	return str.toLowerCase();
+}
+
 describe( 'Env', () => {
 	beforeEach( () => {
 	} );
@@ -29,6 +33,11 @@ describe( 'Env', () => {
 		it( 'returns true for macintosh UA strings', () => {
 			expect( isMac( 'macintosh' ) ).to.be.true;
 			expect( isMac( 'foo macintosh bar' ) ).to.be.true;
+
+			expect( isMac( toLowerCase(
+				'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) ' +
+				'Chrome/61.0.3163.100 Safari/537.36'
+			) ) ).to.be.true;
 		} );
 
 		it( 'returns false for non–macintosh UA strings', () => {
@@ -42,6 +51,11 @@ describe( 'Env', () => {
 		it( 'returns true for Edge UA strings', () => {
 			expect( isEdge( 'edge/12' ) ).to.be.true;
 			expect( isEdge( 'foo edge/12 bar' ) ).to.be.true;
+
+			expect( isEdge( toLowerCase(
+				'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) ' +
+				'Chrome/51.0.2704.79 Safari/537.36 Edge/14.14393'
+			) ) ).to.be.true;
 		} );
 
 		it( 'returns false for non–Edge UA strings', () => {
@@ -50,6 +64,15 @@ describe( 'Env', () => {
 			expect( isEdge( 'foo' ) ).to.be.false;
 			expect( isEdge( 'ledge' ) ).to.be.false;
 			expect( isEdge( 'foo edge bar' ) ).to.be.false;
+
+			// Chrome
+			expect( isEdge( toLowerCase(
+				'Mozilla/5.0 (Windows NT 6.2; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36'
+			) ) ).to.be.false;
+			// IE11
+			expect( isEdge( toLowerCase(
+				'Mozilla/5.0 (Windows NT 6.3; WOW64; Trident/7.0; rv:11.0) like Gecko'
+			) ) ).to.be.false;
 		} );
 	} );
 } );
