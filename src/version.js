@@ -20,7 +20,7 @@ if ( windowOrGlobal.CKEDITOR_VERSION ) {
 	 * class has been loaded twice (or more), a result of either:
 	 *
 	 * * the build containing two (or more) different versions of the {@link module:core/editor/editor~Editor `Editor`}
-	 * class – make sure **all** packages in your {@glink examples/builds build} which have
+	 * class – make sure **all** packages in your {@glink builds/index build} which have
 	 * `@ckeditor/ckeditor5-core` in their `package.json` [dependencies](https://docs.npmjs.com/files/package.json#dependencies)
 	 * use the same version of the package,
 	 * * two (or more) `ckeditor.js` builds loaded in the web page next to one another – check your web page for duplicated
