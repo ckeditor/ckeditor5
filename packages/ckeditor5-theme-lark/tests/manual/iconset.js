@@ -28,6 +28,7 @@ import objectCenter from '@ckeditor/ckeditor5-core/theme/icons/object-center.svg
 import objectRight from '@ckeditor/ckeditor5-core/theme/icons/object-right.svg';
 import objectFullWidth from '@ckeditor/ckeditor5-core/theme/icons/object-full-width.svg';
 import pencil from '@ckeditor/ckeditor5-core/theme/icons/pencil.svg';
+import pilcrow from '@ckeditor/ckeditor5-core/theme/icons/pilcrow.svg';
 import quote from '@ckeditor/ckeditor5-core/theme/icons/quote.svg';
 
 import fontFamily from '@ckeditor/ckeditor5-font/theme/icons/font-family.svg';
@@ -67,7 +68,7 @@ const icons = {
 	bold, italic, underline, code, strikethrough,
 
 	// core
-	check, cancel, lowVision, quote, image, objectLeft, objectCenter, objectRight, objectFullWidth, pencil,
+	check, cancel, lowVision, quote, image, objectLeft, objectCenter, objectRight, objectFullWidth, pencil, pilcrow,
 
 	// font
 	fontFamily, fontSize,

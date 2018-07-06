@@ -5,9 +5,19 @@
 
 :root {
 	/**
+	 * The geometry of the of focused element's outer shadow.
+	 */
+	--ck-focus-outer-shadow-geometry: 0 0 0 3px;
+
+	/**
 	 * A visual style of focused element's outer shadow.
 	 */
-	--ck-focus-outer-shadow: 0 0 3px var(--ck-color-focus-shadow);
+	--ck-focus-outer-shadow: var(--ck-focus-outer-shadow-geometry) var(--ck-color-focus-shadow);
+
+	/**
+	 * A visual style of focused element's outer shadow (when disabled).
+	 */
+	--ck-focus-disabled-outer-shadow: var(--ck-focus-outer-shadow-geometry) var(--ck-color-focus-disabled-shadow);
 
 	/**
 	 * A visual style of focused element's border or outline.

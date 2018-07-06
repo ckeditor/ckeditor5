@@ -13,9 +13,8 @@
 	background: var($(prefix)-background);
 
 	&:not(.ck-disabled) {
-		&:hover,
-		&:focus {
-			background: var($(prefix)-focus-background);
+		&:hover {
+			background: var($(prefix)-hover-background);
 		}
 
 		&:active {

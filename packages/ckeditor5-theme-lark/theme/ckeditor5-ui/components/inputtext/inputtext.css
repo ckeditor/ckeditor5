@@ -23,7 +23,8 @@
 	/* This is important to stay of the same height as surrounding buttons */
 	min-height: var(--ck-ui-component-min-height);
 
-	transition-property: box-shadow,border;
+	/* Apply some smooth transition to the box-shadow and border. */
+	transition-property: box-shadow, border;
 	transition: .2s ease-in-out;
 
 	&:focus {
@@ -35,5 +36,10 @@
 		border: 1px solid var(--ck-color-input-disabled-border);
 		background: var(--ck-color-input-disabled-background);
 		color: var(--ck-color-input-disabled-text);
+
+		&:focus {
+			/* The read-only input should have a slightly less visible shadow when focused. */
+			@mixin ck-box-shadow var(--ck-focus-disabled-outer-shadow), var(--ck-inner-shadow);
+		}
 	}
 }
