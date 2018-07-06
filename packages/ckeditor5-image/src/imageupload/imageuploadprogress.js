@@ -216,7 +216,7 @@ function _showCompleteIcon( viewFigure, writer, view ) {
 
 		setTimeout( () => {
 			view.change( writer => writer.remove( ViewRange.createOn( completeIcon ) ) );
-		}, 30000 );
+		}, 3000 );
 	}
 }
 
