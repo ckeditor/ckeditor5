@@ -14,10 +14,10 @@ import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/c
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 
-testUtils.createSinonSandbox();
-
 describe( 'HeadingUI', () => {
 	let editor, editorElement, dropdown;
+
+	testUtils.createSinonSandbox();
 
 	before( () => {
 		addTranslations( 'en', {
