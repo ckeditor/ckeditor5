@@ -150,10 +150,6 @@ function _showPlaceholder( placeholder, viewFigure, writer ) {
 		writer.addClass( 'ck-image-upload-placeholder', viewFigure );
 	}
 
-	if ( !viewFigure.hasClass( 'ck-infinite-progress' ) ) {
-		writer.addClass( 'ck-infinite-progress', viewFigure );
-	}
-
 	const viewImg = viewFigure.getChild( 0 );
 
 	if ( viewImg.getAttribute( 'src' ) !== placeholder ) {
@@ -172,10 +168,6 @@ function _showPlaceholder( placeholder, viewFigure, writer ) {
 function _hidePlaceholder( viewFigure, writer ) {
 	if ( viewFigure.hasClass( 'ck-image-upload-placeholder' ) ) {
 		writer.removeClass( 'ck-image-upload-placeholder', viewFigure );
-	}
-
-	if ( viewFigure.hasClass( 'ck-infinite-progress' ) ) {
-		writer.removeClass( 'ck-infinite-progress', viewFigure );
 	}
 
 	_removeUIElement( viewFigure, writer, placeholderSymbol );

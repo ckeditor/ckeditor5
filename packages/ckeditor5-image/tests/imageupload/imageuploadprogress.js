@@ -73,7 +73,7 @@ describe( 'ImageUploadProgress', () => {
 		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
 
 		expect( getViewData( view ) ).to.equal(
-			'[<figure class="ck-appear ck-image-upload-placeholder ck-infinite-progress ck-widget image" contenteditable="false">' +
+			'[<figure class="ck-appear ck-image-upload-placeholder ck-widget image" contenteditable="false">' +
 				`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
 				'<div class="ck-upload-placeholder-loader"></div>' +
 			'</figure>]<p>foo</p>'
@@ -132,7 +132,7 @@ describe( 'ImageUploadProgress', () => {
 		} );
 
 		expect( getViewData( view ) ).to.equal(
-			'[<figure class="ck-appear ck-image-upload-placeholder ck-infinite-progress ck-widget image" contenteditable="false">' +
+			'[<figure class="ck-appear ck-image-upload-placeholder ck-widget image" contenteditable="false">' +
 				`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
 				'<div class="ck-upload-placeholder-loader"></div>' +
 			'</figure>]'
@@ -221,7 +221,7 @@ describe( 'ImageUploadProgress', () => {
 		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
 
 		expect( getViewData( view ) ).to.equal(
-			'[<figure class="ck-appear ck-image-upload-placeholder ck-infinite-progress ck-widget image" contenteditable="false">' +
+			'[<figure class="ck-appear ck-image-upload-placeholder ck-widget image" contenteditable="false">' +
 				`<img src="${ base64Sample }"></img>` +
 				'<div class="ck-upload-placeholder-loader"></div>' +
 			'</figure>]<p>foo</p>'
@@ -251,7 +251,7 @@ describe( 'ImageUploadProgress', () => {
 		} );
 
 		expect( getViewData( view ) ).to.equal(
-			'[<figure class="ck-appear ck-image-upload-placeholder ck-infinite-progress ck-widget image" contenteditable="false">' +
+			'[<figure class="ck-appear ck-image-upload-placeholder ck-widget image" contenteditable="false">' +
 				`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
 				'<div class="ck-upload-placeholder-loader"></div>' +
 			'</figure>]'
