@@ -3,24 +3,16 @@
  * For licensing, see LICENSE.md.
  */
 
-:root {
-	--ck-upload-placeholder-loader-size: 24px;
-}
-
 .ck .ck-upload-placeholder-loader {
 	position: absolute;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 100%;
-	height: 100%;
 	top: 0;
 	left: 0;
 
 	&::before {
 		content: '';
 		position: relative;
-		width: var(--ck-upload-placeholder-loader-size);
-		height: var(--ck-upload-placeholder-loader-size);
 	}
 }
