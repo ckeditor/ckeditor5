@@ -17,7 +17,9 @@
 			/* Fixes the problem where surrounding cells cover the focused cell's border.
 			It does not fix the problem in all places but the UX is improved.
 			See https://github.com/ckeditor/ckeditor5-table/issues/29. */
-			border-style: double;
+			border-style: none;
+			outline: 1px solid var(--ck-color-focus-border);
+			outline-offset: -1px; /* progressive enhancement - no IE support */
 		}
 	}
 }

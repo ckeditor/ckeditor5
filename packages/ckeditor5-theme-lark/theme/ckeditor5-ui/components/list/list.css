@@ -45,8 +45,7 @@
 			background: var(--ck-color-list-button-on-background);
 			color: var(--ck-color-list-button-on-text);
 
-			&:hover:not(ck-disabled),
-			&:focus {
+			&:hover:not(ck-disabled) {
 				background: var(--ck-color-list-button-on-background-focus);
 			}
 
@@ -55,8 +54,7 @@
 			}
 		}
 
-		&:hover:not(.ck-disabled),
-		&:focus {
+		&:hover:not(.ck-disabled) {
 			background: var(--ck-color-list-button-hover-background);
 		}
 	}
@@ -68,8 +66,7 @@
 			background: var(--ck-color-list-background);
 			color: inherit;
 
-			&:hover:not(ck-disabled),
-			&:focus {
+			&:hover:not(ck-disabled) {
 				background: var(--ck-color-list-button-hover-background);
 				color: inherit;
 			}

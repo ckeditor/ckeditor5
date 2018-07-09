@@ -72,6 +72,6 @@
 	border: 1px solid var(--ck-color-dropdown-panel-border);
 	bottom: 0;
 
-	/* Make sure the panel is at least as wide as the dropdown's button. */
+	/* Make sure the panel is at least as wide as the drop-down's button. */
 	min-width: 100%;
 }

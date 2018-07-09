@@ -34,7 +34,7 @@ of the component, floating–point numbers have been used which, for the default
 		margin-left: auto;
 
 		/* Gently animate the background color of the toggle switch */
-		transition: background 500ms ease;
+		transition: background 400ms ease;
 
 		width: var(--ck-switch-button-toggle-width);
 		background: var(--ck-color-switch-button-off-background);
