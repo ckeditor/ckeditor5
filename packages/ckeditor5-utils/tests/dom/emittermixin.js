@@ -9,10 +9,10 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import DomEmitterMixin from '../../src/dom/emittermixin';
 import EmitterMixin from '../../src/emittermixin';
 
-testUtils.createSinonSandbox();
-
 describe( 'DomEmitterMixin', () => {
 	let emitter, domEmitter, node;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		emitter = Object.create( EmitterMixin );

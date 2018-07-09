@@ -13,9 +13,9 @@ import mix from '../src/mix';
 
 const assertBinding = utilsTestUtils.assertBinding;
 
-testUtils.createSinonSandbox();
-
 describe( 'ObservableMixin', () => {
+	testUtils.createSinonSandbox();
+
 	it( 'exists', () => {
 		expect( ObservableMixin ).to.be.an( 'object' );
 	} );
@@ -30,6 +30,8 @@ describe( 'ObservableMixin', () => {
 } );
 
 describe( 'Observable', () => {
+	testUtils.createSinonSandbox();
+
 	class Observable {
 		constructor( properties ) {
 			if ( properties ) {

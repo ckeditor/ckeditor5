@@ -6,9 +6,9 @@
 import getBorderWidths from '../../src/dom/getborderwidths';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-testUtils.createSinonSandbox();
-
 describe( 'getBorderWidths()', () => {
+	testUtils.createSinonSandbox();
+
 	it( 'returns CSS border widths', () => {
 		const elementMock = {
 			ownerDocument: {
