@@ -14,10 +14,10 @@ import ClassicTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/classictest
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { add as addTranslations, _clear as clearTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
 
-testUtils.createSinonSandbox();
-
 describe( 'FontFamilyUI', () => {
 	let editor, command, element;
+
+	testUtils.createSinonSandbox();
 
 	before( () => {
 		addTranslations( 'en', {

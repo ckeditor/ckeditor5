@@ -15,10 +15,10 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { _clear as clearTranslations, add as addTranslations } from '@ckeditor/ckeditor5-utils/src/translation-service';
 import { normalizeOptions } from '../../src/fontsize/utils';
 
-testUtils.createSinonSandbox();
-
 describe( 'FontSizeUI', () => {
 	let editor, command, element;
+
+	testUtils.createSinonSandbox();
 
 	before( () => {
 		addTranslations( 'en', {
