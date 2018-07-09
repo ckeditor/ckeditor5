@@ -7,10 +7,6 @@
  * @module engine/model/model
  */
 
-// Load all basic deltas and transformations, they register themselves.
-import './delta/basic-deltas';
-import './delta/basic-transformations';
-
 import Batch from './batch';
 import Writer from './writer';
 import Schema from './schema';
@@ -18,7 +14,7 @@ import Document from './document';
 import MarkerCollection from './markercollection';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
-import deltaTransform from './delta/transform';
+import transform from './operation/transform';
 import ModelElement from './element';
 import ModelRange from './range';
 
@@ -222,26 +218,6 @@ export default class Model {
 	}
 
 	/**
-	 * Transforms two sets of deltas by themselves. Returns both transformed sets.
-	 *
-	 * @param {Array.<module:engine/model/delta/delta~Delta>} deltasA Array with the first set of deltas to transform. These
-	 * deltas are considered more important (than `deltasB`) when resolving conflicts.
-	 * @param {Array.<module:engine/model/delta/delta~Delta>} deltasB Array with the second set of deltas to transform. These
-	 * deltas are considered less important (than `deltasA`) when resolving conflicts.
-	 * @param {Boolean} [useContext=false] When set to `true`, transformation will store and use additional context
-	 * information to guarantee more expected results. Should be used whenever deltas related to already applied
-	 * deltas are transformed (for example when undoing changes).
-	 * @returns {Object}
-	 * @returns {Array.<module:engine/model/delta/delta~Delta>} return.deltasA The first set of deltas transformed
-	 * by the second set of deltas.
-	 * @returns {Array.<module:engine/model/delta/delta~Delta>} return.deltasB The second set of deltas transformed
-	 * by the first set of deltas.
-	 */
-	transformDeltas( deltasA, deltasB, useContext = false ) {
-		return deltaTransform.transformDeltaSets( deltasA, deltasB, useContext ? this.document : null );
-	}
-
-	/**
 	 * Inserts content into the editor (specified selection) as one would expect the paste
 	 * functionality to work.
 	 *
@@ -268,7 +244,7 @@ export default class Model {
 	 * @fires deleteContent
 	 * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
 	 * Selection of which the content should be deleted.
-	 * @param {module:engine/model/batch~Batch} batch Batch to which the deltas will be added.
+	 * @param {module:engine/model/batch~Batch} batch Batch to which the operations will be added.
 	 * @param {Object} [options]
 	 * @param {Boolean} [options.leaveUnmerged=false] Whether to merge elements after removing the content of the selection.
 	 *

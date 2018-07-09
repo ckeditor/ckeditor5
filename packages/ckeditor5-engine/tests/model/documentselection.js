@@ -15,11 +15,10 @@ import InsertOperation from '../../src/model/operation/insertoperation';
 import MoveOperation from '../../src/model/operation/moveoperation';
 import RemoveOperation from '../../src/model/operation/removeoperation';
 import AttributeOperation from '../../src/model/operation/attributeoperation';
-import SplitDelta from '../../src/model/delta/splitdelta';
+import SplitOperation from '../../src/model/operation/splitoperation';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import count from '@ckeditor/ckeditor5-utils/src/count';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
-import { wrapInDelta } from '../../tests/model/_utils/utils';
 import { setData, getData } from '../../src/dev-utils/model';
 
 describe( 'DocumentSelection', () => {
@@ -613,7 +612,7 @@ describe( 'DocumentSelection', () => {
 
 				model.on( 'applyOperation', ( event, args ) => {
 					const operation = args[ 0 ];
-					const batch = operation.delta.batch;
+					const batch = operation.batch;
 
 					batchTypes.push( batch.type );
 				} );
@@ -638,7 +637,7 @@ describe( 'DocumentSelection', () => {
 
 				model.on( 'applyOperation', ( event, args ) => {
 					const operation = args[ 0 ];
-					const batch = operation.delta.batch;
+					const batch = operation.batch;
 
 					batchTypes.set( batch, batch.type );
 				} );
@@ -692,25 +691,6 @@ describe( 'DocumentSelection', () => {
 				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
 			} );
 
-			it( 'are removed only once in case of multi-op deltas', () => {
-				let batch;
-				const emptyP2 = new Element( 'p', null, 'x' );
-				root._appendChild( emptyP2 );
-
-				emptyP._setAttribute( fooStoreAttrKey, 'bar' );
-				emptyP2._setAttribute( fooStoreAttrKey, 'bar' );
-
-				model.change( writer => {
-					batch = writer.batch;
-					// <emptyP>{}<emptyP2>
-					writer.merge( Position.createAfter( emptyP ) );
-				} );
-
-				expect( emptyP.hasAttribute( fooStoreAttrKey ) ).to.be.false;
-				// Attribute delta is only one.
-				expect( Array.from( batch.deltas, delta => delta.type ) ).to.deep.equal( [ 'merge', 'attribute' ] );
-			} );
-
 			it( 'uses model change to clear attributes', () => {
 				selection._setTo( [ rangeInEmptyP ] );
 
@@ -745,7 +725,7 @@ describe( 'DocumentSelection', () => {
 				expect( emptyP.parent ).to.equal( root ); // Just to be sure we're checking the right element.
 			} );
 
-			// Rename and some other deltas don't specify range in doc#change event.
+			// Rename and some other operations don't specify range in doc#change event.
 			// So let's see if there's no crash or something.
 			it( 'are not removed on rename', () => {
 				model.change( writer => {
@@ -922,13 +902,13 @@ describe( 'DocumentSelection', () => {
 					expect( data.directChange ).to.be.false;
 				} );
 
-				model.applyOperation( wrapInDelta(
+				model.applyOperation(
 					new InsertOperation(
 						new Position( root, [ 0, 1 ] ),
 						'xyz',
 						doc.version
 					)
-				) );
+				);
 
 				const range = selection.getFirstRange();
 
@@ -942,13 +922,13 @@ describe( 'DocumentSelection', () => {
 					expect( data.directChange ).to.be.false;
 				} );
 
-				model.applyOperation( wrapInDelta(
+				model.applyOperation(
 					new InsertOperation(
 						new Position( root, [ 1, 0 ] ),
 						'xyz',
 						doc.version
 					)
-				) );
+				);
 
 				const range = selection.getFirstRange();
 
@@ -964,14 +944,14 @@ describe( 'DocumentSelection', () => {
 					expect( data.directChange ).to.be.false;
 				} );
 
-				model.applyOperation( wrapInDelta(
+				model.applyOperation(
 					new MoveOperation(
 						new Position( root, [ 0, 0 ] ),
 						2,
 						new Position( root, [ 2 ] ),
 						doc.version
 					)
-				) );
+				);
 
 				const range = selection.getFirstRange();
 
@@ -985,14 +965,14 @@ describe( 'DocumentSelection', () => {
 					expect( data.directChange ).to.be.false;
 				} );
 
-				model.applyOperation( wrapInDelta(
+				model.applyOperation(
 					new MoveOperation(
 						new Position( root, [ 2 ] ),
 						2,
 						new Position( root, [ 0, 0 ] ),
 						doc.version
 					)
-				) );
+				);
 
 				const range = selection.getFirstRange();
 
@@ -1006,14 +986,14 @@ describe( 'DocumentSelection', () => {
 					expect( data.directChange ).to.be.false;
 				} );
 
-				model.applyOperation( wrapInDelta(
+				model.applyOperation(
 					new MoveOperation(
 						new Position( root, [ 1, 0 ] ),
 						2,
 						new Position( root, [ 2 ] ),
 						doc.version
 					)
-				) );
+				);
 
 				const range = selection.getFirstRange();
 
@@ -1027,19 +1007,19 @@ describe( 'DocumentSelection', () => {
 					expect( data.directChange ).to.be.false;
 				} );
 
-				model.applyOperation( wrapInDelta(
+				model.applyOperation(
 					new MoveOperation(
 						new Position( root, [ 1, 3 ] ),
 						2,
 						new Position( root, [ 4 ] ),
 						doc.version
 					)
-				) );
+				);
 
 				const range = selection.getFirstRange();
 
 				expect( range.start.path ).to.deep.equal( [ 0, 2 ] );
-				expect( range.end.path ).to.deep.equal( [ 5 ] );
+				expect( range.end.path ).to.deep.equal( [ 1, 3 ] );
 				expect( spyRange.calledOnce ).to.be.true;
 			} );
 
@@ -1049,28 +1029,10 @@ describe( 'DocumentSelection', () => {
 				} );
 
 				const batch = new Batch();
-				const splitDelta = new SplitDelta();
+				const splitOperation = new SplitOperation( new Position( root, [ 1, 2 ] ), null, 0 );
 
-				const insertOperation = new InsertOperation(
-					new Position( root, [ 2 ] ),
-					new Element( 'p' ),
-					0
-				);
-
-				const moveOperation = new MoveOperation(
-					new Position( root, [ 1, 2 ] ),
-					4,
-					new Position( root, [ 2, 0 ] ),
-					1
-				);
-
-				batch.addDelta( splitDelta );
-
-				splitDelta.addOperation( insertOperation );
-				splitDelta.addOperation( moveOperation );
-
-				model.applyOperation( insertOperation );
-				model.applyOperation( moveOperation );
+				batch.addOperation( splitOperation );
+				model.applyOperation( splitOperation );
 
 				const range = selection.getFirstRange();
 
@@ -1090,7 +1052,7 @@ describe( 'DocumentSelection', () => {
 					expect( data.attributeKeys ).to.deep.equal( [ 'foo' ] );
 				} );
 
-				model.applyOperation( wrapInDelta(
+				model.applyOperation(
 					new AttributeOperation(
 						new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 5 ] ) ),
 						'foo',
@@ -1098,7 +1060,7 @@ describe( 'DocumentSelection', () => {
 						'bar',
 						doc.version
 					)
-				) );
+				);
 
 				// Attributes are auto updated on document change.
 				model.change( () => {} );
@@ -1113,7 +1075,7 @@ describe( 'DocumentSelection', () => {
 				const spyAttribute = sinon.spy();
 				selection.on( 'change:attribute', spyAttribute );
 
-				model.applyOperation( wrapInDelta(
+				model.applyOperation(
 					new AttributeOperation(
 						new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 5 ] ) ),
 						'foo',
@@ -1121,7 +1083,7 @@ describe( 'DocumentSelection', () => {
 						'bar',
 						doc.version
 					)
-				) );
+				);
 
 				expect( selection.getAttribute( 'foo' ) ).to.equal( 'xyz' );
 				expect( spyAttribute.called ).to.be.false;
@@ -1133,7 +1095,7 @@ describe( 'DocumentSelection', () => {
 				const spyAttribute = sinon.spy();
 				selection.on( 'change:attribute', spyAttribute );
 
-				model.applyOperation( wrapInDelta(
+				model.applyOperation(
 					new AttributeOperation(
 						new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 5 ] ) ),
 						'foo',
@@ -1141,7 +1103,7 @@ describe( 'DocumentSelection', () => {
 						'xyz',
 						doc.version
 					)
-				) );
+				);
 
 				expect( selection.getAttribute( 'foo' ) ).to.equal( 'xyz' );
 				expect( spyAttribute.called ).to.be.false;
@@ -1154,7 +1116,7 @@ describe( 'DocumentSelection', () => {
 				const spyAttribute = sinon.spy();
 				selection.on( 'change:attribute', spyAttribute );
 
-				model.applyOperation( wrapInDelta(
+				model.applyOperation(
 					new AttributeOperation(
 						new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 0, 5 ] ) ),
 						'foo',
@@ -1162,7 +1124,7 @@ describe( 'DocumentSelection', () => {
 						'bar',
 						doc.version
 					)
-				) );
+				);
 
 				expect( selection.hasAttribute( 'foo' ) ).to.be.false;
 				expect( spyAttribute.called ).to.be.false;
@@ -1173,14 +1135,14 @@ describe( 'DocumentSelection', () => {
 			it( 'fix selection range if it ends up in graveyard #1', () => {
 				selection._setTo( new Position( root, [ 1, 3 ] ) );
 
-				model.applyOperation( wrapInDelta(
+				model.applyOperation(
 					new RemoveOperation(
 						new Position( root, [ 1, 2 ] ),
 						2,
 						new Position( doc.graveyard, [ 0 ] ),
 						doc.version
 					)
-				) );
+				);
 
 				expect( selection.getFirstPosition().path ).to.deep.equal( [ 1, 2 ] );
 			} );
@@ -1188,14 +1150,14 @@ describe( 'DocumentSelection', () => {
 			it( 'fix selection range if it ends up in graveyard #2', () => {
 				selection._setTo( [ new Range( new Position( root, [ 1, 2 ] ), new Position( root, [ 1, 4 ] ) ) ] );
 
-				model.applyOperation( wrapInDelta(
+				model.applyOperation(
 					new RemoveOperation(
 						new Position( root, [ 1, 2 ] ),
 						2,
 						new Position( doc.graveyard, [ 0 ] ),
 						doc.version
 					)
-				) );
+				);
 
 				expect( selection.getFirstPosition().path ).to.deep.equal( [ 1, 2 ] );
 			} );
@@ -1203,37 +1165,37 @@ describe( 'DocumentSelection', () => {
 			it( 'fix selection range if it ends up in graveyard #3', () => {
 				selection._setTo( [ new Range( new Position( root, [ 1, 1 ] ), new Position( root, [ 1, 2 ] ) ) ] );
 
-				model.applyOperation( wrapInDelta(
+				model.applyOperation(
 					new RemoveOperation(
 						new Position( root, [ 1 ] ),
 						2,
 						new Position( doc.graveyard, [ 0 ] ),
 						doc.version
 					)
-				) );
+				);
 
 				expect( selection.getFirstPosition().path ).to.deep.equal( [ 0, 6 ] );
 			} );
 
 			it( 'fix selection range if it ends up in graveyard #4 - whole content removed', () => {
-				model.applyOperation( wrapInDelta(
+				model.applyOperation(
 					new RemoveOperation(
 						new Position( root, [ 0 ] ),
 						3,
 						new Position( doc.graveyard, [ 0 ] ),
 						doc.version
 					)
-				) );
+				);
 
 				expect( selection.getFirstPosition().path ).to.deep.equal( [ 0 ] );
 
-				model.applyOperation( wrapInDelta(
+				model.applyOperation(
 					new InsertOperation(
 						new Position( root, [ 0 ] ),
 						new Element( 'p' ),
 						doc.version
 					)
-				) );
+				);
 
 				// Now it's clear that it's the default range.
 				expect( selection.getFirstPosition().path ).to.deep.equal( [ 0, 0 ] );
@@ -1256,13 +1218,13 @@ describe( 'DocumentSelection', () => {
 			spyRange = sinon.spy();
 			selection.on( 'change:range', spyRange );
 
-			model.applyOperation( wrapInDelta(
+			model.applyOperation(
 				new InsertOperation(
 					new Position( root, [ 0 ] ),
 					'xyz #1',
 					doc.version
 				)
-			) );
+			);
 
 			expect( spyRange.calledOnce ).to.be.true;
 		} );

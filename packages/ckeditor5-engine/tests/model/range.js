@@ -9,26 +9,20 @@ import Element from '../../src/model/element';
 import Text from '../../src/model/text';
 import Model from '../../src/model/model';
 import TreeWalker from '../../src/model/treewalker';
-import MergeDelta from '../../src/model/delta/mergedelta';
+import AttributeOperation from '../../src/model/operation/attributeoperation';
+import InsertOperation from '../../src/model/operation/insertoperation';
 import MoveOperation from '../../src/model/operation/moveoperation';
 import RemoveOperation from '../../src/model/operation/removeoperation';
+import RenameOperation from '../../src/model/operation/renameoperation';
+import MergeOperation from '../../src/model/operation/mergeoperation';
+import SplitOperation from '../../src/model/operation/splitoperation';
+import WrapOperation from '../../src/model/operation/wrapoperation';
+import UnwrapOperation from '../../src/model/operation/unwrapoperation';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import { jsonParseStringify } from '../../tests/model/_utils/utils';
 
-import {
-	getAttributeDelta,
-	getInsertDelta,
-	getMoveDelta,
-	getRemoveDelta,
-	getRenameDelta,
-	getSplitDelta,
-	getMergeDelta,
-	getWrapDelta,
-	getUnwrapDelta
-} from '../../tests/model/delta/transform/_utils/utils';
-
 describe( 'Range', () => {
-	let doc, range, start, end, root, otherRoot;
+	let doc, range, start, end, root, otherRoot, gy;
 
 	beforeEach( () => {
 		const model = new Model();
@@ -36,6 +30,7 @@ describe( 'Range', () => {
 		doc = model.document;
 		root = doc.createRoot();
 		otherRoot = doc.createRoot( '$root', 'otherRoot' );
+		gy = doc.graveyard;
 
 		start = new Position( root, [ 1 ] );
 		end = new Position( root, [ 2 ] );
@@ -534,14 +529,6 @@ describe( 'Range', () => {
 			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 3, 11 ] );
 		} );
 
-		it( 'should expand range if insertion is equal to start boundary of the range and sticky flag is set', () => {
-			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 8 ] ) );
-			const transformed = range._getTransformedByInsertion( new Position( root, [ 3, 2 ] ), 3, false, true );
-
-			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 2 ] );
-			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 3, 11 ] );
-		} );
-
 		it( 'should not update positions if insertion is before range (but not equal to the start boundary)', () => {
 			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 8 ] ) );
 			const transformed = range._getTransformedByInsertion( new Position( root, [ 3, 1 ] ), 3 );
@@ -558,28 +545,12 @@ describe( 'Range', () => {
 			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 4, 4 ] );
 		} );
 
-		it( 'should expand range if insertion is equal to end boundary of the range and sticky flag is set', () => {
-			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 4, 4 ] ) );
-			const transformed = range._getTransformedByInsertion( new Position( root, [ 4, 4 ] ), 3, false, true );
-
-			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 2 ] );
-			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 4, 7 ] );
-		} );
-
 		it( 'should not update positions if insertion is after range (but not equal to the end boundary)', () => {
 			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 4, 4 ] ) );
 			const transformed = range._getTransformedByInsertion( new Position( root, [ 4, 5 ] ), 3 );
 
 			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 2 ] );
 			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 4, 4 ] );
-		} );
-
-		it( 'should expand range after inserted nodes if the range is collapsed and isSticky is true', () => {
-			const range = new Range( new Position( root, [ 3, 2 ] ), new Position( root, [ 3, 2 ] ) );
-			const transformed = range._getTransformedByInsertion( new Position( root, [ 3, 2 ] ), 3, false, true );
-
-			expect( transformed[ 0 ].start.path ).to.deep.equal( [ 3, 2 ] );
-			expect( transformed[ 0 ].end.path ).to.deep.equal( [ 3, 5 ] );
 		} );
 	} );
 
@@ -799,9 +770,12 @@ describe( 'Range', () => {
 
 	// Note: We don't create model element structure in these tests because this method
 	// is used by OT so it must not check the structure.
-	describe( 'getTransformedByDelta()', () => {
+	describe( 'getTransformedByOperation()', () => {
+		let gyPos;
+
 		beforeEach( () => {
 			range = Range.createFromParentsAndOffsets( root, 2, root, 5 );
+			gyPos = new Position( gy, [ 0 ] );
 		} );
 
 		function expectRange( range, startOffset, endOffset ) {
@@ -809,45 +783,45 @@ describe( 'Range', () => {
 			expect( range.end.offset ).to.equal( endOffset );
 		}
 
-		describe( 'by AttributeDelta', () => {
+		describe( 'by AttributeOperation', () => {
 			it( 'nothing should change', () => {
-				const delta = getAttributeDelta( Range.createFromParentsAndOffsets( root, 1, root, 6 ), 'key', true, false, 1 );
-				const transformed = range.getTransformedByDelta( delta );
+				const op = new AttributeOperation( Range.createFromParentsAndOffsets( root, 1, root, 6 ), 'key', true, false, 1 );
+				const transformed = range.getTransformedByOperation( op );
 
 				expectRange( transformed[ 0 ], 2, 5 );
 			} );
 		} );
 
-		describe( 'by InsertDelta', () => {
+		describe( 'by InsertOperation', () => {
 			it( 'insert before range', () => {
-				const delta = getInsertDelta( new Position( root, [ 1 ] ), new Text( 'abc' ), 1 );
-				const transformed = range.getTransformedByDelta( delta );
+				const op = new InsertOperation( new Position( root, [ 1 ] ), new Text( 'abc' ), 1 );
+				const transformed = range.getTransformedByOperation( op );
 
 				expectRange( transformed[ 0 ], 5, 8 );
 			} );
 
 			it( 'insert inside range', () => {
-				const delta = getInsertDelta( new Position( root, [ 3 ] ), new Text( 'abc' ), 1 );
-				const transformed = range.getTransformedByDelta( delta );
+				const op = new InsertOperation( new Position( root, [ 3 ] ), new Text( 'abc' ), 1 );
+				const transformed = range.getTransformedByOperation( op );
 
 				expectRange( transformed[ 0 ], 2, 8 );
 			} );
 
 			it( 'insert after range', () => {
-				const delta = getInsertDelta( new Position( root, [ 6 ] ), new Text( 'abc' ), 1 );
-				const transformed = range.getTransformedByDelta( delta );
+				const op = new InsertOperation( new Position( root, [ 6 ] ), new Text( 'abc' ), 1 );
+				const transformed = range.getTransformedByOperation( op );
 
 				expectRange( transformed[ 0 ], 2, 5 );
 			} );
 		} );
 
-		describe( 'by MoveDelta', () => {
+		describe( 'by MoveOperation', () => {
 			it( 'move before range', () => {
 				const start = new Position( root, [ 0 ] );
 				const target = new Position( otherRoot, [ 0 ] );
-				const delta = getMoveDelta( start, 2, target, 1 );
+				const op = new MoveOperation( start, 2, target, 1 );
 
-				const transformed = range.getTransformedByDelta( delta );
+				const transformed = range.getTransformedByOperation( op );
 
 				expectRange( transformed[ 0 ], 0, 3 );
 			} );
@@ -855,9 +829,9 @@ describe( 'Range', () => {
 			it( 'move intersecting with range (and targeting before range)', () => {
 				const start = new Position( root, [ 4 ] );
 				const target = new Position( root, [ 0 ] );
-				const delta = getMoveDelta( start, 2, target, 1 );
+				const op = new MoveOperation( start, 2, target, 1 );
 
-				const transformed = range.getTransformedByDelta( delta );
+				const transformed = range.getTransformedByOperation( op );
 
 				expectRange( transformed[ 0 ], 4, 6 );
 				expectRange( transformed[ 1 ], 0, 1 );
@@ -867,13 +841,13 @@ describe( 'Range', () => {
 				range.end.offset = 6;
 				const start = new Position( root, [ 3 ] );
 				const target = new Position( root, [ 5 ] );
-				const delta = getMoveDelta( start, 1, target, 1 );
+				const op = new MoveOperation( start, 1, target, 1 );
 
-				const transformed = range.getTransformedByDelta( delta );
+				const transformed = range.getTransformedByOperation( op );
 
 				expectRange( transformed[ 0 ], 2, 4 );
-				expectRange( transformed[ 1 ], 5, 6 );
-				expectRange( transformed[ 2 ], 4, 5 );
+				expectRange( transformed[ 1 ], 4, 5 );
+				expectRange( transformed[ 2 ], 5, 6 );
 			} );
 
 			// #877.
@@ -883,29 +857,15 @@ describe( 'Range', () => {
 				// Expected state after moving `<p>` out of `<w>`:
 				// <w><p>abc</p></w><p>x[x</p><p>d]ef</p>
 
-				const range = new Range( new Position( root, [ 0, 1, 1 ] ), new Position( root, [ 1, 1 ] ) );
-				const delta = getMoveDelta( new Position( root, [ 0, 1 ] ), 1, new Position( root, [ 1 ] ), 1 );
+				// <w><p>abc</p>{</w>}<p>x[x</p><p>d]ef</p>
 
-				const transformed = range.getTransformedByDelta( delta );
+				const range = new Range( new Position( root, [ 0, 1, 1 ] ), new Position( root, [ 1, 1 ] ) );
+				const op = new MoveOperation( new Position( root, [ 0, 1 ] ), 1, new Position( root, [ 1 ] ), 1 );
+
+				const transformed = range.getTransformedByOperation( op );
 
 				expect( transformed.length ).to.equal( 1 );
 				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 1, 1 ] );
-				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 2, 1 ] );
-			} );
-
-			it( 'moved element contains range start and is moved out of range', () => {
-				// Initial state:
-				// <p>abc</p><p>x[x</p><p>d]ef</p>
-				// Expected state after moving:
-				// <p>x[x</p><p>abc</p><p>d]ef</p>
-
-				const range = new Range( new Position( root, [ 1, 1 ] ), new Position( root, [ 2, 1 ] ) );
-				const delta = getMoveDelta( new Position( root, [ 1 ] ), 1, new Position( root, [ 0 ] ), 1 );
-
-				const transformed = range.getTransformedByDelta( delta );
-
-				expect( transformed.length ).to.equal( 1 );
-				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 1 ] );
 				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 2, 1 ] );
 			} );
 
@@ -916,37 +876,21 @@ describe( 'Range', () => {
 				// <p>a[bc</p><p>x]x</p><p>def</p>
 
 				const range = new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 2, 1 ] ) );
-				const delta = getMoveDelta( new Position( root, [ 2 ] ), 1, new Position( root, [ 1 ] ), 1 );
+				const op = new MoveOperation( new Position( root, [ 2 ] ), 1, new Position( root, [ 1 ] ), 1 );
 
-				const transformed = range.getTransformedByDelta( delta );
+				const transformed = range.getTransformedByOperation( op );
 
 				expect( transformed.length ).to.equal( 1 );
 				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 1 ] );
 				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 1, 1 ] );
 			} );
 
-			it( 'moved element contains range end and is moved out of range', () => {
-				// Initial state:
-				// <p>a[bc</p><p>x]x</p><p>def</p>
-				// Expected state after moving:
-				// <p>a[bc</p><p>def</p><p>x]x</p>
-
-				const range = new Range( new Position( root, [ 0, 1 ] ), new Position( root, [ 1, 1 ] ) );
-				const delta = getMoveDelta( new Position( root, [ 1 ] ), 1, new Position( root, [ 3 ] ), 1 );
-
-				const transformed = range.getTransformedByDelta( delta );
-
-				expect( transformed.length ).to.equal( 1 );
-				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 1 ] );
-				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 2, 1 ] );
-			} );
-
 			// #1358
-			it( 'should not crash and not transform the range if move delta moves 0 nodes', () => {
+			it( 'should not crash and not transform the range if move operation moves 0 nodes', () => {
 				const range = new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 0, 4 ] ) );
-				const delta = getMoveDelta( new Position( root, [ 0, 1 ] ), 0, new Position( root, [ 0, 3 ] ), 1 );
+				const op = new MoveOperation( new Position( root, [ 0, 1 ] ), 0, new Position( root, [ 0, 3 ] ), 1 );
 
-				const transformed = range.getTransformedByDelta( delta );
+				const transformed = range.getTransformedByOperation( op );
 
 				expect( transformed.length ).to.equal( 1 );
 				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 2 ] );
@@ -954,21 +898,21 @@ describe( 'Range', () => {
 			} );
 		} );
 
-		describe( 'by RemoveDelta', () => {
+		describe( 'by RemoveOperation', () => {
 			it( 'remove before range', () => {
 				const start = new Position( root, [ 0 ] );
-				const delta = getRemoveDelta( start, 2, 1 );
+				const op = new RemoveOperation( start, 2, gyPos, 1 );
 
-				const transformed = range.getTransformedByDelta( delta );
+				const transformed = range.getTransformedByOperation( op );
 
 				expectRange( transformed[ 0 ], 0, 3 );
 			} );
 
 			it( 'remove intersecting with range', () => {
 				const start = new Position( root, [ 4 ] );
-				const delta = getRemoveDelta( start, 2, 1 );
+				const op = new RemoveOperation( start, 2, gyPos, 1 );
 
-				const transformed = range.getTransformedByDelta( delta );
+				const transformed = range.getTransformedByOperation( op );
 
 				expectRange( transformed[ 0 ], 2, 4 );
 				expect( transformed[ 1 ].root ).to.equal( doc.graveyard );
@@ -977,9 +921,10 @@ describe( 'Range', () => {
 
 			it( 'remove inside the range', () => {
 				const start = new Position( root, [ 3 ] );
-				const delta = getRemoveDelta( start, 2, 1 );
 
-				const transformed = range.getTransformedByDelta( delta );
+				const op = new RemoveOperation( start, 2, gyPos, 1 );
+
+				const transformed = range.getTransformedByOperation( op );
 
 				expectRange( transformed[ 0 ], 2, 3 );
 				expect( transformed[ 1 ].root ).to.equal( doc.graveyard );
@@ -987,23 +932,21 @@ describe( 'Range', () => {
 			} );
 		} );
 
-		describe( 'by RenameDelta', () => {
+		describe( 'by RenameOperation', () => {
 			it( 'nothing should change', () => {
-				const delta = getRenameDelta( new Position( root, [ 3 ] ), 'old', 'new', 1 );
-				const transformed = range.getTransformedByDelta( delta );
+				const op = new RenameOperation( new Position( root, [ 3 ] ), 'old', 'new', 1 );
+				const transformed = range.getTransformedByOperation( op );
 
 				expectRange( transformed[ 0 ], 2, 5 );
 			} );
 		} );
 
-		describe( 'by SplitDelta', () => {
+		describe( 'by SplitOperation', () => {
 			it( 'split inside range', () => {
-				range.start = new Position( root, [ 0, 2 ] );
-				range.end = new Position( root, [ 0, 4 ] );
+				range = new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 0, 4 ] ) );
 
-				const delta = getSplitDelta( new Position( root, [ 0, 3 ] ), new Element( 'p' ), 3, 1 );
-
-				const transformed = range.getTransformedByDelta( delta );
+				const op = new SplitOperation( new Position( root, [ 0, 3 ] ), gyPos, 1 );
+				const transformed = range.getTransformedByOperation( op );
 
 				expect( transformed.length ).to.equal( 1 );
 				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 2 ] );
@@ -1011,12 +954,10 @@ describe( 'Range', () => {
 			} );
 
 			it( 'split at the beginning of multi-element range', () => {
-				range.start = new Position( root, [ 0, 4 ] );
-				range.end = new Position( root, [ 1, 2 ] );
+				range = new Range( new Position( root, [ 0, 4 ] ), new Position( root, [ 1, 2 ] ) );
 
-				const delta = getSplitDelta( new Position( root, [ 0, 4 ] ), new Element( 'p' ), 3, 1 );
-
-				const transformed = range.getTransformedByDelta( delta );
+				const op = new SplitOperation( new Position( root, [ 0, 4 ] ), gyPos, 1 );
+				const transformed = range.getTransformedByOperation( op );
 
 				expect( transformed.length ).to.equal( 1 );
 				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 1, 0 ] );
@@ -1024,12 +965,10 @@ describe( 'Range', () => {
 			} );
 
 			it( 'split inside range which starts at the beginning of split element', () => {
-				range.start = new Position( root, [ 0, 0 ] );
-				range.end = new Position( root, [ 0, 4 ] );
+				range = new Range( new Position( root, [ 0, 0 ] ), new Position( root, [ 0, 4 ] ) );
 
-				const delta = getSplitDelta( new Position( root, [ 0, 3 ] ), new Element( 'p' ), 3, 1 );
-
-				const transformed = range.getTransformedByDelta( delta );
+				const op = new SplitOperation( new Position( root, [ 0, 3 ] ), gyPos, 1 );
+				const transformed = range.getTransformedByOperation( op );
 
 				expect( transformed.length ).to.equal( 1 );
 				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 0 ] );
@@ -1037,12 +976,10 @@ describe( 'Range', () => {
 			} );
 
 			it( 'split inside range which end is at the end of split element', () => {
-				range.start = new Position( root, [ 0, 3 ] );
-				range.end = new Position( root, [ 0, 6 ] );
+				range = new Range( new Position( root, [ 0, 3 ] ), new Position( root, [ 0, 6 ] ) );
 
-				const delta = getSplitDelta( new Position( root, [ 0, 4 ] ), new Element( 'p' ), 2, 1 );
-
-				const transformed = range.getTransformedByDelta( delta );
+				const op = new SplitOperation( new Position( root, [ 0, 4 ] ), gyPos, 1 );
+				const transformed = range.getTransformedByOperation( op );
 
 				expect( transformed.length ).to.equal( 1 );
 				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 3 ] );
@@ -1050,12 +987,10 @@ describe( 'Range', () => {
 			} );
 
 			it( 'split element which has collapsed range at the end', () => {
-				range.start = new Position( root, [ 0, 6 ] );
-				range.end = new Position( root, [ 0, 6 ] );
+				range = new Range( new Position( root, [ 0, 6 ] ), new Position( root, [ 0, 6 ] ) );
 
-				const delta = getSplitDelta( new Position( root, [ 0, 3 ] ), new Element( 'p' ), 3, 1 );
-
-				const transformed = range.getTransformedByDelta( delta );
+				const op = new SplitOperation( new Position( root, [ 0, 3 ] ), gyPos, 1 );
+				const transformed = range.getTransformedByOperation( op );
 
 				expect( transformed.length ).to.equal( 1 );
 				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 1, 3 ] );
@@ -1063,14 +998,37 @@ describe( 'Range', () => {
 			} );
 		} );
 
-		describe( 'by MergeDelta', () => {
+		describe( 'by MergeOperation', () => {
 			it( 'merge element with collapsed range', () => {
 				range.start = new Position( root, [ 1, 0 ] );
 				range.end = new Position( root, [ 1, 0 ] );
 
-				const delta = getMergeDelta( new Position( root, [ 1 ] ), 3, 3, 1 );
+				const op = new MergeOperation(
+					new Position( root, [ 1, 0 ] ),
+					new Position( root, [ 0, 3 ] ),
+					gyPos,
+					1
+				);
 
-				const transformed = range.getTransformedByDelta( delta );
+				const transformed = range.getTransformedByOperation( op );
+
+				expect( transformed.length ).to.equal( 1 );
+				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 3 ] );
+				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 0, 3 ] );
+			} );
+
+			it( 'merge element with collapsed range #2', () => {
+				range.start = new Position( root, [ 1, 3 ] );
+				range.end = new Position( root, [ 1, 3 ] );
+
+				const op = new MergeOperation(
+					new Position( root, [ 0, 0 ] ),
+					new Position( root, [ 1, 3 ] ),
+					gyPos,
+					1
+				);
+
+				const transformed = range.getTransformedByOperation( op );
 
 				expect( transformed.length ).to.equal( 1 );
 				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 3 ] );
@@ -1085,56 +1043,32 @@ describe( 'Range', () => {
 				// <w><p>x[x</p><p>y]y</p></w>
 
 				const range = new Range( new Position( root, [ 0, 0, 1 ] ), new Position( root, [ 1, 0, 1 ] ) );
-				const delta = getMergeDelta( new Position( root, [ 1 ] ), 1, 1, 1 );
 
-				const transformed = range.getTransformedByDelta( delta );
+				const op = new MergeOperation(
+					new Position( root, [ 1, 0 ] ),
+					new Position( root, [ 0, 1 ] ),
+					gyPos,
+					1
+				);
+
+				const transformed = range.getTransformedByOperation( op );
 
 				expect( transformed.length ).to.equal( 1 );
 				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 0, 1 ] );
 				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 0, 1, 1 ] );
 			} );
-
-			// #1132.
-			it( 'merge delta has move operation that does not start from offset 0', () => {
-				// This scenario is a test for a rare situation, that after some OT, a move operation in
-				// merge delta does not start from 0 offset.
-				//
-				// It happens that move operation in merge delta becomes "do nothing move operation", something like:
-				//
-				// move range [ a, x ] - [ a, y ] to [ a, x ]
-				// for example: move [ 0, 3 ] - [ 0, 6 ] -> [ 0, 3 ]
-				//
-				// This is a result of valid transformation and we need to check if range is properly transformed
-				// when such unusual delta is generated.
-				// For more see: https://github.com/ckeditor/ckeditor5-engine/pull/1133#issuecomment-329080668.
-				//
-				// For this test scenario assume: <p>foobar[]</p>, "bar" is moved between "o" and "b".
-				// Expect state after transformation is that nothing has changed.
-				const range = new Range( new Position( root, [ 0, 6 ] ), new Position( root, [ 0, 6 ] ) );
-
-				const delta = new MergeDelta();
-				delta.addOperation( new MoveOperation( new Position( root, [ 0, 3 ] ), 3, new Position( root, [ 0, 3 ] ), 0 ) );
-				delta.addOperation( new RemoveOperation( new Position( root, [ 1 ] ), 1, new Position( doc.graveyard, [ 0 ] ), 1 ) );
-
-				const transformed = range.getTransformedByDelta( delta );
-
-				expect( transformed.length ).to.equal( 1 );
-				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 6 ] );
-				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 0, 6 ] );
-			} );
 		} );
 
-		describe( 'by WrapDelta', () => {
+		describe( 'by WrapOperation', () => {
 			it( 'maintans start position when wrapping element in which the range starts and ends', () => {
 				// <p>f[o]o</p><p>bar</p>
 				range.start = new Position( root, [ 0, 1 ] );
 				range.end = new Position( root, [ 0, 2 ] );
 
-				const wrapRange = new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
 				const wrapElement = new Element( 'w' );
-				const delta = getWrapDelta( wrapRange, wrapElement, 1 );
+				const op = new WrapOperation( new Position( root, [ 0 ] ), 1, wrapElement, 1 );
 
-				const transformed = range.getTransformedByDelta( delta );
+				const transformed = range.getTransformedByOperation( op );
 
 				// <w><p>f[o]o</p></w><p>bar</p>
 				expect( transformed.length ).to.equal( 1 );
@@ -1147,11 +1081,10 @@ describe( 'Range', () => {
 				range.start = new Position( root, [ 0, 1 ] );
 				range.end = new Position( root, [ 1, 1 ] );
 
-				const wrapRange = new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) );
 				const wrapElement = new Element( 'w' );
-				const delta = getWrapDelta( wrapRange, wrapElement, 1 );
+				const op = new WrapOperation( new Position( root, [ 0 ] ), 1, wrapElement, 1 );
 
-				const transformed = range.getTransformedByDelta( delta );
+				const transformed = range.getTransformedByOperation( op );
 
 				// <w><p>f[oo</p></w><p>b]ar</p>
 				expect( transformed.length ).to.equal( 1 );
@@ -1164,11 +1097,10 @@ describe( 'Range', () => {
 				range.start = new Position( root, [ 0, 1 ] );
 				range.end = new Position( root, [ 1, 1 ] );
 
-				const wrapRange = new Range( new Position( root, [ 1 ] ), new Position( root, [ 2 ] ) );
 				const wrapElement = new Element( 'w' );
-				const delta = getWrapDelta( wrapRange, wrapElement, 1 );
+				const op = new WrapOperation( new Position( root, [ 1 ] ), 1, wrapElement, 1 );
 
-				const transformed = range.getTransformedByDelta( delta );
+				const transformed = range.getTransformedByOperation( op );
 
 				// <p>f[oo</p><w><p>b]ar</p></w>
 				expect( transformed.length ).to.equal( 1 );
@@ -1177,16 +1109,16 @@ describe( 'Range', () => {
 			} );
 		} );
 
-		describe( 'by UnwrapDelta', () => {
+		describe( 'by UnwrapOperation', () => {
 			it( 'maintans start position when wrapping element in which the range starts and ends', () => {
 				// <w><p>f[o]o</p></w><p>bar</p>
 				range.start = new Position( root, [ 0, 0, 1 ] );
 				range.end = new Position( root, [ 0, 0, 2 ] );
 
-				const unwrapPosition = new Position( root, [ 0 ] );
-				const delta = getUnwrapDelta( unwrapPosition, 1, 1 );
+				const unwrapPosition = new Position( root, [ 0, 0 ] );
+				const op = new UnwrapOperation( unwrapPosition, 1, gyPos, 1 );
 
-				const transformed = range.getTransformedByDelta( delta );
+				const transformed = range.getTransformedByOperation( op );
 
 				// <p>f[o]o</p><p>bar</p>
 				expect( transformed.length ).to.equal( 1 );
@@ -1194,34 +1126,32 @@ describe( 'Range', () => {
 				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 0, 2 ] );
 			} );
 
-			it( 'maintans start position when wrapping element in which the range starts but not ends', () => {
+			it( 'maintans start position when unwrapping element in which the range starts but not ends', () => {
 				// <w><p>f[oo</p></w><p>b]ar</p>
 				range.start = new Position( root, [ 0, 0, 1 ] );
 				range.end = new Position( root, [ 1, 1 ] );
 
-				const unwrapPosition = new Position( root, [ 0 ] );
-				const delta = getUnwrapDelta( unwrapPosition, 1, 1 );
+				const unwrapPosition = new Position( root, [ 0, 0 ] );
+				const op = new UnwrapOperation( unwrapPosition, 1, gyPos, 1 );
 
-				const transformed = range.getTransformedByDelta( delta );
+				const transformed = range.getTransformedByOperation( op );
 
 				// <p>f[oo</p><p>b]ar</p>
-				expect( transformed.length ).to.equal( 2 );
+				expect( transformed.length ).to.equal( 1 );
 
 				expect( transformed[ 0 ].start.path ).to.deep.equal( [ 0, 1 ] );
 				expect( transformed[ 0 ].end.path ).to.deep.equal( [ 1, 1 ] );
-
-				expect( transformed[ 1 ].root.rootName ).to.equal( '$graveyard' );
 			} );
 
-			it( 'maintans end position when wrapping element in which the range ends but not starts', () => {
+			it( 'maintans end position when unwrapping element in which the range ends but not starts', () => {
 				// <p>f[oo</p><w><p>b]ar</p></w>
 				range.start = new Position( root, [ 0, 1 ] );
 				range.end = new Position( root, [ 1, 0, 1 ] );
 
-				const unwrapPosition = new Position( root, [ 1 ] );
-				const delta = getUnwrapDelta( unwrapPosition, 1, 1 );
+				const unwrapPosition = new Position( root, [ 1, 0 ] );
+				const op = new UnwrapOperation( unwrapPosition, 1, gyPos, 1 );
 
-				const transformed = range.getTransformedByDelta( delta );
+				const transformed = range.getTransformedByOperation( op );
 
 				// <p>f[oo</p><p>b]ar</p>
 				expect( transformed.length ).to.equal( 1 );
@@ -1231,7 +1161,7 @@ describe( 'Range', () => {
 		} );
 	} );
 
-	describe( 'getTransformedByDeltas()', () => {
+	describe( 'getTransformedByOperations()', () => {
 		beforeEach( () => {
 			root._appendChild( new Text( 'foobar' ) );
 			range = Range.createFromParentsAndOffsets( root, 2, root, 5 );
@@ -1242,32 +1172,33 @@ describe( 'Range', () => {
 			expect( range.end.offset ).to.equal( endOffset );
 		}
 
-		it( 'should return a range transformed by multiple deltas', () => {
-			const transformed = range.getTransformedByDeltas( [
-				getInsertDelta( new Position( root, [ 1 ] ), new Text( 'abc' ), 1 ), // Range becomes 5..8.
-				getInsertDelta( new Position( root, [ 6 ] ), new Text( 'xx' ), 2 ) // Range becomes 5..10.
+		it( 'should return a range transformed by multiple operations', () => {
+			const transformed = range.getTransformedByOperations( [
+				new InsertOperation( new Position( root, [ 1 ] ), new Text( 'abc' ), 1 ), // Range becomes 5..8.
+				new InsertOperation( new Position( root, [ 6 ] ), new Text( 'xx' ), 2 ) // Range becomes 5..10.
 			] );
 
 			expectRange( transformed[ 0 ], 5, 10 );
 		} );
 
 		it( 'should correctly handle breaking transformed range and all range "pieces"', () => {
-			const transformed = range.getTransformedByDeltas( [
-				getInsertDelta( new Position( root, [ 3 ] ), new Text( 'abc' ), 1 ), // Range becomes 2..8.
-				getMoveDelta( new Position( root, [ 4 ] ), 3, new Position( root, [ 9 ] ), 2 ), // Range becomes 2..5 and 6..9.
-				getInsertDelta( new Position( root, [ 0 ] ), new Text( 'x' ), 3 ), // Range becomes 3..6 and 7..10.
-				getMoveDelta( new Position( root, [ 9 ] ), 1, new Position( root, [ 4 ] ), 4 ), // Range becomes 3..7 and 8..10.
-				getMoveDelta( new Position( root, [ 6 ] ), 1, new Position( root, [ 1 ] ), 5 ) // Range becomes 1..2, 4..7 and 8..10.
+			const transformed = range.getTransformedByOperations( [
+				new InsertOperation( new Position( root, [ 3 ] ), new Text( 'abc' ), 1 ), // Range becomes 2..8.
+				new MoveOperation( new Position( root, [ 4 ] ), 3, new Position( root, [ 9 ] ), 2 ), // Range becomes 2..5 and 6..9.
+				new InsertOperation( new Position( root, [ 0 ] ), new Text( 'x' ), 3 ), // Range becomes 3..6 and 7..10.
+				new MoveOperation( new Position( root, [ 9 ] ), 1, new Position( root, [ 4 ] ), 4 ), // Range becomes 3..7 and 8..10.
+				new MoveOperation( new Position( root, [ 6 ] ), 1, new Position( root, [ 1 ] ), 5 ) // Range becomes 1..2, 4..7 and 8..10.
 			] );
 
 			expect( transformed.length ).to.equal( 3 );
+
 			expectRange( transformed[ 0 ], 4, 7 );
 			expectRange( transformed[ 1 ], 1, 2 );
 			expectRange( transformed[ 2 ], 8, 10 );
 		} );
 
-		it( 'should return range equal to original range for empty delta set', () => {
-			const transformed = range.getTransformedByDeltas( [] );
+		it( 'should return range equal to original range for empty operation set', () => {
+			const transformed = range.getTransformedByOperations( [] );
 
 			expectRange( transformed[ 0 ], 2, 5 );
 		} );

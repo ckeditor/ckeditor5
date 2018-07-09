@@ -24,7 +24,7 @@ import DocumentSelection from '../documentselection';
  * should be performed.
  * @param {module:engine/model/selection~Selection|module:engine/model/documentselection~DocumentSelection} selection
  * Selection of which the content should be deleted.
- * @param {module:engine/model/batch~Batch} batch Batch to which the deltas will be added.
+ * @param {module:engine/model/batch~Batch} batch Batch to which the operations will be added.
  * @param {Object} [options]
  * @param {Boolean} [options.leaveUnmerged=false] Whether to merge elements after removing the content of the selection.
  *
@@ -63,6 +63,7 @@ export default function deleteContent( model, selection, options = {} ) {
 		const selRange = selection.getFirstRange();
 		const startPos = selRange.start;
 		const endPos = LivePosition.createFromPosition( selRange.end );
+		endPos.stickiness = 'toNext';
 
 		// 2. Remove the content if there is any.
 		if ( !selRange.start.isTouching( selRange.end ) ) {

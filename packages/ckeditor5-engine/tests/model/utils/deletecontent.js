@@ -25,7 +25,7 @@ describe( 'DataController utils', () => {
 
 			model.change( writer => {
 				deleteContent( model, doc.selection );
-				expect( writer.batch.deltas ).to.length( 1 );
+				expect( writer.batch.operations ).to.length( 1 );
 			} );
 		} );
 
@@ -263,7 +263,7 @@ describe( 'DataController utils', () => {
 				'<heading1>[]bar</heading1>'
 			);
 
-			it( 'uses merge delta even if merged element is empty', () => {
+			it( 'uses merge operation even if merged element is empty', () => {
 				let mergeSpy;
 
 				setData( model, '<paragraph>ab[cd</paragraph><paragraph>efgh]</paragraph>' );
@@ -278,7 +278,7 @@ describe( 'DataController utils', () => {
 				expect( mergeSpy.called ).to.be.true;
 			} );
 
-			it( 'uses merge delta even if merged element is empty #2', () => {
+			it( 'uses merge operation even if merged element is empty #2', () => {
 				let mergeSpy;
 
 				setData( model, '<paragraph>ab[</paragraph><paragraph>]</paragraph>' );

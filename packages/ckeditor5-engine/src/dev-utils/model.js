@@ -32,7 +32,7 @@ import {
 	convertRangeSelection,
 	convertCollapsedSelection,
 } from '../conversion/downcast-selection-converters';
-import { insertText, insertElement, wrap } from '../conversion/downcast-converters';
+import { insertText, insertElement, wrap, insertUIElement } from '../conversion/downcast-converters';
 
 import isPlainObject from '@ckeditor/ckeditor5-utils/src/lib/lodash/isPlainObject';
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
@@ -50,6 +50,7 @@ import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
  * not be included in the returned string.
  * @param {String} [options.rootName='main'] The name of the root from which the data should be stringified. If not provided,
  * the default `main` name will be used.
+ * @param {Boolean} [options.convertMarkers=false] Whether to include markers in the returned string.
  * @returns {String} The stringified data.
  */
 export function getData( model, options = {} ) {
@@ -57,11 +58,14 @@ export function getData( model, options = {} ) {
 		throw new TypeError( 'Model needs to be an instance of module:engine/model/model~Model.' );
 	}
 
-	const withoutSelection = options.withoutSelection;
 	const rootName = options.rootName || 'main';
 	const root = model.document.getRoot( rootName );
 
-	return withoutSelection ? getData._stringify( root ) : getData._stringify( root, model.document.selection );
+	return getData._stringify(
+		root,
+		options.withoutSelection ? null : model.document.selection,
+		options.convertMarkers ? model.markers : null
+	);
 }
 
 // Set stringify as getData private method - needed for testing/spying.
@@ -155,9 +159,10 @@ setData._parse = parse;
  * A selection instance whose ranges will be included in the returned string data. If a range instance is provided, it will be
  * converted to a selection containing this range. If a position instance is provided, it will be converted to a selection
  * containing one range collapsed at this position.
+ * @param {Iterable.<module:engine/model/markercollection~Marker>|null} markers Markers to include.
  * @returns {String} An HTML-like string representing the model.
  */
-export function stringify( node, selectionOrPositionOrRange = null ) {
+export function stringify( node, selectionOrPositionOrRange = null, markers = null ) {
 	const model = new Model();
 	const mapper = new Mapper();
 	let selection, range;
@@ -227,6 +232,11 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 	} ) );
 	downcastDispatcher.on( 'selection', convertRangeSelection() );
 	downcastDispatcher.on( 'selection', convertCollapsedSelection() );
+	downcastDispatcher.on( 'addMarker', insertUIElement( ( data, writer ) => {
+		const name = data.markerName + ':' + ( data.isOpening ? 'start' : 'end' );
+
+		return writer.createUIElement( name );
+	} ) );
 
 	// Convert model to view.
 	const writer = view._writer;
@@ -234,7 +244,16 @@ export function stringify( node, selectionOrPositionOrRange = null ) {
 
 	// Convert model selection to view selection.
 	if ( selection ) {
-		downcastDispatcher.convertSelection( selection, model.markers, writer );
+		downcastDispatcher.convertSelection( selection, markers || model.markers, writer );
+	}
+
+	if ( markers ) {
+		// To provide stable results, sort markers by name.
+		markers = Array.from( markers ).sort( ( a, b ) => a.name < b.name );
+
+		for ( const marker of markers ) {
+			downcastDispatcher.convertMarkerAdd( marker.name, marker.getRange(), writer );
+		}
 	}
 
 	// Parse view to data string.

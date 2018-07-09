@@ -67,8 +67,6 @@ export default class Document {
 		/**
 		 * The document's history.
 		 *
-		 * **Note:** Be aware that deltas applied to the document might get removed or changed.
-		 *
 		 * @readonly
 		 * @member {module:engine/model/history~History}
 		 */
@@ -143,7 +141,7 @@ export default class Document {
 
 			if ( operation.isDocumentOperation ) {
 				this.version++;
-				this.history.addDelta( operation.delta );
+				this.history.addOperation( operation );
 			}
 		}, { priority: 'low' } );
 

@@ -8,7 +8,7 @@ import Element from '../../../src/model/element';
 import RenameOperation from '../../../src/model/operation/renameoperation';
 import Position from '../../../src/model/position';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import { jsonParseStringify, wrapInDelta } from '../../../tests/model/_utils/utils';
+import { jsonParseStringify } from '../../../tests/model/_utils/utils';
 
 describe( 'RenameOperation', () => {
 	const oldName = 'oldName';
@@ -36,7 +36,7 @@ describe( 'RenameOperation', () => {
 	it( 'should change name of given element', () => {
 		const op = new RenameOperation( position, oldName, newName, doc.version );
 
-		model.applyOperation( wrapInDelta( op ) );
+		model.applyOperation( op );
 
 		expect( element.name ).to.equal( newName );
 	} );
@@ -56,8 +56,8 @@ describe( 'RenameOperation', () => {
 		const op = new RenameOperation( position, oldName, newName, doc.version );
 		const reverse = op.getReversed();
 
-		model.applyOperation( wrapInDelta( op ) );
-		model.applyOperation( wrapInDelta( reverse ) );
+		model.applyOperation( op );
+		model.applyOperation( reverse );
 
 		expect( doc.version ).to.equal( 2 );
 		expect( element.name ).to.equal( oldName );

@@ -11,7 +11,7 @@ import Position from '../../../src/model/position';
 import Range from '../../../src/model/range';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import count from '@ckeditor/ckeditor5-utils/src/count';
-import { jsonParseStringify, wrapInDelta } from '../../../tests/model/_utils/utils';
+import { jsonParseStringify } from '../../../tests/model/_utils/utils';
 
 describe( 'AttributeOperation', () => {
 	let model, doc, root;
@@ -63,7 +63,7 @@ describe( 'AttributeOperation', () => {
 	it( 'should insert attribute to the set of nodes', () => {
 		root._insertChild( 0, new Text( 'bar' ) );
 
-		model.applyOperation( wrapInDelta(
+		model.applyOperation(
 			new AttributeOperation(
 				new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) ),
 				'isNew',
@@ -71,7 +71,7 @@ describe( 'AttributeOperation', () => {
 				true,
 				doc.version
 			)
-		) );
+		);
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.maxOffset ).to.equal( 3 );
@@ -84,7 +84,7 @@ describe( 'AttributeOperation', () => {
 	it( 'should add attribute to the existing attributes', () => {
 		root._insertChild( 0, new Text( 'x', { foo: true, bar: true } ) );
 
-		model.applyOperation( wrapInDelta(
+		model.applyOperation(
 			new AttributeOperation(
 				new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ),
 				'isNew',
@@ -92,7 +92,7 @@ describe( 'AttributeOperation', () => {
 				true,
 				doc.version
 			)
-		) );
+		);
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.maxOffset ).to.equal( 1 );
@@ -105,7 +105,7 @@ describe( 'AttributeOperation', () => {
 	it( 'should change attribute to the set of nodes', () => {
 		root._insertChild( 0, new Text( 'bar', { isNew: false } ) );
 
-		model.applyOperation( wrapInDelta(
+		model.applyOperation(
 			new AttributeOperation(
 				new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) ),
 				'isNew',
@@ -113,7 +113,7 @@ describe( 'AttributeOperation', () => {
 				true,
 				doc.version
 			)
-		) );
+		);
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.maxOffset ).to.equal( 3 );
@@ -126,7 +126,7 @@ describe( 'AttributeOperation', () => {
 	it( 'should change attribute in the middle of existing attributes', () => {
 		root._insertChild( 0, new Text( 'x', { foo: true, x: 1, bar: true } ) );
 
-		model.applyOperation( wrapInDelta(
+		model.applyOperation(
 			new AttributeOperation(
 				new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ),
 				'x',
@@ -134,7 +134,7 @@ describe( 'AttributeOperation', () => {
 				2,
 				doc.version
 			)
-		) );
+		);
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.maxOffset ).to.equal( 1 );
@@ -147,7 +147,7 @@ describe( 'AttributeOperation', () => {
 	it( 'should work correctly if old and new value are same', () => {
 		root._insertChild( 0, new Text( 'bar', { foo: 'bar' } ) );
 
-		model.applyOperation( wrapInDelta(
+		model.applyOperation(
 			new AttributeOperation(
 				new Range( new Position( root, [ 0 ] ), new Position( root, [ 2 ] ) ),
 				'foo',
@@ -155,7 +155,7 @@ describe( 'AttributeOperation', () => {
 				'bar',
 				doc.version
 			)
-		) );
+		);
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.childCount ).to.equal( 1 );
@@ -166,7 +166,7 @@ describe( 'AttributeOperation', () => {
 	it( 'should remove attribute', () => {
 		root._insertChild( 0, new Text( 'x', { foo: true, x: true, bar: true } ) );
 
-		model.applyOperation( wrapInDelta(
+		model.applyOperation(
 			new AttributeOperation(
 				new Range( new Position( root, [ 0 ] ), new Position( root, [ 1 ] ) ),
 				'x',
@@ -174,7 +174,7 @@ describe( 'AttributeOperation', () => {
 				null,
 				doc.version
 			)
-		) );
+		);
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.maxOffset ).to.equal( 1 );
@@ -275,52 +275,12 @@ describe( 'AttributeOperation', () => {
 
 		const reverse = operation.getReversed();
 
-		model.applyOperation( wrapInDelta( operation ) );
-		model.applyOperation( wrapInDelta( reverse ) );
+		model.applyOperation( operation );
+		model.applyOperation( reverse );
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.maxOffset ).to.equal( 3 );
 		expect( count( root.getChild( 0 ).getAttributes() ) ).to.equal( 0 );
-	} );
-
-	it( 'should not set attribute of element if change range starts in the middle of that element', () => {
-		const eleA = new Element( 'a', [], new Text( 'abc' ) );
-		const eleB = new Element( 'b', [], new Text( 'xyz' ) );
-
-		root._insertChild( 0, [ eleA, eleB ] );
-
-		model.applyOperation( wrapInDelta(
-			new AttributeOperation(
-				new Range( new Position( root, [ 0, 2 ] ), new Position( root, [ 1, 2 ] ) ),
-				'foo',
-				null,
-				true,
-				doc.version
-			)
-		) );
-
-		expect( root.getChild( 0 ).hasAttribute( 'foo' ) ).to.be.false;
-	} );
-
-	it( 'should not remove attribute of element if change range starts in the middle of that element', () => {
-		const fooAttr = { foo: true };
-
-		const eleA = new Element( 'a', fooAttr, new Text( 'abc' ) );
-		const eleB = new Element( 'b', fooAttr, new Text( 'xyz' ) );
-
-		root._insertChild( 0, [ eleA, eleB ] );
-
-		model.applyOperation( wrapInDelta(
-			new AttributeOperation(
-				new Range( new Position( root, [ 0, 3 ] ), new Position( root, [ 1, 0 ] ) ),
-				'foo',
-				true,
-				null,
-				doc.version
-			)
-		) );
-
-		expect( root.getChild( 0 ).hasAttribute( 'foo' ) ).to.be.true;
 	} );
 
 	it( 'should undo changing attribute by applying reverse operation', () => {
@@ -336,8 +296,8 @@ describe( 'AttributeOperation', () => {
 
 		const reverse = operation.getReversed();
 
-		model.applyOperation( wrapInDelta( operation ) );
-		model.applyOperation( wrapInDelta( reverse ) );
+		model.applyOperation( operation );
+		model.applyOperation( reverse );
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.maxOffset ).to.equal( 3 );
@@ -358,8 +318,8 @@ describe( 'AttributeOperation', () => {
 
 		const reverse = operation.getReversed();
 
-		model.applyOperation( wrapInDelta( operation ) );
-		model.applyOperation( wrapInDelta( reverse ) );
+		model.applyOperation( operation );
+		model.applyOperation( reverse );
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.maxOffset ).to.equal( 3 );
@@ -393,14 +353,14 @@ describe( 'AttributeOperation', () => {
 		root._insertChild( 0, new Text( 'abc', attrA ) );
 		root._insertChild( 1, new Text( 'xyz', attrB ) );
 
-		model.applyOperation( wrapInDelta(
+		model.applyOperation(
 			new AttributeOperation(
 				new Range( new Position( root, [ 1 ] ), new Position( root, [ 3 ] ) ),
 				'foo',
 				'a',
 				'b',
 				doc.version
-			) )
+			)
 		);
 
 		expect( root.getChild( 0 ).data ).to.equal( 'a' );

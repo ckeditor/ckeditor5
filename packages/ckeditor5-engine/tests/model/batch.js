@@ -4,90 +4,60 @@
  */
 
 import Batch from '../../src/model/batch';
-import Delta from '../../src/model/delta/delta';
 import Operation from '../../src/model/operation/operation';
 
 describe( 'Batch', () => {
 	describe( 'type', () => {
-		it( 'should default be "default"', () => {
+		it( 'should default to "default"', () => {
 			const batch = new Batch();
 
 			expect( batch.type ).to.equal( 'default' );
 		} );
 
 		it( 'should be set to the value set in constructor', () => {
-			const batch = new Batch( 'ignore' );
+			const batch = new Batch( 'transparent' );
 
-			expect( batch.type ).to.equal( 'ignore' );
+			expect( batch.type ).to.equal( 'transparent' );
+		} );
+	} );
+
+	describe( 'addOperation()', () => {
+		it( 'should add operation to the batch', () => {
+			const batch = new Batch();
+			const op = new Operation( 0 );
+
+			batch.addOperation( op );
+
+			expect( batch.operations.length ).to.equal( 1 );
+			expect( batch.operations[ 0 ] ).to.equal( op );
 		} );
 	} );
 
 	describe( 'baseVersion', () => {
-		it( 'should return base version of first delta from the batch', () => {
+		it( 'should return base version of the first operation from the batch', () => {
 			const batch = new Batch();
-			const delta = new Delta();
 			const operation = new Operation( 2 );
-			delta.addOperation( operation );
-			batch.addDelta( delta );
+			batch.addOperation( operation );
 
 			expect( batch.baseVersion ).to.equal( 2 );
 		} );
 
-		it( 'should return null if there are no deltas in batch', () => {
+		it( 'should return null if there are no operations in batch', () => {
 			const batch = new Batch();
 
 			expect( batch.baseVersion ).to.be.null;
 		} );
 
-		it( 'should return null if all deltas in batch have base version set to null', () => {
+		it( 'should return null if all operations in batch have base version set to null', () => {
 			const batch = new Batch();
 
-			const deltaA = new Delta();
-			deltaA.addOperation( new Operation( null ) );
+			const opA = new Operation( null );
+			const opB = new Operation( null );
 
-			const deltaB = new Delta();
-			deltaB.addOperation( new Operation( null ) );
-
-			batch.addDelta( deltaA );
-			batch.addDelta( deltaB );
+			batch.addOperation( opA );
+			batch.addOperation( opB );
 
 			expect( batch.baseVersion ).to.equal( null );
-		} );
-	} );
-
-	describe( 'addDelta()', () => {
-		it( 'should add delta to the batch', () => {
-			const batch = new Batch();
-			const deltaA = new Delta();
-			const deltaB = new Delta();
-			batch.addDelta( deltaA );
-			batch.addDelta( deltaB );
-
-			expect( batch.deltas.length ).to.equal( 2 );
-			expect( batch.deltas[ 0 ] ).to.equal( deltaA );
-			expect( batch.deltas[ 1 ] ).to.equal( deltaB );
-		} );
-	} );
-
-	describe( 'getOperations()', () => {
-		it( 'should return collection of operations from all deltas', () => {
-			const batch = new Batch();
-			const deltaA = new Delta();
-			const deltaB = new Delta();
-			const ops = [
-				new Operation( 0 ),
-				new Operation( 1 ),
-				new Operation( 2 )
-			];
-
-			batch.addDelta( deltaA );
-			deltaA.addOperation( ops[ 0 ] );
-			batch.addDelta( deltaB );
-			deltaA.addOperation( ops[ 1 ] );
-			deltaA.addOperation( ops[ 2 ] );
-
-			expect( Array.from( batch.getOperations() ) ).to.deep.equal( ops );
-			expect( batch.getOperations() ).to.have.property( 'next' );
 		} );
 	} );
 } );

@@ -8,7 +8,6 @@ import Document from '../../src/model/document';
 import RootElement from '../../src/model/rootelement';
 import Text from '../../src/model/text';
 import Batch from '../../src/model/batch';
-import Delta from '../../src/model/delta/delta';
 import Range from '../../src/model/range';
 import Collection from '@ckeditor/ckeditor5-utils/src/collection';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
@@ -37,7 +36,7 @@ describe( 'Document', () => {
 	} );
 
 	describe( 'model#applyOperation listener', () => {
-		let operation, data, delta, batch;
+		let operation, data, batch;
 
 		beforeEach( () => {
 			data = { data: 'x' };
@@ -50,19 +49,15 @@ describe( 'Document', () => {
 				_validate: () => {}
 			};
 
-			delta = new Delta();
-			delta.addOperation( operation );
-			delta.type = 'delta';
-
 			batch = new Batch();
-			batch.addDelta( delta );
+			batch.addOperation( operation );
 		} );
 
 		it( 'for document operation: should increase document version and execute operation', () => {
 			model.applyOperation( operation );
 
 			expect( doc.version ).to.equal( 1 );
-			expect( doc.history._deltas.length ).to.equal( 1 );
+			expect( doc.history._operations.length ).to.equal( 1 );
 			sinon.assert.calledOnce( operation._execute );
 		} );
 
@@ -72,7 +67,7 @@ describe( 'Document', () => {
 			model.applyOperation( operation );
 
 			expect( doc.version ).to.equal( 0 );
-			expect( doc.history._deltas.length ).to.equal( 0 );
+			expect( doc.history._operations.length ).to.equal( 0 );
 			sinon.assert.calledOnce( operation._execute );
 		} );
 

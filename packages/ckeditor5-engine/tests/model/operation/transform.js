@@ -21,7 +21,7 @@ import RenameOperation from '../../../src/model/operation/renameoperation';
 import NoOperation from '../../../src/model/operation/nooperation';
 
 describe( 'transform', () => {
-	let model, doc, root, op, nodeA, nodeB, expected, baseVersion;
+	let model, doc, root, op, nodeA, nodeB, expected;
 
 	beforeEach( () => {
 		model = new Model();
@@ -30,8 +30,6 @@ describe( 'transform', () => {
 
 		nodeA = new Node();
 		nodeB = new Node();
-
-		baseVersion = 0;
 	} );
 
 	function expectOperation( op, params ) {
@@ -64,12 +62,11 @@ describe( 'transform', () => {
 
 			position = new Position( root, [ 0, 2, 2 ] );
 
-			op = new InsertOperation( position, [ nodeA, nodeB ], baseVersion );
+			op = new InsertOperation( position, [ nodeA, nodeB ], 0 );
 
 			expected = {
 				type: InsertOperation,
-				position: Position.createFromPosition( position ),
-				baseVersion: baseVersion + 1
+				position: Position.createFromPosition( position )
 			};
 		} );
 
@@ -78,10 +75,10 @@ describe( 'transform', () => {
 				const transformBy = new InsertOperation(
 					new Position( root, [ 1, 3, 2 ] ),
 					[ nodeC, nodeD ],
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -91,10 +88,10 @@ describe( 'transform', () => {
 				const transformBy = new InsertOperation(
 					new Position( root, [ 0, 2, 0 ] ),
 					[ nodeC, nodeD ],
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 				expected.position.offset += 2;
 
 				expect( transOp.length ).to.equal( 1 );
@@ -105,10 +102,10 @@ describe( 'transform', () => {
 				const transformBy = new InsertOperation(
 					new Position( root, [ 0, 2, 2 ] ),
 					[ nodeC, nodeD ],
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 				expected.position.offset += 2;
 
 				expect( transOp.length ).to.equal( 1 );
@@ -119,23 +116,10 @@ describe( 'transform', () => {
 				const transformBy = new InsertOperation(
 					new Position( root, [ 0, 2, 2 ] ),
 					[ nodeC, nodeD ],
-					baseVersion
+					0
 				);
 
-				const transOp = transform( transformBy, { isStrong: true } );
-
-				expect( transOp.length ).to.equal( 1 );
-				expectOperation( transOp[ 0 ], expected );
-			} );
-
-			it( 'target at same offset and context.insertBefore = true: no position update', () => {
-				const transformBy = new InsertOperation(
-					new Position( root, [ 0, 2, 2 ] ),
-					[ nodeC, nodeD ],
-					baseVersion
-				);
-
-				const transOp = transform( transformBy, { isStrong: false, insertBefore: false } );
+				const transOp = transform.transform( op, transformBy, { isStrong: true } );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -145,10 +129,10 @@ describe( 'transform', () => {
 				const transformBy = new InsertOperation(
 					new Position( root, [ 0, 2, 2 ] ),
 					[ nodeC, nodeD ],
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 				expected.position.offset += 2;
 
 				expect( transOp.length ).to.equal( 1 );
@@ -159,10 +143,10 @@ describe( 'transform', () => {
 				const transformBy = new InsertOperation(
 					new Position( root, [ 0, 2, 3 ] ),
 					[ nodeC, nodeD ],
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -172,10 +156,10 @@ describe( 'transform', () => {
 				const transformBy = new InsertOperation(
 					new Position( root, [ 0, 1 ] ),
 					[ nodeC, nodeD ],
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 				expected.position.path[ 1 ] += 2;
 
 				expect( transOp.length ).to.equal( 1 );
@@ -186,10 +170,10 @@ describe( 'transform', () => {
 				const transformBy = new InsertOperation(
 					new Position( root, [ 0, 6 ] ),
 					[ nodeC, nodeD ],
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -203,10 +187,10 @@ describe( 'transform', () => {
 					'foo',
 					null,
 					'bar',
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -220,10 +204,10 @@ describe( 'transform', () => {
 					'foo',
 					null,
 					'bar',
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -236,10 +220,10 @@ describe( 'transform', () => {
 					new Position( root, [ 1, 3, 2 ] ),
 					2,
 					new Position( root, [ 2, 1 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -250,10 +234,10 @@ describe( 'transform', () => {
 					new Position( root, [ 0, 2, 0 ] ),
 					1,
 					new Position( root, [ 1, 1 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 				expected.position.offset--;
 
 				expect( transOp.length ).to.equal( 1 );
@@ -265,10 +249,10 @@ describe( 'transform', () => {
 					new Position( root, [ 0, 2, 5 ] ),
 					1,
 					new Position( root, [ 1, 1 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -279,10 +263,10 @@ describe( 'transform', () => {
 					new Position( root, [ 1, 1 ] ),
 					2,
 					new Position( root, [ 0, 2, 0 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 				expected.position.offset += 2;
 
 				expect( transOp.length ).to.equal( 1 );
@@ -294,10 +278,10 @@ describe( 'transform', () => {
 					new Position( root, [ 1, 1 ] ),
 					2,
 					new Position( root, [ 0, 2, 5 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -308,54 +292,26 @@ describe( 'transform', () => {
 					new Position( root, [ 1, 1 ] ),
 					2,
 					new Position( root, [ 0, 2, 2 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 				expected.position.offset += 2;
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
-			it( 'target offset same as insert position offset and is less important: no position update', () => {
+			it( 'target offset same as insert position offset and is less important: increment offset', () => {
 				const transformBy = new MoveOperation(
 					new Position( root, [ 1, 1 ] ),
 					2,
 					new Position( root, [ 0, 2, 2 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy, { isStrong: true } );
-
-				expect( transOp.length ).to.equal( 1 );
-				expectOperation( transOp[ 0 ], expected );
-			} );
-
-			it( 'target offset same as insert position offset and context.insertBefore = true: increment offset', () => {
-				const transformBy = new MoveOperation(
-					new Position( root, [ 1, 1 ] ),
-					2,
-					new Position( root, [ 0, 2, 2 ] ),
-					baseVersion
-				);
-
-				const transOp = transform( op, transformBy, { isStrong: true, insertBefore: true } );
+				const transOp = transform.transform( op, transformBy, { isStrong: true } );
 				expected.position.offset += 2;
-
-				expect( transOp.length ).to.equal( 1 );
-				expectOperation( transOp[ 0 ], expected );
-			} );
-
-			it( 'target offset same as insert position offset and context.insertBefore = false: no position update', () => {
-				const transformBy = new MoveOperation(
-					new Position( root, [ 1, 1 ] ),
-					2,
-					new Position( root, [ 0, 2, 2 ] ),
-					baseVersion
-				);
-
-				const transOp = transform( op, transformBy, { isStrong: false, insertBefore: false } );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -366,10 +322,10 @@ describe( 'transform', () => {
 					new Position( root, [ 0, 0 ] ),
 					1,
 					new Position( root, [ 1, 0 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 				expected.position.path[ 1 ] -= 1;
 
 				expect( transOp.length ).to.equal( 1 );
@@ -381,10 +337,10 @@ describe( 'transform', () => {
 					new Position( root, [ 0, 4 ] ),
 					2,
 					new Position( root, [ 1, 0 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -395,10 +351,10 @@ describe( 'transform', () => {
 					new Position( root, [ 1, 0 ] ),
 					2,
 					new Position( root, [ 0, 0 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 				expected.position.path[ 1 ] += 2;
 
 				expect( transOp.length ).to.equal( 1 );
@@ -410,10 +366,10 @@ describe( 'transform', () => {
 					new Position( root, [ 1, 0 ] ),
 					2,
 					new Position( root, [ 0, 4 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -424,10 +380,10 @@ describe( 'transform', () => {
 					new Position( root, [ 0, 1 ] ),
 					2,
 					new Position( root, [ 1, 1 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 				expected.position.path = [ 1, 2, 2 ];
 
 				expect( transOp.length ).to.equal( 1 );
@@ -439,10 +395,10 @@ describe( 'transform', () => {
 					new Position( root, [ 0, 2, 0 ] ),
 					4,
 					new Position( root, [ 1, 0 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 				expected.position.path = [ 1, 2 ];
 
 				expect( transOp.length ).to.equal( 1 );
@@ -452,9 +408,9 @@ describe( 'transform', () => {
 
 		describe( 'by NoOperation', () => {
 			it( 'no operation update', () => {
-				const transformBy = new NoOperation( baseVersion );
+				const transformBy = new NoOperation( 0 );
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -463,9 +419,9 @@ describe( 'transform', () => {
 
 		describe( 'by RenameOperation', () => {
 			it( 'no position update', () => {
-				const transformBy = new RenameOperation( new Position( root, [ 0, 2, 0 ] ), 'oldName', 'newName', baseVersion );
+				const transformBy = new RenameOperation( new Position( root, [ 0, 2, 0 ] ), 'oldName', 'newName', 0 );
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -475,9 +431,9 @@ describe( 'transform', () => {
 		describe( 'by MarkerOperation', () => {
 			it( 'no position update', () => {
 				const newRange = new Range( new Position( root, [ 0, 2, 0 ] ), new Position( root, [ 0, 2, 4 ] ) );
-				const transformBy = new MarkerOperation( 'name', null, newRange, model.markers, baseVersion );
+				const transformBy = new MarkerOperation( 'name', null, newRange, model.markers, 0 );
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -489,968 +445,247 @@ describe( 'transform', () => {
 		let start, end, range;
 
 		beforeEach( () => {
+			start = new Position( root, [ 0, 2, 1 ] );
+			end = new Position( root, [ 0, 2, 4 ] );
+
+			range = new Range( start, end );
+
+			op = new AttributeOperation( range, 'foo', 'abc', 'bar', 0 );
+
 			expected = {
 				type: AttributeOperation,
+				range,
 				key: 'foo',
 				oldValue: 'abc',
-				newValue: 'bar',
-				baseVersion: baseVersion + 1
+				newValue: 'bar'
 			};
 		} );
 
-		describe( 'with multi-level range', () => {
-			beforeEach( () => {
-				start = new Position( root, [ 1, 2 ] );
-				end = new Position( root, [ 2, 2, 4 ] );
+		describe( 'by InsertOperation', () => {
+			it( 'target at offset before: increment offset', () => {
+				const transformBy = new InsertOperation(
+					new Position( root, [ 0, 2, 0 ] ),
+					[ nodeA, nodeB ],
+					0
+				);
 
-				range = new Range( start, end );
+				const transOp = transform.transform( op, transformBy );
 
-				op = new AttributeOperation( range, 'foo', 'abc', 'bar', baseVersion );
+				expected.range.start.offset += 2;
+				expected.range.end.offset += 2;
 
-				expected.range = new Range( start, end );
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
 			} );
 
-			describe( 'by InsertOperation', () => {
-				it( 'target at different position: no operation update', () => {
-					const transformBy = new InsertOperation(
-						new Position( root, [ 3, 3, 2 ] ),
-						[ nodeA, nodeB ],
-						baseVersion
-					);
-
-					const transOp = transform( op, transformBy );
-
-					expect( transOp.length ).to.equal( 1 );
-					expectOperation( transOp[ 0 ], expected );
-				} );
-
-				it( 'target at offset before: increment offset', () => {
-					const transformBy = new InsertOperation(
-						new Position( root, [ 1, 1 ] ),
-						[ nodeA, nodeB ],
-						baseVersion
-					);
-
-					const transOp = transform( op, transformBy );
-
-					expected.range.start.offset += 2;
-
-					expect( transOp.length ).to.equal( 1 );
-					expectOperation( transOp[ 0 ], expected );
-				} );
-
-				it( 'target at same offset: increment offset', () => {
-					const transformBy = new InsertOperation(
-						new Position( root, [ 1, 2 ] ),
-						[ nodeA, nodeB ],
-						baseVersion
-					);
-
-					const transOp = transform( op, transformBy );
-
-					expected.range.start.offset += 2;
-
-					expect( transOp.length ).to.equal( 1 );
-					expectOperation( transOp[ 0 ], expected );
-				} );
-
-				it( 'target at offset after: no operation update', () => {
-					const transformBy = new InsertOperation(
-						new Position( root, [ 3, 2 ] ),
-						[ nodeA, nodeB ],
-						baseVersion
-					);
-
-					const transOp = transform( op, transformBy );
-
-					expect( transOp.length ).to.equal( 1 );
-					expectOperation( transOp[ 0 ], expected );
-				} );
-
-				it( 'target before node from path: increment index on path', () => {
-					const transformBy = new InsertOperation(
-						new Position( root, [ 0 ] ),
-						[ nodeA, nodeB ],
-						baseVersion
-					);
-
-					const transOp = transform( op, transformBy );
-
-					expected.range.start.path[ 0 ] += 2;
-					expected.range.end.path[ 0 ] += 2;
-
-					expect( transOp.length ).to.equal( 1 );
-					expectOperation( transOp[ 0 ], expected );
-				} );
-
-				it( 'target after node from path: no position change', () => {
-					const transformBy = new InsertOperation(
-						new Position( root, [ 2, 6 ] ),
-						[ nodeA, nodeB ],
-						baseVersion
-					);
-
-					const transOp = transform( op, transformBy );
-
-					expect( transOp.length ).to.equal( 1 );
-					expectOperation( transOp[ 0 ], expected );
-				} );
-
-				it( 'target inside change range: split into two operations', () => {
-					const transformBy = new InsertOperation(
-						new Position( root, [ 1, 3, 1 ] ),
-						[ nodeA, nodeB ],
-						baseVersion
-					);
-
-					const transOp = transform( op, transformBy );
-
-					expect( transOp.length ).to.equal( 2 );
-
-					expected.range.start.path = [ 1, 3, 3 ];
-
-					expectOperation( transOp[ 0 ], expected );
-
-					expected.range.start = op.range.start;
-					expected.range.end.path = [ 1, 3, 1 ];
-					expected.baseVersion++;
-
-					expectOperation( transOp[ 1 ], expected );
-				} );
-			} );
-
-			describe( 'by AttributeOperation', () => {
-				it( 'attributes have different key: no operation update', () => {
-					const transformBy = new AttributeOperation(
-						Range.createFromRange( range ),
-						'differentKey',
-						true,
-						false,
-						baseVersion
-					);
-
-					const transOp = transform( op, transformBy );
-
-					expect( transOp.length ).to.equal( 1 );
-					expectOperation( transOp[ 0 ], expected );
-				} );
-
-				it( 'same key and value: convert to NoOperation', () => {
-					const transformBy = new AttributeOperation(
-						Range.createFromRange( range ),
-						'foo',
-						'abc',
-						'bar',
-						baseVersion
-					);
-
-					const transOp = transform( op, transformBy );
-
-					expect( transOp.length ).to.equal( 1 );
-					expectOperation( transOp[ 0 ], {
-						type: NoOperation,
-						baseVersion: baseVersion + 1
-					} );
-				} );
-
-				describe( 'that is less important and', () => {
-					it( 'both operations removes same attribute: change old value to null', () => {
-						op.newValue = null;
-						expected.newValue = null;
-
-						const transformBy = new AttributeOperation(
-							new Range( new Position( root, [ 1, 1, 4 ] ), new Position( root, [ 3 ] ) ),
-							'foo',
-							'another',
-							null,
-							baseVersion
-						);
-
-						const transOp = transform( op, transformBy, { isStrong: true } );
-
-						expected.oldValue = null;
-
-						expect( transOp.length ).to.equal( 1 );
-					} );
-
-					it( 'range does not intersect original range: no operation update', () => {
-						const transformBy = new AttributeOperation(
-							new Range( new Position( root, [ 3, 0 ] ), new Position( root, [ 4 ] ) ),
-							'foo',
-							'abc',
-							null,
-							baseVersion
-						);
-
-						const transOp = transform( op, transformBy, { isStrong: true } );
-
-						expect( transOp.length ).to.equal( 1 );
-						expectOperation( transOp[ 0 ], expected );
-					} );
-
-					it( 'range contains original range: update oldValue', () => {
-						const transformBy = new AttributeOperation(
-							new Range( new Position( root, [ 1, 1, 4 ] ), new Position( root, [ 3 ] ) ),
-							'foo',
-							'abc',
-							null,
-							baseVersion
-						);
-
-						const transOp = transform( op, transformBy, { isStrong: true } );
-
-						expected.oldValue = null;
-
-						expect( transOp.length ).to.equal( 1 );
-						expectOperation( transOp[ 0 ], expected );
-					} );
-
-					// [ original range   <   ]   range transformed by >
-					it( 'range intersects on left: split into two operations, update oldValue', () => {
-						// Get more test cases and better code coverage
-						op.newValue = null;
-						expected.newValue = null;
-
-						const transformBy = new AttributeOperation(
-							new Range( new Position( root, [ 1, 4, 2 ] ), new Position( root, [ 3 ] ) ),
-							'foo',
-							null,
-							// Get more test cases and better code coverage
-							'another',
-							baseVersion
-						);
-
-						const transOp = transform( op, transformBy, { isStrong: true } );
-
-						expect( transOp.length ).to.equal( 2 );
-
-						expected.range.end.path = [ 1, 4, 2 ];
-
-						expectOperation( transOp[ 0 ], expected );
-
-						expected.range.start.path = [ 1, 4, 2 ];
-						expected.range.end = op.range.end;
-						expected.oldValue = 'another';
-						expected.baseVersion++;
-
-						expectOperation( transOp[ 1 ], expected );
-					} );
-
-					// [  range transformed by  <   ]  original range  >
-					it( 'range intersects on right: split into two operations, update oldValue', () => {
-						const transformBy = new AttributeOperation(
-							new Range( new Position( root, [ 1 ] ), new Position( root, [ 2, 1 ] ) ),
-							'foo',
-							'abc',
-							null,
-							baseVersion
-						);
-
-						const transOp = transform( op, transformBy, { isStrong: true } );
-
-						expect( transOp.length ).to.equal( 2 );
-
-						expected.range.start.path = [ 2, 1 ];
-
-						expectOperation( transOp[ 0 ], expected );
-
-						expected.range.start = op.range.start;
-						expected.range.end.path = [ 2, 1 ];
-						expected.oldValue = null;
-						expected.baseVersion++;
-
-						expectOperation( transOp[ 1 ], expected );
-					} );
-
-					it( 'range is inside original range: split into three operations, update oldValue', () => {
-						const transformBy = new AttributeOperation(
-							new Range( new Position( root, [ 1, 4, 1 ] ), new Position( root, [ 2, 1 ] ) ),
-							'foo',
-							'abc',
-							null,
-							baseVersion
-						);
-
-						const transOp = transform( op, transformBy, { isStrong: true } );
-
-						expect( transOp.length ).to.equal( 3 );
-
-						expected.range.end.path = [ 1, 4, 1 ];
-
-						expectOperation( transOp[ 0 ], expected );
-
-						expected.range.start.path = [ 2, 1 ];
-						expected.range.end = op.range.end;
-						expected.baseVersion++;
-
-						expectOperation( transOp[ 1 ], expected );
-
-						expected.range.start.path = [ 1, 4, 1 ];
-						expected.range.end.path = [ 2, 1 ];
-						expected.oldValue = null;
-						expected.baseVersion++;
-
-						expectOperation( transOp[ 2 ], expected );
-					} );
-				} );
-
-				describe( 'that is more important and', () => {
-					it( 'both operations removes same attribute: convert to NoOperation', () => {
-						op.newValue = null;
-						expected.newValue = null;
-
-						const transformBy = new AttributeOperation(
-							new Range( new Position( root, [ 1, 1, 4 ] ), new Position( root, [ 3 ] ) ),
-							'foo',
-							'another',
-							null,
-							baseVersion
-						);
-
-						const transOp = transform( op, transformBy );
-
-						expect( transOp.length ).to.equal( 1 );
-						expectOperation( transOp[ 0 ], {
-							type: NoOperation,
-							baseVersion: baseVersion + 1
-						} );
-					} );
-
-					it( 'range does not intersect original range: no operation update', () => {
-						const transformBy = new AttributeOperation(
-							new Range( new Position( root, [ 3, 0 ] ), new Position( root, [ 4 ] ) ),
-							'foo',
-							'abc',
-							null,
-							baseVersion
-						);
-
-						const transOp = transform( op, transformBy );
-
-						expect( transOp.length ).to.equal( 1 );
-						expectOperation( transOp[ 0 ], expected );
-					} );
-
-					it( 'range contains original range: convert to NoOperation', () => {
-						const transformBy = new AttributeOperation(
-							new Range( new Position( root, [ 1, 1, 4 ] ), new Position( root, [ 3 ] ) ),
-							'foo',
-							'abc',
-							null,
-							baseVersion
-						);
-
-						const transOp = transform( op, transformBy );
-
-						expect( transOp.length ).to.equal( 1 );
-						expectOperation( transOp[ 0 ], {
-							type: NoOperation,
-							baseVersion: baseVersion + 1
-						} );
-					} );
-
-					// [ original range   <   ]   range transformed by >
-					it( 'range intersects on left: shrink original range', () => {
-						const transformBy = new AttributeOperation(
-							new Range( new Position( root, [ 1, 4, 2 ] ), new Position( root, [ 3 ] ) ),
-							'foo',
-							'abc',
-							null,
-							baseVersion
-						);
-
-						const transOp = transform( op, transformBy );
-
-						expected.range.end.path = [ 1, 4, 2 ];
-
-						expect( transOp.length ).to.equal( 1 );
-						expectOperation( transOp[ 0 ], expected );
-					} );
-
-					// [  range transformed by  <   ]  original range  >
-					it( 'range intersects on right: shrink original range', () => {
-						const transformBy = new AttributeOperation(
-							new Range( new Position( root, [ 1 ] ), new Position( root, [ 2, 1 ] ) ),
-							'foo',
-							'abc',
-							null,
-							baseVersion
-						);
-
-						const transOp = transform( op, transformBy );
-
-						expected.range.start.path = [ 2, 1 ];
-
-						expect( transOp.length ).to.equal( 1 );
-						expectOperation( transOp[ 0 ], expected );
-					} );
-
-					it( 'range is inside original range: split into two operations', () => {
-						const transformBy = new AttributeOperation(
-							new Range( new Position( root, [ 1, 4, 1 ] ), new Position( root, [ 2, 1 ] ) ),
-							'foo',
-							'abc',
-							null,
-							baseVersion
-						);
-
-						const transOp = transform( op, transformBy );
-
-						expect( transOp.length ).to.equal( 2 );
-
-						expected.range.end.path = [ 1, 4, 1 ];
-
-						expectOperation( transOp[ 0 ], expected );
-
-						expected.range.start.path = [ 2, 1 ];
-						expected.range.end = op.range.end;
-						expected.baseVersion++;
-
-						expectOperation( transOp[ 1 ], expected );
-					} );
-				} );
-			} );
-
-			describe( 'by RootAttributeOperation', () => {
-				it( 'no operation update', () => {
-					const transformBy = new RootAttributeOperation(
-						root,
-						'foo',
-						null,
-						'bar',
-						baseVersion
-					);
-
-					const transOp = transform( op, transformBy );
-
-					expect( transOp.length ).to.equal( 1 );
-					expectOperation( transOp[ 0 ], expected );
-				} );
-			} );
-
-			describe( 'by MoveOperation', () => {
-				it( 'range and target are different than change range: no operation update', () => {
-					const transformBy = new MoveOperation(
-						new Position( root, [ 1, 1, 2 ] ),
-						2,
-						new Position( root, [ 3, 4 ] ),
-						baseVersion
-					);
-
-					const transOp = transform( op, transformBy );
-
-					expect( transOp.length ).to.equal( 1 );
-					expectOperation( transOp[ 0 ], expected );
-				} );
-
-				it( 'range offset is before change range start offset: decrement offset', () => {
-					const transformBy = new MoveOperation(
-						new Position( root, [ 1, 0 ] ),
-						2,
-						new Position( root, [ 3, 4, 1 ] ),
-						baseVersion
-					);
-
-					const transOp = transform( op, transformBy );
-
-					expected.range.start.offset -= 2;
-
-					expect( transOp.length ).to.equal( 1 );
-					expectOperation( transOp[ 0 ], expected );
-				} );
-
-				it( 'target offset is before change range start offset: increment offset', () => {
-					const transformBy = new MoveOperation(
-						new Position( root, [ 3, 4, 1 ] ),
-						2,
-						new Position( root, [ 1, 0 ] ),
-						baseVersion
-					);
-
-					const transOp = transform( op, transformBy );
-
-					expected.range.start.offset += 2;
-
-					expect( transOp.length ).to.equal( 1 );
-					expectOperation( transOp[ 0 ], expected );
-				} );
-
-				it( 'range is before node from path to change range: decrement index on path', () => {
-					const transformBy = new MoveOperation(
-						new Position( root, [ 0 ] ),
-						1,
-						new Position( root, [ 2, 4, 1 ] ),
-						baseVersion
-					);
-
-					const transOp = transform( op, transformBy );
-
-					expected.range.start.path[ 0 ]--;
-					expected.range.end.path[ 0 ]--;
-
-					expect( transOp.length ).to.equal( 1 );
-					expectOperation( transOp[ 0 ], expected );
-				} );
-
-				it( 'range is after node from path to change range: no position change', () => {
-					const transformBy = new MoveOperation(
-						new Position( root, [ 3 ] ),
-						2,
-						new Position( root, [ 0, 1 ] ),
-						baseVersion
-					);
-
-					const transOp = transform( op, transformBy );
-
-					expect( transOp.length ).to.equal( 1 );
-					expectOperation( transOp[ 0 ], expected );
-				} );
-
-				it( 'target before node from path to change range: increment index on path', () => {
-					const transformBy = new MoveOperation(
-						new Position( root, [ 3, 4, 1 ] ),
-						2,
-						new Position( root, [ 1, 0 ] ),
-						baseVersion
-					);
-
-					const transOp = transform( op, transformBy );
-
-					expected.range.start.path[ 1 ] += 2;
-
-					expect( transOp.length ).to.equal( 1 );
-					expectOperation( transOp[ 0 ], expected );
-				} );
-
-				it( 'target after node from path to change range: no position change', () => {
-					const transformBy = new MoveOperation(
-						new Position( root, [ 3, 4, 1 ] ),
-						2,
-						new Position( root, [ 3 ] ),
-						baseVersion
-					);
-
-					const transOp = transform( op, transformBy );
-
-					expect( transOp.length ).to.equal( 1 );
-					expectOperation( transOp[ 0 ], expected );
-				} );
-
-				it( 'range intersects on left with change range: split into two operations', () => {
-					const transformBy = new MoveOperation(
-						new Position( root, [ 2, 1 ] ),
-						3,
-						new Position( root, [ 4 ] ),
-						baseVersion
-					);
-
-					const transOp = transform( op, transformBy );
-
-					expect( transOp.length ).to.equal( 2 );
-
-					expected.range.end.path = [ 2, 1 ];
-
-					expectOperation( transOp[ 0 ], expected );
-
-					expected.range.start.path = [ 4 ];
-					expected.range.end.path = [ 5, 4 ];
-					expected.baseVersion++;
-
-					expectOperation( transOp[ 1 ], expected );
-				} );
-
-				it( 'range intersects on right with change range: split into two operation', () => {
-					const transformBy = new MoveOperation(
-						new Position( root, [ 1, 1 ] ),
-						3,
-						new Position( root, [ 0, 0 ] ),
-						baseVersion
-					);
-
-					const transOp = transform( op, transformBy );
-
-					expect( transOp.length ).to.equal( 2 );
-
-					expected.range.start.path = [ 1, 1 ];
-
-					expectOperation( transOp[ 0 ], expected );
-
-					expected.range.start.path = [ 0, 1 ];
-					expected.range.end.path = [ 0, 3 ];
-					expected.baseVersion++;
-
-					expectOperation( transOp[ 1 ], expected );
-				} );
-
-				it( 'range contains change range: update change range', () => {
-					const transformBy = new MoveOperation(
-						new Position( root, [ 1 ] ),
-						2,
-						new Position( root, [ 3, 4, 1 ] ),
-						baseVersion
-					);
-
-					const transOp = transform( op, transformBy );
-
-					expected.range.start.path = [ 1, 4, 1, 2 ];
-					expected.range.end.path = [ 1, 4, 2, 2, 4 ];
-
-					expect( transOp.length ).to.equal( 1 );
-					expectOperation( transOp[ 0 ], expected );
-				} );
-
-				it( 'range is inside change range: split into two operations', () => {
-					const transformBy = new MoveOperation(
-						new Position( root, [ 1, 4 ] ),
-						2,
-						new Position( root, [ 3, 2 ] ),
-						baseVersion
-					);
-
-					const transOp = transform( op, transformBy );
-
-					expect( transOp.length ).to.equal( 2 );
-
-					expectOperation( transOp[ 0 ], expected );
-
-					expected.range.start.path = [ 3, 2 ];
-					expected.range.end.path = [ 3, 4 ];
-					expected.baseVersion++;
-
-					expectOperation( transOp[ 1 ], expected );
-				} );
-
-				it( 'target inside change range: split into two operations', () => {
-					const transformBy = new MoveOperation(
-						new Position( root, [ 3, 4, 1 ] ),
-						2,
-						new Position( root, [ 1, 4 ] ),
-						baseVersion
-					);
-
-					const transOp = transform( op, transformBy );
-
-					expect( transOp.length ).to.equal( 2 );
-
-					expected.range.start.path = [ 1, 6 ];
-
-					expectOperation( transOp[ 0 ], expected );
-
-					expected.range.start = op.range.start;
-					expected.range.end.path = [ 1, 4 ];
-					expected.baseVersion++;
-
-					expectOperation( transOp[ 1 ], expected );
-				} );
-
-				it( 'range intersects change range and target inside change range: split into three operations', () => {
-					const transformBy = new MoveOperation(
-						new Position( root, [ 1, 1 ] ),
-						3,
-						new Position( root, [ 2 ] ),
-						baseVersion
-					);
-
-					const transOp = transform( op, transformBy );
-
-					expect( transOp.length ).to.equal( 3 );
-
-					expected.range.start.path = [ 5 ];
-					expected.range.end.path = [ 5, 2, 4 ];
-
-					expectOperation( transOp[ 0 ], expected );
-
-					expected.range.start.path = [ 1, 1 ];
-					expected.range.end.path = [ 2 ];
-					expected.baseVersion++;
-
-					expectOperation( transOp[ 1 ], expected );
-
-					expected.range.start.path = [ 3 ];
-					expected.range.end.path = [ 5 ];
-					expected.baseVersion++;
-
-					expectOperation( transOp[ 2 ], expected );
-				} );
-			} );
-
-			describe( 'by NoOperation', () => {
-				it( 'no operation update', () => {
-					const transformBy = new NoOperation( baseVersion );
-
-					const transOp = transform( op, transformBy );
-
-					expect( transOp.length ).to.equal( 1 );
-					expectOperation( transOp[ 0 ], expected );
-				} );
-			} );
-
-			describe( 'by RenameOperation', () => {
-				it( 'no position update', () => {
-					const transformBy = new RenameOperation( new Position( root, [ 1, 0 ] ), 'oldName', 'newName', baseVersion );
-
-					const transOp = transform( op, transformBy );
-
-					expect( transOp.length ).to.equal( 1 );
-					expectOperation( transOp[ 0 ], expected );
-				} );
-			} );
-
-			describe( 'by MarkerOperation', () => {
-				it( 'no operation update', () => {
-					const newRange = new Range( new Position( root, [ 0, 2, 0 ] ), new Position( root, [ 0, 2, 8 ] ) );
-					const transformBy = new MarkerOperation( 'name', null, newRange, model.markers, baseVersion );
-
-					const transOp = transform( op, transformBy );
-
-					expect( transOp.length ).to.equal( 1 );
-					expectOperation( transOp[ 0 ], expected );
-				} );
+			it( 'target at same offset: increment offset', () => {
+				const transformBy = new InsertOperation(
+					new Position( root, [ 0, 2, 1 ] ),
+					[ nodeA, nodeB ],
+					0
+				);
+
+				const transOp = transform.transform( op, transformBy );
+
+				expected.range.start.offset += 2;
+				expected.range.end.offset += 2;
+
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
 			} );
 		} );
 
-		// Some extra cases for a AttributeOperation that operates on single tree level range.
-		// This means that the change range start and end differs only on offset value.
-		// This test suite also have some modifications to the original operation
-		// to get more test cases covered and better code coverage.
-		describe( 'with single-level range', () => {
-			beforeEach( () => {
-				start = new Position( root, [ 0, 2, 1 ] );
-				end = new Position( root, [ 0, 2, 4 ] );
+		describe( 'by MoveOperation', () => {
+			it( 'range offset is before change range start offset: decrement offset', () => {
+				const transformBy = new MoveOperation(
+					new Position( root, [ 0, 2, 0 ] ),
+					1,
+					new Position( root, [ 2, 4, 1 ] ),
+					0
+				);
 
-				range = new Range( start, end );
+				const transOp = transform.transform( op, transformBy );
 
-				op = new AttributeOperation( range, 'foo', 'abc', 'bar', baseVersion );
+				expected.range.start.offset--;
+				expected.range.end.offset--;
 
-				expected.range = new Range( start, end );
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
 			} );
 
-			describe( 'by InsertOperation', () => {
-				it( 'target at offset before: increment offset', () => {
-					const transformBy = new InsertOperation(
-						new Position( root, [ 0, 2, 0 ] ),
-						[ nodeA, nodeB ],
-						baseVersion
-					);
+			it( 'target offset is before change range start offset: increment offset', () => {
+				const transformBy = new MoveOperation(
+					new Position( root, [ 2, 4, 1 ] ),
+					2,
+					new Position( root, [ 0, 2, 0 ] ),
+					0
+				);
 
-					const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
-					expected.range.start.offset += 2;
-					expected.range.end.offset += 2;
+				expected.range.start.offset += 2;
+				expected.range.end.offset += 2;
 
-					expect( transOp.length ).to.equal( 1 );
-					expectOperation( transOp[ 0 ], expected );
-				} );
-
-				it( 'target at same offset: increment offset', () => {
-					const transformBy = new InsertOperation(
-						new Position( root, [ 0, 2, 1 ] ),
-						[ nodeA, nodeB ],
-						baseVersion
-					);
-
-					const transOp = transform( op, transformBy );
-
-					expected.range.start.offset += 2;
-					expected.range.end.offset += 2;
-
-					expect( transOp.length ).to.equal( 1 );
-					expectOperation( transOp[ 0 ], expected );
-				} );
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
 			} );
 
-			describe( 'by MoveOperation', () => {
-				it( 'range offset is before change range start offset: decrement offset', () => {
-					const transformBy = new MoveOperation(
-						new Position( root, [ 0, 2, 0 ] ),
-						1,
-						new Position( root, [ 2, 4, 1 ] ),
-						baseVersion
-					);
+			it( 'range intersects on left with change range: split into two operations', () => {
+				const transformBy = new MoveOperation(
+					new Position( root, [ 0, 2, 2 ] ),
+					4,
+					new Position( root, [ 2, 4, 1 ] ),
+					0
+				);
 
-					const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
-					expected.range.start.offset--;
-					expected.range.end.offset--;
+				expect( transOp.length ).to.equal( 2 );
 
-					expect( transOp.length ).to.equal( 1 );
-					expectOperation( transOp[ 0 ], expected );
-				} );
+				expected.range.end.offset -= 2;
 
-				it( 'target offset is before change range start offset: increment offset', () => {
-					const transformBy = new MoveOperation(
-						new Position( root, [ 2, 4, 1 ] ),
-						2,
-						new Position( root, [ 0, 2, 0 ] ),
-						baseVersion
-					);
+				expectOperation( transOp[ 0 ], expected );
 
-					const transOp = transform( op, transformBy );
+				expected.range.start.path = [ 2, 4, 1 ];
+				expected.range.end.path = [ 2, 4, 3 ];
 
-					expected.range.start.offset += 2;
-					expected.range.end.offset += 2;
+				expectOperation( transOp[ 1 ], expected );
+			} );
 
-					expect( transOp.length ).to.equal( 1 );
-					expectOperation( transOp[ 0 ], expected );
-				} );
+			it( 'range intersects on right with change range: split into two operation', () => {
+				const transformBy = new MoveOperation(
+					new Position( root, [ 0, 2, 0 ] ),
+					2,
+					new Position( root, [ 2, 4, 1 ] ),
+					0
+				);
 
-				it( 'range intersects on left with change range: split into two operations', () => {
-					const transformBy = new MoveOperation(
-						new Position( root, [ 0, 2, 2 ] ),
-						4,
-						new Position( root, [ 2, 4, 1 ] ),
-						baseVersion
-					);
+				const transOp = transform.transform( op, transformBy );
 
-					const transOp = transform( op, transformBy );
+				expect( transOp.length ).to.equal( 2 );
 
-					expect( transOp.length ).to.equal( 2 );
+				expected.range.start.offset -= 1;
+				expected.range.end.offset -= 2;
 
-					expected.range.end.offset -= 2;
+				expectOperation( transOp[ 0 ], expected );
 
-					expectOperation( transOp[ 0 ], expected );
+				expected.range.start.path = [ 2, 4, 2 ];
+				expected.range.end.path = [ 2, 4, 3 ];
 
-					expected.range.start.path = [ 2, 4, 1 ];
-					expected.range.end.path = [ 2, 4, 3 ];
-					expected.baseVersion++;
+				expectOperation( transOp[ 1 ], expected );
+			} );
 
-					expectOperation( transOp[ 1 ], expected );
-				} );
+			it( 'range contains change range: update change range', () => {
+				const transformBy = new MoveOperation(
+					new Position( root, [ 0, 1 ] ),
+					3,
+					new Position( root, [ 2, 4, 1 ] ),
+					0
+				);
 
-				it( 'range intersects on right with change range: split into two operation', () => {
-					const transformBy = new MoveOperation(
-						new Position( root, [ 0, 2, 0 ] ),
-						2,
-						new Position( root, [ 2, 4, 1 ] ),
-						baseVersion
-					);
+				const transOp = transform.transform( op, transformBy );
 
-					const transOp = transform( op, transformBy );
+				expected.range.start.path = [ 2, 4, 2, 1 ];
+				expected.range.end.path = [ 2, 4, 2, 4 ];
 
-					expect( transOp.length ).to.equal( 2 );
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
+			} );
 
-					expected.range.start.offset -= 1;
-					expected.range.end.offset -= 2;
+			it( 'range is inside change range: split into two operations', () => {
+				const transformBy = new MoveOperation(
+					new Position( root, [ 0, 2, 2 ] ),
+					1,
+					new Position( root, [ 2, 4, 1 ] ),
+					0
+				);
 
-					expectOperation( transOp[ 0 ], expected );
+				const transOp = transform.transform( op, transformBy );
 
-					expected.range.start.path = [ 2, 4, 2 ];
-					expected.range.end.path = [ 2, 4, 3 ];
-					expected.baseVersion++;
+				expect( transOp.length ).to.equal( 3 );
 
-					expectOperation( transOp[ 1 ], expected );
-				} );
+				expected.range.start.path = [ 0, 2, 1 ];
+				expected.range.end.path = [ 0, 2, 2 ];
 
-				it( 'range contains change range: update change range', () => {
-					const transformBy = new MoveOperation(
-						new Position( root, [ 0, 1 ] ),
-						3,
-						new Position( root, [ 2, 4, 1 ] ),
-						baseVersion
-					);
+				expectOperation( transOp[ 0 ], expected );
 
-					const transOp = transform( op, transformBy );
+				expected.range.start.path = [ 0, 2, 2 ];
+				expected.range.end.path = [ 0, 2, 3 ];
 
-					expected.range.start.path = [ 2, 4, 2, 1 ];
-					expected.range.end.path = [ 2, 4, 2, 4 ];
+				expectOperation( transOp[ 1 ], expected );
 
-					expect( transOp.length ).to.equal( 1 );
-					expectOperation( transOp[ 0 ], expected );
-				} );
+				expected.range.start.path = [ 2, 4, 1 ];
+				expected.range.end.path = [ 2, 4, 2 ];
 
-				it( 'range is inside change range: split into two operations', () => {
-					const transformBy = new MoveOperation(
-						new Position( root, [ 0, 2, 2 ] ),
-						1,
-						new Position( root, [ 2, 4, 1 ] ),
-						baseVersion
-					);
+				expectOperation( transOp[ 2 ], expected );
+			} );
 
-					const transOp = transform( op, transformBy );
+			it( 'range is same as change range: update change range', () => {
+				const transformBy = new MoveOperation(
+					new Position( root, [ 0, 2, 1 ] ),
+					3,
+					new Position( root, [ 2, 4, 1 ] ),
+					0
+				);
 
-					expect( transOp.length ).to.equal( 2 );
+				const transOp = transform.transform( op, transformBy );
 
-					expected.range.end.offset--;
+				expected.range.start.path = [ 2, 4, 1 ];
+				expected.range.end.path = [ 2, 4, 4 ];
 
-					expectOperation( transOp[ 0 ], expected );
+				expect( transOp.length ).to.equal( 1 );
+				expectOperation( transOp[ 0 ], expected );
+			} );
 
-					expected.range.start.path = [ 2, 4, 1 ];
-					expected.range.end.path = [ 2, 4, 2 ];
-					expected.baseVersion++;
+			it( 'target inside change range: split into two operations', () => {
+				const transformBy = new MoveOperation(
+					new Position( root, [ 2, 4, 1 ] ),
+					2,
+					new Position( root, [ 0, 2, 2 ] ),
+					0
+				);
 
-					expectOperation( transOp[ 1 ], expected );
-				} );
+				const transOp = transform.transform( op, transformBy );
 
-				it( 'range is same as change range: update change range', () => {
-					const transformBy = new MoveOperation(
-						new Position( root, [ 0, 2, 1 ] ),
-						3,
-						new Position( root, [ 2, 4, 1 ] ),
-						baseVersion
-					);
+				expect( transOp.length ).to.equal( 2 );
 
-					const transOp = transform( op, transformBy );
+				expected.range.end.offset = 2;
 
-					expected.range.start.path = [ 2, 4, 1 ];
-					expected.range.end.path = [ 2, 4, 4 ];
+				expectOperation( transOp[ 0 ], expected );
 
-					expect( transOp.length ).to.equal( 1 );
-					expectOperation( transOp[ 0 ], expected );
-				} );
+				expected.range.start.offset = 4;
+				expected.range.end.offset = 6;
 
-				it( 'target inside change range: split into two operations', () => {
-					const transformBy = new MoveOperation(
-						new Position( root, [ 2, 4, 1 ] ),
-						2,
-						new Position( root, [ 0, 2, 2 ] ),
-						baseVersion
-					);
+				expectOperation( transOp[ 1 ], expected );
+			} );
 
-					const transOp = transform( op, transformBy );
+			it( 'range intersects change range and target inside change range: split into three operations', () => {
+				const transformBy = new MoveOperation(
+					new Position( root, [ 0, 2, 0 ] ),
+					2,
+					new Position( root, [ 0, 2, 3 ] ),
+					0
+				);
 
-					expect( transOp.length ).to.equal( 2 );
+				const transOp = transform.transform( op, transformBy );
 
-					expected.range.start.offset = 4;
-					expected.range.end.offset = 6;
+				expect( transOp.length ).to.equal( 3 );
 
-					expectOperation( transOp[ 0 ], expected );
 
-					expected.range.start.offset = op.range.start.offset;
-					expected.range.end.offset = 2;
-					expected.baseVersion++;
+				expected.range.start.path = [ 0, 2, 0 ];
+				expected.range.end.path = [ 0, 2, 1 ];
 
-					expectOperation( transOp[ 1 ], expected );
-				} );
+				expectOperation( transOp[ 0 ], expected );
 
-				it( 'range intersects change range and target inside change range: split into three operations', () => {
-					const transformBy = new MoveOperation(
-						new Position( root, [ 0, 2, 0 ] ),
-						2,
-						new Position( root, [ 0, 2, 3 ] ),
-						baseVersion
-					);
+				expected.range.start.path = [ 0, 2, 1 ];
+				expected.range.end.path = [ 0, 2, 2 ];
 
-					const transOp = transform( op, transformBy );
+				expectOperation( transOp[ 1 ], expected );
 
-					expect( transOp.length ).to.equal( 3 );
+				expected.range.start.path = [ 0, 2, 2 ];
+				expected.range.end.path = [ 0, 2, 3 ];
 
-					expected.range.start.offset = 3;
-					expected.range.end.offset = 4;
-
-					expectOperation( transOp[ 0 ], expected );
-
-					expected.range.start.offset = 0;
-					expected.range.end.offset = 1;
-					expected.baseVersion++;
-
-					expectOperation( transOp[ 1 ], expected );
-
-					expected.range.start.offset = 2;
-					expected.range.end.offset = 3;
-					expected.baseVersion++;
-
-					expectOperation( transOp[ 2 ], expected );
-				} );
+				expectOperation( transOp[ 2 ], expected );
 			} );
 		} );
 
@@ -1461,7 +696,7 @@ describe( 'transform', () => {
 
 				range = new Range( start, end );
 
-				op = new AttributeOperation( range, 'foo', 'abc', 'bar', baseVersion );
+				op = new AttributeOperation( range, 'foo', 'abc', 'bar', 0 );
 
 				expected.range = new Range( start, end );
 			} );
@@ -1471,12 +706,12 @@ describe( 'transform', () => {
 					new Position( root, [ 0 ] ),
 					2,
 					new Position( doc.graveyard, [ 0 ] ),
-					baseVersion
+					0
 				);
 
 				transformBy.targetPosition.path = [ 0 ];
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 
@@ -1491,12 +726,12 @@ describe( 'transform', () => {
 					new Position( root, [ 0 ] ),
 					2,
 					new Position( doc.graveyard, [ 0 ] ),
-					baseVersion
+					0
 				);
 
 				transformBy.targetPosition.path = [ 4 ];
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 
@@ -1513,11 +748,10 @@ describe( 'transform', () => {
 				type: RootAttributeOperation,
 				key: 'foo',
 				oldValue: 'abc',
-				newValue: 'bar',
-				baseVersion: baseVersion + 1
+				newValue: 'bar'
 			};
 
-			op = new RootAttributeOperation( root, 'foo', 'abc', 'bar', baseVersion );
+			op = new RootAttributeOperation( root, 'foo', 'abc', 'bar', 0 );
 		} );
 
 		describe( 'by InsertOperation', () => {
@@ -1525,10 +759,10 @@ describe( 'transform', () => {
 				const transformBy = new InsertOperation(
 					new Position( root, [ 0 ] ),
 					'a',
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -1545,10 +779,10 @@ describe( 'transform', () => {
 					'foo',
 					'bar',
 					'xyz',
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -1562,10 +796,10 @@ describe( 'transform', () => {
 					'foo',
 					'abc',
 					'xyz',
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -1577,10 +811,10 @@ describe( 'transform', () => {
 					'abc',
 					'abc',
 					'xyz',
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -1592,46 +826,46 @@ describe( 'transform', () => {
 					'foo',
 					'abc',
 					'bar',
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], {
-					type: NoOperation,
-					baseVersion: baseVersion + 1
+					type: NoOperation
 				} );
 			} );
 
-			it( 'sets different value for same key on same root and is important: no operation update', () => {
+			it( 'sets different value for same key on same root and is important: convert to NoOperation', () => {
 				const transformBy = new RootAttributeOperation(
 					root,
 					'foo',
 					'abc',
 					'xyz',
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], {
-					type: NoOperation,
-					baseVersion: baseVersion + 1
+					type: NoOperation
 				} );
 			} );
 
-			it( 'sets different value for same key on same root and is less important: convert to NoOperation', () => {
+			it( 'sets different value for same key on same root and is less important: change oldValue', () => {
 				const transformBy = new RootAttributeOperation(
 					root,
 					'foo',
 					'abc',
 					'xyz',
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy, { isStrong: true } );
+				const transOp = transform.transform( op, transformBy, { isStrong: true } );
+
+				expected.oldValue = 'xyz';
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -1644,10 +878,10 @@ describe( 'transform', () => {
 					new Position( root, [ 0 ] ),
 					2,
 					new Position( root, [ 1 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -1656,9 +890,9 @@ describe( 'transform', () => {
 
 		describe( 'by NoOperation', () => {
 			it( 'no operation update', () => {
-				const transformBy = new NoOperation( baseVersion );
+				const transformBy = new NoOperation( 0 );
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -1667,9 +901,9 @@ describe( 'transform', () => {
 
 		describe( 'by RenameOperation', () => {
 			it( 'no position update', () => {
-				const transformBy = new RenameOperation( new Position( root, [ 0 ] ), 'oldName', 'newName', baseVersion );
+				const transformBy = new RenameOperation( new Position( root, [ 0 ] ), 'oldName', 'newName', 0 );
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -1679,9 +913,9 @@ describe( 'transform', () => {
 		describe( 'by MarkerOperation', () => {
 			it( 'no position update', () => {
 				const newRange = new Range( new Position( root, [ 0, 2, 0 ] ), new Position( root, [ 0, 2, 8 ] ) );
-				const transformBy = new MarkerOperation( 'name', null, newRange, model.markers, baseVersion );
+				const transformBy = new MarkerOperation( 'name', null, newRange, model.markers, 0 );
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -1700,14 +934,13 @@ describe( 'transform', () => {
 			rangeEnd = Position.createFromPosition( sourcePosition );
 			rangeEnd.offset += howMany;
 
-			op = new MoveOperation( sourcePosition, howMany, targetPosition, baseVersion );
+			op = new MoveOperation( sourcePosition, howMany, targetPosition, 0 );
 
 			expected = {
 				type: MoveOperation,
 				sourcePosition: Position.createFromPosition( sourcePosition ),
 				targetPosition: Position.createFromPosition( targetPosition ),
-				howMany,
-				baseVersion: baseVersion + 1
+				howMany
 			};
 		} );
 
@@ -1716,10 +949,10 @@ describe( 'transform', () => {
 				const transformBy = new InsertOperation(
 					new Position( root, [ 1, 3, 2 ] ),
 					[ nodeA, nodeB ],
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -1729,10 +962,10 @@ describe( 'transform', () => {
 				const transformBy = new InsertOperation(
 					new Position( root, [ 2, 2, 4, 1 ] ),
 					[ nodeA, nodeB ],
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -1742,10 +975,10 @@ describe( 'transform', () => {
 				const transformBy = new InsertOperation(
 					new Position( root, [ 2, 2, 0 ] ),
 					[ nodeA, nodeB ],
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expected.sourcePosition.offset += 2;
 
@@ -1757,10 +990,10 @@ describe( 'transform', () => {
 				const transformBy = new InsertOperation(
 					new Position( root, [ 2, 2, 7 ] ),
 					[ nodeA, nodeB ],
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -1770,10 +1003,10 @@ describe( 'transform', () => {
 				const transformBy = new InsertOperation(
 					new Position( root, [ 2, 0 ] ),
 					[ nodeA, nodeB ],
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expected.sourcePosition.path[ 1 ] += 2;
 
@@ -1785,10 +1018,10 @@ describe( 'transform', () => {
 				const transformBy = new InsertOperation(
 					new Position( root, [ 2, 3 ] ),
 					[ nodeA, nodeB ],
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -1798,10 +1031,10 @@ describe( 'transform', () => {
 				const transformBy = new InsertOperation(
 					new Position( root, [ 3, 3, 2 ] ),
 					[ nodeA, nodeB ],
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expected.targetPosition.offset += 2;
 
@@ -1813,10 +1046,10 @@ describe( 'transform', () => {
 				const transformBy = new InsertOperation(
 					new Position( root, [ 3, 3, 4 ] ),
 					[ nodeA, nodeB ],
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -1826,10 +1059,10 @@ describe( 'transform', () => {
 				const transformBy = new InsertOperation(
 					new Position( root, [ 3, 3 ] ),
 					[ nodeA, nodeB ],
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expected.targetPosition.path[ 1 ] += 2;
 
@@ -1841,25 +1074,23 @@ describe( 'transform', () => {
 				const transformBy = new InsertOperation(
 					new Position( root, [ 3, 6 ] ),
 					[ nodeA, nodeB ],
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
-			it( 'target offset same as move target offset and is important: increment target offset', () => {
+			it( 'target offset same as move target offset and is important: no operation update', () => {
 				const transformBy = new InsertOperation(
 					new Position( root, [ 3, 3, 3 ] ),
 					[ nodeA, nodeB ],
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
-
-				expected.targetPosition.offset += 2;
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -1869,38 +1100,10 @@ describe( 'transform', () => {
 				const transformBy = new InsertOperation(
 					new Position( root, [ 3, 3, 3 ] ),
 					[ nodeA, nodeB ],
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy, { isStrong: true } );
-
-				expect( transOp.length ).to.equal( 1 );
-				expectOperation( transOp[ 0 ], expected );
-			} );
-
-			it( 'target offset same as move target offset and context.insertBefore = true: increment target offset', () => {
-				const transformBy = new InsertOperation(
-					new Position( root, [ 3, 3, 3 ] ),
-					[ nodeA, nodeB ],
-					baseVersion
-				);
-
-				const transOp = transform( op, transformBy, { isStrong: true, insertBefore: true } );
-
-				expected.targetPosition.offset += 2;
-
-				expect( transOp.length ).to.equal( 1 );
-				expectOperation( transOp[ 0 ], expected );
-			} );
-
-			it( 'target offset same as move target offset and context.insertBefore = false: no operation update', () => {
-				const transformBy = new InsertOperation(
-					new Position( root, [ 3, 3, 3 ] ),
-					[ nodeA, nodeB ],
-					baseVersion
-				);
-
-				const transOp = transform( op, transformBy, { isStrong: false, insertBefore: false } );
+				const transOp = transform.transform( op, transformBy, { isStrong: true } );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -1910,10 +1113,10 @@ describe( 'transform', () => {
 				const transformBy = new InsertOperation(
 					new Position( root, [ 2, 2, 5 ] ),
 					[ nodeA, nodeB ],
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 
@@ -1926,27 +1129,10 @@ describe( 'transform', () => {
 				const transformBy = new InsertOperation(
 					new Position( root, [ 2, 2, 6 ] ),
 					[ nodeA, nodeB ],
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
-
-				expect( transOp.length ).to.equal( 1 );
-				expectOperation( transOp[ 0 ], expected );
-			} );
-
-			it( 'target at offset same as range end boundary (sticky move): expand range', () => {
-				const transformBy = new InsertOperation(
-					new Position( root, [ 2, 2, 6 ] ),
-					[ nodeA, nodeB ],
-					baseVersion
-				);
-
-				op.isSticky = true;
-
-				const transOp = transform( op, transformBy );
-
-				expected.howMany = 4;
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -1960,10 +1146,10 @@ describe( 'transform', () => {
 					'abc',
 					true,
 					false,
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -1977,10 +1163,10 @@ describe( 'transform', () => {
 					'foo',
 					null,
 					'bar',
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -1993,10 +1179,10 @@ describe( 'transform', () => {
 					new Position( root, [ 1, 2 ] ),
 					3,
 					new Position( root, [ 4, 1, 0 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -2007,10 +1193,10 @@ describe( 'transform', () => {
 					new Position( root, [ 4, 1, 0 ] ),
 					2,
 					new Position( root, [ 2, 2, 0 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expected.sourcePosition.offset += 2;
 
@@ -2023,10 +1209,10 @@ describe( 'transform', () => {
 					new Position( root, [ 4, 1, 0 ] ),
 					2,
 					new Position( root, [ 2, 2, 7 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -2037,10 +1223,10 @@ describe( 'transform', () => {
 					new Position( root, [ 2, 2, 0 ] ),
 					2,
 					new Position( root, [ 4, 1, 0 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expected.sourcePosition.offset -= 2;
 
@@ -2053,10 +1239,10 @@ describe( 'transform', () => {
 					new Position( root, [ 2, 2, 9 ] ),
 					2,
 					new Position( root, [ 4, 1, 0 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy, { isStrong: true } );
+				const transOp = transform.transform( op, transformBy, { isStrong: true } );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -2067,10 +1253,10 @@ describe( 'transform', () => {
 					new Position( root, [ 4, 1, 0 ] ),
 					2,
 					new Position( root, [ 2, 1 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expected.sourcePosition.path[ 1 ] += 2;
 
@@ -2083,10 +1269,10 @@ describe( 'transform', () => {
 					new Position( root, [ 4, 1, 0 ] ),
 					2,
 					new Position( root, [ 2, 5 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -2097,10 +1283,10 @@ describe( 'transform', () => {
 					new Position( root, [ 2, 0 ] ),
 					1,
 					new Position( root, [ 4, 1, 0 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expected.sourcePosition.path[ 1 ] -= 1;
 
@@ -2113,10 +1299,10 @@ describe( 'transform', () => {
 					new Position( root, [ 2, 3 ] ),
 					2,
 					new Position( root, [ 4, 1, 0 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -2127,10 +1313,10 @@ describe( 'transform', () => {
 					new Position( root, [ 4, 1, 0 ] ),
 					2,
 					new Position( root, [ 3, 3, 0 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expected.targetPosition.offset += 2;
 
@@ -2143,10 +1329,10 @@ describe( 'transform', () => {
 					new Position( root, [ 4, 1, 0 ] ),
 					2,
 					new Position( root, [ 3, 3, 5 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -2157,10 +1343,10 @@ describe( 'transform', () => {
 					new Position( root, [ 3, 3, 0 ] ),
 					2,
 					new Position( root, [ 4, 1, 0 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expected.targetPosition.offset -= 2;
 
@@ -2173,10 +1359,10 @@ describe( 'transform', () => {
 					new Position( root, [ 3, 3, 5 ] ),
 					2,
 					new Position( root, [ 4, 1, 0 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -2187,10 +1373,10 @@ describe( 'transform', () => {
 					new Position( root, [ 4, 1, 0 ] ),
 					2,
 					new Position( root, [ 3, 1 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expected.targetPosition.path[ 1 ] += 2;
 
@@ -2203,10 +1389,10 @@ describe( 'transform', () => {
 					new Position( root, [ 4, 1, 0 ] ),
 					2,
 					new Position( root, [ 3, 5 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -2217,10 +1403,10 @@ describe( 'transform', () => {
 					new Position( root, [ 3, 0 ] ),
 					2,
 					new Position( root, [ 4, 1, 0 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expected.targetPosition.path[ 1 ] -= 2;
 
@@ -2233,10 +1419,10 @@ describe( 'transform', () => {
 					new Position( root, [ 3, 5 ] ),
 					2,
 					new Position( root, [ 4, 1, 0 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -2247,10 +1433,10 @@ describe( 'transform', () => {
 					new Position( root, [ 4, 1, 0 ] ),
 					2,
 					new Position( root, [ 2, 2, 5 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 2 );
 
@@ -2259,7 +1445,6 @@ describe( 'transform', () => {
 
 				expected.sourcePosition.path = [ 2, 2, 6 ];
 				expected.targetPosition = targetPosition.getShiftedBy( 1 );
-				expected.baseVersion++;
 				expectOperation( transOp[ 1 ], expected );
 			} );
 
@@ -2268,33 +1453,14 @@ describe( 'transform', () => {
 					new Position( root, [ 4, 1, 0 ] ),
 					2,
 					new Position( root, [ 2, 2, 4 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 
 				expected.sourcePosition.offset = 6;
-
-				expectOperation( transOp[ 0 ], expected );
-			} );
-
-			it( 'target at start boundary of transforming move range (sticky move): expand move range', () => {
-				const transformBy = new MoveOperation(
-					new Position( root, [ 4, 1, 0 ] ),
-					2,
-					new Position( root, [ 2, 2, 4 ] ),
-					baseVersion
-				);
-
-				op.isSticky = true;
-
-				const transOp = transform( op, transformBy );
-
-				expect( transOp.length ).to.equal( 1 );
-
-				expected.howMany = 4;
 
 				expectOperation( transOp[ 0 ], expected );
 			} );
@@ -2304,31 +1470,12 @@ describe( 'transform', () => {
 					new Position( root, [ 4, 1, 0 ] ),
 					2,
 					new Position( root, [ 2, 2, 6 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
-				expectOperation( transOp[ 0 ], expected );
-			} );
-
-			it( 'target at end boundary of transforming move range (sticky move): expand move range', () => {
-				const transformBy = new MoveOperation(
-					new Position( root, [ 4, 1, 0 ] ),
-					2,
-					new Position( root, [ 2, 2, 6 ] ),
-					baseVersion
-				);
-
-				op.isSticky = true;
-
-				const transOp = transform( op, transformBy );
-
-				expect( transOp.length ).to.equal( 1 );
-
-				expected.howMany = 4;
-
 				expectOperation( transOp[ 0 ], expected );
 			} );
 
@@ -2337,10 +1484,10 @@ describe( 'transform', () => {
 					new Position( root, [ 4, 1, 0 ] ),
 					2,
 					new Position( root, [ 2, 2, 5, 1 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -2351,10 +1498,10 @@ describe( 'transform', () => {
 					new Position( root, [ 2, 1 ] ),
 					3,
 					new Position( root, [ 4, 2 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expected.sourcePosition.path = [ 4, 3, 4 ];
 
@@ -2367,10 +1514,10 @@ describe( 'transform', () => {
 					new Position( root, [ 3, 2 ] ),
 					3,
 					new Position( root, [ 0, 1 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expected.targetPosition.path = [ 0, 2, 3 ];
 
@@ -2383,10 +1530,10 @@ describe( 'transform', () => {
 					new Position( root, [ 3, 2 ] ),
 					3,
 					new Position( root, [ 2, 2, 5, 0 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 				const reversed = transformBy.getReversed();
 
 				expected.sourcePosition = reversed.sourcePosition;
@@ -2402,15 +1549,14 @@ describe( 'transform', () => {
 					op.sourcePosition,
 					op.howMany,
 					new Position( root, [ 4, 1, 0 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], {
-					type: NoOperation,
-					baseVersion: baseVersion + 1
+					type: NoOperation
 				} );
 			} );
 
@@ -2419,10 +1565,10 @@ describe( 'transform', () => {
 					op.sourcePosition,
 					op.howMany,
 					new Position( root, [ 4, 1, 0 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy, { isStrong: true } );
+				const transOp = transform.transform( op, transformBy, { isStrong: true } );
 
 				expected.sourcePosition.path = [ 4, 1, 0 ];
 
@@ -2435,15 +1581,14 @@ describe( 'transform', () => {
 					new Position( root, [ 2, 2, 3 ] ),
 					4,
 					new Position( root, [ 4, 1, 0 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], {
-					type: NoOperation,
-					baseVersion: baseVersion + 1
+					type: NoOperation
 				} );
 			} );
 
@@ -2452,10 +1597,10 @@ describe( 'transform', () => {
 					new Position( root, [ 2, 2, 3 ] ),
 					4,
 					new Position( root, [ 4, 1, 0 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy, { isStrong: true } );
+				const transOp = transform.transform( op, transformBy, { isStrong: true } );
 
 				expected.sourcePosition.path = [ 4, 1, 1 ];
 
@@ -2470,10 +1615,10 @@ describe( 'transform', () => {
 					new Position( root, [ 2, 2, 3 ] ),
 					5,
 					new Position( root, [ 4, 1, 0 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 
@@ -2490,10 +1635,10 @@ describe( 'transform', () => {
 					new Position( root, [ 2, 2, 3 ] ),
 					5,
 					new Position( root, [ 4, 1, 0 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy, { isStrong: true } );
+				const transOp = transform.transform( op, transformBy, { isStrong: true } );
 
 				expect( transOp.length ).to.equal( 1 );
 
@@ -2508,10 +1653,10 @@ describe( 'transform', () => {
 					new Position( root, [ 2, 2, 3 ] ),
 					2,
 					new Position( root, [ 4, 1, 0 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expected.sourcePosition.path = [ 2, 2, 3 ];
 				expected.howMany = 1;
@@ -2528,10 +1673,10 @@ describe( 'transform', () => {
 					new Position( root, [ 2, 2, 3 ] ),
 					2,
 					new Position( otherRoot, [ 4, 1, 0 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy, { isStrong: true } );
+				const transOp = transform.transform( op, transformBy, { isStrong: true } );
 
 				expect( transOp.length ).to.equal( 2 );
 
@@ -2542,7 +1687,6 @@ describe( 'transform', () => {
 
 				expected.sourcePosition = new Position( root, [ 2, 2, 3 ] );
 				expected.targetPosition = targetPosition.getShiftedBy( 1 );
-				expected.baseVersion++;
 
 				expectOperation( transOp[ 1 ], expected );
 			} );
@@ -2552,10 +1696,10 @@ describe( 'transform', () => {
 					new Position( root, [ 2, 2, 5 ] ),
 					2,
 					new Position( root, [ 4, 1, 0 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expected.howMany = 1;
 
@@ -2568,10 +1712,10 @@ describe( 'transform', () => {
 					new Position( root, [ 2, 2, 5 ] ),
 					2,
 					new Position( root, [ 4, 1, 0 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy, { isStrong: true } );
+				const transOp = transform.transform( op, transformBy, { isStrong: true } );
 
 				expect( transOp.length ).to.equal( 2 );
 
@@ -2582,7 +1726,6 @@ describe( 'transform', () => {
 
 				expected.sourcePosition = new Position( root, [ 4, 1, 0 ] );
 				expected.targetPosition = targetPosition.getShiftedBy( 1 );
-				expected.baseVersion++;
 
 				expectOperation( transOp[ 1 ], expected );
 			} );
@@ -2594,10 +1737,10 @@ describe( 'transform', () => {
 					new Position( root, [ 2, 2, 3 ] ),
 					2,
 					new Position( root, [ 2, 2, 6 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 2 );
 
@@ -2609,7 +1752,6 @@ describe( 'transform', () => {
 				expected.sourcePosition.path = [ 2, 2, 5 ];
 				expected.howMany = 2;
 				expected.targetPosition = targetPosition.getShiftedBy( 1 );
-				expected.baseVersion++;
 
 				expectOperation( transOp[ 1 ], expected );
 			} );
@@ -2621,10 +1763,10 @@ describe( 'transform', () => {
 					new Position( root, [ 2, 2, 3 ] ),
 					2,
 					new Position( root, [ 2, 2, 6 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy, { isStrong: true } );
+				const transOp = transform.transform( op, transformBy, { isStrong: true } );
 
 				expect( transOp.length ).to.equal( 2 );
 
@@ -2636,7 +1778,6 @@ describe( 'transform', () => {
 				expected.sourcePosition.path = [ 2, 2, 5 ];
 				expected.howMany = 2;
 				expected.targetPosition = targetPosition.getShiftedBy( 1 );
-				expected.baseVersion++;
 
 				expectOperation( transOp[ 1 ], expected );
 			} );
@@ -2646,10 +1787,10 @@ describe( 'transform', () => {
 					new Position( root, [ 2, 2, 5 ] ),
 					2,
 					new Position( root, [ 4, 1, 0 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expected.howMany = 1;
 
@@ -2662,10 +1803,10 @@ describe( 'transform', () => {
 					new Position( root, [ 2, 2, 5 ] ),
 					2,
 					new Position( root, [ 4, 1, 0 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy, { isStrong: true } );
+				const transOp = transform.transform( op, transformBy, { isStrong: true } );
 
 				expect( transOp.length ).to.equal( 2 );
 
@@ -2676,7 +1817,6 @@ describe( 'transform', () => {
 
 				expected.sourcePosition = new Position( root, [ 4, 1, 0 ] );
 				expected.targetPosition = targetPosition.getShiftedBy( 1 );
-				expected.baseVersion++;
 
 				expectOperation( transOp[ 1 ], expected );
 			} );
@@ -2688,10 +1828,10 @@ describe( 'transform', () => {
 					new Position( root, [ 2, 2, 5 ] ),
 					4,
 					new Position( root, [ 4, 1, 0 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy, { isStrong: true } );
+				const transOp = transform.transform( op, transformBy, { isStrong: true } );
 
 				expect( transOp.length ).to.equal( 2 );
 
@@ -2703,7 +1843,6 @@ describe( 'transform', () => {
 
 				expected.sourcePosition.path = [ 4, 1, 0 ];
 				expected.targetPosition.path = [ 4, 1, 3 ];
-				expected.baseVersion++;
 
 				expectOperation( transOp[ 1 ], expected );
 			} );
@@ -2715,10 +1854,10 @@ describe( 'transform', () => {
 					new Position( root, [ 2, 2, 5 ] ),
 					4,
 					new Position( root, [ 4, 1, 0 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 
@@ -2736,10 +1875,10 @@ describe( 'transform', () => {
 					new Position( root, [ 2, 2, 5 ] ),
 					2,
 					new Position( root, [ 4, 1, 0 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 2 );
 
@@ -2749,7 +1888,6 @@ describe( 'transform', () => {
 				expectOperation( transOp[ 0 ], expected );
 
 				expected.targetPosition = targetPosition.getShiftedBy( 1 );
-				expected.baseVersion++;
 
 				expectOperation( transOp[ 1 ], expected );
 			} );
@@ -2761,10 +1899,10 @@ describe( 'transform', () => {
 					new Position( root, [ 2, 2, 5 ] ),
 					2,
 					new Position( root, [ 4, 1, 0 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy, { isStrong: true } );
+				const transOp = transform.transform( op, transformBy, { isStrong: true } );
 
 				expect( transOp.length ).to.equal( 3 );
 
@@ -2776,14 +1914,12 @@ describe( 'transform', () => {
 				expected.sourcePosition.path = [ 4, 1, 0 ];
 				expected.targetPosition = targetPosition.getShiftedBy( 1 );
 				expected.howMany = 2;
-				expected.baseVersion++;
 
 				expectOperation( transOp[ 1 ], expected );
 
 				expected.sourcePosition.path = [ 2, 2, 4 ];
 				expected.targetPosition = targetPosition.getShiftedBy( 3 );
 				expected.howMany = 1;
-				expected.baseVersion++;
 
 				expectOperation( transOp[ 2 ], expected );
 			} );
@@ -2795,10 +1931,10 @@ describe( 'transform', () => {
 					new Position( root, [ 2, 2, 5 ] ),
 					2,
 					new Position( root, [ 2, 2, 9 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 
@@ -2814,10 +1950,10 @@ describe( 'transform', () => {
 					new Position( root, [ 2, 2, 5 ] ),
 					2,
 					new Position( root, [ 2, 2, 9 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy, { isStrong: true } );
+				const transOp = transform.transform( op, transformBy, { isStrong: true } );
 
 				expect( transOp.length ).to.equal( 1 );
 
@@ -2835,37 +1971,26 @@ describe( 'transform', () => {
 					Position.createFromPosition( op.sourcePosition ),
 					op.howMany,
 					new Position( doc.graveyard, [ 0 ] ),
-					baseVersion
+					0
 				);
 			} );
 
 			it( 'should skip context.isStrong and be less important than RemoveOperation', () => {
-				const transOp = transform( op, transformBy, { isStrong: true } );
+				const transOp = transform.transform( op, transformBy, { isStrong: true } );
 
 				expect( transOp.length ).to.equal( 1 );
 
 				expectOperation( transOp[ 0 ], {
-					type: NoOperation,
-					baseVersion: baseVersion + 1
+					type: NoOperation
 				} );
-			} );
-
-			it( 'should use context.isStrong if forceWeakRemove flag is used', () => {
-				const transOp = transform( op, transformBy, { isStrong: true, forceWeakRemove: true } );
-
-				expect( transOp.length ).to.equal( 1 );
-
-				expected.sourcePosition = transformBy.targetPosition;
-
-				expectOperation( transOp[ 0 ], expected );
 			} );
 		} );
 
 		describe( 'by NoOperation', () => {
 			it( 'no operation update', () => {
-				const transformBy = new NoOperation( baseVersion );
+				const transformBy = new NoOperation( 0 );
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -2874,9 +1999,9 @@ describe( 'transform', () => {
 
 		describe( 'by RenameOperation', () => {
 			it( 'no position update', () => {
-				const transformBy = new RenameOperation( new Position( root, [ 2, 2, 4 ] ), 'oldName', 'newName', baseVersion );
+				const transformBy = new RenameOperation( new Position( root, [ 2, 2, 4 ] ), 'oldName', 'newName', 0 );
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -2886,9 +2011,9 @@ describe( 'transform', () => {
 		describe( 'by MarkerOperation', () => {
 			it( 'no position update', () => {
 				const newRange = new Range( new Position( root, [ 2, 2, 3 ] ), new Position( root, [ 2, 2, 8 ] ) );
-				const transformBy = new MarkerOperation( 'name', null, newRange, model.markers, baseVersion );
+				const transformBy = new MarkerOperation( 'name', null, newRange, model.markers, 0 );
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -2899,15 +2024,15 @@ describe( 'transform', () => {
 	describe( 'RemoveOperation', () => {
 		describe( 'by MoveOperation', () => {
 			it( 'should force removing content even if was less important', () => {
-				const op = new RemoveOperation( new Position( root, [ 8 ] ), 2, new Position( doc.graveyard, [ 0 ] ), baseVersion );
+				const op = new RemoveOperation( new Position( root, [ 8 ] ), 2, new Position( doc.graveyard, [ 0 ] ), 0 );
 
 				const targetPosition = Position.createFromPosition( op.targetPosition );
 
-				const transformBy = new MoveOperation( new Position( root, [ 8 ] ), 2, new Position( root, [ 1 ] ), baseVersion );
+				const transformBy = new MoveOperation( new Position( root, [ 8 ] ), 2, new Position( root, [ 1 ] ), 0 );
 
 				const sourcePosition = Position.createFromPosition( transformBy.targetPosition );
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 
@@ -2915,8 +2040,7 @@ describe( 'transform', () => {
 					type: RemoveOperation,
 					howMany: 2,
 					sourcePosition,
-					targetPosition,
-					baseVersion: baseVersion + 1
+					targetPosition
 				} );
 			} );
 		} );
@@ -2924,11 +2048,10 @@ describe( 'transform', () => {
 
 	describe( 'NoOperation', () => {
 		beforeEach( () => {
-			op = new NoOperation( baseVersion );
+			op = new NoOperation( 0 );
 
 			expected = {
-				type: NoOperation,
-				baseVersion: baseVersion + 1
+				type: NoOperation
 			};
 		} );
 
@@ -2937,10 +2060,10 @@ describe( 'transform', () => {
 				const transformBy = new InsertOperation(
 					new Position( root, [ 0 ] ),
 					'a',
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -2957,10 +2080,10 @@ describe( 'transform', () => {
 					'foo',
 					'bar',
 					'xyz',
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -2974,10 +2097,10 @@ describe( 'transform', () => {
 					'foo',
 					null,
 					'bar',
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -2990,10 +2113,10 @@ describe( 'transform', () => {
 					new Position( root, [ 0 ] ),
 					2,
 					new Position( root, [ 1 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -3002,9 +2125,9 @@ describe( 'transform', () => {
 
 		describe( 'by NoOperation', () => {
 			it( 'no operation update', () => {
-				const transformBy = new NoOperation( baseVersion );
+				const transformBy = new NoOperation( 0 );
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -3013,9 +2136,9 @@ describe( 'transform', () => {
 
 		describe( 'by RenameOperation', () => {
 			it( 'no position update', () => {
-				const transformBy = new RenameOperation( new Position( root, [ 0, 2, 0 ] ), 'oldName', 'newName', baseVersion );
+				const transformBy = new RenameOperation( new Position( root, [ 0, 2, 0 ] ), 'oldName', 'newName', 0 );
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -3025,9 +2148,9 @@ describe( 'transform', () => {
 		describe( 'by MarkerOperation', () => {
 			it( 'no position update', () => {
 				const newRange = new Range( new Position( root, [ 0, 2, 0 ] ), new Position( root, [ 0, 2, 8 ] ) );
-				const transformBy = new MarkerOperation( 'name', null, newRange, model.markers, baseVersion );
+				const transformBy = new MarkerOperation( 'name', null, newRange, model.markers, 0 );
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -3039,13 +2162,12 @@ describe( 'transform', () => {
 		beforeEach( () => {
 			const position = new Position( root, [ 0, 2, 2 ] );
 
-			op = new RenameOperation( position, 'oldName', 'newName', baseVersion );
+			op = new RenameOperation( position, 'oldName', 'newName', 0 );
 
 			expected = {
 				position,
 				oldName: 'oldName',
-				newName: 'newName',
-				baseVersion: baseVersion + 1
+				newName: 'newName'
 			};
 		} );
 
@@ -3054,10 +2176,10 @@ describe( 'transform', () => {
 				const transformBy = new InsertOperation(
 					new Position( root, [ 0, 2, 1 ] ),
 					[ nodeA, nodeB ],
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 
@@ -3070,10 +2192,10 @@ describe( 'transform', () => {
 				const transformBy = new InsertOperation(
 					new Position( root, [ 0, 2, 3 ] ),
 					[ nodeA, nodeB ],
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -3083,10 +2205,10 @@ describe( 'transform', () => {
 				const transformBy = new InsertOperation(
 					new Position( root, [ 0, 1 ] ),
 					[ nodeA, nodeB ],
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 
@@ -3099,10 +2221,10 @@ describe( 'transform', () => {
 				const transformBy = new InsertOperation(
 					new Position( root, [ 0, 3 ] ),
 					[ nodeA, nodeB ],
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -3119,10 +2241,10 @@ describe( 'transform', () => {
 					'foo',
 					'bar',
 					'xyz',
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -3136,10 +2258,10 @@ describe( 'transform', () => {
 					'foo',
 					null,
 					'bar',
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -3149,9 +2271,9 @@ describe( 'transform', () => {
 		describe( 'by MarkerOperation', () => {
 			it( 'no operation update', () => {
 				const newRange = new Range( new Position( root, [ 0, 2, 0 ] ), new Position( root, [ 0, 2, 8 ] ) );
-				const transformBy = new MarkerOperation( 'name', null, newRange, model.markers, baseVersion );
+				const transformBy = new MarkerOperation( 'name', null, newRange, model.markers, 0 );
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -3164,10 +2286,10 @@ describe( 'transform', () => {
 					new Position( root, [ 0, 2, 1 ] ),
 					'foo',
 					'bar',
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -3178,15 +2300,14 @@ describe( 'transform', () => {
 					new Position( root, [ 0, 2, 2 ] ),
 					'oldName',
 					'otherName',
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], {
-					type: NoOperation,
-					baseVersion: baseVersion + 1
+					type: NoOperation
 				} );
 			} );
 
@@ -3195,10 +2316,10 @@ describe( 'transform', () => {
 					new Position( root, [ 0, 2, 2 ] ),
 					'oldName',
 					'otherName',
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy, { isStrong: true } );
+				const transOp = transform.transform( op, transformBy, { isStrong: true } );
 
 				expect( transOp.length ).to.equal( 1 );
 
@@ -3213,10 +2334,10 @@ describe( 'transform', () => {
 					new Position( root, [ 0, 2, 0 ] ),
 					2,
 					new Position( root, [ 2, 5 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 
@@ -3230,10 +2351,10 @@ describe( 'transform', () => {
 					new Position( root, [ 0, 0 ] ),
 					2,
 					new Position( root, [ 2, 5 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 
@@ -3247,10 +2368,10 @@ describe( 'transform', () => {
 					new Position( root, [ 0, 2, 1 ] ),
 					3,
 					new Position( root, [ 2, 5 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 
@@ -3264,10 +2385,10 @@ describe( 'transform', () => {
 					new Position( root, [ 0, 1 ] ),
 					3,
 					new Position( root, [ 2, 5 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 
@@ -3281,10 +2402,10 @@ describe( 'transform', () => {
 					new Position( root, [ 2, 5 ] ),
 					2,
 					new Position( root, [ 0, 2, 1 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 
@@ -3298,10 +2419,10 @@ describe( 'transform', () => {
 					new Position( root, [ 0, 2, 0 ] ),
 					2,
 					new Position( root, [ 2, 5 ] ),
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 
@@ -3318,13 +2439,12 @@ describe( 'transform', () => {
 		beforeEach( () => {
 			oldRange = Range.createFromParentsAndOffsets( root, 1, root, 4 );
 			newRange = Range.createFromParentsAndOffsets( root, 10, root, 12 );
-			op = new MarkerOperation( 'name', oldRange, newRange, model.markers, baseVersion );
+			op = new MarkerOperation( 'name', oldRange, newRange, model.markers, 0 );
 
 			expected = {
 				name: 'name',
 				oldRange,
-				newRange,
-				baseVersion: baseVersion + 1
+				newRange
 			};
 		} );
 
@@ -3332,9 +2452,9 @@ describe( 'transform', () => {
 			it( 'insert position affecting oldRange: update oldRange', () => {
 				// Just CC things.
 				op.newRange = null;
-				const transformBy = new InsertOperation( Position.createAt( root, 0 ), [ nodeA, nodeB ], baseVersion );
+				const transformBy = new InsertOperation( Position.createAt( root, 0 ), [ nodeA, nodeB ], 0 );
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expected.newRange = null;
 				expected.oldRange.start.offset = 3;
@@ -3347,9 +2467,9 @@ describe( 'transform', () => {
 			it( 'insert position affecting newRange: update newRange', () => {
 				// Just CC things.
 				op.oldRange = null;
-				const transformBy = new InsertOperation( Position.createAt( root, 8 ), [ nodeA, nodeB ], baseVersion );
+				const transformBy = new InsertOperation( Position.createAt( root, 8 ), [ nodeA, nodeB ], 0 );
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expected.oldRange = null;
 				expected.newRange.start.offset = 12;
@@ -3370,10 +2490,10 @@ describe( 'transform', () => {
 					'foo',
 					'bar',
 					'xyz',
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -3385,8 +2505,8 @@ describe( 'transform', () => {
 				// Just CC things.
 				op.newRange = null;
 
-				const transformBy = new MoveOperation( Position.createAt( root, 0 ), 1, Position.createAt( root, 20 ), baseVersion );
-				const transOp = transform( op, transformBy );
+				const transformBy = new MoveOperation( Position.createAt( root, 0 ), 1, Position.createAt( root, 20 ), 0 );
+				const transOp = transform.transform( op, transformBy );
 
 				expected.newRange = null;
 				expected.oldRange.start.offset = 0;
@@ -3397,8 +2517,8 @@ describe( 'transform', () => {
 			} );
 
 			it( 'moved range contains oldRange and is before newRange: update oldRange and newRange', () => {
-				const transformBy = new MoveOperation( Position.createAt( root, 2 ), 2, Position.createAt( root, 20 ), baseVersion );
-				const transOp = transform( op, transformBy );
+				const transformBy = new MoveOperation( Position.createAt( root, 2 ), 2, Position.createAt( root, 20 ), 0 );
+				const transOp = transform.transform( op, transformBy );
 
 				expected.oldRange.start.offset = 1;
 				expected.oldRange.end.offset = 2;
@@ -3413,8 +2533,8 @@ describe( 'transform', () => {
 				// Just CC things.
 				op.oldRange = null;
 
-				const transformBy = new MoveOperation( Position.createAt( root, 20 ), 2, Position.createAt( root, 11 ), baseVersion );
-				const transOp = transform( op, transformBy );
+				const transformBy = new MoveOperation( Position.createAt( root, 20 ), 2, Position.createAt( root, 11 ), 0 );
+				const transOp = transform.transform( op, transformBy );
 
 				expected.oldRange = null;
 				expected.newRange.start.offset = 10;
@@ -3425,8 +2545,8 @@ describe( 'transform', () => {
 			} );
 
 			it( 'target position is inside oldRange and before newRange: update oldRange and newRange', () => {
-				const transformBy = new MoveOperation( Position.createAt( root, 20 ), 4, Position.createAt( root, 2 ), baseVersion );
-				const transOp = transform( op, transformBy );
+				const transformBy = new MoveOperation( Position.createAt( root, 20 ), 4, Position.createAt( root, 2 ), 0 );
+				const transOp = transform.transform( op, transformBy );
 
 				expected.oldRange.start.offset = 1;
 				expected.oldRange.end.offset = 8;
@@ -3445,10 +2565,10 @@ describe( 'transform', () => {
 					'foo',
 					null,
 					'bar',
-					baseVersion
+					0
 				);
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -3457,9 +2577,9 @@ describe( 'transform', () => {
 
 		describe( 'by RenameOperation', () => {
 			it( 'no operation update', () => {
-				const transformBy = new RenameOperation( new Position( root, [ 1 ] ), 'oldName', 'newName', baseVersion );
+				const transformBy = new RenameOperation( new Position( root, [ 1 ] ), 'oldName', 'newName', 0 );
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -3468,9 +2588,9 @@ describe( 'transform', () => {
 
 		describe( 'by MarkerOperation', () => {
 			it( 'different marker name: no operation update', () => {
-				const transformBy = new MarkerOperation( 'otherName', oldRange, newRange, model.markers, baseVersion );
+				const transformBy = new MarkerOperation( 'otherName', oldRange, newRange, model.markers, 0 );
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], expected );
@@ -3478,22 +2598,21 @@ describe( 'transform', () => {
 
 			it( 'same marker name and is important: convert to NoOperation', () => {
 				const anotherRange = Range.createFromParentsAndOffsets( root, 2, root, 2 );
-				const transformBy = new MarkerOperation( 'name', oldRange, anotherRange, model.markers, baseVersion );
+				const transformBy = new MarkerOperation( 'name', oldRange, anotherRange, model.markers, 0 );
 
-				const transOp = transform( op, transformBy );
+				const transOp = transform.transform( op, transformBy );
 
 				expect( transOp.length ).to.equal( 1 );
 				expectOperation( transOp[ 0 ], {
-					type: NoOperation,
-					baseVersion: baseVersion + 1
+					type: NoOperation
 				} );
 			} );
 
 			it( 'same marker name and is less important: update oldRange parameter', () => {
 				const anotherRange = Range.createFromParentsAndOffsets( root, 2, root, 2 );
-				const transformBy = new MarkerOperation( 'name', oldRange, anotherRange, model.markers, baseVersion );
+				const transformBy = new MarkerOperation( 'name', oldRange, anotherRange, model.markers, 0 );
 
-				const transOp = transform( op, transformBy, { isStrong: true } );
+				const transOp = transform.transform( op, transformBy, { isStrong: true } );
 
 				expected.oldRange = anotherRange;
 

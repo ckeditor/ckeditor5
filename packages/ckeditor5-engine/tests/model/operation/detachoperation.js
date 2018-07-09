@@ -5,7 +5,7 @@
 
 import Model from '../../../src/model/model';
 import DetachOperation from '../../../src/model/operation/detachoperation';
-import { jsonParseStringify, wrapInDelta } from '../../../tests/model/_utils/utils';
+import { jsonParseStringify } from '../../../tests/model/_utils/utils';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import Position from '../../../src/model/position';
 import DocumentFragment from '../../../src/model/documentfragment';
@@ -30,7 +30,7 @@ describe( 'DetachOperation', () => {
 	it( 'should remove given element from parent', () => {
 		const op = new DetachOperation( Position.createBefore( element ), 1 );
 
-		model.applyOperation( wrapInDelta( op ) );
+		model.applyOperation( op );
 
 		expect( docFrag.childCount ).to.equal( 0 );
 	} );

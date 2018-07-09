@@ -12,7 +12,7 @@ import DocumentFragment from '../../../src/model/documentfragment';
 import Element from '../../../src/model/element';
 import Text from '../../../src/model/text';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import { jsonParseStringify, wrapInDelta } from '../../../tests/model/_utils/utils';
+import { jsonParseStringify } from '../../../tests/model/_utils/utils';
 
 describe( 'ReinsertOperation', () => {
 	let model, doc, root, graveyard, operation, graveyardPosition, rootPosition;
@@ -44,10 +44,6 @@ describe( 'ReinsertOperation', () => {
 
 	it( 'should have proper type', () => {
 		expect( operation.type ).to.equal( 'reinsert' );
-	} );
-
-	it( 'should not be sticky', () => {
-		expect( operation.isSticky ).to.be.false;
 	} );
 
 	it( 'should extend MoveOperation class', () => {
@@ -89,13 +85,13 @@ describe( 'ReinsertOperation', () => {
 
 		graveyard._insertChild( 0, new Text( 'xx' ) );
 
-		model.applyOperation( wrapInDelta( operation ) );
+		model.applyOperation( operation );
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.maxOffset ).to.equal( 2 );
 		expect( graveyard.maxOffset ).to.equal( 0 );
 
-		model.applyOperation( wrapInDelta( reverse ) );
+		model.applyOperation( reverse );
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.maxOffset ).to.equal( 0 );
@@ -144,7 +140,6 @@ describe( 'ReinsertOperation', () => {
 				__className: 'engine.model.operation.ReinsertOperation',
 				baseVersion: 0,
 				howMany: 2,
-				isSticky: false,
 				sourcePosition: jsonParseStringify( operation.sourcePosition ),
 				targetPosition: jsonParseStringify( operation.targetPosition )
 			} );

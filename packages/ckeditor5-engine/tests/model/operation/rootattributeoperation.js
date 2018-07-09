@@ -8,7 +8,7 @@ import DocumentFragment from '../../../src/model/documentfragment';
 import Element from '../../../src/model/element';
 import RootAttributeOperation from '../../../src/model/operation/rootattributeoperation';
 import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
-import { jsonParseStringify, wrapInDelta } from '../../../tests/model/_utils/utils';
+import { jsonParseStringify } from '../../../tests/model/_utils/utils';
 
 describe( 'RootAttributeOperation', () => {
 	let model, doc, root;
@@ -58,7 +58,7 @@ describe( 'RootAttributeOperation', () => {
 	} );
 
 	it( 'should add attribute on the root element', () => {
-		model.applyOperation( wrapInDelta(
+		model.applyOperation(
 			new RootAttributeOperation(
 				root,
 				'isNew',
@@ -66,7 +66,7 @@ describe( 'RootAttributeOperation', () => {
 				true,
 				doc.version
 			)
-		) );
+		);
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.hasAttribute( 'isNew' ) ).to.be.true;
@@ -75,7 +75,7 @@ describe( 'RootAttributeOperation', () => {
 	it( 'should change attribute on the root element', () => {
 		root._setAttribute( 'isNew', false );
 
-		model.applyOperation( wrapInDelta(
+		model.applyOperation(
 			new RootAttributeOperation(
 				root,
 				'isNew',
@@ -83,7 +83,7 @@ describe( 'RootAttributeOperation', () => {
 				true,
 				doc.version
 			)
-		) );
+		);
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.getAttribute( 'isNew' ) ).to.be.true;
@@ -92,7 +92,7 @@ describe( 'RootAttributeOperation', () => {
 	it( 'should remove attribute from the root element', () => {
 		root._setAttribute( 'x', true );
 
-		model.applyOperation( wrapInDelta(
+		model.applyOperation(
 			new RootAttributeOperation(
 				root,
 				'x',
@@ -100,7 +100,7 @@ describe( 'RootAttributeOperation', () => {
 				null,
 				doc.version
 			)
-		) );
+		);
 
 		expect( doc.version ).to.equal( 1 );
 		expect( root.hasAttribute( 'x' ) ).to.be.false;
@@ -129,8 +129,8 @@ describe( 'RootAttributeOperation', () => {
 
 		const reverse = operation.getReversed();
 
-		model.applyOperation( wrapInDelta( operation ) );
-		model.applyOperation( wrapInDelta( reverse ) );
+		model.applyOperation( operation );
+		model.applyOperation( reverse );
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.hasAttribute( 'x' ) ).to.be.false;
@@ -149,8 +149,8 @@ describe( 'RootAttributeOperation', () => {
 
 		const reverse = operation.getReversed();
 
-		model.applyOperation( wrapInDelta( operation ) );
-		model.applyOperation( wrapInDelta( reverse ) );
+		model.applyOperation( operation );
+		model.applyOperation( reverse );
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.getAttribute( 'isNew' ) ).to.be.false;
@@ -169,8 +169,8 @@ describe( 'RootAttributeOperation', () => {
 
 		const reverse = operation.getReversed();
 
-		model.applyOperation( wrapInDelta( operation ) );
-		model.applyOperation( wrapInDelta( reverse ) );
+		model.applyOperation( operation );
+		model.applyOperation( reverse );
 
 		expect( doc.version ).to.equal( 2 );
 		expect( root.getAttribute( 'foo' ) ).to.be.true;

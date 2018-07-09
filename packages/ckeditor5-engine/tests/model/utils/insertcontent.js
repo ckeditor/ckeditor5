@@ -27,7 +27,7 @@ describe( 'DataController utils', () => {
 
 			model.change( writer => {
 				insertContent( model, new Text( 'a' ), doc.selection );
-				expect( writer.batch.deltas ).to.length( 1 );
+				expect( writer.batch.operations ).to.length( 1 );
 			} );
 		} );
 

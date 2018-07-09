@@ -6,7 +6,6 @@
 import {
 	getNodesAndText,
 	jsonParseStringify,
-	wrapInDelta,
 	itemAt,
 	getText,
 	createRangeOnElementOnly
@@ -18,7 +17,6 @@ import Text from '../../../src/model/text';
 import Node from '../../../src/model/node';
 import TextProxy from '../../../src/model/textproxy';
 import Operation from '../../../src/model/operation/operation';
-import Delta from '../../../src/model/delta/delta';
 
 describe( 'getNodesAndText', () => {
 	let doc, root, div, p;
@@ -53,16 +51,6 @@ describe( 'jsonParseStringify', () => {
 		const fooJsoned = jsonParseStringify( foo );
 		expect( fooJsoned ).to.not.be.instanceOf( Foo );
 		expect( fooJsoned ).to.deep.equal( { ra: { bar: 'bar' } } );
-	} );
-} );
-
-describe( 'wrapInDelta', () => {
-	it( 'should return given operation wrapped in a delta', () => {
-		const op = new Operation( 0 );
-		const wrapped = wrapInDelta( op );
-
-		expect( wrapped ).to.equal( op );
-		expect( wrapped.delta ).to.be.instanceof( Delta );
 	} );
 } );
 

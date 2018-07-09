@@ -7,7 +7,7 @@ import Model from '../../../src/model/model';
 import Text from '../../../src/model/text';
 import Range from '../../../src/model/range';
 import MarkerOperation from '../../../src/model/operation/markeroperation';
-import { jsonParseStringify, wrapInDelta } from '../../model/_utils/utils';
+import { jsonParseStringify } from '../../model/_utils/utils';
 
 function matchRange( range ) {
 	return sinon.match( rangeToMatch => rangeToMatch.isEqual( range ) );
@@ -32,9 +32,9 @@ describe( 'MarkerOperation', () => {
 	it( 'should add marker to document marker collection', () => {
 		sinon.spy( model.markers, '_set' );
 
-		model.applyOperation( wrapInDelta(
+		model.applyOperation(
 			new MarkerOperation( 'name', null, range, model.markers, doc.version, true )
-		) );
+		);
 
 		expect( doc.version ).to.equal( 1 );
 		expect( model.markers._set.calledWith( 'name', matchRange( range ) ) );
@@ -42,17 +42,17 @@ describe( 'MarkerOperation', () => {
 	} );
 
 	it( 'should update marker in document marker collection', () => {
-		model.applyOperation( wrapInDelta(
+		model.applyOperation(
 			new MarkerOperation( 'name', null, range, model.markers, doc.version, true )
-		) );
+		);
 
 		const range2 = Range.createFromParentsAndOffsets( root, 0, root, 3 );
 
 		sinon.spy( model.markers, '_set' );
 
-		model.applyOperation( wrapInDelta(
+		model.applyOperation(
 			new MarkerOperation( 'name', range, range2, model.markers, doc.version, true )
-		) );
+		);
 
 		expect( doc.version ).to.equal( 2 );
 		expect( model.markers._set.calledWith( 'name', matchRange( range2 ) ) );
@@ -60,15 +60,15 @@ describe( 'MarkerOperation', () => {
 	} );
 
 	it( 'should remove marker from document marker collection', () => {
-		model.applyOperation( wrapInDelta(
+		model.applyOperation(
 			new MarkerOperation( 'name', null, range, model.markers, doc.version, true )
-		) );
+		);
 
 		sinon.spy( model.markers, '_remove' );
 
-		model.applyOperation( wrapInDelta(
+		model.applyOperation(
 			new MarkerOperation( 'name', range, null, model.markers, doc.version, true )
-		) );
+		);
 
 		expect( doc.version ).to.equal( 2 );
 		expect( model.markers._remove.calledWith( 'name' ) );
@@ -78,9 +78,9 @@ describe( 'MarkerOperation', () => {
 	it( 'should not fire document markers remove event if removing non-existing range', () => {
 		sinon.spy( model.markers, 'fire' );
 
-		model.applyOperation( wrapInDelta(
+		model.applyOperation(
 			new MarkerOperation( 'name', null, null, model.markers, doc.version, true )
-		) );
+		);
 
 		expect( model.markers.fire.notCalled ).to.be.true;
 	} );
@@ -92,9 +92,9 @@ describe( 'MarkerOperation', () => {
 
 		sinon.spy( model.markers, 'fire' );
 
-		model.applyOperation( wrapInDelta(
+		model.applyOperation(
 			new MarkerOperation( 'name', range, range, model.markers, doc.version, false )
-		) );
+		);
 
 		expect( model.markers.fire.notCalled ).to.be.true;
 	} );

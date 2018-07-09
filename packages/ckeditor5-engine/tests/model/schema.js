@@ -19,7 +19,7 @@ import Selection from '../../src/model/selection';
 
 import { getData, setData, stringify, parse } from '../../src/dev-utils/model';
 
-import AttributeDelta from '../../src/model/delta/attributedelta';
+import AttributeOperation from '../../src/model/operation/attributeoperation';
 
 describe( 'Schema', () => {
 	let schema, root1, r1p1, r1p2, r1bQ, r1bQp, root2;
@@ -1569,9 +1569,9 @@ describe( 'Schema', () => {
 				expect( Array.from( text.getAttributeKeys() ) ).to.deep.equal( [ 'a' ] );
 				expect( Array.from( image.getAttributeKeys() ) ).to.deep.equal( [ 'b' ] );
 
-				expect( writer.batch.deltas ).to.length( 2 );
-				expect( writer.batch.deltas[ 0 ] ).to.instanceof( AttributeDelta );
-				expect( writer.batch.deltas[ 1 ] ).to.instanceof( AttributeDelta );
+				expect( writer.batch.operations ).to.length( 2 );
+				expect( writer.batch.operations[ 0 ] ).to.instanceof( AttributeOperation );
+				expect( writer.batch.operations[ 1 ] ).to.instanceof( AttributeOperation );
 
 				expect( getData( model, { withoutSelection: true } ) )
 					.to.equal( '<$text a="1">foo</$text><image b="1"></image>' );
@@ -1613,11 +1613,11 @@ describe( 'Schema', () => {
 			model.change( writer => {
 				schema.removeDisallowedAttributes( root.getChildren(), writer );
 
-				expect( writer.batch.deltas ).to.length( 4 );
-				expect( writer.batch.deltas[ 0 ] ).to.instanceof( AttributeDelta );
-				expect( writer.batch.deltas[ 1 ] ).to.instanceof( AttributeDelta );
-				expect( writer.batch.deltas[ 2 ] ).to.instanceof( AttributeDelta );
-				expect( writer.batch.deltas[ 3 ] ).to.instanceof( AttributeDelta );
+				expect( writer.batch.operations ).to.length( 4 );
+				expect( writer.batch.operations[ 0 ] ).to.instanceof( AttributeOperation );
+				expect( writer.batch.operations[ 1 ] ).to.instanceof( AttributeOperation );
+				expect( writer.batch.operations[ 2 ] ).to.instanceof( AttributeOperation );
+				expect( writer.batch.operations[ 3 ] ).to.instanceof( AttributeOperation );
 
 				expect( getData( model, { withoutSelection: true } ) )
 					.to.equal(

@@ -10,7 +10,6 @@ import ModelText from '../../src/model/text';
 import ModelRange from '../../src/model/range';
 
 import MarkerOperation from '../../src/model/operation/markeroperation';
-import { wrapInDelta } from '../model/_utils/utils';
 
 describe( 'Bug ckeditor5-engine@1323', () => {
 	describe( 'constructor()', () => {
@@ -35,10 +34,10 @@ describe( 'Bug ckeditor5-engine@1323', () => {
 
 			model.change( () => {
 				// Add marker.
-				model.applyOperation( wrapInDelta( new MarkerOperation( 'name', null, range, model.markers, 0 ) ) );
+				model.applyOperation( new MarkerOperation( 'name', null, range, model.markers, 0 ) );
 
 				// Remove marker.
-				model.applyOperation( wrapInDelta( new MarkerOperation( 'name', range, null, model.markers, 1 ) ) );
+				model.applyOperation( new MarkerOperation( 'name', range, null, model.markers, 1 ) );
 
 				sinon.assert.notCalled( spy );
 			} );

@@ -193,7 +193,7 @@ describe( 'DataController', () => {
 			schema.extend( '$text', { allowIn: '$root' } );
 			data.init( 'foo' );
 
-			expect( count( modelDocument.history.getDeltas() ) ).to.equal( 1 );
+			expect( count( modelDocument.history.getOperations() ) ).to.equal( 1 );
 		} );
 
 		it( 'should cause firing change event', () => {
@@ -228,7 +228,7 @@ describe( 'DataController', () => {
 			schema.extend( '$text', { allowIn: '$root' } );
 			data.set( 'foo' );
 
-			expect( count( modelDocument.history.getDeltas() ) ).to.equal( 1 );
+			expect( count( modelDocument.history.getOperations() ) ).to.equal( 1 );
 		} );
 
 		it( 'should cause firing change event', () => {
@@ -250,7 +250,7 @@ describe( 'DataController', () => {
 			expect( getData( model, { withoutSelection: true, rootName: 'main' } ) ).to.equal( 'foo' );
 			expect( getData( model, { withoutSelection: true, rootName: 'title' } ) ).to.equal( 'Bar' );
 
-			expect( count( modelDocument.history.getDeltas() ) ).to.equal( 2 );
+			expect( count( modelDocument.history.getOperations() ) ).to.equal( 2 );
 		} );
 
 		it( 'should parse given data before set in a context of correct root', () => {
@@ -261,7 +261,7 @@ describe( 'DataController', () => {
 			expect( getData( model, { withoutSelection: true, rootName: 'main' } ) ).to.equal( '' );
 			expect( getData( model, { withoutSelection: true, rootName: 'title' } ) ).to.equal( 'Bar' );
 
-			expect( count( modelDocument.history.getDeltas() ) ).to.equal( 2 );
+			expect( count( modelDocument.history.getOperations() ) ).to.equal( 2 );
 		} );
 
 		// This case was added when order of params was different and it really didn't work. Let's keep it

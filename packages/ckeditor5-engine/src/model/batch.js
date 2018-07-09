@@ -8,9 +8,9 @@
  */
 
 /**
- * A batch instance groups model changes ({@link module:engine/model/delta/delta~Delta deltas}). All deltas grouped in a single batch
- * can be reverted together, so you can think about a batch as of a single undo step. If you want to extend a given undo step, you
- * can add more changes to the batch using {@link module:engine/model/model~Model#enqueueChange}:
+ * A batch instance groups model changes ({@link module:engine/model/operation/operation~Operation operations}). All operations
+ * grouped in a single batch can be reverted together, so you can also think about a batch as of a single undo step. If you want
+ * to extend a given undo step, you can add more changes to the batch using {@link module:engine/model/model~Model#enqueueChange}:
  *
  *		model.enqueueChange( batch, writer => {
  *			writer.insertText( 'foo', paragraph, 'end' );
@@ -29,12 +29,12 @@ export default class Batch {
 	 */
 	constructor( type = 'default' ) {
 		/**
-		 * An array of deltas that compose this batch.
+		 * An array of operations that compose this batch.
 		 *
 		 * @readonly
-		 * @type {Array.<module:engine/model/delta/delta~Delta>}
+		 * @type {Array.<module:engine/model/operation/operation~Operation>}
 		 */
-		this.deltas = [];
+		this.operations = [];
 
 		/**
 		 * The type of the batch.
@@ -51,16 +51,16 @@ export default class Batch {
 	}
 
 	/**
-	 * Returns the base version of this batch, which is equal to the base version of the first delta (which has the base version set)
-	 * in the batch. If there are no deltas in the batch or neither delta has the base version set, it returns `null`.
+	 * Returns the base version of this batch, which is equal to the base version of the first operation in the batch.
+	 * If there are no operations in the batch or neither operation has the base version set, it returns `null`.
 	 *
 	 * @readonly
 	 * @type {Number|null}
 	 */
 	get baseVersion() {
-		for ( const delta of this.deltas ) {
-			if ( delta.baseVersion !== null ) {
-				return delta.baseVersion;
+		for ( const op of this.operations ) {
+			if ( op.baseVersion !== null ) {
+				return op.baseVersion;
 			}
 		}
 
@@ -68,27 +68,15 @@ export default class Batch {
 	}
 
 	/**
-	 * Adds a delta to the batch instance. All modification methods (insert, remove, split, etc.) use this method
-	 * to add created deltas.
+	 * Adds an operation to the batch instance.
 	 *
-	 * @param {module:engine/model/delta/delta~Delta} delta A delta to add.
-	 * @returns {module:engine/model/delta/delta~Delta} An added delta.
+	 * @param {module:engine/model/operation/operation~Operation} operation An operation to add.
+	 * @returns {module:engine/model/operation/operation~Operation} The added operation.
 	 */
-	addDelta( delta ) {
-		delta.batch = this;
-		this.deltas.push( delta );
+	addOperation( operation ) {
+		operation.batch = this;
+		this.operations.push( operation );
 
-		return delta;
-	}
-
-	/**
-	 * Gets an iterable collection of operations.
-	 *
-	 * @returns {Iterable.<module:engine/model/operation/operation~Operation>}
-	 */
-	* getOperations() {
-		for ( const delta of this.deltas ) {
-			yield* delta.operations;
-		}
+		return operation;
 	}
 }

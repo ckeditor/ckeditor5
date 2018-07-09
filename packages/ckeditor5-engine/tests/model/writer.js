@@ -6,8 +6,7 @@
 import Model from '../../src/model/model';
 import Writer from '../../src/model/writer';
 import Batch from '../../src/model/batch';
-import InsertDelta from '../../src/model/delta/insertdelta';
-import WeakInsertDelta from '../../src/model/delta/weakinsertdelta';
+import InsertOperation from '../../src/model/operation/insertoperation';
 
 import DocumentFragment from '../../src/model/documentfragment';
 import Element from '../../src/model/element';
@@ -159,7 +158,7 @@ describe( 'Writer', () => {
 			expect( Array.from( parent.getChildren() ) ).to.deep.equal( [ child1, child2, child3 ] );
 		} );
 
-		it( 'should create proper delta for inserting element', () => {
+		it( 'should create proper operation for inserting element', () => {
 			const parent = createDocumentFragment();
 			const element = createElement( 'child' );
 
@@ -170,12 +169,12 @@ describe( 'Writer', () => {
 			sinon.assert.calledOnce( spy );
 
 			expect( spy.lastCall.args[ 0 ].type ).to.equal( 'insert' );
-			expect( spy.lastCall.args[ 0 ].delta ).to.instanceof( InsertDelta );
-			expect( spy.lastCall.args[ 0 ].delta ).to.not.instanceof( WeakInsertDelta );
-			expect( spy.lastCall.args[ 0 ].delta.batch ).to.equal( batch );
+			expect( spy.lastCall.args[ 0 ] ).to.instanceof( InsertOperation );
+			expect( spy.lastCall.args[ 0 ].shouldReceiveAttributes ).to.be.false;
+			expect( spy.lastCall.args[ 0 ].batch ).to.equal( batch );
 		} );
 
-		it( 'should create proper delta for inserting text', () => {
+		it( 'should create proper operation for inserting text', () => {
 			const parent = createDocumentFragment();
 			const text = createText( 'child' );
 
@@ -185,8 +184,9 @@ describe( 'Writer', () => {
 
 			sinon.assert.calledOnce( spy );
 			expect( spy.lastCall.args[ 0 ].type ).to.equal( 'insert' );
-			expect( spy.lastCall.args[ 0 ].delta ).to.instanceof( WeakInsertDelta );
-			expect( spy.lastCall.args[ 0 ].delta.batch ).to.equal( batch );
+			expect( spy.lastCall.args[ 0 ] ).to.instanceof( InsertOperation );
+			expect( spy.lastCall.args[ 0 ].shouldReceiveAttributes ).to.be.true;
+			expect( spy.lastCall.args[ 0 ].batch ).to.equal( batch );
 		} );
 
 		it( 'should move element from one parent to the other within the same document (rootA -> rootA)', () => {
@@ -207,10 +207,10 @@ describe( 'Writer', () => {
 			expect( Array.from( parent1.getChildren() ) ).to.deep.equal( [] );
 			expect( Array.from( parent2.getChildren() ) ).to.deep.equal( [ node ] );
 
-			// Verify deltas and operations.
+			// Verify operations.
 			sinon.assert.calledOnce( spy );
 			expect( spy.firstCall.args[ 0 ].type ).to.equal( 'move' );
-			expect( spy.firstCall.args[ 0 ].delta.batch ).to.equal( batch );
+			expect( spy.firstCall.args[ 0 ].batch ).to.equal( batch );
 		} );
 
 		it( 'should move element from one parent to the other within the same document (rootA -> rootB)', () => {
@@ -228,10 +228,10 @@ describe( 'Writer', () => {
 			expect( Array.from( rootA.getChildren() ) ).to.deep.equal( [] );
 			expect( Array.from( rootB.getChildren() ) ).to.deep.equal( [ node ] );
 
-			// Verify deltas and operations.
+			// Verify operations.
 			sinon.assert.calledOnce( spy );
 			expect( spy.firstCall.args[ 0 ].type ).to.equal( 'move' );
-			expect( spy.firstCall.args[ 0 ].delta.batch ).to.equal( batch );
+			expect( spy.firstCall.args[ 0 ].batch ).to.equal( batch );
 		} );
 
 		it( 'should move element from one parent to the other within the same document (docFragA -> docFragA)', () => {
@@ -252,10 +252,10 @@ describe( 'Writer', () => {
 			expect( Array.from( parent1.getChildren() ) ).to.deep.equal( [] );
 			expect( Array.from( parent2.getChildren() ) ).to.deep.equal( [ node ] );
 
-			// Verify deltas and operations.
+			// Verify operations.
 			sinon.assert.calledOnce( spy );
 			expect( spy.firstCall.args[ 0 ].type ).to.equal( 'move' );
-			expect( spy.firstCall.args[ 0 ].delta.batch ).to.equal( batch );
+			expect( spy.firstCall.args[ 0 ].batch ).to.equal( batch );
 		} );
 
 		it( 'should move element from one parent to the other within different document (docFragA -> docFragB)', () => {
@@ -273,12 +273,12 @@ describe( 'Writer', () => {
 			expect( Array.from( docFragA ) ).to.deep.equal( [] );
 			expect( Array.from( docFragB ) ).to.deep.equal( [ node ] );
 
-			// Verify deltas and operations.
+			// Verify operations.
 			sinon.assert.calledTwice( spy );
 			expect( spy.firstCall.args[ 0 ].type ).to.equal( 'detach' );
-			expect( spy.firstCall.args[ 0 ].delta.batch ).to.equal( batch );
+			expect( spy.firstCall.args[ 0 ].batch ).to.equal( batch );
 			expect( spy.secondCall.args[ 0 ].type ).to.equal( 'insert' );
-			expect( spy.secondCall.args[ 0 ].delta.batch ).to.equal( batch );
+			expect( spy.secondCall.args[ 0 ].batch ).to.equal( batch );
 		} );
 
 		it( 'should throw when moving element from document to document fragment', () => {
@@ -430,7 +430,7 @@ describe( 'Writer', () => {
 			expect( parent.getChild( 2 ) ).to.instanceof( Element );
 		} );
 
-		it( 'should create proper delta', () => {
+		it( 'should create proper operation', () => {
 			const parent = createDocumentFragment();
 			const spy = sinon.spy( model, 'applyOperation' );
 
@@ -438,8 +438,9 @@ describe( 'Writer', () => {
 
 			sinon.assert.calledOnce( spy );
 			expect( spy.lastCall.args[ 0 ].type ).to.equal( 'insert' );
-			expect( spy.lastCall.args[ 0 ].delta ).to.instanceof( WeakInsertDelta );
-			expect( spy.lastCall.args[ 0 ].delta.batch ).to.equal( batch );
+			expect( spy.lastCall.args[ 0 ] ).to.instanceof( InsertOperation );
+			expect( spy.lastCall.args[ 0 ].shouldReceiveAttributes ).to.be.true;
+			expect( spy.lastCall.args[ 0 ].batch ).to.equal( batch );
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
@@ -551,16 +552,17 @@ describe( 'Writer', () => {
 			expect( parent.getChild( 2 ).name ).to.equal( 'child2' );
 		} );
 
-		it( 'should create proper delta', () => {
+		it( 'should create proper operation', () => {
 			const parent = createDocumentFragment();
 			const spy = sinon.spy( model, 'applyOperation' );
 
-			insertText( 'foo', parent );
+			insertElement( 'foo', parent );
 
 			sinon.assert.calledOnce( spy );
 			expect( spy.lastCall.args[ 0 ].type ).to.equal( 'insert' );
-			expect( spy.lastCall.args[ 0 ].delta ).to.instanceof( InsertDelta );
-			expect( spy.lastCall.args[ 0 ].delta.batch ).to.equal( batch );
+			expect( spy.lastCall.args[ 0 ] ).to.instanceof( InsertOperation );
+			expect( spy.lastCall.args[ 0 ].shouldReceiveAttributes ).to.be.false;
+			expect( spy.lastCall.args[ 0 ].batch ).to.equal( batch );
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
@@ -585,7 +587,7 @@ describe( 'Writer', () => {
 			expect( Array.from( parent ) ).to.deep.equal( [ childText, childElement ] );
 		} );
 
-		it( 'should create proper delta', () => {
+		it( 'should create proper operation', () => {
 			const parent = createDocumentFragment();
 			const text = createText( 'foo' );
 			const spy = sinon.spy( model, 'applyOperation' );
@@ -594,7 +596,7 @@ describe( 'Writer', () => {
 
 			sinon.assert.calledOnce( spy );
 			expect( spy.lastCall.args[ 0 ].type ).to.equal( 'insert' );
-			expect( spy.lastCall.args[ 0 ].delta.batch ).to.equal( batch );
+			expect( spy.lastCall.args[ 0 ].batch ).to.equal( batch );
 		} );
 
 		it( 'should move element from one parent to the other within the same root (rootA -> rootA)', () => {
@@ -616,10 +618,10 @@ describe( 'Writer', () => {
 			expect( Array.from( parent1.getChildren() ) ).to.deep.equal( [] );
 			expect( Array.from( parent2.getChildren() ) ).to.deep.equal( [ node ] );
 
-			// Verify deltas and operations.
+			// Verify operations.
 			sinon.assert.calledOnce( spy );
 			expect( spy.firstCall.args[ 0 ].type ).to.equal( 'move' );
-			expect( spy.firstCall.args[ 0 ].delta.batch ).to.equal( batch );
+			expect( spy.firstCall.args[ 0 ].batch ).to.equal( batch );
 		} );
 
 		it( 'should move element from one parent to the other within the same document (rootA -> rootB)', () => {
@@ -637,10 +639,10 @@ describe( 'Writer', () => {
 			expect( Array.from( rootA.getChildren() ) ).to.deep.equal( [] );
 			expect( Array.from( rootB.getChildren() ) ).to.deep.equal( [ node ] );
 
-			// Verify deltas and operations.
+			// Verify operations.
 			sinon.assert.calledOnce( spy );
 			expect( spy.firstCall.args[ 0 ].type ).to.equal( 'move' );
-			expect( spy.firstCall.args[ 0 ].delta.batch ).to.equal( batch );
+			expect( spy.firstCall.args[ 0 ].batch ).to.equal( batch );
 		} );
 
 		it( 'should move element from one parent to the other within the same document fragment (docFragA -> docFragA)', () => {
@@ -661,10 +663,10 @@ describe( 'Writer', () => {
 			expect( Array.from( parent1.getChildren() ) ).to.deep.equal( [] );
 			expect( Array.from( parent2.getChildren() ) ).to.deep.equal( [ node ] );
 
-			// Verify deltas and operations.
+			// Verify operations.
 			sinon.assert.calledOnce( spy );
 			expect( spy.firstCall.args[ 0 ].type ).to.equal( 'move' );
-			expect( spy.firstCall.args[ 0 ].delta.batch ).to.equal( batch );
+			expect( spy.firstCall.args[ 0 ].batch ).to.equal( batch );
 		} );
 
 		it( 'should move element from one parent to the other within different document fragments (docFragA -> docFragB)', () => {
@@ -682,12 +684,12 @@ describe( 'Writer', () => {
 			expect( Array.from( docFragA ) ).to.deep.equal( [] );
 			expect( Array.from( docFragB ) ).to.deep.equal( [ node ] );
 
-			// Verify deltas and operations.
+			// Verify operations.
 			sinon.assert.calledTwice( spy );
 			expect( spy.firstCall.args[ 0 ].type ).to.equal( 'detach' );
-			expect( spy.firstCall.args[ 0 ].delta.batch ).to.equal( batch );
+			expect( spy.firstCall.args[ 0 ].batch ).to.equal( batch );
 			expect( spy.secondCall.args[ 0 ].type ).to.equal( 'insert' );
-			expect( spy.secondCall.args[ 0 ].delta.batch ).to.equal( batch );
+			expect( spy.secondCall.args[ 0 ].batch ).to.equal( batch );
 		} );
 
 		it( 'should throw when moving element from document to document fragment', () => {
@@ -736,7 +738,7 @@ describe( 'Writer', () => {
 			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).to.deep.equal( [] );
 		} );
 
-		it( 'should create proper delta and operations', () => {
+		it( 'should create proper operations', () => {
 			const parent = createDocumentFragment();
 			const spy = sinon.spy( model, 'applyOperation' );
 
@@ -744,8 +746,9 @@ describe( 'Writer', () => {
 
 			sinon.assert.calledOnce( spy );
 			expect( spy.firstCall.args[ 0 ].type ).to.equal( 'insert' );
-			expect( spy.firstCall.args[ 0 ].delta ).to.instanceof( WeakInsertDelta );
-			expect( spy.firstCall.args[ 0 ].delta.batch ).to.equal( batch );
+			expect( spy.firstCall.args[ 0 ] ).to.instanceof( InsertOperation );
+			expect( spy.firstCall.args[ 0 ].shouldReceiveAttributes ).to.be.true;
+			expect( spy.firstCall.args[ 0 ].batch ).to.equal( batch );
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
@@ -789,7 +792,7 @@ describe( 'Writer', () => {
 			expect( Array.from( parent.getChild( 0 ).getAttributes() ) ).to.deep.equal( [] );
 		} );
 
-		it( 'should create proper delta and operation', () => {
+		it( 'should create proper operation', () => {
 			const parent = createDocumentFragment();
 			const spy = sinon.spy( model, 'applyOperation' );
 
@@ -797,8 +800,9 @@ describe( 'Writer', () => {
 
 			sinon.assert.calledOnce( spy );
 			expect( spy.firstCall.args[ 0 ].type ).to.equal( 'insert' );
-			expect( spy.firstCall.args[ 0 ].delta ).to.instanceof( InsertDelta ).to.not.instanceof( WeakInsertDelta );
-			expect( spy.firstCall.args[ 0 ].delta.batch ).to.equal( batch );
+			expect( spy.firstCall.args[ 0 ] ).to.be.instanceof( InsertOperation );
+			expect( spy.firstCall.args[ 0 ].shouldReceiveAttributes ).to.be.false;
+			expect( spy.firstCall.args[ 0 ].batch ).to.equal( batch );
 		} );
 
 		it( 'should throw when trying to use detached writer', () => {
@@ -926,11 +930,9 @@ describe( 'Writer', () => {
 			function getChangesAttrsCount() {
 				let totalNumber = 0;
 
-				for ( const delta of batch.deltas ) {
-					for ( const operation of delta.operations ) {
-						if ( operation.range ) {
-							totalNumber += count( operation.range.getItems( { singleCharacters: true } ) );
-						}
+				for ( const operation of batch.operations ) {
+					if ( operation.range ) {
+						totalNumber += count( operation.range.getItems( { singleCharacters: true } ) );
 					}
 				}
 
@@ -1007,7 +1009,7 @@ describe( 'Writer', () => {
 					);
 
 					setAttribute( 'a', 1, range );
-					expect( spy.callCount ).to.equal( 1 );
+					expect( spy.callCount ).to.equal( 2 );
 					expect( getChangesAttrsCount() ).to.equal( 4 );
 					expect( getCompressedAttrs() ).to.equal( '111---111222---1112-1111-' );
 				} );
@@ -1029,11 +1031,11 @@ describe( 'Writer', () => {
 					expect( getCompressedAttrs() ).to.equal( '111---111222---1112------' );
 				} );
 
-				it( 'should create a proper operations for the mixed range', () => {
+				it( 'should not change children of items in the range', () => {
 					setAttribute( 'a', 1, getRange( 0, 20 ) );
 					expect( spy.callCount ).to.equal( 5 );
 					expect( getChangesAttrsCount() ).to.equal( 14 );
-					expect( getCompressedAttrs() ).to.equal( '11111111111111111111111--' );
+					expect( getCompressedAttrs() ).to.equal( '1111111111111111111---1--' );
 				} );
 
 				it( 'should throw when trying to use detached writer', () => {
@@ -1097,13 +1099,6 @@ describe( 'Writer', () => {
 					expect( spy.callCount ).to.equal( 0 );
 					expect( getChangesAttrsCount() ).to.equal( 0 );
 					expect( getCompressedAttrs() ).to.equal( '111---111222---1112------' );
-				} );
-
-				it( 'should not apply operation twice in the range contains opening and closing tags', () => {
-					removeAttribute( 'a', getRange( 18, 22 ) );
-					expect( spy.callCount ).to.equal( 1 );
-					expect( getChangesAttrsCount() ).to.equal( 1 );
-					expect( getCompressedAttrs() ).to.equal( '111---111222---111-------' );
 				} );
 
 				it( 'should not create an operation if range is collapsed', () => {
@@ -1273,20 +1268,6 @@ describe( 'Writer', () => {
 					} ).to.throw( CKEditorError, /^writer-incorrect-use/ );
 				} );
 			} );
-		} );
-
-		it( 'should not add empty delta to the batch', () => {
-			const nodeA = new Element( 'p', { a: 1 } );
-			const nodeB = new Element( 'p', { b: 2 } );
-			root._insertChild( 0, [ nodeA, nodeB ] );
-
-			setAttribute( 'a', 1, nodeA );
-
-			expect( batch.deltas.length ).to.equal( 0 );
-
-			removeAttribute( 'x', Range.createIn( root ) );
-
-			expect( batch.deltas.length ).to.equal( 0 );
 		} );
 	} );
 
@@ -1557,20 +1538,18 @@ describe( 'Writer', () => {
 				expect( getNodesAndText( Range.createIn( root.getChild( 1 ) ) ) ).to.equal( 'abcxyz' );
 			} );
 
-			it( 'should create minimal number of remove deltas, each with only one operation', () => {
+			it( 'should create minimal number of remove operations, each with only one operation', () => {
 				batch = new Batch();
 				remove( range );
 
-				expect( batch.deltas.length ).to.equal( 2 );
-				expect( batch.deltas[ 0 ].operations.length ).to.equal( 1 );
-				expect( batch.deltas[ 1 ].operations.length ).to.equal( 1 );
+				expect( batch.operations.length ).to.equal( 2 );
 			} );
 
 			it( 'should use RemoveOperation', () => {
 				batch = new Batch();
 				remove( div );
 
-				expect( batch.deltas[ 0 ].operations[ 0 ].type ).to.equal( 'remove' );
+				expect( batch.operations[ 0 ].type ).to.equal( 'remove' );
 			} );
 
 			it( 'should throw when trying to use detached writer', () => {
@@ -1616,20 +1595,18 @@ describe( 'Writer', () => {
 				expect( getNodesAndText( Range.createIn( frag.getChild( 1 ) ) ) ).to.equal( 'abcxyz' );
 			} );
 
-			it( 'should create minimal number of remove deltas, each with only one operation', () => {
+			it( 'should create minimal number of remove operations, each with only one operation', () => {
 				batch = new Batch();
 				remove( range );
 
-				expect( batch.deltas.length ).to.equal( 2 );
-				expect( batch.deltas[ 0 ].operations.length ).to.equal( 1 );
-				expect( batch.deltas[ 1 ].operations.length ).to.equal( 1 );
+				expect( batch.operations.length ).to.equal( 2 );
 			} );
 
 			it( 'should use DetachOperation', () => {
 				batch = new Batch();
 				remove( div );
 
-				expect( batch.deltas[ 0 ].operations[ 0 ].type ).to.equal( 'detach' );
+				expect( batch.operations[ 0 ].type ).to.equal( 'detach' );
 			} );
 
 			it( 'should throw when trying to use detached writer', () => {
@@ -1830,8 +1807,8 @@ describe( 'Writer', () => {
 
 			expect( root.maxOffset ).to.equal( 5 );
 			expect( root.getChild( 0 ).data ).to.equal( 'fo' );
-			expect( root.getChild( 1 ) ).to.equal( p );
-			expect( p.getChild( 0 ).data ).to.equal( 'ob' );
+			expect( root.getChild( 1 ).name ).to.equal( 'p' );
+			expect( root.getChild( 1 ).getChild( 0 ).data ).to.equal( 'ob' );
 			expect( root.getChild( 2 ).data ).to.equal( 'ar' );
 		} );
 
@@ -2012,7 +1989,7 @@ describe( 'Writer', () => {
 			model.on( 'applyOperation', spy );
 
 			addMarker( 'name', { range, usingOperation: true } );
-			const op = batch.deltas[ 0 ].operations[ 0 ];
+			const op = batch.operations[ 0 ];
 
 			sinon.assert.calledOnce( spy );
 			expect( spy.firstCall.args[ 1 ][ 0 ].type ).to.equal( 'marker' );
@@ -2057,9 +2034,9 @@ describe( 'Writer', () => {
 
 			updateMarker( marker, { range: range2 } );
 
-			expect( batch.deltas.length ).to.equal( 2 );
+			expect( batch.operations.length ).to.equal( 2 );
 
-			const op = batch.deltas[ 1 ].operations[ 0 ];
+			const op = batch.operations[ 1 ];
 
 			expect( marker.getRange().isEqual( range2 ) ).to.be.true;
 			expect( op.oldRange.isEqual( range ) ).to.be.true;
@@ -2072,9 +2049,9 @@ describe( 'Writer', () => {
 
 			updateMarker( 'name', { range: range2 } );
 
-			expect( batch.deltas.length ).to.equal( 2 );
+			expect( batch.operations.length ).to.equal( 2 );
 
-			const op = batch.deltas[ 1 ].operations[ 0 ];
+			const op = batch.operations[ 1 ];
 
 			expect( marker.getRange().isEqual( range2 ) ).to.be.true;
 			expect( op.oldRange.isEqual( range ) ).to.be.true;
@@ -2087,9 +2064,9 @@ describe( 'Writer', () => {
 
 			updateMarker( marker, { range: range2, usingOperation: true } );
 
-			expect( batch.deltas.length ).to.equal( 2 );
+			expect( batch.operations.length ).to.equal( 2 );
 
-			const op = batch.deltas[ 1 ].operations[ 0 ];
+			const op = batch.operations[ 1 ];
 
 			expect( marker.getRange().isEqual( range2 ) ).to.be.true;
 			expect( op.oldRange.isEqual( range ) ).to.be.true;
@@ -2102,9 +2079,9 @@ describe( 'Writer', () => {
 
 			updateMarker( 'name', { range: range2, usingOperation: true } );
 
-			expect( batch.deltas.length ).to.equal( 2 );
+			expect( batch.operations.length ).to.equal( 2 );
 
-			const op = batch.deltas[ 1 ].operations[ 0 ];
+			const op = batch.operations[ 1 ];
 
 			expect( marker.getRange().isEqual( range2 ) ).to.be.true;
 			expect( op.oldRange.isEqual( range ) ).to.be.true;
@@ -2132,8 +2109,8 @@ describe( 'Writer', () => {
 
 			const marker = model.markers.get( 'name' );
 
-			const op1 = batch.deltas[ 0 ].operations[ 0 ];
-			const op2 = batch.deltas[ 1 ].operations[ 0 ];
+			const op1 = batch.operations[ 0 ];
+			const op2 = batch.operations[ 1 ];
 
 			sinon.assert.calledTwice( spy );
 			expect( spy.firstCall.args[ 1 ][ 0 ].type ).to.equal( 'marker' );
@@ -2158,8 +2135,8 @@ describe( 'Writer', () => {
 
 			const marker = model.markers.get( 'name' );
 
-			const op1 = batch.deltas[ 0 ].operations[ 0 ];
-			const op2 = batch.deltas[ 1 ].operations[ 0 ];
+			const op1 = batch.operations[ 0 ];
+			const op2 = batch.operations[ 1 ];
 
 			sinon.assert.calledTwice( spy );
 			expect( spy.firstCall.args[ 1 ][ 0 ].type ).to.equal( 'marker' );
@@ -2221,8 +2198,8 @@ describe( 'Writer', () => {
 			addMarker( 'name', { range, usingOperation: true } );
 			updateMarker( 'name', { affectsData: true } );
 
-			const op1 = batch.deltas[ 0 ].operations[ 0 ];
-			const op2 = batch.deltas[ 1 ].operations[ 0 ];
+			const op1 = batch.operations[ 0 ];
+			const op2 = batch.operations[ 1 ];
 			const marker = model.markers.get( 'name' );
 
 			expect( op1.affectsData ).to.be.false;
@@ -2246,8 +2223,8 @@ describe( 'Writer', () => {
 			addMarker( 'name', { range, usingOperation: true } );
 			updateMarker( 'name', { affectsData: true, usingOperation: false } );
 
-			const op1 = batch.deltas[ 0 ].operations[ 0 ];
-			const op2 = batch.deltas[ 1 ].operations[ 0 ];
+			const op1 = batch.operations[ 0 ];
+			const op2 = batch.operations[ 1 ];
 			const marker = model.markers.get( 'name' );
 
 			expect( op1.affectsData ).to.be.false;

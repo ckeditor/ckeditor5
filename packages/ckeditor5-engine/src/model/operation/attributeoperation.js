@@ -33,7 +33,7 @@ export default class AttributeOperation extends Operation {
 	 * If both `newValue` and `oldValue` are set, then the operation will change the attribute value. Note that all nodes in
 	 * operation's ranges must already have an attribute with given key and `oldValue` as value
 	 *
-	 * @param {module:engine/model/range~Range} range Range on which the operation should be applied.
+	 * @param {module:engine/model/range~Range} range Range on which the operation should be applied. Must be a flat range.
 	 * @param {String} key Key of an attribute to change or remove.
 	 * @param {*} oldValue Old value of the attribute with given key or `null`, if attribute was not set before.
 	 * @param {*} newValue New value of the attribute with given key or `null`, if operation should remove attribute.
@@ -111,7 +111,16 @@ export default class AttributeOperation extends Operation {
 	 * @inheritDoc
 	 */
 	_validate() {
-		for ( const item of this.range.getItems() ) {
+		if ( !this.range.isFlat ) {
+			/**
+			 * The range to change is not flat.
+			 *
+			 * @error attribute-operation-range-not-flat
+			 */
+			throw new CKEditorError( 'attribute-operation-range-not-flat: The range to change is not flat.' );
+		}
+
+		for ( const item of this.range.getItems( { shallow: true } ) ) {
 			if ( this.oldValue !== null && !isEqual( item.getAttribute( this.key ), this.oldValue ) ) {
 				/**
 				 * Changed node has different attribute value than operation's old attribute value.

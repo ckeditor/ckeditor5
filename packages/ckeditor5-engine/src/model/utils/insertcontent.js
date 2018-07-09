@@ -90,7 +90,7 @@ class Insertion {
 		this.model = model;
 
 		/**
-		 * Batch to which deltas will be added.
+		 * Batch to which operations will be added.
 		 *
 		 * @member {module:engine/controller/writer~Batch} #writer
 		 */
@@ -261,6 +261,7 @@ class Insertion {
 		}
 
 		const livePos = LivePosition.createFromPosition( this.position );
+		livePos.stickiness = 'toNext';
 
 		this.writer.insert( node, this.position );
 
@@ -290,10 +291,13 @@ class Insertion {
 		const mergeLeft = this._canMergeLeft( node, context );
 		const mergeRight = this._canMergeRight( node, context );
 		const mergePosLeft = LivePosition.createBefore( node );
+		mergePosLeft.stickiness = 'toNext';
 		const mergePosRight = LivePosition.createAfter( node );
+		mergePosRight.stickiness = 'toNext';
 
 		if ( mergeLeft ) {
 			const position = LivePosition.createFromPosition( this.position );
+			position.stickiness = 'toNext';
 
 			this.writer.merge( mergePosLeft );
 
@@ -316,7 +320,7 @@ class Insertion {
 
 			// OK:  <p>xx[]</p> + <p>yy</p> => <p>xx[]yy</p> (when sticks to previous)
 			// NOK: <p>xx[]</p> + <p>yy</p> => <p>xxyy[]</p> (when sticks to next)
-			const position = new LivePosition( this.position.root, this.position.path, 'sticksToPrevious' );
+			const position = new LivePosition( this.position.root, this.position.path, 'toPrevious' );
 
 			this.writer.merge( mergePosRight );
 
