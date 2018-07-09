@@ -5,10 +5,16 @@
 
 :root {
 	--ck-color-upload-placeholder-loader: hsl(0, 0%, 70%);
+	--ck-upload-placeholder-loader-size: 24px;
 }
 
 .ck .ck-upload-placeholder-loader {
+	width: 100%;
+	height: 100%;
+
 	&::before {
+		width: var(--ck-upload-placeholder-loader-size);
+		height: var(--ck-upload-placeholder-loader-size);
 		border-radius: 50%;
 		border-top: 2px solid var(--ck-color-upload-placeholder-loader);
 		border-right: 2px solid transparent;
