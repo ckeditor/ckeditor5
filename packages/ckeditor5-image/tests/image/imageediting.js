@@ -16,13 +16,11 @@ import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml'
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'ImageEditing', () => {
-	const initialEnvEdge = env.isEdge;
-
 	let editor, model, doc, view, viewDocument;
 
 	beforeEach( () => {
 		// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
-		env.isEdge = false;
+		sinon.stub( env, 'isEdge' ).get( () => false );
 
 		return VirtualTestEditor
 			.create( {
@@ -35,10 +33,6 @@ describe( 'ImageEditing', () => {
 				view = editor.editing.view;
 				viewDocument = view.document;
 			} );
-	} );
-
-	afterEach( () => {
-		env.isEdge = initialEnvEdge;
 	} );
 
 	it( 'should be loaded', () => {

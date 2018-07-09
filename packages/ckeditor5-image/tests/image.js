@@ -15,13 +15,11 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'Image', () => {
-	const initialEnvEdge = env.isEdge;
-
 	let editorElement, model, view, editor, document, viewDocument;
 
 	beforeEach( () => {
 		// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
-		env.isEdge = false;
+		sinon.stub( env, 'isEdge' ).get( () => false );
 
 		editorElement = global.document.createElement( 'div' );
 		global.document.body.appendChild( editorElement );
@@ -40,8 +38,6 @@ describe( 'Image', () => {
 	} );
 
 	afterEach( () => {
-		env.isEdge = initialEnvEdge;
-
 		editorElement.remove();
 
 		return editor.destroy();

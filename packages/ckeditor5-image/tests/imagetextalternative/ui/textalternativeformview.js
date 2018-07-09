@@ -18,18 +18,12 @@ import env from '@ckeditor/ckeditor5-utils/src/env';
 testUtils.createSinonSandbox();
 
 describe( 'TextAlternativeFormView', () => {
-	const initialEnvEdge = env.isEdge;
-
 	let view;
 
 	beforeEach( () => {
-		env.isEdge = false;
+		sinon.stub( env, 'isEdge' ).get( () => false );
 
 		view = new TextAlternativeFormView( { t: () => {} } );
-	} );
-
-	afterEach( () => {
-		env.isEdge = initialEnvEdge;
 	} );
 
 	describe( 'constructor()', () => {

@@ -17,17 +17,14 @@ import env from '@ckeditor/ckeditor5-utils/src/env';
 testUtils.createSinonSandbox();
 
 describe( 'ImageStyleEditing', () => {
-	const initialEnvEdge = env.isEdge;
-
 	let editor, model, document, viewDocument;
 
 	beforeEach( () => {
 		// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
-		env.isEdge = false;
+		sinon.stub( env, 'isEdge' ).get( () => false );
 	} );
 
 	afterEach( () => {
-		env.isEdge = initialEnvEdge;
 		editor.destroy();
 	} );
 

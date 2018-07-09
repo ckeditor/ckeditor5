@@ -23,8 +23,6 @@ import svgPlaceholder from '../../theme/icons/image_placeholder.svg';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'ImageUploadProgress', () => {
-	const initialEnvEdge = env.isEdge;
-
 	const imagePlaceholder = encodeURIComponent( svgPlaceholder );
 
 	// eslint-disable-next-line max-len
@@ -47,7 +45,7 @@ describe( 'ImageUploadProgress', () => {
 
 	beforeEach( () => {
 		// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
-		env.isEdge = false;
+		sinon.stub( env, 'isEdge' ).get( () => false );
 
 		testUtils.sinon.stub( window, 'FileReader' ).callsFake( () => {
 			nativeReaderMock = new NativeFileReaderMock();
@@ -73,10 +71,6 @@ describe( 'ImageUploadProgress', () => {
 					return adapterMock;
 				};
 			} );
-	} );
-
-	afterEach( () => {
-		env.isEdge = initialEnvEdge;
 	} );
 
 	it( 'should convert image\'s "reading" uploadStatus attribute', () => {

@@ -20,13 +20,11 @@ import { setData as setModelData, getData as getModelData } from '@ckeditor/cked
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'Image converters', () => {
-	const initialEnvEdge = env.isEdge;
-
 	let editor, model, document, viewDocument;
 
 	beforeEach( () => {
 		// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
-		env.isEdge = false;
+		sinon.stub( env, 'isEdge' ).get( () => false );
 
 		return VirtualTestEditor.create()
 			.then( newEditor => {
@@ -56,10 +54,6 @@ describe( 'Image converters', () => {
 					.add( modelToViewAttributeConverter( 'src' ) )
 					.add( modelToViewAttributeConverter( 'alt' ) );
 			} );
-	} );
-
-	afterEach( () => {
-		env.isEdge = initialEnvEdge;
 	} );
 
 	describe( 'viewFigureToModel', () => {

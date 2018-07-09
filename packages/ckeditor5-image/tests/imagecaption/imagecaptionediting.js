@@ -21,13 +21,11 @@ import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'ImageCaptionEditing', () => {
-	const initialEnvEdge = env.isEdge;
-
 	let editor, model, doc, view;
 
 	beforeEach( () => {
 		// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
-		env.isEdge = false;
+		sinon.stub( env, 'isEdge' ).get( () => false );
 
 		return VirtualTestEditor
 			.create( {
@@ -48,10 +46,6 @@ describe( 'ImageCaptionEditing', () => {
 					view: 'widget'
 				} );
 			} );
-	} );
-
-	afterEach( () => {
-		env.isEdge = initialEnvEdge;
 	} );
 
 	it( 'should be loaded', () => {
