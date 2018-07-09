@@ -105,7 +105,8 @@ export default class ImageUploadProgress extends Plugin {
 			return;
 		}
 
-		if ( status == 'complete' && fileRepository.loaders.get( uploadId ) ) {
+		// Because in Edge there is no way to show fancy animation of completeIcon we need to skip it.
+		if ( status == 'complete' && fileRepository.loaders.get( uploadId ) && !env.isEdge ) {
 			_showCompleteIcon( viewFigure, viewWriter, editor.editing.view );
 		}
 
@@ -210,14 +211,11 @@ function _hideProgressBar( viewFigure, writer ) {
 function _showCompleteIcon( viewFigure, writer, view ) {
 	const completeIcon = new UIElement( 'div', { class: 'ck-image-upload-complete-icon' } );
 
-	// Because in Edge there is no way to show fancy animation of completeIcon we need to skip it.
-	if ( !env.isEdge ) {
-		writer.insert( ViewPosition.createAt( viewFigure, 'end' ), completeIcon );
+	writer.insert( ViewPosition.createAt( viewFigure, 'end' ), completeIcon );
 
-		setTimeout( () => {
-			view.change( writer => writer.remove( ViewRange.createOn( completeIcon ) ) );
-		}, 3000 );
-	}
+	setTimeout( () => {
+		view.change( writer => writer.remove( ViewRange.createOn( completeIcon ) ) );
+	}, 3000 );
 }
 
 // Create progress bar element using {@link module:engine/view/uielement~UIElement}.
