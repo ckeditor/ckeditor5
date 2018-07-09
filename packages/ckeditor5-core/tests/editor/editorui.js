@@ -12,10 +12,10 @@ import View from '@ckeditor/ckeditor5-ui/src/view';
 
 import testUtils from '../_utils/utils';
 
-testUtils.createSinonSandbox();
-
 describe( 'EditorUI', () => {
 	let editor, view, ui;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		editor = new Editor();

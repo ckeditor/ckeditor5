@@ -11,9 +11,9 @@ const obj = {
 const origMethod = obj.method;
 let spy;
 
-testUtils.createSinonSandbox();
-
 describe( 'testUtils.createSinonSandbox()', () => {
+	testUtils.createSinonSandbox();
+
 	it( 'creates a sandbox', () => {
 		expect( testUtils.sinon ).to.be.an( 'object' );
 		expect( testUtils.sinon ).to.have.property( 'spy' );
