@@ -13,18 +13,6 @@
 	&.ck-appear {
 		animation: fadeIn 700ms;
 	}
-
-	/* Infinite progress bar on top while image is read. */
-	&.ck-infinite-progress::before {
-		width: var(--ck-image-upload-progress-line-width);
-		height: 2px;
-		background: var(--ck-color-upload-infinite-background);
-		animation-name: readingProgressAnimation;
-		animation-duration: 1500ms;
-		animation-iteration-count: infinite;
-		transition-timing-function: linear;
-	}
-
 	/* Upload progress bar. */
 	& .ck-progress-bar {
 		height: 2px;
