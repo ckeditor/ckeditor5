@@ -17,15 +17,16 @@ import {
 } from '../../src/converters/downcast';
 import { formatTable, formattedViewTable, modelTable } from '../_utils/utils';
 import env from '@ckeditor/ckeditor5-utils/src/env';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+
+testUtils.createSinonSandbox();
 
 describe( 'downcast converters', () => {
-	const initialEnvEdge = env.isEdge;
-
 	let editor, model, doc, root, viewDocument;
 
 	beforeEach( () => {
 		// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
-		env.isEdge = false;
+		sinon.stub( env, 'isEdge' ).get( () => false );
 
 		return VirtualTestEditor.create()
 			.then( newEditor => {
@@ -66,10 +67,6 @@ describe( 'downcast converters', () => {
 				conversion.for( 'downcast' ).add( downcastTableHeadingRowsChange() );
 				conversion.for( 'downcast' ).add( downcastTableHeadingColumnsChange() );
 			} );
-	} );
-
-	afterEach( () => {
-		env.isEdge = initialEnvEdge;
 	} );
 
 	describe( 'downcastInsertTable()', () => {
