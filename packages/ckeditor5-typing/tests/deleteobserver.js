@@ -14,10 +14,10 @@ import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-testUtils.createSinonSandbox();
-
 describe( 'DeleteObserver', () => {
 	let view, viewDocument;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		view = new View();
