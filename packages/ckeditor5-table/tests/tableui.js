@@ -15,10 +15,10 @@ import SwitchButtonView from '@ckeditor/ckeditor5-ui/src/button/switchbuttonview
 import DropdownView from '@ckeditor/ckeditor5-ui/src/dropdown/dropdownview';
 import ListSeparatorView from '@ckeditor/ckeditor5-ui/src/list/listseparatorview';
 
-testUtils.createSinonSandbox();
-
 describe( 'TableUI', () => {
 	let editor, element;
+
+	testUtils.createSinonSandbox();
 
 	before( () => {
 		addTranslations( 'en', {} );
