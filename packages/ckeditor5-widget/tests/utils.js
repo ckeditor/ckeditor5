@@ -20,25 +20,22 @@ import {
 } from '../src/utils';
 import UIElement from '@ckeditor/ckeditor5-engine/src/view/uielement';
 import env from '@ckeditor/ckeditor5-utils/src/env';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'widget utils', () => {
-	const initialEnvEdge = env.isEdge;
-
 	let element, writer, viewDocument;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
-		env.isEdge = false;
+		testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
 
 		viewDocument = new ViewDocument();
 		writer = new Writer( viewDocument );
 
 		element = writer.createContainerElement( 'div' );
 		toWidget( element, writer );
-	} );
-
-	afterEach( () => {
-		env.isEdge = initialEnvEdge;
 	} );
 
 	describe( 'toWidget()', () => {
@@ -123,7 +120,7 @@ describe( 'widget utils', () => {
 
 		describe( 'on Edge', () => {
 			beforeEach( () => {
-				env.isEdge = true;
+				testUtils.sinon.stub( env, 'isEdge' ).get( () => true );
 
 				element = writer.createContainerElement( 'div' );
 				toWidget( element, writer );
@@ -215,7 +212,7 @@ describe( 'widget utils', () => {
 
 		describe( 'on Edge', () => {
 			beforeEach( () => {
-				env.isEdge = true;
+				testUtils.sinon.stub( env, 'isEdge' ).get( () => true );
 
 				viewDocument = new ViewDocument();
 				element = new ViewEditableElement( 'div' );
