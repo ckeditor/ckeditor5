@@ -16,10 +16,10 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import utils from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 
-testUtils.createSinonSandbox();
-
 describe( 'ClassicEditorUI', () => {
 	let editor, view, ui;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		return VirtualClassicTestEditor
