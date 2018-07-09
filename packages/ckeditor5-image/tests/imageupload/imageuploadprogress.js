@@ -265,8 +265,8 @@ describe( 'ImageUploadProgress', () => {
 		);
 	} );
 
-	it( 'should not create completeIcon element when browser is Microsoft Edge', () => {
-		testUtils.sinon.stub( env, 'isEdge' ).returns( true );
+	it( 'should not create completeIcon element when browser is Microsoft Edge', done => {
+		testUtils.sinon.stub( env, 'isEdge' ).get( () => true );
 
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
@@ -274,10 +274,12 @@ describe( 'ImageUploadProgress', () => {
 		model.document.once( 'change', () => {
 			model.document.once( 'change', () => {
 				expect( getViewData( view ) ).to.equal(
-					'[<figure class="ck-widget image" contenteditable="false">' +
+					'[<figure class="ck-widget image">' +
 						'<img src="image.png"></img>' +
 					'</figure>]<p>foo</p>'
 				);
+
+				done();
 			}, { priority: 'lowest' } );
 
 			adapterMock.mockSuccess( { default: 'image.png' } );
