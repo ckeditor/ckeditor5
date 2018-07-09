@@ -24,10 +24,10 @@ import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-testUtils.createSinonSandbox();
-
 describe( 'BalloonEditor', () => {
 	let editor, editorElement;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
