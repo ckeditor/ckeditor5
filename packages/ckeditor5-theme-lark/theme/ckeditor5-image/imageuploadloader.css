@@ -5,7 +5,7 @@
 
 :root {
 	--ck-color-upload-placeholder-loader: hsl(0, 0%, 70%);
-	--ck-upload-placeholder-loader-size: 24px;
+	--ck-upload-placeholder-loader-size: 32px;
 }
 
 .ck .ck-upload-placeholder-loader {
@@ -16,7 +16,7 @@
 		width: var(--ck-upload-placeholder-loader-size);
 		height: var(--ck-upload-placeholder-loader-size);
 		border-radius: 50%;
-		border-top: 2px solid var(--ck-color-upload-placeholder-loader);
+		border-top: 3px solid var(--ck-color-upload-placeholder-loader);
 		border-right: 2px solid transparent;
 		animation: ck-upload-placeholder-loader 1s linear infinite;
 	}

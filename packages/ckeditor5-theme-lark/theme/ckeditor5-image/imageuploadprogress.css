@@ -13,6 +13,7 @@
 	&.ck-appear {
 		animation: fadeIn 700ms;
 	}
+
 	/* Upload progress bar. */
 	& .ck-progress-bar {
 		height: 2px;
@@ -25,19 +26,4 @@
 @keyframes fadeIn {
 	from { opacity: 0; }
 	to   { opacity: 1; }
-}
-
-@keyframes readingProgressAnimation {
-	0% {
-		width: var(--ck-image-upload-progress-line-width);
-		right: 0;
-	}
-
-	50% {
-		width: calc(var(--ck-image-upload-progress-line-width) * 1.5);
-	}
-
-	100% {
-		right: 100%;
-	}
 }
