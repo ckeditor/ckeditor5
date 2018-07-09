@@ -15,6 +15,7 @@ import uploadingPlaceholder from '../../theme/icons/image_placeholder.svg';
 import UIElement from '@ckeditor/ckeditor5-engine/src/view/uielement';
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import ViewRange from '@ckeditor/ckeditor5-engine/src/view/range';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 import '../../theme/imageuploadprogress.css';
 import '../../theme/imageuploadicon.css';
@@ -104,7 +105,8 @@ export default class ImageUploadProgress extends Plugin {
 			return;
 		}
 
-		if ( status == 'complete' && fileRepository.loaders.get( uploadId ) ) {
+		// Because in Edge there is no way to show fancy animation of completeIcon we need to skip it.
+		if ( status == 'complete' && fileRepository.loaders.get( uploadId ) && !env.isEdge ) {
 			_showCompleteIcon( viewFigure, viewWriter, editor.editing.view );
 		}
 

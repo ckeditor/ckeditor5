@@ -19,6 +19,7 @@ import { setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-util
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import svgPlaceholder from '../../theme/icons/image_placeholder.svg';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'ImageUploadProgress', () => {
 	const imagePlaceholder = encodeURIComponent( svgPlaceholder );
@@ -262,5 +263,28 @@ describe( 'ImageUploadProgress', () => {
 				`<img src="data:image/svg+xml;utf8,${ imagePlaceholder }"></img>` +
 			'</figure>]'
 		);
+	} );
+
+	it( 'should not create completeIcon element when browser is Microsoft Edge', done => {
+		testUtils.sinon.stub( env, 'isEdge' ).get( () => true );
+
+		setModelData( model, '<paragraph>[]foo</paragraph>' );
+		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
+
+		model.document.once( 'change', () => {
+			model.document.once( 'change', () => {
+				expect( getViewData( view ) ).to.equal(
+					'[<figure class="ck-widget image">' +
+						'<img src="image.png"></img>' +
+					'</figure>]<p>foo</p>'
+				);
+
+				done();
+			}, { priority: 'lowest' } );
+
+			adapterMock.mockSuccess( { default: 'image.png' } );
+		} );
+
+		nativeReaderMock.mockSuccess( base64Sample );
 	} );
 } );
