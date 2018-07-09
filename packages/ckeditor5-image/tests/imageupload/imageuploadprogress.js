@@ -21,8 +21,6 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import svgPlaceholder from '../../theme/icons/image_placeholder.svg';
 import env from '@ckeditor/ckeditor5-utils/src/env';
 
-import env from '@ckeditor/ckeditor5-utils/src/env';
-
 describe( 'ImageUploadProgress', () => {
 	const imagePlaceholder = encodeURIComponent( svgPlaceholder );
 
