@@ -15,17 +15,18 @@ import { setData as setModelData, getData as getModelData } from '@ckeditor/cked
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import env from '@ckeditor/ckeditor5-utils/src/env';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 /* global document */
 
 describe( 'Widget', () => {
-	const initialEnvEdge = env.isEdge;
-
 	let editor, model, view, viewDocument;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
-		env.isEdge = false;
+		testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
 
 		return VirtualTestEditor.create( { plugins: [ Widget, Typing ] } )
 			.then( newEditor => {
@@ -100,10 +101,6 @@ describe( 'Widget', () => {
 						view: ( modelItem, viewWriter ) => viewWriter.createEditableElement( 'figcaption', { contenteditable: true } )
 					} ) );
 			} );
-	} );
-
-	afterEach( () => {
-		env.isEdge = initialEnvEdge;
 	} );
 
 	it( 'should be loaded', () => {
