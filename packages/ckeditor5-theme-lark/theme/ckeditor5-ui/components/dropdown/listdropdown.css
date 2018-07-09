@@ -11,4 +11,23 @@
 	@mixin ck-rounded-corners {
 		border-top-left-radius: 0;
 	}
+
+	/* Make sure the button belonging to the first/last child of the list goes well with the
+	border radius of the entire panel. */
+	& .ck-list__item {
+		&:first-child .ck-button {
+			@mixin ck-rounded-corners {
+				border-top-left-radius: 0;
+				border-bottom-left-radius: 0;
+				border-bottom-right-radius: 0;
+			}
+		}
+
+		&:last-child .ck-button {
+			@mixin ck-rounded-corners {
+				border-top-left-radius: 0;
+				border-top-right-radius: 0;
+			}
+		}
+	}
 }
