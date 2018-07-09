@@ -11,10 +11,10 @@ import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-testUtils.createSinonSandbox();
-
 describe( 'clickOutsideHandler', () => {
 	let activator, actionSpy, contextElement1, contextElement2;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		activator = testUtils.sinon.stub().returns( false );

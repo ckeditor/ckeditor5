@@ -23,10 +23,10 @@ import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-testUtils.createSinonSandbox();
-
 describe( 'BlockToolbar', () => {
 	let editor, element, blockToolbar;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		element = document.createElement( 'div' );

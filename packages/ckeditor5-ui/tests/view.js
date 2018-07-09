@@ -15,9 +15,9 @@ import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml'
 
 let TestView, view, childA, childB;
 
-testUtils.createSinonSandbox();
-
 describe( 'View', () => {
+	testUtils.createSinonSandbox();
+
 	afterEach( () => {
 		if ( view.element ) {
 			view.element.remove();

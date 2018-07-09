@@ -7,10 +7,10 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import IconView from '../../../src/icon/iconview';
 import DropdownButtonView from '../../../src/dropdown/button/dropdownbuttonview';
 
-testUtils.createSinonSandbox();
-
 describe( 'DropdownButtonView', () => {
 	let locale, view;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		locale = { t() {} };

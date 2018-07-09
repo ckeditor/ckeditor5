@@ -10,10 +10,10 @@ import BalloonPanelView from '../../../src/panel/balloon/balloonpanelview';
 import ButtonView from '../../../src/button/buttonview';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-testUtils.createSinonSandbox();
-
 describe( 'BalloonPanelView', () => {
 	let view;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		view = new BalloonPanelView();
