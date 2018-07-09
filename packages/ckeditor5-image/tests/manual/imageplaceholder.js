@@ -3,19 +3,27 @@
  * For licensing, see LICENSE.md.
  */
 
-/* global document */
+/* global document, console, window */
 
-import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
+import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import ImageEditing from '../../src/image/imageediting';
 import ImageUploadEditing from '../../src/imageupload/imageuploadediting';
 import ImageUploadProgress from '../../src/imageupload/imageuploadprogress';
 
-VirtualTestEditor.create( { plugins: [ ImageEditing, ImageUploadEditing, ImageUploadProgress ] } )
+ClassicEditor.create( document.querySelector( '#editor' ), {
+	plugins: [ ImageEditing, ImageUploadEditing, ImageUploadProgress ]
+} )
 	.then( editor => {
-		const imageUploadProgress = editor.plugins.get( ImageUploadProgress );
-		const img = document.createElement( 'img' );
+		window.editor = editor;
 
-		img.src = imageUploadProgress.placeholder;
-		document.getElementById( 'container' ).appendChild( img );
+		editor.model.change( writer => {
+			writer.appendElement( 'image', {
+				uploadId: 'fake',
+				uploadStatus: 'uploading'
+			}, editor.model.document.getRoot() );
+		} );
+	} )
+	.catch( error => {
+		console.error( error );
 	} );
 
