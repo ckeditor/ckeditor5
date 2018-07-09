@@ -11,10 +11,10 @@ import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Command from '@ckeditor/ckeditor5-core/src/command';
 
-testUtils.createSinonSandbox();
-
 describe( 'BlockAutoformatEditing', () => {
 	let editor, model, doc;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		return VirtualTestEditor

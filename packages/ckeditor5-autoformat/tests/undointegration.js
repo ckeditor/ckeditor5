@@ -20,10 +20,10 @@ import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtest
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-testUtils.createSinonSandbox();
-
 describe( 'Autoformat', () => {
 	let editor, model, doc;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		return VirtualTestEditor
