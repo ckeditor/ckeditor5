@@ -83,11 +83,11 @@ export default class PluginCollection {
 	 * Loads a set of plugins and adds them to the collection.
 	 *
 	 * @param {Array.<Function|String>} plugins An array of {@link module:core/plugin~PluginInterface plugin constructors}
-	 * or {@link module:core/plugin~PluginInterface.pluginName plugin names}. The second option (names) work only if
+	 * or {@link module:core/plugin~PluginInterface.pluginName plugin names}. The second option (names) works only if
 	 * `availablePlugins` were passed to the {@link #constructor}.
 	 * @param {Array.<String|Function>} [removePlugins] Names of plugins or plugin constructors
-	 * which should not be loaded (despite being specified in the `plugins` array).
-	 * @returns {Promise} A promise which gets resolved once all plugins are loaded and available into the
+	 * that should not be loaded (despite being specified in the `plugins` array).
+	 * @returns {Promise} A promise which gets resolved once all plugins are loaded and available in the
 	 * collection.
 	 * @returns {Promise.<Array.<module:core/plugin~PluginInterface>>} returns.loadedPlugins The array of loaded plugins.
 	 */
@@ -102,8 +102,6 @@ export default class PluginCollection {
 		const missingPlugins = getMissingPluginNames( plugins );
 
 		if ( missingPlugins ) {
-			// TODO update this error docs with links to docs because it will be a frequent problem.
-
 			/**
 			 * Some plugins are not available and could not be loaded.
 			 *
@@ -111,9 +109,9 @@ export default class PluginCollection {
 			 * This is usually done by the builder by setting the {@link module:core/editor/editor~Editor.build}
 			 * property.
 			 *
-			 * **If you see this warning when using one of the {@glink builds/index CKEditor 5 Builds}** it means
-			 * that you try to enable a plugin which was not included into that build. This may a be due to a typo
-			 * in the plugin name or simply because that plugin is not part of this build. In the latter scenario,
+			 * **If you see this warning when using one of the {@glink builds/index CKEditor 5 Builds}**, it means
+			 * that you try to enable a plugin which was not included in that build. This may be due to a typo
+			 * in the plugin name or simply because that plugin is not a part of this build. In the latter scenario,
 			 * read more about {@glink builds/guides/development/custom-builds custom builds}.
 			 *
 			 * **If you see this warning when using one of the editor creators directly** (not a build), then it means
@@ -151,11 +149,11 @@ export default class PluginCollection {
 					/**
 					 * It was not possible to load the plugin.
 					 *
-					 * This is a generic error logged to the console when a JavaSript error is thrown during one of
-					 * the plugins initialization.
+					 * This is a generic error logged to the console when a JavaSript error is thrown during the initialization
+					 * of one of the plugins.
 					 *
-					 * If you correctly handled a promise returned by the editor's `create()` method (like shown below)
-					 * you will find the original error logged on the console too:
+					 * If you correctly handled the promise returned by the editor's `create()` method (like shown below)
+					 * you will find the original error logged to the console, too:
 					 *
 					 *		ClassicEditor.create( document.getElementById( 'editor' ) )
 					 *			.then( editor => {
@@ -270,7 +268,7 @@ export default class PluginCollection {
 			/**
 			 * Two plugins with the same {@link module:core/plugin~PluginInterface.pluginName} were loaded.
 			 * This may lead to runtime conflicts between these plugins. This usually means that incorrect
-			 * params were passed to {@link module:core/editor/editor~Editor.create}.
+			 * parameters were passed to {@link module:core/editor/editor~Editor.create}.
 			 *
 			 * @error plugincollection-plugin-name-conflict
 			 * @param {String} pluginName The duplicated plugin name.
