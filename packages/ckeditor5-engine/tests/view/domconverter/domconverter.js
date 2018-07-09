@@ -14,10 +14,10 @@ import { BR_FILLER, NBSP_FILLER, INLINE_FILLER, INLINE_FILLER_LENGTH } from '../
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 
-testUtils.createSinonSandbox();
-
 describe( 'DomConverter', () => {
 	let converter;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		converter = new DomConverter();

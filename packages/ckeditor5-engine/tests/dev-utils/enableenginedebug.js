@@ -49,9 +49,9 @@ import ViewElement from '../../src/view/element';
 import createViewRoot from '../view/_utils/createroot';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-testUtils.createSinonSandbox();
-
 describe( 'enableEngineDebug', () => {
+	testUtils.createSinonSandbox();
+
 	afterEach( () => {
 		disableEngineDebug();
 	} );
@@ -72,6 +72,8 @@ describe( 'enableEngineDebug', () => {
 } );
 
 describe( 'disableEngineDebug', () => {
+	testUtils.createSinonSandbox();
+
 	it( 'restores modified stubs', () => {
 		expect( ModelPosition.prototype.log ).to.equal( undefined, 'Initial value (model/position)' );
 		expect( ModelElement.prototype.printTree ).to.equal( undefined, 'Initial value (model/element)' );
@@ -102,6 +104,8 @@ describe( 'disableEngineDebug', () => {
 
 describe( 'debug tools', () => {
 	let DebugPlugin, log, error;
+
+	testUtils.createSinonSandbox();
 
 	before( () => {
 		log = sinon.spy();

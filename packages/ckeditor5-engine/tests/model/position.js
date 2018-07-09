@@ -13,10 +13,10 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { jsonParseStringify } from '../../tests/model/_utils/utils';
 
-testUtils.createSinonSandbox();
-
 describe( 'Position', () => {
 	let doc, root, otherRoot, p, ul, li1, li2, f, o, z, b, a, r, foz, bar;
+
+	testUtils.createSinonSandbox();
 
 	// root
 	//  |- p         Before: [ 0 ]       After: [ 1 ]

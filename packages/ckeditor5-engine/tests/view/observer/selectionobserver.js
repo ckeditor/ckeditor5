@@ -16,10 +16,10 @@ import log from '@ckeditor/ckeditor5-utils/src/log';
 import createViewRoot from '../_utils/createroot';
 import { parse } from '../../../src/dev-utils/view';
 
-testUtils.createSinonSandbox();
-
 describe( 'SelectionObserver', () => {
 	let view, viewDocument, viewRoot, selectionObserver, domRoot, domMain, domDocument;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( done => {
 		domDocument = document;

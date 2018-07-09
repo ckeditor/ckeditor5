@@ -11,10 +11,10 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import count from '@ckeditor/ckeditor5-utils/src/count';
 import createViewRoot from './_utils/createroot';
 
-testUtils.createSinonSandbox();
-
 describe( 'Document', () => {
 	let domRoot, viewDocument;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		domRoot = createElement( document, 'div', {

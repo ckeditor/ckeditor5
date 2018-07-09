@@ -16,10 +16,10 @@ import count from '@ckeditor/ckeditor5-utils/src/count';
 import { parse, setData } from '../../src/dev-utils/model';
 import Schema from '../../src/model/schema';
 
-testUtils.createSinonSandbox();
-
 describe( 'Selection', () => {
 	let model, doc, root, selection, liveRange, range, range1, range2, range3;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		model = new Model();
