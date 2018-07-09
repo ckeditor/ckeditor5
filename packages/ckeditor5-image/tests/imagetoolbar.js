@@ -15,11 +15,18 @@ import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import View from '@ckeditor/ckeditor5-ui/src/view';
 import { setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import env from '@ckeditor/ckeditor5-utils/src/env';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'ImageToolbar', () => {
 	let editor, model, doc, plugin, toolbar, balloon, editorElement;
 
+	testUtils.createSinonSandbox();
+
 	beforeEach( () => {
+		// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
+		testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
+
 		editorElement = global.document.createElement( 'div' );
 		global.document.body.appendChild( editorElement );
 
