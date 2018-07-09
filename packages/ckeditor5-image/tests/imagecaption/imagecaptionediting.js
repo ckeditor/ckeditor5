@@ -18,10 +18,17 @@ import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
+import env from '@ckeditor/ckeditor5-utils/src/env';
+
 describe( 'ImageCaptionEditing', () => {
+	const initialEnvEdge = env.isEdge;
+
 	let editor, model, doc, view;
 
 	beforeEach( () => {
+		// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
+		env.isEdge = false;
+
 		return VirtualTestEditor
 			.create( {
 				plugins: [ ImageCaptionEditing, ImageEditing, UndoEditing, Paragraph ]
@@ -41,6 +48,10 @@ describe( 'ImageCaptionEditing', () => {
 					view: 'widget'
 				} );
 			} );
+	} );
+
+	afterEach( () => {
+		env.isEdge = initialEnvEdge;
 	} );
 
 	it( 'should be loaded', () => {

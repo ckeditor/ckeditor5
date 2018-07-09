@@ -17,11 +17,17 @@ import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversio
 import ModelRange from '@ckeditor/ckeditor5-engine/src/model/range';
 import { getData as getViewData } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 import { setData as setModelData, getData as getModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'Image converters', () => {
+	const initialEnvEdge = env.isEdge;
+
 	let editor, model, document, viewDocument;
 
 	beforeEach( () => {
+		// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
+		env.isEdge = false;
+
 		return VirtualTestEditor.create()
 			.then( newEditor => {
 				editor = newEditor;
@@ -50,6 +56,10 @@ describe( 'Image converters', () => {
 					.add( modelToViewAttributeConverter( 'src' ) )
 					.add( modelToViewAttributeConverter( 'alt' ) );
 			} );
+	} );
+
+	afterEach( () => {
+		env.isEdge = initialEnvEdge;
 	} );
 
 	describe( 'viewFigureToModel', () => {

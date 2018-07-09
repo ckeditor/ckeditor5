@@ -25,10 +25,12 @@ import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 
 import log from '@ckeditor/ckeditor5-utils/src/log';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Notification from '@ckeditor/ckeditor5-ui/src/notification/notification';
 
 describe( 'ImageUploadEditing', () => {
+	const initialEnvEdge = env.isEdge;
 	// eslint-disable-next-line max-len
 	const base64Sample = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
 	let editor, model, view, doc, fileRepository, viewDocument, nativeReaderMock, loader, adapterMock;
@@ -48,6 +50,9 @@ describe( 'ImageUploadEditing', () => {
 	}
 
 	beforeEach( () => {
+		// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
+		env.isEdge = false;
+
 		testUtils.sinon.stub( window, 'FileReader' ).callsFake( () => {
 			nativeReaderMock = new NativeFileReaderMock();
 
@@ -68,6 +73,8 @@ describe( 'ImageUploadEditing', () => {
 	} );
 
 	afterEach( () => {
+		env.isEdge = initialEnvEdge;
+
 		return editor.destroy();
 	} );
 

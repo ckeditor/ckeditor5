@@ -11,12 +11,18 @@ import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import Image from '../src/image';
 import ImageToolbar from '../src/imagetoolbar';
 import View from '@ckeditor/ckeditor5-ui/src/view';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 describe( 'ImageToolbar integration', () => {
+	const initialEnvEdge = env.isEdge;
+
 	describe( 'with the BalloonToolbar', () => {
 		let balloon, balloonToolbar, newEditor, editorElement;
 
 		beforeEach( () => {
+			// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
+			env.isEdge = false;
+
 			editorElement = global.document.createElement( 'div' );
 			global.document.body.appendChild( editorElement );
 
@@ -42,6 +48,7 @@ describe( 'ImageToolbar integration', () => {
 		} );
 
 		afterEach( () => {
+			env.isEdge = initialEnvEdge;
 			editorElement.remove();
 			return newEditor.destroy();
 		} );

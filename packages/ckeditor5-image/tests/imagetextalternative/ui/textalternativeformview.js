@@ -13,14 +13,23 @@ import FocusTracker from '@ckeditor/ckeditor5-utils/src/focustracker';
 import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
 import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
+import env from '@ckeditor/ckeditor5-utils/src/env';
 
 testUtils.createSinonSandbox();
 
 describe( 'TextAlternativeFormView', () => {
+	const initialEnvEdge = env.isEdge;
+
 	let view;
 
 	beforeEach( () => {
+		env.isEdge = false;
+
 		view = new TextAlternativeFormView( { t: () => {} } );
+	} );
+
+	afterEach( () => {
+		env.isEdge = initialEnvEdge;
 	} );
 
 	describe( 'constructor()', () => {
