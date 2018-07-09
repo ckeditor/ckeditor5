@@ -14,10 +14,10 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
-testUtils.createSinonSandbox();
-
 describe( 'StrikethroughUI', () => {
 	let editor, strikeView;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		const editorElement = document.createElement( 'div' );
