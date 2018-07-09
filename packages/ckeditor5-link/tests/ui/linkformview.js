@@ -14,10 +14,10 @@ import FocusCycler from '@ckeditor/ckeditor5-ui/src/focuscycler';
 import ViewCollection from '@ckeditor/ckeditor5-ui/src/viewcollection';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-testUtils.createSinonSandbox();
-
 describe( 'LinkFormView', () => {
 	let view;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		view = new LinkFormView( { t: val => val } );
