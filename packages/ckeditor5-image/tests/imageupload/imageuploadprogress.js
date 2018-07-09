@@ -266,7 +266,7 @@ describe( 'ImageUploadProgress', () => {
 	} );
 
 	it( 'should not create completeIcon element when browser is Microsoft Edge', () => {
-		env.isEdge = true;
+		testUtils.sinon.stub( env, 'isEdge' ).returns( true );
 
 		setModelData( model, '<paragraph>[]foo</paragraph>' );
 		editor.execute( 'imageUpload', { file: createNativeFileMock() } );
