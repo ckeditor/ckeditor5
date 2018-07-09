@@ -12,14 +12,17 @@ import Image from '../src/image';
 import ImageToolbar from '../src/imagetoolbar';
 import View from '@ckeditor/ckeditor5-ui/src/view';
 import env from '@ckeditor/ckeditor5-utils/src/env';
+import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 describe( 'ImageToolbar integration', () => {
 	describe( 'with the BalloonToolbar', () => {
 		let balloon, balloonToolbar, newEditor, editorElement;
 
+		testUtils.createSinonSandbox();
+
 		beforeEach( () => {
 			// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
-			sinon.stub( env, 'isEdge' ).get( () => false );
+			testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
 
 			editorElement = global.document.createElement( 'div' );
 			global.document.body.appendChild( editorElement );

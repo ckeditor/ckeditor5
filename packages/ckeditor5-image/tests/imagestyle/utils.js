@@ -13,10 +13,10 @@ import rightIcon from '@ckeditor/ckeditor5-core/theme/icons/object-right.svg';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { normalizeImageStyles } from '../../src/imagestyle/utils';
 
-testUtils.createSinonSandbox();
-
 describe( 'ImageStyle utils', () => {
 	let imageStyles;
+
+	testUtils.createSinonSandbox();
 
 	describe( 'normalizeImageStyles()', () => {
 		// Since this function is all about normalizing the config object, make sure it doesn't throw

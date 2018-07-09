@@ -50,7 +50,7 @@ describe( 'ImageUploadEditing', () => {
 
 	beforeEach( () => {
 		// Most tests assume non-edge environment but we do not set `contenteditable=false` on Edge so stub `env.isEdge`.
-		sinon.stub( env, 'isEdge' ).get( () => false );
+		testUtils.sinon.stub( env, 'isEdge' ).get( () => false );
 
 		testUtils.sinon.stub( window, 'FileReader' ).callsFake( () => {
 			nativeReaderMock = new NativeFileReaderMock();
