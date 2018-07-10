@@ -9,6 +9,6 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
 
 import Highlight from '@ckeditor/ckeditor5-highlight/src/highlight';
 
-ClassicEditor.build.plugins.push( Highlight );
+ClassicEditor.builtinPlugins.push( Highlight );
 
 window.ClassicEditor = ClassicEditor;
