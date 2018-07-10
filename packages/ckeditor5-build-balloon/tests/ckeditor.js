@@ -24,11 +24,11 @@ describe( 'BalloonEditor build', () => {
 
 	describe( 'buid', () => {
 		it( 'contains plugins', () => {
-			expect( BalloonEditor.build.plugins ).to.not.be.empty;
+			expect( BalloonEditor.builtinPlugins ).to.not.be.empty;
 		} );
 
 		it( 'contains config', () => {
-			expect( BalloonEditor.build.config.toolbar ).to.not.be.empty;
+			expect( BalloonEditor.defaultConfig.toolbar ).to.not.be.empty;
 		} );
 	} );
 
