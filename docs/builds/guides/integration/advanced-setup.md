@@ -193,53 +193,51 @@ import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 export default class ClassicEditor extends ClassicEditorBase {}
 
-ClassicEditor.build = {
-	plugins: [
-		EssentialsPlugin,
-		UploadadapterPlugin,
-		AutoformatPlugin,
-		BoldPlugin,
-		ItalicPlugin,
-		BlockquotePlugin,
-		EasyimagePlugin,
-		HeadingPlugin,
-		ImagePlugin,
-		ImagecaptionPlugin,
-		ImagestylePlugin,
-		ImagetoolbarPlugin,
-		ImageuploadPlugin,
-		LinkPlugin,
-		ListPlugin,
-		ParagraphPlugin
-	],
-	config: {
-		toolbar: {
-			items: [
-				'heading',
-				'|',
-				'bold',
-				'italic',
-				'link',
-				'bulletedList',
-				'numberedList',
-				'imageUpload',
-				'blockQuote',
-				'undo',
-				'redo'
-			]
-		},
-		image: {
-			toolbar: [
-				'imageStyle:full',
-				'imageStyle:side',
-				'|',
-				'imageTextAlternative'
-			]
-		},
-		language: 'en'
-	}
-};
+ClassicEditor.builtinPlugins = [
+	EssentialsPlugin,
+	UploadadapterPlugin,
+	AutoformatPlugin,
+	BoldPlugin,
+	ItalicPlugin,
+	BlockquotePlugin,
+	EasyimagePlugin,
+	HeadingPlugin,
+	ImagePlugin,
+	ImagecaptionPlugin,
+	ImagestylePlugin,
+	ImagetoolbarPlugin,
+	ImageuploadPlugin,
+	LinkPlugin,
+	ListPlugin,
+	ParagraphPlugin
+];
 
+ClassicEditor.defaultConfig = {
+	toolbar: {
+		items: [
+			'heading',
+			'|',
+			'bold',
+			'italic',
+			'link',
+			'bulletedList',
+			'numberedList',
+			'imageUpload',
+			'blockQuote',
+			'undo',
+			'redo'
+		]
+	},
+	image: {
+		toolbar: [
+			'imageStyle:full',
+			'imageStyle:side',
+			'|',
+			'imageTextAlternative'
+		]
+	},
+	language: 'en'
+};
 ```
 
 This module will export an editor creator class which has all the plugins and configuration that you need already built-in. To use such editor, simply import that class and call the static `.create()` method like in all {@link builds/guides/integration/basic-api#creating-an-editor examples}.

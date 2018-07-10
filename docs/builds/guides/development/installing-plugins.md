@@ -195,26 +195,25 @@ import BlockquotePlugin from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 
 export default class ClassicEditor extends ClassicEditorBase {}
 
-ClassicEditor.build = {
-	plugins: [
-		EssentialsPlugin,
-		UploadadapterPlugin,
-		AutoformatPlugin,
-		BoldPlugin,
-		ItalicPlugin,
-		BlockquotePlugin,
-		// ...
-	],
-	config: {
-		toolbar: {
-			items: [
-				'heading',
-				'bold',
-				// ...
-			]
-		},
-		// ...
-	}
+ClassicEditor.builtInPlugins = [
+	EssentialsPlugin,
+	UploadadapterPlugin,
+	AutoformatPlugin,
+	BoldPlugin,
+	ItalicPlugin,
+	BlockquotePlugin,
+	// ...
+];
+
+ClassicEditor.defaultConfig = {
+	toolbar: {
+		items: [
+			'heading',
+			'bold',
+			// ...
+		]
+	},
+	// ...
 };
 ```
 
