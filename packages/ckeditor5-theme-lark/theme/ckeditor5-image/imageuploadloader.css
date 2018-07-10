@@ -9,7 +9,7 @@
 }
 
 .ck .ck-image-upload-placeholder {
-	/* We need to control full width of svg gray background. */
+	/* We need to control the full width of the SVG gray background. */
 	width: 100%;
 	margin: 0;
 }
