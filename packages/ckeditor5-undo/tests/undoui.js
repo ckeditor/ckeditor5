@@ -11,10 +11,10 @@ import UndoUI from '../src/undoui';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-testUtils.createSinonSandbox();
-
 describe( 'UndoUI', () => {
 	let editor, editorElement;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );
