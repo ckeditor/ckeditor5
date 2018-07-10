@@ -18,42 +18,42 @@ class TestError extends Error {}
 class ChildPlugin extends Plugin {}
 class GrandPlugin extends ChildPlugin {}
 
-testUtils.createSinonSandbox();
-
-before( () => {
-	PluginA = createPlugin( 'A' );
-	PluginB = createPlugin( 'B' );
-	PluginC = createPlugin( 'C' );
-	PluginD = createPlugin( 'D' );
-	PluginE = createPlugin( 'E' );
-	PluginF = createPlugin( 'F' );
-	PluginG = createPlugin( 'G', GrandPlugin );
-	PluginH = createPlugin( 'H' );
-	PluginI = createPlugin( 'I' );
-	PluginJ = createPlugin( 'J' );
-	PluginK = createPlugin( 'K' );
-	PluginX = class extends Plugin {
-		constructor( editor ) {
-			super( editor );
-
-			throw new TestError( 'Some error inside a plugin' );
-		}
-	};
-	PluginFoo = createPlugin( 'Foo' );
-	AnotherPluginFoo = createPlugin( 'Foo' );
-
-	PluginC.requires = [ PluginB ];
-	PluginD.requires = [ PluginA, PluginC ];
-	PluginF.requires = [ PluginE ];
-	PluginE.requires = [ PluginF ];
-	PluginH.requires = [ PluginI ];
-	PluginJ.requires = [ 'K' ];
-	PluginK.requires = [ PluginA ];
-
-	editor = new Editor();
-} );
-
 describe( 'PluginCollection', () => {
+	testUtils.createSinonSandbox();
+
+	before( () => {
+		PluginA = createPlugin( 'A' );
+		PluginB = createPlugin( 'B' );
+		PluginC = createPlugin( 'C' );
+		PluginD = createPlugin( 'D' );
+		PluginE = createPlugin( 'E' );
+		PluginF = createPlugin( 'F' );
+		PluginG = createPlugin( 'G', GrandPlugin );
+		PluginH = createPlugin( 'H' );
+		PluginI = createPlugin( 'I' );
+		PluginJ = createPlugin( 'J' );
+		PluginK = createPlugin( 'K' );
+		PluginX = class extends Plugin {
+			constructor( editor ) {
+				super( editor );
+
+				throw new TestError( 'Some error inside a plugin' );
+			}
+		};
+		PluginFoo = createPlugin( 'Foo' );
+		AnotherPluginFoo = createPlugin( 'Foo' );
+
+		PluginC.requires = [ PluginB ];
+		PluginD.requires = [ PluginA, PluginC ];
+		PluginF.requires = [ PluginE ];
+		PluginE.requires = [ PluginF ];
+		PluginH.requires = [ PluginI ];
+		PluginJ.requires = [ 'K' ];
+		PluginK.requires = [ PluginA ];
+
+		editor = new Editor();
+	} );
+
 	beforeEach( () => {
 		availablePlugins = [
 			PluginA,

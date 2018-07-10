@@ -6,9 +6,9 @@
 import testUtils from '../_utils/utils';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
-testUtils.createSinonSandbox();
-
 describe( 'utils', () => {
+	testUtils.createSinonSandbox();
+
 	describe( 'checkAssertions()', () => {
 		it( 'does not throw an error if at least one assertion passed', () => {
 			const assertionRed = testUtils.sinon.stub().callsFake( () => {

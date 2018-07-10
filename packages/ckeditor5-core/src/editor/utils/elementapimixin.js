@@ -40,7 +40,7 @@ const ElementApiMixin = {
 export default ElementApiMixin;
 
 /**
- * Interface describing an editor which replaced a DOM element (was "initialized on an element").
+ * Interface describing an editor that replaced a DOM element (was "initialized on an element").
  *
  * Such an editor should provide a method to
  * {@link module:core/editor/utils/elementapimixin~ElementApi#updateSourceElement update the replaced element with the current data}.

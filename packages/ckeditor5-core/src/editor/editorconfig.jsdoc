@@ -10,7 +10,7 @@
 /**
  * CKEditor configuration options.
  *
- * The object defining editor configuration can be passed when initializing the editor:
+ * An object defining the editor configuration can be passed when initializing the editor:
  *
  *		EditorClass
  *			.create( {
@@ -34,7 +34,7 @@
  * The list of plugins to load.
  *
  * If you use an {@glink builds/guides/overview editor build} you can define the list of plugins to load
- * using names of plugins which are available:
+ * using the names of plugins that are available:
  *
  *		const config = {
  *			plugins: [ 'Bold', 'Italic', 'Typing', 'Enter', ... ]
@@ -76,7 +76,7 @@
  */
 
 /**
- * Editor toolbar configuration.
+ * The editor toolbar configuration.
  *
  * Simple format (specifies only toolbar items):
  *
@@ -96,7 +96,7 @@
  *
  * Options which can be set using the extended format:
  *
- * * **`toolbar.items`** – Array of toolbar items names. The components (buttons, dropdowns, etc.) which can be used
+ * * **`toolbar.items`** &ndash; An array of toolbar item names. The components (buttons, dropdowns, etc.) which can be used
  * as toolbar items are defined in `editor.ui.componentFactory` and can be listed using the following snippet:
  *
  *		Array.from( editor.ui.componentFactory.names() );
@@ -105,20 +105,20 @@
  *
  *		toolbar: [ 'bold', 'italic', '|', 'undo', 'redo' ]
  *
- * * **`toolbar.viewportTopOffset`** – The offset (in pixels) from the top of the viewport used when positioning a sticky toolbar.
+ * * **`toolbar.viewportTopOffset`** &ndash; The offset (in pixels) from the top of the viewport used when positioning a sticky toolbar.
  * Useful when a page with which the editor is being integrated has some other sticky or fixed elements
- * (e.g. the top menu). Thanks to setting the toolbar offset the toolbar won't be positioned underneath or above the page's UI.
+ * (e.g. the top menu). Thanks to setting the toolbar offset the toolbar will not be positioned underneath or above the page's UI.
  *
  * @member {Array.<String>|Object} module:core/editor/editorconfig~EditorConfig#toolbar
  */
 
 /**
- * Editor UI's language.
+ * The editor UI's language.
  *
  * The language code is defined in the [ISO 639-1](https://en.wikipedia.org/wiki/ISO_639-1) standard.
  * CKEditor 5 currently supports around 20 languages and the number is growing.
  *
- * Note: You don't have to specify this option if your build is optimized for one language or if it's the default language
+ * Note: You do not have to specify this option if your build is optimized for one language or if it is the default language
  * (English is the default language for CDN builds).
  *
  * Simple usage:
@@ -134,7 +134,7 @@
  *				console.error( error );
  *			} );
  *
- * After this step you need to attach the corresponding translation file. Translation files are available at CDN for predefined builds:
+ * After this step you need to attach the corresponding translation file. Translation files are available on CDN for predefined builds:
  *		`<script src="https://cdn.ckeditor.com/ckeditor5/[version.number]/[distribution]/lang/[lang].js"></script>`
  *
  * But you can add them manually by coping from the `node_modules/@ckeditor/ckeditor5-build-[name]/build/lang/[lang].js'`.

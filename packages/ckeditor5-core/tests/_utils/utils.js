@@ -8,20 +8,27 @@
  */
 const utils = {
 	/**
-	 * Creates Sinon sandbox in {@link bender#sinon} and plugs `afterEach()` callback which
+	 * Creates Sinon sandbox in {@link utils#sinon} and plugs `afterEach()` callback which
 	 * restores all spies and stubs created in this sandbox.
 	 *
 	 * See https://github.com/ckeditor/ckeditor5-design/issues/72 and http://sinonjs.org/docs/#sinon-sandbox
 	 *
 	 * Usage:
 	 *
-	 *		// Directly in the test file:
-	 *		testUtils.createSinonSandbox();
+	 *		import testUtils from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 	 *
-	 *		// Then inside tests you can use bender.sinon:
-	 *		it( 'does something', () => {
-	 *			testUtils.sinon.spy( obj, 'method' );
-	 *		} );
+	 *		describe( 'MyClass', () => {
+	 *			// Create Sinon sandbox inside top-level describe block:
+	 *			testUtils.createSinonSandbox();
+	 *
+	 *			// Then inside tests you can use testUtils.sinon:
+	 *			it( 'does something', () => {
+	 *				testUtils.sinon.spy( obj, 'method' );
+	 *			} );
+	 *		}
+	 *
+	 * **Note**: Do not use `testUtils.createSinonSandbox()` outside `describe()` block as it will attach `afterEach()` calls
+	 * to all test - not only those in current file.
 	 */
 	createSinonSandbox() {
 		before( () => {
