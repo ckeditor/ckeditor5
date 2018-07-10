@@ -21,11 +21,12 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
 export default function attachToForm( editor ) {
 	if ( !isFunction( editor.updateSourceElement ) ) {
 		/**
-		 * The {@link module:core/editor/utils/elementapimixin~ElementApi ElementApi interface} is required.
+		 * The editor passed to `attachToForm()` must implement the
+		 * {@link module:core/editor/utils/elementapimixin~ElementApi} interface.
 		 *
 		 * @error attachtoform-missing-elementapi-interface
 		 */
-		throw new CKEditorError( 'attachtoform-missing-elementapi-interface: The ElementApi interface is required.' );
+		throw new CKEditorError( 'attachtoform-missing-elementapi-interface: Editor passed to attachToForm() must implement ElementApi.' );
 	}
 
 	const sourceElement = editor.sourceElement;
