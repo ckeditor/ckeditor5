@@ -20,6 +20,8 @@ import EditingKeystrokeHandler from '../editingkeystrokehandler';
 import ObservableMixin from '@ckeditor/ckeditor5-utils/src/observablemixin';
 import mix from '@ckeditor/ckeditor5-utils/src/mix';
 
+import '@ckeditor/ckeditor5-utils/src/version';
+
 /**
  * Class representing a basic, generic editor.
  *
@@ -109,7 +111,7 @@ export default class Editor {
 		 *
 		 * The editor is in one of the following states:
 		 *
-		 * * `initializing` - during the editor initialization (before {@link module:core/editor/editor~Editor.create `Editor.create()`)
+		 * * `initializing` - during the editor initialization (before {@link module:core/editor/editor~Editor.create `Editor.create()`})
 		 * finished its job,
 		 * * `ready` - after the promise returned by the {@link module:core/editor/editor~Editor.create `Editor.create()`}
 		 * method is resolved,

@@ -3,7 +3,7 @@
  * For licensing, see LICENSE.md.
  */
 
-/* globals setTimeout */
+/* globals window, setTimeout */
 
 import Editor from '../../src/editor/editor';
 import Plugin from '../../src/plugin';
@@ -97,6 +97,10 @@ class PluginF {
 describe( 'Editor', () => {
 	afterEach( () => {
 		delete Editor.build;
+	} );
+
+	it( 'imports the version helper', () => {
+		expect( window.CKEDITOR_VERSION ).to.be.a( 'string' );
 	} );
 
 	describe( 'constructor()', () => {
