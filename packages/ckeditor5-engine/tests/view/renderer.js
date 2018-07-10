@@ -25,10 +25,10 @@ import createViewRoot from './_utils/createroot';
 import createElement from '@ckeditor/ckeditor5-utils/src/dom/createelement';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 
-testUtils.createSinonSandbox();
-
 describe( 'Renderer', () => {
 	let selection, domConverter, renderer;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		selection = new DocumentSelection();

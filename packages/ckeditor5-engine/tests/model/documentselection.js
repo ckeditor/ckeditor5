@@ -22,10 +22,10 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import { wrapInDelta } from '../../tests/model/_utils/utils';
 import { setData, getData } from '../../src/dev-utils/model';
 
-testUtils.createSinonSandbox();
-
 describe( 'DocumentSelection', () => {
 	let model, doc, root, selection, liveRange, range;
+
+	testUtils.createSinonSandbox();
 
 	const fooStoreAttrKey = DocumentSelection._getStoreAttributeKey( 'foo' );
 	const abcStoreAttrKey = DocumentSelection._getStoreAttributeKey( 'abc' );
