@@ -10,7 +10,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 
-ClassicEditor.build.plugins.push( Table );
-ClassicEditor.build.plugins.push( TableToolbar );
+ClassicEditor.builtinPlugins.push( Table );
+ClassicEditor.builtinPlugins.push( TableToolbar );
 
 window.ClassicEditor = ClassicEditor;
