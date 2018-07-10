@@ -13,9 +13,9 @@ import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml'
 
 let collection;
 
-testUtils.createSinonSandbox();
-
 describe( 'ViewCollection', () => {
+	testUtils.createSinonSandbox();
+
 	beforeEach( createTestCollection );
 
 	describe( 'constructor()', () => {

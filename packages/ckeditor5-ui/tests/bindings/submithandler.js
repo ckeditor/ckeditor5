@@ -10,10 +10,10 @@ import submitHandler from '../../src/bindings/submithandler';
 import View from '../../src/view';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-testUtils.createSinonSandbox();
-
 describe( 'submitHandler', () => {
 	let view;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		view = new View();

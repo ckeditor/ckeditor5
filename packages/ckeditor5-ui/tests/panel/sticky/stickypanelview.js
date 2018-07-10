@@ -13,10 +13,10 @@ import ViewCollection from '../../../src/viewcollection';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 
-testUtils.createSinonSandbox();
-
 describe( 'StickyPanelView', () => {
 	let view, element, contentElement, placeholderElement, limiterElement, locale, windowStub;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		locale = {};

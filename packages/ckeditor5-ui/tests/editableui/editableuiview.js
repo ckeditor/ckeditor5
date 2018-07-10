@@ -10,10 +10,10 @@ import View from '../../src/view';
 import Locale from '@ckeditor/ckeditor5-utils/src/locale';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-testUtils.createSinonSandbox();
-
 describe( 'EditableUIView', () => {
 	let view, editableElement, locale;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		locale = new Locale( 'en' );

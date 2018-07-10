@@ -11,10 +11,10 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import global from '@ckeditor/ckeditor5-utils/src/dom/global';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-testUtils.createSinonSandbox();
-
 describe( 'FocusCycler', () => {
 	let focusables, focusTracker, cycler;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		focusables = new ViewCollection();

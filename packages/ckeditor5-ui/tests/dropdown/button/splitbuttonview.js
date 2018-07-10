@@ -8,10 +8,10 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import ButtonView from '../../../src/button/buttonview';
 import SplitButtonView from '../../../src/dropdown/button/splitbuttonview';
 
-testUtils.createSinonSandbox();
-
 describe( 'SplitButtonView', () => {
 	let locale, view;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		locale = { t() {} };

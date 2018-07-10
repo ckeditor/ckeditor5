@@ -12,10 +12,10 @@ import TooltipView from '../../src/tooltip/tooltipview';
 import View from '../../src/view';
 import ViewCollection from '../../src/viewcollection';
 
-testUtils.createSinonSandbox();
-
 describe( 'ButtonView', () => {
 	let locale, view;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		locale = { t() {} };

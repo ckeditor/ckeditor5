@@ -16,12 +16,12 @@ import DomEmitterMixin from '@ckeditor/ckeditor5-utils/src/dom/emittermixin';
 import normalizeHtml from '@ckeditor/ckeditor5-utils/tests/_utils/normalizehtml';
 import log from '@ckeditor/ckeditor5-utils/src/log';
 
-testUtils.createSinonSandbox();
-
 let el, text;
 const injectedElements = [];
 
 describe( 'Template', () => {
+	testUtils.createSinonSandbox();
+
 	// Clean-up document.body from the rendered elements.
 	afterEach( () => {
 		for ( const el of injectedElements ) {
