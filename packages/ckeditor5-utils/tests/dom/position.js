@@ -9,8 +9,6 @@ import { getOptimalPosition } from '../../src/dom/position';
 import Rect from '../../src/dom/rect';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-testUtils.createSinonSandbox();
-
 let element, target, limiter;
 
 //	+--------+-----+
@@ -54,6 +52,8 @@ const attachTop = ( targetRect, elementRect ) => ( {
 } );
 
 describe( 'getOptimalPosition()', () => {
+	testUtils.createSinonSandbox();
+
 	beforeEach( () => {
 		testUtils.sinon.stub( window, 'getComputedStyle' );
 

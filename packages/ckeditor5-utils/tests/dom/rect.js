@@ -9,10 +9,10 @@ import Rect from '../../src/dom/rect';
 import log from '../../src/log';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-testUtils.createSinonSandbox();
-
 describe( 'Rect', () => {
 	let geometry;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		geometry = {

@@ -18,12 +18,20 @@ const userAgent = navigator.userAgent.toLowerCase();
  */
 const env = {
 	/**
-	 * Indicates that application is running on Macintosh.
+	 * Indicates that the application is running on Macintosh.
 	 *
 	 * @static
 	 * @member {Boolean} module:utils/env~env#isMac
 	 */
-	isMac: isMac( userAgent )
+	isMac: isMac( userAgent ),
+
+	/**
+	 * Indicates that the application is running in Microsoft Edge.
+	 *
+	 * @static
+	 * @member {Boolean} module:utils/env~env#isEdge
+	 */
+	isEdge: isEdge( userAgent )
 };
 
 export default env;
@@ -36,4 +44,14 @@ export default env;
  */
 export function isMac( userAgent ) {
 	return userAgent.indexOf( 'macintosh' ) > -1;
+}
+
+/**
+ * Checks if User Agent represented by the string is Microsoft Edge.
+ *
+ * @param {String} userAgent **Lowercase** `navigator.userAgent` string.
+ * @returns {Boolean} Whether User Agent is Edge or not.
+ */
+export function isEdge( userAgent ) {
+	return !!userAgent.match( /edge\/(\d+.?\d*)/ );
 }
