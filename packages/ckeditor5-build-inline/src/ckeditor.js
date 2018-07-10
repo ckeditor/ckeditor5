@@ -23,49 +23,48 @@ import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 export default class InlineEditor extends InlineEditorBase {}
 
-InlineEditor.build = {
-	plugins: [
-		EssentialsPlugin,
-		UploadadapterPlugin,
-		AutoformatPlugin,
-		BoldPlugin,
-		ItalicPlugin,
-		BlockquotePlugin,
-		EasyimagePlugin,
-		HeadingPlugin,
-		ImagePlugin,
-		ImagecaptionPlugin,
-		ImagestylePlugin,
-		ImagetoolbarPlugin,
-		ImageuploadPlugin,
-		LinkPlugin,
-		ListPlugin,
-		ParagraphPlugin
-	],
-	config: {
-		toolbar: {
-			items: [
-				'heading',
-				'|',
-				'bold',
-				'italic',
-				'link',
-				'bulletedList',
-				'numberedList',
-				'imageUpload',
-				'blockQuote',
-				'undo',
-				'redo'
-			]
-		},
-		image: {
-			toolbar: [
-				'imageStyle:full',
-				'imageStyle:side',
-				'|',
-				'imageTextAlternative'
-			]
-		},
-		language: 'en'
-	}
+InlineEditor.builtinPlugins = [
+	EssentialsPlugin,
+	UploadadapterPlugin,
+	AutoformatPlugin,
+	BoldPlugin,
+	ItalicPlugin,
+	BlockquotePlugin,
+	EasyimagePlugin,
+	HeadingPlugin,
+	ImagePlugin,
+	ImagecaptionPlugin,
+	ImagestylePlugin,
+	ImagetoolbarPlugin,
+	ImageuploadPlugin,
+	LinkPlugin,
+	ListPlugin,
+	ParagraphPlugin
+];
+
+InlineEditor.defaultConfig = {
+	toolbar: {
+		items: [
+			'heading',
+			'|',
+			'bold',
+			'italic',
+			'link',
+			'bulletedList',
+			'numberedList',
+			'imageUpload',
+			'blockQuote',
+			'undo',
+			'redo'
+		]
+	},
+	image: {
+		toolbar: [
+			'imageStyle:full',
+			'imageStyle:side',
+			'|',
+			'imageTextAlternative'
+		]
+	},
+	language: 'en'
 };

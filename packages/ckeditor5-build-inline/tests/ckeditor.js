@@ -24,11 +24,11 @@ describe( 'InlineEditor build', () => {
 
 	describe( 'buid', () => {
 		it( 'contains plugins', () => {
-			expect( InlineEditor.build.plugins ).to.not.be.empty;
+			expect( InlineEditor.builtinPlugins ).to.not.be.empty;
 		} );
 
 		it( 'contains config', () => {
-			expect( InlineEditor.build.config.toolbar ).to.not.be.empty;
+			expect( InlineEditor.defaultConfig.toolbar ).to.not.be.empty;
 		} );
 	} );
 
