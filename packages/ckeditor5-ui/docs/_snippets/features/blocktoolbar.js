@@ -13,7 +13,7 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-block-toolbar' ), {
-		plugins: ClassicEditor.build.plugins.concat( [ BlockToolbar, ParagraphButtonUI, HeadingButtonsUI ] ),
+		plugins: ClassicEditor.builtinPlugins.concat( [ BlockToolbar, ParagraphButtonUI, HeadingButtonsUI ] ),
 		toolbar: {
 			items: [ 'bold', 'italic', 'code', 'link', 'blockQuote', 'undo', 'redo' ],
 			viewportTopOffset: 60
