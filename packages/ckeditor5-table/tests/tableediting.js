@@ -3,9 +3,10 @@
  * For licensing, see LICENSE.md.
  */
 
+import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import { getData as getModelData, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData as getModelData, setData as setModelData, parse } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 import TableEditing from '../src/tableediting';
@@ -356,6 +357,50 @@ describe( 'TableEditing', () => {
 					[ '21', '22' ]
 				] ) );
 			} );
+		} );
+	} );
+
+	describe( 'post-fixer', () => {
+		it( 'should add missing columns to a tableRows that are shorter then longest table row', () => {
+			const parsed = parse( modelTable( [
+				[ '00' ],
+				[ '10', '11', '12' ],
+				[ '20', '21' ]
+			] ), model.schema );
+
+			const root = model.document.getRoot();
+
+			model.change( writer => {
+				writer.remove( Range.createIn( root ) );
+				writer.insert( parsed, root );
+			} );
+
+			expect( formatTable( getModelData( model, { withoutSelection: true } ) ) ).to.equal( formattedModelTable( [
+				[ '00', '', '' ],
+				[ '10', '11', '12' ],
+				[ '20', '21', '' ]
+			] ) );
+		} );
+
+		it( 'should add missing columns to a tableRows that are shorter then longest table row (complex)', () => {
+			const parsed = parse( modelTable( [
+				[ { colspan: 6, contents: '00' } ],
+				[ { rowspan: 2, contents: '10' }, '11', { colspan: 3, contents: '12' } ],
+				[ '21', '22' ]
+			] ), model.schema );
+
+			const root = model.document.getRoot();
+
+			model.change( writer => {
+				writer.remove( Range.createIn( root ) );
+				writer.insert( parsed, root );
+			} );
+
+			expect( formatTable( getModelData( model, { withoutSelection: true } ) ) ).to.equal( formattedModelTable( [
+				[ { colspan: 6, contents: '00' } ],
+				[ { rowspan: 2, contents: '10' }, '11', { colspan: 3, contents: '12' }, '' ],
+				[ '21', '22', '', '', '' ]
+			] ) );
 		} );
 	} );
 } );
