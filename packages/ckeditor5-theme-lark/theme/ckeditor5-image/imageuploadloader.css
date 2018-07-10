@@ -8,6 +8,12 @@
 	--ck-upload-placeholder-loader-size: 32px;
 }
 
+.ck .ck-image-upload-placeholder {
+	/* We need to control full width of svg gray background. */
+	width: 100%;
+	margin: 0;
+}
+
 .ck .ck-upload-placeholder-loader {
 	width: 100%;
 	height: 100%;
