@@ -27,11 +27,11 @@ describe( 'DecoupledEditor build', () => {
 
 	describe( 'buid', () => {
 		it( 'contains plugins', () => {
-			expect( DecoupledEditor.build.plugins ).to.not.be.empty;
+			expect( DecoupledEditor.builtinPlugins ).to.not.be.empty;
 		} );
 
 		it( 'contains config', () => {
-			expect( DecoupledEditor.build.config.toolbar ).to.not.be.empty;
+			expect( DecoupledEditor.defaultConfig.toolbar ).to.not.be.empty;
 		} );
 	} );
 

@@ -31,82 +31,81 @@ import TabletoolbarPlugin from '@ckeditor/ckeditor5-table/src/tabletoolbar';
 
 export default class DecoupledEditor extends DecoupledEditorBase {}
 
-DecoupledEditor.build = {
-	plugins: [
-		EssentialsPlugin,
-		AlignmentPlugin,
-		FontsizePlugin,
-		FontfamilyPlugin,
-		HighlightPlugin,
-		UploadadapterPlugin,
-		AutoformatPlugin,
-		BoldPlugin,
-		ItalicPlugin,
-		StrikethroughPlugin,
-		UnderlinePlugin,
-		BlockquotePlugin,
-		EasyimagePlugin,
-		HeadingPlugin,
-		ImagePlugin,
-		ImagecaptionPlugin,
-		ImagestylePlugin,
-		ImagetoolbarPlugin,
-		ImageuploadPlugin,
-		LinkPlugin,
-		ListPlugin,
-		ParagraphPlugin,
-		TablePlugin,
-		TabletoolbarPlugin
-	],
-	config: {
-		toolbar: {
-			items: [
-				'heading',
-				'|',
-				'fontsize',
-				'fontfamily',
-				'|',
-				'bold',
-				'italic',
-				'underline',
-				'strikethrough',
-				'highlight',
-				'|',
-				'alignment',
-				'|',
-				'numberedList',
-				'bulletedList',
-				'|',
-				'link',
-				'blockquote',
-				'imageUpload',
-				'insertTable',
-				'|',
-				'undo',
-				'redo'
-			]
-		},
-		image: {
-			styles: [
-				'full',
-				'alignLeft',
-				'alignRight'
-			],
-			toolbar: [
-				'imageStyle:alignLeft',
-				'imageStyle:full',
-				'imageStyle:alignRight',
-				'|',
-				'imageTextAlternative'
-			]
-		},
-		table: {
-			toolbar: [
-				'tableColumn',
-				'tableRow',
-				'mergeTableCells'
-			]
-		},
-		language: 'en'
-	}
+DecoupledEditor.builtinPlugins = [
+	EssentialsPlugin,
+	AlignmentPlugin,
+	FontsizePlugin,
+	FontfamilyPlugin,
+	HighlightPlugin,
+	UploadadapterPlugin,
+	AutoformatPlugin,
+	BoldPlugin,
+	ItalicPlugin,
+	StrikethroughPlugin,
+	UnderlinePlugin,
+	BlockquotePlugin,
+	EasyimagePlugin,
+	HeadingPlugin,
+	ImagePlugin,
+	ImagecaptionPlugin,
+	ImagestylePlugin,
+	ImagetoolbarPlugin,
+	ImageuploadPlugin,
+	LinkPlugin,
+	ListPlugin,
+	ParagraphPlugin,
+	TablePlugin,
+	TabletoolbarPlugin
+];
+
+DecoupledEditor.defaultConfig = {
+	toolbar: {
+		items: [
+			'heading',
+			'|',
+			'fontsize',
+			'fontfamily',
+			'|',
+			'bold',
+			'italic',
+			'underline',
+			'strikethrough',
+			'highlight',
+			'|',
+			'alignment',
+			'|',
+			'numberedList',
+			'bulletedList',
+			'|',
+			'link',
+			'blockquote',
+			'imageUpload',
+			'insertTable',
+			'|',
+			'undo',
+			'redo'
+		]
+	},
+	image: {
+		styles: [
+			'full',
+			'alignLeft',
+			'alignRight'
+		],
+		toolbar: [
+			'imageStyle:alignLeft',
+			'imageStyle:full',
+			'imageStyle:alignRight',
+			'|',
+			'imageTextAlternative'
+		]
+	},
+	table: {
+		toolbar: [
+			'tableColumn',
+			'tableRow',
+			'mergeTableCells'
+		]
+	},
+	language: 'en'
 };
