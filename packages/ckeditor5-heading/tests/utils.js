@@ -11,9 +11,9 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Heading from '../src/heading';
 import { getLocalizedOptions } from '../src/utils';
 
-testUtils.createSinonSandbox();
-
 describe( 'utils', () => {
+	testUtils.createSinonSandbox();
+
 	describe( 'getLocalizedOptions()', () => {
 		let editor, editorElement;
 
