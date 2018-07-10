@@ -12,14 +12,6 @@
 	position: relative;
 	overflow: hidden;
 
-	/* Infinite progress bar on top while the image is read. */
-	&.ck-infinite-progress::before {
-		content: "";
-		position: absolute;
-		top: 0;
-		right: 0;
-	}
-
 	/* Upload progress bar. */
 	& .ck-progress-bar {
 		position: absolute;
