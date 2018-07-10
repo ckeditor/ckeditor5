@@ -9,10 +9,10 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import isRange from '../../src/dom/isrange';
 import { scrollViewportToShowTarget, scrollAncestorsToShowTarget } from '../../src/dom/scroll';
 
-testUtils.createSinonSandbox();
-
 describe( 'scrollAncestorsToShowTarget()', () => {
 	let target, element, firstAncestor, secondAncestor;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		element = document.createElement( 'p' );
@@ -144,6 +144,8 @@ describe( 'scrollAncestorsToShowTarget()', () => {
 describe( 'scrollViewportToShowTarget()', () => {
 	let target, firstAncestor, element;
 	const viewportOffset = 30;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		element = document.createElement( 'p' );

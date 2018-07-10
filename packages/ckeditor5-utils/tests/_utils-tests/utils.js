@@ -8,10 +8,10 @@ import utilsTestUtils from '../../tests/_utils/utils';
 import ObesrvableMixin from '../../src/observablemixin';
 import EmitterMixin from '../../src/emittermixin';
 
-testUtils.createSinonSandbox();
-
 describe( 'utilsTestUtils.createObserver()', () => {
 	let observable, observable2, observer;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		observer = utilsTestUtils.createObserver();

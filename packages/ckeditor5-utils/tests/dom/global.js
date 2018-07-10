@@ -8,9 +8,9 @@
 import global from '../../src/dom/global';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-testUtils.createSinonSandbox();
-
 describe( 'global', () => {
+	testUtils.createSinonSandbox();
+
 	describe( 'global', () => {
 		describe( 'window', () => {
 			it( 'equals native DOM window', () => {

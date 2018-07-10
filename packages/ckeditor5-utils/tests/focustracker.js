@@ -9,10 +9,10 @@ import FocusTracker from '../src/focustracker';
 import CKEditorError from '../src/ckeditorerror';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-testUtils.createSinonSandbox();
-
 describe( 'FocusTracker', () => {
 	let focusTracker, container, containerFirstInput, containerSecondInput;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		container = document.createElement( 'div' );

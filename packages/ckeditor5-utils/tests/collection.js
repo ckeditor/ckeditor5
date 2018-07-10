@@ -7,8 +7,6 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 import Collection from '../src/collection';
 import CKEditorError from '../src/ckeditorerror';
 
-testUtils.createSinonSandbox();
-
 function getItem( id, idProperty ) {
 	idProperty = idProperty || 'id';
 
@@ -19,6 +17,8 @@ function getItem( id, idProperty ) {
 
 describe( 'Collection', () => {
 	let collection;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		collection = new Collection();
