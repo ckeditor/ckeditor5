@@ -22,10 +22,10 @@ import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
 import { getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import testUtils from '../../tests/_utils/utils';
 
-testUtils.createSinonSandbox();
-
 describe( 'ClassicTestEditor', () => {
 	let editorElement;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		editorElement = document.createElement( 'div' );

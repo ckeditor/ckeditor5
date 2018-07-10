@@ -12,9 +12,9 @@ import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
 
 import testUtils from '../../tests/_utils/utils';
 
-testUtils.createSinonSandbox();
-
 describe( 'VirtualTestEditor', () => {
+	testUtils.createSinonSandbox();
+
 	describe( 'constructor()', () => {
 		it( 'creates an instance of editor', () => {
 			const editor = new VirtualTestEditor( { foo: 1 } );

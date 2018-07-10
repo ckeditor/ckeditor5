@@ -15,9 +15,9 @@ import { getData, setData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model
 
 import testUtils from '../../tests/_utils/utils';
 
-testUtils.createSinonSandbox();
-
 describe( 'ModelTestEditor', () => {
+	testUtils.createSinonSandbox();
+
 	describe( 'constructor()', () => {
 		it( 'creates an instance of editor', () => {
 			const editor = new ModelTestEditor( { foo: 1 } );
