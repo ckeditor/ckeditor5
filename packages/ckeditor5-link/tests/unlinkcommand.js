@@ -8,10 +8,10 @@ import UnlinkCommand from '../src/unlinkcommand';
 import { setData, getData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-testUtils.createSinonSandbox();
-
 describe( 'UnlinkCommand', () => {
 	let editor, model, document, command;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		return ModelTestEditor.create()
