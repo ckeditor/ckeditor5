@@ -13,10 +13,10 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
-testUtils.createSinonSandbox();
-
 describe( 'CodeUI', () => {
 	let editor, codeView;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		const editorElement = document.createElement( 'div' );
