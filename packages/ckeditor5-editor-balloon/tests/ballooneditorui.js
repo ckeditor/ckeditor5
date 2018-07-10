@@ -15,10 +15,10 @@ import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 import utils from '@ckeditor/ckeditor5-utils/tests/_utils/utils';
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-testUtils.createSinonSandbox();
-
 describe( 'BalloonEditorUI', () => {
 	let editor, view, ui;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		return VirtualBalloonTestEditor
