@@ -106,7 +106,7 @@ export default class PluginCollection {
 			 * Some plugins are not available and could not be loaded.
 			 *
 			 * Plugin classes (constructors) need to be provided to the editor before they can be loaded by name.
-			 * This is usually done by the builder by setting the {@link module:core/editor/editor~Editor.build}
+			 * This is usually done in CKEditor 5 builds by setting the {@link module:core/editor/editor~Editor.builtinPlugins}
 			 * property.
 			 *
 			 * **If you see this warning when using one of the {@glink builds/index CKEditor 5 Builds}**, it means

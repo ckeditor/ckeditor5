@@ -96,7 +96,8 @@ class PluginF {
 
 describe( 'Editor', () => {
 	afterEach( () => {
-		delete Editor.build;
+		delete Editor.builtinPlugins;
+		delete Editor.defaultConfig;
 	} );
 
 	it( 'imports the version helper', () => {
@@ -117,12 +118,10 @@ describe( 'Editor', () => {
 		} );
 
 		it( 'should extend an editor configuration using built in config', () => {
-			Editor.build = {
-				config: {
-					foo: {
-						a: 1,
-						b: 2
-					}
+			Editor.defaultConfig = {
+				foo: {
+					a: 1,
+					b: 2
 				}
 			};
 
@@ -533,9 +532,7 @@ describe( 'Editor', () => {
 		} );
 
 		it( 'should load plugins built in the Editor even if the passed config is empty', () => {
-			Editor.build = {
-				plugins: [ PluginA, PluginB, PluginC ]
-			};
+			Editor.builtinPlugins = [ PluginA, PluginB, PluginC ];
 
 			const editor = new Editor();
 
@@ -550,9 +547,7 @@ describe( 'Editor', () => {
 		} );
 
 		it( 'should load plugins provided in the config and should ignore plugins built in the Editor', () => {
-			Editor.build = {
-				plugins: [ PluginA, PluginB, PluginC, PluginD ]
-			};
+			Editor.builtinPlugins = [ PluginA, PluginB, PluginC, PluginD ];
 
 			const editor = new Editor( {
 				plugins: [
@@ -571,9 +566,7 @@ describe( 'Editor', () => {
 		it( 'should load plugins built in the Editor using their names', () => {
 			class PrivatePlugin extends Plugin {}
 
-			Editor.build = {
-				plugins: [ PluginA, PluginB, PluginC, PluginD ]
-			};
+			Editor.builtinPlugins = [ PluginA, PluginB, PluginC, PluginD ];
 
 			const editor = new Editor( {
 				plugins: [
@@ -596,9 +589,7 @@ describe( 'Editor', () => {
 		} );
 
 		it( 'should load plugins inherited from the base Editor', () => {
-			Editor.build = {
-				plugins: [ PluginA, PluginB, PluginC, PluginD ]
-			};
+			Editor.builtinPlugins = [ PluginA, PluginB, PluginC, PluginD ];
 
 			class CustomEditor extends Editor {}
 
@@ -621,9 +612,7 @@ describe( 'Editor', () => {
 		it( 'should load plugins build into Editor\'s subclass', () => {
 			class CustomEditor extends Editor {}
 
-			CustomEditor.build = {
-				plugins: [ PluginA, PluginB, PluginC, PluginD ]
-			};
+			CustomEditor.builtinPlugins = [ PluginA, PluginB, PluginC, PluginD ];
 
 			const editor = new CustomEditor( {
 				plugins: [
@@ -655,9 +644,7 @@ describe( 'Editor', () => {
 		} );
 
 		it( 'should not load plugins built in the Editor when "removePlugins" option is specified', () => {
-			Editor.build = {
-				plugins: [ PluginA, PluginD ]
-			};
+			Editor.builtinPlugins = [ PluginA, PluginD ];
 
 			const editor = new Editor( {
 				removePlugins: [ 'D' ]
@@ -673,9 +660,7 @@ describe( 'Editor', () => {
 		it( 'should not load plugins build into Editor\'s subclass when "removePlugins" option is specified', () => {
 			class CustomEditor extends Editor {}
 
-			CustomEditor.build = {
-				plugins: [ PluginA, PluginD ]
-			};
+			CustomEditor.builtinPlugins = [ PluginA, PluginD ];
 
 			const editor = new CustomEditor( {
 				removePlugins: [ 'D' ]

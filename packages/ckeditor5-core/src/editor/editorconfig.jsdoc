@@ -42,7 +42,7 @@
  *
  * You can check the list of plugins available in a build using this snippet:
  *
- *		ClassicEditor.build.plugins.map( plugin => plugin.pluginName );
+ *		ClassicEditor.builtinPlugins.map( plugin => plugin.pluginName );
  *
  * If you use an editor creator directly (imported from a package like `@ckeditor/ckeditor5-editor-classic`) or you
  * want to load additional plugins which were not included in a build you use, then you need to specify
