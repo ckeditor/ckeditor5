@@ -9,6 +9,6 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic/src/ckeditor';
 
 import Font from '@ckeditor/ckeditor5-font/src/font';
 
-ClassicEditor.build.plugins.push( Font );
+ClassicEditor.builtinPlugins.push( Font );
 
 window.ClassicEditor = ClassicEditor;
