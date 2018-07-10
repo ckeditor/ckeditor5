@@ -19,12 +19,12 @@ import RootElement from '@ckeditor/ckeditor5-engine/src/model/rootelement';
 
 import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
-testUtils.createSinonSandbox();
-
 const editorData = '<p><strong>foo</strong> bar</p>';
 
 describe( 'DecoupledEditor', () => {
 	let editor;
+
+	testUtils.createSinonSandbox();
 
 	describe( 'constructor()', () => {
 		beforeEach( () => {
