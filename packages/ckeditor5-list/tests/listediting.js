@@ -21,7 +21,7 @@ import Clipboard from '@ckeditor/ckeditor5-clipboard/src/clipboard';
 import BlockQuoteEditing from '@ckeditor/ckeditor5-block-quote/src/blockquoteediting';
 
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import { getData as getModelData, setData as setModelData, parse as parseModel } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData as getModelData, parse as parseModel, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getData as getViewData, parse as parseView } from '@ckeditor/ckeditor5-engine/src/dev-utils/view';
 
 import { insertElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
@@ -3861,9 +3861,9 @@ describe( 'ListEditing', () => {
 		const item = input.substring( selStart, selEnd );
 		const modelInput = input.substring( 0, selStart ) + input.substring( selEnd );
 
-		const actionCallback = () => {
+		const actionCallback = selection => {
 			model.change( writer => {
-				writer.insert( parseModel( item, model.schema ), modelDoc.selection.getFirstPosition() );
+				writer.insert( parseModel( item, model.schema ), selection.getFirstPosition() );
 			} );
 		};
 
@@ -3871,9 +3871,9 @@ describe( 'ListEditing', () => {
 	}
 
 	function testRemove( testName, input, output ) {
-		const actionCallback = () => {
+		const actionCallback = selection => {
 			model.change( writer => {
-				writer.remove( modelDoc.selection.getFirstRange() );
+				writer.remove( selection.getFirstRange() );
 			} );
 		};
 
@@ -3881,12 +3881,12 @@ describe( 'ListEditing', () => {
 	}
 
 	function testChangeType( testName, input, output ) {
-		const actionCallback = () => {
-			const element = modelDoc.selection.getFirstPosition().nodeAfter;
+		const actionCallback = selection => {
+			const element = selection.getFirstPosition().nodeAfter;
 			const newType = element.getAttribute( 'listType' ) == 'numbered' ? 'bulleted' : 'numbered';
 
 			model.change( writer => {
-				const itemsToChange = Array.from( modelDoc.selection.getSelectedBlocks() );
+				const itemsToChange = Array.from( selection.getSelectedBlocks() );
 
 				for ( const item of itemsToChange ) {
 					writer.setAttribute( 'listType', newType, item );
@@ -3898,8 +3898,7 @@ describe( 'ListEditing', () => {
 	}
 
 	function testRenameFromListItem( testName, input, output, testUndo = true ) {
-		const actionCallback = undoSelection => {
-			const selection = undoSelection ? undoSelection : modelDoc.selection;
+		const actionCallback = selection => {
 			const element = selection.getFirstPosition().nodeAfter;
 
 			model.change( writer => {
@@ -3913,9 +3912,7 @@ describe( 'ListEditing', () => {
 	}
 
 	function testRenameToListItem( testName, newIndent, input, output ) {
-		const actionCallback = undoSelection => {
-			const selection = undoSelection ? undoSelection : modelDoc.selection;
-
+		const actionCallback = selection => {
 			const element = selection.getFirstPosition().nodeAfter;
 
 			model.change( writer => {
@@ -3928,9 +3925,9 @@ describe( 'ListEditing', () => {
 	}
 
 	function testChangeIndent( testName, newIndent, input, output ) {
-		const actionCallback = () => {
+		const actionCallback = selection => {
 			model.change( writer => {
-				writer.setAttribute( 'listIndent', newIndent, modelDoc.selection.getFirstRange() );
+				writer.setAttribute( 'listIndent', newIndent, selection.getFirstRange() );
 			} );
 		};
 
@@ -3938,10 +3935,8 @@ describe( 'ListEditing', () => {
 	}
 
 	function testMove( testName, input, rootOffset, output, testUndo = true ) {
-		const actionCallback = undoSelection => {
+		const actionCallback = selection => {
 			const targetPosition = ModelPosition.createAt( modelRoot, rootOffset );
-
-			const selection = undoSelection ? undoSelection : modelDoc.selection;
 
 			model.change( writer => {
 				writer.move( selection.getFirstRange(), targetPosition );
@@ -3953,51 +3948,18 @@ describe( 'ListEditing', () => {
 
 	function _test( testName, input, output, actionCallback ) {
 		it( testName, () => {
-			// Wrap all changes in one block to avoid post-fixing the selection
-			// (which may be incorrect) in the meantime.
-			model.change( () => {
-				setModelData( model, input );
+			const callbackSelection = prepareTest( model, input );
 
-				actionCallback();
-			} );
+			actionCallback( callbackSelection );
 
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal( output );
 		} );
 
 		it( testName + ' (undo integration)', () => {
-			const modelRoot = model.document.getRoot( 'main' );
-
-			// Parse data string to model.
-			const parsedResult = parseModel( input, model.schema, { context: [ modelRoot.name ] } );
-
-			// Retrieve DocumentFragment and Selection from parsed model.
-			const modelDocumentFragment = parsedResult.model;
-			const selection = parsedResult.selection;
-
-			// Ensure no undo step is generated.
-			model.enqueueChange( 'transparent', writer => {
-				// Replace existing model in document by new one.
-				writer.remove( ModelRange.createIn( modelRoot ) );
-				writer.insert( modelDocumentFragment, modelRoot );
-
-				// // Clean up previous document selection.
-				writer.setSelection( null );
-				writer.removeSelectionAttribute( model.document.selection.getAttributeKeys() );
-			} );
+			const callbackSelection = prepareTest( model, input );
 
 			const modelBefore = getModelData( model );
 			const viewBefore = getViewData( view, { withoutSelection: true } );
-
-			const ranges = [];
-
-			for ( const range of selection.getRanges() ) {
-				const start = new ModelPosition( modelRoot, range.start.path );
-				const end = new ModelPosition( modelRoot, range.end.path );
-
-				ranges.push( new ModelRange( start, end ) );
-			}
-
-			const callbackSelection = new Selection( ranges );
 
 			actionCallback( callbackSelection );
 
@@ -4014,5 +3976,38 @@ describe( 'ListEditing', () => {
 			expect( getModelData( model ) ).to.equal( modelAfter );
 			expect( getViewData( view, { withoutSelection: true } ) ).to.equal( viewAfter );
 		} );
+
+		function prepareTest( model, input ) {
+			const modelRoot = model.document.getRoot( 'main' );
+
+			// Parse data string to model.
+			const parsedResult = parseModel( input, model.schema, { context: [ modelRoot.name ] } );
+
+			// Retrieve DocumentFragment and Selection from parsed model.
+			const modelDocumentFragment = parsedResult.model;
+			const selection = parsedResult.selection;
+
+			// Ensure no undo step is generated.
+			model.enqueueChange( 'transparent', writer => {
+				// Replace existing model in document by new one.
+				writer.remove( ModelRange.createIn( modelRoot ) );
+				writer.insert( modelDocumentFragment, modelRoot );
+
+				// Clean up previous document selection.
+				writer.setSelection( null );
+				writer.removeSelectionAttribute( model.document.selection.getAttributeKeys() );
+			} );
+
+			const ranges = [];
+
+			for ( const range of selection.getRanges() ) {
+				const start = new ModelPosition( modelRoot, range.start.path );
+				const end = new ModelPosition( modelRoot, range.end.path );
+
+				ranges.push( new ModelRange( start, end ) );
+			}
+
+			return new Selection( ranges );
+		}
 	}
 } );
