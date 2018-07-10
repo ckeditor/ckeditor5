@@ -21,10 +21,10 @@ import testUtils from '@ckeditor/ckeditor5-core/tests/_utils/utils';
 
 import HeadingCommand from '@ckeditor/ckeditor5-heading/src/headingcommand';
 
-testUtils.createSinonSandbox();
-
 describe( 'Autoformat', () => {
 	let editor, model, doc;
+
+	testUtils.createSinonSandbox();
 
 	beforeEach( () => {
 		return VirtualTestEditor
