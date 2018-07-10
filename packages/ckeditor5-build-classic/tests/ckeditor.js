@@ -25,11 +25,11 @@ describe( 'ClassicEditor build', () => {
 
 	describe( 'buid', () => {
 		it( 'contains plugins', () => {
-			expect( ClassicEditor.build.plugins ).to.not.be.empty;
+			expect( ClassicEditor.builtinPlugins ).to.not.be.empty;
 		} );
 
 		it( 'contains config', () => {
-			expect( ClassicEditor.build.config.toolbar ).to.not.be.empty;
+			expect( ClassicEditor.defaultConfig.toolbar ).to.not.be.empty;
 		} );
 	} );
 
