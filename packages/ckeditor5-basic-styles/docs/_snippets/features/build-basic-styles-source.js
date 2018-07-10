@@ -13,6 +13,6 @@ import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import Strikethrough from '@ckeditor/ckeditor5-basic-styles/src/strikethrough';
 import Code from '@ckeditor/ckeditor5-basic-styles/src/code';
 
-ClassicEditor.build.plugins.push( Bold, Italic, Underline, Strikethrough, Code );
+ClassicEditor.builtinPlugins.push( Bold, Italic, Underline, Strikethrough, Code );
 
 window.ClassicEditor = ClassicEditor;
