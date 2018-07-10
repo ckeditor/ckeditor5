@@ -10,6 +10,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
+import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 import { keyCodes } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 import upcastTable from './converters/upcasttable';
@@ -31,7 +32,8 @@ import RemoveColumnCommand from './commands/removecolumncommand';
 import SetHeaderRowCommand from './commands/setheaderrowcommand';
 import SetHeaderColumnCommand from './commands/setheadercolumncommand';
 import { getParentTable } from './commands/utils';
-import TableUtils from './tableutils';
+import TableWalker from './tablewalker';
+import TableUtils from '../src/tableutils';
 
 import '../theme/tableediting.css';
 
@@ -46,7 +48,8 @@ export default class TableEditing extends Plugin {
 	 */
 	init() {
 		const editor = this.editor;
-		const schema = editor.model.schema;
+		const model = editor.model;
+		const schema = model.schema;
 		const conversion = editor.conversion;
 
 		schema.register( 'table', {
@@ -118,6 +121,8 @@ export default class TableEditing extends Plugin {
 
 		editor.commands.add( 'setTableColumnHeader', new SetHeaderColumnCommand( editor ) );
 		editor.commands.add( 'setTableRowHeader', new SetHeaderRowCommand( editor ) );
+
+		injectTablePostFixer( model, this.editor.plugins.get( TableUtils ) );
 
 		// Handle tab key navigation.
 		this.listenTo( editor.editing.view.document, 'keydown', ( ...args ) => this._handleTabOnSelectedTable( ...args ) );
@@ -239,4 +244,57 @@ export default class TableEditing extends Plugin {
 			writer.setSelection( Range.createIn( cellToFocus ) );
 		} );
 	}
+}
+
+function injectTablePostFixer( model, tableUtils ) {
+	model.document.registerPostFixer( writer => fixTableLayout( writer, model, tableUtils ) );
+}
+
+function fixTableLayout( writer, model, tableUtils ) {
+	const changes = model.document.differ.getChanges();
+
+	let wasFixed = false;
+
+	for ( const entry of changes ) {
+		if ( entry.type == 'insert' && entry.name == 'table' ) {
+			const table = entry.position.nodeAfter;
+
+			const lengths = {};
+
+			const tableSize = tableUtils.getColumns( table );
+
+			for ( const data of new TableWalker( table ) ) {
+				const row = data.row;
+				const column = data.column;
+				const colspan = data.colspan;
+
+				if ( !lengths[ row ] ) {
+					// Le first row - the first column will be current width including rowspanned cells.
+					lengths[ row ] = column;
+				}
+
+				lengths[ row ] += colspan;
+			}
+
+			const isValid = Object.values( lengths ).every( length => length === tableSize );
+
+			if ( !isValid ) {
+				const maxColumns = Object.values( lengths ).reduce( ( prev, current ) => current > prev ? current : prev, 0 );
+
+				for ( const [ rowIndex, size ] of Object.entries( lengths ) ) {
+					const columnsToInsert = maxColumns - size;
+
+					if ( columnsToInsert ) {
+						for ( let i = 0; i < columnsToInsert; i++ ) {
+							writer.insertElement( 'tableCell', Position.createAt( table.getChild( rowIndex ), 'end' ) );
+						}
+
+						wasFixed = true;
+					}
+				}
+			}
+		}
+	}
+
+	return wasFixed;
 }
