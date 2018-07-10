@@ -11,7 +11,7 @@ import { CS_CONFIG } from '@ckeditor/ckeditor5-cloud-services/tests/_utils/cloud
 
 ClassicEditor
 	.create( document.querySelector( '#snippet-autoformat' ), {
-		plugins: ClassicEditor.build.plugins.concat( [ Code ] ),
+		plugins: ClassicEditor.builtinPlugins.concat( [ Code ] ),
 		toolbar: {
 			items: [
 				'heading',
