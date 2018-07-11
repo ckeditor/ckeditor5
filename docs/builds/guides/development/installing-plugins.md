@@ -186,22 +186,22 @@ All this works because a typical `src/ckeditor.js` module that you can find in e
 ```js
 import ClassicEditorBase from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 import EssentialsPlugin from '@ckeditor/ckeditor5-essentials/src/essentials';
-import UploadadapterPlugin from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
+import UploadAdapterPlugin from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
 import AutoformatPlugin from '@ckeditor/ckeditor5-autoformat/src/autoformat';
 import BoldPlugin from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import ItalicPlugin from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import BlockquotePlugin from '@ckeditor/ckeditor5-block-quote/src/blockquote';
+import BlockQuotePlugin from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 // ...
 
 export default class ClassicEditor extends ClassicEditorBase {}
 
 ClassicEditor.builtInPlugins = [
 	EssentialsPlugin,
-	UploadadapterPlugin,
+	UploadAdapterPlugin,
 	AutoformatPlugin,
 	BoldPlugin,
 	ItalicPlugin,
-	BlockquotePlugin,
+	BlockQuotePlugin,
 	// ...
 ];
 
