@@ -9,7 +9,6 @@
 
 :root {
 	--ck-dropdown-arrow-size: calc(0.5 * var(--ck-icon-size));
-	--ck-dropdown-panel-max-height: 70vh;
 }
 
 .ck.ck-dropdown {
@@ -57,10 +56,6 @@
 .ck.ck-dropdown__panel {
 	@mixin ck-rounded-corners;
 	@mixin ck-drop-shadow;
-
-	/* https://github.com/ckeditor/ckeditor5/issues/952 */
-	max-height: var(--ck-dropdown-panel-max-height);
-	overflow-y: auto;
 
 	/* Disabled radius of top-left border to be consistent with .dropdown__button
 	https://github.com/ckeditor/ckeditor5/issues/816 */
