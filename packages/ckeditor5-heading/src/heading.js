@@ -113,4 +113,5 @@ export default class Heading extends Plugin {
  * @property {String} class The class which will be added to the dropdown item representing this option.
  * @property {String} [icon] Icon used by {@link module:heading/headingbuttonsui~HeadingButtonsUI}. It can be omitted when using
  * the default configuration.
+ * @extends module:engine/conversion/conversion~ConverterDefinition
  */
