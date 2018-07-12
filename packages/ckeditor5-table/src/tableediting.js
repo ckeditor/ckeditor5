@@ -247,53 +247,139 @@ export default class TableEditing extends Plugin {
 }
 
 function injectTablePostFixer( model, tableUtils ) {
-	model.document.registerPostFixer( writer => fixTableLayout( writer, model, tableUtils ) );
+	model.document.registerPostFixer( writer => tablePostFixer( writer, model, tableUtils ) );
 }
 
-function fixTableLayout( writer, model, tableUtils ) {
+function tablePostFixer( writer, model, tableUtils ) {
 	const changes = model.document.differ.getChanges();
 
 	let wasFixed = false;
 
+	const tableRowsOfRemovedCells = [];
+
 	for ( const entry of changes ) {
-		if ( entry.type == 'insert' && entry.name == 'table' ) {
-			const table = entry.position.nodeAfter;
+		if ( entry.type == 'insert' ) {
+			let table;
 
-			const lengths = {};
-
-			const tableSize = tableUtils.getColumns( table );
-
-			for ( const data of new TableWalker( table ) ) {
-				const row = data.row;
-				const column = data.column;
-				const colspan = data.colspan;
-
-				if ( !lengths[ row ] ) {
-					// Le first row - the first column will be current width including rowspanned cells.
-					lengths[ row ] = column;
-				}
-
-				lengths[ row ] += colspan;
+			if ( entry.name == 'table' ) {
+				table = entry.position.nodeAfter;
 			}
 
-			const isValid = Object.values( lengths ).every( length => length === tableSize );
+			if ( entry.name == 'tableRow' ) {
+				const tableRow = entry.position.nodeAfter;
+				table = tableRow.parent;
+			}
 
-			if ( !isValid ) {
-				const maxColumns = Object.values( lengths ).reduce( ( prev, current ) => current > prev ? current : prev, 0 );
-
-				for ( const [ rowIndex, size ] of Object.entries( lengths ) ) {
-					const columnsToInsert = maxColumns - size;
-
-					if ( columnsToInsert ) {
-						for ( let i = 0; i < columnsToInsert; i++ ) {
-							writer.insertElement( 'tableCell', Position.createAt( table.getChild( rowIndex ), 'end' ) );
-						}
-
-						wasFixed = true;
-					}
-				}
+			if ( table ) {
+				wasFixed = fixTableOnInsert( tableUtils, table, writer, wasFixed );
 			}
 		}
+
+		if ( entry.type == 'remove' && entry.name == 'tableCell' ) {
+			const tableRow = entry.position.parent;
+
+			tableRowsOfRemovedCells.push( tableRow );
+		}
+	}
+
+	wasFixed = fixTableOnRemoveCells( tableRowsOfRemovedCells, writer ) || wasFixed;
+
+	return wasFixed;
+}
+
+function getRowsLengths( table ) {
+	const lengths = {};
+
+	for ( const data of new TableWalker( table ) ) {
+		const row = data.row;
+		const column = data.column;
+		const colspan = data.colspan;
+
+		if ( !lengths[ row ] ) {
+			// Le first row - the first column will be current width including rowspanned cells.
+			lengths[ row ] = column;
+		}
+
+		lengths[ row ] += colspan;
+	}
+
+	return lengths;
+}
+
+function fixTableOnInsert( tableUtils, table, writer, wasFixed ) {
+	const tableSize = tableUtils.getColumns( table );
+
+	const lengths = getRowsLengths( table );
+
+	const isValid = Object.values( lengths ).every( length => length === tableSize );
+
+	if ( !isValid ) {
+		const maxColumns = Object.values( lengths ).reduce( ( prev, current ) => current > prev ? current : prev, 0 );
+
+		for ( const [ rowIndex, size ] of Object.entries( lengths ) ) {
+			const columnsToInsert = maxColumns - size;
+
+			if ( columnsToInsert ) {
+				for ( let i = 0; i < columnsToInsert; i++ ) {
+					writer.insertElement( 'tableCell', Position.createAt( table.getChild( rowIndex ), 'end' ) );
+				}
+
+				wasFixed = true;
+			}
+		}
+	}
+
+	return wasFixed;
+}
+
+function fixTableOnRemoveCells( tableRowsToCheck, writer ) {
+	let wasFixed = false;
+
+	if ( !tableRowsToCheck.length ) {
+		return wasFixed;
+	}
+
+	const indexes = tableRowsToCheck.map( tableRow => tableRow.index );
+
+	const table = tableRowsToCheck[ 0 ].parent;
+	const allIndexes = [ ...table.getChildren() ].map( tableRow => tableRow.index );
+
+	const other = allIndexes.filter( index => !indexes.includes( index ) );
+
+	const lengths = getRowsLengths( table );
+
+	const areSame = indexes.every( index => lengths[ index ] === lengths[ 0 ] );
+
+	if ( areSame ) {
+		const properLength = lengths[ 0 ];
+
+		other.map( index => {
+			let length = lengths[ index ];
+
+			const tableRow = table.getChild( index );
+
+			while ( length > properLength ) {
+				const tableCell = tableRow.getChild( tableRow.childCount - 1 );
+
+				const howMany = length - properLength;
+
+				const colspan = parseInt( tableCell.getAttribute( 'colspan' ) || 1 );
+
+				if ( colspan > howMany ) {
+					writer.setAttribute( 'colspan', colspan - howMany, tableCell );
+
+					length = properLength;
+				} else {
+					writer.remove( tableCell );
+
+					length -= colspan;
+				}
+
+				length = properLength - 10;
+
+				wasFixed = true;
+			}
+		} );
 	}
 
 	return wasFixed;

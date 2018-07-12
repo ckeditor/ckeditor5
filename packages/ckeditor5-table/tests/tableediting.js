@@ -361,14 +361,18 @@ describe( 'TableEditing', () => {
 	} );
 
 	describe( 'post-fixer', () => {
+		let root;
+
+		beforeEach( () => {
+			root = model.document.getRoot();
+		} );
+
 		it( 'should add missing columns to a tableRows that are shorter then longest table row', () => {
 			const parsed = parse( modelTable( [
 				[ '00' ],
 				[ '10', '11', '12' ],
 				[ '20', '21' ]
 			] ), model.schema );
-
-			const root = model.document.getRoot();
 
 			model.change( writer => {
 				writer.remove( Range.createIn( root ) );
@@ -389,8 +393,6 @@ describe( 'TableEditing', () => {
 				[ '21', '22' ]
 			] ), model.schema );
 
-			const root = model.document.getRoot();
-
 			model.change( writer => {
 				writer.remove( Range.createIn( root ) );
 				writer.insert( parsed, root );
@@ -400,6 +402,118 @@ describe( 'TableEditing', () => {
 				[ { colspan: 6, contents: '00' } ],
 				[ { rowspan: 2, contents: '10' }, '11', { colspan: 3, contents: '12' }, '' ],
 				[ '21', '22', '', '', '' ]
+			] ) );
+		} );
+
+		// Client A: insert row. Client B: insert column.
+		it( 'should fix missing insert column before insert row', () => {
+			setModelData( model, modelTable( [
+				[ '00[]', '01', '02' ],
+				[ '10', '11', '12' ],
+				[ '20', '21', '22' ]
+			] ) );
+
+			const table = root.getChild( 0 );
+
+			// Insert column:
+			model.change( writer => {
+				for ( const tableRow of table.getChildren() ) {
+					const tableCell = writer.createElement( 'tableCell' );
+					writer.insert( tableCell, tableRow, 1 );
+					writer.insertText( 'x', tableCell );
+				}
+			} );
+
+			// Insert table row
+			model.change( writer => {
+				const parsedTable = parse(
+					modelTable( [ [ 'a', 'b', 'c' ] ] ),
+					model.schema
+				);
+
+				writer.insert( parsedTable.getChild( 0 ), table, 2 );
+			} );
+
+			expect( formatTable( getModelData( model, { withoutSelection: true } ) ) ).to.equal( formattedModelTable( [
+				[ '00', 'x', '01', '02' ],
+				[ '10', 'x', '11', '12' ],
+				[ 'a', 'b', 'c', '' ],
+				[ '20', 'x', '21', '22' ]
+			] ) );
+		} );
+
+		// Client A: insert row. Client B: insert column.
+		it( 'should fix (undo of add tableRow & add tableCell)', () => {
+			setModelData( model, modelTable( [
+				[ '00', 'x', '01', '02' ],
+				[ '10', 'x', '11', '12' ],
+				[ 'a', 'b', 'c', '' ],
+				[ '20', 'x', '21', '22' ]
+			] ) );
+
+			const table = root.getChild( 0 );
+
+			// Insert column:
+			model.change( writer => {
+				[ 0, 1, 3 ].map( index => writer.remove( table.getChild( index ).getChild( 1 ) ) );
+			} );
+
+			expect( formatTable( getModelData( model, { withoutSelection: true } ) ) ).to.equal( formattedModelTable( [
+				[ '00', '01', '02' ],
+				[ '10', '11', '12' ],
+				[ 'a', 'b', 'c' ],
+				[ '20', '21', '22' ]
+			] ) );
+		} );
+
+		// Client A: insert row. Client B: insert column.
+		it( 'should fix (undo of add tableRow & add tableCell) fff', () => {
+			setModelData( model, modelTable( [
+				[ '00', 'x', '01', '02' ],
+				[ '10', 'x', '11', '12' ],
+				[ 'a', { colspan: 3, contents: 'b' } ],
+				[ '20', 'x', '21', '22' ]
+			] ) );
+
+			const table = root.getChild( 0 );
+
+			// Insert column:
+			model.change( writer => {
+				[ 0, 1, 3 ].map( index => writer.remove( table.getChild( index ).getChild( 1 ) ) );
+			} );
+
+			expect( formatTable( getModelData( model, { withoutSelection: true } ) ) ).to.equal( formattedModelTable( [
+				[ '00', '01', '02' ],
+				[ '10', '11', '12' ],
+				[ 'a', { colspan: 2, contents: 'b' } ],
+				[ '20', '21', '22' ]
+			] ) );
+		} );
+
+		// Client A: insert row. Client B: insert column.
+		it( 'should not fix (undo of add tableRow & add tableCell) - OK', () => {
+			setModelData( model, modelTable( [
+				[ '00', 'x', '01', '02' ],
+				[ '10', 'x', '11', '12' ],
+				[ 'a', 'b', 'c', '' ],
+				[ '20', 'x', '21', '22' ]
+			] ) );
+
+			const table = root.getChild( 0 );
+
+			// Insert column:
+			model.change( writer => {
+				[ 0, 1, 3 ].map( index => writer.remove( table.getChild( index ).getChild( 1 ) ) );
+
+				// Remove one more cell... (shouldn't occur??)
+				writer.remove( table.getChild( 0 ).getChild( 1 ) );
+			} );
+
+			expect( formatTable( getModelData( model, { withoutSelection: true } ) ) ).to.equal( formattedModelTable( [
+				[ '00', '02' ],
+				[ '10', '11', '12' ],
+				[ 'a', 'b', 'c', '' ],
+				[ '20', '21', '22' ]
 			] ) );
 		} );
 	} );
