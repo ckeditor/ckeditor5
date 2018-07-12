@@ -1,14 +1,14 @@
 # Copyright (c) 2003-2018, CKSource - Frederico Knabben. All rights reserved.
 msgid ""
 msgstr ""
-"Language-Team: Norwegian Bokmål (https://www.transifex.com/ckeditor/teams/11143/nb/)\n"
-"Language: nb\n"
+"Language-Team: German (Switzerland) (https://www.transifex.com/ckeditor/teams/11143/de_CH/)\n"
+"Language: de_CH\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgctxt "Toolbar button tooltip for the Undo feature."
 msgid "Undo"
-msgstr "Angre"
+msgstr "Rückgängig"
 
 msgctxt "Toolbar button tooltip for the Redo feature."
 msgid "Redo"
-msgstr "Gjør om"
+msgstr "Wiederherstellen"
