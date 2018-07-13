@@ -237,7 +237,7 @@ describe( 'Autosave', () => {
 			const pendingActions = editor.plugins.get( PendingActions );
 			const serverActionSpy = sinon.spy();
 			const serverActionStub = sinon.stub();
-			serverActionStub.onCall( 0 ).resolves( wait( 500 ).then( serverActionSpy ) );
+			serverActionStub.onCall( 0 ).resolves( wait( 1000 ).then( serverActionSpy ) );
 
 			autosave.adapter = {
 				save: serverActionStub
@@ -252,7 +252,7 @@ describe( 'Autosave', () => {
 			expect( pendingActions.isPending ).to.be.true;
 			expect( pendingActions.first.message ).to.equal( 'Saving in progress.' );
 
-			sandbox.clock.tick( 500 );
+			sandbox.clock.tick( 1000 );
 			return Promise.resolve().then( () => Promise.resolve() ).then( () => {
 				sinon.assert.calledOnce( serverActionSpy );
 				expect( pendingActions.isPending ).to.be.false;
@@ -288,10 +288,10 @@ describe( 'Autosave', () => {
 			const serverActionSpy = sinon.spy();
 			const pendingActions = editor.plugins.get( PendingActions );
 
-			// Create a fake server that responses after 500ms for the first call and after 1000ms for the second call.
+			// Create a fake server that responses after 1000ms for the first call and after 1000ms for the second call.
 			const serverActionStub = sinon.stub();
-			serverActionStub.onCall( 0 ).resolves( wait( 500 ).then( serverActionSpy ) );
-			serverActionStub.onCall( 1 ).resolves( wait( 1000 ).then( serverActionSpy ) );
+			serverActionStub.onCall( 0 ).resolves( wait( 1000 ).then( serverActionSpy ) );
+			serverActionStub.onCall( 1 ).resolves( wait( 2000 ).then( serverActionSpy ) );
 
 			autosave.adapter = {
 				save: serverActionStub
@@ -315,14 +315,14 @@ describe( 'Autosave', () => {
 
 			expect( pendingActions.isPending ).to.be.true;
 
-			sandbox.clock.tick( 500 );
+			sandbox.clock.tick( 1000 );
 
 			return Promise.resolve().then( () => {
 				expect( pendingActions.isPending ).to.be.true;
 				sinon.assert.calledOnce( serverActionSpy );
 
-				// Wait another 500ms and a promise cycle for the second server action.
-				sandbox.clock.tick( 500 );
+				// Wait another 1000ms and a promise cycle for the second server action.
+				sandbox.clock.tick( 1000 );
 			} )
 				.then( () => Promise.resolve() )
 				.then( () => {
@@ -540,7 +540,7 @@ describe( 'Autosave', () => {
 			const pendingActions = editor.plugins.get( PendingActions );
 			const serverActionSpy = sinon.spy();
 			const serverActionStub = sinon.stub();
-			serverActionStub.onCall( 0 ).resolves( wait( 500 ).then( serverActionSpy ) );
+			serverActionStub.onCall( 0 ).resolves( wait( 1000 ).then( serverActionSpy ) );
 
 			autosave.adapter = {
 				save: serverActionStub
@@ -554,7 +554,7 @@ describe( 'Autosave', () => {
 			return editor.destroy()
 				.then( () => {
 					expect( pendingActions.isPending ).to.be.true;
-					sandbox.clock.tick( 500 );
+					sandbox.clock.tick( 1000 );
 				} )
 				.then( () => Promise.resolve() )
 				.then( () => {

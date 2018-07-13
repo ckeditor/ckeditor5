@@ -76,7 +76,7 @@ export default class Autosave extends Plugin {
 		 * @protected
 		 * @type {Function}
 		 */
-		this._throttledSave = throttle( this._save.bind( this ), 500 );
+		this._throttledSave = throttle( this._save.bind( this ), 1000 );
 
 		/**
 		 * Last document version.
