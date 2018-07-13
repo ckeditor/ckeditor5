@@ -125,6 +125,24 @@ describe( 'Autosave', () => {
 				sinon.assert.calledOnce( editor.config.get( 'autosave' ).save );
 			} );
 		} );
+
+		it( 'config callback and adapter callback should be called with the editor as an argument', () => {
+			editor.config.get( 'autosave' ).save.resetHistory();
+
+			autosave.adapter = {
+				save: sinon.spy()
+			};
+
+			editor.model.change( writer => {
+				writer.setSelection( ModelRange.createIn( editor.model.document.getRoot().getChild( 0 ) ) );
+				editor.model.insertContent( new ModelText( 'foo' ), editor.model.document.selection );
+			} );
+
+			return wait().then( () => {
+				sinon.assert.calledWithExactly( autosave.adapter.save, editor );
+				sinon.assert.calledWithExactly( editor.config.get( 'autosave' ).save, editor );
+			} );
+		} );
 	} );
 
 	describe( 'autosaving', () => {

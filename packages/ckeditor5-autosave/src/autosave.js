@@ -27,10 +27,10 @@ import throttle from './throttle';
  *					toolbar: [ 'imageStyle:full', 'imageStyle:side', '|', 'imageTextAlternative' ],
  *				},
  *				autosave: {
- *					save() {
+ *					save( editor ) {
  *						// Note: saveEditorsContentToDatabase function should return a promise
  *						// which should be resolved when the saving action is complete.
- *						return saveEditorsContentToDatabase( data );
+ *						return saveEditorsContentToDatabase( editor.getData() );
  *					}
  *				}
  *			} );
@@ -61,9 +61,8 @@ export default class Autosave extends Plugin {
 		 * the model's data changes. It might be called some time after the change,
 		 * since the event is throttled for performance reasons.
 		 *
-		 * @type {module:autosave/autosave~Adapter}
+		 * @member {module:autosave/autosave~Adapter} #adapter
 		 */
-		this.adapter = undefined;
 
 		/**
 		 * Throttled save method.
@@ -101,9 +100,8 @@ export default class Autosave extends Plugin {
 		 * An action that will be added to pending action manager for actions happening in that plugin.
 		 *
 		 * @private
-		 * @type {Object|null}
+		 * @member {Object} #_action
 		 */
-		this._action = null;
 
 		/**
 		 * Plugins' config.
@@ -214,7 +212,7 @@ export default class Autosave extends Plugin {
 		// 2. Save callbacks are not called inside conversions or while editor's state changes.
 		Promise.resolve()
 			.then( () => Promise.all(
-				saveCallbacks.map( cb => cb() )
+				saveCallbacks.map( cb => cb( this.editor ) )
 			) )
 			.then( () => {
 				this._decrementCounter();
@@ -263,5 +261,6 @@ export default class Autosave extends Plugin {
  * so the `Autosave` plugin will wait for that action before removing it from pending actions.
  *
  * @method #save
+ * @param {module:core/editor/editor~Editor} editor
  * @returns {Promise.<*>}
  */
