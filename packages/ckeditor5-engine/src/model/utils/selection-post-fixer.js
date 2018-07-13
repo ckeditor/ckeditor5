@@ -4,7 +4,7 @@
  */
 
 /**
- * @module engine/mode/utils/selection-post-fixer
+ * @module engine/model/utils/selection-post-fixer
  */
 
 import Range from '../range';
