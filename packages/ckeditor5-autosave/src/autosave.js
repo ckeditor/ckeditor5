@@ -15,11 +15,14 @@ import throttle from './throttle';
 /* globals window */
 
 /**
- * Autosave plugin provides an easy-to-use API to save the editor's content.
- * It watches {@link module:engine/model/document~Document#event:change:data change:data}
- * and `window#beforeunload` events and calls the {@link module:autosave/autosave~Adapter#save} method.
+ * The {@link module:autosave/autosave~Autosave} allows you to automatically save the data (e.g. send it to the server)
+ * when needed (when the user changed the content).
  *
- * 		ClassicEditor
+ * It listens to the {@link module:engine/model/document~Document#event:change:data `editor.model.document#change:data`}
+ * and `window#beforeunload` events and calls the
+ * {@link module:autosave/autosave~AutosaveAdapter#save `config.autosave.save()`} function.
+ *
+ *		ClassicEditor
  *			.create( document.querySelector( '#editor' ), {
  *				plugins: [ ArticlePluginSet, Autosave ],
  *				toolbar: [ 'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote', 'undo', 'redo' ],
@@ -28,12 +31,15 @@ import throttle from './throttle';
  *				},
  *				autosave: {
  *					save( editor ) {
- *						// Note: saveEditorsContentToDatabase function should return a promise
- *						// which should be resolved when the saving action is complete.
- *						return saveEditorsContentToDatabase( editor.getData() );
+ *						// The saveData() function must return a promise
+ *						// which should be resolved when the data is successfully saved.
+ *						return saveData( editor.getData() );
  *					}
  *				}
  *			} );
+ *
+ * Read more about this feature in the {@glink builds/guides/integration/saving-data#the-autosave-feature Autosave feature}
+ * section of the {@glink builds/guides/integration/saving-data Saving and getting data}.
  */
 export default class Autosave extends Plugin {
 	/**
@@ -57,11 +63,11 @@ export default class Autosave extends Plugin {
 		super( editor );
 
 		/**
-		 * The adapter is an object with the `save()` method. That method will be called whenever
-		 * the model's data changes. It might be called some time after the change,
+		 * The adapter is an object with a `save()` method. That method will be called whenever
+		 * the data changes. It might be called some time after the change,
 		 * since the event is throttled for performance reasons.
 		 *
-		 * @member {module:autosave/autosave~Adapter} #adapter
+		 * @member {module:autosave/autosave~AutosaveAdapter} #adapter
 		 */
 
 		/**
@@ -253,14 +259,66 @@ export default class Autosave extends Plugin {
  *
  * Used by {module:autosave/autosave~Autosave#adapter}
  *
- * @interface module:autosave/autosave~Adapter
+ * @interface module:autosave/autosave~AutosaveAdapter
  */
 
 /**
- * Method that will be called when the data model changes. It should return a promise (e.g. in case of saving content to the database),
+ * Method that will be called when the data changes. It should return a promise (e.g. in case of saving content to the database),
  * so the `Autosave` plugin will wait for that action before removing it from pending actions.
  *
  * @method #save
- * @param {module:core/editor/editor~Editor} editor
+ * @param {module:core/editor/editor~Editor} editor The editor instance.
+ * @returns {Promise.<*>}
+ */
+
+/**
+ * The configuration of the {@link module:autosave/autosave~Autosave autosave feature}.
+ *
+ * Read more in {@link module:autosave/autosave~AutosaveConfig}.
+ *
+ * @member {module:autosave/autosave~AutosaveConfig} module:core/editor/editorconfig~EditorConfig#autosave
+ */
+
+/**
+ * The configuration of the {@link module:autosave/autosave~Autosave autosave feature}.
+ *
+ *		ClassicEditor
+ *			.create( editorElement, {
+ *				autosave: {
+ *					save( editor ) {
+ *						// The saveData() function must return a promise
+ *						// which should be resolved when the data is successfully saved.
+ *						return saveData( editor.getData() );
+ *					}
+ *				}
+ *			} );
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * See {@link module:core/editor/editorconfig~EditorConfig all editor configuration options}.
+ *
+ * See also the demo of the {@glink builds/guides/integration/saving-data#autosave-feature autosave feature}.
+ *
+ * @interface AutosaveConfig
+ */
+
+/**
+ * The callback to be executed when the data needs to be saved.
+ *
+ * This function must return a promise which should be which should be resolved when the data is successfully saved.
+ *
+ *		ClassicEditor
+ *			.create( editorElement, {
+ *				autosave: {
+ *					save( editor ) {
+ *						return saveData( editor.getData() );
+ *					}
+ *				}
+ *			} );
+ *			.then( ... )
+ *			.catch( ... );
+ *
+ * @method module:autosave/autosave~AutosaveConfig#save
+ * @param {module:core/editor/editor~Editor} editor The editor instance.
  * @returns {Promise.<*>}
  */
