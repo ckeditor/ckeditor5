@@ -244,7 +244,7 @@ function handleSaveButton( editor ) {
 
 	saveButton.addEventListener( 'click', evt => {
 		const data = editor.getData();
-		const action = pendingActions.add( 'Saving in progress.' );
+		const action = pendingActions.add( 'Saving changes' );
 
 		evt.preventDefault();
 
