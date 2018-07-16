@@ -66,6 +66,9 @@ export default class EditorUI {
 
 	/**
 	 * Fires the {@link module:core/editor/editorui~EditorUI#event:update `update`} event.
+	 *
+	 * This method should be called when the editor UI (e.g. positions of its balloons) needs to be updated due to
+	 * some environmental change which CKEditor 5 is not aware of (e.g. resize of a container in which it is used).
 	 */
 	update() {
 		this.fire( 'update' );
