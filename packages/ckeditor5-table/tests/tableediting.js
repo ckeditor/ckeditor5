@@ -405,6 +405,44 @@ describe( 'TableEditing', () => {
 			] ) );
 		} );
 
+		it( 'should fix wrong rowspan attribute on table header', () => {
+			const parsed = parse( modelTable( [
+				[ { rowspan: 2, contents: '00' }, { rowspan: 3, contents: '01' }, '02' ],
+				[ { rowspan: 8, contents: '12' } ],
+				[ '20', '21', '22' ]
+			], { headingRows: 2 } ), model.schema );
+
+			model.change( writer => {
+				writer.remove( Range.createIn( root ) );
+				writer.insert( parsed, root );
+			} );
+
+			expect( formatTable( getModelData( model, { withoutSelection: true } ) ) ).to.equal( formattedModelTable( [
+				[ { rowspan: 2, contents: '00' }, { rowspan: 2, contents: '01' }, '02' ],
+				[ '12' ],
+				[ '20', '21', '22' ]
+			], { headingRows: 2 } ) );
+		} );
+
+		it( 'should fix wrong rowspan attribute on table body', () => {
+			const parsed = parse( modelTable( [
+				[ '00', '01', '02' ],
+				[ { rowspan: 2, contents: '10' }, { rowspan: 3, contents: '11' }, '12' ],
+				[ { rowspan: 8, contents: '22' } ]
+			], { headingRows: 1 } ), model.schema );
+
+			model.change( writer => {
+				writer.remove( Range.createIn( root ) );
+				writer.insert( parsed, root );
+			} );
+
+			expect( formatTable( getModelData( model, { withoutSelection: true } ) ) ).to.equal( formattedModelTable( [
+				[ '00', '01', '02' ],
+				[ { rowspan: 2, contents: '10' }, { rowspan: 2, contents: '11' }, '12' ],
+				[ '22' ]
+			], { headingRows: 1 } ) );
+		} );
+
 		// Client A: insert row. Client B: insert column.
 		it( 'should fix missing insert column before insert row', () => {
 			setModelData( model, modelTable( [

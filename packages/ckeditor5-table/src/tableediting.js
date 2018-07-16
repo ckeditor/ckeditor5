@@ -31,7 +31,7 @@ import RemoveRowCommand from './commands/removerowcommand';
 import RemoveColumnCommand from './commands/removecolumncommand';
 import SetHeaderRowCommand from './commands/setheaderrowcommand';
 import SetHeaderColumnCommand from './commands/setheadercolumncommand';
-import { getParentTable } from './commands/utils';
+import { getParentTable, updateNumericAttribute } from './commands/utils';
 import TableWalker from './tablewalker';
 import TableUtils from '../src/tableutils';
 
@@ -290,10 +290,15 @@ function tablePostFixer( writer, model, tableUtils ) {
 function getRowsLengths( table ) {
 	const lengths = {};
 
+	const headingRows = parseInt( table.getAttribute( 'headingRows' ) || 0 );
+
+	const cellsToTrim = [];
+
 	for ( const data of new TableWalker( table ) ) {
 		const row = data.row;
 		const column = data.column;
 		const colspan = data.colspan;
+		const rowspan = data.rowspan;
 
 		if ( !lengths[ row ] ) {
 			// Le first row - the first column will be current width including rowspanned cells.
@@ -301,15 +306,31 @@ function getRowsLengths( table ) {
 		}
 
 		lengths[ row ] += colspan;
+
+		const maxRows = table.childCount;
+
+		if ( headingRows > row ) {
+			if ( row + rowspan > headingRows ) {
+				const newRowspan = headingRows - row;
+
+				cellsToTrim.push( { cell: data.cell, rowspan: newRowspan } );
+			}
+		} else {
+			if ( row + rowspan + headingRows > maxRows ) {
+				const newRowspan = maxRows - row - headingRows + 1;
+
+				cellsToTrim.push( { cell: data.cell, rowspan: newRowspan } );
+			}
+		}
 	}
 
-	return lengths;
+	return { lengths, cellsToTrim };
 }
 
 function fixTableOnInsert( tableUtils, table, writer, wasFixed ) {
 	const tableSize = tableUtils.getColumns( table );
 
-	const lengths = getRowsLengths( table );
+	const { lengths, cellsToTrim } = getRowsLengths( table );
 
 	const isValid = Object.values( lengths ).every( length => length === tableSize );
 
@@ -326,6 +347,12 @@ function fixTableOnInsert( tableUtils, table, writer, wasFixed ) {
 
 				wasFixed = true;
 			}
+		}
+	}
+
+	if ( cellsToTrim.length ) {
+		for ( const data of cellsToTrim ) {
+			updateNumericAttribute( 'rowspan', data.rowspan, data.cell, writer, 1 );
 		}
 	}
 
@@ -346,7 +373,7 @@ function fixTableOnRemoveCells( tableRowsToCheck, writer ) {
 
 	const other = allIndexes.filter( index => !indexes.includes( index ) );
 
-	const lengths = getRowsLengths( table );
+	const { lengths } = getRowsLengths( table );
 
 	const areSame = indexes.every( index => lengths[ index ] === lengths[ 0 ] );
 
