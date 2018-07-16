@@ -36,11 +36,9 @@ ClassicEditor
 
 function saveData( data ) {
 	return new Promise( resolve => {
-		log( `Saving... (${ data })` );
-
 		// Fake HTTP server's lag.
 		setTimeout( () => {
-			log( 'Saved.' );
+			log( data );
 
 			resolve();
 		}, HTTP_SERVER_LAG );
@@ -49,7 +47,7 @@ function saveData( data ) {
 
 function displayStatus( editor ) {
 	const pendingActions = editor.plugins.get( 'PendingActions' );
-	const statusIndicator = document.querySelector( '#snippet-autosave-status' );
+	const statusIndicator = document.querySelector( '.snippet-autosave-status' );
 
 	pendingActions.on( 'change:isPending', ( evt, propertyName, newValue ) => {
 		if ( newValue ) {
@@ -63,5 +61,5 @@ function displayStatus( editor ) {
 function log( msg ) {
 	const console = document.querySelector( '#snippet-autosave-console' );
 
-	console.textContent = msg + '\n' + console.textContent;
+	console.textContent = msg;
 }

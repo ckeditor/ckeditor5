@@ -39,15 +39,13 @@ function handleSaveButton( editor ) {
 
 	saveButton.addEventListener( 'click', evt => {
 		const data = editor.getData();
-		const action = pendingActions.add( 'Saving changes' );
+		const action = pendingActions.add( 'Saving in progress.' );
 
 		evt.preventDefault();
 
-		log( `Saving... (${ data })` );
-
 		// Fake HTTP server's lag.
 		setTimeout( () => {
-			log( 'Saved.' );
+			log( data );
 
 			pendingActions.remove( action );
 
@@ -98,7 +96,7 @@ function updateStatus( editor ) {
 }
 
 function log( msg ) {
-	const console = document.querySelector( '#snippet-manual-console' );
+	const console = document.querySelector( '#snippet-manual-save-console' );
 
-	console.textContent = msg + '\n' + console.textContent;
+	console.textContent = msg;
 }

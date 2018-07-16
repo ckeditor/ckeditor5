@@ -1,32 +1,96 @@
-<p>HTTP sever lag: <input id="snippet-autosave-lag" type="number" value="500" step="100" min="0" max="9000"></p>
+<div class="snippet-autosave-header">
+	<div class="snippet-autosave-status">
+		<div class="snippet-autosave-status_label">Status:</div>
+		<div class="snippet-autosave-status_spinner">
+			<span class="snippet-autosave-status_spinner-label"></span>
+			<span class="snippet-autosave-status_spinner-loader"></span>
+		</div>
+	</div>
 
-<p>Status: <span id="snippet-autosave-status"></span></p>
+	<div class="snippet-autosave-server">
+		<div class="snippet-autosave-server_label">HTTP server lag (ms):</div>
+		<input id="snippet-autosave-lag" type="number" value="500" step="100" min="0" max="9000">
+	</div>
+</div>
 
 <div id="snippet-autosave">
 	<p>Test me!</p>
 </div>
 
-<pre id="snippet-autosave-console"></pre>
+<p>Server data:</p>
+
+<pre>
+	<code id="snippet-autosave-console"></code>
+</pre>
 
 <style>
-	#snippet-autosave-status {
-		display: inline-block;
-		width: 20px;
-		height: 20px;
-		background-color: green;
+	.snippet-autosave-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		background: var(--ck-color-toolbar-background);
+		border: 1px solid var(--ck-color-toolbar-border);
+		padding: 10px;
+		border-radius: var(--ck-border-radius);
+		margin-top: 1.5em;
 	}
 
-	#snippet-autosave-status.busy {
-		background-color: red;
+	.snippet-autosave-status_spinner{
+		display: flex;
+		align-items: center;
+		position: relative;
+	}
+	.snippet-autosave-status_spinner-label {
+		position: relative;
+	}
+
+	.snippet-autosave-status_spinner-label::after {
+		content: 'Saved!';
+		color: green;
+		display: inline-block;
+		margin-right: var(--ck-spacing-large);
+	}
+
+	/* During "Saving" display spinner and change content of label. */
+	.snippet-autosave-status.busy .snippet-autosave-status_spinner-label::after  {
+		content: 'Saving...';
+		color: red;
+	}
+
+	.snippet-autosave-status.busy .snippet-autosave-status_spinner-loader {
+		display: block;
+		width: 16px;
+		height: 16px;
+		border-radius: 50%;
+		border-top: 3px solid hsl(0, 0%, 70%);
+		border-right: 2px solid transparent;
+		animation: autosave-status-spinner 1s linear infinite;
+	}
+
+	.snippet-autosave-status,
+	.snippet-autosave-server {
+		display: flex;
+		align-items: center;
+	}
+
+	.snippet-autosave-server_label,
+	.snippet-autosave-status_label {
+		font-weight: bold;
+		margin-right: var(--ck-spacing-large);
+	}
+
+	#snippet-autosave-lag {
+		padding: 4px;
 	}
 
 	#snippet-autosave-console {
-		height: 300px;
+		/* Lets wrap content. */
+		max-height: 300px;
 		overflow: auto;
+		white-space: normal;
+	}
 
-		/* Similar to code blocks. */
-		background: #2b2c26;
-		padding: 1.333em;
-		color: #FFF;
+	@keyframes autosave-status-spinner {
+		to { transform: rotate( 360deg ); }
 	}
 </style>
