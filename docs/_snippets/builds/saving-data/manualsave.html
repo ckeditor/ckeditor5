@@ -1,0 +1,31 @@
+<p>HTTP sever lag: <input id="snippet-manual-lag" type="number" value="500" step="100" min="0" max="9000"></p>
+
+<div id="snippet-manual">
+	<p>Test me!</p>
+</div>
+
+<p><input id="snippet-manual-save" type="submit" value="Submit"></p>
+
+<pre id="snippet-manual-console"></pre>
+
+<style>
+	#snippet-manual-save {
+		color: #999;
+	}
+	#snippet-manual-save.active {
+		color: #000;
+	}
+	#snippet-manual-save.saving {
+		box-shadow: #3f3 0px 0px 5px;
+	}
+
+	#snippet-manual-console {
+		height: 300px;
+		overflow: auto;
+
+		/* Similar to code blocks. */
+		background: #2b2c26;
+		padding: 1.333em;
+		color: #FFF;
+	}
+</style>
