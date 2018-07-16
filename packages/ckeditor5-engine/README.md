@@ -26,9 +26,9 @@ The CKEditor 5 editing engine implements a flexible MVC-based architecture for c
 
 ## Documentation
 
-For general introduction see the [Overview of CKEditor 5 framework](https://docs.ckeditor.com/ckeditor5/latest/framework/guides/overview.html) guide and then the [Editing engine architecture](https://docs.ckeditor.com/ckeditor5/latest/framework/guides/architecture/editing-engine.html) guide.
+For a general introduction see the [Overview of CKEditor 5 Framework](https://docs.ckeditor.com/ckeditor5/latest/framework/guides/overview.html) guide and then the [Editing engine architecture](https://docs.ckeditor.com/ckeditor5/latest/framework/guides/architecture/editing-engine.html) guide.
 
-Additionally, see the [`@ckeditor/ckeditor5-engine` package](https://docs.ckeditor.com/ckeditor5/latest/api/engine.html) page in [CKEditor 5 documentation](https://docs.ckeditor.com/ckeditor5/latest/) for even more information.
+Additionally, refer to the [`@ckeditor/ckeditor5-engine` package](https://docs.ckeditor.com/ckeditor5/latest/api/engine.html) page in [CKEditor 5 documentation](https://docs.ckeditor.com/ckeditor5/latest/) for even more information.
 
 ## License
 
