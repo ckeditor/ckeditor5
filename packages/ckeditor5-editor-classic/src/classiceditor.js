@@ -55,7 +55,7 @@ export default class ClassicEditor extends Editor {
 	 *
 	 * @protected
 	 * @param {HTMLElement|String} sourceElementOrData The DOM element that will be the source for the created editor
-	 * or editor's initial data. For more information see
+	 * or the editor's initial data. For more information see
 	 * {@link module:editor-classic/classiceditor~ClassicEditor.create `ClassicEditor.create()`}.
 	 * @param {module:core/editor/editorconfig~EditorConfig} config The editor configuration.
 	 */
@@ -111,7 +111,7 @@ export default class ClassicEditor extends Editor {
 	/**
 	 * Creates a classic editor instance.
 	 *
-	 * Creating instance when using {@glink builds/index CKEditor build}:
+	 * Creating an instance when using a {@glink builds/index CKEditor build}:
 	 *
 	 *		ClassicEditor
 	 *			.create( document.querySelector( '#editor' ) )
@@ -122,7 +122,7 @@ export default class ClassicEditor extends Editor {
 	 *				console.error( err.stack );
 	 *			} );
 	 *
-	 * Creating instance when using CKEditor from source (make sure to specify the list of plugins to load and the toolbar):
+	 * Creating an instance when using CKEditor from source (make sure to specify the list of plugins to load and the toolbar):
 	 *
 	 *		import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 	 *		import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
@@ -142,7 +142,7 @@ export default class ClassicEditor extends Editor {
 	 *				console.error( err.stack );
 	 *			} );
 	 *
-	 * Creating instance when using initial data instead of a DOM element:
+	 * Creating an instance when using initial data instead of a DOM element:
 	 *
 	 *		import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
 	 *		import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
@@ -163,18 +163,18 @@ export default class ClassicEditor extends Editor {
 	 *			} );
 	 *
 	 * @param {HTMLElement|String} sourceElementOrData The DOM element that will be the source for the created editor
-	 * or editor's initial data.
+	 * or the editor's initial data.
 	 *
 	 * If a source element is passed, then its contents will be automatically
 	 * {@link module:editor-classic/classiceditor~ClassicEditor#setData loaded} to the editor on startup
 	 * and the {@link module:core/editor/editorwithui~EditorWithUI#element editor element} will replace the passed element in the DOM
-	 * (the original one will be hidden and editor will be injected next to it).
+	 * (the original one will be hidden and the editor will be injected next to it).
 	 *
 	 * Moreover, the data will be set back to the source element once the editor is destroyed and
 	 * (if the element is a `<textarea>`) when a form in which this element is contained is submitted (which ensures
 	 * automatic integration with native web forms).
 	 *
-	 * If a data is passed, a detached editor will be created. It means that you need to insert it into the DOM manually
+	 * If the data is passed, a detached editor will be created. It means that you need to insert it into the DOM manually
 	 * (by accessing the {@link module:editor-classic/classiceditor~ClassicEditor#element `editor.element`} property).
 	 *
 	 * See the examples above to learn more.
