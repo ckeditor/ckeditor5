@@ -231,10 +231,12 @@ export default class Autosave extends Plugin {
 	 * @private
 	 */
 	_incrementCounter() {
+		const t = this.editor.t;
+
 		this._saveActionCounter++;
 
 		if ( !this._action ) {
-			this._action = this._pendingActions.add( 'Saving in progress.' );
+			this._action = this._pendingActions.add( t( 'Saving changes' ) );
 		}
 	}
 

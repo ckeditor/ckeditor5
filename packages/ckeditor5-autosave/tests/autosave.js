@@ -250,7 +250,7 @@ describe( 'Autosave', () => {
 
 			sinon.assert.notCalled( serverActionSpy );
 			expect( pendingActions.isPending ).to.be.true;
-			expect( pendingActions.first.message ).to.equal( 'Saving in progress.' );
+			expect( pendingActions.first.message ).to.equal( 'Saving changes' );
 
 			sandbox.clock.tick( 1000 );
 			return Promise.resolve().then( () => Promise.resolve() ).then( () => {
