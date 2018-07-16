@@ -122,7 +122,7 @@ export default class DecoupledEditor extends Editor {
 	/**
 	 * Creates a decoupled editor instance.
 	 *
-	 * Creating an instance when using the {@glink builds/index CKEditor 5 build}:
+	 * Creating an instance when using a {@glink builds/index CKEditor 5 build}:
 	 *
 	 *		DecoupledEditor
 	 *			.create( document.querySelector( '#editor' ) )
