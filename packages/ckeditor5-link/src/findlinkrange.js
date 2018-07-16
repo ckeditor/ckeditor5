@@ -11,8 +11,10 @@ import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import Position from '@ckeditor/ckeditor5-engine/src/model/position';
 
 /**
- * Walks backward and forward from the start position, node by node, as long as they have the same `linkHref` attribute value and return
- * a {@link module:engine/model/range~Range Range} with the found link.
+ * Returns a range containing the entire link in which the given `position` is placed.
+ *
+ * It can be used e.g. to get the entire range on which the `linkHref` attribute needs to be changed when having a
+ * selection inside a link.
  *
  * @param {module:engine/model/position~Position} position The start position.
  * @param {String} value The `linkHref` attribute value.
