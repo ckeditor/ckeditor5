@@ -183,7 +183,6 @@ function saveData( data ) {
 	} );
 }
 
-// Display information whether
 function displayStatus( editor ) {
 	const pendingActions = editor.plugins.get( 'PendingActions' );
 	const statusIndicator = document.querySelector( '#editor-status' );
@@ -218,6 +217,98 @@ The additional concern when integrating the editor in your website is that the u
 
 To handle the former situation you can listen to the native [`window#beforeunload`](https://developer.mozilla.org/en-US/docs/Web/Events/beforeunload) event. The latter situation can be handled by using CKEditor 5's {@link module:core/pendingactions~PendingActions} plugin.
 
+### Demo
+
 The below example shows how all these mechanism can be used together to enable/disable a "Save" button and blocking the user from leaving the page without saving the data.
 
-**TODO: demo**
+```js
+let isDirty = false;
+
+ClassicEditor
+	.create( document.querySelector( '#editor' ) )
+	.then( editor => {
+		window.editor = editor;
+
+		handleStatusChanges( editor );
+		handleSaveButton( editor );
+		handleBeforeunload( editor );
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
+
+// Handle clicking the "Save" button.
+function handleSaveButton( editor ) {
+	const saveButton = document.querySelector( '#save' );
+	const pendingActions = editor.plugins.get( 'PendingActions' );
+
+	saveButton.addEventListener( 'click', evt => {
+		const data = editor.getData();
+		const action = pendingActions.add( 'Saving changes' );
+
+		evt.preventDefault();
+
+		log( `Saving... (${ data })` );
+
+		// Fake HTTP server's lag.
+		setTimeout( () => {
+			log( 'Saved.' );
+
+			pendingActions.remove( action );
+
+			// Reset isDirty only if data didn't change in the meantime.
+			if ( data == editor.getData() ) {
+				isDirty = false;
+			}
+
+			updateStatus( editor );
+		}, HTTP_SERVER_LAG );
+	} );
+}
+
+function handleStatusChanges( editor ) {
+	const pendingActions = editor.plugins.get( 'PendingActions' );
+
+	pendingActions.on( 'change:isPending', () => updateStatus( editor ) );
+
+	editor.model.document.on( 'change:data', () => {
+		isDirty = true;
+
+		updateStatus( editor );
+	} );
+}
+
+function handleBeforeunload( editor ) {
+	const pendingActions = editor.plugins.get( 'PendingActions' );
+
+	window.addEventListener( 'beforeunload', evt => {
+		if ( pendingActions.isPending ) {
+			evt.returnValue = pendingActions.first.message;
+		}
+	} );
+}
+
+function updateStatus( editor ) {
+	const saveButton = document.querySelector( '#save' );
+
+	if ( isDirty ) {
+		saveButton.classList.add( 'active' );
+	} else {
+		saveButton.classList.remove( 'active' );
+	}
+
+	if ( editor.plugins.get( 'PendingActions' ).isPending ) {
+		saveButton.classList.add( 'saving' );
+	} else {
+		saveButton.classList.remove( 'saving' );
+	}
+}
+```
+
+How to understand this demo:
+
+* The "Save" button becomes active when there are some changes to be saved.
+* The spinner is shown when the data is being sent to the server or there are any other pending actions (e.g. image being uploaded).
+* You will be asked whether you want to leave the page if an image is being uploaded or the data has not been saved successfully yet. You can test that by dropping a big image into the editor or changing the "HTTP server lag" to a high value (e.g. 9000ms) and clicking the "Save" button. Those actions will make the editor "busy" for a longer time – try leaving the page at that moments.
+
+{@snippet builds/saving-data/manualsave}

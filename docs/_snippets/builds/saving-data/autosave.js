@@ -38,6 +38,7 @@ function saveData( data ) {
 	return new Promise( resolve => {
 		log( `Saving... (${ data })` );
 
+		// Fake HTTP server's lag.
 		setTimeout( () => {
 			log( 'Saved.' );
 
