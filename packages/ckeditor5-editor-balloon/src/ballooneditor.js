@@ -111,7 +111,7 @@ export default class BalloonEditor extends Editor {
 	/**
 	 * Creates a balloon editor instance.
 	 *
-	 * Creating instance when using {@glink builds/index CKEditor build}:
+	 * Creating an instance when using a {@glink builds/index CKEditor build}:
 	 *
 	 *		BalloonEditor
 	 *			.create( document.querySelector( '#editor' ) )
@@ -122,7 +122,7 @@ export default class BalloonEditor extends Editor {
 	 *				console.error( err.stack );
 	 *			} );
 	 *
-	 * Creating instance when using CKEditor from source (make sure to specify the list of plugins to load and the toolbar):
+	 * Creating an instance when using CKEditor from source (make sure to specify the list of plugins to load and the toolbar):
 	 *
 	 *		import BalloonEditor from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor';
 	 *		import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
@@ -142,7 +142,7 @@ export default class BalloonEditor extends Editor {
 	 *				console.error( err.stack );
 	 *			} );
 	 *
-	 * Creating instance when using initial data instead of a DOM element:
+	 * Creating an instance when using initial data instead of a DOM element:
 	 *
 	 *		import BalloonEditor from '@ckeditor/ckeditor5-editor-balloon/src/ballooneditor';
 	 *		import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
