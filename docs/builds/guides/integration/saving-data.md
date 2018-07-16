@@ -3,6 +3,8 @@ category: builds-integration
 order: 40
 ---
 
+{@snippet builds/saving-data/build-autosave-source}
+
 # Getting and saving data
 
 CKEditor 5 allows you to retrieve and save the data to your server (or to your system in general) in various ways. In this guide you can learn about the options and their pros and cons.
@@ -146,7 +148,66 @@ It also listens to the native [`window#beforeunload`](https://developer.mozilla.
 
 This automatically secures you from the user leaving the page before the content is saved or some ongoing actions like image upload did not finish.
 
-**TODO: demo**
+### Demo
+
+This demo shows a simple integration of the editor with a fake HTTP server (which needs 1000ms to save the content).
+
+```js
+ClassicEditor
+	.create( document.querySelector( '#editor' ), {
+		autosave: {
+			save( editor ) {
+				return saveData( editor.getData() );
+			}
+		}
+	} )
+	.then( editor => {
+		window.editor = editor;
+
+		displayStatus( editor );
+	} )
+	.catch( err => {
+		console.error( err.stack );
+	} );
+
+// Save the data to a fake HTTP server.
+function saveData( data ) {
+	return new Promise( resolve => {
+		console.log( `Saving... (${ data })` );
+
+		setTimeout( () => {
+			console.log( 'Saved.' );
+
+			resolve();
+		}, HTTP_SERVER_LAG );
+	} );
+}
+
+// Display information whether
+function displayStatus( editor ) {
+	const pendingActions = editor.plugins.get( 'PendingActions' );
+	const statusIndicator = document.querySelector( '#editor-status' );
+
+	pendingActions.on( 'change:isPending', ( evt, propertyName, newValue ) => {
+		if ( newValue ) {
+			statusIndicator.classList.add( 'busy' );
+		} else {
+			statusIndicator.classList.remove( 'busy' );
+		}
+	} );
+}
+```
+
+How to understand this demo:
+
+* The status indicator shows when the editor has some unsaved content or pending actions.
+	* If you would drop a big image into this editor you will see that it is busy during the entire period while the image is being uploaded.
+	* The editor is busy also when saving the content is in progress (the `save()`'s promise was not resolved).
+* The autosave feature will throttle changes so frequent changes (e.g. typing) are grouped in batches.
+* The autosave does not check itself whether the data really changed. It bases on changes in the model which, in special cases, may not be "visible" in the data. You can add such a check yourself if you would like to avoid sending the same data to the server twice in a row.
+* You will be asked whether you want to leave the page if an image is being uploaded or the data has not been saved successfully yet. You can test that by dropping a big image into the editor or changing the "HTTP server lag" to a high value (e.g. 9000ms) and typing something. Those actions will make the editor "busy" for a longer time – try leaving the page at that moments.
+
+{@snippet builds/saving-data/autosave}
 
 ## Handling users exiting the page
 

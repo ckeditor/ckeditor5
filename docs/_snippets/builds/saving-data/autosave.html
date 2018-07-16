@@ -1,0 +1,32 @@
+<p>HTTP sever lag: <input id="snippet-autosave-lag" type="number" value="500" step="100" min="0" max="9000"></p>
+
+<p>Status: <span id="snippet-autosave-status"></span></p>
+
+<div id="snippet-autosave">
+	<p>Test me!</p>
+</div>
+
+<pre id="snippet-autosave-console"></pre>
+
+<style>
+	#snippet-autosave-status {
+		display: inline-block;
+		width: 20px;
+		height: 20px;
+		background-color: green;
+	}
+
+	#snippet-autosave-status.busy {
+		background-color: red;
+	}
+
+	#snippet-autosave-console {
+		height: 300px;
+		overflow: auto;
+
+		/* Similar to code blocks. */
+		background: #2b2c26;
+		padding: 1.333em;
+		color: #FFF;
+	}
+</style>
