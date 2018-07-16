@@ -1,31 +1,92 @@
-<p>HTTP sever lag: <input id="snippet-manual-lag" type="number" value="500" step="100" min="0" max="9000"></p>
-
 <div id="snippet-manual">
 	<p>Test me!</p>
 </div>
 
-<p><input id="snippet-manual-save" type="submit" value="Submit"></p>
+<div class="snippet-manual-save-header">
+	<div class="snippet-manual-save-server">
+		<div class="snippet-manual-save-server_label">HTTP server lag (ms):</div>
+		<input id="snippet-manual-lag" type="number" value="500" step="100" min="0" max="9000">
+	</div>
+	<div class="snippet-manual-save-submit">
+		<input id="snippet-manual-save" type="submit" value="Save">
+	</div>
+</div>
 
-<pre id="snippet-manual-console"></pre>
+<p>Server data:</p>
+
+<pre>
+	<code id="snippet-manual-save-console"></code>
+</pre>
 
 <style>
+	.snippet-manual-save-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		background: var(--ck-color-toolbar-background);
+		border: 1px solid var(--ck-color-toolbar-border);
+		padding: 10px;
+		border-radius: var(--ck-border-radius);
+		margin-top: -1.5em;
+		margin-bottom: 1.5em;
+		border-top: 0;
+		border-top-left-radius: 0;
+		border-top-right-radius: 0;
+	}
+
+	.snippet-manual-save-server,
+	.snippet-manual-save-submit {
+		display: flex;
+		align-items: center;
+	}
+
+	.snippet-manual-save-server_label,
+	.snippet-manual-save-status_label {
+		font-weight: bold;
+		margin-right: var(--ck-spacing-medium);
+	}
+
+	#snippet-manual-save-lag {
+		padding: 4px;
+	}
+
 	#snippet-manual-save {
-		color: #999;
+		color: #fff;
+		background: hsl( 88, 73%, 39% );
+		opacity: 0.5;
+		padding: 4px 20px;
+		display: block;
+		border: 0;
+		border-radius: 2px;
+		font-weight: bold;
+		outline: none;
+		transition: 300ms ease background;
+		box-shadow: 0 2px 0 rgb(68, 117, 10);
 	}
+
 	#snippet-manual-save.active {
-		color: #000;
+		cursor: pointer;
+		opacity: 1;
 	}
+
 	#snippet-manual-save.saving {
-		box-shadow: #3f3 0px 0px 5px;
+		background: hsl( 88, 73%, 34% );
 	}
 
-	#snippet-manual-console {
-		height: 300px;
+	#snippet-manual-save-console {
+		/* Lets wrap content. */
+		max-height: 300px;
 		overflow: auto;
-
-		/* Similar to code blocks. */
+		white-space: normal;
 		background: #2b2c26;
-		padding: 1.333em;
-		color: #FFF;
+		transition: 300ms;
+	}
+
+	#snippet-manual-save-console.received {
+		animation: autosave-received 1s ease 1;
+	}
+	@keyframes autosave-received {
+		from { background: green; }
+		to { background: #2b2c26; }
 	}
 </style>

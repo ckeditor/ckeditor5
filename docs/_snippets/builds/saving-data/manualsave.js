@@ -39,15 +39,13 @@ function handleSaveButton( editor ) {
 
 	saveButton.addEventListener( 'click', evt => {
 		const data = editor.getData();
-		const action = pendingActions.add( 'Saving changes' );
+		const action = pendingActions.add( 'Saving in progress.' );
 
 		evt.preventDefault();
 
-		log( `Saving... (${ data })` );
-
 		// Fake HTTP server's lag.
 		setTimeout( () => {
-			log( 'Saved.' );
+			log( data );
 
 			pendingActions.remove( action );
 
@@ -91,14 +89,18 @@ function updateStatus( editor ) {
 	}
 
 	if ( editor.plugins.get( 'PendingActions' ).isPending ) {
+		document.querySelector( '#snippet-manual-save-console' ).classList.remove( 'received' );
+		saveButton.value = 'Saving...';
 		saveButton.classList.add( 'saving' );
 	} else {
+		saveButton.value = 'Save';
 		saveButton.classList.remove( 'saving' );
 	}
 }
 
 function log( msg ) {
-	const console = document.querySelector( '#snippet-manual-console' );
+	const console = document.querySelector( '#snippet-manual-save-console' );
 
-	console.textContent = msg + '\n' + console.textContent;
+	console.classList.add( 'received' );
+	console.textContent = msg;
 }

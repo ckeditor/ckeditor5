@@ -173,10 +173,9 @@ ClassicEditor
 // Save the data to a fake HTTP server.
 function saveData( data ) {
 	return new Promise( resolve => {
-		console.log( `Saving... (${ data })` );
 
 		setTimeout( () => {
-			console.log( 'Saved.' );
+			console.log( data );
 
 			resolve();
 		}, HTTP_SERVER_LAG );
@@ -248,11 +247,9 @@ function handleSaveButton( editor ) {
 
 		evt.preventDefault();
 
-		log( `Saving... (${ data })` );
-
 		// Fake HTTP server's lag.
 		setTimeout( () => {
-			log( 'Saved.' );
+			log( data );
 
 			pendingActions.remove( action );
 
