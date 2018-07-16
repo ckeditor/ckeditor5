@@ -65,7 +65,7 @@ export default class EditorUI {
 	}
 
 	/**
-	 * Fires the {@link module:core/editor/editorui~EditorUI#event:update} event.
+	 * Fires the {@link module:core/editor/editorui~EditorUI#event:update `update`} event.
 	 */
 	update() {
 		this.fire( 'update' );
