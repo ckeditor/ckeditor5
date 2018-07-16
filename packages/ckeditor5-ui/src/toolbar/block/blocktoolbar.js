@@ -24,8 +24,8 @@ import iconPilcrow from '@ckeditor/ckeditor5-core/theme/icons/pilcrow.svg';
 /**
  * The block toolbar plugin.
  *
- * This plugin provides the button positioned next to the block of content where the selection is anchored.
- * Upon clicking the button, a drop–down providing editor features shows up, as configured in
+ * This plugin provides a button positioned next to the block of content where the selection is anchored.
+ * Upon clicking the button, a dropdown providing access to editor features shows up, as configured in
  * {@link module:core/editor/editorconfig~EditorConfig#blockToolbar}.
  *
  * By default, the button is displayed next to all elements marked in {@link module:engine/model/schema~Schema}
@@ -35,21 +35,21 @@ import iconPilcrow from '@ckeditor/ckeditor5-core/theme/icons/pilcrow.svg';
  * {@link module:engine/view/editableelement~EditableElement}:
  *
  * 		 __ |
- * 		|  ||  This is a block of content that
+ * 		|  ||  This is a block of content that the
  * 		 ¯¯ |  button is attached to. This is a
- * 		    |  block of content that button is
+ * 		    |  block of content that the button is
  * 		    |  attached to.
  *
- * The position of the button can be adjusted using the CSS `transform`:
+ * The position of the button can be adjusted using the CSS `transform` property:
  *
  * 		.ck-block-toolbar-button {
  * 			transform: translateX( -10px );
  * 		}
  *
  * 		 __   |
- * 		|  |  |  This is a block of content that
+ * 		|  |  |  This is a block of content that the
  * 		 ¯¯   |  button is attached to. This is a
- * 		      |  block of content that button is
+ * 		      |  block of content that the button is
  * 		      |  attached to.
  *
  * @extends module:core/plugin~Plugin
@@ -83,7 +83,7 @@ export default class BlockToolbar extends Plugin {
 		this.panelView = this._createPanelView();
 
 		/**
-		 * The button view, that opens the {@link #toolbarView}.
+		 * The button view that opens the {@link #toolbarView}.
 		 *
 		 * @type {module:ui/toolbar/block/blockbuttonview~BlockButtonView}
 		 */
@@ -132,7 +132,7 @@ export default class BlockToolbar extends Plugin {
 	}
 
 	/**
-	 * Fill the toolbar with its items based on the configuration.
+	 * Fills the toolbar with its items based on the configuration.
 	 *
 	 * **Note:** This needs to be done after all plugins are ready.
 	 *
@@ -237,7 +237,7 @@ export default class BlockToolbar extends Plugin {
 
 	/**
 	 * Shows or hides the button.
-	 * When the all conditions for displaying button are matched then shows the button. Hides otherwise.
+	 * When all the conditions for displaying the button are matched, it shows the button. Hides otherwise.
 	 *
 	 * @private
 	 */
@@ -317,7 +317,7 @@ export default class BlockToolbar extends Plugin {
 	 * Hides the {@link #toolbarView}.
 	 *
 	 * @private
-	 * @param {Boolean} [focusEditable=false] When `true` then editable will be focused after hiding panel.
+	 * @param {Boolean} [focusEditable=false] When `true`, the editable will be focused after hiding the panel.
 	 */
 	_hidePanel( focusEditable ) {
 		this.panelView.isVisible = false;

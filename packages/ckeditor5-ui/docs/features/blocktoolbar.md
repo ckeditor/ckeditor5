@@ -3,9 +3,9 @@ title: Block toolbar
 category: features
 ---
 
-The {@link module:ui/toolbar/block/blocktoolbar~BlockToolbar} plugin provides an additional [configurable](#configuration) toolbar on the left-hand side of the content area (the gutter). The toolbar is represented by a button with a pilcrow (&#182;) and positioned next to the block element that the selection is anchored to (e.g. a paragraph), following the caret as the user edits the content and navigates the document.
+The {@link module:ui/toolbar/block/blocktoolbar~BlockToolbar} plugin provides an additional [configurable](#configuration) toolbar on the left-hand side of the content area (the gutter). The toolbar is represented by a button with a pilcrow, or a paragraph mark, &#182;. It is positioned next to the block element that the selection is anchored to (e.g. a paragraph), following the caret as the user edits the content and navigates the document.
 
-Because the toolbar is always connected to the block of content, it naturally gives accommodation to the features which modify entire blocks (e.g. create headers, paragraphs) rather than inline styles (e.g. bold, italic, etc.).
+Since the toolbar is always connected to the block of content, it naturally accomodates the features that modify entire blocks (e.g. create headers or paragraphs) rather than inline styles (e.g. bold, italic, etc.).
 
 ## Example
 
@@ -17,7 +17,7 @@ Because the toolbar is always connected to the block of content, it naturally gi
 
 ## Configuration
 
-The content of toolbar can be defined using the {@link module:core/editor/editorconfig~EditorConfig#blockToolbar} configuration. See the [installation instruction](#installation) to learn more.
+The content of the toolbar can be defined using the {@link module:core/editor/editorconfig~EditorConfig#blockToolbar} configuration. See the [installation instructions](#installation) to learn more.
 
 To adjust the position of the block toolbar button to match the styles of your website, use the CSS `transform` property:
 
@@ -30,12 +30,12 @@ To adjust the position of the block toolbar button to match the styles of your w
 ## Installation
 
 <info-box hint>
-	Remember to add proper features to the editor configuration first. The block toolbar provides a space for the buttons, it does not bring the actual features. For example: the `heading1` button will not work if there is no {@link features/headings Headings} feature in the editor.
+	Remember to add relevant features to the editor configuration first. The block toolbar provides a space for the buttons, it does not bring the actual features. For example, the `heading1` button will not work if there is no {@link features/headings Headings} feature in the editor.
 </info-box>
 
 To add this feature to your editor install the [`@ckeditor/ckeditor5-ui`](https://www.npmjs.com/package/@ckeditor/ckeditor5-ui) package:
 
-```
+```bash
 npm install --save @ckeditor/ckeditor5-ui
 ```
 
