@@ -1,15 +1,15 @@
+<div id="snippet-manual">
+	<p>Test me!</p>
+</div>
+
 <div class="snippet-manual-save-header">
-	<div class="snippet-manual-save-submit">
-		<input id="snippet-manual-save" type="submit" value="Save">
-	</div>
 	<div class="snippet-manual-save-server">
 		<div class="snippet-manual-save-server_label">HTTP server lag (ms):</div>
 		<input id="snippet-manual-lag" type="number" value="500" step="100" min="0" max="9000">
 	</div>
-</div>
-
-<div id="snippet-manual">
-	<p>Test me!</p>
+	<div class="snippet-manual-save-submit">
+		<input id="snippet-manual-save" type="submit" value="Save">
+	</div>
 </div>
 
 <p>Server data:</p>
@@ -27,7 +27,11 @@
 		border: 1px solid var(--ck-color-toolbar-border);
 		padding: 10px;
 		border-radius: var(--ck-border-radius);
-		margin-top: 1.5em;
+		margin-top: -1.5em;
+		margin-bottom: 1.5em;
+		border-top: 0;
+		border-top-left-radius: 0;
+		border-top-right-radius: 0;
 	}
 
 	.snippet-manual-save-server,
@@ -39,7 +43,7 @@
 	.snippet-manual-save-server_label,
 	.snippet-manual-save-status_label {
 		font-weight: bold;
-		margin-right: var(--ck-spacing-large);
+		margin-right: var(--ck-spacing-medium);
 	}
 
 	#snippet-manual-save-lag {
@@ -48,15 +52,16 @@
 
 	#snippet-manual-save {
 		color: #fff;
-		background: hsl( 161, 74%, 46% );
+		background: hsl( 88, 73%, 39% );
 		opacity: 0.5;
-		padding: 7px 30px;
+		padding: 4px 20px;
 		display: block;
 		border: 0;
-		border-radius: 30px;
+		border-radius: 2px;
 		font-weight: bold;
 		outline: none;
 		transition: 300ms ease background;
+		box-shadow: 0 2px 0 rgb(68, 117, 10);
 	}
 
 	#snippet-manual-save.active {
@@ -65,7 +70,7 @@
 	}
 
 	#snippet-manual-save.saving {
-		background: hsl( 161, 74%, 36% );
+		background: hsl( 88, 73%, 34% );
 	}
 
 	#snippet-manual-save-console {
@@ -73,5 +78,15 @@
 		max-height: 300px;
 		overflow: auto;
 		white-space: normal;
+		background: #2b2c26;
+		transition: 300ms;
+	}
+
+	#snippet-manual-save-console.received {
+		animation: autosave-received 1s ease 1;
+	}
+	@keyframes autosave-received {
+		from { background: green; }
+		to { background: #2b2c26; }
 	}
 </style>

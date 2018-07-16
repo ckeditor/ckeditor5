@@ -89,8 +89,11 @@ function updateStatus( editor ) {
 	}
 
 	if ( editor.plugins.get( 'PendingActions' ).isPending ) {
+		document.querySelector( '#snippet-manual-save-console' ).classList.remove( 'received' );
+		saveButton.value = 'Saving...';
 		saveButton.classList.add( 'saving' );
 	} else {
+		saveButton.value = 'Save';
 		saveButton.classList.remove( 'saving' );
 	}
 }
@@ -98,5 +101,6 @@ function updateStatus( editor ) {
 function log( msg ) {
 	const console = document.querySelector( '#snippet-manual-save-console' );
 
+	console.classList.add( 'received' );
 	console.textContent = msg;
 }

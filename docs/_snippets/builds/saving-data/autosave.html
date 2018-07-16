@@ -1,3 +1,7 @@
+<div id="snippet-autosave">
+	<p>Test me!</p>
+</div>
+
 <div class="snippet-autosave-header">
 	<div class="snippet-autosave-status">
 		<div class="snippet-autosave-status_label">Status:</div>
@@ -11,10 +15,6 @@
 		<div class="snippet-autosave-server_label">HTTP server lag (ms):</div>
 		<input id="snippet-autosave-lag" type="number" value="500" step="100" min="0" max="9000">
 	</div>
-</div>
-
-<div id="snippet-autosave">
-	<p>Test me!</p>
 </div>
 
 <p>Server data:</p>
@@ -32,7 +32,11 @@
 		border: 1px solid var(--ck-color-toolbar-border);
 		padding: 10px;
 		border-radius: var(--ck-border-radius);
-		margin-top: 1.5em;
+		margin-top: -1.5em;
+		margin-bottom: 1.5em;
+		border-top: 0;
+		border-top-left-radius: 0;
+		border-top-right-radius: 0;
 	}
 
 	.snippet-autosave-status_spinner{
@@ -48,7 +52,7 @@
 		content: 'Saved!';
 		color: green;
 		display: inline-block;
-		margin-right: var(--ck-spacing-large);
+		margin-right: var(--ck-spacing-medium);
 	}
 
 	/* During "Saving" display spinner and change content of label. */
@@ -76,7 +80,7 @@
 	.snippet-autosave-server_label,
 	.snippet-autosave-status_label {
 		font-weight: bold;
-		margin-right: var(--ck-spacing-large);
+		margin-right: var(--ck-spacing-medium);
 	}
 
 	#snippet-autosave-lag {
@@ -88,9 +92,20 @@
 		max-height: 300px;
 		overflow: auto;
 		white-space: normal;
+		background: #2b2c26;
+		transition: 300ms;
+	}
+
+	#snippet-autosave-console.received {
+		animation: autosave-received 1s ease 1;
 	}
 
 	@keyframes autosave-status-spinner {
 		to { transform: rotate( 360deg ); }
+	}
+
+	@keyframes autosave-received {
+		from { background: green; }
+		to { background: #2b2c26; }
 	}
 </style>

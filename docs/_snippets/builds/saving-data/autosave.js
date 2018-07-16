@@ -52,6 +52,7 @@ function displayStatus( editor ) {
 	pendingActions.on( 'change:isPending', ( evt, propertyName, newValue ) => {
 		if ( newValue ) {
 			statusIndicator.classList.add( 'busy' );
+			document.querySelector( '#snippet-autosave-console' ).classList.remove( 'received' );
 		} else {
 			statusIndicator.classList.remove( 'busy' );
 		}
@@ -61,5 +62,6 @@ function displayStatus( editor ) {
 function log( msg ) {
 	const console = document.querySelector( '#snippet-autosave-console' );
 
+	console.classList.add( 'received' );
 	console.textContent = msg;
 }
