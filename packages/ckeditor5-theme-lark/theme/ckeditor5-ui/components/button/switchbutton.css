@@ -59,8 +59,16 @@ of the component, floating–point numbers have been used which, for the default
 		background: var(--ck-color-switch-button-on-background);
 
 		& .ck-button__toggle__inner {
-			/* Move the toggle switch to the right. It will be animated. */
-			transform: translateX(calc(var(--ck-switch-button-toggle-width) - var(--ck-switch-button-toggle-inner-size) - 2*var(--ck-switch-button-toggle-spacing)));
+			/*
+			 * Move the toggle switch to the right. It will be animated.
+			 * ckeditor5-ui#433. Edge is not supporting calc() in the transitions and animations, we need to hardcode this value.
+			 * translateX( calc(
+					var(--ck-switch-button-toggle-width) -
+					var(--ck-switch-button-toggle-inner-size) -
+					2*var(--ck-switch-button-toggle-spacing) )
+				);
+			 */
+			transform: translateX( 1.3846153847em );
 		}
 	}
 }
