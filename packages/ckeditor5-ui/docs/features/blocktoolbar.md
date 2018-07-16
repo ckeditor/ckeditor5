@@ -5,12 +5,12 @@ category: features
 
 The {@link module:ui/toolbar/block/blocktoolbar~BlockToolbar} plugin provides an additional [configurable](#configuration) toolbar on the left-hand side of the content area (the gutter). The toolbar is represented by a button with a pilcrow, or a paragraph mark, &#182;. It is positioned next to the block element that the selection is anchored to (e.g. a paragraph), following the caret as the user edits the content and navigates the document.
 
-Since the toolbar is always connected to the block of content, it naturally accomodates the features that modify entire blocks (e.g. create headers or paragraphs) rather than inline styles (e.g. bold, italic, etc.).
+The block toolbar comes in handy when the main editor toolbar cannot be accessed. It complements the {@link builds/guides/overview#balloon-editor Balloon editor} when it falls short, e.g. when some content must be inserted (e.g. an image) but the selection is collapsed, leaving the user unable to access the toolbar.
 
 ## Example
 
 <info-box hint>
-	Move the caret around to see the block toolbar button following the selection. Click the button to use the toolbar.
+	Move the caret around to see the block toolbar button following the selection. Click the button (&#182;) to use the toolbar, e.g. create a header or insert an image.
 </info-box>
 
 {@snippet features/blocktoolbar}
@@ -18,6 +18,10 @@ Since the toolbar is always connected to the block of content, it naturally acco
 ## Configuration
 
 The content of the toolbar can be defined using the {@link module:core/editor/editorconfig~EditorConfig#blockToolbar} configuration. See the [installation instructions](#installation) to learn more.
+
+<info-box hint>
+	Because the toolbar is always connected to the block of content, it works best with the features that modify entire blocks (e.g. create {@link features/headings headers}) or insert objects (e.g. {@link features/image images} or {@link features/table tables}) rather than inline styles (e.g. {@link features/basic-styles bold or italic}).
+</info-box>
 
 To adjust the position of the block toolbar button to match the styles of your website, use the CSS `transform` property:
 
@@ -46,10 +50,16 @@ import BlockToolbar from '@ckeditor/ckeditor5-ui/src/toolbar/block/blocktoolbar'
 import HeadingButtonsUI from '@ckeditor/ckeditor5-heading/src/headingbuttonsui';
 import ParagraphButtonUI from '@ckeditor/ckeditor5-paragraph/src/paragraphbuttonui';
 
-ClassicEditor
+BalloonEditor
 	.create( document.querySelector( '#editor' ), {
 		plugins: [ BlockToolbar, ParagraphButtonUI, HeadingButtonsUI, ... ],
-		blockToolbar: [ 'paragraph', 'heading1', 'heading2', 'heading3', '|', 'bulletedList', 'numberedList' ]
+		blockToolbar: [
+			'paragraph', 'heading1', 'heading2', 'heading3',
+			'|',
+			'bulletedList', 'numberedList',
+			'|',
+			'blockQuote', 'imageUpload'
+		],
 		toolbar: [ ... ]
 	} )
 	.then( ... )
