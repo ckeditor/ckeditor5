@@ -15,6 +15,7 @@ before_install:
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
 install:
+  - npm install
   - npm install mgit2 lerna
   - mgit bootstrap --resolver-url-template="https://github.com/\${ path }.git"
   - lerna bootstrap
