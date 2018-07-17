@@ -1,5 +1,5 @@
 <div id="snippet-manual">
-	<p>Test me!</p>
+	<p>Change the content of this editor, then save it on the server.</p>
 </div>
 
 <div class="snippet-manual-save-header">
@@ -15,7 +15,7 @@
 <p>Server data:</p>
 
 <pre>
-	<code id="snippet-manual-save-console"></code>
+	<code id="snippet-manual-save-console">&#x3C;p&#x3E;Change the content of this editor, then save it on the server.&#x3C;/p&#x3E;</code>
 </pre>
 
 <style>
@@ -46,6 +46,11 @@
 		margin-right: var(--ck-spacing-medium);
 	}
 
+	#snippet-manual + .ck.ck-editor .ck-editor__editable {
+		border-bottom-right-radius: 0;
+		border-bottom-left-radius: 0;
+	}
+
 	#snippet-manual-save-lag {
 		padding: 4px;
 	}
@@ -62,6 +67,15 @@
 		outline: none;
 		transition: 300ms ease background;
 		box-shadow: 0 2px 0 rgb(68, 117, 10);
+	}
+
+	#snippet-manual-save:hover {
+		background: hsl( 88, 73%, 42% );
+	}
+
+	#snippet-manual-save:active,
+	#snippet-manual-save:focus {
+		box-shadow: 0 1px 0 rgb(68, 117, 10);
 	}
 
 	#snippet-manual-save.active {
