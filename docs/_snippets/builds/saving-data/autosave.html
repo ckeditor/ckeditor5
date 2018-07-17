@@ -1,5 +1,5 @@
 <div id="snippet-autosave">
-	<p>Test me!</p>
+	<p>Type some text to test the <a href="#autosave-feature">autosave</a> feature.</p>
 </div>
 
 <div class="snippet-autosave-header">
@@ -20,7 +20,7 @@
 <p>Server data:</p>
 
 <pre>
-	<code id="snippet-autosave-console"></code>
+	<code id="snippet-autosave-console">Type some text to test the &#x3C;a href=&#x22;#autosave-feature&#x22;&#x3E;autosave&#x3C;/a&#x3E; feature.</code>
 </pre>
 
 <style>
@@ -81,6 +81,11 @@
 	.snippet-autosave-status_label {
 		font-weight: bold;
 		margin-right: var(--ck-spacing-medium);
+	}
+
+	#snippet-autosave + .ck.ck-editor .ck-editor__editable {
+		border-bottom-right-radius: 0;
+		border-bottom-left-radius: 0;
 	}
 
 	#snippet-autosave-lag {
