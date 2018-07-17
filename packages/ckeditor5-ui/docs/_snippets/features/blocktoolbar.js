@@ -15,7 +15,7 @@ BalloonEditor
 	.create( document.querySelector( '#snippet-block-toolbar' ), {
 		plugins: BalloonEditor.builtinPlugins.concat( [ BlockToolbar, ParagraphButtonUI, HeadingButtonsUI ] ),
 		toolbar: {
-			items: [ 'bold', 'italic', 'code', 'link', 'undo', 'redo' ],
+			items: [ 'bold', 'italic', 'link', 'undo', 'redo' ],
 			viewportTopOffset: 60
 		},
 		blockToolbar: [
