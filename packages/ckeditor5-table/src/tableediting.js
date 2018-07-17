@@ -255,34 +255,28 @@ function tablePostFixer( writer, model, tableUtils ) {
 
 	let wasFixed = false;
 
-	const tableRowsOfRemovedCells = [];
-
 	for ( const entry of changes ) {
-		if ( entry.type == 'insert' ) {
-			let table;
+		let table;
 
-			if ( entry.name == 'table' ) {
-				table = entry.position.nodeAfter;
-			}
-
-			if ( entry.name == 'tableRow' ) {
-				const tableRow = entry.position.nodeAfter;
-				table = tableRow.parent;
-			}
-
-			if ( table ) {
-				wasFixed = fixTableOnInsert( tableUtils, table, writer, wasFixed );
-			}
+		if ( entry.name == 'table' ) {
+			table = entry.position.nodeAfter;
 		}
 
-		if ( entry.type == 'remove' && entry.name == 'tableCell' ) {
+		if ( entry.name == 'tableRow' ) {
+			const tableRow = entry.position.nodeAfter;
+			table = tableRow.parent;
+		}
+
+		if ( entry.name == 'tableCell' ) {
 			const tableRow = entry.position.parent;
 
-			tableRowsOfRemovedCells.push( tableRow );
+			table = tableRow.parent;
+		}
+
+		if ( table ) {
+			wasFixed = makeTableRowsSameLength( tableUtils, table, writer );
 		}
 	}
-
-	wasFixed = fixTableOnRemoveCells( tableRowsOfRemovedCells, writer ) || wasFixed;
 
 	return wasFixed;
 }
@@ -327,7 +321,9 @@ function getRowsLengths( table ) {
 	return { lengths, cellsToTrim };
 }
 
-function fixTableOnInsert( tableUtils, table, writer, wasFixed ) {
+function makeTableRowsSameLength( tableUtils, table, writer ) {
+	let wasFixed = false;
+
 	const tableSize = tableUtils.getColumns( table );
 
 	const { lengths, cellsToTrim } = getRowsLengths( table );
@@ -354,59 +350,6 @@ function fixTableOnInsert( tableUtils, table, writer, wasFixed ) {
 		for ( const data of cellsToTrim ) {
 			updateNumericAttribute( 'rowspan', data.rowspan, data.cell, writer, 1 );
 		}
-	}
-
-	return wasFixed;
-}
-
-function fixTableOnRemoveCells( tableRowsToCheck, writer ) {
-	let wasFixed = false;
-
-	if ( !tableRowsToCheck.length ) {
-		return wasFixed;
-	}
-
-	const indexes = tableRowsToCheck.map( tableRow => tableRow.index );
-
-	const table = tableRowsToCheck[ 0 ].parent;
-	const allIndexes = [ ...table.getChildren() ].map( tableRow => tableRow.index );
-
-	const other = allIndexes.filter( index => !indexes.includes( index ) );
-
-	const { lengths } = getRowsLengths( table );
-
-	const areSame = indexes.every( index => lengths[ index ] === lengths[ 0 ] );
-
-	if ( areSame ) {
-		const properLength = lengths[ 0 ];
-
-		other.map( index => {
-			let length = lengths[ index ];
-
-			const tableRow = table.getChild( index );
-
-			while ( length > properLength ) {
-				const tableCell = tableRow.getChild( tableRow.childCount - 1 );
-
-				const howMany = length - properLength;
-
-				const colspan = parseInt( tableCell.getAttribute( 'colspan' ) || 1 );
-
-				if ( colspan > howMany ) {
-					writer.setAttribute( 'colspan', colspan - howMany, tableCell );
-
-					length = properLength;
-				} else {
-					writer.remove( tableCell );
-
-					length -= colspan;
-				}
-
-				length = properLength - 10;
-
-				wasFixed = true;
-			}
-		} );
 	}
 
 	return wasFixed;

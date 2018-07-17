@@ -6,7 +6,7 @@
 import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import VirtualTestEditor from '@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor';
-import { getData as getModelData, setData as setModelData, parse } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
+import { getData as getModelData, parse, setData as setModelData } from '@ckeditor/ckeditor5-engine/src/dev-utils/model';
 import { getCode } from '@ckeditor/ckeditor5-utils/src/keyboard';
 
 import TableEditing from '../src/tableediting';
@@ -20,6 +20,7 @@ import SplitCellCommand from '../src/commands/splitcellcommand';
 import MergeCellCommand from '../src/commands/mergecellcommand';
 import SetHeaderRowCommand from '../src/commands/setheaderrowcommand';
 import SetHeaderColumnCommand from '../src/commands/setheadercolumncommand';
+import UndoEditing from '@ckeditor/ckeditor5-undo/src/undoediting';
 
 describe( 'TableEditing', () => {
 	let editor, model;
@@ -27,7 +28,7 @@ describe( 'TableEditing', () => {
 	beforeEach( () => {
 		return VirtualTestEditor
 			.create( {
-				plugins: [ TableEditing, Paragraph ]
+				plugins: [ TableEditing, Paragraph, UndoEditing ]
 			} )
 			.then( newEditor => {
 				editor = newEditor;
@@ -110,11 +111,11 @@ describe( 'TableEditing', () => {
 
 				expect( editor.getData() ).to.equal(
 					'<figure class="table">' +
-						'<table>' +
-							'<tbody>' +
-								'<tr><td>foo</td></tr>' +
-							'</tbody>' +
-						'</table>' +
+					'<table>' +
+					'<tbody>' +
+					'<tr><td>foo</td></tr>' +
+					'</tbody>' +
+					'</table>' +
 					'</figure>'
 				);
 			} );
@@ -124,11 +125,11 @@ describe( 'TableEditing', () => {
 
 				expect( editor.getData() ).to.equal(
 					'<figure class="table">' +
-						'<table>' +
-							'<thead>' +
-								'<tr><th>foo</th></tr>' +
-							'</thead>' +
-						'</table>' +
+					'<table>' +
+					'<thead>' +
+					'<tr><th>foo</th></tr>' +
+					'</thead>' +
+					'</table>' +
 					'</figure>'
 				);
 			} );
@@ -443,116 +444,187 @@ describe( 'TableEditing', () => {
 			], { headingRows: 1 } ) );
 		} );
 
-		// Client A: insert row. Client B: insert column.
-		it( 'should fix missing insert column before insert row', () => {
-			setModelData( model, modelTable( [
-				[ '00[]', '01', '02' ],
-				[ '10', '11', '12' ],
-				[ '20', '21', '22' ]
-			] ) );
-
-			const table = root.getChild( 0 );
-
-			// Insert column:
-			model.change( writer => {
-				for ( const tableRow of table.getChildren() ) {
-					const tableCell = writer.createElement( 'tableCell' );
-					writer.insert( tableCell, tableRow, 1 );
-					writer.insertText( 'x', tableCell );
-				}
-			} );
-
-			// Insert table row
-			model.change( writer => {
-				const parsedTable = parse(
-					modelTable( [ [ 'a', 'b', 'c' ] ] ),
-					model.schema
-				);
-
-				writer.insert( parsedTable.getChild( 0 ), table, 2 );
-			} );
-
-			expect( formatTable( getModelData( model, { withoutSelection: true } ) ) ).to.equal( formattedModelTable( [
-				[ '00', 'x', '01', '02' ],
-				[ '10', 'x', '11', '12' ],
-				[ 'a', 'b', 'c', '' ],
-				[ '20', 'x', '21', '22' ]
-			] ) );
+		it( 'collab remove column vs insert row', () => {
+			_testExternal(
+				modelTable( [
+					[ '00[]', '01' ],
+					[ '10', '11' ]
+				] ),
+				writer => _removeColumn( writer, 1, [ 0, 1 ] ),
+				writer => _insertRow( writer, 1, [ 'a', 'b' ] ),
+				formattedModelTable( [
+					[ '00', '' ],
+					[ 'a', 'b' ],
+					[ '10', '' ]
+				] ),
+				formattedModelTable( [
+					[ '00', '01', '' ],
+					[ 'a', 'b', '' ],
+					[ '10', '11', '' ]
+				] ) );
 		} );
 
-		// Client A: insert row. Client B: insert column.
-		it( 'should fix (undo of add tableRow & add tableCell)', () => {
-			setModelData( model, modelTable( [
-				[ '00', 'x', '01', '02' ],
-				[ '10', 'x', '11', '12' ],
-				[ 'a', 'b', 'c', '' ],
-				[ '20', 'x', '21', '22' ]
-			] ) );
-
-			const table = root.getChild( 0 );
-
-			// Insert column:
-			model.change( writer => {
-				[ 0, 1, 3 ].map( index => writer.remove( table.getChild( index ).getChild( 1 ) ) );
-			} );
-
-			expect( formatTable( getModelData( model, { withoutSelection: true } ) ) ).to.equal( formattedModelTable( [
-				[ '00', '01', '02' ],
-				[ '10', '11', '12' ],
-				[ 'a', 'b', 'c' ],
-				[ '20', '21', '22' ]
-			] ) );
+		it( 'collab insert row vs remove column', () => {
+			_testExternal(
+				modelTable( [
+					[ '00[]', '01' ],
+					[ '10', '11' ]
+				] ),
+				writer => _insertRow( writer, 1, [ 'a', 'b' ] ),
+				writer => _removeColumn( writer, 1, [ 0, 2 ] ),
+				formattedModelTable( [
+					[ '00', '' ],
+					[ 'a', 'b' ],
+					[ '10', '' ]
+				] ),
+				formattedModelTable( [
+					[ '00', '' ],
+					[ '10', '' ]
+				] ) );
 		} );
 
-		// Client A: insert row. Client B: insert column.
-		it( 'should fix (undo of add tableRow & add tableCell) fff', () => {
-			setModelData( model, modelTable( [
-				[ '00', 'x', '01', '02' ],
-				[ '10', 'x', '11', '12' ],
-				[ 'a', { colspan: 3, contents: 'b' } ],
-				[ '20', 'x', '21', '22' ]
-			] ) );
-
-			const table = root.getChild( 0 );
-
-			// Insert column:
-			model.change( writer => {
-				[ 0, 1, 3 ].map( index => writer.remove( table.getChild( index ).getChild( 1 ) ) );
-			} );
-
-			expect( formatTable( getModelData( model, { withoutSelection: true } ) ) ).to.equal( formattedModelTable( [
-				[ '00', '01', '02' ],
-				[ '10', '11', '12' ],
-				[ 'a', { colspan: 2, contents: 'b' } ],
-				[ '20', '21', '22' ]
-			] ) );
+		it( 'collab insert row vs insert column', () => {
+			_testExternal(
+				modelTable( [
+					[ '00[]', '01' ],
+					[ '10', '11' ]
+				] ),
+				writer => _insertRow( writer, 1, [ 'a', 'b' ] ),
+				writer => _insertColumn( writer, 1, [ 0, 2 ] ),
+				formattedModelTable( [
+					[ '00', '', '01' ],
+					[ 'a', 'b', '' ],
+					[ '10', '', '11' ]
+				] ),
+				formattedModelTable( [
+					[ '00', '', '01' ],
+					[ '10', '', '11' ]
+				] ) );
 		} );
 
-		// Client A: insert row. Client B: insert column.
-		it( 'should not fix (undo of add tableRow & add tableCell) - OK', () => {
-			setModelData( model, modelTable( [
-				[ '00', 'x', '01', '02' ],
-				[ '10', 'x', '11', '12' ],
-				[ 'a', 'b', 'c', '' ],
-				[ '20', 'x', '21', '22' ]
-			] ) );
+		it( 'collab insert column vs insert row', () => {
+			_testExternal(
+				modelTable( [
+					[ '00[]', '01' ],
+					[ '10', '11' ]
+				] ),
+				writer => _insertColumn( writer, 1, [ 0, 1 ] ),
+				writer => _insertRow( writer, 1, [ 'a', 'b' ] ),
+				formattedModelTable( [
+					[ '00', '', '01' ],
+					[ 'a', 'b', '' ],
+					[ '10', '', '11' ]
+				] ),
+				formattedModelTable( [
+					[ '00', '01', '' ],
+					[ 'a', 'b', '' ],
+					[ '10', '11', '' ]
+				] ) );
+		} );
 
+		it( 'collab insert column vs insert column - other row has spanned cell', () => {
+			_testExternal(
+				modelTable( [
+					[ { colspan: 3, contents: '00' } ],
+					[ '10', '11', '12' ]
+				] ),
+				writer => {
+					_setAttribute( writer, 'colspan', 4, [ 0, 0 ] );
+					_insertColumn( writer, 2, [ 1 ] );
+				},
+				writer => {
+					_setAttribute( writer, 'colspan', 4, [ 0, 0 ] );
+					_insertColumn( writer, 1, [ 1 ] );
+				},
+				formattedModelTable( [
+					[ { colspan: 4, contents: '00' }, '' ],
+					[ '10', '', '11', '', '12' ]
+				] ),
+				formattedModelTable( [
+					[ { colspan: 3, contents: '00' }, '' ],
+					[ '10', '', '11', '12' ]
+				] ) );
+		} );
+
+		it( 'collab insert column vs insert column - other row has spanned cell (inverted)', () => {
+			_testExternal(
+				modelTable( [
+					[ { colspan: 3, contents: '00' } ],
+					[ '10', '11', '12' ]
+				] ),
+				writer => {
+					_setAttribute( writer, 'colspan', 4, [ 0, 0 ] );
+					_insertColumn( writer, 1, [ 1 ] );
+				},
+				writer => {
+					_setAttribute( writer, 'colspan', 4, [ 0, 0 ] );
+					_insertColumn( writer, 3, [ 1 ] );
+				},
+				formattedModelTable( [
+					[ { colspan: 4, contents: '00' }, '' ],
+					[ '10', '', '11', '', '12' ]
+				] ),
+				formattedModelTable( [
+					[ { colspan: 3, contents: '00' }, '' ],
+					[ '10', '11', '', '12' ]
+				] ) );
+		} );
+
+		// Case: remove same column (undo does nothing on one client - NOOP in batch).
+		// Case: remove same row (undo does nothing on one client - NOOP in batch).
+		// Case: Typing over user selecting - typing in marker...
+
+		function _testExternal( initialData, localCallback, externalCallback, modelAfter, modelAfterUndo ) {
+			setModelData( model, initialData );
+
+			model.change( localCallback );
+
+			model.enqueueChange( 'transparent', externalCallback );
+
+			expect( formatTable( getModelData( model, { withoutSelection: true } ) ), 'after operations' ).to.equal( modelAfter );
+
+			editor.execute( 'undo' );
+
+			expect( formatTable( getModelData( model, { withoutSelection: true } ) ), 'after undo' ).to.equal( modelAfterUndo );
+		}
+
+		function _removeColumn( writer, columnIndex, rows ) {
 			const table = root.getChild( 0 );
 
-			// Insert column:
-			model.change( writer => {
-				[ 0, 1, 3 ].map( index => writer.remove( table.getChild( index ).getChild( 1 ) ) );
+			for ( const index of rows ) {
+				const tableRow = table.getChild( index );
+				writer.remove( tableRow.getChild( columnIndex ) );
+			}
+		}
 
-				// Remove one more cell... (shouldn't occur??)
-				writer.remove( table.getChild( 0 ).getChild( 1 ) );
-			} );
+		function _insertRow( writer, rowIndex, rowData ) {
+			const table = root.getChild( 0 );
 
-			expect( formatTable( getModelData( model, { withoutSelection: true } ) ) ).to.equal( formattedModelTable( [
-				[ '00', '02' ],
-				[ '10', '11', '12' ],
-				[ 'a', 'b', 'c', '' ],
-				[ '20', '21', '22' ]
-			] ) );
-		} );
+			const parsedTable = parse(
+				modelTable( [ rowData ] ),
+				model.schema
+			);
+
+			writer.insert( parsedTable.getChild( 0 ), table, rowIndex );
+		}
+
+		function _setAttribute( writer, attributeKey, attributeValue, path ) {
+			const table = root.getChild( 0 );
+
+			const node = table.getNodeByPath( path );
+
+			writer.setAttribute( attributeKey, attributeValue, node );
+		}
+
+		function _insertColumn( writer, columnIndex, rows ) {
+			const table = root.getChild( 0 );
+
+			for ( const index of rows ) {
+				const tableRow = table.getChild( index );
+				const tableCell = writer.createElement( 'tableCell' );
+
+				writer.insert( tableCell, tableRow, columnIndex );
+			}
+		}
 	} );
 } );
