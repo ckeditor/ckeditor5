@@ -4,14 +4,11 @@
   "description": "The development environment of CKEditor 5 – the best browser-based rich text editor.",
   "private": true,
   "keywords": [
-    "CKEditor",
+    "ckeditor",
     "ckeditor5",
     "ckeditor 5",
-    "WYSIWYG",
-    "WYSIWYM",
-    "text",
-    "rich-text",
-    "richtext",
+    "wysiwyg",
+    "rich text",
     "editor",
     "html",
     "contentEditable",
@@ -21,7 +18,6 @@
     "collaboration",
     "collaborative",
     "real-time",
-    "virtual dom",
     "framework"
   ],
   "dependencies": {
@@ -88,7 +84,7 @@
     "webpack": "^4.15.0"
   },
   "engines": {
-    "node": ">=6.0.0",
+    "node": ">=6.9.0",
     "npm": ">=3.0.0"
   },
   "author": "CKSource (http://cksource.com/)",

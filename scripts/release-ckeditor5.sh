@@ -20,7 +20,7 @@ then
 	mgit exec 'git checkout -b stable 2> /dev/null && git push origin stable && git checkout master'
 
 	# Update all `stable` branches in all packages.
-	mgit exec 'git checkout stable && git merge master && git checkout master'
+	mgit exec 'git checkout stable && git pull origin stable && git merge master && git checkout master'
 
 	# Make sure that `mgit.json` for `stable` and `master` branches is correct.
 	# `stable` branch.

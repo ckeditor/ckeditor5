@@ -1,0 +1,106 @@
+<div id="snippet-manual">
+	<p>Change the content of this editor, then save it on the server.</p>
+</div>
+
+<div class="snippet-manual-save-header">
+	<div class="snippet-manual-save-server">
+		<div class="snippet-manual-save-server_label">HTTP server lag (ms):</div>
+		<input id="snippet-manual-lag" type="number" value="500" step="100" min="0" max="9000">
+	</div>
+	<div class="snippet-manual-save-submit">
+		<input id="snippet-manual-save" type="submit" value="Save">
+	</div>
+</div>
+
+<p>Server data:</p>
+
+<pre>
+	<code id="snippet-manual-save-console">&#x3C;p&#x3E;Change the content of this editor, then save it on the server.&#x3C;/p&#x3E;</code>
+</pre>
+
+<style>
+	.snippet-manual-save-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		background: var(--ck-color-toolbar-background);
+		border: 1px solid var(--ck-color-toolbar-border);
+		padding: 10px;
+		border-radius: var(--ck-border-radius);
+		margin-top: -1.5em;
+		margin-bottom: 1.5em;
+		border-top: 0;
+		border-top-left-radius: 0;
+		border-top-right-radius: 0;
+	}
+
+	.snippet-manual-save-server,
+	.snippet-manual-save-submit {
+		display: flex;
+		align-items: center;
+	}
+
+	.snippet-manual-save-server_label,
+	.snippet-manual-save-status_label {
+		font-weight: bold;
+		margin-right: var(--ck-spacing-medium);
+	}
+
+	#snippet-manual + .ck.ck-editor .ck-editor__editable {
+		border-bottom-right-radius: 0;
+		border-bottom-left-radius: 0;
+	}
+
+	#snippet-manual-save-lag {
+		padding: 4px;
+	}
+
+	#snippet-manual-save {
+		color: #fff;
+		background: hsl( 88, 73%, 39% );
+		opacity: 0.5;
+		padding: 4px 20px;
+		display: block;
+		border: 0;
+		border-radius: 2px;
+		font-weight: bold;
+		outline: none;
+		transition: 300ms ease background;
+		box-shadow: 0 2px 0 rgb(68, 117, 10);
+	}
+
+	#snippet-manual-save:hover {
+		background: hsl( 88, 73%, 42% );
+	}
+
+	#snippet-manual-save:active,
+	#snippet-manual-save:focus {
+		box-shadow: 0 1px 0 rgb(68, 117, 10);
+	}
+
+	#snippet-manual-save.active {
+		cursor: pointer;
+		opacity: 1;
+	}
+
+	#snippet-manual-save.saving {
+		background: hsl( 88, 73%, 34% );
+	}
+
+	#snippet-manual-save-console {
+		/* Lets wrap content. */
+		max-height: 300px;
+		overflow: auto;
+		white-space: normal;
+		background: #2b2c26;
+		transition: 300ms;
+	}
+
+	#snippet-manual-save-console.received {
+		animation: autosave-received 1s ease 1;
+	}
+	@keyframes autosave-received {
+		from { background: green; }
+		to { background: #2b2c26; }
+	}
+</style>

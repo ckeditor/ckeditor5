@@ -1,0 +1,116 @@
+<div id="snippet-autosave">
+	<p>Type some text to test the <a href="#autosave-feature">autosave</a> feature.</p>
+</div>
+
+<div class="snippet-autosave-header">
+	<div class="snippet-autosave-status">
+		<div class="snippet-autosave-status_label">Status:</div>
+		<div class="snippet-autosave-status_spinner">
+			<span class="snippet-autosave-status_spinner-label"></span>
+			<span class="snippet-autosave-status_spinner-loader"></span>
+		</div>
+	</div>
+
+	<div class="snippet-autosave-server">
+		<div class="snippet-autosave-server_label">HTTP server lag (ms):</div>
+		<input id="snippet-autosave-lag" type="number" value="500" step="100" min="0" max="9000">
+	</div>
+</div>
+
+<p>Server data:</p>
+
+<pre>
+	<code id="snippet-autosave-console">Type some text to test the &#x3C;a href=&#x22;#autosave-feature&#x22;&#x3E;autosave&#x3C;/a&#x3E; feature.</code>
+</pre>
+
+<style>
+	.snippet-autosave-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		background: var(--ck-color-toolbar-background);
+		border: 1px solid var(--ck-color-toolbar-border);
+		padding: 10px;
+		border-radius: var(--ck-border-radius);
+		margin-top: -1.5em;
+		margin-bottom: 1.5em;
+		border-top: 0;
+		border-top-left-radius: 0;
+		border-top-right-radius: 0;
+	}
+
+	.snippet-autosave-status_spinner{
+		display: flex;
+		align-items: center;
+		position: relative;
+	}
+	.snippet-autosave-status_spinner-label {
+		position: relative;
+	}
+
+	.snippet-autosave-status_spinner-label::after {
+		content: 'Saved!';
+		color: green;
+		display: inline-block;
+		margin-right: var(--ck-spacing-medium);
+	}
+
+	/* During "Saving" display spinner and change content of label. */
+	.snippet-autosave-status.busy .snippet-autosave-status_spinner-label::after  {
+		content: 'Saving...';
+		color: red;
+	}
+
+	.snippet-autosave-status.busy .snippet-autosave-status_spinner-loader {
+		display: block;
+		width: 16px;
+		height: 16px;
+		border-radius: 50%;
+		border-top: 3px solid hsl(0, 0%, 70%);
+		border-right: 2px solid transparent;
+		animation: autosave-status-spinner 1s linear infinite;
+	}
+
+	.snippet-autosave-status,
+	.snippet-autosave-server {
+		display: flex;
+		align-items: center;
+	}
+
+	.snippet-autosave-server_label,
+	.snippet-autosave-status_label {
+		font-weight: bold;
+		margin-right: var(--ck-spacing-medium);
+	}
+
+	#snippet-autosave + .ck.ck-editor .ck-editor__editable {
+		border-bottom-right-radius: 0;
+		border-bottom-left-radius: 0;
+	}
+
+	#snippet-autosave-lag {
+		padding: 4px;
+	}
+
+	#snippet-autosave-console {
+		/* Lets wrap content. */
+		max-height: 300px;
+		overflow: auto;
+		white-space: normal;
+		background: #2b2c26;
+		transition: 300ms;
+	}
+
+	#snippet-autosave-console.received {
+		animation: autosave-received 1s ease 1;
+	}
+
+	@keyframes autosave-status-spinner {
+		to { transform: rotate( 360deg ); }
+	}
+
+	@keyframes autosave-received {
+		from { background: green; }
+		to { background: #2b2c26; }
+	}
+</style>
