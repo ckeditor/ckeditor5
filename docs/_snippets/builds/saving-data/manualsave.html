@@ -7,8 +7,9 @@
 		<div class="snippet-manual-save-server_label">HTTP server lag (ms):</div>
 		<input id="snippet-manual-lag" type="number" value="500" step="100" min="0" max="9000">
 	</div>
-	<div class="snippet-manual-save-submit">
+	<div class="snippet-manual-save-container">
 		<input id="snippet-manual-save" type="submit" value="Save">
+		<span class="snippet-manual-save-spinner"></span>
 	</div>
 </div>
 
@@ -60,7 +61,7 @@
 		background: hsl( 88, 73%, 39% );
 		opacity: 0.5;
 		padding: 4px 20px;
-		display: block;
+		display: inline-block;
 		border: 0;
 		border-radius: 2px;
 		font-weight: bold;
@@ -78,12 +79,12 @@
 		box-shadow: 0 1px 0 rgb(68, 117, 10);
 	}
 
-	#snippet-manual-save.active {
+	.snippet-manual-save-container.active #snippet-manual-save {
 		cursor: pointer;
 		opacity: 1;
 	}
 
-	#snippet-manual-save.saving {
+	.snippet-manual-save-container.saving #snippet-manual-save {
 		background: hsl( 88, 73%, 34% );
 	}
 
@@ -97,10 +98,31 @@
 	}
 
 	#snippet-manual-save-console.received {
-		animation: autosave-received 1s ease 1;
+		animation: manualsave-received 1s ease 1;
 	}
-	@keyframes autosave-received {
+
+	.snippet-manual-save-spinner {
+		display: none;
+	}
+
+	.snippet-manual-save-container.saving .snippet-manual-save-spinner {
+		display: inline-block;
+		vertical-align: middle;
+		margin-left: var(--ck-spacing-medium);
+		width: 16px;
+		height: 16px;
+		border-radius: 50%;
+		border-top: 3px solid hsl(0, 0%, 70%);
+		border-right: 2px solid transparent;
+		animation: manualsave-spinner 1s linear infinite;
+	}
+
+	@keyframes manualsave-received {
 		from { background: green; }
 		to { background: #2b2c26; }
+	}
+
+	@keyframes manualsave-spinner {
+		to { transform: rotate( 360deg ); }
 	}
 </style>

@@ -63,5 +63,6 @@ function displayStatus( editor ) {
 
 function log( msg ) {
 	const console = document.querySelector( '#snippet-autosave-console' );
+
 	console.textContent = msg;
 }
