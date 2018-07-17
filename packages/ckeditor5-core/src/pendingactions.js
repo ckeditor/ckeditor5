@@ -17,7 +17,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  *
  * This plugin should be used to synchronise plugins that execute long-lasting actions
  * (e.g. file upload) with the editor integration. It gives the developer who integrates the editor
- * an easy way to check if there are any pending actions whenever such information is needed.
+ * an easy way to check if there are any actions pending whenever such information is needed.
  * All plugins that register a pending action also provide a message about the action that is ongoing
  * which can be displayed to the user. This lets them decide if they want to interrupt the action or wait.
  *
@@ -47,7 +47,7 @@ import CKEditorError from '@ckeditor/ckeditor5-utils/src/ckeditorerror';
  * 		Array.from( pendingActions ); // Returns [ action1, action2 ]
  *
  * This plugin is used by features like {@link module:upload/filerepository~FileRepository} to register their ongoing actions
- * and by features like {@link module:autosave/autosave~Autosave} to detect whether there are no ongoing actions.
+ * and by features like {@link module:autosave/autosave~Autosave} to detect whether there are any ongoing actions.
  * Read more about saving the data in the {@glink builds/guides/integration/saving-data Saving and getting data} guide.
  *
  * @extends module:core/plugin~Plugin
@@ -89,8 +89,8 @@ export default class PendingActions extends Plugin {
 	 * This method returns an action object with an observable message property.
 	 * The action object can be later used in the {@link #remove} method. It also allows you to change the message.
 	 *
-	 * @param {String} message Action message.
-	 * @returns {Object} Observable object that represents a pending action.
+	 * @param {String} message The action message.
+	 * @returns {Object} An observable object that represents a pending action.
 	 */
 	add( message ) {
 		if ( typeof message !== 'string' ) {
