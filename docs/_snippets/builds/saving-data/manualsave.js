@@ -62,7 +62,7 @@ function handleSaveButton( editor ) {
 function handleStatusChanges( editor ) {
 	const pendingActions = editor.plugins.get( 'PendingActions' );
 
-	pendingActions.on( 'change:isPending', () => updateStatus( editor ) );
+	pendingActions.on( 'change:hasAny', () => updateStatus( editor ) );
 
 	editor.model.document.on( 'change:data', () => {
 		isDirty = true;
@@ -73,7 +73,7 @@ function handleStatusChanges( editor ) {
 
 function handleBeforeunload( editor ) {
 	window.addEventListener( 'beforeunload', evt => {
-		if ( editor.plugins.get( 'PendingActions' ).isPending ) {
+		if ( editor.plugins.get( 'PendingActions' ).hasAny ) {
 			evt.preventDefault();
 		}
 	} );
@@ -88,7 +88,7 @@ function updateStatus( editor ) {
 		saveButton.classList.remove( 'active' );
 	}
 
-	if ( editor.plugins.get( 'PendingActions' ).isPending ) {
+	if ( editor.plugins.get( 'PendingActions' ).hasAny ) {
 		document.querySelector( '#snippet-manual-save-console' ).classList.remove( 'received' );
 		saveButton.value = 'Saving...';
 		saveButton.classList.add( 'saving' );
