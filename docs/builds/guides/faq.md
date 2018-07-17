@@ -34,7 +34,7 @@ Although some styles are provided by the features, it is up to the developers to
 
 ## The build I downloaded is missing some features. How do I add them?
 
-See the {@link builds/guides/development/installing-plugins Installing plugins} guide to learn how to extend the editor with some additional features.
+See the {@link builds/guides/integration/installing-plugins Installing plugins} guide to learn how to extend the editor with some additional features.
 
 You can learn which editor features are available in the {@link features/index feature index}.
 
@@ -87,7 +87,7 @@ There are no ready–to–use framework adapters as of yet. We recognize the pop
 
 We believe each editor build should serve its purpose. Including features that are not used makes little sense because they increase the size of the editor and make the website heavier for no good reason. This is why we do not provide a full editor package similar to what we offer in CKEditor 4.
 
-At the same time, we recommend you to {@link builds/guides/development/installing-plugins install plugins} to enable {@link features/index additional features} or even create a {@link builds/guides/development/custom-builds custom build} to make sure you make the most out of CKEditor 5.
+At the same time, we recommend you to {@link builds/guides/integration/installing-plugins install plugins} to enable {@link features/index additional features} or even create a {@link builds/guides/development/custom-builds custom build} to make sure you make the most out of CKEditor 5.
 
 ## How to customize the CKEditor 5 icons?
 

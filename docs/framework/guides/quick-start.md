@@ -113,7 +113,7 @@ Based on these packages you can create a simple application.
 <info-box warning>
 	Note that in this guide the editor class is used directly (i.e. we use `@ckeditor/ckeditor5-editor-classic` instead of `@ckeditor/ckeditor5-build-classic`).
 
-	We do not use any of the {@link builds/guides/overview builds} because adding new plugins to them requires rebuilding them anyway. This can be done by {@link builds/guides/development/installing-plugins customizing a build} or by including CKEditor 5 source into your application (like in this guide).
+	We do not use any of the {@link builds/guides/overview builds} because adding new plugins to them requires rebuilding them anyway. This can be done by {@link builds/guides/integration/installing-plugins customizing a build} or by including CKEditor 5 source into your application (like in this guide).
 </info-box>
 
 ```js

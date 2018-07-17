@@ -1,6 +1,6 @@
 ---
 category: builds-integration
-order: 50
+order: 60
 ---
 
 # Advanced setup
