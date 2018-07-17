@@ -67,7 +67,7 @@ BalloonEditor
 ```
 
 <info-box info>
-	Read more about {@link builds/guides/development/installing-plugins installing plugins}.
+	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
 </info-box>
 
 ## Contribute
