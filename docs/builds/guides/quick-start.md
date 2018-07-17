@@ -33,7 +33,7 @@ Load the classic editor build (here [CDN](https://cdn.ckeditor.com/) location is
 
 Call the {@link module:editor-classic/classiceditor~ClassicEditor#create `ClassicEditor.create()`} method.
 
-```js
+```html
 <script>
 	ClassicEditor
 		.create( document.querySelector( '#editor' ) )

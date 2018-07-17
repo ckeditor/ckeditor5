@@ -1,26 +1,24 @@
-<div id="snippet-manual">
+<div id="snippet-manualsave">
 	<p>Change the content of this editor, then save it on the server.</p>
 </div>
 
-<div class="snippet-manual-save-header">
-	<div class="snippet-manual-save-server">
-		<div class="snippet-manual-save-server_label">HTTP server lag (ms):</div>
-		<input id="snippet-manual-lag" type="number" value="500" step="100" min="0" max="9000">
+<div id="snippet-manualsave-header">
+	<div id="snippet-manualsave-server">
+		<div id="snippet-manualsave-server_label">HTTP server lag (ms):</div>
+		<input id="snippet-manualsave-lag" type="number" value="500" step="100" min="0" max="9000">
 	</div>
-	<div class="snippet-manual-save-container">
-		<input id="snippet-manual-save" type="submit" value="Save">
-		<span class="snippet-manual-save-spinner"></span>
+	<div id="snippet-manualsave-container">
+		<span id="snippet-manualsave-spinner"></span>
+		<input id="snippet-manualsave-save" type="submit" value="Save">
 	</div>
 </div>
 
 <p>Server data:</p>
 
-<pre>
-	<code id="snippet-manual-save-console">&#x3C;p&#x3E;Change the content of this editor, then save it on the server.&#x3C;/p&#x3E;</code>
-</pre>
+<pre><code id="snippet-manualsave-console">&#x3C;p&#x3E;Change the content of this editor, then save it on the server.&#x3C;/p&#x3E;</code></pre>
 
 <style>
-	.snippet-manual-save-header {
+	#snippet-manualsave-header {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
@@ -35,14 +33,14 @@
 		border-top-right-radius: 0;
 	}
 
-	.snippet-manual-save-server,
-	.snippet-manual-save-submit {
+	#snippet-manualsave-server,
+	#snippet-manualsave-submit {
 		display: flex;
 		align-items: center;
 	}
 
-	.snippet-manual-save-server_label,
-	.snippet-manual-save-status_label {
+	#snippet-manualsave-server_label,
+	#snippet-manualsave-status_label {
 		font-weight: bold;
 		margin-right: var(--ck-spacing-medium);
 	}
@@ -52,11 +50,11 @@
 		border-bottom-left-radius: 0;
 	}
 
-	#snippet-manual-save-lag {
+	#snippet-manualsave-lag {
 		padding: 4px;
 	}
 
-	#snippet-manual-save {
+	#snippet-manualsave-save {
 		color: #fff;
 		background: hsl( 88, 73%, 39% );
 		opacity: 0.5;
@@ -70,56 +68,50 @@
 		box-shadow: 0 2px 0 rgb(68, 117, 10);
 	}
 
-	#snippet-manual-save:hover {
+	#snippet-manualsave-save:hover {
 		background: hsl( 88, 73%, 42% );
 	}
 
-	#snippet-manual-save:active,
-	#snippet-manual-save:focus {
+	#snippet-manualsave-save:active,
+	#snippet-manualsave-save:focus {
 		box-shadow: 0 1px 0 rgb(68, 117, 10);
 	}
 
-	.snippet-manual-save-container.active #snippet-manual-save {
+	#snippet-manualsave-container.active #snippet-manualsave-save {
 		cursor: pointer;
 		opacity: 1;
 	}
 
-	.snippet-manual-save-container.saving #snippet-manual-save {
+	#snippet-manualsave-container.saving #snippet-manualsave-save {
 		background: hsl( 88, 73%, 34% );
 	}
 
-	#snippet-manual-save-console {
-		/* Lets wrap content. */
+	#snippet-manualsave-console {
 		max-height: 300px;
 		overflow: auto;
 		white-space: normal;
 		background: #2b2c26;
-		transition: 300ms;
+		transition: background-color 500ms;
 	}
 
-	#snippet-manual-save-console.received {
-		animation: manualsave-received 1s ease 1;
+	#snippet-manualsave-console.updated {
+		background: green;
 	}
 
-	.snippet-manual-save-spinner {
+	#snippet-manualsave-spinner {
 		display: none;
 	}
 
-	.snippet-manual-save-container.saving .snippet-manual-save-spinner {
+	#snippet-manualsave-container.saving #snippet-manualsave-spinner {
 		display: inline-block;
 		vertical-align: middle;
-		margin-left: var(--ck-spacing-medium);
+		margin-right: var(--ck-spacing-medium);
 		width: 16px;
 		height: 16px;
 		border-radius: 50%;
 		border-top: 3px solid hsl(0, 0%, 70%);
 		border-right: 2px solid transparent;
 		animation: manualsave-spinner 1s linear infinite;
-	}
-
-	@keyframes manualsave-received {
-		from { background: green; }
-		to { background: #2b2c26; }
 	}
 
 	@keyframes manualsave-spinner {

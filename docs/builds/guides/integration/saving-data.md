@@ -163,6 +163,12 @@ This demo shows a simple integration of the editor with a fake HTTP server (whic
 ```js
 ClassicEditor
 	.create( document.querySelector( '#editor' ), {
+		plugins: [
+			Autosave,
+
+			// ... other plugins
+		],
+
 		autosave: {
 			save( editor ) {
 				return saveData( editor.getData() );
@@ -178,18 +184,18 @@ ClassicEditor
 		console.error( err.stack );
 	} );
 
-// Save the data to a fake HTTP server.
+// Save the data to a fake HTTP server (emulated here with a setTimeout()).
 function saveData( data ) {
 	return new Promise( resolve => {
-
 		setTimeout( () => {
-			console.log( data );
+			console.log( 'Saved', data );
 
 			resolve();
 		}, HTTP_SERVER_LAG );
 	} );
 }
 
+// Update the "Status: Saving..." info.
 function displayStatus( editor ) {
 	const pendingActions = editor.plugins.get( 'PendingActions' );
 	const statusIndicator = document.querySelector( '#editor-status' );
@@ -229,10 +235,18 @@ To handle the former situation you can listen to the native [`window#beforeunloa
 The example below shows how all these mechanisms can be used together to enable or disable a "Save" button and block the user from leaving the page without saving the data.
 
 ```js
+import PendingActions from '@ckeditor/ckeditor5-core/src/pendingactions';
+
 let isDirty = false;
 
 ClassicEditor
-	.create( document.querySelector( '#editor' ) )
+	.create( document.querySelector( '#editor' ), {
+		plugins: [
+			PendingActions,
+
+			// ... other plugins
+		]
+	} )
 	.then( editor => {
 		window.editor = editor;
 
@@ -244,21 +258,25 @@ ClassicEditor
 		console.error( err.stack );
 	} );
 
-// Handle clicking the "Save" button.
+// Handle clicking the "Save" button by sending the data to a
+// fake HTTP server (emulated here with setTimeout()).
 function handleSaveButton( editor ) {
 	const saveButton = document.querySelector( '#save' );
 	const pendingActions = editor.plugins.get( 'PendingActions' );
 
 	saveButton.addEventListener( 'click', evt => {
 		const data = editor.getData();
+
+		// Register the action of saving the data as a "pending action".
+		// All asynchronous actions related to the editor are tracked like this,
+		// so later on you only need to check `pendingActions.hasAny` to check
+		// whether editor is busy or not.
 		const action = pendingActions.add( 'Saving changes' );
 
 		evt.preventDefault();
 
-		// Fake HTTP server's lag.
+		// Save the data to a fake HTTP server.
 		setTimeout( () => {
-			log( data );
-
 			pendingActions.remove( action );
 
 			// Reset isDirty only if data didn't change in the meantime.
@@ -271,10 +289,10 @@ function handleSaveButton( editor ) {
 	} );
 }
 
+// Listen to new changes (to enable the "Save" button) and to
+// pending actions (to show the spinner animation when the editor is busy).
 function handleStatusChanges( editor ) {
-	const pendingActions = editor.plugins.get( 'PendingActions' );
-
-	pendingActions.on( 'change:hasAny', () => updateStatus( editor ) );
+	editor.plugins.get( 'PendingActions' ).on( 'change:hasAny', () => updateStatus( editor ) );
 
 	editor.model.document.on( 'change:data', () => {
 		isDirty = true;
@@ -283,12 +301,14 @@ function handleStatusChanges( editor ) {
 	} );
 }
 
+// If the user tries to leave the page before the data is saved, ask
+// they whether they are sure.
 function handleBeforeunload( editor ) {
 	const pendingActions = editor.plugins.get( 'PendingActions' );
 
 	window.addEventListener( 'beforeunload', evt => {
 		if ( pendingActions.hasAny ) {
-			evt.returnValue = pendingActions.first.message;
+			evt.preventDefault();
 		}
 	} );
 }
@@ -296,12 +316,14 @@ function handleBeforeunload( editor ) {
 function updateStatus( editor ) {
 	const saveButton = document.querySelector( '#save' );
 
+	// Disables the "Save" button when the data on the server is up to date.
 	if ( isDirty ) {
 		saveButton.classList.add( 'active' );
 	} else {
 		saveButton.classList.remove( 'active' );
 	}
 
+	// Shows the spinner animation.
 	if ( editor.plugins.get( 'PendingActions' ).hasAny ) {
 		saveButton.classList.add( 'saving' );
 	} else {
