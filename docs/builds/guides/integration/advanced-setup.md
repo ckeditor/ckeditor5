@@ -332,7 +332,7 @@ Finally, you can build your application. Run webpack on your project and the edi
 
 ### Option: Minifying JavaScript
 
-Webpack 4 introduced the [concept of modes](https://webpack.js.org/concepts/mode/). It comes with two predefined modes – `development` and `production`. The latter automatically enables the [`uglifyjs-webpack-plugin`](https://www.npmjs.com/package/uglifyjs-webpack-plugin). Therefore, it is enough to execute `webpack` with the `--mode production` option or set `mode: 'production'` in your `webpack.config.js`.
+Webpack 4 introduced the [concept of modes](https://webpack.js.org/concepts/mode/). It comes with two predefined modes – `development` and `production`. The latter automatically enables [`uglifyjs-webpack-plugin`](https://www.npmjs.com/package/uglifyjs-webpack-plugin) which takes care of JavaScript minification. Therefore, it is enough to execute `webpack` with the `--mode production` option or set `mode: 'production'` in your `webpack.config.js` to optimize the build.
 
 <info-box>
 	Prior to version 1.2.7 `uglifyjs-webpack-plugin` had a bug which caused webpack to crash with the following error: `TypeError: Assignment to constant variable.`. If you experienced this error, make sure that your `node_modules` contains an up to date version of that package (and that webpack uses this version).
