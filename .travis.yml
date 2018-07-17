@@ -8,7 +8,7 @@ addons:
       - google-chrome-stable
 language: node_js
 node_js:
-  - "6"
+  - "8"
 cache:
   - node_modules
 before_install:
