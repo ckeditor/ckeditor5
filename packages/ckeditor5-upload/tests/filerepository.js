@@ -104,12 +104,12 @@ describe( 'FileRepository', () => {
 		} );
 
 		it( 'should add pending action when upload is in progress', () => {
-			expect( pendingActions ).to.have.property( 'isPending', false );
+			expect( pendingActions ).to.have.property( 'hasAny', false );
 			expect( Array.from( pendingActions ) ).to.length( 0 );
 
 			fileRepository.createLoader( createNativeFileMock() );
 
-			expect( pendingActions ).to.have.property( 'isPending', true );
+			expect( pendingActions ).to.have.property( 'hasAny', true );
 			expect( Array.from( pendingActions, action => action.message ) ).to.have.members( [ 'Upload in progress 0%.' ] );
 		} );
 
@@ -122,23 +122,23 @@ describe( 'FileRepository', () => {
 		} );
 
 		it( 'should remove pending action when all uploads are finished', () => {
-			expect( pendingActions ).to.have.property( 'isPending', false );
+			expect( pendingActions ).to.have.property( 'hasAny', false );
 			expect( Array.from( pendingActions ) ).to.length( 0 );
 
 			const loader1 = fileRepository.createLoader( createNativeFileMock() );
 			const loader2 = fileRepository.createLoader( createNativeFileMock() );
 
-			expect( pendingActions ).to.have.property( 'isPending', true );
+			expect( pendingActions ).to.have.property( 'hasAny', true );
 			expect( Array.from( pendingActions, action => action.message ) ).to.have.members( [ 'Upload in progress 0%.' ] );
 
 			fileRepository.destroyLoader( loader1 );
 
-			expect( pendingActions ).to.have.property( 'isPending', true );
+			expect( pendingActions ).to.have.property( 'hasAny', true );
 			expect( Array.from( pendingActions, action => action.message ) ).to.have.members( [ 'Upload in progress 0%.' ] );
 
 			fileRepository.destroyLoader( loader2 );
 
-			expect( pendingActions ).to.have.property( 'isPending', false );
+			expect( pendingActions ).to.have.property( 'hasAny', false );
 			expect( Array.from( pendingActions ) ).to.length( 0 );
 		} );
 
