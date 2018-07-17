@@ -182,7 +182,7 @@ ClassicEditor
 ```
 
 <info-box info>
-	Read more about {@link builds/guides/development/installing-plugins installing plugins}.
+	Read more about {@link builds/guides/integration/installing-plugins installing plugins}.
 </info-box>
 
 ## Common API
@@ -249,7 +249,7 @@ The {@link module:font/fontsize~FontSize} plugin registers the following compone
 	// For named presets:
 	editor.execute( 'fontSize', { value: 'small' } );
 	```
-	
+
 	Passing an empty value will remove any `fontSize` set:
 
 	```js
