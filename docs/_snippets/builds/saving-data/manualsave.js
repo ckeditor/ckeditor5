@@ -80,21 +80,20 @@ function handleBeforeunload( editor ) {
 }
 
 function updateStatus( editor ) {
-	const saveButton = document.querySelector( '#snippet-manual-save' );
+	const buttonContainer = document.querySelector( '.snippet-manual-save-container' );
+	const console = document.querySelector( '#snippet-manual-save-console' );
 
 	if ( isDirty ) {
-		saveButton.classList.add( 'active' );
+		buttonContainer.classList.add( 'active' );
 	} else {
-		saveButton.classList.remove( 'active' );
+		buttonContainer.classList.remove( 'active' );
 	}
 
 	if ( editor.plugins.get( 'PendingActions' ).hasAny ) {
-		document.querySelector( '#snippet-manual-save-console' ).classList.remove( 'received' );
-		saveButton.value = 'Saving...';
-		saveButton.classList.add( 'saving' );
+		buttonContainer.classList.add( 'saving' );
+		console.classList.remove( 'received' );
 	} else {
-		saveButton.value = 'Save';
-		saveButton.classList.remove( 'saving' );
+		buttonContainer.classList.remove( 'saving' );
 	}
 }
 
