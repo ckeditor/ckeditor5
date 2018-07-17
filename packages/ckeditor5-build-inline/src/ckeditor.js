@@ -3,45 +3,49 @@
  * For licensing, see LICENSE.md.
  */
 
+// The editor creator to use.
 import InlineEditorBase from '@ckeditor/ckeditor5-editor-inline/src/inlineeditor';
-import EssentialsPlugin from '@ckeditor/ckeditor5-essentials/src/essentials';
-import UploadAdapterPlugin from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
-import AutoformatPlugin from '@ckeditor/ckeditor5-autoformat/src/autoformat';
-import BoldPlugin from '@ckeditor/ckeditor5-basic-styles/src/bold';
-import ItalicPlugin from '@ckeditor/ckeditor5-basic-styles/src/italic';
-import BlockQuotePlugin from '@ckeditor/ckeditor5-block-quote/src/blockquote';
-import EasyImagePlugin from '@ckeditor/ckeditor5-easy-image/src/easyimage';
-import HeadingPlugin from '@ckeditor/ckeditor5-heading/src/heading';
-import ImagePlugin from '@ckeditor/ckeditor5-image/src/image';
-import ImageCaptionPlugin from '@ckeditor/ckeditor5-image/src/imagecaption';
-import ImageStylePlugin from '@ckeditor/ckeditor5-image/src/imagestyle';
-import ImageToolbarPlugin from '@ckeditor/ckeditor5-image/src/imagetoolbar';
-import ImageUploadPlugin from '@ckeditor/ckeditor5-image/src/imageupload';
-import LinkPlugin from '@ckeditor/ckeditor5-link/src/link';
-import ListPlugin from '@ckeditor/ckeditor5-list/src/list';
-import ParagraphPlugin from '@ckeditor/ckeditor5-paragraph/src/paragraph';
+
+import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
+import UploadAdapter from '@ckeditor/ckeditor5-adapter-ckfinder/src/uploadadapter';
+import Autoformat from '@ckeditor/ckeditor5-autoformat/src/autoformat';
+import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
+import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
+import EasyImage from '@ckeditor/ckeditor5-easy-image/src/easyimage';
+import Heading from '@ckeditor/ckeditor5-heading/src/heading';
+import Image from '@ckeditor/ckeditor5-image/src/image';
+import ImageCaption from '@ckeditor/ckeditor5-image/src/imagecaption';
+import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
+import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
+import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
+import Link from '@ckeditor/ckeditor5-link/src/link';
+import List from '@ckeditor/ckeditor5-list/src/list';
+import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 
 export default class InlineEditor extends InlineEditorBase {}
 
+// Plugins to include in the build.
 InlineEditor.builtinPlugins = [
-	EssentialsPlugin,
-	UploadAdapterPlugin,
-	AutoformatPlugin,
-	BoldPlugin,
-	ItalicPlugin,
-	BlockQuotePlugin,
-	EasyImagePlugin,
-	HeadingPlugin,
-	ImagePlugin,
-	ImageCaptionPlugin,
-	ImageStylePlugin,
-	ImageToolbarPlugin,
-	ImageUploadPlugin,
-	LinkPlugin,
-	ListPlugin,
-	ParagraphPlugin
+	Essentials,
+	UploadAdapter,
+	Autoformat,
+	Bold,
+	Italic,
+	BlockQuote,
+	EasyImage,
+	Heading,
+	Image,
+	ImageCaption,
+	ImageStyle,
+	ImageToolbar,
+	ImageUpload,
+	Link,
+	List,
+	Paragraph
 ];
 
+// Editor configuration.
 InlineEditor.defaultConfig = {
 	toolbar: {
 		items: [
@@ -66,5 +70,6 @@ InlineEditor.defaultConfig = {
 			'imageTextAlternative'
 		]
 	},
+	// This value must be kept in sync with the language defined in webpack.config.js.
 	language: 'en'
 };
