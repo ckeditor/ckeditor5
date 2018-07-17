@@ -267,8 +267,28 @@ export default class PluginCollection {
 		if ( this._plugins.has( pluginName ) ) {
 			/**
 			 * Two plugins with the same {@link module:core/plugin~PluginInterface.pluginName} were loaded.
-			 * This may lead to runtime conflicts between these plugins. This usually means that incorrect
-			 * parameters were passed to {@link module:core/editor/editor~Editor.create}.
+			 * This will lead to runtime conflicts between these plugins.
+			 *
+			 * In practice, this warning usually means that new plugins were added to an existing CKEditor 5 build.
+			 * Plugins should always be added to a source version of the editor (`@ckeditor/ckeditor5-editor-*`),
+			 * not to an editor imported from one of the `@ckeditor/ckeditor5-build-*` packages.
+			 *
+			 * Check your import paths and the list of plugins passed to
+			 * {@link module:core/editor/editor~Editor.create `Editor.create()`}
+			 * or specified in {@link module:core/editor/editor~Editor.builtinPlugins `Editor.builtinPlugins`}.
+			 *
+			 * The second option is that your `node_modules/` directory contains duplicated versions of the same
+			 * CKEditor 5 packages. Normally, on clean installations, npm deduplicates packages in `node_modules/`, so
+			 * it may be enough to call `rm -rf node_modules && npm i`. However, if you installed conflicting versions
+			 * of packages, their dependencies may need to be installed in more than one version which may lead to this
+			 * warning.
+			 *
+			 * Technically speaking, this error occurs because after adding a plugin to an existing editor build
+			 * dependencies of this plugin are being duplicated.
+			 * They are already built into that editor build and now get added for the second time as dependencies
+			 * of the plugin you are installing.
+			 *
+			 * Read more about {@glink builds/guides/development/installing-plugins installing plugins}.
 			 *
 			 * @error plugincollection-plugin-name-conflict
 			 * @param {String} pluginName The duplicated plugin name.
