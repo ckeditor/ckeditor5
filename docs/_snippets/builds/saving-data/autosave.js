@@ -48,20 +48,20 @@ function saveData( data ) {
 function displayStatus( editor ) {
 	const pendingActions = editor.plugins.get( 'PendingActions' );
 	const statusIndicator = document.querySelector( '.snippet-autosave-status' );
+	const console = document.querySelector( '#snippet-autosave-console' );
 
 	pendingActions.on( 'change:isPending', ( evt, propertyName, newValue ) => {
 		if ( newValue ) {
 			statusIndicator.classList.add( 'busy' );
-			document.querySelector( '#snippet-autosave-console' ).classList.remove( 'received' );
+			console.classList.remove( 'received' );
 		} else {
 			statusIndicator.classList.remove( 'busy' );
+			console.classList.add( 'received' );
 		}
 	} );
 }
 
 function log( msg ) {
 	const console = document.querySelector( '#snippet-autosave-console' );
-
-	console.classList.add( 'received' );
 	console.textContent = msg;
 }
